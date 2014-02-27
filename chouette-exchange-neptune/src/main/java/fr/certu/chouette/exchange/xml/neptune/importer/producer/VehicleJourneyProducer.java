@@ -63,7 +63,7 @@ public class VehicleJourneyProducer extends AbstractModelProducer<VehicleJourney
       // ServiceStatusValue optional
       if(xmlVehicleJourney.getStatusValue() != null){
          try{
-            vehicleJourney.setServiceStatusValue(ServiceStatusValueEnum.fromValue(xmlVehicleJourney.getStatusValue().value()));
+            vehicleJourney.setServiceStatusValue(ServiceStatusValueEnum.valueOf(xmlVehicleJourney.getStatusValue().value()));
          }
          catch (IllegalArgumentException e) 
          {
@@ -77,7 +77,7 @@ public class VehicleJourneyProducer extends AbstractModelProducer<VehicleJourney
       // TransportMode optional
       if(xmlVehicleJourney.getTransportMode() != null){
          try{
-            vehicleJourney.setTransportMode(TransportModeNameEnum.fromValue(xmlVehicleJourney.getTransportMode().value()));
+            vehicleJourney.setTransportMode(TransportModeNameEnum.valueOf(xmlVehicleJourney.getTransportMode().value()));
          }
          catch (IllegalArgumentException e) 
          {
@@ -99,7 +99,7 @@ public class VehicleJourneyProducer extends AbstractModelProducer<VehicleJourney
 
          if (xmlVehicleJourneyAtStop.getBoardingAlightingPossibility() != null) {
             try{
-               vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibilityEnum.fromValue(xmlVehicleJourneyAtStop.getBoardingAlightingPossibility().value()));
+               vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibilityEnum.valueOf(xmlVehicleJourneyAtStop.getBoardingAlightingPossibility().value()));
             }
             catch (IllegalArgumentException e) 
             {

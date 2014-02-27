@@ -31,7 +31,7 @@ public class RouteProducer extends AbstractJaxbNeptuneProducer<ChouetteRoute, Ro
 		try {
 			PTDirectionEnum direction = route.getDirection();
 			if(direction != null){
-				jaxbRoute.setDirection(PTDirectionType.fromValue(direction.value()));
+				jaxbRoute.setDirection(PTDirectionType.fromValue(direction.name()));
 			}
 		} catch (IllegalArgumentException e) {
 			// TODO generate report

@@ -76,7 +76,7 @@ public class VehicleJourneyConverterTest extends AbstractTestNGSpringContextTest
     @Test(groups = {"TimeTableFrame"}, description = "VehicleJourney's ServiceStatusValue attribute reading")
     public void verifyServiceStatusValue() throws XPathEvalException, NavException, XPathParseException, ParseException {
         VehicleJourney selectedVehicle = getByObjectId( "T:VehicleJourney:1-0-1-0");
-        Assert.assertEquals( selectedVehicle.getServiceStatusValue(), ServiceStatusValueEnum.NORMAL);
+        Assert.assertEquals( selectedVehicle.getServiceStatusValue(), ServiceStatusValueEnum.Normal);
     }
     
     @Test(groups = {"TimeTableFrame"}, description = "VehicleJourney's Number attribute reading")

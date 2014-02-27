@@ -12,6 +12,7 @@ import java.util.Set;
 import lombok.Getter;
 
 import org.apache.log4j.Logger;
+import org.springframework.util.StringUtils;
 
 import au.com.bytecode.opencsv.CSVReader;
 import fr.certu.chouette.exchange.csv.exception.ExchangeException;
@@ -30,6 +31,7 @@ import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
 import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
+import fr.certu.chouette.model.neptune.type.Utils;
 import fr.certu.chouette.plugin.report.Report;
 
 public class LineProducer extends AbstractModelProducer<Line>
@@ -130,7 +132,7 @@ public class LineProducer extends AbstractModelProducer<Line>
 					throw new ExchangeException(ExchangeExceptionCode.INVALID_CSV_FILE, e);
 				}
 			}
-			line.setTransportModeName(TransportModeNameEnum.valueOf(loadStringParam(csvReader, TRANSPORT_MODE_NAME_TITLE)));
+			line.setTransportModeName(Utils.valueOfIgnoreCase(loadStringParam(csvReader, TRANSPORT_MODE_NAME_TITLE), TransportModeNameEnum.class));
 			line.setObjectId(objectIdPrefix + ":" + Line.LINE_KEY + ":" + toIdString(line.getRegistrationNumber()));
 			if (!NeptuneIdentifiedObject.checkObjectId(line.getObjectId()))
 			{
@@ -154,6 +156,8 @@ public class LineProducer extends AbstractModelProducer<Line>
 		return line;
 	}
 
+
+	
 	private void loadRoutes(Line line, CSVReader csvReader, String objectIdPrefix, Report report)
 			throws ExchangeException
 			{
@@ -241,13 +245,13 @@ public class LineProducer extends AbstractModelProducer<Line>
 				end = checkLine(arret);
 			}
 
-			ChouetteAreaEnum areaType = ChouetteAreaEnum.BOARDINGPOSITION;
+			ChouetteAreaEnum areaType = ChouetteAreaEnum.BoardingPosition;
 			switch (line.getTransportModeName())
 			{
-			case METRO:
-			case TRAIN:
-			case TRAMWAY:
-				areaType = ChouetteAreaEnum.QUAY;
+			case Metro:
+			case Train:
+			case Tramway:
+				areaType = ChouetteAreaEnum.Quay;
 				break;
 			default:
 				break;
@@ -262,7 +266,8 @@ public class LineProducer extends AbstractModelProducer<Line>
 				line.addRoute(route);
 				route.setName(directions[routeColumn]);
 				// logger.debug("route "+route.getName()+" created");
-				PTDirectionEnum direction = PTDirectionEnum.fromValue(directions[routeColumn].substring(0, 1));
+				
+				PTDirectionEnum direction = Utils.valueOfIgnoreCase(directions[routeColumn].substring(0, 1), PTDirectionEnum.class);
 				route.setDirection(direction);
 				route.setWayBack(direction.toString());
 				route.setObjectId(objectIdPrefix + ":" + Route.ROUTE_KEY + ":" + toIdString(line.getRegistrationNumber()) + "_"
@@ -313,7 +318,7 @@ public class LineProducer extends AbstractModelProducer<Line>
 				wayback.setName(directions[waybackRouteColumn]);
 				// logger.debug("route "+wayback.getName()+" created");
 
-				PTDirectionEnum direction = PTDirectionEnum.fromValue(directions[waybackRouteColumn].substring(0, 1));
+				PTDirectionEnum direction = Utils.valueOfIgnoreCase(directions[waybackRouteColumn].substring(0, 1), PTDirectionEnum.class);
 				wayback.setDirection(direction);
 				wayback.setWayBack(direction.toString());
 				wayback.setObjectId(objectIdPrefix + ":" + Route.ROUTE_KEY + ":" + toIdString(line.getRegistrationNumber()) + "_"
@@ -524,7 +529,7 @@ public class LineProducer extends AbstractModelProducer<Line>
 	{
 		StopArea commercial;
 		commercial = new StopArea();
-		commercial.setAreaType(ChouetteAreaEnum.COMMERCIALSTOPPOINT);
+		commercial.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
 		commercial.setName(getValue(AREAZONE_COLUMN, stopData));
 		commercial.setObjectId(objectIdPrefix + ":" + StopArea.STOPAREA_KEY + ":C_" + toIdString(commercial.getName()));
 		if (getValue(ADDRESS_COLUMN, stopData) != null || getValue(ZIPCODE_COLUMN, stopData) != null)

@@ -42,7 +42,7 @@ public class LineBlueprint {
     int objectVersion = 1;
     
     @Default
-    TransportModeNameEnum transportModeName = TransportModeNameEnum.METRO;
+    TransportModeNameEnum transportModeName = TransportModeNameEnum.Metro;
     
     @Default
     String registrationNumber = "100110107";

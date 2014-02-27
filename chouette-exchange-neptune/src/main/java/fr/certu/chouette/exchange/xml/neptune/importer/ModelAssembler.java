@@ -648,7 +648,7 @@ public class ModelAssembler
 			stopArea.setAreaCentroid(getObjectFromId(stopArea.getAreaCentroidId(), AreaCentroid.class));
 			if (!stopArea.getAreaType().equals(ChouetteAreaEnum.ITL))
 			{
-				if (stopArea.getAreaType().equals(ChouetteAreaEnum.QUAY) || stopArea.getAreaType().equals(ChouetteAreaEnum.BOARDINGPOSITION))
+				if (stopArea.getAreaType().equals(ChouetteAreaEnum.Quay) || stopArea.getAreaType().equals(ChouetteAreaEnum.BoardingPosition))
 				{
 					stopArea.setContainedStopPoints(getObjectsFromIds(stopArea.getContainedStopIds(), StopPoint.class));
 					stopArea.setContainedStopAreas(null);
@@ -812,7 +812,7 @@ public class ModelAssembler
 					StopArea area = link.getStopArea();
 					if (area != null)
 					{
-						if (area.getAreaType().equals(ChouetteAreaEnum.BOARDINGPOSITION) || area.getAreaType().equals(ChouetteAreaEnum.QUAY))
+						if (area.getAreaType().equals(ChouetteAreaEnum.BoardingPosition) || area.getAreaType().equals(ChouetteAreaEnum.Quay))
 						{
 							if (area.getParent() != null) area = area.getParent();
 							link.getAccessPoint().setContainedIn(area);

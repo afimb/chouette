@@ -63,31 +63,31 @@ public class TimetableProducer extends AbstractModelProducer<Timetable>
          }
          if (loadStringParam(csvReader, MONDAY_TITLE).equalsIgnoreCase(YES_OPTION))
          {
-            timetable.addDayType(DayTypeEnum.MONDAY);
+            timetable.addDayType(DayTypeEnum.Monday);
          }
          if (loadStringParam(csvReader, TUESDAY_TITLE).equalsIgnoreCase(YES_OPTION))
          {
-            timetable.addDayType(DayTypeEnum.TUESDAY);
+            timetable.addDayType(DayTypeEnum.Thursday);
          }
          if (loadStringParam(csvReader, WEDNESDAY_TITLE).equalsIgnoreCase(YES_OPTION))
          {
-            timetable.addDayType(DayTypeEnum.WEDNESDAY);
+            timetable.addDayType(DayTypeEnum.Wednesday);
          }
          if (loadStringParam(csvReader, THURSDAY_TITLE).equalsIgnoreCase(YES_OPTION))
          {
-            timetable.addDayType(DayTypeEnum.THURSDAY);
+            timetable.addDayType(DayTypeEnum.Thursday);
          }
          if (loadStringParam(csvReader, FRIDAY_TITLE).equalsIgnoreCase(YES_OPTION))
          {
-            timetable.addDayType(DayTypeEnum.FRIDAY);
+            timetable.addDayType(DayTypeEnum.Friday);
          }
          if (loadStringParam(csvReader, SATURDAY_TITLE).equalsIgnoreCase(YES_OPTION))
          {
-            timetable.addDayType(DayTypeEnum.SATURDAY);
+            timetable.addDayType(DayTypeEnum.Saturday);
          }
          if (loadStringParam(csvReader, SUNDAY_TITLE).equalsIgnoreCase(YES_OPTION))
          {
-            timetable.addDayType(DayTypeEnum.SUNDAY);
+            timetable.addDayType(DayTypeEnum.Sunday);
          }
          List<Date> startDates = loadDatesParam(csvReader, START_DATE_TITLE);
          List<Date> endDates = loadDatesParam(csvReader, END_DATE_TITLE);

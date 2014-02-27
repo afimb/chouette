@@ -2,21 +2,22 @@ package fr.certu.chouette.dao.hibernate;
 
 import java.util.List;
 
+import javax.persistence.EntityExistsException;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaDelete;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import lombok.Getter;
 import lombok.Setter;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Criteria;
-import org.hibernate.NonUniqueObjectException;
-import org.hibernate.Query;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.criterion.CriteriaSpecification;
-import org.hibernate.criterion.DetachedCriteria;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
-import org.springframework.orm.ObjectRetrievalFailureException;
-import org.springframework.orm.hibernate4.HibernateSystemException;
+import org.springframework.orm.jpa.EntityManagerFactoryUtils;
 
 import fr.certu.chouette.dao.IDaoTemplate;
 import fr.certu.chouette.dao.hibernate.exception.HibernateDaoExceptionCode;
@@ -32,6 +33,7 @@ import fr.certu.chouette.model.neptune.GroupOfLine;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
+import fr.certu.chouette.model.neptune.NeptuneObject;
 import fr.certu.chouette.model.neptune.PTLink;
 import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.model.neptune.Route;
@@ -40,8 +42,14 @@ import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.TimeSlot;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
+import fr.certu.chouette.plugin.model.CompilanceCheckTask;
+import fr.certu.chouette.plugin.model.ExportLogMessage;
+import fr.certu.chouette.plugin.model.GuiExport;
+import fr.certu.chouette.plugin.model.ImportTask;
+import fr.certu.chouette.plugin.model.Organisation;
+import fr.certu.chouette.plugin.model.Referential;
 
-public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> implements
+public class HibernateDaoTemplate<T extends NeptuneObject> implements
       IDaoTemplate<T>
 {
    private static final Logger logger = Logger.getLogger(HibernateDaoTemplate.class);
@@ -133,61 +141,84 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> implements
       return new HibernateDaoTemplate<VehicleJourney>(VehicleJourney.class);
    }
 
+   public static HibernateDaoTemplate<Organisation> createOrganisationDao()
+   {
+      return new HibernateDaoTemplate<Organisation>(
+            Organisation.class);
+   }
+
+   public static HibernateDaoTemplate<Referential> createReferentialDao()
+   {
+      return new HibernateDaoTemplate<Referential>(
+            Referential.class);
+   }
+
+   public static HibernateDaoTemplate<ImportTask> createImportDao()
+   {
+      return new HibernateDaoTemplate<ImportTask>(
+            ImportTask.class);
+   }
+
+   public static HibernateDaoTemplate<CompilanceCheckTask> createValidationDao()
+   {
+      return new HibernateDaoTemplate<CompilanceCheckTask>(
+            CompilanceCheckTask.class);
+   }
+
+   public static HibernateDaoTemplate<GuiExport> createExportDao()
+   {
+      return new HibernateDaoTemplate<GuiExport>(GuiExport.class);
+   }
+
+   public static HibernateDaoTemplate<ExportLogMessage> createExportLogMessageDao()
+   {
+      return new HibernateDaoTemplate<ExportLogMessage>(
+            ExportLogMessage.class);
+   }
+
    @Getter
    @Setter
-   private SessionFactory sessionFactory;
+   private EntityManagerFactory entityManagerFactory;
 
-   private Session getHibernateTemplate()
+   private EntityManager getEntityManager()
    {
-      return sessionFactory.getCurrentSession();
+      return EntityManagerFactoryUtils.getTransactionalEntityManager(getEntityManagerFactory());
    }
 
-   private Session getSession()
-   {
-      return sessionFactory.getCurrentSession();
-   }
-
-   /*
-    * (non-Javadoc)
-    * 
-    * @see fr.certu.chouette.dao.IDaoTemplate#get(java.lang.Long)
-    */
+   @Override
    public T get(Long id)
    {
-      logger.debug("invoke get on " + type.getSimpleName());
       if (id == null)
          return null;
-      T object = (T) getHibernateTemplate().get(type, id);
+
+      T object = getEntityManager().find(type, id);
       if (object == null)
       {
          return null;
-         // throw new ObjectRetrievalFailureException( type, id);
       }
       return object;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * fr.certu.chouette.dao.IDaoTemplate#select(fr.certu.chouette.filter.Filter)
-    */
-   @SuppressWarnings("unchecked")
+   @Override
    public List<T> select(final Filter filter)
    {
+      List<T> result = null;
+
       logger.debug("invoke select on " + type.getSimpleName());
 
-      Session session = getSession();
+      EntityManager em = getEntityManager();
+      CriteriaBuilder builder = em.getCriteriaBuilder();
+      CriteriaQuery<T> criteria = builder.createQuery(type);
+      Root<T> root = criteria.from(type);
+      criteria.distinct(true);
 
-      Criteria criteria = session.createCriteria(type);
-
-      // DetachedCriteria criteria = DetachedCriteria.forClass(type);
-      criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
       if (!filter.isEmpty())
       {
-         FilterToHibernateClauseTranslator translator = new FilterToHibernateClauseTranslator();
-         criteria.add(translator.translate(filter, criteria, getSessionFactory().getClassMetadata(type)));
+         FilterToHibernateClauseTranslator<T> translator = new FilterToHibernateClauseTranslator<T>();
+         Predicate predicate = translator.translate(filter, builder, root);
+         criteria.where(predicate);
       }
+
       if (filter.getOrderList() != null)
       {
          for (FilterOrder order : filter.getOrderList())
@@ -195,10 +226,10 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> implements
             switch (order.getType())
             {
             case ASC:
-               criteria.addOrder(Order.asc(order.getAttribute()));
+               criteria.orderBy(builder.asc(root.get(order.getAttribute())));
                break;
             case DESC:
-               criteria.addOrder(Order.desc(order.getAttribute()));
+               criteria.orderBy(builder.desc(root.get(order.getAttribute())));
                break;
 
             default:
@@ -206,173 +237,109 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> implements
             }
          }
       }
-      // HibernateTemplate ht = getHibernateTemplate();
-      List<T> beans = null;
+      TypedQuery<T> query = em.createQuery(criteria);
+
       if (filter.getLimit() > 0 || filter.getStart() > 0)
       {
          logger.debug("call with start and/or limit");
-         criteria.setFirstResult(filter.getStart());
-         criteria.setMaxResults(filter.getLimit());
-         beans = criteria.list();// ht.findByCriteria(criteria,filter.getStart(),filter.getLimit());
+         query.setMaxResults(filter.getLimit());
+         query.setFirstResult(filter.getStart());
+         result = query.getResultList();
       }
       else
       {
-         beans = criteria.list(); // ht.findByCriteria(criteria);
+         result = query.getResultList();
       }
-      logger.debug(type.getSimpleName() + " founds = " + beans.size());
+      logger.debug(type.getSimpleName() + " founds = " + result.size());
 
-      return beans;
+      return result;
 
    }
 
-   @SuppressWarnings("unchecked")
    public List<T> select(final String hql, final List<Object> values)
    {
-      Session session = getSession();
+      List<T> result = null;
+      EntityManager em = getEntityManager();
+
       if (values.isEmpty())
       {
-         return session.createQuery(hql).list();
+         TypedQuery<T> query = em.createQuery(hql, type);
+         result = query.getResultList();
       }
       else
       {
-         Query query = session.createQuery(hql);
+         TypedQuery<T> query = em.createQuery(hql, type);
          int pos = 0;
          for (Object value : values)
          {
             query.setParameter(pos++, value);
          }
-         logger.debug(query.getQueryString());
-         return query.list();
+         result = query.getResultList();
       }
+      return result;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see fr.certu.chouette.dao.IDaoTemplate#getByObjectId(java.lang.String)
-    */
-   @SuppressWarnings("unchecked")
+   @Override
    public T getByObjectId(final String objectId)
    {
       logger.debug("invoke getByObjectId on " + type.getSimpleName());
       if (objectId == null || objectId.isEmpty())
          return null;
 
-      DetachedCriteria criteria = DetachedCriteria.forClass(type);
-      criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
-      criteria.add(Restrictions.eq("objectId", objectId));
-      // final List<Object> list =
-      // getHibernateTemplate().findByCriteria(criteria);
-      final List<Object> list = criteria.getExecutableCriteria(getSession()).list();
-      final int total = list.size();
+      Filter filter = Filter.getNewEqualsFilter("objectId", objectId);
+      List<T> list = select(filter);
 
-      if (total == 0)
-      {
-         return null;
-         // throw new ObjectRetrievalFailureException( type, objectId);
-      }
-      else if (total > 1)
-      {
-         throw new HibernateDaoRuntimeException(HibernateDaoExceptionCode.DATABASE_INTEGRITY, total + " "
-               + type.getName() + " id =" + objectId);
-      }
-
-      return (T) list.get(0);
+      return list.get(0);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see fr.certu.chouette.dao.IDaoTemplate#getAll()
-    */
+   @Override
    public List<T> getAll()
    {
       logger.debug("invoke getAll on " + type.getSimpleName());
-      // return getHibernateTemplate().loadAll(type);
-      // wrong call, may contains duplicate entry if join clause
       Filter f = Filter.getNewEmptyFilter();
       return select(f);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see fr.certu.chouette.dao.IDaoTemplate#remove(java.lang.Long)
-    */
+   @Override
    public void remove(Long id)
    {
       logger.debug("invoke remove on " + type.getSimpleName());
-      getHibernateTemplate().delete(get(id));
-      getHibernateTemplate().flush();
+      getEntityManager().remove(get(id));
+      getEntityManager().flush();
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * fr.certu.chouette.dao.IDaoTemplate#save(fr.certu.chouette.model.neptune
-    * .NeptuneObject)
-    */
-   public void save(T object)
+   @Override
+   public T save(T entity)
    {
+      T result = null;
+
       logger.debug("invoke save on " + type.getSimpleName());
 
+      EntityManager em = getEntityManager();
       try
       {
-         getHibernateTemplate().saveOrUpdate(object);
+         em.persist(entity);
+         result = entity;
       }
-      catch (HibernateSystemException hse)
+      catch (EntityExistsException e)
       {
-         if (hse.getCause() != null &&
-               hse.getCause() instanceof NonUniqueObjectException)
-            getHibernateTemplate().merge(object);
-         else
-            throw hse;
+         result = em.merge(entity);
       }
-      // T existing = getByObjectId(object.getObjectId());
-      // if (existing == null)
-      // {
-      // getHibernateTemplate().saveOrUpdate( object);
-      // }
-      // else
-      // {
-      // object.setId(existing.getId());
-      // getHibernateTemplate().merge( object);
-      // }
-      // getHibernateTemplate().flush();
+      return result;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * fr.certu.chouette.dao.IDaoTemplate#update(fr.certu.chouette.model.neptune
-    * .NeptuneObject)
-    */
-   public void update(T object)
+   @Override
+   public T update(T entity)
    {
+      T result = null;
+
       logger.debug("invoke update on " + type.getSimpleName());
 
-      try
-      {
-         getHibernateTemplate().saveOrUpdate(object);
-      }
-      catch (HibernateSystemException hse)
-      {
-         if (hse.getCause() != null &&
-               hse.getCause() instanceof NonUniqueObjectException)
-            getHibernateTemplate().merge(object);
-         else
-            throw hse;
-      }
-      // getHibernateTemplate().flush();
+      EntityManager em = getEntityManager();
+      result = em.merge(entity);
+      return result;
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see fr.certu.chouette.dao.IDaoTemplate#exists(java.lang.Long)
-    */
    @Override
    public boolean exists(Long id)
    {
@@ -380,18 +347,12 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> implements
       {
          return (get(id) != null);
       }
-      catch (ObjectRetrievalFailureException e)
+      catch (Exception e)
       {
          return false;
       }
-
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see fr.certu.chouette.dao.IDaoTemplate#exists(java.lang.String)
-    */
    @Override
    public boolean exists(String objectId)
    {
@@ -399,7 +360,7 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> implements
       {
          return (getByObjectId(objectId) != null);
       }
-      catch (ObjectRetrievalFailureException e)
+      catch (Exception e)
       {
          return false;
       }
@@ -410,48 +371,32 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> implements
    {
       logger.debug("invoke removeAll on " + type.getSimpleName());
 
-      for (T t : objects)
+      EntityManager em = getEntityManager();
+      for (T entity : objects)
       {
-         getHibernateTemplate().delete(t);
+         em.remove(entity);
       }
-      getHibernateTemplate().flush();
+      em.flush();
    }
 
    @Override
    public int removeAll(Filter clause)
    {
+      int result = 0;
+
       logger.debug("invoke removeAll on " + type.getSimpleName());
 
-      Session session = getSession();
-      FilterToHibernateClauseTranslator translator = new FilterToHibernateClauseTranslator();
-      String hql = translator.translateToHQLDelete(clause, getSessionFactory().getClassMetadata(type));
-      logger.debug("hql = " + hql);
-      return session.createQuery(hql).executeUpdate();
-   }
+      EntityManager em = getEntityManager();
+      CriteriaBuilder builder = em.getCriteriaBuilder();
+      CriteriaDelete<T> criteria = builder.createCriteriaDelete(type);
+      Root<T> root = criteria.from(type);
+      FilterToHibernateClauseTranslator<T> translator = new FilterToHibernateClauseTranslator<T>();
+      Predicate predicate = translator.translate(clause, builder, root);
+      criteria.where(predicate);
+      Query query = em.createQuery(criteria);
+      result = query.executeUpdate();
 
-   @Override
-   public void saveOrUpdateAll(List<T> objects)
-   {
-      logger.debug("invoke saveOrUpdateAll on " + type.getSimpleName());
-      for (T object : objects)
-      {
-         T existing = getByObjectId(object.getObjectId());
-         if (existing != null)
-         {
-            logger.debug("update object :" + object.getObjectId());
-            getHibernateTemplate().evict(existing);
-            object.setId(existing.getId());
-         }
-         else
-         {
-            logger.debug("save object :" + object.getObjectId());
-         }
-      }
-      for (T t : objects)
-      {
-         getHibernateTemplate().saveOrUpdate(t);
-      }
-      getHibernateTemplate().flush();
+      return result;
    }
 
    @Override
@@ -461,15 +406,16 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> implements
       {
          detach(bean);
       }
-
    }
 
    @Override
-   public void detach(T bean)
+   public void detach(T entity)
    {
-      if (getSession().contains(bean))
-         getSession().evict(bean);
-
+      EntityManager em = getEntityManager();
+      if (em.contains(entity))
+      {
+         em.detach(entity);
+      }
    }
 
    @Override
@@ -481,23 +427,52 @@ public class HibernateDaoTemplate<T extends NeptuneIdentifiedObject> implements
    @Override
    public long count(Filter clause)
    {
-      if (clause == null)
-         clause = Filter.getNewEmptyFilter();
-      Session session = getSession();
-      FilterToHibernateClauseTranslator translator = new FilterToHibernateClauseTranslator();
-      String hql = translator.translateToHQLCount(clause, getSessionFactory().getClassMetadata(type));
-      logger.debug("hql = " + hql);
-      if (translator.getValues().isEmpty())
-         return ((Long) session.createQuery(hql).uniqueResult()).longValue();
-      else
+      long result = 0;
+      // TODO [DSU] ?????????????????
+      EntityManager em = getEntityManager();
+      CriteriaBuilder builder = em.getCriteriaBuilder();
+      CriteriaQuery<Long> criteria = builder.createQuery(Long.class);
+      Root<T> root = criteria.from(type);
+      criteria.select(builder.count(root));
+      if (clause != null)
       {
-         Query query = session.createQuery(hql);
-         int pos = 0;
-         for (Object value : translator.getValues())
-         {
-            query.setParameter(pos++, value);
-         }
-         return ((Long) query.uniqueResult()).longValue();
+         FilterToHibernateClauseTranslator<T> translator = new FilterToHibernateClauseTranslator<T>();
+         Predicate predicate = translator.translate(clause, builder, root);
+         criteria.where(predicate);
       }
+
+      result = em.createQuery(criteria).getSingleResult();
+
+      return result;
    }
+
+   public void saveOrUpdateAll(List<T> list)
+   {
+      logger.debug("invoke saveOrUpdateAll on " + type.getSimpleName());
+      EntityManager em = getEntityManager();
+
+      for (T item : list)
+      {
+         if (item instanceof NeptuneIdentifiedObject)
+         {
+            NeptuneIdentifiedObject object = (NeptuneIdentifiedObject) item;
+            T entity = getByObjectId(object.getObjectId());
+            if (entity != null)
+            {
+               logger.debug("update object :" + object.getObjectId());
+               em.detach(entity);
+               item.setId(entity.getId());
+               em.merge(item);
+            }
+            else
+            {
+               logger.debug("save object :" + object.getObjectId());
+               em.persist(entity);
+            }
+         }
+      }
+
+      em.flush();
+   }
+
 }

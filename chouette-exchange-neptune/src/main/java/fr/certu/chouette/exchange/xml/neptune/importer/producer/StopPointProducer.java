@@ -31,7 +31,7 @@ public class StopPointProducer extends AbstractModelProducer<StopPoint,org.tride
 		// LongLatType mandatory
 		if(xmlStopPoint.getLongLatType() != null){
 			try {
-				stopPoint.setLongLatType(LongLatTypeEnum.fromValue(xmlStopPoint.getLongLatType().value()));
+				stopPoint.setLongLatType(LongLatTypeEnum.valueOf(xmlStopPoint.getLongLatType().value()));
 			} catch (IllegalArgumentException e) {
 				// TODO: handle exception
 				e.printStackTrace();

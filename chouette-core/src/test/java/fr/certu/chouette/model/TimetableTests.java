@@ -58,11 +58,10 @@ public class TimetableTests extends AbstractTestNGSpringContextTests
 		{
 			Timetable t = new Timetable();
 			t.addPeriod(new Period(firstMonday, firstFriday));
-			t.addDayType(DayTypeEnum.MONDAY);
-			t.addDayType(DayTypeEnum.TUESDAY);
-			t.addDayType(DayTypeEnum.WEDNESDAY);
-			t.addDayType(DayTypeEnum.THURSDAY);
-			t.addDayType(DayTypeEnum.FRIDAY);
+			t.addDayType(DayTypeEnum.Monday);
+			t.addDayType(DayTypeEnum.Tuesday);
+			t.addDayType(DayTypeEnum.Thursday);
+			t.addDayType(DayTypeEnum.Friday);
 			Assert.assertNull(t.getStartOfPeriod(),"before complete, startOfPeriod should be null");
 			Assert.assertNull(t.getEndOfPeriod(),"before complete, endOfPeriod should be null");
 			t.complete();
@@ -72,7 +71,7 @@ public class TimetableTests extends AbstractTestNGSpringContextTests
 		{
 			Timetable t = new Timetable();
 			t.addPeriod(new Period(firstMonday, firstFriday));
-			t.addDayType(DayTypeEnum.WEDNESDAY);
+			t.addDayType(DayTypeEnum.Wednesday);
 			Assert.assertNull(t.getStartOfPeriod(),"before complete, startOfPeriod should be null");
 			Assert.assertNull(t.getEndOfPeriod(),"before complete, endOfPeriod should be null");
 			t.complete();
@@ -98,8 +97,8 @@ public class TimetableTests extends AbstractTestNGSpringContextTests
 		{
 			Timetable t = new Timetable();
 			t.addPeriod(new Period(firstMonday, firstFriday));
-			t.addDayType(DayTypeEnum.MONDAY);
-			t.addDayType(DayTypeEnum.FRIDAY);
+			t.addDayType(DayTypeEnum.Monday);
+			t.addDayType(DayTypeEnum.Friday);
 			t.addCalendarDay(firstWednesday);
 			Assert.assertNull(t.getStartOfPeriod(),"before complete, startOfPeriod should be null");
 			Assert.assertNull(t.getEndOfPeriod(),"before complete, endOfPeriod should be null");
@@ -110,7 +109,7 @@ public class TimetableTests extends AbstractTestNGSpringContextTests
 		{
 			Timetable t = new Timetable();
 			t.addPeriod(new Period(firstMonday, firstFriday));
-			t.addDayType(DayTypeEnum.WEDNESDAY);
+			t.addDayType(DayTypeEnum.Wednesday);
 			t.addCalendarDay(firstMonday);
 			t.addCalendarDay(firstFriday);
 			Assert.assertNull(t.getStartOfPeriod(),"before complete, startOfPeriod should be null");

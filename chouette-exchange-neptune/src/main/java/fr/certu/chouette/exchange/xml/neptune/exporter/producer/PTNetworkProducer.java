@@ -36,7 +36,7 @@ public class PTNetworkProducer extends AbstractJaxbNeptuneProducer<PTNetworkType
 		try {
 			PTNetworkSourceTypeEnum ptNetworkSourceType = ptNetwork.getSourceType();
 			if(ptNetworkSourceType != null){
-				jaxbPTNetwork.setSourceType(org.trident.schema.trident.SourceTypeType.fromValue(ptNetworkSourceType.value()));
+				jaxbPTNetwork.setSourceType(org.trident.schema.trident.SourceTypeType.fromValue(ptNetworkSourceType.name()));
 			}
 		} catch (IllegalArgumentException e) {
 			// TODO generate report

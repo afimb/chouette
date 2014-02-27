@@ -25,12 +25,12 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>org.hibernate</groupId>
-					<artifactId>hibernate-jpa-2.0-api</artifactId>
-				</exclusion>
-			</exclusions>
+<!-- 			<exclusions> -->
+<!-- 				<exclusion> -->
+<!-- 					<groupId>org.hibernate</groupId> -->
+<!-- 					<artifactId>hibernate-jpa-2.0-api</artifactId> -->
+<!-- 				</exclusion> -->
+<!-- 			</exclusions> -->
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
@@ -69,6 +69,11 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-orm</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate.javax.persistence</groupId>
+			<artifactId>hibernate-jpa-2.1-api</artifactId>
+			<scope>provided</scope>
 		</dependency>
 		<!-- AspectJ reference cglib-2.1_3.jar -->
 		<dependency>
@@ -121,25 +126,25 @@
 					<include>**/*.properties</include>
 				</includes>
 			</resource>
-			<resource>
-				<targetPath>fr/certu/chouette/model/neptune</targetPath>
-				<directory>src/main/mapping/neptune</directory>
-				<includes>
-					<include>*.hbm.xml</include>
-				</includes>
-			</resource>
-			<resource>
-				<targetPath>fr/certu/chouette/model/gui</targetPath>
-				<directory>src/main/mapping/gui</directory>
-				<includes>
-					<include>*.hbm.xml</include>
-				</includes>
-			</resource>
+<!-- 			<resource> -->
+<!-- 				<targetPath>fr/certu/chouette/model/neptune</targetPath> -->
+<!-- 				<directory>src/main/mapping/neptune</directory> -->
+<!-- 				<includes> -->
+<!-- 					<include>*.hbm.xml</include> -->
+<!-- 				</includes> -->
+<!-- 			</resource> -->
+<!-- 			<resource> -->
+<!-- 				<targetPath>fr/certu/chouette/model/gui</targetPath> -->
+<!-- 				<directory>src/main/mapping/gui</directory> -->
+<!-- 				<includes> -->
+<!-- 					<include>*.hbm.xml</include> -->
+<!-- 				</includes> -->
+<!-- 			</resource> -->
 		</resources>
 		<testResources>
-			<testResource>
-				<directory>src/main/resources</directory>
-			</testResource>
+<!-- 			<testResource> -->
+<!-- 				<directory>src/main/resources</directory> -->
+<!-- 			</testResource> -->
 			<testResource>
 				<directory>src/test/resources</directory>
 			</testResource>

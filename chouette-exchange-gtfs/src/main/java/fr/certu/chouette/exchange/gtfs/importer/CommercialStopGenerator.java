@@ -148,7 +148,7 @@ public class CommercialStopGenerator extends AbstractGenerator
 		area.setObjectId(objectId);
 		area.setObjectVersion(stop.getObjectVersion());
 		area.setCreationTime(now.getTime());
-		area.setAreaType(ChouetteAreaEnum.COMMERCIALSTOPPOINT);
+		area.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
 	}
 
 	/**

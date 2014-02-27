@@ -19,7 +19,7 @@
 	<modules>
 		<module>chouette-core</module>
 		<module>chouette-hibernate-dao</module>
-		<module>chouette-jdbc-dao</module>
+		<module>chouette-jdbc-dao</module>		
 		<module>chouette-exchange-netex</module>
 		<module>chouette-jaxb-neptune</module>
 		<module>chouette-exchange-neptune</module>
@@ -28,7 +28,7 @@
 		<module>chouette-export-geoportail</module>
 		<module>chouette-validation</module> 
 		<module>chouette-command</module>
-		<module>chouette-gui-command</module>
+		<module>chouette-gui-command</module>	
 	</modules>
 
 	<distributionManagement>
@@ -315,6 +315,11 @@
 				<groupId>org.hibernate</groupId>
 				<artifactId>hibernate-entitymanager</artifactId>
 				<version>${hibernate.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.hibernate.javax.persistence</groupId>
+				<artifactId>hibernate-jpa-2.1-api</artifactId>
+				<version>1.0.0.Final</version>
 			</dependency>
 
 			<!-- Hibernate gives you a choice of bytecode providers between cglib 

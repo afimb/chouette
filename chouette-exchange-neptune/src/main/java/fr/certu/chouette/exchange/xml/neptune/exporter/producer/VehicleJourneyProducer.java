@@ -37,7 +37,7 @@ public class VehicleJourneyProducer extends AbstractJaxbNeptuneProducer<VehicleJ
 		{
 			ServiceStatusValueEnum serviceStatusValue = vehicleJourney.getServiceStatusValue();
 			try {
-				jaxbVehicleJourney.setStatusValue(ServiceStatusValueType.fromValue(serviceStatusValue.value()));
+				jaxbVehicleJourney.setStatusValue(ServiceStatusValueType.fromValue(serviceStatusValue.name()));
 			} catch (IllegalArgumentException e) {
 				// TODO generate report
 			}
@@ -46,7 +46,7 @@ public class VehicleJourneyProducer extends AbstractJaxbNeptuneProducer<VehicleJ
 		if(vehicleJourney.getTransportMode() != null){
 			TransportModeNameEnum transportMode = vehicleJourney.getTransportMode();
 			try {
-				jaxbVehicleJourney.setTransportMode(TransportModeNameType.fromValue(transportMode.value()));
+				jaxbVehicleJourney.setTransportMode(TransportModeNameType.fromValue(transportMode.name()));
 			} catch (IllegalArgumentException e) {
 				// TODO generate report
 			}
@@ -60,7 +60,7 @@ public class VehicleJourneyProducer extends AbstractJaxbNeptuneProducer<VehicleJ
 					if(vehicleJourneyAtStop.getBoardingAlightingPossibility() != null){
 						BoardingAlightingPossibilityEnum boardingAlightingPossibility = vehicleJourneyAtStop.getBoardingAlightingPossibility();
 						try {
-							jaxbVehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibilityType.fromValue(boardingAlightingPossibility.value()));
+							jaxbVehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibilityType.fromValue(boardingAlightingPossibility.name()));
 						} catch (IllegalArgumentException e) {
 							// TODO generate report
 						}

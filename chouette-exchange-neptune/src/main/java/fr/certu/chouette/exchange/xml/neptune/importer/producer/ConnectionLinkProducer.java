@@ -89,7 +89,7 @@ public class ConnectionLinkProducer extends AbstractModelProducer<ConnectionLink
 		{
 			try
 			{
-				connectionLink.setLinkType(ConnectionLinkTypeEnum.fromValue(xmlConnectionLink.getLinkType().value()));
+				connectionLink.setLinkType(ConnectionLinkTypeEnum.valueOf(xmlConnectionLink.getLinkType().value()));
 			}
 			catch (IllegalArgumentException e) 
 			{

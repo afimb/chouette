@@ -240,7 +240,7 @@ public abstract class AbstractValidation
 		if (geometryFactory == null)
 		{
 		PrecisionModel precisionModel = new PrecisionModel(PrecisionModel.maximumPreciseValue);
-		geometryFactory = new GeometryFactory(precisionModel, LongLatTypeEnum.WGS84.epsgCode());
+		geometryFactory = new GeometryFactory(precisionModel, LongLatTypeEnum.WGS84.getValue());
 		}
 		return geometryFactory;
 	}

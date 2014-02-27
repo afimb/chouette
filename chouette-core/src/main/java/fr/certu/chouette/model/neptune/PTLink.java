@@ -2,10 +2,19 @@ package fr.certu.chouette.model.neptune;
 
 import java.math.BigDecimal;
 
-import fr.certu.chouette.filter.Filter;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j;
+import fr.certu.chouette.filter.Filter;
 
 /**
  * Neptune PTLink : a link between 2 successive StopPoints in a route
@@ -14,42 +23,56 @@ import lombok.Setter;
  * when readable is added to comment, a implicit getter is available <br/>
  * when writable is added to comment, a implicit setter is available
  */
+@Entity
+@Table(name = "pt_links")
+@NoArgsConstructor
+@Log4j
 public class PTLink extends NeptuneIdentifiedObject
 {
    private static final long serialVersionUID = -3089442100133439163L;
-   // TODO constant for persistence fields
+
    /**
     * name of comment attribute for {@link Filter} attributeName construction
     */
-   public static final String    COMMENT                    = "comment";
-   /**
-    * Comment <br/>
-    * <i>readable/writable</i>
-    */
+   public static final String COMMENT = "comment";
+
    @Getter
    @Setter
-   private String            comment;
-   /**
-    * link distance in meter <br/>
-    * <i>readable/writable</i>
-    */
+   @Column(name = "comment")
+   private String comment;
+
    @Getter
    @Setter
-   private BigDecimal        linkDistance;
+   @Column(name = "link_distance")
+   private BigDecimal linkDistance;
+
+   @Getter
+   @Setter
+   @ManyToOne(fetch = FetchType.LAZY)
+   @JoinColumn(name = "start_of_link_id")
+   private StopPoint startOfLink;
+
+   @Getter
+   @Setter
+   @ManyToOne(fetch = FetchType.LAZY)
+   @JoinColumn(name = "end_of_link_id")
+   private StopPoint endOfLink;
+
+   @Getter
+   @Setter
+   @ManyToOne(fetch = FetchType.LAZY)
+   @JoinColumn(name = "route_id")
+   private Route route;
+
    /**
     * Neptune ObjectId for Start of Link StopPoint <br/>
     * <i>readable/writable</i>
     */
    @Getter
    @Setter
-   private String            startOfLinkId;
-   /**
-    * Start of Link StopPoint <br/>
-    * <i>readable/writable</i>
-    */
-   @Getter
-   @Setter
-   private StopPoint         startOfLink;
+   @Transient
+   private String startOfLinkId;
+
    /**
     * Neptune ObjectId for End of Link StopPoint <br/>
     * (import/export usage) <br/>
@@ -57,14 +80,9 @@ public class PTLink extends NeptuneIdentifiedObject
     */
    @Getter
    @Setter
-   private String            endOfLinkId;
-   /**
-    * End of Link StopPoint <br/>
-    * <i>readable/writable</i>
-    */
-   @Getter
-   @Setter
-   private StopPoint         endOfLink;
+   @Transient
+   private String endOfLinkId;
+
    /**
     * Neptune ObjectId for Route <br/>
     * (import/export usage) <br/>
@@ -72,22 +90,9 @@ public class PTLink extends NeptuneIdentifiedObject
     */
    @Getter
    @Setter
-   private String            routeId;
-   /**
-    * Route <br/>
-    * <i>readable/writable</i>
-    */
-   @Getter
-   @Setter
-   private Route             route;
+   @Transient
+   private String routeId;
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#toString(java.
-    * lang.String, int)
-    */
    @Override
    public String toString(String indent, int level)
    {
@@ -133,32 +138,39 @@ public class PTLink extends NeptuneIdentifiedObject
          endOfLinkId = endOfLink.getObjectId();
 
    }
-   
-	@Override
-	public <T extends NeptuneObject> boolean compareAttributes(
-			T anotherObject) {
-		if (anotherObject instanceof PTLink)
-		{
-			PTLink another = (PTLink) anotherObject;
-			if (!sameValue(this.getObjectId(), another.getObjectId())) return false;
-			if (!sameValue(this.getObjectVersion(), another.getObjectVersion())) return false;
-			if (!sameValue(this.getName(), another.getName())) return false;
-			if (!sameValue(this.getComment(), another.getComment())) return false;
-			if (!sameValue(this.getRegistrationNumber(), another.getRegistrationNumber())) return false;
-			if (!sameValue(this.getLinkDistance(), another.getLinkDistance())) return false;
 
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
+   @Override
+   public <T extends NeptuneObject> boolean compareAttributes(
+         T anotherObject)
+   {
+      if (anotherObject instanceof PTLink)
+      {
+         PTLink another = (PTLink) anotherObject;
+         if (!sameValue(this.getObjectId(), another.getObjectId()))
+            return false;
+         if (!sameValue(this.getObjectVersion(), another.getObjectVersion()))
+            return false;
+         if (!sameValue(this.getName(), another.getName()))
+            return false;
+         if (!sameValue(this.getComment(), another.getComment()))
+            return false;
+         if (!sameValue(this.getRegistrationNumber(), another.getRegistrationNumber()))
+            return false;
+         if (!sameValue(this.getLinkDistance(), another.getLinkDistance()))
+            return false;
 
-	@Override
-	public String toURL() {
-		return null;
-	}
+         return true;
+      }
+      else
+      {
+         return false;
+      }
+   }
 
+   @Override
+   public String toURL()
+   {
+      return null;
+   }
 
 }

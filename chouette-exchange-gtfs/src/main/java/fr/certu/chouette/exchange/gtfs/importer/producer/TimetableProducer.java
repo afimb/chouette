@@ -30,13 +30,13 @@ public class TimetableProducer extends AbstractModelProducer<Timetable, GtfsCale
 		timetable.setObjectId(composeIncrementalObjectId( Timetable.TIMETABLE_KEY, gtfsCalendar.getServiceId(),logger));
 
 
-		if (gtfsCalendar.isMonday()) timetable.addDayType(DayTypeEnum.MONDAY);
-		if (gtfsCalendar.isTuesday()) timetable.addDayType(DayTypeEnum.TUESDAY);
-		if (gtfsCalendar.isWednesday()) timetable.addDayType(DayTypeEnum.WEDNESDAY);
-		if (gtfsCalendar.isThursday()) timetable.addDayType(DayTypeEnum.THURSDAY);
-		if (gtfsCalendar.isFriday()) timetable.addDayType(DayTypeEnum.FRIDAY);
-		if (gtfsCalendar.isSaturday()) timetable.addDayType(DayTypeEnum.SATURDAY);
-		if (gtfsCalendar.isSunday()) timetable.addDayType(DayTypeEnum.SUNDAY);
+		if (gtfsCalendar.isMonday()) timetable.addDayType(DayTypeEnum.Monday);
+		if (gtfsCalendar.isTuesday()) timetable.addDayType(DayTypeEnum.Thursday);
+		if (gtfsCalendar.isWednesday()) timetable.addDayType(DayTypeEnum.Wednesday);
+		if (gtfsCalendar.isThursday()) timetable.addDayType(DayTypeEnum.Thursday);
+		if (gtfsCalendar.isFriday()) timetable.addDayType(DayTypeEnum.Friday);
+		if (gtfsCalendar.isSaturday()) timetable.addDayType(DayTypeEnum.Saturday);
+		if (gtfsCalendar.isSunday()) timetable.addDayType(DayTypeEnum.Sunday);
 
 		if (gtfsCalendar.getStartDate() != null && gtfsCalendar.getEndDate() != null)
 		{
@@ -132,13 +132,13 @@ public class TimetableProducer extends AbstractModelProducer<Timetable, GtfsCale
 	private void buildComment(Timetable timetable)
 	{
 		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
-		String monday = (timetable.getDayTypes().contains(DayTypeEnum.MONDAY)) ? "Mo":"..";
-		String tuesday = (timetable.getDayTypes().contains(DayTypeEnum.TUESDAY)) ? "Tu":"..";
-		String wednesday = (timetable.getDayTypes().contains(DayTypeEnum.WEDNESDAY)) ? "We":"..";
-		String thursday = (timetable.getDayTypes().contains(DayTypeEnum.THURSDAY)) ? "Th":"..";
-		String friday = (timetable.getDayTypes().contains(DayTypeEnum.FRIDAY)) ? "Fr":"..";
-		String saturday = (timetable.getDayTypes().contains(DayTypeEnum.SATURDAY)) ? "Sa":"..";
-		String sunday = (timetable.getDayTypes().contains(DayTypeEnum.SUNDAY)) ? "Su":"..";
+		String monday = (timetable.getDayTypes().contains(DayTypeEnum.Monday)) ? "Mo":"..";
+		String tuesday = (timetable.getDayTypes().contains(DayTypeEnum.Tuesday)) ? "Tu":"..";
+		String wednesday = (timetable.getDayTypes().contains(DayTypeEnum.Wednesday)) ? "We":"..";
+		String thursday = (timetable.getDayTypes().contains(DayTypeEnum.Thursday)) ? "Th":"..";
+		String friday = (timetable.getDayTypes().contains(DayTypeEnum.Friday)) ? "Fr":"..";
+		String saturday = (timetable.getDayTypes().contains(DayTypeEnum.Saturday)) ? "Sa":"..";
+		String sunday = (timetable.getDayTypes().contains(DayTypeEnum.Sunday)) ? "Su":"..";
 
 		Date firstDate = null;
 		Date lastDate = null;

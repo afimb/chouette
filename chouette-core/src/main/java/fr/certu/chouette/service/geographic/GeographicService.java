@@ -90,8 +90,8 @@ public class GeographicService implements IGeographicService
 	@Override
 	public void propagateBarycentre() 
 	{
-		Filter comtypeFilter = Filter.getNewEqualsFilter(StopArea.AREA_TYPE, ChouetteAreaEnum.COMMERCIALSTOPPOINT.toString());
-		Filter placetypeFilter = Filter.getNewEqualsFilter(StopArea.AREA_TYPE, ChouetteAreaEnum.STOPPLACE.toString());
+		Filter comtypeFilter = Filter.getNewEqualsFilter(StopArea.AREA_TYPE, ChouetteAreaEnum.CommercialStopPoint.toString());
+		Filter placetypeFilter = Filter.getNewEqualsFilter(StopArea.AREA_TYPE, ChouetteAreaEnum.StopPlace.toString());
 		List<StopArea> commercials;
 		List<StopArea> stopPlaces;
 		// TODO ITL
@@ -182,7 +182,7 @@ public class GeographicService implements IGeographicService
 						}
 						else 
 						{
-							if (child.getAreaType().equals(ChouetteAreaEnum.STOPPLACE))
+							if (child.getAreaType().equals(ChouetteAreaEnum.StopPlace))
 							{
 								if (stopPlaces.contains(child)) 
 								{

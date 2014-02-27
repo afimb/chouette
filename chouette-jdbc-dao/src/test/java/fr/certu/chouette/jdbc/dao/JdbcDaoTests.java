@@ -212,18 +212,18 @@ public class JdbcDaoTests extends AbstractTestNGSpringContextTests
 
 	}
 
-
-	@Test (groups = {"purge"}, description = "dao should purge",dependsOnMethods={"getBean"})
-	public void verifyPurge() throws ChouetteException
-	{
-		int count = timetableManager.purge(null);
-		count = vehicleJourneyManager.purge(null);
-		count = journeyPatternManager.purge(null);
-		count = routeManager.purge(null);
-		count = lineManager.purge(null);
-		count = stopareaManager.purge(null);
-		Assert.assertTrue(count>=0,"count must be greater than zero");
-	}
+// TODO [DSU] verifyPurge
+//	@Test (groups = {"purge"}, description = "dao should purge",dependsOnMethods={"getBean"})
+//	public void verifyPurge() throws ChouetteException
+//	{
+//		int count = timetableManager.purge(null);
+//		count = vehicleJourneyManager.purge(null);
+//		count = journeyPatternManager.purge(null);
+//		count = routeManager.purge(null);
+//		count = lineManager.purge(null);
+//		count = stopareaManager.purge(null);
+//		Assert.assertTrue(count>=0,"count must be greater than zero");
+//	}
 
 	private void printReport(Report report)
 	{

@@ -109,7 +109,7 @@ public class ConnectionLinkGenerator extends AbstractGenerator
                      link.setStartOfLinkId(source.getObjectId());
                      link.setEndOfLinkId(target.getObjectId());
                      link.setLinkDistance(BigDecimal.valueOf(distance));
-                     link.setLinkType(ConnectionLinkTypeEnum.OVERGROUND);
+                     link.setLinkType(ConnectionLinkTypeEnum.Overground);
                      link.setName("from "+source.getName()+" to "+target.getName());
                      // logger.info("ConnectionLink "+link.getName()+" added"); 
                      links.add(link);
@@ -125,7 +125,7 @@ public class ConnectionLinkGenerator extends AbstractGenerator
                      reverseLink.setStartOfLinkId(target.getObjectId());
                      reverseLink.setEndOfLinkId(source.getObjectId());
                      reverseLink.setLinkDistance(BigDecimal.valueOf(distance));
-                     reverseLink.setLinkType(ConnectionLinkTypeEnum.OVERGROUND);
+                     reverseLink.setLinkType(ConnectionLinkTypeEnum.Overground);
                      reverseLink.setName("from "+target.getName()+" to "+source.getName());
                      // logger.info("ConnectionLink "+reverseLink.getName()+" added"); 
                      links.add(reverseLink);

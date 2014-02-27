@@ -41,7 +41,7 @@ public class AccessPointBlueprint {
     BigDecimal latitude = new BigDecimal( 48.8D + ( UUID.randomUUID().getLeastSignificantBits()%100)/1000000); 
     
     @Default
-    AccessPointTypeEnum type = AccessPointTypeEnum.INOUT;   
+    AccessPointTypeEnum type = AccessPointTypeEnum.InOut;   
     
     @Default
     Time openingTime = new Time(173335738);

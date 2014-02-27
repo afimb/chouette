@@ -130,7 +130,7 @@ public class TimetableTest extends ChouetteModelTest {
                             "']/netex:properties/netex:PropertyOfDay/"+
                             "netex:DaysOfWeek/"+
                             "text()='"+
-                            dtenum.value()+"')";
+                            dtenum.name()+"')";
                     assertXPathTrue( xPathExpr);
                 }
             }

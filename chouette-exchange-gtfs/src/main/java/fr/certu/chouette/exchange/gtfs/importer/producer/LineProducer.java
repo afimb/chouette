@@ -32,13 +32,13 @@ public class LineProducer extends AbstractModelProducer<Line,GtfsRoute>
 		// TransportModeName optional
 		switch (gtfsLine.getRouteType())
 		{
-		case 0 : line.setTransportModeName(TransportModeNameEnum.BUS); break;
-		case 1 : line.setTransportModeName(TransportModeNameEnum.METRO); break;
-		case 2 : line.setTransportModeName(TransportModeNameEnum.LONGDISTANCETRAIN); break;
-		case 3 : line.setTransportModeName(TransportModeNameEnum.COACH); break;
-		case 4 : line.setTransportModeName(TransportModeNameEnum.FERRY); break;
-		case 5 : line.setTransportModeName(TransportModeNameEnum.TRAMWAY); break;
-		default : line.setTransportModeName(TransportModeNameEnum.OTHER); break;
+		case 0 : line.setTransportModeName(TransportModeNameEnum.Bus); break;
+		case 1 : line.setTransportModeName(TransportModeNameEnum.Metro); break;
+		case 2 : line.setTransportModeName(TransportModeNameEnum.LongDistanceTrain); break;
+		case 3 : line.setTransportModeName(TransportModeNameEnum.Coach); break;
+		case 4 : line.setTransportModeName(TransportModeNameEnum.Ferry); break;
+		case 5 : line.setTransportModeName(TransportModeNameEnum.Tramway); break;
+		default : line.setTransportModeName(TransportModeNameEnum.Other); break;
 
 		}
 

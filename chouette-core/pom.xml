@@ -55,12 +55,12 @@
 			<artifactId>spring-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context-support</artifactId>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
 			<scope>test</scope>
-        </dependency>
-        <!-- geographic dependencies -->
+		</dependency>
+		<!-- geographic dependencies -->
 		<dependency>
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-referencing</artifactId>
@@ -73,10 +73,8 @@
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-epsg-hsql</artifactId>
 		</dependency>
-<!-- 		<dependency>
-			<groupId>javax.media</groupId>
-			<artifactId>jai-core</artifactId>
-		</dependency> -->
+		<!-- <dependency> <groupId>javax.media</groupId> <artifactId>jai-core</artifactId> 
+			</dependency> -->
 		<dependency>
 			<groupId>com.vividsolutions</groupId>
 			<artifactId>jts</artifactId>
@@ -84,6 +82,16 @@
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate.javax.persistence</groupId>
+			<artifactId>hibernate-jpa-2.1-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 	<build>

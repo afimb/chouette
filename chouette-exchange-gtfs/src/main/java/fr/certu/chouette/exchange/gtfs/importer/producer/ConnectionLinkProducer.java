@@ -24,7 +24,7 @@ public class ConnectionLinkProducer extends AbstractModelProducer<ConnectionLink
 		link.setEndOfLinkId(gtfsTransfer.getToStopId());
 
 		link.setCreationTime(Calendar.getInstance().getTime());
-		link.setLinkType(ConnectionLinkTypeEnum.OVERGROUND);
+		link.setLinkType(ConnectionLinkTypeEnum.Overground);
 		if (gtfsTransfer.getMinTransferTime() != null)
 			link.setDefaultDuration(gtfsTransfer.getMinTransferTime().getTime());
 		if (gtfsTransfer.getTransferType().equals(GtfsTransfer.Type.FORBIDDEN))

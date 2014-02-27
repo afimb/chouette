@@ -91,9 +91,10 @@ public class DbVehicleJourneyFactory
 
    public VehicleJourney getNewVehicleJourney()
    {
-      if (optimizeMemory)
-         return new DbVehicleJourney(this);
-      else
+      // TODO [DSU] new DbVehicleJourney(this);
+//      if (optimizeMemory)
+//         return new DbVehicleJourney(this);
+//      else
          return new VehicleJourney();
    }
 

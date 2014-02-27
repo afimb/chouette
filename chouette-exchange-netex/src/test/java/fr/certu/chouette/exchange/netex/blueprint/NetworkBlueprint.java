@@ -46,6 +46,6 @@ public class NetworkBlueprint {
     String comment = "Mon réseau";
     
     @Default
-    PTNetworkSourceTypeEnum sourceType = PTNetworkSourceTypeEnum.PUBLICTRANSPORT;
+    PTNetworkSourceTypeEnum sourceType = PTNetworkSourceTypeEnum.PublicTransport;
 
 }

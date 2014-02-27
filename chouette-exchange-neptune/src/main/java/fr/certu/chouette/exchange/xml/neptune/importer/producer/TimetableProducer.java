@@ -37,7 +37,7 @@ public class TimetableProducer extends AbstractModelProducer<Timetable, Timetabl
 			for(DayTypeType xmlDayType : xmlTimetable.getDayType())
 				try
 			{
-					timetable.addDayType(DayTypeEnum.fromValue(xmlDayType.value()));
+					timetable.addDayType(DayTypeEnum.valueOf(xmlDayType.value()));
 			}
 			catch (IllegalArgumentException e) 
 			{

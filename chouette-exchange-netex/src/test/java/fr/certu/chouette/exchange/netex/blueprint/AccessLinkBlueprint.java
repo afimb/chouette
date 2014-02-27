@@ -36,10 +36,10 @@ public class AccessLinkBlueprint {
     String endOfLinkId = "StopPlace2";
     
     @Default
-    ConnectionLinkTypeEnum linkType = ConnectionLinkTypeEnum.MIXED;
+    ConnectionLinkTypeEnum linkType = ConnectionLinkTypeEnum.Mixed;
     
     @Default
-    LinkOrientationEnum linkOrientation = LinkOrientationEnum.ACCESSPOINT_TO_STOPAREA;
+    LinkOrientationEnum linkOrientation = LinkOrientationEnum.AccessPointToStopArea;
     
     @Default
     BigDecimal linkDistance = new BigDecimal(2); 

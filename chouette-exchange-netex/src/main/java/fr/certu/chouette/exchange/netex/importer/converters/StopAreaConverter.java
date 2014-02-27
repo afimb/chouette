@@ -122,7 +122,7 @@ public class StopAreaConverter extends GenericConverter
 			StopArea stopArea = new StopArea();
 
 			// Mandatory            
-			stopArea.setAreaType(ChouetteAreaEnum.COMMERCIALSTOPPOINT);
+			stopArea.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
 
 			convertCommonAttributes(stopArea);
 
@@ -149,7 +149,7 @@ public class StopAreaConverter extends GenericConverter
 			else
 			{
 				stopPlace.setParent( parentPlace);
-				parentPlace.setAreaType(ChouetteAreaEnum.STOPPLACE);
+				parentPlace.setAreaType(ChouetteAreaEnum.StopPlace);
 			}
 		}
 
@@ -170,7 +170,7 @@ public class StopAreaConverter extends GenericConverter
 			StopArea stopArea = new StopArea();
 
 			// Mandatory            
-			stopArea.setAreaType( ChouetteAreaEnum.QUAY);
+			stopArea.setAreaType( ChouetteAreaEnum.Quay);
 			stopArea.setParent( stopPlace);
 
 			convertCommonAttributes(stopArea);

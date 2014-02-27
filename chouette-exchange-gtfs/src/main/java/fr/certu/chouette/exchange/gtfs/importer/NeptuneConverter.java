@@ -228,7 +228,7 @@ public class NeptuneConverter
 			else
 			{
 				mapStopAreasByStopId.put(gtfsStop.getStopId(), area) ;
-				if (area.getAreaType().equals(ChouetteAreaEnum.COMMERCIALSTOPPOINT))
+				if (area.getAreaType().equals(ChouetteAreaEnum.CommercialStopPoint))
 				{
 					commercials.add(area);
 				}
@@ -264,7 +264,7 @@ public class NeptuneConverter
 					logger.warn("stop "+bp.getName()+" has missing parent station "+bp.getParentObjectId());
 					bp.setParentObjectId(null);
 				}
-				else if (!parent.getAreaType().equals(ChouetteAreaEnum.COMMERCIALSTOPPOINT))
+				else if (!parent.getAreaType().equals(ChouetteAreaEnum.CommercialStopPoint))
 				{
 					ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE,Report.STATE.WARNING,"StopArea",bp.getName(),"parent",bp.getParentObjectId());
 					stopReport.addItem(item);

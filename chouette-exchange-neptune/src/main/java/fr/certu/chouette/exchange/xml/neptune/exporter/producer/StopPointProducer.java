@@ -38,7 +38,7 @@ public class StopPointProducer extends AbstractJaxbNeptuneProducer<ChouettePTNet
 		if(stopPoint.getLongLatType() != null){
 			LongLatTypeEnum longLatType = stopPoint.getLongLatType();
 			try {
-				jaxbStopPoint.setLongLatType(LongLatTypeType.fromValue(longLatType.value()));
+				jaxbStopPoint.setLongLatType(LongLatTypeType.fromValue(longLatType.name()));
 			} catch (IllegalArgumentException e) {
 				// TODO generate report
 			}

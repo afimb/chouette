@@ -39,7 +39,7 @@ public class AccessPointProducer extends AbstractModelProducer<AccessPoint, PTAc
 		// LongLatType mandatory
 		if(xmlAccessPoint.getLongLatType() != null){
 			try {
-				accessPoint.setLongLatType(LongLatTypeEnum.fromValue(xmlAccessPoint.getLongLatType().value()));
+				accessPoint.setLongLatType(LongLatTypeEnum.valueOf(xmlAccessPoint.getLongLatType().value()));
 			} catch (IllegalArgumentException e) {
 				// TODO: handle exception
 				e.printStackTrace();
@@ -66,7 +66,7 @@ public class AccessPointProducer extends AbstractModelProducer<AccessPoint, PTAc
 		if(xmlAccessPoint.getType() != null)
 		{
 			try {
-				accessPoint.setType(AccessPointTypeEnum.fromValue(xmlAccessPoint.getType()));
+				accessPoint.setType(AccessPointTypeEnum.valueOf(xmlAccessPoint.getType()));
 			} catch (IllegalArgumentException e) {
 				// TODO: handle exception
 				e.printStackTrace();

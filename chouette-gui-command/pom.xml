@@ -20,7 +20,7 @@
 			<groupId>fr.certu.chouette</groupId>
 			<artifactId>chouette-exchange-neptune</artifactId>
 		</dependency>
-                <dependency>
+		<dependency>
 			<groupId>fr.certu.chouette</groupId>
 			<artifactId>chouette-exchange-netex</artifactId>
 		</dependency>
@@ -90,9 +90,13 @@
 			<artifactId>testng</artifactId>
 			<scope>test</scope>
 		</dependency>
-
+		<dependency>
+			<groupId>org.hibernate.javax.persistence</groupId>
+			<artifactId>hibernate-jpa-2.1-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
-		<build>
+	<build>
 		<resources>
 			<resource>
 				<directory>src/main/java/</directory>
@@ -196,5 +200,5 @@
 
 		</plugins>
 	</build>
-	
+
 </project>

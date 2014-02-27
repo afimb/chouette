@@ -86,6 +86,7 @@ public class Filter
 	 * required value for a TERMINAL family filter (first value when the filter requires 2 values
 	 */
 	@Getter private Object firstValue;
+	
 	/**
 	 * second required value for a TERMINAL family filter which requires 2 values 
 	 * <p/>

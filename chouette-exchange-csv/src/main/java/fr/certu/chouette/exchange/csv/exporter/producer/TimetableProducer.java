@@ -42,13 +42,13 @@ public class TimetableProducer extends AbstractCSVNeptuneProducer<Timetable> {
 		}
 		csvLinesList.add(createCSVLine(ALIAS_TITLE, timetable.getVersion()));
 		List<DayTypeEnum> timetableDayTypes = timetable.getDayTypes();
-		csvLinesList.add(createCSVLine(MONDAY_TITLE, getDayTypeString(timetableDayTypes, DayTypeEnum.MONDAY)));
-		csvLinesList.add(createCSVLine(TUESDAY_TITLE, getDayTypeString(timetableDayTypes, DayTypeEnum.TUESDAY)));
-		csvLinesList.add(createCSVLine(WEDNESDAY_TITLE, getDayTypeString(timetableDayTypes, DayTypeEnum.WEDNESDAY)));
-		csvLinesList.add(createCSVLine(THURSDAY_TITLE, getDayTypeString(timetableDayTypes, DayTypeEnum.THURSDAY)));
-		csvLinesList.add(createCSVLine(FRIDAY_TITLE, getDayTypeString(timetableDayTypes, DayTypeEnum.FRIDAY)));
-		csvLinesList.add(createCSVLine(SATURDAY_TITLE, getDayTypeString(timetableDayTypes, DayTypeEnum.SATURDAY)));
-		csvLinesList.add(createCSVLine(SUNDAY_TITLE, getDayTypeString(timetableDayTypes, DayTypeEnum.SUNDAY)));
+		csvLinesList.add(createCSVLine(MONDAY_TITLE, getDayTypeString(timetableDayTypes, DayTypeEnum.Monday)));
+		csvLinesList.add(createCSVLine(TUESDAY_TITLE, getDayTypeString(timetableDayTypes, DayTypeEnum.Tuesday)));
+		csvLinesList.add(createCSVLine(WEDNESDAY_TITLE, getDayTypeString(timetableDayTypes, DayTypeEnum.Wednesday)));
+		csvLinesList.add(createCSVLine(THURSDAY_TITLE, getDayTypeString(timetableDayTypes, DayTypeEnum.Thursday)));
+		csvLinesList.add(createCSVLine(FRIDAY_TITLE, getDayTypeString(timetableDayTypes, DayTypeEnum.Friday)));
+		csvLinesList.add(createCSVLine(SATURDAY_TITLE, getDayTypeString(timetableDayTypes, DayTypeEnum.Saturday)));
+		csvLinesList.add(createCSVLine(SUNDAY_TITLE, getDayTypeString(timetableDayTypes, DayTypeEnum.Sunday)));
 		List<Period> timetablePeriods = timetable.getPeriods();
 		csvLinesList.addAll(getPeriodsCSVLines(timetablePeriods));
 		List<Date> timetableCalendarDays = timetable.getCalendarDays();

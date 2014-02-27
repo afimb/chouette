@@ -253,7 +253,7 @@ public abstract class AbstractDaoTemplateTests<T extends NeptuneIdentifiedObject
       network.setCreatorId("TESTNG");
       network.setName("TestNG Network");
       network.setObjectVersion(1);
-      network.setSourceType(PTNetworkSourceTypeEnum.PUBLICTRANSPORT);
+      network.setSourceType(PTNetworkSourceTypeEnum.PublicTransport);
       network.setRegistrationNumber("TESTNG_"+objectId);
       network.setDescription("Fake Network for Test purpose");
       HibernateDaoTemplate<PTNetwork> networkTemplate = (HibernateDaoTemplate<PTNetwork>) applicationContext.getBean("networkDao");
@@ -349,7 +349,7 @@ public abstract class AbstractDaoTemplateTests<T extends NeptuneIdentifiedObject
       stoparea.setCreatorId("TESTNG");
       stoparea.setObjectId("Test:StopArea:"+objectId);
       stoparea.setObjectVersion(1);
-      stoparea.setAreaType(ChouetteAreaEnum.BOARDINGPOSITION);
+      stoparea.setAreaType(ChouetteAreaEnum.BoardingPosition);
       AreaCentroid centroid = new AreaCentroid();
       BigDecimal latitude = new BigDecimal(46.5220796582747800);
       BigDecimal longitude = new BigDecimal(5.6110095977783200);

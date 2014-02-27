@@ -4,7 +4,16 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import org.apache.log4j.Logger;
@@ -21,19 +30,43 @@ import fr.certu.chouette.model.neptune.type.ProjectedPoint;
  * when readable is added to comment, a implicit getter is available <br/>
  * when writable is added to comment, a implicit setter is available
  */
+
+@Entity
+@Table(name = "stop_points")
+@NoArgsConstructor
 public class StopPoint extends NeptuneIdentifiedObject
 {
-   private static final long   serialVersionUID = -4913573673645997423L;
+   private static final long serialVersionUID = -4913573673645997423L;
 
-   private static final Logger logger           = Logger.getLogger(StopPoint.class);
+   private static final Logger logger = Logger.getLogger(StopPoint.class);
 
-   // TODO constant for persistence fields
    /**
     * name of comment attribute for {@link Filter} attributeName construction
     */
-   public static final String    COMMENT                    = "comment";
+   public static final String COMMENT = "comment";
 
-   
+   @Getter
+   @Setter
+   @Column(name = "comment")
+   private String comment;
+
+   @Getter
+   @Setter
+   @Column(name = "position")
+   private Integer position;
+
+   @Getter
+   @Setter
+   @ManyToOne(fetch = FetchType.LAZY)
+   @JoinColumn(name = "stop_area_id")
+   private StopArea containedInStopArea;
+
+   @Getter
+   @Setter
+   @ManyToOne(fetch = FetchType.LAZY)
+   @JoinColumn(name = "route_id")
+   private Route route;
+
    /**
     * postal Address <br/>
     * (import/export usage) based on parent StopArea's AreaCentroid <br/>
@@ -41,7 +74,8 @@ public class StopPoint extends NeptuneIdentifiedObject
     */
    @Getter
    @Setter
-   private Address             address;
+   @Transient
+   private Address address;
    /**
     * Spatial Referential Type (actually only WGS84 is valid) <br/>
     * (import/export usage) based on parent StopArea's AreaCentroid <br/>
@@ -49,7 +83,8 @@ public class StopPoint extends NeptuneIdentifiedObject
     */
    @Getter
    @Setter
-   private LongLatTypeEnum     longLatType;
+   @Transient
+   private LongLatTypeEnum longLatType;
    /**
     * Latitude position of area <br/>
     * (import/export usage) based on parent StopArea's AreaCentroid <br/>
@@ -57,7 +92,8 @@ public class StopPoint extends NeptuneIdentifiedObject
     */
    @Getter
    @Setter
-   private BigDecimal          latitude;
+   @Transient
+   private BigDecimal latitude;
    /**
     * Longitude position of area <br/>
     * (import/export usage) based on parent StopArea's AreaCentroid <br/>
@@ -65,7 +101,8 @@ public class StopPoint extends NeptuneIdentifiedObject
     */
    @Getter
    @Setter
-   private BigDecimal          longitude;
+   @Transient
+   private BigDecimal longitude;
    /**
     * Optional other Spatial Referential position <br/>
     * (import/export usage) based on parent StopArea's AreaCentroid <br/>
@@ -73,14 +110,9 @@ public class StopPoint extends NeptuneIdentifiedObject
     */
    @Getter
    @Setter
-   private ProjectedPoint      projectedPoint;
-   /**
-    * Comment <br/>
-    * <i>readable/writable</i>
-    */
-   @Getter
-   @Setter
-   private String              comment;
+   @Transient
+   private ProjectedPoint projectedPoint;
+
    /**
     * Neptune ObjectId for StopArea Container <br/>
     * (import/export usage) <br/>
@@ -88,14 +120,9 @@ public class StopPoint extends NeptuneIdentifiedObject
     */
    @Getter
    @Setter
-   private String              containedInStopAreaId;
-   /**
-    * StopArea Container <br/>
-    * <i>readable/writable</i>
-    */
-   @Getter
-   @Setter
-   private StopArea            containedInStopArea;
+   @Transient
+   private String containedInStopAreaId;
+
    /**
     * Neptune ObjectId for line <br/>
     * (import/export usage) <br/>
@@ -103,7 +130,8 @@ public class StopPoint extends NeptuneIdentifiedObject
     */
    @Getter
    @Setter
-   private String              lineIdShortcut;
+   @Transient
+   private String lineIdShortcut;
    /**
     * Line <br/>
     * (import/export usage) <br/>
@@ -111,7 +139,8 @@ public class StopPoint extends NeptuneIdentifiedObject
     */
    @Getter
    @Setter
-   private Line                line;
+   @Transient
+   private Line line;
    /**
     * Neptune ObjectId for PTNetwork <br/>
     * (import/export usage) <br/>
@@ -119,7 +148,8 @@ public class StopPoint extends NeptuneIdentifiedObject
     */
    @Getter
    @Setter
-   private String              ptNetworkIdShortcut;
+   @Transient
+   private String ptNetworkIdShortcut;
    /**
     * PTNetwork <br/>
     * (import/export usage) <br/>
@@ -127,28 +157,17 @@ public class StopPoint extends NeptuneIdentifiedObject
     */
    @Getter
    @Setter
-   private PTNetwork           ptNetwork;
-   /**
-    * rank of stop point in route <br/>
-    * <i>readable/writable</i>
-    */
-   @Getter
-   @Setter
-   private int                 position;
-   /**
-    * Route <br/>
-    * <i>readable/writable</i>
-    */
-   @Getter
-   @Setter
-   private Route               route;
+   @Transient
+   private PTNetwork ptNetwork;
+
    /**
     * Facility affected to this stopPoint <br/>
     * <i>readable/writable</i>
     */
    @Getter
    @Setter
-   private List<Facility>      facilities;
+   @Transient
+   private List<Facility> facilities;
 
    /**
     * add a facility if not already present
@@ -176,13 +195,6 @@ public class StopPoint extends NeptuneIdentifiedObject
          facilities.remove(facility);
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#toString(java.
-    * lang.String, int)
-    */
    @Override
    public String toString(String indent, int level)
    {
@@ -229,7 +241,7 @@ public class StopPoint extends NeptuneIdentifiedObject
    {
       return position < another.getPosition();
    }
-   
+
    public boolean after(StopPoint another)
    {
       return position > another.getPosition();
@@ -272,36 +284,49 @@ public class StopPoint extends NeptuneIdentifiedObject
          setName(area.getName());
       }
    }
-   
-	@Override
-	public <T extends NeptuneObject> boolean compareAttributes(
-			T anotherObject) {
-		if (anotherObject instanceof StopPoint)
-		{
-			StopPoint another = (StopPoint) anotherObject;
-			if (!sameValue(this.getObjectId(), another.getObjectId())) return false;
-			if (!sameValue(this.getObjectVersion(), another.getObjectVersion())) return false;
-			if (!sameValue(this.getName(), another.getName())) return false;
-			if (!sameValue(this.getComment(), another.getComment())) return false;
-			if (!sameValue(this.getRegistrationNumber(), another.getRegistrationNumber())) return false;
-			if (!sameValue(this.getLatitude(), another.getLatitude())) return false;
-			if (!sameValue(this.getLongitude(), another.getLongitude())) return false;
-			if (!sameValue(this.getLongLatType(), another.getLongLatType())) return false;
-			if (!sameValue(this.getAddress(), another.getAddress())) return false;
-			if (!sameValue(this.getProjectedPoint(), another.getProjectedPoint())) return false;
 
-			if (!sameValue(this.getPosition(), another.getPosition())) return false;
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
+   @Override
+   public <T extends NeptuneObject> boolean compareAttributes(
+         T anotherObject)
+   {
+      if (anotherObject instanceof StopPoint)
+      {
+         StopPoint another = (StopPoint) anotherObject;
+         if (!sameValue(this.getObjectId(), another.getObjectId()))
+            return false;
+         if (!sameValue(this.getObjectVersion(), another.getObjectVersion()))
+            return false;
+         if (!sameValue(this.getName(), another.getName()))
+            return false;
+         if (!sameValue(this.getComment(), another.getComment()))
+            return false;
+         if (!sameValue(this.getRegistrationNumber(), another.getRegistrationNumber()))
+            return false;
+         if (!sameValue(this.getLatitude(), another.getLatitude()))
+            return false;
+         if (!sameValue(this.getLongitude(), another.getLongitude()))
+            return false;
+         if (!sameValue(this.getLongLatType(), another.getLongLatType()))
+            return false;
+         if (!sameValue(this.getAddress(), another.getAddress()))
+            return false;
+         if (!sameValue(this.getProjectedPoint(), another.getProjectedPoint()))
+            return false;
 
-	@Override
-	public String toURL() {
-		return null;
-	}
+         if (!sameValue(this.getPosition(), another.getPosition()))
+            return false;
+         return true;
+      }
+      else
+      {
+         return false;
+      }
+   }
+
+   @Override
+   public String toURL()
+   {
+      return null;
+   }
 
 }

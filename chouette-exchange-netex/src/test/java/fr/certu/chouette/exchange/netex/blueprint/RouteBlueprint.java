@@ -36,7 +36,7 @@ public class RouteBlueprint {
     String number = "1A - par Pont Neuf";
     
     @Default
-    PTDirectionEnum direction = PTDirectionEnum.NORTH;
+    PTDirectionEnum direction = PTDirectionEnum.North;
     
     @Default
     String comment = "aller retour";

@@ -55,7 +55,7 @@ public class StopAreaProducer extends AbstractJaxbNeptuneProducer<ChouetteArea.S
 			ChouetteAreaEnum areaType = stopArea.getAreaType();
 			if(areaType != null)
 			{
-				stopAreaExtension.setAreaType(ChouetteAreaType.fromValue(areaType.value()));
+				stopAreaExtension.setAreaType(ChouetteAreaType.fromValue(areaType.name()));
 			}
 		}
 		catch (IllegalArgumentException e) 

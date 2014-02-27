@@ -95,8 +95,8 @@ public class TimetableConverterTest extends AbstractTestNGSpringContextTests {
         Timetable selectedTimetable = getByObjectId( "T:DayType:1");
         List<DayTypeEnum> dayTypeList = selectedTimetable.getDayTypes();
         Assert.assertEquals( dayTypeList.size(), 2);
-        Assert.assertTrue( dayTypeList.contains( DayTypeEnum.MONDAY));
-        Assert.assertTrue( dayTypeList.contains( DayTypeEnum.WEDNESDAY));
+        Assert.assertTrue( dayTypeList.contains( DayTypeEnum.Monday));
+        Assert.assertTrue( dayTypeList.contains( DayTypeEnum.Wednesday));
     }
 
 }

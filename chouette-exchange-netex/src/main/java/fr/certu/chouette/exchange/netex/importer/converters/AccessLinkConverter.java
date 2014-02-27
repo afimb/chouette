@@ -79,13 +79,13 @@ public class AccessLinkConverter extends GenericConverter {
             {
                 link.setStartOfLinkId(fromEntrance);
                 link.setEndOfLinkId( subXpathSelection( "netex:To/netex:PlaceRef/@ref"));
-                link.setLinkOrientation(LinkOrientationEnum.ACCESSPOINT_TO_STOPAREA);
+                link.setLinkOrientation(LinkOrientationEnum.AccessPointToStopArea);
             }
             else
             {
                 link.setStartOfLinkId(toEntrance);
                 link.setEndOfLinkId( subXpathSelection( "netex:From/netex:PlaceRef/@ref"));
-                link.setLinkOrientation(LinkOrientationEnum.STOPAREA_TO_ACCESSPOINT);
+                link.setLinkOrientation(LinkOrientationEnum.StopAreaToAccessPoint);
             }
                         
             String stopAreaObjectId = link.getEndOfLinkId();

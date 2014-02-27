@@ -23,305 +23,143 @@
 		<property name="databaseSchema" value="${database.schema}" />
 	</bean>
 
-
-	<bean id="sessionFactory"
-		class="fr.certu.chouette.dao.hibernate.ChouetteSessionFactoryBean"
-		lazy-init="true">
-		<property name="hibernateProperties">
+	<bean id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+		<property name="persistenceUnitName" value="fr.certu.chouette.model.neptune"/>
+		<property name="jpaVendorAdapter">
+			<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" />
+		</property>
+		<property name="dataSource" ref="chouetteDataSource" />
+		<property name="jpaProperties">
 			<props>
-				<prop key="hibernate.dialect">${database.hibernate.dialect}
-				</prop>
+				<prop key="hibernate.dialect">${database.hibernate.dialect}</prop>
 				<prop key="hibernate.hbm2ddl.auto">${database.hbm2ddl.auto}</prop>
 				<prop key="hibernate.show_sql">${database.showsql}</prop>
 				<prop key="hibernate.format_sql">true</prop>
 				<prop key="hibernate.default_schema">${database.schema}</prop>
 			</props>
 		</property>
-		<property name="dataSource" ref="chouetteDataSource" />
-		<property name="mappingResources">
-			<list>
-				<value>fr/certu/chouette/model/neptune/AccessLink.hbm.xml</value>
-				<value>fr/certu/chouette/model/neptune/AccessPoint.hbm.xml</value>
-				<value>fr/certu/chouette/model/neptune/Company.hbm.xml</value>
-				<value>fr/certu/chouette/model/neptune/ConnectionLink.hbm.xml
-				</value>
-				<!--<value>fr/certu/chouette/model/neptune/Facility.hbm.xml</value> -->
-				<value>fr/certu/chouette/model/neptune/GroupOfLine.hbm.xml</value>
-				<value>fr/certu/chouette/model/neptune/JourneyPattern.hbm.xml
-				</value>
-				<value>fr/certu/chouette/model/neptune/Line.hbm.xml</value>
-				<!-- <value>fr/certu/chouette/model/neptune/PTLink.hbm.xml</value> -->
-				<value>fr/certu/chouette/model/neptune/PTNetwork.hbm.xml</value>
-				<value>fr/certu/chouette/model/neptune/Route.hbm.xml</value>
-				<value>fr/certu/chouette/model/neptune/StopArea.hbm.xml</value>
-				<value>fr/certu/chouette/model/neptune/StopPoint.hbm.xml</value>
-				<!-- value>fr/certu/chouette/model/neptune/TimeSlot.hbm.xml</value -->
-				<value>fr/certu/chouette/model/neptune/TimeTable.hbm.xml</value>
-				<value>fr/certu/chouette/model/neptune/VehicleJourney.hbm.xml</value>
-				<value>fr/certu/chouette/model/neptune/VehicleJourneyAtStop.hbm.xml</value>
-                <!-- external objects only for chouette2 interface -->
-				<value>fr/certu/chouette/model/gui/referential.hbm.xml</value>
-				<value>fr/certu/chouette/model/gui/import_task.hbm.xml</value>
-				<value>fr/certu/chouette/model/gui/compilance_check_task.hbm.xml</value>
-				<value>fr/certu/chouette/model/gui/compilance_check_result.hbm.xml</value>
-				<value>fr/certu/chouette/model/gui/export.hbm.xml</value>
-			</list>
-		</property>
-		<!-- chouette specific parameters to complete hibernate update schema action -->
-		<property name="strategy">
-			<value>${database.hbm2ddl.auto}</value>
-		</property>
-		<property name="dropConstraintKeySql">
-			<value>ALTER TABLE ${database.schema}.{0} DROP CONSTRAINT {1} CASCADE
-			</value>
-		</property>
-		<property name="getForeignKeysSql">
-			<value>select i.constraint_name, i.table_name, k.column_name,
-				u.table_name as target_table,u.column_name as target_column,
-				r.match_option, r.update_rule, r.delete_rule
-				from
-				information_schema.table_constraints i,
-				information_schema.key_column_usage k,
-				information_schema.constraint_column_usage u,
-				information_schema.referential_constraints r
-				where
-				i.constraint_schema = '${database.schema}'
-				and i.constraint_type = 'FOREIGN KEY'
-				and u.constraint_schema =
-				i.constraint_schema
-				and u.constraint_name = i.constraint_name
-				and k.constraint_schema =
-				i.constraint_schema
-				and k.constraint_name = i.constraint_name
-				and r.constraint_schema =
-				i.constraint_schema
-				and r.constraint_name = i.constraint_name
-				order by i.table_name,
-				k.column_name </value>
-		</property>
-		<property name="addForeignKeySql">
-			<value>ALTER TABLE ${database.schema}.{0}
-				ADD CONSTRAINT {1} FOREIGN
-				KEY ({2})
-				REFERENCES ${database.schema}.{3} ({4})
-				ON UPDATE {6} ON
-				DELETE {7}</value>
-		</property>
-		<property name="cascadeDeleteFkeys">
-			<map>
-				<entry key="aclk_acpt_fkey" value="access_links;access_point_id;access_points;id" />
-				<entry key="aclk_area_fkey" value="access_links;stop_area_id;stop_areas;id" />
-				<entry key="access_area_fkey" value="access_points;stop_area_id;stop_areas;id" />
-				<entry key="colk_endarea_fkey" value="connection_links;arrival_id;stop_areas;id" />
-				<entry key="colk_startarea_fkey" value="connection_links;departure_id;stop_areas;id" />
-				<!-- <entry key="faci_colk_fkey" value="facilities;connection_link_id;connection_links;id" />
-				<entry key="faci_line_fkey" value="facilities;line_id;lines;id" />
-				<entry key="faci_area_fkey" value="facilities;stop_area_id;stop_areas;id" />
-				<entry key="faci_stpt_fkey" value="facilities;stop_point_id;stop_points;id" /> 
-				<entry key="facility_feature_fkey" value="facilities_features;facility_id;facilities;id" /> -->
-				<entry key="groupofline_group_fkey" value="group_of_lines_lines;group_of_line_id;group_of_lines;id" />
-				<entry key="groupofline_line_fkey" value="group_of_lines_lines;line_id;lines;id" />
-				<entry key="jp_route_fkey" value="journey_patterns;route_id;routes;id" />
-				<entry key="jpsp_jp_fkey"
-					value="journey_patterns_stop_points;journey_pattern_id;journey_patterns;id" />
-				<entry key="jpsp_stoppoint_fkey" value="journey_patterns_stop_points;stop_point_id;stop_points;id" />
-				<!-- <entry key="ptlink_route_fkey" value="pt_links;route_id;routes;id" /> -->
-				<entry key="route_line_fkey" value="routes;line_id;lines;id" />
-				<entry key="routingconstraint_line_fkey" value="routing_constraints_lines;line_id;lines;id" />
-				<entry key="routingconstraint_stoparea_fkey" value="routing_constraints_lines;stop_area_id;stop_areas;id" />
-				<entry key="stoparea_child_fkey" value="stop_areas_stop_areas;child_id;stop_areas;id" />
-				<entry key="stoparea_parent_fkey" value="stop_areas_stop_areas;parent_id;stop_areas;id" />
-				<entry key="stoppoint_route_fkey" value="stop_points;route_id;routes;id" />
-				<entry key="tm_date_fkey" value="time_table_dates;time_table_id;time_tables;id" />
-				<entry key="tm_period_fkey" value="time_table_periods;time_table_id;time_tables;id" />
-				<entry key="vjtm_tm_fkey" value="time_tables_vehicle_journeys;time_table_id;time_tables;id" />
-				<entry key="vjtm_vj_fkey"
-					value="time_tables_vehicle_journeys;vehicle_journey_id;vehicle_journeys;id" />
-				<entry key="vj_jp_fkey" value="vehicle_journeys;journey_pattern_id;journey_patterns;id" />
-				<entry key="vj_route_fkey" value="vehicle_journeys;route_id;routes;id" />
-				<entry key="vjas_sp_fkey" value="vehicle_journey_at_stops;stop_point_id;stop_points;id" />
-				<entry key="vjas_vj_fkey"
-					value="vehicle_journey_at_stops;vehicle_journey_id;vehicle_journeys;id" />
-			</map>
-		</property>
-		<property name="setNullDeleteFkeys">
-			<map>
-				<entry key="line_company_fkey" value="lines;company_id;companies;id" />
-				<entry key="line_ptnetwork_fkey" value="lines;network_id;networks;id" />
-				<entry key="vj_company_fkey" value="vehicle_journeys;company_id;companies;id" />
-				<entry key="area_parent_fkey" value="stop_areas;parent_id;stop_areas;id" />
-				<entry key="departure_point_fkey" value="journey_patterns;departure_stop_point_id;stop_points;id" />
-				<entry key="arrival_point_fkey" value="journey_patterns;arrival_stop_point_id;stop_points;id" />
-				<!-- <entry key="vj_timeslot_fkey" value="vehicle_journeys;time_slot_id;time_slots;id" /> -->
-			</map>
-		</property>
-		<property name="noActionDeleteFkeys">
-			<map>
-				<!-- <entry key="ptlk_endstpt_fkey" value="pt_links;end_of_link_id;stop_points;id" />
-				<entry key="ptlk_startstpt_fkey" value="pt_links;start_of_link_id;stop_points;id" /> -->
-				<entry key="stoppoint_area_fkey" value="stop_points;stop_area_id;stop_areas;id" />
-			</map>
-		</property>
-		<property name="getPrimaryKeysSql">
-			<value>select i.constraint_name, i.table_name, u.column_name
-				from
-				information_schema.table_constraints i,
-				information_schema.constraint_column_usage u
-				where
-				i.constraint_schema = '${database.schema}'
-				and constraint_type =
-				'PRIMARY KEY'
-				and i.constraint_schema = u.constraint_schema
-				and
-				i.constraint_name = u.constraint_name
-				order by
-				i.table_name,i.constraint_name</value>
-		</property>
-		<property name="addPrimaryKeySql">
-			<value>ALTER TABLE ${database.schema}.{0}
-				ADD CONSTRAINT {1} PRIMARY
-				KEY ({2})
-				</value>
-		</property>
-		<property name="cleanBeforePrimaryKeySql">
-			<list>
-				<value>DROP TABLE IF EXISTS ${database.schema}.temp_duplicate
-				</value>
-				<value>CREATE TABLE ${database.schema}.temp_duplicate AS select {2}
-					from ${database.schema}.{0} group by {2} having count(*) > 1
-				</value>
-				<value>DELETE FROM ${database.schema}.{0} tv USINGnull
-					${database.schema}.temp_duplicate td WHERE tv.{3} = td.{3} AND
-					tv.{4} = td.{4}</value>
-				<value>INSERT INTO ${database.schema}.{0} ({2}) SELECT {2} FROM
-					${database.schema}.temp_duplicate</value>
-				<value>DROP TABLE ${database.schema}.temp_duplicate</value>
-			</list>
-		</property>
-
-		<property name="primaryKeys">
-			<list>
-			</list>
-		</property>
-
 	</bean>
 
 	<tx:annotation-driven transaction-manager="transactionManager" />
-
 	<bean id="transactionManager"
-		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
-		<property name="sessionFactory" ref="sessionFactory" />
+		class="org.springframework.orm.jpa.JpaTransactionManager">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
 	</bean>
+
 
 	<!-- Modules DAO -->
 
 	<bean id="accessLinkDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
 		factory-method="createAccessLinkDao">
-		<property name="sessionFactory" ref="sessionFactory" />
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
 	</bean>
 
 	<bean id="accessPointDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
 		factory-method="createAccessPointDao">
-		<property name="sessionFactory" ref="sessionFactory" />
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
 	</bean>
 
 	<bean id="companyDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
 		factory-method="createCompanyDao">
-		<property name="sessionFactory" ref="sessionFactory" />
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
 	</bean>
 
 	<bean id="connectionLinkDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
 		factory-method="createConnectionLinkDao">
-		<property name="sessionFactory" ref="sessionFactory" />
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
 	</bean>
 
-	<!-- <bean id="facilityDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
-		factory-method="createFacilityDao">
-		<property name="sessionFactory" ref="sessionFactory" />
-	</bean> -->
+	<!-- <bean id="facilityDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate" 
+		factory-method="createFacilityDao"> <property name="entityManagerFactory" 
+		ref="entityManagerFactory" /> </bean> -->
 
 	<bean id="groupOfLineDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
 		factory-method="createGroupOfLineDao">
-		<property name="sessionFactory" ref="sessionFactory" />
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
 	</bean>
 
 	<bean id="journeyPatternDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
 		factory-method="createJourneyPatternDao">
-		<property name="sessionFactory" ref="sessionFactory" />
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
 	</bean>
 
 	<bean id="lineDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
 		factory-method="createLineDao">
-		<property name="sessionFactory" ref="sessionFactory" />
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
 	</bean>
 
-	<!-- <bean id="ptLinkDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
-		factory-method="createPTLinkDao">
-		<property name="sessionFactory" ref="sessionFactory" />
-	</bean> -->
+	<!-- <bean id="ptLinkDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate" 
+		factory-method="createPTLinkDao"> <property name="entityManagerFactory" ref="entityManagerFactory" 
+		/> </bean> -->
 
 	<bean id="networkDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
 		factory-method="createPTNetworkDao">
-		<property name="sessionFactory" ref="sessionFactory" />
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
 	</bean>
 
 	<bean id="routeDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
 		factory-method="createRouteDao">
-		<property name="sessionFactory" ref="sessionFactory" />
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
 	</bean>
 
 	<bean id="stopAreaDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
 		factory-method="createStopAreaDao">
-		<property name="sessionFactory" ref="sessionFactory" />
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
 	</bean>
 
 	<bean id="stopPointDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
 		factory-method="createStopPointDao">
-		<property name="sessionFactory" ref="sessionFactory" />
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
 	</bean>
 
-	<!-- <bean id="timeSlotDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
-		factory-method="createTimeSlotDao">
-		<property name="sessionFactory" ref="sessionFactory" />
-	</bean> -->
+	<!-- <bean id="timeSlotDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate" 
+		factory-method="createTimeSlotDao"> <property name="entityManagerFactory" 
+		ref="entityManagerFactory" /> </bean> -->
 
 	<bean id="timetableDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
 		factory-method="createTimetableDao">
-		<property name="sessionFactory" ref="sessionFactory" />
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
 	</bean>
 
 	<bean id="vehicleJourneyDao" class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
 		factory-method="createVehicleJourneyDao">
-		<property name="sessionFactory" ref="sessionFactory" />
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
 	</bean>
 
-	<bean id="organisationDao" class="fr.certu.chouette.dao.hibernate.NeptuneObjectHibernateDaoTemplate"
+	<bean id="organisationDao"
+		class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
 		factory-method="createOrganisationDao">
-		<property name="sessionFactory" ref="sessionFactory" />
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
 	</bean>
-	<bean id="referentialDao" class="fr.certu.chouette.dao.hibernate.NeptuneObjectHibernateDaoTemplate"
+	<bean id="referentialDao"
+		class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
 		factory-method="createReferentialDao">
-		<property name="sessionFactory" ref="sessionFactory" />
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
 	</bean>
-	<bean id="importDao" class="fr.certu.chouette.dao.hibernate.NeptuneObjectHibernateDaoTemplate"
+	<bean id="importDao"
+		class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
 		factory-method="createImportDao">
-		<property name="sessionFactory" ref="sessionFactory" />
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
 	</bean>
-	
-	<bean id="validationDao" class="fr.certu.chouette.dao.hibernate.NeptuneObjectHibernateDaoTemplate"
+
+	<bean id="validationDao"
+		class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
 		factory-method="createValidationDao">
-		<property name="sessionFactory" ref="sessionFactory" />
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
 	</bean>
-	
-	<bean id="exportDao" class="fr.certu.chouette.dao.hibernate.NeptuneObjectHibernateDaoTemplate"
+
+	<bean id="exportDao"
+		class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
 		factory-method="createExportDao">
-		<property name="sessionFactory" ref="sessionFactory" />
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
 	</bean>
-	
-	<bean id="exportLogMessageDao" class="fr.certu.chouette.dao.hibernate.NeptuneObjectHibernateDaoTemplate"
+
+	<bean id="exportLogMessageDao"
+		class="fr.certu.chouette.dao.hibernate.HibernateDaoTemplate"
 		factory-method="createExportLogMessageDao">
-		<property name="sessionFactory" ref="sessionFactory" />
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
 	</bean>
-	
+
 
 </beans>

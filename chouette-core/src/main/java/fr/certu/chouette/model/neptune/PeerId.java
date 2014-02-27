@@ -24,14 +24,14 @@ public class PeerId implements Serializable
     */
    @Getter
    @Setter
-   private Long              id;
+   private Long id;
    /**
     * object id <br/>
     * <i>readable/writable</i>
     */
    @Getter
    @Setter
-   private String            objectid;
+   private String objectid;
 
    /**
     * default constructor

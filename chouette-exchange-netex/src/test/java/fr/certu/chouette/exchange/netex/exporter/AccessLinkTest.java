@@ -48,7 +48,7 @@ public class AccessLinkTest extends ChouetteModelTest {
         for (AccessLink accessLink : accessLinks) { 
             NeptuneIdentifiedObject startLink = null;
             NeptuneIdentifiedObject endLink = null;
-            if ( accessLink.getLinkOrientation().equals( LinkOrientationEnum.ACCESSPOINT_TO_STOPAREA)) {
+            if ( accessLink.getLinkOrientation().equals( LinkOrientationEnum.AccessPointToStopArea)) {
                 startLink = accessLink.getAccessPoint();
                 endLink = accessLink.getStopArea();
             } else {

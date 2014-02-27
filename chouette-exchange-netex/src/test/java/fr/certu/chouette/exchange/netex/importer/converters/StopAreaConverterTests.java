@@ -93,19 +93,19 @@ public class StopAreaConverterTests extends AbstractTestNGSpringContextTests {
     @Test(groups = {"ServiceFrame"}, description = "StopArea's areaType attribute reading")
     public void verifyStopPlaceAreaType() throws XPathEvalException, NavException, XPathParseException, ParseException {
         StopArea selectedStopArea = getStopAreaByObjectId( "RATP_PIVI:StopArea:430399");
-        Assert.assertEquals( selectedStopArea.getAreaType(), ChouetteAreaEnum.COMMERCIALSTOPPOINT);
+        Assert.assertEquals( selectedStopArea.getAreaType(), ChouetteAreaEnum.CommercialStopPoint);
     }
 
     @Test(groups = {"ServiceFrame"}, description = "StopArea's parent areaType attribute reading")
     public void verifyStopPlaceAreaParentAreaType() throws XPathEvalException, NavException, XPathParseException, ParseException {
         StopArea selectedStopArea = getStopAreaByObjectId( "RATP_PIVI:StopArea:1234567");
-        Assert.assertEquals( selectedStopArea.getAreaType(), ChouetteAreaEnum.STOPPLACE);
+        Assert.assertEquals( selectedStopArea.getAreaType(), ChouetteAreaEnum.StopPlace);
     }
 
     @Test(groups = {"ServiceFrame"}, description = "Quay's areaType attribute reading")
     public void verifyQuayAreaType() throws XPathEvalException, NavException, XPathParseException, ParseException {
         StopArea selectedStopArea = getStopAreaByObjectId( "RATP_PIVI:Quay:5246072");
-        Assert.assertEquals( selectedStopArea.getAreaType(), ChouetteAreaEnum.QUAY);
+        Assert.assertEquals( selectedStopArea.getAreaType(), ChouetteAreaEnum.Quay);
     }
 
     @Test(groups = {"ServiceFrame"}, description = "StopArea's name attribute reading")

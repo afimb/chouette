@@ -40,10 +40,10 @@ public class StopAreaDaoTemplateTests extends AbstractDaoTemplateTests<StopArea>
 		// bean.setId(Long.valueOf(0));
 		daoTemplate.save(bean);
 		Assert.assertFalse(bean.getId().equals(Long.valueOf(0)),"created Bean should have id different of zero");
-		Filter filter = Filter.getNewEqualsFilter("areaType", ChouetteAreaEnum.BOARDINGPOSITION);
+		Filter filter = Filter.getNewEqualsFilter("areaType", ChouetteAreaEnum.BoardingPosition);
 		Long count = daoTemplate.count(filter);
 		Assert.assertTrue(count > 0,"count Bean should be 1");
-		filter = Filter.getNewInFilter("areaType", new Object[]{ChouetteAreaEnum.BOARDINGPOSITION,ChouetteAreaEnum.QUAY});
+		filter = Filter.getNewInFilter("areaType", new Object[]{ChouetteAreaEnum.BoardingPosition,ChouetteAreaEnum.Quay});
 	    count = daoTemplate.count(filter);
 		Assert.assertTrue(count > 0,"count Bean should be 1");
 	}

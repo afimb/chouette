@@ -47,7 +47,7 @@ public class StopAreaBlueprint {
     AreaCentroid areaCentroid;  
     
     @Default
-    ChouetteAreaEnum areaType = ChouetteAreaEnum.BOARDINGPOSITION;
+    ChouetteAreaEnum areaType = ChouetteAreaEnum.BoardingPosition;
     
     @Nullable
     @Mapped   

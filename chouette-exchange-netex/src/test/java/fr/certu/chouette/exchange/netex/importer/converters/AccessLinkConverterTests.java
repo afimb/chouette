@@ -99,7 +99,7 @@ public class AccessLinkConverterTests {
     @Test(groups = {"ServiceFrame"}, description = "ConnectionLink's linkType attribute reading")
     public void verifyLinkType() throws XPathEvalException, NavException, XPathParseException, ParseException {
         AccessLink selectedLink = getConnectionLinkByObjectId( "RATP_PIVI:PathLink:1234");
-        Assert.assertEquals( selectedLink.getLinkType(), ConnectionLinkTypeEnum.UNDERGROUND);
+        Assert.assertEquals( selectedLink.getLinkType(), ConnectionLinkTypeEnum.Underground);
     }
 
     @Test(groups = {"ServiceFrame"}, description = "ConnectionLink's comment attribute reading")

@@ -41,7 +41,7 @@ public class LineProducer extends AbstractModelProducer<Line,org.trident.schema.
 		{
 			try
 			{
-				line.setTransportModeName(TransportModeNameEnum.fromValue(xmlLine.getTransportModeName().value()));
+				line.setTransportModeName(TransportModeNameEnum.valueOf(xmlLine.getTransportModeName().value()));
 			}
 			catch (IllegalArgumentException e) 
 			{

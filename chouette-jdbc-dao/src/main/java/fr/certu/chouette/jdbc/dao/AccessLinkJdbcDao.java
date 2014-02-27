@@ -78,13 +78,13 @@ public class AccessLinkJdbcDao extends AbstractJdbcDao<AccessLink>
 		ps.setTime(14, mobilityrestrictedtravellerduration);
 		String linkType = null;
 		if (accessLink.getLinkType() != null)
-			linkType = accessLink.getLinkType().value();
+			linkType = accessLink.getLinkType().name();
 		ps.setString(15, linkType);
 		ps.setObject(16, (Integer)accessLink.getIntUserNeeds());
 		
 		String linkOrientation = null;
 		if(accessLink.getLinkOrientation() != null)
-			linkOrientation = accessLink.getLinkOrientation().value();
+			linkOrientation = accessLink.getLinkOrientation().name();
 		ps.setString(17, linkOrientation);
 		
 		setId(ps,18,accessLink.getAccessPoint(),true,"access_point_id");

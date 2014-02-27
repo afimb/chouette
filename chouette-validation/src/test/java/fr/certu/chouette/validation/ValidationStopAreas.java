@@ -131,7 +131,7 @@ public class ValidationStopAreas extends AbstractTransactionalTestNGSpringContex
 		StopArea area1 = null;
 		for (StopArea stopArea : beans) 
 		{
-			if (stopArea.getAreaType().equals(ChouetteAreaEnum.BOARDINGPOSITION)) 
+			if (stopArea.getAreaType().equals(ChouetteAreaEnum.BoardingPosition)) 
 			{
 				area1 = stopArea;
 				break;

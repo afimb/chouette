@@ -44,7 +44,7 @@ public class StopAreaProducer extends AbstractModelProducer<StopArea,org.trident
 			// AreaType mandatory
 			if(xmlStopAreaExtension.getAreaType() != null){
 				try{
-					stopArea.setAreaType(ChouetteAreaEnum.fromValue(xmlStopAreaExtension.getAreaType().value()));
+					stopArea.setAreaType(ChouetteAreaEnum.valueOf(xmlStopAreaExtension.getAreaType().value()));
 				}
 				catch (IllegalArgumentException e) 
 				{

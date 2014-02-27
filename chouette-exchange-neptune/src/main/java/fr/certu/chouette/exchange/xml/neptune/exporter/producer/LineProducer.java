@@ -37,7 +37,7 @@ public class LineProducer extends AbstractJaxbNeptuneProducer<ChouettePTNetworkT
       try {
          TransportModeNameEnum transportModeName = line.getTransportModeName();
          if(transportModeName != null){
-            jaxbLine.setTransportModeName(TransportModeNameType.fromValue(transportModeName.value()));
+            jaxbLine.setTransportModeName(TransportModeNameType.fromValue(transportModeName.name()));
          }
       } catch (IllegalArgumentException e) {
          // TODO generate report

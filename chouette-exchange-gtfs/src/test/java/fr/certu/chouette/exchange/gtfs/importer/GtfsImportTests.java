@@ -227,19 +227,19 @@ public class GtfsImportTests extends AbstractTestNGSpringContextTests
       {
          // comptage des objets : 
          Assert.assertNotNull(line.getPtNetwork(),"line must have a network");
-         Assert.assertNull(line.getGroupOfLines(),"line must have no groupOfLines");
+         Assert.assertTrue(line.getGroupOfLines().isEmpty(),"line must have no groupOfLines");
          Assert.assertNotNull(line.getCompany(),"line must have a company");
-         Assert.assertNotNull(line.getRoutes(),"line must have routes");
+         Assert.assertFalse(line.getRoutes().isEmpty(),"line must have routes");
          Assert.assertEquals(line.getRoutes().size(),2,"line must have 2 routes");
          Set<StopArea> bps = new HashSet<StopArea>();
          Set<StopArea> comms = new HashSet<StopArea>();
 
          for (Route route : line.getRoutes())
          {
-            Assert.assertNotNull(route.getJourneyPatterns(),"line routes must have journeyPattens");
+            Assert.assertFalse(route.getJourneyPatterns().isEmpty(),"line routes must have journeyPattens");
             for (JourneyPattern jp : route.getJourneyPatterns())
             {
-               Assert.assertNotNull(jp.getStopPoints(),"line journeyPattens must have stoppoints");
+               Assert.assertFalse(jp.getStopPoints().isEmpty(),"line journeyPattens must have stoppoints");
                for (StopPoint point : jp.getStopPoints())
                {
 

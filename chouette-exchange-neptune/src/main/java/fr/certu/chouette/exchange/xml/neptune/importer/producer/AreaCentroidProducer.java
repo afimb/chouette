@@ -32,7 +32,7 @@ public class AreaCentroidProducer extends AbstractModelProducer<AreaCentroid,org
 		{
 			try 
 			{
-				areaCentroid.setLongLatType(LongLatTypeEnum.fromValue(xmlAreaCentroid.getLongLatType().value()));
+				areaCentroid.setLongLatType(LongLatTypeEnum.valueOf(xmlAreaCentroid.getLongLatType().value()));
 			}
 			catch (IllegalArgumentException e) 
 			{

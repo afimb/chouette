@@ -56,7 +56,7 @@ public class AccessPointJdbcDao extends AbstractJdbcDao<AccessPoint>
 		String longLatType = null,
 				type = null;
 		if(accessPoint.getLongLatType() != null)
-			longLatType = accessPoint.getLongLatType().value();
+			longLatType = accessPoint.getLongLatType().name();
 		ps.setString(11, longLatType);
 
 		ps.setString(12, accessPoint.getContainedInStopArea());
@@ -70,7 +70,7 @@ public class AccessPointJdbcDao extends AbstractJdbcDao<AccessPoint>
 		ps.setTime(15, closingTime);
 		if (accessPoint.getType() != null)
 		{
-		   type = accessPoint.getType().value();
+		   type = accessPoint.getType().name();
 		}
 		ps.setString(16, type);
 		ps.setBoolean(17, accessPoint.isLiftAvailable());

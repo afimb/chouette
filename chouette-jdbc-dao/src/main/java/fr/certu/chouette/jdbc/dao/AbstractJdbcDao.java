@@ -622,7 +622,7 @@ IDaoTemplate<T>
 	 * .NeptuneObject)
 	 */
 	@Override
-	public void save(T object)
+	public T save(T object)
 	{
 		throw new JdbcDaoRuntimeException(JdbcDaoExceptionCode.NOT_YET_IMPLEMENTED, "save");
 	}
@@ -660,7 +660,7 @@ IDaoTemplate<T>
 	 * .NeptuneObject)
 	 */
 	@Override
-	public void update(T object)
+	public T update(T object)
 	{
 		throw new JdbcDaoRuntimeException(JdbcDaoExceptionCode.NOT_YET_IMPLEMENTED, "update");
 
