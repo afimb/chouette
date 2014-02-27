@@ -26,6 +26,10 @@
 			<outputDirectory>/</outputDirectory>
 		</file>
 		<file>
+			<source>${project.build.directory}/parameterset.json</source>
+			<outputDirectory>/</outputDirectory>
+		</file>
+		<file>
 			<source>${project.build.directory}/chouette.sh</source>
 			<outputDirectory>/</outputDirectory>
 			<fileMode>0755</fileMode>

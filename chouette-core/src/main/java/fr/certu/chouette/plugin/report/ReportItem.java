@@ -44,7 +44,7 @@ public abstract  class ReportItem extends Report implements Comparable<ReportIte
 	 * @param locale
 	 * @return
 	 */
-	public final String getLocalizedMessage(Locale locale)
+	public  String getLocalizedMessage(Locale locale)
 	{
 		String format = "";
 		String message = "";

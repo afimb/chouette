@@ -91,9 +91,6 @@
 			</resource>
 			<resource>
 				<directory>${basedir}/src/main/resources</directory>
-				<excludes>
-					<exclude>filtered/**</exclude>
-				</excludes>
 				<filtering>false</filtering>
 			</resource>
 			<resource>
@@ -102,12 +99,10 @@
 				<includes>
 					<include>*.bat</include>
 					<include>*.sh</include>
+					<include>*.json</include>
 				</includes>
 				<targetPath>${project.build.directory}</targetPath>
 			</resource>
-			<!-- <resource> <directory>${basedir}/src/main/resources/filtered</directory> 
-				<filtering>true</filtering> <targetPath>${project.build.directory}</targetPath> 
-				</resource> -->
 			<resource>
 				<directory>../config/dev</directory>
 				<filtering>false</filtering>

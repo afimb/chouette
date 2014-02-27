@@ -1,34 +1,36 @@
 package fr.certu.chouette.exchange.netex.exporter;
 
-import com.tobedevoured.modelcitizen.ModelFactory;
-import fr.certu.chouette.exchange.netex.ComplexModelFactory;
-import fr.certu.chouette.exchange.netex.ModelTranslator;
-import fr.certu.chouette.exchange.netex.NetexNamespaceContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.annotations.Test;
-
-import fr.certu.chouette.model.neptune.Line;
-import fr.certu.chouette.model.neptune.Timetable;
-import fr.certu.chouette.model.neptune.VehicleJourney;
 import java.util.List;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+
+import lombok.extern.log4j.Log4j;
+
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 import org.w3c.dom.Document;
 
+import fr.certu.chouette.exchange.netex.ComplexModelFactory;
+import fr.certu.chouette.exchange.netex.ModelTranslator;
+import fr.certu.chouette.exchange.netex.NetexNamespaceContext;
+import fr.certu.chouette.model.neptune.Line;
+import fr.certu.chouette.model.neptune.Timetable;
+import fr.certu.chouette.model.neptune.VehicleJourney;
+
 @ContextConfiguration(locations = {"classpath:testContext.xml"})
-@SuppressWarnings("unchecked")
+@Log4j
 public class TimeTableFrameFileWritterTests extends AbstractTestNGSpringContextTests {
 
     protected ModelTranslator modelTranslator = new ModelTranslator();
     private NetexFileWriter netexFileWriter;
-    private ModelFactory modelFactory;
     private ComplexModelFactory complexModelFactory;
     private String fileName = "/tmp/test.xml";
     private XPath xPath = XPathFactory.newInstance().newXPath();
@@ -37,9 +39,10 @@ public class TimeTableFrameFileWritterTests extends AbstractTestNGSpringContextT
 
     @BeforeClass
     protected void setUp() throws Exception {
+    	try
+    	{
         xPath.setNamespaceContext(new NetexNamespaceContext());
         netexFileWriter = (NetexFileWriter) applicationContext.getBean("netexFileWriter");
-        modelFactory = (ModelFactory) applicationContext.getBean("modelFactory");
 
         complexModelFactory = new ComplexModelFactory();
         complexModelFactory.init();
@@ -54,6 +57,12 @@ public class TimeTableFrameFileWritterTests extends AbstractTestNGSpringContextT
         domFactory.setNamespaceAware(true);
         DocumentBuilder builder = domFactory.newDocumentBuilder();
         xmlDocument = builder.parse(fileName);
+    	}
+    	catch (Exception ex)
+    	{
+    		log.error("setup fails",ex);
+    		throw ex;
+    	}
     }
     
     @Test(groups = {"TimeTableFrame"}, description = "Check if 2 vehicle journeys exists")

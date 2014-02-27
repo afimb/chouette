@@ -158,14 +158,16 @@ public abstract class NeptuneLocalizedObject extends NeptuneIdentifiedObject
       super.complete();
       if (!hasCoordinates())
          return;
-      geographicService.convertToProjection(this);
+      if (geographicService != null)
+         geographicService.convertToProjection(this);
    }
 
    public void toLatLong()
    {
       if (!hasProjection())
          return;
-      geographicService.convertToWGS84(this);
+      if (geographicService != null)
+         geographicService.convertToWGS84(this);
 
    }
 

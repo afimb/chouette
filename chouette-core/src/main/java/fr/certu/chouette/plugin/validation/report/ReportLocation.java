@@ -59,5 +59,22 @@ public class ReportLocation
 			json.put("url", getObject().toURL());
 		return json;
 	}
+	
+	public String toString()
+	{
+		String message = "";
+		if (object != null)
+		{
+			return "objet = "+getObject().toURL();
+		}
+		if (fileName != null)
+			message = fileName;
+		if (lineNumber != -1)
+			message += " : l="+lineNumber;
+		if (columnNumber != -1)
+			message += " ,c="+columnNumber;
+		return message;
+		
+	}
 
 }
