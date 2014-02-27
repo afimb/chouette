@@ -90,7 +90,7 @@ public class Route extends NeptuneIdentifiedObject
 
    @Getter
    @Setter
-   // @OneToOne(fetch = FetchType.LAZY)
+   // TODO [DSU] @OneToOne(fetch = FetchType.LAZY)
    // @JoinColumn(name = "opposite_route_id")
    @Column(name = "opposite_route_id")
    private Long oppositeRouteId;

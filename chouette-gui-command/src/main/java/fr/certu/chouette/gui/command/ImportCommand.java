@@ -24,6 +24,8 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import javax.persistence.EntityManager;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -31,7 +33,6 @@ import lombok.extern.log4j.Log4j;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.hibernate.Session;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -87,7 +88,7 @@ public class ImportCommand extends AbstractCommand
 	 * @param parameters
 	 * @return
 	 */
-	public int executeImport(Session session,Map<String, List<String>> parameters)
+	public int executeImport(EntityManager session,Map<String, List<String>> parameters)
 	{
 		Report importReport = null;
 		ValidationReport validationReport = null;
@@ -125,8 +126,8 @@ public class ImportCommand extends AbstractCommand
 
 		save = !options.getBoolean("no_save");
 
-		Referential referential = referentialDao.get(importTask.getReferentialId());
-		log.info("Referential "+importTask.getReferentialId());
+		Referential referential =importTask.getReferential();
+		log.info("Referential "+referential.getId());
 		log.info("  name : "+referential.getName());
 		log.info("  slug : "+referential.getSlug());
 
@@ -264,7 +265,7 @@ public class ImportCommand extends AbstractCommand
 	 * @param validationHolder
 	 * @throws ChouetteException
 	 */
-	private int importZipEntries(Session session, boolean save,
+	private int importZipEntries(EntityManager session, boolean save,
 			List<Long> savedIds,
 			INeptuneManager<NeptuneIdentifiedObject> manager,
 			ImportTask importTask, String format, String inputFile,
@@ -469,7 +470,7 @@ public class ImportCommand extends AbstractCommand
 		}
 	}
 
-	private void startProcess(Session session,ImportTask importTask) 
+	private void startProcess(EntityManager session,ImportTask importTask) 
 	{
 		importTask.setStatus("processing");
 		importTask.setUpdatedAt(Calendar.getInstance().getTime());
@@ -479,12 +480,12 @@ public class ImportCommand extends AbstractCommand
 			importTask.getCompilanceCheckTask().setUpdatedAt(Calendar.getInstance().getTime());
 		}
 		importDao.save(importTask);
-		session.flush();
+		importDao.flush();
 
 	}
 
 
-	private void saveImportReports(Session session,ImportTask importTask, Report ireport, Report vreport) 
+	private void saveImportReports(EntityManager session,ImportTask importTask, Report ireport, Report vreport) 
 	{
 		// log.info("import report = "+ireport.toJSON().toString(3));
 		ImportReportToJSONConverter converter = new ImportReportToJSONConverter(ireport);
@@ -518,7 +519,7 @@ public class ImportCommand extends AbstractCommand
 		importTask.setResult(converter.toJSONObject());
 		importTask.setUpdatedAt(Calendar.getInstance().getTime());
 		importDao.save(importTask);
-		session.flush();
+		importDao.flush();
 	}
 
 	private void checkProjection(Line line)

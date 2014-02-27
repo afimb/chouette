@@ -2,9 +2,9 @@ package fr.certu.chouette.dao.hibernate;
 
 import java.util.List;
 
-import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -309,23 +309,16 @@ public class HibernateDaoTemplate<T extends NeptuneObject> implements
    }
 
    @Override
-   public T save(T entity)
+   public void save(T entity)
    {
       T result = null;
 
-      logger.debug("invoke save on " + type.getSimpleName());
+      logger.debug("invoke create on " + type.getSimpleName());
 
       EntityManager em = getEntityManager();
-      try
-      {
-         em.persist(entity);
-         result = entity;
-      }
-      catch (EntityExistsException e)
-      {
-         result = em.merge(entity);
-      }
-      return result;
+      em.persist(entity);
+      return;
+
    }
 
    @Override
@@ -338,6 +331,28 @@ public class HibernateDaoTemplate<T extends NeptuneObject> implements
       EntityManager em = getEntityManager();
       result = em.merge(entity);
       return result;
+   }
+
+   @Override
+   public void flush()
+   {
+      EntityManager em = getEntityManager();
+
+      try
+      {
+         em.getTransaction().begin();
+         em.flush();
+         em.getTransaction().commit();
+      }
+      catch (PersistenceException e)
+      {
+         if (em.getTransaction().isActive())
+         {
+            em.getTransaction().rollback();
+         }
+         throw e;
+      }
+
    }
 
    @Override
@@ -428,7 +443,7 @@ public class HibernateDaoTemplate<T extends NeptuneObject> implements
    public long count(Filter clause)
    {
       long result = 0;
-      // TODO [DSU] ?????????????????
+
       EntityManager em = getEntityManager();
       CriteriaBuilder builder = em.getCriteriaBuilder();
       CriteriaQuery<Long> criteria = builder.createQuery(Long.class);

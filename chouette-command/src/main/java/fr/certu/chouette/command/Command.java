@@ -35,6 +35,9 @@ import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -50,6 +53,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.orm.hibernate4.SessionFactoryUtils;
 import org.springframework.orm.hibernate4.SessionHolder;
+import org.springframework.orm.jpa.EntityManagerHolder;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import fr.certu.chouette.common.ChouetteException;
@@ -198,11 +202,10 @@ public class Command
 	public static void initDao() {
 		if (dao)
 		{
-			ConfigurableBeanFactory factory = applicationContext.getBeanFactory();
-			SessionFactory sessionFactory = (SessionFactory)factory.getBean("sessionFactory");
-         Session session = sessionFactory.openSession();
-			//Session session = SessionFactoryUtils.getSession(sessionFactory, true);
-			TransactionSynchronizationManager.bindResource(sessionFactory, new SessionHolder(session));
+			ConfigurableBeanFactory beanFactory = applicationContext.getBeanFactory();			
+		   EntityManagerFactory factory = (EntityManagerFactory)beanFactory.getBean("entityManagerFactory");
+	      EntityManager manager = factory.createEntityManager();
+	      TransactionSynchronizationManager.bindResource(factory, new EntityManagerHolder(manager));
 		}
 	}
 

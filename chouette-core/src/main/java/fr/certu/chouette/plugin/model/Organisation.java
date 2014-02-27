@@ -3,10 +3,15 @@
  */
 package fr.certu.chouette.plugin.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import fr.certu.chouette.model.neptune.Route;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,7 +21,7 @@ import lombok.Setter;
  * 
  */
 @Entity
-@Table(name = "compliance_check_tasks")
+@Table(name = "organisations", schema = "public")
 @NoArgsConstructor
 public class Organisation extends ActiveRecordObject
 {
@@ -26,4 +31,9 @@ public class Organisation extends ActiveRecordObject
    @Setter
    @Column(name="name")
    private String name;
+   
+   @Getter
+   @Setter
+   @OneToMany(mappedBy = "organisation")
+   private List<Referential> referentials = new ArrayList<Referential>(0);
 }

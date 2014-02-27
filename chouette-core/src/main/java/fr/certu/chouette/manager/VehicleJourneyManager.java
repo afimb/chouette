@@ -102,10 +102,10 @@ public class VehicleJourneyManager extends AbstractNeptuneManager<VehicleJourney
 	 */
 	@Transactional
 	@Override
-	public void update(User user, VehicleJourney vehicleJourney) throws ChouetteException 
+	public VehicleJourney update(User user, VehicleJourney vehicleJourney) throws ChouetteException 
 	{
 		vehicleJourney.sortVehicleJourneyAtStops();
-		super.update(user, vehicleJourney);
+		return super.update(user, vehicleJourney);
 	}
 
 

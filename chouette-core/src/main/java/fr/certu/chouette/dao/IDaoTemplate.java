@@ -40,7 +40,7 @@ public interface IDaoTemplate<T extends NeptuneObject>
     * @param object
     *           object to save
     */
-   T save(T object);
+   void save(T object);
 
    /**
     * remove object from database
@@ -145,5 +145,7 @@ public interface IDaoTemplate<T extends NeptuneObject>
     * @param bean
     */
    void detach(T bean);
+
+   void flush();
 
 }

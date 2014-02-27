@@ -77,7 +77,6 @@ public class FilterToHibernateClauseTranslator<T extends NeptuneObject>
    private Predicate translateTerminal(Filter clause, CriteriaBuilder builder, Root<T> root)
    {
       String propertyName = clause.getAttribute();
-      // TODO [DSU] ?????????
 
       String[] tokens = propertyName.split("[.]");
       Path path = root;

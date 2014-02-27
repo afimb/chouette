@@ -330,12 +330,12 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject> 
     */
    @Transactional
    @Override
-   public void update(User user, T bean) throws ChouetteException
+   public T update(User user, T bean) throws ChouetteException
    {
       if (getDao() == null)
          throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE, "unavailable resource");
 
-      getDao().update(bean);
+      return getDao().update(bean);
    }
 
    /*

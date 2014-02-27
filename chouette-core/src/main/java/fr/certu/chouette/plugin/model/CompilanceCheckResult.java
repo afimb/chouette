@@ -19,7 +19,7 @@ import org.json.JSONObject;
  * 
  */
 @Entity
-@Table(name = "compliance_check_results")
+@Table(name = "compliance_check_results", schema = "public")
 @NoArgsConstructor
 public class CompilanceCheckResult extends ActiveRecordObject
 {

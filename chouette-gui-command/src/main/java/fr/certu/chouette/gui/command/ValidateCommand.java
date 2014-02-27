@@ -14,12 +14,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.EntityManager;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Session;
 import org.json.JSONObject;
 
 import fr.certu.chouette.common.ChouetteException;
@@ -49,11 +50,11 @@ public class ValidateCommand extends AbstractCommand
 
 	@Getter @Setter private IDaoTemplate<CompilanceCheckTask> validationDao;
 
-	private void startProcess(Session session,CompilanceCheckTask compilanceCheckTask) 
+	private void startProcess(EntityManager session,CompilanceCheckTask compilanceCheckTask) 
 	{
 		compilanceCheckTask.setStatus("processing");
 		validationDao.save(compilanceCheckTask);
-		session.flush();
+		validationDao.flush();
 
 	}
 
@@ -65,7 +66,7 @@ public class ValidateCommand extends AbstractCommand
 	 * @return 
 	 * @throws ChouetteException
 	 */
-	public int executeValidate(Session session,
+	public int executeValidate(EntityManager session,
 			Map<String, List<String>> parameters)
 					throws ChouetteException 
 					{
@@ -181,7 +182,7 @@ public class ValidateCommand extends AbstractCommand
 		return values.get(0);
 	}
 
-	private void saveValidationReport(Session session, CompilanceCheckTask compilanceCheckTask, PhaseReportItem vreport)
+	private void saveValidationReport(EntityManager session, CompilanceCheckTask compilanceCheckTask, PhaseReportItem vreport)
 	{
 		if (vreport != null && vreport.getItems() != null)
 		{
@@ -201,7 +202,7 @@ public class ValidateCommand extends AbstractCommand
 			}
 			compilanceCheckTask.addAllResults(vreport.toValidationResults());
 			validationDao.save(compilanceCheckTask);
-			session.flush();
+			validationDao.flush();
 		}
 
 	}

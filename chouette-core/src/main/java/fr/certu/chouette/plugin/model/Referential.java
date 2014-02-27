@@ -3,8 +3,14 @@
  */
 package fr.certu.chouette.plugin.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -16,7 +22,7 @@ import lombok.Setter;
  * 
  */
 @Entity
-@Table(name = "compliance_check_tasks")
+@Table(name = "referentials", schema = "public")
 @NoArgsConstructor
 public class Referential extends ActiveRecordObject
 {
@@ -25,8 +31,9 @@ public class Referential extends ActiveRecordObject
    
    @Getter
    @Setter
-   @Column(name = "organisation_id", nullable = false, unique = true)
-   private Long organisationId;
+   @ManyToOne
+   @JoinColumn(name = "organisation_id", nullable=false)
+   private Organisation organisation;
    
    @Getter
    @Setter
@@ -57,5 +64,21 @@ public class Referential extends ActiveRecordObject
    @Setter
    @Column(name="bounds")
    private String bounds;
+   
+   
+   @Getter
+   @Setter
+   @OneToMany(mappedBy = "referential")
+   private List<ImportTask> importTasks = new ArrayList<ImportTask>(0);
+   
+   @Getter
+   @Setter
+   @OneToMany(mappedBy = "referential")
+   private List<CompilanceCheckTask> compilanceCheckTasks = new ArrayList<CompilanceCheckTask>(0);
+   
+   @Getter
+   @Setter
+   @OneToMany(mappedBy = "referential")
+   private List<GuiExport> guiExports = new ArrayList<GuiExport>(0);
    
 }

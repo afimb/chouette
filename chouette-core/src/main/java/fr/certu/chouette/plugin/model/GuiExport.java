@@ -5,6 +5,8 @@ package fr.certu.chouette.plugin.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -17,7 +19,7 @@ import lombok.Setter;
  */
 
 @Entity
-@Table(name = "exports")
+@Table(name = "exports", schema = "public")
 @NoArgsConstructor
 public class GuiExport extends ActiveRecordObject
 {
@@ -26,8 +28,9 @@ public class GuiExport extends ActiveRecordObject
 
    @Getter
    @Setter
-   @Column(name = "referential_id", nullable = false, unique = true)
-   private Long referentialId;
+   @ManyToOne
+   @JoinColumn(name = "referential_id", nullable=false)
+   private Referential referential;
 
    @Getter
    @Setter

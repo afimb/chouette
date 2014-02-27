@@ -44,7 +44,6 @@ public class JourneyPattern extends NeptuneIdentifiedObject
    private String comment;
 
    @Getter
-   // TODO [DSU] @Column(name = "registration_number", nullable = false, unique = true)
    @Column(name = "registration_number")
    private String registrationNumber;
 

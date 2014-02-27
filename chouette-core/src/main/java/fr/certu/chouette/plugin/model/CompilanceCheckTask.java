@@ -11,6 +11,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -22,6 +23,7 @@ import lombok.Setter;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.Type;
+import org.hibernate.engine.spi.CascadingAction;
 import org.json.JSONObject;
 
 /**
@@ -30,7 +32,7 @@ import org.json.JSONObject;
  */
 
 @Entity
-@Table(name = "compliance_check_tasks")
+@Table(name = "compliance_check_tasks", schema = "public")
 @NoArgsConstructor
 public class CompilanceCheckTask extends ActiveRecordObject
 {
@@ -39,9 +41,9 @@ public class CompilanceCheckTask extends ActiveRecordObject
 
    @Getter
    @Setter
-   @Column(name = "referential_id", nullable = false, unique = true)
-   private Long referentialId;
-// TODO [DSU] , cascade = CascadeType.ALL) @OnDelete(action = OnDeleteAction.CASCADE)
+   @ManyToOne
+   @JoinColumn(name = "referential_id", nullable=false)
+   private Referential referential;
    
    @Getter
    @Setter
@@ -79,7 +81,7 @@ public class CompilanceCheckTask extends ActiveRecordObject
 
    @Getter
    @Setter
-   @OneToMany(mappedBy = "compilanceCheckTask")
+   @OneToMany(mappedBy = "compilanceCheckTask", cascade=CascadeType.ALL)
    private List<CompilanceCheckResult> results;
    
    @Getter
