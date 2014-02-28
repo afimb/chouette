@@ -1,9 +1,13 @@
 package fr.certu.chouette.plugin.model;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -26,7 +30,7 @@ public class ExportLogMessage extends ActiveRecordObject
    @Getter
    @Setter
    @ManyToOne
-   @JoinColumn(name = "export_id", nullable=false)
+   @JoinColumn(name = "export_id", nullable = false)
    private GuiExport parent;
 
    @Getter
@@ -48,6 +52,9 @@ public class ExportLogMessage extends ActiveRecordObject
    @Setter
    @Column(name = "position")
    private int position;
+
+   @Column(name = "export_id", insertable = false, updatable = false)
+   private Long exportId;
 
    public ExportLogMessage(GuiExport parent, String format, Report report, int position)
    {
@@ -148,7 +155,5 @@ public class ExportLogMessage extends ActiveRecordObject
       }
       this.arguments = b.toString();
    }
-   
-   
 
 }

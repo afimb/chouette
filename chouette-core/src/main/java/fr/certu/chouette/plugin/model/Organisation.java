@@ -35,4 +35,6 @@ public class Organisation extends ActiveRecordObject
    @Setter
    @OneToMany(mappedBy = "organisation")
    private List<Referential> referentials = new ArrayList<Referential>(0);
+   
+    
 }

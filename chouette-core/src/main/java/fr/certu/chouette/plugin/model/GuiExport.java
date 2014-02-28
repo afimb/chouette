@@ -3,8 +3,13 @@
  */
 package fr.certu.chouette.plugin.model;
 
+import java.sql.Timestamp;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -29,7 +34,7 @@ public class GuiExport extends ActiveRecordObject
    @Getter
    @Setter
    @ManyToOne
-   @JoinColumn(name = "referential_id", nullable=false)
+   @JoinColumn(name = "referential_id", nullable = false)
    private Referential referential;
 
    @Getter
@@ -56,5 +61,8 @@ public class GuiExport extends ActiveRecordObject
    @Setter
    @Column(name = "reference_ids")
    private String referenceIds;
+
+   @Column(name = "referential_id", insertable = false, updatable = false)
+   private Long referentialId;
 
 }

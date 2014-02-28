@@ -3,6 +3,7 @@
  */
 package fr.certu.chouette.plugin.model;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +11,9 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -39,13 +43,13 @@ public class CompilanceCheckTask extends ActiveRecordObject
    @Getter
    @Setter
    @ManyToOne
-   @JoinColumn(name = "referential_id", nullable=false)
+   @JoinColumn(name = "referential_id", nullable = false)
    private Referential referential;
-   
+
    @Getter
    @Setter
-   @OneToOne(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
-   @JoinColumn(name="import_task_id")
+   @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+   @JoinColumn(name = "import_task_id")
    private ImportTask importTask;
 
    @Getter
@@ -56,7 +60,7 @@ public class CompilanceCheckTask extends ActiveRecordObject
    @Getter
    @Setter
    @Column(name = "parameter_set")
-   @Type(type="fr.certu.chouette.plugin.model.JsonTextUserType")
+   @Type(type = "fr.certu.chouette.plugin.model.JsonTextUserType")
    private JSONObject parameters;
 
    @Getter
@@ -72,19 +76,19 @@ public class CompilanceCheckTask extends ActiveRecordObject
    @Getter
    @Setter
    @Column(name = "progress_info")
-   @Type(type="fr.certu.chouette.plugin.model.JsonTextUserType")
+   @Type(type = "fr.certu.chouette.plugin.model.JsonTextUserType")
    private JSONObject progressInfo;
 
    @Getter
    @Setter
-   @OneToMany(mappedBy = "compilanceCheckTask", cascade=CascadeType.ALL)
+   @OneToMany(mappedBy = "compilanceCheckTask", cascade = CascadeType.ALL)
    private List<CompilanceCheckResult> results;
-   
+
    @Getter
    @Setter
    @Column(name = "references_type")
    private String referencesType;
-   
+
    @Getter
    @Setter
    @Column(name = "reference_ids")
@@ -105,5 +109,11 @@ public class CompilanceCheckTask extends ActiveRecordObject
          addResult(result);
       }
    }
+
+   @Column(name = "parameter_set",insertable=false, updatable=false)
+   private String parameterSet;
+
+   @Column(name = "parameter_set_name")
+   private String parameterSetName;
 
 }
