@@ -45,10 +45,10 @@ public class StopPoint extends NeptuneIdentifiedObject
     */
    public static final String COMMENT = "comment";
 
-   @Getter
-   @Setter
-   @Column(name = "comment")
-   private String comment;
+//   @Getter
+//   @Setter
+//   @Column(name = "comment")
+//   private String comment;
 
    @Getter
    @Setter
@@ -223,7 +223,7 @@ public class StopPoint extends NeptuneIdentifiedObject
          sb.append("\n").append(indent).append("  projectedPoint = ").append(projectedPoint);
       }
 
-      sb.append("\n").append(indent).append("  comment = ").append(comment);
+   //   sb.append("\n").append(indent).append("  comment = ").append(comment);
       sb.append("\n").append(indent).append("  containedInStopAreaId = ").append(containedInStopAreaId);
       sb.append("\n").append(indent).append("  lineIdShortcut = ").append(lineIdShortcut);
       sb.append("\n").append(indent).append("  ptNetworkIdShortcut = ").append(ptNetworkIdShortcut);
@@ -303,8 +303,8 @@ public class StopPoint extends NeptuneIdentifiedObject
             return false;
          if (!sameValue(this.getName(), another.getName()))
             return false;
-         if (!sameValue(this.getComment(), another.getComment()))
-            return false;
+//         if (!sameValue(this.getComment(), another.getComment()))
+//            return false;
          if (!sameValue(this.getRegistrationNumber(), another.getRegistrationNumber()))
             return false;
          if (!sameValue(this.getLatitude(), another.getLatitude()))

@@ -20,9 +20,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -116,14 +113,12 @@ public class AccessLink extends NeptuneIdentifiedObject
    @Getter
    @Setter
    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-   @OnDelete(action = OnDeleteAction.CASCADE)
    @JoinColumn(name = "access_point_id")
    private AccessPoint accessPoint;
 
    @Getter
    @Setter
    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-   @OnDelete(action = OnDeleteAction.CASCADE)
    @JoinColumn(name = "stop_area_id")
    private StopArea stopArea;
 

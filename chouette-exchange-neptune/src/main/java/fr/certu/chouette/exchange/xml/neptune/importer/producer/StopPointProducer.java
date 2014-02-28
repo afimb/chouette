@@ -26,7 +26,7 @@ public class StopPointProducer extends AbstractModelProducer<StopPoint,org.tride
 		stopPoint.setName(getNonEmptyTrimedString(xmlStopPoint.getName()));
 
 		// Comment optional
-		stopPoint.setComment(getNonEmptyTrimedString(xmlStopPoint.getComment()));
+//		stopPoint.setComment(getNonEmptyTrimedString(xmlStopPoint.getComment()));
 		
 		// LongLatType mandatory
 		if(xmlStopPoint.getLongLatType() != null){

@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.persistence.Access;
-import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,9 +20,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
-
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 /**
  * Neptune Journey Pattern : pattern for vehicle journeys in a route
@@ -61,7 +56,6 @@ public class JourneyPattern extends NeptuneIdentifiedObject
    @Getter
    @Setter
    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-   @OnDelete(action = OnDeleteAction.CASCADE)
    @JoinColumn(name = "route_id")
    private Route route;
 
@@ -88,7 +82,6 @@ public class JourneyPattern extends NeptuneIdentifiedObject
    @Getter
    @Setter
    @OneToMany(mappedBy = "journeyPattern", cascade = CascadeType.ALL)
-   @OnDelete(action = OnDeleteAction.CASCADE)
    private List<VehicleJourney> vehicleJourneys = new ArrayList<VehicleJourney>(
          0);
 

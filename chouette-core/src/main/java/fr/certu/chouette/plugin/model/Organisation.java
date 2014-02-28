@@ -11,7 +11,6 @@ import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import fr.certu.chouette.model.neptune.Route;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

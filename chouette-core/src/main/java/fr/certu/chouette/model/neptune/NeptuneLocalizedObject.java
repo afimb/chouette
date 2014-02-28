@@ -13,6 +13,7 @@ import javax.persistence.Column;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -63,17 +64,17 @@ public abstract class NeptuneLocalizedObject extends NeptuneIdentifiedObject
 
    @Getter
    @Setter
-   @Column(name = "x")
+   @Transient
    private BigDecimal x;
 
    @Getter
    @Setter
-   @Column(name = "y")
+   @Transient
    private BigDecimal y;
 
    @Getter
    @Setter
-   @Column(name = "projection_type")
+   @Transient
    private String projectionType;
 
    @Getter

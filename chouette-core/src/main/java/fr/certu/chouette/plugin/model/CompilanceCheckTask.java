@@ -20,10 +20,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.Type;
-import org.hibernate.engine.spi.CascadingAction;
 import org.json.JSONObject;
 
 /**
@@ -48,7 +45,6 @@ public class CompilanceCheckTask extends ActiveRecordObject
    @Getter
    @Setter
    @OneToOne(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
-   @OnDelete(action = OnDeleteAction.CASCADE)
    @JoinColumn(name="import_task_id")
    private ImportTask importTask;
 

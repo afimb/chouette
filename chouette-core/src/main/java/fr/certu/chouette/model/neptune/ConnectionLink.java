@@ -18,12 +18,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.Transient;
-
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -178,14 +173,12 @@ public class ConnectionLink extends NeptuneIdentifiedObject
    @Getter
    @Setter
    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-   @OnDelete(action = OnDeleteAction.CASCADE)
    @JoinColumn(name = "departure_id")
    private StopArea startOfLink;
 
    @Getter
    @Setter
    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-   @OnDelete(action = OnDeleteAction.CASCADE)
    @JoinColumn(name = "arrival_id")
    private StopArea endOfLink;
 

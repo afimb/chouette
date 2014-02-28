@@ -23,6 +23,7 @@
 		<class>fr.certu.chouette.model.neptune.Timetable</class>
 		<class>fr.certu.chouette.model.neptune.VehicleJourney</class>
 		<class>fr.certu.chouette.model.neptune.VehicleJourneyAtStop</class>
+		
 		<class>fr.certu.chouette.plugin.model.CompilanceCheckResult</class>
 		<class>fr.certu.chouette.plugin.model.CompilanceCheckTask</class>
 		<class>fr.certu.chouette.plugin.model.ExportLogMessage</class>

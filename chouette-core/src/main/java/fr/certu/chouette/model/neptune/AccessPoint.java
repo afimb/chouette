@@ -16,9 +16,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -90,7 +87,6 @@ public class AccessPoint extends NeptuneLocalizedObject
    @Getter
    @Setter
    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-   @OnDelete(action = OnDeleteAction.CASCADE)
    @JoinColumn(name = "stop_area_id")
    private StopArea containedIn;
 

@@ -19,7 +19,7 @@ public class StopPointProducer extends AbstractJaxbNeptuneProducer<ChouettePTNet
 		//
 		populateFromModel(jaxbStopPoint, stopPoint);
 		
-		jaxbStopPoint.setComment(stopPoint.getComment());
+		//jaxbStopPoint.setComment(stopPoint.getComment());
 		jaxbStopPoint.setName(stopPoint.getName());
 		jaxbStopPoint.setLineIdShortcut(stopPoint.getLineIdShortcut());
 		

@@ -31,10 +31,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
-
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
 
@@ -123,20 +119,17 @@ public class Route extends NeptuneIdentifiedObject
    @Getter
    @Setter
    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-   @OnDelete(action = OnDeleteAction.CASCADE)
    @JoinColumn(name = "line_id")
    private Line line;
 
    @Getter
    @Setter
    @OneToMany(mappedBy = "route", cascade = CascadeType.ALL)
-   @OnDelete(action = OnDeleteAction.CASCADE)
    private List<JourneyPattern> journeyPatterns = new ArrayList<JourneyPattern>(0);
 
    @Getter
    @Setter
    @OneToMany(mappedBy = "route", cascade = CascadeType.ALL)
-   @OnDelete(action = OnDeleteAction.CASCADE)
    @OrderColumn(name = "position", nullable = false)
    private List<StopPoint> stopPoints = new ArrayList<StopPoint>(0);
 
