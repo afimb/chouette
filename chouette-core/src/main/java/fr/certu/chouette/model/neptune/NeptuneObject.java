@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -27,6 +29,7 @@ import lombok.Setter;
  * basic class for every Neptune object
  */
 @MappedSuperclass
+@Access(AccessType.FIELD)
 public abstract class NeptuneObject implements Serializable
 {
 

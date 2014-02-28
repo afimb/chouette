@@ -80,17 +80,25 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject
    @Column(name = "creator_id")
    private String creatorId;
 
-   @Getter
-   @Column(name = "name")
-   private String name;
-   // TODO [DSU] @Column(name = "name", nullable = false)
-
    /**
     * indicated if object is completed for export purpose
     */
    @Getter
    @Transient
    private boolean completed = false;
+
+   @Transient
+   private String unsaved_name;
+
+   public String getName()
+   {
+      return unsaved_name;
+   }
+
+   public void setName(String name)
+   {
+      this.unsaved_name = name;
+   }
 
    public void setObjectId(String value)
    {
@@ -102,19 +110,6 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject
       else
       {
          objectId = value;
-      }
-   }
-
-   public void setName(String value)
-   {
-      if (value != null && value.length() > 255)
-      {
-         log.warn("name too long, truncated " + value);
-         name = value.substring(0, 255);
-      }
-      else
-      {
-         name = value;
       }
    }
 
@@ -149,8 +144,8 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject
          s += "\n" + indent + "  creationTime = " + f.format(creationTime);
       if (creatorId != null)
          s += "\n" + indent + "  creatorId = " + creatorId;
-      if (name != null)
-         s += "\n" + indent + "  name = " + name;
+       if (getName() != null)
+       s += "\n" + indent + "  name = " + getName();
 
       return s;
    }

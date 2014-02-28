@@ -37,6 +37,10 @@ public class PTLink extends NeptuneIdentifiedObject
    public static final String COMMENT = "comment";
 
    @Getter
+   @Column(name = "name")
+   private String name;
+
+   @Getter
    @Setter
    @Column(name = "comment")
    private String comment;
@@ -92,6 +96,19 @@ public class PTLink extends NeptuneIdentifiedObject
    @Setter
    @Transient
    private String routeId;
+
+   public void setName(String value)
+   {
+      if (value != null && value.length() > 255)
+      {
+         log.warn("name too long, truncated " + value);
+         name = value.substring(0, 255);
+      }
+      else
+      {
+         name = value;
+      }
+   }
 
    @Override
    public String toString(String indent, int level)

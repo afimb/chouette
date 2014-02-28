@@ -85,6 +85,10 @@ public class Route extends NeptuneIdentifiedObject
    public static final String WAYBACK = "wayBack";
 
    @Getter
+   @Column(name = "name")
+   private String name;
+   
+   @Getter
    @Column(name = "comment")
    private String comment;
 
@@ -204,6 +208,19 @@ public class Route extends NeptuneIdentifiedObject
    @Transient
    private List<StopArea> stopAreas = null;
 
+   public void setName(String value)
+   {
+      if (value != null && value.length() > 255)
+      {
+         log.warn("name too long, truncated " + value);
+         name = value.substring(0, 255);
+      }
+      else
+      {
+         name = value;
+      }
+   }
+   
    public void setComment(String value)
    {
       if (value != null && value.length() > 255)

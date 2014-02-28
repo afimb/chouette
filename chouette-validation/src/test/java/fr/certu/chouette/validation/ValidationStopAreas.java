@@ -145,7 +145,7 @@ public class ValidationStopAreas extends AbstractTransactionalTestNGSpringContex
 		area2.setLongLatType(area1.getLongLatType());
 		area2.setLongitude(area1.getLongitude());
 		area2.setLatitude(area1.getLatitude());
-		beans.add(area2);
+		beans.add(0,area2);
 		
 		PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
 		stopAreaManager.validate(null, beans, parameters, report, true);

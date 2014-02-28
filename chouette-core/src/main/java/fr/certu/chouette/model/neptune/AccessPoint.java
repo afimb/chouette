@@ -44,6 +44,10 @@ public class AccessPoint extends NeptuneLocalizedObject
    private static final long serialVersionUID = 7520070228185917225L;
 
    @Getter
+   @Column(name = "name")
+   private String name;
+    
+   @Getter
    @Column(name = "comment")
    private String comment;
 
@@ -95,6 +99,19 @@ public class AccessPoint extends NeptuneLocalizedObject
    @OneToMany(mappedBy = "accessPoint")
    private List<AccessLink> accessLinks = new ArrayList<AccessLink>(0);
 
+   public void setName(String value)
+   {
+      if (value != null && value.length() > 255)
+      {
+         log.warn("name too long, truncated " + value);
+         name = value.substring(0, 255);
+      }
+      else
+      {
+         name = value;
+      }
+   }
+      
    public void setComment(String value)
    {
       if (value != null && value.length() > 255)

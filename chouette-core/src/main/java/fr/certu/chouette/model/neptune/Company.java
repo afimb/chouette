@@ -37,6 +37,10 @@ public class Company extends NeptuneIdentifiedObject
    private static final long serialVersionUID = -8086291270595894778L;
 
    @Getter
+   @Column(name = "name", nullable=false)
+   private String name;
+   
+   @Getter
    @Setter
    @Column(name = "short_name")
    private String shortName;
@@ -80,6 +84,20 @@ public class Company extends NeptuneIdentifiedObject
    @OneToMany(mappedBy = "company")
    private List<Line> lines = new ArrayList<Line>(0);
 
+   public void setName(String value)
+   {
+      if (value != null && value.length() > 255)
+      {
+         log.warn("name too long, truncated " + value);
+         name = value.substring(0, 255);
+      }
+      else
+      {
+         name = value;
+      }
+   }
+   
+   
    public void setRegistrationNumber(String value)
    {
       if (value != null && value.length() > 255)

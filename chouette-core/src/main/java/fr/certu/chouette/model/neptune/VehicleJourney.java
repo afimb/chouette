@@ -714,8 +714,6 @@ public class VehicleJourney extends NeptuneIdentifiedObject
             return false;
          if (!sameValue(this.getObjectVersion(), another.getObjectVersion()))
             return false;
-         if (!sameValue(this.getName(), another.getName()))
-            return false;
          if (!sameValue(this.getComment(), another.getComment()))
             return false;
          if (!sameValue(this.getNumber(), another.getNumber()))

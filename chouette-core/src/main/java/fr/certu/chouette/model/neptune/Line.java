@@ -58,6 +58,7 @@ public class Line extends NeptuneIdentifiedObject
 {
    private static final long serialVersionUID = -8086291270595894778L;
 
+   
    /**
     * name of comment attribute for {@link Filter} attributeName construction
     */
@@ -111,6 +112,10 @@ public class Line extends NeptuneIdentifiedObject
     */
    public static final String GROUPOFLINE = "groupOfLines";
 
+   @Getter
+   @Column(name = "name", nullable=false)
+   private String name;
+    
    @Getter
    @Column(name = "comment")
    private String comment;
@@ -173,8 +178,8 @@ public class Line extends NeptuneIdentifiedObject
    @Setter
    @ManyToMany( mappedBy="routingConstraintLines")
    private List<StopArea> routingConstraints = new ArrayList<StopArea>(0);
-
-   /**f
+   
+   /**
     * Neptune identification referring to the line's network <br/>
     * <i>readable/writable</i>
     * 
@@ -347,6 +352,18 @@ public class Line extends NeptuneIdentifiedObject
       else
       {
          registrationNumber = value;
+      }
+   }
+   public void setName(String value)
+   {
+      if (value != null && value.length() > 255)
+      {
+         log.warn("name too long, truncated " + value);
+         name = value.substring(0, 255);
+      }
+      else
+      {
+         name = value;
       }
    }
 

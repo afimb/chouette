@@ -83,6 +83,10 @@ public abstract class NeptuneLocalizedObject extends NeptuneIdentifiedObject
    @Getter
    @Column(name = "street_name")
    private String streetName;
+   
+   
+   public abstract String getName();
+
 
    public void setStreetName(String value)
    {

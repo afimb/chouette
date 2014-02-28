@@ -48,6 +48,10 @@ public class AccessLink extends NeptuneIdentifiedObject
    private static final long serialVersionUID = 7835556134861322471L;
 
    @Getter
+   @Column(name = "name")
+   private String name;
+
+   @Getter
    @Setter
    @Column(name = "comment")
    private String comment;
@@ -147,6 +151,19 @@ public class AccessLink extends NeptuneIdentifiedObject
    @Setter
    @Transient
    private String startOfLinkId;
+
+   public void setName(String value)
+   {
+      if (value != null && value.length() > 255)
+      {
+         log.warn("name too long, truncated " + value);
+         name = value.substring(0, 255);
+      }
+      else
+      {
+         name = value;
+      }
+   }
 
    /**
     * add a userNeed value in userNeeds collection if not already present <br/>

@@ -140,6 +140,10 @@ public class StopArea extends NeptuneLocalizedObject
          ChouetteAreaEnum.BoardingPosition, ChouetteAreaEnum.Quay });
 
    @Getter
+   @Column(name = "name")
+   private String name;
+
+   @Getter
    @Column(name = "comment")
    private String comment;
 
@@ -191,7 +195,7 @@ public class StopArea extends NeptuneLocalizedObject
 
    @Getter
    @Setter
-   @ManyToMany 
+   @ManyToMany
    @JoinTable(name = "routing_constraints_lines",
          joinColumns = { @JoinColumn(name = "stop_area_id", nullable = false, updatable = false) },
          inverseJoinColumns = { @JoinColumn(name = "line_id", nullable = false, updatable = false) })
@@ -330,6 +334,19 @@ public class StopArea extends NeptuneLocalizedObject
       else
       {
          registrationNumber = value;
+      }
+   }
+
+   public void setName(String value)
+   {
+      if (value != null && value.length() > 255)
+      {
+         log.warn("name too long, truncated " + value);
+         name = value.substring(0, 255);
+      }
+      else
+      {
+         name = value;
       }
    }
 

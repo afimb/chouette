@@ -34,6 +34,10 @@ public class Facility extends NeptuneLocalizedObject
    private static final long serialVersionUID = -2150117548707325330L;
 
    @Getter
+   @Column(name = "name")
+   private String name;
+  
+   @Getter
    @Setter
    @Column(name = "comment")
    private String comment;
@@ -124,6 +128,20 @@ public class Facility extends NeptuneLocalizedObject
    @Getter
    @Setter
    private String stopPointId;
+   
+   
+   public void setName(String value)
+   {
+      if (value != null && value.length() > 255)
+      {
+         log.warn("name too long, truncated " + value);
+         name = value.substring(0, 255);
+      }
+      else
+      {
+         name = value;
+      }
+   }
 
    /**
     * add a new feature if not already present

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -38,6 +40,10 @@ import org.hibernate.annotations.OnDeleteAction;
 public class JourneyPattern extends NeptuneIdentifiedObject
 {
    private static final long serialVersionUID = 7895941111990419404L;
+
+   @Getter
+   @Column(name = "name")
+   private String name ;
 
    @Getter
    @Column(name = "comment")
@@ -143,6 +149,19 @@ public class JourneyPattern extends NeptuneIdentifiedObject
       else
       {
          registrationNumber = value;
+      }
+   }
+
+   public void setName(String value)
+   {
+      if (value != null && value.length() > 255)
+      {
+         log.warn("name too long, truncated " + value);
+         name = value.substring(0, 255);
+      }
+      else
+      {
+         name = value;
       }
    }
 

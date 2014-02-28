@@ -67,6 +67,11 @@ public class StopPoint extends NeptuneIdentifiedObject
    @JoinColumn(name = "route_id")
    private Route route;
 
+   @Getter
+   @Setter
+   @Transient
+   private String name;
+
    /**
     * postal Address <br/>
     * (import/export usage) based on parent StopArea's AreaCentroid <br/>

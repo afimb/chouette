@@ -53,6 +53,10 @@ public class PTNetwork extends NeptuneIdentifiedObject
    public static final String COMMENT = "comment";
 
    @Getter
+   @Column(name = "name")
+   private String name;
+
+   @Getter
    @Column(name = "comment")
    private String comment;
 
@@ -113,6 +117,19 @@ public class PTNetwork extends NeptuneIdentifiedObject
       else
       {
          registrationNumber = value;
+      }
+   }
+
+   public void setName(String value)
+   {
+      if (value != null && value.length() > 255)
+      {
+         log.warn("name too long, truncated " + value);
+         name = value.substring(0, 255);
+      }
+      else
+      {
+         name = value;
       }
    }
 

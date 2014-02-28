@@ -28,6 +28,7 @@ import org.hibernate.annotations.OnDeleteAction;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
 import fr.certu.chouette.model.neptune.type.UserNeedEnum;
@@ -43,6 +44,7 @@ import fr.certu.chouette.model.neptune.type.UserNeedEnum;
 @Entity
 @Table(name = "connection_links")
 @NoArgsConstructor
+@Log4j
 public class ConnectionLink extends NeptuneIdentifiedObject
 {
    private static final long serialVersionUID = 8490105295077539089L;
@@ -114,10 +116,13 @@ public class ConnectionLink extends NeptuneIdentifiedObject
    public static final String FACILITIES = "facilities";
 
    @Getter
+   @Column(name = "name", nullable = false)
+   private String name;
+
+   @Getter
    @Setter
    @Column(name = "comment")
    private String comment;
-   
 
    @Getter
    @Setter
@@ -215,6 +220,19 @@ public class ConnectionLink extends NeptuneIdentifiedObject
    @Setter
    @Transient
    private List<Facility> facilities;
+
+   public void setName(String value)
+   {
+      if (value != null && value.length() > 255)
+      {
+         log.warn("name too long, truncated " + value);
+         name = value.substring(0, 255);
+      }
+      else
+      {
+         name = value;
+      }
+   }
 
    /**
     * @param facility

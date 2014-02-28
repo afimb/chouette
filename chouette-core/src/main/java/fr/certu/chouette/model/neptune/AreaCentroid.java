@@ -2,6 +2,8 @@ package fr.certu.chouette.model.neptune;
 
 import java.math.BigDecimal;
 
+import javax.persistence.Column;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -21,6 +23,11 @@ public class AreaCentroid extends NeptuneIdentifiedObject
 {
    private static final long serialVersionUID = -5908896146442329392L;
 
+   @Getter
+   @Setter
+   @Column(name = "name")
+   private String name;
+ 
    /**
     * postal Address <br/>
     * <i>readable/writable</i>

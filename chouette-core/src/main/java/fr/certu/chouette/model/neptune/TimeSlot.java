@@ -35,7 +35,11 @@ public class TimeSlot extends NeptuneIdentifiedObject
     * construction
     */
    public static final String BEGINNING_SLOTTIME = "beginningSlotTime";
-
+   
+   @Getter
+   @Column(name = "name")
+   private String name;
+  
    @Getter
    @Setter
    @Column(name = "beginning_slot_time")
@@ -56,6 +60,21 @@ public class TimeSlot extends NeptuneIdentifiedObject
    @Column(name = "last_departure_time_in_slot")
    private Time lastDepartureTimeInSlot;
 
+   
+   public void setName(String value)
+   {
+      if (value != null && value.length() > 255)
+      {
+         log.warn("name too long, truncated " + value);
+         name = value.substring(0, 255);
+      }
+      else
+      {
+         name = value;
+      }
+   }
+   
+   
    @Override
    public String toString(String indent, int level)
    {

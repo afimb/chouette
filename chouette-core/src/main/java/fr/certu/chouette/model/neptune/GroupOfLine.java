@@ -37,6 +37,10 @@ public class GroupOfLine extends NeptuneIdentifiedObject
    private static final long serialVersionUID = 2900948915585746984L;
 
    @Getter
+   @Column(name = "name")
+   private String name;
+    
+   @Getter
    @Column(name = "comment")
    private String comment;
 
@@ -55,6 +59,19 @@ public class GroupOfLine extends NeptuneIdentifiedObject
    @Transient
    private List<String> lineIds;
 
+   public void setName(String value)
+   {
+      if (value != null && value.length() > 255)
+      {
+         log.warn("name too long, truncated " + value);
+         name = value.substring(0, 255);
+      }
+      else
+      {
+         name = value;
+      }
+   }
+   
    public void setComment(String value)
    {
       if (value != null && value.length() > 255)
