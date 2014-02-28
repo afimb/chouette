@@ -86,7 +86,7 @@ public class AccessLinkCheckPoints extends AbstractValidation implements ICheckP
 					map.put("endId", end.getObjectId());
 					map.put("endName", end.getName());
 					map.put("distance", Integer.valueOf((int) distance));
-					map.put("linkdistance", Integer.valueOf(accessLink.getLinkDistance().intValue()));
+					map.put("linkDistance", Integer.valueOf(accessLink.getLinkDistance().intValue()));
 
 					DetailReportItem detail = new DetailReportItem(ACCESS_LINK_2,accessLink.getObjectId(), Report.STATE.WARNING, location,map);
 					addValidationError(report, ACCESS_LINK_2, detail);
