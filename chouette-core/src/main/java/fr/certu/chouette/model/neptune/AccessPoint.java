@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -86,7 +85,7 @@ public class AccessPoint extends NeptuneLocalizedObject
 
    @Getter
    @Setter
-   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "stop_area_id")
    private StopArea containedIn;
 

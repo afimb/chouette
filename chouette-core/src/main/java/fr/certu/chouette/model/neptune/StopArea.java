@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -237,6 +238,12 @@ public class StopArea extends NeptuneLocalizedObject
    private List<ConnectionLink> connectionEndLinks = new ArrayList<ConnectionLink>(
          0);
 
+   @Getter
+   @Setter
+   @OneToMany(mappedBy = "containedIn", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+   private List<AccessPoint> accessPoints = new ArrayList<AccessPoint>(
+         0);
+
    /**
     * AreaCentroid ObjectId for import/export purpose <br/>
     * <i>readable/writable</i>
@@ -279,17 +286,6 @@ public class StopArea extends NeptuneLocalizedObject
    @Setter
    @Transient
    private List<ConnectionLink> connectionLinks;
-
-   /**
-    * list of access points
-    * <p>
-    * access points contained in this stop area <br/>
-    * <i>readable/writable</i>
-    */
-   @Getter
-   @Setter
-   @Transient
-   private List<AccessPoint> accessPoints;
 
    /**
     * list of facilities <br/>

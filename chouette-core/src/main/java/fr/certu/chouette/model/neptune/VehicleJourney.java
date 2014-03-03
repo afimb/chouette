@@ -9,6 +9,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -187,7 +188,7 @@ public class VehicleJourney extends NeptuneIdentifiedObject
    private List<Timetable> timetables = new ArrayList<Timetable>(0);
 
    @Getter
-   @OneToMany(fetch = FetchType.EAGER)
+   @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
    @JoinColumn(name = "vehicle_journey_id", updatable = false)
    private List<VehicleJourneyAtStop> vehicleJourneyAtStops = new ArrayList<VehicleJourneyAtStop>(
          0);

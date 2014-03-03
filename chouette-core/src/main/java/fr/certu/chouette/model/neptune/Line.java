@@ -15,6 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -159,7 +160,7 @@ public class Line extends NeptuneIdentifiedObject
 
    @Getter
    @Setter
-   @OneToMany(mappedBy = "line")
+   @OneToMany(mappedBy = "line", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
    private List<Route> routes = new ArrayList<Route>(0);
 
    @Getter

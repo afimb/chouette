@@ -100,7 +100,7 @@ public class Timetable extends NeptuneIdentifiedObject
 
    @Getter
    @Setter
-   @ElementCollection(targetClass = Date.class, fetch = FetchType.LAZY)
+   @ElementCollection(targetClass = Date.class)
    @CollectionTable(name = "time_table_dates", joinColumns = @JoinColumn(name = "time_table_id"))
    @Column(name = "date")
    @OrderColumn(name = "position", nullable = false)
@@ -108,7 +108,7 @@ public class Timetable extends NeptuneIdentifiedObject
 
    @Getter
    @Setter
-   @ElementCollection(fetch = FetchType.LAZY)
+   @ElementCollection
    @CollectionTable(name = "time_table_periods", joinColumns = @JoinColumn(name = "time_table_id"))
    @OrderColumn(name = "position", nullable = false)
    private List<Period> periods = new ArrayList<Period>(0);

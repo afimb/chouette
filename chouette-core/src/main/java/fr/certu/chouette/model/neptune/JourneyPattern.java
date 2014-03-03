@@ -55,7 +55,7 @@ public class JourneyPattern extends NeptuneIdentifiedObject
 
    @Getter
    @Setter
-   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "route_id")
    private Route route;
 
@@ -81,7 +81,7 @@ public class JourneyPattern extends NeptuneIdentifiedObject
 
    @Getter
    @Setter
-   @OneToMany(mappedBy = "journeyPattern", cascade = CascadeType.ALL)
+   @OneToMany(mappedBy = "journeyPattern", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
    private List<VehicleJourney> vehicleJourneys = new ArrayList<VehicleJourney>(
          0);
 

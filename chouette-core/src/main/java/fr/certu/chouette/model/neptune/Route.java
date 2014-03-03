@@ -83,7 +83,7 @@ public class Route extends NeptuneIdentifiedObject
    @Getter
    @Column(name = "name")
    private String name;
-   
+
    @Getter
    @Column(name = "comment")
    private String comment;
@@ -118,18 +118,18 @@ public class Route extends NeptuneIdentifiedObject
 
    @Getter
    @Setter
-   @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+   @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "line_id")
    private Line line;
 
    @Getter
    @Setter
-   @OneToMany(mappedBy = "route", cascade = CascadeType.ALL)
+   @OneToMany(mappedBy = "route", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
    private List<JourneyPattern> journeyPatterns = new ArrayList<JourneyPattern>(0);
 
    @Getter
    @Setter
-   @OneToMany(mappedBy = "route", cascade = CascadeType.ALL)
+   @OneToMany(mappedBy = "route", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
    @OrderColumn(name = "position", nullable = false)
    private List<StopPoint> stopPoints = new ArrayList<StopPoint>(0);
 
@@ -213,7 +213,7 @@ public class Route extends NeptuneIdentifiedObject
          name = value;
       }
    }
-   
+
    public void setComment(String value)
    {
       if (value != null && value.length() > 255)
@@ -663,7 +663,6 @@ public class Route extends NeptuneIdentifiedObject
 
    }
 
-
    @Override
    public boolean clean()
    {
@@ -685,7 +684,6 @@ public class Route extends NeptuneIdentifiedObject
       }
       return true;
    }
-
 
    @Override
    public void complete()
