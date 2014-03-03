@@ -118,7 +118,7 @@ public class Route extends NeptuneIdentifiedObject
 
    @Getter
    @Setter
-   @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+   @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
    @JoinColumn(name = "line_id")
    private Line line;
 

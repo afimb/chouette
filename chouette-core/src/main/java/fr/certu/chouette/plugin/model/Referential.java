@@ -47,7 +47,7 @@ public class Referential extends ActiveRecordObject
 
    @Getter
    @Setter
-   @Column(name = "projection_type")
+   @Column(name = "prefix")
    private String prefix;
 
    @Getter

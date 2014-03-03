@@ -5,15 +5,25 @@ import java.util.List;
 
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Reporter;
+import org.testng.annotations.BeforeTest;
 
+import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.manager.INeptuneManager;
+import fr.certu.chouette.model.neptune.Company;
+import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.NeptuneLocalizedObject;
+import fr.certu.chouette.model.neptune.PTNetwork;
+import fr.certu.chouette.model.neptune.StopArea;
+import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
 import fr.certu.chouette.plugin.validation.report.CheckPointReportItem;
 import fr.certu.chouette.plugin.validation.report.DetailReportItem;
 
-public class AbstractValidation extends AbstractTestNGSpringContextTests
+public abstract class AbstractValidation extends AbstractTestNGSpringContextTests
 {
+  
+   
 	public static void printReport(Report report)
 	{
 		if (report == null)
