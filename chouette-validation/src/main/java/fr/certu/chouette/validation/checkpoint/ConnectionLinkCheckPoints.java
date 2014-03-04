@@ -85,7 +85,7 @@ public class ConnectionLinkCheckPoints extends AbstractValidation implements ICh
 					map.put("endId", end.getObjectId());
 					map.put("endName", end.getName());
 					map.put("distance", Integer.valueOf((int) distance));
-					map.put("linkdistance", Integer.valueOf(connectionLink.getLinkDistance().intValue()));
+					map.put("linkDistance", Integer.valueOf(connectionLink.getLinkDistance().intValue()));
 
 					DetailReportItem detail = new DetailReportItem(CONNECTION_LINK_2,connectionLink.getObjectId(), Report.STATE.WARNING, location,map);
 					addValidationError(report, CONNECTION_LINK_2, detail);
