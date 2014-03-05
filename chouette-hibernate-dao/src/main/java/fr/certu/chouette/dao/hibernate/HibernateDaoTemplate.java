@@ -289,6 +289,16 @@ public class HibernateDaoTemplate<T extends NeptuneObject> implements
       Filter filter = Filter.getNewEqualsFilter("objectId", objectId);
       List<T> list = select(filter);
 
+      int total = list.size();
+
+      if ( total==0)
+      {
+         return null;
+      }
+      else if ( total>1)
+      {
+         throw new HibernateDaoRuntimeException( HibernateDaoExceptionCode.DATABASE_INTEGRITY, total + " "+type.getName()+" id =" + objectId);
+      }
       return list.get(0);
    }
 
@@ -482,7 +492,7 @@ public class HibernateDaoTemplate<T extends NeptuneObject> implements
             else
             {
                logger.debug("save object :" + object.getObjectId());
-               em.persist(entity);
+               em.persist(item);
             }
          }
       }

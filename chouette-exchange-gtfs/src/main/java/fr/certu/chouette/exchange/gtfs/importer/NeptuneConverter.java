@@ -659,9 +659,6 @@ public class NeptuneConverter
 				area.addContainedStopPoint(spor);
 				spor.setContainedInStopArea(area);
 				spor.setName(area.getName());
-				spor.setLatitude(area.getLatitude());
-				spor.setLongitude(area.getLongitude());
-				spor.setLongLatType(area.getLongLatType());
 				stopPoints.add(spor);
 			}
 		}

@@ -26,7 +26,6 @@ import org.testng.annotations.Test;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.AccessLink;
 import fr.certu.chouette.model.neptune.AccessPoint;
-import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.JourneyPattern;
@@ -40,7 +39,6 @@ import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
-import fr.certu.chouette.model.neptune.type.Address;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
 import fr.certu.chouette.model.neptune.type.PTNetworkSourceTypeEnum;
@@ -350,17 +348,13 @@ public abstract class AbstractDaoTemplateTests<T extends NeptuneIdentifiedObject
       stoparea.setObjectId("Test:StopArea:"+objectId);
       stoparea.setObjectVersion(1);
       stoparea.setAreaType(ChouetteAreaEnum.BoardingPosition);
-      AreaCentroid centroid = new AreaCentroid();
       BigDecimal latitude = new BigDecimal(46.5220796582747800);
       BigDecimal longitude = new BigDecimal(5.6110095977783200);
 
-      centroid.setLatitude(latitude);
-      centroid.setLongitude(longitude);
-      centroid.setLongLatType(LongLatTypeEnum.WGS84);
-      Address address = new Address();
-      address.setCountryCode("39397");
-      centroid.setAddress(address);
-      stoparea.setAreaCentroid(centroid);
+      stoparea.setLatitude(latitude);
+      stoparea.setLongitude(longitude);
+      stoparea.setLongLatType(LongLatTypeEnum.WGS84);
+      stoparea.setCountryCode("39397");
       HibernateDaoTemplate<StopArea> template = (HibernateDaoTemplate<StopArea>) applicationContext.getBean("stopAreaDao");
       template.save(stoparea);
 
@@ -374,9 +368,6 @@ public abstract class AbstractDaoTemplateTests<T extends NeptuneIdentifiedObject
       stopPoint.setCreatorId("TESTNG");
       stopPoint.setObjectId("Test:StopPoint:"+objectId);
       stopPoint.setContainedInStopArea(createStopArea());
-      Address address = new Address();
-      address.setCountryCode("39397");
-      stopPoint.setAddress(address);
       stopPoint.setRoute(createRoute());
       HibernateDaoTemplate<StopPoint> template = (HibernateDaoTemplate<StopPoint>) applicationContext.getBean("stopPointDao");
       template.save(stopPoint);

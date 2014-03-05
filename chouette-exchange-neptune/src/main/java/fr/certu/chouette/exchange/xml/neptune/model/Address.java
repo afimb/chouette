@@ -1,4 +1,4 @@
-package fr.certu.chouette.model.neptune.type;
+package fr.certu.chouette.exchange.xml.neptune.model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

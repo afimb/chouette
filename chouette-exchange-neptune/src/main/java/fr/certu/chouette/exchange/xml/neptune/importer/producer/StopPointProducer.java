@@ -1,13 +1,7 @@
 package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
-import org.trident.schema.trident.AddressType;
-import org.trident.schema.trident.ProjectedPointType;
-
 import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.model.neptune.StopPoint;
-import fr.certu.chouette.model.neptune.type.Address;
-import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
-import fr.certu.chouette.model.neptune.type.ProjectedPoint;
 import fr.certu.chouette.plugin.exchange.SharedImportedData;
 import fr.certu.chouette.plugin.exchange.UnsharedImportedData;
 import fr.certu.chouette.plugin.report.ReportItem;
@@ -28,21 +22,11 @@ public class StopPointProducer extends AbstractModelProducer<StopPoint,org.tride
 		// Comment optional
 //		stopPoint.setComment(getNonEmptyTrimedString(xmlStopPoint.getComment()));
 		
-		// LongLatType mandatory
-		if(xmlStopPoint.getLongLatType() != null){
-			try {
-				stopPoint.setLongLatType(LongLatTypeEnum.valueOf(xmlStopPoint.getLongLatType().value()));
-			} catch (IllegalArgumentException e) {
-				// TODO: handle exception
-				e.printStackTrace();
-			}
-		}
+		// LongLatType mandatory but ignored in chouette
 		
-		// Latitude mandatory
-		stopPoint.setLatitude(xmlStopPoint.getLatitude());
+		// Latitude mandatory  but ignored in chouette
 		
-		// Longitude mandatory
-		stopPoint.setLongitude(xmlStopPoint.getLongitude());
+		// Longitude mandatory  but ignored in chouette
 		
 		// ContainedInStopArea 
 		stopPoint.setContainedInStopAreaId(getNonEmptyTrimedString(xmlStopPoint.getContainedIn()));
@@ -57,26 +41,7 @@ public class StopPointProducer extends AbstractModelProducer<StopPoint,org.tride
 			ptNetworkId = ptNetworkId.replace(":PTNetwork:", ":"+PTNetwork.PTNETWORK_KEY+":");
 		}
 		stopPoint.setPtNetworkIdShortcut(ptNetworkId);
-		
-		// Address optional
-		AddressType xmlAddress = xmlStopPoint.getAddress();		
-		if(xmlAddress != null){
-			Address address = new Address();
-			address.setCountryCode(getNonEmptyTrimedString(xmlAddress.getCountryCode()));
-			address.setStreetName(getNonEmptyTrimedString(xmlAddress.getStreetName()));
-			stopPoint.setAddress(address);
-		}
-		
-		// ProjectedPoint optional
-		ProjectedPointType xmlProjectedPoint = xmlStopPoint.getProjectedPoint();
-		if(xmlProjectedPoint != null){
-			ProjectedPoint projectedPoint = new ProjectedPoint();
-			projectedPoint.setX(xmlProjectedPoint.getX());
-			projectedPoint.setY(xmlProjectedPoint.getY());
-			projectedPoint.setProjectionType(xmlProjectedPoint.getProjectionType());
-			stopPoint.setProjectedPoint(projectedPoint);
-		}
-		
+				
 		return stopPoint;
 	}
 

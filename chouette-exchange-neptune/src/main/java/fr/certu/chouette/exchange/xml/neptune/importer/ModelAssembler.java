@@ -19,10 +19,10 @@ import lombok.Setter;
 
 import org.apache.log4j.Logger;
 
+import fr.certu.chouette.exchange.xml.neptune.model.AreaCentroid;
 import fr.certu.chouette.exchange.xml.neptune.model.NeptuneRoutingConstraint;
 import fr.certu.chouette.model.neptune.AccessLink;
 import fr.certu.chouette.model.neptune.AccessPoint;
-import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.Facility;
@@ -645,7 +645,11 @@ public class ModelAssembler
 	{
 		for (StopArea stopArea : stopAreas)
 		{
-			stopArea.setAreaCentroid(getObjectFromId(stopArea.getAreaCentroidId(), AreaCentroid.class));
+			AreaCentroid centroid = getObjectFromId(stopArea.getAreaCentroidId(), AreaCentroid.class);
+			if (centroid != null)
+			{
+				centroid.populateStopArea(stopArea);
+			}
 			if (!stopArea.getAreaType().equals(ChouetteAreaEnum.ITL))
 			{
 				if (stopArea.getAreaType().equals(ChouetteAreaEnum.Quay) || stopArea.getAreaType().equals(ChouetteAreaEnum.BoardingPosition))

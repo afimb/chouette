@@ -6,7 +6,7 @@
 	<groupId>fr.certu.chouette</groupId>
 	<artifactId>chouette</artifactId>
 	<packaging>pom</packaging>
-	<version>2.2.0</version>
+	<version>2.3.0</version>
 
 	<properties>
 		<maven.build.timestamp.format>yyyy-MM-dd_HH-mm</maven.build.timestamp.format>
@@ -19,16 +19,16 @@
 	<modules>
 		<module>chouette-core</module>
 		<module>chouette-hibernate-dao</module>
-		<module>chouette-jdbc-dao</module>		
+		<module>chouette-jdbc-dao</module>
 		<module>chouette-exchange-netex</module>
 		<module>chouette-jaxb-neptune</module>
 		<module>chouette-exchange-neptune</module>
 		<module>chouette-exchange-gtfs</module>
 		<module>chouette-exchange-csv</module>
 		<module>chouette-export-geoportail</module>
-		<module>chouette-validation</module> 
+		<module>chouette-validation</module>
 		<module>chouette-command</module>
-		<module>chouette-gui-command</module>	
+		<module>chouette-gui-command</module>
 	</modules>
 
 	<distributionManagement>
@@ -338,10 +338,9 @@
 			</dependency>
 			<!-- Postgres -->
 			<dependency>
-				<groupId>postgresql</groupId>
+				<groupId>org.postgresql</groupId>
 				<artifactId>postgresql</artifactId>
-				<version>9.2-1002.jdbc4</version>
-				<scope>compile</scope>
+				<version>9.2-1003-jdbc4</version>
 			</dependency>
 			<!-- jaxb replacing Castor -->
 			<dependency>
@@ -487,6 +486,43 @@
 						<version>1.0</version>
 					</dependency>
 				</dependencies>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>sql-maven-plugin</artifactId>
+				<version>1.5</version>
+				<dependencies>
+					<!-- specify the dependent jdbc driver here -->
+					<dependency>
+						<groupId>org.postgresql</groupId>
+						<artifactId>postgresql</artifactId>
+						<version>9.2-1003-jdbc4</version>
+					</dependency>
+				</dependencies>
+				<!-- common configuration shared by all executions -->
+				<configuration>
+					<driver>org.postgresql.Driver</driver>
+					<url>jdbc:postgresql://localhost:5432/chouette_test</url>
+					<username>chouette</username>
+					<password>chouette</password>
+					<!--all executions are ignored if -Dmaven.test.skip=true -->
+					<skip>${maven.test.skip}</skip>
+				</configuration>
+				<executions>
+					<execution>
+						<id>create-schema</id>
+						<phase>process-test-resources</phase>
+						<goals>
+							<goal>execute</goal>
+						</goals>
+						<configuration>
+							<autocommit>true</autocommit>
+							<srcFiles>
+								<srcFile>../config/test/chouette_test.sql</srcFile>
+							</srcFiles>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

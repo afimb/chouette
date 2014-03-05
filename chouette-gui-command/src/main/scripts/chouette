@@ -1,8 +1,8 @@
 #!/bin/bash -xe
 
 # trace java version
-echo $JAVA_HOME
-java -version
+#echo $JAVA_HOME
+#java -version
 
 if [ "$1" == "-classpath" ]; then
     OPTIONS="-Xbootclasspath/p:$2"
@@ -12,6 +12,5 @@ if [ "$1" == "-classpath" ]; then
 fi
 
 cd `dirname $0`
-# Use the highest version 
-jar_name=`/bin/ls -r chouette-gui-command-* 2> /dev/null | head -1`
-java $OPTIONS -Duser.timezone=UTC -Xmx2000M -jar $jar_name $*
+
+java $OPTIONS -Duser.timezone=UTC -Xmx2000M -jar ${project.build.finalName}.jar $*

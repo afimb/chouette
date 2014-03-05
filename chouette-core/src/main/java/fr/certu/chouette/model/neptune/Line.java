@@ -127,7 +127,7 @@ public class Line extends NeptuneIdentifiedObject
    private String publishedName;
 
    @Getter
-   @Column(name = "registration_number", nullable = false, unique = true)
+   @Column(name = "registration_number", unique = true)
    private String registrationNumber;
 
    @Getter

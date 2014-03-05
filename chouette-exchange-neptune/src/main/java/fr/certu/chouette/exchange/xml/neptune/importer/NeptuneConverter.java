@@ -46,10 +46,10 @@ import fr.certu.chouette.exchange.xml.neptune.importer.producer.StopPointProduce
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.TimeSlotProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.TimetableProducer;
 import fr.certu.chouette.exchange.xml.neptune.importer.producer.VehicleJourneyProducer;
+import fr.certu.chouette.exchange.xml.neptune.model.AreaCentroid;
 import fr.certu.chouette.exchange.xml.neptune.model.NeptuneRoutingConstraint;
 import fr.certu.chouette.model.neptune.AccessLink;
 import fr.certu.chouette.model.neptune.AccessPoint;
-import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.Facility;

@@ -252,11 +252,6 @@ public class StopArea extends NeptuneLocalizedObject
    @Setter
    @Transient
    private String areaCentroidId;
-   /**
-    * AreaCentroid
-    */
-   @Transient
-   private AreaCentroid areaCentroid;
 
    /**
     * List of Children objectIds for import/export purpose
@@ -731,30 +726,6 @@ public class StopArea extends NeptuneLocalizedObject
          routingConstraintAreas.remove(area);
    }
 
-   /**
-    * returns areaCentroid <br/>
-    * <b>Note:</b> areaCentroid is not persistent, it is present only if
-    * complete() was called or set by import
-    * 
-    * @return areaCentroid
-    */
-   public AreaCentroid getAreaCentroid()
-   {
-      return areaCentroid;
-   }
-
-   /**
-    * setting areaCentroid will populate StopArea's attribute by copy from
-    * centroid one's
-    * 
-    * @param areaCentroid
-    */
-   public void setAreaCentroid(AreaCentroid areaCentroid)
-   {
-      this.areaCentroid = areaCentroid;
-      if (areaCentroid != null)
-         areaCentroid.populateStopArea(this);
-   }
 
    /**
     * add a userNeed value in userNeeds collection if not already present <br/>
@@ -875,10 +846,6 @@ public class StopArea extends NeptuneLocalizedObject
       sb.append("\n").append(indent).append("  registrationNumber = ").append(registrationNumber);
       sb.append("\n").append(indent).append("  stairsAvailable = ").append(stairsAvailable);
 
-      if (areaCentroid != null)
-      {
-         sb.append("\n").append(indent).append(CHILD_ARROW).append(areaCentroid.toString(indent + CHILD_INDENT, 0));
-      }
 
       if (getUserNeeds() != null)
       {
@@ -974,20 +941,6 @@ public class StopArea extends NeptuneLocalizedObject
       {
          parentObjectId = parent.getObjectId();
          parent.complete();
-      }
-      // TODO ITL ?
-      if (!areaType.equals(ChouetteAreaEnum.ITL))
-      {
-         areaCentroid = new AreaCentroid(this);
-         if (areaCentroid.getObjectId() == null)
-         {
-            areaCentroid.setObjectId(getObjectId().replace(STOPAREA_KEY, AREACENTROID_KEY));
-         }
-         areaCentroid.setCreationTime(getCreationTime());
-         areaCentroid.setObjectVersion(getObjectVersion());
-         areaCentroid.setContainedInStopAreaId(getObjectId());
-         areaCentroid.setName(getName());
-         setAreaCentroidId(getAreaCentroid().getObjectId());
       }
 
       if (getRoutingConstraintLines() != null)

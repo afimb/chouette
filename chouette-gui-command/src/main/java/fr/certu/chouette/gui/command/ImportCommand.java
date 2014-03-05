@@ -40,7 +40,6 @@ import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.dao.IDaoTemplate;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.manager.INeptuneManager;
-import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.neptune.Route;
@@ -184,7 +183,7 @@ public class ImportCommand extends AbstractCommand
 						importHolder, validationHolder) ;
 				importReport = importHolder.getReport();
 				validationReport = (ValidationReport) validationHolder.getReport();
-                if (code > 0) return code; // import fails
+				if (code > 0) return code; // import fails
 			}
 			else
 			{
@@ -271,22 +270,22 @@ public class ImportCommand extends AbstractCommand
 			ImportTask importTask, String format, String inputFile,
 			List<String> suffixes, List<ParameterValue> values,
 			ReportHolder importHolder, ReportHolder validationHolder)
-			throws ChouetteException 
-			{
+					throws ChouetteException 
+					{
 		SimpleParameterValue inputFileParam = new SimpleParameterValue("inputFile");
 		values.add(inputFileParam);
-		
+
 		ReportHolder zipHolder = new ReportHolder();
 		if (format.equalsIgnoreCase("neptune"))
 		{
-		SharedImportedData sharedData = new SharedImportedData();
-		UnsharedImportedData unsharedData = new UnsharedImportedData();
-		SimpleParameterValue sharedDataParam = new SimpleParameterValue("sharedImportedData");
-		sharedDataParam.setObjectValue(sharedData);
-		values.add(sharedDataParam);
-		SimpleParameterValue unsharedDataParam = new SimpleParameterValue("unsharedImportedData");
-		unsharedDataParam.setObjectValue(unsharedData);
-		values.add(unsharedDataParam);
+			SharedImportedData sharedData = new SharedImportedData();
+			UnsharedImportedData unsharedData = new UnsharedImportedData();
+			SimpleParameterValue sharedDataParam = new SimpleParameterValue("sharedImportedData");
+			sharedDataParam.setObjectValue(sharedData);
+			values.add(sharedDataParam);
+			SimpleParameterValue unsharedDataParam = new SimpleParameterValue("unsharedImportedData");
+			unsharedDataParam.setObjectValue(unsharedData);
+			values.add(unsharedDataParam);
 		}
 
 		// unzip files , import and save contents 
@@ -395,7 +394,7 @@ public class ImportCommand extends AbstractCommand
 			}
 		}
 		return 0;
-	}
+					}
 
 	/**
 	 * @param manager
@@ -407,7 +406,7 @@ public class ImportCommand extends AbstractCommand
 			INeptuneManager<NeptuneIdentifiedObject> manager,
 			List<Long> savedIds, JSONObject parameters,
 			ValidationReport validationReport) {
-		
+
 		if (parameters != null)
 		{
 			log.info("processing phase 3 validation on "+savedIds.size()+" lines");
@@ -537,13 +536,9 @@ public class ImportCommand extends AbstractCommand
 	private void checkProjection(StopArea area)
 	{
 		if (area == null) return;
-		if (area.getAreaCentroid() != null)
+		if (area.hasProjection())
 		{
-			AreaCentroid centroid = area.getAreaCentroid();
-			if (centroid.getLongLatType() == null)
-			{
-				geographicService.convertToWGS84(area);
-			}
+			geographicService.convertToWGS84(area);
 		}
 		checkProjection(area.getParent());
 

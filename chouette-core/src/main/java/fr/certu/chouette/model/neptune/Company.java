@@ -76,7 +76,7 @@ public class Company extends NeptuneIdentifiedObject
    private String email;
 
    @Getter
-   @Column(name = "registration_number", nullable = false, unique = true)
+   @Column(name = "registration_number", unique = true)
    private String registrationNumber;
 
    @Getter

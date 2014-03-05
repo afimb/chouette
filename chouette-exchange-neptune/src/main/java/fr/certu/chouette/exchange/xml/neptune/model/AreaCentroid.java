@@ -1,15 +1,14 @@
-package fr.certu.chouette.model.neptune;
+package fr.certu.chouette.exchange.xml.neptune.model;
 
 import java.math.BigDecimal;
-
-import javax.persistence.Column;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import fr.certu.chouette.model.neptune.type.Address;
+import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
+import fr.certu.chouette.model.neptune.NeptuneObject;
+import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
-import fr.certu.chouette.model.neptune.type.ProjectedPoint;
 
 /**
  * Neptune AreaCentroid : Geographic informations for a unique StopArea
@@ -25,7 +24,6 @@ public class AreaCentroid extends NeptuneIdentifiedObject
 
    @Getter
    @Setter
-   @Column(name = "name")
    private String name;
  
    /**

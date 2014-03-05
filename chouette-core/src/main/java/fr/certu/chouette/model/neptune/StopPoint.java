@@ -1,6 +1,5 @@
 package fr.certu.chouette.model.neptune;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,13 +14,7 @@ import javax.persistence.Transient;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import org.apache.log4j.Logger;
-
 import fr.certu.chouette.filter.Filter;
-import fr.certu.chouette.model.neptune.type.Address;
-import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
-import fr.certu.chouette.model.neptune.type.ProjectedPoint;
 
 /**
  * Neptune StopPoint : a StopPoint on a route
@@ -37,8 +30,6 @@ import fr.certu.chouette.model.neptune.type.ProjectedPoint;
 public class StopPoint extends NeptuneIdentifiedObject
 {
    private static final long serialVersionUID = -4913573673645997423L;
-
-   private static final Logger logger = Logger.getLogger(StopPoint.class);
 
    /**
     * name of comment attribute for {@link Filter} attributeName construction
@@ -72,51 +63,6 @@ public class StopPoint extends NeptuneIdentifiedObject
    @Transient
    private String name;
 
-   /**
-    * postal Address <br/>
-    * (import/export usage) based on parent StopArea's AreaCentroid <br/>
-    * <i>readable/writable</i>
-    */
-   @Getter
-   @Setter
-   @Transient
-   private Address address;
-   /**
-    * Spatial Referential Type (actually only WGS84 is valid) <br/>
-    * (import/export usage) based on parent StopArea's AreaCentroid <br/>
-    * <i>readable/writable</i>
-    */
-   @Getter
-   @Setter
-   @Transient
-   private LongLatTypeEnum longLatType;
-   /**
-    * Latitude position of area <br/>
-    * (import/export usage) based on parent StopArea's AreaCentroid <br/>
-    * <i>readable/writable</i>
-    */
-   @Getter
-   @Setter
-   @Transient
-   private BigDecimal latitude;
-   /**
-    * Longitude position of area <br/>
-    * (import/export usage) based on parent StopArea's AreaCentroid <br/>
-    * <i>readable/writable</i>
-    */
-   @Getter
-   @Setter
-   @Transient
-   private BigDecimal longitude;
-   /**
-    * Optional other Spatial Referential position <br/>
-    * (import/export usage) based on parent StopArea's AreaCentroid <br/>
-    * <i>readable/writable</i>
-    */
-   @Getter
-   @Setter
-   @Transient
-   private ProjectedPoint projectedPoint;
 
    /**
     * Neptune ObjectId for StopArea Container <br/>
@@ -205,25 +151,7 @@ public class StopPoint extends NeptuneIdentifiedObject
    {
       StringBuilder sb = new StringBuilder(super.toString(indent, level));
 
-      if (address != null)
-      {
-         sb.append("\n").append(indent).append("  address = ").append(address);
-      }
-
-      if (longLatType != null)
-      {
-         sb.append("\n").append(indent).append("  longLatType = ").append(longLatType);
-      }
-
-      sb.append("\n").append(indent).append("  latitude = ").append(latitude);
-      sb.append("\n").append(indent).append("  longitude = ").append(longitude);
-
-      if (projectedPoint != null)
-      {
-         sb.append("\n").append(indent).append("  projectedPoint = ").append(projectedPoint);
-      }
-
-   //   sb.append("\n").append(indent).append("  comment = ").append(comment);
+ //   sb.append("\n").append(indent).append("  comment = ").append(comment);
       sb.append("\n").append(indent).append("  containedInStopAreaId = ").append(containedInStopAreaId);
       sb.append("\n").append(indent).append("  lineIdShortcut = ").append(lineIdShortcut);
       sb.append("\n").append(indent).append("  ptNetworkIdShortcut = ").append(ptNetworkIdShortcut);
@@ -273,19 +201,6 @@ public class StopPoint extends NeptuneIdentifiedObject
       if (area != null)
       {
          area.complete();
-         AreaCentroid centroid = area.getAreaCentroid();
-         if (centroid != null)
-         {
-            setLatitude(centroid.getLatitude());
-            setLongitude(centroid.getLongitude());
-            setLongLatType(centroid.getLongLatType());
-            setProjectedPoint(centroid.getProjectedPoint());
-            setAddress(centroid.getAddress());
-         }
-         else
-         {
-            logger.error("stopPoint " + getObjectId() + " has an area without centroid " + area.getObjectId());
-         }
          setName(area.getName());
       }
    }
@@ -306,16 +221,6 @@ public class StopPoint extends NeptuneIdentifiedObject
 //         if (!sameValue(this.getComment(), another.getComment()))
 //            return false;
          if (!sameValue(this.getRegistrationNumber(), another.getRegistrationNumber()))
-            return false;
-         if (!sameValue(this.getLatitude(), another.getLatitude()))
-            return false;
-         if (!sameValue(this.getLongitude(), another.getLongitude()))
-            return false;
-         if (!sameValue(this.getLongLatType(), another.getLongLatType()))
-            return false;
-         if (!sameValue(this.getAddress(), another.getAddress()))
-            return false;
-         if (!sameValue(this.getProjectedPoint(), another.getProjectedPoint()))
             return false;
 
          if (!sameValue(this.getPosition(), another.getPosition()))
