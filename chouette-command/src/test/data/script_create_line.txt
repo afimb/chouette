@@ -1,3 +1,4 @@
+lang -fr
 # create a new instance of network
 new -o ptnetwork
 # set attributes

@@ -1,3 +1,4 @@
+lang -fr
 # test help command
 help
 help -cmd add
