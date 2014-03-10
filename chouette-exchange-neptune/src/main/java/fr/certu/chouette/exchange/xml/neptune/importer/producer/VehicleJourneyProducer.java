@@ -91,7 +91,7 @@ public class VehicleJourneyProducer extends AbstractModelProducer<VehicleJourney
       // VehicleJourneyAtStops [2..w]
       int order = 0;
       for(VehicleJourneyAtStopType  xmlVehicleJourneyAtStop : xmlVehicleJourney.getVehicleJourneyAtStop()){
-         VehicleJourneyAtStop vehicleJourneyAtStop = new VehicleJourneyAtStop();
+         VehicleJourneyAtStop vehicleJourneyAtStop = factory.getNewVehicleJourneyAtStop();
 
          // VehicleJourneyId optional
          vehicleJourneyAtStop.setVehicleJourneyId(getNonEmptyTrimedString(xmlVehicleJourneyAtStop.getVehicleJourneyId()));

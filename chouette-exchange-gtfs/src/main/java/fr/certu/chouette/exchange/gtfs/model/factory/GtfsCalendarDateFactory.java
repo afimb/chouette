@@ -14,7 +14,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import org.apache.log4j.Logger;
 
@@ -28,9 +27,9 @@ import fr.certu.chouette.plugin.report.Report;
  * @author michel
  *
  */
-@NoArgsConstructor
 public class GtfsCalendarDateFactory extends GtfsBeanFactory<GtfsCalendarDate> 
 {
+
 	private static final Logger logger = Logger.getLogger(GtfsCalendarDateFactory.class);
 
 	@Getter private final String dropSql = "drop table if exists calendardate;";
@@ -40,11 +39,14 @@ public class GtfsCalendarDateFactory extends GtfsBeanFactory<GtfsCalendarDate>
 	@Getter private final String selectSql = "select num, id, date,mode from calendardate ";
 	@Getter private final String[] dbHeader = new String[]{"num","service_id","date","exception_type"};
 
+	public GtfsCalendarDateFactory() {
+		super(GtfsCalendarDate.class);
+	}
 
 	@Override
 	public GtfsCalendarDate getNewGtfsBean(int lineNumber, String[] csvLine,Report report) 
 	{
-		GtfsCalendarDate bean = new GtfsCalendarDate();
+		GtfsCalendarDate bean = getNewGtfsBean(GtfsCalendarDate.class);
 		bean.setFileLineNumber(lineNumber);
 		bean.setServiceId(getValue("service_id", csvLine));
 		bean.setDate(getDateValue("date", csvLine,logger));

@@ -3,7 +3,6 @@
  */
 package fr.certu.chouette.plugin.validation.report;
 
-import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
@@ -11,10 +10,11 @@ import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import org.json.JSONObject;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import org.json.JSONObject;
+
 import fr.certu.chouette.plugin.report.ReportItem;
 
 /**

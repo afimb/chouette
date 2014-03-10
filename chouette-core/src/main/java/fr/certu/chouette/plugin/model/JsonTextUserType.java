@@ -24,8 +24,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import lombok.extern.log4j.Log4j;
-
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.usertype.UserType;
@@ -38,7 +36,6 @@ import org.json.JSONObject;
  * La structure implemente l'interface des definitions de type UserType.
  * 
  */
-@Log4j
 public class JsonTextUserType implements UserType
 {
    // ------------------------------------------------------------

@@ -14,7 +14,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import org.apache.log4j.Logger;
 
@@ -28,9 +27,9 @@ import fr.certu.chouette.plugin.report.Report;
  * @author michel
  *
  */
-@NoArgsConstructor
 public class GtfsFrequencyFactory extends GtfsBeanFactory<GtfsFrequency> 
 {
+
 	private static final Logger logger = Logger.getLogger(GtfsFrequency.class);
 	@Getter private final String dropSql = "drop table if exists frequency;";
 	@Getter private final String createSql = "create table frequency (num, tripid, starttime,endtime,headwaysecs,exacttimes);";
@@ -38,9 +37,12 @@ public class GtfsFrequencyFactory extends GtfsBeanFactory<GtfsFrequency>
 	private final String insertSQL = "insert into frequency (num, tripid, starttime,endtime,headwaysecs,exacttimes) values (?, ?, ?, ?, ?, ?)";
 	@Getter private final String selectSql = "select num, tripid, starttime,endtime,headwaysecs,exacttimes from frequency ";
 	@Getter private final String[] dbHeader = new String[]{"num","trip_id","start_time","end_time","headway_secs"};
+	public GtfsFrequencyFactory() {
+		super(GtfsFrequency.class);
+	}
 	@Override
 	public GtfsFrequency getNewGtfsBean(int lineNumber, String[] csvLine,Report report) {
-		GtfsFrequency bean = new GtfsFrequency();
+		GtfsFrequency bean = getNewGtfsBean(GtfsFrequency.class);
 		bean.setFileLineNumber(lineNumber);
 		bean.setTripId(getValue("trip_id", csvLine));
 		bean.setStartTime(getTimeValue("start_time", csvLine));

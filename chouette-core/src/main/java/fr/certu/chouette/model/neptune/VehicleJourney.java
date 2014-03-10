@@ -284,6 +284,7 @@ public class VehicleJourney extends NeptuneIdentifiedObject
     * <i>readable only; populated by complete()</i>
     */
    @Getter
+   @Setter
    @Transient
    private Date startOfPeriod;
 
@@ -292,6 +293,7 @@ public class VehicleJourney extends NeptuneIdentifiedObject
     * <i>readable only; populated by complete()</i>
     */
    @Getter
+   @Setter
    @Transient
    private Date endOfPeriod;
 
@@ -400,6 +402,12 @@ public class VehicleJourney extends NeptuneIdentifiedObject
          return false;
       }
       return true;
+   }
+   
+   public void purgeVehicleJourneyAtStops()
+   {
+	   if (vehicleJourneyAtStops != null)
+	   vehicleJourneyAtStops.clear();
    }
 
    /**
@@ -658,7 +666,7 @@ public class VehicleJourney extends NeptuneIdentifiedObject
     * @param date2
     * @return
     */
-   private Date minDate(Date date1, Date date2)
+   protected Date minDate(Date date1, Date date2)
    {
       if (date1 == null)
          return date2;
@@ -674,7 +682,7 @@ public class VehicleJourney extends NeptuneIdentifiedObject
     * @param date2
     * @return
     */
-   private Date maxDate(Date date1, Date date2)
+   protected Date maxDate(Date date1, Date date2)
    {
       if (date1 == null)
          return date2;

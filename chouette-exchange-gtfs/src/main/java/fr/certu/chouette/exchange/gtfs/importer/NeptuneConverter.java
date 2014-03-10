@@ -148,6 +148,7 @@ public class NeptuneConverter
 	{
 		DbVehicleJourneyFactory vjFactory = new DbVehicleJourneyFactory(prefix,optimizeMemory);
 		vehicleJourneyProducer.setFactory(vjFactory);
+		vehicleJourneyAtStopProducer.setFactory(vjFactory);
 		ModelAssembler assembler = new ModelAssembler();
 		AbstractModelProducer.setPrefix(prefix);
 		AbstractModelProducer.setIncrementalPrefix(incrementalPrefix);
@@ -440,7 +441,7 @@ public class NeptuneConverter
 				vehicleJourney.addVehicleJourneyAtStop(vjas);
 				stRank++;
 			}
-			stopTimesOfATrip.clear();
+			data.getStopTimes().removeAll(stopTimesOfATrip);
 			if (!validVehicleJourney) 
 			{
 				continue;
@@ -480,7 +481,7 @@ public class NeptuneConverter
 
 		// free some unused maps 
 		data.getTrips().clear();
-		data.getStopTimes().clear();
+		// data.getStopTimes().clear();
 		vjFactory.flush();
 		// fix spor objectids and clean empty routes
 
@@ -639,6 +640,7 @@ public class NeptuneConverter
 		List<StopPoint> stopPoints = new ArrayList<StopPoint>();
 		Set<String> stopPointKeys = new HashSet<String>();
 
+		int position = 0;
 		for (GtfsStopTime gtfsStopTime : stopTimesOfATrip)
 		{
 			String stopKey = routeId.replace(Route.ROUTE_KEY, StopPoint.STOPPOINT_KEY) + "a" + gtfsStopTime.getStopId().trim().replaceAll("[^a-zA-Z_0-9\\-]", "_");
@@ -657,6 +659,7 @@ public class NeptuneConverter
 			else
 			{
 				area.addContainedStopPoint(spor);
+				spor.setPosition(position++);
 				spor.setContainedInStopArea(area);
 				spor.setName(area.getName());
 				stopPoints.add(spor);
@@ -739,7 +742,8 @@ public class NeptuneConverter
 			List<VehicleJourneyAtStop> vjass = vj.getVehicleJourneyAtStops();
 			for (VehicleJourneyAtStop vjas : vjass)
 			{
-				VehicleJourneyAtStop nvjas = (VehicleJourneyAtStop) BeanUtils.cloneBean(vjas);
+				VehicleJourneyAtStop nvjas = factory.getNewVehicleJourneyAtStop();
+				BeanUtils.copyProperties(nvjas, vjas);
 				nvjas.setVehicleJourney(nvj);
 				nvjas.setArrivalTime(shiftTime(nvjas.getArrivalTime(), offset));
 				nvjas.setDepartureTime(shiftTime(nvjas.getDepartureTime(), offset));

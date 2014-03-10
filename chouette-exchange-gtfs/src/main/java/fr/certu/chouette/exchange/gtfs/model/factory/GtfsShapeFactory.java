@@ -50,12 +50,13 @@ public class GtfsShapeFactory extends GtfsBeanFactory<GtfsShape>
 	 */
 	public GtfsShapeFactory() 
 	{
+		super(GtfsShape.class);
 		shapeChains = new HashMap<String, List<GtfsShape>> ();
 	}
 
 	@Override
 	public GtfsShape getNewGtfsBean(int lineNumber, String[] csvLine,Report report) {
-		GtfsShape bean = new GtfsShape();
+		GtfsShape bean = getNewGtfsBean(GtfsShape.class);
 		bean.setFileLineNumber(lineNumber);
 		bean.setShapeId(getValue("shape_id", csvLine));
 		bean.setShapePtLat(getDoubleValue("shape_pt_lat", csvLine,0.0));

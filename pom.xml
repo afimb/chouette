@@ -234,6 +234,11 @@
 				<artifactId>commons-beanutils</artifactId>
 				<version>1.8.3</version>
 			</dependency>
+			<dependency>
+				<groupId>commons-pool</groupId>
+				<artifactId>commons-pool</artifactId>
+				<version>1.6</version>
+			</dependency>
 
 
 			<!-- AspectJ reference cglib-2.2.jar -->
@@ -385,17 +390,17 @@
 			<dependency>
 				<groupId>org.geotools</groupId>
 				<artifactId>gt-referencing</artifactId>
-				<version>10.1</version>
+				<version>10.5</version>
 			</dependency>
 			<dependency>
 				<groupId>org.geotools</groupId>
 				<artifactId>gt-jts-wrapper</artifactId>
-				<version>10.1</version>
+				<version>10.5</version>
 			</dependency>
 			<dependency>
 				<groupId>org.geotools</groupId>
 				<artifactId>gt-epsg-hsql</artifactId>
-				<version>10.1</version>
+				<version>10.5</version>
 			</dependency>
 			<dependency>
 				<groupId>javax.media</groupId>

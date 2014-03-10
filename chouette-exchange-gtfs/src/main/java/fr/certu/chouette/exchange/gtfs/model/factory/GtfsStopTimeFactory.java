@@ -14,7 +14,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import org.apache.log4j.Logger;
 
@@ -28,9 +27,9 @@ import fr.certu.chouette.plugin.report.Report;
  * @author michel
  *
  */
-@NoArgsConstructor
 public class GtfsStopTimeFactory extends GtfsBeanFactory<GtfsStopTime> 
 {
+
 	private static final Logger logger = Logger.getLogger(GtfsStopTimeFactory.class);
 	@Getter private final String dropSql = "drop table if exists stoptime;";
 	@Getter private final String createSql = "create table stoptime (num, tripid, arrivaltime,departuretime,stopid,stopsequence,stopheadsign,pickuptype,dropoftype,shapedisttraveled);";
@@ -38,10 +37,13 @@ public class GtfsStopTimeFactory extends GtfsBeanFactory<GtfsStopTime>
 	private final String insertSQL = "insert into stoptime (num, tripid, arrivaltime,departuretime,stopid,stopsequence,stopheadsign,pickuptype,dropoftype,shapedisttraveled) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	@Getter private final String selectSql = "select num, tripid, arrivaltime,departuretime,stopid,stopsequence,stopheadsign,pickuptype,dropoftype,shapedisttraveled from stoptime ";
 	@Getter private final String[] dbHeader = new String[]{"num", "trip_id","arrival_time","departure_time","stop_id","stop_sequence","stop_headsign","pickup_type","drop_off_type","shape_dist_traveled"};
+	public GtfsStopTimeFactory() {
+		super(GtfsStopTime.class);
+	}
 	@Override
 	public GtfsStopTime getNewGtfsBean(int lineNumber, String[] csvLine,Report report) 
 	{
-		GtfsStopTime bean = new GtfsStopTime();
+		GtfsStopTime bean = getNewGtfsBean(GtfsStopTime.class);
 		bean.setFileLineNumber(lineNumber);
 		bean.setTripId(getValue("trip_id", csvLine));
 		bean.setArrivalTime(getTimeValue("arrival_time", csvLine));

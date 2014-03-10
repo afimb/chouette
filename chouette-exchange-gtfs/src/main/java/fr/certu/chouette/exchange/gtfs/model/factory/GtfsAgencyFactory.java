@@ -14,7 +14,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import org.apache.log4j.Logger;
 
@@ -28,9 +27,9 @@ import fr.certu.chouette.plugin.report.Report;
  * @author michel
  *
  */
-@NoArgsConstructor
 public class GtfsAgencyFactory extends GtfsBeanFactory<GtfsAgency> 
 {
+
 	private static final Logger logger = Logger.getLogger(GtfsAgencyFactory.class);
 
 
@@ -40,13 +39,17 @@ public class GtfsAgencyFactory extends GtfsBeanFactory<GtfsAgency>
 	@Getter private final String selectSql = "select num, id, name,url,timezone,lang,phone from agency ";
 	@Getter private final String createIndexSql = "create index agency_id_idx on agency (id)" ; 
 	@Getter private final String[] dbHeader = new String[]{"num","agency_id","agency_name","agency_url","agency_timezone","agency_lang","agency_phone"};
+	public GtfsAgencyFactory() {
+		super(GtfsAgency.class);
+	}
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.exchange.gtfs.model.factory.GtfsBeanFactory#getNewGtfsBean(int, java.lang.String[])
 	 */
 	@Override
 	public GtfsAgency getNewGtfsBean(int lineNumber, String[] csvLine,Report report) 
 	{
-		GtfsAgency bean = new GtfsAgency();
+		GtfsAgency bean = getNewGtfsBean(GtfsAgency.class);
+		
 		bean.setFileLineNumber(lineNumber);
 		String agencyId = getValue("agency_id", csvLine);
 		if (agencyId == null || agencyId.isEmpty()) agencyId = "default";

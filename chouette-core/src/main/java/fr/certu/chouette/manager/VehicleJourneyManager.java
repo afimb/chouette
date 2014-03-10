@@ -83,6 +83,14 @@ public class VehicleJourneyManager extends AbstractNeptuneManager<VehicleJourney
 		}
 
 		super.saveAll(user, vehicleJourneys,propagate,fast);
+		if (fast)
+		{
+			for (VehicleJourney vehicleJourney : vehicleJourneys) 
+			{
+				// free some memory
+				vehicleJourney.purgeVehicleJourneyAtStops();
+			}
+		}
 	}
 
 	/* (non-Javadoc)
@@ -91,11 +99,11 @@ public class VehicleJourneyManager extends AbstractNeptuneManager<VehicleJourney
 	@Transactional
 	@Override
 	public VehicleJourney addNew(User user, VehicleJourney vehicleJourney)
-	throws ChouetteException 
-	{
+			throws ChouetteException 
+			{
 		vehicleJourney.sortVehicleJourneyAtStops();
 		return super.addNew(user, vehicleJourney);
-	}
+			}
 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.manager.AbstractNeptuneManager#update(fr.certu.chouette.model.user.User, fr.certu.chouette.model.neptune.NeptuneIdentifiedObject)
@@ -115,11 +123,11 @@ public class VehicleJourneyManager extends AbstractNeptuneManager<VehicleJourney
 	@Transactional
 	@Override
 	public void save(User user, VehicleJourney vehicleJourney, boolean propagate)
-	throws ChouetteException 
-	{
+			throws ChouetteException 
+			{
 		vehicleJourney.sortVehicleJourneyAtStops();
 		super.save(user, vehicleJourney, propagate);
-	}
+			}
 
 	/* (non-Javadoc)
 	 * @see fr.certu.chouette.manager.AbstractNeptuneManager#saveOrUpdateAll(fr.certu.chouette.model.user.User, java.util.List)
@@ -127,14 +135,14 @@ public class VehicleJourneyManager extends AbstractNeptuneManager<VehicleJourney
 	@Transactional
 	@Override
 	public void saveOrUpdateAll(User user, List<VehicleJourney> vehicleJourneys)
-	throws ChouetteException 
-	{
+			throws ChouetteException 
+			{
 		for (VehicleJourney vehicleJourney : vehicleJourneys) 
 		{
 			vehicleJourney.sortVehicleJourneyAtStops();
 		}
 		super.saveOrUpdateAll(user, vehicleJourneys);
-	}
+			}
 
 
 }

@@ -85,7 +85,7 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject
     */
    @Getter
    @Transient
-   private boolean completed = false;
+   protected boolean completed = false;
 
    @Transient
    private String unsaved_name;

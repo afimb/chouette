@@ -174,7 +174,7 @@ public class GtfsData
 		int columns = csvLine.length;
 
 		logger.debug(fileName+"header = "+Arrays.toString(csvLine));
-		
+
 		factory.initHeader(csvLine);
 
 		int lineNumber = 1;
@@ -189,10 +189,10 @@ public class GtfsData
 				{
 					if(warnCount < 6)
 					{
-					logger.warn(fileName+" : line "+(lineNumber)+" has missing mandatory data, ignored");        		 
-					logger.warn(fileName+"line = "+Arrays.toString(csvLine));
+						logger.warn(fileName+" : line "+(lineNumber)+" has missing mandatory data, ignored");        		 
+						logger.warn(fileName+"line = "+Arrays.toString(csvLine));
 					}
-                    warnCount++;
+					warnCount++;
 				}
 				else
 				{
@@ -220,51 +220,57 @@ public class GtfsData
 		reader.close();
 		beans.flush();
 
+		if (optimizeMemory)
+		{
+			Statement stmt = conn.createStatement();
+			factory.createIndex(stmt);
+			stmt.close(); 
+		}
 	}
 
 	public void loadAgencies(InputStream input,Report report) throws Exception
 	{
-		loadGtfsBean("agency.txt","agencies",input,new GtfsAgencyFactory(),agencies,report);
+		loadGtfsBean("agency.txt","agencies",input,agencyFactory,agencies,report);
 	}
 
 
 	public void loadCalendarDates(InputStream input,Report report) throws Exception
 	{
-		loadGtfsBean("calendar_dates.txt","calendar dates",input,new GtfsCalendarDateFactory(),calendarDates,report);
+		loadGtfsBean("calendar_dates.txt","calendar dates",input,calendarDateFactory,calendarDates,report);
 	}
 
 	public void loadCalendars(InputStream input,Report report) throws Exception
 	{
-		loadGtfsBean("calendar.txt","calendars",input,new GtfsCalendarFactory(),calendars,report);
+		loadGtfsBean("calendar.txt","calendars",input,calendarFactory,calendars,report);
 	}
 
 	public void loadFrequencies(InputStream input,Report report) throws Exception
 	{
-		loadGtfsBean("frequencies.txt","frequencies",input,new GtfsFrequencyFactory(),frequencies,report);
+		loadGtfsBean("frequencies.txt","frequencies",input,frequencyFactory,frequencies,report);
 	}
 	public void loadRoutes(InputStream input,Report report) throws Exception
 	{
-		loadGtfsBean("routes.txt","routes",input,new GtfsRouteFactory(),routes,report);
+		loadGtfsBean("routes.txt","routes",input,routeFactory,routes,report);
 	} 
 	public void loadStops(InputStream input,Report report) throws Exception
 	{
-		loadGtfsBean("stops.txt","stops",input,new GtfsStopFactory(),stops,report);
+		loadGtfsBean("stops.txt","stops",input,stopFactory,stops,report);
 	}
 	public void loadStopTimes(InputStream input,Report report) throws Exception
 	{
-		loadGtfsBean("stop_times.txt","stopTimes",input,new GtfsStopTimeFactory(),stopTimes,report);
+		loadGtfsBean("stop_times.txt","stopTimes",input,stopTimeFactory,stopTimes,report);
 	}
 	public void loadTrips(InputStream input,Report report) throws Exception
 	{
-		loadGtfsBean("trips.txt","trips",input,new GtfsTripFactory(),trips,report);
+		loadGtfsBean("trips.txt","trips",input,tripFactory,trips,report);
 	}
 	public void loadShapes(InputStream input,Report report) throws Exception
 	{
-		loadGtfsBean("shapes.txt","shapes",input,new GtfsShapeFactory(),shapes,report);
+		loadGtfsBean("shapes.txt","shapes",input,shapeFactory,shapes,report);
 	}
 	public void loadTransfers(InputStream input,Report report) throws Exception
 	{
-		loadGtfsBean("transfers.txt","transfers",input,new GtfsTransferFactory(),transfers,report);
+		loadGtfsBean("transfers.txt","transfers",input,transferFactory,transfers,report);
 	}
 
 	public boolean connect(Report report)
