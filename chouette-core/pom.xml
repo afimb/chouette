@@ -125,47 +125,6 @@
 			</testResource>
 		</testResources>
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>2.1.2</version>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<goals>
-							<goal>jar-no-fork</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<!-- delombok sources for javadoc <plugin> <groupId>org.apache.maven.plugins</groupId> 
-				<artifactId>maven-antrun-plugin</artifactId> <version>1.6</version> <dependencies> 
-				</dependencies> <executions> <execution> <id>attach-javadocs</id> <phase>package</phase> 
-				<configuration> <target> <taskdef classname="lombok.delombok.ant.DelombokTask" 
-				name="delombok" > <classpath refid="maven.compile.classpath"/> </taskdef> 
-				<mkdir dir="target/src-delomboked" /> <delombok verbose="true" encoding="UTF-8" 
-				to="target/src-delomboked" from="src/main/java" /> <mkdir dir="target/apidocs" 
-				/> <javadoc sourcepath="target/src-delomboked" defaultexcludes="yes" destdir="target/apidocs" 
-				access="private"/> </target> </configuration> <goals> <goal>run</goal> </goals> 
-				</execution> </executions> </plugin> -->
-			<!-- no delombok sources for javadoc -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<configuration>
-					<quiet>false</quiet>
-					<show>private</show>
-				</configuration>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<phase>package</phase>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 			<!-- -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

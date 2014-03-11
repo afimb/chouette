@@ -36,10 +36,22 @@ public class Company extends NeptuneIdentifiedObject
 {
    private static final long serialVersionUID = -8086291270595894778L;
 
+   
    @Getter
    @Column(name = "name", nullable=false)
    private String name;
    
+  /**
+   * -- GETTER --
+   * get short name
+   *
+   * @return short name
+   *
+   * -- SETTER --
+   * set short name
+   *
+   * @param name short name to set
+   */
    @Getter
    @Setter
    @Column(name = "short_name")
