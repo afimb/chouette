@@ -520,7 +520,7 @@ public class ExportCommand
 	private void saveExportReports(GuiExport export, String format,List<Report> reports)
 	{
 		int position = 1;
-		Filter filter = Filter.getNewEqualsFilter("parentId", export);
+		Filter filter = Filter.getNewEqualsFilter("parent", export);
 		List<ExportLogMessage> messages = exportLogMessageDao.select(filter);
 		if (messages != null)
 		{

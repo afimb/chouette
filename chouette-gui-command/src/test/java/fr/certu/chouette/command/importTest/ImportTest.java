@@ -97,7 +97,7 @@ public class ImportTest extends AbstractTestNGSpringContextTests
    }
 
    @SuppressWarnings("unchecked")
-   private ImportTask prepareImportTask(Referential ref, String filename)
+   private ImportTask prepareImportTask(Referential ref, String filename, boolean save)
    {
       IDaoTemplate<ImportTask> importDao = (IDaoTemplate<ImportTask>) applicationContext.getBean("importDao");
       IDaoTemplate<CompilanceCheckTask> compilanceDao = (IDaoTemplate<CompilanceCheckTask>) applicationContext
@@ -107,7 +107,7 @@ public class ImportTest extends AbstractTestNGSpringContextTests
       JSONObject parameters = new JSONObject();
       parameters.put("format", "NEPTUNE");
       parameters.put("file_path", filename);
-      parameters.put("no_save", true);
+      parameters.put("no_save", !save);
       importTask.setParameters(parameters);
       CompilanceCheckTask compilanceCheckTask = new CompilanceCheckTask();
       importTask.setCompilanceCheckTask(compilanceCheckTask);
@@ -183,7 +183,7 @@ public class ImportTest extends AbstractTestNGSpringContextTests
       Command.setBeanFactory(applicationContext);
       Command.initDao();
       Referential ref = prepareReferential();
-      ImportTask importTask = prepareImportTask(ref, "src/test/data/neptune.zip");
+      ImportTask importTask = prepareImportTask(ref, "src/test/data/neptune.zip",true);
       Command command = (Command) applicationContext.getBean("Command");
       String[] args = { "-c", "import", "-id", Long.toString(importTask.getId()) };
       int code = command.execute(args);
@@ -267,7 +267,7 @@ public class ImportTest extends AbstractTestNGSpringContextTests
       Command.setBeanFactory(applicationContext);
       Command.initDao();
       Referential ref = prepareReferential();
-      ImportTask importTask = prepareImportTask(ref, "src/test/data/bidon.zip");
+      ImportTask importTask = prepareImportTask(ref, "src/test/data/bidon.zip",false);
       Command command = (Command) applicationContext.getBean("Command");
       String[] args = { "-c", "import", "-id", Long.toString(importTask.getId()) };
       int code = command.execute(args);
