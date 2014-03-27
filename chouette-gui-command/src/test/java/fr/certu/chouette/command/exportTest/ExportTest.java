@@ -94,7 +94,7 @@ public class ExportTest extends AbstractTestNGSpringContextTests
 	    		            "-exportid", Long.toString(exportTask.getId()),
 	    		            "-format", "NEPTUNE",
 	    		            "-o", "line",
-	    		            "-outputFile", "target/exp_Neptune_test.zip"
+	    		            "-outputFile", f.getAbsolutePath()
 	    		            };
 	      int code = command.execute(args);
 	      Command.closeDao();
