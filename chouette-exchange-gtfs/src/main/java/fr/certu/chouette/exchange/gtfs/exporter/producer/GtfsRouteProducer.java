@@ -94,10 +94,14 @@ public class GtfsRouteProducer extends AbstractProducer<GtfsRoute, Route>
          case TROLLEYBUS:
          case COACH:
          case BUS : route.setRouteType(GtfsRoute.BUS);break;
+         case VAL:
          case METRO : route.setRouteType(GtfsRoute.SUBWAY);break;
-         case LOCALTRAIN: 
-         case LONGDISTANCETRAIN : 
+         case RAPIDTRANSIT:
+         case LOCALTRAIN:
+         case LONGDISTANCETRAIN :
          case TRAIN : route.setRouteType(GtfsRoute.RAIL);break;
+         case FERRY : route.setRouteType(GtfsRoute.FERRY);break;
+         case WATERBORNE : route.setRouteType(GtfsRoute.SUSPENDED_CAR);break;
          default: route.setRouteType(GtfsRoute.BUS);
          }
       }
