@@ -1,4 +1,11 @@
-# Version 2.3.0 (en développement)
+# Version 2.4.0 (en développement)
+* Corrections d'annomalies
+  * L'Import GTFS importe les fichiers avec marqueurs BOM (Mantis 21260)
+  * L'Import GTFS accepte des routes sans colonne agencyId (Mantis 22665)
+  * L'Export GTFS sort en erreur sur objet à exportee incomplêt (Mantis 24484)
+  * L'Export CSV sort un message inexploitable sur informations incomplètes (Mantis 24485)
+  
+# Version 2.3.0 (06/03/14, en cours de qualification)
 * migration technique
   * passage sous spring 4
   * passage sous hibernate 4
