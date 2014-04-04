@@ -204,8 +204,8 @@ public class ExportCommand
 			saveExportReports(guiExport,format,reports);
 			return 1;
 		}
-		saveExportReports(guiExport,format,reports);
-		return 0;
+		return saveExportReports(guiExport,format,reports);
+
 	}
 
 
@@ -517,9 +517,10 @@ public class ExportCommand
 		return position;
 	}
 
-	private void saveExportReports(GuiExport export, String format,List<Report> reports)
+	private int saveExportReports(GuiExport export, String format,List<Report> reports)
 	{
 		int position = 1;
+		int retVal = 1;
 		Filter filter = Filter.getNewEqualsFilter("parent", export);
 		List<ExportLogMessage> messages = exportLogMessageDao.select(filter);
 		if (messages != null)
@@ -536,7 +537,10 @@ public class ExportCommand
 				position = saveExportReport(export,"",report,position);
 			else
 				position = saveExportReport(export,format+"_",report,position);
+			// return ok when at least one report is ok or warning
+			if (report.getStatus().ordinal() <= Report.STATE.WARNING.ordinal()) retVal = 0;
 		}
+		return retVal;
 
 	}
 

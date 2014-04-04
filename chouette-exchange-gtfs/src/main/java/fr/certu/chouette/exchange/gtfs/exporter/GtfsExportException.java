@@ -16,7 +16,7 @@ import fr.certu.chouette.common.ChouetteException;
 @SuppressWarnings("serial")
 public class GtfsExportException extends ChouetteException
 {
-   private static final String PREFIX = "COR";
+   private static final String PREFIX = "GTFS";
    private GtfsExportExceptionCode code;
 
    /**

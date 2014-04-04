@@ -221,7 +221,7 @@ public class GtfsLineExportPlugin implements IExportPlugin<Line>
 		}
 		catch (GtfsExportException e)
 		{
-			logger.error("incomplete data");
+			logger.error("incomplete data",e);
 			try 
 			{
 				out.close();
@@ -251,7 +251,9 @@ public class GtfsLineExportPlugin implements IExportPlugin<Line>
 		}
 		catch (GtfsExportException e)
 		{
-			logger.error("zipEntry failure "+e.getMessage());
+			logger.error("zipEntry failure "+e.getMessage(),e);
+			GtfsReportItem item = new GtfsReportItem(GtfsReportItem.KEY.FILE_ACCESS, STATE.ERROR, fileName);
+			report.addItem(item);
 		}
 
 		try
