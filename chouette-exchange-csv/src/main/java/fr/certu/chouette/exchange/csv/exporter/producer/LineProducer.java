@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
+import fr.certu.chouette.exchange.csv.exporter.report.CSVReportItem;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.Route;
@@ -16,6 +17,7 @@ import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
+import fr.certu.chouette.plugin.report.Report;
 
 public class LineProducer extends AbstractCSVNeptuneProducer<Line>
 {
@@ -49,7 +51,7 @@ public class LineProducer extends AbstractCSVNeptuneProducer<Line>
 
 
 	@Override
-	public List<String[]> produce(Line line)
+	public List<String[]> produce(Line line, Report report)
 	{
 		List<String[]> csvLinesList = new ArrayList<String[]>();
 		csvLinesList.add(createCSVLine(LINE_NAME_TITLE, line.getName()));
@@ -70,10 +72,9 @@ public class LineProducer extends AbstractCSVNeptuneProducer<Line>
 		List<Route> routes = new ArrayList<Route>(line.getRoutes());
 		if (routes.size() > 2)
 		{
+			// normally reported before this call
 			throw new IllegalArgumentException("cannot export lines with more than 2 routes");
 
-			// TODO report problem
-			//return null;
 		}
 		// sort routes (A before R)
 		Collections.sort(routes, new WaybackRouteComparator());
@@ -81,10 +82,14 @@ public class LineProducer extends AbstractCSVNeptuneProducer<Line>
 		int vehicleJourneysCount = routes.size();//add one dummy vehicle journey for each route
 		for (Route route : routes)
 		{
-			List<JourneyPattern> journeyPatterns = route.getJourneyPatterns();
-			for (JourneyPattern journeyPattern : journeyPatterns)
+			if (route.getJourneyPatterns() != null)
 			{
-				vehicleJourneysCount += journeyPattern.getVehicleJourneys().size();
+				List<JourneyPattern> journeyPatterns = route.getJourneyPatterns();
+				for (JourneyPattern journeyPattern : journeyPatterns)
+				{
+					if (journeyPattern.getVehicleJourneys() != null)
+						vehicleJourneysCount += journeyPattern.getVehicleJourneys().size();
+				}
 			}
 		}
 
@@ -106,6 +111,7 @@ public class LineProducer extends AbstractCSVNeptuneProducer<Line>
 		int vehicleJourneyColumn = TITLE_COLUMN + 1; // must not be reseted for second route ! 
 		for (Route route : routes)
 		{
+			if (route.getStopPoints() == null) break;
 			for (StopPoint stopPointOnRoute : route.getStopPoints())
 			{
 				StopArea boardingPosition = stopPointOnRoute.getContainedInStopArea();
@@ -123,32 +129,8 @@ public class LineProducer extends AbstractCSVNeptuneProducer<Line>
 				vehicleJourneys.addAll(vjByJourney);
 			}
 
-
-			//dummy vehicleJourney global informations are filled with the ones of the first vehicleJourney of the route
-			VehicleJourney dummyVJ = vehicleJourneys.get(0);
-			vehicleJourneyDirectionCSVLine[vehicleJourneyColumn] = ("R".equals(dummyVJ.getRoute().getWayBack()) ? "RETOUR"
+			vehicleJourneyDirectionCSVLine[vehicleJourneyColumn] = ("R".equals(route.getWayBack()) ? "RETOUR"
 					: "ALLER");
-			List<Timetable> dummyVJTimetables = dummyVJ.getTimetables();
-			if (dummyVJTimetables != null && dummyVJTimetables.size() > 0)
-			{
-				{
-					String tmCode = dummyVJTimetables.get(0).getVersion();
-					if (tmCode == null || tmCode.isEmpty())
-						tmCode = dummyVJTimetables.get(0).getComment();
-					vehicleJourneyTimetableCSVLine[vehicleJourneyColumn] = tmCode;
-				}
-				for (int i = 1; i < dummyVJTimetables.size(); i++)
-				{
-					String tmCode = dummyVJTimetables.get(i).getVersion();
-					if (tmCode == null || tmCode.isEmpty())
-						tmCode = dummyVJTimetables.get(i).getComment();
-					vehicleJourneyTimetableCSVLine[vehicleJourneyColumn] += ","+tmCode;
-				}
-			}
-			else{
-				// TODO add report item
-			}
-			vehicleJourneySpecificCSVLine[vehicleJourneyColumn] = dummyVJ.getVehicleTypeIdentifier();
 
 			vehicleJourneyColumn++;
 

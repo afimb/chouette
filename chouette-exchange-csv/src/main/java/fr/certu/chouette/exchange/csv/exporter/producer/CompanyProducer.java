@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.certu.chouette.model.neptune.Company;
+import fr.certu.chouette.plugin.report.Report;
 
 public class CompanyProducer extends AbstractCSVNeptuneProducer<Company> {
 
@@ -17,7 +18,7 @@ public class CompanyProducer extends AbstractCSVNeptuneProducer<Company> {
 	   public static final String  EMAIL_TITLE        = "Email";
 	   
 	@Override
-	public List<String[]> produce(Company company) {
+	public List<String[]> produce(Company company,Report report) {
 		List<String[]> csvLinesList = new ArrayList<String[]>();
 		csvLinesList.add(createCSVLine(COMPANY_NAME_TITLE, company.getName()));
 		csvLinesList.add(createCSVLine(CODE_TITLE, company.getRegistrationNumber()));
@@ -30,5 +31,6 @@ public class CompanyProducer extends AbstractCSVNeptuneProducer<Company> {
 
 		return csvLinesList;
 	}
+
 
 }

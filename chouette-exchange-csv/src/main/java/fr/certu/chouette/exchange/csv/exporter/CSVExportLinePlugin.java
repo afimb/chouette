@@ -113,7 +113,7 @@ public class CSVExportLinePlugin implements IExportPlugin<Line> {
                 	line.complete();
                     ByteArrayOutputStream stream = new ByteArrayOutputStream();
     				try {
-						exportLine(new OutputStreamWriter(stream, "UTF-8"), line);
+						exportLine(new OutputStreamWriter(stream, "UTF-8"), line,report);
 
 	                    // Add ZIP entry to output stream.
 	                    ZipEntry entry = new ZipEntry(line.getName()+"_"+line.getId()+".csv");
@@ -143,7 +143,7 @@ public class CSVExportLinePlugin implements IExportPlugin<Line> {
 			try 
 			{
 				line.complete();
-				exportLine(new OutputStreamWriter(new FileOutputStream(fileName), "UTF-8"), line);
+				exportLine(new OutputStreamWriter(new FileOutputStream(fileName), "UTF-8"), line,report);
 			} 
 			catch (IOException e) 
 			{
@@ -152,24 +152,24 @@ public class CSVExportLinePlugin implements IExportPlugin<Line> {
 		}
 	}
 
-	private void exportLine(Writer writer, Line line) {
+	private void exportLine(Writer writer, Line line, Report report) {
 		List<Timetable> timetables = line.getTimetables();
 		
 		try {
 			CSVWriter csvWriter = new CSVWriter(writer, ';',CSVWriter.NO_QUOTE_CHARACTER);
 			for(Timetable timetable : timetables)
 			{
-				csvWriter.writeAll(timetableProducer.produce(timetable));
+				csvWriter.writeAll(timetableProducer.produce(timetable,report));
 				csvWriter.writeNext(new String[0]);
 			}
 			
-			csvWriter.writeAll(ptNetworkProducer.produce(line.getPtNetwork()));
+			csvWriter.writeAll(ptNetworkProducer.produce(line.getPtNetwork(),report));
 			csvWriter.writeNext(new String[0]);
 			
-			csvWriter.writeAll(companyProducer.produce(line.getCompany()));
+			csvWriter.writeAll(companyProducer.produce(line.getCompany(),report));
 			csvWriter.writeNext(new String[0]);
 			
-			csvWriter.writeAll(lineProducer.produce(line));
+			csvWriter.writeAll(lineProducer.produce(line,report));
 			csvWriter.writeNext(new String[0]);
 			
 			csvWriter.close();

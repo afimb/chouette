@@ -11,6 +11,7 @@ package fr.certu.chouette.exchange.csv.exporter.producer;
 import java.util.List;
 
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
+import fr.certu.chouette.plugin.report.Report;
 
 /**
  * @author michel
@@ -18,5 +19,5 @@ import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
  */
 public interface ICSVNeptuneProducer <T extends NeptuneIdentifiedObject> 
 {
-    List<String[]> produce(T o);
+    List<String[]> produce(T o, Report report);
 }

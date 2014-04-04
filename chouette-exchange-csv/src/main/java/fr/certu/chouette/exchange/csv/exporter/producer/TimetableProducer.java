@@ -8,6 +8,7 @@ import java.util.List;
 import fr.certu.chouette.model.neptune.Period;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.type.DayTypeEnum;
+import fr.certu.chouette.plugin.report.Report;
 
 public class TimetableProducer extends AbstractCSVNeptuneProducer<Timetable> {
 
@@ -31,7 +32,7 @@ public class TimetableProducer extends AbstractCSVNeptuneProducer<Timetable> {
 
 	   
 	@Override
-	public List<String[]> produce(Timetable timetable) {
+	public List<String[]> produce(Timetable timetable, Report report) {
 		List<String[]> csvLinesList = new ArrayList<String[]>();
 		
 		csvLinesList.add(createCSVLine(TIMETABLE_LABEL_TITLE, timetable.getComment()));

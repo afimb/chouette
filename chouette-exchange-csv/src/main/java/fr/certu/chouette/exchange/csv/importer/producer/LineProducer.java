@@ -211,12 +211,6 @@ public class LineProducer extends AbstractModelProducer<Line>
 				throw new ExchangeException(ExchangeExceptionCode.MISSING_VALUES, TIMETABLE_TITLE,
 						Integer.toString(timetables.length), lineName);
 
-			for (int i = TITLE_COLUMN + 1; i < lastVehicleJourneyRank; i++)
-			{
-				if (timetables[i] == null || timetables[i].isEmpty())
-					throw new ExchangeException(ExchangeExceptionCode.MISSING_VALUES, TIMETABLE_TITLE, Integer.toString(i),
-							lineName);
-			}
 			String[] specific = csvReader.readNext();
 			if (checkLine(specific))
 				throw new ExchangeException(ExchangeExceptionCode.MISSING_TAG, SPECIFIC_TITLE, lineName);
@@ -306,7 +300,7 @@ public class LineProducer extends AbstractModelProducer<Line>
 					// logger.debug("add "+physical.getName()+" to route");
 				}
 				route.rebuildPTLinks();
-				buildJourneys(route, arrets, timetables, specific, 0, wayBackRouteRank, journeyColumn, waybackRouteColumn);
+				buildJourneys(route, arrets, timetables, specific, 0, wayBackRouteRank, journeyColumn, waybackRouteColumn,lineName);
 			}
 			// build second route 
 			if (waybackRouteColumn != routeColumn)
@@ -361,7 +355,7 @@ public class LineProducer extends AbstractModelProducer<Line>
 				}
 				wayback.rebuildPTLinks();
 				buildJourneys(wayback, arrets, timetables, specific, wayBackRouteRank, arrets.size(), journeyColumn,
-						lastVehicleJourneyRank);
+						lastVehicleJourneyRank,lineName);
 			}
 
 		}
@@ -382,7 +376,7 @@ public class LineProducer extends AbstractModelProducer<Line>
 	 * @param endColumn
 	 */
 	private void buildJourneys(Route route, List<String[]> arrets, String[] timetables, String[] specifics,
-			int startRow, int endRow, int startColumn, int endColumn) throws ExchangeException
+			int startRow, int endRow, int startColumn, int endColumn,String lineName) throws ExchangeException
 			{
 		int rank = 1;
 		int journeyRank = 1;
@@ -393,6 +387,9 @@ public class LineProducer extends AbstractModelProducer<Line>
 		for (int col = startColumn; col < endColumn; col++)
 		{
 			VehicleJourney vj = new VehicleJourney();
+			if (timetables[col] == null || timetables[col].isEmpty())
+			throw new ExchangeException(ExchangeExceptionCode.MISSING_VALUES, TIMETABLE_TITLE, Integer.toString(col),
+					lineName);
 			vj.setComment(timetables[col]);
 			// logger.debug("creating vehicleJourney with "+timetables[col]+" for timetable");
 			String specific = getValue(col, specifics);
