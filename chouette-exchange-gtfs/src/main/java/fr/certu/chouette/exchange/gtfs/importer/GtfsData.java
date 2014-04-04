@@ -319,7 +319,7 @@ public class GtfsData
 				if (route.getAgencyId() == null)
 				{
 					GtfsAgency agency = agencyMap.get("default");
-					if (agency == null) agency = agencies.get(0);
+					if (agency == null) agency = agencies.getAll().get(0);
 					route.setAgency(agency);
 				}
 				else
