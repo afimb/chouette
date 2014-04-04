@@ -98,7 +98,7 @@ public class ModelAssembler
 			importItem.addItem(countItem);
 			countItem = new ExchangeReportItem(ExchangeReportItem.KEY.TIME_TABLE_COUNT,Report.STATE.OK,line.getTimetables().size());
 			importItem.addItem(countItem);
-			
+
 		}
 
 	}
@@ -138,8 +138,17 @@ public class ModelAssembler
 		{
 			line.setPtNetwork(ptNetwork);
 			//			line.setRoutes(getObjectsFromIds(line.getRouteIds(), Route.class));
-			line.setCompany(getObjectFromId(line.getComment(), Company.class));
-			line.setComment(null);
+			if (line.getComment() == null)
+			{
+				// use for default : first company
+				if (!companies.isEmpty()) 
+				   line.setCompany(companies.get(0));
+			}
+			else
+			{
+				line.setCompany(getObjectFromId(line.getComment(), Company.class));
+				line.setComment(null);
+			}
 
 			switch (line.getTransportModeName())
 			{
@@ -177,7 +186,7 @@ public class ModelAssembler
 		}
 
 	}
-	
+
 	private void connectRoutes()
 	{
 	}

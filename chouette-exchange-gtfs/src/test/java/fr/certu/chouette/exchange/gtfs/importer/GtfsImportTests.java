@@ -207,9 +207,26 @@ public class GtfsImportTests extends AbstractTestNGSpringContextTests
    @Test (groups = {"ImportLine"}, description = "Import Plugin should import file",dependsOnMethods={"getBean"})
    public void verifyImportLine() throws ChouetteException
    {
+	   verifyImportLine(path+"/test_gtfs.zip");
+   }
+   
+   @Test (groups = {"ImportLine"}, description = "Import Plugin should set company when no agencyid set",dependsOnMethods={"getBean"})
+   public void verifyImportLineWithNoAgencyId() throws ChouetteException
+   {
+	   verifyImportLine(path+"/test_gtfs_no_agencyid.zip");
+   }
+   
+   @Test (groups = {"ImportLine"}, description = "Import Plugin should accept bom marker",dependsOnMethods={"getBean"})
+   public void verifyImportLineWithBOM() throws ChouetteException
+   {
+	   verifyImportLine(path+"/test_gtfs_bom.zip");
+   }
+
+   private void verifyImportLine(String file) throws ChouetteException
+   {
       List<ParameterValue> parameters = new ArrayList<ParameterValue>();
       SimpleParameterValue simpleParameterValue = new SimpleParameterValue("inputFile");
-      simpleParameterValue.setFilepathValue(path+"/test_gtfs.zip");
+      simpleParameterValue.setFilepathValue(file);
       parameters.add(simpleParameterValue);
       simpleParameterValue = new SimpleParameterValue("objectIdPrefix");
       simpleParameterValue.setStringValue("GTFS");

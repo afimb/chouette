@@ -9,6 +9,7 @@
 package fr.certu.chouette.exchange.gtfs.importer;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.Connection;
@@ -23,6 +24,7 @@ import java.util.Map;
 
 import lombok.Getter;
 
+import org.apache.commons.io.input.BOMInputStream;
 import org.apache.log4j.Logger;
 
 import au.com.bytecode.opencsv.CSVReader;
@@ -166,9 +168,7 @@ public class GtfsData
 
 	private <T extends GtfsBean> void loadGtfsBean(String fileName,String beanName,InputStream input,GtfsBeanFactory<T> factory,DbList<T> beans,Report report) throws Exception
 	{
-		// List<String[]> fileLines = loadFile(input);
-		// TODO: check bom
-		CSVReader reader = new CSVReader(new InputStreamReader(input, "UTF-8"), ',', '"' );
+		CSVReader reader = new CSVReader(new InputStreamReader(new BOMInputStream(input)), ',', '"' );
 		String[] csvLine = reader.readNext();
 
 		int columns = csvLine.length;
@@ -276,18 +276,12 @@ public class GtfsData
 	public boolean connect(Report report)
 	{
 		boolean ok = true;
-		Map<String,GtfsRoute> routeMap = new HashMap<String, GtfsRoute>();
 		Map<String,GtfsAgency> agencyMap = new HashMap<String, GtfsAgency>();
-		//      Map<String,GtfsTrip> tripMap = new HashMap<String, GtfsTrip>();
 		Map<String,GtfsCalendar> calendarMap = new HashMap<String, GtfsCalendar>();
-		Map<String,GtfsStop> stopMap = new HashMap<String, GtfsStop>();
+
 		for (GtfsAgency agency : agencies.getAll()) 
 		{
 			agencyMap.put(agency.getAgencyId(),agency);
-		}
-		for (GtfsStop stop : stops.getAll())
-		{
-			stopMap.put(stop.getStopId(),stop);
 		}
 		for (GtfsCalendar calendar : calendars.getAll())
 		{
@@ -304,28 +298,43 @@ public class GtfsData
 				calendars.add(calendar);
 				logger.info("calendar created from date "+date.getServiceId());
 			}
-
-			// calendar.addCalendarDate(date); // connection made by NeptuneConverter
-
 		}
 		calendars.flush();
-		for (GtfsRoute route : routes.getAll())
+
+		if (agencies.size() == 0)
 		{
-			routeMap.put(route.getRouteId(), route);
-			// agencyId is optionnal when only one agency is provided
-			if (route.getAgencyId() == null && agencyMap.size() == 1)
+			logger.error("no agency defined");
+			ok = false;
+
+		}
+		else
+		{
+			for (GtfsRoute route : routes.getAll())
 			{
-				route.setAgencyId(agencyMap.keySet().iterator().next());
-			}
-			GtfsAgency agency = agencyMap.get(route.getAgencyId());
-			if (agency == null)
-			{
-				logger.error("Route line "+route.getFileLineNumber()+" : routeId = "+route.getRouteId()+" has no agency");
-				ok = false;
-			}
-			else
-			{
-				route.setAgency(agency);
+				// agencyId is optionnal when only one agency is provided
+				if (route.getAgencyId() == null && agencyMap.size() == 1)
+				{
+					route.setAgencyId(agencyMap.keySet().iterator().next());
+				}
+				if (route.getAgencyId() == null)
+				{
+					GtfsAgency agency = agencyMap.get("default");
+					if (agency == null) agency = agencies.get(0);
+					route.setAgency(agency);
+				}
+				else
+				{
+					GtfsAgency agency = agencyMap.get(route.getAgencyId());
+					if (agency == null)
+					{
+						logger.error("Route line "+route.getFileLineNumber()+" : routeId = "+route.getRouteId()+" has no agency");
+						ok = false;
+					}
+					else
+					{
+						route.setAgency(agency);
+					}
+				}
 			}
 		}
 		return ok;

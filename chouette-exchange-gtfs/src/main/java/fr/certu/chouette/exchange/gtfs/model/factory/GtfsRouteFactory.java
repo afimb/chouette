@@ -47,8 +47,8 @@ public class GtfsRouteFactory extends GtfsBeanFactory<GtfsRoute>
 		bean.setFileLineNumber(lineNumber);
 		bean.setRouteId(getValue("route_id", csvLine));
 		String agencyId = getValue("agency_id", csvLine);
-		if (agencyId == null) agencyId = "default";
-		bean.setAgencyId(agencyId);
+		// if (agencyId == null) agencyId = "default";
+		// bean.setAgencyId(agencyId);
 		bean.setRouteShortName(getValue("route_short_name", csvLine));
 		bean.setRouteLongName(getValue("route_long_name", csvLine));
 		bean.setRouteDesc(getValue("route_desc", csvLine));
