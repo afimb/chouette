@@ -3,30 +3,79 @@
  */
 package fr.certu.chouette.plugin.model;
 
-
-
-import org.json.JSONObject;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import org.hibernate.annotations.Type;
+import org.json.JSONObject;
 
 /**
  * @author michel
- *
+ * 
  */
+@Entity
+@Table(name = "import_tasks", schema = "public")
+@NoArgsConstructor
 public class ImportTask extends ActiveRecordObject
 {
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = 896326851460511494L;
-	@Getter @Setter private Long referentialId;
-    @Getter @Setter private String status;
-    @Getter @Setter private JSONObject parameters;
-	@Getter @Setter private Long userId;
-	@Getter @Setter private String userName;
-    @Getter @Setter private JSONObject progressInfo;
-    @Getter @Setter private JSONObject result;
-    @Getter @Setter private CompilanceCheckTask compilanceCheckTask;
+
+   private static final long serialVersionUID = 896326851460511494L;
+
+   @Getter
+   @Setter
+   @ManyToOne
+   @JoinColumn(name = "referential_id", nullable = false)
+   private Referential referential;
+
+   @Getter
+   @Setter
+   @Column(name = "status")
+   private String status;
+
+   @Getter
+   @Setter
+   @Column(name = "parameter_set")
+   @Type(type = "fr.certu.chouette.plugin.model.JsonTextUserType")
+   private JSONObject parameters;
+
+   @Getter
+   @Setter
+   @Column(name = "user_id")
+   private Long userId;
+
+   @Getter
+   @Setter
+   @Column(name = "user_name")
+   private String userName;
+
+   @Getter
+   @Setter
+   @Column(name = "progress_info")
+   @Type(type = "fr.certu.chouette.plugin.model.JsonTextUserType")
+   private JSONObject progressInfo;
+
+   @Getter
+   @Setter
+   @Column(name = "result")
+   @Type(type = "fr.certu.chouette.plugin.model.JsonTextUserType")
+   private JSONObject result;
+
+   @Getter
+   @Setter
+   @OneToOne(fetch = FetchType.LAZY, mappedBy = "importTask", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+   private CompilanceCheckTask compilanceCheckTask;
+
+   @Column(name = "parameter_set",insertable=false, updatable=false)
+   private String parameterSet;
 
 }

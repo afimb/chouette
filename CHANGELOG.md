@@ -1,9 +1,15 @@
+# Version 2.3.0 (en développement)
+* migration technique
+  * passage sous spring 4
+  * passage sous hibernate 4
+  * utilisation des annotations JPA
+
 # Version 2.2.0 (14/02/14, en cours de qualification)
 * refonte de la validation
-	* suppression de la validation de fichiers
-	* mise en place de la validation durant l'import
-	* ajout de la validation sur les objets en base
-	* redéfinition des tests
+  * suppression de la validation de fichiers
+  * mise en place de la validation durant l'import
+  * ajout de la validation sur les objets en base
+  * redéfinition des tests
 
 # Version 2.1.0 (15/07/13)
 * Suppression des coordonnées projetées en base

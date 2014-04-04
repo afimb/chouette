@@ -1,6 +1,5 @@
 package fr.certu.chouette.exchange.netex.blueprint;
 
-import java.math.BigDecimal;
 import java.util.UUID;
 
 import com.tobedevoured.modelcitizen.annotation.Blueprint;
@@ -34,11 +33,11 @@ public class StopPointBlueprint {
     @Mapped   
     StopArea containedInStopArea;    
     
-    @Default
-    BigDecimal longitude = new BigDecimal("1.27");
-    
-    @Default
-    BigDecimal latitude = new BigDecimal("2.27");
+//    @Default
+//    BigDecimal longitude = new BigDecimal("1.27");
+//    
+//    @Default
+//    BigDecimal latitude = new BigDecimal("2.27");
     
     @Default
     int position = 1;

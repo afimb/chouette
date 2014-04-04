@@ -14,7 +14,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import org.apache.log4j.Logger;
 
@@ -28,9 +27,9 @@ import fr.certu.chouette.plugin.report.Report;
  * @author michel
  *
  */
-@NoArgsConstructor
 public class GtfsStopFactory extends GtfsBeanFactory<GtfsStop> 
 {
+
 	private static final Logger logger = Logger.getLogger(GtfsStopFactory.class);
 	@Getter private final String dropSql = "drop table if exists stop;";
 	@Getter private final String createSql = "create table stop (num, id, code,name,desc,lat,lon,zoneid,url,locationtype,parentstation);";
@@ -39,9 +38,12 @@ public class GtfsStopFactory extends GtfsBeanFactory<GtfsStop>
 	@Getter private final String selectSql = "select num, id, code,name,desc,lat,lon,zoneid,url,locationtype,parentstation from stop ";
 	@Getter private final String[] dbHeader = new String[]{"num","stop_id","stop_code","stop_name","stop_desc","stop_lat","stop_lon","zone_id","stop_url","location_type","parent_station"};
 
+	public GtfsStopFactory() {
+		super(GtfsStop.class);
+	}
 	@Override
 	public GtfsStop getNewGtfsBean(int lineNumber, String[] csvLine,Report report) {
-		GtfsStop bean = new GtfsStop();
+		GtfsStop bean = getNewGtfsBean(GtfsStop.class);
 		bean.setFileLineNumber(lineNumber);
 		bean.setStopId(getValue("stop_id", csvLine));
 		bean.setStopCode(getValue("stop_code", csvLine));

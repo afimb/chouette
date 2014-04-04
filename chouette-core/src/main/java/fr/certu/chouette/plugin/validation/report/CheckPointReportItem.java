@@ -4,7 +4,6 @@
 package fr.certu.chouette.plugin.validation.report;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Locale;
 import java.util.MissingResourceException;

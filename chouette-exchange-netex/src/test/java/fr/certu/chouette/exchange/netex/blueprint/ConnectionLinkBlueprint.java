@@ -51,7 +51,7 @@ public class ConnectionLinkBlueprint {
     int objectVersion = 1;
     
     @Default
-    ConnectionLinkTypeEnum linkType = ConnectionLinkTypeEnum.MIXED;
+    ConnectionLinkTypeEnum linkType = ConnectionLinkTypeEnum.Mixed;
     
     @Default
     Time mobilityRestrictedTravellerDuration = new Time(1908888);

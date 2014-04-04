@@ -78,7 +78,7 @@ public class ConnectionLinkJdbcDao extends AbstractJdbcDao<ConnectionLink>
 		ps.setTime(16, mobilityrestrictedtravellerduration);
 		String linkType = null;
 		if (connectionLink.getLinkType() != null)
-			linkType = connectionLink.getLinkType().value();
+			linkType = connectionLink.getLinkType().name();
 		ps.setString(17, linkType);
 		ps.setObject(18, connectionLink.getIntUserNeeds());
 	}

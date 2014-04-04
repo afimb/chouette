@@ -75,20 +75,20 @@ public class ComplexModelFactory {
             for ( int i=0; i<quayCount; i++) {
                 StopArea stopAreaCommercial = modelFactory.createModel(StopArea.class);
                 stopAreaCommercial.setObjectId( "T:StopArea:CSP-"+i);
-                stopAreaCommercial.setAreaType( ChouetteAreaEnum.COMMERCIALSTOPPOINT);
+                stopAreaCommercial.setAreaType( ChouetteAreaEnum.CommercialStopPoint);
                 stopAreaCommercial.setFareCode( i%5);
                 
                 if (i%2==0) {
                     StopArea stopAreaPlace = modelFactory.createModel(StopArea.class);
                     stopAreaPlace.setObjectId( "T:StopArea:PLC-"+i);
-                    stopAreaPlace.setAreaType( ChouetteAreaEnum.STOPPLACE);
+                    stopAreaPlace.setAreaType( ChouetteAreaEnum.StopPlace);
                     stopPlaces.add(stopAreaPlace);
                     stopAreaCommercial.setParent( stopAreaPlace);
                 }
 
                 StopArea stopArea = modelFactory.createModel(StopArea.class);
                 stopArea.setObjectId( "T:StopArea:"+i);
-                stopArea.setAreaType( ChouetteAreaEnum.QUAY);
+                stopArea.setAreaType( ChouetteAreaEnum.Quay);
                 stopArea.setParent( stopAreaCommercial);
                 
                 stopAreaCommercial.setContainedStopAreas( new ArrayList<StopArea>());
@@ -98,7 +98,7 @@ public class ComplexModelFactory {
                 
                 
                 for ( StopArea sa : quays) {
-                    if ( !sa.getAreaType().equals(ChouetteAreaEnum.QUAY))
+                    if ( !sa.getAreaType().equals(ChouetteAreaEnum.Quay))
                         logger.info( "error: "+sa.getObjectId());
                 }
             }

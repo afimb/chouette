@@ -233,7 +233,7 @@ public class CSVImportTests extends AbstractTestNGSpringContextTests
 		if (!tm.getPeriods().isEmpty())
 		{
 			Assert.assertEquals(tm.getPeriods().size(), 2," when tm has periods, 2 periods are expected");
-			int expectedDayType = Timetable.buildDayTypeMask(Arrays.asList(new DayTypeEnum[]{DayTypeEnum.MONDAY,DayTypeEnum.WEDNESDAY}));
+			int expectedDayType = Timetable.buildDayTypeMask(Arrays.asList(new DayTypeEnum[]{DayTypeEnum.Monday,DayTypeEnum.Wednesday}));
 			Assert.assertEquals(tm.getIntDayTypes(), Integer.valueOf(expectedDayType), "when tm has periods, day type expected for Monday and Wednesday");
 		}
 		if (!tm.getCalendarDays().isEmpty())
@@ -334,11 +334,11 @@ public class CSVImportTests extends AbstractTestNGSpringContextTests
 		Assert.assertEquals(line.getComment(),"Ligne de test pour le format CSV "+rank,"line must have correct comment");
 		Assert.assertEquals(line.getRegistrationNumber(),"ABCD"+rank,"line must have correct registration number");
 		Assert.assertEquals(line.getNumber(),"CSV "+rank,"line must have correct number");
-		Assert.assertEquals(line.getTransportModeName(), TransportModeNameEnum.BUS,"line must be on Bus mode");
+		Assert.assertEquals(line.getTransportModeName(), TransportModeNameEnum.Bus,"line must be on Bus mode");
 		Assert.assertNotNull(line.getPtNetwork(),"line must have a network");
-		Assert.assertNull(line.getGroupOfLines(),"line must have no groupOfLines");
+		Assert.assertTrue(line.getGroupOfLines().isEmpty(),"line must have no groupOfLines");
 		Assert.assertNotNull(line.getCompany(),"line must have a company");
-		Assert.assertNotNull(line.getRoutes(),"line must have routes");
+		Assert.assertFalse(line.getRoutes().isEmpty(),"line must have routes");
 		Assert.assertEquals(line.getRoutes().size(),2,"line must have 2 routes");
 	}
 

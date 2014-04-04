@@ -118,8 +118,8 @@ public class ExportCommand
 		logger.info("  references type : "+guiExport.getReferencesType());
 		logger.info("  reference ids : "+guiExport.getReferenceIds());
 
-		Referential referential = referentialDao.get(guiExport.getReferentialId());
-		logger.info("Referential "+guiExport.getReferentialId());
+		Referential referential = guiExport.getReferential();
+		logger.info("Referential "+referential.getId());
 		logger.info("  name : "+referential.getName());
 		logger.info("  slug : "+referential.getSlug());
 		logger.info("  projection type : "+referential.getProjectionType());
@@ -201,10 +201,10 @@ public class ExportCommand
 			GuiReportItem item = new GuiReportItem(GuiReportItem.KEY.EXCEPTION,Report.STATE.ERROR,e.getMessage());
 			errorReport.addItem(item);
 			reports.add(errorReport);
-			saveExportReports(exportId,format,reports);
+			saveExportReports(guiExport,format,reports);
 			return 1;
 		}
-		saveExportReports(exportId,format,reports);
+		saveExportReports(guiExport,format,reports);
 		return 0;
 	}
 
@@ -485,42 +485,42 @@ public class ExportCommand
 		return values;      
 	}
 
-	private int saveExportReport(Long exportId, String format,Report report,int position)
+	private int saveExportReport(GuiExport export, String format,Report report,int position)
 	{
 		String prefix = report.getOriginKey();
 		if (prefix == null || report instanceof ReportItem) prefix = ((ReportItem) report).getMessageKey();
 		prefix = format+prefix;
-		ExportLogMessage message = new ExportLogMessage(exportId,format,report,position++);
+		ExportLogMessage message = new ExportLogMessage(export,format,report,position++);
 		exportLogMessageDao.save(message);
 		if (report.getItems() != null)
 		{
 			for (ReportItem item : report.getItems())
 			{
-				position = saveExportReportItem(exportId,format,item,prefix,position);
+				position = saveExportReportItem(export,format,item,prefix,position);
 			}
 		}
 		return position;
 	}
 
-	private int saveExportReportItem(Long exportId, String format,ReportItem item, String prefix, int position)
+	private int saveExportReportItem(GuiExport export, String format,ReportItem item, String prefix, int position)
 	{
-		ExportLogMessage message = new ExportLogMessage(exportId,format,item,prefix,position++);
+		ExportLogMessage message = new ExportLogMessage(export,format,item,prefix,position++);
 		exportLogMessageDao.save(message);
 		if (item.getItems() != null)
 		{
 			String subPrefix = prefix+"|"+format+item.getMessageKey();
 			for (ReportItem child : item.getItems())
 			{
-				position = saveExportReportItem(exportId,format,child,subPrefix,position);
+				position = saveExportReportItem(export,format,child,subPrefix,position);
 			}
 		}
 		return position;
 	}
 
-	private void saveExportReports(Long exportId, String format,List<Report> reports)
+	private void saveExportReports(GuiExport export, String format,List<Report> reports)
 	{
 		int position = 1;
-		Filter filter = Filter.getNewEqualsFilter("parentId", exportId);
+		Filter filter = Filter.getNewEqualsFilter("parent", export);
 		List<ExportLogMessage> messages = exportLogMessageDao.select(filter);
 		if (messages != null)
 		{
@@ -533,9 +533,9 @@ public class ExportCommand
 		for (Report report : reports)
 		{
 			if (report instanceof GuiReport) 
-				position = saveExportReport(exportId,"",report,position);
+				position = saveExportReport(export,"",report,position);
 			else
-				position = saveExportReport(exportId,format+"_",report,position);
+				position = saveExportReport(export,format+"_",report,position);
 		}
 
 	}

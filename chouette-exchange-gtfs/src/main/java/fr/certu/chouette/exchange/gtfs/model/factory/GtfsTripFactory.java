@@ -14,7 +14,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import org.apache.log4j.Logger;
 
@@ -28,10 +27,9 @@ import fr.certu.chouette.plugin.report.Report;
  * @author michel
  *
  */
-@NoArgsConstructor
-
 public class GtfsTripFactory extends GtfsBeanFactory<GtfsTrip> 
 {
+
 	private static final Logger logger = Logger.getLogger(GtfsTripFactory.class);
 	@Getter private final String dropSql = "drop table if exists trip;";
 	@Getter private final String createSql = "create table trip (num, id, routeid,serviceid,headsign,shortname,directionid,blockid,shapeid);";
@@ -40,10 +38,14 @@ public class GtfsTripFactory extends GtfsBeanFactory<GtfsTrip>
 	private static final String insertSQL = "insert into trip (num, id, routeid,serviceid,headsign,shortname,directionid,blockid,shapeid) values (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	@Getter private final String selectSql = "select num, id, routeid,serviceid,headsign,shortname,directionid,blockid,shapeid from trip ";
 	@Getter private final String[] dbHeader = new String[]{"num","trip_id","route_id","service_id","trip_headsign","trip_short_name","direction_id","block_id","shape_id"};
-
+	
+	public GtfsTripFactory() 
+	{
+		super(GtfsTrip.class);
+	}
 	@Override
 	public GtfsTrip getNewGtfsBean(int lineNumber, String[] csvLine,Report report) {
-		GtfsTrip bean = new GtfsTrip();
+		GtfsTrip bean = getNewGtfsBean(GtfsTrip.class);
 		bean.setFileLineNumber(lineNumber);
 		bean.setRouteId(getValue("route_id",csvLine));
 		bean.setServiceId(getValue("service_id",csvLine));

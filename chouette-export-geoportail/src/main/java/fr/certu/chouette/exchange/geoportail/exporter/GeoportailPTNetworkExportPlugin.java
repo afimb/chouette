@@ -838,15 +838,15 @@ public class GeoportailPTNetworkExportPlugin implements IExportPlugin<PTNetwork>
     */
    private String toCSV(StopArea area, AOTData aotData)
    {
-      aotData.insertCoords(area.getAreaCentroid().getLongitude(),area.getAreaCentroid().getLatitude());
+      aotData.insertCoords(area.getLongitude(),area.getLatitude());
       aotData.updateAccessCreationTime(area.getCreationTime());
 
       StringBuilder builder = new StringBuilder(); 
       builder.append(quoted(area.getObjectId())); // objectid
       builder.append(FIELD_SEPARATOR);
-      builder.append(quoted(area.getAreaCentroid().getLongitude())); //geom_longitude
+      builder.append(quoted(area.getLongitude())); //geom_longitude
       builder.append(FIELD_SEPARATOR);
-      builder.append(quoted(area.getAreaCentroid().getLatitude())); //geom_latitude
+      builder.append(quoted(area.getLatitude())); //geom_latitude
       builder.append(FIELD_SEPARATOR);
       builder.append(quoted(area.getRegistrationNumber())); // registrationnumber
       builder.append(FIELD_SEPARATOR);
@@ -858,9 +858,9 @@ public class GeoportailPTNetworkExportPlugin implements IExportPlugin<PTNetwork>
       builder.append(FIELD_SEPARATOR);
       builder.append(quoted(area.getComment())); // comment
       builder.append(FIELD_SEPARATOR);
-      if (area.getAreaCentroid().getAddress() != null)
+      if (area.getCountryCode() != null)
       {
-         builder.append(quoted(area.getAreaCentroid().getAddress().getCountryCode())); // countrycode
+         builder.append(quoted(area.getCountryCode())); // countrycode
       }
       else
       {
@@ -871,19 +871,19 @@ public class GeoportailPTNetworkExportPlugin implements IExportPlugin<PTNetwork>
       builder.append(FIELD_SEPARATOR);
       builder.append(quoted(area.getCreatorId())); // creatorid
       builder.append(FIELD_SEPARATOR);
-      builder.append(quoted(area.getAreaCentroid().getLongLatType())); // longlattype
+      builder.append(quoted(area.getLongLatType())); // longlattype
       builder.append(FIELD_SEPARATOR);
-      builder.append(quoted(area.getAreaCentroid().getLongitude())); // longitude
+      builder.append(quoted(area.getLongitude())); // longitude
       builder.append(FIELD_SEPARATOR);
-      builder.append(quoted(area.getAreaCentroid().getLatitude())); // latitude
+      builder.append(quoted(area.getLatitude())); // latitude
       builder.append(FIELD_SEPARATOR);
-      if (area.getAreaCentroid().getProjectedPoint() != null)
+      if (area.getProjectionType() != null)
       {
-         builder.append(quoted(area.getAreaCentroid().getProjectedPoint().getProjectionType())); // projectiontype
+         builder.append(quoted(area.getProjectionType())); // projectiontype
          builder.append(FIELD_SEPARATOR);
-         builder.append(quoted(area.getAreaCentroid().getProjectedPoint().getX())); // x
+         builder.append(quoted(area.getX())); // x
          builder.append(FIELD_SEPARATOR);
-         builder.append(quoted(area.getAreaCentroid().getProjectedPoint().getY())); // y
+         builder.append(quoted(area.getY())); // y
       }
       else
       {
@@ -896,9 +896,9 @@ public class GeoportailPTNetworkExportPlugin implements IExportPlugin<PTNetwork>
       builder.append(FIELD_SEPARATOR);
       builder.append(quoted(area.getObjectVersion())); // objectversion
       builder.append(FIELD_SEPARATOR);
-      if (area.getAreaCentroid().getAddress() != null)
+      if (area.getStreetName() != null)
       {
-         builder.append(quoted(area.getAreaCentroid().getAddress().getStreetName())); // streetname
+         builder.append(quoted(area.getStreetName())); // streetname
       }
       else
       {

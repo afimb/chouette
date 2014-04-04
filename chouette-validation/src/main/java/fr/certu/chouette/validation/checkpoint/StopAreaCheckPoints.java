@@ -87,7 +87,7 @@ public class StopAreaCheckPoints extends AbstractValidation implements ICheckPoi
 		if (!hasCoordinates(stopArea)) return; 
 		long distanceMin = parameters.optLong(INTER_STOP_AREA_DISTANCE_MIN,20);
 		ChouetteAreaEnum type = stopArea.getAreaType();
-		if (type.equals(ChouetteAreaEnum.BOARDINGPOSITION) || type.equals(ChouetteAreaEnum.QUAY))
+		if (type.equals(ChouetteAreaEnum.BoardingPosition) || type.equals(ChouetteAreaEnum.Quay))
 		{
 			if (!stopArea2.getAreaType().equals(type)) return;
 			if (!hasCoordinates(stopArea2)) return;
@@ -186,7 +186,7 @@ public class StopAreaCheckPoints extends AbstractValidation implements ICheckPoi
 	private Collection<Line> getLines(StopArea area)
 	{
 		Set<Line> lines = new HashSet<Line>();
-		if (area.getAreaType().equals(ChouetteAreaEnum.BOARDINGPOSITION) || area.getAreaType().equals(ChouetteAreaEnum.QUAY))
+		if (area.getAreaType().equals(ChouetteAreaEnum.BoardingPosition) || area.getAreaType().equals(ChouetteAreaEnum.Quay))
 		{
 			for (StopPoint point : area.getContainedStopPoints())
 			{

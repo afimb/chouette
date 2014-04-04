@@ -41,10 +41,10 @@ public class VehicleJourneyBlueprint {
     String comment = "comment "+UUID.randomUUID().toString();
 
     @Default
-    ServiceStatusValueEnum serviceStatusValue = ServiceStatusValueEnum.NORMAL;
+    ServiceStatusValueEnum serviceStatusValue = ServiceStatusValueEnum.Normal;
 
     @Default
-    TransportModeNameEnum transportMode = TransportModeNameEnum.COACH;
+    TransportModeNameEnum transportMode = TransportModeNameEnum.Coach;
 
     // TODO: define here number property, but noy so simple
     // @Default

@@ -37,11 +37,11 @@ public class GtfsStopProducer extends AbstractProducer<GtfsStop, StopArea>
    {
       GtfsStop stop = new GtfsStop();
       ChouetteAreaEnum chouetteAreaType = neptuneObject.getAreaType();
-      if (chouetteAreaType.compareTo(ChouetteAreaEnum.BOARDINGPOSITION) == 0)
+      if (chouetteAreaType.compareTo(ChouetteAreaEnum.BoardingPosition) == 0)
          stop.setLocationType(GtfsStop.STOP);
-      else if(chouetteAreaType.compareTo(ChouetteAreaEnum.QUAY) == 0)
+      else if(chouetteAreaType.compareTo(ChouetteAreaEnum.Quay) == 0)
          stop.setLocationType(GtfsStop.STOP);
-      else if(chouetteAreaType.compareTo(ChouetteAreaEnum.COMMERCIALSTOPPOINT) == 0)
+      else if(chouetteAreaType.compareTo(ChouetteAreaEnum.CommercialStopPoint) == 0)
          stop.setLocationType(GtfsStop.STATION);
 //      else if(chouetteAreaType.compareTo(ChouetteAreaEnum.STOPPLACE) == 0)
 //         stop.setLocationType(GtfsStop.STATION);

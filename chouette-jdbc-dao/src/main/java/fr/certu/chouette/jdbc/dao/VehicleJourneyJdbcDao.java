@@ -43,10 +43,10 @@ public class VehicleJourneyJdbcDao extends AbstractJdbcDao<VehicleJourney>
 		transportMode = null;
 
 		if(vehicleJourney.getServiceStatusValue() != null)
-			statusValue = vehicleJourney.getServiceStatusValue().value();
+			statusValue = vehicleJourney.getServiceStatusValue().name();
 
 		if(vehicleJourney.getTransportMode() != null)
-			transportMode = vehicleJourney.getTransportMode().value();
+			transportMode = vehicleJourney.getTransportMode().name();
 
 		ps.setString(6, statusValue );
 		ps.setString(7, transportMode);
@@ -81,7 +81,7 @@ public class VehicleJourneyJdbcDao extends AbstractJdbcDao<VehicleJourney>
 
 			String bordingPossibility = null;
 			if(vAtStop.getBoardingAlightingPossibility() != null)
-				bordingPossibility  = vAtStop.getBoardingAlightingPossibility().value();
+				bordingPossibility  = vAtStop.getBoardingAlightingPossibility().name();
 			ps.setString(4, bordingPossibility);
 			Time arrivaltime = null,
 			departuretime = null,

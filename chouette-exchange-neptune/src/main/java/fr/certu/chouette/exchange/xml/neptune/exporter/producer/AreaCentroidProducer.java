@@ -38,7 +38,7 @@ public class AreaCentroidProducer extends AbstractJaxbNeptuneProducer<ChouetteAr
 			jaxbAreaCentroid.setLatitude(area.getLatitude());
 			jaxbAreaCentroid.setLongitude(area.getLongitude());
 			try {
-				jaxbAreaCentroid.setLongLatType(LongLatTypeType.fromValue(longLatType.value()));
+				jaxbAreaCentroid.setLongLatType(LongLatTypeType.fromValue(longLatType.name()));
 			} catch (IllegalArgumentException e) {
 				// TODO generate report
 			}

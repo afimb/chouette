@@ -109,7 +109,7 @@ public class StopAreaJdbcDao extends AbstractJdbcDao<StopArea>
 		ps.setString(7, stopArea.getComment());
 		String areaType = null;
 		if (stopArea.getAreaType() != null)
-			areaType = stopArea.getAreaType().value();
+			areaType = stopArea.getAreaType().name();
 		ps.setString(8, areaType);
 		ps.setString(9, stopArea.getRegistrationNumber());
 		ps.setString(10, stopArea.getNearestTopicName());
@@ -121,7 +121,7 @@ public class StopAreaJdbcDao extends AbstractJdbcDao<StopArea>
 		ps.setBigDecimal(13, stopArea.getLatitude());
 		String longLatType = null;
 		if (stopArea.getLongLatType() != null)
-			longLatType = stopArea.getLongLatType().value();
+			longLatType = stopArea.getLongLatType().name();
 		ps.setString(14, longLatType);
 		ps.setString(15, stopArea.getCountryCode());
 		ps.setString(16, stopArea.getStreetName());

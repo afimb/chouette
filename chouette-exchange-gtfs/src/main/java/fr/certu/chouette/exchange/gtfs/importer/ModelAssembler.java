@@ -143,12 +143,12 @@ public class ModelAssembler
 
 			switch (line.getTransportModeName())
 			{
-			case LOCALTRAIN :
-			case LONGDISTANCETRAIN :
-			case METRO :
-			case RAPIDTRANSIT :
-			case TRAMWAY :
-			case TRAIN :
+			case LocalTrain :
+			case LongDistanceTrain :
+			case Metro :
+			case RapidTransit :
+			case Tramway :
+			case Train :
 				changeBoardingPositionToQuay(line);
 				break;
 			default :
@@ -171,7 +171,7 @@ public class ModelAssembler
 			{
 				if (point.getContainedInStopArea() != null)
 				{
-					point.getContainedInStopArea().setAreaType(ChouetteAreaEnum.QUAY);
+					point.getContainedInStopArea().setAreaType(ChouetteAreaEnum.Quay);
 				}
 			}
 		}

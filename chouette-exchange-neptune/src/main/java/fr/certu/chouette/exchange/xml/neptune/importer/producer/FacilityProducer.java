@@ -73,7 +73,7 @@ public class FacilityProducer extends AbstractModelProducer<Facility, ChouetteFa
 			// LongLatType mandatory
 			if(xmlFacilityLocation.getLongLatType() != null){
 				try {
-					facility.setLongLatType(LongLatTypeEnum.fromValue(xmlFacilityLocation.getLongLatType().value()));
+					facility.setLongLatType(LongLatTypeEnum.valueOf(xmlFacilityLocation.getLongLatType().value()));
 				} catch (IllegalArgumentException e) {
 					// TODO: handle exception
 					e.printStackTrace();

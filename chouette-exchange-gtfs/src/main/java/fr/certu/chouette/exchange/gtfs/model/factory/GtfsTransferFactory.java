@@ -14,7 +14,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import org.apache.log4j.Logger;
 
@@ -28,10 +27,9 @@ import fr.certu.chouette.plugin.report.Report;
  * @author michel
  *
  */
-@NoArgsConstructor
-
 public class GtfsTransferFactory extends GtfsBeanFactory<GtfsTransfer> 
 {
+
 	private static final Logger logger = Logger.getLogger(GtfsTransferFactory.class);
 	@Getter private final String dropSql = "drop table if exists transfer;";
 	@Getter private final String createSql = "create table transfer (num, fromstopid, tostopid,transfertype,mintransfertime);";
@@ -39,9 +37,12 @@ public class GtfsTransferFactory extends GtfsBeanFactory<GtfsTransfer>
 	@Getter private final String selectSql = "select num, fromstopid, tostopid,transfertype,mintransfertime from transfer ";
 	@Getter private final String[] dbHeader = new String[]{"num","from_stop_id","to_stop_id","transfer_type","min_transfer_time"};
 
+	public GtfsTransferFactory() {
+		super(GtfsTransfer.class);
+	}
 	@Override
 	public GtfsTransfer getNewGtfsBean(int lineNumber, String[] csvLine,Report report) {
-		GtfsTransfer bean = new GtfsTransfer();
+		GtfsTransfer bean = getNewGtfsBean(GtfsTransfer.class);
 		bean.setFileLineNumber(lineNumber);
 		bean.setFromStopId(getValue("from_stop_id",csvLine));
 		bean.setToStopId(getValue("to_stop_id",csvLine));

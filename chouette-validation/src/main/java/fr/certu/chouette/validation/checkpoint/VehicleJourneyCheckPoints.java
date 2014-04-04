@@ -226,7 +226,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation implements ICh
 		if (transportMode == null)
 		{
 			transportMode = vj.getRoute().getLine().getTransportModeName();
-			if (transportMode == null) transportMode = TransportModeNameEnum.OTHER;
+			if (transportMode == null) transportMode = TransportModeNameEnum.Other;
 		}
 		return transportMode;
 	}

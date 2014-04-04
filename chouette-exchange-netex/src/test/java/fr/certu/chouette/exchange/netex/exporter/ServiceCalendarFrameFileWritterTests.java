@@ -84,8 +84,8 @@ public class ServiceCalendarFrameFileWritterTests extends AbstractTestNGSpringCo
         for (int i = 0; i < counter; i++) {
             Timetable timeTable = modelFactory.createModel(Timetable.class);
 
-            timeTable.addDayType(DayTypeEnum.MONDAY);
-            timeTable.addDayType(DayTypeEnum.TUESDAY);
+            timeTable.addDayType(DayTypeEnum.Monday);
+            timeTable.addDayType(DayTypeEnum.Tuesday);
 
             timeTable.addCalendarDay(new Date(10000));
             timeTable.addCalendarDay(new Date(20000));
@@ -110,7 +110,7 @@ public class ServiceCalendarFrameFileWritterTests extends AbstractTestNGSpringCo
             Assert.assertNotNull(xPath.evaluate("//netex:ServiceCalendarFrame//netex:DayType[@id='" +modelTranslator.netexId(timetable) + "']", xmlDocument, XPathConstants.NODE), "Must find DayType");
 
             for (DayTypeEnum dayType : timetable.getDayTypes()) {
-                Assert.assertNotNull(xPath.evaluate("//netex:ServiceCalendarFrame//netex:DayType[@id='" + modelTranslator.netexId(timetable) + "']//netex:PropertyOfDay[netex:DaysOfWeek = '" + dayType.value() + "']", xmlDocument, XPathConstants.STRING), "daysOfWeek must exists");
+                Assert.assertNotNull(xPath.evaluate("//netex:ServiceCalendarFrame//netex:DayType[@id='" + modelTranslator.netexId(timetable) + "']//netex:PropertyOfDay[netex:DaysOfWeek = '" + dayType.name() + "']", xmlDocument, XPathConstants.STRING), "daysOfWeek must exists");
             }
         }
     }

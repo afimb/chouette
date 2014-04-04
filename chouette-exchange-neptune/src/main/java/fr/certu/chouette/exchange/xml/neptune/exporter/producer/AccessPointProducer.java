@@ -24,7 +24,7 @@ public class AccessPointProducer extends AbstractJaxbNeptuneProducer<PTAccessPoi
       // type
       if(accessPoint.getType() != null){
           AccessPointTypeEnum type = accessPoint.getType();
-             jaxbAccessPoint.setType(type.value());
+             jaxbAccessPoint.setType(type.name());
        }
 
       // opening/closingTime
@@ -46,7 +46,7 @@ public class AccessPointProducer extends AbstractJaxbNeptuneProducer<PTAccessPoi
       {
          LongLatTypeEnum longLatType = accessPoint.getLongLatType();
          try {
-            jaxbAccessPoint.setLongLatType(LongLatTypeType.fromValue(longLatType.value()));
+            jaxbAccessPoint.setLongLatType(LongLatTypeType.fromValue(longLatType.name()));
             jaxbAccessPoint.setLatitude(accessPoint.getLatitude());
             jaxbAccessPoint.setLongitude(accessPoint.getLongitude());
          } catch (IllegalArgumentException e) {

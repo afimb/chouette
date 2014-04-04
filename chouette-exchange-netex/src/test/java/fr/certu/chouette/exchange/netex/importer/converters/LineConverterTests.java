@@ -58,7 +58,7 @@ public class LineConverterTests extends AbstractTestNGSpringContextTests {
     @Test(groups = {"ServiceFrame"}, description = "Line's transportModeName attribute reading")
     public void verifyTransportModeName() throws XPathEvalException, NavException, XPathParseException, ParseException {
         Line line = lineConverter.convert();
-        Assert.assertEquals(line.getTransportModeName(), TransportModeNameEnum.METRO);
+        Assert.assertEquals(line.getTransportModeName(), TransportModeNameEnum.Metro);
     }
 
     @Test(groups = {"ServiceFrame"}, description = "Line's registrationNumber attribute reading")

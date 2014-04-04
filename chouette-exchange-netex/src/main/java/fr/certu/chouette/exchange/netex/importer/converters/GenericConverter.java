@@ -88,7 +88,7 @@ public class GenericConverter {
         List<DayTypeEnum> dayTypeEnums = new ArrayList<DayTypeEnum>(objects.size());
         for (Object object : objects) {
             if(object != null)
-                dayTypeEnums.add(DayTypeEnum.fromValue(object.toString()));
+                dayTypeEnums.add(DayTypeEnum.valueOf(object.toString()));
         }
         return dayTypeEnums;
     }

@@ -78,7 +78,7 @@ public class FacilityProducer extends AbstractJaxbNeptuneProducer<ChouetteFacili
 			LongLatTypeEnum longLatType = facility.getLongLatType();
 			try 
 			{
-				jaxbLocation.setLongLatType(LongLatTypeType.fromValue(longLatType.value()));
+				jaxbLocation.setLongLatType(LongLatTypeType.fromValue(longLatType.name()));
 			} 
 			catch (IllegalArgumentException e) 
 			{

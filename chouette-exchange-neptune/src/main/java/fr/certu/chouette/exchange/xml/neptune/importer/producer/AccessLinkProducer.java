@@ -86,7 +86,7 @@ public class AccessLinkProducer extends AbstractModelProducer<AccessLink, org.tr
 		// LinkType optional
 		if(xmlAccessLink.getLinkType() != null){
 			try{
-				accessLink.setLinkType(ConnectionLinkTypeEnum.fromValue(xmlAccessLink.getLinkType().value()));
+				accessLink.setLinkType(ConnectionLinkTypeEnum.valueOf(xmlAccessLink.getLinkType().value()));
 			}
 			catch (IllegalArgumentException e) 
 			{
@@ -97,11 +97,11 @@ public class AccessLinkProducer extends AbstractModelProducer<AccessLink, org.tr
 		// produce link orientation on startOflink type
 		if (accessLink.getStartOfLinkId() != null && accessLink.getStartOfLinkId().contains(":"+AccessPoint.ACCESSPOINT_KEY+":"))
 		{
-			accessLink.setLinkOrientation(LinkOrientationEnum.ACCESSPOINT_TO_STOPAREA);
+			accessLink.setLinkOrientation(LinkOrientationEnum.AccessPointToStopArea);
 		}
 		else
 		{
-			accessLink.setLinkOrientation(LinkOrientationEnum.STOPAREA_TO_ACCESSPOINT);
+			accessLink.setLinkOrientation(LinkOrientationEnum.StopAreaToAccessPoint);
 		}
 		
 		return accessLink;

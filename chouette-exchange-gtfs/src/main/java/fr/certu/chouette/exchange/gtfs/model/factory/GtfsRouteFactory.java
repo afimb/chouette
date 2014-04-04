@@ -14,7 +14,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import org.apache.log4j.Logger;
 
@@ -28,9 +27,9 @@ import fr.certu.chouette.plugin.report.Report;
  * @author michel
  *
  */
-@NoArgsConstructor
 public class GtfsRouteFactory extends GtfsBeanFactory<GtfsRoute> 
 {
+
 	private static final Logger logger = Logger.getLogger(GtfsRoute.class);
 	@Getter private final String dropSql = "drop table if exists route;";
 	@Getter private final String createSql = "create table route (num, id, shortname,longname,desc,type,agencyid,url,color,textcolor);";
@@ -39,9 +38,12 @@ public class GtfsRouteFactory extends GtfsBeanFactory<GtfsRoute>
 	@Getter private final String selectSql = "select num, id, shortname,longname,desc,type,agencyid,url,color,textcolor from route ";
 	@Getter private final String[] dbHeader = new String[]{"num", "route_id","route_short_name","route_long_name","route_desc","route_type","agency_id","route_url","route_color","route_text_color"};
 
+	public GtfsRouteFactory() {
+		super(GtfsRoute.class);
+	}
 	@Override
 	public GtfsRoute getNewGtfsBean(int lineNumber, String[] csvLine,Report report) {
-		GtfsRoute bean = new GtfsRoute();
+		GtfsRoute bean = getNewGtfsBean(GtfsRoute.class);
 		bean.setFileLineNumber(lineNumber);
 		bean.setRouteId(getValue("route_id", csvLine));
 		String agencyId = getValue("agency_id", csvLine);

@@ -27,7 +27,7 @@ public class RouteProducer extends AbstractModelProducer<Route, ChouetteRoute> {
 		// Direction optional
 		if(xmlRoute.getDirection() != null){
 			try {
-				route.setDirection(PTDirectionEnum.fromValue(xmlRoute.getDirection().value()));
+				route.setDirection(PTDirectionEnum.valueOf(xmlRoute.getDirection().value()));
 			} catch (IllegalArgumentException e) {
 				// TODO: traiter le cas de non correspondance 
 				

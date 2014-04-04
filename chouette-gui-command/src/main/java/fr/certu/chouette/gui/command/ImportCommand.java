@@ -24,6 +24,8 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import javax.persistence.EntityManager;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -31,7 +33,6 @@ import lombok.extern.log4j.Log4j;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
-import org.hibernate.Session;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -39,7 +40,6 @@ import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.dao.IDaoTemplate;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.manager.INeptuneManager;
-import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.neptune.Route;
@@ -87,7 +87,7 @@ public class ImportCommand extends AbstractCommand
 	 * @param parameters
 	 * @return
 	 */
-	public int executeImport(Session session,Map<String, List<String>> parameters)
+	public int executeImport(EntityManager session,Map<String, List<String>> parameters)
 	{
 		Report importReport = null;
 		ValidationReport validationReport = null;
@@ -125,8 +125,8 @@ public class ImportCommand extends AbstractCommand
 
 		save = !options.getBoolean("no_save");
 
-		Referential referential = referentialDao.get(importTask.getReferentialId());
-		log.info("Referential "+importTask.getReferentialId());
+		Referential referential =importTask.getReferential();
+		log.info("Referential "+referential.getId());
 		log.info("  name : "+referential.getName());
 		log.info("  slug : "+referential.getSlug());
 
@@ -183,7 +183,7 @@ public class ImportCommand extends AbstractCommand
 						importHolder, validationHolder) ;
 				importReport = importHolder.getReport();
 				validationReport = (ValidationReport) validationHolder.getReport();
-                if (code > 0) return code; // import fails
+				if (code > 0) return code; // import fails
 			}
 			else
 			{
@@ -264,28 +264,28 @@ public class ImportCommand extends AbstractCommand
 	 * @param validationHolder
 	 * @throws ChouetteException
 	 */
-	private int importZipEntries(Session session, boolean save,
+	private int importZipEntries(EntityManager session, boolean save,
 			List<Long> savedIds,
 			INeptuneManager<NeptuneIdentifiedObject> manager,
 			ImportTask importTask, String format, String inputFile,
 			List<String> suffixes, List<ParameterValue> values,
 			ReportHolder importHolder, ReportHolder validationHolder)
-			throws ChouetteException 
-			{
+					throws ChouetteException 
+					{
 		SimpleParameterValue inputFileParam = new SimpleParameterValue("inputFile");
 		values.add(inputFileParam);
-		
+
 		ReportHolder zipHolder = new ReportHolder();
 		if (format.equalsIgnoreCase("neptune"))
 		{
-		SharedImportedData sharedData = new SharedImportedData();
-		UnsharedImportedData unsharedData = new UnsharedImportedData();
-		SimpleParameterValue sharedDataParam = new SimpleParameterValue("sharedImportedData");
-		sharedDataParam.setObjectValue(sharedData);
-		values.add(sharedDataParam);
-		SimpleParameterValue unsharedDataParam = new SimpleParameterValue("unsharedImportedData");
-		unsharedDataParam.setObjectValue(unsharedData);
-		values.add(unsharedDataParam);
+			SharedImportedData sharedData = new SharedImportedData();
+			UnsharedImportedData unsharedData = new UnsharedImportedData();
+			SimpleParameterValue sharedDataParam = new SimpleParameterValue("sharedImportedData");
+			sharedDataParam.setObjectValue(sharedData);
+			values.add(sharedDataParam);
+			SimpleParameterValue unsharedDataParam = new SimpleParameterValue("unsharedImportedData");
+			unsharedDataParam.setObjectValue(unsharedData);
+			values.add(unsharedDataParam);
 		}
 
 		// unzip files , import and save contents 
@@ -394,7 +394,7 @@ public class ImportCommand extends AbstractCommand
 			}
 		}
 		return 0;
-	}
+					}
 
 	/**
 	 * @param manager
@@ -406,7 +406,7 @@ public class ImportCommand extends AbstractCommand
 			INeptuneManager<NeptuneIdentifiedObject> manager,
 			List<Long> savedIds, JSONObject parameters,
 			ValidationReport validationReport) {
-		
+
 		if (parameters != null)
 		{
 			log.info("processing phase 3 validation on "+savedIds.size()+" lines");
@@ -469,7 +469,7 @@ public class ImportCommand extends AbstractCommand
 		}
 	}
 
-	private void startProcess(Session session,ImportTask importTask) 
+	private void startProcess(EntityManager session,ImportTask importTask) 
 	{
 		importTask.setStatus("processing");
 		importTask.setUpdatedAt(Calendar.getInstance().getTime());
@@ -479,12 +479,12 @@ public class ImportCommand extends AbstractCommand
 			importTask.getCompilanceCheckTask().setUpdatedAt(Calendar.getInstance().getTime());
 		}
 		importDao.save(importTask);
-		session.flush();
+		importDao.flush();
 
 	}
 
 
-	private void saveImportReports(Session session,ImportTask importTask, Report ireport, Report vreport) 
+	private void saveImportReports(EntityManager session,ImportTask importTask, Report ireport, Report vreport) 
 	{
 		// log.info("import report = "+ireport.toJSON().toString(3));
 		ImportReportToJSONConverter converter = new ImportReportToJSONConverter(ireport);
@@ -518,7 +518,7 @@ public class ImportCommand extends AbstractCommand
 		importTask.setResult(converter.toJSONObject());
 		importTask.setUpdatedAt(Calendar.getInstance().getTime());
 		importDao.save(importTask);
-		session.flush();
+		importDao.flush();
 	}
 
 	private void checkProjection(Line line)
@@ -536,13 +536,9 @@ public class ImportCommand extends AbstractCommand
 	private void checkProjection(StopArea area)
 	{
 		if (area == null) return;
-		if (area.getAreaCentroid() != null)
+		if (area.hasProjection())
 		{
-			AreaCentroid centroid = area.getAreaCentroid();
-			if (centroid.getLongLatType() == null)
-			{
-				geographicService.convertToWGS84(area);
-			}
+			geographicService.convertToWGS84(area);
 		}
 		checkProjection(area.getParent());
 

@@ -9,12 +9,23 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.extern.log4j.Log4j;
 import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
 import fr.certu.chouette.model.neptune.type.LinkOrientationEnum;
 import fr.certu.chouette.model.neptune.type.UserNeedEnum;
-
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * Neptune AccessLink
@@ -24,132 +35,129 @@ import lombok.Setter;
  * when writable is added to comment, a implicit setter is available
  * 
  */
+@Entity
+@Table(name = "access_links")
+@NoArgsConstructor
+@Log4j
 public class AccessLink extends NeptuneIdentifiedObject
 {
-   private static final long      serialVersionUID = 7835556134861322471L;
-   /**
-    * Comment <br/>
-    * <i>readable/writable</i>
-    */
+   private static final long serialVersionUID = 7835556134861322471L;
+
+   @Getter
+   @Column(name = "name")
+   private String name;
+
    @Getter
    @Setter
-   private String                 comment;
-   /**
-    * Link Distance in meters (To be confirmed) <br/>
-    * <i>readable/writable</i>
-    */
+   @Column(name = "comment")
+   private String comment;
+
    @Getter
    @Setter
-   private BigDecimal             linkDistance;
-   /**
-    * Neptune Id for Start of Link StopArea <br/>
-    * <i>readable/writable</i>
-    */
+   @Column(name = "link_distance")
+   private BigDecimal linkDistance;
+
    @Getter
    @Setter
-   private String                 startOfLinkId;
-   /**
-    * StopArea <br/>
-    * <i>readable/writable</i>
-    */
+   @Column(name = "lift_availability")
+   private boolean liftAvailable = false;
+
    @Getter
    @Setter
-   private StopArea               stopArea;
+   @Column(name = "mobility_restricted_suitability")
+   private boolean mobilityRestrictedSuitable = false;
+
+   @Getter
+   @Setter
+   @Column(name = "stairs_availability")
+   private boolean stairsAvailable = false;
+
+   @Getter
+   @Setter
+   @Column(name = "default_duration")
+   private Time defaultDuration;
+
+   @Getter
+   @Setter
+   @Column(name = "frequent_traveller_duration")
+   private Time frequentTravellerDuration;
+
+   @Getter
+   @Setter
+   @Column(name = "occasional_traveller_duration")
+   private Time occasionalTravellerDuration;
+
+   @Getter
+   @Setter
+   @Column(name = "mobility_restricted_traveller_duration")
+   private Time mobilityRestrictedTravellerDuration;
+
+   @Getter
+   @Setter
+   @Enumerated(EnumType.STRING)
+   @Column(name = "link_type")
+   private ConnectionLinkTypeEnum linkType;
+
+   @Getter
+   @Setter
+   @Column(name = "int_user_needs")
+   private Integer intUserNeeds = 0;
+
+   @Getter
+   @Setter
+   @Enumerated(EnumType.STRING)
+   @Column(name = "link_orientation")
+   private LinkOrientationEnum linkOrientation;
+
+   @Getter
+   @Setter
+   @ManyToOne(fetch = FetchType.LAZY)
+   @JoinColumn(name = "access_point_id")
+   private AccessPoint accessPoint;
+
+   @Getter
+   @Setter
+   @ManyToOne(fetch = FetchType.LAZY)
+   @JoinColumn(name = "stop_area_id")
+   private StopArea stopArea;
+
    /**
     * Neptune Id for End of Link StopArea <br/>
     * <i>readable/writable</i>
     */
    @Getter
    @Setter
-   private String                 endOfLinkId;
-   /**
-    * AccessPoint <br/>
-    * <i>readable/writable</i>
-    */
-   @Getter
-   @Setter
-   private AccessPoint            accessPoint;
-   /**
-    * Indicate if a Lift is available <br/>
-    * <i>readable/writable</i>
-    */
-   @Getter
-   @Setter
-   private boolean                liftAvailable;
-   /**
-    * indicate if the link is equipped for mobility restricted persons <br/>
-    * <i>readable/writable</i>
-    */
-   @Getter
-   @Setter
-   private boolean                mobilityRestrictedSuitable;
-   /**
-    * indicate if stairs are present on the link <br/>
-    * <i>readable/writable</i>
-    */
-   @Getter
-   @Setter
-   private boolean                stairsAvailable;
+   @Transient
+   private String endOfLinkId;
+
    /**
     * give a list of specific User needs available <br/>
     * <i>readable/writable</i>
     */
-   private List<UserNeedEnum>     userNeeds;                              // Never
-                                                                           // be
-                                                                           // persisted
+   @Transient
+   private List<UserNeedEnum> userNeeds;
+
    /**
-    * encoded form of userNeeds for database purpose
-    */
-   @Getter
-   @Setter
-   private Integer                intUserNeeds;                           // BD
-   /**
-    * Duration of link <br/>
+    * Neptune Id for Start of Link StopArea <br/>
     * <i>readable/writable</i>
     */
    @Getter
    @Setter
-   private Time                   defaultDuration;
-   /**
-    * Duration of link for frequent travelers <br/>
-    * <i>readable/writable</i>
-    */
-   @Getter
-   @Setter
-   private Time                   frequentTravellerDuration;
-   /**
-    * Duration of link for occasional travelers <br/>
-    * <i>readable/writable</i>
-    */
-   @Getter
-   @Setter
-   private Time                   occasionalTravellerDuration;
-   /**
-    * Duration of link for mobility restricted travelers <br/>
-    * <i>readable/writable</i>
-    */
-   @Getter
-   @Setter
-   private Time                   mobilityRestrictedTravellerDuration;
-   /**
-    * Link type <br/>
-    * <i>readable/writable</i>
-    */
-   @Getter
-   @Setter
-   private ConnectionLinkTypeEnum linkType;
-   /**
-    * Link Orientation (for Database purpose)
-    * <p/>
-    * database can't save startLink or endlink because they may be of
-    * alternative types<br/>
-    * linkOrientation helps to know which one (stopArea or accessPoint) is
-    * startOfLink. <br/>
-    * <i>readable/writable</i>
-    */
-   @Getter
-   @Setter
-   private LinkOrientationEnum    linkOrientation;
+   @Transient
+   private String startOfLinkId;
+
+   public void setName(String value)
+   {
+      if (value != null && value.length() > 255)
+      {
+         log.warn("name too long, truncated " + value);
+         name = value.substring(0, 255);
+      }
+      else
+      {
+         name = value;
+      }
+   }
 
    /**
     * add a userNeed value in userNeeds collection if not already present <br/>
@@ -266,13 +274,6 @@ public class AccessLink extends NeptuneIdentifiedObject
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see
-    * fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#toString(java.
-    * lang.String, int)
-    */
    @Override
    public String toString(String indent, int level)
    {
@@ -344,28 +345,24 @@ public class AccessLink extends NeptuneIdentifiedObject
       }
    }
 
-   /*
-    * (non-Javadoc)
-    * 
-    * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#complete()
-    */
    @Override
    public void complete()
    {
       if (isCompleted())
          return;
       super.complete();
-      if (getAccessPoint() != null) getAccessPoint().complete();
+      if (getAccessPoint() != null)
+         getAccessPoint().complete();
       if (getLinkOrientation() != null)
       {
-         if (getLinkOrientation().equals(LinkOrientationEnum.ACCESSPOINT_TO_STOPAREA))
+         if (getLinkOrientation().equals(LinkOrientationEnum.AccessPointToStopArea))
          {
             if (getAccessPoint() != null)
                setStartOfLinkId(getAccessPoint().getObjectId());
             if (getStopArea() != null)
                setEndOfLinkId(getStopArea().getObjectId());
          }
-         else if (getLinkOrientation().equals(LinkOrientationEnum.STOPAREA_TO_ACCESSPOINT))
+         else if (getLinkOrientation().equals(LinkOrientationEnum.StopAreaToAccessPoint))
          {
             if (getAccessPoint() != null)
                setEndOfLinkId(getAccessPoint().getObjectId());
@@ -375,37 +372,49 @@ public class AccessLink extends NeptuneIdentifiedObject
       }
    }
 
-   
-	@Override
-	public <T extends NeptuneObject> boolean compareAttributes(
-			T anotherObject) {
-		if (anotherObject instanceof AccessLink)
-		{
-			AccessLink another = (AccessLink) anotherObject;
-			if (!sameValue(this.getObjectId(), another.getObjectId())) return false;
-			if (!sameValue(this.getObjectVersion(), another.getObjectVersion())) return false;
-			if (!sameValue(this.getName(), another.getName())) return false;
-			if (!sameValue(this.getComment(), another.getComment())) return false;
-			if (!sameValue(this.getIntUserNeeds(), another.getIntUserNeeds())) return false;
-			if (!sameValue(this.getRegistrationNumber(), another.getRegistrationNumber())) return false;
-			if (!sameValue(this.getDefaultDuration(), another.getDefaultDuration())) return false;
-			if (!sameValue(this.getFrequentTravellerDuration(), another.getFrequentTravellerDuration())) return false;
-			if (!sameValue(this.getLinkDistance(), another.getLinkDistance())) return false;
-			if (!sameValue(this.getLinkOrientation(), another.getLinkOrientation())) return false;
-			if (!sameValue(this.getMobilityRestrictedTravellerDuration(), another.getMobilityRestrictedTravellerDuration())) return false;
-			if (!sameValue(this.getOccasionalTravellerDuration(), another.getOccasionalTravellerDuration())) return false;
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
+   @Override
+   public <T extends NeptuneObject> boolean compareAttributes(
+         T anotherObject)
+   {
+      if (anotherObject instanceof AccessLink)
+      {
+         AccessLink another = (AccessLink) anotherObject;
+         if (!sameValue(this.getObjectId(), another.getObjectId()))
+            return false;
+         if (!sameValue(this.getObjectVersion(), another.getObjectVersion()))
+            return false;
+         if (!sameValue(this.getName(), another.getName()))
+            return false;
+         if (!sameValue(this.getComment(), another.getComment()))
+            return false;
+         if (!sameValue(this.getIntUserNeeds(), another.getIntUserNeeds()))
+            return false;
+         if (!sameValue(this.getRegistrationNumber(), another.getRegistrationNumber()))
+            return false;
+         if (!sameValue(this.getDefaultDuration(), another.getDefaultDuration()))
+            return false;
+         if (!sameValue(this.getFrequentTravellerDuration(), another.getFrequentTravellerDuration()))
+            return false;
+         if (!sameValue(this.getLinkDistance(), another.getLinkDistance()))
+            return false;
+         if (!sameValue(this.getLinkOrientation(), another.getLinkOrientation()))
+            return false;
+         if (!sameValue(this.getMobilityRestrictedTravellerDuration(), another.getMobilityRestrictedTravellerDuration()))
+            return false;
+         if (!sameValue(this.getOccasionalTravellerDuration(), another.getOccasionalTravellerDuration()))
+            return false;
+         return true;
+      }
+      else
+      {
+         return false;
+      }
+   }
 
-	@Override
-	public String toURL() 
-	{
-		return "access_points/"+getAccessPoint().getId()+"/access_links/"+getId();
-	}
+   @Override
+   public String toURL()
+   {
+      return "access_points/" + getAccessPoint().getId() + "/access_links/" + getId();
+   }
 
 }

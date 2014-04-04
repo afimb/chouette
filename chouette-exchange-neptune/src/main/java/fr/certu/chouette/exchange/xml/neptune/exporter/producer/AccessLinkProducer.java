@@ -52,7 +52,7 @@ public class AccessLinkProducer extends AbstractJaxbNeptuneProducer<ChouettePTNe
 		try {
 			ConnectionLinkTypeEnum linkType = accessLink.getLinkType();
 			if(linkType != null){
-				jaxbAccessLink.setLinkType(ConnectionLinkTypeType.fromValue(linkType.value()));
+				jaxbAccessLink.setLinkType(ConnectionLinkTypeType.fromValue(linkType.name()));
 			}
 		} catch (IllegalArgumentException e) {
 			// TODO generate report

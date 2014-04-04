@@ -38,7 +38,7 @@ public class StopAreaProducer extends AbstractModelProducer<StopArea,GtfsStop>
 
 		if (gtfsStop.getLocationType() == GtfsStop.STATION)
 		{
-			stopArea.setAreaType(ChouetteAreaEnum.COMMERCIALSTOPPOINT);
+			stopArea.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
 			if (getNonEmptyTrimedString(gtfsStop.getParentStation()) != null)
 			{
 				ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.IGNORED_DATA,Report.STATE.WARNING,"stops.txt",gtfsStop.getFileLineNumber(),"parent_station",gtfsStop.getParentStation()) ;
@@ -48,7 +48,7 @@ public class StopAreaProducer extends AbstractModelProducer<StopArea,GtfsStop>
 		}
 		else
 		{
-			stopArea.setAreaType(ChouetteAreaEnum.BOARDINGPOSITION);
+			stopArea.setAreaType(ChouetteAreaEnum.BoardingPosition);
 			stopArea.setParentObjectId(getNonEmptyTrimedString(gtfsStop.getParentStation()));
 		}
 

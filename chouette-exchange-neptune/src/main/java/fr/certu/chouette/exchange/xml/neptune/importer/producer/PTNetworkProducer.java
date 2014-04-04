@@ -56,7 +56,7 @@ public class PTNetworkProducer extends AbstractModelProducer<PTNetwork, PTNetwor
 		if(xmlPTNetwork.getSourceType() != null)
 		{
 			try{
-				ptNetwork.setSourceType(PTNetworkSourceTypeEnum.fromValue(xmlPTNetwork.getSourceType().value()));
+				ptNetwork.setSourceType(PTNetworkSourceTypeEnum.valueOf(xmlPTNetwork.getSourceType().value()));
 			}
 			catch (IllegalArgumentException e) 
 			{

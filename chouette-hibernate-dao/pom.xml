@@ -5,12 +5,12 @@
 	<parent>
 		<groupId>fr.certu.chouette</groupId>
 		<artifactId>chouette</artifactId>
-		<version>2.2.0</version>
+		<version>2.3.0</version>
 	</parent>
 	<groupId>fr.certu.chouette</groupId>
 	<artifactId>chouette-hibernate-dao</artifactId>
 	<name>Chouette Hibernate Dao</name>
-	<version>2.2.0</version>
+	<version>2.3.0</version>
 
 	<dependencies>
 		<dependency>
@@ -25,12 +25,12 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>org.hibernate</groupId>
-					<artifactId>hibernate-jpa-2.0-api</artifactId>
-				</exclusion>
-			</exclusions>
+<!-- 			<exclusions> -->
+<!-- 				<exclusion> -->
+<!-- 					<groupId>org.hibernate</groupId> -->
+<!-- 					<artifactId>hibernate-jpa-2.0-api</artifactId> -->
+<!-- 				</exclusion> -->
+<!-- 			</exclusions> -->
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>
@@ -70,6 +70,11 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-orm</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.hibernate.javax.persistence</groupId>
+			<artifactId>hibernate-jpa-2.1-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
 		<!-- AspectJ reference cglib-2.1_3.jar -->
 		<dependency>
 			<groupId>org.aspectj</groupId>
@@ -100,11 +105,10 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-context-support</artifactId>
-			<scope>test</scope>
 		</dependency>
 		<!-- Postgres -->
 		<dependency>
-			<groupId>postgresql</groupId>
+			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 			<scope>test</scope>
 		</dependency>
@@ -122,25 +126,25 @@
 					<include>**/*.properties</include>
 				</includes>
 			</resource>
-			<resource>
-				<targetPath>fr/certu/chouette/model/neptune</targetPath>
-				<directory>src/main/mapping/neptune</directory>
-				<includes>
-					<include>*.hbm.xml</include>
-				</includes>
-			</resource>
-			<resource>
-				<targetPath>fr/certu/chouette/model/gui</targetPath>
-				<directory>src/main/mapping/gui</directory>
-				<includes>
-					<include>*.hbm.xml</include>
-				</includes>
-			</resource>
+<!-- 			<resource> -->
+<!-- 				<targetPath>fr/certu/chouette/model/neptune</targetPath> -->
+<!-- 				<directory>src/main/mapping/neptune</directory> -->
+<!-- 				<includes> -->
+<!-- 					<include>*.hbm.xml</include> -->
+<!-- 				</includes> -->
+<!-- 			</resource> -->
+<!-- 			<resource> -->
+<!-- 				<targetPath>fr/certu/chouette/model/gui</targetPath> -->
+<!-- 				<directory>src/main/mapping/gui</directory> -->
+<!-- 				<includes> -->
+<!-- 					<include>*.hbm.xml</include> -->
+<!-- 				</includes> -->
+<!-- 			</resource> -->
 		</resources>
 		<testResources>
-			<testResource>
-				<directory>src/main/resources</directory>
-			</testResource>
+<!-- 			<testResource> -->
+<!-- 				<directory>src/main/resources</directory> -->
+<!-- 			</testResource> -->
 			<testResource>
 				<directory>src/test/resources</directory>
 			</testResource>

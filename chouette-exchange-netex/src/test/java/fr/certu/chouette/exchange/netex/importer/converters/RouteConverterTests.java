@@ -94,7 +94,7 @@ public class RouteConverterTests extends AbstractTestNGSpringContextTests {
     @Test(groups = {"ServiceFrame"}, description = "Route's direction attribute reading")
     public void verifyRouteDirection() throws XPathEvalException, NavException, XPathParseException, ParseException {
         Route selectedRoute = getRouteByObjectId( "T:Route:1-1");
-        Assert.assertEquals( selectedRoute.getDirection(), PTDirectionEnum.SOUTH);
+        Assert.assertEquals( selectedRoute.getDirection(), PTDirectionEnum.South);
     }
 
     @Test(groups = {"ServiceFrame"}, description = "Route's wayback attribute reading")

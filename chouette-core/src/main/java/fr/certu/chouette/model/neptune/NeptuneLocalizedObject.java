@@ -9,6 +9,12 @@ package fr.certu.chouette.model.neptune;
 
 import java.math.BigDecimal;
 
+import javax.persistence.Column;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
@@ -23,146 +29,151 @@ import fr.certu.chouette.service.geographic.IGeographicService;
  * when writable is added to comment, a implicit setter is available
  */
 @SuppressWarnings("serial")
+@MappedSuperclass
 @Log4j
 public abstract class NeptuneLocalizedObject extends NeptuneIdentifiedObject
 {
-	// geographic tool for coordinate conversion
-	@Setter @Getter private static IGeographicService geographicService;
-	// constant for persistence fields
-	public static final String LONGITUDE ="longitude"; 
-	public static final String LATITUDE ="latitude"; 
-	public static final String LONGLAT_TYPE="longLatType"; 
-	public static final String COUNTRY_CODE="countryCode"; 
-	public static final String STREET_NAME="streetName"; 
-	public static final String X="x"; 
-	public static final String Y="y"; 
-	public static final String PROJECTION_TYPE="projectionType"; 
+   @Setter
+   @Getter
+   private static IGeographicService geographicService;
 
-	/**
-	 * Spatial Referential Type (actually only WGS84 is valid)  
-	 * <br/><i>readable/writable</i>
-	 */
-	@Getter @Setter private LongLatTypeEnum longLatType;
-	/**
-	 * Latitude position of area 
-	 * <br/><i>readable/writable</i>
-	 */
-	@Getter @Setter private BigDecimal latitude;
-	/**
-	 * Longitude position of area
-	 * <br/><i>readable/writable</i>
-	 */
-	@Getter @Setter private BigDecimal longitude;
-	/**
-	 * address street name 
-	 * <br/><i>readable/writable</i>
-	 */
-	@Getter private String streetName;
-	public void setStreetName(String value)
-	{
-		if (value != null && value.length() > 255)
-		{
-			log.warn("streetName too long, truncated "+ value);
-			streetName = value.substring(0, 255);
-		}
-		else
-		{
-			streetName = value;
-		}
-	}
-	/**
-	 * address city or district code
-	 * <br/><i>readable/writable</i>
-	 */
-	@Getter private String countryCode;
-	public void setCountryCode(String value)
-	{
-		if (value != null && value.length() > 255)
-		{
-			log.warn("countryCode too long, truncated "+ value);
-			countryCode = value.substring(0, 255);
-		}
-		else
-		{
-			countryCode = value;
-		}
-	}
+   public static final String LONGITUDE = "longitude";
+   public static final String LATITUDE = "latitude";
+   public static final String LONGLAT_TYPE = "longLatType";
+   public static final String COUNTRY_CODE = "countryCode";
+   public static final String STREET_NAME = "streetName";
+   public static final String X = "x";
+   public static final String Y = "y";
+   public static final String PROJECTION_TYPE = "projectionType";
 
-	/**
-	 * x coordinate
-	 * <br/><i>readable/writable</i>
-	 */
-	@Getter @Setter private BigDecimal x;
-	/**
-	 * y coordinate
-	 * <br/><i>readable/writable</i>
-	 */
-	@Getter @Setter private BigDecimal y;
-	/**
-	 * projection system name (f.e. : epgs:27578)
-	 * <br/><i>readable/writable</i>
-	 */
-	@Getter @Setter private String projectionType;
+   @Getter
+   @Setter
+   @Column(name = "longitude", precision = 19, scale = 16)
+   private BigDecimal longitude;
 
-	public boolean hasCoordinates()
-	{
-		return longitude != null && latitude != null && longLatType != null;
-	}
+   @Getter
+   @Setter
+   @Column(name = "latitude", precision = 19, scale = 16)
+   private BigDecimal latitude;
 
-	public boolean hasAddress()
-	{
-		return notEmptyString(countryCode) || notEmptyString(streetName);
-	}
+   @Getter
+   @Setter
+   @Enumerated(EnumType.STRING)
+   @Column(name = "long_lat_type")
+   private LongLatTypeEnum longLatType;
 
-	public boolean hasProjection()
-	{
-		return x != null && x != null &&  notEmptyString(projectionType);
-	}
+   @Getter
+   @Setter
+   @Transient
+   private BigDecimal x;
 
-	private boolean notEmptyString(String data)
-	{
-		return data != null && !data.isEmpty();
-	}
-	/* (non-Javadoc)
-	 * @see fr.certu.chouette.model.neptune.NeptuneObject#toString(java.lang.String, int)
-	 */
-	@Override
-	public String toString(String indent, int level)
-	{
-		String s = super.toString(indent,level);
-		StringBuffer sb = new StringBuffer(s);
-		if (streetName != null && !streetName.isEmpty())
-			sb.append("\n").append(indent).append("  streetName = ").append(streetName);
-		if (countryCode != null && !countryCode.isEmpty())
-			sb.append("\n").append(indent).append("  countryCode = ").append(countryCode);
-		sb.append("\n").append(indent).append("  longLatType = ").append(longLatType);
-		sb.append("\n").append(indent).append("  latitude = ").append(latitude);
-		sb.append("\n").append(indent).append("  longitude = ").append(longitude);
-		if (x != null)
-			sb.append("\n").append(indent).append("  x = ").append(x);
-		if (y != null)
-			sb.append("\n").append(indent).append("  y = ").append(y);
-		if (projectionType != null && !projectionType.isEmpty())
-			sb.append("\n").append(indent).append("  projection = ").append(projectionType);
+   @Getter
+   @Setter
+   @Transient
+   private BigDecimal y;
 
-		return sb.toString();
-	}
+   @Getter
+   @Setter
+   @Transient
+   private String projectionType;
 
-	@Override
-	public void complete() 
-	{
-		super.complete();
-		if (!hasCoordinates()) return;
-		if (geographicService != null)
-			geographicService.convertToProjection(this);
-	}
+   @Getter
+   @Column(name = "country_code")
+   private String countryCode;
 
-	public void toLatLong()
-	{
-		if (!hasProjection()) return;
-		if (geographicService != null)
-			geographicService.convertToWGS84(this);
+   @Getter
+   @Column(name = "street_name")
+   private String streetName;
+   
+   
+   public abstract String getName();
 
-	}
+
+   public void setStreetName(String value)
+   {
+      if (value != null && value.length() > 255)
+      {
+         log.warn("streetName too long, truncated " + value);
+         streetName = value.substring(0, 255);
+      }
+      else
+      {
+         streetName = value;
+      }
+   }
+
+   public void setCountryCode(String value)
+   {
+      if (value != null && value.length() > 255)
+      {
+         log.warn("countryCode too long, truncated " + value);
+         countryCode = value.substring(0, 255);
+      }
+      else
+      {
+         countryCode = value;
+      }
+   }
+
+   public boolean hasCoordinates()
+   {
+      return longitude != null && latitude != null && longLatType != null;
+   }
+
+   public boolean hasAddress()
+   {
+      return notEmptyString(countryCode) || notEmptyString(streetName);
+   }
+
+   public boolean hasProjection()
+   {
+      return x != null && x != null && notEmptyString(projectionType);
+   }
+
+   private boolean notEmptyString(String data)
+   {
+      return data != null && !data.isEmpty();
+   }
+
+   @Override
+   public String toString(String indent, int level)
+   {
+      String s = super.toString(indent, level);
+      StringBuffer sb = new StringBuffer(s);
+      if (streetName != null && !streetName.isEmpty())
+         sb.append("\n").append(indent).append("  streetName = ").append(streetName);
+      if (countryCode != null && !countryCode.isEmpty())
+         sb.append("\n").append(indent).append("  countryCode = ").append(countryCode);
+      sb.append("\n").append(indent).append("  longLatType = ").append(longLatType);
+      sb.append("\n").append(indent).append("  latitude = ").append(latitude);
+      sb.append("\n").append(indent).append("  longitude = ").append(longitude);
+      if (x != null)
+         sb.append("\n").append(indent).append("  x = ").append(x);
+      if (y != null)
+         sb.append("\n").append(indent).append("  y = ").append(y);
+      if (projectionType != null && !projectionType.isEmpty())
+         sb.append("\n").append(indent).append("  projection = ").append(projectionType);
+
+      return sb.toString();
+   }
+
+   @Override
+   public void complete()
+   {
+      super.complete();
+      if (!hasCoordinates())
+         return;
+      if (geographicService != null)
+         geographicService.convertToProjection(this);
+   }
+
+   public void toLatLong()
+   {
+      if (!hasProjection())
+         return;
+      if (geographicService != null)
+         geographicService.convertToWGS84(this);
+
+   }
 
 }

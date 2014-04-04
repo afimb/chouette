@@ -18,578 +18,359 @@ set -attr objectVersion 1
 set -attr versionDate 2011-05-11
 set -attr name CITURA
 # save to database
-save
+
+save -slow
 # create a new instance of company
 new -o company
 set -attr objectId CITURA:Company:TRANSDEV
 set -attr objectVersion 1
 set -attr name "Transdev Reims"
-save
+save -slow
+
 # create new instances of StopArea
 new -o StopArea
 set -attr objectId CITURA:StopArea:ALS3
 set -attr objectVersion 1
 set -attr name "ALSACE LORRAINE"
 set -attr areaType CommercialStopPoint
-# insert areacentroid CITURA:AreaCentroid:ALS3
-set -attr areacentroid.objectId CITURA:AreaCentroid:ALS3
-set -attr areacentroid.objectVersion 1
-set -attr areacentroid.longitude 4.040980161539514
-set -attr areacentroid.latitude 49.21905234063518
-set -attr areacentroid.longLatType WGS84
-set -attr areacentroid.projectedPoint.x 724260
-set -attr areacentroid.projectedPoint.y 2470377
-set -attr areacentroid.projectedPoint.projectionType epgs:27572
-set -attr areacentroid.name "ALSACE LORRAINE"
-save
+set -attr longitude 4.040980161539514
+set -attr latitude 49.21905234063518
+set -attr longLatType WGS84
+save -slow
 #
 new
 set -attr objectId CITURA:StopArea:NOD2
 set -attr objectVersion 1
 set -attr name NODIER
 set -attr areaType CommercialStopPoint
-# insert areacentroid CITURA:AreaCentroid:NOD2
-set -attr areacentroid.objectId CITURA:AreaCentroid:NOD2
-set -attr areacentroid.objectVersion 1
-set -attr areacentroid.longitude 4.023547885585011
-set -attr areacentroid.latitude 49.21584774618384
-set -attr areacentroid.longLatType WGS84
-set -attr areacentroid.projectedPoint.x 722997
-set -attr areacentroid.projectedPoint.y 2469993
-set -attr areacentroid.projectedPoint.projectionType epgs:27572
-set -attr areacentroid.name NODIER
-save
+set -attr longitude 4.023547885585011
+set -attr latitude 49.21584774618384
+set -attr longLatType WGS84
+save -slow
 #
 new
 set -attr objectId CITURA:StopArea:VAL2
 set -attr objectVersion 1
 set -attr name "VAL DE MURIGNY"
 set -attr areaType CommercialStopPoint
-# insert areacentroid CITURA:AreaCentroid:VAL2
-set -attr areacentroid.objectId CITURA:AreaCentroid:VAL2
-set -attr areacentroid.objectVersion 1
-set -attr areacentroid.longitude 4.025271107959671
-set -attr areacentroid.latitude 49.20982936308434
-set -attr areacentroid.longLatType WGS84
-set -attr areacentroid.projectedPoint.x 723137
-set -attr areacentroid.projectedPoint.y 2469326
-set -attr areacentroid.projectedPoint.projectionType epgs:27572
-set -attr areacentroid.name "VAL DE MURIGNY"
-save
+set -attr longitude 4.025271107959671
+set -attr latitude 49.20982936308434
+set -attr longLatType WGS84
+save -slow
 #
 new
 set -attr objectId CITURA:StopArea:RIC2
 set -attr objectVersion 1
 set -attr name RICHELIEU
 set -attr areaType CommercialStopPoint
-# insert areacentroid CITURA:AreaCentroid:RIC2
-set -attr areacentroid.objectId CITURA:AreaCentroid:RIC2
-set -attr areacentroid.objectVersion 1
-set -attr areacentroid.longitude 4.028458393592839
-set -attr areacentroid.latitude 49.216245928443904
-set -attr areacentroid.longLatType WGS84
-set -attr areacentroid.projectedPoint.x 723354
-set -attr areacentroid.projectedPoint.y 2470045
-set -attr areacentroid.projectedPoint.projectionType epgs:27572
-set -attr areacentroid.name RICHELIEU
-save
+set -attr longitude 4.028458393592839
+set -attr latitude 49.216245928443904
+set -attr longLatType WGS84
+save -slow
 #
 new
 set -attr objectId CITURA:StopArea:DSK2
 set -attr objectVersion 1
 set -attr name DOSTOIEVSKI
 set -attr areaType CommercialStopPoint
-# insert areacentroid CITURA:AreaCentroid:DSK2
-set -attr areacentroid.objectId CITURA:AreaCentroid:DSK2
-set -attr areacentroid.objectVersion 1
-set -attr areacentroid.longitude 4.0218675136647795
-set -attr areacentroid.latitude 49.21019174919832
-set -attr areacentroid.longLatType WGS84
-set -attr areacentroid.projectedPoint.x 722888
-set -attr areacentroid.projectedPoint.y 2469361
-set -attr areacentroid.projectedPoint.projectionType epgs:27572
-set -attr areacentroid.name DOSTOIEVSKI
-save
+set -attr longitude 4.0218675136647795
+set -attr latitude 49.21019174919832
+set -attr longLatType WGS84
+save -slow
 #
 new
 set -attr objectId CITURA:StopArea:MEL2
 set -attr objectVersion 1
 set -attr name MELIES
 set -attr areaType CommercialStopPoint
-# insert areacentroid CITURA:AreaCentroid:MEL2
-set -attr areacentroid.objectId CITURA:AreaCentroid:MEL2
-set -attr areacentroid.objectVersion 1
-set -attr areacentroid.longitude 4.026659786461324
-set -attr areacentroid.latitude 49.213692084227446
-set -attr areacentroid.longLatType WGS84
-set -attr areacentroid.projectedPoint.x 723229
-set -attr areacentroid.projectedPoint.y 2469758
-set -attr areacentroid.projectedPoint.projectionType epgs:27572
-set -attr areacentroid.name MELIES
-save
+set -attr longitude 4.026659786461324
+set -attr latitude 49.213692084227446
+set -attr longLatType WGS84
+save -slow
 #
 new
 set -attr objectId CITURA:StopArea:COB2
 set -attr objectVersion 1
 set -attr name COUBERTIN
 set -attr areaType CommercialStopPoint
-# insert areacentroid CITURA:AreaCentroid:COB2
-set -attr areacentroid.objectId CITURA:AreaCentroid:COB2
-set -attr areacentroid.objectVersion 1
-set -attr areacentroid.longitude 4.035374815475717
-set -attr areacentroid.latitude 49.21964405425343
-set -attr areacentroid.longLatType WGS84
-set -attr areacentroid.projectedPoint.x 723850
-set -attr areacentroid.projectedPoint.y 2470434
-set -attr areacentroid.projectedPoint.projectionType epgs:27572
-set -attr areacentroid.name COUBERTIN
-save
+set -attr longitude 4.035374815475717
+set -attr latitude 49.21964405425343
+set -attr longLatType WGS84
+save -slow
 #
 new
 set -attr objectId CITURA:StopArea:VRD2
 set -attr objectVersion 1
 set -attr name VERDI
 set -attr areaType CommercialStopPoint
-# insert areacentroid CITURA:AreaCentroid:VRD2
-set -attr areacentroid.objectId CITURA:AreaCentroid:VRD2
-set -attr areacentroid.objectVersion 1
-set -attr areacentroid.longitude 4.02801703482637
-set -attr areacentroid.latitude 49.21157905227647
-set -attr areacentroid.longLatType WGS84
-set -attr areacentroid.projectedPoint.x 723333
-set -attr areacentroid.projectedPoint.y 2469525
-set -attr areacentroid.projectedPoint.projectionType epgs:27572
-set -attr areacentroid.name VERDI
-save
+set -attr longitude 4.02801703482637
+set -attr latitude 49.21157905227647
+set -attr longLatType WGS84
+save -slow
 #
 new
 set -attr objectId CITURA:StopArea:MON2
 set -attr objectVersion 1
 set -attr name MONTHERLANT
 set -attr areaType CommercialStopPoint
-# insert areacentroid CITURA:AreaCentroid:MON2
-set -attr areacentroid.objectId CITURA:AreaCentroid:MON2
-set -attr areacentroid.objectVersion 1
-set -attr areacentroid.longitude 4.025932723051815
-set -attr areacentroid.latitude 49.2162006275098
-set -attr areacentroid.longLatType WGS84
-set -attr areacentroid.projectedPoint.x 723170
-set -attr areacentroid.projectedPoint.y 2470036
-set -attr areacentroid.projectedPoint.projectionType epgs:27572
-set -attr areacentroid.name MONTHERLANT
-save
+set -attr longitude 4.025932723051815
+set -attr latitude 49.2162006275098
+set -attr longLatType WGS84
+ssave -slow
 #
 new
 set -attr objectId CITURA:StopArea:KIP2
 set -attr objectVersion 1
 set -attr name KIPLING
 set -attr areaType CommercialStopPoint
-# insert areacentroid CITURA:AreaCentroid:KIP2
-set -attr areacentroid.objectId CITURA:AreaCentroid:KIP2
-set -attr areacentroid.objectVersion 1
-set -attr areacentroid.longitude 4.021922404889179
-set -attr areacentroid.latitude 49.21396540327621
-set -attr areacentroid.longLatType WGS84
-set -attr areacentroid.projectedPoint.x 722883
-set -attr areacentroid.projectedPoint.y 2469781
-set -attr areacentroid.projectedPoint.projectionType epgs:27572
-set -attr areacentroid.name KIPLING
-save
+set -attr longitude 4.021922404889179
+set -attr latitude 49.21396540327621
+set -attr longLatType WGS84
+save -slow
 #
 new
 set -attr objectId CITURA:StopArea:PDO2
 set -attr objectVersion 1
 set -attr name POMPIDOU
 set -attr areaType CommercialStopPoint
-# insert areacentroid CITURA:AreaCentroid:PDO2
-set -attr areacentroid.objectId CITURA:AreaCentroid:PDO2
-set -attr areacentroid.objectVersion 1
-set -attr areacentroid.longitude 4.028543795168355
-set -attr areacentroid.latitude 49.21759272978749
-set -attr areacentroid.longLatType WGS84
-set -attr areacentroid.projectedPoint.x 723357
-set -attr areacentroid.projectedPoint.y 2470195
-set -attr areacentroid.projectedPoint.projectionType epgs:27572
-set -attr areacentroid.name POMPIDOU
-save
+set -attr longitude 4.028543795168355
+set -attr latitude 49.21759272978749
+set -attr longLatType WGS84
+save -slow
 # BOARDING POSITIONS
 new 
 set -attr objectId CITURA:StopArea:19909
 set -attr objectVersion 1
 set -attr name RICHELIEU
 set -attr areaType BoardingPosition
-set -ref parentStopArea CITURA:StopArea:RIC2
-# insert areacentroid CITURA:AreaCentroid:19909
-set -attr areacentroid.objectId CITURA:AreaCentroid:19909
-set -attr areacentroid.objectVersion 1
-set -attr areacentroid.longitude 4.028530495041858
-set -attr areacentroid.latitude 49.21635275245038
-set -attr areacentroid.longLatType WGS84
-set -attr areacentroid.projectedPoint.x 723359
-set -attr areacentroid.projectedPoint.y 2470057
-set -attr areacentroid.projectedPoint.projectionType epgs:27572
-set -attr areacentroid.name RICHELIEU
-save
+set -ref parent CITURA:StopArea:RIC2
+set -attr longitude 4.028530495041858
+set -attr latitude 49.21635275245038
+set -attr longLatType WGS84
+save -slow
 #
 new 
 set -attr objectId CITURA:StopArea:19408
 set -attr objectVersion 1
 set -attr name MONTHERLANT
 set -attr areaType BoardingPosition
-set -ref parentStopArea CITURA:StopArea:MON2
+set -ref parent CITURA:StopArea:MON2
 # insert areacentroid CITURA:AreaCentroid:19408
 set -attr areacentroid.objectId CITURA:AreaCentroid:19408
 set -attr areacentroid.objectVersion 1
-set -attr areacentroid.longitude 4.025851334671668
-set -attr areacentroid.latitude 49.2162287332574
-set -attr areacentroid.longLatType WGS84
-set -attr areacentroid.projectedPoint.x 723164
-set -attr areacentroid.projectedPoint.y 2470039
-set -attr areacentroid.projectedPoint.projectionType epgs:27572
-set -attr areacentroid.name MONTHERLANT
-save
+set -attr longitude 4.025851334671668
+set -attr latitude 49.2162287332574
+set -attr longLatType WGS84
+save -slow
 #
 new 
 set -attr objectId CITURA:StopArea:27514
 set -attr objectVersion 1
 set -attr name POMPIDOU
 set -attr areaType BoardingPosition
-set -ref parentStopArea CITURA:StopArea:PDO2
-# insert areacentroid CITURA:AreaCentroid:27514
-set -attr areacentroid.objectId CITURA:AreaCentroid:27514
-set -attr areacentroid.objectVersion 1
-set -attr areacentroid.longitude 4.028586407979327
-set -attr areacentroid.latitude 49.21763706250882
-set -attr areacentroid.longLatType WGS84
-set -attr areacentroid.projectedPoint.x 723360
-set -attr areacentroid.projectedPoint.y 2470200
-set -attr areacentroid.projectedPoint.projectionType epgs:27572
-set -attr areacentroid.name POMPIDOU
-save
+set -ref parent CITURA:StopArea:PDO2
+set -attr longitude 4.028586407979327
+set -attr latitude 49.21763706250882
+set -attr longLatType WGS84
+save -slow
 #
 new 
 set -attr objectId CITURA:StopArea:5687
 set -attr objectVersion 1
 set -attr name "VAL DE MURIGNY"
 set -attr areaType BoardingPosition
-set -ref parentStopArea CITURA:StopArea:VAL2
-# insert areacentroid CITURA:AreaCentroid:5687
-set -attr areacentroid.objectId CITURA:AreaCentroid:5687
-set -attr areacentroid.objectVersion 1
-set -attr areacentroid.longitude 4.025175724449591
-set -attr areacentroid.latitude 49.20984867887436
-set -attr areacentroid.longLatType WGS84
-set -attr areacentroid.projectedPoint.x 723130
-set -attr areacentroid.projectedPoint.y 2469328
-set -attr areacentroid.projectedPoint.projectionType epgs:27572
-set -attr areacentroid.name "VAL DE MURIGNY"
-save
+set -ref parent CITURA:StopArea:VAL2
+set -attr longitude 4.025175724449591
+set -attr latitude 49.20984867887436
+set -attr longLatType WGS84
+save -slow
 #
 new 
 set -attr objectId CITURA:StopArea:18087
 set -attr objectVersion 1
 set -attr name MONTHERLANT
 set -attr areaType BoardingPosition
-set -ref parentStopArea CITURA:StopArea:MON2
-# insert areacentroid CITURA:AreaCentroid:18087
-set -attr areacentroid.objectId CITURA:AreaCentroid:18087
-set -attr areacentroid.objectVersion 1
-set -attr areacentroid.longitude 4.026028118045004
-set -attr areacentroid.latitude 49.21618131123141
-set -attr areacentroid.longLatType WGS84
-set -attr areacentroid.projectedPoint.x 723177
-set -attr areacentroid.projectedPoint.y 2470034
-set -attr areacentroid.projectedPoint.projectionType epgs:27572
-set -attr areacentroid.name MONTHERLANT
-save
+set -ref parent CITURA:StopArea:MON2
+set -attr longitude 4.026028118045004
+set -attr latitude 49.21618131123141
+set -attr longLatType WGS84
+save -slow
 #
 new 
 set -attr objectId CITURA:StopArea:21424
 set -attr objectVersion 1
 set -attr name COUBERTIN
 set -attr areaType BoardingPosition
-set -ref parentStopArea CITURA:StopArea:COB2
-# insert areacentroid CITURA:AreaCentroid:21424
-set -attr areacentroid.objectId CITURA:AreaCentroid:21424
-set -attr areacentroid.objectVersion 1
-set -attr areacentroid.longitude 4.035333972998959
-set -attr areacentroid.latitude 49.21965361904064
-set -attr areacentroid.longLatType WGS84
-set -attr areacentroid.projectedPoint.x 723847
-set -attr areacentroid.projectedPoint.y 2470435
-set -attr areacentroid.projectedPoint.projectionType epgs:27572
-set -attr areacentroid.name COUBERTIN
-save
+set -ref parent CITURA:StopArea:COB2
+set -attr longitude 4.035333972998959
+set -attr latitude 49.21965361904064
+set -attr longLatType WGS84
+save -slow
 #
 new 
 set -attr objectId CITURA:StopArea:30705
 set -attr objectVersion 1
 set -attr name VERDI
 set -attr areaType BoardingPosition
-set -ref parentStopArea CITURA:StopArea:VRD2
-# insert areacentroid CITURA:AreaCentroid:30705
-set -attr areacentroid.objectId CITURA:AreaCentroid:30705
-set -attr areacentroid.objectVersion 1
-set -attr areacentroid.longitude 4.028007158791428
-set -attr areacentroid.latitude 49.21169601916422
-set -attr areacentroid.longLatType WGS84
-set -attr areacentroid.projectedPoint.x 723332
-set -attr areacentroid.projectedPoint.y 2469538
-set -attr areacentroid.projectedPoint.projectionType epgs:27572
-set -attr areacentroid.name VERDI
-save
+set -ref parent CITURA:StopArea:VRD2
+set -attr longitude 4.028007158791428
+set -attr latitude 49.21169601916422
+set -attr longLatType WGS84
+save -slow
 #
 new 
 set -attr objectId CITURA:StopArea:29003
 set -attr objectVersion 1
 set -attr name NODIER
 set -attr areaType BoardingPosition
-set -ref parentStopArea CITURA:StopArea:NOD2
-# insert areacentroid CITURA:AreaCentroid:29003
-set -attr areacentroid.objectId CITURA:AreaCentroid:29003
-set -attr areacentroid.objectVersion 1
-set -attr areacentroid.longitude 4.023352681974474
-set -attr areacentroid.latitude 49.21575163627759
-set -attr areacentroid.longLatType WGS84
-set -attr areacentroid.projectedPoint.x 722983
-set -attr areacentroid.projectedPoint.y 2469982
-set -attr areacentroid.projectedPoint.projectionType epgs:27572
-set -attr areacentroid.name NODIER
-save
+set -ref parent CITURA:StopArea:NOD2
+set -attr longitude 4.023352681974474
+set -attr latitude 49.21575163627759
+set -attr longLatType WGS84
+save -slow
 #
 new 
 set -attr objectId CITURA:StopArea:914
 set -attr objectVersion 1
 set -attr name DOSTOIEVSKI
 set -attr areaType BoardingPosition
-set -ref parentStopArea CITURA:StopArea:DSK2
-# insert areacentroid CITURA:AreaCentroid:914
-set -attr areacentroid.objectId CITURA:AreaCentroid:21424
-set -attr areacentroid.objectVersion 1
-set -attr areacentroid.longitude 4.022001972929609
-set -attr areacentroid.latitude 49.21010898004009
-set -attr areacentroid.longLatType WGS84
-set -attr areacentroid.projectedPoint.x 722898
-set -attr areacentroid.projectedPoint.y 2469352
-set -attr areacentroid.projectedPoint.projectionType epgs:27572
-set -attr areacentroid.name DOSTOIEVSKI
-save
+set -ref parent CITURA:StopArea:DSK2
+set -attr longitude 4.022001972929609
+set -attr latitude 49.21010898004009
+set -attr longLatType WGS84
+save -slow
 #
 new 
 set -attr objectId CITURA:StopArea:24990
 set -attr objectVersion 1
 set -attr name MELIES
 set -attr areaType BoardingPosition
-set -ref parentStopArea CITURA:StopArea:MEL2
-# insert areacentroid CITURA:AreaCentroid:24990
-set -attr areacentroid.objectId CITURA:AreaCentroid:24990
-set -attr areacentroid.objectVersion 1
-set -attr areacentroid.longitude 4.0266448960579435
-set -attr areacentroid.latitude 49.21365634703545
-set -attr areacentroid.longLatType WGS84
-set -attr areacentroid.projectedPoint.x 723228
-set -attr areacentroid.projectedPoint.y 2469754
-set -attr areacentroid.projectedPoint.projectionType epgs:27572
-set -attr areacentroid.name MELIES
-save
+set -ref parent CITURA:StopArea:MEL2
+set -attr longitude 4.0266448960579435
+set -attr latitude 49.21365634703545
+set -attr longLatType WGS84
+save -slow
 #
 new 
 set -attr objectId CITURA:StopArea:17547
 set -attr objectVersion 1
 set -attr name "ALSACE LORRAINE"
 set -attr areaType BoardingPosition
-set -ref parentStopArea CITURA:StopArea:ALS3
-# insert areacentroid CITURA:AreaCentroid:17547
-set -attr areacentroid.objectId CITURA:AreaCentroid:17547
-set -attr areacentroid.objectVersion 1
-set -attr areacentroid.longitude 4.0403323079456985
-set -attr areacentroid.latitude 49.219789462757014
-set -attr areacentroid.longLatType WGS84
-set -attr areacentroid.projectedPoint.x 724211
-set -attr areacentroid.projectedPoint.y 2470458
-set -attr areacentroid.projectedPoint.projectionType epgs:27572
-set -attr areacentroid.name "ALSACE LORRAINE"
-save
+set -ref parent CITURA:StopArea:ALS3
+set -attr longitude 4.0403323079456985
+set -attr latitude 49.219789462757014
+set -attr longLatType WGS84
+ave -slow
 #
 new 
 set -attr objectId CITURA:StopArea:6126
 set -attr objectVersion 1
 set -attr name VERDI
 set -attr areaType BoardingPosition
-set -ref parentStopArea CITURA:StopArea:VRD2
-# insert areacentroid CITURA:AreaCentroid:6126
-set -attr areacentroid.objectId CITURA:AreaCentroid:6126
-set -attr areacentroid.objectVersion 1
-set -attr areacentroid.longitude 4.028026910816446
-set -attr areacentroid.latitude 49.21146208537525
-set -attr areacentroid.longLatType WGS84
-set -attr areacentroid.projectedPoint.x 723334
-set -attr areacentroid.projectedPoint.y 2469512
-set -attr areacentroid.projectedPoint.projectionType epgs:27572
-set -attr areacentroid.name VERDI
-save
+set -ref parent CITURA:StopArea:VRD2
+set -attr longitude 4.028026910816446
+set -attr latitude 49.21146208537525
+set -attr longLatType WGS84
+save -slow
 #
 new 
 set -attr objectId CITURA:StopArea:1780
 set -attr objectVersion 1
 set -attr name "VAL DE MURIGNY"
 set -attr areaType BoardingPosition
-set -ref parentStopArea CITURA:StopArea:VAL2
-# insert areacentroid CITURA:AreaCentroid:1780
-set -attr areacentroid.objectId CITURA:AreaCentroid:1780
-set -attr areacentroid.objectVersion 1
-set -attr areacentroid.longitude 4.025366491398194
-set -attr areacentroid.latitude 49.20981004721816
-set -attr areacentroid.longLatType WGS84
-set -attr areacentroid.projectedPoint.x 723144
-set -attr areacentroid.projectedPoint.y 2469324
-set -attr areacentroid.projectedPoint.projectionType epgs:27572
-set -attr areacentroid.name "VAL DE MURIGNY"
-save
+set -ref parent CITURA:StopArea:VAL2
+set -attr longitude 4.025366491398194
+set -attr latitude 49.20981004721816
+set -attr longLatType WGS84
+save -slow
 #
 new 
 set -attr objectId CITURA:StopArea:6679
 set -attr objectVersion 1
 set -attr name NODIER
 set -attr areaType BoardingPosition
-set -ref parentStopArea CITURA:StopArea:NOD2
-# insert areacentroid CITURA:AreaCentroid:6679
-set -attr areacentroid.objectId CITURA:AreaCentroid:6679
-set -attr areacentroid.objectVersion 1
-set -attr areacentroid.longitude 4.0237568019102214
-set -attr areacentroid.latitude 49.215943662994526
-set -attr areacentroid.longLatType WGS84
-set -attr areacentroid.projectedPoint.x 723012
-set -attr areacentroid.projectedPoint.y 2470004
-set -attr areacentroid.projectedPoint.projectionType epgs:27572
-set -attr areacentroid.name NODIER
-save
+set -ref parent CITURA:StopArea:NOD2
+set -attr longitude 4.0237568019102214
+set -attr latitude 49.215943662994526
+set -attr longLatType WGS84
+save -slow
 #
 new 
 set -attr objectId CITURA:StopArea:13717
 set -attr objectVersion 1
 set -attr name POMPIDOU
 set -attr areaType BoardingPosition
-set -ref parentStopArea CITURA:StopArea:PDO2
-# insert areacentroid CITURA:AreaCentroid:13717
-set -attr areacentroid.objectId CITURA:AreaCentroid:13717
-set -attr areacentroid.objectVersion 1
-set -attr areacentroid.longitude 4.028501477533717
-set -attr areacentroid.latitude 49.21755737958582
-set -attr areacentroid.longLatType WGS84
-set -attr areacentroid.projectedPoint.x 723354
-set -attr areacentroid.projectedPoint.y 2470191
-set -attr areacentroid.projectedPoint.projectionType epgs:27572
-set -attr areacentroid.name POMPIDOU
-save
+set -ref parent CITURA:StopArea:PDO2
+set -attr longitude 4.028501477533717
+set -attr latitude 49.21755737958582
+set -attr longLatType WGS84
+ave -slow
 #
 new 
 set -attr objectId CITURA:StopArea:7004
 set -attr objectVersion 1
 set -attr name KIPLING
 set -attr areaType BoardingPosition
-set -ref parentStopArea CITURA:StopArea:KIP2
-# insert areacentroid CITURA:AreaCentroid:7004
-set -attr areacentroid.objectId CITURA:AreaCentroid:7004
-set -attr areacentroid.objectVersion 1
-set -attr areacentroid.longitude 4.021905166242827
-set -attr areacentroid.latitude 49.21385780483977
-set -attr areacentroid.longLatType WGS84
-set -attr areacentroid.projectedPoint.x 722882
-set -attr areacentroid.projectedPoint.y 2469769
-set -attr areacentroid.projectedPoint.projectionType epgs:27572
-set -attr areacentroid.name KIPLING
-save
+set -ref parent CITURA:StopArea:KIP2
+set -attr longitude 4.021905166242827
+set -attr latitude 49.21385780483977
+set -attr longLatType WGS84
+save -slow
 #
 new 
 set -attr objectId CITURA:StopArea:9219
 set -attr objectVersion 1
 set -attr name RICHELIEU
 set -attr areaType BoardingPosition
-set -ref parentStopArea CITURA:StopArea:RIC2
-# insert areacentroid CITURA:AreaCentroid:9219
-set -attr areacentroid.objectId CITURA:AreaCentroid:9219
-set -attr areacentroid.objectVersion 1
-set -attr areacentroid.longitude 4.028386587517829
-set -attr areacentroid.latitude 49.21614808693212
-set -attr areacentroid.longLatType WGS84
-set -attr areacentroid.projectedPoint.x 723349
-set -attr areacentroid.projectedPoint.y 2470034
-set -attr areacentroid.projectedPoint.projectionType epgs:27572
-set -attr areacentroid.name RICHELIEU
-save
+set -ref parent CITURA:StopArea:RIC2
+set -attr longitude 4.028386587517829
+set -attr latitude 49.21614808693212
+set -attr longLatType WGS84
+save -slow
 #
 new 
 set -attr objectId CITURA:StopArea:16229
 set -attr objectVersion 1
 set -attr name DOSTOIEVSKI
 set -attr areaType BoardingPosition
-set -ref parentStopArea CITURA:StopArea:DSK2
-# insert areacentroid CITURA:AreaCentroid:16229
-set -attr areacentroid.objectId CITURA:AreaCentroid:16229
-set -attr areacentroid.objectVersion 1
-set -attr areacentroid.longitude 4.021733347848372
-set -attr areacentroid.latitude 49.210283500813155
-set -attr areacentroid.longLatType WGS84
-set -attr areacentroid.projectedPoint.x 722878
-set -attr areacentroid.projectedPoint.y 2469371
-set -attr areacentroid.projectedPoint.projectionType epgs:27572
-set -attr areacentroid.name DOSTOIEVSKI
-save
+set -ref parent CITURA:StopArea:DSK2
+set -attr longitude 4.021733347848372
+set -attr latitude 49.210283500813155
+set -attr longLatType WGS84
+save -slow
 #
 new 
 set -attr objectId CITURA:StopArea:1248
 set -attr objectVersion 1
 set -attr name COUBERTIN
 set -attr areaType BoardingPosition
-set -ref parentStopArea CITURA:StopArea:COB2
-# insert areacentroid CITURA:AreaCentroid:1248
-set -attr areacentroid.objectId CITURA:AreaCentroid:1248
-set -attr areacentroid.objectVersion 1
-set -attr areacentroid.longitude 4.035429370862314
-set -attr areacentroid.latitude 49.21963429534946
-set -attr areacentroid.longLatType WGS84
-set -attr areacentroid.projectedPoint.x 723854
-set -attr areacentroid.projectedPoint.y 2470433
-set -attr areacentroid.projectedPoint.projectionType epgs:27572
-set -attr areacentroid.name COUBERTIN
-save
+set -ref parent CITURA:StopArea:COB2
+set -attr longitude 4.035429370862314
+set -attr latitude 49.21963429534946
+set -attr longLatType WGS84
+save -slow
 #
 new 
 set -attr objectId CITURA:StopArea:20829
 set -attr objectVersion 1
 set -attr name KIPLING
 set -attr areaType BoardingPosition
-set -ref parentStopArea CITURA:StopArea:KIP2
-# insert areacentroid CITURA:AreaCentroid:20829
-set -attr areacentroid.objectId CITURA:AreaCentroid:20829
-set -attr areacentroid.objectVersion 1
-set -attr areacentroid.longitude 4.021939643607574
-set -attr areacentroid.latitude 49.21407300169949
-set -attr areacentroid.longLatType WGS84
-set -attr areacentroid.projectedPoint.x 722884
-set -attr areacentroid.projectedPoint.y 2469793
-set -attr areacentroid.projectedPoint.projectionType epgs:27572
-set -attr areacentroid.name KIPLING
-save
+set -ref parent CITURA:StopArea:KIP2
+set -attr longitude 4.021939643607574
+set -attr latitude 49.21407300169949
+set -attr longLatType WGS84
+save -slow
 #
 new 
 set -attr objectId CITURA:StopArea:20285
 set -attr objectVersion 1
 set -attr name MELIES
 set -attr areaType BoardingPosition
-set -ref parentStopArea CITURA:StopArea:MEL2
-# insert areacentroid CITURA:AreaCentroid:20285
-set -attr areacentroid.objectId CITURA:AreaCentroid:20285
-set -attr areacentroid.objectVersion 1
-set -attr areacentroid.longitude 4.02668868303502
-set -attr areacentroid.latitude 49.213736610884325
-set -attr areacentroid.longLatType WGS84
-set -attr areacentroid.projectedPoint.x 723231
-set -attr areacentroid.projectedPoint.y 2469763
-set -attr areacentroid.projectedPoint.projectionType epgs:27572
-set -attr areacentroid.name MELIES
-save
+set -ref parent CITURA:StopArea:MEL2
+set -attr longitude 4.02668868303502
+set -attr latitude 49.213736610884325
+set -attr longLatType WGS84
+save -slow
 #
 
 # TIMETABLES
@@ -597,7 +378,7 @@ new -o timetable
 set -attr objectId CITURA:Timetable:20110511
 set -attr objectVersion 1
 add -attr calendarDay 2011-05-11
-save
+save -slow
 
 
 # line
@@ -611,7 +392,7 @@ set -attr transportModeName Bus
 set -ref ptNetwork CITURA:GroupOfLine:CITURA
 set -ref company CITURA:Company:TRANSDEV
 set -attr mobilityRestrictedSuitable false
-save
+save -slow
 
 
 # routes
@@ -622,7 +403,7 @@ set -attr name MELI-VALM-KIPL-COUB-MELI
 set -attr direction A
 set -attr wayBack A
 set -ref line CITURA:Line:15
-save
+save -slow
 
 new 
 set -attr objectId CITURA:Route:15_R_2
@@ -631,7 +412,7 @@ set -attr name MELI-COUB-ALSA-COUB-MELI
 set -attr direction R
 set -attr wayBack R
 set -ref line CITURA:Line:15
-save
+save -slow
 
 
 # STOPPOINTS 
@@ -642,7 +423,7 @@ set -attr objectVersion 1
 set -ref containedInStopArea CITURA:StopArea:24990
 set -ref route CITURA:Route:15_A_1
 set -attr position 1
-save
+save -slow
 
 new 
 set -attr objectId CITURA:StopPoint:15_A_1_274
@@ -650,7 +431,7 @@ set -attr objectVersion 1
 set -ref containedInStopArea CITURA:StopArea:6126
 set -ref route CITURA:Route:15_A_1
 set -attr position 2
-save
+save -slow
 
 new 
 set -attr objectId CITURA:StopPoint:15_A_1_612
@@ -658,7 +439,7 @@ set -attr objectVersion 1
 set -ref containedInStopArea CITURA:StopArea:5687
 set -ref route CITURA:Route:15_A_1
 set -attr position 3
-save
+save -slow
 
 new 
 set -attr objectId CITURA:StopPoint:15_A_1_882
@@ -666,7 +447,7 @@ set -attr objectVersion 1
 set -ref containedInStopArea CITURA:StopArea:16229
 set -ref route CITURA:Route:15_A_1
 set -attr position 4
-save
+save -slow
 
 new 
 set -attr objectId CITURA:StopPoint:15_A_1_1290
@@ -674,7 +455,7 @@ set -attr objectVersion 1
 set -ref containedInStopArea CITURA:StopArea:20829
 set -ref route CITURA:Route:15_A_1
 set -attr position 5
-save
+save -slow
 
 new 
 set -attr objectId CITURA:StopPoint:15_A_1_1513
@@ -682,7 +463,7 @@ set -attr objectVersion 1
 set -ref containedInStopArea CITURA:StopArea:29003
 set -ref route CITURA:Route:15_A_1
 set -attr position 6
-save
+save -slow
 
 new 
 set -attr objectId CITURA:StopPoint:15_A_1_1719
@@ -690,7 +471,7 @@ set -attr objectVersion 1
 set -ref containedInStopArea CITURA:StopArea:18087
 set -ref route CITURA:Route:15_A_1
 set -attr position 7
-save
+save -slow
 
 new 
 set -attr objectId CITURA:StopPoint:15_A_1_1934
@@ -698,7 +479,7 @@ set -attr objectVersion 1
 set -ref containedInStopArea CITURA:StopArea:19909
 set -ref route CITURA:Route:15_A_1
 set -attr position 8
-save
+save -slow
 
 new 
 set -attr objectId CITURA:StopPoint:15_A_1_2077
@@ -706,7 +487,7 @@ set -attr objectVersion 1
 set -ref containedInStopArea CITURA:StopArea:27514
 set -ref route CITURA:Route:15_A_1
 set -attr position 9
-save
+save -slow
 
 new 
 set -attr objectId CITURA:StopPoint:15_A_1_2686
@@ -714,7 +495,7 @@ set -attr objectVersion 1
 set -ref containedInStopArea CITURA:StopArea:1248
 set -ref route CITURA:Route:15_A_1
 set -attr position 10
-save
+save -slow
 
 new 
 set -attr objectId CITURA:StopPoint:15_A_1_3058
@@ -722,7 +503,7 @@ set -attr objectVersion 1
 set -ref containedInStopArea CITURA:StopArea:17547
 set -ref route CITURA:Route:15_A_1
 set -attr position 11
-save
+save -slow
 
 new 
 set -attr objectId CITURA:StopPoint:15_A_1_3648
@@ -730,7 +511,7 @@ set -attr objectVersion 1
 set -ref containedInStopArea CITURA:StopArea:21424
 set -ref route CITURA:Route:15_A_1
 set -attr position 12
-save
+save -slow
 
 new 
 set -attr objectId CITURA:StopPoint:15_A_1_4361
@@ -738,7 +519,7 @@ set -attr objectVersion 1
 set -ref containedInStopArea CITURA:StopArea:13717
 set -ref route CITURA:Route:15_A_1
 set -attr position 13
-save
+save -slow
 
 new 
 set -attr objectId CITURA:StopPoint:15_A_1_4519
@@ -746,7 +527,7 @@ set -attr objectVersion 1
 set -ref containedInStopArea CITURA:StopArea:9219
 set -ref route CITURA:Route:15_A_1
 set -attr position 14
-save
+save -slow
 
 new 
 set -attr objectId CITURA:StopPoint:15_A_1_4835
@@ -754,7 +535,7 @@ set -attr objectVersion 1
 set -ref containedInStopArea CITURA:StopArea:24990
 set -ref route CITURA:Route:15_A_1
 set -attr position 15
-save
+save -slow
 
 # route retour
 new 
@@ -763,7 +544,7 @@ set -attr objectVersion 1
 set -ref containedInStopArea CITURA:StopArea:20285
 set -ref route CITURA:Route:15_R_2
 set -attr position 1
-save
+save -slow
 
 new 
 set -attr objectId CITURA:StopPoint:15_R_2_332
@@ -771,7 +552,7 @@ set -attr objectVersion 1
 set -ref containedInStopArea CITURA:StopArea:19909
 set -ref route CITURA:Route:15_R_2
 set -attr position 2
-save
+save -slow
 
 new 
 set -attr objectId CITURA:StopPoint:15_R_2_475
@@ -779,7 +560,7 @@ set -attr objectVersion 1
 set -ref containedInStopArea CITURA:StopArea:27514
 set -ref route CITURA:Route:15_R_2
 set -attr position 3
-save
+save -slow
 
 new 
 set -attr objectId CITURA:StopPoint:15_R_2_1084
@@ -787,7 +568,7 @@ set -attr objectVersion 1
 set -ref containedInStopArea CITURA:StopArea:1248
 set -ref route CITURA:Route:15_R_2
 set -attr position 4
-save
+save -slow
 
 new 
 set -attr objectId CITURA:StopPoint:15_R_2_1456
@@ -795,7 +576,7 @@ set -attr objectVersion 1
 set -ref containedInStopArea CITURA:StopArea:17547
 set -ref route CITURA:Route:15_R_2
 set -attr position 5
-save
+save -slow
 
 new
 set -attr objectId CITURA:StopPoint:15_R_2_2046
@@ -803,7 +584,7 @@ set -attr objectVersion 1
 set -ref containedInStopArea CITURA:StopArea:21424
 set -ref route CITURA:Route:15_R_2
 set -attr position 6
-save
+save -slow
 
 new 
 set -attr objectId CITURA:StopPoint:15_R_2_2759
@@ -811,7 +592,7 @@ set -attr objectVersion 1
 set -ref containedInStopArea CITURA:StopArea:13717
 set -ref route CITURA:Route:15_R_2
 set -attr position 7
-save
+save -slow
 
 new 
 set -attr objectId CITURA:StopPoint:15_R_2_2917
@@ -819,7 +600,7 @@ set -attr objectVersion 1
 set -ref containedInStopArea CITURA:StopArea:9219
 set -ref route CITURA:Route:15_R_2
 set -attr position 8
-save
+save -slow
 
 new 
 set -attr objectId CITURA:StopPoint:15_R_2_3115
@@ -827,7 +608,7 @@ set -attr objectVersion 1
 set -ref containedInStopArea CITURA:StopArea:19408
 set -ref route CITURA:Route:15_R_2
 set -attr position 9
-save
+save -slow
 
 new 
 set -attr objectId CITURA:StopPoint:15_R_2_3272
@@ -835,7 +616,7 @@ set -attr objectVersion 1
 set -ref containedInStopArea CITURA:StopArea:6679
 set -ref route CITURA:Route:15_R_2
 set -attr position 10
-save
+save -slow
 
 new 
 set -attr objectId CITURA:StopPoint:15_R_2_3555
@@ -843,7 +624,7 @@ set -attr objectVersion 1
 set -ref containedInStopArea CITURA:StopArea:7004
 set -ref route CITURA:Route:15_R_2
 set -attr position 11
-save
+save -slow
 
 new 
 set -attr objectId CITURA:StopPoint:15_R_2_4010
@@ -851,7 +632,7 @@ set -attr objectVersion 1
 set -ref containedInStopArea CITURA:StopArea:914
 set -ref route CITURA:Route:15_R_2
 set -attr position 12
-save
+save -slow
 
 new 
 set -attr objectId CITURA:StopPoint:15_R_2_4274
@@ -859,7 +640,7 @@ set -attr objectVersion 1
 set -ref containedInStopArea CITURA:StopArea:1780
 set -ref route CITURA:Route:15_R_2
 set -attr position 13
-save
+save -slow
 
 new 
 set -attr objectId CITURA:StopPoint:15_R_2_4630
@@ -867,7 +648,7 @@ set -attr objectVersion 1
 set -ref containedInStopArea CITURA:StopArea:30705
 set -ref route CITURA:Route:15_R_2
 set -attr position 14
-save
+save -slow
 
 new 
 set -attr objectId CITURA:StopPoint:15_R_2_4883
@@ -875,7 +656,7 @@ set -attr objectVersion 1
 set -ref containedInStopArea CITURA:StopArea:20285
 set -ref route CITURA:Route:15_R_2
 set -attr position 15
-save
+save -slow
 
 #  PTLinks
 
@@ -885,16 +666,15 @@ set -attr objectId CITURA:JourneyPattern:15_A_1
 set -attr objectVersion 1
 set -attr name MELI-VALM-KIPL-COUB-MELI 
 set -ref route CITURA:Route:15_A_1
-save
+save -slow
 
 new
 set -attr objectId CITURA:JourneyPattern:15_R_2
 set -attr objectVersion 1
 set -attr name MELI-COUB-ALSA-COUB-MELI 
 set -ref route CITURA:Route:15_R_2
-save
+save -slow
 
-exit
 # VehicleJourney
 new -o vehicleJourney
 set -attr objectId CITURA:VehicleJourney:15_A_1_08_38
@@ -981,7 +761,7 @@ set -attr vehicleJourneyAtStop[last].departureTime 08:52:00
 set -attr vehicleJourneyAtStop[last].arrivalTime 08:52:00
 
 # save vehiclejourney
-save
+save  -slow
 
 get -o line -objectId CITURA:Line:15
 print -level 4

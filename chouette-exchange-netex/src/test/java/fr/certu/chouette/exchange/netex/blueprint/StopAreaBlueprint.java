@@ -6,10 +6,13 @@ import com.tobedevoured.modelcitizen.annotation.Mapped;
 import com.tobedevoured.modelcitizen.annotation.MappedList;
 import com.tobedevoured.modelcitizen.annotation.Nullable;
 import com.tobedevoured.modelcitizen.field.FieldCallback;
-import fr.certu.chouette.model.neptune.AreaCentroid;
+// import fr.certu.chouette.model.neptune.AreaCentroid;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
+import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
+
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -43,11 +46,32 @@ public class StopAreaBlueprint {
     @Default
     int fareCode = 1;
 
-    @Mapped   
-    AreaCentroid areaCentroid;  
+    @Default
+    LongLatTypeEnum longLatType = LongLatTypeEnum.WGS84;
     
     @Default
-    ChouetteAreaEnum areaType = ChouetteAreaEnum.BOARDINGPOSITION;
+    BigDecimal longitude = new BigDecimal( 2.373D + ( UUID.randomUUID().getLeastSignificantBits()%100)/1000000);
+    
+    @Default
+    BigDecimal latitude = new BigDecimal( 48.8D + ( UUID.randomUUID().getLeastSignificantBits()%100)/1000000);
+
+    @Default
+    String streetName = "Rue "+ UUID.randomUUID();
+    
+    @Default
+    String countryCode = "ZIP "+ UUID.randomUUID();
+
+    @Default
+    String projectionType = "EPSG:9801";
+    
+    @Default
+    BigDecimal x = new BigDecimal( 602747 + ( UUID.randomUUID().getLeastSignificantBits()%100));
+    
+    @Default
+    BigDecimal y = new BigDecimal( 2431390 + ( UUID.randomUUID().getLeastSignificantBits()%100));
+
+    @Default
+    ChouetteAreaEnum areaType = ChouetteAreaEnum.BoardingPosition;
     
     @Nullable
     @Mapped   

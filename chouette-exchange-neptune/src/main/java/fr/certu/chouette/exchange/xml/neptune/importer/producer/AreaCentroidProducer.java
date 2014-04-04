@@ -3,10 +3,10 @@ package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 import org.trident.schema.trident.AddressType;
 import org.trident.schema.trident.ProjectedPointType;
 
-import fr.certu.chouette.model.neptune.AreaCentroid;
-import fr.certu.chouette.model.neptune.type.Address;
+import fr.certu.chouette.exchange.xml.neptune.model.Address;
+import fr.certu.chouette.exchange.xml.neptune.model.AreaCentroid;
+import fr.certu.chouette.exchange.xml.neptune.model.ProjectedPoint;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
-import fr.certu.chouette.model.neptune.type.ProjectedPoint;
 import fr.certu.chouette.plugin.exchange.SharedImportedData;
 import fr.certu.chouette.plugin.exchange.UnsharedImportedData;
 import fr.certu.chouette.plugin.report.ReportItem;
@@ -32,7 +32,7 @@ public class AreaCentroidProducer extends AbstractModelProducer<AreaCentroid,org
 		{
 			try 
 			{
-				areaCentroid.setLongLatType(LongLatTypeEnum.fromValue(xmlAreaCentroid.getLongLatType().value()));
+				areaCentroid.setLongLatType(LongLatTypeEnum.valueOf(xmlAreaCentroid.getLongLatType().value()));
 			}
 			catch (IllegalArgumentException e) 
 			{

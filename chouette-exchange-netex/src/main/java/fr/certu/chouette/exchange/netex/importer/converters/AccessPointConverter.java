@@ -82,13 +82,13 @@ public class AccessPointConverter extends GenericConverter
             boolean isExit = exitVal!=null && exitVal.equals("true");        
             
             if (isEntry && isExit)
-                accessPoint.setType(AccessPointTypeEnum.INOUT);              
+                accessPoint.setType(AccessPointTypeEnum.InOut);              
             else if( !isEntry && isExit)
-                accessPoint.setType(AccessPointTypeEnum.OUT);              
+                accessPoint.setType(AccessPointTypeEnum.Out);              
             else if(isEntry && !isExit)
-                accessPoint.setType(AccessPointTypeEnum.IN);
+                accessPoint.setType(AccessPointTypeEnum.In);
             else
-                accessPoint.setType(AccessPointTypeEnum.INOUT);
+                accessPoint.setType(AccessPointTypeEnum.InOut);
             
             accessPoint.setOpeningTime((Time)parseOptionnalSubElement(nav, "TimeBand", "StartTime", "Time"));
             accessPoint.setClosingTime((Time)parseOptionnalSubElement(nav, "TimeBand", "EndTime", "Time"));                        

@@ -56,7 +56,7 @@ public class FacilityJdbcDao extends AbstractJdbcDao<Facility>
 		ps.setBigDecimal(14, facility.getLatitude());
 		String longlattype = null;
 		if(facility.getLongLatType() != null)
-			longlattype = facility.getLongLatType().value();
+			longlattype = facility.getLongLatType().name();
 		ps.setString(15, longlattype);
 		ps.setString(16, facility.getCountryCode());
 		ps.setString(17, facility.getStreetName());

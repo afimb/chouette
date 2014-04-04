@@ -162,7 +162,7 @@ public interface INeptuneManager <T extends NeptuneIdentifiedObject>
 	 * @param bean the bean to update
 	 * @throws ChouetteException invalid user access or constraints conflits or storage access problem 
 	 */
-	void update(User user,T bean)  throws ChouetteException;
+	T update(User user,T bean)  throws ChouetteException;
 
 	// Delete
 	/**

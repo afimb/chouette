@@ -50,35 +50,35 @@ public class GtfsCalendarProducer extends AbstractProducer<GtfsCalendar, Timetab
          {
             switch (dayType)
             {
-            case MONDAY:
+            case Monday:
                calendar.setMonday(true);
                break;
-            case TUESDAY:
+            case Tuesday:
                calendar.setTuesday(true);
                break;
-            case WEDNESDAY:
+            case Wednesday:
                calendar.setWednesday(true);
                break;
-            case THURSDAY:
+            case Thursday:
                calendar.setThursday(true);
                break;
-            case FRIDAY:
+            case Friday:
                calendar.setFriday(true);
                break;
-            case SATURDAY:
+            case Saturday:
                calendar.setSaturday(true);
                break;
-            case SUNDAY:
+            case Sunday:
                calendar.setSunday(true);
                break;
-            case WEEKDAY:
+            case WeekDay:
                calendar.setMonday(true);
                calendar.setTuesday(true);
                calendar.setWednesday(true);
                calendar.setThursday(true);
                calendar.setFriday(true);
                break;
-            case WEEKEND:
+            case WeekEnd:
                calendar.setSaturday(true);
                calendar.setSunday(true);
                break;

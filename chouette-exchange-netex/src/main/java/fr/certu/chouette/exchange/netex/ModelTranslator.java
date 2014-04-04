@@ -114,7 +114,9 @@ public class ModelTranslator {
             return null;
         // netexSourceType is a free text
         PTDirectionEnum ptDirection = null;
-        try { ptDirection = PTDirectionEnum.fromValue(firstLetterUpcase( netexPTDirection)); } 
+        
+        
+        try { ptDirection = PTDirectionEnum.valueOf(firstLetterUpcase( netexPTDirection)); } 
         catch ( Exception e) {
         	logger.error("unable to translate "+netexPTDirection+" as PTDirection");
         }
@@ -131,7 +133,7 @@ public class ModelTranslator {
             return null;
         // netexSourceType is a free text
         PTNetworkSourceTypeEnum sourceType = null;
-        try { sourceType = PTNetworkSourceTypeEnum.fromValue(firstLetterUpcase( netexSourceType)); } 
+        try { sourceType = PTNetworkSourceTypeEnum.valueOf(firstLetterUpcase( netexSourceType)); } 
         catch ( Exception e) {
         	logger.error("unable to translate "+netexSourceType+" as PTNetworkSourceType");
         }
@@ -142,11 +144,11 @@ public class ModelTranslator {
         if ( netexServiceAlteration==null)
             return null;
         if (netexServiceAlteration.equals("planned"))
-            return ServiceStatusValueEnum.NORMAL;
+            return ServiceStatusValueEnum.Normal;
         else if (netexServiceAlteration.equals("cancellation"))
-            return ServiceStatusValueEnum.CANCELLED;
+            return ServiceStatusValueEnum.Cancelled;
         else if (netexServiceAlteration.equals("extraJourney"))
-            return ServiceStatusValueEnum.INCREASEDSERVICE;
+            return ServiceStatusValueEnum.IncreasedService;
         else 
             return null;
     }
@@ -155,17 +157,17 @@ public class ModelTranslator {
         if (serviceStatusValue==null)
             return null;
         switch(serviceStatusValue) {
-            case NORMAL:
-            case DELAYED:
-            case EARLY:
+            case Normal:
+            case Delayed:
+            case Early:
                 return "planned";
-            case CANCELLED:
-            case DISRUPTED:
-            case NOTSTOPPING:
-            case REROUTED:
-            case REDUCEDSERVICE:
+            case Cancelled:
+            case Disrupted:
+            case NotStopping:
+            case Rerouted:
+            case ReducedService:
                 return "cancellation";
-            case INCREASEDSERVICE:
+            case IncreasedService:
                 return "extraJourney";
              default:
                  return null;
@@ -176,11 +178,11 @@ public class ModelTranslator {
         if (linkType==null)
             return null;
         switch(linkType) {
-            case UNDERGROUND:
+            case Underground:
                 return "indoors";
-            case OVERGROUND:
+            case Overground:
                 return "outdoors";
-            case MIXED:
+            case Mixed:
                 return "mixed";
              default:
                  return "unknown";
@@ -190,11 +192,11 @@ public class ModelTranslator {
         if ( netexLinkType==null)
             return null;
         if (netexLinkType.equals("indoors"))
-            return ConnectionLinkTypeEnum.UNDERGROUND;
+            return ConnectionLinkTypeEnum.Underground;
         else if (netexLinkType.equals("outdoors"))
-            return ConnectionLinkTypeEnum.OVERGROUND;
+            return ConnectionLinkTypeEnum.Overground;
         else if (netexLinkType.equals("mixed"))
-            return ConnectionLinkTypeEnum.MIXED;
+            return ConnectionLinkTypeEnum.Mixed;
         else 
             return null;
     }
@@ -218,45 +220,45 @@ public class ModelTranslator {
 //			<xsd:enumeration value="selfDrive">    
     public String toTransportModeNetex( TransportModeNameEnum transportMode) {
         switch(transportMode) {
-            case AIR:
+            case Air:
                 return "air";
-            case TRAIN:
+            case Train:
                 return "rail";
-            case LONGDISTANCETRAIN:
+            case LongDistanceTrain:
                 return "intercityRail";
-            case LONGDISTANCETRAIN_2:
+            case LongDistanceTrain_2:
                 return "intercityRail";
-            case LOCALTRAIN:
+            case LocalTrain:
                 return "urbanRail";
-            case RAPIDTRANSIT:
+            case RapidTransit:
                 return "urbanRail";
-            case METRO:
+            case Metro:
                 return "metro";
-            case TRAMWAY:
+            case Tramway:
                 return "tram";
-            case COACH:
+            case Coach:
                 return "coach";
-            case BUS:
+            case Bus:
                 return "bus";
-            case FERRY:
+            case Ferry:
                 return "water";
-            case WATERBORNE:
+            case Waterborne:
                 return "water";
-            case PRIVATEVEHICLE:
+            case PrivateVehicle:
                 return "selfDrive";
-            case WALK:
+            case Walk:
                 return "selfDrive";
-            case TROLLEYBUS:
+            case Trolleybus:
                 return "trolleyBus";
-            case BICYCLE:
+            case Bicycle:
                 return "selfDrive";
-            case SHUTTLE:
+            case Shuttle:
                 return "rail";
-            case TAXI:
+            case Taxi:
                 return "taxi";
-            case VAL:
+            case Val:
                 return "rail";
-            case OTHER:
+            case Other:
                 return "unknown";
             default:
                 return "";
@@ -267,33 +269,33 @@ public class ModelTranslator {
             if ( netexMode==null)
                 return null;
             else if ( netexMode.equals("air")) 
-                return TransportModeNameEnum.AIR;
+                return TransportModeNameEnum.Air;
             else if ( netexMode.equals("rail")) 
-                return TransportModeNameEnum.TRAIN;
+                return TransportModeNameEnum.Train;
             else if ( netexMode.equals("intercityRail")) 
-                return TransportModeNameEnum.LONGDISTANCETRAIN;
+                return TransportModeNameEnum.LongDistanceTrain;
             else if ( netexMode.equals("urbanRail")) 
-                return TransportModeNameEnum.LOCALTRAIN;
+                return TransportModeNameEnum.LocalTrain;
             else if ( netexMode.equals("metro")) 
-                return TransportModeNameEnum.METRO;
+                return TransportModeNameEnum.Metro;
             else if ( netexMode.equals("tram")) 
-                return TransportModeNameEnum.TRAMWAY;
+                return TransportModeNameEnum.Tramway;
             else if ( netexMode.equals("coach")) 
-                return TransportModeNameEnum.COACH;
+                return TransportModeNameEnum.Coach;
             else if ( netexMode.equals("bus")) 
-                return TransportModeNameEnum.BUS;
+                return TransportModeNameEnum.Bus;
             else if ( netexMode.equals("water")) 
-                return TransportModeNameEnum.FERRY;
+                return TransportModeNameEnum.Ferry;
             else if ( netexMode.equals("selfDrive")) 
-                return TransportModeNameEnum.WALK;
+                return TransportModeNameEnum.Walk;
             else if ( netexMode.equals("trolleyBus")) 
-                return TransportModeNameEnum.TROLLEYBUS;
+                return TransportModeNameEnum.Trolleybus;
             else if ( netexMode.equals("taxi")) 
-                return TransportModeNameEnum.TAXI;
+                return TransportModeNameEnum.Taxi;
             else if ( netexMode.equals("unknown")) 
-                return TransportModeNameEnum.OTHER;
+                return TransportModeNameEnum.Other;
             else  
-                return TransportModeNameEnum.OTHER;
+                return TransportModeNameEnum.Other;
         }
         
         public String toDayTypeNetex( DayTypeEnum dayType) {
@@ -301,19 +303,19 @@ public class ModelTranslator {
                 return null;
            
             switch(dayType) {
-                case MONDAY: 
+                case Monday: 
                     return "Monday";
-                case TUESDAY: 
+                case Tuesday: 
                     return "Tuesday";
-                case WEDNESDAY: 
+                case Wednesday: 
                     return "Wednesday";                    
-                case THURSDAY: 
+                case Thursday: 
                     return "Thursday";
-                case FRIDAY: 
+                case Friday: 
                     return "Friday";
-                case SATURDAY: 
+                case Saturday: 
                     return "Saturday";
-                case SUNDAY: 
+                case Sunday: 
                     return "Sunday";                
                 default:
                     return null;
@@ -324,19 +326,19 @@ public class ModelTranslator {
             if ( dayType==null)
                 return null;
             else if ( dayType.equals("Monday")) 
-                return DayTypeEnum.MONDAY;
+                return DayTypeEnum.Monday;
             else if ( dayType.equals("Tuesday")) 
-                return DayTypeEnum.TUESDAY;
+                return DayTypeEnum.Tuesday;
             else if ( dayType.equals("Wednesday")) 
-                return DayTypeEnum.WEDNESDAY;
+                return DayTypeEnum.Wednesday;
             else if ( dayType.equals("Thursday")) 
-                return DayTypeEnum.THURSDAY;
+                return DayTypeEnum.Thursday;
             else if ( dayType.equals("Friday")) 
-                return DayTypeEnum.FRIDAY;
+                return DayTypeEnum.Friday;
             else if ( dayType.equals("Saturday")) 
-                return DayTypeEnum.SATURDAY;
+                return DayTypeEnum.Saturday;
             else if ( dayType.equals("Sunday")) 
-                return DayTypeEnum.SUNDAY;
+                return DayTypeEnum.Sunday;
             else
                 return null;            
         }

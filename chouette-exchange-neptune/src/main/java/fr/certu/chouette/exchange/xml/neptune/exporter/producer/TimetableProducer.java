@@ -43,7 +43,7 @@ public class TimetableProducer extends AbstractJaxbNeptuneProducer<TimetableType
 			for(DayTypeEnum dayType : timetable.getDayTypes()){
 				if(dayType != null){
 					try {
-						castorTimetable.getDayType().add(DayTypeType.fromValue(dayType.value()));						
+						castorTimetable.getDayType().add(DayTypeType.fromValue(dayType.name()));						
 					} catch (IllegalArgumentException e) {
 						// TODO: handle exception
 					}

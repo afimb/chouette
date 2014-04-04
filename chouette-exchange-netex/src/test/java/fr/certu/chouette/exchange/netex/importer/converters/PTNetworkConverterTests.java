@@ -79,7 +79,7 @@ public class PTNetworkConverterTests extends AbstractTestNGSpringContextTests {
     @Test(groups = {"ResourceFrame"}, description = "PTNetwork's sourceType attribute reading")
     public void verifySourceType() throws XPathEvalException, NavException, XPathParseException, ParseException {
         PTNetwork network = networkConverter.convert();
-        Assert.assertEquals( network.getSourceType(), PTNetworkSourceTypeEnum.PUBLICTRANSPORT);
+        Assert.assertEquals( network.getSourceType(), PTNetworkSourceTypeEnum.PublicTransport);
     }
 
 }

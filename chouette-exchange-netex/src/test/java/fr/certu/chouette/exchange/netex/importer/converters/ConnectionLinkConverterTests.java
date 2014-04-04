@@ -104,7 +104,7 @@ public class ConnectionLinkConverterTests {
     @Test(groups = {"ServiceFrame"}, description = "ConnectionLink's linkType attribute reading")
     public void verifyLinkType() throws XPathEvalException, NavException, XPathParseException, ParseException {
         ConnectionLink selectedLink = getConnectionLinkByObjectId( "RATP_PIVI:SiteConnection:1357");
-        Assert.assertEquals( selectedLink.getLinkType(), ConnectionLinkTypeEnum.OVERGROUND);
+        Assert.assertEquals( selectedLink.getLinkType(), ConnectionLinkTypeEnum.Overground);
     }
 
     @Test(groups = {"ServiceFrame"}, description = "ConnectionLink's comment attribute reading")

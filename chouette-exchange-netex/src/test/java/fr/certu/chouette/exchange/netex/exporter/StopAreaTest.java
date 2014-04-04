@@ -282,9 +282,9 @@ public class StopAreaTest extends ChouetteModelTest {
                                 "netex:StopPlace/netex:quays/netex:Quay"+
                                 "[@id = '"+modelTranslator.netexId(quay)+"']/netex:Centroid/netex:Location"+
                                 "[@id = '"+
-                                quay.getAreaCentroid().objectIdPrefix()+
+                                quay.objectIdPrefix()+
                                 ":Location:"+
-                                quay.getAreaCentroid().objectIdSuffix()+
+                                quay.objectIdSuffix()+
                                 "'])";
             assertXPathTrue( xPathExpr);
         }
