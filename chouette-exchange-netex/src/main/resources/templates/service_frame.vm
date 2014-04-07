@@ -296,7 +296,7 @@
       #end
       #if( ( $routingConstraint.latitude && $routingConstraint.longitude) || ( $routingConstraint.x && $routingConstraint.y && $routingConstraint.projectionType))
       <Centroid>
-        <Location id="${stopPlace.objectIdPrefix()}:Location:${stopPlace.objectIdSuffix()}">
+        <Location id="${routingConstraint.objectIdPrefix()}:Location:${routingConstraint.objectIdSuffix()}">
           #if ( $routingConstraint.longitude && $routingConstraint.latitude )
           <Longitude>$routingConstraint.longitude</Longitude>
           <Latitude>$routingConstraint.latitude</Latitude>

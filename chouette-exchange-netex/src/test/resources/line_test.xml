@@ -885,29 +885,18 @@ To make it clean inside the mapping, the Link Id is now RATP_PIVI:RouteLink:xxxx
                                             </SiteConnection>  
                                         </connections>
 					<routingConstraintZones>
-                                            <RoutingConstraintZone version="any" id="RATP_PIVI:StopArea:84e453ab-cd02-429c-9016-b41839126d38">
-                                                <Name>A6b0029b4-d0d9-42a0-8a8e-48b757928b08</Name> 
-                                                      <Description>mon arret 50edd6e5-b96c-42b9-82c8-ed4d2b10d3f4</Description> 
-                                                      <PrivateCode>C-5fcf6225-3ce9-4c3c-bcaf-d31b85495f04</PrivateCode> 
-                                                      <Centroid>
-                                                        <Location id="${stopPlace.objectIdPrefix()}:Location:${stopPlace.objectIdSuffix()}">
-                                                            <Longitude>2.37300000000000022026824808563105762004852294921875</Longitude>
-                                                            <Latitude>48.7999999999999971578290569595992565155029296875</Latitude>
-                                                            <gml:pos srsName="EPSG:9801">602710 2431374</gml:pos>
-                                                        </Location>
-                                                      </Centroid>
-                                                <ZoneUse>cannotBoardAndAlightInSameZone</ZoneUse>
-                                                <pointsInPattern>
-                                                    <StopPointInJourneyPattern version="1" id="T:StopPointInJourneyPattern:84e453ab-cd02-429c-9016-b41839126d38-0">
-                                                        <ScheduledStopPointRef version="1" ref="T:StopArea:0"/>
-                                                    </StopPointInJourneyPattern>
-                                                    <StopPointInJourneyPattern version="1" id="RATP_PIVI:StopPointInJourneyPattern:84e453ab-cd02-429c-9016-b41839126d38-a62154aa-612b-429c-ba15-22159a079d1d">
-                                                        <ScheduledStopPointRef version="1" ref="RATP_PIVI:StopArea:a62154aa-612b-429c-ba15-22159a079d1d"/>
-                                                    </StopPointInJourneyPattern>
-                                                    </pointsInPattern>
-                                                      <lines>
-                                                        <LineRef version="1" ref="T:Line:1"/>
-                                                        <LineRef version="1" ref="RATP_PIVI:Line:ebdc2081-c2eb-4923-81e4-888e1d1011da"/>
+                                            <RoutingConstraintZone version="any" id="RATP_PIVI:StopArea:ITL_01">
+                                                <Name>ITL de Test</Name> 
+                                                      <Description>mon ITL</Description> 
+                                                      <PrivateCode>ITL_01</PrivateCode> 
+                               <members>
+                    <ScheduledStopPointRef version="1" ref="RATP_PIVI:StopArea:1234567"/>
+                    <ScheduledStopPointRef version="1" ref="RATP_PIVI:StopArea:430398"/>
+                </members>
+                                                   <ZoneUse>cannotBoardAndAlightInSameZone</ZoneUse>
+                                                       <lines>
+                                                        <LineRef version="1" ref="RATP_PIVI:Line:100110001"/>
+                                                        <LineRef version="1" ref="RATP_PIVI:Line:100110107"/>
                                                     </lines>
                                             </RoutingConstraintZone>
 					</routingConstraintZones>

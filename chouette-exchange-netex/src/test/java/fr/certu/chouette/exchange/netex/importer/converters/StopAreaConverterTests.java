@@ -24,14 +24,13 @@ import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
 
 
 @ContextConfiguration(locations={"classpath:testContext.xml","classpath*:chouetteContext.xml"})
-@SuppressWarnings("unchecked")
 public class StopAreaConverterTests extends AbstractTestNGSpringContextTests {
 
     private StopAreaConverter stopAreaConverter;
 
     @BeforeClass
     protected void setUp() throws Exception {
-        File f = FileUtils.getFile("src","test", "resources", "line_test.xml");;
+        File f = FileUtils.getFile("src","test", "resources", "line_test.xml");
         FileInputStream fis = new FileInputStream(f);
         byte[] b = new byte[(int) f.length()];
         fis.read(b);
@@ -45,11 +44,11 @@ public class StopAreaConverterTests extends AbstractTestNGSpringContextTests {
         stopAreaConverter = new StopAreaConverter(nav);
     }
 
-    @Test(groups = {"ServiceFrame"}, description = "Export Plugin should have 8+2*7 stopAreas")
+    @Test(groups = {"ServiceFrame"}, description = "Export Plugin should have 8+2*7+2 stopAreas")
     public void verifyStopAreaConverter() throws XPathEvalException, NavException, XPathParseException, ParseException {
         List<StopArea> stopAreas = stopAreaConverter.convert();
         
-        Assert.assertEquals( stopAreas.size(), 8+2*7+1);
+        Assert.assertEquals( stopAreas.size(), 8+2*7+1+1);
     }
     
     private StopArea getStopAreaByObjectId( String objectId)  throws XPathEvalException, NavException, XPathParseException, ParseException {
@@ -62,7 +61,7 @@ public class StopAreaConverterTests extends AbstractTestNGSpringContextTests {
             }
         }
         
-        Assert.assertNotNull( selectedStopArea, "can't find expected route having "+objectId+" as objectId");
+        Assert.assertNotNull( selectedStopArea, "can't find expected stopArea having "+objectId+" as objectId");
         return selectedStopArea;
     }
     
@@ -210,5 +209,41 @@ public class StopAreaConverterTests extends AbstractTestNGSpringContextTests {
         Assert.assertEquals( selectedStopArea.getStreetName(), "Bolivar (28 rue)");
     }
     
+    @Test(groups = {"ServiceFrame"}, description = "RoutingConstraint must be on areaType = ITL")
+    public void verifyRoutingConstraintType() throws XPathEvalException, NavException, XPathParseException, ParseException {
+        StopArea selectedStopArea = getStopAreaByObjectId( "RATP_PIVI:StopArea:ITL_01");
+        Assert.assertEquals( selectedStopArea.getAreaType(), ChouetteAreaEnum.ITL);
+    }
+
+    @Test(groups = {"ServiceFrame"}, description = "RoutingConstraint's name attribute reading")
+    public void verifyRoutingConstraintName() throws XPathEvalException, NavException, XPathParseException, ParseException {
+        StopArea selectedStopArea = getStopAreaByObjectId( "RATP_PIVI:StopArea:ITL_01");
+        Assert.assertEquals( selectedStopArea.getName(), "ITL de Test");
+    }
+
+    @Test(groups = {"ServiceFrame"}, description = "RoutingConstraint's comment attribute reading")
+    public void verifyRoutingConstraintComment() throws XPathEvalException, NavException, XPathParseException, ParseException {
+        StopArea selectedStopArea = getStopAreaByObjectId( "RATP_PIVI:StopArea:ITL_01");
+        Assert.assertEquals( selectedStopArea.getComment(), "mon ITL");
+    }
+
+    @Test(groups = {"ServiceFrame"}, description = "RoutingConstraint's registration number attribute reading")
+    public void verifyRoutingConstraintRegistrationNumber() throws XPathEvalException, NavException, XPathParseException, ParseException {
+        StopArea selectedStopArea = getStopAreaByObjectId( "RATP_PIVI:StopArea:ITL_01");
+        Assert.assertEquals( selectedStopArea.getRegistrationNumber(), "ITL_01");
+    }
+
+    @Test(groups = {"ServiceFrame"}, description = "RoutingConstraint must have 2 line refs")
+    public void verifyRoutingConstraintLines() throws XPathEvalException, NavException, XPathParseException, ParseException {
+        StopArea selectedStopArea = getStopAreaByObjectId( "RATP_PIVI:StopArea:ITL_01");
+        Assert.assertEquals( selectedStopArea.getRoutingConstraintLineIds().size(), 2);
+    }
+
+    @Test(groups = {"ServiceFrame"}, description = "RoutingConstraint must have 2 area refs")
+    public void verifyRoutingConstraintAreas() throws XPathEvalException, NavException, XPathParseException, ParseException {
+        StopArea selectedStopArea = getStopAreaByObjectId( "RATP_PIVI:StopArea:ITL_01");
+        Assert.assertEquals( selectedStopArea.getRoutingConstraintAreas().size(), 2);
+    }
+
 
 }

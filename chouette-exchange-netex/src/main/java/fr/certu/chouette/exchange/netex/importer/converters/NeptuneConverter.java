@@ -27,6 +27,7 @@ import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
+import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
@@ -193,6 +194,26 @@ public class NeptuneConverter {
 						StopArea area = stopAreaByObjectId.get(accessPoint.getContainedInStopArea());
 						accessPoint.setContainedIn(area);
 					}
+				}
+			}
+		}
+		
+		// connect RoutingConstraints
+		for (StopArea stopArea : stopAreas)
+		{
+			if (stopArea.getAreaType().equals(ChouetteAreaEnum.ITL))
+			{
+//				logger.info("ITL "+stopArea.getName()+ " found");
+//				logger.info("has "+stopArea.getRoutingConstraintAreas().size()+" children");
+				for (String lineId : stopArea.getRoutingConstraintLineIds()) 
+				{
+				   	if (lineId.equals(line.getObjectId()))
+				   	{
+//						logger.info("RoutingConstraint added to line");
+				   		line.addRoutingConstraint(stopArea);
+				   		stopArea.addRoutingConstraintLine(line);
+				   		break;
+				   	}
 				}
 			}
 		}

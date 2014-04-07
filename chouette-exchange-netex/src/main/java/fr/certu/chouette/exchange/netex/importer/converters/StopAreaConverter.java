@@ -55,41 +55,66 @@ public class StopAreaConverter extends GenericConverter
 	{
 		stopareas.clear();
 		stopAreaByObjectId.clear();
-                tariffByTariffId.clear();
-                
+		tariffByTariffId.clear();
+
 		convertTariffs();
 		convertStopPlaces();
-                convertRoutingConstraintZones();
+		convertRoutingConstraintZones();
 
 		return stopareas;
 	}
 	public void convertRoutingConstraintZones() throws XPathEvalException, NavException, XPathParseException, ParseException
 	{
 		AutoPilot autoPilot = createAutoPilot(nav);
-		autoPilot.selectXPath( xPathFrames()+"netex:routingConstraintZones/"+
+		autoPilot.selectXPath("//netex:ServiceFrame/netex:routingConstraintZones/"+
 				"netex:RoutingConstraintZone");
 
 		nav.push();
-                logger.info( "ITL reading");
 		while(autoPilot.evalXPath() != -1 )
 		{  
-                    String zoneUse = subXpathSelection("ZoneUse");
-                    
-                    if ( zoneUse.equals( "cannotBoardAndAlightInSameZone")) {
-                        StopArea stopArea = new StopArea();
-                        stopArea.setAreaType( ChouetteAreaEnum.ITL);
+			String zoneUse = subXpathSelection("ZoneUse");
 
-                        stopArea.setObjectId( subXpathSelection("@id"));
-                        stopArea.setName( subXpathSelection("netex:Name"));
-                        stopArea.setComment( subXpathSelection("netex:Description"));
-                        stopArea.setRegistrationNumber( subXpathSelection("netex:PrivateCode"));
-                        
-                        List<String> lines = subXpathListSelection("netex:lines/netex:LineRef");
-                        logger.info( "ITL lines reading");
-                        for( String line : lines) {
-                            logger.info( "line "+line);
-                        }
-                    }
+			if ( zoneUse.equals( "cannotBoardAndAlightInSameZone")) 
+			{
+				StopArea stopArea = new StopArea();
+				stopArea.setAreaType( ChouetteAreaEnum.ITL);
+
+				stopArea.setObjectId( subXpathSelection("@id"));
+				stopArea.setName( subXpathSelection("netex:Name"));
+				stopArea.setComment( subXpathSelection("netex:Description"));
+				stopArea.setRegistrationNumber( subXpathSelection("netex:PrivateCode"));
+//				logger.info( "ITL reading");
+//				logger.info( " objectId = "+stopArea.getObjectId());
+//				logger.info( " name = "+stopArea.getName());
+
+				List<String> lines = toStringList(parseMandatoryAttributes(nav, "LineRef", "ref"));
+				for( String line : lines) 
+				{
+					stopArea.addRoutingConstraintLineId(line);
+				}
+				List<String> children = toStringList(parseMandatoryAttributes(nav, "ScheduledStopPointRef", "ref"));
+				for( String child : children) 
+				{
+					StopArea childArea = stopAreaByObjectId.get(child);
+					if (childArea == null)
+					{
+						logger.warn("Routing Constraint "+stopArea.getObjectId()+": child not found :"+child);
+					}
+					else
+					{
+						stopArea.addContainedStopArea(childArea);
+					}
+				}
+				if (stopArea.getRoutingConstraintAreas().size() > 0 && stopArea.getRoutingConstraintLineIds().size() > 0 )
+				{
+					stopareas.add(stopArea);
+					stopAreaByObjectId.put( stopArea.getObjectId(), stopArea);
+				}
+				else
+				{
+					logger.warn("Routing Constraint "+stopArea.getObjectId()+ " has no child or line; ignored");
+				}
+			}
 		}
 		nav.pop();
 	}
@@ -191,25 +216,25 @@ public class StopAreaConverter extends GenericConverter
 		}
 	}
 
-	private List<String> subXpathListSelection( String xPath) throws XPathParseException, NavException, XPathEvalException {
-		AutoPilot autoPilot = createAutoPilot(nav);
-		autoPilot.declareXPathNameSpace("gml","http://www.opengis.net/gml/3.2");        
-		autoPilot.selectXPath( xPath);
-
-                List<String> result = new ArrayList<String>();
-                int number = autoPilot.evalXPath();
-                logger.info("number="+number);
-                while ( autoPilot.iterate())
-                {
-                    String element = autoPilot.evalXPathToString();
-                    if ( element!=null && !element.isEmpty())
-                            result.add( element);
-                    
-                }
-
-		autoPilot.resetXPath();
-		return result;
-	}
+	//	private List<String> subXpathListSelection( String xPath) throws XPathParseException, NavException, XPathEvalException {
+	//		AutoPilot autoPilot = createAutoPilot(nav);
+	//		autoPilot.declareXPathNameSpace("gml","http://www.opengis.net/gml/3.2");        
+	//		autoPilot.selectXPath( xPath);
+	//
+	//		List<String> result = new ArrayList<String>();
+	//		int number = autoPilot.evalXPath();
+	//		logger.info("number="+number);
+	//		while ( autoPilot.iterate())
+	//		{
+	//			String element = autoPilot.evalXPathToString();
+	//			if ( element!=null && !element.isEmpty())
+	//				result.add( element);
+	//
+	//		}
+	//
+	//		autoPilot.resetXPath();
+	//		return result;
+	//	}
 
 	private String subXpathSelection( String xPath) throws XPathParseException {
 		AutoPilot autoPilot = createAutoPilot(nav);
