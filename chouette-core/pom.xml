@@ -10,12 +10,6 @@
 	<artifactId>chouette-core</artifactId>
 	<name>Chouette Core</name>
 	<version>2.4.0</version>
-	<!-- added for delombok in javadoc -->
-	<!-- <profiles> <profile> <id>default-javac.jar</id> <activation> <property> 
-		<name>java.vendor</name> <value>Sun Microsystems Inc.</value> </property> 
-		</activation> <dependencies> <dependency> <groupId>com.sun</groupId> <artifactId>tools</artifactId> 
-		<version>1.6</version> <scope>system</scope> <systemPath>${java.home}/../lib/tools.jar</systemPath> 
-		</dependency> </dependencies> </profile> </profiles> -->
 	<dependencies>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -73,8 +67,6 @@
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-epsg-hsql</artifactId>
 		</dependency>
-		<!-- <dependency> <groupId>javax.media</groupId> <artifactId>jai-core</artifactId> 
-			</dependency> -->
 		<dependency>
 			<groupId>com.vividsolutions</groupId>
 			<artifactId>jts</artifactId>
