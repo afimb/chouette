@@ -202,8 +202,8 @@ public class StopArea extends NeptuneLocalizedObject
    @Setter
    @ManyToMany
    @JoinTable(name = "stop_areas_stop_areas",
-         joinColumns = { @JoinColumn(name = "child_id", nullable = false, updatable = false) },
-         inverseJoinColumns = { @JoinColumn(name = "parent_id", nullable = false, updatable = false) })
+         joinColumns = { @JoinColumn(name = "parent_id", nullable = false, updatable = false) },
+         inverseJoinColumns = { @JoinColumn(name = "child_id", nullable = false, updatable = false) })
    private List<StopArea> routingConstraintAreas = new ArrayList<StopArea>(0);
 
    @Getter
