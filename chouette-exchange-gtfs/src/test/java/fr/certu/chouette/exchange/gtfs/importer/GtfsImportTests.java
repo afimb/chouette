@@ -224,76 +224,78 @@ public class GtfsImportTests extends AbstractTestNGSpringContextTests
 
 	private void verifyImportLine(String file) throws ChouetteException
 	{
-		List<ParameterValue> parameters = new ArrayList<ParameterValue>();
-		SimpleParameterValue simpleParameterValue = new SimpleParameterValue("inputFile");
-		simpleParameterValue.setFilepathValue(file);
-		parameters.add(simpleParameterValue);
-		simpleParameterValue = new SimpleParameterValue("objectIdPrefix");
-		simpleParameterValue.setStringValue("GTFS");
-		parameters.add(simpleParameterValue);
-
-		ReportHolder report = new ReportHolder();
-
-		List<Line> lines = importLine.doImport(parameters, report,null);
-
-		printReport(report.getReport());    
-
-		Assert.assertNotNull(lines,"lines can't be null");
-		Assert.assertEquals(lines.size(), 1,"lines size must equals 1");
-		for (Line line : lines)
 		{
-			// comptage des objets : 
-			Assert.assertNotNull(line.getPtNetwork(),"line must have a network");
-			Assert.assertTrue(line.getGroupOfLines().isEmpty(),"line must have no groupOfLines");
-			Assert.assertNotNull(line.getCompany(),"line must have a company");
-			Assert.assertFalse(line.getRoutes().isEmpty(),"line must have routes");
-			Assert.assertEquals(line.getRoutes().size(),2,"line must have 2 routes");
-			Set<StopArea> bps = new HashSet<StopArea>();
-			Set<StopArea> comms = new HashSet<StopArea>();
+			List<ParameterValue> parameters = new ArrayList<ParameterValue>();
+			SimpleParameterValue simpleParameterValue = new SimpleParameterValue("inputFile");
+			simpleParameterValue.setFilepathValue(file);
+			parameters.add(simpleParameterValue);
+			simpleParameterValue = new SimpleParameterValue("objectIdPrefix");
+			simpleParameterValue.setStringValue("GTFS");
+			parameters.add(simpleParameterValue);
 
-			for (Route route : line.getRoutes())
+			ReportHolder report = new ReportHolder();
+
+			List<Line> lines = importLine.doImport(parameters, report,null);
+
+			printReport(report.getReport());    
+
+			Assert.assertNotNull(lines,"lines can't be null");
+			Assert.assertEquals(lines.size(), 1,"lines size must equals 1");
+			for (Line line : lines)
 			{
-				Assert.assertFalse(route.getJourneyPatterns().isEmpty(),"line routes must have journeyPattens");
-				for (JourneyPattern jp : route.getJourneyPatterns())
+				// comptage des objets : 
+				Assert.assertNotNull(line.getPtNetwork(),"line must have a network");
+				Assert.assertTrue(line.getGroupOfLines().isEmpty(),"line must have no groupOfLines");
+				Assert.assertNotNull(line.getCompany(),"line must have a company");
+				Assert.assertFalse(line.getRoutes().isEmpty(),"line must have routes");
+				Assert.assertEquals(line.getRoutes().size(),2,"line must have 2 routes");
+				Set<StopArea> bps = new HashSet<StopArea>();
+				Set<StopArea> comms = new HashSet<StopArea>();
+
+				for (Route route : line.getRoutes())
 				{
-					Assert.assertFalse(jp.getStopPoints().isEmpty(),"line journeyPattens must have stoppoints");
-					for (StopPoint point : jp.getStopPoints())
+					Assert.assertFalse(route.getJourneyPatterns().isEmpty(),"line routes must have journeyPattens");
+					for (JourneyPattern jp : route.getJourneyPatterns())
 					{
+						Assert.assertFalse(jp.getStopPoints().isEmpty(),"line journeyPattens must have stoppoints");
+						for (StopPoint point : jp.getStopPoints())
+						{
 
-						Assert.assertNotNull(point.getContainedInStopArea(),"stoppoints must have StopAreas");
-						bps.add(point.getContainedInStopArea());
+							Assert.assertNotNull(point.getContainedInStopArea(),"stoppoints must have StopAreas");
+							bps.add(point.getContainedInStopArea());
 
-						Assert.assertNotNull(point.getContainedInStopArea().getParent(),"StopAreas must have parent : "+point.getContainedInStopArea().getObjectId());
-						comms.add(point.getContainedInStopArea().getParent());
+							Assert.assertNotNull(point.getContainedInStopArea().getParent(),"StopAreas must have parent : "+point.getContainedInStopArea().getObjectId());
+							comms.add(point.getContainedInStopArea().getParent());
+						}
 					}
 				}
-			}
-			Assert.assertEquals(bps.size(),8,"line must have 8 boarding positions");
-			Assert.assertEquals(comms.size(),4,"line must have 4 commercial stop points");
+				Assert.assertEquals(bps.size(),8,"line must have 8 boarding positions");
+				Assert.assertEquals(comms.size(),4,"line must have 4 commercial stop points");
 
-			Set<ConnectionLink> clinks = new HashSet<ConnectionLink>();
+				Set<ConnectionLink> clinks = new HashSet<ConnectionLink>();
 
 
-			for (StopArea comm : comms)
-			{
-
-				if (comm.getConnectionLinks() != null)
+				for (StopArea comm : comms)
 				{
-					clinks.addAll(comm.getConnectionLinks());
+
+					if (comm.getConnectionLinks() != null)
+					{
+						clinks.addAll(comm.getConnectionLinks());
+					}
 				}
+				Assert.assertEquals(clinks.size(),1,"line must have 1 connection link");
+				for (ConnectionLink connectionLink : clinks)
+				{
+					Assert.assertNotNull(connectionLink.getDefaultDuration(), "defaultDuration must not be null");
+					long seconds = connectionLink.getDefaultDuration().getTime() / 1000;
+
+					Assert.assertEquals(seconds,240,"line must have links duration of 4 minutes");
+					Reporter.log(connectionLink.toString("\t",1));
+
+				}
+
+				Reporter.log(line.toString("\t",1));
 			}
-			Assert.assertEquals(clinks.size(),1,"line must have 1 connection link");
-			for (ConnectionLink connectionLink : clinks)
-			{
-				Assert.assertNotNull(connectionLink.getDefaultDuration(), "defaultDuration must not be null");
-				long seconds = connectionLink.getDefaultDuration().getTime() / 1000;
-
-				Assert.assertEquals(seconds,240,"line must have links duration of 4 minutes");
-				Reporter.log(connectionLink.toString("\t",1));
-
-			}
-
-			Reporter.log(line.toString("\t",1));
 		}
 		// try to clean data
 		System.gc();
