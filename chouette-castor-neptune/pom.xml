@@ -5,13 +5,13 @@
 	<parent>
 		<groupId>fr.certu.chouette</groupId>
 		<artifactId>chouette</artifactId>
-		<version>2.1.0</version>
+		<version>2.1.1</version>
 	</parent>
 	<groupId>fr.certu.chouette.schema</groupId>
 	<artifactId>chouette-castor-neptune</artifactId>
 	<name>Chouette Castor Neptune Mapping</name>
 	<packaging>jar</packaging>
-	<version>2.1.0</version>
+	<version>2.1.1</version>
 	<dependencies>
 		<dependency>
 			<groupId>org.codehaus.castor</groupId>
