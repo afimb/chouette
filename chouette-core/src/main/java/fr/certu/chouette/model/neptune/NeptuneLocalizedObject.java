@@ -121,20 +121,24 @@ public abstract class NeptuneLocalizedObject extends NeptuneIdentifiedObject
 
 		return sb.toString();
 	}
-	
+
 	@Override
 	public void complete() 
 	{
 		super.complete();
-		if (!hasCoordinates()) return;
-		geographicService.convertToProjection(this);
+		if (!hasCoordinates())
+			return;
+		if (geographicService != null)
+			geographicService.convertToProjection(this);
 	}
 
-    public void toLatLong()
-    {
-    	if (!hasProjection()) return;
-    	geographicService.convertToWGS84(this);
-    	
-    }
+	public void toLatLong()
+	{
+		if (!hasProjection())
+			return;
+		if (geographicService != null)
+			geographicService.convertToWGS84(this);
+
+	}
 
 }
