@@ -34,6 +34,7 @@
 
 	<bean id="GtfsLineImport" class="fr.certu.chouette.exchange.gtfs.importer.GtfsImportLinePlugin">
 		<property name="converter" ref="GtfsConverter" />
+		<property name="dbDirectory" value="${import.gtfs.tempDir}" />
 	</bean>
 
 	<bean id="GtfsConnectionLinkImport" class="fr.certu.chouette.exchange.gtfs.importer.GtfsImportConnectionLinkPlugin">
