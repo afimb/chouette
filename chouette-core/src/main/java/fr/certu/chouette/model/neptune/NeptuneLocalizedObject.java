@@ -62,8 +62,8 @@ public abstract class NeptuneLocalizedObject extends NeptuneIdentifiedObject
 	{
 		if (value != null && value.length() > 255)
 		{
-		   log.warn("streetName too long, truncated "+ value);
-		   streetName = value.substring(0, 255);
+			log.warn("streetName too long, truncated "+ value);
+			streetName = value.substring(0, 255);
 		}
 		else
 		{
@@ -79,8 +79,8 @@ public abstract class NeptuneLocalizedObject extends NeptuneIdentifiedObject
 	{
 		if (value != null && value.length() > 255)
 		{
-		   log.warn("countryCode too long, truncated "+ value);
-		   countryCode = value.substring(0, 255);
+			log.warn("countryCode too long, truncated "+ value);
+			countryCode = value.substring(0, 255);
 		}
 		else
 		{
@@ -147,20 +147,24 @@ public abstract class NeptuneLocalizedObject extends NeptuneIdentifiedObject
 
 		return sb.toString();
 	}
-	
+
 	@Override
 	public void complete() 
 	{
 		super.complete();
-		if (!hasCoordinates()) return;
-		geographicService.convertToProjection(this);
+		if (!hasCoordinates())
+			return;
+		if (geographicService != null)
+			geographicService.convertToProjection(this);
 	}
 
-    public void toLatLong()
-    {
-    	if (!hasProjection()) return;
-    	geographicService.convertToWGS84(this);
-    	
-    }
+	public void toLatLong()
+	{
+		if (!hasProjection())
+			return;
+		if (geographicService != null)
+			geographicService.convertToWGS84(this);
+
+	}
 
 }
