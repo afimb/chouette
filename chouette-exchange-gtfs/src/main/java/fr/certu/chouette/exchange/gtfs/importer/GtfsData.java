@@ -325,10 +325,9 @@ public class GtfsData
 		return ok;
 	}
 
-	protected void finalize() throws Throwable
+	public void close() 
 	{
-		super.finalize();
-		if (optimizeMemory)
+		if (optimizeMemory && conn != null)
 		{
 			try
 			{
@@ -338,6 +337,7 @@ public class GtfsData
 			{
 				// let data on cache
 			}
+			conn = null;
 		}
 	}
 

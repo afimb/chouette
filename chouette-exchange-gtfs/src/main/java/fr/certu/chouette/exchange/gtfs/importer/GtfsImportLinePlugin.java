@@ -125,6 +125,8 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 		boolean tripFound = false;
 		boolean routeFound = false;
 		boolean calendarFound = false;
+		GtfsData data = null;
+		
 		for (ParameterValue value : parameters) 
 		{
 			if (value instanceof SimpleParameterValue) 
@@ -226,7 +228,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 		}
 		try
 		{
-			GtfsData data = new GtfsData(objectIdPrefix,dbDirectory,optimizeMemory);
+			data = new GtfsData(objectIdPrefix,dbDirectory,optimizeMemory);
 			data.loadNetwork(objectIdPrefix);
 			boolean ok = true;
 			for (Enumeration<? extends ZipEntry> entries = zip.entries(); entries.hasMoreElements() && ok;) 
@@ -500,9 +502,16 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 		}
 		finally
 		{
-			try {
+			if (data != null)
+			{
+				data.close();
+			}
+			try 
+			{
 				zip.close();
-			} catch (IOException e) {
+			} 
+			catch (IOException e) 
+			{
 				logger.warn("cannot close zip file");
 			}
 
