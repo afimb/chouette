@@ -258,7 +258,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation implements ICh
 				{
                    long duration0 = diffTime(vjas0.get(j-1).getDepartureTime(), vjas0.get(j).getArrivalTime());
                    long duration1 = diffTime(vjas1.get(j-1).getDepartureTime(), vjas1.get(j).getArrivalTime());
-                   if (Math.abs(duration1-duration1) > maxDuration)
+                   if (Math.abs(duration0-duration1) > maxDuration)
                    {
 						ReportLocation location = new ReportLocation(vj0);
 

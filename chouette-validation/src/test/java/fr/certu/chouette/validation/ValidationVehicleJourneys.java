@@ -232,6 +232,8 @@ public class ValidationVehicleJourneys extends AbstractValidation
 		// line1 is model;
 		line1.setId(id++);
 		
+		VehicleJourney vj1 = null;
+		JourneyPattern jp1 = null;
 		for (Route route : line1.getRoutes()) 
 		{
 			route.setId(id++);
@@ -241,17 +243,25 @@ public class ValidationVehicleJourneys extends AbstractValidation
 				for (VehicleJourney vj : jp.getVehicleJourneys())
 				{
 					vj.setId(id++);
+					vj.sortVehicleJourneyAtStops();
+					if (vj.getObjectId().equals("NINOXE:VehicleJourney:15627288") )
+					{
+						vj1=vj;
+						jp1=jp;
+					}
 				}
 			}
 		}
 		
-		Route route1 = line1.getRoutes().get(0);
-		route1.setObjectId("NINOXE:Route:checkedRoute");
-		JourneyPattern jp1 = route1.getJourneyPatterns().get(0);
-		jp1.setObjectId("NINOXE:JourneyPattern:checkedJP");
-		VehicleJourney vj1 = jp1.getVehicleJourneys().get(0);
-		vj1.setObjectId("NINOXE:VehicleJourney:checkedVJ");
-		
+		Assert.assertNotNull(jp1, "tested jp not found");
+		Assert.assertNotNull(vj1, "tested vj not found");
+//		Route route1 = line1.getRoutes().get(0);
+//		route1.setObjectId("NINOXE:Route:checkedRoute");
+//		JourneyPattern jp1 = route1.getJourneyPatterns().get(0);
+//		jp1.setObjectId("NINOXE:JourneyPattern:checkedJP");
+//		VehicleJourney vj1 = jp1.getVehicleJourneys().get(0);
+//		vj1.setObjectId("NINOXE:VehicleJourney:checkedVJ");
+	
 		VehicleJourneyAtStop vjas1 = vj1.getVehicleJourneyAtStops().get(1);
 		vjas1.getArrivalTime().setTime(vjas1.getArrivalTime().getTime() - 240000);
 		
