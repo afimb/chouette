@@ -1,10 +1,10 @@
-# Version 2.3.0 (en développement)
+# Version 2.3.0 (17/04/2014)
 * migration technique
   * passage sous spring 4
   * passage sous hibernate 4
   * utilisation des annotations JPA
 
-# Version 2.2.0 (14/02/14, en cours de qualification)
+# Version 2.2.0 (14/02/14)
 * refonte de la validation
   * suppression de la validation de fichiers
   * mise en place de la validation durant l'import
