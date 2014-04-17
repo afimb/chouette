@@ -59,6 +59,11 @@ public class VehicleJourneyCheckPoints extends AbstractValidation implements ICh
 		prepareCheckPoint(report, VEHICLE_JOURNEY_2);
 		prepareCheckPoint(report, VEHICLE_JOURNEY_4);
 
+		for (VehicleJourney vj: beans)
+		{
+			vj.sortVehicleJourneyAtStops(); // ensure scheduled times order
+		}
+		
 		for (int i = 0; i < beans.size(); i++)
 		{
 			VehicleJourney vj = beans.get(i);
