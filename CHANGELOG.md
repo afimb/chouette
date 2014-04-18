@@ -5,6 +5,7 @@
   * L'Export GTFS sort en erreur sur objet à exportee incomplêt (Mantis 24484)
   * L'Export CSV sort un message inexploitable sur informations incomplètes (Mantis 24485)
   * L'import NeTEx n'importe pas les ITL (Mantis 20889)
+  * La validation plante sur un arrêt non géolocalisé (Mantis 26099)
   
 # Version 2.3.0 (17/04/14)
 * migration technique

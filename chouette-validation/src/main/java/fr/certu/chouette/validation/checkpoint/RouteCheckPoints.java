@@ -205,6 +205,7 @@ public class RouteCheckPoints extends AbstractValidation implements ICheckPointP
 		{
 			StopArea firstArea = areas.get(i-1);
 			StopArea nextArea = areas.get(i);
+			if (!firstArea.hasCoordinates() || !nextArea.hasCoordinates()) continue;
 			double distance = distance(firstArea, nextArea);
 			if (distance < distanceMin) 
 			{
