@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.testng.annotations.BeforeMethod;
 
+import fr.certu.chouette.dao.hibernate.AbstractDaoTemplateTests.FilterData;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.Line;
 
@@ -39,15 +40,15 @@ public class LineDaoTemplateTests extends AbstractDaoTemplateTests<Line> {
 	}
 
 	@Override
-	protected Filter getSelectFilter() 
+	protected List<FilterData> getSelectFilters() 
 	{
-		return Filter.getNewEqualsFilter("ptNetwork.name", "TestNG Network");
-//		return Filter.getNewAndFilter(
-//				Filter.getNewEqualsFilter("ptNetwork.id", null),
-//				Filter.getNewEqualsFilter("company.id", null),
-//				Filter.getNewLikeFilter("name", "nom ligne -53808172"));
+		List<FilterData> ret = new ArrayList<FilterData>();
+		List<String> args = new ArrayList<>();
+		args.add("TestNG Network");
+		ret.add(new FilterData("Line : ptNetwork.name in",Filter.getNewInFilter("ptNetwork.name", args) , 1));
+		return ret;
 	}
-
+	
    /* (non-Javadoc)
     * @see fr.certu.chouette.dao.hibernate.AbstractDaoTemplateTests#getHqlValues()
     */

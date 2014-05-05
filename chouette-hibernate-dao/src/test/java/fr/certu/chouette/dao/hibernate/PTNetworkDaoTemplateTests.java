@@ -8,9 +8,11 @@
 
 package fr.certu.chouette.dao.hibernate;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.testng.annotations.BeforeMethod;
 
-import fr.certu.chouette.dao.hibernate.AbstractDaoTemplateTests;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.PTNetwork;
 
@@ -40,9 +42,11 @@ public class PTNetworkDaoTemplateTests extends AbstractDaoTemplateTests<PTNetwor
 	}
 
 	@Override
-	protected Filter getSelectFilter() 
+	protected List<FilterData> getSelectFilters() 
 	{
-		return Filter.getNewEqualsFilter("name", "TestNG Network");
+		List<FilterData> ret = new ArrayList<FilterData>();
+		ret.add(new FilterData("PTNetwork : name",Filter.getNewLikeFilter("name", "%Network") , 1));
+		return ret;
 	}
 
 }

@@ -8,6 +8,9 @@
 
 package fr.certu.chouette.dao.hibernate;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -59,9 +62,11 @@ public class StopAreaDaoTemplateTests extends AbstractDaoTemplateTests<StopArea>
 	}
 	
 	@Override
-	protected Filter getSelectFilter() 
+	protected List<FilterData> getSelectFilters() 
 	{
-		return Filter.getNewEqualsFilter("countryCode", "75000");
+		List<FilterData> ret = new ArrayList<FilterData>();
+		ret.add(new FilterData("StopArea : countryCode",Filter.getNewEqualsFilter("countryCode", "39397") , 1));
+		return ret;
 	}
 
 }

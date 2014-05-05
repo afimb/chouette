@@ -8,6 +8,9 @@
 
 package fr.certu.chouette.dao.hibernate;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.testng.annotations.BeforeMethod;
 
 import fr.certu.chouette.filter.Filter;
@@ -39,9 +42,11 @@ public class RouteDaoTemplateTests extends AbstractDaoTemplateTests<Route> {
 	}
 
 	@Override
-	protected Filter getSelectFilter() 
+	protected List<FilterData> getSelectFilters() 
 	{
-		return Filter.getNewEqualsFilter("line.name", "TestNG Line");
+		List<FilterData> ret = new ArrayList<FilterData>();
+		ret.add(new FilterData("Route : line.name",Filter.getNewEqualsFilter("line.name", "TestNG Line") , 1));
+		return ret;
 	}
 
 

@@ -6,6 +6,7 @@
   * L'Export CSV sort un message inexploitable sur informations incomplètes (Mantis 24485)
   * L'import NeTEx n'importe pas les ITL (Mantis 20889)
   * La validation plante sur un arrêt non géolocalisé (Mantis 26099)
+  * l'export n'accepte pas une liste de réseaux (Mantis 26438)
   
 # Version 2.3.0 (17/04/14)
 * migration technique

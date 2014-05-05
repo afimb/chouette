@@ -41,9 +41,11 @@ public class TimetableDaoTemplateTests extends AbstractDaoTemplateTests<Timetabl
 	}
 	
 	@Override
-	protected Filter getSelectFilter() 
+	protected List<FilterData> getSelectFilters() 
 	{
-		return  Filter.getNewEqualsFilter("comment", bean.getComment());
+		List<FilterData> ret = new ArrayList<FilterData>();
+		ret.add(new FilterData("Timetable : comment",Filter.getNewEqualsFilter("comment", bean.getComment()) , 1));
+		return ret;
 	}
 
    /* (non-Javadoc)

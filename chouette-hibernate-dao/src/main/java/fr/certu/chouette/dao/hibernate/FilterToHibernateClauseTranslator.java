@@ -108,15 +108,25 @@ public class FilterToHibernateClauseTranslator<T extends NeptuneObject>
       case GREATER_OR_EQUALS:
          return builder.greaterThanOrEqualTo(field, (Comparable) clause.getFirstValue());
       case LIKE:
-         Expression<String> like = root.get(propertyName);
+         Expression<String> like = path.get(name);
          return builder.like(like, getILikeOrLikeRestrictionValue(clause.getFirstValue()));
       case ILIKE:
-         Expression<String> ilike = root.get(propertyName);
+         Expression<String> ilike = path.get(name);
          return builder.like(
                builder.lower(ilike), getILikeOrLikeRestrictionValue(((String) clause.getFirstValue()).toLowerCase())
                );
       case IN:
-         return translateIn(clause, builder, root);
+    	  Expression in = path.get(name);
+
+          if (clause.getFirstValue() != null)
+          {
+             // sous requête non implémentée dans hibernate
+          }
+          else if (clause.getValueArray() != null)
+          {
+             return in.in(clause.getValueArray());
+          }
+    	  return null;
       case BETWEEN:
          return builder.between(field, (Comparable) clause.getFirstValue(), (Comparable) clause.getSecondValue());
       case SQL_WHERE:
@@ -125,21 +135,6 @@ public class FilterToHibernateClauseTranslator<T extends NeptuneObject>
          return null;
       }
 
-   }
-
-   private Predicate translateIn(Filter clause, CriteriaBuilder builder, Root<T> root)
-   {
-      Expression field = root.get(clause.getAttribute());
-
-      if (clause.getFirstValue() != null)
-      {
-         // sous requête non implémentée dans hibernate
-      }
-      else if (clause.getValueArray() != null)
-      {
-         return field.in(clause.getValueArray());
-      }
-      return null;
    }
 
    private String getILikeOrLikeRestrictionValue(Object value)
