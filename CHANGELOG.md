@@ -1,21 +1,21 @@
-# Version 2.4.0 (en développement)
-* Corrections d'annomalies
-  * L'Import GTFS importe les fichiers avec marqueurs BOM (Mantis 21260)
-  * L'Import GTFS accepte des routes sans colonne agencyId (Mantis 22665)
-  * L'Export GTFS sort en erreur sur objet à exportee incomplêt (Mantis 24484)
+# Version 2.4.0 (en recette)
+* Corrections d'anomalies
+  * L'Import GTFS n'importe pas les fichiers avec marqueurs BOM (Mantis 21260)
+  * L'Import GTFS n'accepte pas des routes sans colonne agencyId (Mantis 22665)
+  * L'Export GTFS sort en erreur sur objet à exporter incomplêt (Mantis 24484)
   * L'Export CSV sort un message inexploitable sur informations incomplètes (Mantis 24485)
   * L'import NeTEx n'importe pas les ITL (Mantis 20889)
   * La validation plante sur un arrêt non géolocalisé (Mantis 26099)
-  * l'export n'accepte pas une liste de réseaux (Mantis 26438)
+  * L'export n'accepte pas une liste de réseaux (Mantis 26438)
   
 # Version 2.3.0 (17/04/14)
-* migration technique
+* Migration technique
   * passage sous spring 4
   * passage sous hibernate 4
   * utilisation des annotations JPA
 
 # Version 2.2.0 (14/02/14)
-* refonte de la validation
+* Refonte de la validation
   * suppression de la validation de fichiers
   * mise en place de la validation durant l'import
   * ajout de la validation sur les objets en base

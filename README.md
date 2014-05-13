@@ -22,6 +22,11 @@ Feel free to test and access to the demonstration web site at [http://www.chouet
   * password : chouette
 * Create your own organisation : Must follow the link "Sign up" ("S'inscrire")
 
+Release Notes
+-------------
+
+The release notes can be found in [CHANGELOG](./CHANGELOG.md) file 
+
 Requirements
 ------------
  
@@ -56,7 +61,7 @@ createdb -E UTF-8 -T template1 chouette_test
 Get git repository
 ```sh
 cd workspace
-git clone -b V2_3 git://github.com/afimb/chouette
+git clone -b V2_4 git://github.com/afimb/chouette
 cd chouette
 ```
 
