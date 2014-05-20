@@ -49,6 +49,12 @@ public class LineProducer extends AbstractModelProducer<Line,org.trident.schema.
 				importReport.addItem(item);
 			}
 		}
+		else
+		{
+			// TransportModeName is mandatory in database
+			log.warn("Line "+line.getObjectId()+" without TransportMode , forced to Other");
+			line.setTransportModeName(TransportModeNameEnum.Other);
+		}
 		// LineEnd [0..w] : TODO 
 		List<String> jaxbLineEnds = xmlLine.getLineEnd();
 		for (String lineEnd : jaxbLineEnds) 

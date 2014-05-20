@@ -7,6 +7,7 @@
   * L'import NeTEx n'importe pas les ITL (Mantis 20889)
   * La validation plante sur un arrêt non géolocalisé (Mantis 26099)
   * L'export n'accepte pas une liste de réseaux (Mantis 26438)
+  * Import Neptune : erreur de sauvegarde si le mode de transport est manquant (Mantis 26702)
   
 # Version 2.3.0 (17/04/14)
 * Migration technique

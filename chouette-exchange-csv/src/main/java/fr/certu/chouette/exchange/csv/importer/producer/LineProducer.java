@@ -133,6 +133,12 @@ public class LineProducer extends AbstractModelProducer<Line>
 				}
 			}
 			line.setTransportModeName(Utils.valueOfIgnoreCase(loadStringParam(csvReader, TRANSPORT_MODE_NAME_TITLE), TransportModeNameEnum.class));
+			if (line.getTransportModeName() == null) 
+			{
+				logger.warn("Line "+line.getObjectId()+" without TransportMode , forced to Other");
+				line.setTransportModeName(TransportModeNameEnum.Other);
+			}
+            
 			line.setObjectId(objectIdPrefix + ":" + Line.LINE_KEY + ":" + toIdString(line.getRegistrationNumber()));
 			if (!NeptuneIdentifiedObject.checkObjectId(line.getObjectId()))
 			{
