@@ -28,6 +28,7 @@ public abstract class GtfsBean
    
    protected String toCSVString(String input)
    {
+	   if (input == null) return "";
 	   if (input.contains("\"") || input.contains (","))
 	   {
 		   StringBuilder builder = new StringBuilder();

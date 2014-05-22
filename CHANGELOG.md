@@ -1,3 +1,7 @@
+# Version 2.5.0 (en développement)
+* Corrections d'anomalies
+  * L'export GTFS exige que l'indice de ligne soit renseigné (Mantis 26726)
+
 # Version 2.4.0 (en recette)
 * Corrections d'anomalies
   * L'Import GTFS n'importe pas les fichiers avec marqueurs BOM (Mantis 21260)

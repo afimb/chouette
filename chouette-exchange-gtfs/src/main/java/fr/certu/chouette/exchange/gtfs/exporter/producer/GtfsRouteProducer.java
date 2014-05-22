@@ -43,13 +43,6 @@ public class GtfsRouteProducer extends AbstractProducer<GtfsRoute, Route>
       Line line = neptuneObject.getLine();
       route.setAgencyId(toGtfsId(line.getCompany().getObjectId()));
       route.setRouteShortName(line.getNumber());
-      if (line.getNumber() == null)
-      {
-         logger.error("no number for "+neptuneObject.getLine().getObjectId());
-         GtfsReportItem item = new GtfsReportItem(GtfsReportItem.KEY.MISSING_DATA, STATE.ERROR, "Line",neptuneObject.getLine().getObjectId(),"Number");
-         report.addItem(item);
-         return null;
-      }
 
       String routeLongName = "";
       String nameExtent = "";
@@ -72,13 +65,15 @@ public class GtfsRouteProducer extends AbstractProducer<GtfsRoute, Route>
       {
          if (line.getPublishedName() != null)
             routeLongName = line.getPublishedName()+nameExtent;
-         else
+         else if (line.getName() != null)
             routeLongName = line.getName()+nameExtent;
       }
-      if (line.getNumber() == null)
+
+      // Gtfs Route require short or long name 
+      if (line.getNumber() == null && routeLongName.isEmpty())
       {
-         logger.error("no name for "+neptuneObject.getLine().getObjectId());
-         GtfsReportItem item = new GtfsReportItem(GtfsReportItem.KEY.MISSING_DATA, STATE.ERROR, "Line",neptuneObject.getLine().getObjectId(),"Name");
+         logger.error("no short or long name for route : "+neptuneObject.getObjectId());
+         GtfsReportItem item = new GtfsReportItem(GtfsReportItem.KEY.MISSING_DATA, STATE.ERROR, "Route",neptuneObject.getObjectId(),"Name or line number");
          report.addItem(item);
          return null;
       }
