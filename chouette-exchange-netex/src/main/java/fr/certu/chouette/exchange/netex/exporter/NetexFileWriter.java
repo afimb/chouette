@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,12 +35,12 @@ public class NetexFileWriter {
     private static final Logger logger = Logger.getLogger(NetexFileWriter.class);
     @Getter @Setter private VelocityEngine velocityEngine; 
     // Prepare the model for velocity
-    private Map model = new HashMap();
+	private Map<String,Object> model = new HashMap<String,Object>();
     
     public NetexFileWriter() {        
     }
 
-    private void prepareModel(Line line) throws DatatypeConfigurationException
+	private void prepareModel(Line line) throws DatatypeConfigurationException
     {        
         model.put("date", new DateTool());
         model.put("esc", new EscapeTool());
@@ -52,6 +53,10 @@ public class NetexFileWriter {
 
         model.put("line", line);
         model.put("network", line.getPtNetwork());
+        if (line.getPtNetwork().getVersionDate() == null)
+        {
+			line.getPtNetwork().setVersionDate(Calendar.getInstance().getTime());
+        }
         model.put("company", line.getCompany());
         model.put("connectionLinks", line.getConnectionLinks());        
         model.put("accessLinks", line.getAccessLinks());

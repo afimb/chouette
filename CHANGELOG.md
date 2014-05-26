@@ -2,7 +2,8 @@
 * Corrections d'anomalies
   * L'export GTFS exige que l'indice de ligne soit renseigné (Mantis 26726)
   * L'import GTFS ne tient pas compte des courses commençant après minuit (Mantis 25824)
-  * l'import GTFS plante sur une course qui dessert plus de 2 fois le même arrêt (Mantis 26755)
+  * L'import GTFS plante sur une course qui dessert plus de 2 fois le même arrêt (Mantis 26755)
+  * L'export NeTEx produit un fichier invalide si le champ VersionDate du réseau est vide (Mantis 26434)
   
 # Version 2.4.0 (en recette)
 * Corrections d'anomalies
