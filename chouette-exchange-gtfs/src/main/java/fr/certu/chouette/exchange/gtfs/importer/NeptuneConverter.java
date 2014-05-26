@@ -696,9 +696,11 @@ public class NeptuneConverter
 		int position = 0;
 		for (GtfsStopTime gtfsStopTime : stopTimesOfATrip)
 		{
-			String stopKey = routeId.replace(Route.ROUTE_KEY, StopPoint.STOPPOINT_KEY) + "a" + gtfsStopTime.getStopId().trim().replaceAll("[^a-zA-Z_0-9\\-]", "_");
-			if (stopPointKeys.contains(stopKey))
-				stopKey = stopKey + "_1";
+			String baseKey = routeId.replace(Route.ROUTE_KEY, StopPoint.STOPPOINT_KEY) + "a" + gtfsStopTime.getStopId().trim().replaceAll("[^a-zA-Z_0-9\\-]", "_");
+			String stopKey = baseKey;
+			int dup = 1;
+			while (stopPointKeys.contains(stopKey))
+				stopKey = stopKey + "_"+ (dup++);
 			stopPointKeys.add(stopKey);
 			StopPoint spor = new StopPoint();
 			spor.setObjectId(stopKey);

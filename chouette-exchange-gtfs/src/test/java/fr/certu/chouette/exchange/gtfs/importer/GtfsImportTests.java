@@ -209,7 +209,22 @@ public class GtfsImportTests extends AbstractTestNGSpringContextTests
 	@Test (groups = {"ImportLine"}, description = "Import Plugin should import file",dependsOnMethods={"getBean"})
 	public void verifyImportLine() throws ChouetteException
 	{
-		verifyImportLine(path+"/test_gtfs.zip");
+		verifyImportLine(path+"/test_gtfs.zip",2);
+		// try to clean data
+		System.gc();
+		// wait 1 second for next test
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Test (groups = {"ImportLine"}, description = "Import Plugin should import file with three times a same stop on one journey",dependsOnMethods={"getBean"})
+	public void verifyImportLineWithThreeTimesAStopOnJourney() throws ChouetteException
+	{
+		verifyImportLine(path+"/test_gtfs_triple_stop.zip",3);
 		// try to clean data
 		System.gc();
 		// wait 1 second for next test
@@ -224,7 +239,7 @@ public class GtfsImportTests extends AbstractTestNGSpringContextTests
 	@Test (groups = {"ImportLine"}, description = "Import Plugin should import file with journey after midnight",dependsOnMethods={"getBean"})
 	public void verifyImportLineAfterMidnight() throws ChouetteException
 	{
-		List<Line> lines = verifyImportLine(path+"/test_gtfs_after_midnight.zip");
+		List<Line> lines = verifyImportLine(path+"/test_gtfs_after_midnight.zip",2);
 		int afterMidnightVJ = 0;
 		for (Line line : lines)
 		{
@@ -266,7 +281,7 @@ public class GtfsImportTests extends AbstractTestNGSpringContextTests
 	@Test (groups = {"ImportLine"}, description = "Import Plugin should set company when no agencyid set",dependsOnMethods={"getBean"})
 	public void verifyImportLineWithNoAgencyId() throws ChouetteException
 	{
-		verifyImportLine(path+"/test_gtfs_no_agencyid.zip");
+		verifyImportLine(path+"/test_gtfs_no_agencyid.zip",2);
 		// try to clean data
 		System.gc();
 		// wait 1 second for next test
@@ -281,7 +296,7 @@ public class GtfsImportTests extends AbstractTestNGSpringContextTests
 	@Test (groups = {"ImportLine"}, description = "Import Plugin should accept bom marker",dependsOnMethods={"getBean"})
 	public void verifyImportLineWithBOM() throws ChouetteException
 	{
-		verifyImportLine(path+"/test_gtfs_bom.zip");
+		verifyImportLine(path+"/test_gtfs_bom.zip",2);
 		// try to clean data
 		System.gc();
 		// wait 1 second for next test
@@ -293,7 +308,7 @@ public class GtfsImportTests extends AbstractTestNGSpringContextTests
 		}
 	}
 
-	private List<Line> verifyImportLine(String file) throws ChouetteException
+	private List<Line> verifyImportLine(String file,int routeSize) throws ChouetteException
 	{
 		List<ParameterValue> parameters = new ArrayList<ParameterValue>();
 		SimpleParameterValue simpleParameterValue = new SimpleParameterValue("inputFile");
@@ -318,7 +333,7 @@ public class GtfsImportTests extends AbstractTestNGSpringContextTests
 			Assert.assertTrue(line.getGroupOfLines().isEmpty(),"line must have no groupOfLines");
 			Assert.assertNotNull(line.getCompany(),"line must have a company");
 			Assert.assertFalse(line.getRoutes().isEmpty(),"line must have routes");
-			Assert.assertEquals(line.getRoutes().size(),2,"line must have 2 routes");
+			Assert.assertEquals(line.getRoutes().size(),routeSize,"line must have "+routeSize+" routes");
 			Set<StopArea> bps = new HashSet<StopArea>();
 			Set<StopArea> comms = new HashSet<StopArea>();
 

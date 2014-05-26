@@ -1,7 +1,9 @@
 # Version 2.5.0 (en développement)
 * Corrections d'anomalies
   * L'export GTFS exige que l'indice de ligne soit renseigné (Mantis 26726)
-
+  * L'import GTFS ne tient pas compte des courses commençant après minuit (Mantis 25824)
+  * l'import GTFS plante sur une course qui dessert plus de 2 fois le même arrêt (Mantis 26755)
+  
 # Version 2.4.0 (en recette)
 * Corrections d'anomalies
   * L'Import GTFS n'importe pas les fichiers avec marqueurs BOM (Mantis 21260)
