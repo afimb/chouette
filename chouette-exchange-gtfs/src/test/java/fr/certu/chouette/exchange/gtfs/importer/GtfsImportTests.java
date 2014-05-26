@@ -18,6 +18,8 @@ import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
+import fr.certu.chouette.model.neptune.Timetable;
+import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.plugin.exchange.FormatDescription;
 import fr.certu.chouette.plugin.exchange.IImportPlugin;
 import fr.certu.chouette.plugin.exchange.ParameterDescription;
@@ -208,95 +210,6 @@ public class GtfsImportTests extends AbstractTestNGSpringContextTests
 	public void verifyImportLine() throws ChouetteException
 	{
 		verifyImportLine(path+"/test_gtfs.zip");
-	}
-
-	@Test (groups = {"ImportLine"}, description = "Import Plugin should set company when no agencyid set",dependsOnMethods={"getBean"})
-	public void verifyImportLineWithNoAgencyId() throws ChouetteException
-	{
-		verifyImportLine(path+"/test_gtfs_no_agencyid.zip");
-	}
-
-	@Test (groups = {"ImportLine"}, description = "Import Plugin should accept bom marker",dependsOnMethods={"getBean"})
-	public void verifyImportLineWithBOM() throws ChouetteException
-	{
-		verifyImportLine(path+"/test_gtfs_bom.zip");
-	}
-
-	private void verifyImportLine(String file) throws ChouetteException
-	{
-		{
-			List<ParameterValue> parameters = new ArrayList<ParameterValue>();
-			SimpleParameterValue simpleParameterValue = new SimpleParameterValue("inputFile");
-			simpleParameterValue.setFilepathValue(file);
-			parameters.add(simpleParameterValue);
-			simpleParameterValue = new SimpleParameterValue("objectIdPrefix");
-			simpleParameterValue.setStringValue("GTFS");
-			parameters.add(simpleParameterValue);
-
-			ReportHolder report = new ReportHolder();
-
-			List<Line> lines = importLine.doImport(parameters, report,null);
-
-			printReport(report.getReport());    
-
-			Assert.assertNotNull(lines,"lines can't be null");
-			Assert.assertEquals(lines.size(), 1,"lines size must equals 1");
-			for (Line line : lines)
-			{
-				// comptage des objets : 
-				Assert.assertNotNull(line.getPtNetwork(),"line must have a network");
-				Assert.assertTrue(line.getGroupOfLines().isEmpty(),"line must have no groupOfLines");
-				Assert.assertNotNull(line.getCompany(),"line must have a company");
-				Assert.assertFalse(line.getRoutes().isEmpty(),"line must have routes");
-				Assert.assertEquals(line.getRoutes().size(),2,"line must have 2 routes");
-				Set<StopArea> bps = new HashSet<StopArea>();
-				Set<StopArea> comms = new HashSet<StopArea>();
-
-				for (Route route : line.getRoutes())
-				{
-					Assert.assertFalse(route.getJourneyPatterns().isEmpty(),"line routes must have journeyPattens");
-					for (JourneyPattern jp : route.getJourneyPatterns())
-					{
-						Assert.assertFalse(jp.getStopPoints().isEmpty(),"line journeyPattens must have stoppoints");
-						for (StopPoint point : jp.getStopPoints())
-						{
-
-							Assert.assertNotNull(point.getContainedInStopArea(),"stoppoints must have StopAreas");
-							bps.add(point.getContainedInStopArea());
-
-							Assert.assertNotNull(point.getContainedInStopArea().getParent(),"StopAreas must have parent : "+point.getContainedInStopArea().getObjectId());
-							comms.add(point.getContainedInStopArea().getParent());
-						}
-					}
-				}
-				Assert.assertEquals(bps.size(),8,"line must have 8 boarding positions");
-				Assert.assertEquals(comms.size(),4,"line must have 4 commercial stop points");
-
-				Set<ConnectionLink> clinks = new HashSet<ConnectionLink>();
-
-
-				for (StopArea comm : comms)
-				{
-
-					if (comm.getConnectionLinks() != null)
-					{
-						clinks.addAll(comm.getConnectionLinks());
-					}
-				}
-				Assert.assertEquals(clinks.size(),1,"line must have 1 connection link");
-				for (ConnectionLink connectionLink : clinks)
-				{
-					Assert.assertNotNull(connectionLink.getDefaultDuration(), "defaultDuration must not be null");
-					long seconds = connectionLink.getDefaultDuration().getTime() / 1000;
-
-					Assert.assertEquals(seconds,240,"line must have links duration of 4 minutes");
-					Reporter.log(connectionLink.toString("\t",1));
-
-				}
-
-				Reporter.log(line.toString("\t",1));
-			}
-		}
 		// try to clean data
 		System.gc();
 		// wait 1 second for next test
@@ -306,6 +219,155 @@ public class GtfsImportTests extends AbstractTestNGSpringContextTests
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	@Test (groups = {"ImportLine"}, description = "Import Plugin should import file with journey after midnight",dependsOnMethods={"getBean"})
+	public void verifyImportLineAfterMidnight() throws ChouetteException
+	{
+		List<Line> lines = verifyImportLine(path+"/test_gtfs_after_midnight.zip");
+		int afterMidnightVJ = 0;
+		for (Line line : lines)
+		{
+			for (Route route : line.getRoutes())
+			{
+				for (JourneyPattern jp : route.getJourneyPatterns())
+				{
+					for (VehicleJourney vj : jp.getVehicleJourneys())
+					{
+						for (Timetable tm : vj.getTimetables())
+						{
+							if (tm.getObjectId().endsWith(("_after_midnight"))) 
+							{
+								afterMidnightVJ++;
+							}
+						}
+					}
+				}
+			}
+			for (Timetable tm : line.getTimetables())
+			{
+				Reporter.log(tm.toString("\t",0));
+			}
+		}
+
+		Assert.assertEquals(afterMidnightVJ, 2, "import should produce 2 vehicle journeys after midnight");
+
+		// try to clean data
+		System.gc();
+		// wait 1 second for next test
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Test (groups = {"ImportLine"}, description = "Import Plugin should set company when no agencyid set",dependsOnMethods={"getBean"})
+	public void verifyImportLineWithNoAgencyId() throws ChouetteException
+	{
+		verifyImportLine(path+"/test_gtfs_no_agencyid.zip");
+		// try to clean data
+		System.gc();
+		// wait 1 second for next test
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	@Test (groups = {"ImportLine"}, description = "Import Plugin should accept bom marker",dependsOnMethods={"getBean"})
+	public void verifyImportLineWithBOM() throws ChouetteException
+	{
+		verifyImportLine(path+"/test_gtfs_bom.zip");
+		// try to clean data
+		System.gc();
+		// wait 1 second for next test
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	private List<Line> verifyImportLine(String file) throws ChouetteException
+	{
+		List<ParameterValue> parameters = new ArrayList<ParameterValue>();
+		SimpleParameterValue simpleParameterValue = new SimpleParameterValue("inputFile");
+		simpleParameterValue.setFilepathValue(file);
+		parameters.add(simpleParameterValue);
+		simpleParameterValue = new SimpleParameterValue("objectIdPrefix");
+		simpleParameterValue.setStringValue("GTFS");
+		parameters.add(simpleParameterValue);
+
+		ReportHolder report = new ReportHolder();
+
+		List<Line> lines = importLine.doImport(parameters, report,null);
+
+		printReport(report.getReport());    
+
+		Assert.assertNotNull(lines,"lines can't be null");
+		Assert.assertEquals(lines.size(), 1,"lines size must equals 1");
+		for (Line line : lines)
+		{
+			// comptage des objets : 
+			Assert.assertNotNull(line.getPtNetwork(),"line must have a network");
+			Assert.assertTrue(line.getGroupOfLines().isEmpty(),"line must have no groupOfLines");
+			Assert.assertNotNull(line.getCompany(),"line must have a company");
+			Assert.assertFalse(line.getRoutes().isEmpty(),"line must have routes");
+			Assert.assertEquals(line.getRoutes().size(),2,"line must have 2 routes");
+			Set<StopArea> bps = new HashSet<StopArea>();
+			Set<StopArea> comms = new HashSet<StopArea>();
+
+			for (Route route : line.getRoutes())
+			{
+				Assert.assertFalse(route.getJourneyPatterns().isEmpty(),"line routes must have journeyPattens");
+				for (JourneyPattern jp : route.getJourneyPatterns())
+				{
+					Assert.assertFalse(jp.getStopPoints().isEmpty(),"line journeyPattens must have stoppoints");
+					for (StopPoint point : jp.getStopPoints())
+					{
+
+						Assert.assertNotNull(point.getContainedInStopArea(),"stoppoints must have StopAreas");
+						bps.add(point.getContainedInStopArea());
+
+						Assert.assertNotNull(point.getContainedInStopArea().getParent(),"StopAreas must have parent : "+point.getContainedInStopArea().getObjectId());
+						comms.add(point.getContainedInStopArea().getParent());
+					}
+				}
+			}
+			Assert.assertEquals(bps.size(),8,"line must have 8 boarding positions");
+			Assert.assertEquals(comms.size(),4,"line must have 4 commercial stop points");
+
+			Set<ConnectionLink> clinks = new HashSet<ConnectionLink>();
+
+
+			for (StopArea comm : comms)
+			{
+
+				if (comm.getConnectionLinks() != null)
+				{
+					clinks.addAll(comm.getConnectionLinks());
+				}
+			}
+			Assert.assertEquals(clinks.size(),1,"line must have 1 connection link");
+			for (ConnectionLink connectionLink : clinks)
+			{
+				Assert.assertNotNull(connectionLink.getDefaultDuration(), "defaultDuration must not be null");
+				long seconds = connectionLink.getDefaultDuration().getTime() / 1000;
+
+				Assert.assertEquals(seconds,240,"line must have links duration of 4 minutes");
+				Reporter.log(connectionLink.toString("\t",1));
+
+			}
+
+			Reporter.log(line.toString("\t",1));
+		}
+
+		return lines;
 	}
 
 

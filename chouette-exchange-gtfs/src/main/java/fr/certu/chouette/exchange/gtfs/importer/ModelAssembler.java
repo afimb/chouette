@@ -9,6 +9,7 @@ package fr.certu.chouette.exchange.gtfs.importer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -236,6 +237,15 @@ public class ModelAssembler
 
 	private void connectTimetables() 
 	{
+		// purge not connected timetables
+		for (Iterator<Timetable> tm = timetables.iterator(); tm.hasNext();) 
+		{
+			if (tm.next().getVehicleJourneys().isEmpty())
+			{
+				tm.remove();
+			}
+			
+		}
 	}
 
 	@SuppressWarnings("unchecked")

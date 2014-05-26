@@ -8,6 +8,7 @@
 package fr.certu.chouette.exchange.gtfs.importer;
 
 import java.lang.reflect.InvocationTargetException;
+import java.sql.Date;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,6 +17,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import lombok.Setter;
@@ -47,6 +49,7 @@ import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.PTNetwork;
+import fr.certu.chouette.model.neptune.Period;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
@@ -54,6 +57,7 @@ import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
+import fr.certu.chouette.model.neptune.type.DayTypeEnum;
 import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
 import fr.certu.chouette.plugin.exchange.report.LimitedExchangeReportItem;
 import fr.certu.chouette.plugin.exchange.tools.DbVehicleJourneyFactory;
@@ -153,19 +157,9 @@ public class NeptuneConverter
 		AbstractModelProducer.setPrefix(prefix);
 		AbstractModelProducer.setIncrementalPrefix(incrementalPrefix);
 
-		// PTnetwork
-		PTNetwork network = networkProducer.produce(data.getNetwork(), report);
-		assembler.setPtNetwork(network);
+		convertNetworks(data, assembler, report);
 
-		// Companies
-		List<Company> companies = new ArrayList<Company>();
-		for (GtfsAgency gtfsAgency : data.getAgencies().getAll())
-		{
-			Company company = companyProducer.produce(gtfsAgency, report);
-			companies.add(company);
-		}
-		data.getAgencies().clear();
-		assembler.setCompanies(companies);
+		convertCompanies(data, assembler, report);
 
 		// lines, routes
 		List<Line> lines = new ArrayList<Line>();
@@ -303,26 +297,14 @@ public class NeptuneConverter
 		areas.addAll(commercials);
 		assembler.setStopAreas(areas);
 
-		// Timetables
-		List<Timetable> timetables = new ArrayList<Timetable>();
-		Map<String, Timetable> mapTimetableByServiceId = new HashMap<String, Timetable>();
-
-		logger.info("process timetables :" + data.getCalendars().size());
-		for (GtfsCalendar gtfsCalendar : data.getCalendars().getAll())
+		Map<String, Timetable> mapTimetableByServiceId = convertTimetables(
+				data, assembler, report);
+		Map<String, Timetable> mapTimetableAfterMidnightByServiceId = new HashMap<String, Timetable>(); 
+		for (Entry<String, Timetable> entry : mapTimetableByServiceId.entrySet()) 
 		{
-			List<GtfsCalendarDate> dates = data.getCalendarDates().getAllFromParent(gtfsCalendar.getServiceId());
-			for (GtfsCalendarDate date : dates)
-			{
-				gtfsCalendar.addCalendarDate(date);
-			}
-
-			Timetable timetable = timetableProducer.produce(gtfsCalendar, report);
-
-			timetables.add(timetable);
-			mapTimetableByServiceId.put(gtfsCalendar.getServiceId(), timetable);
+			mapTimetableAfterMidnightByServiceId.put(entry.getKey(), cloneTimetableAfterMidnight(entry.getValue()));
 		}
-
-		assembler.setTimetables(timetables);
+		assembler.getTimetables().addAll(mapTimetableAfterMidnightByServiceId.values());
 
 		// vehicleJourneys , vehicleJourneyAtStops, JourneyPatterns and StopPoints
 		// build in to steps :
@@ -350,7 +332,15 @@ public class NeptuneConverter
 			}
 
 			VehicleJourney vehicleJourney = vehicleJourneyProducer.produce(gtfsTrip, report);
+			List<GtfsStopTime> stopTimesOfATrip = data.getStopTimes().getAllFromParent(gtfsTrip.getTripId());
+			Collections.sort(stopTimesOfATrip);
 			Timetable timetable = mapTimetableByServiceId.get(gtfsTrip.getServiceId());
+			if (stopTimesOfATrip.get(0).getDepartureTime().isTomorrow())
+			{
+				// vehicleJourney starts after midnight
+				logger.info("trip "+gtfsTrip.getTripId()+" starts after midnight");
+				timetable = mapTimetableAfterMidnightByServiceId.get(gtfsTrip.getServiceId());
+			}
 			if (timetable == null) 
 			{
 				ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE_IN_FILE,Report.STATE.WARNING,"trips.txt",gtfsTrip.getFileLineNumber(),"service_id",gtfsTrip.getServiceId());
@@ -374,8 +364,6 @@ public class NeptuneConverter
 			vehicleJourneys.add(vehicleJourney);
 			mapVehicleJourneyByTripId.put(gtfsTrip.getTripId(), vehicleJourney);
 			// stopSequence
-			List<GtfsStopTime> stopTimesOfATrip = data.getStopTimes().getAllFromParent(gtfsTrip.getTripId());
-			Collections.sort(stopTimesOfATrip);
 			String journeyKey = routeId;
 			for (GtfsStopTime gtfsStopTime : stopTimesOfATrip)
 			{
@@ -600,6 +588,71 @@ public class NeptuneConverter
 
 
 	/**
+	 * @param data
+	 * @param assembler
+	 * @param report
+	 * @return
+	 */
+	private Map<String, Timetable> convertTimetables(GtfsData data,
+			ModelAssembler assembler, Report report) {
+		// Timetables
+		List<Timetable> timetables = new ArrayList<Timetable>();
+		Map<String, Timetable> mapTimetableByServiceId = new HashMap<String, Timetable>();
+
+		logger.info("process timetables :" + data.getCalendars().size());
+		for (GtfsCalendar gtfsCalendar : data.getCalendars().getAll())
+		{
+			List<GtfsCalendarDate> dates = data.getCalendarDates().getAllFromParent(gtfsCalendar.getServiceId());
+			for (GtfsCalendarDate date : dates)
+			{
+				gtfsCalendar.addCalendarDate(date);
+			}
+
+			Timetable timetable = timetableProducer.produce(gtfsCalendar, report);
+
+			timetables.add(timetable);
+			mapTimetableByServiceId.put(gtfsCalendar.getServiceId(), timetable);
+		}
+
+		assembler.setTimetables(timetables);
+		return mapTimetableByServiceId;
+	}
+
+
+	/**
+	 * @param data
+	 * @param assembler
+	 * @param report
+	 */
+	private void convertCompanies(GtfsData data, ModelAssembler assembler,
+			Report report) {
+		// Companies
+		List<Company> companies = new ArrayList<Company>();
+		for (GtfsAgency gtfsAgency : data.getAgencies().getAll())
+		{
+			Company company = companyProducer.produce(gtfsAgency, report);
+			companies.add(company);
+		}
+		data.getAgencies().clear();
+		assembler.setCompanies(companies);
+	}
+
+
+	/**
+	 * @param data
+	 * @param assembler
+	 * @param report
+	 */
+	private void convertNetworks(GtfsData data, ModelAssembler assembler,
+			Report report) 
+	{
+		// PTnetwork
+		PTNetwork network = networkProducer.produce(data.getNetwork(), report);
+		assembler.setPtNetwork(network);
+	}
+
+
+	/**
 	 * create a copy of a route
 	 * 
 	 * @param route
@@ -764,5 +817,69 @@ public class NeptuneConverter
 		}
 		return;
 	}
+	
+	private static long dayOffest = 24*3600000; // one day in milliseconds
+	
+	private Timetable cloneTimetableAfterMidnight(Timetable source)
+	{
+		Timetable result = new Timetable();
+		result.setObjectId(source.getObjectId()+"_after_midnight");
+        result.setComment(source.getComment()+" (after midnight)");
+        result.setVersion(source.getVersion());
+        for (DayTypeEnum dayType : source.getDayTypes()) 
+        {
+			switch (dayType) {
+			case Monday:
+				result.addDayType(DayTypeEnum.Tuesday);
+				break;
+			case Tuesday:
+				result.addDayType(DayTypeEnum.Wednesday);
+				break;
+			case Wednesday:
+				result.addDayType(DayTypeEnum.Thursday);
+				break;
+			case Thursday:
+				result.addDayType(DayTypeEnum.Friday);
+				break;
+			case Friday:
+				result.addDayType(DayTypeEnum.Saturday);
+				break;
+			case Saturday:
+				result.addDayType(DayTypeEnum.Sunday);
+				break;
+			case Sunday:
+				result.addDayType(DayTypeEnum.Monday);
+				break;
 
+			default:
+				result.addDayType(dayType);
+				break;
+			}
+		}
+		for (Period period : source.getPeriods()) 
+		{
+			result.addPeriod(clonePeriodAfterMidnight(period));
+		}
+		
+		for (Date calendarDay : source.getCalendarDays()) 
+		{
+			result.addCalendarDay(cloneDateAfterMidnight(calendarDay));
+		}
+		return result;
+	}
+	
+	private Period clonePeriodAfterMidnight(Period source)
+	{
+		Period result = new Period();
+		
+		result.setStartDate(new Date(source.getStartDate().getTime()+dayOffest));
+		result.setEndDate(new Date(source.getEndDate().getTime()+dayOffest));
+		
+		return result;
+	}
+
+	private Date cloneDateAfterMidnight(Date source)
+	{
+		return new Date(source.getTime()+dayOffest);
+	}
 }
