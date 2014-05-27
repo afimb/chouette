@@ -1,4 +1,4 @@
-# Version 2.4.0 (en recette)
+# Version 2.4.0 (27/05/14)
 * Corrections d'anomalies
   * L'Import GTFS n'importe pas les fichiers avec marqueurs BOM (Mantis 21260)
   * L'Import GTFS n'accepte pas des routes sans colonne agencyId (Mantis 22665)
