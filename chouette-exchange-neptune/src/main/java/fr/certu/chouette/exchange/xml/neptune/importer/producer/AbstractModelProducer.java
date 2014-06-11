@@ -134,7 +134,7 @@ public abstract class AbstractModelProducer<T extends NeptuneIdentifiedObject, U
 				// error already set : add detail
 				Locator srcLoc = source.sourceLocation() ;
 				ReportLocation location = new ReportLocation(sourceFile, srcLoc.getLineNumber(), srcLoc.getColumnNumber());
-				DetailReportItem detail = new DetailReportItem(COMMON_1,model.getObjectId(), Report.STATE.ERROR, location ,null);
+				DetailReportItem detail = new DetailReportItem(COMMON_1,model.getObjectId(), Report.STATE.WARNING, location ,null);
 				addValidationError(validationReport,COMMON_1, detail);
 				
 			}
@@ -157,7 +157,7 @@ public abstract class AbstractModelProducer<T extends NeptuneIdentifiedObject, U
 					{
 						Locator srcLoc = origin.getSourceLocation() ;
 						ReportLocation location = new ReportLocation(origin.getSourceFile(), srcLoc.getLineNumber(), srcLoc.getColumnNumber());
-						DetailReportItem detail = new DetailReportItem(COMMON_1, model.getObjectId(), Report.STATE.ERROR, location, null);
+						DetailReportItem detail = new DetailReportItem(COMMON_1, model.getObjectId(), Report.STATE.WARNING, location, null);
 						addValidationError(validationReport,COMMON_1, detail);
 					}
 				}
