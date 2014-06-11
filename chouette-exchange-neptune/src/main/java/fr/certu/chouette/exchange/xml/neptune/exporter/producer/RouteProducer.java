@@ -43,9 +43,12 @@ public class RouteProducer extends AbstractJaxbNeptuneProducer<ChouetteRoute, Ro
 
 		jaxbRoute.setWayBackRouteId(route.getWayBackRouteId());
 
-		RouteExtension castorRouteExtension = new RouteExtension();
-		castorRouteExtension.setWayBack(route.getWayBack());
-		jaxbRoute.setRouteExtension(castorRouteExtension);
+		if (route.getWayBack() != null)
+		{
+			RouteExtension castorRouteExtension = new RouteExtension();
+			castorRouteExtension.setWayBack(route.getWayBack());
+			jaxbRoute.setRouteExtension(castorRouteExtension);
+		}
 
 		return jaxbRoute;
 	}

@@ -1,4 +1,4 @@
-# Version 2.4.0 (en recette)
+# Version 2.4.0 (10/09/14)
 * Corrections d'anomalies
   * L'Import GTFS n'importe pas les fichiers avec marqueurs BOM (Mantis 21260)
   * L'Import GTFS n'accepte pas des routes sans colonne agencyId (Mantis 22665)
@@ -8,6 +8,8 @@
   * La validation plante sur un arrêt non géolocalisé (Mantis 26099)
   * L'export n'accepte pas une liste de réseaux (Mantis 26438)
   * Import Neptune : erreur de sauvegarde si le mode de transport est manquant (Mantis 26702)
+  * Import Neptune : comparaison des objets partagés trop stricte (Mantis 26912)
+  * Export Neptune : export de séquences d'arrêt sans sens de défini (Mantis 26929)
   
 # Version 2.3.0 (17/04/14)
 * Migration technique
