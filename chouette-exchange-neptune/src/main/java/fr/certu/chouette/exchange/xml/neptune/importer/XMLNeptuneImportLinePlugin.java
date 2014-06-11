@@ -574,7 +574,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 	private void initValidation(PhaseReportItem validationItem) 
 	{
 		String prefix = "2-NEPTUNE-";
-		int order = addItemToValidation(validationItem,prefix,"Common",2,1,"E","E");
+		int order = addItemToValidation(validationItem,prefix,"Common",2,1,"W","E");
 		order = addItemToValidation(validationItem,prefix,"Network",1,order,"W");
 		order = addItemToValidation(validationItem,prefix,"GroupOfLine",1,order,"W");
 		order = addItemToValidation(validationItem,prefix,"StopArea",6,order,"E","E","E","E","E","E");

@@ -95,6 +95,8 @@ public class StopAreaProducer extends AbstractModelProducer<StopArea,org.trident
 		
 		List<String> contains = new ArrayList<String>(xmlStopArea.getContains());
 		xmlStopArea.getContains().clear();
+		// remove unrelevant attributs
+		xmlStopArea.unsetBoundaryPoint();
 
 		StopArea sharedBean = getOrAddSharedData(sharedData, stopArea, sourceFile, xmlStopArea,validationReport);
 		if (sharedBean != null) stopArea = sharedBean;
