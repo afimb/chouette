@@ -6,7 +6,7 @@
 	<groupId>fr.certu.chouette</groupId>
 	<artifactId>chouette</artifactId>
 	<packaging>pom</packaging>
-	<version>2.5.0</version>
+	<version>2.4.1</version>
 
 	<properties>
 		<maven.build.timestamp.format>yyyy-MM-dd_HH-mm</maven.build.timestamp.format>
@@ -37,7 +37,7 @@
 		<repository>
 			<id>chouette-repository</id>
 			<name>Chouette Repository</name>
-			<url>scp://chouette-int.aix.cityway.fr/var/lib/tomcat6/webapps/maven</url>
+			<url>scp://chouette.marseille.cityway.fr/var/lib/tomcat6/webapps/maven</url>
 		</repository>
 		<downloadUrl>http://maven.chouette.mobi</downloadUrl>
 	</distributionManagement>
