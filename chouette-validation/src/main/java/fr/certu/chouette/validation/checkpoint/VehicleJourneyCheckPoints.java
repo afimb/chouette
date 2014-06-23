@@ -1,7 +1,6 @@
 package fr.certu.chouette.validation.checkpoint;
 
 import java.sql.Time;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,9 +9,6 @@ import lombok.extern.log4j.Log4j;
 
 import org.json.JSONObject;
 
-import fr.certu.chouette.model.neptune.JourneyPattern;
-import fr.certu.chouette.model.neptune.StopArea;
-import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
@@ -54,9 +50,6 @@ public class VehicleJourneyCheckPoints extends AbstractValidation implements ICh
 		initCheckPoint(report, VEHICLE_JOURNEY_3, CheckPointReportItem.SEVERITY.WARNING);
 		initCheckPoint(report, VEHICLE_JOURNEY_4, CheckPointReportItem.SEVERITY.WARNING);
 
-		List<Double> distances = prepareDistance(beans.get(0).getJourneyPattern());
-		if (distances.size() == 0) return;
-
 		// checkPoint is applicable
 		prepareCheckPoint(report, VEHICLE_JOURNEY_1);
 		prepareCheckPoint(report, VEHICLE_JOURNEY_2);
@@ -75,7 +68,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation implements ICh
 			checkVehicleJourney1(report, vj, parameters);
 
 			// 3-VehicleJourney-2 : check speed progression
-			checkVehicleJourney2(report, vj, parameters, distances);
+			checkVehicleJourney2(report, vj, parameters);
 
 			// 3-VehicleJourney-3 : check if two journeys progress similarly
 			checkVehicleJourney3(report, beans, i, vj, parameters);
@@ -86,31 +79,6 @@ public class VehicleJourneyCheckPoints extends AbstractValidation implements ICh
 		}
 	}
 
-	/**
-	 * calculate distance between each stops 
-	 * 
-	 * @param jp
-	 * @return
-	 */
-	private List<Double> prepareDistance(JourneyPattern jp) 
-	{
-		List<Double> distances = new ArrayList<Double>();
-		if (jp != null) 
-		{
-			List<StopPoint> stops = jp.getStopPoints();
-			if (!isEmpty(stops))
-			{
-				StopArea first = stops.get(0).getContainedInStopArea();
-				for (int i = 1; i < stops.size(); i++)
-				{
-					StopArea next = stops.get(i).getContainedInStopArea();
-					double distance = distance(first, next);
-					distances.add(Double.valueOf(distance));
-				}
-			}
-		}
-		return distances;
-	}
 
 	private long diffTime(Time first, Time last) 
 	{
@@ -151,7 +119,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation implements ICh
 
 	}
 
-	private void checkVehicleJourney2(PhaseReportItem report, VehicleJourney vj, JSONObject parameters, List<Double> distances) 
+	private void checkVehicleJourney2(PhaseReportItem report, VehicleJourney vj, JSONObject parameters) 
 	{
 		if (isEmpty(vj.getVehicleJourneyAtStops())) return;
 		// 3-VehicleJourney-2 : check speed progression
@@ -181,6 +149,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation implements ICh
 			}
 			else
 			{
+				
 				double distance = distance(vjas0.getStopPoint().getContainedInStopArea(),
 						vjas1.getStopPoint().getContainedInStopArea());
 				if (distance < 1) 
