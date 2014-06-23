@@ -49,7 +49,7 @@ public class UnsharedImportedData
 			Method m = c.getMethod("getObjectId");
 			return (String) m.invoke(bean);
 		} 
-		catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) 
+		catch (Exception e) 
 		{
 			throw new ExchangeRuntimeException(ExchangeExceptionCode.UNVALID_OBJECT_TYPE, c.getName());
 		}
