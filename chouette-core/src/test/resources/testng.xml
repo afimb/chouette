@@ -13,4 +13,10 @@
       </package>
    </packages>
   </test>
+  <test name="Plugin" >
+    <packages>
+      <package name="fr.certu.chouette.plugin.exchange.tools" >
+      </package>
+   </packages>
+  </test>
 </suite>

@@ -1,6 +1,25 @@
 package fr.certu.chouette.exchange.netex.importer;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
+import lombok.Getter;
+import lombok.Setter;
+
+import org.apache.commons.io.FilenameUtils;
+import org.apache.log4j.Logger;
+
 import com.ximpleware.VTDGen;
+
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.plugin.exchange.FormatDescription;
@@ -10,25 +29,11 @@ import fr.certu.chouette.plugin.exchange.ParameterValue;
 import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
 import fr.certu.chouette.plugin.exchange.report.ExchangeReport;
 import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
+import fr.certu.chouette.plugin.exchange.tools.FileTool;
 import fr.certu.chouette.plugin.exchange.xml.exception.ExchangeRuntimeException;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportHolder;
 import fr.certu.chouette.plugin.report.ReportItem;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import lombok.Getter;
-import lombok.Setter;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.log4j.Logger;
 
 public class NetexImportPlugin implements IImportPlugin<Line> 
 {    
@@ -38,9 +43,6 @@ public class NetexImportPlugin implements IImportPlugin<Line>
 	@Getter @Setter
 	private NetexFileReader netexFileReader;
 
-	//   @Getter
-	//   private NetexReport report;
-
 	/**
 	 * API description for caller
 	 */
@@ -49,22 +51,6 @@ public class NetexImportPlugin implements IImportPlugin<Line>
 	 * list of allowed file extensions
 	 */
 	private List<String>        allowedExtensions = Arrays.asList(new String[] { "xml", "zip" });
-	//   /**
-	//    * warning and error reporting container
-	//    */
-	//   private SheetReportItem sheet1_1 = new SheetReportItem("Test1_Sheet1", 1);;
-	//   /**
-	//    * warning and error reporting container
-	//    */
-	//   private SheetReportItem sheet1_2 = new SheetReportItem("Test1_Sheet2", 2);
-	//   /**
-	//    * file format reporting
-	//    */
-	//   private SheetReportItem report1_1_1 = new SheetReportItem("Test1_Sheet1_Step1", 1);
-	//   /**
-	//    * data format reporting
-	//    */
-	//   private SheetReportItem report1_2_1 = new SheetReportItem("Test1_Sheet2_Step1", 1);       
 
 	/**
 	 * Constructor
@@ -219,6 +205,15 @@ public class NetexImportPlugin implements IImportPlugin<Line>
 
 		ZipFile zip = null;
 		try {
+			Charset encoding = FileTool.getZipCharset(filePath);
+			if (encoding == null)
+			{
+				ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.FILE_ERROR,Report.STATE.ERROR,filePath,"unknown encoding");
+				report.addItem(item);
+				report.updateStatus(Report.STATE.ERROR);
+				logger.error("zip import failed (unknown encoding)");
+				return null;
+			}
 			zip = new ZipFile(filePath);
 		} catch (IOException e) {
 			// report for save

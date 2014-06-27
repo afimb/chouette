@@ -12,6 +12,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -54,6 +55,7 @@ import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
 import fr.certu.chouette.plugin.exchange.UnsharedImportedData;
 import fr.certu.chouette.plugin.exchange.report.ExchangeReport;
 import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
+import fr.certu.chouette.plugin.exchange.tools.FileTool;
 import fr.certu.chouette.plugin.model.ImportTask;
 import fr.certu.chouette.plugin.model.Referential;
 import fr.certu.chouette.plugin.report.Report;
@@ -297,8 +299,16 @@ public class ImportCommand extends AbstractCommand
 		ReportItem zipReportItem = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_FILE,Report.STATE.OK,zipFile.getName());
 		try
 		{
-
-			zip = new ZipFile(inputFile);
+            Charset encoding = FileTool.getZipCharset(inputFile);
+            if (encoding == null)
+            {
+    			ReportItem fileErrorItem = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ERROR,Report.STATE.ERROR,"unknown encoding");
+    			zipReportItem.addItem(fileErrorItem);
+    			importHolder.getReport().addItem(zipReportItem);
+    			saveImportReports(session,importTask, importHolder.getReport(), validationHolder.getReport());
+    			return 1;            	
+            }
+			zip = new ZipFile(inputFile,encoding);
 			zipHolder.setReport(zipReportItem);
 			for (Enumeration<? extends ZipEntry> entries = zip.entries(); entries.hasMoreElements();)
 			{
@@ -376,6 +386,15 @@ public class ImportCommand extends AbstractCommand
 		catch (IOException e)
 		{
 			log.error("IO error",e);
+			ReportItem fileErrorItem = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ERROR,Report.STATE.ERROR,e.getLocalizedMessage());
+			zipReportItem.addItem(fileErrorItem);
+			importHolder.getReport().addItem(zipReportItem);
+			saveImportReports(session,importTask, importHolder.getReport(), validationHolder.getReport());
+			return 1;
+		}
+		catch (IllegalArgumentException e)
+		{
+			log.error("Format error",e);
 			ReportItem fileErrorItem = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ERROR,Report.STATE.ERROR,e.getLocalizedMessage());
 			zipReportItem.addItem(fileErrorItem);
 			importHolder.getReport().addItem(zipReportItem);
@@ -536,7 +555,7 @@ public class ImportCommand extends AbstractCommand
 	private void checkProjection(StopArea area)
 	{
 		if (area == null) return;
-		if (area.hasProjection())
+		if (area.hasProjection() && !area.hasCoordinates())
 		{
 			geographicService.convertToWGS84(area);
 		}

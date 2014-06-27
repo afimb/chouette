@@ -116,18 +116,13 @@ public class GeographicService implements IGeographicService
 				double sumLatitude = 0.;
 				double sumLongitude = 0.;
 				int count = 0;
-				LongLatTypeEnum longLatType = null;
 				for (StopArea physical : commercial.getContainedStopAreas()) 
 				{
-					if (physical.getLatitude() != null && physical.getLongitude() != null)
+					if (physical.hasCoordinates())
 					{
 						sumLatitude += physical.getLatitude().doubleValue();
 						sumLongitude += physical.getLongitude().doubleValue();
 						count ++;
-						if (longLatType == null && physical.getLongLatType() != null)
-						{
-							longLatType = physical.getLongLatType();
-						}
 					}
 					else 
 					{
@@ -167,18 +162,13 @@ public class GeographicService implements IGeographicService
 					double sumLongitude = 0.;
 					int count = 0;
 					boolean differ = false;
-					LongLatTypeEnum longLatType = null;
 					for (StopArea child : place.getContainedStopAreas()) 
 					{
-						if (child.getLatitude() != null && child.getLongitude() != null)
+						if (child.hasCoordinates())
 						{
 							sumLatitude += child.getLatitude().doubleValue();
 							sumLongitude += child.getLongitude().doubleValue();
 							count ++;
-							if (longLatType == null && child.getLongLatType() != null)
-							{
-								longLatType = child.getLongLatType();
-							}
 						}
 						else 
 						{
@@ -250,7 +240,7 @@ public class GeographicService implements IGeographicService
 				int count = 0;
 				for (StopArea child : area.getContainedStopAreas()) 
 				{
-					if (child.getLatitude() != null && child.getLongitude() != null)
+					if (child.hasCoordinates())
 					{
 						sumLatitude += child.getLatitude().doubleValue();
 						sumLongitude += child.getLongitude().doubleValue();
@@ -289,7 +279,7 @@ public class GeographicService implements IGeographicService
 	@Override
 	public void convertToWGS84() 
 	{
-		// build filter on projected point x and y not nulls and lattitude or longitude nulls
+		// build filter on projected point x and y not nulls and latitude or longitude nulls
 		Filter latFilter = Filter.getNewIsNullFilter(StopArea.LATITUDE);
 		Filter lonFilter = Filter.getNewIsNullFilter(StopArea.LONGITUDE);
 		Filter xFilter = Filter.getNewNotFilter(Filter.getNewIsNullFilter(StopArea.X));
@@ -329,10 +319,14 @@ public class GeographicService implements IGeographicService
 
 	}
 
+	/* (non-Javadoc)
+	 * @see fr.certu.chouette.service.geographic.IGeographicService#convertToProjection()
+	 */
 	@Override
+	@Deprecated
 	public void convertToProjection() 
 	{
-		// build filter on projected point x or y nulls and lattitude and longitude not nulls
+		// build filter on projected point x or y nulls and latitude and longitude not nulls
 		Filter xFilter = Filter.getNewIsNullFilter(StopArea.X);
 		Filter yFilter = Filter.getNewIsNullFilter(StopArea.Y);
 		Filter latFilter = Filter.getNewNotFilter(Filter.getNewIsNullFilter(StopArea.LATITUDE));
@@ -424,6 +418,12 @@ public class GeographicService implements IGeographicService
 			area.setProjectionType(null);
 			return true;
 		}
+		if (!area.hasCoordinates())
+		{
+			logger.error("no WGS84 coordinate for "+ area.getName());
+			return false;
+		}
+		
 		Point point = factoryWGS84.createPoint(new Coordinate(area.getLatitude().doubleValue(),
 				area.getLongitude().doubleValue()));
 

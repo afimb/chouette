@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -27,6 +28,7 @@ import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
 import fr.certu.chouette.plugin.exchange.report.ExchangeReport;
 import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
 import fr.certu.chouette.plugin.exchange.report.LimitedExchangeReportItem;
+import fr.certu.chouette.plugin.exchange.tools.FileTool;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportHolder;
 import fr.certu.chouette.plugin.report.ReportItem;
@@ -126,7 +128,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 		boolean routeFound = false;
 		boolean calendarFound = false;
 		GtfsData data = null;
-		
+
 		for (ParameterValue value : parameters) 
 		{
 			if (value instanceof SimpleParameterValue) 
@@ -212,11 +214,20 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 		Report report = new ExchangeReport(ExchangeReport.KEY.IMPORT, description.getName());
 		report.updateStatus(Report.STATE.OK);
 		importReport.setReport(report);
-		
+
 		ZipFile zip = null;
 		try 
 		{
-			zip = new ZipFile(filePath);
+			Charset encoding = FileTool.getZipCharset(filePath);
+			if (encoding == null)
+			{
+				ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.FILE_ERROR,Report.STATE.ERROR,filePath,"unknown encoding");
+				report.addItem(item);
+				report.updateStatus(Report.STATE.ERROR);
+				logger.error("zip import failed (unknown encoding)");
+				return null;
+			}
+			zip = new ZipFile(filePath,encoding);
 		} 
 		catch (IOException e) 
 		{
@@ -344,7 +355,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 						ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ERROR,Report.STATE.ERROR,"stops.txt",filePath,e.getLocalizedMessage());
 						report.addItem(item);
 						report.updateStatus(Report.STATE.ERROR);
-					logger.error("zip import failed (cannot read stops.txt)" + e.getLocalizedMessage(),e);
+						logger.error("zip import failed (cannot read stops.txt)" + e.getLocalizedMessage(),e);
 						ok = false;
 					}
 				}
@@ -384,18 +395,18 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 						ok = false;
 					}
 				}
-//				else if (entryName.endsWith("shapes.txt"))
-//				{
-//					try 
-//					{
-//						data.loadShapes(zip.getInputStream(entry));
-//					} 
-//					catch (Exception e) 
-//					{
-//						logger.error("zip import failed (cannot read shapes.txt)" + e.getLocalizedMessage(),e);
-//						ok = false;
-//					}
-//				}
+				//				else if (entryName.endsWith("shapes.txt"))
+				//				{
+				//					try 
+				//					{
+				//						data.loadShapes(zip.getInputStream(entry));
+				//					} 
+				//					catch (Exception e) 
+				//					{
+				//						logger.error("zip import failed (cannot read shapes.txt)" + e.getLocalizedMessage(),e);
+				//						ok = false;
+				//					}
+				//				}
 				else if (entryName.endsWith("transfers.txt"))
 				{
 					try 
@@ -469,7 +480,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 				logger.error("zip import failed (missing entry trips.txt)");
 				ok = false;				
 			}
-			
+
 			if (ok && data.connect(report))
 			{
 				System.gc();

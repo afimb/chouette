@@ -41,9 +41,12 @@ public interface IGeographicService
 	 * 
 	 * nullify data if no projection set
 	 * 
+	 * @deprecated  Since 2.1.0 : projected coordinates are no more saved 
+	 * 
 	 * @param area
 	 * @return
 	 */
+	@Deprecated
 	boolean convertToProjection(NeptuneLocalizedObject area);
 	
 	void switchProjection(String srid);

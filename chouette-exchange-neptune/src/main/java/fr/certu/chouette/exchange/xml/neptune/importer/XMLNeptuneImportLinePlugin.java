@@ -10,6 +10,7 @@ package fr.certu.chouette.exchange.xml.neptune.importer;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -37,6 +38,7 @@ import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
 import fr.certu.chouette.plugin.exchange.UnsharedImportedData;
 import fr.certu.chouette.plugin.exchange.report.ExchangeReport;
 import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
+import fr.certu.chouette.plugin.exchange.tools.FileTool;
 import fr.certu.chouette.plugin.exchange.xml.exception.ExchangeException;
 import fr.certu.chouette.plugin.exchange.xml.exception.ExchangeRuntimeException;
 import fr.certu.chouette.plugin.report.Report;
@@ -291,6 +293,15 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 		ZipFile zip = null;
 		try
 		{
+			Charset encoding = FileTool.getZipCharset(filePath);
+			if (encoding == null)
+			{
+				ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.FILE_ERROR,Report.STATE.ERROR,filePath,"unknown encoding");
+				importReport.addItem(item);
+				importReport.updateStatus(Report.STATE.ERROR);
+				logger.error("zip import failed (unknown encoding)");
+				return null;
+			}
 			zip = new ZipFile(filePath);
 		}
 		catch (IOException e)
