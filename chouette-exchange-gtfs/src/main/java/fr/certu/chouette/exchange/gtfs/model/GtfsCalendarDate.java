@@ -17,7 +17,7 @@ import lombok.Setter;
  */
 @NoArgsConstructor
 
-public class GtfsCalendarDate extends GtfsBean
+public class GtfsCalendarDate extends GtfsBean implements Comparable<GtfsCalendarDate>
 {
    public static final int INCLUDED = 1;
    public static final int EXCLUDED = 2;
@@ -102,6 +102,12 @@ public class GtfsCalendarDate extends GtfsBean
 			ret = false;
 		}
 		return ret;
+	}
+
+	@Override
+	public int compareTo(GtfsCalendarDate o) 
+	{
+		return date.compareTo(o.date);
 	}
 
 }

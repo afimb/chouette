@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
+import org.testng.Reporter;
 import org.testng.annotations.Test;
 
 import fr.certu.chouette.common.ChouetteException;
@@ -15,6 +16,7 @@ import fr.certu.chouette.exchange.gtfs.exporter.producer.GtfsCalendarProducer;
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
 import fr.certu.chouette.exchange.gtfs.model.GtfsCalendar;
 import fr.certu.chouette.exchange.gtfs.model.GtfsCalendarDate;
+import fr.certu.chouette.model.neptune.CalendarDay;
 import fr.certu.chouette.model.neptune.Period;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.type.DayTypeEnum;
@@ -83,7 +85,7 @@ public class GtfsExportCalendarProducerTests extends AbstractTestNGSpringContext
 		for (int i = 0; i < 5; i++)
 		{
 			Date date = new Date(c.getTimeInMillis());
-			neptuneObject.addCalendarDay(date); 
+			neptuneObject.addCalendarDay(new CalendarDay(date,true)); 
 			c.add(Calendar.DATE, 3);
 		}
 
@@ -145,7 +147,7 @@ public class GtfsExportCalendarProducerTests extends AbstractTestNGSpringContext
 		for (int i = 0; i < 5; i++)
 		{
 			Date date = new Date(c.getTimeInMillis());
-			neptuneObject.addCalendarDay(date); 
+			neptuneObject.addCalendarDay(new CalendarDay(date,true)); 
 			c.add(Calendar.DATE, 3);
 		}
 
@@ -210,14 +212,16 @@ public class GtfsExportCalendarProducerTests extends AbstractTestNGSpringContext
 		Date endDate2  = new Date(c.getTimeInMillis());
 		Period period2 = new Period(startDate2, endDate2);
 		neptuneObject.addPeriod(period2);
+		
+		Reporter.log(neptuneObject.toString());
 
 		GtfsCalendar gtfsObject = producer.produce(neptuneObject , report );
-		System.out.println("verifyCalendarProducer4");
-		System.out.println(gtfsObject);
+		Reporter.log("verifyCalendarProducer4");
+		Reporter.log(gtfsObject.toString());
 
 		Assert.assertEquals(gtfsObject.getServiceId(), toGtfsId(neptuneObject.getObjectId()),"service id must be correcty set");
-		Assert.assertEquals(gtfsObject.getStartDate(), startDate1, "start date must be correcty set");
-		Assert.assertEquals(gtfsObject.getEndDate(), endDate2, "end date must be correcty set");
+		Assert.assertEquals(gtfsObject.getStartDate(), null, "start date must be correcty set");
+		Assert.assertEquals(gtfsObject.getEndDate(), null, "end date must be correcty set");
 		Assert.assertTrue(gtfsObject.isMonday(),"monday must be true");
 		Assert.assertTrue(gtfsObject.isTuesday(),"tuesday must be true");
 		Assert.assertFalse(gtfsObject.isWednesday(),"wednesday must be false");
@@ -225,20 +229,20 @@ public class GtfsExportCalendarProducerTests extends AbstractTestNGSpringContext
 		Assert.assertTrue(gtfsObject.isFriday(),"friday must be true");
 		Assert.assertTrue(gtfsObject.isSaturday(),"saturday must be true");
 		Assert.assertTrue(gtfsObject.isSunday(),"sunday must be true");
-		Assert.assertEquals(gtfsObject.getCalendarDates().size(), 12, "calendar must have 12 dates");
+		Assert.assertEquals(gtfsObject.getCalendarDates().size(), 53, "calendar must have 53 dates");
 		c.set(Calendar.YEAR, 2013);
 		c.set(Calendar.MONTH, Calendar.JULY);
 		c.set(Calendar.DAY_OF_MONTH, 1);
-		c.add(Calendar.DATE, 30);
 		if (c.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY) c.add(Calendar.DATE, 1);
 		for (GtfsCalendarDate gtfsCalendarDate : gtfsObject.getCalendarDates()) 
 		{
 			Date date = new Date(c.getTimeInMillis());
 			c.add(Calendar.DATE, 1);
+			if (c.get(Calendar.DAY_OF_MONTH) == 31 && c.get(Calendar.MONTH) == Calendar.JULY) c.add(Calendar.DATE,15);
 			if (c.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY) c.add(Calendar.DATE, 1);
 			Assert.assertEquals(gtfsCalendarDate.getServiceId(), toGtfsId(neptuneObject.getObjectId()),"service id must be correcty set");
 			Assert.assertEquals(gtfsCalendarDate.getDate(),date,"calendar date must be correctly");	
-			Assert.assertEquals(gtfsCalendarDate.getExceptionType(),2,"calendar date must be exclusive");	
+			Assert.assertEquals(gtfsCalendarDate.getExceptionType(),1,"calendar date must be inclusive");	
 		}
 
 	}

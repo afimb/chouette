@@ -9,6 +9,7 @@ import com.tobedevoured.modelcitizen.ModelFactory;
 import com.tobedevoured.modelcitizen.RegisterBlueprintException;
 import fr.certu.chouette.model.neptune.AccessLink;
 import fr.certu.chouette.model.neptune.AccessPoint;
+import fr.certu.chouette.model.neptune.CalendarDay;
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.GroupOfLine;
 import fr.certu.chouette.model.neptune.JourneyPattern;
@@ -169,9 +170,9 @@ public class ComplexModelFactory {
             Calendar cal = Calendar.getInstance();
             cal.add(  Calendar.MONTH,index);
 
-            tm.setCalendarDays( new ArrayList<Date>(5));
+            tm.setCalendarDays( new ArrayList<CalendarDay>(5));
             for( int i = 0; i<5; i++) {
-                tm.addCalendarDay( new Date( cal.getTimeInMillis()));
+                tm.addCalendarDay( new CalendarDay(new Date( cal.getTimeInMillis()),true));
                 cal.add( Calendar.DAY_OF_MONTH,1 );
             }
             tm.setPeriods( new ArrayList<Period>(5));

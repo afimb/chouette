@@ -13,6 +13,8 @@ import java.text.ParseException;
 import java.util.List;
 import java.util.Date;
 import javax.xml.xpath.XPathExpressionException;
+
+import org.testng.Reporter;
 import org.testng.annotations.Test;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -198,7 +200,7 @@ public class TimetableTest extends ChouetteModelTest {
         List<Timetable> timetables = line.getTimetables();
         
         for( Timetable timetable : timetables) {
-            for ( Date day : timetable.getCalendarDays()) {
+            for ( Date day : timetable.getPeculiarDates()) {
                 String xPathExpr = "boolean(//netex:ServiceCalendarFrame"+
                                     "/netex:operatingDays"+
                                     "/netex:OperatingDay"+
@@ -219,7 +221,7 @@ public class TimetableTest extends ChouetteModelTest {
         List<Timetable> timetables = line.getTimetables();
         
         for( Timetable timetable : timetables) {
-            for ( Date day : timetable.getCalendarDays()) {
+            for ( Date day : timetable.getPeculiarDates()) {
                 String xPathExpr = "boolean(//netex:ServiceCalendarFrame"+
                                     "/netex:operatingDays"+
                                     "/netex:OperatingDay/netex:CalendarDate/"+
@@ -274,7 +276,7 @@ public class TimetableTest extends ChouetteModelTest {
         List<Timetable> timetables = line.getTimetables();
         
         for( Timetable timetable : timetables) {
-            for ( Date day : timetable.getCalendarDays()) {
+            for ( Date day : timetable.getPeculiarDates()) {
                 String xPathExpr = "boolean(//netex:ServiceCalendarFrame"+
                                     "/netex:dayTypeAssignments"+
                                     "/netex:DayTypeAssignment/netex:OperatingDayRef"+

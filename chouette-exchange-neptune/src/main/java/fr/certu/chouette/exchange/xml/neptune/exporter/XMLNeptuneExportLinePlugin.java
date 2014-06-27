@@ -52,6 +52,7 @@ import fr.certu.chouette.exchange.xml.neptune.exporter.producer.TimetableProduce
 import fr.certu.chouette.exchange.xml.neptune.exporter.producer.VehicleJourneyProducer;
 import fr.certu.chouette.model.neptune.AccessLink;
 import fr.certu.chouette.model.neptune.AccessPoint;
+import fr.certu.chouette.model.neptune.CalendarDay;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.Facility;
@@ -734,10 +735,10 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
 		reduced.setVehicleJourneyIds(timetable.getVehicleJourneyIds());
 		reduced.setVehicleJourneys(timetable.getVehicleJourneys());
 
-		List<Date> dates = new ArrayList<Date>(timetable.getCalendarDays());
-		for (Iterator<Date> iterator = dates.iterator(); iterator.hasNext();)
+		List<CalendarDay> dates = new ArrayList<CalendarDay>(timetable.getCalendarDays());
+		for (Iterator<CalendarDay> iterator = dates.iterator(); iterator.hasNext();)
 		{
-			Date date = iterator.next();
+			CalendarDay date = iterator.next();
 			if (date == null)
 			{
 				iterator.remove();
@@ -819,13 +820,13 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
 	 * @param before
 	 * @return
 	 */
-	private boolean checkDate(Date date, Date boundaryDate, boolean before)
+	private boolean checkDate(CalendarDay date, Date boundaryDate, boolean before)
 	{
 		if (before)
 		{
-			return date.before(boundaryDate);
+			return date.getDate().before(boundaryDate);
 		}
-		return date.after(boundaryDate);
+		return date.getDate().after(boundaryDate);
 	}
 
 }

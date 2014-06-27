@@ -12,6 +12,7 @@ import fr.certu.chouette.exchange.csv.exception.ExchangeException;
 import fr.certu.chouette.exchange.csv.exception.ExchangeExceptionCode;
 import fr.certu.chouette.exchange.csv.importer.ChouetteCsvReader;
 import fr.certu.chouette.exchange.csv.importer.report.CSVReportItem;
+import fr.certu.chouette.model.neptune.CalendarDay;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.neptune.Period;
 import fr.certu.chouette.model.neptune.Timetable;
@@ -106,7 +107,7 @@ public class TimetableProducer extends AbstractModelProducer<Timetable>
          List<Date> calendarDays = loadDatesParam(csvReader, CALENDAR_DAY_TITLE);
          for (Date calendarDay : calendarDays)
          {
-            timetable.addCalendarDay(calendarDay);
+            timetable.addCalendarDay(new CalendarDay(calendarDay,true));
          }
 
       }

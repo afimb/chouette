@@ -87,7 +87,7 @@ public class TimetableConverterTest extends AbstractTestNGSpringContextTests {
     public void verifyCalendarDay() throws XPathEvalException, NavException, XPathParseException, ParseException {
         Timetable selectedTimetable = getByObjectId( "T:DayType:1");
         Assert.assertEquals( selectedTimetable.getCalendarDays().size(), 5);
-        Assert.assertEquals( selectedTimetable.getCalendarDays().get(0), dateFormat.parse("2015-03-18"));
+        Assert.assertEquals( selectedTimetable.getCalendarDays().get(0).getDate(), dateFormat.parse("2015-03-18"));
     }
     
     @Test(groups = {"ServiceCalendarFrame"}, description = "DayType's properties attribute reading")

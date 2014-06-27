@@ -34,8 +34,8 @@
   #if ( $timetable.calendarDays && $timetable.calendarDays.size() > 0 )
   <operatingDays>
     #foreach( $day in $timetable.calendarDays )
-    <OperatingDay version="any" id="${timetable.objectIdPrefix()}:OperatingDay:${timetable.objectIdSuffix()}D${date.format($shortDateFormat, $day)}">
-      <CalendarDate>$date.format($shortDateFormat, $day)</CalendarDate>
+    <OperatingDay version="any" id="${timetable.objectIdPrefix()}:OperatingDay:${timetable.objectIdSuffix()}D${date.format($shortDateFormat, ${day.getDate()})}">
+      <CalendarDate>$date.format($shortDateFormat, ${day.getDate()})</CalendarDate>
     </OperatingDay>
     #end		
   </operatingDays>  
@@ -61,7 +61,7 @@
     #end		
     #foreach( $day in $timetable.calendarDays )
     <DayTypeAssignment version="any">
-      <OperatingDayRef ref="${timetable.objectIdPrefix()}:OperatingDay:${timetable.objectIdSuffix()}D${date.format($shortDateFormat, $day)}"/>
+      <OperatingDayRef ref="${timetable.objectIdPrefix()}:OperatingDay:${timetable.objectIdSuffix()}D${date.format($shortDateFormat, ${day.getDate()})}"/>
       <DayTypeRef version="$timetable.objectVersion" ref="$modelTranslator.netexId( $timetable)"/>
     </DayTypeAssignment>
     #end

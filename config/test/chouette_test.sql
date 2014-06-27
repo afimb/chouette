@@ -837,7 +837,8 @@ CREATE TABLE time_table_dates (
     time_table_id bigint NOT NULL,
     date date,
     "position" integer NOT NULL,
-    id bigint NOT NULL
+    id bigint NOT NULL,
+    in_out boolean
 );
 
 

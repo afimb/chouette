@@ -52,7 +52,7 @@ public class TimetableProducer extends AbstractCSVNeptuneProducer<Timetable> {
 		csvLinesList.add(createCSVLine(SUNDAY_TITLE, getDayTypeString(timetableDayTypes, DayTypeEnum.Sunday)));
 		List<Period> timetablePeriods = timetable.getPeriods();
 		csvLinesList.addAll(getPeriodsCSVLines(timetablePeriods));
-		List<Date> timetableCalendarDays = timetable.getCalendarDays();
+		List<Date> timetableCalendarDays = timetable.getPeculiarDates();
 		csvLinesList.add(getCalendarDaysCSVLines(timetableCalendarDays));
 		
 		return csvLinesList;

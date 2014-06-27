@@ -6,7 +6,7 @@
 	<groupId>fr.certu.chouette</groupId>
 	<artifactId>chouette</artifactId>
 	<packaging>pom</packaging>
-	<version>2.4.1</version>
+	<version>2.5.0</version>
 
 	<properties>
 		<maven.build.timestamp.format>yyyy-MM-dd_HH-mm</maven.build.timestamp.format>
@@ -27,7 +27,6 @@
 		<module>chouette-exchange-neptune</module>
 		<module>chouette-exchange-gtfs</module>
 		<module>chouette-exchange-csv</module>
-		<module>chouette-export-geoportail</module>
 		<module>chouette-validation</module>
 		<module>chouette-command</module>
 		<module>chouette-gui-command</module>

@@ -8,6 +8,7 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import fr.certu.chouette.model.neptune.CalendarDay;
 import fr.certu.chouette.model.neptune.Period;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.type.DayTypeEnum;
@@ -23,15 +24,15 @@ public class TimetableTests extends AbstractTestNGSpringContextTests
 		Calendar c = Calendar.getInstance();
 
 		Date firstDate = new Date(c.getTimeInMillis());
-		t.addCalendarDay(firstDate);
+		t.addCalendarDay(new CalendarDay(firstDate,true));
 		for (int i = 0; i < 5; i++)
 		{
 			c.add(Calendar.DATE, 2);
-			t.addCalendarDay(new Date(c.getTimeInMillis()));
+			t.addCalendarDay(new CalendarDay(new Date(c.getTimeInMillis()),true));
 		}
 		c.add(Calendar.DATE, 2);
 		Date lastDate = new Date(c.getTimeInMillis());
-		t.addCalendarDay(lastDate);
+		t.addCalendarDay(new CalendarDay(lastDate,true));
 		Assert.assertNull(t.getStartOfPeriod(),"before complete, startOfPeriod should be null");
 		Assert.assertNull(t.getEndOfPeriod(),"before complete, endOfPeriod should be null");
 		t.complete();
@@ -99,7 +100,7 @@ public class TimetableTests extends AbstractTestNGSpringContextTests
 			t.addPeriod(new Period(firstMonday, firstFriday));
 			t.addDayType(DayTypeEnum.Monday);
 			t.addDayType(DayTypeEnum.Friday);
-			t.addCalendarDay(firstWednesday);
+			t.addCalendarDay(new CalendarDay(firstWednesday,true));
 			Assert.assertNull(t.getStartOfPeriod(),"before complete, startOfPeriod should be null");
 			Assert.assertNull(t.getEndOfPeriod(),"before complete, endOfPeriod should be null");
 			t.complete();
@@ -110,8 +111,8 @@ public class TimetableTests extends AbstractTestNGSpringContextTests
 			Timetable t = new Timetable();
 			t.addPeriod(new Period(firstMonday, firstFriday));
 			t.addDayType(DayTypeEnum.Wednesday);
-			t.addCalendarDay(firstMonday);
-			t.addCalendarDay(firstFriday);
+			t.addCalendarDay(new CalendarDay(firstMonday,true));
+			t.addCalendarDay(new CalendarDay(firstFriday,true));
 			Assert.assertNull(t.getStartOfPeriod(),"before complete, startOfPeriod should be null");
 			Assert.assertNull(t.getEndOfPeriod(),"before complete, endOfPeriod should be null");
 			t.complete();
@@ -129,7 +130,7 @@ public class TimetableTests extends AbstractTestNGSpringContextTests
 		Calendar c = Calendar.getInstance();
 
 		Date firstDate = new Date(c.getTimeInMillis());
-		t.addCalendarDay(firstDate);
+		t.addCalendarDay(new CalendarDay(firstDate,true));
 		Assert.assertNull(t.getStartOfPeriod(),"before complete, startOfPeriod should be null");
 		Assert.assertNull(t.getEndOfPeriod(),"before complete, endOfPeriod should be null");
 		t.complete();

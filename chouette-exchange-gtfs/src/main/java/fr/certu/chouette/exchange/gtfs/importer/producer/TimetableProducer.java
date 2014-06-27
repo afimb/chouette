@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 
 import fr.certu.chouette.exchange.gtfs.model.GtfsCalendar;
 import fr.certu.chouette.exchange.gtfs.model.GtfsCalendarDate;
+import fr.certu.chouette.model.neptune.CalendarDay;
 import fr.certu.chouette.model.neptune.Period;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.type.DayTypeEnum;
@@ -18,9 +19,8 @@ import fr.certu.chouette.plugin.report.Report;
 
 public class TimetableProducer extends AbstractModelProducer<Timetable, GtfsCalendar> {
 	private static Logger logger = Logger.getLogger(TimetableProducer.class);
-	
-	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-	
+
+
 	@Override
 	public Timetable produce(GtfsCalendar gtfsCalendar,Report report) 
 	{
@@ -54,68 +54,7 @@ public class TimetableProducer extends AbstractModelProducer<Timetable, GtfsCale
 		{
 			for (GtfsCalendarDate date : gtfsCalendar.getCalendarDates())
 			{
-				if (date.getExceptionType() == GtfsCalendarDate.INCLUDED)
-				{
-					timetable.addCalendarDay(date.getDate() );
-				}
-				else
-				{
-					Date calendarDay = date.getDate();
-					if (timetable.getPeriods() == null || timetable.getPeriods().isEmpty())
-					{
-						logger.warn("service exclude date without defined period "+gtfsCalendar.getServiceId());
-					}
-					else
-					{
-						// logger.info("exclude date from service "+gtfsCalendar.getServiceId());
-						boolean found = false;
-						Period aNewPeriod = null;
-						for (Period period : timetable.getPeriods())
-						{
-							if (calendarDay.after(period.getStartDate()) && calendarDay.before(period.getEndDate()))
-							{
-								found = true;
-								Calendar cal = Calendar.getInstance();
-								cal.setTime(calendarDay);
-								aNewPeriod = new Period();
-								aNewPeriod.setEndDate(period.getEndDate());
-								cal.add(Calendar.DATE, -1);
-								period.setEndDate(new Date(cal.getTimeInMillis()));
-								cal.add(Calendar.DATE, 2);
-								aNewPeriod.setStartDate(new Date(cal.getTimeInMillis()));
-							}
-							else if (calendarDay.equals(period.getStartDate()))
-							{
-								found = true;
-								Calendar cal = Calendar.getInstance();
-								cal.setTime(calendarDay);
-								cal.add(Calendar.DATE, 1);
-								period.setStartDate(new Date(cal.getTimeInMillis()));
-							}
-							else if (calendarDay.equals(period.getEndDate()))
-							{
-								found = true;
-								Calendar cal = Calendar.getInstance();
-								cal.setTime(calendarDay);
-								cal.add(Calendar.DATE, -1);
-								period.setEndDate(new Date(cal.getTimeInMillis()));
-							}
-						}
-						if (!found)
-						{
-							logger.warn("service exclude date within no defined period "+gtfsCalendar.getServiceId());
-							logger.warn("   date "+dateFormat.format(calendarDay));
-							for (Period period : timetable.getPeriods()) 
-							{
-								logger.warn("   Period "+period.toString());
-							}
-						}
-						if (aNewPeriod != null)
-						{
-							timetable.addPeriod(aNewPeriod);
-						}
-					}
-				}
+				timetable.addCalendarDay(new CalendarDay(date.getDate(),date.getExceptionType() == GtfsCalendarDate.INCLUDED));
 			}
 		}
 		List<Period> periods = timetable.getPeriods();
@@ -153,7 +92,7 @@ public class TimetableProducer extends AbstractModelProducer<Timetable, GtfsCale
 		if (timetable.getCalendarDays() != null && !timetable.getCalendarDays().isEmpty())
 		{
 			Calendar cal = Calendar.getInstance();
-			for (Date date : timetable.getCalendarDays())
+			for (Date date : timetable.getPeculiarDates())
 			{
 				cal.setTime(date);
 				if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) monday = "Mo";

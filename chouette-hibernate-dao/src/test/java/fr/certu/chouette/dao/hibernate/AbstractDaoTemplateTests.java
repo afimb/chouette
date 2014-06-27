@@ -30,6 +30,7 @@ import org.testng.annotations.Test;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.AccessLink;
 import fr.certu.chouette.model.neptune.AccessPoint;
+import fr.certu.chouette.model.neptune.CalendarDay;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.JourneyPattern;
@@ -514,7 +515,7 @@ public abstract class AbstractDaoTemplateTests<T extends NeptuneIdentifiedObject
 		timetable.setCreationTime(new Date());
 		timetable.setName("TestNG Timetable");
 
-		timetable.addCalendarDay(toDate("01/10/2011") );
+		timetable.addCalendarDay(new CalendarDay(toDate("01/10/2011"),true) );
 		timetable.addPeriod(new Period(toDate("01/11/2011"),toDate("01/11/2012")));
 
 		HibernateDaoTemplate<Timetable> template = (HibernateDaoTemplate<Timetable>) applicationContext.getBean("timetableDao");

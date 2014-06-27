@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 
 import lombok.Getter;
 import lombok.Setter;
+import fr.certu.chouette.model.neptune.CalendarDay;
 import fr.certu.chouette.model.neptune.Period;
 import fr.certu.chouette.model.neptune.Timetable;
 
@@ -99,6 +100,7 @@ public class TimetableJdbcDao extends AbstractJdbcDao<Timetable>
          ps.setLong(1, jdate.timetableId);
          ps.setDate(2, jdate.date);
          ps.setInt(3, jdate.position);
+         ps.setBoolean(4, jdate.inOut);
          return;
       }
 
@@ -139,11 +141,12 @@ public class TimetableJdbcDao extends AbstractJdbcDao<Timetable>
          int position = 0;
          if (item.getCalendarDays() != null)
          {
-            for (Date date : item.getCalendarDays())
+            for (CalendarDay date : item.getCalendarDays())
             {
                JdbcDate jdate = new JdbcDate();
                jdate.timetableId = item.getId();
-               jdate.date = date;
+               jdate.date = date.getDate();
+               jdate.inOut = date.getIncluded();
                jdate.position = position++;
                dates.add(jdate);
             }
@@ -208,6 +211,11 @@ public class TimetableJdbcDao extends AbstractJdbcDao<Timetable>
        * position in list
        */
       public int  position;
+      
+      /**
+       * included or excluded
+       */
+      public boolean inOut;
    }
 
 }

@@ -19,6 +19,7 @@ import com.ximpleware.NavException;
 import com.ximpleware.VTDNav;
 
 import fr.certu.chouette.exchange.netex.ModelTranslator;
+import fr.certu.chouette.model.neptune.CalendarDay;
 import fr.certu.chouette.model.neptune.type.DayTypeEnum;
 import fr.certu.chouette.plugin.exchange.xml.exception.ExchangeExceptionCode;
 import fr.certu.chouette.plugin.exchange.xml.exception.ExchangeRuntimeException;
@@ -76,10 +77,10 @@ public class GenericConverter {
         return dates;
     }
     
-    protected List<java.sql.Date> toShortDateList(List<Object> objects) {
-        List<java.sql.Date> dates = new ArrayList<java.sql.Date>(objects.size());
+    protected List<CalendarDay> toShortDateList(List<Object> objects) {
+        List<CalendarDay> dates = new ArrayList<CalendarDay>(objects.size());
         for (Object object : objects) {
-            dates.add((java.sql.Date) object);
+            dates.add(new CalendarDay((java.sql.Date) object,true));
         }
         return dates;
     }
@@ -391,7 +392,7 @@ public class GenericConverter {
                 
                 if (position == -1 || nav.toNormalizedString(position) == null)
                 {
-                    String log = "No element " + element + " found for " + this.getClass();
+                    //String log = "No element " + element + " found for " + this.getClass();
                     return elements;     
                 }
                 

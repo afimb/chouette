@@ -9,6 +9,7 @@ import org.trident.schema.trident.DayTypeType;
 import org.trident.schema.trident.PeriodType;
 import org.trident.schema.trident.TimetableType;
 
+import fr.certu.chouette.model.neptune.CalendarDay;
 import fr.certu.chouette.model.neptune.Period;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.type.DayTypeEnum;
@@ -17,7 +18,8 @@ import fr.certu.chouette.plugin.exchange.UnsharedImportedData;
 import fr.certu.chouette.plugin.report.ReportItem;
 import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 
-public class TimetableProducer extends AbstractModelProducer<Timetable, TimetableType> {
+public class TimetableProducer extends AbstractModelProducer<Timetable, TimetableType> 
+{
 
 	@Override
 	public Timetable produce(String sourceFile,TimetableType xmlTimetable,ReportItem importReport, PhaseReportItem validationReport,SharedImportedData sharedData, UnsharedImportedData unshareableData) 
@@ -48,7 +50,7 @@ public class TimetableProducer extends AbstractModelProducer<Timetable, Timetabl
 		// 
 		if(xmlTimetable.getCalendarDay() != null){
 			for(XMLGregorianCalendar calendarDay : xmlTimetable.getCalendarDay()){
-				timetable.addCalendarDay(getSqlDate(calendarDay));
+				timetable.addCalendarDay(new CalendarDay(getSqlDate(calendarDay),true));
 			}
 		}
 

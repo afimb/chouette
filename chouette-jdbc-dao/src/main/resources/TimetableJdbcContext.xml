@@ -113,9 +113,10 @@
 								(
 								time_table_id,
 								date,
-								position
+								position,
+								in_out
 								)
-								VALUES(?, ?, ?)</value>
+								VALUES(?, ?, ?, ?)</value>
 						</entry>
 						<entry key="sqlDelete">
 							<value>

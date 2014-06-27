@@ -9,6 +9,7 @@ import fr.certu.chouette.model.neptune.JourneyPattern;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 
+import fr.certu.chouette.model.neptune.CalendarDay;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.Period;
 import fr.certu.chouette.model.neptune.Route;
@@ -87,8 +88,8 @@ public class ServiceCalendarFrameFileWritterTests extends AbstractTestNGSpringCo
             timeTable.addDayType(DayTypeEnum.Monday);
             timeTable.addDayType(DayTypeEnum.Tuesday);
 
-            timeTable.addCalendarDay(new Date(10000));
-            timeTable.addCalendarDay(new Date(20000));
+            timeTable.addCalendarDay(new CalendarDay( new Date(10000),true));
+            timeTable.addCalendarDay(new CalendarDay( new Date(20000),true));
 
             timeTable.addPeriod(new Period(new Date(20000), new Date(30000)));
             timeTable.addPeriod(new Period(new Date(40000), new Date(50000)));

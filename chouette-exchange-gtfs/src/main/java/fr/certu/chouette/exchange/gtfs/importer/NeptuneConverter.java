@@ -44,6 +44,7 @@ import fr.certu.chouette.exchange.gtfs.model.GtfsStop;
 import fr.certu.chouette.exchange.gtfs.model.GtfsStopTime;
 import fr.certu.chouette.exchange.gtfs.model.GtfsTransfer;
 import fr.certu.chouette.exchange.gtfs.model.GtfsTrip;
+import fr.certu.chouette.model.neptune.CalendarDay;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.JourneyPattern;
@@ -863,7 +864,7 @@ public class NeptuneConverter
 			result.addPeriod(clonePeriodAfterMidnight(period));
 		}
 		
-		for (Date calendarDay : source.getCalendarDays()) 
+		for (CalendarDay calendarDay : source.getCalendarDays()) 
 		{
 			result.addCalendarDay(cloneDateAfterMidnight(calendarDay));
 		}
@@ -883,5 +884,10 @@ public class NeptuneConverter
 	private Date cloneDateAfterMidnight(Date source)
 	{
 		return new Date(source.getTime()+dayOffest);
+	}
+	
+	private CalendarDay cloneDateAfterMidnight(CalendarDay source)
+	{
+		return new CalendarDay(cloneDateAfterMidnight(source.getDate()),source.getIncluded());
 	}
 }

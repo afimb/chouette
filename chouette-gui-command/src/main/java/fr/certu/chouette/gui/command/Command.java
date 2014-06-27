@@ -310,9 +310,10 @@ public class Command extends AbstractCommand
          }
          int code = 0;
          Command command = null;
+         ClassPathXmlApplicationContext applicationContext = null;
          try
          {
-            ClassPathXmlApplicationContext applicationContext =  new ClassPathXmlApplicationContext(context);
+            applicationContext =  new ClassPathXmlApplicationContext(context);
             applicationContext.registerShutdownHook();
             ConfigurableBeanFactory factory = applicationContext.getBeanFactory();
             command = (Command) factory.getBean("Command");
@@ -360,6 +361,9 @@ public class Command extends AbstractCommand
             System.exit(2);
          }
 
+         
+         applicationContext.close();
+         
          System.exit(code);
       }
       else

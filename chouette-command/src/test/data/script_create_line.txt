@@ -397,7 +397,8 @@ print
 new -o timetable
 set -attr objectId CITURA:Timetable:20110511
 set -attr objectVersion 1
-add -attr calendarDay 2011-05-11
+set -attr calendarDay[new].date 2011-05-11
+set -attr calendarDay[last].included true
 save -slow
 print
 
