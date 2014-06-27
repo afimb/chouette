@@ -34,10 +34,6 @@
 		</dependency>
 		<dependency>
 			<groupId>fr.certu.chouette</groupId>
-			<artifactId>chouette-export-geoportail</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>fr.certu.chouette</groupId>
 			<artifactId>chouette-core</artifactId>
 		</dependency>
 		<dependency>
