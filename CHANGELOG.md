@@ -7,7 +7,7 @@
   * La validation plante si un arrêt n'est pas géolocalisé (Mantis 26931) 
   * L'import plante si l'encodage du catalogue d'un ZIP n'est pas compatible UTF-8 (Mantis 27011) 
   
-# Version 2.4.0 (10/09/14)
+# Version 2.4.0 (27/05/14)
 * Corrections d'anomalies
   * L'Import GTFS n'importe pas les fichiers avec marqueurs BOM (Mantis 21260)
   * L'Import GTFS n'accepte pas des routes sans colonne agencyId (Mantis 22665)
