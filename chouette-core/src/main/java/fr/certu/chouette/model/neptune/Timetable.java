@@ -5,7 +5,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
+import java.util.ListIterator;
 
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
@@ -38,6 +40,7 @@ import fr.certu.chouette.model.neptune.type.DayTypeEnum;
 public class Timetable extends NeptuneIdentifiedObject
 {
 	private static final long serialVersionUID = -1598554061982685113L;
+	private static final long ONE_DAY = 3600000*24;
 
 	// constant for persistence fields
 	/**
@@ -570,6 +573,54 @@ public class Timetable extends NeptuneIdentifiedObject
 			}
 		}
 
+	}
+	
+	/**
+	 * return periods broken on excluded dates, for exports without date exclusion
+	 * 
+	 * @return
+	 */
+	public List<Period> getEffectivePeriods()
+	{
+		List<Date> dates = getExcludedDates();
+		List<Period> effectivePeriods = new ArrayList<Period>();
+		// copy periods
+		for (Period period : periods) 
+		{
+			effectivePeriods.add(new Period(period.getStartDate(),period.getEndDate()));
+		}
+		if (!effectivePeriods.isEmpty())
+		{
+			for (Date aDay : dates) 
+			{
+				// reduce or split periods around excluded date
+				for (ListIterator<Period> iterator = effectivePeriods.listIterator(); iterator
+						.hasNext();) 
+				{
+					Period period = iterator.next();
+					if (period.getStartDate().equals(aDay))
+					{
+						period.getStartDate().setTime(period.getStartDate().getTime()+ONE_DAY);
+						if (period.getStartDate().after(period.getEndDate())) iterator.remove();
+					}
+					else if (period.getEndDate().equals(aDay))
+					{
+						period.getEndDate().setTime(period.getEndDate().getTime()+ONE_DAY);							
+						if (period.getStartDate().after(period.getEndDate())) iterator.remove();
+					}
+					else if (period.contains(aDay))
+					{
+						// split period
+						Period before = new Period(period.getStartDate(),new Date(aDay.getTime()-ONE_DAY));
+						period.setStartDate(new Date(aDay.getTime()+ONE_DAY));
+						iterator.add(before);
+					}
+					
+				}
+			}
+		}
+		Collections.sort(effectivePeriods);
+		return effectivePeriods;
 	}
 
 	@Override

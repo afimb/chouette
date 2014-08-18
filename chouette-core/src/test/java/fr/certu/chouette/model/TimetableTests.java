@@ -2,6 +2,7 @@ package fr.certu.chouette.model;
 
 import java.sql.Date;
 import java.util.Calendar;
+import java.util.List;
 
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -149,6 +150,70 @@ public class TimetableTests extends AbstractTestNGSpringContextTests
 		Assert.assertNull(t.getStartOfPeriod(),"after complete, startOfPeriod should be null");
 		Assert.assertNull(t.getEndOfPeriod(),"after complete, endOfPeriod should be null");
 	}
+
+	@Test(groups = { "model" } , description = "peculiarDates/excludedDates")
+	public void verifyPeculiarDates()
+	{
+		Timetable t = new Timetable();
+		Assert.assertEquals(t.getPeculiarDates().size(),0,"timetable should not have peculiarDates");
+		Assert.assertEquals(t.getExcludedDates().size(),0,"timetable should not have excludedDates");
+
+		Calendar c = Calendar.getInstance();
+		c.set(Calendar.YEAR,2013);
+		c.set(Calendar.MONTH,Calendar.FEBRUARY);
+		c.set(Calendar.DAY_OF_MONTH,4); // set to monday
+
+		t.addCalendarDay(new CalendarDay(new Date(c.getTimeInMillis()), true));
+		c.add(Calendar.DATE, 1);
+		t.addCalendarDay(new CalendarDay(new Date(c.getTimeInMillis()), false));
+		c.add(Calendar.DATE, 1);
+		t.addCalendarDay(new CalendarDay(new Date(c.getTimeInMillis()), true));
+		c.add(Calendar.DATE, 1);
+		t.addCalendarDay(new CalendarDay(new Date(c.getTimeInMillis()), false));
+		c.add(Calendar.DATE, 1);
+		t.addCalendarDay(new CalendarDay(new Date(c.getTimeInMillis()), true));
+
+		Assert.assertEquals(t.getPeculiarDates().size(),3,"timetable should have peculiarDates");
+		Assert.assertEquals(t.getExcludedDates().size(),2,"timetable should have excludedDates");
+	}
+
+	@Test(groups = { "model" } , description = "effectivePeriods")
+	public void verifyRealPeriods()
+	{
+		Timetable t = new Timetable();
+		Assert.assertEquals(t.getPeriods().size(),0,"timetable should not have periods");
+		Assert.assertEquals(t.getEffectivePeriods().size(),0,"timetable should not have effectivePeriods");
+
+		Calendar c = Calendar.getInstance();
+		c.set(Calendar.YEAR,2013);
+		c.set(Calendar.MONTH,Calendar.FEBRUARY);
+		c.set(Calendar.DAY_OF_MONTH,4); // set to monday
+
+		Date firstMonday = new Date(c.getTimeInMillis());
+		c.add(Calendar.DATE, 1);
+		Date firstTuesday = new Date(c.getTimeInMillis());
+		c.add(Calendar.DATE, 1);
+		Date firstWednesday = new Date(c.getTimeInMillis());
+		c.add(Calendar.DATE, 1);
+		Date firstThursday = new Date(c.getTimeInMillis());
+		c.add(Calendar.DATE, 1);
+		Date firstFriday = new Date(c.getTimeInMillis());
+		
+		t.addPeriod(new Period(firstMonday,firstFriday));
+		Assert.assertEquals(t.getEffectivePeriods().size(),1,"timetable should have effectivePeriod");
+		
+		t.addCalendarDay(new CalendarDay(firstWednesday, false));
+		Assert.assertEquals(t.getEffectivePeriods().size(),2,"timetable should have effectivePeriods");
+		Assert.assertEquals(t.getPeriods().size(),1,"timetable should have periods preserved");
+		
+		List<Period> periods = t.getEffectivePeriods();
+		Assert.assertEquals(periods.get(0).getStartDate(),firstMonday,"firstPeriod should start on first day");
+		Assert.assertEquals(periods.get(0).getEndDate(),firstTuesday,"firstPeriod should end a day before excluded");
+		Assert.assertEquals(periods.get(1).getStartDate(),firstThursday,"lastPeriod should start a day after excluded");
+		Assert.assertEquals(periods.get(1).getEndDate(),firstFriday,"lastPeriod should end on last day");
+		
+	}
+	
 
 
 

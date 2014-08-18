@@ -31,19 +31,19 @@
     </DayType>
   </dayTypes>
   <!--- === Day assignments ==== -->
-  #if ( $timetable.calendarDays && $timetable.calendarDays.size() > 0 )
+  #if ( $timetable.peculiarDates.size() > 0 )
   <operatingDays>
-    #foreach( $day in $timetable.calendarDays )
-    <OperatingDay version="any" id="${timetable.objectIdPrefix()}:OperatingDay:${timetable.objectIdSuffix()}D${date.format($shortDateFormat, ${day.getDate()})}">
-      <CalendarDate>$date.format($shortDateFormat, ${day.getDate()})</CalendarDate>
+    #foreach( $day in $timetable.peculiarDates )
+    <OperatingDay version="any" id="${timetable.objectIdPrefix()}:OperatingDay:${timetable.objectIdSuffix()}D${date.format($shortDateFormat, ${day})}">
+      <CalendarDate>$date.format($shortDateFormat, ${day})</CalendarDate>
     </OperatingDay>
     #end		
   </operatingDays>  
   #end		
   <!--- === Period assignments ==== -->
-  #if ( $timetable.periods && $timetable.periods.size() > 0 )
+  #if ( $timetable.effectivePeriods.size() > 0 )
   <operatingPeriods>
-    #foreach( $period in $timetable.periods )
+    #foreach( $period in $timetable.effectivePeriods )
     <OperatingPeriod version="any" id="${timetable.objectIdPrefix()}:OperatingPeriod:${timetable.objectIdSuffix()}S${date.format($shortDateFormat, $period.startDate)}E${date.format($shortDateFormat, $period.endDate)}">
       <FromDate>$date.format($dateTimeFormat, $period.startDate)</FromDate>
       <ToDate>$date.format($dateTimeFormat, $period.endDate)</ToDate>
@@ -53,15 +53,15 @@
   #end		
   <!--- === Day Type assignments ==== -->
   <dayTypeAssignments>
-    #foreach( $period in $timetable.periods )
+    #foreach( $period in $timetable.effectivePeriods )
     <DayTypeAssignment version="any">
       <OperatingPeriodRef ref="${timetable.objectIdPrefix()}:OperatingPeriod:${timetable.objectIdSuffix()}S${date.format($shortDateFormat, $period.startDate)}E${date.format($shortDateFormat, $period.endDate)}"/>
       <DayTypeRef version="$timetable.objectVersion" ref="$modelTranslator.netexId( $timetable)"/>
     </DayTypeAssignment>
     #end		
-    #foreach( $day in $timetable.calendarDays )
+    #foreach( $day in $timetable.peculiarDates )
     <DayTypeAssignment version="any">
-      <OperatingDayRef ref="${timetable.objectIdPrefix()}:OperatingDay:${timetable.objectIdSuffix()}D${date.format($shortDateFormat, ${day.getDate()})}"/>
+      <OperatingDayRef ref="${timetable.objectIdPrefix()}:OperatingDay:${timetable.objectIdSuffix()}D${date.format($shortDateFormat, ${day})}"/>
       <DayTypeRef version="$timetable.objectVersion" ref="$modelTranslator.netexId( $timetable)"/>
     </DayTypeAssignment>
     #end

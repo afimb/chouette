@@ -16,8 +16,6 @@ import fr.certu.chouette.model.neptune.type.DayTypeEnum;
 
 public class TimetableProducer extends AbstractJaxbNeptuneProducer<TimetableType, Timetable> 
 {
-
-	private static final long ONE_DAY = 3600000*24;
 	
 	@Override
 	public TimetableType produce(Timetable timetable) 
@@ -29,48 +27,17 @@ public class TimetableProducer extends AbstractJaxbNeptuneProducer<TimetableType
 
 		castorTimetable.setComment(getNotEmptyString(timetable.getComment()));
 		castorTimetable.setVersion(timetable.getVersion());
-		ArrayList<Period> periods = new ArrayList<Period>(timetable.getPeriods());
 
-		for(CalendarDay calendarDay : timetable.getCalendarDays())
+		for(Date peculiarDay : timetable.getPeculiarDates())
 		{
-			if(calendarDay != null)
+			if(peculiarDay != null)
 			{
-				if (calendarDay.getIncluded())
-				{
-					castorTimetable.getCalendarDay().add(toCalendar(calendarDay.getDate()));
-				}
-				else
-				{
-					Date aDay = calendarDay.getDate();
-					// reduce or split periods around excluded date
-					for (ListIterator<Period> iterator = periods.listIterator(); iterator
-							.hasNext();) 
-					{
-						Period period = iterator.next();
-						if (period.getStartDate().equals(aDay))
-						{
-							period.getStartDate().setTime(period.getStartDate().getTime()+ONE_DAY);
-							if (period.getStartDate().after(period.getEndDate())) iterator.remove();
-						}
-						else if (period.getEndDate().equals(aDay))
-						{
-							period.getEndDate().setTime(period.getEndDate().getTime()+ONE_DAY);							
-							if (period.getStartDate().after(period.getEndDate())) iterator.remove();
-						}
-						else if (period.contains(aDay))
-						{
-							// split period
-							Period before = new Period(period.getStartDate(),new Date(aDay.getTime()-ONE_DAY));
-							period.setStartDate(new Date(aDay.getTime()+ONE_DAY));
-							iterator.add(before);
-						}
-						
-					}
-				}
+				
+					castorTimetable.getCalendarDay().add(toCalendar(peculiarDay));
 			}
 		}
 
-		for(Period period : periods)
+		for(Period period : timetable.getEffectivePeriods())
 		{
 			if(period != null)
 			{
