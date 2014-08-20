@@ -41,6 +41,8 @@ public abstract class NeptuneLocalizedObject extends NeptuneIdentifiedObject
    public static final String LATITUDE = "latitude";
    public static final String LONGLAT_TYPE = "longLatType";
    public static final String COUNTRY_CODE = "countryCode";
+   public static final String ZIP_CODE = "zipCode";
+   public static final String CITY_NAME = "cityName";
    public static final String STREET_NAME = "streetName";
    public static final String X = "x";
    public static final String Y = "y";
@@ -80,6 +82,14 @@ public abstract class NeptuneLocalizedObject extends NeptuneIdentifiedObject
    @Getter
    @Column(name = "country_code")
    private String countryCode;
+
+   @Getter
+   @Column(name = "zip_code")
+   private String zipCode;
+
+   @Getter
+   @Column(name = "city_name")
+   private String cityName;
 
    @Getter
    @Column(name = "street_name")
@@ -144,6 +154,10 @@ public abstract class NeptuneLocalizedObject extends NeptuneIdentifiedObject
          sb.append("\n").append(indent).append("  streetName = ").append(streetName);
       if (countryCode != null && !countryCode.isEmpty())
          sb.append("\n").append(indent).append("  countryCode = ").append(countryCode);
+      if (zipCode != null && !zipCode.isEmpty())
+          sb.append("\n").append(indent).append("  zipCode = ").append(zipCode);
+      if (cityName != null && !cityName.isEmpty())
+          sb.append("\n").append(indent).append("  cityName = ").append(cityName);
       sb.append("\n").append(indent).append("  longLatType = ").append(longLatType);
       sb.append("\n").append(indent).append("  latitude = ").append(latitude);
       sb.append("\n").append(indent).append("  longitude = ").append(longitude);

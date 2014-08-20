@@ -323,7 +323,6 @@ public class GeographicService implements IGeographicService
 	 * @see fr.certu.chouette.service.geographic.IGeographicService#convertToProjection()
 	 */
 	@Override
-	@Deprecated
 	public void convertToProjection() 
 	{
 		// build filter on projected point x or y nulls and latitude and longitude not nulls

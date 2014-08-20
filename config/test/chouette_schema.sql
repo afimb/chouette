@@ -109,7 +109,9 @@ CREATE TABLE access_points (
     lift_availability boolean,
     mobility_restricted_suitability boolean,
     stairs_availability boolean,
-    stop_area_id bigint
+    stop_area_id bigint,
+    zip_code character varying(255),
+    city_name character varying(255)
 );
 
 
@@ -690,7 +692,9 @@ CREATE TABLE stop_areas (
     mobility_restricted_suitability boolean,
     stairs_availability boolean,
     lift_availability boolean,
-    int_user_needs integer
+    int_user_needs integer,
+    zip_code character varying(255),
+    city_name character varying(255)
 );
 
 
