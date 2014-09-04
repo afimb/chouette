@@ -41,8 +41,10 @@ import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.dao.IDaoTemplate;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.manager.INeptuneManager;
+import fr.certu.chouette.model.neptune.AccessPoint;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
+import fr.certu.chouette.model.neptune.NeptuneLocalizedObject;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
@@ -96,7 +98,6 @@ public class ImportCommand extends AbstractCommand
 		boolean save = true;
 		List<Long> savedIds = new ArrayList<Long>();
 
-		INeptuneManager<NeptuneIdentifiedObject> manager = managers.get("line");
 		// check if import exists and accept unzip before call
 		Long importId = Long.valueOf(getSimpleString(parameters,"id"));
 		if (!importDao.exists(importId))
@@ -144,6 +145,15 @@ public class ImportCommand extends AbstractCommand
 
 		boolean zipped = (inputFile.toLowerCase().endsWith(".zip"));
 
+		String objectType = getTypefromGuiType(options.getString("references_type"),"line");
+		
+		INeptuneManager<NeptuneIdentifiedObject> manager = managers.get(objectType);
+		if (manager == null) 
+		{
+			log.error("import unknown object type "+objectType);
+			return 1;
+		}
+		
 		try
 		{
 			List<FormatDescription> formats = manager.getImportFormats(null);
@@ -207,7 +217,7 @@ public class ImportCommand extends AbstractCommand
 				}
 				if (beans != null && !beans.isEmpty())
 				{
-					log.info("imported Lines "+beans.size());
+					log.info("imported items "+beans.size());
 					if (save)
 					{
 						saveBeans(manager, beans, savedIds, importReport);
@@ -466,14 +476,17 @@ public class ImportCommand extends AbstractCommand
 		{
 			if (bean instanceof Line)
 			{
-				Line line = (Line) bean;
-				checkProjection(line);
+				checkProjection((Line) bean);
+			}
+			else if (bean instanceof StopArea)
+			{
+				checkProjection((StopArea) bean);
 			}
 			List<NeptuneIdentifiedObject> oneBean = new ArrayList<NeptuneIdentifiedObject>();
 			oneBean.add(bean);
 			try
 			{
-				log.info("save  Line "+bean.getName());
+				log.info("save "+bean.getClass().getSimpleName()+""+bean.getName());
 				manager.saveAll(null, oneBean, true, true);
 				GuiReportItem item = new GuiReportItem(GuiReportItem.KEY.SAVE_OK,Report.STATE.OK,bean.getName());
 				importReport.addItem(item);
@@ -505,7 +518,7 @@ public class ImportCommand extends AbstractCommand
 
 	private void saveImportReports(EntityManager session,ImportTask importTask, Report ireport, Report vreport) 
 	{
-		// log.info("import report = "+ireport.toJSON().toString(3));
+		log.info("import report = "+ireport.toJSON().toString(3));
 		ImportReportToJSONConverter converter = new ImportReportToJSONConverter(ireport);
 
 		if (importTask.getCompilanceCheckTask() != null)
@@ -560,6 +573,23 @@ public class ImportCommand extends AbstractCommand
 			geographicService.convertToWGS84(area);
 		}
 		checkProjection(area.getParent());
+		if (area.getAccessPoints() != null)
+		{
+			for (AccessPoint accessPoint : area.getAccessPoints()) 
+			{
+				checkProjection(accessPoint);
+			}
+		}
+
+	}
+
+	private void checkProjection(AccessPoint accessPoint)
+	{
+		if (accessPoint == null) return;
+		if (accessPoint.hasProjection() && !accessPoint.hasCoordinates())
+		{
+			geographicService.convertToWGS84(accessPoint);
+		}
 
 	}
 

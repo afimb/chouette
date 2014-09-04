@@ -71,6 +71,34 @@ public class ImportReportToJSONConverter
 				lineCount++;
 				lineReports.add(item);
 			}
+			if (key.equals(ExchangeReportItem.KEY.ROUTE_COUNT.name())) 
+			{
+				routeCount+=Integer.valueOf(item.getMessageArgs().get(0).toString());
+			}
+			if (key.equals(ExchangeReportItem.KEY.JOURNEY_PATTERN_COUNT.name())) 
+			{
+				journeyPatternCount+=Integer.valueOf(item.getMessageArgs().get(0).toString());
+			}
+			if (key.equals(ExchangeReportItem.KEY.VEHICLE_JOURNEY_COUNT.name())) 
+			{
+				vehicleJourneyCount+=Integer.valueOf(item.getMessageArgs().get(0).toString());
+			}
+			if (key.equals(ExchangeReportItem.KEY.STOP_AREA_COUNT.name())) 
+			{
+				stopAreaCount+=Integer.valueOf(item.getMessageArgs().get(0).toString());
+			}
+			if (key.equals(ExchangeReportItem.KEY.CONNECTION_LINK_COUNT.name())) 
+			{
+				connectionLinkCount+=Integer.valueOf(item.getMessageArgs().get(0).toString());
+			}
+			if (key.equals(ExchangeReportItem.KEY.ACCES_POINT_COUNT.name())) 
+			{
+				accessPointCount+=Integer.valueOf(item.getMessageArgs().get(0).toString());
+			}
+			if (key.equals(ExchangeReportItem.KEY.TIME_TABLE_COUNT.name())) 
+			{
+				timeTableCount+=Integer.valueOf(item.getMessageArgs().get(0).toString());
+			}
 			if (item.hasItems()) parseItems(item,1);
 		}
 	}

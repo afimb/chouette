@@ -208,94 +208,9 @@ public class NeptuneConverter
 
 		// stopareas
 		List<StopArea> commercials = new ArrayList<StopArea>();
-		List<StopArea> bps = new ArrayList<StopArea>();
-		Map<String, StopArea> mapStopAreasByStopId = new HashMap<String, StopArea>();
-		Set<String> stopAreaOidSet = new HashSet<String>();
-		logger.info("process stopArea :" + data.getStops().size());
-		for (GtfsStop gtfsStop : data.getStops().getAll())
-		{
-			StopArea area = stopAreaProducer.produce(gtfsStop, report);
-			if (mapStopAreasByStopId.containsKey(gtfsStop.getStopId()))
-			{
-				ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.DUPLICATE_ID,Report.STATE.WARNING,"Stops.txt",gtfsStop.getFileLineNumber(),gtfsStop.getStopId());
-				report.addItem(item);
-				logger.error("duplicate stop id "+gtfsStop.getStopId());
-			}
-			else
-			{
-				mapStopAreasByStopId.put(gtfsStop.getStopId(), area) ;
-				if (area.getAreaType().equals(ChouetteAreaEnum.CommercialStopPoint))
-				{
-					commercials.add(area);
-				}
-				else
-				{
-					bps.add(area);
-				}
-				if (stopAreaOidSet.contains(area.getObjectId()))
-				{
-					ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.DUPLICATE_ID,Report.STATE.WARNING,"stops.txt",gtfsStop.getFileLineNumber(),area.getObjectId());
-					report.addItem(item);
-					logger.error("duplicate stop object id "+area.getObjectId());
-				}
-				else
-				{
-					stopAreaOidSet.add(area.getObjectId());
-				}
-			}
-		}
-		data.getStops().clear();
-		// connect bps to parents
-		LimitedExchangeReportItem stopReport = new LimitedExchangeReportItem(LimitedExchangeReportItem.KEY.STOP_ANALYSE, Report.STATE.OK);
-		for (StopArea bp : bps) 
-		{
-
-			if (bp.getParentObjectId() != null)
-			{
-				StopArea parent = mapStopAreasByStopId.get(bp.getParentObjectId());
-				if (parent == null)
-				{
-					ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE,Report.STATE.WARNING,"StopArea",bp.getName(),"parent",bp.getParentObjectId());
-					stopReport.addItem(item);
-					logger.warn("stop "+bp.getName()+" has missing parent station "+bp.getParentObjectId());
-					bp.setParentObjectId(null);
-				}
-				else if (!parent.getAreaType().equals(ChouetteAreaEnum.CommercialStopPoint))
-				{
-					ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE,Report.STATE.WARNING,"StopArea",bp.getName(),"parent",bp.getParentObjectId());
-					stopReport.addItem(item);
-					logger.error("stop "+bp.getName()+" has wrong parent station type "+bp.getParentObjectId());
-					bp.setParentObjectId(null);
-				}
-				else
-				{
-					bp.setParent(parent);
-					parent.addContainedStopArea(bp);
-					// logger.info("stop "+bp.getName()+" connected to "+parent.getName());					
-				}
-			}
-		}
-
-		if (!stopReport.getStatus().equals(Report.STATE.OK))
-		{
-			report.addItem(stopReport);
-		}
-
-		// add commercials
 		List<StopArea> areas = new ArrayList<StopArea>();
-		if (maxDistanceForCommercialStop > 0)
-		{
-			if (commercials.size() > 0)
-			{
-				// TODO check if all bps has csp
-				logger.warn("GTFS has already commercial stops");
-			}
-			List<StopArea> generatedCommercials = commercialStopGenerator.createCommercialStopPoints(bps,
-					maxDistanceForCommercialStop, ignoreLastWord, ignoreEndCharacters);
-			commercials.addAll(generatedCommercials);
-		}
-		areas.addAll(bps);
-		areas.addAll(commercials);
+		Map<String, StopArea> mapStopAreasByStopId = new HashMap<String, StopArea>();
+		convertStopAreas(data,report, areas,commercials,mapStopAreasByStopId,maxDistanceForCommercialStop, ignoreLastWord, ignoreEndCharacters);
 		assembler.setStopAreas(areas);
 
 		Map<String, Timetable> mapTimetableByServiceId = convertTimetables(
@@ -508,7 +423,6 @@ public class NeptuneConverter
 			}
 		}
 		// clean missing waybacks
-
 		for (Iterator<Route> iterator = routes.iterator(); iterator.hasNext();)
 		{
 			Route route = iterator.next();
@@ -522,13 +436,32 @@ public class NeptuneConverter
 			}
 		}
 
-
 		assembler.setVehicleJourneys(vehicleJourneys);
 		assembler.setStopPoints(stopPoints);
 		assembler.setJourneyPatterns(journeyPatterns);
 
 		// ConnectionLinks
 		List<ConnectionLink> links = new ArrayList<ConnectionLink>();
+		convertConnectionLink(data, report, links, commercials,
+				mapStopAreasByStopId, maxDistanceForConnectionLink);
+		assembler.setConnectionLinks(links);
+
+		return assembler;
+	}
+
+
+	/**
+	 * @param data
+	 * @param report
+	 * @param links
+	 * @param commercials
+	 * @param mapStopAreasByStopId
+	 * @param maxDistanceForConnectionLink
+	 */
+	public void convertConnectionLink(GtfsData data, Report report,
+			List<ConnectionLink> links, List<StopArea> commercials,
+			Map<String, StopArea> mapStopAreasByStopId,
+			double maxDistanceForConnectionLink) {
 		List<ConnectionLink> excludedLinks = new ArrayList<ConnectionLink>();
 		LimitedExchangeReportItem connectionLinkReport = new LimitedExchangeReportItem(LimitedExchangeReportItem.KEY.CONNECTION_LINK_ANALYSE, Report.STATE.OK);
 		for (GtfsTransfer transfer : data.getTransfers().getAll())
@@ -582,9 +515,99 @@ public class NeptuneConverter
 			links.addAll(connectionLinkGenerator.createConnectionLinks(commercials,
 					maxDistanceForConnectionLink,links,excludedLinks));
 		}
-		assembler.setConnectionLinks(links);
+	}
 
-		return assembler;
+
+	public void convertStopAreas(GtfsData data, Report report, List<StopArea> areas,
+			List<StopArea> commercials,
+			Map<String, StopArea> mapStopAreasByStopId, double maxDistanceForCommercialStop, boolean ignoreLastWord, int ignoreEndCharacters) 
+	{
+	List<StopArea> bps = new ArrayList<StopArea>();
+	Set<String> stopAreaOidSet = new HashSet<String>();
+	logger.info("process stopArea :" + data.getStops().size());
+	for (GtfsStop gtfsStop : data.getStops().getAll())
+	{
+		StopArea area = stopAreaProducer.produce(gtfsStop, report);
+		if (mapStopAreasByStopId.containsKey(gtfsStop.getStopId()))
+		{
+			ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.DUPLICATE_ID,Report.STATE.WARNING,"Stops.txt",gtfsStop.getFileLineNumber(),gtfsStop.getStopId());
+			report.addItem(item);
+			logger.error("duplicate stop id "+gtfsStop.getStopId());
+		}
+		else
+		{
+			mapStopAreasByStopId.put(gtfsStop.getStopId(), area) ;
+			if (area.getAreaType().equals(ChouetteAreaEnum.CommercialStopPoint))
+			{
+				commercials.add(area);
+			}
+			else
+			{
+				bps.add(area);
+			}
+			if (stopAreaOidSet.contains(area.getObjectId()))
+			{
+				ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.DUPLICATE_ID,Report.STATE.WARNING,"stops.txt",gtfsStop.getFileLineNumber(),area.getObjectId());
+				report.addItem(item);
+				logger.error("duplicate stop object id "+area.getObjectId());
+			}
+			else
+			{
+				stopAreaOidSet.add(area.getObjectId());
+			}
+		}
+	}
+	data.getStops().clear();
+	// connect bps to parents
+	LimitedExchangeReportItem stopReport = new LimitedExchangeReportItem(LimitedExchangeReportItem.KEY.STOP_ANALYSE, Report.STATE.OK);
+	for (StopArea bp : bps) 
+	{
+
+		if (bp.getParentObjectId() != null)
+		{
+			StopArea parent = mapStopAreasByStopId.get(bp.getParentObjectId());
+			if (parent == null)
+			{
+				ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE,Report.STATE.WARNING,"StopArea",bp.getName(),"parent",bp.getParentObjectId());
+				stopReport.addItem(item);
+				logger.warn("stop "+bp.getName()+" has missing parent station "+bp.getParentObjectId());
+				bp.setParentObjectId(null);
+			}
+			else if (!parent.getAreaType().equals(ChouetteAreaEnum.CommercialStopPoint))
+			{
+				ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE,Report.STATE.WARNING,"StopArea",bp.getName(),"parent",bp.getParentObjectId());
+				stopReport.addItem(item);
+				logger.error("stop "+bp.getName()+" has wrong parent station type "+bp.getParentObjectId());
+				bp.setParentObjectId(null);
+			}
+			else
+			{
+				bp.setParent(parent);
+				parent.addContainedStopArea(bp);
+				// logger.info("stop "+bp.getName()+" connected to "+parent.getName());					
+			}
+		}
+	}
+
+	if (!stopReport.getStatus().equals(Report.STATE.OK))
+	{
+		report.addItem(stopReport);
+	}
+
+	// add commercials
+	if (maxDistanceForCommercialStop > 0)
+	{
+		if (commercials.size() > 0)
+		{
+			// TODO check if all bps has csp
+			logger.warn("GTFS has already commercial stops");
+		}
+		List<StopArea> generatedCommercials = commercialStopGenerator.createCommercialStopPoints(bps,
+				maxDistanceForCommercialStop, ignoreLastWord, ignoreEndCharacters);
+		commercials.addAll(generatedCommercials);
+	}
+	areas.addAll(bps);
+	areas.addAll(commercials);
 	}
 
 

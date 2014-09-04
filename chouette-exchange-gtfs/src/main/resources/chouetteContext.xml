@@ -23,6 +23,16 @@
 		</property>
 
 	</bean>
+	<bean id="GtfsStopAreaPluginInjector" class="fr.certu.chouette.plugin.PluginInjector"
+		factory-method="createStopAreaPluginInjector">
+		<property name="manager" ref="stopAreaManager" />
+		<property name="importPlugins">
+			<list>
+				<ref bean="GtfsStopAreaImport" />
+			</list>
+		</property>
+	</bean>
+	<!-- 
 	<bean id="GtfsConnectionLinkPluginInjector" class="fr.certu.chouette.plugin.PluginInjector"
 		factory-method="createConnectionLinkPluginInjector">
 		<property name="manager" ref="connectionLinkManager" />
@@ -32,5 +42,5 @@
 			</list>
 		</property>
 	</bean>
-
+    --> 
 </beans>

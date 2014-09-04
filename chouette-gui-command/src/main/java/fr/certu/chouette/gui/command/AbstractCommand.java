@@ -10,5 +10,15 @@ import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 public abstract class AbstractCommand 
 {
 	@Getter @Setter protected Map<String,INeptuneManager<NeptuneIdentifiedObject>> managers;
+	
+	protected String getTypefromGuiType(String guiType,String defaultType)
+	{
+		if (guiType == null || guiType.isEmpty())
+		{
+			return defaultType;
+		}
+		String[] token = guiType.toLowerCase().split(":");
+		return token[token.length -1];
+	}
 
 }
