@@ -150,6 +150,36 @@ public class ImportTest extends AbstractTestNGSpringContextTests
       compilanceDao.detach(compilanceCheckTask);
       return importTask;
    }
+   @SuppressWarnings("unchecked")
+   private ImportTask prepareImportGtfsTaskForStopAreas(Referential ref, String filename)
+   {
+      IDaoTemplate<ImportTask> importDao = (IDaoTemplate<ImportTask>) applicationContext.getBean("importDao");
+      IDaoTemplate<CompilanceCheckTask> compilanceDao = (IDaoTemplate<CompilanceCheckTask>) applicationContext
+            .getBean("validationDao");
+      ImportTask importTask = new ImportTask();
+      importTask.setReferential(ref);
+      JSONObject parameters = new JSONObject();
+      parameters.put("format", "Gtfs");
+      parameters.put("references_type", "Chouette::StopArea");
+      parameters.put("file_path", filename);
+      parameters.put("no_save", true);
+      parameters.put("object_id_prefix", "NINOXE");
+      parameters.put("max_distance_for_connection_link", "0");
+      parameters.put("max_distance_for_commercial", "0");
+      parameters.put("ignore_end_chars", "0");
+      parameters.put("ignore_last_word", "0");
+      importTask.setParameters(parameters);
+      CompilanceCheckTask compilanceCheckTask = new CompilanceCheckTask();
+      importTask.setCompilanceCheckTask(compilanceCheckTask);
+      compilanceCheckTask.setImportTask(importTask);
+      compilanceCheckTask.setReferential(ref);
+      importDao.save(importTask);
+      compilanceDao.save(compilanceCheckTask);
+      flush();
+      importDao.detach(importTask);
+      compilanceDao.detach(compilanceCheckTask);
+      return importTask;
+   }
 
    @SuppressWarnings("unchecked")
    private ImportTask prepareImportNetexTask(Referential ref, String filename)
@@ -212,6 +242,34 @@ public class ImportTest extends AbstractTestNGSpringContextTests
       Command.initDao();
       Referential ref = prepareReferential();
       ImportTask importTask = prepareImportGtfsTask(ref, "src/test/data/gtfs.zip");
+      Command command = (Command) applicationContext.getBean("Command");
+      String[] args = { "-c", "import", "-id", Long.toString(importTask.getId()) };
+      int code = command.execute(args);
+      Command.closeDao();
+      // check results
+      Command.initDao();
+      IDaoTemplate<ImportTask> importDao = (IDaoTemplate<ImportTask>) applicationContext.getBean("importDao");
+      importTask = importDao.get(importTask.getId());
+      Assert.assertEquals(importTask.getStatus(), "processing", "importTask should have status as processing");
+      Assert.assertNotNull(importTask.getResult(), "importTask should have a result");
+      JSONObject result = importTask.getResult();
+      Reporter.log("import result = " + result.toString(2));
+      Assert.assertNotNull(importTask.getCompilanceCheckTask(), "importTask should have a compilanceCheckTask");
+      CompilanceCheckTask compilanceCheckTask = importTask.getCompilanceCheckTask();
+      Assert.assertNotNull(compilanceCheckTask.getResults(), "compilanceCheckTask should have results list");
+      Assert.assertTrue(compilanceCheckTask.getResults().isEmpty(), "compilanceCheckTask should not have results");
+      Assert.assertEquals(code, 0, "command should return 0");
+
+   }
+   
+   @SuppressWarnings("unchecked")
+   @Test(groups = { "imports" }, description = "import should load stops and transferts GTFS file")
+   public void verifyImportGtfsForStopAreas()
+   {
+      Command.setBeanFactory(applicationContext);
+      Command.initDao();
+      Referential ref = prepareReferential();
+      ImportTask importTask = prepareImportGtfsTaskForStopAreas(ref, "src/test/data/gtfs.zip");
       Command command = (Command) applicationContext.getBean("Command");
       String[] args = { "-c", "import", "-id", Long.toString(importTask.getId()) };
       int code = command.execute(args);

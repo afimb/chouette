@@ -145,7 +145,8 @@ public class ImportCommand extends AbstractCommand
 
 		boolean zipped = (inputFile.toLowerCase().endsWith(".zip"));
 
-		String objectType = getTypefromGuiType(options.getString("references_type"),"line");
+		
+		String objectType = getTypefromGuiType(options.optString("references_type"),"line");
 		
 		INeptuneManager<NeptuneIdentifiedObject> manager = managers.get(objectType);
 		if (manager == null) 
