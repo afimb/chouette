@@ -41,9 +41,7 @@ public class GtfsImportConnectionLinkPlugin implements IImportPlugin<ConnectionL
 	
 	/**
 	 * Connection producer from GtfsTransfer
-	 */
-	@Setter private ConnectionLinkProducer connectionLinkProducer ;
-	
+	 */	
 	@Setter private INeptuneManager<StopArea> stopAreaManager;
 
 
@@ -195,7 +193,7 @@ public class GtfsImportConnectionLinkPlugin implements IImportPlugin<ConnectionL
 			}
 			if (ok)
 			{
-				System.gc();
+				ConnectionLinkProducer connectionLinkProducer = new ConnectionLinkProducer();
 				List<StopArea> areas = stopAreaManager.getAll(null);
 				
 				if (areas.size() == 0)

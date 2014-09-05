@@ -1,7 +1,5 @@
 package fr.certu.chouette.exchange.gtfs.export.producer;
 
-import java.util.List;
-
 import org.apache.log4j.Logger;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -15,7 +13,6 @@ import fr.certu.chouette.exchange.gtfs.model.GtfsRoute;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.Route;
-import fr.certu.chouette.plugin.report.ReportItem;
 
 @ContextConfiguration(locations={"classpath:testContext.xml","classpath*:chouetteContext.xml"})
 public class GtfsExportRouteProducerTests extends AbstractTestNGSpringContextTests
@@ -25,7 +22,7 @@ public class GtfsExportRouteProducerTests extends AbstractTestNGSpringContextTes
 	@Test (groups = {"Producers"}, description = "test route with both short and long name" )
 	public void verifyRouteProducerWithShortAndLongName() throws ChouetteException 
 	{
-		GtfsRouteProducer producer = (GtfsRouteProducer) applicationContext.getBean("GtfsRouteExportProducer");
+		GtfsRouteProducer producer = new GtfsRouteProducer();
 
 		GtfsReport report = new GtfsReport(GtfsReport.KEY.EXPORT);
 		Route neptuneObject = new Route();
@@ -55,7 +52,7 @@ public class GtfsExportRouteProducerTests extends AbstractTestNGSpringContextTes
 	@Test (groups = {"Producers"}, description = "test route with no short name" )
 	public void verifyRouteProducerWithNoShortName() throws ChouetteException 
 	{
-		GtfsRouteProducer producer = (GtfsRouteProducer) applicationContext.getBean("GtfsRouteExportProducer");
+		GtfsRouteProducer producer = new GtfsRouteProducer();
 
 		GtfsReport report = new GtfsReport(GtfsReport.KEY.EXPORT);
 		Route neptuneObject = new Route();
@@ -84,7 +81,7 @@ public class GtfsExportRouteProducerTests extends AbstractTestNGSpringContextTes
 	@Test (groups = {"Producers"}, description = "test route with no long name" )
 	public void verifyRouteProducerWithNoLongName() throws ChouetteException 
 	{
-		GtfsRouteProducer producer = (GtfsRouteProducer) applicationContext.getBean("GtfsRouteExportProducer");
+		GtfsRouteProducer producer = new GtfsRouteProducer();
 
 		GtfsReport report = new GtfsReport(GtfsReport.KEY.EXPORT);
 		Route neptuneObject = new Route();
@@ -112,7 +109,7 @@ public class GtfsExportRouteProducerTests extends AbstractTestNGSpringContextTes
 	@Test (groups = {"Producers"}, description = "test route with no name" )
 	public void verifyRouteProducerWithNoName() throws ChouetteException 
 	{
-		GtfsRouteProducer producer = (GtfsRouteProducer) applicationContext.getBean("GtfsRouteExportProducer");
+		GtfsRouteProducer producer = new GtfsRouteProducer();
 
 		GtfsReport report = new GtfsReport(GtfsReport.KEY.EXPORT);
 		Route neptuneObject = new Route();
@@ -135,15 +132,15 @@ public class GtfsExportRouteProducerTests extends AbstractTestNGSpringContextTes
 
 
 
-	private void printItems(String indent,List<ReportItem> items) 
-	{
-		if (items == null) return;
-		for (ReportItem item : items) 
-		{
-			System.out.println(indent+item.getStatus().name()+" : "+item.getLocalizedMessage());
-			printItems(indent+"   ",item.getItems());
-		}
-
-	}
+//	private void printItems(String indent,List<ReportItem> items) 
+//	{
+//		if (items == null) return;
+//		for (ReportItem item : items) 
+//		{
+//			System.out.println(indent+item.getStatus().name()+" : "+item.getLocalizedMessage());
+//			printItems(indent+"   ",item.getItems());
+//		}
+//
+//	}
 
 }

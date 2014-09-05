@@ -5,35 +5,10 @@
    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
 	default-init-method="init">
 
-	<bean id="GtfsAgencyExportProducer"
-		class="fr.certu.chouette.exchange.gtfs.exporter.producer.GtfsAgencyProducer" />
-	<bean id="GtfsCalendarExportProducer"
-		class="fr.certu.chouette.exchange.gtfs.exporter.producer.GtfsCalendarProducer" />
-	<bean id="GtfsRouteExportProducer"
-		class="fr.certu.chouette.exchange.gtfs.exporter.producer.GtfsRouteProducer" />
-	<bean id="GtfsStopExportProducer"
-		class="fr.certu.chouette.exchange.gtfs.exporter.producer.GtfsStopProducer" />
-	<bean id="GtfsTripExportProducer"
-		class="fr.certu.chouette.exchange.gtfs.exporter.producer.GtfsTripProducer" />
-	<bean id="GtfsTransferExportProducer"
-		class="fr.certu.chouette.exchange.gtfs.exporter.producer.GtfsTransferProducer" />
-
-	<bean id="GtfsDataExportProducer"
-		class="fr.certu.chouette.exchange.gtfs.exporter.GtfsDataProducer">
-		<property name="agencyProducer" ref="GtfsAgencyExportProducer" />
-		<property name="calendarProducer" ref="GtfsCalendarExportProducer" />
-		<property name="routeProducer" ref="GtfsRouteExportProducer" />
-		<property name="stopProducer" ref="GtfsStopExportProducer" />
-		<property name="tripProducer" ref="GtfsTripExportProducer" />
-		<property name="transferProducer" ref="GtfsTransferExportProducer" />
-	</bean>
-
 	<bean id="GtfsLineExport"
 		class="fr.certu.chouette.exchange.gtfs.exporter.GtfsLineExportPlugin">
-		<property name="gtfsDataProducer" ref="GtfsDataExportProducer" />
 	</bean>
 	<bean id="GtfsStopAreaExport"
 		class="fr.certu.chouette.exchange.gtfs.exporter.GtfsStopAreaExportPlugin">
-		<property name="gtfsDataProducer" ref="GtfsDataExportProducer" />
 	</bean>
 </beans>

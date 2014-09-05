@@ -20,8 +20,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import lombok.Setter;
-
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
 
@@ -72,62 +70,6 @@ public class NeptuneConverter
 {
 	private static Logger                logger = Logger.getLogger(NeptuneConverter.class);
 
-	/**
-	 * Line producer from GtfsRoute
-	 */
-	@Setter
-	private LineProducer                 lineProducer;
-	/**
-	 * Route producer from GtfsRoute
-	 */
-	@Setter
-	private RouteProducer                routeProducer;
-	/**
-	 * PTNetwork producer from base name
-	 */
-	@Setter
-	private PTNetworkProducer            networkProducer;
-	/**
-	 * Company producer from GtfsAgency
-	 */
-	@Setter
-	private CompanyProducer              companyProducer;
-	/**
-	 * VehicleJourney producer from GtfsTrip
-	 */
-	@Setter
-	private VehicleJourneyProducer       vehicleJourneyProducer;
-	/**
-	 * VehicleJourneyAtStop producer from GtfsStopTime
-	 */
-	@Setter
-	private VehicleJourneyAtStopProducer vehicleJourneyAtStopProducer;
-	/**
-	 * StopArea (BoardingPosition) producer from GtfsStop
-	 */
-	@Setter
-	private StopAreaProducer             stopAreaProducer;
-	/**
-	 * Timetable producer from GtfsCalendar and CtfsCalendarDate
-	 */
-	@Setter
-	private TimetableProducer            timetableProducer;
-
-	/**
-	 * Connection producer from GtfsTransfer
-	 */
-	@Setter private ConnectionLinkProducer connectionLinkProducer ;
-
-	/**
-	 * CommercialStopPoint generator
-	 */
-	@Setter
-	private CommercialStopGenerator      commercialStopGenerator;
-	/**
-	 * ConnectionLink generator
-	 */
-	@Setter
-	private ConnectionLinkGenerator      connectionLinkGenerator;
 
 	/**
 	 * convert Gfts model to Chouette model
@@ -151,9 +93,13 @@ public class NeptuneConverter
 	public ModelAssembler convert(boolean optimizeMemory, String prefix, String incrementalPrefix, GtfsData data, double maxDistanceForCommercialStop,
 			boolean ignoreLastWord, int ignoreEndCharacters, double maxDistanceForConnectionLink, boolean mergeRouteByShortName, Report report)
 	{
+		LineProducer lineProducer = new LineProducer();
+		RouteProducer routeProducer = new RouteProducer();
 		DbVehicleJourneyFactory vjFactory = new DbVehicleJourneyFactory(prefix,optimizeMemory);
-		vehicleJourneyProducer.setFactory(vjFactory);
-		vehicleJourneyAtStopProducer.setFactory(vjFactory);
+		VehicleJourneyProducer vehicleJourneyProducer =  new VehicleJourneyProducer();
+		VehicleJourneyAtStopProducer vehicleJourneyAtStopProducer = new VehicleJourneyAtStopProducer();
+		vehicleJourneyProducer .setFactory(vjFactory);
+		vehicleJourneyAtStopProducer .setFactory(vjFactory);
 		ModelAssembler assembler = new ModelAssembler();
 		AbstractModelProducer.setPrefix(prefix);
 		AbstractModelProducer.setIncrementalPrefix(incrementalPrefix);
@@ -179,6 +125,7 @@ public class NeptuneConverter
 			Line line = mapLineByRouteName.get(routeName);
 			if (line == null)
 			{
+
 				line = lineProducer.produce(gtfsRoute, report);
 				mapLineByRouteName.put(routeName, line);
 				lines.add(line);
@@ -462,6 +409,8 @@ public class NeptuneConverter
 			List<ConnectionLink> links, List<StopArea> commercials,
 			Map<String, StopArea> mapStopAreasByStopId,
 			double maxDistanceForConnectionLink) {
+		ConnectionLinkProducer connectionLinkProducer = new ConnectionLinkProducer();
+		ConnectionLinkGenerator connectionLinkGenerator = new ConnectionLinkGenerator();
 		List<ConnectionLink> excludedLinks = new ArrayList<ConnectionLink>();
 		LimitedExchangeReportItem connectionLinkReport = new LimitedExchangeReportItem(LimitedExchangeReportItem.KEY.CONNECTION_LINK_ANALYSE, Report.STATE.OK);
 		for (GtfsTransfer transfer : data.getTransfers().getAll())
@@ -522,92 +471,94 @@ public class NeptuneConverter
 			List<StopArea> commercials,
 			Map<String, StopArea> mapStopAreasByStopId, double maxDistanceForCommercialStop, boolean ignoreLastWord, int ignoreEndCharacters) 
 	{
-	List<StopArea> bps = new ArrayList<StopArea>();
-	Set<String> stopAreaOidSet = new HashSet<String>();
-	logger.info("process stopArea :" + data.getStops().size());
-	for (GtfsStop gtfsStop : data.getStops().getAll())
-	{
-		StopArea area = stopAreaProducer.produce(gtfsStop, report);
-		if (mapStopAreasByStopId.containsKey(gtfsStop.getStopId()))
+		StopAreaProducer stopAreaProducer = new StopAreaProducer();
+		CommercialStopGenerator commercialStopGenerator = new CommercialStopGenerator();
+		List<StopArea> bps = new ArrayList<StopArea>();
+		Set<String> stopAreaOidSet = new HashSet<String>();
+		logger.info("process stopArea :" + data.getStops().size());
+		for (GtfsStop gtfsStop : data.getStops().getAll())
 		{
-			ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.DUPLICATE_ID,Report.STATE.WARNING,"Stops.txt",gtfsStop.getFileLineNumber(),gtfsStop.getStopId());
-			report.addItem(item);
-			logger.error("duplicate stop id "+gtfsStop.getStopId());
-		}
-		else
-		{
-			mapStopAreasByStopId.put(gtfsStop.getStopId(), area) ;
-			if (area.getAreaType().equals(ChouetteAreaEnum.CommercialStopPoint))
+			StopArea area = stopAreaProducer.produce(gtfsStop, report);
+			if (mapStopAreasByStopId.containsKey(gtfsStop.getStopId()))
 			{
-				commercials.add(area);
-			}
-			else
-			{
-				bps.add(area);
-			}
-			if (stopAreaOidSet.contains(area.getObjectId()))
-			{
-				ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.DUPLICATE_ID,Report.STATE.WARNING,"stops.txt",gtfsStop.getFileLineNumber(),area.getObjectId());
+				ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.DUPLICATE_ID,Report.STATE.WARNING,"Stops.txt",gtfsStop.getFileLineNumber(),gtfsStop.getStopId());
 				report.addItem(item);
-				logger.error("duplicate stop object id "+area.getObjectId());
+				logger.error("duplicate stop id "+gtfsStop.getStopId());
 			}
 			else
 			{
-				stopAreaOidSet.add(area.getObjectId());
+				mapStopAreasByStopId.put(gtfsStop.getStopId(), area) ;
+				if (area.getAreaType().equals(ChouetteAreaEnum.CommercialStopPoint))
+				{
+					commercials.add(area);
+				}
+				else
+				{
+					bps.add(area);
+				}
+				if (stopAreaOidSet.contains(area.getObjectId()))
+				{
+					ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.DUPLICATE_ID,Report.STATE.WARNING,"stops.txt",gtfsStop.getFileLineNumber(),area.getObjectId());
+					report.addItem(item);
+					logger.error("duplicate stop object id "+area.getObjectId());
+				}
+				else
+				{
+					stopAreaOidSet.add(area.getObjectId());
+				}
 			}
 		}
-	}
-	data.getStops().clear();
-	// connect bps to parents
-	LimitedExchangeReportItem stopReport = new LimitedExchangeReportItem(LimitedExchangeReportItem.KEY.STOP_ANALYSE, Report.STATE.OK);
-	for (StopArea bp : bps) 
-	{
-
-		if (bp.getParentObjectId() != null)
+		data.getStops().clear();
+		// connect bps to parents
+		LimitedExchangeReportItem stopReport = new LimitedExchangeReportItem(LimitedExchangeReportItem.KEY.STOP_ANALYSE, Report.STATE.OK);
+		for (StopArea bp : bps) 
 		{
-			StopArea parent = mapStopAreasByStopId.get(bp.getParentObjectId());
-			if (parent == null)
+
+			if (bp.getParentObjectId() != null)
 			{
-				ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE,Report.STATE.WARNING,"StopArea",bp.getName(),"parent",bp.getParentObjectId());
-				stopReport.addItem(item);
-				logger.warn("stop "+bp.getName()+" has missing parent station "+bp.getParentObjectId());
-				bp.setParentObjectId(null);
-			}
-			else if (!parent.getAreaType().equals(ChouetteAreaEnum.CommercialStopPoint))
-			{
-				ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE,Report.STATE.WARNING,"StopArea",bp.getName(),"parent",bp.getParentObjectId());
-				stopReport.addItem(item);
-				logger.error("stop "+bp.getName()+" has wrong parent station type "+bp.getParentObjectId());
-				bp.setParentObjectId(null);
-			}
-			else
-			{
-				bp.setParent(parent);
-				parent.addContainedStopArea(bp);
-				// logger.info("stop "+bp.getName()+" connected to "+parent.getName());					
+				StopArea parent = mapStopAreasByStopId.get(bp.getParentObjectId());
+				if (parent == null)
+				{
+					ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE,Report.STATE.WARNING,"StopArea",bp.getName(),"parent",bp.getParentObjectId());
+					stopReport.addItem(item);
+					logger.warn("stop "+bp.getName()+" has missing parent station "+bp.getParentObjectId());
+					bp.setParentObjectId(null);
+				}
+				else if (!parent.getAreaType().equals(ChouetteAreaEnum.CommercialStopPoint))
+				{
+					ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.BAD_REFERENCE,Report.STATE.WARNING,"StopArea",bp.getName(),"parent",bp.getParentObjectId());
+					stopReport.addItem(item);
+					logger.error("stop "+bp.getName()+" has wrong parent station type "+bp.getParentObjectId());
+					bp.setParentObjectId(null);
+				}
+				else
+				{
+					bp.setParent(parent);
+					parent.addContainedStopArea(bp);
+					// logger.info("stop "+bp.getName()+" connected to "+parent.getName());					
+				}
 			}
 		}
-	}
 
-	if (!stopReport.getStatus().equals(Report.STATE.OK))
-	{
-		report.addItem(stopReport);
-	}
-
-	// add commercials
-	if (maxDistanceForCommercialStop > 0)
-	{
-		if (commercials.size() > 0)
+		if (!stopReport.getStatus().equals(Report.STATE.OK))
 		{
-			// TODO check if all bps has csp
-			logger.warn("GTFS has already commercial stops");
+			report.addItem(stopReport);
 		}
-		List<StopArea> generatedCommercials = commercialStopGenerator.createCommercialStopPoints(bps,
-				maxDistanceForCommercialStop, ignoreLastWord, ignoreEndCharacters);
-		commercials.addAll(generatedCommercials);
-	}
-	areas.addAll(bps);
-	areas.addAll(commercials);
+
+		// add commercials
+		if (maxDistanceForCommercialStop > 0)
+		{
+			if (commercials.size() > 0)
+			{
+				// TODO check if all bps has csp
+				logger.warn("GTFS has already commercial stops");
+			}
+			List<StopArea> generatedCommercials = commercialStopGenerator.createCommercialStopPoints(bps,
+					maxDistanceForCommercialStop, ignoreLastWord, ignoreEndCharacters);
+			commercials.addAll(generatedCommercials);
+		}
+		areas.addAll(bps);
+		areas.addAll(commercials);
 	}
 
 
@@ -619,6 +570,7 @@ public class NeptuneConverter
 	 */
 	private Map<String, Timetable> convertTimetables(GtfsData data,
 			ModelAssembler assembler, Report report) {
+		TimetableProducer timetableProducer = new TimetableProducer();
 		// Timetables
 		List<Timetable> timetables = new ArrayList<Timetable>();
 		Map<String, Timetable> mapTimetableByServiceId = new HashMap<String, Timetable>();
@@ -650,6 +602,7 @@ public class NeptuneConverter
 	 */
 	private void convertCompanies(GtfsData data, ModelAssembler assembler,
 			Report report) {
+		CompanyProducer companyProducer = new CompanyProducer();
 		// Companies
 		List<Company> companies = new ArrayList<Company>();
 		for (GtfsAgency gtfsAgency : data.getAgencies().getAll())
@@ -670,6 +623,7 @@ public class NeptuneConverter
 	private void convertNetworks(GtfsData data, ModelAssembler assembler,
 			Report report) 
 	{
+		PTNetworkProducer networkProducer = new PTNetworkProducer();
 		// PTnetwork
 		PTNetwork network = networkProducer.produce(data.getNetwork(), report);
 		assembler.setPtNetwork(network);
@@ -843,17 +797,17 @@ public class NeptuneConverter
 		}
 		return;
 	}
-	
+
 	private static long dayOffest = 24*3600000; // one day in milliseconds
-	
+
 	private Timetable cloneTimetableAfterMidnight(Timetable source)
 	{
 		Timetable result = new Timetable();
 		result.setObjectId(source.getObjectId()+"_after_midnight");
-        result.setComment(source.getComment()+" (after midnight)");
-        result.setVersion(source.getVersion());
-        for (DayTypeEnum dayType : source.getDayTypes()) 
-        {
+		result.setComment(source.getComment()+" (after midnight)");
+		result.setVersion(source.getVersion());
+		for (DayTypeEnum dayType : source.getDayTypes()) 
+		{
 			switch (dayType) {
 			case Monday:
 				result.addDayType(DayTypeEnum.Tuesday);
@@ -886,21 +840,21 @@ public class NeptuneConverter
 		{
 			result.addPeriod(clonePeriodAfterMidnight(period));
 		}
-		
+
 		for (CalendarDay calendarDay : source.getCalendarDays()) 
 		{
 			result.addCalendarDay(cloneDateAfterMidnight(calendarDay));
 		}
 		return result;
 	}
-	
+
 	private Period clonePeriodAfterMidnight(Period source)
 	{
 		Period result = new Period();
-		
+
 		result.setStartDate(new Date(source.getStartDate().getTime()+dayOffest));
 		result.setEndDate(new Date(source.getEndDate().getTime()+dayOffest));
-		
+
 		return result;
 	}
 
@@ -908,7 +862,7 @@ public class NeptuneConverter
 	{
 		return new Date(source.getTime()+dayOffest);
 	}
-	
+
 	private CalendarDay cloneDateAfterMidnight(CalendarDay source)
 	{
 		return new CalendarDay(cloneDateAfterMidnight(source.getDate()),source.getIncluded());

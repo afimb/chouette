@@ -2,6 +2,7 @@ package fr.certu.chouette.exchange.gtfs.importer.producer;
 
 import org.apache.log4j.Logger;
 
+import fr.certu.chouette.exchange.gtfs.model.GtfsExtendedStop;
 import fr.certu.chouette.exchange.gtfs.model.GtfsStop;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
@@ -55,6 +56,15 @@ public class StopAreaProducer extends AbstractModelProducer<StopArea,GtfsStop>
 		// RegistrationNumber optional
 		String[] token = stopArea.getObjectId().split(":");
 		stopArea.setRegistrationNumber(token[2]);
+		
+		// extension
+		if (gtfsStop instanceof GtfsExtendedStop)
+		{
+			GtfsExtendedStop ext = (GtfsExtendedStop) gtfsStop;
+			stopArea.setStreetName(ext.getAddressLine());
+			stopArea.setCityName(ext.getLocality());
+			stopArea.setZipCode(ext.getPostalCode());
+		} 
 
 		return stopArea;
 	}

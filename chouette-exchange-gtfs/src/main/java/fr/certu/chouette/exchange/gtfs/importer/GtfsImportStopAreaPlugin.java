@@ -37,7 +37,6 @@ public class GtfsImportStopAreaPlugin implements IImportPlugin<StopArea>
 {
 	private static final Logger logger = Logger.getLogger(GtfsImportStopAreaPlugin.class);
 	private FormatDescription description;
-	@Setter private NeptuneConverter converter; 
 	@Setter private String dbDirectory = "/tmp";
 
 	private List<String>        allowedExtensions = Arrays.asList(new String[] { "zip" });
@@ -279,6 +278,7 @@ public class GtfsImportStopAreaPlugin implements IImportPlugin<StopArea>
 			}
 			if (ok)
 			{
+				NeptuneConverter converter = new NeptuneConverter();
 				AbstractModelProducer.setPrefix(objectIdPrefix);
 				AbstractModelProducer.setIncrementalPrefix(incrementalPrefix);
 

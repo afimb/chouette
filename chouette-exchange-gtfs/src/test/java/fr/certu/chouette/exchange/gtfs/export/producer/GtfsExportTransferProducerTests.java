@@ -1,7 +1,6 @@
 package fr.certu.chouette.exchange.gtfs.export.producer;
 
 import java.sql.Time;
-import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.test.context.ContextConfiguration;
@@ -16,7 +15,6 @@ import fr.certu.chouette.exchange.gtfs.model.GtfsTransfer;
 import fr.certu.chouette.exchange.gtfs.model.GtfsTransfer.Type;
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.StopArea;
-import fr.certu.chouette.plugin.report.ReportItem;
 
 @ContextConfiguration(locations={"classpath:testContext.xml","classpath*:chouetteContext.xml"})
 public class GtfsExportTransferProducerTests extends AbstractTestNGSpringContextTests
@@ -28,7 +26,7 @@ public class GtfsExportTransferProducerTests extends AbstractTestNGSpringContext
 	{
 		
 
-		GtfsTransferProducer producer = (GtfsTransferProducer) applicationContext.getBean("GtfsTransferExportProducer");
+		GtfsTransferProducer producer = new GtfsTransferProducer();
 
 		GtfsReport report = new GtfsReport(GtfsReport.KEY.EXPORT);
 		ConnectionLink neptuneObject = new ConnectionLink();
@@ -59,7 +57,7 @@ public class GtfsExportTransferProducerTests extends AbstractTestNGSpringContext
 	{
 		
 
-		GtfsTransferProducer producer = (GtfsTransferProducer) applicationContext.getBean("GtfsTransferExportProducer");
+		GtfsTransferProducer producer = new GtfsTransferProducer();
 
 		GtfsReport report = new GtfsReport(GtfsReport.KEY.EXPORT);
 		ConnectionLink neptuneObject = new ConnectionLink();
@@ -86,15 +84,15 @@ public class GtfsExportTransferProducerTests extends AbstractTestNGSpringContext
 	}
 
 
-	private void printItems(String indent,List<ReportItem> items) 
-	{
-		if (items == null) return;
-		for (ReportItem item : items) 
-		{
-			System.out.println(indent+item.getStatus().name()+" : "+item.getLocalizedMessage());
-			printItems(indent+"   ",item.getItems());
-		}
-
-	}
+//	private void printItems(String indent,List<ReportItem> items) 
+//	{
+//		if (items == null) return;
+//		for (ReportItem item : items) 
+//		{
+//			System.out.println(indent+item.getStatus().name()+" : "+item.getLocalizedMessage());
+//			printItems(indent+"   ",item.getItems());
+//		}
+//
+//	}
 
 }

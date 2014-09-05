@@ -16,9 +16,11 @@ import lombok.Setter;
 import org.apache.log4j.Logger;
 
 import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.exchange.gtfs.exporter.producer.GtfsExtendedStopProducer;
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReportItem;
 import fr.certu.chouette.exchange.gtfs.model.GtfsBean;
+import fr.certu.chouette.exchange.gtfs.model.GtfsExtendedStop;
 import fr.certu.chouette.exchange.gtfs.model.GtfsStop;
 import fr.certu.chouette.exchange.gtfs.model.GtfsTransfer;
 import fr.certu.chouette.model.neptune.StopArea;
@@ -44,11 +46,6 @@ public class GtfsStopAreaExportPlugin implements IExportPlugin<StopArea>
 	 */
 	private FormatDescription   description;
 
-	/**
-	 * data converter from neptune objects to Gtfs objects
-	 */
-	@Setter
-	private GtfsDataProducer    gtfsDataProducer;
 
 	/**
 	 * build a GtfsLineExportPlugin and fill API description
@@ -162,6 +159,7 @@ public class GtfsStopAreaExportPlugin implements IExportPlugin<StopArea>
 		GtfsData gtfsData = null;
 		try
 		{
+			GtfsDataProducer gtfsDataProducer = new GtfsDataProducer();
 			gtfsData = gtfsDataProducer.produceStops(neptuneData, report);
 		}
 		catch (GtfsExportException e)
@@ -180,7 +178,7 @@ public class GtfsStopAreaExportPlugin implements IExportPlugin<StopArea>
 
 		try
 		{
-			writeFile(out, gtfsData.getStops(), "stops.txt", GtfsStop.header,report);
+			writeFile(out, gtfsData.getStops(), "stops.txt", GtfsExtendedStop.header,report);
 			writeFile(out, gtfsData.getTransfer(), "transfers.txt", GtfsTransfer.header,report);
 		}
 		catch (GtfsExportException e)

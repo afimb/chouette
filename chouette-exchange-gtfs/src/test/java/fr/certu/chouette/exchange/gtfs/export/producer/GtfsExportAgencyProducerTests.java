@@ -1,7 +1,5 @@
 package fr.certu.chouette.exchange.gtfs.export.producer;
 
-import java.util.List;
-
 import org.apache.log4j.Logger;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -13,7 +11,6 @@ import fr.certu.chouette.exchange.gtfs.exporter.producer.GtfsAgencyProducer;
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
 import fr.certu.chouette.exchange.gtfs.model.GtfsAgency;
 import fr.certu.chouette.model.neptune.Company;
-import fr.certu.chouette.plugin.report.ReportItem;
 
 @ContextConfiguration(locations={"classpath:testContext.xml","classpath*:chouetteContext.xml"})
 public class GtfsExportAgencyProducerTests extends AbstractTestNGSpringContextTests
@@ -24,7 +21,7 @@ public class GtfsExportAgencyProducerTests extends AbstractTestNGSpringContextTe
 	public void verifyAgencyProducer1() throws ChouetteException 
 	{
 
-		GtfsAgencyProducer producer = (GtfsAgencyProducer) applicationContext.getBean("GtfsAgencyExportProducer");
+		GtfsAgencyProducer producer = new GtfsAgencyProducer();
 
 		GtfsReport report = new GtfsReport(GtfsReport.KEY.EXPORT);
 		Company neptuneObject = new Company();
@@ -51,7 +48,7 @@ public class GtfsExportAgencyProducerTests extends AbstractTestNGSpringContextTe
 	public void verifyAgencyProducer2() throws ChouetteException 
 	{
 
-		GtfsAgencyProducer producer = (GtfsAgencyProducer) applicationContext.getBean("GtfsAgencyExportProducer");
+		GtfsAgencyProducer producer = new GtfsAgencyProducer();
 
 		GtfsReport report = new GtfsReport(GtfsReport.KEY.EXPORT);
 		Company neptuneObject = new Company();
@@ -75,7 +72,7 @@ public class GtfsExportAgencyProducerTests extends AbstractTestNGSpringContextTe
 	public void verifyAgencyProducer3() throws ChouetteException 
 	{
 
-		GtfsAgencyProducer producer = (GtfsAgencyProducer) applicationContext.getBean("GtfsAgencyExportProducer");
+		GtfsAgencyProducer producer = new GtfsAgencyProducer();
 
 		GtfsReport report = new GtfsReport(GtfsReport.KEY.EXPORT);
 		Company neptuneObject = new Company();

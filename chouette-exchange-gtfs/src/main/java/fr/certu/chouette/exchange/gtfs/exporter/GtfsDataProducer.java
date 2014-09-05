@@ -13,14 +13,19 @@ import java.util.TimeZone;
 
 import org.apache.log4j.Logger;
 
-import lombok.Setter;
-
-
+import fr.certu.chouette.exchange.gtfs.exporter.producer.GtfsAgencyProducer;
+import fr.certu.chouette.exchange.gtfs.exporter.producer.GtfsCalendarProducer;
+import fr.certu.chouette.exchange.gtfs.exporter.producer.GtfsExtendedStopProducer;
+import fr.certu.chouette.exchange.gtfs.exporter.producer.GtfsRouteProducer;
+import fr.certu.chouette.exchange.gtfs.exporter.producer.GtfsStopProducer;
+import fr.certu.chouette.exchange.gtfs.exporter.producer.GtfsTransferProducer;
+import fr.certu.chouette.exchange.gtfs.exporter.producer.GtfsTripProducer;
 import fr.certu.chouette.exchange.gtfs.exporter.producer.IGtfsProducer;
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReportItem;
 import fr.certu.chouette.exchange.gtfs.model.GtfsAgency;
 import fr.certu.chouette.exchange.gtfs.model.GtfsCalendar;
+import fr.certu.chouette.exchange.gtfs.model.GtfsExtendedStop;
 import fr.certu.chouette.exchange.gtfs.model.GtfsRoute;
 import fr.certu.chouette.exchange.gtfs.model.GtfsStop;
 import fr.certu.chouette.exchange.gtfs.model.GtfsTransfer;
@@ -40,16 +45,16 @@ import fr.certu.chouette.plugin.report.Report.STATE;
 public class GtfsDataProducer
 {
    private static final Logger logger = Logger.getLogger(GtfsDataProducer.class);
-   @Setter private IGtfsProducer<GtfsCalendar,Timetable> calendarProducer;
-   @Setter private IGtfsProducer<GtfsTrip,VehicleJourney> tripProducer;
-   @Setter private IGtfsProducer<GtfsAgency,Company> agencyProducer;
-   @Setter private IGtfsProducer<GtfsStop,StopArea> stopProducer;
-   @Setter private IGtfsProducer<GtfsRoute,Route> routeProducer;
-   @Setter private IGtfsProducer<GtfsTransfer,ConnectionLink> transferProducer;
 
    public GtfsData produceAll(NeptuneData neptuneData,TimeZone timeZone, GtfsReport report) throws GtfsExportException
    {
       GtfsData gtfsData = new GtfsData();
+      IGtfsProducer<GtfsCalendar,Timetable> calendarProducer = new GtfsCalendarProducer();
+      IGtfsProducer<GtfsTrip,VehicleJourney> tripProducer = new GtfsTripProducer();
+      IGtfsProducer<GtfsAgency,Company> agencyProducer = new GtfsAgencyProducer();
+      IGtfsProducer<GtfsStop,StopArea> stopProducer = new GtfsStopProducer();
+      IGtfsProducer<GtfsRoute,Route> routeProducer = new GtfsRouteProducer();
+      IGtfsProducer<GtfsTransfer,ConnectionLink> transferProducer = new GtfsTransferProducer();
       // add calendars
       gtfsData.getCalendars().addAll(calendarProducer.produceAll(neptuneData.getTimetables(),report));
       // add calendarDates and remove calendar without period
@@ -140,7 +145,8 @@ public class GtfsDataProducer
    public GtfsData produceStops(NeptuneData neptuneData, GtfsReport report) throws GtfsExportException
    {
       GtfsData gtfsData = new GtfsData();
-
+      IGtfsProducer<GtfsExtendedStop, StopArea> stopProducer = new GtfsExtendedStopProducer();
+      IGtfsProducer<GtfsTransfer,ConnectionLink> transferProducer = new GtfsTransferProducer();
 
       // add stops
       gtfsData.getStops().addAll(stopProducer.produceAll(neptuneData.getPhysicalStops(),report));

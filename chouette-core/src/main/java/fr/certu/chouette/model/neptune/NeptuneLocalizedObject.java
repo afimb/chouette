@@ -98,6 +98,31 @@ public abstract class NeptuneLocalizedObject extends NeptuneIdentifiedObject
    
    public abstract String getName();
 
+   public void setZipCode(String value)
+   {
+      if (value != null && value.length() > 255)
+      {
+         log.warn("zipCode too long, truncated " + value);
+         zipCode = value.substring(0, 255);
+      }
+      else
+      {
+    	  zipCode = value;
+      }
+   }
+
+   public void setCityName(String value)
+   {
+      if (value != null && value.length() > 255)
+      {
+         log.warn("cityName too long, truncated " + value);
+         cityName = value.substring(0, 255);
+      }
+      else
+      {
+    	  cityName = value;
+      }
+   }
 
    public void setStreetName(String value)
    {

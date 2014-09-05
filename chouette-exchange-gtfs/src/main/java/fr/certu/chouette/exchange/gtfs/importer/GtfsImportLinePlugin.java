@@ -38,7 +38,6 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 	private static final Logger logger = Logger.getLogger(GtfsImportLinePlugin.class);
 	private FormatDescription description;
 
-	@Setter private NeptuneConverter converter; 
 	@Setter private String dbDirectory = "/tmp";
 
 	private List<String>        allowedExtensions = Arrays.asList(new String[] { "zip" });
@@ -483,7 +482,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
 
 			if (ok && data.connect(report))
 			{
-				System.gc();
+				NeptuneConverter converter = new NeptuneConverter();
 				ModelAssembler assembler = converter.convert(optimizeMemory, objectIdPrefix, incrementalPrefix, data, maxDistanceForCommercialStop,  ignoreLastWord,  ignoreEndCharacters, maxDistanceForConnectionLink, mergeRouteByShortName,report);
 				assembler.connect(report);
 				if (colorPath != null) produceColorFile(colorPath,data,assembler);

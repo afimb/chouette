@@ -52,12 +52,6 @@ public class GtfsLineExportPlugin implements IExportPlugin<Line>
 	 */
 	private FormatDescription   description;
 
-	// @Setter private String defaultLineColor = "ff007f00";
-	/**
-	 * data converter from neptune objects to Gtfs objects
-	 */
-	@Setter
-	private GtfsDataProducer    gtfsDataProducer;
 
 	/**
 	 * build a GtfsLineExportPlugin and fill API description
@@ -211,6 +205,7 @@ public class GtfsLineExportPlugin implements IExportPlugin<Line>
 		GtfsData gtfsData = null;
 		try
 		{
+			GtfsDataProducer gtfsDataProducer = new GtfsDataProducer();
 			gtfsData = gtfsDataProducer.produceAll(neptuneData, timeZone,report);
 		}
 		catch (GtfsExportException e)

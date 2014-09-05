@@ -2,7 +2,6 @@ package fr.certu.chouette.exchange.gtfs.export.producer;
 
 import java.sql.Date;
 import java.util.Calendar;
-import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.springframework.test.context.ContextConfiguration;
@@ -20,7 +19,6 @@ import fr.certu.chouette.model.neptune.CalendarDay;
 import fr.certu.chouette.model.neptune.Period;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.type.DayTypeEnum;
-import fr.certu.chouette.plugin.report.ReportItem;
 
 @ContextConfiguration(locations={"classpath:testContext.xml","classpath*:chouetteContext.xml"})
 public class GtfsExportCalendarProducerTests extends AbstractTestNGSpringContextTests
@@ -36,7 +34,7 @@ public class GtfsExportCalendarProducerTests extends AbstractTestNGSpringContext
 		c.set(Calendar.DAY_OF_MONTH, 1);
 		c.set(Calendar.HOUR_OF_DAY,12);
 
-		GtfsCalendarProducer producer = (GtfsCalendarProducer) applicationContext.getBean("GtfsCalendarExportProducer");
+		GtfsCalendarProducer producer = new GtfsCalendarProducer();
 
 		GtfsReport report = new GtfsReport(GtfsReport.KEY.EXPORT);
 		Timetable neptuneObject = new Timetable();
@@ -76,7 +74,7 @@ public class GtfsExportCalendarProducerTests extends AbstractTestNGSpringContext
 		c.set(Calendar.DAY_OF_MONTH, 1);
 		c.set(Calendar.HOUR_OF_DAY,12);
 
-		GtfsCalendarProducer producer = (GtfsCalendarProducer) applicationContext.getBean("GtfsCalendarExportProducer");
+		GtfsCalendarProducer producer = new GtfsCalendarProducer();
 
 		GtfsReport report = new GtfsReport(GtfsReport.KEY.EXPORT);
 		Timetable neptuneObject = new Timetable();
@@ -127,7 +125,7 @@ public class GtfsExportCalendarProducerTests extends AbstractTestNGSpringContext
 		c.set(Calendar.DAY_OF_MONTH, 1);
 		c.set(Calendar.HOUR_OF_DAY,12);
 
-		GtfsCalendarProducer producer = (GtfsCalendarProducer) applicationContext.getBean("GtfsCalendarExportProducer");
+		GtfsCalendarProducer producer = new GtfsCalendarProducer();
 
 		GtfsReport report = new GtfsReport(GtfsReport.KEY.EXPORT);
 		Timetable neptuneObject = new Timetable();
@@ -189,7 +187,7 @@ public class GtfsExportCalendarProducerTests extends AbstractTestNGSpringContext
 		c.set(Calendar.DAY_OF_MONTH, 1);
 		c.set(Calendar.HOUR_OF_DAY,12);
 
-		GtfsCalendarProducer producer = (GtfsCalendarProducer) applicationContext.getBean("GtfsCalendarExportProducer");
+		GtfsCalendarProducer producer = new GtfsCalendarProducer();
 
 		GtfsReport report = new GtfsReport(GtfsReport.KEY.EXPORT);
 		Timetable neptuneObject = new Timetable();
@@ -257,7 +255,7 @@ public class GtfsExportCalendarProducerTests extends AbstractTestNGSpringContext
 		c.set(Calendar.DAY_OF_MONTH, 1);
 		c.set(Calendar.HOUR_OF_DAY,12);
 
-		GtfsCalendarProducer producer = (GtfsCalendarProducer) applicationContext.getBean("GtfsCalendarExportProducer");
+		GtfsCalendarProducer producer = new GtfsCalendarProducer();
 
 		GtfsReport report = new GtfsReport(GtfsReport.KEY.EXPORT);
 		Timetable neptuneObject = new Timetable();
@@ -327,15 +325,15 @@ public class GtfsExportCalendarProducerTests extends AbstractTestNGSpringContext
 		return tokens[2];
 	}
 
-	private void printItems(String indent,List<ReportItem> items) 
-	{
-		if (items == null) return;
-		for (ReportItem item : items) 
-		{
-			System.out.println(indent+item.getStatus().name()+" : "+item.getLocalizedMessage());
-			printItems(indent+"   ",item.getItems());
-		}
-
-	}
+//	private void printItems(String indent,List<ReportItem> items) 
+//	{
+//		if (items == null) return;
+//		for (ReportItem item : items) 
+//		{
+//			System.out.println(indent+item.getStatus().name()+" : "+item.getLocalizedMessage());
+//			printItems(indent+"   ",item.getItems());
+//		}
+//
+//	}
 
 }

@@ -12,5 +12,5 @@
       <package name="fr.certu.chouette.command.exportTest" >
       </package>
    </packages>
-  </test>
+</test>
 </suite>

@@ -33,16 +33,16 @@ public class GtfsStop extends GtfsBean
 	@Getter @Setter private URL        stopUrl       = null;
 	@Getter @Setter private int        locationType  = -1;
 	@Getter @Setter private String     parentStation = null;
+	
+	// extension active only when partial exchange on stop
 
 	public static final String header = "stop_id,stop_code,stop_name,stop_desc,stop_lat,stop_lon,location_type,parent_station";
 
 	public String getCSVLine() {
 		String csvLine = toCSVString(stopId) + ",";
-		if (stopCode != null)
-			csvLine += toCSVString(stopCode);
+		csvLine += toCSVString(stopCode);
 		csvLine += "," + toCSVString(stopName) + ",";
-		if (stopDesc != null)
-			csvLine += toCSVString(stopDesc);
+		csvLine += toCSVString(stopDesc);
 		csvLine += "," + stopLat + "," + stopLon + ",";
 //		if (zoneId != null)
 //			csvLine += zoneId;
