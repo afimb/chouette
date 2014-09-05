@@ -31,6 +31,11 @@
 				<ref bean="GtfsStopAreaImport" />
 			</list>
 		</property>
+		<property name="exportPlugins">
+			<list>
+				<ref bean="GtfsStopAreaExport" />
+			</list>
+		</property>
 	</bean>
 	<!-- 
 	<bean id="GtfsConnectionLinkPluginInjector" class="fr.certu.chouette.plugin.PluginInjector"

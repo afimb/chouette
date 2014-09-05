@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityManager;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -98,7 +100,7 @@ public class ExportCommand
 	 * @param parameters
 	 * @return 
 	 */
-	public int executeExport(
+	public int executeExport(EntityManager session,
 			INeptuneManager<NeptuneIdentifiedObject> manager,
 			Map<String, List<String>> parameters) 
 	{
@@ -118,6 +120,8 @@ public class ExportCommand
 		logger.info("  references type : "+guiExport.getReferencesType());
 		logger.info("  reference ids : "+guiExport.getReferenceIds());
 
+		startProcess(session,guiExport);
+		
 		Referential referential = guiExport.getReferential();
 		logger.info("Referential "+referential.getId());
 		logger.info("  name : "+referential.getName());
@@ -179,7 +183,7 @@ public class ExportCommand
 					parameters.put("filter", filter);
 				}
 
-				return executeExport(manager,parameters);
+				return executeExport(session,manager,parameters);
 
 			}
 
@@ -483,6 +487,15 @@ public class ExportCommand
 			}
 		}
 		return values;      
+	}
+
+	private void startProcess(EntityManager session,GuiExport guiExport) 
+	{
+		guiExport.setStatus("processing");
+		guiExport.setUpdatedAt(Calendar.getInstance().getTime());
+		exportDao.save(guiExport);
+		exportDao.flush();
+
 	}
 
 	private int saveExportReport(GuiExport export, String format,Report report,int position)

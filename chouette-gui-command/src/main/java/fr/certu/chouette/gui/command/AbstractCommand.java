@@ -18,7 +18,7 @@ public abstract class AbstractCommand
 			return defaultType;
 		}
 		String[] token = guiType.toLowerCase().split(":");
-		return token[token.length -1];
+		return token[token.length -1].replaceAll("_", "");
 	}
 
 }

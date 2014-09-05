@@ -109,5 +109,36 @@ public class ExportTest extends AbstractTestNGSpringContextTests
 	      Assert.assertTrue(f.exists(),"export file must exists");
 	      f.delete();
 	   }
+	   
+	   @SuppressWarnings("unchecked")
+	   @Test(groups = { "exports" }, description = "export should produce zip")
+	   public void verifyExportStopArea()
+	   {
+		   File f = new File("target/exp_Neptune_test.zip");
+		   if (f.exists()) f.delete();
+	      Command.setBeanFactory(applicationContext);
+	      Command.initDao();
+	      Referential ref = prepareReferential();
+	      GuiExport exportTask = prepareExportTask(ref);
+	      Command command = (Command) applicationContext.getBean("Command");
+	      String[] args = { "-c", "export", 
+	    		            "-exportid", Long.toString(exportTask.getId()),
+	    		            "-format", "GTFS",
+	    		            "-o", "stoparea",
+	    		            "-outputFile", f.getAbsolutePath()
+	    		            };
+	      int code = command.execute(args);
+	      Command.closeDao();
+	      // check results
+	      Command.initDao();
+	      IDaoTemplate<GuiExport> exportDao = (IDaoTemplate<GuiExport>) applicationContext.getBean("exportDao");
+	      exportTask = exportDao.get(exportTask.getId());
+	      // Assert.assertEquals(exportTask.getStatus(), "processing", "exportTask should have status as processing");
+	      Assert.assertNotNull(exportTask.getResults(), "exportTask should have a result list");
+	      Assert.assertFalse(exportTask.getResults().isEmpty(), "exportTask should have a non empty result");
+	      Assert.assertEquals(code, 0, "command should return 0");
+	      Assert.assertTrue(f.exists(),"export file must exists");
+	      f.delete();
+	   }
 
 }

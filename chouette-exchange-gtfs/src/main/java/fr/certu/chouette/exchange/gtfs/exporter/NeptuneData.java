@@ -26,6 +26,7 @@ import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
+import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 
 /**
  *
@@ -47,11 +48,11 @@ public class NeptuneData
 	Set<Company>         companies       = new HashSet<Company>();
 	@Getter 
 	Set<ConnectionLink>  connectionLinks = new HashSet<ConnectionLink>();
- 
+
 	/**
 	 * @param lines
 	 */
-	public void populate(List<Line> lines)
+	public void populateLines(List<Line> lines)
 	{
 		for (Line line : lines)
 		{
@@ -111,7 +112,49 @@ public class NeptuneData
 				iterator.remove();
 			}
 		} 
-		
+
+	}
+
+	public void populateStopAreas(List<StopArea> beans) 
+	{
+		for (StopArea area : beans)
+		{
+			area.complete();
+			if (area.getAreaType().equals(ChouetteAreaEnum.BoardingPosition) 
+					|| area.getAreaType().equals(ChouetteAreaEnum.Quay))   
+			{
+				if (area.hasCoordinates())
+				{
+					physicalStops.add(area);
+					if (area.getConnectionLinks() !=  null)
+						connectionLinks.addAll(area.getConnectionLinks());
+
+					if (area.getParent() != null && area.getParent().hasCoordinates())
+					{
+						commercialStops.add(area.getParent());
+						if (area.getParent().getConnectionLinks() !=  null)
+							connectionLinks.addAll(area.getParent().getConnectionLinks());
+					}
+				}
+			}
+
+		}
+		// remove incomplete connectionlinks
+		for (Iterator<ConnectionLink> iterator = connectionLinks.iterator(); iterator.hasNext();) 
+		{
+			ConnectionLink link = iterator.next();
+			if (!physicalStops.contains(link.getStartOfLink()) && !commercialStops.contains(link.getStartOfLink()))
+			{
+				logger.info("missing start link for "+link.getObjectId());
+				iterator.remove();
+			}
+			else if (!physicalStops.contains(link.getEndOfLink()) && !commercialStops.contains(link.getEndOfLink()))
+			{
+				logger.info("missing end link for "+link.getObjectId());
+				iterator.remove();
+			}
+		} 
+
 	}
 
 }

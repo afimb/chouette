@@ -8,7 +8,7 @@
       </package>
    </packages>
 </test>
-  <test name="ExportGTFSProducers" >
+ <!-- <test name="ExportGTFSProducers" >
     <packages>
       <package name="fr.certu.chouette.exchange.gtfs.export.producer" >
       </package>
@@ -20,5 +20,5 @@
       </package>
    </packages>
   </test>
-  
+  -->
 </suite>

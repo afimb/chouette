@@ -8,7 +8,6 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.TimeZone;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -19,17 +18,10 @@ import org.apache.log4j.Logger;
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReportItem;
-import fr.certu.chouette.exchange.gtfs.model.GtfsAgency;
 import fr.certu.chouette.exchange.gtfs.model.GtfsBean;
-import fr.certu.chouette.exchange.gtfs.model.GtfsCalendar;
-import fr.certu.chouette.exchange.gtfs.model.GtfsCalendarDate;
-import fr.certu.chouette.exchange.gtfs.model.GtfsFrequency;
-import fr.certu.chouette.exchange.gtfs.model.GtfsRoute;
 import fr.certu.chouette.exchange.gtfs.model.GtfsStop;
-import fr.certu.chouette.exchange.gtfs.model.GtfsStopTime;
 import fr.certu.chouette.exchange.gtfs.model.GtfsTransfer;
-import fr.certu.chouette.exchange.gtfs.model.GtfsTrip;
-import fr.certu.chouette.model.neptune.Line;
+import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.plugin.exchange.FormatDescription;
 import fr.certu.chouette.plugin.exchange.IExportPlugin;
 import fr.certu.chouette.plugin.exchange.ParameterDescription;
@@ -42,9 +34,9 @@ import fr.certu.chouette.plugin.report.ReportHolder;
 /**
  * export lines in GTFS GoogleTransit format
  */
-public class GtfsLineExportPlugin implements IExportPlugin<Line>
+public class GtfsStopAreaExportPlugin implements IExportPlugin<StopArea>
 {
-	private static final Logger logger       = Logger.getLogger(GtfsLineExportPlugin.class);
+	private static final Logger logger       = Logger.getLogger(GtfsStopAreaExportPlugin.class);
 	private static final String GTFS_CHARSET = "UTF-8";
 
 	/**
@@ -52,7 +44,6 @@ public class GtfsLineExportPlugin implements IExportPlugin<Line>
 	 */
 	private FormatDescription   description;
 
-	// @Setter private String defaultLineColor = "ff007f00";
 	/**
 	 * data converter from neptune objects to Gtfs objects
 	 */
@@ -62,7 +53,7 @@ public class GtfsLineExportPlugin implements IExportPlugin<Line>
 	/**
 	 * build a GtfsLineExportPlugin and fill API description
 	 */
-	public GtfsLineExportPlugin()
+	public GtfsStopAreaExportPlugin()
 	{
 		description = new FormatDescription(this.getClass().getName());
 		description.setName("GTFS");
@@ -73,35 +64,6 @@ public class GtfsLineExportPlugin implements IExportPlugin<Line>
 			param.setAllowedExtensions(Arrays.asList(new String[] { "zip" }));
 			params.add(param);
 		}
-		{
-			ParameterDescription param = new ParameterDescription("timeZone", ParameterDescription.TYPE.STRING, false,
-					true);
-			params.add(param);
-		}
-		// possible filter in future extension : 
-		// send only trips for a period, manage colors
-		// {
-		// ParameterDescription param = new ParameterDescription("startDate",
-		// ParameterDescription.TYPE.DATE, false, false);
-		// params.add(param);
-		// }
-		// {
-		// ParameterDescription param = new ParameterDescription("endDate",
-		// ParameterDescription.TYPE.FILEPATH, false, false);
-		// params.add(param);
-		// }
-		// manage lines colors : perhaps in Neptune Model
-		// {
-		// ParameterDescription param = new ParameterDescription("lineColor",
-		// ParameterDescription.TYPE.STRING, false, false);
-		// params.add(param);
-		// }
-		// {
-		// ParameterDescription param = new ParameterDescription("colorMap",
-		// ParameterDescription.TYPE.FILEPATH, false, false);
-		// param.setAllowedExtensions(Arrays.asList(new String[]{"txt","tmp"}));
-		// params.add(param);
-		// }
 		description.setParameterDescriptions(params);
 	}
 
@@ -124,18 +86,13 @@ public class GtfsLineExportPlugin implements IExportPlugin<Line>
 	 * java.util.List, fr.certu.chouette.plugin.report.ReportHolder)
 	 */
 	@Override
-	public void doExport(List<Line> beans, List<ParameterValue> parameters, ReportHolder reportHolder)
+	public void doExport(List<StopArea> beans, List<ParameterValue> parameters, ReportHolder reportHolder)
 			throws ChouetteException
 			{
 		GtfsReport report = new GtfsReport(GtfsReport.KEY.EXPORT);
 		report.updateStatus(Report.STATE.OK);
 		reportHolder.setReport(report);
 		String fileName = null;
-		TimeZone timeZone = null;
-		// Date startDate = null; // today ??
-		// Date endDate = null; // in ten years ??
-		// String lineColor = defaultLineColor;
-		// String colorMapFileName = null;
 
 		if (beans == null)
 		{
@@ -155,10 +112,6 @@ public class GtfsLineExportPlugin implements IExportPlugin<Line>
 				{
 					fileName = svalue.getFilepathValue();
 				}
-				else if (svalue.getName().equalsIgnoreCase("timeZone"))
-				{
-					timeZone = TimeZone.getTimeZone(svalue.getStringValue());
-				}
 				else
 				{
 					GtfsReportItem item = new GtfsReportItem(GtfsReportItem.KEY.UNKNOWN_PARAMETER, Report.STATE.ERROR,svalue.getName());
@@ -171,12 +124,6 @@ public class GtfsLineExportPlugin implements IExportPlugin<Line>
 		if (fileName == null)
 		{
 			GtfsReportItem item = new GtfsReportItem(GtfsReportItem.KEY.MISSING_PARAMETER, Report.STATE.ERROR,"outputFile");
-			report.addItem(item);
-			error = true;
-		}
-		if (timeZone == null)
-		{
-			GtfsReportItem item = new GtfsReportItem(GtfsReportItem.KEY.MISSING_PARAMETER, Report.STATE.ERROR,"timeZone");
 			report.addItem(item);
 			error = true;
 		}
@@ -206,12 +153,16 @@ public class GtfsLineExportPlugin implements IExportPlugin<Line>
 		}
 
 		NeptuneData neptuneData = new NeptuneData();
-		neptuneData.populateLines(beans);
+		neptuneData.populateStopAreas(beans);
+		
+		logger.info("export "+neptuneData.physicalStops.size()+" physical stops");
+		logger.info("export "+neptuneData.commercialStops.size()+" commercial stops");
+		logger.info("export "+neptuneData.connectionLinks.size()+" transfers");
 
 		GtfsData gtfsData = null;
 		try
 		{
-			gtfsData = gtfsDataProducer.produceAll(neptuneData, timeZone,report);
+			gtfsData = gtfsDataProducer.produceStops(neptuneData, report);
 		}
 		catch (GtfsExportException e)
 		{
@@ -229,19 +180,8 @@ public class GtfsLineExportPlugin implements IExportPlugin<Line>
 
 		try
 		{
-			writeFile(out, gtfsData.getAgencies(), "agency.txt", GtfsAgency.header,report);
 			writeFile(out, gtfsData.getStops(), "stops.txt", GtfsStop.header,report);
-			writeFile(out, gtfsData.getRoutes(), "routes.txt", GtfsRoute.header,report);
-			writeFile(out, gtfsData.getTrip(), "trips.txt", GtfsTrip.header,report);
-			writeFile(out, gtfsData.getStoptimes(), "stop_times.txt", GtfsStopTime.header,report);
-			writeFile(out, gtfsData.getCalendars(), "calendar.txt", GtfsCalendar.header,report);
-			writeFile(out, gtfsData.getCalendardates(), "calendar_dates.txt", GtfsCalendarDate.header,report);
-			writeFile(out, gtfsData.getFrequencies(), "frequencies.txt", GtfsFrequency.header,report);
 			writeFile(out, gtfsData.getTransfer(), "transfers.txt", GtfsTransfer.header,report);
-			// fare_rules.txt
-			// fare_attributes.txt
-			// shapes.txt
-			// feed_info.txt
 		}
 		catch (GtfsExportException e)
 		{

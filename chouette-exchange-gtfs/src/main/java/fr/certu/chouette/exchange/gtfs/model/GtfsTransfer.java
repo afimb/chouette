@@ -27,7 +27,7 @@ public class GtfsTransfer extends GtfsBean
 */
    public static enum Type { RECOMMENDED, TIMED, MINIMAL, FORBIDDEN};
    
-	public static final String header = "from_stop_id,to_stop_id,transfer_type,min_transfer_time"; 
+   public static final String header = "from_stop_id,to_stop_id,transfer_type,min_transfer_time"; 
   
    @Getter @Setter private String fromStopId;
    @Getter @Setter private String toStopId;

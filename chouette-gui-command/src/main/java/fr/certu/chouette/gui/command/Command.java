@@ -501,7 +501,7 @@ public class Command extends AbstractCommand
       {
          // old fashioned interface
          INeptuneManager<NeptuneIdentifiedObject> manager = getManager(parameters);
-         int code = exportCommand.executeExport(manager, parameters);
+         int code = exportCommand.executeExport(getEntityManager(),manager, parameters);
          if (code > 0)
          {
             logger.error("   command failed with code " + code);
@@ -540,14 +540,14 @@ public class Command extends AbstractCommand
       String object = null;
       try
       {
-         object = getSimpleString(parameters, "object").toLowerCase();
+         object = getSimpleString(parameters, "object").toLowerCase().replaceAll("_", "");
          List<String> objects = new ArrayList<String>();
          objects.add(object);
          globals.put("object", objects);
       }
       catch (IllegalArgumentException e)
       {
-         object = getSimpleString(globals, "object").toLowerCase();
+         object = getSimpleString(globals, "object").toLowerCase().replaceAll("_", "");
       }
       INeptuneManager<NeptuneIdentifiedObject> manager = managers.get(object);
       if (manager == null)

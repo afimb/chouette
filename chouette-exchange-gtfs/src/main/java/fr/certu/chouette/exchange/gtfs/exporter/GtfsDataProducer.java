@@ -47,7 +47,7 @@ public class GtfsDataProducer
    @Setter private IGtfsProducer<GtfsRoute,Route> routeProducer;
    @Setter private IGtfsProducer<GtfsTransfer,ConnectionLink> transferProducer;
 
-   public GtfsData produce(NeptuneData neptuneData,TimeZone timeZone, GtfsReport report) throws GtfsExportException
+   public GtfsData produceAll(NeptuneData neptuneData,TimeZone timeZone, GtfsReport report) throws GtfsExportException
    {
       GtfsData gtfsData = new GtfsData();
       // add calendars
@@ -126,6 +126,36 @@ public class GtfsDataProducer
          report.addItem(item);
          error= true;
       }
+      if (gtfsData.getStops().isEmpty()) 
+      {
+         logger.error("no stopArea for stops.txt");
+         GtfsReportItem item = new GtfsReportItem(GtfsReportItem.KEY.EMPTY_DATA, STATE.ERROR, "StopArea");
+         report.addItem(item);
+         error= true;
+      }
+
+      if (error) throw new GtfsExportException(GtfsExportExceptionCode.ERROR, "empty data");
+      return gtfsData;
+   }
+   public GtfsData produceStops(NeptuneData neptuneData, GtfsReport report) throws GtfsExportException
+   {
+      GtfsData gtfsData = new GtfsData();
+
+
+      // add stops
+      gtfsData.getStops().addAll(stopProducer.produceAll(neptuneData.getPhysicalStops(),report));
+
+      // add stations
+      gtfsData.getStops().addAll(stopProducer.produceAll(neptuneData.getCommercialStops(),report));
+
+      // add transfers
+      gtfsData.getTransfer().addAll(transferProducer.produceAll(neptuneData.getConnectionLinks(),report));
+
+
+      if (report.getStatus().ordinal() >= Report.STATE.ERROR.ordinal()) 
+         throw new GtfsExportException(GtfsExportExceptionCode.ERROR, "missing data");
+      // check if no data for one or more types 
+      boolean error = false;
       if (gtfsData.getStops().isEmpty()) 
       {
          logger.error("no stopArea for stops.txt");
