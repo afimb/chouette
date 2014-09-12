@@ -26,6 +26,7 @@ import javax.persistence.Transient;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.manager.VehicleJourneyManager;
 import fr.certu.chouette.model.neptune.type.ServiceStatusValueEnum;
@@ -49,6 +50,7 @@ import fr.certu.chouette.model.user.User;
 @Entity
 @Table(name = "vehicle_journeys")
 @NoArgsConstructor
+@Log4j
 public class VehicleJourney extends NeptuneIdentifiedObject
 {
    private static final long serialVersionUID = 304336286208135064L;
@@ -120,7 +122,6 @@ public class VehicleJourney extends NeptuneIdentifiedObject
    public static final String VEHICLE_JOURNEY_AT_STOPS = "vehicleJourneyAtStops";
 
    @Getter
-   @Setter
    @Column(name = "comment")
    private String comment;
 
@@ -137,7 +138,6 @@ public class VehicleJourney extends NeptuneIdentifiedObject
    private TransportModeNameEnum transportMode;
 
    @Getter
-   @Setter
    @Column(name = "published_journey_name")
    private String publishedJourneyName;
 
@@ -152,7 +152,6 @@ public class VehicleJourney extends NeptuneIdentifiedObject
    private String facility;
 
    @Getter
-   @Setter
    @Column(name = "vehicle_type_identifier")
    private String vehicleTypeIdentifier;
 
@@ -297,6 +296,45 @@ public class VehicleJourney extends NeptuneIdentifiedObject
    @Transient
    private Date endOfPeriod;
 
+   public void setComment(String value)
+   {
+      if (value != null && value.length() > 255)
+      {
+         log.warn("comment too long, truncated " + value);
+         comment = value.substring(0, 255);
+      }
+      else
+      {
+         comment = value;
+      }
+   }   
+   
+   public void setPublishedJourneyName(String value)
+   {
+      if (value != null && value.length() > 255)
+      {
+         log.warn("publishedJourneyName too long, truncated " + value);
+         publishedJourneyName = value.substring(0, 255);
+      }
+      else
+      {
+    	  publishedJourneyName = value;
+      }
+   }   
+   
+   public void setVehicleTypeIdentifier(String value)
+   {
+      if (value != null && value.length() > 255)
+      {
+         log.warn("vehicleTypeIdentifier too long, truncated " + value);
+         vehicleTypeIdentifier = value.substring(0, 255);
+      }
+      else
+      {
+    	  vehicleTypeIdentifier = value;
+      }
+   }   
+   
    /**
     * add a VehicleJourneyAtStop if not already present
     * <p/>
