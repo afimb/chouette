@@ -31,7 +31,7 @@ public class TimetableProducer extends AbstractModelProducer<Timetable, GtfsCale
 
 
 		if (gtfsCalendar.isMonday()) timetable.addDayType(DayTypeEnum.Monday);
-		if (gtfsCalendar.isTuesday()) timetable.addDayType(DayTypeEnum.Thursday);
+		if (gtfsCalendar.isTuesday()) timetable.addDayType(DayTypeEnum.Tuesday);
 		if (gtfsCalendar.isWednesday()) timetable.addDayType(DayTypeEnum.Wednesday);
 		if (gtfsCalendar.isThursday()) timetable.addDayType(DayTypeEnum.Thursday);
 		if (gtfsCalendar.isFriday()) timetable.addDayType(DayTypeEnum.Friday);
