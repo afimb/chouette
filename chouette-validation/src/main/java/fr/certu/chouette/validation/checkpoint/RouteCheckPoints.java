@@ -222,7 +222,7 @@ public class RouteCheckPoints extends AbstractValidation implements ICheckPointP
 
 				DetailReportItem detail = new DetailReportItem(ROUTE_3,route.getObjectId(), Report.STATE.WARNING, location,map);
 				addValidationError(report, ROUTE_3, detail);
-
+                break; // do not check for oder stops in this route
 			}
 			if (distance > distanceMax)
 			{
@@ -239,7 +239,7 @@ public class RouteCheckPoints extends AbstractValidation implements ICheckPointP
 
 				DetailReportItem detail = new DetailReportItem(ROUTE_3,route.getObjectId(), Report.STATE.WARNING, location,map);
 				addValidationError(report, ROUTE_3, detail);
-
+                break; // do not check for oder stops in this route
 			}
 		}
 
