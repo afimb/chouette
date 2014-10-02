@@ -26,17 +26,17 @@ import fr.certu.chouette.plugin.report.Report.STATE;
  */
 public class GtfsRouteProducer extends AbstractProducer<GtfsRoute, Route>
 {
-   private static final Logger logger = Logger.getLogger(GtfsRouteProducer.class);
+   private static final Logger logger = Logger
+         .getLogger(GtfsRouteProducer.class);
 
    @Override
-   public List<GtfsRoute> produceAll(Route route,GtfsReport report)
+   public List<GtfsRoute> produceAll(Route route, GtfsReport report)
    {
       throw new UnsupportedOperationException("not yet implemented");
    }
 
-
    @Override
-   public GtfsRoute produce(Route neptuneObject,GtfsReport report)
+   public GtfsRoute produce(Route neptuneObject, GtfsReport report)
    {
       GtfsRoute route = new GtfsRoute();
       route.setRouteId(toGtfsId(neptuneObject.getObjectId()));
@@ -51,29 +51,31 @@ public class GtfsRouteProducer extends AbstractProducer<GtfsRoute, Route>
          if (neptuneObject.getPublishedName() != null)
          {
             routeLongName = neptuneObject.getPublishedName();
-         }
-         else if (neptuneObject.getName() != null)
+         } else if (neptuneObject.getName() != null)
          {
             routeLongName = neptuneObject.getName();
-         }
-         else
+         } else
          {
-            nameExtent = ("A".equals(neptuneObject.getWayBack())?" - Aller":" - Retour");
+            nameExtent = ("A".equals(neptuneObject.getWayBack()) ? " - Aller"
+                  : " - Retour");
          }
       }
       if (routeLongName.isEmpty())
       {
          if (line.getPublishedName() != null)
-            routeLongName = line.getPublishedName()+nameExtent;
+            routeLongName = line.getPublishedName() + nameExtent;
          else if (line.getName() != null)
-            routeLongName = line.getName()+nameExtent;
+            routeLongName = line.getName() + nameExtent;
       }
 
-      // Gtfs Route require short or long name 
+      // Gtfs Route require short or long name
       if (line.getNumber() == null && routeLongName.isEmpty())
       {
-         logger.error("no short or long name for route : "+neptuneObject.getObjectId());
-         GtfsReportItem item = new GtfsReportItem(GtfsReportItem.KEY.MISSING_DATA, STATE.ERROR, "Route",neptuneObject.getObjectId(),"Name or line number");
+         logger.error("no short or long name for route : "
+               + neptuneObject.getObjectId());
+         GtfsReportItem item = new GtfsReportItem(
+               GtfsReportItem.KEY.MISSING_DATA, STATE.ERROR, "Route",
+               neptuneObject.getObjectId(), "Name or line number");
          report.addItem(item);
          return null;
       }
@@ -85,27 +87,38 @@ public class GtfsRouteProducer extends AbstractProducer<GtfsRoute, Route>
       {
          switch (line.getTransportModeName())
          {
-         case Tramway:route.setRouteType(GtfsRoute.TRAM);break;
+         case Tramway:
+            route.setRouteType(GtfsRoute.TRAM);
+            break;
          case Trolleybus:
          case Coach:
-         case Bus : route.setRouteType(GtfsRoute.BUS);break;
-         case Val :
-         case Metro : route.setRouteType(GtfsRoute.SUBWAY);break;
-         case RapidTransit: 
-         case LocalTrain: 
-         case LongDistanceTrain : 
-         case Train : route.setRouteType(GtfsRoute.RAIL);break;
-         case Ferry : route.setRouteType(GtfsRoute.FERRY);break;
-         case Waterborne : route.setRouteType(GtfsRoute.SUSPENDED_CAR);break;
-         default: route.setRouteType(GtfsRoute.BUS);
+         case Bus:
+            route.setRouteType(GtfsRoute.BUS);
+            break;
+         case Val:
+         case Metro:
+            route.setRouteType(GtfsRoute.SUBWAY);
+            break;
+         case RapidTransit:
+         case LocalTrain:
+         case LongDistanceTrain:
+         case Train:
+            route.setRouteType(GtfsRoute.RAIL);
+            break;
+         case Ferry:
+            route.setRouteType(GtfsRoute.FERRY);
+            break;
+         case Waterborne:
+            route.setRouteType(GtfsRoute.SUSPENDED_CAR);
+            break;
+         default:
+            route.setRouteType(GtfsRoute.BUS);
          }
-      }
-      else
+      } else
       {
          route.setRouteType(GtfsRoute.BUS);
       }
       return route;
    }
-
 
 }

@@ -72,10 +72,11 @@ public class ImportTask extends ActiveRecordObject
 
    @Getter
    @Setter
-   @OneToOne(fetch = FetchType.LAZY, mappedBy = "importTask", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+   @OneToOne(fetch = FetchType.LAZY, mappedBy = "importTask", cascade = {
+         CascadeType.PERSIST, CascadeType.MERGE })
    private CompilanceCheckTask compilanceCheckTask;
 
-   @Column(name = "parameter_set",insertable=false, updatable=false)
+   @Column(name = "parameter_set", insertable = false, updatable = false)
    private String parameterSet;
 
 }

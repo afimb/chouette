@@ -12,74 +12,91 @@ import java.util.Date;
 import javax.xml.datatype.DatatypeConfigurationException;
 import org.apache.log4j.Logger;
 
-public class PTNetworkConverter extends GenericConverter 
-{    
-    private static final Logger       logger = Logger.getLogger(PTNetworkConverter.class);
-    private PTNetwork network = new PTNetwork();    
-    private AutoPilot pilot;
-    private VTDNav nav;
-    
-    public PTNetworkConverter(VTDNav vTDNav) throws XPathParseException, XPathEvalException, NavException, DatatypeConfigurationException
-    {
-        nav = vTDNav;
+public class PTNetworkConverter extends GenericConverter
+{
+   private static final Logger logger = Logger
+         .getLogger(PTNetworkConverter.class);
+   private PTNetwork network = new PTNetwork();
+   private AutoPilot pilot;
+   private VTDNav nav;
 
-        pilot = new AutoPilot(nav);
-        pilot.declareXPathNameSpace("netex","http://www.netex.org.uk/netex");
-    }
-    
-    public PTNetwork convert() throws XPathEvalException, NavException, XPathParseException, ParseException
-    {
-        pilot.selectXPath("//netex:ServiceFrame/netex:Network");
-        
-        while( pilot.evalXPath() != -1 )
-        {                        
-            // Mandatory
-            network.setName( (String)parseMandatoryElement(nav, "Name") );
-            network.setRegistrationNumber( (String)parseMandatoryElement(nav, "PrivateCode") );
-            network.setObjectId( (String)parseMandatoryAttribute(nav, "id") );
-                        
-            // Optionnal
-            network.setDescription( (String)parseOptionnalElement(nav, "Description") );  
-            Object objectVersion =  parseOptionnalAttribute(nav, "version", "Integer");
-            network.setObjectVersion( objectVersion != null ? (Integer)objectVersion : 0 );
-            
-            network.setVersionDate( (Date)parseOptionnalAttribute(nav, "changed", "Date") );                        
-        }
-        pilot.resetXPath();
-        
-        convertResourceFrame();
-        
-        returnToRootElement(nav);
-        return network;
-    }
-    public void convertResourceFrame() throws XPathEvalException, NavException, XPathParseException, ParseException
-    {
-        nav.push();
-        AutoPilot autoPilot2 = new AutoPilot(nav);
-        autoPilot2.declareXPathNameSpace("netex","http://www.netex.org.uk/netex");        
-        autoPilot2.selectXPath("//netex:ResourceFrame/netex:dataSources/"+
-                "netex:DataSource");
-        
-        while( autoPilot2.evalXPath() != -1 )
-        {  
-            String sourceIdentifier = (String)parseOptionnalAttribute(nav, "id");
-            if ( sourceIdentifier!=null) {
-                network.setSourceIdentifier(sourceIdentifier);
-            }
-            String sourceName = (String)parseOptionnalElement(nav, "Name");
-            if ( sourceName!=null) {
-                network.setSourceName(sourceName);
-            }
-            PTNetworkSourceTypeEnum sourceType = null;
-            try { 
-                sourceType = (PTNetworkSourceTypeEnum)parseOptionnalElement(nav, 
-                        "Description", "PTNetworkSourceTypeEnum");
-            } catch (Exception e){};
-            network.setSourceType(sourceType);
-        }
-        autoPilot2.resetXPath();
-        nav.pop();
-    }
+   public PTNetworkConverter(VTDNav vTDNav) throws XPathParseException,
+         XPathEvalException, NavException, DatatypeConfigurationException
+   {
+      nav = vTDNav;
 
-    
+      pilot = new AutoPilot(nav);
+      pilot.declareXPathNameSpace("netex", "http://www.netex.org.uk/netex");
+   }
+
+   public PTNetwork convert() throws XPathEvalException, NavException,
+         XPathParseException, ParseException
+   {
+      pilot.selectXPath("//netex:ServiceFrame/netex:Network");
+
+      while (pilot.evalXPath() != -1)
+      {
+         // Mandatory
+         network.setName((String) parseMandatoryElement(nav, "Name"));
+         network.setRegistrationNumber((String) parseMandatoryElement(nav,
+               "PrivateCode"));
+         network.setObjectId((String) parseMandatoryAttribute(nav, "id"));
+
+         // Optionnal
+         network.setDescription((String) parseOptionnalElement(nav,
+               "Description"));
+         Object objectVersion = parseOptionnalAttribute(nav, "version",
+               "Integer");
+         network
+               .setObjectVersion(objectVersion != null ? (Integer) objectVersion
+                     : 0);
+
+         network.setVersionDate((Date) parseOptionnalAttribute(nav, "changed",
+               "Date"));
+      }
+      pilot.resetXPath();
+
+      convertResourceFrame();
+
+      returnToRootElement(nav);
+      return network;
+   }
+
+   public void convertResourceFrame() throws XPathEvalException, NavException,
+         XPathParseException, ParseException
+   {
+      nav.push();
+      AutoPilot autoPilot2 = new AutoPilot(nav);
+      autoPilot2
+            .declareXPathNameSpace("netex", "http://www.netex.org.uk/netex");
+      autoPilot2.selectXPath("//netex:ResourceFrame/netex:dataSources/"
+            + "netex:DataSource");
+
+      while (autoPilot2.evalXPath() != -1)
+      {
+         String sourceIdentifier = (String) parseOptionnalAttribute(nav, "id");
+         if (sourceIdentifier != null)
+         {
+            network.setSourceIdentifier(sourceIdentifier);
+         }
+         String sourceName = (String) parseOptionnalElement(nav, "Name");
+         if (sourceName != null)
+         {
+            network.setSourceName(sourceName);
+         }
+         PTNetworkSourceTypeEnum sourceType = null;
+         try
+         {
+            sourceType = (PTNetworkSourceTypeEnum) parseOptionnalElement(nav,
+                  "Description", "PTNetworkSourceTypeEnum");
+         } catch (Exception e)
+         {
+         }
+         ;
+         network.setSourceType(sourceType);
+      }
+      autoPilot2.resetXPath();
+      nav.pop();
+   }
+
 }

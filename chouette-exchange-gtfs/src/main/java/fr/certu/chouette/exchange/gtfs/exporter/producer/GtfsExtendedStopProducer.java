@@ -22,35 +22,37 @@ import fr.certu.chouette.plugin.report.Report.STATE;
  * <p>
  * optimise multiple period timetable with calendarDate inclusion or exclusion
  */
-public class GtfsExtendedStopProducer extends AbstractProducer<GtfsExtendedStop, StopArea>
+public class GtfsExtendedStopProducer extends
+      AbstractProducer<GtfsExtendedStop, StopArea>
 {
 
    @Override
-   public List<GtfsExtendedStop> produceAll(StopArea area,GtfsReport report)
+   public List<GtfsExtendedStop> produceAll(StopArea area, GtfsReport report)
    {
       throw new UnsupportedOperationException("not yet implemented");
    }
 
-
    @Override
-   public GtfsExtendedStop produce(StopArea neptuneObject,GtfsReport report)
+   public GtfsExtendedStop produce(StopArea neptuneObject, GtfsReport report)
    {
-	  GtfsExtendedStop stop = new GtfsExtendedStop();
+      GtfsExtendedStop stop = new GtfsExtendedStop();
       ChouetteAreaEnum chouetteAreaType = neptuneObject.getAreaType();
       if (chouetteAreaType.compareTo(ChouetteAreaEnum.BoardingPosition) == 0)
          stop.setLocationType(GtfsExtendedStop.STOP);
-      else if(chouetteAreaType.compareTo(ChouetteAreaEnum.Quay) == 0)
+      else if (chouetteAreaType.compareTo(ChouetteAreaEnum.Quay) == 0)
          stop.setLocationType(GtfsExtendedStop.STOP);
-      else if(chouetteAreaType.compareTo(ChouetteAreaEnum.CommercialStopPoint) == 0)
+      else if (chouetteAreaType.compareTo(ChouetteAreaEnum.CommercialStopPoint) == 0)
          stop.setLocationType(GtfsExtendedStop.STATION);
-//      else if(chouetteAreaType.compareTo(ChouetteAreaEnum.STOPPLACE) == 0)
-//         stop.setLocationType(GtfsStop.STATION);
+      // else if(chouetteAreaType.compareTo(ChouetteAreaEnum.STOPPLACE) == 0)
+      // stop.setLocationType(GtfsStop.STATION);
       else
-         return null ; // StopPlaces and ITL type not available
+         return null; // StopPlaces and ITL type not available
       stop.setStopId(toGtfsId(neptuneObject.getObjectId()));
       if (neptuneObject.getName() == null)
       {
-         GtfsReportItem item = new GtfsReportItem(GtfsReportItem.KEY.MISSING_DATA, STATE.ERROR, "StopArea",neptuneObject.getObjectId(),"Name");
+         GtfsReportItem item = new GtfsReportItem(
+               GtfsReportItem.KEY.MISSING_DATA, STATE.ERROR, "StopArea",
+               neptuneObject.getObjectId(), "Name");
          report.addItem(item);
          return null;
       }
@@ -58,14 +60,18 @@ public class GtfsExtendedStopProducer extends AbstractProducer<GtfsExtendedStop,
 
       if (neptuneObject.getLatitude() == null)
       {
-         GtfsReportItem item = new GtfsReportItem(GtfsReportItem.KEY.MISSING_DATA, STATE.ERROR, "StopArea",neptuneObject.getName(),"Latitude");
+         GtfsReportItem item = new GtfsReportItem(
+               GtfsReportItem.KEY.MISSING_DATA, STATE.ERROR, "StopArea",
+               neptuneObject.getName(), "Latitude");
          report.addItem(item);
          return null;
       }
       stop.setStopLat(neptuneObject.getLatitude());
       if (neptuneObject.getLongitude() == null)
       {
-         GtfsReportItem item = new GtfsReportItem(GtfsReportItem.KEY.MISSING_DATA, STATE.ERROR, "StopArea",neptuneObject.getName(),"Longitude");
+         GtfsReportItem item = new GtfsReportItem(
+               GtfsReportItem.KEY.MISSING_DATA, STATE.ERROR, "StopArea",
+               neptuneObject.getName(), "Longitude");
          report.addItem(item);
          return null;
       }
@@ -77,13 +83,13 @@ public class GtfsExtendedStopProducer extends AbstractProducer<GtfsExtendedStop,
       stop.setPostalCode(neptuneObject.getZipCode());
       if (stop.getLocationType() == GtfsExtendedStop.STOP)
       {
-    	  if (neptuneObject.getParent() != null)
-    	  {
-    		  stop.setParentStation(toGtfsId(neptuneObject.getParent().getObjectId()));
-    	  }
+         if (neptuneObject.getParent() != null)
+         {
+            stop.setParentStation(toGtfsId(neptuneObject.getParent()
+                  .getObjectId()));
+         }
       }
       return stop;
    }
-
 
 }

@@ -18,9 +18,11 @@ import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 
 /**
  * @author michel
- *
+ * 
  */
-public interface IModelProducer <T extends NeptuneIdentifiedObject, U extends TridentObjectType> 
+public interface IModelProducer<T extends NeptuneIdentifiedObject, U extends TridentObjectType>
 {
-    T produce(String sourceFile, U o,ReportItem importReport, PhaseReportItem validationReport,SharedImportedData sharedData, UnsharedImportedData unshareableData);
+   T produce(String sourceFile, U o, ReportItem importReport,
+         PhaseReportItem validationReport, SharedImportedData sharedData,
+         UnsharedImportedData unshareableData);
 }

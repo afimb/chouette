@@ -17,42 +17,48 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 /**
- *
+ * 
  * @author marc
  */
-@ContextConfiguration(locations={"classpath:testContext.xml"})
+@ContextConfiguration(locations = { "classpath:testContext.xml" })
 @SuppressWarnings("unchecked")
-public class SpecificTest extends AbstractTestNGSpringContextTests {
-    
-    private void my() throws Exception {
-        VTDGen vg = new VTDGen();
-        
-        
-        if (vg.parseFile("/tmp/test.xml", false)) {
-            VTDNav vn = vg.getNav();
-            AutoPilot ap = new AutoPilot(vn);
-            ap.selectXPath("//*[not(node()) and not(@*)]");            
-            
-            XMLModifier xm = new XMLModifier(vn);
-            int i;
-            while(ap.evalXPath()!=-1){
-                xm.remove();
-            }
+public class SpecificTest extends AbstractTestNGSpringContextTests
+{
 
-            xm.output(new FileOutputStream("new.xml"));
-        }
-    }
-    
-    @Test(groups = {"specific"}, description = "Validate CompositeFrame build")
-    public void mytest()  {
-        try {
-            my();
-        } catch (Exception ex) {
-            Logger.getLogger(SpecificTest.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        
-        Assert.assertEquals( "A", "A");
-    }
-    
+   private void my() throws Exception
+   {
+      VTDGen vg = new VTDGen();
+
+      if (vg.parseFile("/tmp/test.xml", false))
+      {
+         VTDNav vn = vg.getNav();
+         AutoPilot ap = new AutoPilot(vn);
+         ap.selectXPath("//*[not(node()) and not(@*)]");
+
+         XMLModifier xm = new XMLModifier(vn);
+         int i;
+         while (ap.evalXPath() != -1)
+         {
+            xm.remove();
+         }
+
+         xm.output(new FileOutputStream("new.xml"));
+      }
+   }
+
+   @Test(groups = { "specific" }, description = "Validate CompositeFrame build")
+   public void mytest()
+   {
+      try
+      {
+         my();
+      } catch (Exception ex)
+      {
+         Logger.getLogger(SpecificTest.class.getName()).log(Level.SEVERE, null,
+               ex);
+      }
+
+      Assert.assertEquals("A", "A");
+   }
+
 }

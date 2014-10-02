@@ -52,7 +52,8 @@ import fr.certu.chouette.plugin.model.Referential;
 public class HibernateDaoTemplate<T extends NeptuneObject> implements
       IDaoTemplate<T>
 {
-   private static final Logger logger = Logger.getLogger(HibernateDaoTemplate.class);
+   private static final Logger logger = Logger
+         .getLogger(HibernateDaoTemplate.class);
 
    private Class<T> type;
 
@@ -143,20 +144,17 @@ public class HibernateDaoTemplate<T extends NeptuneObject> implements
 
    public static HibernateDaoTemplate<Organisation> createOrganisationDao()
    {
-      return new HibernateDaoTemplate<Organisation>(
-            Organisation.class);
+      return new HibernateDaoTemplate<Organisation>(Organisation.class);
    }
 
    public static HibernateDaoTemplate<Referential> createReferentialDao()
    {
-      return new HibernateDaoTemplate<Referential>(
-            Referential.class);
+      return new HibernateDaoTemplate<Referential>(Referential.class);
    }
 
    public static HibernateDaoTemplate<ImportTask> createImportDao()
    {
-      return new HibernateDaoTemplate<ImportTask>(
-            ImportTask.class);
+      return new HibernateDaoTemplate<ImportTask>(ImportTask.class);
    }
 
    public static HibernateDaoTemplate<CompilanceCheckTask> createValidationDao()
@@ -172,8 +170,7 @@ public class HibernateDaoTemplate<T extends NeptuneObject> implements
 
    public static HibernateDaoTemplate<ExportLogMessage> createExportLogMessageDao()
    {
-      return new HibernateDaoTemplate<ExportLogMessage>(
-            ExportLogMessage.class);
+      return new HibernateDaoTemplate<ExportLogMessage>(ExportLogMessage.class);
    }
 
    @Getter
@@ -182,7 +179,8 @@ public class HibernateDaoTemplate<T extends NeptuneObject> implements
 
    private EntityManager getEntityManager()
    {
-      return EntityManagerFactoryUtils.getTransactionalEntityManager(getEntityManagerFactory());
+      return EntityManagerFactoryUtils
+            .getTransactionalEntityManager(getEntityManagerFactory());
    }
 
    @Override
@@ -245,8 +243,7 @@ public class HibernateDaoTemplate<T extends NeptuneObject> implements
          query.setMaxResults(filter.getLimit());
          query.setFirstResult(filter.getStart());
          result = query.getResultList();
-      }
-      else
+      } else
       {
          result = query.getResultList();
       }
@@ -265,8 +262,7 @@ public class HibernateDaoTemplate<T extends NeptuneObject> implements
       {
          TypedQuery<T> query = em.createQuery(hql, type);
          result = query.getResultList();
-      }
-      else
+      } else
       {
          TypedQuery<T> query = em.createQuery(hql, type);
          int pos = 0;
@@ -291,13 +287,14 @@ public class HibernateDaoTemplate<T extends NeptuneObject> implements
 
       int total = list.size();
 
-      if ( total==0)
+      if (total == 0)
       {
          return null;
-      }
-      else if ( total>1)
+      } else if (total > 1)
       {
-         throw new HibernateDaoRuntimeException( HibernateDaoExceptionCode.DATABASE_INTEGRITY, total + " "+type.getName()+" id =" + objectId);
+         throw new HibernateDaoRuntimeException(
+               HibernateDaoExceptionCode.DATABASE_INTEGRITY, total + " "
+                     + type.getName() + " id =" + objectId);
       }
       return list.get(0);
    }
@@ -353,8 +350,7 @@ public class HibernateDaoTemplate<T extends NeptuneObject> implements
          em.getTransaction().begin();
          em.flush();
          em.getTransaction().commit();
-      }
-      catch (PersistenceException e)
+      } catch (PersistenceException e)
       {
          if (em.getTransaction().isActive())
          {
@@ -371,8 +367,7 @@ public class HibernateDaoTemplate<T extends NeptuneObject> implements
       try
       {
          return (get(id) != null);
-      }
-      catch (Exception e)
+      } catch (Exception e)
       {
          return false;
       }
@@ -384,8 +379,7 @@ public class HibernateDaoTemplate<T extends NeptuneObject> implements
       try
       {
          return (getByObjectId(objectId) != null);
-      }
-      catch (Exception e)
+      } catch (Exception e)
       {
          return false;
       }
@@ -446,7 +440,8 @@ public class HibernateDaoTemplate<T extends NeptuneObject> implements
    @Override
    public int purge()
    {
-      throw new HibernateDaoRuntimeException(HibernateDaoExceptionCode.NOT_YET_IMPLEMENTED, "purge");
+      throw new HibernateDaoRuntimeException(
+            HibernateDaoExceptionCode.NOT_YET_IMPLEMENTED, "purge");
    }
 
    @Override
@@ -488,8 +483,7 @@ public class HibernateDaoTemplate<T extends NeptuneObject> implements
                em.detach(entity);
                item.setId(entity.getId());
                em.merge(item);
-            }
-            else
+            } else
             {
                logger.debug("save object :" + object.getObjectId());
                em.persist(item);

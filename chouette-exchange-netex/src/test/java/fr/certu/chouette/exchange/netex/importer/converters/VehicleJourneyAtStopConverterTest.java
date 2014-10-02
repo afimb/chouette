@@ -22,47 +22,61 @@ import com.ximpleware.XPathParseException;
 
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
 
-
-@ContextConfiguration(locations={"classpath:testContext.xml","classpath*:chouetteContext.xml"})
+@ContextConfiguration(locations = { "classpath:testContext.xml",
+      "classpath*:chouetteContext.xml" })
 @SuppressWarnings("unchecked")
-public class VehicleJourneyAtStopConverterTest extends AbstractTestNGSpringContextTests {
+public class VehicleJourneyAtStopConverterTest extends
+      AbstractTestNGSpringContextTests
+{
 
-    private VehicleJourneyAtStopConverter vehicleJourneyAtStopConverter;
-    private AutoPilot autoPilot;
-    private VTDNav nav;
+   private VehicleJourneyAtStopConverter vehicleJourneyAtStopConverter;
+   private AutoPilot autoPilot;
+   private VTDNav nav;
 
-    @BeforeClass
-    protected void setUp() throws Exception {
-        File f = FileUtils.getFile("src","test", "resources", "line2_test.xml");
-        FileInputStream fis = new FileInputStream(f);
-        byte[] b = new byte[(int) f.length()];
-        fis.read(b);
-        fis.close();
-        
-        VTDGen vg = new VTDGen();
-        vg.setDoc(b);
-        vg.parse(true); // set namespace awareness to true
+   @BeforeClass
+   protected void setUp() throws Exception
+   {
+      File f = FileUtils.getFile("src", "test", "resources", "line2_test.xml");
+      FileInputStream fis = new FileInputStream(f);
+      byte[] b = new byte[(int) f.length()];
+      fis.read(b);
+      fis.close();
 
-        nav = vg.getNav();
-        autoPilot = new AutoPilot(nav);
-        autoPilot.declareXPathNameSpace("netex","http://www.netex.org.uk/netex");        
-        
-        vehicleJourneyAtStopConverter = new VehicleJourneyAtStopConverter(nav);
-    }
+      VTDGen vg = new VTDGen();
+      vg.setDoc(b);
+      vg.parse(true); // set namespace awareness to true
 
-    @Test(groups = {"NeptuneConverter"}, description = "Must return vehicle journey at stop")
-    public void verifyVehicleJourneyAtStopConverter() throws XPathEvalException, NavException, XPathParseException, ParseException {
-        List<VehicleJourneyAtStop> vehicleJourneyAtStops = vehicleJourneyAtStopConverter.convert();
-        
-        Assert.assertEquals(Time.valueOf("13:05:00"), vehicleJourneyAtStops.get(0).getDepartureTime());
-        Assert.assertEquals(Time.valueOf("13:05:00"), vehicleJourneyAtStops.get(0).getArrivalTime());
-        Assert.assertEquals("T:VehicleJourney:1-0-0-0", vehicleJourneyAtStops.get(0).getVehicleJourneyId());
-        Assert.assertEquals("T:StopPoint:1-0-0", vehicleJourneyAtStops.get(0).getStopPointId());     
-        
-        Assert.assertEquals(Time.valueOf("13:08:00"), vehicleJourneyAtStops.get(1).getDepartureTime());
-        Assert.assertEquals(Time.valueOf("13:08:00"), vehicleJourneyAtStops.get(1).getArrivalTime());
-        Assert.assertEquals("T:VehicleJourney:1-0-0-0", vehicleJourneyAtStops.get(1).getVehicleJourneyId());
-        Assert.assertEquals("T:StopPoint:1-0-7", vehicleJourneyAtStops.get(1).getStopPointId());             
-    }
+      nav = vg.getNav();
+      autoPilot = new AutoPilot(nav);
+      autoPilot.declareXPathNameSpace("netex", "http://www.netex.org.uk/netex");
+
+      vehicleJourneyAtStopConverter = new VehicleJourneyAtStopConverter(nav);
+   }
+
+   @Test(groups = { "NeptuneConverter" }, description = "Must return vehicle journey at stop")
+   public void verifyVehicleJourneyAtStopConverter() throws XPathEvalException,
+         NavException, XPathParseException, ParseException
+   {
+      List<VehicleJourneyAtStop> vehicleJourneyAtStops = vehicleJourneyAtStopConverter
+            .convert();
+
+      Assert.assertEquals(Time.valueOf("13:05:00"), vehicleJourneyAtStops
+            .get(0).getDepartureTime());
+      Assert.assertEquals(Time.valueOf("13:05:00"), vehicleJourneyAtStops
+            .get(0).getArrivalTime());
+      Assert.assertEquals("T:VehicleJourney:1-0-0-0", vehicleJourneyAtStops
+            .get(0).getVehicleJourneyId());
+      Assert.assertEquals("T:StopPoint:1-0-0", vehicleJourneyAtStops.get(0)
+            .getStopPointId());
+
+      Assert.assertEquals(Time.valueOf("13:08:00"), vehicleJourneyAtStops
+            .get(1).getDepartureTime());
+      Assert.assertEquals(Time.valueOf("13:08:00"), vehicleJourneyAtStops
+            .get(1).getArrivalTime());
+      Assert.assertEquals("T:VehicleJourney:1-0-0-0", vehicleJourneyAtStops
+            .get(1).getVehicleJourneyId());
+      Assert.assertEquals("T:StopPoint:1-0-7", vehicleJourneyAtStops.get(1)
+            .getStopPointId());
+   }
 
 }

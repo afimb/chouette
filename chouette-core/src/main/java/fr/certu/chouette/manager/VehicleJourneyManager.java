@@ -21,128 +21,147 @@ import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.user.User;
 
-
-
 /**
  * @author michel
- *
+ * 
  */
 @SuppressWarnings("unchecked")
-public class VehicleJourneyManager extends AbstractNeptuneManager<VehicleJourney> 
+public class VehicleJourneyManager extends
+      AbstractNeptuneManager<VehicleJourney>
 {
-	private static final Logger logger = Logger.getLogger(VehicleJourneyManager.class);
+   private static final Logger logger = Logger
+         .getLogger(VehicleJourneyManager.class);
 
-	public VehicleJourneyManager()
-	{
-		super(VehicleJourney.class,VehicleJourney.VEHICLEJOURNEY_KEY);
-	}
+   public VehicleJourneyManager()
+   {
+      super(VehicleJourney.class, VehicleJourney.VEHICLEJOURNEY_KEY);
+   }
 
-	@Override
-	protected Logger getLogger() 
-	{
-		return logger;
-	}
+   @Override
+   protected Logger getLogger()
+   {
+      return logger;
+   }
 
-	@Override
-	public void completeObject(User user, VehicleJourney vehicleJourney) throws ChouetteException
-	{
-		vehicleJourney.complete();
-	} 
-	@Transactional
-	@Override
-	public void saveAll(User user, List<VehicleJourney> vehicleJourneys, boolean propagate,boolean fast) throws ChouetteException 
-	{
+   @Override
+   public void completeObject(User user, VehicleJourney vehicleJourney)
+         throws ChouetteException
+   {
+      vehicleJourney.complete();
+   }
 
-		if(propagate)
-		{
-			INeptuneManager<Company> companyManager = (INeptuneManager<Company>) getManager(Company.class);
-			INeptuneManager<Timetable> timetableManager = (INeptuneManager<Timetable>) getManager(Timetable.class);
-			INeptuneManager<TimeSlot> timeSlotManager = (INeptuneManager<TimeSlot>) getManager(TimeSlot.class);
+   @Transactional
+   @Override
+   public void saveAll(User user, List<VehicleJourney> vehicleJourneys,
+         boolean propagate, boolean fast) throws ChouetteException
+   {
 
-			List<Timetable> timetables = new ArrayList<Timetable>();
-			List<TimeSlot> timeSlots = new ArrayList<TimeSlot>();
-			List<Company> companies = new ArrayList<Company>();
+      if (propagate)
+      {
+         INeptuneManager<Company> companyManager = (INeptuneManager<Company>) getManager(Company.class);
+         INeptuneManager<Timetable> timetableManager = (INeptuneManager<Timetable>) getManager(Timetable.class);
+         INeptuneManager<TimeSlot> timeSlotManager = (INeptuneManager<TimeSlot>) getManager(TimeSlot.class);
 
-			for (VehicleJourney vehicleJourney : vehicleJourneys) 
-			{
-				mergeCollection(timetables,vehicleJourney.getTimetables());
-				// addIfMissingInCollection(timeSlots,vehicleJourney.getTimeSlot());
-				addIfMissingInCollection(companies,vehicleJourney.getCompany());
-			}
-			if(!timetables.isEmpty())
-				timetableManager.saveAll(user, timetables, propagate,fast);
-			if(!timeSlots.isEmpty())
-				timeSlotManager.saveAll(user, timeSlots, propagate,fast);
-			if(!companies.isEmpty())
-				companyManager.saveAll(user, companies, propagate,fast);
-		}
+         List<Timetable> timetables = new ArrayList<Timetable>();
+         List<TimeSlot> timeSlots = new ArrayList<TimeSlot>();
+         List<Company> companies = new ArrayList<Company>();
 
-		for (VehicleJourney vehicleJourney : vehicleJourneys) 
-		{
-			vehicleJourney.sortVehicleJourneyAtStops();
-		}
+         for (VehicleJourney vehicleJourney : vehicleJourneys)
+         {
+            mergeCollection(timetables, vehicleJourney.getTimetables());
+            // addIfMissingInCollection(timeSlots,vehicleJourney.getTimeSlot());
+            addIfMissingInCollection(companies, vehicleJourney.getCompany());
+         }
+         if (!timetables.isEmpty())
+            timetableManager.saveAll(user, timetables, propagate, fast);
+         if (!timeSlots.isEmpty())
+            timeSlotManager.saveAll(user, timeSlots, propagate, fast);
+         if (!companies.isEmpty())
+            companyManager.saveAll(user, companies, propagate, fast);
+      }
 
-		super.saveAll(user, vehicleJourneys,propagate,fast);
-		if (fast)
-		{
-			for (VehicleJourney vehicleJourney : vehicleJourneys) 
-			{
-				// free some memory
-				vehicleJourney.purgeVehicleJourneyAtStops();
-			}
-		}
-	}
+      for (VehicleJourney vehicleJourney : vehicleJourneys)
+      {
+         vehicleJourney.sortVehicleJourneyAtStops();
+      }
 
-	/* (non-Javadoc)
-	 * @see fr.certu.chouette.manager.AbstractNeptuneManager#addNew(fr.certu.chouette.model.user.User, fr.certu.chouette.model.neptune.NeptuneIdentifiedObject)
-	 */
-	@Transactional
-	@Override
-	public VehicleJourney addNew(User user, VehicleJourney vehicleJourney)
-			throws ChouetteException 
-			{
-		vehicleJourney.sortVehicleJourneyAtStops();
-		return super.addNew(user, vehicleJourney);
-			}
+      super.saveAll(user, vehicleJourneys, propagate, fast);
+      if (fast)
+      {
+         for (VehicleJourney vehicleJourney : vehicleJourneys)
+         {
+            // free some memory
+            vehicleJourney.purgeVehicleJourneyAtStops();
+         }
+      }
+   }
 
-	/* (non-Javadoc)
-	 * @see fr.certu.chouette.manager.AbstractNeptuneManager#update(fr.certu.chouette.model.user.User, fr.certu.chouette.model.neptune.NeptuneIdentifiedObject)
-	 */
-	@Transactional
-	@Override
-	public VehicleJourney update(User user, VehicleJourney vehicleJourney) throws ChouetteException 
-	{
-		vehicleJourney.sortVehicleJourneyAtStops();
-		return super.update(user, vehicleJourney);
-	}
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * fr.certu.chouette.manager.AbstractNeptuneManager#addNew(fr.certu.chouette
+    * .model.user.User, fr.certu.chouette.model.neptune.NeptuneIdentifiedObject)
+    */
+   @Transactional
+   @Override
+   public VehicleJourney addNew(User user, VehicleJourney vehicleJourney)
+         throws ChouetteException
+   {
+      vehicleJourney.sortVehicleJourneyAtStops();
+      return super.addNew(user, vehicleJourney);
+   }
 
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * fr.certu.chouette.manager.AbstractNeptuneManager#update(fr.certu.chouette
+    * .model.user.User, fr.certu.chouette.model.neptune.NeptuneIdentifiedObject)
+    */
+   @Transactional
+   @Override
+   public VehicleJourney update(User user, VehicleJourney vehicleJourney)
+         throws ChouetteException
+   {
+      vehicleJourney.sortVehicleJourneyAtStops();
+      return super.update(user, vehicleJourney);
+   }
 
-	/* (non-Javadoc)
-	 * @see fr.certu.chouette.manager.AbstractNeptuneManager#save(fr.certu.chouette.model.user.User, fr.certu.chouette.model.neptune.NeptuneIdentifiedObject, boolean)
-	 */
-	@Transactional
-	@Override
-	public void save(User user, VehicleJourney vehicleJourney, boolean propagate)
-			throws ChouetteException 
-			{
-		vehicleJourney.sortVehicleJourneyAtStops();
-		super.save(user, vehicleJourney, propagate);
-			}
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * fr.certu.chouette.manager.AbstractNeptuneManager#save(fr.certu.chouette
+    * .model.user.User, fr.certu.chouette.model.neptune.NeptuneIdentifiedObject,
+    * boolean)
+    */
+   @Transactional
+   @Override
+   public void save(User user, VehicleJourney vehicleJourney, boolean propagate)
+         throws ChouetteException
+   {
+      vehicleJourney.sortVehicleJourneyAtStops();
+      super.save(user, vehicleJourney, propagate);
+   }
 
-	/* (non-Javadoc)
-	 * @see fr.certu.chouette.manager.AbstractNeptuneManager#saveOrUpdateAll(fr.certu.chouette.model.user.User, java.util.List)
-	 */
-	@Transactional
-	@Override
-	public void saveOrUpdateAll(User user, List<VehicleJourney> vehicleJourneys)
-			throws ChouetteException 
-			{
-		for (VehicleJourney vehicleJourney : vehicleJourneys) 
-		{
-			vehicleJourney.sortVehicleJourneyAtStops();
-		}
-		super.saveOrUpdateAll(user, vehicleJourneys);
-			}
-
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * fr.certu.chouette.manager.AbstractNeptuneManager#saveOrUpdateAll(fr.certu
+    * .chouette.model.user.User, java.util.List)
+    */
+   @Transactional
+   @Override
+   public void saveOrUpdateAll(User user, List<VehicleJourney> vehicleJourneys)
+         throws ChouetteException
+   {
+      for (VehicleJourney vehicleJourney : vehicleJourneys)
+      {
+         vehicleJourney.sortVehicleJourneyAtStops();
+      }
+      super.saveOrUpdateAll(user, vehicleJourneys);
+   }
 
 }

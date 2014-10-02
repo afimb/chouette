@@ -9,18 +9,19 @@ import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
 import java.sql.Time;
 
 @Blueprint(VehicleJourneyAtStop.class)
-public class VehicleJourneyAtStopBlueprint {             
-        
-    @Mapped   
-    VehicleJourney vehicleJourney;
-        
-    @Mapped   
-    StopPoint stopPoint;
-    
-    @Default
-    Time departureTime = new Time(2500);    
-    
-    @Default
-    Time arrivalTime = new Time(2800);
+public class VehicleJourneyAtStopBlueprint
+{
+
+   @Mapped
+   VehicleJourney vehicleJourney;
+
+   @Mapped
+   StopPoint stopPoint;
+
+   @Default
+   Time departureTime = new Time(2500);
+
+   @Default
+   Time arrivalTime = new Time(2800);
 
 }

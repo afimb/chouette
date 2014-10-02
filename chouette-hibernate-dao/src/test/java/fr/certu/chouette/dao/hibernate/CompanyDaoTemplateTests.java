@@ -18,34 +18,44 @@ import fr.certu.chouette.model.neptune.Company;
 
 /**
  * @author michel
- *
+ * 
  */
-public class CompanyDaoTemplateTests extends AbstractDaoTemplateTests<Company> {
+public class CompanyDaoTemplateTests extends AbstractDaoTemplateTests<Company>
+{
 
-	/* (non-Javadoc)
-	 * @see fr.certu.chouette.dao.hibernate.AbstractDaoTemplateTests#createDaoTemplate()
-	 */
-	@Override
-	@BeforeMethod (alwaysRun=true)
-	public void createDaoTemplate() 
-	{
-		initDaoTemplate("Company", "companyDao");
-	}
-	/* (non-Javadoc)
-	 * @see fr.certu.chouette.dao.hibernate.AbstractDaoTemplateTests#refreshBean()
-	 */
-	@Override
-	public void refreshBean() 
-	{
-		bean = createCompany();
-	}
-	
-	@Override
-	protected List<FilterData> getSelectFilters() 
-	{
-		List<FilterData> ret = new ArrayList<FilterData>();
-		ret.add(new FilterData("Company : name",Filter.getNewEqualsFilter("name", "TestNG Company") , 1));
-		return ret;
-	}
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * fr.certu.chouette.dao.hibernate.AbstractDaoTemplateTests#createDaoTemplate
+    * ()
+    */
+   @Override
+   @BeforeMethod(alwaysRun = true)
+   public void createDaoTemplate()
+   {
+      initDaoTemplate("Company", "companyDao");
+   }
+
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * fr.certu.chouette.dao.hibernate.AbstractDaoTemplateTests#refreshBean()
+    */
+   @Override
+   public void refreshBean()
+   {
+      bean = createCompany();
+   }
+
+   @Override
+   protected List<FilterData> getSelectFilters()
+   {
+      List<FilterData> ret = new ArrayList<FilterData>();
+      ret.add(new FilterData("Company : name", Filter.getNewEqualsFilter(
+            "name", "TestNG Company"), 1));
+      return ret;
+   }
 
 }

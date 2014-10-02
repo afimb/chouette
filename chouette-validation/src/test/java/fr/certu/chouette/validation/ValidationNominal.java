@@ -27,89 +27,106 @@ import fr.certu.chouette.plugin.validation.report.CheckPointReportItem;
 import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 import fr.certu.chouette.plugin.validation.report.PhaseReportItem.PHASE;
 
-@ContextConfiguration(locations={"classpath:testContext.xml","classpath*:chouetteContext.xml"})
-@TransactionConfiguration(transactionManager="transactionManager",defaultRollback=true)
-
-public class ValidationNominal extends AbstractTransactionalTestNGSpringContextTests
+@ContextConfiguration(locations = { "classpath:testContext.xml",
+      "classpath*:chouetteContext.xml" })
+@TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
+public class ValidationNominal extends
+      AbstractTransactionalTestNGSpringContextTests
 {
 
    @BeforeMethod
    public void cleanData() throws Exception
    {
-      //springTestContextPrepareTestInstance();
-      
-      INeptuneManager<Line> lineManager = (INeptuneManager<Line>) applicationContext.getBean("lineManager");
+      // springTestContextPrepareTestInstance();
+
+      INeptuneManager<Line> lineManager = (INeptuneManager<Line>) applicationContext
+            .getBean("lineManager");
       List<Line> lines = lineManager.getAll(null);
       lineManager.removeAll(null, lines, true);
-      
-      INeptuneManager<StopArea> stopeManager = (INeptuneManager<StopArea>) applicationContext.getBean("stopAreaManager");
+
+      INeptuneManager<StopArea> stopeManager = (INeptuneManager<StopArea>) applicationContext
+            .getBean("stopAreaManager");
       List<StopArea> stops = stopeManager.getAll(null);
       stopeManager.removeAll(null, stops, true);
-            
-      INeptuneManager<PTNetwork> networkManager = (INeptuneManager<PTNetwork>) applicationContext.getBean("networkManager");
+
+      INeptuneManager<PTNetwork> networkManager = (INeptuneManager<PTNetwork>) applicationContext
+            .getBean("networkManager");
       List<PTNetwork> networks = networkManager.getAll(null);
       networkManager.removeAll(null, networks, true);
-      
-      INeptuneManager<Timetable> timetableManager = (INeptuneManager<Timetable>) applicationContext.getBean("timetableManager");
+
+      INeptuneManager<Timetable> timetableManager = (INeptuneManager<Timetable>) applicationContext
+            .getBean("timetableManager");
       List<Timetable> timetables = timetableManager.getAll(null);
       timetableManager.removeAll(null, timetables, true);
-      
-      INeptuneManager<Company> companyManager = (INeptuneManager<Company>) applicationContext.getBean("companyManager");
+
+      INeptuneManager<Company> companyManager = (INeptuneManager<Company>) applicationContext
+            .getBean("companyManager");
       List<Company> companies = companyManager.getAll(null);
       companyManager.removeAll(null, companies, true);
-      
+
    }
-   
-	@SuppressWarnings("unchecked")
-	@Test (groups = {"all"}, description = "3-all-ok" )
-	public void verifyTestOk() throws ChouetteException 
-	{
-		// 3-all-1 : no warning nor error
-		IImportPlugin<Line> importLine = (IImportPlugin<Line>) applicationContext.getBean("NeptuneLineImport");
-		INeptuneManager<Line> lineManager = (INeptuneManager<Line>) applicationContext.getBean("lineManager");
 
-		JSONObject parameters = null;
-		try {
-			parameters = new RuleParameterSet();
-		} catch (JSONException | IOException e) {
-			e.printStackTrace();
-		}
-		Assert.assertNotNull(parameters,"no parameters for test");
+   @SuppressWarnings("unchecked")
+   @Test(groups = { "all" }, description = "3-all-ok")
+   public void verifyTestOk() throws ChouetteException
+   {
+      // 3-all-1 : no warning nor error
+      IImportPlugin<Line> importLine = (IImportPlugin<Line>) applicationContext
+            .getBean("NeptuneLineImport");
+      INeptuneManager<Line> lineManager = (INeptuneManager<Line>) applicationContext
+            .getBean("lineManager");
 
-		List<Line> beans = LineLoader.load(importLine, "src/test/data/model.zip");
-		Assert.assertFalse(beans.isEmpty(),"No data for test");
-		lineManager.saveAll(null, beans, true, true);
-		beans = lineManager.getAll(null);
+      JSONObject parameters = null;
+      try
+      {
+         parameters = new RuleParameterSet();
+      } catch (JSONException | IOException e)
+      {
+         e.printStackTrace();
+      }
+      Assert.assertNotNull(parameters, "no parameters for test");
 
-		PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
-		for (Line line : beans) 
-		{
-			line.complete();	
-		}
+      List<Line> beans = LineLoader.load(importLine, "src/test/data/model.zip");
+      Assert.assertFalse(beans.isEmpty(), "No data for test");
+      lineManager.saveAll(null, beans, true, true);
+      beans = lineManager.getAll(null);
 
-		lineManager.validate(null, beans, parameters, report, true);
-		report.refreshStatus();
+      PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
+      for (Line line : beans)
+      {
+         line.complete();
+      }
 
-		AbstractValidation.printReport(report);
+      lineManager.validate(null, beans, parameters, report, true);
+      report.refreshStatus();
 
-		Assert.assertEquals(report.getStatus(), Report.STATE.OK,"report must be on level ok");
-		Assert.assertEquals(report.hasItems(), true,"report must have items");
-		for (ReportItem item : report.getItems()) 
-		{
-			CheckPointReportItem checkPointReport = (CheckPointReportItem) item;
-			if (checkPointReport.getMessageKey().equals("3-Route-5")) 
-			{
-				Assert.assertEquals(checkPointReport.getStatus(), Report.STATE.UNCHECK,
-						"checkPointReport "+checkPointReport.getMessageKey()+" must not be on level "+checkPointReport.getStatus());
-			}
-			else
-			{
-				Assert.assertEquals(checkPointReport.getStatus(), Report.STATE.OK,
-						"checkPointReport "+checkPointReport.getMessageKey()+" must not be on level "+checkPointReport.getStatus());
-			}  
-		}
+      AbstractValidation.printReport(report);
 
-	}
+      Assert.assertEquals(report.getStatus(), Report.STATE.OK,
+            "report must be on level ok");
+      Assert.assertEquals(report.hasItems(), true, "report must have items");
+      for (ReportItem item : report.getItems())
+      {
+         CheckPointReportItem checkPointReport = (CheckPointReportItem) item;
+         if (checkPointReport.getMessageKey().equals("3-Route-5"))
+         {
+            Assert.assertEquals(
+                  checkPointReport.getStatus(),
+                  Report.STATE.UNCHECK,
+                  "checkPointReport " + checkPointReport.getMessageKey()
+                        + " must not be on level "
+                        + checkPointReport.getStatus());
+         } else
+         {
+            Assert.assertEquals(
+                  checkPointReport.getStatus(),
+                  Report.STATE.OK,
+                  "checkPointReport " + checkPointReport.getMessageKey()
+                        + " must not be on level "
+                        + checkPointReport.getStatus());
+         }
+      }
 
+   }
 
 }

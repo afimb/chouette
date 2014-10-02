@@ -3,15 +3,20 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="
    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
-   default-init-method="init">
+	default-init-method="init">
 
 
-	<bean id="CSVLineExportProducer" class="fr.certu.chouette.exchange.csv.exporter.producer.LineProducer" />
-	<bean id="CSVCompanyExportProducer" class="fr.certu.chouette.exchange.csv.exporter.producer.CompanyProducer" />
-	<bean id="CSVNetworkExportProducer" class="fr.certu.chouette.exchange.csv.exporter.producer.PTNetworkProducer" />
-	<bean id="CSVTimetableExportProducer" class="fr.certu.chouette.exchange.csv.exporter.producer.TimetableProducer" />
-	
-	<bean id="CSVLineExport" class="fr.certu.chouette.exchange.csv.exporter.CSVExportLinePlugin">
+	<bean id="CSVLineExportProducer"
+		class="fr.certu.chouette.exchange.csv.exporter.producer.LineProducer" />
+	<bean id="CSVCompanyExportProducer"
+		class="fr.certu.chouette.exchange.csv.exporter.producer.CompanyProducer" />
+	<bean id="CSVNetworkExportProducer"
+		class="fr.certu.chouette.exchange.csv.exporter.producer.PTNetworkProducer" />
+	<bean id="CSVTimetableExportProducer"
+		class="fr.certu.chouette.exchange.csv.exporter.producer.TimetableProducer" />
+
+	<bean id="CSVLineExport"
+		class="fr.certu.chouette.exchange.csv.exporter.CSVExportLinePlugin">
 		<property name="lineProducer" ref="CSVLineExportProducer" />
 		<property name="companyProducer" ref="CSVCompanyExportProducer" />
 		<property name="ptNetworkProducer" ref="CSVNetworkExportProducer" />

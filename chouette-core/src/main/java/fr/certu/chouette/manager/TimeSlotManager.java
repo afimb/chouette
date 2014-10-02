@@ -14,19 +14,22 @@ import fr.certu.chouette.model.neptune.TimeSlot;
 
 /**
  * @author michel
- *
+ * 
  */
-public class TimeSlotManager extends AbstractNeptuneManager<TimeSlot> {
+public class TimeSlotManager extends AbstractNeptuneManager<TimeSlot>
+{
 
-	private static final Logger logger = Logger.getLogger(TimeSlotManager.class); 
+   private static final Logger logger = Logger.getLogger(TimeSlotManager.class);
 
-	public TimeSlotManager() {
-		super(TimeSlot.class,TimeSlot.TIMESLOT_KEY);
-	}
+   public TimeSlotManager()
+   {
+      super(TimeSlot.class, TimeSlot.TIMESLOT_KEY);
+   }
 
-	@Override
-	protected Logger getLogger() {
-		return logger;
-	}
+   @Override
+   protected Logger getLogger()
+   {
+      return logger;
+   }
 
 }

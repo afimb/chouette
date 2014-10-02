@@ -19,11 +19,16 @@ import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 import fr.certu.chouette.model.neptune.type.UserNeedEnum;
 
-public class LineProducer extends AbstractJaxbNeptuneProducer<ChouettePTNetworkType.ChouetteLineDescription.Line, Line> {
+public class LineProducer
+      extends
+      AbstractJaxbNeptuneProducer<ChouettePTNetworkType.ChouetteLineDescription.Line, Line>
+{
 
    @Override
-   public ChouettePTNetworkType.ChouetteLineDescription.Line produce(Line line) {
-	   ChouettePTNetworkType.ChouetteLineDescription.Line jaxbLine = tridentFactory.createChouettePTNetworkTypeChouetteLineDescriptionLine();
+   public ChouettePTNetworkType.ChouetteLineDescription.Line produce(Line line)
+   {
+      ChouettePTNetworkType.ChouetteLineDescription.Line jaxbLine = tridentFactory
+            .createChouettePTNetworkTypeChouetteLineDescriptionLine();
 
       //
       populateFromModel(jaxbLine, line);
@@ -34,31 +39,42 @@ public class LineProducer extends AbstractJaxbNeptuneProducer<ChouettePTNetworkT
       jaxbLine.setPublishedName(line.getPublishedName());
       jaxbLine.setPtNetworkIdShortcut(getNonEmptyObjectId(line.getPtNetwork()));
 
-      try {
+      try
+      {
          TransportModeNameEnum transportModeName = line.getTransportModeName();
-         if(transportModeName != null){
-            jaxbLine.setTransportModeName(TransportModeNameType.fromValue(transportModeName.name()));
+         if (transportModeName != null)
+         {
+            jaxbLine.setTransportModeName(TransportModeNameType
+                  .fromValue(transportModeName.name()));
          }
-      } catch (IllegalArgumentException e) {
+      } catch (IllegalArgumentException e)
+      {
          // TODO generate report
       }
 
       jaxbLine.setRegistration(getRegistration(line.getRegistrationNumber()));
-      if(line.getLineEnds() != null){
+      if (line.getLineEnds() != null)
+      {
          jaxbLine.getLineEnd().addAll(line.getLineEnds());
       }
-      jaxbLine.getRouteId().addAll(NeptuneIdentifiedObject.extractObjectIds(line.getRoutes()));
+      jaxbLine.getRouteId().addAll(
+            NeptuneIdentifiedObject.extractObjectIds(line.getRoutes()));
 
       boolean hasExtensions = false;
-      LineExtensionType jaxbLineExtension = tridentFactory.createLineExtensionType();
+      LineExtensionType jaxbLineExtension = tridentFactory
+            .createLineExtensionType();
       if (line.getUserNeeds() != null && !line.getUserNeeds().isEmpty())
       {
-         jaxbLineExtension.setAccessibilitySuitabilityDetails(extractAccessibilitySuitabilityDetails(line.getUserNeeds()));
+         jaxbLineExtension
+               .setAccessibilitySuitabilityDetails(extractAccessibilitySuitabilityDetails(line
+                     .getUserNeeds()));
          hasExtensions = true;
       }
-      if (line.getMobilityRestrictedSuitable() != null && line.getMobilityRestrictedSuitable())
+      if (line.getMobilityRestrictedSuitable() != null
+            && line.getMobilityRestrictedSuitable())
       {
-         jaxbLineExtension.setMobilityRestrictedSuitability(line.getMobilityRestrictedSuitable());
+         jaxbLineExtension.setMobilityRestrictedSuitability(line
+               .getMobilityRestrictedSuitable());
          hasExtensions = true;
       }
       // jaxbLineExtension.setStableId(stableId); ???
@@ -67,41 +83,54 @@ public class LineProducer extends AbstractJaxbNeptuneProducer<ChouettePTNetworkT
 
       return jaxbLine;
    }
-   
-	protected AccessibilitySuitabilityDetails extractAccessibilitySuitabilityDetails(List<UserNeedEnum> userNeeds){
-		AccessibilitySuitabilityDetails details = new AccessibilitySuitabilityDetails();
-		List<UserNeedStructure> detailsItems = new ArrayList<UserNeedStructure>();
-		if(userNeeds != null){
-			for(UserNeedEnum userNeed : userNeeds){
-				if(userNeed != null){
-					UserNeedStructure userNeedGroup = new UserNeedStructure();
 
-					switch (userNeed.category()) {
-					case ENCUMBRANCE:
-						userNeedGroup.setEncumbranceNeed(EncumbranceEnumeration.fromValue(userNeed.value()));
-						break;
-					case MEDICAL:
-						userNeedGroup.setMedicalNeed(MedicalNeedEnumeration.fromValue(userNeed.value()));					
-						break;
-					case PSYCHOSENSORY:
-						userNeedGroup.setPsychosensoryNeed(PyschosensoryNeedEnumeration.fromValue(userNeed.value()));	
-						break;
-					case MOBILITY:
-						userNeedGroup.setMobilityNeed(MobilityEnumeration.fromValue(userNeed.value()));	
-						break;
-					default:
-						throw new IllegalArgumentException("bad value of userNeed");
-					}
+   protected AccessibilitySuitabilityDetails extractAccessibilitySuitabilityDetails(
+         List<UserNeedEnum> userNeeds)
+   {
+      AccessibilitySuitabilityDetails details = new AccessibilitySuitabilityDetails();
+      List<UserNeedStructure> detailsItems = new ArrayList<UserNeedStructure>();
+      if (userNeeds != null)
+      {
+         for (UserNeedEnum userNeed : userNeeds)
+         {
+            if (userNeed != null)
+            {
+               UserNeedStructure userNeedGroup = new UserNeedStructure();
 
-					detailsItems.add(userNeedGroup);
+               switch (userNeed.category())
+               {
+               case ENCUMBRANCE:
+                  userNeedGroup.setEncumbranceNeed(EncumbranceEnumeration
+                        .fromValue(userNeed.value()));
+                  break;
+               case MEDICAL:
+                  userNeedGroup.setMedicalNeed(MedicalNeedEnumeration
+                        .fromValue(userNeed.value()));
+                  break;
+               case PSYCHOSENSORY:
+                  userNeedGroup
+                        .setPsychosensoryNeed(PyschosensoryNeedEnumeration
+                              .fromValue(userNeed.value()));
+                  break;
+               case MOBILITY:
+                  userNeedGroup.setMobilityNeed(MobilityEnumeration
+                        .fromValue(userNeed.value()));
+                  break;
+               default:
+                  throw new IllegalArgumentException("bad value of userNeed");
+               }
 
-				}
-			}
-		}
+               detailsItems.add(userNeedGroup);
 
-		if (detailsItems.isEmpty()) return null;
-		details.getMobilityNeedOrPsychosensoryNeedOrMedicalNeed().addAll(detailsItems);
-		return details;
-	}
+            }
+         }
+      }
+
+      if (detailsItems.isEmpty())
+         return null;
+      details.getMobilityNeedOrPsychosensoryNeedOrMedicalNeed().addAll(
+            detailsItems);
+      return details;
+   }
 
 }

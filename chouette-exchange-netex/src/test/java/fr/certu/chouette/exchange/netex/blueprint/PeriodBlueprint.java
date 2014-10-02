@@ -8,10 +8,11 @@ import com.tobedevoured.modelcitizen.annotation.Default;
 import fr.certu.chouette.model.neptune.Period;
 
 @Blueprint(Period.class)
-public class PeriodBlueprint {    
-    @Default
-    Date startDate;           
+public class PeriodBlueprint
+{
+   @Default
+   Date startDate;
 
-    @Default
-    Date endDate;   
+   @Default
+   Date endDate;
 }

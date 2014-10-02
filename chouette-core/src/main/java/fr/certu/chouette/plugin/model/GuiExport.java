@@ -63,7 +63,8 @@ public class GuiExport extends ActiveRecordObject
 
    @Getter
    @Setter
-   @OneToMany(mappedBy = "parent", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+   @OneToMany(mappedBy = "parent", cascade = { CascadeType.PERSIST,
+         CascadeType.MERGE })
    private List<ExportLogMessage> results;
 
 }

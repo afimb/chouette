@@ -21,14 +21,15 @@ import au.com.bytecode.opencsv.CSVReader;
 public class ChouetteCsvReader extends CSVReader
 {
 
-   @Getter private int rowNum = 0;
+   @Getter
+   private int rowNum = 0;
+
    /**
     * @param arg0
     */
    public ChouetteCsvReader(Reader arg0)
    {
       super(arg0);
-      // TODO Auto-generated constructor stub
    }
 
    /**
@@ -38,7 +39,6 @@ public class ChouetteCsvReader extends CSVReader
    public ChouetteCsvReader(Reader arg0, char arg1)
    {
       super(arg0, arg1);
-      // TODO Auto-generated constructor stub
    }
 
    /**
@@ -49,7 +49,6 @@ public class ChouetteCsvReader extends CSVReader
    public ChouetteCsvReader(Reader arg0, char arg1, char arg2)
    {
       super(arg0, arg1, arg2);
-      // TODO Auto-generated constructor stub
    }
 
    /**
@@ -61,10 +60,11 @@ public class ChouetteCsvReader extends CSVReader
    public ChouetteCsvReader(Reader arg0, char arg1, char arg2, int arg3)
    {
       super(arg0, arg1, arg2, arg3);
-      // TODO Auto-generated constructor stub
    }
 
-   /* (non-Javadoc)
+   /*
+    * (non-Javadoc)
+    * 
     * @see au.com.bytecode.opencsv.CSVReader#readNext()
     */
    @Override
@@ -74,5 +74,4 @@ public class ChouetteCsvReader extends CSVReader
       return super.readNext();
    }
 
-   
 }

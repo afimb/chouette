@@ -15,19 +15,21 @@ import fr.certu.chouette.plugin.report.ReportHolder;
 
 /**
  * @author michel
- *
+ * 
  * @param <T>
  */
-public interface IImportPlugin<T extends NeptuneIdentifiedObject> extends IExchangePlugin
+public interface IImportPlugin<T extends NeptuneIdentifiedObject> extends
+      IExchangePlugin
 {
 
-	/**
-	 * import data
-	 * 
-	 * @param parameters
-	 * @param report
-	 * @return
-	 * @throws ExchangeException
-	 */
-	List<T> doImport(List<ParameterValue> parameters,ReportHolder importReport,ReportHolder validationReport) throws ChouetteException;
+   /**
+    * import data
+    * 
+    * @param parameters
+    * @param report
+    * @return
+    * @throws ExchangeException
+    */
+   List<T> doImport(List<ParameterValue> parameters, ReportHolder importReport,
+         ReportHolder validationReport) throws ChouetteException;
 }

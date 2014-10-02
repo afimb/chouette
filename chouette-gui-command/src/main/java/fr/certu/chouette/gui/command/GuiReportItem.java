@@ -17,7 +17,11 @@ import fr.certu.chouette.plugin.report.ReportItem;
  */
 public class GuiReportItem extends ReportItem
 {
-   public enum KEY {SAVE_OK , NO_SAVE, SAVE_ERROR, EXCEPTION };
+   public enum KEY
+   {
+      SAVE_OK, NO_SAVE, SAVE_ERROR, EXCEPTION
+   };
+
    /**
     * 
     */
@@ -26,25 +30,28 @@ public class GuiReportItem extends ReportItem
 
    }
 
-
    public GuiReportItem(KEY key, STATE status, Object... args)
    {
       setMessageKey(key.toString());
       updateStatus(status);
-      if (args != null) setMessageArgs(Arrays.asList(args));
+      if (args != null)
+         setMessageArgs(Arrays.asList(args));
    }
-   
-   /* (non-Javadoc)
-    * @see fr.certu.chouette.plugin.report.Report#addItem(fr.certu.chouette.plugin.report.ReportItem)
+
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * fr.certu.chouette.plugin.report.Report#addItem(fr.certu.chouette.plugin
+    * .report.ReportItem)
     */
    @Override
    public void addItem(ReportItem item)
    {
-      if (getItems() == null) 
+      if (getItems() == null)
       {
          super.addItem(item);
-      }
-      else
+      } else
       {
          getItems().add(item);
       }

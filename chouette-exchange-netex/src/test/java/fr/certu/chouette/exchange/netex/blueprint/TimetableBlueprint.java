@@ -12,24 +12,27 @@ import java.util.List;
 import java.util.UUID;
 
 @Blueprint(Timetable.class)
-public class TimetableBlueprint {
-    
-    @Default
-    FieldCallback objectId = new FieldCallback() {
-        @Override
-        public String get( Object model) {
-            return "RATP_PIVI:TimeTable:" + UUID.randomUUID();
-        }
-        
-    };     
-    
-    @MappedList(target = Period.class, size = 0, ignoreEmpty = false)
-    List<Period> periods;
-    
-    @Mapped
-    List<Date> calendarDays;
-    
-    @Default
-    Integer intDayTypes;
+public class TimetableBlueprint
+{
+
+   @Default
+   FieldCallback objectId = new FieldCallback()
+   {
+      @Override
+      public String get(Object model)
+      {
+         return "RATP_PIVI:TimeTable:" + UUID.randomUUID();
+      }
+
+   };
+
+   @MappedList(target = Period.class, size = 0, ignoreEmpty = false)
+   List<Period> periods;
+
+   @Mapped
+   List<Date> calendarDays;
+
+   @Default
+   Integer intDayTypes;
 
 }

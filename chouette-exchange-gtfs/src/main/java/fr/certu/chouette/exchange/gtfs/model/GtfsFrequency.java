@@ -14,100 +14,128 @@ import lombok.Setter;
 
 /**
  * @author michel
- *
+ * 
  */
 @NoArgsConstructor
-
 public class GtfsFrequency extends GtfsBean
 {
-	@Getter @Setter private String tripId;
-	@Getter @Setter private GtfsTime startTime ;
-	@Getter @Setter private GtfsTime endTime;
-	@Getter @Setter private int headwaySecs = 0;
-	@Getter @Setter private GtfsTrip trip;
-	@Getter @Setter private boolean exactTimes = false;
+   @Getter
+   @Setter
+   private String tripId;
+   @Getter
+   @Setter
+   private GtfsTime startTime;
+   @Getter
+   @Setter
+   private GtfsTime endTime;
+   @Getter
+   @Setter
+   private int headwaySecs = 0;
+   @Getter
+   @Setter
+   private GtfsTrip trip;
+   @Getter
+   @Setter
+   private boolean exactTimes = false;
 
-	public static final String header = "trip_id,start_time,end_time,headway_secs"; //,exact_times";
-	
-	public String getCSVLine() {
-		String csvLine = toCSVString(tripId) + ",";
-		csvLine += startTime;
-		csvLine += ",";
-		csvLine += endTime;
-		csvLine += ",";
-		csvLine += headwaySecs;
-		return csvLine;
-	}
+   public static final String header = "trip_id,start_time,end_time,headway_secs"; // ,exact_times";
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = super.hashCode();
-		result = prime * result + ((startTime == null) ? 0 : startTime.hashCode());
-		result = prime * result + ((tripId == null) ? 0 : tripId.hashCode());
-		return result;
-	}
+   public String getCSVLine()
+   {
+      String csvLine = toCSVString(tripId) + ",";
+      csvLine += startTime;
+      csvLine += ",";
+      csvLine += endTime;
+      csvLine += ",";
+      csvLine += headwaySecs;
+      return csvLine;
+   }
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (!super.equals(obj)) {
-			return false;
-		}
-		if (!(obj instanceof GtfsFrequency)) {
-			return false;
-		}
-		GtfsFrequency other = (GtfsFrequency) obj;
-		if (startTime == null) {
-			if (other.startTime != null) {
-				return false;
-			}
-		} else if (!startTime.equals(other.startTime)) {
-			return false;
-		}
-		if (tripId == null) {
-			if (other.tripId != null) {
-				return false;
-			}
-		} else if (!tripId.equals(other.tripId)) {
-			return false;
-		}
-		return true;
-	}
+   /*
+    * (non-Javadoc)
+    * 
+    * @see java.lang.Object#hashCode()
+    */
+   @Override
+   public int hashCode()
+   {
+      final int prime = 31;
+      int result = super.hashCode();
+      result = prime * result
+            + ((startTime == null) ? 0 : startTime.hashCode());
+      result = prime * result + ((tripId == null) ? 0 : tripId.hashCode());
+      return result;
+   }
 
-	@Override
-	public boolean isValid() 
-	{
-		boolean ret = true;
-		if (tripId == null)
-		{
-			addMissingData("trip_id");
-			ret = false;
-		}
-		if (startTime == null)
-		{
-			addMissingData("start_time");
-			ret = false;
-		}
-		if (endTime == null)
-		{
-			addMissingData("end_time");
-			ret = false;
-		}
-		if (headwaySecs == 0)
-		{
-			addMissingData("headway_secs");
-			ret = false;
-		}
-		return ret;
-	}
+   /*
+    * (non-Javadoc)
+    * 
+    * @see java.lang.Object#equals(java.lang.Object)
+    */
+   @Override
+   public boolean equals(Object obj)
+   {
+      if (this == obj)
+      {
+         return true;
+      }
+      if (!super.equals(obj))
+      {
+         return false;
+      }
+      if (!(obj instanceof GtfsFrequency))
+      {
+         return false;
+      }
+      GtfsFrequency other = (GtfsFrequency) obj;
+      if (startTime == null)
+      {
+         if (other.startTime != null)
+         {
+            return false;
+         }
+      } else if (!startTime.equals(other.startTime))
+      {
+         return false;
+      }
+      if (tripId == null)
+      {
+         if (other.tripId != null)
+         {
+            return false;
+         }
+      } else if (!tripId.equals(other.tripId))
+      {
+         return false;
+      }
+      return true;
+   }
+
+   @Override
+   public boolean isValid()
+   {
+      boolean ret = true;
+      if (tripId == null)
+      {
+         addMissingData("trip_id");
+         ret = false;
+      }
+      if (startTime == null)
+      {
+         addMissingData("start_time");
+         ret = false;
+      }
+      if (endTime == null)
+      {
+         addMissingData("end_time");
+         ret = false;
+      }
+      if (headwaySecs == 0)
+      {
+         addMissingData("headway_secs");
+         ret = false;
+      }
+      return ret;
+   }
 
 }

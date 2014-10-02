@@ -31,113 +31,159 @@ import fr.certu.chouette.plugin.exchange.SharedImportedData;
 import fr.certu.chouette.plugin.exchange.UnsharedImportedData;
 import fr.certu.chouette.plugin.report.ReportItem;
 import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
+
 /**
  * 
  * @author mamadou keira
- *
+ * 
  */
-public class FacilityProducer extends AbstractModelProducer<Facility, ChouetteFacilityType>{
+public class FacilityProducer extends
+      AbstractModelProducer<Facility, ChouetteFacilityType>
+{
 
+   @Override
+   public Facility produce(String sourceFile, ChouetteFacilityType xmlFacility,
+         ReportItem importReport, PhaseReportItem validationReport,
+         SharedImportedData sharedData, UnsharedImportedData unshareableData)
+   {
+      Facility facility = new Facility();
+      // objectId, objectVersion, creatorId, creationTime
+      populateFromCastorNeptune(facility, xmlFacility, importReport);
+      // Name optional
+      facility.setName(getNonEmptyTrimedString(xmlFacility.getName()));
+      // Comment optional
+      facility.setComment(getNonEmptyTrimedString(xmlFacility.getComment()));
 
-	@Override
-	public Facility produce(String sourceFile,ChouetteFacilityType xmlFacility, ReportItem importReport, PhaseReportItem validationReport,SharedImportedData sharedData, UnsharedImportedData unshareableData) {
-		Facility facility = new Facility();
-		// objectId, objectVersion, creatorId, creationTime
-		populateFromCastorNeptune(facility, xmlFacility,importReport);
-		// Name optional
-		facility.setName(getNonEmptyTrimedString(xmlFacility.getName()));	
-		// Comment optional
-		facility.setComment(getNonEmptyTrimedString(xmlFacility.getComment()));
+      facility.setStopAreaId(getNonEmptyTrimedString(xmlFacility
+            .getStopAreaId()));
+      facility.setLineId(getNonEmptyTrimedString(xmlFacility.getLineId()));
+      facility.setConnectionLinkId(getNonEmptyTrimedString(xmlFacility
+            .getConnectionLinkId()));
+      facility.setStopPointId(getNonEmptyTrimedString(xmlFacility
+            .getStopPointId()));
 
-		facility.setStopAreaId(getNonEmptyTrimedString(xmlFacility.getStopAreaId()));
-		facility.setLineId(getNonEmptyTrimedString(xmlFacility.getLineId()));
-		facility.setConnectionLinkId(getNonEmptyTrimedString(xmlFacility.getConnectionLinkId()));
-		facility.setStopPointId(getNonEmptyTrimedString(xmlFacility.getStopPointId()));
+      facility.setDescription(getNonEmptyTrimedString(xmlFacility
+            .getDescription()));
+      // FreeAccess optional
+      if (xmlFacility.isSetFreeAccess())
+         facility.setFreeAccess(xmlFacility.isFreeAccess());
 
-		facility.setDescription(getNonEmptyTrimedString(xmlFacility.getDescription()));
-		//FreeAccess optional
-		if (xmlFacility.isSetFreeAccess())
-			facility.setFreeAccess(xmlFacility.isFreeAccess());
+      FacilityLocation xmlFacilityLocation = xmlFacility.getFacilityLocation();
+      if (xmlFacilityLocation != null)
+      {
+         // FacilityLocation facilityLocation = new FacilityLocation();
+         // Address optional
+         AddressType xmlAddress = xmlFacilityLocation.getAddress();
+         if (xmlAddress != null)
+         {
+            // Address address = new Address();
+            facility.setCountryCode(getNonEmptyTrimedString(xmlAddress
+                  .getCountryCode()));
+            facility.setStreetName(getNonEmptyTrimedString(xmlAddress
+                  .getStreetName()));
+            // facilityLocation.setAddress(address);
+         }
+         // LongLatType mandatory
+         if (xmlFacilityLocation.getLongLatType() != null)
+         {
+            try
+            {
+               facility.setLongLatType(LongLatTypeEnum
+                     .valueOf(xmlFacilityLocation.getLongLatType().value()));
+            } catch (IllegalArgumentException e)
+            {
+               // TODO: handle exception
+               e.printStackTrace();
+            }
+         }
+         // Latitude mandatory
+         facility.setLatitude(xmlFacilityLocation.getLatitude());
+         // Longitude mandatory
+         facility.setLongitude(xmlFacilityLocation.getLongitude());
+         // ProjectedPoint optional
+         ProjectedPointType xmlProjectedPoint = xmlFacilityLocation
+               .getProjectedPoint();
+         if (xmlProjectedPoint != null)
+         {
+            // ProjectedPoint projectedPoint = new ProjectedPoint();
+            facility.setX(xmlProjectedPoint.getX());
+            facility.setY(xmlProjectedPoint.getY());
+            facility.setProjectionType(xmlProjectedPoint.getProjectionType());
+            // facilityLocation.setProjectedPoint(projectedPoint);
+         }
+         // ContainedIn mandatory
+         facility.setContainedIn(xmlFacilityLocation.getContainedIn());
+         // facility.setFacilityLocation(facilityLocation);
+      }
+      // FacilityFeature[1..n] mandatory
+      List<AllFacilitiesFeatureStructure> features = xmlFacility
+            .getFacilityFeature();
+      for (AllFacilitiesFeatureStructure xmlFeature : features)
+      {
+         FacilityFeature facilityFeature = new FacilityFeature();
 
-		FacilityLocation xmlFacilityLocation = xmlFacility.getFacilityLocation();
-		if(xmlFacilityLocation != null){
-			// FacilityLocation facilityLocation = new FacilityLocation();
-			// Address optional
-			AddressType xmlAddress = xmlFacilityLocation.getAddress();		
-			if(xmlAddress != null){
-				// Address address = new Address();
-				facility.setCountryCode(getNonEmptyTrimedString(xmlAddress.getCountryCode()));
-				facility.setStreetName(getNonEmptyTrimedString(xmlAddress.getStreetName()));
-				// facilityLocation.setAddress(address);
-			}
-			// LongLatType mandatory
-			if(xmlFacilityLocation.getLongLatType() != null){
-				try {
-					facility.setLongLatType(LongLatTypeEnum.valueOf(xmlFacilityLocation.getLongLatType().value()));
-				} catch (IllegalArgumentException e) {
-					// TODO: handle exception
-					e.printStackTrace();
-				}
-			}
-			// Latitude mandatory
-			facility.setLatitude(xmlFacilityLocation.getLatitude());
-			// Longitude mandatory
-			facility.setLongitude(xmlFacilityLocation.getLongitude());
-			// ProjectedPoint optional
-			ProjectedPointType xmlProjectedPoint = xmlFacilityLocation.getProjectedPoint();
-			if(xmlProjectedPoint != null){
-				// ProjectedPoint projectedPoint = new ProjectedPoint();
-				facility.setX(xmlProjectedPoint.getX());
-				facility.setY(xmlProjectedPoint.getY());
-				facility.setProjectionType(xmlProjectedPoint.getProjectionType());
-				// facilityLocation.setProjectedPoint(projectedPoint);
-			}			
-			//ContainedIn mandatory
-			facility.setContainedIn(xmlFacilityLocation.getContainedIn());
-			// facility.setFacilityLocation(facilityLocation);
-		}
-		//FacilityFeature[1..n] mandatory
-		List<AllFacilitiesFeatureStructure> features = xmlFacility.getFacilityFeature();
-		for (AllFacilitiesFeatureStructure xmlFeature : features) {
-			FacilityFeature facilityFeature = new FacilityFeature();
+         if (xmlFeature.isSetAccessFacility())
+            facilityFeature.setAccessFacility(AccessFacilityEnumeration
+                  .fromValue(xmlFeature.getAccessFacility().value()));
+         else if (xmlFeature.isSetAccommodationFacility())
+            facilityFeature
+                  .setAccommodationFacility(AccommodationFacilityEnumeration
+                        .fromValue(xmlFeature.getAccommodationFacility()
+                              .value()));
+         else if (xmlFeature.isSetAssistanceFacility())
+            facilityFeature.setAssistanceFacility(AssistanceFacilityEnumeration
+                  .fromValue(xmlFeature.getAssistanceFacility().value()));
+         else if (xmlFeature.isSetFareClassFacility())
+            facilityFeature.setFareClassFacility(FareClassFacilityEnumeration
+                  .fromValue(xmlFeature.getFareClassFacility().value()));
+         else if (xmlFeature.isSetHireFacility())
+            facilityFeature.setHireFacility(HireFacilityEnumeration
+                  .fromValue(xmlFeature.getHireFacility().value()));
+         else if (xmlFeature.isSetLuggageFacility())
+            facilityFeature.setLuggageFacility(LuggageFacilityEnumeration
+                  .fromValue(xmlFeature.getLuggageFacility().value()));
+         else if (xmlFeature.isSetMobilityFacility())
+            facilityFeature.setMobilityFacility(MobilityFacilityEnumeration
+                  .fromValue(xmlFeature.getMobilityFacility().value()));
+         else if (xmlFeature.isSetNuisanceFacility())
+            facilityFeature.setNuisanceFacility(NuisanceFacilityEnumeration
+                  .fromValue(xmlFeature.getNuisanceFacility().value()));
+         else if (xmlFeature.isSetParkingFacility())
+            facilityFeature.setParkingFacility(ParkingFacilityEnumeration
+                  .fromValue(xmlFeature.getParkingFacility().value()));
+         else if (xmlFeature.isSetPassengerCommsFacility())
+            facilityFeature
+                  .setPassengerCommsFacility(PassengerCommsFacilityEnumeration
+                        .fromValue(xmlFeature.getPassengerCommsFacility()
+                              .value()));
+         else if (xmlFeature.isSetPassengerInformationFacility())
+            facilityFeature
+                  .setPassengerInformationFacility(PassengerInformationFacilityEnumeration
+                        .fromValue(xmlFeature.getPassengerInformationFacility()
+                              .value()));
+         else if (xmlFeature.isSetRefreshmentFacility())
+            facilityFeature
+                  .setRefreshmentFacility(RefreshmentFacilityEnumeration
+                        .fromValue(xmlFeature.getRefreshmentFacility().value()));
+         else if (xmlFeature.isSetReservedSpaceFacility())
+            facilityFeature
+                  .setReservedSpaceFacility(ReservedSpaceFacilityEnumeration
+                        .fromValue(xmlFeature.getReservedSpaceFacility()
+                              .value()));
+         else if (xmlFeature.isSetRetailFacility())
+            facilityFeature.setRetailFacility(RetailFacilityEnumeration
+                  .fromValue(xmlFeature.getRetailFacility().value()));
+         else if (xmlFeature.isSetSanitaryFacility())
+            facilityFeature.setSanitaryFacility(SanitaryFacilityEnumeration
+                  .fromValue(xmlFeature.getSanitaryFacility().value()));
+         else if (xmlFeature.isSetTicketingFacility())
+            facilityFeature.setTicketingFacility(TicketingFacilityEnumeration
+                  .fromValue(xmlFeature.getTicketingFacility().value()));
 
-			if (xmlFeature.isSetAccessFacility())
-				facilityFeature.setAccessFacility(AccessFacilityEnumeration.fromValue(xmlFeature.getAccessFacility().value()));
-			else if (xmlFeature.isSetAccommodationFacility())  
-				facilityFeature.setAccommodationFacility(AccommodationFacilityEnumeration.fromValue(xmlFeature.getAccommodationFacility().value()));
-			else if (xmlFeature.isSetAssistanceFacility())  
-				facilityFeature.setAssistanceFacility(AssistanceFacilityEnumeration.fromValue(xmlFeature.getAssistanceFacility().value()));
-			else if (xmlFeature.isSetFareClassFacility())  
-				facilityFeature.setFareClassFacility(FareClassFacilityEnumeration.fromValue(xmlFeature.getFareClassFacility().value()));
-			else if (xmlFeature.isSetHireFacility())  
-				facilityFeature.setHireFacility(HireFacilityEnumeration.fromValue(xmlFeature.getHireFacility().value()));
-			else if (xmlFeature.isSetLuggageFacility())  
-				facilityFeature.setLuggageFacility(LuggageFacilityEnumeration.fromValue(xmlFeature.getLuggageFacility().value()));
-			else if (xmlFeature.isSetMobilityFacility())  
-				facilityFeature.setMobilityFacility(MobilityFacilityEnumeration.fromValue(xmlFeature.getMobilityFacility().value()));
-			else if (xmlFeature.isSetNuisanceFacility())  
-				facilityFeature.setNuisanceFacility(NuisanceFacilityEnumeration.fromValue(xmlFeature.getNuisanceFacility().value()));
-			else if (xmlFeature.isSetParkingFacility())  
-				facilityFeature.setParkingFacility(ParkingFacilityEnumeration.fromValue(xmlFeature.getParkingFacility().value()));
-			else if (xmlFeature.isSetPassengerCommsFacility())  
-				facilityFeature.setPassengerCommsFacility(PassengerCommsFacilityEnumeration.fromValue(xmlFeature.getPassengerCommsFacility().value()));
-			else if (xmlFeature.isSetPassengerInformationFacility())  
-				facilityFeature.setPassengerInformationFacility(PassengerInformationFacilityEnumeration.fromValue(xmlFeature.getPassengerInformationFacility().value()));
-			else if (xmlFeature.isSetRefreshmentFacility())  
-				facilityFeature.setRefreshmentFacility(RefreshmentFacilityEnumeration.fromValue(xmlFeature.getRefreshmentFacility().value()));
-			else if (xmlFeature.isSetReservedSpaceFacility())  
-				facilityFeature.setReservedSpaceFacility(ReservedSpaceFacilityEnumeration.fromValue(xmlFeature.getReservedSpaceFacility().value()));
-			else if (xmlFeature.isSetRetailFacility())  
-				facilityFeature.setRetailFacility(RetailFacilityEnumeration.fromValue(xmlFeature.getRetailFacility().value()));
-			else if (xmlFeature.isSetSanitaryFacility())  
-				facilityFeature.setSanitaryFacility(SanitaryFacilityEnumeration.fromValue(xmlFeature.getSanitaryFacility().value()));
-			else if (xmlFeature.isSetTicketingFacility())  
-				facilityFeature.setTicketingFacility(TicketingFacilityEnumeration.fromValue(xmlFeature.getTicketingFacility().value()));
+         facility.addFacilityFeature(facilityFeature);
+      }
 
-			facility.addFacilityFeature(facilityFeature);
-		}	
-
-		return facility;
-	}
+      return facility;
+   }
 
 }

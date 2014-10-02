@@ -28,17 +28,17 @@ import fr.certu.chouette.plugin.report.Report.STATE;
  */
 public class GtfsAgencyProducer extends AbstractProducer<GtfsAgency, Company>
 {
-   private static final Logger logger = Logger.getLogger(GtfsAgencyProducer.class);
+   private static final Logger logger = Logger
+         .getLogger(GtfsAgencyProducer.class);
 
    @Override
-   public List<GtfsAgency> produceAll(Company company,GtfsReport report)
+   public List<GtfsAgency> produceAll(Company company, GtfsReport report)
    {
       throw new UnsupportedOperationException("not yet implemented");
    }
 
-
    @Override
-   public GtfsAgency produce(Company neptuneObject,GtfsReport report)
+   public GtfsAgency produce(Company neptuneObject, GtfsReport report)
    {
       GtfsAgency agency = new GtfsAgency();
       agency.setAgencyId(toGtfsId(neptuneObject.getObjectId()));
@@ -50,8 +50,10 @@ public class GtfsAgencyProducer extends AbstractProducer<GtfsAgency, Company>
          name += " (" + neptuneObject.getRegistrationNumber() + ")";
       if (name.trim().isEmpty())
       {
-         logger.error("no name for "+neptuneObject.getObjectId());
-         GtfsReportItem item = new GtfsReportItem(GtfsReportItem.KEY.MISSING_DATA, STATE.ERROR, "Company",neptuneObject.getObjectId(),"Name");
+         logger.error("no name for " + neptuneObject.getObjectId());
+         GtfsReportItem item = new GtfsReportItem(
+               GtfsReportItem.KEY.MISSING_DATA, STATE.ERROR, "Company",
+               neptuneObject.getObjectId(), "Name");
          report.addItem(item);
          return null;
       }
@@ -60,22 +62,23 @@ public class GtfsAgencyProducer extends AbstractProducer<GtfsAgency, Company>
       agency.setAgencyTimezone(TimeZone.getDefault());
 
       String url = null;
-      if (neptuneObject.getOrganisationalUnit() != null && neptuneObject.getOrganisationalUnit().startsWith("http"))
+      if (neptuneObject.getOrganisationalUnit() != null
+            && neptuneObject.getOrganisationalUnit().startsWith("http"))
       {
          url = neptuneObject.getOrganisationalUnit();
-      }
-      else
+      } else
       {
-         url = "http://www."+neptuneObject.getShortName()+".com";
+         url = "http://www." + neptuneObject.getShortName() + ".com";
       }
       try
       {
          agency.setAgencyURL(new URL(url));
-      }
-      catch (MalformedURLException e)
+      } catch (MalformedURLException e)
       {
-         logger.error("malformed URL "+url);
-         GtfsReportItem item = new GtfsReportItem(GtfsReportItem.KEY.INVALID_DATA, STATE.ERROR, "Company",neptuneObject.getName(),"OrganisationalUnit",url);
+         logger.error("malformed URL " + url);
+         GtfsReportItem item = new GtfsReportItem(
+               GtfsReportItem.KEY.INVALID_DATA, STATE.ERROR, "Company",
+               neptuneObject.getName(), "OrganisationalUnit", url);
          report.addItem(item);
          return null;
       }
@@ -84,6 +87,5 @@ public class GtfsAgencyProducer extends AbstractProducer<GtfsAgency, Company>
 
       return agency;
    }
-
 
 }

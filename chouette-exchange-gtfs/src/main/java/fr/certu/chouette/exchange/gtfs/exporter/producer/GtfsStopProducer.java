@@ -26,31 +26,32 @@ public class GtfsStopProducer extends AbstractProducer<GtfsStop, StopArea>
 {
 
    @Override
-   public List<GtfsStop> produceAll(StopArea area,GtfsReport report)
+   public List<GtfsStop> produceAll(StopArea area, GtfsReport report)
    {
       throw new UnsupportedOperationException("not yet implemented");
    }
 
-
    @Override
-   public GtfsStop produce(StopArea neptuneObject,GtfsReport report)
+   public GtfsStop produce(StopArea neptuneObject, GtfsReport report)
    {
       GtfsStop stop = new GtfsStop();
       ChouetteAreaEnum chouetteAreaType = neptuneObject.getAreaType();
       if (chouetteAreaType.compareTo(ChouetteAreaEnum.BoardingPosition) == 0)
          stop.setLocationType(GtfsStop.STOP);
-      else if(chouetteAreaType.compareTo(ChouetteAreaEnum.Quay) == 0)
+      else if (chouetteAreaType.compareTo(ChouetteAreaEnum.Quay) == 0)
          stop.setLocationType(GtfsStop.STOP);
-      else if(chouetteAreaType.compareTo(ChouetteAreaEnum.CommercialStopPoint) == 0)
+      else if (chouetteAreaType.compareTo(ChouetteAreaEnum.CommercialStopPoint) == 0)
          stop.setLocationType(GtfsStop.STATION);
-//      else if(chouetteAreaType.compareTo(ChouetteAreaEnum.STOPPLACE) == 0)
-//         stop.setLocationType(GtfsStop.STATION);
+      // else if(chouetteAreaType.compareTo(ChouetteAreaEnum.STOPPLACE) == 0)
+      // stop.setLocationType(GtfsStop.STATION);
       else
-         return null ; // StopPlaces and ITL type not available
+         return null; // StopPlaces and ITL type not available
       stop.setStopId(toGtfsId(neptuneObject.getObjectId()));
       if (neptuneObject.getName() == null)
       {
-         GtfsReportItem item = new GtfsReportItem(GtfsReportItem.KEY.MISSING_DATA, STATE.ERROR, "StopArea",neptuneObject.getObjectId(),"Name");
+         GtfsReportItem item = new GtfsReportItem(
+               GtfsReportItem.KEY.MISSING_DATA, STATE.ERROR, "StopArea",
+               neptuneObject.getObjectId(), "Name");
          report.addItem(item);
          return null;
       }
@@ -58,14 +59,18 @@ public class GtfsStopProducer extends AbstractProducer<GtfsStop, StopArea>
 
       if (neptuneObject.getLatitude() == null)
       {
-         GtfsReportItem item = new GtfsReportItem(GtfsReportItem.KEY.MISSING_DATA, STATE.ERROR, "StopArea",neptuneObject.getName(),"Latitude");
+         GtfsReportItem item = new GtfsReportItem(
+               GtfsReportItem.KEY.MISSING_DATA, STATE.ERROR, "StopArea",
+               neptuneObject.getName(), "Latitude");
          report.addItem(item);
          return null;
       }
       stop.setStopLat(neptuneObject.getLatitude());
       if (neptuneObject.getLongitude() == null)
       {
-         GtfsReportItem item = new GtfsReportItem(GtfsReportItem.KEY.MISSING_DATA, STATE.ERROR, "StopArea",neptuneObject.getName(),"Longitude");
+         GtfsReportItem item = new GtfsReportItem(
+               GtfsReportItem.KEY.MISSING_DATA, STATE.ERROR, "StopArea",
+               neptuneObject.getName(), "Longitude");
          report.addItem(item);
          return null;
       }
@@ -74,13 +79,13 @@ public class GtfsStopProducer extends AbstractProducer<GtfsStop, StopArea>
       stop.setStopDesc(neptuneObject.getComment());
       if (stop.getLocationType() == GtfsStop.STOP)
       {
-    	  if (neptuneObject.getParent() != null)
-    	  {
-    		  stop.setParentStation(toGtfsId(neptuneObject.getParent().getObjectId()));
-    	  }
+         if (neptuneObject.getParent() != null)
+         {
+            stop.setParentStation(toGtfsId(neptuneObject.getParent()
+                  .getObjectId()));
+         }
       }
       return stop;
    }
-
 
 }

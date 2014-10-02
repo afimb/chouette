@@ -8,17 +8,17 @@
 package fr.certu.chouette.plugin.exchange;
 
 @SuppressWarnings("serial")
-public class ExchangeException extends Exception 
+public class ExchangeException extends Exception
 {
 
-	public ExchangeException(String arg0, Throwable arg1) {
-		super(arg0, arg1);
-		// TODO Auto-generated constructor stub
-	}
+   public ExchangeException(String arg0, Throwable arg1)
+   {
+      super(arg0, arg1);
+   }
 
-	public ExchangeException(String arg0) {
-		super(arg0);
-		// TODO Auto-generated constructor stub
-	}
+   public ExchangeException(String arg0)
+   {
+      super(arg0);
+   }
 
 }

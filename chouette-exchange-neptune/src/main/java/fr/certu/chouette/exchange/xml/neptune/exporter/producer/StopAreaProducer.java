@@ -21,98 +21,122 @@ import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.model.neptune.type.UserNeedEnum;
 
-public class StopAreaProducer extends AbstractJaxbNeptuneProducer<ChouetteArea.StopArea, StopArea> {
+public class StopAreaProducer extends
+      AbstractJaxbNeptuneProducer<ChouetteArea.StopArea, StopArea>
+{
 
-	@Override
-	public ChouetteArea.StopArea produce(StopArea stopArea) {
-		ChouetteArea.StopArea jaxbStopArea = tridentFactory.createChouettePTNetworkTypeChouetteAreaStopArea();
+   @Override
+   public ChouetteArea.StopArea produce(StopArea stopArea)
+   {
+      ChouetteArea.StopArea jaxbStopArea = tridentFactory
+            .createChouettePTNetworkTypeChouetteAreaStopArea();
 
-		//
-		populateFromModel(jaxbStopArea, stopArea);
+      //
+      populateFromModel(jaxbStopArea, stopArea);
 
-		jaxbStopArea.setComment(getNotEmptyString(stopArea.getComment()));
-		jaxbStopArea.setName(stopArea.getName());
-		
-		// castorStopArea.setCentroidOfArea(getNonEmptyObjectId(stopArea.getAreaCentroid()));
+      jaxbStopArea.setComment(getNotEmptyString(stopArea.getComment()));
+      jaxbStopArea.setName(stopArea.getName());
 
-		Set<String> containsList = new HashSet<String>();
-		if (stopArea.getAreaType().equals(ChouetteAreaEnum.ITL))
-		{
-			containsList.addAll(NeptuneIdentifiedObject.extractObjectIds(stopArea.getRoutingConstraintAreas()));
-		}
-		else
-		{
-			containsList.addAll(NeptuneIdentifiedObject.extractObjectIds(stopArea.getContainedStopAreas()));
-			containsList.addAll(NeptuneIdentifiedObject.extractObjectIds(stopArea.getContainedStopPoints()));			
-		}
-		jaxbStopArea.getContains().addAll(containsList);
+      // castorStopArea.setCentroidOfArea(getNonEmptyObjectId(stopArea.getAreaCentroid()));
 
-		StopAreaExtensionType stopAreaExtension = tridentFactory.createStopAreaExtensionType();
-		stopAreaExtension.setAccessibilitySuitabilityDetails(extractAccessibilitySuitabilityDetails(stopArea.getUserNeeds()));
+      Set<String> containsList = new HashSet<String>();
+      if (stopArea.getAreaType().equals(ChouetteAreaEnum.ITL))
+      {
+         containsList.addAll(NeptuneIdentifiedObject.extractObjectIds(stopArea
+               .getRoutingConstraintAreas()));
+      } else
+      {
+         containsList.addAll(NeptuneIdentifiedObject.extractObjectIds(stopArea
+               .getContainedStopAreas()));
+         containsList.addAll(NeptuneIdentifiedObject.extractObjectIds(stopArea
+               .getContainedStopPoints()));
+      }
+      jaxbStopArea.getContains().addAll(containsList);
 
-		try 
-		{
-			ChouetteAreaEnum areaType = stopArea.getAreaType();
-			if(areaType != null)
-			{
-				stopAreaExtension.setAreaType(ChouetteAreaType.fromValue(areaType.name()));
-			}
-		}
-		catch (IllegalArgumentException e) 
-		{
-			// TODO generate report
-		}
+      StopAreaExtensionType stopAreaExtension = tridentFactory
+            .createStopAreaExtensionType();
+      stopAreaExtension
+            .setAccessibilitySuitabilityDetails(extractAccessibilitySuitabilityDetails(stopArea
+                  .getUserNeeds()));
 
-		stopAreaExtension.setNearestTopicName(getNotEmptyString(stopArea.getNearestTopicName()));
-		stopAreaExtension.setRegistration(getRegistration(stopArea.getRegistrationNumber()));
-		if (stopArea.getFareCode() != null)
-			stopAreaExtension.setFareCode(stopArea.getFareCode());
-		if (stopArea.isLiftAvailable())
-			stopAreaExtension.setLiftAvailability(true);
-		if (stopArea.isMobilityRestrictedSuitable())
-			stopAreaExtension.setMobilityRestrictedSuitability(true);
-		if (stopArea.isStairsAvailable())
-			stopAreaExtension.setStairsAvailability(true);
+      try
+      {
+         ChouetteAreaEnum areaType = stopArea.getAreaType();
+         if (areaType != null)
+         {
+            stopAreaExtension.setAreaType(ChouetteAreaType.fromValue(areaType
+                  .name()));
+         }
+      } catch (IllegalArgumentException e)
+      {
+         // TODO generate report
+      }
 
-		jaxbStopArea.setStopAreaExtension(stopAreaExtension );
+      stopAreaExtension.setNearestTopicName(getNotEmptyString(stopArea
+            .getNearestTopicName()));
+      stopAreaExtension.setRegistration(getRegistration(stopArea
+            .getRegistrationNumber()));
+      if (stopArea.getFareCode() != null)
+         stopAreaExtension.setFareCode(stopArea.getFareCode());
+      if (stopArea.isLiftAvailable())
+         stopAreaExtension.setLiftAvailability(true);
+      if (stopArea.isMobilityRestrictedSuitable())
+         stopAreaExtension.setMobilityRestrictedSuitability(true);
+      if (stopArea.isStairsAvailable())
+         stopAreaExtension.setStairsAvailability(true);
 
-		return jaxbStopArea;
-	}
-	
-	protected AccessibilitySuitabilityDetails extractAccessibilitySuitabilityDetails(List<UserNeedEnum> userNeeds){
-		AccessibilitySuitabilityDetails details = new AccessibilitySuitabilityDetails();
-		List<UserNeedStructure> detailsItems = new ArrayList<UserNeedStructure>();
-		if(userNeeds != null){
-			for(UserNeedEnum userNeed : userNeeds){
-				if(userNeed != null){
-					UserNeedStructure userNeedGroup = new UserNeedStructure();
+      jaxbStopArea.setStopAreaExtension(stopAreaExtension);
 
-					switch (userNeed.category()) {
-					case ENCUMBRANCE:
-						userNeedGroup.setEncumbranceNeed(EncumbranceEnumeration.fromValue(userNeed.value()));
-						break;
-					case MEDICAL:
-						userNeedGroup.setMedicalNeed(MedicalNeedEnumeration.fromValue(userNeed.value()));					
-						break;
-					case PSYCHOSENSORY:
-						userNeedGroup.setPsychosensoryNeed(PyschosensoryNeedEnumeration.fromValue(userNeed.value()));	
-						break;
-					case MOBILITY:
-						userNeedGroup.setMobilityNeed(MobilityEnumeration.fromValue(userNeed.value()));	
-						break;
-					default:
-						throw new IllegalArgumentException("bad value of userNeed");
-					}
+      return jaxbStopArea;
+   }
 
-					detailsItems.add(userNeedGroup);
+   protected AccessibilitySuitabilityDetails extractAccessibilitySuitabilityDetails(
+         List<UserNeedEnum> userNeeds)
+   {
+      AccessibilitySuitabilityDetails details = new AccessibilitySuitabilityDetails();
+      List<UserNeedStructure> detailsItems = new ArrayList<UserNeedStructure>();
+      if (userNeeds != null)
+      {
+         for (UserNeedEnum userNeed : userNeeds)
+         {
+            if (userNeed != null)
+            {
+               UserNeedStructure userNeedGroup = new UserNeedStructure();
 
-				}
-			}
-		}
+               switch (userNeed.category())
+               {
+               case ENCUMBRANCE:
+                  userNeedGroup.setEncumbranceNeed(EncumbranceEnumeration
+                        .fromValue(userNeed.value()));
+                  break;
+               case MEDICAL:
+                  userNeedGroup.setMedicalNeed(MedicalNeedEnumeration
+                        .fromValue(userNeed.value()));
+                  break;
+               case PSYCHOSENSORY:
+                  userNeedGroup
+                        .setPsychosensoryNeed(PyschosensoryNeedEnumeration
+                              .fromValue(userNeed.value()));
+                  break;
+               case MOBILITY:
+                  userNeedGroup.setMobilityNeed(MobilityEnumeration
+                        .fromValue(userNeed.value()));
+                  break;
+               default:
+                  throw new IllegalArgumentException("bad value of userNeed");
+               }
 
-		if (detailsItems.isEmpty()) return null;
-		details.getMobilityNeedOrPsychosensoryNeedOrMedicalNeed().addAll(detailsItems);
-		return details;
-	}
+               detailsItems.add(userNeedGroup);
+
+            }
+         }
+      }
+
+      if (detailsItems.isEmpty())
+         return null;
+      details.getMobilityNeedOrPsychosensoryNeedOrMedicalNeed().addAll(
+            detailsItems);
+      return details;
+   }
 
 }

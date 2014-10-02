@@ -18,38 +18,52 @@ import fr.certu.chouette.model.neptune.Timetable;
 
 /**
  * @author michel
- *
+ * 
  */
-public class TimetableDaoTemplateTests extends AbstractDaoTemplateTests<Timetable> {
+public class TimetableDaoTemplateTests extends
+      AbstractDaoTemplateTests<Timetable>
+{
 
-	/* (non-Javadoc)
-	 * @see fr.certu.chouette.dao.hibernate.AbstractDaoTemplateTests#createDaoTemplate()
-	 */
-	@Override
-	@BeforeMethod (alwaysRun=true)
-	public void createDaoTemplate() 
-	{
-		initDaoTemplate("Timetable", "timetableDao");
-	}
-	/* (non-Javadoc)
-	 * @see fr.certu.chouette.dao.hibernate.AbstractDaoTemplateTests#refreshBean()
-	 */
-	@Override
-	public void refreshBean() 
-	{
-		bean = createTimetable();
-	}
-	
-	@Override
-	protected List<FilterData> getSelectFilters() 
-	{
-		List<FilterData> ret = new ArrayList<FilterData>();
-		ret.add(new FilterData("Timetable : comment",Filter.getNewEqualsFilter("comment", bean.getComment()) , 1));
-		return ret;
-	}
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * fr.certu.chouette.dao.hibernate.AbstractDaoTemplateTests#createDaoTemplate
+    * ()
+    */
+   @Override
+   @BeforeMethod(alwaysRun = true)
+   public void createDaoTemplate()
+   {
+      initDaoTemplate("Timetable", "timetableDao");
+   }
 
-   /* (non-Javadoc)
-    * @see fr.certu.chouette.dao.hibernate.AbstractDaoTemplateTests#getHqlValues()
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * fr.certu.chouette.dao.hibernate.AbstractDaoTemplateTests#refreshBean()
+    */
+   @Override
+   public void refreshBean()
+   {
+      bean = createTimetable();
+   }
+
+   @Override
+   protected List<FilterData> getSelectFilters()
+   {
+      List<FilterData> ret = new ArrayList<FilterData>();
+      ret.add(new FilterData("Timetable : comment", Filter.getNewEqualsFilter(
+            "comment", bean.getComment()), 1));
+      return ret;
+   }
+
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * fr.certu.chouette.dao.hibernate.AbstractDaoTemplateTests#getHqlValues()
     */
    @Override
    protected List<Object> getHqlValues()
@@ -60,14 +74,20 @@ public class TimetableDaoTemplateTests extends AbstractDaoTemplateTests<Timetabl
       return values;
    }
 
-   /* (non-Javadoc)
-    * @see fr.certu.chouette.dao.hibernate.AbstractDaoTemplateTests#getHQLFilter()
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * fr.certu.chouette.dao.hibernate.AbstractDaoTemplateTests#getHQLFilter()
     */
    @Override
    protected String getHQLFilter()
    {
-      return "select distinct b from "+beanName+" as b left join b.vehicleJourneys as v left join b.periods as p where v.journeyPattern.route.line.ptNetwork.name = ? and p.endDate > ?";
-      // return "select distinct b from "+beanName+" b left join b.vehicleJourneys v where v.journeyPattern.route.line.ptNetwork.name = ?";
+      return "select distinct b from "
+            + beanName
+            + " as b left join b.vehicleJourneys as v left join b.periods as p where v.journeyPattern.route.line.ptNetwork.name = ? and p.endDate > ?";
+      // return
+      // "select distinct b from "+beanName+" b left join b.vehicleJourneys v where v.journeyPattern.route.line.ptNetwork.name = ?";
    }
 
 }

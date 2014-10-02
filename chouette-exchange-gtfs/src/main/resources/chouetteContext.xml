@@ -3,10 +3,10 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="
    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
-   default-init-method="init">
+	default-init-method="init">
 
-    <import resource="GtfsExportContext.xml"/>
-    <import resource="GtfsImportContext.xml"/>
+	<import resource="GtfsExportContext.xml" />
+	<import resource="GtfsImportContext.xml" />
 
 	<bean id="GtfsLinePluginInjector" class="fr.certu.chouette.plugin.PluginInjector"
 		factory-method="createLinePluginInjector">
@@ -37,15 +37,8 @@
 			</list>
 		</property>
 	</bean>
-	<!-- 
-	<bean id="GtfsConnectionLinkPluginInjector" class="fr.certu.chouette.plugin.PluginInjector"
-		factory-method="createConnectionLinkPluginInjector">
-		<property name="manager" ref="connectionLinkManager" />
-		<property name="importPlugins">
-			<list>
-				<ref bean="GtfsConnectionLinkImport" />
-			</list>
-		</property>
-	</bean>
-    --> 
+	<!-- <bean id="GtfsConnectionLinkPluginInjector" class="fr.certu.chouette.plugin.PluginInjector" 
+		factory-method="createConnectionLinkPluginInjector"> <property name="manager" 
+		ref="connectionLinkManager" /> <property name="importPlugins"> <list> <ref 
+		bean="GtfsConnectionLinkImport" /> </list> </property> </bean> -->
 </beans>

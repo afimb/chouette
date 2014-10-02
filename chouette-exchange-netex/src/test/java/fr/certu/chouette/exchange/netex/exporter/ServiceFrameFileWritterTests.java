@@ -24,82 +24,92 @@ import fr.certu.chouette.exchange.netex.ComplexModelFactory;
 import fr.certu.chouette.exchange.netex.NetexNamespaceContext;
 import fr.certu.chouette.model.neptune.Line;
 
-@ContextConfiguration(locations = {"classpath:testContext.xml"})
+@ContextConfiguration(locations = { "classpath:testContext.xml" })
 @SuppressWarnings("unchecked")
-public class ServiceFrameFileWritterTests extends AbstractTestNGSpringContextTests {
+public class ServiceFrameFileWritterTests extends
+      AbstractTestNGSpringContextTests
+{
 
-    private NetexFileWriter netexFileWriter;
-    private ModelFactory modelFactory;
-    private ComplexModelFactory complexModelFactory;
-    private List<Line> lines = new ArrayList<Line>();
-    private String fileName = "/tmp/test.xml";
-    private XPath xPath = XPathFactory.newInstance().newXPath();
-    private Document xmlDocument;
-    private int stopCount = 20;
-    private int journeyPatternCount = 3;
-    private int vehicleCount = 2;
+   private NetexFileWriter netexFileWriter;
+   private ModelFactory modelFactory;
+   private ComplexModelFactory complexModelFactory;
+   private List<Line> lines = new ArrayList<Line>();
+   private String fileName = "/tmp/test.xml";
+   private XPath xPath = XPathFactory.newInstance().newXPath();
+   private Document xmlDocument;
+   private int stopCount = 20;
+   private int journeyPatternCount = 3;
+   private int vehicleCount = 2;
 
-    @BeforeMethod
-    protected void setUp() throws Exception {
-        xPath.setNamespaceContext(new NetexNamespaceContext());
-        
-        netexFileWriter = (NetexFileWriter) applicationContext.getBean("netexFileWriter");
-        modelFactory = (ModelFactory) applicationContext.getBean("modelFactory");
-        complexModelFactory = new ComplexModelFactory();
-        complexModelFactory.init();
-        
-        
-        Line line = complexModelFactory.nominalLine( "1");
-        line.complete();
-        
-        netexFileWriter.writeXmlFile(line, fileName);
+   @BeforeMethod
+   protected void setUp() throws Exception
+   {
+      xPath.setNamespaceContext(new NetexNamespaceContext());
 
-        DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
-        domFactory.setNamespaceAware(true);
-        DocumentBuilder builder = domFactory.newDocumentBuilder();
-        xmlDocument = builder.parse(fileName);
-    }
+      netexFileWriter = (NetexFileWriter) applicationContext
+            .getBean("netexFileWriter");
+      modelFactory = (ModelFactory) applicationContext.getBean("modelFactory");
+      complexModelFactory = new ComplexModelFactory();
+      complexModelFactory.init();
 
-    @Test(groups = {"ServiceFrame"}, description = "Export Plugin should have one network")
-    public void verifyNetwork() throws XPathExpressionException {
-        XPathExpression xPathExpression = xPath.compile("//netex:Network/netex:Name/node()"); 
-        NodeList nodes = (NodeList) xPathExpression.evaluate(xmlDocument, XPathConstants.NODESET);       
-//        for (int i = 0; i < nodes.getLength(); i++) {
-//            logger.error(nodes.item(0).toString());
-//        }
-        assert nodes.getLength() == 1;
-        assert nodes.item(0).getNodeValue().equals("METRO");
-    }
+      Line line = complexModelFactory.nominalLine("1");
+      line.complete();
 
-    @Test(groups = {"ServiceFrame"}, description = "Export Plugin should have one company")
-    public void verifyCompany() throws XPathExpressionException {
-        XPathExpression xPathExpression = xPath.compile("//netex:Operator/netex:Name/node()");
-        NodeList nodes = (NodeList) xPathExpression.evaluate(xmlDocument, XPathConstants.NODESET);
+      netexFileWriter.writeXmlFile(line, fileName);
 
-        assert nodes.getLength() == 1;
-        assert nodes.item(0).getNodeValue().equals("RATP nom long");
+      DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
+      domFactory.setNamespaceAware(true);
+      DocumentBuilder builder = domFactory.newDocumentBuilder();
+      xmlDocument = builder.parse(fileName);
+   }
 
-    }
+   @Test(groups = { "ServiceFrame" }, description = "Export Plugin should have one network")
+   public void verifyNetwork() throws XPathExpressionException
+   {
+      XPathExpression xPathExpression = xPath
+            .compile("//netex:Network/netex:Name/node()");
+      NodeList nodes = (NodeList) xPathExpression.evaluate(xmlDocument,
+            XPathConstants.NODESET);
+      // for (int i = 0; i < nodes.getLength(); i++) {
+      // logger.error(nodes.item(0).toString());
+      // }
+      assert nodes.getLength() == 1;
+      assert nodes.item(0).getNodeValue().equals("METRO");
+   }
 
+   @Test(groups = { "ServiceFrame" }, description = "Export Plugin should have one company")
+   public void verifyCompany() throws XPathExpressionException
+   {
+      XPathExpression xPathExpression = xPath
+            .compile("//netex:Operator/netex:Name/node()");
+      NodeList nodes = (NodeList) xPathExpression.evaluate(xmlDocument,
+            XPathConstants.NODESET);
 
-    @Test(groups = {"ServiceFrame"}, description = "Export Plugin should have one line")
-    public void verifyLine() throws XPathExpressionException {
-        XPathExpression xPathExpression = xPath.compile("//netex:Line/netex:Name/node()");
-        NodeList nodes = (NodeList) xPathExpression.evaluate(xmlDocument, XPathConstants.NODESET);
+      assert nodes.getLength() == 1;
+      assert nodes.item(0).getNodeValue().equals("RATP nom long");
 
-        assert nodes.getLength() == 1;
-        assert nodes.item(0).getNodeValue().equals("7B");
-    }
+   }
 
+   @Test(groups = { "ServiceFrame" }, description = "Export Plugin should have one line")
+   public void verifyLine() throws XPathExpressionException
+   {
+      XPathExpression xPathExpression = xPath
+            .compile("//netex:Line/netex:Name/node()");
+      NodeList nodes = (NodeList) xPathExpression.evaluate(xmlDocument,
+            XPathConstants.NODESET);
 
+      assert nodes.getLength() == 1;
+      assert nodes.item(0).getNodeValue().equals("7B");
+   }
 
-
-    @Test(groups = {"ServiceFrame"}, description = "Export Plugin should have TariffZone")
-    public void verifyTariffZone() throws XPathExpressionException {
-        XPathExpression xPathExpression = xPath.compile("//netex:tariffZones/netex:TariffZone");
-        NodeList nodes = (NodeList) xPathExpression.evaluate(xmlDocument, XPathConstants.NODESET);
-        //assert nodes.getLength() == 6;
-    }
-
+   @Test(groups = { "ServiceFrame" }, description = "Export Plugin should have TariffZone")
+   public void verifyTariffZone() throws XPathExpressionException
+   {
+      XPathExpression xPathExpression = xPath
+            .compile("//netex:tariffZones/netex:TariffZone");
+      NodeList nodes = (NodeList) xPathExpression.evaluate(xmlDocument,
+            XPathConstants.NODESET);
+      // assert nodes.getLength() == 6;
+   }
 
 }

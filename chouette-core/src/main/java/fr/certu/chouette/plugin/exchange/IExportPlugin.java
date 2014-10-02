@@ -13,17 +13,19 @@ import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.plugin.report.ReportHolder;
 
-public interface IExportPlugin<T extends NeptuneIdentifiedObject> extends IExchangePlugin
+public interface IExportPlugin<T extends NeptuneIdentifiedObject> extends
+      IExchangePlugin
 {
 
-	/**
-	 * export data
-	 * 
-	 * @param beans
-	 * @param parameters
-	 * @param report
-	 * @throws ExchangeException
-	 */
-	void doExport(List<T> beans,List<ParameterValue> parameters,ReportHolder report) throws ChouetteException;
+   /**
+    * export data
+    * 
+    * @param beans
+    * @param parameters
+    * @param report
+    * @throws ExchangeException
+    */
+   void doExport(List<T> beans, List<ParameterValue> parameters,
+         ReportHolder report) throws ChouetteException;
 
 }

@@ -3,10 +3,10 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="
    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
-   default-init-method="init">
+	default-init-method="init">
 
-    <import resource="NeptuneImportContext.xml"/>
-    <import resource="NeptuneExportContext.xml"/>
+	<import resource="NeptuneImportContext.xml" />
+	<import resource="NeptuneExportContext.xml" />
 
 	<bean id="NeptuneLinePluginInjector" class="fr.certu.chouette.plugin.PluginInjector"
 		factory-method="createLinePluginInjector">

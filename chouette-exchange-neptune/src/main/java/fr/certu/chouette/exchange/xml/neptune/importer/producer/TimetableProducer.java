@@ -18,63 +18,75 @@ import fr.certu.chouette.plugin.exchange.UnsharedImportedData;
 import fr.certu.chouette.plugin.report.ReportItem;
 import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 
-public class TimetableProducer extends AbstractModelProducer<Timetable, TimetableType> 
+public class TimetableProducer extends
+      AbstractModelProducer<Timetable, TimetableType>
 {
 
-	@Override
-	public Timetable produce(String sourceFile,TimetableType xmlTimetable,ReportItem importReport, PhaseReportItem validationReport,SharedImportedData sharedData, UnsharedImportedData unshareableData) 
-	{
-		Timetable timetable= new Timetable();
+   @Override
+   public Timetable produce(String sourceFile, TimetableType xmlTimetable,
+         ReportItem importReport, PhaseReportItem validationReport,
+         SharedImportedData sharedData, UnsharedImportedData unshareableData)
+   {
+      Timetable timetable = new Timetable();
 
-		// objectId, objectVersion, creatorId, creationTime
-		populateFromCastorNeptune(timetable, xmlTimetable, importReport);
+      // objectId, objectVersion, creatorId, creationTime
+      populateFromCastorNeptune(timetable, xmlTimetable, importReport);
 
-		timetable.setComment(getNonEmptyTrimedString(xmlTimetable.getComment()));
+      timetable.setComment(getNonEmptyTrimedString(xmlTimetable.getComment()));
 
-		timetable.setVersion(getNonEmptyTrimedString(xmlTimetable.getVersion()));
+      timetable.setVersion(getNonEmptyTrimedString(xmlTimetable.getVersion()));
 
-		// DayType optional
-		if (xmlTimetable.getDayType() != null)
-		{
-			for(DayTypeType xmlDayType : xmlTimetable.getDayType())
-				try
-			{
-					timetable.addDayType(DayTypeEnum.valueOf(xmlDayType.value()));
-			}
-			catch (IllegalArgumentException e) 
-			{
-				// TODO: traiter le cas de non correspondance
-			}
-		}
+      // DayType optional
+      if (xmlTimetable.getDayType() != null)
+      {
+         for (DayTypeType xmlDayType : xmlTimetable.getDayType())
+            try
+            {
+               timetable.addDayType(DayTypeEnum.valueOf(xmlDayType.value()));
+            } catch (IllegalArgumentException e)
+            {
+               // TODO: traiter le cas de non correspondance
+            }
+      }
 
-		// 
-		if(xmlTimetable.getCalendarDay() != null){
-			for(XMLGregorianCalendar calendarDay : xmlTimetable.getCalendarDay()){
-				timetable.addCalendarDay(new CalendarDay(getSqlDate(calendarDay),true));
-			}
-		}
+      //
+      if (xmlTimetable.getCalendarDay() != null)
+      {
+         for (XMLGregorianCalendar calendarDay : xmlTimetable.getCalendarDay())
+         {
+            timetable.addCalendarDay(new CalendarDay(getSqlDate(calendarDay),
+                  true));
+         }
+      }
 
-		if(xmlTimetable.getPeriod() != null){
-			for(PeriodType xmlPeriod : xmlTimetable.getPeriod()){
-				timetable.addPeriod(new Period(getSqlDate(xmlPeriod.getStartOfPeriod()),getSqlDate(xmlPeriod.getEndOfPeriod())));
-			}
-		}
+      if (xmlTimetable.getPeriod() != null)
+      {
+         for (PeriodType xmlPeriod : xmlTimetable.getPeriod())
+         {
+            timetable
+                  .addPeriod(new Period(
+                        getSqlDate(xmlPeriod.getStartOfPeriod()),
+                        getSqlDate(xmlPeriod.getEndOfPeriod())));
+         }
+      }
 
+      List<String> vehicleJourneys = new ArrayList<String>(
+            xmlTimetable.getVehicleJourneyId());
+      xmlTimetable.getVehicleJourneyId().clear();
 
-		List<String> vehicleJourneys = new ArrayList<String>(xmlTimetable.getVehicleJourneyId());
-		xmlTimetable.getVehicleJourneyId().clear();
+      Timetable sharedBean = getOrAddSharedData(sharedData, timetable,
+            sourceFile, xmlTimetable, validationReport);
+      if (sharedBean != null)
+         timetable = sharedBean;
+      xmlTimetable.getVehicleJourneyId().addAll(vehicleJourneys);
 
-		Timetable  sharedBean = getOrAddSharedData(sharedData, timetable, sourceFile, xmlTimetable,validationReport);
-		if (sharedBean != null) timetable = sharedBean;
-		xmlTimetable.getVehicleJourneyId().addAll(vehicleJourneys);
+      for (String vehicleJourneyId : vehicleJourneys)
+      {
+         timetable
+               .addVehicleJourneyId(getNonEmptyTrimedString(vehicleJourneyId));
+      }
 
-
-		for(String vehicleJourneyId : vehicleJourneys){
-			timetable.addVehicleJourneyId(getNonEmptyTrimedString(vehicleJourneyId));
-		}
-
-
-		return timetable;
-	}
+      return timetable;
+   }
 
 }

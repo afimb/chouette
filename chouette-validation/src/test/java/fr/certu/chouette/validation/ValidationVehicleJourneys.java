@@ -24,359 +24,410 @@ import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 import fr.certu.chouette.plugin.validation.report.PhaseReportItem.PHASE;
 import fr.certu.chouette.validation.checkpoint.VehicleJourneyCheckPoints;
 
-@ContextConfiguration(locations={"classpath:testContext.xml","classpath*:chouetteContext.xml"})
+@ContextConfiguration(locations = { "classpath:testContext.xml",
+      "classpath*:chouetteContext.xml" })
 public class ValidationVehicleJourneys extends AbstractValidation
 {
 
+   @SuppressWarnings("unchecked")
+   @Test(groups = { "vehicleJourney" }, description = "3-VehicleJourney-1")
+   public void verifyTest1() throws ChouetteException
+   {
+      // 3-VehicleJourney-1 : check if time progress correctly on each stop
 
-	@SuppressWarnings("unchecked")
-	@Test (groups = {"vehicleJourney"}, description = "3-VehicleJourney-1" )
-	public void verifyTest1() throws ChouetteException 
-	{
-		// 3-VehicleJourney-1 : check if time progress correctly on each stop
+      VehicleJourneyCheckPoints checkPoint = (VehicleJourneyCheckPoints) applicationContext
+            .getBean("vehicleJourneyCheckPoints");
+      IImportPlugin<Line> importLine = (IImportPlugin<Line>) applicationContext
+            .getBean("NeptuneLineImport");
 
-		VehicleJourneyCheckPoints checkPoint = (VehicleJourneyCheckPoints) applicationContext.getBean("vehicleJourneyCheckPoints");
-		IImportPlugin<Line> importLine = (IImportPlugin<Line>) applicationContext.getBean("NeptuneLineImport");
+      long id = 1;
 
-		long id = 1;
-		
-		JSONObject parameters = null;
-		try {
-			parameters = new RuleParameterSet();
-		} catch (JSONException | IOException e) {
-			e.printStackTrace();
-		}
-		Assert.assertNotNull(parameters,"no parameters for test");
+      JSONObject parameters = null;
+      try
+      {
+         parameters = new RuleParameterSet();
+      } catch (JSONException | IOException e)
+      {
+         e.printStackTrace();
+      }
+      Assert.assertNotNull(parameters, "no parameters for test");
 
-		List<Line> beans = LineLoader.load(importLine, "src/test/data/Ligne_OK.xml");
-		Assert.assertFalse(beans.isEmpty(),"No data for test");
-		Line line1 = beans.get(0);
-		
-		// line1 is model;
-		line1.setId(id++);
-		
-		for (Route route : line1.getRoutes()) 
-		{
-			route.setId(id++);
-			for (JourneyPattern jp : route.getJourneyPatterns()) 
-			{
-				jp.setId(id++);
-				for (VehicleJourney vj : jp.getVehicleJourneys())
-				{
-					vj.setId(id++);
-				}
-			}
-		}
-		
-		Route route1 = line1.getRoutes().get(0);
-		route1.setObjectId("NINOXE:Route:checkedRoute");
-		JourneyPattern jp1 = route1.getJourneyPatterns().get(0);
-		jp1.setObjectId("NINOXE:JourneyPattern:checkedJP");
-		VehicleJourney vj1 = jp1.getVehicleJourneys().get(0);
-		vj1.setObjectId("NINOXE:VehicleJourney:checkedVJ");
-		long maxDiffTime = 0;
-		for (VehicleJourneyAtStop vjas : vj1.getVehicleJourneyAtStops()) 
-		{
-			if (vjas.getArrivalTime().equals(vjas.getDepartureTime()) )
-			{
-				vjas.getArrivalTime().setTime(vjas.getArrivalTime().getTime() - 60000);
-			}
-			long diffTime = Math.abs(diffTime(vjas.getArrivalTime(),vjas.getDepartureTime()));
-			if (diffTime > maxDiffTime) maxDiffTime = diffTime;
-		}
-        parameters.put("inter_stop_duration_max",(int) maxDiffTime - 30);
+      List<Line> beans = LineLoader.load(importLine,
+            "src/test/data/Ligne_OK.xml");
+      Assert.assertFalse(beans.isEmpty(), "No data for test");
+      Line line1 = beans.get(0);
 
-		PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
+      // line1 is model;
+      line1.setId(id++);
 
-		checkPoint.check(jp1.getVehicleJourneys(), parameters , report);
-		report.refreshStatus();
+      for (Route route : line1.getRoutes())
+      {
+         route.setId(id++);
+         for (JourneyPattern jp : route.getJourneyPatterns())
+         {
+            jp.setId(id++);
+            for (VehicleJourney vj : jp.getVehicleJourneys())
+            {
+               vj.setId(id++);
+            }
+         }
+      }
 
-		printReport(report);
+      Route route1 = line1.getRoutes().get(0);
+      route1.setObjectId("NINOXE:Route:checkedRoute");
+      JourneyPattern jp1 = route1.getJourneyPatterns().get(0);
+      jp1.setObjectId("NINOXE:JourneyPattern:checkedJP");
+      VehicleJourney vj1 = jp1.getVehicleJourneys().get(0);
+      vj1.setObjectId("NINOXE:VehicleJourney:checkedVJ");
+      long maxDiffTime = 0;
+      for (VehicleJourneyAtStop vjas : vj1.getVehicleJourneyAtStops())
+      {
+         if (vjas.getArrivalTime().equals(vjas.getDepartureTime()))
+         {
+            vjas.getArrivalTime().setTime(
+                  vjas.getArrivalTime().getTime() - 60000);
+         }
+         long diffTime = Math.abs(diffTime(vjas.getArrivalTime(),
+               vjas.getDepartureTime()));
+         if (diffTime > maxDiffTime)
+            maxDiffTime = diffTime;
+      }
+      parameters.put("inter_stop_duration_max", (int) maxDiffTime - 30);
 
-		Assert.assertEquals(report.getStatus(), Report.STATE.WARNING," report must be on level warning");
-		Assert.assertEquals(report.hasItems(), true," report must have items");
-		boolean found = false;
-		for (ReportItem item : report.getItems()) 
-		{
-			CheckPointReportItem checkPointReport = (CheckPointReportItem) item;
-			if (checkPointReport.getMessageKey().equals("3-VehicleJourney-1"))
-			{
-				found = true;
-				Assert.assertEquals(checkPointReport.getStatus(), Report.STATE.WARNING," checkPointReport must be on level warning");
-				Assert.assertEquals(checkPointReport.hasItems(), true," checkPointReport must have items");
-				Assert.assertEquals(checkPointReport.getItems().size(), 4," checkPointReport must have 4 items");
+      PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
 
-				//check detail keys
-				boolean objectIdFound = false;
-				for (ReportItem ditem : checkPointReport.getItems()) 
-				{
-					DetailReportItem detailReport = (DetailReportItem) ditem;
-					if (detailReport.getObjectId().equals(vj1.getObjectId())) objectIdFound = true;
-				}
-				Assert.assertTrue(objectIdFound,"detail report must refer VehicleJourney 1");
-			}
-		}
-		Assert.assertTrue(found,"report must contain a 3-VehicleJourney-1 checkPoint");
+      checkPoint.check(jp1.getVehicleJourneys(), parameters, report);
+      report.refreshStatus();
 
-	}
-	
+      printReport(report);
 
-	@SuppressWarnings("unchecked")
-	@Test (groups = {"vehicleJourney"}, description = "3-VehicleJourney-2" )
-	public void verifyTest2() throws ChouetteException 
-	{
-		// 3-VehicleJourney-2 : check speed progression
+      Assert.assertEquals(report.getStatus(), Report.STATE.WARNING,
+            " report must be on level warning");
+      Assert.assertEquals(report.hasItems(), true, " report must have items");
+      boolean found = false;
+      for (ReportItem item : report.getItems())
+      {
+         CheckPointReportItem checkPointReport = (CheckPointReportItem) item;
+         if (checkPointReport.getMessageKey().equals("3-VehicleJourney-1"))
+         {
+            found = true;
+            Assert.assertEquals(checkPointReport.getStatus(),
+                  Report.STATE.WARNING,
+                  " checkPointReport must be on level warning");
+            Assert.assertEquals(checkPointReport.hasItems(), true,
+                  " checkPointReport must have items");
+            Assert.assertEquals(checkPointReport.getItems().size(), 4,
+                  " checkPointReport must have 4 items");
 
-		VehicleJourneyCheckPoints checkPoint = (VehicleJourneyCheckPoints) applicationContext.getBean("vehicleJourneyCheckPoints");
-		IImportPlugin<Line> importLine = (IImportPlugin<Line>) applicationContext.getBean("NeptuneLineImport");
+            // check detail keys
+            boolean objectIdFound = false;
+            for (ReportItem ditem : checkPointReport.getItems())
+            {
+               DetailReportItem detailReport = (DetailReportItem) ditem;
+               if (detailReport.getObjectId().equals(vj1.getObjectId()))
+                  objectIdFound = true;
+            }
+            Assert.assertTrue(objectIdFound,
+                  "detail report must refer VehicleJourney 1");
+         }
+      }
+      Assert.assertTrue(found,
+            "report must contain a 3-VehicleJourney-1 checkPoint");
 
-		long id = 1;
-		
-		JSONObject parameters = null;
-		try {
-			parameters = new RuleParameterSet();
-		} catch (JSONException | IOException e) {
-			e.printStackTrace();
-		}
-		Assert.assertNotNull(parameters,"no parameters for test");
+   }
 
-		List<Line> beans = LineLoader.load(importLine, "src/test/data/Ligne_OK.xml");
-		Assert.assertFalse(beans.isEmpty(),"No data for test");
-		Line line1 = beans.get(0);
-		
-		// line1 is model;
-		line1.setId(id++);
-		
-		for (Route route : line1.getRoutes()) 
-		{
-			route.setId(id++);
-			for (JourneyPattern jp : route.getJourneyPatterns()) 
-			{
-				jp.setId(id++);
-				for (VehicleJourney vj : jp.getVehicleJourneys())
-				{
-					vj.setId(id++);
-				}
-			}
-		}
-		
-		Route route1 = line1.getRoutes().get(0);
-		route1.setObjectId("NINOXE:Route:checkedRoute");
-		JourneyPattern jp1 = route1.getJourneyPatterns().get(0);
-		jp1.setObjectId("NINOXE:JourneyPattern:checkedJP");
-				
-		VehicleJourney vj1 = jp1.getVehicleJourneys().get(0);
-		vj1.setObjectId("NINOXE:VehicleJourney:checkedVJ");
-		
-        parameters.getJSONObject("mode_bus").put("speed_max",10);
-        parameters.getJSONObject("mode_bus").put("speed_min",20);
+   @SuppressWarnings("unchecked")
+   @Test(groups = { "vehicleJourney" }, description = "3-VehicleJourney-2")
+   public void verifyTest2() throws ChouetteException
+   {
+      // 3-VehicleJourney-2 : check speed progression
 
-		PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
+      VehicleJourneyCheckPoints checkPoint = (VehicleJourneyCheckPoints) applicationContext
+            .getBean("vehicleJourneyCheckPoints");
+      IImportPlugin<Line> importLine = (IImportPlugin<Line>) applicationContext
+            .getBean("NeptuneLineImport");
 
-		checkPoint.check(jp1.getVehicleJourneys(), parameters , report);
-		report.refreshStatus();
+      long id = 1;
 
-		printReport(report);
+      JSONObject parameters = null;
+      try
+      {
+         parameters = new RuleParameterSet();
+      } catch (JSONException | IOException e)
+      {
+         e.printStackTrace();
+      }
+      Assert.assertNotNull(parameters, "no parameters for test");
 
-		Assert.assertEquals(report.getStatus(), Report.STATE.WARNING," report must be on level warning");
-		Assert.assertEquals(report.hasItems(), true," report must have items");
-		boolean found = false;
-		for (ReportItem item : report.getItems()) 
-		{
-			CheckPointReportItem checkPointReport = (CheckPointReportItem) item;
-			if (checkPointReport.getMessageKey().equals("3-VehicleJourney-2"))
-			{
-				found = true;
-				Assert.assertEquals(checkPointReport.getStatus(), Report.STATE.WARNING," checkPointReport must be on level warning");
-				Assert.assertEquals(checkPointReport.hasItems(), true," checkPointReport must have items");
-				Assert.assertEquals(checkPointReport.getItems().size(), 50," checkPointReport must have 50 items");
+      List<Line> beans = LineLoader.load(importLine,
+            "src/test/data/Ligne_OK.xml");
+      Assert.assertFalse(beans.isEmpty(), "No data for test");
+      Line line1 = beans.get(0);
 
-				//check detail keys
-				boolean objectIdFound = false;
-				for (ReportItem ditem : checkPointReport.getItems()) 
-				{
-					DetailReportItem detailReport = (DetailReportItem) ditem;
-					if (detailReport.getObjectId().equals(vj1.getObjectId())) objectIdFound = true;
-				}
-				Assert.assertTrue(objectIdFound,"detail report must refer VehicleJourney 1");
-			}
-		}
-		Assert.assertTrue(found,"report must contain a 3-VehicleJourney-2 checkPoint");
+      // line1 is model;
+      line1.setId(id++);
 
-	}
-	
+      for (Route route : line1.getRoutes())
+      {
+         route.setId(id++);
+         for (JourneyPattern jp : route.getJourneyPatterns())
+         {
+            jp.setId(id++);
+            for (VehicleJourney vj : jp.getVehicleJourneys())
+            {
+               vj.setId(id++);
+            }
+         }
+      }
 
-	@SuppressWarnings("unchecked")
-	@Test (groups = {"vehicleJourney"}, description = "3-VehicleJourney-3" )
-	public void verifyTest3() throws ChouetteException 
-	{
-		// 3-VehicleJourney-3 : check if two journeys progress similarly
+      Route route1 = line1.getRoutes().get(0);
+      route1.setObjectId("NINOXE:Route:checkedRoute");
+      JourneyPattern jp1 = route1.getJourneyPatterns().get(0);
+      jp1.setObjectId("NINOXE:JourneyPattern:checkedJP");
 
-		VehicleJourneyCheckPoints checkPoint = (VehicleJourneyCheckPoints) applicationContext.getBean("vehicleJourneyCheckPoints");
-		IImportPlugin<Line> importLine = (IImportPlugin<Line>) applicationContext.getBean("NeptuneLineImport");
+      VehicleJourney vj1 = jp1.getVehicleJourneys().get(0);
+      vj1.setObjectId("NINOXE:VehicleJourney:checkedVJ");
 
-		long id = 1;
-		
-		JSONObject parameters = null;
-		try {
-			parameters = new RuleParameterSet();
-		} catch (JSONException | IOException e) {
-			e.printStackTrace();
-		}
-		Assert.assertNotNull(parameters,"no parameters for test");
+      parameters.getJSONObject("mode_bus").put("speed_max", 10);
+      parameters.getJSONObject("mode_bus").put("speed_min", 20);
 
-		List<Line> beans = LineLoader.load(importLine, "src/test/data/Ligne_OK.xml");
-		Assert.assertFalse(beans.isEmpty(),"No data for test");
-		Line line1 = beans.get(0);
-		
-		// line1 is model;
-		line1.setId(id++);
-		VehicleJourney vj1 = null;
-		JourneyPattern jp1 = null;
-		for (Route route : line1.getRoutes()) 
-		{
-			route.setId(id++);
-			for (JourneyPattern jp : route.getJourneyPatterns()) 
-			{
-				jp.setId(id++);
-				for (VehicleJourney vj : jp.getVehicleJourneys())
-				{
-					vj.setId(id++);
-					vj.sortVehicleJourneyAtStops();
-					if (vj.getObjectId().equals("NINOXE:VehicleJourney:15627288") )
-					{
-						vj1=vj;
-						jp1=jp;
-					}
-				}
-			}
-		}
-		
-		Assert.assertNotNull(jp1, "tested jp not found");
-		Assert.assertNotNull(vj1, "tested vj not found");
-		
-		VehicleJourneyAtStop vjas1 = vj1.getVehicleJourneyAtStops().get(1);
-		vjas1.getArrivalTime().setTime(vjas1.getArrivalTime().getTime() - 240000);
-		
-        parameters.getJSONObject("mode_bus").put("inter_stop_duration_variation_max",220);
+      PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
 
+      checkPoint.check(jp1.getVehicleJourneys(), parameters, report);
+      report.refreshStatus();
 
-		PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
+      printReport(report);
 
-		checkPoint.check(jp1.getVehicleJourneys(), parameters , report);
-		report.refreshStatus();
+      Assert.assertEquals(report.getStatus(), Report.STATE.WARNING,
+            " report must be on level warning");
+      Assert.assertEquals(report.hasItems(), true, " report must have items");
+      boolean found = false;
+      for (ReportItem item : report.getItems())
+      {
+         CheckPointReportItem checkPointReport = (CheckPointReportItem) item;
+         if (checkPointReport.getMessageKey().equals("3-VehicleJourney-2"))
+         {
+            found = true;
+            Assert.assertEquals(checkPointReport.getStatus(),
+                  Report.STATE.WARNING,
+                  " checkPointReport must be on level warning");
+            Assert.assertEquals(checkPointReport.hasItems(), true,
+                  " checkPointReport must have items");
+            Assert.assertEquals(checkPointReport.getItems().size(), 50,
+                  " checkPointReport must have 50 items");
 
-		printReport(report);
+            // check detail keys
+            boolean objectIdFound = false;
+            for (ReportItem ditem : checkPointReport.getItems())
+            {
+               DetailReportItem detailReport = (DetailReportItem) ditem;
+               if (detailReport.getObjectId().equals(vj1.getObjectId()))
+                  objectIdFound = true;
+            }
+            Assert.assertTrue(objectIdFound,
+                  "detail report must refer VehicleJourney 1");
+         }
+      }
+      Assert.assertTrue(found,
+            "report must contain a 3-VehicleJourney-2 checkPoint");
 
-		Assert.assertEquals(report.getStatus(), Report.STATE.WARNING," report must be on level warning");
-		Assert.assertEquals(report.hasItems(), true," report must have items");
-		boolean found = false;
-		for (ReportItem item : report.getItems()) 
-		{
-			CheckPointReportItem checkPointReport = (CheckPointReportItem) item;
-			if (checkPointReport.getMessageKey().equals("3-VehicleJourney-3"))
-			{
-				found = true;
-				Assert.assertEquals(checkPointReport.getStatus(), Report.STATE.WARNING," checkPointReport must be on level warning");
-				Assert.assertEquals(checkPointReport.hasItems(), true," checkPointReport must have items");
-				Assert.assertEquals(checkPointReport.getItems().size(), 26," checkPointReport must have 26 items");
+   }
 
-				//check detail keys
-				boolean objectIdFound = false;
-				for (ReportItem ditem : checkPointReport.getItems()) 
-				{
-					DetailReportItem detailReport = (DetailReportItem) ditem;
-					if (detailReport.getObjectId().equals(vj1.getObjectId())) objectIdFound = true;
-				}
-				Assert.assertTrue(objectIdFound,"detail report must refer VehicleJourney 1");
-			}
-		}
-		Assert.assertTrue(found,"report must contain a 3-VehicleJourney-3 checkPoint");
+   @SuppressWarnings("unchecked")
+   @Test(groups = { "vehicleJourney" }, description = "3-VehicleJourney-3")
+   public void verifyTest3() throws ChouetteException
+   {
+      // 3-VehicleJourney-3 : check if two journeys progress similarly
 
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Test (groups = {"vehicleJourney"}, description = "3-VehicleJourney-4" )
-	public void verifyTest4() throws ChouetteException 
-	{
-		// 3-VehicleJourney-4 : check if each journey has minimum one timetable
+      VehicleJourneyCheckPoints checkPoint = (VehicleJourneyCheckPoints) applicationContext
+            .getBean("vehicleJourneyCheckPoints");
+      IImportPlugin<Line> importLine = (IImportPlugin<Line>) applicationContext
+            .getBean("NeptuneLineImport");
 
-		VehicleJourneyCheckPoints checkPoint = (VehicleJourneyCheckPoints) applicationContext.getBean("vehicleJourneyCheckPoints");
-		IImportPlugin<Line> importLine = (IImportPlugin<Line>) applicationContext.getBean("NeptuneLineImport");
+      long id = 1;
 
-		long id = 1;
-		
-		JSONObject parameters = null;
-		try {
-			parameters = new RuleParameterSet();
-		} catch (JSONException | IOException e) {
-			e.printStackTrace();
-		}
-		Assert.assertNotNull(parameters,"no parameters for test");
+      JSONObject parameters = null;
+      try
+      {
+         parameters = new RuleParameterSet();
+      } catch (JSONException | IOException e)
+      {
+         e.printStackTrace();
+      }
+      Assert.assertNotNull(parameters, "no parameters for test");
 
-		List<Line> beans = LineLoader.load(importLine, "src/test/data/Ligne_OK.xml");
-		Assert.assertFalse(beans.isEmpty(),"No data for test");
-		Line line1 = beans.get(0);
-		
-		// line1 is model;
-		line1.setId(id++);
-		
-		for (Route route : line1.getRoutes()) 
-		{
-			route.setId(id++);
-			for (JourneyPattern jp : route.getJourneyPatterns()) 
-			{
-				jp.setId(id++);
-				for (VehicleJourney vj : jp.getVehicleJourneys())
-				{
-					vj.setId(id++);
-				}
-			}
-		}
-		
-		Route route1 = line1.getRoutes().get(0);
-		route1.setObjectId("NINOXE:Route:checkedRoute");
-		JourneyPattern jp1 = route1.getJourneyPatterns().get(0);
-		jp1.setObjectId("NINOXE:JourneyPattern:checkedJP");
-		VehicleJourney vj1 = jp1.getVehicleJourneys().get(0);
-		vj1.setObjectId("NINOXE:VehicleJourney:checkedVJ");
+      List<Line> beans = LineLoader.load(importLine,
+            "src/test/data/Ligne_OK.xml");
+      Assert.assertFalse(beans.isEmpty(), "No data for test");
+      Line line1 = beans.get(0);
 
-		
-		vj1.getTimetables().clear();
+      // line1 is model;
+      line1.setId(id++);
+      VehicleJourney vj1 = null;
+      JourneyPattern jp1 = null;
+      for (Route route : line1.getRoutes())
+      {
+         route.setId(id++);
+         for (JourneyPattern jp : route.getJourneyPatterns())
+         {
+            jp.setId(id++);
+            for (VehicleJourney vj : jp.getVehicleJourneys())
+            {
+               vj.setId(id++);
+               vj.sortVehicleJourneyAtStops();
+               if (vj.getObjectId().equals("NINOXE:VehicleJourney:15627288"))
+               {
+                  vj1 = vj;
+                  jp1 = jp;
+               }
+            }
+         }
+      }
 
-		PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
+      Assert.assertNotNull(jp1, "tested jp not found");
+      Assert.assertNotNull(vj1, "tested vj not found");
 
-		checkPoint.check(jp1.getVehicleJourneys(), parameters , report);
-		report.refreshStatus();
+      VehicleJourneyAtStop vjas1 = vj1.getVehicleJourneyAtStops().get(1);
+      vjas1.getArrivalTime().setTime(vjas1.getArrivalTime().getTime() - 240000);
 
-		printReport(report);
+      parameters.getJSONObject("mode_bus").put(
+            "inter_stop_duration_variation_max", 220);
 
-		Assert.assertEquals(report.getStatus(), Report.STATE.WARNING," report must be on level warning");
-		Assert.assertEquals(report.hasItems(), true," report must have items");
-		boolean found = false;
-		for (ReportItem item : report.getItems()) 
-		{
-			CheckPointReportItem checkPointReport = (CheckPointReportItem) item;
-			if (checkPointReport.getMessageKey().equals("3-VehicleJourney-4"))
-			{
-				found = true;
-				Assert.assertEquals(checkPointReport.getStatus(), Report.STATE.WARNING," checkPointReport must be on level warning");
-				Assert.assertEquals(checkPointReport.hasItems(), true," checkPointReport must have items");
-				Assert.assertEquals(checkPointReport.getItems().size(), 1," checkPointReport must have 1 item");
+      PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
 
-				//check detail keys 
-				boolean objectIdFound = false;
-				for (ReportItem ditem : checkPointReport.getItems()) 
-				{
-					DetailReportItem detailReport = (DetailReportItem) ditem;
-					if (detailReport.getObjectId().equals(vj1.getObjectId())) objectIdFound = true;
-				}
-				Assert.assertTrue(objectIdFound,"detail report must refer VehicleJourney 1");
-			}
-		}
-		Assert.assertTrue(found,"report must contain a 3-VehicleJourney-4 checkPoint");
+      checkPoint.check(jp1.getVehicleJourneys(), parameters, report);
+      report.refreshStatus();
 
-	}
+      printReport(report);
 
+      Assert.assertEquals(report.getStatus(), Report.STATE.WARNING,
+            " report must be on level warning");
+      Assert.assertEquals(report.hasItems(), true, " report must have items");
+      boolean found = false;
+      for (ReportItem item : report.getItems())
+      {
+         CheckPointReportItem checkPointReport = (CheckPointReportItem) item;
+         if (checkPointReport.getMessageKey().equals("3-VehicleJourney-3"))
+         {
+            found = true;
+            Assert.assertEquals(checkPointReport.getStatus(),
+                  Report.STATE.WARNING,
+                  " checkPointReport must be on level warning");
+            Assert.assertEquals(checkPointReport.hasItems(), true,
+                  " checkPointReport must have items");
+            Assert.assertEquals(checkPointReport.getItems().size(), 26,
+                  " checkPointReport must have 26 items");
+
+            // check detail keys
+            boolean objectIdFound = false;
+            for (ReportItem ditem : checkPointReport.getItems())
+            {
+               DetailReportItem detailReport = (DetailReportItem) ditem;
+               if (detailReport.getObjectId().equals(vj1.getObjectId()))
+                  objectIdFound = true;
+            }
+            Assert.assertTrue(objectIdFound,
+                  "detail report must refer VehicleJourney 1");
+         }
+      }
+      Assert.assertTrue(found,
+            "report must contain a 3-VehicleJourney-3 checkPoint");
+
+   }
+
+   @SuppressWarnings("unchecked")
+   @Test(groups = { "vehicleJourney" }, description = "3-VehicleJourney-4")
+   public void verifyTest4() throws ChouetteException
+   {
+      // 3-VehicleJourney-4 : check if each journey has minimum one timetable
+
+      VehicleJourneyCheckPoints checkPoint = (VehicleJourneyCheckPoints) applicationContext
+            .getBean("vehicleJourneyCheckPoints");
+      IImportPlugin<Line> importLine = (IImportPlugin<Line>) applicationContext
+            .getBean("NeptuneLineImport");
+
+      long id = 1;
+
+      JSONObject parameters = null;
+      try
+      {
+         parameters = new RuleParameterSet();
+      } catch (JSONException | IOException e)
+      {
+         e.printStackTrace();
+      }
+      Assert.assertNotNull(parameters, "no parameters for test");
+
+      List<Line> beans = LineLoader.load(importLine,
+            "src/test/data/Ligne_OK.xml");
+      Assert.assertFalse(beans.isEmpty(), "No data for test");
+      Line line1 = beans.get(0);
+
+      // line1 is model;
+      line1.setId(id++);
+
+      for (Route route : line1.getRoutes())
+      {
+         route.setId(id++);
+         for (JourneyPattern jp : route.getJourneyPatterns())
+         {
+            jp.setId(id++);
+            for (VehicleJourney vj : jp.getVehicleJourneys())
+            {
+               vj.setId(id++);
+            }
+         }
+      }
+
+      Route route1 = line1.getRoutes().get(0);
+      route1.setObjectId("NINOXE:Route:checkedRoute");
+      JourneyPattern jp1 = route1.getJourneyPatterns().get(0);
+      jp1.setObjectId("NINOXE:JourneyPattern:checkedJP");
+      VehicleJourney vj1 = jp1.getVehicleJourneys().get(0);
+      vj1.setObjectId("NINOXE:VehicleJourney:checkedVJ");
+
+      vj1.getTimetables().clear();
+
+      PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
+
+      checkPoint.check(jp1.getVehicleJourneys(), parameters, report);
+      report.refreshStatus();
+
+      printReport(report);
+
+      Assert.assertEquals(report.getStatus(), Report.STATE.WARNING,
+            " report must be on level warning");
+      Assert.assertEquals(report.hasItems(), true, " report must have items");
+      boolean found = false;
+      for (ReportItem item : report.getItems())
+      {
+         CheckPointReportItem checkPointReport = (CheckPointReportItem) item;
+         if (checkPointReport.getMessageKey().equals("3-VehicleJourney-4"))
+         {
+            found = true;
+            Assert.assertEquals(checkPointReport.getStatus(),
+                  Report.STATE.WARNING,
+                  " checkPointReport must be on level warning");
+            Assert.assertEquals(checkPointReport.hasItems(), true,
+                  " checkPointReport must have items");
+            Assert.assertEquals(checkPointReport.getItems().size(), 1,
+                  " checkPointReport must have 1 item");
+
+            // check detail keys
+            boolean objectIdFound = false;
+            for (ReportItem ditem : checkPointReport.getItems())
+            {
+               DetailReportItem detailReport = (DetailReportItem) ditem;
+               if (detailReport.getObjectId().equals(vj1.getObjectId()))
+                  objectIdFound = true;
+            }
+            Assert.assertTrue(objectIdFound,
+                  "detail report must refer VehicleJourney 1");
+         }
+      }
+      Assert.assertTrue(found,
+            "report must contain a 3-VehicleJourney-4 checkPoint");
+
+   }
 
 }

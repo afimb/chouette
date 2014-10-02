@@ -6,32 +6,35 @@ import fr.certu.chouette.exchange.gtfs.model.GtfsAgency;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.plugin.report.Report;
 
-public class CompanyProducer extends AbstractModelProducer<Company, GtfsAgency> 
+public class CompanyProducer extends AbstractModelProducer<Company, GtfsAgency>
 {
-    private static Logger logger = Logger.getLogger(CompanyProducer.class);
-	@Override
-	public Company produce(GtfsAgency gtfsAgency,Report report) 
-	{
+   private static Logger logger = Logger.getLogger(CompanyProducer.class);
 
-		Company company = new Company();
-		
-		company.setObjectId(composeObjectId( Company.COMPANY_KEY, gtfsAgency.getAgencyId(),logger));
-		
-		// Name mandatory
-		company.setName(getNonEmptyTrimedString(gtfsAgency.getAgencyName()));
-		
-		// OrganisationalUnit : URL Mandatory
-		if (gtfsAgency.getAgencyURL() != null)
-		   company.setOrganisationalUnit(getNonEmptyTrimedString(gtfsAgency.getAgencyURL().toString()));
-		
-		// Phone optional
-		company.setPhone(getNonEmptyTrimedString(gtfsAgency.getAgencyPhone()));
-				
-		//RegistrationNumber optional
-		String[] token = company.getObjectId().split(":");
-		company.setRegistrationNumber(token[2]);
-		
-		return company;
-	}
+   @Override
+   public Company produce(GtfsAgency gtfsAgency, Report report)
+   {
+
+      Company company = new Company();
+
+      company.setObjectId(composeObjectId(Company.COMPANY_KEY,
+            gtfsAgency.getAgencyId(), logger));
+
+      // Name mandatory
+      company.setName(getNonEmptyTrimedString(gtfsAgency.getAgencyName()));
+
+      // OrganisationalUnit : URL Mandatory
+      if (gtfsAgency.getAgencyURL() != null)
+         company.setOrganisationalUnit(getNonEmptyTrimedString(gtfsAgency
+               .getAgencyURL().toString()));
+
+      // Phone optional
+      company.setPhone(getNonEmptyTrimedString(gtfsAgency.getAgencyPhone()));
+
+      // RegistrationNumber optional
+      String[] token = company.getObjectId().split(":");
+      company.setRegistrationNumber(token[2]);
+
+      return company;
+   }
 
 }

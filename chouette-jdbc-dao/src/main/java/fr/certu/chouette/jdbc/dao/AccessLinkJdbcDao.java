@@ -20,7 +20,8 @@ import fr.certu.chouette.model.neptune.AccessLink;
 @SuppressWarnings("unchecked")
 public class AccessLinkJdbcDao extends AbstractJdbcDao<AccessLink>
 {
-   private static final Logger logger = Logger.getLogger(AccessLinkJdbcDao.class);
+   private static final Logger logger = Logger
+         .getLogger(AccessLinkJdbcDao.class);
 
    public Logger getLogger()
    {
@@ -62,13 +63,16 @@ public class AccessLinkJdbcDao extends AbstractJdbcDao<AccessLink>
          defaultduration = new Time(accessLink.getDefaultDuration().getTime());
 
       if (accessLink.getFrequentTravellerDuration() != null)
-         frequenttravellerduration = new Time(accessLink.getFrequentTravellerDuration().getTime());
+         frequenttravellerduration = new Time(accessLink
+               .getFrequentTravellerDuration().getTime());
 
       if (accessLink.getOccasionalTravellerDuration() != null)
-         occasionaltravellerduration = new Time(accessLink.getOccasionalTravellerDuration().getTime());
+         occasionaltravellerduration = new Time(accessLink
+               .getOccasionalTravellerDuration().getTime());
 
       if (accessLink.getMobilityRestrictedTravellerDuration() != null)
-         mobilityrestrictedtravellerduration = new Time(accessLink.getMobilityRestrictedTravellerDuration().getTime());
+         mobilityrestrictedtravellerduration = new Time(accessLink
+               .getMobilityRestrictedTravellerDuration().getTime());
 
       ps.setTime(11, defaultduration);
       ps.setTime(12, frequenttravellerduration);

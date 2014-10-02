@@ -21,34 +21,36 @@ import fr.certu.chouette.model.neptune.ConnectionLink;
  * <p>
  * optimise multiple period timetable with calendarDate inclusion or exclusion
  */
-public class GtfsTransferProducer extends AbstractProducer<GtfsTransfer, ConnectionLink>
+public class GtfsTransferProducer extends
+      AbstractProducer<GtfsTransfer, ConnectionLink>
 {
 
-	@Override
-	public List<GtfsTransfer> produceAll(ConnectionLink link,GtfsReport report)
-	{
-		throw new UnsupportedOperationException("not yet implemented");
-	}
+   @Override
+   public List<GtfsTransfer> produceAll(ConnectionLink link, GtfsReport report)
+   {
+      throw new UnsupportedOperationException("not yet implemented");
+   }
 
-
-	@Override
-	public GtfsTransfer produce(ConnectionLink neptuneObject,GtfsReport report)
-	{
-		GtfsTransfer transfer = new GtfsTransfer();
-		transfer.setFromStopId(toGtfsId(neptuneObject.getStartOfLink().getObjectId())) ;
-		transfer.setToStopId(toGtfsId(neptuneObject.getEndOfLink().getObjectId())) ;
-		if (neptuneObject.getDefaultDuration() != null && neptuneObject.getDefaultDuration().getTime() > 1000)
-		{
-			GtfsTime minTransferTime = new GtfsTime(neptuneObject.getDefaultDuration(),false);
-			transfer.setMinTransferTime(minTransferTime );
-			transfer.setTransferType(Type.MINIMAL);
-		}
-		else
-		{
-			transfer.setTransferType(Type.RECOMMENDED);
-		}
-		return transfer;
-	}
-
+   @Override
+   public GtfsTransfer produce(ConnectionLink neptuneObject, GtfsReport report)
+   {
+      GtfsTransfer transfer = new GtfsTransfer();
+      transfer.setFromStopId(toGtfsId(neptuneObject.getStartOfLink()
+            .getObjectId()));
+      transfer
+            .setToStopId(toGtfsId(neptuneObject.getEndOfLink().getObjectId()));
+      if (neptuneObject.getDefaultDuration() != null
+            && neptuneObject.getDefaultDuration().getTime() > 1000)
+      {
+         GtfsTime minTransferTime = new GtfsTime(
+               neptuneObject.getDefaultDuration(), false);
+         transfer.setMinTransferTime(minTransferTime);
+         transfer.setTransferType(Type.MINIMAL);
+      } else
+      {
+         transfer.setTransferType(Type.RECOMMENDED);
+      }
+      return transfer;
+   }
 
 }

@@ -18,35 +18,45 @@ import fr.certu.chouette.model.neptune.PTNetwork;
 
 /**
  * @author michel
- *
+ * 
  */
-public class PTNetworkDaoTemplateTests extends AbstractDaoTemplateTests<PTNetwork> {
+public class PTNetworkDaoTemplateTests extends
+      AbstractDaoTemplateTests<PTNetwork>
+{
 
-	/* (non-Javadoc)
-	 * @see fr.certu.chouette.dao.hibernate.AbstractDaoTemplateTests#createDaoTemplate()
-	 */
-	@Override
-	@BeforeMethod (alwaysRun=true)
-	public void createDaoTemplate() 
-	{
-		initDaoTemplate("PTNetwork", "networkDao");
-	}
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * fr.certu.chouette.dao.hibernate.AbstractDaoTemplateTests#createDaoTemplate
+    * ()
+    */
+   @Override
+   @BeforeMethod(alwaysRun = true)
+   public void createDaoTemplate()
+   {
+      initDaoTemplate("PTNetwork", "networkDao");
+   }
 
-	/* (non-Javadoc)
-	 * @see fr.certu.chouette.dao.hibernate.AbstractDaoTemplateTests#refreshBean()
-	 */
-	@Override
-	public void refreshBean() 
-	{
-		bean = createPTNetwork();
-	}
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * fr.certu.chouette.dao.hibernate.AbstractDaoTemplateTests#refreshBean()
+    */
+   @Override
+   public void refreshBean()
+   {
+      bean = createPTNetwork();
+   }
 
-	@Override
-	protected List<FilterData> getSelectFilters() 
-	{
-		List<FilterData> ret = new ArrayList<FilterData>();
-		ret.add(new FilterData("PTNetwork : name",Filter.getNewLikeFilter("name", "%Network") , 1));
-		return ret;
-	}
+   @Override
+   protected List<FilterData> getSelectFilters()
+   {
+      List<FilterData> ret = new ArrayList<FilterData>();
+      ret.add(new FilterData("PTNetwork : name", Filter.getNewLikeFilter(
+            "name", "%Network"), 1));
+      return ret;
+   }
 
 }

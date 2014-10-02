@@ -16,13 +16,15 @@ public class HibernateDaoRuntimeException extends ChouetteRuntimeException
 
    private HibernateDaoExceptionCode code;
 
-   public HibernateDaoRuntimeException(HibernateDaoExceptionCode code, String... args)
+   public HibernateDaoRuntimeException(HibernateDaoExceptionCode code,
+         String... args)
    {
       super(args);
       this.code = code;
    }
 
-   public HibernateDaoRuntimeException(HibernateDaoExceptionCode code, Throwable cause, String... args)
+   public HibernateDaoRuntimeException(HibernateDaoExceptionCode code,
+         Throwable cause, String... args)
    {
       super(cause, args);
       this.code = code;

@@ -1,6 +1,5 @@
 package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,26 +15,33 @@ import fr.certu.chouette.plugin.report.ReportItem;
 import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 
 /**
- *  produce a temporary NeptuneRoutingConstraint object to create 
- *  relation between line and RoutingConstraint StopAreas on assembly phase
+ * produce a temporary NeptuneRoutingConstraint object to create relation
+ * between line and RoutingConstraint StopAreas on assembly phase
  */
 public class RoutingConstraintProducer extends AbstractProducer
 {
-   private static final Logger logger = Logger.getLogger(RoutingConstraintProducer.class);
+   private static final Logger logger = Logger
+         .getLogger(RoutingConstraintProducer.class);
+
    /**
-    * produce a temporary NeptuneRoutingConstraint object to create 
-    *  relation between line and RoutingConstraint StopAreas on assembly phase
+    * produce a temporary NeptuneRoutingConstraint object to create relation
+    * between line and RoutingConstraint StopAreas on assembly phase
     * 
-    * @param itls ITL data from Neptune file
-    * @param report error reporting
+    * @param itls
+    *           ITL data from Neptune file
+    * @param report
+    *           error reporting
     * @return relations created
     */
-   public List<NeptuneRoutingConstraint> produce(String sourceFile,List<ITLType> itls,ReportItem importReport, PhaseReportItem validationReport,SharedImportedData sharedData, UnsharedImportedData unshareableData) 
+   public List<NeptuneRoutingConstraint> produce(String sourceFile,
+         List<ITLType> itls, ReportItem importReport,
+         PhaseReportItem validationReport, SharedImportedData sharedData,
+         UnsharedImportedData unshareableData)
    {
-      Map<String,NeptuneRoutingConstraint> constraintMap = new HashMap<String, NeptuneRoutingConstraint>();
+      Map<String, NeptuneRoutingConstraint> constraintMap = new HashMap<String, NeptuneRoutingConstraint>();
       List<NeptuneRoutingConstraint> restrictions = new ArrayList<NeptuneRoutingConstraint>();
 
-      for (ITLType itl : itls) 
+      for (ITLType itl : itls)
       {
          String lineId = getNonEmptyTrimedString(itl.getLineIdShortCut());
          NeptuneRoutingConstraint restriction = constraintMap.get(lineId);
@@ -49,9 +55,11 @@ public class RoutingConstraintProducer extends AbstractProducer
             constraintMap.put(restriction.getLineId(), restriction);
             restrictions.add(restriction);
          }
-         logger.debug("RoutingConstraint relation between "+lineId+" and "+itl.getAreaId()+" created");
+         logger.debug("RoutingConstraint relation between " + lineId + " and "
+               + itl.getAreaId() + " created");
          // Area mandatory
-         restriction.addRoutingConstraintId(getNonEmptyTrimedString(itl.getAreaId()));
+         restriction.addRoutingConstraintId(getNonEmptyTrimedString(itl
+               .getAreaId()));
       }
       return restrictions;
    }

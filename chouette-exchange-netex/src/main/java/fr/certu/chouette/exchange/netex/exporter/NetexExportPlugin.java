@@ -30,40 +30,47 @@ import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportHolder;
 
 /**
- *  Export lines in Netex format
+ * Export lines in Netex format
  */
 public class NetexExportPlugin implements IExportPlugin<Line>
 {
 
-   private static final Logger       logger = Logger.getLogger(NetexExportPlugin.class);
-   private FormatDescription         description;   
-   private NetexReport               report = new NetexReport(NetexReport.KEY.EXPORT);
+   private static final Logger logger = Logger
+         .getLogger(NetexExportPlugin.class);
+   private FormatDescription description;
+   private NetexReport report = new NetexReport(NetexReport.KEY.EXPORT);
    /**
     * list of allowed file extensions
     */
-   private List<String>        allowedExtensions = Arrays.asList(new String[] { "xml", "zip" });
+   private List<String> allowedExtensions = Arrays.asList(new String[] { "xml",
+         "zip" });
 
-   @Getter @Setter private NetexFileWriter           netexFileWriter;
-   
+   @Getter
+   @Setter
+   private NetexFileWriter netexFileWriter;
+
    /**
     * Export lines in Netex format
     */
    public NetexExportPlugin()
    {
       report.updateStatus(Report.STATE.OK);
-       
+
       description = new FormatDescription(this.getClass().getName());
       description.setName("NETEX");
       List<ParameterDescription> params = new ArrayList<ParameterDescription>();
-      
-      ParameterDescription outputFile = new ParameterDescription("outputFile", ParameterDescription.TYPE.FILEPATH, false, true);
+
+      ParameterDescription outputFile = new ParameterDescription("outputFile",
+            ParameterDescription.TYPE.FILEPATH, false, true);
       outputFile.setAllowedExtensions(allowedExtensions);
       params.add(outputFile);
 
       description.setParameterDescriptions(params);
    }
 
-   /* (non-Javadoc)
+   /*
+    * (non-Javadoc)
+    * 
     * @see fr.certu.chouette.plugin.exchange.IExchangePlugin#getDescription()
     */
    @Override
@@ -72,132 +79,189 @@ public class NetexExportPlugin implements IExportPlugin<Line>
       return description;
    }
 
-   /* (non-Javadoc)
-    * @see fr.certu.chouette.plugin.exchange.IExportPlugin#doExport(java.util.List, java.util.List, fr.certu.chouette.plugin.report.ReportHolder)
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * fr.certu.chouette.plugin.exchange.IExportPlugin#doExport(java.util.List,
+    * java.util.List, fr.certu.chouette.plugin.report.ReportHolder)
     */
    @Override
-   public void doExport(List<Line> lines, List<ParameterValue> parameters, ReportHolder reportContainer)
-   throws ChouetteException
+   public void doExport(List<Line> lines, List<ParameterValue> parameters,
+         ReportHolder reportContainer) throws ChouetteException
    {
-        reportContainer.setReport(report);
+      reportContainer.setReport(report);
 
-        String fileName = null;
-        
-        for (ParameterValue value : parameters) {
-            if (value instanceof SimpleParameterValue) {
-                SimpleParameterValue svalue = (SimpleParameterValue) value;
-                if (svalue.getName().equalsIgnoreCase("outputFile")) {
-                    fileName = svalue.getFilepathValue();
-                    if (fileName == null) {
-                        logger.warn("outputFile changed as FILEPATH type");
-                        fileName = svalue.getFilenameValue();
-                    }
-                }
+      String fileName = null;
+
+      for (ParameterValue value : parameters)
+      {
+         if (value instanceof SimpleParameterValue)
+         {
+            SimpleParameterValue svalue = (SimpleParameterValue) value;
+            if (svalue.getName().equalsIgnoreCase("outputFile"))
+            {
+               fileName = svalue.getFilepathValue();
+               if (fileName == null)
+               {
+                  logger.warn("outputFile changed as FILEPATH type");
+                  fileName = svalue.getFilenameValue();
+               }
             }
-        }
-        
-        if (lines == null) {
-            throw new IllegalArgumentException("No beans to export");
-        }
-        if (fileName == null) {
-            throw new IllegalArgumentException("outputFile required");
-        }
+         }
+      }
 
-        String fileExtension =  FilenameUtils.getExtension(fileName).toLowerCase();
+      if (lines == null)
+      {
+         throw new IllegalArgumentException("No beans to export");
+      }
+      if (fileName == null)
+      {
+         throw new IllegalArgumentException("outputFile required");
+      }
 
-        if (lines.size() > 1 && fileExtension.equals("xml")) {
-            throw new IllegalArgumentException("cannot export multiple lines in one XML file");
-        }
+      String fileExtension = FilenameUtils.getExtension(fileName).toLowerCase();
 
-        File outputFile = new File(fileName);
-        if (outputFile.getParentFile() != null && !outputFile.getParentFile().exists()) {
-            outputFile.getParentFile().mkdirs();
-        }
+      if (lines.size() > 1 && fileExtension.equals("xml"))
+      {
+         throw new IllegalArgumentException(
+               "cannot export multiple lines in one XML file");
+      }
 
-        if (fileExtension.equals("xml")) {
-            createXmlFile(fileName, lines.get(0));
-        } else {
-            createZipFile(fileName, lines);           
-        }
+      File outputFile = new File(fileName);
+      if (outputFile.getParentFile() != null
+            && !outputFile.getParentFile().exists())
+      {
+         outputFile.getParentFile().mkdirs();
+      }
 
-    }
+      if (fileExtension.equals("xml"))
+      {
+         createXmlFile(fileName, lines.get(0));
+      } else
+      {
+         createZipFile(fileName, lines);
+      }
 
-    private File createXmlFile(String filename, Line line) {
-        logger.info("exporting " + line.getName() + " (" + line.getObjectId() + ")");
-        File xmlFile = null;
-        // Complete datas for all neptune objects
-        line.complete();
-        
-        if (line.getVehicleJourneys() == null || line.getVehicleJourneys().isEmpty()) {
-            logger.info("no vehiclejourneys for line " + line.getName() + " (" + line.getObjectId() + "): not exported");
-            NetexReportItem item = new NetexReportItem(NetexReportItem.KEY.EMPTY_LINE, Report.STATE.ERROR, line.getName(), line.getObjectId());
+   }
+
+   private File createXmlFile(String filename, Line line)
+   {
+      logger.info("exporting " + line.getName() + " (" + line.getObjectId()
+            + ")");
+      File xmlFile = null;
+      // Complete datas for all neptune objects
+      line.complete();
+
+      if (line.getVehicleJourneys() == null
+            || line.getVehicleJourneys().isEmpty())
+      {
+         logger.info("no vehiclejourneys for line " + line.getName() + " ("
+               + line.getObjectId() + "): not exported");
+         NetexReportItem item = new NetexReportItem(
+               NetexReportItem.KEY.EMPTY_LINE, Report.STATE.ERROR,
+               line.getName(), line.getObjectId());
+         report.addItem(item);
+      } else
+      {
+         try
+         {
+            xmlFile = netexFileWriter.writeXmlFile(line, filename);
+            NetexReportItem item = new NetexReportItem(
+                  NetexReportItem.KEY.EXPORTED_LINE, Report.STATE.OK,
+                  line.getName(), line.getObjectId());
             report.addItem(item);
-        } else {
-            try {
-                xmlFile = netexFileWriter.writeXmlFile(line, filename);
-                NetexReportItem item = new NetexReportItem(NetexReportItem.KEY.EXPORTED_LINE, Report.STATE.OK, line.getName(), line.getObjectId());
-                report.addItem(item);
-            } catch (DatatypeConfigurationException exception) {
-                logger.error("Impossible to create xml file for line " + line.getName() + " : " + exception);
-                NetexReportItem item = new NetexReportItem(NetexReportItem.KEY.FILE_ERROR, Report.STATE.ERROR, line.getName(), line.getObjectId());
-                report.addItem(item);
-            } catch (IOException exception) {
-                logger.error("Impossible to create xml file for line " + line.getName() + " : " + exception);
-                NetexReportItem item = new NetexReportItem(NetexReportItem.KEY.FILE_ERROR, Report.STATE.ERROR, line.getName(), line.getObjectId());
-                report.addItem(item);
-            }
-        }
-
-        return xmlFile;
-    }
-
-    private ZipOutputStream createZipFile(String fileName, List<Line> lines)
-    {
-        ZipOutputStream zipFile = null;
-        try {
-            zipFile = new ZipOutputStream(new FileOutputStream(fileName));
-            // Compress the files
-            for (Iterator<Line> it = lines.iterator(); it.hasNext();) {
-                Line line = it.next();
-                // Hack to remove line and free memory
-                it.remove();
-                // Complete datas for all neptune objects
-                line.complete();
-                
-                logger.info("exporting " + line.getName() + " (" + line.getObjectId() + ")");
-
-                if (line.getVehicleJourneys() == null || line.getVehicleJourneys().isEmpty()) {
-                    logger.info("no vehiclejourneys for line " + line.getName() + " (" + line.getObjectId() + "): not exported");
-                    NetexReportItem item = new NetexReportItem(NetexReportItem.KEY.EMPTY_LINE, Report.STATE.ERROR, line.getName(), line.getObjectId());
-                    report.addItem(item);
-                } else {
-                    try {
-                        // Add ZIP entry to zipFile stream.
-                        String entryName = line.objectIdSuffix() + ".xml";
-                        netexFileWriter.writeZipEntry(line, entryName, zipFile);
-                        NetexReportItem item = new NetexReportItem(NetexReportItem.KEY.EXPORTED_LINE, Report.STATE.OK, line.getName(), line.getObjectId());
-                        report.addItem(item);
-                    } catch (DatatypeConfigurationException exception) {
-                        logger.error("Impossible to create xml file for line " + line.getName() + " : " + exception);
-                        NetexReportItem item = new NetexReportItem(NetexReportItem.KEY.FILE_ERROR, Report.STATE.ERROR, line.getName(), line.getObjectId());
-                        report.addItem(item);
-                    } catch (IOException exception) {
-                        logger.error("Impossible to create xml file for line " + line.getName() + " : " + exception);
-                        NetexReportItem item = new NetexReportItem(NetexReportItem.KEY.FILE_ERROR, Report.STATE.ERROR, line.getName(), line.getObjectId());
-                        report.addItem(item);
-                    }
-                }
-            }
-            System.gc();
-            
-            // Complete the ZIP file
-            zipFile.close();            
-        } catch (IOException exception) {
-            logger.error("Impossible to create zip file : " + exception);
-            NetexReportItem item = new NetexReportItem(NetexReportItem.KEY.FILE_ERROR, Report.STATE.ERROR);
+         } catch (DatatypeConfigurationException exception)
+         {
+            logger.error("Impossible to create xml file for line "
+                  + line.getName() + " : " + exception);
+            NetexReportItem item = new NetexReportItem(
+                  NetexReportItem.KEY.FILE_ERROR, Report.STATE.ERROR,
+                  line.getName(), line.getObjectId());
             report.addItem(item);
-        }
-        
-        return zipFile;
-    }
+         } catch (IOException exception)
+         {
+            logger.error("Impossible to create xml file for line "
+                  + line.getName() + " : " + exception);
+            NetexReportItem item = new NetexReportItem(
+                  NetexReportItem.KEY.FILE_ERROR, Report.STATE.ERROR,
+                  line.getName(), line.getObjectId());
+            report.addItem(item);
+         }
+      }
+
+      return xmlFile;
+   }
+
+   private ZipOutputStream createZipFile(String fileName, List<Line> lines)
+   {
+      ZipOutputStream zipFile = null;
+      try
+      {
+         zipFile = new ZipOutputStream(new FileOutputStream(fileName));
+         // Compress the files
+         for (Iterator<Line> it = lines.iterator(); it.hasNext();)
+         {
+            Line line = it.next();
+            // Hack to remove line and free memory
+            it.remove();
+            // Complete datas for all neptune objects
+            line.complete();
+
+            logger.info("exporting " + line.getName() + " ("
+                  + line.getObjectId() + ")");
+
+            if (line.getVehicleJourneys() == null
+                  || line.getVehicleJourneys().isEmpty())
+            {
+               logger.info("no vehiclejourneys for line " + line.getName()
+                     + " (" + line.getObjectId() + "): not exported");
+               NetexReportItem item = new NetexReportItem(
+                     NetexReportItem.KEY.EMPTY_LINE, Report.STATE.ERROR,
+                     line.getName(), line.getObjectId());
+               report.addItem(item);
+            } else
+            {
+               try
+               {
+                  // Add ZIP entry to zipFile stream.
+                  String entryName = line.objectIdSuffix() + ".xml";
+                  netexFileWriter.writeZipEntry(line, entryName, zipFile);
+                  NetexReportItem item = new NetexReportItem(
+                        NetexReportItem.KEY.EXPORTED_LINE, Report.STATE.OK,
+                        line.getName(), line.getObjectId());
+                  report.addItem(item);
+               } catch (DatatypeConfigurationException exception)
+               {
+                  logger.error("Impossible to create xml file for line "
+                        + line.getName() + " : " + exception);
+                  NetexReportItem item = new NetexReportItem(
+                        NetexReportItem.KEY.FILE_ERROR, Report.STATE.ERROR,
+                        line.getName(), line.getObjectId());
+                  report.addItem(item);
+               } catch (IOException exception)
+               {
+                  logger.error("Impossible to create xml file for line "
+                        + line.getName() + " : " + exception);
+                  NetexReportItem item = new NetexReportItem(
+                        NetexReportItem.KEY.FILE_ERROR, Report.STATE.ERROR,
+                        line.getName(), line.getObjectId());
+                  report.addItem(item);
+               }
+            }
+         }
+         System.gc();
+
+         // Complete the ZIP file
+         zipFile.close();
+      } catch (IOException exception)
+      {
+         logger.error("Impossible to create zip file : " + exception);
+         NetexReportItem item = new NetexReportItem(
+               NetexReportItem.KEY.FILE_ERROR, Report.STATE.ERROR);
+         report.addItem(item);
+      }
+
+      return zipFile;
+   }
 }

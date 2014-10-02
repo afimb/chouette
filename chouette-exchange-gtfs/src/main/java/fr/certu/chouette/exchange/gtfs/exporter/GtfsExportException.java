@@ -22,40 +22,43 @@ public class GtfsExportException extends ChouetteException
    /**
     * 
     */
-   public GtfsExportException(GtfsExportExceptionCode code, String... args) 
+   public GtfsExportException(GtfsExportExceptionCode code, String... args)
    {
-      super( args);
-      this.code = code;
-   }
-   
-   public GtfsExportException(GtfsExportExceptionCode code, Throwable cause, String... args) 
-   {
-      super( cause, args);
+      super(args);
       this.code = code;
    }
 
-   public GtfsExportExceptionCode getExceptionCode() 
+   public GtfsExportException(GtfsExportExceptionCode code, Throwable cause,
+         String... args)
+   {
+      super(cause, args);
+      this.code = code;
+   }
+
+   public GtfsExportExceptionCode getExceptionCode()
    {
       return code;
    }
 
-   /* (non-Javadoc)
+   /*
+    * (non-Javadoc)
+    * 
     * @see fr.certu.chouette.common.ChouetteException#getPrefix()
     */
    @Override
    public String getPrefix()
    {
-      // TODO Auto-generated method stub
       return PREFIX;
    }
 
-   /* (non-Javadoc)
+   /*
+    * (non-Javadoc)
+    * 
     * @see fr.certu.chouette.common.ChouetteException#getCode()
     */
    @Override
    public String getCode()
    {
-      // TODO Auto-generated method stub
       return code.name();
    }
 

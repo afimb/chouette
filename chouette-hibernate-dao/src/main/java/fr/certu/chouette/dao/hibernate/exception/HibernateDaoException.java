@@ -21,7 +21,8 @@ public class HibernateDaoException extends ChouetteException
       this.code = code;
    }
 
-   public HibernateDaoException(HibernateDaoExceptionCode code, Throwable cause, String... args)
+   public HibernateDaoException(HibernateDaoExceptionCode code,
+         Throwable cause, String... args)
    {
       super(cause, args);
       this.code = code;

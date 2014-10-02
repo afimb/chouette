@@ -10,33 +10,36 @@ import fr.certu.chouette.plugin.exchange.ParameterValue;
 import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
 import fr.certu.chouette.plugin.report.ReportHolder;
 
-public class LineLoader 
+public class LineLoader
 {
- public static  List<Line> load(IImportPlugin<Line> importLine,String fileName) throws ChouetteException
- {
-		List<ParameterValue> parameters = new ArrayList<ParameterValue>();
-		{
-		SimpleParameterValue simpleParameterValue = new SimpleParameterValue("inputFile");
-		simpleParameterValue.setFilepathValue(fileName);
-		parameters.add(simpleParameterValue);
-		}
-		{
-		SimpleParameterValue simpleParameterValue = new SimpleParameterValue("optimizeMemory");
-		simpleParameterValue.setBooleanValue(false);
-		parameters.add(simpleParameterValue);
-		}
+   public static List<Line> load(IImportPlugin<Line> importLine, String fileName)
+         throws ChouetteException
+   {
+      List<ParameterValue> parameters = new ArrayList<ParameterValue>();
+      {
+         SimpleParameterValue simpleParameterValue = new SimpleParameterValue(
+               "inputFile");
+         simpleParameterValue.setFilepathValue(fileName);
+         parameters.add(simpleParameterValue);
+      }
+      {
+         SimpleParameterValue simpleParameterValue = new SimpleParameterValue(
+               "optimizeMemory");
+         simpleParameterValue.setBooleanValue(false);
+         parameters.add(simpleParameterValue);
+      }
 
-		ReportHolder ireport = new ReportHolder();
-		ReportHolder vreport = new ReportHolder();
+      ReportHolder ireport = new ReportHolder();
+      ReportHolder vreport = new ReportHolder();
 
-		List<Line> lines = importLine.doImport(parameters, ireport,vreport);
-		
-		if (lines == null || lines.isEmpty())
-		{
-			AbstractValidation.printReport(ireport.getReport());
-			AbstractValidation.printReport(vreport.getReport());
-			lines = new ArrayList<Line>();
-		}
-	    return lines;
- }
+      List<Line> lines = importLine.doImport(parameters, ireport, vreport);
+
+      if (lines == null || lines.isEmpty())
+      {
+         AbstractValidation.printReport(ireport.getReport());
+         AbstractValidation.printReport(vreport.getReport());
+         lines = new ArrayList<Line>();
+      }
+      return lines;
+   }
 }

@@ -24,62 +24,78 @@ import com.ximpleware.XPathParseException;
 
 import fr.certu.chouette.model.neptune.GroupOfLine;
 
-
-@ContextConfiguration(locations={"classpath:testContext.xml","classpath*:chouetteContext.xml"})
+@ContextConfiguration(locations = { "classpath:testContext.xml",
+      "classpath*:chouetteContext.xml" })
 @SuppressWarnings("unchecked")
-public class GroupOfLinesConverterTests {
+public class GroupOfLinesConverterTests
+{
 
-    private GroupOfLinesConverter groupOfLinesConverter;
+   private GroupOfLinesConverter groupOfLinesConverter;
 
-    @BeforeClass
-    protected void setUp() throws Exception {
-        File f = FileUtils.getFile("src","test", "resources", "line_test.xml");;
-        FileInputStream fis = new FileInputStream(f);
-        byte[] b = new byte[(int) f.length()];
-        fis.read(b);
-        fis.close();
-        
-        VTDGen vg = new VTDGen();
-        vg.setDoc(b);
-        vg.parse(true); // set namespace awareness to true
+   @BeforeClass
+   protected void setUp() throws Exception
+   {
+      File f = FileUtils.getFile("src", "test", "resources", "line_test.xml");
+      ;
+      FileInputStream fis = new FileInputStream(f);
+      byte[] b = new byte[(int) f.length()];
+      fis.read(b);
+      fis.close();
 
-        VTDNav nav = vg.getNav();
-        AutoPilot autoPilot = new AutoPilot(nav);
-        autoPilot.declareXPathNameSpace("netex","http://www.netex.org.uk/netex");
-        groupOfLinesConverter = new GroupOfLinesConverter(nav);
-    }
+      VTDGen vg = new VTDGen();
+      vg.setDoc(b);
+      vg.parse(true); // set namespace awareness to true
 
-    @Test(groups = {"ServiceFrame"}, description = "Export Plugin should have one group of line")
-    public void verifyRouteConverter() throws XPathEvalException, NavException, XPathParseException, ParseException {
-        List<GroupOfLine> groups = groupOfLinesConverter.convert();
-        
-        Assert.assertEquals( groups.size(), 2);
-    }
-    
-    private GroupOfLine getGroupByObjectId( String objectId)  throws XPathEvalException, NavException, XPathParseException, ParseException {
-        List<GroupOfLine> groups = groupOfLinesConverter.convert();
-        GroupOfLine selectedGroup = null;
-        for( GroupOfLine group : groups) {
-            if ( group.getObjectId().equals( objectId)) {
-                selectedGroup = group;
-                break;
-            }
-        }
-        
-        Assert.assertNotNull( selectedGroup, "can't find expected group of lines having "+objectId+" as objectId");
-        return selectedGroup;
-    }
+      VTDNav nav = vg.getNav();
+      AutoPilot autoPilot = new AutoPilot(nav);
+      autoPilot.declareXPathNameSpace("netex", "http://www.netex.org.uk/netex");
+      groupOfLinesConverter = new GroupOfLinesConverter(nav);
+   }
 
-    @Test(groups = {"ServiceFrame"}, description = "Group of lines's name attribute reading")
-    public void verifyGroupName() throws XPathEvalException, NavException, XPathParseException, ParseException {
-        GroupOfLine selectedGroup = getGroupByObjectId( "RATP_PIVI:GroupOfLines:1234");
-        Assert.assertEquals( selectedGroup.getName(), "Noctilien");
-    }
+   @Test(groups = { "ServiceFrame" }, description = "Export Plugin should have one group of line")
+   public void verifyRouteConverter() throws XPathEvalException, NavException,
+         XPathParseException, ParseException
+   {
+      List<GroupOfLine> groups = groupOfLinesConverter.convert();
 
-    @Test(groups = {"ServiceFrame"}, description = "Group of lines's comment attribute reading")
-    public void verifyGroupComment() throws XPathEvalException, NavException, XPathParseException, ParseException {
-        GroupOfLine selectedGroup = getGroupByObjectId( "RATP_PIVI:GroupOfLines:1234");
-        Assert.assertEquals( selectedGroup.getComment(), "Bus de nuit");
-    }
-    
+      Assert.assertEquals(groups.size(), 2);
+   }
+
+   private GroupOfLine getGroupByObjectId(String objectId)
+         throws XPathEvalException, NavException, XPathParseException,
+         ParseException
+   {
+      List<GroupOfLine> groups = groupOfLinesConverter.convert();
+      GroupOfLine selectedGroup = null;
+      for (GroupOfLine group : groups)
+      {
+         if (group.getObjectId().equals(objectId))
+         {
+            selectedGroup = group;
+            break;
+         }
+      }
+
+      Assert.assertNotNull(selectedGroup,
+            "can't find expected group of lines having " + objectId
+                  + " as objectId");
+      return selectedGroup;
+   }
+
+   @Test(groups = { "ServiceFrame" }, description = "Group of lines's name attribute reading")
+   public void verifyGroupName() throws XPathEvalException, NavException,
+         XPathParseException, ParseException
+   {
+      GroupOfLine selectedGroup = getGroupByObjectId("RATP_PIVI:GroupOfLines:1234");
+      Assert.assertEquals(selectedGroup.getName(), "Noctilien");
+   }
+
+   @Test(groups = { "ServiceFrame" }, description = "Group of lines's comment attribute reading")
+   public void verifyGroupComment() throws XPathEvalException, NavException,
+         XPathParseException, ParseException
+   {
+      GroupOfLine selectedGroup = getGroupByObjectId("RATP_PIVI:GroupOfLines:1234");
+      Assert.assertEquals(selectedGroup.getComment(), "Bus de nuit");
+   }
+
 }

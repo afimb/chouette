@@ -10,29 +10,52 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- *
+ * 
  * @author zbouziane
  */
 @NoArgsConstructor
 public class GtfsStopTime extends GtfsBean implements Comparable<GtfsStopTime>
 {
 
-   @Getter @Setter private String tripId;
-   @Getter @Setter private GtfsTime   arrivalTime;
-   @Getter @Setter private GtfsTime   departureTime;
-   @Getter @Setter private String stopId;
-   @Getter @Setter private int    stopSequence = -1;
+   @Getter
+   @Setter
+   private String tripId;
+   @Getter
+   @Setter
+   private GtfsTime arrivalTime;
+   @Getter
+   @Setter
+   private GtfsTime departureTime;
+   @Getter
+   @Setter
+   private String stopId;
+   @Getter
+   @Setter
+   private int stopSequence = -1;
    // optional items
-   @Getter @Setter private String stopHeadsign = null;
-   @Getter @Setter private int    pickupType = 0;
-   @Getter @Setter private int    dropOffType = 0;
-   @Getter @Setter private double shapeDistTraveled = (double)-1;
-   @Getter @Setter private GtfsTrip trip;
-   @Getter @Setter private GtfsStop stop;
+   @Getter
+   @Setter
+   private String stopHeadsign = null;
+   @Getter
+   @Setter
+   private int pickupType = 0;
+   @Getter
+   @Setter
+   private int dropOffType = 0;
+   @Getter
+   @Setter
+   private double shapeDistTraveled = (double) -1;
+   @Getter
+   @Setter
+   private GtfsTrip trip;
+   @Getter
+   @Setter
+   private GtfsStop stop;
 
    public static final String header = "trip_id,arrival_time,departure_time,stop_id,stop_sequence,stop_headsign,shape_dist_traveled";
-   
-   public String getCSVLine() {
+
+   public String getCSVLine()
+   {
       String csvLine = tripId + ",";
       if (arrivalTime == null)
          arrivalTime = departureTime;
@@ -48,26 +71,26 @@ public class GtfsStopTime extends GtfsBean implements Comparable<GtfsStopTime>
       csvLine += stopSequence + ",";
       if (stopHeadsign != null)
          csvLine += stopHeadsign;
-      csvLine += "," ; // + pickupType + "," + dropOffType + "," ;
+      csvLine += ","; // + pickupType + "," + dropOffType + "," ;
       if (shapeDistTraveled >= 0)
          csvLine += shapeDistTraveled;
       return csvLine;
    }
 
-
    @Override
-   public int compareTo(GtfsStopTime o) 
+   public int compareTo(GtfsStopTime o)
    {
       return stopSequence - o.getStopSequence();
    }
 
-
-
-   /* (non-Javadoc)
+   /*
+    * (non-Javadoc)
+    * 
     * @see java.lang.Object#hashCode()
     */
    @Override
-   public int hashCode() {
+   public int hashCode()
+   {
       final int prime = 31;
       int result = 1;
       result = prime * result + ((stopId == null) ? 0 : stopId.hashCode());
@@ -76,37 +99,49 @@ public class GtfsStopTime extends GtfsBean implements Comparable<GtfsStopTime>
       return result;
    }
 
-
-   /* (non-Javadoc)
+   /*
+    * (non-Javadoc)
+    * 
     * @see java.lang.Object#equals(java.lang.Object)
     */
    @Override
-   public boolean equals(Object obj) {
-      if (this == obj) {
+   public boolean equals(Object obj)
+   {
+      if (this == obj)
+      {
          return true;
       }
-      if (!super.equals(obj)) {
+      if (!super.equals(obj))
+      {
          return false;
       }
-      if (!(obj instanceof GtfsStopTime)) {
+      if (!(obj instanceof GtfsStopTime))
+      {
          return false;
       }
       GtfsStopTime other = (GtfsStopTime) obj;
-      if (stopId == null) {
-         if (other.stopId != null) {
+      if (stopId == null)
+      {
+         if (other.stopId != null)
+         {
             return false;
          }
-      } else if (!stopId.equals(other.stopId)) {
+      } else if (!stopId.equals(other.stopId))
+      {
          return false;
       }
-      if (stopSequence != other.stopSequence) {
+      if (stopSequence != other.stopSequence)
+      {
          return false;
       }
-      if (tripId == null) {
-         if (other.tripId != null) {
+      if (tripId == null)
+      {
+         if (other.tripId != null)
+         {
             return false;
          }
-      } else if (!tripId.equals(other.tripId)) {
+      } else if (!tripId.equals(other.tripId))
+      {
          return false;
       }
       return true;
@@ -125,36 +160,37 @@ public class GtfsStopTime extends GtfsBean implements Comparable<GtfsStopTime>
       copy.stopSequence = this.stopSequence;
       return copy;
    }
-	@Override
-	public boolean isValid() 
-	{
-		boolean ret = true;
-		if (tripId == null)
-		{
-			addMissingData("trip_id");
-			ret = false;
-		}
-		if (arrivalTime == null)
-		{
-			addMissingData("arrival_time");
-			ret = false;
-		}
-		if (departureTime == null)
-		{
-			addMissingData("departure_time");
-			ret = false;
-		}
-		if (stopId == null)
-		{
-			addMissingData("stop_id");
-			ret = false;
-		}
-		if (stopSequence == -1)
-		{
-			addMissingData("stop_sequence");
-			ret = false;
-		}
-		return ret;
-	}
+
+   @Override
+   public boolean isValid()
+   {
+      boolean ret = true;
+      if (tripId == null)
+      {
+         addMissingData("trip_id");
+         ret = false;
+      }
+      if (arrivalTime == null)
+      {
+         addMissingData("arrival_time");
+         ret = false;
+      }
+      if (departureTime == null)
+      {
+         addMissingData("departure_time");
+         ret = false;
+      }
+      if (stopId == null)
+      {
+         addMissingData("stop_id");
+         ret = false;
+      }
+      if (stopSequence == -1)
+      {
+         addMissingData("stop_sequence");
+         ret = false;
+      }
+      return ret;
+   }
 
 }

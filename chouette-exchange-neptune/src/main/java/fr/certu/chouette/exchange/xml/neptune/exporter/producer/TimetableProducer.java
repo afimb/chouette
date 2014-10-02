@@ -14,64 +14,68 @@ import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.type.DayTypeEnum;
 
-public class TimetableProducer extends AbstractJaxbNeptuneProducer<TimetableType, Timetable> 
+public class TimetableProducer extends
+      AbstractJaxbNeptuneProducer<TimetableType, Timetable>
 {
-	
-	@Override
-	public TimetableType produce(Timetable timetable) 
-	{
-		TimetableType castorTimetable = tridentFactory.createTimetableType();
 
-		//
-		populateFromModel(castorTimetable, timetable);
+   @Override
+   public TimetableType produce(Timetable timetable)
+   {
+      TimetableType castorTimetable = tridentFactory.createTimetableType();
 
-		castorTimetable.setComment(getNotEmptyString(timetable.getComment()));
-		castorTimetable.setVersion(timetable.getVersion());
+      //
+      populateFromModel(castorTimetable, timetable);
 
-		for(Date peculiarDay : timetable.getPeculiarDates())
-		{
-			if(peculiarDay != null)
-			{
-				
-					castorTimetable.getCalendarDay().add(toCalendar(peculiarDay));
-			}
-		}
+      castorTimetable.setComment(getNotEmptyString(timetable.getComment()));
+      castorTimetable.setVersion(timetable.getVersion());
 
-		for(Period period : timetable.getEffectivePeriods())
-		{
-			if(period != null)
-			{
-				PeriodType castorPeriod = tridentFactory.createPeriodType();
-				castorPeriod.setStartOfPeriod(toCalendar(period.getStartDate()));
-				castorPeriod.setEndOfPeriod(toCalendar(period.getEndDate()));
-				castorTimetable.getPeriod().add(castorPeriod);
-			}
-		}
+      for (Date peculiarDay : timetable.getPeculiarDates())
+      {
+         if (peculiarDay != null)
+         {
 
-		if(timetable.getDayTypes() != null)
-		{
-			for(DayTypeEnum dayType : timetable.getDayTypes()){
-				if(dayType != null)
-				{
-					try 
-					{
-						castorTimetable.getDayType().add(DayTypeType.fromValue(dayType.name()));						
-					} 
-					catch (IllegalArgumentException e) 
-					{
-						// TODO: handle exception
-					}
-				}
-			}
-		}
-		if(timetable.getVehicleJourneys() != null)
-		{
-			for(VehicleJourney vehicleJourney : timetable.getVehicleJourneys()){
-				castorTimetable.getVehicleJourneyId().add(getNonEmptyObjectId(vehicleJourney));
-			}
-		}
+            castorTimetable.getCalendarDay().add(toCalendar(peculiarDay));
+         }
+      }
 
-		return castorTimetable;
-	}
+      for (Period period : timetable.getEffectivePeriods())
+      {
+         if (period != null)
+         {
+            PeriodType castorPeriod = tridentFactory.createPeriodType();
+            castorPeriod.setStartOfPeriod(toCalendar(period.getStartDate()));
+            castorPeriod.setEndOfPeriod(toCalendar(period.getEndDate()));
+            castorTimetable.getPeriod().add(castorPeriod);
+         }
+      }
+
+      if (timetable.getDayTypes() != null)
+      {
+         for (DayTypeEnum dayType : timetable.getDayTypes())
+         {
+            if (dayType != null)
+            {
+               try
+               {
+                  castorTimetable.getDayType().add(
+                        DayTypeType.fromValue(dayType.name()));
+               } catch (IllegalArgumentException e)
+               {
+                  // TODO: handle exception
+               }
+            }
+         }
+      }
+      if (timetable.getVehicleJourneys() != null)
+      {
+         for (VehicleJourney vehicleJourney : timetable.getVehicleJourneys())
+         {
+            castorTimetable.getVehicleJourneyId().add(
+                  getNonEmptyObjectId(vehicleJourney));
+         }
+      }
+
+      return castorTimetable;
+   }
 
 }

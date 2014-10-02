@@ -60,7 +60,8 @@ public class Command extends AbstractCommand
 
    private static final Logger logger = Logger.getLogger(Command.class);
    // public static ClassPathXmlApplicationContext applicationContext;
-   @Getter @Setter
+   @Getter
+   @Setter
    private static BeanFactory beanFactory;
 
    /**
@@ -72,14 +73,12 @@ public class Command extends AbstractCommand
       try
       {
          bundle = ResourceBundle.getBundle(Command.class.getName(), locale);
-      }
-      catch (MissingResourceException e1)
+      } catch (MissingResourceException e1)
       {
          try
          {
             bundle = ResourceBundle.getBundle(Command.class.getName());
-         }
-         catch (MissingResourceException e2)
+         } catch (MissingResourceException e2)
          {
             System.out.println("missing help resource");
             return;
@@ -119,14 +118,14 @@ public class Command extends AbstractCommand
       try
       {
          return bundle.getString(key);
-      }
-      catch (Exception e)
+      } catch (Exception e)
       {
          return null;
       }
    }
 
-   private static void printBloc(ResourceBundle bundle, String key, String indent)
+   private static void printBloc(ResourceBundle bundle, String key,
+         String indent)
    {
       // print options
       String line = null;
@@ -140,11 +139,11 @@ public class Command extends AbstractCommand
             printBloc(bundle, key + rank + "_", indent + "   ");
          }
          rank++;
-      }
-      while (line != null);
+      } while (line != null);
    }
 
-   private static void printCommandDetail(ResourceBundle bundle, String key, String indent)
+   private static void printCommandDetail(ResourceBundle bundle, String key,
+         String indent)
    {
       // print command
       String line = getHelpString(bundle, key);
@@ -172,14 +171,12 @@ public class Command extends AbstractCommand
       try
       {
          bundle = ResourceBundle.getBundle(Command.class.getName(), locale);
-      }
-      catch (MissingResourceException e1)
+      } catch (MissingResourceException e1)
       {
          try
          {
             bundle = ResourceBundle.getBundle(Command.class.getName());
-         }
-         catch (MissingResourceException e2)
+         } catch (MissingResourceException e2)
          {
             System.out.println("missing help resource");
             return;
@@ -199,14 +196,12 @@ public class Command extends AbstractCommand
       try
       {
          bundle = ResourceBundle.getBundle(Command.class.getName(), locale);
-      }
-      catch (MissingResourceException e1)
+      } catch (MissingResourceException e1)
       {
          try
          {
             bundle = ResourceBundle.getBundle(Command.class.getName());
-         }
-         catch (MissingResourceException e2)
+         } catch (MissingResourceException e2)
          {
             System.out.println("missing help resource");
             return;
@@ -221,8 +216,7 @@ public class Command extends AbstractCommand
             String line = getHelpString(bundle, command);
             System.out.println("   " + line);
          }
-      }
-      else
+      } else
       {
          for (String command : commands)
          {
@@ -238,7 +232,6 @@ public class Command extends AbstractCommand
    public static Map<String, String> shortCuts;
 
    public static Locale locale = Locale.getDefault();
-
 
    static
    {
@@ -256,7 +249,8 @@ public class Command extends AbstractCommand
    {
       EntityManagerFactory entityManagerFactory = getEntityManagerFactory();
       EntityManager entityManager = entityManagerFactory.createEntityManager();
-      TransactionSynchronizationManager.bindResource(entityManagerFactory, new EntityManagerHolder(entityManager));
+      TransactionSynchronizationManager.bindResource(entityManagerFactory,
+            new EntityManagerHolder(entityManager));
    }
 
    /**
@@ -265,8 +259,8 @@ public class Command extends AbstractCommand
    public static void closeDao()
    {
       EntityManagerFactory entityManagerFactory = getEntityManagerFactory();
-      EntityManagerHolder holder = (EntityManagerHolder)
-            TransactionSynchronizationManager.unbindResource(entityManagerFactory);
+      EntityManagerHolder holder = (EntityManagerHolder) TransactionSynchronizationManager
+            .unbindResource(entityManagerFactory);
       EntityManager em = holder.getEntityManager();
       EntityTransaction tx = em.getTransaction();
       try
@@ -274,23 +268,24 @@ public class Command extends AbstractCommand
          tx.begin();
          em.flush();
          tx.commit();
-      }
-      catch (PersistenceException e)
+      } catch (PersistenceException e)
       {
          tx.rollback();
-      }      
+      }
       EntityManagerFactoryUtils.closeEntityManager(em);
    }
 
    public static EntityManagerFactory getEntityManagerFactory()
    {
-      EntityManagerFactory entityManagerFactory = (EntityManagerFactory) beanFactory.getBean("entityManagerFactory");
+      EntityManagerFactory entityManagerFactory = (EntityManagerFactory) beanFactory
+            .getBean("entityManagerFactory");
       return entityManagerFactory;
    }
 
    public static EntityManager getEntityManager()
    {
-      return EntityManagerFactoryUtils.getTransactionalEntityManager(getEntityManagerFactory());
+      return EntityManagerFactoryUtils
+            .getTransactionalEntityManager(getEntityManagerFactory());
    }
 
    /**
@@ -303,7 +298,8 @@ public class Command extends AbstractCommand
 
       if (args.length >= 1)
       {
-         if (args[0].equalsIgnoreCase("-help") || args[0].equalsIgnoreCase("-h"))
+         if (args[0].equalsIgnoreCase("-help")
+               || args[0].equalsIgnoreCase("-h"))
          {
             printHelp();
             System.exit(0);
@@ -313,19 +309,18 @@ public class Command extends AbstractCommand
          ClassPathXmlApplicationContext applicationContext = null;
          try
          {
-            applicationContext =  new ClassPathXmlApplicationContext(context);
+            applicationContext = new ClassPathXmlApplicationContext(context);
             applicationContext.registerShutdownHook();
-            ConfigurableBeanFactory factory = applicationContext.getBeanFactory();
+            ConfigurableBeanFactory factory = applicationContext
+                  .getBeanFactory();
             command = (Command) factory.getBean("Command");
             beanFactory = applicationContext.getBeanFactory();
             initDao();
-         }
-         catch (Exception ex)
+         } catch (Exception ex)
          {
             logger.fatal("global failure", ex);
             System.exit(2);
-         }
-         catch (Error e)
+         } catch (Error e)
          {
             logger.fatal("global error", e);
             System.exit(2);
@@ -334,13 +329,11 @@ public class Command extends AbstractCommand
          try
          {
             code = command.execute(args);
-         }
-         catch (Exception ex)
+         } catch (Exception ex)
          {
             logger.fatal("global failure", ex);
             code = 2;
-         }
-         catch (Error e)
+         } catch (Error e)
          {
             logger.fatal("global error", e);
             code = 2;
@@ -349,24 +342,20 @@ public class Command extends AbstractCommand
          try
          {
             closeDao();
-         }
-         catch (Exception ex)
+         } catch (Exception ex)
          {
             logger.fatal("global failure", ex);
             System.exit(2);
-         }
-         catch (Error e)
+         } catch (Error e)
          {
             logger.fatal("global error", e);
             System.exit(2);
          }
 
-         
          applicationContext.close();
-         
+
          System.exit(code);
-      }
-      else
+      } else
       {
          printHelp();
       }
@@ -381,15 +370,13 @@ public class Command extends AbstractCommand
       try
       {
          commands = parseArgs(args);
-      }
-      catch (Exception e1)
+      } catch (Exception e1)
       {
          if (getBoolean(globals, "help"))
          {
             printHelp();
             return 0;
-         }
-         else
+         } else
          {
             System.err.println("invalid syntax : " + e1.getMessage());
             logger.error(e1.getMessage(), e1);
@@ -404,7 +391,8 @@ public class Command extends AbstractCommand
 
       for (String key : globals.keySet())
       {
-         logger.info("global parameters " + key + " : " + Arrays.toString(globals.get(key).toArray()));
+         logger.info("global parameters " + key + " : "
+               + Arrays.toString(globals.get(key).toArray()));
       }
 
       int commandNumber = 0;
@@ -416,8 +404,7 @@ public class Command extends AbstractCommand
             commandNumber++;
             code = executeCommand(commandNumber, command);
          }
-      }
-      catch (Exception e)
+      } catch (Exception e)
       {
          System.out.println("command failed : " + e.getMessage());
          logger.error(e.getMessage(), e);
@@ -435,16 +422,16 @@ public class Command extends AbstractCommand
     * @throws ChouetteException
     * @throws Exception
     */
-   private int executeCommand(
-         int commandNumber,
-         CommandArgument command) throws Exception
-         {
+   private int executeCommand(int commandNumber, CommandArgument command)
+         throws Exception
+   {
       String name = command.getName();
       Map<String, List<String>> parameters = command.getParameters();
       logger.info("Command " + commandNumber + " : " + name);
       for (String key : parameters.keySet())
       {
-         logger.info("    parameters " + key + " : " + Arrays.toString(parameters.get(key).toArray()));
+         logger.info("    parameters " + key + " : "
+               + Arrays.toString(parameters.get(key).toArray()));
       }
 
       if (name.equals("help"))
@@ -453,8 +440,7 @@ public class Command extends AbstractCommand
          if (cmd.length() > 0)
          {
             printCommandDetail(cmd);
-         }
-         else
+         } else
          {
             printCommandSyntax(true);
          }
@@ -465,12 +451,10 @@ public class Command extends AbstractCommand
          if (getBoolean(parameters, "en"))
          {
             locale = Locale.ENGLISH;
-         }
-         else if (getBoolean(parameters, "fr"))
+         } else if (getBoolean(parameters, "fr"))
          {
             locale = Locale.FRENCH;
-         }
-         else
+         } else
          {
             System.out.println(locale);
          }
@@ -487,35 +471,36 @@ public class Command extends AbstractCommand
             logger.error("   command failed with code " + code);
             return code;
          }
-      }
-      else if (name.equals("validate"))
+      } else if (name.equals("validate"))
       {
-         int code = validateCommand.executeValidate(getEntityManager(), parameters);
+         int code = validateCommand.executeValidate(getEntityManager(),
+               parameters);
          if (code > 0)
          {
             logger.error("   command failed with code " + code);
             return code;
          }
-      }
-      else if (name.equals("export"))
+      } else if (name.equals("export"))
       {
          // old fashioned interface
          INeptuneManager<NeptuneIdentifiedObject> manager = getManager(parameters);
-         int code = exportCommand.executeExport(getEntityManager(),manager, parameters);
+         int code = exportCommand.executeExport(getEntityManager(), manager,
+               parameters);
          if (code > 0)
          {
             logger.error("   command failed with code " + code);
             return code;
          }
-      }
-      else
+      } else
       {
-         throw new Exception("Command " + commandNumber + ": unknown command :" + command.getName());
+         throw new Exception("Command " + commandNumber + ": unknown command :"
+               + command.getName());
       }
       long tfin = System.currentTimeMillis();
-      logger.info("    command " + command.getName() + " executed in " + getTimeAsString(tfin - tdeb));
+      logger.info("    command " + command.getName() + " executed in "
+            + getTimeAsString(tfin - tdeb));
       return 0;
-         }
+   }
 
    /**
     * @param string
@@ -527,7 +512,8 @@ public class Command extends AbstractCommand
       if (values == null)
          return false;
       if (values.size() > 1)
-         throw new IllegalArgumentException("parameter -" + key + " of boolean type must be unique");
+         throw new IllegalArgumentException("parameter -" + key
+               + " of boolean type must be unique");
       return Boolean.parseBoolean(values.get(0));
    }
 
@@ -535,25 +521,28 @@ public class Command extends AbstractCommand
     * @param parameters
     * @return
     */
-   private INeptuneManager<NeptuneIdentifiedObject> getManager(Map<String, List<String>> parameters)
+   private INeptuneManager<NeptuneIdentifiedObject> getManager(
+         Map<String, List<String>> parameters)
    {
       String object = null;
       try
       {
-         object = getSimpleString(parameters, "object").toLowerCase().replaceAll("_", "");
+         object = getSimpleString(parameters, "object").toLowerCase()
+               .replaceAll("_", "");
          List<String> objects = new ArrayList<String>();
          objects.add(object);
          globals.put("object", objects);
-      }
-      catch (IllegalArgumentException e)
+      } catch (IllegalArgumentException e)
       {
-         object = getSimpleString(globals, "object").toLowerCase().replaceAll("_", "");
+         object = getSimpleString(globals, "object").toLowerCase().replaceAll(
+               "_", "");
       }
       INeptuneManager<NeptuneIdentifiedObject> manager = managers.get(object);
       if (manager == null)
       {
-         throw new IllegalArgumentException("unknown object " + object + ", only "
-               + Arrays.toString(managers.keySet().toArray()) + " are managed");
+         throw new IllegalArgumentException("unknown object " + object
+               + ", only " + Arrays.toString(managers.keySet().toArray())
+               + " are managed");
       }
       return manager;
    }
@@ -562,13 +551,16 @@ public class Command extends AbstractCommand
     * @param string
     * @return
     */
-   private String getSimpleString(Map<String, List<String>> parameters, String key)
+   private String getSimpleString(Map<String, List<String>> parameters,
+         String key)
    {
       List<String> values = parameters.get(key);
       if (values == null)
-         throw new IllegalArgumentException("parameter -" + key + " of String type is required");
+         throw new IllegalArgumentException("parameter -" + key
+               + " of String type is required");
       if (values.size() > 1)
-         throw new IllegalArgumentException("parameter -" + key + " of String type must be unique");
+         throw new IllegalArgumentException("parameter -" + key
+               + " of String type must be unique");
       return values.get(0);
    }
 
@@ -576,13 +568,15 @@ public class Command extends AbstractCommand
     * @param string
     * @return
     */
-   private String getSimpleString(Map<String, List<String>> parameters, String key, String defaultValue)
+   private String getSimpleString(Map<String, List<String>> parameters,
+         String key, String defaultValue)
    {
       List<String> values = parameters.get(key);
       if (values == null)
          return defaultValue;
       if (values.size() > 1)
-         throw new IllegalArgumentException("parameter -" + key + " of String type must be unique");
+         throw new IllegalArgumentException("parameter -" + key
+               + " of String type must be unique");
       return values.get(0);
    }
 
@@ -657,8 +651,7 @@ public class Command extends AbstractCommand
                command = new CommandArgument(name);
                parameters = command.getParameters();
                commands.add(command);
-            }
-            else
+            } else
             {
                if (parameters.containsKey(key))
                {
@@ -669,8 +662,7 @@ public class Command extends AbstractCommand
                if (i == args.length - 1 || isOption(args[i + 1]))
                {
                   list.add("true");
-               }
-               else
+               } else
                {
                   while ((i + 1) < args.length && !isOption(args[i + 1]))
                   {

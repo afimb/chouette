@@ -16,12 +16,17 @@ import fr.certu.chouette.plugin.exchange.tools.DbVehicleJourneyFactory;
 import fr.certu.chouette.plugin.report.ReportItem;
 import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 
-public class VehicleJourneyProducer extends AbstractModelProducer<VehicleJourney, VehicleJourneyType> 
+public class VehicleJourneyProducer extends
+      AbstractModelProducer<VehicleJourney, VehicleJourneyType>
 {
-   @Setter private DbVehicleJourneyFactory factory;
+   @Setter
+   private DbVehicleJourneyFactory factory;
 
    @Override
-   public VehicleJourney produce(String sourceFile,VehicleJourneyType xmlVehicleJourney,ReportItem importReport, PhaseReportItem validationReport,SharedImportedData sharedData, UnsharedImportedData unshareableData) 
+   public VehicleJourney produce(String sourceFile,
+         VehicleJourneyType xmlVehicleJourney, ReportItem importReport,
+         PhaseReportItem validationReport, SharedImportedData sharedData,
+         UnsharedImportedData unshareableData)
    {
       VehicleJourney vehicleJourney = null;
       if (factory == null)
@@ -33,117 +38,158 @@ public class VehicleJourneyProducer extends AbstractModelProducer<VehicleJourney
       populateFromCastorNeptune(vehicleJourney, xmlVehicleJourney, importReport);
 
       // Comment optional
-      vehicleJourney.setComment(getNonEmptyTrimedString(xmlVehicleJourney.getComment()));
+      vehicleJourney.setComment(getNonEmptyTrimedString(xmlVehicleJourney
+            .getComment()));
 
       // Facility optional
-      vehicleJourney.setFacility(getNonEmptyTrimedString(xmlVehicleJourney.getFacility()));
+      vehicleJourney.setFacility(getNonEmptyTrimedString(xmlVehicleJourney
+            .getFacility()));
 
       // JourneyPatternId optional
-      vehicleJourney.setJourneyPatternId(getNonEmptyTrimedString(xmlVehicleJourney.getJourneyPatternId()));
+      vehicleJourney
+            .setJourneyPatternId(getNonEmptyTrimedString(xmlVehicleJourney
+                  .getJourneyPatternId()));
 
       // Number optional
       if (xmlVehicleJourney.isSetNumber())
          vehicleJourney.setNumber(xmlVehicleJourney.getNumber().longValue());
 
       // CompanyId optional
-      vehicleJourney.setCompanyId(getNonEmptyTrimedString(xmlVehicleJourney.getOperatorId()));
+      vehicleJourney.setCompanyId(getNonEmptyTrimedString(xmlVehicleJourney
+            .getOperatorId()));
 
       // PublishedJourneyIdentifier optional
-      vehicleJourney.setPublishedJourneyIdentifier(getNonEmptyTrimedString(xmlVehicleJourney.getPublishedJourneyIdentifier()));
+      vehicleJourney
+            .setPublishedJourneyIdentifier(getNonEmptyTrimedString(xmlVehicleJourney
+                  .getPublishedJourneyIdentifier()));
 
       // PublishedJourneyName optional
-      vehicleJourney.setPublishedJourneyName(getNonEmptyTrimedString(xmlVehicleJourney.getPublishedJourneyName()));
+      vehicleJourney
+            .setPublishedJourneyName(getNonEmptyTrimedString(xmlVehicleJourney
+                  .getPublishedJourneyName()));
 
       // RouteId mandatory
-      vehicleJourney.setRouteId(getNonEmptyTrimedString(xmlVehicleJourney.getRouteId()));
+      vehicleJourney.setRouteId(getNonEmptyTrimedString(xmlVehicleJourney
+            .getRouteId()));
 
       // LineIdShortcut
-      vehicleJourney.setLineIdShortcut(getNonEmptyTrimedString(xmlVehicleJourney.getLineIdShortcut()));
+      vehicleJourney
+            .setLineIdShortcut(getNonEmptyTrimedString(xmlVehicleJourney
+                  .getLineIdShortcut()));
 
       // ServiceStatusValue optional
-      if(xmlVehicleJourney.getStatusValue() != null){
-         try{
-            vehicleJourney.setServiceStatusValue(ServiceStatusValueEnum.valueOf(xmlVehicleJourney.getStatusValue().value()));
-         }
-         catch (IllegalArgumentException e) 
+      if (xmlVehicleJourney.getStatusValue() != null)
+      {
+         try
+         {
+            vehicleJourney.setServiceStatusValue(ServiceStatusValueEnum
+                  .valueOf(xmlVehicleJourney.getStatusValue().value()));
+         } catch (IllegalArgumentException e)
          {
             // TODO: traiter le cas de non correspondance
          }
       }
 
       // TimeSlotId optional
-      vehicleJourney.setTimeSlotId(getNonEmptyTrimedString(xmlVehicleJourney.getTimeSlotId()));
+      vehicleJourney.setTimeSlotId(getNonEmptyTrimedString(xmlVehicleJourney
+            .getTimeSlotId()));
 
       // TransportMode optional
-      if(xmlVehicleJourney.getTransportMode() != null){
-         try{
-            vehicleJourney.setTransportMode(TransportModeNameEnum.valueOf(xmlVehicleJourney.getTransportMode().value()));
-         }
-         catch (IllegalArgumentException e) 
+      if (xmlVehicleJourney.getTransportMode() != null)
+      {
+         try
+         {
+            vehicleJourney.setTransportMode(TransportModeNameEnum
+                  .valueOf(xmlVehicleJourney.getTransportMode().value()));
+         } catch (IllegalArgumentException e)
          {
             // TODO: traiter le cas de non correspondance
          }
       }
 
       // VehicleTypeIdentifier optional
-      vehicleJourney.setVehicleTypeIdentifier(getNonEmptyTrimedString(xmlVehicleJourney.getVehicleTypeIdentifier()));
+      vehicleJourney
+            .setVehicleTypeIdentifier(getNonEmptyTrimedString(xmlVehicleJourney
+                  .getVehicleTypeIdentifier()));
 
       // VehicleJourneyAtStops [2..w]
       int order = 0;
-      for(VehicleJourneyAtStopType  xmlVehicleJourneyAtStop : xmlVehicleJourney.getVehicleJourneyAtStop()){
-         VehicleJourneyAtStop vehicleJourneyAtStop = factory.getNewVehicleJourneyAtStop();
+      for (VehicleJourneyAtStopType xmlVehicleJourneyAtStop : xmlVehicleJourney
+            .getVehicleJourneyAtStop())
+      {
+         VehicleJourneyAtStop vehicleJourneyAtStop = factory
+               .getNewVehicleJourneyAtStop();
 
          // VehicleJourneyId optional
-         vehicleJourneyAtStop.setVehicleJourneyId(getNonEmptyTrimedString(xmlVehicleJourneyAtStop.getVehicleJourneyId()));
+         vehicleJourneyAtStop
+               .setVehicleJourneyId(getNonEmptyTrimedString(xmlVehicleJourneyAtStop
+                     .getVehicleJourneyId()));
          vehicleJourneyAtStop.setVehicleJourney(vehicleJourney);
 
-         if (xmlVehicleJourneyAtStop.getBoardingAlightingPossibility() != null) {
-            try{
-               vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibilityEnum.valueOf(xmlVehicleJourneyAtStop.getBoardingAlightingPossibility().value()));
-            }
-            catch (IllegalArgumentException e) 
+         if (xmlVehicleJourneyAtStop.getBoardingAlightingPossibility() != null)
+         {
+            try
+            {
+               vehicleJourneyAtStop
+                     .setBoardingAlightingPossibility(BoardingAlightingPossibilityEnum
+                           .valueOf(xmlVehicleJourneyAtStop
+                                 .getBoardingAlightingPossibility().value()));
+            } catch (IllegalArgumentException e)
             {
                // TODO: traiter le cas de non correspondance
             }
          }
 
          // ConnectingServiceId
-         vehicleJourneyAtStop.setConnectingServiceId(getNonEmptyTrimedString(xmlVehicleJourneyAtStop.getConnectingServiceId()));
+         vehicleJourneyAtStop
+               .setConnectingServiceId(getNonEmptyTrimedString(xmlVehicleJourneyAtStop
+                     .getConnectingServiceId()));
 
          // StopPointId mandatory
-         vehicleJourneyAtStop.setStopPointId(getNonEmptyTrimedString(xmlVehicleJourneyAtStop.getStopPointId()));
+         vehicleJourneyAtStop
+               .setStopPointId(getNonEmptyTrimedString(xmlVehicleJourneyAtStop
+                     .getStopPointId()));
 
          // Order optional
          if (xmlVehicleJourneyAtStop.isSetOrder())
          {
-             vehicleJourneyAtStop.setOrder(xmlVehicleJourneyAtStop.getOrder().longValue());
-         }
-         else
+            vehicleJourneyAtStop.setOrder(xmlVehicleJourneyAtStop.getOrder()
+                  .longValue());
+         } else
          {
-        	 vehicleJourneyAtStop.setOrder(order);
+            vehicleJourneyAtStop.setOrder(order);
          }
-         order ++;
+         order++;
 
-         // ([arrivalTime AND] departureTime [AND waitingTime]) XOR elapseDuration
-         if(xmlVehicleJourneyAtStop.isSetElapseDuration())
+         // ([arrivalTime AND] departureTime [AND waitingTime]) XOR
+         // elapseDuration
+         if (xmlVehicleJourneyAtStop.isSetElapseDuration())
          {
-             vehicleJourneyAtStop.setElapseDuration(getTime(xmlVehicleJourneyAtStop.getElapseDuration()));        	 
-         }
-         else
+            vehicleJourneyAtStop
+                  .setElapseDuration(getTime(xmlVehicleJourneyAtStop
+                        .getElapseDuration()));
+         } else
          {
-               // ArrivalTime optional
-               vehicleJourneyAtStop.setArrivalTime(getTime(xmlVehicleJourneyAtStop.getArrivalTime()));
+            // ArrivalTime optional
+            vehicleJourneyAtStop.setArrivalTime(getTime(xmlVehicleJourneyAtStop
+                  .getArrivalTime()));
 
-               // DepartureTime mandatory
-               vehicleJourneyAtStop.setDepartureTime(getTime(xmlVehicleJourneyAtStop.getDepartureTime()));
+            // DepartureTime mandatory
+            vehicleJourneyAtStop
+                  .setDepartureTime(getTime(xmlVehicleJourneyAtStop
+                        .getDepartureTime()));
 
-               // WaintingTime optional
-               vehicleJourneyAtStop.setWaitingTime(getTime(xmlVehicleJourneyAtStop.getWaitingTime()));
+            // WaintingTime optional
+            vehicleJourneyAtStop.setWaitingTime(getTime(xmlVehicleJourneyAtStop
+                  .getWaitingTime()));
          }
 
          // HeadwayFrequency optional
-         if(xmlVehicleJourneyAtStop.getHeadwayFrequency() != null){
-            vehicleJourneyAtStop.setHeadwayFrequency(getTime(xmlVehicleJourneyAtStop.getHeadwayFrequency()));
+         if (xmlVehicleJourneyAtStop.getHeadwayFrequency() != null)
+         {
+            vehicleJourneyAtStop
+                  .setHeadwayFrequency(getTime(xmlVehicleJourneyAtStop
+                        .getHeadwayFrequency()));
          }
 
          vehicleJourney.addVehicleJourneyAtStop(vehicleJourneyAtStop);
@@ -151,6 +197,5 @@ public class VehicleJourneyProducer extends AbstractModelProducer<VehicleJourney
       vehicleJourney.sortVehicleJourneyAtStops();
       return vehicleJourney;
    }
-
 
 }

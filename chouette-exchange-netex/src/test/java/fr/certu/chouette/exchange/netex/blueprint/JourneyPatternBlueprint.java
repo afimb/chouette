@@ -11,39 +11,42 @@ import java.util.List;
 import java.util.UUID;
 
 @Blueprint(JourneyPattern.class)
-public class JourneyPatternBlueprint {
+public class JourneyPatternBlueprint
+{
 
-    @Default
-    FieldCallback objectId = new FieldCallback() {
-        @Override
-        public String get( Object model) {
-            return "RATP_PIVI:JourneyPattern:" + UUID.randomUUID();
-        }
-        
-    };   
-        
-    @Default
-    int objectVersion = 1;       
-    
-    @Default
-    String name = "101";
-    
-    @Default
-    String publishedName = "numero: 101";
-    
-    @Default
-    String registrationNumber = "ST-101";
-    
-    @Default
-    String comment = "omnibus";
-    
-    @Default
-    String routeId = "RATP_PIVI:Route:317452";
-    
-    @MappedList(target = StopPoint.class, size = 0)
-    List<StopPoint> stopPoints;
-    
-    @MappedList(target = VehicleJourney.class, size = 0)
-    List<VehicleJourney> vehicleJourneys;
+   @Default
+   FieldCallback objectId = new FieldCallback()
+   {
+      @Override
+      public String get(Object model)
+      {
+         return "RATP_PIVI:JourneyPattern:" + UUID.randomUUID();
+      }
+
+   };
+
+   @Default
+   int objectVersion = 1;
+
+   @Default
+   String name = "101";
+
+   @Default
+   String publishedName = "numero: 101";
+
+   @Default
+   String registrationNumber = "ST-101";
+
+   @Default
+   String comment = "omnibus";
+
+   @Default
+   String routeId = "RATP_PIVI:Route:317452";
+
+   @MappedList(target = StopPoint.class, size = 0)
+   List<StopPoint> stopPoints;
+
+   @MappedList(target = VehicleJourney.class, size = 0)
+   List<VehicleJourney> vehicleJourneys;
 
 }

@@ -73,7 +73,8 @@ public class Referential extends ActiveRecordObject
    @Getter
    @Setter
    @OneToMany(mappedBy = "referential")
-   private List<CompilanceCheckTask> compilanceCheckTasks = new ArrayList<CompilanceCheckTask>(0);
+   private List<CompilanceCheckTask> compilanceCheckTasks = new ArrayList<CompilanceCheckTask>(
+         0);
 
    @Getter
    @Setter

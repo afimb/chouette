@@ -5,26 +5,28 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @NoArgsConstructor
-public class GtfsNetwork extends GtfsBean 
+public class GtfsNetwork extends GtfsBean
 {
-	@Getter @Setter private String name;
+   @Getter
+   @Setter
+   private String name;
 
-	public GtfsNetwork(String name)
-	{
-		this.name = name;
-	}
-	@Override
-	public String getCSVLine() 
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-	@Override
-	public boolean isValid() 
-	{
-		boolean ret = true;
-		return ret;
-	}
-	
+   public GtfsNetwork(String name)
+   {
+      this.name = name;
+   }
+
+   @Override
+   public String getCSVLine()
+   {
+      return null;
+   }
+
+   @Override
+   public boolean isValid()
+   {
+      boolean ret = true;
+      return ret;
+   }
 
 }

@@ -68,8 +68,7 @@ import fr.certu.chouette.service.geographic.IGeographicService;
 
 /**
  * 
- * import command : 
- * -c import -Id ZZZ  
+ * import command : -c import -Id ZZZ
  * 
  */
 @NoArgsConstructor
@@ -77,618 +76,691 @@ import fr.certu.chouette.service.geographic.IGeographicService;
 public class ImportCommand extends AbstractCommand
 {
 
-	@Getter @Setter private IDaoTemplate<Referential> referentialDao;;
+   @Getter
+   @Setter
+   private IDaoTemplate<Referential> referentialDao;;
 
-	@Getter @Setter private IDaoTemplate<ImportTask> importDao;;
+   @Getter
+   @Setter
+   private IDaoTemplate<ImportTask> importDao;;
 
-	@Setter private IGeographicService geographicService;
+   @Setter
+   private IGeographicService geographicService;
 
-	/**
-	 * import command :  
-	 * -c import -id ZZZ 
-	 * @param managers
-	 * @param parameters
-	 * @return
-	 */
-	public int executeImport(EntityManager session,Map<String, List<String>> parameters)
-	{
-		Report importReport = null;
-		ValidationReport validationReport = null;
-		boolean save = true;
-		List<Long> savedIds = new ArrayList<Long>();
+   /**
+    * import command : -c import -id ZZZ
+    * 
+    * @param managers
+    * @param parameters
+    * @return
+    */
+   public int executeImport(EntityManager session,
+         Map<String, List<String>> parameters)
+   {
+      Report importReport = null;
+      ValidationReport validationReport = null;
+      boolean save = true;
+      List<Long> savedIds = new ArrayList<Long>();
 
-		// check if import exists and accept unzip before call
-		Long importId = Long.valueOf(getSimpleString(parameters,"id"));
-		if (!importDao.exists(importId))
-		{
-			// error import not found
-			log.error("import not found "+importId);
-			return 1;
-		}
-		ImportTask importTask = importDao.get(importId);
-		log.info("Import data for import id "+importId);
-		log.info("  options : "+importTask.getParameters());
+      // check if import exists and accept unzip before call
+      Long importId = Long.valueOf(getSimpleString(parameters, "id"));
+      if (!importDao.exists(importId))
+      {
+         // error import not found
+         log.error("import not found " + importId);
+         return 1;
+      }
+      ImportTask importTask = importDao.get(importId);
+      log.info("Import data for import id " + importId);
+      log.info("  options : " + importTask.getParameters());
 
-		startProcess(session, importTask);
+      startProcess(session, importTask);
 
-		JSONObject options = importTask.getParameters();
-		if (options == null) 
-		{
-			log.error("import without parameters "+importId);
-			return 1;
-		}
-		String format = options.getString("format").toUpperCase();
-		String inputFile = options.getString("file_path");
-		if (!options.has("input_file"))
-		{
-			options.put("input_file", inputFile); // for import compatibility
-			log.info("  options : "+options);
-		}
+      JSONObject options = importTask.getParameters();
+      if (options == null)
+      {
+         log.error("import without parameters " + importId);
+         return 1;
+      }
+      String format = options.getString("format").toUpperCase();
+      String inputFile = options.getString("file_path");
+      if (!options.has("input_file"))
+      {
+         options.put("input_file", inputFile); // for import compatibility
+         log.info("  options : " + options);
+      }
 
-		save = !options.getBoolean("no_save");
+      save = !options.getBoolean("no_save");
 
-		Referential referential =importTask.getReferential();
-		log.info("Referential "+referential.getId());
-		log.info("  name : "+referential.getName());
-		log.info("  slug : "+referential.getSlug());
+      Referential referential = importTask.getReferential();
+      log.info("Referential " + referential.getId());
+      log.info("  name : " + referential.getName());
+      log.info("  slug : " + referential.getSlug());
 
-		String projectionType = null;
-		if (referential.getProjectionType() != null && !referential.getProjectionType().isEmpty())
-		{
-			log.info("  projection type for import: "+referential.getProjectionType());
-			projectionType = referential.getProjectionType();
-			parameters.put("srid", Arrays.asList(new String[]{projectionType}));
-		}
-		// set projection for import (inactive if not set)
-		geographicService.switchProjection(projectionType);
+      String projectionType = null;
+      if (referential.getProjectionType() != null
+            && !referential.getProjectionType().isEmpty())
+      {
+         log.info("  projection type for import: "
+               + referential.getProjectionType());
+         projectionType = referential.getProjectionType();
+         parameters.put("srid", Arrays.asList(new String[] { projectionType }));
+      }
+      // set projection for import (inactive if not set)
+      geographicService.switchProjection(projectionType);
 
-		boolean zipped = (inputFile.toLowerCase().endsWith(".zip"));
+      boolean zipped = (inputFile.toLowerCase().endsWith(".zip"));
 
-		
-		String objectType = getTypefromGuiType(options.optString("references_type"),"line");
-		
-		INeptuneManager<NeptuneIdentifiedObject> manager = managers.get(objectType);
-		if (manager == null) 
-		{
-			log.error("import unknown object type "+objectType);
-			return 1;
-		}
-		
-		try
-		{
-			List<FormatDescription> formats = manager.getImportFormats(null);
-			FormatDescription description = null;
+      String objectType = getTypefromGuiType(
+            options.optString("references_type"), "line");
 
-			for (FormatDescription formatDescription : formats)
-			{
-				if (formatDescription.getName().equalsIgnoreCase(format))
-				{
-					description=formatDescription;
-					break;
-				}
-			}
-			if (description == null)
-			{
-				throw new IllegalArgumentException("format "+format+" unavailable");
-			}
-			List<String> suffixes = new ArrayList<String>();
-			for (ParameterDescription desc : description.getParameterDescriptions())
-			{
-				if (desc.getName().equalsIgnoreCase("inputfile"))
-				{
-					suffixes = desc.getAllowedExtensions();
-					break;
-				}
-			}
-			List<ParameterValue> values = populateParametersFromJSON(description,options,"inputfile","fileformat");
-			if (zipped && description.isUnzipAllowed())
-			{
-				importReport = new ExchangeReport(ExchangeReport.KEY.IMPORT, format);
-				ReportHolder importHolder = new ReportHolder();
-				importHolder.setReport(importReport);
-				validationReport = new ValidationReport();
-				ReportHolder validationHolder = new ReportHolder();
-				validationHolder.setReport(validationReport);
+      INeptuneManager<NeptuneIdentifiedObject> manager = managers
+            .get(objectType);
+      if (manager == null)
+      {
+         log.error("import unknown object type " + objectType);
+         return 1;
+      }
 
-				int code = importZipEntries(session, save, savedIds, manager,
-						importTask, format, inputFile, suffixes, values,
-						importHolder, validationHolder) ;
-				importReport = importHolder.getReport();
-				validationReport = (ValidationReport) validationHolder.getReport();
-				if (code > 0) return code; // import fails
-			}
-			else
-			{
-				SimpleParameterValue inputFileParam = new SimpleParameterValue("inputFile");
-				inputFileParam.setFilepathValue(inputFile);
-				values.add(inputFileParam);
-				// surround with try catch 
-				ReportHolder importHolder = new ReportHolder();
-				ReportHolder validationHolder = new ReportHolder();
-				List<NeptuneIdentifiedObject> beans = manager.doImport(null, format, values,importHolder,validationHolder);
+      try
+      {
+         List<FormatDescription> formats = manager.getImportFormats(null);
+         FormatDescription description = null;
 
-				if (importHolder.getReport() != null)
-				{
-					importReport = importHolder.getReport();
-				}
-				if (validationHolder.getReport() != null)
-				{
-					validationReport = (ValidationReport) validationHolder.getReport();
-				}
-				if (beans != null && !beans.isEmpty())
-				{
-					log.info("imported items "+beans.size());
-					if (save)
-					{
-						saveBeans(manager, beans, savedIds, importReport);
-					}
-					else
-					{
-						for (NeptuneIdentifiedObject bean : beans) 
-						{
-							GuiReportItem item = new GuiReportItem(GuiReportItem.KEY.NO_SAVE,Report.STATE.OK,bean.getName());
-							importReport.addItem(item);
-						}
-
-					}
-				}
-			}
-		}
-		catch (Exception e)
-		{
-			// fill report with error
-			String msg = e.getMessage();
-			if (msg == null) msg = e.getClass().getName();
-			log.error("import failed "+msg,e);
-			if (importReport == null)
-			{
-				importReport = new ExchangeReport(ExchangeReport.KEY.IMPORT, format);
-			}
-			GuiReportItem item = new GuiReportItem(GuiReportItem.KEY.EXCEPTION,Report.STATE.ERROR,msg);
-			importReport.addItem(item);
-			saveImportReports(session,importTask,importReport,validationReport);
-
-			return 1;
-		}
-
-		// launch phase3 validation if required and possible
-		if (save && !savedIds.isEmpty() && importTask.getCompilanceCheckTask() != null)
-		{
-			validateLevel3(manager, savedIds, importTask.getCompilanceCheckTask().getParameters(), validationReport);
-		}
-
-		saveImportReports(session,importTask,importReport,validationReport);
-		return (0);
-
-	}
-
-	/**
-	 * @param session
-	 * @param save
-	 * @param savedIds
-	 * @param manager
-	 * @param importTask
-	 * @param format
-	 * @param inputFile
-	 * @param suffixes
-	 * @param values
-	 * @param importHolder
-	 * @param validationHolder
-	 * @throws ChouetteException
-	 */
-	private int importZipEntries(EntityManager session, boolean save,
-			List<Long> savedIds,
-			INeptuneManager<NeptuneIdentifiedObject> manager,
-			ImportTask importTask, String format, String inputFile,
-			List<String> suffixes, List<ParameterValue> values,
-			ReportHolder importHolder, ReportHolder validationHolder)
-					throws ChouetteException 
-					{
-		SimpleParameterValue inputFileParam = new SimpleParameterValue("inputFile");
-		values.add(inputFileParam);
-
-		ReportHolder zipHolder = new ReportHolder();
-		if (format.equalsIgnoreCase("neptune"))
-		{
-			SharedImportedData sharedData = new SharedImportedData();
-			UnsharedImportedData unsharedData = new UnsharedImportedData();
-			SimpleParameterValue sharedDataParam = new SimpleParameterValue("sharedImportedData");
-			sharedDataParam.setObjectValue(sharedData);
-			values.add(sharedDataParam);
-			SimpleParameterValue unsharedDataParam = new SimpleParameterValue("unsharedImportedData");
-			unsharedDataParam.setObjectValue(unsharedData);
-			values.add(unsharedDataParam);
-		}
-
-		// unzip files , import and save contents 
-		ZipFile zip = null;
-		File temp = null;
-		File tempRep = new File(FileUtils.getTempDirectory(),"massImport"+importTask.getId());
-		if (!tempRep.exists()) tempRep.mkdirs();
-		File zipFile = new File(inputFile);
-		ReportItem zipReportItem = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_FILE,Report.STATE.OK,zipFile.getName());
-		try
-		{
-            Charset encoding = FileTool.getZipCharset(inputFile);
-            if (encoding == null)
+         for (FormatDescription formatDescription : formats)
+         {
+            if (formatDescription.getName().equalsIgnoreCase(format))
             {
-    			ReportItem fileErrorItem = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ERROR,Report.STATE.ERROR,"unknown encoding");
-    			zipReportItem.addItem(fileErrorItem);
-    			importHolder.getReport().addItem(zipReportItem);
-    			saveImportReports(session,importTask, importHolder.getReport(), validationHolder.getReport());
-    			return 1;            	
+               description = formatDescription;
+               break;
             }
-			zip = new ZipFile(inputFile,encoding);
-			zipHolder.setReport(zipReportItem);
-			for (Enumeration<? extends ZipEntry> entries = zip.entries(); entries.hasMoreElements();)
-			{
-				ZipEntry entry = entries.nextElement();
+         }
+         if (description == null)
+         {
+            throw new IllegalArgumentException("format " + format
+                  + " unavailable");
+         }
+         List<String> suffixes = new ArrayList<String>();
+         for (ParameterDescription desc : description
+               .getParameterDescriptions())
+         {
+            if (desc.getName().equalsIgnoreCase("inputfile"))
+            {
+               suffixes = desc.getAllowedExtensions();
+               break;
+            }
+         }
+         List<ParameterValue> values = populateParametersFromJSON(description,
+               options, "inputfile", "fileformat");
+         if (zipped && description.isUnzipAllowed())
+         {
+            importReport = new ExchangeReport(ExchangeReport.KEY.IMPORT, format);
+            ReportHolder importHolder = new ReportHolder();
+            importHolder.setReport(importReport);
+            validationReport = new ValidationReport();
+            ReportHolder validationHolder = new ReportHolder();
+            validationHolder.setReport(validationReport);
 
-				if (entry.isDirectory())
-				{
-					File dir = new File(tempRep, entry.getName());
-					dir.mkdirs();
-					continue;
-				}
-				if (!FilenameUtils.isExtension(entry.getName().toLowerCase(),suffixes))
-				{
-					ReportItem fileReportItem = new ExchangeReportItem(ExchangeReportItem.KEY.FILE_IGNORED,Report.STATE.OK,FilenameUtils.getName(entry.getName()));
-					zipReportItem.addItem(fileReportItem);
-					log.info("entry "+entry.getName()+" ignored, unknown extension");
-					continue;
-				}
-				InputStream stream = null;
-				try
-				{
-					stream = zip.getInputStream(entry);
-				}
-				catch (IOException e)
-				{
-					ReportItem fileReportItem = new ExchangeReportItem(ExchangeReportItem.KEY.FILE_ERROR,Report.STATE.WARNING,FilenameUtils.getName(entry.getName()));
-					zipReportItem.addItem(fileReportItem);
-					log.error("entry "+entry.getName()+" cannot read",e);
-					continue;
-				}
-				byte[] bytes = new byte[4096];
-				int len = stream.read(bytes);
-				temp = new File(tempRep.getAbsolutePath()+"/"+entry.getName());
-				FileOutputStream fos = new FileOutputStream(temp);
-				while (len > 0)
-				{
-					fos.write(bytes, 0, len);
-					len = stream.read(bytes);
-				}
-				fos.close();
+            int code = importZipEntries(session, save, savedIds, manager,
+                  importTask, format, inputFile, suffixes, values,
+                  importHolder, validationHolder);
+            importReport = importHolder.getReport();
+            validationReport = (ValidationReport) validationHolder.getReport();
+            if (code > 0)
+               return code; // import fails
+         } else
+         {
+            SimpleParameterValue inputFileParam = new SimpleParameterValue(
+                  "inputFile");
+            inputFileParam.setFilepathValue(inputFile);
+            values.add(inputFileParam);
+            // surround with try catch
+            ReportHolder importHolder = new ReportHolder();
+            ReportHolder validationHolder = new ReportHolder();
+            List<NeptuneIdentifiedObject> beans = manager.doImport(null,
+                  format, values, importHolder, validationHolder);
 
-				// import
-				log.info("import file "+entry.getName());
-				inputFileParam.setFilepathValue(temp.getAbsolutePath());
-				List<NeptuneIdentifiedObject> beans = manager.doImport(null, format, values,zipHolder,validationHolder);
-				if (beans != null && !beans.isEmpty())
-				{
-					// save
-					if (save)
-					{
-						saveBeans(manager, beans, savedIds, importHolder.getReport());
-					}
-					else
-					{
-						for (NeptuneIdentifiedObject bean : beans)
-						{
-							GuiReportItem item = new GuiReportItem(GuiReportItem.KEY.NO_SAVE,Report.STATE.OK,bean.getName());
-							importHolder.getReport().addItem(item);
-						}
+            if (importHolder.getReport() != null)
+            {
+               importReport = importHolder.getReport();
+            }
+            if (validationHolder.getReport() != null)
+            {
+               validationReport = (ValidationReport) validationHolder
+                     .getReport();
+            }
+            if (beans != null && !beans.isEmpty())
+            {
+               log.info("imported items " + beans.size());
+               if (save)
+               {
+                  saveBeans(manager, beans, savedIds, importReport);
+               } else
+               {
+                  for (NeptuneIdentifiedObject bean : beans)
+                  {
+                     GuiReportItem item = new GuiReportItem(
+                           GuiReportItem.KEY.NO_SAVE, Report.STATE.OK,
+                           bean.getName());
+                     importReport.addItem(item);
+                  }
 
-					}
-				}
-				temp.delete();
-			}        
-			try
-			{
-				zip.close();
-			}
-			catch (IOException e)
-			{
-				log.info("cannot close zip file");
-			}
-			importHolder.getReport().addItem(zipReportItem);
-		}
-		catch (IOException e)
-		{
-			log.error("IO error",e);
-			ReportItem fileErrorItem = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ERROR,Report.STATE.ERROR,e.getLocalizedMessage());
-			zipReportItem.addItem(fileErrorItem);
-			importHolder.getReport().addItem(zipReportItem);
-			saveImportReports(session,importTask, importHolder.getReport(), validationHolder.getReport());
-			return 1;
-		}
-		catch (IllegalArgumentException e)
-		{
-			log.error("Format error",e);
-			ReportItem fileErrorItem = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ERROR,Report.STATE.ERROR,e.getLocalizedMessage());
-			zipReportItem.addItem(fileErrorItem);
-			importHolder.getReport().addItem(zipReportItem);
-			saveImportReports(session,importTask, importHolder.getReport(), validationHolder.getReport());
-			return 1;
-		}
-		finally
-		{
-			try
-			{
-				FileUtils.deleteDirectory(tempRep);
-			}
-			catch (IOException e) 
-			{
-				log.warn("temporary directory "+tempRep.getAbsolutePath()+" could not be deleted");
-			}
-		}
-		return 0;
-					}
+               }
+            }
+         }
+      } catch (Exception e)
+      {
+         // fill report with error
+         String msg = e.getMessage();
+         if (msg == null)
+            msg = e.getClass().getName();
+         log.error("import failed " + msg, e);
+         if (importReport == null)
+         {
+            importReport = new ExchangeReport(ExchangeReport.KEY.IMPORT, format);
+         }
+         GuiReportItem item = new GuiReportItem(GuiReportItem.KEY.EXCEPTION,
+               Report.STATE.ERROR, msg);
+         importReport.addItem(item);
+         saveImportReports(session, importTask, importReport, validationReport);
 
-	/**
-	 * @param manager
-	 * @param savedIds
-	 * @param importTask
-	 * @param validationReport
-	 */
-	private void validateLevel3(
-			INeptuneManager<NeptuneIdentifiedObject> manager,
-			List<Long> savedIds, JSONObject parameters,
-			ValidationReport validationReport) {
+         return 1;
+      }
 
-		if (parameters != null)
-		{
-			log.info("processing phase 3 validation on "+savedIds.size()+" lines");
-			// launch validation on objects
-			Filter filter = Filter.getNewInFilter("id", savedIds);
-			try 
-			{
-				List<NeptuneIdentifiedObject> beans = manager.getAll(null, filter);
-				if (beans == null || beans.isEmpty())
-				{
-					log.error("cannot read previously saved objects :"+Arrays.deepToString(savedIds.toArray()));
+      // launch phase3 validation if required and possible
+      if (save && !savedIds.isEmpty()
+            && importTask.getCompilanceCheckTask() != null)
+      {
+         validateLevel3(manager, savedIds, importTask.getCompilanceCheckTask()
+               .getParameters(), validationReport);
+      }
 
-				}
-				else
-				{
-					PhaseReportItem phaseReport = new PhaseReportItem(PhaseReportItem.PHASE.THREE);
-					validationReport.addItem(phaseReport);
-					manager.validate(null, beans, parameters, phaseReport, true);
-				}
-			} 
-			catch (Exception e) 
-			{
-				log.error("cannot read previously saved objects",e);
-			}
-		}
-	}
+      saveImportReports(session, importTask, importReport, validationReport);
+      return (0);
 
-	/**
-	 * @param manager
-	 * @param beans
-	 * @param savedIds
-	 * @param importReport
-	 */
-	private void saveBeans(INeptuneManager<NeptuneIdentifiedObject> manager,
-			List<NeptuneIdentifiedObject> beans, List<Long> savedIds,
-			Report importReport) {
-		for (NeptuneIdentifiedObject bean : beans) 
-		{
-			if (bean instanceof Line)
-			{
-				checkProjection((Line) bean);
-			}
-			else if (bean instanceof StopArea)
-			{
-				checkProjection((StopArea) bean);
-			}
-			List<NeptuneIdentifiedObject> oneBean = new ArrayList<NeptuneIdentifiedObject>();
-			oneBean.add(bean);
-			try
-			{
-				log.info("save "+bean.getClass().getSimpleName()+""+bean.getName());
-				manager.saveAll(null, oneBean, true, true);
-				GuiReportItem item = new GuiReportItem(GuiReportItem.KEY.SAVE_OK,Report.STATE.OK,bean.getName());
-				importReport.addItem(item);
-				savedIds.add(bean.getId());
-			}
-			catch (Exception e) 
-			{
-				log.error("save failed "+e.getMessage(),e);
-				GuiReportItem item = new GuiReportItem(GuiReportItem.KEY.SAVE_ERROR,Report.STATE.ERROR,bean.getName(),e.getMessage());
-				importReport.addItem(item);
-			}
-		}
-	}
+   }
 
-	private void startProcess(EntityManager session,ImportTask importTask) 
-	{
-		importTask.setStatus("processing");
-		importTask.setUpdatedAt(Calendar.getInstance().getTime());
-		if (importTask.getCompilanceCheckTask() != null)
-		{
-			importTask.getCompilanceCheckTask().setStatus("processing");
-			importTask.getCompilanceCheckTask().setUpdatedAt(Calendar.getInstance().getTime());
-		}
-		importDao.save(importTask);
-		importDao.flush();
+   /**
+    * @param session
+    * @param save
+    * @param savedIds
+    * @param manager
+    * @param importTask
+    * @param format
+    * @param inputFile
+    * @param suffixes
+    * @param values
+    * @param importHolder
+    * @param validationHolder
+    * @throws ChouetteException
+    */
+   private int importZipEntries(EntityManager session, boolean save,
+         List<Long> savedIds, INeptuneManager<NeptuneIdentifiedObject> manager,
+         ImportTask importTask, String format, String inputFile,
+         List<String> suffixes, List<ParameterValue> values,
+         ReportHolder importHolder, ReportHolder validationHolder)
+         throws ChouetteException
+   {
+      SimpleParameterValue inputFileParam = new SimpleParameterValue(
+            "inputFile");
+      values.add(inputFileParam);
 
-	}
+      ReportHolder zipHolder = new ReportHolder();
+      if (format.equalsIgnoreCase("neptune"))
+      {
+         SharedImportedData sharedData = new SharedImportedData();
+         UnsharedImportedData unsharedData = new UnsharedImportedData();
+         SimpleParameterValue sharedDataParam = new SimpleParameterValue(
+               "sharedImportedData");
+         sharedDataParam.setObjectValue(sharedData);
+         values.add(sharedDataParam);
+         SimpleParameterValue unsharedDataParam = new SimpleParameterValue(
+               "unsharedImportedData");
+         unsharedDataParam.setObjectValue(unsharedData);
+         values.add(unsharedDataParam);
+      }
 
+      // unzip files , import and save contents
+      ZipFile zip = null;
+      File temp = null;
+      File tempRep = new File(FileUtils.getTempDirectory(), "massImport"
+            + importTask.getId());
+      if (!tempRep.exists())
+         tempRep.mkdirs();
+      File zipFile = new File(inputFile);
+      ReportItem zipReportItem = new ExchangeReportItem(
+            ExchangeReportItem.KEY.ZIP_FILE, Report.STATE.OK, zipFile.getName());
+      try
+      {
+         Charset encoding = FileTool.getZipCharset(inputFile);
+         if (encoding == null)
+         {
+            ReportItem fileErrorItem = new ExchangeReportItem(
+                  ExchangeReportItem.KEY.ZIP_ERROR, Report.STATE.ERROR,
+                  "unknown encoding");
+            zipReportItem.addItem(fileErrorItem);
+            importHolder.getReport().addItem(zipReportItem);
+            saveImportReports(session, importTask, importHolder.getReport(),
+                  validationHolder.getReport());
+            return 1;
+         }
+         zip = new ZipFile(inputFile, encoding);
+         zipHolder.setReport(zipReportItem);
+         for (Enumeration<? extends ZipEntry> entries = zip.entries(); entries
+               .hasMoreElements();)
+         {
+            ZipEntry entry = entries.nextElement();
 
-	private void saveImportReports(EntityManager session,ImportTask importTask, Report ireport, Report vreport) 
-	{
-		log.info("import report = "+ireport.toJSON().toString(3));
-		ImportReportToJSONConverter converter = new ImportReportToJSONConverter(ireport);
+            if (entry.isDirectory())
+            {
+               File dir = new File(tempRep, entry.getName());
+               dir.mkdirs();
+               continue;
+            }
+            if (!FilenameUtils.isExtension(entry.getName().toLowerCase(),
+                  suffixes))
+            {
+               ReportItem fileReportItem = new ExchangeReportItem(
+                     ExchangeReportItem.KEY.FILE_IGNORED, Report.STATE.OK,
+                     FilenameUtils.getName(entry.getName()));
+               zipReportItem.addItem(fileReportItem);
+               log.info("entry " + entry.getName()
+                     + " ignored, unknown extension");
+               continue;
+            }
+            InputStream stream = null;
+            try
+            {
+               stream = zip.getInputStream(entry);
+            } catch (IOException e)
+            {
+               ReportItem fileReportItem = new ExchangeReportItem(
+                     ExchangeReportItem.KEY.FILE_ERROR, Report.STATE.WARNING,
+                     FilenameUtils.getName(entry.getName()));
+               zipReportItem.addItem(fileReportItem);
+               log.error("entry " + entry.getName() + " cannot read", e);
+               continue;
+            }
+            byte[] bytes = new byte[4096];
+            int len = stream.read(bytes);
+            temp = new File(tempRep.getAbsolutePath() + "/" + entry.getName());
+            FileOutputStream fos = new FileOutputStream(temp);
+            while (len > 0)
+            {
+               fos.write(bytes, 0, len);
+               len = stream.read(bytes);
+            }
+            fos.close();
 
-		if (importTask.getCompilanceCheckTask() != null)
-		{
-			if (vreport != null && vreport.getItems() != null)
-			{
-				switch (vreport.getStatus())
-				{
-				case WARNING:
-				case ERROR:
-				case FATAL:
-					importTask.getCompilanceCheckTask().setStatus("nok");
-					break;
-				case OK:
-					importTask.getCompilanceCheckTask().setStatus("ok");
-					break;
-				case UNCHECK:
-					importTask.getCompilanceCheckTask().setStatus("na");
-					break;
-				}
-				importTask.getCompilanceCheckTask().addAllResults(((ValidationReport)vreport).toValidationResults());
-				importTask.getCompilanceCheckTask().setUpdatedAt(Calendar.getInstance().getTime());
-			}
-			else
-			{
-				log.error("validation report null or empty");
-			}
-		}
-		importTask.setResult(converter.toJSONObject());
-		importTask.setUpdatedAt(Calendar.getInstance().getTime());
-		importDao.save(importTask);
-		importDao.flush();
-	}
+            // import
+            log.info("import file " + entry.getName());
+            inputFileParam.setFilepathValue(temp.getAbsolutePath());
+            List<NeptuneIdentifiedObject> beans = manager.doImport(null,
+                  format, values, zipHolder, validationHolder);
+            if (beans != null && !beans.isEmpty())
+            {
+               // save
+               if (save)
+               {
+                  saveBeans(manager, beans, savedIds, importHolder.getReport());
+               } else
+               {
+                  for (NeptuneIdentifiedObject bean : beans)
+                  {
+                     GuiReportItem item = new GuiReportItem(
+                           GuiReportItem.KEY.NO_SAVE, Report.STATE.OK,
+                           bean.getName());
+                     importHolder.getReport().addItem(item);
+                  }
 
-	private void checkProjection(Line line)
-	{
-		for (Route route : line.getRoutes())
-		{
-			for (StopPoint point : route.getStopPoints())
-			{
-				checkProjection(point.getContainedInStopArea());
-			}
-		}
+               }
+            }
+            temp.delete();
+         }
+         try
+         {
+            zip.close();
+         } catch (IOException e)
+         {
+            log.info("cannot close zip file");
+         }
+         importHolder.getReport().addItem(zipReportItem);
+      } catch (IOException e)
+      {
+         log.error("IO error", e);
+         ReportItem fileErrorItem = new ExchangeReportItem(
+               ExchangeReportItem.KEY.ZIP_ERROR, Report.STATE.ERROR,
+               e.getLocalizedMessage());
+         zipReportItem.addItem(fileErrorItem);
+         importHolder.getReport().addItem(zipReportItem);
+         saveImportReports(session, importTask, importHolder.getReport(),
+               validationHolder.getReport());
+         return 1;
+      } catch (IllegalArgumentException e)
+      {
+         log.error("Format error", e);
+         ReportItem fileErrorItem = new ExchangeReportItem(
+               ExchangeReportItem.KEY.ZIP_ERROR, Report.STATE.ERROR,
+               e.getLocalizedMessage());
+         zipReportItem.addItem(fileErrorItem);
+         importHolder.getReport().addItem(zipReportItem);
+         saveImportReports(session, importTask, importHolder.getReport(),
+               validationHolder.getReport());
+         return 1;
+      } finally
+      {
+         try
+         {
+            FileUtils.deleteDirectory(tempRep);
+         } catch (IOException e)
+         {
+            log.warn("temporary directory " + tempRep.getAbsolutePath()
+                  + " could not be deleted");
+         }
+      }
+      return 0;
+   }
 
-	}
+   /**
+    * @param manager
+    * @param savedIds
+    * @param importTask
+    * @param validationReport
+    */
+   private void validateLevel3(
+         INeptuneManager<NeptuneIdentifiedObject> manager, List<Long> savedIds,
+         JSONObject parameters, ValidationReport validationReport)
+   {
 
-	private void checkProjection(StopArea area)
-	{
-		if (area == null) return;
-		if (area.hasProjection() && !area.hasCoordinates())
-		{
-			geographicService.convertToWGS84(area);
-		}
-		checkProjection(area.getParent());
-		if (area.getAccessPoints() != null)
-		{
-			for (AccessPoint accessPoint : area.getAccessPoints()) 
-			{
-				checkProjection(accessPoint);
-			}
-		}
+      if (parameters != null)
+      {
+         log.info("processing phase 3 validation on " + savedIds.size()
+               + " lines");
+         // launch validation on objects
+         Filter filter = Filter.getNewInFilter("id", savedIds);
+         try
+         {
+            List<NeptuneIdentifiedObject> beans = manager.getAll(null, filter);
+            if (beans == null || beans.isEmpty())
+            {
+               log.error("cannot read previously saved objects :"
+                     + Arrays.deepToString(savedIds.toArray()));
 
-	}
+            } else
+            {
+               PhaseReportItem phaseReport = new PhaseReportItem(
+                     PhaseReportItem.PHASE.THREE);
+               validationReport.addItem(phaseReport);
+               manager.validate(null, beans, parameters, phaseReport, true);
+            }
+         } catch (Exception e)
+         {
+            log.error("cannot read previously saved objects", e);
+         }
+      }
+   }
 
-	private void checkProjection(AccessPoint accessPoint)
-	{
-		if (accessPoint == null) return;
-		if (accessPoint.hasProjection() && !accessPoint.hasCoordinates())
-		{
-			geographicService.convertToWGS84(accessPoint);
-		}
+   /**
+    * @param manager
+    * @param beans
+    * @param savedIds
+    * @param importReport
+    */
+   private void saveBeans(INeptuneManager<NeptuneIdentifiedObject> manager,
+         List<NeptuneIdentifiedObject> beans, List<Long> savedIds,
+         Report importReport)
+   {
+      for (NeptuneIdentifiedObject bean : beans)
+      {
+         if (bean instanceof Line)
+         {
+            checkProjection((Line) bean);
+         } else if (bean instanceof StopArea)
+         {
+            checkProjection((StopArea) bean);
+         }
+         List<NeptuneIdentifiedObject> oneBean = new ArrayList<NeptuneIdentifiedObject>();
+         oneBean.add(bean);
+         try
+         {
+            log.info("save " + bean.getClass().getSimpleName() + ""
+                  + bean.getName());
+            manager.saveAll(null, oneBean, true, true);
+            GuiReportItem item = new GuiReportItem(GuiReportItem.KEY.SAVE_OK,
+                  Report.STATE.OK, bean.getName());
+            importReport.addItem(item);
+            savedIds.add(bean.getId());
+         } catch (Exception e)
+         {
+            log.error("save failed " + e.getMessage(), e);
+            GuiReportItem item = new GuiReportItem(
+                  GuiReportItem.KEY.SAVE_ERROR, Report.STATE.ERROR,
+                  bean.getName(), e.getMessage());
+            importReport.addItem(item);
+         }
+      }
+   }
 
-	}
+   private void startProcess(EntityManager session, ImportTask importTask)
+   {
+      importTask.setStatus("processing");
+      importTask.setUpdatedAt(Calendar.getInstance().getTime());
+      if (importTask.getCompilanceCheckTask() != null)
+      {
+         importTask.getCompilanceCheckTask().setStatus("processing");
+         importTask.getCompilanceCheckTask().setUpdatedAt(
+               Calendar.getInstance().getTime());
+      }
+      importDao.save(importTask);
+      importDao.flush();
 
-	/**
-	 * @param string
-	 * @return
-	 */
-	private String getSimpleString(Map<String, List<String>> parameters,String key)
-	{
-		List<String> values = parameters.get(key);
-		if (values == null) throw new IllegalArgumentException("parameter -"+key+" of String type is required");
-		if (values.size() > 1) throw new IllegalArgumentException("parameter -"+key+" of String type must be unique");
-		return values.get(0);
-	}
+   }
 
-	@SuppressWarnings("incomplete-switch")
-	private List<ParameterValue> populateParametersFromJSON(FormatDescription description,JSONObject options,String ... excluded)
-	{
-		List<ParameterValue> values = new ArrayList<ParameterValue>();
-		List<String> excludedParams = Arrays.asList(excluded);
-		for (ParameterDescription desc : description.getParameterDescriptions())
-		{
-			String name = desc.getName();
-			String key = name.replaceAll("(.)(\\p{Upper})", "$1_$2").toLowerCase();
-			if (excludedParams.contains(key)) continue;
-			// 
+   private void saveImportReports(EntityManager session, ImportTask importTask,
+         Report ireport, Report vreport)
+   {
+      log.info("import report = " + ireport.toJSON().toString(3));
+      ImportReportToJSONConverter converter = new ImportReportToJSONConverter(
+            ireport);
 
+      if (importTask.getCompilanceCheckTask() != null)
+      {
+         if (vreport != null && vreport.getItems() != null)
+         {
+            switch (vreport.getStatus())
+            {
+            case WARNING:
+            case ERROR:
+            case FATAL:
+               importTask.getCompilanceCheckTask().setStatus("nok");
+               break;
+            case OK:
+               importTask.getCompilanceCheckTask().setStatus("ok");
+               break;
+            case UNCHECK:
+               importTask.getCompilanceCheckTask().setStatus("na");
+               break;
+            }
+            importTask.getCompilanceCheckTask().addAllResults(
+                  ((ValidationReport) vreport).toValidationResults());
+            importTask.getCompilanceCheckTask().setUpdatedAt(
+                  Calendar.getInstance().getTime());
+         } else
+         {
+            log.error("validation report null or empty");
+         }
+      }
+      importTask.setResult(converter.toJSONObject());
+      importTask.setUpdatedAt(Calendar.getInstance().getTime());
+      importDao.save(importTask);
+      importDao.flush();
+   }
 
-			if (!options.has(key))
-			{
-				if (desc.isMandatory())
-				{
-					throw new IllegalArgumentException("parameter -"+name+" is required");
-				}
-			}
-			else
-			{
+   private void checkProjection(Line line)
+   {
+      for (Route route : line.getRoutes())
+      {
+         for (StopPoint point : route.getStopPoints())
+         {
+            checkProjection(point.getContainedInStopArea());
+         }
+      }
 
-				if (desc.isCollection())
-				{
-					JSONArray vals =  options.getJSONArray(key);
-					ListParameterValue val = new ListParameterValue(name);
-					switch (desc.getType())
-					{
-					case FILEPATH : val.fillFilepathList(vals); break;
-					case STRING : val.fillStringList(vals); break;
-					case FILENAME : val.fillFilenameList(vals); break;
-					default:
-						throw new IllegalArgumentException("parameter -"+name+" unknown type "+desc.getType());
-					}
-					values.add(val);
-				}
-				else
-				{
-					//					if (options.optJSONObject(key) == null) // will be a JSONArray
-					//					{
-					//						throw new IllegalArgumentException("parameter -"+name+" must be unique");
-					//					}
+   }
 
-					SimpleParameterValue val = new SimpleParameterValue(name);
-					switch (desc.getType())
-					{
-					case FILEPATH : val.setFilepathValue(options.getString(key)); break;
-					case STRING : val.setStringValue(options.getString(key)); break;
-					case FILENAME : val.setFilenameValue(options.getString(key)); break;
-					case BOOLEAN : val.setBooleanValue(!options.getString(key).equals("0")); break;
-					case INTEGER : val.setIntegerValue(options.getLong(key)); break;
-					case DATE : val.setDateValue(toCalendar(options.getString(key)));break;
-					}
-					values.add(val);
+   private void checkProjection(StopArea area)
+   {
+      if (area == null)
+         return;
+      if (area.hasProjection() && !area.hasCoordinates())
+      {
+         geographicService.convertToWGS84(area);
+      }
+      checkProjection(area.getParent());
+      if (area.getAccessPoints() != null)
+      {
+         for (AccessPoint accessPoint : area.getAccessPoints())
+         {
+            checkProjection(accessPoint);
+         }
+      }
 
-				}
-			}
-		}
-		return values;      
-	}
+   }
 
-	/**
-	 * convert date string to calendar
-	 * @param simpleval
-	 * @return
-	 */
-	private Calendar toCalendar(String simpleval)
-	{
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		try
-		{
-			Date d = sdf.parse(simpleval);
-			Calendar c = Calendar.getInstance();
-			c.setTime(d);
-			return c;
-		}
-		catch (ParseException e)
-		{
-			log.error("invalid date format : "+ simpleval+" yyyy-MM-dd expected");
-			throw new RuntimeException("invalid date format : "+ simpleval+" yyyy-MM-dd expected");
-		}
+   private void checkProjection(AccessPoint accessPoint)
+   {
+      if (accessPoint == null)
+         return;
+      if (accessPoint.hasProjection() && !accessPoint.hasCoordinates())
+      {
+         geographicService.convertToWGS84(accessPoint);
+      }
 
-	}
+   }
 
+   /**
+    * @param string
+    * @return
+    */
+   private String getSimpleString(Map<String, List<String>> parameters,
+         String key)
+   {
+      List<String> values = parameters.get(key);
+      if (values == null)
+         throw new IllegalArgumentException("parameter -" + key
+               + " of String type is required");
+      if (values.size() > 1)
+         throw new IllegalArgumentException("parameter -" + key
+               + " of String type must be unique");
+      return values.get(0);
+   }
+
+   @SuppressWarnings("incomplete-switch")
+   private List<ParameterValue> populateParametersFromJSON(
+         FormatDescription description, JSONObject options, String... excluded)
+   {
+      List<ParameterValue> values = new ArrayList<ParameterValue>();
+      List<String> excludedParams = Arrays.asList(excluded);
+      for (ParameterDescription desc : description.getParameterDescriptions())
+      {
+         String name = desc.getName();
+         String key = name.replaceAll("(.)(\\p{Upper})", "$1_$2").toLowerCase();
+         if (excludedParams.contains(key))
+            continue;
+         //
+
+         if (!options.has(key))
+         {
+            if (desc.isMandatory())
+            {
+               throw new IllegalArgumentException("parameter -" + name
+                     + " is required");
+            }
+         } else
+         {
+
+            if (desc.isCollection())
+            {
+               JSONArray vals = options.getJSONArray(key);
+               ListParameterValue val = new ListParameterValue(name);
+               switch (desc.getType())
+               {
+               case FILEPATH:
+                  val.fillFilepathList(vals);
+                  break;
+               case STRING:
+                  val.fillStringList(vals);
+                  break;
+               case FILENAME:
+                  val.fillFilenameList(vals);
+                  break;
+               default:
+                  throw new IllegalArgumentException("parameter -" + name
+                        + " unknown type " + desc.getType());
+               }
+               values.add(val);
+            } else
+            {
+               // if (options.optJSONObject(key) == null) // will be a
+               // JSONArray
+               // {
+               // throw new
+               // IllegalArgumentException("parameter -"+name+" must be unique");
+               // }
+
+               SimpleParameterValue val = new SimpleParameterValue(name);
+               switch (desc.getType())
+               {
+               case FILEPATH:
+                  val.setFilepathValue(options.getString(key));
+                  break;
+               case STRING:
+                  val.setStringValue(options.getString(key));
+                  break;
+               case FILENAME:
+                  val.setFilenameValue(options.getString(key));
+                  break;
+               case BOOLEAN:
+                  val.setBooleanValue(!options.getString(key).equals("0"));
+                  break;
+               case INTEGER:
+                  val.setIntegerValue(options.getLong(key));
+                  break;
+               case DATE:
+                  val.setDateValue(toCalendar(options.getString(key)));
+                  break;
+               }
+               values.add(val);
+
+            }
+         }
+      }
+      return values;
+   }
+
+   /**
+    * convert date string to calendar
+    * 
+    * @param simpleval
+    * @return
+    */
+   private Calendar toCalendar(String simpleval)
+   {
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+      try
+      {
+         Date d = sdf.parse(simpleval);
+         Calendar c = Calendar.getInstance();
+         c.setTime(d);
+         return c;
+      } catch (ParseException e)
+      {
+         log.error("invalid date format : " + simpleval
+               + " yyyy-MM-dd expected");
+         throw new RuntimeException("invalid date format : " + simpleval
+               + " yyyy-MM-dd expected");
+      }
+
+   }
 
 }

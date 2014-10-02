@@ -28,15 +28,25 @@ import fr.certu.chouette.exchange.gtfs.model.GtfsTrip;
  */
 public class GtfsData
 {
-   @Getter private List<GtfsAgency> agencies = new ArrayList<GtfsAgency>();
-   @Getter private List<GtfsCalendar> calendars = new ArrayList<GtfsCalendar>();
-   @Getter private List<GtfsCalendarDate> calendardates = new ArrayList<GtfsCalendarDate>();
-   @Getter private List<GtfsFrequency> frequencies = new ArrayList<GtfsFrequency>();
-   @Getter private List<GtfsRoute> routes = new ArrayList<GtfsRoute>();
-   @Getter private List<GtfsShape> shapes = new ArrayList<GtfsShape>();
-   @Getter private List<GtfsStop> stops = new ArrayList<GtfsStop>();
-   @Getter private List<GtfsStopTime> stoptimes = new ArrayList<GtfsStopTime>();
-   @Getter private List<GtfsTrip> trip = new ArrayList<GtfsTrip>();
-   @Getter private List<GtfsTransfer> transfer = new ArrayList<GtfsTransfer>();
-   
+   @Getter
+   private List<GtfsAgency> agencies = new ArrayList<GtfsAgency>();
+   @Getter
+   private List<GtfsCalendar> calendars = new ArrayList<GtfsCalendar>();
+   @Getter
+   private List<GtfsCalendarDate> calendardates = new ArrayList<GtfsCalendarDate>();
+   @Getter
+   private List<GtfsFrequency> frequencies = new ArrayList<GtfsFrequency>();
+   @Getter
+   private List<GtfsRoute> routes = new ArrayList<GtfsRoute>();
+   @Getter
+   private List<GtfsShape> shapes = new ArrayList<GtfsShape>();
+   @Getter
+   private List<GtfsStop> stops = new ArrayList<GtfsStop>();
+   @Getter
+   private List<GtfsStopTime> stoptimes = new ArrayList<GtfsStopTime>();
+   @Getter
+   private List<GtfsTrip> trip = new ArrayList<GtfsTrip>();
+   @Getter
+   private List<GtfsTransfer> transfer = new ArrayList<GtfsTransfer>();
+
 }

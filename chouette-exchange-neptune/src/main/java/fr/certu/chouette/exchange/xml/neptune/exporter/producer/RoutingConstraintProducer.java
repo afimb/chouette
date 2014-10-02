@@ -5,7 +5,7 @@ import org.trident.schema.trident.ITLType;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.StopArea;
 
-public class RoutingConstraintProducer 
+public class RoutingConstraintProducer
 {
    /**
     * @param line
@@ -14,7 +14,8 @@ public class RoutingConstraintProducer
     */
    public ITLType produceITL(Line line, StopArea routingConstraint)
    {
-      ITLType jaxbITL = AbstractJaxbNeptuneProducer.tridentFactory.createITLType();
+      ITLType jaxbITL = AbstractJaxbNeptuneProducer.tridentFactory
+            .createITLType();
 
       jaxbITL.setName(routingConstraint.getName());
       jaxbITL.setLineIdShortCut(line.getObjectId());

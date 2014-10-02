@@ -25,7 +25,7 @@ public class AreaCentroid extends NeptuneIdentifiedObject
    @Getter
    @Setter
    private String name;
- 
+
    /**
     * postal Address <br/>
     * <i>readable/writable</i>
@@ -108,7 +108,8 @@ public class AreaCentroid extends NeptuneIdentifiedObject
 
       if (longLatType != null)
       {
-         sb.append("\n").append(indent).append("  longLatType = ").append(longLatType);
+         sb.append("\n").append(indent).append("  longLatType = ")
+               .append(longLatType);
       }
 
       sb.append("\n").append(indent).append("  latitude = ").append(latitude);
@@ -116,11 +117,13 @@ public class AreaCentroid extends NeptuneIdentifiedObject
 
       if (projectedPoint != null)
       {
-         sb.append("\n").append(indent).append("  projectedPoint = ").append(projectedPoint);
+         sb.append("\n").append(indent).append("  projectedPoint = ")
+               .append(projectedPoint);
       }
 
       sb.append("\n").append(indent).append("  comment = ").append(comment);
-      sb.append("\n").append(indent).append("  containedInStopAreaId = ").append(containedInStopAreaId);
+      sb.append("\n").append(indent).append("  containedInStopAreaId = ")
+            .append(containedInStopAreaId);
 
       return sb.toString();
    }
@@ -148,8 +151,7 @@ public class AreaCentroid extends NeptuneIdentifiedObject
    }
 
    @Override
-   public <T extends NeptuneObject> boolean compareAttributes(
-         T anotherObject)
+   public <T extends NeptuneObject> boolean compareAttributes(T anotherObject)
    {
       if (anotherObject instanceof AreaCentroid)
       {
@@ -162,7 +164,8 @@ public class AreaCentroid extends NeptuneIdentifiedObject
             return false;
          if (!sameValue(this.getComment(), another.getComment()))
             return false;
-         if (!sameValue(this.getRegistrationNumber(), another.getRegistrationNumber()))
+         if (!sameValue(this.getRegistrationNumber(),
+               another.getRegistrationNumber()))
             return false;
          if (!sameValue(this.getLatitude(), another.getLatitude()))
             return false;
@@ -175,8 +178,7 @@ public class AreaCentroid extends NeptuneIdentifiedObject
          if (!sameValue(this.getProjectedPoint(), another.getProjectedPoint()))
             return false;
          return true;
-      }
-      else
+      } else
       {
          return false;
       }
@@ -185,7 +187,6 @@ public class AreaCentroid extends NeptuneIdentifiedObject
    @Override
    public String toURL()
    {
-      // TODO Auto-generated method stub
       return null;
    }
 

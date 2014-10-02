@@ -44,35 +44,41 @@ import fr.certu.chouette.plugin.report.Report.STATE;
  */
 public class GtfsDataProducer
 {
-   private static final Logger logger = Logger.getLogger(GtfsDataProducer.class);
+   private static final Logger logger = Logger
+         .getLogger(GtfsDataProducer.class);
 
-   public GtfsData produceAll(NeptuneData neptuneData,TimeZone timeZone, GtfsReport report) throws GtfsExportException
+   public GtfsData produceAll(NeptuneData neptuneData, TimeZone timeZone,
+         GtfsReport report) throws GtfsExportException
    {
       GtfsData gtfsData = new GtfsData();
-      IGtfsProducer<GtfsCalendar,Timetable> calendarProducer = new GtfsCalendarProducer();
-      IGtfsProducer<GtfsTrip,VehicleJourney> tripProducer = new GtfsTripProducer();
-      IGtfsProducer<GtfsAgency,Company> agencyProducer = new GtfsAgencyProducer();
-      IGtfsProducer<GtfsStop,StopArea> stopProducer = new GtfsStopProducer();
-      IGtfsProducer<GtfsRoute,Route> routeProducer = new GtfsRouteProducer();
-      IGtfsProducer<GtfsTransfer,ConnectionLink> transferProducer = new GtfsTransferProducer();
+      IGtfsProducer<GtfsCalendar, Timetable> calendarProducer = new GtfsCalendarProducer();
+      IGtfsProducer<GtfsTrip, VehicleJourney> tripProducer = new GtfsTripProducer();
+      IGtfsProducer<GtfsAgency, Company> agencyProducer = new GtfsAgencyProducer();
+      IGtfsProducer<GtfsStop, StopArea> stopProducer = new GtfsStopProducer();
+      IGtfsProducer<GtfsRoute, Route> routeProducer = new GtfsRouteProducer();
+      IGtfsProducer<GtfsTransfer, ConnectionLink> transferProducer = new GtfsTransferProducer();
       // add calendars
-      gtfsData.getCalendars().addAll(calendarProducer.produceAll(neptuneData.getTimetables(),report));
+      gtfsData.getCalendars().addAll(
+            calendarProducer.produceAll(neptuneData.getTimetables(), report));
       // add calendarDates and remove calendar without period
-      for (Iterator<GtfsCalendar> iterator = gtfsData.getCalendars().iterator(); iterator.hasNext();)
+      for (Iterator<GtfsCalendar> iterator = gtfsData.getCalendars().iterator(); iterator
+            .hasNext();)
       {
          GtfsCalendar calendar = iterator.next();
          gtfsData.getCalendardates().addAll(calendar.getCalendarDates());
 
-         if (!calendar.hasPeriod()) 
+         if (!calendar.hasPeriod())
          {
-            logger.info("calendar "+calendar.getServiceId()+" has no period : removed (may be only calendar_dates)");
+            logger.info("calendar " + calendar.getServiceId()
+                  + " has no period : removed (may be only calendar_dates)");
             iterator.remove();
 
          }
       }
-            
+
       // add trips
-      gtfsData.getTrip().addAll(tripProducer.produceAll(neptuneData.getVehicleJourneys(),report));
+      gtfsData.getTrip().addAll(
+            tripProducer.produceAll(neptuneData.getVehicleJourneys(), report));
 
       // add stopTimes and frequencies
       for (GtfsTrip trip : gtfsData.getTrip())
@@ -82,95 +88,119 @@ public class GtfsDataProducer
       }
 
       // add routes
-      gtfsData.getRoutes().addAll(routeProducer.produceAll(neptuneData.getRoutes(),report));
+      gtfsData.getRoutes().addAll(
+            routeProducer.produceAll(neptuneData.getRoutes(), report));
 
       // add stops
-      gtfsData.getStops().addAll(stopProducer.produceAll(neptuneData.getPhysicalStops(),report));
+      gtfsData.getStops().addAll(
+            stopProducer.produceAll(neptuneData.getPhysicalStops(), report));
 
       // add stations
-      gtfsData.getStops().addAll(stopProducer.produceAll(neptuneData.getCommercialStops(),report));
+      gtfsData.getStops().addAll(
+            stopProducer.produceAll(neptuneData.getCommercialStops(), report));
 
       // add transfers
-      gtfsData.getTransfer().addAll(transferProducer.produceAll(neptuneData.getConnectionLinks(),report));
+      gtfsData.getTransfer().addAll(
+            transferProducer.produceAll(neptuneData.getConnectionLinks(),
+                  report));
 
       // add agencies
-      gtfsData.getAgencies().addAll(agencyProducer.produceAll(neptuneData.getCompanies(),report));
+      gtfsData.getAgencies().addAll(
+            agencyProducer.produceAll(neptuneData.getCompanies(), report));
       for (GtfsAgency agency : gtfsData.getAgencies())
       {
          agency.setAgencyTimezone(timeZone);
       }
-      if (report.getStatus().ordinal() >= Report.STATE.ERROR.ordinal()) 
-         throw new GtfsExportException(GtfsExportExceptionCode.ERROR, "missing data");
-      // check if no data for one or more types 
+      if (report.getStatus().ordinal() >= Report.STATE.ERROR.ordinal())
+         throw new GtfsExportException(GtfsExportExceptionCode.ERROR,
+               "missing data");
+      // check if no data for one or more types
       boolean error = false;
-      if (gtfsData.getAgencies().isEmpty()) 
+      if (gtfsData.getAgencies().isEmpty())
       {
          logger.error("no company for agencies.txt");
-         GtfsReportItem item = new GtfsReportItem(GtfsReportItem.KEY.EMPTY_DATA, STATE.ERROR, "Company");
+         GtfsReportItem item = new GtfsReportItem(
+               GtfsReportItem.KEY.EMPTY_DATA, STATE.ERROR, "Company");
          report.addItem(item);
-         error= true;
+         error = true;
       }
-      if (gtfsData.getCalendars().isEmpty() && gtfsData.getCalendardates().isEmpty()) 
+      if (gtfsData.getCalendars().isEmpty()
+            && gtfsData.getCalendardates().isEmpty())
       {
          logger.error("no timetable for calendars.txt or calendar_dates.txt");
-         GtfsReportItem item = new GtfsReportItem(GtfsReportItem.KEY.EMPTY_DATA, STATE.ERROR, "Timetable");
+         GtfsReportItem item = new GtfsReportItem(
+               GtfsReportItem.KEY.EMPTY_DATA, STATE.ERROR, "Timetable");
          report.addItem(item);
-         error= true;
+         error = true;
       }
-      if (gtfsData.getRoutes().isEmpty()) 
+      if (gtfsData.getRoutes().isEmpty())
       {
          logger.error("no route for routes.txt");
-         GtfsReportItem item = new GtfsReportItem(GtfsReportItem.KEY.EMPTY_DATA, STATE.ERROR, "Route");
+         GtfsReportItem item = new GtfsReportItem(
+               GtfsReportItem.KEY.EMPTY_DATA, STATE.ERROR, "Route");
          report.addItem(item);
-         error= true;
+         error = true;
       }
-      if (gtfsData.getTrip().isEmpty() || gtfsData.getStoptimes().isEmpty()) 
+      if (gtfsData.getTrip().isEmpty() || gtfsData.getStoptimes().isEmpty())
       {
          logger.error("no vehicleJourney for trips.txt or stoptimes.txt");
-         GtfsReportItem item = new GtfsReportItem(GtfsReportItem.KEY.EMPTY_DATA, STATE.ERROR, "VehicleJourney");
+         GtfsReportItem item = new GtfsReportItem(
+               GtfsReportItem.KEY.EMPTY_DATA, STATE.ERROR, "VehicleJourney");
          report.addItem(item);
-         error= true;
+         error = true;
       }
-      if (gtfsData.getStops().isEmpty()) 
+      if (gtfsData.getStops().isEmpty())
       {
          logger.error("no stopArea for stops.txt");
-         GtfsReportItem item = new GtfsReportItem(GtfsReportItem.KEY.EMPTY_DATA, STATE.ERROR, "StopArea");
+         GtfsReportItem item = new GtfsReportItem(
+               GtfsReportItem.KEY.EMPTY_DATA, STATE.ERROR, "StopArea");
          report.addItem(item);
-         error= true;
+         error = true;
       }
 
-      if (error) throw new GtfsExportException(GtfsExportExceptionCode.ERROR, "empty data");
+      if (error)
+         throw new GtfsExportException(GtfsExportExceptionCode.ERROR,
+               "empty data");
       return gtfsData;
    }
-   public GtfsData produceStops(NeptuneData neptuneData, GtfsReport report) throws GtfsExportException
+
+   public GtfsData produceStops(NeptuneData neptuneData, GtfsReport report)
+         throws GtfsExportException
    {
       GtfsData gtfsData = new GtfsData();
       IGtfsProducer<GtfsExtendedStop, StopArea> stopProducer = new GtfsExtendedStopProducer();
-      IGtfsProducer<GtfsTransfer,ConnectionLink> transferProducer = new GtfsTransferProducer();
+      IGtfsProducer<GtfsTransfer, ConnectionLink> transferProducer = new GtfsTransferProducer();
 
       // add stops
-      gtfsData.getStops().addAll(stopProducer.produceAll(neptuneData.getPhysicalStops(),report));
+      gtfsData.getStops().addAll(
+            stopProducer.produceAll(neptuneData.getPhysicalStops(), report));
 
       // add stations
-      gtfsData.getStops().addAll(stopProducer.produceAll(neptuneData.getCommercialStops(),report));
+      gtfsData.getStops().addAll(
+            stopProducer.produceAll(neptuneData.getCommercialStops(), report));
 
       // add transfers
-      gtfsData.getTransfer().addAll(transferProducer.produceAll(neptuneData.getConnectionLinks(),report));
+      gtfsData.getTransfer().addAll(
+            transferProducer.produceAll(neptuneData.getConnectionLinks(),
+                  report));
 
-
-      if (report.getStatus().ordinal() >= Report.STATE.ERROR.ordinal()) 
-         throw new GtfsExportException(GtfsExportExceptionCode.ERROR, "missing data");
-      // check if no data for one or more types 
+      if (report.getStatus().ordinal() >= Report.STATE.ERROR.ordinal())
+         throw new GtfsExportException(GtfsExportExceptionCode.ERROR,
+               "missing data");
+      // check if no data for one or more types
       boolean error = false;
-      if (gtfsData.getStops().isEmpty()) 
+      if (gtfsData.getStops().isEmpty())
       {
          logger.error("no stopArea for stops.txt");
-         GtfsReportItem item = new GtfsReportItem(GtfsReportItem.KEY.EMPTY_DATA, STATE.ERROR, "StopArea");
+         GtfsReportItem item = new GtfsReportItem(
+               GtfsReportItem.KEY.EMPTY_DATA, STATE.ERROR, "StopArea");
          report.addItem(item);
-         error= true;
+         error = true;
       }
 
-      if (error) throw new GtfsExportException(GtfsExportExceptionCode.ERROR, "empty data");
+      if (error)
+         throw new GtfsExportException(GtfsExportExceptionCode.ERROR,
+               "empty data");
       return gtfsData;
    }
 

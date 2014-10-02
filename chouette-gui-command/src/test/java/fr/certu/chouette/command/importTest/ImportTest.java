@@ -22,7 +22,8 @@ import fr.certu.chouette.plugin.model.ImportTask;
 import fr.certu.chouette.plugin.model.Organisation;
 import fr.certu.chouette.plugin.model.Referential;
 
-@ContextConfiguration(locations = { "classpath:testContext.xml", "classpath*:/chouetteContext.xml" })
+@ContextConfiguration(locations = { "classpath:testContext.xml",
+      "classpath*:/chouetteContext.xml" })
 public class ImportTest extends AbstractTestNGSpringContextTests
 {
 
@@ -35,8 +36,7 @@ public class ImportTest extends AbstractTestNGSpringContextTests
          em.getTransaction().begin();
          em.flush();
          em.getTransaction().commit();
-      }
-      catch (PersistenceException e)
+      } catch (PersistenceException e)
       {
          if (em.getTransaction().isActive())
          {
@@ -46,7 +46,7 @@ public class ImportTest extends AbstractTestNGSpringContextTests
       }
 
    }
-   
+
    @AfterMethod(alwaysRun = true)
    public void closeDao()
    {
@@ -65,7 +65,8 @@ public class ImportTest extends AbstractTestNGSpringContextTests
             .getBean("referentialDao");
       IDaoTemplate<Organisation> organisationDao = (IDaoTemplate<Organisation>) applicationContext
             .getBean("organisationDao");
-      Filter filter = Filter.getNewEqualsFilter("slug", chouetteDataSource.getDatabaseSchema());
+      Filter filter = Filter.getNewEqualsFilter("slug",
+            chouetteDataSource.getDatabaseSchema());
       List<Referential> refs = referentialDao.select(filter);
       if (refs.isEmpty())
       {
@@ -75,8 +76,7 @@ public class ImportTest extends AbstractTestNGSpringContextTests
             org = new Organisation();
             org.setName("test");
             organisationDao.save(org);
-         }
-         else
+         } else
          {
             org = orgs.get(0);
          }
@@ -88,8 +88,7 @@ public class ImportTest extends AbstractTestNGSpringContextTests
          referentialDao.save(ref);
          flush();
          referentialDao.detach(ref);
-      }
-      else
+      } else
       {
          ref = refs.get(0);
       }
@@ -97,9 +96,11 @@ public class ImportTest extends AbstractTestNGSpringContextTests
    }
 
    @SuppressWarnings("unchecked")
-   private ImportTask prepareImportTask(Referential ref, String filename, boolean save)
+   private ImportTask prepareImportTask(Referential ref, String filename,
+         boolean save)
    {
-      IDaoTemplate<ImportTask> importDao = (IDaoTemplate<ImportTask>) applicationContext.getBean("importDao");
+      IDaoTemplate<ImportTask> importDao = (IDaoTemplate<ImportTask>) applicationContext
+            .getBean("importDao");
       IDaoTemplate<CompilanceCheckTask> compilanceDao = (IDaoTemplate<CompilanceCheckTask>) applicationContext
             .getBean("validationDao");
       ImportTask importTask = new ImportTask();
@@ -124,7 +125,8 @@ public class ImportTest extends AbstractTestNGSpringContextTests
    @SuppressWarnings("unchecked")
    private ImportTask prepareImportGtfsTask(Referential ref, String filename)
    {
-      IDaoTemplate<ImportTask> importDao = (IDaoTemplate<ImportTask>) applicationContext.getBean("importDao");
+      IDaoTemplate<ImportTask> importDao = (IDaoTemplate<ImportTask>) applicationContext
+            .getBean("importDao");
       IDaoTemplate<CompilanceCheckTask> compilanceDao = (IDaoTemplate<CompilanceCheckTask>) applicationContext
             .getBean("validationDao");
       ImportTask importTask = new ImportTask();
@@ -150,10 +152,13 @@ public class ImportTest extends AbstractTestNGSpringContextTests
       compilanceDao.detach(compilanceCheckTask);
       return importTask;
    }
+
    @SuppressWarnings("unchecked")
-   private ImportTask prepareImportGtfsTaskForStopAreas(Referential ref, String filename)
+   private ImportTask prepareImportGtfsTaskForStopAreas(Referential ref,
+         String filename)
    {
-      IDaoTemplate<ImportTask> importDao = (IDaoTemplate<ImportTask>) applicationContext.getBean("importDao");
+      IDaoTemplate<ImportTask> importDao = (IDaoTemplate<ImportTask>) applicationContext
+            .getBean("importDao");
       IDaoTemplate<CompilanceCheckTask> compilanceDao = (IDaoTemplate<CompilanceCheckTask>) applicationContext
             .getBean("validationDao");
       ImportTask importTask = new ImportTask();
@@ -184,7 +189,8 @@ public class ImportTest extends AbstractTestNGSpringContextTests
    @SuppressWarnings("unchecked")
    private ImportTask prepareImportNetexTask(Referential ref, String filename)
    {
-      IDaoTemplate<ImportTask> importDao = (IDaoTemplate<ImportTask>) applicationContext.getBean("importDao");
+      IDaoTemplate<ImportTask> importDao = (IDaoTemplate<ImportTask>) applicationContext
+            .getBean("importDao");
       IDaoTemplate<CompilanceCheckTask> compilanceDao = (IDaoTemplate<CompilanceCheckTask>) applicationContext
             .getBean("validationDao");
       ImportTask importTask = new ImportTask();
@@ -213,23 +219,32 @@ public class ImportTest extends AbstractTestNGSpringContextTests
       Command.setBeanFactory(applicationContext);
       Command.initDao();
       Referential ref = prepareReferential();
-      ImportTask importTask = prepareImportTask(ref, "src/test/data/neptune.zip",true);
+      ImportTask importTask = prepareImportTask(ref,
+            "src/test/data/neptune.zip", true);
       Command command = (Command) applicationContext.getBean("Command");
-      String[] args = { "-c", "import", "-id", Long.toString(importTask.getId()) };
+      String[] args = { "-c", "import", "-id",
+            Long.toString(importTask.getId()) };
       int code = command.execute(args);
       Command.closeDao();
       // check results
       Command.initDao();
-      IDaoTemplate<ImportTask> importDao = (IDaoTemplate<ImportTask>) applicationContext.getBean("importDao");
+      IDaoTemplate<ImportTask> importDao = (IDaoTemplate<ImportTask>) applicationContext
+            .getBean("importDao");
       importTask = importDao.get(importTask.getId());
-      Assert.assertEquals(importTask.getStatus(), "processing", "importTask should have status as processing");
-      Assert.assertNotNull(importTask.getResult(), "importTask should have a result");
+      Assert.assertEquals(importTask.getStatus(), "processing",
+            "importTask should have status as processing");
+      Assert.assertNotNull(importTask.getResult(),
+            "importTask should have a result");
       JSONObject result = importTask.getResult();
       Reporter.log("import result = " + result.toString(2));
-      Assert.assertNotNull(importTask.getCompilanceCheckTask(), "importTask should have a compilanceCheckTask");
-      CompilanceCheckTask compilanceCheckTask = importTask.getCompilanceCheckTask();
-      Assert.assertNotNull(compilanceCheckTask.getResults(), "compilanceCheckTask should have results list");
-      Assert.assertFalse(compilanceCheckTask.getResults().isEmpty(), "compilanceCheckTask should have results");
+      Assert.assertNotNull(importTask.getCompilanceCheckTask(),
+            "importTask should have a compilanceCheckTask");
+      CompilanceCheckTask compilanceCheckTask = importTask
+            .getCompilanceCheckTask();
+      Assert.assertNotNull(compilanceCheckTask.getResults(),
+            "compilanceCheckTask should have results list");
+      Assert.assertFalse(compilanceCheckTask.getResults().isEmpty(),
+            "compilanceCheckTask should have results");
       Assert.assertEquals(code, 0, "command should return 0");
 
    }
@@ -241,27 +256,36 @@ public class ImportTest extends AbstractTestNGSpringContextTests
       Command.setBeanFactory(applicationContext);
       Command.initDao();
       Referential ref = prepareReferential();
-      ImportTask importTask = prepareImportGtfsTask(ref, "src/test/data/gtfs.zip");
+      ImportTask importTask = prepareImportGtfsTask(ref,
+            "src/test/data/gtfs.zip");
       Command command = (Command) applicationContext.getBean("Command");
-      String[] args = { "-c", "import", "-id", Long.toString(importTask.getId()) };
+      String[] args = { "-c", "import", "-id",
+            Long.toString(importTask.getId()) };
       int code = command.execute(args);
       Command.closeDao();
       // check results
       Command.initDao();
-      IDaoTemplate<ImportTask> importDao = (IDaoTemplate<ImportTask>) applicationContext.getBean("importDao");
+      IDaoTemplate<ImportTask> importDao = (IDaoTemplate<ImportTask>) applicationContext
+            .getBean("importDao");
       importTask = importDao.get(importTask.getId());
-      Assert.assertEquals(importTask.getStatus(), "processing", "importTask should have status as processing");
-      Assert.assertNotNull(importTask.getResult(), "importTask should have a result");
+      Assert.assertEquals(importTask.getStatus(), "processing",
+            "importTask should have status as processing");
+      Assert.assertNotNull(importTask.getResult(),
+            "importTask should have a result");
       JSONObject result = importTask.getResult();
       Reporter.log("import result = " + result.toString(2));
-      Assert.assertNotNull(importTask.getCompilanceCheckTask(), "importTask should have a compilanceCheckTask");
-      CompilanceCheckTask compilanceCheckTask = importTask.getCompilanceCheckTask();
-      Assert.assertNotNull(compilanceCheckTask.getResults(), "compilanceCheckTask should have results list");
-      Assert.assertTrue(compilanceCheckTask.getResults().isEmpty(), "compilanceCheckTask should not have results");
+      Assert.assertNotNull(importTask.getCompilanceCheckTask(),
+            "importTask should have a compilanceCheckTask");
+      CompilanceCheckTask compilanceCheckTask = importTask
+            .getCompilanceCheckTask();
+      Assert.assertNotNull(compilanceCheckTask.getResults(),
+            "compilanceCheckTask should have results list");
+      Assert.assertTrue(compilanceCheckTask.getResults().isEmpty(),
+            "compilanceCheckTask should not have results");
       Assert.assertEquals(code, 0, "command should return 0");
 
    }
-   
+
    @SuppressWarnings("unchecked")
    @Test(groups = { "imports" }, description = "import should load stops and transferts GTFS file")
    public void verifyImportGtfsForStopAreas()
@@ -269,23 +293,32 @@ public class ImportTest extends AbstractTestNGSpringContextTests
       Command.setBeanFactory(applicationContext);
       Command.initDao();
       Referential ref = prepareReferential();
-      ImportTask importTask = prepareImportGtfsTaskForStopAreas(ref, "src/test/data/gtfs.zip");
+      ImportTask importTask = prepareImportGtfsTaskForStopAreas(ref,
+            "src/test/data/gtfs.zip");
       Command command = (Command) applicationContext.getBean("Command");
-      String[] args = { "-c", "import", "-id", Long.toString(importTask.getId()) };
+      String[] args = { "-c", "import", "-id",
+            Long.toString(importTask.getId()) };
       int code = command.execute(args);
       Command.closeDao();
       // check results
       Command.initDao();
-      IDaoTemplate<ImportTask> importDao = (IDaoTemplate<ImportTask>) applicationContext.getBean("importDao");
+      IDaoTemplate<ImportTask> importDao = (IDaoTemplate<ImportTask>) applicationContext
+            .getBean("importDao");
       importTask = importDao.get(importTask.getId());
-      Assert.assertEquals(importTask.getStatus(), "processing", "importTask should have status as processing");
-      Assert.assertNotNull(importTask.getResult(), "importTask should have a result");
+      Assert.assertEquals(importTask.getStatus(), "processing",
+            "importTask should have status as processing");
+      Assert.assertNotNull(importTask.getResult(),
+            "importTask should have a result");
       JSONObject result = importTask.getResult();
       Reporter.log("import result = " + result.toString(2));
-      Assert.assertNotNull(importTask.getCompilanceCheckTask(), "importTask should have a compilanceCheckTask");
-      CompilanceCheckTask compilanceCheckTask = importTask.getCompilanceCheckTask();
-      Assert.assertNotNull(compilanceCheckTask.getResults(), "compilanceCheckTask should have results list");
-      Assert.assertTrue(compilanceCheckTask.getResults().isEmpty(), "compilanceCheckTask should not have results");
+      Assert.assertNotNull(importTask.getCompilanceCheckTask(),
+            "importTask should have a compilanceCheckTask");
+      CompilanceCheckTask compilanceCheckTask = importTask
+            .getCompilanceCheckTask();
+      Assert.assertNotNull(compilanceCheckTask.getResults(),
+            "compilanceCheckTask should have results list");
+      Assert.assertTrue(compilanceCheckTask.getResults().isEmpty(),
+            "compilanceCheckTask should not have results");
       Assert.assertEquals(code, 0, "command should return 0");
 
    }
@@ -297,23 +330,32 @@ public class ImportTest extends AbstractTestNGSpringContextTests
       Command.setBeanFactory(applicationContext);
       Command.initDao();
       Referential ref = prepareReferential();
-      ImportTask importTask = prepareImportNetexTask(ref, "src/test/data/netex.zip");
+      ImportTask importTask = prepareImportNetexTask(ref,
+            "src/test/data/netex.zip");
       Command command = (Command) applicationContext.getBean("Command");
-      String[] args = { "-c", "import", "-id", Long.toString(importTask.getId()) };
+      String[] args = { "-c", "import", "-id",
+            Long.toString(importTask.getId()) };
       int code = command.execute(args);
       Command.closeDao();
       // check results
       Command.initDao();
-      IDaoTemplate<ImportTask> importDao = (IDaoTemplate<ImportTask>) applicationContext.getBean("importDao");
+      IDaoTemplate<ImportTask> importDao = (IDaoTemplate<ImportTask>) applicationContext
+            .getBean("importDao");
       importTask = importDao.get(importTask.getId());
-      Assert.assertEquals(importTask.getStatus(), "processing", "importTask should have status as processing");
-      Assert.assertNotNull(importTask.getResult(), "importTask should have a result");
+      Assert.assertEquals(importTask.getStatus(), "processing",
+            "importTask should have status as processing");
+      Assert.assertNotNull(importTask.getResult(),
+            "importTask should have a result");
       JSONObject result = importTask.getResult();
       Reporter.log("import result = " + result.toString(2));
-      Assert.assertNotNull(importTask.getCompilanceCheckTask(), "importTask should have a compilanceCheckTask");
-      CompilanceCheckTask compilanceCheckTask = importTask.getCompilanceCheckTask();
-      Assert.assertNotNull(compilanceCheckTask.getResults(), "compilanceCheckTask should have results list");
-      Assert.assertTrue(compilanceCheckTask.getResults().isEmpty(), "compilanceCheckTask should not have results");
+      Assert.assertNotNull(importTask.getCompilanceCheckTask(),
+            "importTask should have a compilanceCheckTask");
+      CompilanceCheckTask compilanceCheckTask = importTask
+            .getCompilanceCheckTask();
+      Assert.assertNotNull(compilanceCheckTask.getResults(),
+            "compilanceCheckTask should have results list");
+      Assert.assertTrue(compilanceCheckTask.getResults().isEmpty(),
+            "compilanceCheckTask should not have results");
       Assert.assertEquals(code, 0, "command should return 0");
 
    }
@@ -325,23 +367,32 @@ public class ImportTest extends AbstractTestNGSpringContextTests
       Command.setBeanFactory(applicationContext);
       Command.initDao();
       Referential ref = prepareReferential();
-      ImportTask importTask = prepareImportTask(ref, "src/test/data/bidon.zip",false);
+      ImportTask importTask = prepareImportTask(ref, "src/test/data/bidon.zip",
+            false);
       Command command = (Command) applicationContext.getBean("Command");
-      String[] args = { "-c", "import", "-id", Long.toString(importTask.getId()) };
+      String[] args = { "-c", "import", "-id",
+            Long.toString(importTask.getId()) };
       int code = command.execute(args);
       Command.closeDao();
       // check results
       Command.initDao();
-      IDaoTemplate<ImportTask> importDao = (IDaoTemplate<ImportTask>) applicationContext.getBean("importDao");
+      IDaoTemplate<ImportTask> importDao = (IDaoTemplate<ImportTask>) applicationContext
+            .getBean("importDao");
       importTask = importDao.get(importTask.getId());
-      Assert.assertEquals(importTask.getStatus(), "processing", "importTask should have status as processing");
-      Assert.assertNotNull(importTask.getResult(), "importTask should have a result");
+      Assert.assertEquals(importTask.getStatus(), "processing",
+            "importTask should have status as processing");
+      Assert.assertNotNull(importTask.getResult(),
+            "importTask should have a result");
       JSONObject result = importTask.getResult();
       Reporter.log("import result = " + result.toString(2));
-      Assert.assertNotNull(importTask.getCompilanceCheckTask(), "importTask should have a compilanceCheckTask");
-      CompilanceCheckTask compilanceCheckTask = importTask.getCompilanceCheckTask();
-      Assert.assertNotNull(compilanceCheckTask.getResults(), "compilanceCheckTask should have results list");
-      Assert.assertTrue(compilanceCheckTask.getResults().isEmpty(), "compilanceCheckTask should not have results");
+      Assert.assertNotNull(importTask.getCompilanceCheckTask(),
+            "importTask should have a compilanceCheckTask");
+      CompilanceCheckTask compilanceCheckTask = importTask
+            .getCompilanceCheckTask();
+      Assert.assertNotNull(compilanceCheckTask.getResults(),
+            "compilanceCheckTask should have results list");
+      Assert.assertTrue(compilanceCheckTask.getResults().isEmpty(),
+            "compilanceCheckTask should not have results");
       Assert.assertEquals(code, 1, "command should return 1");
 
    }

@@ -8,9 +8,11 @@ import org.trident.schema.trident.ChouettePTNetworkType;
 import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 
 @AllArgsConstructor
-public class ChouettePTNetworkHolder 
+public class ChouettePTNetworkHolder
 {
-@Getter private ChouettePTNetworkType chouettePTNetwork;
-@Getter private PhaseReportItem report;
+   @Getter
+   private ChouettePTNetworkType chouettePTNetwork;
+   @Getter
+   private PhaseReportItem report;
 
 }

@@ -14,9 +14,9 @@ import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 
 /**
  * @author michel
- *
+ * 
  */
-public interface IJaxbNeptuneProducer <T extends TridentObjectType, U extends NeptuneIdentifiedObject> 
+public interface IJaxbNeptuneProducer<T extends TridentObjectType, U extends NeptuneIdentifiedObject>
 {
-    T produce(U o);
+   T produce(U o);
 }

@@ -18,39 +18,42 @@ import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
 import fr.certu.chouette.model.user.User;
 
 @SuppressWarnings("unchecked")
-public class StopPointManager extends AbstractNeptuneManager<StopPoint> 
+public class StopPointManager extends AbstractNeptuneManager<StopPoint>
 {
-   private static final Logger logger = Logger.getLogger(StopPointManager.class);
+   private static final Logger logger = Logger
+         .getLogger(StopPointManager.class);
 
-   public StopPointManager() 
+   public StopPointManager()
    {
-      super(StopPoint.class,StopPoint.STOPPOINT_KEY);
+      super(StopPoint.class, StopPoint.STOPPOINT_KEY);
    }
-
-
 
    @Transactional
    @Override
-   public void remove(User user,StopPoint stopPoint,boolean propagate) throws ChouetteException
+   public void remove(User user, StopPoint stopPoint, boolean propagate)
+         throws ChouetteException
    {
-	   // @TODO manage arrival and departure on journeypatterns
-	   
+      // @TODO manage arrival and departure on journeypatterns
+
       INeptuneManager<VehicleJourney> vjManager = (INeptuneManager<VehicleJourney>) getManager(VehicleJourney.class);
       INeptuneManager<Facility> facilityManager = (INeptuneManager<Facility>) getManager(Facility.class);
 
-      Facility facility = facilityManager.get(user, Filter.getNewEqualsFilter("stopPoint.id", stopPoint.getId()));
-      if(facility != null)
-         facilityManager.remove(user, facility,propagate);
-      List<VehicleJourney> vjs = vjManager.getAll(user, Filter.getNewEqualsFilter("route.id",
-            stopPoint.getRoute().getId()));
+      Facility facility = facilityManager.get(user,
+            Filter.getNewEqualsFilter("stopPoint.id", stopPoint.getId()));
+      if (facility != null)
+         facilityManager.remove(user, facility, propagate);
+      List<VehicleJourney> vjs = vjManager
+            .getAll(user, Filter.getNewEqualsFilter("route.id", stopPoint
+                  .getRoute().getId()));
 
-      for (VehicleJourney vehicleJourney : vjs) 
+      for (VehicleJourney vehicleJourney : vjs)
       {
-         List<VehicleJourneyAtStop> vAtStops = vehicleJourney.getVehicleJourneyAtStops();
-         for (int i=0;i< vAtStops.size();i++) 
+         List<VehicleJourneyAtStop> vAtStops = vehicleJourney
+               .getVehicleJourneyAtStops();
+         for (int i = 0; i < vAtStops.size(); i++)
          {
             VehicleJourneyAtStop vAtStop = vAtStops.get(i);
-            if(vAtStop.getStopPoint().equals(stopPoint)) 
+            if (vAtStop.getStopPoint().equals(stopPoint))
             {
                vAtStops.remove(vAtStop);
             }
@@ -58,33 +61,38 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
 
          vjManager.update(null, vehicleJourney);
       }
-      List<StopPoint> stopPoints4Route = getAll(user, Filter.getNewAndFilter(
-            Filter.getNewEqualsFilter("route.id", stopPoint.getRoute().getId()),
-            Filter.getNewGreaterFilter("position", stopPoint.getPosition())));
-      for (StopPoint  sp : stopPoints4Route) 
+      List<StopPoint> stopPoints4Route = getAll(user,
+            Filter.getNewAndFilter(Filter.getNewEqualsFilter("route.id",
+                  stopPoint.getRoute().getId()), Filter.getNewGreaterFilter(
+                  "position", stopPoint.getPosition())));
+      for (StopPoint sp : stopPoints4Route)
       {
          sp.setPosition(sp.getPosition() - 1);
          update(user, sp);
       }
-      super.remove(user, stopPoint,propagate);
+      super.remove(user, stopPoint, propagate);
    }
 
    @Override
-   protected Logger getLogger() {
+   protected Logger getLogger()
+   {
       return logger;
    }
 
    @Override
-   public void completeObject(User user, StopPoint stopPoint) throws ChouetteException 
+   public void completeObject(User user, StopPoint stopPoint)
+         throws ChouetteException
    {
       stopPoint.complete();
    }
+
    @Transactional
    @Override
-   public void saveAll(User user, List<StopPoint> stopPoints, boolean propagate,boolean fast) throws ChouetteException 
+   public void saveAll(User user, List<StopPoint> stopPoints,
+         boolean propagate, boolean fast) throws ChouetteException
    {
-      getLogger().debug("try to save "+stopPoints.size()+" StopPoints");
-      if(propagate)
+      getLogger().debug("try to save " + stopPoints.size() + " StopPoints");
+      if (propagate)
       {
          INeptuneManager<StopArea> stopAreaManager = (INeptuneManager<StopArea>) getManager(StopArea.class);
          INeptuneManager<Facility> facilityManager = (INeptuneManager<Facility>) getManager(Facility.class);
@@ -92,46 +100,55 @@ public class StopPointManager extends AbstractNeptuneManager<StopPoint>
          List<StopArea> stopAreas = new ArrayList<StopArea>();
          List<Facility> facilities = new ArrayList<Facility>();
 
-         for (StopPoint stopPoint : stopPoints) 
+         for (StopPoint stopPoint : stopPoints)
          {
-            addIfMissingInCollection(stopAreas, stopPoint.getContainedInStopArea());
+            addIfMissingInCollection(stopAreas,
+                  stopPoint.getContainedInStopArea());
             // mergeCollection(facilities,stopPoint.getFacilities());
          }
 
-         if(!stopAreas.isEmpty())
-            stopAreaManager.saveAll(user, stopAreas, propagate,fast);
+         if (!stopAreas.isEmpty())
+            stopAreaManager.saveAll(user, stopAreas, propagate, fast);
 
-         super.saveAll(user, stopPoints, propagate,fast);
+         super.saveAll(user, stopPoints, propagate, fast);
 
-         if(!facilities.isEmpty())
-            facilityManager.saveAll(user, facilities, propagate,fast);
-      }
-      else
+         if (!facilities.isEmpty())
+            facilityManager.saveAll(user, facilities, propagate, fast);
+      } else
       {
-         super.saveAll(user, stopPoints,propagate,fast);	
+         super.saveAll(user, stopPoints, propagate, fast);
       }
    }
+
    @Transactional
    @Override
-   public int removeAll(User user, Filter filter) throws ChouetteException 
+   public int removeAll(User user, Filter filter) throws ChouetteException
    {
-      if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
+      if (getDao() == null)
+         throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,
+               "unavailable resource");
       if (filter.getType().equals(Filter.Type.EQUALS))
       {
-         //			INeptuneManager<PTLink> ptlinkManager = (INeptuneManager<PTLink>) getManager(PTLink.class);
-         //			INeptuneManager<JourneyPattern> jpManager = (INeptuneManager<JourneyPattern>) getManager(JourneyPattern.class);
-         //			INeptuneManager<StopPoint> stopPointManager = (INeptuneManager<StopPoint>) getManager(StopPoint.class);
-         //	        Filter dependentFilter = Filter.getNewEqualsFilter("stopPoint."+filter.getAttribute(), filter.getFirstValue());
-         //	        ptlinkManager.removeAll(user, dependentFilter);
-         //	        jpManager.removeAll(user, dependentFilter);
-         //	        stopPointManager.removeAll(user, dependentFilter);
-      }
-      else
+         // INeptuneManager<PTLink> ptlinkManager = (INeptuneManager<PTLink>)
+         // getManager(PTLink.class);
+         // INeptuneManager<JourneyPattern> jpManager =
+         // (INeptuneManager<JourneyPattern>)
+         // getManager(JourneyPattern.class);
+         // INeptuneManager<StopPoint> stopPointManager =
+         // (INeptuneManager<StopPoint>) getManager(StopPoint.class);
+         // Filter dependentFilter =
+         // Filter.getNewEqualsFilter("stopPoint."+filter.getAttribute(),
+         // filter.getFirstValue());
+         // ptlinkManager.removeAll(user, dependentFilter);
+         // jpManager.removeAll(user, dependentFilter);
+         // stopPointManager.removeAll(user, dependentFilter);
+      } else
       {
-         throw new CoreException(CoreExceptionCode.DELETE_IMPOSSIBLE,"unvalid filter");
+         throw new CoreException(CoreExceptionCode.DELETE_IMPOSSIBLE,
+               "unvalid filter");
       }
-      int ret =  getDao().removeAll(filter);
-      logger.debug(""+ret+" stopPoints deleted");
+      int ret = getDao().removeAll(filter);
+      logger.debug("" + ret + " stopPoints deleted");
       return ret;
 
    }

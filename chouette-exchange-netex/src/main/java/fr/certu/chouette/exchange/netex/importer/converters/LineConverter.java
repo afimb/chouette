@@ -20,59 +20,68 @@ import fr.certu.chouette.exchange.netex.ModelTranslator;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 
-public class LineConverter extends GenericConverter 
-{    
-	private static final Logger       logger = Logger.getLogger(LineConverter.class);
-	private Line line = new Line();    
-	private AutoPilot pilot;
-	private VTDNav nav;
-	private ModelTranslator modelTranslator = new ModelTranslator();
+public class LineConverter extends GenericConverter
+{
+   private static final Logger logger = Logger.getLogger(LineConverter.class);
+   private Line line = new Line();
+   private AutoPilot pilot;
+   private VTDNav nav;
+   private ModelTranslator modelTranslator = new ModelTranslator();
 
-	@Getter
-	private List<String> routeObjectIds = new ArrayList<String>();
+   @Getter
+   private List<String> routeObjectIds = new ArrayList<String>();
 
-	public LineConverter(VTDNav vTDNav) throws XPathParseException, XPathEvalException, NavException, DatatypeConfigurationException
-	{
-		nav = vTDNav;
+   public LineConverter(VTDNav vTDNav) throws XPathParseException,
+         XPathEvalException, NavException, DatatypeConfigurationException
+   {
+      nav = vTDNav;
 
-		pilot = new AutoPilot(nav);
-		pilot.declareXPathNameSpace("netex","http://www.netex.org.uk/netex");
-	}
+      pilot = new AutoPilot(nav);
+      pilot.declareXPathNameSpace("netex", "http://www.netex.org.uk/netex");
+   }
 
-	public Line convert() throws XPathEvalException, NavException, XPathParseException, ParseException
-	{
-		pilot.selectXPath("//netex:Line");
+   public Line convert() throws XPathEvalException, NavException,
+         XPathParseException, ParseException
+   {
+      pilot.selectXPath("//netex:Line");
 
-		while( pilot.evalXPath() != -1 )
-		{
-			// Mandatory
-			line.setObjectId( (String)parseMandatoryAttribute(nav, "id"));
+      while (pilot.evalXPath() != -1)
+      {
+         // Mandatory
+         line.setObjectId((String) parseMandatoryAttribute(nav, "id"));
 
-			// Optionnal
-			line.setName( (String)parseOptionnalElement(nav, "Name") );
-			line.setPublishedName( (String)parseOptionnalElement(nav, "ShortName") );
-			line.setRegistrationNumber( (String)parseOptionnalElement(nav, "PrivateCode") );
-			line.setNumber( (String)parseOptionnalElement(nav, "PublicCode") );
-			line.setComment( (String)parseOptionnalElement(nav, "Description") );
+         // Optionnal
+         line.setName((String) parseOptionnalElement(nav, "Name"));
+         line.setPublishedName((String) parseOptionnalElement(nav, "ShortName"));
+         line.setRegistrationNumber((String) parseOptionnalElement(nav,
+               "PrivateCode"));
+         line.setNumber((String) parseOptionnalElement(nav, "PublicCode"));
+         line.setComment((String) parseOptionnalElement(nav, "Description"));
 
-			// Optionnal            
-			line.setTransportModeName( modelTranslator.readTransportMode((String)parseOptionnalElement(nav, "TransportMode")));
-			if (line.getTransportModeName() == null) 
-			{
-				logger.warn("Line "+line.getObjectId()+" without TransportMode , forced to Other");
-				line.setTransportModeName(TransportModeNameEnum.Other);
-			}
+         // Optionnal
+         line.setTransportModeName(modelTranslator
+               .readTransportMode((String) parseOptionnalElement(nav,
+                     "TransportMode")));
+         if (line.getTransportModeName() == null)
+         {
+            logger.warn("Line " + line.getObjectId()
+                  + " without TransportMode , forced to Other");
+            line.setTransportModeName(TransportModeNameEnum.Other);
+         }
 
-			Object objectVersion =  parseOptionnalAttribute(nav, "version", "Integer");
-			line.setObjectVersion( objectVersion != null ? (Integer)objectVersion : 0 );
+         Object objectVersion = parseOptionnalAttribute(nav, "version",
+               "Integer");
+         line.setObjectVersion(objectVersion != null ? (Integer) objectVersion
+               : 0);
 
-			// Routes
-			routeObjectIds = toStringList(parseMandatoryAttributes(nav, "RouteRef", "ref"));            
-		}
-		pilot.resetXPath();
+         // Routes
+         routeObjectIds = toStringList(parseMandatoryAttributes(nav,
+               "RouteRef", "ref"));
+      }
+      pilot.resetXPath();
 
-		returnToRootElement(nav);        
-		return line;
-	}      
+      returnToRootElement(nav);
+      return line;
+   }
 
 }

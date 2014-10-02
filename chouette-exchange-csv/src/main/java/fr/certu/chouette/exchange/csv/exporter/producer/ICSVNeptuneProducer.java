@@ -15,9 +15,9 @@ import fr.certu.chouette.plugin.report.Report;
 
 /**
  * @author michel
- *
+ * 
  */
-public interface ICSVNeptuneProducer <T extends NeptuneIdentifiedObject> 
+public interface ICSVNeptuneProducer<T extends NeptuneIdentifiedObject>
 {
-    List<String[]> produce(T o, Report report);
+   List<String[]> produce(T o, Report report);
 }

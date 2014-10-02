@@ -14,13 +14,14 @@ import fr.certu.chouette.exchange.csv.exception.ExchangeException;
 import fr.certu.chouette.exchange.csv.exception.ExchangeExceptionCode;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 
-public abstract class AbstractModelProducer<T extends NeptuneIdentifiedObject> implements IModelProducer<T>
+public abstract class AbstractModelProducer<T extends NeptuneIdentifiedObject>
+      implements IModelProducer<T>
 {
    public static final int TITLE_COLUMN = 7;
-   
-   private static final SimpleDateFormat  dfHM = new SimpleDateFormat("HH:mm") ;
-   private static final SimpleDateFormat dfHMS = new SimpleDateFormat("HH:mm:ss") ;
 
+   private static final SimpleDateFormat dfHM = new SimpleDateFormat("HH:mm");
+   private static final SimpleDateFormat dfHMS = new SimpleDateFormat(
+         "HH:mm:ss");
 
    /**
     * load simple value in CSV row
@@ -33,25 +34,25 @@ public abstract class AbstractModelProducer<T extends NeptuneIdentifiedObject> i
     * @throws ExchangeException
     *            title not found
     */
-   protected String loadStringParam(CSVReader csvReader, String title) throws ExchangeException
+   protected String loadStringParam(CSVReader csvReader, String title)
+         throws ExchangeException
    {
       String[] currentLine = null;
       try
       {
          currentLine = csvReader.readNext();
-      }
-      catch (IOException e)
+      } catch (IOException e)
       {
          throw new ExchangeException(ExchangeExceptionCode.INVALID_CSV_FILE, e);
       }
       if (currentLine[TITLE_COLUMN].equals(title))
       {
          return currentLine[TITLE_COLUMN + 1];
-      }
-      else
+      } else
       {
-         throw new ExchangeException(ExchangeExceptionCode.INVALID_CSV_FILE, "Unable to read '" + title
-               + "' in csv file , " + currentLine[TITLE_COLUMN] + " found");
+         throw new ExchangeException(ExchangeExceptionCode.INVALID_CSV_FILE,
+               "Unable to read '" + title + "' in csv file , "
+                     + currentLine[TITLE_COLUMN] + " found");
       }
    }
 
@@ -82,7 +83,8 @@ public abstract class AbstractModelProducer<T extends NeptuneIdentifiedObject> i
     *           value if missing
     * @return extracted defaultValue (null if not found)
     */
-   protected final int getIntValue(int column, String[] csvLine, int defaultValue)
+   protected final int getIntValue(int column, String[] csvLine,
+         int defaultValue)
    {
       if (csvLine[column].trim().isEmpty())
          return defaultValue;
@@ -100,7 +102,8 @@ public abstract class AbstractModelProducer<T extends NeptuneIdentifiedObject> i
     *           value if missing
     * @return extracted defaultValue (null if not found)
     */
-   protected final double getDoubleValue(int column, String[] csvLine, double defaultValue)
+   protected final double getDoubleValue(int column, String[] csvLine,
+         double defaultValue)
    {
       if (csvLine[column].trim().isEmpty())
          return defaultValue;
@@ -144,8 +147,7 @@ public abstract class AbstractModelProducer<T extends NeptuneIdentifiedObject> i
       try
       {
          return new Date(sdf.parse(csvLine[column].trim()).getTime());
-      }
-      catch (ParseException e)
+      } catch (ParseException e)
       {
          logger.error(column + ": unable to parse date " + csvLine[column]);
          return null;
@@ -163,33 +165,35 @@ public abstract class AbstractModelProducer<T extends NeptuneIdentifiedObject> i
     *           to log errors
     * @return extracted value (null if not found or invalid format)
     */
-   protected final Time getTimeValue(int column, String[] csvLine) throws ExchangeException
+   protected final Time getTimeValue(int column, String[] csvLine)
+         throws ExchangeException
    {
       if (csvLine[column].trim().isEmpty())
          return null;
       String dateString = csvLine[column].trim();
       String token[] = dateString.split(":");
-      if (token.length < 2 || token.length > 3) throw new ExchangeException(ExchangeExceptionCode.INVALID_CSV_FILE, "Invalid Time format : "+dateString);
+      if (token.length < 2 || token.length > 3)
+         throw new ExchangeException(ExchangeExceptionCode.INVALID_CSV_FILE,
+               "Invalid Time format : " + dateString);
       try
       {
-         java.util.Date d =  null;
+         java.util.Date d = null;
          if (token.length == 2)
          {
 
             d = dfHM.parse(dateString);
 
-         }
-         else
+         } else
          {
             d = dfHMS.parse(dateString);
          }
          Time time = new Time(d.getTime());
-         
+
          return time;
-      }
-      catch (ParseException e)
+      } catch (ParseException e)
       {
-         throw new ExchangeException(ExchangeExceptionCode.INVALID_CSV_FILE, "Invalid Time format : "+dateString);
+         throw new ExchangeException(ExchangeExceptionCode.INVALID_CSV_FILE,
+               "Invalid Time format : " + dateString);
       }
 
    }
@@ -199,12 +203,12 @@ public abstract class AbstractModelProducer<T extends NeptuneIdentifiedObject> i
       String output = input.replaceAll("[^0-9A-Za-z_\\-]", "_");
       return output;
    }
-   
+
    /**
     * check if csv line has no data
     * 
     * @param data
-    * @return true if  empty
+    * @return true if empty
     */
    public boolean checkLine(String[] data)
    {
@@ -217,6 +221,5 @@ public abstract class AbstractModelProducer<T extends NeptuneIdentifiedObject> i
       }
       return true;
    }
-
 
 }

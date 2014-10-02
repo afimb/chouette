@@ -77,7 +77,8 @@ public class CompilanceCheckTask extends ActiveRecordObject
 
    @Getter
    @Setter
-   @OneToMany(mappedBy = "compilanceCheckTask", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+   @OneToMany(mappedBy = "compilanceCheckTask", cascade = {
+         CascadeType.PERSIST, CascadeType.MERGE })
    private List<CompilanceCheckResult> results;
 
    @Getter
@@ -106,7 +107,7 @@ public class CompilanceCheckTask extends ActiveRecordObject
       }
    }
 
-   @Column(name = "parameter_set",insertable=false, updatable=false)
+   @Column(name = "parameter_set", insertable = false, updatable = false)
    private String parameterSet;
 
    @Column(name = "parameter_set_name")

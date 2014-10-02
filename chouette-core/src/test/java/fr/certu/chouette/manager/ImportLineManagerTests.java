@@ -4,17 +4,16 @@ import org.testng.annotations.BeforeMethod;
 
 import fr.certu.chouette.model.neptune.Line;
 
-
-public class ImportLineManagerTests extends AbstractImportManagerTests<Line> 
+public class ImportLineManagerTests extends AbstractImportManagerTests<Line>
 {
 
-	@BeforeMethod (alwaysRun=true)
-	public void createManager()
-	{
-		Line bean = new Line();
-		bean.setId(Long.valueOf(1));
-		bean.setObjectId("TestNG:Line:1");
-		initManager("Line","lineManager",bean);
-	}
-	
+   @BeforeMethod(alwaysRun = true)
+   public void createManager()
+   {
+      Line bean = new Line();
+      bean.setId(Long.valueOf(1));
+      bean.setObjectId("TestNG:Line:1");
+      initManager("Line", "lineManager", bean);
+   }
+
 }

@@ -8,25 +8,22 @@ import fr.certu.chouette.model.neptune.NeptuneLocalizedObject;
 /**
  * 
  * @author mamadou keira
- *
+ * 
  */
-public class AccessPointManager extends AbstractNeptuneManager<AccessPoint> 
+public class AccessPointManager extends AbstractNeptuneManager<AccessPoint>
 {
-    private static final Logger logger = Logger.getLogger(AccessPointManager.class);
-	
-	public AccessPointManager() {
-		super(AccessPoint.class,AccessPoint.ACCESSPOINT_KEY);
-	}
+   private static final Logger logger = Logger
+         .getLogger(AccessPointManager.class);
 
-	public void init()
-	{
-		NeptuneLocalizedObject.setGeographicService(getGeographicService());
-	}
-	
-	@Override
-	protected Logger getLogger() 
-	{
-		return logger;
-	}
-	
+   public AccessPointManager()
+   {
+      super(AccessPoint.class, AccessPoint.ACCESSPOINT_KEY);
+   }
+
+   @Override
+   protected Logger getLogger()
+   {
+      return logger;
+   }
+
 }

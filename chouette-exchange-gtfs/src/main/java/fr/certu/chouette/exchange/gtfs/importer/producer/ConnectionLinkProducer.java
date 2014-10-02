@@ -9,30 +9,35 @@ import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
 import fr.certu.chouette.plugin.report.Report;
 
-public class ConnectionLinkProducer extends AbstractModelProducer<ConnectionLink, GtfsTransfer> 
+public class ConnectionLinkProducer extends
+      AbstractModelProducer<ConnectionLink, GtfsTransfer>
 {
-	private static Logger logger = Logger.getLogger(ConnectionLinkProducer.class);
-	@Override
-	public ConnectionLink produce(GtfsTransfer gtfsTransfer,Report report) 
-	{
+   private static Logger logger = Logger
+         .getLogger(ConnectionLinkProducer.class);
 
-		ConnectionLink link = new ConnectionLink();
+   @Override
+   public ConnectionLink produce(GtfsTransfer gtfsTransfer, Report report)
+   {
 
-		link.setObjectId(composeObjectId( ConnectionLink.CONNECTIONLINK_KEY,gtfsTransfer.getFromStopId()+"_"+gtfsTransfer.getToStopId(),logger));
+      ConnectionLink link = new ConnectionLink();
 
-		link.setStartOfLinkId(gtfsTransfer.getFromStopId());
-		link.setEndOfLinkId(gtfsTransfer.getToStopId());
+      link.setObjectId(composeObjectId(ConnectionLink.CONNECTIONLINK_KEY,
+            gtfsTransfer.getFromStopId() + "_" + gtfsTransfer.getToStopId(),
+            logger));
 
-		link.setCreationTime(Calendar.getInstance().getTime());
-		link.setLinkType(ConnectionLinkTypeEnum.Overground);
-		if (gtfsTransfer.getMinTransferTime() != null)
-			link.setDefaultDuration(gtfsTransfer.getMinTransferTime().getTime());
-		if (gtfsTransfer.getTransferType().equals(GtfsTransfer.Type.FORBIDDEN))
-		{
-			link.setName("FORBIDDEN");
-		}
+      link.setStartOfLinkId(gtfsTransfer.getFromStopId());
+      link.setEndOfLinkId(gtfsTransfer.getToStopId());
 
-		return link;
-	}
+      link.setCreationTime(Calendar.getInstance().getTime());
+      link.setLinkType(ConnectionLinkTypeEnum.Overground);
+      if (gtfsTransfer.getMinTransferTime() != null)
+         link.setDefaultDuration(gtfsTransfer.getMinTransferTime().getTime());
+      if (gtfsTransfer.getTransferType().equals(GtfsTransfer.Type.FORBIDDEN))
+      {
+         link.setName("FORBIDDEN");
+      }
+
+      return link;
+   }
 
 }

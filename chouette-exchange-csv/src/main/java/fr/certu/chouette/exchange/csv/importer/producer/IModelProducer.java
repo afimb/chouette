@@ -15,9 +15,11 @@ import fr.certu.chouette.plugin.report.Report;
 
 /**
  * @author michel
- *
+ * 
  */
-public interface IModelProducer <T extends NeptuneIdentifiedObject> 
+public interface IModelProducer<T extends NeptuneIdentifiedObject>
 {
-    T produce(ChouetteCsvReader csvReader, String[] firstLine, String objectIdPrefix, String srid, Report report) throws ExchangeException;
+   T produce(ChouetteCsvReader csvReader, String[] firstLine,
+         String objectIdPrefix, String srid, Report report)
+         throws ExchangeException;
 }

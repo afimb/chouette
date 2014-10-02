@@ -18,65 +18,82 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.testng.Assert;
 
-
-@ContextConfiguration(locations={"classpath:testContext.xml","classpath*:chouetteContext.xml"})
+@ContextConfiguration(locations = { "classpath:testContext.xml",
+      "classpath*:chouetteContext.xml" })
 @SuppressWarnings("unchecked")
-public class LineConverterTests extends AbstractTestNGSpringContextTests {
+public class LineConverterTests extends AbstractTestNGSpringContextTests
+{
 
-    private LineConverter lineConverter;
+   private LineConverter lineConverter;
 
-    @BeforeClass
-    protected void setUp() throws Exception {
-        File f = FileUtils.getFile("src","test", "resources", "line_test.xml");;
-        FileInputStream fis = new FileInputStream(f);
-        byte[] b = new byte[(int) f.length()];
-        fis.read(b);
-        fis.close();
-        
-        VTDGen vg = new VTDGen();
-        vg.setDoc(b);
-        vg.parse(true); // set namespace awareness to true
+   @BeforeClass
+   protected void setUp() throws Exception
+   {
+      File f = FileUtils.getFile("src", "test", "resources", "line_test.xml");
+      ;
+      FileInputStream fis = new FileInputStream(f);
+      byte[] b = new byte[(int) f.length()];
+      fis.read(b);
+      fis.close();
 
-        VTDNav nav = vg.getNav();
-        AutoPilot autoPilot = new AutoPilot(nav);
-        autoPilot.declareXPathNameSpace("netex","http://www.netex.org.uk/netex");
-        lineConverter = new LineConverter(nav);
-    }
+      VTDGen vg = new VTDGen();
+      vg.setDoc(b);
+      vg.parse(true); // set namespace awareness to true
 
-    @Test(groups = {"ServiceFrame"}, description = "Line's name attribute reading")
-    public void verifyName() throws XPathEvalException, NavException, XPathParseException, ParseException {
-        Line line = lineConverter.convert();
-        Assert.assertEquals(line.getName(), "7B");
-    }
+      VTDNav nav = vg.getNav();
+      AutoPilot autoPilot = new AutoPilot(nav);
+      autoPilot.declareXPathNameSpace("netex", "http://www.netex.org.uk/netex");
+      lineConverter = new LineConverter(nav);
+   }
 
-    @Test(groups = {"ServiceFrame"}, description = "Line's publishedName attribute reading")
-    public void verifyPublishedName() throws XPathEvalException, NavException, XPathParseException, ParseException {
-        Line line = lineConverter.convert();
-        Assert.assertEquals(line.getPublishedName(), "Mairie d Issy porte d Orleans");
-    }
+   @Test(groups = { "ServiceFrame" }, description = "Line's name attribute reading")
+   public void verifyName() throws XPathEvalException, NavException,
+         XPathParseException, ParseException
+   {
+      Line line = lineConverter.convert();
+      Assert.assertEquals(line.getName(), "7B");
+   }
 
-    @Test(groups = {"ServiceFrame"}, description = "Line's transportModeName attribute reading")
-    public void verifyTransportModeName() throws XPathEvalException, NavException, XPathParseException, ParseException {
-        Line line = lineConverter.convert();
-        Assert.assertEquals(line.getTransportModeName(), TransportModeNameEnum.Metro);
-    }
+   @Test(groups = { "ServiceFrame" }, description = "Line's publishedName attribute reading")
+   public void verifyPublishedName() throws XPathEvalException, NavException,
+         XPathParseException, ParseException
+   {
+      Line line = lineConverter.convert();
+      Assert.assertEquals(line.getPublishedName(),
+            "Mairie d Issy porte d Orleans");
+   }
 
-    @Test(groups = {"ServiceFrame"}, description = "Line's registrationNumber attribute reading")
-    public void verifyRegistrationNumber() throws XPathEvalException, NavException, XPathParseException, ParseException {
-        Line line = lineConverter.convert();
-        Assert.assertEquals(line.getRegistrationNumber(), "100110107");
-    }
+   @Test(groups = { "ServiceFrame" }, description = "Line's transportModeName attribute reading")
+   public void verifyTransportModeName() throws XPathEvalException,
+         NavException, XPathParseException, ParseException
+   {
+      Line line = lineConverter.convert();
+      Assert.assertEquals(line.getTransportModeName(),
+            TransportModeNameEnum.Metro);
+   }
 
-    @Test(groups = {"ServiceFrame"}, description = "Line's number attribute reading")
-    public void verifyNumber() throws XPathEvalException, NavException, XPathParseException, ParseException {
-        Line line = lineConverter.convert();
-        Assert.assertEquals(line.getNumber(), "7Bis");
-    }
+   @Test(groups = { "ServiceFrame" }, description = "Line's registrationNumber attribute reading")
+   public void verifyRegistrationNumber() throws XPathEvalException,
+         NavException, XPathParseException, ParseException
+   {
+      Line line = lineConverter.convert();
+      Assert.assertEquals(line.getRegistrationNumber(), "100110107");
+   }
 
-    @Test(groups = {"ServiceFrame"}, description = "Line's comment attribute reading")
-    public void verifyComment() throws XPathEvalException, NavException, XPathParseException, ParseException {
-        Line line = lineConverter.convert();
-        Assert.assertEquals(line.getComment(), "Extension à partir de juin");
-    }
+   @Test(groups = { "ServiceFrame" }, description = "Line's number attribute reading")
+   public void verifyNumber() throws XPathEvalException, NavException,
+         XPathParseException, ParseException
+   {
+      Line line = lineConverter.convert();
+      Assert.assertEquals(line.getNumber(), "7Bis");
+   }
+
+   @Test(groups = { "ServiceFrame" }, description = "Line's comment attribute reading")
+   public void verifyComment() throws XPathEvalException, NavException,
+         XPathParseException, ParseException
+   {
+      Line line = lineConverter.convert();
+      Assert.assertEquals(line.getComment(), "Extension à partir de juin");
+   }
 
 }

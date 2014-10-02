@@ -31,8 +31,8 @@ import fr.certu.chouette.model.neptune.PeerId;
  * 
  * @param <T>
  */
-public abstract class AbstractJdbcDao<T extends NeptuneIdentifiedObject> extends JdbcDaoSupport implements
-      IDaoTemplate<T>
+public abstract class AbstractJdbcDao<T extends NeptuneIdentifiedObject>
+      extends JdbcDaoSupport implements IDaoTemplate<T>
 {
    private static final int BATCH_SIZE = 5000;
 
@@ -110,12 +110,14 @@ public abstract class AbstractJdbcDao<T extends NeptuneIdentifiedObject> extends
    public List<PeerId> get(List<String> objectids)
    {
       if (sqlSelectByObjectIdWithInClause == null)
-         throw new JdbcDaoRuntimeException(JdbcDaoExceptionCode.NO_SQL_REQUEST_AVALAIBLE,
+         throw new JdbcDaoRuntimeException(
+               JdbcDaoExceptionCode.NO_SQL_REQUEST_AVALAIBLE,
                "implements sqlSelectByObjectIdWithInClause request statement in xml file :"
                      + objectids.get(0).split(":")[1] + "JdbcDaoConext.xml");
 
       String[] myArray = objectids.toArray(new String[objectids.size()]);
-      String sql = sqlSelectByObjectIdWithInClause.replaceAll("_OBJECTIDS_", arrayToSQLIn(myArray));
+      String sql = sqlSelectByObjectIdWithInClause.replaceAll("_OBJECTIDS_",
+            arrayToSQLIn(myArray));
 
       List<PeerId> peerIds = new ArrayList<PeerId>();
 
@@ -139,7 +141,8 @@ public abstract class AbstractJdbcDao<T extends NeptuneIdentifiedObject> extends
     * @param type
     * @throws SQLException
     */
-   protected abstract void populateStatement(PreparedStatement ps, T type) throws SQLException;
+   protected abstract void populateStatement(PreparedStatement ps, T type)
+         throws SQLException;
 
    @Override
    public final void saveOrUpdateAll(final List<T> objects)
@@ -181,8 +184,7 @@ public abstract class AbstractJdbcDao<T extends NeptuneIdentifiedObject> extends
                index += BATCH_SIZE;
                rest -= BATCH_SIZE;
             }
-         }
-         else if (sqlDelete != null)
+         } else if (sqlDelete != null)
          {
             toBatchDelete(sqlDelete, updatables);
             int index = 0;
@@ -195,12 +197,13 @@ public abstract class AbstractJdbcDao<T extends NeptuneIdentifiedObject> extends
                index += BATCH_SIZE;
                rest -= BATCH_SIZE;
             }
-         }
-         else
+         } else
          {
-            throw new JdbcDaoRuntimeException(JdbcDaoExceptionCode.NO_SQL_REQUEST_AVALAIBLE,
+            throw new JdbcDaoRuntimeException(
+                  JdbcDaoExceptionCode.NO_SQL_REQUEST_AVALAIBLE,
                   "implements sqlUpdate AND/OR sqlDelete request statement in xml file :"
-                        + objects.get(0).getClass().getName() + "JdbcDaoConext.xml");
+                        + objects.get(0).getClass().getName()
+                        + "JdbcDaoConext.xml");
          }
 
       }
@@ -229,7 +232,8 @@ public abstract class AbstractJdbcDao<T extends NeptuneIdentifiedObject> extends
     *           the real updatable or deletable objects
     * @throws JdbcDaoException
     */
-   protected void dispatchObjects(List<T> list, List<T> insertables, List<T> updatables)
+   protected void dispatchObjects(List<T> list, List<T> insertables,
+         List<T> updatables)
    {
       Map<String, T> map = new HashMap<String, T>();
       for (T type : list)
@@ -263,28 +267,31 @@ public abstract class AbstractJdbcDao<T extends NeptuneIdentifiedObject> extends
    protected int[] toBatchUpdate(String sql, final List<T> list)
    {
       if (sql == null)
-         throw new JdbcDaoRuntimeException(JdbcDaoExceptionCode.NO_SQL_REQUEST_AVALAIBLE,
-               "implements sqlUpdate request statement in xml file :" + list.get(0).getClass().getName()
-                     + "JdbcDaoConext.xml");
+         throw new JdbcDaoRuntimeException(
+               JdbcDaoExceptionCode.NO_SQL_REQUEST_AVALAIBLE,
+               "implements sqlUpdate request statement in xml file :"
+                     + list.get(0).getClass().getName() + "JdbcDaoConext.xml");
 
-      int[] rows = getJdbcTemplate().batchUpdate(sql, new BatchPreparedStatementSetter()
-      {
-         @Override
-         public void setValues(PreparedStatement ps, int i) throws SQLException
-         {
-            T type = list.get(i);
-            if (type != null)
-               populateStatement(ps, type);
-            int rank = ps.getParameterMetaData().getParameterCount();
-            ps.setString(rank, type.getObjectId());
-         }
+      int[] rows = getJdbcTemplate().batchUpdate(sql,
+            new BatchPreparedStatementSetter()
+            {
+               @Override
+               public void setValues(PreparedStatement ps, int i)
+                     throws SQLException
+               {
+                  T type = list.get(i);
+                  if (type != null)
+                     populateStatement(ps, type);
+                  int rank = ps.getParameterMetaData().getParameterCount();
+                  ps.setString(rank, type.getObjectId());
+               }
 
-         @Override
-         public int getBatchSize()
-         {
-            return list.size();
-         }
-      });
+               @Override
+               public int getBatchSize()
+               {
+                  return list.size();
+               }
+            });
 
       // remove from secondary tables for multiple occurence attributes
       toBatchDeleteCollectionAttributes(list);
@@ -304,7 +311,8 @@ public abstract class AbstractJdbcDao<T extends NeptuneIdentifiedObject> extends
       {
          for (String attributeKey : collectionAttributes.keySet())
          {
-            toBatchDeleteCollectionAttribute(list, attributeKey, collectionAttributes.get(attributeKey));
+            toBatchDeleteCollectionAttribute(list, attributeKey,
+                  collectionAttributes.get(attributeKey));
          }
       }
 
@@ -316,13 +324,16 @@ public abstract class AbstractJdbcDao<T extends NeptuneIdentifiedObject> extends
     * @param map
     * @throws JdbcDaoException
     */
-   private void toBatchDeleteCollectionAttribute(List<T> list, String attributeKey, Map<String, String> map)
+   private void toBatchDeleteCollectionAttribute(List<T> list,
+         String attributeKey, Map<String, String> map)
    {
       String sql = map.get("sqlDelete");
       if (sql == null)
-         throw new JdbcDaoRuntimeException(JdbcDaoExceptionCode.NO_SQL_SUBREQUEST_AVALAIBLE,
-               "implements sqlDelete request statement for " + attributeKey + " in xml file :"
-                     + list.get(0).getClass().getName() + "JdbcDaoConext.xml");
+         throw new JdbcDaoRuntimeException(
+               JdbcDaoExceptionCode.NO_SQL_SUBREQUEST_AVALAIBLE,
+               "implements sqlDelete request statement for " + attributeKey
+                     + " in xml file :" + list.get(0).getClass().getName()
+                     + "JdbcDaoConext.xml");
 
       List<Long> ids = T.extractIds(list);
       Long[] myArray = ids.toArray(new Long[ids.size()]);
@@ -346,26 +357,29 @@ public abstract class AbstractJdbcDao<T extends NeptuneIdentifiedObject> extends
    protected int[] toBatchInsert(String sql, final List<T> list)
    {
       if (sql == null)
-         throw new JdbcDaoRuntimeException(JdbcDaoExceptionCode.NO_SQL_REQUEST_AVALAIBLE,
-               "implements sqlInsert request statement in xml file :" + list.get(0).getClass().getName()
-                     + "JdbcDaoConext.xml");
+         throw new JdbcDaoRuntimeException(
+               JdbcDaoExceptionCode.NO_SQL_REQUEST_AVALAIBLE,
+               "implements sqlInsert request statement in xml file :"
+                     + list.get(0).getClass().getName() + "JdbcDaoConext.xml");
 
-      int[] rows = getJdbcTemplate().batchUpdate(sql, new BatchPreparedStatementSetter()
-      {
-         @Override
-         public void setValues(PreparedStatement ps, int i) throws SQLException
-         {
-            T type = list.get(i);
-            if (type != null)
-               populateStatement(ps, type);
-         }
+      int[] rows = getJdbcTemplate().batchUpdate(sql,
+            new BatchPreparedStatementSetter()
+            {
+               @Override
+               public void setValues(PreparedStatement ps, int i)
+                     throws SQLException
+               {
+                  T type = list.get(i);
+                  if (type != null)
+                     populateStatement(ps, type);
+               }
 
-         @Override
-         public int getBatchSize()
-         {
-            return list.size();
-         }
-      });
+               @Override
+               public int getBatchSize()
+               {
+                  return list.size();
+               }
+            });
       Map<String, T> map = new HashMap<String, T>();
       for (T type : list)
       {
@@ -399,7 +413,8 @@ public abstract class AbstractJdbcDao<T extends NeptuneIdentifiedObject> extends
       {
          for (String attributeKey : collectionAttributes.keySet())
          {
-            toBatchInsertCollectionAttribute(list, attributeKey, collectionAttributes.get(attributeKey));
+            toBatchInsertCollectionAttribute(list, attributeKey,
+                  collectionAttributes.get(attributeKey));
          }
       }
 
@@ -413,13 +428,16 @@ public abstract class AbstractJdbcDao<T extends NeptuneIdentifiedObject> extends
     * @param map
     * @throws JdbcDaoException
     */
-   private void toBatchInsertCollectionAttribute(List<T> list, final String attributeKey, Map<String, String> map)
+   private void toBatchInsertCollectionAttribute(List<T> list,
+         final String attributeKey, Map<String, String> map)
    {
       String sql = map.get("sqlInsert");
       if (sql == null)
-         throw new JdbcDaoRuntimeException(JdbcDaoExceptionCode.NO_SQL_SUBREQUEST_AVALAIBLE,
-               "implements sqlInsert request statement for " + attributeKey + " in xml file :"
-                     + list.get(0).getClass().getName() + "JdbcDaoConext.xml");
+         throw new JdbcDaoRuntimeException(
+               JdbcDaoExceptionCode.NO_SQL_SUBREQUEST_AVALAIBLE,
+               "implements sqlInsert request statement for " + attributeKey
+                     + " in xml file :" + list.get(0).getClass().getName()
+                     + "JdbcDaoConext.xml");
 
       final List<Object> attributes = new ArrayList<Object>();
       for (T item : list)
@@ -454,10 +472,13 @@ public abstract class AbstractJdbcDao<T extends NeptuneIdentifiedObject> extends
     * @return
     * @throws JdbcDaoException
     */
-   protected Collection<? extends Object> getAttributeValues(String attributeKey, T item)
+   protected Collection<? extends Object> getAttributeValues(
+         String attributeKey, T item)
    {
-      throw new JdbcDaoRuntimeException(JdbcDaoExceptionCode.NO_SQL_REQUEST_AVALAIBLE,
-            "getAttributeValues is not implemented for " + this.getClass().getName());
+      throw new JdbcDaoRuntimeException(
+            JdbcDaoExceptionCode.NO_SQL_REQUEST_AVALAIBLE,
+            "getAttributeValues is not implemented for "
+                  + this.getClass().getName());
    }
 
    /**
@@ -468,10 +489,12 @@ public abstract class AbstractJdbcDao<T extends NeptuneIdentifiedObject> extends
     * @param attribute
     * @throws SQLException
     */
-   protected void populateAttributeStatement(String attributeKey, PreparedStatement ps, Object attribute)
-         throws SQLException
+   protected void populateAttributeStatement(String attributeKey,
+         PreparedStatement ps, Object attribute) throws SQLException
    {
-      throw new SQLException("populateAttributeStatement is not implemented for " + this.getClass().getName());
+      throw new SQLException(
+            "populateAttributeStatement is not implemented for "
+                  + this.getClass().getName());
    }
 
    /**
@@ -485,9 +508,10 @@ public abstract class AbstractJdbcDao<T extends NeptuneIdentifiedObject> extends
    protected int[] toBatchDelete(String sql, List<T> list)
    {
       if (sql == null)
-         throw new JdbcDaoRuntimeException(JdbcDaoExceptionCode.NO_SQL_REQUEST_AVALAIBLE,
-               "implements sqlDelete request statement in xml file :" + list.get(0).getClass().getName()
-                     + "JdbcDaoConext.xml");
+         throw new JdbcDaoRuntimeException(
+               JdbcDaoExceptionCode.NO_SQL_REQUEST_AVALAIBLE,
+               "implements sqlDelete request statement in xml file :"
+                     + list.get(0).getClass().getName() + "JdbcDaoConext.xml");
 
       List<String> objectids = T.extractObjectIds(list);
       String[] myArray = objectids.toArray(new String[objectids.size()]);
@@ -532,24 +556,24 @@ public abstract class AbstractJdbcDao<T extends NeptuneIdentifiedObject> extends
     *           object
     * @throws SQLException
     */
-   protected void setId(PreparedStatement ps, int pos, NeptuneObject object, boolean mandatory, String fieldName)
-         throws SQLException
+   protected void setId(PreparedStatement ps, int pos, NeptuneObject object,
+         boolean mandatory, String fieldName) throws SQLException
    {
       if (object == null)
       {
          if (mandatory)
          {
             getLogger().error("mandatory reference not set for " + fieldName);
-            throw new NullPointerException("mandatory reference not set for " + fieldName);
+            throw new NullPointerException("mandatory reference not set for "
+                  + fieldName);
          }
          ps.setNull(pos, Types.BIGINT);
-      }
-      else if (object.getId() == null)
+      } else if (object.getId() == null)
       {
-         getLogger().error("refer object has not id set " + object.toString("", 0));
+         getLogger().error(
+               "refer object has not id set " + object.toString("", 0));
          throw new NullPointerException("refer object has not id set");
-      }
-      else
+      } else
          ps.setLong(pos, object.getId());
    }
 
@@ -561,13 +585,13 @@ public abstract class AbstractJdbcDao<T extends NeptuneIdentifiedObject> extends
     * @param value
     * @throws SQLException
     */
-   protected void setLong(PreparedStatement ps, int pos, Long value) throws SQLException
+   protected void setLong(PreparedStatement ps, int pos, Long value)
+         throws SQLException
    {
       if (value == null)
       {
          ps.setNull(pos, Types.BIGINT);
-      }
-      else
+      } else
       {
          ps.setLong(pos, value);
       }
@@ -584,7 +608,8 @@ public abstract class AbstractJdbcDao<T extends NeptuneIdentifiedObject> extends
     *           object
     * @throws SQLException
     */
-   protected void setId(PreparedStatement ps, int pos, NeptuneObject object) throws SQLException
+   protected void setId(PreparedStatement ps, int pos, NeptuneObject object)
+         throws SQLException
    {
       setId(ps, pos, object, false, "");
    }
@@ -612,7 +637,8 @@ public abstract class AbstractJdbcDao<T extends NeptuneIdentifiedObject> extends
    @Override
    public T get(Long id)
    {
-      throw new JdbcDaoRuntimeException(JdbcDaoExceptionCode.NOT_YET_IMPLEMENTED, "get");
+      throw new JdbcDaoRuntimeException(
+            JdbcDaoExceptionCode.NOT_YET_IMPLEMENTED, "get");
    }
 
    /*
@@ -625,7 +651,8 @@ public abstract class AbstractJdbcDao<T extends NeptuneIdentifiedObject> extends
    @Override
    public void save(T object)
    {
-      throw new JdbcDaoRuntimeException(JdbcDaoExceptionCode.NOT_YET_IMPLEMENTED, "save");
+      throw new JdbcDaoRuntimeException(
+            JdbcDaoExceptionCode.NOT_YET_IMPLEMENTED, "save");
    }
 
    /*
@@ -636,7 +663,8 @@ public abstract class AbstractJdbcDao<T extends NeptuneIdentifiedObject> extends
    @Override
    public void remove(Long id)
    {
-      throw new JdbcDaoRuntimeException(JdbcDaoExceptionCode.NOT_YET_IMPLEMENTED, "remove");
+      throw new JdbcDaoRuntimeException(
+            JdbcDaoExceptionCode.NOT_YET_IMPLEMENTED, "remove");
 
    }
 
@@ -650,7 +678,8 @@ public abstract class AbstractJdbcDao<T extends NeptuneIdentifiedObject> extends
    @Override
    public int removeAll(Filter clause)
    {
-      throw new JdbcDaoRuntimeException(JdbcDaoExceptionCode.NOT_YET_IMPLEMENTED, "removeAll");
+      throw new JdbcDaoRuntimeException(
+            JdbcDaoExceptionCode.NOT_YET_IMPLEMENTED, "removeAll");
    }
 
    /*
@@ -663,7 +692,8 @@ public abstract class AbstractJdbcDao<T extends NeptuneIdentifiedObject> extends
    @Override
    public T update(T object)
    {
-      throw new JdbcDaoRuntimeException(JdbcDaoExceptionCode.NOT_YET_IMPLEMENTED, "update");
+      throw new JdbcDaoRuntimeException(
+            JdbcDaoExceptionCode.NOT_YET_IMPLEMENTED, "update");
 
    }
 
@@ -675,19 +705,22 @@ public abstract class AbstractJdbcDao<T extends NeptuneIdentifiedObject> extends
    @Override
    public T getByObjectId(String objectId)
    {
-      throw new JdbcDaoRuntimeException(JdbcDaoExceptionCode.NOT_YET_IMPLEMENTED, "getByObjectId");
+      throw new JdbcDaoRuntimeException(
+            JdbcDaoExceptionCode.NOT_YET_IMPLEMENTED, "getByObjectId");
    }
 
    /*
     * (non-Javadoc)
     * 
     * @see
-    * fr.certu.chouette.dao.IDaoTemplate#select(fr.certu.chouette.filter.Filter)
+    * fr.certu.chouette.dao.IDaoTemplate#select(fr.certu.chouette.filter.Filter
+    * )
     */
    @Override
    public List<T> select(Filter clause)
    {
-      throw new JdbcDaoRuntimeException(JdbcDaoExceptionCode.NOT_YET_IMPLEMENTED, "select");
+      throw new JdbcDaoRuntimeException(
+            JdbcDaoExceptionCode.NOT_YET_IMPLEMENTED, "select");
    }
 
    /*
@@ -698,7 +731,8 @@ public abstract class AbstractJdbcDao<T extends NeptuneIdentifiedObject> extends
    @Override
    public boolean exists(Long id)
    {
-      throw new JdbcDaoRuntimeException(JdbcDaoExceptionCode.NOT_YET_IMPLEMENTED, "exists");
+      throw new JdbcDaoRuntimeException(
+            JdbcDaoExceptionCode.NOT_YET_IMPLEMENTED, "exists");
    }
 
    /*
@@ -709,7 +743,8 @@ public abstract class AbstractJdbcDao<T extends NeptuneIdentifiedObject> extends
    @Override
    public boolean exists(String objectId)
    {
-      throw new JdbcDaoRuntimeException(JdbcDaoExceptionCode.NOT_YET_IMPLEMENTED, "exists");
+      throw new JdbcDaoRuntimeException(
+            JdbcDaoExceptionCode.NOT_YET_IMPLEMENTED, "exists");
    }
 
    /*
@@ -721,7 +756,8 @@ public abstract class AbstractJdbcDao<T extends NeptuneIdentifiedObject> extends
    @Override
    public long count(Filter clause)
    {
-      throw new JdbcDaoRuntimeException(JdbcDaoExceptionCode.NOT_YET_IMPLEMENTED, "count");
+      throw new JdbcDaoRuntimeException(
+            JdbcDaoExceptionCode.NOT_YET_IMPLEMENTED, "count");
    }
 
    /*
@@ -744,7 +780,8 @@ public abstract class AbstractJdbcDao<T extends NeptuneIdentifiedObject> extends
    @Override
    public void flush()
    {
-      throw new JdbcDaoRuntimeException(JdbcDaoExceptionCode.NOT_YET_IMPLEMENTED, "count");
+      throw new JdbcDaoRuntimeException(
+            JdbcDaoExceptionCode.NOT_YET_IMPLEMENTED, "count");
 
    }
 

@@ -12,52 +12,75 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
 /**
- *
+ * 
  * @author zbouziane
  */
 @NoArgsConstructor
-
-
 public class GtfsTrip extends GtfsBean
 {
    /**
     * travel in one direction
     */
-   public static final int OUTBOUND = 0; 
+   public static final int OUTBOUND = 0;
    /**
     * travel in the opposite direction
     */
    public static final int INBOUND = 1;
-   @Getter @Setter private String routeId;
-   @Getter @Setter private String serviceId;
-   @Getter @Setter private String tripId;
-   @Getter @Setter private String tripHeadsign  = null;
-   @Getter @Setter private String tripShortName = null;
-   @Getter @Setter private int    directionId = 0;
-   @Getter @Setter private String blockId = null; // sans interet
-   @Getter @Setter private String shapeId = null; 
+   @Getter
+   @Setter
+   private String routeId;
+   @Getter
+   @Setter
+   private String serviceId;
+   @Getter
+   @Setter
+   private String tripId;
+   @Getter
+   @Setter
+   private String tripHeadsign = null;
+   @Getter
+   @Setter
+   private String tripShortName = null;
+   @Getter
+   @Setter
+   private int directionId = 0;
+   @Getter
+   @Setter
+   private String blockId = null; // sans interet
+   @Getter
+   @Setter
+   private String shapeId = null;
 
-   @Getter @Setter private GtfsRoute route;
-   @Getter @Setter private GtfsCalendar calendar;
-   @Getter @Setter private List<GtfsFrequency> frequencies = new ArrayList<GtfsFrequency>();
+   @Getter
+   @Setter
+   private GtfsRoute route;
+   @Getter
+   @Setter
+   private GtfsCalendar calendar;
+   @Getter
+   @Setter
+   private List<GtfsFrequency> frequencies = new ArrayList<GtfsFrequency>();
 
-   @Getter @Setter private List<GtfsStopTime> stopTimes = new ArrayList<GtfsStopTime>();
+   @Getter
+   @Setter
+   private List<GtfsStopTime> stopTimes = new ArrayList<GtfsStopTime>();
 
    public static final String header = "route_id,service_id,trip_id,trip_headsign,trip_short_name,direction_id,shape_id";
-   
-   public String getCSVLine() {
-      String csvLine = toCSVString(routeId) + "," + toCSVString(serviceId) + "," + toCSVString(tripId) + ",";
+
+   public String getCSVLine()
+   {
+      String csvLine = toCSVString(routeId) + "," + toCSVString(serviceId)
+            + "," + toCSVString(tripId) + ",";
       if (tripHeadsign != null)
          csvLine += toCSVString(tripHeadsign);
       csvLine += ",";
       if (tripShortName != null)
          csvLine += toCSVString(tripShortName);
       csvLine += "," + directionId + ",";
-//      if (blockId != null)
-//         csvLine += blockId;
-//      csvLine += ",";
+      // if (blockId != null)
+      // csvLine += blockId;
+      // csvLine += ",";
       if (shapeId != null)
          csvLine += toCSVString(shapeId);
       return csvLine;
@@ -65,7 +88,7 @@ public class GtfsTrip extends GtfsBean
 
    public void addStopTime(GtfsStopTime time)
    {
-      if (!stopTimes.contains(time)) 
+      if (!stopTimes.contains(time))
       {
          int index = -1;
          for (int i = 0; i < stopTimes.size(); i++)
@@ -78,79 +101,89 @@ public class GtfsTrip extends GtfsBean
                break;
             }
          }
-         if (index == -1) stopTimes.add(time);
+         if (index == -1)
+            stopTimes.add(time);
          time.setTrip(this);
       }
    }
 
    public void addFrequency(GtfsFrequency frequency)
    {
-      if (!frequencies.contains(frequency)) 
+      if (!frequencies.contains(frequency))
       {
          frequencies.add(frequency);
          frequency.setTrip(this);
       }
    }
 
-
-
-   /* (non-Javadoc)
+   /*
+    * (non-Javadoc)
+    * 
     * @see java.lang.Object#hashCode()
     */
    @Override
-   public int hashCode() {
+   public int hashCode()
+   {
       final int prime = 31;
       int result = 1;
       result = prime * result + ((tripId == null) ? 0 : tripId.hashCode());
       return result;
    }
 
-   /* (non-Javadoc)
+   /*
+    * (non-Javadoc)
+    * 
     * @see java.lang.Object#equals(java.lang.Object)
     */
    @Override
-   public boolean equals(Object obj) {
-      if (this == obj) {
+   public boolean equals(Object obj)
+   {
+      if (this == obj)
+      {
          return true;
       }
-      if (obj == null) {
+      if (obj == null)
+      {
          return false;
       }
-      if (!(obj instanceof GtfsTrip)) {
+      if (!(obj instanceof GtfsTrip))
+      {
          return false;
       }
       GtfsTrip other = (GtfsTrip) obj;
-      if (tripId == null) {
-         if (other.tripId != null) {
+      if (tripId == null)
+      {
+         if (other.tripId != null)
+         {
             return false;
          }
-      } else if (!tripId.equals(other.tripId)) {
+      } else if (!tripId.equals(other.tripId))
+      {
          return false;
       }
       return true;
    }
-   
-	@Override
-	public boolean isValid() 
-	{
-		boolean ret = true;
-		if (routeId == null)
-		{
-			addMissingData("route_id");
-			ret = false;
-		}
-		if (serviceId == null)
-		{
-			addMissingData("service_id");
-			ret = false;
-		}
-		if (tripId == null)
-		{
-			addMissingData("trip_id");
-			ret = false;
-		}
-		return ret;
-	}
 
+   @Override
+   public boolean isValid()
+   {
+      boolean ret = true;
+      if (routeId == null)
+      {
+         addMissingData("route_id");
+         ret = false;
+      }
+      if (serviceId == null)
+      {
+         addMissingData("service_id");
+         ret = false;
+      }
+      if (tripId == null)
+      {
+         addMissingData("trip_id");
+         ret = false;
+      }
+      return ret;
+   }
 
 }

@@ -12,13 +12,15 @@ import com.ximpleware.VTDNav;
 import fr.certu.chouette.model.neptune.Company;
 
 /**
- *
+ * 
  * @author marc
  */
-public class StopPointConverter {
-    private static final Logger       logger = Logger.getLogger(CompanyConverter.class);
-    private Company company = new Company();    
-    private AutoPilot pilot;
-    private VTDNav nav;
-    
+public class StopPointConverter
+{
+   private static final Logger logger = Logger
+         .getLogger(CompanyConverter.class);
+   private Company company = new Company();
+   private AutoPilot pilot;
+   private VTDNav nav;
+
 }

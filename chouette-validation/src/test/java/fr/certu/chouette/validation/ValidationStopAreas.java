@@ -30,9 +30,11 @@ import fr.certu.chouette.plugin.validation.report.CheckPointReportItem;
 import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 import fr.certu.chouette.plugin.validation.report.PhaseReportItem.PHASE;
 
-@ContextConfiguration(locations = { "classpath:testContext.xml", "classpath*:chouetteContext.xml" })
+@ContextConfiguration(locations = { "classpath:testContext.xml",
+      "classpath*:chouetteContext.xml" })
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
-public class ValidationStopAreas extends AbstractTransactionalTestNGSpringContextTests
+public class ValidationStopAreas extends
+      AbstractTransactionalTestNGSpringContextTests
 {
 
    @SuppressWarnings("unchecked")
@@ -40,48 +42,48 @@ public class ValidationStopAreas extends AbstractTransactionalTestNGSpringContex
    public void loadStopAreas() throws ChouetteException
    {
 
-         INeptuneManager<Line> lineManager = (INeptuneManager<Line>) applicationContext.getBean("lineManager");
-         List<Line> lines = lineManager.getAll(null);
-         lineManager.removeAll(null, lines, true);
+      INeptuneManager<Line> lineManager = (INeptuneManager<Line>) applicationContext
+            .getBean("lineManager");
+      List<Line> lines = lineManager.getAll(null);
+      lineManager.removeAll(null, lines, true);
 
-         INeptuneManager<StopArea> stopeManager = (INeptuneManager<StopArea>) applicationContext
-               .getBean("stopAreaManager");
-         List<StopArea> stops = stopeManager.getAll(null);
-         stopeManager.removeAll(null, stops, true);
+      INeptuneManager<StopArea> stopeManager = (INeptuneManager<StopArea>) applicationContext
+            .getBean("stopAreaManager");
+      List<StopArea> stops = stopeManager.getAll(null);
+      stopeManager.removeAll(null, stops, true);
 
-         INeptuneManager<PTNetwork> networkManager = (INeptuneManager<PTNetwork>) applicationContext
-               .getBean("networkManager");
-         List<PTNetwork> networks = networkManager.getAll(null);
-         networkManager.removeAll(null, networks, true);
+      INeptuneManager<PTNetwork> networkManager = (INeptuneManager<PTNetwork>) applicationContext
+            .getBean("networkManager");
+      List<PTNetwork> networks = networkManager.getAll(null);
+      networkManager.removeAll(null, networks, true);
 
-         INeptuneManager<Timetable> timetableManager = (INeptuneManager<Timetable>) applicationContext
-               .getBean("timetableManager");
-         List<Timetable> timetables = timetableManager.getAll(null);
-         timetableManager.removeAll(null, timetables, true);
+      INeptuneManager<Timetable> timetableManager = (INeptuneManager<Timetable>) applicationContext
+            .getBean("timetableManager");
+      List<Timetable> timetables = timetableManager.getAll(null);
+      timetableManager.removeAll(null, timetables, true);
 
-         INeptuneManager<Company> companyManager = (INeptuneManager<Company>) applicationContext
-               .getBean("companyManager");
-         List<Company> companies = companyManager.getAll(null);
-         companyManager.removeAll(null, companies, true);
+      INeptuneManager<Company> companyManager = (INeptuneManager<Company>) applicationContext
+            .getBean("companyManager");
+      List<Company> companies = companyManager.getAll(null);
+      companyManager.removeAll(null, companies, true);
 
-         IImportPlugin<Line> importLine = (IImportPlugin<Line>) applicationContext.getBean("NeptuneLineImport");
+      IImportPlugin<Line> importLine = (IImportPlugin<Line>) applicationContext
+            .getBean("NeptuneLineImport");
 
-         JSONObject parameters = null;
-         try
-         {
-            parameters = new RuleParameterSet();
-         }
-         catch (JSONException | IOException e)
-         {
-            e.printStackTrace();
-         }
-         Assert.assertNotNull(parameters, "no parameters for test");
+      JSONObject parameters = null;
+      try
+      {
+         parameters = new RuleParameterSet();
+      } catch (JSONException | IOException e)
+      {
+         e.printStackTrace();
+      }
+      Assert.assertNotNull(parameters, "no parameters for test");
 
-         List<Line> beans = LineLoader.load(importLine, "src/test/data/model.zip");
-         Assert.assertFalse(beans.isEmpty(), "No data for test");
-         lineManager.saveAll(null, beans, true, true);
+      List<Line> beans = LineLoader.load(importLine, "src/test/data/model.zip");
+      Assert.assertFalse(beans.isEmpty(), "No data for test");
+      lineManager.saveAll(null, beans, true, true);
 
-       
    }
 
    @SuppressWarnings("unchecked")
@@ -97,8 +99,7 @@ public class ValidationStopAreas extends AbstractTransactionalTestNGSpringContex
       try
       {
          parameters = new RuleParameterSet();
-      }
-      catch (JSONException | IOException e)
+      } catch (JSONException | IOException e)
       {
          e.printStackTrace();
       }
@@ -118,7 +119,8 @@ public class ValidationStopAreas extends AbstractTransactionalTestNGSpringContex
 
       AbstractValidation.printReport(report);
 
-      Assert.assertEquals(report.getStatus(), Report.STATE.ERROR, " report must be on level error");
+      Assert.assertEquals(report.getStatus(), Report.STATE.ERROR,
+            " report must be on level error");
       Assert.assertEquals(report.hasItems(), true, " report must have items");
       boolean found = false;
       for (ReportItem item : report.getItems())
@@ -127,10 +129,13 @@ public class ValidationStopAreas extends AbstractTransactionalTestNGSpringContex
          if (checkPointReport.getMessageKey().equals("3-StopArea-1"))
          {
             found = true;
-            Assert.assertEquals(checkPointReport.getStatus(), Report.STATE.ERROR,
+            Assert.assertEquals(checkPointReport.getStatus(),
+                  Report.STATE.ERROR,
                   " checkPointReport must be on level error");
-            Assert.assertEquals(checkPointReport.hasItems(), true, " checkPointReport must have items");
-            Assert.assertEquals(checkPointReport.getItems().size(), 1, " checkPointReport must have 1 item");
+            Assert.assertEquals(checkPointReport.hasItems(), true,
+                  " checkPointReport must have items");
+            Assert.assertEquals(checkPointReport.getItems().size(), 1,
+                  " checkPointReport must have 1 item");
 
          }
       }
@@ -145,7 +150,7 @@ public class ValidationStopAreas extends AbstractTransactionalTestNGSpringContex
    public void verifyTest2() throws ChouetteException
    {
       // 3-StopArea-2 : check distance of stop areas with different name
-      
+
       INeptuneManager<StopArea> stopAreaManager = (INeptuneManager<StopArea>) applicationContext
             .getBean("stopAreaManager");
 
@@ -153,8 +158,7 @@ public class ValidationStopAreas extends AbstractTransactionalTestNGSpringContex
       try
       {
          parameters = new RuleParameterSet();
-      }
-      catch (JSONException | IOException e)
+      } catch (JSONException | IOException e)
       {
          e.printStackTrace();
       }
@@ -188,7 +192,8 @@ public class ValidationStopAreas extends AbstractTransactionalTestNGSpringContex
 
       AbstractValidation.printReport(report);
 
-      Assert.assertEquals(report.getStatus(), Report.STATE.WARNING, " report must be on level warning");
+      Assert.assertEquals(report.getStatus(), Report.STATE.WARNING,
+            " report must be on level warning");
       Assert.assertEquals(report.hasItems(), true, " report must have items");
       boolean found = false;
       for (ReportItem item : report.getItems())
@@ -197,10 +202,13 @@ public class ValidationStopAreas extends AbstractTransactionalTestNGSpringContex
          if (checkPointReport.getMessageKey().equals("3-StopArea-2"))
          {
             found = true;
-            Assert.assertEquals(checkPointReport.getStatus(), Report.STATE.WARNING,
+            Assert.assertEquals(checkPointReport.getStatus(),
+                  Report.STATE.WARNING,
                   " checkPointReport must be on level warning");
-            Assert.assertEquals(checkPointReport.hasItems(), true, " checkPointReport must have items");
-            Assert.assertEquals(checkPointReport.getItems().size(), 1, " checkPointReport must have 1 item");
+            Assert.assertEquals(checkPointReport.hasItems(), true,
+                  " checkPointReport must have items");
+            Assert.assertEquals(checkPointReport.getItems().size(), 1,
+                  " checkPointReport must have 1 item");
 
          }
       }
@@ -221,8 +229,7 @@ public class ValidationStopAreas extends AbstractTransactionalTestNGSpringContex
       try
       {
          parameters = new RuleParameterSet();
-      }
-      catch (JSONException | IOException e)
+      } catch (JSONException | IOException e)
       {
          e.printStackTrace();
       }
@@ -236,13 +243,13 @@ public class ValidationStopAreas extends AbstractTransactionalTestNGSpringContex
       for (StopArea stopArea : beans)
       {
          if (stopArea.getObjectId().equals("NINOXE:StopArea:15568801")) // St
-                                                                        // Paul
+         // Paul
          {
             area1 = stopArea;
          }
          if (stopArea.getObjectId().equals("NINOXE:StopArea:15568802")) // place
-                                                                        // de
-                                                                        // verdun
+         // de
+         // verdun
          {
             area2 = stopArea;
          }
@@ -261,7 +268,8 @@ public class ValidationStopAreas extends AbstractTransactionalTestNGSpringContex
 
       AbstractValidation.printReport(report);
 
-      Assert.assertEquals(report.getStatus(), Report.STATE.WARNING, " report must be on level warning");
+      Assert.assertEquals(report.getStatus(), Report.STATE.WARNING,
+            " report must be on level warning");
       Assert.assertEquals(report.hasItems(), true, " report must have items");
       boolean found = false;
       for (ReportItem item : report.getItems())
@@ -270,10 +278,13 @@ public class ValidationStopAreas extends AbstractTransactionalTestNGSpringContex
          if (checkPointReport.getMessageKey().equals("3-StopArea-3"))
          {
             found = true;
-            Assert.assertEquals(checkPointReport.getStatus(), Report.STATE.WARNING,
+            Assert.assertEquals(checkPointReport.getStatus(),
+                  Report.STATE.WARNING,
                   " checkPointReport must be on level warning");
-            Assert.assertEquals(checkPointReport.hasItems(), true, " checkPointReport must have items");
-            Assert.assertEquals(checkPointReport.getItems().size(), 1, " checkPointReport must have 1 item");
+            Assert.assertEquals(checkPointReport.hasItems(), true,
+                  " checkPointReport must have items");
+            Assert.assertEquals(checkPointReport.getItems().size(), 1,
+                  " checkPointReport must have 1 item");
 
          }
       }
@@ -294,8 +305,7 @@ public class ValidationStopAreas extends AbstractTransactionalTestNGSpringContex
       try
       {
          parameters = new RuleParameterSet();
-      }
-      catch (JSONException | IOException e)
+      } catch (JSONException | IOException e)
       {
          e.printStackTrace();
       }
@@ -339,7 +349,8 @@ public class ValidationStopAreas extends AbstractTransactionalTestNGSpringContex
 
       AbstractValidation.printReport(report);
 
-      Assert.assertEquals(report.getStatus(), Report.STATE.WARNING, " report must be on level warning");
+      Assert.assertEquals(report.getStatus(), Report.STATE.WARNING,
+            " report must be on level warning");
       Assert.assertEquals(report.hasItems(), true, " report must have items");
       boolean found = false;
       for (ReportItem item : report.getItems())
@@ -348,10 +359,13 @@ public class ValidationStopAreas extends AbstractTransactionalTestNGSpringContex
          if (checkPointReport.getMessageKey().equals("3-StopArea-4"))
          {
             found = true;
-            Assert.assertEquals(checkPointReport.getStatus(), Report.STATE.WARNING,
+            Assert.assertEquals(checkPointReport.getStatus(),
+                  Report.STATE.WARNING,
                   " checkPointReport must be on level warning");
-            Assert.assertEquals(checkPointReport.hasItems(), true, " checkPointReport must have items");
-            Assert.assertEquals(checkPointReport.getItems().size(), 17, " checkPointReport must have 17 item");
+            Assert.assertEquals(checkPointReport.hasItems(), true,
+                  " checkPointReport must have items");
+            Assert.assertEquals(checkPointReport.getItems().size(), 17,
+                  " checkPointReport must have 17 item");
 
          }
       }
@@ -372,8 +386,7 @@ public class ValidationStopAreas extends AbstractTransactionalTestNGSpringContex
       try
       {
          parameters = new RuleParameterSet();
-      }
-      catch (JSONException | IOException e)
+      } catch (JSONException | IOException e)
       {
          e.printStackTrace();
       }
@@ -390,7 +403,8 @@ public class ValidationStopAreas extends AbstractTransactionalTestNGSpringContex
 
       AbstractValidation.printReport(report);
 
-      Assert.assertEquals(report.getStatus(), Report.STATE.WARNING, " report must be on level warning");
+      Assert.assertEquals(report.getStatus(), Report.STATE.WARNING,
+            " report must be on level warning");
       Assert.assertEquals(report.hasItems(), true, " report must have items");
       boolean found = false;
       for (ReportItem item : report.getItems())
@@ -399,10 +413,13 @@ public class ValidationStopAreas extends AbstractTransactionalTestNGSpringContex
          if (checkPointReport.getMessageKey().equals("3-StopArea-5"))
          {
             found = true;
-            Assert.assertEquals(checkPointReport.getStatus(), Report.STATE.WARNING,
+            Assert.assertEquals(checkPointReport.getStatus(),
+                  Report.STATE.WARNING,
                   " checkPointReport must be on level warning");
-            Assert.assertEquals(checkPointReport.hasItems(), true, " checkPointReport must have items");
-            Assert.assertEquals(checkPointReport.getItems().size(), 2, " checkPointReport must have 2 item");
+            Assert.assertEquals(checkPointReport.hasItems(), true,
+                  " checkPointReport must have items");
+            Assert.assertEquals(checkPointReport.getItems().size(), 2,
+                  " checkPointReport must have 2 item");
 
          }
       }

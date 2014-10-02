@@ -17,39 +17,41 @@ import fr.certu.chouette.model.neptune.StopPoint;
  */
 
 @SuppressWarnings("unchecked")
-public class StopPointJdbcDao extends AbstractJdbcDao<StopPoint> 
+public class StopPointJdbcDao extends AbstractJdbcDao<StopPoint>
 {
-   private static final Logger logger = Logger.getLogger(StopPointJdbcDao.class);
-   
+   private static final Logger logger = Logger
+         .getLogger(StopPointJdbcDao.class);
+
    public Logger getLogger()
    {
       return logger;
    }
 
-	@Override
-	public List<StopPoint> getAll() 
-	{
-		String sql = sqlSelectAll;
-		List<StopPoint> stopPoints = getJdbcTemplate().query(sql,
-				new BeanPropertyRowMapper(StopPoint.class));
+   @Override
+   public List<StopPoint> getAll()
+   {
+      String sql = sqlSelectAll;
+      List<StopPoint> stopPoints = getJdbcTemplate().query(sql,
+            new BeanPropertyRowMapper(StopPoint.class));
 
-		return stopPoints;
-	}
+      return stopPoints;
+   }
 
-	@Override
-	protected void populateStatement(PreparedStatement ps, StopPoint stopPoint)
-	throws SQLException {
-		ps.setString(1, stopPoint.getObjectId());
-		ps.setInt(2, stopPoint.getObjectVersion());
+   @Override
+   protected void populateStatement(PreparedStatement ps, StopPoint stopPoint)
+         throws SQLException
+   {
+      ps.setString(1, stopPoint.getObjectId());
+      ps.setInt(2, stopPoint.getObjectVersion());
 
-		Timestamp timestamp = null;
-		if(stopPoint.getCreationTime() != null)
-			timestamp = new Timestamp(stopPoint.getCreationTime().getTime());
-		ps.setTimestamp(3, timestamp);
-		ps.setString(4, stopPoint.getCreatorId());
-		
-		setId(ps,5,stopPoint.getContainedInStopArea(),true,"stop_area_id");
-		ps.setInt(6, stopPoint.getPosition());
-		setId(ps,7,stopPoint.getRoute(),true,"route_id");
-	}
+      Timestamp timestamp = null;
+      if (stopPoint.getCreationTime() != null)
+         timestamp = new Timestamp(stopPoint.getCreationTime().getTime());
+      ps.setTimestamp(3, timestamp);
+      ps.setString(4, stopPoint.getCreatorId());
+
+      setId(ps, 5, stopPoint.getContainedInStopArea(), true, "stop_area_id");
+      ps.setInt(6, stopPoint.getPosition());
+      setId(ps, 7, stopPoint.getRoute(), true, "route_id");
+   }
 }

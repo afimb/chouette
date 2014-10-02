@@ -18,91 +18,123 @@ import fr.certu.chouette.model.neptune.AccessLink;
 import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
 import fr.certu.chouette.model.neptune.type.UserNeedEnum;
 
-public class AccessLinkProducer extends AbstractJaxbNeptuneProducer<ChouettePTNetworkType.AccessLink, AccessLink> {
+public class AccessLinkProducer extends
+      AbstractJaxbNeptuneProducer<ChouettePTNetworkType.AccessLink, AccessLink>
+{
 
-	@Override
-	public ChouettePTNetworkType.AccessLink produce(AccessLink accessLink) 
-	{
-		ChouettePTNetworkType.AccessLink jaxbAccessLink = tridentFactory.createChouettePTNetworkTypeAccessLink();
-		
-		//
-		populateFromModel(jaxbAccessLink, accessLink);
-		 
-		jaxbAccessLink.setComment(getNotEmptyString(accessLink.getComment()));
-		jaxbAccessLink.setName(accessLink.getName());
-		jaxbAccessLink.setStartOfLink(accessLink.getStartOfLinkId());
-		jaxbAccessLink.setEndOfLink(accessLink.getEndOfLinkId());
-		jaxbAccessLink.setLinkDistance(accessLink.getLinkDistance());
-		jaxbAccessLink.setMobilityRestrictedSuitability(accessLink.isMobilityRestrictedSuitable());
-		jaxbAccessLink.setLiftAvailability(accessLink.isLiftAvailable());
-		jaxbAccessLink.setStairsAvailability(accessLink.isStairsAvailable());
-		if(accessLink.getDefaultDuration() != null){
-			jaxbAccessLink.setDefaultDuration(toDuration(accessLink.getDefaultDuration()));
-		}
-		if(accessLink.getFrequentTravellerDuration() != null){
-			jaxbAccessLink.setFrequentTravellerDuration(toDuration(accessLink.getFrequentTravellerDuration()));
-		}
-		if(accessLink.getOccasionalTravellerDuration() != null){
-			jaxbAccessLink.setOccasionalTravellerDuration(toDuration(accessLink.getOccasionalTravellerDuration()));
-		}
-		if(accessLink.getMobilityRestrictedTravellerDuration() != null){
-			jaxbAccessLink.setMobilityRestrictedTravellerDuration(toDuration(accessLink.getMobilityRestrictedTravellerDuration()));
-		}
-		
-		try {
-			ConnectionLinkTypeEnum linkType = accessLink.getLinkType();
-			if(linkType != null){
-				jaxbAccessLink.setLinkType(ConnectionLinkTypeType.fromValue(linkType.name()));
-			}
-		} catch (IllegalArgumentException e) {
-			// TODO generate report
-		}
-		
-		ConnectionLinkExtensionType connectionLinkExtension = tridentFactory.createConnectionLinkExtensionType();
-		AccessibilitySuitabilityDetails details = extractAccessibilitySuitabilityDetails(accessLink.getUserNeeds());
-		if (details != null)
-		{
-			connectionLinkExtension.setAccessibilitySuitabilityDetails(details);
-			jaxbAccessLink.setConnectionLinkExtension(connectionLinkExtension);
-		}
-		
-		return jaxbAccessLink;
-	}
-	
-	protected AccessibilitySuitabilityDetails extractAccessibilitySuitabilityDetails(List<UserNeedEnum> userNeeds){
-		AccessibilitySuitabilityDetails details = new AccessibilitySuitabilityDetails();
-		List<UserNeedStructure> detailsItems = new ArrayList<UserNeedStructure>();
-		if(userNeeds != null){
-			for(UserNeedEnum userNeed : userNeeds){
-				if(userNeed != null){
-					UserNeedStructure userNeedGroup = new UserNeedStructure();
+   @Override
+   public ChouettePTNetworkType.AccessLink produce(AccessLink accessLink)
+   {
+      ChouettePTNetworkType.AccessLink jaxbAccessLink = tridentFactory
+            .createChouettePTNetworkTypeAccessLink();
 
-					switch (userNeed.category()) {
-					case ENCUMBRANCE:
-						userNeedGroup.setEncumbranceNeed(EncumbranceEnumeration.fromValue(userNeed.value()));
-						break;
-					case MEDICAL:
-						userNeedGroup.setMedicalNeed(MedicalNeedEnumeration.fromValue(userNeed.value()));					
-						break;
-					case PSYCHOSENSORY:
-						userNeedGroup.setPsychosensoryNeed(PyschosensoryNeedEnumeration.fromValue(userNeed.value()));	
-						break;
-					case MOBILITY:
-						userNeedGroup.setMobilityNeed(MobilityEnumeration.fromValue(userNeed.value()));	
-						break;
-					default:
-						throw new IllegalArgumentException("bad value of userNeed");
-					}
+      //
+      populateFromModel(jaxbAccessLink, accessLink);
 
-					detailsItems.add(userNeedGroup);
+      jaxbAccessLink.setComment(getNotEmptyString(accessLink.getComment()));
+      jaxbAccessLink.setName(accessLink.getName());
+      jaxbAccessLink.setStartOfLink(accessLink.getStartOfLinkId());
+      jaxbAccessLink.setEndOfLink(accessLink.getEndOfLinkId());
+      jaxbAccessLink.setLinkDistance(accessLink.getLinkDistance());
+      jaxbAccessLink.setMobilityRestrictedSuitability(accessLink
+            .isMobilityRestrictedSuitable());
+      jaxbAccessLink.setLiftAvailability(accessLink.isLiftAvailable());
+      jaxbAccessLink.setStairsAvailability(accessLink.isStairsAvailable());
+      if (accessLink.getDefaultDuration() != null)
+      {
+         jaxbAccessLink.setDefaultDuration(toDuration(accessLink
+               .getDefaultDuration()));
+      }
+      if (accessLink.getFrequentTravellerDuration() != null)
+      {
+         jaxbAccessLink.setFrequentTravellerDuration(toDuration(accessLink
+               .getFrequentTravellerDuration()));
+      }
+      if (accessLink.getOccasionalTravellerDuration() != null)
+      {
+         jaxbAccessLink.setOccasionalTravellerDuration(toDuration(accessLink
+               .getOccasionalTravellerDuration()));
+      }
+      if (accessLink.getMobilityRestrictedTravellerDuration() != null)
+      {
+         jaxbAccessLink
+               .setMobilityRestrictedTravellerDuration(toDuration(accessLink
+                     .getMobilityRestrictedTravellerDuration()));
+      }
 
-				}
-			}
-		}
+      try
+      {
+         ConnectionLinkTypeEnum linkType = accessLink.getLinkType();
+         if (linkType != null)
+         {
+            jaxbAccessLink.setLinkType(ConnectionLinkTypeType
+                  .fromValue(linkType.name()));
+         }
+      } catch (IllegalArgumentException e)
+      {
+         // TODO generate report
+      }
 
-		if (detailsItems.isEmpty()) return null;
-		details.getMobilityNeedOrPsychosensoryNeedOrMedicalNeed().addAll(detailsItems);
-		return details;
-	}
+      ConnectionLinkExtensionType connectionLinkExtension = tridentFactory
+            .createConnectionLinkExtensionType();
+      AccessibilitySuitabilityDetails details = extractAccessibilitySuitabilityDetails(accessLink
+            .getUserNeeds());
+      if (details != null)
+      {
+         connectionLinkExtension.setAccessibilitySuitabilityDetails(details);
+         jaxbAccessLink.setConnectionLinkExtension(connectionLinkExtension);
+      }
+
+      return jaxbAccessLink;
+   }
+
+   protected AccessibilitySuitabilityDetails extractAccessibilitySuitabilityDetails(
+         List<UserNeedEnum> userNeeds)
+   {
+      AccessibilitySuitabilityDetails details = new AccessibilitySuitabilityDetails();
+      List<UserNeedStructure> detailsItems = new ArrayList<UserNeedStructure>();
+      if (userNeeds != null)
+      {
+         for (UserNeedEnum userNeed : userNeeds)
+         {
+            if (userNeed != null)
+            {
+               UserNeedStructure userNeedGroup = new UserNeedStructure();
+
+               switch (userNeed.category())
+               {
+               case ENCUMBRANCE:
+                  userNeedGroup.setEncumbranceNeed(EncumbranceEnumeration
+                        .fromValue(userNeed.value()));
+                  break;
+               case MEDICAL:
+                  userNeedGroup.setMedicalNeed(MedicalNeedEnumeration
+                        .fromValue(userNeed.value()));
+                  break;
+               case PSYCHOSENSORY:
+                  userNeedGroup
+                        .setPsychosensoryNeed(PyschosensoryNeedEnumeration
+                              .fromValue(userNeed.value()));
+                  break;
+               case MOBILITY:
+                  userNeedGroup.setMobilityNeed(MobilityEnumeration
+                        .fromValue(userNeed.value()));
+                  break;
+               default:
+                  throw new IllegalArgumentException("bad value of userNeed");
+               }
+
+               detailsItems.add(userNeedGroup);
+
+            }
+         }
+      }
+
+      if (detailsItems.isEmpty())
+         return null;
+      details.getMobilityNeedOrPsychosensoryNeedOrMedicalNeed().addAll(
+            detailsItems);
+      return details;
+   }
 
 }

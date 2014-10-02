@@ -7,7 +7,7 @@
  */
 package fr.certu.chouette.exchange.gtfs.exporter;
 
-public enum GtfsExportExceptionCode 
+public enum GtfsExportExceptionCode
 {
-	ERROR
+   ERROR
 }

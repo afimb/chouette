@@ -16,5 +16,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public abstract class ParameterValue
 {
-	@Getter  private final String name;
+   @Getter
+   private final String name;
 }

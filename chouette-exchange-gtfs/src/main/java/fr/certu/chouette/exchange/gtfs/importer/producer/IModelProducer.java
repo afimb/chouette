@@ -14,9 +14,9 @@ import fr.certu.chouette.plugin.report.Report;
 
 /**
  * @author michel
- *
+ * 
  */
-public interface IModelProducer <T extends NeptuneObject, U extends GtfsBean> 
+public interface IModelProducer<T extends NeptuneObject, U extends GtfsBean>
 {
-    T produce(U o,Report report);
+   T produce(U o, Report report);
 }

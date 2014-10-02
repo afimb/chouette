@@ -12,51 +12,54 @@ import java.sql.Time;
 import java.util.UUID;
 
 @Blueprint(ConnectionLink.class)
-public class ConnectionLinkBlueprint {
-    
-    @Default
-    FieldCallback objectId = new FieldCallback() {
-        @Override
-        public String get( Object model) {
-            return "RATP_PIVI:SiteConnection:" + UUID.randomUUID();
-        }
-        
-    };  
-    
-    @Default
-    String name = "Conection Link";   
-    
-    @Default
-    String comment = "Comment Connection Link";   
-    
-    @Mapped
-    StopArea startOfLink;   
-    
-    @Mapped
-    StopArea endOfLink;
-    
-    @Default
-    BigDecimal linkDistance = new BigDecimal(2); 
-    
-    @Default
-    Time defaultDuration = new Time(173335738);
-    
-    @Default
-    Time frequentTravellerDuration = new Time(173335738);
-    
-    @Default
-    Time occasionalTravellerDuration = new Time(173335738);
+public class ConnectionLinkBlueprint
+{
 
-    @Default
-    int objectVersion = 1;
-    
-    @Default
-    ConnectionLinkTypeEnum linkType = ConnectionLinkTypeEnum.Mixed;
-    
-    @Default
-    Time mobilityRestrictedTravellerDuration = new Time(1908888);
-    
-    @Mapped   
-    boolean mobilityRestrictedSuitable = true;    
+   @Default
+   FieldCallback objectId = new FieldCallback()
+   {
+      @Override
+      public String get(Object model)
+      {
+         return "RATP_PIVI:SiteConnection:" + UUID.randomUUID();
+      }
+
+   };
+
+   @Default
+   String name = "Conection Link";
+
+   @Default
+   String comment = "Comment Connection Link";
+
+   @Mapped
+   StopArea startOfLink;
+
+   @Mapped
+   StopArea endOfLink;
+
+   @Default
+   BigDecimal linkDistance = new BigDecimal(2);
+
+   @Default
+   Time defaultDuration = new Time(173335738);
+
+   @Default
+   Time frequentTravellerDuration = new Time(173335738);
+
+   @Default
+   Time occasionalTravellerDuration = new Time(173335738);
+
+   @Default
+   int objectVersion = 1;
+
+   @Default
+   ConnectionLinkTypeEnum linkType = ConnectionLinkTypeEnum.Mixed;
+
+   @Default
+   Time mobilityRestrictedTravellerDuration = new Time(1908888);
+
+   @Mapped
+   boolean mobilityRestrictedSuitable = true;
 
 }

@@ -13,23 +13,25 @@ import java.util.ArrayList;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
 
-
 /**
  * @author michel
- *
+ * 
  */
-public class GtfsReportItem extends ReportItem 
+public class GtfsReportItem extends ReportItem
 {
-	public enum KEY {OK,NO_LINE,UNKNOWN_PARAMETER,MISSING_PARAMETER,FILE_ACCESS,EMPTY_TIMETABLE,MISSING_DATA,EMPTY_DATA, INVALID_DATA} ;
+   public enum KEY
+   {
+      OK, NO_LINE, UNKNOWN_PARAMETER, MISSING_PARAMETER, FILE_ACCESS, EMPTY_TIMETABLE, MISSING_DATA, EMPTY_DATA, INVALID_DATA
+   };
 
-	public GtfsReportItem(KEY key,Report.STATE status, Object... args)
-	{
-		updateStatus(status);
-        setMessageKey(key.name());
-        addMessageArgs(args);
-	}
-	
-	@Override
+   public GtfsReportItem(KEY key, Report.STATE status, Object... args)
+   {
+      updateStatus(status);
+      setMessageKey(key.name());
+      addMessageArgs(args);
+   }
+
+   @Override
    /**
     * add but don't merge item in list
     * 
@@ -43,6 +45,5 @@ public class GtfsReportItem extends ReportItem
       updateStatus(item.getStatus());
       getItems().add(item);
    }
-	
-	
+
 }

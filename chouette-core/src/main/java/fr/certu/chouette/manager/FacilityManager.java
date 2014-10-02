@@ -8,26 +8,21 @@ import fr.certu.chouette.model.neptune.NeptuneLocalizedObject;
 /**
  * 
  * @author mamadou keira
- *
+ * 
  */
 public class FacilityManager extends AbstractNeptuneManager<Facility>
 {
-	private static final Logger logger = Logger.getLogger(FacilityManager.class); 
-	
-	public FacilityManager() 
-	{
-		super(Facility.class,Facility.FACILITY_KEY);
-	}
+   private static final Logger logger = Logger.getLogger(FacilityManager.class);
 
-	public void init()
-	{
-		NeptuneLocalizedObject.setGeographicService(getGeographicService());
-	}
-	
-	@Override
-	protected Logger getLogger() 
-	{
-		return logger;
-	}
+   public FacilityManager()
+   {
+      super(Facility.class, Facility.FACILITY_KEY);
+   }
+
+   @Override
+   protected Logger getLogger()
+   {
+      return logger;
+   }
 
 }

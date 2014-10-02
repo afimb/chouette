@@ -4,17 +4,17 @@ import org.testng.annotations.BeforeMethod;
 
 import fr.certu.chouette.model.neptune.PTNetwork;
 
-public class ExportPTNetworkManagerTests extends AbstractExportManagerTests<PTNetwork> {
+public class ExportPTNetworkManagerTests extends
+      AbstractExportManagerTests<PTNetwork>
+{
 
-	@BeforeMethod (alwaysRun=true)
-	public void createManager()
-	{
-		PTNetwork bean = new PTNetwork();
-		bean.setId(Long.valueOf(1));
-		bean.setObjectId("TestNG:GroupOfLine:1");
-		initManager("GroupOfLine","networkManager",bean);
-	}
-
-
+   @BeforeMethod(alwaysRun = true)
+   public void createManager()
+   {
+      PTNetwork bean = new PTNetwork();
+      bean.setId(Long.valueOf(1));
+      bean.setObjectId("TestNG:GroupOfLine:1");
+      initManager("GroupOfLine", "networkManager", bean);
+   }
 
 }

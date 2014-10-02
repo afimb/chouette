@@ -21,102 +21,112 @@ import lombok.Setter;
 
 public class FormatDescription
 {
-	private String bundleName = null;
-	@Getter @Setter private String name;
-	@Getter @Setter private boolean unzipAllowed = false;
-	@Getter private List<ParameterDescription> parameterDescriptions;
+   private String bundleName = null;
+   @Getter
+   @Setter
+   private String name;
+   @Getter
+   @Setter
+   private boolean unzipAllowed = false;
+   @Getter
+   private List<ParameterDescription> parameterDescriptions;
 
-	public FormatDescription(String bundleName)
-	{
-		this.bundleName = bundleName;
-	}
+   public FormatDescription(String bundleName)
+   {
+      this.bundleName = bundleName;
+   }
 
-	public String getDescription()
-	{
-		return getDescription(Locale.getDefault());
-	}
+   public String getDescription()
+   {
+      return getDescription(Locale.getDefault());
+   }
 
-	public String getDescription(Locale locale) 
-	{
-		if (bundleName == null) return name;
-		try
-		{
-			ResourceBundle bundle = ResourceBundle.getBundle(bundleName,locale);
-			return bundle.getString(name);
-		}
-		catch (MissingResourceException e1)
-		{
-			try
-			{
-				ResourceBundle bundle = ResourceBundle.getBundle(bundleName);
-				return bundle.getString(name);
-			}
-			catch (MissingResourceException e2)
-			{
-				return name;
-			}
-		}
+   public String getDescription(Locale locale)
+   {
+      if (bundleName == null)
+         return name;
+      try
+      {
+         ResourceBundle bundle = ResourceBundle.getBundle(bundleName, locale);
+         return bundle.getString(name);
+      } catch (MissingResourceException e1)
+      {
+         try
+         {
+            ResourceBundle bundle = ResourceBundle.getBundle(bundleName);
+            return bundle.getString(name);
+         } catch (MissingResourceException e2)
+         {
+            return name;
+         }
+      }
 
-	}
+   }
 
+   /**
+    * @param parameterDescriptions
+    *           the parameterDescriptions to set
+    */
+   public void setParameterDescriptions(
+         List<ParameterDescription> parameterDescriptions)
+   {
+      this.parameterDescriptions = parameterDescriptions;
+      for (ParameterDescription parameterDescription : this.parameterDescriptions)
+      {
+         parameterDescription.setBundleName(bundleName);
+      }
+   }
 
+   /*
+    * (non-Javadoc)
+    * 
+    * @see java.lang.Object#hashCode()
+    */
+   @Override
+   public int hashCode()
+   {
+      return name.hashCode();
+   }
 
-	/**
-	 * @param parameterDescriptions the parameterDescriptions to set
-	 */
-	public void setParameterDescriptions(
-			List<ParameterDescription> parameterDescriptions) 
-	{
-		this.parameterDescriptions = parameterDescriptions;
-		for (ParameterDescription parameterDescription : this.parameterDescriptions)
-		{
-			parameterDescription.setBundleName(bundleName);
-		}
-	}
+   /*
+    * (non-Javadoc)
+    * 
+    * @see java.lang.Object#equals(java.lang.Object)
+    */
+   @Override
+   public boolean equals(Object obj)
+   {
+      if (obj instanceof FormatDescription)
+      {
+         FormatDescription fobj = (FormatDescription) obj;
+         return name.equals(fobj.getName());
+      }
+      return super.equals(obj);
+   }
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#hashCode()
-	 */
-	@Override
-	public int hashCode() 
-	{
-		// TODO Auto-generated method stub
-		return name.hashCode();
-	}
-	/* (non-Javadoc)
-	 * @see java.lang.Object#equals(java.lang.Object)
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		// TODO Auto-generated method stub
-		if (obj instanceof FormatDescription)
-		{
-			FormatDescription fobj = (FormatDescription) obj;
-			return name.equals(fobj.getName());
-		}
-		return super.equals(obj);
-	}
+   /*
+    * (non-Javadoc)
+    * 
+    * @see java.lang.Object#toString()
+    */
+   @Override
+   public String toString()
+   {
+      return toString(Locale.getDefault());
+   }
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() 
-	{
-		return toString(Locale.getDefault());
-	}
-
-	public String toString(Locale locale) 
-	{
-		String s = "FormatDescription : name = "+name+" , description = "+getDescription(locale);
-		if (unzipAllowed) 
-		{
-		   s+= "\n archive contains collection of same objects" ;
-		}
-		for (ParameterDescription param : parameterDescriptions) 
-		{
-			s+= "\n   "+param.toString(locale);
-		}
-		return s;
-	}
+   public String toString(Locale locale)
+   {
+      String s = "FormatDescription : name = " + name + " , description = "
+            + getDescription(locale);
+      if (unzipAllowed)
+      {
+         s += "\n archive contains collection of same objects";
+      }
+      for (ParameterDescription param : parameterDescriptions)
+      {
+         s += "\n   " + param.toString(locale);
+      }
+      return s;
+   }
 }

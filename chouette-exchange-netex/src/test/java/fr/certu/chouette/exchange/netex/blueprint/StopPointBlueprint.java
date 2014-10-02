@@ -12,34 +12,37 @@ import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
 
 @Blueprint(StopPoint.class)
-public class StopPointBlueprint {
-    
-    @Default
-    FieldCallback objectId = new FieldCallback() {
-        @Override
-        public String get( Object model) {
-            return "RATP_PIVI:StopPoint:" + UUID.randomUUID();
-        }
-        
-    };  
-    
-    @Default
-    int objectVersion = 1;   
-    
-    @Default
-    String name = "A";
+public class StopPointBlueprint
+{
 
-    @Nullable
-    @Mapped   
-    StopArea containedInStopArea;    
-    
-//    @Default
-//    BigDecimal longitude = new BigDecimal("1.27");
-//    
-//    @Default
-//    BigDecimal latitude = new BigDecimal("2.27");
-    
-    @Default
-    int position = 1;
-    
+   @Default
+   FieldCallback objectId = new FieldCallback()
+   {
+      @Override
+      public String get(Object model)
+      {
+         return "RATP_PIVI:StopPoint:" + UUID.randomUUID();
+      }
+
+   };
+
+   @Default
+   int objectVersion = 1;
+
+   @Default
+   String name = "A";
+
+   @Nullable
+   @Mapped
+   StopArea containedInStopArea;
+
+   // @Default
+   // BigDecimal longitude = new BigDecimal("1.27");
+   //
+   // @Default
+   // BigDecimal latitude = new BigDecimal("2.27");
+
+   @Default
+   int position = 1;
+
 }

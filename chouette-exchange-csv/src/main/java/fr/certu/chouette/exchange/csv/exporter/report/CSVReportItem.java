@@ -13,24 +13,25 @@ import java.util.ArrayList;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
 
-
 /**
  * @author michel
- *
+ * 
  */
-public class CSVReportItem extends ReportItem 
+public class CSVReportItem extends ReportItem
 {
-	public enum KEY {OK_LINE,TOO_MUCH_ROUTES,OK_TIMETABLE,OK_PTNETWORK,OK_COMPANY,
-	   MANDATORY_TAG,TIMETABLE_COUNT,LINE_COUNT,END_OF_FILE,BAD_TIMETABLE_PERIODS,INVALID_LINE, STOP_WITHOUT_COORDS, VJ_MISSING_TIMETABLE} ;
+   public enum KEY
+   {
+      OK_LINE, TOO_MUCH_ROUTES, OK_TIMETABLE, OK_PTNETWORK, OK_COMPANY, MANDATORY_TAG, TIMETABLE_COUNT, LINE_COUNT, END_OF_FILE, BAD_TIMETABLE_PERIODS, INVALID_LINE, STOP_WITHOUT_COORDS, VJ_MISSING_TIMETABLE
+   };
 
-	public CSVReportItem(KEY key,Report.STATE status, Object... args)
-	{
-		updateStatus(status);
-        setMessageKey(key.name());
-        addMessageArgs(args);
-	}
-	
-	@Override
+   public CSVReportItem(KEY key, Report.STATE status, Object... args)
+   {
+      updateStatus(status);
+      setMessageKey(key.name());
+      addMessageArgs(args);
+   }
+
+   @Override
    /**
     * add but don't merge item in list
     * 
@@ -44,6 +45,5 @@ public class CSVReportItem extends ReportItem
       updateStatus(item.getStatus());
       getItems().add(item);
    }
-	
-	
+
 }

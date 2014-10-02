@@ -14,10 +14,12 @@ import lombok.Setter;
 
 /**
  * @author michel
- *
+ * 
  */
 @NoArgsConstructor
-public final class ReportHolder 
+public final class ReportHolder
 {
-@Getter @Setter private Report report;
+   @Getter
+   @Setter
+   private Report report;
 }

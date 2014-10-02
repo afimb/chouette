@@ -10,36 +10,39 @@ package fr.certu.chouette.plugin.exchange.xml.exception;
 import fr.certu.chouette.common.ChouetteException;
 
 @SuppressWarnings("serial")
-public class ExchangeException extends ChouetteException 
+public class ExchangeException extends ChouetteException
 {
-	private static final String PREFIX = "NPT";
-	
-	private ExchangeExceptionCode code;
+   private static final String PREFIX = "NPT";
 
-	public ExchangeException(ExchangeExceptionCode code, String... args) 
-	{
-		super( args);
-		this.code = code;
-	}
-	public ExchangeException(ExchangeExceptionCode code, Throwable cause, String... args) 
-	{
-		super( cause, args);
-		this.code = code;
-	}
+   private ExchangeExceptionCode code;
 
-	public ExchangeExceptionCode getExceptionCode() 
-	{
-		return code;
-	}
-	
-	public String getCode()
-	{
-		return code.name();
-	}
-	@Override
-	public String getPrefix() 
-	{
-		return PREFIX;
-	}
+   public ExchangeException(ExchangeExceptionCode code, String... args)
+   {
+      super(args);
+      this.code = code;
+   }
+
+   public ExchangeException(ExchangeExceptionCode code, Throwable cause,
+         String... args)
+   {
+      super(cause, args);
+      this.code = code;
+   }
+
+   public ExchangeExceptionCode getExceptionCode()
+   {
+      return code;
+   }
+
+   public String getCode()
+   {
+      return code.name();
+   }
+
+   @Override
+   public String getPrefix()
+   {
+      return PREFIX;
+   }
 
 }

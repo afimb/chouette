@@ -57,304 +57,334 @@ import fr.certu.chouette.plugin.report.Report;
 
 /**
  * @author michel
- *
+ * 
  */
-public class GtfsData 
+public class GtfsData
 {
-	private static final Logger logger = Logger.getLogger(GtfsData.class);
-	@Getter private GtfsNetwork network;
-	@Getter private DbList<GtfsAgency> agencies; 
-	@Getter private DbList<GtfsCalendar> calendars; 
-	@Getter private DbList<GtfsCalendarDate> calendarDates;
-	@Getter private DbList<GtfsFrequency> frequencies;
-	@Getter private DbList<GtfsRoute> routes; 
-	@Getter private DbList<GtfsExtendedStop> stops; 
-	@Getter private DbList<GtfsStopTime> stopTimes; 
-	@Getter private DbList<GtfsTrip> trips;
-	@Getter private DbList<GtfsShape> shapes;
-	@Getter private DbList<GtfsTransfer> transfers;
+   private static final Logger logger = Logger.getLogger(GtfsData.class);
+   @Getter
+   private GtfsNetwork network;
+   @Getter
+   private DbList<GtfsAgency> agencies;
+   @Getter
+   private DbList<GtfsCalendar> calendars;
+   @Getter
+   private DbList<GtfsCalendarDate> calendarDates;
+   @Getter
+   private DbList<GtfsFrequency> frequencies;
+   @Getter
+   private DbList<GtfsRoute> routes;
+   @Getter
+   private DbList<GtfsExtendedStop> stops;
+   @Getter
+   private DbList<GtfsStopTime> stopTimes;
+   @Getter
+   private DbList<GtfsTrip> trips;
+   @Getter
+   private DbList<GtfsShape> shapes;
+   @Getter
+   private DbList<GtfsTransfer> transfers;
 
-	private GtfsAgencyFactory agencyFactory ;
-	private GtfsCalendarDateFactory calendarDateFactory ;
-	private GtfsCalendarFactory calendarFactory ;
-	private GtfsFrequencyFactory frequencyFactory ;
-	private GtfsRouteFactory routeFactory ;
-	private GtfsShapeFactory shapeFactory ;
-	private GtfsExtendedStopFactory stopFactory ;
-	private GtfsStopTimeFactory stopTimeFactory ;
-	private GtfsTransferFactory transferFactory ;
-	private GtfsTripFactory tripFactory ;
+   private GtfsAgencyFactory agencyFactory;
+   private GtfsCalendarDateFactory calendarDateFactory;
+   private GtfsCalendarFactory calendarFactory;
+   private GtfsFrequencyFactory frequencyFactory;
+   private GtfsRouteFactory routeFactory;
+   private GtfsShapeFactory shapeFactory;
+   private GtfsExtendedStopFactory stopFactory;
+   private GtfsStopTimeFactory stopTimeFactory;
+   private GtfsTransferFactory transferFactory;
+   private GtfsTripFactory tripFactory;
 
-	private Connection conn = null;
-	private String dbName;
-	private boolean optimizeMemory;
+   private Connection conn = null;
+   private String dbName;
+   private boolean optimizeMemory;
 
-	public GtfsData(String prefix, String dbDirectory, boolean optimize)
-	{
-		optimizeMemory = optimize;
-		agencyFactory = new GtfsAgencyFactory();
-		calendarDateFactory = new GtfsCalendarDateFactory();
-		calendarFactory = new GtfsCalendarFactory();
-		frequencyFactory = new GtfsFrequencyFactory();
-		routeFactory = new GtfsRouteFactory();
-		shapeFactory = new GtfsShapeFactory();
-		stopFactory = new GtfsExtendedStopFactory();
-		stopTimeFactory = new GtfsStopTimeFactory();
-		transferFactory = new GtfsTransferFactory();
-		tripFactory = new GtfsTripFactory();
+   public GtfsData(String prefix, String dbDirectory, boolean optimize)
+   {
+      optimizeMemory = optimize;
+      agencyFactory = new GtfsAgencyFactory();
+      calendarDateFactory = new GtfsCalendarDateFactory();
+      calendarFactory = new GtfsCalendarFactory();
+      frequencyFactory = new GtfsFrequencyFactory();
+      routeFactory = new GtfsRouteFactory();
+      shapeFactory = new GtfsShapeFactory();
+      stopFactory = new GtfsExtendedStopFactory();
+      stopTimeFactory = new GtfsStopTimeFactory();
+      transferFactory = new GtfsTransferFactory();
+      tripFactory = new GtfsTripFactory();
 
-		if (optimizeMemory)
-		{
-			try
-			{
-				SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
-				// TODO paramétrer le répertoire
-				dbName = dbDirectory+"/"+prefix+"_"+df.format(Calendar.getInstance().getTime())+"_gtfs.db";
-				File f = new File(dbDirectory);
-				if (!f.exists())
-				{
-					f.mkdirs();
-				}
-				Class.forName("org.sqlite.JDBC");
-				conn = DriverManager.getConnection("jdbc:sqlite:"+dbName);
-				conn.setAutoCommit(true);
-				Statement stmt = conn.createStatement();
-				agencyFactory.initDb(stmt);
-				calendarFactory.initDb(stmt);
-				calendarDateFactory.initDb(stmt);
-				frequencyFactory.initDb(stmt);
-				routeFactory.initDb(stmt);
-				shapeFactory.initDb(stmt);
-				stopFactory.initDb(stmt);
-				stopTimeFactory.initDb(stmt);
-				transferFactory.initDb(stmt);
-				tripFactory.initDb(stmt);
-				stmt.close(); 
-				conn.setAutoCommit(false);
-				f = new File(dbName);
-				if (f.exists())
-				{
-					f.deleteOnExit();
-				}
-			}
-			catch (SQLException e)
-			{
-				logger.error("fail to create sqlite database",e);
-				throw new RuntimeException("gtfs database init failed");
-			}
-			catch (ClassNotFoundException e)
-			{
-				logger.error("fail to create sqlite database",e);
-				throw new RuntimeException(e.getMessage());
-			}
-		}
+      if (optimizeMemory)
+      {
+         try
+         {
+            SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+            // TODO paramétrer le répertoire
+            dbName = dbDirectory + "/" + prefix + "_"
+                  + df.format(Calendar.getInstance().getTime()) + "_gtfs.db";
+            File f = new File(dbDirectory);
+            if (!f.exists())
+            {
+               f.mkdirs();
+            }
+            Class.forName("org.sqlite.JDBC");
+            conn = DriverManager.getConnection("jdbc:sqlite:" + dbName);
+            conn.setAutoCommit(true);
+            Statement stmt = conn.createStatement();
+            agencyFactory.initDb(stmt);
+            calendarFactory.initDb(stmt);
+            calendarDateFactory.initDb(stmt);
+            frequencyFactory.initDb(stmt);
+            routeFactory.initDb(stmt);
+            shapeFactory.initDb(stmt);
+            stopFactory.initDb(stmt);
+            stopTimeFactory.initDb(stmt);
+            transferFactory.initDb(stmt);
+            tripFactory.initDb(stmt);
+            stmt.close();
+            conn.setAutoCommit(false);
+            f = new File(dbName);
+            if (f.exists())
+            {
+               f.deleteOnExit();
+            }
+         } catch (SQLException e)
+         {
+            logger.error("fail to create sqlite database", e);
+            throw new RuntimeException("gtfs database init failed");
+         } catch (ClassNotFoundException e)
+         {
+            logger.error("fail to create sqlite database", e);
+            throw new RuntimeException(e.getMessage());
+         }
+      }
 
-		agencies = new DbList<GtfsAgency>(conn,agencyFactory,optimizeMemory);
-		calendarDates = new DbList<GtfsCalendarDate>(conn,calendarDateFactory,optimizeMemory);
-		calendars = new DbList<GtfsCalendar>(conn,calendarFactory,optimizeMemory);
-		frequencies = new DbList<GtfsFrequency>(conn,frequencyFactory,optimizeMemory);
-		routes = new DbList<GtfsRoute>(conn,routeFactory,optimizeMemory);
-		stops = new DbList<GtfsExtendedStop>(conn,stopFactory,optimizeMemory);
-		stopTimes = new DbList<GtfsStopTime>(conn,stopTimeFactory,optimizeMemory);
-		trips = new DbList<GtfsTrip>(conn,tripFactory,optimizeMemory);
-		shapes = new DbList<GtfsShape>(conn,shapeFactory,optimizeMemory);
-		transfers = new DbList<GtfsTransfer>(conn,transferFactory,optimizeMemory);
+      agencies = new DbList<GtfsAgency>(conn, agencyFactory, optimizeMemory);
+      calendarDates = new DbList<GtfsCalendarDate>(conn, calendarDateFactory,
+            optimizeMemory);
+      calendars = new DbList<GtfsCalendar>(conn, calendarFactory,
+            optimizeMemory);
+      frequencies = new DbList<GtfsFrequency>(conn, frequencyFactory,
+            optimizeMemory);
+      routes = new DbList<GtfsRoute>(conn, routeFactory, optimizeMemory);
+      stops = new DbList<GtfsExtendedStop>(conn, stopFactory, optimizeMemory);
+      stopTimes = new DbList<GtfsStopTime>(conn, stopTimeFactory,
+            optimizeMemory);
+      trips = new DbList<GtfsTrip>(conn, tripFactory, optimizeMemory);
+      shapes = new DbList<GtfsShape>(conn, shapeFactory, optimizeMemory);
+      transfers = new DbList<GtfsTransfer>(conn, transferFactory,
+            optimizeMemory);
 
-	}
+   }
 
-	public void loadNetwork(String objectIdPrefix) 
-	{
-		network = new GtfsNetwork(objectIdPrefix);
-	}
+   public void loadNetwork(String objectIdPrefix)
+   {
+      network = new GtfsNetwork(objectIdPrefix);
+   }
 
-	private <T extends GtfsBean> void loadGtfsBean(String fileName,String beanName,InputStream input,GtfsBeanFactory<T> factory,DbList<T> beans,Report report) throws Exception
-	{
-		CSVReader reader = new CSVReader(new InputStreamReader(new BOMInputStream(input)), ',', '"' );
-		String[] csvLine = reader.readNext();
+   private <T extends GtfsBean> void loadGtfsBean(String fileName,
+         String beanName, InputStream input, GtfsBeanFactory<T> factory,
+         DbList<T> beans, Report report) throws Exception
+   {
+      CSVReader reader = new CSVReader(new InputStreamReader(
+            new BOMInputStream(input)), ',', '"');
+      String[] csvLine = reader.readNext();
 
-		int columns = csvLine.length;
+      int columns = csvLine.length;
 
-		logger.debug(fileName+"header = "+Arrays.toString(csvLine));
+      logger.debug(fileName + "header = " + Arrays.toString(csvLine));
 
-		factory.initHeader(csvLine);
+      factory.initHeader(csvLine);
 
-		int lineNumber = 1;
-		int warnCount = 0;
-		while ((csvLine = reader.readNext()) != null)
-		{
-			lineNumber++;
-			if (csvLine.length == columns)
-			{
-				T bean = factory.getNewGtfsBean(lineNumber,csvLine,report);
-				if (bean == null)
-				{
-					if(warnCount < 6)
-					{
-						logger.warn(fileName+" : line "+(lineNumber)+" has missing mandatory data, ignored");        		 
-						logger.warn(fileName+"line = "+Arrays.toString(csvLine));
-					}
-					warnCount++;
-				}
-				else
-				{
-					beans.add(bean);
-				}
-			}
-			else
-			{
-				if (csvLine.length == 1 && csvLine[0].trim().isEmpty())
-				{
-					logger.debug(fileName+" : line "+(lineNumber)+"empty, ignored");
-				}
-				else
-				{
-					logger.warn(fileName+" : line "+(lineNumber)+" has wrong number of columns, ignored");
-				}
-			}
-			if (lineNumber % 10000 == 0)
-			{
-				logger.debug(fileName+" : csv lines procedeed :"+lineNumber);
+      int lineNumber = 1;
+      int warnCount = 0;
+      while ((csvLine = reader.readNext()) != null)
+      {
+         lineNumber++;
+         if (csvLine.length == columns)
+         {
+            T bean = factory.getNewGtfsBean(lineNumber, csvLine, report);
+            if (bean == null)
+            {
+               if (warnCount < 6)
+               {
+                  logger.warn(fileName + " : line " + (lineNumber)
+                        + " has missing mandatory data, ignored");
+                  logger.warn(fileName + "line = " + Arrays.toString(csvLine));
+               }
+               warnCount++;
+            } else
+            {
+               beans.add(bean);
+            }
+         } else
+         {
+            if (csvLine.length == 1 && csvLine[0].trim().isEmpty())
+            {
+               logger.debug(fileName + " : line " + (lineNumber)
+                     + "empty, ignored");
+            } else
+            {
+               logger.warn(fileName + " : line " + (lineNumber)
+                     + " has wrong number of columns, ignored");
+            }
+         }
+         if (lineNumber % 10000 == 0)
+         {
+            logger.debug(fileName + " : csv lines procedeed :" + lineNumber);
 
-			}
-		}
-		logger.info(beanName+" loaded :"+beans.size());
-		reader.close();
-		beans.flush();
+         }
+      }
+      logger.info(beanName + " loaded :" + beans.size());
+      reader.close();
+      beans.flush();
 
-		if (optimizeMemory)
-		{
-			Statement stmt = conn.createStatement();
-			factory.createIndex(stmt);
-			stmt.close(); 
-		}
-	}
+      if (optimizeMemory)
+      {
+         Statement stmt = conn.createStatement();
+         factory.createIndex(stmt);
+         stmt.close();
+      }
+   }
 
-	public void loadAgencies(InputStream input,Report report) throws Exception
-	{
-		loadGtfsBean("agency.txt","agencies",input,agencyFactory,agencies,report);
-	}
+   public void loadAgencies(InputStream input, Report report) throws Exception
+   {
+      loadGtfsBean("agency.txt", "agencies", input, agencyFactory, agencies,
+            report);
+   }
 
+   public void loadCalendarDates(InputStream input, Report report)
+         throws Exception
+   {
+      loadGtfsBean("calendar_dates.txt", "calendar dates", input,
+            calendarDateFactory, calendarDates, report);
+   }
 
-	public void loadCalendarDates(InputStream input,Report report) throws Exception
-	{
-		loadGtfsBean("calendar_dates.txt","calendar dates",input,calendarDateFactory,calendarDates,report);
-	}
+   public void loadCalendars(InputStream input, Report report) throws Exception
+   {
+      loadGtfsBean("calendar.txt", "calendars", input, calendarFactory,
+            calendars, report);
+   }
 
-	public void loadCalendars(InputStream input,Report report) throws Exception
-	{
-		loadGtfsBean("calendar.txt","calendars",input,calendarFactory,calendars,report);
-	}
+   public void loadFrequencies(InputStream input, Report report)
+         throws Exception
+   {
+      loadGtfsBean("frequencies.txt", "frequencies", input, frequencyFactory,
+            frequencies, report);
+   }
 
-	public void loadFrequencies(InputStream input,Report report) throws Exception
-	{
-		loadGtfsBean("frequencies.txt","frequencies",input,frequencyFactory,frequencies,report);
-	}
-	public void loadRoutes(InputStream input,Report report) throws Exception
-	{
-		loadGtfsBean("routes.txt","routes",input,routeFactory,routes,report);
-	} 
-	public void loadStops(InputStream input,Report report) throws Exception
-	{
-		loadGtfsBean("stops.txt","stops",input,stopFactory,stops,report);
-	}
-	public void loadStopTimes(InputStream input,Report report) throws Exception
-	{
-		loadGtfsBean("stop_times.txt","stopTimes",input,stopTimeFactory,stopTimes,report);
-	}
-	public void loadTrips(InputStream input,Report report) throws Exception
-	{
-		loadGtfsBean("trips.txt","trips",input,tripFactory,trips,report);
-	}
-	public void loadShapes(InputStream input,Report report) throws Exception
-	{
-		loadGtfsBean("shapes.txt","shapes",input,shapeFactory,shapes,report);
-	}
-	public void loadTransfers(InputStream input,Report report) throws Exception
-	{
-		loadGtfsBean("transfers.txt","transfers",input,transferFactory,transfers,report);
-	}
+   public void loadRoutes(InputStream input, Report report) throws Exception
+   {
+      loadGtfsBean("routes.txt", "routes", input, routeFactory, routes, report);
+   }
 
-	public boolean connect(Report report)
-	{
-		boolean ok = true;
-		Map<String,GtfsAgency> agencyMap = new HashMap<String, GtfsAgency>();
-		Map<String,GtfsCalendar> calendarMap = new HashMap<String, GtfsCalendar>();
+   public void loadStops(InputStream input, Report report) throws Exception
+   {
+      loadGtfsBean("stops.txt", "stops", input, stopFactory, stops, report);
+   }
 
-		for (GtfsAgency agency : agencies.getAll()) 
-		{
-			agencyMap.put(agency.getAgencyId(),agency);
-		}
-		for (GtfsCalendar calendar : calendars.getAll())
-		{
-			calendarMap.put(calendar.getServiceId(),calendar);
-		}
-		for (GtfsCalendarDate date : calendarDates.getAll())
-		{
-			GtfsCalendar calendar = calendarMap.get(date.getServiceId());
-			if (calendar == null)
-			{
-				calendar= new GtfsCalendar();
-				calendar.setServiceId(date.getServiceId());
-				calendarMap.put(date.getServiceId(),calendar);
-				calendars.add(calendar);
-				logger.info("calendar created from date "+date.getServiceId());
-			}
-		}
-		calendars.flush();
+   public void loadStopTimes(InputStream input, Report report) throws Exception
+   {
+      loadGtfsBean("stop_times.txt", "stopTimes", input, stopTimeFactory,
+            stopTimes, report);
+   }
 
-		if (agencies.size() == 0)
-		{
-			logger.error("no agency defined");
-			ok = false;
+   public void loadTrips(InputStream input, Report report) throws Exception
+   {
+      loadGtfsBean("trips.txt", "trips", input, tripFactory, trips, report);
+   }
 
-		}
-		else
-		{
-			for (GtfsRoute route : routes.getAll())
-			{
-				// agencyId is optionnal when only one agency is provided
-				if (route.getAgencyId() == null && agencyMap.size() == 1)
-				{
-					route.setAgencyId(agencyMap.keySet().iterator().next());
-				}
-				if (route.getAgencyId() == null)
-				{
-					GtfsAgency agency = agencyMap.get("default");
-					if (agency == null) agency = agencies.getAll().get(0);
-					route.setAgency(agency);
-				}
-				else
-				{
-					GtfsAgency agency = agencyMap.get(route.getAgencyId());
-					if (agency == null)
-					{
-						logger.error("Route line "+route.getFileLineNumber()+" : routeId = "+route.getRouteId()+" has no agency");
-						ok = false;
-					}
-					else
-					{
-						route.setAgency(agency);
-					}
-				}
-			}
-		}
-		return ok;
-	}
+   public void loadShapes(InputStream input, Report report) throws Exception
+   {
+      loadGtfsBean("shapes.txt", "shapes", input, shapeFactory, shapes, report);
+   }
 
-	public void close()
-	{
-		if (optimizeMemory && conn != null)
-		{
-			try
-			{
-				conn.close();
-			}
-			catch (SQLException e) 
-			{
-				// let data on cache
-			}
-			conn = null;
-		}
-	}
+   public void loadTransfers(InputStream input, Report report) throws Exception
+   {
+      loadGtfsBean("transfers.txt", "transfers", input, transferFactory,
+            transfers, report);
+   }
+
+   public boolean connect(Report report)
+   {
+      boolean ok = true;
+      Map<String, GtfsAgency> agencyMap = new HashMap<String, GtfsAgency>();
+      Map<String, GtfsCalendar> calendarMap = new HashMap<String, GtfsCalendar>();
+
+      for (GtfsAgency agency : agencies.getAll())
+      {
+         agencyMap.put(agency.getAgencyId(), agency);
+      }
+      for (GtfsCalendar calendar : calendars.getAll())
+      {
+         calendarMap.put(calendar.getServiceId(), calendar);
+      }
+      for (GtfsCalendarDate date : calendarDates.getAll())
+      {
+         GtfsCalendar calendar = calendarMap.get(date.getServiceId());
+         if (calendar == null)
+         {
+            calendar = new GtfsCalendar();
+            calendar.setServiceId(date.getServiceId());
+            calendarMap.put(date.getServiceId(), calendar);
+            calendars.add(calendar);
+            logger.info("calendar created from date " + date.getServiceId());
+         }
+      }
+      calendars.flush();
+
+      if (agencies.size() == 0)
+      {
+         logger.error("no agency defined");
+         ok = false;
+
+      } else
+      {
+         for (GtfsRoute route : routes.getAll())
+         {
+            // agencyId is optionnal when only one agency is provided
+            if (route.getAgencyId() == null && agencyMap.size() == 1)
+            {
+               route.setAgencyId(agencyMap.keySet().iterator().next());
+            }
+            if (route.getAgencyId() == null)
+            {
+               GtfsAgency agency = agencyMap.get("default");
+               if (agency == null)
+                  agency = agencies.getAll().get(0);
+               route.setAgency(agency);
+            } else
+            {
+               GtfsAgency agency = agencyMap.get(route.getAgencyId());
+               if (agency == null)
+               {
+                  logger.error("Route line " + route.getFileLineNumber()
+                        + " : routeId = " + route.getRouteId()
+                        + " has no agency");
+                  ok = false;
+               } else
+               {
+                  route.setAgency(agency);
+               }
+            }
+         }
+      }
+      return ok;
+   }
+
+   public void close()
+   {
+      if (optimizeMemory && conn != null)
+      {
+         try
+         {
+            conn.close();
+         } catch (SQLException e)
+         {
+            // let data on cache
+         }
+         conn = null;
+      }
+   }
 
 }

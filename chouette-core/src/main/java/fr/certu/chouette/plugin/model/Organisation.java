@@ -25,16 +25,15 @@ import lombok.Setter;
 public class Organisation extends ActiveRecordObject
 {
    private static final long serialVersionUID = 8673888363745200271L;
-   
+
    @Getter
    @Setter
-   @Column(name="name")
+   @Column(name = "name")
    private String name;
-   
+
    @Getter
    @Setter
    @OneToMany(mappedBy = "organisation")
    private List<Referential> referentials = new ArrayList<Referential>(0);
-   
-    
+
 }

@@ -28,85 +28,89 @@ import fr.certu.chouette.model.user.User;
 
 /**
  * @author michel
- *
+ * 
  */
 @SuppressWarnings("unchecked")
-public class StopAreaManager extends AbstractNeptuneManager<StopArea> 
+public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 {
    private static final Logger logger = Logger.getLogger(StopAreaManager.class);
 
-	public StopAreaManager() 
+   public StopAreaManager()
    {
-      super(StopArea.class,StopArea.STOPAREA_KEY);
+      super(StopArea.class, StopArea.STOPAREA_KEY);
    }
-	
-	public void init()
-	{
-		NeptuneLocalizedObject.setGeographicService(getGeographicService());		
-	}
 
-//   @Override
-//   protected Report propagateValidation(User user, List<StopArea> beans,
-//         ValidationParameters parameters,boolean propagate) 
-//   throws ChouetteException 
-//   {
-//      Report globalReport = new ValidationReport();
-//
-//      // aggregate dependent objects for validation
-//      Set<ConnectionLink> links = new HashSet<ConnectionLink>();
-//      for (StopArea bean : beans) 
-//      {
-//         if (bean.getConnectionLinks() != null)
-//         {
-//            links.addAll(bean.getConnectionLinks());
-//         }
-//
-//      }
-//
-//      // propagate validation on ConnectionLink
-//      if (links.size() > 0)
-//      {
-//         Report report = null;
-//         AbstractNeptuneManager<ConnectionLink> manager = (AbstractNeptuneManager<ConnectionLink>) getManager(ConnectionLink.class);
-//         if (manager.canValidate())
-//         {
-//            report = manager.validate(user, Arrays.asList(links.toArray(new ConnectionLink[0])), parameters,propagate);
-//         }
-//         else
-//         {
-//            report = manager.propagateValidation(user, Arrays.asList(links.toArray(new ConnectionLink[0])), parameters,propagate);
-//         }
-//         if (report != null)
-//         {
-//            globalReport.addAll(report.getItems());
-//            globalReport.updateStatus(report.getStatus());
-//         }
-//      }
-//
-//
-//      return globalReport;
-//   }
+   // @Override
+   // protected Report propagateValidation(User user, List<StopArea> beans,
+   // ValidationParameters parameters,boolean propagate)
+   // throws ChouetteException
+   // {
+   // Report globalReport = new ValidationReport();
+   //
+   // // aggregate dependent objects for validation
+   // Set<ConnectionLink> links = new HashSet<ConnectionLink>();
+   // for (StopArea bean : beans)
+   // {
+   // if (bean.getConnectionLinks() != null)
+   // {
+   // links.addAll(bean.getConnectionLinks());
+   // }
+   //
+   // }
+   //
+   // // propagate validation on ConnectionLink
+   // if (links.size() > 0)
+   // {
+   // Report report = null;
+   // AbstractNeptuneManager<ConnectionLink> manager =
+   // (AbstractNeptuneManager<ConnectionLink>)
+   // getManager(ConnectionLink.class);
+   // if (manager.canValidate())
+   // {
+   // report = manager.validate(user, Arrays.asList(links.toArray(new
+   // ConnectionLink[0])), parameters,propagate);
+   // }
+   // else
+   // {
+   // report = manager.propagateValidation(user,
+   // Arrays.asList(links.toArray(new ConnectionLink[0])),
+   // parameters,propagate);
+   // }
+   // if (report != null)
+   // {
+   // globalReport.addAll(report.getItems());
+   // globalReport.updateStatus(report.getStatus());
+   // }
+   // }
+   //
+   //
+   // return globalReport;
+   // }
    @Transactional
    @Override
-   public void remove(User user,StopArea stopArea,boolean propagate) throws ChouetteException
+   public void remove(User user, StopArea stopArea, boolean propagate)
+         throws ChouetteException
    {
       List<StopPoint> stopPoints = stopArea.getContainedStopPoints();
-      if(stopPoints != null && !stopPoints.isEmpty())
-         throw new CoreException(CoreExceptionCode.DELETE_IMPOSSIBLE,"can't be deleted because it has a stopPoints");
+      if (stopPoints != null && !stopPoints.isEmpty())
+         throw new CoreException(CoreExceptionCode.DELETE_IMPOSSIBLE,
+               "can't be deleted because it has a stopPoints");
 
-      super.remove(user, stopArea,propagate);		
+      super.remove(user, stopArea, propagate);
    }
 
    @Override
-   protected Logger getLogger() 
+   protected Logger getLogger()
    {
       return logger;
-   }	
+   }
+
    @Transactional
    @Override
-   public void saveAll(User user, List<StopArea> stopAreas, boolean propagate,boolean fast) throws ChouetteException 
+   public void saveAll(User user, List<StopArea> stopAreas, boolean propagate,
+         boolean fast) throws ChouetteException
    {
-      getLogger().debug("try to save "+stopAreas.size()+" StopAreas");
+      getLogger().debug("try to save " + stopAreas.size() + " StopAreas");
 
       List<StopArea> completeStopAreas = new ArrayList<StopArea>();
       List<AccessLink> accessLinks = new ArrayList<AccessLink>();
@@ -114,10 +118,11 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
       List<Facility> facilities = new ArrayList<Facility>();
       if (propagate)
       {
-         saveParents(user,stopAreas,propagate,fast,accessLinks,connectionLinks,facilities);
-         mergeCollection(completeStopAreas,stopAreas);
+         saveParents(user, stopAreas, propagate, fast, accessLinks,
+               connectionLinks, facilities);
+         mergeCollection(completeStopAreas, stopAreas);
 
-         for (StopArea stopArea : completeStopAreas) 
+         for (StopArea stopArea : completeStopAreas)
          {
             mergeCollection(accessLinks, stopArea.getAccessLinks());
             mergeCollection(connectionLinks, stopArea.getConnectionLinks());
@@ -126,50 +131,57 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 
          // add targetConnectionLink if not present
          List<StopArea> connected = new ArrayList<StopArea>();
-         for (Iterator<ConnectionLink> iterator = connectionLinks.iterator(); iterator.hasNext();) 
+         for (Iterator<ConnectionLink> iterator = connectionLinks.iterator(); iterator
+               .hasNext();)
          {
             ConnectionLink connectionLink = iterator.next();
-            if (connectionLink.getStartOfLink() != null)  
+            if (connectionLink.getStartOfLink() != null)
             {
                if (!completeStopAreas.contains(connectionLink.getStartOfLink()))
-                  addIfMissingInCollection(connected, connectionLink.getStartOfLink());
+                  addIfMissingInCollection(connected,
+                        connectionLink.getStartOfLink());
             }
             if (connectionLink.getEndOfLink() != null)
             {
                if (!completeStopAreas.contains(connectionLink.getEndOfLink()))
-                  addIfMissingInCollection(connected,connectionLink.getEndOfLink());
+                  addIfMissingInCollection(connected,
+                        connectionLink.getEndOfLink());
             }
          }
-         saveParents(user,connected,propagate,fast,accessLinks,connectionLinks,facilities);
+         saveParents(user, connected, propagate, fast, accessLinks,
+               connectionLinks, facilities);
          mergeCollection(completeStopAreas, connected);
-      }
-      else
+      } else
       {
          completeStopAreas = stopAreas;
       }
 
-      super.saveAll(user, completeStopAreas,propagate,fast);
+      super.saveAll(user, completeStopAreas, propagate, fast);
 
-      if(propagate)
+      if (propagate)
       {
          INeptuneManager<AccessLink> accessLinkManager = (INeptuneManager<AccessLink>) getManager(AccessLink.class);
          INeptuneManager<ConnectionLink> connectionLinkManager = (INeptuneManager<ConnectionLink>) getManager(ConnectionLink.class);
-         //			INeptuneManager<RestrictionConstraint> constraintManager = (INeptuneManager<RestrictionConstraint>) getManager(RestrictionConstraint.class);
-         // INeptuneManager<Facility> facilityManager = (INeptuneManager<Facility>) getManager(Facility.class);
+         // INeptuneManager<RestrictionConstraint> constraintManager =
+         // (INeptuneManager<RestrictionConstraint>)
+         // getManager(RestrictionConstraint.class);
+         // INeptuneManager<Facility> facilityManager =
+         // (INeptuneManager<Facility>) getManager(Facility.class);
 
-         if(!accessLinks.isEmpty())
+         if (!accessLinks.isEmpty())
          {
-            accessLinkManager.saveAll(user, accessLinks, propagate,fast);
+            accessLinkManager.saveAll(user, accessLinks, propagate, fast);
          }
-         if(!connectionLinks.isEmpty())
+         if (!connectionLinks.isEmpty())
          {
-            connectionLinkManager.saveAll(user, connectionLinks, propagate,fast);
+            connectionLinkManager.saveAll(user, connectionLinks, propagate,
+                  fast);
          }
-         //			if(!constraints.isEmpty())
-         //				constraintManager.saveAll(user, constraints, propagate,fast);	
-         if(!facilities.isEmpty())
+         // if(!constraints.isEmpty())
+         // constraintManager.saveAll(user, constraints, propagate,fast);
+         if (!facilities.isEmpty())
          {
-        	// not yet implemented
+            // not yet implemented
             // facilityManager.saveAll(user, facilities, propagate,fast);
          }
       }
@@ -177,28 +189,32 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
 
    /**
     * @param stopAreas
-    * @param facilities 
-    * @param connectionLinks 
-    * @param accessLinks 
+    * @param facilities
+    * @param connectionLinks
+    * @param accessLinks
     * @return
-    * @throws ChouetteException 
+    * @throws ChouetteException
     */
-   private void saveParents(User user,List<StopArea> stopAreas,boolean propagate,boolean fast, List<AccessLink> accessLinks, List<ConnectionLink> connectionLinks, List<Facility> facilities) throws ChouetteException 
+   private void saveParents(User user, List<StopArea> stopAreas,
+         boolean propagate, boolean fast, List<AccessLink> accessLinks,
+         List<ConnectionLink> connectionLinks, List<Facility> facilities)
+         throws ChouetteException
    {
       List<StopArea> parents = new ArrayList<StopArea>();
       if (stopAreas != null)
       {
-         for (StopArea stopArea : stopAreas) 
+         for (StopArea stopArea : stopAreas)
          {
             if (stopArea.getParent() != null)
             {
-               addIfMissingInCollection(parents,stopArea.getParent());
+               addIfMissingInCollection(parents, stopArea.getParent());
             }
          }
          if (!parents.isEmpty())
          {
-            saveParents(user, parents, propagate, fast,accessLinks,connectionLinks,facilities);
-            for (StopArea stopArea : parents) 
+            saveParents(user, parents, propagate, fast, accessLinks,
+                  connectionLinks, facilities);
+            for (StopArea stopArea : parents)
             {
                mergeCollection(accessLinks, stopArea.getAccessLinks());
                mergeCollection(connectionLinks, stopArea.getConnectionLinks());
@@ -206,21 +222,25 @@ public class StopAreaManager extends AbstractNeptuneManager<StopArea>
             }
 
             super.saveAll(user, parents, propagate, fast);
-            getLogger().debug("saving "+parents.size()+" parents");
+            getLogger().debug("saving " + parents.size() + " parents");
          }
       }
       return;
    }
 
-   /* (non-Javadoc)
-    * @see fr.certu.chouette.manager.AbstractNeptuneManager#completeObject(fr.certu.chouette.model.user.User, fr.certu.chouette.model.neptune.NeptuneIdentifiedObject)
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * fr.certu.chouette.manager.AbstractNeptuneManager#completeObject(fr.certu
+    * .chouette.model.user.User,
+    * fr.certu.chouette.model.neptune.NeptuneIdentifiedObject)
     */
    @Override
    public void completeObject(User user, StopArea stopArea)
-   throws ChouetteException 
+         throws ChouetteException
    {
       stopArea.complete();
    }
-
 
 }

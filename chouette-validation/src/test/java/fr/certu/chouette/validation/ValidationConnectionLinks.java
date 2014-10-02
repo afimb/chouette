@@ -30,63 +30,65 @@ import fr.certu.chouette.plugin.validation.report.CheckPointReportItem;
 import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 import fr.certu.chouette.plugin.validation.report.PhaseReportItem.PHASE;
 
-@ContextConfiguration(locations = { "classpath:testContext.xml", "classpath*:chouetteContext.xml" })
+@ContextConfiguration(locations = { "classpath:testContext.xml",
+      "classpath*:chouetteContext.xml" })
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
-public class ValidationConnectionLinks extends AbstractTransactionalTestNGSpringContextTests
+public class ValidationConnectionLinks extends
+      AbstractTransactionalTestNGSpringContextTests
 {
-
 
    @SuppressWarnings("unchecked")
    @BeforeMethod
    public void loadStopAreas() throws ChouetteException
    {
-         IImportPlugin<Line> importLine = (IImportPlugin<Line>) applicationContext.getBean("NeptuneLineImport");
+      IImportPlugin<Line> importLine = (IImportPlugin<Line>) applicationContext
+            .getBean("NeptuneLineImport");
 
-         INeptuneManager<Line> lineManager = (INeptuneManager<Line>) applicationContext.getBean("lineManager");
-         List<Line> lines = lineManager.getAll(null);
-         lineManager.removeAll(null, lines, true);
+      INeptuneManager<Line> lineManager = (INeptuneManager<Line>) applicationContext
+            .getBean("lineManager");
+      List<Line> lines = lineManager.getAll(null);
+      lineManager.removeAll(null, lines, true);
 
-         INeptuneManager<StopArea> stopeManager = (INeptuneManager<StopArea>) applicationContext
-               .getBean("stopAreaManager");
-         List<StopArea> stops = stopeManager.getAll(null);
-         stopeManager.removeAll(null, stops, true);
+      INeptuneManager<StopArea> stopeManager = (INeptuneManager<StopArea>) applicationContext
+            .getBean("stopAreaManager");
+      List<StopArea> stops = stopeManager.getAll(null);
+      stopeManager.removeAll(null, stops, true);
 
-         INeptuneManager<PTNetwork> networkManager = (INeptuneManager<PTNetwork>) applicationContext
-               .getBean("networkManager");
-         List<PTNetwork> networks = networkManager.getAll(null);
-         networkManager.removeAll(null, networks, true);
+      INeptuneManager<PTNetwork> networkManager = (INeptuneManager<PTNetwork>) applicationContext
+            .getBean("networkManager");
+      List<PTNetwork> networks = networkManager.getAll(null);
+      networkManager.removeAll(null, networks, true);
 
-         INeptuneManager<Timetable> timetableManager = (INeptuneManager<Timetable>) applicationContext
-               .getBean("timetableManager");
-         List<Timetable> timetables = timetableManager.getAll(null);
-         timetableManager.removeAll(null, timetables, true);
+      INeptuneManager<Timetable> timetableManager = (INeptuneManager<Timetable>) applicationContext
+            .getBean("timetableManager");
+      List<Timetable> timetables = timetableManager.getAll(null);
+      timetableManager.removeAll(null, timetables, true);
 
-         INeptuneManager<Company> companyManager = (INeptuneManager<Company>) applicationContext
-               .getBean("companyManager");
-         List<Company> companies = companyManager.getAll(null);
-         companyManager.removeAll(null, companies, true);
+      INeptuneManager<Company> companyManager = (INeptuneManager<Company>) applicationContext
+            .getBean("companyManager");
+      List<Company> companies = companyManager.getAll(null);
+      companyManager.removeAll(null, companies, true);
 
-         JSONObject parameters = null;
-         try
-         {
-            parameters = new RuleParameterSet();
-         }
-         catch (JSONException | IOException e)
-         {
-            e.printStackTrace();
-         }
-         Assert.assertNotNull(parameters, "no parameters for test");
+      JSONObject parameters = null;
+      try
+      {
+         parameters = new RuleParameterSet();
+      } catch (JSONException | IOException e)
+      {
+         e.printStackTrace();
+      }
+      Assert.assertNotNull(parameters, "no parameters for test");
 
-         List<Line> beans = LineLoader.load(importLine, "src/test/data/model.zip");
-         Assert.assertFalse(beans.isEmpty(), "No data for test");
-         lineManager.saveAll(null, beans, true, true);
-       
+      List<Line> beans = LineLoader.load(importLine, "src/test/data/model.zip");
+      Assert.assertFalse(beans.isEmpty(), "No data for test");
+      lineManager.saveAll(null, beans, true, true);
+
    }
 
    @SuppressWarnings("unchecked")
    @Test(groups = { "ConnectionLink" }, description = "3-ConnectionLink-1")
    public void verifyTest1() throws ChouetteException
-   {      
+   {
       // 3-ConnectionLink-1 : check distance between stops of connectionLink
 
       INeptuneManager<ConnectionLink> connectionLinkManager = (INeptuneManager<ConnectionLink>) applicationContext
@@ -96,8 +98,7 @@ public class ValidationConnectionLinks extends AbstractTransactionalTestNGSpring
       try
       {
          parameters = new RuleParameterSet();
-      }
-      catch (JSONException | IOException e)
+      } catch (JSONException | IOException e)
       {
          e.printStackTrace();
       }
@@ -114,7 +115,8 @@ public class ValidationConnectionLinks extends AbstractTransactionalTestNGSpring
 
       AbstractValidation.printReport(report);
 
-      Assert.assertEquals(report.getStatus(), Report.STATE.WARNING, " report must be on level warning");
+      Assert.assertEquals(report.getStatus(), Report.STATE.WARNING,
+            " report must be on level warning");
       Assert.assertEquals(report.hasItems(), true, " report must have items");
       boolean found = false;
       for (ReportItem item : report.getItems())
@@ -123,13 +125,17 @@ public class ValidationConnectionLinks extends AbstractTransactionalTestNGSpring
          if (checkPointReport.getMessageKey().equals("3-ConnectionLink-1"))
          {
             found = true;
-            Assert.assertEquals(checkPointReport.getStatus(), Report.STATE.WARNING,
+            Assert.assertEquals(checkPointReport.getStatus(),
+                  Report.STATE.WARNING,
                   " checkPointReport must be on level warning");
-            Assert.assertEquals(checkPointReport.hasItems(), true, " checkPointReport must have items");
-            Assert.assertEquals(checkPointReport.getItems().size(), 1, " checkPointReport must have 1 item");
+            Assert.assertEquals(checkPointReport.hasItems(), true,
+                  " checkPointReport must have items");
+            Assert.assertEquals(checkPointReport.getItems().size(), 1,
+                  " checkPointReport must have 1 item");
          }
       }
-      Assert.assertTrue(found, "report must contain a 3-ConnectionLink-1 checkPoint");
+      Assert.assertTrue(found,
+            "report must contain a 3-ConnectionLink-1 checkPoint");
 
    }
 
@@ -140,7 +146,7 @@ public class ValidationConnectionLinks extends AbstractTransactionalTestNGSpring
       // 3-ConnectionLink-2 : check distance of link against distance between
       // stops of connectionLink
       // 3-ConnectionLink-3 : check speeds in connectionLink
-      
+
       INeptuneManager<ConnectionLink> connectionLinkManager = (INeptuneManager<ConnectionLink>) applicationContext
             .getBean("connectionLinkManager");
 
@@ -148,8 +154,7 @@ public class ValidationConnectionLinks extends AbstractTransactionalTestNGSpring
       try
       {
          parameters = new RuleParameterSet();
-      }
-      catch (JSONException | IOException e)
+      } catch (JSONException | IOException e)
       {
          e.printStackTrace();
       }
@@ -159,7 +164,8 @@ public class ValidationConnectionLinks extends AbstractTransactionalTestNGSpring
       Assert.assertFalse(beans.isEmpty(), "No data for test");
 
       ConnectionLink link = beans.get(0);
-      double distance = AbstractValidation.distance(link.getStartOfLink(), link.getEndOfLink());
+      double distance = AbstractValidation.distance(link.getStartOfLink(),
+            link.getEndOfLink());
 
       link.setLinkDistance(BigDecimal.valueOf(distance - 50));
 
@@ -169,7 +175,8 @@ public class ValidationConnectionLinks extends AbstractTransactionalTestNGSpring
 
       AbstractValidation.printReport(report);
 
-      Assert.assertEquals(report.getStatus(), Report.STATE.WARNING, " report must be on level warning");
+      Assert.assertEquals(report.getStatus(), Report.STATE.WARNING,
+            " report must be on level warning");
       Assert.assertEquals(report.hasItems(), true, " report must have items");
       boolean found = false;
       for (ReportItem item : report.getItems())
@@ -178,13 +185,17 @@ public class ValidationConnectionLinks extends AbstractTransactionalTestNGSpring
          if (checkPointReport.getMessageKey().equals("3-ConnectionLink-2"))
          {
             found = true;
-            Assert.assertEquals(checkPointReport.getStatus(), Report.STATE.WARNING,
+            Assert.assertEquals(checkPointReport.getStatus(),
+                  Report.STATE.WARNING,
                   " checkPointReport must be on level warning");
-            Assert.assertEquals(checkPointReport.hasItems(), true, " checkPointReport must have items");
-            Assert.assertEquals(checkPointReport.getItems().size(), 1, " checkPointReport must have 1 item");
+            Assert.assertEquals(checkPointReport.hasItems(), true,
+                  " checkPointReport must have items");
+            Assert.assertEquals(checkPointReport.getItems().size(), 1,
+                  " checkPointReport must have 1 item");
          }
       }
-      Assert.assertTrue(found, "report must contain a 3-ConnectionLink-2 checkPoint");
+      Assert.assertTrue(found,
+            "report must contain a 3-ConnectionLink-2 checkPoint");
 
    }
 
@@ -193,7 +204,7 @@ public class ValidationConnectionLinks extends AbstractTransactionalTestNGSpring
    public void verifyTest3() throws ChouetteException
    {
       // 3-ConnectionLink-3 : check speeds in connectionLink
-      
+
       INeptuneManager<ConnectionLink> connectionLinkManager = (INeptuneManager<ConnectionLink>) applicationContext
             .getBean("connectionLinkManager");
 
@@ -201,8 +212,7 @@ public class ValidationConnectionLinks extends AbstractTransactionalTestNGSpring
       try
       {
          parameters = new RuleParameterSet();
-      }
-      catch (JSONException | IOException e)
+      } catch (JSONException | IOException e)
       {
          e.printStackTrace();
       }
@@ -214,16 +224,20 @@ public class ValidationConnectionLinks extends AbstractTransactionalTestNGSpring
       ConnectionLink link = null;
       for (ConnectionLink connectionLink : beans)
       {
-         if (connectionLink.getObjectId().equals("NINOXE:ConnectionLink:15627089"))
+         if (connectionLink.getObjectId().equals(
+               "NINOXE:ConnectionLink:15627089"))
          {
             link = connectionLink;
             break;
          }
       }
 
-      link.getDefaultDuration().setTime(link.getDefaultDuration().getTime() - 600000);
-      link.getOccasionalTravellerDuration().setTime(link.getOccasionalTravellerDuration().getTime() - 800000);
-      link.getFrequentTravellerDuration().setTime(link.getFrequentTravellerDuration().getTime() - 600000);
+      link.getDefaultDuration().setTime(
+            link.getDefaultDuration().getTime() - 600000);
+      link.getOccasionalTravellerDuration().setTime(
+            link.getOccasionalTravellerDuration().getTime() - 800000);
+      link.getFrequentTravellerDuration().setTime(
+            link.getFrequentTravellerDuration().getTime() - 600000);
       link.getMobilityRestrictedTravellerDuration().setTime(
             link.getMobilityRestrictedTravellerDuration().getTime() - 900000);
 
@@ -233,7 +247,8 @@ public class ValidationConnectionLinks extends AbstractTransactionalTestNGSpring
 
       AbstractValidation.printReport(report);
 
-      Assert.assertEquals(report.getStatus(), Report.STATE.WARNING, " report must be on level warning");
+      Assert.assertEquals(report.getStatus(), Report.STATE.WARNING,
+            " report must be on level warning");
       Assert.assertEquals(report.hasItems(), true, " report must have items");
       boolean found = false;
       for (ReportItem item : report.getItems())
@@ -242,13 +257,17 @@ public class ValidationConnectionLinks extends AbstractTransactionalTestNGSpring
          if (checkPointReport.getMessageKey().equals("3-ConnectionLink-3"))
          {
             found = true;
-            Assert.assertEquals(checkPointReport.getStatus(), Report.STATE.WARNING,
+            Assert.assertEquals(checkPointReport.getStatus(),
+                  Report.STATE.WARNING,
                   " checkPointReport must be on level warning");
-            Assert.assertEquals(checkPointReport.hasItems(), true, " checkPointReport must have items");
-            Assert.assertEquals(checkPointReport.getItems().size(), 4, " checkPointReport must have 4 items");
+            Assert.assertEquals(checkPointReport.hasItems(), true,
+                  " checkPointReport must have items");
+            Assert.assertEquals(checkPointReport.getItems().size(), 4,
+                  " checkPointReport must have 4 items");
          }
       }
-      Assert.assertTrue(found, "report must contain a 3-ConnectionLink-3 checkPoint");
+      Assert.assertTrue(found,
+            "report must contain a 3-ConnectionLink-3 checkPoint");
 
    }
 

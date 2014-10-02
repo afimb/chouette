@@ -24,32 +24,41 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-@ContextConfiguration(locations={"classpath:testContext.xml","classpath*:chouetteContext.xml"})
+@ContextConfiguration(locations = { "classpath:testContext.xml",
+      "classpath*:chouetteContext.xml" })
 @SuppressWarnings("unchecked")
-public class NetexFileReaderTest extends AbstractTestNGSpringContextTests {
-    private NetexFileReader netexFileReader;
-    private ComplexModelFactory complexModelFactory;
-    private Line netexLine;
+public class NetexFileReaderTest extends AbstractTestNGSpringContextTests
+{
+   private NetexFileReader netexFileReader;
+   private ComplexModelFactory complexModelFactory;
+   private Line netexLine;
 
-    @BeforeClass
-    protected void setUp() throws Exception {
-        netexFileReader = (NetexFileReader) applicationContext.getBean("netexFileReader");
-        
-        complexModelFactory = new ComplexModelFactory();
-        complexModelFactory.init();
-        netexLine = complexModelFactory.nominalLine( "1");
-        netexLine.complete();
-    }
+   @BeforeClass
+   protected void setUp() throws Exception
+   {
+      netexFileReader = (NetexFileReader) applicationContext
+            .getBean("netexFileReader");
 
-    @Test(groups = {"NetexFileReader"}, description = "Netex File Reader must return a Line Object")
-    public void verifyReadInputStream() throws FileNotFoundException, IOException, EncodingException, EOFException, EntityException, ParseException, XPathParseException, XPathEvalException, NavException, java.text.ParseException, DatatypeConfigurationException {        
-		ExchangeReport report = new ExchangeReport(ExchangeReport.KEY.IMPORT, "NETEX");
-        File f = FileUtils.getFile("src","test", "resources", "line2_test.xml");
-        InputStream stream = new FileInputStream(f);
-        
-        Line neptuneLine = netexFileReader.readInputStream(stream,report);
-        
-        Assert.assertEquals(neptuneLine.getName(), netexLine.getName());
-    }
-    
+      complexModelFactory = new ComplexModelFactory();
+      complexModelFactory.init();
+      netexLine = complexModelFactory.nominalLine("1");
+      netexLine.complete();
+   }
+
+   @Test(groups = { "NetexFileReader" }, description = "Netex File Reader must return a Line Object")
+   public void verifyReadInputStream() throws FileNotFoundException,
+         IOException, EncodingException, EOFException, EntityException,
+         ParseException, XPathParseException, XPathEvalException, NavException,
+         java.text.ParseException, DatatypeConfigurationException
+   {
+      ExchangeReport report = new ExchangeReport(ExchangeReport.KEY.IMPORT,
+            "NETEX");
+      File f = FileUtils.getFile("src", "test", "resources", "line2_test.xml");
+      InputStream stream = new FileInputStream(f);
+
+      Line neptuneLine = netexFileReader.readInputStream(stream, report);
+
+      Assert.assertEquals(neptuneLine.getName(), netexLine.getName());
+   }
+
 }

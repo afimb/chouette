@@ -17,70 +17,77 @@ import java.util.List;
 import java.util.UUID;
 
 @Blueprint(StopArea.class)
-public class StopAreaBlueprint {
-    
-    @Default
-    FieldCallback objectId = new FieldCallback() {
-        @Override
-        public String get( Object model) {
-            return "RATP_PIVI:StopArea:" + UUID.randomUUID();
-        }
-        
-    };  
-    
-    @Default
-    int objectVersion = 1;
-    
-    @Default
-    String name = "A"+UUID.randomUUID();
-    
-    @Default
-    String comment = "mon arret "+UUID.randomUUID();
-    
-    @Default
-    String registrationNumber = "C-"+UUID.randomUUID();
-    
-    @Default
-    String nearestTopicName = "POI-"+UUID.randomUUID();
-    
-    @Default
-    int fareCode = 1;
+public class StopAreaBlueprint
+{
 
-    @Default
-    LongLatTypeEnum longLatType = LongLatTypeEnum.WGS84;
-    
-    @Default
-    BigDecimal longitude = new BigDecimal( 2.373D + ( UUID.randomUUID().getLeastSignificantBits()%100)/1000000);
-    
-    @Default
-    BigDecimal latitude = new BigDecimal( 48.8D + ( UUID.randomUUID().getLeastSignificantBits()%100)/1000000);
+   @Default
+   FieldCallback objectId = new FieldCallback()
+   {
+      @Override
+      public String get(Object model)
+      {
+         return "RATP_PIVI:StopArea:" + UUID.randomUUID();
+      }
 
-    @Default
-    String streetName = "Rue "+ UUID.randomUUID();
-    
-    @Default
-    String countryCode = "ZIP "+ UUID.randomUUID();
+   };
 
-    @Default
-    String projectionType = "EPSG:9801";
-    
-    @Default
-    BigDecimal x = new BigDecimal( 602747 + ( UUID.randomUUID().getLeastSignificantBits()%100));
-    
-    @Default
-    BigDecimal y = new BigDecimal( 2431390 + ( UUID.randomUUID().getLeastSignificantBits()%100));
+   @Default
+   int objectVersion = 1;
 
-    @Default
-    ChouetteAreaEnum areaType = ChouetteAreaEnum.BoardingPosition;
-    
-    @Nullable
-    @Mapped   
-    StopArea parent;   
+   @Default
+   String name = "A" + UUID.randomUUID();
 
-    @MappedList(target = StopArea.class, size = 0)
-    List<StopArea> containedStopAreas;
-    
-    @MappedList(target = StopPoint.class, size = 0)
-    List<StopPoint> containedStopPoints;
-      
+   @Default
+   String comment = "mon arret " + UUID.randomUUID();
+
+   @Default
+   String registrationNumber = "C-" + UUID.randomUUID();
+
+   @Default
+   String nearestTopicName = "POI-" + UUID.randomUUID();
+
+   @Default
+   int fareCode = 1;
+
+   @Default
+   LongLatTypeEnum longLatType = LongLatTypeEnum.WGS84;
+
+   @Default
+   BigDecimal longitude = new BigDecimal(2.373D + (UUID.randomUUID()
+         .getLeastSignificantBits() % 100) / 1000000);
+
+   @Default
+   BigDecimal latitude = new BigDecimal(48.8D + (UUID.randomUUID()
+         .getLeastSignificantBits() % 100) / 1000000);
+
+   @Default
+   String streetName = "Rue " + UUID.randomUUID();
+
+   @Default
+   String countryCode = "ZIP " + UUID.randomUUID();
+
+   @Default
+   String projectionType = "EPSG:9801";
+
+   @Default
+   BigDecimal x = new BigDecimal(602747 + (UUID.randomUUID()
+         .getLeastSignificantBits() % 100));
+
+   @Default
+   BigDecimal y = new BigDecimal(2431390 + (UUID.randomUUID()
+         .getLeastSignificantBits() % 100));
+
+   @Default
+   ChouetteAreaEnum areaType = ChouetteAreaEnum.BoardingPosition;
+
+   @Nullable
+   @Mapped
+   StopArea parent;
+
+   @MappedList(target = StopArea.class, size = 0)
+   List<StopArea> containedStopAreas;
+
+   @MappedList(target = StopPoint.class, size = 0)
+   List<StopPoint> containedStopPoints;
+
 }

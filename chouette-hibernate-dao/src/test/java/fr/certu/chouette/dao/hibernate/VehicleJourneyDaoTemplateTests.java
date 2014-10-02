@@ -18,36 +18,45 @@ import fr.certu.chouette.model.neptune.VehicleJourney;
 
 /**
  * @author michel
- *
+ * 
  */
-public class VehicleJourneyDaoTemplateTests extends AbstractDaoTemplateTests<VehicleJourney> {
+public class VehicleJourneyDaoTemplateTests extends
+      AbstractDaoTemplateTests<VehicleJourney>
+{
 
-	/* (non-Javadoc)
-	 * @see fr.certu.chouette.dao.hibernate.AbstractDaoTemplateTests#createDaoTemplate()
-	 */
-	@Override
-	@BeforeMethod (alwaysRun=true)
-	public void createDaoTemplate() 
-	{
-		initDaoTemplate("VehicleJourney", "vehicleJourneyDao");
-	}
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * fr.certu.chouette.dao.hibernate.AbstractDaoTemplateTests#createDaoTemplate
+    * ()
+    */
+   @Override
+   @BeforeMethod(alwaysRun = true)
+   public void createDaoTemplate()
+   {
+      initDaoTemplate("VehicleJourney", "vehicleJourneyDao");
+   }
 
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * fr.certu.chouette.dao.hibernate.AbstractDaoTemplateTests#refreshBean()
+    */
+   @Override
+   public void refreshBean()
+   {
+      bean = createVehicleJourney();
+   }
 
-	/* (non-Javadoc)
-	 * @see fr.certu.chouette.dao.hibernate.AbstractDaoTemplateTests#refreshBean()
-	 */
-	@Override
-	public void refreshBean() 
-	{
-		bean = createVehicleJourney();
-	}
-	
-	@Override
-	protected List<FilterData> getSelectFilters() 
-	{
-		List<FilterData> ret = new ArrayList<FilterData>();
-		ret.add(new FilterData("VehicleJourney : route.creatorId",Filter.getNewEqualsFilter("route.creatorId", "TESTNG") , 1));
-		return ret;
-	}
+   @Override
+   protected List<FilterData> getSelectFilters()
+   {
+      List<FilterData> ret = new ArrayList<FilterData>();
+      ret.add(new FilterData("VehicleJourney : route.creatorId", Filter
+            .getNewEqualsFilter("route.creatorId", "TESTNG"), 1));
+      return ret;
+   }
 
 }

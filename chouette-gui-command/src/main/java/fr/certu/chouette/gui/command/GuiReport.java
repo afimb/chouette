@@ -17,35 +17,36 @@ import fr.certu.chouette.plugin.report.ReportItem;
 public class GuiReport extends Report
 {
 
-	/**
+   /**
 	 * 
 	 */
-	public GuiReport()
-	{
-		// TODO Auto-generated constructor stub
-	}
+   public GuiReport()
+   {
+   }
 
-	public GuiReport(String originKey, STATE status)
-	{
-		updateStatus(status);
-		setOriginKey(originKey);
-	}
+   public GuiReport(String originKey, STATE status)
+   {
+      updateStatus(status);
+      setOriginKey(originKey);
+   }
 
-	/* (non-Javadoc)
-	 * @see fr.certu.chouette.plugin.report.Report#addItem(fr.certu.chouette.plugin.report.ReportItem)
-	 */
-	@Override
-	public void addItem(ReportItem item)
-	{
-		if (getItems() == null) 
-		{
-			super.addItem(item);
-		}
-		else
-		{
-			getItems().add(item);
-		}
-	}
-
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * fr.certu.chouette.plugin.report.Report#addItem(fr.certu.chouette.plugin
+    * .report.ReportItem)
+    */
+   @Override
+   public void addItem(ReportItem item)
+   {
+      if (getItems() == null)
+      {
+         super.addItem(item);
+      } else
+      {
+         getItems().add(item);
+      }
+   }
 
 }

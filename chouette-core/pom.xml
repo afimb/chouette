@@ -16,6 +16,14 @@
 			<artifactId>lombok</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>fr.certu.chouette</groupId>
+			<artifactId>chouette-common</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>fr.certu.chouette</groupId>
+			<artifactId>chouette-model</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 		</dependency>
@@ -85,6 +93,7 @@
 			<artifactId>hibernate-entitymanager</artifactId>
 			<scope>provided</scope>
 		</dependency>
+
 	</dependencies>
 	<build>
 		<resources>

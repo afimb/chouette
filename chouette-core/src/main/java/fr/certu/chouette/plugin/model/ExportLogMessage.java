@@ -49,8 +49,8 @@ public class ExportLogMessage extends ActiveRecordObject
    @Column(name = "position")
    private int position;
 
-
-   public ExportLogMessage(GuiExport parent, String format, Report report, int position)
+   public ExportLogMessage(GuiExport parent, String format, Report report,
+         int position)
    {
       super();
       this.parent = parent;
@@ -58,8 +58,7 @@ public class ExportLogMessage extends ActiveRecordObject
       {
          ReportItem item = (ReportItem) report;
          init(format, item, null, position);
-      }
-      else
+      } else
       {
          this.key = format + report.getOriginKey();
          this.position = position;
@@ -72,7 +71,8 @@ public class ExportLogMessage extends ActiveRecordObject
       }
    }
 
-   public ExportLogMessage(GuiExport parent, String format, ReportItem item, String prefix, int position)
+   public ExportLogMessage(GuiExport parent, String format, ReportItem item,
+         String prefix, int position)
    {
       super();
       this.parent = parent;
@@ -104,15 +104,15 @@ public class ExportLogMessage extends ActiveRecordObject
          b.append(i);
          b.append("\" : \"");
          if (args.get(i) != null)
-            b.append(args.get(i).toString().replaceAll("\"", "\\\"").replaceAll("\n", " "));
+            b.append(args.get(i).toString().replaceAll("\"", "\\\"")
+                  .replaceAll("\n", " "));
          else
             b.append("???");
          b.append("\"");
          if (i == size - 1)
          {
             b.append("}");
-         }
-         else
+         } else
          {
             b.append(",");
          }
@@ -132,15 +132,13 @@ public class ExportLogMessage extends ActiveRecordObject
                if (s.length() > 50)
                   s = s.substring(0, 50);
                b.append(s.replaceAll("\"", "\\\"").replaceAll("\n", " "));
-            }
-            else
+            } else
                b.append("???");
             b.append("\"");
             if (i == size - 1)
             {
                b.append("}");
-            }
-            else
+            } else
             {
                b.append(",");
             }

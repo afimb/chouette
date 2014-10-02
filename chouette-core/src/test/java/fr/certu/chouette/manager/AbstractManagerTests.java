@@ -4,22 +4,25 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
-@ContextConfiguration(locations={"classpath:testContext.xml"})
-public abstract class AbstractManagerTests<T extends NeptuneIdentifiedObject> extends AbstractTestNGSpringContextTests {
 
-	protected AbstractNeptuneManager<T>  manager;
-	protected String beanName;
-	protected T bean;
+@ContextConfiguration(locations = { "classpath:testContext.xml" })
+public abstract class AbstractManagerTests<T extends NeptuneIdentifiedObject>
+      extends AbstractTestNGSpringContextTests
+{
 
-	public abstract void createManager();
-	
-	@SuppressWarnings("unchecked")
-	public void initManager(String beanName, String managerName, T bean)
-	{
-		manager = (AbstractNeptuneManager<T>) applicationContext.getBean(managerName);
-		this.beanName = beanName;
-		this.bean = bean;
-	}
+   protected AbstractNeptuneManager<T> manager;
+   protected String beanName;
+   protected T bean;
 
+   public abstract void createManager();
+
+   @SuppressWarnings("unchecked")
+   public void initManager(String beanName, String managerName, T bean)
+   {
+      manager = (AbstractNeptuneManager<T>) applicationContext
+            .getBean(managerName);
+      this.beanName = beanName;
+      this.bean = bean;
+   }
 
 }

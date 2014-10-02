@@ -85,8 +85,7 @@ public class CompilanceCheckResult extends ActiveRecordObject
          ruleFormat = items[1];
          ruleTarget = items[2];
          ruleNumber = Integer.valueOf(items[3]);
-      }
-      else if (items.length == 3)
+      } else if (items.length == 3)
       {
          ruleLevel = Integer.valueOf(items[0]);
          ruleFormat = "";

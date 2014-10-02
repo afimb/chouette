@@ -23,8 +23,9 @@ import fr.certu.chouette.model.neptune.Timetable;
 
 public class TimetableJdbcDao extends AbstractJdbcDao<Timetable>
 {
-   private static final Logger logger = Logger.getLogger(TimetableJdbcDao.class);
-   
+   private static final Logger logger = Logger
+         .getLogger(TimetableJdbcDao.class);
+
    public Logger getLogger()
    {
       return logger;
@@ -35,13 +36,13 @@ public class TimetableJdbcDao extends AbstractJdbcDao<Timetable>
     */
    @Getter
    @Setter
-   private String              sqlPurge1;
+   private String sqlPurge1;
    /**
     * second SQL purge request : remove all timetable without date nor period
     */
    @Getter
    @Setter
-   private String              sqlPurge2;
+   private String sqlPurge2;
 
    /*
     * (non-Javadoc)
@@ -52,11 +53,13 @@ public class TimetableJdbcDao extends AbstractJdbcDao<Timetable>
     * fr.certu.chouette.model.neptune.NeptuneIdentifiedObject)
     */
    @Override
-   protected void populateStatement(PreparedStatement ps, Timetable timetable) throws SQLException
+   protected void populateStatement(PreparedStatement ps, Timetable timetable)
+         throws SQLException
    {
-	  // security when startOfPeriod not initialized
-	  if (timetable.getStartOfPeriod() == null) timetable.computeLimitOfPeriods();
-	   
+      // security when startOfPeriod not initialized
+      if (timetable.getStartOfPeriod() == null)
+         timetable.computeLimitOfPeriods();
+
       ps.setString(1, timetable.getObjectId());
       ps.setInt(2, timetable.getObjectVersion());
       Timestamp timestamp = null;
@@ -67,8 +70,8 @@ public class TimetableJdbcDao extends AbstractJdbcDao<Timetable>
       ps.setString(5, timetable.getComment());
       ps.setString(6, timetable.getVersion());
       ps.setObject(7, (Integer) timetable.getIntDayTypes());
-      ps.setDate(8,timetable.getStartOfPeriod());
-      ps.setDate(9,timetable.getEndOfPeriod());
+      ps.setDate(8, timetable.getStartOfPeriod());
+      ps.setDate(9, timetable.getEndOfPeriod());
    }
 
    /*
@@ -79,8 +82,8 @@ public class TimetableJdbcDao extends AbstractJdbcDao<Timetable>
     * java.lang.String, java.sql.PreparedStatement, java.lang.Object)
     */
    @Override
-   protected void populateAttributeStatement(String attributeKey, PreparedStatement ps, Object attribute)
-         throws SQLException
+   protected void populateAttributeStatement(String attributeKey,
+         PreparedStatement ps, Object attribute) throws SQLException
    {
       if (attributeKey.equals("period"))
       {
@@ -116,7 +119,8 @@ public class TimetableJdbcDao extends AbstractJdbcDao<Timetable>
     * .String, fr.certu.chouette.model.neptune.NeptuneIdentifiedObject)
     */
    @Override
-   protected Collection<? extends Object> getAttributeValues(String attributeKey, Timetable item)
+   protected Collection<? extends Object> getAttributeValues(
+         String attributeKey, Timetable item)
    {
       if (attributeKey.equals("period"))
       {
@@ -182,7 +186,7 @@ public class TimetableJdbcDao extends AbstractJdbcDao<Timetable>
       /**
        * timetable id
        */
-      public Long   timetableId;
+      public Long timetableId;
       /**
        * period
        */
@@ -190,7 +194,7 @@ public class TimetableJdbcDao extends AbstractJdbcDao<Timetable>
       /**
        * position in list
        */
-      public int    position;
+      public int position;
    }
 
    /**
@@ -210,8 +214,8 @@ public class TimetableJdbcDao extends AbstractJdbcDao<Timetable>
       /**
        * position in list
        */
-      public int  position;
-      
+      public int position;
+
       /**
        * included or excluded
        */

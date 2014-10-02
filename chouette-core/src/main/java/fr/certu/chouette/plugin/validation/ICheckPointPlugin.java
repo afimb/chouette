@@ -17,9 +17,9 @@ import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 
 /**
  * @author michel
- *
+ * 
  */
 public interface ICheckPointPlugin<T extends NeptuneIdentifiedObject>
 {
-    void check(List<T> beans, JSONObject parameters, PhaseReportItem report);
+   void check(List<T> beans, JSONObject parameters, PhaseReportItem report);
 }

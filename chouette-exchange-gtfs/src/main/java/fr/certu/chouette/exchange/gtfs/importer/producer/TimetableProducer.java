@@ -17,117 +17,147 @@ import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.type.DayTypeEnum;
 import fr.certu.chouette.plugin.report.Report;
 
-public class TimetableProducer extends AbstractModelProducer<Timetable, GtfsCalendar> {
-	private static Logger logger = Logger.getLogger(TimetableProducer.class);
+public class TimetableProducer extends
+      AbstractModelProducer<Timetable, GtfsCalendar>
+{
+   private static Logger logger = Logger.getLogger(TimetableProducer.class);
 
+   @Override
+   public Timetable produce(GtfsCalendar gtfsCalendar, Report report)
+   {
+      Timetable timetable = new Timetable();
 
-	@Override
-	public Timetable produce(GtfsCalendar gtfsCalendar,Report report) 
-	{
-		Timetable timetable= new Timetable();
+      // objectId, objectVersion, creatorId, creationTime
+      timetable.setObjectId(composeIncrementalObjectId(Timetable.TIMETABLE_KEY,
+            gtfsCalendar.getServiceId(), logger));
 
-		// objectId, objectVersion, creatorId, creationTime
-		timetable.setObjectId(composeIncrementalObjectId( Timetable.TIMETABLE_KEY, gtfsCalendar.getServiceId(),logger));
+      if (gtfsCalendar.isMonday())
+         timetable.addDayType(DayTypeEnum.Monday);
+      if (gtfsCalendar.isTuesday())
+         timetable.addDayType(DayTypeEnum.Thursday);
+      if (gtfsCalendar.isWednesday())
+         timetable.addDayType(DayTypeEnum.Wednesday);
+      if (gtfsCalendar.isThursday())
+         timetable.addDayType(DayTypeEnum.Thursday);
+      if (gtfsCalendar.isFriday())
+         timetable.addDayType(DayTypeEnum.Friday);
+      if (gtfsCalendar.isSaturday())
+         timetable.addDayType(DayTypeEnum.Saturday);
+      if (gtfsCalendar.isSunday())
+         timetable.addDayType(DayTypeEnum.Sunday);
 
+      if (gtfsCalendar.getStartDate() != null
+            && gtfsCalendar.getEndDate() != null)
+      {
+         Period period = new Period();
+         period.setStartDate(gtfsCalendar.getStartDate());
+         period.setEndDate(gtfsCalendar.getEndDate());
+         timetable.addPeriod(period);
+      } else
+      {
+         // logger.info("service without period "+gtfsCalendar.getServiceId());
+      }
 
-		if (gtfsCalendar.isMonday()) timetable.addDayType(DayTypeEnum.Monday);
-		if (gtfsCalendar.isTuesday()) timetable.addDayType(DayTypeEnum.Thursday);
-		if (gtfsCalendar.isWednesday()) timetable.addDayType(DayTypeEnum.Wednesday);
-		if (gtfsCalendar.isThursday()) timetable.addDayType(DayTypeEnum.Thursday);
-		if (gtfsCalendar.isFriday()) timetable.addDayType(DayTypeEnum.Friday);
-		if (gtfsCalendar.isSaturday()) timetable.addDayType(DayTypeEnum.Saturday);
-		if (gtfsCalendar.isSunday()) timetable.addDayType(DayTypeEnum.Sunday);
+      if (!gtfsCalendar.getCalendarDates().isEmpty())
+      {
+         for (GtfsCalendarDate date : gtfsCalendar.getCalendarDates())
+         {
+            timetable.addCalendarDay(new CalendarDay(date.getDate(), date
+                  .getExceptionType() == GtfsCalendarDate.INCLUDED));
+         }
+      }
+      List<Period> periods = timetable.getPeriods();
+      if (periods != null)
+         Collections.sort(periods, new PeriodSorter());
+      buildComment(timetable);
+      return timetable;
+   }
 
-		if (gtfsCalendar.getStartDate() != null && gtfsCalendar.getEndDate() != null)
-		{
-			Period period = new Period();
-			period.setStartDate(gtfsCalendar.getStartDate());
-			period.setEndDate(gtfsCalendar.getEndDate());
-			timetable.addPeriod(period);
-		}
-		else
-		{
-			// logger.info("service without period "+gtfsCalendar.getServiceId());
-		}
+   /**
+    * produce a comment with first date, end date and maybe applicable days
+    * 
+    * @param timetable
+    */
+   private void buildComment(Timetable timetable)
+   {
+      SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
+      String monday = (timetable.getDayTypes().contains(DayTypeEnum.Monday)) ? "Mo"
+            : "..";
+      String tuesday = (timetable.getDayTypes().contains(DayTypeEnum.Tuesday)) ? "Tu"
+            : "..";
+      String wednesday = (timetable.getDayTypes()
+            .contains(DayTypeEnum.Wednesday)) ? "We" : "..";
+      String thursday = (timetable.getDayTypes().contains(DayTypeEnum.Thursday)) ? "Th"
+            : "..";
+      String friday = (timetable.getDayTypes().contains(DayTypeEnum.Friday)) ? "Fr"
+            : "..";
+      String saturday = (timetable.getDayTypes().contains(DayTypeEnum.Saturday)) ? "Sa"
+            : "..";
+      String sunday = (timetable.getDayTypes().contains(DayTypeEnum.Sunday)) ? "Su"
+            : "..";
 
-		if (!gtfsCalendar.getCalendarDates().isEmpty())
-		{
-			for (GtfsCalendarDate date : gtfsCalendar.getCalendarDates())
-			{
-				timetable.addCalendarDay(new CalendarDay(date.getDate(),date.getExceptionType() == GtfsCalendarDate.INCLUDED));
-			}
-		}
-		List<Period> periods = timetable.getPeriods();
-		if (periods != null) Collections.sort(periods, new PeriodSorter());
-		buildComment(timetable);
-		return timetable;
-	}
+      Date firstDate = null;
+      Date lastDate = null;
+      if (timetable.getPeriods() != null && !timetable.getPeriods().isEmpty())
+      {
+         for (Period period : timetable.getPeriods())
+         {
+            if (firstDate == null || period.getStartDate().before(firstDate))
+               firstDate = period.getStartDate();
+            if (lastDate == null || period.getEndDate().after(lastDate))
+               lastDate = period.getEndDate();
+         }
+      }
+      if (timetable.getCalendarDays() != null
+            && !timetable.getCalendarDays().isEmpty())
+      {
+         Calendar cal = Calendar.getInstance();
+         for (Date date : timetable.getPeculiarDates())
+         {
+            cal.setTime(date);
+            if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY)
+               monday = "Mo";
+            if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY)
+               tuesday = "Tu";
+            if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY)
+               wednesday = "We";
+            if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.THURSDAY)
+               thursday = "Th";
+            if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY)
+               friday = "Fr";
+            if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY)
+               saturday = "Sa";
+            if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
+               sunday = "Su";
+            if (firstDate == null || date.before(firstDate))
+               firstDate = date;
+            if (lastDate == null || date.after(lastDate))
+               lastDate = date;
+         }
+      }
 
-	/**
-	 * produce a comment with first date, end date and maybe applicable days
-	 * 
-	 * @param timetable
-	 */
-	private void buildComment(Timetable timetable)
-	{
-		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
-		String monday = (timetable.getDayTypes().contains(DayTypeEnum.Monday)) ? "Mo":"..";
-		String tuesday = (timetable.getDayTypes().contains(DayTypeEnum.Tuesday)) ? "Tu":"..";
-		String wednesday = (timetable.getDayTypes().contains(DayTypeEnum.Wednesday)) ? "We":"..";
-		String thursday = (timetable.getDayTypes().contains(DayTypeEnum.Thursday)) ? "Th":"..";
-		String friday = (timetable.getDayTypes().contains(DayTypeEnum.Friday)) ? "Fr":"..";
-		String saturday = (timetable.getDayTypes().contains(DayTypeEnum.Saturday)) ? "Sa":"..";
-		String sunday = (timetable.getDayTypes().contains(DayTypeEnum.Sunday)) ? "Su":"..";
+      // security if timetable is empty
+      if (firstDate != null && lastDate != null)
+      {
+         String comment = "From " + format.format(firstDate) + " to "
+               + format.format(lastDate) + " : " + monday + tuesday + wednesday
+               + thursday + friday + saturday + sunday;
+         timetable.setComment(comment);
+      } else
+      {
+         timetable.setComment("Empty timetable");
+      }
+   }
 
-		Date firstDate = null;
-		Date lastDate = null;
-		if (timetable.getPeriods() != null && !timetable.getPeriods().isEmpty())
-		{
-			for (Period period : timetable.getPeriods())
-			{
-				if (firstDate == null || period.getStartDate().before(firstDate)) firstDate = period.getStartDate();
-				if (lastDate == null || period.getEndDate().after(lastDate)) lastDate = period.getEndDate();
-			}
-		}
-		if (timetable.getCalendarDays() != null && !timetable.getCalendarDays().isEmpty())
-		{
-			Calendar cal = Calendar.getInstance();
-			for (Date date : timetable.getPeculiarDates())
-			{
-				cal.setTime(date);
-				if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) monday = "Mo";
-				if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY) tuesday = "Tu";
-				if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY) wednesday = "We";
-				if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.THURSDAY) thursday = "Th";
-				if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY) friday = "Fr";
-				if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) saturday = "Sa";
-				if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) sunday = "Su";
-				if (firstDate == null || date.before(firstDate)) firstDate = date;
-				if (lastDate == null || date.after(lastDate)) lastDate = date;
-			}
-		}
+   private class PeriodSorter implements Comparator<Period>
+   {
 
-		// security if timetable is empty
-		if (firstDate != null && lastDate != null)
-		{
-			String comment = "From " + format.format(firstDate) + " to " + format.format(lastDate)+" : "+monday+tuesday+wednesday+thursday+friday+saturday+sunday;
-			timetable.setComment(comment);
-		}
-		else
-		{
-			timetable.setComment("Empty timetable");
-		}
-	}
+      @Override
+      public int compare(Period o1, Period o2)
+      {
 
-	private class PeriodSorter implements Comparator<Period>
-	{
+         return o1.getStartDate().compareTo(o2.getStartDate());
+      }
 
-		@Override
-		public int compare(Period o1, Period o2)
-		{
-
-			return o1.getStartDate().compareTo(o2.getStartDate());
-		}
-
-	}
+   }
 }

@@ -1,7 +1,7 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
 <suite name="Validation phase 1" verbose="1">
-	 <test name="Test_1_1_1" preserve-order="true">
+	<test name="Test_1_1_1" preserve-order="true">
 		<parameter name="description" value="incomplete xml" />
 		<parameter name="testFile" value="1-NEPTUNE-XML-1_1.xml" />
 		<parameter name="mandatoryErrorTest" value="1-NEPTUNE-XML-1" />
@@ -27,6 +27,6 @@
 		<classes>
 			<class name="fr.certu.chouette.exchange.xml.neptune.ValidationTests" />
 		</classes>
-	      </test> 
+	</test>
 </suite>
 

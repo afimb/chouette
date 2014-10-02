@@ -8,21 +8,23 @@ import fr.certu.chouette.plugin.report.Report;
 
 /**
  * @author michel
- *
+ * 
  */
-public class VehicleJourneyAtStopProducer extends AbstractModelProducer<VehicleJourneyAtStop, GtfsStopTime> 
+public class VehicleJourneyAtStopProducer extends
+      AbstractModelProducer<VehicleJourneyAtStop, GtfsStopTime>
 {
-	   @Setter private DbVehicleJourneyFactory factory;
+   @Setter
+   private DbVehicleJourneyFactory factory;
 
-	@Override
-	public VehicleJourneyAtStop produce(GtfsStopTime gtfsStopTime,Report report) 
-	{
-		VehicleJourneyAtStop vjas = factory.getNewVehicleJourneyAtStop();
+   @Override
+   public VehicleJourneyAtStop produce(GtfsStopTime gtfsStopTime, Report report)
+   {
+      VehicleJourneyAtStop vjas = factory.getNewVehicleJourneyAtStop();
 
-		vjas.setArrivalTime(gtfsStopTime.getArrivalTime().getTime());
-		vjas.setDepartureTime(gtfsStopTime.getDepartureTime().getTime());
+      vjas.setArrivalTime(gtfsStopTime.getArrivalTime().getTime());
+      vjas.setDepartureTime(gtfsStopTime.getDepartureTime().getTime());
 
-		return vjas;
-	}
+      return vjas;
+   }
 
 }

@@ -20,33 +20,40 @@ import fr.certu.chouette.model.user.User;
 
 /**
  * @author michel
- *
+ * 
  */
-public class PTLinkManager extends AbstractNeptuneManager<PTLink> {
+public class PTLinkManager extends AbstractNeptuneManager<PTLink>
+{
 
-	private static final Logger logger = Logger.getLogger(PTLinkManager.class);
-	public PTLinkManager() 
-	{
-		super(PTLink.class,PTLink.PTLINK_KEY);
-	}
+   private static final Logger logger = Logger.getLogger(PTLinkManager.class);
 
-	@Override
-	protected Logger getLogger() {
-		return logger;
-	}
-	@Transactional
-	@Override
-	public int removeAll(User user, Filter filter) throws ChouetteException 
-	{
-		if (getDao() == null) throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,"unavailable resource");
-		if (!filter.getType().equals(Filter.Type.EQUALS))
-		{
-			throw new CoreException(CoreExceptionCode.DELETE_IMPOSSIBLE,"unvalid filter");
-		}
-		int ret =  getDao().removeAll(filter);
-		logger.debug(""+ret+" PTLinks deleted");
-		return ret;
-		
-	}
+   public PTLinkManager()
+   {
+      super(PTLink.class, PTLink.PTLINK_KEY);
+   }
+
+   @Override
+   protected Logger getLogger()
+   {
+      return logger;
+   }
+
+   @Transactional
+   @Override
+   public int removeAll(User user, Filter filter) throws ChouetteException
+   {
+      if (getDao() == null)
+         throw new CoreException(CoreExceptionCode.NO_DAO_AVAILABLE,
+               "unavailable resource");
+      if (!filter.getType().equals(Filter.Type.EQUALS))
+      {
+         throw new CoreException(CoreExceptionCode.DELETE_IMPOSSIBLE,
+               "unvalid filter");
+      }
+      int ret = getDao().removeAll(filter);
+      logger.debug("" + ret + " PTLinks deleted");
+      return ret;
+
+   }
 
 }

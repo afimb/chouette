@@ -20,52 +20,56 @@ import fr.certu.chouette.model.neptune.type.ServiceStatusValueEnum;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 
 @Blueprint(VehicleJourney.class)
-public class VehicleJourneyBlueprint {
-    
-    @Default
-    FieldCallback objectId = new FieldCallback() {
-        @Override
-        public String get( Object model) {
-        return "RATP_PIVI:ServiceJourney:" + UUID.randomUUID();
-        }
-        
-    };     
-    
-    @Default
-    String publishedJourneyName = "nom "+UUID.randomUUID().toString(); 
+public class VehicleJourneyBlueprint
+{
 
-    @Default
-    String publishedJourneyIdentifier = "nom court "+UUID.randomUUID().toString();
+   @Default
+   FieldCallback objectId = new FieldCallback()
+   {
+      @Override
+      public String get(Object model)
+      {
+         return "RATP_PIVI:ServiceJourney:" + UUID.randomUUID();
+      }
 
-    @Default
-    String comment = "comment "+UUID.randomUUID().toString();
+   };
 
-    @Default
-    ServiceStatusValueEnum serviceStatusValue = ServiceStatusValueEnum.Normal;
+   @Default
+   String publishedJourneyName = "nom " + UUID.randomUUID().toString();
 
-    @Default
-    TransportModeNameEnum transportMode = TransportModeNameEnum.Coach;
+   @Default
+   String publishedJourneyIdentifier = "nom court "
+         + UUID.randomUUID().toString();
 
-    // TODO: define here number property, but noy so simple
-    // @Default
-    // long number = 5L;
+   @Default
+   String comment = "comment " + UUID.randomUUID().toString();
 
-    @Nullable
-    @Mapped
-    JourneyPattern journeyPattern;    
-    
-    @Nullable
-    @Mapped
-    Route route;    
-    
-    @Nullable
-    @Mapped
-    Company company;    
-    
-    @MappedList(target = VehicleJourneyAtStop.class, size = 0)
-    List<VehicleJourneyAtStop> vehicleJourneyAtStops;    
-    
-    @MappedList(target = Timetable.class, size = 0)
-    List<Timetable> timetables;    
+   @Default
+   ServiceStatusValueEnum serviceStatusValue = ServiceStatusValueEnum.Normal;
+
+   @Default
+   TransportModeNameEnum transportMode = TransportModeNameEnum.Coach;
+
+   // TODO: define here number property, but noy so simple
+   // @Default
+   // long number = 5L;
+
+   @Nullable
+   @Mapped
+   JourneyPattern journeyPattern;
+
+   @Nullable
+   @Mapped
+   Route route;
+
+   @Nullable
+   @Mapped
+   Company company;
+
+   @MappedList(target = VehicleJourneyAtStop.class, size = 0)
+   List<VehicleJourneyAtStop> vehicleJourneyAtStops;
+
+   @MappedList(target = Timetable.class, size = 0)
+   List<Timetable> timetables;
 
 }

@@ -82,8 +82,9 @@ public class JsonTextUserType implements UserType
     * @see org.hibernate.usertype.UserType#nullSafeGet(java.sql.ResultSet,
     * java.lang.String[], java.lang.Object)
     */
-   public Object nullSafeGet(ResultSet resultSet, String[] names, SessionImplementor arg2, Object arg3)
-         throws HibernateException, SQLException
+   public Object nullSafeGet(ResultSet resultSet, String[] names,
+         SessionImplementor arg2, Object arg3) throws HibernateException,
+         SQLException
    {
       String name = resultSet.getString(names[0]);
       if (resultSet.wasNull() || name.isEmpty())
@@ -100,15 +101,15 @@ public class JsonTextUserType implements UserType
     * org.hibernate.usertype.UserType#nullSafeSet(java.sql.PreparedStatement,
     * java.lang.Object, int)
     */
-   public void nullSafeSet(PreparedStatement statement, Object value, int index, SessionImplementor arg3)
-         throws HibernateException, SQLException
+   public void nullSafeSet(PreparedStatement statement, Object value,
+         int index, SessionImplementor arg3) throws HibernateException,
+         SQLException
    {
       // log.warn(" json set "+index+" = "+value);
       if (value == null)
       {
          statement.setNull(index, Types.VARCHAR);
-      }
-      else
+      } else
       {
          statement.setString(index, value.toString());
       }
@@ -120,7 +121,8 @@ public class JsonTextUserType implements UserType
     * @see org.hibernate.usertype.UserType#assemble(java.io.Serializable,
     * java.lang.Object)
     */
-   public Object assemble(Serializable cached, Object owner) throws HibernateException
+   public Object assemble(Serializable cached, Object owner)
+         throws HibernateException
    {
       return cached;
    }
@@ -141,7 +143,8 @@ public class JsonTextUserType implements UserType
     * @see org.hibernate.usertype.UserType#replace(java.lang.Object,
     * java.lang.Object, java.lang.Object)
     */
-   public Object replace(Object original, Object target, Object owner) throws HibernateException
+   public Object replace(Object original, Object target, Object owner)
+         throws HibernateException
    {
       return original;
    }

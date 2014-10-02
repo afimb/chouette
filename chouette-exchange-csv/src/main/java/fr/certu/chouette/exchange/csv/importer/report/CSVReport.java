@@ -15,32 +15,33 @@ import fr.certu.chouette.plugin.report.ReportItem;
 
 /**
  * @author michel
- *
+ * 
  */
-public class CSVReport extends Report 
+public class CSVReport extends Report
 {
-	// declare message report
-    public enum KEY {IMPORT};
-    
+   // declare message report
+   public enum KEY
+   {
+      IMPORT
+   };
 
-    public CSVReport(KEY key)
-    {
-    	setOriginKey(key.name());
-    }
-    
-    /**
-     * add but don't merge item in list
-     * 
-     * @param item
-     *           to add/merge
-     */
-    public void addItem(ReportItem item)
-    {
-       if (getItems() == null)
-          setItems(new ArrayList<ReportItem>());
-       updateStatus(item.getStatus());
-       getItems().add(item);
-    }
+   public CSVReport(KEY key)
+   {
+      setOriginKey(key.name());
+   }
 
+   /**
+    * add but don't merge item in list
+    * 
+    * @param item
+    *           to add/merge
+    */
+   public void addItem(ReportItem item)
+   {
+      if (getItems() == null)
+         setItems(new ArrayList<ReportItem>());
+      updateStatus(item.getStatus());
+      getItems().add(item);
+   }
 
 }

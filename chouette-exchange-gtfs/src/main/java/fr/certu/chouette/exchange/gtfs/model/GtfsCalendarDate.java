@@ -12,102 +12,129 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- *
+ * 
  * @author zbouziane
  */
 @NoArgsConstructor
-
-public class GtfsCalendarDate extends GtfsBean implements Comparable<GtfsCalendarDate>
+public class GtfsCalendarDate extends GtfsBean implements
+      Comparable<GtfsCalendarDate>
 {
    public static final int INCLUDED = 1;
    public static final int EXCLUDED = 2;
-   
-   @Getter @Setter private String serviceId;
-   @Getter @Setter private Date   date;
-   @Getter @Setter private int    exceptionType = 0;
-   @Getter @Setter private GtfsCalendar calendar;
+
+   @Getter
+   @Setter
+   private String serviceId;
+   @Getter
+   @Setter
+   private Date date;
+   @Getter
+   @Setter
+   private int exceptionType = 0;
+   @Getter
+   @Setter
+   private GtfsCalendar calendar;
 
    public static final String header = "service_id,date,exception_type";
 
-   
-   public String getCSVLine() {
-      String csvLine = toCSVString(serviceId) + "," + GtfsCalendar.sdf.format(date) + "," +exceptionType;
+   public String getCSVLine()
+   {
+      String csvLine = toCSVString(serviceId) + ","
+            + GtfsCalendar.sdf.format(date) + "," + exceptionType;
       return csvLine;
    }
 
-   /* (non-Javadoc)
+   /*
+    * (non-Javadoc)
+    * 
     * @see java.lang.Object#hashCode()
     */
    @Override
-   public int hashCode() {
+   public int hashCode()
+   {
       final int prime = 31;
       int result = super.hashCode();
       result = prime * result + ((date == null) ? 0 : date.hashCode());
       result = prime * result + exceptionType;
-      result = prime * result + ((serviceId == null) ? 0 : serviceId.hashCode());
+      result = prime * result
+            + ((serviceId == null) ? 0 : serviceId.hashCode());
       return result;
    }
 
-   /* (non-Javadoc)
+   /*
+    * (non-Javadoc)
+    * 
     * @see java.lang.Object#equals(java.lang.Object)
     */
    @Override
-   public boolean equals(Object obj) {
-      if (this == obj) {
+   public boolean equals(Object obj)
+   {
+      if (this == obj)
+      {
          return true;
       }
-      if (!super.equals(obj)) {
+      if (!super.equals(obj))
+      {
          return false;
       }
-      if (!(obj instanceof GtfsCalendarDate)) {
+      if (!(obj instanceof GtfsCalendarDate))
+      {
          return false;
       }
       GtfsCalendarDate other = (GtfsCalendarDate) obj;
-      if (date == null) {
-         if (other.date != null) {
+      if (date == null)
+      {
+         if (other.date != null)
+         {
             return false;
          }
-      } else if (!date.equals(other.date)) {
+      } else if (!date.equals(other.date))
+      {
          return false;
       }
-      if (exceptionType != other.exceptionType) {
+      if (exceptionType != other.exceptionType)
+      {
          return false;
       }
-      if (serviceId == null) {
-         if (other.serviceId != null) {
+      if (serviceId == null)
+      {
+         if (other.serviceId != null)
+         {
             return false;
          }
-      } else if (!serviceId.equals(other.serviceId)) {
+      } else if (!serviceId.equals(other.serviceId))
+      {
          return false;
       }
       return true;
    }
-	@Override
-	public boolean isValid() 
-	{
-		boolean ret = true;
-		if (serviceId == null)
-		{
-			addMissingData("service_id");
-			ret = false;
-		}
-		if (date == null)
-		{
-			addMissingData("date");
-			ret = false;
-		}
-		if (exceptionType == 0)
-		{
-			addMissingData("exception_type");
-			ret = false;
-		}
-		return ret;
-	}
 
-	@Override
-	public int compareTo(GtfsCalendarDate o) 
-	{
-		return date.compareTo(o.date);
-	}
+   @Override
+   public boolean isValid()
+   {
+      boolean ret = true;
+      if (serviceId == null)
+      {
+         addMissingData("service_id");
+         ret = false;
+      }
+      if (date == null)
+      {
+         addMissingData("date");
+         ret = false;
+      }
+      if (exceptionType == 0)
+      {
+         addMissingData("exception_type");
+         ret = false;
+      }
+      return ret;
+   }
+
+   @Override
+   public int compareTo(GtfsCalendarDate o)
+   {
+      return date.compareTo(o.date);
+   }
 
 }

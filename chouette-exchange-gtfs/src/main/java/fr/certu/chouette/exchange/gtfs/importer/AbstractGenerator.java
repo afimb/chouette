@@ -10,23 +10,25 @@ package fr.certu.chouette.exchange.gtfs.importer;
 
 /**
  * @author michel
- *
+ * 
  */
-public abstract class AbstractGenerator 
+public abstract class AbstractGenerator
 {
-	protected double distance(double long1,double lat1,double long2, double lat2)
-	{
-		double long1rad = Math.toRadians(long1);
-		double lat1rad = Math.toRadians(lat1);
-		double long2rad = Math.toRadians(long2);
-		double lat2rad = Math.toRadians(lat2);
+   protected double distance(double long1, double lat1, double long2,
+         double lat2)
+   {
+      double long1rad = Math.toRadians(long1);
+      double lat1rad = Math.toRadians(lat1);
+      double long2rad = Math.toRadians(long2);
+      double lat2rad = Math.toRadians(lat2);
 
-		double alpha = Math.cos(lat1rad)*Math.cos(lat2rad)*Math.cos(long2rad-long1rad) + Math.sin(lat1rad)*Math.sin(lat2rad);
+      double alpha = Math.cos(lat1rad) * Math.cos(lat2rad)
+            * Math.cos(long2rad - long1rad) + Math.sin(lat1rad)
+            * Math.sin(lat2rad);
 
-		double distance = 6378. * Math.acos(alpha);
+      double distance = 6378. * Math.acos(alpha);
 
-		return distance *1000;
-	}
-
+      return distance * 1000;
+   }
 
 }

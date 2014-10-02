@@ -25,188 +25,226 @@ import fr.certu.chouette.plugin.validation.report.CheckPointReportItem;
 import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 import fr.certu.chouette.plugin.validation.report.PhaseReportItem.PHASE;
 
-@ContextConfiguration(locations={"classpath:testContext.xml","classpath*:chouetteContext.xml"})
-@TransactionConfiguration(transactionManager="transactionManager",defaultRollback=true)
-public class ValidationAccessLinks extends AbstractTransactionalTestNGSpringContextTests
+@ContextConfiguration(locations = { "classpath:testContext.xml",
+      "classpath*:chouetteContext.xml" })
+@TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
+public class ValidationAccessLinks extends
+      AbstractTransactionalTestNGSpringContextTests
 {
 
-	@SuppressWarnings("unchecked")
-	@BeforeGroups (groups = {"AccessLink"})
-	public void loadStopAreas() throws ChouetteException
-	{
-		{
-		IImportPlugin<Line> importLine = (IImportPlugin<Line>) applicationContext.getBean("NeptuneLineImport");
-		INeptuneManager<Line> lineManager = (INeptuneManager<Line>) applicationContext.getBean("lineManager");
+   @SuppressWarnings("unchecked")
+   @BeforeGroups(groups = { "AccessLink" })
+   public void loadStopAreas() throws ChouetteException
+   {
+      {
+         IImportPlugin<Line> importLine = (IImportPlugin<Line>) applicationContext
+               .getBean("NeptuneLineImport");
+         INeptuneManager<Line> lineManager = (INeptuneManager<Line>) applicationContext
+               .getBean("lineManager");
 
-		JSONObject parameters = null;
-		try {
-			parameters = new RuleParameterSet();
-		} catch (JSONException | IOException e) {
-			e.printStackTrace();
-		}
-		Assert.assertNotNull(parameters,"no parameters for test");
+         JSONObject parameters = null;
+         try
+         {
+            parameters = new RuleParameterSet();
+         } catch (JSONException | IOException e)
+         {
+            e.printStackTrace();
+         }
+         Assert.assertNotNull(parameters, "no parameters for test");
 
-		List<Line> beans = LineLoader.load(importLine, "src/test/data/model.zip");
-		Assert.assertFalse(beans.isEmpty(),"No data for test");
-		lineManager.saveAll(null, beans, true, true);
-		}
-		
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Test (groups = {"AccessLink"}, description = "3-AccessLink-1" )
-	public void verifyTest1() throws ChouetteException 
-	{
-		// 3-AccessLink-1 : check distance between ends of accessLink
+         List<Line> beans = LineLoader.load(importLine,
+               "src/test/data/model.zip");
+         Assert.assertFalse(beans.isEmpty(), "No data for test");
+         lineManager.saveAll(null, beans, true, true);
+      }
 
-		INeptuneManager<AccessLink> accessLinkManager = (INeptuneManager<AccessLink>) applicationContext.getBean("accessLinkManager");
+   }
 
-		JSONObject parameters = null;
-		try {
-			parameters = new RuleParameterSet();
-		} catch (JSONException | IOException e) {
-			e.printStackTrace();
-		}
-		Assert.assertNotNull(parameters,"no parameters for test");
+   @SuppressWarnings("unchecked")
+   @Test(groups = { "AccessLink" }, description = "3-AccessLink-1")
+   public void verifyTest1() throws ChouetteException
+   {
+      // 3-AccessLink-1 : check distance between ends of accessLink
 
-		List<AccessLink> beans  = accessLinkManager.getAll(null);
-		Assert.assertFalse(beans.isEmpty(),"No data for test");
+      INeptuneManager<AccessLink> accessLinkManager = (INeptuneManager<AccessLink>) applicationContext
+            .getBean("accessLinkManager");
 
-		parameters.put("inter_access_link_distance_max", 50);
+      JSONObject parameters = null;
+      try
+      {
+         parameters = new RuleParameterSet();
+      } catch (JSONException | IOException e)
+      {
+         e.printStackTrace();
+      }
+      Assert.assertNotNull(parameters, "no parameters for test");
 
-		PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
-		accessLinkManager.validate(null, beans, parameters, report, true);
-		report.refreshStatus();
+      List<AccessLink> beans = accessLinkManager.getAll(null);
+      Assert.assertFalse(beans.isEmpty(), "No data for test");
 
-		AbstractValidation.printReport(report);
+      parameters.put("inter_access_link_distance_max", 50);
 
-		Assert.assertEquals(report.getStatus(), Report.STATE.WARNING," report must be on level warning");
-		Assert.assertEquals(report.hasItems(), true," report must have items");
-		boolean found = false;
-		for (ReportItem item : report.getItems()) 
-		{
-			CheckPointReportItem checkPointReport = (CheckPointReportItem) item;
-			if (checkPointReport.getMessageKey().equals("3-AccessLink-1"))
-			{
-				found = true;
-				Assert.assertEquals(checkPointReport.getStatus(), Report.STATE.WARNING," checkPointReport must be on level warning");
-				Assert.assertEquals(checkPointReport.hasItems(), true," checkPointReport must have items");
-				Assert.assertEquals(checkPointReport.getItems().size(), 2," checkPointReport must have 2 item");
-			}
-		}
-		Assert.assertTrue(found,"report must contain a 3-AccessLink-1 checkPoint");
+      PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
+      accessLinkManager.validate(null, beans, parameters, report, true);
+      report.refreshStatus();
 
-	}
+      AbstractValidation.printReport(report);
 
+      Assert.assertEquals(report.getStatus(), Report.STATE.WARNING,
+            " report must be on level warning");
+      Assert.assertEquals(report.hasItems(), true, " report must have items");
+      boolean found = false;
+      for (ReportItem item : report.getItems())
+      {
+         CheckPointReportItem checkPointReport = (CheckPointReportItem) item;
+         if (checkPointReport.getMessageKey().equals("3-AccessLink-1"))
+         {
+            found = true;
+            Assert.assertEquals(checkPointReport.getStatus(),
+                  Report.STATE.WARNING,
+                  " checkPointReport must be on level warning");
+            Assert.assertEquals(checkPointReport.hasItems(), true,
+                  " checkPointReport must have items");
+            Assert.assertEquals(checkPointReport.getItems().size(), 2,
+                  " checkPointReport must have 2 item");
+         }
+      }
+      Assert.assertTrue(found,
+            "report must contain a 3-AccessLink-1 checkPoint");
 
-	@SuppressWarnings("unchecked")
-	@Test (groups = {"AccessLink"}, description = "3-AccessLink-2" )
-	public void verifyTest2() throws ChouetteException 
-	{
-		// 3-AccessLink-2 : check distance of link against distance between stops of accessLink
+   }
 
-		INeptuneManager<AccessLink> accessLinkManager = (INeptuneManager<AccessLink>) applicationContext.getBean("accessLinkManager");
+   @SuppressWarnings("unchecked")
+   @Test(groups = { "AccessLink" }, description = "3-AccessLink-2")
+   public void verifyTest2() throws ChouetteException
+   {
+      // 3-AccessLink-2 : check distance of link against distance between
+      // stops of accessLink
 
-		JSONObject parameters = null;
-		try {
-			parameters = new RuleParameterSet();
-		} catch (JSONException | IOException e) {
-			e.printStackTrace();
-		}
-		Assert.assertNotNull(parameters,"no parameters for test");
+      INeptuneManager<AccessLink> accessLinkManager = (INeptuneManager<AccessLink>) applicationContext
+            .getBean("accessLinkManager");
 
-		List<AccessLink> beans  = accessLinkManager.getAll(null);
-		Assert.assertFalse(beans.isEmpty(),"No data for test");
+      JSONObject parameters = null;
+      try
+      {
+         parameters = new RuleParameterSet();
+      } catch (JSONException | IOException e)
+      {
+         e.printStackTrace();
+      }
+      Assert.assertNotNull(parameters, "no parameters for test");
 
-		AccessLink link = beans.get(0);
-		
-		double distance = AbstractValidation.distance(link.getStopArea(), link.getAccessPoint());
+      List<AccessLink> beans = accessLinkManager.getAll(null);
+      Assert.assertFalse(beans.isEmpty(), "No data for test");
 
-		link.setLinkDistance(BigDecimal.valueOf(distance-50));
+      AccessLink link = beans.get(0);
 
-		PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
-		accessLinkManager.validate(null, beans, parameters, report, true);
-		report.refreshStatus();
+      double distance = AbstractValidation.distance(link.getStopArea(),
+            link.getAccessPoint());
 
-		AbstractValidation.printReport(report);
+      link.setLinkDistance(BigDecimal.valueOf(distance - 50));
 
-		Assert.assertEquals(report.getStatus(), Report.STATE.WARNING," report must be on level warning");
-		Assert.assertEquals(report.hasItems(), true," report must have items");
-		boolean found = false;
-		for (ReportItem item : report.getItems()) 
-		{
-			CheckPointReportItem checkPointReport = (CheckPointReportItem) item;
-			if (checkPointReport.getMessageKey().equals("3-AccessLink-2"))
-			{
-				found = true;
-				Assert.assertEquals(checkPointReport.getStatus(), Report.STATE.WARNING," checkPointReport must be on level warning");
-				Assert.assertEquals(checkPointReport.hasItems(), true," checkPointReport must have items");
-				Assert.assertEquals(checkPointReport.getItems().size(), 1," checkPointReport must have 1 item");
-			}
-		}
-		Assert.assertTrue(found,"report must contain a 3-AccessLink-2 checkPoint");
+      PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
+      accessLinkManager.validate(null, beans, parameters, report, true);
+      report.refreshStatus();
 
-	}
+      AbstractValidation.printReport(report);
 
+      Assert.assertEquals(report.getStatus(), Report.STATE.WARNING,
+            " report must be on level warning");
+      Assert.assertEquals(report.hasItems(), true, " report must have items");
+      boolean found = false;
+      for (ReportItem item : report.getItems())
+      {
+         CheckPointReportItem checkPointReport = (CheckPointReportItem) item;
+         if (checkPointReport.getMessageKey().equals("3-AccessLink-2"))
+         {
+            found = true;
+            Assert.assertEquals(checkPointReport.getStatus(),
+                  Report.STATE.WARNING,
+                  " checkPointReport must be on level warning");
+            Assert.assertEquals(checkPointReport.hasItems(), true,
+                  " checkPointReport must have items");
+            Assert.assertEquals(checkPointReport.getItems().size(), 1,
+                  " checkPointReport must have 1 item");
+         }
+      }
+      Assert.assertTrue(found,
+            "report must contain a 3-AccessLink-2 checkPoint");
 
-	@SuppressWarnings("unchecked")
-	@Test (groups = {"AccessLink"}, description = "3-AccessLink-3" )
-	public void verifyTest3() throws ChouetteException 
-	{
-		// 3-AccessLink-3 : check speeds in accessLink
+   }
 
-		INeptuneManager<AccessLink> accessLinkManager = (INeptuneManager<AccessLink>) applicationContext.getBean("accessLinkManager");
+   @SuppressWarnings("unchecked")
+   @Test(groups = { "AccessLink" }, description = "3-AccessLink-3")
+   public void verifyTest3() throws ChouetteException
+   {
+      // 3-AccessLink-3 : check speeds in accessLink
 
-		JSONObject parameters = null;
-		try {
-			parameters = new RuleParameterSet();
-		} catch (JSONException | IOException e) {
-			e.printStackTrace();
-		}
-		Assert.assertNotNull(parameters,"no parameters for test");
+      INeptuneManager<AccessLink> accessLinkManager = (INeptuneManager<AccessLink>) applicationContext
+            .getBean("accessLinkManager");
 
-		List<AccessLink> beans  = accessLinkManager.getAll(null);
-		Assert.assertFalse(beans.isEmpty(),"No data for test");
+      JSONObject parameters = null;
+      try
+      {
+         parameters = new RuleParameterSet();
+      } catch (JSONException | IOException e)
+      {
+         e.printStackTrace();
+      }
+      Assert.assertNotNull(parameters, "no parameters for test");
 
-		AccessLink link = null; 
-		for (AccessLink accessLink : beans) 
-		{
-			if (accessLink.getObjectId().equals("NINOXE:AccessLink:7"))
-			{
-				link = accessLink;
-				break;
-			}
-		}
-		double distance = AbstractValidation.distance(link.getAccessPoint(), link.getStopArea());
-		link.setLinkDistance(BigDecimal.valueOf(distance));
-		link.getDefaultDuration().setTime(link.getDefaultDuration().getTime() - 150000);
-		link.getOccasionalTravellerDuration().setTime(link.getDefaultDuration().getTime());
-		link.getFrequentTravellerDuration().setTime(link.getDefaultDuration().getTime());
-		link.getMobilityRestrictedTravellerDuration().setTime(link.getDefaultDuration().getTime());
+      List<AccessLink> beans = accessLinkManager.getAll(null);
+      Assert.assertFalse(beans.isEmpty(), "No data for test");
 
-		PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
-		accessLinkManager.validate(null, beans, parameters, report, true);
-		report.refreshStatus();
+      AccessLink link = null;
+      for (AccessLink accessLink : beans)
+      {
+         if (accessLink.getObjectId().equals("NINOXE:AccessLink:7"))
+         {
+            link = accessLink;
+            break;
+         }
+      }
+      double distance = AbstractValidation.distance(link.getAccessPoint(),
+            link.getStopArea());
+      link.setLinkDistance(BigDecimal.valueOf(distance));
+      link.getDefaultDuration().setTime(
+            link.getDefaultDuration().getTime() - 150000);
+      link.getOccasionalTravellerDuration().setTime(
+            link.getDefaultDuration().getTime());
+      link.getFrequentTravellerDuration().setTime(
+            link.getDefaultDuration().getTime());
+      link.getMobilityRestrictedTravellerDuration().setTime(
+            link.getDefaultDuration().getTime());
 
-		AbstractValidation.printReport(report);
+      PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
+      accessLinkManager.validate(null, beans, parameters, report, true);
+      report.refreshStatus();
 
-		Assert.assertEquals(report.getStatus(), Report.STATE.WARNING," report must be on level warning");
-		Assert.assertEquals(report.hasItems(), true," report must have items");
-		boolean found = false;
-		for (ReportItem item : report.getItems()) 
-		{
-			CheckPointReportItem checkPointReport = (CheckPointReportItem) item;
-			if (checkPointReport.getMessageKey().equals("3-AccessLink-3"))
-			{
-				found = true;
-				Assert.assertEquals(checkPointReport.getStatus(), Report.STATE.WARNING," checkPointReport must be on level warning");
-				Assert.assertEquals(checkPointReport.hasItems(), true," checkPointReport must have items");
-				Assert.assertEquals(checkPointReport.getItems().size(), 4," checkPointReport must have 4 items");
-			}
-		}
-		Assert.assertTrue(found,"report must contain a 3-AccessLink-3 checkPoint");
+      AbstractValidation.printReport(report);
 
-	}
+      Assert.assertEquals(report.getStatus(), Report.STATE.WARNING,
+            " report must be on level warning");
+      Assert.assertEquals(report.hasItems(), true, " report must have items");
+      boolean found = false;
+      for (ReportItem item : report.getItems())
+      {
+         CheckPointReportItem checkPointReport = (CheckPointReportItem) item;
+         if (checkPointReport.getMessageKey().equals("3-AccessLink-3"))
+         {
+            found = true;
+            Assert.assertEquals(checkPointReport.getStatus(),
+                  Report.STATE.WARNING,
+                  " checkPointReport must be on level warning");
+            Assert.assertEquals(checkPointReport.hasItems(), true,
+                  " checkPointReport must have items");
+            Assert.assertEquals(checkPointReport.getItems().size(), 4,
+                  " checkPointReport must have 4 items");
+         }
+      }
+      Assert.assertTrue(found,
+            "report must contain a 3-AccessLink-3 checkPoint");
 
+   }
 
 }

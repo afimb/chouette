@@ -20,17 +20,17 @@ import fr.certu.chouette.model.neptune.Line;
  */
 
 @SuppressWarnings("unchecked")
-public class LineJdbcDao extends AbstractJdbcDao<Line> 
+public class LineJdbcDao extends AbstractJdbcDao<Line>
 {
    private static final Logger logger = Logger.getLogger(LineJdbcDao.class);
-   
+
    public Logger getLogger()
    {
       return logger;
    }
 
    @Override
-   public List<Line> getAll() 
+   public List<Line> getAll()
    {
       String sql = sqlSelectAll;
       List<Line> lines = getJdbcTemplate().query(sql,
@@ -41,13 +41,14 @@ public class LineJdbcDao extends AbstractJdbcDao<Line>
 
    @Override
    protected void populateStatement(PreparedStatement ps, Line line)
-   throws SQLException {
-      setId(ps,1,line.getPtNetwork());
-      setId(ps,2,line.getCompany());
+         throws SQLException
+   {
+      setId(ps, 1, line.getPtNetwork());
+      setId(ps, 2, line.getCompany());
       ps.setString(3, line.getObjectId());
       ps.setInt(4, line.getObjectVersion());
       Timestamp timestamp = null;
-      if(line.getCreationTime() != null)
+      if (line.getCreationTime() != null)
          timestamp = new Timestamp(line.getCreationTime().getTime());
       ps.setTimestamp(5, timestamp);
       ps.setString(6, line.getCreatorId());
@@ -58,24 +59,28 @@ public class LineJdbcDao extends AbstractJdbcDao<Line>
       ps.setString(11, line.getRegistrationNumber());
       ps.setString(12, line.getComment());
       Boolean mobilityRS = false;
-      if(line.getMobilityRestrictedSuitable() != null)
-         mobilityRS = true;		
+      if (line.getMobilityRestrictedSuitable() != null)
+         mobilityRS = true;
       ps.setBoolean(13, mobilityRS);
-      ps.setObject(14, (Integer)line.getIntUserNeeds());
+      ps.setObject(14, (Integer) line.getIntUserNeeds());
    }
 
-   /* (non-Javadoc)
-    * @see fr.certu.chouette.jdbc.dao.AbstractJdbcDao#populateAttributeStatement(java.lang.String, java.sql.PreparedStatement, java.lang.Object)
+   /*
+    * (non-Javadoc)
+    * 
+    * @see fr.certu.chouette.jdbc.dao.AbstractJdbcDao#populateAttributeStatement
+    * (java.lang.String, java.sql.PreparedStatement, java.lang.Object)
     */
    @Override
-   protected void populateAttributeStatement(String attributeKey,PreparedStatement ps, Object attribute) throws SQLException 
+   protected void populateAttributeStatement(String attributeKey,
+         PreparedStatement ps, Object attribute) throws SQLException
    {
 
       if (attributeKey.equals("groupOfLines"))
       {
          JdbcLineGroupOfLine group = (JdbcLineGroupOfLine) attribute;
-         ps.setLong(1,group.lineId);
-         ps.setLong(2,group.groupOfLineId);
+         ps.setLong(1, group.lineId);
+         ps.setLong(2, group.groupOfLineId);
 
          return;
       }
@@ -84,9 +89,9 @@ public class LineJdbcDao extends AbstractJdbcDao<Line>
 
    }
 
-
    @Override
-   protected Collection<? extends Object> getAttributeValues(String attributeKey, Line item) 
+   protected Collection<? extends Object> getAttributeValues(
+         String attributeKey, Line item)
    {
 
       if (attributeKey.equals("groupOfLines"))
@@ -98,7 +103,7 @@ public class LineJdbcDao extends AbstractJdbcDao<Line>
             {
                JdbcLineGroupOfLine object = new JdbcLineGroupOfLine();
                object.groupOfLineId = group.getId();
-               object.lineId = item.getId(); 
+               object.lineId = item.getId();
                groups.add(object);
 
             }
@@ -109,11 +114,9 @@ public class LineJdbcDao extends AbstractJdbcDao<Line>
       return super.getAttributeValues(attributeKey, item);
    }
 
-
-   class JdbcLineGroupOfLine 
+   class JdbcLineGroupOfLine
    {
-      Long lineId,
-      groupOfLineId;
+      Long lineId, groupOfLineId;
    }
 
 }

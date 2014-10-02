@@ -16,49 +16,59 @@ import org.json.JSONArray;
 import lombok.Getter;
 import lombok.Setter;
 
-public class ListParameterValue extends ParameterValue 
+public class ListParameterValue extends ParameterValue
 {
 
-	@Getter @Setter private List<Long> integerList;
-	@Getter @Setter private List<Boolean> booleanList;
-	@Getter @Setter private List<Calendar> dateList;
-	@Getter @Setter private List<String> stringList;
-	@Getter @Setter private List<String> filenameList;
-	@Getter @Setter private List<String> filepathList;
+   @Getter
+   @Setter
+   private List<Long> integerList;
+   @Getter
+   @Setter
+   private List<Boolean> booleanList;
+   @Getter
+   @Setter
+   private List<Calendar> dateList;
+   @Getter
+   @Setter
+   private List<String> stringList;
+   @Getter
+   @Setter
+   private List<String> filenameList;
+   @Getter
+   @Setter
+   private List<String> filepathList;
 
-	public ListParameterValue(String name) 
-	{
-		super(name);
-	}
+   public ListParameterValue(String name)
+   {
+      super(name);
+   }
 
-	public void fillFilepathList(JSONArray vals) 
-	{
-		filepathList = toStringArray(vals);
-		
-	}
-	
-	public void fillStringList(JSONArray vals) 
-	{
-		stringList = toStringArray(vals);
-		
-	}
-	
-	public void fillFilenameList(JSONArray vals) 
-	{
-		filenameList = toStringArray(vals);
-		
-	}
-	
-	
-	
-	private List<String> toStringArray(JSONArray vals)
-	{
-		List<String> array = new ArrayList<String>();
-		
-		for (int i = 0; i < vals.length(); i++) 
-		{
-			array.add(vals.getString(i));
-		}
-		return array;
-	}
+   public void fillFilepathList(JSONArray vals)
+   {
+      filepathList = toStringArray(vals);
+
+   }
+
+   public void fillStringList(JSONArray vals)
+   {
+      stringList = toStringArray(vals);
+
+   }
+
+   public void fillFilenameList(JSONArray vals)
+   {
+      filenameList = toStringArray(vals);
+
+   }
+
+   private List<String> toStringArray(JSONArray vals)
+   {
+      List<String> array = new ArrayList<String>();
+
+      for (int i = 0; i < vals.length(); i++)
+      {
+         array.add(vals.getString(i));
+      }
+      return array;
+   }
 }

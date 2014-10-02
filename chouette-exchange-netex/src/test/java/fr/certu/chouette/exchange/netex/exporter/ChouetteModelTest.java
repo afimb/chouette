@@ -27,61 +27,70 @@ import fr.certu.chouette.exchange.netex.NetexNamespaceContext;
 import fr.certu.chouette.model.neptune.Line;
 
 /**
- *
+ * 
  * @author marc
  */
-@ContextConfiguration(locations={"classpath:testContext.xml","classpath*:chouetteContext.xml"})
+@ContextConfiguration(locations = { "classpath:testContext.xml",
+      "classpath*:chouetteContext.xml" })
 @SuppressWarnings("unchecked")
-public class ChouetteModelTest extends AbstractTestNGSpringContextTests {
-    protected ModelTranslator modelTranslator = new ModelTranslator();
-    protected NetexFileWriter netexFileWriter;
-    protected ModelFactory modelFactory;
-    protected ComplexModelFactory complexModelFactory;
-    protected Line line;
-    protected String fileName = "/tmp/test.xml";
-    protected XPath xPath = XPathFactory.newInstance().newXPath();
-    protected Document xmlDocument;
-    protected SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-d'T'HH:mm:ss'Z'");
-    protected DatatypeFactory durationFactory;
+public class ChouetteModelTest extends AbstractTestNGSpringContextTests
+{
+   protected ModelTranslator modelTranslator = new ModelTranslator();
+   protected NetexFileWriter netexFileWriter;
+   protected ModelFactory modelFactory;
+   protected ComplexModelFactory complexModelFactory;
+   protected Line line;
+   protected String fileName = "/tmp/test.xml";
+   protected XPath xPath = XPathFactory.newInstance().newXPath();
+   protected Document xmlDocument;
+   protected SimpleDateFormat dateFormat = new SimpleDateFormat(
+         "yyyy-MM-d'T'HH:mm:ss'Z'");
+   protected DatatypeFactory durationFactory;
 
-    @BeforeMethod
-    protected void setUp() throws Exception {
-        xPath.setNamespaceContext(new NetexNamespaceContext());
-        durationFactory = DatatypeFactory.newInstance();
+   @BeforeMethod
+   protected void setUp() throws Exception
+   {
+      xPath.setNamespaceContext(new NetexNamespaceContext());
+      durationFactory = DatatypeFactory.newInstance();
 
-        netexFileWriter = (NetexFileWriter) applicationContext.getBean("netexFileWriter");
-        
-        modelFactory = (ModelFactory) applicationContext.getBean("modelFactory");
-        complexModelFactory = new ComplexModelFactory();
-        complexModelFactory.init();
-        
-        
-        line = complexModelFactory.nominalLine( "1");
-        line.complete();
-        
-        netexFileWriter.writeXmlFile(line, fileName);
+      netexFileWriter = (NetexFileWriter) applicationContext
+            .getBean("netexFileWriter");
 
-        DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
-        domFactory.setNamespaceAware(true);
-        DocumentBuilder builder = domFactory.newDocumentBuilder();
-        xmlDocument = builder.parse(fileName);
-    }    
-    
-    protected void assertXPathTrue(String xPathExpr) throws XPathExpressionException {       
-        Assert.assertTrue( Boolean.parseBoolean( 
-                xPath.evaluate( xPathExpr, 
-                                xmlDocument)));
-    }
-    
-    protected void assertXPathEquals(String xPathExpr, boolean expected) throws XPathExpressionException {        
-        Assert.assertEquals( Boolean.parseBoolean(                 
-                xPath.evaluate( xPathExpr, 
-                                xmlDocument)), expected);
-    }
+      modelFactory = (ModelFactory) applicationContext.getBean("modelFactory");
+      complexModelFactory = new ComplexModelFactory();
+      complexModelFactory.init();
 
-    protected void assertXPathCount(String xPathExpr, int vehicleCount) throws NumberFormatException, XPathExpressionException {
-        Assert.assertEquals( Integer.parseInt( 
-                xPath.evaluate( xPathExpr, 
-                                xmlDocument)), vehicleCount);
-    }
+      line = complexModelFactory.nominalLine("1");
+      line.complete();
+
+      netexFileWriter.writeXmlFile(line, fileName);
+
+      DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
+      domFactory.setNamespaceAware(true);
+      DocumentBuilder builder = domFactory.newDocumentBuilder();
+      xmlDocument = builder.parse(fileName);
+   }
+
+   protected void assertXPathTrue(String xPathExpr)
+         throws XPathExpressionException
+   {
+      Assert.assertTrue(Boolean.parseBoolean(xPath.evaluate(xPathExpr,
+            xmlDocument)));
+   }
+
+   protected void assertXPathEquals(String xPathExpr, boolean expected)
+         throws XPathExpressionException
+   {
+      Assert.assertEquals(
+            Boolean.parseBoolean(xPath.evaluate(xPathExpr, xmlDocument)),
+            expected);
+   }
+
+   protected void assertXPathCount(String xPathExpr, int vehicleCount)
+         throws NumberFormatException, XPathExpressionException
+   {
+      Assert.assertEquals(
+            Integer.parseInt(xPath.evaluate(xPathExpr, xmlDocument)),
+            vehicleCount);
+   }
 }

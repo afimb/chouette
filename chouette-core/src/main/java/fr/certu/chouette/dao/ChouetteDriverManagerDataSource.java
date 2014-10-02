@@ -11,19 +11,20 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 public class ChouetteDriverManagerDataSource extends DriverManagerDataSource
 {
-	private String databaseSchema;
+   private String databaseSchema;
 
-	public void setDatabaseSchema(String databaseSchema) 
-	{
-	   if (databaseSchema.trim().equals(databaseSchema))
-		   this.databaseSchema = databaseSchema;
-	   else
-	      throw new IllegalArgumentException("Database schema must not end with white spaces");
-	}
+   public void setDatabaseSchema(String databaseSchema)
+   {
+      if (databaseSchema.trim().equals(databaseSchema))
+         this.databaseSchema = databaseSchema;
+      else
+         throw new IllegalArgumentException(
+               "Database schema must not end with white spaces");
+   }
 
-	public String getDatabaseSchema() 
-	{
-		return databaseSchema;
-	}
-	
+   public String getDatabaseSchema()
+   {
+      return databaseSchema;
+   }
+
 }

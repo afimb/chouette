@@ -16,60 +16,66 @@ import fr.certu.chouette.plugin.validation.report.DetailReportItem;
 import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 import fr.certu.chouette.plugin.validation.report.ReportLocation;
 
-public class JourneyPatternCheckPoints extends AbstractValidation implements ICheckPointPlugin<JourneyPattern>
+public class JourneyPatternCheckPoints extends AbstractValidation implements
+      ICheckPointPlugin<JourneyPattern>
 {
-	@Setter private VehicleJourneyCheckPoints vehicleJourneyCheckPoints;
+   @Setter
+   private VehicleJourneyCheckPoints vehicleJourneyCheckPoints;
 
-	@Override
-	public void check(List<JourneyPattern> beans, JSONObject parameters,
-			PhaseReportItem report) 
-	{
-		if (isEmpty(beans)) return;
-		// init checkPoints : add here all defined check points for this kind of object
+   @Override
+   public void check(List<JourneyPattern> beans, JSONObject parameters,
+         PhaseReportItem report)
+   {
+      if (isEmpty(beans))
+         return;
+      // init checkPoints : add here all defined check points for this kind of
+      // object
 
-		initCheckPoint(report, JOURNEY_PATTERN_1, CheckPointReportItem.SEVERITY.WARNING);
+      initCheckPoint(report, JOURNEY_PATTERN_1,
+            CheckPointReportItem.SEVERITY.WARNING);
 
-		// checkPoint is applicable
-		for (int i = 0; i < beans.size(); i++)
-		{
-			JourneyPattern jp = beans.get(i);
+      // checkPoint is applicable
+      for (int i = 0; i < beans.size(); i++)
+      {
+         JourneyPattern jp = beans.get(i);
 
-			// 3-JourneyPattern-1 : check if two journey patterns use same stops
-			checkJourneyPattern1(report, beans, i, jp);
+         // 3-JourneyPattern-1 : check if two journey patterns use same stops
+         checkJourneyPattern1(report, beans, i, jp);
 
-			if (vehicleJourneyCheckPoints != null)
-			   vehicleJourneyCheckPoints.check(jp.getVehicleJourneys(), parameters, report);
-		}
+         if (vehicleJourneyCheckPoints != null)
+            vehicleJourneyCheckPoints.check(jp.getVehicleJourneys(),
+                  parameters, report);
+      }
 
+   }
 
-	}
+   private void checkJourneyPattern1(PhaseReportItem report,
+         List<JourneyPattern> beans, int jpRank, JourneyPattern jp)
+   {
+      // 3-JourneyPattern-1 : check if two journey patterns use same stops
+      if (beans.size() <= 1)
+         return;
+      prepareCheckPoint(report, JOURNEY_PATTERN_1);
+      int pointCount = jp.getStopPoints().size();
+      for (int j = jpRank + 1; j < beans.size(); j++)
+      {
+         JourneyPattern jp2 = beans.get(j);
+         if (pointCount != jp2.getStopPoints().size())
+            continue;
+         if (jp.getStopPoints().equals(jp2.getStopPoints()))
+         {
+            ReportLocation location = new ReportLocation(jp);
 
-	private void checkJourneyPattern1(PhaseReportItem report,
-			List<JourneyPattern> beans, int jpRank, JourneyPattern jp) 
-	{
-		// 3-JourneyPattern-1 : check if two journey patterns use same stops
-		if (beans.size() <= 1) return;
-		prepareCheckPoint(report, JOURNEY_PATTERN_1);
-		int pointCount = jp.getStopPoints().size();
-		for (int j = jpRank+1; j < beans.size() ; j++)
-		{
-			JourneyPattern jp2 = beans.get(j);
-			if (pointCount != jp2.getStopPoints().size()) continue;
-			if (jp.getStopPoints().equals(jp2.getStopPoints()))
-			{
-				ReportLocation location = new ReportLocation(jp);
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("stopPointCount", pointCount);
+            map.put("journeyPatternId", jp2.getObjectId());
 
-				Map<String, Object> map = new HashMap<String, Object>();
-				map.put("stopPointCount", pointCount);
-				map.put("journeyPatternId", jp2.getObjectId());
+            DetailReportItem detail = new DetailReportItem(JOURNEY_PATTERN_1,
+                  jp.getObjectId(), Report.STATE.WARNING, location, map);
+            addValidationError(report, JOURNEY_PATTERN_1, detail);
+         }
+      }
 
-				DetailReportItem detail = new DetailReportItem(JOURNEY_PATTERN_1,jp.getObjectId(), Report.STATE.WARNING, location,map);
-				addValidationError(report, JOURNEY_PATTERN_1, detail);
-			}
-		}
-
-
-	}
-
+   }
 
 }
