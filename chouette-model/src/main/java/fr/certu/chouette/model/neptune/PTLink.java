@@ -30,11 +30,6 @@ public class PTLink extends NeptuneIdentifiedObject
 {
    private static final long serialVersionUID = -3089442100133439163L;
 
-   /**
-    * name of comment attribute for {@link Filter} attributeName construction
-    */
-   public static final String COMMENT = "comment";
-
    @Getter
    @Column(name = "name")
    private String name;

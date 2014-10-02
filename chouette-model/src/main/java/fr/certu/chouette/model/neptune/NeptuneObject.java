@@ -33,8 +33,6 @@ import lombok.Setter;
 public abstract class NeptuneObject implements Serializable
 {
 
-   // constant for persistence fields
-   public static final String ID = "id";
 
    private static final long serialVersionUID = -1406542019260386319L;
    protected static final String CHILD_INDENT = "        ";

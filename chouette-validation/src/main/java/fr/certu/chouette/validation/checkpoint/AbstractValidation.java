@@ -181,7 +181,7 @@ public abstract class AbstractValidation
    }
 
    /**
-    * TODO [DSU] @see http://mathforum.org/library/drmath/view/51879.html
+    * @see http://mathforum.org/library/drmath/view/51879.html
     */
    private double computeHaversineFormula(NeptuneLocalizedObject obj1,
          NeptuneLocalizedObject obj2)

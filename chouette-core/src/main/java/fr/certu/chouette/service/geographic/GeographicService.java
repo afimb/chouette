@@ -100,9 +100,9 @@ public class GeographicService implements IGeographicService
    @Override
    public void propagateBarycentre()
    {
-      Filter comtypeFilter = Filter.getNewEqualsFilter(StopArea.AREA_TYPE,
+      Filter comtypeFilter = Filter.getNewEqualsFilter("areaType",
             ChouetteAreaEnum.CommercialStopPoint.toString());
-      Filter placetypeFilter = Filter.getNewEqualsFilter(StopArea.AREA_TYPE,
+      Filter placetypeFilter = Filter.getNewEqualsFilter("areaType",
             ChouetteAreaEnum.StopPlace.toString());
       List<StopArea> commercials;
       List<StopArea> stopPlaces;
@@ -294,12 +294,12 @@ public class GeographicService implements IGeographicService
    {
       // build filter on projected point x and y not nulls and latitude or
       // longitude nulls
-      Filter latFilter = Filter.getNewIsNullFilter(StopArea.LATITUDE);
-      Filter lonFilter = Filter.getNewIsNullFilter(StopArea.LONGITUDE);
+      Filter latFilter = Filter.getNewIsNullFilter("latitude");
+      Filter lonFilter = Filter.getNewIsNullFilter("longitude");
       Filter xFilter = Filter.getNewNotFilter(Filter
-            .getNewIsNullFilter(StopArea.X));
+            .getNewIsNullFilter("x"));
       Filter yFilter = Filter.getNewNotFilter(Filter
-            .getNewIsNullFilter(StopArea.Y));
+            .getNewIsNullFilter("y"));
       Filter coordFilter = Filter.getNewAndFilter(xFilter, yFilter,
             Filter.getNewOrFilter(latFilter, lonFilter));
       List<StopArea> areas;
@@ -346,12 +346,12 @@ public class GeographicService implements IGeographicService
    {
       // build filter on projected point x or y nulls and latitude and
       // longitude not nulls
-      Filter xFilter = Filter.getNewIsNullFilter(StopArea.X);
-      Filter yFilter = Filter.getNewIsNullFilter(StopArea.Y);
+      Filter xFilter = Filter.getNewIsNullFilter("x");
+      Filter yFilter = Filter.getNewIsNullFilter("y");
       Filter latFilter = Filter.getNewNotFilter(Filter
-            .getNewIsNullFilter(StopArea.LATITUDE));
+            .getNewIsNullFilter("latitude"));
       Filter lonFilter = Filter.getNewNotFilter(Filter
-            .getNewIsNullFilter(StopArea.LONGITUDE));
+            .getNewIsNullFilter("longitude"));
       Filter coordFilter = Filter.getNewAndFilter(latFilter, lonFilter,
             Filter.getNewOrFilter(xFilter, yFilter));
       List<StopArea> areas;

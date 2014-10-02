@@ -30,16 +30,6 @@ public class StopPoint extends NeptuneIdentifiedObject
 {
    private static final long serialVersionUID = -4913573673645997423L;
 
-   /**
-    * name of comment attribute for {@link Filter} attributeName construction
-    */
-   public static final String COMMENT = "comment";
-
-   // @Getter
-   // @Setter
-   // @Column(name = "comment")
-   // private String comment;
-
    @Getter
    @Setter
    @Column(name = "position")

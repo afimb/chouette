@@ -47,37 +47,6 @@ import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
 public class Route extends NeptuneIdentifiedObject
 {
    private static final long serialVersionUID = -2249654966081042738L;
-   // constant for persistence fields
-   /**
-    * name of comment attribute for {@link Filter} attributeName construction
-    */
-   public static final String COMMENT = "comment";
-   /**
-    * name of oppositeRouteId attribute for {@link Filter} attributeName
-    * construction
-    */
-   public static final String OPPOSITE_ROUTE_ID = "oppositeRouteId";
-   /**
-    * name of line attribute for {@link Filter} attributeName construction
-    */
-   public static final String LINE = "line";
-   /**
-    * name of number attribute for {@link Filter} attributeName construction
-    */
-   public static final String NUMBER = "number";
-   /**
-    * name of publishedName attribute for {@link Filter} attributeName
-    * construction
-    */
-   public static final String PUBLISHED_NAME = "publishedName";
-   /**
-    * name of direction attribute for {@link Filter} attributeName construction
-    */
-   public static final String DIRECTION = "direction";
-   /**
-    * name of wayBack attribute for {@link Filter} attributeName construction
-    */
-   public static final String WAYBACK = "wayBack";
 
    @Getter
    @Column(name = "name")

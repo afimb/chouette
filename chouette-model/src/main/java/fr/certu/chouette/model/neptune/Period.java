@@ -25,16 +25,6 @@ public class Period implements Serializable, Comparable<Period>
 {
    private static final long serialVersionUID = -1964071056103739954L;
 
-   // constant for persistence fields
-   /**
-    * name of startDate attribute for {@link Filter} attributeName construction
-    */
-   public static final String START_DATE = "startDate";
-   /**
-    * name of endDate attribute for {@link Filter} attributeName construction
-    */
-   public static final String END_DATE = "endDate";
-
    @Getter
    @Setter
    @Column(name = "period_start")

@@ -29,11 +29,6 @@ public class TimeSlot extends NeptuneIdentifiedObject
 {
    private static final long serialVersionUID = 7510494886757866590L;
 
-   /**
-    * name of beginningSlotTime attribute for {@link Filter} attributeName
-    * construction
-    */
-   public static final String BEGINNING_SLOTTIME = "beginningSlotTime";
 
    @Getter
    @Column(name = "name")

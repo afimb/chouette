@@ -53,58 +53,6 @@ public class Line extends NeptuneIdentifiedObject
 {
    private static final long serialVersionUID = -8086291270595894778L;
 
-   /**
-    * name of comment attribute for {@link Filter} attributeName construction
-    */
-   public static final String COMMENT = "comment";
-   /**
-    * name of number attribute for {@link Filter} attributeName construction
-    */
-   public static final String NUMBER = "number";
-   /**
-    * name of publishedName attribute for {@link Filter} attributeName
-    * construction
-    */
-   public static final String PUBLISHEDNAME = "publishedName";
-   /**
-    * name of registrationNumber attribute for {@link Filter} attributeName
-    * construction
-    */
-   public static final String REGISTRATIONNUMBER = "registrationNumber";
-   /**
-    * name of transportModeName attribute for {@link Filter} attributeName
-    * construction
-    */
-   public static final String TRANSPORTMODENAME = "transportModeName";
-   /**
-    * name of mobilityRestrictedSuitable attribute for {@link Filter}
-    * attributeName construction
-    */
-   public static final String MOBILITYRESTRICTEDSUITABLE = "mobilityRestrictedSuitable";
-   /**
-    * name of userNeedsAsLong attribute for {@link Filter} attributeName
-    * construction
-    * <p>
-    * needs bitwise comparison
-    */
-   public static final String USERNEEDS = "userNeedsAsLong";
-   /**
-    * name of ptNetwork attribute for {@link Filter} attributeName construction
-    */
-   public static final String PTNETWORK = "ptNetwork";
-   /**
-    * name of company attribute for {@link Filter} attributeName construction
-    */
-   public static final String COMPANY = "company";
-   /**
-    * name of routes attribute for {@link Filter} attributeName construction
-    */
-   public static final String ROUTES = "routes";
-   /**
-    * name of groupOfLine attribute for {@link Filter} attributeName
-    * construction
-    */
-   public static final String GROUPOFLINE = "groupOfLines";
 
    @Getter
    @Column(name = "name", nullable = false)

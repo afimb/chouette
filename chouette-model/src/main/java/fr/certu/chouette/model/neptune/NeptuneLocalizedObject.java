@@ -34,16 +34,6 @@ import fr.certu.chouette.util.CoordinateUtil;
 @Log4j
 public abstract class NeptuneLocalizedObject extends NeptuneIdentifiedObject
 {
-   public static final String LONGITUDE = "longitude";
-   public static final String LATITUDE = "latitude";
-   public static final String LONGLAT_TYPE = "longLatType";
-   public static final String COUNTRY_CODE = "countryCode";
-   public static final String ZIP_CODE = "zipCode";
-   public static final String CITY_NAME = "cityName";
-   public static final String STREET_NAME = "streetName";
-   public static final String X = "x";
-   public static final String Y = "y";
-   public static final String PROJECTION_TYPE = "projectionType";
 
    @Getter
    @Setter

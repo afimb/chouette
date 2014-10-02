@@ -37,10 +37,6 @@ public class VehicleJourneyAtStop extends NeptuneObject
 {
    private static final long serialVersionUID = 194243517715939830L;
 
-   /**
-    * name of stopPoint attribute for {@link Filter} attributeName construction
-    */
-   public static final String STOPPOINT = "stopPoint";
 
    @Getter
    @Setter

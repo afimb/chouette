@@ -41,28 +41,6 @@ public class Timetable extends NeptuneIdentifiedObject
    private static final long serialVersionUID = -1598554061982685113L;
    private static final long ONE_DAY = 3600000 * 24;
 
-   // constant for persistence fields
-   /**
-    * name of comment attribute for {@link Filter} attributeName construction
-    */
-   public static final String COMMENT = "comment";
-   /**
-    * name of version attribute for {@link Filter} attributeName construction
-    */
-   public static final String VERSION = "version";
-   /**
-    * name of dayTypes attribute for {@link Filter} attributeName construction
-    */
-   public static final String DAYTYPES_MASK = "intDayTypes";
-   /**
-    * name of calendarDays attribute for {@link Filter} attributeName
-    * construction
-    */
-   public static final String CALENDARDAYS = "calendarDays";
-   /**
-    * name of periods attribute for {@link Filter} attributeName construction
-    */
-   public static final String PERIODS = "periods";
 
    /**
     * mapping day type with enumerations
