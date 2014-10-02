@@ -30,10 +30,16 @@ public class CalendarDay implements Serializable,Comparable<CalendarDay>
    @Column(name = "date")
    private Date date;
 
-   @Getter
    @Setter
    @Column(name = "in_out")
-   private Boolean included = true;
+   private Boolean included = Boolean.TRUE;
+   
+   public Boolean getIncluded()
+   {
+	   // protection from missing migration
+	   if (included == null) included = Boolean.TRUE;
+	   return included;
+   }
 
    /**
     * complete constructor

@@ -711,6 +711,20 @@ public class Route extends NeptuneIdentifiedObject
       List<StopPoint> stopPoints = getStopPoints();
       if (stopPoints != null && !stopPoints.isEmpty())
       {
+    	  // check position and null values
+    	  int rank = 0;
+          for (Iterator<StopPoint> iterator = stopPoints.iterator(); iterator.hasNext();) 
+          {
+			StopPoint stopPoint = iterator.next();
+			if (stopPoint == null) 
+			{
+				iterator.remove();
+			}
+			else
+			{
+				stopPoint.setPosition(rank++);
+			}
+		  }
          // generate PtLinks
          List<PTLink> ptLinks = getPtLinks();
          if (ptLinks == null || ptLinks.isEmpty())
