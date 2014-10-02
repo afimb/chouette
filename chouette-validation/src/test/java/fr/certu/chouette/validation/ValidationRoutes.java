@@ -252,7 +252,7 @@ public class ValidationRoutes extends AbstractValidation
 				found = true;
 				Assert.assertEquals(checkPointReport.getStatus(), Report.STATE.WARNING," checkPointReport must be on level warning");
 				Assert.assertEquals(checkPointReport.hasItems(), true," checkPointReport must have items");
-				Assert.assertEquals(checkPointReport.getItems().size(), 4," checkPointReport must have 4 item");
+				Assert.assertEquals(checkPointReport.getItems().size(), 2," checkPointReport must have 2 item");
 
 				//check detail keys = route1 objectids
 				boolean routeobjectIdFound = false;
