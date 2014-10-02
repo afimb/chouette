@@ -34,7 +34,7 @@ public class TimetableProducer extends
       if (gtfsCalendar.isMonday())
          timetable.addDayType(DayTypeEnum.Monday);
       if (gtfsCalendar.isTuesday())
-         timetable.addDayType(DayTypeEnum.Thursday);
+         timetable.addDayType(DayTypeEnum.Tuesday);
       if (gtfsCalendar.isWednesday())
          timetable.addDayType(DayTypeEnum.Wednesday);
       if (gtfsCalendar.isThursday())

@@ -48,6 +48,8 @@ sudo apt-get install git
 Installation
 ------------
  
+On debian, chouette can also be installed as package : see [debian packages](http://packages.chouette.cityway.fr/debian/chouette)
+
 Install [Postgres](./doc/install/postgresql.md) 
 
 Install [Maven](./doc/install/maven.md)
