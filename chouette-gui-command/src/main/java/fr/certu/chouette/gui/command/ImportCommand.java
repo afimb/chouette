@@ -491,7 +491,7 @@ public class ImportCommand extends AbstractCommand
                PhaseReportItem phaseReport = new PhaseReportItem(
                      PhaseReportItem.PHASE.THREE);
                validationReport.addItem(phaseReport);
-               manager.validate(null, beans, parameters, phaseReport, true);
+               manager.validate(null, beans, parameters, phaseReport, null, true);
             }
          } catch (Exception e)
          {

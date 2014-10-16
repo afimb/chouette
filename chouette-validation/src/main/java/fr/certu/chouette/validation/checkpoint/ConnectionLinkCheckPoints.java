@@ -22,7 +22,7 @@ public class ConnectionLinkCheckPoints extends AbstractValidation implements
 
    @Override
    public void check(List<ConnectionLink> beans, JSONObject parameters,
-         PhaseReportItem report)
+         PhaseReportItem report, Map<String, Object> context)
    {
       if (isEmpty(beans))
          return;

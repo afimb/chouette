@@ -16,7 +16,6 @@ import org.testng.annotations.Test;
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.manager.INeptuneManager;
 import fr.certu.chouette.model.neptune.AccessLink;
-import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.plugin.exchange.IImportPlugin;
 import fr.certu.chouette.plugin.report.Report;
@@ -85,7 +84,7 @@ public class ValidationAccessLinks extends
       parameters.put("inter_access_link_distance_max", 50);
 
       PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
-      accessLinkManager.validate(null, beans, parameters, report, true);
+      accessLinkManager.validate(null, beans, parameters, report,null, true);
       report.refreshStatus();
 
       AbstractValidation.printReport(report);
@@ -145,7 +144,7 @@ public class ValidationAccessLinks extends
       link.setLinkDistance(BigDecimal.valueOf(distance - 50));
 
       PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
-      accessLinkManager.validate(null, beans, parameters, report, true);
+      accessLinkManager.validate(null, beans, parameters, report,null, true);
       report.refreshStatus();
 
       AbstractValidation.printReport(report);
@@ -218,7 +217,7 @@ public class ValidationAccessLinks extends
             link.getDefaultDuration().getTime());
 
       PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
-      accessLinkManager.validate(null, beans, parameters, report, true);
+      accessLinkManager.validate(null, beans, parameters, report,null, true);
       report.refreshStatus();
 
       AbstractValidation.printReport(report);

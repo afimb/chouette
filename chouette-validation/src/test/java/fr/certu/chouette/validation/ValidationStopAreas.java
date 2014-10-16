@@ -114,7 +114,7 @@ public class ValidationStopAreas extends
       area1.setLongitude(null);
 
       PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
-      stopAreaManager.validate(null, beans, parameters, report, true);
+      stopAreaManager.validate(null, beans, parameters, report, null, true);
       report.refreshStatus();
 
       AbstractValidation.printReport(report);
@@ -187,7 +187,7 @@ public class ValidationStopAreas extends
       beans.add(0, area2);
 
       PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
-      stopAreaManager.validate(null, beans, parameters, report, true);
+      stopAreaManager.validate(null, beans, parameters, report, null, true);
       report.refreshStatus();
 
       AbstractValidation.printReport(report);
@@ -263,7 +263,7 @@ public class ValidationStopAreas extends
       area2.setCountryCode(area1.getCountryCode());
 
       PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
-      stopAreaManager.validate(null, beans, parameters, report, true);
+      stopAreaManager.validate(null, beans, parameters, report, null, true);
       report.refreshStatus();
 
       AbstractValidation.printReport(report);
@@ -344,7 +344,7 @@ public class ValidationStopAreas extends
       array.put(new JSONArray().put(minLon).put(minLat));
 
       parameters.put("stop_areas_area", array.toString());
-      stopAreaManager.validate(null, beans, parameters, report, true);
+      stopAreaManager.validate(null, beans, parameters, report, null, true);
       report.refreshStatus();
 
       AbstractValidation.printReport(report);
@@ -398,7 +398,7 @@ public class ValidationStopAreas extends
       parameters.put("parent_stop_area_distance_max", 300);
 
       PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
-      stopAreaManager.validate(null, beans, parameters, report, true);
+      stopAreaManager.validate(null, beans, parameters, report, null, true);
       report.refreshStatus();
 
       AbstractValidation.printReport(report);
@@ -424,6 +424,63 @@ public class ValidationStopAreas extends
          }
       }
       Assert.assertTrue(found, "report must contain a 3-StopArea-5 checkPoint");
+
+   }
+
+   @SuppressWarnings("unchecked")
+   @Test(groups = { "StopArea" }, description = "3-StopArea-6")
+   public void verifyTest6() throws ChouetteException
+   {
+      // 3-StopArea-6 : check if stopArea has country code
+
+      INeptuneManager<StopArea> stopAreaManager = (INeptuneManager<StopArea>) applicationContext
+            .getBean("stopAreaManager");
+
+      JSONObject parameters = null;
+      try
+      {
+         parameters = new RuleParameterSet();
+      } catch (JSONException | IOException e)
+      {
+         e.printStackTrace();
+      }
+      Assert.assertNotNull(parameters, "no parameters for test");
+
+      List<StopArea> beans = stopAreaManager.getAll(null);
+      Assert.assertFalse(beans.isEmpty(), "No data for test");
+
+      StopArea area1 = beans.get(0);
+      String svCode = area1.getCountryCode();
+      area1.setCountryCode(null);
+
+      PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
+      stopAreaManager.validate(null, beans, parameters, report, null, true);
+      report.refreshStatus();
+
+      AbstractValidation.printReport(report);
+
+      Assert.assertEquals(report.getStatus(), Report.STATE.WARNING,
+            " report must be on level warning");
+      Assert.assertEquals(report.hasItems(), true, " report must have items");
+      boolean found = false;
+      for (ReportItem item : report.getItems())
+      {
+         CheckPointReportItem checkPointReport = (CheckPointReportItem) item;
+         if (checkPointReport.getMessageKey().equals("3-StopArea-6"))
+         {
+            found = true;
+            Assert.assertEquals(checkPointReport.getStatus(),
+                  Report.STATE.WARNING,
+                  " checkPointReport must be on level warning");
+            Assert.assertEquals(checkPointReport.hasItems(), true,
+                  " checkPointReport must have items");
+            Assert.assertEquals(checkPointReport.getItems().size(), 1,
+                  " checkPointReport must have 1 item");
+
+         }
+      }
+      Assert.assertTrue(found, "report must contain a 3-StopArea-6 checkPoint");
+      area1.setCountryCode(svCode);
 
    }
 

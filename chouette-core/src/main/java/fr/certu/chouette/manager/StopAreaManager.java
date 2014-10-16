@@ -21,7 +21,6 @@ import fr.certu.chouette.core.CoreExceptionCode;
 import fr.certu.chouette.model.neptune.AccessLink;
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.Facility;
-import fr.certu.chouette.model.neptune.NeptuneLocalizedObject;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.user.User;

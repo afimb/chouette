@@ -29,7 +29,7 @@ public class StopAreaCheckPoints extends AbstractValidation implements
 
    @Override
    public void check(List<StopArea> beans, JSONObject parameters,
-         PhaseReportItem report)
+         PhaseReportItem report, Map<String, Object> context)
    {
       if (isEmpty(beans))
          return;
@@ -40,16 +40,19 @@ public class StopAreaCheckPoints extends AbstractValidation implements
       // 3-StopArea-3 : check multiple occurrence of a stopArea
       // 3-StopArea-4 : check localization in a region
       // 3-StopArea-5 : check distance with parents
+      // 3-StopArea-6 : check insee_code presence
       initCheckPoint(report, STOP_AREA_1, CheckPointReportItem.SEVERITY.ERROR);
       initCheckPoint(report, STOP_AREA_2, CheckPointReportItem.SEVERITY.WARNING);
       initCheckPoint(report, STOP_AREA_3, CheckPointReportItem.SEVERITY.WARNING);
       initCheckPoint(report, STOP_AREA_4, CheckPointReportItem.SEVERITY.WARNING);
       initCheckPoint(report, STOP_AREA_5, CheckPointReportItem.SEVERITY.WARNING);
+      initCheckPoint(report, STOP_AREA_6, CheckPointReportItem.SEVERITY.WARNING);
       prepareCheckPoint(report, STOP_AREA_1);
       prepareCheckPoint(report, STOP_AREA_2);
       prepareCheckPoint(report, STOP_AREA_3);
       prepareCheckPoint(report, STOP_AREA_4);
       prepareCheckPoint(report, STOP_AREA_5);
+      prepareCheckPoint(report, STOP_AREA_6);
 
       Polygon enveloppe = getEnveloppe(parameters);
 
@@ -62,6 +65,7 @@ public class StopAreaCheckPoints extends AbstractValidation implements
          checkStopArea1(report, stopArea);
          checkStopArea4(report, stopArea, enveloppe);
          checkStopArea5(report, stopArea, parameters);
+         checkStopArea6(report, stopArea);
          for (int j = i + 1; j < beans.size(); j++)
          {
             checkStopArea2(report, i, stopArea, j, beans.get(j), parameters);
@@ -203,6 +207,20 @@ public class StopAreaCheckPoints extends AbstractValidation implements
          DetailReportItem detail = new DetailReportItem(STOP_AREA_5,
                stopArea.getObjectId(), Report.STATE.WARNING, location, map);
          addValidationError(report, STOP_AREA_5, detail);
+      }
+   }
+
+   private void checkStopArea6(PhaseReportItem report, StopArea stopArea)
+   {
+      // 3-StopArea-6 : check if all non ITL stopArea has insse_code
+      if (isEmpty(stopArea.getCountryCode()))
+      {
+         ReportLocation location = new ReportLocation(stopArea);
+         Map<String, Object> map = new HashMap<String, Object>();
+         map.put("name", stopArea.getName());
+         DetailReportItem detail = new DetailReportItem(STOP_AREA_6,
+               stopArea.getObjectId(), Report.STATE.WARNING, location, map);
+         addValidationError(report, STOP_AREA_6, detail);
       }
    }
 

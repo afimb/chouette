@@ -39,7 +39,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation implements
 
    @Override
    public void check(List<VehicleJourney> beans, JSONObject parameters,
-         PhaseReportItem report)
+         PhaseReportItem report, Map<String,Object> context)
    {
       if (isEmpty(beans))
          return;
@@ -47,6 +47,11 @@ public class VehicleJourneyCheckPoints extends AbstractValidation implements
       // 3-VehicleJourney-2 : check speed progression
       // 3-VehicleJourney-3 : check if two journeys progress similarly
       // 3-VehicleJourney-4 : check if each journey has minimum one timetable
+      // 3-VehicleJourney-5 : (optionnal) check operational code
+      // 3-VehicleJourney-6 : (optionnal) check transport modes
+      boolean test6 = parameters.optInt(CHECK_ALLOWED_TRANSPORT_MODES,0) == 1;
+      boolean test5 = parameters.optInt(VEHICLE_JOURNEY_NUMBER_MIN,0) != 0 || parameters.optInt(VEHICLE_JOURNEY_NUMBER_MAX,0) != 0;
+      
       initCheckPoint(report, VEHICLE_JOURNEY_1,
             CheckPointReportItem.SEVERITY.WARNING);
       initCheckPoint(report, VEHICLE_JOURNEY_2,
@@ -60,6 +65,18 @@ public class VehicleJourneyCheckPoints extends AbstractValidation implements
       prepareCheckPoint(report, VEHICLE_JOURNEY_1);
       prepareCheckPoint(report, VEHICLE_JOURNEY_2);
       prepareCheckPoint(report, VEHICLE_JOURNEY_4);
+      
+      // 
+      if (test5)
+      {
+         initCheckPoint(report, VEHICLE_JOURNEY_5, CheckPointReportItem.SEVERITY.WARNING);
+         prepareCheckPoint(report, VEHICLE_JOURNEY_5);
+      }
+      if (test6)
+      {
+         initCheckPoint(report, VEHICLE_JOURNEY_6, CheckPointReportItem.SEVERITY.WARNING);
+         prepareCheckPoint(report, VEHICLE_JOURNEY_6);
+      }
 
       for (VehicleJourney vj : beans)
       {
@@ -84,8 +101,14 @@ public class VehicleJourneyCheckPoints extends AbstractValidation implements
          // timetable
          checkVehicleJourney4(report, vj);
 
+         // 3-VehicleJourney-5 : (optionnal) check operational code
+         checkVehicleJourney5(report, vj, parameters, context);
+         
+         // 3-VehicleJourney-6 : (optionnal) check transport modes
+         checkVehicleJourney6(report, vj, parameters);
       }
    }
+
 
    private long diffTime(Time first, Time last)
    {
@@ -315,6 +338,82 @@ public class VehicleJourneyCheckPoints extends AbstractValidation implements
 
       }
 
+   }
+
+   @SuppressWarnings("unchecked")
+   private void checkVehicleJourney5(PhaseReportItem report, VehicleJourney vj, JSONObject parameters, Map<String,Object> context)
+   {
+      // 3-VehicleJourney-5 : (optionnal) check operational code
+      long minValue = parameters.optLong(VEHICLE_JOURNEY_NUMBER_MIN,0);
+      long maxValue = parameters.optLong(VEHICLE_JOURNEY_NUMBER_MAX,0);
+      Map<Long,String> values = (Map<Long,String>) context.get(VEHICLE_JOURNEY_5);
+      boolean firstCall = false;
+      if (values == null)
+      {
+         values = new HashMap<>();
+         context.put(VEHICLE_JOURNEY_5, values);
+         firstCall = true;
+      }
+      if (minValue >= maxValue) 
+      {
+         if (firstCall) log.error(VEHICLE_JOURNEY_5+ " min and max values are invalid: test ignored ");
+         return;
+      }
+      
+      Long number = vj.getNumber();
+      if (number == null) 
+      {
+         // failure encountered : number not present, add vj
+         ReportLocation location = new ReportLocation(vj);
+         Map<String, Object> map = new HashMap<String, Object>();
+         DetailReportItem detail = new DetailReportItem(VEHICLE_JOURNEY_5+"-1",
+               vj.getObjectId(), Report.STATE.WARNING, location, map);
+         addValidationError(report, VEHICLE_JOURNEY_5, detail);
+         return;
+      }
+      
+      if (number < minValue || number > maxValue)
+      {
+         // failure encountered : number out of bounds, add vj
+         ReportLocation location = new ReportLocation(vj);
+         Map<String, Object> map = new HashMap<String, Object>();
+         map.put("number", number);
+         DetailReportItem detail = new DetailReportItem(VEHICLE_JOURNEY_5+"-2",
+               vj.getObjectId(), Report.STATE.WARNING, location, map);
+         addValidationError(report, VEHICLE_JOURNEY_5, detail);
+         return;
+      }
+      String key = values.get(number);
+      if (key != null)
+      {
+         // failure encountered : number in conflict, add vj
+         ReportLocation location = new ReportLocation(vj);
+         Map<String, Object> map = new HashMap<String, Object>();
+         map.put("number", number);
+         map.put("vehicleJourneyId", key);
+         DetailReportItem detail = new DetailReportItem(VEHICLE_JOURNEY_5+"-3",
+               vj.getObjectId(), Report.STATE.WARNING, location, map);
+         addValidationError(report, VEHICLE_JOURNEY_5, detail);
+         return;
+      }
+      // affect number to vj in context
+      values.put(number, vj.getObjectId());
+   }
+
+   private void checkVehicleJourney6(PhaseReportItem report, VehicleJourney vj, JSONObject parameters)
+   {
+      // 3-VehicleJourney-6 : (optionnal) check transport modes
+      if (vj.getTransportMode() == null) return;
+      if (getModeParameter(parameters, vj.getTransportMode().name(), ALLOWED_TRANSPORT) != 1)
+      {
+         // failure encountered, add line 1
+         ReportLocation location = new ReportLocation(vj);
+         Map<String, Object> map = new HashMap<String, Object>();
+         map.put("transportMode", vj.getTransportMode().name());
+         DetailReportItem detail = new DetailReportItem(VEHICLE_JOURNEY_6,
+               vj.getObjectId(), Report.STATE.WARNING, location, map);
+         addValidationError(report, VEHICLE_JOURNEY_6, detail);
+      }
    }
 
 }

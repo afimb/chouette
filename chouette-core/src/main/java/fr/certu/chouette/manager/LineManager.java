@@ -10,6 +10,7 @@ package fr.certu.chouette.manager;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -51,7 +52,7 @@ public class LineManager extends AbstractNeptuneManager<Line>
 
    @Override
    protected void propagateValidation(User user, List<Line> beans,
-         JSONObject parameters, PhaseReportItem report, boolean propagate)
+         JSONObject parameters, PhaseReportItem report, Map<String, Object> validationContext, boolean propagate)
          throws ChouetteException
    {
 
@@ -111,7 +112,7 @@ public class LineManager extends AbstractNeptuneManager<Line>
       if (networks.size() > 0)
       {
          AbstractNeptuneManager<PTNetwork> manager = (AbstractNeptuneManager<PTNetwork>) getManager(PTNetwork.class);
-         validateReport(user, manager, networkList, parameters, report,
+         validateReport(user, manager, networkList, parameters, report,validationContext,
                propagate);
       }
 
@@ -119,7 +120,7 @@ public class LineManager extends AbstractNeptuneManager<Line>
       if (companies.size() > 0)
       {
          AbstractNeptuneManager<Company> manager = (AbstractNeptuneManager<Company>) getManager(Company.class);
-         validateReport(user, manager, companyList, parameters, report,
+         validateReport(user, manager, companyList, parameters, report,validationContext,
                propagate);
       }
 
@@ -127,7 +128,7 @@ public class LineManager extends AbstractNeptuneManager<Line>
       if (!connectionLinks.isEmpty())
       {
          AbstractNeptuneManager<ConnectionLink> manager = (AbstractNeptuneManager<ConnectionLink>) getManager(ConnectionLink.class);
-         validateReport(user, manager, connectionLinkList, parameters, report,
+         validateReport(user, manager, connectionLinkList, parameters, report,validationContext,
                propagate);
       }
 
@@ -135,7 +136,7 @@ public class LineManager extends AbstractNeptuneManager<Line>
       if (!stopAreas.isEmpty())
       {
          AbstractNeptuneManager<StopArea> manager = (AbstractNeptuneManager<StopArea>) getManager(StopArea.class);
-         validateReport(user, manager, stopAreaList, parameters, report,
+         validateReport(user, manager, stopAreaList, parameters, report,validationContext,
                propagate);
       }
 
@@ -143,7 +144,7 @@ public class LineManager extends AbstractNeptuneManager<Line>
       if (!timetables.isEmpty())
       {
          AbstractNeptuneManager<Timetable> manager = (AbstractNeptuneManager<Timetable>) getManager(Timetable.class);
-         validateReport(user, manager, timetableList, parameters, report,
+         validateReport(user, manager, timetableList, parameters, report, validationContext,
                propagate);
       }
 
@@ -151,7 +152,7 @@ public class LineManager extends AbstractNeptuneManager<Line>
       if (!timeSlots.isEmpty())
       {
          AbstractNeptuneManager<TimeSlot> manager = (AbstractNeptuneManager<TimeSlot>) getManager(TimeSlot.class);
-         validateReport(user, manager, timeSlotList, parameters, report,
+         validateReport(user, manager, timeSlotList, parameters, report, validationContext,
                propagate);
       }
 
@@ -159,7 +160,7 @@ public class LineManager extends AbstractNeptuneManager<Line>
       if (!accessLinks.isEmpty())
       {
          AbstractNeptuneManager<AccessLink> manager = (AbstractNeptuneManager<AccessLink>) getManager(AccessLink.class);
-         validateReport(user, manager, accessLinkList, parameters, report,
+         validateReport(user, manager, accessLinkList, parameters, report, validationContext,
                propagate);
       }
 
@@ -167,7 +168,7 @@ public class LineManager extends AbstractNeptuneManager<Line>
       if (!accessPoints.isEmpty())
       {
          AbstractNeptuneManager<AccessPoint> manager = (AbstractNeptuneManager<AccessPoint>) getManager(AccessPoint.class);
-         validateReport(user, manager, accessPointList, parameters, report,
+         validateReport(user, manager, accessPointList, parameters, report, validationContext,
                propagate);
       }
 
@@ -175,7 +176,7 @@ public class LineManager extends AbstractNeptuneManager<Line>
       if (!facilities.isEmpty())
       {
          AbstractNeptuneManager<Facility> manager = (AbstractNeptuneManager<Facility>) getManager(Facility.class);
-         validateReport(user, manager, facilityList, parameters, report,
+         validateReport(user, manager, facilityList, parameters, report, validationContext,
                propagate);
       }
 
@@ -183,7 +184,7 @@ public class LineManager extends AbstractNeptuneManager<Line>
       if (!groupOfLines.isEmpty())
       {
          AbstractNeptuneManager<GroupOfLine> manager = (AbstractNeptuneManager<GroupOfLine>) getManager(GroupOfLine.class);
-         validateReport(user, manager, groupOfLineList, parameters, report,
+         validateReport(user, manager, groupOfLineList, parameters, report, validationContext,
                propagate);
       }
 
@@ -204,17 +205,17 @@ public class LineManager extends AbstractNeptuneManager<Line>
     */
    private <T extends NeptuneIdentifiedObject> void validateReport(User user,
          AbstractNeptuneManager<T> manager, List<T> list,
-         JSONObject parameters, PhaseReportItem report, boolean propagate)
+         JSONObject parameters, PhaseReportItem report, Map<String, Object> validationContext, boolean propagate)
          throws ChouetteException
    {
       if (!list.isEmpty())
       {
          if (manager.canValidate())
          {
-            manager.validate(user, list, parameters, report, propagate);
+            manager.validate(user, list, parameters, report,validationContext, propagate);
          } else if (propagate)
          {
-            manager.propagateValidation(user, list, parameters, report,
+            manager.propagateValidation(user, list, parameters, report,validationContext,
                   propagate);
          }
       }

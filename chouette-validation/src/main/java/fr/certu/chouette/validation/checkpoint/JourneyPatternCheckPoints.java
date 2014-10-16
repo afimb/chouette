@@ -24,7 +24,7 @@ public class JourneyPatternCheckPoints extends AbstractValidation implements
 
    @Override
    public void check(List<JourneyPattern> beans, JSONObject parameters,
-         PhaseReportItem report)
+         PhaseReportItem report, Map<String, Object> context)
    {
       if (isEmpty(beans))
          return;
@@ -44,7 +44,7 @@ public class JourneyPatternCheckPoints extends AbstractValidation implements
 
          if (vehicleJourneyCheckPoints != null)
             vehicleJourneyCheckPoints.check(jp.getVehicleJourneys(),
-                  parameters, report);
+                  parameters, report, context);
       }
 
    }

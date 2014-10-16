@@ -88,7 +88,7 @@ public class ValidationAccessPoints extends
       access1.setLongitude(null);
 
       PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
-      accessPointManager.validate(null, beans, parameters, report, true);
+      accessPointManager.validate(null, beans, parameters, report,null, true);
       report.refreshStatus();
 
       AbstractValidation.printReport(report);
@@ -145,7 +145,7 @@ public class ValidationAccessPoints extends
       parameters.put("parent_stop_area_distance_max", 50);
 
       PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
-      accessPointManager.validate(null, beans, parameters, report, true);
+      accessPointManager.validate(null, beans, parameters, report,null, true);
       report.refreshStatus();
 
       AbstractValidation.printReport(report);
@@ -211,7 +211,7 @@ public class ValidationAccessPoints extends
       access1.setLatitude(access2.getLatitude());
 
       PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
-      accessPointManager.validate(null, beans, parameters, report, true);
+      accessPointManager.validate(null, beans, parameters, report,null, true);
       report.refreshStatus();
 
       AbstractValidation.printReport(report);

@@ -575,7 +575,7 @@ public class ExchangeCommand extends AbstractCommand
 
       PhaseReportItem valReport = new PhaseReportItem(
             PhaseReportItem.PHASE.THREE);
-      manager.validate(null, beans, validationParameters, valReport);
+      manager.validate(null, beans, validationParameters, valReport, null, true);
       PrintStream stream = System.out;
       if (!fileName.isEmpty())
       {

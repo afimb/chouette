@@ -10,9 +10,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.testng.Assert;
-import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import fr.certu.chouette.common.ChouetteException;
@@ -110,7 +108,7 @@ public class ValidationConnectionLinks extends
       parameters.put("inter_connection_link_distance_max", 600);
 
       PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
-      connectionLinkManager.validate(null, beans, parameters, report, true);
+      connectionLinkManager.validate(null, beans, parameters, report,null, true);
       report.refreshStatus();
 
       AbstractValidation.printReport(report);
@@ -170,7 +168,7 @@ public class ValidationConnectionLinks extends
       link.setLinkDistance(BigDecimal.valueOf(distance - 50));
 
       PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
-      connectionLinkManager.validate(null, beans, parameters, report, true);
+      connectionLinkManager.validate(null, beans, parameters, report,null, true);
       report.refreshStatus();
 
       AbstractValidation.printReport(report);
@@ -242,7 +240,7 @@ public class ValidationConnectionLinks extends
             link.getMobilityRestrictedTravellerDuration().getTime() - 900000);
 
       PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
-      connectionLinkManager.validate(null, beans, parameters, report, true);
+      connectionLinkManager.validate(null, beans, parameters, report,null, true);
       report.refreshStatus();
 
       AbstractValidation.printReport(report);

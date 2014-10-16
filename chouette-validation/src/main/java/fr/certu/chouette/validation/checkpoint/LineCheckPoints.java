@@ -26,7 +26,7 @@ public class LineCheckPoints extends AbstractValidation implements
 
    @Override
    public void check(List<Line> beans, JSONObject parameters,
-         PhaseReportItem report)
+         PhaseReportItem report, Map<String, Object> context)
    {
       // init checkPoints : add here all defined check points for this kind of
       // object
@@ -35,10 +35,18 @@ public class LineCheckPoints extends AbstractValidation implements
 
       // 3-Line-1 : check if two lines have same name
       // 3-Line-2 : check if line has routes
+      // 3-Line-3 : check if line has valid transport mode
+      boolean test3 = parameters.optInt(CHECK_ALLOWED_TRANSPORT_MODES,0) == 1;
+      
       if (beans.size() > 0)
       {
          // checkPoint is applicable
          prepareCheckPoint(report, LINE_2);
+         if (test3)
+         {
+            initCheckPoint(report, LINE_3, CheckPointReportItem.SEVERITY.WARNING);
+            prepareCheckPoint(report, LINE_3);
+         }
 
          // en cas d'erreur, on reporte autant de detail que de lignes en
          // erreur
@@ -49,15 +57,18 @@ public class LineCheckPoints extends AbstractValidation implements
             checkLine1(beans, report, i, line1);
             // 3-Line-2 : check if line has routes
             checkLine2(report, line1);
+            // 3-Line-3 : check if line has valid transportMode
+            if (test3) checkLine3(report, line1, parameters);
 
             // forward on routes
             List<Route> routes = line1.getRoutes();
             if (routeCheckPoints != null)
-               routeCheckPoints.check(routes, parameters, report);
+               routeCheckPoints.check(routes, parameters, report, context);
          }
       }
 
    }
+
 
    /**
     * @param beans
@@ -128,6 +139,24 @@ public class LineCheckPoints extends AbstractValidation implements
                line1.getObjectId(), Report.STATE.ERROR, location, map);
          addValidationError(report, LINE_2, detail);
       }
+   }
+
+   
+   private void checkLine3(PhaseReportItem report, Line line1, JSONObject parameters)
+   {
+      if (getModeParameter(parameters, line1.getTransportModeName().name(), ALLOWED_TRANSPORT) != 1)
+      {
+         // failure encountered, add line 1
+         ReportLocation location = new ReportLocation(line1);
+         Map<String, Object> map = new HashMap<String, Object>();
+         map.put("name", line1.getName());
+         map.put("number", line1.getNumber());
+         map.put("transportMode", line1.getTransportModeName().name());
+         DetailReportItem detail = new DetailReportItem(LINE_3,
+               line1.getObjectId(), Report.STATE.WARNING, location, map);
+         addValidationError(report, LINE_3, detail);
+      }
+      
    }
 
 }

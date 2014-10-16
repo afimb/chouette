@@ -8,6 +8,7 @@
 package fr.certu.chouette.manager;
 
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONObject;
 
@@ -443,12 +444,16 @@ public interface INeptuneManager<T extends NeptuneIdentifiedObject>
     *           beans to be validate
     * @param parameters
     *           validation parameters
+    * @param validationContext
+    *           validation context (may be null)
+    * @param propagate
+    *           propagate to dependencies 
     * @return a diagnostic step by step
     * @throws ChouetteException
     *            invalid user access or validation failure
     */
-   void validate(User user, List<T> beans, JSONObject parameters,
-         PhaseReportItem report, Boolean... propagate) throws ChouetteException;
+   void validate(User user, List<T> beans, JSONObject parameters, PhaseReportItem report, Map<String, Object> validationContext, Boolean propagate)
+         throws ChouetteException;
 
    /**
     * get the steps description for validation
@@ -539,4 +544,5 @@ public interface INeptuneManager<T extends NeptuneIdentifiedObject>
     */
    void saveAll(User user, List<T> beans, boolean propagate, boolean fast)
          throws ChouetteException;
+
 }

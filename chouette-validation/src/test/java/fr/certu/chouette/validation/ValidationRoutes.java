@@ -1,6 +1,7 @@
 package fr.certu.chouette.validation;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 import org.json.JSONException;
@@ -64,7 +65,7 @@ public class ValidationRoutes extends AbstractValidation
 
 		PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
 
-		checkPoint.check(line1.getRoutes(), parameters , report);
+		checkPoint.check(line1.getRoutes(), parameters , report, new HashMap<String, Object>());
 		report.refreshStatus();
 
 		printReport(report);
@@ -143,7 +144,7 @@ public class ValidationRoutes extends AbstractValidation
 		
 		PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
 
-		checkPoint.check(line1.getRoutes(), parameters , report);
+		checkPoint.check(line1.getRoutes(), parameters , report, new HashMap<String, Object>());
 		report.refreshStatus();
 
 		printReport(report);
@@ -237,7 +238,7 @@ public class ValidationRoutes extends AbstractValidation
         parameters.getJSONObject("mode_bus").put("inter_stop_area_distance_max",(int) distanceMax - 10);
 		PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
 
-		checkPoint.check(line1.getRoutes(), parameters , report);
+		checkPoint.check(line1.getRoutes(), parameters , report, new HashMap<String, Object>());
 		report.refreshStatus();
 
 		printReport(report);
@@ -324,7 +325,7 @@ public class ValidationRoutes extends AbstractValidation
 		
 		PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
 
-		checkPoint.check(line1.getRoutes(), parameters , report);
+		checkPoint.check(line1.getRoutes(), parameters , report, new HashMap<String, Object>());
 		report.refreshStatus();
 
 		printReport(report);
@@ -396,7 +397,7 @@ public class ValidationRoutes extends AbstractValidation
 				
 		PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
 
-		checkPoint.check(line1.getRoutes(), parameters , report);
+		checkPoint.check(line1.getRoutes(), parameters , report, new HashMap<String, Object>());
 		report.refreshStatus();
 
 		printReport(report);
@@ -470,7 +471,7 @@ public class ValidationRoutes extends AbstractValidation
 				
 		PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
 
-		checkPoint.check(line1.getRoutes(), parameters , report);
+		checkPoint.check(line1.getRoutes(), parameters , report, new HashMap<String, Object>());
 		report.refreshStatus();
 
 		printReport(report);
@@ -541,7 +542,7 @@ public class ValidationRoutes extends AbstractValidation
 				
 		PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
 
-		checkPoint.check(line1.getRoutes(), parameters , report);
+		checkPoint.check(line1.getRoutes(), parameters , report, new HashMap<String, Object>());
 		report.refreshStatus();
 
 		printReport(report);
@@ -612,7 +613,7 @@ public class ValidationRoutes extends AbstractValidation
 				
 		PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
 
-		checkPoint.check(line1.getRoutes(), parameters , report);
+		checkPoint.check(line1.getRoutes(), parameters , report, new HashMap<String, Object>());
 		report.refreshStatus();
 
 		printReport(report);
@@ -683,7 +684,7 @@ public class ValidationRoutes extends AbstractValidation
 				
 		PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
 
-		checkPoint.check(line1.getRoutes(), parameters , report);
+		checkPoint.check(line1.getRoutes(), parameters , report, new HashMap<String, Object>());
 		report.refreshStatus();
 
 		printReport(report);

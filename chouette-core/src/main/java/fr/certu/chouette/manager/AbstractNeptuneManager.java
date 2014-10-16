@@ -690,35 +690,33 @@ public abstract class AbstractNeptuneManager<T extends NeptuneIdentifiedObject>
     * fr.certu.chouette.plugin.validation.ValidationParameters)
     */
    @Override
-   public void validate(User user, List<T> beans, JSONObject parameters,
-         PhaseReportItem report, Boolean... propagate) throws ChouetteException
+   public final void validate(User user, List<T> beans, JSONObject parameters,
+         PhaseReportItem report, Map<String, Object> validationContext, Boolean propagate) throws ChouetteException
    {
       if (validationPluginList.size() == 0)
          throw new CoreException(
                CoreExceptionCode.NO_VALIDATION_PLUGIN_AVAILABLE, "");
 
-      boolean hasToPropagate = true;
-      if (propagate.length > 0)
-      {
-         hasToPropagate = propagate[0].booleanValue();
-      }
+      boolean hasToPropagate = propagate;
+
+      if (validationContext == null) validationContext = new HashMap<>();
 
       for (ICheckPointPlugin<T> plugin : validationPluginList)
       {
-         plugin.check(beans, parameters, report);
+         plugin.check(beans, parameters, report, validationContext);
 
       }
 
       if (hasToPropagate)
       {
-         propagateValidation(user, beans, parameters, report, hasToPropagate);
+         propagateValidation(user, beans, parameters, report,validationContext, hasToPropagate);
       }
 
       return;
    }
 
    protected void propagateValidation(User user, List<T> beans,
-         JSONObject parameters, PhaseReportItem report, boolean propagate)
+         JSONObject parameters, PhaseReportItem report, Map<String, Object> validationContext, boolean propagate)
          throws ChouetteException
    {
       return;

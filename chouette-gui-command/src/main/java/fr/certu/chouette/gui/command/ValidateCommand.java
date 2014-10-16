@@ -151,7 +151,7 @@ public class ValidateCommand extends AbstractCommand
             PhaseReportItem.PHASE.THREE);
       if (beans != null && !beans.isEmpty())
       {
-         manager.validate(null, beans, validationParameters, valReport);
+         manager.validate(null, beans, validationParameters, valReport, null, true);
       }
 
       // save report

@@ -10,7 +10,6 @@ import org.springframework.test.context.testng.AbstractTransactionalTestNGSpring
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 import fr.certu.chouette.common.ChouetteException;
@@ -34,6 +33,7 @@ public class ValidationNominal extends
       AbstractTransactionalTestNGSpringContextTests
 {
 
+   @SuppressWarnings("unchecked")
    @BeforeMethod
    public void cleanData() throws Exception
    {
@@ -97,7 +97,7 @@ public class ValidationNominal extends
          line.complete();
       }
 
-      lineManager.validate(null, beans, parameters, report, true);
+      lineManager.validate(null, beans, parameters, report, null, true);
       report.refreshStatus();
 
       AbstractValidation.printReport(report);

@@ -31,7 +31,7 @@ public class RouteCheckPoints extends AbstractValidation implements
 
    @Override
    public void check(List<Route> beans, JSONObject parameters,
-         PhaseReportItem report)
+         PhaseReportItem report, Map<String, Object> context)
    {
       if (isEmpty(beans))
          return;
@@ -99,7 +99,7 @@ public class RouteCheckPoints extends AbstractValidation implements
          if (journeyPatternCheckPoints != null)
          {
             journeyPatternCheckPoints.check(route.getJourneyPatterns(),
-                  parameters, report);
+                  parameters, report, context);
          }
       }
    }

@@ -9,6 +9,7 @@
 package fr.certu.chouette.plugin.validation;
 
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONObject;
 
@@ -21,5 +22,5 @@ import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
  */
 public interface ICheckPointPlugin<T extends NeptuneIdentifiedObject>
 {
-   void check(List<T> beans, JSONObject parameters, PhaseReportItem report);
+   void check(List<T> beans, JSONObject parameters, PhaseReportItem report, Map<String, Object> context);
 }

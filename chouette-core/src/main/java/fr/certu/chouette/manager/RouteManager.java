@@ -10,6 +10,7 @@ package fr.certu.chouette.manager;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.json.JSONObject;
@@ -42,7 +43,7 @@ public class RouteManager extends AbstractNeptuneManager<Route>
 
    @Override
    protected void propagateValidation(User user, List<Route> beans,
-         JSONObject parameters, PhaseReportItem report, boolean propagate)
+         JSONObject parameters, PhaseReportItem report, Map<String, Object> validationContext, boolean propagate)
          throws ChouetteException
    {
 
@@ -64,10 +65,10 @@ public class RouteManager extends AbstractNeptuneManager<Route>
          AbstractNeptuneManager<PTLink> manager = (AbstractNeptuneManager<PTLink>) getManager(PTLink.class);
          if (manager.canValidate())
          {
-            manager.validate(user, ptLinks, parameters, report, propagate);
+            manager.validate(user, ptLinks, parameters, report, validationContext, propagate);
          } else
          {
-            manager.propagateValidation(user, ptLinks, parameters, report,
+            manager.propagateValidation(user, ptLinks, parameters, report, validationContext,
                   propagate);
          }
       }
@@ -78,12 +79,12 @@ public class RouteManager extends AbstractNeptuneManager<Route>
          AbstractNeptuneManager<JourneyPattern> manager = (AbstractNeptuneManager<JourneyPattern>) getManager(JourneyPattern.class);
          if (manager.canValidate())
          {
-            manager.validate(user, journeyPatterns, parameters, report,
+            manager.validate(user, journeyPatterns, parameters, report, validationContext,
                   propagate);
          } else
          {
             manager.propagateValidation(user, journeyPatterns, parameters,
-                  report, propagate);
+                  report, validationContext, propagate);
          }
       }
 

@@ -1,6 +1,7 @@
 package fr.certu.chouette.validation;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 
 import org.json.JSONException;
@@ -77,7 +78,7 @@ public class ValidationJourneyPatterns extends AbstractValidation
 
       PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
 
-      checkPoint.check(route1.getJourneyPatterns(), parameters, report);
+      checkPoint.check(route1.getJourneyPatterns(), parameters, report, new HashMap<String, Object>());
       report.refreshStatus();
 
       printReport(report);

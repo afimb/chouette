@@ -3,7 +3,6 @@ package fr.certu.chouette.manager;
 import org.apache.log4j.Logger;
 
 import fr.certu.chouette.model.neptune.AccessPoint;
-import fr.certu.chouette.model.neptune.NeptuneLocalizedObject;
 
 /**
  * 

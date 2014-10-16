@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -34,7 +35,7 @@ public class JourneyPatternManager extends
 
    @Override
    protected void propagateValidation(User user, List<JourneyPattern> beans,
-         JSONObject parameters, PhaseReportItem report, boolean propagate)
+         JSONObject parameters, PhaseReportItem report, Map<String, Object> validationContext, boolean propagate)
          throws ChouetteException
    {
 
@@ -57,12 +58,12 @@ public class JourneyPatternManager extends
          {
             manager.validate(user,
                   Arrays.asList(stopPoints.toArray(new StopPoint[0])),
-                  parameters, report, propagate);
+                  parameters, report,validationContext, propagate);
          } else
          {
             manager.propagateValidation(user,
                   Arrays.asList(stopPoints.toArray(new StopPoint[0])),
-                  parameters, report, propagate);
+                  parameters, report,validationContext, propagate);
          }
       }
 
@@ -72,12 +73,12 @@ public class JourneyPatternManager extends
          AbstractNeptuneManager<VehicleJourney> manager = (AbstractNeptuneManager<VehicleJourney>) getManager(VehicleJourney.class);
          if (manager.canValidate())
          {
-            manager.validate(user, vehicleJourneys, parameters, report,
+            manager.validate(user, vehicleJourneys, parameters, report,validationContext,
                   propagate);
          } else
          {
             manager.propagateValidation(user, vehicleJourneys, parameters,
-                  report, propagate);
+                  report,validationContext, propagate);
          }
       }
 
