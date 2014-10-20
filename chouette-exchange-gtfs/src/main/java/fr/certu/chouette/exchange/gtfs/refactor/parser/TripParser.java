@@ -27,6 +27,12 @@ public class TripParser extends ParserImpl<GtfsTrip>
       return null;
    }
 
+   @Override
+   public boolean validate(GtfsTrip bean, GtfsDao dao)
+   {
+      return true;
+   }
+
    public static class DefaultParserFactory extends ParserFactory
    {
       @Override

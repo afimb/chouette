@@ -6,10 +6,9 @@ import fr.certu.chouette.exchange.gtfs.refactor.converter.GtfsConverter;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStopTime;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStopTime.DropOffType;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStopTime.PickupType;
-import fr.certu.chouette.exchange.gtfs.refactor.validator.StopTimeValidator;
 
 public class StopTimeParser extends ParserImpl<GtfsStopTime> implements
-      GtfsConverter, StopTimeValidator
+      GtfsConverter
 {
 
    public static enum FIELDS
@@ -55,19 +54,26 @@ public class StopTimeParser extends ParserImpl<GtfsStopTime> implements
             DropOffType.Scheduled, false));
       bean.setShapeDistTraveled(FLOAT_CONVERTER.from(shapeDistTraveled, false));
 
-      // STOPTIME_VALIDATOR.validate(bean);
-
       return bean;
    }
 
-   public static class DefaultParserFactory extends ParserFactory {
+   @Override
+   public boolean validate(GtfsStopTime bean, GtfsDao dao)
+   {
+      return true;
+   }
+
+   public static class DefaultParserFactory extends ParserFactory
+   {
       @Override
-      protected GtfsParser<GtfsStopTime> create(String name) throws IOException {
+      protected GtfsParser<GtfsStopTime> create(String name) throws IOException
+      {
          return new StopTimeParser(name);
       }
    }
 
-   static {
+   static
+   {
       ParserFactory factory = new DefaultParserFactory();
       ParserFactory.factories.put(StopTimeParser.class.getName(), factory);
    }

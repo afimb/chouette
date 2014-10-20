@@ -27,6 +27,12 @@ public class FrequencyParser extends ParserImpl<GtfsFrequency>
       return null;
    }
 
+   @Override
+   public boolean validate(GtfsFrequency bean, GtfsDao dao)
+   {
+      return true;
+   }
+
    public static class DefaultParserFactory extends ParserFactory
    {
       @Override

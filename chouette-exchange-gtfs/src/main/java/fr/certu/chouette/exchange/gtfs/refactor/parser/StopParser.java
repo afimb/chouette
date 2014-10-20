@@ -27,6 +27,12 @@ public class StopParser extends ParserImpl<GtfsStop>
       return null;
    }
 
+   @Override
+   public boolean validate(GtfsStop bean, GtfsDao dao)
+   {
+      return true;
+   }
+
    public static class DefaultParserFactory extends ParserFactory
    {
       @Override

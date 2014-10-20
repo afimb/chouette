@@ -15,4 +15,6 @@ public interface GtfsParser<T> extends Iterable<T>
 
    T getValue(String key);
 
+   boolean validate(T bean, GtfsDao dao);
+
 }

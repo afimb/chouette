@@ -27,6 +27,12 @@ public class AgencyParser extends ParserImpl<GtfsAgency>
       return null;
    }
 
+   @Override
+   public boolean validate(GtfsAgency bean, GtfsDao dao)
+   {
+      return true;
+   }
+
    public static class DefaultParserFactory extends ParserFactory
    {
       @Override

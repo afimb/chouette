@@ -27,6 +27,12 @@ public class CalendarParser extends ParserImpl<GtfsCalendar>
       return null;
    }
 
+   @Override
+   public boolean validate(GtfsCalendar bean, GtfsDao dao)
+   {
+      return true;
+   }
+
    public static class DefaultParserFactory extends ParserFactory
    {
       @Override

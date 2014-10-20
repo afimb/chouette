@@ -27,6 +27,12 @@ public class TransferParser extends ParserImpl<GtfsTransfer>
       return null;
    }
 
+   @Override
+   public boolean validate(GtfsTransfer bean, GtfsDao dao)
+   {
+      return true;
+   }
+
    public static class DefaultParserFactory extends ParserFactory
    {
       @Override

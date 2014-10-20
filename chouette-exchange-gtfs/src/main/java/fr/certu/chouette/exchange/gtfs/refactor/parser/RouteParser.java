@@ -27,6 +27,12 @@ public class RouteParser extends ParserImpl<GtfsRoute>
       return null;
    }
 
+   @Override
+   public boolean validate(GtfsRoute bean, GtfsDao dao)
+   {
+      return true;
+   }
+
    public static class DefaultParserFactory extends ParserFactory
    {
       @Override

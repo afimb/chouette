@@ -38,7 +38,7 @@ public abstract class ParserImpl<T> extends AbstractParser<T>
    private FileChannel _channel2;
    private File _temp;
 
-   public static final ThreadLocal userThreadLocal = new ThreadLocal();
+   public static final ThreadLocal local = new ThreadLocal();
    private static final String LINES = "lines";
 
    public ParserImpl(String name, String id) throws IOException
