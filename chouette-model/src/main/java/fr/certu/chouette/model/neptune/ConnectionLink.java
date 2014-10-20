@@ -46,11 +46,18 @@ public class ConnectionLink extends NeptuneIdentifiedObject
    @Getter
    @Column(name = "name", nullable = false)
    private String name;
+   public void setName(String value)
+   {
+      name = dataBaseSizeProtectedValue(value,"name",log);
+   }
 
    @Getter
-   @Setter
    @Column(name = "comment")
    private String comment;
+   public void setComment(String value)
+   {
+      comment = dataBaseSizeProtectedValue(value,"comment",log);
+   }
 
    @Getter
    @Setter
@@ -146,18 +153,6 @@ public class ConnectionLink extends NeptuneIdentifiedObject
    @Setter
    @Transient
    private List<Facility> facilities;
-
-   public void setName(String value)
-   {
-      if (value != null && value.length() > 255)
-      {
-         log.warn("name too long, truncated " + value);
-         name = value.substring(0, 255);
-      } else
-      {
-         name = value;
-      }
-   }
 
    /**
     * @param facility

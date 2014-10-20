@@ -84,18 +84,6 @@ public class GtfsLineExportPlugin implements IExportPlugin<Line>
       // ParameterDescription.TYPE.FILEPATH, false, false);
       // params.add(param);
       // }
-      // manage lines colors : perhaps in Neptune Model
-      // {
-      // ParameterDescription param = new ParameterDescription("lineColor",
-      // ParameterDescription.TYPE.STRING, false, false);
-      // params.add(param);
-      // }
-      // {
-      // ParameterDescription param = new ParameterDescription("colorMap",
-      // ParameterDescription.TYPE.FILEPATH, false, false);
-      // param.setAllowedExtensions(Arrays.asList(new String[]{"txt","tmp"}));
-      // params.add(param);
-      // }
       description.setParameterDescriptions(params);
    }
 
@@ -128,8 +116,6 @@ public class GtfsLineExportPlugin implements IExportPlugin<Line>
       TimeZone timeZone = null;
       // Date startDate = null; // today ??
       // Date endDate = null; // in ten years ??
-      // String lineColor = defaultLineColor;
-      // String colorMapFileName = null;
 
       if (beans == null)
       {

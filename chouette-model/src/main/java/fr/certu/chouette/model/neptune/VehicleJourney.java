@@ -56,6 +56,10 @@ public class VehicleJourney extends NeptuneIdentifiedObject
    @Getter
    @Column(name = "comment")
    private String comment;
+   public void setComment(String value)
+   {
+      comment = dataBaseSizeProtectedValue(value,"comment",log);
+   }
 
    @Getter
    @Setter
@@ -72,26 +76,51 @@ public class VehicleJourney extends NeptuneIdentifiedObject
    @Getter
    @Column(name = "published_journey_name")
    private String publishedJourneyName;
+   public void setPublishedJourneyName(String value)
+   {
+      publishedJourneyName = dataBaseSizeProtectedValue(value,"publishedJourneyName",log);
+   }
 
    @Getter
-   @Setter
    @Column(name = "published_journey_identifier")
    private String publishedJourneyIdentifier;
+   public void setPublishedJourneyIdentifier(String value)
+   {
+      publishedJourneyIdentifier = dataBaseSizeProtectedValue(value,"publishedJourneyIdentifier",log);
+   }
 
    @Getter
-   @Setter
    @Column(name = "facility")
    private String facility;
+   public void setFacility(String value)
+   {
+      facility = dataBaseSizeProtectedValue(value,"facility",log);
+   }
 
    @Getter
    @Column(name = "vehicle_type_identifier")
    private String vehicleTypeIdentifier;
+   public void setVehicleTypeIdentifier(String value)
+   {
+      vehicleTypeIdentifier = dataBaseSizeProtectedValue(value,"vehicleTypeIdentifier",log);
+   }
 
    @Getter
    @Setter
    @Column(name = "number")
    private Long number;
 
+   @Getter
+   @Setter
+   @Column(name = "mobility_restricted_suitability")
+   private Boolean mobilityRestrictedSuitability;
+   
+   @Getter
+   @Setter
+   @Column(name = "flexible_service")
+   private Boolean flexibleService;
+
+   
    @Getter
    @Setter
    @ManyToOne(fetch = FetchType.LAZY)
@@ -128,7 +157,7 @@ public class VehicleJourney extends NeptuneIdentifiedObject
     * <i>readable/writable</i>
     * <p/>
     * null if vehicleJourney is read from database; call
-    * {@link VehicleJourneyManager#completeObject(User, VehicleJourney)} to
+    * {@link #complete()} to
     * initialize
     */
    @Getter
@@ -141,7 +170,7 @@ public class VehicleJourney extends NeptuneIdentifiedObject
     * <i>readable/writable</i>
     * <p/>
     * null if vehicleJourney is read from database; call
-    * {@link VehicleJourneyManager#completeObject(User, VehicleJourney)} to
+    * {@link #complete()} to
     * initialize
     */
    @Getter
@@ -154,7 +183,7 @@ public class VehicleJourney extends NeptuneIdentifiedObject
     * <i>readable/writable</i>
     * <p/>
     * null if vehicleJourney is read from database; call
-    * {@link VehicleJourneyManager#completeObject(User, VehicleJourney)} to
+    * {@link #complete()} to
     * initialize
     */
    @Getter
@@ -176,7 +205,7 @@ public class VehicleJourney extends NeptuneIdentifiedObject
     * <i>readable/writable</i>
     * <p/>
     * null if vehicleJourney is read from database; call
-    * {@link VehicleJourneyManager#completeObject(User, VehicleJourney)} to
+    * {@link #complete()} to
     * initialize
     */
    @Getter
@@ -189,7 +218,7 @@ public class VehicleJourney extends NeptuneIdentifiedObject
     * <i>readable/writable</i>
     * <p/>
     * null if vehicleJourney is read from database; call
-    * {@link VehicleJourneyManager#completeObject(User, VehicleJourney)} to
+    * {@link #complete()} to
     * initialize
     */
    @Getter
@@ -201,7 +230,7 @@ public class VehicleJourney extends NeptuneIdentifiedObject
     * <i>readable/writable</i>
     * <p/>
     * null if vehicleJourney is read from database; call
-    * {@link VehicleJourneyManager#completeObject(User, VehicleJourney)} to
+    * {@link #complete()} to
     * initialize
     */
    @Getter
@@ -227,41 +256,6 @@ public class VehicleJourney extends NeptuneIdentifiedObject
    @Transient
    private Date endOfPeriod;
 
-   public void setComment(String value)
-   {
-      if (value != null && value.length() > 255)
-      {
-         log.warn("comment too long, truncated " + value);
-         comment = value.substring(0, 255);
-      } else
-      {
-         comment = value;
-      }
-   }
-
-   public void setPublishedJourneyName(String value)
-   {
-      if (value != null && value.length() > 255)
-      {
-         log.warn("publishedJourneyName too long, truncated " + value);
-         publishedJourneyName = value.substring(0, 255);
-      } else
-      {
-         publishedJourneyName = value;
-      }
-   }
-
-   public void setVehicleTypeIdentifier(String value)
-   {
-      if (value != null && value.length() > 255)
-      {
-         log.warn("vehicleTypeIdentifier too long, truncated " + value);
-         vehicleTypeIdentifier = value.substring(0, 255);
-      } else
-      {
-         vehicleTypeIdentifier = value;
-      }
-   }
 
    /**
     * add a VehicleJourneyAtStop if not already present
@@ -332,7 +326,7 @@ public class VehicleJourney extends NeptuneIdentifiedObject
    /**
     * add a collection of timetables if not already presents
     * 
-    * @param timetable
+    * @param timetableCollection
     *           to add
     */
    public void addTimetables(Collection<Timetable> timetableCollection)
@@ -359,6 +353,9 @@ public class VehicleJourney extends NeptuneIdentifiedObject
          timetables.remove(timetable);
    }
 
+   /* (non-Javadoc)
+    * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#clean()
+    */
    @Override
    public boolean clean()
    {
@@ -373,6 +370,9 @@ public class VehicleJourney extends NeptuneIdentifiedObject
       return true;
    }
 
+   /**
+    * remove all vehicleJourneyAtStops
+    */
    public void purgeVehicleJourneyAtStops()
    {
       if (vehicleJourneyAtStops != null)
@@ -518,7 +518,7 @@ public class VehicleJourney extends NeptuneIdentifiedObject
     * <p/>
     * use to match journeyPattern stopPointKey
     * 
-    * @return
+    * @return a string of all stoppoint ids in order
     */
    private String getStopPointsAsKey()
    {
@@ -610,6 +610,11 @@ public class VehicleJourney extends NeptuneIdentifiedObject
       return sb.toString();
    }
 
+   /**
+    * set and order vehicleJourneyAtStops
+    * 
+    * @param vehicleJourneyAtStops
+    */
    public void setVehicleJourneyAtStops(
          List<VehicleJourneyAtStop> vehicleJourneyAtStops)
    {
@@ -618,6 +623,9 @@ public class VehicleJourney extends NeptuneIdentifiedObject
 
    }
 
+   /* (non-Javadoc)
+    * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#complete()
+    */
    @Override
    public void complete()
    {
@@ -652,7 +660,7 @@ public class VehicleJourney extends NeptuneIdentifiedObject
     * 
     * @param date1
     * @param date2
-    * @return
+    * @return minimum of dates
     */
    protected Date minDate(Date date1, Date date2)
    {
@@ -668,7 +676,7 @@ public class VehicleJourney extends NeptuneIdentifiedObject
     * 
     * @param date1
     * @param date2
-    * @return
+    * @return maximum of dates
     */
    protected Date maxDate(Date date1, Date date2)
    {
@@ -687,6 +695,9 @@ public class VehicleJourney extends NeptuneIdentifiedObject
          Comparator<VehicleJourneyAtStop>
    {
 
+      /* (non-Javadoc)
+       * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+       */
       @Override
       public int compare(VehicleJourneyAtStop o1, VehicleJourneyAtStop o2)
       {
@@ -701,6 +712,9 @@ public class VehicleJourney extends NeptuneIdentifiedObject
 
    }
 
+   /* (non-Javadoc)
+    * @see fr.certu.chouette.model.neptune.NeptuneObject#compareAttributes(fr.certu.chouette.model.neptune.NeptuneObject)
+    */
    @Override
    public <T extends NeptuneObject> boolean compareAttributes(T anotherObject)
    {
@@ -746,6 +760,9 @@ public class VehicleJourney extends NeptuneIdentifiedObject
       }
    }
 
+   /* (non-Javadoc)
+    * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#toURL()
+    */
    @Override
    public String toURL()
    {

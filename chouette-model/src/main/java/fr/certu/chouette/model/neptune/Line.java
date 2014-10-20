@@ -57,24 +57,42 @@ public class Line extends NeptuneIdentifiedObject
    @Getter
    @Column(name = "name", nullable = false)
    private String name;
+   public void setName(String value)
+   {
+      name = dataBaseSizeProtectedValue(value,"name",log);
+   }
 
    @Getter
    @Column(name = "comment")
    private String comment;
+   public void setComment(String value)
+   {
+      comment = dataBaseSizeProtectedValue(value,"comment",log);
+   }
 
    @Getter
-   @Setter
    @Column(name = "number")
    private String number;
+   public void setNumber(String value)
+   {
+      number = dataBaseSizeProtectedValue(value,"number",log);
+   }
 
    @Getter
-   @Setter
    @Column(name = "published_name")
    private String publishedName;
+   public void setPublishedName(String value)
+   {
+      publishedName = dataBaseSizeProtectedValue(value,"publishedName",log);
+   }
 
    @Getter
    @Column(name = "registration_number", unique = true)
    private String registrationNumber;
+   public void setRegistrationNumber(String value)
+   {
+      registrationNumber = dataBaseSizeProtectedValue(value,"registrationNumber",log);
+   }
 
    @Getter
    @Setter
@@ -91,6 +109,31 @@ public class Line extends NeptuneIdentifiedObject
    @Setter
    @Column(name = "int_user_needs")
    private Integer intUserNeeds = 0;
+
+   @Getter
+   @Column(name = "url")
+   private String url;
+   public void setUrl(String value)
+   {
+      url = dataBaseSizeProtectedValue(value,"url",log);
+   }
+
+   @Getter
+   @Column(name = "color", length = 6)
+   private String color;
+
+   public void setColor(String value)
+   {
+      color = dataBaseSizeProtectedValue(value,"color",log);
+   }
+
+   @Getter
+   @Column(name = "text_color", length = 6)
+   private String textColor;
+   public void setTextColor(String value)
+   {
+      textColor = dataBaseSizeProtectedValue(value,"textColor",log);
+   }
 
    @Getter
    @Setter
@@ -284,42 +327,6 @@ public class Line extends NeptuneIdentifiedObject
    @Transient
    private List<ConnectionLink> connectionLinks;
 
-   public void setRegistrationNumber(String value)
-   {
-      if (value != null && value.length() > 255)
-      {
-         log.warn("registrationNumber too long, truncated " + value);
-         registrationNumber = value.substring(0, 255);
-      } else
-      {
-         registrationNumber = value;
-      }
-   }
-
-   public void setName(String value)
-   {
-      if (value != null && value.length() > 255)
-      {
-         log.warn("name too long, truncated " + value);
-         name = value.substring(0, 255);
-      } else
-      {
-         name = value;
-      }
-   }
-
-   public void setComment(String value)
-   {
-      if (value != null && value.length() > 255)
-      {
-         log.warn("comment too long, truncated " + value);
-         comment = value.substring(0, 255);
-      } else
-      {
-         comment = value;
-      }
-   }
-
    /**
     * @param groupOfLine
     */
@@ -343,7 +350,7 @@ public class Line extends NeptuneIdentifiedObject
    }
 
    /**
-    * @param facility
+    * @param groupOfLineId
     */
    public void addGroupOfLineId(String groupOfLineId)
    {
@@ -493,28 +500,28 @@ public class Line extends NeptuneIdentifiedObject
    {
       StringBuilder sb = new StringBuilder(super.toString(indent, level));
       sb.append("\n").append(indent).append("  ptNetworkIdShortcut = ")
-            .append(ptNetworkIdShortcut);
+      .append(ptNetworkIdShortcut);
       sb.append("\n").append(indent).append("  number = ").append(number);
       sb.append("\n").append(indent).append("  publishedName = ")
-            .append(publishedName);
+      .append(publishedName);
       sb.append("\n").append(indent).append("  transportModeName = ")
-            .append(transportModeName);
+      .append(transportModeName);
       sb.append("\n").append(indent).append("  registrationNumber = ")
-            .append(registrationNumber);
+      .append(registrationNumber);
       sb.append("\n").append(indent).append("  comment = ").append(comment);
       sb.append("\n").append(indent).append("  mobilityRestrictedSuitable = ")
-            .append(mobilityRestrictedSuitable);
+      .append(mobilityRestrictedSuitable);
       sb.append("\n").append(indent).append("  routes count = ")
-            .append(routes == null ? 0 : routes.size());
+      .append(routes == null ? 0 : routes.size());
       sb.append("\n").append(indent).append("  routingConstraints count= ")
-            .append(routingConstraints == null ? 0 : routingConstraints.size());
+      .append(routingConstraints == null ? 0 : routingConstraints.size());
       if (lineEnds != null)
       {
          sb.append("\n").append(indent).append(CHILD_ARROW).append("lineEnds");
          for (String lineEnd : getLineEnds())
          {
             sb.append("\n").append(indent).append(CHILD_LIST_ARROW)
-                  .append(lineEnd);
+            .append(lineEnd);
          }
       }
       if (routeIds != null)
@@ -523,7 +530,7 @@ public class Line extends NeptuneIdentifiedObject
          for (String routeid : getRouteIds())
          {
             sb.append("\n").append(indent).append(CHILD_LIST_ARROW)
-                  .append(routeid);
+            .append(routeid);
          }
       }
       if (userNeeds != null)
@@ -532,18 +539,18 @@ public class Line extends NeptuneIdentifiedObject
          for (UserNeedEnum userNeed : getUserNeeds())
          {
             sb.append("\n").append(indent).append(CHILD_LIST_ARROW)
-                  .append(userNeed);
+            .append(userNeed);
          }
       }
 
       if (routingConstraintIds != null)
       {
          sb.append("\n").append(indent).append(CHILD_ARROW)
-               .append("routingConstraintIds");
+         .append("routingConstraintIds");
          for (String routingConstraintId : getRoutingConstraintIds())
          {
             sb.append("\n").append(indent).append(CHILD_LIST_ARROW)
-                  .append(routingConstraintId);
+            .append(routingConstraintId);
          }
       }
 
@@ -554,12 +561,12 @@ public class Line extends NeptuneIdentifiedObject
          if (getPtNetwork() != null)
          {
             sb.append("\n").append(indent).append(CHILD_ARROW)
-                  .append(ptNetwork.toString(childIndent, 0));
+            .append(ptNetwork.toString(childIndent, 0));
          }
          if (getCompany() != null)
          {
             sb.append("\n").append(indent).append(CHILD_ARROW)
-                  .append(company.toString(childIndent, 0));
+            .append(company.toString(childIndent, 0));
          }
          childIndent = indent + CHILD_LIST_INDENT;
          if (getRoutes() != null)
@@ -568,17 +575,17 @@ public class Line extends NeptuneIdentifiedObject
             for (Route route : getRoutes())
             {
                sb.append("\n").append(indent).append(CHILD_LIST_ARROW)
-                     .append(route.toString(childIndent, childLevel));
+               .append(route.toString(childIndent, childLevel));
             }
          }
          if (routingConstraints != null)
          {
             sb.append("\n").append(indent).append(CHILD_ARROW)
-                  .append("routingConstraints");
+            .append("routingConstraints");
             for (StopArea routing : getRoutingConstraints())
             {
                sb.append("\n").append(indent).append(CHILD_LIST_ARROW)
-                     .append(routing.toString(childIndent, childLevel));
+               .append(routing.toString(childIndent, childLevel));
             }
          }
 
@@ -742,13 +749,13 @@ public class Line extends NeptuneIdentifiedObject
     * 
     * @param routingConstraintId
     */
-   public void addRoutingConstraintId(String routingConstraintid)
+   public void addRoutingConstraintId(String routingConstraintId)
    {
       if (routingConstraintIds == null)
          routingConstraintIds = new ArrayList<String>();
-      if (routingConstraintid != null
-            && !routingConstraintIds.contains(routingConstraintid))
-         routingConstraintIds.add(routingConstraintid);
+      if (routingConstraintId != null
+            && !routingConstraintIds.contains(routingConstraintId))
+         routingConstraintIds.add(routingConstraintId);
 
    }
 

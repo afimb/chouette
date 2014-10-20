@@ -12,7 +12,6 @@ import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
 import fr.certu.chouette.exchange.gtfs.model.GtfsRoute;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.Line;
-import fr.certu.chouette.model.neptune.Route;
 
 @ContextConfiguration(locations = { "classpath:testContext.xml",
       "classpath*:chouetteContext.xml" })
@@ -29,29 +28,25 @@ public class GtfsExportRouteProducerTests extends
       GtfsRouteProducer producer = new GtfsRouteProducer();
 
       GtfsReport report = new GtfsReport(GtfsReport.KEY.EXPORT);
-      Route neptuneObject = new Route();
-      neptuneObject.setObjectId("GTFS:Route:1234");
-      Line line = new Line();
-      line.setObjectId("GTFS:Line:4321");
-      line.addRoute(neptuneObject);
-      line.setName("lineName");
-      line.setNumber("lineNumber");
-      line.setPublishedName("publishedLineName");
+      Line neptuneObject = new Line();
+      neptuneObject.setObjectId("GTFS:Line:4321");
+      neptuneObject.setName("lineName");
+      neptuneObject.setNumber("lineNumber");
+      neptuneObject.setPublishedName("publishedLineName");
       Company company = new Company();
       company.setObjectId("GTFS:Company:1234");
       company.setName("name");
-      line.setCompany(company);
-      neptuneObject.setWayBack("A");
+      neptuneObject.setCompany(company);
       GtfsRoute gtfsObject = producer.produce(neptuneObject, report);
       System.out.println("verifyRouteProducerWithShortAndLongName");
 
       Assert.assertNotNull(gtfsObject, "Route should be returned");
       System.out.println(GtfsRoute.header);
       System.out.println(gtfsObject.getCSVLine() + "\n");
-      Assert.assertEquals(gtfsObject.getRouteShortName(), line.getNumber(),
-            "RouteShortName must be line Number");
+      Assert.assertEquals(gtfsObject.getRouteShortName(), neptuneObject.getName(),
+            "RouteShortName must be line Name");
       Assert.assertEquals(gtfsObject.getRouteLongName(),
-            line.getPublishedName() + " - Aller",
+            neptuneObject.getPublishedName(),
             "RouteLongName must be correctly set");
 
    }
@@ -62,18 +57,14 @@ public class GtfsExportRouteProducerTests extends
       GtfsRouteProducer producer = new GtfsRouteProducer();
 
       GtfsReport report = new GtfsReport(GtfsReport.KEY.EXPORT);
-      Route neptuneObject = new Route();
-      neptuneObject.setObjectId("GTFS:Route:1234");
-      Line line = new Line();
-      line.setObjectId("GTFS:Line:4321");
-      line.addRoute(neptuneObject);
-      line.setName("lineName");
-      line.setPublishedName("publishedLineName");
+      Line neptuneObject = new Line();
+      neptuneObject.setObjectId("GTFS:Line:4321");
+      neptuneObject.setNumber("lineNumber");
+      neptuneObject.setPublishedName("publishedLineName");
       Company company = new Company();
       company.setObjectId("GTFS:Company:1234");
       company.setName("name");
-      line.setCompany(company);
-      neptuneObject.setWayBack("A");
+      neptuneObject.setCompany(company);
       GtfsRoute gtfsObject = producer.produce(neptuneObject, report);
       System.out.println("verifyRouteProducerWithNoShortName");
 
@@ -83,7 +74,7 @@ public class GtfsExportRouteProducerTests extends
       Assert.assertNull(gtfsObject.getRouteShortName(),
             "RouteShortName must be null");
       Assert.assertEquals(gtfsObject.getRouteLongName(),
-            line.getPublishedName() + " - Aller",
+            neptuneObject.getPublishedName(),
             "RouteLongName must be correctly set");
 
    }
@@ -94,26 +85,23 @@ public class GtfsExportRouteProducerTests extends
       GtfsRouteProducer producer = new GtfsRouteProducer();
 
       GtfsReport report = new GtfsReport(GtfsReport.KEY.EXPORT);
-      Route neptuneObject = new Route();
-      neptuneObject.setObjectId("GTFS:Route:1234");
-      Line line = new Line();
-      line.setObjectId("GTFS:Line:4321");
-      line.addRoute(neptuneObject);
-      line.setNumber("lineNumber");
+      Line neptuneObject = new Line();
+      neptuneObject.setObjectId("GTFS:Line:4321");
+      neptuneObject.setName("lineName");
+      neptuneObject.setNumber("lineNumber");
       Company company = new Company();
       company.setObjectId("GTFS:Company:1234");
       company.setName("name");
-      line.setCompany(company);
-      neptuneObject.setWayBack("A");
+      neptuneObject.setCompany(company);
       GtfsRoute gtfsObject = producer.produce(neptuneObject, report);
       System.out.println("verifyRouteProducerWithNoLongName");
 
       Assert.assertNotNull(gtfsObject, "Route should be returned");
       System.out.println(GtfsRoute.header);
       System.out.println(gtfsObject.getCSVLine() + "\n");
-      Assert.assertEquals(gtfsObject.getRouteShortName(), line.getNumber(),
-            "RouteShortName must be line Number");
-      Assert.assertEquals(gtfsObject.getRouteLongName(), "",
+      Assert.assertEquals(gtfsObject.getRouteShortName(), neptuneObject.getName(),
+            "RouteShortName must be line Name");
+      Assert.assertNull(gtfsObject.getRouteLongName(),
             "RouteLongName must be empty");
 
    }
@@ -122,18 +110,14 @@ public class GtfsExportRouteProducerTests extends
    public void verifyRouteProducerWithNoName() throws ChouetteException
    {
       GtfsRouteProducer producer = new GtfsRouteProducer();
-
       GtfsReport report = new GtfsReport(GtfsReport.KEY.EXPORT);
-      Route neptuneObject = new Route();
-      neptuneObject.setObjectId("GTFS:Route:1234");
-      Line line = new Line();
-      line.setObjectId("GTFS:Line:4321");
-      line.addRoute(neptuneObject);
+
+      Line neptuneObject = new Line();
+      neptuneObject.setObjectId("GTFS:Line:4321");
       Company company = new Company();
       company.setObjectId("GTFS:Company:1234");
       company.setName("name");
-      line.setCompany(company);
-      neptuneObject.setWayBack("A");
+      neptuneObject.setCompany(company);
       GtfsRoute gtfsObject = producer.produce(neptuneObject, report);
       System.out.println("verifyRouteProducerWithNoName");
       System.out.println(gtfsObject);
