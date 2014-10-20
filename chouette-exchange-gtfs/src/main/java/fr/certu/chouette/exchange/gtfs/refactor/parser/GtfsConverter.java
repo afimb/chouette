@@ -1,16 +1,16 @@
-package fr.certu.chouette.exchange.gtfs.refactor.converter;
+package fr.certu.chouette.exchange.gtfs.refactor.parser;
 
 import java.sql.Date;
 import java.sql.Time;
 import java.text.DateFormat;
 
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsCalendarDate.ExceptionType;
-import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsTime;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsRoute.RouteType;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStop.LocationType;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStop.WheelchairBoardingType;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStopTime.DropOffType;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStopTime.PickupType;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsTime;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsTrip.BikesAllowedType;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsTrip.DirectionType;
 
@@ -474,5 +474,4 @@ public interface GtfsConverter
       public abstract F to(T input);
 
    }
-
 }
