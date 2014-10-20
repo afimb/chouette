@@ -23,10 +23,10 @@ public class RouteMarshaller extends MarshallerImpl<GtfsRoute> implements
    @Override
    public void marshal(GtfsRoute bean) throws IOException
    {
-      marshal(Route_CONVERTER.to(bean));
+      marshal(ROUTE_CONVERTER.to(bean));
    }
 
-   public static Converter<String, GtfsRoute> Route_CONVERTER = new Converter<String, GtfsRoute>()
+   public static Converter<String, GtfsRoute> ROUTE_CONVERTER = new Converter<String, GtfsRoute>()
    {
 
       @Override

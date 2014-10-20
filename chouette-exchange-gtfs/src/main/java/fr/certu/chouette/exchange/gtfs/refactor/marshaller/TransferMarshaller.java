@@ -23,10 +23,10 @@ public class TransferMarshaller extends MarshallerImpl<GtfsTransfer> implements
    @Override
    public void marshal(GtfsTransfer bean) throws IOException
    {
-      marshal(Transfer_CONVERTER.to(bean));
+      marshal(TRANSFER_CONVERTER.to(bean));
    }
 
-   public static Converter<String, GtfsTransfer> Transfer_CONVERTER = new Converter<String, GtfsTransfer>()
+   public static Converter<String, GtfsTransfer> TRANSFER_CONVERTER = new Converter<String, GtfsTransfer>()
    {
 
       @Override

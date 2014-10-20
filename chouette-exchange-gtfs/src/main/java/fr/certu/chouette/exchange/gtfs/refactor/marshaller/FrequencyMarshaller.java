@@ -23,10 +23,10 @@ public class FrequencyMarshaller extends MarshallerImpl<GtfsFrequency>
    @Override
    public void marshal(GtfsFrequency bean) throws IOException
    {
-      marshal(Frequency_CONVERTER.to(bean));
+      marshal(FREQUENCY_CONVERTER.to(bean));
    }
 
-   public static Converter<String, GtfsFrequency> Frequency_CONVERTER = new Converter<String, GtfsFrequency>()
+   public static Converter<String, GtfsFrequency> FREQUENCY_CONVERTER = new Converter<String, GtfsFrequency>()
    {
 
       @Override

@@ -23,10 +23,10 @@ public class TripMarshaller extends MarshallerImpl<GtfsTrip> implements
    @Override
    public void marshal(GtfsTrip bean) throws IOException
    {
-      marshal(Trip_CONVERTER.to(bean));
+      marshal(TRIP_CONVERTER.to(bean));
    }
 
-   public static Converter<String, GtfsTrip> Trip_CONVERTER = new Converter<String, GtfsTrip>()
+   public static Converter<String, GtfsTrip> TRIP_CONVERTER = new Converter<String, GtfsTrip>()
    {
 
       @Override

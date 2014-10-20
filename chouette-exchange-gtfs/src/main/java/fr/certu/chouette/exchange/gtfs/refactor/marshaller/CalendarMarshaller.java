@@ -23,10 +23,10 @@ public class CalendarMarshaller extends MarshallerImpl<GtfsCalendar> implements
    @Override
    public void marshal(GtfsCalendar bean) throws IOException
    {
-      marshal(Calendar_CONVERTER.to(bean));
+      marshal(CALENDAR_CONVERTER.to(bean));
    }
 
-   public static Converter<String, GtfsCalendar> Calendar_CONVERTER = new Converter<String, GtfsCalendar>()
+   public static Converter<String, GtfsCalendar> CALENDAR_CONVERTER = new Converter<String, GtfsCalendar>()
    {
 
       @Override

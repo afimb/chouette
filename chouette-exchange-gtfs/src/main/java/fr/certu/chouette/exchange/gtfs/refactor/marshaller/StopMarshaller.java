@@ -23,10 +23,10 @@ public class StopMarshaller extends MarshallerImpl<GtfsStop> implements
    @Override
    public void marshal(GtfsStop bean) throws IOException
    {
-      marshal(Stop_CONVERTER.to(bean));
+      marshal(STOP_CONVERTER.to(bean));
    }
 
-   public static Converter<String, GtfsStop> Stop_CONVERTER = new Converter<String, GtfsStop>()
+   public static Converter<String, GtfsStop> STOP_CONVERTER = new Converter<String, GtfsStop>()
    {
 
       @Override
