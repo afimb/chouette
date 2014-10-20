@@ -10,9 +10,9 @@ public abstract class MarshallerFactory
 
    public static Map factories = new HashMap();
 
-   protected abstract GtfsMarshaller create(String path) throws IOException;
+   protected abstract Marshaller create(String path) throws IOException;
 
-   public static final GtfsMarshaller build(String path)
+   public static final Marshaller build(String path)
          throws ClassNotFoundException, IOException
    {
       String clazz = getClassName(path);

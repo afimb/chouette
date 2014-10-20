@@ -49,7 +49,7 @@ public class CalendarDateMarshaller extends MarshallerImpl<GtfsCalendarDate>
    {
 
       @Override
-      protected GtfsMarshaller create(String path) throws IOException
+      protected Marshaller create(String path) throws IOException
       {
          return new CalendarDateMarshaller(path);
       }

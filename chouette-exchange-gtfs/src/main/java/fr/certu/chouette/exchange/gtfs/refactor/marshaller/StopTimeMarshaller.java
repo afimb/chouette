@@ -50,7 +50,7 @@ public class StopTimeMarshaller extends MarshallerImpl<GtfsStopTime> implements
    {
 
       @Override
-      protected GtfsMarshaller create(String path) throws IOException
+      protected Marshaller create(String path) throws IOException
       {
          return new StopTimeMarshaller(path);
       }

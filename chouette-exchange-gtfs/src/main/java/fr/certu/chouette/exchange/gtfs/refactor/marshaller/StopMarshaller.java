@@ -49,7 +49,7 @@ public class StopMarshaller extends MarshallerImpl<GtfsStop> implements
    {
 
       @Override
-      protected GtfsMarshaller create(String path) throws IOException
+      protected Marshaller create(String path) throws IOException
       {
          return new StopMarshaller(path);
       }

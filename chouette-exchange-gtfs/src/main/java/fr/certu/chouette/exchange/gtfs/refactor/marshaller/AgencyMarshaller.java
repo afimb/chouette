@@ -50,7 +50,7 @@ public class AgencyMarshaller extends MarshallerImpl<GtfsAgency> implements
    {
 
       @Override
-      protected GtfsMarshaller create(String path) throws IOException
+      protected Marshaller create(String path) throws IOException
       {
          return new AgencyMarshaller(path);
       }

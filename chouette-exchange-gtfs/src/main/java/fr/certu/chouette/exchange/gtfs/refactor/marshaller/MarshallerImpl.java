@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public abstract class MarshallerImpl<T> implements GtfsMarshaller<T>
+public abstract class MarshallerImpl<T> implements Marshaller<T>
 {
 
    private BufferedWriter _writer;
