@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsCalendarDate;
 
-public class CalendarDatesParser extends ParserImpl<GtfsCalendarDate>
+public class CalendarDateParser extends ParserImpl<GtfsCalendarDate>
 {
 
    public static enum FIELDS
@@ -15,7 +15,7 @@ public class CalendarDatesParser extends ParserImpl<GtfsCalendarDate>
    public static final String FILENAME = "calendar_dates.txt";
    public static final String KEY = FIELDS.service_id.name();
 
-   public CalendarDatesParser(String name) throws IOException
+   public CalendarDateParser(String name) throws IOException
    {
       super(name, KEY);
    }
@@ -32,14 +32,14 @@ public class CalendarDatesParser extends ParserImpl<GtfsCalendarDate>
       @Override
       protected GtfsParser create(String name) throws IOException
       {
-         return new CalendarDatesParser(name);
+         return new CalendarDateParser(name);
       }
    }
 
    static
    {
       ParserFactory factory = new DefaultParserFactory();
-      ParserFactory.factories.put(CalendarDatesParser.class.getName(), factory);
+      ParserFactory.factories.put(CalendarDateParser.class.getName(), factory);
    }
 
 }

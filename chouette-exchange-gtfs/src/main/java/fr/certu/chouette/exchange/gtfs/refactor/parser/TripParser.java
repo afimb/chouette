@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsTrip;
 
-public class TripsParser extends ParserImpl<GtfsTrip>
+public class TripParser extends ParserImpl<GtfsTrip>
 {
 
    public static enum FIELDS
@@ -15,7 +15,7 @@ public class TripsParser extends ParserImpl<GtfsTrip>
    public static final String FILENAME = "trips.txt";
    public static final String KEY = FIELDS.route_id.name();
 
-   public TripsParser(String name) throws IOException
+   public TripParser(String name) throws IOException
    {
       super(name, KEY);
    }
@@ -32,13 +32,13 @@ public class TripsParser extends ParserImpl<GtfsTrip>
       @Override
       protected GtfsParser create(String name) throws IOException
       {
-         return new TripsParser(name);
+         return new TripParser(name);
       }
    }
 
    static
    {
       ParserFactory factory = new DefaultParserFactory();
-      ParserFactory.factories.put(TripsParser.class.getName(), factory);
+      ParserFactory.factories.put(TripParser.class.getName(), factory);
    }
 }

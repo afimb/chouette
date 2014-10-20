@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStop;
 
-public class StopsParser extends ParserImpl<GtfsStop>
+public class StopParser extends ParserImpl<GtfsStop>
 {
 
    public static enum FIELDS
@@ -15,7 +15,7 @@ public class StopsParser extends ParserImpl<GtfsStop>
    public static final String FILENAME = "stops.txt";
    public static final String KEY = FIELDS.stop_id.name();
 
-   public StopsParser(String name) throws IOException
+   public StopParser(String name) throws IOException
    {
       super(name, KEY);
    }
@@ -32,13 +32,13 @@ public class StopsParser extends ParserImpl<GtfsStop>
       @Override
       protected GtfsParser create(String name) throws IOException
       {
-         return new StopsParser(name);
+         return new StopParser(name);
       }
    }
 
    static
    {
       ParserFactory factory = new DefaultParserFactory();
-      ParserFactory.factories.put(StopsParser.class.getName(), factory);
+      ParserFactory.factories.put(StopParser.class.getName(), factory);
    }
 }

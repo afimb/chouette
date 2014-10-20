@@ -8,7 +8,7 @@ import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStopTime.DropOffType;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStopTime.PickupType;
 import fr.certu.chouette.exchange.gtfs.refactor.validator.StopTimeValidator;
 
-public class StopTimesParser extends ParserImpl<GtfsStopTime> implements
+public class StopTimeParser extends ParserImpl<GtfsStopTime> implements
       GtfsConverter, StopTimeValidator
 {
 
@@ -22,7 +22,7 @@ public class StopTimesParser extends ParserImpl<GtfsStopTime> implements
 
    private GtfsStopTime bean = new GtfsStopTime();
 
-   public StopTimesParser(String name) throws IOException
+   public StopTimeParser(String name) throws IOException
    {
       super(name, KEY);
    }
@@ -63,13 +63,13 @@ public class StopTimesParser extends ParserImpl<GtfsStopTime> implements
    public static class DefaultParserFactory extends ParserFactory {
       @Override
       protected GtfsParser<GtfsStopTime> create(String name) throws IOException {
-         return new StopTimesParser(name);
+         return new StopTimeParser(name);
       }
    }
 
    static {
       ParserFactory factory = new DefaultParserFactory();
-      ParserFactory.factories.put(StopTimesParser.class.getName(), factory);
+      ParserFactory.factories.put(StopTimeParser.class.getName(), factory);
    }
 
 }
