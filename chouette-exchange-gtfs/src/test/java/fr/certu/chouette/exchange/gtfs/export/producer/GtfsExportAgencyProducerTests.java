@@ -43,7 +43,7 @@ public class GtfsExportAgencyProducerTests extends
       Assert.assertEquals(gtfsObject.getAgencyId(),
             toGtfsId(neptuneObject.getObjectId()),
             "agency id must be correcty set");
-      Assert.assertEquals(gtfsObject.getAgencyName(), "name (short) (1234)",
+      Assert.assertEquals(gtfsObject.getAgencyName(), "name",
             "agency name must be correcty set");
       Assert.assertEquals(gtfsObject.getAgencyURL().toString(),
             "http://www.mywebsite.com", "agency url must be correcty set");
@@ -73,7 +73,7 @@ public class GtfsExportAgencyProducerTests extends
       Assert.assertEquals(gtfsObject.getAgencyId(),
             toGtfsId(neptuneObject.getObjectId()),
             "agency id must be correcty set");
-      Assert.assertEquals(gtfsObject.getAgencyName(), "name (short)",
+      Assert.assertEquals(gtfsObject.getAgencyName(), "name",
             "agency name must be correcty set");
       Assert.assertEquals(gtfsObject.getAgencyURL().toString(),
             "http://www.short.com", "agency url must be correcty set");

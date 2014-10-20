@@ -44,10 +44,6 @@ public class GtfsAgencyProducer extends AbstractProducer<GtfsAgency, Company>
       agency.setAgencyId(toGtfsId(neptuneObject.getObjectId()));
 
       String name = neptuneObject.getName();
-      if (neptuneObject.getShortName() != null)
-         name += " (" + neptuneObject.getShortName() + ")";
-      if (neptuneObject.getRegistrationNumber() != null)
-         name += " (" + neptuneObject.getRegistrationNumber() + ")";
       if (name.trim().isEmpty())
       {
          logger.error("no name for " + neptuneObject.getObjectId());
@@ -59,8 +55,11 @@ public class GtfsAgencyProducer extends AbstractProducer<GtfsAgency, Company>
       }
 
       agency.setAgencyName(name);
+      
+      // @TODO : manage agency_timezone
       agency.setAgencyTimezone(TimeZone.getDefault());
 
+      // @TODO : manage agency_url
       String url = null;
       if (neptuneObject.getOrganisationalUnit() != null
             && neptuneObject.getOrganisationalUnit().startsWith("http"))
@@ -82,6 +81,7 @@ public class GtfsAgencyProducer extends AbstractProducer<GtfsAgency, Company>
          report.addItem(item);
          return null;
       }
+      
       if (neptuneObject.getPhone() != null)
          agency.setAgencyPhone(neptuneObject.getPhone());
 

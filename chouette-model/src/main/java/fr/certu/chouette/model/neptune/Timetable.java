@@ -52,11 +52,18 @@ public class Timetable extends NeptuneIdentifiedObject
    @Getter
    @Column(name = "comment")
    private String comment;
+   public void setComment(String value)
+   {
+      comment = dataBaseSizeProtectedValue(value,"comment",log);
+   }
 
    @Getter
-   @Setter
    @Column(name = "version")
    private String version;
+   public void setVersion(String value)
+   {
+      version = dataBaseSizeProtectedValue(value,"version",log);
+   }
 
    @Getter
    @Setter
@@ -109,18 +116,6 @@ public class Timetable extends NeptuneIdentifiedObject
    @Setter
    @Transient
    private List<String> vehicleJourneyIds;
-
-   public void setComment(String value)
-   {
-      if (value != null && value.length() > 255)
-      {
-         log.warn("comment too long, truncated " + value);
-         comment = value.substring(0, 255);
-      } else
-      {
-         comment = value;
-      }
-   }
 
    /**
     * add a dayType if not already present
@@ -270,6 +265,9 @@ public class Timetable extends NeptuneIdentifiedObject
       }
    }
 
+   /* (non-Javadoc)
+    * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#toString(java.lang.String, int)
+    */
    @Override
    public String toString(String indent, int level)
    {
@@ -341,7 +339,7 @@ public class Timetable extends NeptuneIdentifiedObject
     * format a date for toString usage
     * 
     * @param date
-    * @return
+    * @return string formatted date
     */
    private static String formatDate(Date date)
    {
@@ -358,7 +356,7 @@ public class Timetable extends NeptuneIdentifiedObject
    /**
     * get the affected dayTypes
     * 
-    * @return
+    * @return list of DayTypeEnum for intDayTypes value
     */
    public List<DayTypeEnum> getDayTypes()
    {
@@ -412,7 +410,7 @@ public class Timetable extends NeptuneIdentifiedObject
     * 
     * @param dayTypes
     *           a list of included day types
-    * @return
+    * @return binary mask for selected day types
     */
    public static int buildDayTypeMask(List<DayTypeEnum> dayTypes)
    {
@@ -431,13 +429,18 @@ public class Timetable extends NeptuneIdentifiedObject
     * 
     * @param dayType
     *           the dayType to filter
-    * @return
+    * @return binary mask for a day type
     */
    public static int buildDayTypeMask(DayTypeEnum dayType)
    {
       return (int) Math.pow(2, dayType.ordinal());
    }
 
+   /**
+    * get peculiar dates
+    * 
+    * @return a list of active dates
+    */
    public List<Date> getPeculiarDates()
    {
       List<Date> ret = new ArrayList<>();
@@ -449,6 +452,11 @@ public class Timetable extends NeptuneIdentifiedObject
       return ret;
    }
 
+   /**
+    * get excluded dates
+    * 
+    * @return a list of excluded dates
+    */
    public List<Date> getExcludedDates()
    {
       List<Date> ret = new ArrayList<>();
@@ -464,7 +472,7 @@ public class Timetable extends NeptuneIdentifiedObject
     * check if a Timetable is active on a given date
     * 
     * @param aDay
-    * @return
+    * @return true if timetable is active on given date
     */
    public boolean isActiveOn(Date aDay)
    {
@@ -498,6 +506,9 @@ public class Timetable extends NeptuneIdentifiedObject
       return false;
    }
 
+   /* (non-Javadoc)
+    * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#complete()
+    */
    @Override
    public void complete()
    {
@@ -561,7 +572,7 @@ public class Timetable extends NeptuneIdentifiedObject
     * return periods broken on excluded dates, for exports without date
     * exclusion
     * 
-    * @return
+    * @return periods
     */
    public List<Period> getEffectivePeriods()
    {
@@ -610,6 +621,9 @@ public class Timetable extends NeptuneIdentifiedObject
       return effectivePeriods;
    }
 
+   /* (non-Javadoc)
+    * @see fr.certu.chouette.model.neptune.NeptuneObject#compareAttributes(fr.certu.chouette.model.neptune.NeptuneObject)
+    */
    @Override
    public <T extends NeptuneObject> boolean compareAttributes(T anotherObject)
    {
@@ -639,6 +653,9 @@ public class Timetable extends NeptuneIdentifiedObject
       }
    }
 
+   /* (non-Javadoc)
+    * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#toURL()
+    */
    @Override
    public String toURL()
    {

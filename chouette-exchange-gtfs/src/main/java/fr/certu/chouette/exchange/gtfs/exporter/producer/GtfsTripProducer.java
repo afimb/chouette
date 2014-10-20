@@ -19,6 +19,8 @@ import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
 import fr.certu.chouette.exchange.gtfs.model.GtfsStopTime;
 import fr.certu.chouette.exchange.gtfs.model.GtfsTime;
 import fr.certu.chouette.exchange.gtfs.model.GtfsTrip;
+import fr.certu.chouette.model.neptune.JourneyPattern;
+import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
@@ -100,7 +102,7 @@ public class GtfsTripProducer extends
          }
          time.setDepartureTime(new GtfsTime(departure, tomorrowDeparture));
          previousDeparture = departure;
-         time.setStopSequence((int) vjas.getOrder());
+         time.setStopSequence((int) vjas.getStopPoint().getPosition());
          times.add(time);
       }
       return times;
@@ -118,20 +120,15 @@ public class GtfsTripProducer extends
 
       trip.setTripId(tripId);
 
-      // route = un aller-retour !
+      JourneyPattern jp = vj.getJourneyPattern();
       Route route = vj.getRoute();
-      if ("R".equals(route.getWayBack()) && route.getWayBackRouteId() != null)
+      Line line = route.getLine();
+      trip.setRouteId(toGtfsId(line.getObjectId()));
+      if ("R".equals(route.getWayBack()))
       {
-         logger.info("trip " + vj.getObjectId() + " as wayback of route "
-               + route.getWayBackRouteId());
-         trip.setRouteId(toGtfsId(route.getWayBackRouteId()));
          trip.setDirectionId(GtfsTrip.INBOUND);
       } else
       {
-         logger.info("trip " + vj.getObjectId() + " as direct of route "
-               + route.getWayBackRouteId());
-
-         trip.setRouteId(toGtfsId(route.getObjectId()));
          trip.setDirectionId(GtfsTrip.OUTBOUND);
       }
 
@@ -141,12 +138,20 @@ public class GtfsTripProducer extends
       String name = vj.getPublishedJourneyName();
       if (name == null && vj.getNumber() != null)
          name = "" + vj.getNumber();
-      else
+      else if (name == null)
          name = "";
-      if (name.trim().length() == 0 && vj.getComment() != null)
-         name = vj.getComment();
       if (name.trim().length() != 0)
          trip.setTripShortName(name);
+      
+      if (!isEmpty(jp.getPublishedName()))
+      {
+         trip.setTripHeadsign(jp.getPublishedName());
+      }
+      
+      if (vj.getMobilityRestrictedSuitability() != null)
+      {
+         
+      }
       // trip.setShapeId(...);
 
       // add StopTimes

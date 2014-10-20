@@ -162,7 +162,9 @@ CREATE TABLE companies (
     phone character varying(255),
     fax character varying(255),
     email character varying(255),
-    registration_number character varying(255)
+    registration_number character varying(255),
+    url character varying(255),
+    time_zone character varying(255)
 );
 
 
@@ -469,7 +471,10 @@ CREATE TABLE lines (
     registration_number character varying(255),
     comment character varying(255),
     mobility_restricted_suitability boolean,
-    int_user_needs integer
+    int_user_needs integer,
+    url character varying(255),
+    color character varying(6),
+    text_color character varying(6)
 );
 
 
@@ -694,7 +699,9 @@ CREATE TABLE stop_areas (
     lift_availability boolean,
     int_user_needs integer,
     zip_code character varying(255),
-    city_name character varying(255)
+    city_name character varying(255),
+    url character varying(255),
+    time_zone character varying(255)
 );
 
 
@@ -1047,7 +1054,9 @@ CREATE TABLE vehicle_journeys (
     published_journey_identifier character varying(255),
     facility character varying(255),
     vehicle_type_identifier character varying(255),
-    number bigint
+    number bigint,
+    mobility_restricted_suitability boolean,
+    flexible_service boolean
 );
 
 

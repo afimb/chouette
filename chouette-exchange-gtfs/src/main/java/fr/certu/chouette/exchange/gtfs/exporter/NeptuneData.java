@@ -35,7 +35,7 @@ public class NeptuneData
 {
    private static final Logger logger = Logger.getLogger(NeptuneData.class);
    @Getter
-   List<Route> routes = new ArrayList<Route>();
+   List<Line> lines = new ArrayList<Line>();
    @Getter
    Set<Timetable> timetables = new HashSet<Timetable>();
    @Getter
@@ -53,7 +53,7 @@ public class NeptuneData
     * @param lines
     */
    public void populateLines(List<Line> lines)
-   {
+   { 
       for (Line line : lines)
       {
          line.complete();
@@ -63,20 +63,11 @@ public class NeptuneData
          {
             connectionLinks.addAll(line.getConnectionLinks());
          }
+         this.lines.add(line);
          if (line.getRoutes() != null)
          {
             for (Route route : line.getRoutes())
             {
-               if (!"R".equals(route.getWayBack())
-                     || route.getWayBackRouteId() == null)
-               {
-                  logger.info("route " + route.getObjectId() + " added");
-                  routes.add(route);
-               } else
-               {
-                  logger.info("route " + route.getObjectId()
-                        + " bypassed, wayback is " + route.getWayBackRouteId());
-               }
                for (StopPoint point : route.getStopPoints())
                {
                   StopArea area = point.getContainedInStopArea();

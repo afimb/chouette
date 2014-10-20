@@ -37,7 +37,7 @@ public class VehicleJourneyAtStop extends NeptuneObject
 {
    private static final long serialVersionUID = 194243517715939830L;
 
-
+   @Deprecated
    @Getter
    @Setter
    @Column(name = "connecting_service_id")
@@ -164,7 +164,7 @@ public class VehicleJourneyAtStop extends NeptuneObject
     * convert time to string for toString purpose
     * 
     * @param date
-    * @return
+    * @return string formated time
     */
    private String formatDate(Date date)
    {

@@ -63,10 +63,18 @@ public class StopArea extends NeptuneLocalizedObject
    @Getter
    @Column(name = "name")
    private String name;
+   public void setName(String value)
+   {
+      name = dataBaseSizeProtectedValue(value,"name",log);
+   }
 
    @Getter
    @Column(name = "comment")
    private String comment;
+   public void setComment(String value)
+   {
+      comment = dataBaseSizeProtectedValue(value,"comment",log);
+   }
 
    @Getter
    @Setter
@@ -77,11 +85,34 @@ public class StopArea extends NeptuneLocalizedObject
    @Getter
    @Column(name = "registration_number")
    private String registrationNumber;
+   public void setRegistrationNumber(String value)
+   {
+      registrationNumber = dataBaseSizeProtectedValue(value,"registrationNumber",log);
+   }
 
    @Getter
-   @Setter
    @Column(name = "nearest_topic_name")
    private String nearestTopicName;
+   public void setNearestTopicName(String value)
+   {
+      nearestTopicName = dataBaseSizeProtectedValue(value,"nearestTopicName",log);
+   }
+
+   @Getter
+   @Column(name = "url")
+   private String url;
+   public void setUrl(String value)
+   {
+      url = dataBaseSizeProtectedValue(value,"url",log);
+   }
+
+   @Getter
+   @Column(name = "time_zone")
+   private String timeZone;
+   public void setTimeZone(String value)
+   {
+      timeZone = dataBaseSizeProtectedValue(value,"timeZone",log);
+   }
 
    @Getter
    @Setter
@@ -228,42 +259,6 @@ public class StopArea extends NeptuneLocalizedObject
    @Setter
    @Transient
    private String parentObjectId;
-
-   public void setRegistrationNumber(String value)
-   {
-      if (value != null && value.length() > 255)
-      {
-         log.warn("registrationNumber too long, truncated " + value);
-         registrationNumber = value.substring(0, 255);
-      } else
-      {
-         registrationNumber = value;
-      }
-   }
-
-   public void setName(String value)
-   {
-      if (value != null && value.length() > 255)
-      {
-         log.warn("name too long, truncated " + value);
-         name = value.substring(0, 255);
-      } else
-      {
-         name = value;
-      }
-   }
-
-   public void setComment(String value)
-   {
-      if (value != null && value.length() > 255)
-      {
-         log.warn("comment too long, truncated " + value);
-         comment = value.substring(0, 255);
-      } else
-      {
-         comment = value;
-      }
-   }
 
    /**
     * add a facility if not already present
@@ -573,7 +568,7 @@ public class StopArea extends NeptuneLocalizedObject
     * <p>
     * stop
     * 
-    * @param line
+    * @param lineId
     */
    public void addRoutingConstraintLineId(String lineId)
    {
@@ -592,7 +587,7 @@ public class StopArea extends NeptuneLocalizedObject
    /**
     * remove a line
     * 
-    * @param line
+    * @param lineId
     */
    public void removeRoutingConstraintLineId(String lineId)
    {
@@ -613,7 +608,7 @@ public class StopArea extends NeptuneLocalizedObject
     * <p>
     * stop
     * 
-    * @param line
+    * @param area
     */
    public void addRoutingConstraintLine(StopArea area)
    {
@@ -632,7 +627,7 @@ public class StopArea extends NeptuneLocalizedObject
    /**
     * remove a line
     * 
-    * @param line
+    * @param area
     */
    public void removeRoutingConstraintArea(StopArea area)
    {

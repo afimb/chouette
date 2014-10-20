@@ -58,6 +58,10 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject
    @Getter
    @Column(name = "objectid", nullable = false, unique = true)
    private String objectId;
+   public void setObjectId(String value)
+   {
+      objectId = dataBaseSizeProtectedValue(value,"objectId",log);
+   }
 
    @Getter
    @Setter
@@ -92,18 +96,6 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject
    public void setName(String name)
    {
       this.unsaved_name = name;
-   }
-
-   public void setObjectId(String value)
-   {
-      if (value != null && value.length() > 255)
-      {
-         log.warn("objectId too long, truncated " + value);
-         objectId = value.substring(0, 255);
-      } else
-      {
-         objectId = value;
-      }
    }
 
    /**

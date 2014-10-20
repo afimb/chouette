@@ -66,7 +66,7 @@ public class GtfsTrip extends GtfsBean
    @Setter
    private List<GtfsStopTime> stopTimes = new ArrayList<GtfsStopTime>();
 
-   public static final String header = "route_id,service_id,trip_id,trip_headsign,trip_short_name,direction_id,shape_id";
+   public static final String header = "route_id,service_id,trip_id,trip_headsign,trip_short_name,direction_id,shape_id,wheelchair_accessible,bikes_allowed";
 
    public String getCSVLine()
    {

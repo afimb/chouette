@@ -32,7 +32,7 @@ import fr.certu.chouette.exchange.gtfs.model.GtfsTransfer;
 import fr.certu.chouette.exchange.gtfs.model.GtfsTrip;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.ConnectionLink;
-import fr.certu.chouette.model.neptune.Route;
+import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
@@ -55,7 +55,7 @@ public class GtfsDataProducer
       IGtfsProducer<GtfsTrip, VehicleJourney> tripProducer = new GtfsTripProducer();
       IGtfsProducer<GtfsAgency, Company> agencyProducer = new GtfsAgencyProducer();
       IGtfsProducer<GtfsStop, StopArea> stopProducer = new GtfsStopProducer();
-      IGtfsProducer<GtfsRoute, Route> routeProducer = new GtfsRouteProducer();
+      IGtfsProducer<GtfsRoute, Line> routeProducer = new GtfsRouteProducer();
       IGtfsProducer<GtfsTransfer, ConnectionLink> transferProducer = new GtfsTransferProducer();
       // add calendars
       gtfsData.getCalendars().addAll(
@@ -89,7 +89,7 @@ public class GtfsDataProducer
 
       // add routes
       gtfsData.getRoutes().addAll(
-            routeProducer.produceAll(neptuneData.getRoutes(), report));
+            routeProducer.produceAll(neptuneData.getLines(), report));
 
       // add stops
       gtfsData.getStops().addAll(
