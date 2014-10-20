@@ -2,9 +2,9 @@ package fr.certu.chouette.exchange.gtfs.refactor.parser;
 
 import java.io.IOException;
 
-import fr.certu.chouette.exchange.gtfs.refactor.model.Agency;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsAgency;
 
-public class AgencyParser extends ParserImpl<Agency>
+public class AgencyParser extends ParserImpl<GtfsAgency>
 {
 
    public static enum FIELDS
@@ -21,7 +21,7 @@ public class AgencyParser extends ParserImpl<Agency>
    }
 
    @Override
-   protected Agency build(GtfsReader _reader, int id)
+   protected GtfsAgency build(GtfsReader _reader, int id)
    {
       // TODO Auto-generated method stub
       return null;

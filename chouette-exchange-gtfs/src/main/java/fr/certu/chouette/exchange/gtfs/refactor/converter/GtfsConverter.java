@@ -4,15 +4,15 @@ import java.sql.Date;
 import java.sql.Time;
 import java.text.DateFormat;
 
-import fr.certu.chouette.exchange.gtfs.refactor.model.CalendarDate.ExceptionType;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsCalendarDate.ExceptionType;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsTime;
-import fr.certu.chouette.exchange.gtfs.refactor.model.Route.RouteType;
-import fr.certu.chouette.exchange.gtfs.refactor.model.Stop.LocationType;
-import fr.certu.chouette.exchange.gtfs.refactor.model.Stop.WheelchairBoardingType;
-import fr.certu.chouette.exchange.gtfs.refactor.model.StopTime.DropOffType;
-import fr.certu.chouette.exchange.gtfs.refactor.model.StopTime.PickupType;
-import fr.certu.chouette.exchange.gtfs.refactor.model.Trip.BikesAllowedType;
-import fr.certu.chouette.exchange.gtfs.refactor.model.Trip.DirectionType;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsRoute.RouteType;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStop.LocationType;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStop.WheelchairBoardingType;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStopTime.DropOffType;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStopTime.PickupType;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsTrip.BikesAllowedType;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsTrip.DirectionType;
 
 public interface GtfsConverter
 {

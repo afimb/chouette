@@ -1,22 +1,22 @@
 package fr.certu.chouette.exchange.gtfs.refactor.converter;
 
-import fr.certu.chouette.exchange.gtfs.refactor.model.StopTime;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStopTime;
 
 public class StopTimeConverter implements GtfsConverter
 {
 
-   public static Converter<String, StopTime> STOPTIME_CONVERTER = new Converter<String, StopTime>()
+   public static Converter<String, GtfsStopTime> STOPTIME_CONVERTER = new Converter<String, GtfsStopTime>()
    {
 
       @Override
-      public StopTime from(String input)
+      public GtfsStopTime from(String input)
       {
          // TODO Auto-generated method stub
          return null;
       }
 
       @Override
-      public String to(StopTime input)
+      public String to(GtfsStopTime input)
       {
          // TODO Auto-generated method stub
          return null;

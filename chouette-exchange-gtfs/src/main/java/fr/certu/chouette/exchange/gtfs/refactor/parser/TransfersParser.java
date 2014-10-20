@@ -2,9 +2,9 @@ package fr.certu.chouette.exchange.gtfs.refactor.parser;
 
 import java.io.IOException;
 
-import fr.certu.chouette.exchange.gtfs.refactor.model.Transfer;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsTransfer;
 
-public class TransfersParser extends ParserImpl<Transfer>
+public class TransfersParser extends ParserImpl<GtfsTransfer>
 {
 
    public static enum FIELDS
@@ -21,7 +21,7 @@ public class TransfersParser extends ParserImpl<Transfer>
    }
 
    @Override
-   protected Transfer build(GtfsReader _reader, int line)
+   protected GtfsTransfer build(GtfsReader _reader, int line)
    {
       // TODO Auto-generated method stub
       return null;

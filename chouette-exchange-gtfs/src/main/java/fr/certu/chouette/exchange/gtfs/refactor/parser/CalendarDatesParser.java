@@ -2,9 +2,9 @@ package fr.certu.chouette.exchange.gtfs.refactor.parser;
 
 import java.io.IOException;
 
-import fr.certu.chouette.exchange.gtfs.refactor.model.CalendarDate;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsCalendarDate;
 
-public class CalendarDatesParser extends ParserImpl<CalendarDate>
+public class CalendarDatesParser extends ParserImpl<GtfsCalendarDate>
 {
 
    public static enum FIELDS
@@ -21,7 +21,7 @@ public class CalendarDatesParser extends ParserImpl<CalendarDate>
    }
 
    @Override
-   protected CalendarDate build(GtfsReader _reader, int id)
+   protected GtfsCalendarDate build(GtfsReader _reader, int id)
    {
       // TODO Auto-generated method stub
       return null;

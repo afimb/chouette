@@ -2,9 +2,9 @@ package fr.certu.chouette.exchange.gtfs.refactor.parser;
 
 import java.io.IOException;
 
-import fr.certu.chouette.exchange.gtfs.refactor.model.Stop;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStop;
 
-public class StopsParser extends ParserImpl<Stop>
+public class StopsParser extends ParserImpl<GtfsStop>
 {
 
    public static enum FIELDS
@@ -21,7 +21,7 @@ public class StopsParser extends ParserImpl<Stop>
    }
 
    @Override
-   protected Stop build(GtfsReader _reader, int id)
+   protected GtfsStop build(GtfsReader _reader, int id)
    {
       // TODO Auto-generated method stub
       return null;

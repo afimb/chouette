@@ -2,9 +2,9 @@ package fr.certu.chouette.exchange.gtfs.refactor.parser;
 
 import java.io.IOException;
 
-import fr.certu.chouette.exchange.gtfs.refactor.model.Trip;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsTrip;
 
-public class TripsParser extends ParserImpl<Trip>
+public class TripsParser extends ParserImpl<GtfsTrip>
 {
 
    public static enum FIELDS
@@ -21,7 +21,7 @@ public class TripsParser extends ParserImpl<Trip>
    }
 
    @Override
-   protected Trip build(GtfsReader reader, int id)
+   protected GtfsTrip build(GtfsReader reader, int id)
    {
       // TODO Auto-generated method stub
       return null;

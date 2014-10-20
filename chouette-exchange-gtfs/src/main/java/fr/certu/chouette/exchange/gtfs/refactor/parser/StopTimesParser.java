@@ -3,12 +3,12 @@ package fr.certu.chouette.exchange.gtfs.refactor.parser;
 import java.io.IOException;
 
 import fr.certu.chouette.exchange.gtfs.refactor.converter.GtfsConverter;
-import fr.certu.chouette.exchange.gtfs.refactor.model.StopTime;
-import fr.certu.chouette.exchange.gtfs.refactor.model.StopTime.DropOffType;
-import fr.certu.chouette.exchange.gtfs.refactor.model.StopTime.PickupType;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStopTime;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStopTime.DropOffType;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStopTime.PickupType;
 import fr.certu.chouette.exchange.gtfs.refactor.validator.StopTimeValidator;
 
-public class StopTimesParser extends ParserImpl<StopTime> implements
+public class StopTimesParser extends ParserImpl<GtfsStopTime> implements
       GtfsConverter, StopTimeValidator
 {
 
@@ -20,7 +20,7 @@ public class StopTimesParser extends ParserImpl<StopTime> implements
    public static final String FILENAME = "stop_times.txt";
    public static final String KEY = FIELDS.trip_id.name();
 
-   private StopTime bean = new StopTime();
+   private GtfsStopTime bean = new GtfsStopTime();
 
    public StopTimesParser(String name) throws IOException
    {
@@ -28,7 +28,7 @@ public class StopTimesParser extends ParserImpl<StopTime> implements
    }
 
    @Override
-   protected StopTime build(GtfsReader reader, int id)
+   protected GtfsStopTime build(GtfsReader reader, int id)
    {
 
       String tripId = getField(reader, FIELDS.trip_id.name());
@@ -60,17 +60,14 @@ public class StopTimesParser extends ParserImpl<StopTime> implements
       return bean;
    }
 
-   public static class DefaultParserFactory extends ParserFactory
-   {
+   public static class DefaultParserFactory extends ParserFactory {
       @Override
-      protected GtfsParser create(String name) throws IOException
-      {
+      protected GtfsParser<GtfsStopTime> create(String name) throws IOException {
          return new StopTimesParser(name);
       }
    }
 
-   static
-   {
+   static {
       ParserFactory factory = new DefaultParserFactory();
       ParserFactory.factories.put(StopTimesParser.class.getName(), factory);
    }

@@ -2,9 +2,9 @@ package fr.certu.chouette.exchange.gtfs.refactor.parser;
 
 import java.io.IOException;
 
-import fr.certu.chouette.exchange.gtfs.refactor.model.Route;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsRoute;
 
-public class RoutesParser extends ParserImpl<Route>
+public class RoutesParser extends ParserImpl<GtfsRoute>
 {
 
    public static enum FIELDS
@@ -21,7 +21,7 @@ public class RoutesParser extends ParserImpl<Route>
    }
 
    @Override
-   protected Route build(GtfsReader _reader, int id)
+   protected GtfsRoute build(GtfsReader _reader, int id)
    {
       // TODO Auto-generated method stub
       return null;
