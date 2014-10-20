@@ -1,0 +1,60 @@
+package fr.certu.chouette.exchange.gtfs.refactor.model;
+
+import java.io.Serializable;
+import java.sql.Date;
+
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@ToString
+@EqualsAndHashCode(callSuper = false)
+@NoArgsConstructor
+public class Calendar extends GtfsObject implements Serializable
+{
+
+   private static final long serialVersionUID = 1L;
+
+   @Getter
+   @Setter
+   private String serviceId;
+
+   @Getter
+   @Setter
+   private Boolean monday;
+
+   @Getter
+   @Setter
+   private Boolean tuesday;
+
+   @Getter
+   @Setter
+   private Boolean wednesday;
+
+   @Getter
+   @Setter
+   private Boolean thursday;
+
+   @Getter
+   @Setter
+   private Boolean friday;
+
+   @Getter
+   @Setter
+   private Boolean saturday;
+
+   @Getter
+   @Setter
+   private Boolean sunday;
+
+   @Getter
+   @Setter
+   private Date start_date;
+
+   @Getter
+   @Setter
+   private Date end_date;
+
+}
