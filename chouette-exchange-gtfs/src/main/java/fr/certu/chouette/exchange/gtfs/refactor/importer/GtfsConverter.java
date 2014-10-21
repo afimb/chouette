@@ -1,5 +1,8 @@
 package fr.certu.chouette.exchange.gtfs.refactor.importer;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.sql.Date;
 import java.sql.Time;
 import java.text.DateFormat;
@@ -549,4 +552,5 @@ public interface GtfsConverter
       public abstract F to(T input);
 
    }
+
 }

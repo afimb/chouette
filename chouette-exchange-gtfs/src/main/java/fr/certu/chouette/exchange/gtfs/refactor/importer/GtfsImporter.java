@@ -31,12 +31,51 @@ public class GtfsImporter
       _path = path;
    }
 
+   public void dispose()
+   {
+      if (agencyImporter != null)
+      {
+         agencyImporter.dispose();
+      }
+      if (calendarImporter != null)
+      {
+         calendarImporter.dispose();
+      }
+      if (calendarDateImporter != null)
+      {
+         calendarDateImporter.dispose();
+      }
+      if (frequencyImporter != null)
+      {
+         frequencyImporter.dispose();
+      }
+      if (routeImporter != null)
+      {
+         routeImporter.dispose();
+      }
+      if (stopImporter != null)
+      {
+         stopImporter.dispose();
+      }
+      if (stopTimeImporter != null)
+      {
+         stopTimeImporter.dispose();
+      }
+      if (transferImporter != null)
+      {
+         transferImporter.dispose();
+      }
+      if (tripImporter != null)
+      {
+         tripImporter.dispose();
+      }
+   }
+
    public Importer<GtfsAgency> getAgencyImporter() throws Exception
    {
       if (agencyImporter == null)
       {
-         agencyImporter = ImporterFactory.build(Paths
-               .get(_path, AgencyImporter.FILENAME).toString());
+         agencyImporter = ImporterFactory.build(Paths.get(_path, AgencyImporter.FILENAME).toString());
       }
       return agencyImporter;
    }
@@ -45,8 +84,7 @@ public class GtfsImporter
    {
       if (calendarImporter == null)
       {
-         calendarImporter = ImporterFactory.build(Paths.get(_path,
-               CalendarImporter.FILENAME).toString());
+         calendarImporter = ImporterFactory.build(Paths.get(_path, CalendarImporter.FILENAME).toString());
       }
       return calendarImporter;
    }
@@ -55,8 +93,7 @@ public class GtfsImporter
    {
       if (calendarDateImporter == null)
       {
-         calendarDateImporter = ImporterFactory.build(Paths.get(_path,
-               CalendarDateImporter.FILENAME).toString());
+         calendarDateImporter = ImporterFactory.build(Paths.get(_path, CalendarDateImporter.FILENAME).toString());
       }
       return calendarDateImporter;
    }
@@ -65,8 +102,7 @@ public class GtfsImporter
    {
       if (frequencyImporter == null)
       {
-         frequencyImporter = ImporterFactory.build(Paths.get(_path,
-               FrequencyImporter.FILENAME).toString());
+         frequencyImporter = ImporterFactory.build(Paths.get(_path, FrequencyImporter.FILENAME).toString());
       }
       return frequencyImporter;
    }
@@ -75,8 +111,7 @@ public class GtfsImporter
    {
       if (routeImporter == null)
       {
-         routeImporter = ImporterFactory.build(Paths.get(_path, RouteImporter.FILENAME)
-               .toString());
+         routeImporter = ImporterFactory.build(Paths.get(_path, RouteImporter.FILENAME).toString());
       }
       return routeImporter;
    }
@@ -85,8 +120,7 @@ public class GtfsImporter
    {
       if (stopImporter == null)
       {
-         stopImporter = ImporterFactory.build(Paths.get(_path, StopImporter.FILENAME)
-               .toString());
+         stopImporter = ImporterFactory.build(Paths.get(_path, StopImporter.FILENAME).toString());
       }
       return stopImporter;
    }
@@ -95,8 +129,7 @@ public class GtfsImporter
    {
       if (stopTimeImporter == null)
       {
-         stopTimeImporter = ImporterFactory.build(Paths.get(_path,
-               StopTimeImporter.FILENAME).toString());
+         stopTimeImporter = ImporterFactory.build(Paths.get(_path, StopTimeImporter.FILENAME).toString());
       }
       return stopTimeImporter;
    }
@@ -105,8 +138,7 @@ public class GtfsImporter
    {
       if (transferImporter == null)
       {
-         transferImporter = ImporterFactory.build(Paths.get(_path,
-               TransferImporter.FILENAME).toString());
+         transferImporter = ImporterFactory.build(Paths.get(_path, TransferImporter.FILENAME).toString());
       }
       return transferImporter;
    }
@@ -115,24 +147,9 @@ public class GtfsImporter
    {
       if (tripImporter == null)
       {
-         tripImporter = ImporterFactory.build(Paths.get(_path, TripImporter.FILENAME)
-               .toString());
+         tripImporter = ImporterFactory.build(Paths.get(_path, TripImporter.FILENAME).toString());
       }
       return tripImporter;
-   }
-
-   public void dispose()
-   {
-      if (agencyImporter != null) agencyImporter.dispose();
-      if (calendarImporter != null) calendarImporter.dispose();
-      if (calendarDateImporter != null) calendarDateImporter.dispose();
-      if (frequencyImporter != null) frequencyImporter.dispose();
-      if (routeImporter != null) routeImporter.dispose();
-      if (stopImporter != null) stopImporter.dispose();
-      if (stopTimeImporter != null) stopTimeImporter.dispose();
-      if (transferImporter != null) transferImporter.dispose();
-      if (tripImporter != null) tripImporter.dispose();
-      
    }
 
 }
