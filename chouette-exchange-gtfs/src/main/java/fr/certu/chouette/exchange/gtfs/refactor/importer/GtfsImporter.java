@@ -16,109 +16,109 @@ public class GtfsImporter
 {
    private String _path;
 
-   private Importer<GtfsAgency> agencyDao;
-   private Importer<GtfsCalendar> calendarDao;
-   private Importer<GtfsCalendarDate> calendarDateDao;
-   private Importer<GtfsFrequency> frequencyDao;
-   private Importer<GtfsRoute> routeyDao;
-   private Importer<GtfsStop> stopDao;
-   private Importer<GtfsStopTime> stopTimeDao;
-   private Importer<GtfsTransfer> transferDao;
-   private Importer<GtfsTrip> tripDao;
+   private Importer<GtfsAgency> agencyImporter;
+   private Importer<GtfsCalendar> calendarImporter;
+   private Importer<GtfsCalendarDate> calendarDateImporter;
+   private Importer<GtfsFrequency> frequencyImporter;
+   private Importer<GtfsRoute> routeyImporter;
+   private Importer<GtfsStop> stopImporter;
+   private Importer<GtfsStopTime> stopTimeImporter;
+   private Importer<GtfsTransfer> transferImporter;
+   private Importer<GtfsTrip> tripImporter;
 
    public GtfsImporter(String path)
    {
       _path = path;
    }
 
-   public Importer<GtfsAgency> getAgencyDao() throws Exception
+   public Importer<GtfsAgency> getAgencyImporter() throws Exception
    {
-      if (agencyDao == null)
+      if (agencyImporter == null)
       {
-         agencyDao = ImporterFactory.build(Paths
+         agencyImporter = ImporterFactory.build(Paths
                .get(_path, AgencyImporter.FILENAME).toString());
       }
-      return agencyDao;
+      return agencyImporter;
    }
 
-   public Importer<GtfsCalendar> getCalendarDao() throws Exception
+   public Importer<GtfsCalendar> getCalendarImporter() throws Exception
    {
-      if (calendarDao == null)
+      if (calendarImporter == null)
       {
-         calendarDao = ImporterFactory.build(Paths.get(_path,
+         calendarImporter = ImporterFactory.build(Paths.get(_path,
                CalendarImporter.FILENAME).toString());
       }
-      return calendarDao;
+      return calendarImporter;
    }
 
-   public Importer<GtfsCalendarDate> getCalendarDateDao() throws Exception
+   public Importer<GtfsCalendarDate> getCalendarDateImporter() throws Exception
    {
-      if (calendarDateDao == null)
+      if (calendarDateImporter == null)
       {
-         calendarDateDao = ImporterFactory.build(Paths.get(_path,
+         calendarDateImporter = ImporterFactory.build(Paths.get(_path,
                CalendarDateImporter.FILENAME).toString());
       }
-      return calendarDateDao;
+      return calendarDateImporter;
    }
 
-   public Importer<GtfsFrequency> getFrequencyDao() throws Exception
+   public Importer<GtfsFrequency> getFrequencyImporter() throws Exception
    {
-      if (frequencyDao == null)
+      if (frequencyImporter == null)
       {
-         frequencyDao = ImporterFactory.build(Paths.get(_path,
+         frequencyImporter = ImporterFactory.build(Paths.get(_path,
                FrequencyImporter.FILENAME).toString());
       }
-      return frequencyDao;
+      return frequencyImporter;
    }
 
-   public Importer<GtfsRoute> getRouteDao() throws Exception
+   public Importer<GtfsRoute> getRouteImporter() throws Exception
    {
-      if (routeyDao == null)
+      if (routeyImporter == null)
       {
-         routeyDao = ImporterFactory.build(Paths.get(_path, RouteImporter.FILENAME)
+         routeyImporter = ImporterFactory.build(Paths.get(_path, RouteImporter.FILENAME)
                .toString());
       }
-      return routeyDao;
+      return routeyImporter;
    }
 
-   public Importer<GtfsStop> getStopDao() throws Exception
+   public Importer<GtfsStop> getStopImporter() throws Exception
    {
-      if (stopDao == null)
+      if (stopImporter == null)
       {
-         stopDao = ImporterFactory.build(Paths.get(_path, StopImporter.FILENAME)
+         stopImporter = ImporterFactory.build(Paths.get(_path, StopImporter.FILENAME)
                .toString());
       }
-      return stopDao;
+      return stopImporter;
    }
 
-   public Importer<GtfsStopTime> getStopTimeDao() throws Exception
+   public Importer<GtfsStopTime> getStopTimeImporter() throws Exception
    {
-      if (stopTimeDao == null)
+      if (stopTimeImporter == null)
       {
-         stopTimeDao = ImporterFactory.build(Paths.get(_path,
+         stopTimeImporter = ImporterFactory.build(Paths.get(_path,
                StopTimeImporter.FILENAME).toString());
       }
-      return stopTimeDao;
+      return stopTimeImporter;
    }
 
-   public Importer<GtfsTransfer> getTransferDao() throws Exception
+   public Importer<GtfsTransfer> getTransferImporter() throws Exception
    {
-      if (transferDao == null)
+      if (transferImporter == null)
       {
-         transferDao = ImporterFactory.build(Paths.get(_path,
+         transferImporter = ImporterFactory.build(Paths.get(_path,
                TransferImporter.FILENAME).toString());
       }
-      return transferDao;
+      return transferImporter;
    }
 
-   public Importer<GtfsTrip> getTripDao() throws Exception
+   public Importer<GtfsTrip> getTripImporter() throws Exception
    {
-      if (tripDao == null)
+      if (tripImporter == null)
       {
-         tripDao = ImporterFactory.build(Paths.get(_path, TripImporter.FILENAME)
+         tripImporter = ImporterFactory.build(Paths.get(_path, TripImporter.FILENAME)
                .toString());
       }
-      return tripDao;
+      return tripImporter;
    }
 
 }

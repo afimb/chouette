@@ -22,7 +22,7 @@ public class GtfsTime
 
    @Getter
    @Setter
-   private Integer day;
+   private Integer day = 0;
 
    public boolean moreOneDay()
    {

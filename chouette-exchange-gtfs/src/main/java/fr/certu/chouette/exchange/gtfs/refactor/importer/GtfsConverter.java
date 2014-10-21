@@ -37,8 +37,7 @@ public interface GtfsConverter
       @Override
       public String to(String input)
       {
-         // TODO Auto-generated method stub
-         return null;
+         return (input != null) ? input.toString() : "";
       }
    };
 
@@ -62,9 +61,9 @@ public interface GtfsConverter
       @Override
       public String to(Integer input)
       {
-         // TODO Auto-generated method stub
-         return null;
+         return (input != null) ? input.toString() : "";
       }
+
    };
 
    public static FieldConverter<String, Float> FLOAT_CONVERTER = new FieldConverter<String, Float>()
@@ -87,8 +86,7 @@ public interface GtfsConverter
       @Override
       public String to(Float input)
       {
-         // TODO Auto-generated method stub
-         return null;
+         return (input != null) ? input.toString() : "";
       }
    };
 
@@ -114,8 +112,7 @@ public interface GtfsConverter
       @Override
       public String to(Double input)
       {
-         // TODO Auto-generated method stub
-         return null;
+         return (input != null) ? input.toString() : "";
       }
    };
 
@@ -139,8 +136,7 @@ public interface GtfsConverter
       @Override
       public String to(Time input)
       {
-         // TODO Auto-generated method stub
-         return null;
+         return (input != null) ? input.toString() : "";
       }
 
    };
@@ -167,8 +163,7 @@ public interface GtfsConverter
       @Override
       public String to(Date input)
       {
-         // TODO Auto-generated method stub
-         return null;
+         return (input != null) ? input.toString() : "";
       }
    };
 
@@ -181,12 +176,10 @@ public interface GtfsConverter
       @Override
       public GtfsTime from(String input, GtfsTime value, boolean required)
       {
-
          GtfsTime result = value;
          if (input != null && !input.isEmpty())
          {
-            result = new GtfsTime();
-            convert(input, result);
+            result = convert(input);
          } else if (required && value == null)
          {
             throw new IllegalArgumentException();
@@ -197,12 +190,17 @@ public interface GtfsConverter
       @Override
       public String to(GtfsTime input)
       {
-         // TODO Auto-generated method stub
-         return null;
+         String result = "";
+         if (input != null && input.getTime() != null)
+         {
+            result = convert(input);
+         }
+         return result;
       }
 
-      private void convert(String input, GtfsTime value)
+      private GtfsTime convert(String input)
       {
+         GtfsTime result = new GtfsTime();
          int day;
          int hour;
          int minute;
@@ -229,8 +227,45 @@ public interface GtfsConverter
             throw new java.lang.IllegalArgumentException();
          }
 
-         value.setTime(new Time(hour, minute, second));
-         value.setDay(day);
+         result.setTime(new Time(hour, minute, second));
+         result.setDay(day);
+
+         return result;
+      }
+
+      private String convert(GtfsTime input)
+      {
+         Time value = input.getTime();
+
+         int hour = value.getHours() + input.getDay();
+         int minute = value.getMinutes();
+         int second = value.getSeconds();
+         String hourString;
+         String minuteString;
+         String secondString;
+
+         if (hour < 10)
+         {
+            hourString = "0" + hour;
+         } else
+         {
+            hourString = Integer.toString(hour);
+         }
+         if (minute < 10)
+         {
+            minuteString = "0" + minute;
+         } else
+         {
+            minuteString = Integer.toString(minute);
+         }
+         if (second < 10)
+         {
+            secondString = "0" + second;
+         } else
+         {
+            secondString = Integer.toString(second);
+         }
+         return (hourString + ":" + minuteString + ":" + secondString);
       }
 
    };
@@ -256,8 +291,7 @@ public interface GtfsConverter
       @Override
       public String to(PickupType input)
       {
-         // TODO Auto-generated method stub
-         return null;
+         return (input != null) ? "" String.valueOf(input.ordinal()).toString() : "";
       }
    };
 
