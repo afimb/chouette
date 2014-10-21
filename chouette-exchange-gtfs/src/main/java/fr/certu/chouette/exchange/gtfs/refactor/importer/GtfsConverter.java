@@ -291,7 +291,13 @@ public interface GtfsConverter
       @Override
       public String to(PickupType input)
       {
-         return (input != null) ? "" String.valueOf(input.ordinal()).toString() : "";
+         String result = "0";
+         if (input != null)
+         {
+            result = String.valueOf(input.ordinal());
+         }
+
+         return result;
       }
    };
 
@@ -316,8 +322,13 @@ public interface GtfsConverter
       @Override
       public String to(DropOffType input)
       {
-         // TODO Auto-generated method stub
-         return null;
+         String result = "0";
+         if (input != null)
+         {
+            result = String.valueOf(input.ordinal());
+         }
+
+         return result;
       }
    };
 
@@ -343,8 +354,13 @@ public interface GtfsConverter
       @Override
       public String to(ExceptionType input)
       {
-         // TODO Auto-generated method stub
-         return null;
+         String result = "1";
+         if (input != null)
+         {
+            result = String.valueOf(input.ordinal());
+         }
+
+         return result;
       }
    };
 
@@ -369,8 +385,13 @@ public interface GtfsConverter
       @Override
       public String to(RouteType input)
       {
-         // TODO Auto-generated method stub
-         return null;
+         String result = "0";
+         if (input != null)
+         {
+            result = String.valueOf(input.ordinal());
+         }
+
+         return result;
       }
    };
 
@@ -396,8 +417,13 @@ public interface GtfsConverter
       @Override
       public String to(LocationType input)
       {
-         // TODO Auto-generated method stub
-         return null;
+         String result = "0";
+         if (input != null)
+         {
+            result = String.valueOf(input.ordinal());
+         }
+
+         return result;
       }
    };
 
@@ -423,12 +449,17 @@ public interface GtfsConverter
       @Override
       public String to(WheelchairBoardingType input)
       {
-         // TODO Auto-generated method stub
-         return null;
+         String result = "0";
+         if (input != null)
+         {
+            result = String.valueOf(input.ordinal());
+         }
+
+         return result;
       }
    };
 
-   public static FieldConverter<String, DirectionType> DirectionType_CONVERTER = new FieldConverter<String, DirectionType>()
+   public static FieldConverter<String, DirectionType> DIRECTIONTYPE_CONVERTER = new FieldConverter<String, DirectionType>()
    {
 
       @Override
@@ -450,8 +481,13 @@ public interface GtfsConverter
       @Override
       public String to(DirectionType input)
       {
-         // TODO Auto-generated method stub
-         return null;
+         String result = "0";
+         if (input != null)
+         {
+            result = String.valueOf(input.ordinal());
+         }
+
+         return result;
       }
    };
 
@@ -477,8 +513,13 @@ public interface GtfsConverter
       @Override
       public String to(BikesAllowedType input)
       {
-         // TODO Auto-generated method stub
-         return null;
+         String result = "0";
+         if (input != null)
+         {
+            result = String.valueOf(input.ordinal());
+         }
+
+         return result;
       }
    };
 
