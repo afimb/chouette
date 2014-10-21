@@ -4,7 +4,6 @@ import java.util.Iterator;
 
 public interface Importer<T> extends Iterable<T>
 {
-
    void dispose();
 
    Iterator<String> keyIterator();
@@ -16,5 +15,8 @@ public interface Importer<T> extends Iterable<T>
    T getValue(String key);
 
    boolean validate(T bean, GtfsImporter dao);
+   
+   int getLength();
+
 
 }

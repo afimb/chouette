@@ -45,7 +45,8 @@ public class CalendarDateImporter extends ImporterImpl<GtfsCalendarDate>
    static
    {
       ImporterFactory factory = new DefaultImporterFactory();
-      ImporterFactory.factories.put(CalendarDateImporter.class.getName(), factory);
+      ImporterFactory.factories.put(CalendarDateImporter.class.getName(),
+            factory);
    }
 
 }

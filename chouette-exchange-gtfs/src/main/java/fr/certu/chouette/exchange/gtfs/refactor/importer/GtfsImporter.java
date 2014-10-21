@@ -31,12 +31,52 @@ public class GtfsImporter
       _path = path;
    }
 
+   void dispose()
+   {
+      if (agencyImporter != null)
+      {
+         agencyImporter.dispose();
+      }
+      if (calendarImporter != null)
+      {
+         calendarImporter.dispose();
+      }
+      if (calendarDateImporter != null)
+      {
+         calendarDateImporter.dispose();
+      }
+      if (frequencyImporter != null)
+      {
+         frequencyImporter.dispose();
+      }
+      if (routeyImporter != null)
+      {
+         routeyImporter.dispose();
+      }
+      if (stopImporter != null)
+      {
+         stopImporter.dispose();
+      }
+      if (stopTimeImporter != null)
+      {
+         stopTimeImporter.dispose();
+      }
+      if (transferImporter != null)
+      {
+         transferImporter.dispose();
+      }
+      if (tripImporter != null)
+      {
+         tripImporter.dispose();
+      }
+   }
+
    public Importer<GtfsAgency> getAgencyImporter() throws Exception
    {
       if (agencyImporter == null)
       {
-         agencyImporter = ImporterFactory.build(Paths
-               .get(_path, AgencyImporter.FILENAME).toString());
+         agencyImporter = ImporterFactory.build(Paths.get(_path,
+               AgencyImporter.FILENAME).toString());
       }
       return agencyImporter;
    }
@@ -75,8 +115,8 @@ public class GtfsImporter
    {
       if (routeyImporter == null)
       {
-         routeyImporter = ImporterFactory.build(Paths.get(_path, RouteImporter.FILENAME)
-               .toString());
+         routeyImporter = ImporterFactory.build(Paths.get(_path,
+               RouteImporter.FILENAME).toString());
       }
       return routeyImporter;
    }
@@ -85,8 +125,8 @@ public class GtfsImporter
    {
       if (stopImporter == null)
       {
-         stopImporter = ImporterFactory.build(Paths.get(_path, StopImporter.FILENAME)
-               .toString());
+         stopImporter = ImporterFactory.build(Paths.get(_path,
+               StopImporter.FILENAME).toString());
       }
       return stopImporter;
    }
@@ -115,8 +155,8 @@ public class GtfsImporter
    {
       if (tripImporter == null)
       {
-         tripImporter = ImporterFactory.build(Paths.get(_path, TripImporter.FILENAME)
-               .toString());
+         tripImporter = ImporterFactory.build(Paths.get(_path,
+               TripImporter.FILENAME).toString());
       }
       return tripImporter;
    }

@@ -37,9 +37,9 @@ public abstract class ImporterImpl<T> extends AbstractImporter<T>
    private IntBuffer _index;
    private FileChannel _channel2;
    private File _temp;
+   private int _total;
 
-   // public static final ThreadLocal<Context> local = new
-   // ThreadLocal<Context>();
+
    private static final String LINES = "lines";
 
    public ImporterImpl(String name, String id) throws IOException
@@ -164,10 +164,16 @@ public abstract class ImporterImpl<T> extends AbstractImporter<T>
    }
 
    @Override
+   public int getLength()
+   {
+      return _total;
+   }
+
+   @Override
    protected Map<String, Token> index() throws IOException
    {
       Monitor monitor = MonitorFactory.start();
-      int total = 1;
+      _total = 1;
       _reader.setPosition(0);
       _reader.next();
 
@@ -187,7 +193,7 @@ public abstract class ImporterImpl<T> extends AbstractImporter<T>
          {
             token.lenght++;
          }
-         total++;
+         _total++;
       }
 
       String name = Paths.get(_name).getFileName().toString();
@@ -195,9 +201,9 @@ public abstract class ImporterImpl<T> extends AbstractImporter<T>
       _temp.deleteOnExit();
       RandomAccessFile file = new RandomAccessFile(_temp, "rw");
       _channel2 = file.getChannel();
-      _index = _channel2.map(FileChannel.MapMode.READ_WRITE, 0, total * 8)
+      _index = _channel2.map(FileChannel.MapMode.READ_WRITE, 0, _total * 8)
             .asIntBuffer();
-      for (int i = 0; i < total; i++)
+      for (int i = 0; i < _total; i++)
       {
          _index.put(-1);
          _index.put(-1);
