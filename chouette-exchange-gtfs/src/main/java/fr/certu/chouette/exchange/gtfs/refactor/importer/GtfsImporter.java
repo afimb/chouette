@@ -20,7 +20,7 @@ public class GtfsImporter
    private Importer<GtfsCalendar> calendarImporter;
    private Importer<GtfsCalendarDate> calendarDateImporter;
    private Importer<GtfsFrequency> frequencyImporter;
-   private Importer<GtfsRoute> routeyImporter;
+   private Importer<GtfsRoute> routeImporter;
    private Importer<GtfsStop> stopImporter;
    private Importer<GtfsStopTime> stopTimeImporter;
    private Importer<GtfsTransfer> transferImporter;
@@ -73,12 +73,12 @@ public class GtfsImporter
 
    public Importer<GtfsRoute> getRouteImporter() throws Exception
    {
-      if (routeyImporter == null)
+      if (routeImporter == null)
       {
-         routeyImporter = ImporterFactory.build(Paths.get(_path, RouteImporter.FILENAME)
+         routeImporter = ImporterFactory.build(Paths.get(_path, RouteImporter.FILENAME)
                .toString());
       }
-      return routeyImporter;
+      return routeImporter;
    }
 
    public Importer<GtfsStop> getStopImporter() throws Exception
@@ -119,6 +119,20 @@ public class GtfsImporter
                .toString());
       }
       return tripImporter;
+   }
+
+   public void dispose()
+   {
+      if (agencyImporter != null) agencyImporter.dispose();
+      if (calendarImporter != null) calendarImporter.dispose();
+      if (calendarDateImporter != null) calendarDateImporter.dispose();
+      if (frequencyImporter != null) frequencyImporter.dispose();
+      if (routeImporter != null) routeImporter.dispose();
+      if (stopImporter != null) stopImporter.dispose();
+      if (stopTimeImporter != null) stopTimeImporter.dispose();
+      if (transferImporter != null) transferImporter.dispose();
+      if (tripImporter != null) tripImporter.dispose();
+      
    }
 
 }
