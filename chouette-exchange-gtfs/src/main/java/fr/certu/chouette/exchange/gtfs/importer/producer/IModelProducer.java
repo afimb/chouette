@@ -8,7 +8,7 @@
 
 package fr.certu.chouette.exchange.gtfs.importer.producer;
 
-import fr.certu.chouette.exchange.gtfs.model.GtfsBean;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsObject;
 import fr.certu.chouette.model.neptune.NeptuneObject;
 import fr.certu.chouette.plugin.report.Report;
 
@@ -16,7 +16,7 @@ import fr.certu.chouette.plugin.report.Report;
  * @author michel
  * 
  */
-public interface IModelProducer<T extends NeptuneObject, U extends GtfsBean>
+public interface IModelProducer<T extends NeptuneObject, U extends GtfsObject>
 {
    T produce(U o, Report report);
 }

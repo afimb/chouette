@@ -1,5 +1,6 @@
 package fr.certu.chouette.exchange.gtfs.refactor.importer;
 
+import java.io.File;
 import java.nio.file.Paths;
 
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsAgency;
@@ -78,6 +79,57 @@ public class GtfsImporter
          agencyImporter = ImporterFactory.build(Paths.get(_path, AgencyImporter.FILENAME).toString());
       }
       return agencyImporter;
+   }
+   
+   public boolean hasAgencyImporter()
+   {
+      return hasImporter(AgencyImporter.FILENAME);
+   }
+
+   public boolean hasCalendarImporter()
+   {
+      return hasImporter(CalendarImporter.FILENAME);
+   }
+
+   public boolean hasCalendarDateImporter()
+   {
+      return hasImporter(CalendarDateImporter.FILENAME);
+   }
+
+   public boolean hasFrequencyImporter()
+   {
+      return hasImporter(FrequencyImporter.FILENAME);
+   }
+
+   public boolean hasRouteImporter()
+   {
+      return hasImporter(RouteImporter.FILENAME);
+   }
+
+   public boolean hasStopImporter()
+   {
+      return hasImporter(StopImporter.FILENAME);
+   }
+
+   public boolean hasStopTimeImporter()
+   {
+      return hasImporter(StopTimeImporter.FILENAME);
+   }
+
+   public boolean hasTransferImporter()
+   {
+      return hasImporter(TransferImporter.FILENAME);
+   }
+
+   public boolean hasTripImporter()
+   {
+      return hasImporter(TripImporter.FILENAME);
+   }
+
+   private boolean hasImporter(String filename)
+   {
+      File f = new File(_path,filename);
+      return f.exists();
    }
 
    public Importer<GtfsCalendar> getCalendarImporter() throws Exception

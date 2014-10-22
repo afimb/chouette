@@ -2,7 +2,7 @@ package fr.certu.chouette.exchange.gtfs.importer.producer;
 
 import org.apache.log4j.Logger;
 
-import fr.certu.chouette.exchange.gtfs.model.GtfsRoute;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsRoute;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.plugin.report.Report;
 

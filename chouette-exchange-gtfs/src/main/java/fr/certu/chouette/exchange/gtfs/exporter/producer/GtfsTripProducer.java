@@ -30,16 +30,23 @@ import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
  * produce Trips and stop_times for vehicleJourney
  * <p>
  * when vehicleJourney is on multiple timetables, it will be cloned for each
+ * 
+ * @ TODO : refactor to produce one calendar for each timetable groups
  */
-public class GtfsTripProducer extends
-      AbstractProducer<GtfsTrip, VehicleJourney>
+public class GtfsTripProducer extends AbstractProducer<GtfsTrip, VehicleJourney>
 {
-   private static final Logger logger = Logger
-         .getLogger(GtfsTripProducer.class);
+   private static final Logger logger = Logger.getLogger(GtfsTripProducer.class);
 
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * fr.certu.chouette.exchange.gtfs.exporter.producer.AbstractProducer#produceAll
+    * (java.util.Collection,
+    * fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport)
+    */
    @Override
-   public List<GtfsTrip> produceAll(Collection<VehicleJourney> neptuneObjects,
-         GtfsReport report)
+   public List<GtfsTrip> produceAll(Collection<VehicleJourney> neptuneObjects, GtfsReport report)
    {
       List<GtfsTrip> objects = new ArrayList<GtfsTrip>();
       for (VehicleJourney object : neptuneObjects)
@@ -49,6 +56,14 @@ public class GtfsTripProducer extends
       return objects;
    }
 
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * fr.certu.chouette.exchange.gtfs.exporter.producer.AbstractProducer#produceAll
+    * (fr.certu.chouette.model.neptune.NeptuneIdentifiedObject,
+    * fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport)
+    */
    @Override
    public List<GtfsTrip> produceAll(VehicleJourney vj, GtfsReport report)
    {
@@ -61,7 +76,8 @@ public class GtfsTripProducer extends
       {
          Timetable timetable = vj.getTimetables().get(0);
          trips.add(produce(vj, timetable.getObjectId(), times, false));
-      } else
+      }
+      else
       {
          for (Timetable timetable : vj.getTimetables())
          {
@@ -72,6 +88,12 @@ public class GtfsTripProducer extends
 
    }
 
+   /**
+    * produce stoptimes for vehiclejourneyatstops @ TODO see how to manage ITL
+    * 
+    * @param vj
+    * @return list of stoptimes
+    */
    private List<GtfsStopTime> produceTimes(VehicleJourney vj)
    {
       List<GtfsStopTime> times = new ArrayList<GtfsStopTime>();
@@ -82,34 +104,48 @@ public class GtfsTripProducer extends
       for (VehicleJourneyAtStop vjas : vj.getVehicleJourneyAtStops())
       {
          GtfsStopTime time = new GtfsStopTime();
-         time.setStopId(toGtfsId(vjas.getStopPoint().getContainedInStopArea()
-               .getObjectId()));
+         time.setStopId(toGtfsId(vjas.getStopPoint().getContainedInStopArea().getObjectId()));
          Time arrival = vjas.getArrivalTime();
          if (arrival == null)
             arrival = vjas.getDepartureTime();
-         if (!tomorrowArrival && previousArrival != null
-               && previousArrival.after(arrival))
+         if (!tomorrowArrival && previousArrival != null && previousArrival.after(arrival))
          {
             tomorrowArrival = true; // after midnight
          }
          previousArrival = arrival;
          time.setArrivalTime(new GtfsTime(arrival, tomorrowArrival));
          Time departure = vjas.getDepartureTime();
-         if (!tomorrowDeparture && previousDeparture != null
-               && previousDeparture.after(departure))
+         if (!tomorrowDeparture && previousDeparture != null && previousDeparture.after(departure))
          {
             tomorrowDeparture = true; // after midnight
          }
          time.setDepartureTime(new GtfsTime(departure, tomorrowDeparture));
          previousDeparture = departure;
          time.setStopSequence((int) vjas.getStopPoint().getPosition());
+
+         // time.setStopHeadsign();
+         // time.setPickUpType();
+         // time.setDropOffType();
+
          times.add(time);
       }
       return times;
    }
 
-   private GtfsTrip produce(VehicleJourney vj, String timetableId,
-         List<GtfsStopTime> times, boolean multipleTimetable)
+   /**
+    * convert vehicle journey to trip for a specific timetable
+    * 
+    * @param vj
+    *           vehicle journey
+    * @param timetableId
+    *           timetable id
+    * @param times
+    *           stoptimes model
+    * @param multipleTimetable
+    *           vehicle journey with multiple timetables
+    * @return gtfs trip
+    */
+   private GtfsTrip produce(VehicleJourney vj, String timetableId, List<GtfsStopTime> times, boolean multipleTimetable)
    {
 
       GtfsTrip trip = new GtfsTrip();
@@ -127,32 +163,29 @@ public class GtfsTripProducer extends
       if ("R".equals(route.getWayBack()))
       {
          trip.setDirectionId(GtfsTrip.INBOUND);
-      } else
+      }
+      else
       {
          trip.setDirectionId(GtfsTrip.OUTBOUND);
       }
 
       trip.setServiceId(toGtfsId(timetableId));
 
-      // trip.setTripHeadsign(...);
       String name = vj.getPublishedJourneyName();
-      if (name == null && vj.getNumber() != null)
+      if (isEmpty(name) && vj.getNumber() != null)
          name = "" + vj.getNumber();
-      else if (name == null)
-         name = "";
-      if (name.trim().length() != 0)
+
+      if (!isEmpty(name))
          trip.setTripShortName(name);
-      
+
       if (!isEmpty(jp.getPublishedName()))
-      {
          trip.setTripHeadsign(jp.getPublishedName());
-      }
-      
+
       if (vj.getMobilityRestrictedSuitability() != null)
-      {
-         
-      }
+         trip.setWheelchairAccessible(vj.getMobilityRestrictedSuitability() ? 1 : 2);
+      // trip.setBlockId(...);
       // trip.setShapeId(...);
+      // trip.setBikeAllowed();
 
       // add StopTimes
       for (GtfsStopTime time : times)
@@ -165,6 +198,14 @@ public class GtfsTripProducer extends
       return trip;
    }
 
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * fr.certu.chouette.exchange.gtfs.exporter.producer.AbstractProducer#produce
+    * (fr.certu.chouette.model.neptune.NeptuneIdentifiedObject,
+    * fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport)
+    */
    @Override
    public GtfsTrip produce(VehicleJourney neptuneObject, GtfsReport report)
    {

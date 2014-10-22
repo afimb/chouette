@@ -2,7 +2,7 @@ package fr.certu.chouette.exchange.gtfs.importer.producer;
 
 import java.sql.Time;
 
-import fr.certu.chouette.exchange.gtfs.model.GtfsTime;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsTime;
 
 public abstract class AbstractProducer
 {

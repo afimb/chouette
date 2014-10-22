@@ -2,8 +2,7 @@ package fr.certu.chouette.exchange.gtfs.importer.producer;
 
 import org.apache.log4j.Logger;
 
-import fr.certu.chouette.exchange.gtfs.model.GtfsExtendedStop;
-import fr.certu.chouette.exchange.gtfs.model.GtfsStop;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStop;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
@@ -21,8 +20,7 @@ public class StopAreaProducer extends AbstractModelProducer<StopArea, GtfsStop>
       StopArea stopArea = new StopArea();
 
       // objectId, objectVersion, creatorId, creationTime
-      stopArea.setObjectId(composeObjectId(StopArea.STOPAREA_KEY,
-            gtfsStop.getStopId(), logger));
+      stopArea.setObjectId(composeObjectId(StopArea.STOPAREA_KEY, gtfsStop.getStopId(), logger));
 
       stopArea.setLatitude(gtfsStop.getStopLat());
       stopArea.setLongitude(gtfsStop.getStopLon());
@@ -39,24 +37,25 @@ public class StopAreaProducer extends AbstractModelProducer<StopArea, GtfsStop>
       // farecode
       stopArea.setFareCode(0);
 
-      if (gtfsStop.getLocationType() == GtfsStop.STATION)
+      if (gtfsStop.getLocationType() == GtfsStop.LocationType.Station)
       {
          stopArea.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
          if (getNonEmptyTrimedString(gtfsStop.getParentStation()) != null)
          {
-            ReportItem item = new ExchangeReportItem(
-                  ExchangeReportItem.KEY.IGNORED_DATA, Report.STATE.WARNING,
-                  "stops.txt", gtfsStop.getFileLineNumber(), "parent_station",
-                  gtfsStop.getParentStation());
+            ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.IGNORED_DATA, Report.STATE.WARNING, "stops.txt", gtfsStop.getId(),
+                  "parent_station", gtfsStop.getParentStation());
             report.addItem(item);
-            logger.warn("station " + stopArea.getName() + " has parent "
-                  + getNonEmptyTrimedString(gtfsStop.getParentStation()));
+            logger.warn("station " + stopArea.getName() + " has parent " + getNonEmptyTrimedString(gtfsStop.getParentStation()));
          }
-      } else
+      }
+      else if (gtfsStop.getLocationType() == GtfsStop.LocationType.Access)
+      {
+         return null;
+      }
+      else
       {
          stopArea.setAreaType(ChouetteAreaEnum.BoardingPosition);
-         stopArea.setParentObjectId(getNonEmptyTrimedString(gtfsStop
-               .getParentStation()));
+         stopArea.setParentObjectId(getNonEmptyTrimedString(gtfsStop.getParentStation()));
       }
 
       // RegistrationNumber optional
@@ -64,13 +63,13 @@ public class StopAreaProducer extends AbstractModelProducer<StopArea, GtfsStop>
       stopArea.setRegistrationNumber(token[2]);
 
       // extension
-      if (gtfsStop instanceof GtfsExtendedStop)
-      {
-         GtfsExtendedStop ext = (GtfsExtendedStop) gtfsStop;
-         stopArea.setStreetName(ext.getAddressLine());
-         stopArea.setCityName(ext.getLocality());
-         stopArea.setZipCode(ext.getPostalCode());
-      }
+//      if (gtfsStop instanceof GtfsExtendedStop)
+//      {
+//         GtfsExtendedStop ext = (GtfsExtendedStop) gtfsStop;
+//         stopArea.setStreetName(ext.getAddressLine());
+//         stopArea.setCityName(ext.getLocality());
+//         stopArea.setZipCode(ext.getPostalCode());
+//      }
 
       return stopArea;
    }

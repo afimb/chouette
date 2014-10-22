@@ -2,7 +2,7 @@ package fr.certu.chouette.exchange.gtfs.importer.producer;
 
 import org.apache.log4j.Logger;
 
-import fr.certu.chouette.exchange.gtfs.model.GtfsAgency;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsAgency;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.plugin.report.Report;
 
@@ -23,9 +23,9 @@ public class CompanyProducer extends AbstractModelProducer<Company, GtfsAgency>
       company.setName(getNonEmptyTrimedString(gtfsAgency.getAgencyName()));
 
       // OrganisationalUnit : URL Mandatory
-      if (gtfsAgency.getAgencyURL() != null)
+      if (gtfsAgency.getAgencyUrl() != null)
          company.setOrganisationalUnit(getNonEmptyTrimedString(gtfsAgency
-               .getAgencyURL().toString()));
+               .getAgencyUrl().toString()));
 
       // Phone optional
       company.setPhone(getNonEmptyTrimedString(gtfsAgency.getAgencyPhone()));

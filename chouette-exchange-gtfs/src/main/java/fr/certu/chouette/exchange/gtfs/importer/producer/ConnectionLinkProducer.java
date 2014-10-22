@@ -4,7 +4,8 @@ import java.util.Calendar;
 
 import org.apache.log4j.Logger;
 
-import fr.certu.chouette.exchange.gtfs.model.GtfsTransfer;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsTransfer;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsTransfer.TransferType;
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
 import fr.certu.chouette.plugin.report.Report;
@@ -32,7 +33,7 @@ public class ConnectionLinkProducer extends
       link.setLinkType(ConnectionLinkTypeEnum.Overground);
       if (gtfsTransfer.getMinTransferTime() != null)
          link.setDefaultDuration(gtfsTransfer.getMinTransferTime().getTime());
-      if (gtfsTransfer.getTransferType().equals(GtfsTransfer.Type.FORBIDDEN))
+      if (gtfsTransfer.getTransferType().equals(TransferType.NoAllowed))
       {
          link.setName("FORBIDDEN");
       }

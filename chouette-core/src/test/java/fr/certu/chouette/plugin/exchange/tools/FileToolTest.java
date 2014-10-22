@@ -1,8 +1,13 @@
 package fr.certu.chouette.plugin.exchange.tools;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Collection;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
@@ -43,5 +48,17 @@ public class FileToolTest extends AbstractTestNGSpringContextTests
       Assert.assertNotNull(encoding);
       Assert.assertEquals(encoding.name(), "UTF-8");
    }
+   
+   @Test(groups = { "plugin_tool" }, description = "should uncompress zip file")
+   public void verifUncompress() throws IOException
+   {
+      Path dir = Files.createTempDirectory("test_chouette");
+      FileTool.uncompress("src/test/data/default.zip", dir.toFile());
+      Collection<File> files = FileUtils.listFiles(dir.toFile(), null, false);
+      Assert.assertEquals(files.size(),1,"directory must contain 1 file");
+      Assert.assertEquals(files.toArray(new File[0])[0].getName(), "C_NEPTUNE_reseau_5_28102887.xml", "file name must match");
+      FileUtils.deleteDirectory(dir.toFile());
+   }
+   
 
 }
