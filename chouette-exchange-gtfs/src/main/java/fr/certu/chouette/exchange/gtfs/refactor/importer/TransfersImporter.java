@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsTransfer;
 
-public class TransferImporter extends ImporterImpl<GtfsTransfer>
+public class TransfersImporter extends ImporterImpl<GtfsTransfer>
 {
 
    public static enum FIELDS
@@ -15,13 +15,13 @@ public class TransferImporter extends ImporterImpl<GtfsTransfer>
    public static final String FILENAME = "transfers.txt";
    public static final String KEY = FIELDS.from_stop_id.name();
 
-   public TransferImporter(String name) throws IOException
+   public TransfersImporter(String name) throws IOException
    {
       super(name, KEY);
    }
 
    @Override
-   protected GtfsTransfer build(GtfsReader _reader, int line)
+   protected GtfsTransfer build(GtfsIterator _reader, int line)
    {
       // TODO Auto-generated method stub
       return null;
@@ -38,14 +38,14 @@ public class TransferImporter extends ImporterImpl<GtfsTransfer>
       @Override
       protected Importer create(String name) throws IOException
       {
-         return new TransferImporter(name);
+         return new TransfersImporter(name);
       }
    }
 
    static
    {
       ImporterFactory factory = new DefaultImporterFactory();
-      ImporterFactory.factories.put(TransferImporter.class.getName(), factory);
+      ImporterFactory.factories.put(TransfersImporter.class.getName(), factory);
    }
 
 }

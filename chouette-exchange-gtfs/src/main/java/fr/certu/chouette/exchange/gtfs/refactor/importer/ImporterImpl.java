@@ -31,14 +31,13 @@ public abstract class ImporterImpl<T> extends AbstractImporter<T>
    protected Map<String, Integer> _fields;
    protected Map<String, Token> _tokens = new LinkedHashMap<String, Token>();
 
-   private GtfsReader _reader;
+   private GtfsIterator _reader;
    private FileChannel _channel1;
    private MappedByteBuffer _buffer;
    private IntBuffer _index;
    private FileChannel _channel2;
    private File _temp;
    private int _total;
-
 
    private static final String LINES = "lines";
 
@@ -57,13 +56,13 @@ public abstract class ImporterImpl<T> extends AbstractImporter<T>
       _buffer = _channel1.map(FileChannel.MapMode.READ_ONLY, 0,
             _channel1.size());
       _buffer.load();
-
-      _reader = new GtfsReader(_buffer, 0);
+      _reader = new GtfsIterator(_buffer, 0);
       _reader.next();
       _fields = new HashMap<String, Integer>();
-      for (int i = 0; i < _reader.getFieldSize(); i++)
+      for (int i = 0; i < _reader.getFieldCount(); i++)
       {
-         _fields.put(_reader.getValue(i), i);
+         String key = _reader.getValue(i);
+         _fields.put(key, i);
       }
       index();
    }
@@ -269,7 +268,7 @@ public abstract class ImporterImpl<T> extends AbstractImporter<T>
          lines.add(line);
          _reader.setPosition(index);
          _reader.next();
-         ByteBuffer value = _reader.slice();
+         ByteBuffer value = _reader.getBuffer();
          list.add(value);
       }
       Context context = new Context();
@@ -294,12 +293,12 @@ public abstract class ImporterImpl<T> extends AbstractImporter<T>
       return getField(_reader, key, value);
    }
 
-   protected String getField(GtfsReader reader, String key)
+   protected String getField(GtfsIterator reader, String key)
    {
       return getField(reader, key, "");
    }
 
-   protected String getField(GtfsReader reader, String key, String value)
+   protected String getField(GtfsIterator reader, String key, String value)
    {
       Integer index = _fields.get(key);
       if (index == null)
@@ -338,16 +337,16 @@ public abstract class ImporterImpl<T> extends AbstractImporter<T>
       return result;
    }
 
-   class GTFSIterator implements Iterator<T>
+   private class GTFSIterator implements Iterator<T>
    {
 
-      private GtfsReader _reader;
+      private GtfsIterator _reader;
       private int _index;
       private List<Integer> _lines;
 
       public GTFSIterator(ByteBuffer buffer)
       {
-         _reader = new GtfsReader(buffer, _fields.size());
+         _reader = new GtfsIterator(buffer, _fields.size());
          _index = 0;
       }
 

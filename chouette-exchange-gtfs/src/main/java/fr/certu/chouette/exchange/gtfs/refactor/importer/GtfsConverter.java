@@ -1,8 +1,5 @@
 package fr.certu.chouette.exchange.gtfs.refactor.importer;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
 import java.sql.Date;
 import java.sql.Time;
 import java.text.DateFormat;
@@ -42,6 +39,7 @@ public interface GtfsConverter
       {
          return (input != null) ? input.toString() : "";
       }
+
    };
 
    public static FieldConverter<String, Integer> INTEGER_CONVERTER = new FieldConverter<String, Integer>()
@@ -182,7 +180,7 @@ public interface GtfsConverter
          GtfsTime result = value;
          if (input != null && !input.isEmpty())
          {
-            result = convert(input);
+            result = decode(input);
          } else if (required && value == null)
          {
             throw new IllegalArgumentException();
@@ -196,12 +194,12 @@ public interface GtfsConverter
          String result = "";
          if (input != null && input.getTime() != null)
          {
-            result = convert(input);
+            result = decode(input);
          }
          return result;
       }
 
-      private GtfsTime convert(String input)
+      private GtfsTime decode(String input)
       {
          GtfsTime result = new GtfsTime();
          int day;
@@ -236,7 +234,7 @@ public interface GtfsConverter
          return result;
       }
 
-      private String convert(GtfsTime input)
+      private String decode(GtfsTime input)
       {
          Time value = input.getTime();
 
@@ -552,5 +550,4 @@ public interface GtfsConverter
       public abstract F to(T input);
 
    }
-
 }

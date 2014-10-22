@@ -12,8 +12,6 @@ import java.util.TimeZone;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import lombok.Setter;
-
 import org.apache.log4j.Logger;
 
 import fr.certu.chouette.common.ChouetteException;

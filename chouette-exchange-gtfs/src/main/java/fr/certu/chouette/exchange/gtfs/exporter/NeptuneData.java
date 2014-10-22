@@ -14,9 +14,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import lombok.Getter;
+
 import org.apache.log4j.Logger;
 
-import lombok.Getter;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.JourneyPattern;

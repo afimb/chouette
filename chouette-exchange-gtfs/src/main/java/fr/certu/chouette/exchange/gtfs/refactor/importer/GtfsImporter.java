@@ -76,7 +76,8 @@ public class GtfsImporter
    {
       if (agencyImporter == null)
       {
-         agencyImporter = ImporterFactory.build(Paths.get(_path, AgencyImporter.FILENAME).toString());
+         agencyImporter = ImporterFactory.build(Paths.get(_path,
+               AgencyImporter.FILENAME).toString());
       }
       return agencyImporter;
    }
@@ -136,7 +137,8 @@ public class GtfsImporter
    {
       if (calendarImporter == null)
       {
-         calendarImporter = ImporterFactory.build(Paths.get(_path, CalendarImporter.FILENAME).toString());
+         calendarImporter = ImporterFactory.build(Paths.get(_path,
+               CalendarImporter.FILENAME).toString());
       }
       return calendarImporter;
    }
@@ -145,7 +147,9 @@ public class GtfsImporter
    {
       if (calendarDateImporter == null)
       {
-         calendarDateImporter = ImporterFactory.build(Paths.get(_path, CalendarDateImporter.FILENAME).toString());
+         calendarDateImporter = ImporterFactory.build(Paths.get(_path,
+               CalendarDatesImporter.FILENAME).toString());
+
       }
       return calendarDateImporter;
    }
@@ -154,7 +158,8 @@ public class GtfsImporter
    {
       if (frequencyImporter == null)
       {
-         frequencyImporter = ImporterFactory.build(Paths.get(_path, FrequencyImporter.FILENAME).toString());
+         frequencyImporter = ImporterFactory.build(Paths.get(_path,
+               FrequencyImporter.FILENAME).toString());
       }
       return frequencyImporter;
    }
@@ -163,7 +168,9 @@ public class GtfsImporter
    {
       if (routeImporter == null)
       {
-         routeImporter = ImporterFactory.build(Paths.get(_path, RouteImporter.FILENAME).toString());
+         routeImporter = ImporterFactory.build(Paths.get(_path,
+               RoutesImporter.FILENAME).toString());
+
       }
       return routeImporter;
    }
@@ -172,7 +179,9 @@ public class GtfsImporter
    {
       if (stopImporter == null)
       {
-         stopImporter = ImporterFactory.build(Paths.get(_path, StopImporter.FILENAME).toString());
+         stopImporter = ImporterFactory.build(Paths.get(_path,
+               StopsImporter.FILENAME).toString());
+
       }
       return stopImporter;
    }
@@ -181,7 +190,9 @@ public class GtfsImporter
    {
       if (stopTimeImporter == null)
       {
-         stopTimeImporter = ImporterFactory.build(Paths.get(_path, StopTimeImporter.FILENAME).toString());
+         stopTimeImporter = ImporterFactory.build(Paths.get(_path,
+               StopTimesImporter.FILENAME).toString());
+
       }
       return stopTimeImporter;
    }
@@ -190,7 +201,9 @@ public class GtfsImporter
    {
       if (transferImporter == null)
       {
-         transferImporter = ImporterFactory.build(Paths.get(_path, TransferImporter.FILENAME).toString());
+         transferImporter = ImporterFactory.build(Paths.get(_path,
+               TransfersImporter.FILENAME).toString());
+
       }
       return transferImporter;
    }
@@ -199,7 +212,9 @@ public class GtfsImporter
    {
       if (tripImporter == null)
       {
-         tripImporter = ImporterFactory.build(Paths.get(_path, TripImporter.FILENAME).toString());
+         tripImporter = ImporterFactory.build(Paths.get(_path,
+               TripsImporter.FILENAME).toString());
+
       }
       return tripImporter;
    }

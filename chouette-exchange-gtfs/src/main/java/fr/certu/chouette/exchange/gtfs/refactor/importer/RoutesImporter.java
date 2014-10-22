@@ -2,33 +2,33 @@ package fr.certu.chouette.exchange.gtfs.refactor.importer;
 
 import java.io.IOException;
 
-import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsTrip;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsRoute;
 
-public class TripImporter extends ImporterImpl<GtfsTrip>
+public class RoutesImporter extends ImporterImpl<GtfsRoute>
 {
 
    public static enum FIELDS
    {
-      route_id, service_id, trip_id, trip_headsign, trip_short_name, direction_id, shape_id;
+      route_id, agency_id, route_short_name, route_long_name, route_desc, route_type, route_url, route_color, route_text_color;
    };
 
-   public static final String FILENAME = "trips.txt";
+   public static final String FILENAME = "routes.txt";
    public static final String KEY = FIELDS.route_id.name();
 
-   public TripImporter(String name) throws IOException
+   public RoutesImporter(String name) throws IOException
    {
       super(name, KEY);
    }
 
    @Override
-   protected GtfsTrip build(GtfsReader reader, int id)
+   protected GtfsRoute build(GtfsIterator _reader, int id)
    {
       // TODO Auto-generated method stub
       return null;
    }
 
    @Override
-   public boolean validate(GtfsTrip bean, GtfsImporter dao)
+   public boolean validate(GtfsRoute bean, GtfsImporter dao)
    {
       return true;
    }
@@ -38,13 +38,14 @@ public class TripImporter extends ImporterImpl<GtfsTrip>
       @Override
       protected Importer create(String name) throws IOException
       {
-         return new TripImporter(name);
+         return new RoutesImporter(name);
       }
    }
 
    static
    {
       ImporterFactory factory = new DefaultImporterFactory();
-      ImporterFactory.factories.put(TripImporter.class.getName(), factory);
+      ImporterFactory.factories.put(RoutesImporter.class.getName(), factory);
    }
+
 }

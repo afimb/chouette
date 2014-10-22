@@ -21,7 +21,7 @@ public class AgencyImporter extends ImporterImpl<GtfsAgency>
    }
 
    @Override
-   protected GtfsAgency build(GtfsReader _reader, int id)
+   protected GtfsAgency build(GtfsIterator _reader, int id)
    {
       // TODO Auto-generated method stub
       return null;

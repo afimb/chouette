@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStop;
 
-public class StopImporter extends ImporterImpl<GtfsStop>
+public class StopsImporter extends ImporterImpl<GtfsStop>
 {
 
    public static enum FIELDS
@@ -15,13 +15,13 @@ public class StopImporter extends ImporterImpl<GtfsStop>
    public static final String FILENAME = "stops.txt";
    public static final String KEY = FIELDS.stop_id.name();
 
-   public StopImporter(String name) throws IOException
+   public StopsImporter(String name) throws IOException
    {
       super(name, KEY);
    }
 
    @Override
-   protected GtfsStop build(GtfsReader _reader, int id)
+   protected GtfsStop build(GtfsIterator _reader, int id)
    {
       // TODO Auto-generated method stub
       return null;
@@ -38,13 +38,13 @@ public class StopImporter extends ImporterImpl<GtfsStop>
       @Override
       protected Importer create(String name) throws IOException
       {
-         return new StopImporter(name);
+         return new StopsImporter(name);
       }
    }
 
    static
    {
       ImporterFactory factory = new DefaultImporterFactory();
-      ImporterFactory.factories.put(StopImporter.class.getName(), factory);
+      ImporterFactory.factories.put(StopsImporter.class.getName(), factory);
    }
 }
