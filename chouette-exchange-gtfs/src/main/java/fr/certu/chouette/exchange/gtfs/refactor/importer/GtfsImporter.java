@@ -96,7 +96,7 @@ public class GtfsImporter
       if (calendarDateImporter == null)
       {
          calendarDateImporter = ImporterFactory.build(Paths.get(_path,
-               CalendarDateImporter.FILENAME).toString());
+               CalendarDatesImporter.FILENAME).toString());
       }
       return calendarDateImporter;
    }
@@ -116,7 +116,7 @@ public class GtfsImporter
       if (routeyImporter == null)
       {
          routeyImporter = ImporterFactory.build(Paths.get(_path,
-               RouteImporter.FILENAME).toString());
+               RoutesImporter.FILENAME).toString());
       }
       return routeyImporter;
    }
@@ -126,7 +126,7 @@ public class GtfsImporter
       if (stopImporter == null)
       {
          stopImporter = ImporterFactory.build(Paths.get(_path,
-               StopImporter.FILENAME).toString());
+               StopsImporter.FILENAME).toString());
       }
       return stopImporter;
    }
@@ -136,7 +136,7 @@ public class GtfsImporter
       if (stopTimeImporter == null)
       {
          stopTimeImporter = ImporterFactory.build(Paths.get(_path,
-               StopTimeImporter.FILENAME).toString());
+               StopTimesImporter.FILENAME).toString());
       }
       return stopTimeImporter;
    }
@@ -146,7 +146,7 @@ public class GtfsImporter
       if (transferImporter == null)
       {
          transferImporter = ImporterFactory.build(Paths.get(_path,
-               TransferImporter.FILENAME).toString());
+               TransfersImporter.FILENAME).toString());
       }
       return transferImporter;
    }
@@ -156,7 +156,7 @@ public class GtfsImporter
       if (tripImporter == null)
       {
          tripImporter = ImporterFactory.build(Paths.get(_path,
-               TripImporter.FILENAME).toString());
+               TripsImporter.FILENAME).toString());
       }
       return tripImporter;
    }

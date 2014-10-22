@@ -2,6 +2,7 @@ package fr.certu.chouette.exchange.gtfs.refactor.importer;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -26,7 +27,7 @@ public abstract class AbstractImporter<T> implements Importer<T>
 
    protected abstract Iterator<Token> tokenIterator();
 
-   protected abstract T build(GtfsReader reader, int id);
+   protected abstract T build(GtfsIterator reader, int id);
 
    public static void set(Context context)
    {

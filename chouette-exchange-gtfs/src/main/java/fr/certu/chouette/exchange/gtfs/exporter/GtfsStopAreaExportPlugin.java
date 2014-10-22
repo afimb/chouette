@@ -11,17 +11,13 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import lombok.Setter;
-
 import org.apache.log4j.Logger;
 
 import fr.certu.chouette.common.ChouetteException;
-import fr.certu.chouette.exchange.gtfs.exporter.producer.GtfsExtendedStopProducer;
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReportItem;
 import fr.certu.chouette.exchange.gtfs.model.GtfsBean;
 import fr.certu.chouette.exchange.gtfs.model.GtfsExtendedStop;
-import fr.certu.chouette.exchange.gtfs.model.GtfsStop;
 import fr.certu.chouette.exchange.gtfs.model.GtfsTransfer;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.plugin.exchange.FormatDescription;

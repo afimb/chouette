@@ -6,7 +6,7 @@ import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStopTime;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStopTime.DropOffType;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStopTime.PickupType;
 
-public class StopTimeImporter extends ImporterImpl<GtfsStopTime> implements
+public class StopTimesImporter extends ImporterImpl<GtfsStopTime> implements
       GtfsConverter
 {
 
@@ -20,13 +20,13 @@ public class StopTimeImporter extends ImporterImpl<GtfsStopTime> implements
 
    private GtfsStopTime bean = new GtfsStopTime();
 
-   public StopTimeImporter(String name) throws IOException
+   public StopTimesImporter(String name) throws IOException
    {
       super(name, KEY);
    }
 
    @Override
-   protected GtfsStopTime build(GtfsReader reader, int id)
+   protected GtfsStopTime build(GtfsIterator reader, int id)
    {
 
       String tripId = getField(reader, FIELDS.trip_id.name());
@@ -67,14 +67,14 @@ public class StopTimeImporter extends ImporterImpl<GtfsStopTime> implements
       @Override
       protected Importer<GtfsStopTime> create(String name) throws IOException
       {
-         return new StopTimeImporter(name);
+         return new StopTimesImporter(name);
       }
    }
 
    static
    {
       ImporterFactory factory = new DefaultImporterFactory();
-      ImporterFactory.factories.put(StopTimeImporter.class.getName(), factory);
+      ImporterFactory.factories.put(StopTimesImporter.class.getName(), factory);
    }
 
 }

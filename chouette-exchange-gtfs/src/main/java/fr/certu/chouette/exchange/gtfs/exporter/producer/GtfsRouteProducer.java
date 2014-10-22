@@ -16,7 +16,6 @@ import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReportItem;
 import fr.certu.chouette.exchange.gtfs.model.GtfsRoute;
 import fr.certu.chouette.model.neptune.Line;
-import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.plugin.report.Report.STATE;
 
 /**

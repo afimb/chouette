@@ -21,7 +21,7 @@ public class CalendarImporter extends ImporterImpl<GtfsCalendar>
    }
 
    @Override
-   protected GtfsCalendar build(GtfsReader reader, int id)
+   protected GtfsCalendar build(GtfsIterator reader, int id)
    {
       // TODO Auto-generated method stub
       return null;

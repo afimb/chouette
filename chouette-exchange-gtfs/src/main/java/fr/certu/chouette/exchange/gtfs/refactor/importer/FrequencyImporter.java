@@ -21,7 +21,7 @@ public class FrequencyImporter extends ImporterImpl<GtfsFrequency>
    }
 
    @Override
-   protected GtfsFrequency build(GtfsReader _reader, int line)
+   protected GtfsFrequency build(GtfsIterator _reader, int line)
    {
       // TODO Auto-generated method stub
       return null;

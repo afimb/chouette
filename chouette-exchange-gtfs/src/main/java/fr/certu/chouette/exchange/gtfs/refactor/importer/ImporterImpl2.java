@@ -23,7 +23,7 @@ import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
 @Log4j
-public abstract class ImporterImpl<T> extends AbstractImporter<T>
+public abstract class ImporterImpl2<T> extends AbstractImporter<T>
 {
 
    protected String _name;
@@ -31,7 +31,7 @@ public abstract class ImporterImpl<T> extends AbstractImporter<T>
    protected Map<String, Integer> _fields;
    protected Map<String, Token> _tokens = new LinkedHashMap<String, Token>();
 
-   private GtfsIterator _reader;
+   private GtfsIterator2 _reader;
    private FileChannel _channel1;
    private MappedByteBuffer _buffer;
    private IntBuffer _index;
@@ -41,7 +41,7 @@ public abstract class ImporterImpl<T> extends AbstractImporter<T>
 
    private static final String LINES = "lines";
 
-   public ImporterImpl(String name, String id) throws IOException
+   public ImporterImpl2(String name, String id) throws IOException
    {
       _name = name;
       _id = id;
@@ -56,13 +56,19 @@ public abstract class ImporterImpl<T> extends AbstractImporter<T>
       _buffer = _channel1.map(FileChannel.MapMode.READ_ONLY, 0,
             _channel1.size());
       _buffer.load();
-      _reader = new GtfsIterator(_buffer, 0);
-      _reader.next();
+
+      _reader = new GtfsIterator2(_buffer);
+      String text = _reader.next();
+      List<String> list = Tokenizer.tokenize(text);
       _fields = new HashMap<String, Integer>();
-      for (int i = 0; i < _reader.getFieldCount(); i++)
+
+      int i = 0;
+      for (String field : list)
       {
-         _fields.put(_reader.getValue(i), i);
+         _fields.put(field, i);
+         i++;
       }
+
       index();
    }
 
@@ -177,9 +183,10 @@ public abstract class ImporterImpl<T> extends AbstractImporter<T>
 
       while (_reader.hasNext())
       {
-         _reader.next();
+         String text = _reader.next();
+         List<String> list = Tokenizer.tokenize(text);
+         String key = list.get(_fields.get(_id));
 
-         String key = getField(_id);
          Token token = _tokens.get(key);
          if (token == null)
          {
@@ -224,8 +231,10 @@ public abstract class ImporterImpl<T> extends AbstractImporter<T>
       int line = 1;
       while (_reader.hasNext())
       {
-         _reader.next();
-         String key = getField(_id);
+         String text = _reader.next();
+         List<String> list = Tokenizer.tokenize(text);
+         String key = list.get(_fields.get(_id));
+
          Token token = _tokens.get(key);
          for (int i = 0; i < token.lenght; i++)
          {
@@ -267,7 +276,7 @@ public abstract class ImporterImpl<T> extends AbstractImporter<T>
          lines.add(line);
          _reader.setPosition(index);
          _reader.next();
-         ByteBuffer value = _reader.getBuffer();
+         ByteBuffer value = _reader.slice(index, _reader.getPosition());
          list.add(value);
       }
       Context context = new Context();
@@ -282,35 +291,29 @@ public abstract class ImporterImpl<T> extends AbstractImporter<T>
       return _fields.keySet();
    }
 
-   protected String getField(String key)
-   {
-      return getField(_reader, key, "");
-   }
-
-   protected String getField(String key, String value)
-   {
-      return getField(_reader, key, value);
-   }
-
-   protected String getField(GtfsIterator reader, String key)
-   {
-      return getField(reader, key, "");
-   }
-
-   protected String getField(GtfsIterator reader, String key, String value)
-   {
-      Integer index = _fields.get(key);
-      if (index == null)
-      {
-         return value;
-      }
-      String result = reader.getValue(index);
-      if (result == null || result.isEmpty())
-      {
-         return value;
-      }
-      return result;
-   }
+   // protected String getField(String key) {
+   // return getField(_reader, key, "");
+   // }
+   //
+   // protected String getField(String key, String value) {
+   // return getField(_reader, key, value);
+   // }
+   //
+   // protected String getField(GtfsIterator reader, String key) {
+   // return getField(reader, key, "");
+   // }
+   //
+   // protected String getField(GtfsIterator reader, String key, String value) {
+   // Integer index = _fields.get(key);
+   // if (index == null) {
+   // return value;
+   // }
+   // String result = reader.getValue(index);
+   // if (result == null || result.isEmpty()) {
+   // return value;
+   // }
+   // return result;
+   // }
 
    private ByteBuffer concat(ByteBuffer... buffers)
    {
@@ -336,7 +339,7 @@ public abstract class ImporterImpl<T> extends AbstractImporter<T>
       return result;
    }
 
-   private class GTFSIterator implements Iterator<T>
+   class GTFSIterator implements Iterator<T>
    {
 
       private GtfsIterator _reader;
