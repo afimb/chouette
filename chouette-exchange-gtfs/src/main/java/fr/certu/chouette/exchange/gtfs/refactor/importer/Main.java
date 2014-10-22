@@ -60,12 +60,13 @@ public class Main
          // }
          // }
 
-//          for (Iterator<GtfsStopTime> values = parser
-//          .valuesIterator("10052"); values.hasNext();) {
-//          GtfsStopTime bean = values.next();
-//          System.out.println("[DSU] value : " + bean);
-//          _count++;
-//          }
+//         for (Iterator<GtfsStopTime> values = parser.valuesIterator("10052"); values
+//               .hasNext();)
+//         {
+//            GtfsStopTime bean = values.next();
+//            System.out.println("[DSU] value : " + bean);
+//            _count++;
+//         }
 
          // System.out.println("[DSU] !!!! value : " +
          // parser.getValue("10052"));
