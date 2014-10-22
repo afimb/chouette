@@ -1,6 +1,7 @@
 package fr.certu.chouette.exchange.gtfs.refactor.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.net.URL;
 import java.util.TimeZone;
 
@@ -36,11 +37,11 @@ public class GtfsStop extends GtfsObject implements Serializable
 
    @Getter
    @Setter
-   private Float stopLat;
+   private BigDecimal stopLat;
 
    @Getter
    @Setter
-   private Float stopLon;
+   private BigDecimal stopLon;
 
    @Getter
    @Setter
@@ -68,7 +69,7 @@ public class GtfsStop extends GtfsObject implements Serializable
 
    public enum LocationType implements Serializable
    {
-      BoardingPosition, CommercialStopPoint;
+      Stop, Station, Access;
 
    }
 

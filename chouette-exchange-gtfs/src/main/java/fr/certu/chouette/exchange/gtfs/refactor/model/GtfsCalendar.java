@@ -51,10 +51,10 @@ public class GtfsCalendar extends GtfsObject implements Serializable
 
    @Getter
    @Setter
-   private Date start_date;
+   private Date startDate;
 
    @Getter
    @Setter
-   private Date end_date;
+   private Date endDate;
 
 }

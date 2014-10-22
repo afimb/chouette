@@ -20,7 +20,7 @@ public class GtfsImporter
    private Importer<GtfsCalendar> calendarImporter;
    private Importer<GtfsCalendarDate> calendarDateImporter;
    private Importer<GtfsFrequency> frequencyImporter;
-   private Importer<GtfsRoute> routeyImporter;
+   private Importer<GtfsRoute> routeImporter;
    private Importer<GtfsStop> stopImporter;
    private Importer<GtfsStopTime> stopTimeImporter;
    private Importer<GtfsTransfer> transferImporter;
@@ -31,7 +31,7 @@ public class GtfsImporter
       _path = path;
    }
 
-   void dispose()
+   public void dispose()
    {
       if (agencyImporter != null)
       {
@@ -49,9 +49,9 @@ public class GtfsImporter
       {
          frequencyImporter.dispose();
       }
-      if (routeyImporter != null)
+      if (routeImporter != null)
       {
-         routeyImporter.dispose();
+         routeImporter.dispose();
       }
       if (stopImporter != null)
       {
@@ -97,6 +97,7 @@ public class GtfsImporter
       {
          calendarDateImporter = ImporterFactory.build(Paths.get(_path,
                CalendarDatesImporter.FILENAME).toString());
+
       }
       return calendarDateImporter;
    }
@@ -113,12 +114,13 @@ public class GtfsImporter
 
    public Importer<GtfsRoute> getRouteImporter() throws Exception
    {
-      if (routeyImporter == null)
+      if (routeImporter == null)
       {
-         routeyImporter = ImporterFactory.build(Paths.get(_path,
+         routeImporter = ImporterFactory.build(Paths.get(_path,
                RoutesImporter.FILENAME).toString());
+
       }
-      return routeyImporter;
+      return routeImporter;
    }
 
    public Importer<GtfsStop> getStopImporter() throws Exception
@@ -127,6 +129,7 @@ public class GtfsImporter
       {
          stopImporter = ImporterFactory.build(Paths.get(_path,
                StopsImporter.FILENAME).toString());
+
       }
       return stopImporter;
    }
@@ -137,6 +140,7 @@ public class GtfsImporter
       {
          stopTimeImporter = ImporterFactory.build(Paths.get(_path,
                StopTimesImporter.FILENAME).toString());
+
       }
       return stopTimeImporter;
    }
@@ -147,6 +151,7 @@ public class GtfsImporter
       {
          transferImporter = ImporterFactory.build(Paths.get(_path,
                TransfersImporter.FILENAME).toString());
+
       }
       return transferImporter;
    }
@@ -157,6 +162,7 @@ public class GtfsImporter
       {
          tripImporter = ImporterFactory.build(Paths.get(_path,
                TripsImporter.FILENAME).toString());
+
       }
       return tripImporter;
    }

@@ -1,7 +1,7 @@
 package fr.certu.chouette.exchange.gtfs.refactor.model;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.sql.Date;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

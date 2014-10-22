@@ -1,7 +1,6 @@
 package fr.certu.chouette.exchange.gtfs.refactor.model;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -31,7 +30,7 @@ public class GtfsTransfer extends GtfsObject implements Serializable
 
    @Getter
    @Setter
-   private Date minTransferTime;
+   private GtfsTime minTransferTime;
 
    public enum TransferType implements Serializable
    {
