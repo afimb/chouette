@@ -20,7 +20,7 @@ public class GtfsAgency extends GtfsObject implements Serializable
 
    @Getter
    @Setter
-   private String agencyId;
+   private String agencyId = "default";
 
    @Getter
    @Setter

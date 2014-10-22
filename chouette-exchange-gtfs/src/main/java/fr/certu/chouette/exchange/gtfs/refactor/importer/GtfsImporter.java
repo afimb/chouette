@@ -94,37 +94,37 @@ public class GtfsImporter
 
    public boolean hasCalendarDateImporter()
    {
-      return hasImporter(CalendarDateImporter.FILENAME);
+      return hasImporter(CalendarDatesImporter.FILENAME);
    }
 
    public boolean hasFrequencyImporter()
    {
-      return hasImporter(FrequencyImporter.FILENAME);
+      return hasImporter(FrequenciesImporter.FILENAME);
    }
 
    public boolean hasRouteImporter()
    {
-      return hasImporter(RouteImporter.FILENAME);
+      return hasImporter(RoutesImporter.FILENAME);
    }
 
    public boolean hasStopImporter()
    {
-      return hasImporter(StopImporter.FILENAME);
+      return hasImporter(StopsImporter.FILENAME);
    }
 
    public boolean hasStopTimeImporter()
    {
-      return hasImporter(StopTimeImporter.FILENAME);
+      return hasImporter(StopTimesImporter.FILENAME);
    }
 
    public boolean hasTransferImporter()
    {
-      return hasImporter(TransferImporter.FILENAME);
+      return hasImporter(TransfersImporter.FILENAME);
    }
 
    public boolean hasTripImporter()
    {
-      return hasImporter(TripImporter.FILENAME);
+      return hasImporter(TripsImporter.FILENAME);
    }
 
    private boolean hasImporter(String filename)
@@ -159,7 +159,7 @@ public class GtfsImporter
       if (frequencyImporter == null)
       {
          frequencyImporter = ImporterFactory.build(Paths.get(_path,
-               FrequencyImporter.FILENAME).toString());
+               FrequenciesImporter.FILENAME).toString());
       }
       return frequencyImporter;
    }

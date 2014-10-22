@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsFrequency;
 
-public class FrequencyImporter extends ImporterImpl<GtfsFrequency>
+public class FrequenciesImporter extends ImporterImpl<GtfsFrequency>
 {
 
    public static enum FIELDS
@@ -15,7 +15,7 @@ public class FrequencyImporter extends ImporterImpl<GtfsFrequency>
    public static final String FILENAME = "frequencies.txt";
    public static final String KEY = FIELDS.trip_id.name();
 
-   public FrequencyImporter(String name) throws IOException
+   public FrequenciesImporter(String name) throws IOException
    {
       super(name, KEY);
    }
@@ -38,14 +38,14 @@ public class FrequencyImporter extends ImporterImpl<GtfsFrequency>
       @Override
       protected Importer create(String name) throws IOException
       {
-         return new FrequencyImporter(name);
+         return new FrequenciesImporter(name);
       }
    }
 
    static
    {
       ImporterFactory factory = new DefaultImporterFactory();
-      ImporterFactory.factories.put(FrequencyImporter.class.getName(), factory);
+      ImporterFactory.factories.put(FrequenciesImporter.class.getName(), factory);
    }
 
 }
