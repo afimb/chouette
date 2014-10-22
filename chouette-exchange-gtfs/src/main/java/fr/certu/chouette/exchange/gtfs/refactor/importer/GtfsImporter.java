@@ -1,5 +1,7 @@
 package fr.certu.chouette.exchange.gtfs.refactor.importer;
 
+
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -53,6 +55,57 @@ public class GtfsImporter
       }
       return importer;
    }
+   
+   public boolean hasAgencyImporter()
+   {
+      return hasImporter(AgencyImporter.FILENAME);
+   }
+
+   public boolean hasCalendarImporter()
+   {
+      return hasImporter(CalendarImporter.FILENAME);
+   }
+
+   public boolean hasCalendarDateImporter()
+   {
+      return hasImporter(CalendarDatesImporter.FILENAME);
+   }
+
+   public boolean hasFrequencyImporter()
+   {
+      return hasImporter(FrequenciesImporter.FILENAME);
+   }
+
+   public boolean hasRouteImporter()
+   {
+      return hasImporter(RoutesImporter.FILENAME);
+   }
+
+   public boolean hasStopImporter()
+   {
+      return hasImporter(StopsImporter.FILENAME);
+   }
+
+   public boolean hasStopTimeImporter()
+   {
+      return hasImporter(StopTimesImporter.FILENAME);
+   }
+
+   public boolean hasTransferImporter()
+   {
+      return hasImporter(TransfersImporter.FILENAME);
+   }
+
+   public boolean hasTripImporter()
+   {
+      return hasImporter(TripsImporter.FILENAME);
+   }
+
+   private boolean hasImporter(String filename)
+   {
+      File f = new File(_path,filename);
+      return f.exists();
+   }
 
    public Importer<GtfsAgency> getAgencyImporter()
    {
@@ -71,7 +124,7 @@ public class GtfsImporter
 
    public Importer<GtfsFrequency> getFrequencyImporter()
    {
-      return geImporter(FrequencyImporter.FILENAME);
+      return geImporter(FrequenciesImporter.FILENAME);
    }
 
    public Importer<GtfsRoute> getRouteImporter()

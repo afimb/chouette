@@ -56,13 +56,13 @@ public abstract class NeptuneObject implements Serializable
    /**
     * read annotation to get maximum size of database dfield
     * 
-    * @param fieldName
-    * @return
+    * @param fieldName field name 
+    * @return size
     * @throws NoSuchFieldException
     */
    private int getfieldSize(String fieldName) throws NoSuchFieldException
    {
-      Class c = getClass();
+      Class<? extends Object> c = getClass();
       Field f = null;
       while (f == null)
       {
@@ -82,10 +82,10 @@ public abstract class NeptuneObject implements Serializable
    /**
     * truncate string value for database suitability
     * 
-    * @param value
-    * @param fieldName
-    * @param log
-    * @return
+    * @param value value to set
+    * @param fieldName field name
+    * @param log log if truncated
+    * @return truncated or entire value
     */
    protected String dataBaseSizeProtectedValue(String value,String fieldName, Logger log)
    {
@@ -247,7 +247,7 @@ public abstract class NeptuneObject implements Serializable
     * 
     * @param first
     * @param second
-    * @return
+    * @return true if values are identical
     */
    protected boolean sameValue(Object first, Object second)
    {
@@ -261,7 +261,7 @@ public abstract class NeptuneObject implements Serializable
     * 
     * @param first
     * @param second
-    * @return
+    * @return if values are identical
     */
    protected boolean sameValue(int first, int second)
    {
@@ -273,7 +273,7 @@ public abstract class NeptuneObject implements Serializable
     * 
     * @param first
     * @param second
-    * @return
+    * @return if values are identical
     */
    protected boolean sameValues(List<?> first, List<?> second)
    {

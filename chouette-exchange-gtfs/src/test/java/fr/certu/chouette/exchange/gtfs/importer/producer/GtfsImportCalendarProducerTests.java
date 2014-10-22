@@ -9,7 +9,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import fr.certu.chouette.common.ChouetteException;
-import fr.certu.chouette.exchange.gtfs.model.GtfsCalendar;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsCalendar;
 import fr.certu.chouette.model.neptune.Period;
 import fr.certu.chouette.model.neptune.Timetable;
 
@@ -28,8 +28,6 @@ public class GtfsImportCalendarProducerTests extends AbstractTestNGSpringContext
 
 		AbstractModelProducer.setPrefix("NINOXE");
 		TimetableProducer producer = new TimetableProducer();
-
-		// GtfsReport report = new GtfsReport(GtfsReport.KEY.EXPORT);
 
 		GtfsCalendar gtfsObject = new GtfsCalendar();
 		Date startDate = new Date(c.getTimeInMillis());

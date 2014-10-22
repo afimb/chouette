@@ -2,10 +2,10 @@ package fr.certu.chouette.exchange.gtfs.importer.producer;
 
 import org.apache.log4j.Logger;
 
-import fr.certu.chouette.exchange.gtfs.model.GtfsBean;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsObject;
 import fr.certu.chouette.model.neptune.NeptuneObject;
 
-public abstract class AbstractModelProducer<T extends NeptuneObject, U extends GtfsBean>
+public abstract class AbstractModelProducer<T extends NeptuneObject, U extends GtfsObject>
       extends AbstractProducer implements IModelProducer<T, U>
 {
 

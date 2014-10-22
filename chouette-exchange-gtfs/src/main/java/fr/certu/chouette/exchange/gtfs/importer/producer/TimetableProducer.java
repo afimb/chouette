@@ -9,8 +9,8 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import fr.certu.chouette.exchange.gtfs.model.GtfsCalendar;
-import fr.certu.chouette.exchange.gtfs.model.GtfsCalendarDate;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsCalendar;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsCalendarDate;
 import fr.certu.chouette.model.neptune.CalendarDay;
 import fr.certu.chouette.model.neptune.Period;
 import fr.certu.chouette.model.neptune.Timetable;
@@ -31,19 +31,19 @@ public class TimetableProducer extends
       timetable.setObjectId(composeIncrementalObjectId(Timetable.TIMETABLE_KEY,
             gtfsCalendar.getServiceId(), logger));
 
-      if (gtfsCalendar.isMonday())
+      if (gtfsCalendar.getMonday())
          timetable.addDayType(DayTypeEnum.Monday);
-      if (gtfsCalendar.isTuesday())
+      if (gtfsCalendar.getTuesday())
          timetable.addDayType(DayTypeEnum.Tuesday);
-      if (gtfsCalendar.isWednesday())
+      if (gtfsCalendar.getWednesday())
          timetable.addDayType(DayTypeEnum.Wednesday);
-      if (gtfsCalendar.isThursday())
+      if (gtfsCalendar.getThursday())
          timetable.addDayType(DayTypeEnum.Thursday);
-      if (gtfsCalendar.isFriday())
+      if (gtfsCalendar.getFriday())
          timetable.addDayType(DayTypeEnum.Friday);
-      if (gtfsCalendar.isSaturday())
+      if (gtfsCalendar.getSaturday())
          timetable.addDayType(DayTypeEnum.Saturday);
-      if (gtfsCalendar.isSunday())
+      if (gtfsCalendar.getSunday())
          timetable.addDayType(DayTypeEnum.Sunday);
 
       if (gtfsCalendar.getStartDate() != null
@@ -58,14 +58,6 @@ public class TimetableProducer extends
          // logger.info("service without period "+gtfsCalendar.getServiceId());
       }
 
-      if (!gtfsCalendar.getCalendarDates().isEmpty())
-      {
-         for (GtfsCalendarDate date : gtfsCalendar.getCalendarDates())
-         {
-            timetable.addCalendarDay(new CalendarDay(date.getDate(), date
-                  .getExceptionType() == GtfsCalendarDate.INCLUDED));
-         }
-      }
       List<Period> periods = timetable.getPeriods();
       if (periods != null)
          Collections.sort(periods, new PeriodSorter());
@@ -73,12 +65,18 @@ public class TimetableProducer extends
       return timetable;
    }
 
+   public void addDate(Timetable timetable, GtfsCalendarDate date)
+   {
+      timetable.addCalendarDay(new CalendarDay(date.getDate(), date
+          .getExceptionType() != GtfsCalendarDate.ExceptionType.Removed));
+   }
+   
    /**
     * produce a comment with first date, end date and maybe applicable days
     * 
     * @param timetable
     */
-   private void buildComment(Timetable timetable)
+   public void buildComment(Timetable timetable)
    {
       SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
       String monday = (timetable.getDayTypes().contains(DayTypeEnum.Monday)) ? "Mo"
