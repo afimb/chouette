@@ -17,5 +17,6 @@ public interface Importer<T> extends Iterable<T>
    boolean validate(T bean, GtfsImporter dao);
 
    int getLength();
+      
 
 }

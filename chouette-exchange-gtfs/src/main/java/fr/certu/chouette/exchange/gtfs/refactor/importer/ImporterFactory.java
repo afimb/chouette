@@ -12,10 +12,10 @@ public abstract class ImporterFactory
 
    protected abstract Importer create(String path) throws IOException;
 
-   public static final Importer build(String path)
+   public static final Importer build(String path, String clazz)
          throws ClassNotFoundException, IOException
    {
-      String clazz = getClassName(path);
+      // String clazz = getClassName(path);
       if (!factories.containsKey(clazz))
       {
          Class.forName(clazz);

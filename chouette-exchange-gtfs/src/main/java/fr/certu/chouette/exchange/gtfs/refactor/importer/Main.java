@@ -12,7 +12,7 @@ public class Main
 {
 
    private int _count;
-   private static final String PATH = "/opt/tmp/RENNES/";
+   private static final String PATH = "/opt/tmp/RATP/";
 
    public static void main(String[] args)
    {
@@ -27,14 +27,14 @@ public class Main
       main.printMemory(runtime);
    }
 
-   private void parse(GtfsImporter dao, String name)
+   private void parse(GtfsImporter dao, String name, String path, Class clazz )
    {
 
       try
       {
 
          Monitor monitor = MonitorFactory.start();
-         Importer parser = dao.geImporter(name);
+         Importer parser = dao.geImporter(name, path, clazz);
          _count = 0;
          for (Object bean : parser)
          {
@@ -78,14 +78,18 @@ public class Main
    private void execute()
    {
       GtfsImporter dao = new GtfsImporter(PATH);
-      parse(dao, StopTimesImporter.FILENAME);
-      parse(dao, TripsImporter.FILENAME);
-      parse(dao, RoutesImporter.FILENAME);
-      parse(dao, StopsImporter.FILENAME);
-      parse(dao, CalendarDatesImporter.FILENAME);
-      parse(dao, CalendarImporter.FILENAME);
-      parse(dao, TransfersImporter.FILENAME);
-      parse(dao, AgencyImporter.FILENAME);
+      parse(dao, StopTimesImporter.FILENAME, StopTimesImporter.FILENAME, StopTimesImporter.class);
+      parse(dao, TripsImporter.FILENAME, TripsImporter.FILENAME,TripsImporter.class);
+      parse(dao, "trip_by_route", TripsImporter.FILENAME,TripByRouteIndex.class);
+      parse(dao, "trip_by_service", TripsImporter.FILENAME,TripByRouteIndex.class);
+
+      parse(dao, RoutesImporter.FILENAME, RoutesImporter.FILENAME, RoutesImporter.class);
+      parse(dao, StopsImporter.FILENAME, StopsImporter.FILENAME,StopsImporter.class);
+      parse(dao, CalendarDatesImporter.FILENAME,CalendarDatesImporter.FILENAME, CalendarDatesImporter.class);
+      parse(dao, CalendarImporter.FILENAME, CalendarImporter.FILENAME, CalendarImporter.class);
+      parse(dao, TransfersImporter.FILENAME, TransfersImporter.FILENAME, TransfersImporter.class);
+      parse(dao, AgencyImporter.FILENAME,AgencyImporter.FILENAME, AgencyImporter.class);
+     //  parse(dao, FrequenciesImporter.FILENAME,FrequenciesImporter.FILENAME, FrequenciesImporter.class);
 
       dao.dispose();
 

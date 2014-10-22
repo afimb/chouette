@@ -1,6 +1,5 @@
 package fr.certu.chouette.exchange.gtfs.refactor.importer;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -37,7 +36,7 @@ public class GtfsImporter
       _map.clear();
    }
 
-   public Importer geImporter(String name)
+   public Importer geImporter(String name, String path, Class clazz)
    {
       Importer importer = _map.get(name);
 
@@ -45,17 +44,18 @@ public class GtfsImporter
       {
          try
          {
-            importer = ImporterFactory.build(Paths.get(_path, name).toString());
+            importer = ImporterFactory.build(Paths.get(_path, path).toString(),
+                  clazz.getName());
             _map.put(name, importer);
          } catch (ClassNotFoundException | IOException e)
          {
             throw new GtfsException(e);
          }
-        
+
       }
       return importer;
    }
-   
+
    public boolean hasAgencyImporter()
    {
       return hasImporter(AgencyImporter.FILENAME);
@@ -103,53 +103,62 @@ public class GtfsImporter
 
    private boolean hasImporter(String filename)
    {
-      File f = new File(_path,filename);
+      File f = new File(_path, filename);
       return f.exists();
    }
 
    public Importer<GtfsAgency> getAgencyImporter()
    {
-      return geImporter(AgencyImporter.FILENAME);
+      return geImporter(AgencyImporter.FILENAME, AgencyImporter.FILENAME,
+            AgencyImporter.class);
    }
 
    public Importer<GtfsCalendar> getCalendarImporter()
    {
-      return geImporter(CalendarImporter.FILENAME);
+      return geImporter(CalendarImporter.FILENAME, CalendarImporter.FILENAME,
+            CalendarImporter.class);
    }
 
    public Importer<GtfsCalendarDate> getCalendarDateImporter()
    {
-      return geImporter(CalendarDatesImporter.FILENAME);
+      return geImporter(CalendarDatesImporter.FILENAME,
+            CalendarDatesImporter.FILENAME, CalendarDatesImporter.class);
    }
 
    public Importer<GtfsFrequency> getFrequencyImporter()
    {
-      return geImporter(FrequenciesImporter.FILENAME);
+      return geImporter(FrequenciesImporter.FILENAME,
+            FrequenciesImporter.FILENAME, FrequenciesImporter.class);
    }
 
    public Importer<GtfsRoute> getRouteImporter()
    {
-      return geImporter(RoutesImporter.FILENAME);
+      return geImporter(RoutesImporter.FILENAME, RoutesImporter.FILENAME,
+            RoutesImporter.class);
    }
 
    public Importer<GtfsStop> getStopImporter()
    {
-      return geImporter(StopsImporter.FILENAME);
+      return geImporter(StopsImporter.FILENAME, StopsImporter.FILENAME,
+            StopsImporter.class);
    }
 
    public Importer<GtfsStopTime> getStopTimeImporter()
    {
-      return geImporter(StopsImporter.FILENAME);
+      return geImporter(StopTimesImporter.FILENAME, StopTimesImporter.FILENAME,
+            StopTimesImporter.class);
    }
 
    public Importer<GtfsTransfer> getTransferImporter()
    {
-      return geImporter(TransfersImporter.FILENAME);
+      return geImporter(TransfersImporter.FILENAME, TransfersImporter.FILENAME,
+            TransfersImporter.class);
    }
 
    public Importer<GtfsTrip> getTripImporter()
    {
-      return geImporter(TripsImporter.FILENAME);
+      return geImporter(TripsImporter.FILENAME, TripsImporter.FILENAME,
+            TripsImporter.class);
    }
 
 }

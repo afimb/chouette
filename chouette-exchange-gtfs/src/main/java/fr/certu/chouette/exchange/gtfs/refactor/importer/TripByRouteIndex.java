@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsTrip;
 
-public class TripsImporter extends ImporterImpl<GtfsTrip>
+public class TripByRouteIndex extends ImporterImpl<GtfsTrip>
 {
 
    public static enum FIELDS
@@ -13,11 +13,11 @@ public class TripsImporter extends ImporterImpl<GtfsTrip>
    };
 
    public static final String FILENAME = "trips.txt";
-   public static final String KEY = FIELDS.trip_id.name();
+   public static final String KEY = FIELDS.route_id.name();
 
    private GtfsTrip bean = new GtfsTrip();
    
-   public TripsImporter(String name) throws IOException
+   public TripByRouteIndex(String name) throws IOException
    {
       super(name, KEY, false);
    }
@@ -39,13 +39,13 @@ public class TripsImporter extends ImporterImpl<GtfsTrip>
       @Override
       protected Importer<GtfsTrip> create(String name) throws IOException
       {
-         return new TripsImporter(name);
+         return new TripByRouteIndex(name);
       }
    }
 
    static
    {
       ImporterFactory factory = new DefaultImporterFactory();
-      ImporterFactory.factories.put(TripsImporter.class.getName(), factory);
+      ImporterFactory.factories.put(TripByRouteIndex.class.getName(), factory);
    }
 }
