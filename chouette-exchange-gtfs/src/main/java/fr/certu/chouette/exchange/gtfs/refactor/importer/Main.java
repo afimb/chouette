@@ -1,7 +1,5 @@
 package fr.certu.chouette.exchange.gtfs.refactor.importer;
 
-import java.util.Iterator;
-
 import lombok.extern.log4j.Log4j;
 
 import org.apache.log4j.BasicConfigurator;
@@ -16,7 +14,7 @@ public class Main
 {
 
    private int _count;
-   private static final String PATH = "/opt/tmp/RENNES/";
+   private static final String PATH = "/opt/tmp/RATP/";
 
    public static void main(String[] args)
    {

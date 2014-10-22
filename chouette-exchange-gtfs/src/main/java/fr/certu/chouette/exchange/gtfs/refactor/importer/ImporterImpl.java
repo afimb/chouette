@@ -61,7 +61,8 @@ public abstract class ImporterImpl<T> extends AbstractImporter<T>
       _fields = new HashMap<String, Integer>();
       for (int i = 0; i < _reader.getFieldCount(); i++)
       {
-         _fields.put(_reader.getValue(i), i);
+         String key = _reader.getValue(i);
+         _fields.put(key, i);
       }
       index();
    }

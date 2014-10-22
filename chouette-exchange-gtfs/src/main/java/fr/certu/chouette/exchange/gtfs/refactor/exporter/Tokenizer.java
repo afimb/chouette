@@ -1,4 +1,4 @@
-package fr.certu.chouette.exchange.gtfs.refactor.importer;
+package fr.certu.chouette.exchange.gtfs.refactor.exporter;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -22,8 +22,8 @@ public class GtfsIterator implements Iterator<Boolean>
    private List<Field> _fields = new ArrayList<Field>();
    private int _position;
    private byte[] bytes = new byte[1024];
-   // private  ByteBuffer _builder = ByteBuffer.allocate(255);
-   private  StringBuilder _builder = new StringBuilder();
+   private  ByteBuffer _builder = ByteBuffer.allocate(255);
+   //private  StringBuilder _builder = new StringBuilder();
    
    public GtfsIterator(ByteBuffer buffer, int count)
    {
@@ -176,16 +176,16 @@ public class GtfsIterator implements Iterator<Boolean>
       return result;
    }
    
-   /*
+
    private String getText(int offset, int length)
    {
       String result;
       _buffer.position(offset);
       boolean escape = false;
-      _builder.delete(0, _builder.length());
+      _builder.clear();
       for (int i = 0; i < length; i++)
       {
-         char c = (char) _buffer.get();
+         byte c =  _buffer.get();
          if (!escape)
          {
             if (c == DQUOTE)
@@ -195,10 +195,10 @@ public class GtfsIterator implements Iterator<Boolean>
                   escape = true;
                } else if (i + 1 < length)
                {
-                  char next = (char) nextByte();
+                  byte next =  nextByte();
                   if (next == DQUOTE && i < length - 1)
                   {
-                     _builder.append(c);
+                     _builder.put(c);
                   } else
                   {
                      escape = true;
@@ -206,7 +206,7 @@ public class GtfsIterator implements Iterator<Boolean>
                }
             } else
             {
-               _builder.append(c);
+               _builder.put(c);
             }
          } else
          {
@@ -214,10 +214,10 @@ public class GtfsIterator implements Iterator<Boolean>
             {
                if (i + 1 < length)
                {
-                  char next = (char) nextByte();
+                  byte next =  nextByte();
                   if (next == DQUOTE)
                   {
-                     _builder.append(c);
+                     _builder.put(c);
                      _buffer.get();
                   } else
                   {
@@ -229,16 +229,15 @@ public class GtfsIterator implements Iterator<Boolean>
                }
             } else
             {
-               _builder.append(c);
+               _builder.put(c);
             }
          }
       }
-      result = _builder.toString();
+      result = new String(_builder.array(),0 , _builder.position());
       return result;
    }
-*/
    
-
+/*
    private String getText(int offset, int length)
    {
       String result;
@@ -304,7 +303,7 @@ public class GtfsIterator implements Iterator<Boolean>
       result = _builder.toString();
       return result;
    }
-   
+*/   
 
    @ToString
    class Field
