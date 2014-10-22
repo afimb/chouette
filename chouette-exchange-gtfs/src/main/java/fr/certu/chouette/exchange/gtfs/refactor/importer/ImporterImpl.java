@@ -38,13 +38,21 @@ public abstract class ImporterImpl<T> extends AbstractImporter<T>
    private FileChannel _channel2;
    private File _temp;
    private int _total;
+   private boolean _unique;
 
    private static final String LINES = "lines";
 
    public ImporterImpl(String name, String id) throws IOException
    {
+      this(name, id, true);
+   }
+
+   public ImporterImpl(String name, String id, boolean unique)
+         throws IOException
+   {
       _name = name;
       _id = id;
+      _unique = unique;
       initialize();
    }
 
@@ -182,6 +190,7 @@ public abstract class ImporterImpl<T> extends AbstractImporter<T>
 
          String key = getField(_id);
          Token token = _tokens.get(key);
+         
          if (token == null)
          {
             token = new Token();
@@ -190,6 +199,9 @@ public abstract class ImporterImpl<T> extends AbstractImporter<T>
             _tokens.put(key, token);
          } else
          {
+            if(_unique){
+               throw new GtfsException();
+            }
             token.lenght++;
          }
          _total++;

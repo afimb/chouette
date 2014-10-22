@@ -17,7 +17,7 @@ public class CalendarDatesImporter extends ImporterImpl<GtfsCalendarDate>
 
    public CalendarDatesImporter(String name) throws IOException
    {
-      super(name, KEY);
+      super(name, KEY, false);
    }
 
    @Override

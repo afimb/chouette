@@ -6,6 +6,28 @@ public class GtfsException extends IllegalArgumentException
 {
 
    private static final long serialVersionUID = 1L;
+   private GtfsObject _bean;
+
+   public GtfsException()
+   {
+      super();
+   }
+
+   public GtfsException(String message, Throwable cause)
+   {
+      super(message, cause);
+
+   }
+
+   public GtfsException(String s)
+   {
+      super(s);
+   }
+
+   public GtfsException(Throwable cause)
+   {
+      super(cause);
+   }
 
    public GtfsException(String message, GtfsObject bean)
    {
@@ -14,7 +36,8 @@ public class GtfsException extends IllegalArgumentException
 
    public GtfsException(String message, GtfsObject bean, Throwable cause)
    {
-      super();
+      super(message, cause);
+      _bean = bean;
    }
 
 }

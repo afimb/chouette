@@ -7,14 +7,12 @@ import org.apache.log4j.BasicConfigurator;
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
-import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStopTime;
-
 @Log4j
 public class Main
 {
 
    private int _count;
-   private static final String PATH = "/opt/tmp/RATP/";
+   private static final String PATH = "/opt/tmp/RENNES/";
 
    public static void main(String[] args)
    {
@@ -29,20 +27,19 @@ public class Main
       main.printMemory(runtime);
    }
 
-   private void parse(String name)
+   private void parse(GtfsImporter dao, String name)
    {
 
-      Importer<GtfsStopTime> parser;
       try
       {
-         parser = ImporterFactory.build(name);
 
          Monitor monitor = MonitorFactory.start();
+         Importer parser = dao.geImporter(name);
          _count = 0;
-
-         for (GtfsStopTime bean : parser)
+         for (Object bean : parser)
          {
             // System.out.println("[DSU] value : " + bean);
+            parser.validate(bean, dao);
             _count++;
          }
 
@@ -58,17 +55,17 @@ public class Main
          // }
          // }
 
-//         for (Iterator<GtfsStopTime> values = parser.valuesIterator("10052"); values
-//               .hasNext();)
-//         {
-//            GtfsStopTime bean = values.next();
-//            System.out.println("[DSU] value : " + bean);
-//            _count++;
-//         }
+         // for (Iterator<GtfsStopTime> values = parser.valuesIterator("10052");
+         // values
+         // .hasNext();)
+         // {
+         // GtfsStopTime bean = values.next();
+         // System.out.println("[DSU] value : " + bean);
+         // _count++;
+         // }
 
          // System.out.println("[DSU] !!!! value : " +
          // parser.getValue("10052"));
-         parser.dispose();
          log.debug("[DSU] get " + _count + " object " + monitor.stop());
 
       } catch (Exception e)
@@ -80,14 +77,17 @@ public class Main
 
    private void execute()
    {
-      parse(PATH + StopTimesImporter.FILENAME);
-      // parse(PATH + TripsParser.FILENAME);
-      // parse(PATH + RoutesParser.FILENAME);
-      // parse(PATH + StopsParser.FILENAME);
-      // parse(PATH + CalendarDatesParser.FILENAME);
-      // parse(PATH + CalendarParser.FILENAME);
-      // parse(PATH + TransfersParser.FILENAME);
-      // parse(PATH + AgencyParser.FILENAME);
+      GtfsImporter dao = new GtfsImporter(PATH);
+      parse(dao, StopTimesImporter.FILENAME);
+      parse(dao, TripsImporter.FILENAME);
+      parse(dao, RoutesImporter.FILENAME);
+      parse(dao, StopsImporter.FILENAME);
+      parse(dao, CalendarDatesImporter.FILENAME);
+      parse(dao, CalendarImporter.FILENAME);
+      parse(dao, TransfersImporter.FILENAME);
+      parse(dao, AgencyImporter.FILENAME);
+
+      dao.dispose();
 
    }
 

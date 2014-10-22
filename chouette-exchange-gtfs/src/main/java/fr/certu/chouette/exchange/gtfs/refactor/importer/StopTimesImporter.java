@@ -22,7 +22,7 @@ public class StopTimesImporter extends ImporterImpl<GtfsStopTime> implements
 
    public StopTimesImporter(String name) throws IOException
    {
-      super(name, KEY);
+      super(name, KEY, false);
    }
 
    @Override
@@ -59,7 +59,12 @@ public class StopTimesImporter extends ImporterImpl<GtfsStopTime> implements
    @Override
    public boolean validate(GtfsStopTime bean, GtfsImporter dao)
    {
-      return true;
+      boolean result =false;
+      String key = bean.getTripId();
+      
+     // result = dao.getTripImporter().containsKey(key);
+     //System.out.println("FK trip_id : "+ key + " = " + result);
+     return result;
    }
 
    public static class DefaultImporterFactory extends ImporterFactory

@@ -17,7 +17,7 @@ public class TransfersImporter extends ImporterImpl<GtfsTransfer>
 
    public TransfersImporter(String name) throws IOException
    {
-      super(name, KEY);
+      super(name, KEY, false);
    }
 
    @Override

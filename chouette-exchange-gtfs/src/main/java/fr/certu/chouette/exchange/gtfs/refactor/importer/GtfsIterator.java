@@ -9,7 +9,6 @@ import lombok.ToString;
 
 public class GtfsIterator implements Iterator<Boolean>
 {
-
    public static final char LF = '\n';
    public static final char CR = '\r';
    public static final char DELIMITER = ',';
@@ -21,10 +20,8 @@ public class GtfsIterator implements Iterator<Boolean>
    private int _mark = 0;
    private List<Field> _fields = new ArrayList<Field>();
    private int _position;
-   private byte[] bytes = new byte[1024];
-   private  ByteBuffer _builder = ByteBuffer.allocate(255);
-   //private  StringBuilder _builder = new StringBuilder();
-   
+   private ByteBuffer _builder = ByteBuffer.allocate(1024);
+
    public GtfsIterator(ByteBuffer buffer, int count)
    {
       super();
@@ -51,7 +48,8 @@ public class GtfsIterator implements Iterator<Boolean>
    {
       boolean result = false;
       try
-      {         _buffer.position(_mark);
+      {
+         _buffer.position(_mark);
          loop: while (_buffer.hasRemaining())
          {
 
@@ -175,7 +173,6 @@ public class GtfsIterator implements Iterator<Boolean>
       _buffer.position(position);
       return result;
    }
-   
 
    private String getText(int offset, int length)
    {
@@ -185,7 +182,7 @@ public class GtfsIterator implements Iterator<Boolean>
       _builder.clear();
       for (int i = 0; i < length; i++)
       {
-         byte c =  _buffer.get();
+         byte c = _buffer.get();
          if (!escape)
          {
             if (c == DQUOTE)
@@ -195,7 +192,7 @@ public class GtfsIterator implements Iterator<Boolean>
                   escape = true;
                } else if (i + 1 < length)
                {
-                  byte next =  nextByte();
+                  byte next = nextByte();
                   if (next == DQUOTE && i < length - 1)
                   {
                      _builder.put(c);
@@ -214,7 +211,7 @@ public class GtfsIterator implements Iterator<Boolean>
             {
                if (i + 1 < length)
                {
-                  byte next =  nextByte();
+                  byte next = nextByte();
                   if (next == DQUOTE)
                   {
                      _builder.put(c);
@@ -233,77 +230,9 @@ public class GtfsIterator implements Iterator<Boolean>
             }
          }
       }
-      result = new String(_builder.array(),0 , _builder.position());
+      result = new String(_builder.array(), 0, _builder.position());
       return result;
    }
-   
-/*
-   private String getText(int offset, int length)
-   {
-      String result;
-      _buffer.position(offset);
-      boolean escape = false;
-      _builder.delete(0, _builder.length());
-      //_builder.clear();
-      for (int i = 0; i < length; i++)
-      {
-         char c =  (char) _buffer.get();
-         if (!escape)
-         {
-            if (c == DQUOTE)
-            {
-               if (i == 0)
-               {
-                  escape = true;
-               } else if (i + 1 < length)
-               {
-                  char next =  (char) nextByte();
-                  if (next == DQUOTE && i < length - 1)
-                  {
-                     //_builder.put(c);
-                     _builder.append(c);
-                  } else
-                  {
-                     escape = true;
-                  }
-               }
-            } else
-            {
-               // _builder.put(c);
-               _builder.append(c);
-            }
-         } else
-         {
-            if (c == DQUOTE)
-            {
-               if (i + 1 < length)
-               {
-                  char next = (char) nextByte();
-                  if (next == DQUOTE)
-                  {
-                     //_builder.put(c);
-                     _builder.append(c);
-                     _buffer.get();
-                  } else
-                  {
-                     escape = false;
-                  }
-               } else
-               {
-                  escape = false;
-               }
-            } else
-            {
-               //_builder.put(c);
-               _builder.append(c);
-            }
-         }
-      }
-      //result = new String(_builder.array());
-      result = _builder.toString();
-      return result;
-   }
-*/   
 
    @ToString
    class Field

@@ -17,7 +17,7 @@ public class FrequencyImporter extends ImporterImpl<GtfsFrequency>
 
    public FrequencyImporter(String name) throws IOException
    {
-      super(name, KEY);
+      super(name, KEY, false);
    }
 
    @Override

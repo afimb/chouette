@@ -15,16 +15,17 @@ public class TripsImporter extends ImporterImpl<GtfsTrip>
    public static final String FILENAME = "trips.txt";
    public static final String KEY = FIELDS.route_id.name();
 
+   private GtfsTrip bean = new GtfsTrip();
+   
    public TripsImporter(String name) throws IOException
    {
-      super(name, KEY);
+      super(name, KEY, false);
    }
 
    @Override
    protected GtfsTrip build(GtfsIterator reader, int id)
    {
-      // TODO Auto-generated method stub
-      return null;
+      return bean;
    }
 
    @Override
@@ -36,7 +37,7 @@ public class TripsImporter extends ImporterImpl<GtfsTrip>
    public static class DefaultImporterFactory extends ImporterFactory
    {
       @Override
-      protected Importer create(String name) throws IOException
+      protected Importer<GtfsTrip> create(String name) throws IOException
       {
          return new TripsImporter(name);
       }
