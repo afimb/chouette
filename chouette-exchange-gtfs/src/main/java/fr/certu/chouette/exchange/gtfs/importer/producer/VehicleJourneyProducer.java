@@ -28,7 +28,6 @@ public class VehicleJourneyProducer extends
       vehicleJourney.setObjectId(composeIncrementalObjectId(
             DbVehicleJourney.VEHICLEJOURNEY_KEY, gtfsTrip.getTripId(), logger));
 
-
       return vehicleJourney;
    }
 

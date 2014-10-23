@@ -45,7 +45,8 @@ public class GtfsRouteProducer extends AbstractProducer<GtfsRoute, Line>
       route.setRouteLongName(neptuneObject.getPublishedName());
 
       // Gtfs Route require short or long name
-      if (isEmpty(route.getRouteShortName()) && isEmpty(route.getRouteLongName()))
+      if (isEmpty(route.getRouteShortName())
+            && isEmpty(route.getRouteLongName()))
       {
          if (isEmpty(neptuneObject.getNumber()))
          {

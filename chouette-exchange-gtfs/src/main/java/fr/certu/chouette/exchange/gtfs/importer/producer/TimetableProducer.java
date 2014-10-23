@@ -68,9 +68,9 @@ public class TimetableProducer extends
    public void addDate(Timetable timetable, GtfsCalendarDate date)
    {
       timetable.addCalendarDay(new CalendarDay(date.getDate(), date
-          .getExceptionType() != GtfsCalendarDate.ExceptionType.Removed));
+            .getExceptionType() != GtfsCalendarDate.ExceptionType.Removed));
    }
-   
+
    /**
     * produce a comment with first date, end date and maybe applicable days
     * 

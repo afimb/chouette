@@ -21,9 +21,12 @@ public class VehicleJourneyAtStopProducer extends
    {
       VehicleJourneyAtStop vjas = factory.getNewVehicleJourneyAtStop();
 
-      vjas.setId(Long.valueOf(gtfsStopTime.getId().longValue())); // preserve file line in vjas
+      vjas.setId(Long.valueOf(gtfsStopTime.getId().longValue())); // preserve
+                                                                  // file line
+                                                                  // in vjas
       vjas.setStopPointId(gtfsStopTime.getStopId()); // preserve stopId in vjas
-      vjas.setOrder(gtfsStopTime.getStopSequence()); // preserve stopSequence in vjas
+      vjas.setOrder(gtfsStopTime.getStopSequence()); // preserve stopSequence in
+                                                     // vjas
       vjas.setArrivalTime(gtfsStopTime.getArrivalTime().getTime());
       vjas.setDepartureTime(gtfsStopTime.getDepartureTime().getTime());
 

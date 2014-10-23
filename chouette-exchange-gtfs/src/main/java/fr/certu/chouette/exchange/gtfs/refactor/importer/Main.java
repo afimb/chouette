@@ -27,14 +27,14 @@ public class Main
       main.printMemory(runtime);
    }
 
-   private void parse(GtfsImporter dao, String name, String path, Class clazz )
+   private void parse(GtfsImporter dao, String name, String path, Class clazz)
    {
 
       try
       {
 
          Monitor monitor = MonitorFactory.start();
-         Importer parser = dao.geImporter(name, path, clazz);
+         Index parser = dao.geImporter(name, path, clazz);
          _count = 0;
          for (Object bean : parser)
          {
@@ -78,18 +78,23 @@ public class Main
    private void execute()
    {
       GtfsImporter dao = new GtfsImporter(PATH);
-      parse(dao, StopTimesImporter.FILENAME, StopTimesImporter.FILENAME, StopTimesImporter.class);
-      parse(dao, TripsImporter.FILENAME, TripsImporter.FILENAME,TripsImporter.class);
-      parse(dao, "trip_by_route", TripsImporter.FILENAME,TripByRouteIndex.class);
-      parse(dao, "trip_by_service", TripsImporter.FILENAME,TripByRouteIndex.class);
+      parse(dao, StopTimeByTrip.FILENAME, StopTimeByTrip.FILENAME,
+            StopTimeByTrip.class);
+      parse(dao, TripById.FILENAME, TripById.FILENAME, TripById.class);
+      parse(dao, "trip_by_route", TripById.FILENAME, TripByRoute.class);
+      parse(dao, "trip_by_service", TripById.FILENAME, TripByRoute.class);
 
-      parse(dao, RoutesImporter.FILENAME, RoutesImporter.FILENAME, RoutesImporter.class);
-      parse(dao, StopsImporter.FILENAME, StopsImporter.FILENAME,StopsImporter.class);
-      parse(dao, CalendarDatesImporter.FILENAME,CalendarDatesImporter.FILENAME, CalendarDatesImporter.class);
-      parse(dao, CalendarImporter.FILENAME, CalendarImporter.FILENAME, CalendarImporter.class);
-      parse(dao, TransfersImporter.FILENAME, TransfersImporter.FILENAME, TransfersImporter.class);
-      parse(dao, AgencyImporter.FILENAME,AgencyImporter.FILENAME, AgencyImporter.class);
-     //  parse(dao, FrequenciesImporter.FILENAME,FrequenciesImporter.FILENAME, FrequenciesImporter.class);
+      parse(dao, RouteById.FILENAME, RouteById.FILENAME, RouteById.class);
+      parse(dao, StopById.FILENAME, StopById.FILENAME, StopById.class);
+      parse(dao, CalendarDateByService.FILENAME,
+            CalendarDateByService.FILENAME, CalendarDateByService.class);
+      parse(dao, CalendarByService.FILENAME, CalendarByService.FILENAME,
+            CalendarByService.class);
+      parse(dao, TransferByFromStop.FILENAME, TransferByFromStop.FILENAME,
+            TransferByFromStop.class);
+      parse(dao, AgencyById.FILENAME, AgencyById.FILENAME, AgencyById.class);
+      // parse(dao, FrequenciesImporter.FILENAME,FrequenciesImporter.FILENAME,
+      // FrequenciesImporter.class);
 
       dao.dispose();
 

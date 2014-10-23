@@ -78,7 +78,8 @@ public class GtfsTrip extends GtfsBean
 
    public String getCSVLine()
    {
-      String csvLine = toCSVString(routeId) + "," + toCSVString(serviceId) + "," + toCSVString(tripId) + ",";
+      String csvLine = toCSVString(routeId) + "," + toCSVString(serviceId)
+            + "," + toCSVString(tripId) + ",";
       if (tripHeadsign != null)
          csvLine += toCSVString(tripHeadsign);
       csvLine += ",";
@@ -166,8 +167,7 @@ public class GtfsTrip extends GtfsBean
          {
             return false;
          }
-      }
-      else if (!tripId.equals(other.tripId))
+      } else if (!tripId.equals(other.tripId))
       {
          return false;
       }

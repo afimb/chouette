@@ -54,7 +54,7 @@ public class NeptuneData
     * @param lines
     */
    public void populateLines(List<Line> lines)
-   { 
+   {
       for (Line line : lines)
       {
          line.complete();

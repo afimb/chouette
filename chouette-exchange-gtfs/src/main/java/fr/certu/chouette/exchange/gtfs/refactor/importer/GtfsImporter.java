@@ -21,11 +21,11 @@ public class GtfsImporter
 {
    public static enum INDEX
    {
-      AGENCY_BY_ID, CALENDAR_BY_SERVICE, CALENDARDATE_BY_SERVICE, FREQUENCY_BY_TRIP, ROUTEBY_ID, STOP_BY_ID, STOP_TIME_BY_TRIP, TRABSFER_BY_STOP, TRIP_BY_ROUTE, TRIP_BY_SERVICE;
+      AGENCY_BY_ID, CALENDAR_BY_SERVICE, CALENDAR_DATE_BY_SERVICE, FREQUENCY_BY_TRIP, ROUTE_BY_ID, STOP_BY_ID, STOP_TIME_BY_TRIP, TRANSFER_BY_FROM_STOP, TRIP_BY_ID, TRIP_BY_ROUTE, TRIP_BY_SERVICE;
    }
 
    private String _path;
-   private Map<String, Importer<GtfsObject>> _map = new HashMap<String, Importer<GtfsObject>>();
+   private Map<String, Index<GtfsObject>> _map = new HashMap<String, Index<GtfsObject>>();
 
    public GtfsImporter(String path)
    {
@@ -34,22 +34,22 @@ public class GtfsImporter
 
    public void dispose()
    {
-      for (Importer importer : _map.values())
+      for (Index importer : _map.values())
       {
          importer.dispose();
       }
       _map.clear();
    }
 
-   public Importer geImporter(String name, String path, Class clazz)
+   public Index geImporter(String name, String path, Class clazz)
    {
-      Importer importer = _map.get(name);
+      Index importer = _map.get(name);
 
       if (importer == null)
       {
          try
          {
-            importer = ImporterFactory.build(Paths.get(_path, path).toString(),
+            importer = IndexFactory.build(Paths.get(_path, path).toString(),
                   clazz.getName());
             _map.put(name, importer);
          } catch (ClassNotFoundException | IOException e)
@@ -63,47 +63,47 @@ public class GtfsImporter
 
    public boolean hasAgencyImporter()
    {
-      return hasImporter(AgencyImporter.FILENAME);
+      return hasImporter(AgencyById.FILENAME);
    }
 
    public boolean hasCalendarImporter()
    {
-      return hasImporter(CalendarImporter.FILENAME);
+      return hasImporter(CalendarByService.FILENAME);
    }
 
    public boolean hasCalendarDateImporter()
    {
-      return hasImporter(CalendarDatesImporter.FILENAME);
+      return hasImporter(CalendarDateByService.FILENAME);
    }
 
    public boolean hasFrequencyImporter()
    {
-      return hasImporter(FrequenciesImporter.FILENAME);
+      return hasImporter(FrequencyByTrip.FILENAME);
    }
 
    public boolean hasRouteImporter()
    {
-      return hasImporter(RoutesImporter.FILENAME);
+      return hasImporter(RouteById.FILENAME);
    }
 
    public boolean hasStopImporter()
    {
-      return hasImporter(StopsImporter.FILENAME);
+      return hasImporter(StopById.FILENAME);
    }
 
    public boolean hasStopTimeImporter()
    {
-      return hasImporter(StopTimesImporter.FILENAME);
+      return hasImporter(StopTimeByTrip.FILENAME);
    }
 
    public boolean hasTransferImporter()
    {
-      return hasImporter(TransfersImporter.FILENAME);
+      return hasImporter(TransferByFromStop.FILENAME);
    }
 
    public boolean hasTripImporter()
    {
-      return hasImporter(TripsImporter.FILENAME);
+      return hasImporter(TripById.FILENAME);
    }
 
    private boolean hasImporter(String filename)
@@ -112,70 +112,70 @@ public class GtfsImporter
       return f.exists();
    }
 
-   public Importer<GtfsAgency> getAgencyImporter()
+   public Index<GtfsAgency> getAgencyById()
    {
-      return geImporter(AgencyImporter.FILENAME, AgencyImporter.FILENAME,
-            AgencyImporter.class);
+      return geImporter(INDEX.AGENCY_BY_ID.name(), AgencyById.FILENAME,
+            AgencyById.class);
    }
 
-   public Importer<GtfsCalendar> getCalendarImporter()
+   public Index<GtfsCalendar> getCalendarByService()
    {
-      return geImporter(CalendarImporter.FILENAME, CalendarImporter.FILENAME,
-            CalendarImporter.class);
+      return geImporter(INDEX.CALENDAR_BY_SERVICE.name(),
+            CalendarByService.FILENAME, CalendarByService.class);
    }
 
-   public Importer<GtfsCalendarDate> getCalendarDateImporter()
+   public Index<GtfsCalendarDate> getCalendarDateByService()
    {
-      return geImporter(CalendarDatesImporter.FILENAME,
-            CalendarDatesImporter.FILENAME, CalendarDatesImporter.class);
+      return geImporter(INDEX.CALENDAR_DATE_BY_SERVICE.name(),
+            CalendarDateByService.FILENAME, CalendarDateByService.class);
    }
 
-   public Importer<GtfsFrequency> getFrequencyImporter()
+   public Index<GtfsFrequency> getFrequencyByTrip()
    {
-      return geImporter(FrequenciesImporter.FILENAME,
-            FrequenciesImporter.FILENAME, FrequenciesImporter.class);
+      return geImporter(INDEX.FREQUENCY_BY_TRIP.name(),
+            FrequencyByTrip.FILENAME, FrequencyByTrip.class);
    }
 
-   public Importer<GtfsRoute> getRouteImporter()
+   public Index<GtfsRoute> getRouteById()
    {
-      return geImporter(RoutesImporter.FILENAME, RoutesImporter.FILENAME,
-            RoutesImporter.class);
+      return geImporter(INDEX.ROUTE_BY_ID.name(), RouteById.FILENAME,
+            RouteById.class);
    }
 
-   public Importer<GtfsStop> getStopImporter()
+   public Index<GtfsStop> getStopById()
    {
-      return geImporter(StopsImporter.FILENAME, StopsImporter.FILENAME,
-            StopsImporter.class);
+      return geImporter(INDEX.STOP_BY_ID.name(), StopById.FILENAME,
+            StopById.class);
    }
 
-   public Importer<GtfsStopTime> getStopTimeImporter()
+   public Index<GtfsStopTime> getStopTimeByTrip()
    {
-      return geImporter(StopTimesImporter.FILENAME, StopTimesImporter.FILENAME,
-            StopTimesImporter.class);
+      return geImporter(INDEX.STOP_TIME_BY_TRIP.name(),
+            StopTimeByTrip.FILENAME, StopTimeByTrip.class);
    }
 
-   public Importer<GtfsTransfer> getTransferImporter()
+   public Index<GtfsTransfer> getTransferByToStop()
    {
-      return geImporter(TransfersImporter.FILENAME, TransfersImporter.FILENAME,
-            TransfersImporter.class);
+      return geImporter(INDEX.TRANSFER_BY_FROM_STOP.name(),
+            TransferByFromStop.FILENAME, TransferByFromStop.class);
    }
 
-   public Importer<GtfsTrip> getTripImporter()
+   public Index<GtfsTrip> getTripById()
    {
-      return geImporter(TripsImporter.FILENAME, TripsImporter.FILENAME,
-            TripsImporter.class);
+      return geImporter(INDEX.TRIP_BY_ID.name(), TripById.FILENAME,
+            TripById.class);
    }
 
-   public Importer<GtfsTrip> getTripByRoute()
+   public Index<GtfsTrip> getTripByRoute()
    {
-      return geImporter(INDEX.TRIP_BY_ROUTE.name(), TripsImporter.FILENAME,
-            TripByRouteIndex.class);
+      return geImporter(INDEX.TRIP_BY_ROUTE.name(), TripById.FILENAME,
+            TripByRoute.class);
    }
 
-   public Importer<GtfsTrip> getTripByService()
+   public Index<GtfsTrip> getTripByService()
    {
-      return geImporter(INDEX.TRIP_BY_SERVICE.name(), TripsImporter.FILENAME,
-            TripByRouteIndex.class);
+      return geImporter(INDEX.TRIP_BY_SERVICE.name(), TripById.FILENAME,
+            TripByRoute.class);
    }
 
 }

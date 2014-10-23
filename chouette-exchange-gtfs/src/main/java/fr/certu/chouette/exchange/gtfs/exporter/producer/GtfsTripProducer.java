@@ -33,9 +33,11 @@ import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
  * 
  * @ TODO : refactor to produce one calendar for each timetable groups
  */
-public class GtfsTripProducer extends AbstractProducer<GtfsTrip, VehicleJourney>
+public class GtfsTripProducer extends
+      AbstractProducer<GtfsTrip, VehicleJourney>
 {
-   private static final Logger logger = Logger.getLogger(GtfsTripProducer.class);
+   private static final Logger logger = Logger
+         .getLogger(GtfsTripProducer.class);
 
    /*
     * (non-Javadoc)
@@ -46,7 +48,8 @@ public class GtfsTripProducer extends AbstractProducer<GtfsTrip, VehicleJourney>
     * fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport)
     */
    @Override
-   public List<GtfsTrip> produceAll(Collection<VehicleJourney> neptuneObjects, GtfsReport report)
+   public List<GtfsTrip> produceAll(Collection<VehicleJourney> neptuneObjects,
+         GtfsReport report)
    {
       List<GtfsTrip> objects = new ArrayList<GtfsTrip>();
       for (VehicleJourney object : neptuneObjects)
@@ -76,8 +79,7 @@ public class GtfsTripProducer extends AbstractProducer<GtfsTrip, VehicleJourney>
       {
          Timetable timetable = vj.getTimetables().get(0);
          trips.add(produce(vj, timetable.getObjectId(), times, false));
-      }
-      else
+      } else
       {
          for (Timetable timetable : vj.getTimetables())
          {
@@ -104,18 +106,21 @@ public class GtfsTripProducer extends AbstractProducer<GtfsTrip, VehicleJourney>
       for (VehicleJourneyAtStop vjas : vj.getVehicleJourneyAtStops())
       {
          GtfsStopTime time = new GtfsStopTime();
-         time.setStopId(toGtfsId(vjas.getStopPoint().getContainedInStopArea().getObjectId()));
+         time.setStopId(toGtfsId(vjas.getStopPoint().getContainedInStopArea()
+               .getObjectId()));
          Time arrival = vjas.getArrivalTime();
          if (arrival == null)
             arrival = vjas.getDepartureTime();
-         if (!tomorrowArrival && previousArrival != null && previousArrival.after(arrival))
+         if (!tomorrowArrival && previousArrival != null
+               && previousArrival.after(arrival))
          {
             tomorrowArrival = true; // after midnight
          }
          previousArrival = arrival;
          time.setArrivalTime(new GtfsTime(arrival, tomorrowArrival));
          Time departure = vjas.getDepartureTime();
-         if (!tomorrowDeparture && previousDeparture != null && previousDeparture.after(departure))
+         if (!tomorrowDeparture && previousDeparture != null
+               && previousDeparture.after(departure))
          {
             tomorrowDeparture = true; // after midnight
          }
@@ -145,7 +150,8 @@ public class GtfsTripProducer extends AbstractProducer<GtfsTrip, VehicleJourney>
     *           vehicle journey with multiple timetables
     * @return gtfs trip
     */
-   private GtfsTrip produce(VehicleJourney vj, String timetableId, List<GtfsStopTime> times, boolean multipleTimetable)
+   private GtfsTrip produce(VehicleJourney vj, String timetableId,
+         List<GtfsStopTime> times, boolean multipleTimetable)
    {
 
       GtfsTrip trip = new GtfsTrip();
@@ -163,8 +169,7 @@ public class GtfsTripProducer extends AbstractProducer<GtfsTrip, VehicleJourney>
       if ("R".equals(route.getWayBack()))
       {
          trip.setDirectionId(GtfsTrip.INBOUND);
-      }
-      else
+      } else
       {
          trip.setDirectionId(GtfsTrip.OUTBOUND);
       }
@@ -182,7 +187,8 @@ public class GtfsTripProducer extends AbstractProducer<GtfsTrip, VehicleJourney>
          trip.setTripHeadsign(jp.getPublishedName());
 
       if (vj.getMobilityRestrictedSuitability() != null)
-         trip.setWheelchairAccessible(vj.getMobilityRestrictedSuitability() ? 1 : 2);
+         trip.setWheelchairAccessible(vj.getMobilityRestrictedSuitability() ? 1
+               : 2);
       // trip.setBlockId(...);
       // trip.setShapeId(...);
       // trip.setBikeAllowed();

@@ -55,7 +55,7 @@ public class GtfsAgencyProducer extends AbstractProducer<GtfsAgency, Company>
       }
 
       agency.setAgencyName(name);
-      
+
       // @TODO : manage agency_timezone
       agency.setAgencyTimezone(TimeZone.getDefault());
 
@@ -81,7 +81,7 @@ public class GtfsAgencyProducer extends AbstractProducer<GtfsAgency, Company>
          report.addItem(item);
          return null;
       }
-      
+
       if (neptuneObject.getPhone() != null)
          agency.setAgencyPhone(neptuneObject.getPhone());
 

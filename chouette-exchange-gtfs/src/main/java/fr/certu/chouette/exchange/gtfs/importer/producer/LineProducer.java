@@ -54,7 +54,7 @@ public class LineProducer extends AbstractModelProducer<Line, GtfsRoute>
       case Gondola:
          line.setTransportModeName(TransportModeNameEnum.Other);
          break;
-      case Funicular : 
+      case Funicular:
          line.setTransportModeName(TransportModeNameEnum.Other);
          break;
       default:

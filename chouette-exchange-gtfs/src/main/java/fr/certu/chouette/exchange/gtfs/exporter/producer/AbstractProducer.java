@@ -32,7 +32,7 @@ public abstract class AbstractProducer<T extends GtfsBean, N extends NeptuneIden
       String[] tokens = neptuneId.split(":");
       return tokens[2];
    }
-   
+
    boolean isEmpty(String s)
    {
       return s == null || s.trim().isEmpty();
