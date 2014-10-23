@@ -1,5 +1,7 @@
 package fr.certu.chouette.exchange.gtfs.refactor.importer;
 
+import java.util.Iterator;
+
 import lombok.extern.log4j.Log4j;
 
 import org.apache.log4j.BasicConfigurator;
@@ -7,12 +9,14 @@ import org.apache.log4j.BasicConfigurator;
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStopTime;
+
 @Log4j
 public class Main
 {
 
    private int _count;
-   private static final String PATH = "/opt/tmp/RATP/";
+   private static final String PATH = "/opt/tmp/RENNES/";
 
    public static void main(String[] args)
    {
@@ -55,17 +59,6 @@ public class Main
          // }
          // }
 
-         // for (Iterator<GtfsStopTime> values = parser.valuesIterator("10052");
-         // values
-         // .hasNext();)
-         // {
-         // GtfsStopTime bean = values.next();
-         // System.out.println("[DSU] value : " + bean);
-         // _count++;
-         // }
-
-         // System.out.println("[DSU] !!!! value : " +
-         // parser.getValue("10052"));
          log.debug("[DSU] get " + _count + " object " + monitor.stop());
 
       } catch (Exception e)
@@ -78,23 +71,61 @@ public class Main
    private void execute()
    {
       GtfsImporter dao = new GtfsImporter(PATH);
-      parse(dao, StopTimeByTrip.FILENAME, StopTimeByTrip.FILENAME,
-            StopTimeByTrip.class);
-      parse(dao, TripById.FILENAME, TripById.FILENAME, TripById.class);
-      parse(dao, "trip_by_route", TripById.FILENAME, TripByRoute.class);
-      parse(dao, "trip_by_service", TripById.FILENAME, TripByRoute.class);
 
-      parse(dao, RouteById.FILENAME, RouteById.FILENAME, RouteById.class);
-      parse(dao, StopById.FILENAME, StopById.FILENAME, StopById.class);
-      parse(dao, CalendarDateByService.FILENAME,
+      // stop_times.txt
+      parse(dao, GtfsImporter.INDEX.STOP_TIME_BY_TRIP.name(),
+            StopTimeByTrip.FILENAME, StopTimeByTrip.class);
+
+      // trips.txt
+      parse(dao, GtfsImporter.INDEX.TRIP_BY_ID.name(), TripById.FILENAME,
+            TripById.class);
+      parse(dao, GtfsImporter.INDEX.TRIP_BY_ROUTE.name(), TripById.FILENAME,
+            TripByRoute.class);
+      parse(dao, GtfsImporter.INDEX.TRIP_BY_SERVICE.name(), TripById.FILENAME,
+            TripByService.class);
+
+      // routes.txt
+      parse(dao, GtfsImporter.INDEX.ROUTE_BY_ID.name(), RouteById.FILENAME,
+            RouteById.class);
+
+      // stops.txt
+      parse(dao, GtfsImporter.INDEX.STOP_BY_ID.name(), StopById.FILENAME,
+            StopById.class);
+
+      // calendar.txt
+      parse(dao, GtfsImporter.INDEX.CALENDAR_DATE_BY_SERVICE.name(),
             CalendarDateByService.FILENAME, CalendarDateByService.class);
-      parse(dao, CalendarByService.FILENAME, CalendarByService.FILENAME,
-            CalendarByService.class);
-      parse(dao, TransferByFromStop.FILENAME, TransferByFromStop.FILENAME,
-            TransferByFromStop.class);
-      parse(dao, AgencyById.FILENAME, AgencyById.FILENAME, AgencyById.class);
-      // parse(dao, FrequenciesImporter.FILENAME,FrequenciesImporter.FILENAME,
-      // FrequenciesImporter.class);
+
+      // calendar_dates.txt
+      parse(dao, GtfsImporter.INDEX.CALENDAR_BY_SERVICE.name(),
+            CalendarByService.FILENAME, CalendarByService.class);
+
+      // transfers.txt
+      parse(dao, GtfsImporter.INDEX.TRANSFER_BY_FROM_STOP.name(),
+            TransferByFromStop.FILENAME, TransferByFromStop.class);
+
+      // agency.txt
+      parse(dao, GtfsImporter.INDEX.AGENCY_BY_ID.name(), AgencyById.FILENAME,
+            AgencyById.class);
+
+      // frequencies.txt
+      if (dao.hasFrequencyImporter())
+      {
+         parse(dao, GtfsImporter.INDEX.FREQUENCY_BY_TRIP.name(),
+               FrequencyByTrip.FILENAME, FrequencyByTrip.class);
+      }
+
+      Index<GtfsStopTime> parser = dao.getStopTimeByTrip();
+      for (Iterator<GtfsStopTime> values = parser.valuesIterator("10052"); values
+            .hasNext();)
+      {
+         GtfsStopTime bean = values.next();
+         System.out.println("[DSU] value : " + bean);
+         _count++;
+      }
+
+       System.out.println("[DSU] !!!! value : " +
+             dao.getStopById().getValue("2713"));
 
       dao.dispose();
 

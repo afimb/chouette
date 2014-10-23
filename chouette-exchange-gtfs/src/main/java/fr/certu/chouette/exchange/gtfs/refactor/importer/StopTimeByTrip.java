@@ -18,7 +18,9 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements
    public static final String FILENAME = "stop_times.txt";
    public static final String KEY = FIELDS.trip_id.name();
 
-   private GtfsStopTime bean = new GtfsStopTime();
+   private GtfsStopTime _bean = new GtfsStopTime();
+   private String[] _array = new String[FIELDS.values().length];
+
    private String _tripId = null;
    private String _stopId = null;
 
@@ -31,31 +33,27 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements
    protected GtfsStopTime build(GtfsIterator reader, int id)
    {
 
-      String tripId = getField(reader, FIELDS.trip_id.name());
-      String stopId = getField(reader, FIELDS.stop_id.name());
-      String stopSequence = getField(reader, FIELDS.stop_sequence.name());
-      String arrivalTime = getField(reader, FIELDS.arrival_time.name());
-      String departureTime = getField(reader, FIELDS.departure_time.name());
-      String stopHeadsign = getField(reader, FIELDS.stop_headsign.name());
-      String pickupType = getField(reader, FIELDS.pickup_type.name());
-      String dropOffType = getField(reader, FIELDS.drop_off_type.name());
-      String shapeDistTraveled = getField(reader,
-            FIELDS.shape_dist_traveled.name());
+      int i = 0;
+      for (FIELDS field : FIELDS.values())
+      {
+         _array[i++] = getField(reader, field.name());
+      }
 
-      bean.setId(id);
-      bean.setTripId(STRING_CONVERTER.from(tripId, true));
-      bean.setStopId(STRING_CONVERTER.from(stopId, true));
-      bean.setStopSequence(INTEGER_CONVERTER.from(stopSequence, true));
-      bean.setArrivalTime(GTFSTIME_CONVERTER.from(arrivalTime, true));
-      bean.setDepartureTime(GTFSTIME_CONVERTER.from(departureTime, true));
-      bean.setStopHeadsign(STRING_CONVERTER.from(stopHeadsign, false));
-      bean.setPickupType(PICKUP_CONVERTER.from(pickupType,
+      i = 0;
+      _bean.setId(id);
+      _bean.setTripId(STRING_CONVERTER.from(_array[i++], true));
+      _bean.setStopId(STRING_CONVERTER.from(_array[i++], true));
+      _bean.setStopSequence(INTEGER_CONVERTER.from(_array[i++], true));
+      _bean.setArrivalTime(GTFSTIME_CONVERTER.from(_array[i++], true));
+      _bean.setDepartureTime(GTFSTIME_CONVERTER.from(_array[i++], true));
+      _bean.setStopHeadsign(STRING_CONVERTER.from(_array[i++], false));
+      _bean.setPickupType(PICKUP_CONVERTER.from(_array[i++],
             PickupType.Scheduled, false));
-      bean.setDropOffType(DROPOFFTYPE_CONVERTER.from(dropOffType,
+      _bean.setDropOffType(DROPOFFTYPE_CONVERTER.from(_array[i++],
             DropOffType.Scheduled, false));
-      bean.setShapeDistTraveled(FLOAT_CONVERTER.from(shapeDistTraveled, false));
+      _bean.setShapeDistTraveled(FLOAT_CONVERTER.from(_array[i++], false));
 
-      return bean;
+      return _bean;
    }
 
    @Override
@@ -69,6 +67,7 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements
          {
             throw new GtfsException("[DSU] error trip_id : " + tripId);
          }
+         _tripId = tripId;
       }
 
       String stopId = bean.getStopId();
@@ -78,6 +77,7 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements
          {
             throw new GtfsException("[DSU] error stopid : " + _stopId);
          }
+         _stopId = stopId;
       }
 
       return result;

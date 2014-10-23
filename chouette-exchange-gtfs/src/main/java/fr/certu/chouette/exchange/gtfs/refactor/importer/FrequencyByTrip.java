@@ -4,7 +4,8 @@ import java.io.IOException;
 
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsFrequency;
 
-public class FrequencyByTrip extends IndexImpl<GtfsFrequency>
+public class FrequencyByTrip extends IndexImpl<GtfsFrequency> implements
+      GtfsConverter
 {
 
    public static enum FIELDS
@@ -15,22 +16,49 @@ public class FrequencyByTrip extends IndexImpl<GtfsFrequency>
    public static final String FILENAME = "frequencies.txt";
    public static final String KEY = FIELDS.trip_id.name();
 
+   private GtfsFrequency bean = new GtfsFrequency();
+   private String[] array = new String[FIELDS.values().length];
+   private String _tripId = null;
+
    public FrequencyByTrip(String name) throws IOException
    {
       super(name, KEY, false);
    }
 
    @Override
-   protected GtfsFrequency build(GtfsIterator _reader, int line)
+   protected GtfsFrequency build(GtfsIterator reader, int id)
    {
-      // TODO Auto-generated method stub
-      return null;
+      int i = 0;
+      for (FIELDS field : FIELDS.values())
+      {
+         array[i++] = getField(reader, field.name());
+      }
+
+      i = 0;
+      bean.setTripId(STRING_CONVERTER.from(array[i++], true));
+      bean.setStartTime(GTFSTIME_CONVERTER.from(array[i++], true));
+      bean.setEndTime(GTFSTIME_CONVERTER.from(array[i++], true));
+      bean.setHeadwaySecs(INTEGER_CONVERTER.from(array[i++], true));
+      bean.setExactTimes(BOOLEAN_CONVERTER.from(array[i++], false, false));
+
+      return bean;
    }
 
    @Override
    public boolean validate(GtfsFrequency bean, GtfsImporter dao)
    {
-      return true;
+      boolean result = true;
+      String tripId = bean.getTripId();
+      if (!tripId.equals(_tripId))
+      {
+         if (!dao.getTripById().containsKey(tripId))
+         {
+            throw new GtfsException("[DSU] error trip_id : " + tripId);
+         }
+         _tripId = tripId;
+      }
+
+      return result;
    }
 
    public static class DefaultImporterFactory extends IndexFactory

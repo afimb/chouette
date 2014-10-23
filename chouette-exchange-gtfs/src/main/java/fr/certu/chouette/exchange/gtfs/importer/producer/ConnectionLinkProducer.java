@@ -1,5 +1,6 @@
 package fr.certu.chouette.exchange.gtfs.importer.producer;
 
+import java.sql.Time;
 import java.util.Calendar;
 
 import org.apache.log4j.Logger;
@@ -32,7 +33,7 @@ public class ConnectionLinkProducer extends
       link.setCreationTime(Calendar.getInstance().getTime());
       link.setLinkType(ConnectionLinkTypeEnum.Overground);
       if (gtfsTransfer.getMinTransferTime() != null)
-         link.setDefaultDuration(gtfsTransfer.getMinTransferTime().getTime());
+         link.setDefaultDuration(new Time(gtfsTransfer.getMinTransferTime() *1000));
       if (gtfsTransfer.getTransferType().equals(TransferType.NoAllowed))
       {
          link.setName("FORBIDDEN");

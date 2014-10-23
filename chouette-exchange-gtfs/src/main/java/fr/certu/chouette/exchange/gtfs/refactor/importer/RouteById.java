@@ -1,10 +1,11 @@
 package fr.certu.chouette.exchange.gtfs.refactor.importer;
 
+import java.awt.Color;
 import java.io.IOException;
 
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsRoute;
 
-public class RouteById extends IndexImpl<GtfsRoute>
+public class RouteById extends IndexImpl<GtfsRoute> implements GtfsConverter
 {
 
    public static enum FIELDS
@@ -15,16 +16,36 @@ public class RouteById extends IndexImpl<GtfsRoute>
    public static final String FILENAME = "routes.txt";
    public static final String KEY = FIELDS.route_id.name();
 
+   private GtfsRoute bean = new GtfsRoute();
+   private String[] array = new String[FIELDS.values().length];
+   
    public RouteById(String name) throws IOException
    {
       super(name, KEY);
    }
 
    @Override
-   protected GtfsRoute build(GtfsIterator _reader, int id)
+   protected GtfsRoute build(GtfsIterator reader, int id)
    {
-      // TODO Auto-generated method stub
-      return null;
+      int i = 0;
+      for (FIELDS field : FIELDS.values())
+      {
+         array[i++] = getField(reader, field.name());        
+      }
+      
+      i = 0;
+      bean.setId(id);      
+      bean.setRouteId(STRING_CONVERTER.from(array[i++], true));
+      bean.setAgencyId(STRING_CONVERTER.from(array[i++], false));
+      bean.setRouteShortName(STRING_CONVERTER.from(array[i++], true));
+      bean.setRouteLongName(STRING_CONVERTER.from(array[i++], true));
+      bean.setRouteDesc(STRING_CONVERTER.from(array[i++], false));
+      bean.setRouteType(ROUTETYPE_CONVERTER.from(array[i++], true));
+      bean.setRouteUrl(URL_CONVERTER.from(array[i++], false));
+      bean.setRouteColor(COLOR_CONVERTER.from(array[i++], Color.WHITE, false));
+      bean.setRouteTextColor(COLOR_CONVERTER.from(array[i++],Color.BLACK, false));
+     
+      return bean;
    }
 
    @Override

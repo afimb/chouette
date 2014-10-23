@@ -2,9 +2,11 @@ package fr.certu.chouette.exchange.gtfs.refactor.importer;
 
 import java.io.IOException;
 
+import fr.certu.chouette.exchange.gtfs.refactor.importer.AgencyById.FIELDS;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsCalendar;
 
-public class CalendarByService extends IndexImpl<GtfsCalendar>
+public class CalendarByService extends IndexImpl<GtfsCalendar> implements
+      GtfsConverter
 {
 
    public static enum FIELDS
@@ -15,6 +17,9 @@ public class CalendarByService extends IndexImpl<GtfsCalendar>
    public static final String FILENAME = "calendar.txt";
    public static final String KEY = FIELDS.service_id.name();
 
+   private GtfsCalendar bean = new GtfsCalendar();
+   private String[] array = new String[FIELDS.values().length];
+
    public CalendarByService(String name) throws IOException
    {
       super(name, KEY, false);
@@ -23,8 +28,26 @@ public class CalendarByService extends IndexImpl<GtfsCalendar>
    @Override
    protected GtfsCalendar build(GtfsIterator reader, int id)
    {
-      // TODO Auto-generated method stub
-      return null;
+      int i = 0;
+      for (FIELDS field : FIELDS.values())
+      {
+         array[i++] = getField(reader, field.name());
+      }
+
+      i = 0;
+      bean.setId(id);
+      bean.setServiceId(STRING_CONVERTER.from(array[i++], true));
+      bean.setMonday(BOOLEAN_CONVERTER.from(array[i++], true));
+      bean.setTuesday(BOOLEAN_CONVERTER.from(array[i++], true));
+      bean.setWednesday(BOOLEAN_CONVERTER.from(array[i++], true));
+      bean.setThursday(BOOLEAN_CONVERTER.from(array[i++], true));
+      bean.setFriday(BOOLEAN_CONVERTER.from(array[i++], true));
+      bean.setSaturday(BOOLEAN_CONVERTER.from(array[i++], true));
+      bean.setSunday(BOOLEAN_CONVERTER.from(array[i++], true));
+      bean.setStartDate(DATE_CONVERTER.from(array[i++], true));
+      bean.setEndDate(DATE_CONVERTER.from(array[i++], true));
+
+      return bean;
    }
 
    @Override

@@ -30,7 +30,7 @@ public class GtfsTransfer extends GtfsObject implements Serializable
 
    @Getter
    @Setter
-   private GtfsTime minTransferTime;
+   private Integer minTransferTime;
 
    public enum TransferType implements Serializable
    {

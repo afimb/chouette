@@ -1,8 +1,14 @@
 package fr.certu.chouette.exchange.gtfs.refactor.importer;
 
+import java.awt.Color;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.sql.Date;
 import java.sql.Time;
 import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsCalendarDate.ExceptionType;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsRoute.RouteType;
@@ -11,11 +17,16 @@ import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStop.WheelchairBoardin
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStopTime.DropOffType;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStopTime.PickupType;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsTime;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsTransfer.TransferType;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsTrip.BikesAllowedType;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsTrip.DirectionType;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsTrip.WheelchairAccessibleType;
 
 public interface GtfsConverter
 {
+
+   public static SimpleDateFormat BASIC_ISO_DATE = new SimpleDateFormat(
+         "yyyyMMdd");
 
    public static FieldConverter<String, String> STRING_CONVERTER = new FieldConverter<String, String>()
    {
@@ -63,6 +74,46 @@ public interface GtfsConverter
       public String to(Integer input)
       {
          return (input != null) ? input.toString() : "";
+      }
+
+   };
+
+   public static FieldConverter<String, Boolean> BOOLEAN_CONVERTER = new FieldConverter<String, Boolean>()
+   {
+
+      @Override
+      public Boolean from(String input, Boolean value, boolean required)
+      {
+         Boolean result = value;
+         if (input != null && !input.isEmpty())
+         {
+            value = input.equals("0");
+            if (value)
+            {
+               result = true;
+            } else
+            {
+               value = input.equals("1");
+               if (value)
+               {
+                  result = false;
+               } else
+               {
+                  throw new IllegalArgumentException();
+               }
+            }
+
+         } else if (required && value == null)
+         {
+            throw new IllegalArgumentException();
+         }
+         return result;
+      }
+
+      @Override
+      public String to(Boolean input)
+      {
+         return (input != null) ? (input) ? "1" : "0" : "0";
       }
 
    };
@@ -117,6 +168,8 @@ public interface GtfsConverter
       }
    };
 
+  
+         
    public static FieldConverter<String, Time> TIME_CONVERTER = new FieldConverter<String, Time>()
    {
 
@@ -152,7 +205,13 @@ public interface GtfsConverter
          Date result = value;
          if (input != null && !input.isEmpty())
          {
-            result = Date.valueOf(input);
+            try
+            {
+               result = new Date(BASIC_ISO_DATE.parse(input).getTime());
+            } catch (ParseException e)
+            {
+               throw new IllegalArgumentException();
+            }
 
          } else if (required && value == null)
          {
@@ -164,9 +223,93 @@ public interface GtfsConverter
       @Override
       public String to(Date input)
       {
+         return (input != null) ? BASIC_ISO_DATE.format(input) : "";
+      }
+
+   };
+
+   public static FieldConverter<String, URL> URL_CONVERTER = new FieldConverter<String, URL>()
+   {
+
+      @Override
+      public URL from(String input, URL value, boolean required)
+      {
+         URL result = value;
+         if (input != null && !input.isEmpty())
+         {
+            try
+            {
+               result = new URL(input);
+               String protocol = result.getProtocol();
+               if (!(protocol.equals("http") || protocol.equals("https")))
+               {
+                  throw new IllegalArgumentException();
+               }
+            } catch (MalformedURLException e)
+            {
+               throw new IllegalArgumentException(e);
+            }
+         } else if (required && value == null)
+         {
+            throw new IllegalArgumentException();
+         }
+         return result;
+      }
+
+      @Override
+      public String to(URL input)
+      {
          return (input != null) ? input.toString() : "";
       }
    };
+
+   public static FieldConverter<String, TimeZone> TIMEZONE_CONVERTER = new FieldConverter<String, TimeZone>()
+   {
+
+      @Override
+      public TimeZone from(String input, TimeZone value, boolean required)
+      {
+         TimeZone result = value;
+         if (input != null && !input.isEmpty())
+         {
+            result = TimeZone.getTimeZone(input);
+         } else if (required && value == null)
+         {
+            throw new IllegalArgumentException();
+         }
+         return result;
+      }
+
+      @Override
+      public String to(TimeZone input)
+      {
+         return (input != null) ? input.getDisplayName() : "";
+      }
+   };
+   
+   public static FieldConverter<String, Color> COLOR_CONVERTER = new FieldConverter<String, Color>()
+         {
+
+            @Override
+            public Color from(String input, Color value, boolean required)
+            {
+               Color result = value;
+               if (input != null && !input.isEmpty())
+               {
+                  result = new Color(Integer.parseInt(input, 16));
+               } else if (required && value == null)
+               {
+                  throw new IllegalArgumentException();
+               }
+               return result;
+            }
+
+            @Override
+            public String to(Color input)
+            {
+               return (input != null) ? Integer.toHexString(input.getRGB()).substring(2) : "";
+            }
+         };
 
    public static FieldConverter<String, GtfsTime> GTFSTIME_CONVERTER = new FieldConverter<String, GtfsTime>()
    {
@@ -491,6 +634,38 @@ public interface GtfsConverter
          return result;
       }
    };
+   
+   public static FieldConverter<String, WheelchairAccessibleType> WHEELCHAIRACCESSIBLETYPE_CONVERTER = new FieldConverter<String, WheelchairAccessibleType>()
+         {
+
+            @Override
+            public WheelchairAccessibleType from(String input,
+                  WheelchairAccessibleType value, boolean required)
+            {
+               WheelchairAccessibleType result = value;
+               if (input != null && !input.isEmpty())
+               {
+                  int ordinal = Integer.parseInt(input, 10);
+                  result = WheelchairAccessibleType.values()[ordinal];
+               } else if (required && value == null)
+               {
+                  throw new IllegalArgumentException();
+               }
+               return result;
+            }
+
+            @Override
+            public String to(WheelchairAccessibleType input)
+            {
+               String result = "0";
+               if (input != null)
+               {
+                  result = String.valueOf(input.ordinal());
+               }
+
+               return result;
+            }
+         };
 
    public static FieldConverter<String, BikesAllowedType> BIKESALLOWEDTYPE_CONVERTER = new FieldConverter<String, BikesAllowedType>()
    {
@@ -523,6 +698,39 @@ public interface GtfsConverter
          return result;
       }
    };
+   
+   
+   public static FieldConverter<String, TransferType> TRANSFERTYPE_CONVERTER = new FieldConverter<String, TransferType>()
+         {
+
+            @Override
+            public TransferType from(String input, TransferType value,
+                  boolean required)
+            {
+               TransferType result = value;
+               if (input != null && !input.isEmpty())
+               {
+                  int ordinal = Integer.parseInt(input, 10);
+                  result = TransferType.values()[ordinal];
+               } else if (required && value == null)
+               {
+                  throw new IllegalArgumentException();
+               }
+               return result;
+            }
+
+            @Override
+            public String to(TransferType input)
+            {
+               String result = "0";
+               if (input != null)
+               {
+                  result = String.valueOf(input.ordinal());
+               }
+
+               return result;
+            }
+         };
 
    public abstract class FieldConverter<F, T> extends Converter<F, T>
    {
