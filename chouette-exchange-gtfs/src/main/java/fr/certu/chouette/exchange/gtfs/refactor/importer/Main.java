@@ -47,23 +47,10 @@ public class Main
             _count++;
          }
 
-         // for (Iterator<String> keys = parser.keyIterator();
-         // keys.hasNext();) {
-         // String key = keys.next();
-         // for (Iterator<StopTime> values = parser.valuesIterator(key);
-         // values
-         // .hasNext();) {
-         // StopTime bean = values.next();
-         // // System.out.println("[DSU] value : " + bean);
-         // _count++;
-         // }
-         // }
-
          log.debug("[DSU] get " + _count + " object " + monitor.stop());
 
       } catch (Exception e)
       {
-         // TODO Auto-generated catch block
          e.printStackTrace();
       }
    }
@@ -115,6 +102,7 @@ public class Main
                FrequencyByTrip.FILENAME, FrequencyByTrip.class);
       }
 
+      Monitor monitor = MonitorFactory.start();
       Index<GtfsStopTime> parser = dao.getStopTimeByTrip();
       for (Iterator<GtfsStopTime> values = parser.valuesIterator("10052"); values
             .hasNext();)
@@ -123,10 +111,12 @@ public class Main
          System.out.println("[DSU] value : " + bean);
          _count++;
       }
+      log.debug("[DSU] get " + _count + " object " + monitor.stop());
 
-       System.out.println("[DSU] !!!! value : " +
-             dao.getStopById().getValue("2713"));
-
+      monitor = MonitorFactory.start();
+      System.out.println("[DSU] !!!! value : "
+            + dao.getStopById().getValue("2713"));
+      log.debug("[DSU] get " + _count + " object " + monitor.stop());
       dao.dispose();
 
    }
