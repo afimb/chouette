@@ -19,7 +19,9 @@ public class StopTimesImporter extends ImporterImpl<GtfsStopTime> implements
    public static final String KEY = FIELDS.trip_id.name();
 
    private GtfsStopTime bean = new GtfsStopTime();
-
+   private String _tripId = null;
+   private String _stopId = null;
+   
    public StopTimesImporter(String name) throws IOException
    {
       super(name, KEY, false);
@@ -56,15 +58,31 @@ public class StopTimesImporter extends ImporterImpl<GtfsStopTime> implements
       return bean;
    }
 
+  
+
    @Override
    public boolean validate(GtfsStopTime bean, GtfsImporter dao)
    {
-      boolean result =false;
-      String key = bean.getTripId();
-      
-     // result = dao.getTripImporter().containsKey(key);
-     //System.out.println("FK trip_id : "+ key + " = " + result);
-     return result;
+      boolean result = true;
+      String tripId = bean.getTripId();
+      if (!tripId.equals(_tripId))
+      {
+         if (!dao.getTripImporter().containsKey(tripId))
+         {
+            throw new GtfsException("[DSU] error trip_id : " + tripId);
+         }
+      }
+
+      String stopId = bean.getStopId();
+      if (!stopId.equals(_stopId))
+      {
+         if (!dao.getStopImporter().containsKey(stopId))
+         {
+            throw new GtfsException("[DSU] error stopid : " + _stopId);
+         }
+      }
+
+      return result;
    }
 
    public static class DefaultImporterFactory extends ImporterFactory

@@ -19,7 +19,7 @@ public class TripsImporter extends ImporterImpl<GtfsTrip>
    
    public TripsImporter(String name) throws IOException
    {
-      super(name, KEY, false);
+      super(name, KEY);
    }
 
    @Override

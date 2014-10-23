@@ -19,6 +19,11 @@ import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsTrip;
 
 public class GtfsImporter
 {
+   public static enum INDEX
+   {
+      AGENCY_BY_ID, CALENDAR_BY_SERVICE, CALENDARDATE_BY_SERVICE, FREQUENCY_BY_TRIP, ROUTEBY_ID, STOP_BY_ID, STOP_TIME_BY_TRIP, TRABSFER_BY_STOP, TRIP_BY_ROUTE, TRIP_BY_SERVICE;
+   }
+
    private String _path;
    private Map<String, Importer<GtfsObject>> _map = new HashMap<String, Importer<GtfsObject>>();
 
@@ -159,6 +164,18 @@ public class GtfsImporter
    {
       return geImporter(TripsImporter.FILENAME, TripsImporter.FILENAME,
             TripsImporter.class);
+   }
+
+   public Importer<GtfsTrip> getTripByRoute()
+   {
+      return geImporter(INDEX.TRIP_BY_ROUTE.name(), TripsImporter.FILENAME,
+            TripByRouteIndex.class);
+   }
+
+   public Importer<GtfsTrip> getTripByService()
+   {
+      return geImporter(INDEX.TRIP_BY_SERVICE.name(), TripsImporter.FILENAME,
+            TripByRouteIndex.class);
    }
 
 }
