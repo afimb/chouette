@@ -15,6 +15,7 @@ import lombok.extern.log4j.Log4j;
 import org.apache.commons.io.FilenameUtils;
 
 import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.exchange.gtfs.refactor.importer.GtfsException;
 import fr.certu.chouette.exchange.gtfs.refactor.importer.GtfsImporter;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.plugin.exchange.FormatDescription;
@@ -232,7 +233,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
          {
             importer.getAgencyImporter();
          }
-         catch (FileNotFoundException e)
+         catch (GtfsException e)
          {
             ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_MISSING_ENTRY, Report.STATE.ERROR, "agency.txt", filePath);
             report.addItem(item);
@@ -255,7 +256,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
             importer.getCalendarImporter();
             calendarFound = true;
          }
-         catch (FileNotFoundException e)
+         catch (GtfsException e)
          {
             // ignore before checking calendar_dates
          }
@@ -273,7 +274,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
          {
             importer.getCalendarDateImporter();
          }
-         catch (FileNotFoundException e)
+         catch (GtfsException e)
          {
             // ignore if calendar present
             if (!calendarFound)
@@ -300,7 +301,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
          {
             importer.getFrequencyImporter();
          }
-         catch (FileNotFoundException e)
+         catch (GtfsException e)
          {
             // not mandatory
          }
@@ -318,7 +319,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
          {
             importer.getRouteImporter();
          }
-         catch (FileNotFoundException e)
+         catch (GtfsException e)
          {
             ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_MISSING_ENTRY, Report.STATE.ERROR, "routes.txt", filePath);
             report.addItem(item);
@@ -340,7 +341,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
          {
             importer.getStopImporter();
          }
-         catch (FileNotFoundException e)
+         catch (GtfsException e)
          {
             ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_MISSING_ENTRY, Report.STATE.ERROR, "stops.txt", filePath);
             report.addItem(item);
@@ -362,7 +363,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
          {
             importer.getStopTimeImporter();
          }
-         catch (FileNotFoundException e)
+         catch (GtfsException e)
          {
             ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_MISSING_ENTRY, Report.STATE.ERROR, "stop_times.txt", filePath);
             report.addItem(item);
@@ -384,7 +385,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
          {
             importer.getTripImporter();
          }
-         catch (FileNotFoundException e)
+         catch (GtfsException e)
          {
             ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_MISSING_ENTRY, Report.STATE.ERROR, "trips.txt", filePath);
             report.addItem(item);
@@ -406,7 +407,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
          {
             importer.getTransferImporter();
          }
-         catch (FileNotFoundException e)
+         catch (GtfsException e)
          {
             // not mandatory
          }

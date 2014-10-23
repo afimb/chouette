@@ -11,8 +11,8 @@ public abstract class ImporterFactory
 
    protected abstract Importer create(String path) throws IOException;
 
-   public static final Importer build(String path, String clazz)
-         throws ClassNotFoundException, IOException
+   public static final Importer build(String path, String clazz) throws ClassNotFoundException, IOException
+         
    {
       if (!factories.containsKey(clazz))
       {

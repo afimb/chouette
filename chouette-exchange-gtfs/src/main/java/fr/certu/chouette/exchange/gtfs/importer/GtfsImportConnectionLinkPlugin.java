@@ -1,6 +1,5 @@
 package fr.certu.chouette.exchange.gtfs.importer;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -18,6 +17,7 @@ import org.apache.log4j.Logger;
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.exchange.gtfs.importer.producer.AbstractModelProducer;
 import fr.certu.chouette.exchange.gtfs.importer.producer.ConnectionLinkProducer;
+import fr.certu.chouette.exchange.gtfs.refactor.importer.GtfsException;
 import fr.certu.chouette.exchange.gtfs.refactor.importer.GtfsImporter;
 import fr.certu.chouette.exchange.gtfs.refactor.importer.Importer;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsTransfer;
@@ -192,7 +192,7 @@ public class GtfsImportConnectionLinkPlugin implements IImportPlugin<ConnectionL
          {
             transferImporter = importer.getTransferImporter();
          }
-         catch (FileNotFoundException e)
+         catch (GtfsException e)
          {
             ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_MISSING_ENTRY, Report.STATE.ERROR, "transfer.txt", filePath);
             report.addItem(item);

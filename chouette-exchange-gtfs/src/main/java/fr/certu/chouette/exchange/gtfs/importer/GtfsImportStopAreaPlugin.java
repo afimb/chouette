@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.exchange.gtfs.importer.producer.AbstractModelProducer;
+import fr.certu.chouette.exchange.gtfs.refactor.importer.GtfsException;
 import fr.certu.chouette.exchange.gtfs.refactor.importer.GtfsImporter;
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.StopArea;
@@ -229,7 +230,7 @@ public class GtfsImportStopAreaPlugin implements IImportPlugin<StopArea>
          {
             importer.getStopImporter();
          }
-         catch (FileNotFoundException e)
+         catch (GtfsException e)
          {
             ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_MISSING_ENTRY, Report.STATE.ERROR, "stops.txt", filePath);
             report.addItem(item);
@@ -250,7 +251,7 @@ public class GtfsImportStopAreaPlugin implements IImportPlugin<StopArea>
          {
             importer.getTransferImporter();
          }
-         catch (FileNotFoundException e)
+         catch (GtfsException e)
          {
             // not mandatory
          }
