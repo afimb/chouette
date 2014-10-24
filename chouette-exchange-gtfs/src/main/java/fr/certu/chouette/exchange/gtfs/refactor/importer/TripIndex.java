@@ -14,8 +14,8 @@ public abstract  class TripIndex extends IndexImpl<GtfsTrip> implements GtfsConv
 
    public static final String FILENAME = "trips.txt";
 
-   protected GtfsTrip _bean = new GtfsTrip();
-   protected String[] _array = new String[FIELDS.values().length];
+   protected GtfsTrip bean = new GtfsTrip();
+   protected String[] array = new String[FIELDS.values().length];
    protected String _routeId = null;
 
 
@@ -30,24 +30,24 @@ public abstract  class TripIndex extends IndexImpl<GtfsTrip> implements GtfsConv
       int i = 0;
       for (FIELDS field : FIELDS.values())
       {
-         _array[i++] = getField(reader, field.name());
+         array[i++] = getField(reader, field.name());
       }
 
       i = 0;
-      _bean.setId(id);
-      _bean.setRouteId(STRING_CONVERTER.from(_array[i++], true));
-      _bean.setServiceId(STRING_CONVERTER.from(_array[i++], true));
-      _bean.setTripId(STRING_CONVERTER.from(_array[i++], true));
-      _bean.setTripHeadSign(STRING_CONVERTER.from(_array[i++], false));
-      _bean.setTripShortName(STRING_CONVERTER.from(_array[i++], false));
-      _bean.setDirectionId(DIRECTIONTYPE_CONVERTER.from(_array[i++], false));
-      _bean.setBlockId(STRING_CONVERTER.from(_array[i++], false));
-      _bean.setShapeId(STRING_CONVERTER.from(_array[i++], false));
-      _bean.setWheelchairAccessible(WHEELCHAIRACCESSIBLETYPE_CONVERTER.from(
-            _array[i++], false));
-      _bean.setBikesAllowed(BIKESALLOWEDTYPE_CONVERTER.from(_array[i++], false));
+      bean.setId(id);
+      bean.setRouteId(STRING_CONVERTER.from(array[i++], true));
+      bean.setServiceId(STRING_CONVERTER.from(array[i++], true));
+      bean.setTripId(STRING_CONVERTER.from(array[i++], true));
+      bean.setTripHeadSign(STRING_CONVERTER.from(array[i++], false));
+      bean.setTripShortName(STRING_CONVERTER.from(array[i++], false));
+      bean.setDirectionId(DIRECTIONTYPE_CONVERTER.from(array[i++], false));
+      bean.setBlockId(STRING_CONVERTER.from(array[i++], false));
+      bean.setShapeId(STRING_CONVERTER.from(array[i++], false));
+      bean.setWheelchairAccessible(WHEELCHAIRACCESSIBLETYPE_CONVERTER.from(
+            array[i++], false));
+      bean.setBikesAllowed(BIKESALLOWEDTYPE_CONVERTER.from(array[i++], false));
 
-      return _bean;
+      return bean;
    }
 
    @Override

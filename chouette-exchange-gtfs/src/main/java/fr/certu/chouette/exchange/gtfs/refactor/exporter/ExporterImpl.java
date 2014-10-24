@@ -4,24 +4,28 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public abstract class ExporterImpl<T> implements Exporter<T>
 {
+
+   public static final char DELIMITER = ',';
 
    private BufferedWriter _writer;
 
    public ExporterImpl(String name) throws IOException
    {
-      File file = new File(name);
-      if (!file.exists())
-      {
-         file.createNewFile();
-      }
-      _writer = new BufferedWriter(new FileWriter(file.getAbsoluteFile()));
+      Path path = Paths.get(name);
+      Files.deleteIfExists(path);
+      _writer = Files.newBufferedWriter(path,Charset.defaultCharset());
+      writeHeader();
    }
 
    @Override
-   public void export(String text) throws IOException
+   public void write(String text) throws IOException
    {
       _writer.write(text);
    }
@@ -30,6 +34,22 @@ public abstract class ExporterImpl<T> implements Exporter<T>
    public void dispose() throws IOException
    {
       _writer.close();
+   }
+
+   void write(Enum[] values)
+   {
+      StringBuilder builder = new StringBuilder();
+      final int length = values.length;
+      for (int i = 0; i < length; i++)
+      {
+         Enum field = values[i];
+         builder.append(field.name());
+         if (i + 1 < length)
+         {
+            builder.append(DELIMITER);
+         }
+      }
+
    }
 
 }

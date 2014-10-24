@@ -1,6 +1,8 @@
 package fr.certu.chouette.exchange.gtfs.refactor.exporter;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import fr.certu.chouette.exchange.gtfs.refactor.importer.GtfsConverter;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsFrequency;
@@ -21,26 +23,49 @@ public class FrequencyExporter extends ExporterImpl<GtfsFrequency> implements
    }
 
    @Override
+   public void writeHeader() throws IOException
+   {
+      write(FIELDS.values());
+   }
+
+   @Override
    public void export(GtfsFrequency bean) throws IOException
    {
-      export(FREQUENCY_CONVERTER.to(bean));
+      write(FREQUENCY_CONVERTER.to(bean));
    }
 
    public static Converter<String, GtfsFrequency> FREQUENCY_CONVERTER = new Converter<String, GtfsFrequency>()
    {
-
+ 
       @Override
       public GtfsFrequency from(String input)
       {
+         GtfsFrequency bean = new GtfsFrequency();
+         List<String> values = Tokenizer.tokenize(input);
 
-         return null;
+         int i = 0;
+         bean.setTripId(STRING_CONVERTER.from(values.get(i++), true));
+         bean.setStartTime(GTFSTIME_CONVERTER.from(values.get(i++), true));
+         bean.setEndTime(GTFSTIME_CONVERTER.from(values.get(i++), true));
+         bean.setHeadwaySecs(INTEGER_CONVERTER.from(values.get(i++), true));
+         bean.setExactTimes(BOOLEAN_CONVERTER.from(values.get(i++), false, false));
+
+         return bean;
       }
 
       @Override
       public String to(GtfsFrequency input)
       {
-
-         return null;
+         String result = null;
+         List<String> values = new ArrayList<String>();
+         values.add(STRING_CONVERTER.to(input.getTripId()));
+         values.add(GTFSTIME_CONVERTER.to(input.getStartTime()));
+         values.add(GTFSTIME_CONVERTER.to(input.getEndTime()));
+         values.add(INTEGER_CONVERTER.to(input.getHeadwaySecs()));
+         values.add(BOOLEAN_CONVERTER.to(input.getExactTimes()));
+     
+         result = Tokenizer.untokenize(values);
+         return result;
       }
 
    };

@@ -10,6 +10,35 @@ public class Tokenizer
    public static final char DELIMITER = ',';
    public static final char DQUOTE = '"';
 
+   public static final String untokenize(List<String> values)
+   {
+      StringBuilder builder = new StringBuilder();
+      
+      final int size = values.size();
+      for (int i = 0; i < size; i++)
+      {
+         builder.append(DQUOTE);
+         String value = values.get(i);
+         final int length = value.length();
+         for (int j = 0; i < length; j++)
+         {
+            char c = value.charAt(j);
+            if (c == DQUOTE)
+            {
+               builder.append(DQUOTE);
+            }
+            builder.append(c);
+         }
+         builder.append(DQUOTE);
+         if (i +1 < size)
+         {
+            builder.append(DELIMITER);
+         }
+      }
+      
+      return builder.toString();
+   }
+
    public static final List<String> tokenize(String text)
    {
 
@@ -17,8 +46,6 @@ public class Tokenizer
       final List<String> tokens = new ArrayList<String>();
       boolean escape = false;
       int length = text.length();
-
-      // System.out.println("[DSU] text : " + text);
 
       for (int i = 0; i < length; i++)
       {
@@ -47,18 +74,15 @@ public class Tokenizer
                      {
                         if (text.charAt(i + 2) != DELIMITER)
                         {
-                           // ""A
                            builder.append(c);
                            i++;
                            escape = true;
                         } else
                         {
-                           // "",
                            escape = true;
                         }
                      } else
                      {
-                        // ""eol
                         escape = true;
                      }
                   } else
@@ -98,7 +122,6 @@ public class Tokenizer
          }
 
       }
-      // System.out.println("[DSU] text : " + tokens);
 
       return tokens;
    }

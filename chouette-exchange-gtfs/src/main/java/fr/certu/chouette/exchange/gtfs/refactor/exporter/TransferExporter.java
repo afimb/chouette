@@ -1,6 +1,8 @@
 package fr.certu.chouette.exchange.gtfs.refactor.exporter;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import fr.certu.chouette.exchange.gtfs.refactor.importer.GtfsConverter;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsTransfer;
@@ -21,9 +23,15 @@ public class TransferExporter extends ExporterImpl<GtfsTransfer> implements
    }
 
    @Override
+   public void writeHeader() throws IOException
+   {
+      write(FIELDS.values());
+   }
+
+   @Override
    public void export(GtfsTransfer bean) throws IOException
    {
-      export(TRANSFER_CONVERTER.to(bean));
+      write(TRANSFER_CONVERTER.to(bean));
    }
 
    public static Converter<String, GtfsTransfer> TRANSFER_CONVERTER = new Converter<String, GtfsTransfer>()
@@ -32,15 +40,30 @@ public class TransferExporter extends ExporterImpl<GtfsTransfer> implements
       @Override
       public GtfsTransfer from(String input)
       {
+         GtfsTransfer bean = new GtfsTransfer();
+         List<String> values = Tokenizer.tokenize(input);
 
-         return null;
+         int i = 0;
+         bean.setFromStopId(STRING_CONVERTER.from(values.get(i++), true));
+         bean.setToStopId(STRING_CONVERTER.from(values.get(i++), true));
+         bean.setTransferType(TRANSFERTYPE_CONVERTER.from(values.get(i++), true));
+         bean.setMinTransferTime(INTEGER_CONVERTER.from(values.get(i++), false));
+
+         return bean;
       }
 
       @Override
       public String to(GtfsTransfer input)
       {
+         String result = null;
+         List<String> values = new ArrayList<String>();
+         values.add(STRING_CONVERTER.to(input.getFromStopId()));
+         values.add(STRING_CONVERTER.to(input.getToStopId()));
+         values.add(TRANSFERTYPE_CONVERTER.to(input.getTransferType()));
+         values.add(INTEGER_CONVERTER.to(input.getMinTransferTime()));
 
-         return null;
+         result = Tokenizer.untokenize(values);
+         return result;
       }
 
    };

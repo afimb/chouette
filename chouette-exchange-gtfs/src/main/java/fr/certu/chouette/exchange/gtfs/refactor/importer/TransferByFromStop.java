@@ -17,8 +17,8 @@ public class TransferByFromStop extends IndexImpl<GtfsTransfer> implements
    public static final String FILENAME = "transfers.txt";
    public static final String KEY = FIELDS.from_stop_id.name();
 
-   private GtfsTransfer _bean = new GtfsTransfer();
-   private String[] _array = new String[FIELDS.values().length];
+   private GtfsTransfer bean = new GtfsTransfer();
+   private String[] array = new String[FIELDS.values().length];
 
    public TransferByFromStop(String name) throws IOException
    {
@@ -31,17 +31,17 @@ public class TransferByFromStop extends IndexImpl<GtfsTransfer> implements
       int i = 0;
       for (FIELDS field : FIELDS.values())
       {
-         _array[i++] = getField(reader, field.name());
+         array[i++] = getField(reader, field.name());
       }
 
       i = 0;
-      _bean.setId(id);
-      _bean.setFromStopId(STRING_CONVERTER.from(_array[i++], true));
-      _bean.setToStopId(STRING_CONVERTER.from(_array[i++], true));
-      _bean.setTransferType(TRANSFERTYPE_CONVERTER.from(_array[i++], true));
-      _bean.setMinTransferTime(INTEGER_CONVERTER.from(_array[i++], false));
+      bean.setId(id);
+      bean.setFromStopId(STRING_CONVERTER.from(array[i++], true));
+      bean.setToStopId(STRING_CONVERTER.from(array[i++], true));
+      bean.setTransferType(TRANSFERTYPE_CONVERTER.from(array[i++], true));
+      bean.setMinTransferTime(INTEGER_CONVERTER.from(array[i++], false));
 
-      return _bean;
+      return bean;
    }
 
    @Override
