@@ -5,82 +5,102 @@ import java.util.List;
 
 public class Tokenizer
 {
+   public static final char LF = '\n';
+   public static final char CR = '\r';
+   public static final char DELIMITER = ',';
+   public static final char DQUOTE = '"';
 
-   public static final List<String> tokenize(String line)
+   public static final List<String> tokenize(String text)
    {
-      final char DELIMITER = ',';
-      final char DQUOTE = '"';
 
-      final StringBuilder sb = new StringBuilder();
-      final List<String> token = new ArrayList<String>();
+      final StringBuilder builder = new StringBuilder();
+      final List<String> tokens = new ArrayList<String>();
+      boolean escape = false;
+      int length = text.length();
 
-      State state = State.NORMAL;
+      // System.out.println("[DSU] text : " + text);
 
-      int pointer = 0;
-      int length = line.length();
-
-      while (pointer < line.length())
+      for (int i = 0; i < length; i++)
       {
-         final char c = line.charAt(pointer);
-
-         switch (state)
+         final char c = text.charAt(i);
+         if (!escape)
          {
-         case NORMAL:
             if (c == DELIMITER)
             {
-               token.add(sb.toString());
-               sb.delete(0, sb.length());
-            }
-
-            else if (c == DQUOTE)
+               tokens.add(builder.toString());
+               builder.delete(0, builder.length());
+            } else if (i + 1 == length)
             {
-               if (sb.length() == 0)
-               {
-                  state = State.QUOTED;
-               } else if ((pointer + 1 < line.length())
-                     && line.charAt(pointer + 1) == DQUOTE && sb.length() > 0)
-               {
-                  sb.append(c);
-                  pointer++;
-               } else if ((pointer + 1 < line.length())
-                     && line.charAt(pointer + 1) != DQUOTE)
-               {
-                  state = State.QUOTED;
-               }
-            } else
+               builder.append(c);
+               tokens.add(builder.toString());
+               builder.delete(0, builder.length());
+            } else if (c == DQUOTE)
             {
-               sb.append(c);
-            }
-            break;
-
-         case QUOTED:
-
-            if (c == DQUOTE)
-            {
-               if ((pointer + 1 < line.length())
-                     && line.charAt(pointer + 1) == DQUOTE)
+               if (i == 0)
                {
-                  sb.append(c);
-                  pointer++;
-                  break;
+                  escape = true;
                } else
                {
-                  state = State.NORMAL;
+                  if (text.charAt(i + 1) == DQUOTE)
+                  {
+                     if (i + 2 < length)
+                     {
+                        if (text.charAt(i + 2) != DELIMITER)
+                        {
+                           // ""A
+                           builder.append(c);
+                           i++;
+                           escape = true;
+                        } else
+                        {
+                           // "",
+                           escape = true;
+                        }
+                     } else
+                     {
+                        // ""eol
+                        escape = true;
+                     }
+                  } else
+                  {
+                     escape = true;
+                  }
                }
             } else
             {
-               sb.append(c);
+               builder.append(c);
             }
-            break;
+
+         } else
+         {
+            if (c == DQUOTE)
+            {
+               if (i + 1 < length)
+               {
+                  if (text.charAt(i + 1) == DQUOTE)
+                  {
+                     builder.append(c);
+                     i++;
+                  } else
+                  {
+                     escape = false;
+                  }
+               } else
+               {
+                  escape = false;
+                  tokens.add(builder.toString());
+                  builder.delete(0, builder.length());
+               }
+            } else
+            {
+               builder.append(c);
+            }
          }
 
-         pointer++;
       }
-      return token;
+      // System.out.println("[DSU] text : " + tokens);
+
+      return tokens;
    }
 
-   private enum State
-   {
-      NORMAL, QUOTED
-   }
 }

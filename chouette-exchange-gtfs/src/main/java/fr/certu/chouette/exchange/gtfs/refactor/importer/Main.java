@@ -102,21 +102,22 @@ public class Main
                FrequencyByTrip.FILENAME, FrequencyByTrip.class);
       }
 
-      Monitor monitor = MonitorFactory.start();
-      Index<GtfsStopTime> parser = dao.getStopTimeByTrip();
-      for (Iterator<GtfsStopTime> values = parser.valuesIterator("10052"); values
-            .hasNext();)
-      {
-         GtfsStopTime bean = values.next();
-         System.out.println("[DSU] value : " + bean);
-         _count++;
-      }
-      log.debug("[DSU] get " + _count + " object " + monitor.stop());
+//      Monitor monitor = MonitorFactory.start();
+//      Index<GtfsStopTime> parser = dao.getStopTimeByTrip();
+//      for (Iterator<GtfsStopTime> values = parser.valuesIterator("6113969740881054"); values
+//            .hasNext();)
+//      {
+//         GtfsStopTime bean = values.next();
+//         System.out.println("[DSU] value : " + bean);
+//         _count++;
+//      }
+//      log.debug("[DSU] get " + _count + " object " + monitor.stop());
+//
+//      monitor = MonitorFactory.start();
+//      System.out.println("[DSU] !!!! value : "
+//            + dao.getStopById().getValue("4035320"));
+//      log.debug("[DSU] get " + _count + " object " + monitor.stop());
 
-      monitor = MonitorFactory.start();
-      System.out.println("[DSU] !!!! value : "
-            + dao.getStopById().getValue("2713"));
-      log.debug("[DSU] get " + _count + " object " + monitor.stop());
       dao.dispose();
 
    }

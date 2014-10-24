@@ -1,244 +1,25 @@
 package fr.certu.chouette.exchange.gtfs.refactor.importer;
 
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
-import lombok.ToString;
+public interface GtfsIterator {
 
-public class GtfsIterator implements Iterator<Boolean>
-{
-   public static final char LF = '\n';
-   public static final char CR = '\r';
-   public static final char DELIMITER = ',';
-   public static final char DQUOTE = '"';
+	public abstract void dispose();
 
-   private ByteBuffer _buffer;
-   private int _index = 0;
-   private boolean _escape = false;
-   private int _mark = 0;
-   private List<Field> _fields = new ArrayList<Field>();
-   private int _position;
-   private ByteBuffer _builder = ByteBuffer.allocate(1024);
+	public abstract boolean hasNext();
 
-   public GtfsIterator(ByteBuffer buffer, int count)
-   {
-      super();
-      _buffer = buffer;
-      for (int i = 0; i < count; i++)
-      {
-         _fields.add(new Field());
-      }
-   }
+	public abstract Boolean next();
 
-   public void dispose()
-   {
-      _buffer.clear();
-   }
+	public abstract void remove();
 
-   @Override
-   public boolean hasNext()
-   {
-      return _buffer.hasRemaining() && (_mark < _buffer.limit());
-   }
+	public abstract String getValue(int index);
 
-   @Override
-   public Boolean next()
-   {
-      boolean result = false;
-      try
-      {
-         _buffer.position(_mark);
-         loop: while (_buffer.hasRemaining())
-         {
+	public abstract int getFieldCount();
 
-            if (_index >= _fields.size())
-            {
-               _fields.add(new Field());
-            }
+	public abstract int getPosition();
 
-            char value = (char) _buffer.get();
-            switch (value)
-            {
-            case CR:
-            case LF:
-            {
-               _fields.get(_index).offset = _mark;
-               _fields.get(_index).length = _buffer.position() - 1
-                     - _fields.get(_index).offset;
-               if (value == CR)
-               {
-                  _mark = _buffer.position() + 1;
-               } else
-               {
-                  _mark = _buffer.position();
-               }
-               _index = 0;
-               _position = _mark;
-               result = true;
-               break loop;
-            }
-            case DELIMITER:
-            {
-               if (!_escape)
-               {
-                  _fields.get(_index).offset = _mark;
-                  _fields.get(_index).length = (_buffer.position() - 1 - _fields
-                        .get(_index).offset);
-                  _mark = _buffer.position();
-                  _index++;
+	public abstract void setPosition(int position);
 
-               }
-               break;
-            }
-            case DQUOTE:
-            {
-               if (!_escape)
-               {
-                  _escape = true;
-               } else
-               {
-                  int next = nextByte();
-                  if (next == DELIMITER || next == CR || next == LF)
-                  {
-                     _escape = false;
-                  } else if (next == DQUOTE)
-                  {
-                     _buffer.get();
-                  }
-               }
-               break;
-            }
-            default:
-               break;
-            }
-         }
-      } catch (Exception ignored)
-      {
-
-      }
-
-      return result;
-   }
-
-   @Override
-   public void remove()
-   {
-      throw new UnsupportedOperationException();
-   }
-
-   public String getValue(int index)
-   {
-      int length = _fields.get(index).length;
-      int offset = _fields.get(index).offset;
-      return getText(offset, length);
-   }
-
-   int getFieldCount()
-   {
-      return _fields.size();
-   }
-
-   int getPosition()
-   {
-      return _position;
-   }
-
-   void setPosition(int position)
-   {
-      _buffer.position(position);
-      _mark = position;
-   }
-
-   ByteBuffer getBuffer()
-   {
-      int offset = _fields.get(0).offset;
-      int length = _position - offset;
-      return getBuffer(offset, length);
-   }
-
-   private ByteBuffer getBuffer(int offset, int length)
-   {
-      _buffer.position(offset);
-      ByteBuffer result = _buffer.slice();
-      result.limit(length);
-      return result;
-   }
-
-   private byte nextByte()
-   {
-      int position = _buffer.position();
-      byte result = _buffer.get();
-      _buffer.position(position);
-      return result;
-   }
-
-   private String getText(int offset, int length)
-   {
-      String result;
-      _buffer.position(offset);
-      boolean escape = false;
-      _builder.clear();
-      for (int i = 0; i < length; i++)
-      {
-         byte c = _buffer.get();
-         if (!escape)
-         {
-            if (c == DQUOTE)
-            {
-               if (i == 0)
-               {
-                  escape = true;
-               } else if (i + 1 < length)
-               {
-                  byte next = nextByte();
-                  if (next == DQUOTE && i < length - 1)
-                  {
-                     _builder.put(c);
-                  } else
-                  {
-                     escape = true;
-                  }
-               }
-            } else
-            {
-               _builder.put(c);
-            }
-         } else
-         {
-            if (c == DQUOTE)
-            {
-               if (i + 1 < length)
-               {
-                  byte next = nextByte();
-                  if (next == DQUOTE)
-                  {
-                     _builder.put(c);
-                     _buffer.get();
-                  } else
-                  {
-                     escape = false;
-                  }
-               } else
-               {
-                  escape = false;
-               }
-            } else
-            {
-               _builder.put(c);
-            }
-         }
-      }
-      result = new String(_builder.array(), 0, _builder.position());
-      return result;
-   }
-
-   @ToString
-   class Field
-   {
-      int offset;
-      int length;
-   }
+	public abstract ByteBuffer getBuffer();
 
 }
