@@ -8,9 +8,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
+import fr.certu.chouette.exchange.gtfs.refactor.exporter.RouteExporter;
 
-@ToString
+// @ToString(callSuper=true)
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 public class GtfsRoute extends GtfsObject implements Serializable
@@ -58,5 +58,11 @@ public class GtfsRoute extends GtfsObject implements Serializable
    {
       Tram, Subway, Rail, Bus, Ferry, Cable, Gondola, Funicular;
 
+   }
+
+   @Override
+   public String toString()
+   {
+      return id + ":" + RouteExporter.CONVERTER.to(this);
    }
 }

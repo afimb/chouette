@@ -2,11 +2,7 @@ package fr.certu.chouette.exchange.gtfs.refactor.importer;
 
 import java.io.IOException;
 
-import fr.certu.chouette.exchange.gtfs.refactor.importer.StopTimeByTrip.FIELDS;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsAgency;
-import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStopTime;
-import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStopTime.DropOffType;
-import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStopTime.PickupType;
 
 public class AgencyById extends IndexImpl<GtfsAgency> implements GtfsConverter
 {
@@ -28,7 +24,7 @@ public class AgencyById extends IndexImpl<GtfsAgency> implements GtfsConverter
    }
 
    @Override
-   protected GtfsAgency build(GtfsIterator reader, int id)
+   protected GtfsAgency build(GtfsIterator reader, Context context)
    {
       int i = 0;
       for (FIELDS field : FIELDS.values())
@@ -37,14 +33,22 @@ public class AgencyById extends IndexImpl<GtfsAgency> implements GtfsConverter
       }
 
       i = 0;
+      int id = (int) context.get(Context.ID);
       bean.setId(id);
-      bean.setAgencyId(STRING_CONVERTER.from(array[i++], false));
-      bean.setAgencyName(STRING_CONVERTER.from(array[i++], true));
-      bean.setAgencyUrl(URL_CONVERTER.from(array[i++], true));
-      bean.setAgencyTimezone(TIMEZONE_CONVERTER.from(array[i++], true));
-      bean.setAgencyPhone(STRING_CONVERTER.from(array[i++], false));
-      bean.setAgencyLang(STRING_CONVERTER.from(array[i++], false));
-      bean.setAgencyFareUrl(URL_CONVERTER.from(array[i++], false));
+      bean.setAgencyId(STRING_CONVERTER.from(context, FIELDS.agency_id,
+            array[i++], "default", false));
+      bean.setAgencyName(STRING_CONVERTER.from(context, FIELDS.agency_name,
+            array[i++], true));
+      bean.setAgencyUrl(URL_CONVERTER.from(context, FIELDS.agency_url,
+            array[i++], true));
+      bean.setAgencyTimezone(TIMEZONE_CONVERTER.from(context,
+            FIELDS.agency_timezone, array[i++], true));
+      bean.setAgencyPhone(STRING_CONVERTER.from(context, FIELDS.agency_phone,
+            array[i++], false));
+      bean.setAgencyLang(STRING_CONVERTER.from(context, FIELDS.agency_lang,
+            array[i++], false));
+      bean.setAgencyFareUrl(URL_CONVERTER.from(context, FIELDS.agency_fare_url,
+            array[i++], false));
 
       return bean;
    }

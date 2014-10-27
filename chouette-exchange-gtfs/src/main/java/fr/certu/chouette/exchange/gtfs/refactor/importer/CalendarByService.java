@@ -2,7 +2,6 @@ package fr.certu.chouette.exchange.gtfs.refactor.importer;
 
 import java.io.IOException;
 
-import fr.certu.chouette.exchange.gtfs.refactor.importer.AgencyById.FIELDS;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsCalendar;
 
 public class CalendarByService extends IndexImpl<GtfsCalendar> implements
@@ -26,7 +25,7 @@ public class CalendarByService extends IndexImpl<GtfsCalendar> implements
    }
 
    @Override
-   protected GtfsCalendar build(GtfsIterator reader, int id)
+   protected GtfsCalendar build(GtfsIterator reader, Context context)
    {
       int i = 0;
       for (FIELDS field : FIELDS.values())
@@ -35,17 +34,28 @@ public class CalendarByService extends IndexImpl<GtfsCalendar> implements
       }
 
       i = 0;
+      int id = (int) context.get(Context.ID);
       bean.setId(id);
-      bean.setServiceId(STRING_CONVERTER.from(array[i++], true));
-      bean.setMonday(BOOLEAN_CONVERTER.from(array[i++], true));
-      bean.setTuesday(BOOLEAN_CONVERTER.from(array[i++], true));
-      bean.setWednesday(BOOLEAN_CONVERTER.from(array[i++], true));
-      bean.setThursday(BOOLEAN_CONVERTER.from(array[i++], true));
-      bean.setFriday(BOOLEAN_CONVERTER.from(array[i++], true));
-      bean.setSaturday(BOOLEAN_CONVERTER.from(array[i++], true));
-      bean.setSunday(BOOLEAN_CONVERTER.from(array[i++], true));
-      bean.setStartDate(DATE_CONVERTER.from(array[i++], true));
-      bean.setEndDate(DATE_CONVERTER.from(array[i++], true));
+      bean.setServiceId(STRING_CONVERTER.from(context, FIELDS.service_id,
+            array[i++], true));
+      bean.setMonday(BOOLEAN_CONVERTER.from(context, FIELDS.monday, array[i++],
+            true));
+      bean.setTuesday(BOOLEAN_CONVERTER.from(context, FIELDS.tuesday,
+            array[i++], true));
+      bean.setWednesday(BOOLEAN_CONVERTER.from(context, FIELDS.wednesday,
+            array[i++], true));
+      bean.setThursday(BOOLEAN_CONVERTER.from(context, FIELDS.thursday,
+            array[i++], true));
+      bean.setFriday(BOOLEAN_CONVERTER.from(context, FIELDS.friday, array[i++],
+            true));
+      bean.setSaturday(BOOLEAN_CONVERTER.from(context, FIELDS.saturday,
+            array[i++], true));
+      bean.setSunday(BOOLEAN_CONVERTER.from(context, FIELDS.sunday, array[i++],
+            true));
+      bean.setStartDate(DATE_CONVERTER.from(context, FIELDS.start_date,
+            array[i++], true));
+      bean.setEndDate(DATE_CONVERTER.from(context, FIELDS.end_date, array[i++],
+            true));
 
       return bean;
    }

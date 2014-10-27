@@ -1,8 +1,6 @@
 package fr.certu.chouette.exchange.gtfs.refactor.exporter;
 
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -20,7 +18,7 @@ public abstract class ExporterImpl<T> implements Exporter<T>
    {
       Path path = Paths.get(name);
       Files.deleteIfExists(path);
-      _writer = Files.newBufferedWriter(path,Charset.defaultCharset());
+      _writer = Files.newBufferedWriter(path, Charset.defaultCharset());
       writeHeader();
    }
 

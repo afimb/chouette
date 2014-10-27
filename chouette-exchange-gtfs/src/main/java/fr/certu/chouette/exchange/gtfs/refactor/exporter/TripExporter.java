@@ -31,10 +31,10 @@ public class TripExporter extends ExporterImpl<GtfsTrip> implements
    @Override
    public void export(GtfsTrip bean) throws IOException
    {
-      write(TRIP_CONVERTER.to(bean));
+      write(CONVERTER.to(bean));
    }
 
-   public static Converter<String, GtfsTrip> TRIP_CONVERTER = new Converter<String, GtfsTrip>()
+   public static Converter<String, GtfsTrip> CONVERTER = new Converter<String, GtfsTrip>()
    {
 
       @Override

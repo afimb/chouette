@@ -6,9 +6,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
+import fr.certu.chouette.exchange.gtfs.refactor.exporter.FrequencyExporter;
 
-@ToString
+//@ToString(callSuper=true)
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 public class GtfsFrequency extends GtfsObject implements Serializable
@@ -35,5 +35,11 @@ public class GtfsFrequency extends GtfsObject implements Serializable
    @Getter
    @Setter
    private Boolean exactTimes;
+
+   @Override
+   public String toString()
+   {
+      return id + ":" + FrequencyExporter.CONVERTER.to(this);
+   }
 
 }

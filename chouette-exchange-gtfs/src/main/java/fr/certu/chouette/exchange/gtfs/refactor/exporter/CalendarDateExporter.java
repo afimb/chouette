@@ -21,18 +21,20 @@ public class CalendarDateExporter extends ExporterImpl<GtfsCalendarDate>
    {
       super(name);
    }
+
    @Override
    public void writeHeader() throws IOException
    {
       write(FIELDS.values());
    }
+
    @Override
    public void export(GtfsCalendarDate bean) throws IOException
    {
-      write(CALENDARDATE_CONVERTER.to(bean));
+      write(CONVERTER.to(bean));
    }
 
-   public static Converter<String, GtfsCalendarDate> CALENDARDATE_CONVERTER = new Converter<String, GtfsCalendarDate>()
+   public static Converter<String, GtfsCalendarDate> CONVERTER = new Converter<String, GtfsCalendarDate>()
    {
 
       @Override

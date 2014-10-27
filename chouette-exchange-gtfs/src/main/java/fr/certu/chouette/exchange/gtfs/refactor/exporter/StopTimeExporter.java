@@ -34,10 +34,10 @@ public class StopTimeExporter extends ExporterImpl<GtfsStopTime> implements
    @Override
    public void export(GtfsStopTime bean) throws IOException
    {
-      write(STOPTIME_CONVERTER.to(bean));
+      write(CONVERTER.to(bean));
    }
 
-   public static Converter<String, GtfsStopTime> STOPTIME_CONVERTER = new Converter<String, GtfsStopTime>()
+   public static Converter<String, GtfsStopTime> CONVERTER = new Converter<String, GtfsStopTime>()
    {
 
       @Override

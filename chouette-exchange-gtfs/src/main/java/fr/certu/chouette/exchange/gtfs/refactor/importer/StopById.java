@@ -28,7 +28,7 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter
    }
 
    @Override
-   protected GtfsStop build(GtfsIterator reader, int id)
+   protected GtfsStop build(GtfsIterator reader, Context context)
    {
       int i = 0;
       for (FIELDS field : FIELDS.values())
@@ -37,22 +37,33 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter
       }
 
       i = 0;
+      int id = (int) context.get(Context.ID);
       bean.setId(id);
-
-      bean.setStopId(STRING_CONVERTER.from(array[i++], true));
-      bean.setStopCode(STRING_CONVERTER.from(array[i++], false));
-      bean.setStopName(STRING_CONVERTER.from(array[i++], true));
-      bean.setStopDesc(STRING_CONVERTER.from(array[i++], false));
-      bean.setStopLat(BigDecimal.valueOf(FLOAT_CONVERTER.from(array[i++], true)));
-      bean.setStopLon(BigDecimal.valueOf(FLOAT_CONVERTER.from(array[i++], true)));
-      bean.setZoneId(STRING_CONVERTER.from(array[i++], false));
-      bean.setStopUrl(URL_CONVERTER.from(array[i++], false));
-      bean.setLocationType(LOCATIONTYPE_CONVERTER.from(array[i++],
-            LocationType.Stop, false));
-      bean.setParentStation(STRING_CONVERTER.from(array[i++], false));
-      bean.setStopTimezone(TIMEZONE_CONVERTER.from(array[i++], false));
-      bean.setWheelchairBoarding(WHEELCHAIRBOARDINGTYPE_CONVERTER.from(
-            array[i++], WheelchairBoardingType.NoInformation, false));
+      bean.setStopId(STRING_CONVERTER.from(context, FIELDS.stop_id, array[i++],
+            true));
+      bean.setStopCode(STRING_CONVERTER.from(context, FIELDS.stop_id,
+            array[i++], false));
+      bean.setStopName(STRING_CONVERTER.from(context, FIELDS.stop_name,
+            array[i++], true));
+      bean.setStopDesc(STRING_CONVERTER.from(context, FIELDS.stop_desc,
+            array[i++], false));
+      bean.setStopLat(BigDecimal.valueOf(FLOAT_CONVERTER.from(context,
+            FIELDS.stop_lat, array[i++], true)));
+      bean.setStopLon(BigDecimal.valueOf(FLOAT_CONVERTER.from(context,
+            FIELDS.stop_lon, array[i++], true)));
+      bean.setZoneId(STRING_CONVERTER.from(context, FIELDS.zone_id, array[i++],
+            false));
+      bean.setStopUrl(URL_CONVERTER.from(context, FIELDS.stop_url, array[i++],
+            false));
+      bean.setLocationType(LOCATIONTYPE_CONVERTER.from(context,
+            FIELDS.location_type, array[i++], LocationType.Stop, false));
+      bean.setParentStation(STRING_CONVERTER.from(context,
+            FIELDS.parent_station, array[i++], false));
+      bean.setStopTimezone(TIMEZONE_CONVERTER.from(context,
+            FIELDS.stop_timezone, array[i++], false));
+      bean.setWheelchairBoarding(WHEELCHAIRBOARDINGTYPE_CONVERTER.from(context,
+            FIELDS.wheelchair_boarding, array[i++],
+            WheelchairBoardingType.NoInformation, false));
 
       return bean;
    }

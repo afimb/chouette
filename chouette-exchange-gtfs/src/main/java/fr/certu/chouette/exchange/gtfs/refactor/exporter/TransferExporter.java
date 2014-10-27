@@ -31,10 +31,10 @@ public class TransferExporter extends ExporterImpl<GtfsTransfer> implements
    @Override
    public void export(GtfsTransfer bean) throws IOException
    {
-      write(TRANSFER_CONVERTER.to(bean));
+      write(CONVERTER.to(bean));
    }
 
-   public static Converter<String, GtfsTransfer> TRANSFER_CONVERTER = new Converter<String, GtfsTransfer>()
+   public static Converter<String, GtfsTransfer> CONVERTER = new Converter<String, GtfsTransfer>()
    {
 
       @Override

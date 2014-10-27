@@ -6,9 +6,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
+import fr.certu.chouette.exchange.gtfs.refactor.exporter.StopTimeExporter;
 
-@ToString(callSuper = true)
+// @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 public class GtfsStopTime extends GtfsObject implements Serializable
@@ -51,6 +51,12 @@ public class GtfsStopTime extends GtfsObject implements Serializable
    @Getter
    @Setter
    private Float shapeDistTraveled;
+
+   @Override
+   public String toString()
+   {
+      return id + ":" + StopTimeExporter.CONVERTER.to(this);
+   }
 
    public enum DropOffType implements Serializable
    {

@@ -6,9 +6,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
+import fr.certu.chouette.exchange.gtfs.refactor.exporter.TransferExporter;
 
-@ToString
+//@ToString(callSuper=true)
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 public class GtfsTransfer extends GtfsObject implements Serializable
@@ -36,5 +36,11 @@ public class GtfsTransfer extends GtfsObject implements Serializable
    {
       Recommended, Timed, Minimal, NoAllowed;
 
+   }
+
+   @Override
+   public String toString()
+   {
+      return id + ":" + TransferExporter.CONVERTER.to(this);
    }
 }

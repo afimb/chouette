@@ -217,8 +217,10 @@ public class NeptuneConverter
 
          List<VehicleJourneyAtStop> lvjas = new ArrayList<>();
          boolean afterMidnight = true;
+         
+         // TODO [DSU iterator ?]
          for (Iterator<GtfsStopTime> stopTimesOfATrip = importer
-               .getStopTimeByTrip().valuesIterator(gtfsTrip.getTripId()); stopTimesOfATrip
+               .getStopTimeByTrip().values(gtfsTrip.getTripId()).iterator(); stopTimesOfATrip
                .hasNext();)
          {
             GtfsStopTime gtfsStopTime = stopTimesOfATrip.next();
@@ -362,11 +364,9 @@ public class NeptuneConverter
          if (importer.hasFrequencyImporter())
          {
 
-            for (Iterator<GtfsFrequency> iterator = importer
-                  .getFrequencyByTrip().valuesIterator(gtfsTrip.getTripId()); iterator
-                  .hasNext();)
+            for (GtfsFrequency frequency : importer
+                  .getFrequencyByTrip().values(gtfsTrip.getTripId()))
             {
-               GtfsFrequency frequency = iterator.next();
                baseVehicleJourneyToTime(vehicleJourney, frequency
                      .getStartTime().getTime().getTime());
                try
@@ -487,7 +487,7 @@ public class NeptuneConverter
             Report.STATE.OK);
       if (importer.hasTransferImporter())
       {
-         for (GtfsTransfer transfer : importer.getTransferByToStop())
+         for (GtfsTransfer transfer : importer.getTransferByFromStop())
          {
             ConnectionLink link = connectionLinkProducer.produce(transfer,
                   report);
@@ -694,10 +694,9 @@ public class NeptuneConverter
       {
          GtfsCalendar calendar = new GtfsCalendar(); // dummy calendar for
          // production
-         for (Iterator<String> keys = importer.getCalendarDateByService()
-               .keyIterator(); keys.hasNext();)
-         {
-            String serviceId = keys.next();
+         for (String serviceId : importer.getCalendarDateByService()
+               .keys())
+         {         
             Timetable timetable = mapTimetableByServiceId.get(serviceId);
             if (timetable == null)
             {
@@ -706,11 +705,9 @@ public class NeptuneConverter
                timetables.add(timetable);
                mapTimetableByServiceId.put(serviceId, timetable);
             }
-            for (Iterator<GtfsCalendarDate> dates = importer
-                  .getCalendarDateByService().valuesIterator(serviceId); dates
-                  .hasNext();)
-            {
-               GtfsCalendarDate date = dates.next();
+            for (GtfsCalendarDate date : importer
+                  .getCalendarDateByService().values(serviceId))
+            {                      
                timetableProducer.addDate(timetable, date);
             }
             // refresh timetable name

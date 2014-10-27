@@ -13,14 +13,14 @@ public class Tokenizer
    public static final String untokenize(List<String> values)
    {
       StringBuilder builder = new StringBuilder();
-      
+
       final int size = values.size();
       for (int i = 0; i < size; i++)
       {
          builder.append(DQUOTE);
          String value = values.get(i);
          final int length = value.length();
-         for (int j = 0; i < length; j++)
+         for (int j = 0; j < length; j++)
          {
             char c = value.charAt(j);
             if (c == DQUOTE)
@@ -30,12 +30,12 @@ public class Tokenizer
             builder.append(c);
          }
          builder.append(DQUOTE);
-         if (i +1 < size)
+         if (i + 1 < size)
          {
             builder.append(DELIMITER);
          }
       }
-      
+
       return builder.toString();
    }
 

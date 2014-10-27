@@ -30,7 +30,7 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements
    }
 
    @Override
-   protected GtfsStopTime build(GtfsIterator reader, int id)
+   protected GtfsStopTime build(GtfsIterator reader, Context context)
    {
 
       int i = 0;
@@ -40,18 +40,26 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements
       }
 
       i = 0;
+      int id = (int) context.get(Context.ID);
       _bean.setId(id);
-      _bean.setTripId(STRING_CONVERTER.from(_array[i++], true));
-      _bean.setStopId(STRING_CONVERTER.from(_array[i++], true));
-      _bean.setStopSequence(INTEGER_CONVERTER.from(_array[i++], true));
-      _bean.setArrivalTime(GTFSTIME_CONVERTER.from(_array[i++], true));
-      _bean.setDepartureTime(GTFSTIME_CONVERTER.from(_array[i++], true));
-      _bean.setStopHeadsign(STRING_CONVERTER.from(_array[i++], false));
-      _bean.setPickupType(PICKUP_CONVERTER.from(_array[i++],
-            PickupType.Scheduled, false));
-      _bean.setDropOffType(DROPOFFTYPE_CONVERTER.from(_array[i++],
-            DropOffType.Scheduled, false));
-      _bean.setShapeDistTraveled(FLOAT_CONVERTER.from(_array[i++], false));
+      _bean.setTripId(STRING_CONVERTER.from(context, FIELDS.trip_id,
+            _array[i++], true));
+      _bean.setStopId(STRING_CONVERTER.from(context, FIELDS.stop_id,
+            _array[i++], true));
+      _bean.setStopSequence(INTEGER_CONVERTER.from(context,
+            FIELDS.stop_sequence, _array[i++], true));
+      _bean.setArrivalTime(GTFSTIME_CONVERTER.from(context,
+            FIELDS.arrival_time, _array[i++], true));
+      _bean.setDepartureTime(GTFSTIME_CONVERTER.from(context,
+            FIELDS.departure_time, _array[i++], true));
+      _bean.setStopHeadsign(STRING_CONVERTER.from(context,
+            FIELDS.stop_headsign, _array[i++], false));
+      _bean.setPickupType(PICKUP_CONVERTER.from(context, FIELDS.pickup_type,
+            _array[i++], PickupType.Scheduled, false));
+      _bean.setDropOffType(DROPOFFTYPE_CONVERTER.from(context,
+            FIELDS.drop_off_type, _array[i++], DropOffType.Scheduled, false));
+      _bean.setShapeDistTraveled(FLOAT_CONVERTER.from(context,
+            FIELDS.shape_dist_traveled, _array[i++], false));
 
       return _bean;
    }

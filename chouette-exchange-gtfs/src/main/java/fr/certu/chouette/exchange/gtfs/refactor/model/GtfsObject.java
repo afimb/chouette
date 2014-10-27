@@ -12,5 +12,5 @@ public abstract class GtfsObject
 
    @Getter
    @Setter
-   private Integer id;
+   protected Integer id;
 }

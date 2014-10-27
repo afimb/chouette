@@ -1,14 +1,12 @@
 package fr.certu.chouette.exchange.gtfs.refactor.importer;
 
-import java.util.Iterator;
-
 public interface Index<T> extends Iterable<T>
 {
    void dispose();
 
-   Iterator<String> keyIterator();
+   Iterable<String> keys();
 
-   Iterator<T> valuesIterator(String key);
+   Iterable<T> values(String key);
 
    boolean containsKey(String key);
 

@@ -8,9 +8,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
+import fr.certu.chouette.exchange.gtfs.refactor.exporter.AgencyExporter;
 
-@ToString
+//@ToString(callSuper=true)
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 public class GtfsAgency extends GtfsObject implements Serializable
@@ -20,7 +20,7 @@ public class GtfsAgency extends GtfsObject implements Serializable
 
    @Getter
    @Setter
-   private String agencyId = "default";
+   private String agencyId;
 
    @Getter
    @Setter
@@ -45,5 +45,11 @@ public class GtfsAgency extends GtfsObject implements Serializable
    @Getter
    @Setter
    private URL agencyFareUrl;
+
+   @Override
+   public String toString()
+   {
+      return id + ":" + AgencyExporter.CONVERTER.to(this);
+   }
 
 }

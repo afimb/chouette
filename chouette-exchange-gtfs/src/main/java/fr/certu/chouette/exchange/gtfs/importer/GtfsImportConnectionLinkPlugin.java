@@ -205,7 +205,7 @@ public class GtfsImportConnectionLinkPlugin implements
          Index<GtfsTransfer> transferImporter = null;
          try
          {
-            transferImporter = importer.getTransferByToStop();
+            transferImporter = importer.getTransferByFromStop();
          } catch (GtfsException e)
          {
             ReportItem item = new ExchangeReportItem(

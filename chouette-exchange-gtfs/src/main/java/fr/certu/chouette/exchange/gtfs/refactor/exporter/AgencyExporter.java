@@ -26,10 +26,10 @@ public class AgencyExporter extends ExporterImpl<GtfsAgency> implements
    @Override
    public void export(GtfsAgency bean) throws IOException
    {
-      write(AGENCY_CONVERTER.to(bean));
+      write(CONVERTER.to(bean));
    }
 
-   public static Converter<String, GtfsAgency> AGENCY_CONVERTER = new Converter<String, GtfsAgency>()
+   public static Converter<String, GtfsAgency> CONVERTER = new Converter<String, GtfsAgency>()
    {
 
       @Override

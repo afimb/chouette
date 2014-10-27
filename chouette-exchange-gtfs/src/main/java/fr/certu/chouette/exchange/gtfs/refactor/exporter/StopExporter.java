@@ -34,10 +34,10 @@ public class StopExporter extends ExporterImpl<GtfsStop> implements
    @Override
    public void export(GtfsStop bean) throws IOException
    {
-      write(STOP_CONVERTER.to(bean));
+      write(CONVERTER.to(bean));
    }
 
-   public static Converter<String, GtfsStop> STOP_CONVERTER = new Converter<String, GtfsStop>()
+   public static Converter<String, GtfsStop> CONVERTER = new Converter<String, GtfsStop>()
    {
 
       @Override

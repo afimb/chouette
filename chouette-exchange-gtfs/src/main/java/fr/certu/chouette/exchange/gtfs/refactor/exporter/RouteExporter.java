@@ -32,10 +32,10 @@ public class RouteExporter extends ExporterImpl<GtfsRoute> implements
    @Override
    public void export(GtfsRoute bean) throws IOException
    {
-      write(ROUTE_CONVERTER.to(bean));
+      write(CONVERTER.to(bean));
    }
 
-   public static Converter<String, GtfsRoute> ROUTE_CONVERTER = new Converter<String, GtfsRoute>()
+   public static Converter<String, GtfsRoute> CONVERTER = new Converter<String, GtfsRoute>()
    {
 
       @Override

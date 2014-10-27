@@ -32,7 +32,8 @@ public interface GtfsConverter
    {
 
       @Override
-      public String from(String input, String value, boolean required)
+      public String from(Context context, Enum field, String input,
+            String value, boolean required)
       {
          String result = value;
          if (input != null && !input.isEmpty())
@@ -40,13 +41,15 @@ public interface GtfsConverter
             result = input.trim();
          } else if (required && value == null)
          {
-            throw new IllegalArgumentException();
+            context.put(Context.FIELD, field.name());
+            context.put(Context.CODE, GtfsException.ERROR.MISSING_FIELD);
+            throw new GtfsException(context);
          }
          return result;
       }
 
       @Override
-      public String to(String input)
+      public String to(Context context, String input)
       {
          return (input != null) ? input.toString() : "";
       }
@@ -57,7 +60,8 @@ public interface GtfsConverter
    {
 
       @Override
-      public Integer from(String input, Integer value, boolean required)
+      public Integer from(Context context, Enum field, String input,
+            Integer value, boolean required)
       {
          Integer result = value;
          if (input != null && !input.isEmpty())
@@ -65,13 +69,15 @@ public interface GtfsConverter
             result = Integer.parseInt(input, 10);
          } else if (required && value == null)
          {
-            throw new IllegalArgumentException();
+            context.put(Context.FIELD, field.name());
+            context.put(Context.CODE, GtfsException.ERROR.MISSING_FIELD);
+            throw new GtfsException(context);
          }
          return result;
       }
 
       @Override
-      public String to(Integer input)
+      public String to(Context context, Integer input)
       {
          return (input != null) ? input.toString() : "";
       }
@@ -82,7 +88,8 @@ public interface GtfsConverter
    {
 
       @Override
-      public Boolean from(String input, Boolean value, boolean required)
+      public Boolean from(Context context, Enum field, String input,
+            Boolean value, boolean required)
       {
          Boolean result = value;
          if (input != null && !input.isEmpty())
@@ -111,7 +118,7 @@ public interface GtfsConverter
       }
 
       @Override
-      public String to(Boolean input)
+      public String to(Context context, Boolean input)
       {
          return (input != null) ? (input) ? "1" : "0" : "0";
       }
@@ -122,7 +129,8 @@ public interface GtfsConverter
    {
 
       @Override
-      public Float from(String input, Float value, boolean required)
+      public Float from(Context context, Enum field, String input, Float value,
+            boolean required)
       {
          Float result = value;
          if (input != null && !input.isEmpty())
@@ -130,13 +138,15 @@ public interface GtfsConverter
             result = Float.parseFloat(input);
          } else if (required && value == null)
          {
-            throw new IllegalArgumentException();
+            context.put(Context.FIELD, field.name());
+            context.put(Context.CODE, GtfsException.ERROR.MISSING_FIELD);
+            throw new GtfsException(context);
          }
          return result;
       }
 
       @Override
-      public String to(Float input)
+      public String to(Context context, Float input)
       {
          return (input != null) ? input.toString() : "";
       }
@@ -146,7 +156,8 @@ public interface GtfsConverter
    {
 
       @Override
-      public Double from(String input, Double value, boolean required)
+      public Double from(Context context, Enum field, String input,
+            Double value, boolean required)
       {
          Double result = value;
          if (input != null && !input.isEmpty())
@@ -162,19 +173,18 @@ public interface GtfsConverter
       }
 
       @Override
-      public String to(Double input)
+      public String to(Context context, Double input)
       {
          return (input != null) ? input.toString() : "";
       }
    };
 
-  
-         
    public static FieldConverter<String, Time> TIME_CONVERTER = new FieldConverter<String, Time>()
    {
 
       @Override
-      public Time from(String input, Time value, boolean required)
+      public Time from(Context context, Enum field, String input, Time value,
+            boolean required)
       {
          Time result = value;
          if (input != null && !input.isEmpty())
@@ -182,13 +192,15 @@ public interface GtfsConverter
             result = Time.valueOf(input);
          } else if (required && value == null)
          {
-            throw new IllegalArgumentException();
+            context.put(Context.FIELD, field.name());
+            context.put(Context.CODE, GtfsException.ERROR.MISSING_FIELD);
+            throw new GtfsException(context);
          }
          return result;
       }
 
       @Override
-      public String to(Time input)
+      public String to(Context context, Time input)
       {
          return (input != null) ? input.toString() : "";
       }
@@ -199,7 +211,8 @@ public interface GtfsConverter
    {
 
       @Override
-      public Date from(String input, Date value, boolean required)
+      public Date from(Context context, Enum field, String input, Date value,
+            boolean required)
       {
 
          Date result = value;
@@ -221,7 +234,7 @@ public interface GtfsConverter
       }
 
       @Override
-      public String to(Date input)
+      public String to(Context context, Date input)
       {
          return (input != null) ? BASIC_ISO_DATE.format(input) : "";
       }
@@ -232,7 +245,8 @@ public interface GtfsConverter
    {
 
       @Override
-      public URL from(String input, URL value, boolean required)
+      public URL from(Context context, Enum field, String input, URL value,
+            boolean required)
       {
          URL result = value;
          if (input != null && !input.isEmpty())
@@ -257,7 +271,7 @@ public interface GtfsConverter
       }
 
       @Override
-      public String to(URL input)
+      public String to(Context context, URL input)
       {
          return (input != null) ? input.toString() : "";
       }
@@ -267,7 +281,8 @@ public interface GtfsConverter
    {
 
       @Override
-      public TimeZone from(String input, TimeZone value, boolean required)
+      public TimeZone from(Context context, Enum field, String input,
+            TimeZone value, boolean required)
       {
          TimeZone result = value;
          if (input != null && !input.isEmpty())
@@ -281,35 +296,37 @@ public interface GtfsConverter
       }
 
       @Override
-      public String to(TimeZone input)
+      public String to(Context context, TimeZone input)
       {
          return (input != null) ? input.getDisplayName() : "";
       }
    };
-   
+
    public static FieldConverter<String, Color> COLOR_CONVERTER = new FieldConverter<String, Color>()
+   {
+
+      @Override
+      public Color from(Context context, Enum field, String input, Color value,
+            boolean required)
+      {
+         Color result = value;
+         if (input != null && !input.isEmpty())
          {
+            result = new Color(Integer.parseInt(input, 16));
+         } else if (required && value == null)
+         {
+            throw new IllegalArgumentException();
+         }
+         return result;
+      }
 
-            @Override
-            public Color from(String input, Color value, boolean required)
-            {
-               Color result = value;
-               if (input != null && !input.isEmpty())
-               {
-                  result = new Color(Integer.parseInt(input, 16));
-               } else if (required && value == null)
-               {
-                  throw new IllegalArgumentException();
-               }
-               return result;
-            }
-
-            @Override
-            public String to(Color input)
-            {
-               return (input != null) ? Integer.toHexString(input.getRGB()).substring(2) : "";
-            }
-         };
+      @Override
+      public String to(Context context, Color input)
+      {
+         return (input != null) ? Integer.toHexString(input.getRGB())
+               .substring(2) : "";
+      }
+   };
 
    public static FieldConverter<String, GtfsTime> GTFSTIME_CONVERTER = new FieldConverter<String, GtfsTime>()
    {
@@ -318,7 +335,8 @@ public interface GtfsConverter
             .getTimeInstance(DateFormat.MEDIUM);
 
       @Override
-      public GtfsTime from(String input, GtfsTime value, boolean required)
+      public GtfsTime from(Context context, Enum field, String input,
+            GtfsTime value, boolean required)
       {
          GtfsTime result = value;
          if (input != null && !input.isEmpty())
@@ -332,7 +350,7 @@ public interface GtfsConverter
       }
 
       @Override
-      public String to(GtfsTime input)
+      public String to(Context context, GtfsTime input)
       {
          String result = "";
          if (input != null && input.getTime() != null)
@@ -418,7 +436,8 @@ public interface GtfsConverter
    {
 
       @Override
-      public PickupType from(String input, PickupType value, boolean required)
+      public PickupType from(Context context, Enum field, String input,
+            PickupType value, boolean required)
       {
          PickupType result = value;
          if (input != null && !input.isEmpty())
@@ -433,7 +452,7 @@ public interface GtfsConverter
       }
 
       @Override
-      public String to(PickupType input)
+      public String to(Context context, PickupType input)
       {
          String result = "0";
          if (input != null)
@@ -449,7 +468,8 @@ public interface GtfsConverter
    {
 
       @Override
-      public DropOffType from(String input, DropOffType value, boolean required)
+      public DropOffType from(Context context, Enum field, String input,
+            DropOffType value, boolean required)
       {
          DropOffType result = value;
          if (input != null && !input.isEmpty())
@@ -464,7 +484,7 @@ public interface GtfsConverter
       }
 
       @Override
-      public String to(DropOffType input)
+      public String to(Context context, DropOffType input)
       {
          String result = "0";
          if (input != null)
@@ -480,8 +500,8 @@ public interface GtfsConverter
    {
 
       @Override
-      public ExceptionType from(String input, ExceptionType value,
-            boolean required)
+      public ExceptionType from(Context context, Enum field, String input,
+            ExceptionType value, boolean required)
       {
          ExceptionType result = value;
          if (input != null && !input.isEmpty())
@@ -496,7 +516,7 @@ public interface GtfsConverter
       }
 
       @Override
-      public String to(ExceptionType input)
+      public String to(Context context, ExceptionType input)
       {
          String result = "1";
          if (input != null)
@@ -512,7 +532,8 @@ public interface GtfsConverter
    {
 
       @Override
-      public RouteType from(String input, RouteType value, boolean required)
+      public RouteType from(Context context, Enum field, String input,
+            RouteType value, boolean required)
       {
          RouteType result = value;
          if (input != null && !input.isEmpty())
@@ -527,7 +548,7 @@ public interface GtfsConverter
       }
 
       @Override
-      public String to(RouteType input)
+      public String to(Context context, RouteType input)
       {
          String result = "0";
          if (input != null)
@@ -543,8 +564,8 @@ public interface GtfsConverter
    {
 
       @Override
-      public LocationType from(String input, LocationType value,
-            boolean required)
+      public LocationType from(Context context, Enum field, String input,
+            LocationType value, boolean required)
       {
          LocationType result = value;
          if (input != null && !input.isEmpty())
@@ -559,7 +580,7 @@ public interface GtfsConverter
       }
 
       @Override
-      public String to(LocationType input)
+      public String to(Context context, LocationType input)
       {
          String result = "0";
          if (input != null)
@@ -575,8 +596,8 @@ public interface GtfsConverter
    {
 
       @Override
-      public WheelchairBoardingType from(String input,
-            WheelchairBoardingType value, boolean required)
+      public WheelchairBoardingType from(Context context, Enum field,
+            String input, WheelchairBoardingType value, boolean required)
       {
          WheelchairBoardingType result = value;
          if (input != null && !input.isEmpty())
@@ -591,7 +612,7 @@ public interface GtfsConverter
       }
 
       @Override
-      public String to(WheelchairBoardingType input)
+      public String to(Context context, WheelchairBoardingType input)
       {
          String result = "0";
          if (input != null)
@@ -607,8 +628,8 @@ public interface GtfsConverter
    {
 
       @Override
-      public DirectionType from(String input, DirectionType value,
-            boolean required)
+      public DirectionType from(Context context, Enum field, String input,
+            DirectionType value, boolean required)
       {
          DirectionType result = value;
          if (input != null && !input.isEmpty())
@@ -623,7 +644,7 @@ public interface GtfsConverter
       }
 
       @Override
-      public String to(DirectionType input)
+      public String to(Context context, DirectionType input)
       {
          String result = "0";
          if (input != null)
@@ -634,45 +655,45 @@ public interface GtfsConverter
          return result;
       }
    };
-   
+
    public static FieldConverter<String, WheelchairAccessibleType> WHEELCHAIRACCESSIBLETYPE_CONVERTER = new FieldConverter<String, WheelchairAccessibleType>()
+   {
+
+      @Override
+      public WheelchairAccessibleType from(Context context, Enum field,
+            String input, WheelchairAccessibleType value, boolean required)
+      {
+         WheelchairAccessibleType result = value;
+         if (input != null && !input.isEmpty())
          {
+            int ordinal = Integer.parseInt(input, 10);
+            result = WheelchairAccessibleType.values()[ordinal];
+         } else if (required && value == null)
+         {
+            throw new IllegalArgumentException();
+         }
+         return result;
+      }
 
-            @Override
-            public WheelchairAccessibleType from(String input,
-                  WheelchairAccessibleType value, boolean required)
-            {
-               WheelchairAccessibleType result = value;
-               if (input != null && !input.isEmpty())
-               {
-                  int ordinal = Integer.parseInt(input, 10);
-                  result = WheelchairAccessibleType.values()[ordinal];
-               } else if (required && value == null)
-               {
-                  throw new IllegalArgumentException();
-               }
-               return result;
-            }
+      @Override
+      public String to(Context context, WheelchairAccessibleType input)
+      {
+         String result = "0";
+         if (input != null)
+         {
+            result = String.valueOf(input.ordinal());
+         }
 
-            @Override
-            public String to(WheelchairAccessibleType input)
-            {
-               String result = "0";
-               if (input != null)
-               {
-                  result = String.valueOf(input.ordinal());
-               }
-
-               return result;
-            }
-         };
+         return result;
+      }
+   };
 
    public static FieldConverter<String, BikesAllowedType> BIKESALLOWEDTYPE_CONVERTER = new FieldConverter<String, BikesAllowedType>()
    {
 
       @Override
-      public BikesAllowedType from(String input, BikesAllowedType value,
-            boolean required)
+      public BikesAllowedType from(Context context, Enum field, String input,
+            BikesAllowedType value, boolean required)
       {
          BikesAllowedType result = value;
          if (input != null && !input.isEmpty())
@@ -687,7 +708,7 @@ public interface GtfsConverter
       }
 
       @Override
-      public String to(BikesAllowedType input)
+      public String to(Context context, BikesAllowedType input)
       {
          String result = "0";
          if (input != null)
@@ -698,55 +719,73 @@ public interface GtfsConverter
          return result;
       }
    };
-   
-   
+
    public static FieldConverter<String, TransferType> TRANSFERTYPE_CONVERTER = new FieldConverter<String, TransferType>()
-         {
-
-            @Override
-            public TransferType from(String input, TransferType value,
-                  boolean required)
-            {
-               TransferType result = value;
-               if (input != null && !input.isEmpty())
-               {
-                  int ordinal = Integer.parseInt(input, 10);
-                  result = TransferType.values()[ordinal];
-               } else if (required && value == null)
-               {
-                  throw new IllegalArgumentException();
-               }
-               return result;
-            }
-
-            @Override
-            public String to(TransferType input)
-            {
-               String result = "0";
-               if (input != null)
-               {
-                  result = String.valueOf(input.ordinal());
-               }
-
-               return result;
-            }
-         };
-
-   public abstract class FieldConverter<F, T> extends Converter<F, T>
    {
 
       @Override
-      public T from(F input)
+      public TransferType from(Context context, Enum field, String input,
+            TransferType value, boolean required)
       {
-         return from(input, null, false);
+         TransferType result = value;
+         if (input != null && !input.isEmpty())
+         {
+            int ordinal = Integer.parseInt(input, 10);
+            result = TransferType.values()[ordinal];
+         } else if (required && value == null)
+         {
+            throw new IllegalArgumentException();
+         }
+         return result;
       }
 
+      @Override
+      public String to(Context context, TransferType input)
+      {
+         String result = "0";
+         if (input != null)
+         {
+            result = String.valueOf(input.ordinal());
+         }
+
+         return result;
+      }
+
+   };
+
+   public abstract class FieldConverter<F, T>
+   {
+
+      // TODO [DSU] modif exporter
       public T from(F input, boolean required)
       {
-         return from(input, null, required);
+         return from(null, null, null, required);
       }
 
-      public abstract T from(F input, T value, boolean required);
+      public T from(F input, T value, boolean required)
+      {
+         return from(null, null, input, value, required);
+      }
+
+      public T from(Context context, Enum field, F input)
+      {
+         return from(context, field, input, null, false);
+      }
+
+      public T from(Context context, Enum field, F input, boolean required)
+      {
+         return from(context, field, input, null, required);
+      }
+
+      public abstract T from(Context context, Enum field, F input, T value,
+            boolean required);
+
+      public F to(T input)
+      {
+         return to(null, input);
+      }
+
+      public abstract F to(Context context, T input);
 
    }
 

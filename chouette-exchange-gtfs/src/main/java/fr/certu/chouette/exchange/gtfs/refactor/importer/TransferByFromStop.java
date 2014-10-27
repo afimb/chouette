@@ -26,7 +26,7 @@ public class TransferByFromStop extends IndexImpl<GtfsTransfer> implements
    }
 
    @Override
-   protected GtfsTransfer build(GtfsIterator reader, int id)
+   protected GtfsTransfer build(GtfsIterator reader, Context context)
    {
       int i = 0;
       for (FIELDS field : FIELDS.values())
@@ -35,11 +35,16 @@ public class TransferByFromStop extends IndexImpl<GtfsTransfer> implements
       }
 
       i = 0;
+      int id = (int) context.get(Context.ID);
       bean.setId(id);
-      bean.setFromStopId(STRING_CONVERTER.from(array[i++], true));
-      bean.setToStopId(STRING_CONVERTER.from(array[i++], true));
-      bean.setTransferType(TRANSFERTYPE_CONVERTER.from(array[i++], true));
-      bean.setMinTransferTime(INTEGER_CONVERTER.from(array[i++], false));
+      bean.setFromStopId(STRING_CONVERTER.from(context, FIELDS.from_stop_id,
+            array[i++], true));
+      bean.setToStopId(STRING_CONVERTER.from(context, FIELDS.to_stop_id,
+            array[i++], true));
+      bean.setTransferType(TRANSFERTYPE_CONVERTER.from(context,
+            FIELDS.transfer_type, array[i++], true));
+      bean.setMinTransferTime(INTEGER_CONVERTER.from(context,
+            FIELDS.min_transfer_time, array[i++], false));
 
       return bean;
    }

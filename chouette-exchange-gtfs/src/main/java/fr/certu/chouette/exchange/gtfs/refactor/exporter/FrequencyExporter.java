@@ -31,12 +31,12 @@ public class FrequencyExporter extends ExporterImpl<GtfsFrequency> implements
    @Override
    public void export(GtfsFrequency bean) throws IOException
    {
-      write(FREQUENCY_CONVERTER.to(bean));
+      write(CONVERTER.to(bean));
    }
 
-   public static Converter<String, GtfsFrequency> FREQUENCY_CONVERTER = new Converter<String, GtfsFrequency>()
+   public static Converter<String, GtfsFrequency> CONVERTER = new Converter<String, GtfsFrequency>()
    {
- 
+
       @Override
       public GtfsFrequency from(String input)
       {
@@ -48,7 +48,8 @@ public class FrequencyExporter extends ExporterImpl<GtfsFrequency> implements
          bean.setStartTime(GTFSTIME_CONVERTER.from(values.get(i++), true));
          bean.setEndTime(GTFSTIME_CONVERTER.from(values.get(i++), true));
          bean.setHeadwaySecs(INTEGER_CONVERTER.from(values.get(i++), true));
-         bean.setExactTimes(BOOLEAN_CONVERTER.from(values.get(i++), false, false));
+         bean.setExactTimes(BOOLEAN_CONVERTER.from(values.get(i++), false,
+               false));
 
          return bean;
       }
@@ -63,7 +64,7 @@ public class FrequencyExporter extends ExporterImpl<GtfsFrequency> implements
          values.add(GTFSTIME_CONVERTER.to(input.getEndTime()));
          values.add(INTEGER_CONVERTER.to(input.getHeadwaySecs()));
          values.add(BOOLEAN_CONVERTER.to(input.getExactTimes()));
-     
+
          result = Tokenizer.untokenize(values);
          return result;
       }

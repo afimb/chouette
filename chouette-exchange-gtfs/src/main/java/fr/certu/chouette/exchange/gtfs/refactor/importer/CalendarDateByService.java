@@ -2,8 +2,6 @@ package fr.certu.chouette.exchange.gtfs.refactor.importer;
 
 import java.io.IOException;
 
-import fr.certu.chouette.exchange.gtfs.refactor.importer.CalendarByService.FIELDS;
-import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsCalendar;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsCalendarDate;
 
 public class CalendarDateByService extends IndexImpl<GtfsCalendarDate>
@@ -27,7 +25,7 @@ public class CalendarDateByService extends IndexImpl<GtfsCalendarDate>
    }
 
    @Override
-   protected GtfsCalendarDate build(GtfsIterator reader, int id)
+   protected GtfsCalendarDate build(GtfsIterator reader, Context context)
    {
       int i = 0;
       for (FIELDS field : FIELDS.values())
@@ -36,10 +34,13 @@ public class CalendarDateByService extends IndexImpl<GtfsCalendarDate>
       }
 
       i = 0;
+      int id = (int) context.get(Context.ID);
       bean.setId(id);
-      bean.setServiceId(STRING_CONVERTER.from(array[i++], true));
-      bean.setDate(DATE_CONVERTER.from(array[i++], true));
-      bean.setExceptionType(EXCEPTIONTYPE_CONVERTER.from(array[i++], true));
+      bean.setServiceId(STRING_CONVERTER.from(context, FIELDS.service_id,
+            array[i++], true));
+      bean.setDate(DATE_CONVERTER.from(context, FIELDS.date, array[i++], true));
+      bean.setExceptionType(EXCEPTIONTYPE_CONVERTER.from(context,
+            FIELDS.exception_type, array[i++], true));
 
       return bean;
    }

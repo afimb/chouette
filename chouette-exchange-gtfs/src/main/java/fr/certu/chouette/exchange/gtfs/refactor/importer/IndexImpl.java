@@ -23,321 +23,440 @@ import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
 @Log4j
-public abstract class IndexImpl<T> extends AbstractIndex<T> {
+public abstract class IndexImpl<T> extends AbstractIndex<T>
+{
 
-	protected String _name;
-	protected String _id;
-	protected Map<String, Integer> _fields;
-	protected Map<String, Token> _tokens = new LinkedHashMap<String, Token>();
+   protected String _path;
+   protected String _key;
+   protected Map<String, Integer> _fields;
+   protected Map<String, Token> _tokens = new LinkedHashMap<String, Token>();
 
-	private GtfsIterator _reader;
-	private FileChannel _channel1;
-	private MappedByteBuffer _buffer;
-	private IntBuffer _index;
-	private FileChannel _channel2;
-	private File _temp;
-	private int _total;
-	private boolean _unique;
+   private GtfsIterator _reader;
+   private FileChannel _channel1;
+   private MappedByteBuffer _buffer;
+   private IntBuffer _index;
+   private FileChannel _channel2;
+   private File _temp;
+   private int _total;
+   private boolean _unique;
 
-	private static final String LINES = "lines";
+   // private IndexIterator _iterator;
 
-	public IndexImpl(String name, String id) throws IOException {
-		this(name, id, true);
-	}
+   public IndexImpl(String name, String id) throws IOException
+   {
+      this(name, id, true);
+   }
 
-	public IndexImpl(String name, String id, boolean unique) throws IOException {
-		_name = name;
-		_id = id;
-		_unique = unique;
-		initialize();
-	}
+   public IndexImpl(String name, String id, boolean unique) throws IOException
+   {
+      _path = name;
+      _key = id;
+      _unique = unique;
+      initialize();
+   }
 
-	@Override
-	protected void initialize() throws IOException {
-		RandomAccessFile file = new RandomAccessFile(_name, "r");
-		_channel1 = file.getChannel();
-		_buffer = _channel1.map(FileChannel.MapMode.READ_ONLY, 0,
-				_channel1.size());
-		_buffer.load();
-		_reader = new GtfsIteratorImpl(_buffer, 0);
-		_reader.next();
-		_fields = new HashMap<String, Integer>();
-		for (int i = 0; i < _reader.getFieldCount(); i++) {
-			String key = _reader.getValue(i);
-			_fields.put(key, i);
-		}
-		index();
-	}
+   private Context getContext()
+   {
+      Context context = new Context();
+      context.put(Context.PATH, _path);
+      return context;
+   }
 
-	@Override
-	public void dispose() {
-		try {
-			_reader.dispose();
-			_channel1.close();
-			_channel2.close();
-			_temp.delete();
+   @Override
+   protected void initialize() throws IOException
+   {
+      RandomAccessFile file = new RandomAccessFile(_path, "r");
+      _channel1 = file.getChannel();
+      _buffer = _channel1.map(FileChannel.MapMode.READ_ONLY, 0,
+            _channel1.size());
+      _buffer.load();
+      _reader = new GtfsIteratorImpl(_buffer, 0);
+      _reader.next();
+      _fields = new HashMap<String, Integer>();
+      for (int i = 0; i < _reader.getFieldCount(); i++)
+      {
+         String key = _reader.getValue(i);
+         _fields.put(key, i);
+      }
 
-		} catch (IOException ignored) {
-		}
-	}
+      index();
+      // _iterator = new IndexIterator(ByteBuffer.allocate(0), _fields.size());
 
-	@Override
-	public Iterator<T> iterator() {
-		return new Iterator<T>() {
+   }
 
-			private Iterator<Token> _tokens = tokenIterator();
-			private GTFSIterator _iterator = null;
+   @Override
+   public void dispose()
+   {
+      try
+      {
+         _reader.dispose();
+         _channel1.close();
+         _channel2.close();
+         _temp.delete();
 
-			@Override
-			public boolean hasNext() {
-				boolean result = false;
-				if (_iterator != null && _iterator.hasNext()) {
-					result = true;
-				} else if (_tokens.hasNext()) {
-					result = true;
-				}
-				return result;
-			}
+      } catch (IOException ignored)
+      {
+      }
+   }
 
-			@Override
-			public T next() {
-				T result = null;
-				if (_iterator != null && _iterator.hasNext()) {
-					result = _iterator.next();
-				} else if (_tokens.hasNext()) {
-					Token token = _tokens.next();
-					ByteBuffer buffer = getBuffer(token);
-					_iterator = new GTFSIterator(buffer);
-					result = _iterator.next();
-				}
-				return result;
-			}
+   @Override
+   public Iterator<T> iterator()
+   {
+      return new Iterator<T>()
+      {
 
-			@Override
-			public void remove() {
-				throw new UnsupportedOperationException();
-			}
+         private Iterator<Token> _tokens = tokenIterator();
+         private IndexIterator _iterator = null;
+         private Context _context = getContext();
 
-		};
-	}
+         @Override
+         public boolean hasNext()
+         {
+            boolean result = false;
+            if (_iterator != null && _iterator.hasNext())
+            {
+               result = true;
+            } else if (_tokens.hasNext())
+            {
+               result = true;
+            }
+            return result;
+         }
 
-	@Override
-	protected Iterator<Token> tokenIterator() {
-		return _tokens.values().iterator();
-	}
+         @Override
+         public T next()
+         {
+            T result = null;
+            if (_iterator != null && _iterator.hasNext())
+            {
+               result = _iterator.next();
+            } else if (_tokens.hasNext())
+            {
+               Token token = _tokens.next();
+               ByteBuffer buffer = getBuffer(token, _context);
+               _iterator = new IndexIterator(buffer, _context);
+               result = _iterator.next();
+            }
+            return result;
+         }
 
-	@Override
-	public Iterator<String> keyIterator() {
-		return _tokens.keySet().iterator();
-	}
+         @Override
+         public void remove()
+         {
+            throw new UnsupportedOperationException();
+         }
 
-	@Override
-	public Iterator<T> valuesIterator(String key) {
-		ByteBuffer buffer = getBuffer(key);
-		return new GTFSIterator(buffer);
-	}
+      };
+   }
 
-	@Override
-	public boolean containsKey(String key) {
-		return _tokens.containsKey(key);
-	}
+   @Override
+   protected Iterator<Token> tokenIterator()
+   {
+      return _tokens.values().iterator();
+   }
 
-	@Override
-	public T getValue(String key) {
-		return valuesIterator(key).next();
-	}
+   @Override
+   public Iterable<String> keys()
+   {
+      return _tokens.keySet();
+   }
 
-	@Override
-	public int getLength() {
-		return _total;
-	}
+   @Override
+   public Iterable<T> values(final String key)
+   {
+      return new Iterable<T>()
+      {
 
-	@Override
-	protected Map<String, Token> index() throws IOException {
-		Monitor monitor = MonitorFactory.start();
-		_total = 1;
-		_reader.setPosition(0);
-		_reader.next();
+         private Context _context = getContext();
 
-		while (_reader.hasNext()) {
-			_reader.next();
+         @Override
+         public Iterator<T> iterator()
+         {
+            ByteBuffer buffer = getBuffer(key, _context);
+            return new IndexIterator(buffer, _context);
+         }
+      };
+   }
 
-			String key = getField(_id);
-			Token token = _tokens.get(key);
+   @Override
+   public boolean containsKey(String key)
+   {
+      return _tokens.containsKey(key);
+   }
 
-			if (token == null) {
-				token = new Token();
-				token.offset = 0;
-				token.lenght = 1;
-				_tokens.put(key, token);
-			} else {
-				if (_unique) {
-					throw new GtfsException();
-				}
-				token.lenght++;
-			}
-			_total++;
-		}
+   @Override
+   public T getValue(String key)
+   {
+      T result = null;
+      Context context = getContext();
+      ByteBuffer buffer = getBuffer(key, context);
+      IndexIterator iterator = new IndexIterator(buffer, context);
+      result = iterator.next();
+      return result;
+   }
 
-		String name = Paths.get(_name).getFileName().toString();
-		_temp = File.createTempFile(name + ".", ".index");
-		_temp.deleteOnExit();
-		RandomAccessFile file = new RandomAccessFile(_temp, "rw");
-		_channel2 = file.getChannel();
-		_index = _channel2.map(FileChannel.MapMode.READ_WRITE, 0, _total * 8)
-				.asIntBuffer();
-		for (int i = 0; i < _total; i++) {
-			_index.put(-1);
-			_index.put(-1);
-		}
+   @Override
+   public int getLength()
+   {
+      return _total;
+   }
 
-		Token previous = null;
-		for (String key : _tokens.keySet()) {
-			Token token = _tokens.get(key);
-			if (previous != null) {
-				token.offset = previous.offset + previous.lenght * 2;
-			}
-			previous = token;
-		}
+   @Override
+   protected Map<String, Token> index() throws IOException
+   {
+      Monitor monitor = MonitorFactory.start();
+      _total = 1;
+      _reader.setPosition(0);
+      _reader.next();
 
-		_reader.setPosition(0);
-		_reader.next();
-		int position = _reader.getPosition();
-		int line = 1;
-		while (_reader.hasNext()) {
-			_reader.next();
-			String key = getField(_id);
-			Token token = _tokens.get(key);
-			for (int i = 0; i < token.lenght; i++) {
-				int n = token.offset + i * 2;
-				if (_index.get(n) == -1) {
-					_index.put(n, position);
-					_index.put(n + 1, ++line);
-					break;
-				}
-			}
-			position = _reader.getPosition();
-		}
+      while (_reader.hasNext())
+      {
+         _reader.next();
 
-		log.debug("[DSU] index " + _name + " " + _tokens.size() + " objects "
-				+ monitor.stop());
-		return _tokens;
-	}
+         String key = getField(_key);
+         Token token = _tokens.get(key);
 
-	@Override
-	protected ByteBuffer getBuffer(String key) {
-		Token token = _tokens.get(key);
-		return getBuffer(token);
-	}
+         if (token == null)
+         {
+            token = new Token();
+            token.offset = 0;
+            token.lenght = 1;
+            _tokens.put(key, token);
+         } else
+         {
+            if (_unique)
+            {
+               Context context = getContext();
+               context.put(Context.ID, _total);
+               context.put(Context.FIELD, _key);
+               context.put(Context.CODE, GtfsException.ERROR.DUPLICATE_FIELD);
+               throw new GtfsException(context);
+            }
+            token.lenght++;
+         }
+         _total++;
+      }
 
-	@Override
-	protected ByteBuffer getBuffer(Token token) {
-		int offset = token.offset;
-		int lenght = token.lenght;
-		List<Integer> lines = new ArrayList<Integer>(lenght);
-		List<ByteBuffer> list = new ArrayList<ByteBuffer>(lenght);
-		for (int i = 0; i < lenght; i++) {
-			int n = offset + i * 2;
-			int position = _index.get(n);
-			int line = _index.get(n + 1);
-			lines.add(line);
-			_reader.setPosition(position);
-			ByteBuffer value = _reader.getBuffer();
-			list.add(value);
-		}
-		Context context = new Context();
-		context.put(LINES, lines);
-		set(context);
-		return concat(list);
-	}
+      String name = Paths.get(_path).getFileName().toString();
+      _temp = File.createTempFile(name + ".", ".index");
+      _temp.deleteOnExit();
+      RandomAccessFile file = new RandomAccessFile(_temp, "rw");
+      _channel2 = file.getChannel();
+      _index = _channel2.map(FileChannel.MapMode.READ_WRITE, 0, _total * 8)
+            .asIntBuffer();
+      for (int i = 0; i < _total; i++)
+      {
+         _index.put(-1);
+         _index.put(-1);
+      }
 
-	@Override
-	protected Set<String> getFieldIds() {
-		return _fields.keySet();
-	}
+      Token previous = null;
+      for (String key : _tokens.keySet())
+      {
+         Token token = _tokens.get(key);
+         if (previous != null)
+         {
+            token.offset = previous.offset + previous.lenght * 2;
+         }
+         previous = token;
+      }
 
-	protected String getField(String key) {
-		return getField(_reader, key, "");
-	}
+      _reader.setPosition(0);
+      _reader.next();
+      int position = _reader.getPosition();
+      int line = 1;
+      while (_reader.hasNext())
+      {
+         _reader.next();
+         String key = getField(_key);
+         Token token = _tokens.get(key);
+         for (int i = 0; i < token.lenght; i++)
+         {
+            int n = token.offset + i * 2;
+            if (_index.get(n) == -1)
+            {
+               _index.put(n, position);
+               _index.put(n + 1, ++line);
+               break;
+            }
+         }
+         position = _reader.getPosition();
+      }
 
-	protected String getField(String key, String value) {
-		return getField(_reader, key, value);
-	}
+      log.debug("[DSU] index " + _path + " " + _tokens.size() + " objects "
+            + monitor.stop());
+      return _tokens;
+   }
 
-	protected String getField(GtfsIterator reader, String key) {
-		return getField(reader, key, "");
-	}
+   @Override
+   protected ByteBuffer getBuffer(String key, Context context)
+   {
+      Token token = _tokens.get(key);
+      if (token != null)
+      {
+         return getBuffer(token, context);
+      } else
+      {
+         return ByteBuffer.allocate(0);
+      }
+   }
 
-	protected String getField(GtfsIterator reader, String key, String value) {
-		Integer index = _fields.get(key);
-		if (index == null) {
-			return value;
-		}
-		String result = reader.getValue(index);
-		if (result == null || result.isEmpty()) {
-			return value;
-		}
-		return result;
-	}
+   @Override
+   protected ByteBuffer getBuffer(Token token, Context context)
+   {
+      int offset = token.offset;
+      int lenght = token.lenght;
+      List<Integer> lines = new ArrayList<Integer>(lenght);
+      List<ByteBuffer> list = new ArrayList<ByteBuffer>(lenght);
+      for (int i = 0; i < lenght; i++)
+      {
+         int n = offset + i * 2;
+         int position = _index.get(n);
+         // TODO [DSU] line
+         int line = _index.get(n + 1);
+         lines.add(line);
+         _reader.setPosition(position);
+         ByteBuffer value = _reader.getBuffer();
+         list.add(value);
+      }
+      context.put(IDS, lines);
+      return concat(list);
+   }
 
-	private ByteBuffer concat(ByteBuffer... buffers) {
-		return concat(Arrays.asList(buffers));
-	}
+   @Override
+   protected Set<String> getFieldIds()
+   {
+      return _fields.keySet();
+   }
 
-	private ByteBuffer concat(List<ByteBuffer> buffers) {
-		int length = 0;
-		for (ByteBuffer buffer : buffers) {
-			buffer.rewind();
-			length += buffer.remaining();
-		}
-		ByteBuffer result = ByteBuffer.allocate(length);
+   protected String getField()
+   {
+      return _reader.getValue();
+   }
 
-		for (ByteBuffer buffer : buffers) {
-			buffer.rewind();
-			result.put(buffer);
-		}
-		result.rewind();
-		return result;
-	}
+   protected String getField(String key)
+   {
+      return getField(_reader, key, "");
+   }
 
-	private class GTFSIterator implements Iterator<T> {
+   protected String getField(String key, String value)
+   {
+      return getField(_reader, key, value);
+   }
 
-		private GtfsIterator _reader;
-		private int _index;
-		private List<Integer> _lines;
+   protected String getField(GtfsIterator reader, String key)
+   {
+      return getField(reader, key, "");
+   }
 
-		public GTFSIterator(ByteBuffer buffer) {
-			_reader = new GtfsIteratorImpl(buffer, _fields.size());
-			_index = 0;
-		}
+   protected String getField(GtfsIterator reader, String key, String value)
+   {
+      Integer index = _fields.get(key);
+      if (index == null)
+      {
+         return value;
+      }
+      String result = reader.getValue(index);
+      if (result == null || result.isEmpty())
+      {
+         return value;
+      }
+      return result;
+   }
 
-		@Override
-		public T next() {
-			T result = null;
-			if (_reader.hasNext()) {
-				_reader.next();
-				result = build(_reader, getLineNumber());
-				_index++;
-			}
-			return result;
-		}
+   private ByteBuffer concat(ByteBuffer... buffers)
+   {
+      return concat(Arrays.asList(buffers));
+   }
 
-		private int getLineNumber() {
-			if (_lines == null) {
-				Context context = get();
-				_lines = (List<Integer>) context.get(LINES);
-			}
-			return _lines.get(_index);
-		}
+   private ByteBuffer concat(List<ByteBuffer> buffers)
+   {
+      int length = 0;
+      for (ByteBuffer buffer : buffers)
+      {
+         buffer.rewind();
+         length += buffer.remaining();
+      }
+      ByteBuffer result = ByteBuffer.allocate(length);
 
-		@Override
-		public boolean hasNext() {
-			return _reader.hasNext();
-		}
+      for (ByteBuffer buffer : buffers)
+      {
+         buffer.rewind();
+         result.put(buffer);
+      }
+      result.rewind();
+      return result;
+   }
 
-		@Override
-		public void remove() {
-			throw new UnsupportedOperationException();
-		}
-	}
+   private class IndexIterator implements Iterator<T>
+   {
+
+      private GtfsIterator _iterator;
+      private int _index;
+      private List<Integer> _list;
+
+      private Context _context;
+
+      public IndexIterator(ByteBuffer buffer, Context context)
+      {
+         _iterator = new GtfsIteratorImpl(buffer, _fields.size());
+         _index = 0;
+         _context = context;
+      }
+
+      public void setByteBuffer(ByteBuffer buffer)
+      {
+         _iterator.setByteBuffer(buffer);
+         _list = null;
+         _index = 0;
+      }
+
+      // public Context getContext()
+      // {
+      // return _context;
+      // }
+      //
+      // public void setContext(Context context)
+      // {
+      // _context = context;
+      // }
+
+      @Override
+      public T next()
+      {
+         T result = null;
+         if (_iterator.hasNext())
+         {
+            _iterator.next();
+            updateContext();
+            // TODO [DSU] line
+            result = build(_iterator, _context);
+            _index++;
+         }
+         return result;
+      }
+
+      private void updateContext()
+      {
+         int result = -1;
+         if (_list == null)
+         {
+            _list = (List<Integer>) _context.get(IDS);
+         }
+         result = _list.get(_index);
+         _context.put(Context.ID, result);
+      }
+
+      @Override
+      public boolean hasNext()
+      {
+         return _iterator.hasNext();
+      }
+
+      @Override
+      public void remove()
+      {
+         throw new UnsupportedOperationException();
+      }
+   }
 }

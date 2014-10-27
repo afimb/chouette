@@ -273,7 +273,7 @@ public class GtfsImportStopAreaPlugin implements IImportPlugin<StopArea>
          }
          try
          {
-            importer.getTransferByToStop();
+            importer.getTransferByFromStop();
          } catch (GtfsException e)
          {
             // not mandatory

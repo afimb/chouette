@@ -1,43 +1,64 @@
 package fr.certu.chouette.exchange.gtfs.refactor.importer;
 
-import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsObject;
+import lombok.Getter;
+import lombok.ToString;
 
-public class GtfsException extends IllegalArgumentException
+@ToString
+public class GtfsException extends RuntimeException
 {
-
    private static final long serialVersionUID = 1L;
-   private GtfsObject _bean;
 
-   public GtfsException()
+   public enum ERROR
    {
-      super();
+      MISSING_FIELD, INVALID_FORMAT, MISSING_FOREIGN_KEY, DUPLICATE_FIELD
    }
 
-   public GtfsException(String message, Throwable cause)
-   {
-      super(message, cause);
+   @Getter
+   private String path;
+   @Getter
+   private Integer id;
+   @Getter
+   private String field;
+   @Getter
+   private ERROR code;
 
+   @Getter
+   private String value;
+
+   public GtfsException(Context context)
+   {
+      this(context, null);
    }
 
-   public GtfsException(String s)
-   {
-      super(s);
-   }
-
-   public GtfsException(Throwable cause)
+   public GtfsException(Context context, Throwable cause)
    {
       super(cause);
+      this.path = (String) context.get(Context.PATH);
+      this.id = (Integer) context.get(Context.ID);
+      this.field = (String) context.get(Context.FIELD);
+      this.code = (ERROR) context.get(Context.CODE);
+      this.value = context.get(Context.VALUE).toString();
    }
 
-   public GtfsException(String message, GtfsObject bean)
+   public GtfsException(String path, Integer id, String field, ERROR code,
+         String value)
    {
-      this(message, bean, null);
+      super();
+      this.path = path;
+      this.id = id;
+      this.field = field;
+      this.code = code;
+      this.value = value;
    }
 
-   public GtfsException(String message, GtfsObject bean, Throwable cause)
+   public GtfsException(String string)
    {
-      super(message, cause);
-      _bean = bean;
+      // TODO Auto-generated constructor stub
+   }
+
+   public GtfsException(Exception e)
+   {
+      // TODO Auto-generated constructor stub
    }
 
 }

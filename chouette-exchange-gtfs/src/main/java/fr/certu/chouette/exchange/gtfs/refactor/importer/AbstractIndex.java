@@ -2,7 +2,6 @@ package fr.certu.chouette.exchange.gtfs.refactor.importer;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -12,7 +11,7 @@ import lombok.ToString;
 public abstract class AbstractIndex<T> implements Index<T>
 {
 
-   public static final ThreadLocal<Context> LOCAL = new ThreadLocal<Context>();
+   public static final String IDS = "ids";
 
    protected abstract void initialize() throws IOException;
 
@@ -20,28 +19,13 @@ public abstract class AbstractIndex<T> implements Index<T>
 
    protected abstract Map<String, Token> index() throws IOException;
 
-   protected abstract ByteBuffer getBuffer(String id);
+   protected abstract ByteBuffer getBuffer(String id, Context context);
 
-   protected abstract ByteBuffer getBuffer(Token id);
+   protected abstract ByteBuffer getBuffer(Token id, Context context);
 
    protected abstract Iterator<Token> tokenIterator();
 
-   protected abstract T build(GtfsIterator reader, int id);
-
-   public static void set(Context context)
-   {
-      LOCAL.set(context);
-   }
-
-   public static void unset()
-   {
-      LOCAL.remove();
-   }
-
-   public static Context get()
-   {
-      return LOCAL.get();
-   }
+   protected abstract T build(GtfsIterator reader, Context context);
 
    @ToString
    class Token
@@ -50,8 +34,4 @@ public abstract class AbstractIndex<T> implements Index<T>
       int lenght = 0;
    }
 
-   static class Context extends HashMap<String, Object>
-   {
-      private static final long serialVersionUID = 1L;
-   }
 }

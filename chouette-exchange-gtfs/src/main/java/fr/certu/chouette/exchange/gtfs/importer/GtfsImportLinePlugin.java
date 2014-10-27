@@ -444,7 +444,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
          }
          try
          {
-            importer.getTransferByToStop();
+            importer.getTransferByFromStop();
          } catch (GtfsException e)
          {
             // not mandatory

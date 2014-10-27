@@ -9,9 +9,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
+import fr.certu.chouette.exchange.gtfs.refactor.exporter.StopExporter;
 
-@ToString
+// @ToString(callSuper=true)
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 public class GtfsStop extends GtfsObject implements Serializable
@@ -66,6 +66,12 @@ public class GtfsStop extends GtfsObject implements Serializable
    @Getter
    @Setter
    private WheelchairBoardingType wheelchairBoarding;
+
+   @Override
+   public String toString()
+   {
+      return id + ":" + StopExporter.CONVERTER.to(this);
+   }
 
    public enum LocationType implements Serializable
    {

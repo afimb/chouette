@@ -1,6 +1,7 @@
 package fr.certu.chouette.exchange.gtfs.refactor.importer;
 
-import java.util.Iterator;
+import java.util.HashMap;
+import java.util.Map;
 
 import lombok.extern.log4j.Log4j;
 
@@ -9,7 +10,14 @@ import org.apache.log4j.BasicConfigurator;
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsAgency;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsCalendar;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsCalendarDate;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsRoute;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStop;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStopTime;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsTransfer;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsTrip;
 
 @Log4j
 public class Main
@@ -21,14 +29,11 @@ public class Main
    public static void main(String[] args)
    {
       BasicConfigurator.configure();
-      Runtime runtime = Runtime.getRuntime();
       Main main = new Main();
 
-      main.printMemory(runtime);
       Monitor monitor = MonitorFactory.start();
-      main.execute();
+      main.test();
       log.debug("[DSU] total : " + monitor.stop());
-      main.printMemory(runtime);
    }
 
    private void parse(GtfsImporter dao, String name, String path, Class clazz)
@@ -102,30 +107,91 @@ public class Main
                FrequencyByTrip.FILENAME, FrequencyByTrip.class);
       }
 
-//      Monitor monitor = MonitorFactory.start();
-//      Index<GtfsStopTime> parser = dao.getStopTimeByTrip();
-//      for (Iterator<GtfsStopTime> values = parser.valuesIterator("6113969740881054"); values
-//            .hasNext();)
-//      {
-//         GtfsStopTime bean = values.next();
-//         System.out.println("[DSU] value : " + bean);
-//         _count++;
-//      }
-//      log.debug("[DSU] get " + _count + " object " + monitor.stop());
-//
-//      monitor = MonitorFactory.start();
-//      System.out.println("[DSU] !!!! value : "
-//            + dao.getStopById().getValue("4035320"));
-//      log.debug("[DSU] get " + _count + " object " + monitor.stop());
-
       dao.dispose();
 
    }
 
-   public static void printMemory(Runtime runtime)
+   private void test()
+   {
+
+      printMemory();
+
+      GtfsImporter dao = new GtfsImporter(PATH);
+
+      Map<String, GtfsStop> _map = new HashMap<String, GtfsStop>();
+
+      for (GtfsStop stop : dao.getStopById())
+      {
+         // System.out.println(stop);
+
+         _map.put(stop.getStopId(), stop);
+      }
+
+      for (GtfsRoute route : dao.getRouteById())
+      {
+         // System.out.println(route);
+
+         GtfsAgency agency = dao.getAgencyById().getValue(route.getAgencyId());
+
+         // System.out.println(agency);
+
+         for (GtfsTrip trip : dao.getTripByRoute().values(route.getRouteId()))
+         {
+
+            // System.out.println(trip);
+
+            for (GtfsStopTime stopTime : dao.getStopTimeByTrip().values(
+                  trip.getTripId()))
+            {
+               // System.out.println(stopTime);
+
+               // GtfsStop stop =
+               // dao.getStopById().getValue(stopTime.getStopId());
+
+               GtfsStop stop = _map.get(stopTime.getStopId());
+               if (stop == null)
+                  throw new NullPointerException();
+            }
+
+            for (GtfsCalendar calendar : dao.getCalendarByService().values(
+                  trip.getServiceId()))
+            {
+               // System.out.println(calendar);
+            }
+
+            for (GtfsCalendarDate date : dao.getCalendarDateByService().values(
+                  trip.getServiceId()))
+            {
+               // System.out.println(date);
+
+            }
+
+         }
+      }
+
+      if (dao.hasTransferImporter())
+      {
+         for (GtfsTransfer transfer : dao.getTransferByFromStop())
+         {
+            dao.getStopById().getValue(transfer.getFromStopId());
+            dao.getStopById().getValue(transfer.getToStopId());
+         }
+      }
+      printMemory();
+
+      dao.dispose();
+
+      printMemory();
+
+   }
+
+   public static void printMemory()
    {
 
       final int MB = 1024 * 1024;
+      Runtime runtime = Runtime.getRuntime();
+
+      runtime.gc();
 
       System.out.println("\n##### Heap utilization statistics [MB] #####");
       System.out.println("Used Memory:"
@@ -135,5 +201,4 @@ public class Main
       System.out.println("Max Memory:" + runtime.maxMemory() / MB);
 
    }
-
 }

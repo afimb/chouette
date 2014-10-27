@@ -154,7 +154,7 @@ public class GtfsImporter
             StopTimeByTrip.FILENAME, StopTimeByTrip.class);
    }
 
-   public Index<GtfsTransfer> getTransferByToStop()
+   public Index<GtfsTransfer> getTransferByFromStop()
    {
       return geImporter(INDEX.TRANSFER_BY_FROM_STOP.name(),
             TransferByFromStop.FILENAME, TransferByFromStop.class);

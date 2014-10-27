@@ -7,9 +7,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
+import fr.certu.chouette.exchange.gtfs.refactor.exporter.CalendarDateExporter;
 
-@ToString
+//@ToString(callSuper=true)
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 public class GtfsCalendarDate extends GtfsObject implements Serializable
@@ -28,6 +28,12 @@ public class GtfsCalendarDate extends GtfsObject implements Serializable
    @Getter
    @Setter
    private ExceptionType exceptionType;
+
+   @Override
+   public String toString()
+   {
+      return id + ":" + CalendarDateExporter.CONVERTER.to(this);
+   }
 
    public enum ExceptionType
    {

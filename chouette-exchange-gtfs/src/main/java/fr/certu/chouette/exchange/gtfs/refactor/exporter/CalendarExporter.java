@@ -31,10 +31,10 @@ public class CalendarExporter extends ExporterImpl<GtfsCalendar> implements
    @Override
    public void export(GtfsCalendar bean) throws IOException
    {
-      write(CALENDAR_CONVERTER.to(bean));
+      write(CONVERTER.to(bean));
    }
 
-   public static Converter<String, GtfsCalendar> CALENDAR_CONVERTER = new Converter<String, GtfsCalendar>()
+   public static Converter<String, GtfsCalendar> CONVERTER = new Converter<String, GtfsCalendar>()
    {
 
       @Override

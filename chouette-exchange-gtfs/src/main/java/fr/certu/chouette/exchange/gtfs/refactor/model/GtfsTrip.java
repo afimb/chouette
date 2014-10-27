@@ -7,9 +7,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
+import fr.certu.chouette.exchange.gtfs.refactor.exporter.TripExporter;
 
-@ToString
+// @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 public class GtfsTrip extends GtfsObject implements Serializable
@@ -56,6 +56,12 @@ public class GtfsTrip extends GtfsObject implements Serializable
    @Getter
    @Setter
    private BikesAllowedType bikesAllowed;
+
+   @Override
+   public String toString()
+   {
+      return id + ":" + TripExporter.CONVERTER.to(this);
+   }
 
    @AllArgsConstructor
    public enum DirectionType implements Serializable

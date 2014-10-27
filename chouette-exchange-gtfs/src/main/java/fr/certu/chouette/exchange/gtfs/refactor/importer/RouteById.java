@@ -18,33 +18,43 @@ public class RouteById extends IndexImpl<GtfsRoute> implements GtfsConverter
 
    private GtfsRoute bean = new GtfsRoute();
    private String[] array = new String[FIELDS.values().length];
-   
+
    public RouteById(String name) throws IOException
    {
       super(name, KEY);
    }
 
    @Override
-   protected GtfsRoute build(GtfsIterator reader, int id)
+   protected GtfsRoute build(GtfsIterator reader, Context context)
    {
       int i = 0;
       for (FIELDS field : FIELDS.values())
       {
-         array[i++] = getField(reader, field.name());        
+         array[i++] = getField(reader, field.name());
       }
-      
+
       i = 0;
-      bean.setId(id);      
-      bean.setRouteId(STRING_CONVERTER.from(array[i++], true));
-      bean.setAgencyId(STRING_CONVERTER.from(array[i++], false));
-      bean.setRouteShortName(STRING_CONVERTER.from(array[i++], true));
-      bean.setRouteLongName(STRING_CONVERTER.from(array[i++], true));
-      bean.setRouteDesc(STRING_CONVERTER.from(array[i++], false));
-      bean.setRouteType(ROUTETYPE_CONVERTER.from(array[i++], true));
-      bean.setRouteUrl(URL_CONVERTER.from(array[i++], false));
-      bean.setRouteColor(COLOR_CONVERTER.from(array[i++], Color.WHITE, false));
-      bean.setRouteTextColor(COLOR_CONVERTER.from(array[i++],Color.BLACK, false));
-     
+      int id = (int) context.get(Context.ID);
+      bean.setId(id);
+      bean.setRouteId(STRING_CONVERTER.from(context, FIELDS.route_id,
+            array[i++], true));
+      bean.setAgencyId(STRING_CONVERTER.from(context, FIELDS.agency_id,
+            array[i++], false));
+      bean.setRouteShortName(STRING_CONVERTER.from(context,
+            FIELDS.route_short_name, array[i++], true));
+      bean.setRouteLongName(STRING_CONVERTER.from(context,
+            FIELDS.route_long_name, array[i++], true));
+      bean.setRouteDesc(STRING_CONVERTER.from(context, FIELDS.route_desc,
+            array[i++], false));
+      bean.setRouteType(ROUTETYPE_CONVERTER.from(context, FIELDS.route_type,
+            array[i++], true));
+      bean.setRouteUrl(URL_CONVERTER.from(context, FIELDS.route_url,
+            array[i++], false));
+      bean.setRouteColor(COLOR_CONVERTER.from(context, FIELDS.route_color,
+            array[i++], Color.WHITE, false));
+      bean.setRouteTextColor(COLOR_CONVERTER.from(context,
+            FIELDS.route_text_color, array[i++], Color.BLACK, false));
+
       return bean;
    }
 
