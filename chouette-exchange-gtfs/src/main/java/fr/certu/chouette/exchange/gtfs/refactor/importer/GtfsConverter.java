@@ -1,13 +1,12 @@
 package fr.certu.chouette.exchange.gtfs.refactor.importer;
 
 import java.awt.Color;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Date;
 import java.sql.Time;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.IllegalFormatException;
 import java.util.TimeZone;
 
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsCalendarDate.ExceptionType;
@@ -28,97 +27,66 @@ public interface GtfsConverter
    public static SimpleDateFormat BASIC_ISO_DATE = new SimpleDateFormat(
          "yyyyMMdd");
 
-   public static FieldConverter<String, String> STRING_CONVERTER = new FieldConverter<String, String>()
+   public static DefaultFieldConverter<String> STRING_CONVERTER = new DefaultFieldConverter<String>()
    {
 
       @Override
-      public String from(Context context, Enum field, String input,
-            String value, boolean required)
+      protected String from(String input) throws Exception
       {
-         String result = value;
-         if (input != null && !input.isEmpty())
-         {
-            result = input.trim();
-         } else if (required && value == null)
-         {
-            context.put(Context.FIELD, field.name());
-            context.put(Context.CODE, GtfsException.ERROR.MISSING_FIELD);
-            throw new GtfsException(context);
-         }
-         return result;
+         return input.trim();
       }
 
       @Override
-      public String to(Context context, String input)
+      protected String to(String input) throws Exception
       {
          return (input != null) ? input.toString() : "";
       }
 
    };
 
-   public static FieldConverter<String, Integer> INTEGER_CONVERTER = new FieldConverter<String, Integer>()
+   public static DefaultFieldConverter<Integer> INTEGER_CONVERTER = new DefaultFieldConverter<Integer>()
    {
 
       @Override
-      public Integer from(Context context, Enum field, String input,
-            Integer value, boolean required)
+      protected Integer from(String input) throws Exception
       {
-         Integer result = value;
-         if (input != null && !input.isEmpty())
-         {
-            result = Integer.parseInt(input, 10);
-         } else if (required && value == null)
-         {
-            context.put(Context.FIELD, field.name());
-            context.put(Context.CODE, GtfsException.ERROR.MISSING_FIELD);
-            throw new GtfsException(context);
-         }
-         return result;
+         return Integer.parseInt(input, 10);
       }
 
       @Override
-      public String to(Context context, Integer input)
+      protected String to(Integer input) throws Exception
       {
          return (input != null) ? input.toString() : "";
       }
 
    };
 
-   public static FieldConverter<String, Boolean> BOOLEAN_CONVERTER = new FieldConverter<String, Boolean>()
+   public static DefaultFieldConverter<Boolean> BOOLEAN_CONVERTER = new DefaultFieldConverter<Boolean>()
    {
 
       @Override
-      public Boolean from(Context context, Enum field, String input,
-            Boolean value, boolean required)
+      protected Boolean from(String input) throws Exception
       {
-         Boolean result = value;
-         if (input != null && !input.isEmpty())
+         boolean value = input.equals("0");
+         if (value)
          {
-            value = input.equals("0");
+            return true;
+         } else
+         {
+            value = input.equals("1");
             if (value)
             {
-               result = true;
+               return false;
             } else
             {
-               value = input.equals("1");
-               if (value)
-               {
-                  result = false;
-               } else
-               {
-                  throw new IllegalArgumentException();
-               }
-            }
 
-         } else if (required && value == null)
-         {
-            throw new IllegalArgumentException();
+               throw new IllegalArgumentException();
+            }
          }
-         return result;
       }
 
       @Override
-      public String to(Context context, Boolean input)
+      protected String to(Boolean input) throws Exception
       {
          return (input != null) ? (input) ? "1" : "0" : "0";
       }
@@ -135,7 +103,15 @@ public interface GtfsConverter
          Float result = value;
          if (input != null && !input.isEmpty())
          {
-            result = Float.parseFloat(input);
+            try
+            {
+               result = Float.parseFloat(input);
+            } catch (Exception e)
+            {
+               context.put(Context.FIELD, field.name());
+               context.put(Context.CODE, GtfsException.ERROR.INVALID_FORMAT);
+               throw new GtfsException(context, e);
+            }
          } else if (required && value == null)
          {
             context.put(Context.FIELD, field.name());
@@ -162,12 +138,20 @@ public interface GtfsConverter
          Double result = value;
          if (input != null && !input.isEmpty())
          {
-            result = Double.parseDouble(input);
+            try
+            {
+               result = Double.parseDouble(input);
+            } catch (Exception e)
+            {
+               context.put(Context.FIELD, field.name());
+               context.put(Context.CODE, GtfsException.ERROR.INVALID_FORMAT);
+               throw new GtfsException(context, e);
+            }
          } else if (required && value == null)
          {
-         } else if (required && value == null)
-         {
-            throw new IllegalArgumentException();
+            context.put(Context.FIELD, field.name());
+            context.put(Context.CODE, GtfsException.ERROR.MISSING_FIELD);
+            throw new GtfsException(context);
          }
          return result;
       }
@@ -189,7 +173,15 @@ public interface GtfsConverter
          Time result = value;
          if (input != null && !input.isEmpty())
          {
-            result = Time.valueOf(input);
+            try
+            {
+               result = Time.valueOf(input);
+            } catch (Exception e)
+            {
+               context.put(Context.FIELD, field.name());
+               context.put(Context.CODE, GtfsException.ERROR.INVALID_FORMAT);
+               throw new GtfsException(context, e);
+            }
          } else if (required && value == null)
          {
             context.put(Context.FIELD, field.name());
@@ -221,14 +213,18 @@ public interface GtfsConverter
             try
             {
                result = new Date(BASIC_ISO_DATE.parse(input).getTime());
-            } catch (ParseException e)
+            } catch (Exception e)
             {
-               throw new IllegalArgumentException();
+               context.put(Context.FIELD, field.name());
+               context.put(Context.CODE, GtfsException.ERROR.INVALID_FORMAT);
+               throw new GtfsException(context, e);
             }
 
          } else if (required && value == null)
          {
-            throw new IllegalArgumentException();
+            context.put(Context.FIELD, field.name());
+            context.put(Context.CODE, GtfsException.ERROR.MISSING_FIELD);
+            throw new GtfsException(context);
          }
          return result;
       }
@@ -257,15 +253,21 @@ public interface GtfsConverter
                String protocol = result.getProtocol();
                if (!(protocol.equals("http") || protocol.equals("https")))
                {
-                  throw new IllegalArgumentException();
+                  context.put(Context.FIELD, field.name());
+                  context.put(Context.CODE, GtfsException.ERROR.INVALID_FORMAT);
+                  throw new GtfsException(context);
                }
-            } catch (MalformedURLException e)
+            } catch (Exception e)
             {
-               throw new IllegalArgumentException(e);
+               context.put(Context.FIELD, field.name());
+               context.put(Context.CODE, GtfsException.ERROR.INVALID_FORMAT);
+               throw new GtfsException(context, e);
             }
          } else if (required && value == null)
          {
-            throw new IllegalArgumentException();
+            context.put(Context.FIELD, field.name());
+            context.put(Context.CODE, GtfsException.ERROR.MISSING_FIELD);
+            throw new GtfsException(context);
          }
          return result;
       }
@@ -287,10 +289,21 @@ public interface GtfsConverter
          TimeZone result = value;
          if (input != null && !input.isEmpty())
          {
-            result = TimeZone.getTimeZone(input);
+            try
+            {
+               result = TimeZone.getTimeZone(input);
+            } catch (Exception e)
+            {
+               context.put(Context.FIELD, field.name());
+               context.put(Context.CODE, GtfsException.ERROR.INVALID_FORMAT);
+               throw new GtfsException(context, e);
+            }
+
          } else if (required && value == null)
          {
-            throw new IllegalArgumentException();
+            context.put(Context.FIELD, field.name());
+            context.put(Context.CODE, GtfsException.ERROR.MISSING_FIELD);
+            throw new GtfsException(context);
          }
          return result;
       }
@@ -312,10 +325,21 @@ public interface GtfsConverter
          Color result = value;
          if (input != null && !input.isEmpty())
          {
-            result = new Color(Integer.parseInt(input, 16));
+            try
+            {
+               result = new Color(Integer.parseInt(input, 16));
+            } catch (Exception e)
+            {
+               context.put(Context.FIELD, field.name());
+               context.put(Context.CODE, GtfsException.ERROR.INVALID_FORMAT);
+               throw new GtfsException(context, e);
+            }
+
          } else if (required && value == null)
          {
-            throw new IllegalArgumentException();
+            context.put(Context.FIELD, field.name());
+            context.put(Context.CODE, GtfsException.ERROR.MISSING_FIELD);
+            throw new GtfsException(context);
          }
          return result;
       }
@@ -344,7 +368,9 @@ public interface GtfsConverter
             result = decode(input);
          } else if (required && value == null)
          {
-            throw new IllegalArgumentException();
+            context.put(Context.FIELD, field.name());
+            context.put(Context.CODE, GtfsException.ERROR.MISSING_FIELD);
+            throw new GtfsException(context);
          }
          return result;
       }
@@ -432,326 +458,220 @@ public interface GtfsConverter
 
    };
 
-   public static FieldConverter<String, PickupType> PICKUP_CONVERTER = new FieldConverter<String, PickupType>()
+   public static DefaultFieldConverter<PickupType> PICKUP_CONVERTER = new DefaultFieldConverter<PickupType>()
    {
 
       @Override
-      public PickupType from(Context context, Enum field, String input,
-            PickupType value, boolean required)
+      protected PickupType from(String input) throws Exception
       {
-         PickupType result = value;
-         if (input != null && !input.isEmpty())
-         {
-            int ordinal = Integer.parseInt(input, 10);
-            result = PickupType.values()[ordinal];
-         } else if (required && value == null)
-         {
-            throw new IllegalArgumentException();
-         }
-         return result;
+         int ordinal = Integer.parseInt(input, 10);
+         return PickupType.values()[ordinal];
       }
 
       @Override
-      public String to(Context context, PickupType input)
+      protected String to(PickupType input) throws Exception
       {
-         String result = "0";
-         if (input != null)
-         {
-            result = String.valueOf(input.ordinal());
-         }
-
-         return result;
+         return String.valueOf(input.ordinal());
       }
    };
 
-   public static FieldConverter<String, DropOffType> DROPOFFTYPE_CONVERTER = new FieldConverter<String, DropOffType>()
+   public static DefaultFieldConverter<DropOffType> DROPOFFTYPE_CONVERTER = new DefaultFieldConverter<DropOffType>()
    {
 
       @Override
-      public DropOffType from(Context context, Enum field, String input,
-            DropOffType value, boolean required)
+      protected DropOffType from(String input) throws Exception
       {
-         DropOffType result = value;
-         if (input != null && !input.isEmpty())
-         {
-            int ordinal = Integer.parseInt(input, 10);
-            result = DropOffType.values()[ordinal];
-         } else if (required && value == null)
-         {
-            throw new IllegalArgumentException();
-         }
-         return result;
+         int ordinal = Integer.parseInt(input, 10);
+         return DropOffType.values()[ordinal];
       }
 
       @Override
-      public String to(Context context, DropOffType input)
+      protected String to(DropOffType input) throws Exception
       {
-         String result = "0";
-         if (input != null)
-         {
-            result = String.valueOf(input.ordinal());
-         }
-
-         return result;
+         return String.valueOf(input.ordinal());
       }
    };
 
-   public static FieldConverter<String, ExceptionType> EXCEPTIONTYPE_CONVERTER = new FieldConverter<String, ExceptionType>()
+   public static DefaultFieldConverter<ExceptionType> EXCEPTIONTYPE_CONVERTER = new DefaultFieldConverter<ExceptionType>()
    {
 
       @Override
-      public ExceptionType from(Context context, Enum field, String input,
-            ExceptionType value, boolean required)
+      protected ExceptionType from(String input) throws Exception
       {
-         ExceptionType result = value;
-         if (input != null && !input.isEmpty())
-         {
-            int ordinal = Integer.parseInt(input, 10);
-            result = ExceptionType.values()[ordinal];
-         } else if (required && value == null)
-         {
-            throw new IllegalArgumentException();
-         }
-         return result;
+         int ordinal = Integer.parseInt(input, 10);
+         return ExceptionType.values()[ordinal];
       }
 
       @Override
-      public String to(Context context, ExceptionType input)
+      protected String to(ExceptionType input) throws Exception
       {
-         String result = "1";
-         if (input != null)
-         {
-            result = String.valueOf(input.ordinal());
-         }
-
-         return result;
+         return String.valueOf(input.ordinal());
       }
    };
 
-   public static FieldConverter<String, RouteType> ROUTETYPE_CONVERTER = new FieldConverter<String, RouteType>()
+   public static DefaultFieldConverter<RouteType> ROUTETYPE_CONVERTER = new DefaultFieldConverter<RouteType>()
    {
 
       @Override
-      public RouteType from(Context context, Enum field, String input,
-            RouteType value, boolean required)
+      protected RouteType from(String input) throws Exception
       {
-         RouteType result = value;
-         if (input != null && !input.isEmpty())
-         {
-            int ordinal = Integer.parseInt(input, 10);
-            result = RouteType.values()[ordinal];
-         } else if (required && value == null)
-         {
-            throw new IllegalArgumentException();
-         }
-         return result;
+         int ordinal = Integer.parseInt(input, 10);
+         return RouteType.values()[ordinal];
       }
 
       @Override
-      public String to(Context context, RouteType input)
+      protected String to(RouteType input) throws Exception
       {
-         String result = "0";
-         if (input != null)
-         {
-            result = String.valueOf(input.ordinal());
-         }
-
-         return result;
+         return String.valueOf(input.ordinal());
       }
    };
 
-   public static FieldConverter<String, LocationType> LOCATIONTYPE_CONVERTER = new FieldConverter<String, LocationType>()
+   public static DefaultFieldConverter<LocationType> LOCATIONTYPE_CONVERTER = new DefaultFieldConverter<LocationType>()
    {
 
       @Override
-      public LocationType from(Context context, Enum field, String input,
-            LocationType value, boolean required)
+      protected LocationType from(String input) throws Exception
       {
-         LocationType result = value;
-         if (input != null && !input.isEmpty())
-         {
-            int ordinal = Integer.parseInt(input, 10);
-            result = LocationType.values()[ordinal];
-         } else if (required && value == null)
-         {
-            throw new IllegalArgumentException();
-         }
-         return result;
+         int ordinal = Integer.parseInt(input, 10);
+         return LocationType.values()[ordinal];
       }
 
       @Override
-      public String to(Context context, LocationType input)
+      protected String to(LocationType input) throws Exception
       {
-         String result = "0";
-         if (input != null)
-         {
-            result = String.valueOf(input.ordinal());
-         }
-
-         return result;
+         return String.valueOf(input.ordinal());
       }
    };
 
-   public static FieldConverter<String, WheelchairBoardingType> WHEELCHAIRBOARDINGTYPE_CONVERTER = new FieldConverter<String, WheelchairBoardingType>()
+   public static DefaultFieldConverter<WheelchairBoardingType> WHEELCHAIRBOARDINGTYPE_CONVERTER = new DefaultFieldConverter<WheelchairBoardingType>()
    {
 
       @Override
-      public WheelchairBoardingType from(Context context, Enum field,
-            String input, WheelchairBoardingType value, boolean required)
+      protected WheelchairBoardingType from(String input) throws Exception
       {
-         WheelchairBoardingType result = value;
-         if (input != null && !input.isEmpty())
-         {
-            int ordinal = Integer.parseInt(input, 10);
-            result = WheelchairBoardingType.values()[ordinal];
-         } else if (required && value == null)
-         {
-            throw new IllegalArgumentException();
-         }
-         return result;
+         int ordinal = Integer.parseInt(input, 10);
+         return WheelchairBoardingType.values()[ordinal];
       }
 
       @Override
-      public String to(Context context, WheelchairBoardingType input)
+      protected String to(WheelchairBoardingType input) throws Exception
       {
-         String result = "0";
-         if (input != null)
-         {
-            result = String.valueOf(input.ordinal());
-         }
-
-         return result;
+         return String.valueOf(input.ordinal());
       }
    };
 
-   public static FieldConverter<String, DirectionType> DIRECTIONTYPE_CONVERTER = new FieldConverter<String, DirectionType>()
+   public static DefaultFieldConverter<DirectionType> DIRECTIONTYPE_CONVERTER = new DefaultFieldConverter<DirectionType>()
    {
 
       @Override
-      public DirectionType from(Context context, Enum field, String input,
-            DirectionType value, boolean required)
+      protected DirectionType from(String input) throws Exception
       {
-         DirectionType result = value;
-         if (input != null && !input.isEmpty())
-         {
-            int ordinal = Integer.parseInt(input, 10);
-            result = DirectionType.values()[ordinal];
-         } else if (required && value == null)
-         {
-            throw new IllegalArgumentException();
-         }
-         return result;
+         int ordinal = Integer.parseInt(input, 10);
+         return DirectionType.values()[ordinal];
       }
 
       @Override
-      public String to(Context context, DirectionType input)
+      protected String to(DirectionType input) throws Exception
       {
-         String result = "0";
-         if (input != null)
-         {
-            result = String.valueOf(input.ordinal());
-         }
-
-         return result;
+         return String.valueOf(input.ordinal());
       }
    };
 
-   public static FieldConverter<String, WheelchairAccessibleType> WHEELCHAIRACCESSIBLETYPE_CONVERTER = new FieldConverter<String, WheelchairAccessibleType>()
+   public static DefaultFieldConverter<WheelchairAccessibleType> WHEELCHAIRACCESSIBLETYPE_CONVERTER = new DefaultFieldConverter<WheelchairAccessibleType>()
    {
 
       @Override
-      public WheelchairAccessibleType from(Context context, Enum field,
-            String input, WheelchairAccessibleType value, boolean required)
+      protected WheelchairAccessibleType from(String input) throws Exception
       {
-         WheelchairAccessibleType result = value;
-         if (input != null && !input.isEmpty())
-         {
-            int ordinal = Integer.parseInt(input, 10);
-            result = WheelchairAccessibleType.values()[ordinal];
-         } else if (required && value == null)
-         {
-            throw new IllegalArgumentException();
-         }
-         return result;
+         int ordinal = Integer.parseInt(input, 10);
+         return WheelchairAccessibleType.values()[ordinal];
       }
 
       @Override
-      public String to(Context context, WheelchairAccessibleType input)
+      protected String to(WheelchairAccessibleType input) throws Exception
       {
-         String result = "0";
-         if (input != null)
-         {
-            result = String.valueOf(input.ordinal());
-         }
-
-         return result;
+         return String.valueOf(input.ordinal());
       }
    };
 
-   public static FieldConverter<String, BikesAllowedType> BIKESALLOWEDTYPE_CONVERTER = new FieldConverter<String, BikesAllowedType>()
+   public static DefaultFieldConverter<BikesAllowedType> BIKESALLOWEDTYPE_CONVERTER = new DefaultFieldConverter<BikesAllowedType>()
    {
-
       @Override
-      public BikesAllowedType from(Context context, Enum field, String input,
-            BikesAllowedType value, boolean required)
+      protected BikesAllowedType from(String input) throws Exception
       {
-         BikesAllowedType result = value;
-         if (input != null && !input.isEmpty())
-         {
-            int ordinal = Integer.parseInt(input, 10);
-            result = BikesAllowedType.values()[ordinal];
-         } else if (required && value == null)
-         {
-            throw new IllegalArgumentException();
-         }
-         return result;
+         int ordinal = Integer.parseInt(input, 10);
+         return BikesAllowedType.values()[ordinal];
       }
 
       @Override
-      public String to(Context context, BikesAllowedType input)
+      protected String to(BikesAllowedType input) throws Exception
       {
-         String result = "0";
-         if (input != null)
-         {
-            result = String.valueOf(input.ordinal());
-         }
-
-         return result;
+         return String.valueOf(input.ordinal());
       }
    };
 
-   public static FieldConverter<String, TransferType> TRANSFERTYPE_CONVERTER = new FieldConverter<String, TransferType>()
+   public static DefaultFieldConverter<TransferType> TRANSFERTYPE_CONVERTER = new DefaultFieldConverter<TransferType>()
    {
+      @Override
+      protected TransferType from(String input) throws Exception
+      {
+         int ordinal = Integer.parseInt(input, 10);
+         return TransferType.values()[ordinal];
+      }
 
       @Override
-      public TransferType from(Context context, Enum field, String input,
-            TransferType value, boolean required)
+      protected String to(TransferType input) throws Exception
       {
-         TransferType result = value;
+         return String.valueOf(input.ordinal());
+      }
+   };
+
+   public abstract class DefaultFieldConverter<T> extends
+         FieldConverter<String, T>
+   {
+      @Override
+      public T from(Context context, Enum field, String input, T value,
+            boolean required)
+      {
+         T result = value;
          if (input != null && !input.isEmpty())
          {
-            int ordinal = Integer.parseInt(input, 10);
-            result = TransferType.values()[ordinal];
+            try
+            {
+               result = from(input);
+            } catch (Exception e)
+            {
+               context.put(Context.FIELD, field.name());
+               context.put(Context.CODE, GtfsException.ERROR.INVALID_FORMAT);
+               throw new GtfsException(context, e);
+            }
+
          } else if (required && value == null)
          {
-            throw new IllegalArgumentException();
+            context.put(Context.FIELD, field.name());
+            context.put(Context.CODE, GtfsException.ERROR.MISSING_FIELD);
+            throw new GtfsException(context);
          }
          return result;
       }
 
       @Override
-      public String to(Context context, TransferType input)
+      public String to(Context context, T input)
       {
-         String result = "0";
-         if (input != null)
+         try
          {
-            result = String.valueOf(input.ordinal());
+            return to(input);
+         } catch (Exception e)
+         {
+            context.put(Context.CODE, GtfsException.ERROR.INVALID_FORMAT);
+            throw new GtfsException(context, e);
          }
-
-         return result;
       }
 
-   };
+      protected abstract T from(String input) throws Exception;
+
+      protected abstract String to(T input) throws Exception;
+   }
 
    public abstract class FieldConverter<F, T>
    {
