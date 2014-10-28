@@ -132,6 +132,7 @@ public class NeptuneConverter
       for (GtfsRoute gtfsRoute : importer.getRouteById())
       {
          // @TODO : check errors
+         logger.info(gtfsRoute.toString());
 
          // must produce 2 routes : one for each direction;
          // at end of processing, empty route will be destroyed
@@ -206,6 +207,7 @@ public class NeptuneConverter
       VjasComparator vjasComparator = new VjasComparator();
       for (GtfsTrip gtfsTrip : importer.getTripById())
       {
+         logger.info("trip "+gtfsTrip.toString());
          count++;
          if (count % 1000 == 0)
          {
@@ -254,7 +256,7 @@ public class NeptuneConverter
             continue;
          }
          String routeId = gtfsTrip.getRouteId() + "_"
-               + gtfsTrip.getDirectionId();
+               + gtfsTrip.getDirectionId().ordinal();
          Route route = mapRouteByRouteId.get(routeId);
          if (route == null)
          {
@@ -689,6 +691,13 @@ public class NeptuneConverter
       if (importer.hasCalendarDateImporter())
       {
          GtfsCalendar calendar = new GtfsCalendar(); // dummy calendar for
+         calendar.setMonday(false);
+         calendar.setTuesday(false);
+         calendar.setWednesday(false);
+         calendar.setThursday(false);
+         calendar.setFriday(false);
+         calendar.setSaturday(false);
+         calendar.setSunday(false);
          // production
          for (String serviceId : importer.getCalendarDateByService()
                .keys())

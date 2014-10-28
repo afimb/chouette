@@ -524,6 +524,7 @@ public interface GtfsConverter
       @Override
       public String to(Context context, T input)
       {
+         if (input == null) return "";
          try
          {
             return convertTo(input);
