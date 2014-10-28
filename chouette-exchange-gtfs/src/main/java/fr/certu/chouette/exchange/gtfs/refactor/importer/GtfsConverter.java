@@ -1,12 +1,11 @@
 package fr.certu.chouette.exchange.gtfs.refactor.importer;
 
 import java.awt.Color;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Date;
 import java.sql.Time;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.IllegalFormatException;
 import java.util.TimeZone;
 
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsCalendarDate.ExceptionType;
@@ -31,13 +30,13 @@ public interface GtfsConverter
    {
 
       @Override
-      protected String from(String input) throws Exception
+      protected String convertFrom(String input) throws Exception
       {
          return input.trim();
       }
 
       @Override
-      protected String to(String input) throws Exception
+      protected String convertTo(String input) throws Exception
       {
          return (input != null) ? input.toString() : "";
       }
@@ -48,13 +47,35 @@ public interface GtfsConverter
    {
 
       @Override
-      protected Integer from(String input) throws Exception
+      protected Integer convertFrom(String input) throws Exception
       {
          return Integer.parseInt(input, 10);
       }
 
       @Override
-      protected String to(Integer input) throws Exception
+      protected String convertTo(Integer input) throws Exception
+      {
+         return (input != null) ? input.toString() : "";
+      }
+
+   };
+
+   public static DefaultFieldConverter<Integer> POSITIVE_INTEGER_CONVERTER = new DefaultFieldConverter<Integer>()
+   {
+
+      @Override
+      protected Integer convertFrom(String input) throws Exception
+      {
+         int result = Integer.parseInt(input, 10);
+         if (result < 0)
+         {
+            throw new NumberFormatException();
+         }
+         return result;
+      }
+
+      @Override
+      protected String convertTo(Integer input) throws Exception
       {
          return (input != null) ? input.toString() : "";
       }
@@ -65,7 +86,7 @@ public interface GtfsConverter
    {
 
       @Override
-      protected Boolean from(String input) throws Exception
+      protected Boolean convertFrom(String input) throws Exception
       {
          boolean value = input.equals("0");
          if (value)
@@ -86,307 +107,139 @@ public interface GtfsConverter
       }
 
       @Override
-      protected String to(Boolean input) throws Exception
+      protected String convertTo(Boolean input) throws Exception
       {
          return (input != null) ? (input) ? "1" : "0" : "0";
       }
 
    };
 
-   public static FieldConverter<String, Float> FLOAT_CONVERTER = new FieldConverter<String, Float>()
+   public static DefaultFieldConverter<Float> FLOAT_CONVERTER = new DefaultFieldConverter<Float>()
    {
 
       @Override
-      public Float from(Context context, Enum field, String input, Float value,
-            boolean required)
+      protected Float convertFrom(String input) throws Exception
       {
-         Float result = value;
-         if (input != null && !input.isEmpty())
-         {
-            try
-            {
-               result = Float.parseFloat(input);
-            } catch (Exception e)
-            {
-               context.put(Context.FIELD, field.name());
-               context.put(Context.CODE, GtfsException.ERROR.INVALID_FORMAT);
-               throw new GtfsException(context, e);
-            }
-         } else if (required && value == null)
-         {
-            context.put(Context.FIELD, field.name());
-            context.put(Context.CODE, GtfsException.ERROR.MISSING_FIELD);
-            throw new GtfsException(context);
-         }
-         return result;
+         return Float.parseFloat(input);
       }
 
       @Override
-      public String to(Context context, Float input)
+      protected String convertTo(Float input) throws Exception
       {
          return (input != null) ? input.toString() : "";
       }
    };
 
-   public static FieldConverter<String, Double> DOUBLE_CONVERTER = new FieldConverter<String, Double>()
+   public static DefaultFieldConverter<Double> DOUBLE_CONVERTER = new DefaultFieldConverter<Double>()
    {
 
       @Override
-      public Double from(Context context, Enum field, String input,
-            Double value, boolean required)
+      protected Double convertFrom(String input) throws Exception
       {
-         Double result = value;
-         if (input != null && !input.isEmpty())
-         {
-            try
-            {
-               result = Double.parseDouble(input);
-            } catch (Exception e)
-            {
-               context.put(Context.FIELD, field.name());
-               context.put(Context.CODE, GtfsException.ERROR.INVALID_FORMAT);
-               throw new GtfsException(context, e);
-            }
-         } else if (required && value == null)
-         {
-            context.put(Context.FIELD, field.name());
-            context.put(Context.CODE, GtfsException.ERROR.MISSING_FIELD);
-            throw new GtfsException(context);
-         }
-         return result;
+         return Double.parseDouble(input);
       }
 
       @Override
-      public String to(Context context, Double input)
+      protected String convertTo(Double input) throws Exception
       {
          return (input != null) ? input.toString() : "";
       }
    };
 
-   public static FieldConverter<String, Time> TIME_CONVERTER = new FieldConverter<String, Time>()
+   public static DefaultFieldConverter<Time> TIME_CONVERTER = new DefaultFieldConverter<Time>()
    {
 
       @Override
-      public Time from(Context context, Enum field, String input, Time value,
-            boolean required)
+      protected Time convertFrom(String input) throws Exception
       {
-         Time result = value;
-         if (input != null && !input.isEmpty())
-         {
-            try
-            {
-               result = Time.valueOf(input);
-            } catch (Exception e)
-            {
-               context.put(Context.FIELD, field.name());
-               context.put(Context.CODE, GtfsException.ERROR.INVALID_FORMAT);
-               throw new GtfsException(context, e);
-            }
-         } else if (required && value == null)
-         {
-            context.put(Context.FIELD, field.name());
-            context.put(Context.CODE, GtfsException.ERROR.MISSING_FIELD);
-            throw new GtfsException(context);
-         }
-         return result;
+         return Time.valueOf(input);
       }
 
       @Override
-      public String to(Context context, Time input)
+      protected String convertTo(Time input) throws Exception
       {
          return (input != null) ? input.toString() : "";
       }
 
    };
 
-   public static FieldConverter<String, Date> DATE_CONVERTER = new FieldConverter<String, Date>()
+   public static DefaultFieldConverter<Date> DATE_CONVERTER = new DefaultFieldConverter<Date>()
    {
 
       @Override
-      public Date from(Context context, Enum field, String input, Date value,
-            boolean required)
+      protected Date convertFrom(String input) throws Exception
       {
-
-         Date result = value;
-         if (input != null && !input.isEmpty())
-         {
-            try
-            {
-               result = new Date(BASIC_ISO_DATE.parse(input).getTime());
-            } catch (Exception e)
-            {
-               context.put(Context.FIELD, field.name());
-               context.put(Context.CODE, GtfsException.ERROR.INVALID_FORMAT);
-               throw new GtfsException(context, e);
-            }
-
-         } else if (required && value == null)
-         {
-            context.put(Context.FIELD, field.name());
-            context.put(Context.CODE, GtfsException.ERROR.MISSING_FIELD);
-            throw new GtfsException(context);
-         }
-         return result;
+         return new Date(BASIC_ISO_DATE.parse(input).getTime());
       }
 
       @Override
-      public String to(Context context, Date input)
+      protected String convertTo(Date input) throws Exception
       {
          return (input != null) ? BASIC_ISO_DATE.format(input) : "";
       }
 
    };
 
-   public static FieldConverter<String, URL> URL_CONVERTER = new FieldConverter<String, URL>()
+   public static DefaultFieldConverter<URL> URL_CONVERTER = new DefaultFieldConverter<URL>()
    {
 
       @Override
-      public URL from(Context context, Enum field, String input, URL value,
-            boolean required)
+      protected URL convertFrom(String input) throws Exception
       {
-         URL result = value;
-         if (input != null && !input.isEmpty())
+         URL result = new URL(input);
+         String protocol = result.getProtocol();
+         if (!(protocol.equals("http") || protocol.equals("https")))
          {
-            try
-            {
-               result = new URL(input);
-               String protocol = result.getProtocol();
-               if (!(protocol.equals("http") || protocol.equals("https")))
-               {
-                  context.put(Context.FIELD, field.name());
-                  context.put(Context.CODE, GtfsException.ERROR.INVALID_FORMAT);
-                  throw new GtfsException(context);
-               }
-            } catch (Exception e)
-            {
-               context.put(Context.FIELD, field.name());
-               context.put(Context.CODE, GtfsException.ERROR.INVALID_FORMAT);
-               throw new GtfsException(context, e);
-            }
-         } else if (required && value == null)
-         {
-            context.put(Context.FIELD, field.name());
-            context.put(Context.CODE, GtfsException.ERROR.MISSING_FIELD);
-            throw new GtfsException(context);
+            throw new MalformedURLException();
          }
          return result;
       }
 
       @Override
-      public String to(Context context, URL input)
+      protected String convertTo(URL input) throws Exception
       {
          return (input != null) ? input.toString() : "";
       }
    };
 
-   public static FieldConverter<String, TimeZone> TIMEZONE_CONVERTER = new FieldConverter<String, TimeZone>()
+   public static DefaultFieldConverter<TimeZone> TIMEZONE_CONVERTER = new DefaultFieldConverter<TimeZone>()
    {
 
       @Override
-      public TimeZone from(Context context, Enum field, String input,
-            TimeZone value, boolean required)
+      protected TimeZone convertFrom(String input) throws Exception
       {
-         TimeZone result = value;
-         if (input != null && !input.isEmpty())
-         {
-            try
-            {
-               result = TimeZone.getTimeZone(input);
-            } catch (Exception e)
-            {
-               context.put(Context.FIELD, field.name());
-               context.put(Context.CODE, GtfsException.ERROR.INVALID_FORMAT);
-               throw new GtfsException(context, e);
-            }
-
-         } else if (required && value == null)
-         {
-            context.put(Context.FIELD, field.name());
-            context.put(Context.CODE, GtfsException.ERROR.MISSING_FIELD);
-            throw new GtfsException(context);
-         }
-         return result;
+         return TimeZone.getTimeZone(input);
       }
 
       @Override
-      public String to(Context context, TimeZone input)
+      protected String convertTo(TimeZone input) throws Exception
       {
          return (input != null) ? input.getDisplayName() : "";
       }
    };
 
-   public static FieldConverter<String, Color> COLOR_CONVERTER = new FieldConverter<String, Color>()
+   public static DefaultFieldConverter<Color> COLOR_CONVERTER = new DefaultFieldConverter<Color>()
    {
 
       @Override
-      public Color from(Context context, Enum field, String input, Color value,
-            boolean required)
+      protected Color convertFrom(String input) throws Exception
       {
-         Color result = value;
-         if (input != null && !input.isEmpty())
-         {
-            try
-            {
-               result = new Color(Integer.parseInt(input, 16));
-            } catch (Exception e)
-            {
-               context.put(Context.FIELD, field.name());
-               context.put(Context.CODE, GtfsException.ERROR.INVALID_FORMAT);
-               throw new GtfsException(context, e);
-            }
-
-         } else if (required && value == null)
-         {
-            context.put(Context.FIELD, field.name());
-            context.put(Context.CODE, GtfsException.ERROR.MISSING_FIELD);
-            throw new GtfsException(context);
-         }
-         return result;
+         return new Color(Integer.parseInt(input, 16));
       }
 
       @Override
-      public String to(Context context, Color input)
+      protected String convertTo(Color input) throws Exception
       {
          return (input != null) ? Integer.toHexString(input.getRGB())
                .substring(2) : "";
       }
    };
 
-   public static FieldConverter<String, GtfsTime> GTFSTIME_CONVERTER = new FieldConverter<String, GtfsTime>()
+   public static DefaultFieldConverter<GtfsTime> GTFSTIME_CONVERTER = new DefaultFieldConverter<GtfsTime>()
    {
 
-      private final DateFormat format = DateFormat
-            .getTimeInstance(DateFormat.MEDIUM);
-
       @Override
-      public GtfsTime from(Context context, Enum field, String input,
-            GtfsTime value, boolean required)
-      {
-         GtfsTime result = value;
-         if (input != null && !input.isEmpty())
-         {
-            result = decode(input);
-         } else if (required && value == null)
-         {
-            context.put(Context.FIELD, field.name());
-            context.put(Context.CODE, GtfsException.ERROR.MISSING_FIELD);
-            throw new GtfsException(context);
-         }
-         return result;
-      }
-
-      @Override
-      public String to(Context context, GtfsTime input)
-      {
-         String result = "";
-         if (input != null && input.getTime() != null)
-         {
-            result = decode(input);
-         }
-         return result;
-      }
-
-      private GtfsTime decode(String input)
+      protected GtfsTime convertFrom(String input) throws Exception
       {
          GtfsTime result = new GtfsTime();
          int day;
@@ -421,55 +274,62 @@ public interface GtfsConverter
          return result;
       }
 
-      private String decode(GtfsTime input)
+      @Override
+      protected String convertTo(GtfsTime input) throws Exception
       {
-         Time value = input.getTime();
+         String result = "";
+         if (input != null && input.getTime() != null)
+         {
 
-         int hour = value.getHours() + input.getDay();
-         int minute = value.getMinutes();
-         int second = value.getSeconds();
-         String hourString;
-         String minuteString;
-         String secondString;
+            Time value = input.getTime();
 
-         if (hour < 10)
-         {
-            hourString = "0" + hour;
-         } else
-         {
-            hourString = Integer.toString(hour);
+            int hour = value.getHours() + input.getDay();
+            int minute = value.getMinutes();
+            int second = value.getSeconds();
+            String hourString;
+            String minuteString;
+            String secondString;
+
+            if (hour < 10)
+            {
+               hourString = "0" + hour;
+            } else
+            {
+               hourString = Integer.toString(hour);
+            }
+            if (minute < 10)
+            {
+               minuteString = "0" + minute;
+            } else
+            {
+               minuteString = Integer.toString(minute);
+            }
+            if (second < 10)
+            {
+               secondString = "0" + second;
+            } else
+            {
+               secondString = Integer.toString(second);
+            }
+            result = (hourString + ":" + minuteString + ":" + secondString);
+
          }
-         if (minute < 10)
-         {
-            minuteString = "0" + minute;
-         } else
-         {
-            minuteString = Integer.toString(minute);
-         }
-         if (second < 10)
-         {
-            secondString = "0" + second;
-         } else
-         {
-            secondString = Integer.toString(second);
-         }
-         return (hourString + ":" + minuteString + ":" + secondString);
+         return result;
       }
-
    };
 
    public static DefaultFieldConverter<PickupType> PICKUP_CONVERTER = new DefaultFieldConverter<PickupType>()
    {
 
       @Override
-      protected PickupType from(String input) throws Exception
+      protected PickupType convertFrom(String input) throws Exception
       {
          int ordinal = Integer.parseInt(input, 10);
          return PickupType.values()[ordinal];
       }
 
       @Override
-      protected String to(PickupType input) throws Exception
+      protected String convertTo(PickupType input) throws Exception
       {
          return String.valueOf(input.ordinal());
       }
@@ -479,14 +339,14 @@ public interface GtfsConverter
    {
 
       @Override
-      protected DropOffType from(String input) throws Exception
+      protected DropOffType convertFrom(String input) throws Exception
       {
          int ordinal = Integer.parseInt(input, 10);
          return DropOffType.values()[ordinal];
       }
 
       @Override
-      protected String to(DropOffType input) throws Exception
+      protected String convertTo(DropOffType input) throws Exception
       {
          return String.valueOf(input.ordinal());
       }
@@ -496,14 +356,14 @@ public interface GtfsConverter
    {
 
       @Override
-      protected ExceptionType from(String input) throws Exception
+      protected ExceptionType convertFrom(String input) throws Exception
       {
          int ordinal = Integer.parseInt(input, 10);
          return ExceptionType.values()[ordinal];
       }
 
       @Override
-      protected String to(ExceptionType input) throws Exception
+      protected String convertTo(ExceptionType input) throws Exception
       {
          return String.valueOf(input.ordinal());
       }
@@ -513,14 +373,14 @@ public interface GtfsConverter
    {
 
       @Override
-      protected RouteType from(String input) throws Exception
+      protected RouteType convertFrom(String input) throws Exception
       {
          int ordinal = Integer.parseInt(input, 10);
          return RouteType.values()[ordinal];
       }
 
       @Override
-      protected String to(RouteType input) throws Exception
+      protected String convertTo(RouteType input) throws Exception
       {
          return String.valueOf(input.ordinal());
       }
@@ -530,14 +390,14 @@ public interface GtfsConverter
    {
 
       @Override
-      protected LocationType from(String input) throws Exception
+      protected LocationType convertFrom(String input) throws Exception
       {
          int ordinal = Integer.parseInt(input, 10);
          return LocationType.values()[ordinal];
       }
 
       @Override
-      protected String to(LocationType input) throws Exception
+      protected String convertTo(LocationType input) throws Exception
       {
          return String.valueOf(input.ordinal());
       }
@@ -547,14 +407,15 @@ public interface GtfsConverter
    {
 
       @Override
-      protected WheelchairBoardingType from(String input) throws Exception
+      protected WheelchairBoardingType convertFrom(String input)
+            throws Exception
       {
          int ordinal = Integer.parseInt(input, 10);
          return WheelchairBoardingType.values()[ordinal];
       }
 
       @Override
-      protected String to(WheelchairBoardingType input) throws Exception
+      protected String convertTo(WheelchairBoardingType input) throws Exception
       {
          return String.valueOf(input.ordinal());
       }
@@ -564,14 +425,14 @@ public interface GtfsConverter
    {
 
       @Override
-      protected DirectionType from(String input) throws Exception
+      protected DirectionType convertFrom(String input) throws Exception
       {
          int ordinal = Integer.parseInt(input, 10);
          return DirectionType.values()[ordinal];
       }
 
       @Override
-      protected String to(DirectionType input) throws Exception
+      protected String convertTo(DirectionType input) throws Exception
       {
          return String.valueOf(input.ordinal());
       }
@@ -581,14 +442,16 @@ public interface GtfsConverter
    {
 
       @Override
-      protected WheelchairAccessibleType from(String input) throws Exception
+      protected WheelchairAccessibleType convertFrom(String input)
+            throws Exception
       {
          int ordinal = Integer.parseInt(input, 10);
          return WheelchairAccessibleType.values()[ordinal];
       }
 
       @Override
-      protected String to(WheelchairAccessibleType input) throws Exception
+      protected String convertTo(WheelchairAccessibleType input)
+            throws Exception
       {
          return String.valueOf(input.ordinal());
       }
@@ -597,14 +460,14 @@ public interface GtfsConverter
    public static DefaultFieldConverter<BikesAllowedType> BIKESALLOWEDTYPE_CONVERTER = new DefaultFieldConverter<BikesAllowedType>()
    {
       @Override
-      protected BikesAllowedType from(String input) throws Exception
+      protected BikesAllowedType convertFrom(String input) throws Exception
       {
          int ordinal = Integer.parseInt(input, 10);
          return BikesAllowedType.values()[ordinal];
       }
 
       @Override
-      protected String to(BikesAllowedType input) throws Exception
+      protected String convertTo(BikesAllowedType input) throws Exception
       {
          return String.valueOf(input.ordinal());
       }
@@ -613,14 +476,14 @@ public interface GtfsConverter
    public static DefaultFieldConverter<TransferType> TRANSFERTYPE_CONVERTER = new DefaultFieldConverter<TransferType>()
    {
       @Override
-      protected TransferType from(String input) throws Exception
+      protected TransferType convertFrom(String input) throws Exception
       {
          int ordinal = Integer.parseInt(input, 10);
          return TransferType.values()[ordinal];
       }
 
       @Override
-      protected String to(TransferType input) throws Exception
+      protected String convertTo(TransferType input) throws Exception
       {
          return String.valueOf(input.ordinal());
       }
@@ -638,7 +501,7 @@ public interface GtfsConverter
          {
             try
             {
-               result = from(input);
+               result = convertFrom(input);
             } catch (Exception e)
             {
                context.put(Context.FIELD, field.name());
@@ -668,9 +531,9 @@ public interface GtfsConverter
          }
       }
 
-      protected abstract T from(String input) throws Exception;
+      protected abstract T convertFrom(String input) throws Exception;
 
-      protected abstract String to(T input) throws Exception;
+      protected abstract String convertTo(T input) throws Exception;
    }
 
    public abstract class FieldConverter<F, T>
