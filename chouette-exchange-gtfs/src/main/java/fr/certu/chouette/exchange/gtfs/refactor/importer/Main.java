@@ -120,49 +120,52 @@ public class Main
 
       Map<String, GtfsStop> _map = new HashMap<String, GtfsStop>();
 
-      // for (GtfsStop stop : dao.getStopById())
-      // {
-      // // System.out.println(stop);
-      //
-      // _map.put(stop.getStopId(), stop);
-      // }
-
-      for (GtfsRoute route : dao.getRouteById())
+      Index<GtfsRoute> routes = dao.getRouteById();
+      for (GtfsRoute route : routes)
       {
          // System.out.println(route);
+         routes.validate(route, dao);
 
-         GtfsAgency agency = dao.getAgencyById().getValue(route.getAgencyId());
-
+         Index<GtfsAgency> agencies = dao.getAgencyById();
+         GtfsAgency agency = agencies.getValue(route.getAgencyId());
+         agencies.validate(agency, dao);
          // System.out.println(agency);
 
-         for (GtfsTrip trip : dao.getTripByRoute().values(route.getRouteId()))
+         Index<GtfsTrip> trips = dao.getTripByRoute();
+         for (GtfsTrip trip : trips.values(route.getRouteId()))
          {
 
             // System.out.println(trip);
+            trips.validate(trip, dao);
 
-            for (GtfsStopTime stopTime : dao.getStopTimeByTrip().values(
-                  trip.getTripId()))
+            Index<GtfsStopTime> stopTimes = dao.getStopTimeByTrip();
+            for (GtfsStopTime stopTime : stopTimes.values(trip.getTripId()))
             {
                // System.out.println(stopTime);
+               stopTimes.validate(stopTime, dao);
 
                GtfsStop stop = _map.get(stopTime.getStopId());
                if (stop == null)
                {
-                  stop = dao.getStopById().getValue(stopTime.getStopId());
+                  Index<GtfsStop> stops = dao.getStopById();
+                  stop = stops.getValue(stopTime.getStopId());
+                  stops.validate(stop, dao);
                   _map.put(stop.getStopId(), stop);
                }
             }
 
-            for (GtfsCalendar calendar : dao.getCalendarByService().values(
-                  trip.getServiceId()))
+            Index<GtfsCalendar> calendars = dao.getCalendarByService();
+            for (GtfsCalendar calendar : calendars.values(trip.getServiceId()))
             {
                // System.out.println(calendar);
+               calendars.validate(calendar, dao);
             }
 
-            for (GtfsCalendarDate date : dao.getCalendarDateByService().values(
-                  trip.getServiceId()))
+            Index<GtfsCalendarDate> dates = dao.getCalendarDateByService();
+            for (GtfsCalendarDate date : dates.values(trip.getServiceId()))
             {
                // System.out.println(date);
+               dates.validate(date, dao);
 
             }
 
@@ -171,10 +174,13 @@ public class Main
 
       if (dao.hasTransferImporter())
       {
-         for (GtfsTransfer transfer : dao.getTransferByFromStop())
+         Index<GtfsTransfer> transfers = dao.getTransferByFromStop();
+         for (GtfsTransfer transfer : transfers)
          {
-            dao.getStopById().getValue(transfer.getFromStopId());
-            dao.getStopById().getValue(transfer.getToStopId());
+            transfers.validate(transfer, dao);
+            GtfsStop from = dao.getStopById()
+                  .getValue(transfer.getFromStopId());
+            GtfsStop to = dao.getStopById().getValue(transfer.getToStopId());
          }
       }
       printMemory();
