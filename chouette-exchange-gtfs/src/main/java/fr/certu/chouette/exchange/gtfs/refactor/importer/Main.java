@@ -120,12 +120,12 @@ public class Main
 
       Map<String, GtfsStop> _map = new HashMap<String, GtfsStop>();
 
-      for (GtfsStop stop : dao.getStopById())
-      {
-         // System.out.println(stop);
-
-         _map.put(stop.getStopId(), stop);
-      }
+      // for (GtfsStop stop : dao.getStopById())
+      // {
+      // // System.out.println(stop);
+      //
+      // _map.put(stop.getStopId(), stop);
+      // }
 
       for (GtfsRoute route : dao.getRouteById())
       {
@@ -145,12 +145,12 @@ public class Main
             {
                // System.out.println(stopTime);
 
-               // GtfsStop stop =
-               // dao.getStopById().getValue(stopTime.getStopId());
-
                GtfsStop stop = _map.get(stopTime.getStopId());
                if (stop == null)
-                  throw new NullPointerException();
+               {
+                  stop = dao.getStopById().getValue(stopTime.getStopId());
+                  _map.put(stop.getStopId(), stop);
+               }
             }
 
             for (GtfsCalendar calendar : dao.getCalendarByService().values(
