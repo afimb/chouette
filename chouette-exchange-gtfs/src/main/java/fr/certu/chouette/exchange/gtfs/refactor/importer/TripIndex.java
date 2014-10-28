@@ -74,7 +74,7 @@ public abstract class TripIndex extends IndexImpl<GtfsTrip> implements
          if (!dao.getRouteById().containsKey(routeId))
          {
             throw new GtfsException(getPath(), bean.getId(),
-                  FIELDS.route_id.name(), ERROR.MISSING_FOREIGN_KEY,
+                  FIELDS.route_id.name(), ERROR.MISSING_FOREIGN_KEY, "TODO",
                   bean.getRouteId());
          }
          _routeId = routeId;
@@ -87,7 +87,7 @@ public abstract class TripIndex extends IndexImpl<GtfsTrip> implements
                && !dao.getCalendarDateByService().containsKey(serviceId))
          {
             throw new GtfsException(getPath(), bean.getId(),
-                  FIELDS.service_id.name(), ERROR.MISSING_FOREIGN_KEY,
+                  FIELDS.service_id.name(), ERROR.MISSING_FOREIGN_KEY, "TODO",
                   bean.getServiceId());
          }
 

@@ -76,7 +76,7 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements
          if (!dao.getTripById().containsKey(tripId))
          {
             throw new GtfsException(getPath(), bean.getId(),
-                  FIELDS.trip_id.name(), ERROR.MISSING_FOREIGN_KEY,
+                  FIELDS.trip_id.name(), ERROR.MISSING_FOREIGN_KEY, "TODO",
                   bean.getTripId());
          }
          _tripId = tripId;
@@ -88,7 +88,7 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements
          if (!dao.getStopById().containsKey(stopId))
          {
             throw new GtfsException(getPath(), bean.getId(),
-                  FIELDS.stop_id.name(), ERROR.MISSING_FOREIGN_KEY,
+                  FIELDS.stop_id.name(), ERROR.MISSING_FOREIGN_KEY, "TODO",
                   bean.getStopId());
          }
          _stopId = stopId;

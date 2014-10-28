@@ -82,9 +82,9 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter
             if (!containsKey(stopId))
             {
                throw new GtfsException(getPath(), bean.getId(),
-                     FIELDS.stop_id.name(), ERROR.MISSING_FOREIGN_KEY,
+                     FIELDS.stop_id.name(), ERROR.MISSING_FOREIGN_KEY, "TODO",
                      bean.getStopId());
-               
+
             }
             GtfsStop parent = getValue(stopId);
             if (parent == null
@@ -92,7 +92,8 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter
             {
                throw new GtfsException(getPath(), bean.getId(),
                      FIELDS.parent_station.name(), ERROR.MISSING_FOREIGN_KEY,
-                     bean.getParentStation());            }
+                     "TODO", bean.getParentStation());
+            }
             _stopId = stopId;
          }
       }

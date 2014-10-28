@@ -505,14 +505,14 @@ public interface GtfsConverter
             } catch (Exception e)
             {
                context.put(Context.FIELD, field.name());
-               context.put(Context.CODE, GtfsException.ERROR.INVALID_FORMAT);
+               context.put(Context.ERROR, GtfsException.ERROR.INVALID_FORMAT);
                throw new GtfsException(context, e);
             }
 
          } else if (required && value == null)
          {
             context.put(Context.FIELD, field.name());
-            context.put(Context.CODE, GtfsException.ERROR.MISSING_FIELD);
+            context.put(Context.ERROR, GtfsException.ERROR.MISSING_FIELD);
             throw new GtfsException(context);
          }
          return result;
@@ -526,7 +526,7 @@ public interface GtfsConverter
             return to(input);
          } catch (Exception e)
          {
-            context.put(Context.CODE, GtfsException.ERROR.INVALID_FORMAT);
+            context.put(Context.ERROR, GtfsException.ERROR.INVALID_FORMAT);
             throw new GtfsException(context, e);
          }
       }

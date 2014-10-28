@@ -62,7 +62,7 @@ public class FrequencyByTrip extends IndexImpl<GtfsFrequency> implements
          if (!dao.getTripById().containsKey(tripId))
          {
             throw new GtfsException(getPath(), bean.getId(),
-                  FIELDS.trip_id.name(), ERROR.MISSING_FOREIGN_KEY,
+                  FIELDS.trip_id.name(), ERROR.MISSING_FOREIGN_KEY, "TODO",
                   bean.getTripId());
          }
          _tripId = tripId;

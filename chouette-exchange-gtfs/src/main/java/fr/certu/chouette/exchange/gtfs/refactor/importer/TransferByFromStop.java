@@ -60,7 +60,7 @@ public class TransferByFromStop extends IndexImpl<GtfsTransfer> implements
       if (!dao.getStopById().containsKey(fromStopId))
       {
          throw new GtfsException(getPath(), bean.getId(),
-               FIELDS.from_stop_id.name(), ERROR.MISSING_FOREIGN_KEY,
+               FIELDS.from_stop_id.name(), ERROR.MISSING_FOREIGN_KEY, "TODO",
                bean.getFromStopId());
       }
 
@@ -68,7 +68,7 @@ public class TransferByFromStop extends IndexImpl<GtfsTransfer> implements
       if (!dao.getStopById().containsKey(toStopId))
       {
          throw new GtfsException(getPath(), bean.getId(),
-               FIELDS.to_stop_id.name(), ERROR.MISSING_FOREIGN_KEY,
+               FIELDS.to_stop_id.name(), ERROR.MISSING_FOREIGN_KEY, "TODO",
                bean.getToStopId());
          }
 

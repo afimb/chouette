@@ -57,7 +57,7 @@ public class GtfsImporter
          {
             Context context = new Context();
             context.put(Context.PATH, _path);
-            context.put(Context.CODE, ERROR.SYSTEM);
+            context.put(Context.ERROR, ERROR.SYSTEM);
             throw new GtfsException(context, e);
          }
 

@@ -23,6 +23,9 @@ public class GtfsException extends RuntimeException
    private ERROR error;
 
    @Getter
+   private String code;
+
+   @Getter
    private String value;
 
    public GtfsException(Context context)
@@ -36,24 +39,25 @@ public class GtfsException extends RuntimeException
       this.path = (String) context.get(Context.PATH);
       this.id = (Integer) context.get(Context.ID);
       this.field = (String) context.get(Context.FIELD);
-      this.error = (ERROR) context.get(Context.CODE);
+      this.error = (ERROR) context.get(Context.ERROR);
       this.value = context.get(Context.VALUE).toString();
    }
 
-   public GtfsException(String path, Integer id, String field, ERROR code,
-         String value)
+   public GtfsException(String path, Integer id, String field, ERROR error,
+         String code, String value)
    {
-      this(path, id, field, code, value, null);
+      this(path, id, field, error, code, value, null);
    }
 
-   public GtfsException(String path, Integer id, String field, ERROR code,
-         String value, Throwable cause)
+   public GtfsException(String path, Integer id, String field, ERROR error,
+         String code, String value, Throwable cause)
    {
       super(cause);
       this.path = path;
       this.id = id;
       this.field = field;
-      this.error = code;
+      this.error = error;
+      this.code = code;
       this.value = value;
    }
 

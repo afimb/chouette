@@ -10,6 +10,7 @@ public class Context extends HashMap<String, Object>
 
    public static final String ID = "id";
    public static final String FIELD = "field";
+   public static final String ERROR = "error";
    public static final String CODE = "code";
    public static final String VALUE = "value";
 
@@ -19,12 +20,13 @@ public class Context extends HashMap<String, Object>
    }
 
    public Context(String path, int id, String field, GtfsException.ERROR error,
-         Object value)
+         String code, Object value)
    {
       put(PATH, path);
       put(ID, id);
       put(FIELD, field);
-      put(CODE, error);
+      put(ERROR, error);
+      put(CODE, code);
       put(VALUE, value);
 
    }
@@ -34,6 +36,7 @@ public class Context extends HashMap<String, Object>
       put(PATH, context.get(PATH));
       put(ID, context.get(ID));
       put(FIELD, context.get(FIELD));
+      put(ERROR, context.get(ERROR));
       put(CODE, context.get(CODE));
       put(VALUE, context.get(VALUE));
 

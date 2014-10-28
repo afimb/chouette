@@ -235,7 +235,7 @@ public abstract class IndexImpl<T> extends AbstractIndex<T>
                context.put(Context.PATH, _path);
                context.put(Context.ID, _total);
                context.put(Context.FIELD, _key);
-               context.put(Context.CODE, GtfsException.ERROR.DUPLICATE_FIELD);
+               context.put(Context.ERROR, GtfsException.ERROR.DUPLICATE_FIELD);
                throw new GtfsException(context);
             }
             token.lenght++;
