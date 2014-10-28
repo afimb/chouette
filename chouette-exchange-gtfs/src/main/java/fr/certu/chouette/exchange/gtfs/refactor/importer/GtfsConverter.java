@@ -91,13 +91,13 @@ public interface GtfsConverter
          boolean value = input.equals("0");
          if (value)
          {
-            return true;
+            return false;
          } else
          {
             value = input.equals("1");
             if (value)
             {
-               return false;
+               return true;
             } else
             {
 
