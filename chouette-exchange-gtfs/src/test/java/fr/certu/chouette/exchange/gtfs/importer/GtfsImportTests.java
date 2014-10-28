@@ -148,7 +148,7 @@ public class GtfsImportTests extends AbstractTestNGSpringContextTests
 
       Assert.assertEquals(description.getName(), "GTFS");
       Assert.assertNotNull(params, "params should not be null");
-      Assert.assertEquals(params.size(), 11, " params size must equal 11");
+      Assert.assertEquals(params.size(), 9, " params size must equal 9");
       logger.info("Description \n " + description.toString());
       Reporter.log("Description \n " + description.toString());
 

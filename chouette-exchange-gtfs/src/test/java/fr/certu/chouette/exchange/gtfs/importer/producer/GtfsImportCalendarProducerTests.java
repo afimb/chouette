@@ -36,7 +36,13 @@ public class GtfsImportCalendarProducerTests extends AbstractTestNGSpringContext
 		Date endDate = new Date(c.getTimeInMillis());
 		gtfsObject.setEndDate(endDate);
 		gtfsObject.setServiceId("1");
-        gtfsObject.setMonday(true);
+      gtfsObject.setMonday(true);
+      gtfsObject.setTuesday(false);
+      gtfsObject.setWednesday(false);
+      gtfsObject.setThursday(false);
+      gtfsObject.setFriday(false);
+      gtfsObject.setSaturday(false);
+      gtfsObject.setSunday(false);
 		Timetable neptuneObject = producer.produce(gtfsObject, null);
         
 		Assert.assertEquals(neptuneObject.getObjectId(),"NINOXE:Timetable:1","timetable id must be correcty set");

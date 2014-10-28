@@ -218,15 +218,11 @@ public class NeptuneConverter
          List<VehicleJourneyAtStop> lvjas = new ArrayList<>();
          boolean afterMidnight = true;
          
-         // TODO [DSU iterator ?]
-         for (Iterator<GtfsStopTime> stopTimesOfATrip = importer
-               .getStopTimeByTrip().values(gtfsTrip.getTripId()).iterator(); stopTimesOfATrip
-               .hasNext();)
+         for (GtfsStopTime gtfsStopTime: importer
+               .getStopTimeByTrip().values(gtfsTrip.getTripId()))
          {
-            GtfsStopTime gtfsStopTime = stopTimesOfATrip.next();
-            // @TODO : check syntax
             lvjas.add(vehicleJourneyAtStopProducer.produce(
-                  stopTimesOfATrip.next(), vjReport));
+                  gtfsStopTime, vjReport));
             if (afterMidnight)
             {
                if (!gtfsStopTime.getArrivalTime().moreOneDay())
@@ -679,7 +675,7 @@ public class NeptuneConverter
 
       logger.info("process timetables from calendar :"
             + importer.getCalendarByService().getLength());
-      if (importer.getCalendarByService() != null)
+      if (importer.hasCalendarImporter())
       {
          for (GtfsCalendar gtfsCalendar : importer.getCalendarByService())
          {
@@ -690,7 +686,7 @@ public class NeptuneConverter
             mapTimetableByServiceId.put(gtfsCalendar.getServiceId(), timetable);
          }
       }
-      if (importer.getCalendarDateByService() != null)
+      if (importer.hasCalendarDateImporter())
       {
          GtfsCalendar calendar = new GtfsCalendar(); // dummy calendar for
          // production
