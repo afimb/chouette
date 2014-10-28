@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.net.URL;
 import java.util.TimeZone;
 
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,7 @@ import fr.certu.chouette.exchange.gtfs.refactor.exporter.AgencyExporter;
 //@ToString(callSuper=true)
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
+@AllArgsConstructor
 public class GtfsAgency extends GtfsObject implements Serializable
 {
 
