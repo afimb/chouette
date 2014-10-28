@@ -135,7 +135,7 @@ public class Main
          for (GtfsTrip trip : trips.values(route.getRouteId()))
          {
 
-            // System.out.println(trip);
+            System.out.println(trip);
             trips.validate(trip, dao);
 
             Index<GtfsStopTime> stopTimes = dao.getStopTimeByTrip();
@@ -157,7 +157,7 @@ public class Main
             Index<GtfsCalendar> calendars = dao.getCalendarByService();
             for (GtfsCalendar calendar : calendars.values(trip.getServiceId()))
             {
-               System.out.println(calendar);
+               //System.out.println(calendar);
                calendars.validate(calendar, dao);
             }
 
