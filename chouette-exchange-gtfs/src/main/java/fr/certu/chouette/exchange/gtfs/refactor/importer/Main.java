@@ -43,7 +43,7 @@ public class Main
       {
 
          Monitor monitor = MonitorFactory.start();
-         Index parser = dao.geImporter(name, path, clazz);
+         Index parser = dao.getImporter(name, path, clazz);
          _count = 0;
          for (Object bean : parser)
          {
