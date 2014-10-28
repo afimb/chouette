@@ -12,6 +12,7 @@ import fr.certu.chouette.exchange.gtfs.refactor.exporter.TripExporter;
 // @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
+@AllArgsConstructor
 public class GtfsTrip extends GtfsObject implements Serializable
 {
 

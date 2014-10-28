@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.net.URL;
 import java.util.TimeZone;
 
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,7 @@ import fr.certu.chouette.exchange.gtfs.refactor.exporter.StopExporter;
 // @ToString(callSuper=true)
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
+@AllArgsConstructor
 public class GtfsStop extends GtfsObject implements Serializable
 {
 

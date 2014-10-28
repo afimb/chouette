@@ -524,15 +524,19 @@ public interface GtfsConverter
       @Override
       public String to(Context context, T input)
       {
-         if (input == null) return "";
+         String result = "";
          try
          {
-            return convertTo(input);
+            if (input != null)
+            {
+               result = convertTo(input);
+            }
          } catch (Exception e)
          {
             context.put(Context.ERROR, GtfsException.ERROR.INVALID_FORMAT);
             throw new GtfsException(context, e);
          }
+         return result;
       }
 
       protected abstract T convertFrom(String input) throws Exception;

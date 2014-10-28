@@ -2,6 +2,7 @@ package fr.certu.chouette.exchange.gtfs.refactor.model;
 
 import java.io.Serializable;
 
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,6 +12,7 @@ import fr.certu.chouette.exchange.gtfs.refactor.exporter.FrequencyExporter;
 //@ToString(callSuper=true)
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
+@AllArgsConstructor
 public class GtfsFrequency extends GtfsObject implements Serializable
 {
 

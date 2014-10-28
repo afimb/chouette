@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.io.Serializable;
 import java.net.URL;
 
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,7 @@ import fr.certu.chouette.exchange.gtfs.refactor.exporter.RouteExporter;
 // @ToString(callSuper=true)
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
+@AllArgsConstructor
 public class GtfsRoute extends GtfsObject implements Serializable
 {
 
