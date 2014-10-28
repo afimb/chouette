@@ -10,7 +10,7 @@ public class GtfsException extends RuntimeException
 
    public enum ERROR
    {
-      MISSING_FIELD, INVALID_FORMAT, MISSING_FOREIGN_KEY, DUPLICATE_FIELD
+      MISSING_FIELD, INVALID_FORMAT, MISSING_FOREIGN_KEY, DUPLICATE_FIELD, SYSTEM
    }
 
    @Getter
@@ -20,7 +20,7 @@ public class GtfsException extends RuntimeException
    @Getter
    private String field;
    @Getter
-   private ERROR code;
+   private ERROR error;
 
    @Getter
    private String value;
@@ -36,29 +36,25 @@ public class GtfsException extends RuntimeException
       this.path = (String) context.get(Context.PATH);
       this.id = (Integer) context.get(Context.ID);
       this.field = (String) context.get(Context.FIELD);
-      this.code = (ERROR) context.get(Context.CODE);
+      this.error = (ERROR) context.get(Context.CODE);
       this.value = context.get(Context.VALUE).toString();
    }
 
    public GtfsException(String path, Integer id, String field, ERROR code,
          String value)
    {
-      super();
+      this(path, id, field, code, value, null);
+   }
+
+   public GtfsException(String path, Integer id, String field, ERROR code,
+         String value, Throwable cause)
+   {
+      super(cause);
       this.path = path;
       this.id = id;
       this.field = field;
-      this.code = code;
+      this.error = code;
       this.value = value;
-   }
-
-   public GtfsException(String string)
-   {
-      // TODO Auto-generated constructor stub
-   }
-
-   public GtfsException(Exception e)
-   {
-      // TODO Auto-generated constructor stub
    }
 
 }

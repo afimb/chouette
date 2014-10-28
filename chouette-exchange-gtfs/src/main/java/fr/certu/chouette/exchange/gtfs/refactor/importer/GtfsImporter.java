@@ -6,6 +6,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
+import fr.certu.chouette.exchange.gtfs.refactor.importer.GtfsException.ERROR;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsAgency;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsCalendar;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsCalendarDate;
@@ -54,7 +55,10 @@ public class GtfsImporter
             _map.put(name, importer);
          } catch (ClassNotFoundException | IOException e)
          {
-            throw new GtfsException(e);
+            Context context = new Context();
+            context.put(Context.PATH, _path);
+            context.put(Context.CODE, ERROR.SYSTEM);
+            throw new GtfsException(context, e);
          }
 
       }

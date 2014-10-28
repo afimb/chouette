@@ -73,8 +73,8 @@ public class Main
             TripById.class);
       parse(dao, GtfsImporter.INDEX.TRIP_BY_ROUTE.name(), TripById.FILENAME,
             TripByRoute.class);
-      parse(dao, GtfsImporter.INDEX.TRIP_BY_SERVICE.name(), TripById.FILENAME,
-            TripByService.class);
+//      parse(dao, GtfsImporter.INDEX.TRIP_BY_SERVICE.name(), TripById.FILENAME,
+//            TripByService.class);
 
       // routes.txt
       parse(dao, GtfsImporter.INDEX.ROUTE_BY_ID.name(), RouteById.FILENAME,

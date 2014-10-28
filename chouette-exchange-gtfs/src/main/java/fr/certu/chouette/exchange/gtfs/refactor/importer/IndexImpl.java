@@ -40,7 +40,7 @@ public abstract class IndexImpl<T> extends AbstractIndex<T>
    private int _total;
    private boolean _unique;
 
-   // private IndexIterator _iterator;
+   private Map<Object, Context> _map = new HashMap<Object, Context>();
 
    public IndexImpl(String name, String id) throws IOException
    {
@@ -55,11 +55,10 @@ public abstract class IndexImpl<T> extends AbstractIndex<T>
       initialize();
    }
 
-   private Context getContext()
+   
+   public String getPath()
    {
-      Context context = new Context();
-      context.put(Context.PATH, _path);
-      return context;
+      return _path;
    }
 
    @Override
@@ -80,8 +79,6 @@ public abstract class IndexImpl<T> extends AbstractIndex<T>
       }
 
       index();
-      // _iterator = new IndexIterator(ByteBuffer.allocate(0), _fields.size());
-
    }
 
    @Override
@@ -107,7 +104,7 @@ public abstract class IndexImpl<T> extends AbstractIndex<T>
 
          private Iterator<Token> _tokens = tokenIterator();
          private IndexIterator _iterator = null;
-         private Context _context = getContext();
+         private Context _context = createContext();
 
          @Override
          public boolean hasNext()
@@ -146,6 +143,13 @@ public abstract class IndexImpl<T> extends AbstractIndex<T>
             throw new UnsupportedOperationException();
          }
 
+         private Context createContext()
+         {
+            Context context = new Context();
+            context.put(Context.PATH, _path);
+            return context;
+         }
+
       };
    }
 
@@ -167,13 +171,13 @@ public abstract class IndexImpl<T> extends AbstractIndex<T>
       return new Iterable<T>()
       {
 
-         private Context _context = getContext();
-
          @Override
          public Iterator<T> iterator()
          {
-            ByteBuffer buffer = getBuffer(key, _context);
-            return new IndexIterator(buffer, _context);
+            Context context = new Context();
+            context.put(Context.PATH, _path);
+            ByteBuffer buffer = getBuffer(key, context);
+            return new IndexIterator(buffer, context);
          }
       };
    }
@@ -188,7 +192,8 @@ public abstract class IndexImpl<T> extends AbstractIndex<T>
    public T getValue(String key)
    {
       T result = null;
-      Context context = getContext();
+      Context context = new Context();
+      context.put(Context.PATH, _path);
       ByteBuffer buffer = getBuffer(key, context);
       IndexIterator iterator = new IndexIterator(buffer, context);
       result = iterator.next();
@@ -226,7 +231,8 @@ public abstract class IndexImpl<T> extends AbstractIndex<T>
          {
             if (_unique)
             {
-               Context context = getContext();
+               Context context = new Context();
+               context.put(Context.PATH, _path);
                context.put(Context.ID, _total);
                context.put(Context.FIELD, _key);
                context.put(Context.CODE, GtfsException.ERROR.DUPLICATE_FIELD);
@@ -388,6 +394,12 @@ public abstract class IndexImpl<T> extends AbstractIndex<T>
       return result;
    }
 
+   @Override
+   public boolean validate(T bean, GtfsImporter dao)
+   {
+      return validate(bean, dao);
+   }
+
    private class IndexIterator implements Iterator<T>
    {
 
@@ -410,16 +422,6 @@ public abstract class IndexImpl<T> extends AbstractIndex<T>
          _list = null;
          _index = 0;
       }
-
-      // public Context getContext()
-      // {
-      // return _context;
-      // }
-      //
-      // public void setContext(Context context)
-      // {
-      // _context = context;
-      // }
 
       @Override
       public T next()

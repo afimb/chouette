@@ -2,6 +2,8 @@ package fr.certu.chouette.exchange.gtfs.refactor.importer;
 
 import java.io.IOException;
 
+import fr.certu.chouette.exchange.gtfs.refactor.importer.CalendarDateByService.FIELDS;
+import fr.certu.chouette.exchange.gtfs.refactor.importer.GtfsException.ERROR;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsTrip;
 
 public abstract class TripIndex extends IndexImpl<GtfsTrip> implements
@@ -18,6 +20,7 @@ public abstract class TripIndex extends IndexImpl<GtfsTrip> implements
    protected GtfsTrip bean = new GtfsTrip();
    protected String[] array = new String[FIELDS.values().length];
    protected String _routeId = null;
+   protected String _serviceId = null;
 
    public TripIndex(String name, String id, boolean unique) throws IOException
    {
@@ -70,9 +73,25 @@ public abstract class TripIndex extends IndexImpl<GtfsTrip> implements
       {
          if (!dao.getRouteById().containsKey(routeId))
          {
-            throw new GtfsException("[DSU] error route_id : " + routeId);
+            throw new GtfsException(getPath(), bean.getId(),
+                  FIELDS.route_id.name(), ERROR.MISSING_FOREIGN_KEY,
+                  bean.getRouteId());
          }
          _routeId = routeId;
+      }
+
+      String serviceId = bean.getServiceId();
+      if (!serviceId.equals(_serviceId))
+      {
+         if (!dao.getCalendarByService().containsKey(serviceId)
+               && !dao.getCalendarDateByService().containsKey(serviceId))
+         {
+            throw new GtfsException(getPath(), bean.getId(),
+                  FIELDS.service_id.name(), ERROR.MISSING_FOREIGN_KEY,
+                  bean.getServiceId());
+         }
+
+         _serviceId = serviceId;
       }
 
       return result;

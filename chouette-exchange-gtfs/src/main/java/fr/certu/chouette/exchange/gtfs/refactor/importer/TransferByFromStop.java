@@ -2,6 +2,8 @@ package fr.certu.chouette.exchange.gtfs.refactor.importer;
 
 import java.io.IOException;
 
+import fr.certu.chouette.exchange.gtfs.refactor.importer.GtfsException.ERROR;
+import fr.certu.chouette.exchange.gtfs.refactor.importer.StopTimeByTrip.FIELDS;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsTransfer;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsTransfer.TransferType;
 
@@ -43,7 +45,7 @@ public class TransferByFromStop extends IndexImpl<GtfsTransfer> implements
             array[i++], true));
       bean.setTransferType(TRANSFERTYPE_CONVERTER.from(context,
             FIELDS.transfer_type, array[i++], true));
-      bean.setMinTransferTime(INTEGER_CONVERTER.from(context,
+      bean.setMinTransferTime(POSITIVE_INTEGER_CONVERTER.from(context,
             FIELDS.min_transfer_time, array[i++], false));
 
       return bean;
@@ -54,25 +56,21 @@ public class TransferByFromStop extends IndexImpl<GtfsTransfer> implements
    {
       boolean result = true;
 
-      if (bean.getTransferType() == TransferType.Minimal)
-      {
-         if (bean.getMinTransferTime() == null || bean.getMinTransferTime() < 0)
-         {
-            throw new GtfsException("[DSU] error min transfer time: ");
-         }
-      }
-
       String fromStopId = bean.getFromStopId();
       if (!dao.getStopById().containsKey(fromStopId))
       {
-         throw new GtfsException("[DSU] error from stop id : " + fromStopId);
+         throw new GtfsException(getPath(), bean.getId(),
+               FIELDS.from_stop_id.name(), ERROR.MISSING_FOREIGN_KEY,
+               bean.getFromStopId());
       }
 
       String toStopId = bean.getToStopId();
       if (!dao.getStopById().containsKey(toStopId))
       {
-         throw new GtfsException("[DSU] error to stop id : " + toStopId);
-      }
+         throw new GtfsException(getPath(), bean.getId(),
+               FIELDS.to_stop_id.name(), ERROR.MISSING_FOREIGN_KEY,
+               bean.getToStopId());
+         }
 
       return result;
    }

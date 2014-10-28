@@ -2,6 +2,8 @@ package fr.certu.chouette.exchange.gtfs.refactor.importer;
 
 import java.io.IOException;
 
+import fr.certu.chouette.exchange.gtfs.refactor.importer.GtfsException.ERROR;
+import fr.certu.chouette.exchange.gtfs.refactor.importer.TripIndex.FIELDS;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsFrequency;
 
 public class FrequencyByTrip extends IndexImpl<GtfsFrequency> implements
@@ -42,7 +44,7 @@ public class FrequencyByTrip extends IndexImpl<GtfsFrequency> implements
             array[i++], true));
       bean.setEndTime(GTFSTIME_CONVERTER.from(context, FIELDS.end_time,
             array[i++], true));
-      bean.setHeadwaySecs(INTEGER_CONVERTER.from(context, FIELDS.headway_secs,
+      bean.setHeadwaySecs(POSITIVE_INTEGER_CONVERTER.from(context, FIELDS.headway_secs,
             array[i++], true));
       bean.setExactTimes(BOOLEAN_CONVERTER.from(context, FIELDS.exact_times,
             array[i++], false, false));
@@ -59,7 +61,9 @@ public class FrequencyByTrip extends IndexImpl<GtfsFrequency> implements
       {
          if (!dao.getTripById().containsKey(tripId))
          {
-            throw new GtfsException("[DSU] error trip_id : " + tripId);
+            throw new GtfsException(getPath(), bean.getId(),
+                  FIELDS.trip_id.name(), ERROR.MISSING_FOREIGN_KEY,
+                  bean.getTripId());
          }
          _tripId = tripId;
       }

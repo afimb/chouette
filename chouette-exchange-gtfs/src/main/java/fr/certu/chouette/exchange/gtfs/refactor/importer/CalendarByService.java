@@ -21,7 +21,7 @@ public class CalendarByService extends IndexImpl<GtfsCalendar> implements
 
    public CalendarByService(String name) throws IOException
    {
-      super(name, KEY, false);
+      super(name, KEY);
    }
 
    @Override

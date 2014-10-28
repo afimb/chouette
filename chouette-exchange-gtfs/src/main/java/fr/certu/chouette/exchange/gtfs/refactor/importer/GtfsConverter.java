@@ -67,7 +67,7 @@ public interface GtfsConverter
       protected Integer convertFrom(String input) throws Exception
       {
          int result = Integer.parseInt(input, 10);
-         if (result < 0)
+         if (result <= 0)
          {
             throw new NumberFormatException();
          }

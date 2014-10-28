@@ -1,5 +1,6 @@
 package fr.certu.chouette.exchange.gtfs.refactor.importer;
 
+
 public interface Index<T> extends Iterable<T>
 {
    void dispose();

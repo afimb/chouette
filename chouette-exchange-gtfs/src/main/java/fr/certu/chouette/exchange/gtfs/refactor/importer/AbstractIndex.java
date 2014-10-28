@@ -26,6 +26,8 @@ public abstract class AbstractIndex<T> implements Index<T>
    protected abstract Iterator<Token> tokenIterator();
 
    protected abstract T build(GtfsIterator reader, Context context);
+   
+
 
    @ToString
    class Token

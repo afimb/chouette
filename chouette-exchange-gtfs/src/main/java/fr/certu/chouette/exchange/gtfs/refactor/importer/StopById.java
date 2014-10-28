@@ -3,6 +3,8 @@ package fr.certu.chouette.exchange.gtfs.refactor.importer;
 import java.io.IOException;
 import java.math.BigDecimal;
 
+import fr.certu.chouette.exchange.gtfs.refactor.importer.GtfsException.ERROR;
+import fr.certu.chouette.exchange.gtfs.refactor.importer.TripIndex.FIELDS;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStop;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStop.LocationType;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStop.WheelchairBoardingType;
@@ -79,14 +81,18 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter
          {
             if (!containsKey(stopId))
             {
-               throw new GtfsException("[DSU] error stop_id : " + stopId);
+               throw new GtfsException(getPath(), bean.getId(),
+                     FIELDS.stop_id.name(), ERROR.MISSING_FOREIGN_KEY,
+                     bean.getStopId());
+               
             }
             GtfsStop parent = getValue(stopId);
             if (parent == null
                   || parent.getLocationType() != LocationType.Station)
             {
-               throw new GtfsException("[DSU] error stop_id : " + stopId);
-            }
+               throw new GtfsException(getPath(), bean.getId(),
+                     FIELDS.parent_station.name(), ERROR.MISSING_FOREIGN_KEY,
+                     bean.getParentStation());            }
             _stopId = stopId;
          }
       }
