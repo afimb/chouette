@@ -523,7 +523,7 @@ public interface GtfsConverter
       {
          try
          {
-            return to(input);
+            return convertTo(input);
          } catch (Exception e)
          {
             context.put(Context.ERROR, GtfsException.ERROR.INVALID_FORMAT);

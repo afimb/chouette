@@ -157,7 +157,7 @@ public class Main
             Index<GtfsCalendar> calendars = dao.getCalendarByService();
             for (GtfsCalendar calendar : calendars.values(trip.getServiceId()))
             {
-               // System.out.println(calendar);
+               System.out.println(calendar);
                calendars.validate(calendar, dao);
             }
 
