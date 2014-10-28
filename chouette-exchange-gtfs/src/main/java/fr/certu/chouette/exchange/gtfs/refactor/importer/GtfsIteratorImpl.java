@@ -1,6 +1,7 @@
 package fr.certu.chouette.exchange.gtfs.refactor.importer;
 
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -270,7 +271,8 @@ public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator
             }
          }
       }
-      result = new String(_builder.array(), 0, _builder.position());
+      result = new String(_builder.array(), 0, _builder.position(),
+            StandardCharsets.UTF_8);
       return result;
    }
 
