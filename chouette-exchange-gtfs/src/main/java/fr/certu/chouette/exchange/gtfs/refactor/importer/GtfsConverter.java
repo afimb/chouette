@@ -506,6 +506,8 @@ public interface GtfsConverter
             {
                context.put(Context.FIELD, field.name());
                context.put(Context.ERROR, GtfsException.ERROR.INVALID_FORMAT);
+               context.put(Context.CODE, "TODO");
+               context.put(Context.VALUE, input);
                throw new GtfsException(context, e);
             }
 
@@ -513,6 +515,7 @@ public interface GtfsConverter
          {
             context.put(Context.FIELD, field.name());
             context.put(Context.ERROR, GtfsException.ERROR.MISSING_FIELD);
+            context.put(Context.CODE, "TODO");
             throw new GtfsException(context);
          }
          return result;
