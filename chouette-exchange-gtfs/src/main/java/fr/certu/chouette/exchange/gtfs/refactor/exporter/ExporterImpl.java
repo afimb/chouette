@@ -17,7 +17,6 @@ public abstract class ExporterImpl<T> implements Exporter<T>
    public ExporterImpl(String name) throws IOException
    {
       Path path = Paths.get(name);
-      Files.deleteIfExists(path);
       _writer = Files.newBufferedWriter(path, Charset.defaultCharset());
       writeHeader();
    }

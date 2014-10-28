@@ -24,6 +24,13 @@ public class AgencyExporter extends ExporterImpl<GtfsAgency> implements
    }
 
    @Override
+   public void writeHeader() throws IOException
+   {
+      write(FIELDS.values());
+
+   }
+
+   @Override
    public void export(GtfsAgency bean) throws IOException
    {
       write(CONVERTER.to(bean));
@@ -83,13 +90,6 @@ public class AgencyExporter extends ExporterImpl<GtfsAgency> implements
    {
       ExporterFactory factory = new DefaultExporterFactory();
       ExporterFactory.factories.put(AgencyExporter.class.getName(), factory);
-   }
-
-   @Override
-   public void writeHeader() throws IOException
-   {
-      write(FIELDS.values());
-
    }
 
 }
