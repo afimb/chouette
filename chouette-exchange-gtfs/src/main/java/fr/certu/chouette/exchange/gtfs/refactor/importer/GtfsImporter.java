@@ -42,7 +42,7 @@ public class GtfsImporter
       _map.clear();
    }
 
-   public Index geImporter(String name, String path, Class clazz)
+   public Index getImporter(String name, String path, Class clazz)
    {
       Index importer = _map.get(name);
 
@@ -118,67 +118,67 @@ public class GtfsImporter
 
    public Index<GtfsAgency> getAgencyById()
    {
-      return geImporter(INDEX.AGENCY_BY_ID.name(), AgencyById.FILENAME,
+      return getImporter(INDEX.AGENCY_BY_ID.name(), AgencyById.FILENAME,
             AgencyById.class);
    }
 
    public Index<GtfsCalendar> getCalendarByService()
    {
-      return geImporter(INDEX.CALENDAR_BY_SERVICE.name(),
+      return getImporter(INDEX.CALENDAR_BY_SERVICE.name(),
             CalendarByService.FILENAME, CalendarByService.class);
    }
 
    public Index<GtfsCalendarDate> getCalendarDateByService()
    {
-      return geImporter(INDEX.CALENDAR_DATE_BY_SERVICE.name(),
+      return getImporter(INDEX.CALENDAR_DATE_BY_SERVICE.name(),
             CalendarDateByService.FILENAME, CalendarDateByService.class);
    }
 
    public Index<GtfsFrequency> getFrequencyByTrip()
    {
-      return geImporter(INDEX.FREQUENCY_BY_TRIP.name(),
+      return getImporter(INDEX.FREQUENCY_BY_TRIP.name(),
             FrequencyByTrip.FILENAME, FrequencyByTrip.class);
    }
 
    public Index<GtfsRoute> getRouteById()
    {
-      return geImporter(INDEX.ROUTE_BY_ID.name(), RouteById.FILENAME,
+      return getImporter(INDEX.ROUTE_BY_ID.name(), RouteById.FILENAME,
             RouteById.class);
    }
 
    public Index<GtfsStop> getStopById()
    {
-      return geImporter(INDEX.STOP_BY_ID.name(), StopById.FILENAME,
+      return getImporter(INDEX.STOP_BY_ID.name(), StopById.FILENAME,
             StopById.class);
    }
 
    public Index<GtfsStopTime> getStopTimeByTrip()
    {
-      return geImporter(INDEX.STOP_TIME_BY_TRIP.name(),
+      return getImporter(INDEX.STOP_TIME_BY_TRIP.name(),
             StopTimeByTrip.FILENAME, StopTimeByTrip.class);
    }
 
    public Index<GtfsTransfer> getTransferByFromStop()
    {
-      return geImporter(INDEX.TRANSFER_BY_FROM_STOP.name(),
+      return getImporter(INDEX.TRANSFER_BY_FROM_STOP.name(),
             TransferByFromStop.FILENAME, TransferByFromStop.class);
    }
 
    public Index<GtfsTrip> getTripById()
    {
-      return geImporter(INDEX.TRIP_BY_ID.name(), TripById.FILENAME,
+      return getImporter(INDEX.TRIP_BY_ID.name(), TripById.FILENAME,
             TripById.class);
    }
 
    public Index<GtfsTrip> getTripByRoute()
    {
-      return geImporter(INDEX.TRIP_BY_ROUTE.name(), TripById.FILENAME,
+      return getImporter(INDEX.TRIP_BY_ROUTE.name(), TripById.FILENAME,
             TripByRoute.class);
    }
 
    public Index<GtfsTrip> getTripByService()
    {
-      return geImporter(INDEX.TRIP_BY_SERVICE.name(), TripById.FILENAME,
+      return getImporter(INDEX.TRIP_BY_SERVICE.name(), TripById.FILENAME,
             TripByRoute.class);
    }
 
