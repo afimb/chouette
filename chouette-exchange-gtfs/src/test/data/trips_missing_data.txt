@@ -1,6 +1,0 @@
-route_id,service_id,trip_id,trip_headsign,trip_short_name,direction_id,shape_id
-ABCD1_A,TM2,ABCD1_R_1,,,1,
-,TM2,ABCD1_R_1,,,1,
-ABCD1_A,,ABCD1_R_1,,,1,
-ABCD1_A,TM2,,,,1,
-,,,,,1,

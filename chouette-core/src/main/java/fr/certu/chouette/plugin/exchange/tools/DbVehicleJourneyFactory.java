@@ -89,12 +89,12 @@ public class DbVehicleJourneyFactory
             }
          } catch (SQLException e)
          {
-            log.fatal("cannot create temporary database");
+            log.fatal("cannot create temporary database",e);
             throw new RuntimeException("missing sqlite driver");
          } catch (ClassNotFoundException e)
          {
             log.fatal("missing sqlite driver");
-            throw new RuntimeException("missing sqlite driver");
+            throw new RuntimeException("missing sqlite driver",e);
          }
       }
    }
