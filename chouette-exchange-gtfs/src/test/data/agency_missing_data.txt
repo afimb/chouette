@@ -1,6 +1,0 @@
-agency_id,agency_name,agency_url,agency_timezone,agency_lang,agency_phone
-4321,Transporteur 1 (un) (4321),http://www.un.com,Europe/Paris,,01.02.03.04.05
-4321,,http://www.un.com,Europe/Paris,,01.02.03.04.05
-4321,Transporteur 1 (un) (4321),,Europe/Paris,,01.02.03.04.05
-4321,Transporteur 1 (un) (4321),http://www.un.com,,,01.02.03.04.05
-4321,,,,,01.02.03.04.05

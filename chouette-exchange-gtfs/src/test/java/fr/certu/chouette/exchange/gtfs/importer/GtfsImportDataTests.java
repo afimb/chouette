@@ -1,173 +1,208 @@
 package fr.certu.chouette.exchange.gtfs.importer;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.List;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Iterator;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
-import org.testng.Reporter;
+import org.testng.annotations.AfterGroups;
+import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.Test;
 
-import fr.certu.chouette.plugin.exchange.report.ExchangeReport;
-import fr.certu.chouette.plugin.report.Report;
-import fr.certu.chouette.plugin.report.ReportItem;
+import fr.certu.chouette.exchange.gtfs.refactor.importer.GtfsException;
+import fr.certu.chouette.exchange.gtfs.refactor.importer.GtfsImporter;
+import fr.certu.chouette.exchange.gtfs.refactor.importer.Index;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsAgency;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsCalendar;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsCalendarDate;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsRoute;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStop;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStopTime;
+import fr.certu.chouette.plugin.exchange.tools.FileTool;
 
 @ContextConfiguration(locations = { "classpath:testContext.xml",
       "classpath*:chouetteContext.xml" })
 public class GtfsImportDataTests extends AbstractTestNGSpringContextTests
-{
-   private String path = "src/test/data/";
+{   
+   private GtfsImporter importer = null;
+   
+   Path targetDirectory = null;;
 
-   @Test(groups = { "GtfsData" }, description = "GtfsData should report missing mandatory data on agency.txt")
-   public void verifyMandatoryAgencyData() throws Exception
+   
+   @BeforeGroups (groups = {"GtfsImporter"})
+   public void initImporter() throws Exception
    {
-      Report report = new ExchangeReport(ExchangeReport.KEY.IMPORT, "GTFS");
-      GtfsData data = new GtfsData("test", "tmp", false);
-      FileInputStream input = new FileInputStream(new File(path,
-            "agency_missing_data.txt"));
-      data.loadAgencies(input, report);
-      printReport(report);
-      Assert.assertEquals(data.getAgencies().size(), 1,
-            "only 1 agency must be loaded");
-      Assert.assertEquals(report.getItems().size(), 4,
-            "report must have items ");
+      targetDirectory = Files.createTempDirectory("gtfs_import_");
+      FileTool.uncompress("src/test/data/test_missing_data.zip", targetDirectory.toFile());
+      
+      importer = new GtfsImporter(targetDirectory.toString());
    }
 
-   @Test(groups = { "GtfsData" }, description = "GtfsData should report missing mandatory data on stops.txt")
+   
+   @AfterGroups (groups = {"GtfsImporter"})
+   public void releaseImporter() throws Exception
+   {
+      importer.dispose();
+      FileUtils.deleteDirectory(targetDirectory.toFile());
+   }
+
+   @Test(groups = { "GtfsImporter" }, description = "GtfsImporter should report missing mandatory data on agency.txt")
+   public void verifyMandatoryAgencyData() throws Exception
+   {      
+      int errors = 0;
+      int ok = 0;
+      for (Iterator<GtfsAgency> it =  importer.getAgencyById().iterator(); it.hasNext(); )
+      {
+         try
+         {
+            it.next();
+            ok++;
+         }
+         catch (GtfsException e)
+         {
+            //logger.warn("missing data ",e);
+            errors++;
+         }
+      }
+      Assert.assertEquals(ok, 1, "only 1 agency must be loaded");
+      Assert.assertEquals(errors, 4,"report must have errors ");
+      
+   }
+
+   @Test(groups = { "GtfsImporter" }, description = "GtfsImporter should report missing mandatory data on stops.txt")
    public void verifyMandatoryStopsData() throws Exception
    {
-      Report report = new ExchangeReport(ExchangeReport.KEY.IMPORT, "GTFS");
-      GtfsData data = new GtfsData("test", "tmp", false);
-      FileInputStream input = new FileInputStream(new File(path,
-            "stops_missing_data.txt"));
-      data.loadStops(input, report);
-      printReport(report);
-      Assert.assertEquals(data.getStops().size(), 1,
-            "only 1 stop must be loaded");
-      Assert.assertEquals(report.getItems().size(), 5,
-            "report must have items ");
+      int errors = 0;
+      int ok = 0;
+      Index<GtfsStop> stops = importer.getStopById();
+      for (Iterator<GtfsStop> it =  stops.iterator(); it.hasNext(); )
+      {
+         try
+         {
+            GtfsStop bean = it.next();
+            // foreign key
+            stops.validate(bean, importer);
+            ok++;
+         }
+         catch (GtfsException e)
+         {
+            // logger.warn("missing data ",e);
+            errors++;
+         }
+      }
+      Assert.assertEquals(ok, 2, "only 2 stop must be loaded");
+      Assert.assertEquals(errors, 4,"report must have errors ");
    }
 
-   @Test(groups = { "GtfsData" }, description = "GtfsData should report missing mandatory data on calendars.txt")
+   @Test(groups = { "GtfsImporter" }, description = "GtfsImporter should report missing mandatory data on calendars.txt")
    public void verifyMandatoryCalendarsData() throws Exception
    {
-      Report report = new ExchangeReport(ExchangeReport.KEY.IMPORT, "GTFS");
-      GtfsData data = new GtfsData("test", "tmp", false);
-      FileInputStream input = new FileInputStream(new File(path,
-            "calendars_missing_data.txt"));
-      data.loadCalendars(input, report);
-      printReport(report);
-      Assert.assertEquals(data.getCalendars().size(), 1,
-            "only 1 calendar must be loaded");
-      Assert.assertEquals(report.getItems().size(), 6,
-            "report must have items ");
+      int errors = 0;
+      int ok = 0;
+      for (Iterator<GtfsCalendar> it =  importer.getCalendarByService().iterator(); it.hasNext(); )
+      {
+         try
+         {
+            it.next();
+            ok++;
+         }
+         catch (GtfsException e)
+         {
+            //logger.warn("missing data ",e);
+            errors++;
+         }
+      }
+      Assert.assertEquals(ok, 1, "only 1 calendar must be loaded");
+      Assert.assertEquals(errors, 3,"report must have errors ");
    }
 
-   @Test(groups = { "GtfsData" }, description = "GtfsData should report missing mandatory data on calendar_dates.txt")
+   @Test(groups = { "GtfsImporter" }, description = "GtfsImporter should report missing mandatory data on calendar_dates.txt")
    public void verifyMandatoryCalendarDatesData() throws Exception
    {
-      Report report = new ExchangeReport(ExchangeReport.KEY.IMPORT, "GTFS");
-      GtfsData data = new GtfsData("test", "tmp", false);
-      FileInputStream input = new FileInputStream(new File(path,
-            "calendar_dates_missing_data.txt"));
-      data.loadCalendarDates(input, report);
-      printReport(report);
-      Assert.assertEquals(data.getCalendarDates().size(), 1,
-            "only 1 calendar_date must be loaded");
-      Assert.assertEquals(report.getItems().size(), 4,
-            "report must have items ");
+      int errors = 0;
+      int ok = 0;
+      for (Iterator<GtfsCalendarDate> it =  importer.getCalendarDateByService().iterator(); it.hasNext(); )
+      {
+         try
+         {
+            it.next();
+            ok++;
+         }
+         catch (GtfsException e)
+         {
+            //logger.warn("missing data ",e);
+            errors++;
+         }
+      }
+      Assert.assertEquals(ok, 1, "only 1 calendarDate must be loaded");
+      Assert.assertEquals(errors, 2,"report must have errors ");
    }
 
-   @Test(groups = { "GtfsData" }, description = "GtfsData should report missing mandatory data on routes.txt")
+   @Test(groups = { "GtfsImporter" }, description = "GtfsImporter should report missing mandatory data on routes.txt")
    public void verifyMandatoryRoutesData() throws Exception
    {
-      Report report = new ExchangeReport(ExchangeReport.KEY.IMPORT, "GTFS");
-      GtfsData data = new GtfsData("test", "tmp", false);
-      FileInputStream input = new FileInputStream(new File(path,
-            "routes_missing_data.txt"));
-      data.loadRoutes(input, report);
-      printReport(report);
-      Assert.assertEquals(data.getRoutes().size(), 3,
-            "only 3 routes must be loaded");
-      Assert.assertEquals(report.getItems().size(), 3,
-            "report must have items ");
+      int errors = 0;
+      int ok = 0;
+      for (Iterator<GtfsRoute> it =  importer.getRouteById().iterator(); it.hasNext(); )
+      {
+         try
+         {
+            it.next();
+            ok++;
+         }
+         catch (GtfsException e)
+         {
+            //logger.warn("missing data ",e);
+            errors++;
+         }
+      }
+      Assert.assertEquals(ok, 1, "only 1 Route must be loaded");
+      Assert.assertEquals(errors, 3,"report must have errors ");
    }
 
-   @Test(groups = { "GtfsData" }, description = "GtfsData should report missing mandatory data on stop_times.txt")
+   @Test(groups = { "GtfsImporter" }, description = "GtfsImporter should report missing mandatory data on stop_times.txt")
    public void verifyMandatoryStopTimesData() throws Exception
    {
-      Report report = new ExchangeReport(ExchangeReport.KEY.IMPORT, "GTFS");
-      GtfsData data = new GtfsData("test", "tmp", false);
-      FileInputStream input = new FileInputStream(new File(path,
-            "stop_times_missing_data.txt"));
-      data.loadStopTimes(input, report);
-      printReport(report);
-      Assert.assertEquals(data.getStopTimes().size(), 1,
-            "only 1 stop_time must be loaded");
-      Assert.assertEquals(report.getItems().size(), 6,
-            "report must have items ");
+      int errors = 0;
+      int ok = 0;
+      for (Iterator<GtfsStopTime> it =  importer.getStopTimeByTrip().iterator(); it.hasNext(); )
+      {
+         try
+         {
+            it.next();
+            ok++;
+         }
+         catch (GtfsException e)
+         {
+            //logger.warn("missing data ",e);
+            errors++;
+         }
+      }
+      Assert.assertEquals(ok, 1, "only 1 stopTime must be loaded");
+      Assert.assertEquals(errors, 5,"report must have errors ");
    }
 
-   @Test(groups = { "GtfsData" }, description = "GtfsData should report missing mandatory data on transfers.txt")
+   @Test(groups = { "GtfsImporter" }, description = "GtfsImporter should report missing mandatory data on transfers.txt")
    public void verifyMandatoryTransfersData() throws Exception
    {
-      Report report = new ExchangeReport(ExchangeReport.KEY.IMPORT, "GTFS");
-      GtfsData data = new GtfsData("test", "tmp", false);
-      FileInputStream input = new FileInputStream(new File(path,
-            "transfers_missing_data.txt"));
-      data.loadTransfers(input, report);
-      printReport(report);
-      Assert.assertEquals(data.getTransfers().size(), 1,
-            "only 1 transfer must be loaded");
-      Assert.assertEquals(report.getItems().size(), 3,
-            "report must have items ");
+//      Assert.assertEquals(data.getTransfers().size(), 1,
+//            "only 1 transfer must be loaded");
+//      Assert.assertEquals(report.getItems().size(), 3,
+//            "report must have items ");
    }
 
-   @Test(groups = { "GtfsData" }, description = "GtfsData should report missing mandatory data on trips.txt")
-   public void verifyMandatoryStopData() throws Exception
+   @Test(groups = { "GtfsImporter" }, description = "GtfsImporter should report missing mandatory data on trips.txt")
+   public void verifyMandatoryTripsData() throws Exception
    {
-      Report report = new ExchangeReport(ExchangeReport.KEY.IMPORT, "GTFS");
-      GtfsData data = new GtfsData("test", "tmp", false);
-      FileInputStream input = new FileInputStream(new File(path,
-            "trips_missing_data.txt"));
-      data.loadTrips(input, report);
-      printReport(report);
-      Assert.assertEquals(data.getTrips().size(), 1,
-            "only 1 trip must be loaded");
-      Assert.assertEquals(report.getItems().size(), 4,
-            "report must have items ");
+//      Assert.assertEquals(data.getTrips().size(), 1,
+//            "only 1 trip must be loaded");
+//      Assert.assertEquals(report.getItems().size(), 4,
+//            "report must have items ");
    }
 
-   private void printReport(Report report)
-   {
-      if (report == null)
-      {
-         Reporter.log("no report");
-      } else
-      {
-         Reporter.log(report.getStatus().name() + " : "
-               + report.getLocalizedMessage());
-         printItems("   ", report.getItems());
-      }
-   }
 
-   /**
-    * @param indent
-    * @param items
-    */
-   private void printItems(String indent, List<ReportItem> items)
-   {
-      if (items == null)
-         return;
-      for (ReportItem item : items)
-      {
-         Reporter.log(indent + item.getStatus().name() + " : "
-               + item.getLocalizedMessage());
-         printItems(indent + "   ", item.getItems());
-      }
-
-   }
 
 }

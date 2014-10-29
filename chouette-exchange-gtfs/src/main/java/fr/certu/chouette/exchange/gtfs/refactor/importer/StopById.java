@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 
 import fr.certu.chouette.exchange.gtfs.refactor.importer.GtfsException.ERROR;
-import fr.certu.chouette.exchange.gtfs.refactor.importer.TripIndex.FIELDS;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStop;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStop.LocationType;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStop.WheelchairBoardingType;

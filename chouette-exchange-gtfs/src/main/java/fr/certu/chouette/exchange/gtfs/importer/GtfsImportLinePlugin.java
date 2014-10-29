@@ -11,6 +11,7 @@ import java.util.List;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 
 import fr.certu.chouette.common.ChouetteException;
@@ -258,7 +259,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
                   "agency.txt", filePath);
             report.addItem(item);
             report.updateStatus(Report.STATE.ERROR);
-            log.error("zip import failed (missing entry agency.txt)");
+            log.error("zip import failed (missing entry agency.txt)",e);
             ok = false;
          } catch (Exception e)
          {
@@ -307,7 +308,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
                      filePath);
                report.addItem(item);
                report.updateStatus(Report.STATE.ERROR);
-               log.error("zip import failed (missing entries calendars.txt, calendar_dates.txt)");
+               log.error("zip import failed (missing entries calendars.txt, calendar_dates.txt)",e);
                ok = false;
             }
          } catch (Exception e)
@@ -352,7 +353,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
                   "routes.txt", filePath);
             report.addItem(item);
             report.updateStatus(Report.STATE.ERROR);
-            log.error("zip import failed (missing entry routes.txt)");
+            log.error("zip import failed (missing entry routes.txt)",e);
             ok = false;
          } catch (Exception e)
          {
@@ -377,7 +378,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
                   "stops.txt", filePath);
             report.addItem(item);
             report.updateStatus(Report.STATE.ERROR);
-            log.error("zip import failed (missing entry stops.txt)");
+            log.error("zip import failed (missing entry stops.txt)",e);
             ok = false;
          } catch (Exception e)
          {
@@ -402,7 +403,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
                   "stop_times.txt", filePath);
             report.addItem(item);
             report.updateStatus(Report.STATE.ERROR);
-            log.error("zip import failed (missing entry stop_times.txt)");
+            log.error("zip import failed (missing entry stop_times.txt)",e);
             ok = false;
          } catch (Exception e)
          {
@@ -427,7 +428,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
                   "trips.txt", filePath);
             report.addItem(item);
             report.updateStatus(Report.STATE.ERROR);
-            log.error("zip import failed (missing entry trips.txt)");
+            log.error("zip import failed (missing entry trips.txt)",e);
             ok = false;
          } catch (Exception e)
          {
@@ -516,6 +517,14 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
          if (importer != null)
          {
             importer.dispose();
+         }
+         try
+         {
+            FileUtils.deleteDirectory(targetDirectory.toFile());
+         }
+         catch (IOException e)
+         {
+            // TODO Auto-generated catch block
          }
 
       }

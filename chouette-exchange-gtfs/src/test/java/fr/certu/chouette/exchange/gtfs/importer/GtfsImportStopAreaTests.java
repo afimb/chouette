@@ -199,7 +199,7 @@ public class GtfsImportStopAreaTests extends AbstractTestNGSpringContextTests
    }
 
    @Test(groups = { "ImportStopArea" }, description = "Import Plugin should accept bom marker", dependsOnMethods = { "getBean" })
-   public void verifyImportLineWithBOM() throws ChouetteException
+   public void verifyImportStopAreaWithBOM() throws ChouetteException
    {
       verifyImportStopArea(path + "/test_gtfs_bom.zip", 12, 1);
       // try to clean data

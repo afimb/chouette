@@ -1,8 +1,0 @@
-trip_id,arrival_time,departure_time,stop_id,stop_sequence,stop_headsign,shape_dist_traveled
-ABCD1_R_1,18:00:00,18:00:00,BP_Terminus_2__R__39016,1,,
-,18:00:00,18:00:00,BP_Terminus_2__R__39016,1,,
-ABCD1_R_1,,18:00:00,BP_Terminus_2__R__39016,1,,
-ABCD1_R_1,18:00:00,,BP_Terminus_2__R__39016,1,,
-ABCD1_R_1,18:00:00,18:00:00,,1,,
-ABCD1_R_1,18:00:00,18:00:00,BP_Terminus_2__R__39016,,,
-ABCD1_R_1,,,BP_Terminus_2__R__39016,1,,

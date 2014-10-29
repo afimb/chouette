@@ -12,6 +12,7 @@ import java.util.Map;
 
 import lombok.Setter;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
 
@@ -249,6 +250,7 @@ public class GtfsImportStopAreaPlugin implements IImportPlugin<StopArea>
          try
          {
             importer.getStopById();
+            stopFound = true;
          } catch (GtfsException e)
          {
             ReportItem item = new ExchangeReportItem(
@@ -256,7 +258,7 @@ public class GtfsImportStopAreaPlugin implements IImportPlugin<StopArea>
                   "stops.txt", filePath);
             report.addItem(item);
             report.updateStatus(Report.STATE.ERROR);
-            log.error("zip import failed (missing entry stops.txt)");
+            log.error("zip import failed (missing entry stops.txt)",e);
             ok = false;
          } catch (Exception e)
          {
@@ -360,7 +362,18 @@ public class GtfsImportStopAreaPlugin implements IImportPlugin<StopArea>
          return new ArrayList<StopArea>();
       } finally
       {
-         importer.dispose();
+         if (importer != null)
+         {
+            importer.dispose();
+         }
+         try
+         {
+            FileUtils.deleteDirectory(targetDirectory.toFile());
+         }
+         catch (IOException e)
+         {
+            // TODO Auto-generated catch block
+         }
 
       }
 
