@@ -7,10 +7,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import fr.certu.chouette.exchange.gtfs.refactor.exporter.TripExporter;
-import fr.certu.chouette.exchange.gtfs.refactor.importer.Context;
+import lombok.ToString;
 
-//@ToString(callSuper = true)
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
@@ -59,11 +58,11 @@ public class GtfsTrip extends GtfsObject implements Serializable
    @Setter
    private BikesAllowedType bikesAllowed;
 
-   @Override
-   public String toString()
-   {
-      return id + ":" + TripExporter.CONVERTER.to(new Context(),this);
-   }
+   // @Override
+   // public String toString()
+   // {
+   // return id + ":" + TripExporter.CONVERTER.to(new Context(),this);
+   // }
 
    @AllArgsConstructor
    public enum DirectionType implements Serializable
