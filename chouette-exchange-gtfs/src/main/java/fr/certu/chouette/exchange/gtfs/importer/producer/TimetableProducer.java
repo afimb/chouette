@@ -31,9 +31,6 @@ public class TimetableProducer extends
       timetable.setObjectId(composeIncrementalObjectId(Timetable.TIMETABLE_KEY,
             gtfsCalendar.getServiceId(), logger));
 
-      logger.info("import calendar " );
-      logger.info(gtfsCalendar.toString());
-      
       if (gtfsCalendar.getMonday())
          timetable.addDayType(DayTypeEnum.Monday);
       if (gtfsCalendar.getTuesday())

@@ -76,11 +76,7 @@
 			<groupId>com.jamonapi</groupId>
 			<artifactId>jamon</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.mapdb</groupId>
-			<artifactId>mapdb</artifactId>
-			<version>1.0.6</version>
-		</dependency>
+		
 	</dependencies>
 	<build>
 		<resources>
