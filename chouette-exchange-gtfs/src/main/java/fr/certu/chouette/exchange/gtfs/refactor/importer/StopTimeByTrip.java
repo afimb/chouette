@@ -3,7 +3,6 @@ package fr.certu.chouette.exchange.gtfs.refactor.importer;
 import java.io.IOException;
 
 import fr.certu.chouette.exchange.gtfs.refactor.importer.GtfsException.ERROR;
-import fr.certu.chouette.exchange.gtfs.refactor.importer.StopById.FIELDS;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStopTime;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStopTime.DropOffType;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStopTime.PickupType;

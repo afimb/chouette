@@ -307,7 +307,7 @@ public abstract class IndexImpl<T> extends AbstractIndex<T>
             + monitor.stop());
    }
 
-   @Override
+   // @Override
    protected ByteBuffer getBuffer(String key, Context context)
    {
       Token token = _tokens.get(key);
@@ -320,7 +320,7 @@ public abstract class IndexImpl<T> extends AbstractIndex<T>
       }
    }
 
-   @Override
+   //@Override
    protected ByteBuffer getBuffer(Token token, Context context)
    {
       int offset = token.offset;

@@ -59,6 +59,23 @@ public class Main
          e.printStackTrace();
       }
    }
+   
+   private void todo()
+   {
+      GtfsImporter dao = new GtfsImporter(PATH);
+
+
+
+      // stop_times.txt
+      parse(dao, GtfsImporter.INDEX.STOP_TIME_BY_TRIP.name(),
+            StopTimeByTrip.FILENAME, StopTimeByTrip.class);
+
+      
+      dao.dispose();
+
+   }
+
+   
 
    private void execute()
    {
