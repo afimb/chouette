@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import fr.certu.chouette.exchange.gtfs.refactor.exporter.CalendarExporter;
+import fr.certu.chouette.exchange.gtfs.refactor.importer.Context;
 
 // @ToString(callSuper=true)
 @EqualsAndHashCode(callSuper = false)
@@ -62,6 +63,6 @@ public class GtfsCalendar extends GtfsObject implements Serializable
    @Override
    public String toString()
    {
-      return id + ":" + CalendarExporter.CONVERTER.to(this);
+      return id + ":" + CalendarExporter.CONVERTER.to(new Context(),this);
    }
 }

@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import fr.certu.chouette.exchange.gtfs.refactor.exporter.RouteExporter;
+import fr.certu.chouette.exchange.gtfs.refactor.importer.Context;
 
 // @ToString(callSuper=true)
 @EqualsAndHashCode(callSuper = false)
@@ -65,6 +66,6 @@ public class GtfsRoute extends GtfsObject implements Serializable
    @Override
    public String toString()
    {
-      return id + ":" + RouteExporter.CONVERTER.to(this);
+      return id + ":" + RouteExporter.CONVERTER.to(new Context(),this);
    }
 }

@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.certu.chouette.exchange.gtfs.refactor.importer.Context;
 import fr.certu.chouette.exchange.gtfs.refactor.importer.GtfsConverter;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStop;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStop.LocationType;
@@ -34,57 +35,77 @@ public class StopExporter extends ExporterImpl<GtfsStop> implements
    @Override
    public void export(GtfsStop bean) throws IOException
    {
-      write(CONVERTER.to(bean));
+      write(CONVERTER.to(_context, bean));
    }
 
    public static Converter<String, GtfsStop> CONVERTER = new Converter<String, GtfsStop>()
    {
 
       @Override
-      public GtfsStop from(String input)
+      public GtfsStop from(Context context, String input)
       {
          GtfsStop bean = new GtfsStop();
          List<String> values = Tokenizer.tokenize(input);
 
          int i = 0;
-         bean.setStopId(STRING_CONVERTER.from(values.get(i++), true));
-         bean.setStopCode(STRING_CONVERTER.from(values.get(i++), false));
-         bean.setStopName(STRING_CONVERTER.from(values.get(i++), true));
-         bean.setStopDesc(STRING_CONVERTER.from(values.get(i++), false));
-         bean.setStopLat(BigDecimal.valueOf(FLOAT_CONVERTER.from(
-               values.get(i++), true)));
-         bean.setStopLon(BigDecimal.valueOf(FLOAT_CONVERTER.from(
-               values.get(i++), true)));
-         bean.setZoneId(STRING_CONVERTER.from(values.get(i++), false));
-         bean.setStopUrl(URL_CONVERTER.from(values.get(i++), false));
-         bean.setLocationType(LOCATIONTYPE_CONVERTER.from(values.get(i++),
-               LocationType.Stop, false));
-         bean.setParentStation(STRING_CONVERTER.from(values.get(i++), false));
-         bean.setStopTimezone(TIMEZONE_CONVERTER.from(values.get(i++), false));
+         bean.setStopId(STRING_CONVERTER.from(context, FIELDS.stop_id,
+               values.get(i++), true));
+         bean.setStopCode(STRING_CONVERTER.from(context, FIELDS.stop_code,
+               values.get(i++), false));
+         bean.setStopName(STRING_CONVERTER.from(context, FIELDS.stop_name,
+               values.get(i++), true));
+         bean.setStopDesc(STRING_CONVERTER.from(context, FIELDS.stop_desc,
+               values.get(i++), false));
+         bean.setStopLat(BigDecimal.valueOf(FLOAT_CONVERTER.from(context,
+               FIELDS.stop_lat, values.get(i++), true)));
+         bean.setStopLon(BigDecimal.valueOf(FLOAT_CONVERTER.from(context,
+               FIELDS.stop_lon, values.get(i++), true)));
+         bean.setZoneId(STRING_CONVERTER.from(context, FIELDS.zone_id,
+               values.get(i++), false));
+         bean.setStopUrl(URL_CONVERTER.from(context, FIELDS.stop_url,
+               values.get(i++), false));
+         bean.setLocationType(LOCATIONTYPE_CONVERTER.from(context,
+               FIELDS.location_type, values.get(i++), LocationType.Stop, false));
+         bean.setParentStation(STRING_CONVERTER.from(context,
+               FIELDS.parent_station, values.get(i++), false));
+         bean.setStopTimezone(TIMEZONE_CONVERTER.from(context,
+               FIELDS.stop_timezone, values.get(i++), false));
          bean.setWheelchairBoarding(WHEELCHAIRBOARDINGTYPE_CONVERTER.from(
-               values.get(i++), WheelchairBoardingType.NoInformation, false));
+               context, FIELDS.wheelchair_boarding, values.get(i++),
+               WheelchairBoardingType.NoInformation, false));
 
          return bean;
       }
 
       @Override
-      public String to(GtfsStop input)
+      public String to(Context context, GtfsStop input)
       {
          String result = null;
          List<String> values = new ArrayList<String>();
-         values.add(STRING_CONVERTER.to(input.getStopId()));
-         values.add(STRING_CONVERTER.to(input.getStopCode()));
-         values.add(STRING_CONVERTER.to(input.getStopName()));
-         values.add(STRING_CONVERTER.to(input.getStopDesc()));
-         values.add(FLOAT_CONVERTER.to(input.getStopLat().floatValue()));
-         values.add(FLOAT_CONVERTER.to(input.getStopLon().floatValue()));
-         values.add(STRING_CONVERTER.to(input.getZoneId()));
-         values.add(URL_CONVERTER.to(input.getStopUrl()));
-         values.add(LOCATIONTYPE_CONVERTER.to(input.getLocationType()));
-         values.add(STRING_CONVERTER.to(input.getParentStation()));
-         values.add(TIMEZONE_CONVERTER.to(input.getStopTimezone()));
-         values.add(WHEELCHAIRBOARDINGTYPE_CONVERTER.to(input
-               .getWheelchairBoarding()));
+         values.add(STRING_CONVERTER.to(context, FIELDS.stop_id,
+               input.getStopId(), true));
+         values.add(STRING_CONVERTER.to(context, FIELDS.stop_code,
+               input.getStopCode(), false));
+         values.add(STRING_CONVERTER.to(context, FIELDS.stop_name,
+               input.getStopName(), true));
+         values.add(STRING_CONVERTER.to(context, FIELDS.stop_desc,
+               input.getStopDesc(), false));
+         values.add(FLOAT_CONVERTER.to(context, FIELDS.stop_lat, input
+               .getStopLat().floatValue(), true));
+         values.add(FLOAT_CONVERTER.to(context, FIELDS.stop_lon, input
+               .getStopLon().floatValue(), true));
+         values.add(STRING_CONVERTER.to(context, FIELDS.zone_id,
+               input.getZoneId(), false));
+         values.add(URL_CONVERTER.to(context, FIELDS.stop_url,
+               input.getStopUrl(), false));
+         values.add(LOCATIONTYPE_CONVERTER.to(context, FIELDS.location_type,
+               input.getLocationType(), false));
+         values.add(STRING_CONVERTER.to(context, FIELDS.parent_station,
+               input.getParentStation(), false));
+         values.add(TIMEZONE_CONVERTER.to(context, FIELDS.stop_timezone,
+               input.getStopTimezone(), false));
+         values.add(WHEELCHAIRBOARDINGTYPE_CONVERTER.to(context,
+               FIELDS.wheelchair_boarding, input.getWheelchairBoarding(), false));
 
          result = Tokenizer.untokenize(values);
          return result;

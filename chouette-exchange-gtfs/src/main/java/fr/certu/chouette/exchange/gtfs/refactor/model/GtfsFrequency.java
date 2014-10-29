@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import fr.certu.chouette.exchange.gtfs.refactor.exporter.FrequencyExporter;
+import fr.certu.chouette.exchange.gtfs.refactor.importer.Context;
 
 //@ToString(callSuper=true)
 @EqualsAndHashCode(callSuper = false)
@@ -41,7 +42,7 @@ public class GtfsFrequency extends GtfsObject implements Serializable
    @Override
    public String toString()
    {
-      return id + ":" + FrequencyExporter.CONVERTER.to(this);
+      return id + ":" + FrequencyExporter.CONVERTER.to(new Context(),this);
    }
 
 }

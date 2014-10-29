@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.certu.chouette.exchange.gtfs.refactor.importer.Context;
 import fr.certu.chouette.exchange.gtfs.refactor.importer.GtfsConverter;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsRoute;
 
@@ -32,48 +33,64 @@ public class RouteExporter extends ExporterImpl<GtfsRoute> implements
    @Override
    public void export(GtfsRoute bean) throws IOException
    {
-      write(CONVERTER.to(bean));
+      write(CONVERTER.to(_context, bean));
    }
 
    public static Converter<String, GtfsRoute> CONVERTER = new Converter<String, GtfsRoute>()
    {
 
       @Override
-      public GtfsRoute from(String input)
+      public GtfsRoute from(Context context, String input)
       {
          GtfsRoute bean = new GtfsRoute();
          List<String> values = Tokenizer.tokenize(input);
 
          int i = 0;
-         bean.setRouteId(STRING_CONVERTER.from(values.get(i++), true));
-         bean.setAgencyId(STRING_CONVERTER.from(values.get(i++), false));
-         bean.setRouteShortName(STRING_CONVERTER.from(values.get(i++), true));
-         bean.setRouteLongName(STRING_CONVERTER.from(values.get(i++), true));
-         bean.setRouteDesc(STRING_CONVERTER.from(values.get(i++), false));
-         bean.setRouteType(ROUTETYPE_CONVERTER.from(values.get(i++), true));
-         bean.setRouteUrl(URL_CONVERTER.from(values.get(i++), false));
-         bean.setRouteColor(COLOR_CONVERTER.from(values.get(i++), Color.WHITE,
-               false));
-         bean.setRouteTextColor(COLOR_CONVERTER.from(values.get(i++),
-               Color.BLACK, false));
+         bean.setRouteId(STRING_CONVERTER.from(context, FIELDS.route_id,
+               values.get(i++), true));
+         bean.setAgencyId(STRING_CONVERTER.from(context, FIELDS.agency_id,
+               values.get(i++), false));
+         bean.setRouteShortName(STRING_CONVERTER.from(context,
+               FIELDS.route_short_name, values.get(i++), true));
+         bean.setRouteLongName(STRING_CONVERTER.from(context,
+               FIELDS.route_long_name, values.get(i++), true));
+         bean.setRouteDesc(STRING_CONVERTER.from(context, FIELDS.route_desc,
+               values.get(i++), false));
+         bean.setRouteType(ROUTETYPE_CONVERTER.from(context, FIELDS.route_type,
+               values.get(i++), true));
+         bean.setRouteUrl(URL_CONVERTER.from(context, FIELDS.route_url,
+               values.get(i++), false));
+         bean.setRouteColor(COLOR_CONVERTER.from(context, FIELDS.route_color,
+               values.get(i++), Color.WHITE, false));
+         bean.setRouteTextColor(COLOR_CONVERTER.from(context,
+               FIELDS.route_text_color, values.get(i++), Color.BLACK, false));
 
          return bean;
       }
 
       @Override
-      public String to(GtfsRoute input)
+      public String to(Context context, GtfsRoute input)
       {
          String result = null;
          List<String> values = new ArrayList<String>();
-         values.add(STRING_CONVERTER.to(input.getRouteId()));
-         values.add(STRING_CONVERTER.to(input.getAgencyId()));
-         values.add(STRING_CONVERTER.to(input.getRouteShortName()));
-         values.add(STRING_CONVERTER.to(input.getRouteLongName()));
-         values.add(STRING_CONVERTER.to(input.getRouteDesc()));
-         values.add(ROUTETYPE_CONVERTER.to(input.getRouteType()));
-         values.add(URL_CONVERTER.to(input.getRouteUrl()));
-         values.add(COLOR_CONVERTER.to(input.getRouteColor()));
-         values.add(COLOR_CONVERTER.to(input.getRouteTextColor()));
+         values.add(STRING_CONVERTER.to(context, FIELDS.route_id,
+               input.getRouteId(), true));
+         values.add(STRING_CONVERTER.to(context, FIELDS.agency_id,
+               input.getAgencyId(), false));
+         values.add(STRING_CONVERTER.to(context, FIELDS.route_short_name,
+               input.getRouteShortName(), true));
+         values.add(STRING_CONVERTER.to(context, FIELDS.route_long_name,
+               input.getRouteLongName(), true));
+         values.add(STRING_CONVERTER.to(context, FIELDS.route_desc,
+               input.getRouteDesc(), false));
+         values.add(ROUTETYPE_CONVERTER.to(context, FIELDS.route_type,
+               input.getRouteType(), true));
+         values.add(URL_CONVERTER.to(context, FIELDS.route_url,
+               input.getRouteUrl(), false));
+         values.add(COLOR_CONVERTER.to(context, FIELDS.route_color,
+               input.getRouteColor(), false));
+         values.add(COLOR_CONVERTER.to(context, FIELDS.route_text_color,
+               input.getRouteTextColor(), false));
 
          result = Tokenizer.untokenize(values);
          return result;

@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import fr.certu.chouette.exchange.gtfs.refactor.exporter.StopExporter;
+import fr.certu.chouette.exchange.gtfs.refactor.importer.Context;
 
 // @ToString(callSuper=true)
 @EqualsAndHashCode(callSuper = false)
@@ -72,7 +73,7 @@ public class GtfsStop extends GtfsObject implements Serializable
    @Override
    public String toString()
    {
-      return id + ":" + StopExporter.CONVERTER.to(this);
+      return id + ":" + StopExporter.CONVERTER.to(new Context(),this);
    }
 
    public enum LocationType implements Serializable

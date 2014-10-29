@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import fr.certu.chouette.exchange.gtfs.refactor.exporter.TripExporter;
+import fr.certu.chouette.exchange.gtfs.refactor.importer.Context;
 
 //@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
@@ -61,7 +62,7 @@ public class GtfsTrip extends GtfsObject implements Serializable
    @Override
    public String toString()
    {
-      return id + ":" + TripExporter.CONVERTER.to(this);
+      return id + ":" + TripExporter.CONVERTER.to(new Context(),this);
    }
 
    @AllArgsConstructor

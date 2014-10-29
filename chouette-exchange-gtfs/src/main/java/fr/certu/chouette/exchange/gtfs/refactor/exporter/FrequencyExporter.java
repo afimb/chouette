@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.certu.chouette.exchange.gtfs.refactor.importer.Context;
 import fr.certu.chouette.exchange.gtfs.refactor.importer.GtfsConverter;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsFrequency;
 
@@ -31,39 +32,48 @@ public class FrequencyExporter extends ExporterImpl<GtfsFrequency> implements
    @Override
    public void export(GtfsFrequency bean) throws IOException
    {
-      write(CONVERTER.to(bean));
+      write(CONVERTER.to(_context, bean));
    }
 
    public static Converter<String, GtfsFrequency> CONVERTER = new Converter<String, GtfsFrequency>()
    {
 
       @Override
-      public GtfsFrequency from(String input)
+      public GtfsFrequency from(Context context, String input)
       {
          GtfsFrequency bean = new GtfsFrequency();
          List<String> values = Tokenizer.tokenize(input);
 
          int i = 0;
-         bean.setTripId(STRING_CONVERTER.from(values.get(i++), true));
-         bean.setStartTime(GTFSTIME_CONVERTER.from(values.get(i++), true));
-         bean.setEndTime(GTFSTIME_CONVERTER.from(values.get(i++), true));
-         bean.setHeadwaySecs(INTEGER_CONVERTER.from(values.get(i++), true));
-         bean.setExactTimes(BOOLEAN_CONVERTER.from(values.get(i++), false,
-               false));
+         bean.setTripId(STRING_CONVERTER.from(context, FIELDS.trip_id,
+               values.get(i++), true));
+         bean.setStartTime(GTFSTIME_CONVERTER.from(context, FIELDS.start_time,
+               values.get(i++), true));
+         bean.setEndTime(GTFSTIME_CONVERTER.from(context, FIELDS.end_time,
+               values.get(i++), true));
+         bean.setHeadwaySecs(INTEGER_CONVERTER.from(context,
+               FIELDS.headway_secs, values.get(i++), true));
+         bean.setExactTimes(BOOLEAN_CONVERTER.from(context, FIELDS.exact_times,
+               values.get(i++), false, false));
 
          return bean;
       }
 
       @Override
-      public String to(GtfsFrequency input)
+      public String to(Context context, GtfsFrequency input)
       {
          String result = null;
          List<String> values = new ArrayList<String>();
-         values.add(STRING_CONVERTER.to(input.getTripId()));
-         values.add(GTFSTIME_CONVERTER.to(input.getStartTime()));
-         values.add(GTFSTIME_CONVERTER.to(input.getEndTime()));
-         values.add(INTEGER_CONVERTER.to(input.getHeadwaySecs()));
-         values.add(BOOLEAN_CONVERTER.to(input.getExactTimes()));
+         values.add(STRING_CONVERTER.to(context, FIELDS.trip_id,
+               input.getTripId(), true));
+         values.add(GTFSTIME_CONVERTER.to(context, FIELDS.start_time,
+               input.getStartTime(), true));
+         values.add(GTFSTIME_CONVERTER.to(context, FIELDS.end_time,
+               input.getEndTime(), true));
+         values.add(INTEGER_CONVERTER.to(context, FIELDS.headway_secs,
+               input.getHeadwaySecs(), true));
+         values.add(BOOLEAN_CONVERTER.to(context, FIELDS.exact_times,
+               input.getExactTimes(), false));
 
          result = Tokenizer.untokenize(values);
          return result;

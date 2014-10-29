@@ -7,24 +7,34 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import fr.certu.chouette.exchange.gtfs.refactor.importer.Context;
+
 public abstract class ExporterImpl<T> implements Exporter<T>
 {
 
    public static final char DELIMITER = ',';
 
    private BufferedWriter _writer;
+   
+   protected Context _context;
+
+   private int _total;
 
    public ExporterImpl(String name) throws IOException
    {
+      _context =  new Context();
+      _context.put(Context.PATH, name);
       Path path = Paths.get(name);
       _writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8);
       writeHeader();
+      _total = 1;
    }
 
    @Override
    public void write(String text) throws IOException
    {
       _writer.write(text);
+      _context.put(Context.ID, _total++);
    }
 
    @Override
@@ -33,7 +43,7 @@ public abstract class ExporterImpl<T> implements Exporter<T>
       _writer.close();
    }
 
-   void write(Enum[] values)
+   void write(Enum[] values) throws IOException
    {
       StringBuilder builder = new StringBuilder();
       final int length = values.length;
@@ -46,6 +56,7 @@ public abstract class ExporterImpl<T> implements Exporter<T>
             builder.append(DELIMITER);
          }
       }
+      write(builder.toString());
 
    }
 

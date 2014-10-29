@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.certu.chouette.exchange.gtfs.refactor.importer.Context;
 import fr.certu.chouette.exchange.gtfs.refactor.importer.GtfsConverter;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsCalendar;
 
@@ -31,49 +32,69 @@ public class CalendarExporter extends ExporterImpl<GtfsCalendar> implements
    @Override
    public void export(GtfsCalendar bean) throws IOException
    {
-      write(CONVERTER.to(bean));
+      write(CONVERTER.to(_context, bean));
    }
 
    public static Converter<String, GtfsCalendar> CONVERTER = new Converter<String, GtfsCalendar>()
    {
 
       @Override
-      public GtfsCalendar from(String input)
+      public GtfsCalendar from(Context context, String input)
       {
 
          GtfsCalendar bean = new GtfsCalendar();
          List<String> values = Tokenizer.tokenize(input);
 
          int i = 0;
-         bean.setServiceId(STRING_CONVERTER.from(values.get(i++), true));
-         bean.setMonday(BOOLEAN_CONVERTER.from(values.get(i++), true));
-         bean.setTuesday(BOOLEAN_CONVERTER.from(values.get(i++), true));
-         bean.setWednesday(BOOLEAN_CONVERTER.from(values.get(i++), true));
-         bean.setThursday(BOOLEAN_CONVERTER.from(values.get(i++), true));
-         bean.setFriday(BOOLEAN_CONVERTER.from(values.get(i++), true));
-         bean.setSaturday(BOOLEAN_CONVERTER.from(values.get(i++), true));
-         bean.setSunday(BOOLEAN_CONVERTER.from(values.get(i++), true));
-         bean.setStartDate(DATE_CONVERTER.from(values.get(i++), true));
-         bean.setEndDate(DATE_CONVERTER.from(values.get(i++), true));
+         bean.setServiceId(STRING_CONVERTER.from(context, FIELDS.service_id,
+               values.get(i++), true));
+         bean.setMonday(BOOLEAN_CONVERTER.from(context, FIELDS.monday,
+               values.get(i++), true));
+         bean.setTuesday(BOOLEAN_CONVERTER.from(context, FIELDS.tuesday,
+               values.get(i++), true));
+         bean.setWednesday(BOOLEAN_CONVERTER.from(context, FIELDS.wednesday,
+               values.get(i++), true));
+         bean.setThursday(BOOLEAN_CONVERTER.from(context, FIELDS.thursday,
+               values.get(i++), true));
+         bean.setFriday(BOOLEAN_CONVERTER.from(context, FIELDS.friday,
+               values.get(i++), true));
+         bean.setSaturday(BOOLEAN_CONVERTER.from(context, FIELDS.saturday,
+               values.get(i++), true));
+         bean.setSunday(BOOLEAN_CONVERTER.from(context, FIELDS.sunday,
+               values.get(i++), true));
+         bean.setStartDate(DATE_CONVERTER.from(context, FIELDS.start_date,
+               values.get(i++), true));
+         bean.setEndDate(DATE_CONVERTER.from(context, FIELDS.end_date,
+               values.get(i++), true));
 
          return bean;
       }
 
       @Override
-      public String to(GtfsCalendar input)
+      public String to(Context context, GtfsCalendar input)
       {
          String result = null;
          List<String> values = new ArrayList<String>();
-         values.add(STRING_CONVERTER.to(input.getServiceId()));
-         values.add(BOOLEAN_CONVERTER.to(input.getMonday()));
-         values.add(BOOLEAN_CONVERTER.to(input.getTuesday()));
-         values.add(BOOLEAN_CONVERTER.to(input.getWednesday()));
-         values.add(BOOLEAN_CONVERTER.to(input.getThursday()));
-         values.add(BOOLEAN_CONVERTER.to(input.getFriday()));
-         values.add(BOOLEAN_CONVERTER.to(input.getSaturday()));
-         values.add(BOOLEAN_CONVERTER.to(input.getSunday()));
-         values.add(DATE_CONVERTER.to(input.getStartDate()));
-         values.add(DATE_CONVERTER.to(input.getEndDate()));
+         values.add(STRING_CONVERTER.to(context, FIELDS.service_id,
+               input.getServiceId(), true));
+         values.add(BOOLEAN_CONVERTER.to(context, FIELDS.monday,
+               input.getMonday(), true));
+         values.add(BOOLEAN_CONVERTER.to(context, FIELDS.tuesday,
+               input.getTuesday(), true));
+         values.add(BOOLEAN_CONVERTER.to(context, FIELDS.wednesday,
+               input.getWednesday(), true));
+         values.add(BOOLEAN_CONVERTER.to(context, FIELDS.thursday,
+               input.getThursday(), true));
+         values.add(BOOLEAN_CONVERTER.to(context, FIELDS.friday,
+               input.getFriday(), true));
+         values.add(BOOLEAN_CONVERTER.to(context, FIELDS.saturday,
+               input.getSaturday(), true));
+         values.add(BOOLEAN_CONVERTER.to(context, FIELDS.sunday,
+               input.getSunday(), true));
+         values.add(DATE_CONVERTER.to(context, FIELDS.start_date,
+               input.getStartDate(), true));
+         values.add(DATE_CONVERTER.to(context, FIELDS.end_date,
+               input.getEndDate(), true));
 
          result = Tokenizer.untokenize(values);
          return result;

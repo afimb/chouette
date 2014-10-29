@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.certu.chouette.exchange.gtfs.refactor.importer.Context;
 import fr.certu.chouette.exchange.gtfs.refactor.importer.GtfsConverter;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsTransfer;
 
@@ -31,36 +32,44 @@ public class TransferExporter extends ExporterImpl<GtfsTransfer> implements
    @Override
    public void export(GtfsTransfer bean) throws IOException
    {
-      write(CONVERTER.to(bean));
+      write(CONVERTER.to(_context, bean));
    }
 
    public static Converter<String, GtfsTransfer> CONVERTER = new Converter<String, GtfsTransfer>()
    {
 
       @Override
-      public GtfsTransfer from(String input)
+      public GtfsTransfer from(Context context, String input)
       {
          GtfsTransfer bean = new GtfsTransfer();
          List<String> values = Tokenizer.tokenize(input);
 
          int i = 0;
-         bean.setFromStopId(STRING_CONVERTER.from(values.get(i++), true));
-         bean.setToStopId(STRING_CONVERTER.from(values.get(i++), true));
-         bean.setTransferType(TRANSFERTYPE_CONVERTER.from(values.get(i++), true));
-         bean.setMinTransferTime(INTEGER_CONVERTER.from(values.get(i++), false));
+         bean.setFromStopId(STRING_CONVERTER.from(context, FIELDS.from_stop_id,
+               values.get(i++), true));
+         bean.setToStopId(STRING_CONVERTER.from(context, FIELDS.to_stop_id,
+               values.get(i++), true));
+         bean.setTransferType(TRANSFERTYPE_CONVERTER.from(context,
+               FIELDS.transfer_type, values.get(i++), true));
+         bean.setMinTransferTime(INTEGER_CONVERTER.from(context,
+               FIELDS.min_transfer_time, values.get(i++), false));
 
          return bean;
       }
 
       @Override
-      public String to(GtfsTransfer input)
+      public String to(Context context, GtfsTransfer input)
       {
          String result = null;
          List<String> values = new ArrayList<String>();
-         values.add(STRING_CONVERTER.to(input.getFromStopId()));
-         values.add(STRING_CONVERTER.to(input.getToStopId()));
-         values.add(TRANSFERTYPE_CONVERTER.to(input.getTransferType()));
-         values.add(INTEGER_CONVERTER.to(input.getMinTransferTime()));
+         values.add(STRING_CONVERTER.to(context, FIELDS.from_stop_id,
+               input.getFromStopId(), true));
+         values.add(STRING_CONVERTER.to(context, FIELDS.to_stop_id,
+               input.getToStopId(), true));
+         values.add(TRANSFERTYPE_CONVERTER.to(context, FIELDS.transfer_type,
+               input.getTransferType(), true));
+         values.add(INTEGER_CONVERTER.to(context, FIELDS.min_transfer_time,
+               input.getMinTransferTime(), false));
 
          result = Tokenizer.untokenize(values);
          return result;

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.certu.chouette.exchange.gtfs.refactor.importer.Context;
 import fr.certu.chouette.exchange.gtfs.refactor.importer.GtfsConverter;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsCalendarDate;
 
@@ -31,35 +32,40 @@ public class CalendarDateExporter extends ExporterImpl<GtfsCalendarDate>
    @Override
    public void export(GtfsCalendarDate bean) throws IOException
    {
-      write(CONVERTER.to(bean));
+      write(CONVERTER.to(_context, bean));
    }
 
    public static Converter<String, GtfsCalendarDate> CONVERTER = new Converter<String, GtfsCalendarDate>()
    {
 
       @Override
-      public GtfsCalendarDate from(String input)
+      public GtfsCalendarDate from(Context context, String input)
       {
          GtfsCalendarDate bean = new GtfsCalendarDate();
          List<String> values = Tokenizer.tokenize(input);
 
          int i = 0;
-         bean.setServiceId(STRING_CONVERTER.from(values.get(i++), true));
-         bean.setDate(DATE_CONVERTER.from(values.get(i++), true));
-         bean.setExceptionType(EXCEPTIONTYPE_CONVERTER.from(values.get(i++),
-               true));
+         bean.setServiceId(STRING_CONVERTER.from(context, FIELDS.service_id,
+               values.get(i++), true));
+         bean.setDate(DATE_CONVERTER.from(context, FIELDS.date,
+               values.get(i++), true));
+         bean.setExceptionType(EXCEPTIONTYPE_CONVERTER.from(context,
+               FIELDS.exception_type, values.get(i++), true));
 
          return bean;
       }
 
       @Override
-      public String to(GtfsCalendarDate input)
+      public String to(Context context, GtfsCalendarDate input)
       {
          String result = null;
          List<String> values = new ArrayList<String>();
-         values.add(STRING_CONVERTER.to(input.getServiceId()));
-         values.add(DATE_CONVERTER.to(input.getDate()));
-         values.add(EXCEPTIONTYPE_CONVERTER.to(input.getExceptionType()));
+         values.add(STRING_CONVERTER.to(context, FIELDS.service_id,
+               input.getServiceId(), true));
+         values.add(DATE_CONVERTER.to(context, FIELDS.date, input.getDate(),
+               true));
+         values.add(EXCEPTIONTYPE_CONVERTER.to(context, FIELDS.exception_type,
+               input.getExceptionType(), true));
 
          result = Tokenizer.untokenize(values);
          return result;

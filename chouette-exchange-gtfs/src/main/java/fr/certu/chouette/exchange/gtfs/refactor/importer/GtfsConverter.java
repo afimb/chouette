@@ -522,19 +522,28 @@ public interface GtfsConverter
       }
 
       @Override
-      public String to(Context context, T input)
+      public String to(Context context, Enum field, T input, boolean required)
       {
          String result = "";
-         try
+         if (input != null)
          {
-            if (input != null)
+            try
             {
                result = convertTo(input);
+            } catch (Exception e)
+            {
+               context.put(Context.FIELD, field.name());
+               context.put(Context.ERROR, GtfsException.ERROR.INVALID_FORMAT);
+               context.put(Context.CODE, "TODO");
+               context.put(Context.VALUE, input);
+               throw new GtfsException(context, e);
             }
-         } catch (Exception e)
+         } else if (required)
          {
-            context.put(Context.ERROR, GtfsException.ERROR.INVALID_FORMAT);
-            throw new GtfsException(context, e);
+            context.put(Context.FIELD, field.name());
+            context.put(Context.ERROR, GtfsException.ERROR.MISSING_FIELD);
+            context.put(Context.CODE, "TODO");
+            throw new GtfsException(context);
          }
          return result;
       }
@@ -547,22 +556,6 @@ public interface GtfsConverter
    public abstract class FieldConverter<F, T>
    {
 
-      // TODO [DSU] modif exporter
-      public T from(F input, boolean required)
-      {
-         return from(null, null, null, required);
-      }
-
-      public T from(F input, T value, boolean required)
-      {
-         return from(null, null, input, value, required);
-      }
-
-      public T from(Context context, Enum field, F input)
-      {
-         return from(context, field, input, null, false);
-      }
-
       public T from(Context context, Enum field, F input, boolean required)
       {
          return from(context, field, input, null, required);
@@ -571,21 +564,16 @@ public interface GtfsConverter
       public abstract T from(Context context, Enum field, F input, T value,
             boolean required);
 
-      public F to(T input)
-      {
-         return to(null, input);
-      }
-
-      public abstract F to(Context context, T input);
-
+      public abstract F to(Context context, Enum field, T input,
+            boolean required);
    }
 
    public abstract class Converter<F, T>
    {
 
-      public abstract T from(F input);
+      public abstract T from(Context context ,F input);
 
-      public abstract F to(T input);
+      public abstract F to(Context context , T input);
 
    }
 }

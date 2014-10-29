@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import fr.certu.chouette.exchange.gtfs.refactor.exporter.AgencyExporter;
+import fr.certu.chouette.exchange.gtfs.refactor.importer.Context;
 
 //@ToString(callSuper=true)
 @EqualsAndHashCode(callSuper = false)
@@ -51,7 +52,7 @@ public class GtfsAgency extends GtfsObject implements Serializable
    @Override
    public String toString()
    {
-      return id + ":" + AgencyExporter.CONVERTER.to(this);
+      return id + ":" + AgencyExporter.CONVERTER.to(new Context(), this);
    }
 
 }
