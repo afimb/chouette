@@ -20,7 +20,7 @@ public class AgencyById extends IndexImpl<GtfsAgency> implements GtfsConverter
 
    public AgencyById(String name) throws IOException
    {
-      super(name, KEY);
+      super(name, KEY, "default", true);
    }
 
    @Override

@@ -24,7 +24,7 @@ public class Main
 {
 
    private int _count;
-   private static final String PATH = "/opt/tmp/CHOUETTE/";
+   private static final String PATH = "/opt/tmp/RENNES/";
 
    public static void main(String[] args)
    {
@@ -135,7 +135,7 @@ public class Main
          for (GtfsTrip trip : trips.values(route.getRouteId()))
          {
 
-            System.out.println(trip);
+            //System.out.println(trip);
             trips.validate(trip, dao);
 
             Index<GtfsStopTime> stopTimes = dao.getStopTimeByTrip();

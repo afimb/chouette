@@ -74,6 +74,12 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter
    public boolean validate(GtfsStop bean, GtfsImporter dao)
    {
       boolean result = true;
+      if(bean.getLocationType() == LocationType.Station && bean.getParentStation() != null){
+         throw new GtfsException(getPath(), bean.getId(),
+               FIELDS.parent_station.name(), ERROR.INVALID_FORMAT,
+               "TODO", bean.getParentStation());
+      }
+      
       String stopId = bean.getParentStation();
       if (stopId != null && !stopId.equals(_stopId))
       {

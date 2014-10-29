@@ -30,30 +30,37 @@ public abstract class IndexImpl<T> extends AbstractIndex<T>
 
    protected String _path;
    protected String _key;
+   protected String _value;
    protected Map<String, Integer> _fields;
    protected Map<String, Token> _tokens = new LinkedHashMap<String, Token>();
 
    private GtfsIterator _reader;
    private FileChannel _channel1;
    private MappedByteBuffer _buffer;
-   private IntBuffer _index;
-   private FileChannel _channel2;
    private File _temp;
+   private FileChannel _channel2;
+   private IntBuffer _index;
    private int _total;
    private boolean _unique;
 
-   private Map<Object, Context> _map = new HashMap<Object, Context>();
-
    public IndexImpl(String name, String id) throws IOException
    {
-      this(name, id, true);
+      this(name, id, "", true);
    }
 
    public IndexImpl(String name, String id, boolean unique) throws IOException
    {
+      this(name, id, "", unique);
+   }
+
+   public IndexImpl(String name, String id, String value, boolean unique)
+         throws IOException
+   {
       _path = name;
       _key = id;
+      _value = value;
       _unique = unique;
+
       initialize();
    }
 
@@ -106,18 +113,18 @@ public abstract class IndexImpl<T> extends AbstractIndex<T>
       return new Iterator<T>()
       {
 
-         private Iterator<Token> _tokens = tokenIterator();
-         private IndexIterator _iterator = null;
-         private Context _context = createContext();
+         private Iterator<Token> tokens = _tokens.values().iterator();
+         private IndexIterator iterator = null;
+         private Context context = createContext();
 
          @Override
          public boolean hasNext()
          {
             boolean result = false;
-            if (_iterator != null && _iterator.hasNext())
+            if (iterator != null && iterator.hasNext())
             {
                result = true;
-            } else if (_tokens.hasNext())
+            } else if (tokens.hasNext())
             {
                result = true;
             }
@@ -128,15 +135,15 @@ public abstract class IndexImpl<T> extends AbstractIndex<T>
          public T next()
          {
             T result = null;
-            if (_iterator != null && _iterator.hasNext())
+            if (iterator != null && iterator.hasNext())
             {
-               result = _iterator.next();
-            } else if (_tokens.hasNext())
+               result = iterator.next();
+            } else if (tokens.hasNext())
             {
-               Token token = _tokens.next();
-               ByteBuffer buffer = getBuffer(token, _context);
-               _iterator = new IndexIterator(buffer, _context);
-               result = _iterator.next();
+               Token token = tokens.next();
+               ByteBuffer buffer = getBuffer(token, context);
+               iterator = new IndexIterator(buffer, context);
+               result = iterator.next();
             }
             return result;
          }
@@ -155,12 +162,6 @@ public abstract class IndexImpl<T> extends AbstractIndex<T>
          }
 
       };
-   }
-
-   @Override
-   protected Iterator<Token> tokenIterator()
-   {
-      return _tokens.values().iterator();
    }
 
    @Override
@@ -207,24 +208,34 @@ public abstract class IndexImpl<T> extends AbstractIndex<T>
    @Override
    public int getLength()
    {
-      return _total -1;
+      return _total - 1;
    }
 
    @Override
-   protected Map<String, Token> index() throws IOException
+   protected void index() throws IOException
    {
       Monitor monitor = MonitorFactory.start();
-      _total = 1;
       _reader.setPosition(0);
       _reader.next();
+      _total = 1;
 
       while (_reader.hasNext())
       {
          _reader.next();
+         _total++;
 
          String key = getField(_key);
-         Token token = _tokens.get(key);
+         if (key == null || key.isEmpty())
+         {
+            Context context = new Context();
+            context.put(Context.PATH, _path);
+            context.put(Context.ID, _total);
+            context.put(Context.FIELD, _key);
+            context.put(Context.ERROR, GtfsException.ERROR.MISSING_FIELD);
+            throw new GtfsException(context);
+         }
 
+         Token token = _tokens.get(key);
          if (token == null)
          {
             token = new Token();
@@ -244,7 +255,6 @@ public abstract class IndexImpl<T> extends AbstractIndex<T>
             }
             token.lenght++;
          }
-         _total++;
       }
 
       String name = Paths.get(_path).getFileName().toString();
@@ -278,7 +288,7 @@ public abstract class IndexImpl<T> extends AbstractIndex<T>
       while (_reader.hasNext())
       {
          _reader.next();
-         String key = getField(_key);
+         String key = getField(_key,_value);
          Token token = _tokens.get(key);
          for (int i = 0; i < token.lenght; i++)
          {
@@ -295,7 +305,6 @@ public abstract class IndexImpl<T> extends AbstractIndex<T>
 
       log.debug("[DSU] index " + _path + " " + _tokens.size() + " objects "
             + monitor.stop());
-      return _tokens;
    }
 
    @Override
@@ -346,7 +355,7 @@ public abstract class IndexImpl<T> extends AbstractIndex<T>
 
    protected String getField(String key)
    {
-      return getField(_reader, key, "");
+      return getField(_reader, key, _value);
    }
 
    protected String getField(String key, String value)
@@ -444,37 +453,30 @@ public abstract class IndexImpl<T> extends AbstractIndex<T>
    private class IndexIterator implements Iterator<T>
    {
 
-      private GtfsIterator _iterator;
-      private int _index;
-      private List<Integer> _list;
+      private GtfsIterator iterator;
+      private int index;
+      private List<Integer> list;
 
-      private Context _context;
+      private Context context;
 
       public IndexIterator(ByteBuffer buffer, Context context)
       {
-         _iterator = new GtfsIteratorImpl(buffer, _fields.size());
-         _index = 0;
-         _context = context;
-      }
-
-      public void setByteBuffer(ByteBuffer buffer)
-      {
-         _iterator.setByteBuffer(buffer);
-         _list = null;
-         _index = 0;
+         this.iterator = new GtfsIteratorImpl(buffer, _fields.size());
+         this.index = 0;
+         this.context = context;
       }
 
       @Override
       public T next()
       {
          T result = null;
-         if (_iterator.hasNext())
+         if (iterator.hasNext())
          {
-            _iterator.next();
+            iterator.next();
             updateContext();
             // TODO [DSU] line
-            result = build(_iterator, _context);
-            _index++;
+            result = build(iterator, context);
+            index++;
          }
          return result;
       }
@@ -482,18 +484,18 @@ public abstract class IndexImpl<T> extends AbstractIndex<T>
       private void updateContext()
       {
          int result = -1;
-         if (_list == null)
+         if (list == null)
          {
-            _list = (List<Integer>) _context.get(IDS);
+            list = (List<Integer>) context.get(IDS);
          }
-         result = _list.get(_index);
-         _context.put(Context.ID, result);
+         result = list.get(index);
+         context.put(Context.ID, result);
       }
 
       @Override
       public boolean hasNext()
       {
-         return _iterator.hasNext();
+         return iterator.hasNext();
       }
 
       @Override
