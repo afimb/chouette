@@ -7,6 +7,7 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,6 +26,8 @@ import com.jamonapi.MonitorFactory;
 @Log4j
 public abstract class IndexImpl<T> extends AbstractIndex<T>
 {
+
+   public static final byte[] UTF_8 = { (byte) 0xEF, (byte) 0xBB, (byte) 0xBF };
 
    protected String _path;
    protected String _key;
@@ -55,7 +58,6 @@ public abstract class IndexImpl<T> extends AbstractIndex<T>
       initialize();
    }
 
-   
    public String getPath()
    {
       return _path;
@@ -64,9 +66,12 @@ public abstract class IndexImpl<T> extends AbstractIndex<T>
    @Override
    protected void initialize() throws IOException
    {
+
+      int offset = (hasBOM(_path)) ? 3 : 0;
       RandomAccessFile file = new RandomAccessFile(_path, "r");
       _channel1 = file.getChannel();
-      _buffer = _channel1.map(FileChannel.MapMode.READ_ONLY, 0,
+
+      _buffer = _channel1.map(FileChannel.MapMode.READ_ONLY, offset,
             _channel1.size());
       _buffer.load();
       _reader = new GtfsIteratorImpl(_buffer, 0);
@@ -398,6 +403,43 @@ public abstract class IndexImpl<T> extends AbstractIndex<T>
    public boolean validate(T bean, GtfsImporter dao)
    {
       return validate(bean, dao);
+   }
+
+   private boolean hasBOM(String path)
+   {
+      boolean result = true;
+      FileChannel channel = null;
+      try
+      {
+         RandomAccessFile file = new RandomAccessFile(path, "r");
+         channel = file.getChannel();
+         ByteBuffer buffer = ByteBuffer.allocate(UTF_8.length);
+         channel.read(buffer);
+         buffer.rewind();
+         for (int i = 0; i < UTF_8.length; i++)
+         {
+            if (buffer.get() != UTF_8[i])
+            {
+               result = false;
+               break;
+            }
+         }
+      } catch (Exception ignored)
+      {
+      } finally
+      {
+         try
+         {
+            if (channel != null)
+            {
+               channel.close();
+            }
+         } catch (IOException ignored)
+         {
+         }
+      }
+
+      return result;
    }
 
    private class IndexIterator implements Iterator<T>
