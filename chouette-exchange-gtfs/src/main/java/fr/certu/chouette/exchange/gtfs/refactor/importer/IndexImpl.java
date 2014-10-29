@@ -7,7 +7,6 @@ import java.nio.ByteBuffer;
 import java.nio.IntBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -66,13 +65,13 @@ public abstract class IndexImpl<T> extends AbstractIndex<T>
    @Override
    protected void initialize() throws IOException
    {
-
-      int offset = (hasBOM(_path)) ? 3 : 0;
+      boolean bom = hasBOM(_path);
+      int offset = (bom) ? 3 : 0;
       RandomAccessFile file = new RandomAccessFile(_path, "r");
       _channel1 = file.getChannel();
+      long length = (bom) ? _channel1.size() - 3 : _channel1.size();
 
-      _buffer = _channel1.map(FileChannel.MapMode.READ_ONLY, offset,
-            _channel1.size());
+      _buffer = _channel1.map(FileChannel.MapMode.READ_ONLY, offset, length);
       _buffer.load();
       _reader = new GtfsIteratorImpl(_buffer, 0);
       _reader.next();
@@ -208,7 +207,7 @@ public abstract class IndexImpl<T> extends AbstractIndex<T>
    @Override
    public int getLength()
    {
-      return _total;
+      return _total -1;
    }
 
    @Override
