@@ -6,6 +6,7 @@ import java.util.Map;
 import lombok.extern.log4j.Log4j;
 
 import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -24,11 +25,12 @@ public class Main
 {
 
    private int _count;
-   private static final String PATH = "/opt/tmp/RENNES/";
+   private static final String PATH = "/opt/tmp/RATP/";
 
    public static void main(String[] args)
    {
       BasicConfigurator.configure();
+      log.getLogger("org.infinispan").setLevel(Level.WARN);
       Main main = new Main();
 
       Monitor monitor = MonitorFactory.start();
@@ -47,8 +49,8 @@ public class Main
          _count = 0;
          for (Object bean : parser)
          {
-            // System.out.println("[DSU] value : " + bean);
-            parser.validate(bean, dao);
+            System.out.println("[DSU] value : " + bean);
+            // parser.validate(bean, dao);
             _count++;
          }
 
@@ -59,23 +61,18 @@ public class Main
          e.printStackTrace();
       }
    }
-   
+
    private void todo()
    {
       GtfsImporter dao = new GtfsImporter(PATH);
 
-
-
       // stop_times.txt
-      parse(dao, GtfsImporter.INDEX.STOP_TIME_BY_TRIP.name(),
-            StopTimeByTrip.FILENAME, StopTimeByTrip.class);
+      parse(dao, GtfsImporter.INDEX.ROUTE_BY_ID.name(), RouteById.FILENAME,
+            RouteById.class);
 
-      
       dao.dispose();
 
    }
-
-   
 
    private void execute()
    {
@@ -90,8 +87,9 @@ public class Main
             TripById.class);
       parse(dao, GtfsImporter.INDEX.TRIP_BY_ROUTE.name(), TripById.FILENAME,
             TripByRoute.class);
-//      parse(dao, GtfsImporter.INDEX.TRIP_BY_SERVICE.name(), TripById.FILENAME,
-//            TripByService.class);
+      // parse(dao, GtfsImporter.INDEX.TRIP_BY_SERVICE.name(),
+      // TripById.FILENAME,
+      // TripByService.class);
 
       // routes.txt
       parse(dao, GtfsImporter.INDEX.ROUTE_BY_ID.name(), RouteById.FILENAME,
@@ -140,7 +138,7 @@ public class Main
       Index<GtfsRoute> routes = dao.getRouteById();
       for (GtfsRoute route : routes)
       {
-         // System.out.println(route);
+        // System.out.println(route);
          routes.validate(route, dao);
 
          Index<GtfsAgency> agencies = dao.getAgencyById();
@@ -152,7 +150,7 @@ public class Main
          for (GtfsTrip trip : trips.values(route.getRouteId()))
          {
 
-            //System.out.println(trip);
+            // System.out.println(trip);
             trips.validate(trip, dao);
 
             Index<GtfsStopTime> stopTimes = dao.getStopTimeByTrip();
@@ -167,14 +165,20 @@ public class Main
                   Index<GtfsStop> stops = dao.getStopById();
                   stop = stops.getValue(stopTime.getStopId());
                   stops.validate(stop, dao);
-                  _map.put(stop.getStopId(), stop);
+                  GtfsStop clone = new GtfsStop(stop.getStopId(),
+                        stop.getStopCode(), stop.getStopName(),
+                        stop.getStopDesc(), stop.getStopLat(),
+                        stop.getStopLon(), stop.getZoneId(), stop.getStopUrl(),
+                        stop.getLocationType(), stop.getParentStation(),
+                        stop.getStopTimezone(), stop.getWheelchairBoarding());
+                  _map.put(stop.getStopId(), clone);
                }
             }
 
             Index<GtfsCalendar> calendars = dao.getCalendarByService();
             for (GtfsCalendar calendar : calendars.values(trip.getServiceId()))
             {
-               //System.out.println(calendar);
+               // System.out.println(calendar);
                calendars.validate(calendar, dao);
             }
 
