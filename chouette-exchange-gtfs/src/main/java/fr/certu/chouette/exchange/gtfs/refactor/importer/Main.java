@@ -66,10 +66,15 @@ public class Main
    {
       GtfsImporter dao = new GtfsImporter(PATH);
 
-      // stop_times.txt
-      parse(dao, GtfsImporter.INDEX.ROUTE_BY_ID.name(), RouteById.FILENAME,
-            RouteById.class);
+      // routes.txt
+//      parse(dao, GtfsImporter.INDEX.ROUTE_BY_ID.name(), RouteById.FILENAME,
+//            RouteById.class);
 
+      // trips.txt
+    
+      parse(dao, GtfsImporter.INDEX.TRIP_BY_ROUTE.name(), TripById.FILENAME,
+            TripByRoute.class);
+      
       dao.dispose();
 
    }
@@ -138,7 +143,7 @@ public class Main
       Index<GtfsRoute> routes = dao.getRouteById();
       for (GtfsRoute route : routes)
       {
-        // System.out.println(route);
+         // System.out.println(route);
          routes.validate(route, dao);
 
          Index<GtfsAgency> agencies = dao.getAgencyById();
