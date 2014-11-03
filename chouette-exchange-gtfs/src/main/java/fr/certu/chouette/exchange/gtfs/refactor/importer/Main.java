@@ -224,6 +224,8 @@ public class Main
       Runtime runtime = Runtime.getRuntime();
 
       runtime.gc();
+      runtime.gc();
+      runtime.gc();
 
       System.out.println("\n##### Heap utilization statistics [MB] #####");
       System.out.println("Used Memory:"
