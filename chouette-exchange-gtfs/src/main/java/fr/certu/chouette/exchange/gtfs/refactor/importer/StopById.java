@@ -13,7 +13,7 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter
 
    public static enum FIELDS
    {
-      stop_id, stop_code, stop_name, stop_desc, stop_lat, stop_lon, zone_id, stop_url, location_type, parent_station, stop_timezone, wheelchair_boarding;
+      stop_id, stop_code, stop_name, stop_desc, stop_lat, stop_lon, zone_id, stop_url, location_type, parent_station, stop_timezone, wheelchair_boarding, address_line, locality, postal_code;
    };
 
    public static final String FILENAME = "stops.txt";
@@ -66,6 +66,13 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter
             FIELDS.wheelchair_boarding, array[i++],
             WheelchairBoardingType.NoInformation, false));
 
+      bean.setAddressLine(STRING_CONVERTER.from(context, FIELDS.address_line,
+            array[i++], false));
+      bean.setLocality(STRING_CONVERTER.from(context, FIELDS.locality,
+            array[i++], false));
+      bean.setPostalCode(STRING_CONVERTER.from(context, FIELDS.postal_code,
+            array[i++], false));
+
       return bean;
    }
 
@@ -73,12 +80,14 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter
    public boolean validate(GtfsStop bean, GtfsImporter dao)
    {
       boolean result = true;
-      if(bean.getLocationType() == LocationType.Station && bean.getParentStation() != null){
+      if (bean.getLocationType() == LocationType.Station
+            && bean.getParentStation() != null)
+      {
          throw new GtfsException(getPath(), bean.getId(),
-               FIELDS.parent_station.name(), ERROR.INVALID_FORMAT,
-               "TODO", bean.getParentStation());
+               FIELDS.parent_station.name(), ERROR.INVALID_FORMAT, "TODO",
+               bean.getParentStation());
       }
-      
+
       String stopId = bean.getParentStation();
       if (stopId != null && !stopId.equals(_stopId))
       {

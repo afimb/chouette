@@ -68,6 +68,18 @@ public class GtfsStop extends GtfsObject implements Serializable
    @Getter
    @Setter
    private WheelchairBoardingType wheelchairBoarding;
+   
+   @Getter
+   @Setter
+   private String addressLine;
+   
+   @Getter
+   @Setter
+   private String locality;
+   
+   @Getter
+   @Setter
+   private String postalCode;
 
    // @Override
    // public String toString()
