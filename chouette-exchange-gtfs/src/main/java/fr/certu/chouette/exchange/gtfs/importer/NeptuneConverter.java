@@ -34,6 +34,7 @@ import fr.certu.chouette.exchange.gtfs.importer.producer.StopAreaProducer;
 import fr.certu.chouette.exchange.gtfs.importer.producer.TimetableProducer;
 import fr.certu.chouette.exchange.gtfs.importer.producer.VehicleJourneyAtStopProducer;
 import fr.certu.chouette.exchange.gtfs.importer.producer.VehicleJourneyProducer;
+import fr.certu.chouette.exchange.gtfs.refactor.importer.GtfsException;
 import fr.certu.chouette.exchange.gtfs.refactor.importer.GtfsImporter;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsAgency;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsCalendar;
@@ -104,7 +105,7 @@ public class NeptuneConverter
          String incrementalPrefix, double maxDistanceForCommercialStop,
          boolean ignoreLastWord, int ignoreEndCharacters,
          double maxDistanceForConnectionLink, Report report) throws Exception
-   {
+         {
       LineProducer lineProducer = new LineProducer();
       RouteProducer routeProducer = new RouteProducer();
       DbVehicleJourneyFactory vjFactory = new DbVehicleJourneyFactory(prefix,
@@ -219,7 +220,7 @@ public class NeptuneConverter
 
          List<VehicleJourneyAtStop> lvjas = new ArrayList<>();
          boolean afterMidnight = true;
-         
+
          for (GtfsStopTime gtfsStopTime: importer
                .getStopTimeByTrip().values(gtfsTrip.getTripId()))
          {
@@ -461,7 +462,7 @@ public class NeptuneConverter
       assembler.setConnectionLinks(links);
 
       return assembler;
-   }
+         }
 
    /**
     * @param data
@@ -476,7 +477,7 @@ public class NeptuneConverter
          List<StopArea> commercials,
          Map<String, StopArea> mapStopAreasByStopId,
          double maxDistanceForConnectionLink) throws Exception
-   {
+         {
       ConnectionLinkProducer connectionLinkProducer = new ConnectionLinkProducer();
       ConnectionLinkGenerator connectionLinkGenerator = new ConnectionLinkGenerator();
       List<ConnectionLink> excludedLinks = new ArrayList<ConnectionLink>();
@@ -546,57 +547,76 @@ public class NeptuneConverter
          links.addAll(connectionLinkGenerator.createConnectionLinks(
                commercials, maxDistanceForConnectionLink, links, excludedLinks));
       }
-   }
+         }
 
    public void convertStopAreas(Report report, List<StopArea> areas,
          List<StopArea> commercials,
          Map<String, StopArea> mapStopAreasByStopId,
          double maxDistanceForCommercialStop, boolean ignoreLastWord,
          int ignoreEndCharacters) throws Exception
-   {
+         {
       StopAreaProducer stopAreaProducer = new StopAreaProducer();
       CommercialStopGenerator commercialStopGenerator = new CommercialStopGenerator();
       List<StopArea> bps = new ArrayList<StopArea>();
       Set<String> stopAreaOidSet = new HashSet<String>();
 
       logger.info("process stopArea :" + importer.getStopById().getLength());
-      for (GtfsStop gtfsStop : importer.getStopById())
+      for (Iterator<GtfsStop> iterator = importer.getStopById().iterator(); iterator.hasNext();)
       {
-         // check exceptions
-         StopArea area = stopAreaProducer.produce(gtfsStop, report);
-         if (area != null)
+         try
          {
-            if (mapStopAreasByStopId.containsKey(gtfsStop.getStopId()))
+            GtfsStop gtfsStop = iterator.next();
+            // check exceptions
+            StopArea area = stopAreaProducer.produce(gtfsStop, report);
+            if (area != null)
             {
-               ExchangeReportItem item = new ExchangeReportItem(
-                     ExchangeReportItem.KEY.DUPLICATE_ID, Report.STATE.WARNING,
-                     "Stops.txt", gtfsStop.getId(), gtfsStop.getStopId());
-               report.addItem(item);
-               logger.error("duplicate stop id " + gtfsStop.getStopId());
-            } else
-            {
-               mapStopAreasByStopId.put(gtfsStop.getStopId(), area);
-               if (area.getAreaType().equals(
-                     ChouetteAreaEnum.CommercialStopPoint))
-               {
-                  commercials.add(area);
-               } else
-               {
-                  bps.add(area);
-               }
-               if (stopAreaOidSet.contains(area.getObjectId()))
+               if (mapStopAreasByStopId.containsKey(gtfsStop.getStopId()))
                {
                   ExchangeReportItem item = new ExchangeReportItem(
-                        ExchangeReportItem.KEY.DUPLICATE_ID,
-                        Report.STATE.WARNING, "stops.txt", gtfsStop.getId(),
-                        area.getObjectId());
+                        ExchangeReportItem.KEY.DUPLICATE_ID, Report.STATE.WARNING,
+                        "Stops.txt", gtfsStop.getId(), gtfsStop.getStopId());
                   report.addItem(item);
-                  logger.error("duplicate stop object id " + area.getObjectId());
+                  logger.error("duplicate stop id " + gtfsStop.getStopId());
                } else
                {
-                  stopAreaOidSet.add(area.getObjectId());
+                  mapStopAreasByStopId.put(gtfsStop.getStopId(), area);
+                  if (area.getAreaType().equals(
+                        ChouetteAreaEnum.CommercialStopPoint))
+                  {
+                     commercials.add(area);
+                  } else
+                  {
+                     bps.add(area);
+                  }
+                  if (stopAreaOidSet.contains(area.getObjectId()))
+                  {
+                     ExchangeReportItem item = new ExchangeReportItem(
+                           ExchangeReportItem.KEY.DUPLICATE_ID,
+                           Report.STATE.WARNING, "stops.txt", gtfsStop.getId(),
+                           area.getObjectId());
+                     report.addItem(item);
+                     logger.error("duplicate stop object id " + area.getObjectId());
+                  } else
+                  {
+                     stopAreaOidSet.add(area.getObjectId());
+                  }
                }
             }
+         }
+         catch (Exception e)
+         {
+            // report problem
+            logger.error(e.getMessage(),e);
+            
+            if (e instanceof GtfsException)
+            {
+               GtfsException ge = (GtfsException) e;
+               ExchangeReportItem item = new ExchangeReportItem(
+                     ExchangeReportItem.KEY.MANDATORY_DATA, Report.STATE.WARNING,
+                     ge.getId(), ge.getField());
+               report.addItem(item);
+            }
+            
          }
       }
       // connect bps to parents
@@ -659,7 +679,7 @@ public class NeptuneConverter
       }
       areas.addAll(bps);
       areas.addAll(commercials);
-   }
+         }
 
    /**
     * @param data
@@ -669,7 +689,7 @@ public class NeptuneConverter
     */
    private Map<String, Timetable> convertTimetables(ModelAssembler assembler,
          Report report) throws Exception
-   {
+         {
       TimetableProducer timetableProducer = new TimetableProducer();
       // Timetables
       List<Timetable> timetables = new ArrayList<Timetable>();
@@ -722,7 +742,7 @@ public class NeptuneConverter
 
       assembler.setTimetables(timetables);
       return mapTimetableByServiceId;
-   }
+         }
 
    /**
     * @param data
@@ -732,7 +752,7 @@ public class NeptuneConverter
     */
    private void convertCompanies(ModelAssembler assembler, Report report)
          throws Exception
-   {
+         {
       CompanyProducer companyProducer = new CompanyProducer();
       // Companies
       List<Company> companies = new ArrayList<Company>();
@@ -742,7 +762,7 @@ public class NeptuneConverter
          companies.add(company);
       }
       assembler.setCompanies(companies);
-   }
+         }
 
    /**
     * @param data
@@ -811,7 +831,7 @@ public class NeptuneConverter
    private List<StopPoint> buildStopPoint(String routeId,
          List<VehicleJourneyAtStop> lvjas,
          Map<String, StopArea> mapStopAreasByStopId, Report report)
-   {
+         {
       List<StopPoint> stopPoints = new ArrayList<StopPoint>();
       Set<String> stopPointKeys = new HashSet<String>();
 
@@ -822,7 +842,7 @@ public class NeptuneConverter
                StopPoint.STOPPOINT_KEY)
                + "a"
                + vjas.getStopPointId().trim()
-                     .replaceAll("[^a-zA-Z_0-9\\-]", "_");
+               .replaceAll("[^a-zA-Z_0-9\\-]", "_");
          String stopKey = baseKey;
          int dup = 1;
          while (stopPointKeys.contains(stopKey))
@@ -851,7 +871,7 @@ public class NeptuneConverter
       }
       return stopPoints;
 
-   }
+         }
 
    /**
     * shift vehicleJourney times to start vehicleJourney at a specific time
@@ -907,9 +927,9 @@ public class NeptuneConverter
     */
    private void copyVehicleJourney(DbVehicleJourneyFactory factory,
          VehicleJourney vj, long end, long headway)
-         throws IllegalAccessException, InstantiationException,
-         InvocationTargetException, NoSuchMethodException
-   {
+               throws IllegalAccessException, InstantiationException,
+               InvocationTargetException, NoSuchMethodException
+               {
       VehicleJourneyAtStop first = vj.getVehicleJourneyAtStops().get(0);
       long start = first.getDepartureTime().getTime();
       long stop = end - start;
@@ -949,7 +969,7 @@ public class NeptuneConverter
          offset += headway;
       }
       return;
-   }
+               }
 
    private static long dayOffest = 24 * 3600000; // one day in milliseconds
 

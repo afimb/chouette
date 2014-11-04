@@ -8,16 +8,25 @@
 
 package fr.certu.chouette.exchange.gtfs.exporter;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import lombok.Getter;
 
 import org.apache.log4j.Logger;
 
+import fr.certu.chouette.exchange.gtfs.exporter.producer.GtfsAgencyProducer;
+import fr.certu.chouette.exchange.gtfs.exporter.producer.GtfsRouteProducer;
+import fr.certu.chouette.exchange.gtfs.exporter.producer.GtfsServiceProducer;
+import fr.certu.chouette.exchange.gtfs.exporter.producer.GtfsStopProducer;
+import fr.certu.chouette.exchange.gtfs.exporter.producer.GtfsTransferProducer;
+import fr.certu.chouette.exchange.gtfs.exporter.producer.GtfsTripProducer;
+import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
+import fr.certu.chouette.exchange.gtfs.refactor.exporter.GtfsExporter;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.JourneyPattern;
@@ -36,11 +45,7 @@ public class NeptuneData
 {
    private static final Logger logger = Logger.getLogger(NeptuneData.class);
    @Getter
-   List<Line> lines = new ArrayList<Line>();
-   @Getter
-   Set<Timetable> timetables = new HashSet<Timetable>();
-   @Getter
-   List<VehicleJourney> vehicleJourneys = new ArrayList<VehicleJourney>();
+   Map<String,List<Timetable>> timetables = new HashMap<String,List<Timetable>>();
    @Getter
    Set<StopArea> physicalStops = new HashSet<StopArea>();
    @Getter
@@ -52,11 +57,20 @@ public class NeptuneData
 
    /**
     * @param lines
+    * @param report 
     */
-   public void populateLines(List<Line> lines)
+   public void populateLines(List<Line> lines, GtfsExporter exporter, GtfsReport report)
    {
-      for (Line line : lines)
+      GtfsServiceProducer calendarProducer = new GtfsServiceProducer(exporter);
+      GtfsTripProducer tripProducer = new GtfsTripProducer(exporter);
+      GtfsAgencyProducer agencyProducer = new GtfsAgencyProducer(exporter);
+      GtfsStopProducer stopProducer = new GtfsStopProducer(exporter);
+      GtfsRouteProducer routeProducer = new GtfsRouteProducer(exporter);
+      GtfsTransferProducer transferProducer = new GtfsTransferProducer(exporter);      
+      for (Iterator<Line> lineIterator = lines.iterator(); lineIterator.hasNext();)
       {
+         Line line = lineIterator.next();
+         lineIterator.remove();
          line.complete();
          if (line.getCompany() != null)
             companies.add(line.getCompany());
@@ -64,7 +78,9 @@ public class NeptuneData
          {
             connectionLinks.addAll(line.getConnectionLinks());
          }
-         this.lines.add(line);
+         
+         boolean ok = routeProducer.save(line, report, "");
+         if (!ok) continue;
          if (line.getRoutes() != null)
          {
             for (Route route : line.getRoutes())
@@ -83,11 +99,12 @@ public class NeptuneData
                {
                   for (VehicleJourney vj : jp.getVehicleJourneys())
                   {
-                     vehicleJourneys.add(vj);
-                     for (Timetable timetable : vj.getTimetables())
-                     {
-                        timetables.add(timetable);
-                     }
+                     // TODO : refactor
+//                     vehicleJourneys.add(vj);
+//                     for (Timetable timetable : vj.getTimetables())
+//                     {
+//                        timetables.add(timetable);
+//                     }
                   }
                }
             }

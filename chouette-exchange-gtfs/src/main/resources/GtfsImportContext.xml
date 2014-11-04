@@ -16,10 +16,4 @@
 		<property name="dbDirectory" value="${import.gtfs.tempDir}" />
 	</bean>
 
-	<bean id="GtfsConnectionLinkImport"
-		class="fr.certu.chouette.exchange.gtfs.importer.GtfsImportConnectionLinkPlugin">
-		<property name="dbDirectory" value="${import.gtfs.tempDir}" />
-		<property name="stopAreaManager" ref="stopAreaManager" />
-	</bean>
-
 </beans>

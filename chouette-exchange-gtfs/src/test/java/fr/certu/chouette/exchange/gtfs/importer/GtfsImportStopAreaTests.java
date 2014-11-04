@@ -7,7 +7,6 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
 import org.testng.Reporter;
 import org.testng.annotations.Test;
@@ -20,14 +19,13 @@ import fr.certu.chouette.plugin.exchange.IImportPlugin;
 import fr.certu.chouette.plugin.exchange.ParameterDescription;
 import fr.certu.chouette.plugin.exchange.ParameterValue;
 import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
-import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportHolder;
 import fr.certu.chouette.plugin.report.ReportItem;
 
 @ContextConfiguration(locations = { "classpath:testContext.xml",
       "classpath*:chouetteContext.xml" })
 @SuppressWarnings("unchecked")
-public class GtfsImportStopAreaTests extends AbstractTestNGSpringContextTests
+public class GtfsImportStopAreaTests extends AbstractGtfsTest
 {
    private static final Logger logger = Logger
          .getLogger(GtfsImportStopAreaTests.class);
@@ -185,7 +183,7 @@ public class GtfsImportStopAreaTests extends AbstractTestNGSpringContextTests
    @Test(groups = { "ImportStopArea" }, description = "Import Plugin should import file", dependsOnMethods = { "getBean" })
    public void verifyImportStopArea() throws ChouetteException
    {
-      verifyImportStopArea(path + "/test_gtfs.zip", 12, 1);
+      verifyImportStopArea(path + "/test_gtfs_stops.zip", 12, 1);
       // try to clean data
       System.gc();
       // wait 1 second for next test
@@ -250,34 +248,5 @@ public class GtfsImportStopAreaTests extends AbstractTestNGSpringContextTests
       return areas;
    }
 
-   private void printReport(Report report)
-   {
-      if (report == null)
-      {
-         Reporter.log("no report");
-      } else
-      {
-         Reporter.log(report.getStatus().name() + " : "
-               + report.getLocalizedMessage());
-         printItems("   ", report.getItems());
-      }
-   }
-
-   /**
-    * @param indent
-    * @param items
-    */
-   private void printItems(String indent, List<ReportItem> items)
-   {
-      if (items == null)
-         return;
-      for (ReportItem item : items)
-      {
-         Reporter.log(indent + item.getStatus().name() + " : "
-               + item.getLocalizedMessage());
-         printItems(indent + "   ", item.getItems());
-      }
-
-   }
 
 }

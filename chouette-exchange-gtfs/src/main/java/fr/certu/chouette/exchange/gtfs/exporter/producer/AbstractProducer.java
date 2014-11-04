@@ -1,41 +1,75 @@
 package fr.certu.chouette.exchange.gtfs.exporter.producer;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.awt.Color;
+import java.net.MalformedURLException;
+import java.net.URL;
 
-import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
-import fr.certu.chouette.exchange.gtfs.model.GtfsBean;
-import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
+import lombok.Getter;
 
-public abstract class AbstractProducer<T extends GtfsBean, N extends NeptuneIdentifiedObject>
-      implements IGtfsProducer<T, N>
+import fr.certu.chouette.exchange.gtfs.refactor.exporter.GtfsExporter;
+
+public abstract class AbstractProducer
 {
-   public abstract T produce(N neptuneObject, GtfsReport report);
 
-   public abstract List<T> produceAll(N neptuneObject, GtfsReport report);
+   @Getter
+   private GtfsExporter exporter;
 
-   public List<T> produceAll(Collection<N> neptuneObjects, GtfsReport report)
+   public AbstractProducer(GtfsExporter exporter)
    {
-      List<T> objects = new ArrayList<T>();
-      for (N object : neptuneObjects)
-      {
-         T gtfsObject = produce(object, report);
-         if (gtfsObject != null)
-            objects.add(produce(object, report));
-      }
-      return objects;
+      this.exporter = exporter;
    }
 
-   protected String toGtfsId(String neptuneId)
+   static protected String toGtfsId(String neptuneId, String prefix)
    {
       String[] tokens = neptuneId.split(":");
-      return tokens[2];
+      if (prefix == null || tokens[0].equals(prefix))
+         return tokens[2];
+      else
+         return tokens[0]+":"+tokens[2];
    }
 
-   boolean isEmpty(String s)
+   static boolean  isEmpty(String s)
    {
       return s == null || s.trim().isEmpty();
+   }
+
+   static String  getValue(String s)
+   {
+      if (isEmpty(s))
+         return null;
+      else 
+         return s;
+
+   }
+
+   static Color getColor(String s)
+   {
+      if (isEmpty(s))
+         return null;
+      else 
+         return new Color(Integer.parseInt(s, 16));
+   }
+
+   static URL getUrl(String s)
+   {
+      if (isEmpty(s))
+         return null;
+      else
+         try
+      {
+            URL result = new URL(s);
+            String protocol = result.getProtocol();
+            if (!(protocol.equals("http") || protocol.equals("https")))
+            {
+               throw new MalformedURLException();
+            }
+            return result;
+      }
+      catch (MalformedURLException e)
+      {
+         // TODO: manage exception
+         return null;
+      }
    }
 
 }

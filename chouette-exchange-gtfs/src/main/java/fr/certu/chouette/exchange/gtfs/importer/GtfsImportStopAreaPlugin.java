@@ -241,67 +241,76 @@ public class GtfsImportStopAreaPlugin implements IImportPlugin<StopArea>
          report.updateStatus(Report.STATE.ERROR);
          log.error("zip import failed (cannot open zip)"
                + e.getLocalizedMessage());
+         try
+         {
+            FileUtils.deleteDirectory(targetDirectory.toFile());
+         }
+         catch (IOException e2)
+         {
+            // TODO Auto-generated catch block
+         }
          return null;
       }
       GtfsImporter importer = new GtfsImporter(targetDirectory.toString());
       try
       {
-         boolean ok = true;
-         try
-         {
-            importer.getStopById();
-            stopFound = true;
-         } catch (GtfsException e)
-         {
-            ReportItem item = new ExchangeReportItem(
-                  ExchangeReportItem.KEY.ZIP_MISSING_ENTRY, Report.STATE.ERROR,
-                  "stops.txt", filePath);
-            report.addItem(item);
-            report.updateStatus(Report.STATE.ERROR);
-            log.error("zip import failed (missing entry stops.txt)",e);
-            ok = false;
-         } catch (Exception e)
-         {
-            ReportItem item = new ExchangeReportItem(
-                  ExchangeReportItem.KEY.ZIP_ERROR, Report.STATE.ERROR,
-                  "stops.txt", filePath, e.getLocalizedMessage());
-            report.addItem(item);
-            report.updateStatus(Report.STATE.ERROR);
-            log.error(
-                  "zip import failed (cannot read stops.txt)"
-                        + e.getLocalizedMessage(), e);
-            ok = false;
-
-         }
-         try
-         {
-            importer.getTransferByFromStop();
-         } catch (GtfsException e)
-         {
-            // not mandatory
-         } catch (Exception e)
-         {
-            ReportItem item = new ExchangeReportItem(
-                  ExchangeReportItem.KEY.ZIP_ERROR, Report.STATE.ERROR,
-                  "transfers.txt", filePath, e.getLocalizedMessage());
-            report.addItem(item);
-            report.updateStatus(Report.STATE.ERROR);
-            log.error(
-                  "zip import failed (cannot read transfers.txt)"
-                        + e.getLocalizedMessage(), e);
-            ok = false;
-
-         }
-         if (!stopFound)
-         {
-            ReportItem item = new ExchangeReportItem(
-                  ExchangeReportItem.KEY.ZIP_MISSING_ENTRY, Report.STATE.ERROR,
-                  "stops.txt", filePath);
-            report.addItem(item);
-            report.updateStatus(Report.STATE.ERROR);
-            log.error("zip import failed (missing entry stops.txt)");
-            ok = false;
-         }
+         GtfsChecker checker = new GtfsChecker();
+         boolean ok = checker.check(importer, report, false);
+//         try
+//         {
+//            importer.getStopById();
+//            stopFound = true;
+//         } catch (GtfsException e)
+//         {
+//            ReportItem item = new ExchangeReportItem(
+//                  ExchangeReportItem.KEY.ZIP_MISSING_ENTRY, Report.STATE.ERROR,
+//                  "stops.txt", filePath);
+//            report.addItem(item);
+//            report.updateStatus(Report.STATE.ERROR);
+//            log.error("zip import failed (missing entry stops.txt)",e);
+//            ok = false;
+//         } catch (Exception e)
+//         {
+//            ReportItem item = new ExchangeReportItem(
+//                  ExchangeReportItem.KEY.ZIP_ERROR, Report.STATE.ERROR,
+//                  "stops.txt", filePath, e.getLocalizedMessage());
+//            report.addItem(item);
+//            report.updateStatus(Report.STATE.ERROR);
+//            log.error(
+//                  "zip import failed (cannot read stops.txt)"
+//                        + e.getLocalizedMessage(), e);
+//            ok = false;
+//
+//         }
+//         try
+//         {
+//            importer.getTransferByFromStop();
+//         } catch (GtfsException e)
+//         {
+//            // not mandatory
+//         } catch (Exception e)
+//         {
+//            ReportItem item = new ExchangeReportItem(
+//                  ExchangeReportItem.KEY.ZIP_ERROR, Report.STATE.ERROR,
+//                  "transfers.txt", filePath, e.getLocalizedMessage());
+//            report.addItem(item);
+//            report.updateStatus(Report.STATE.ERROR);
+//            log.error(
+//                  "zip import failed (cannot read transfers.txt)"
+//                        + e.getLocalizedMessage(), e);
+//            ok = false;
+//
+//         }
+//         if (!stopFound)
+//         {
+//            ReportItem item = new ExchangeReportItem(
+//                  ExchangeReportItem.KEY.ZIP_MISSING_ENTRY, Report.STATE.ERROR,
+//                  "stops.txt", filePath);
+//            report.addItem(item);
+//            report.updateStatus(Report.STATE.ERROR);
+//            log.error("zip import failed (missing entry stops.txt)");
+//            ok = false;
+//         }
          if (ok)
          {
             NeptuneConverter converter = new NeptuneConverter(importer);

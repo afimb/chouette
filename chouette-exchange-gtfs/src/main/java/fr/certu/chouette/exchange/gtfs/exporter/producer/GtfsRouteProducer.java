@@ -8,13 +8,12 @@
 
 package fr.certu.chouette.exchange.gtfs.exporter.producer;
 
-import java.util.List;
-
 import org.apache.log4j.Logger;
 
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReportItem;
-import fr.certu.chouette.exchange.gtfs.model.GtfsRoute;
+import fr.certu.chouette.exchange.gtfs.refactor.exporter.GtfsExporter;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsRoute;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.plugin.report.Report.STATE;
 
@@ -23,23 +22,24 @@ import fr.certu.chouette.plugin.report.Report.STATE;
  * <p>
  * optimise multiple period timetable with calendarDate inclusion or exclusion
  */
-public class GtfsRouteProducer extends AbstractProducer<GtfsRoute, Line>
+public class GtfsRouteProducer extends AbstractProducer
 {
-   private static final Logger logger = Logger
-         .getLogger(GtfsRouteProducer.class);
-
-   @Override
-   public List<GtfsRoute> produceAll(Line neptuneObject, GtfsReport report)
+   public GtfsRouteProducer(GtfsExporter exporter)
    {
-      throw new UnsupportedOperationException("not yet implemented");
+      super(exporter);
    }
 
-   @Override
-   public GtfsRoute produce(Line neptuneObject, GtfsReport report)
+
+   private static final Logger logger = Logger
+         .getLogger(GtfsRouteProducer.class);
+   
+   private GtfsRoute route = new GtfsRoute();
+   
+
+   public boolean save(Line neptuneObject, GtfsReport report, String prefix)
    {
-      GtfsRoute route = new GtfsRoute();
-      route.setRouteId(toGtfsId(neptuneObject.getObjectId()));
-      route.setAgencyId(toGtfsId(neptuneObject.getCompany().getObjectId()));
+      route.setRouteId(toGtfsId(neptuneObject.getObjectId(),prefix));
+      route.setAgencyId(toGtfsId(neptuneObject.getCompany().getObjectId(),prefix));
       route.setRouteShortName(neptuneObject.getName());
 
       route.setRouteLongName(neptuneObject.getPublishedName());
@@ -56,45 +56,60 @@ public class GtfsRouteProducer extends AbstractProducer<GtfsRoute, Line>
                   GtfsReportItem.KEY.MISSING_DATA, STATE.ERROR, "Route",
                   neptuneObject.getObjectId(), "Name or line number");
             report.addItem(item);
-            return null;
+            return false;
          }
       }
 
-      if (!isEmpty(neptuneObject.getComment()))
-         route.setRouteDesc(neptuneObject.getComment());
+      route.setRouteDesc(neptuneObject.getComment());
+      route.setRouteColor(getColor(neptuneObject.getColor()));
+      route.setRouteTextColor(getColor(neptuneObject.getTextColor()));
+      route.setRouteUrl(getUrl(neptuneObject.getUrl()));
+            
       if (neptuneObject.getTransportModeName() != null)
       {
          switch (neptuneObject.getTransportModeName())
          {
          case Tramway:
-            route.setRouteType(GtfsRoute.TRAM);
+            route.setRouteType(GtfsRoute.RouteType.Tram);
             break;
          case Trolleybus:
          case Coach:
          case Bus:
-            route.setRouteType(GtfsRoute.BUS);
+            route.setRouteType(GtfsRoute.RouteType.Bus);
             break;
          case Val:
          case Metro:
-            route.setRouteType(GtfsRoute.SUBWAY);
+            route.setRouteType(GtfsRoute.RouteType.Subway);
             break;
          case RapidTransit:
          case LocalTrain:
          case LongDistanceTrain:
          case Train:
-            route.setRouteType(GtfsRoute.RAIL);
+            route.setRouteType(GtfsRoute.RouteType.Rail);
             break;
          case Ferry:
-            route.setRouteType(GtfsRoute.FERRY);
+            route.setRouteType(GtfsRoute.RouteType.Ferry);
             break;
          default:
-            route.setRouteType(GtfsRoute.BUS);
+            route.setRouteType(GtfsRoute.RouteType.Bus);
          }
       } else
       {
-         route.setRouteType(GtfsRoute.BUS);
+         route.setRouteType(GtfsRoute.RouteType.Bus);
       }
-      return route;
+      
+      try
+      {
+         getExporter().getRouteExporter().export(route);
+      }
+      catch (Exception e)
+      {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+         return false;
+      }
+      
+      return true;
    }
 
 }

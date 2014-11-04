@@ -10,14 +10,14 @@ package fr.certu.chouette.exchange.gtfs.exporter.producer;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.List;
 import java.util.TimeZone;
 
 import org.apache.log4j.Logger;
 
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReportItem;
-import fr.certu.chouette.exchange.gtfs.model.GtfsAgency;
+import fr.certu.chouette.exchange.gtfs.refactor.exporter.GtfsExporter;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsAgency;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.plugin.report.Report.STATE;
 
@@ -26,22 +26,23 @@ import fr.certu.chouette.plugin.report.Report.STATE;
  * <p>
  * optimise multiple period timetable with calendarDate inclusion or exclusion
  */
-public class GtfsAgencyProducer extends AbstractProducer<GtfsAgency, Company>
+public class GtfsAgencyProducer extends AbstractProducer
 {
+   public GtfsAgencyProducer(GtfsExporter exporter)
+   {
+      super(exporter);
+   }
+
+
    private static final Logger logger = Logger
          .getLogger(GtfsAgencyProducer.class);
 
-   @Override
-   public List<GtfsAgency> produceAll(Company company, GtfsReport report)
-   {
-      throw new UnsupportedOperationException("not yet implemented");
-   }
+   private GtfsAgency agency = new GtfsAgency();
 
-   @Override
-   public GtfsAgency produce(Company neptuneObject, GtfsReport report)
+
+   public boolean save(Company neptuneObject, GtfsReport report, String prefix)
    {
-      GtfsAgency agency = new GtfsAgency();
-      agency.setAgencyId(toGtfsId(neptuneObject.getObjectId()));
+      agency.setAgencyId(toGtfsId(neptuneObject.getObjectId(),prefix));
 
       String name = neptuneObject.getName();
       if (name.trim().isEmpty())
@@ -51,7 +52,7 @@ public class GtfsAgencyProducer extends AbstractProducer<GtfsAgency, Company>
                GtfsReportItem.KEY.MISSING_DATA, STATE.ERROR, "Company",
                neptuneObject.getObjectId(), "Name");
          report.addItem(item);
-         return null;
+         return false;
       }
 
       agency.setAgencyName(name);
@@ -59,33 +60,52 @@ public class GtfsAgencyProducer extends AbstractProducer<GtfsAgency, Company>
       // @TODO : manage agency_timezone
       agency.setAgencyTimezone(TimeZone.getDefault());
 
-      // @TODO : manage agency_url
-      String url = null;
-      if (neptuneObject.getOrganisationalUnit() != null
-            && neptuneObject.getOrganisationalUnit().startsWith("http"))
+      // @TODO : manage agency_url mandatory
+      String urlData = "Url";
+      String url = getValue(neptuneObject.getUrl());
+      if (url == null)
       {
-         url = neptuneObject.getOrganisationalUnit();
-      } else
-      {
-         url = "http://www." + neptuneObject.getShortName() + ".com";
+         if (neptuneObject.getOrganisationalUnit() != null
+               && neptuneObject.getOrganisationalUnit().startsWith("http"))
+         {
+            urlData = "OrganisationalUnit";
+            url = neptuneObject.getOrganisationalUnit();
+         } else
+         {
+            url = "http://www." + neptuneObject.getShortName() + ".com";
+         }
       }
       try
       {
-         agency.setAgencyURL(new URL(url));
+         agency.setAgencyUrl(new URL(url));
       } catch (MalformedURLException e)
       {
          logger.error("malformed URL " + url);
          GtfsReportItem item = new GtfsReportItem(
                GtfsReportItem.KEY.INVALID_DATA, STATE.ERROR, "Company",
-               neptuneObject.getName(), "OrganisationalUnit", url);
+               neptuneObject.getName(), urlData, url);
          report.addItem(item);
-         return null;
+         return false;
       }
 
       if (neptuneObject.getPhone() != null)
          agency.setAgencyPhone(neptuneObject.getPhone());
 
-      return agency;
+      // unmanaged attributes
+      agency.setAgencyLang(null);
+      agency.setAgencyFareUrl(null);
+      
+      try
+      {
+         getExporter().getAgencyExporter().export(agency);
+      }
+      catch (Exception e)
+      {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+         return false;
+      }
+      return true;
    }
 
 }

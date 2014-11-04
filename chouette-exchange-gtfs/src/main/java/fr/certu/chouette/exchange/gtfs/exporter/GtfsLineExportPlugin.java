@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -12,38 +14,42 @@ import java.util.TimeZone;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import lombok.extern.log4j.Log4j;
+
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReportItem;
-import fr.certu.chouette.exchange.gtfs.model.GtfsAgency;
-import fr.certu.chouette.exchange.gtfs.model.GtfsBean;
-import fr.certu.chouette.exchange.gtfs.model.GtfsCalendar;
-import fr.certu.chouette.exchange.gtfs.model.GtfsCalendarDate;
-import fr.certu.chouette.exchange.gtfs.model.GtfsFrequency;
-import fr.certu.chouette.exchange.gtfs.model.GtfsRoute;
-import fr.certu.chouette.exchange.gtfs.model.GtfsStop;
-import fr.certu.chouette.exchange.gtfs.model.GtfsStopTime;
-import fr.certu.chouette.exchange.gtfs.model.GtfsTransfer;
-import fr.certu.chouette.exchange.gtfs.model.GtfsTrip;
+import fr.certu.chouette.exchange.gtfs.refactor.exporter.GtfsExporter;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsAgency;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsCalendar;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsCalendarDate;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsFrequency;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsRoute;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStop;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStopTime;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsTransfer;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsTrip;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.plugin.exchange.FormatDescription;
 import fr.certu.chouette.plugin.exchange.IExportPlugin;
 import fr.certu.chouette.plugin.exchange.ParameterDescription;
 import fr.certu.chouette.plugin.exchange.ParameterValue;
 import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
+import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
 import fr.certu.chouette.plugin.report.Report;
+import fr.certu.chouette.plugin.report.ReportItem;
 import fr.certu.chouette.plugin.report.Report.STATE;
 import fr.certu.chouette.plugin.report.ReportHolder;
 
 /**
  * export lines in GTFS GoogleTransit format
  */
+@Log4j
 public class GtfsLineExportPlugin implements IExportPlugin<Line>
 {
-   private static final Logger logger = Logger
-         .getLogger(GtfsLineExportPlugin.class);
    private static final String GTFS_CHARSET = "UTF-8";
 
    /**
@@ -169,6 +175,42 @@ public class GtfsLineExportPlugin implements IExportPlugin<Line>
 
       File fic = new File(fileName);
       ZipOutputStream out = null;
+
+      Path targetDirectory = null;
+      try
+      {
+         targetDirectory = Files.createTempDirectory("gtfs_import_");
+      } catch (IOException e)
+      {
+         ReportItem item = new ExchangeReportItem(
+               ExchangeReportItem.KEY.FILE_ERROR, Report.STATE.ERROR, "/tmp",
+               "cannot create tempdir");
+         report.addItem(item);
+         report.updateStatus(Report.STATE.ERROR);
+         log.error("zip import failed (cannot create temp dir)", e);
+         return;
+      }
+
+      GtfsExporter exporter = null;
+      try
+      {
+         exporter = new GtfsExporter(targetDirectory.toString());
+         NeptuneData neptuneData = new NeptuneData();
+         neptuneData.populateLines(beans,exporter,null);
+      } catch (Exception e)
+      {
+         log.error("incomplete data", e);
+         try
+         {
+            FileUtils.deleteDirectory(targetDirectory.toFile());
+         } catch (IOException e1)
+         {
+         }
+         return;
+      }
+
+      // TODO: compress files to zip
+       
       try
       {
          // create directory if exists
@@ -182,65 +224,11 @@ public class GtfsLineExportPlugin implements IExportPlugin<Line>
          out = new ZipOutputStream(new FileOutputStream(fileName));
       } catch (IOException e)
       {
-         logger.error("cannot create zip file", e);
+         log.error("cannot create zip file", e);
          GtfsReportItem item = new GtfsReportItem(
                GtfsReportItem.KEY.FILE_ACCESS, STATE.ERROR, fileName);
          report.addItem(item);
          return;
-      }
-
-      NeptuneData neptuneData = new NeptuneData();
-      neptuneData.populateLines(beans);
-
-      GtfsData gtfsData = null;
-      try
-      {
-         GtfsDataProducer gtfsDataProducer = new GtfsDataProducer();
-         gtfsData = gtfsDataProducer.produceAll(neptuneData, timeZone, report);
-      } catch (GtfsExportException e)
-      {
-         logger.error("incomplete data", e);
-         try
-         {
-            out.close();
-         } catch (IOException e1)
-         {
-         }
-         if (fic.exists())
-            fic.delete();
-         return;
-      }
-
-      try
-      {
-         writeFile(out, gtfsData.getAgencies(), "agency.txt",
-               GtfsAgency.header, report);
-         writeFile(out, gtfsData.getStops(), "stops.txt", GtfsStop.header,
-               report);
-         writeFile(out, gtfsData.getRoutes(), "routes.txt", GtfsRoute.header,
-               report);
-         writeFile(out, gtfsData.getTrip(), "trips.txt", GtfsTrip.header,
-               report);
-         writeFile(out, gtfsData.getStoptimes(), "stop_times.txt",
-               GtfsStopTime.header, report);
-         writeFile(out, gtfsData.getCalendars(), "calendar.txt",
-               GtfsCalendar.header, report);
-         writeFile(out, gtfsData.getCalendardates(), "calendar_dates.txt",
-               GtfsCalendarDate.header, report);
-         writeFile(out, gtfsData.getFrequencies(), "frequencies.txt",
-               GtfsFrequency.header, report);
-         writeFile(out, gtfsData.getTransfer(), "transfers.txt",
-               GtfsTransfer.header, report);
-         // fare_rules.txt
-         // fare_attributes.txt
-         // shapes.txt
-         // feed_info.txt
-      } catch (GtfsExportException e)
-      {
-         logger.error("zipEntry failure " + e.getMessage(), e);
-         GtfsReportItem item = new GtfsReportItem(
-               GtfsReportItem.KEY.FILE_ACCESS, STATE.ERROR, fileName);
-         report.addItem(item);
       }
 
       try
@@ -249,64 +237,12 @@ public class GtfsLineExportPlugin implements IExportPlugin<Line>
          out.close();
       } catch (IOException e)
       {
-         logger.error("cannot create zip file", e);
+         log.error("cannot create zip file", e);
          GtfsReportItem item = new GtfsReportItem(
                GtfsReportItem.KEY.FILE_ACCESS, STATE.ERROR, fileName);
          report.addItem(item);
       }
    }
 
-   /**
-    * write a file in Zip file
-    * 
-    * @param out
-    *           zip file
-    * @param gtfsBeans
-    *           GTFS objects to write
-    * @param entryName
-    *           zip entry name (GTFS Filename)
-    * @param header
-    *           GTFS File header
-    */
-   private void writeFile(ZipOutputStream out,
-         List<? extends GtfsBean> gtfsBeans, String entryName, String header,
-         GtfsReport report) throws GtfsExportException
-   {
-      if (gtfsBeans.isEmpty())
-      {
-         logger.info(entryName + " is empty, not produced");
-         return;
-      }
-      try
-      {
-         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-         OutputStreamWriter writer = new OutputStreamWriter(stream,
-               GTFS_CHARSET);
-         writer.write(header);
-         writer.write("\n");
-         for (GtfsBean gtfsBean : gtfsBeans)
-         {
-            writer.write(gtfsBean.getCSVLine());
-            writer.write("\n");
-         }
-         writer.close();
-         // Add ZIP entry to output stream.
-         ZipEntry entry = new ZipEntry(entryName);
-         out.putNextEntry(entry);
-
-         out.write(stream.toByteArray());
-
-         // Complete the entry
-         out.closeEntry();
-      } catch (IOException e)
-      {
-         logger.error(entryName + " failure " + e.getMessage(), e);
-         GtfsReportItem item = new GtfsReportItem(
-               GtfsReportItem.KEY.FILE_ACCESS, STATE.ERROR, entryName);
-         report.addItem(item);
-         throw new GtfsExportException(GtfsExportExceptionCode.ERROR, entryName);
-      }
-
-   }
 
 }

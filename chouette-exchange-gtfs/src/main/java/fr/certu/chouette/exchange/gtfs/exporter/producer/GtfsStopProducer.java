@@ -8,11 +8,10 @@
 
 package fr.certu.chouette.exchange.gtfs.exporter.producer;
 
-import java.util.List;
-
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReportItem;
-import fr.certu.chouette.exchange.gtfs.model.GtfsStop;
+import fr.certu.chouette.exchange.gtfs.refactor.exporter.GtfsExporter;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStop;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.plugin.report.Report.STATE;
@@ -22,38 +21,37 @@ import fr.certu.chouette.plugin.report.Report.STATE;
  * <p>
  * optimise multiple period timetable with calendarDate inclusion or exclusion
  */
-public class GtfsStopProducer extends AbstractProducer<GtfsStop, StopArea>
+public class GtfsStopProducer extends AbstractProducer
 {
 
-   @Override
-   public List<GtfsStop> produceAll(StopArea area, GtfsReport report)
+
+   public GtfsStopProducer(GtfsExporter exporter)
    {
-      throw new UnsupportedOperationException("not yet implemented");
+      super(exporter);
    }
 
-   @Override
-   public GtfsStop produce(StopArea neptuneObject, GtfsReport report)
+   public boolean save(StopArea neptuneObject, GtfsReport report, String prefix)
    {
       GtfsStop stop = new GtfsStop();
       ChouetteAreaEnum chouetteAreaType = neptuneObject.getAreaType();
       if (chouetteAreaType.compareTo(ChouetteAreaEnum.BoardingPosition) == 0)
-         stop.setLocationType(GtfsStop.STOP);
+         stop.setLocationType(GtfsStop.LocationType.Stop);
       else if (chouetteAreaType.compareTo(ChouetteAreaEnum.Quay) == 0)
-         stop.setLocationType(GtfsStop.STOP);
+         stop.setLocationType(GtfsStop.LocationType.Stop);
       else if (chouetteAreaType.compareTo(ChouetteAreaEnum.CommercialStopPoint) == 0)
-         stop.setLocationType(GtfsStop.STATION);
+         stop.setLocationType(GtfsStop.LocationType.Station);
       // else if(chouetteAreaType.compareTo(ChouetteAreaEnum.STOPPLACE) == 0)
       // stop.setLocationType(GtfsStop.STATION);
       else
-         return null; // StopPlaces and ITL type not available
-      stop.setStopId(toGtfsId(neptuneObject.getObjectId()));
+         return false; // StopPlaces and ITL type not available
+      stop.setStopId(toGtfsId(neptuneObject.getObjectId(),prefix));
       if (neptuneObject.getName() == null)
       {
          GtfsReportItem item = new GtfsReportItem(
                GtfsReportItem.KEY.MISSING_DATA, STATE.ERROR, "StopArea",
                neptuneObject.getObjectId(), "Name");
          report.addItem(item);
-         return null;
+         return false;
       }
       stop.setStopName(neptuneObject.getName());
 
@@ -63,7 +61,7 @@ public class GtfsStopProducer extends AbstractProducer<GtfsStop, StopArea>
                GtfsReportItem.KEY.MISSING_DATA, STATE.ERROR, "StopArea",
                neptuneObject.getName(), "Latitude");
          report.addItem(item);
-         return null;
+         return false;
       }
       stop.setStopLat(neptuneObject.getLatitude());
       if (neptuneObject.getLongitude() == null)
@@ -72,20 +70,29 @@ public class GtfsStopProducer extends AbstractProducer<GtfsStop, StopArea>
                GtfsReportItem.KEY.MISSING_DATA, STATE.ERROR, "StopArea",
                neptuneObject.getName(), "Longitude");
          report.addItem(item);
-         return null;
+         return false;
       }
       stop.setStopLon(neptuneObject.getLongitude());
       stop.setStopCode(neptuneObject.getRegistrationNumber());
       stop.setStopDesc(neptuneObject.getComment());
-      if (stop.getLocationType() == GtfsStop.STOP)
+      if (stop.getLocationType().equals(GtfsStop.LocationType.Stop))
       {
          if (neptuneObject.getParent() != null)
          {
             stop.setParentStation(toGtfsId(neptuneObject.getParent()
-                  .getObjectId()));
+                  .getObjectId(),prefix));
          }
       }
-      return stop;
+      try
+      {
+         getExporter().getStopExporter().export(stop);
+      }
+      catch (Exception e)
+      {
+         e.printStackTrace();
+         return false;
+      }
+      return true;
    }
 
 }

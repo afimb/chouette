@@ -8,12 +8,11 @@
 
 package fr.certu.chouette.exchange.gtfs.exporter.producer;
 
-import java.util.List;
+import java.io.IOException;
 
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
-import fr.certu.chouette.exchange.gtfs.model.GtfsTime;
-import fr.certu.chouette.exchange.gtfs.model.GtfsTransfer;
-import fr.certu.chouette.exchange.gtfs.model.GtfsTransfer.Type;
+import fr.certu.chouette.exchange.gtfs.refactor.exporter.GtfsExporter;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsTransfer;
 import fr.certu.chouette.model.neptune.ConnectionLink;
 
 /**
@@ -21,36 +20,42 @@ import fr.certu.chouette.model.neptune.ConnectionLink;
  * <p>
  * optimise multiple period timetable with calendarDate inclusion or exclusion
  */
-public class GtfsTransferProducer extends
-      AbstractProducer<GtfsTransfer, ConnectionLink>
+public class GtfsTransferProducer extends AbstractProducer
 {
-
-   @Override
-   public List<GtfsTransfer> produceAll(ConnectionLink link, GtfsReport report)
+   public GtfsTransferProducer(GtfsExporter exporter)
    {
-      throw new UnsupportedOperationException("not yet implemented");
+      super(exporter);
    }
+   private GtfsTransfer transfer = new GtfsTransfer();
 
-   @Override
-   public GtfsTransfer produce(ConnectionLink neptuneObject, GtfsReport report)
+   public boolean save(ConnectionLink neptuneObject, GtfsReport report,String prefix)
    {
-      GtfsTransfer transfer = new GtfsTransfer();
       transfer.setFromStopId(toGtfsId(neptuneObject.getStartOfLink()
-            .getObjectId()));
+            .getObjectId(),prefix));
       transfer
-            .setToStopId(toGtfsId(neptuneObject.getEndOfLink().getObjectId()));
+            .setToStopId(toGtfsId(neptuneObject.getEndOfLink().getObjectId(),prefix));
       if (neptuneObject.getDefaultDuration() != null
             && neptuneObject.getDefaultDuration().getTime() > 1000)
       {
-         GtfsTime minTransferTime = new GtfsTime(
-               neptuneObject.getDefaultDuration(), false);
-         transfer.setMinTransferTime(minTransferTime);
-         transfer.setTransferType(Type.MINIMAL);
+         transfer.setMinTransferTime(Integer.valueOf((int)(neptuneObject.getDefaultDuration().getTime()/1000)));
+         transfer.setTransferType(GtfsTransfer.TransferType.Minimal);
       } else
       {
-         transfer.setTransferType(Type.RECOMMENDED);
+         transfer.setMinTransferTime(null);
+         transfer.setTransferType(GtfsTransfer.TransferType.Recommended);
       }
-      return transfer;
+      
+      try
+      {
+         getExporter().getTransferExporter().export(transfer);
+      }
+      catch (Exception e)
+      {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
+         return false;
+      }
+      return true;
    }
 
 }
