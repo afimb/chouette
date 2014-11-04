@@ -67,14 +67,14 @@ public class Main
       GtfsImporter dao = new GtfsImporter(PATH);
 
       // routes.txt
-//      parse(dao, GtfsImporter.INDEX.ROUTE_BY_ID.name(), RouteById.FILENAME,
-//            RouteById.class);
+      // parse(dao, GtfsImporter.INDEX.ROUTE_BY_ID.name(), RouteById.FILENAME,
+      // RouteById.class);
 
       // trips.txt
-    
+
       parse(dao, GtfsImporter.INDEX.TRIP_BY_ROUTE.name(), TripById.FILENAME,
             TripByRoute.class);
-      
+
       dao.dispose();
 
    }
@@ -175,7 +175,9 @@ public class Main
                         stop.getStopDesc(), stop.getStopLat(),
                         stop.getStopLon(), stop.getZoneId(), stop.getStopUrl(),
                         stop.getLocationType(), stop.getParentStation(),
-                        stop.getStopTimezone(), stop.getWheelchairBoarding());
+                        stop.getStopTimezone(), stop.getWheelchairBoarding(),
+                        stop.getAddressLine(), stop.getLocality(),
+                        stop.getPostalCode());
                   _map.put(stop.getStopId(), clone);
                }
             }

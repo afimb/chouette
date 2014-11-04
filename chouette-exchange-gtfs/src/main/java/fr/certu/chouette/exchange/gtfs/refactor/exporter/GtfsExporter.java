@@ -110,6 +110,12 @@ public class GtfsExporter
       return getExporter(EXPORTER.STOP.name(), StopExporter.FILENAME,
             StopExporter.class);
    }
+   
+   public Exporter<GtfsStop> getStopExtendedExporter() throws Exception
+   {
+      return getExporter(EXPORTER.STOP.name(), StopExporter.FILENAME,
+            StopExtendedExporter.class);
+   }
 
    public Exporter<GtfsStopTime> getStopTimeExporter() throws Exception
    {
