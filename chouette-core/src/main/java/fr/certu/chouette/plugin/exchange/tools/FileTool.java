@@ -3,12 +3,16 @@ package fr.certu.chouette.plugin.exchange.tools;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
 
 import lombok.extern.log4j.Log4j;
 
@@ -72,7 +76,7 @@ public class FileTool
 
       try
       {
-         zipFile = new ZipFile(srcFile,getZipCharset(zipFileName));
+         zipFile = new ZipFile(srcFile, getZipCharset(zipFileName));
 
          // get an enumeration of the ZIP file entries
          Enumeration<? extends ZipEntry> e = zipFile.entries();
@@ -127,6 +131,48 @@ public class FileTool
             log.error("Error while closing zip file" + ioe);
          }
       }
+
+   }
+
+   public static void compress(String zipFileName, File sourceDirectory) throws IOException
+   {
+      FileOutputStream fos  = new FileOutputStream(zipFileName);
+      ZipOutputStream zos = new ZipOutputStream(fos);
+      List<File> files = getFileList(sourceDirectory);
+      for (File f : files)
+      {
+         String name = f.getName();
+         ZipEntry zipEntry = new ZipEntry(name);
+         zos.putNextEntry(zipEntry);
+         FileInputStream fis = new FileInputStream(f);
+         byte[] buffer = new byte[1024];
+         int length;
+         while ((length = fis.read(buffer)) > 0) {
+             zos.write(buffer, 0, length);
+         }
+         zos.closeEntry();
+         fis.close();
+         
+      }
+      zos.close();
+      fos.close();
+   }
+
+   private static List<File> getFileList(File directory)
+   {
+      List<File> fileList = new ArrayList<>();
+      File[] files = directory.listFiles();
+      if (files != null && files.length > 0)
+      {
+         for (File file : files)
+         {
+            if (file.isFile())
+            {
+               fileList.add(file);
+            }
+         }
+      }
+      return fileList;
 
    }
 

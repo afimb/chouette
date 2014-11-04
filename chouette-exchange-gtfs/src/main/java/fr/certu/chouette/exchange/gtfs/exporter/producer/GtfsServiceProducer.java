@@ -8,7 +8,16 @@
 
 package fr.certu.chouette.exchange.gtfs.exporter.producer;
 
+import java.sql.Date;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+
+import lombok.extern.log4j.Log4j;
 
 import org.apache.log4j.Logger;
 
@@ -26,6 +35,7 @@ import fr.certu.chouette.model.neptune.type.DayTypeEnum;
  * <p>
  * optimise multiple period timetable with calendarDate inclusion or exclusion
  */
+@Log4j
 public class GtfsServiceProducer extends
 AbstractProducer
 {
@@ -34,26 +44,24 @@ AbstractProducer
       super(exporter);
    }
 
-   private static final Logger logger = Logger
-         .getLogger(GtfsServiceProducer.class);
    private static final long ONE_DAY = 3600000 * 24;
 
    GtfsCalendar calendar = new GtfsCalendar();
    GtfsCalendarDate calendarDate = new GtfsCalendarDate();
 
-   public boolean save(Timetable timetable, GtfsReport report, String prefix)
+   public boolean save(List<Timetable> timetables, GtfsReport report, String prefix)
    {
 
-      Timetable reduced = reduce(timetable);
+      Timetable reduced = merge(timetables, prefix);
 
       if (reduced == null) return false;
 
       String serviceId = toGtfsId(reduced.getObjectId(), prefix);
 
-      if (reduced.getPeriods() != null && !reduced.getPeriods().isEmpty())
+      if (!isEmpty(reduced.getPeriods()))
       {
          clear(calendar);
-         for (DayTypeEnum dayType : timetable.getDayTypes())
+         for (DayTypeEnum dayType : reduced.getDayTypes())
          {
             switch (dayType)
             {
@@ -95,7 +103,7 @@ AbstractProducer
          }
          calendar.setServiceId(serviceId);
 
-         Period period = timetable.getPeriods().get(0);
+         Period period = reduced.getPeriods().get(0);
          calendar.setStartDate(period.getStartDate());
          calendar.setEndDate(period.getEndDate());
 
@@ -105,13 +113,12 @@ AbstractProducer
          }
          catch (Exception e)
          {
-            // TODO Auto-generated catch block
+            log.error(e.getMessage(),e);
             e.printStackTrace();
             return false;
          }
       }
-      if (timetable.getCalendarDays() != null
-            && !timetable.getCalendarDays().isEmpty())
+      if (!isEmpty(reduced.getCalendarDays()))
       {
          for (CalendarDay day : reduced.getCalendarDays())
          {
@@ -136,17 +143,19 @@ AbstractProducer
 
    private Timetable reduce(Timetable timetable)
    {
+      Timetable reduced = timetable.copy();
 
       // no periods => nothing to reduce
-      if (timetable.getPeriods().isEmpty()) 
+      if (isEmpty(reduced.getPeriods()))
       {
-         return timetable;
+         return reduced;
       }
 
       // one valid period => nothing to reduce
-      if (timetable.getPeriods().size() == 1 && ! timetable.getDayTypes().isEmpty()) return timetable;
+      if (reduced.getPeriods().size() == 1 && ! isEmpty(reduced.getDayTypes())) return reduced;
 
-      // no valid days
+      // replace all periods as dates
+      removePeriods(reduced);
 
       return timetable;
    }
@@ -171,11 +180,90 @@ AbstractProducer
 
    }
 
-
-   public Timetable merge(List<Timetable> timetables)
+   private Timetable removePeriods(Timetable timetable)
    {
-      Timetable merged = new Timetable();
+      Set<Date> excludedDates = new HashSet<Date>(
+            timetable.getExcludedDates());
+      Set<Date> includedDates = new HashSet<Date>(
+            timetable.getPeculiarDates());
 
+      for (Period period : timetable.getPeriods())
+      {
+         Date checkedDate = period.getStartDate();
+         Date endDate = new Date(period.getEndDate().getTime() + ONE_DAY);
+         while (checkedDate.before(endDate))
+         {
+            if (!excludedDates.contains(checkedDate)
+                  && !includedDates.contains(checkedDate))
+            {
+               if (checkValidDay(checkedDate, timetable))
+               {
+                  includedDates.add(checkedDate);
+               }
+            }
+            checkedDate = new Date(checkedDate.getTime() + ONE_DAY);
+         }
+      }
+      timetable.getPeriods().clear();
+      timetable.setIntDayTypes(Integer.valueOf(0));
+      timetable.getCalendarDays().clear();
+      for (Date date : includedDates)
+      {
+         timetable.addCalendarDay(new CalendarDay(date, true));
+      }
+      return timetable;
+
+   }
+
+   private boolean checkValidDay(Date checkedDate, Timetable timetable)
+   {
+      boolean valid = false;
+      // to avoid timezone
+      Calendar c = Calendar.getInstance();
+      c.set(Calendar.HOUR_OF_DAY, 12);
+      java.util.Date aDate = new java.util.Date(checkedDate.getTime());
+      c.setTime(aDate);
+      switch (c.get(Calendar.DAY_OF_WEEK))
+      {
+      case Calendar.MONDAY :
+         if ((timetable.getIntDayTypes() & DayTypeEnum.Monday.ordinal()) != 0 ) valid = true;
+         break;
+      case Calendar.TUESDAY :
+         if ((timetable.getIntDayTypes() & DayTypeEnum.Tuesday.ordinal()) != 0 ) valid = true;
+         break;
+      case Calendar.WEDNESDAY :
+         if ((timetable.getIntDayTypes() & DayTypeEnum.Wednesday.ordinal()) != 0 ) valid = true;
+         break;
+      case Calendar.THURSDAY :
+         if ((timetable.getIntDayTypes() & DayTypeEnum.Thursday.ordinal()) != 0 ) valid = true;
+         break;
+      case Calendar.FRIDAY :
+         if ((timetable.getIntDayTypes() & DayTypeEnum.Friday.ordinal()) != 0 ) valid = true;
+         break;
+      case Calendar.SATURDAY :
+         if ((timetable.getIntDayTypes() & DayTypeEnum.Saturday.ordinal()) != 0 ) valid = true;
+         break;
+      case Calendar.SUNDAY :
+         if ((timetable.getIntDayTypes() & DayTypeEnum.Sunday.ordinal()) != 0 ) valid = true;
+         break;
+      }
+      return valid;
+   }
+
+
+   private Timetable merge(List<Timetable> timetables,String prefix)
+   {
+      Timetable merged = reduce(timetables.get(0).copy());
+      if (timetables.size() > 1)
+      {
+         removePeriods(merged);
+         for (int i = 1; i < timetables.size(); i++)
+         {
+            Timetable reduced = removePeriods(timetables.get(i).copy());
+            merged.addCalendarDays(reduced.getCalendarDays());
+         }
+         merged.setObjectId(prefix+":"+Timetable.TIMETABLE_KEY+":"+key(timetables,prefix));
+      }
       return merged;
    }
 
@@ -184,62 +272,36 @@ AbstractProducer
       // protection if no valid days
       if (timetable.getDayTypes().isEmpty()) timetable.getPeriods().clear();
       return !timetable.getPeriods().isEmpty() || !timetable.getCalendarDays().isEmpty();
-
    }
 
-   public String key(List<Timetable> timetables)
+   public String key(List<Timetable> timetables,String prefix)
    {
-      return "";
+      if (isEmpty(timetables)) return null;
+      // remove invalid timetables (no date set) 
+      for (Iterator<Timetable> iterator = timetables.iterator(); iterator.hasNext();)
+      {
+         Timetable timetable = iterator.next();
+         if (!isValid(timetable)) iterator.remove();
+      }
+      if (isEmpty(timetables)) return null;
+
+      Collections.sort(timetables, new TimetableSorter());
+      String key = "";
+      for (Timetable timetable : timetables)
+      {
+         key += "-"+toGtfsId(timetable.getObjectId(), prefix);
+      }
+      return key.substring(1);
    }
 
+   private class TimetableSorter implements Comparator<Timetable>
+   {
+      @Override
+      public int compare(Timetable arg0, Timetable arg1)
+      {
+         return arg0.getObjectId().compareTo(arg1.getObjectId());
+      }
+
+   }
 
 }
-
-//public void bidon()
-//{
-//   // GTFS can't use multiple periods, converted as single dates
-//   Set<Date> excludedDates = new HashSet<Date>(
-//         timetable.getExcludedDates());
-//   Set<Date> includedDates = new HashSet<Date>(
-//         timetable.getPeculiarDates());
-//
-//   for (Period period : timetable.getPeriods())
-//   {
-//      Date checkedDate = period.getStartDate();
-//      Date endDate = new Date(period.getEndDate().getTime() + ONE_DAY);
-//      while (checkedDate.before(endDate))
-//      {
-//         if (!excludedDates.contains(checkedDate)
-//               && !includedDates.contains(checkedDate))
-//         {
-//            if (checkValidDay(checkedDate, calendar))
-//            {
-//               includedDates.add(checkedDate);
-//            }
-//         }
-//         checkedDate = new Date(checkedDate.getTime() + ONE_DAY);
-//      }
-//   }
-//
-//   // create only included CalendarDates
-//   addDates(calendar, includedDates, GtfsCalendarDate.ExceptionType.Added);
-//}
-//} else if (timetable.getCalendarDays() != null
-//      && !timetable.getCalendarDays().isEmpty())
-//{
-//   addDates(calendar, timetable.getCalendarDays());
-//} else
-//{
-//   logger.warn("timetable " + timetable.getObjectId()
-//         + " has no period nor calendarDays : rejected");
-//   return false;
-//}
-//
-//if (!calendar.getCalendarDates().isEmpty())
-//{
-//   Collections.sort(calendar.getCalendarDates());
-//}
-//
-//return true;
-//}
-

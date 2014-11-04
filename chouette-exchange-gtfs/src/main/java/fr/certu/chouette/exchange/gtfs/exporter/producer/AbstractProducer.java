@@ -3,6 +3,7 @@ package fr.certu.chouette.exchange.gtfs.exporter.producer;
 import java.awt.Color;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collection;
 
 import lombok.Getter;
 
@@ -28,9 +29,14 @@ public abstract class AbstractProducer
          return tokens[0]+":"+tokens[2];
    }
 
-   static boolean  isEmpty(String s)
+   static boolean isEmpty(String s)
    {
       return s == null || s.trim().isEmpty();
+   }
+
+   static boolean isEmpty(Collection<? extends Object> s)
+   {
+      return s == null || s.isEmpty();
    }
 
    static String  getValue(String s)

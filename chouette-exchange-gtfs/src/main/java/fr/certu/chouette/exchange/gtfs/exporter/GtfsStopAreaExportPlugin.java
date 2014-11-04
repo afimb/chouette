@@ -1,42 +1,40 @@
 package fr.certu.chouette.exchange.gtfs.exporter;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
-import org.apache.log4j.Logger;
+import lombok.extern.log4j.Log4j;
+
+import org.apache.commons.io.FileUtils;
 
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReportItem;
-import fr.certu.chouette.exchange.gtfs.model.GtfsBean;
-import fr.certu.chouette.exchange.gtfs.model.GtfsExtendedStop;
-import fr.certu.chouette.exchange.gtfs.model.GtfsTransfer;
+import fr.certu.chouette.exchange.gtfs.refactor.exporter.GtfsExporter;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.plugin.exchange.FormatDescription;
 import fr.certu.chouette.plugin.exchange.IExportPlugin;
 import fr.certu.chouette.plugin.exchange.ParameterDescription;
 import fr.certu.chouette.plugin.exchange.ParameterValue;
 import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
+import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
+import fr.certu.chouette.plugin.exchange.tools.FileTool;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.Report.STATE;
 import fr.certu.chouette.plugin.report.ReportHolder;
+import fr.certu.chouette.plugin.report.ReportItem;
 
 /**
  * export lines in GTFS GoogleTransit format
  */
+@Log4j
 public class GtfsStopAreaExportPlugin implements IExportPlugin<StopArea>
 {
-   private static final Logger logger = Logger
-         .getLogger(GtfsStopAreaExportPlugin.class);
-   private static final String GTFS_CHARSET = "UTF-8";
 
    /**
     * describe plugin API
@@ -129,7 +127,44 @@ public class GtfsStopAreaExportPlugin implements IExportPlugin<StopArea>
          return;
 
       File fic = new File(fileName);
-      ZipOutputStream out = null;
+
+      Path targetDirectory = null;
+      try
+      {
+         targetDirectory = Files.createTempDirectory("gtfs_import_");
+      }
+      catch (IOException e)
+      {
+         ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.FILE_ERROR, Report.STATE.ERROR, "/tmp", "cannot create tempdir");
+         report.addItem(item);
+         report.updateStatus(Report.STATE.ERROR);
+         log.error("zip import failed (cannot create temp dir)", e);
+         return;
+      }
+
+      GtfsExporter exporter = null;
+      try
+      {
+         exporter = new GtfsExporter(targetDirectory.toString());
+         NeptuneData neptuneData = new NeptuneData();
+         neptuneData.saveStopAreas(beans, exporter, report, null);
+      }
+      catch (Exception e)
+      {
+         log.error("incomplete data", e);
+         exporter.dispose();
+         try
+         {
+            FileUtils.deleteDirectory(targetDirectory.toFile());
+         }
+         catch (IOException e1)
+         {
+         }
+         return;
+      }
+      exporter.dispose();
+
+      // compress files to zip
       try
       {
          // create directory if exists
@@ -140,120 +175,20 @@ public class GtfsStopAreaExportPlugin implements IExportPlugin<StopArea>
                dir.mkdirs();
          }
          // Create the ZIP file
-         out = new ZipOutputStream(new FileOutputStream(fileName));
-      } catch (IOException e)
+         FileTool.compress(fileName, targetDirectory.toFile());
+      }
+      catch (IOException e)
       {
-         logger.error("cannot create zip file", e);
-         GtfsReportItem item = new GtfsReportItem(
-               GtfsReportItem.KEY.FILE_ACCESS, STATE.ERROR, fileName);
+         log.error("cannot create zip file", e);
+         GtfsReportItem item = new GtfsReportItem(GtfsReportItem.KEY.FILE_ACCESS, STATE.ERROR, fileName);
          report.addItem(item);
-         return;
-      }
-
-      NeptuneData neptuneData = new NeptuneData();
-      neptuneData.populateStopAreas(beans);
-
-      logger.info("export " + neptuneData.physicalStops.size()
-            + " physical stops");
-      logger.info("export " + neptuneData.commercialStops.size()
-            + " commercial stops");
-      logger.info("export " + neptuneData.connectionLinks.size() + " transfers");
-
-      GtfsData gtfsData = null;
-      try
-      {
-         GtfsDataProducer gtfsDataProducer = new GtfsDataProducer();
-         gtfsData = gtfsDataProducer.produceStops(neptuneData, report);
-      } catch (GtfsExportException e)
-      {
-         logger.error("incomplete data", e);
-         try
-         {
-            out.close();
-         } catch (IOException e1)
-         {
-         }
-         if (fic.exists())
-            fic.delete();
-         return;
-      }
-
-      try
-      {
-         writeFile(out, gtfsData.getStops(), "stops.txt",
-               GtfsExtendedStop.header, report);
-         writeFile(out, gtfsData.getTransfer(), "transfers.txt",
-               GtfsTransfer.header, report);
-      } catch (GtfsExportException e)
-      {
-         logger.error("zipEntry failure " + e.getMessage(), e);
-         GtfsReportItem item = new GtfsReportItem(
-               GtfsReportItem.KEY.FILE_ACCESS, STATE.ERROR, fileName);
-         report.addItem(item);
-      }
-
-      try
-      {
-         // Complete the ZIP file
-         out.close();
-      } catch (IOException e)
-      {
-         logger.error("cannot create zip file", e);
-         GtfsReportItem item = new GtfsReportItem(
-               GtfsReportItem.KEY.FILE_ACCESS, STATE.ERROR, fileName);
-         report.addItem(item);
-      }
-   }
-
-   /**
-    * write a file in Zip file
-    * 
-    * @param out
-    *           zip file
-    * @param gtfsBeans
-    *           GTFS objects to write
-    * @param entryName
-    *           zip entry name (GTFS Filename)
-    * @param header
-    *           GTFS File header
-    */
-   private void writeFile(ZipOutputStream out,
-         List<? extends GtfsBean> gtfsBeans, String entryName, String header,
-         GtfsReport report) throws GtfsExportException
-   {
-      if (gtfsBeans.isEmpty())
-      {
-         logger.info(entryName + " is empty, not produced");
-         return;
       }
       try
       {
-         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-         OutputStreamWriter writer = new OutputStreamWriter(stream,
-               GTFS_CHARSET);
-         writer.write(header);
-         writer.write("\n");
-         for (GtfsBean gtfsBean : gtfsBeans)
-         {
-            writer.write(gtfsBean.getCSVLine());
-            writer.write("\n");
-         }
-         writer.close();
-         // Add ZIP entry to output stream.
-         ZipEntry entry = new ZipEntry(entryName);
-         out.putNextEntry(entry);
-
-         out.write(stream.toByteArray());
-
-         // Complete the entry
-         out.closeEntry();
-      } catch (IOException e)
+         FileUtils.deleteDirectory(targetDirectory.toFile());
+      }
+      catch (IOException e1)
       {
-         logger.error(entryName + " failure " + e.getMessage(), e);
-         GtfsReportItem item = new GtfsReportItem(
-               GtfsReportItem.KEY.FILE_ACCESS, STATE.ERROR, entryName);
-         report.addItem(item);
-         throw new GtfsExportException(GtfsExportExceptionCode.ERROR, entryName);
       }
 
    }

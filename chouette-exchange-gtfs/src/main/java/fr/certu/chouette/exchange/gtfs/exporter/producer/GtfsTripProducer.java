@@ -10,6 +10,8 @@ package fr.certu.chouette.exchange.gtfs.exporter.producer;
 
 import java.sql.Time;
 
+import lombok.extern.log4j.Log4j;
+
 import org.apache.log4j.Logger;
 
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
@@ -20,7 +22,6 @@ import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsTrip;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.Route;
-import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
 
@@ -31,30 +32,29 @@ import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
  * 
  * @ TODO : refactor to produce one calendar for each timetable groups
  */
+@Log4j
 public class GtfsTripProducer extends
-      AbstractProducer
+AbstractProducer
 {
-   private static final Logger logger = Logger
-         .getLogger(GtfsTripProducer.class);
 
 
    GtfsTrip trip = new GtfsTrip();
    GtfsStopTime time = new GtfsStopTime();
-   
+
 
    public GtfsTripProducer(GtfsExporter exporter)
    {
       super(exporter);
-      // TODO Auto-generated constructor stub
    }
 
    /**
     * produce stoptimes for vehiclejourneyatstops @ TODO see how to manage ITL
     * 
     * @param vj
+    * @param sharedPrefix 
     * @return list of stoptimes
     */
-   private boolean saveTimes(VehicleJourney vj, GtfsReport report, String prefix)
+   private boolean saveTimes(VehicleJourney vj, GtfsReport report, String prefix, String sharedPrefix)
    {
       Integer tomorrowArrival = Integer.valueOf(0);
       Time previousArrival = null;
@@ -65,7 +65,7 @@ public class GtfsTripProducer extends
       for (VehicleJourneyAtStop vjas : vj.getVehicleJourneyAtStops())
       {
          time.setStopId(toGtfsId(vjas.getStopPoint().getContainedInStopArea()
-               .getObjectId(),prefix));
+               .getObjectId(),sharedPrefix));
          Time arrival = vjas.getArrivalTime();
          if (arrival == null)
             arrival = vjas.getDepartureTime();
@@ -96,10 +96,10 @@ public class GtfsTripProducer extends
          catch (Exception e)
          {
             // TODO Auto-generated catch block
-            e.printStackTrace();
+            log.error(e.getMessage(),e);
             return false;
          }
-         
+
       }
       return true;
    }
@@ -109,6 +109,7 @@ public class GtfsTripProducer extends
     * 
     * @param vj
     *           vehicle journey
+    * @param sharedPrefix 
     * @param timetableId
     *           timetable id
     * @param times
@@ -117,7 +118,7 @@ public class GtfsTripProducer extends
     *           vehicle journey with multiple timetables
     * @return gtfs trip
     */
-   public boolean save(VehicleJourney vj, Timetable timetable, GtfsReport report, String prefix)
+   public boolean save(VehicleJourney vj, String serviceId, GtfsReport report, String prefix, String sharedPrefix)
    {
 
       String tripId = toGtfsId(vj.getObjectId(), prefix);
@@ -136,7 +137,7 @@ public class GtfsTripProducer extends
          trip.setDirectionId(GtfsTrip.DirectionType.Outbound);
       }
 
-      trip.setServiceId(toGtfsId(timetable.getObjectId(),prefix));
+      trip.setServiceId(serviceId);
 
       String name = vj.getPublishedJourneyName();
       if (isEmpty(name) && vj.getNumber() != null)
@@ -158,24 +159,23 @@ public class GtfsTripProducer extends
       // trip.setBlockId(...);
       // trip.setShapeId(...);
       // trip.setBikeAllowed();
-      
-      try
-      {
-         getExporter().getTripExporter().export(trip);
-      }
-      catch (Exception e)
-      {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-         return false;
-      }
 
       // add StopTimes
-      saveTimes(vj,report,prefix);
-
+      if (saveTimes(vj,report,prefix,sharedPrefix))
+      {
+         try
+         {
+            getExporter().getTripExporter().export(trip);
+         }
+         catch (Exception e)
+         {
+            log.error(e.getMessage(),e);
+            return false;
+         }
+      }
       return true;
    }
 
 
-   
+
 }

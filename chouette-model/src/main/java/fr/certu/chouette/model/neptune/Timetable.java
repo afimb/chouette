@@ -5,6 +5,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
@@ -46,8 +47,8 @@ public class Timetable extends NeptuneIdentifiedObject
     * mapping day type with enumerations
     */
    private static final DayTypeEnum[] dayTypeByInt = { DayTypeEnum.Sunday,
-         DayTypeEnum.Monday, DayTypeEnum.Tuesday, DayTypeEnum.Wednesday,
-         DayTypeEnum.Thursday, DayTypeEnum.Friday, DayTypeEnum.Saturday };
+      DayTypeEnum.Monday, DayTypeEnum.Tuesday, DayTypeEnum.Wednesday,
+      DayTypeEnum.Thursday, DayTypeEnum.Friday, DayTypeEnum.Saturday };
 
    @Getter
    @Column(name = "comment")
@@ -164,6 +165,17 @@ public class Timetable extends NeptuneIdentifiedObject
       }
    }
 
+   public void addCalendarDays(Collection<CalendarDay> list)
+   {
+      if (calendarDays == null)
+         calendarDays = new ArrayList<CalendarDay>();
+      for (CalendarDay calendarDay : list)
+      {
+         if (!calendarDays.contains(calendarDay))
+            addCalendarDay(calendarDay);
+      }
+   }
+
    /**
     * remove a day
     * 
@@ -275,26 +287,26 @@ public class Timetable extends NeptuneIdentifiedObject
       sb.append("\n").append(indent).append("  comment = ").append(comment);
       sb.append("\n").append(indent).append("  version = ").append(version);
       sb.append("\n").append(indent).append("  startOfPeriod = ")
-            .append(formatDate(startOfPeriod));
+      .append(formatDate(startOfPeriod));
       sb.append("\n").append(indent).append("  endOfPeriod = ")
-            .append(formatDate(endOfPeriod));
+      .append(formatDate(endOfPeriod));
       if (dayTypes != null)
       {
          sb.append("\n").append(indent).append(CHILD_ARROW).append("dayTypes");
          for (DayTypeEnum dayType : getDayTypes())
          {
             sb.append("\n").append(indent).append(CHILD_LIST_ARROW)
-                  .append(dayType);
+            .append(dayType);
          }
       }
       if (calendarDays != null)
       {
          sb.append("\n").append(indent).append(CHILD_ARROW)
-               .append("calendarDays");
+         .append("calendarDays");
          for (CalendarDay calendarDay : getCalendarDays())
          {
             sb.append("\n").append(indent).append(CHILD_LIST_ARROW)
-                  .append(calendarDay);
+            .append(calendarDay);
          }
       }
       if (periods != null)
@@ -303,17 +315,17 @@ public class Timetable extends NeptuneIdentifiedObject
          for (Period period : getPeriods())
          {
             sb.append("\n").append(indent).append(CHILD_LIST_ARROW)
-                  .append(period);
+            .append(period);
          }
       }
       if (vehicleJourneyIds != null)
       {
          sb.append("\n").append(indent).append(CHILD_ARROW)
-               .append("vehicleJourneyIds");
+         .append("vehicleJourneyIds");
          for (String vehicleJourneyId : getVehicleJourneyIds())
          {
             sb.append("\n").append(indent).append(CHILD_LIST_ARROW)
-                  .append(vehicleJourneyId);
+            .append(vehicleJourneyId);
          }
       }
       if (level > 0)
@@ -327,7 +339,7 @@ public class Timetable extends NeptuneIdentifiedObject
             for (VehicleJourney vehicleJourney : getVehicleJourneys())
             {
                sb.append("\n").append(indent).append(CHILD_LIST_ARROW)
-                     .append(vehicleJourney.toString(childIndent, childLevel));
+               .append(vehicleJourney.toString(childIndent, childLevel));
             }
          }
       }
@@ -621,6 +633,7 @@ public class Timetable extends NeptuneIdentifiedObject
       return effectivePeriods;
    }
 
+
    /* (non-Javadoc)
     * @see fr.certu.chouette.model.neptune.NeptuneObject#compareAttributes(fr.certu.chouette.model.neptune.NeptuneObject)
     */
@@ -661,5 +674,27 @@ public class Timetable extends NeptuneIdentifiedObject
    {
       return "time_tables/" + getId();
    }
+
+
+   public Timetable copy()
+   {
+      Timetable tm = new Timetable();
+      tm.setObjectId(getObjectId());
+      tm.setObjectVersion(getObjectVersion());
+      tm.setComment(getComment());
+      tm.setIntDayTypes(getIntDayTypes());
+      tm.setPeriods(new ArrayList<Period>());
+      for (Period period : getPeriods())
+      {
+         tm.addPeriod(new Period(period.getStartDate(),period.getEndDate()));
+      }
+      tm.setCalendarDays(new ArrayList<CalendarDay>());
+      for (CalendarDay day : getCalendarDays())
+      {
+         tm.addCalendarDay(new CalendarDay(day.getDate(), day.getIncluded()));
+      }
+      return tm;
+   }
+
 
 }

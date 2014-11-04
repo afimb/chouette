@@ -8,6 +8,8 @@
 
 package fr.certu.chouette.exchange.gtfs.exporter.producer;
 
+import java.util.Collection;
+
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReportItem;
 import fr.certu.chouette.exchange.gtfs.refactor.exporter.GtfsExporter;
@@ -23,6 +25,7 @@ import fr.certu.chouette.plugin.report.Report.STATE;
  */
 public class GtfsStopProducer extends AbstractProducer
 {
+   GtfsStop stop = new GtfsStop();
 
 
    public GtfsStopProducer(GtfsExporter exporter)
@@ -30,9 +33,8 @@ public class GtfsStopProducer extends AbstractProducer
       super(exporter);
    }
 
-   public boolean save(StopArea neptuneObject, GtfsReport report, String prefix)
+   public boolean save(StopArea neptuneObject, GtfsReport report, String prefix, Collection<StopArea> validParents)
    {
-      GtfsStop stop = new GtfsStop();
       ChouetteAreaEnum chouetteAreaType = neptuneObject.getAreaType();
       if (chouetteAreaType.compareTo(ChouetteAreaEnum.BoardingPosition) == 0)
          stop.setLocationType(GtfsStop.LocationType.Stop);
@@ -77,7 +79,7 @@ public class GtfsStopProducer extends AbstractProducer
       stop.setStopDesc(neptuneObject.getComment());
       if (stop.getLocationType().equals(GtfsStop.LocationType.Stop))
       {
-         if (neptuneObject.getParent() != null)
+         if (neptuneObject.getParent() != null && validParents.contains(neptuneObject.getParent()))
          {
             stop.setParentStation(toGtfsId(neptuneObject.getParent()
                   .getObjectId(),prefix));

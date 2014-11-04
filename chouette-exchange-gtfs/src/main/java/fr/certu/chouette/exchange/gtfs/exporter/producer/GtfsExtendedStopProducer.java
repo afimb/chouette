@@ -8,6 +8,8 @@
 
 package fr.certu.chouette.exchange.gtfs.exporter.producer;
 
+import java.util.Collection;
+
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReportItem;
 import fr.certu.chouette.exchange.gtfs.refactor.exporter.GtfsExporter;
@@ -25,15 +27,14 @@ public class GtfsExtendedStopProducer extends
       AbstractProducer
 {
 
-
+   GtfsStop stop = new GtfsStop();
    public GtfsExtendedStopProducer(GtfsExporter exporter)
    {
       super(exporter);
    }
 
-   public boolean save(StopArea neptuneObject, GtfsReport report, String prefix)
+   public boolean save(StopArea neptuneObject, GtfsReport report, String prefix, Collection<StopArea> validParents)
    {
-      GtfsStop stop = new GtfsStop();
       ChouetteAreaEnum chouetteAreaType = neptuneObject.getAreaType();
       if (chouetteAreaType.compareTo(ChouetteAreaEnum.BoardingPosition) == 0)
          stop.setLocationType(GtfsStop.LocationType.Stop);
@@ -76,12 +77,12 @@ public class GtfsExtendedStopProducer extends
       stop.setStopLon(neptuneObject.getLongitude());
       stop.setStopCode(neptuneObject.getRegistrationNumber());
       stop.setStopDesc(neptuneObject.getComment());
-      // stop.setAddressLine(neptuneObject.getStreetName());
-      // stop.setLocality(neptuneObject.getCityName());
-      // stop.setPostalCode(neptuneObject.getZipCode());
-      if (stop.getLocationType() == GtfsStop.LocationType.Stop)
+      stop.setAddressLine(neptuneObject.getStreetName());
+      stop.setLocality(neptuneObject.getCityName());
+      stop.setPostalCode(neptuneObject.getZipCode());
+      if (stop.getLocationType().equals(GtfsStop.LocationType.Stop))
       {
-         if (neptuneObject.getParent() != null)
+         if (neptuneObject.getParent() != null && validParents.contains(neptuneObject.getParent()))
          {
             stop.setParentStation(toGtfsId(neptuneObject.getParent()
                   .getObjectId(),prefix));
@@ -89,11 +90,10 @@ public class GtfsExtendedStopProducer extends
       }
       try
       {
-         getExporter().getStopExporter().export(stop);
+         getExporter().getStopExtendedExporter().export(stop);
       }
       catch (Exception e)
       {
-         // TODO Auto-generated catch block
          e.printStackTrace();
          return false;
       }
