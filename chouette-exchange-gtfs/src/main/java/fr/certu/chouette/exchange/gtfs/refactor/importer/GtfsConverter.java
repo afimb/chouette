@@ -214,7 +214,7 @@ public interface GtfsConverter
       @Override
       protected String convertTo(TimeZone input) throws Exception
       {
-         return (input != null) ? input.getDisplayName() : "";
+         return (input != null) ? input.getID() : "";
       }
    };
 

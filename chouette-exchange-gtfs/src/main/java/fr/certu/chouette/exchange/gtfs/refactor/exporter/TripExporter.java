@@ -13,7 +13,7 @@ public class TripExporter extends ExporterImpl<GtfsTrip> implements
 {
    public static enum FIELDS
    {
-      route_id, service_id, trip_id, trip_headsign, trip_short_name, direction_id, block_id, shape_id, wheelchair_accessible, bikes_allowed;
+      route_id, service_id, trip_id, trip_headsign, trip_short_name, direction_id, wheelchair_accessible; //, block_id, shape_id, bikes_allowed;
    };
 
    public static final String FILENAME = "trips.txt";
@@ -57,14 +57,14 @@ public class TripExporter extends ExporterImpl<GtfsTrip> implements
                FIELDS.trip_short_name, values.get(i++), false));
          bean.setDirectionId(DIRECTIONTYPE_CONVERTER.from(context,
                FIELDS.direction_id, values.get(i++), false));
-         bean.setBlockId(STRING_CONVERTER.from(context, FIELDS.block_id,
-               values.get(i++), false));
-         bean.setShapeId(STRING_CONVERTER.from(context, FIELDS.shape_id,
-               values.get(i++), false));
          bean.setWheelchairAccessible(WHEELCHAIRACCESSIBLETYPE_CONVERTER.from(
                context, FIELDS.wheelchair_accessible, values.get(i++), false));
-         bean.setBikesAllowed(BIKESALLOWEDTYPE_CONVERTER.from(context,
-               FIELDS.bikes_allowed, values.get(i++), false));
+//         bean.setBlockId(STRING_CONVERTER.from(context, FIELDS.block_id,
+//               values.get(i++), false));
+//         bean.setShapeId(STRING_CONVERTER.from(context, FIELDS.shape_id,
+//               values.get(i++), false));
+//         bean.setBikesAllowed(BIKESALLOWEDTYPE_CONVERTER.from(context,
+//               FIELDS.bikes_allowed, values.get(i++), false));
 
          return bean;
       }
@@ -86,15 +86,15 @@ public class TripExporter extends ExporterImpl<GtfsTrip> implements
                input.getTripShortName(), false));
          values.add(DIRECTIONTYPE_CONVERTER.to(context, FIELDS.direction_id,
                input.getDirectionId(), false));
-         values.add(STRING_CONVERTER.to(context, FIELDS.block_id,
-               input.getBlockId(), false));
-         values.add(STRING_CONVERTER.to(context, FIELDS.shape_id,
-               input.getShapeId(), false));
          values.add(WHEELCHAIRACCESSIBLETYPE_CONVERTER.to(context,
                FIELDS.wheelchair_accessible, input.getWheelchairAccessible(),
                false));
-         values.add(BIKESALLOWEDTYPE_CONVERTER.to(context,
-               FIELDS.bikes_allowed, input.getBikesAllowed(), false));
+//         values.add(STRING_CONVERTER.to(context, FIELDS.block_id,
+//               input.getBlockId(), false));
+//         values.add(STRING_CONVERTER.to(context, FIELDS.shape_id,
+//               input.getShapeId(), false));
+//         values.add(BIKESALLOWEDTYPE_CONVERTER.to(context,
+//               FIELDS.bikes_allowed, input.getBikesAllowed(), false));
 
          result = Tokenizer.untokenize(values);
          return result;

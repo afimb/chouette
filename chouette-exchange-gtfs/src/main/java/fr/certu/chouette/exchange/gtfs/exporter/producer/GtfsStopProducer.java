@@ -75,7 +75,7 @@ public class GtfsStopProducer extends AbstractProducer
          return false;
       }
       stop.setStopLon(neptuneObject.getLongitude());
-      stop.setStopCode(neptuneObject.getRegistrationNumber());
+      // stop.setStopCode(neptuneObject.getRegistrationNumber());
       stop.setStopDesc(neptuneObject.getComment());
       if (stop.getLocationType().equals(GtfsStop.LocationType.Stop))
       {

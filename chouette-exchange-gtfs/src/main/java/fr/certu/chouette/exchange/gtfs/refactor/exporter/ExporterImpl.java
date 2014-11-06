@@ -34,6 +34,7 @@ public abstract class ExporterImpl<T> implements Exporter<T>
    public void write(String text) throws IOException
    {
       _writer.write(text);
+      _writer.write("\n");
       _context.put(Context.ID, _total++);
    }
 

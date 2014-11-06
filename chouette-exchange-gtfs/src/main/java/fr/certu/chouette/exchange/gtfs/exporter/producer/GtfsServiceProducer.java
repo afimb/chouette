@@ -114,7 +114,6 @@ AbstractProducer
          catch (Exception e)
          {
             log.error(e.getMessage(),e);
-            e.printStackTrace();
             return false;
          }
       }
@@ -172,8 +171,7 @@ AbstractProducer
       }
       catch (Exception e)
       {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
+         log.error(e.getMessage(),e);
          return false;
       }
       return true;

@@ -81,13 +81,13 @@ public class GtfsExporter
 
    }
 
-   public Exporter<GtfsCalendar> getCalendarExporter() throws Exception
+   public Exporter<GtfsCalendarDate> getCalendarDateExporter() throws Exception
    {
       return getExporter(EXPORTER.CALENDAR_DATE.name(),
             CalendarDateExporter.FILENAME, CalendarDateExporter.class);
    }
 
-   public Exporter<GtfsCalendarDate> getCalendarDateExporter() throws Exception
+   public Exporter<GtfsCalendar> getCalendarExporter() throws Exception
    {
       return getExporter(EXPORTER.CALENDAR.name(), CalendarExporter.FILENAME,
             CalendarExporter.class);

@@ -16,7 +16,8 @@ public class StopExtendedExporter extends ExporterImpl<GtfsStop> implements
 {
    public static enum FIELDS
    {
-      stop_id, stop_code, stop_name, stop_desc, stop_lat, stop_lon, zone_id, stop_url, location_type, parent_station, stop_timezone, wheelchair_boarding, address_line, locality, postal_code;
+      stop_id, stop_code, stop_name, stop_desc, stop_lat, stop_lon, zone_id, stop_url, location_type, parent_station, 
+      wheelchair_boarding, address_line, locality, postal_code ; //, stop_timezone;
    };
 
    public static final String FILENAME = "stops.txt";
@@ -68,8 +69,6 @@ public class StopExtendedExporter extends ExporterImpl<GtfsStop> implements
                FIELDS.location_type, values.get(i++), LocationType.Stop, false));
          bean.setParentStation(STRING_CONVERTER.from(context,
                FIELDS.parent_station, values.get(i++), false));
-         bean.setStopTimezone(TIMEZONE_CONVERTER.from(context,
-               FIELDS.stop_timezone, values.get(i++), false));
          bean.setWheelchairBoarding(WHEELCHAIRBOARDINGTYPE_CONVERTER.from(
                context, FIELDS.wheelchair_boarding, values.get(i++),
                WheelchairBoardingType.NoInformation, false));
@@ -80,7 +79,9 @@ public class StopExtendedExporter extends ExporterImpl<GtfsStop> implements
                values.get(i++), false));
          bean.setPostalCode(STRING_CONVERTER.from(context, FIELDS.postal_code,
                values.get(i++), false));
-
+//         bean.setStopTimezone(TIMEZONE_CONVERTER.from(context,
+//               FIELDS.stop_timezone, values.get(i++), false));
+      
          return bean;
       }
 
@@ -109,8 +110,6 @@ public class StopExtendedExporter extends ExporterImpl<GtfsStop> implements
                input.getLocationType(), false));
          values.add(STRING_CONVERTER.to(context, FIELDS.parent_station,
                input.getParentStation(), false));
-         values.add(TIMEZONE_CONVERTER.to(context, FIELDS.stop_timezone,
-               input.getStopTimezone(), false));
          values.add(WHEELCHAIRBOARDINGTYPE_CONVERTER.to(context,
                FIELDS.wheelchair_boarding, input.getWheelchairBoarding(), false));
          
@@ -120,6 +119,8 @@ public class StopExtendedExporter extends ExporterImpl<GtfsStop> implements
                input.getLocality(), false));
          values.add(STRING_CONVERTER.to(context, FIELDS.postal_code,
                input.getPostalCode(), false));
+//         values.add(TIMEZONE_CONVERTER.to(context, FIELDS.stop_timezone,
+//               input.getStopTimezone(), false));
                   
          result = Tokenizer.untokenize(values);
          return result;

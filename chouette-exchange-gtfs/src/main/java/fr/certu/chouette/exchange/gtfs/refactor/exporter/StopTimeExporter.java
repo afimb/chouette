@@ -16,7 +16,7 @@ public class StopTimeExporter extends ExporterImpl<GtfsStopTime> implements
 
    public static enum FIELDS
    {
-      trip_id, stop_id, stop_sequence, arrival_time, departure_time, stop_headsign, pickup_type, drop_off_type, shape_dist_traveled
+      trip_id, stop_id, stop_sequence, arrival_time, departure_time ;//, stop_headsign, pickup_type, drop_off_type, shape_dist_traveled
    };
 
    public static final String FILENAME = "stop_times.txt";
@@ -58,15 +58,15 @@ public class StopTimeExporter extends ExporterImpl<GtfsStopTime> implements
                FIELDS.arrival_time, values.get(i++), true));
          bean.setDepartureTime(GTFSTIME_CONVERTER.from(context,
                FIELDS.departure_time, values.get(i++), true));
-         bean.setStopHeadsign(STRING_CONVERTER.from(context,
-               FIELDS.stop_headsign, values.get(i++), false));
-         bean.setPickupType(PICKUP_CONVERTER.from(context, FIELDS.pickup_type,
-               values.get(i++), PickupType.Scheduled, false));
-         bean.setDropOffType(DROPOFFTYPE_CONVERTER.from(context,
-               FIELDS.drop_off_type, values.get(i++), DropOffType.Scheduled,
-               false));
-         bean.setShapeDistTraveled(FLOAT_CONVERTER.from(context,
-               FIELDS.shape_dist_traveled, values.get(i++), false));
+//         bean.setStopHeadsign(STRING_CONVERTER.from(context,
+//               FIELDS.stop_headsign, values.get(i++), false));
+//         bean.setPickupType(PICKUP_CONVERTER.from(context, FIELDS.pickup_type,
+//               values.get(i++), PickupType.Scheduled, false));
+//         bean.setDropOffType(DROPOFFTYPE_CONVERTER.from(context,
+//               FIELDS.drop_off_type, values.get(i++), DropOffType.Scheduled,
+//               false));
+//         bean.setShapeDistTraveled(FLOAT_CONVERTER.from(context,
+//               FIELDS.shape_dist_traveled, values.get(i++), false));
 
          return bean;
       }
@@ -86,14 +86,14 @@ public class StopTimeExporter extends ExporterImpl<GtfsStopTime> implements
                input.getArrivalTime(), true));
          values.add(GTFSTIME_CONVERTER.to(context, FIELDS.departure_time,
                input.getDepartureTime(), true));
-         values.add(STRING_CONVERTER.to(context, FIELDS.stop_headsign,
-               input.getStopHeadsign(), false));
-         values.add(PICKUP_CONVERTER.to(context, FIELDS.pickup_type,
-               input.getPickupType(), false));
-         values.add(DROPOFFTYPE_CONVERTER.to(context, FIELDS.drop_off_type,
-               input.getDropOffType(), false));
-         values.add(FLOAT_CONVERTER.to(context, FIELDS.shape_dist_traveled,
-               input.getShapeDistTraveled(), false));
+//         values.add(STRING_CONVERTER.to(context, FIELDS.stop_headsign,
+//               input.getStopHeadsign(), false));
+//         values.add(PICKUP_CONVERTER.to(context, FIELDS.pickup_type,
+//               input.getPickupType(), false));
+//         values.add(DROPOFFTYPE_CONVERTER.to(context, FIELDS.drop_off_type,
+//               input.getDropOffType(), false));
+//         values.add(FLOAT_CONVERTER.to(context, FIELDS.shape_dist_traveled,
+//               input.getShapeDistTraveled(), false));
 
          result = Tokenizer.untokenize(values);
          return result;
