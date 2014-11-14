@@ -1,4 +1,16 @@
-# Version 2.4.1 (en développement)
+# Version 2.5.0 (23/10/14)
+* Nouvelles foctionnalités
+  * Import d'arrêts en CSV/Excel (Mantis 26832)
+  * Attributs vacances et jours fériés : comme étiquette (Mantis 26835)
+  * Gestion de dates exclues dans les calendriers (Mantis 26837)
+  * Import CSV d'horaires pour une séquence d'arrêts (Mantis 26843)
+  * Attributs TAD et PMR sur les lignes et les courses (Mantis 26846
+  * Séparataion des classes du modèle dans un module maven isolé
+  * ajout d'un test de niveau 3 sur l'unicité des numéros de course (Mantis 29182)
+  * ajout d'un test de niveau 3 sur les modes autorisés pour les courses (Mantis 29183)
+  * ajout d'un test de niveau 3 sur les arrêts sans commune (Mantis 29184)
+
+# Version 2.4.1 (30/06/2014)
 * Corrections d'anomalies
   * L'export GTFS exige que l'indice de ligne soit renseigné (Mantis 26726)
   * L'import GTFS ne tient pas compte des courses commençant après minuit (Mantis 25824)

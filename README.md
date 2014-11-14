@@ -2,6 +2,7 @@
 
 Chouette is a java open source project on transport offer. It's divided in differents module : 
 * chouette-command : Lite command line tool to manipulate data
+* chouette-common : Common basic classes (excpetions and tools)
 * chouette-core : Core functionnalities (Internal model and managers)
 * chouette-exchange-csv : Import/Export in a chouette specific csv format
 * chouette-exchange-gtfs : Import/Export in gtfs format
@@ -12,11 +13,12 @@ Chouette is a java open source project on transport offer. It's divided in diffe
 * chouette-hibernate-dao : Access to the database via hibernate 
 * chouette-jdbc-dao : Access to the database via jdbc (mass upload only)
 * chouette-jaxb-neptune : JAXB object model upon Neptune xsd 
+* chouette-model : JPA Model 
 * chouette-validation : Validate the data from import or database
 
-For more information see [Architecture Documentation](http://www.chouette.mobi/IMG/pdf/DARC_CHOUETTE_2-0.pdf) 
+For more information see [Architecture Documentation](http://www.chouette.mobi/docs/) 
 
-Feel free to test and access to the demonstration web site at [http://www.chouette.mobi](http://www.chouette.mobi/chouette2/users/sign_in). Two types of access are granted : 
+Feel free to test and access to the demonstration web site at [http://www.chouette.mobi](http://appli.chouette.mobi/chouette2/users/sign_in). Two types of access are granted : 
 * A demo organisation with a set of data
   * login : demo@chouette.mobi
   * password : chouette
@@ -63,7 +65,7 @@ createdb -E UTF-8 -T template1 chouette_test
 Get git repository
 ```sh
 cd workspace
-git clone -b V2_4 git://github.com/afimb/chouette
+git clone -b V2_5 git://github.com/afimb/chouette
 cd chouette
 ```
 
@@ -78,14 +80,13 @@ More Information
 ----------------
  
 More information can be found on the [project website on GitHub](.). 
-There is extensive usage documentation available [on the wiki](../../wiki).
-
+An exhaustive technical documentation in French is avalailable [here](http://www.chouette.mobi/docs/)
 Example Usage 
 -------------
 
 Install 
 ```sh
-mvn -Dmaven.test.skip=true install
+mvn -DskipTests install
 ```
 
 License
