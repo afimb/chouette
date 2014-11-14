@@ -23,8 +23,7 @@ import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsTrip.WheelchairAccessi
 public interface GtfsConverter
 {
 
-   public static SimpleDateFormat BASIC_ISO_DATE = new SimpleDateFormat(
-         "yyyyMMdd");
+   public static SimpleDateFormat BASIC_ISO_DATE = new SimpleDateFormat("yyyyMMdd");
 
    public static DefaultFieldConverter<String> STRING_CONVERTER = new DefaultFieldConverter<String>()
    {
@@ -92,13 +91,15 @@ public interface GtfsConverter
          if (value)
          {
             return false;
-         } else
+         }
+         else
          {
             value = input.equals("1");
             if (value)
             {
                return true;
-            } else
+            }
+            else
             {
 
                throw new IllegalArgumentException();
@@ -230,8 +231,7 @@ public interface GtfsConverter
       @Override
       protected String convertTo(Color input) throws Exception
       {
-         return (input != null) ? Integer.toHexString(input.getRGB())
-               .substring(2) : "";
+         return (input != null) ? Integer.toHexString(input.getRGB()).substring(2) : "";
       }
    };
 
@@ -254,16 +254,15 @@ public interface GtfsConverter
 
          firstColon = input.indexOf(':');
          secondColon = input.indexOf(':', firstColon + 1);
-         if ((firstColon > 0) & (secondColon > 0)
-               & (secondColon < input.length() - 1))
+         if ((firstColon > 0) & (secondColon > 0) & (secondColon < input.length() - 1))
          {
             hour = Integer.parseInt(input.substring(0, firstColon));
             day = hour / 24;
             hour %= 24;
-            minute = Integer.parseInt(input.substring(firstColon + 1,
-                  secondColon));
+            minute = Integer.parseInt(input.substring(firstColon + 1, secondColon));
             second = Integer.parseInt(input.substring(secondColon + 1));
-         } else
+         }
+         else
          {
             throw new java.lang.IllegalArgumentException();
          }
@@ -283,7 +282,7 @@ public interface GtfsConverter
 
             Time value = input.getTime();
 
-            int hour = value.getHours() + input.getDay();
+            int hour = value.getHours() + (input.getDay() * 24);
             int minute = value.getMinutes();
             int second = value.getSeconds();
             String hourString;
@@ -293,21 +292,24 @@ public interface GtfsConverter
             if (hour < 10)
             {
                hourString = "0" + hour;
-            } else
+            }
+            else
             {
                hourString = Integer.toString(hour);
             }
             if (minute < 10)
             {
                minuteString = "0" + minute;
-            } else
+            }
+            else
             {
                minuteString = Integer.toString(minute);
             }
             if (second < 10)
             {
                secondString = "0" + second;
-            } else
+            }
+            else
             {
                secondString = Integer.toString(second);
             }
@@ -407,8 +409,7 @@ public interface GtfsConverter
    {
 
       @Override
-      protected WheelchairBoardingType convertFrom(String input)
-            throws Exception
+      protected WheelchairBoardingType convertFrom(String input) throws Exception
       {
          int ordinal = Integer.parseInt(input, 10);
          return WheelchairBoardingType.values()[ordinal];
@@ -442,16 +443,14 @@ public interface GtfsConverter
    {
 
       @Override
-      protected WheelchairAccessibleType convertFrom(String input)
-            throws Exception
+      protected WheelchairAccessibleType convertFrom(String input) throws Exception
       {
          int ordinal = Integer.parseInt(input, 10);
          return WheelchairAccessibleType.values()[ordinal];
       }
 
       @Override
-      protected String convertTo(WheelchairAccessibleType input)
-            throws Exception
+      protected String convertTo(WheelchairAccessibleType input) throws Exception
       {
          return String.valueOf(input.ordinal());
       }
@@ -489,12 +488,10 @@ public interface GtfsConverter
       }
    };
 
-   public abstract class DefaultFieldConverter<T> extends
-         FieldConverter<String, T>
+   public abstract class DefaultFieldConverter<T> extends FieldConverter<String, T>
    {
       @Override
-      public T from(Context context, Enum field, String input, T value,
-            boolean required)
+      public T from(Context context, Enum field, String input, T value, boolean required)
       {
          T result = value;
          if (input != null && !input.isEmpty())
@@ -502,7 +499,8 @@ public interface GtfsConverter
             try
             {
                result = convertFrom(input);
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                context.put(Context.FIELD, field.name());
                context.put(Context.ERROR, GtfsException.ERROR.INVALID_FORMAT);
@@ -511,7 +509,8 @@ public interface GtfsConverter
                throw new GtfsException(context, e);
             }
 
-         } else if (required && value == null)
+         }
+         else if (required && value == null)
          {
             context.put(Context.FIELD, field.name());
             context.put(Context.ERROR, GtfsException.ERROR.MISSING_FIELD);
@@ -530,7 +529,8 @@ public interface GtfsConverter
             try
             {
                result = convertTo(input);
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                context.put(Context.FIELD, field.name());
                context.put(Context.ERROR, GtfsException.ERROR.INVALID_FORMAT);
@@ -538,7 +538,8 @@ public interface GtfsConverter
                context.put(Context.VALUE, input);
                throw new GtfsException(context, e);
             }
-         } else if (required)
+         }
+         else if (required)
          {
             context.put(Context.FIELD, field.name());
             context.put(Context.ERROR, GtfsException.ERROR.MISSING_FIELD);
@@ -561,19 +562,17 @@ public interface GtfsConverter
          return from(context, field, input, null, required);
       }
 
-      public abstract T from(Context context, Enum field, F input, T value,
-            boolean required);
+      public abstract T from(Context context, Enum field, F input, T value, boolean required);
 
-      public abstract F to(Context context, Enum field, T input,
-            boolean required);
+      public abstract F to(Context context, Enum field, T input, boolean required);
    }
 
    public abstract class Converter<F, T>
    {
 
-      public abstract T from(Context context ,F input);
+      public abstract T from(Context context, F input);
 
-      public abstract F to(Context context , T input);
+      public abstract F to(Context context, T input);
 
    }
 }

@@ -16,7 +16,6 @@ import fr.certu.chouette.model.neptune.StopPoint;
  * 
  */
 
-@SuppressWarnings("unchecked")
 public class StopPointJdbcDao extends AbstractJdbcDao<StopPoint>
 {
    private static final Logger logger = Logger
@@ -32,7 +31,7 @@ public class StopPointJdbcDao extends AbstractJdbcDao<StopPoint>
    {
       String sql = sqlSelectAll;
       List<StopPoint> stopPoints = getJdbcTemplate().query(sql,
-            new BeanPropertyRowMapper(StopPoint.class));
+            new BeanPropertyRowMapper<StopPoint>(StopPoint.class));
 
       return stopPoints;
    }

@@ -131,6 +131,8 @@ public class StopAreaJdbcDao extends AbstractJdbcDao<StopArea>
       ps.setBoolean(18, stopArea.isMobilityRestrictedSuitable());
       ps.setBoolean(19, stopArea.isStairsAvailable());
       ps.setObject(20, stopArea.getIntUserNeeds());
+      ps.setString(21, stopArea.getTimeZone());
+      ps.setString(22, stopArea.getUrl());
 
    }
 

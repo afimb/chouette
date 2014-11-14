@@ -30,6 +30,9 @@ public class StopAreaProducer extends AbstractModelProducer<StopArea, GtfsStop>
       // Name optional
       stopArea.setName(getNonEmptyTrimedString(gtfsStop.getStopName()));
 
+      // URL optional
+      stopArea.setUrl(toString(gtfsStop.getStopUrl()));
+
       // Comment optional
       stopArea.setComment(getNonEmptyTrimedString(gtfsStop.getStopDesc()));
       if (stopArea.getComment() != null && stopArea.getComment().length() > 255)
@@ -62,17 +65,14 @@ public class StopAreaProducer extends AbstractModelProducer<StopArea, GtfsStop>
       }
 
       // RegistrationNumber optional
-      String[] token = stopArea.getObjectId().split(":");
-      stopArea.setRegistrationNumber(token[2]);
+      //      String[] token = stopArea.getObjectId().split(":");
+      //      stopArea.setRegistrationNumber(token[2]);
+      // TODO : code
 
       // extension
-      // if (gtfsStop instanceof GtfsExtendedStop)
-      // {
-      // GtfsExtendedStop ext = (GtfsExtendedStop) gtfsStop;
-      // stopArea.setStreetName(ext.getAddressLine());
-      // stopArea.setCityName(ext.getLocality());
-      // stopArea.setZipCode(ext.getPostalCode());
-      // }
+       stopArea.setStreetName(gtfsStop.getAddressLine());
+       stopArea.setCityName(gtfsStop.getLocality());
+       stopArea.setZipCode(gtfsStop.getPostalCode());
 
       return stopArea;
    }

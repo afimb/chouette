@@ -16,7 +16,6 @@ import fr.certu.chouette.model.neptune.GroupOfLine;
  * 
  */
 
-@SuppressWarnings("unchecked")
 public class GroupOfLineJdbcDao extends AbstractJdbcDao<GroupOfLine>
 {
    private static final Logger logger = Logger
@@ -32,7 +31,7 @@ public class GroupOfLineJdbcDao extends AbstractJdbcDao<GroupOfLine>
    {
       String sql = sqlSelectAll;
       List<GroupOfLine> groupOfLines = getJdbcTemplate().query(sql,
-            new BeanPropertyRowMapper(GroupOfLine.class));
+            new BeanPropertyRowMapper<GroupOfLine>(GroupOfLine.class));
 
       return groupOfLines;
    }

@@ -15,11 +15,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 
 import lombok.extern.log4j.Log4j;
-
-import org.apache.log4j.Logger;
-
 import fr.certu.chouette.exchange.gtfs.exporter.producer.GtfsAgencyProducer;
 import fr.certu.chouette.exchange.gtfs.exporter.producer.GtfsExtendedStopProducer;
 import fr.certu.chouette.exchange.gtfs.exporter.producer.GtfsRouteProducer;
@@ -50,8 +48,9 @@ public class NeptuneData
    /**
     * @param lines
     * @param report
+    * @param timeZone 
     */
-   public void saveLines(List<Line> lines, GtfsExporter exporter, GtfsReport report, String prefix, String sharedPrefix)
+   public void saveLines(List<Line> lines, GtfsExporter exporter, GtfsReport report, String prefix, String sharedPrefix, TimeZone timeZone)
    {
       Map<String, List<Timetable>> timetables = new HashMap<String, List<Timetable>>();
       Set<StopArea> physicalStops = new HashSet<StopArea>();
@@ -150,7 +149,7 @@ public class NeptuneData
 
          for (Company company : companies)
          {
-            agencyProducer.save(company, report, prefix);
+            agencyProducer.save(company, report, prefix, timeZone);
          }
 
          for (List<Timetable> tms : timetables.values())

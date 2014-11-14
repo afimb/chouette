@@ -15,21 +15,23 @@ public class RouteProducer extends AbstractModelProducer<Route, GtfsRoute>
       Route route = new Route();
 
       // objectId, objectVersion, creatorId, creationTime
-      route.setObjectId(composeIncrementalObjectId(Route.ROUTE_KEY,
-            gtfsRoute.getRouteId(), logger));
+      route.setObjectId(composeIncrementalObjectId(Route.ROUTE_KEY, gtfsRoute.getRouteId(), logger));
 
-      // Name optional
-      route.setName(getNonEmptyTrimedString(gtfsRoute.getRouteLongName()));
-
-      // PublishedName optional
-      route.setPublishedName(getNonEmptyTrimedString(gtfsRoute
-            .getRouteLongName()));
-
-      // Comment optional
-      route.setComment(getNonEmptyTrimedString(gtfsRoute.getRouteDesc()));
-      if (route.getComment() != null && route.getComment().length() > 255)
-         route.setComment(route.getComment().substring(0, 255));
+      route.setWayBack("A");
 
       return route;
+   }
+
+   public void update(Route route)
+   {
+      if (route.getName() == null)
+      {
+         if (!route.getStopPoints().isEmpty())
+         {
+            String first = route.getStopPoints().get(0).getContainedInStopArea().getName();
+            String last = route.getStopPoints().get(route.getStopPoints().size() - 1).getContainedInStopArea().getName();
+            route.setName(first + " -> " + last);
+         }
+      }
    }
 }

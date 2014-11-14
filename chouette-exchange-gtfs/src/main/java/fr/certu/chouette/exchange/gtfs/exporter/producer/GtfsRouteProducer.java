@@ -29,42 +29,47 @@ public class GtfsRouteProducer extends AbstractProducer
       super(exporter);
    }
 
+   private static final Logger logger = Logger.getLogger(GtfsRouteProducer.class);
 
-   private static final Logger logger = Logger
-         .getLogger(GtfsRouteProducer.class);
-   
    private GtfsRoute route = new GtfsRoute();
-   
 
    public boolean save(Line neptuneObject, GtfsReport report, String prefix)
    {
-      route.setRouteId(toGtfsId(neptuneObject.getObjectId(),prefix));
-      route.setAgencyId(toGtfsId(neptuneObject.getCompany().getObjectId(),prefix));
-      route.setRouteShortName(neptuneObject.getName());
-
-      route.setRouteLongName(neptuneObject.getPublishedName());
-
-      // Gtfs Route require short or long name
-      if (isEmpty(route.getRouteShortName())
-            && isEmpty(route.getRouteLongName()))
+      route.setRouteId(toGtfsId(neptuneObject.getObjectId(), prefix));
+      route.setAgencyId(toGtfsId(neptuneObject.getCompany().getObjectId(), prefix));
+      if (isEmpty(neptuneObject.getNumber()))
       {
-         if (isEmpty(neptuneObject.getNumber()))
-         {
-            logger.error("no short or long name for route : "
-                  + neptuneObject.getObjectId());
-            GtfsReportItem item = new GtfsReportItem(
-                  GtfsReportItem.KEY.MISSING_DATA, STATE.ERROR, "Route",
-                  neptuneObject.getObjectId(), "Name or line number");
-            report.addItem(item);
-            return false;
-         }
+         route.setRouteShortName(neptuneObject.getName());
+      }
+      else
+      {
+         route.setRouteShortName(neptuneObject.getNumber());
       }
 
-      route.setRouteDesc(neptuneObject.getComment());
+      if (isEmpty(neptuneObject.getPublishedName()))
+      {
+         route.setRouteLongName(neptuneObject.getName());
+      }
+      else
+      {
+         route.setRouteLongName(neptuneObject.getPublishedName());
+      }
+      if (route.getRouteShortName().equals(route.getRouteLongName()))
+      {
+         route.setRouteLongName(null);
+      }
+
+      route.setRouteDesc(null);
+      if (!isEmpty(neptuneObject.getComment()))
+      {
+         if (!neptuneObject.getComment().equals(route.getRouteShortName()) && !neptuneObject.getComment().equals(route.getRouteLongName()))
+            route.setRouteDesc(neptuneObject.getComment());
+      }
+
       route.setRouteColor(getColor(neptuneObject.getColor()));
       route.setRouteTextColor(getColor(neptuneObject.getTextColor()));
       route.setRouteUrl(getUrl(neptuneObject.getUrl()));
-            
+
       if (neptuneObject.getTransportModeName() != null)
       {
          switch (neptuneObject.getTransportModeName())
@@ -93,11 +98,12 @@ public class GtfsRouteProducer extends AbstractProducer
          default:
             route.setRouteType(GtfsRoute.RouteType.Bus);
          }
-      } else
+      }
+      else
       {
          route.setRouteType(GtfsRoute.RouteType.Bus);
       }
-      
+
       try
       {
          getExporter().getRouteExporter().export(route);
@@ -108,7 +114,7 @@ public class GtfsRouteProducer extends AbstractProducer
          e.printStackTrace();
          return false;
       }
-      
+
       return true;
    }
 

@@ -55,6 +55,10 @@ public class GtfsStopAreaExportPlugin implements IExportPlugin<StopArea>
          param.setAllowedExtensions(Arrays.asList(new String[] { "zip" }));
          params.add(param);
       }
+      {
+         ParameterDescription param = new ParameterDescription("objectIdPrefix", ParameterDescription.TYPE.STRING, false, false);
+         params.add(param);
+      }
       description.setParameterDescriptions(params);
    }
 
@@ -84,6 +88,7 @@ public class GtfsStopAreaExportPlugin implements IExportPlugin<StopArea>
       report.updateStatus(Report.STATE.OK);
       reportHolder.setReport(report);
       String fileName = null;
+      String objectIdPrefix = null;
 
       if (beans == null)
       {
@@ -102,7 +107,12 @@ public class GtfsStopAreaExportPlugin implements IExportPlugin<StopArea>
             if (svalue.getName().equalsIgnoreCase("outputFile"))
             {
                fileName = svalue.getFilepathValue();
-            } else
+            }
+            else if (svalue.getName().equalsIgnoreCase("objectIdPrefix"))
+            {
+               objectIdPrefix = svalue.getStringValue();
+            }
+            else
             {
                GtfsReportItem item = new GtfsReportItem(
                      GtfsReportItem.KEY.UNKNOWN_PARAMETER, Report.STATE.ERROR,
@@ -131,7 +141,7 @@ public class GtfsStopAreaExportPlugin implements IExportPlugin<StopArea>
       Path targetDirectory = null;
       try
       {
-         targetDirectory = Files.createTempDirectory("gtfs_import_");
+         targetDirectory = Files.createTempDirectory("gtfs_export_");
       }
       catch (IOException e)
       {
@@ -147,7 +157,7 @@ public class GtfsStopAreaExportPlugin implements IExportPlugin<StopArea>
       {
          exporter = new GtfsExporter(targetDirectory.toString());
          NeptuneData neptuneData = new NeptuneData();
-         neptuneData.saveStopAreas(beans, exporter, report, null);
+         neptuneData.saveStopAreas(beans, exporter, report, objectIdPrefix);
       }
       catch (Exception e)
       {

@@ -22,10 +22,8 @@ public class CompanyProducer extends AbstractModelProducer<Company, GtfsAgency>
       // Name mandatory
       company.setName(getNonEmptyTrimedString(gtfsAgency.getAgencyName()));
 
-      // OrganisationalUnit : URL Mandatory
-      if (gtfsAgency.getAgencyUrl() != null)
-         company.setOrganisationalUnit(getNonEmptyTrimedString(gtfsAgency
-               .getAgencyUrl().toString()));
+      // URL Mandatory
+      company.setUrl(toString(gtfsAgency.getAgencyUrl()));
 
       // Phone optional
       company.setPhone(getNonEmptyTrimedString(gtfsAgency.getAgencyPhone()));
@@ -33,6 +31,8 @@ public class CompanyProducer extends AbstractModelProducer<Company, GtfsAgency>
       // RegistrationNumber optional
       String[] token = company.getObjectId().split(":");
       company.setRegistrationNumber(token[2]);
+      
+
 
       return company;
    }

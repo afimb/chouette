@@ -1,5 +1,7 @@
 package fr.certu.chouette.exchange.gtfs.importer.producer;
 
+import java.awt.Color;
+
 import org.apache.log4j.Logger;
 
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsRoute;
@@ -20,9 +22,9 @@ public class LineProducer extends AbstractModelProducer<Line, GtfsRoute>
             logger));
 
       // Name optional
-      line.setName(getNonEmptyTrimedString(gtfsLine.getRouteShortName()));
+      line.setName(getNonEmptyTrimedString(gtfsLine.getRouteLongName()));
       if (line.getName() == null)
-         line.setName(getNonEmptyTrimedString(gtfsLine.getRouteLongName()));
+         line.setName(getNonEmptyTrimedString(gtfsLine.getRouteShortName()));
 
       // Number optional
       line.setNumber(getNonEmptyTrimedString(gtfsLine.getRouteShortName()));
@@ -79,7 +81,23 @@ public class LineProducer extends AbstractModelProducer<Line, GtfsRoute>
          // if missing, ModelAssembler will take first agency
          line.setComment(null);
       }
+      
+      line.setColor(toHexa(gtfsLine.getRouteColor()));
+      line.setTextColor(toHexa(gtfsLine.getRouteTextColor()));
+      line.setUrl(toString(gtfsLine.getRouteUrl()));
+      
       return line;
+   }
+   
+   private String toHexa(Color color)
+   {
+      // TODO : check alpha !!!
+      if (color == null) return null;
+      String ret = Integer.toHexString(color.getRGB());
+      if (ret.length() == 8) ret = ret.substring(2);
+      while (ret.length() < 6) ret = "0" + ret;
+      return ret;
+      
    }
 
 }

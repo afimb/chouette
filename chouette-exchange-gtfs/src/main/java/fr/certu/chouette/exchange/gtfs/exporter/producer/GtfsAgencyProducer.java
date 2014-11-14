@@ -40,7 +40,7 @@ public class GtfsAgencyProducer extends AbstractProducer
    private GtfsAgency agency = new GtfsAgency();
 
 
-   public boolean save(Company neptuneObject, GtfsReport report, String prefix)
+   public boolean save(Company neptuneObject, GtfsReport report, String prefix, TimeZone timeZone)
    {
       agency.setAgencyId(toGtfsId(neptuneObject.getObjectId(),prefix));
 
@@ -57,10 +57,19 @@ public class GtfsAgencyProducer extends AbstractProducer
 
       agency.setAgencyName(name);
 
-      // @TODO : manage agency_timezone
-      agency.setAgencyTimezone(TimeZone.getDefault());
+      // manage agency_timezone
+      TimeZone tz = timeZone;
+      if (!isEmpty(neptuneObject.getTimeZone()))
+      {
+         tz = TimeZone.getTimeZone(neptuneObject.getTimeZone());
+      }
+      if (tz == null)
+      {
+         tz = TimeZone.getDefault();
+      }
+      agency.setAgencyTimezone(tz);
 
-      // @TODO : manage agency_url mandatory
+      // manage agency_url mandatory
       String urlData = "Url";
       String url = getValue(neptuneObject.getUrl());
       if (url == null)

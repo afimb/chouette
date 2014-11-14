@@ -18,7 +18,6 @@ import fr.certu.chouette.model.neptune.Route;
  * 
  */
 
-@SuppressWarnings("unchecked")
 public class RouteJdbcDao extends AbstractJdbcDao<Route>
 {
    private static final Logger logger = Logger.getLogger(RouteJdbcDao.class);
@@ -33,7 +32,7 @@ public class RouteJdbcDao extends AbstractJdbcDao<Route>
    {
       String sql = sqlSelectAll;
       List<Route> routes = getJdbcTemplate().query(sql,
-            new BeanPropertyRowMapper(Route.class));
+            new BeanPropertyRowMapper<Route>(Route.class));
 
       return routes;
    }

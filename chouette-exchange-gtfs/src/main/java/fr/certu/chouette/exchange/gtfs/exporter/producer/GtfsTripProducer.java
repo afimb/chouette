@@ -11,9 +11,6 @@ package fr.certu.chouette.exchange.gtfs.exporter.producer;
 import java.sql.Time;
 
 import lombok.extern.log4j.Log4j;
-
-import org.apache.log4j.Logger;
-
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
 import fr.certu.chouette.exchange.gtfs.refactor.exporter.GtfsExporter;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStopTime;
@@ -56,9 +53,11 @@ AbstractProducer
     */
    private boolean saveTimes(VehicleJourney vj, GtfsReport report, String prefix, String sharedPrefix)
    {
-      Integer tomorrowArrival = Integer.valueOf(0);
+      Integer zero = Integer.valueOf(0);
+      Integer one = Integer.valueOf(1);
+      Integer tomorrowArrival = zero;
       Time previousArrival = null;
-      Integer tomorrowDeparture = Integer.valueOf(0);
+      Integer tomorrowDeparture = zero;
       Time previousDeparture = null;
       String tripId = toGtfsId(vj.getObjectId(),prefix);
       time.setTripId(tripId);
@@ -69,18 +68,18 @@ AbstractProducer
          Time arrival = vjas.getArrivalTime();
          if (arrival == null)
             arrival = vjas.getDepartureTime();
-         if (tomorrowArrival != 1 && previousArrival != null
+         if (tomorrowArrival != one && previousArrival != null
                && previousArrival.after(arrival))
          {
-            tomorrowArrival = Integer.valueOf(1); // after midnight
+            tomorrowArrival = one; // after midnight
          }
          previousArrival = arrival;
          time.setArrivalTime(new GtfsTime(arrival, tomorrowArrival));
          Time departure = vjas.getDepartureTime();
-         if (tomorrowDeparture != 1 && previousDeparture != null
+         if (tomorrowDeparture != one && previousDeparture != null
                && previousDeparture.after(departure))
          {
-            tomorrowDeparture = Integer.valueOf(1); // after midnight
+            tomorrowDeparture = one; // after midnight
          }
          time.setDepartureTime(new GtfsTime(departure, tomorrowDeparture));
          previousDeparture = departure;
@@ -140,7 +139,7 @@ AbstractProducer
       trip.setServiceId(serviceId);
 
       String name = vj.getPublishedJourneyName();
-      if (isEmpty(name) && vj.getNumber() != null)
+      if (isEmpty(name) && vj.getNumber() != null && !vj.getNumber().equals(Long.valueOf(0)))
          name = "" + vj.getNumber();
 
       if (!isEmpty(name))
@@ -155,7 +154,9 @@ AbstractProducer
 
       if (vj.getMobilityRestrictedSuitability() != null)
          trip.setWheelchairAccessible(vj.getMobilityRestrictedSuitability() ? GtfsTrip.WheelchairAccessibleType.Allowed
-               : GtfsTrip.WheelchairAccessibleType.Allowed);
+               : GtfsTrip.WheelchairAccessibleType.NoAllowed);
+      else
+         trip.setWheelchairAccessible(GtfsTrip.WheelchairAccessibleType.NoInformation);
       // trip.setBlockId(...);
       // trip.setShapeId(...);
       // trip.setBikeAllowed();

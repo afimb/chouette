@@ -23,10 +23,10 @@ public abstract class AbstractProducer
    static protected String toGtfsId(String neptuneId, String prefix)
    {
       String[] tokens = neptuneId.split(":");
-      if (prefix == null || tokens[0].equals(prefix))
+      if (tokens[0].equals(prefix))
          return tokens[2];
       else
-         return tokens[0]+":"+tokens[2];
+         return tokens[0]+"."+tokens[2];
    }
 
    static boolean isEmpty(String s)

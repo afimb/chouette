@@ -58,6 +58,10 @@ public class GtfsLineExportPlugin implements IExportPlugin<Line>
          ParameterDescription param = new ParameterDescription("timeZone", ParameterDescription.TYPE.STRING, false, true);
          params.add(param);
       }
+      {
+         ParameterDescription param = new ParameterDescription("objectIdPrefix", ParameterDescription.TYPE.STRING, false, false);
+         params.add(param);
+      }
       // possible filter in future extension :
       // send only trips for a period, manage colors
       // {
@@ -99,6 +103,7 @@ public class GtfsLineExportPlugin implements IExportPlugin<Line>
       reportHolder.setReport(report);
       String fileName = null;
       TimeZone timeZone = null;
+      String objectIdPrefix = null;
       // Date startDate = null; // today ??
       // Date endDate = null; // in ten years ??
 
@@ -122,6 +127,10 @@ public class GtfsLineExportPlugin implements IExportPlugin<Line>
             else if (svalue.getName().equalsIgnoreCase("timeZone"))
             {
                timeZone = TimeZone.getTimeZone(svalue.getStringValue());
+            }
+            else if (svalue.getName().equalsIgnoreCase("objectIdPrefix"))
+            {
+               objectIdPrefix = svalue.getStringValue();
             }
             else
             {
@@ -154,7 +163,7 @@ public class GtfsLineExportPlugin implements IExportPlugin<Line>
       Path targetDirectory = null;
       try
       {
-         targetDirectory = Files.createTempDirectory("gtfs_import_");
+         targetDirectory = Files.createTempDirectory("gtfs_export_");
       }
       catch (IOException e)
       {
@@ -170,7 +179,7 @@ public class GtfsLineExportPlugin implements IExportPlugin<Line>
       {
          exporter = new GtfsExporter(targetDirectory.toString());
          NeptuneData neptuneData = new NeptuneData();
-         neptuneData.saveLines(beans, exporter, report, null, null);
+         neptuneData.saveLines(beans, exporter, report, objectIdPrefix, objectIdPrefix, timeZone);
       }
       catch (Exception e)
       {

@@ -33,8 +33,11 @@
 				phone,
 				fax,
 				email,
-				registration_number)
-				VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+				registration_number,
+				time_zone,
+				url
+				)
+				VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 			</value>
 		</property>
 		<property name="sqlSelectByObjectId">
@@ -63,7 +66,9 @@
 				phone =?,
 				fax = ?,
 				email = ?,
-				registration_number = ?
+				registration_number = ?,
+				time_zone = ?,
+				url = ?
 				WHERE objectid = ?
 		</value>
 		</property>

@@ -125,7 +125,7 @@ public class GtfsImportLinePlugin implements IImportPlugin<Line>
             }
             else if (svalue.getName().equalsIgnoreCase("objectIdPrefix"))
             {
-               objectIdPrefix = svalue.getStringValue().toLowerCase();
+               objectIdPrefix = svalue.getStringValue();
             }
             else if (svalue.getName().equalsIgnoreCase("incremental"))
             {
