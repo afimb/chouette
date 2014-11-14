@@ -44,5 +44,8 @@ public class CompanyJdbcDao extends AbstractJdbcDao<Company>
       ps.setString(11, company.getFax());
       ps.setString(12, company.getEmail());
       ps.setString(13, company.getRegistrationNumber());
+      ps.setString(14, company.getTimeZone());
+      ps.setString(15, company.getUrl());
+      
    }
 }

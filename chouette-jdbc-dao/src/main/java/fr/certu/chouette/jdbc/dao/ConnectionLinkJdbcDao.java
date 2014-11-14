@@ -17,7 +17,6 @@ import fr.certu.chouette.model.neptune.ConnectionLink;
  * 
  */
 
-@SuppressWarnings("unchecked")
 public class ConnectionLinkJdbcDao extends AbstractJdbcDao<ConnectionLink>
 {
    private static final Logger logger = Logger
@@ -33,7 +32,7 @@ public class ConnectionLinkJdbcDao extends AbstractJdbcDao<ConnectionLink>
    {
       String sql = sqlSelectAll;
       List<ConnectionLink> connectionLinks = getJdbcTemplate().query(sql,
-            new BeanPropertyRowMapper(ConnectionLink.class));
+            new BeanPropertyRowMapper<ConnectionLink>(ConnectionLink.class));
 
       return connectionLinks;
    }

@@ -17,7 +17,6 @@ import fr.certu.chouette.model.neptune.AccessPoint;
  * 
  */
 
-@SuppressWarnings("unchecked")
 public class AccessPointJdbcDao extends AbstractJdbcDao<AccessPoint>
 {
    private static final Logger logger = Logger
@@ -33,7 +32,7 @@ public class AccessPointJdbcDao extends AbstractJdbcDao<AccessPoint>
    {
       String sql = sqlSelectAll;
       List<AccessPoint> accessPoints = getJdbcTemplate().query(sql,
-            new BeanPropertyRowMapper(AccessPoint.class));
+            new BeanPropertyRowMapper<AccessPoint>(AccessPoint.class));
 
       return accessPoints;
    }

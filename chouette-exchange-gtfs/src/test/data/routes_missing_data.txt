@@ -1,7 +1,0 @@
-route_id,agency_id,route_short_name,route_long_name,route_desc,route_type,route_url,route_color,route_text_color
-ABCD1_A,4321,CSV 1,Ligne de test CSV 1,Ligne de test pour le format CSV 1,3,,FFFFFF,000000
-,4321,CSV 1,Ligne de test CSV 1,Ligne de test pour le format CSV 1,3,,FFFFFF,000000
-ABCD1_A,4321,,Ligne de test CSV 1,Ligne de test pour le format CSV 1,3,,FFFFFF,000000
-ABCD1_A,4321,CSV 1,,Ligne de test pour le format CSV 1,3,,FFFFFF,000000
-ABCD1_A,4321,CSV 1,Ligne de test CSV 1,Ligne de test pour le format CSV 1,,,FFFFFF,000000
-,4321,,Ligne de test CSV 1,Ligne de test pour le format CSV 1,,,FFFFFF,000000

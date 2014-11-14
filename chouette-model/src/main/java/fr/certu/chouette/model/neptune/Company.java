@@ -39,84 +39,96 @@ public class Company extends NeptuneIdentifiedObject
    @Getter
    @Column(name = "name", nullable = false)
    private String name;
+   public void setName(String value)
+   {
+      name = dataBaseSizeProtectedValue(value,"name",log);
+   }
 
-   /**
-    * -- GETTER -- get short name
-    * 
-    * @return short name
-    * 
-    *         -- SETTER -- set short name
-    * 
-    * @param name
-    *           short name to set
-    */
    @Getter
-   @Setter
    @Column(name = "short_name")
    private String shortName;
+   public void setShortName(String value)
+   {
+      shortName = dataBaseSizeProtectedValue(value,"shortName",log);
+   }
 
    @Getter
-   @Setter
    @Column(name = "organizational_unit")
    private String organisationalUnit;
+   public void setOrganisationalUnit(String value)
+   {
+      organisationalUnit = dataBaseSizeProtectedValue(value,"organisationalUnit",log);
+   }
 
    @Getter
-   @Setter
    @Column(name = "operating_department_name")
    private String operatingDepartmentName;
+   public void setOperatingDepartmentName(String value)
+   {
+      operatingDepartmentName = dataBaseSizeProtectedValue(value,"operatingDepartmentName",log);
+   }
 
    @Getter
-   @Setter
    @Column(name = "code")
    private String code;
+   public void setCode(String value)
+   {
+      code = dataBaseSizeProtectedValue(value,"code",log);
+   }
 
    @Getter
-   @Setter
    @Column(name = "phone")
    private String phone;
+   public void setPhone(String value)
+   {
+      phone = dataBaseSizeProtectedValue(value,"phone",log);
+   }
 
    @Getter
-   @Setter
    @Column(name = "fax")
    private String fax;
+   public void setFax(String value)
+   {
+      fax = dataBaseSizeProtectedValue(value,"fax",log);
+   }
 
    @Getter
-   @Setter
    @Column(name = "email")
    private String email;
+   public void setEmail(String value)
+   {
+      email = dataBaseSizeProtectedValue(value,"email",log);
+   }
 
    @Getter
    @Column(name = "registration_number", unique = true)
    private String registrationNumber;
+   public void setRegistrationNumber(String value)
+   {
+      registrationNumber = dataBaseSizeProtectedValue(value,"registrationNumber",log);
+   }
+
+   @Getter
+   @Column(name = "url")
+   private String url;
+   public void setUrl(String value)
+   {
+      url = dataBaseSizeProtectedValue(value,"url",log);
+   }
+
+
+   @Getter
+   @Column(name = "time_zone")
+   private String timeZone;
+   public void setTimeZone(String value)
+   {
+      timeZone = dataBaseSizeProtectedValue(value,"timeZone",log);
+   }
 
    @Getter
    @Setter
    @OneToMany(mappedBy = "company")
    private List<Line> lines = new ArrayList<Line>(0);
-
-   public void setName(String value)
-   {
-      if (value != null && value.length() > 255)
-      {
-         log.warn("name too long, truncated " + value);
-         name = value.substring(0, 255);
-      } else
-      {
-         name = value;
-      }
-   }
-
-   public void setRegistrationNumber(String value)
-   {
-      if (value != null && value.length() > 255)
-      {
-         log.warn("registrationNumber too long, truncated " + value);
-         registrationNumber = value.substring(0, 255);
-      } else
-      {
-         registrationNumber = value;
-      }
-   }
 
    @Override
    public String toString(String indent, int level)

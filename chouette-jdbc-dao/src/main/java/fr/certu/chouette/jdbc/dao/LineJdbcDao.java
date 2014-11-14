@@ -19,7 +19,6 @@ import fr.certu.chouette.model.neptune.Line;
  * 
  */
 
-@SuppressWarnings("unchecked")
 public class LineJdbcDao extends AbstractJdbcDao<Line>
 {
    private static final Logger logger = Logger.getLogger(LineJdbcDao.class);
@@ -34,7 +33,7 @@ public class LineJdbcDao extends AbstractJdbcDao<Line>
    {
       String sql = sqlSelectAll;
       List<Line> lines = getJdbcTemplate().query(sql,
-            new BeanPropertyRowMapper(Line.class));
+            new BeanPropertyRowMapper<Line>(Line.class));
 
       return lines;
    }
@@ -63,6 +62,9 @@ public class LineJdbcDao extends AbstractJdbcDao<Line>
          mobilityRS = true;
       ps.setBoolean(13, mobilityRS);
       ps.setObject(14, (Integer) line.getIntUserNeeds());
+      ps.setString(15, line.getColor());
+      ps.setString(16, line.getTextColor());
+      ps.setString(17, line.getUrl());
    }
 
    /*

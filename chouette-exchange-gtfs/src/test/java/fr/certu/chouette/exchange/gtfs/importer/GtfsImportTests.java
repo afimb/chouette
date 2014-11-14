@@ -7,7 +7,6 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
 import org.testng.Reporter;
 import org.testng.annotations.Test;
@@ -26,14 +25,13 @@ import fr.certu.chouette.plugin.exchange.IImportPlugin;
 import fr.certu.chouette.plugin.exchange.ParameterDescription;
 import fr.certu.chouette.plugin.exchange.ParameterValue;
 import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
-import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportHolder;
 import fr.certu.chouette.plugin.report.ReportItem;
 
 @ContextConfiguration(locations = { "classpath:testContext.xml",
       "classpath*:chouetteContext.xml" })
 @SuppressWarnings("unchecked")
-public class GtfsImportTests extends AbstractTestNGSpringContextTests
+public class GtfsImportTests extends AbstractGtfsTest
 {
    private static final Logger logger = Logger.getLogger(GtfsImportTests.class);
 
@@ -148,7 +146,7 @@ public class GtfsImportTests extends AbstractTestNGSpringContextTests
 
       Assert.assertEquals(description.getName(), "GTFS");
       Assert.assertNotNull(params, "params should not be null");
-      Assert.assertEquals(params.size(), 11, " params size must equal 11");
+      Assert.assertEquals(params.size(), 9, " params size must equal 9");
       logger.info("Description \n " + description.toString());
       Reporter.log("Description \n " + description.toString());
 
@@ -417,34 +415,5 @@ public class GtfsImportTests extends AbstractTestNGSpringContextTests
       return lines;
    }
 
-   private void printReport(Report report)
-   {
-      if (report == null)
-      {
-         Reporter.log("no report");
-      } else
-      {
-         Reporter.log(report.getStatus().name() + " : "
-               + report.getLocalizedMessage());
-         printItems("   ", report.getItems());
-      }
-   }
-
-   /**
-    * @param indent
-    * @param items
-    */
-   private void printItems(String indent, List<ReportItem> items)
-   {
-      if (items == null)
-         return;
-      for (ReportItem item : items)
-      {
-         Reporter.log(indent + item.getStatus().name() + " : "
-               + item.getLocalizedMessage());
-         printItems(indent + "   ", item.getItems());
-      }
-
-   }
 
 }

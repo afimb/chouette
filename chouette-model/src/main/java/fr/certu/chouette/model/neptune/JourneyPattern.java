@@ -39,19 +39,34 @@ public class JourneyPattern extends NeptuneIdentifiedObject
    @Getter
    @Column(name = "name")
    private String name;
+   public void setName(String value)
+   {
+      name = dataBaseSizeProtectedValue(value,"name",log);
+   }
 
    @Getter
    @Column(name = "comment")
    private String comment;
+   public void setComment(String value)
+   {
+      comment = dataBaseSizeProtectedValue(value,"comment",log);
+   }
 
    @Getter
    @Column(name = "registration_number")
    private String registrationNumber;
+   public void setRegistrationNumber(String value)
+   {
+      registrationNumber = dataBaseSizeProtectedValue(value,"registrationNumber",log);
+   }
 
    @Getter
-   @Setter
    @Column(name = "published_name")
    private String publishedName;
+   public void setPublishedName(String value)
+   {
+      publishedName = dataBaseSizeProtectedValue(value,"publishedName",log);
+   }
 
    @Getter
    @Setter
@@ -130,42 +145,6 @@ public class JourneyPattern extends NeptuneIdentifiedObject
    @Setter
    @Transient
    private String routeId;
-
-   public void setRegistrationNumber(String value)
-   {
-      if (value != null && value.length() > 255)
-      {
-         log.warn("registrationNumber too long, truncated " + value);
-         registrationNumber = value.substring(0, 255);
-      } else
-      {
-         registrationNumber = value;
-      }
-   }
-
-   public void setName(String value)
-   {
-      if (value != null && value.length() > 255)
-      {
-         log.warn("name too long, truncated " + value);
-         name = value.substring(0, 255);
-      } else
-      {
-         name = value;
-      }
-   }
-
-   public void setComment(String value)
-   {
-      if (value != null && value.length() > 255)
-      {
-         log.warn("comment too long, truncated " + value);
-         comment = value.substring(0, 255);
-      } else
-      {
-         comment = value;
-      }
-   }
 
    @Override
    public String toString(String indent, int level)

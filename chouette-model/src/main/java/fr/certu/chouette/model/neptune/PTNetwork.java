@@ -47,10 +47,18 @@ public class PTNetwork extends NeptuneIdentifiedObject
    @Getter
    @Column(name = "name")
    private String name;
+   public void setName(String value)
+   {
+      name = dataBaseSizeProtectedValue(value,"name",log);
+   }
 
    @Getter
    @Column(name = "comment")
    private String comment;
+   public void setComment(String value)
+   {
+      comment = dataBaseSizeProtectedValue(value,"comment",log);
+   }
 
    @Getter
    @Setter
@@ -59,13 +67,20 @@ public class PTNetwork extends NeptuneIdentifiedObject
    private Date versionDate;
 
    @Getter
-   @Setter
    @Column(name = "description")
    private String description;
+   public void setDescription(String value)
+   {
+      description = dataBaseSizeProtectedValue(value,"description",log);
+   }
 
    @Getter
    @Column(name = "registration_number")
    private String registrationNumber;
+   public void setRegistrationNumber(String value)
+   {
+      registrationNumber = dataBaseSizeProtectedValue(value,"registrationNumber",log);
+   }
 
    @Getter
    @Setter
@@ -74,14 +89,20 @@ public class PTNetwork extends NeptuneIdentifiedObject
    private PTNetworkSourceTypeEnum sourceType;
 
    @Getter
-   @Setter
    @Column(name = "source_name")
    private String sourceName;
+   public void setSourceName(String value)
+   {
+      sourceName = dataBaseSizeProtectedValue(value,"sourceName",log);
+   }
 
    @Getter
-   @Setter
    @Column(name = "source_identifier")
    private String sourceIdentifier;
+   public void setSourceIdentifier(String value)
+   {
+      sourceIdentifier = dataBaseSizeProtectedValue(value,"sourceIdentifier",log);
+   }
 
    @Getter
    @Setter
@@ -99,41 +120,6 @@ public class PTNetwork extends NeptuneIdentifiedObject
    @Transient
    private List<String> lineIds;
 
-   public void setRegistrationNumber(String value)
-   {
-      if (value != null && value.length() > 255)
-      {
-         log.warn("registrationNumber too long, truncated " + value);
-         registrationNumber = value.substring(0, 255);
-      } else
-      {
-         registrationNumber = value;
-      }
-   }
-
-   public void setName(String value)
-   {
-      if (value != null && value.length() > 255)
-      {
-         log.warn("name too long, truncated " + value);
-         name = value.substring(0, 255);
-      } else
-      {
-         name = value;
-      }
-   }
-
-   public void setComment(String value)
-   {
-      if (value != null && value.length() > 255)
-      {
-         log.warn("comment too long, truncated " + value);
-         comment = value.substring(0, 255);
-      } else
-      {
-         comment = value;
-      }
-   }
 
    @Override
    public String toString(String indent, int level)

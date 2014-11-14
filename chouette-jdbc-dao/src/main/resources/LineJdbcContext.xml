@@ -34,9 +34,12 @@
 				registration_number,
 				COMMENT,
 				mobility_restricted_suitability,
-				int_user_needs)
+				int_user_needs,
+				color,
+				text_color,
+				url)
 				VALUES(?, ?, ?, ?, ?, ?, ?,
-				?, ?, ?, ?, ?, ?, ?)
+				?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 			</value>
 		</property>
 		<property name="sqlSelectByObjectId">
@@ -68,7 +71,10 @@
 				registration_number = ?,
 				COMMENT = ?,
 				mobility_restricted_suitability = ?,
-				int_user_needs = ?
+				int_user_needs = ?,
+				color = ?,
+				text_color = ?,
+				url = ?
 				WHERE objectid = ?
 			</value>
 		</property>

@@ -1,8 +1,10 @@
 package fr.certu.chouette.exchange.gtfs.importer.producer;
 
+import java.awt.Color;
+
 import org.apache.log4j.Logger;
 
-import fr.certu.chouette.exchange.gtfs.model.GtfsRoute;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsRoute;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
@@ -20,9 +22,9 @@ public class LineProducer extends AbstractModelProducer<Line, GtfsRoute>
             logger));
 
       // Name optional
-      line.setName(getNonEmptyTrimedString(gtfsLine.getRouteShortName()));
+      line.setName(getNonEmptyTrimedString(gtfsLine.getRouteLongName()));
       if (line.getName() == null)
-         line.setName(getNonEmptyTrimedString(gtfsLine.getRouteLongName()));
+         line.setName(getNonEmptyTrimedString(gtfsLine.getRouteShortName()));
 
       // Number optional
       line.setNumber(getNonEmptyTrimedString(gtfsLine.getRouteShortName()));
@@ -31,42 +33,32 @@ public class LineProducer extends AbstractModelProducer<Line, GtfsRoute>
       line.setPublishedName(getNonEmptyTrimedString(gtfsLine.getRouteLongName()));
 
       // TransportModeName optional
-      /**
-       * GTFS definitions 0 - Tram, Streetcar, Light rail. Any light rail or
-       * street level system within a metropolitan area. 1 - Subway, Metro. Any
-       * underground rail system within a metropolitan area. 2 - Rail. Used for
-       * intercity or long-distance travel. 3 - Bus. Used for short- and
-       * long-distance bus routes. 4 - Ferry. Used for short- and long-distance
-       * boat service. 5 - Cable car. Used for street-level cable cars where the
-       * cable runs beneath the car. 6 - Gondola, Suspended cable car. Typically
-       * used for aerial cable cars where the car is suspended from the cable. 7
-       * - Funicular. Any rail system designed for steep inclines.
-       **/
       switch (gtfsLine.getRouteType())
       {
-      case 0:
+      case Tram:
          line.setTransportModeName(TransportModeNameEnum.Tramway);
          break;
-      case 1:
+      case Subway:
          line.setTransportModeName(TransportModeNameEnum.Metro);
          break;
-      case 2:
+      case Rail:
          line.setTransportModeName(TransportModeNameEnum.Train);
          break;
-      case 3:
+      case Bus:
          line.setTransportModeName(TransportModeNameEnum.Bus);
          break;
-      case 4:
+      case Ferry:
          line.setTransportModeName(TransportModeNameEnum.Ferry);
          break;
-      case 5:
-         line.setTransportModeName(TransportModeNameEnum.Tramway);
+      case Cable:
+         line.setTransportModeName(TransportModeNameEnum.Other);
          break;
-      case 6:
-         line.setTransportModeName(TransportModeNameEnum.Waterborne);
+      case Gondola:
+         line.setTransportModeName(TransportModeNameEnum.Other);
          break;
-      // case 7 : line.setTransportModeName(TransportModeNameEnum.FUNICULAR);
-      // break;
+      case Funicular:
+         line.setTransportModeName(TransportModeNameEnum.Other);
+         break;
       default:
          line.setTransportModeName(TransportModeNameEnum.Other);
          break;
@@ -89,7 +81,23 @@ public class LineProducer extends AbstractModelProducer<Line, GtfsRoute>
          // if missing, ModelAssembler will take first agency
          line.setComment(null);
       }
+      
+      line.setColor(toHexa(gtfsLine.getRouteColor()));
+      line.setTextColor(toHexa(gtfsLine.getRouteTextColor()));
+      line.setUrl(toString(gtfsLine.getRouteUrl()));
+      
       return line;
+   }
+   
+   private String toHexa(Color color)
+   {
+      // TODO : check alpha !!!
+      if (color == null) return null;
+      String ret = Integer.toHexString(color.getRGB());
+      if (ret.length() == 8) ret = ret.substring(2);
+      while (ret.length() < 6) ret = "0" + ret;
+      return ret;
+      
    }
 
 }

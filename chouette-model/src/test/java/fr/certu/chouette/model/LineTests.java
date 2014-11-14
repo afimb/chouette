@@ -68,5 +68,33 @@ public class LineTests extends AbstractTestNGSpringContextTests
             "IntUserNeeds value1 vs value1 should be true");
 
    }
+   
+   @Test(groups = { "model" }, description = "check maximum size of fields")
+   public void verifyFieldTruncating()
+   {
+      Line obj = new Line();
+      obj.setName(null);
+      Assert.assertNull(obj.getName(),"name should be null");
+      obj.setName("short name");
+      Assert.assertEquals(obj.getName(),"short name", "name should be preserved");
+      String longString = "long string with more than 256 chrs";
+      while (longString.length() < 256) longString += "0123456789";
+      obj.setObjectId("toto:Line:"+longString);
+      Assert.assertEquals(obj.getObjectId().length(),255, "objectId should be truncated");
+      obj.setName(longString);
+      Assert.assertEquals(obj.getName().length(),255, "name should be truncated");
+      obj.setRegistrationNumber(longString);
+      Assert.assertEquals(obj.getRegistrationNumber().length(),255, "registration number should be truncated");
+      obj.setComment(longString);
+      Assert.assertEquals(obj.getComment().length(),255, "comment should be truncated");
+      obj.setUrl(longString);
+      Assert.assertEquals(obj.getUrl().length(),255, "url should be truncated");
+      obj.setColor("1234567");
+      Assert.assertEquals(obj.getColor().length(),6, "color should be truncated");
+      obj.setTextColor("1234567");
+      Assert.assertEquals(obj.getTextColor().length(),6, "text color should be truncated");
+      obj.setObjectId("toto:Line:"+longString);
+      Assert.assertEquals(obj.getObjectId().length(),255, "objectId should be truncated");
+   }
 
 }

@@ -36,16 +36,26 @@ public class Facility extends NeptuneLocalizedObject
    @Getter
    @Column(name = "name")
    private String name;
+   public void setName(String value)
+   {
+      name = dataBaseSizeProtectedValue(value,"name",log);
+   }
 
    @Getter
-   @Setter
    @Column(name = "comment")
    private String comment;
+   public void setComment(String value)
+   {
+      comment = dataBaseSizeProtectedValue(value,"comment",log);
+   }
 
    @Getter
-   @Setter
    @Column(name = "description")
    private String description;
+   public void setDescription(String value)
+   {
+      description = dataBaseSizeProtectedValue(value,"description",log);
+   }
 
    @Getter
    @Setter
@@ -128,18 +138,6 @@ public class Facility extends NeptuneLocalizedObject
    @Getter
    @Setter
    private String stopPointId;
-
-   public void setName(String value)
-   {
-      if (value != null && value.length() > 255)
-      {
-         log.warn("name too long, truncated " + value);
-         name = value.substring(0, 255);
-      } else
-      {
-         name = value;
-      }
-   }
 
    /**
     * add a new feature if not already present

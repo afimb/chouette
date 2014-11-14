@@ -254,4 +254,18 @@ public class TimetableTests extends AbstractTestNGSpringContextTests
 
    }
 
+   @Test(groups = { "model" }, description = "check maximum size of fields")
+   public void verifyFieldTruncating()
+   {
+      Timetable obj = new Timetable();
+      String longString = "long string with more than 256 chrs";
+      while (longString.length() < 256) longString += "0123456789";
+      obj.setObjectId("toto:TimeTable:"+longString);
+      Assert.assertEquals(obj.getObjectId().length(),255, "objectId should be truncated");
+      obj.setComment(longString);
+      Assert.assertEquals(obj.getComment().length(),255, "comment should be truncated");
+      obj.setVersion(longString);
+      Assert.assertEquals(obj.getVersion().length(),255, "version should be truncated");
+   }
+
 }

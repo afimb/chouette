@@ -8,6 +8,7 @@
 package fr.certu.chouette.model.neptune;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +22,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
+
+import org.apache.log4j.Logger;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -50,6 +53,60 @@ public abstract class NeptuneObject implements Serializable
    @Transient
    private boolean validationProceeded = false;
 
+   /**
+    * read annotation to get maximum size of database dfield
+    * 
+    * @param fieldName field name 
+    * @return size
+    * @throws NoSuchFieldException
+    */
+   private int getfieldSize(String fieldName) throws NoSuchFieldException
+   {
+      Class<? extends Object> c = getClass();
+      Field f = null;
+      while (f == null)
+      {
+            try
+            {
+               f = c.getDeclaredField(fieldName);
+            } catch (NoSuchFieldException e)
+            {
+               if (c == Object.class) throw e;
+               c = c.getSuperclass();
+               
+            } 
+      }
+      return f.getAnnotation(Column.class).length();
+   }
+   
+   /**
+    * truncate string value for database suitability
+    * 
+    * @param value value to set
+    * @param fieldName field name
+    * @param log log if truncated
+    * @return truncated or entire value
+    */
+   protected String dataBaseSizeProtectedValue(String value,String fieldName, Logger log)
+   {
+      if (value != null)
+      {
+         try 
+         {
+            int size = getfieldSize(fieldName);
+            int inLength = value.length();
+            if (inLength > size)
+            {
+               log.warn(fieldName+" length > "+size+", truncated " + value);
+               value = value.substring(0, size);
+            }
+         } 
+         catch (NoSuchFieldException ex) {} 
+         catch (SecurityException ex) {}
+      } 
+      return value;
+      
+   }
    /**
     * Build a list of internal Ids (Id) from a list of Neptune Objects
     * 
@@ -190,7 +247,7 @@ public abstract class NeptuneObject implements Serializable
     * 
     * @param first
     * @param second
-    * @return
+    * @return true if values are identical
     */
    protected boolean sameValue(Object first, Object second)
    {
@@ -204,7 +261,7 @@ public abstract class NeptuneObject implements Serializable
     * 
     * @param first
     * @param second
-    * @return
+    * @return if values are identical
     */
    protected boolean sameValue(int first, int second)
    {
@@ -216,7 +273,7 @@ public abstract class NeptuneObject implements Serializable
     * 
     * @param first
     * @param second
-    * @return
+    * @return if values are identical
     */
    protected boolean sameValues(List<?> first, List<?> second)
    {

@@ -71,6 +71,7 @@ public class VehicleJourneyJdbcDao extends AbstractJdbcDao<VehicleJourney>
     * @see fr.certu.chouette.jdbc.dao.AbstractJdbcDao#populateAttributeStatement
     * (java.lang.String, java.sql.PreparedStatement, java.lang.Object)
     */
+   @SuppressWarnings("deprecation")
    @Override
    protected void populateAttributeStatement(String attributeKey,
          PreparedStatement ps, Object attribute) throws SQLException

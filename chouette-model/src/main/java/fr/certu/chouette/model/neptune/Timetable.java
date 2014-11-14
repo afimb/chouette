@@ -5,6 +5,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
@@ -46,17 +47,24 @@ public class Timetable extends NeptuneIdentifiedObject
     * mapping day type with enumerations
     */
    private static final DayTypeEnum[] dayTypeByInt = { DayTypeEnum.Sunday,
-         DayTypeEnum.Monday, DayTypeEnum.Tuesday, DayTypeEnum.Wednesday,
-         DayTypeEnum.Thursday, DayTypeEnum.Friday, DayTypeEnum.Saturday };
+      DayTypeEnum.Monday, DayTypeEnum.Tuesday, DayTypeEnum.Wednesday,
+      DayTypeEnum.Thursday, DayTypeEnum.Friday, DayTypeEnum.Saturday };
 
    @Getter
    @Column(name = "comment")
    private String comment;
+   public void setComment(String value)
+   {
+      comment = dataBaseSizeProtectedValue(value,"comment",log);
+   }
 
    @Getter
-   @Setter
    @Column(name = "version")
    private String version;
+   public void setVersion(String value)
+   {
+      version = dataBaseSizeProtectedValue(value,"version",log);
+   }
 
    @Getter
    @Setter
@@ -110,18 +118,6 @@ public class Timetable extends NeptuneIdentifiedObject
    @Transient
    private List<String> vehicleJourneyIds;
 
-   public void setComment(String value)
-   {
-      if (value != null && value.length() > 255)
-      {
-         log.warn("comment too long, truncated " + value);
-         comment = value.substring(0, 255);
-      } else
-      {
-         comment = value;
-      }
-   }
-
    /**
     * add a dayType if not already present
     * 
@@ -166,6 +162,17 @@ public class Timetable extends NeptuneIdentifiedObject
       if (calendarDay != null && !calendarDays.contains(calendarDay))
       {
          calendarDays.add(calendarDay);
+      }
+   }
+
+   public void addCalendarDays(Collection<CalendarDay> list)
+   {
+      if (calendarDays == null)
+         calendarDays = new ArrayList<CalendarDay>();
+      for (CalendarDay calendarDay : list)
+      {
+         if (!calendarDays.contains(calendarDay))
+            addCalendarDay(calendarDay);
       }
    }
 
@@ -270,6 +277,9 @@ public class Timetable extends NeptuneIdentifiedObject
       }
    }
 
+   /* (non-Javadoc)
+    * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#toString(java.lang.String, int)
+    */
    @Override
    public String toString(String indent, int level)
    {
@@ -277,26 +287,26 @@ public class Timetable extends NeptuneIdentifiedObject
       sb.append("\n").append(indent).append("  comment = ").append(comment);
       sb.append("\n").append(indent).append("  version = ").append(version);
       sb.append("\n").append(indent).append("  startOfPeriod = ")
-            .append(formatDate(startOfPeriod));
+      .append(formatDate(startOfPeriod));
       sb.append("\n").append(indent).append("  endOfPeriod = ")
-            .append(formatDate(endOfPeriod));
+      .append(formatDate(endOfPeriod));
       if (dayTypes != null)
       {
          sb.append("\n").append(indent).append(CHILD_ARROW).append("dayTypes");
          for (DayTypeEnum dayType : getDayTypes())
          {
             sb.append("\n").append(indent).append(CHILD_LIST_ARROW)
-                  .append(dayType);
+            .append(dayType);
          }
       }
       if (calendarDays != null)
       {
          sb.append("\n").append(indent).append(CHILD_ARROW)
-               .append("calendarDays");
+         .append("calendarDays");
          for (CalendarDay calendarDay : getCalendarDays())
          {
             sb.append("\n").append(indent).append(CHILD_LIST_ARROW)
-                  .append(calendarDay);
+            .append(calendarDay);
          }
       }
       if (periods != null)
@@ -305,17 +315,17 @@ public class Timetable extends NeptuneIdentifiedObject
          for (Period period : getPeriods())
          {
             sb.append("\n").append(indent).append(CHILD_LIST_ARROW)
-                  .append(period);
+            .append(period);
          }
       }
       if (vehicleJourneyIds != null)
       {
          sb.append("\n").append(indent).append(CHILD_ARROW)
-               .append("vehicleJourneyIds");
+         .append("vehicleJourneyIds");
          for (String vehicleJourneyId : getVehicleJourneyIds())
          {
             sb.append("\n").append(indent).append(CHILD_LIST_ARROW)
-                  .append(vehicleJourneyId);
+            .append(vehicleJourneyId);
          }
       }
       if (level > 0)
@@ -329,7 +339,7 @@ public class Timetable extends NeptuneIdentifiedObject
             for (VehicleJourney vehicleJourney : getVehicleJourneys())
             {
                sb.append("\n").append(indent).append(CHILD_LIST_ARROW)
-                     .append(vehicleJourney.toString(childIndent, childLevel));
+               .append(vehicleJourney.toString(childIndent, childLevel));
             }
          }
       }
@@ -341,7 +351,7 @@ public class Timetable extends NeptuneIdentifiedObject
     * format a date for toString usage
     * 
     * @param date
-    * @return
+    * @return string formatted date
     */
    private static String formatDate(Date date)
    {
@@ -358,7 +368,7 @@ public class Timetable extends NeptuneIdentifiedObject
    /**
     * get the affected dayTypes
     * 
-    * @return
+    * @return list of DayTypeEnum for intDayTypes value
     */
    public List<DayTypeEnum> getDayTypes()
    {
@@ -412,7 +422,7 @@ public class Timetable extends NeptuneIdentifiedObject
     * 
     * @param dayTypes
     *           a list of included day types
-    * @return
+    * @return binary mask for selected day types
     */
    public static int buildDayTypeMask(List<DayTypeEnum> dayTypes)
    {
@@ -431,13 +441,18 @@ public class Timetable extends NeptuneIdentifiedObject
     * 
     * @param dayType
     *           the dayType to filter
-    * @return
+    * @return binary mask for a day type
     */
    public static int buildDayTypeMask(DayTypeEnum dayType)
    {
       return (int) Math.pow(2, dayType.ordinal());
    }
 
+   /**
+    * get peculiar dates
+    * 
+    * @return a list of active dates
+    */
    public List<Date> getPeculiarDates()
    {
       List<Date> ret = new ArrayList<>();
@@ -449,6 +464,11 @@ public class Timetable extends NeptuneIdentifiedObject
       return ret;
    }
 
+   /**
+    * get excluded dates
+    * 
+    * @return a list of excluded dates
+    */
    public List<Date> getExcludedDates()
    {
       List<Date> ret = new ArrayList<>();
@@ -464,7 +484,7 @@ public class Timetable extends NeptuneIdentifiedObject
     * check if a Timetable is active on a given date
     * 
     * @param aDay
-    * @return
+    * @return true if timetable is active on given date
     */
    public boolean isActiveOn(Date aDay)
    {
@@ -498,6 +518,9 @@ public class Timetable extends NeptuneIdentifiedObject
       return false;
    }
 
+   /* (non-Javadoc)
+    * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#complete()
+    */
    @Override
    public void complete()
    {
@@ -561,7 +584,7 @@ public class Timetable extends NeptuneIdentifiedObject
     * return periods broken on excluded dates, for exports without date
     * exclusion
     * 
-    * @return
+    * @return periods
     */
    public List<Period> getEffectivePeriods()
    {
@@ -610,6 +633,10 @@ public class Timetable extends NeptuneIdentifiedObject
       return effectivePeriods;
    }
 
+
+   /* (non-Javadoc)
+    * @see fr.certu.chouette.model.neptune.NeptuneObject#compareAttributes(fr.certu.chouette.model.neptune.NeptuneObject)
+    */
    @Override
    public <T extends NeptuneObject> boolean compareAttributes(T anotherObject)
    {
@@ -639,10 +666,35 @@ public class Timetable extends NeptuneIdentifiedObject
       }
    }
 
+   /* (non-Javadoc)
+    * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#toURL()
+    */
    @Override
    public String toURL()
    {
       return "time_tables/" + getId();
    }
+
+
+   public Timetable copy()
+   {
+      Timetable tm = new Timetable();
+      tm.setObjectId(getObjectId());
+      tm.setObjectVersion(getObjectVersion());
+      tm.setComment(getComment());
+      tm.setIntDayTypes(getIntDayTypes());
+      tm.setPeriods(new ArrayList<Period>());
+      for (Period period : getPeriods())
+      {
+         tm.addPeriod(new Period(period.getStartDate(),period.getEndDate()));
+      }
+      tm.setCalendarDays(new ArrayList<CalendarDay>());
+      for (CalendarDay day : getCalendarDays())
+      {
+         tm.addCalendarDay(new CalendarDay(day.getDate(), day.getIncluded()));
+      }
+      return tm;
+   }
+
 
 }

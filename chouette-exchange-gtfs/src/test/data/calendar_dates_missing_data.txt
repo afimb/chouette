@@ -1,7 +1,0 @@
-service_id,date,exception_type
-TM1,20130701,2
-,20130703,2
-TM1,,2
-TM1,20130710,
-,,
-

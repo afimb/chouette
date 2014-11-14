@@ -69,68 +69,36 @@ public abstract class NeptuneLocalizedObject extends NeptuneIdentifiedObject
    @Getter
    @Column(name = "country_code")
    private String countryCode;
+   public void setCountryCode(String value)
+   {
+      countryCode = dataBaseSizeProtectedValue(value,"countryCode",log);
+   }
 
    @Getter
    @Column(name = "zip_code")
    private String zipCode;
+   public void setZipCode(String value)
+   {
+      zipCode = dataBaseSizeProtectedValue(value,"zipCode",log);
+   }
 
    @Getter
    @Column(name = "city_name")
    private String cityName;
+   public void setCityName(String value)
+   {
+      cityName = dataBaseSizeProtectedValue(value,"cityName",log);
+   }
 
    @Getter
    @Column(name = "street_name")
    private String streetName;
-
-   public abstract String getName();
-
-   public void setZipCode(String value)
-   {
-      if (value != null && value.length() > 255)
-      {
-         log.warn("zipCode too long, truncated " + value);
-         zipCode = value.substring(0, 255);
-      } else
-      {
-         zipCode = value;
-      }
-   }
-
-   public void setCityName(String value)
-   {
-      if (value != null && value.length() > 255)
-      {
-         log.warn("cityName too long, truncated " + value);
-         cityName = value.substring(0, 255);
-      } else
-      {
-         cityName = value;
-      }
-   }
-
    public void setStreetName(String value)
    {
-      if (value != null && value.length() > 255)
-      {
-         log.warn("streetName too long, truncated " + value);
-         streetName = value.substring(0, 255);
-      } else
-      {
-         streetName = value;
-      }
+      streetName = dataBaseSizeProtectedValue(value,"streetName",log);
    }
 
-   public void setCountryCode(String value)
-   {
-      if (value != null && value.length() > 255)
-      {
-         log.warn("countryCode too long, truncated " + value);
-         countryCode = value.substring(0, 255);
-      } else
-      {
-         countryCode = value;
-      }
-   }
+   public abstract String getName();
 
    public boolean hasCoordinates()
    {

@@ -64,10 +64,12 @@
 				lift_availability,
 				mobility_restricted_suitability,
 				stairs_availability,
-				int_user_needs
+				int_user_needs,
+				time_zone,
+				url
 				)
 				VALUES(?, ?,
-				?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+				?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 			</value>
 		</property>
 		<property name="sqlSelectByObjectId">
@@ -104,7 +106,9 @@
 				lift_availability = ?,
 				mobility_restricted_suitability = ?,
 				stairs_availability = ?,
-				int_user_needs = ?
+				int_user_needs = ?,
+				time_zone = ?,
+				url = ?
 				WHERE objectid = ?
 			</value>
 		</property>

@@ -17,7 +17,6 @@ import fr.certu.chouette.model.neptune.AccessLink;
  * 
  */
 
-@SuppressWarnings("unchecked")
 public class AccessLinkJdbcDao extends AbstractJdbcDao<AccessLink>
 {
    private static final Logger logger = Logger
@@ -33,7 +32,7 @@ public class AccessLinkJdbcDao extends AbstractJdbcDao<AccessLink>
    {
       String sql = sqlSelectAll;
       List<AccessLink> accessLinks = getJdbcTemplate().query(sql,
-            new BeanPropertyRowMapper(AccessLink.class));
+            new BeanPropertyRowMapper<AccessLink>(AccessLink.class));
 
       return accessLinks;
    }

@@ -58,6 +58,14 @@ public class GtfsTrip extends GtfsBean
    @Getter
    @Setter
    private GtfsCalendar calendar;
+
+   @Getter
+   @Setter
+   private int wheelchairAccessible = 0;
+
+   @Getter
+   @Setter
+   private int bikesAllowed = 0;
    @Getter
    @Setter
    private List<GtfsFrequency> frequencies = new ArrayList<GtfsFrequency>();
@@ -66,7 +74,7 @@ public class GtfsTrip extends GtfsBean
    @Setter
    private List<GtfsStopTime> stopTimes = new ArrayList<GtfsStopTime>();
 
-   public static final String header = "route_id,service_id,trip_id,trip_headsign,trip_short_name,direction_id,shape_id";
+   public static final String header = "route_id,service_id,trip_id,trip_headsign,trip_short_name,direction_id,shape_id,wheelchair_accessible,bikes_allowed";
 
    public String getCSVLine()
    {
@@ -83,6 +91,8 @@ public class GtfsTrip extends GtfsBean
       // csvLine += ",";
       if (shapeId != null)
          csvLine += toCSVString(shapeId);
+      csvLine += "," + wheelchairAccessible;
+      csvLine += "," + bikesAllowed;
       return csvLine;
    }
 

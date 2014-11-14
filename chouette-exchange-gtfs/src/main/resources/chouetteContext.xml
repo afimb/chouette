@@ -37,8 +37,4 @@
 			</list>
 		</property>
 	</bean>
-	<!-- <bean id="GtfsConnectionLinkPluginInjector" class="fr.certu.chouette.plugin.PluginInjector" 
-		factory-method="createConnectionLinkPluginInjector"> <property name="manager" 
-		ref="connectionLinkManager" /> <property name="importPlugins"> <list> <ref 
-		bean="GtfsConnectionLinkImport" /> </list> </property> </bean> -->
 </beans>
