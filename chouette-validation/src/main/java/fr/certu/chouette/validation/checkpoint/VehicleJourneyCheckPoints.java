@@ -47,8 +47,8 @@ public class VehicleJourneyCheckPoints extends AbstractValidation implements
       // 3-VehicleJourney-2 : check speed progression
       // 3-VehicleJourney-3 : check if two journeys progress similarly
       // 3-VehicleJourney-4 : check if each journey has minimum one timetable
-      // 3-VehicleJourney-5 : (optionnal) check operational code
-      // 3-VehicleJourney-6 : (optionnal) check transport modes
+      // 3-VehicleJourney-5 : (optional) check operational code
+      // 3-VehicleJourney-6 : (optional) check transport modes
       boolean test6 = parameters.optInt(CHECK_ALLOWED_TRANSPORT_MODES,0) == 1;
       boolean test5 = parameters.optInt(VEHICLE_JOURNEY_NUMBER_MIN,0) != 0 || parameters.optInt(VEHICLE_JOURNEY_NUMBER_MAX,0) != 0;
       
@@ -102,10 +102,10 @@ public class VehicleJourneyCheckPoints extends AbstractValidation implements
          checkVehicleJourney4(report, vj);
 
          // 3-VehicleJourney-5 : (optionnal) check operational code
-         checkVehicleJourney5(report, vj, parameters, context);
+         if (test5) checkVehicleJourney5(report, vj, parameters, context);
          
          // 3-VehicleJourney-6 : (optionnal) check transport modes
-         checkVehicleJourney6(report, vj, parameters);
+         if (test6) checkVehicleJourney6(report, vj, parameters);
       }
    }
 
@@ -343,7 +343,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation implements
    @SuppressWarnings("unchecked")
    private void checkVehicleJourney5(PhaseReportItem report, VehicleJourney vj, JSONObject parameters, Map<String,Object> context)
    {
-      // 3-VehicleJourney-5 : (optionnal) check operational code
+      // 3-VehicleJourney-5 : (optional) check operational code
       long minValue = parameters.optLong(VEHICLE_JOURNEY_NUMBER_MIN,0);
       long maxValue = parameters.optLong(VEHICLE_JOURNEY_NUMBER_MAX,0);
       Map<Long,String> values = (Map<Long,String>) context.get(VEHICLE_JOURNEY_5);
@@ -402,7 +402,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation implements
 
    private void checkVehicleJourney6(PhaseReportItem report, VehicleJourney vj, JSONObject parameters)
    {
-      // 3-VehicleJourney-6 : (optionnal) check transport modes
+      // 3-VehicleJourney-6 : (optional) check transport modes
       if (vj.getTransportMode() == null) return;
       if (getModeParameter(parameters, vj.getTransportMode().name(), ALLOWED_TRANSPORT) != 1)
       {
