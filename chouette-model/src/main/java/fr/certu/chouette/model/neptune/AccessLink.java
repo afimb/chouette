@@ -28,11 +28,10 @@ import fr.certu.chouette.model.neptune.type.LinkOrientationEnum;
 import fr.certu.chouette.model.neptune.type.UserNeedEnum;
 
 /**
- * Neptune AccessLink
+ * Chouette AccessLink : relation between an AccessPoint and a StopArea
  * <p/>
- * Note for fields comment : <br/>
- * when readable is added to comment, a implicit getter is available <br/>
- * when writable is added to comment, a implicit setter is available
+ * Neptune mapping : PTAccessLink <br/>
+ * Gtfs mapping : none <br/>
  * 
  */
 @Entity
@@ -43,85 +42,230 @@ public class AccessLink extends NeptuneIdentifiedObject
 {
    private static final long serialVersionUID = 7835556134861322471L;
 
+   /**
+    * name
+    * 
+    * @return The actual value
+    */
    @Getter
    @Column(name = "name")
    private String name;
+
+   /**
+    * set name <br/>
+    * truncated to 255 characters if too long
+    * 
+    * @param value
+    *           New value
+    */
    public void setName(String value)
    {
-      name = dataBaseSizeProtectedValue(value,"name",log);
+      name = dataBaseSizeProtectedValue(value, "name", log);
    }
 
+   /**
+    * comment
+    * 
+    * @return The actual value
+    */
    @Getter
    @Column(name = "comment")
    private String comment;
+
+   /**
+    * set comment <br/>
+    * truncated to 255 characters if too long
+    * 
+    * @param value
+    *           New value
+    */
    public void setComment(String value)
    {
-      comment = dataBaseSizeProtectedValue(value,"comment",log);
+      comment = dataBaseSizeProtectedValue(value, "comment", log);
    }
 
+   /**
+    * link length in meters
+    * 
+    * @param linkDistance
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @Column(name = "link_distance")
    private BigDecimal linkDistance;
 
+   /**
+    * lift indicator <br/>
+    * 
+    * <ul>
+    * <li>true if a lift is available on this link</li>
+    * <li>false if no lift is available on this link</li>
+    * </ul>
+    * 
+    * @param liftAvailable
+    *           New state for lift indicator
+    * @return The actual lift indicator
+    */
    @Getter
    @Setter
    @Column(name = "lift_availability")
    private boolean liftAvailable = false;
 
+   /**
+    * mobility restriction indicator (such as wheel chairs) <br/>
+    * 
+    * <ul>
+    * <li>true if wheel chairs can follow this link</li>
+    * <li>false if wheel chairs can't follow this link</li>
+    * </ul>
+    * 
+    * @param mobilityRestrictedSuitable
+    *           New state for mobility restriction indicator
+    * @return The actual mobility restriction indicator
+    */
    @Getter
    @Setter
    @Column(name = "mobility_restricted_suitability")
    private boolean mobilityRestrictedSuitable = false;
 
+   /**
+    * stairs indicator <br/>
+    * 
+    * <ul>
+    * <li>true if a stairs are presents on this link</li>
+    * <li>false if no stairs are presents on this link</li>
+    * </ul>
+    * 
+    * @param stairsAvailable
+    *           New state for stairs indicator
+    * @return The actual stairs indicator
+    */
    @Getter
    @Setter
    @Column(name = "stairs_availability")
    private boolean stairsAvailable = false;
 
+   /**
+    * medium time to follow the link <br/>
+    * null if unknown
+    * 
+    * @param defaultDuration
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @Column(name = "default_duration")
    private Time defaultDuration;
 
+   /**
+    * time to follow the link for a frequent traveller <br/>
+    * null if unknown
+    * 
+    * @param frequentTravellerDuration
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @Column(name = "frequent_traveller_duration")
    private Time frequentTravellerDuration;
 
+   /**
+    * time to follow the link for an occasional traveller <br/>
+    * null if unknown
+    * 
+    * @param occasionalTravellerDuration
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @Column(name = "occasional_traveller_duration")
    private Time occasionalTravellerDuration;
 
+   /**
+    * time to follow the link for a traveller with mobility restriction <br/>
+    * null if unknown
+    * 
+    * @param mobilityRestrictedTravellerDuration
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @Column(name = "mobility_restricted_traveller_duration")
    private Time mobilityRestrictedTravellerDuration;
 
+   /**
+    * link type
+    * 
+    * @param linkType
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @Enumerated(EnumType.STRING)
    @Column(name = "link_type")
    private ConnectionLinkTypeEnum linkType;
 
+   /**
+    * coded user needs as binary map<br/>
+    * 
+    * use following methods for easier access :
+    * <ul>
+    * <li>getUserNeeds</li>
+    * <li>setUserNeeds</li>
+    * <li>addUserNeed</li>
+    * <li>addAllUserNeed</li>
+    * <li>removeUserNeed</li>
+    * </ul>
+    * 
+    * @param intUserNeeds
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @Column(name = "int_user_needs")
    private Integer intUserNeeds = 0;
 
+   /**
+    * access link orientation
+    * 
+    * @param linkOrientation
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @Enumerated(EnumType.STRING)
    @Column(name = "link_orientation")
    private LinkOrientationEnum linkOrientation;
 
+   /**
+    * access point connected to link
+    * 
+    * @param accessPoint
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "access_point_id")
    private AccessPoint accessPoint;
 
+   /**
+    * stop area connected to link
+    * 
+    * @param stopArea
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @ManyToOne(fetch = FetchType.LAZY)
@@ -129,8 +273,12 @@ public class AccessLink extends NeptuneIdentifiedObject
    private StopArea stopArea;
 
    /**
-    * Neptune Id for End of Link StopArea <br/>
-    * <i>readable/writable</i>
+    * Neptune Object Id for End of Link <br/>
+    * available only after calling method complete()
+    * 
+    * @param endOfLinkId
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
@@ -138,15 +286,18 @@ public class AccessLink extends NeptuneIdentifiedObject
    private String endOfLinkId;
 
    /**
-    * give a list of specific User needs available <br/>
-    * <i>readable/writable</i>
+    * List of the specific user needs available
     */
    @Transient
    private List<UserNeedEnum> userNeeds;
 
    /**
-    * Neptune Id for Start of Link StopArea <br/>
-    * <i>readable/writable</i>
+    * Neptune Object Id for Start of Link <br/>
+    * available only after calling method complete()
+    * 
+    * @param startOfLinkId
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
@@ -155,8 +306,7 @@ public class AccessLink extends NeptuneIdentifiedObject
 
    /**
     * add a userNeed value in userNeeds collection if not already present <br/>
-    * intUserNeeds will be automatically synchronized <br/>
-    * <i>readable/writable</i>
+    * intUserNeeds will be automatically synchronized
     * 
     * @param userNeed
     *           the userNeed to add
@@ -218,7 +368,7 @@ public class AccessLink extends NeptuneIdentifiedObject
    }
 
    /**
-    * get UserNeeds list
+    * give a list of specific User needs available
     * 
     * @return userNeeds
     */
@@ -268,40 +418,35 @@ public class AccessLink extends NeptuneIdentifiedObject
       }
    }
 
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#toString(java.
+    * lang.String, int)
+    */
    @Override
    public String toString(String indent, int level)
    {
       StringBuilder sb = new StringBuilder(super.toString(indent, level));
-      sb.append("\n").append(indent).append("  startOfLinkId = ")
-            .append(startOfLinkId);
-      sb.append("\n").append(indent).append("  endOfLinkId = ")
-            .append(endOfLinkId);
+      sb.append("\n").append(indent).append("  startOfLinkId = ").append(startOfLinkId);
+      sb.append("\n").append(indent).append("  endOfLinkId = ").append(endOfLinkId);
       if (linkDistance != null)
       {
-         sb.append("\n").append(indent).append("  linkDistance = ")
-               .append(linkDistance.toPlainString());
+         sb.append("\n").append(indent).append("  linkDistance = ").append(linkDistance.toPlainString());
       }
       if (linkOrientation != null)
       {
-         sb.append("\n").append(indent).append("  linkOrientation = ")
-               .append(linkOrientation.toString());
+         sb.append("\n").append(indent).append("  linkOrientation = ").append(linkOrientation.toString());
       }
       sb.append("\n").append(indent).append("  comment = ").append(comment);
-      sb.append("\n").append(indent).append("  liftAvailable = ")
-            .append(liftAvailable);
-      sb.append("\n").append(indent).append("  mobilityRestrictedSuitable = ")
-            .append(mobilityRestrictedSuitable);
-      sb.append("\n").append(indent).append("  stairsAvailable = ")
-            .append(stairsAvailable);
-      sb.append("\n").append(indent).append("  defaultDuration = ")
-            .append(formatDate(defaultDuration));
-      sb.append("\n").append(indent).append("  frequentTravellerDuration = ")
-            .append(formatDate(frequentTravellerDuration));
-      sb.append("\n").append(indent).append("  occasionalTravellerDuration = ")
-            .append(formatDate(occasionalTravellerDuration));
-      sb.append("\n").append(indent)
-            .append("  mobilityRestrictedTravellerDuration = ")
-            .append(formatDate(mobilityRestrictedTravellerDuration));
+      sb.append("\n").append(indent).append("  liftAvailable = ").append(liftAvailable);
+      sb.append("\n").append(indent).append("  mobilityRestrictedSuitable = ").append(mobilityRestrictedSuitable);
+      sb.append("\n").append(indent).append("  stairsAvailable = ").append(stairsAvailable);
+      sb.append("\n").append(indent).append("  defaultDuration = ").append(formatDate(defaultDuration));
+      sb.append("\n").append(indent).append("  frequentTravellerDuration = ").append(formatDate(frequentTravellerDuration));
+      sb.append("\n").append(indent).append("  occasionalTravellerDuration = ").append(formatDate(occasionalTravellerDuration));
+      sb.append("\n").append(indent).append("  mobilityRestrictedTravellerDuration = ").append(formatDate(mobilityRestrictedTravellerDuration));
       sb.append("\n").append(indent).append("  linkType = ").append(linkType);
 
       if (userNeeds != null)
@@ -309,8 +454,7 @@ public class AccessLink extends NeptuneIdentifiedObject
          sb.append("\n").append(indent).append(CHILD_ARROW).append("userNeeds");
          for (UserNeedEnum userNeed : getUserNeeds())
          {
-            sb.append("\n").append(indent).append(CHILD_LIST_ARROW)
-                  .append(userNeed);
+            sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(userNeed);
          }
       }
       if (level > 0)
@@ -318,13 +462,11 @@ public class AccessLink extends NeptuneIdentifiedObject
          String childIndent = indent + CHILD_INDENT;
          if (stopArea != null)
          {
-            sb.append("\n").append(indent).append(CHILD_ARROW)
-                  .append(stopArea.toString(childIndent, 0));
+            sb.append("\n").append(indent).append(CHILD_ARROW).append(stopArea.toString(childIndent, 0));
          }
          if (accessPoint != null)
          {
-            sb.append("\n").append(indent).append(CHILD_ARROW)
-                  .append(accessPoint.toString(childIndent, 0));
+            sb.append("\n").append(indent).append(CHILD_ARROW).append(accessPoint.toString(childIndent, 0));
          }
       }
 
@@ -344,12 +486,18 @@ public class AccessLink extends NeptuneIdentifiedObject
       if (date != null)
       {
          return dateFormat.format(date);
-      } else
+      }
+      else
       {
          return null;
       }
    }
 
+   /*
+    * (non-Javadoc)
+    * 
+    * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#complete()
+    */
    @Override
    public void complete()
    {
@@ -360,15 +508,14 @@ public class AccessLink extends NeptuneIdentifiedObject
          getAccessPoint().complete();
       if (getLinkOrientation() != null)
       {
-         if (getLinkOrientation().equals(
-               LinkOrientationEnum.AccessPointToStopArea))
+         if (getLinkOrientation().equals(LinkOrientationEnum.AccessPointToStopArea))
          {
             if (getAccessPoint() != null)
                setStartOfLinkId(getAccessPoint().getObjectId());
             if (getStopArea() != null)
                setEndOfLinkId(getStopArea().getObjectId());
-         } else if (getLinkOrientation().equals(
-               LinkOrientationEnum.StopAreaToAccessPoint))
+         }
+         else if (getLinkOrientation().equals(LinkOrientationEnum.StopAreaToAccessPoint))
          {
             if (getAccessPoint() != null)
                setEndOfLinkId(getAccessPoint().getObjectId());
@@ -378,6 +525,13 @@ public class AccessLink extends NeptuneIdentifiedObject
       }
    }
 
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * fr.certu.chouette.model.neptune.NeptuneObject#compareAttributes(fr.certu
+    * .chouette.model.neptune.NeptuneObject)
+    */
    @Override
    public <T extends NeptuneObject> boolean compareAttributes(T anotherObject)
    {
@@ -394,36 +548,37 @@ public class AccessLink extends NeptuneIdentifiedObject
             return false;
          if (!sameValue(this.getIntUserNeeds(), another.getIntUserNeeds()))
             return false;
-         if (!sameValue(this.getRegistrationNumber(),
-               another.getRegistrationNumber()))
+         if (!sameValue(this.getRegistrationNumber(), another.getRegistrationNumber()))
             return false;
          if (!sameValue(this.getDefaultDuration(), another.getDefaultDuration()))
             return false;
-         if (!sameValue(this.getFrequentTravellerDuration(),
-               another.getFrequentTravellerDuration()))
+         if (!sameValue(this.getFrequentTravellerDuration(), another.getFrequentTravellerDuration()))
             return false;
          if (!sameValue(this.getLinkDistance(), another.getLinkDistance()))
             return false;
          if (!sameValue(this.getLinkOrientation(), another.getLinkOrientation()))
             return false;
-         if (!sameValue(this.getMobilityRestrictedTravellerDuration(),
-               another.getMobilityRestrictedTravellerDuration()))
+         if (!sameValue(this.getMobilityRestrictedTravellerDuration(), another.getMobilityRestrictedTravellerDuration()))
             return false;
-         if (!sameValue(this.getOccasionalTravellerDuration(),
-               another.getOccasionalTravellerDuration()))
+         if (!sameValue(this.getOccasionalTravellerDuration(), another.getOccasionalTravellerDuration()))
             return false;
          return true;
-      } else
+      }
+      else
       {
          return false;
       }
    }
 
+   /*
+    * (non-Javadoc)
+    * 
+    * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#toURL()
+    */
    @Override
    public String toURL()
    {
-      return "access_points/" + getAccessPoint().getId() + "/access_links/"
-            + getId();
+      return "access_points/" + getAccessPoint().getId() + "/access_links/" + getId();
    }
 
 }

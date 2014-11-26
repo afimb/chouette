@@ -43,6 +43,14 @@ public abstract class NeptuneObject implements Serializable
    protected static final String CHILD_LIST_INDENT = "           ";
    protected static final String CHILD_LIST_ARROW = "      -->";
 
+
+   /** 
+    * database id <br/>
+    * null if not saved
+    * 
+    * @param id New value
+    * @return  The actual value
+    */
    @Getter
    @Setter
    @Id

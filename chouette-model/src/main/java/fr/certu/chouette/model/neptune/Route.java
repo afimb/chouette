@@ -34,11 +34,12 @@ import lombok.extern.log4j.Log4j;
 import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
 
 /**
- * Neptune Route
+ * Chouette Route : An ordered list of StopPoints defining one single path through the network. <br/>
+ * When a route pass through the same physical point more than once, one stop point must be created for each occurrence.  
  * <p/>
- * Note for fields comment : <br/>
- * when readable is added to comment, a implicit getter is available <br/>
- * when writable is added to comment, a implicit setter is available
+ * Neptune mapping : ChouetteRoute, PTLink <br/>
+ * Gtfs mapping : none <br/>
+ * 
  */
 @Entity
 @Table(name = "routes")
@@ -48,48 +49,163 @@ public class Route extends NeptuneIdentifiedObject
 {
    private static final long serialVersionUID = -2249654966081042738L;
 
+   /**
+    * name
+    * 
+    * @return The actual value
+    */
    @Getter
    @Column(name = "name")
    private String name;
+   /**
+    * set name <br/>
+    * truncated to 255 characters if too long
+    * 
+    * @param value
+    *           New value
+    */
+   public void setName(String value)
+   {
+      name = dataBaseSizeProtectedValue(value, "name", log);
+   }
 
+   /**
+    * comment
+    * 
+    * @return The actual value
+    */
    @Getter
    @Column(name = "comment")
    private String comment;
 
+   /**
+    * set comment <br/>
+    * truncated to 255 characters if too long
+    * 
+    * @param value
+    *           New value
+    */
+   public void setComment(String value)
+   {
+      comment = dataBaseSizeProtectedValue(value, "comment", log);
+   }
+
+   /**
+    * opposite route identifier <br/>
+    * an opposite route must have it's wayBack attribute on reverse value<br/>
+    * 
+    * the model doesn't map this relationship as object as facility on saving in database
+    * 
+    * @param oppositeRouteId
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
-   // TODO [DSU] @OneToOne(fetch = FetchType.LAZY)
+   // mapped as id for database update facility
+   // @OneToOne(fetch = FetchType.LAZY)
    // @JoinColumn(name = "opposite_route_id")
    @Column(name = "opposite_route_id")
    private Long oppositeRouteId;
 
+   /**
+    * published name
+    * 
+    * @return The actual value
+    */
    @Getter
-   @Setter
    @Column(name = "published_name")
    private String publishedName;
+   /**
+    * set comment <br/>
+    * truncated to 255 characters if too long
+    * 
+    * @param value
+    *           New value
+    */
+   public void setPublishedName(String value)
+   {
+      publishedName = dataBaseSizeProtectedValue(value, "publishedName", log);
+   }
 
+   /**
+    * number
+    * 
+    * @return The actual value
+    */
    @Getter
-   @Setter
    @Column(name = "number")
    private String number;
+   /**
+    * set number <br/>
+    * truncated to 255 characters if too long
+    * 
+    * @param value
+    *           New value
+    */
+   public void setNumber(String value)
+   {
+      number = dataBaseSizeProtectedValue(value, "number", log);
+   }
 
+   /**
+    * direction
+    * 
+    * @param direction
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @Enumerated(EnumType.STRING)
    @Column(name = "direction")
    private PTDirectionEnum direction;
 
+   /**
+    * wayback <br/>
+    * possible values : 
+    * <ul>
+    * <li>A : outBound</li>
+    * <li>R : inBound</li>
+    * </ul>
+    * 
+    * @return The actual value
+    */
    @Getter
-   @Setter
    @Column(name = "wayback")
    private String wayBack;
+   /**
+    * set wayBack <br/>
+    * truncated to 255 characters if too long
+    * 
+    * @param value
+    *           New value
+    */
+   public void setWayBack(String value)
+   {
+      wayBack = dataBaseSizeProtectedValue(value, "wayBack", log);
+   }
 
+   /**
+    * line reverse reference
+    * 
+    * @param line
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "line_id")
    private Line line;
 
+   /**
+    * journeyPatterns
+    * 
+    * @param journeyPatterns
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @OneToMany(mappedBy = "route", cascade = { CascadeType.PERSIST,
@@ -97,6 +213,13 @@ public class Route extends NeptuneIdentifiedObject
    private List<JourneyPattern> journeyPatterns = new ArrayList<JourneyPattern>(
          0);
 
+   /**
+    * stopPoints
+    * 
+    * @param stopPoints
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @OneToMany(mappedBy = "route", cascade = { CascadeType.PERSIST,
@@ -105,29 +228,22 @@ public class Route extends NeptuneIdentifiedObject
    private List<StopPoint> stopPoints = new ArrayList<StopPoint>(0);
 
    /**
-    * Database foreign key referring to the route's line<br/>
-    * Meaningless after import action <br/>
-    * <i>readable/writable</i>
-    */
-   @Getter
-   @Setter
-   @Transient
-   private Long lineId;
-
-   /**
     * Neptune identification referring to the wayBackRoute of the route<br/>
     * Meaningless after database read (see oppositeRouteId) <br/>
     * will be populate with complete() Changes have no effect on database <br/>
-    * <i>readable/writable</i>
+    * 
+    * @param wayBackRouteId
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
    @Transient
    private String wayBackRouteId;
+
    /**
     * reference to the wayBackRoute of the route<br/>
     * will be populate with complete() Changes have no effect on database <br/>
-    * <i>readable</i>
     */
    @Getter
    @Setter
@@ -138,7 +254,6 @@ public class Route extends NeptuneIdentifiedObject
     * Neptune identification referring to the JourneyPatterns of the route<br/>
     * Meaningless after database read (see journeyPatterns) <br/>
     * Changes have no effect on database <br/>
-    * <i>readable/writable</i>
     */
    @Getter
    @Setter
@@ -172,37 +287,12 @@ public class Route extends NeptuneIdentifiedObject
    @Transient
    private List<StopArea> stopAreas = null;
 
-   public void setName(String value)
-   {
-      if (value != null && value.length() > 255)
-      {
-         log.warn("name too long, truncated " + value);
-         name = value.substring(0, 255);
-      } else
-      {
-         name = value;
-      }
-   }
-
-   public void setComment(String value)
-   {
-      if (value != null && value.length() > 255)
-      {
-         log.warn("comment too long, truncated " + value);
-         comment = value.substring(0, 255);
-      } else
-      {
-         comment = value;
-      }
-   }
-
    @Override
    public String toString(String indent, int level)
    {
       StringBuilder sb = new StringBuilder(super.toString(indent, level));
       sb.append("\n").append(indent).append("oppositeRouteId = ")
             .append(oppositeRouteId);
-      sb.append("\n").append(indent).append("lineId = ").append(lineId);
       sb.append("\n").append(indent).append("publishedName = ")
             .append(publishedName);
       sb.append("\n").append(indent).append("number = ").append(number);

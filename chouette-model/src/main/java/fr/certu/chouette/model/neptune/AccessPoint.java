@@ -22,11 +22,10 @@ import lombok.extern.log4j.Log4j;
 import fr.certu.chouette.model.neptune.type.AccessPointTypeEnum;
 
 /**
- * Neptune AccessPoint
+ * Chouette AccessPoint : relation between an AccessPoint and a StopArea
  * <p/>
- * Note for fields comment : <br/>
- * when readable is added to comment, a implicit getter is available <br/>
- * when writable is added to comment, a implicit setter is available
+ * Neptune mapping : PTAccessPoint <br/>
+ * Gtfs mapping : none <br/>
  * 
  */
 
@@ -39,84 +38,175 @@ public class AccessPoint extends NeptuneLocalizedObject
 
    private static final long serialVersionUID = 7520070228185917225L;
 
+   /**
+    * name
+    * 
+    * @return The actual value
+    */
    @Getter
    @Column(name = "name")
    private String name;
 
+   /**
+    * set name <br/>
+    * truncated to 255 characters if too long
+    * 
+    * @param value
+    *           New value
+    */
+   public void setName(String value)
+   {
+      name = dataBaseSizeProtectedValue(value, "name", log);
+   }
+
+   /**
+    * comment
+    * 
+    * @return The actual value
+    */
    @Getter
    @Column(name = "comment")
    private String comment;
 
+   /**
+    * set comment <br/>
+    * truncated to 255 characters if too long
+    * 
+    * @param value
+    *           New value
+    */
+   public void setComment(String value)
+   {
+      comment = dataBaseSizeProtectedValue(value, "comment", log);
+   }
+
+   /**
+    * contained in StopArea id (deprecated in next release)
+    * 
+    * @param containedInStopArea
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @Column(name = "contained_in")
    private String containedInStopArea;
 
+   /**
+    * access point opening time
+    * 
+    * @param openingTime
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @Column(name = "openning_time")
    private Time openingTime;
 
+   /**
+    * access point closing time
+    * 
+    * @param closingTime
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @Column(name = "closing_time")
    private Time closingTime;
 
+   /**
+    * access type
+    * 
+    * @param type
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @Enumerated(EnumType.STRING)
    @Column(name = "access_type")
    private AccessPointTypeEnum type;
 
+   /**
+    * lift indicator <br/>
+    * 
+    * <ul>
+    * <li>true if a lift is available on this access point</li>
+    * <li>false if no lift is available on this access point</li>
+    * </ul>
+    * 
+    * @param liftAvailable
+    *           New state for lift indicator
+    * @return The actual lift indicator
+    */
    @Getter
    @Setter
    @Column(name = "lift_availability")
    private boolean liftAvailable = false;
 
+   /**
+    * mobility restriction indicator (such as wheel chairs) <br/>
+    * 
+    * <ul>
+    * <li>true if wheel chairs can follow this access point</li>
+    * <li>false if wheel chairs can't follow this access point</li>
+    * </ul>
+    * 
+    * @param mobilityRestrictedSuitable
+    *           New state for mobility restriction indicator
+    * @return The actual mobility restriction indicator
+    */
    @Getter
    @Setter
    @Column(name = "mobility_restricted_suitability")
    private boolean mobilityRestrictedSuitable = false;
 
+   /**
+    * stairs indicator <br/>
+    * 
+    * <ul>
+    * <li>true if a stairs are presents on this access point</li>
+    * <li>false if no stairs are presents on this access point</li>
+    * </ul>
+    * 
+    * @param stairsAvailable
+    *           New state for stairs indicator
+    * @return The actual stairs indicator
+    */
    @Getter
    @Setter
    @Column(name = "stairs_availability")
    private boolean stairsAvailable = false;
 
+   /**
+    * access point owner <br/>
+    * should be a logical stop area such as commercial stop point or stop place <br/>
+    * access links from or to this access should reach only this stop area or
+    * it's children
+    * 
+    * @param containedIn
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "stop_area_id")
    private StopArea containedIn;
 
+   /**
+    * access links reaching this access point <br/>
+    * 
+    * @param accessLinks
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @OneToMany(mappedBy = "accessPoint")
    private List<AccessLink> accessLinks = new ArrayList<AccessLink>(0);
-
-   public void setName(String value)
-   {
-      if (value != null && value.length() > 255)
-      {
-         log.warn("name too long, truncated " + value);
-         name = value.substring(0, 255);
-      } else
-      {
-         name = value;
-      }
-   }
-
-   public void setComment(String value)
-   {
-      if (value != null && value.length() > 255)
-      {
-         log.warn("comment too long, truncated " + value);
-         comment = value.substring(0, 255);
-      } else
-      {
-         comment = value;
-      }
-   }
 
    /**
     * add an AccessLink to AccesPoint if not already present <br/>
@@ -173,20 +263,29 @@ public class AccessPoint extends NeptuneLocalizedObject
          accessLinks.remove(accessLink);
    }
 
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * fr.certu.chouette.model.neptune.NeptuneLocalizedObject#toString(java.lang
+    * .String, int)
+    */
    @Override
    public String toString(String indent, int level)
    {
       StringBuilder sb = new StringBuilder(super.toString(indent, level));
       sb.append("\n").append(indent).append("  comment = ").append(comment);
-      sb.append("\n").append(indent).append("  liftAvailable = ")
-            .append(liftAvailable);
-      sb.append("\n").append(indent).append("  mobilityRestrictedSuitable = ")
-            .append(mobilityRestrictedSuitable);
-      sb.append("\n").append(indent).append("  stairsAvailable = ")
-            .append(stairsAvailable);
+      sb.append("\n").append(indent).append("  liftAvailable = ").append(liftAvailable);
+      sb.append("\n").append(indent).append("  mobilityRestrictedSuitable = ").append(mobilityRestrictedSuitable);
+      sb.append("\n").append(indent).append("  stairsAvailable = ").append(stairsAvailable);
       return sb.toString();
    }
 
+   /*
+    * (non-Javadoc)
+    * 
+    * @see fr.certu.chouette.model.neptune.NeptuneLocalizedObject#complete()
+    */
    @Override
    public void complete()
    {
@@ -197,12 +296,20 @@ public class AccessPoint extends NeptuneLocalizedObject
       {
          containedInStopArea = getContainedIn().getObjectId();
          getContainedIn().addAccessPoint(this);
-      } else
+      }
+      else
       {
          containedInStopArea = "NEPTUNE:StopArea:UnusedField";
       }
    }
 
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * fr.certu.chouette.model.neptune.NeptuneObject#compareAttributes(fr.certu
+    * .chouette.model.neptune.NeptuneObject)
+    */
    @Override
    public <T extends NeptuneObject> boolean compareAttributes(T anotherObject)
    {
@@ -217,8 +324,7 @@ public class AccessPoint extends NeptuneLocalizedObject
             return false;
          if (!sameValue(this.getComment(), another.getComment()))
             return false;
-         if (!sameValue(this.getRegistrationNumber(),
-               another.getRegistrationNumber()))
+         if (!sameValue(this.getRegistrationNumber(), another.getRegistrationNumber()))
             return false;
 
          if (!sameValue(this.getClosingTime(), another.getClosingTime()))
@@ -245,12 +351,18 @@ public class AccessPoint extends NeptuneLocalizedObject
             return false;
 
          return true;
-      } else
+      }
+      else
       {
          return false;
       }
    }
 
+   /*
+    * (non-Javadoc)
+    * 
+    * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#toURL()
+    */
    @Override
    public String toURL()
    {

@@ -37,24 +37,88 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject
 {
 
    // constants for ObjectId prefixes
+   /**
+    * default objectId type for access points 
+    */
    public static final String ACCESSPOINT_KEY = "AccessPoint";
+   /**
+    * default objectId type for access links 
+    */
    public static final String ACCESSLINK_KEY = "AccessLink";
+   /**
+    * default objectId type for area centroids (deprecated in next release)
+    */
    public static final String AREACENTROID_KEY = "AreaCentroid";
+   /**
+    * default objectId type for companies
+    */
    public static final String COMPANY_KEY = "Company";
+   /**
+    * default objectId type for connection links 
+    */
    public static final String CONNECTIONLINK_KEY = "ConnectionLink";
+   /**
+    * default objectId type for facilities
+    */
    public static final String FACILITY_KEY = "Facility";
+   /**
+    * default objectId type for group of lines 
+    */
    public static final String GROUPOFLINE_KEY = "GroupOfLine";
+   /**
+    * default objectId type for journey patterns 
+    */
    public static final String JOURNEYPATTERN_KEY = "JourneyPattern";
+   /**
+    * default objectId type for lines 
+    */
    public static final String LINE_KEY = "Line";
-   public static final String PTLINK_KEY = "PtLink";
+   /**
+    * default objectId type for ptlinks  (deprecated in next release)
+    */
+   public static final String PTLINK_KEY = "PtLink"; 
+   /**
+    * default objectId type for Networks
+    */
    public static final String PTNETWORK_KEY = "GroupOfLine";
+   /**
+    * default objectId type for route 
+    */
    public static final String ROUTE_KEY = "Route";
+   /**
+    * default objectId type for stop areas 
+    */
    public static final String STOPAREA_KEY = "StopArea";
+   /**
+    * default objectId type for stop points 
+    */
    public static final String STOPPOINT_KEY = "StopPoint";
+   /**
+    * default objectId type for time slots
+    */
    public static final String TIMESLOT_KEY = "TimeSlot";
+   /**
+    * default objectId type for timetables 
+    */
    public static final String TIMETABLE_KEY = "Timetable";
+   /**
+    * default objectId type for vehicle journeys 
+    */
    public static final String VEHICLEJOURNEY_KEY = "VehicleJourney";
 
+
+   /** 
+    * Neptune object id <br/>
+    * composed of 3 items separated by a colon
+    * <ol>
+    * <li>prefix : an alphanumerical value (underscore accepted)</li>
+    * <li>type : a camelcase name describing object type</li>
+    * <li>technical id: an alphanumerical value (underscore and minus accepted) </li>
+    * </ol>
+    * This data must be unique in dataset
+    * 
+    * @return  The actual value
+    */
    @Getter
    @Column(name = "objectid", nullable = false, unique = true)
    private String objectId;
@@ -63,23 +127,43 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject
       objectId = dataBaseSizeProtectedValue(value,"objectId",log);
    }
 
+   /** 
+    * object version
+    * 
+    * @param objectVersion New value
+    * @return  The actual value
+    */
    @Getter
    @Setter
    @Column(name = "object_version")
    private Integer objectVersion = 1;
 
+   /** 
+    * creation time
+    * 
+    * @param creationTime New value
+    * @return  The actual value
+    */
    @Getter
    @Setter
    @Column(name = "creation_time")
    private Date creationTime = new Date();
 
+   /** 
+    * creator id
+    * 
+    * @param creatorId New value
+    * @return  The actual value
+    */
    @Getter
    @Setter
    @Column(name = "creator_id")
    private String creatorId;
 
    /**
-    * indicated if object is completed for export purpose
+    * indicate if object is completed for export purpose
+    * 
+    * @return  The actual value
     */
    @Getter
    @Transient
@@ -88,11 +172,23 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject
    @Transient
    private String unsaved_name;
 
+   /**
+    * virtual name for object without name attribute<br>
+    * use to maintain coherence for generic interfaces
+    * 
+    * @return  The actual value
+    */
    public String getName()
    {
       return unsaved_name;
    }
 
+   /**
+    * virtual name for object without name attribute<br>
+    * use to maintain coherence for generic interfaces
+    * 
+    * @param name New value
+    */
    public void setName(String name)
    {
       this.unsaved_name = name;
@@ -136,7 +232,8 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject
    }
 
    /**
-    * default complete action : do nothing
+    * fill transient values for export purpose<br>
+    * recursive method along the model
     */
    public void complete()
    {
@@ -275,7 +372,7 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject
    }
 
    /**
-    * return prefixe for objectId
+    * return prefix of objectId
     * 
     * @return String
     */
@@ -289,7 +386,7 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject
    }
 
    /**
-    * return suffix for objectId
+    * return suffix of objectId
     * 
     * @return String
     */
@@ -301,5 +398,10 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject
          return "";
    }
 
+   /**
+    * for rails interface: produce rest URL for reports
+    * 
+    * @return URL relative to dataspace
+    */
    public abstract String toURL();
 }
