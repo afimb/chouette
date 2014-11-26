@@ -9,7 +9,6 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -90,6 +89,7 @@ public abstract class IndexImpl<T> extends AbstractIndex<T>
       }
 
       index();
+      file.close();
    }
 
    @Override
@@ -305,6 +305,7 @@ public abstract class IndexImpl<T> extends AbstractIndex<T>
 
       log.debug("[DSU] index " + _path + " " + _tokens.size() + " objects "
             + monitor.stop());
+      file.close();
    }
 
    // @Override
@@ -383,11 +384,6 @@ public abstract class IndexImpl<T> extends AbstractIndex<T>
       return result;
    }
 
-   private ByteBuffer concat(ByteBuffer... buffers)
-   {
-      return concat(Arrays.asList(buffers));
-   }
-
    private ByteBuffer concat(List<ByteBuffer> buffers)
    {
       int length = 0;
@@ -417,9 +413,10 @@ public abstract class IndexImpl<T> extends AbstractIndex<T>
    {
       boolean result = true;
       FileChannel channel = null;
+      RandomAccessFile file = null;
       try
       {
-         RandomAccessFile file = new RandomAccessFile(path, "r");
+         file = new RandomAccessFile(path, "r");
          channel = file.getChannel();
          ByteBuffer buffer = ByteBuffer.allocate(UTF_8.length);
          channel.read(buffer);
@@ -441,6 +438,15 @@ public abstract class IndexImpl<T> extends AbstractIndex<T>
             if (channel != null)
             {
                channel.close();
+            }
+         } catch (IOException ignored)
+         {
+         }
+         try
+         {
+            if (file != null)
+            {
+               file.close();
             }
          } catch (IOException ignored)
          {
@@ -481,6 +487,7 @@ public abstract class IndexImpl<T> extends AbstractIndex<T>
          return result;
       }
 
+      @SuppressWarnings("unchecked")
       private void updateContext()
       {
          int result = -1;

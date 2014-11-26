@@ -3,15 +3,9 @@ package fr.certu.chouette.exchange.gtfs.export.producer;
 import org.apache.log4j.Logger;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import fr.certu.chouette.common.ChouetteException;
-import fr.certu.chouette.exchange.gtfs.exporter.producer.GtfsRouteProducer;
-import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
-import fr.certu.chouette.exchange.gtfs.model.GtfsRoute;
-import fr.certu.chouette.model.neptune.Company;
-import fr.certu.chouette.model.neptune.Line;
 
 @ContextConfiguration(locations = { "classpath:testContext.xml",
       "classpath*:chouetteContext.xml" })

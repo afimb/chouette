@@ -11,10 +11,8 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import fr.certu.chouette.common.ChouetteException;
-import fr.certu.chouette.manager.INeptuneManager;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.PTNetwork;
-import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 import fr.certu.chouette.plugin.exchange.IImportPlugin;
 import fr.certu.chouette.plugin.report.Report;

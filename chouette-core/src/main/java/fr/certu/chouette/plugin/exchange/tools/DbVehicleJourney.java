@@ -15,9 +15,7 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
-
 import fr.certu.chouette.model.neptune.Line;
-import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;

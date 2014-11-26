@@ -1,7 +1,5 @@
 package fr.certu.chouette.neptune;
 
-import java.util.List;
-
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
@@ -14,7 +12,6 @@ import uk.org.siri.siri.AccessFacilityEnumeration;
 import fr.certu.chouette.plugin.exchange.xml.exception.ExchangeRuntimeException;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
-import fr.certu.chouette.plugin.validation.report.DetailReportItem;
 
 @ContextConfiguration(locations = { "classpath:testContext.xml",
       "classpath*:chouetteContext.xml" })

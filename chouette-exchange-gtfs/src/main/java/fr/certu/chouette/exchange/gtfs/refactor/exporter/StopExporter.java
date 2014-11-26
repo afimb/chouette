@@ -16,7 +16,7 @@ public class StopExporter extends ExporterImpl<GtfsStop> implements
 {
    public static enum FIELDS
    {
-      stop_id, stop_code, stop_name, stop_desc, stop_lat, stop_lon, zone_id, stop_url, location_type, parent_station, wheelchair_boarding; //, stop_timezone ;
+      stop_id, stop_code, stop_name, stop_desc, stop_lat, stop_lon, zone_id, stop_url, location_type, parent_station, wheelchair_boarding, stop_timezone ;
    };
 
    public static final String FILENAME = "stops.txt";
@@ -104,8 +104,8 @@ public class StopExporter extends ExporterImpl<GtfsStop> implements
                input.getParentStation(), false));
          values.add(WHEELCHAIRBOARDINGTYPE_CONVERTER.to(context,
                FIELDS.wheelchair_boarding, input.getWheelchairBoarding(), false));
-//         values.add(TIMEZONE_CONVERTER.to(context, FIELDS.stop_timezone,
-//               input.getStopTimezone(), false));
+         values.add(TIMEZONE_CONVERTER.to(context, FIELDS.stop_timezone,
+               input.getStopTimezone(), false));
 
          result = Tokenizer.untokenize(values);
          return result;

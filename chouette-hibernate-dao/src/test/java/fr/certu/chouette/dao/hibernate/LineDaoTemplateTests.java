@@ -13,7 +13,6 @@ import java.util.List;
 
 import org.testng.annotations.BeforeMethod;
 
-import fr.certu.chouette.dao.hibernate.AbstractDaoTemplateTests.FilterData;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.model.neptune.Line;
 

@@ -9,6 +9,7 @@
 package fr.certu.chouette.exchange.gtfs.exporter.producer;
 
 import java.util.Collection;
+import java.util.TimeZone;
 
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReportItem;
@@ -77,6 +78,17 @@ public class GtfsStopProducer extends AbstractProducer
       stop.setStopLon(neptuneObject.getLongitude());
       // stop.setStopCode(neptuneObject.getRegistrationNumber());
       stop.setStopDesc(neptuneObject.getComment());
+      // manage stop_timezone
+      stop.setStopTimezone(null);
+      if (!isEmpty(neptuneObject.getTimeZone()))
+      {
+         TimeZone tz = TimeZone.getTimeZone(neptuneObject.getTimeZone());
+         if (tz != null)
+         {
+            stop.setStopTimezone(tz);
+         }
+      }
+
       if (stop.getLocationType().equals(GtfsStop.LocationType.Stop))
       {
          if (neptuneObject.getParent() != null && validParents.contains(neptuneObject.getParent()))

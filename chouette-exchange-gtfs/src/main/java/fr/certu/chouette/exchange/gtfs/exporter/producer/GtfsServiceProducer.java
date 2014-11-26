@@ -18,9 +18,6 @@ import java.util.List;
 import java.util.Set;
 
 import lombok.extern.log4j.Log4j;
-
-import org.apache.log4j.Logger;
-
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
 import fr.certu.chouette.exchange.gtfs.refactor.exporter.GtfsExporter;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsCalendar;

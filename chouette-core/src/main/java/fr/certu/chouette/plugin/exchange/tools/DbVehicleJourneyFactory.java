@@ -18,7 +18,6 @@ import lombok.extern.log4j.Log4j;
 
 import org.apache.commons.pool.BasePoolableObjectFactory;
 import org.apache.commons.pool.impl.GenericObjectPool;
-import org.apache.log4j.Logger;
 
 import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.VehicleJourney;

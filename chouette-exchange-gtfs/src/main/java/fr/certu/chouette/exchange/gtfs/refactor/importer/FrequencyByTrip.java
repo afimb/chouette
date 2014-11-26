@@ -3,7 +3,6 @@ package fr.certu.chouette.exchange.gtfs.refactor.importer;
 import java.io.IOException;
 
 import fr.certu.chouette.exchange.gtfs.refactor.importer.GtfsException.ERROR;
-import fr.certu.chouette.exchange.gtfs.refactor.importer.TripIndex.FIELDS;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsFrequency;
 
 public class FrequencyByTrip extends IndexImpl<GtfsFrequency> implements

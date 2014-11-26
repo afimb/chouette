@@ -559,7 +559,7 @@ public class ImportCommand extends AbstractCommand
    private void saveImportReports(EntityManager session, ImportTask importTask,
          Report ireport, Report vreport)
    {
-      log.info("import report = " + ireport.toJSON().toString(3));
+      // log.info("import report = " + ireport.toJSON().toString(3));
       ImportReportToJSONConverter converter = new ImportReportToJSONConverter(
             ireport);
 

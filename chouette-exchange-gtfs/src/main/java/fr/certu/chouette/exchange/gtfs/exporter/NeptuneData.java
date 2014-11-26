@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TimeZone;
 
-import lombok.extern.log4j.Log4j;
 import fr.certu.chouette.exchange.gtfs.exporter.producer.GtfsAgencyProducer;
 import fr.certu.chouette.exchange.gtfs.exporter.producer.GtfsExtendedStopProducer;
 import fr.certu.chouette.exchange.gtfs.exporter.producer.GtfsRouteProducer;
@@ -41,7 +40,6 @@ import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 /**
  *
  */
-@Log4j
 public class NeptuneData
 {
 

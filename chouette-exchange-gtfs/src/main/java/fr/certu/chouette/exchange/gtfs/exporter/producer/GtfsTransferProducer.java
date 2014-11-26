@@ -8,8 +8,6 @@
 
 package fr.certu.chouette.exchange.gtfs.exporter.producer;
 
-import java.io.IOException;
-
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
 import fr.certu.chouette.exchange.gtfs.refactor.exporter.GtfsExporter;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsTransfer;

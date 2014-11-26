@@ -1,14 +1,11 @@
 package fr.certu.chouette.exchange.xml.neptune.exporter.producer;
 
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.ListIterator;
 
 import org.trident.schema.trident.DayTypeType;
 import org.trident.schema.trident.PeriodType;
 import org.trident.schema.trident.TimetableType;
 
-import fr.certu.chouette.model.neptune.CalendarDay;
 import fr.certu.chouette.model.neptune.Period;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;

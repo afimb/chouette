@@ -7,8 +7,6 @@ import java.util.List;
 import fr.certu.chouette.exchange.gtfs.refactor.importer.Context;
 import fr.certu.chouette.exchange.gtfs.refactor.importer.GtfsConverter;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStopTime;
-import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStopTime.DropOffType;
-import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStopTime.PickupType;
 
 public class StopTimeExporter extends ExporterImpl<GtfsStopTime> implements
       GtfsConverter

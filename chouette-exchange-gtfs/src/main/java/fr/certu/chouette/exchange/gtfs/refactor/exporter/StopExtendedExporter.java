@@ -17,7 +17,7 @@ public class StopExtendedExporter extends ExporterImpl<GtfsStop> implements
    public static enum FIELDS
    {
       stop_id, stop_code, stop_name, stop_desc, stop_lat, stop_lon, zone_id, stop_url, location_type, parent_station, 
-      wheelchair_boarding, address_line, locality, postal_code ; //, stop_timezone;
+      wheelchair_boarding, address_line, locality, postal_code , stop_timezone;
    };
 
    public static final String FILENAME = "stops.txt";
@@ -79,8 +79,8 @@ public class StopExtendedExporter extends ExporterImpl<GtfsStop> implements
                values.get(i++), false));
          bean.setPostalCode(STRING_CONVERTER.from(context, FIELDS.postal_code,
                values.get(i++), false));
-//         bean.setStopTimezone(TIMEZONE_CONVERTER.from(context,
-//               FIELDS.stop_timezone, values.get(i++), false));
+         bean.setStopTimezone(TIMEZONE_CONVERTER.from(context,
+               FIELDS.stop_timezone, values.get(i++), false));
       
          return bean;
       }

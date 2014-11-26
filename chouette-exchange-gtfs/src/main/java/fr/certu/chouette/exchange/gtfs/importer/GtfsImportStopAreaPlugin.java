@@ -18,7 +18,6 @@ import org.apache.log4j.Logger;
 
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.exchange.gtfs.importer.producer.AbstractModelProducer;
-import fr.certu.chouette.exchange.gtfs.refactor.importer.GtfsException;
 import fr.certu.chouette.exchange.gtfs.refactor.importer.GtfsImporter;
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.StopArea;

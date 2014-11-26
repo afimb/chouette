@@ -8,14 +8,10 @@
 
 package fr.certu.chouette.exchange.gtfs.exporter.producer;
 
-import org.apache.log4j.Logger;
-
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
-import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReportItem;
 import fr.certu.chouette.exchange.gtfs.refactor.exporter.GtfsExporter;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsRoute;
 import fr.certu.chouette.model.neptune.Line;
-import fr.certu.chouette.plugin.report.Report.STATE;
 
 /**
  * convert Timetable to Gtfs Calendar and CalendarDate
@@ -28,8 +24,6 @@ public class GtfsRouteProducer extends AbstractProducer
    {
       super(exporter);
    }
-
-   private static final Logger logger = Logger.getLogger(GtfsRouteProducer.class);
 
    private GtfsRoute route = new GtfsRoute();
 

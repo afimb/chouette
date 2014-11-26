@@ -4,20 +4,20 @@
  */
 package fr.certu.chouette.exchange.netex.exporter;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+import javax.xml.xpath.XPathExpressionException;
+
+import org.testng.annotations.Test;
+
 import fr.certu.chouette.exchange.netex.ModelTranslator;
 import fr.certu.chouette.model.neptune.Period;
 import fr.certu.chouette.model.neptune.Timetable;
-
 import fr.certu.chouette.model.neptune.type.DayTypeEnum;
-import java.text.ParseException;
-import java.util.List;
-import java.util.Date;
-import javax.xml.xpath.XPathExpressionException;
-
-import org.testng.Reporter;
-import org.testng.annotations.Test;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 
 /**
  * 

@@ -42,7 +42,7 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter
       bean.setId(id);
       bean.setStopId(STRING_CONVERTER.from(context, FIELDS.stop_id, array[i++],
             true));
-      bean.setStopCode(STRING_CONVERTER.from(context, FIELDS.stop_id,
+      bean.setStopCode(STRING_CONVERTER.from(context, FIELDS.stop_code,
             array[i++], false));
       bean.setStopName(STRING_CONVERTER.from(context, FIELDS.stop_name,
             array[i++], true));

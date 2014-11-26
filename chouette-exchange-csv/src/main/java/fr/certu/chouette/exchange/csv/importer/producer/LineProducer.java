@@ -12,7 +12,6 @@ import java.util.Set;
 import lombok.Getter;
 
 import org.apache.log4j.Logger;
-import org.springframework.util.StringUtils;
 
 import au.com.bytecode.opencsv.CSVReader;
 import fr.certu.chouette.exchange.csv.exception.ExchangeException;

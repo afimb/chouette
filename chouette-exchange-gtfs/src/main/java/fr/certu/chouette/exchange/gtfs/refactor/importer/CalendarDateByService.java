@@ -2,9 +2,6 @@ package fr.certu.chouette.exchange.gtfs.refactor.importer;
 
 import java.io.IOException;
 
-import com.hazelcast.management.request.GetSystemWarningsRequest;
-
-import fr.certu.chouette.exchange.gtfs.refactor.importer.GtfsException.ERROR;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsCalendarDate;
 
 public class CalendarDateByService extends IndexImpl<GtfsCalendarDate>

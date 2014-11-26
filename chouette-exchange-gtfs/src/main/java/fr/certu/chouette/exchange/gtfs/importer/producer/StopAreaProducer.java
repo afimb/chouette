@@ -65,6 +65,7 @@ public class StopAreaProducer extends AbstractModelProducer<StopArea, GtfsStop>
       }
 
       // RegistrationNumber optional
+      stopArea.setRegistrationNumber(gtfsStop.getStopCode());
       //      String[] token = stopArea.getObjectId().split(":");
       //      stopArea.setRegistrationNumber(token[2]);
       // TODO : code

@@ -1,20 +1,11 @@
 package fr.certu.chouette.exchange.gtfs.export.producer;
 
-import java.sql.Time;
-
 import org.apache.log4j.Logger;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import fr.certu.chouette.common.ChouetteException;
-import fr.certu.chouette.exchange.gtfs.exporter.producer.GtfsTransferProducer;
-import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
-import fr.certu.chouette.exchange.gtfs.model.GtfsTransfer;
-import fr.certu.chouette.exchange.gtfs.model.GtfsTransfer.Type;
-import fr.certu.chouette.model.neptune.ConnectionLink;
-import fr.certu.chouette.model.neptune.StopArea;
 
 @ContextConfiguration(locations = { "classpath:testContext.xml",
       "classpath*:chouetteContext.xml" })

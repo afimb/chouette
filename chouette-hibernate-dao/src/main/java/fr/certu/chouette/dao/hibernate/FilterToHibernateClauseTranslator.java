@@ -1,7 +1,5 @@
 package fr.certu.chouette.dao.hibernate;
 
-import java.util.StringTokenizer;
-
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Path;

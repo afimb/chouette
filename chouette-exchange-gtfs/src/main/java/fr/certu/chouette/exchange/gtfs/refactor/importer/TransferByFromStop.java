@@ -3,9 +3,7 @@ package fr.certu.chouette.exchange.gtfs.refactor.importer;
 import java.io.IOException;
 
 import fr.certu.chouette.exchange.gtfs.refactor.importer.GtfsException.ERROR;
-import fr.certu.chouette.exchange.gtfs.refactor.importer.StopTimeByTrip.FIELDS;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsTransfer;
-import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsTransfer.TransferType;
 
 public class TransferByFromStop extends IndexImpl<GtfsTransfer> implements
       GtfsConverter
