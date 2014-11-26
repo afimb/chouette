@@ -34,9 +34,11 @@
 				access_type,
 				lift_availability,
 				mobility_restricted_suitability,
-				stairs_availability
+				stairs_availability,
+				zip_code,
+				city_name
 				)
-				VALUES(?,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?, ?,?,?,?)
+				VALUES(?,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?, ?,?,?,?,?, ?)
 			</value>
 		</property>
 		<property name="sqlSelectByObjectId">
@@ -73,7 +75,9 @@
 				access_type = ?,
 				lift_availability = ?,
 				mobility_restricted_suitability = ? ,
-				stairs_availability =?
+				stairs_availability = ?,
+				zip_code = ?,
+				city_name = ?
 				WHERE objectid = ?
 		</value>
 		</property>

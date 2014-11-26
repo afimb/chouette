@@ -76,5 +76,7 @@ public class AccessPointJdbcDao extends AbstractJdbcDao<AccessPoint>
       ps.setBoolean(17, accessPoint.isLiftAvailable());
       ps.setBoolean(18, accessPoint.isMobilityRestrictedSuitable());
       ps.setBoolean(19, accessPoint.isStairsAvailable());
+      ps.setString(20, accessPoint.getZipCode());
+      ps.setString(21, accessPoint.getCityName());
    }
 }
