@@ -89,8 +89,7 @@ import fr.certu.chouette.plugin.report.ReportItem;
 public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
 {
 
-   private static final Logger logger = Logger
-         .getLogger(XMLNeptuneExportLinePlugin.class);
+   private static final Logger logger = Logger.getLogger(XMLNeptuneExportLinePlugin.class);
 
    private FormatDescription description;
    @Setter
@@ -133,8 +132,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
    /**
     * list of allowed file extensions
     */
-   private List<String> allowedExtensions = Arrays.asList(new String[] { "xml",
-         "zip" });
+   private List<String> allowedExtensions = Arrays.asList(new String[] { "xml", "zip" });
 
    /**
     * Export lines in Neptune XML format
@@ -145,19 +143,20 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
       description.setName("NEPTUNE");
       List<ParameterDescription> params = new ArrayList<ParameterDescription>();
       {
-         ParameterDescription param = new ParameterDescription("outputFile",
-               ParameterDescription.TYPE.FILEPATH, false, true);
+         ParameterDescription param = new ParameterDescription("outputFile", ParameterDescription.TYPE.FILEPATH, false, true);
          param.setAllowedExtensions(allowedExtensions);
          params.add(param);
       }
       {
-         ParameterDescription param = new ParameterDescription("startDate",
-               ParameterDescription.TYPE.DATE, false, false);
+         ParameterDescription param = new ParameterDescription("startDate", ParameterDescription.TYPE.DATE, false, false);
          params.add(param);
       }
       {
-         ParameterDescription param = new ParameterDescription("endDate",
-               ParameterDescription.TYPE.DATE, false, false);
+         ParameterDescription param = new ParameterDescription("endDate", ParameterDescription.TYPE.DATE, false, false);
+         params.add(param);
+      }
+      {
+         ParameterDescription param = new ParameterDescription("projectionType", ParameterDescription.TYPE.STRING, false, false);
          params.add(param);
       }
       description.setParameterDescriptions(params);
@@ -182,15 +181,15 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
     * java.util.List, fr.certu.chouette.plugin.report.ReportHolder)
     */
    @Override
-   public void doExport(List<Line> beans, List<ParameterValue> parameters,
-         ReportHolder reportContainer) throws ChouetteException
+   public void doExport(List<Line> beans, List<ParameterValue> parameters, ReportHolder reportContainer) throws ChouetteException
    {
-      ExchangeReport report = new ExchangeReport(ExchangeReport.KEY.EXPORT,
-            description.getName());
+      ExchangeReport report = new ExchangeReport(ExchangeReport.KEY.EXPORT, description.getName());
       report.updateStatus(Report.STATE.OK);
       reportContainer.setReport(report);
 
       String fileName = null;
+
+      String projectionType = null;
 
       Date startDate = null;
       Date endDate = null;
@@ -208,25 +207,31 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
                   logger.warn("outputFile changed as FILEPATH type");
                   fileName = svalue.getFilenameValue();
                }
-            } else if (svalue.getName().equalsIgnoreCase("startDate"))
+            }
+            else if (svalue.getName().equalsIgnoreCase("startDate"))
             {
                Calendar c = svalue.getDateValue();
                if (c != null)
                   startDate = new Date(c.getTime().getTime());
-            } else if (svalue.getName().equalsIgnoreCase("endDate"))
+            }
+            else if (svalue.getName().equalsIgnoreCase("endDate"))
             {
                Calendar c = svalue.getDateValue();
                if (c != null)
                   endDate = new Date(c.getTime().getTime());
-            } else
-            {
-               throw new IllegalArgumentException("unexpected argument "
-                     + svalue.getName());
             }
-         } else
+            else if (svalue.getName().equalsIgnoreCase("projectionType"))
+            {
+               projectionType = svalue.getStringValue();
+            }
+            else
+            {
+               throw new IllegalArgumentException("unexpected argument " + svalue.getName());
+            }
+         }
+         else
          {
-            throw new IllegalArgumentException("unexpected argument "
-                  + value.getName());
+            throw new IllegalArgumentException("unexpected argument " + value.getName());
          }
       }
       if (fileName == null)
@@ -238,15 +243,11 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
          throw new IllegalArgumentException("startDate after endDate");
       }
 
-      String fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1)
-            .toLowerCase();
+      String fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
       if (!allowedExtensions.contains(fileExtension))
       {
-         logger.error("invalid argument outputFile " + fileName
-               + ", allowed format : "
-               + Arrays.toString(allowedExtensions.toArray()));
-         throw new IllegalArgumentException("invalid file type : "
-               + fileExtension);
+         logger.error("invalid argument outputFile " + fileName + ", allowed format : " + Arrays.toString(allowedExtensions.toArray()));
+         throw new IllegalArgumentException("invalid file type : " + fileExtension);
       }
 
       if (beans == null || beans.isEmpty())
@@ -256,14 +257,12 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
 
       if (beans.size() > 1 && fileExtension.equals("xml"))
       {
-         throw new IllegalArgumentException(
-               "cannot export multiple lines in one XML file");
+         throw new IllegalArgumentException("cannot export multiple lines in one XML file");
       }
 
       JaxbNeptuneFileConverter neptuneFileWriter;
       File outputFile = new File(fileName);
-      if (outputFile.getParentFile() != null
-            && !outputFile.getParentFile().exists())
+      if (outputFile.getParentFile() != null && !outputFile.getParentFile().exists())
       {
          outputFile.getParentFile().mkdirs();
       }
@@ -273,56 +272,47 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
          {
             neptuneFileWriter = new JaxbNeptuneFileConverter();
             Line line = beans.get(0);
-            ExchangeReportItem item = new ExchangeReportItem(
-                  ExchangeReportItem.KEY.EXPORTED_LINE, Report.STATE.OK,
-                  line.getName(), line.getObjectId());
+            ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.EXPORTED_LINE, Report.STATE.OK, line.getName(), line.getObjectId());
             report.addItem(item);
-            JAXBElement<ChouettePTNetworkType> rootObject = exportLine(line,
-                  startDate, endDate, item);
+            JAXBElement<ChouettePTNetworkType> rootObject = exportLine(line, startDate, endDate, projectionType, item);
             if (rootObject != null)
             {
-               logger.info("exporting " + line.getName() + " ("
-                     + line.getObjectId() + ")");
+               logger.info("exporting " + line.getName() + " (" + line.getObjectId() + ")");
                neptuneFileWriter.write(rootObject, outputFile);
-            } else
+            }
+            else
             {
-               logger.info("no vehiclejourneys for line " + line.getName()
-                     + " (" + line.getObjectId() + "): not exported");
-               ExchangeReportItem errorItem = new ExchangeReportItem(
-                     ExchangeReportItem.KEY.EMPTY_LINE, Report.STATE.ERROR,
-                     line.getName(), line.getObjectId());
+               logger.info("no vehiclejourneys for line " + line.getName() + " (" + line.getObjectId() + "): not exported");
+               ExchangeReportItem errorItem = new ExchangeReportItem(ExchangeReportItem.KEY.EMPTY_LINE, Report.STATE.ERROR, line.getName(), line.getObjectId());
                item.addItem(errorItem);
             }
-         } catch (Exception e1)
+         }
+         catch (Exception e1)
          {
             e1.printStackTrace();
          }
-      } else
+      }
+      else
       {
 
          try
          {
             neptuneFileWriter = new JaxbNeptuneFileConverter();
             // Create the ZIP file
-            ZipOutputStream out = new ZipOutputStream(new FileOutputStream(
-                  fileName));
+            ZipOutputStream out = new ZipOutputStream(new FileOutputStream(fileName));
 
             // Compress the files
             for (Iterator<Line> iterator = beans.iterator(); iterator.hasNext();)
             {
                Line line = iterator.next();
                iterator.remove();
-               ExchangeReportItem item = new ExchangeReportItem(
-                     ExchangeReportItem.KEY.EXPORTED_LINE, Report.STATE.OK,
-                     line.getName(), line.getObjectId());
+               ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.EXPORTED_LINE, Report.STATE.OK, line.getName(), line.getObjectId());
                report.addItem(item);
 
-               JAXBElement<ChouettePTNetworkType> rootObject = exportLine(line,
-                     startDate, endDate, item);
+               JAXBElement<ChouettePTNetworkType> rootObject = exportLine(line, startDate, endDate, projectionType, item);
                if (rootObject != null)
                {
-                  logger.info("exporting " + line.getName() + " ("
-                        + line.getObjectId() + ")");
+                  logger.info("exporting " + line.getName() + " (" + line.getObjectId() + ")");
 
                   String name = line.getObjectId().split(":")[2];
 
@@ -330,7 +320,8 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
                   try
                   {
                      neptuneFileWriter.write(rootObject, stream);
-                  } catch (JAXBException e)
+                  }
+                  catch (JAXBException e)
                   {
                      e.printStackTrace();
                   }
@@ -343,13 +334,11 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
 
                   // Complete the entry
                   out.closeEntry();
-               } else
+               }
+               else
                {
-                  logger.info("no vehiclejourneys for line " + line.getName()
-                        + " (" + line.getObjectId() + "): not exported");
-                  ExchangeReportItem errorItem = new ExchangeReportItem(
-                        ExchangeReportItem.KEY.EMPTY_LINE,
-                        Report.STATE.WARNING, line.getName(),
+                  logger.info("no vehiclejourneys for line " + line.getName() + " (" + line.getObjectId() + "): not exported");
+                  ExchangeReportItem errorItem = new ExchangeReportItem(ExchangeReportItem.KEY.EMPTY_LINE, Report.STATE.WARNING, line.getName(),
                         line.getObjectId());
                   item.addItem(errorItem);
                }
@@ -359,11 +348,11 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
 
             // Complete the ZIP file
             out.close();
-         } catch (Exception e)
+         }
+         catch (Exception e)
          {
             logger.error("cannot create zip file", e);
-            throw new ExchangeRuntimeException(
-                  ExchangeExceptionCode.ERR_XML_WRITE, e);
+            throw new ExchangeRuntimeException(ExchangeExceptionCode.ERR_XML_WRITE, e);
          }
       }
    }
@@ -380,8 +369,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
     * @param report
     * @return chouetteLine or null if line has no valid vehicleJourneys
     */
-   private JAXBElement<ChouettePTNetworkType> exportLine(Line line,
-         Date startDate, Date endDate, ReportItem report)
+   private JAXBElement<ChouettePTNetworkType> exportLine(Line line, Date startDate, Date endDate, String projectionType, ReportItem report)
    {
       ObjectFactory factory = AbstractJaxbNeptuneProducer.tridentFactory;
       ChouettePTNetworkType rootObject = factory.createChouettePTNetworkType();
@@ -392,8 +380,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
 
          if (line.getPtNetwork() != null)
          {
-            rootObject
-                  .setPTNetwork(networkProducer.produce(line.getPtNetwork()));
+            rootObject.setPTNetwork(networkProducer.produce(line.getPtNetwork()));
          }
 
          if (line.getGroupOfLines() != null)
@@ -440,7 +427,8 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
                   validJourneyPatterns.add(vehicleJourney.getJourneyPattern());
                   validRoutes.add(vehicleJourney.getRoute());
                }
-            } else
+            }
+            else
             {
                boolean isValid = false;
                for (Timetable timetable : vehicleJourney.getTimetables())
@@ -448,15 +436,14 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
                   if (timetables.contains(timetable))
                   {
                      isValid = true;
-                  } else
+                  }
+                  else
                   {
                      Timetable validTimetable = timetable;
                      if (startDate != null)
-                        validTimetable = reduceTimetable(timetable, startDate,
-                              true);
+                        validTimetable = reduceTimetable(timetable, startDate, true);
                      if (validTimetable != null && endDate != null)
-                        validTimetable = reduceTimetable(validTimetable,
-                              endDate, false);
+                        validTimetable = reduceTimetable(validTimetable, endDate, false);
                      if (validTimetable != null)
                      {
                         timetables.add(timetable);
@@ -489,8 +476,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
          HashSet<StopPoint> stopPoints = new HashSet<StopPoint>();
          for (JourneyPattern journeyPattern : validJourneyPatterns)
          {
-            JourneyPatternType jaxbObj = journeyPatternProducer
-                  .produce(journeyPattern);
+            JourneyPatternType jaxbObj = journeyPatternProducer.produce(journeyPattern);
             validObjectIds.add(jaxbObj.getObjectId());
             chouetteLineDescription.getJourneyPattern().add(jaxbObj);
          }
@@ -535,13 +521,13 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
             if (vehicleJourney.getCompany() != null)
             {
                companies.add(vehicleJourney.getCompany());
-            } else
+            }
+            else
             {
                vehicleJourney.setCompany(line.getCompany());
             }
 
-            chouetteLineDescription.getVehicleJourney().add(
-                  vehicleJourneyProducer.produce(vehicleJourney));
+            chouetteLineDescription.getVehicleJourney().add(vehicleJourneyProducer.produce(vehicleJourney));
          }
 
          HashSet<StopArea> stopAreas = new HashSet<StopArea>();
@@ -552,10 +538,8 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
          for (StopPoint stopPoint : stopPoints)
          {
             stopRefs.add(stopPoint.getObjectId());
-            chouetteLineDescription.getStopPoint().add(
-                  stopPointProducer.produce(stopPoint));
-            stopAreas.addAll(extractStopAreaHierarchy(
-                  stopPoint.getContainedInStopArea(), line));
+            chouetteLineDescription.getStopPoint().add(stopPointProducer.produce(stopPoint));
+            stopAreas.addAll(extractStopAreaHierarchy(stopPoint.getContainedInStopArea(), line));
             if (stopPoint.getFacilities() != null)
             {
                facilities.addAll(stopPoint.getFacilities());
@@ -569,8 +553,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
 
          for (PTLink ptLink : ptLinks)
          {
-            chouetteLineDescription.getPtLink().add(
-                  ptLinkProducer.produce(ptLink));
+            chouetteLineDescription.getPtLink().add(ptLinkProducer.produce(ptLink));
          }
 
          for (Company company : companies)
@@ -593,12 +576,11 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
          }
          for (StopArea stopArea : stopAreas)
          {
-            ChouetteArea.StopArea chouetteStopArea = stopAreaProducer
-                  .produce(stopArea);
+            stopArea.toProjection(projectionType);
+            ChouetteArea.StopArea chouetteStopArea = stopAreaProducer.produce(stopArea);
             // remove external stopPoints or stopareas
             List<String> pointRefs = chouetteStopArea.getContains();
-            for (Iterator<String> iterator = pointRefs.iterator(); iterator
-                  .hasNext();)
+            for (Iterator<String> iterator = pointRefs.iterator(); iterator.hasNext();)
             {
                String ref = iterator.next();
                if (!stopRefs.contains(ref))
@@ -607,11 +589,9 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
                }
 
             }
-            if (stopArea.hasAddress() || stopArea.hasCoordinates()
-                  || stopArea.hasProjection())
+            if (stopArea.hasAddress() || stopArea.hasCoordinates() || stopArea.hasProjection())
             {
-               ChouetteArea.AreaCentroid centroid = areaCentroidProducer
-                     .produce(stopArea);
+               ChouetteArea.AreaCentroid centroid = areaCentroidProducer.produce(stopArea);
                chouetteArea.getAreaCentroid().add(centroid);
                chouetteStopArea.setCentroidOfArea(centroid.getObjectId());
             }
@@ -630,8 +610,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
 
          for (ConnectionLink connectionLink : connectionLinks)
          {
-            rootObject.getConnectionLink().add(
-                  connectionLinkProducer.produce(connectionLink));
+            rootObject.getConnectionLink().add(connectionLinkProducer.produce(connectionLink));
             if (connectionLink.getFacilities() != null)
             {
                facilities.addAll(connectionLink.getFacilities());
@@ -645,20 +624,20 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
 
          for (Facility facility : facilities)
          {
+            facility.toProjection(projectionType);
             rootObject.getFacility().add(facilityProducer.produce(facility));
          }
 
          for (AccessLink accessLink : accessLinks)
          {
-            rootObject.getAccessLink().add(
-                  accessLinkProducer.produce(accessLink));
+            rootObject.getAccessLink().add(accessLinkProducer.produce(accessLink));
             accessPoints.add(accessLink.getAccessPoint());
          }
 
          for (AccessPoint accessPoint : accessPoints)
          {
-            rootObject.getAccessPoint().add(
-                  accessPointProducer.produce(accessPoint));
+            accessPoint.toProjection(projectionType);
+            rootObject.getAccessPoint().add(accessPointProducer.produce(accessPoint));
          }
 
          for (Timetable timetable : timetables)
@@ -673,10 +652,10 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
             {
                if (stopRefs.contains(routingConstraint.getObjectId()))
                {
-                  ITLType jaxbITL = routingConstraintProducer.produceITL(line,
-                        routingConstraint);
+                  ITLType jaxbITL = routingConstraintProducer.produceITL(line, routingConstraint);
                   chouetteLineDescription.getITL().add(jaxbITL);
-               } else
+               }
+               else
                {
                   // TODO ? routing constraint without stop on line
                }
@@ -755,8 +734,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
          stopAreas.add(stopArea);
          if (stopArea.getParent() != null)
          {
-            stopAreas.addAll(extractStopAreaHierarchy(stopArea.getParent(),
-                  line));
+            stopAreas.addAll(extractStopAreaHierarchy(stopArea.getParent(), line));
          }
       }
 
@@ -774,8 +752,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
     *           true to eliminate before boundary date , false otherwise
     * @return a copy reduced to date or null if reduced to nothing
     */
-   private Timetable reduceTimetable(Timetable timetable, Date boundaryDate,
-         boolean before)
+   private Timetable reduceTimetable(Timetable timetable, Date boundaryDate, boolean before)
    {
       Timetable reduced = new Timetable();
       reduced.setDayTypes(new ArrayList<DayTypeEnum>(timetable.getDayTypes()));
@@ -786,16 +763,15 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
       reduced.setVehicleJourneyIds(timetable.getVehicleJourneyIds());
       reduced.setVehicleJourneys(timetable.getVehicleJourneys());
 
-      List<CalendarDay> dates = new ArrayList<CalendarDay>(
-            timetable.getCalendarDays());
-      for (Iterator<CalendarDay> iterator = dates.iterator(); iterator
-            .hasNext();)
+      List<CalendarDay> dates = new ArrayList<CalendarDay>(timetable.getCalendarDays());
+      for (Iterator<CalendarDay> iterator = dates.iterator(); iterator.hasNext();)
       {
          CalendarDay date = iterator.next();
          if (date == null)
          {
             iterator.remove();
-         } else if (checkDate(date, boundaryDate, before))
+         }
+         else if (checkDate(date, boundaryDate, before))
          {
             iterator.remove();
          }
@@ -807,7 +783,8 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
          if (checkPeriod(period, boundaryDate, before))
          {
             iterator.remove();
-         } else
+         }
+         else
          {
             shortenPeriod(period, boundaryDate, before);
          }
@@ -831,8 +808,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
     * @param before
     * @return true if period has been modified
     */
-   private boolean shortenPeriod(Period period, Date boundaryDate,
-         boolean before)
+   private boolean shortenPeriod(Period period, Date boundaryDate, boolean before)
    {
       boolean ret = false;
       if (before && period.getStartDate().before(boundaryDate))

@@ -138,6 +138,8 @@ public class ExportCommand
          logger.info("  projection type for export: "
                + referential.getProjectionType());
          projectionType = referential.getProjectionType();
+         parameters.put("projectionType", new ArrayList<String>());
+         parameters.get("projectionType").add(projectionType);
       }
       // set projection for export (inactive if not set)
       geographicService.switchProjection(projectionType);
