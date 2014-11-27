@@ -27,11 +27,10 @@ import lombok.extern.log4j.Log4j;
 import fr.certu.chouette.model.neptune.type.DayTypeEnum;
 
 /**
- * Neptune Timetable
+ * Chouette Timetable
  * <p/>
- * Note for fields comment : <br/>
- * when readable is added to comment, a implicit getter is available <br/>
- * when writable is added to comment, a implicit setter is available
+ * Neptune mapping : Timetable <br/>
+ * Gtfs mapping : service in calendar and calendar_dates <br/>
  */
 @Entity
 @Table(name = "time_tables")
@@ -50,37 +49,92 @@ public class Timetable extends NeptuneIdentifiedObject
       DayTypeEnum.Monday, DayTypeEnum.Tuesday, DayTypeEnum.Wednesday,
       DayTypeEnum.Thursday, DayTypeEnum.Friday, DayTypeEnum.Saturday };
 
+   /**
+    * comment <br/>
+    * Note : should be rename as name in next release
+    * 
+    * @return The actual value
+    */
    @Getter
    @Column(name = "comment")
    private String comment;
+
+   /**
+    * set comment <br/>
+    * truncated to 255 characters if too long
+    * 
+    * @param value
+    *           New value
+    */
    public void setComment(String value)
    {
-      comment = dataBaseSizeProtectedValue(value,"comment",log);
+      comment = dataBaseSizeProtectedValue(value, "comment", log);
    }
 
+   /**
+    * version <br/>
+    * Note : should be rename as short name  in next release
+    * 
+    * @return The actual value
+    */
    @Getter
    @Column(name = "version")
    private String version;
+   /**
+    * set version <br/>
+    * truncated to 255 characters if too long
+    * 
+    * @param value
+    *           New value
+    */
    public void setVersion(String value)
    {
       version = dataBaseSizeProtectedValue(value,"version",log);
    }
 
+   /**
+    * day of week as bit mask
+    * 
+    * @param intDayTypes
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @Column(name = "int_day_types")
    private Integer intDayTypes;
 
+   /**
+    * first valid day in timetable
+    * 
+    * @param startOfPeriod
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @Column(name = "start_date")
    private Date startOfPeriod;
 
+   /**
+    * last valid day in timetable
+    * 
+    * @param endOfPeriod
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @Column(name = "end_date")
    private Date endOfPeriod;
 
+   /**
+    * list of peculiar days
+    * 
+    * @param calendarDays
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @ElementCollection
@@ -88,6 +142,13 @@ public class Timetable extends NeptuneIdentifiedObject
    @OrderColumn(name = "position", nullable = false)
    private List<CalendarDay> calendarDays = new ArrayList<CalendarDay>(0);
 
+   /**
+    * list of periods
+    * 
+    * @param periods
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @ElementCollection
@@ -95,6 +156,13 @@ public class Timetable extends NeptuneIdentifiedObject
    @OrderColumn(name = "position", nullable = false)
    private List<Period> periods = new ArrayList<Period>(0);
 
+   /**
+    * list of vehicleJourneys
+    * 
+    * @param vehicleJourneys
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @ManyToMany(mappedBy = "timetables")
@@ -110,8 +178,11 @@ public class Timetable extends NeptuneIdentifiedObject
 
    /**
     * Neptune ObjectId of vehicleJourneys attached to this timetable <br/>
-    * (import/export usage) <br/>
-    * <i>readable/writable</i>
+    * (import/export purpose)
+    * 
+    * @param vehicleJourneyIds
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
@@ -165,6 +236,12 @@ public class Timetable extends NeptuneIdentifiedObject
       }
    }
 
+   /**
+    * add a list of Calendar days <br/>
+    * will skip dates already presents
+    * 
+    * @param list
+    */
    public void addCalendarDays(Collection<CalendarDay> list)
    {
       if (calendarDays == null)
@@ -676,12 +753,18 @@ public class Timetable extends NeptuneIdentifiedObject
    }
 
 
+   /**
+    * copy a timetable and its periods and calendar days<br/>
+    * 
+    * @return a copy
+    */
    public Timetable copy()
    {
       Timetable tm = new Timetable();
       tm.setObjectId(getObjectId());
       tm.setObjectVersion(getObjectVersion());
       tm.setComment(getComment());
+      tm.setVersion(getVersion());
       tm.setIntDayTypes(getIntDayTypes());
       tm.setPeriods(new ArrayList<Period>());
       for (Period period : getPeriods())

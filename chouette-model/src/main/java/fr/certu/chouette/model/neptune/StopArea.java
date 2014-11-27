@@ -28,7 +28,7 @@ import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.model.neptune.type.UserNeedEnum;
 
 /**
- * Neptune StopArea
+ * Chouette StopArea
  * <p/>
  * StopArea may be on 5 areaTypes :
  * <ul>
@@ -47,9 +47,9 @@ import fr.certu.chouette.model.neptune.type.UserNeedEnum;
  * <li>routing constraint stops can't have routing constraint stops children</li>
  * </ol>
  * <p/>
- * Note for fields comment : <br/>
- * when readable is added to comment, a implicit getter is available <br/>
- * when writable is added to comment, a implicit setter is available
+ * Neptune mapping : ChouetteStopArea, AreaCentroid <br/>
+ * Gtfs mapping : Stop (only for BoardingPosition, Quay and CommercialStopPoint
+ * types) <br/>
  */
 
 @Entity
@@ -60,142 +60,359 @@ public class StopArea extends NeptuneLocalizedObject
 {
    private static final long serialVersionUID = 4548672479038099240L;
 
+   /**
+    * name
+    * 
+    * @return The actual value
+    */
    @Getter
    @Column(name = "name")
    private String name;
+
+   /**
+    * set name <br/>
+    * truncated to 255 characters if too long
+    * 
+    * @param value
+    *           New value
+    */
    public void setName(String value)
    {
-      name = dataBaseSizeProtectedValue(value,"name",log);
+      name = dataBaseSizeProtectedValue(value, "name", log);
    }
 
+   /**
+    * comment
+    * 
+    * @return The actual value
+    */
    @Getter
    @Column(name = "comment")
    private String comment;
+
+   /**
+    * set comment <br/>
+    * truncated to 255 characters if too long
+    * 
+    * @param value
+    *           New value
+    */
    public void setComment(String value)
    {
-      comment = dataBaseSizeProtectedValue(value,"comment",log);
+      comment = dataBaseSizeProtectedValue(value, "comment", log);
    }
 
+   /**
+    * area type
+    * 
+    * @param areaType
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @Enumerated(EnumType.STRING)
    @Column(name = "area_type")
    private ChouetteAreaEnum areaType;
 
+   /**
+    * registration number
+    * 
+    * @return The actual value
+    */
    @Getter
-   @Column(name = "registration_number")
+   @Column(name = "registration_number", unique = true)
    private String registrationNumber;
+
+   /**
+    * set registration number <br/>
+    * truncated to 255 characters if too long
+    * 
+    * @param value
+    *           New value
+    */
    public void setRegistrationNumber(String value)
    {
-      registrationNumber = dataBaseSizeProtectedValue(value,"registrationNumber",log);
+      registrationNumber = dataBaseSizeProtectedValue(value, "registrationNumber", log);
    }
 
+   /**
+    * nearest topic name
+    * 
+    * @return The actual value
+    */
    @Getter
    @Column(name = "nearest_topic_name")
    private String nearestTopicName;
+
+   /**
+    * set nearest topic name <br/>
+    * truncated to 255 characters if too long
+    * 
+    * @param value
+    *           New value
+    */
    public void setNearestTopicName(String value)
    {
-      nearestTopicName = dataBaseSizeProtectedValue(value,"nearestTopicName",log);
+      nearestTopicName = dataBaseSizeProtectedValue(value, "nearestTopicName", log);
    }
 
+   /**
+    * web site url
+    * 
+    * @return The actual value
+    */
    @Getter
    @Column(name = "url")
    private String url;
+
+   /**
+    * set web site url <br/>
+    * truncated to 255 characters if too long
+    * 
+    * @param value
+    *           New value
+    */
    public void setUrl(String value)
    {
-      url = dataBaseSizeProtectedValue(value,"url",log);
+      url = dataBaseSizeProtectedValue(value, "url", log);
    }
 
+   /**
+    * timezone
+    * 
+    * @return The actual value
+    */
    @Getter
    @Column(name = "time_zone")
    private String timeZone;
+
+   /**
+    * set timezone <br/>
+    * truncated to 255 characters if too long
+    * 
+    * @param value
+    *           New value
+    */
    public void setTimeZone(String value)
    {
-      timeZone = dataBaseSizeProtectedValue(value,"timeZone",log);
+      timeZone = dataBaseSizeProtectedValue(value, "timeZone", log);
    }
 
+   /**
+    * fare code
+    * 
+    * @param fareCode
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @Column(name = "fare_code")
    private Integer fareCode;
 
+   /**
+    * lift indicator <br/>
+    * 
+    * <ul>
+    * <li>true if a lift is available at this stop</li>
+    * <li>false if no lift is available at this stop</li>
+    * </ul>
+    * 
+    * @param liftAvailable
+    *           New state for lift indicator
+    * @return The actual lift indicator
+    */
    @Getter
    @Setter
    @Column(name = "lift_availability")
    private boolean liftAvailable = false;
 
+   /**
+    * mobility restriction indicator (such as wheel chairs) <br/>
+    * 
+    * <ul>
+    * <li>true if wheel chairs can access this stop</li>
+    * <li>false if wheel chairs can't access this stop</li>
+    * </ul>
+    * 
+    * @param mobilityRestrictedSuitable
+    *           New state for mobility restriction indicator
+    * @return The actual mobility restriction indicator
+    */
    @Getter
    @Setter
    @Column(name = "mobility_restricted_suitability")
    private boolean mobilityRestrictedSuitable = false;
 
+   /**
+    * stairs indicator <br/>
+    * 
+    * <ul>
+    * <li>true if a stairs are presents at this stop</li>
+    * <li>false if no stairs are presents at this stop</li>
+    * </ul>
+    * 
+    * @param stairsAvailable
+    *           New state for stairs indicator
+    * @return The actual stairs indicator
+    */
    @Getter
    @Setter
    @Column(name = "stairs_availability")
    private boolean stairsAvailable = false;
 
+   /**
+    * coded user needs as binary map<br/>
+    * 
+    * use following methods for easier access :
+    * <ul>
+    * <li>getUserNeeds</li>
+    * <li>setUserNeeds</li>
+    * <li>addUserNeed</li>
+    * <li>addAllUserNeed</li>
+    * <li>removeUserNeed</li>
+    * </ul>
+    * 
+    * @param intUserNeeds
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @Column(name = "int_user_needs")
    private Integer intUserNeeds = 0;
 
+   /**
+    * stop area parent<br/>
+    * unavailable for areaType = ITL
+    * 
+    * @param parent
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "parent_id")
    private StopArea parent;
 
+   /**
+    * lines concerned by routing constraints <br/>
+    * only for areaType = ITL
+    * 
+    * @param routingConstraintLines
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @ManyToMany
    @JoinTable(name = "routing_constraints_lines", joinColumns = { @JoinColumn(name = "stop_area_id", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "line_id", nullable = false, updatable = false) })
    private List<Line> routingConstraintLines = new ArrayList<Line>(0);
 
+   /**
+    * stops grouped in a routing constraints <br/>
+    * only for areaType = ITL<br/>
+    * stops in this list can't be of ITL type
+    * 
+    * @param routingConstraintAreas
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @ManyToMany
    @JoinTable(name = "stop_areas_stop_areas", joinColumns = { @JoinColumn(name = "parent_id", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "child_id", nullable = false, updatable = false) })
    private List<StopArea> routingConstraintAreas = new ArrayList<StopArea>(0);
 
+   /**
+    * stop area children<br/>
+    * unavailable for areaType = ITL, BoardingPosition and Quay
+    * 
+    * @param containedStopAreas
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @OneToMany(mappedBy = "parent")
    private List<StopArea> containedStopAreas = new ArrayList<StopArea>(0);
 
+   /**
+    * stop points children<br/>
+    * only for areaType = BoardingPosition and Quay
+    * 
+    * @param containedStopPoints
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @OneToMany(mappedBy = "containedInStopArea")
    private List<StopPoint> containedStopPoints = new ArrayList<StopPoint>(0);
 
+   /**
+    * access links<br/>
+    * only for areaType != ITL
+    * 
+    * @param accessLinks
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @OneToMany
    @JoinColumn(name = "stop_area_id", updatable = false)
    private List<AccessLink> accessLinks = new ArrayList<AccessLink>(0);
 
+   /**
+    * connection links where this stop is at start position<br/>
+    * only for areaType != ITL
+    * 
+    * @param connectionStartLinks
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @OneToMany
    @JoinColumn(name = "departure_id", updatable = false)
-   private List<ConnectionLink> connectionStartLinks = new ArrayList<ConnectionLink>(
-         0);
+   private List<ConnectionLink> connectionStartLinks = new ArrayList<ConnectionLink>(0);
 
+   /**
+    * connection links where this stop is at end position<br/>
+    * only for areaType != ITL
+    * 
+    * @param connectionEndLinks
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @OneToMany
    @JoinColumn(name = "arrival_id", updatable = false)
-   private List<ConnectionLink> connectionEndLinks = new ArrayList<ConnectionLink>(
-         0);
+   private List<ConnectionLink> connectionEndLinks = new ArrayList<ConnectionLink>(0);
 
+   /**
+    * access points<br/>
+    * only for areaType != ITL
+    * 
+    * @param accessPoints
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
-   @OneToMany(mappedBy = "containedIn", cascade = { CascadeType.PERSIST,
-         CascadeType.MERGE })
+   @OneToMany(mappedBy = "containedIn", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
    private List<AccessPoint> accessPoints = new ArrayList<AccessPoint>(0);
 
    /**
     * AreaCentroid ObjectId for import/export purpose <br/>
-    * <i>readable/writable</i>
+    * 
+    * @param areaCentroidId
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
@@ -206,7 +423,10 @@ public class StopArea extends NeptuneLocalizedObject
     * List of Children objectIds for import/export purpose
     * <p/>
     * may content StopPoint or StopArea ids but not mixed <br/>
-    * <i>readable/writable</i>
+    * 
+    * @param containedStopIds
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
@@ -215,7 +435,6 @@ public class StopArea extends NeptuneLocalizedObject
 
    /**
     * List of the specific user needs available <br/>
-    * <i>readable/writable</i>
     */
    @Transient
    private List<UserNeedEnum> userNeeds;
@@ -224,7 +443,10 @@ public class StopArea extends NeptuneLocalizedObject
     * list of connection links
     * <p>
     * links to others StopAreas (may be same one) <br/>
-    * <i>readable/writable</i>
+    * 
+    * @param connectionLinks
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
@@ -233,7 +455,10 @@ public class StopArea extends NeptuneLocalizedObject
 
    /**
     * list of facilities <br/>
-    * <i>readable/writable</i>
+    * 
+    * @param facilities
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
@@ -244,7 +469,10 @@ public class StopArea extends NeptuneLocalizedObject
     * line ids affected by this RoutingConstraint (for exchange purpose)
     * <p>
     * only for {@link ChouetteAreaEnum}.ITL StopAreas <br/>
-    * <i>readable/writable</i>
+    * 
+    * @param routingConstraintLineIds
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
@@ -254,6 +482,9 @@ public class StopArea extends NeptuneLocalizedObject
    /**
     * non ITL parent StopArea ObjectID
     * 
+    * @param parentObjectId
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
@@ -321,45 +552,37 @@ public class StopArea extends NeptuneLocalizedObject
    {
       if (containedStopAreas == null)
          containedStopAreas = new ArrayList<StopArea>();
-      if (areaType.equals(ChouetteAreaEnum.BoardingPosition)
-            || areaType.equals(ChouetteAreaEnum.Quay))
+      if (areaType.equals(ChouetteAreaEnum.BoardingPosition) || areaType.equals(ChouetteAreaEnum.Quay))
       {
          // boarding positions or quays can't contains stop areas
-         throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE,
-               areaType.toString(), STOPAREA_KEY, "containedStopAreas");
+         throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE, areaType.toString(), STOPAREA_KEY, "containedStopAreas");
       }
       if (areaType.equals(ChouetteAreaEnum.CommercialStopPoint))
       {
          // commercial stops can contains only boarding positions or quays
-         if (!containedStopArea.getAreaType().equals(
-               ChouetteAreaEnum.BoardingPosition)
-               && !containedStopArea.getAreaType()
-                     .equals(ChouetteAreaEnum.Quay))
+         if (!containedStopArea.getAreaType().equals(ChouetteAreaEnum.BoardingPosition) && !containedStopArea.getAreaType().equals(ChouetteAreaEnum.Quay))
          {
-            throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE,
-                  areaType.toString(), containedStopArea.getAreaType()
-                        .toString(), "containedStopAreas");
+            throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE, areaType.toString(), containedStopArea.getAreaType().toString(),
+                  "containedStopAreas");
          }
-      } else if (areaType.equals(ChouetteAreaEnum.StopPlace))
+      }
+      else if (areaType.equals(ChouetteAreaEnum.StopPlace))
       {
          // stop places can contains only stop places or commercial stops
-         if (!containedStopArea.getAreaType()
-               .equals(ChouetteAreaEnum.StopPlace)
-               && !containedStopArea.getAreaType().equals(
-                     ChouetteAreaEnum.CommercialStopPoint))
+         if (!containedStopArea.getAreaType().equals(ChouetteAreaEnum.StopPlace)
+               && !containedStopArea.getAreaType().equals(ChouetteAreaEnum.CommercialStopPoint))
          {
-            throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE,
-                  areaType.toString(), containedStopArea.getAreaType()
-                        .toString(), "containedStopAreas");
+            throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE, areaType.toString(), containedStopArea.getAreaType().toString(),
+                  "containedStopAreas");
          }
-      } else if (areaType.equals(ChouetteAreaEnum.ITL))
+      }
+      else if (areaType.equals(ChouetteAreaEnum.ITL))
       {
          // restriction constraints can't contains restriction constraints
          if (containedStopArea.getAreaType().equals(ChouetteAreaEnum.ITL))
          {
-            throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE,
-                  areaType.toString(), containedStopArea.getAreaType()
-                        .toString(), "containedStopAreas");
+            throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE, areaType.toString(), containedStopArea.getAreaType().toString(),
+                  "containedStopAreas");
          }
          // ITL relationship are stored in routingConstraintAreas
          if (!routingConstraintAreas.contains(containedStopArea))
@@ -387,7 +610,8 @@ public class StopArea extends NeptuneLocalizedObject
          if (routingConstraintAreas.contains(containedStopArea))
             routingConstraintAreas.remove(containedStopArea);
 
-      } else
+      }
+      else
       {
          if (containedStopAreas == null)
             containedStopAreas = new ArrayList<StopArea>();
@@ -408,15 +632,12 @@ public class StopArea extends NeptuneLocalizedObject
    {
       if (containedStopPoints == null)
          containedStopPoints = new ArrayList<StopPoint>();
-      if (!areaType.equals(ChouetteAreaEnum.BoardingPosition)
-            && !areaType.equals(ChouetteAreaEnum.Quay))
+      if (!areaType.equals(ChouetteAreaEnum.BoardingPosition) && !areaType.equals(ChouetteAreaEnum.Quay))
       {
          // only boarding positions and quays can contains stop points
-         throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE,
-               areaType.toString(), STOPPOINT_KEY, "containedStopPoints");
+         throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE, areaType.toString(), STOPPOINT_KEY, "containedStopPoints");
       }
-      if (containedStopPoint == null
-            || containedStopPoints.contains(containedStopPoint))
+      if (containedStopPoint == null || containedStopPoints.contains(containedStopPoint))
          return;
       containedStopPoints.add(containedStopPoint);
       containedStopPoint.setContainedInStopArea(this);
@@ -535,8 +756,7 @@ public class StopArea extends NeptuneLocalizedObject
       if (!areaType.equals(ChouetteAreaEnum.ITL))
       {
          // only routing constraints can contains lines
-         throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE,
-               areaType.toString(), STOPAREA_KEY, "routingConstraintLines");
+         throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE, areaType.toString(), STOPAREA_KEY, "routingConstraintLines");
       }
       if (routingConstraintLines == null)
          routingConstraintLines = new ArrayList<Line>();
@@ -554,8 +774,7 @@ public class StopArea extends NeptuneLocalizedObject
       if (!areaType.equals(ChouetteAreaEnum.ITL))
       {
          // only routing constraints can contains lines
-         throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE,
-               areaType.toString(), STOPAREA_KEY, "routingConstraintLines");
+         throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE, areaType.toString(), STOPAREA_KEY, "routingConstraintLines");
       }
       if (routingConstraintLines == null)
          routingConstraintLines = new ArrayList<Line>();
@@ -575,8 +794,7 @@ public class StopArea extends NeptuneLocalizedObject
       if (!areaType.equals(ChouetteAreaEnum.ITL))
       {
          // only routing constraints can contains lines
-         throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE,
-               areaType.toString(), STOPAREA_KEY, "routingConstraintLineIds");
+         throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE, areaType.toString(), STOPAREA_KEY, "routingConstraintLineIds");
       }
       if (routingConstraintLineIds == null)
          routingConstraintLineIds = new ArrayList<String>();
@@ -594,8 +812,7 @@ public class StopArea extends NeptuneLocalizedObject
       if (!areaType.equals(ChouetteAreaEnum.ITL))
       {
          // only routing constraints can contains lines
-         throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE,
-               areaType.toString(), STOPAREA_KEY, "routingConstraintLineIds");
+         throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE, areaType.toString(), STOPAREA_KEY, "routingConstraintLineIds");
       }
       if (routingConstraintLineIds == null)
          routingConstraintLineIds = new ArrayList<String>();
@@ -615,8 +832,7 @@ public class StopArea extends NeptuneLocalizedObject
       if (!areaType.equals(ChouetteAreaEnum.ITL))
       {
          // only routing constraints can contains lines
-         throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE,
-               areaType.toString(), STOPAREA_KEY, "routingConstraintAreas");
+         throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE, areaType.toString(), STOPAREA_KEY, "routingConstraintAreas");
       }
       if (routingConstraintAreas == null)
          routingConstraintAreas = new ArrayList<StopArea>();
@@ -634,8 +850,7 @@ public class StopArea extends NeptuneLocalizedObject
       if (!areaType.equals(ChouetteAreaEnum.ITL))
       {
          // only routing constraints can contains lines
-         throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE,
-               areaType.toString(), STOPAREA_KEY, "routingConstraintAreas");
+         throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE, areaType.toString(), STOPAREA_KEY, "routingConstraintAreas");
       }
       if (routingConstraintAreas == null)
          routingConstraintAreas = new ArrayList<StopArea>();
@@ -646,7 +861,6 @@ public class StopArea extends NeptuneLocalizedObject
    /**
     * add a userNeed value in userNeeds collection if not already present <br/>
     * intUserNeeds will be automatically synchronized <br/>
-    * <i>readable/writable</i>
     * 
     * @param userNeed
     *           the userNeed to add
@@ -670,8 +884,7 @@ public class StopArea extends NeptuneLocalizedObject
     * @param userNeedCollection
     *           the userNeeds to add
     */
-   public synchronized void addAllUserNeed(
-         Collection<UserNeedEnum> userNeedCollection)
+   public synchronized void addAllUserNeed(Collection<UserNeedEnum> userNeedCollection)
    {
       if (userNeeds == null)
          userNeeds = new ArrayList<UserNeedEnum>();
@@ -749,44 +962,42 @@ public class StopArea extends NeptuneLocalizedObject
       }
    }
 
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * fr.certu.chouette.model.neptune.NeptuneLocalizedObject#toString(java.lang
+    * .String, int)
+    */
    @Override
    public String toString(String indent, int level)
    {
       StringBuilder sb = new StringBuilder(super.toString(indent, level));
-      sb.append("\n").append(indent).append("  areaCentroidId = ")
-            .append(areaCentroidId);
+      sb.append("\n").append(indent).append("  areaCentroidId = ").append(areaCentroidId);
       sb.append("\n").append(indent).append("  comment = ").append(comment);
       sb.append("\n").append(indent).append("  areaType = ").append(areaType);
       sb.append("\n").append(indent).append("  fareCode = ").append(fareCode);
-      sb.append("\n").append(indent).append("  liftAvailable = ")
-            .append(liftAvailable);
-      sb.append("\n").append(indent).append("  mobilityRestrictedSuitable = ")
-            .append(mobilityRestrictedSuitable);
-      sb.append("\n").append(indent).append("  nearestTopicName = ")
-            .append(nearestTopicName);
-      sb.append("\n").append(indent).append("  registrationNumber = ")
-            .append(registrationNumber);
-      sb.append("\n").append(indent).append("  stairsAvailable = ")
-            .append(stairsAvailable);
+      sb.append("\n").append(indent).append("  liftAvailable = ").append(liftAvailable);
+      sb.append("\n").append(indent).append("  mobilityRestrictedSuitable = ").append(mobilityRestrictedSuitable);
+      sb.append("\n").append(indent).append("  nearestTopicName = ").append(nearestTopicName);
+      sb.append("\n").append(indent).append("  registrationNumber = ").append(registrationNumber);
+      sb.append("\n").append(indent).append("  stairsAvailable = ").append(stairsAvailable);
 
       if (getUserNeeds() != null)
       {
          sb.append("\n").append(indent).append(CHILD_ARROW).append("userNeeds");
          for (UserNeedEnum userNeed : getUserNeeds())
          {
-            sb.append("\n").append(indent).append(CHILD_LIST_ARROW)
-                  .append(userNeed);
+            sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(userNeed);
          }
       }
 
       if (containedStopIds != null)
       {
-         sb.append("\n").append(indent).append(CHILD_ARROW)
-               .append("containedStopIds");
+         sb.append("\n").append(indent).append(CHILD_ARROW).append("containedStopIds");
          for (String containedStopId : getContainedStopIds())
          {
-            sb.append("\n").append(indent).append(CHILD_LIST_ARROW)
-                  .append(containedStopId);
+            sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(containedStopId);
          }
       }
 
@@ -796,49 +1007,40 @@ public class StopArea extends NeptuneLocalizedObject
          String childIndent = indent + CHILD_INDENT;
          if (parent != null)
          {
-            sb.append("\n").append(indent).append(CHILD_ARROW)
-                  .append(parent.toString(childIndent, childLevel));
+            sb.append("\n").append(indent).append(CHILD_ARROW).append(parent.toString(childIndent, childLevel));
          }
 
          childIndent = indent + CHILD_LIST_INDENT;
          if (connectionLinks != null && !connectionLinks.isEmpty())
          {
-            sb.append("\n").append(indent).append(CHILD_ARROW)
-                  .append("connectionLinks");
+            sb.append("\n").append(indent).append(CHILD_ARROW).append("connectionLinks");
             for (ConnectionLink connectionLink : getConnectionLinks())
             {
-               sb.append("\n").append(indent).append(CHILD_LIST_ARROW)
-                     .append(connectionLink.toString(childIndent, 1));
+               sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(connectionLink.toString(childIndent, 1));
             }
          }
 
          if (accessLinks != null && !accessLinks.isEmpty())
          {
-            sb.append("\n").append(indent).append(CHILD_ARROW)
-                  .append("accessLinks");
+            sb.append("\n").append(indent).append(CHILD_ARROW).append("accessLinks");
             for (AccessLink accessLink : accessLinks)
             {
-               sb.append("\n").append(indent).append(CHILD_LIST_ARROW)
-                     .append(accessLink.toString(childIndent, 1));
+               sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(accessLink.toString(childIndent, 1));
             }
 
          }
 
          if (areaType.equals(ChouetteAreaEnum.ITL))
          {
-            sb.append("\n").append(indent).append(CHILD_ARROW)
-                  .append("routingAreas");
+            sb.append("\n").append(indent).append(CHILD_ARROW).append("routingAreas");
             for (StopArea routingArea : routingConstraintAreas)
             {
-               sb.append("\n").append(indent).append(CHILD_LIST_ARROW)
-                     .append(routingArea.toString(childIndent, 0));
+               sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(routingArea.toString(childIndent, 0));
             }
-            sb.append("\n").append(indent).append(CHILD_ARROW)
-                  .append("routingLines");
+            sb.append("\n").append(indent).append(CHILD_ARROW).append("routingLines");
             for (Line routingLine : routingConstraintLines)
             {
-               sb.append("\n").append(indent).append(CHILD_LIST_ARROW)
-                     .append(routingLine.toString(childIndent, 0));
+               sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(routingLine.toString(childIndent, 0));
             }
 
          }
@@ -847,6 +1049,11 @@ public class StopArea extends NeptuneLocalizedObject
       return sb.toString();
    }
 
+   /*
+    * (non-Javadoc)
+    * 
+    * @see fr.certu.chouette.model.neptune.NeptuneLocalizedObject#complete()
+    */
    @Override
    public void complete()
    {
@@ -927,6 +1134,13 @@ public class StopArea extends NeptuneLocalizedObject
       }
    }
 
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * fr.certu.chouette.model.neptune.NeptuneObject#compareAttributes(fr.certu
+    * .chouette.model.neptune.NeptuneObject)
+    */
    @Override
    public <T extends NeptuneObject> boolean compareAttributes(T anotherObject)
    {
@@ -943,8 +1157,7 @@ public class StopArea extends NeptuneLocalizedObject
             return false;
          if (!sameValue(this.getIntUserNeeds(), another.getIntUserNeeds()))
             return false;
-         if (!sameValue(this.getRegistrationNumber(),
-               another.getRegistrationNumber()))
+         if (!sameValue(this.getRegistrationNumber(), another.getRegistrationNumber()))
             return false;
          if (!sameValue(this.getCountryCode(), another.getCountryCode()))
             return false;
@@ -967,16 +1180,21 @@ public class StopArea extends NeptuneLocalizedObject
             return false;
          if (!sameValue(this.getFareCode(), another.getFareCode()))
             return false;
-         if (!sameValue(this.getNearestTopicName(),
-               another.getNearestTopicName()))
+         if (!sameValue(this.getNearestTopicName(), another.getNearestTopicName()))
             return false;
          return true;
-      } else
+      }
+      else
       {
          return false;
       }
    }
 
+   /*
+    * (non-Javadoc)
+    * 
+    * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#toURL()
+    */
    @Override
    public String toURL()
    {

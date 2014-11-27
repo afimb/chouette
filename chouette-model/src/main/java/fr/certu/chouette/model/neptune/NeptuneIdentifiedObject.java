@@ -24,11 +24,8 @@ import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
 /**
- * Abstract object used for all Identified Neptune Object
+ * Abstract object used for all Identified Chouette Object
  * <p/>
- * Note for fields comment : <br/>
- * when readable is added to comment, a implicit getter is available <br/>
- * when writable is added to comment, a implicit setter is available
  */
 @SuppressWarnings("serial")
 @Log4j

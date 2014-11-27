@@ -16,11 +16,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Neptune StopPoint : a StopPoint on a route
+ * Chouette StopPoint : a StopPoint on a route
  * <p/>
- * Note for fields comment : <br/>
- * when readable is added to comment, a implicit getter is available <br/>
- * when writable is added to comment, a implicit setter is available
+ * Neptune mapping : StopPoint <br/>
+ * Gtfs mapping : none
  */
 
 @Entity
@@ -30,23 +29,53 @@ public class StopPoint extends NeptuneIdentifiedObject
 {
    private static final long serialVersionUID = -4913573673645997423L;
 
+   /**
+    * position on the route
+    * 
+    * @param position
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @Column(name = "position")
    private Integer position;
 
+   /**
+    * stop area container
+    * 
+    * @param containedInStopArea
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "stop_area_id")
    private StopArea containedInStopArea;
 
+   /**
+    * route
+    * 
+    * @param route
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "route_id")
    private Route route;
 
+   /**
+    * name<br/>
+    * for import/export purpose
+    * 
+    * @param name
+    *           New value
+    * @return The actual value
+    * 
+    */
    @Getter
    @Setter
    @Transient
@@ -54,8 +83,12 @@ public class StopPoint extends NeptuneIdentifiedObject
 
    /**
     * Neptune ObjectId for StopArea Container <br/>
-    * (import/export usage) <br/>
-    * <i>readable/writable</i>
+    * for import/export purpose
+    * 
+    * @param containedInStopAreaId
+    *           New value
+    * @return The actual value
+    * 
     */
    @Getter
    @Setter
@@ -64,8 +97,11 @@ public class StopPoint extends NeptuneIdentifiedObject
 
    /**
     * Neptune ObjectId for line <br/>
-    * (import/export usage) <br/>
-    * <i>readable/writable</i>
+    * for import/export purpose
+    * 
+    * @param lineIdShortcut
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
@@ -73,8 +109,11 @@ public class StopPoint extends NeptuneIdentifiedObject
    private String lineIdShortcut;
    /**
     * Line <br/>
-    * (import/export usage) <br/>
-    * <i>readable/writable</i>
+    * for import/export purpose
+    * 
+    * @param line
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
@@ -82,17 +121,24 @@ public class StopPoint extends NeptuneIdentifiedObject
    private Line line;
    /**
     * Neptune ObjectId for PTNetwork <br/>
-    * (import/export usage) <br/>
-    * <i>readable/writable</i>
+    * for import/export purpose
+    * 
+    * @param ptNetworkIdShortcut
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
    @Transient
    private String ptNetworkIdShortcut;
+
    /**
     * PTNetwork <br/>
-    * (import/export usage) <br/>
-    * <i>readable/writable</i>
+    * for import/export purpose
+    * 
+    * @param ptNetwork
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
@@ -101,7 +147,11 @@ public class StopPoint extends NeptuneIdentifiedObject
 
    /**
     * Facility affected to this stopPoint <br/>
-    * <i>readable/writable</i>
+    * for import purpose
+    * 
+    * @param facilities
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
@@ -134,18 +184,18 @@ public class StopPoint extends NeptuneIdentifiedObject
          facilities.remove(facility);
    }
 
+   /* (non-Javadoc)
+    * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#toString(java.lang.String, int)
+    */
    @Override
    public String toString(String indent, int level)
    {
       StringBuilder sb = new StringBuilder(super.toString(indent, level));
 
       // sb.append("\n").append(indent).append("  comment = ").append(comment);
-      sb.append("\n").append(indent).append("  containedInStopAreaId = ")
-            .append(containedInStopAreaId);
-      sb.append("\n").append(indent).append("  lineIdShortcut = ")
-            .append(lineIdShortcut);
-      sb.append("\n").append(indent).append("  ptNetworkIdShortcut = ")
-            .append(ptNetworkIdShortcut);
+      sb.append("\n").append(indent).append("  containedInStopAreaId = ").append(containedInStopAreaId);
+      sb.append("\n").append(indent).append("  lineIdShortcut = ").append(lineIdShortcut);
+      sb.append("\n").append(indent).append("  ptNetworkIdShortcut = ").append(ptNetworkIdShortcut);
 
       if (level > 0)
       {
@@ -153,21 +203,32 @@ public class StopPoint extends NeptuneIdentifiedObject
          String childIndent = indent + CHILD_INDENT;
          if (containedInStopArea != null)
          {
-            sb.append("\n")
-                  .append(indent)
-                  .append(CHILD_ARROW)
-                  .append(containedInStopArea.toString(childIndent, childLevel));
+            sb.append("\n").append(indent).append(CHILD_ARROW).append(containedInStopArea.toString(childIndent, childLevel));
          }
       }
 
       return sb.toString();
    }
 
+   /**
+    * check relative position with another stop point<br/>
+    * assume both stop points are on the same route (not checked)
+    * 
+    * @param another stop point
+    * @return true if position if less than another position
+    */
    public boolean before(StopPoint another)
    {
       return position < another.getPosition();
    }
 
+   /**
+    * check relative position with another stop point<br/>
+    * assume both stop points are on the same route (not checked)
+    * 
+    * @param another stop point
+    * @return true if position if greater than another position
+    */
    public boolean after(StopPoint another)
    {
       return position > another.getPosition();
@@ -198,6 +259,9 @@ public class StopPoint extends NeptuneIdentifiedObject
       }
    }
 
+   /* (non-Javadoc)
+    * @see fr.certu.chouette.model.neptune.NeptuneObject#compareAttributes(fr.certu.chouette.model.neptune.NeptuneObject)
+    */
    @Override
    public <T extends NeptuneObject> boolean compareAttributes(T anotherObject)
    {
@@ -212,22 +276,26 @@ public class StopPoint extends NeptuneIdentifiedObject
             return false;
          // if (!sameValue(this.getComment(), another.getComment()))
          // return false;
-         if (!sameValue(this.getRegistrationNumber(),
-               another.getRegistrationNumber()))
+         if (!sameValue(this.getRegistrationNumber(), another.getRegistrationNumber()))
             return false;
 
          if (!sameValue(this.getPosition(), another.getPosition()))
             return false;
          return true;
-      } else
+      }
+      else
       {
          return false;
       }
    }
 
+   /* (non-Javadoc)
+    * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#toURL()
+    */
    @Override
    public String toURL()
    {
+      // no show page for stop points in ruby gui
       return null;
    }
 

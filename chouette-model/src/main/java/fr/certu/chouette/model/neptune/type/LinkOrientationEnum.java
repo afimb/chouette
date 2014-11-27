@@ -1,6 +1,18 @@
 package fr.certu.chouette.model.neptune.type;
 
+
+/**
+ * Access link orientation
+ *
+ */
 public enum LinkOrientationEnum
 {
-   AccessPointToStopArea, StopAreaToAccessPoint;
+   /**
+    * entry (from AccessPoint to StopArea)
+    */
+   AccessPointToStopArea, 
+   /**
+    * exit (from StopArea to AccessPoint)
+    */
+   StopAreaToAccessPoint;
 }

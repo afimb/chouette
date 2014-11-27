@@ -13,49 +13,92 @@ import javax.persistence.Transient;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.extern.log4j.Log4j;
 
 /**
- * Neptune PTLink : a link between 2 successive StopPoints in a route
+ * Chouette PTLink : a link between 2 successive StopPoints in a route
+ * <br/>
+ * Note: this object is only used for Neptune import, export and validation purpose
  * <p/>
- * Note for fields comment : <br/>
- * when readable is added to comment, a implicit getter is available <br/>
- * when writable is added to comment, a implicit setter is available
+ * <p/>
+ * Neptune mapping : PtLink <br/>
+ * Gtfs mapping : none <br/>
  */
 @Entity
 @Table(name = "pt_links")
 @NoArgsConstructor
-@Log4j
 public class PTLink extends NeptuneIdentifiedObject
 {
    private static final long serialVersionUID = -3089442100133439163L;
 
+   /**
+    * name
+    * 
+    * @param name
+    *           New value
+    * @return The actual value
+    */
    @Getter
+   @Setter
    @Column(name = "name")
    private String name;
 
+   /**
+    * comment
+    * 
+    * @param comment
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @Column(name = "comment")
    private String comment;
 
+   /**
+    * link length in meters
+    * 
+    * @param linkDistance
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @Column(name = "link_distance")
    private BigDecimal linkDistance;
 
+   /**
+    * start of link
+    * 
+    * @param startOfLink
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "start_of_link_id")
    private StopPoint startOfLink;
 
+   /**
+    * end of link
+    * 
+    * @param endOfLink
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "end_of_link_id")
    private StopPoint endOfLink;
 
+   /**
+    * route
+    * 
+    * @param route
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @ManyToOne(fetch = FetchType.LAZY)
@@ -64,7 +107,10 @@ public class PTLink extends NeptuneIdentifiedObject
 
    /**
     * Neptune ObjectId for Start of Link StopPoint <br/>
-    * <i>readable/writable</i>
+    * 
+    * @param startOfLinkId
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
@@ -74,7 +120,10 @@ public class PTLink extends NeptuneIdentifiedObject
    /**
     * Neptune ObjectId for End of Link StopPoint <br/>
     * (import/export usage) <br/>
-    * <i>readable/writable</i>
+    * 
+    * @param endOfLinkId
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
@@ -84,25 +133,20 @@ public class PTLink extends NeptuneIdentifiedObject
    /**
     * Neptune ObjectId for Route <br/>
     * (import/export usage) <br/>
-    * <i>readable/writable</i>
+    * 
+    * @param routeId
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
    @Transient
    private String routeId;
 
-   public void setName(String value)
-   {
-      if (value != null && value.length() > 255)
-      {
-         log.warn("name too long, truncated " + value);
-         name = value.substring(0, 255);
-      } else
-      {
-         name = value;
-      }
-   }
 
+   /* (non-Javadoc)
+    * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#toString(java.lang.String, int)
+    */
    @Override
    public String toString(String indent, int level)
    {
@@ -141,6 +185,9 @@ public class PTLink extends NeptuneIdentifiedObject
     * 
     * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#complete()
     */
+   /* (non-Javadoc)
+    * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#complete()
+    */
    @Override
    public void complete()
    {
@@ -154,6 +201,9 @@ public class PTLink extends NeptuneIdentifiedObject
 
    }
 
+   /* (non-Javadoc)
+    * @see fr.certu.chouette.model.neptune.NeptuneObject#compareAttributes(fr.certu.chouette.model.neptune.NeptuneObject)
+    */
    @Override
    public <T extends NeptuneObject> boolean compareAttributes(T anotherObject)
    {
@@ -181,6 +231,9 @@ public class PTLink extends NeptuneIdentifiedObject
       }
    }
 
+   /* (non-Javadoc)
+    * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#toURL()
+    */
    @Override
    public String toURL()
    {

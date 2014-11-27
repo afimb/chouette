@@ -7,10 +7,6 @@ import lombok.Setter;
 
 /**
  * PeerId : couple of database Id and ObjectId
- * <p/>
- * Note for fields comment : <br/>
- * when readable is added to comment, a implicit getter is available <br/>
- * when writable is added to comment, a implicit setter is available
  */
 
 public class PeerId implements Serializable
@@ -19,15 +15,21 @@ public class PeerId implements Serializable
    private static final long serialVersionUID = -8800619354993403437L;
 
    /**
-    * id <br/>
-    * <i>readable/writable</i>
+    * id 
+    * 
+    * @param id
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
    private Long id;
    /**
-    * object id <br/>
-    * <i>readable/writable</i>
+    * object id 
+    * 
+    * @param objectid
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
@@ -44,11 +46,11 @@ public class PeerId implements Serializable
     * complete constructor
     * 
     * @param id
-    * @param objecid
+    * @param objectid
     */
-   public PeerId(Long id, String objecid)
+   public PeerId(Long id, String objectid)
    {
       this.id = id;
-      this.objectid = objecid;
+      this.objectid = objectid;
    }
 }

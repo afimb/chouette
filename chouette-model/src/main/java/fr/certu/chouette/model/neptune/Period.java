@@ -14,10 +14,6 @@ import lombok.Setter;
 
 /**
  * Period : date period for Timetables
- * <p/>
- * Note for fields comment : <br/>
- * when readable is added to comment, a implicit getter is available <br/>
- * when writable is added to comment, a implicit setter is available
  */
 @Embeddable
 @NoArgsConstructor
@@ -25,11 +21,25 @@ public class Period implements Serializable, Comparable<Period>
 {
    private static final long serialVersionUID = -1964071056103739954L;
 
+   /**
+    * first date of period
+    * 
+    * @param startDate
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @Column(name = "period_start")
    private Date startDate;
 
+   /**
+    * last date of period
+    * 
+    * @param endDate
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @Column(name = "period_end")
@@ -49,6 +59,9 @@ public class Period implements Serializable, Comparable<Period>
       this.endDate = endDate;
    }
 
+   /* (non-Javadoc)
+    * @see java.lang.Object#toString()
+    */
    @Override
    public String toString()
    {
@@ -81,7 +94,7 @@ public class Period implements Serializable, Comparable<Period>
     * check if a date is included in period
     * 
     * @param aDay
-    * @return
+    * @return true if date is active in period
     */
    public boolean contains(Date aDay)
    {
@@ -94,6 +107,9 @@ public class Period implements Serializable, Comparable<Period>
       return aDay.after(startDate) && aDay.before(endDate);
    }
 
+   /* (non-Javadoc)
+    * @see java.lang.Object#hashCode()
+    */
    @Override
    public int hashCode()
    {
@@ -105,6 +121,9 @@ public class Period implements Serializable, Comparable<Period>
       return result;
    }
 
+   /* (non-Javadoc)
+    * @see java.lang.Object#equals(java.lang.Object)
+    */
    @Override
    public boolean equals(Object obj)
    {
@@ -130,6 +149,9 @@ public class Period implements Serializable, Comparable<Period>
       return true;
    }
 
+   /* (non-Javadoc)
+    * @see java.lang.Comparable#compareTo(java.lang.Object)
+    */
    @Override
    public int compareTo(Period period)
    {

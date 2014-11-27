@@ -29,11 +29,10 @@ import lombok.extern.log4j.Log4j;
 import fr.certu.chouette.model.neptune.type.PTNetworkSourceTypeEnum;
 
 /**
- * Neptune Public Transport Network
+ * Chouette Public Transport Network : a set of lines
  * <p/>
- * Note for fields comment : <br/>
- * when readable is added to comment, a implicit getter is available <br/>
- * when writable is added to comment, a implicit setter is available
+ * Neptune mapping : PTNetwork <br/>
+ * Gtfs mapping : none
  */
 @Entity
 @Table(name = "networks")
@@ -44,66 +43,162 @@ public class PTNetwork extends NeptuneIdentifiedObject
 
    private static final long serialVersionUID = -8986371268064619423L;
 
+   /**
+    * name
+    * 
+    * @return The actual value
+    */
    @Getter
-   @Column(name = "name")
+   @Column(name = "name", nullable = false)
    private String name;
+
+   /**
+    * set name <br/>
+    * truncated to 255 characters if too long
+    * 
+    * @param value
+    *           New value
+    */
    public void setName(String value)
    {
-      name = dataBaseSizeProtectedValue(value,"name",log);
+      name = dataBaseSizeProtectedValue(value, "name", log);
    }
 
+   /**
+    * comment
+    * 
+    * @return The actual value
+    */
    @Getter
    @Column(name = "comment")
    private String comment;
+
+   /**
+    * set comment <br/>
+    * truncated to 255 characters if too long
+    * 
+    * @param value
+    *           New value
+    */
    public void setComment(String value)
    {
-      comment = dataBaseSizeProtectedValue(value,"comment",log);
+      comment = dataBaseSizeProtectedValue(value, "comment", log);
    }
 
+   /**
+    * version date
+    * 
+    * @param versionDate
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @Temporal(TemporalType.DATE)
    @Column(name = "version_date")
    private Date versionDate;
 
+   /**
+    * description
+    * 
+    * @return The actual value
+    */
    @Getter
    @Column(name = "description")
    private String description;
+   /**
+    * set description <br/>
+    * truncated to 255 characters if too long
+    * 
+    * @param value
+    *           New value
+    */
    public void setDescription(String value)
    {
       description = dataBaseSizeProtectedValue(value,"description",log);
    }
 
+   /**
+    * registration number
+    * 
+    * @return The actual value
+    */
    @Getter
    @Column(name = "registration_number")
    private String registrationNumber;
+
+   /**
+    * set registration number <br/>
+    * truncated to 255 characters if too long
+    * 
+    * @param value
+    *           New value
+    */
    public void setRegistrationNumber(String value)
    {
-      registrationNumber = dataBaseSizeProtectedValue(value,"registrationNumber",log);
+      registrationNumber = dataBaseSizeProtectedValue(value, "registrationNumber", log);
    }
 
+   /**
+    * source type
+    * 
+    * @param sourceType
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @Enumerated(EnumType.STRING)
    @Column(name = "source_type")
    private PTNetworkSourceTypeEnum sourceType;
 
+   /**
+    * source name
+    * 
+    * @return The actual value
+    */
    @Getter
    @Column(name = "source_name")
    private String sourceName;
+   /**
+    * set source name <br/>
+    * truncated to 255 characters if too long
+    * 
+    * @param value
+    *           New value
+    */
    public void setSourceName(String value)
    {
       sourceName = dataBaseSizeProtectedValue(value,"sourceName",log);
    }
 
+   /**
+    * source identifier
+    * 
+    * @return The actual value
+    */
    @Getter
    @Column(name = "source_identifier")
    private String sourceIdentifier;
+   /**
+    * set source identifier <br/>
+    * truncated to 255 characters if too long
+    * 
+    * @param value
+    *           New value
+    */
    public void setSourceIdentifier(String value)
    {
       sourceIdentifier = dataBaseSizeProtectedValue(value,"sourceIdentifier",log);
    }
 
+   /**
+    * lines
+    * 
+    * @param lines
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @OneToMany(mappedBy = "ptNetwork")
@@ -113,7 +208,10 @@ public class PTNetwork extends NeptuneIdentifiedObject
     * List of the network lines Neptune Ids<br/>
     * After import, may content only lines imported<br/>
     * Meaningless after database loading <br/>
-    * <i>readable/writable</i>
+    * 
+    * @param lineIds
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
@@ -121,6 +219,9 @@ public class PTNetwork extends NeptuneIdentifiedObject
    private List<String> lineIds;
 
 
+   /* (non-Javadoc)
+    * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#toString(java.lang.String, int)
+    */
    @Override
    public String toString(String indent, int level)
    {
@@ -192,6 +293,9 @@ public class PTNetwork extends NeptuneIdentifiedObject
          lines.remove(line);
    }
 
+   /* (non-Javadoc)
+    * @see fr.certu.chouette.model.neptune.NeptuneObject#compareAttributes(fr.certu.chouette.model.neptune.NeptuneObject)
+    */
    @Override
    public <T extends NeptuneObject> boolean compareAttributes(T anotherObject)
    {
@@ -228,6 +332,9 @@ public class PTNetwork extends NeptuneIdentifiedObject
       }
    }
 
+   /* (non-Javadoc)
+    * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#toURL()
+    */
    @Override
    public String toURL()
    {

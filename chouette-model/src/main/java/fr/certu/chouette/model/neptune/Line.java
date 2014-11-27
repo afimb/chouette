@@ -39,11 +39,11 @@ import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 import fr.certu.chouette.model.neptune.type.UserNeedEnum;
 
 /**
- * Neptune Line
+ * Chouette Line : a group of Routes which is generally known to the public 
+ * by a similar name or number
  * <p/>
- * Note for fields comment : <br/>
- * when readable is added to comment, a implicit getter is available <br/>
- * when writable is added to comment, a implicit setter is available
+ * Neptune mapping : Line <br/>
+ * Gtfs mapping : Line <br/>
  */
 @Entity
 @Table(name = "lines")
@@ -53,112 +53,279 @@ public class Line extends NeptuneIdentifiedObject
 {
    private static final long serialVersionUID = -8086291270595894778L;
 
-
+   /**
+    * name
+    * 
+    * @return The actual value
+    */
    @Getter
-   @Column(name = "name", nullable = false)
+   @Column(name = "name")
    private String name;
+   /**
+    * set name <br/>
+    * truncated to 255 characters if too long
+    * 
+    * @param value
+    *           New value
+    */
    public void setName(String value)
    {
-      name = dataBaseSizeProtectedValue(value,"name",log);
+      name = dataBaseSizeProtectedValue(value, "name", log);
    }
 
+   /**
+    * comment
+    * 
+    * @return The actual value
+    */
    @Getter
    @Column(name = "comment")
    private String comment;
+
+   /**
+    * set comment <br/>
+    * truncated to 255 characters if too long
+    * 
+    * @param value
+    *           New value
+    */
    public void setComment(String value)
    {
-      comment = dataBaseSizeProtectedValue(value,"comment",log);
+      comment = dataBaseSizeProtectedValue(value, "comment", log);
    }
 
+   /**
+    * number or short name
+    * 
+    * @return The actual value
+    */
    @Getter
    @Column(name = "number")
    private String number;
+   /**
+    * set number <br/>
+    * truncated to 255 characters if too long
+    * 
+    * @param value
+    *           New value
+    */
    public void setNumber(String value)
    {
       number = dataBaseSizeProtectedValue(value,"number",log);
    }
 
+   /**
+    * published name
+    * 
+    * @return The actual value
+    */
    @Getter
    @Column(name = "published_name")
    private String publishedName;
+   /**
+    * set published name <br/>
+    * truncated to 255 characters if too long
+    * 
+    * @param value
+    *           New value
+    */
    public void setPublishedName(String value)
    {
-      publishedName = dataBaseSizeProtectedValue(value,"publishedName",log);
+      publishedName = dataBaseSizeProtectedValue(value, "publishedName", log);
    }
 
+   /**
+    * registration number
+    * 
+    * @return The actual value
+    */
    @Getter
    @Column(name = "registration_number", unique = true)
    private String registrationNumber;
+   /**
+    * set registration number <br/>
+    * truncated to 255 characters if too long
+    * 
+    * @param value
+    *           New value
+    */
    public void setRegistrationNumber(String value)
    {
       registrationNumber = dataBaseSizeProtectedValue(value,"registrationNumber",log);
    }
 
+   /**
+    * Transport mode
+    * 
+    * @param transportModeName
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @Enumerated(EnumType.STRING)
    @Column(name = "transport_mode_name")
    private TransportModeNameEnum transportModeName;
 
+   /**
+    * mobility restriction indicator (such as wheel chairs) <br/>
+    * 
+    * <ul>
+    * <li>true if wheel chairs can use this line</li>
+    * <li>false if wheel chairs can't use this line</li>
+    * </ul>
+    * 
+    * @param mobilityRestrictedSuitable
+    *           New state for mobility restriction indicator
+    * @return The actual mobility restriction indicator
+    */
    @Getter
    @Setter
    @Column(name = "mobility_restricted_suitability")
    private Boolean mobilityRestrictedSuitable = false;
 
+   /**
+    * coded user needs as binary map<br/>
+    * 
+    * use following methods for easier access :
+    * <ul>
+    * <li>getUserNeeds</li>
+    * <li>setUserNeeds</li>
+    * <li>addUserNeed</li>
+    * <li>addAllUserNeed</li>
+    * <li>removeUserNeed</li>
+    * </ul>
+    * 
+    * @param intUserNeeds
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @Column(name = "int_user_needs")
    private Integer intUserNeeds = 0;
 
+   /**
+    * web site url
+    * 
+    * @return The actual value
+    */
    @Getter
    @Column(name = "url")
    private String url;
+   /**
+    * set  web site url <br/>
+    * truncated to 255 characters if too long
+    * 
+    * @param value
+    *           New value
+    */
    public void setUrl(String value)
    {
       url = dataBaseSizeProtectedValue(value,"url",log);
    }
 
+   /**
+    * line drawing color <br/>
+    * should be used also on label background
+    * 
+    * @return The actual value in RRGGBB hexadecimal format
+    */
    @Getter
    @Column(name = "color", length = 6)
    private String color;
 
+   /**
+    * set  line drawing color <br/>
+    * truncated to 6 characters if too long
+    * 
+    * @param value
+    *           New value in RRGGBB hexadecimal format
+    */
    public void setColor(String value)
    {
       color = dataBaseSizeProtectedValue(value,"color",log);
    }
 
+   /**
+    * line text color
+    * 
+    * @return The actual value in RRGGBB hexadecimal format
+    */
    @Getter
    @Column(name = "text_color", length = 6)
    private String textColor;
+   /**
+    * set  line text color <br/>
+    * truncated to 6 characters if too long
+    * 
+    * @param value
+    *           New value in RRGGBB hexadecimal format
+    */
    public void setTextColor(String value)
    {
       textColor = dataBaseSizeProtectedValue(value,"textColor",log);
    }
 
+   /**
+    * network reference
+    * 
+    * @param ptNetwork
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @ManyToOne
    @JoinColumn(name = "network_id")
    private PTNetwork ptNetwork;
 
+   /**
+    * company reference
+    * 
+    * @param company
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @ManyToOne
    @JoinColumn(name = "company_id")
    private Company company;
 
+   /**
+    * list of routes
+    * 
+    * @param routes
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @OneToMany(mappedBy = "line", cascade = { CascadeType.PERSIST,
          CascadeType.MERGE })
    private List<Route> routes = new ArrayList<Route>(0);
 
+   /**
+    * groups of lines reverse reference
+    * 
+    * @param groupOfLines
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @ManyToMany
    @JoinTable(name = "group_of_lines_lines", joinColumns = { @JoinColumn(name = "line_id", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "group_of_line_id", nullable = false, updatable = false) })
    private List<GroupOfLine> groupOfLines = new ArrayList<GroupOfLine>(0);
 
+   /**
+    * routing constraints associations
+    * 
+    * @param routingConstraints
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @ManyToMany(mappedBy = "routingConstraintLines")
@@ -166,8 +333,11 @@ public class Line extends NeptuneIdentifiedObject
 
    /**
     * Neptune identification referring to the line's network <br/>
-    * <i>readable/writable</i>
+    * (import/export purpose)
     * 
+    * @param ptNetworkIdShortcut
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
@@ -175,8 +345,11 @@ public class Line extends NeptuneIdentifiedObject
    private String ptNetworkIdShortcut;
    /**
     * Neptune identification referring to the line's routes <br/>
-    * for import/export purpose <br/>
-    * <i>readable/writable</i>
+    * (import/export purpose)
+    * 
+    * @param routeIds
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
@@ -185,9 +358,11 @@ public class Line extends NeptuneIdentifiedObject
    /**
     * Neptune identification referring to the departures/arrivals stoppoints of
     * the line's JourneyPatterns<br/>
-    * Meaningless after database read <br/>
-    * for import/export purpose <br/>
-    * <i>readable/writable</i>
+    * (import/export purpose)
+    * 
+    * @param lineEnds
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
@@ -196,8 +371,12 @@ public class Line extends NeptuneIdentifiedObject
 
    /**
     * The line's companies objects <br/>
-    * <br/>
-    * <i>readable/writable</i>
+    * shortcut reference of companies connected to line or to vehicle journeys of the line<br/>
+    * (import/export purpose)
+    * 
+    * @param companies
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
@@ -205,16 +384,18 @@ public class Line extends NeptuneIdentifiedObject
    private List<Company> companies;
 
    /**
-    * List of the specific user needs available <br/>
-    * <i>readable/writable</i>
+    * List of the specific user needs available 
     */
    @Transient
    private List<UserNeedEnum> userNeeds;
 
    /**
     * The GroupOfLinesId of the line <br/>
-    * for import/export purpose <br/>
-    * <i>readable/writable</i>
+    * (import/export purpose)
+    * 
+    * @param groupOfLineIds
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
@@ -226,7 +407,11 @@ public class Line extends NeptuneIdentifiedObject
     * <p>
     * RoutingConstraints are {@link StopArea} of {@link ChouetteAreaEnum}.ITL
     * areaType <br/>
-    * <i>readable/writable</i>
+    * (import/export purpose)
+    * 
+    * @param routingConstraintIds
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
@@ -234,8 +419,12 @@ public class Line extends NeptuneIdentifiedObject
    private List<String> routingConstraintIds;
 
    /**
-    * list of facilities <br/>
-    * <i>readable/writable</i>
+    * list of facilities (currently not saved) <br/>
+    * (import purpose)
+    * 
+    * @param facilities
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
@@ -243,28 +432,40 @@ public class Line extends NeptuneIdentifiedObject
    private List<Facility> facilities;
 
    /**
-    * List of journeyPatterns filled only after complete() call
+    * List of journeyPatterns filled only after complete() call<br/>
+    * (export purpose)
+    * 
+    * @return The actual value
     */
    @Getter
    @Transient
    private List<JourneyPattern> journeyPatterns;
 
    /**
-    * List of vehicleJourneys filled only after complete() call
+    * List of vehicleJourneys filled only after complete() call<br/>
+    * (export purpose)
+    * 
+    * @return The actual value
     */
    @Getter
    @Transient
    private List<VehicleJourney> vehicleJourneys;
 
    /**
-    * List of timetables filled only after complete() call
+    * List of timetables filled only after complete() call<br/>
+    * (export purpose)
+    * 
+    * @return The actual value
     */
    @Getter
    @Transient
    private List<Timetable> timetables;
 
    /**
-    * List of stopPoints filled only after complete() call
+    * List of stopPoints filled only after complete() call<br/>
+    * (export purpose)
+    * 
+    * @return The actual value
     */
    @Getter
    @Transient
@@ -272,62 +473,88 @@ public class Line extends NeptuneIdentifiedObject
 
    /**
     * List of stopAreas (excluded RoutingConstraints) filled only after
-    * complete() call
+    * complete() call<br/>
+    * (export purpose)
+    * 
+    * @return The actual value
     */
    @Getter
    @Transient
    private List<StopArea> stopAreas;
 
    /**
-    * List of boardingPositions filled only after complete() call
+    * List of boardingPositions filled only after complete() call<br/>
+    * (export purpose)
+    * 
+    * @return The actual value
     */
    @Getter
    @Transient
    private List<StopArea> boardingPositions;
 
    /**
-    * List of quays filled only after complete() call
+    * List of quays filled only after complete() call<br/>
+    * (export purpose)
+    * 
+    * @return The actual value
     */
    @Getter
    @Transient
    private List<StopArea> quays;
 
    /**
-    * List of commercialStopPoints filled only after complete() call
+    * List of commercialStopPoints filled only after complete() call<br/>
+    * (export purpose)
+    * 
+    * @return The actual value
     */
    @Getter
    @Transient
    private List<StopArea> commercialStopPoints;
 
    /**
-    * List of stopPlaces filled only after complete() call
+    * List of stopPlaces filled only after complete() call<br/>
+    * (export purpose)
+    * 
+    * @return The actual value
     */
    @Getter
    @Transient
    private List<StopArea> stopPlaces;
 
    /**
-    * List of accessLinks filled only after complete() call
+    * List of accessLinks filled only after complete() call<br/>
+    * (export purpose)
+    * 
+    * @return The actual value
     */
    @Getter
    @Transient
    private List<AccessLink> accessLinks;
 
    /**
-    * List of accessPoints filled only after complete() call
+    * List of accessPoints filled only after complete() call<br/>
+    * (export purpose)
+    * 
+    * @return The actual value
     */
    @Getter
    @Transient
    private List<AccessPoint> accessPoints;
 
    /**
-    * List of connectionLinks filled only after complete() call
+    * List of connectionLinks filled only after complete() call<br/>
+    * (export purpose)
+    * 
+    * @return The actual value
     */
    @Getter
    @Transient
    private List<ConnectionLink> connectionLinks;
 
    /**
+    * add a group of line
+    * 
     * @param groupOfLine
     */
    public void addGroupOfLine(GroupOfLine groupOfLine)
@@ -339,6 +566,8 @@ public class Line extends NeptuneIdentifiedObject
    }
 
    /**
+    * remove a group of line
+    * 
     * @param groupOfLine
     */
    public void removeGroupOfLine(GroupOfLine groupOfLine)
@@ -350,6 +579,8 @@ public class Line extends NeptuneIdentifiedObject
    }
 
    /**
+    * add a group of line id
+    * 
     * @param groupOfLineId
     */
    public void addGroupOfLineId(String groupOfLineId)
@@ -361,6 +592,8 @@ public class Line extends NeptuneIdentifiedObject
    }
 
    /**
+    * add a facility
+    * 
     * @param facility
     */
    public void addFacility(Facility facility)
@@ -372,6 +605,8 @@ public class Line extends NeptuneIdentifiedObject
    }
 
    /**
+    * remove a facility
+    * 
     * @param facility
     */
    public void removeFacility(Facility facility)
@@ -384,8 +619,7 @@ public class Line extends NeptuneIdentifiedObject
 
    /**
     * add a userNeed value in userNeeds collection if not already present <br/>
-    * intUserNeeds will be automatically synchronized <br/>
-    * <i>readable/writable</i>
+    * intUserNeeds will be automatically synchronized 
     * 
     * @param userNeed
     *           the userNeed to add
@@ -777,9 +1011,6 @@ public class Line extends NeptuneIdentifiedObject
    /**
     * return lineEndList built with PTLink relationship
     * <p/>
-    * line must be loaded form database with DetailLevel of
-    * STRUCTURAL_DEPENDENCIES minimun for this method to operate
-    * <p/>
     * This method does not refresh lineEnds
     */
    public List<StopPoint> getLineEndList()
@@ -827,9 +1058,6 @@ public class Line extends NeptuneIdentifiedObject
 
    /**
     * return stopPointList built with JourneyPattern relationship
-    * <p/>
-    * line must be loaded form database with DetailLevel of
-    * STRUCTURAL_DEPENDENCIES minimun for this method to operate
     * <p/>
     * This method does not refresh anything
     */
@@ -1065,6 +1293,9 @@ public class Line extends NeptuneIdentifiedObject
       return stopAreas;
    }
 
+   /* (non-Javadoc)
+    * @see fr.certu.chouette.model.neptune.NeptuneObject#compareAttributes(fr.certu.chouette.model.neptune.NeptuneObject)
+    */
    @Override
    public <T extends NeptuneObject> boolean compareAttributes(T anotherObject)
    {
@@ -1101,6 +1332,9 @@ public class Line extends NeptuneIdentifiedObject
       }
    }
 
+   /* (non-Javadoc)
+    * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#toURL()
+    */
    @Override
    public String toURL()
    {

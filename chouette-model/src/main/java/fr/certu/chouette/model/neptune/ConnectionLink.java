@@ -30,7 +30,7 @@ import fr.certu.chouette.model.neptune.type.UserNeedEnum;
  * Chouette ConnectionLink : relation between 2 StopAreas
  * <p/>
  * Neptune mapping : ConnectionLink <br/>
- * Gtfs mapping : transfer <br/>
+ * Gtfs mapping : transfer
  * 
  */
 

@@ -22,11 +22,11 @@ import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
 /**
- * Neptune Journey Pattern : pattern for vehicle journeys in a route
+ * Chouette Journey Pattern : pattern for vehicle journeys in a route
  * <p/>
- * Note for fields comment : <br/>
- * when readable is added to comment, a implicit getter is available <br/>
- * when writable is added to comment, a implicit setter is available
+ * Neptune mapping : JourneyPattern <br/>
+ * Gtfs mapping : none
+ * 
  */
 @Entity
 @Table(name = "journey_patterns")
@@ -36,73 +36,161 @@ public class JourneyPattern extends NeptuneIdentifiedObject
 {
    private static final long serialVersionUID = 7895941111990419404L;
 
+   /**
+    * name
+    * 
+    * @return The actual value
+    */
    @Getter
    @Column(name = "name")
    private String name;
+
+   /**
+    * set name <br/>
+    * truncated to 255 characters if too long
+    * 
+    * @param value
+    *           New value
+    */
    public void setName(String value)
    {
-      name = dataBaseSizeProtectedValue(value,"name",log);
+      name = dataBaseSizeProtectedValue(value, "name", log);
    }
 
+   /**
+    * comment
+    * 
+    * @return The actual value
+    */
    @Getter
    @Column(name = "comment")
    private String comment;
+
+   /**
+    * set comment <br/>
+    * truncated to 255 characters if too long
+    * 
+    * @param value
+    *           New value
+    */
    public void setComment(String value)
    {
-      comment = dataBaseSizeProtectedValue(value,"comment",log);
+      comment = dataBaseSizeProtectedValue(value, "comment", log);
    }
 
+   /**
+    * registration number
+    * 
+    * @return The actual value
+    */
    @Getter
    @Column(name = "registration_number")
    private String registrationNumber;
+
+   /**
+    * set registration number <br/>
+    * truncated to 255 characters if too long
+    * 
+    * @param value
+    *           New value
+    */
    public void setRegistrationNumber(String value)
    {
-      registrationNumber = dataBaseSizeProtectedValue(value,"registrationNumber",log);
+      registrationNumber = dataBaseSizeProtectedValue(value, "registrationNumber", log);
    }
 
+   /**
+    * published name
+    * 
+    * @return The actual value
+    */
    @Getter
    @Column(name = "published_name")
    private String publishedName;
+
+   /**
+    * set published name <br/>
+    * truncated to 255 characters if too long
+    * 
+    * @param value
+    *           New value
+    */
    public void setPublishedName(String value)
    {
-      publishedName = dataBaseSizeProtectedValue(value,"publishedName",log);
+      publishedName = dataBaseSizeProtectedValue(value, "publishedName", log);
    }
 
+   /**
+    * route reverse reference
+    * 
+    * @param route
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "route_id")
    private Route route;
 
+   /**
+    * first stop
+    * 
+    * @param departureStopPoint
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "departure_stop_point_id")
    private StopPoint departureStopPoint;
 
+   /**
+    * last stop
+    * 
+    * @param arrivalStopPoint
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "arrival_stop_point_id")
    private StopPoint arrivalStopPoint;
 
+   /**
+    * stop list
+    * 
+    * @param stopPoints
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @ManyToMany
    @JoinTable(name = "journey_patterns_stop_points", joinColumns = { @JoinColumn(name = "journey_pattern_id", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "stop_point_id", nullable = false, updatable = false) })
    private List<StopPoint> stopPoints = new ArrayList<StopPoint>(0);
 
+   /**
+    * vehicle journeys
+    * 
+    * @param vehicleJourneys
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
-   @OneToMany(mappedBy = "journeyPattern", cascade = { CascadeType.PERSIST,
-         CascadeType.MERGE })
-   private List<VehicleJourney> vehicleJourneys = new ArrayList<VehicleJourney>(
-         0);
+   @OneToMany(mappedBy = "journeyPattern", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+   private List<VehicleJourney> vehicleJourneys = new ArrayList<VehicleJourney>(0);
 
    /**
     * Start StopPoint id <br/>
-    * import/export usage <br/>
-    * <i>readable/writable</i>
+    * import/export usage
+    * 
+    * @param origin
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
@@ -110,8 +198,11 @@ public class JourneyPattern extends NeptuneIdentifiedObject
    private String origin;
    /**
     * End StopPoint id <br/>
-    * import/export usage <br/>
-    * <i>readable/writable</i>
+    * import/export usage
+    * 
+    * @param destination
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
@@ -119,9 +210,12 @@ public class JourneyPattern extends NeptuneIdentifiedObject
    private String destination;
 
    /**
-    * List of StpoPoint ObjectIds <br/>
-    * import/export usage <br/>
-    * <i>readable/writable</i>
+    * List of StopPoint ObjectIds <br/>
+    * import/export usage
+    * 
+    * @param stopPointIds
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
@@ -129,8 +223,11 @@ public class JourneyPattern extends NeptuneIdentifiedObject
    private List<String> stopPointIds;
    /**
     * Line ObjectId <br/>
-    * import/export usage <br/>
-    * <i>readable/writable</i>
+    * import/export usage
+    * 
+    * @param lineIdShortcut
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
@@ -138,36 +235,41 @@ public class JourneyPattern extends NeptuneIdentifiedObject
    private String lineIdShortcut;
    /**
     * Route ObjectId <br/>
-    * import/export usage <br/>
-    * <i>readable/writable</i>
+    * import/export usage
+    * 
+    * @param routeId
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
    @Transient
    private String routeId;
 
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#toString(java.
+    * lang.String, int)
+    */
    @Override
    public String toString(String indent, int level)
    {
       StringBuilder sb = new StringBuilder(super.toString(indent, level));
       sb.append("\n").append(indent).append("routeId = ").append(routeId);
-      sb.append("\n").append(indent).append("publishedName = ")
-            .append(publishedName);
+      sb.append("\n").append(indent).append("publishedName = ").append(publishedName);
       sb.append("\n").append(indent).append("origin = ").append(origin);
-      sb.append("\n").append(indent).append("destination = ")
-            .append(destination);
-      sb.append("\n").append(indent).append("registrationNumber = ")
-            .append(registrationNumber);
+      sb.append("\n").append(indent).append("destination = ").append(destination);
+      sb.append("\n").append(indent).append("registrationNumber = ").append(registrationNumber);
       sb.append("\n").append(indent).append("comment = ").append(comment);
 
       if (stopPointIds != null)
       {
-         sb.append("\n").append(indent).append(CHILD_ARROW)
-               .append("stopPointIds");
+         sb.append("\n").append(indent).append(CHILD_ARROW).append("stopPointIds");
          for (String stopPointId : stopPointIds)
          {
-            sb.append("\n").append(indent).append(CHILD_LIST_ARROW)
-                  .append(stopPointId);
+            sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(stopPointId);
          }
       }
       if (level > 0)
@@ -178,22 +280,18 @@ public class JourneyPattern extends NeptuneIdentifiedObject
          childIndent = indent + CHILD_LIST_INDENT;
          if (stopPoints != null)
          {
-            sb.append("\n").append(indent).append(CHILD_ARROW)
-                  .append("stopPoints");
+            sb.append("\n").append(indent).append(CHILD_ARROW).append("stopPoints");
             for (StopPoint stopPoint : getStopPoints())
             {
-               sb.append("\n").append(indent).append(CHILD_LIST_ARROW)
-                     .append(stopPoint.toString(childIndent, childLevel));
+               sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(stopPoint.toString(childIndent, childLevel));
             }
          }
          if (vehicleJourneys != null)
          {
-            sb.append("\n").append(indent).append(CHILD_ARROW)
-                  .append("vehicleJourneys");
+            sb.append("\n").append(indent).append(CHILD_ARROW).append("vehicleJourneys");
             for (VehicleJourney vehicleJourney : getVehicleJourneys())
             {
-               sb.append("\n").append(indent).append(CHILD_LIST_ARROW)
-                     .append(vehicleJourney.toString(childIndent, childLevel));
+               sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(vehicleJourney.toString(childIndent, childLevel));
             }
          }
       }
@@ -279,7 +377,7 @@ public class JourneyPattern extends NeptuneIdentifiedObject
    /**
     * produce a unique key for the list of Stop points
     * 
-    * @return
+    * @return key
     */
    public String getStopPointsAsKey()
    {
@@ -309,8 +407,7 @@ public class JourneyPattern extends NeptuneIdentifiedObject
       {
          return false;
       }
-      for (Iterator<VehicleJourney> iterator = vehicleJourneys.iterator(); iterator
-            .hasNext();)
+      for (Iterator<VehicleJourney> iterator = vehicleJourneys.iterator(); iterator.hasNext();)
       {
          VehicleJourney vehicleJourney = iterator.next();
          if (vehicleJourney == null || !vehicleJourney.clean())
@@ -361,7 +458,8 @@ public class JourneyPattern extends NeptuneIdentifiedObject
          {
             origin = null;
             destination = null;
-         } else
+         }
+         else
          {
             origin = stopPoints.get(0).getObjectId();
             destination = stopPoints.get(stopPoints.size() - 1).getObjectId();
@@ -374,13 +472,18 @@ public class JourneyPattern extends NeptuneIdentifiedObject
       }
    }
 
+   /**
+    * update departure and arrival <br/>
+    * to be used after stopPoints update
+    */
    public void refreshDepartureArrivals()
    {
       if (stopPoints == null || stopPoints.isEmpty())
       {
          departureStopPoint = null;
          arrivalStopPoint = null;
-      } else
+      }
+      else
       {
          departureStopPoint = stopPoints.get(0);
          arrivalStopPoint = stopPoints.get(stopPoints.size() - 1);
@@ -388,6 +491,13 @@ public class JourneyPattern extends NeptuneIdentifiedObject
 
    }
 
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * fr.certu.chouette.model.neptune.NeptuneObject#compareAttributes(fr.certu
+    * .chouette.model.neptune.NeptuneObject)
+    */
    @Override
    public <T extends NeptuneObject> boolean compareAttributes(T anotherObject)
    {
@@ -404,17 +514,22 @@ public class JourneyPattern extends NeptuneIdentifiedObject
             return false;
          if (!sameValue(this.getPublishedName(), another.getPublishedName()))
             return false;
-         if (!sameValue(this.getRegistrationNumber(),
-               another.getRegistrationNumber()))
+         if (!sameValue(this.getRegistrationNumber(), another.getRegistrationNumber()))
             return false;
 
          return true;
-      } else
+      }
+      else
       {
          return false;
       }
    }
 
+   /*
+    * (non-Javadoc)
+    * 
+    * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#toURL()
+    */
    @Override
    public String toURL()
    {

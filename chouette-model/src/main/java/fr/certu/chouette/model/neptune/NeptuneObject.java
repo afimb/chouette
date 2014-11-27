@@ -29,7 +29,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * basic class for every Neptune object
+ * basic class for every Chouette object
  */
 @MappedSuperclass
 @Access(AccessType.FIELD)
@@ -62,7 +62,7 @@ public abstract class NeptuneObject implements Serializable
    private boolean validationProceeded = false;
 
    /**
-    * read annotation to get maximum size of database dfield
+    * read annotation to get maximum size of database field
     * 
     * @param fieldName field name 
     * @return size
@@ -190,7 +190,7 @@ public abstract class NeptuneObject implements Serializable
     *           indentation
     * @param level
     *           deep level to print
-    * @return
+    * @return object description 
     */
    public String toString(String indent, int level)
    {
@@ -246,7 +246,7 @@ public abstract class NeptuneObject implements Serializable
     * compare 2 Neptune Object for identical attributs
     * 
     * @param another
-    * @return
+    * @return true if attributes are equals
     */
    public abstract <T extends NeptuneObject> boolean compareAttributes(T another);
 

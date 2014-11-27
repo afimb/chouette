@@ -1,9 +1,25 @@
 package fr.certu.chouette.model.neptune.type;
 
+
+/**
+ * Allowed Longitude/Latitude types
+ *
+ */
 public enum LongLatTypeEnum
 {
 
-   WGS84(4326), WGS92(0), Standard(4326);
+   /**
+    * EPSG:4326, only allowed value
+    */
+   WGS84(4326), 
+   /**
+    * prohibited (Neptune unknown value)
+    */
+   WGS92(0), 
+   /**
+    * prohibited (Neptune insignificant value)
+    */
+   Standard(4326);
 
    private int value;
 

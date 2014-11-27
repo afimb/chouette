@@ -18,12 +18,13 @@ import lombok.extern.log4j.Log4j;
 import fr.certu.chouette.model.neptune.type.facility.FacilityFeature;
 
 /**
- * Neptune Facility : specific feature on different kind of Public Transport
+ * Chouette Facility : specific feature on different kind of Public Transport
  * elements
+ * <br/>
+ * Note: this object is only used for Neptune import and validation purpose
  * <p/>
- * Note for fields comment : <br/>
- * when readable is added to comment, a implicit getter is available <br/>
- * when writable is added to comment, a implicit setter is available
+ * Neptune mapping : ChouetteFacility <br/>
+ * Gtfs mapping : none <br/>
  */
 @Entity
 @Table(name = "facilities")
@@ -33,70 +34,176 @@ public class Facility extends NeptuneLocalizedObject
 {
    private static final long serialVersionUID = -2150117548707325330L;
 
+   /**
+    * name
+    * 
+    * @return The actual value
+    */
    @Getter
    @Column(name = "name")
    private String name;
+
+   /**
+    * set name <br/>
+    * truncated to 255 characters if too long
+    * 
+    * @param value
+    *           New value
+    */
    public void setName(String value)
    {
       name = dataBaseSizeProtectedValue(value,"name",log);
    }
 
+   /**
+    * comment
+    * 
+    * @return The actual value
+    */
    @Getter
    @Column(name = "comment")
    private String comment;
+   /**
+    * set comment <br/>
+    * truncated to 255 characters if too long
+    * 
+    * @param value
+    *           New value
+    */
    public void setComment(String value)
    {
       comment = dataBaseSizeProtectedValue(value,"comment",log);
    }
 
+   /**
+    * description
+    * 
+    * @return The actual value
+    */
    @Getter
    @Column(name = "description")
    private String description;
+   /**
+    * set description <br/>
+    * truncated to 255 characters if too long
+    * 
+    * @param value
+    *           New value
+    */
    public void setDescription(String value)
    {
       description = dataBaseSizeProtectedValue(value,"description",log);
    }
 
+   /**
+    * free access : tell if this facility is available for anybody or not<br/>
+    * description or comment should describe access rules if necessary
+    * 
+    * @param freeAccess
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @Column(name = "free_access")
    private Boolean freeAccess;
 
+   /**
+    * container : TBD
+    * 
+    * @return The actual value
+    */
    @Getter
-   @Setter
    @Column(name = "contained_in")
    private String containedIn;
+   /**
+    * set container <br/>
+    * truncated to 255 characters if too long
+    * 
+    * @param value
+    *           New value
+    */
+   public void setContainedIn(String value)
+   {
+      containedIn = dataBaseSizeProtectedValue(value,"containedIn",log);
+   }
 
+   /**
+    * attached stop area <br/>
+    * exclusive relation <br/>
+    * if set, line, connectionLink and stopPoint must be null
+    * 
+    * @param stopArea
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "stop_area_id")
    private StopArea stopArea;
 
+   /**
+    * attached line <br/>
+    * exclusive relation <br/>
+    * if set, stopArea, connectionLink and stopPoint must be null
+    * 
+    * @param line
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "line_id")
    private Line line;
 
+   /**
+    * attached connection link <br/>
+    * exclusive relation <br/>
+    * if set, line, stopArea and stopPoint must be null
+    * 
+    * @param connectionLink
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "connection_link_id")
    private ConnectionLink connectionLink;
 
+   /**
+    * attached stopPoint <br/>
+    * exclusive relation <br/>
+    * if set, line, stopArea and connectionLink must be null
+    * 
+    * @param stopPoint
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "stop_point_id")
    private StopPoint stopPoint;
 
+   /**
+    * facility features 
+    * 
+    * @param facilityFeatures
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    private List<FacilityFeature> facilityFeatures;
 
    /**
-    * Field containedInStopArea.
+    * containedInStopArea : TBD
+    * @param containedInStopArea
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
@@ -105,8 +212,11 @@ public class Facility extends NeptuneLocalizedObject
 
    /**
     * Attached StopArea ObjectId when Facility concern a StopArea <br/>
-    * (Import/Export purpose) <br/>
-    * <i>readable/writable</i>
+    * (Import/Export purpose) 
+    * 
+    * @param stopAreaId
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
@@ -114,8 +224,11 @@ public class Facility extends NeptuneLocalizedObject
 
    /**
     * Attached Line ObjectId when Facility concern a Line <br/>
-    * (Import/Export purpose) <br/>
-    * <i>readable/writable</i>
+    * (Import/Export purpose) 
+    * 
+    * @param lineId
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
@@ -123,8 +236,11 @@ public class Facility extends NeptuneLocalizedObject
 
    /**
     * Attached ConnectionLink ObjectId when Facility concern a ConnectionLink <br/>
-    * (Import/Export purpose) <br/>
-    * <i>readable/writable</i>
+    * 
+    * @param connectionLinkId
+    *           New value
+    * @return The actual value
+    * (Import/Export purpose) 
     */
    @Getter
    @Setter
@@ -132,8 +248,11 @@ public class Facility extends NeptuneLocalizedObject
 
    /**
     * Attached StopPoint ObjectId when Facility concern a StopPoint <br/>
-    * (Import/Export purpose) <br/>
-    * <i>readable/writable</i>
+    * 
+    * @param stopPointId
+    *           New value
+    * @return The actual value
+    * (Import/Export purpose) 
     */
    @Getter
    @Setter
@@ -143,7 +262,7 @@ public class Facility extends NeptuneLocalizedObject
     * add a new feature if not already present
     * 
     * @param facilityFeature
-    *           teature to be added
+    *           feature to be added
     */
    public void addFacilityFeature(FacilityFeature facilityFeature)
    {
@@ -189,6 +308,9 @@ public class Facility extends NeptuneLocalizedObject
       lineId = (line != null) ? line.getObjectId() : null;
    }
 
+   /* (non-Javadoc)
+    * @see fr.certu.chouette.model.neptune.NeptuneObject#compareAttributes(fr.certu.chouette.model.neptune.NeptuneObject)
+    */
    @Override
    public <T extends NeptuneObject> boolean compareAttributes(T anotherObject)
    {
@@ -234,6 +356,9 @@ public class Facility extends NeptuneLocalizedObject
       }
    }
 
+   /* (non-Javadoc)
+    * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#toURL()
+    */
    @Override
    public String toURL()
    {

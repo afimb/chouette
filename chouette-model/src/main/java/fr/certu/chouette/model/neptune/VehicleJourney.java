@@ -31,17 +31,15 @@ import fr.certu.chouette.model.neptune.type.ServiceStatusValueEnum;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 
 /**
- * Neptune VehicleJourney
+ * Chouette VehicleJourney
  * <p/>
  * <b>Note</b> VehicleJourney class contains method to manipulate
  * VehicleJourneyAtStop in logic with StopPoint's position on Route and
  * StopPoint list in JourneyPatterns <br/>
  * it is mandatory to respect instruction on each of these methods
  * <p/>
- * Note for fields comment : <br/>
- * when readable is added to comment, a implicit getter is available <br/>
- * when writable is added to comment, a implicit setter is available
- * 
+ * Neptune mapping : VehicleJourney <br/>
+ * Gtfs mapping : trip <br/>
  */
 
 @Entity
@@ -52,113 +50,267 @@ public class VehicleJourney extends NeptuneIdentifiedObject
 {
    private static final long serialVersionUID = 304336286208135064L;
 
-
+   /**
+    * comment
+    * 
+    * @return The actual value
+    */
    @Getter
    @Column(name = "comment")
    private String comment;
+
+   /**
+    * set comment <br/>
+    * truncated to 255 characters if too long
+    * 
+    * @param value
+    *           New value
+    */
    public void setComment(String value)
    {
-      comment = dataBaseSizeProtectedValue(value,"comment",log);
+      comment = dataBaseSizeProtectedValue(value, "comment", log);
    }
 
+   /**
+    * service status
+    * 
+    * @param serviceStatusValue
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @Enumerated(EnumType.STRING)
    @Column(name = "status_value")
+   @Deprecated
    private ServiceStatusValueEnum serviceStatusValue;
 
+   /**
+    * Transport mode when different from line transport mode
+    * 
+    * @param transportMode
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @Enumerated(EnumType.STRING)
    @Column(name = "transport_mode")
    private TransportModeNameEnum transportMode;
 
+   /**
+    * published journey name
+    * 
+    * @return The actual value
+    */
    @Getter
    @Column(name = "published_journey_name")
    private String publishedJourneyName;
+
+   /**
+    * set published journey name <br/>
+    * truncated to 255 characters if too long
+    * 
+    * @param value
+    *           New value
+    */
    public void setPublishedJourneyName(String value)
    {
-      publishedJourneyName = dataBaseSizeProtectedValue(value,"publishedJourneyName",log);
+      publishedJourneyName = dataBaseSizeProtectedValue(value, "publishedJourneyName", log);
    }
 
+   /**
+    * published journey identifier
+    * 
+    * @return The actual value
+    */
    @Getter
    @Column(name = "published_journey_identifier")
    private String publishedJourneyIdentifier;
+
+   /**
+    * set published journey identifier <br/>
+    * truncated to 255 characters if too long
+    * 
+    * @param value
+    *           New value
+    */
    public void setPublishedJourneyIdentifier(String value)
    {
-      publishedJourneyIdentifier = dataBaseSizeProtectedValue(value,"publishedJourneyIdentifier",log);
+      publishedJourneyIdentifier = dataBaseSizeProtectedValue(value, "publishedJourneyIdentifier", log);
    }
 
+   /**
+    * facility
+    * 
+    * @return The actual value
+    */
    @Getter
    @Column(name = "facility")
    private String facility;
+
+   /**
+    * set facility <br/>
+    * truncated to 255 characters if too long
+    * 
+    * @param value
+    *           New value
+    */
    public void setFacility(String value)
    {
-      facility = dataBaseSizeProtectedValue(value,"facility",log);
+      facility = dataBaseSizeProtectedValue(value, "facility", log);
    }
 
+   /**
+    * vehicle type identifier
+    * 
+    * @return The actual value
+    */
    @Getter
    @Column(name = "vehicle_type_identifier")
    private String vehicleTypeIdentifier;
+
+   /**
+    * set vehicle type identifier <br/>
+    * truncated to 255 characters if too long
+    * 
+    * @param value
+    *           New value
+    */
    public void setVehicleTypeIdentifier(String value)
    {
-      vehicleTypeIdentifier = dataBaseSizeProtectedValue(value,"vehicleTypeIdentifier",log);
+      vehicleTypeIdentifier = dataBaseSizeProtectedValue(value, "vehicleTypeIdentifier", log);
    }
 
+   /**
+    * number
+    * 
+    * @param number
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @Column(name = "number")
    private Long number;
 
+   /**
+    * mobility restriction indicator (such as wheel chairs) <br/>
+    * 
+    * <ul>
+    * <li>null if unknown
+    * <li>true if wheel chairs can use this line</li>
+    * <li>false if wheel chairs can't use this line</li>
+    * </ul>
+    * 
+    * @param mobilityRestrictedSuitability
+    *           New state for mobility restriction indicator
+    * @return The actual mobility restriction indicator
+    */
    @Getter
    @Setter
    @Column(name = "mobility_restricted_suitability")
    private Boolean mobilityRestrictedSuitability;
-   
+
+   /**
+    * flexible service <br/>
+    * 
+    * <ul>
+    * <li>null if unknown or inherited from line
+    * <li>true for flexible service</li>
+    * <li>false for regular service</li>
+    * </ul>
+    * 
+    * @param flexibleService
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @Column(name = "flexible_service")
    private Boolean flexibleService;
 
-   
+   /**
+    * route reference
+    * 
+    * @param route
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "route_id")
    private Route route;
 
+   /**
+    * journey pattern reference
+    * 
+    * @param journeyPattern
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "journey_pattern_id")
    private JourneyPattern journeyPattern;
 
+   /**
+    * company reference<br/>
+    * if different from line company
+    * 
+    * @param company
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @ManyToOne(fetch = FetchType.LAZY)
    @JoinColumn(name = "company_id")
    private Company company;
 
+   /**
+    * timtables
+    * 
+    * @param timetables
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @ManyToMany
    @JoinTable(name = "time_tables_vehicle_journeys", joinColumns = { @JoinColumn(name = "vehicle_journey_id", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "time_table_id", nullable = false, updatable = false) })
    private List<Timetable> timetables = new ArrayList<Timetable>(0);
 
+   /**
+    * vehicle journey at stops : passing times
+    * 
+    * @return The actual value
+    */
    @Getter
-   @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST,
-         CascadeType.MERGE })
+   @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
    @JoinColumn(name = "vehicle_journey_id", updatable = false)
-   private List<VehicleJourneyAtStop> vehicleJourneyAtStops = new ArrayList<VehicleJourneyAtStop>(
-         0);
+   private List<VehicleJourneyAtStop> vehicleJourneyAtStops = new ArrayList<VehicleJourneyAtStop>(0);
+   /**
+    * set and order vehicleJourneyAtStops
+    * 
+    * @param vehicleJourneyAtStops
+    */
+   public void setVehicleJourneyAtStops(List<VehicleJourneyAtStop> vehicleJourneyAtStops)
+   {
+      this.vehicleJourneyAtStops = vehicleJourneyAtStops;
+      sortVehicleJourneyAtStops();
+
+   }
 
    /**
     * route objectId <br/>
-    * <i>readable/writable</i>
-    * <p/>
-    * null if vehicleJourney is read from database; call
-    * {@link #complete()} to
-    * initialize
+    * (import/export purpose)
+    * 
+    * @param routeId
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
@@ -167,11 +319,11 @@ public class VehicleJourney extends NeptuneIdentifiedObject
 
    /**
     * journeyPattern objectId <br/>
-    * <i>readable/writable</i>
-    * <p/>
-    * null if vehicleJourney is read from database; call
-    * {@link #complete()} to
-    * initialize
+    * (import/export purpose)
+    * 
+    * @param journeyPatternId
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
@@ -180,33 +332,39 @@ public class VehicleJourney extends NeptuneIdentifiedObject
 
    /**
     * timeSlot objectId <br/>
-    * <i>readable/writable</i>
-    * <p/>
-    * null if vehicleJourney is read from database; call
-    * {@link #complete()} to
-    * initialize
+    * (import/export purpose)
+    * 
+    * @param timeSlotId
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
    @Transient
+   @Deprecated
    private String timeSlotId;
 
    /**
     * timeSlot <br/>
-    * <i>readable/writable</i>
+    * (import/export purpose)
+    * 
+    * @param timeSlot
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
    @Transient
+   @Deprecated
    private TimeSlot timeSlot;
 
    /**
     * company objectId <br/>
-    * <i>readable/writable</i>
-    * <p/>
-    * null if vehicleJourney is read from database; call
-    * {@link #complete()} to
-    * initialize
+    * (import/export purpose)
+    * 
+    * @param companyId
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
@@ -215,11 +373,11 @@ public class VehicleJourney extends NeptuneIdentifiedObject
 
    /**
     * line objectId <br/>
-    * <i>readable/writable</i>
-    * <p/>
-    * null if vehicleJourney is read from database; call
-    * {@link #complete()} to
-    * initialize
+    * (import/export purpose)
+    * 
+    * @param lineIdShortcut
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
@@ -227,11 +385,11 @@ public class VehicleJourney extends NeptuneIdentifiedObject
    private String lineIdShortcut;
    /**
     * line <br/>
-    * <i>readable/writable</i>
-    * <p/>
-    * null if vehicleJourney is read from database; call
-    * {@link #complete()} to
-    * initialize
+    * (import/export purpose)
+    * 
+    * @param line
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
@@ -240,7 +398,11 @@ public class VehicleJourney extends NeptuneIdentifiedObject
 
    /**
     * Start of period = minimum of timetables starts of periods ; may be null <br/>
-    * <i>readable only; populated by complete()</i>
+    * (import/export purpose)
+    * 
+    * @param startOfPeriod
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
@@ -249,13 +411,16 @@ public class VehicleJourney extends NeptuneIdentifiedObject
 
    /**
     * End of period = maximum of timetables ends of periods ; may be null <br/>
-    * <i>readable only; populated by complete()</i>
+    * (import/export purpose)
+    * 
+    * @param endOfPeriod
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
    @Transient
    private Date endOfPeriod;
-
 
    /**
     * add a VehicleJourneyAtStop if not already present
@@ -274,8 +439,7 @@ public class VehicleJourney extends NeptuneIdentifiedObject
    {
       if (vehicleJourneyAtStops == null)
          vehicleJourneyAtStops = new ArrayList<VehicleJourneyAtStop>();
-      if (vehicleJourneyAtStop != null
-            && !vehicleJourneyAtStops.contains(vehicleJourneyAtStop))
+      if (vehicleJourneyAtStop != null && !vehicleJourneyAtStops.contains(vehicleJourneyAtStop))
       {
          vehicleJourneyAtStops.add(vehicleJourneyAtStop);
          vehicleJourneyAtStop.setVehicleJourney(this);
@@ -293,15 +457,13 @@ public class VehicleJourney extends NeptuneIdentifiedObject
     * @param vehicleJourneyAtStopCollection
     *           VehicleJourneyAtStops to add
     */
-   public void addVehicleJourneyAtStops(
-         Collection<VehicleJourneyAtStop> vehicleJourneyAtStopCollection)
+   public void addVehicleJourneyAtStops(Collection<VehicleJourneyAtStop> vehicleJourneyAtStopCollection)
    {
       if (vehicleJourneyAtStops == null)
          vehicleJourneyAtStops = new ArrayList<VehicleJourneyAtStop>();
       for (VehicleJourneyAtStop vehicleJourneyAtStop : vehicleJourneyAtStopCollection)
       {
-         if (vehicleJourneyAtStop != null
-               && !vehicleJourneyAtStops.contains(vehicleJourneyAtStop))
+         if (vehicleJourneyAtStop != null && !vehicleJourneyAtStops.contains(vehicleJourneyAtStop))
          {
             vehicleJourneyAtStops.add(vehicleJourneyAtStop);
             vehicleJourneyAtStop.setVehicleJourney(this);
@@ -353,7 +515,9 @@ public class VehicleJourney extends NeptuneIdentifiedObject
          timetables.remove(timetable);
    }
 
-   /* (non-Javadoc)
+   /*
+    * (non-Javadoc)
+    * 
     * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#clean()
     */
    @Override
@@ -395,8 +559,7 @@ public class VehicleJourney extends NeptuneIdentifiedObject
       {
          List<VehicleJourneyAtStop> vjas = vehicleJourneyAtStops;
          boolean found = false;
-         for (Iterator<VehicleJourneyAtStop> iterator = vjas.iterator(); iterator
-               .hasNext();)
+         for (Iterator<VehicleJourneyAtStop> iterator = vjas.iterator(); iterator.hasNext();)
          {
             VehicleJourneyAtStop vehicleJourneyAtStop = iterator.next();
             if (stopPoint.equals(vehicleJourneyAtStop.getStopPoint()))
@@ -490,15 +653,11 @@ public class VehicleJourney extends NeptuneIdentifiedObject
          for (VehicleJourneyAtStop vjas : vehicleJourneyAtStops)
          {
             journeyPattern.addStopPoint(vjas.getStopPoint());
-            if (journeyPattern.getDepartureStopPoint() == null
-                  || journeyPattern.getDepartureStopPoint().after(
-                        vjas.getStopPoint()))
+            if (journeyPattern.getDepartureStopPoint() == null || journeyPattern.getDepartureStopPoint().after(vjas.getStopPoint()))
             {
                journeyPattern.setDepartureStopPoint(vjas.getStopPoint());
             }
-            if (journeyPattern.getArrivalStopPoint() == null
-                  || journeyPattern.getArrivalStopPoint().before(
-                        vjas.getStopPoint()))
+            if (journeyPattern.getArrivalStopPoint() == null || journeyPattern.getArrivalStopPoint().before(vjas.getStopPoint()))
             {
                journeyPattern.setArrivalStopPoint(vjas.getStopPoint());
             }
@@ -536,27 +695,28 @@ public class VehicleJourney extends NeptuneIdentifiedObject
       return "empty vehicleJourney";
    }
 
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#toString(java.
+    * lang.String, int)
+    */
    @Override
    public String toString(String indent, int level)
    {
       StringBuilder sb = new StringBuilder(super.toString(indent, level));
-      sb.append("\n").append(indent).append("serviceStatusValue = ")
-            .append(serviceStatusValue);
-      sb.append("\n").append(indent).append("transportMode = ")
-            .append(transportMode);
+      sb.append("\n").append(indent).append("serviceStatusValue = ").append(serviceStatusValue);
+      sb.append("\n").append(indent).append("transportMode = ").append(transportMode);
       sb.append("\n").append(indent).append("comment = ").append(comment);
       sb.append("\n").append(indent).append("facility = ").append(facility);
       sb.append("\n").append(indent).append("number = ").append(number);
       sb.append("\n").append(indent).append("routeId = ").append(routeId);
-      sb.append("\n").append(indent).append("journeyPatternId = ")
-            .append(journeyPatternId);
+      sb.append("\n").append(indent).append("journeyPatternId = ").append(journeyPatternId);
       sb.append("\n").append(indent).append("timeSlotId = ").append(timeSlotId);
-      sb.append("\n").append(indent).append("publishedJourneyName = ")
-            .append(publishedJourneyName);
-      sb.append("\n").append(indent).append("publishedJourneyIdentifier = ")
-            .append(publishedJourneyIdentifier);
-      sb.append("\n").append(indent).append("vehicleTypeIdentifier = ")
-            .append(vehicleTypeIdentifier);
+      sb.append("\n").append(indent).append("publishedJourneyName = ").append(publishedJourneyName);
+      sb.append("\n").append(indent).append("publishedJourneyIdentifier = ").append(publishedJourneyIdentifier);
+      sb.append("\n").append(indent).append("vehicleTypeIdentifier = ").append(vehicleTypeIdentifier);
       sb.append("\n").append(indent).append("companyId = ").append(companyId);
 
       int childLevel = level - 1;
@@ -564,66 +724,45 @@ public class VehicleJourney extends NeptuneIdentifiedObject
       String childIndent = indent + CHILD_LIST_INDENT;
       if (vehicleJourneyAtStops != null)
       {
-         sb.append("\n").append(indent).append(CHILD_ARROW)
-               .append("vehicleJourneyAtStops");
+         sb.append("\n").append(indent).append(CHILD_ARROW).append("vehicleJourneyAtStops");
          for (VehicleJourneyAtStop vehicleJourneyAtStop : getVehicleJourneyAtStops())
          {
-            sb.append("\n")
-                  .append(indent)
-                  .append(CHILD_LIST_ARROW)
-                  .append(
-                        vehicleJourneyAtStop.toString(childIndent, childLevel));
+            sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(vehicleJourneyAtStop.toString(childIndent, childLevel));
          }
       }
       if (timeSlot != null)
       {
          sb.append("\n").append(indent).append(CHILD_ARROW).append("timeSlot");
-         sb.append("\n").append(indent).append(CHILD_LIST_ARROW)
-               .append(timeSlot.toString(childIndent, childLevel));
+         sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(timeSlot.toString(childIndent, childLevel));
       }
       if (level > 0)
       {
          childIndent = indent + CHILD_INDENT;
          if (timeSlot != null)
          {
-            sb.append("\n").append(indent).append(CHILD_ARROW)
-                  .append(timeSlot.toString(childIndent, 0));
+            sb.append("\n").append(indent).append(CHILD_ARROW).append(timeSlot.toString(childIndent, 0));
          }
 
          if (company != null)
          {
-            sb.append("\n").append(indent).append(CHILD_ARROW)
-                  .append(company.toString(childIndent, 0));
+            sb.append("\n").append(indent).append(CHILD_ARROW).append(company.toString(childIndent, 0));
          }
          childIndent = indent + CHILD_LIST_INDENT;
          if (timetables != null)
          {
-            sb.append("\n").append(indent).append(CHILD_ARROW)
-                  .append("timetables");
+            sb.append("\n").append(indent).append(CHILD_ARROW).append("timetables");
             for (Timetable timetable : getTimetables())
             {
-               sb.append("\n").append(indent).append(CHILD_LIST_ARROW)
-                     .append(timetable.toString(childIndent, 0));
+               sb.append("\n").append(indent).append(CHILD_LIST_ARROW).append(timetable.toString(childIndent, 0));
             }
          }
       }
       return sb.toString();
    }
 
-   /**
-    * set and order vehicleJourneyAtStops
+   /*
+    * (non-Javadoc)
     * 
-    * @param vehicleJourneyAtStops
-    */
-   public void setVehicleJourneyAtStops(
-         List<VehicleJourneyAtStop> vehicleJourneyAtStops)
-   {
-      this.vehicleJourneyAtStops = vehicleJourneyAtStops;
-      sortVehicleJourneyAtStops();
-
-   }
-
-   /* (non-Javadoc)
     * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#complete()
     */
    @Override
@@ -691,11 +830,12 @@ public class VehicleJourney extends NeptuneIdentifiedObject
     * compare VehicleJourneyAtStop on StoPoint position in route
     * 
     */
-   public class VehicleJourneyAtStopComparator implements
-         Comparator<VehicleJourneyAtStop>
+   public class VehicleJourneyAtStopComparator implements Comparator<VehicleJourneyAtStop>
    {
 
-      /* (non-Javadoc)
+      /*
+       * (non-Javadoc)
+       * 
        * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
        */
       @Override
@@ -712,8 +852,12 @@ public class VehicleJourney extends NeptuneIdentifiedObject
 
    }
 
-   /* (non-Javadoc)
-    * @see fr.certu.chouette.model.neptune.NeptuneObject#compareAttributes(fr.certu.chouette.model.neptune.NeptuneObject)
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * fr.certu.chouette.model.neptune.NeptuneObject#compareAttributes(fr.certu
+    * .chouette.model.neptune.NeptuneObject)
     */
    @Override
    public <T extends NeptuneObject> boolean compareAttributes(T anotherObject)
@@ -729,38 +873,36 @@ public class VehicleJourney extends NeptuneIdentifiedObject
             return false;
          if (!sameValue(this.getNumber(), another.getNumber()))
             return false;
-         if (!sameValue(this.getRegistrationNumber(),
-               another.getRegistrationNumber()))
+         if (!sameValue(this.getRegistrationNumber(), another.getRegistrationNumber()))
             return false;
 
          if (!sameValue(this.getEndOfPeriod(), another.getEndOfPeriod()))
             return false;
          if (!sameValue(this.getFacility(), another.getFacility()))
             return false;
-         if (!sameValue(this.getServiceStatusValue(),
-               another.getServiceStatusValue()))
+         if (!sameValue(this.getServiceStatusValue(), another.getServiceStatusValue()))
             return false;
          if (!sameValue(this.getStartOfPeriod(), another.getStartOfPeriod()))
             return false;
-         if (!sameValue(this.getPublishedJourneyIdentifier(),
-               another.getPublishedJourneyIdentifier()))
+         if (!sameValue(this.getPublishedJourneyIdentifier(), another.getPublishedJourneyIdentifier()))
             return false;
-         if (!sameValue(this.getPublishedJourneyName(),
-               another.getPublishedJourneyName()))
+         if (!sameValue(this.getPublishedJourneyName(), another.getPublishedJourneyName()))
             return false;
          if (!sameValue(this.getTransportMode(), another.getTransportMode()))
             return false;
-         if (!sameValue(this.getVehicleTypeIdentifier(),
-               another.getVehicleTypeIdentifier()))
+         if (!sameValue(this.getVehicleTypeIdentifier(), another.getVehicleTypeIdentifier()))
             return false;
          return true;
-      } else
+      }
+      else
       {
          return false;
       }
    }
 
-   /* (non-Javadoc)
+   /*
+    * (non-Javadoc)
+    * 
     * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#toURL()
     */
    @Override

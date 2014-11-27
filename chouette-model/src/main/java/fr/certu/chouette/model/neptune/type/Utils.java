@@ -2,9 +2,19 @@ package fr.certu.chouette.model.neptune.type;
 
 import java.util.EnumSet;
 
+/**
+ * tools on enums
+ */
 public class Utils
 {
 
+   /**
+    * find enum value ignoring case
+    * 
+    * @param text enum value name
+    * @param cls enum class name
+    * @return enum found (null if not found)
+    */
    public static <T extends Enum<T>> T valueOfIgnoreCase(String text,
          Class<T> cls)
    {

@@ -1,7 +1,58 @@
 package fr.certu.chouette.model.neptune.type;
 
+/**
+ * Day type for timetable
+ *
+ */
 public enum DayTypeEnum
 {
-   WeekDay, WeekEnd, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday, SchoolHolliday, PublicHolliday, MarketDay;
+   /**
+    * from monday to friday
+    */
+   WeekDay, 
+   /**
+    * saturday and sunday
+    */
+   WeekEnd, 
+   /**
+    * monday
+    */
+   Monday, 
+   /**
+    * tuesday
+    */
+   Tuesday,
+   /**
+    * wednesday
+    */
+   Wednesday, 
+   /**
+    * thursday
+    */
+   Thursday, 
+   /**
+    * friday
+    */
+   Friday, 
+   /**
+    * saturday
+    */
+   Saturday, 
+   /**
+    * sunday
+    */
+   Sunday, 
+   /**
+    * school holliday (unused)
+    */
+   SchoolHolliday, 
+   /**
+    * public holliday (unused)
+    */
+   PublicHolliday, 
+   /**
+    * market day (unused)
+    */
+   MarketDay;
 
 }

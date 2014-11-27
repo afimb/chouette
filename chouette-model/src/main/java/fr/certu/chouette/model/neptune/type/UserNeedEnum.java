@@ -1,5 +1,9 @@
 package fr.certu.chouette.model.neptune.type;
 
+/**
+ * User needs
+ *
+ */
 public enum UserNeedEnum implements java.io.Serializable
 {
 
@@ -8,40 +12,40 @@ public enum UserNeedEnum implements java.io.Serializable
    // ------------------/
 
    /**
-    * Constant ALLERGIC
+    * ALLERGIC
     */
    ALLERGIC("allergic", NeedCategoryEnum.MEDICAL),
    /**
-    * Constant HEARTCONDITION
+    * HEARTCONDITION
     */
    HEART_CONDITION("heartCondition", NeedCategoryEnum.MEDICAL),
    /**
-    * Constant OTHERMEDICALNEED
+    * OTHERMEDICALNEED
     */
    OTHER_MEDICAL_NEED("otherMedicalNeed", NeedCategoryEnum.MEDICAL),
    /**
-    * Constant VISUALIMPAIRMENT
+    * VISUALIMPAIRMENT
     */
    VISUAL_IMPAIRMENT("visualImpairment", NeedCategoryEnum.PSYCHOSENSORY),
    /**
-    * Constant AUDITORYIMPAIRMENT
+    * AUDITORYIMPAIRMENT
     */
    AUDITORY_IMPAIRMENT("auditoryImpairment", NeedCategoryEnum.PSYCHOSENSORY),
    /**
-    * Constant COGNITIVEINPUTIMPAIRMENT
+    * COGNITIVEINPUTIMPAIRMENT
     */
    COGNITIVE_INPUT_IMPAIRMENT("cognitiveInputImpairment",
          NeedCategoryEnum.PSYCHOSENSORY),
    /**
-    * Constant AVERSETOLIFTS
+    * AVERSETOLIFTS
     */
    AVERSE_TO_LIFTS("averseToLifts", NeedCategoryEnum.PSYCHOSENSORY),
    /**
-    * Constant AVERSETOESCALATORS
+    * AVERSETOESCALATORS
     */
    AVERSE_TO_ESCALATORS("averseToEscalators", NeedCategoryEnum.PSYCHOSENSORY),
    /**
-    * Constant AVERSETOCONFINEDSPACES
+    * AVERSETOCONFINEDSPACES
     */
    AVERSE_TO_CONFINED_SPACES("averseToConfinedSpaces",
          NeedCategoryEnum.PSYCHOSENSORY),
@@ -50,16 +54,16 @@ public enum UserNeedEnum implements java.io.Serializable
     */
    AVERSE_TO_CROWDS("averseToCrowds", NeedCategoryEnum.PSYCHOSENSORY),
    /**
-    * Constant OTHERPSYCHOSENSORYNEED
+    * OTHERPSYCHOSENSORYNEED
     */
    OTHER_PSYCHOSENSORY_NEED("otherPsychosensoryNeed",
          NeedCategoryEnum.PSYCHOSENSORY),
    /**
-    * Constant LUGGAGEENCUMBERED
+    * LUGGAGEENCUMBERED
     */
    LUGGAGE_ENCUMBERED("luggageEncumbered", NeedCategoryEnum.ENCUMBRANCE),
    /**
-    * Constant PUSHCHAIR
+    * PUSHCHAIR
     */
    PUSHCHAIR("pushchair", NeedCategoryEnum.ENCUMBRANCE),
    /**
@@ -67,43 +71,43 @@ public enum UserNeedEnum implements java.io.Serializable
     */
    BAGGAGE_TROLLEY("baggageTrolley", NeedCategoryEnum.ENCUMBRANCE),
    /**
-    * Constant OVERSIZEBAGGAGE
+    * OVERSIZEBAGGAGE
     */
    OVERSIZE_BAGGAGE("oversizeBaggage", NeedCategoryEnum.ENCUMBRANCE),
    /**
-    * Constant GUIDEDOG
+    * GUIDEDOG
     */
    GUIDE_DOG("guideDog", NeedCategoryEnum.ENCUMBRANCE),
    /**
-    * Constant OTHERANIMAL
+    * OTHERANIMAL
     */
    OTHER_ANIMAL("otherAnimal", NeedCategoryEnum.ENCUMBRANCE),
    /**
-    * Constant OTHERENCUMBRANCE
+    * OTHERENCUMBRANCE
     */
    OTHER_ENCUMBRANCE("otherEncumbrance", NeedCategoryEnum.ENCUMBRANCE),
    /**
-    * Constant WHEELCHAIR
+    * WHEELCHAIR
     */
    WHEELCHAIR("wheelchair", NeedCategoryEnum.MOBILITY),
    /**
-    * Constant ASSISTEDWHEELCHAIR
+    * ASSISTEDWHEELCHAIR
     */
    ASSISTED_WHEELCHAIR("assistedWheelchair", NeedCategoryEnum.MOBILITY),
    /**
-    * Constant MOTORIZEDWHEELCHAIR
+    * MOTORIZEDWHEELCHAIR
     */
    MOTORIZED_WHEELCHAIR("motorizedWheelchair", NeedCategoryEnum.MOBILITY),
    /**
-    * Constant WALKINGFRAME
+    * WALKINGFRAME
     */
    WALKING_FRAME("walkingFrame", NeedCategoryEnum.MOBILITY),
    /**
-    * Constant RESTRICTEDMOBILITY
+    * RESTRICTEDMOBILITY
     */
    RESTRICTED_MOBILITY("restrictedMobility", NeedCategoryEnum.MOBILITY),
    /**
-    * Constant OTHERMOBILITYNEED
+    * OTHERMOBILITYNEED
     */
    OTHER_MOBILITY_NEED("otherMobilityNeed", NeedCategoryEnum.MOBILITY);
 
@@ -188,6 +192,10 @@ public enum UserNeedEnum implements java.io.Serializable
       return this.category;
    }
 
+   /**
+    * Need Categories
+    *
+    */
    public enum NeedCategoryEnum implements java.io.Serializable
    {
 
@@ -196,19 +204,19 @@ public enum UserNeedEnum implements java.io.Serializable
       // ------------------/
 
       /**
-       * Constant MEDICAL
+       * MEDICAL
        */
       MEDICAL("medical"),
       /**
-       * Constant PSYCHOSENSORY
+       * PSYCHOSENSORY
        */
       PSYCHOSENSORY("psychosensory"),
       /**
-       * Constant ENCUMBRANCE
+       * ENCUMBRANCE
        */
       ENCUMBRANCE("encumbrance"),
       /**
-       * Constant MOBILITY
+       * MOBILITY
        */
       MOBILITY("mobility");
 

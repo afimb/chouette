@@ -15,11 +15,10 @@ import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
 /**
- * Neptune GroupOfLine : to associate lines with common purpose
+ * Chouette GroupOfLine : to associate lines with common purpose
  * <p/>
- * Note for fields comment : <br/>
- * when readable is added to comment, a implicit getter is available <br/>
- * when writable is added to comment, a implicit setter is available
+ * Neptune mapping : GroupOfLine <br/>
+ * 
  */
 @Entity
 @Table(name = "group_of_lines")
@@ -30,22 +29,55 @@ public class GroupOfLine extends NeptuneIdentifiedObject
 
    private static final long serialVersionUID = 2900948915585746984L;
 
+   /**
+    * name
+    * 
+    * @return The actual value
+    */
    @Getter
-   @Column(name = "name")
+   @Column(name = "name", nullable = false)
    private String name;
+
+   /**
+    * set name <br/>
+    * truncated to 255 characters if too long
+    * 
+    * @param value
+    *           New value
+    */
    public void setName(String value)
    {
-      name = dataBaseSizeProtectedValue(value,"name",log);
+      name = dataBaseSizeProtectedValue(value, "name", log);
    }
 
+   /**
+    * comment
+    * 
+    * @return The actual value
+    */
    @Getter
    @Column(name = "comment")
    private String comment;
+
+   /**
+    * set comment <br/>
+    * truncated to 255 characters if too long
+    * 
+    * @param value
+    *           New value
+    */
    public void setComment(String value)
    {
-      comment = dataBaseSizeProtectedValue(value,"comment",log);
+      comment = dataBaseSizeProtectedValue(value, "comment", log);
    }
 
+   /**
+    * grouped Lines
+    * 
+    * @param lines
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @ManyToMany(mappedBy = "groupOfLines")
@@ -53,8 +85,11 @@ public class GroupOfLine extends NeptuneIdentifiedObject
 
    /**
     * grouped Lines ObjectIds <br/>
-    * (import/export usage) <br/>
-    * <i>readable/writable</i>
+    * (import/export purpose)
+    * 
+    * @param lineIds
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
@@ -119,12 +154,20 @@ public class GroupOfLine extends NeptuneIdentifiedObject
       if (lines != null)
       {
          lineIds = extractObjectIds(lines);
-      } else
+      }
+      else
       {
          lineIds = new ArrayList<String>();
       }
    }
 
+   /*
+    * (non-Javadoc)
+    * 
+    * @see
+    * fr.certu.chouette.model.neptune.NeptuneObject#compareAttributes(fr.certu
+    * .chouette.model.neptune.NeptuneObject)
+    */
    @Override
    public <T extends NeptuneObject> boolean compareAttributes(T anotherObject)
    {
@@ -139,17 +182,22 @@ public class GroupOfLine extends NeptuneIdentifiedObject
             return false;
          if (!sameValue(this.getComment(), another.getComment()))
             return false;
-         if (!sameValue(this.getRegistrationNumber(),
-               another.getRegistrationNumber()))
+         if (!sameValue(this.getRegistrationNumber(), another.getRegistrationNumber()))
             return false;
 
          return true;
-      } else
+      }
+      else
       {
          return false;
       }
    }
 
+   /*
+    * (non-Javadoc)
+    * 
+    * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#toURL()
+    */
    @Override
    public String toURL()
    {

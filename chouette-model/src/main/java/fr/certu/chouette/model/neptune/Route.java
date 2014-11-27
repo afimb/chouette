@@ -117,7 +117,7 @@ public class Route extends NeptuneIdentifiedObject
    @Column(name = "published_name")
    private String publishedName;
    /**
-    * set comment <br/>
+    * set published name <br/>
     * truncated to 255 characters if too long
     * 
     * @param value
@@ -244,6 +244,10 @@ public class Route extends NeptuneIdentifiedObject
    /**
     * reference to the wayBackRoute of the route<br/>
     * will be populate with complete() Changes have no effect on database <br/>
+    * 
+    * @param wayBackRoute
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
@@ -254,6 +258,10 @@ public class Route extends NeptuneIdentifiedObject
     * Neptune identification referring to the JourneyPatterns of the route<br/>
     * Meaningless after database read (see journeyPatterns) <br/>
     * Changes have no effect on database <br/>
+    * 
+    * @param journeyPatternIds
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
@@ -264,7 +272,10 @@ public class Route extends NeptuneIdentifiedObject
     * Neptune identification referring to the PTLinks of the route<br/>
     * Meaningless after database read (see ptLinks) <br/>
     * Changes have no effect on database <br/>
-    * <i>readable/writable</i>
+    * 
+    * @param ptLinkIds
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
@@ -273,8 +284,10 @@ public class Route extends NeptuneIdentifiedObject
 
    /**
     * The route's ptLink objects <br/>
-    * <br/>
-    * <i>readable/writable</i>
+    * 
+    * @param ptLinks
+    *           New value
+    * @return The actual value
     */
    @Getter
    @Setter
@@ -287,6 +300,9 @@ public class Route extends NeptuneIdentifiedObject
    @Transient
    private List<StopArea> stopAreas = null;
 
+   /* (non-Javadoc)
+    * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#toString(java.lang.String, int)
+    */
    @Override
    public String toString(String indent, int level)
    {
@@ -737,6 +753,9 @@ public class Route extends NeptuneIdentifiedObject
 
    }
 
+   /* (non-Javadoc)
+    * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#clean()
+    */
    @Override
    public boolean clean()
    {
@@ -760,6 +779,9 @@ public class Route extends NeptuneIdentifiedObject
       return true;
    }
 
+   /* (non-Javadoc)
+    * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#complete()
+    */
    @Override
    public void complete()
    {
@@ -834,6 +856,9 @@ public class Route extends NeptuneIdentifiedObject
 
    }
 
+   /* (non-Javadoc)
+    * @see fr.certu.chouette.model.neptune.NeptuneObject#compareAttributes(fr.certu.chouette.model.neptune.NeptuneObject)
+    */
    @Override
    public <T extends NeptuneObject> boolean compareAttributes(T anotherObject)
    {
@@ -867,6 +892,11 @@ public class Route extends NeptuneIdentifiedObject
       }
    }
 
+   /**
+    * get stopAreas computed by complete()
+    * 
+    * @return list of stopAreas connected to route through stopPoints
+    */
    public List<StopArea> getStopAreas()
    {
       if (stopAreas == null)
@@ -880,6 +910,9 @@ public class Route extends NeptuneIdentifiedObject
       return stopAreas;
    }
 
+   /* (non-Javadoc)
+    * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#toURL()
+    */
    @Override
    public String toURL()
    {

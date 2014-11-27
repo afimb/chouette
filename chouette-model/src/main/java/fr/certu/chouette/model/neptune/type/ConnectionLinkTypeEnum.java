@@ -1,6 +1,21 @@
 package fr.certu.chouette.model.neptune.type;
 
+/**
+ * COnnection link type
+ *
+ */
 public enum ConnectionLinkTypeEnum
 {
-   Underground, Mixed, Overground;
+   /**
+    * underground only
+    */
+   Underground, 
+   /**
+    * mixed mode
+    */
+   Mixed, 
+   /**
+    * surface (outside) only
+    */
+   Overground;
 }

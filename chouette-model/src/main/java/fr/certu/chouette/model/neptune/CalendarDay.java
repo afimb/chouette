@@ -13,11 +13,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Period : peculiar date for Timetables
- * <p/>
- * Note for fields comment : <br/>
- * when readable is added to comment, a implicit getter is available <br/>
- * when writable is added to comment, a implicit setter is available
+ * peculiar date for Timetables
  */
 @Embeddable
 @NoArgsConstructor
@@ -25,15 +21,41 @@ public class CalendarDay implements Serializable, Comparable<CalendarDay>
 {
    private static final long serialVersionUID = -1964071056103739954L;
 
+   /**
+    * date
+    * 
+    * @param date
+    *           New value
+    * @return The actual value
+    */
    @Getter
    @Setter
    @Column(name = "date")
    private Date date;
 
+   /**
+    * included or excluded date <br/>
+    * <ul>
+    * <li>true : if date is effective for this calendar (default value)</li>
+    * <li>false : if date is to be excluded from periods definitions</li>
+    * </ul>
+    * 
+    * @param included
+    *           New value
+    */
    @Setter
    @Column(name = "in_out")
    private Boolean included = Boolean.TRUE;
    
+   /**
+    * included or excluded date <br/>
+    * <ul>
+    * <li>true : if date is effective for this calendar (default value)</li>
+    * <li>false : if date is to be excluded from periods definitions</li>
+    * </ul>
+    * 
+    * @return The actual value
+    */
    public Boolean getIncluded()
    {
 	   // protection from missing migration
@@ -55,6 +77,9 @@ public class CalendarDay implements Serializable, Comparable<CalendarDay>
       this.included = Boolean.valueOf(included);
    }
 
+   /* (non-Javadoc)
+    * @see java.lang.Object#toString()
+    */
    @Override
    public String toString()
    {
@@ -83,6 +108,9 @@ public class CalendarDay implements Serializable, Comparable<CalendarDay>
       }
    }
 
+   /* (non-Javadoc)
+    * @see java.lang.Object#hashCode()
+    */
    @Override
    public int hashCode()
    {
@@ -96,6 +124,9 @@ public class CalendarDay implements Serializable, Comparable<CalendarDay>
       return result;
    }
 
+   /* (non-Javadoc)
+    * @see java.lang.Object#equals(java.lang.Object)
+    */
    @Override
    public boolean equals(Object obj)
    {
@@ -124,6 +155,9 @@ public class CalendarDay implements Serializable, Comparable<CalendarDay>
       return true;
    }
 
+   /* (non-Javadoc)
+    * @see java.lang.Comparable#compareTo(java.lang.Object)
+    */
    @Override
    public int compareTo(CalendarDay o)
    {

@@ -7,8 +7,36 @@
  */
 package fr.certu.chouette.model.neptune.type;
 
+/**
+ * Public Transport source type
+ *
+ */
 public enum PTNetworkSourceTypeEnum
 {
-
-   AutomobileClubPatrol, SpotterAircraft, BreakdownService, CameraObservation, EmergencyServicePatrol, FreightVehicleOperator, InfraredMonitoringStation, InductionLoopMonitoringStation, MicrowaveMonitoringStation, MobileTelephoneCaller, OtherInformation, OtherOfficialVehicle, PolicePatrol, PublicAndPrivateUtilities, RoadAuthorities, RegisteredMotoristObserver, RoadsideTelephoneCaller, TrafficMonitoringStation, TransitOperator, VideoProcessingMonitoringStation, VehicleProbeMeasurement, PublicTransport, PassengerTransportCoordinatingAuthority, TravelInformationServiceProvider, TravelAgency, IndividualSubjectOfTravelItinerary;
+   AutomobileClubPatrol, 
+   SpotterAircraft, 
+   BreakdownService, 
+   CameraObservation, 
+   EmergencyServicePatrol, 
+   FreightVehicleOperator, 
+   InfraredMonitoringStation, 
+   InductionLoopMonitoringStation, 
+   MicrowaveMonitoringStation, 
+   MobileTelephoneCaller, 
+   OtherInformation, 
+   OtherOfficialVehicle, 
+   PolicePatrol, 
+   PublicAndPrivateUtilities, 
+   RoadAuthorities, 
+   RegisteredMotoristObserver, 
+   RoadsideTelephoneCaller, 
+   TrafficMonitoringStation, 
+   TransitOperator, 
+   VideoProcessingMonitoringStation, 
+   VehicleProbeMeasurement, 
+   PublicTransport, 
+   PassengerTransportCoordinatingAuthority, 
+   TravelInformationServiceProvider, 
+   TravelAgency, 
+   IndividualSubjectOfTravelItinerary;
 }
