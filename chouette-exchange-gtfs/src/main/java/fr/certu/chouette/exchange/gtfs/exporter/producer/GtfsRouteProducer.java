@@ -8,8 +8,9 @@
 
 package fr.certu.chouette.exchange.gtfs.exporter.producer;
 
+import lombok.extern.log4j.Log4j;
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
-import fr.certu.chouette.exchange.gtfs.refactor.exporter.GtfsExporter;
+import fr.certu.chouette.exchange.gtfs.refactor.exporter.GtfsExporterInterface;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsRoute;
 import fr.certu.chouette.model.neptune.Line;
 
@@ -18,9 +19,10 @@ import fr.certu.chouette.model.neptune.Line;
  * <p>
  * optimise multiple period timetable with calendarDate inclusion or exclusion
  */
+@Log4j
 public class GtfsRouteProducer extends AbstractProducer
 {
-   public GtfsRouteProducer(GtfsExporter exporter)
+   public GtfsRouteProducer(GtfsExporterInterface exporter)
    {
       super(exporter);
    }
@@ -31,6 +33,8 @@ public class GtfsRouteProducer extends AbstractProducer
    {
       route.setRouteId(toGtfsId(neptuneObject.getObjectId(), prefix));
       route.setAgencyId(toGtfsId(neptuneObject.getCompany().getObjectId(), prefix));
+      route.setRouteShortName(null);
+      route.setRouteLongName(null);
       if (isEmpty(neptuneObject.getNumber()))
       {
          route.setRouteShortName(neptuneObject.getName());
@@ -48,7 +52,12 @@ public class GtfsRouteProducer extends AbstractProducer
       {
          route.setRouteLongName(neptuneObject.getPublishedName());
       }
-      if (route.getRouteShortName().equals(route.getRouteLongName()))
+      if (isEmpty(route.getRouteShortName()) && isEmpty(route.getRouteLongName()))
+      {
+          log.warn("no naming data for line "+neptuneObject.getObjectId());
+          return false;
+      }
+      if (!isEmpty(route.getRouteShortName()) && route.getRouteShortName().equals(route.getRouteLongName()))
       {
          route.setRouteLongName(null);
       }
@@ -104,12 +113,10 @@ public class GtfsRouteProducer extends AbstractProducer
       }
       catch (Exception e)
       {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
+         log.warn("export failed for line "+neptuneObject.getObjectId(),e);
          return false;
       }
 
       return true;
    }
-
 }

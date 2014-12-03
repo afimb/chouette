@@ -6,16 +6,15 @@ import java.net.URL;
 import java.util.Collection;
 
 import lombok.Getter;
-
-import fr.certu.chouette.exchange.gtfs.refactor.exporter.GtfsExporter;
+import fr.certu.chouette.exchange.gtfs.refactor.exporter.GtfsExporterInterface;
 
 public abstract class AbstractProducer
 {
 
    @Getter
-   private GtfsExporter exporter;
+   private GtfsExporterInterface exporter;
 
-   public AbstractProducer(GtfsExporter exporter)
+   public AbstractProducer(GtfsExporterInterface exporter)
    {
       this.exporter = exporter;
    }

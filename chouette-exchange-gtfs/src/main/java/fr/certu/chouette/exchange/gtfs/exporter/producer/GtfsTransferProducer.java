@@ -9,7 +9,7 @@
 package fr.certu.chouette.exchange.gtfs.exporter.producer;
 
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
-import fr.certu.chouette.exchange.gtfs.refactor.exporter.GtfsExporter;
+import fr.certu.chouette.exchange.gtfs.refactor.exporter.GtfsExporterInterface;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsTransfer;
 import fr.certu.chouette.model.neptune.ConnectionLink;
 
@@ -20,7 +20,7 @@ import fr.certu.chouette.model.neptune.ConnectionLink;
  */
 public class GtfsTransferProducer extends AbstractProducer
 {
-   public GtfsTransferProducer(GtfsExporter exporter)
+   public GtfsTransferProducer(GtfsExporterInterface exporter)
    {
       super(exporter);
    }

@@ -12,7 +12,7 @@ import java.sql.Time;
 
 import lombok.extern.log4j.Log4j;
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
-import fr.certu.chouette.exchange.gtfs.refactor.exporter.GtfsExporter;
+import fr.certu.chouette.exchange.gtfs.refactor.exporter.GtfsExporterInterface;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStopTime;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsTime;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsTrip;
@@ -39,7 +39,7 @@ AbstractProducer
    GtfsStopTime time = new GtfsStopTime();
 
 
-   public GtfsTripProducer(GtfsExporter exporter)
+   public GtfsTripProducer(GtfsExporterInterface exporter)
    {
       super(exporter);
    }

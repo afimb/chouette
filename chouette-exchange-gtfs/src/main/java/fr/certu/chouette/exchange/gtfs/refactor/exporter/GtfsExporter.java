@@ -21,7 +21,7 @@ import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsTransfer;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsTrip;
 
 @Log4j
-public class GtfsExporter
+public class GtfsExporter implements GtfsExporterInterface
 {
    public static enum EXPORTER
    {

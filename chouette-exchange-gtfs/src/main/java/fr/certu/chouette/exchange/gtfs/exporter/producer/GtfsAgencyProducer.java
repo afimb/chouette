@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReportItem;
-import fr.certu.chouette.exchange.gtfs.refactor.exporter.GtfsExporter;
+import fr.certu.chouette.exchange.gtfs.refactor.exporter.GtfsExporterInterface;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsAgency;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.plugin.report.Report.STATE;
@@ -28,7 +28,7 @@ import fr.certu.chouette.plugin.report.Report.STATE;
  */
 public class GtfsAgencyProducer extends AbstractProducer
 {
-   public GtfsAgencyProducer(GtfsExporter exporter)
+   public GtfsAgencyProducer(GtfsExporterInterface exporter)
    {
       super(exporter);
    }

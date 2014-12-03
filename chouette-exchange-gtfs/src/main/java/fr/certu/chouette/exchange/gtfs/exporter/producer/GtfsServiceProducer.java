@@ -19,7 +19,7 @@ import java.util.Set;
 
 import lombok.extern.log4j.Log4j;
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
-import fr.certu.chouette.exchange.gtfs.refactor.exporter.GtfsExporter;
+import fr.certu.chouette.exchange.gtfs.refactor.exporter.GtfsExporterInterface;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsCalendar;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsCalendarDate;
 import fr.certu.chouette.model.neptune.CalendarDay;
@@ -36,7 +36,7 @@ import fr.certu.chouette.model.neptune.type.DayTypeEnum;
 public class GtfsServiceProducer extends
 AbstractProducer
 {
-   public GtfsServiceProducer(GtfsExporter exporter)
+   public GtfsServiceProducer(GtfsExporterInterface exporter)
    {
       super(exporter);
    }
@@ -153,7 +153,7 @@ AbstractProducer
       // replace all periods as dates
       removePeriods(reduced);
 
-      return timetable;
+      return reduced;
    }
 
    private boolean saveDay(String serviceId,CalendarDay day,GtfsReport report)
@@ -175,7 +175,7 @@ AbstractProducer
 
    }
 
-   private Timetable removePeriods(Timetable timetable)
+   public Timetable removePeriods(Timetable timetable)
    {
       Set<Date> excludedDates = new HashSet<Date>(
             timetable.getExcludedDates());
@@ -193,7 +193,7 @@ AbstractProducer
             {
                if (checkValidDay(checkedDate, timetable))
                {
-                  includedDates.add(checkedDate);
+                  includedDates.add(new Date(checkedDate.getTime()));
                }
             }
             checkedDate = new Date(checkedDate.getTime() + ONE_DAY);
@@ -206,6 +206,7 @@ AbstractProducer
       {
          timetable.addCalendarDay(new CalendarDay(date, true));
       }
+      Collections.sort(timetable.getCalendarDays());
       return timetable;
 
    }
@@ -218,28 +219,29 @@ AbstractProducer
       c.set(Calendar.HOUR_OF_DAY, 12);
       java.util.Date aDate = new java.util.Date(checkedDate.getTime());
       c.setTime(aDate);
+      List<DayTypeEnum> dayTypes = timetable.getDayTypes();
       switch (c.get(Calendar.DAY_OF_WEEK))
       {
       case Calendar.MONDAY :
-         if ((timetable.getIntDayTypes() & DayTypeEnum.Monday.ordinal()) != 0 ) valid = true;
+         if (dayTypes.contains(DayTypeEnum.Monday)) valid = true;
          break;
       case Calendar.TUESDAY :
-         if ((timetable.getIntDayTypes() & DayTypeEnum.Tuesday.ordinal()) != 0 ) valid = true;
+         if (dayTypes.contains(DayTypeEnum.Tuesday)) valid = true;
          break;
       case Calendar.WEDNESDAY :
-         if ((timetable.getIntDayTypes() & DayTypeEnum.Wednesday.ordinal()) != 0 ) valid = true;
+         if (dayTypes.contains(DayTypeEnum.Wednesday)) valid = true;
          break;
       case Calendar.THURSDAY :
-         if ((timetable.getIntDayTypes() & DayTypeEnum.Thursday.ordinal()) != 0 ) valid = true;
+         if (dayTypes.contains(DayTypeEnum.Thursday)) valid = true;
          break;
       case Calendar.FRIDAY :
-         if ((timetable.getIntDayTypes() & DayTypeEnum.Friday.ordinal()) != 0 ) valid = true;
+         if (dayTypes.contains(DayTypeEnum.Friday)) valid = true;
          break;
       case Calendar.SATURDAY :
-         if ((timetable.getIntDayTypes() & DayTypeEnum.Saturday.ordinal()) != 0 ) valid = true;
+         if (dayTypes.contains(DayTypeEnum.Saturday)) valid = true;
          break;
       case Calendar.SUNDAY :
-         if ((timetable.getIntDayTypes() & DayTypeEnum.Sunday.ordinal()) != 0 ) valid = true;
+         if (dayTypes.contains(DayTypeEnum.Sunday)) valid = true;
          break;
       }
       return valid;

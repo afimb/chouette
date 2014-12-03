@@ -13,7 +13,7 @@ import java.util.TimeZone;
 
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReportItem;
-import fr.certu.chouette.exchange.gtfs.refactor.exporter.GtfsExporter;
+import fr.certu.chouette.exchange.gtfs.refactor.exporter.GtfsExporterInterface;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStop;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
@@ -29,7 +29,7 @@ public class GtfsStopProducer extends AbstractProducer
    GtfsStop stop = new GtfsStop();
 
 
-   public GtfsStopProducer(GtfsExporter exporter)
+   public GtfsStopProducer(GtfsExporterInterface exporter)
    {
       super(exporter);
    }
