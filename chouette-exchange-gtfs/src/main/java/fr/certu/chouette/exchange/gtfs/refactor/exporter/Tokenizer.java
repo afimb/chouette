@@ -17,19 +17,26 @@ public class Tokenizer
       final int size = values.size();
       for (int i = 0; i < size; i++)
       {
-         builder.append(DQUOTE);
          String value = values.get(i);
-         final int length = value.length();
-         for (int j = 0; j < length; j++)
+         if (value.contains("\""))
          {
-            char c = value.charAt(j);
-            if (c == DQUOTE)
+            builder.append(DQUOTE);
+            final int length = value.length();
+            for (int j = 0; j < length; j++)
             {
-               builder.append(DQUOTE);
+               char c = value.charAt(j);
+               if (c == DQUOTE)
+               {
+                  builder.append(DQUOTE);
+               }
+               builder.append(c);
             }
-            builder.append(c);
+            builder.append(DQUOTE);
          }
-         builder.append(DQUOTE);
+         else
+         {
+            builder.append(value);
+         }
          if (i + 1 < size)
          {
             builder.append(DELIMITER);
@@ -56,17 +63,20 @@ public class Tokenizer
             {
                tokens.add(builder.toString());
                builder.delete(0, builder.length());
-            } else if (i + 1 == length)
+            }
+            else if (i + 1 == length)
             {
                builder.append(c);
                tokens.add(builder.toString());
                builder.delete(0, builder.length());
-            } else if (c == DQUOTE)
+            }
+            else if (c == DQUOTE)
             {
                if (i == 0)
                {
                   escape = true;
-               } else
+               }
+               else
                {
                   if (text.charAt(i + 1) == DQUOTE)
                   {
@@ -77,25 +87,30 @@ public class Tokenizer
                            builder.append(c);
                            i++;
                            escape = true;
-                        } else
+                        }
+                        else
                         {
                            escape = true;
                         }
-                     } else
+                     }
+                     else
                      {
                         escape = true;
                      }
-                  } else
+                  }
+                  else
                   {
                      escape = true;
                   }
                }
-            } else
+            }
+            else
             {
                builder.append(c);
             }
 
-         } else
+         }
+         else
          {
             if (c == DQUOTE)
             {
@@ -105,17 +120,20 @@ public class Tokenizer
                   {
                      builder.append(c);
                      i++;
-                  } else
+                  }
+                  else
                   {
                      escape = false;
                   }
-               } else
+               }
+               else
                {
                   escape = false;
                   tokens.add(builder.toString());
                   builder.delete(0, builder.length());
                }
-            } else
+            }
+            else
             {
                builder.append(c);
             }

@@ -631,9 +631,9 @@ public class NeptuneConverter
       List<Timetable> timetables = new ArrayList<Timetable>();
       Map<String, Timetable> mapTimetableByServiceId = new HashMap<String, Timetable>();
 
-      logger.info("process timetables from calendar :" + importer.getCalendarByService().getLength());
       if (importer.hasCalendarImporter())
       {
+         logger.info("process timetables from calendar :" + importer.getCalendarByService().getLength());
          for (GtfsCalendar gtfsCalendar : importer.getCalendarByService())
          {
             Timetable timetable = timetableProducer.produce(gtfsCalendar, report);

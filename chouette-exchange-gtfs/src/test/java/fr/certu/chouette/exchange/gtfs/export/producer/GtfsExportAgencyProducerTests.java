@@ -11,6 +11,7 @@ import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.exchange.gtfs.export.producer.mock.GtfsExporterMock;
 import fr.certu.chouette.exchange.gtfs.exporter.producer.GtfsAgencyProducer;
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
+import fr.certu.chouette.exchange.gtfs.refactor.importer.Context;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsAgency;
 import fr.certu.chouette.model.neptune.Company;
 
@@ -23,6 +24,7 @@ public class GtfsExportAgencyProducerTests extends
          .getLogger(GtfsExportAgencyProducerTests.class);
    
    private GtfsExporterMock mock = new GtfsExporterMock();
+   private Context context = new Context();
 
    @Test(groups = { "Producers" }, description = "test full company data")
    public void verifyAgencyProducer1() throws ChouetteException

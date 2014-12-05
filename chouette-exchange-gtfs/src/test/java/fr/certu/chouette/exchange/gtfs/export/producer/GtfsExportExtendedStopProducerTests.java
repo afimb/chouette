@@ -13,16 +13,13 @@ import org.testng.annotations.Test;
 
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.exchange.gtfs.export.producer.mock.GtfsExporterMock;
-import fr.certu.chouette.exchange.gtfs.exporter.producer.GtfsRouteProducer;
-import fr.certu.chouette.exchange.gtfs.exporter.producer.GtfsStopProducer;
+import fr.certu.chouette.exchange.gtfs.exporter.producer.GtfsExtendedStopProducer;
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
-import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsAgency;
-import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsRoute;
+import fr.certu.chouette.exchange.gtfs.refactor.exporter.StopExtendedExporter;
+import fr.certu.chouette.exchange.gtfs.refactor.importer.Context;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStop;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStop.LocationType;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStop.WheelchairBoardingType;
-import fr.certu.chouette.model.neptune.Company;
-import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
@@ -33,11 +30,15 @@ public class GtfsExportExtendedStopProducerTests extends AbstractTestNGSpringCon
    private static final Logger logger = Logger.getLogger(GtfsExportExtendedStopProducerTests.class);
 
    private GtfsExporterMock mock = new GtfsExporterMock();
-   private GtfsStopProducer producer = new GtfsStopProducer(mock);
+   private GtfsExtendedStopProducer producer = new GtfsExtendedStopProducer(mock);
+   private Context context = new Context();
 
 
-   @Test(groups = { "Producers" }, description = "test stops with full data")
-   public void verifyStopProducerWithFullData() throws ChouetteException
+   /**
+    * @throws ChouetteException
+    */
+   @Test(groups = { "Producers" }, description = "test stops with full data and extensions")
+   public void verifyExtendedStopProducerWithFullData() throws ChouetteException
    {
       mock.reset();
 
@@ -53,6 +54,9 @@ public class GtfsExportExtendedStopProducerTests extends AbstractTestNGSpringCon
       neptuneObject.setLongLatType(LongLatTypeEnum.WGS84);
       neptuneObject.setUrl("http://mystop.com");
       neptuneObject.setMobilityRestrictedSuitable(true);
+      neptuneObject.setStreetName("Rue du Louvre");
+      neptuneObject.setZipCode("75001");
+      neptuneObject.setCityName("Paris");
       
       StopArea parent = new StopArea();
       parent.setObjectId("GTFS:StopArea:5678");
@@ -62,7 +66,8 @@ public class GtfsExportExtendedStopProducerTests extends AbstractTestNGSpringCon
 
       producer.save(neptuneObject, report, "GTFS", parents);
       GtfsStop gtfsObject = mock.getExportedStops().get(0);
-      Reporter.log("verifyStopProducerWithFullData");
+      Reporter.log("verifyExtendedStopProducerWithFullData");
+      Reporter.log(StopExtendedExporter.CONVERTER.to(context, gtfsObject));
 
       Assert.assertEquals(gtfsObject.getStopId(), "4321", "StopId must be third part of objectid");
       Assert.assertEquals(gtfsObject.getStopCode(), neptuneObject.getRegistrationNumber(), "StopCode must be correctly set");
@@ -75,9 +80,9 @@ public class GtfsExportExtendedStopProducerTests extends AbstractTestNGSpringCon
       Assert.assertNotNull(gtfsObject.getStopUrl(),  "StopUrl must be set");
       Assert.assertEquals(gtfsObject.getStopUrl().toString(), neptuneObject.getUrl(), "StopUrl must be correctly set");
       Assert.assertEquals(gtfsObject.getWheelchairBoarding(), WheelchairBoardingType.Allowed, "WheelchairBoarding must be correctly set");
-      Assert.assertNull(gtfsObject.getAddressLine(),  "AddressLine must not be set");
-      Assert.assertNull(gtfsObject.getLocality(),  "Locality must not be set");
-      Assert.assertNull(gtfsObject.getPostalCode(),  "PostalCode must not be set");
+      Assert.assertEquals(gtfsObject.getAddressLine(),neptuneObject.getStreetName(),  "AddressLine must be correctly set");
+      Assert.assertEquals(gtfsObject.getLocality(),neptuneObject.getCityName(),  "Locality must be correctly set");
+      Assert.assertEquals(gtfsObject.getPostalCode(),neptuneObject.getZipCode(),  "PostalCode must be correctly set");
       Assert.assertNull(gtfsObject.getZoneId(),  "ZoneId must not be set");
       Assert.assertNull(gtfsObject.getStopTimezone(),  "StopTimezone must not be set");
 

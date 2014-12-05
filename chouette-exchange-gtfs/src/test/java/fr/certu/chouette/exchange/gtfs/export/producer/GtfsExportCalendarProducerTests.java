@@ -16,6 +16,9 @@ import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.exchange.gtfs.export.producer.mock.GtfsExporterMock;
 import fr.certu.chouette.exchange.gtfs.exporter.producer.GtfsServiceProducer;
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
+import fr.certu.chouette.exchange.gtfs.refactor.exporter.CalendarDateExporter;
+import fr.certu.chouette.exchange.gtfs.refactor.exporter.CalendarExporter;
+import fr.certu.chouette.exchange.gtfs.refactor.importer.Context;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsCalendar;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsCalendarDate;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsCalendarDate.ExceptionType;
@@ -24,15 +27,14 @@ import fr.certu.chouette.model.neptune.Period;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.type.DayTypeEnum;
 
-@ContextConfiguration(locations = { "classpath:testContext.xml",
-      "classpath*:chouetteContext.xml" })
-public class GtfsExportCalendarProducerTests extends
-      AbstractTestNGSpringContextTests
+@ContextConfiguration(locations = { "classpath:testContext.xml", "classpath*:chouetteContext.xml" })
+public class GtfsExportCalendarProducerTests extends AbstractTestNGSpringContextTests
 {
-   private static final Logger logger = Logger
-         .getLogger(GtfsExportCalendarProducerTests.class);
+   private static final Logger logger = Logger.getLogger(GtfsExportCalendarProducerTests.class);
 
    private GtfsExporterMock mock = new GtfsExporterMock();
+   private GtfsServiceProducer producer = new GtfsServiceProducer(mock);
+   private Context context = new Context();
 
    @Test(groups = { "Producers" }, description = "test timetable with period")
    public void verifyCalendarProducer1() throws ChouetteException
@@ -43,8 +45,6 @@ public class GtfsExportCalendarProducerTests extends
       c.set(Calendar.MONTH, Calendar.JULY);
       c.set(Calendar.DAY_OF_MONTH, 1);
       c.set(Calendar.HOUR_OF_DAY, 12);
-
-      GtfsServiceProducer producer = new GtfsServiceProducer(mock);
 
       GtfsReport report = new GtfsReport(GtfsReport.KEY.EXPORT);
       Timetable neptuneObject = new Timetable();
@@ -61,17 +61,14 @@ public class GtfsExportCalendarProducerTests extends
       List<Timetable> tms = new ArrayList<>();
       tms.add(neptuneObject);
       producer.save(tms, report, "GTFS");
-      GtfsCalendar gtfsObject = mock.getExportedCalendars().get(0);
       Reporter.log("verifyCalendarProducer1");
-      Reporter.log(gtfsObject.toString());
+      Assert.assertEquals(mock.getExportedCalendars().size(),1,"Calendar must be returned");
+      GtfsCalendar gtfsObject = mock.getExportedCalendars().get(0);
+      Reporter.log(CalendarExporter.CONVERTER.to(context, gtfsObject));
 
-      Assert.assertEquals(gtfsObject.getServiceId(),
-            toGtfsId(neptuneObject.getObjectId()),
-            "timetable id must be correcty set");
-      Assert.assertEquals(gtfsObject.getStartDate(), startDate,
-            "start date must be correcty set");
-      Assert.assertEquals(gtfsObject.getEndDate(), endDate,
-            "end date must be correcty set");
+      Assert.assertEquals(gtfsObject.getServiceId(), toGtfsId(neptuneObject.getObjectId()), "timetable id must be correcty set");
+      Assert.assertEquals(gtfsObject.getStartDate(), startDate, "start date must be correcty set");
+      Assert.assertEquals(gtfsObject.getEndDate(), endDate, "end date must be correcty set");
       Assert.assertTrue(gtfsObject.getMonday(), "monday must be true");
       Assert.assertFalse(gtfsObject.getTuesday(), "tuesday must be false");
       Assert.assertFalse(gtfsObject.getWednesday(), "wednesday must be false");
@@ -92,8 +89,6 @@ public class GtfsExportCalendarProducerTests extends
       c.set(Calendar.DAY_OF_MONTH, 1);
       c.set(Calendar.HOUR_OF_DAY, 12);
 
-      GtfsServiceProducer producer = new GtfsServiceProducer(mock);
-
       GtfsReport report = new GtfsReport(GtfsReport.KEY.EXPORT);
       Timetable neptuneObject = new Timetable();
       neptuneObject.setObjectId("GTFS:Timetable:1234");
@@ -111,26 +106,20 @@ public class GtfsExportCalendarProducerTests extends
       producer.save(tms, report, "GTFS");
       Reporter.log("verifyCalendarProducer2");
 
-      Assert.assertEquals(mock.getExportedCalendars().size(), 0,
-            "no calendar produced");
-      
-      Assert.assertEquals(mock.getExportedCalendarDates().size(), 5,
-            "calendar must have 5 dates");
+      Assert.assertEquals(mock.getExportedCalendars().size(), 0, "no calendar produced");
+
+      Assert.assertEquals(mock.getExportedCalendarDates().size(), 5, "calendar must have 5 dates");
       c.set(Calendar.YEAR, 2013);
       c.set(Calendar.MONTH, Calendar.JULY);
       c.set(Calendar.DAY_OF_MONTH, 1);
       for (GtfsCalendarDate gtfsCalendarDate : mock.getExportedCalendarDates())
       {
-         Reporter.log(gtfsCalendarDate.toString());
+         Reporter.log(CalendarDateExporter.CONVERTER.to(context,gtfsCalendarDate));
          Date date = new Date(c.getTimeInMillis());
          c.add(Calendar.DATE, 3);
-         Assert.assertEquals(gtfsCalendarDate.getServiceId(),
-               toGtfsId(neptuneObject.getObjectId()),
-               "service id must be correcty set");
-         Assert.assertEquals(gtfsCalendarDate.getDate(), date,
-               "calendar date must be correctly");
-         Assert.assertEquals(gtfsCalendarDate.getExceptionType(), ExceptionType.Added,
-               "calendar date must be inclusive");
+         Assert.assertEquals(gtfsCalendarDate.getServiceId(), toGtfsId(neptuneObject.getObjectId()), "service id must be correcty set");
+         Assert.assertEquals(gtfsCalendarDate.getDate(), date, "calendar date must be correctly");
+         Assert.assertEquals(gtfsCalendarDate.getExceptionType(), ExceptionType.Added, "calendar date must be inclusive");
       }
 
    }
@@ -144,8 +133,6 @@ public class GtfsExportCalendarProducerTests extends
       c.set(Calendar.MONTH, Calendar.JULY);
       c.set(Calendar.DAY_OF_MONTH, 1);
       c.set(Calendar.HOUR_OF_DAY, 12);
-
-      GtfsServiceProducer producer = new GtfsServiceProducer(mock);
 
       GtfsReport report = new GtfsReport(GtfsReport.KEY.EXPORT);
       Timetable neptuneObject = new Timetable();
@@ -172,17 +159,14 @@ public class GtfsExportCalendarProducerTests extends
       List<Timetable> tms = new ArrayList<>();
       tms.add(neptuneObject);
       producer.save(tms, report, "GTFS");
-      GtfsCalendar gtfsObject = mock.getExportedCalendars().get(0);
       Reporter.log("verifyCalendarProducer3");
-      Reporter.log(gtfsObject.toString());
+      Assert.assertEquals(mock.getExportedCalendars().size(),1,"Calendar must be returned");
+      GtfsCalendar gtfsObject = mock.getExportedCalendars().get(0);
+      Reporter.log(CalendarExporter.CONVERTER.to(context, gtfsObject));
 
-      Assert.assertEquals(gtfsObject.getServiceId(),
-            toGtfsId(neptuneObject.getObjectId()),
-            "service id must be correcty set");
-      Assert.assertEquals(gtfsObject.getStartDate(), startDate,
-            "start date must be correcty set");
-      Assert.assertEquals(gtfsObject.getEndDate(), endDate,
-            "end date must be correcty set");
+      Assert.assertEquals(gtfsObject.getServiceId(), toGtfsId(neptuneObject.getObjectId()), "service id must be correcty set");
+      Assert.assertEquals(gtfsObject.getStartDate(), startDate, "start date must be correcty set");
+      Assert.assertEquals(gtfsObject.getEndDate(), endDate, "end date must be correcty set");
       Assert.assertFalse(gtfsObject.getMonday(), "monday must be false");
       Assert.assertTrue(gtfsObject.getTuesday(), "tuesday must be true");
       Assert.assertTrue(gtfsObject.getWednesday(), "wednesday must be true");
@@ -190,28 +174,22 @@ public class GtfsExportCalendarProducerTests extends
       Assert.assertTrue(gtfsObject.getFriday(), "friday must be true");
       Assert.assertFalse(gtfsObject.getSaturday(), "saturday must be false");
       Assert.assertTrue(gtfsObject.getSunday(), "sunday must be true");
-      Assert.assertEquals(mock.getExportedCalendarDates().size(), 5,
-            "calendar must have 5 dates");
+      Assert.assertEquals(mock.getExportedCalendarDates().size(), 5, "calendar must have 5 dates");
       c.set(Calendar.YEAR, 2013);
       c.set(Calendar.MONTH, Calendar.JULY);
       c.set(Calendar.DAY_OF_MONTH, 1);
       c.add(Calendar.DATE, 30);
       for (GtfsCalendarDate gtfsCalendarDate : mock.getExportedCalendarDates())
       {
-         Reporter.log(gtfsCalendarDate.toString());
+         Reporter.log(CalendarDateExporter.CONVERTER.to(context,gtfsCalendarDate));
          Date date = new Date(c.getTimeInMillis());
          c.add(Calendar.DATE, 3);
-         Assert.assertEquals(gtfsCalendarDate.getServiceId(),
-               toGtfsId(neptuneObject.getObjectId()),
-               "service id must be correcty set");
-         Assert.assertEquals(gtfsCalendarDate.getDate(), date,
-               "calendar date must be correctly");
-         Assert.assertEquals(gtfsCalendarDate.getExceptionType(), ExceptionType.Added,
-               "calendar date must be inclusive");
+         Assert.assertEquals(gtfsCalendarDate.getServiceId(), toGtfsId(neptuneObject.getObjectId()), "service id must be correcty set");
+         Assert.assertEquals(gtfsCalendarDate.getDate(), date, "calendar date must be correctly");
+         Assert.assertEquals(gtfsCalendarDate.getExceptionType(), ExceptionType.Added, "calendar date must be inclusive");
       }
 
    }
-
 
    @Test(groups = { "Producers" }, description = "test timetable with 2 periods")
    public void verifyCalendarProducer4() throws ChouetteException
@@ -222,8 +200,6 @@ public class GtfsExportCalendarProducerTests extends
       c.set(Calendar.MONTH, Calendar.JULY);
       c.set(Calendar.DAY_OF_MONTH, 1);
       c.set(Calendar.HOUR_OF_DAY, 12);
-
-      GtfsServiceProducer producer = new GtfsServiceProducer(mock);
 
       GtfsReport report = new GtfsReport(GtfsReport.KEY.EXPORT);
       Timetable neptuneObject = new Timetable();
@@ -251,18 +227,10 @@ public class GtfsExportCalendarProducerTests extends
       tms.add(neptuneObject);
       producer.save(tms, report, "GTFS");
       Reporter.log("verifyCalendarProducer4");
-      Reporter.log(neptuneObject.toString());
 
-      Assert.assertEquals(mock.getExportedCalendars().size(), 0,
-            "no calendar produced");
-      
-      for (GtfsCalendarDate gtfsCalendarDate : mock.getExportedCalendarDates())
-      {
-         Reporter.log(gtfsCalendarDate.toString());
-      
-      }
-      Assert.assertEquals(mock.getExportedCalendarDates().size(), 28,
-            "calendar must have 28 dates");
+      Assert.assertEquals(mock.getExportedCalendars().size(), 0, "no calendar produced");
+
+      Assert.assertEquals(mock.getExportedCalendarDates().size(), 28, "calendar must have 28 dates");
       c.set(Calendar.YEAR, 2013);
       c.set(Calendar.MONTH, Calendar.JULY);
       c.set(Calendar.DAY_OF_MONTH, 1);
@@ -271,6 +239,7 @@ public class GtfsExportCalendarProducerTests extends
       int cpt = 0;
       for (GtfsCalendarDate gtfsCalendarDate : mock.getExportedCalendarDates())
       {
+         Reporter.log(CalendarDateExporter.CONVERTER.to(context,gtfsCalendarDate));
          Date date = new Date(c.getTimeInMillis());
          cpt++;
          if (cpt == 14)
@@ -280,13 +249,9 @@ public class GtfsExportCalendarProducerTests extends
          c.add(Calendar.DATE, 1);
          if (c.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY)
             c.add(Calendar.DATE, 1);
-         Assert.assertEquals(gtfsCalendarDate.getServiceId(),
-               toGtfsId(neptuneObject.getObjectId()),
-               "service id must be correcty set");
-         Assert.assertEquals(gtfsCalendarDate.getDate(), date,
-               "calendar date must be correctly");
-         Assert.assertEquals(gtfsCalendarDate.getExceptionType(), ExceptionType.Added,
-               "calendar date must be inclusive");
+         Assert.assertEquals(gtfsCalendarDate.getServiceId(), toGtfsId(neptuneObject.getObjectId()), "service id must be correcty set");
+         Assert.assertEquals(gtfsCalendarDate.getDate(), date, "calendar date must be correctly");
+         Assert.assertEquals(gtfsCalendarDate.getExceptionType(), ExceptionType.Added, "calendar date must be inclusive");
       }
 
    }
@@ -296,6 +261,5 @@ public class GtfsExportCalendarProducerTests extends
       String[] tokens = neptuneId.split(":");
       return tokens[2];
    }
-
 
 }

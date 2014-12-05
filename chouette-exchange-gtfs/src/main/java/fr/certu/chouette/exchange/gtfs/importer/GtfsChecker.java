@@ -145,7 +145,7 @@ public class GtfsChecker
          }
          catch (GtfsException e)
          {
-            calendarOk = manageSystemException(fileName, e, false, report);
+            calendarOk = manageSystemException(fileName, e, true, report);
          }
       }
       // calendar_dates.txt
@@ -165,7 +165,7 @@ public class GtfsChecker
          }
          catch (GtfsException e)
          {
-            calendarDateOk = manageSystemException(fileName, e, false, report);
+            calendarDateOk = manageSystemException(fileName, e, true, report);
          }
       }
       // transfers.txt

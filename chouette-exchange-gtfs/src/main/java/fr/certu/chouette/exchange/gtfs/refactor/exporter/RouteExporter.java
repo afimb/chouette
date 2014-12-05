@@ -78,9 +78,9 @@ public class RouteExporter extends ExporterImpl<GtfsRoute> implements
          values.add(STRING_CONVERTER.to(context, FIELDS.agency_id,
                input.getAgencyId(), false));
          values.add(STRING_CONVERTER.to(context, FIELDS.route_short_name,
-               input.getRouteShortName(), true));
+               input.getRouteShortName(), input.getRouteLongName() == null));
          values.add(STRING_CONVERTER.to(context, FIELDS.route_long_name,
-               input.getRouteLongName(), true));
+               input.getRouteLongName(), input.getRouteShortName() == null));
          values.add(STRING_CONVERTER.to(context, FIELDS.route_desc,
                input.getRouteDesc(), false));
          values.add(ROUTETYPE_CONVERTER.to(context, FIELDS.route_type,
