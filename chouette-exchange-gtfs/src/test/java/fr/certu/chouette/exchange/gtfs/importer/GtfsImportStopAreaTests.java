@@ -48,6 +48,9 @@ public class GtfsImportStopAreaTests extends AbstractGtfsTest
             "inputFile");
       simpleParameterValue.setFilepathValue(path + "/dummyFile.tmp");
       parameters.add(simpleParameterValue);
+      simpleParameterValue = new SimpleParameterValue("objectIdPrefix");
+      simpleParameterValue.setStringValue("GTFS");
+      parameters.add(simpleParameterValue);
       ReportHolder report = new ReportHolder();
 
       importStopArea.doImport(parameters, report, null);
@@ -75,9 +78,8 @@ public class GtfsImportStopAreaTests extends AbstractGtfsTest
    public void verifyCheckMandatoryParameter() throws ChouetteException
    {
       List<ParameterValue> parameters = new ArrayList<ParameterValue>();
-      SimpleParameterValue simpleParameterValue = new SimpleParameterValue(
-            "validate");
-      simpleParameterValue.setBooleanValue(true);
+      SimpleParameterValue simpleParameterValue = new SimpleParameterValue("objectIdPrefix");
+      simpleParameterValue.setStringValue("GTFS");
       parameters.add(simpleParameterValue);
       ReportHolder report = new ReportHolder();
 
@@ -95,6 +97,9 @@ public class GtfsImportStopAreaTests extends AbstractGtfsTest
       parameters.add(simpleParameterValue);
       simpleParameterValue = new SimpleParameterValue("fileFormat");
       simpleParameterValue.setStringValue("txt");
+      parameters.add(simpleParameterValue);
+      simpleParameterValue = new SimpleParameterValue("objectIdPrefix");
+      simpleParameterValue.setStringValue("GTFS");
       parameters.add(simpleParameterValue);
       ReportHolder report = new ReportHolder();
 
