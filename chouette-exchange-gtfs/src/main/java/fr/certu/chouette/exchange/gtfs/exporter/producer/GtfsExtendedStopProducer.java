@@ -15,6 +15,7 @@ import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReportItem;
 import fr.certu.chouette.exchange.gtfs.refactor.exporter.GtfsExporterInterface;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStop;
+import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsStop.WheelchairBoardingType;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.plugin.report.Report.STATE;
@@ -78,6 +79,7 @@ public class GtfsExtendedStopProducer extends
       stop.setStopLon(neptuneObject.getLongitude());
       stop.setStopCode(neptuneObject.getRegistrationNumber());
       stop.setStopDesc(neptuneObject.getComment());
+      stop.setStopUrl(getUrl(neptuneObject.getUrl()));
       stop.setAddressLine(neptuneObject.getStreetName());
       stop.setLocality(neptuneObject.getCityName());
       stop.setPostalCode(neptuneObject.getZipCode());
@@ -100,6 +102,17 @@ public class GtfsExtendedStopProducer extends
                   .getObjectId(),prefix));
          }
       }
+      
+      if (neptuneObject.isMobilityRestrictedSuitable())
+      {
+         stop.setWheelchairBoarding(WheelchairBoardingType.Allowed);
+      }
+      else
+      {
+         // neptune stop does not distinct unknown and false !
+         stop.setWheelchairBoarding(null);
+      }
+      
       try
       {
          getExporter().getStopExtendedExporter().export(stop);

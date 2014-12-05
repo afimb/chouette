@@ -53,6 +53,7 @@ AbstractProducer
     */
    private boolean saveTimes(VehicleJourney vj, GtfsReport report, String prefix, String sharedPrefix)
    {
+      if (vj.getVehicleJourneyAtStops().isEmpty()) return false;
       Integer zero = Integer.valueOf(0);
       Integer one = Integer.valueOf(1);
       Integer tomorrowArrival = zero;
