@@ -44,7 +44,7 @@ public class GtfsExportTripProducerTests extends AbstractTestNGSpringContextTest
       mock.reset();
 
       GtfsReport report = new GtfsReport(GtfsReport.KEY.EXPORT);
-      VehicleJourney neptuneObject = buildNeptuneObject();
+      VehicleJourney neptuneObject = buildNeptuneObject(true);
 
       producer.save(neptuneObject, "tm_01", report, "GTFS", "GTFS");
       Reporter.log("verifyTripProducerWithFullData");
@@ -93,6 +93,62 @@ public class GtfsExportTripProducerTests extends AbstractTestNGSpringContextTest
 
    }
 
+   @Test(groups = { "Producers" }, description = "test trip with less data")
+   public void verifyTripProducerWithLessData() throws ChouetteException
+   {
+      
+      mock.reset();
+
+      GtfsReport report = new GtfsReport(GtfsReport.KEY.EXPORT);
+      VehicleJourney neptuneObject = buildNeptuneObject(false);
+
+      producer.save(neptuneObject, "tm_01", report, "GTFS", "GTFS");
+      Reporter.log("verifyTripProducerWithLessData");
+
+      Assert.assertEquals(mock.getExportedTrips().size(), 1, "Trip should be returned");
+      Assert.assertEquals(mock.getExportedStopTimes().size(), 4, "StopTimes should be returned");
+      GtfsTrip gtfsObject = mock.getExportedTrips().get(0);
+      Reporter.log(TripExporter.CONVERTER.to(context,gtfsObject));
+
+      Assert.assertEquals(gtfsObject.getTripId(), "4321", "TripId must be correctly set");
+      Assert.assertEquals(gtfsObject.getServiceId(), "tm_01", "ServiceId must be correctly set");
+      Assert.assertEquals(gtfsObject.getRouteId(), "0123", "RouteId must be correctly set");
+      Assert.assertNull(gtfsObject.getTripShortName(),  "TripShortName must not be set");
+      Assert.assertEquals(gtfsObject.getDirectionId(), DirectionType.Outbound, "DirectionId must be correctly set");
+      Assert.assertNull(gtfsObject.getTripHeadSign(),  "TripHeadSign must not be set");
+      Assert.assertNull(gtfsObject.getBlockId(), "BlockId must not be set");
+      Assert.assertNull(gtfsObject.getShapeId(), "ShapeId must not be set");
+      Assert.assertEquals(gtfsObject.getWheelchairAccessible(), WheelchairAccessibleType.NoInformation, "WheelchairAccessible must be correctly set");
+      Assert.assertNull(gtfsObject.getBikesAllowed(), "BikesAllowed must not be set");
+      
+      int i = 0;
+      for (GtfsStopTime gtfsStopTime : mock.getExportedStopTimes())
+      {
+         Reporter.log(StopTimeExporter.CONVERTER.to(context,gtfsStopTime));
+         Assert.assertEquals(gtfsStopTime.getTripId(), "4321", "TripId must be correctly set");
+         Assert.assertEquals(gtfsStopTime.getStopId(), "SA"+i, "StopId must be correctly set");
+         Assert.assertEquals(gtfsStopTime.getStopSequence(), Integer.valueOf(i*2), "StopSequence must be correctly set");
+         if (i < 2) 
+         {
+            Assert.assertEquals(gtfsStopTime.getArrivalTime().getDay(), Integer.valueOf(0), "ArrivalTime must be today");
+            Assert.assertEquals(gtfsStopTime.getDepartureTime().getDay(), Integer.valueOf(0), "DepartureTime must be today");
+         }
+         else if (i == 2)
+         {
+            Assert.assertEquals(gtfsStopTime.getArrivalTime().getDay(), Integer.valueOf(0), "ArrivalTime must be today");
+            Assert.assertEquals(gtfsStopTime.getDepartureTime().getDay(), Integer.valueOf(1), "DepartureTime must be tomorrow");           
+         }
+         else
+         {
+            Assert.assertEquals(gtfsStopTime.getArrivalTime().getDay(), Integer.valueOf(1), "ArrivalTime must be tomorrow");
+            Assert.assertEquals(gtfsStopTime.getDepartureTime().getDay(), Integer.valueOf(1), "DepartureTime must be tomorrow");           
+         }
+            
+         i++;
+      }
+
+   }
+
    @Test(groups = { "Producers" }, description = "test trip wheelChair mapping")
    public void verifyTripProducerForWheelChairMapping() throws ChouetteException
    {
@@ -100,7 +156,7 @@ public class GtfsExportTripProducerTests extends AbstractTestNGSpringContextTest
       Reporter.log("verifyTripProducerForWheelChairMapping");
 
       GtfsReport report = new GtfsReport(GtfsReport.KEY.EXPORT);
-      VehicleJourney neptuneObject = buildNeptuneObject();
+      VehicleJourney neptuneObject = buildNeptuneObject(true);
       neptuneObject.setMobilityRestrictedSuitability(Boolean.TRUE);
 
       producer.save(neptuneObject, "tm_01", report, "GTFS", "GTFS");
@@ -135,7 +191,7 @@ public class GtfsExportTripProducerTests extends AbstractTestNGSpringContextTest
       Reporter.log("verifyTripProducerForDirectionMapping");
 
       GtfsReport report = new GtfsReport(GtfsReport.KEY.EXPORT);
-      VehicleJourney neptuneObject = buildNeptuneObject();
+      VehicleJourney neptuneObject = buildNeptuneObject(true);
       Route r = neptuneObject.getRoute();
       r.setWayBack("A");
       producer.save(neptuneObject, "tm_01", report, "GTFS", "GTFS");
@@ -162,23 +218,23 @@ public class GtfsExportTripProducerTests extends AbstractTestNGSpringContextTest
    /**
     * @return
     */
-   private VehicleJourney buildNeptuneObject()
+   private VehicleJourney buildNeptuneObject(boolean full)
    {
       VehicleJourney neptuneObject = new VehicleJourney();
       neptuneObject.setObjectId("GTFS:VehicleJourney:4321");
-      neptuneObject.setName("name");
-      neptuneObject.setNumber(Long.valueOf(456));
-      neptuneObject.setMobilityRestrictedSuitability(Boolean.TRUE);
+      if (full) neptuneObject.setName("name");
+      if (full) neptuneObject.setNumber(Long.valueOf(456));
+      if (full) neptuneObject.setMobilityRestrictedSuitability(Boolean.TRUE);
       JourneyPattern jp = new JourneyPattern();
       neptuneObject.setJourneyPattern(jp);
       Route route = new Route();
       neptuneObject.setRoute(route);
-      jp.setPublishedName("jp name");
+      if (full) jp.setPublishedName("jp name");
       Line line = new Line();
       line.setObjectId("GTFS:Line:0123");
 
       route.setLine(line);
-      route.setWayBack("A");
+      if (full) route.setWayBack("A");
       
       int h = 22;
       int m = 59;

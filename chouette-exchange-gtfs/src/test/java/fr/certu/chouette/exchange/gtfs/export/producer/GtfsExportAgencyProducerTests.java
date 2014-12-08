@@ -1,5 +1,7 @@
 package fr.certu.chouette.exchange.gtfs.export.producer;
 
+import java.util.TimeZone;
+
 import org.apache.log4j.Logger;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
@@ -11,6 +13,7 @@ import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.exchange.gtfs.export.producer.mock.GtfsExporterMock;
 import fr.certu.chouette.exchange.gtfs.exporter.producer.GtfsAgencyProducer;
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
+import fr.certu.chouette.exchange.gtfs.refactor.exporter.AgencyExporter;
 import fr.certu.chouette.exchange.gtfs.refactor.importer.Context;
 import fr.certu.chouette.exchange.gtfs.refactor.model.GtfsAgency;
 import fr.certu.chouette.model.neptune.Company;
@@ -25,12 +28,13 @@ public class GtfsExportAgencyProducerTests extends
    
    private GtfsExporterMock mock = new GtfsExporterMock();
    private Context context = new Context();
+   private GtfsAgencyProducer producer = new GtfsAgencyProducer(mock);
 
    @Test(groups = { "Producers" }, description = "test full company data")
    public void verifyAgencyProducer1() throws ChouetteException
    {
       mock.reset();
-      GtfsAgencyProducer producer = new GtfsAgencyProducer(mock);
+      
       GtfsReport report = new GtfsReport(GtfsReport.KEY.EXPORT);
       Company neptuneObject = new Company();
       neptuneObject.setObjectId("GTFS:Company:1234");
@@ -43,6 +47,7 @@ public class GtfsExportAgencyProducerTests extends
       producer.save(neptuneObject, report, "GTFS", null);
       GtfsAgency gtfsObject = mock.getExportedAgencies().get(0);
       Reporter.log("verifyAgencyProducer1");
+      Reporter.log(AgencyExporter.CONVERTER.to(context, gtfsObject));
 
       Assert.assertEquals(gtfsObject.getAgencyId(),
             toGtfsId(neptuneObject.getObjectId()),
@@ -61,7 +66,6 @@ public class GtfsExportAgencyProducerTests extends
    {
 
       mock.reset();
-      GtfsAgencyProducer producer = new GtfsAgencyProducer(mock);
 
       GtfsReport report = new GtfsReport(GtfsReport.KEY.EXPORT);
       Company neptuneObject = new Company();
@@ -73,6 +77,7 @@ public class GtfsExportAgencyProducerTests extends
       producer.save(neptuneObject, report, "GTFS", null);
       GtfsAgency gtfsObject = mock.getExportedAgencies().get(0);
       Reporter.log("verifyAgencyProducer2");
+      Reporter.log(AgencyExporter.CONVERTER.to(context, gtfsObject));
 
       Assert.assertEquals(gtfsObject.getAgencyId(),
             toGtfsId(neptuneObject.getObjectId()),
@@ -83,6 +88,7 @@ public class GtfsExportAgencyProducerTests extends
             "http://www.short.com", "agency url must be correcty set");
       Assert.assertEquals(gtfsObject.getAgencyPhone(), "01 02 03 04 05",
             "agency phone must be correcty set");
+      Assert.assertEquals(gtfsObject.getAgencyTimezone(), TimeZone.getDefault(), "agency timezone must be correctly set");
 
    }
 
@@ -91,7 +97,6 @@ public class GtfsExportAgencyProducerTests extends
    {
 
       mock.reset();
-      GtfsAgencyProducer producer = new GtfsAgencyProducer(mock);
 
       GtfsReport report = new GtfsReport(GtfsReport.KEY.EXPORT);
       Company neptuneObject = new Company();
@@ -102,6 +107,7 @@ public class GtfsExportAgencyProducerTests extends
       producer.save(neptuneObject, report, "GTFS", null);
       GtfsAgency gtfsObject = mock.getExportedAgencies().get(0);
       Reporter.log("verifyAgencyProducer3");
+      Reporter.log(AgencyExporter.CONVERTER.to(context, gtfsObject));
 
       Assert.assertEquals(gtfsObject.getAgencyId(),
             toGtfsId(neptuneObject.getObjectId()),
@@ -114,6 +120,37 @@ public class GtfsExportAgencyProducerTests extends
             "agency phone must be correcty set");
 
    }
+   
+   @Test(groups = { "Producers" }, description = "test timezone affectation")
+   public void verifyAgencyProducer4() throws ChouetteException
+   {
+
+      mock.reset();
+
+      GtfsReport report = new GtfsReport(GtfsReport.KEY.EXPORT);
+      Company neptuneObject = new Company();
+      neptuneObject.setObjectId("GTFS:Company:1234");
+      neptuneObject.setName("name");
+
+      Reporter.log("verifyAgencyProducer4");
+      producer.save(neptuneObject, report, "GTFS", TimeZone.getTimeZone("America/Montreal"));
+      GtfsAgency gtfsObject = mock.getExportedAgencies().get(0);
+      Reporter.log(AgencyExporter.CONVERTER.to(context, gtfsObject));
+
+      Assert.assertEquals(gtfsObject.getAgencyTimezone().getID(),"America/Montreal" ,
+            "agency timezone must be correcty set");
+      
+      neptuneObject.setTimeZone("Europe/Paris");
+      mock.reset();
+      producer.save(neptuneObject, report, "GTFS", TimeZone.getTimeZone("America/Montreal"));
+      gtfsObject = mock.getExportedAgencies().get(0);
+      Reporter.log(AgencyExporter.CONVERTER.to(context, gtfsObject));
+      Assert.assertEquals(gtfsObject.getAgencyTimezone().getID(),"Europe/Paris" ,
+            "agency timezone must be correcty set");
+
+
+   }
+   
 
    protected String toGtfsId(String neptuneId)
    {

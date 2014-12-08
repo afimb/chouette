@@ -151,7 +151,7 @@ AbstractProducer
       if (!isEmpty(jp.getPublishedName()))
          trip.setTripHeadSign(jp.getPublishedName());
       else
-         trip.setTripShortName(null);
+         trip.setTripHeadSign(null);
 
       if (vj.getMobilityRestrictedSuitability() != null)
          trip.setWheelchairAccessible(vj.getMobilityRestrictedSuitability() ? GtfsTrip.WheelchairAccessibleType.Allowed

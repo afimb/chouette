@@ -25,43 +25,43 @@ public abstract class AbstractProducer
       if (tokens[0].equals(prefix))
          return tokens[2];
       else
-         return tokens[0]+"."+tokens[2];
+         return tokens[0] + "." + tokens[2];
    }
 
-   static boolean isEmpty(String s)
+   static protected boolean isEmpty(String s)
    {
       return s == null || s.trim().isEmpty();
    }
 
-   static boolean isEmpty(Collection<? extends Object> s)
+   static protected boolean isEmpty(Collection<? extends Object> s)
    {
       return s == null || s.isEmpty();
    }
 
-   static String  getValue(String s)
+   static protected String getValue(String s)
    {
       if (isEmpty(s))
          return null;
-      else 
+      else
          return s;
 
    }
 
-   static Color getColor(String s)
+   static protected Color getColor(String s)
    {
       if (isEmpty(s))
          return null;
-      else 
+      else
          return new Color(Integer.parseInt(s, 16));
    }
 
-   static URL getUrl(String s)
+   static protected URL getUrl(String s)
    {
       if (isEmpty(s))
          return null;
       else
          try
-      {
+         {
             URL result = new URL(s);
             String protocol = result.getProtocol();
             if (!(protocol.equals("http") || protocol.equals("https")))
@@ -69,12 +69,12 @@ public abstract class AbstractProducer
                throw new MalformedURLException();
             }
             return result;
-      }
-      catch (MalformedURLException e)
-      {
-         // TODO: manage exception
-         return null;
-      }
+         }
+         catch (MalformedURLException e)
+         {
+            // TODO: manage exception
+            return null;
+         }
    }
 
 }

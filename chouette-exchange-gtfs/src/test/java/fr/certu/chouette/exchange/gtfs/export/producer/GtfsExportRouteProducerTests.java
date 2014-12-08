@@ -37,6 +37,9 @@ public class GtfsExportRouteProducerTests extends AbstractTestNGSpringContextTes
       neptuneObject.setName("lineName");
       neptuneObject.setNumber("lineNumber");
       neptuneObject.setPublishedName("publishedLineName");
+      neptuneObject.setUrl("http://www.line.fr");
+      neptuneObject.setColor("0000FF");
+      neptuneObject.setTextColor("00FF00");
       Company company = new Company();
       company.setObjectId("GTFS:Company:1234");
       company.setName("name");
@@ -50,6 +53,13 @@ public class GtfsExportRouteProducerTests extends AbstractTestNGSpringContextTes
 
       Assert.assertEquals(gtfsObject.getRouteShortName(), neptuneObject.getNumber(), "RouteShortName must be line Number");
       Assert.assertEquals(gtfsObject.getRouteLongName(), neptuneObject.getPublishedName(), "RouteLongName must be correctly set");
+      Assert.assertEquals(gtfsObject.getRouteUrl().toString(), neptuneObject.getUrl(), "RouteUrl must be correctly set");
+      Assert.assertEquals(gtfsObject.getRouteColor().getRed(), Integer.parseInt("00",16), "RouteColor must be correctly set");
+      Assert.assertEquals(gtfsObject.getRouteColor().getGreen(), Integer.parseInt("00",16), "RouteColor must be correctly set");
+      Assert.assertEquals(gtfsObject.getRouteColor().getBlue(), Integer.parseInt("FF",16), "RouteColor must be correctly set");
+      Assert.assertEquals(gtfsObject.getRouteTextColor().getRed(), Integer.parseInt("00",16), "RouteTextColor must be correctly set");
+      Assert.assertEquals(gtfsObject.getRouteTextColor().getGreen(), Integer.parseInt("FF",16), "RouteTextColor must be correctly set");
+      Assert.assertEquals(gtfsObject.getRouteTextColor().getBlue(), Integer.parseInt("00",16), "RouteTextColor must be correctly set");
 
    }
 
@@ -75,6 +85,9 @@ public class GtfsExportRouteProducerTests extends AbstractTestNGSpringContextTes
 
       Assert.assertEquals(gtfsObject.getRouteShortName(), neptuneObject.getName(), "RouteShortName must be line name");
       Assert.assertEquals(gtfsObject.getRouteLongName(), neptuneObject.getPublishedName(), "RouteLongName must be correctly set");
+      Assert.assertNull(gtfsObject.getRouteUrl(),  "RouteUrl must not be set");
+      Assert.assertNull(gtfsObject.getRouteColor(),  "RouteColor must not be set");
+      Assert.assertNull(gtfsObject.getRouteTextColor(),  "RouteTextColor must not be set");
 
    }
 

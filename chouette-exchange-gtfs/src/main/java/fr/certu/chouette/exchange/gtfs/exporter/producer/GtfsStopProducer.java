@@ -91,6 +91,7 @@ public class GtfsStopProducer extends AbstractProducer
          }
       }
 
+      stop.setParentStation(null);
       if (stop.getLocationType().equals(GtfsStop.LocationType.Stop))
       {
          if (neptuneObject.getParent() != null && validParents.contains(neptuneObject.getParent()))
@@ -99,6 +100,7 @@ public class GtfsStopProducer extends AbstractProducer
                   .getObjectId(),prefix));
          }
       }
+      
       if (neptuneObject.isMobilityRestrictedSuitable())
       {
          stop.setWheelchairBoarding(WheelchairBoardingType.Allowed);
