@@ -14,7 +14,7 @@ import fr.certu.chouette.model.neptune.Period;
 import fr.certu.chouette.model.neptune.Timetable;
 
 @ContextConfiguration(locations={"classpath:testContext.xml","classpath*:chouetteContext.xml"})
-public class GtfsImportCalendarProducerTests extends AbstractTestNGSpringContextTests
+public class GtfsCalendarProducerTests extends AbstractTestNGSpringContextTests
 {
 
 	@Test (groups = {"Producers"}, description = "test timetable with period" )
@@ -27,6 +27,7 @@ public class GtfsImportCalendarProducerTests extends AbstractTestNGSpringContext
 		c.set(Calendar.HOUR_OF_DAY,12);
 
 		AbstractModelProducer.setPrefix("NINOXE");
+		AbstractModelProducer.setIncrementalPrefix("");
 		TimetableProducer producer = new TimetableProducer();
 
 		GtfsCalendar gtfsObject = new GtfsCalendar();
@@ -79,16 +80,5 @@ public class GtfsImportCalendarProducerTests extends AbstractTestNGSpringContext
 
 	}
 
-
-//	private void printItems(String indent,List<ReportItem> items) 
-//	{
-//		if (items == null) return;
-//		for (ReportItem item : items) 
-//		{
-//			System.out.println(indent+item.getStatus().name()+" : "+item.getLocalizedMessage());
-//			printItems(indent+"   ",item.getItems());
-//		}
-//
-//	}
 
 }

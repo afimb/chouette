@@ -18,8 +18,7 @@ public class LineProducer extends AbstractModelProducer<Line, GtfsRoute>
    {
       Line line = new Line();
 
-      line.setObjectId(composeObjectId(Line.LINE_KEY, gtfsLine.getRouteId(),
-            logger));
+      line.setObjectId(composeObjectId(Line.LINE_KEY, gtfsLine.getRouteId(), logger));
 
       // Name optional
       line.setName(getNonEmptyTrimedString(gtfsLine.getRouteLongName()));
@@ -31,7 +30,16 @@ public class LineProducer extends AbstractModelProducer<Line, GtfsRoute>
 
       // PublishedName optional
       line.setPublishedName(getNonEmptyTrimedString(gtfsLine.getRouteLongName()));
-
+      
+      // Name = route_long_name oder route_short_name
+      if (line.getPublishedName() != null)
+      {
+         line.setName(line.getPublishedName()); 
+      }
+      else
+      {
+         line.setName(line.getNumber()); 
+      }
       // TransportModeName optional
       switch (gtfsLine.getRouteType())
       {
@@ -69,35 +77,38 @@ public class LineProducer extends AbstractModelProducer<Line, GtfsRoute>
       String[] token = line.getObjectId().split(":");
       line.setRegistrationNumber(token[2]);
 
-      // Comment optional : refers to company
+      // Comment optional
+      line.setComment(gtfsLine.getRouteDesc());
+
+      // Company optional
       if (gtfsLine.getAgencyId() != null)
       {
-         line.setComment(getNonEmptyTrimedString(composeObjectId(
-               Company.COMPANY_KEY, gtfsLine.getAgencyId(), logger)));
-         if (line.getComment() != null && line.getComment().length() > 255)
-            line.setComment(line.getComment().substring(0, 255));
-      } else
-      {
-         // if missing, ModelAssembler will take first agency
-         line.setComment(null);
+         String cid = getNonEmptyTrimedString(composeObjectId(Company.COMPANY_KEY, gtfsLine.getAgencyId(), logger));
+         if (cid != null)
+         {
+            line.getCompanyIds().add(cid);
+         }
       }
-      
+
       line.setColor(toHexa(gtfsLine.getRouteColor()));
       line.setTextColor(toHexa(gtfsLine.getRouteTextColor()));
       line.setUrl(toString(gtfsLine.getRouteUrl()));
-      
+
       return line;
    }
-   
+
    private String toHexa(Color color)
    {
       // TODO : check alpha !!!
-      if (color == null) return null;
+      if (color == null)
+         return null;
       String ret = Integer.toHexString(color.getRGB());
-      if (ret.length() == 8) ret = ret.substring(2);
-      while (ret.length() < 6) ret = "0" + ret;
+      if (ret.length() == 8)
+         ret = ret.substring(2);
+      while (ret.length() < 6)
+         ret = "0" + ret;
       return ret;
-      
+
    }
 
 }

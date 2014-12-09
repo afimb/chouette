@@ -11,7 +11,7 @@ public abstract class AbstractProducer
     * @param source
     * @return
     */
-   protected String getNonEmptyTrimedString(String source)
+   public static String getNonEmptyTrimedString(String source)
    {
       if (source == null)
          return null;
@@ -23,7 +23,7 @@ public abstract class AbstractProducer
     * @param gtfsTime
     * @return
     */
-   protected Time getTime(GtfsTime gtfsTime)
+   public static Time getTime(GtfsTime gtfsTime)
    {
       if (gtfsTime == null)
          return null;

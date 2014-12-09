@@ -1,6 +1,10 @@
 package fr.certu.chouette.exchange.gtfs.importer.producer;
 
 import java.net.URL;
+import java.util.TimeZone;
+
+import lombok.Getter;
+import lombok.Setter;
 
 import org.apache.log4j.Logger;
 
@@ -10,11 +14,18 @@ import fr.certu.chouette.model.neptune.NeptuneObject;
 public abstract class AbstractModelProducer<T extends NeptuneObject, U extends GtfsObject> extends AbstractProducer implements IModelProducer<T, U>
 {
 
+   @Getter
+   @Setter
    private static String prefix;
-   private static String incremental = "";
+   
+   
+   @Getter
+   @Setter
+   private static String incrementalPrefix = "";
+   
    private static int nullIdCount = 0;
 
-   public String composeObjectId(String type, String id, Logger logger)
+   public static String composeObjectId(String type, String id, Logger logger)
    {
       if (id == null)
       {
@@ -22,7 +33,7 @@ public abstract class AbstractModelProducer<T extends NeptuneObject, U extends G
          id = "NULL_" + nullIdCount;
          nullIdCount++;
       }
-      String[] tokens = id.split(".");
+      String[] tokens = id.split("\\.");
       if (tokens.length == 2)
       {
          // id should be produced by Chouette
@@ -31,7 +42,7 @@ public abstract class AbstractModelProducer<T extends NeptuneObject, U extends G
       return prefix + ":" + type + ":" + id.trim().replaceAll("[^a-zA-Z_0-9\\-]", "_");
    }
 
-   public String composeIncrementalObjectId(String type, String id, Logger logger)
+   public static String composeIncrementalObjectId(String type, String id, Logger logger)
    {
       if (id == null)
       {
@@ -39,40 +50,28 @@ public abstract class AbstractModelProducer<T extends NeptuneObject, U extends G
          id = "NULL_" + nullIdCount;
          nullIdCount++;
       }
-      String[] tokens = id.split(".");
+      String[] tokens = id.split("\\.");
       if (tokens.length == 2)
       {
          // id should be produced by Chouette
-         return tokens[0].trim().replaceAll("[^a-zA-Z_0-9]", "_") + ":" + type + ":" + incremental + tokens[1].trim().replaceAll("[^a-zA-Z_0-9\\-]", "_");
+         return tokens[0].trim().replaceAll("[^a-zA-Z_0-9]", "_") + ":" + type + ":" + incrementalPrefix + tokens[1].trim().replaceAll("[^a-zA-Z_0-9\\-]", "_");
       }
-      return prefix + ":" + type + ":" + incremental + id.trim().replaceAll("[^a-zA-Z_0-9\\-]", "_");
+      return prefix + ":" + type + ":" + incrementalPrefix + id.trim().replaceAll("[^a-zA-Z_0-9\\-]", "_");
    }
 
-   public static void setIncrementalPrefix(String value)
-   {
-      incremental = value;
-   }
-
-   public static String getIncrementalPrefix()
-   {
-      return incremental;
-   }
-
-   public static void setPrefix(String value)
-   {
-      prefix = value;
-   }
-
-   public static String getPrefix()
-   {
-      return prefix;
-   }
 
    public static String toString(URL url)
    {
       if (url == null)
          return null;
-      return url.getPath();
+      return url.toString();
+   }
+
+   public static String toString(TimeZone tz)
+   {
+      if (tz == null)
+         return null;
+      return tz.getID();
    }
 
 }

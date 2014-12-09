@@ -417,6 +417,18 @@ public class Line extends NeptuneIdentifiedObject
    @Setter
    @Transient
    private List<String> routingConstraintIds;
+   
+   /**
+    * The optional Companies objectIds of the line
+    * <p>
+    * (import/export purpose)
+    * 
+    * @return The actual value
+    */
+   @Getter
+   @Transient
+   private List<String> companyIds = new ArrayList<>();
+
 
    /**
     * list of facilities (currently not saved) <br/>

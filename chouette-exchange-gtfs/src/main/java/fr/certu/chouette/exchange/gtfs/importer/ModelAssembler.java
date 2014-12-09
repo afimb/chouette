@@ -183,15 +183,14 @@ public class ModelAssembler
          line.setPtNetwork(ptNetwork);
          // line.setRoutes(getObjectsFromIds(line.getRouteIds(),
          // Route.class));
-         if (line.getComment() == null)
+         if (line.getCompanyIds().isEmpty())
          {
             // use for default : first company
             if (!companies.isEmpty())
                line.setCompany(companies.get(0));
          } else
          {
-            line.setCompany(getObjectFromId(line.getComment(), Company.class));
-            line.setComment(null);
+            line.setCompany(getObjectFromId(line.getCompanyIds().get(0), Company.class));
          }
 
          switch (line.getTransportModeName())

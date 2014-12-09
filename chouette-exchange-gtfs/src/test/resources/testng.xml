@@ -1,7 +1,7 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
 <suite name="Factory" verbose="5" >
-  <test name="ExportGTFS" >
+  <!-- <test name="ExportGTFS" >
   <parameter name="gtfsZip"  value="gtfs_feed.zip"/>
     <packages>
       <package name="fr.certu.chouette.exchange.gtfs.export" >
@@ -19,7 +19,7 @@
       <package name="fr.certu.chouette.exchange.gtfs.importer" >
       </package>
    </packages>
-  </test>
+  </test> -->
   <test name="ImportGTFSProducers" >
     <packages>
       <package name="fr.certu.chouette.exchange.gtfs.importer.producer" >

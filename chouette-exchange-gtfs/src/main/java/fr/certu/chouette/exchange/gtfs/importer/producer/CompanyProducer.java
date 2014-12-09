@@ -32,7 +32,8 @@ public class CompanyProducer extends AbstractModelProducer<Company, GtfsAgency>
       String[] token = company.getObjectId().split(":");
       company.setRegistrationNumber(token[2]);
       
-
+      // Timezone
+      company.setTimeZone(toString(gtfsAgency.getAgencyTimezone()));
 
       return company;
    }
