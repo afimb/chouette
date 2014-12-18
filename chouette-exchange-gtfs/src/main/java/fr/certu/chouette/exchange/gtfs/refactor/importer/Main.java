@@ -25,7 +25,7 @@ public class Main
 {
 
    private int _count;
-   private static final String PATH = "/opt/tmp/RATP/";
+   private static final String PATH = "/opt/tmp/RENNES/";
 
    public static void main(String[] args)
    {
