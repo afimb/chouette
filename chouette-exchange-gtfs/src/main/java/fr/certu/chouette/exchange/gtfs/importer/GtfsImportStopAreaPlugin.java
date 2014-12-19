@@ -192,7 +192,7 @@ public class GtfsImportStopAreaPlugin implements IImportPlugin<StopArea>
       }
       catch (IOException e)
       {
-         ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.FILE_ERROR, Report.STATE.ERROR, filePath, "cannot create tempdir");
+         ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ERROR, Report.STATE.ERROR, filePath, "cannot create tempdir");
          report.addItem(item);
          report.updateStatus(Report.STATE.ERROR);
          log.error("zip import failed (cannot create temp dir)", e);
@@ -204,7 +204,7 @@ public class GtfsImportStopAreaPlugin implements IImportPlugin<StopArea>
          Charset encoding = FileTool.getZipCharset(filePath);
          if (encoding == null)
          {
-            ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.FILE_ERROR, Report.STATE.ERROR, filePath, "unknown encoding");
+            ReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_ERROR, Report.STATE.ERROR, filePath, "unknown encoding");
             report.addItem(item);
             report.updateStatus(Report.STATE.ERROR);
             log.error("zip import failed (unknown encoding)");
@@ -232,8 +232,10 @@ public class GtfsImportStopAreaPlugin implements IImportPlugin<StopArea>
       GtfsImporter importer = new GtfsImporter(targetDirectory.toString());
       try
       {
+          ReportItem zipReport = new ExchangeReportItem(ExchangeReportItem.KEY.ZIP_FILE, Report.STATE.OK, filePath);
+          report.addItem(zipReport);
          GtfsChecker checker = new GtfsChecker();
-         boolean ok = checker.check(importer, report, false);
+         boolean ok = checker.check(importer, zipReport, false);
          // try
          // {
          // importer.getStopById();

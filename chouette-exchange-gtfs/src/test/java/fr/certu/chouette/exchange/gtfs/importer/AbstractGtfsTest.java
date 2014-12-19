@@ -18,9 +18,9 @@ public abstract class AbstractGtfsTest extends AbstractTestNGSpringContextTests
          Reporter.log("no report");
       } else
       {
-         Reporter.log(report.getStatus().name() + " : "
+         Reporter.log(report.getStatus().name() + " : " + report.getOriginKey()+ ", "
                + report.getLocalizedMessage());
-         printItems("   ", report.getItems());
+         printItems("-->", report.getItems());
       }
    }
 
@@ -34,9 +34,9 @@ public abstract class AbstractGtfsTest extends AbstractTestNGSpringContextTests
          return;
       for (ReportItem item : items)
       {
-         Reporter.log(indent + item.getStatus().name() + " : "
+         Reporter.log(indent + item.getStatus().name() + " : "+ item.getMessageKey()+ ", "
                + item.getLocalizedMessage());
-         printItems(indent + "   ", item.getItems());
+         printItems( "---" +indent , item.getItems());
       }
 
    }

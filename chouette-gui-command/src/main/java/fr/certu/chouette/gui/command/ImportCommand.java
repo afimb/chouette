@@ -587,10 +587,12 @@ public class ImportCommand extends AbstractCommand
                   Calendar.getInstance().getTime());
          } else
          {
-            log.error("validation report null or empty");
+            log.warn("validation report null or empty");
          }
       }
-      importTask.setResult(converter.toJSONObject());
+      JSONObject reportJson = converter.toJSONObject();
+      importTask.setResult(reportJson);
+      log.info("import report : \n"+reportJson.toString(2)); 
       importTask.setUpdatedAt(Calendar.getInstance().getTime());
       importDao.save(importTask);
       importDao.flush();

@@ -152,7 +152,7 @@ public class GtfsImportStopAreaTests extends AbstractGtfsTest
 
    }
 
-   private void verifyCheckinputFileMissingEntry(String zipName)
+   private void verifyCheckinputFileMissingEntry(String zipName, String missingEntry)
          throws ChouetteException
    {
       List<ParameterValue> parameters = new ArrayList<ParameterValue>();
@@ -172,8 +172,16 @@ public class GtfsImportStopAreaTests extends AbstractGtfsTest
       boolean found = false;
       for (ReportItem reportItem : items)
       {
-         if (reportItem.getMessageKey().equals("ZIP_MISSING_ENTRY"))
+          if (reportItem.getMessageKey().equals("ZIP_MISSING_ENTRY") && reportItem.getLocalizedMessage().contains(missingEntry))
             found = true;
+         if (reportItem.hasItems())
+         {
+        	 for (ReportItem child : reportItem.getItems())
+        	 {
+        		 if (child.getMessageKey().equals("ZIP_MISSING_ENTRY") && child.getLocalizedMessage().contains(missingEntry))
+        	            found = true;
+        	 }
+         }
       }
       Assert.assertTrue(found, "ZIP_MISSING_ENTRY must be found in report");
 
@@ -182,7 +190,7 @@ public class GtfsImportStopAreaTests extends AbstractGtfsTest
    @Test(groups = { "CheckFiles" }, description = "Import Plugin should reject file when missing stops.txt", dependsOnMethods = { "getBean" })
    public void verifyCheckinputFileMissingStops() throws ChouetteException
    {
-      verifyCheckinputFileMissingEntry("test_gtfs_no_stop.zip");
+      verifyCheckinputFileMissingEntry("test_gtfs_no_stop.zip","stops.txt");
    }
 
    @Test(groups = { "ImportStopArea" }, description = "Import Plugin should import file", dependsOnMethods = { "getBean" })

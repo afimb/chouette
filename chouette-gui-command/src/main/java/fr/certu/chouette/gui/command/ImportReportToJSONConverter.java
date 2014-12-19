@@ -277,7 +277,7 @@ public class ImportReportToJSONConverter
             fileOkCount++;
             fileOkReports.add(item);
          }
-         if (key.equals(ExchangeReportItem.KEY.ZIP_MISSING_ENTRY.name()))
+         if (key.equals(ExchangeReportItem.KEY.ZIP_MISSING_ENTRY.name()) && item.getStatus().equals(Report.STATE.ERROR))
          {
             fileNOKCount++;
             fileErrorReports.add(item);
