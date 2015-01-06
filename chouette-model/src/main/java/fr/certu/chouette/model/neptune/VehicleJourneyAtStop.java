@@ -19,7 +19,9 @@ import javax.persistence.UniqueConstraint;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import fr.certu.chouette.model.neptune.type.AlightingPossibilityEnum;
 import fr.certu.chouette.model.neptune.type.BoardingAlightingPossibilityEnum;
+import fr.certu.chouette.model.neptune.type.BoardingPossibilityEnum;
 
 /**
  * Chouette VehicleJourneyAtStop : passing time on stops
@@ -41,6 +43,9 @@ public class VehicleJourneyAtStop extends NeptuneObject
     * @param connectingServiceId
     *           New value
     * @return The actual value
+    * 
+    * @deprecated unused in Neptune 2014 specifications </br> 
+    *             {will be removed in next version}
     */
    @Deprecated
    @Getter
@@ -54,12 +59,47 @@ public class VehicleJourneyAtStop extends NeptuneObject
     * @param boardingAlightingPossibility
     *           New value
     * @return The actual value
+    * 
+    * @deprecated replaced by forBoarding and forAlighting</br>
+    *             {will be removed in next version}
+    * 
     */
+   @Deprecated
    @Getter
    @Setter
    @Enumerated(EnumType.STRING)
    @Column(name = "boarding_alighting_possibility")
    private BoardingAlightingPossibilityEnum boardingAlightingPossibility;
+
+   /**
+    * boarding possibility
+    * 
+    * @param forBoarding
+    *           New value
+    * @return The actual value
+    * 
+    * @since 2.5.2
+    */
+   @Getter
+   @Setter
+   @Enumerated(EnumType.STRING)
+   @Column(name = "for_boarding")
+   private BoardingPossibilityEnum forBoarding;
+
+   /**
+    * alighting possibility
+    * 
+    * @param forAlighting
+    *           New value
+    * @return The actual value
+    * 
+    * @since 2.5.2
+    */
+   @Getter
+   @Setter
+   @Enumerated(EnumType.STRING)
+   @Column(name = "for_alighting")
+   private AlightingPossibilityEnum forAlighting;
 
    /**
     * arrival time
@@ -91,6 +131,9 @@ public class VehicleJourneyAtStop extends NeptuneObject
     * @param waitingTime
     *           New value
     * @return The actual value
+    * 
+    * @deprecated unused in Neptune 2014 specifications</br>
+    *             {will be removed in next version}
     */
    @Deprecated
    @Getter
@@ -120,7 +163,10 @@ public class VehicleJourneyAtStop extends NeptuneObject
     * @param headwayFrequency
     *           New value
     * @return The actual value
+    * 
+    * @deprecated field should move to vehicleJourney in next release
     */
+   @Deprecated
    @Getter
    @Setter
    @Column(name = "headway_frequency")

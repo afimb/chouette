@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import lombok.extern.log4j.Log4j;
+
 import org.json.JSONObject;
 
 import fr.certu.chouette.model.neptune.ConnectionLink;
@@ -16,7 +18,8 @@ import fr.certu.chouette.plugin.validation.report.DetailReportItem;
 import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 import fr.certu.chouette.plugin.validation.report.ReportLocation;
 
-public class ConnectionLinkCheckPoints extends AbstractValidation implements
+@Log4j
+public class ConnectionLinkCheckPoints extends AbstractValidation<ConnectionLink> implements
       ICheckPointPlugin<ConnectionLink>
 {
 
@@ -42,21 +45,32 @@ public class ConnectionLinkCheckPoints extends AbstractValidation implements
       prepareCheckPoint(report, CONNECTION_LINK_2);
       prepareCheckPoint(report, CONNECTION_LINK_3);
 
+      boolean test4_1 = (parameters.optInt(CHECK_OBJECT+OBJECT_KEY.connection_link.name(),0) != 0);
+      if (test4_1)
+      {
+         initCheckPoint(report, L4_CONNECTIONLINK_1, CheckPointReportItem.SEVERITY.ERROR);
+         prepareCheckPoint(report, L4_CONNECTIONLINK_1);
+      }
       for (int i = 0; i < beans.size(); i++)
       {
          ConnectionLink connectionLink = beans.get(i);
-         checkConnectionLink1_2(report, connectionLink, parameters);
-         checkConnectionLink3(report, connectionLink, parameters);
+         check3ConnectionLink1_2(report, connectionLink, parameters);
+         check3ConnectionLink3(report, connectionLink, parameters);
+         // 4-ConnectionLink-1 : check columns constraints
+         if (test4_1)
+         check4Generic1(report,connectionLink,L4_CONNECTIONLINK_1,OBJECT_KEY.connection_link,parameters,context,log );
 
       }
    }
 
-   private void checkConnectionLink1_2(PhaseReportItem report,
+   private void check3ConnectionLink1_2(PhaseReportItem report,
          ConnectionLink connectionLink, JSONObject parameters)
    {
       // 3-ConnectionLink-1 : check distance between stops of connectionLink
       StopArea start = connectionLink.getStartOfLink();
       StopArea end = connectionLink.getEndOfLink();
+      if (start == null | end == null)
+         return; 
       if (!hasCoordinates(start) || !hasCoordinates(end))
          return;
       long distanceMax = parameters.optLong(INTER_CONNECTION_LINK_DISTANCE_MAX,
@@ -111,7 +125,7 @@ public class ConnectionLinkCheckPoints extends AbstractValidation implements
 
    }
 
-   private void checkConnectionLink3(PhaseReportItem report,
+   private void check3ConnectionLink3(PhaseReportItem report,
          ConnectionLink connectionLink, JSONObject parameters)
    {
       // 3-ConnectionLink-3 : check speeds in connectionLink

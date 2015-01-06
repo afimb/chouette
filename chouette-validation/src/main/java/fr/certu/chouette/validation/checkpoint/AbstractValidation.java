@@ -8,15 +8,17 @@
 
 package fr.certu.chouette.validation.checkpoint;
 
+import java.lang.reflect.Method;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
+import java.util.regex.Pattern;
 
-import lombok.extern.log4j.Log4j;
-
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -40,9 +42,16 @@ import fr.certu.chouette.plugin.validation.report.ReportLocation;
  * @author michel
  * 
  */
-@Log4j
-public abstract class AbstractValidation
+public abstract class AbstractValidation<T extends NeptuneIdentifiedObject>
 {
+   protected enum OBJECT_KEY {
+      network,company,group_of_line,stop_area,access_point,access_link,connection_link,
+      time_table, line, route, journey_pattern, vehicle_journey 
+   }
+
+   protected enum PATTERN_OPTION {
+      free,num,alpha,upper,lower
+   }
    // test keys
    protected static final String STOP_AREA_1 = "3-StopArea-1";
    protected static final String STOP_AREA_2 = "3-StopArea-2";
@@ -81,6 +90,19 @@ public abstract class AbstractValidation
    protected static final String FACILITY_1 = "3-Facility-1";
    protected static final String FACILITY_2 = "3-Facility-2";
 
+   protected static final String L4_NETWORK_1 = "4-Network-1";
+   protected static final String L4_COMPANY_1 = "4-Company-1";
+   protected static final String L4_GROUPOFLINE_1 = "4-GroupOfLine-1";
+   protected static final String L4_STOPAREA_1 = "4-StopArea-1";
+   protected static final String L4_ACCESSPOINT_1 = "4-AccessPoint-1";
+   protected static final String L4_ACCESSLINK_1 = "4-AccessLink-1";
+   protected static final String L4_CONNECTIONLINK_1 = "4-ConnectionLink-1";
+   protected static final String L4_TIMETABLE_1 = "4-Timetable-1";
+   protected static final String L4_LINE_1 = "4-Line-1";
+   protected static final String L4_ROUTE_1 = "4-Route-1";
+   protected static final String L4_JOURNEYPATTERN_1 = "4-JourneyPattern-1";
+   protected static final String L4_VEHICLEJOURNEY_1 = "4-VehicleJourney-1";
+
    // parameter keys
    protected static final String STOP_AREAS_AREA = "stop_areas_area";
    protected static final String INTER_STOP_AREA_DISTANCE_MIN = "inter_stop_area_distance_min";
@@ -104,6 +126,11 @@ public abstract class AbstractValidation
    protected static final String ALLOWED_TRANSPORT = "allowed_transport";
    protected static final String VEHICLE_JOURNEY_NUMBER_MIN = "vehicle_journey_number_min";
    protected static final String VEHICLE_JOURNEY_NUMBER_MAX = "vehicle_journey_number_max";
+   protected static final String CHECK_OBJECT = "check_";
+   protected static final String UNIQUE = "unique";
+   protected static final String PATTERN = "pattern";
+   protected static final String MIN_SIZE = "min_size";
+   protected static final String MAX_SIZE = "max_size";
 
    protected static final JSONObject mode_default = new JSONObject(" {"
          + "\"allowed_transport\": 1, "
@@ -124,6 +151,7 @@ public abstract class AbstractValidation
    protected void initCheckPoint(PhaseReportItem validationItem,
          String checkPointKey, CheckPointReportItem.SEVERITY severity)
    {
+      if (validationItem.hasItem(checkPointKey)) return;
       int order = validationItem.hasItems() ? validationItem.getItems().size()
             : 0;
       validationItem.addItem(new CheckPointReportItem(checkPointKey, order,
@@ -230,8 +258,27 @@ public abstract class AbstractValidation
       return camelcase.replaceAll("(.)(\\p{Upper})", "$1_$2").toLowerCase();
    }
 
+   protected String toCamelCase(String underscore)
+   {
+      StringBuffer b = new StringBuffer();
+      boolean underChar = false;
+      for (char c : underscore.toCharArray())
+      {
+         if (c == '_') 
+         {
+            underChar = true;
+            continue;
+         }
+         if (underChar) 
+            b.append(Character.toUpperCase(c));
+         else
+            b.append(c);
+      }
+      return b.toString();
+   }
+
    protected long getModeParameter(JSONObject parameters, String modeKey,
-         String key)
+         String key,Logger log)
    {
       // find transportMode :
       modeKey = MODE_PREFIX + toUnderscore(modeKey);
@@ -347,5 +394,313 @@ public abstract class AbstractValidation
       millis = time.getTime() + tz.getRawOffset();
       return millis / 1000;
    }
+
+
+   @SuppressWarnings("unchecked")
+   protected void check4Generic1(PhaseReportItem report, T object, String testName,
+         OBJECT_KEY objectKey, JSONObject parameters, Map<String, Object> context, Logger log)
+   {
+
+      JSONObject columnsParams = parameters.optJSONObject(objectKey.name());
+      if (columnsParams == null) 
+      {
+         log.info("no columns parameters for "+objectKey);
+         return;
+      }
+
+      for (Iterator<String> columns =  columnsParams.keys(); columns.hasNext();)
+      {
+         String column = columns.next();
+         String javaAttribute = toCamelCase(column);
+         Method getter = findGetter(object.getClass(), javaAttribute);
+
+         if (getter == null) 
+         {
+            log.error("unknown column "+column+" for "+objectKey);
+            continue; 
+         }
+
+         JSONObject colParam = columnsParams.getJSONObject(column);
+
+         try
+         {
+            Object objVal = getter.invoke(object);
+            String value = "";
+            if (objVal != null) value = objVal.toString();
+            // if objectId : check only third part
+            if (column.equalsIgnoreCase("objectId"))
+            {
+               value = value.split(":")[2];
+            }
+            // uniqueness ? 
+            if (colParam.optInt(UNIQUE,0) == 1)
+            {
+               check4Generic1Unique(report, object, testName, objectKey, context, column, value);
+            }
+
+            // pattern ?
+            PATTERN_OPTION pattern_opt = PATTERN_OPTION.values()[colParam.optInt(PATTERN,0)];
+
+            check4Generic1Pattern(report, object, testName, column, value, pattern_opt);
+
+            // min size ?
+            if (!colParam.optString(MIN_SIZE,"").isEmpty())
+            {
+               check4Generic1MinSize(report, object, testName, column, colParam, objVal, value, pattern_opt);
+            }
+
+            // max_size ? 
+            if (!colParam.optString(MAX_SIZE,"").isEmpty() && !value.isEmpty())
+            {
+               check4Generic1MaxSize(report, object, testName, column, colParam, objVal, value, pattern_opt);
+            }
+
+         }
+         catch (Exception e)
+         {
+            log.error("fail to check column "+column+" for "+objectKey, e);
+         }
+      }
+
+   }
+
+   /**
+    * @param report
+    * @param object
+    * @param testName
+    * @param column
+    * @param colParam
+    * @param objVal
+    * @param value
+    * @param pattern_opt
+    */
+   private void check4Generic1MaxSize(PhaseReportItem report, T object, String testName, String column, JSONObject colParam, Object objVal, String value,
+         PATTERN_OPTION pattern_opt)
+   {
+      long maxSize = Long.parseLong(colParam.optString(MAX_SIZE,"0"));
+      if (maxSize != 0)
+      {
+         if (objVal instanceof Number || pattern_opt == PATTERN_OPTION.num)
+         {
+            // check numeric value
+            long val = Long.parseLong(value);
+            if (val > maxSize)
+            {
+               ReportLocation location = new ReportLocation(object);
+
+               Map<String, Object> map = new HashMap<String, Object>();
+               map.put("name", object.getName());
+               map.put("column", column);
+               map.put("value", value);
+               map.put("maximum", Long.toString(maxSize));
+
+               DetailReportItem detail = new DetailReportItem(testName+"_"+MAX_SIZE,
+                     object.getObjectId(), Report.STATE.ERROR, location, map);
+               addValidationError(report, testName, detail);
+            }
+         }
+         else
+         {
+            // test string size
+            if (value.length() > maxSize)
+            {
+               ReportLocation location = new ReportLocation(object);
+
+               Map<String, Object> map = new HashMap<String, Object>();
+               map.put("name", object.getName());
+               map.put("column", column);
+               map.put("value", value);
+               map.put("maximum", Long.toString(maxSize));
+
+               DetailReportItem detail = new DetailReportItem(testName+"_"+MAX_SIZE,
+                     object.getObjectId(), Report.STATE.ERROR, location, map);
+               addValidationError(report, testName, detail);
+            }
+         }
+      }
+   }
+
+   /**
+    * @param report
+    * @param object
+    * @param testName
+    * @param column
+    * @param colParam
+    * @param objVal
+    * @param value
+    * @param pattern_opt
+    */
+   private void check4Generic1MinSize(PhaseReportItem report, T object, String testName, String column, JSONObject colParam, Object objVal, String value,
+         PATTERN_OPTION pattern_opt)
+   {
+      long minSize = Long.parseLong(colParam.optString(MIN_SIZE,"0"));
+      if (minSize > 0 && value.isEmpty())
+      {
+         ReportLocation location = new ReportLocation(object);
+
+         Map<String, Object> map = new HashMap<String, Object>();
+         map.put("name", object.getName());
+         map.put("column", column);
+         map.put("value", "");
+         map.put("minimum", Long.toString(minSize));
+
+         DetailReportItem detail = new DetailReportItem(testName+"_"+MIN_SIZE,
+               object.getObjectId(), Report.STATE.ERROR, location, map);
+         addValidationError(report, testName, detail);
+         return;
+      }
+
+      if (objVal instanceof Number || pattern_opt == PATTERN_OPTION.num)
+      {
+         // check numeric value
+         long val = Long.parseLong(value);
+         if (val < minSize)
+         {
+            ReportLocation location = new ReportLocation(object);
+
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("name", object.getName());
+            map.put("column", column);
+            map.put("value", value);
+            map.put("minimum", Long.toString(minSize));
+
+            DetailReportItem detail = new DetailReportItem(testName+"_"+MIN_SIZE,
+                  object.getObjectId(), Report.STATE.ERROR, location, map);
+            addValidationError(report, testName, detail);
+         }
+      }
+      else
+      {
+         // test string size
+         if (value.length() < minSize)
+         {
+            ReportLocation location = new ReportLocation(object);
+
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("name", object.getName());
+            map.put("column", column);
+            map.put("value", value);
+            map.put("minimum", Long.toString(minSize));
+
+            DetailReportItem detail = new DetailReportItem(testName+"_"+MIN_SIZE,
+                  object.getObjectId(), Report.STATE.ERROR, location, map);
+            addValidationError(report, testName, detail);
+         }
+      }
+   }
+
+   /**
+    * @param report
+    * @param object
+    * @param testName
+    * @param column
+    * @param value
+    * @param pattern_opt
+    */
+   private void check4Generic1Pattern(PhaseReportItem report, T object, String testName, String column, String value, PATTERN_OPTION pattern_opt)
+   {
+      if (!value.isEmpty())
+      {
+         String regex = null;
+         switch(pattern_opt)
+         {
+         case free :  // no check
+            break;
+         case num :   // numeric
+            regex = "^[0-9]+$";
+            break;
+         case alpha : // alphabetic
+            regex = "^[a-zA-Z]+$";
+            break;
+         case upper : // uppercase
+            regex = "^[A-Z]+$";
+            break;
+         case lower : // lowercase
+            regex = "^[a-z]+$";
+            break;
+         }
+         if (regex != null)
+         {
+            if (!Pattern.matches(regex, value))
+            {
+               ReportLocation location = new ReportLocation(object);
+
+               Map<String, Object> map = new HashMap<String, Object>();
+               map.put("name", object.getName());
+               map.put("column", column);
+               map.put("value", value);
+
+               DetailReportItem detail = new DetailReportItem(testName+"_"+PATTERN,
+                     object.getObjectId(), Report.STATE.ERROR, location, map);
+               addValidationError(report, testName, detail);
+            }
+         }
+      }
+   }
+
+   /**
+    * @param report
+    * @param object
+    * @param testName
+    * @param objectKey
+    * @param context
+    * @param column
+    * @param value
+    */
+   @SuppressWarnings("unchecked")
+   private void check4Generic1Unique(PhaseReportItem report, T object, String testName, OBJECT_KEY objectKey, Map<String, Object> context, String column,
+         String value)
+   {
+      String context_key = objectKey.name()+"_"+column+"_"+UNIQUE;
+      Map<String,String> values = (Map<String, String>) context.get(context_key);  
+      if (values == null)
+      {
+         values = new HashMap<>();
+         context.put(context_key,values);
+      }
+      if (values.containsKey(value))
+      {
+         ReportLocation location = new ReportLocation(object);
+
+         Map<String, Object> map = new HashMap<String, Object>();
+         map.put("name", object.getName());
+         map.put("column", column);
+         map.put("value", value);
+         map.put("alternateId", values.get(value));
+
+         DetailReportItem detail = new DetailReportItem(testName+"_"+UNIQUE,
+               object.getObjectId(), Report.STATE.ERROR, location, map);
+         addValidationError(report, testName, detail);
+      }
+      else
+      {
+         values.put(value,object.getObjectId());
+      }
+   }
+
+
+   /**
+    * @param class1
+    * @param attribute
+    * @return
+    * @throws Exception
+    */
+   private Method findGetter(Class<? extends NeptuneIdentifiedObject> class1, String attribute)
+   {
+      String methodName = "get" + attribute;
+      Method[] methods = class1.getMethods();
+      Method accessor = null;
+      for (Method method : methods)
+      {
+         if (method.getName().equalsIgnoreCase(methodName))
+         {
+            accessor = method;
+            break;
+         }
+      }
+      return accessor;
+   }
+
+
 
 }

@@ -53,7 +53,8 @@ public class PhaseReportItem extends ReportItem
       {
          super.addItem(item);
          updateStatus(item.getStatus());
-      } else
+      } 
+      else
       {
          throw new IllegalArgumentException(
                "item must be of CheckPointReportItem type");
@@ -70,6 +71,18 @@ public class PhaseReportItem extends ReportItem
          }
       }
       return null;
+   }
+
+   public boolean hasItem(String key)
+   {
+      for (ReportItem item : getItems())
+      {
+         if (item.getMessageKey().equals(key))
+         {
+            return true;
+         }
+      }
+      return false;
    }
 
    public void sortItems()

@@ -72,6 +72,27 @@ public class GroupOfLine extends NeptuneIdentifiedObject
    }
 
    /**
+    * registration number
+    * 
+    * @return The actual value
+    */
+   @Getter
+   @Column(name = "registration_number")
+   private String registrationNumber;
+
+   /**
+    * set registration number <br/>
+    * truncated to 255 characters if too long
+    * 
+    * @param value
+    *           New value
+    */
+   public void setRegistrationNumber(String value)
+   {
+      registrationNumber = dataBaseSizeProtectedValue(value, "registrationNumber", log);
+   }
+
+   /**
     * grouped Lines
     * 
     * @param lines

@@ -229,6 +229,8 @@ public class Company extends NeptuneIdentifiedObject
     * web site url
     * 
     * @return The actual value
+    * 
+    * @since 2.5.1
     */
    @Getter
    @Column(name = "url")
@@ -240,6 +242,8 @@ public class Company extends NeptuneIdentifiedObject
     * 
     * @param value
     *           New value
+    * 
+    * @since 2.5.1
     */
    public void setUrl(String value)
    {
@@ -250,6 +254,8 @@ public class Company extends NeptuneIdentifiedObject
     * default timezone
     * 
     * @return The actual value
+    * 
+    * @since 2.5.1
     */
    @Getter
    @Column(name = "time_zone")
@@ -261,6 +267,8 @@ public class Company extends NeptuneIdentifiedObject
     * 
     * @param value
     *           New value
+    * 
+    * @since 2.5.1
     */
    public void setTimeZone(String value)
    {

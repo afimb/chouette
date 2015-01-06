@@ -33,7 +33,7 @@ import fr.certu.chouette.plugin.validation.report.ReportLocation;
  * 
  */
 @Log4j
-public class VehicleJourneyCheckPoints extends AbstractValidation implements
+public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney> implements
       ICheckPointPlugin<VehicleJourney>
 {
 
@@ -49,8 +49,9 @@ public class VehicleJourneyCheckPoints extends AbstractValidation implements
       // 3-VehicleJourney-4 : check if each journey has minimum one timetable
       // 3-VehicleJourney-5 : (optional) check operational code
       // 3-VehicleJourney-6 : (optional) check transport modes
-      boolean test6 = parameters.optInt(CHECK_ALLOWED_TRANSPORT_MODES,0) == 1;
-      boolean test5 = parameters.optInt(VEHICLE_JOURNEY_NUMBER_MIN,0) != 0 || parameters.optInt(VEHICLE_JOURNEY_NUMBER_MAX,0) != 0;
+      boolean test3_6 = parameters.optInt(CHECK_ALLOWED_TRANSPORT_MODES,0) == 1;
+      boolean test3_5 = parameters.optInt(VEHICLE_JOURNEY_NUMBER_MIN,0) != 0 || parameters.optInt(VEHICLE_JOURNEY_NUMBER_MAX,0) != 0;
+      boolean test4_1 = (parameters.optInt(CHECK_OBJECT+OBJECT_KEY.vehicle_journey.name(),0) != 0);
       
       initCheckPoint(report, VEHICLE_JOURNEY_1,
             CheckPointReportItem.SEVERITY.WARNING);
@@ -67,15 +68,21 @@ public class VehicleJourneyCheckPoints extends AbstractValidation implements
       prepareCheckPoint(report, VEHICLE_JOURNEY_4);
       
       // 
-      if (test5)
+      if (test3_5)
       {
          initCheckPoint(report, VEHICLE_JOURNEY_5, CheckPointReportItem.SEVERITY.WARNING);
          prepareCheckPoint(report, VEHICLE_JOURNEY_5);
       }
-      if (test6)
+      if (test3_6)
       {
          initCheckPoint(report, VEHICLE_JOURNEY_6, CheckPointReportItem.SEVERITY.WARNING);
          prepareCheckPoint(report, VEHICLE_JOURNEY_6);
+      }
+
+      if (test4_1)
+      {
+         initCheckPoint(report, L4_VEHICLEJOURNEY_1, CheckPointReportItem.SEVERITY.ERROR);
+         prepareCheckPoint(report, L4_VEHICLEJOURNEY_1);
       }
 
       for (VehicleJourney vj : beans)
@@ -89,23 +96,27 @@ public class VehicleJourneyCheckPoints extends AbstractValidation implements
 
          // 3-VehicleJourney-1 : check if time progress correctly on each
          // stop
-         checkVehicleJourney1(report, vj, parameters);
+         check3VehicleJourney1(report, vj, parameters);
 
          // 3-VehicleJourney-2 : check speed progression
-         checkVehicleJourney2(report, vj, parameters);
+         check3VehicleJourney2(report, vj, parameters);
 
          // 3-VehicleJourney-3 : check if two journeys progress similarly
-         checkVehicleJourney3(report, beans, i, vj, parameters);
+         check3VehicleJourney3(report, beans, i, vj, parameters);
 
          // 3-VehicleJourney-4 : check if each journey has minimum one
          // timetable
-         checkVehicleJourney4(report, vj);
+         check3VehicleJourney4(report, vj);
 
          // 3-VehicleJourney-5 : (optionnal) check operational code
-         if (test5) checkVehicleJourney5(report, vj, parameters, context);
+         if (test3_5) check3VehicleJourney5(report, vj, parameters, context);
          
          // 3-VehicleJourney-6 : (optionnal) check transport modes
-         if (test6) checkVehicleJourney6(report, vj, parameters);
+         if (test3_6) check3VehicleJourney6(report, vj, parameters);
+         
+         // 4-Line-1 : check columns constraints
+         check4Generic1(report,vj,L4_VEHICLEJOURNEY_1,OBJECT_KEY.vehicle_journey,parameters,context,log );
+
       }
    }
 
@@ -120,7 +131,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation implements
       return diff;
    }
 
-   private void checkVehicleJourney1(PhaseReportItem report, VehicleJourney vj,
+   private void check3VehicleJourney1(PhaseReportItem report, VehicleJourney vj,
          JSONObject parameters)
    {
       // 3-VehicleJourney-1 : check if time progress correctly on each stop
@@ -156,7 +167,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation implements
 
    }
 
-   private void checkVehicleJourney2(PhaseReportItem report, VehicleJourney vj,
+   private void check3VehicleJourney2(PhaseReportItem report, VehicleJourney vj,
          JSONObject parameters)
    {
       if (isEmpty(vj.getVehicleJourneyAtStops()))
@@ -164,9 +175,9 @@ public class VehicleJourneyCheckPoints extends AbstractValidation implements
       // 3-VehicleJourney-2 : check speed progression
       TransportModeNameEnum transportMode = getTransportMode(vj);
       long maxSpeed = getModeParameter(parameters, transportMode.toString(),
-            SPEED_MAX);
+            SPEED_MAX,log);
       long minSpeed = getModeParameter(parameters, transportMode.toString(),
-            SPEED_MIN);
+            SPEED_MIN,log);
       List<VehicleJourneyAtStop> vjasList = vj.getVehicleJourneyAtStops();
       for (int i = 1; i < vjasList.size(); i++)
       {
@@ -264,7 +275,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation implements
       return transportMode;
    }
 
-   private void checkVehicleJourney3(PhaseReportItem report,
+   private void check3VehicleJourney3(PhaseReportItem report,
          List<VehicleJourney> beans, int rank, VehicleJourney vj0,
          JSONObject parameters)
    {
@@ -276,7 +287,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation implements
 
       prepareCheckPoint(report, VEHICLE_JOURNEY_3);
       long maxDuration = getModeParameter(parameters,
-            transportMode0.toString(), INTER_STOP_DURATION_VARIATION_MAX);
+            transportMode0.toString(), INTER_STOP_DURATION_VARIATION_MAX,log);
 
       List<VehicleJourneyAtStop> vjas0 = vj0.getVehicleJourneyAtStops();
       for (int i = rank + 1; i < beans.size(); i++)
@@ -326,7 +337,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation implements
 
    }
 
-   private void checkVehicleJourney4(PhaseReportItem report, VehicleJourney vj)
+   private void check3VehicleJourney4(PhaseReportItem report, VehicleJourney vj)
    {
       // 3-VehicleJourney-4 : check if each journey has minimum one timetable
       if (isEmpty(vj.getTimetables()))
@@ -341,7 +352,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation implements
    }
 
    @SuppressWarnings("unchecked")
-   private void checkVehicleJourney5(PhaseReportItem report, VehicleJourney vj, JSONObject parameters, Map<String,Object> context)
+   private void check3VehicleJourney5(PhaseReportItem report, VehicleJourney vj, JSONObject parameters, Map<String,Object> context)
    {
       // 3-VehicleJourney-5 : (optional) check operational code
       long minValue = parameters.optLong(VEHICLE_JOURNEY_NUMBER_MIN,0);
@@ -400,11 +411,11 @@ public class VehicleJourneyCheckPoints extends AbstractValidation implements
       values.put(number, vj.getObjectId());
    }
 
-   private void checkVehicleJourney6(PhaseReportItem report, VehicleJourney vj, JSONObject parameters)
+   private void check3VehicleJourney6(PhaseReportItem report, VehicleJourney vj, JSONObject parameters)
    {
       // 3-VehicleJourney-6 : (optional) check transport modes
       if (vj.getTransportMode() == null) return;
-      if (getModeParameter(parameters, vj.getTransportMode().name(), ALLOWED_TRANSPORT) != 1)
+      if (getModeParameter(parameters, vj.getTransportMode().name(), ALLOWED_TRANSPORT,log) != 1)
       {
          // failure encountered, add line 1
          ReportLocation location = new ReportLocation(vj);

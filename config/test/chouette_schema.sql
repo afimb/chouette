@@ -339,6 +339,7 @@ CREATE TABLE group_of_lines (
     creation_time timestamp without time zone,
     creator_id character varying(255),
     name character varying(255),
+    registration_number character varying(255),
     comment character varying(255)
 );
 
@@ -753,7 +754,9 @@ CREATE TABLE stop_points (
     object_version integer,
     creation_time timestamp without time zone,
     creator_id character varying(255),
-    "position" integer
+    "position" integer,
+    for_boarding character varying(255),
+    for_alighting character varying(255)
 );
 
 
@@ -993,7 +996,9 @@ CREATE TABLE vehicle_journey_at_stops (
     departure_time time without time zone,
     waiting_time time without time zone,
     elapse_duration time without time zone,
-    headway_frequency time without time zone
+    headway_frequency time without time zone,
+    for_boarding character varying(255),
+    for_alighting character varying(255)
 );
 
 

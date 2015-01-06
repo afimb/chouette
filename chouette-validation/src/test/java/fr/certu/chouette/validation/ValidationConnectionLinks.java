@@ -2,41 +2,132 @@ package fr.certu.chouette.validation;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.testng.Assert;
-import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.Test;
 
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.manager.INeptuneManager;
-import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.Line;
-import fr.certu.chouette.model.neptune.PTNetwork;
-import fr.certu.chouette.model.neptune.StopArea;
-import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.plugin.exchange.IImportPlugin;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
 import fr.certu.chouette.plugin.validation.report.CheckPointReportItem;
+import fr.certu.chouette.plugin.validation.report.DetailReportItem;
 import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 import fr.certu.chouette.plugin.validation.report.PhaseReportItem.PHASE;
+import fr.certu.chouette.validation.checkpoint.ConnectionLinkCheckPoints;
 
 @ContextConfiguration(locations = { "classpath:testContext.xml",
       "classpath*:chouetteContext.xml" })
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
-public class ValidationConnectionLinks extends
-      AbstractTransactionalTestNGSpringContextTests
+public class ValidationConnectionLinks extends AbstractValidation
 {
+   private ConnectionLinkCheckPoints checkPoint;
+   private JSONObject fullparameters;
+   private ConnectionLink bean1;
+   private ConnectionLink bean2;
+   private List<ConnectionLink> beansFor4 = new ArrayList<>();
+   private INeptuneManager<ConnectionLink> connectionLinkManager ;
+
+   
+   @SuppressWarnings("unchecked")
+   @BeforeGroups (groups = { "connectionLink" })
+   public void init()
+   {
+      connectionLinkManager = (INeptuneManager<ConnectionLink>) applicationContext
+            .getBean("connectionLinkManager");
+      checkPoint = (ConnectionLinkCheckPoints) applicationContext
+            .getBean("connectionLinkCheckPoints");
+      
+      long id = 1;
+
+      fullparameters = null;
+      try
+      {
+         fullparameters = new RuleParameterSet();
+         fullparameters.put("check_connection_link","1");
+
+         bean1 = new ConnectionLink();
+         bean1.setId(id++);
+         bean1.setObjectId("test1:ConnectionLink:1");
+         bean1.setName("test1");
+         bean2 = new ConnectionLink();
+         bean2.setId(id++);
+         bean2.setObjectId("test2:ConnectionLink:1");
+         bean2.setName("test2");
+   
+         beansFor4.add(bean1);
+         beansFor4.add(bean2);
+      } 
+      catch (Exception e)
+      {
+         fullparameters = null;
+         e.printStackTrace();
+      }
+      
+   }
+   
+   
+   @Test(groups = { "connectionLink" }, description = "4-ConnectionLink-1 no test")
+   public void verifyTest4_1_notest() throws ChouetteException
+   {
+      // 4-ConnectionLink-1 : check columns
+      Assert.assertNotNull(fullparameters, "no parameters for test");
+
+      PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
+
+      fullparameters.put("check_connection_link","0");
+      checkPoint.check(beansFor4, fullparameters, report, new HashMap<String, Object>());
+      report.refreshStatus();
+
+      Assert.assertFalse(report.hasItem("4-ConnectionLink-1"), " report must not have item 4-ConnectionLink-1");
+
+      fullparameters.put("check_connection_link","1");
+      report = new PhaseReportItem(PHASE.THREE);
+
+      checkPoint.check(beansFor4, fullparameters, report, new HashMap<String, Object>());
+      report.refreshStatus();
+
+      Assert.assertTrue(report.hasItem("4-ConnectionLink-1"), " report must have item 4-ConnectionLink-1");
+      Assert.assertEquals(report.getItem("4-ConnectionLink-1").getItems().size(), 0, " checkpoint must have no detail");
+
+   }
+   
+   @Test(groups = { "connectionLink" }, description = "4-ConnectionLink-1 unicity")
+   public void verifyTest4_1_unique() throws ChouetteException
+   {
+      // 4-ConnectionLink-1 : check columns
+      Assert.assertNotNull(fullparameters, "no parameters for test");
+
+      PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
+
+      // unique
+      JSONObject column = fullparameters.getJSONObject("connection_link").getJSONObject("objectid");
+      column.put("unique",1);
+
+      checkPoint.check(beansFor4, fullparameters, report, new HashMap<String, Object>());
+      report.refreshStatus();
+      column.put("unique",0);
+
+      DetailReportItem detail = checkReportForTest4_1(report,"4-ConnectionLink-1",bean2.getObjectId());
+      Assert.assertEquals(detail.getArgs().get("column"),"objectid","detail must refer column");
+      Assert.assertEquals(detail.getArgs().get("value"),bean2.getObjectId().split(":")[2],"detail must refer value");
+      Assert.assertEquals(detail.getArgs().get("alternateId"),bean1.getObjectId(),"detail must refer fisrt bean");
+   }
+
 
    @SuppressWarnings("unchecked")
-   @BeforeMethod
+   @BeforeGroups (groups = { "connectionLink" })
    public void loadStopAreas() throws ChouetteException
    {
       IImportPlugin<Line> importLine = (IImportPlugin<Line>) applicationContext
@@ -44,28 +135,6 @@ public class ValidationConnectionLinks extends
 
       INeptuneManager<Line> lineManager = (INeptuneManager<Line>) applicationContext
             .getBean("lineManager");
-      List<Line> lines = lineManager.getAll(null);
-      lineManager.removeAll(null, lines, true);
-
-      INeptuneManager<StopArea> stopeManager = (INeptuneManager<StopArea>) applicationContext
-            .getBean("stopAreaManager");
-      List<StopArea> stops = stopeManager.getAll(null);
-      stopeManager.removeAll(null, stops, true);
-
-      INeptuneManager<PTNetwork> networkManager = (INeptuneManager<PTNetwork>) applicationContext
-            .getBean("networkManager");
-      List<PTNetwork> networks = networkManager.getAll(null);
-      networkManager.removeAll(null, networks, true);
-
-      INeptuneManager<Timetable> timetableManager = (INeptuneManager<Timetable>) applicationContext
-            .getBean("timetableManager");
-      List<Timetable> timetables = timetableManager.getAll(null);
-      timetableManager.removeAll(null, timetables, true);
-
-      INeptuneManager<Company> companyManager = (INeptuneManager<Company>) applicationContext
-            .getBean("companyManager");
-      List<Company> companies = companyManager.getAll(null);
-      companyManager.removeAll(null, companies, true);
 
       JSONObject parameters = null;
       try
@@ -83,14 +152,10 @@ public class ValidationConnectionLinks extends
 
    }
 
-   @SuppressWarnings("unchecked")
-   @Test(groups = { "ConnectionLink" }, description = "3-ConnectionLink-1")
-   public void verifyTest1() throws ChouetteException
+   @Test(groups = { "connectionLink" }, description = "3-ConnectionLink-1")
+   public void verifyTest3_1() throws ChouetteException
    {
       // 3-ConnectionLink-1 : check distance between stops of connectionLink
-
-      INeptuneManager<ConnectionLink> connectionLinkManager = (INeptuneManager<ConnectionLink>) applicationContext
-            .getBean("connectionLinkManager");
 
       JSONObject parameters = null;
       try
@@ -137,16 +202,11 @@ public class ValidationConnectionLinks extends
 
    }
 
-   @SuppressWarnings("unchecked")
-   @Test(groups = { "ConnectionLink" }, description = "3-ConnectionLink-2")
-   public void verifyTest2() throws ChouetteException
+   @Test(groups = { "connectionLink" }, description = "3-ConnectionLink-2")
+   public void verifyTest3_2() throws ChouetteException
    {
       // 3-ConnectionLink-2 : check distance of link against distance between
       // stops of connectionLink
-      // 3-ConnectionLink-3 : check speeds in connectionLink
-
-      INeptuneManager<ConnectionLink> connectionLinkManager = (INeptuneManager<ConnectionLink>) applicationContext
-            .getBean("connectionLinkManager");
 
       JSONObject parameters = null;
       try
@@ -197,14 +257,10 @@ public class ValidationConnectionLinks extends
 
    }
 
-   @SuppressWarnings("unchecked")
-   @Test(groups = { "ConnectionLink" }, description = "3-ConnectionLink-3")
-   public void verifyTest3() throws ChouetteException
+   @Test(groups = { "connectionLink" }, description = "3-ConnectionLink-3")
+   public void verifyTest3_3() throws ChouetteException
    {
       // 3-ConnectionLink-3 : check speeds in connectionLink
-
-      INeptuneManager<ConnectionLink> connectionLinkManager = (INeptuneManager<ConnectionLink>) applicationContext
-            .getBean("connectionLinkManager");
 
       JSONObject parameters = null;
       try

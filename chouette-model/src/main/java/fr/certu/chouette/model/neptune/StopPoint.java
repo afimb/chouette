@@ -5,11 +5,17 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import fr.certu.chouette.model.neptune.type.AlightingPossibilityEnum;
+import fr.certu.chouette.model.neptune.type.BoardingPossibilityEnum;
+import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -40,6 +46,36 @@ public class StopPoint extends NeptuneIdentifiedObject
    @Setter
    @Column(name = "position")
    private Integer position;
+
+   /**
+    * boarding possibility
+    * 
+    * @param forBoarding
+    *           New value
+    * @return The actual value
+    * 
+    * @since 2.5.2
+    */
+   @Getter
+   @Setter
+   @Enumerated(EnumType.STRING)
+   @Column(name = "for_boarding")
+   private BoardingPossibilityEnum forBoarding;
+
+   /**
+    * alighting possibility
+    * 
+    * @param forAlighting
+    *           New value
+    * @return The actual value
+    * 
+    * @since 2.5.2
+    */
+   @Getter
+   @Setter
+   @Enumerated(EnumType.STRING)
+   @Column(name = "for_alighting")
+   private AlightingPossibilityEnum forAlighting;
 
    /**
     * stop area container

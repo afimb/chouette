@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import lombok.extern.log4j.Log4j;
+
 import org.json.JSONObject;
 
 import fr.certu.chouette.model.neptune.AccessPoint;
@@ -14,9 +16,10 @@ import fr.certu.chouette.plugin.validation.report.CheckPointReportItem;
 import fr.certu.chouette.plugin.validation.report.DetailReportItem;
 import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 import fr.certu.chouette.plugin.validation.report.ReportLocation;
-
-public class AccessPointCheckPoints extends AbstractValidation implements
-      ICheckPointPlugin<AccessPoint>
+import fr.certu.chouette.validation.checkpoint.AbstractValidation.OBJECT_KEY;
+@Log4j
+public class AccessPointCheckPoints extends AbstractValidation<AccessPoint> implements
+ICheckPointPlugin<AccessPoint>
 {
 
    @Override
@@ -39,15 +42,24 @@ public class AccessPointCheckPoints extends AbstractValidation implements
       prepareCheckPoint(report, ACCESS_POINT_1);
       prepareCheckPoint(report, ACCESS_POINT_2);
       prepareCheckPoint(report, ACCESS_POINT_3);
+      boolean test4_1 = (parameters.optInt(CHECK_OBJECT+OBJECT_KEY.access_point.name(),0) != 0);
+      if (test4_1)
+      {
+         initCheckPoint(report, L4_ACCESSPOINT_1, CheckPointReportItem.SEVERITY.ERROR);
+         prepareCheckPoint(report, L4_ACCESSPOINT_1);
+      }
 
       for (int i = 0; i < beans.size(); i++)
       {
          AccessPoint accessPoint = beans.get(i);
-         checkAccessPoint1(report, accessPoint);
-         checkAccessPoint3(report, accessPoint, parameters);
+         check3AccessPoint1(report, accessPoint);
+         check3AccessPoint3(report, accessPoint, parameters);
+         // 4-AccessPoint-1 : check columns constraints
+         if (test4_1)
+            check4Generic1(report,accessPoint,L4_ACCESSPOINT_1,OBJECT_KEY.access_point,parameters,context,log );
          for (int j = i + 1; j < beans.size(); j++)
          {
-            checkAccessPoint2(report, i, accessPoint, j, beans.get(j),
+            check3AccessPoint2(report, i, accessPoint, j, beans.get(j),
                   parameters);
          }
 
@@ -55,7 +67,7 @@ public class AccessPointCheckPoints extends AbstractValidation implements
 
    }
 
-   private void checkAccessPoint1(PhaseReportItem report,
+   private void check3AccessPoint1(PhaseReportItem report,
          AccessPoint accessPoint)
    {
       // 3-AccessPoint-1 : check if all access points have geolocalization
@@ -73,7 +85,7 @@ public class AccessPointCheckPoints extends AbstractValidation implements
       }
    }
 
-   private void checkAccessPoint2(PhaseReportItem report, int i,
+   private void check3AccessPoint2(PhaseReportItem report, int i,
          AccessPoint accessPoint, int j, AccessPoint accessPoint2,
          JSONObject parameters)
    {
@@ -105,7 +117,7 @@ public class AccessPointCheckPoints extends AbstractValidation implements
 
    }
 
-   private void checkAccessPoint3(PhaseReportItem report,
+   private void check3AccessPoint3(PhaseReportItem report,
          AccessPoint accessPoint, JSONObject parameters)
    {
       // 3-AccessPoint-3 : check distance with parents

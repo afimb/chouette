@@ -15,7 +15,7 @@ import fr.certu.chouette.plugin.validation.report.DetailReportItem;
 import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 import fr.certu.chouette.plugin.validation.report.ReportLocation;
 
-public class FacilityCheckPoints extends AbstractValidation implements
+public class FacilityCheckPoints extends AbstractValidation<Facility> implements
       ICheckPointPlugin<Facility>
 {
 
@@ -36,13 +36,13 @@ public class FacilityCheckPoints extends AbstractValidation implements
       for (int i = 0; i < beans.size(); i++)
       {
          Facility facility = beans.get(i);
-         checkFacility1(report, facility);
-         checkFacility2(report, facility, parameters);
+         check3Facility1(report, facility);
+         check3Facility2(report, facility, parameters);
 
       }
    }
 
-   private void checkFacility1(PhaseReportItem report, Facility facility)
+   private void check3Facility1(PhaseReportItem report, Facility facility)
    {
       // 3-Facility-1 : check localization (E)
       if (!hasCoordinates(facility))
@@ -56,7 +56,7 @@ public class FacilityCheckPoints extends AbstractValidation implements
       }
    }
 
-   private void checkFacility2(PhaseReportItem report, Facility facility,
+   private void check3Facility2(PhaseReportItem report, Facility facility,
          JSONObject parameters)
    {
       // 3-Facility-2 : check distance of facility with stop area ()

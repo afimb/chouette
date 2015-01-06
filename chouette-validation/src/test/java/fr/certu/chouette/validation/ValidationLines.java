@@ -1,6 +1,7 @@
 package fr.certu.chouette.validation;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -8,6 +9,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.test.context.ContextConfiguration;
 import org.testng.Assert;
+import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.Test;
 
 import fr.certu.chouette.common.ChouetteException;
@@ -27,15 +29,99 @@ import fr.certu.chouette.validation.checkpoint.LineCheckPoints;
       "classpath*:chouetteContext.xml" })
 public class ValidationLines extends AbstractValidation
 {
+   private LineCheckPoints checkPoint;
+   private JSONObject fullparameters;
+   private Line bean1;
+   private Line bean2;
+   private List<Line> beansFor4 = new ArrayList<>();
+   
+   @BeforeGroups (groups = { "line" })
+   public void init()
+   {
+      checkPoint = (LineCheckPoints) applicationContext
+            .getBean("lineCheckPoints");
+      checkPoint.setRouteCheckPoints(null);
+
+      long id = 1;
+
+      fullparameters = null;
+      try
+      {
+         fullparameters = new RuleParameterSet();
+         fullparameters.put("check_line","1");
+
+         bean1 = new Line();
+         bean1.setId(id++);
+         bean1.setObjectId("test1:Line:1");
+         bean1.setName("test1");
+         bean2 = new Line();
+         bean2.setId(id++);
+         bean2.setObjectId("test2:Line:1");
+         bean2.setName("test2");
+   
+         beansFor4.add(bean1);
+         beansFor4.add(bean2);
+      } 
+      catch (Exception e)
+      {
+         fullparameters = null;
+         e.printStackTrace();
+      }
+      
+   }
+   
+   @Test(groups = { "line" }, description = "4-Line-1 no test")
+   public void verifyTest4_1_notest() throws ChouetteException
+   {
+      // 4-Line-1 : check columns
+      Assert.assertNotNull(fullparameters, "no parameters for test");
+
+      PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
+
+      fullparameters.put("check_line","0");
+      checkPoint.check(beansFor4, fullparameters, report, new HashMap<String, Object>());
+      report.refreshStatus();
+
+      Assert.assertFalse(report.hasItem("4-Line-1"), " report must not have item 4-Line-1");
+
+      fullparameters.put("check_line","1");
+      report = new PhaseReportItem(PHASE.THREE);
+
+      checkPoint.check(beansFor4, fullparameters, report, new HashMap<String, Object>());
+      report.refreshStatus();
+
+      Assert.assertTrue(report.hasItem("4-Line-1"), " report must have item 4-Line-1");
+      Assert.assertEquals(report.getItem("4-Line-1").getItems().size(), 0, " checkpoint must have no detail");
+
+   }
+   
+   @Test(groups = { "line" }, description = "4-Line-1 unicity")
+   public void verifyTest4_1_unique() throws ChouetteException
+   {
+      // 4-Line-1 : check columns
+      Assert.assertNotNull(fullparameters, "no parameters for test");
+
+      PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
+
+      // unique
+      JSONObject column = fullparameters.getJSONObject("line").getJSONObject("objectid");
+      column.put("unique",1);
+
+      checkPoint.check(beansFor4, fullparameters, report, new HashMap<String, Object>());
+      report.refreshStatus();
+      column.put("unique",0);
+
+      DetailReportItem detail = checkReportForTest4_1(report,"4-Line-1",bean2.getObjectId());
+      Assert.assertEquals(detail.getArgs().get("column"),"objectid","detail must refer column");
+      Assert.assertEquals(detail.getArgs().get("value"),bean2.getObjectId().split(":")[2],"detail must refer value");
+      Assert.assertEquals(detail.getArgs().get("alternateId"),bean1.getObjectId(),"detail must refer fisrt bean");
+   }
 
    @SuppressWarnings("unchecked")
    @Test(groups = { "line" }, description = "3-Line-1")
-   public void verifyTest1() throws ChouetteException
+   public void verifyTest3_1() throws ChouetteException
    {
       // 3-Line-1 : check if two lines have same name
-      LineCheckPoints checkPoint = (LineCheckPoints) applicationContext
-            .getBean("lineCheckPoints");
-      checkPoint.setRouteCheckPoints(null);
       IImportPlugin<Line> importLine = (IImportPlugin<Line>) applicationContext
             .getBean("NeptuneLineImport");
 
@@ -130,11 +216,9 @@ public class ValidationLines extends AbstractValidation
 
    @SuppressWarnings("unchecked")
    @Test(groups = { "line" }, description = "3-Line-2")
-   public void verifyTest2() throws ChouetteException
+   public void verifyTest3_2() throws ChouetteException
    {
       // 3-Line-2 : check if line has routes
-      LineCheckPoints checkPoint = (LineCheckPoints) applicationContext
-            .getBean("lineCheckPoints");
       IImportPlugin<Line> importLine = (IImportPlugin<Line>) applicationContext
             .getBean("NeptuneLineImport");
 
@@ -204,12 +288,9 @@ public class ValidationLines extends AbstractValidation
    
    @SuppressWarnings("unchecked")
    @Test(groups = { "Line" }, description = "3-Line-3")
-   public void verifyTest3() throws ChouetteException
+   public void verifyTest3_3() throws ChouetteException
    {
       // 3-Line-4 : check transport mode
-
-      LineCheckPoints checkPoint = (LineCheckPoints) applicationContext
-            .getBean("lineCheckPoints");
       IImportPlugin<Line> importLine = (IImportPlugin<Line>) applicationContext
             .getBean("NeptuneLineImport");
 

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.Setter;
+import lombok.extern.log4j.Log4j;
 
 import org.json.JSONObject;
 
@@ -16,8 +17,9 @@ import fr.certu.chouette.plugin.validation.report.DetailReportItem;
 import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 import fr.certu.chouette.plugin.validation.report.ReportLocation;
 
-public class JourneyPatternCheckPoints extends AbstractValidation implements
-      ICheckPointPlugin<JourneyPattern>
+@Log4j
+public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern> implements
+ICheckPointPlugin<JourneyPattern>
 {
    @Setter
    private VehicleJourneyCheckPoints vehicleJourneyCheckPoints;
@@ -33,6 +35,12 @@ public class JourneyPatternCheckPoints extends AbstractValidation implements
 
       initCheckPoint(report, JOURNEY_PATTERN_1,
             CheckPointReportItem.SEVERITY.WARNING);
+      boolean test4_1 = (parameters.optInt(CHECK_OBJECT+OBJECT_KEY.journey_pattern.name(),0) != 0);
+      if (test4_1)
+      {
+         initCheckPoint(report, L4_JOURNEYPATTERN_1, CheckPointReportItem.SEVERITY.ERROR);
+         prepareCheckPoint(report, L4_JOURNEYPATTERN_1);
+      }
 
       // checkPoint is applicable
       for (int i = 0; i < beans.size(); i++)
@@ -40,7 +48,11 @@ public class JourneyPatternCheckPoints extends AbstractValidation implements
          JourneyPattern jp = beans.get(i);
 
          // 3-JourneyPattern-1 : check if two journey patterns use same stops
-         checkJourneyPattern1(report, beans, i, jp);
+         check3JourneyPattern1(report, beans, i, jp);
+
+         // 4-JourneyPattern-1 : check columns constraints
+         if (test4_1)
+            check4Generic1(report,jp,L4_JOURNEYPATTERN_1,OBJECT_KEY.journey_pattern,parameters,context,log );
 
          if (vehicleJourneyCheckPoints != null)
             vehicleJourneyCheckPoints.check(jp.getVehicleJourneys(),
@@ -49,7 +61,7 @@ public class JourneyPatternCheckPoints extends AbstractValidation implements
 
    }
 
-   private void checkJourneyPattern1(PhaseReportItem report,
+   private void check3JourneyPattern1(PhaseReportItem report,
          List<JourneyPattern> beans, int jpRank, JourneyPattern jp)
    {
       // 3-JourneyPattern-1 : check if two journey patterns use same stops

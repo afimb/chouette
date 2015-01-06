@@ -14,6 +14,8 @@ import lombok.Setter;
 
 /**
  * peculiar date for Timetables
+ * 
+ * @since 2.5.0
  */
 @Embeddable
 @NoArgsConstructor

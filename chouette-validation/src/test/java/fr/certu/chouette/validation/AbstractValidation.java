@@ -3,7 +3,8 @@ package fr.certu.chouette.validation;
 import java.sql.Time;
 import java.util.List;
 
-import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
+import org.testng.Assert;
 import org.testng.Reporter;
 
 import fr.certu.chouette.model.neptune.NeptuneLocalizedObject;
@@ -11,9 +12,10 @@ import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
 import fr.certu.chouette.plugin.validation.report.CheckPointReportItem;
 import fr.certu.chouette.plugin.validation.report.DetailReportItem;
+import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 
 public abstract class AbstractValidation extends
-      AbstractTestNGSpringContextTests
+AbstractTransactionalTestNGSpringContextTests
 {
 
    public static void printReport(Report report)
@@ -94,5 +96,21 @@ public abstract class AbstractValidation extends
          diff += 86400L; // step upon midnight : add one day in seconds
       return diff;
    }
+   
+   /**
+    * @param report
+    */
+   protected DetailReportItem checkReportForTest4_1(PhaseReportItem report, String key, String objectId)
+   {
+      Assert.assertEquals(report.getStatus(), Report.STATE.ERROR," report must be on level error");
+      Assert.assertEquals(report.hasItems(), true, " report must have items");
+      Assert.assertTrue(report.hasItem(key), " report must have 1 item on key "+key);
+      CheckPointReportItem checkPointReport = (CheckPointReportItem) report.getItem(key);
+      Assert.assertEquals(checkPointReport.getItems().size(), 1, " checkpoint must have 1 detail");
+      DetailReportItem detail = (DetailReportItem) checkPointReport.getItems().get(0);
+      Assert.assertEquals(detail.getObjectId(),objectId,"detail must be on second bean");
+      return detail;
+   }
+
 
 }

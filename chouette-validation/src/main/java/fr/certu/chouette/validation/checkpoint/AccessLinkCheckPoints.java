@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import lombok.extern.log4j.Log4j;
+
 import org.json.JSONObject;
 
 import fr.certu.chouette.model.neptune.AccessLink;
@@ -17,8 +19,9 @@ import fr.certu.chouette.plugin.validation.report.DetailReportItem;
 import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 import fr.certu.chouette.plugin.validation.report.ReportLocation;
 
-public class AccessLinkCheckPoints extends AbstractValidation implements
-      ICheckPointPlugin<AccessLink>
+@Log4j
+public class AccessLinkCheckPoints extends AbstractValidation<AccessLink> implements
+ICheckPointPlugin<AccessLink>
 {
 
    @Override
@@ -42,22 +45,35 @@ public class AccessLinkCheckPoints extends AbstractValidation implements
       prepareCheckPoint(report, ACCESS_LINK_1);
       prepareCheckPoint(report, ACCESS_LINK_2);
       prepareCheckPoint(report, ACCESS_LINK_3);
+      boolean test4_1 = (parameters.optInt(CHECK_OBJECT+OBJECT_KEY.access_link.name(),0) != 0);
+      if (test4_1)
+      {
+         initCheckPoint(report, L4_ACCESSLINK_1, CheckPointReportItem.SEVERITY.ERROR);
+         prepareCheckPoint(report, L4_ACCESSLINK_1);
+      }
+
 
       for (int i = 0; i < beans.size(); i++)
       {
          AccessLink accessLink = beans.get(i);
-         checkAccessLink1_2(report, accessLink, parameters);
-         checkAccessLink3(report, accessLink, parameters);
+         check3AccessLink1_2(report, accessLink, parameters);
+         check3AccessLink3(report, accessLink, parameters);
+
+         // 4-AccessLink-1 : check columns constraints
+         if (test4_1)
+            check4Generic1(report,accessLink,L4_ACCESSLINK_1,OBJECT_KEY.access_link,parameters,context,log );
+
 
       }
    }
 
-   private void checkAccessLink1_2(PhaseReportItem report,
+   private void check3AccessLink1_2(PhaseReportItem report,
          AccessLink accessLink, JSONObject parameters)
    {
       // 3-AccessLink-1 : check distance between stops of accessLink
       StopArea start = accessLink.getStopArea();
       AccessPoint end = accessLink.getAccessPoint();
+      if (start == null || end == null) return;
       if (!hasCoordinates(start) || !hasCoordinates(end))
          return;
       long distanceMax = parameters
@@ -111,7 +127,7 @@ public class AccessLinkCheckPoints extends AbstractValidation implements
 
    }
 
-   private void checkAccessLink3(PhaseReportItem report, AccessLink accessLink,
+   private void check3AccessLink3(PhaseReportItem report, AccessLink accessLink,
          JSONObject parameters)
    {
       // 3-AccessLink-3 : check speeds in accessLink

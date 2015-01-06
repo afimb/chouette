@@ -18,6 +18,7 @@ import fr.certu.chouette.model.neptune.AccessPoint;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.Facility;
+import fr.certu.chouette.model.neptune.GroupOfLine;
 import fr.certu.chouette.model.neptune.JourneyPattern;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
@@ -44,7 +45,7 @@ public class PluginInjector<T extends NeptuneIdentifiedObject>
       return new PluginInjector<Line>();
    }
 
-   public static PluginInjector<PTNetwork> createPTNetworkPluginInjector()
+   public static PluginInjector<PTNetwork> createNetworkPluginInjector()
    {
       return new PluginInjector<PTNetwork>();
    }
@@ -79,11 +80,6 @@ public class PluginInjector<T extends NeptuneIdentifiedObject>
       return new PluginInjector<StopArea>();
    }
 
-   public static PluginInjector<PTLink> createPTLinkPluginInjector()
-   {
-      return new PluginInjector<PTLink>();
-   }
-
    public static PluginInjector<TimeSlot> createTimeSlotPluginInjector()
    {
       return new PluginInjector<TimeSlot>();
@@ -112,6 +108,11 @@ public class PluginInjector<T extends NeptuneIdentifiedObject>
    public static PluginInjector<Facility> createFacilityPluginInjector()
    {
       return new PluginInjector<Facility>();
+   }
+   
+   public static PluginInjector<GroupOfLine> createGroupOfLinePluginInjector()
+   {
+      return new PluginInjector<GroupOfLine>();
    }
 
    @Getter

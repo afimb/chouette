@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import lombok.Setter;
+import lombok.extern.log4j.Log4j;
 
 import org.json.JSONObject;
 
@@ -17,7 +18,8 @@ import fr.certu.chouette.plugin.validation.report.DetailReportItem;
 import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 import fr.certu.chouette.plugin.validation.report.ReportLocation;
 
-public class LineCheckPoints extends AbstractValidation implements
+@Log4j
+public class LineCheckPoints extends AbstractValidation<Line> implements
       ICheckPointPlugin<Line>
 {
 
@@ -36,16 +38,22 @@ public class LineCheckPoints extends AbstractValidation implements
       // 3-Line-1 : check if two lines have same name
       // 3-Line-2 : check if line has routes
       // 3-Line-3 : check if line has valid transport mode
-      boolean test3 = parameters.optInt(CHECK_ALLOWED_TRANSPORT_MODES,0) == 1;
+      boolean test3_3 = parameters.optInt(CHECK_ALLOWED_TRANSPORT_MODES,0) == 1;
       
       if (beans.size() > 0)
       {
          // checkPoint is applicable
          prepareCheckPoint(report, LINE_2);
-         if (test3)
+         if (test3_3)
          {
             initCheckPoint(report, LINE_3, CheckPointReportItem.SEVERITY.WARNING);
             prepareCheckPoint(report, LINE_3);
+         }
+         boolean test4_1 = (parameters.optInt(CHECK_OBJECT+OBJECT_KEY.line.name(),0) != 0);
+         if (test4_1)
+         {
+            initCheckPoint(report, L4_LINE_1, CheckPointReportItem.SEVERITY.ERROR);
+            prepareCheckPoint(report, L4_LINE_1);
          }
 
          // en cas d'erreur, on reporte autant de detail que de lignes en
@@ -54,11 +62,15 @@ public class LineCheckPoints extends AbstractValidation implements
          {
             Line line1 = beans.get(i);
             // 3-Line-1 : check if two lines have same name
-            checkLine1(beans, report, i, line1);
+            check3Line1(beans, report, i, line1);
             // 3-Line-2 : check if line has routes
-            checkLine2(report, line1);
+            check3Line2(report, line1);
             // 3-Line-3 : check if line has valid transportMode
-            if (test3) checkLine3(report, line1, parameters);
+            if (test3_3) check3Line3(report, line1, parameters);
+            
+            // 4-Line-1 : check columns constraints
+            if (test4_1)
+            check4Generic1(report,line1,L4_LINE_1,OBJECT_KEY.line,parameters,context,log );
 
             // forward on routes
             List<Route> routes = line1.getRoutes();
@@ -76,16 +88,19 @@ public class LineCheckPoints extends AbstractValidation implements
     * @param lineRank
     * @param line1
     */
-   private void checkLine1(List<Line> beans, PhaseReportItem report,
+   private void check3Line1(List<Line> beans, PhaseReportItem report,
          int lineRank, Line line1)
    {
       if (beans.size() <= 1)
          return;
       boolean error_1 = false; // if true, add detail for this line
+      if (line1.getPtNetwork() == null) return;
       prepareCheckPoint(report, LINE_1);
       for (int j = lineRank + 1; j < beans.size(); j++)
       {
          Line line2 = beans.get(j);
+         if (line2.getPtNetwork() == null) continue;
+
          if (line2.getPtNetwork().equals(line1.getPtNetwork()))
          {
             if (line1.getName().equals(line2.getName())
@@ -126,7 +141,7 @@ public class LineCheckPoints extends AbstractValidation implements
     * @param report
     * @param line1
     */
-   private void checkLine2(PhaseReportItem report, Line line1)
+   private void check3Line2(PhaseReportItem report, Line line1)
    {
       if (isEmpty(line1.getRoutes()))
       {
@@ -142,9 +157,9 @@ public class LineCheckPoints extends AbstractValidation implements
    }
 
    
-   private void checkLine3(PhaseReportItem report, Line line1, JSONObject parameters)
+   private void check3Line3(PhaseReportItem report, Line line1, JSONObject parameters)
    {
-      if (getModeParameter(parameters, line1.getTransportModeName().name(), ALLOWED_TRANSPORT) != 1)
+      if (getModeParameter(parameters, line1.getTransportModeName().name(), ALLOWED_TRANSPORT,log) != 1)
       {
          // failure encountered, add line 1
          ReportLocation location = new ReportLocation(line1);

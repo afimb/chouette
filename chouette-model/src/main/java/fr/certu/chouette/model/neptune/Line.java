@@ -209,6 +209,8 @@ public class Line extends NeptuneIdentifiedObject
     * web site url
     * 
     * @return The actual value
+    * 
+    * @since 2.5.1
     */
    @Getter
    @Column(name = "url")
@@ -219,6 +221,8 @@ public class Line extends NeptuneIdentifiedObject
     * 
     * @param value
     *           New value
+    * 
+    * @since 2.5.1
     */
    public void setUrl(String value)
    {
@@ -230,6 +234,8 @@ public class Line extends NeptuneIdentifiedObject
     * should be used also on label background
     * 
     * @return The actual value in RRGGBB hexadecimal format
+    * 
+    * @since 2.5.1
     */
    @Getter
    @Column(name = "color", length = 6)
@@ -241,6 +247,8 @@ public class Line extends NeptuneIdentifiedObject
     * 
     * @param value
     *           New value in RRGGBB hexadecimal format
+    * 
+    * @since 2.5.1
     */
    public void setColor(String value)
    {
@@ -251,6 +259,8 @@ public class Line extends NeptuneIdentifiedObject
     * line text color
     * 
     * @return The actual value in RRGGBB hexadecimal format
+
+    * @since 2.5.1
     */
    @Getter
    @Column(name = "text_color", length = 6)
@@ -261,6 +271,8 @@ public class Line extends NeptuneIdentifiedObject
     * 
     * @param value
     *           New value in RRGGBB hexadecimal format
+    *           
+    * @since 2.5.1
     */
    public void setTextColor(String value)
    {

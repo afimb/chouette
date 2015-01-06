@@ -79,6 +79,42 @@
 			</list>
 		</property>
 	</bean>
+	<bean id="NetworkValidationPluginInjector" class="fr.certu.chouette.plugin.PluginInjector"
+		factory-method="createNetworkPluginInjector">
+		<property name="manager" ref="networkManager" />
+		<property name="checkPointPlugins">
+			<list>
+				<ref bean="networkCheckPoints" />
+			</list>
+		</property>
+	</bean>
+	<bean id="CompanyValidationPluginInjector" class="fr.certu.chouette.plugin.PluginInjector"
+		factory-method="createCompanyPluginInjector">
+		<property name="manager" ref="companyManager" />
+		<property name="checkPointPlugins">
+			<list>
+				<ref bean="companyCheckPoints" />
+			</list>
+		</property>
+	</bean>
+	<bean id="GroupOfLineValidationPluginInjector" class="fr.certu.chouette.plugin.PluginInjector"
+		factory-method="createGroupOfLinePluginInjector">
+		<property name="manager" ref="groupOfLineManager" />
+		<property name="checkPointPlugins">
+			<list>
+				<ref bean="groupOfLineCheckPoints" />
+			</list>
+		</property>
+	</bean>
+	<bean id="TimetableValidationPluginInjector" class="fr.certu.chouette.plugin.PluginInjector"
+		factory-method="createTimetablePluginInjector">
+		<property name="manager" ref="timetableManager" />
+		<property name="checkPointPlugins">
+			<list>
+				<ref bean="timetableCheckPoints" />
+			</list>
+		</property>
+	</bean>
 	<bean id="StopAreaValidationPluginInjector" class="fr.certu.chouette.plugin.PluginInjector"
 		factory-method="createStopAreaPluginInjector">
 		<property name="manager" ref="stopAreaManager" />

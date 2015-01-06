@@ -34,8 +34,8 @@ public class DetailReportItem extends ReportItem
    Map<String, Object> args;
 
    /**
-	 * 
-	 */
+    * 
+    */
    public DetailReportItem(String key, String objectId, STATE state,
          ReportLocation location, Map<String, Object> args)
    {
@@ -135,11 +135,14 @@ public class DetailReportItem extends ReportItem
    private String populate(String template)
    {
       String message = template;
-      for (String key : args.keySet())
+      if (args != null) 
       {
-         String value = args.get(key).toString();
+         for (String key : args.keySet())
+         {
+            String value = args.get(key).toString();
 
-         message = expand(message, key, value);
+            message = expand(message, key, value);
+         }
       }
       message = expand(message, "objectId", getObjectId());
       message = message.replaceAll("''", "'");

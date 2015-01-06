@@ -161,6 +161,8 @@ public class StopArea extends NeptuneLocalizedObject
     * web site url
     * 
     * @return The actual value
+    * 
+    * @since 2.5.1
     */
    @Getter
    @Column(name = "url")
@@ -172,6 +174,8 @@ public class StopArea extends NeptuneLocalizedObject
     * 
     * @param value
     *           New value
+    * 
+    * @since 2.5.1
     */
    public void setUrl(String value)
    {
@@ -182,6 +186,8 @@ public class StopArea extends NeptuneLocalizedObject
     * timezone
     * 
     * @return The actual value
+    * 
+    * @since 2.5.1
     */
    @Getter
    @Column(name = "time_zone")
@@ -193,6 +199,8 @@ public class StopArea extends NeptuneLocalizedObject
     * 
     * @param value
     *           New value
+    * 
+    * @since 2.5.1
     */
    public void setTimeZone(String value)
    {

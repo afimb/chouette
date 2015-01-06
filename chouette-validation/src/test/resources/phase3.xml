@@ -46,5 +46,25 @@
 			<class name="fr.certu.chouette.validation.ValidationAccessLinks" />
 		</classes>
 	</test>
+	<test name="Test_J_Networks" preserve-order="true">
+		<classes>
+			<class name="fr.certu.chouette.validation.ValidationNetworks" />
+		</classes>
+	</test>
+	<test name="Test_K_Companies" preserve-order="true">
+		<classes>
+			<class name="fr.certu.chouette.validation.ValidationCompanies" />
+		</classes>
+	</test>
+	<test name="Test_L_GroupOfLines" preserve-order="true">
+		<classes>
+			<class name="fr.certu.chouette.validation.ValidationGroupOfLines" />
+		</classes>
+	</test>
+	<test name="Test_L_Timetables" preserve-order="true">
+		<classes>
+			<class name="fr.certu.chouette.validation.ValidationTimetables" />
+		</classes>
+	</test>
 </suite>
 

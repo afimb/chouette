@@ -22,7 +22,10 @@ import lombok.Setter;
  * <p/>
  * Neptune mapping : PtLink <br/>
  * Gtfs mapping : none <br/>
+ * 
+ * @deprecated links should be produced by importers/exporters
  */
+@Deprecated
 @Entity
 @Table(name = "pt_links")
 @NoArgsConstructor

@@ -11,8 +11,13 @@ public class RuleParameterSet extends JSONObject
 {
    public RuleParameterSet() throws JSONException, IOException
    {
+      this("full");
+   }
+
+   public RuleParameterSet(String filename) throws JSONException, IOException
+   {
       super(FileUtils.readFileToString(new File(
-            "src/test/data/parameterset.json")));
+            "src/test/data/"+filename+"parameterset.json")));
 
    }
 

@@ -22,8 +22,8 @@ import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 import fr.certu.chouette.plugin.validation.report.ReportLocation;
 
 @Log4j
-public class RouteCheckPoints extends AbstractValidation implements
-      ICheckPointPlugin<Route>
+public class RouteCheckPoints extends AbstractValidation<Route> implements
+ICheckPointPlugin<Route>
 {
 
    @Setter
@@ -61,39 +61,50 @@ public class RouteCheckPoints extends AbstractValidation implements
       prepareCheckPoint(report, ROUTE_6);
       prepareCheckPoint(report, ROUTE_7);
 
+      boolean test4_1 = (parameters.optInt(CHECK_OBJECT+OBJECT_KEY.route.name(),0) != 0);
+      if (test4_1)
+      {
+         initCheckPoint(report, L4_ROUTE_1, CheckPointReportItem.SEVERITY.ERROR);
+         prepareCheckPoint(report, L4_ROUTE_1);
+      }
+
       // en cas d'erreur, on reporte autant de detail que de route en erreur
       for (int i = 0; i < beans.size(); i++)
       {
          Route route = beans.get(i);
 
          // 3-Route-1 : check if two successive stops are in same area
-         checkRoute1(report, route);
+         check3Route1(report, route);
 
          // 3-Route-2 : check if two wayback routes are actually waybacks
-         checkRoute2(report, route);
+         check3Route2(report, route);
 
          // 3-Route-3 : check distance between stops
-         checkRoute3(report, route, parameters);
+         check3Route3(report, route, parameters);
 
          // 3-Route-6 : check if route has minimum 2 StopPoints
-         checkRoute6(report, route);
+         check3Route6(report, route);
 
          // 3-Route-7 : check if route has minimum 1 JourneyPattern
-         checkRoute7(report, route);
+         check3Route7(report, route);
 
          // 3-Route-8 : check if all stopPoints are used by journeyPatterns
-         checkRoute8(report, route);
+         check3Route8(report, route);
 
          // 3-Route-9 : check if one journeyPattern uses all stopPoints
-         checkRoute9(report, route);
+         check3Route9(report, route);
+
+         // 4-Route-1 : check columns constraints
+         if (test4_1)
+            check4Generic1(report,route,L4_ROUTE_1,OBJECT_KEY.route,parameters,context,log );
 
          for (int j = i + 1; j < beans.size(); j++)
          {
             // 3-Route-4 : check identical routes
-            checkRoute4(report, i, route, j, beans.get(j));
+            check3Route4(report, i, route, j, beans.get(j));
 
             // 3-Route-5 : check for potentially waybacks
-            checkRoute5(report, i, route, j, beans.get(j));
+            check3Route5(report, i, route, j, beans.get(j));
          }
          // chain on journeyPatterns
          if (journeyPatternCheckPoints != null)
@@ -109,7 +120,7 @@ public class RouteCheckPoints extends AbstractValidation implements
     * @param route
     * @param areas
     */
-   private void checkRoute1(PhaseReportItem report, Route route)
+   private void check3Route1(PhaseReportItem report, Route route)
    {
       // 3-Route-1 : check if two successive stops are in same area
       prepareCheckPoint(report, ROUTE_1);
@@ -138,7 +149,7 @@ public class RouteCheckPoints extends AbstractValidation implements
     * @param route
     * @param areas
     */
-   private void checkRoute2(PhaseReportItem report, Route route)
+   private void check3Route2(PhaseReportItem report, Route route)
    {
       // 3-Route-2 : check if two wayback routes are actually waybacks
       List<StopArea> areas = route.getStopAreas();
@@ -189,9 +200,11 @@ public class RouteCheckPoints extends AbstractValidation implements
       }
    }
 
-   private void checkRoute3(PhaseReportItem report, Route route,
+   private void check3Route3(PhaseReportItem report, Route route,
          JSONObject parameters)
    {
+      List<StopArea> areas = route.getStopAreas();
+      if (isEmpty(areas)) return;
       // 3-Route-3 : check distance between stops
       prepareCheckPoint(report, ROUTE_3);
       // find transportMode :
@@ -211,7 +224,6 @@ public class RouteCheckPoints extends AbstractValidation implements
       double distanceMin = mode.getLong(INTER_STOP_AREA_DISTANCE_MIN);
       double distanceMax = mode.getLong(INTER_STOP_AREA_DISTANCE_MAX);
 
-      List<StopArea> areas = route.getStopAreas();
 
       for (int i = 1; i < areas.size(); i++)
       {
@@ -260,7 +272,7 @@ public class RouteCheckPoints extends AbstractValidation implements
 
    }
 
-   private void checkRoute4(PhaseReportItem report, int rank, Route route,
+   private void check3Route4(PhaseReportItem report, int rank, Route route,
          int rank2, Route route2)
    {
       // 3-Route-4 : check identical routes
@@ -270,7 +282,7 @@ public class RouteCheckPoints extends AbstractValidation implements
       List<StopArea> areas = route.getStopAreas();
       if (isEmpty(route2.getStopPoints()))
          return;
-      ;
+
       List<StopArea> areas2 = route2.getStopAreas();
       // test can be passed if alternate route areas exist
       if (!areas2.isEmpty())
@@ -295,7 +307,7 @@ public class RouteCheckPoints extends AbstractValidation implements
     * @param routeRank
     * @param route
     */
-   private void checkRoute5(PhaseReportItem report, int rank, Route route,
+   private void check3Route5(PhaseReportItem report, int rank, Route route,
          int rankWb, Route routeWb)
    {
       // 3-Route-5 : check for potentially waybacks
@@ -337,7 +349,7 @@ public class RouteCheckPoints extends AbstractValidation implements
     * @param report
     * @param route
     */
-   private void checkRoute6(PhaseReportItem report, Route route)
+   private void check3Route6(PhaseReportItem report, Route route)
    {
       // 3-Route-6 : check if route has minimum 2 StopPoints
       if (isEmpty(route.getStopPoints()) || route.getStopPoints().size() < 2)
@@ -354,7 +366,7 @@ public class RouteCheckPoints extends AbstractValidation implements
     * @param report
     * @param route
     */
-   private void checkRoute7(PhaseReportItem report, Route route)
+   private void check3Route7(PhaseReportItem report, Route route)
    {
       // 3-Route-7 : check if route has minimum 1 JourneyPattern
       if (isEmpty(route.getJourneyPatterns()))
@@ -371,7 +383,7 @@ public class RouteCheckPoints extends AbstractValidation implements
     * @param report
     * @param route
     */
-   private void checkRoute8(PhaseReportItem report, Route route)
+   private void check3Route8(PhaseReportItem report, Route route)
    {
       // 3-Route-8 : check if all stopPoints are used by journeyPatterns
       if (isEmpty(route.getJourneyPatterns()))
@@ -409,7 +421,7 @@ public class RouteCheckPoints extends AbstractValidation implements
     * @param report
     * @param route
     */
-   private void checkRoute9(PhaseReportItem report, Route route)
+   private void check3Route9(PhaseReportItem report, Route route)
    {
       // 3-Route-9 : check if one journeyPattern uses all stopPoints
       if (isEmpty(route.getJourneyPatterns()))

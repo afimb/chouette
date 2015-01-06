@@ -2,70 +2,142 @@ package fr.certu.chouette.validation;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.testng.Assert;
-import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.Test;
 
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.manager.INeptuneManager;
-import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.Line;
-import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.model.neptune.StopArea;
-import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
 import fr.certu.chouette.plugin.exchange.IImportPlugin;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
 import fr.certu.chouette.plugin.validation.report.CheckPointReportItem;
+import fr.certu.chouette.plugin.validation.report.DetailReportItem;
 import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 import fr.certu.chouette.plugin.validation.report.PhaseReportItem.PHASE;
+import fr.certu.chouette.validation.checkpoint.StopAreaCheckPoints;
 
 @ContextConfiguration(locations = { "classpath:testContext.xml",
       "classpath*:chouetteContext.xml" })
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 public class ValidationStopAreas extends
-      AbstractTransactionalTestNGSpringContextTests
+      AbstractValidation
 {
+   private StopAreaCheckPoints checkPoint;
+   private JSONObject fullparameters;
+   private StopArea bean1;
+   private StopArea bean2;
+   private List<StopArea> beansFor4 = new ArrayList<>();
+   private INeptuneManager<StopArea> stopAreaManager ;
+
+   
+   @SuppressWarnings("unchecked")
+   @BeforeGroups (groups = { "stopArea" })
+   public void init()
+   {
+      stopAreaManager = (INeptuneManager<StopArea>) applicationContext
+            .getBean("stopAreaManager");
+      checkPoint = (StopAreaCheckPoints) applicationContext
+            .getBean("stopAreaCheckPoints");
+      
+      long id = 1;
+
+      fullparameters = null;
+      try
+      {
+         fullparameters = new RuleParameterSet();
+         fullparameters.put("check_stop_area","1");
+
+         bean1 = new StopArea();
+         bean1.setId(id++);
+         bean1.setObjectId("test1:StopArea:1");
+         bean1.setName("test1");
+         bean1.setAreaType(ChouetteAreaEnum.BoardingPosition);
+         bean2 = new StopArea();
+         bean2.setId(id++);
+         bean2.setObjectId("test2:StopArea:1");
+         bean2.setName("test2");
+         bean2.setAreaType(ChouetteAreaEnum.BoardingPosition);
+   
+         beansFor4.add(bean1);
+         beansFor4.add(bean2);
+      } 
+      catch (Exception e)
+      {
+         fullparameters = null;
+         e.printStackTrace();
+      }
+      
+   }
+   
+   
+   @Test(groups = { "stopArea" }, description = "4-StopArea-1 no test")
+   public void verifyTest4_1_notest() throws ChouetteException
+   {
+      // 4-StopArea-1 : check columns
+      Assert.assertNotNull(fullparameters, "no parameters for test");
+
+      PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
+
+      fullparameters.put("check_stop_area","0");
+      checkPoint.check(beansFor4, fullparameters, report, new HashMap<String, Object>());
+      report.refreshStatus();
+
+      Assert.assertFalse(report.hasItem("4-StopArea-1"), " report must not have item 4-StopArea-1");
+
+      fullparameters.put("check_stop_area","1");
+      report = new PhaseReportItem(PHASE.THREE);
+
+      checkPoint.check(beansFor4, fullparameters, report, new HashMap<String, Object>());
+      report.refreshStatus();
+
+      Assert.assertTrue(report.hasItem("4-StopArea-1"), " report must have item 4-StopArea-1");
+      Assert.assertEquals(report.getItem("4-StopArea-1").getItems().size(), 0, " checkpoint must have no detail");
+
+   }
+   
+   @Test(groups = { "stopArea" }, description = "4-StopArea-1 unicity")
+   public void verifyTest4_1_unique() throws ChouetteException
+   {
+      // 4-StopArea-1 : check columns
+      Assert.assertNotNull(fullparameters, "no parameters for test");
+
+      PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
+
+      // unique
+      JSONObject column = fullparameters.getJSONObject("stop_area").getJSONObject("objectid");
+      column.put("unique",1);
+
+      checkPoint.check(beansFor4, fullparameters, report, new HashMap<String, Object>());
+      report.refreshStatus();
+      column.put("unique",0);
+
+      DetailReportItem detail = checkReportForTest4_1(report,"4-StopArea-1",bean2.getObjectId());
+      Assert.assertEquals(detail.getArgs().get("column"),"objectid","detail must refer column");
+      Assert.assertEquals(detail.getArgs().get("value"),bean2.getObjectId().split(":")[2],"detail must refer value");
+      Assert.assertEquals(detail.getArgs().get("alternateId"),bean1.getObjectId(),"detail must refer fisrt bean");
+   }
 
    @SuppressWarnings("unchecked")
-   @BeforeMethod
+   @BeforeGroups(groups = { "stopArea" })
    public void loadStopAreas() throws ChouetteException
    {
 
       INeptuneManager<Line> lineManager = (INeptuneManager<Line>) applicationContext
             .getBean("lineManager");
-      List<Line> lines = lineManager.getAll(null);
-      lineManager.removeAll(null, lines, true);
-
-      INeptuneManager<StopArea> stopeManager = (INeptuneManager<StopArea>) applicationContext
-            .getBean("stopAreaManager");
-      List<StopArea> stops = stopeManager.getAll(null);
-      stopeManager.removeAll(null, stops, true);
-
-      INeptuneManager<PTNetwork> networkManager = (INeptuneManager<PTNetwork>) applicationContext
-            .getBean("networkManager");
-      List<PTNetwork> networks = networkManager.getAll(null);
-      networkManager.removeAll(null, networks, true);
-
-      INeptuneManager<Timetable> timetableManager = (INeptuneManager<Timetable>) applicationContext
-            .getBean("timetableManager");
-      List<Timetable> timetables = timetableManager.getAll(null);
-      timetableManager.removeAll(null, timetables, true);
-
-      INeptuneManager<Company> companyManager = (INeptuneManager<Company>) applicationContext
-            .getBean("companyManager");
-      List<Company> companies = companyManager.getAll(null);
-      companyManager.removeAll(null, companies, true);
 
       IImportPlugin<Line> importLine = (IImportPlugin<Line>) applicationContext
             .getBean("NeptuneLineImport");
@@ -86,14 +158,10 @@ public class ValidationStopAreas extends
 
    }
 
-   @SuppressWarnings("unchecked")
-   @Test(groups = { "StopArea" }, description = "3-StopArea-1")
-   public void verifyTest1() throws ChouetteException
+   @Test(groups = { "stopArea" }, description = "3-StopArea-1")
+   public void verifyTest3_1() throws ChouetteException
    {
       // 3-StopArea-1 : check if all non ITL stopArea has geolocalization
-
-      INeptuneManager<StopArea> stopAreaManager = (INeptuneManager<StopArea>) applicationContext
-            .getBean("stopAreaManager");
 
       JSONObject parameters = null;
       try
@@ -145,14 +213,10 @@ public class ValidationStopAreas extends
 
    }
 
-   @SuppressWarnings("unchecked")
-   @Test(groups = { "StopArea" }, description = "3-StopArea-2")
-   public void verifyTest2() throws ChouetteException
+   @Test(groups = { "stopArea" }, description = "3-StopArea-2")
+   public void verifyTest3_2() throws ChouetteException
    {
       // 3-StopArea-2 : check distance of stop areas with different name
-
-      INeptuneManager<StopArea> stopAreaManager = (INeptuneManager<StopArea>) applicationContext
-            .getBean("stopAreaManager");
 
       JSONObject parameters = null;
       try
@@ -215,15 +279,11 @@ public class ValidationStopAreas extends
       Assert.assertTrue(found, "report must contain a 3-StopArea-2 checkPoint");
    }
 
-   @SuppressWarnings("unchecked")
-   @Test(groups = { "StopArea" }, description = "3-StopArea-3")
-   public void verifyTest3() throws ChouetteException
+   @Test(groups = { "stopArea" }, description = "3-StopArea-3")
+   public void verifyTest3_3() throws ChouetteException
    {
 
       // 3-StopArea-3 : check multiple occurrence of a stopArea
-
-      INeptuneManager<StopArea> stopAreaManager = (INeptuneManager<StopArea>) applicationContext
-            .getBean("stopAreaManager");
 
       JSONObject parameters = null;
       try
@@ -292,14 +352,10 @@ public class ValidationStopAreas extends
 
    }
 
-   @SuppressWarnings("unchecked")
-   @Test(groups = { "StopArea" }, description = "3-StopArea-4")
-   public void verifyTest4() throws ChouetteException
+   @Test(groups = { "stopArea" }, description = "3-StopArea-4")
+   public void verifyTest3_4() throws ChouetteException
    {
       // 3-StopArea-4 : check localization in a region
-
-      INeptuneManager<StopArea> stopAreaManager = (INeptuneManager<StopArea>) applicationContext
-            .getBean("stopAreaManager");
 
       JSONObject parameters = null;
       try
@@ -373,14 +429,10 @@ public class ValidationStopAreas extends
 
    }
 
-   @SuppressWarnings("unchecked")
-   @Test(groups = { "StopArea" }, description = "3-StopArea-5")
-   public void verifyTest5() throws ChouetteException
+   @Test(groups = { "stopArea" }, description = "3-StopArea-5")
+   public void verifyTest3_5() throws ChouetteException
    {
       // 3-StopArea-5 : check distance with parents
-
-      INeptuneManager<StopArea> stopAreaManager = (INeptuneManager<StopArea>) applicationContext
-            .getBean("stopAreaManager");
 
       JSONObject parameters = null;
       try
@@ -427,14 +479,10 @@ public class ValidationStopAreas extends
 
    }
 
-   @SuppressWarnings("unchecked")
-   @Test(groups = { "StopArea" }, description = "3-StopArea-6")
-   public void verifyTest6() throws ChouetteException
+   @Test(groups = { "stopArea" }, description = "3-StopArea-6")
+   public void verifyTest3_6() throws ChouetteException
    {
       // 3-StopArea-6 : check if stopArea has country code
-
-      INeptuneManager<StopArea> stopAreaManager = (INeptuneManager<StopArea>) applicationContext
-            .getBean("stopAreaManager");
 
       JSONObject parameters = null;
       try

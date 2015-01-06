@@ -19,4 +19,8 @@
 	<bean id="connectionLinkCheckPoints" class="fr.certu.chouette.validation.checkpoint.ConnectionLinkCheckPoints" />
 	<bean id="facilityCheckPoints" class="fr.certu.chouette.validation.checkpoint.FacilityCheckPoints" />
 	<bean id="stopAreaCheckPoints" class="fr.certu.chouette.validation.checkpoint.StopAreaCheckPoints" />
+	<bean id="networkCheckPoints" class="fr.certu.chouette.validation.checkpoint.NetworkCheckPoints" />
+	<bean id="companyCheckPoints" class="fr.certu.chouette.validation.checkpoint.CompanyCheckPoints" />
+	<bean id="timetableCheckPoints" class="fr.certu.chouette.validation.checkpoint.TimetableCheckPoints" />
+	<bean id="groupOfLineCheckPoints" class="fr.certu.chouette.validation.checkpoint.GroupOfLineCheckPoints" />
 </beans>

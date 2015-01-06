@@ -64,7 +64,7 @@ public abstract class Report
     */
    @Getter
    @Setter
-   private List<ReportItem> items;
+   private List<ReportItem> items = new ArrayList<ReportItem>();
 
    /**
     * add or merge item in list
@@ -76,8 +76,6 @@ public abstract class Report
     */
    public void addItem(ReportItem item)
    {
-      if (items == null)
-         items = new ArrayList<ReportItem>();
       String messageKey = item.getMessageKey();
       updateStatus(item.getStatus());
       for (ReportItem it : items)
@@ -109,8 +107,6 @@ public abstract class Report
    {
       if (itemsToAdd == null)
          return;
-      if (items == null)
-         items = new ArrayList<ReportItem>();
       for (ReportItem it : itemsToAdd)
       {
          addItem(it);
@@ -239,7 +235,7 @@ public abstract class Report
 
    public boolean hasItems()
    {
-      return items != null && !items.isEmpty();
+      return !items.isEmpty();
    }
 
    public final void refreshStatus()

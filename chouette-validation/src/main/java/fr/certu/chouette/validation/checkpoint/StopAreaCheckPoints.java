@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import lombok.extern.log4j.Log4j;
+
 import org.json.JSONObject;
 
 import com.vividsolutions.jts.geom.Point;
@@ -23,8 +25,9 @@ import fr.certu.chouette.plugin.validation.report.DetailReportItem;
 import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 import fr.certu.chouette.plugin.validation.report.ReportLocation;
 
-public class StopAreaCheckPoints extends AbstractValidation implements
-      ICheckPointPlugin<StopArea>
+@Log4j
+public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
+ICheckPointPlugin<StopArea>
 {
 
    @Override
@@ -54,6 +57,12 @@ public class StopAreaCheckPoints extends AbstractValidation implements
       prepareCheckPoint(report, STOP_AREA_5);
       prepareCheckPoint(report, STOP_AREA_6);
 
+      boolean test4_1 = (parameters.optInt(CHECK_OBJECT+OBJECT_KEY.stop_area.name(),0) != 0);
+      if (test4_1)
+      {
+         initCheckPoint(report, L4_STOPAREA_1, CheckPointReportItem.SEVERITY.ERROR);
+         prepareCheckPoint(report, L4_STOPAREA_1);
+      }
       Polygon enveloppe = getEnveloppe(parameters);
 
       for (int i = 0; i < beans.size(); i++)
@@ -62,20 +71,24 @@ public class StopAreaCheckPoints extends AbstractValidation implements
          // no test for ITL
          if (stopArea.getAreaType().equals(ChouetteAreaEnum.ITL))
             continue;
-         checkStopArea1(report, stopArea);
-         checkStopArea4(report, stopArea, enveloppe);
-         checkStopArea5(report, stopArea, parameters);
-         checkStopArea6(report, stopArea);
+         check3StopArea1(report, stopArea);
+         check3StopArea4(report, stopArea, enveloppe);
+         check3StopArea5(report, stopArea, parameters);
+         check3StopArea6(report, stopArea);
+         // 4-Line-1 : check columns constraints
+         if (test4_1)
+            check4Generic1(report,stopArea,L4_STOPAREA_1,OBJECT_KEY.stop_area,parameters,context,log );
+
          for (int j = i + 1; j < beans.size(); j++)
          {
-            checkStopArea2(report, i, stopArea, j, beans.get(j), parameters);
-            checkStopArea3(report, i, stopArea, j, beans.get(j));
+            check3StopArea2(report, i, stopArea, j, beans.get(j), parameters);
+            check3StopArea3(report, i, stopArea, j, beans.get(j));
          }
 
       }
    }
 
-   private void checkStopArea1(PhaseReportItem report, StopArea stopArea)
+   private void check3StopArea1(PhaseReportItem report, StopArea stopArea)
    {
       // 3-StopArea-1 : check if all non ITL stopArea has geolocalization
       if (!hasCoordinates(stopArea))
@@ -89,7 +102,7 @@ public class StopAreaCheckPoints extends AbstractValidation implements
       }
    }
 
-   private void checkStopArea2(PhaseReportItem report, int rank,
+   private void check3StopArea2(PhaseReportItem report, int rank,
          StopArea stopArea, int rank2, StopArea stopArea2, JSONObject parameters)
    {
       // 3-StopArea-2 : check distance of stop areas with different name
@@ -127,7 +140,7 @@ public class StopAreaCheckPoints extends AbstractValidation implements
 
    }
 
-   private void checkStopArea3(PhaseReportItem report, int rank,
+   private void check3StopArea3(PhaseReportItem report, int rank,
          StopArea stopArea, int rank2, StopArea stopArea2)
    {
       // 3-StopArea-3 : check multiple occurrence of a stopArea of same type
@@ -159,7 +172,7 @@ public class StopAreaCheckPoints extends AbstractValidation implements
 
    }
 
-   private void checkStopArea4(PhaseReportItem report, StopArea stopArea,
+   private void check3StopArea4(PhaseReportItem report, StopArea stopArea,
          Polygon enveloppe)
    {
       // 3-StopArea-4 : check localization in a region
@@ -180,7 +193,7 @@ public class StopAreaCheckPoints extends AbstractValidation implements
 
    }
 
-   private void checkStopArea5(PhaseReportItem report, StopArea stopArea,
+   private void check3StopArea5(PhaseReportItem report, StopArea stopArea,
          JSONObject parameters)
    {
       // 3-StopArea-5 : check distance with parents
@@ -210,7 +223,7 @@ public class StopAreaCheckPoints extends AbstractValidation implements
       }
    }
 
-   private void checkStopArea6(PhaseReportItem report, StopArea stopArea)
+   private void check3StopArea6(PhaseReportItem report, StopArea stopArea)
    {
       // 3-StopArea-6 : check if all non ITL stopArea has insse_code
       if (isEmpty(stopArea.getCountryCode()))
