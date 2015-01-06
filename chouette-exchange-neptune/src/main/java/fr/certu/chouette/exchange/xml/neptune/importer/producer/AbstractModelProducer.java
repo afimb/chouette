@@ -35,6 +35,8 @@ public abstract class AbstractModelProducer<T extends NeptuneIdentifiedObject, U
    public static final String COMMON_1 = "2-NEPTUNE-Common-1";
    public static final String COMMON_2 = "2-NEPTUNE-Common-2";
 
+   private static JAXBContextCache jaxbContextCache = new JAXBContextCache();
+
    public void populateFromCastorNeptune(T target, U source, ReportItem report)
    {
       // ObjectId : maybe null but not empty
@@ -107,7 +109,7 @@ public abstract class AbstractModelProducer<T extends NeptuneIdentifiedObject, U
       JAXBContext jc;
       try
       {
-         jc = JAXBContext.newInstance(name);
+         jc = jaxbContextCache.getContext(name);
          String text = marshal(jc, object);
          return text;
       } catch (Exception e)
