@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1"
+	xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+
+	<persistence-unit name="public">
+
+		<class>mobi.chouette.model.Job</class>
+
+		<exclude-unlisted-classes>true</exclude-unlisted-classes>
+		<validation-mode>NONE</validation-mode>
+
+		<properties>
+			<property name="hibernate.show_sql" value="false" />
+			<property name="hibernate.format_sql" value="true" />
+			<property name="hibernate.jdbc.batch_size" value="50" />
+			<property name="hibernate.default_batch_fetch_size" value="50" />
+			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL9Dialect" />
+			<property name="hibernate.connection.datasource" value="java:jboss/datasources/chouette" />
+			<property name="hibernate.cache.use_second_level_cache"
+				value="true" />
+			<property name="hibernate.cache.use_query_cache" value="true" />
+			<property name="javax.persistence.validation.mode" value="none" />
+			<property name="hibernate.hbm2ddl.auto" value="update" />
+		</properties>
+	</persistence-unit>
+
+	<persistence-unit name="referential">
+
+		<exclude-unlisted-classes>true</exclude-unlisted-classes>
+		<validation-mode>NONE</validation-mode>
+		<properties>
+			<property name="hibernate.show_sql" value="true" />
+			<property name="hibernate.format_sql" value="true" />
+			<property name="hibernate.jdbc.batch_size" value="50" />
+			<property name="hibernate.default_batch_fetch_size" value="50" />
+			<property name="hibernate.multiTenancy" value="SCHEMA" />
+			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL9Dialect" />
+			<property name="hibernate.connection.datasource" value="java:jboss/datasources/chouette" />
+			<property name="hibernate.tenant_identifier_resolver"
+				value="mobi.chouette.util.DefaultTenantIdentifierResolver" />
+			<property name="hibernate.multi_tenant_connection_provider"
+				value="mobi.chouette.util.DefaultConnectionProvider" />
+			<property name="hibernate.cache.use_second_level_cache"
+				value="false" />
+			<property name="hibernate.cache.use_query_cache" value="false" />
+			<property name="javax.persistence.validation.mode" value="none" />
+
+		</properties>
+
+	</persistence-unit>
+
+
+</persistence>
