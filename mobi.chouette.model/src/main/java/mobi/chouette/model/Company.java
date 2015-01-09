@@ -1,0 +1,276 @@
+/**
+ * Projet CHOUETTE
+ *
+ * ce projet est sous license libre
+ * voir LICENSE.txt pour plus de details
+ *
+ */
+package mobi.chouette.model;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.extern.log4j.Log4j;
+
+/**
+ * Chouette Company : a company providing public transport services.
+ * <p/>
+ * Neptune mapping : Company <br/>
+ * Gtfs mapping : Agency <br/>
+ */
+
+@Entity
+@Table(name = "companies")
+@NoArgsConstructor
+@ToString(exclude = { "lines" })
+@Log4j
+public class Company extends NeptuneIdentifiedObject {
+
+	private static final long serialVersionUID = -8086291270595894778L;
+
+	/**
+	 * name
+	 * 
+	 * @return The actual value
+	 */
+	@Getter
+	@Column(name = "name")
+	private String name;
+
+	/**
+	 * set name <br/>
+	 * truncated to 255 characters if too long
+	 * 
+	 * @param value
+	 *            New value
+	 */
+	public void setName(String value) {
+		name = dataBaseSizeProtectedValue(value, "name", log);
+	}
+
+	/**
+	 * short name
+	 * 
+	 * @return The actual value
+	 */
+	@Getter
+	@Column(name = "short_name")
+	private String shortName;
+
+	/**
+	 * set short name <br/>
+	 * truncated to 255 characters if too long
+	 * 
+	 * @param value
+	 *            New value
+	 */
+	public void setShortName(String value) {
+		shortName = dataBaseSizeProtectedValue(value, "shortName", log);
+	}
+
+	/**
+	 * organizational unit
+	 * 
+	 * @return The actual value
+	 */
+	@Getter
+	@Column(name = "organizational_unit")
+	private String organisationalUnit;
+
+	/**
+	 * set organizational unit <br/>
+	 * truncated to 255 characters if too long
+	 * 
+	 * @param value
+	 *            New value
+	 */
+	public void setOrganisationalUnit(String value) {
+		organisationalUnit = dataBaseSizeProtectedValue(value,
+				"organisationalUnit", log);
+	}
+
+	/**
+	 * operating department name
+	 * 
+	 * @return The actual value
+	 */
+	@Getter
+	@Column(name = "operating_department_name")
+	private String operatingDepartmentName;
+
+	/**
+	 * set operating department name <br/>
+	 * truncated to 255 characters if too long
+	 * 
+	 * @param value
+	 *            New value
+	 */
+	public void setOperatingDepartmentName(String value) {
+		operatingDepartmentName = dataBaseSizeProtectedValue(value,
+				"operatingDepartmentName", log);
+	}
+
+	/**
+	 * organization code <br/>
+	 * usually fixed by Transport Authority
+	 * 
+	 * @return The actual value
+	 */
+	@Getter
+	@Column(name = "code")
+	private String code;
+
+	/**
+	 * set organization code <br/>
+	 * truncated to 255 characters if too long
+	 * 
+	 * @param value
+	 *            New value
+	 */
+	public void setCode(String value) {
+		code = dataBaseSizeProtectedValue(value, "code", log);
+	}
+
+	/**
+	 * phone number
+	 * 
+	 * @return The actual value
+	 */
+	@Getter
+	@Column(name = "phone")
+	private String phone;
+
+	/**
+	 * set phone number <br/>
+	 * truncated to 255 characters if too long
+	 * 
+	 * @param value
+	 *            New value
+	 */
+	public void setPhone(String value) {
+		phone = dataBaseSizeProtectedValue(value, "phone", log);
+	}
+
+	/**
+	 * fax number
+	 * 
+	 * @return The actual value
+	 */
+	@Getter
+	@Column(name = "fax")
+	private String fax;
+
+	/**
+	 * set fax number <br/>
+	 * truncated to 255 characters if too long
+	 * 
+	 * @param value
+	 *            New value
+	 */
+	public void setFax(String value) {
+		fax = dataBaseSizeProtectedValue(value, "fax", log);
+	}
+
+	/**
+	 * email
+	 * 
+	 * @return The actual value
+	 */
+	@Getter
+	@Column(name = "email")
+	private String email;
+
+	/**
+	 * set email <br/>
+	 * truncated to 255 characters if too long
+	 * 
+	 * @param value
+	 *            New value
+	 */
+	public void setEmail(String value) {
+		email = dataBaseSizeProtectedValue(value, "email", log);
+	}
+
+	/**
+	 * registration number
+	 * 
+	 * @return The actual value
+	 */
+	@Getter
+	@Column(name = "registration_number", unique = true)
+	private String registrationNumber;
+
+	/**
+	 * set registration number <br/>
+	 * truncated to 255 characters if too long
+	 * 
+	 * @param value
+	 *            New value
+	 */
+	public void setRegistrationNumber(String value) {
+		registrationNumber = dataBaseSizeProtectedValue(value,
+				"registrationNumber", log);
+	}
+
+	/**
+	 * web site url
+	 * 
+	 * @return The actual value
+	 */
+	@Getter
+	@Column(name = "url")
+	private String url;
+
+	/**
+	 * set web site url <br/>
+	 * truncated to 255 characters if too long
+	 * 
+	 * @param value
+	 *            New value
+	 */
+	public void setUrl(String value) {
+		url = dataBaseSizeProtectedValue(value, "url", log);
+	}
+
+	/**
+	 * default timezone
+	 * 
+	 * @return The actual value
+	 */
+	@Getter
+	@Column(name = "time_zone")
+	private String timeZone;
+
+	/**
+	 * set default timezone <br/>
+	 * truncated to 255 characters if too long
+	 * 
+	 * @param value
+	 *            New value
+	 */
+	public void setTimeZone(String value) {
+		timeZone = dataBaseSizeProtectedValue(value, "timeZone", log);
+	}
+
+	/**
+	 * lines
+	 * 
+	 * @param lines
+	 *            New value
+	 * @return The actual value
+	 */
+	@Getter
+	@Setter
+	@OneToMany(mappedBy = "company")
+	private List<Line> lines = new ArrayList<Line>(0);
+
+}
