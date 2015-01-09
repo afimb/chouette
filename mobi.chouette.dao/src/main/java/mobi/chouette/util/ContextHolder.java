@@ -2,6 +2,7 @@ package mobi.chouette.util;
 
 import lombok.Getter;
 import lombok.Setter;
+
 public class ContextHolder {
 
 	private static final ThreadLocal<String> holder = new ThreadLocal<String>();
@@ -23,5 +24,4 @@ public class ContextHolder {
 		holder.remove();
 	}
 
-	
 }

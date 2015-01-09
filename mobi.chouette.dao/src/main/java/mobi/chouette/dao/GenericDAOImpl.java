@@ -12,7 +12,6 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.Color;
 
 @Log4j
 public abstract class GenericDAOImpl<T> implements GenericDAO<T> {

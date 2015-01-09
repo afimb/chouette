@@ -87,7 +87,7 @@ public class DefaultConnectionProvider implements
 	@Override
 	public void injectServices(ServiceRegistryImplementor registry) {
 
-		Map<?,?> settings = getSettings(registry);
+		Map<?, ?> settings = getSettings(registry);
 		String datasource = (String) settings.get(AvailableSettings.DATASOURCE);
 
 		ContextHolder.setDefaultSchema("public");
@@ -114,8 +114,8 @@ public class DefaultConnectionProvider implements
 
 	}
 
-	private Map<?,?> getSettings(ServiceRegistryImplementor registry) {
-		Map<?,?> result = registry.getService(ConfigurationService.class)
+	private Map<?, ?> getSettings(ServiceRegistryImplementor registry) {
+		Map<?, ?> result = registry.getService(ConfigurationService.class)
 				.getSettings();
 		return result;
 	}

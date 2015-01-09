@@ -16,18 +16,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.ws.rs.core.MediaType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
-
-import org.hibernate.annotations.Type;
-import org.hibernate.type.MaterializedClobType;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -35,10 +30,9 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j;
 
-
 @EqualsAndHashCode(of = { "id" })
 @Log4j
-@ToString(exclude= {"parameters", "validation"})
+@ToString(exclude = { "parameters", "validation" })
 @XmlRootElement(name = "job")
 @Entity
 @Table(name = "jobs")
@@ -74,18 +68,17 @@ public class Job implements Serializable {
 	private String type;
 
 	@XmlAttribute(name = "parameters")
-	@Column(name = "parameters", columnDefinition="TEXT")
+	@Column(name = "parameters", columnDefinition = "TEXT")
 	@Getter
 	@Setter
 	private String parameters;
 
 	@XmlAttribute(name = "validation")
-	@Column(name = "validation", columnDefinition="TEXT")
+	@Column(name = "validation", columnDefinition = "TEXT")
 	@Getter
 	@Setter
 	private String validation;
 
-	
 	@XmlAttribute(name = "filename")
 	@Column(name = "filename")
 	@Getter
@@ -103,7 +96,7 @@ public class Job implements Serializable {
 	@Column(name = "status")
 	@Getter
 	@Setter
-	private STATUS status ;
+	private STATUS status;
 
 	@XmlElement(name = "links")
 	@ElementCollection(targetClass = Link.class, fetch = FetchType.EAGER)
@@ -115,7 +108,7 @@ public class Job implements Serializable {
 	public Job() {
 		super();
 		status = STATUS.CREATED;
-		date= new Date();		
+		date = new Date();
 	}
 
 	@XmlType

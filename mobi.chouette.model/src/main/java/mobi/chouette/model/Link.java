@@ -15,12 +15,12 @@ import lombok.ToString;
 public class Link implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	public static final String GET_METHOD = "get";
 	public static final String POST_METHOD = "post";
 	public static final String PUT_METHOD = "put";
 	public static final String DELETE_METHOD = "delete";
-	
+
 	public static final String LOCATION_REL = "location";
 	public static final String CANCEL_REL = "cancel";
 	public static final String DELETE_REL = "delete";
@@ -28,29 +28,28 @@ public class Link implements java.io.Serializable {
 
 	public static final String VALIDATION_REL = "validation";
 
-
 	@Column(name = "rel")
 	@Getter
 	@Setter
-	@XmlAttribute(name="rel")
+	@XmlAttribute(name = "rel")
 	private String rel;
-	
+
 	@Column(name = "href")
 	@Getter
 	@Setter
-	@XmlAttribute(name="href")
+	@XmlAttribute(name = "href")
 	private String href;
-	
+
 	@Column(name = "type")
 	@Getter
 	@Setter
-	@XmlAttribute(name="type")
+	@XmlAttribute(name = "type")
 	private String type;
 
 	@Column(name = "method")
 	@Getter
 	@Setter
-	@XmlAttribute(name="method")
+	@XmlAttribute(name = "method")
 	private String method;
 
 }

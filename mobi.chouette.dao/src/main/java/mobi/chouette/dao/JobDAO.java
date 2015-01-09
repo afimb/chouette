@@ -46,7 +46,8 @@ public class JobDAO extends GenericDAOImpl<Job> {
 		CriteriaQuery<Job> criteria = builder.createQuery(Job.class);
 		Root<Job> root = criteria.from(type);
 		Predicate p1 = builder.equal(root.get(Job_.referential), referential);
-		Predicate p2 = builder.lessThan(root.get(Job_.status), STATUS.TERMINATED);
+		Predicate p2 = builder.lessThan(root.get(Job_.status),
+				STATUS.TERMINATED);
 		criteria.where(builder.and(p1, p2));
 		criteria.orderBy(builder.desc(root.get(Job_.status)));
 		TypedQuery<Job> query = em.createQuery(criteria);

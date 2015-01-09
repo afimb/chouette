@@ -43,10 +43,7 @@
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
 		</dependency>
-		<!-- <dependency> -->
-		<!-- <groupId>commons-pool</groupId> -->
-		<!-- <artifactId>commons-pool</artifactId> -->
-		<!-- </dependency> -->
+
 		<dependency>
 			<groupId>commons-lang</groupId>
 			<artifactId>commons-lang</artifactId>
@@ -55,13 +52,19 @@
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 		</dependency>
-		<!-- <dependency> -->
-		<!-- <groupId>commons-beanutils</groupId> -->
-		<!-- <artifactId>commons-beanutils</artifactId> -->
-		<!-- </dependency> -->
+
 		<dependency>
 			<groupId>xpp3</groupId>
 			<artifactId>xpp3</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-jts-wrapper</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.geotools</groupId>
+			<artifactId>gt-epsg-wkt</artifactId>
 		</dependency>
 
 		<!-- Modules Dependencies -->

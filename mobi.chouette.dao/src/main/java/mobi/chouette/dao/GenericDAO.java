@@ -5,9 +5,9 @@ import java.util.List;
 public interface GenericDAO<T> {
 
 	T find(Object id);
-	
+
 	T findByObjectId(String id);
-	
+
 	List<T> findAll();
 
 	List<T> find(String hql, List<Object> values);
