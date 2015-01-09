@@ -14,6 +14,10 @@
     "vehicle_journey_number_min":0,
     "vehicle_journey_number_max":0,
     "check_allowed_transport_modes":0,
+    "check_lines_in_groups":0,
+    "check_line_routes":0,
+    "check_stop_parent":0,
+    "check_connection_link_on_physical":0,
     "mode_coach": {
         "inter_stop_area_distance_min": 500,
         "inter_stop_area_distance_max": 10000,

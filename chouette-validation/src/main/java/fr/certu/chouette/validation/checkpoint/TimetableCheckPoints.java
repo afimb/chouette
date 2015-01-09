@@ -27,8 +27,8 @@ ICheckPointPlugin<Timetable>
       boolean test4_1 = (parameters.optInt(CHECK_OBJECT+OBJECT_KEY.time_table.name(),0) != 0);
       if (test4_1)
       {
-         initCheckPoint(report, L4_TIMETABLE_1, CheckPointReportItem.SEVERITY.ERROR);
-         prepareCheckPoint(report, L4_TIMETABLE_1);
+         initCheckPoint(report, L4_TIME_TABLE_1, CheckPointReportItem.SEVERITY.ERROR);
+         prepareCheckPoint(report, L4_TIME_TABLE_1);
       }
       else // no other tests for this object
       {
@@ -40,7 +40,7 @@ ICheckPointPlugin<Timetable>
 
          // 4-Timetable-1 : check columns constraints
          if (test4_1)
-            check4Generic1(report,bean,L4_TIMETABLE_1,OBJECT_KEY.time_table,parameters,context,log );
+            check4Generic1(report,bean,L4_TIME_TABLE_1,OBJECT_KEY.time_table,parameters,context,log );
 
 
       }

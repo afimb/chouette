@@ -40,6 +40,7 @@ public class ValidationStopAreas extends
    private JSONObject fullparameters;
    private StopArea bean1;
    private StopArea bean2;
+   private StopArea bean3;
    private List<StopArea> beansFor4 = new ArrayList<>();
    private INeptuneManager<StopArea> stopAreaManager ;
 
@@ -71,6 +72,11 @@ public class ValidationStopAreas extends
          bean2.setObjectId("test2:StopArea:1");
          bean2.setName("test2");
          bean2.setAreaType(ChouetteAreaEnum.BoardingPosition);
+         bean3 = new StopArea();
+         bean3.setId(id++);
+         bean3.setObjectId("test2:StopArea:3");
+         bean3.setName("test2");
+         bean3.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
    
          beansFor4.add(bean1);
          beansFor4.add(bean2);
@@ -84,52 +90,6 @@ public class ValidationStopAreas extends
    }
    
    
-   @Test(groups = { "stopArea" }, description = "4-StopArea-1 no test")
-   public void verifyTest4_1_notest() throws ChouetteException
-   {
-      // 4-StopArea-1 : check columns
-      Assert.assertNotNull(fullparameters, "no parameters for test");
-
-      PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
-
-      fullparameters.put("check_stop_area","0");
-      checkPoint.check(beansFor4, fullparameters, report, new HashMap<String, Object>());
-      report.refreshStatus();
-
-      Assert.assertFalse(report.hasItem("4-StopArea-1"), " report must not have item 4-StopArea-1");
-
-      fullparameters.put("check_stop_area","1");
-      report = new PhaseReportItem(PHASE.THREE);
-
-      checkPoint.check(beansFor4, fullparameters, report, new HashMap<String, Object>());
-      report.refreshStatus();
-
-      Assert.assertTrue(report.hasItem("4-StopArea-1"), " report must have item 4-StopArea-1");
-      Assert.assertEquals(report.getItem("4-StopArea-1").getItems().size(), 0, " checkpoint must have no detail");
-
-   }
-   
-   @Test(groups = { "stopArea" }, description = "4-StopArea-1 unicity")
-   public void verifyTest4_1_unique() throws ChouetteException
-   {
-      // 4-StopArea-1 : check columns
-      Assert.assertNotNull(fullparameters, "no parameters for test");
-
-      PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
-
-      // unique
-      JSONObject column = fullparameters.getJSONObject("stop_area").getJSONObject("objectid");
-      column.put("unique",1);
-
-      checkPoint.check(beansFor4, fullparameters, report, new HashMap<String, Object>());
-      report.refreshStatus();
-      column.put("unique",0);
-
-      DetailReportItem detail = checkReportForTest4_1(report,"4-StopArea-1",bean2.getObjectId());
-      Assert.assertEquals(detail.getArgs().get("column"),"objectid","detail must refer column");
-      Assert.assertEquals(detail.getArgs().get("value"),bean2.getObjectId().split(":")[2],"detail must refer value");
-      Assert.assertEquals(detail.getArgs().get("alternateId"),bean1.getObjectId(),"detail must refer fisrt bean");
-   }
 
    @SuppressWarnings("unchecked")
    @BeforeGroups(groups = { "stopArea" })
@@ -479,57 +439,95 @@ public class ValidationStopAreas extends
 
    }
 
-   @Test(groups = { "stopArea" }, description = "3-StopArea-6")
-   public void verifyTest3_6() throws ChouetteException
+   @Test(groups = { "stopArea" }, description = "4-StopArea-1 no test")
+   public void verifyTest4_1_notest() throws ChouetteException
    {
-      // 3-StopArea-6 : check if stopArea has country code
-
-      JSONObject parameters = null;
-      try
-      {
-         parameters = new RuleParameterSet();
-      } catch (JSONException | IOException e)
-      {
-         e.printStackTrace();
-      }
-      Assert.assertNotNull(parameters, "no parameters for test");
-
-      List<StopArea> beans = stopAreaManager.getAll(null);
-      Assert.assertFalse(beans.isEmpty(), "No data for test");
-
-      StopArea area1 = beans.get(0);
-      String svCode = area1.getCountryCode();
-      area1.setCountryCode(null);
+      // 4-StopArea-1 : check columns
+      Assert.assertNotNull(fullparameters, "no parameters for test");
 
       PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
-      stopAreaManager.validate(null, beans, parameters, report, null, true);
+
+      fullparameters.put("check_stop_area","0");
+      checkPoint.check(beansFor4, fullparameters, report, new HashMap<String, Object>());
       report.refreshStatus();
 
-      AbstractValidation.printReport(report);
+      Assert.assertFalse(report.hasItem("4-StopArea-1"), " report must not have item 4-StopArea-1");
 
-      Assert.assertEquals(report.getStatus(), Report.STATE.WARNING,
-            " report must be on level warning");
-      Assert.assertEquals(report.hasItems(), true, " report must have items");
-      boolean found = false;
-      for (ReportItem item : report.getItems())
-      {
-         CheckPointReportItem checkPointReport = (CheckPointReportItem) item;
-         if (checkPointReport.getMessageKey().equals("3-StopArea-6"))
-         {
-            found = true;
-            Assert.assertEquals(checkPointReport.getStatus(),
-                  Report.STATE.WARNING,
-                  " checkPointReport must be on level warning");
-            Assert.assertEquals(checkPointReport.hasItems(), true,
-                  " checkPointReport must have items");
-            Assert.assertEquals(checkPointReport.getItems().size(), 1,
-                  " checkPointReport must have 1 item");
+      fullparameters.put("check_stop_area","1");
+      report = new PhaseReportItem(PHASE.THREE);
 
-         }
-      }
-      Assert.assertTrue(found, "report must contain a 3-StopArea-6 checkPoint");
-      area1.setCountryCode(svCode);
+      checkPoint.check(beansFor4, fullparameters, report, new HashMap<String, Object>());
+      report.refreshStatus();
+
+      Assert.assertTrue(report.hasItem("4-StopArea-1"), " report must have item 4-StopArea-1");
+      Assert.assertEquals(report.getItem("4-StopArea-1").getItems().size(), 0, " checkpoint must have no detail");
 
    }
+   
+   @Test(groups = { "stopArea" }, description = "4-StopArea-1 unicity")
+   public void verifyTest4_1_unique() throws ChouetteException
+   {
+      // 4-StopArea-1 : check columns
+      Assert.assertNotNull(fullparameters, "no parameters for test");
+
+      PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
+
+      // unique
+      JSONObject column = fullparameters.getJSONObject("stop_area").getJSONObject("objectid");
+      column.put("unique",1);
+
+      checkPoint.check(beansFor4, fullparameters, report, new HashMap<String, Object>());
+      report.refreshStatus();
+      column.put("unique",0);
+
+      DetailReportItem detail = checkReportForTest4_1(report,"4-StopArea-1",bean2.getObjectId());
+      Assert.assertEquals(detail.getArgs().get("column"),"objectid","detail must refer column");
+      Assert.assertEquals(detail.getArgs().get("value"),bean2.getObjectId().split(":")[2],"detail must refer value");
+      Assert.assertEquals(detail.getArgs().get("alternateId"),bean1.getObjectId(),"detail must refer fisrt bean");
+   }
+
+   @Test(groups = { "StopArea" }, description = "4-StopArea-2")
+   public void verifyTest4_2() throws ChouetteException
+   {
+      // 4-StopArea-2 : check parent
+      Assert.assertNotNull(fullparameters, "no parameters for test");
+
+      PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
+      
+      bean1.setParent(bean3);
+      bean2.setParent(bean3);
+      
+      List<StopArea> list = new ArrayList<>(beansFor4);
+      list.add(bean3);
+
+      fullparameters.put("check_stop_parent","0");
+      checkPoint.check(list, fullparameters, report, new HashMap<String, Object>());
+      report.refreshStatus();
+
+      Assert.assertFalse(report.hasItem("4-StopArea-2"), " report must not have item 4-StopArea-2");
+
+      fullparameters.put("check_stop_parent","1");
+      report = new PhaseReportItem(PHASE.THREE);
+
+      checkPoint.check(list, fullparameters, report, new HashMap<String, Object>());
+      report.refreshStatus();
+      fullparameters.put("check_stop_parent","0");
+
+      Assert.assertTrue(report.hasItem("4-StopArea-2"), " report must have item 4-StopArea-2");
+      Assert.assertEquals(report.getItem("4-StopArea-2").getItems().size(), 0, " checkpoint must have no detail");
+
+      bean1.setParent(null);
+      fullparameters.put("check_stop_parent","1");
+      report = new PhaseReportItem(PHASE.THREE);
+
+      checkPoint.check(list, fullparameters, report, new HashMap<String, Object>());
+      report.refreshStatus();
+      fullparameters.put("check_stop_parent","0");
+
+      Assert.assertTrue(report.hasItem("4-StopArea-2"), " report must have item 4-StopArea-2");
+      Assert.assertEquals(report.getItem("4-StopArea-2").getItems().size(), 1, " checkpoint must have one detail");
+
+   }
+
 
 }

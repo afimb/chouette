@@ -18,6 +18,8 @@ import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.manager.INeptuneManager;
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.Line;
+import fr.certu.chouette.model.neptune.StopArea;
+import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.plugin.exchange.IImportPlugin;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
@@ -78,52 +80,6 @@ public class ValidationConnectionLinks extends AbstractValidation
    }
    
    
-   @Test(groups = { "connectionLink" }, description = "4-ConnectionLink-1 no test")
-   public void verifyTest4_1_notest() throws ChouetteException
-   {
-      // 4-ConnectionLink-1 : check columns
-      Assert.assertNotNull(fullparameters, "no parameters for test");
-
-      PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
-
-      fullparameters.put("check_connection_link","0");
-      checkPoint.check(beansFor4, fullparameters, report, new HashMap<String, Object>());
-      report.refreshStatus();
-
-      Assert.assertFalse(report.hasItem("4-ConnectionLink-1"), " report must not have item 4-ConnectionLink-1");
-
-      fullparameters.put("check_connection_link","1");
-      report = new PhaseReportItem(PHASE.THREE);
-
-      checkPoint.check(beansFor4, fullparameters, report, new HashMap<String, Object>());
-      report.refreshStatus();
-
-      Assert.assertTrue(report.hasItem("4-ConnectionLink-1"), " report must have item 4-ConnectionLink-1");
-      Assert.assertEquals(report.getItem("4-ConnectionLink-1").getItems().size(), 0, " checkpoint must have no detail");
-
-   }
-   
-   @Test(groups = { "connectionLink" }, description = "4-ConnectionLink-1 unicity")
-   public void verifyTest4_1_unique() throws ChouetteException
-   {
-      // 4-ConnectionLink-1 : check columns
-      Assert.assertNotNull(fullparameters, "no parameters for test");
-
-      PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
-
-      // unique
-      JSONObject column = fullparameters.getJSONObject("connection_link").getJSONObject("objectid");
-      column.put("unique",1);
-
-      checkPoint.check(beansFor4, fullparameters, report, new HashMap<String, Object>());
-      report.refreshStatus();
-      column.put("unique",0);
-
-      DetailReportItem detail = checkReportForTest4_1(report,"4-ConnectionLink-1",bean2.getObjectId());
-      Assert.assertEquals(detail.getArgs().get("column"),"objectid","detail must refer column");
-      Assert.assertEquals(detail.getArgs().get("value"),bean2.getObjectId().split(":")[2],"detail must refer value");
-      Assert.assertEquals(detail.getArgs().get("alternateId"),bean1.getObjectId(),"detail must refer fisrt bean");
-   }
 
 
    @SuppressWarnings("unchecked")
@@ -324,5 +280,105 @@ public class ValidationConnectionLinks extends AbstractValidation
             "report must contain a 3-ConnectionLink-3 checkPoint");
 
    }
+   
+   @Test(groups = { "connectionLink" }, description = "4-ConnectionLink-1 no test")
+   public void verifyTest4_1_notest() throws ChouetteException
+   {
+      // 4-ConnectionLink-1 : check columns
+      Assert.assertNotNull(fullparameters, "no parameters for test");
+
+      PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
+
+      fullparameters.put("check_connection_link","0");
+      checkPoint.check(beansFor4, fullparameters, report, new HashMap<String, Object>());
+      report.refreshStatus();
+
+      Assert.assertFalse(report.hasItem("4-ConnectionLink-1"), " report must not have item 4-ConnectionLink-1");
+
+      fullparameters.put("check_connection_link","1");
+      report = new PhaseReportItem(PHASE.THREE);
+
+      checkPoint.check(beansFor4, fullparameters, report, new HashMap<String, Object>());
+      report.refreshStatus();
+
+      Assert.assertTrue(report.hasItem("4-ConnectionLink-1"), " report must have item 4-ConnectionLink-1");
+      Assert.assertEquals(report.getItem("4-ConnectionLink-1").getItems().size(), 0, " checkpoint must have no detail");
+
+   }
+   
+   @Test(groups = { "connectionLink" }, description = "4-ConnectionLink-1 unicity")
+   public void verifyTest4_1_unique() throws ChouetteException
+   {
+      // 4-ConnectionLink-1 : check columns
+      Assert.assertNotNull(fullparameters, "no parameters for test");
+
+      PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
+
+      // unique
+      JSONObject column = fullparameters.getJSONObject("connection_link").getJSONObject("objectid");
+      column.put("unique",1);
+
+      checkPoint.check(beansFor4, fullparameters, report, new HashMap<String, Object>());
+      report.refreshStatus();
+      column.put("unique",0);
+
+      DetailReportItem detail = checkReportForTest4_1(report,"4-ConnectionLink-1",bean2.getObjectId());
+      Assert.assertEquals(detail.getArgs().get("column"),"objectid","detail must refer column");
+      Assert.assertEquals(detail.getArgs().get("value"),bean2.getObjectId().split(":")[2],"detail must refer value");
+      Assert.assertEquals(detail.getArgs().get("alternateId"),bean1.getObjectId(),"detail must refer fisrt bean");
+   }
+
+   @Test(groups = { "connectionLink" }, description = "4-ConnectionLink-2")
+   public void verifyTest4_2() throws ChouetteException
+   {
+      // 4-connectionLink-2 : check targets
+      Assert.assertNotNull(fullparameters, "no parameters for test");
+
+      PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
+      
+      StopArea start = new StopArea();
+      start.setId((long) 1);
+      start.setObjectId("test:StopArea:1");
+      start.setAreaType(ChouetteAreaEnum.StopPlace);      
+      StopArea end = new StopArea();
+      end.setId((long) 2);
+      end.setObjectId("test:StopArea:1");
+      end.setAreaType(ChouetteAreaEnum.Quay);      
+      bean1.setStartOfLink(start);
+      bean1.setEndOfLink(end);
+      
+      List<ConnectionLink> list = new ArrayList<>();
+      list.add(bean1);
+
+      fullparameters.put("check_connection_link_on_physical","0");
+      checkPoint.check(list, fullparameters, report, new HashMap<String, Object>());
+      report.refreshStatus();
+
+      Assert.assertFalse(report.hasItem("4-ConnectionLink-2"), " report must not have item 4-ConnectionLink-2");
+
+      fullparameters.put("check_connection_link_on_physical","1");
+      start.setAreaType(ChouetteAreaEnum.BoardingPosition);      
+      report = new PhaseReportItem(PHASE.THREE);
+
+      checkPoint.check(list, fullparameters, report, new HashMap<String, Object>());
+      report.refreshStatus();
+      fullparameters.put("check_connection_link_on_physical","0");
+
+      Assert.assertTrue(report.hasItem("4-ConnectionLink-2"), " report must have item 4-ConnectionLink-2");
+      Assert.assertEquals(report.getItem("4-ConnectionLink-2").getItems().size(), 0, " checkpoint must have no detail");
+
+      start.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
+      fullparameters.put("check_connection_link_on_physical","1");
+      report = new PhaseReportItem(PHASE.THREE);
+
+      checkPoint.check(list, fullparameters, report, new HashMap<String, Object>());
+      report.refreshStatus();
+      fullparameters.put("check_connection_link_on_physical","0");
+
+      Assert.assertTrue(report.hasItem("4-ConnectionLink-2"), " report must have item 4-ConnectionLink-2");
+      Assert.assertEquals(report.getItem("4-ConnectionLink-2").getItems().size(), 1, " checkpoint must have one detail");
+
+   }
+
 
 }

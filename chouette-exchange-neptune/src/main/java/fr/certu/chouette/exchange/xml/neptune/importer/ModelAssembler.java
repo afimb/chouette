@@ -468,6 +468,12 @@ public class ModelAssembler
          }
 
          route.setLine(line);
+         
+         if (route.getWayBackRouteId() != null)
+         {
+            Route wRoute = routesDictionary.get(route.getWayBackRouteId());
+            route.setWayBackRoute(wRoute);
+         }
       }
    }
 

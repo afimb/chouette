@@ -38,8 +38,8 @@ ICheckPointPlugin<JourneyPattern>
       boolean test4_1 = (parameters.optInt(CHECK_OBJECT+OBJECT_KEY.journey_pattern.name(),0) != 0);
       if (test4_1)
       {
-         initCheckPoint(report, L4_JOURNEYPATTERN_1, CheckPointReportItem.SEVERITY.ERROR);
-         prepareCheckPoint(report, L4_JOURNEYPATTERN_1);
+         initCheckPoint(report, L4_JOURNEY_PATTERN_1, CheckPointReportItem.SEVERITY.ERROR);
+         prepareCheckPoint(report, L4_JOURNEY_PATTERN_1);
       }
 
       // checkPoint is applicable
@@ -52,7 +52,7 @@ ICheckPointPlugin<JourneyPattern>
 
          // 4-JourneyPattern-1 : check columns constraints
          if (test4_1)
-            check4Generic1(report,jp,L4_JOURNEYPATTERN_1,OBJECT_KEY.journey_pattern,parameters,context,log );
+            check4Generic1(report,jp,L4_JOURNEY_PATTERN_1,OBJECT_KEY.journey_pattern,parameters,context,log );
 
          if (vehicleJourneyCheckPoints != null)
             vehicleJourneyCheckPoints.check(jp.getVehicleJourneys(),

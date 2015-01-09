@@ -47,11 +47,9 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
       // 3-VehicleJourney-2 : check speed progression
       // 3-VehicleJourney-3 : check if two journeys progress similarly
       // 3-VehicleJourney-4 : check if each journey has minimum one timetable
-      // 3-VehicleJourney-5 : (optional) check operational code
-      // 3-VehicleJourney-6 : (optional) check transport modes
-      boolean test3_6 = parameters.optInt(CHECK_ALLOWED_TRANSPORT_MODES,0) == 1;
-      boolean test3_5 = parameters.optInt(VEHICLE_JOURNEY_NUMBER_MIN,0) != 0 || parameters.optInt(VEHICLE_JOURNEY_NUMBER_MAX,0) != 0;
+      // 4-VehicleJourney-2 : (optional) check transport modes
       boolean test4_1 = (parameters.optInt(CHECK_OBJECT+OBJECT_KEY.vehicle_journey.name(),0) != 0);
+      boolean test4_2 = parameters.optInt(CHECK_ALLOWED_TRANSPORT_MODES,0) == 1;
       
       initCheckPoint(report, VEHICLE_JOURNEY_1,
             CheckPointReportItem.SEVERITY.WARNING);
@@ -68,21 +66,16 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
       prepareCheckPoint(report, VEHICLE_JOURNEY_4);
       
       // 
-      if (test3_5)
+      if (test4_2)
       {
-         initCheckPoint(report, VEHICLE_JOURNEY_5, CheckPointReportItem.SEVERITY.WARNING);
-         prepareCheckPoint(report, VEHICLE_JOURNEY_5);
-      }
-      if (test3_6)
-      {
-         initCheckPoint(report, VEHICLE_JOURNEY_6, CheckPointReportItem.SEVERITY.WARNING);
-         prepareCheckPoint(report, VEHICLE_JOURNEY_6);
+         initCheckPoint(report, L4_VEHICLE_JOURNEY_2, CheckPointReportItem.SEVERITY.ERROR);
+         prepareCheckPoint(report, L4_VEHICLE_JOURNEY_2);
       }
 
       if (test4_1)
       {
-         initCheckPoint(report, L4_VEHICLEJOURNEY_1, CheckPointReportItem.SEVERITY.ERROR);
-         prepareCheckPoint(report, L4_VEHICLEJOURNEY_1);
+         initCheckPoint(report, L4_VEHICLE_JOURNEY_1, CheckPointReportItem.SEVERITY.ERROR);
+         prepareCheckPoint(report, L4_VEHICLE_JOURNEY_1);
       }
 
       for (VehicleJourney vj : beans)
@@ -107,15 +100,13 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
          // 3-VehicleJourney-4 : check if each journey has minimum one
          // timetable
          check3VehicleJourney4(report, vj);
+        
+         // 4-VehicleJourney-1 : (optionnal) check columns constraints
+         check4Generic1(report,vj,L4_VEHICLE_JOURNEY_1,OBJECT_KEY.vehicle_journey,parameters,context,log );
 
-         // 3-VehicleJourney-5 : (optionnal) check operational code
-         if (test3_5) check3VehicleJourney5(report, vj, parameters, context);
+         // 4-VehicleJourney-2 : (optionnal) check transport modes
+         if (test4_2) check4VehicleJourney2(report, vj, parameters);
          
-         // 3-VehicleJourney-6 : (optionnal) check transport modes
-         if (test3_6) check3VehicleJourney6(report, vj, parameters);
-         
-         // 4-Line-1 : check columns constraints
-         check4Generic1(report,vj,L4_VEHICLEJOURNEY_1,OBJECT_KEY.vehicle_journey,parameters,context,log );
 
       }
    }
@@ -296,11 +287,11 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
          List<VehicleJourneyAtStop> vjas1 = vj1.getVehicleJourneyAtStops();
          if (vjas1.size() != vjas0.size())
          {
-            // FATAL ERROR :
+            // FATAL ERROR : TODO 
             log.error("vehicleJourney " + vj1.getObjectId()
                   + " has different vehicleJourneyAtStop count " + vjas1.size()
                   + " than vehicleJourney " + vj0.getObjectId());
-            continue;
+            break;
          }
          TransportModeNameEnum transportMode1 = getTransportMode(vj1);
          if (transportMode1.equals(transportMode0))
@@ -351,69 +342,10 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 
    }
 
-   @SuppressWarnings("unchecked")
-   private void check3VehicleJourney5(PhaseReportItem report, VehicleJourney vj, JSONObject parameters, Map<String,Object> context)
-   {
-      // 3-VehicleJourney-5 : (optional) check operational code
-      long minValue = parameters.optLong(VEHICLE_JOURNEY_NUMBER_MIN,0);
-      long maxValue = parameters.optLong(VEHICLE_JOURNEY_NUMBER_MAX,0);
-      Map<Long,String> values = (Map<Long,String>) context.get(VEHICLE_JOURNEY_5);
-      boolean firstCall = false;
-      if (values == null)
-      {
-         values = new HashMap<>();
-         context.put(VEHICLE_JOURNEY_5, values);
-         firstCall = true;
-      }
-      if (minValue >= maxValue) 
-      {
-         if (firstCall) log.error(VEHICLE_JOURNEY_5+ " min and max values are invalid: test ignored ");
-         return;
-      }
-      
-      Long number = vj.getNumber();
-      if (number == null) 
-      {
-         // failure encountered : number not present, add vj
-         ReportLocation location = new ReportLocation(vj);
-         Map<String, Object> map = new HashMap<String, Object>();
-         DetailReportItem detail = new DetailReportItem(VEHICLE_JOURNEY_5+"-1",
-               vj.getObjectId(), Report.STATE.WARNING, location, map);
-         addValidationError(report, VEHICLE_JOURNEY_5, detail);
-         return;
-      }
-      
-      if (number < minValue || number > maxValue)
-      {
-         // failure encountered : number out of bounds, add vj
-         ReportLocation location = new ReportLocation(vj);
-         Map<String, Object> map = new HashMap<String, Object>();
-         map.put("number", number);
-         DetailReportItem detail = new DetailReportItem(VEHICLE_JOURNEY_5+"-2",
-               vj.getObjectId(), Report.STATE.WARNING, location, map);
-         addValidationError(report, VEHICLE_JOURNEY_5, detail);
-         return;
-      }
-      String key = values.get(number);
-      if (key != null)
-      {
-         // failure encountered : number in conflict, add vj
-         ReportLocation location = new ReportLocation(vj);
-         Map<String, Object> map = new HashMap<String, Object>();
-         map.put("number", number);
-         map.put("vehicleJourneyId", key);
-         DetailReportItem detail = new DetailReportItem(VEHICLE_JOURNEY_5+"-3",
-               vj.getObjectId(), Report.STATE.WARNING, location, map);
-         addValidationError(report, VEHICLE_JOURNEY_5, detail);
-         return;
-      }
-      // affect number to vj in context
-      values.put(number, vj.getObjectId());
-   }
 
-   private void check3VehicleJourney6(PhaseReportItem report, VehicleJourney vj, JSONObject parameters)
+   private void check4VehicleJourney2(PhaseReportItem report, VehicleJourney vj, JSONObject parameters)
    {
-      // 3-VehicleJourney-6 : (optional) check transport modes
+      // 4-VehicleJourney-2 : (optional) check transport modes
       if (vj.getTransportMode() == null) return;
       if (getModeParameter(parameters, vj.getTransportMode().name(), ALLOWED_TRANSPORT,log) != 1)
       {
@@ -421,9 +353,9 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
          ReportLocation location = new ReportLocation(vj);
          Map<String, Object> map = new HashMap<String, Object>();
          map.put("transportMode", vj.getTransportMode().name());
-         DetailReportItem detail = new DetailReportItem(VEHICLE_JOURNEY_6,
+         DetailReportItem detail = new DetailReportItem(L4_VEHICLE_JOURNEY_2,
                vj.getObjectId(), Report.STATE.WARNING, location, map);
-         addValidationError(report, VEHICLE_JOURNEY_6, detail);
+         addValidationError(report, L4_VEHICLE_JOURNEY_2, detail);
       }
    }
 

@@ -293,8 +293,8 @@ public class ValidationTimetables extends AbstractValidation
    protected void checkReportForTest4_1(PhaseReportItem report, String key)
    {
       DetailReportItem detail = checkReportForTest4_1(report,key,bean2.getObjectId());
-      Assert.assertEquals(detail.getArgs().get("column"),"comment","detail must refer column");
-      Assert.assertEquals(detail.getArgs().get("value"),bean2.getComment(),"detail must refer value");
+      Assert.assertEquals(detail.getArgs().get("column"),"comment","detail must refer comment");
+      Assert.assertEquals(detail.getArgs().get("value"),bean2.getName(),"detail must refer value");
    }
 
 }   

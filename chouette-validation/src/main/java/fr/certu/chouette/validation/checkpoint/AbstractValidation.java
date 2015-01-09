@@ -58,7 +58,6 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject>
    protected static final String STOP_AREA_3 = "3-StopArea-3";
    protected static final String STOP_AREA_4 = "3-StopArea-4";
    protected static final String STOP_AREA_5 = "3-StopArea-5";
-   protected static final String STOP_AREA_6 = "3-StopArea-6";
    protected static final String ACCESS_POINT_1 = "3-AccessPoint-1";
    protected static final String ACCESS_POINT_2 = "3-AccessPoint-2";
    protected static final String ACCESS_POINT_3 = "3-AccessPoint-3";
@@ -70,7 +69,6 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject>
    protected static final String ACCESS_LINK_3 = "3-AccessLink-3";
    protected static final String LINE_1 = "3-Line-1";
    protected static final String LINE_2 = "3-Line-2";
-   protected static final String LINE_3 = "3-Line-3";
    protected static final String ROUTE_1 = "3-Route-1";
    protected static final String ROUTE_2 = "3-Route-2";
    protected static final String ROUTE_3 = "3-Route-3";
@@ -85,23 +83,27 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject>
    protected static final String VEHICLE_JOURNEY_2 = "3-VehicleJourney-2";
    protected static final String VEHICLE_JOURNEY_3 = "3-VehicleJourney-3";
    protected static final String VEHICLE_JOURNEY_4 = "3-VehicleJourney-4";
-   protected static final String VEHICLE_JOURNEY_5 = "3-VehicleJourney-5";
-   protected static final String VEHICLE_JOURNEY_6 = "3-VehicleJourney-6";
    protected static final String FACILITY_1 = "3-Facility-1";
    protected static final String FACILITY_2 = "3-Facility-2";
 
    protected static final String L4_NETWORK_1 = "4-Network-1";
    protected static final String L4_COMPANY_1 = "4-Company-1";
-   protected static final String L4_GROUPOFLINE_1 = "4-GroupOfLine-1";
-   protected static final String L4_STOPAREA_1 = "4-StopArea-1";
-   protected static final String L4_ACCESSPOINT_1 = "4-AccessPoint-1";
-   protected static final String L4_ACCESSLINK_1 = "4-AccessLink-1";
-   protected static final String L4_CONNECTIONLINK_1 = "4-ConnectionLink-1";
-   protected static final String L4_TIMETABLE_1 = "4-Timetable-1";
+   protected static final String L4_GROUP_OF_LINE_1 = "4-GroupOfLine-1";
+   protected static final String L4_STOP_AREA_1 = "4-StopArea-1";
+   protected static final String L4_STOP_AREA_2 = "4-StopArea-2";
+   protected static final String L4_ACCESS_POINT_1 = "4-AccessPoint-1";
+   protected static final String L4_ACCESS_LINK_1 = "4-AccessLink-1";
+   protected static final String L4_CONNECTION_LINK_1 = "4-ConnectionLink-1";
+   protected static final String L4_CONNECTION_LINK_2 = "4-ConnectionLink-2";
+   protected static final String L4_TIME_TABLE_1 = "4-Timetable-1";
    protected static final String L4_LINE_1 = "4-Line-1";
+   protected static final String L4_LINE_2 = "4-Line-2";
+   protected static final String L4_LINE_3 = "4-Line-3";
+   protected static final String L4_LINE_4 = "4-Line-4";
    protected static final String L4_ROUTE_1 = "4-Route-1";
-   protected static final String L4_JOURNEYPATTERN_1 = "4-JourneyPattern-1";
-   protected static final String L4_VEHICLEJOURNEY_1 = "4-VehicleJourney-1";
+   protected static final String L4_JOURNEY_PATTERN_1 = "4-JourneyPattern-1";
+   protected static final String L4_VEHICLE_JOURNEY_1 = "4-VehicleJourney-1";
+   protected static final String L4_VEHICLE_JOURNEY_2 = "4-VehicleJourney-2";
 
    // parameter keys
    protected static final String STOP_AREAS_AREA = "stop_areas_area";
@@ -122,10 +124,14 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject>
    protected static final String SPEED_MAX = "speed_max";
    protected static final String SPEED_MIN = "speed_min";
    protected static final String INTER_STOP_DURATION_VARIATION_MAX = "inter_stop_duration_variation_max";
+
+   // level 4 parameters
    protected static final String CHECK_ALLOWED_TRANSPORT_MODES = "check_allowed_transport_modes";
+   protected static final String CHECK_LINES_IN_GROUPS = "check_lines_in_groups";
+   protected static final String CHECK_LINE_ROUTES = "check_line_routes";
+   protected static final String CHECK_STOP_PARENT = "check_stop_parent";
+   protected static final String CHECK_CONNECTION_LINK_ON_PHYSICAL = "check_connection_link_on_physical" ;
    protected static final String ALLOWED_TRANSPORT = "allowed_transport";
-   protected static final String VEHICLE_JOURNEY_NUMBER_MIN = "vehicle_journey_number_min";
-   protected static final String VEHICLE_JOURNEY_NUMBER_MAX = "vehicle_journey_number_max";
    protected static final String CHECK_OBJECT = "check_";
    protected static final String UNIQUE = "unique";
    protected static final String PATTERN = "pattern";
@@ -426,9 +432,18 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject>
          {
             Object objVal = getter.invoke(object);
             String value = "";
-            if (objVal != null) value = objVal.toString();
+            if (objVal != null) 
+            {
+               if (objVal instanceof Time)
+               {
+                  // use value in seconds
+                  Time t = (Time) objVal;
+                  value = Long.toString(t.getTime() / 1000);
+               }
+               value = objVal.toString();
+            }
             // if objectId : check only third part
-            if (column.equalsIgnoreCase("objectId"))
+            if (column.equalsIgnoreCase("objectId") && !value.isEmpty())
             {
                value = value.split(":")[2];
             }
@@ -480,7 +495,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject>
       long maxSize = Long.parseLong(colParam.optString(MAX_SIZE,"0"));
       if (maxSize != 0)
       {
-         if (objVal instanceof Number || pattern_opt == PATTERN_OPTION.num)
+         if (objVal instanceof Number || objVal instanceof Time || pattern_opt == PATTERN_OPTION.num)
          {
             // check numeric value
             long val = Long.parseLong(value);
@@ -550,7 +565,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject>
          return;
       }
 
-      if (objVal instanceof Number || pattern_opt == PATTERN_OPTION.num)
+      if (objVal instanceof Number || objVal instanceof Time || pattern_opt == PATTERN_OPTION.num)
       {
          // check numeric value
          long val = Long.parseLong(value);

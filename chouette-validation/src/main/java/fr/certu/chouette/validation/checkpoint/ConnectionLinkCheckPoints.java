@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.StopArea;
+import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.validation.ICheckPointPlugin;
 import fr.certu.chouette.plugin.validation.report.CheckPointReportItem;
@@ -48,8 +49,14 @@ public class ConnectionLinkCheckPoints extends AbstractValidation<ConnectionLink
       boolean test4_1 = (parameters.optInt(CHECK_OBJECT+OBJECT_KEY.connection_link.name(),0) != 0);
       if (test4_1)
       {
-         initCheckPoint(report, L4_CONNECTIONLINK_1, CheckPointReportItem.SEVERITY.ERROR);
-         prepareCheckPoint(report, L4_CONNECTIONLINK_1);
+         initCheckPoint(report, L4_CONNECTION_LINK_1, CheckPointReportItem.SEVERITY.ERROR);
+         prepareCheckPoint(report, L4_CONNECTION_LINK_1);
+      }
+      boolean test4_2 = parameters.optInt(CHECK_CONNECTION_LINK_ON_PHYSICAL,0) == 1;
+      if (test4_2)
+      {
+         initCheckPoint(report, L4_CONNECTION_LINK_2, CheckPointReportItem.SEVERITY.ERROR);
+         prepareCheckPoint(report, L4_CONNECTION_LINK_2);
       }
       for (int i = 0; i < beans.size(); i++)
       {
@@ -58,10 +65,14 @@ public class ConnectionLinkCheckPoints extends AbstractValidation<ConnectionLink
          check3ConnectionLink3(report, connectionLink, parameters);
          // 4-ConnectionLink-1 : check columns constraints
          if (test4_1)
-         check4Generic1(report,connectionLink,L4_CONNECTIONLINK_1,OBJECT_KEY.connection_link,parameters,context,log );
+         check4Generic1(report,connectionLink,L4_CONNECTION_LINK_1,OBJECT_KEY.connection_link,parameters,context,log );
+         // 4-ConnectionLink-2 : check linked stop areas 
+         if (test4_2)
+            check4ConnectionLink2(report, connectionLink);
 
       }
    }
+
 
    private void check3ConnectionLink1_2(PhaseReportItem report,
          ConnectionLink connectionLink, JSONObject parameters)
@@ -156,6 +167,30 @@ public class ConnectionLinkCheckPoints extends AbstractValidation<ConnectionLink
             connectionLink.getMobilityRestrictedTravellerDuration(), distance,
             maxMobilitySpeed, CONNECTION_LINK_3, "_4");
 
+   }
+   private void check4ConnectionLink2(PhaseReportItem report, ConnectionLink connectionLink)
+   {
+      StopArea start = connectionLink.getStartOfLink();
+      StopArea end = connectionLink.getEndOfLink();
+      if (start == null | end == null)
+         return; 
+      if (start.getAreaType().ordinal() > ChouetteAreaEnum.BoardingPosition.ordinal() || 
+            end.getAreaType().ordinal() > ChouetteAreaEnum.BoardingPosition.ordinal())
+      {
+         ReportLocation location = new ReportLocation(connectionLink);
+
+         Map<String, Object> map = new HashMap<String, Object>();
+         map.put("name", connectionLink.getName());
+         map.put("startId", start.getObjectId());
+         map.put("startName", start.getName());
+         map.put("endId", end.getObjectId());
+         map.put("endName", end.getName());
+
+         DetailReportItem detail = new DetailReportItem(L4_CONNECTION_LINK_2,
+               connectionLink.getObjectId(), Report.STATE.ERROR, location,
+               map);
+         addValidationError(report, L4_CONNECTION_LINK_2, detail);
+      }      
    }
 
 }

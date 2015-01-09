@@ -48,8 +48,8 @@ ICheckPointPlugin<AccessLink>
       boolean test4_1 = (parameters.optInt(CHECK_OBJECT+OBJECT_KEY.access_link.name(),0) != 0);
       if (test4_1)
       {
-         initCheckPoint(report, L4_ACCESSLINK_1, CheckPointReportItem.SEVERITY.ERROR);
-         prepareCheckPoint(report, L4_ACCESSLINK_1);
+         initCheckPoint(report, L4_ACCESS_LINK_1, CheckPointReportItem.SEVERITY.ERROR);
+         prepareCheckPoint(report, L4_ACCESS_LINK_1);
       }
 
 
@@ -61,7 +61,7 @@ ICheckPointPlugin<AccessLink>
 
          // 4-AccessLink-1 : check columns constraints
          if (test4_1)
-            check4Generic1(report,accessLink,L4_ACCESSLINK_1,OBJECT_KEY.access_link,parameters,context,log );
+            check4Generic1(report,accessLink,L4_ACCESS_LINK_1,OBJECT_KEY.access_link,parameters,context,log );
 
 
       }

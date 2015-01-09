@@ -16,7 +16,6 @@ import fr.certu.chouette.plugin.validation.report.CheckPointReportItem;
 import fr.certu.chouette.plugin.validation.report.DetailReportItem;
 import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 import fr.certu.chouette.plugin.validation.report.ReportLocation;
-import fr.certu.chouette.validation.checkpoint.AbstractValidation.OBJECT_KEY;
 @Log4j
 public class AccessPointCheckPoints extends AbstractValidation<AccessPoint> implements
 ICheckPointPlugin<AccessPoint>
@@ -45,8 +44,8 @@ ICheckPointPlugin<AccessPoint>
       boolean test4_1 = (parameters.optInt(CHECK_OBJECT+OBJECT_KEY.access_point.name(),0) != 0);
       if (test4_1)
       {
-         initCheckPoint(report, L4_ACCESSPOINT_1, CheckPointReportItem.SEVERITY.ERROR);
-         prepareCheckPoint(report, L4_ACCESSPOINT_1);
+         initCheckPoint(report, L4_ACCESS_POINT_1, CheckPointReportItem.SEVERITY.ERROR);
+         prepareCheckPoint(report, L4_ACCESS_POINT_1);
       }
 
       for (int i = 0; i < beans.size(); i++)
@@ -56,7 +55,7 @@ ICheckPointPlugin<AccessPoint>
          check3AccessPoint3(report, accessPoint, parameters);
          // 4-AccessPoint-1 : check columns constraints
          if (test4_1)
-            check4Generic1(report,accessPoint,L4_ACCESSPOINT_1,OBJECT_KEY.access_point,parameters,context,log );
+            check4Generic1(report,accessPoint,L4_ACCESS_POINT_1,OBJECT_KEY.access_point,parameters,context,log );
          for (int j = i + 1; j < beans.size(); j++)
          {
             check3AccessPoint2(report, i, accessPoint, j, beans.get(j),

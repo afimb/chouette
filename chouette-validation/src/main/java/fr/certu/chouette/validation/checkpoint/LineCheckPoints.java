@@ -20,7 +20,7 @@ import fr.certu.chouette.plugin.validation.report.ReportLocation;
 
 @Log4j
 public class LineCheckPoints extends AbstractValidation<Line> implements
-      ICheckPointPlugin<Line>
+ICheckPointPlugin<Line>
 {
 
    @Setter
@@ -37,23 +37,38 @@ public class LineCheckPoints extends AbstractValidation<Line> implements
 
       // 3-Line-1 : check if two lines have same name
       // 3-Line-2 : check if line has routes
-      // 3-Line-3 : check if line has valid transport mode
-      boolean test3_3 = parameters.optInt(CHECK_ALLOWED_TRANSPORT_MODES,0) == 1;
-      
+      // 4-Line-2 : check if line has valid transport mode
+      // 4-Line-3 : check if line has one group and only one
+      // 4-Line-4 : check if line has one route or one pair (inbound/outbound)
+
+      boolean test4_1 = (parameters.optInt(CHECK_OBJECT+OBJECT_KEY.line.name(),0) != 0);
+      boolean test4_2 = parameters.optInt(CHECK_ALLOWED_TRANSPORT_MODES,0) == 1;
+      boolean test4_3 = parameters.optInt(CHECK_LINES_IN_GROUPS,0) == 1;
+      boolean test4_4 = parameters.optInt(CHECK_LINE_ROUTES,0) == 1;
+
       if (beans.size() > 0)
       {
          // checkPoint is applicable
          prepareCheckPoint(report, LINE_2);
-         if (test3_3)
-         {
-            initCheckPoint(report, LINE_3, CheckPointReportItem.SEVERITY.WARNING);
-            prepareCheckPoint(report, LINE_3);
-         }
-         boolean test4_1 = (parameters.optInt(CHECK_OBJECT+OBJECT_KEY.line.name(),0) != 0);
          if (test4_1)
          {
             initCheckPoint(report, L4_LINE_1, CheckPointReportItem.SEVERITY.ERROR);
             prepareCheckPoint(report, L4_LINE_1);
+         }
+         if (test4_2)
+         {
+            initCheckPoint(report, L4_LINE_2, CheckPointReportItem.SEVERITY.ERROR);
+            prepareCheckPoint(report, L4_LINE_2);
+         }
+         if (test4_3)
+         {
+            initCheckPoint(report, L4_LINE_3, CheckPointReportItem.SEVERITY.ERROR);
+            prepareCheckPoint(report, L4_LINE_3);
+         }
+         if (test4_4)
+         {
+            initCheckPoint(report, L4_LINE_4, CheckPointReportItem.SEVERITY.ERROR);
+            prepareCheckPoint(report, L4_LINE_4);
          }
 
          // en cas d'erreur, on reporte autant de detail que de lignes en
@@ -65,12 +80,16 @@ public class LineCheckPoints extends AbstractValidation<Line> implements
             check3Line1(beans, report, i, line1);
             // 3-Line-2 : check if line has routes
             check3Line2(report, line1);
-            // 3-Line-3 : check if line has valid transportMode
-            if (test3_3) check3Line3(report, line1, parameters);
-            
             // 4-Line-1 : check columns constraints
             if (test4_1)
-            check4Generic1(report,line1,L4_LINE_1,OBJECT_KEY.line,parameters,context,log );
+               check4Generic1(report,line1,L4_LINE_1,OBJECT_KEY.line,parameters,context,log );
+            // 4-Line-2 : check if line has valid transportMode
+            if (test4_2) check4Line2(report, line1, parameters);
+            // 4-Line-3 : check if line has one group and only one
+            if (test4_3) check4Line3(report, line1, parameters);
+            // 4-Line-4 : check if line has one route or one pair (inbound/outbound)
+            if (test4_4) check4Line4(report, line1, parameters);
+
 
             // forward on routes
             List<Route> routes = line1.getRoutes();
@@ -156,8 +175,8 @@ public class LineCheckPoints extends AbstractValidation<Line> implements
       }
    }
 
-   
-   private void check3Line3(PhaseReportItem report, Line line1, JSONObject parameters)
+
+   private void check4Line2(PhaseReportItem report, Line line1, JSONObject parameters)
    {
       if (getModeParameter(parameters, line1.getTransportModeName().name(), ALLOWED_TRANSPORT,log) != 1)
       {
@@ -167,11 +186,67 @@ public class LineCheckPoints extends AbstractValidation<Line> implements
          map.put("name", line1.getName());
          map.put("number", line1.getNumber());
          map.put("transportMode", line1.getTransportModeName().name());
-         DetailReportItem detail = new DetailReportItem(LINE_3,
-               line1.getObjectId(), Report.STATE.WARNING, location, map);
-         addValidationError(report, LINE_3, detail);
+         DetailReportItem detail = new DetailReportItem(L4_LINE_2,
+               line1.getObjectId(), Report.STATE.ERROR, location, map);
+         addValidationError(report, L4_LINE_2, detail);
       }
-      
+
+   }
+   private void check4Line3(PhaseReportItem report, Line line1, JSONObject parameters)
+   {
+      if (line1.getGroupOfLines().size() == 0)
+      {
+         // failure encountered, add line 1
+         ReportLocation location = new ReportLocation(line1);
+         Map<String, Object> map = new HashMap<String, Object>();
+         map.put("name", line1.getName());
+         map.put("number", line1.getNumber());
+         DetailReportItem detail = new DetailReportItem(L4_LINE_3+"_1",
+               line1.getObjectId(), Report.STATE.ERROR, location, map);
+         addValidationError(report, L4_LINE_3, detail);
+      }
+      else if (line1.getGroupOfLines().size() > 1)
+      {
+         // failure encountered, add line 1
+         ReportLocation location = new ReportLocation(line1);
+         Map<String, Object> map = new HashMap<String, Object>();
+         map.put("name", line1.getName());
+         map.put("number", line1.getNumber());
+         DetailReportItem detail = new DetailReportItem(L4_LINE_3+"_2",
+               line1.getObjectId(), Report.STATE.ERROR, location, map);
+         addValidationError(report, L4_LINE_3, detail);
+      }
+
+
+   }
+   private void check4Line4(PhaseReportItem report, Line line1, JSONObject parameters)
+   {
+      if (line1.getRoutes().size() == 1) return;
+      if (line1.getRoutes().size() == 2) 
+      {
+         Route r1 = line1.getRoutes().get(0);
+         Route r2 = line1.getRoutes().get(1);
+         if (r1.getWayBackRoute() == r2 && r2.getWayBackRoute() == r1) return;
+      }
+      // failure encountered, add line 1
+      ReportLocation location = new ReportLocation(line1);
+      Map<String, Object> map = new HashMap<String, Object>();
+      map.put("name", line1.getName());
+      map.put("number", line1.getNumber());
+      map.put("routeCount", line1.getRoutes().size());
+      if (line1.getRoutes().size() == 0)
+      {
+         DetailReportItem detail = new DetailReportItem(L4_LINE_4+"_1",
+               line1.getObjectId(), Report.STATE.ERROR, location, map);
+         addValidationError(report, L4_LINE_4, detail);
+      }
+      else
+      {
+         DetailReportItem detail = new DetailReportItem(L4_LINE_4+"_2",
+               line1.getObjectId(), Report.STATE.ERROR, location, map);
+         addValidationError(report, L4_LINE_4, detail);
+
+      }
    }
 
 }

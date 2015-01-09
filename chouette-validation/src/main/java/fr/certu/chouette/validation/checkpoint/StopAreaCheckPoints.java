@@ -42,27 +42,31 @@ ICheckPointPlugin<StopArea>
       // 3-StopArea-2 : check distance of stop areas with different name
       // 3-StopArea-3 : check multiple occurrence of a stopArea
       // 3-StopArea-4 : check localization in a region
-      // 3-StopArea-5 : check distance with parents
-      // 3-StopArea-6 : check insee_code presence
+      // 3-StopArea-5 : check distance with parent
       initCheckPoint(report, STOP_AREA_1, CheckPointReportItem.SEVERITY.ERROR);
       initCheckPoint(report, STOP_AREA_2, CheckPointReportItem.SEVERITY.WARNING);
       initCheckPoint(report, STOP_AREA_3, CheckPointReportItem.SEVERITY.WARNING);
       initCheckPoint(report, STOP_AREA_4, CheckPointReportItem.SEVERITY.WARNING);
       initCheckPoint(report, STOP_AREA_5, CheckPointReportItem.SEVERITY.WARNING);
-      initCheckPoint(report, STOP_AREA_6, CheckPointReportItem.SEVERITY.WARNING);
       prepareCheckPoint(report, STOP_AREA_1);
       prepareCheckPoint(report, STOP_AREA_2);
       prepareCheckPoint(report, STOP_AREA_3);
       prepareCheckPoint(report, STOP_AREA_4);
       prepareCheckPoint(report, STOP_AREA_5);
-      prepareCheckPoint(report, STOP_AREA_6);
 
       boolean test4_1 = (parameters.optInt(CHECK_OBJECT+OBJECT_KEY.stop_area.name(),0) != 0);
       if (test4_1)
       {
-         initCheckPoint(report, L4_STOPAREA_1, CheckPointReportItem.SEVERITY.ERROR);
-         prepareCheckPoint(report, L4_STOPAREA_1);
+         initCheckPoint(report, L4_STOP_AREA_1, CheckPointReportItem.SEVERITY.ERROR);
+         prepareCheckPoint(report, L4_STOP_AREA_1);
       }
+      boolean test4_2 = parameters.optInt(CHECK_STOP_PARENT,0) == 1;
+      if (test4_2)
+      {
+         initCheckPoint(report, L4_STOP_AREA_2, CheckPointReportItem.SEVERITY.ERROR);
+         prepareCheckPoint(report, L4_STOP_AREA_2);
+      }
+
       Polygon enveloppe = getEnveloppe(parameters);
 
       for (int i = 0; i < beans.size(); i++)
@@ -74,10 +78,12 @@ ICheckPointPlugin<StopArea>
          check3StopArea1(report, stopArea);
          check3StopArea4(report, stopArea, enveloppe);
          check3StopArea5(report, stopArea, parameters);
-         check3StopArea6(report, stopArea);
-         // 4-Line-1 : check columns constraints
+         // 4-StopArea-1 : check columns constraints
          if (test4_1)
-            check4Generic1(report,stopArea,L4_STOPAREA_1,OBJECT_KEY.stop_area,parameters,context,log );
+            check4Generic1(report,stopArea,L4_STOP_AREA_1,OBJECT_KEY.stop_area,parameters,context,log );
+         // 4-StopArea-2 : check parent
+         if (test4_2)
+            check4StopArea2(report, stopArea);
 
          for (int j = i + 1; j < beans.size(); j++)
          {
@@ -87,6 +93,7 @@ ICheckPointPlugin<StopArea>
 
       }
    }
+
 
    private void check3StopArea1(PhaseReportItem report, StopArea stopArea)
    {
@@ -223,19 +230,23 @@ ICheckPointPlugin<StopArea>
       }
    }
 
-   private void check3StopArea6(PhaseReportItem report, StopArea stopArea)
+   private void check4StopArea2(PhaseReportItem report, StopArea stopArea)
    {
-      // 3-StopArea-6 : check if all non ITL stopArea has insse_code
-      if (isEmpty(stopArea.getCountryCode()))
+      // 4-StopArea-2 : check if all physical stopArea has parent
+      if (stopArea.getAreaType().equals(ChouetteAreaEnum.BoardingPosition) || stopArea.getAreaType().equals(ChouetteAreaEnum.Quay))
       {
-         ReportLocation location = new ReportLocation(stopArea);
-         Map<String, Object> map = new HashMap<String, Object>();
-         map.put("name", stopArea.getName());
-         DetailReportItem detail = new DetailReportItem(STOP_AREA_6,
-               stopArea.getObjectId(), Report.STATE.WARNING, location, map);
-         addValidationError(report, STOP_AREA_6, detail);
+         if (stopArea.getParent() == null)
+         {
+            ReportLocation location = new ReportLocation(stopArea);
+            Map<String, Object> map = new HashMap<String, Object>();
+            map.put("name", stopArea.getName());
+            DetailReportItem detail = new DetailReportItem(L4_STOP_AREA_2,
+                  stopArea.getObjectId(), Report.STATE.ERROR, location, map);
+            addValidationError(report, L4_STOP_AREA_2, detail);
+         }
       }
    }
+
 
    private Collection<Line> getLines(StopArea area)
    {

@@ -753,6 +753,15 @@ public class Timetable extends NeptuneIdentifiedObject
    }
    
    /* (non-Javadoc)
+    * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#setName(java.lang.String)
+    */
+   @Override
+   public void setName(String name)
+   {
+      setComment(name);
+   }
+   
+   /* (non-Javadoc)
     * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#toURL()
     */
    @Override

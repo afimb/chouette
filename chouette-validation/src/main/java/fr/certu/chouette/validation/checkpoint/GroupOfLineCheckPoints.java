@@ -27,8 +27,8 @@ ICheckPointPlugin<GroupOfLine>
       boolean test4_1 = (parameters.optInt(CHECK_OBJECT+OBJECT_KEY.group_of_line.name(),0) != 0);
       if (test4_1)
       {
-         initCheckPoint(report, L4_GROUPOFLINE_1, CheckPointReportItem.SEVERITY.ERROR);
-         prepareCheckPoint(report, L4_GROUPOFLINE_1);
+         initCheckPoint(report, L4_GROUP_OF_LINE_1, CheckPointReportItem.SEVERITY.ERROR);
+         prepareCheckPoint(report, L4_GROUP_OF_LINE_1);
       }
       else // no other tests for this object
       {
@@ -40,7 +40,7 @@ ICheckPointPlugin<GroupOfLine>
 
          // 4-GroupOfLine-1 : check columns constraints
          if (test4_1)
-            check4Generic1(report,bean,L4_GROUPOFLINE_1,OBJECT_KEY.group_of_line,parameters,context,log );
+            check4Generic1(report,bean,L4_GROUP_OF_LINE_1,OBJECT_KEY.group_of_line,parameters,context,log );
 
 
       }
