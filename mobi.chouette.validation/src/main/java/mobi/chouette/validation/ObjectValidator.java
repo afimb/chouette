@@ -5,8 +5,9 @@ import mobi.chouette.common.Context;
 public class ObjectValidator implements Validator<Object> {
 
 	@Override
-	public boolean validate(Context context, Object object) {
-		return false;
+	public ValidationConstraints validate(Context context, Object target,
+			Object... params) throws ValidationException {
+		return new ValidationConstraints();
 	}
 
 	public static class DefaultValidatorFactory extends ValidatorFactory {
@@ -28,5 +29,7 @@ public class ObjectValidator implements Validator<Object> {
 		ValidatorFactory.factories
 				.put(ObjectValidator.class.getName(), factory);
 	}
+
+
 
 }

@@ -10,9 +10,8 @@ public interface Color {
 	public static final String CYAN = (char) 27 + "[1;36m";
 	public static final String WHITE = (char) 27 + "[1;37m";
 	public static final String NORMAL = (char) 27 + "[0;39m";
+	public static final String SUCCESS = GREEN;
+	public static final String FAILURE = RED;
+	public static final String WARNING = YELLOW;
 
-	public static final String SETCOLOR_SUCCESS = GREEN;
-	public static final String SETCOLOR_FAILURE = RED;
-	public static final String SETCOLOR_WARNING = YELLOW;
-	public static final String SETCOLOR_NORMAL = NORMAL;
 }

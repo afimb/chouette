@@ -145,8 +145,8 @@ public class Scheduler {
 		public void taskAborted(Future<?> future,
 				ManagedExecutorService executor, Object task,
 				Throwable exception) {
-			log.info(Color.SETCOLOR_FAILURE + "[DSU] task aborted : " + task
-					+ Color.SETCOLOR_NORMAL);
+			log.info(Color.FAILURE + "[DSU] task aborted : " + task
+					+ Color.NORMAL);
 			Task target = (Task) task;
 			Scheduler.this.schedule(target.getJob().getReferential());
 		}
@@ -154,8 +154,8 @@ public class Scheduler {
 		@Override
 		public void taskDone(Future<?> future, ManagedExecutorService executor,
 				Object task, Throwable exception) {
-			log.info(Color.SETCOLOR_SUCCESS + "[DSU] task done : " + task
-					+ Color.SETCOLOR_NORMAL);
+			log.info(Color.SUCCESS + "[DSU] task done : " + task
+					+ Color.NORMAL);
 			Task target = (Task) task;
 			Scheduler.this.schedule(target.getJob().getReferential());
 		}
@@ -163,16 +163,16 @@ public class Scheduler {
 		@Override
 		public void taskStarting(Future<?> future,
 				ManagedExecutorService executor, Object task) {
-			log.info(Color.SETCOLOR_SUCCESS + "[DSU] task starting : " + task
-					+ Color.SETCOLOR_NORMAL);
+			log.info(Color.SUCCESS + "[DSU] task starting : " + task
+					+ Color.NORMAL);
 
 		}
 
 		@Override
 		public void taskSubmitted(Future<?> future,
 				ManagedExecutorService executor, Object task) {
-			log.info(Color.SETCOLOR_SUCCESS + "[DSU] task submitted : " + task
-					+ Color.SETCOLOR_NORMAL);
+			log.info(Color.SUCCESS + "[DSU] task submitted : " + task
+					+ Color.NORMAL);
 		}
 
 	}

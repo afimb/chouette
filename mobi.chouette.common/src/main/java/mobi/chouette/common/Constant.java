@@ -1,4 +1,4 @@
-package mobi.chouette.common.chain;
+package mobi.chouette.common;
 
 public interface Constant {
 	

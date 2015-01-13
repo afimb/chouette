@@ -4,6 +4,7 @@ import mobi.chouette.common.Context;
 
 public interface Validator<T> {
 
-	boolean validate(Context context, T object);
+	ValidationConstraints validate(Context context, T target, Object... params)
+			throws ValidationException;
 
 }

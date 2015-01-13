@@ -19,6 +19,11 @@
 		</dependency>
 
 		<!-- Others Dependencies -->
+		<dependency>
+			<groupId>org.jboss.spec.javax.ejb</groupId>
+			<artifactId>jboss-ejb-api_3.2_spec</artifactId>
+			<scope>provided</scope>
+		</dependency>
 
 		<!-- Modules -->
 		<dependency>

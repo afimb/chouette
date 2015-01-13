@@ -23,6 +23,8 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.core.CoreExceptionCode;
 import mobi.chouette.core.CoreRuntimeException;
 import mobi.chouette.model.type.ChouetteAreaEnum;
+import mobi.chouette.model.type.DayTypeEnum;
+import mobi.chouette.model.type.UserNeedEnum;
 import mobi.chouette.model.util.ObjectIdTypes;
 
 /**
@@ -58,7 +60,7 @@ import mobi.chouette.model.util.ObjectIdTypes;
 @Table(name = "stop_areas")
 @NoArgsConstructor
 @Log4j
-public class StopArea extends NeptuneLocalizedObject implements ObjectIdTypes{
+public class StopArea extends NeptuneLocalizedObject implements ObjectIdTypes {
 	private static final long serialVersionUID = 4548672479038099240L;
 
 	/**
@@ -275,10 +277,29 @@ public class StopArea extends NeptuneLocalizedObject implements ObjectIdTypes{
 	 *            New value
 	 * @return The actual value
 	 */
-	@Getter
-	@Setter
+
 	@Column(name = "int_user_needs")
 	private Integer intUserNeeds = 0;
+
+	public List<UserNeedEnum> getUserNeeds() {
+		List<UserNeedEnum> result = new ArrayList<UserNeedEnum>();
+		for (UserNeedEnum userNeed : UserNeedEnum.values()) {
+			int mask = 1 << userNeed.ordinal();
+			if ((this.intUserNeeds & mask) == mask) {
+				result.add(userNeed);
+			}
+		}
+		return result;
+	}
+
+	public void setUserNeeds(List<UserNeedEnum> userNeeds) {
+		int value = 0;
+		for (UserNeedEnum userNeed : userNeeds) {
+			int mask = 1 << userNeed.ordinal();
+			value |= mask;
+		}
+		this.intUserNeeds = value;
+	}
 
 	/**
 	 * stop area parent<br/>
@@ -421,112 +442,114 @@ public class StopArea extends NeptuneLocalizedObject implements ObjectIdTypes{
 			CascadeType.MERGE })
 	private List<AccessPoint> accessPoints = new ArrayList<AccessPoint>(0);
 
-	/**
-	 * add a child StopArea if not already present
-	 * 
-	 * @param containedStopArea
-	 */
-	public void addContainedStopArea(StopArea containedStopArea) {
-		if (containedStopAreas == null)
-			containedStopAreas = new ArrayList<StopArea>();
-		if (areaType.equals(ChouetteAreaEnum.BoardingPosition)
-				|| areaType.equals(ChouetteAreaEnum.Quay)) {
-			// boarding positions or quays can't contains stop areas
-			throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE,
-					areaType.toString(), STOPAREA_KEY, "containedStopAreas");
-		}
-		if (areaType.equals(ChouetteAreaEnum.CommercialStopPoint)) {
-			// commercial stops can contains only boarding positions or quays
-			if (!containedStopArea.getAreaType().equals(
-					ChouetteAreaEnum.BoardingPosition)
-					&& !containedStopArea.getAreaType().equals(
-							ChouetteAreaEnum.Quay)) {
-				throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE,
-						areaType.toString(), containedStopArea.getAreaType()
-								.toString(), "containedStopAreas");
-			}
-		} else if (areaType.equals(ChouetteAreaEnum.StopPlace)) {
-			// stop places can contains only stop places or commercial stops
-			if (!containedStopArea.getAreaType().equals(
-					ChouetteAreaEnum.StopPlace)
-					&& !containedStopArea.getAreaType().equals(
-							ChouetteAreaEnum.CommercialStopPoint)) {
-				throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE,
-						areaType.toString(), containedStopArea.getAreaType()
-								.toString(), "containedStopAreas");
-			}
-		} else if (areaType.equals(ChouetteAreaEnum.ITL)) {
-			// restriction constraints can't contains restriction constraints
-			if (containedStopArea.getAreaType().equals(ChouetteAreaEnum.ITL)) {
-				throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE,
-						areaType.toString(), containedStopArea.getAreaType()
-								.toString(), "containedStopAreas");
-			}
-			// ITL relationship are stored in routingConstraintAreas
-			if (!routingConstraintAreas.contains(containedStopArea))
-				routingConstraintAreas.add(containedStopArea);
-			return;
-		}
-		if (!containedStopAreas.contains(containedStopArea)) {
-			containedStopAreas.add(containedStopArea);
-			containedStopArea.setParent(this);
-		}
-	}
 
-	/**
-	 * remove a child StopArea
-	 * 
-	 * @param containedStopArea
-	 */
-	public void removeContainedStopArea(StopArea containedStopArea) {
-		if (areaType.equals(ChouetteAreaEnum.ITL)) {
-			if (routingConstraintAreas == null)
-				routingConstraintAreas = new ArrayList<StopArea>();
-			if (routingConstraintAreas.contains(containedStopArea))
-				routingConstraintAreas.remove(containedStopArea);
+	 
+//	/**
+//	 * add a child StopArea if not already present
+//	 * 
+//	 * @param containedStopArea
+//	 */
+//	public void addContainedStopArea(StopArea containedStopArea) {
+//		if (containedStopAreas == null)
+//			containedStopAreas = new ArrayList<StopArea>();
+//		if (areaType.equals(ChouetteAreaEnum.BoardingPosition)
+//				|| areaType.equals(ChouetteAreaEnum.Quay)) {
+//			// boarding positions or quays can't contains stop areas
+//			throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE,
+//					areaType.toString(), STOPAREA_KEY, "containedStopAreas");
+//		}
+//		if (areaType.equals(ChouetteAreaEnum.CommercialStopPoint)) {
+//			// commercial stops can contains only boarding positions or quays
+//			if (!containedStopArea.getAreaType().equals(
+//					ChouetteAreaEnum.BoardingPosition)
+//					&& !containedStopArea.getAreaType().equals(
+//							ChouetteAreaEnum.Quay)) {
+//				throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE,
+//						areaType.toString(), containedStopArea.getAreaType()
+//								.toString(), "containedStopAreas");
+//			}
+//		} else if (areaType.equals(ChouetteAreaEnum.StopPlace)) {
+//			// stop places can contains only stop places or commercial stops
+//			if (!containedStopArea.getAreaType().equals(
+//					ChouetteAreaEnum.StopPlace)
+//					&& !containedStopArea.getAreaType().equals(
+//							ChouetteAreaEnum.CommercialStopPoint)) {
+//				throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE,
+//						areaType.toString(), containedStopArea.getAreaType()
+//								.toString(), "containedStopAreas");
+//			}
+//		} else if (areaType.equals(ChouetteAreaEnum.ITL)) {
+//			// restriction constraints can't contains restriction constraints
+//			if (containedStopArea.getAreaType().equals(ChouetteAreaEnum.ITL)) {
+//				throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE,
+//						areaType.toString(), containedStopArea.getAreaType()
+//								.toString(), "containedStopAreas");
+//			}
+//			// ITL relationship are stored in routingConstraintAreas
+//			if (!routingConstraintAreas.contains(containedStopArea))
+//				routingConstraintAreas.add(containedStopArea);
+//			return;
+//		}
+//		if (!containedStopAreas.contains(containedStopArea)) {
+//			containedStopAreas.add(containedStopArea);
+//			containedStopArea.setParent(this);
+//		}
+//	}
 
-		} else {
-			if (containedStopAreas == null)
-				containedStopAreas = new ArrayList<StopArea>();
-			if (containedStopAreas.contains(containedStopArea)) {
-				containedStopAreas.remove(containedStopArea);
-				containedStopArea.setParent(null);
-			}
-		}
-	}
+//	/**
+//	 * remove a child StopArea
+//	 * 
+//	 * @param containedStopArea
+//	 */
+//	public void removeContainedStopArea(StopArea containedStopArea) {
+//		if (areaType.equals(ChouetteAreaEnum.ITL)) {
+//			if (routingConstraintAreas == null)
+//				routingConstraintAreas = new ArrayList<StopArea>();
+//			if (routingConstraintAreas.contains(containedStopArea))
+//				routingConstraintAreas.remove(containedStopArea);
+//
+//		} else {
+//			if (containedStopAreas == null)
+//				containedStopAreas = new ArrayList<StopArea>();
+//			if (containedStopAreas.contains(containedStopArea)) {
+//				containedStopAreas.remove(containedStopArea);
+//				containedStopArea.setParent(null);
+//			}
+//		}
+//	}
 
-	/**
-	 * add a child StopPoint if not already present
-	 * 
-	 * @param containedStopPoint
-	 */
-	public void addContainedStopPoint(StopPoint containedStopPoint) {
-		if (containedStopPoints == null)
-			containedStopPoints = new ArrayList<StopPoint>();
-		if (!areaType.equals(ChouetteAreaEnum.BoardingPosition)
-				&& !areaType.equals(ChouetteAreaEnum.Quay)) {
-			// only boarding positions and quays can contains stop points
-			throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE,
-					areaType.toString(), STOPPOINT_KEY, "containedStopPoints");
-		}
-		if (containedStopPoint == null
-				|| containedStopPoints.contains(containedStopPoint))
-			return;
-		containedStopPoints.add(containedStopPoint);
-		containedStopPoint.setContainedInStopArea(this);
-	}
+//	/**
+//	 * add a child StopPoint if not already present
+//	 * 
+//	 * @param containedStopPoint
+//	 */
+//	public void addContainedStopPoint(StopPoint containedStopPoint) {
+//		if (containedStopPoints == null)
+//			containedStopPoints = new ArrayList<StopPoint>();
+//		if (!areaType.equals(ChouetteAreaEnum.BoardingPosition)
+//				&& !areaType.equals(ChouetteAreaEnum.Quay)) {
+//			// only boarding positions and quays can contains stop points
+//			throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE,
+//					areaType.toString(), STOPPOINT_KEY, "containedStopPoints");
+//		}
+//		if (containedStopPoint == null
+//				|| containedStopPoints.contains(containedStopPoint))
+//			return;
+//		containedStopPoints.add(containedStopPoint);
+//		containedStopPoint.setContainedInStopArea(this);
+//	}
 
-	/**
-	 * remove a child StopPoint
-	 * 
-	 * @param containedStopPoint
-	 */
-	public void removeContainedStopPoint(StopPoint containedStopPoint) {
-		if (containedStopPoints == null)
-			containedStopPoints = new ArrayList<StopPoint>();
-		if (containedStopPoints.contains(containedStopPoint))
-			containedStopPoints.remove(containedStopPoint);
-	}
+//	/**
+//	 * remove a child StopPoint
+//	 * 
+//	 * @param containedStopPoint
+//	 */
+//	public void removeContainedStopPoint(StopPoint containedStopPoint) {
+//		if (containedStopPoints == null)
+//			containedStopPoints = new ArrayList<StopPoint>();
+//		if (containedStopPoints.contains(containedStopPoint))
+//			containedStopPoints.remove(containedStopPoint);
+//	}
 
 	/**
 	 * add an accessLink if not already present
