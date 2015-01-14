@@ -37,7 +37,6 @@ public class PTNetworkParser implements Parser, Constant {
 				network.setCreationTime(creationTime);
 			} else if (xpp.getName().equals("creatorId")) {
 				network.setCreatorId(NeptuneUtils.getText(xpp.nextText()));
-
 			} else if (xpp.getName().equals("versionDate")) {
 				Date versionDate = NeptuneUtils.getSQLDate(xpp.nextText());
 				network.setVersionDate(versionDate);

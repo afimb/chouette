@@ -52,8 +52,7 @@ public class NeptuneSAXParser implements Command, Constant {
 		Validator validator = schema.newValidator();
 		try {
 			validator.validate(file);
-			log.info(Color.SUCCESS + "[DSU] " + monitor.stop()
-					+ Color.NORMAL);
+			log.info(Color.SUCCESS + "[DSU] " + monitor.stop() + Color.NORMAL);
 		} catch (IOException | SAXException e) {
 			log.error(e);
 			monitor.stop();

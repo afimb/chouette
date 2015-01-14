@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.neptune.parser;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -18,7 +19,7 @@ import mobi.chouette.model.type.UserNeedEnum;
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
-public class ChouettePTNetworkParser implements Parser, Constant {
+public class ChouetteAreaParser implements Parser, Constant {
 	private static final String CHILD_TAG = "ChouetteArea";
 
 	@Override
@@ -55,16 +56,8 @@ public class ChouettePTNetworkParser implements Parser, Constant {
 					} else if (xpp.getName().equals("creatorId")) {
 						stopArea.setCreatorId(NeptuneUtils.getText(xpp
 								.nextText()));
-
 					} else if (xpp.getName().equals("name")) {
 						stopArea.setName(NeptuneUtils.getText(xpp.nextText()));
-					} else if (xpp.getName().equals("contains")) {
-						contains.add(NeptuneUtils.getText(xpp.nextText()));
-					} else if (xpp.getName().equals("centroidOfArea")) {
-						String key = stopArea.getObjectId();
-						String value = NeptuneUtils.getText(xpp.nextText());
-						map.put(key, value);
-						inverse.put(value, key);
 					} else if (xpp.getName().equals("comment")) {
 						stopArea.setComment(NeptuneUtils.getText(xpp.nextText()));
 					} else if (xpp.getName().equals("StopAreaExtension")) {
@@ -145,49 +138,90 @@ public class ChouettePTNetworkParser implements Parser, Constant {
 								XPPUtil.skipSubTree(log, xpp);
 							}
 						}
+					} else if (xpp.getName().equals("contains")) {
+						contains.add(NeptuneUtils.getText(xpp.nextText()));
+					} else if (xpp.getName().equals("centroidOfArea")) {
+						String key = stopArea.getObjectId();
+						String value = NeptuneUtils.getText(xpp.nextText());
+						map.put(key, value);
+						inverse.put(value, key);
+
 					} else {
 						XPPUtil.skipSubTree(log, xpp);
 					}
 				}
 
 			} else if (xpp.getName().equals("AreaCentroid")) {
-				StopArea stopArea = null;
-				if (xpp.getName().equals("objectId")) {
-					String objectId = inverse.get(NeptuneUtils.getText(xpp
-							.nextText()));
-					stopArea = ObjectFactory.getStopArea(referential, objectId);
-				} else if (xpp.getName().equals("longitude")) {
-					stopArea.setLongitude(NeptuneUtils.getBigDecimal(xpp
-							.nextText()));
-				} else if (xpp.getName().equals("latitude")) {
-					stopArea.setLatitude(NeptuneUtils.getBigDecimal(xpp
-							.nextText()));
-				} else if (xpp.getName().equals("longLatType")) {
-					stopArea.setLongLatType(NeptuneUtils.getEnum(
-							LongLatTypeEnum.class, xpp.nextText()));
-				} else if (xpp.getName().equals("address")) {
 
-				} else if (xpp.getName().equals("containedIn")) {
-					String objectId = NeptuneUtils.getText(xpp.nextText());
+				while (xpp.nextTag() == XmlPullParser.START_TAG) {
 
-				} else if (xpp.getName().equals("name")) {
-					stopArea.setName(NeptuneUtils.getText(xpp.nextText()));
-				} else if (xpp.getName().equals("comment")) {
-					stopArea.setComment(NeptuneUtils.getText(xpp.nextText()));
-				} else {
-					XPPUtil.skipSubTree(log, xpp);
+					StopArea stopArea = null;
+					if (xpp.getName().equals("objectId")) {
+						String objectId = inverse.get(NeptuneUtils.getText(xpp
+								.nextText()));
+						stopArea = ObjectFactory.getStopArea(referential,
+								objectId);
+					} else if (xpp.getName().equals("name")) {
+						stopArea.setName(NeptuneUtils.getText(xpp.nextText()));
+					} else if (xpp.getName().equals("comment")) {
+						stopArea.setComment(NeptuneUtils.getText(xpp.nextText()));
+					} else if (xpp.getName().equals("longLatType")) {
+						stopArea.setLongLatType(NeptuneUtils.getEnum(
+								LongLatTypeEnum.class, xpp.nextText()));
+					} else if (xpp.getName().equals("latitude")) {
+						stopArea.setLatitude(NeptuneUtils.getBigDecimal(xpp
+								.nextText()));
+					} else if (xpp.getName().equals("longitude")) {
+						stopArea.setLongitude(NeptuneUtils.getBigDecimal(xpp
+								.nextText()));
+					} else if (xpp.getName().equals("containedIn")) {
+						String objectId = NeptuneUtils.getText(xpp.nextText());
+					} else if (xpp.getName().equals("address")) {
+
+						while (xpp.nextTag() == XmlPullParser.START_TAG) {
+							if (xpp.getName().equals("countryCode")) {
+								stopArea.setCountryCode(NeptuneUtils
+										.getText(xpp.nextText()));
+							} else if (xpp.getName().equals("streetName")) {
+								stopArea.setStreetName(NeptuneUtils.getText(xpp
+										.nextText()));
+							} else {
+								XPPUtil.skipSubTree(log, xpp);
+							}
+						}
+					} else if (xpp.getName().equals("projectedPoint")) {
+
+						while (xpp.nextTag() == XmlPullParser.START_TAG) {
+							if (xpp.getName().equals("X")) {
+								BigDecimal value = NeptuneUtils
+										.getBigDecimal(xpp.nextText());
+								stopArea.setX(value);
+							} else if (xpp.getName().equals("Y")) {
+								BigDecimal value = NeptuneUtils
+										.getBigDecimal(xpp.nextText());
+								stopArea.setY(value);
+							} else if (xpp.getName().equals("projectionType")) {
+								String value = NeptuneUtils.getText(xpp
+										.nextText());
+								stopArea.setProjectionType(value);
+							} else {
+								XPPUtil.skipSubTree(log, xpp);
+							}
+						}
+					} else {
+						XPPUtil.skipSubTree(log, xpp);
+					}
 				}
 			} else {
 				XPPUtil.skipSubTree(log, xpp);
 			}
 		}
-
 	}
 
 	static {
-		ParserFactory.register(ChouettePTNetworkParser.class.getName(),
+		ParserFactory.register(ChouetteAreaParser.class.getName(),
 				new ParserFactory() {
-					private ChouettePTNetworkParser instance = new ChouettePTNetworkParser();
+					private ChouetteAreaParser instance = new ChouetteAreaParser();
 
 					@Override
 					protected Parser create() {

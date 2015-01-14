@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import mobi.chouette.model.AccessLink;
+import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.GroupOfLine;
@@ -23,6 +25,14 @@ import mobi.chouette.model.VehicleJourney;
 @ToString()
 public class Referential implements java.io.Serializable {
 	private static final long serialVersionUID = 1L;
+
+	@Getter
+	@Setter
+	private Map<String, AccessLink> accessLink = new HashMap<String, AccessLink>();
+
+	@Getter
+	@Setter
+	private Map<String, AccessPoint> accessPoint = new HashMap<String, AccessPoint>();
 
 	@Getter
 	@Setter

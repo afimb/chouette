@@ -2,6 +2,8 @@ package mobi.chouette.model;
 
 import java.math.BigDecimal;
 import java.sql.Time;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -18,6 +20,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.type.ConnectionLinkTypeEnum;
+import mobi.chouette.model.type.UserNeedEnum;
 
 /**
  * Chouette ConnectionLink : relation between 2 StopAreas
@@ -219,10 +222,28 @@ public class ConnectionLink extends NeptuneIdentifiedObject {
 	 *            New value
 	 * @return The actual value
 	 */
-	@Getter
-	@Setter
 	@Column(name = "int_user_needs")
 	private Integer intUserNeeds = 0;
+
+	public List<UserNeedEnum> getUserNeeds() {
+		List<UserNeedEnum> result = new ArrayList<UserNeedEnum>();
+		for (UserNeedEnum userNeed : UserNeedEnum.values()) {
+			int mask = 1 << userNeed.ordinal();
+			if ((this.intUserNeeds & mask) == mask) {
+				result.add(userNeed);
+			}
+		}
+		return result;
+	}
+
+	public void setUserNeeds(List<UserNeedEnum> userNeeds) {
+		int value = 0;
+		for (UserNeedEnum userNeed : userNeeds) {
+			int mask = 1 << userNeed.ordinal();
+			value |= mask;
+		}
+		this.intUserNeeds = value;
+	}
 
 	/**
 	 * first stop area connected to link

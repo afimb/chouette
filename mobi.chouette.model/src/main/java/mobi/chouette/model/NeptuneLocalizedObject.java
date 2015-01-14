@@ -227,9 +227,6 @@ public abstract class NeptuneLocalizedObject extends NeptuneIdentifiedObject {
 	private boolean notEmptyString(String data) {
 		return data != null && !data.isEmpty();
 	}
-
-	
-
 	
 	/**
 	 * project latitude and longitude on x and y if not already set<br/>

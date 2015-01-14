@@ -164,7 +164,7 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes{
 	@Setter
 	@Enumerated(EnumType.STRING)
 	@Column(name = "transport_mode_name")
-	private TransportModeNameEnum transportModeName;
+	private TransportModeNameEnum transportModeName = TransportModeNameEnum.Other;
 
 	/**
 	 * mobility restriction indicator (such as wheel chairs) <br/>
@@ -199,11 +199,29 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes{
 	 *            New value
 	 * @return The actual value
 	 */
-	@Getter
-	@Setter
 	@Column(name = "int_user_needs")
 	private Integer intUserNeeds = 0;
 
+	public List<UserNeedEnum> getUserNeeds() {
+		List<UserNeedEnum> result = new ArrayList<UserNeedEnum>();
+		for (UserNeedEnum userNeed : UserNeedEnum.values()) {
+			int mask = 1 << userNeed.ordinal();
+			if ((this.intUserNeeds & mask) == mask) {
+				result.add(userNeed);
+			}
+		}
+		return result;
+	}
+
+	public void setUserNeeds(List<UserNeedEnum> userNeeds) {
+		int value = 0;
+		for (UserNeedEnum userNeed : userNeeds) {
+			int mask = 1 << userNeed.ordinal();
+			value |= mask;
+		}
+		this.intUserNeeds = value;
+	}
+	
 	/**
 	 * web site url
 	 * 

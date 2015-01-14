@@ -18,7 +18,7 @@ public class CompanyParser implements Parser, Constant {
 
 		XmlPullParser xpp = (XmlPullParser) context.get(XPP);
 		Referential referential = (Referential) context.get(REFERENTIAL);
-		
+
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
 
 		Company company = null;
@@ -35,7 +35,7 @@ public class CompanyParser implements Parser, Constant {
 				company.setCreationTime(creationTime);
 			} else if (xpp.getName().equals("creatorId")) {
 				company.setCreatorId(NeptuneUtils.getText(xpp.nextText()));
-				
+
 			} else if (xpp.getName().equals("name")) {
 				company.setName(NeptuneUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("shortName")) {
