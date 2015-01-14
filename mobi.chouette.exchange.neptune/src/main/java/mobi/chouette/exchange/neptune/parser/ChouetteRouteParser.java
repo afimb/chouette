@@ -10,7 +10,7 @@ import mobi.chouette.model.Company;
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
-public class CompanyParser implements Parser, Constant {
+public class ChouetteRouteParser implements Parser, Constant {
 	private static final String CHILD_TAG = "PTNetwork";
 
 	@Override
@@ -72,9 +72,9 @@ public class CompanyParser implements Parser, Constant {
 	}
 
 	static {
-		ParserFactory.register(CompanyParser.class.getName(),
+		ParserFactory.register(ChouetteRouteParser.class.getName(),
 				new ParserFactory() {
-					private CompanyParser instance = new CompanyParser();
+					private ChouetteRouteParser instance = new ChouetteRouteParser();
 
 					@Override
 					protected Parser create() {

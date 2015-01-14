@@ -1,4 +1,4 @@
-package mobi.chouette.model;
+package mobi.chouette.api.model;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

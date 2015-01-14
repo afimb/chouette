@@ -9,13 +9,13 @@ import javax.naming.InitialContext;
 import javax.ws.rs.core.MediaType;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.api.model.Job;
+import mobi.chouette.api.model.Link;
+import mobi.chouette.api.model.Job.STATUS;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.JobDAO;
-import mobi.chouette.model.Job;
-import mobi.chouette.model.Job.STATUS;
-import mobi.chouette.model.Link;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;

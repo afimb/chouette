@@ -11,8 +11,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import mobi.chouette.model.Job;
-import mobi.chouette.model.Job.STATUS;
+import mobi.chouette.api.model.Job;
+import mobi.chouette.api.model.Job.STATUS;
 import mobi.chouette.model.Job_;
 
 @Stateless

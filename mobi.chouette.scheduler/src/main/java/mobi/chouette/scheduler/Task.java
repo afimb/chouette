@@ -11,11 +11,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.api.model.Job;
+import mobi.chouette.api.model.Job.STATUS;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.model.Job;
-import mobi.chouette.model.Job.STATUS;
 import mobi.chouette.util.ContextHolder;
 
 @Log4j

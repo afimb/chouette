@@ -5,15 +5,13 @@ import java.util.Date;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
-import mobi.chouette.model.GroupOfLine;
-import mobi.chouette.model.Line;
+import mobi.chouette.model.StopPoint;
 
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
-public class GroupOfLineParser implements Parser, Constant {
-
-	private static final String CHILD_TAG = "GroupOfLine";
+public class StopPointParser implements Parser, Constant {
+	private static final String CHILD_TAG = "StopPoint";
 
 	@Override
 	public void parse(Context context) throws Exception {
@@ -23,29 +21,22 @@ public class GroupOfLineParser implements Parser, Constant {
 
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
 
-		GroupOfLine groupOfLine = null;
+		StopPoint stopPoint = null;
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 
 			if (xpp.getName().equals("objectId")) {
 				String objectId = NeptuneUtils.getText(xpp.nextText());
-				groupOfLine = ObjectFactory.getGroupOfLine(referential,
-						objectId);
+				stopPoint = ObjectFactory.getStopPoint(referential, objectId);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = NeptuneUtils.getInt(xpp.nextText());
-				groupOfLine.setObjectVersion(version);
+				stopPoint.setObjectVersion(version);
 			} else if (xpp.getName().equals("creationTime")) {
 				Date creationTime = NeptuneUtils.getSQLDateTime(xpp.nextText());
-				groupOfLine.setCreationTime(creationTime);
+				stopPoint.setCreationTime(creationTime);
 			} else if (xpp.getName().equals("creatorId")) {
-				groupOfLine.setCreatorId(NeptuneUtils.getText(xpp.nextText()));
+				stopPoint.setCreatorId(NeptuneUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("name")) {
-				groupOfLine.setName(NeptuneUtils.getText(xpp.nextText()));
-			} else if (xpp.getName().equals("comment")) {
-				groupOfLine.setComment(NeptuneUtils.getText(xpp.nextText()));
-			} else if (xpp.getName().equals("lineId")) {
-				String objectId = NeptuneUtils.getText(xpp.nextText());
-				Line line = ObjectFactory.getLine(referential, objectId);
-				groupOfLine.addLine(line);
+				stopPoint.setName(NeptuneUtils.getText(xpp.nextText()));
 			} else {
 				XPPUtil.skipSubTree(log, xpp);
 			}
@@ -53,9 +44,9 @@ public class GroupOfLineParser implements Parser, Constant {
 	}
 
 	static {
-		ParserFactory.register(GroupOfLineParser.class.getName(),
+		ParserFactory.register(StopPointParser.class.getName(),
 				new ParserFactory() {
-					private GroupOfLineParser instance = new GroupOfLineParser();
+					private StopPointParser instance = new StopPointParser();
 
 					@Override
 					protected Parser create() {
