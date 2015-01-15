@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.neptune.parser;
+package mobi.chouette.model.util;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,6 +14,7 @@ import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
+import mobi.chouette.model.PTLink;
 import mobi.chouette.model.PTNetwork;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
@@ -33,6 +34,16 @@ public class Referential implements java.io.Serializable {
 	@Getter
 	@Setter
 	private Map<String, AccessPoint> accessPoint = new HashMap<String, AccessPoint>();
+
+	@Getter
+	@Setter
+	private Map<String, PTLink> ptLink = new HashMap<String, PTLink>();
+
+	@Getter
+	@Setter
+	private Map<String, Timetable> timetable = new HashMap<String, Timetable>();
+
+	/* ------------------ */
 
 	@Getter
 	@Setter
@@ -77,5 +88,10 @@ public class Referential implements java.io.Serializable {
 	@Getter
 	@Setter
 	private Map<String, Timetable> timetables = new HashMap<String, Timetable>();
+	
+	
+	void clear(){
+		// TODO DSU clear
+	}
 
 }

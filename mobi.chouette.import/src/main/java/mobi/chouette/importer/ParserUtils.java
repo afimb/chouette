@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.neptune.parser;
+package mobi.chouette.importer;
 
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -17,7 +17,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import lombok.extern.log4j.Log4j;
 
 @Log4j
-public class NeptuneUtils {
+public class ParserUtils {
 
 	private static DatatypeFactory factory = null;
 

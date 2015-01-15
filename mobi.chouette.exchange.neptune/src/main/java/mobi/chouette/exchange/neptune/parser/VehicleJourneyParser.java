@@ -9,16 +9,15 @@ import mobi.chouette.importer.ParserUtils;
 import mobi.chouette.importer.Parser;
 import mobi.chouette.importer.ParserFactory;
 import mobi.chouette.importer.XPPUtil;
-import mobi.chouette.model.StopArea;
-import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
-public class StopPointParser implements Parser, Constant {
-	private static final String CHILD_TAG = "StopPoint";
+public class VehicleJourneyParser implements Parser, Constant {
+	private static final String CHILD_TAG = "VehicleJourney";
 
 	@Override
 	public void parse(Context context) throws Exception {
@@ -30,33 +29,24 @@ public class StopPointParser implements Parser, Constant {
 		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
 		context.put(LINE_NUMBER, xpp.getLineNumber());
 
-		StopPoint stopPoint = null;
+		VehicleJourney vehicleJourney = null;
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 
 			if (xpp.getName().equals("objectId")) {
 				String objectId = ParserUtils.getText(xpp.nextText());
-				stopPoint = ObjectFactory.getStopPoint(referential, objectId);
+				vehicleJourney = ObjectFactory.getVehicleJourney(referential,
+						objectId);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
-				stopPoint.setObjectVersion(version);
+				vehicleJourney.setObjectVersion(version);
 			} else if (xpp.getName().equals("creationTime")) {
 				Date creationTime = ParserUtils.getSQLDateTime(xpp.nextText());
-				stopPoint.setCreationTime(creationTime);
+				vehicleJourney.setCreationTime(creationTime);
 			} else if (xpp.getName().equals("creatorId")) {
-				stopPoint.setCreatorId(ParserUtils.getText(xpp.nextText()));
+				vehicleJourney
+						.setCreatorId(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("name")) {
-				stopPoint.setName(ParserUtils.getText(xpp.nextText()));
-			} else if (xpp.getName().equals("containedIn")) {
-				String objectId = ParserUtils.getText(xpp.nextText());
-				StopArea stopArea = ObjectFactory.getStopArea(referential,
-						objectId);
-				stopPoint.setContainedInStopArea(stopArea);
-			} else if (xpp.getName().equals("lineIdShortcut")) {
-				String objectId = ParserUtils.getText(xpp.nextText());
-				// TODO lineIdShortcut
-			} else if (xpp.getName().equals("ptNetworkIdShortcut")) {
-				String objectId = ParserUtils.getText(xpp.nextText());
-				// TODO ptNetworkIdShortcut
+				vehicleJourney.setName(ParserUtils.getText(xpp.nextText()));
 			} else {
 				XPPUtil.skipSubTree(log, xpp);
 			}
@@ -64,9 +54,9 @@ public class StopPointParser implements Parser, Constant {
 	}
 
 	static {
-		ParserFactory.register(StopPointParser.class.getName(),
+		ParserFactory.register(VehicleJourneyParser.class.getName(),
 				new ParserFactory() {
-					private StopPointParser instance = new StopPointParser();
+					private VehicleJourneyParser instance = new VehicleJourneyParser();
 
 					@Override
 					protected Parser create() {

@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.neptune.parser;
+package mobi.chouette.exchange.neptune.importer;
 
 import lombok.AllArgsConstructor;
 import mobi.chouette.common.Context;

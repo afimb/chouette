@@ -9,10 +9,16 @@ import java.util.Map.Entry;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
+import mobi.chouette.importer.ParserUtils;
+import mobi.chouette.importer.Parser;
+import mobi.chouette.importer.ParserFactory;
+import mobi.chouette.importer.XPPUtil;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.type.UserNeedEnum;
+import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
 
@@ -30,79 +36,59 @@ public class LineParser implements Parser, Constant {
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
+		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
+		context.put(LINE_NUMBER, xpp.getLineNumber());
 
 		Line line = null;
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 
 			if (xpp.getName().equals("objectId")) {
-				String objectId = NeptuneUtils.getText(xpp.nextText());
+				String objectId = ParserUtils.getText(xpp.nextText());
 				line = ObjectFactory.getLine(referential, objectId);
 			} else if (xpp.getName().equals("objectVersion")) {
-				Integer version = NeptuneUtils.getInt(xpp.nextText());
+				Integer version = ParserUtils.getInt(xpp.nextText());
 				line.setObjectVersion(version);
 			} else if (xpp.getName().equals("creationTime")) {
-				Date creationTime = NeptuneUtils.getSQLDateTime(xpp.nextText());
+				Date creationTime = ParserUtils.getSQLDateTime(xpp.nextText());
 				line.setCreationTime(creationTime);
 			} else if (xpp.getName().equals("creatorId")) {
-				line.setCreatorId(NeptuneUtils.getText(xpp.nextText()));
+				line.setCreatorId(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("name")) {
-				line.setName(NeptuneUtils.getText(xpp.nextText()));
+				line.setName(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("number")) {
-				line.setNumber(NeptuneUtils.getText(xpp.nextText()));
+				line.setNumber(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("publishedName")) {
-				line.setPublishedName(NeptuneUtils.getText(xpp.nextText()));
+				line.setPublishedName(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("transportModeName")) {
-				TransportModeNameEnum value = NeptuneUtils.getEnum(
+				TransportModeNameEnum value = ParserUtils.getEnum(
 						TransportModeNameEnum.class, xpp.nextText());
 				line.setTransportModeName(value);
 			} else if (xpp.getName().equals("LineEnd")) {
-				String objectId = NeptuneUtils.getText(xpp.nextText());
-
+				String objectId = ParserUtils.getText(xpp.nextText());
+				// TODO [DSU] LineEnd
 			} else if (xpp.getName().equals("routeId")) {
-				String objectId = NeptuneUtils.getText(xpp.nextText());
+				String objectId = ParserUtils.getText(xpp.nextText());
 				Route route = ObjectFactory.getRoute(referential, objectId);
-
+				route.setLine(line);
 			} else if (xpp.getName().equals("ptNetworkIdShortcut")) {
-				final String objectId = NeptuneUtils.getText(xpp.nextText());
-
-				// remove lines
-				Map<String, Line> removed = Maps.filterEntries(
-						referential.getLines(),
-						new Predicate<Map.Entry<String, Line>>() {
-							@Override
-							public boolean apply(Entry<String, Line> input) {
-								boolean result = false;
-								Line line = input.getValue();
-
-								if (!line.getPtNetwork().getObjectId()
-										.equals(objectId)) {
-									line.setPTNetwork(null);
-									result = true;
-								}
-								return result;
-							}
-						});
-
-				for (String key : removed.keySet()) {
-					referential.getLines().remove(key);
-				}
-
+				final String objectId = ParserUtils.getText(xpp.nextText());
+				// TODO [DSU] ptNetworkIdShortcut
 			} else if (xpp.getName().equals("registration")) {
 				while (xpp.nextTag() == XmlPullParser.START_TAG) {
 					if (xpp.getName().equals("registrationNumber")) {
-						line.setRegistrationNumber(NeptuneUtils.getText(xpp
+						line.setRegistrationNumber(ParserUtils.getText(xpp
 								.nextText()));
 					} else {
 						XPPUtil.skipSubTree(log, xpp);
 					}
 				}
 			} else if (xpp.getName().equals("comment")) {
-				line.setComment(NeptuneUtils.getText(xpp.nextText()));
+				line.setComment(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("LineExtension")) {
 
 				while (xpp.nextTag() == XmlPullParser.START_TAG) {
 					if (xpp.getName().equals("mobilityRestrictedSuitability")) {
-						line.setRegistrationNumber(NeptuneUtils.getText(xpp
+						line.setRegistrationNumber(ParserUtils.getText(xpp
 								.nextText()));
 					} else if (xpp.getName().equals(
 							"accessibilitySuitabilityDetails")) {
@@ -112,7 +98,7 @@ public class LineParser implements Parser, Constant {
 									|| xpp.getName()
 											.equals("PsychosensoryNeed")
 									|| xpp.getName().equals("MedicalNeed")) {
-								UserNeedEnum userNeed = NeptuneUtils.getEnum(
+								UserNeedEnum userNeed = ParserUtils.getEnum(
 										UserNeedEnum.class, xpp.nextText());
 								if (userNeed != null) {
 									userNeeds.add(userNeed);
@@ -130,6 +116,28 @@ public class LineParser implements Parser, Constant {
 			} else {
 				XPPUtil.skipSubTree(log, xpp);
 			}
+		}
+	}
+
+	private void todo(Referential referential, final Line line) {
+
+		Map<String, Line> removed = Maps.filterEntries(referential.getLines(),
+				new Predicate<Map.Entry<String, Line>>() {
+					@Override
+					public boolean apply(Entry<String, Line> input) {
+						boolean result = false;
+						Line item = input.getValue();
+
+						if (!item.equals(line)) {
+							item.setPTNetwork(null);
+							result = true;
+						}
+						return result;
+					}
+				});
+
+		for (String key : removed.keySet()) {
+			referential.getLines().remove(key);
 		}
 	}
 

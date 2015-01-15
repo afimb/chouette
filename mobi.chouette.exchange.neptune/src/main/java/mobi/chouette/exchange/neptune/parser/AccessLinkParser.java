@@ -9,18 +9,24 @@ import java.util.List;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
+import mobi.chouette.importer.ParserUtils;
+import mobi.chouette.importer.Parser;
+import mobi.chouette.importer.ParserFactory;
+import mobi.chouette.importer.XPPUtil;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ConnectionLinkTypeEnum;
 import mobi.chouette.model.type.LinkOrientationEnum;
 import mobi.chouette.model.type.UserNeedEnum;
+import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
 public class AccessLinkParser implements Parser, Constant {
-	private static final String CHILD_TAG = "ConnectionLink";
+	private static final String CHILD_TAG = "AccessLink";
 
 	@Override
 	public void parse(Context context) throws Exception {
@@ -29,27 +35,29 @@ public class AccessLinkParser implements Parser, Constant {
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
-
+		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
+		context.put(LINE_NUMBER, xpp.getLineNumber());
+		
 		AccessLink accessLink = null;
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 
 			if (xpp.getName().equals("objectId")) {
-				String objectId = NeptuneUtils.getText(xpp.nextText());
+				String objectId = ParserUtils.getText(xpp.nextText());
 				accessLink = ObjectFactory.getAccessLink(referential, objectId);
 			} else if (xpp.getName().equals("objectVersion")) {
-				Integer version = NeptuneUtils.getInt(xpp.nextText());
+				Integer version = ParserUtils.getInt(xpp.nextText());
 				accessLink.setObjectVersion(version);
 			} else if (xpp.getName().equals("creationTime")) {
-				Date creationTime = NeptuneUtils.getSQLDateTime(xpp.nextText());
+				Date creationTime = ParserUtils.getSQLDateTime(xpp.nextText());
 				accessLink.setCreationTime(creationTime);
 			} else if (xpp.getName().equals("creatorId")) {
-				accessLink.setCreatorId(NeptuneUtils.getText(xpp.nextText()));
+				accessLink.setCreatorId(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("name")) {
-				accessLink.setName(NeptuneUtils.getText(xpp.nextText()));
+				accessLink.setName(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("comment")) {
-				accessLink.setComment(NeptuneUtils.getText(xpp.nextText()));
+				accessLink.setComment(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("startOfLink")) {
-				String objectId = NeptuneUtils.getText(xpp.nextText());
+				String objectId = ParserUtils.getText(xpp.nextText());
 				if (referential.getStopAreas().containsKey(objectId)) {
 					StopArea stopArea = ObjectFactory.getStopArea(referential,
 							objectId);
@@ -64,7 +72,7 @@ public class AccessLinkParser implements Parser, Constant {
 							.setLinkOrientation(LinkOrientationEnum.AccessPointToStopArea);
 				}
 			} else if (xpp.getName().equals("endOfLink")) {
-				String objectId = NeptuneUtils.getText(xpp.nextText());
+				String objectId = ParserUtils.getText(xpp.nextText());
 				if (referential.getStopAreas().containsKey(objectId)) {
 					StopArea stopArea = ObjectFactory.getStopArea(referential,
 							objectId);
@@ -75,16 +83,16 @@ public class AccessLinkParser implements Parser, Constant {
 					accessLink.setAccessPoint(accessPoint);
 				}
 			} else if (xpp.getName().equals("linkDistance")) {
-				BigDecimal value = NeptuneUtils.getBigDecimal(xpp.nextText());
+				BigDecimal value = ParserUtils.getBigDecimal(xpp.nextText());
 				accessLink.setLinkDistance(value);
 			} else if (xpp.getName().equals("liftAvailability")) {
-				boolean value = NeptuneUtils.getBoolean(xpp.nextText());
+				boolean value = ParserUtils.getBoolean(xpp.nextText());
 				accessLink.setLiftAvailable(value);
 			} else if (xpp.getName().equals("mobilityRestrictedSuitability")) {
-				boolean value = NeptuneUtils.getBoolean(xpp.nextText());
+				boolean value = ParserUtils.getBoolean(xpp.nextText());
 				accessLink.setMobilityRestrictedSuitable(value);
 			} else if (xpp.getName().equals("stairsAvailability")) {
-				boolean value = NeptuneUtils.getBoolean(xpp.nextText());
+				boolean value = ParserUtils.getBoolean(xpp.nextText());
 				accessLink.setStairsAvailable(value);
 			} else if (xpp.getName().equals("ConnectionLinkExtension")) {
 				while (xpp.nextTag() == XmlPullParser.START_TAG) {
@@ -96,7 +104,7 @@ public class AccessLinkParser implements Parser, Constant {
 									|| xpp.getName()
 											.equals("PsychosensoryNeed")
 									|| xpp.getName().equals("MedicalNeed")) {
-								UserNeedEnum userNeed = NeptuneUtils.getEnum(
+								UserNeedEnum userNeed = ParserUtils.getEnum(
 										UserNeedEnum.class, xpp.nextText());
 								if (userNeed != null) {
 									userNeeds.add(userNeed);
@@ -111,20 +119,20 @@ public class AccessLinkParser implements Parser, Constant {
 					}
 				}
 			} else if (xpp.getName().equals("defaultDuration")) {
-				Time value = NeptuneUtils.getSQLDuration(xpp.nextText());
+				Time value = ParserUtils.getSQLDuration(xpp.nextText());
 				accessLink.setDefaultDuration(value);
 			} else if (xpp.getName().equals("frequentTravellerDuration")) {
-				Time value = NeptuneUtils.getSQLDuration(xpp.nextText());
+				Time value = ParserUtils.getSQLDuration(xpp.nextText());
 				accessLink.setFrequentTravellerDuration(value);
 			} else if (xpp.getName().equals("occasionalTravellerDuration")) {
-				Time value = NeptuneUtils.getSQLDuration(xpp.nextText());
+				Time value = ParserUtils.getSQLDuration(xpp.nextText());
 				accessLink.setOccasionalTravellerDuration(value);
 			} else if (xpp.getName().equals(
 					"mobilityRestrictedTravellerDuration")) {
-				Time value = NeptuneUtils.getSQLDuration(xpp.nextText());
+				Time value = ParserUtils.getSQLDuration(xpp.nextText());
 				accessLink.setMobilityRestrictedTravellerDuration(value);
 			} else if (xpp.getName().equals("linkType")) {
-				ConnectionLinkTypeEnum value = NeptuneUtils.getEnum(
+				ConnectionLinkTypeEnum value = ParserUtils.getEnum(
 						ConnectionLinkTypeEnum.class, xpp.nextText());
 				accessLink.setLinkType(value);
 			} else {

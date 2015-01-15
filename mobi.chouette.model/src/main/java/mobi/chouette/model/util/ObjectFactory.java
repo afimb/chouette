@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.neptune.parser;
+package mobi.chouette.model.util;
 
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
@@ -7,10 +7,12 @@ import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
+import mobi.chouette.model.PTLink;
 import mobi.chouette.model.PTNetwork;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 
 public class ObjectFactory {
@@ -36,6 +38,29 @@ public class ObjectFactory {
 		}
 		return result;
 	}
+
+	public static PTLink getPTLink(Referential referential, String objectId) {
+		PTLink result = referential.getPtLink().get(objectId);
+		if (result == null) {
+			result = new PTLink();
+			result.setObjectId(objectId);
+			referential.getPtLink().put(objectId, result);
+		}
+		return result;
+	}
+
+	public static Timetable getTimetable(Referential referential,
+			String objectId) {
+		Timetable result = referential.getTimetable().get(objectId);
+		if (result == null) {
+			result = new Timetable();
+			result.setObjectId(objectId);
+			referential.getTimetable().put(objectId, result);
+		}
+		return result;
+	}
+
+	/*- ---------------- */
 
 	public static PTNetwork getPTNetwork(Referential referential,
 			String objectId) {

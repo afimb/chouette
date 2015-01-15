@@ -5,8 +5,14 @@ import java.util.Date;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
+import mobi.chouette.importer.ParserUtils;
+import mobi.chouette.importer.Parser;
+import mobi.chouette.importer.ParserFactory;
+import mobi.chouette.importer.XPPUtil;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.Line;
+import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
 
@@ -22,28 +28,30 @@ public class GroupOfLineParser implements Parser, Constant {
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
-
+		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
+		context.put(LINE_NUMBER, xpp.getLineNumber());
+		
 		GroupOfLine groupOfLine = null;
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 
 			if (xpp.getName().equals("objectId")) {
-				String objectId = NeptuneUtils.getText(xpp.nextText());
+				String objectId = ParserUtils.getText(xpp.nextText());
 				groupOfLine = ObjectFactory.getGroupOfLine(referential,
 						objectId);
 			} else if (xpp.getName().equals("objectVersion")) {
-				Integer version = NeptuneUtils.getInt(xpp.nextText());
+				Integer version = ParserUtils.getInt(xpp.nextText());
 				groupOfLine.setObjectVersion(version);
 			} else if (xpp.getName().equals("creationTime")) {
-				Date creationTime = NeptuneUtils.getSQLDateTime(xpp.nextText());
+				Date creationTime = ParserUtils.getSQLDateTime(xpp.nextText());
 				groupOfLine.setCreationTime(creationTime);
 			} else if (xpp.getName().equals("creatorId")) {
-				groupOfLine.setCreatorId(NeptuneUtils.getText(xpp.nextText()));
+				groupOfLine.setCreatorId(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("name")) {
-				groupOfLine.setName(NeptuneUtils.getText(xpp.nextText()));
+				groupOfLine.setName(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("comment")) {
-				groupOfLine.setComment(NeptuneUtils.getText(xpp.nextText()));
+				groupOfLine.setComment(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("lineId")) {
-				String objectId = NeptuneUtils.getText(xpp.nextText());
+				String objectId = ParserUtils.getText(xpp.nextText());
 				Line line = ObjectFactory.getLine(referential, objectId);
 				groupOfLine.addLine(line);
 			} else {

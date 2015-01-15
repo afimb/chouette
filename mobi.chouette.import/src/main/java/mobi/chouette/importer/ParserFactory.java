@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.neptune.parser;
+package mobi.chouette.importer;
 
 import java.io.IOException;
 import java.util.HashMap;

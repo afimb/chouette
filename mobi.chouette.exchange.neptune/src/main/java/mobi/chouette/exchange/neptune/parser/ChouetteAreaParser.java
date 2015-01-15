@@ -10,11 +10,17 @@ import java.util.Map;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
+import mobi.chouette.importer.ParserUtils;
+import mobi.chouette.importer.Parser;
+import mobi.chouette.importer.ParserFactory;
+import mobi.chouette.importer.XPPUtil;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.LongLatTypeEnum;
 import mobi.chouette.model.type.UserNeedEnum;
+import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
 
@@ -37,35 +43,38 @@ public class ChouetteAreaParser implements Parser, Constant {
 
 			if (xpp.getName().equals("StopArea")) {
 
+				context.put(COLUMN_NUMBER, xpp.getColumnNumber());
+				context.put(LINE_NUMBER, xpp.getLineNumber());
+
 				StopArea stopArea = null;
 				List<String> contains = new ArrayList<String>();
 
 				while (xpp.nextTag() == XmlPullParser.START_TAG) {
 
 					if (xpp.getName().equals("objectId")) {
-						String objectId = NeptuneUtils.getText(xpp.nextText());
+						String objectId = ParserUtils.getText(xpp.nextText());
 						stopArea = ObjectFactory.getStopArea(referential,
 								objectId);
 					} else if (xpp.getName().equals("objectVersion")) {
-						Integer version = NeptuneUtils.getInt(xpp.nextText());
+						Integer version = ParserUtils.getInt(xpp.nextText());
 						stopArea.setObjectVersion(version);
 					} else if (xpp.getName().equals("creationTime")) {
-						Date creationTime = NeptuneUtils.getSQLDateTime(xpp
+						Date creationTime = ParserUtils.getSQLDateTime(xpp
 								.nextText());
 						stopArea.setCreationTime(creationTime);
 					} else if (xpp.getName().equals("creatorId")) {
-						stopArea.setCreatorId(NeptuneUtils.getText(xpp
+						stopArea.setCreatorId(ParserUtils.getText(xpp
 								.nextText()));
 					} else if (xpp.getName().equals("name")) {
-						stopArea.setName(NeptuneUtils.getText(xpp.nextText()));
+						stopArea.setName(ParserUtils.getText(xpp.nextText()));
 					} else if (xpp.getName().equals("comment")) {
-						stopArea.setComment(NeptuneUtils.getText(xpp.nextText()));
+						stopArea.setComment(ParserUtils.getText(xpp.nextText()));
 					} else if (xpp.getName().equals("StopAreaExtension")) {
 
 						while (xpp.nextTag() == XmlPullParser.START_TAG) {
 
 							if (xpp.getName().equals("areaType")) {
-								stopArea.setAreaType(NeptuneUtils.getEnum(
+								stopArea.setAreaType(ParserUtils.getEnum(
 										ChouetteAreaEnum.class, xpp.nextText()));
 								if (stopArea.getAreaType() == ChouetteAreaEnum.BoardingPosition
 										|| stopArea.getAreaType() == ChouetteAreaEnum.Quay) {
@@ -85,16 +94,16 @@ public class ChouetteAreaParser implements Parser, Constant {
 									}
 								}
 							} else if (xpp.getName().equals("nearestTopicName")) {
-								stopArea.setNearestTopicName(NeptuneUtils
+								stopArea.setNearestTopicName(ParserUtils
 										.getText(xpp.nextText()));
 							} else if (xpp.getName().equals("fareCode")) {
-								stopArea.setFareCode(NeptuneUtils.getInt(xpp
+								stopArea.setFareCode(ParserUtils.getInt(xpp
 										.nextText()));
 							} else if (xpp.getName().equals("registration")) {
 								while (xpp.nextTag() == XmlPullParser.START_TAG) {
 									if (xpp.getName().equals(
 											"registrationNumber")) {
-										stopArea.setRegistrationNumber(NeptuneUtils
+										stopArea.setRegistrationNumber(ParserUtils
 												.getText(xpp.nextText()));
 									} else {
 										XPPUtil.skipSubTree(log, xpp);
@@ -102,7 +111,7 @@ public class ChouetteAreaParser implements Parser, Constant {
 								}
 							} else if (xpp.getName().equals(
 									"mobilityRestrictedSuitability")) {
-								stopArea.setMobilityRestrictedSuitable(NeptuneUtils
+								stopArea.setMobilityRestrictedSuitable(ParserUtils
 										.getBoolean(xpp.nextText()));
 							} else if (xpp.getName().equals(
 									"accessibilitySuitabilityDetails")) {
@@ -115,7 +124,7 @@ public class ChouetteAreaParser implements Parser, Constant {
 													"MedicalNeed")
 											|| xpp.getName().equals(
 													"EncumbranceNeed")) {
-										UserNeedEnum userNeed = NeptuneUtils
+										UserNeedEnum userNeed = ParserUtils
 												.getEnum(UserNeedEnum.class,
 														xpp.nextText());
 										if (userNeed != null) {
@@ -129,20 +138,20 @@ public class ChouetteAreaParser implements Parser, Constant {
 								stopArea.setUserNeeds(userNeeds);
 							} else if (xpp.getName().equals(
 									"stairsAvailability")) {
-								stopArea.setStairsAvailable(NeptuneUtils
+								stopArea.setStairsAvailable(ParserUtils
 										.getBoolean(xpp.nextText()));
 							} else if (xpp.getName().equals("liftAvailability")) {
-								stopArea.setLiftAvailable(NeptuneUtils
+								stopArea.setLiftAvailable(ParserUtils
 										.getBoolean(xpp.nextText()));
 							} else {
 								XPPUtil.skipSubTree(log, xpp);
 							}
 						}
 					} else if (xpp.getName().equals("contains")) {
-						contains.add(NeptuneUtils.getText(xpp.nextText()));
+						contains.add(ParserUtils.getText(xpp.nextText()));
 					} else if (xpp.getName().equals("centroidOfArea")) {
 						String key = stopArea.getObjectId();
-						String value = NeptuneUtils.getText(xpp.nextText());
+						String value = ParserUtils.getText(xpp.nextText());
 						map.put(key, value);
 						inverse.put(value, key);
 
@@ -153,37 +162,40 @@ public class ChouetteAreaParser implements Parser, Constant {
 
 			} else if (xpp.getName().equals("AreaCentroid")) {
 
+				context.put(COLUMN_NUMBER, xpp.getColumnNumber());
+				context.put(LINE_NUMBER, xpp.getLineNumber());
+
 				while (xpp.nextTag() == XmlPullParser.START_TAG) {
 
 					StopArea stopArea = null;
 					if (xpp.getName().equals("objectId")) {
-						String objectId = inverse.get(NeptuneUtils.getText(xpp
+						String objectId = inverse.get(ParserUtils.getText(xpp
 								.nextText()));
 						stopArea = ObjectFactory.getStopArea(referential,
 								objectId);
 					} else if (xpp.getName().equals("name")) {
-						stopArea.setName(NeptuneUtils.getText(xpp.nextText()));
+						stopArea.setName(ParserUtils.getText(xpp.nextText()));
 					} else if (xpp.getName().equals("comment")) {
-						stopArea.setComment(NeptuneUtils.getText(xpp.nextText()));
+						stopArea.setComment(ParserUtils.getText(xpp.nextText()));
 					} else if (xpp.getName().equals("longLatType")) {
-						stopArea.setLongLatType(NeptuneUtils.getEnum(
+						stopArea.setLongLatType(ParserUtils.getEnum(
 								LongLatTypeEnum.class, xpp.nextText()));
 					} else if (xpp.getName().equals("latitude")) {
-						stopArea.setLatitude(NeptuneUtils.getBigDecimal(xpp
+						stopArea.setLatitude(ParserUtils.getBigDecimal(xpp
 								.nextText()));
 					} else if (xpp.getName().equals("longitude")) {
-						stopArea.setLongitude(NeptuneUtils.getBigDecimal(xpp
+						stopArea.setLongitude(ParserUtils.getBigDecimal(xpp
 								.nextText()));
 					} else if (xpp.getName().equals("containedIn")) {
-						String objectId = NeptuneUtils.getText(xpp.nextText());
+						String objectId = ParserUtils.getText(xpp.nextText());
 					} else if (xpp.getName().equals("address")) {
 
 						while (xpp.nextTag() == XmlPullParser.START_TAG) {
 							if (xpp.getName().equals("countryCode")) {
-								stopArea.setCountryCode(NeptuneUtils
+								stopArea.setCountryCode(ParserUtils
 										.getText(xpp.nextText()));
 							} else if (xpp.getName().equals("streetName")) {
-								stopArea.setStreetName(NeptuneUtils.getText(xpp
+								stopArea.setStreetName(ParserUtils.getText(xpp
 										.nextText()));
 							} else {
 								XPPUtil.skipSubTree(log, xpp);
@@ -193,15 +205,15 @@ public class ChouetteAreaParser implements Parser, Constant {
 
 						while (xpp.nextTag() == XmlPullParser.START_TAG) {
 							if (xpp.getName().equals("X")) {
-								BigDecimal value = NeptuneUtils
+								BigDecimal value = ParserUtils
 										.getBigDecimal(xpp.nextText());
 								stopArea.setX(value);
 							} else if (xpp.getName().equals("Y")) {
-								BigDecimal value = NeptuneUtils
+								BigDecimal value = ParserUtils
 										.getBigDecimal(xpp.nextText());
 								stopArea.setY(value);
 							} else if (xpp.getName().equals("projectionType")) {
-								String value = NeptuneUtils.getText(xpp
+								String value = ParserUtils.getText(xpp
 										.nextText());
 								stopArea.setProjectionType(value);
 							} else {

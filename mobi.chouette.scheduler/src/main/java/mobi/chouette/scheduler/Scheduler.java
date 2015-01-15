@@ -17,11 +17,11 @@ import javax.enterprise.concurrent.ManagedTaskListener;
 import javax.ws.rs.core.MediaType;
 
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.api.model.Job;
-import mobi.chouette.api.model.Link;
-import mobi.chouette.api.model.Job.STATUS;
 import mobi.chouette.common.Color;
 import mobi.chouette.dao.JobDAO;
+import mobi.chouette.model.api.Job;
+import mobi.chouette.model.api.Link;
+import mobi.chouette.model.api.Job.STATUS;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;

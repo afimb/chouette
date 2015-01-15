@@ -5,7 +5,7 @@
 
 	<persistence-unit name="public">
 
-		<class>mobi.chouette.api.model.Job</class>
+		<class>mobi.chouette.model.api.Job</class>
 
 		<exclude-unlisted-classes>true</exclude-unlisted-classes>
 		<validation-mode>NONE</validation-mode>

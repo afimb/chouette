@@ -6,7 +6,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import lombok.Data;
-import mobi.chouette.api.model.Job;
+import mobi.chouette.model.api.Job;
 
 @Data
 @XmlRootElement

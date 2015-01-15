@@ -9,15 +9,15 @@ import mobi.chouette.importer.ParserUtils;
 import mobi.chouette.importer.Parser;
 import mobi.chouette.importer.ParserFactory;
 import mobi.chouette.importer.XPPUtil;
-import mobi.chouette.model.Company;
+import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
-public class CompanyParser implements Parser, Constant {
-	private static final String CHILD_TAG = "Company";
+public class JourneyPatternParser implements Parser, Constant {
+	private static final String CHILD_TAG = "JourneyPattern";
 
 	@Override
 	public void parse(Context context) throws Exception {
@@ -29,46 +29,30 @@ public class CompanyParser implements Parser, Constant {
 		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
 		context.put(LINE_NUMBER, xpp.getLineNumber());
 
-		Company company = null;
+		JourneyPattern journeyPattern = null;
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 
 			if (xpp.getName().equals("objectId")) {
 				String objectId = ParserUtils.getText(xpp.nextText());
-				company = ObjectFactory.getCompany(referential, objectId);
+				journeyPattern = ObjectFactory.getJourneyPattern(referential,
+						objectId);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
-				company.setObjectVersion(version);
+				journeyPattern.setObjectVersion(version);
 			} else if (xpp.getName().equals("creationTime")) {
 				Date creationTime = ParserUtils.getSQLDateTime(xpp.nextText());
-				company.setCreationTime(creationTime);
+				journeyPattern.setCreationTime(creationTime);
 			} else if (xpp.getName().equals("creatorId")) {
-				company.setCreatorId(ParserUtils.getText(xpp.nextText()));
+				journeyPattern
+						.setCreatorId(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("name")) {
-				company.setName(ParserUtils.getText(xpp.nextText()));
-			} else if (xpp.getName().equals("shortName")) {
-				company.setShortName(ParserUtils.getText(xpp.nextText()));
-			} else if (xpp.getName().equals("organisationalUnit")) {
-				company.setOrganisationalUnit(xpp.nextText());
-			} else if (xpp.getName().equals("OperatingDepartmentName")) {
-				company.setOperatingDepartmentName(ParserUtils.getText(xpp
-						.nextText()));
-			} else if (xpp.getName().equals("organisationalUnit")) {
-				company.setOrganisationalUnit(ParserUtils.getText(xpp
-						.nextText()));
-			} else if (xpp.getName().equals("code")) {
-				company.setCode(ParserUtils.getText(xpp.nextText()));
-			} else if (xpp.getName().equals("phone")) {
-				company.setPhone(ParserUtils.getText(xpp.nextText()));
-			} else if (xpp.getName().equals("fax")) {
-				company.setFax(ParserUtils.getText(xpp.nextText()));
-			} else if (xpp.getName().equals("email")) {
-				company.setEmail(ParserUtils.getText(xpp.nextText()));
+				journeyPattern.setName(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("registration")) {
 
 				while (xpp.nextTag() == XmlPullParser.START_TAG) {
 					if (xpp.getName().equals("registrationNumber")) {
-						company.setRegistrationNumber(ParserUtils.getText(xpp
-								.nextText()));
+						journeyPattern.setRegistrationNumber(ParserUtils
+								.getText(xpp.nextText()));
 					} else {
 						XPPUtil.skipSubTree(log, xpp);
 					}
@@ -80,9 +64,9 @@ public class CompanyParser implements Parser, Constant {
 	}
 
 	static {
-		ParserFactory.register(CompanyParser.class.getName(),
+		ParserFactory.register(JourneyPatternParser.class.getName(),
 				new ParserFactory() {
-					private CompanyParser instance = new CompanyParser();
+					private JourneyPatternParser instance = new JourneyPatternParser();
 
 					@Override
 					protected Parser create() {

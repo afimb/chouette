@@ -31,11 +31,11 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.api.model.Job;
-import mobi.chouette.api.model.Link;
-import mobi.chouette.api.model.Job.STATUS;
 import mobi.chouette.dao.JobDAO;
 import mobi.chouette.dao.SchemaDAO;
+import mobi.chouette.model.api.Job;
+import mobi.chouette.model.api.Link;
+import mobi.chouette.model.api.Job.STATUS;
 import mobi.chouette.scheduler.Constant;
 import mobi.chouette.scheduler.Scheduler;
 

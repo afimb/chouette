@@ -3,6 +3,10 @@ package mobi.chouette.exchange.neptune.parser;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
+import mobi.chouette.importer.Parser;
+import mobi.chouette.importer.ParserFactory;
+import mobi.chouette.importer.XPPUtil;
+import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
 
@@ -17,6 +21,8 @@ public class ChouetteLineDescriptionParser implements Parser, Constant {
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
+		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
+		context.put(LINE_NUMBER, xpp.getLineNumber());
 
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 
@@ -33,11 +39,17 @@ public class ChouetteLineDescriptionParser implements Parser, Constant {
 						.getName());
 				parser.parse(context);
 			} else if (xpp.getName().equals("PtLink")) {
-
+				Parser parser = ParserFactory.create(PtLinkParser.class
+						.getName());
+				parser.parse(context);
 			} else if (xpp.getName().equals("JourneyPattern")) {
-
+				Parser parser = ParserFactory.create(JourneyPatternParser.class
+						.getName());
+				parser.parse(context);
 			} else if (xpp.getName().equals("VehicleJourney")) {
-
+				Parser parser = ParserFactory.create(VehicleJourneyParser.class
+						.getName());
+				parser.parse(context);
 			} else {
 				XPPUtil.skipSubTree(log, xpp);
 			}

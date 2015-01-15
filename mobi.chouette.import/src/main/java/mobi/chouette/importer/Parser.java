@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.neptune.parser;
+package mobi.chouette.importer;
 
 import mobi.chouette.common.Context;
 

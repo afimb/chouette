@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.neptune.parser;
+package mobi.chouette.exchange.neptune.importer;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -11,6 +11,9 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.exchange.neptune.Constant;
+import mobi.chouette.exchange.neptune.parser.ChouettePTNetworkParser;
+import mobi.chouette.importer.Parser;
+import mobi.chouette.importer.ParserFactory;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -30,6 +33,10 @@ public class NeptuneParser implements Command, Constant {
 		BufferedReader in = new BufferedReader(new InputStreamReader(input),
 				8192 * 10);
 		xpp.setInput(in);
+		
+		Parser parser = ParserFactory.create(ChouettePTNetworkParser.class
+				.getName());
+		parser.parse(context);
 
 		return false;
 	}

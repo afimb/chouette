@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.neptune.parser;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import lombok.extern.log4j.Log4j;
@@ -9,7 +10,7 @@ import mobi.chouette.importer.ParserUtils;
 import mobi.chouette.importer.Parser;
 import mobi.chouette.importer.ParserFactory;
 import mobi.chouette.importer.XPPUtil;
-import mobi.chouette.model.StopArea;
+import mobi.chouette.model.PTLink;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
@@ -17,8 +18,8 @@ import mobi.chouette.model.util.Referential;
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
-public class StopPointParser implements Parser, Constant {
-	private static final String CHILD_TAG = "StopPoint";
+public class PtLinkParser implements Parser, Constant {
+	private static final String CHILD_TAG = "PtLink";
 
 	@Override
 	public void parse(Context context) throws Exception {
@@ -30,33 +31,33 @@ public class StopPointParser implements Parser, Constant {
 		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
 		context.put(LINE_NUMBER, xpp.getLineNumber());
 
-		StopPoint stopPoint = null;
+		PTLink ptLink = null;
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 
 			if (xpp.getName().equals("objectId")) {
 				String objectId = ParserUtils.getText(xpp.nextText());
-				stopPoint = ObjectFactory.getStopPoint(referential, objectId);
+				ptLink = ObjectFactory.getPTLink(referential, objectId);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
-				stopPoint.setObjectVersion(version);
+				ptLink.setObjectVersion(version);
 			} else if (xpp.getName().equals("creationTime")) {
 				Date creationTime = ParserUtils.getSQLDateTime(xpp.nextText());
-				stopPoint.setCreationTime(creationTime);
+				ptLink.setCreationTime(creationTime);
 			} else if (xpp.getName().equals("creatorId")) {
-				stopPoint.setCreatorId(ParserUtils.getText(xpp.nextText()));
-			} else if (xpp.getName().equals("name")) {
-				stopPoint.setName(ParserUtils.getText(xpp.nextText()));
-			} else if (xpp.getName().equals("containedIn")) {
+				ptLink.setCreatorId(ParserUtils.getText(xpp.nextText()));
+			} else if (xpp.getName().equals("startOfLink")) {
 				String objectId = ParserUtils.getText(xpp.nextText());
-				StopArea stopArea = ObjectFactory.getStopArea(referential,
+				StopPoint startOfLink = ObjectFactory.getStopPoint(referential,
 						objectId);
-				stopPoint.setContainedInStopArea(stopArea);
-			} else if (xpp.getName().equals("lineIdShortcut")) {
+				ptLink.setStartOfLink(startOfLink);
+			} else if (xpp.getName().equals("endOfLink")) {
 				String objectId = ParserUtils.getText(xpp.nextText());
-				// TODO lineIdShortcut
-			} else if (xpp.getName().equals("ptNetworkIdShortcut")) {
-				String objectId = ParserUtils.getText(xpp.nextText());
-				// TODO ptNetworkIdShortcut
+				StopPoint endOfLink = ObjectFactory.getStopPoint(referential,
+						objectId);
+				ptLink.setEndOfLink(endOfLink);
+			} else if (xpp.getName().equals("linkDistance")) {
+				BigDecimal value = ParserUtils.getBigDecimal(xpp.nextText());
+				ptLink.setLinkDistance(value);
 			} else {
 				XPPUtil.skipSubTree(log, xpp);
 			}
@@ -64,9 +65,9 @@ public class StopPointParser implements Parser, Constant {
 	}
 
 	static {
-		ParserFactory.register(StopPointParser.class.getName(),
+		ParserFactory.register(PtLinkParser.class.getName(),
 				new ParserFactory() {
-					private StopPointParser instance = new StopPointParser();
+					private PtLinkParser instance = new PtLinkParser();
 
 					@Override
 					protected Parser create() {

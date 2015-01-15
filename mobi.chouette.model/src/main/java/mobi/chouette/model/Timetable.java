@@ -3,7 +3,6 @@ package mobi.chouette.model;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
@@ -93,10 +92,29 @@ public class Timetable extends NeptuneIdentifiedObject {
 	 *            New value
 	 * @return The actual value
 	 */
-	@Getter
-	@Setter
+
 	@Column(name = "int_day_types")
 	private Integer intDayTypes;
+
+	public List<DayTypeEnum> getDayTypes() {
+		List<DayTypeEnum> result = new ArrayList<DayTypeEnum>();
+		for (DayTypeEnum dayType : DayTypeEnum.values()) {
+			int mask = 1 << dayType.ordinal();
+			if ((this.intDayTypes & mask) == mask) {
+				result.add(dayType);
+			}
+		}
+		return result;
+	}
+
+	public void setDayTypes(List<DayTypeEnum> dayTypes) {
+		int value = 0;
+		for (DayTypeEnum dayType : dayTypes) {
+			int mask = 1 << dayType.ordinal();
+			value |= mask;
+		}
+		this.intDayTypes = value;
+	}
 
 	/**
 	 * first valid day in timetable
@@ -177,22 +195,6 @@ public class Timetable extends NeptuneIdentifiedObject {
 	}
 
 	/**
-	 * add a list of Calendar days <br/>
-	 * will skip dates already presents
-	 * 
-	 * @param list
-	 */
-	public void addCalendarDays(Collection<CalendarDay> list) {
-		if (calendarDays == null)
-			calendarDays = new ArrayList<CalendarDay>();
-		for (CalendarDay calendarDay : list) {
-			if (!calendarDays.contains(calendarDay)) {
-				addCalendarDay(calendarDay);
-			}
-		}
-	}
-
-	/**
 	 * remove a day
 	 * 
 	 * @param calendarDay
@@ -233,19 +235,6 @@ public class Timetable extends NeptuneIdentifiedObject {
 	}
 
 	/**
-	 * remove a period at a specific rank
-	 * 
-	 * @param rank
-	 */
-	public void removePeriod(int rank) {
-		if (periods == null)
-			periods = new ArrayList<Period>();
-		if (rank >= 0 && rank < periods.size()) {
-			periods.remove(rank);
-		}
-	}
-
-	/**
 	 * add a vehicle journey if not already present
 	 * 
 	 * @param vehicleJourney
@@ -268,35 +257,10 @@ public class Timetable extends NeptuneIdentifiedObject {
 		getVehicleJourneys().remove(vehicleJourney);
 		vehicleJourney.getTimetables().remove(this);
 	}
-	
-	
-	 public List<DayTypeEnum> getDayTypes()
-	   {
-	      List<DayTypeEnum> result = new ArrayList<DayTypeEnum>();
-	      for (DayTypeEnum dayType : DayTypeEnum.values())
-	      {
-	         int mask = 1 << dayType.ordinal();
-	         if ((this.intDayTypes & mask) == mask)
-	         {
-	            result.add(dayType);
-	         }
-	      }
 
-	      return result;
-	   }
+	// TODO [DSU]
+	// --------------------------------------------------------------------------------
 
-	   public void setDayTypes(List<DayTypeEnum> dayTypes)
-	   {
-	      int value = 0;
-	      for (DayTypeEnum dayType : dayTypes)
-	      {
-	         int mask = 1 << dayType.ordinal();
-	         value |= mask;
-	      }
-	      this.intDayTypes = value;
-	   }
-
-/*-------------------*/
 	/**
 	 * build a bitwise dayType mask for filtering
 	 * 
@@ -478,22 +442,22 @@ public class Timetable extends NeptuneIdentifiedObject {
 	 * 
 	 * @return a copy
 	 */
-	public Timetable copy() {
-		Timetable tm = new Timetable();
-		tm.setObjectId(getObjectId());
-		tm.setObjectVersion(getObjectVersion());
-		tm.setComment(getComment());
-		tm.setVersion(getVersion());
-		tm.setIntDayTypes(getIntDayTypes());
-		tm.setPeriods(new ArrayList<Period>());
-		for (Period period : getPeriods()) {
-			tm.addPeriod(new Period(period.getStartDate(), period.getEndDate()));
-		}
-		tm.setCalendarDays(new ArrayList<CalendarDay>());
-		for (CalendarDay day : getCalendarDays()) {
-			tm.addCalendarDay(new CalendarDay(day.getDate(), day.getIncluded()));
-		}
-		return tm;
-	}
+//	public Timetable copy() {
+//		Timetable tm = new Timetable();
+//		tm.setObjectId(getObjectId());
+//		tm.setObjectVersion(getObjectVersion());
+//		tm.setComment(getComment());
+//		tm.setVersion(getVersion());
+//		tm.setIntDayTypes(getIntDayTypes());
+//		tm.setPeriods(new ArrayList<Period>());
+//		for (Period period : getPeriods()) {
+//			tm.addPeriod(new Period(period.getStartDate(), period.getEndDate()));
+//		}
+//		tm.setCalendarDays(new ArrayList<CalendarDay>());
+//		for (CalendarDay day : getCalendarDays()) {
+//			tm.addCalendarDay(new CalendarDay(day.getDate(), day.getIncluded()));
+//		}
+//		return tm;
+//	}
 
 }
