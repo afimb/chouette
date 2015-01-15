@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.gtfs.importer.parameters;
+package mobi.chouette.exchange.gtfs.importer;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;

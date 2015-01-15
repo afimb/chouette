@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.neptune.exporter.parameters;
+package mobi.chouette.exchange.neptune.exporter;
 
 import java.sql.Date;
 

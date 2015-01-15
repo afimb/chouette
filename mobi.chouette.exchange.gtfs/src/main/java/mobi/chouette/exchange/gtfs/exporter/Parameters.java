@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.netex.exporter.parameters;
+package mobi.chouette.exchange.gtfs.exporter;
 
 import java.sql.Date;
 
@@ -17,7 +17,10 @@ public class Parameters {
 	@XmlAttribute(name = "end_date")
 	private Date endDate;
 	
-	@XmlAttribute(name = "projection_type")
-	private String projectionType;
+	@XmlAttribute(name = "time_zone")
+	private Date timeZone;
+	
+	@XmlAttribute(name = "object_id_prefix")
+	private String objectIdPrefix;
 
 }
