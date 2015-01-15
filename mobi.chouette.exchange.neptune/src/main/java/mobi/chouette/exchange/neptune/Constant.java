@@ -10,6 +10,4 @@ public interface Constant extends mobi.chouette.common.Constant {
 	public static final String COLUMN_NUMBER = "column_number";
 	public static final String LINE_NUMBER = "line_number";
 
-
-
 }

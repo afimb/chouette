@@ -1,4 +1,4 @@
-package mobi.chouette.scheduler;
+package mobi.chouette.exporter;
 
 import java.io.IOException;
 
@@ -8,26 +8,27 @@ import javax.naming.NamingException;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
+import mobi.chouette.common.chain.Chain;
+import mobi.chouette.common.chain.ChainImpl;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 
-@Stateless(name = WaitCommand.COMMAND)
+@Stateless(name = ExporterCommand.COMMAND)
 @Log4j
-public class WaitCommand implements Command, Constant {
+public class ExporterCommand implements Command {
 
-	public static final String COMMAND = "WaitCommand";
+	public static final String COMMAND = "ExporterCommand";
 
 	@Override
 	public boolean execute(Context context) throws Exception {
-		sleep(60 * 1000);
-		return Constant.SUCCESS;
-	}
 
-	private void sleep(long millis) {
-		try {
-			Thread.sleep(millis);
-		} catch (InterruptedException ignored) {
-		}
+		boolean result = ERROR;
+
+		Chain chain = new ChainImpl();
+		// TODO add command
+
+		result = chain.execute(context);
+		return result;
 	}
 
 	public static class DefaultCommandFactory extends CommandFactory {
@@ -46,6 +47,6 @@ public class WaitCommand implements Command, Constant {
 
 	static {
 		CommandFactory factory = new DefaultCommandFactory();
-		CommandFactory.factories.put(WaitCommand.class.getName(), factory);
+		CommandFactory.factories.put(ExporterCommand.class.getName(), factory);
 	}
 }

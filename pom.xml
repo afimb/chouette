@@ -222,7 +222,7 @@
 		<module>mobi.chouette.common</module>
 		<module>mobi.chouette.model</module>
 		<module>mobi.chouette.dao</module>
-		<module>mobi.chouette.import</module>
+		<module>mobi.chouette.importer</module>
 		<module>mobi.chouette.exporter</module>
 		<module>mobi.chouette.validation</module>
 		<module>mobi.chouette.exchange.neptune</module>

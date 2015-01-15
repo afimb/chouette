@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import mobi.chouette.common.Context;
 
-@AllArgsConstructor
+@NoArgsConstructor
 public class ChainImpl implements Chain {
 
 	private List<Command> commands = new ArrayList<Command>();
