@@ -196,8 +196,6 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 	private List<VehicleJourney> vehicleJourneys = new ArrayList<VehicleJourney>(
 			0);
 
-	/* ------------------------------- */
-	
 	/**
 	 * add a stop point if not already present
 	 * 
@@ -227,34 +225,7 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 		}
 	}
 
-	/**
-	 * add a vehicle journey if not already present
-	 * 
-	 * @param vehicleJourney
-	 */
-	public void addVehicleJourney(VehicleJourney vehicleJourney) {
-		if (vehicleJourneys == null)
-			vehicleJourneys = new ArrayList<VehicleJourney>();
-		if (vehicleJourney == null || vehicleJourneys.contains(vehicleJourney))
-			return;
-		vehicleJourneys.add(vehicleJourney);
-		vehicleJourney.setJourneyPattern(this);
-		if (route != null)
-			vehicleJourney.setRoute(route);
-	}
-
-	/**
-	 * remove a vehicle journey if not already present
-	 * 
-	 * @param vehicleJourney
-	 */
-	public void removeVehicleJourney(VehicleJourney vehicleJourney) {
-		if (vehicleJourneys == null)
-			vehicleJourneys = new ArrayList<VehicleJourney>();
-		if (vehicleJourneys.contains(vehicleJourney))
-			vehicleJourneys.remove(vehicleJourney);
-	}
-
+	/* ---------------------------- */
 	/**
 	 * update departure and arrival <br/>
 	 * to be used after stopPoints update

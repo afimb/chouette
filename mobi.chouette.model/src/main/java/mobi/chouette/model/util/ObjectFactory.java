@@ -14,6 +14,7 @@ import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
+import mobi.chouette.model.VehicleJourneyAtStop;
 
 public class ObjectFactory {
 
@@ -57,6 +58,12 @@ public class ObjectFactory {
 			result.setObjectId(objectId);
 			referential.getTimetable().put(objectId, result);
 		}
+		return result;
+	}
+
+	public static VehicleJourneyAtStop getVehicleJourneyAtStop() {
+		// TODO [DSU] object pool
+		VehicleJourneyAtStop result = new VehicleJourneyAtStop();
 		return result;
 	}
 
