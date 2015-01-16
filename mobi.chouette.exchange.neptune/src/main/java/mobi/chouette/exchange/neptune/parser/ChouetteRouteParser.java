@@ -75,7 +75,8 @@ public class ChouetteRouteParser implements Parser, Constant {
 				String objectId = ParserUtils.getText(xpp.nextText());
 				Route wayBackRoute = ObjectFactory.getRoute(referential,
 						objectId);
-				// TODO [DSU] wayBackRouteId
+				// TODO [DSU] wayBack oppositeRouteId
+	
 			} else if (xpp.getName().equals("comment")) {
 				route.setComment(ParserUtils.getText(xpp.nextText()));
 			} else {

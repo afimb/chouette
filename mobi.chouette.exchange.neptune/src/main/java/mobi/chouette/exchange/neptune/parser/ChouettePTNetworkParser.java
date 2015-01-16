@@ -20,6 +20,8 @@ public class ChouettePTNetworkParser implements Parser, Constant {
 		XmlPullParser xpp = (XmlPullParser) context.get(XPP);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
+		XPPUtil.nextStartTag(xpp, "CHILD_TAG");
+
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
 		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
 		context.put(LINE_NUMBER, xpp.getLineNumber());

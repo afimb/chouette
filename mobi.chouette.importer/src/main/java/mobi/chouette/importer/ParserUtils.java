@@ -166,6 +166,14 @@ public class ParserUtils {
 		return result;
 	}
 
+	public static BigDecimal getX(String value) {
+		return ParserUtils.getBigDecimal(value, "([\\d\\.]+) [\\d\\.]+");
+	}
+
+	public static BigDecimal getY(String value) {
+		return ParserUtils.getBigDecimal(value, "[\\d\\.]+ ([\\d\\.]+)");
+	}
+	
 	public static String objectIdPrefix(String objectId) {
 		if (objectIdArray(objectId).length > 2) {
 			return objectIdArray(objectId)[0].trim();
