@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.neptune.importer;
+package mobi.chouette.importer;
 
 import lombok.AllArgsConstructor;
 import mobi.chouette.common.Context;
@@ -8,7 +8,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 @AllArgsConstructor
-public class NeptuneErrorHandler implements ErrorHandler {
+public class SAXErrorHandler implements ErrorHandler {
 
 	private Context context;
 

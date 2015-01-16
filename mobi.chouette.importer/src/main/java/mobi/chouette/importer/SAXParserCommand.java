@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.neptune.importer;
+package mobi.chouette.importer;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,16 +19,15 @@ import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.neptune.Constant;
 
 import org.xml.sax.SAXException;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
-@Stateless(name = NeptuneSAXParserCommand.COMMAND)
+@Stateless(name = SAXParserCommand.COMMAND)
 @Log4j
-public class NeptuneSAXParserCommand implements Command, Constant {
+public class SAXParserCommand implements Command, Constant {
 
 	public static final String COMMAND = "NeptuneSAXParserCommand";
 
@@ -39,19 +38,19 @@ public class NeptuneSAXParserCommand implements Command, Constant {
 
 		Monitor monitor = MonitorFactory.start();
 
-		Schema schema = (Schema) context.get(NEPTUNE_SCHEMA);
+		Schema schema = (Schema) context.get(SCHEMA);
 		if (schema != null) {
 			InputStream in = this.getClass().getResourceAsStream(FILE);
 			Source source = new StreamSource(in);
 			SchemaFactory factory = SchemaFactory
 					.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-			NeptuneErrorHandler handler = new NeptuneErrorHandler(context);
+			SAXErrorHandler handler = new SAXErrorHandler(context);
 			factory.setErrorHandler(handler);
 			schema = factory.newSchema(source);
-			context.put(NEPTUNE_SCHEMA, schema);
+			context.put(SCHEMA, schema);
 		}
 
-		String path = (String) context.get(NEPTUNE_FILE);
+		String path = (String) context.get(FILE);
 		Source file = new StreamSource(new File(path));
 
 		Validator validator = schema.newValidator();
@@ -82,7 +81,7 @@ public class NeptuneSAXParserCommand implements Command, Constant {
 
 	static {
 		CommandFactory factory = new DefaultCommandFactory();
-		CommandFactory.factories.put(NeptuneSAXParserCommand.class.getName(),
+		CommandFactory.factories.put(SAXParserCommand.class.getName(),
 				factory);
 	}
 }

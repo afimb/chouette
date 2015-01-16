@@ -18,6 +18,34 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<!-- Test Dependencies -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.wildfly</groupId>
+			<artifactId>wildfly-embedded</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.wildfly</groupId>
+			<artifactId>wildfly-arquillian-container-embedded</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.arquillian.junit</groupId>
+			<artifactId>arquillian-junit-container</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+
 		<!-- Others Dependencies -->
 		<dependency>
 			<groupId>org.jboss.spec.javax.ejb</groupId>
@@ -38,5 +66,13 @@
 			<type>ejb</type>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>mobi.chouette.validation</artifactId>
+			<type>ejb</type>
+			<version>${project.version}</version>
+		</dependency>
 	</dependencies>
+	
+	
 </project>

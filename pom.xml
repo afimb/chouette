@@ -33,6 +33,50 @@
 	<build>
 		<plugins>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.8</version>
+				<executions>
+					<execution>
+						<id>unpack</id>
+						<phase>process-test-classes</phase>
+						<goals>
+							<goal>unpack</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>org.wildfly</groupId>
+									<artifactId>wildfly-dist</artifactId>
+									<version>${version.wildfly}</version>
+									<type>zip</type>
+									<overWrite>false</overWrite>
+									<outputDirectory>target</outputDirectory>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.17</version>
+				<configuration>
+					<!-- Fork every test because it will launch a separate AS instance -->
+					<forkMode>always</forkMode>
+					<systemPropertyVariables>
+						<java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+						<!-- the maven dependency plugin will have already downloaded the server 
+							on /target -->
+						<jboss.home>${project.basedir}/target/${version.wildfly}</jboss.home>
+						<module.path>${project.basedir}/target/wildfly-${version.wildfly}/modules</module.path>
+					</systemPropertyVariables>
+					<redirectTestOutputToFile>false</redirectTestOutputToFile>
+				</configuration>
+			</plugin>
+
+			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>${version.compiler.plugin}</version>
 				<configuration>
@@ -98,6 +142,25 @@
 										<ignore></ignore>
 									</action>
 								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.apache.maven.plugins
+										</groupId>
+										<artifactId>
+											maven-dependency-plugin
+										</artifactId>
+										<versionRange>
+											[2.8,)
+										</versionRange>
+										<goals>
+											<goal>unpack</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
 							</pluginExecutions>
 						</lifecycleMappingMetadata>
 					</configuration>
@@ -108,6 +171,7 @@
 	<dependencyManagement>
 		<dependencies>
 
+			<!-- Default Dependencies -->
 			<dependency>
 				<groupId>org.wildfly</groupId>
 				<artifactId>wildfly-spec-api</artifactId>
@@ -115,8 +179,38 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+			<dependency>
+				<groupId>org.jboss.spec</groupId>
+				<artifactId>jboss-javaee-7.0</artifactId>
+				<type>pom</type>
+				<version>1.0.2.Final</version>
+				<scope>provided</scope>
+			</dependency>
 
-			<!-- Default Dependencies -->
+			<!-- Test Dependencies -->
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>4.11</version>
+			</dependency>
+			<dependency>
+				<groupId>org.wildfly</groupId>
+				<artifactId>wildfly-arquillian-container-embedded</artifactId>
+				<version>${version.wildfly}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.wildfly</groupId>
+				<artifactId>wildfly-embedded</artifactId>
+				<version>${version.wildfly}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.postgresql</groupId>
+				<artifactId>postgresql</artifactId>
+				<version>9.3-1102-jdbc41</version>
+			</dependency>
+
+
+			<!-- Other Dependencies -->
 			<dependency>
 				<groupId>log4j</groupId>
 				<artifactId>log4j</artifactId>
@@ -128,34 +222,39 @@
 				<version>1.14.8</version>
 			</dependency>
 			<dependency>
-				<groupId>junit</groupId>
-				<artifactId>junit</artifactId>
-				<version>4.11</version>
-			</dependency>
-			<dependency>
 				<groupId>com.jamonapi</groupId>
 				<artifactId>jamon</artifactId>
 				<version>2.76</version>
 			</dependency>
 
 			<!-- JAXB -->
-			<dependency>
-				<groupId>javax.xml.bind</groupId>
-				<artifactId>jaxb-api</artifactId>
-				<version>2.2.4</version>
-			</dependency>
-			<dependency>
-				<groupId>com.sun.xml.bind</groupId>
-				<artifactId>jaxb-xjc</artifactId>
-				<version>2.2.4</version>
-			</dependency>
-			<dependency>
-				<groupId>javax.xml.ws</groupId>
-				<artifactId>jaxws-api</artifactId>
-				<version>2.2.8</version>
-			</dependency>
+			<!-- <dependency> -->
+			<!-- <groupId>javax.xml.bind</groupId> -->
+			<!-- <artifactId>jaxb-api</artifactId> -->
+			<!-- <version>2.2.4</version> -->
+			<!-- </dependency> -->
+			<!-- <dependency> -->
+			<!-- <groupId>com.sun.xml.bind</groupId> -->
+			<!-- <artifactId>jaxb-xjc</artifactId> -->
+			<!-- <version>2.2.4</version> -->
+			<!-- </dependency> -->
+			<!-- <dependency> -->
+			<!-- <groupId>javax.xml.ws</groupId> -->
+			<!-- <artifactId>jaxws-api</artifactId> -->
+			<!-- <version>2.2.8</version> -->
+			<!-- </dependency> -->
+			<!-- <dependency> -->
+			<!-- <groupId>com.sun.xml.parsers</groupId> -->
+			<!-- <artifactId>jaxp-ri</artifactId> -->
+			<!-- <version>1.4.5</version> -->
+			<!-- </dependency> -->
+			<!-- <dependency> -->
+			<!-- <groupId>com.sun.xml.ws</groupId> -->
+			<!-- <artifactId>jaxws-rt</artifactId> -->
+			<!-- <version>2.2.6</version> -->
+			<!-- </dependency> -->
 
-			<!-- Utilities -->
+			<!-- Utilities Dependencies -->
 			<dependency>
 				<groupId>com.google.guava</groupId>
 				<artifactId>guava</artifactId>
@@ -195,16 +294,6 @@
 				<groupId>xpp3</groupId>
 				<artifactId>xpp3</artifactId>
 				<version>1.1.3.4.O</version>
-			</dependency>
-			<dependency>
-				<groupId>com.sun.xml.ws</groupId>
-				<artifactId>jaxws-rt</artifactId>
-				<version>2.2.6</version>
-			</dependency>
-			<dependency>
-				<groupId>com.sun.xml.parsers</groupId>
-				<artifactId>jaxp-ri</artifactId>
-				<version>1.4.5</version>
 			</dependency>
 			<dependency>
 				<groupId>org.geotools</groupId>

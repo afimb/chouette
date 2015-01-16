@@ -31,7 +31,7 @@ public class NeptuneParserCommand implements Command, Constant {
 	@Override
 	public boolean execute(Context context) throws Exception {
 
-		String path = (String) context.get(NEPTUNE_FILE);
+		String path = (String) context.get(FILE);
 		InputStream input = new FileInputStream(path);
 		XmlPullParser xpp = XmlPullParserFactory.newInstance().newPullParser();
 		BufferedReader in = new BufferedReader(new InputStreamReader(input),
