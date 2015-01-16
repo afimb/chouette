@@ -397,7 +397,7 @@ public class GeographicService implements IGeographicService
    {
       if (sourceCRS == null)
       {
-         logger.error("no projection defined ");
+         //logger.error("no projection defined ");
          return false;
       }
 

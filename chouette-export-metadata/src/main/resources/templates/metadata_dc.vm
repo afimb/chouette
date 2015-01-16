@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<metadata xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:dcterms="http://purl.org/dc/terms/">
+	<!-- produced by Chouette -->
+#if ( $data.temporalCoverage.isSet())
+	<dcterms:coverage xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:type="dcterms:Period">$formater.format($data.temporalCoverage)</dcterms:coverage>
+#end
+#if ( $data.spatialCoverage.isSet())
+	<dcterms:spatial xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:type="dcterms:Box">$formater.format($data.spatialCoverage)</dcterms:spatial>
+#end
+	<dcterms:creator>$data.creator</dcterms:creator>
+	<dcterms:date xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:type="dcterms:W3CDTF">$formater.formatDate($data.date)</dcterms:date>
+#if ( $data.resources.size() > 0)	
+	<dcterms:description>Exported data count = $data.resources.size()
+#foreach( $resource in $data.resources )
+		$formater.format($resource)
+#end
+	</dcterms:description>
+#else
+	<dcterms:description>$data.description</dcterms:description>
+#end
+	<dcterms:format>$data.format</dcterms:format>
+	<dcterms:language xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:type="dcterms:W3CDTF">$data.language</dcterms:language>
+	<dcterms:publisher>$data.publisher</dcterms:publisher>
+	<dcterms:relation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:type="dcterms:URI">$data.relation</dcterms:relation>
+	<dcterms:title>$data.title</dcterms:title>
+	<dcterms:type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:type="dcterms:DCMIType">$data.type</dcterms:type>
+</metadata>

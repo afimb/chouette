@@ -32,6 +32,7 @@
 		<module>chouette-validation</module>
 		<module>chouette-command</module>
 		<module>chouette-gui-command</module>
+		<module>chouette-export-metadata</module>
 	</modules>
 
 	<distributionManagement>

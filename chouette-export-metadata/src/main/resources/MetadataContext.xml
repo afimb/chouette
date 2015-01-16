@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+   http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+	default-init-method="init">
+
+
+	<bean id="metadataDublinCoreFileWriter"
+		class="fr.certu.chouette.export.metadata.writer.DublinCoreFileWriter">
+		<property name="velocityEngine" ref="mdVelocityEngine" />
+	</bean>
+	
+	<bean id="metadataTextFileWriter"
+		class="fr.certu.chouette.export.metadata.writer.TextFileWriter">
+		<property name="velocityEngine" ref="mdVelocityEngine" />
+	</bean>
+
+	<bean id="mdVelocityEngine"
+		class="org.springframework.ui.velocity.VelocityEngineFactoryBean">
+		<property name="configLocation" value="classpath:velocityMD.properties" />
+	</bean>
+
+</beans>
+    
