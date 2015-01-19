@@ -1,7 +1,6 @@
 language: java
 jdk:
   - oraclejdk7
-  - oraclejdk8
   - openjdk7
 before_script:
   - psql -c "create user chouette with login createdb encrypted password 'chouette';" -U postgres
