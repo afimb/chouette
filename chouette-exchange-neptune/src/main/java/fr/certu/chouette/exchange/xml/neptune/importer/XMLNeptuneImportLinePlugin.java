@@ -341,7 +341,18 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
             continue;
 
          String entryName = entry.getName();
-         if (!FilenameUtils.getExtension(entryName).toLowerCase().equals("xml"))
+         if (entry.getName().contains("metadata_chouette"))
+         {
+            // report for save
+            ReportItem fileReportItem = new ExchangeReportItem(
+                  ExchangeReportItem.KEY.FILE_IGNORED, Report.STATE.OK,
+                  entryName);
+            importReport.addItem(fileReportItem);
+            // log
+            logger.info("zip entry " + entryName + " bypassed ; metadata file");
+            continue;
+         }
+         else if (!FilenameUtils.getExtension(entryName).toLowerCase().equals("xml"))
          {
             // report for save
             ReportItem fileReportItem = new ExchangeReportItem(

@@ -20,6 +20,10 @@
 			<groupId>fr.certu.chouette</groupId>
 			<artifactId>chouette-core</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>fr.certu.chouette</groupId>
+			<artifactId>chouette-export-metadata</artifactId>
+		</dependency>
 		<!-- Spring -->
 		<dependency>
 			<groupId>org.springframework</groupId>

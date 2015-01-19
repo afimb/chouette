@@ -26,6 +26,8 @@ import fr.certu.chouette.exchange.gtfs.exporter.producer.GtfsTransferProducer;
 import fr.certu.chouette.exchange.gtfs.exporter.producer.GtfsTripProducer;
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
 import fr.certu.chouette.exchange.gtfs.refactor.exporter.GtfsExporter;
+import fr.certu.chouette.export.metadata.model.Metadata;
+import fr.certu.chouette.export.metadata.model.NeptuneObjectPresenter;
 import fr.certu.chouette.model.neptune.Company;
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.JourneyPattern;
@@ -48,7 +50,7 @@ public class NeptuneData
     * @param report
     * @param timeZone 
     */
-   public void saveLines(List<Line> lines, GtfsExporter exporter, GtfsReport report, String prefix, String sharedPrefix, TimeZone timeZone)
+   public void saveLines(List<Line> lines, GtfsExporter exporter, GtfsReport report, String prefix, String sharedPrefix, TimeZone timeZone, Metadata metadata)
    {
       Map<String, List<Timetable>> timetables = new HashMap<String, List<Timetable>>();
       Set<StopArea> physicalStops = new HashSet<StopArea>();
@@ -108,6 +110,8 @@ public class NeptuneData
             {
                routeProducer.save(line, report, prefix);
                hasLines = true;
+               metadata.getResources().add(metadata.new Resource( 
+                     NeptuneObjectPresenter.getName(line.getPtNetwork()), NeptuneObjectPresenter.getName(line)));
                if (line.getCompany() != null)
                   companies.add(line.getCompany());
                if (line.getConnectionLinks() != null)
@@ -126,10 +130,17 @@ public class NeptuneData
             {
                iterator.remove();
             }
+            else
+            {
+               if (stop.hasCoordinates())
+                  metadata.getSpatialCoverage().update(stop.getLongitude().doubleValue(), stop.getLatitude().doubleValue());
+            }
          }
          for (StopArea stop : physicalStops)
          {
             stopProducer.save(stop, report, sharedPrefix, commercialStops);
+            if (stop.hasCoordinates())
+               metadata.getSpatialCoverage().update(stop.getLongitude().doubleValue(), stop.getLatitude().doubleValue());
          }
          // remove incomplete connectionlinks
          for (ConnectionLink link : connectionLinks)
@@ -153,19 +164,24 @@ public class NeptuneData
          for (List<Timetable> tms : timetables.values())
          {
             calendarProducer.save(tms, report, sharedPrefix);
+            for (Timetable tm : tms)
+            {
+               metadata.getTemporalCoverage().update(tm.getStartOfPeriod(), tm.getEndOfPeriod());
+            }
          }
 
       }
 
    }
 
-   public void saveStopAreas(List<StopArea> beans, GtfsExporter exporter, GtfsReport report, String sharedPrefix)
+   public void saveStopAreas(List<StopArea> beans, GtfsExporter exporter, GtfsReport report, String sharedPrefix, Metadata metadata)
    {
       Set<StopArea> physicalStops = new HashSet<StopArea>();
       Set<StopArea> commercialStops = new HashSet<StopArea>();
       Set<ConnectionLink> connectionLinks = new HashSet<ConnectionLink>();
       GtfsExtendedStopProducer stopProducer = new GtfsExtendedStopProducer(exporter);
       GtfsTransferProducer transferProducer = new GtfsTransferProducer(exporter);
+      metadata.setDescription("limited to stops and transfers");
       for (StopArea area : beans)
       {
          area.complete();
@@ -194,10 +210,17 @@ public class NeptuneData
          {
             iterator.remove();
          }
+         else
+         {
+            if (stop.hasCoordinates())
+               metadata.getSpatialCoverage().update(stop.getLongitude().doubleValue(), stop.getLatitude().doubleValue());
+         }
       }
       for (StopArea stop : physicalStops)
       {
          stopProducer.save(stop, report, sharedPrefix, commercialStops);
+         if (stop.hasCoordinates())
+            metadata.getSpatialCoverage().update(stop.getLongitude().doubleValue(), stop.getLatitude().doubleValue());
       }
       // remove incomplete connectionlinks
       for (ConnectionLink link : connectionLinks)

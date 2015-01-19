@@ -24,6 +24,7 @@
 		<module>chouette-core</module>
 		<module>chouette-hibernate-dao</module>
 		<module>chouette-jdbc-dao</module>
+		<module>chouette-export-metadata</module>
 		<module>chouette-exchange-netex</module>
 		<module>chouette-jaxb-neptune</module>
 		<module>chouette-exchange-neptune</module>
@@ -32,7 +33,6 @@
 		<module>chouette-validation</module>
 		<module>chouette-command</module>
 		<module>chouette-gui-command</module>
-		<module>chouette-export-metadata</module>
 	</modules>
 
 	<distributionManagement>
@@ -129,6 +129,11 @@
 			<dependency>
 				<groupId>fr.certu.chouette</groupId>
 				<artifactId>chouette-hibernate-dao</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>fr.certu.chouette</groupId>
+				<artifactId>chouette-export-metadata</artifactId>
 				<version>${project.version}</version>
 			</dependency>
 			<dependency>

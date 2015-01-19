@@ -26,8 +26,7 @@ import fr.certu.chouette.export.metadata.writer.TextFileWriter;
  * 
  * @author michel
  */
-@ContextConfiguration(locations = { "classpath:testContext.xml",
-      "classpath*:chouetteContext.xml" })
+@ContextConfiguration(locations = { "classpath:testContext.xml" })
 public class TextMetadataTest extends AbstractTestNGSpringContextTests
 {
    protected TextFileWriter fileWriter;
@@ -35,8 +34,7 @@ public class TextMetadataTest extends AbstractTestNGSpringContextTests
    @BeforeGroups  (groups = { "text" })
    protected void setUp() throws Exception
    {
-      fileWriter = (TextFileWriter) applicationContext
-            .getBean("metadataTextFileWriter");
+      fileWriter = new TextFileWriter();
 
    }
    

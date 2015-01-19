@@ -1246,6 +1246,7 @@ public class Line extends NeptuneIdentifiedObject
       // collect stopareas
       for (StopPoint sp : stopPoints)
       {
+         sp.getContainedInStopArea().addContainedStopPoint(sp);
          stopAreaSet.addAll(extractStopAreaHierarchy(sp
                .getContainedInStopArea()));
       }
@@ -1310,6 +1311,7 @@ public class Line extends NeptuneIdentifiedObject
             stopAreas.add(stopArea);
             if (stopArea.getParent() != null)
             {
+               stopArea.getParent().addContainedStopArea(stopArea);
                stopAreas.addAll(extractStopAreaHierarchy(stopArea.getParent()));
             }
          }

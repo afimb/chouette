@@ -2,12 +2,17 @@ package fr.certu.chouette.exchange.gtfs.exporter;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.TimeZone;
+
+import javax.xml.datatype.DatatypeConfigurationException;
 
 import lombok.extern.log4j.Log4j;
 
@@ -17,6 +22,9 @@ import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReportItem;
 import fr.certu.chouette.exchange.gtfs.refactor.exporter.GtfsExporter;
+import fr.certu.chouette.export.metadata.model.Metadata;
+import fr.certu.chouette.export.metadata.writer.DublinCoreFileWriter;
+import fr.certu.chouette.export.metadata.writer.TextFileWriter;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.plugin.exchange.FormatDescription;
 import fr.certu.chouette.plugin.exchange.IExportPlugin;
@@ -62,6 +70,10 @@ public class GtfsLineExportPlugin implements IExportPlugin<Line>
          ParameterDescription param = new ParameterDescription("objectIdPrefix", ParameterDescription.TYPE.STRING, false, false);
          params.add(param);
       }
+      {
+         ParameterDescription param = new ParameterDescription("metadata", ParameterDescription.TYPE.OBJECT, false, false);
+         params.add(param);
+      }
       // possible filter in future extension :
       // send only trips for a period, manage colors
       // {
@@ -104,6 +116,8 @@ public class GtfsLineExportPlugin implements IExportPlugin<Line>
       String fileName = null;
       TimeZone timeZone = null;
       String objectIdPrefix = null;
+      boolean addMetadata = false;
+      Metadata metadata = new Metadata();
       // Date startDate = null; // today ??
       // Date endDate = null; // in ten years ??
 
@@ -131,6 +145,11 @@ public class GtfsLineExportPlugin implements IExportPlugin<Line>
             else if (svalue.getName().equalsIgnoreCase("objectIdPrefix"))
             {
                objectIdPrefix = svalue.getStringValue();
+            }
+            else if (svalue.getName().equalsIgnoreCase("metadata"))
+            {
+               addMetadata = true;
+               metadata = (Metadata) svalue.getObjectValue();
             }
             else
             {
@@ -175,11 +194,22 @@ public class GtfsLineExportPlugin implements IExportPlugin<Line>
       }
 
       GtfsExporter exporter = null;
+      metadata.setDate(Calendar.getInstance());
+      metadata.setFormat("text/csv");
+      metadata.setTitle("Export GTFS ");
+      try
+      {
+         metadata.setRelation(new URL("https://developers.google.com/transit/gtfs/reference"));
+      }
+      catch (MalformedURLException e1)
+      {
+         log.error("problem with https://developers.google.com/transit/gtfs/reference url", e1);
+      }
       try
       {
          exporter = new GtfsExporter(targetDirectory.toString());
          NeptuneData neptuneData = new NeptuneData();
-         neptuneData.saveLines(beans, exporter, report, objectIdPrefix, objectIdPrefix, timeZone);
+         neptuneData.saveLines(beans, exporter, report, objectIdPrefix, objectIdPrefix, timeZone, metadata);
       }
       catch (Exception e)
       {
@@ -196,6 +226,22 @@ public class GtfsLineExportPlugin implements IExportPlugin<Line>
       }
       exporter.dispose();
 
+      // add metadata if required
+      if (addMetadata)
+      {
+         try
+         {
+            DublinCoreFileWriter dcWriter = new DublinCoreFileWriter();
+            dcWriter.writePlainFile(metadata, targetDirectory.toString());
+            TextFileWriter tWriter = new TextFileWriter();
+            tWriter.writePlainFile(metadata, targetDirectory.toString());         
+         }
+         catch (Exception e)
+         {
+            log.error("fail to produce metadata files ",e);
+         }
+      }
+      
       // compress files to zip
       try
       {

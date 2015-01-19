@@ -3,8 +3,11 @@ package fr.certu.chouette.exchange.netex.exporter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.zip.ZipOutputStream;
@@ -13,16 +16,21 @@ import javax.xml.datatype.DatatypeConfigurationException;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.log4j.Logger;
 
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.exchange.netex.NetexReport;
 import fr.certu.chouette.exchange.netex.NetexReportItem;
+import fr.certu.chouette.export.metadata.model.Metadata;
+import fr.certu.chouette.export.metadata.model.NeptuneObjectPresenter;
+import fr.certu.chouette.export.metadata.writer.DublinCoreFileWriter;
+import fr.certu.chouette.export.metadata.writer.TextFileWriter;
 import fr.certu.chouette.model.neptune.AccessPoint;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.StopArea;
+import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.plugin.exchange.FormatDescription;
 import fr.certu.chouette.plugin.exchange.IExportPlugin;
 import fr.certu.chouette.plugin.exchange.ParameterDescription;
@@ -34,10 +42,10 @@ import fr.certu.chouette.plugin.report.ReportHolder;
 /**
  * Export lines in Netex format
  */
+@Log4j
 public class NetexExportPlugin implements IExportPlugin<Line>
 {
 
-   private static final Logger logger = Logger.getLogger(NetexExportPlugin.class);
    private FormatDescription description;
    private NetexReport report = new NetexReport(NetexReport.KEY.EXPORT);
    /**
@@ -69,6 +77,10 @@ public class NetexExportPlugin implements IExportPlugin<Line>
          ParameterDescription param = new ParameterDescription("projectionType", ParameterDescription.TYPE.STRING, false, false);
          params.add(param);
       }
+      {
+         ParameterDescription param = new ParameterDescription("metadata", ParameterDescription.TYPE.OBJECT, false, false);
+         params.add(param);
+      }
 
       description.setParameterDescriptions(params);
    }
@@ -94,6 +106,8 @@ public class NetexExportPlugin implements IExportPlugin<Line>
    @Override
    public void doExport(List<Line> lines, List<ParameterValue> parameters, ReportHolder reportContainer) throws ChouetteException
    {
+      boolean addMetadata = false;
+      Metadata metadata = new Metadata();
       reportContainer.setReport(report);
 
       String fileName = null;
@@ -109,12 +123,17 @@ public class NetexExportPlugin implements IExportPlugin<Line>
                fileName = svalue.getFilepathValue();
                if (fileName == null)
                {
-                  logger.warn("outputFile changed as FILEPATH type");
+                  log.warn("outputFile changed as FILEPATH type");
                   fileName = svalue.getFilenameValue();
                }
                else if (svalue.getName().equalsIgnoreCase("projectionType"))
                {
                   projectionType = svalue.getStringValue();
+               }
+               else if (svalue.getName().equalsIgnoreCase("metadata"))
+               {
+                  addMetadata = true;
+                  metadata = (Metadata) svalue.getObjectValue();
                }
             }
          }
@@ -148,21 +167,21 @@ public class NetexExportPlugin implements IExportPlugin<Line>
       }
       else
       {
-         createZipFile(fileName, lines, projectionType);
+         createZipFile(fileName, lines, projectionType, metadata,addMetadata);
       }
 
    }
 
    private File createXmlFile(String filename, Line line, String projectionType)
    {
-      logger.info("exporting " + line.getName() + " (" + line.getObjectId() + ")");
+      log.info("exporting " + line.getName() + " (" + line.getObjectId() + ")");
       File xmlFile = null;
       // Complete datas for all neptune objects
       line.complete();
 
       if (line.getVehicleJourneys() == null || line.getVehicleJourneys().isEmpty())
       {
-         logger.info("no vehiclejourneys for line " + line.getName() + " (" + line.getObjectId() + "): not exported");
+         log.info("no vehiclejourneys for line " + line.getName() + " (" + line.getObjectId() + "): not exported");
          NetexReportItem item = new NetexReportItem(NetexReportItem.KEY.EMPTY_LINE, Report.STATE.ERROR, line.getName(), line.getObjectId());
          report.addItem(item);
       }
@@ -185,13 +204,13 @@ public class NetexExportPlugin implements IExportPlugin<Line>
          }
          catch (DatatypeConfigurationException exception)
          {
-            logger.error("Impossible to create xml file for line " + line.getName() + " : " + exception);
+            log.error("Impossible to create xml file for line " + line.getName() + " : " + exception);
             NetexReportItem item = new NetexReportItem(NetexReportItem.KEY.FILE_ERROR, Report.STATE.ERROR, line.getName(), line.getObjectId());
             report.addItem(item);
          }
          catch (IOException exception)
          {
-            logger.error("Impossible to create xml file for line " + line.getName() + " : " + exception);
+            log.error("Impossible to create xml file for line " + line.getName() + " : " + exception);
             NetexReportItem item = new NetexReportItem(NetexReportItem.KEY.FILE_ERROR, Report.STATE.ERROR, line.getName(), line.getObjectId());
             report.addItem(item);
          }
@@ -200,9 +219,21 @@ public class NetexExportPlugin implements IExportPlugin<Line>
       return xmlFile;
    }
 
-   private ZipOutputStream createZipFile(String fileName, List<Line> lines, String projectionType)
+   private ZipOutputStream createZipFile(String fileName, List<Line> lines, String projectionType, Metadata metadata, boolean addMetadata)
    {
       ZipOutputStream zipFile = null;
+      metadata.setDate(Calendar.getInstance());
+      metadata.setFormat("application/xml");
+      metadata.setTitle("Export NeTEx ");
+      try
+      {
+         metadata.setRelation(new URL("http://www.chouette.mobi"));
+      }
+      catch (MalformedURLException e1)
+      {
+         log.error("problem with http://www.chouette.mobi url", e1);
+      }
+
       try
       {
          zipFile = new ZipOutputStream(new FileOutputStream(fileName));
@@ -215,11 +246,11 @@ public class NetexExportPlugin implements IExportPlugin<Line>
             // Complete datas for all neptune objects
             line.complete();
 
-            logger.info("exporting " + line.getName() + " (" + line.getObjectId() + ")");
+            log.info("exporting " + line.getName() + " (" + line.getObjectId() + ")");
 
             if (line.getVehicleJourneys() == null || line.getVehicleJourneys().isEmpty())
             {
-               logger.info("no vehiclejourneys for line " + line.getName() + " (" + line.getObjectId() + "): not exported");
+               log.info("no vehiclejourneys for line " + line.getName() + " (" + line.getObjectId() + "): not exported");
                NetexReportItem item = new NetexReportItem(NetexReportItem.KEY.EMPTY_LINE, Report.STATE.ERROR, line.getName(), line.getObjectId());
                report.addItem(item);
             }
@@ -232,16 +263,28 @@ public class NetexExportPlugin implements IExportPlugin<Line>
                   netexFileWriter.writeZipEntry(line, entryName, zipFile);
                   NetexReportItem item = new NetexReportItem(NetexReportItem.KEY.EXPORTED_LINE, Report.STATE.OK, line.getName(), line.getObjectId());
                   report.addItem(item);
+                  metadata.getResources().add(metadata.new Resource( entryName,
+                        NeptuneObjectPresenter.getName(line.getPtNetwork()), NeptuneObjectPresenter.getName(line)));
+                  for (Timetable tm : line.getTimetables())
+                  {
+                     metadata.getTemporalCoverage().update(tm.getStartOfPeriod(), tm.getEndOfPeriod());
+                  }
+                  for (StopArea stop : line.getStopAreas())
+                  {
+                     if (stop.hasCoordinates())
+                        metadata.getSpatialCoverage().update(stop.getLongitude().doubleValue(), stop.getLatitude().doubleValue());
+                  }
+                  
                }
                catch (DatatypeConfigurationException exception)
                {
-                  logger.error("Impossible to create xml file for line " + line.getName() + " : " + exception);
+                  log.error("Impossible to create xml file for line " + line.getName() + " : " + exception);
                   NetexReportItem item = new NetexReportItem(NetexReportItem.KEY.FILE_ERROR, Report.STATE.ERROR, line.getName(), line.getObjectId());
                   report.addItem(item);
                }
                catch (IOException exception)
                {
-                  logger.error("Impossible to create xml file for line " + line.getName() + " : " + exception);
+                  log.error("Impossible to create xml file for line " + line.getName() + " : " + exception);
                   NetexReportItem item = new NetexReportItem(NetexReportItem.KEY.FILE_ERROR, Report.STATE.ERROR, line.getName(), line.getObjectId());
                   report.addItem(item);
                }
@@ -249,12 +292,28 @@ public class NetexExportPlugin implements IExportPlugin<Line>
          }
          System.gc();
 
+         // write metadata
+         if (addMetadata)
+         {
+            try
+            {
+               DublinCoreFileWriter dcWriter = new DublinCoreFileWriter();
+               dcWriter.writeZipEntry(metadata, zipFile);
+               TextFileWriter tWriter = new TextFileWriter();
+               tWriter.writeZipEntry(metadata, zipFile);
+            }
+            catch (DatatypeConfigurationException e)
+            {
+               log.error("unable to produce metadata",e);
+            }
+         }
+
          // Complete the ZIP file
          zipFile.close();
       }
       catch (IOException exception)
       {
-         logger.error("Impossible to create zip file : " + exception);
+         log.error("Impossible to create zip file : " + exception);
          NetexReportItem item = new NetexReportItem(NetexReportItem.KEY.FILE_ERROR, Report.STATE.ERROR);
          report.addItem(item);
       }

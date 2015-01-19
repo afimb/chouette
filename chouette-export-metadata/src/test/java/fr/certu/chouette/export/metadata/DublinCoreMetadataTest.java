@@ -26,8 +26,7 @@ import fr.certu.chouette.export.metadata.writer.DublinCoreFileWriter;
  * 
  * @author michel
  */
-@ContextConfiguration(locations = { "classpath:testContext.xml",
-      "classpath*:chouetteContext.xml" })
+@ContextConfiguration(locations = { "classpath:testContext.xml" })
 public class DublinCoreMetadataTest extends AbstractTestNGSpringContextTests
 {
    protected DublinCoreFileWriter fileWriter;
@@ -35,8 +34,7 @@ public class DublinCoreMetadataTest extends AbstractTestNGSpringContextTests
    @BeforeGroups  (groups = { "dc" })
    protected void setUp() throws Exception
    {
-      fileWriter = (DublinCoreFileWriter) applicationContext
-            .getBean("metadataDublinCoreFileWriter");
+      fileWriter = new DublinCoreFileWriter();
 
    }
    

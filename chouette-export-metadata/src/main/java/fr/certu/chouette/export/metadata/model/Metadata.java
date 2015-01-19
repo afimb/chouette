@@ -6,6 +6,7 @@ package fr.certu.chouette.export.metadata.model;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -22,13 +23,11 @@ public class Metadata
     * spatial coverage, bounding box including all exported stop areas
     */
    @Getter
-   @Setter
    private Box spatialCoverage = new Box();
    /**
     * temporal coverage, calendar period covered by exported timetables
     */
    @Getter
-   @Setter
    private Period temporalCoverage = new Period();
 
    /**
@@ -54,7 +53,6 @@ public class Metadata
     * list of exported data, replace description if not empty
     */
    @Getter
-   @Setter
    private List<Resource> resources = new ArrayList<>();
 
    /**
@@ -200,7 +198,22 @@ public class Metadata
          if (end == null || endDate.after(end))
             end = (Calendar) endDate.clone();
       }
-      
+
+      /**
+       * update period if timetable overlaps it
+       * 
+       * @param startDate timetable minimal date
+       * @param endDate timetable maximal date
+       */
+      public void update(Date startDate, Date endDate)
+      {
+         Calendar startCal = Calendar.getInstance();
+         startCal.setTime(startDate);
+         Calendar endCal = Calendar.getInstance();
+         endCal.setTime(endDate);
+         update(startCal,endCal);
+      }
+
       public boolean isSet()
       {
          return start != null && end != null;

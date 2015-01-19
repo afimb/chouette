@@ -46,6 +46,10 @@
 			<artifactId>chouette-core</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>fr.certu.chouette</groupId>
+			<artifactId>chouette-export-metadata</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>org.apache.velocity</groupId>
 			<artifactId>velocity</artifactId>
 		</dependency>

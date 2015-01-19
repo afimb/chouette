@@ -29,6 +29,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.dao.IDaoTemplate;
+import fr.certu.chouette.export.metadata.model.Metadata;
 import fr.certu.chouette.filter.Filter;
 import fr.certu.chouette.filter.FilterOrder;
 import fr.certu.chouette.manager.INeptuneManager;
@@ -40,6 +41,7 @@ import fr.certu.chouette.plugin.exchange.ParameterValue;
 import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
 import fr.certu.chouette.plugin.model.ExportLogMessage;
 import fr.certu.chouette.plugin.model.GuiExport;
+import fr.certu.chouette.plugin.model.Organisation;
 import fr.certu.chouette.plugin.model.Referential;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportHolder;
@@ -130,6 +132,12 @@ public class ExportCommand
       logger.info("  name : " + referential.getName());
       logger.info("  slug : " + referential.getSlug());
       logger.info("  projection type : " + referential.getProjectionType());
+      
+      Organisation organisation = referential.getOrganisation();
+      
+      Metadata metadata = new Metadata();
+      metadata.setCreator(organisation.getName());
+      metadata.setPublisher(referential.getName());
 
       String projectionType = null;
       if (referential.getProjectionType() != null
@@ -174,10 +182,12 @@ public class ExportCommand
             if (objectName.equals("network"))
             {
                filter.add("ptNetwork.id");
-            } else if (objectName.equals("company"))
+            } 
+            else if (objectName.equals("company"))
             {
                filter.add("company.id");
-            } else
+            } 
+            else
             {
                throw new IllegalArgumentException("format " + format
                      + " unavailable for " + objectName);
@@ -195,6 +205,10 @@ public class ExportCommand
 
          List<ParameterValue> values = populateParameters(description,
                parameters);
+         
+         SimpleParameterValue metadataParameter = new SimpleParameterValue("metadata");
+         metadataParameter.setObjectValue(metadata);
+         values.add(metadataParameter);
 
          ReportHolder holder = new ReportHolder();
          List<NeptuneIdentifiedObject> beans = executeGet(manager, parameters);

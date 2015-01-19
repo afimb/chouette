@@ -5,13 +5,17 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import lombok.Setter;
+import lombok.extern.log4j.Log4j;
 
 import org.apache.log4j.Logger;
 
@@ -23,7 +27,13 @@ import fr.certu.chouette.exchange.csv.exporter.producer.PTNetworkProducer;
 import fr.certu.chouette.exchange.csv.exporter.producer.TimetableProducer;
 import fr.certu.chouette.exchange.csv.exporter.report.CSVReport;
 import fr.certu.chouette.exchange.csv.exporter.report.CSVReportItem;
+import fr.certu.chouette.export.metadata.model.Metadata;
+import fr.certu.chouette.export.metadata.model.NeptuneObjectPresenter;
+import fr.certu.chouette.export.metadata.model.Metadata.Resource;
+import fr.certu.chouette.export.metadata.writer.DublinCoreFileWriter;
+import fr.certu.chouette.export.metadata.writer.TextFileWriter;
 import fr.certu.chouette.model.neptune.Line;
+import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.plugin.exchange.FormatDescription;
 import fr.certu.chouette.plugin.exchange.IExportPlugin;
@@ -33,11 +43,10 @@ import fr.certu.chouette.plugin.exchange.SimpleParameterValue;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportHolder;
 
+@Log4j
 public class CSVExportLinePlugin implements IExportPlugin<Line>
 {
 
-   private static final Logger logger = Logger
-         .getLogger(CSVExportLinePlugin.class);
    @Setter
    TimetableProducer timetableProducer;
    @Setter
@@ -58,6 +67,10 @@ public class CSVExportLinePlugin implements IExportPlugin<Line>
             ParameterDescription.TYPE.FILEPATH, false, true);
       param1.setAllowedExtensions(Arrays.asList(new String[] { "csv", "zip" }));
       params.add(param1);
+      {
+         ParameterDescription param = new ParameterDescription("metadata", ParameterDescription.TYPE.OBJECT, false, false);
+         params.add(param);
+      }
       description.setParameterDescriptions(params);
    }
 
@@ -70,7 +83,9 @@ public class CSVExportLinePlugin implements IExportPlugin<Line>
    @Override
    public void doExport(List<Line> beans, List<ParameterValue> parameters,
          ReportHolder reportContainer) throws ChouetteException
-   {
+         {
+      boolean addMetadata = false;
+      Metadata metadata = new Metadata();
       String fileName = null;
       CSVReport report = new CSVReport(CSVReport.KEY.EXPORT);
       report.updateStatus(Report.STATE.OK);
@@ -90,6 +105,11 @@ public class CSVExportLinePlugin implements IExportPlugin<Line>
             {
                fileName = svalue.getFilepathValue();
             }
+            else if (svalue.getName().equalsIgnoreCase("metadata"))
+            {
+               addMetadata = true;
+               metadata = (Metadata) svalue.getObjectValue();
+            }
 
          }
       }
@@ -106,9 +126,21 @@ public class CSVExportLinePlugin implements IExportPlugin<Line>
       }
       if (fileName.toLowerCase().endsWith(".zip"))
       {
+         metadata.setDate(Calendar.getInstance());
+         metadata.setFormat("application/xml");
+         metadata.setTitle("Export Neptune ");
+         try
+         {
+            metadata.setRelation(new URL("http://www.chouette.mobi"));
+         }
+         catch (MalformedURLException e1)
+         {
+            log.error("problem with http://www.chouette.mobi url", e1);
+         }
          // Create the ZIP file
          try
          {
+
             ZipOutputStream out = new ZipOutputStream(new FileOutputStream(
                   fileName));
             for (Line line : beans)
@@ -121,7 +153,7 @@ public class CSVExportLinePlugin implements IExportPlugin<Line>
                         CSVReportItem.KEY.TOO_MUCH_ROUTES,
                         Report.STATE.WARNING, line.getName());
                   report.addItem(item);
-                  logger.error("cannot export " + line.getName()
+                  log.error("cannot export " + line.getName()
                         + " too much routes (> 2)");
                   continue;
                }
@@ -130,7 +162,7 @@ public class CSVExportLinePlugin implements IExportPlugin<Line>
                try
                {
                   exportLine(new OutputStreamWriter(stream, "UTF-8"), line,
-                        report);
+                        report,metadata);
 
                   // Add ZIP entry to output stream.
                   ZipEntry entry = new ZipEntry(line.getName() + "_"
@@ -145,15 +177,27 @@ public class CSVExportLinePlugin implements IExportPlugin<Line>
 
                   // Complete the entry
                   out.closeEntry();
+                  metadata.getResources().add(metadata.new Resource(line.getName() + "_" + line.getId() + ".csv", 
+                        NeptuneObjectPresenter.getName(line.getPtNetwork()), NeptuneObjectPresenter.getName(line)));
                } catch (IOException e)
                {
-                  logger.error("export failed ", e);
+                  log.error("export failed ", e);
                }
             }
+
+            // write metadata
+            if (addMetadata)
+            {
+               DublinCoreFileWriter dcWriter = new DublinCoreFileWriter();
+               dcWriter.writeZipEntry(metadata, out);
+               TextFileWriter tWriter = new TextFileWriter();
+               tWriter.writeZipEntry(metadata, out);
+            }
+
             out.close();
-         } catch (IOException e)
+         } catch (Exception e)
          {
-            logger.error("export failed ", e);
+            log.error("export failed ", e);
          }
 
       } else
@@ -163,15 +207,15 @@ public class CSVExportLinePlugin implements IExportPlugin<Line>
          {
             line.complete();
             exportLine(new OutputStreamWriter(new FileOutputStream(fileName),
-                  "UTF-8"), line, report);
+                  "UTF-8"), line, report, metadata);
          } catch (IOException e)
          {
-            logger.error("export failed ", e);
+            log.error("export failed ", e);
          }
       }
-   }
+         }
 
-   private void exportLine(Writer writer, Line line, Report report)
+   private void exportLine(Writer writer, Line line, Report report, Metadata metadata)
    {
       List<Timetable> timetables = line.getTimetables();
 
@@ -181,10 +225,18 @@ public class CSVExportLinePlugin implements IExportPlugin<Line>
                CSVWriter.NO_QUOTE_CHARACTER);
          for (Timetable timetable : timetables)
          {
+
             csvWriter.writeAll(timetableProducer.produce(timetable, report));
             csvWriter.writeNext(new String[0]);
+            metadata.getTemporalCoverage().update(timetable.getStartOfPeriod(), timetable.getEndOfPeriod());
          }
 
+         for (StopArea stopArea : line.getStopAreas())
+         {
+            if (stopArea.hasCoordinates())
+               metadata.getSpatialCoverage().update(stopArea.getLongitude().doubleValue(), stopArea.getLatitude().doubleValue());
+
+         }
          csvWriter.writeAll(ptNetworkProducer.produce(line.getPtNetwork(),
                report));
          csvWriter.writeNext(new String[0]);
@@ -198,7 +250,7 @@ public class CSVExportLinePlugin implements IExportPlugin<Line>
          csvWriter.close();
       } catch (IOException e)
       {
-         logger.error("export failed ", e);
+         log.error("export failed ", e);
       }
    }
 

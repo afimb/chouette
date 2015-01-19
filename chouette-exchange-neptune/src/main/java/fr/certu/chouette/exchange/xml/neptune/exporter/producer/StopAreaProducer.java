@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.trident.schema.trident.ChouetteAreaType;
-import org.trident.schema.trident.StopAreaExtensionType;
 import org.trident.schema.trident.ChouettePTNetworkType.ChouetteArea;
+import org.trident.schema.trident.StopAreaExtensionType;
 import org.trident.schema.trident.StopAreaExtensionType.AccessibilitySuitabilityDetails;
 
 import uk.org.ifopt.acsb.EncumbranceEnumeration;
@@ -15,11 +15,11 @@ import uk.org.ifopt.acsb.MedicalNeedEnumeration;
 import uk.org.ifopt.acsb.MobilityEnumeration;
 import uk.org.ifopt.acsb.PyschosensoryNeedEnumeration;
 import uk.org.ifopt.acsb.UserNeedStructure;
-
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.model.neptune.type.UserNeedEnum;
+
 
 public class StopAreaProducer extends
       AbstractJaxbNeptuneProducer<ChouetteArea.StopArea, StopArea>
@@ -36,8 +36,6 @@ public class StopAreaProducer extends
 
       jaxbStopArea.setComment(getNotEmptyString(stopArea.getComment()));
       jaxbStopArea.setName(stopArea.getName());
-
-      // castorStopArea.setCentroidOfArea(getNonEmptyObjectId(stopArea.getAreaCentroid()));
 
       Set<String> containsList = new HashSet<String>();
       if (stopArea.getAreaType().equals(ChouetteAreaEnum.ITL))

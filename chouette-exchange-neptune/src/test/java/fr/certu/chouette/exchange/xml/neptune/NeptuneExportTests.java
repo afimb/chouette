@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.Logger;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
@@ -15,6 +14,7 @@ import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
 import fr.certu.chouette.common.ChouetteException;
+import fr.certu.chouette.export.metadata.model.Metadata;
 import fr.certu.chouette.model.neptune.AccessLink;
 import fr.certu.chouette.model.neptune.AccessPoint;
 import fr.certu.chouette.model.neptune.ConnectionLink;
@@ -41,14 +41,14 @@ import fr.certu.chouette.plugin.validation.report.DetailReportItem;
 @SuppressWarnings("unchecked")
 public class NeptuneExportTests extends AbstractTestNGSpringContextTests
 {
-   private static final Logger logger = Logger
-         .getLogger(NeptuneExportTests.class);
 
    private IImportPlugin<Line> importLine = null;
    private IExportPlugin<Line> exportLine = null;
    private String neptuneFile = null;
    private String path = "src/test/resources/";
    private String targetPath = "target/test/";
+
+   private String neptuneZipOK = null;
 
    @Test(groups = { "ExportLine" }, description = "Get a bean from context")
    public void getBean()
@@ -64,6 +64,13 @@ public class NeptuneExportTests extends AbstractTestNGSpringContextTests
    public void getNeptuneFile(String neptuneFile)
    {
       this.neptuneFile = neptuneFile;
+   }
+
+   @Parameters({ "neptuneZipOK" })
+   @Test(groups = { "ExportLine" }, description = "Export Plugin should export neptune file", dependsOnMethods = { "getBean" })
+   public void getNeptuneZipOK(String neptuneFile)
+   {
+      this.neptuneZipOK  = neptuneFile;
    }
 
    @Test(groups = { "CheckParameters" }, description = "Export Plugin should reject wrong file extension", dependsOnMethods = { "getBean" }, expectedExceptions = { IllegalArgumentException.class })
@@ -132,8 +139,7 @@ public class NeptuneExportTests extends AbstractTestNGSpringContextTests
 
       Assert.assertEquals(description.getName(), "NEPTUNE");
       Assert.assertNotNull(params, "params should not be null");
-      Assert.assertEquals(params.size(), 4, " params size must equal 4");
-      logger.info("Description \n " + description.toString());
+      Assert.assertEquals(params.size(), 5, " params size must equal 5");
       Reporter.log("Description \n " + description.toString());
 
    }
@@ -293,20 +299,41 @@ public class NeptuneExportTests extends AbstractTestNGSpringContextTests
                   "line must have closing time of 22 hours 10");
 
          }
-         // Assert.assertEquals(facilities.size(),1,"line must have 1 facility");
-         // for (Facility facility : facilities)
-         // {
-         // Assert.assertNotNull(facility.getFacilityFeatures(),"Facility must have features : "+facility.getObjectId());
-         // Assert.assertEquals(facility.getFacilityFeatures().size(),1,"Facility must have 1 feature : "+facility.getObjectId());
-         // for (FacilityFeature feature : facility.getFacilityFeatures())
-         // {
-         // Assert.assertNotNull(feature.getChoiceValue(),"feature must have choice");
-         // Assert.assertEquals(feature.getAccessFacility(),
-         // AccessFacilityEnumeration.BARRIER,"feature must be BARRIER");
-         // }
-         // }
 
       }
+   }
+
+   @Test(groups = { "ExportLine" }, description = "Export Plugin should export file and metadata", dependsOnMethods = {
+         "getBean", "getNeptuneZipOK" })
+   public void verifyExportLineWithMetadata() throws ChouetteException
+   {
+      List<Line> lines = importZip();
+
+      // export data
+     
+         Metadata data = new Metadata();
+         data.setCreator("creator");
+         data.setPublisher("publisher");
+         List<ParameterValue> parameters = new ArrayList<ParameterValue>();
+         {
+         SimpleParameterValue simpleParameterValue = new SimpleParameterValue(
+               "outputFile");
+         simpleParameterValue.setFilepathValue(targetPath + "/" + neptuneZipOK);
+         parameters.add(simpleParameterValue);
+         }
+         {
+         SimpleParameterValue simpleParameterValue = new SimpleParameterValue(
+               "metadata");
+         simpleParameterValue.setObjectValue(data);
+         parameters.add(simpleParameterValue);
+         }
+
+         ReportHolder report = new ReportHolder();
+         exportLine.doExport(lines, parameters, report);
+         Assert.assertEquals(data.getResources().size(), 7,"metadata should refer 7 resources");
+         Assert.assertTrue(data.getTemporalCoverage().isSet(), " temporal coverage should be set");
+         Assert.assertTrue(data.getSpatialCoverage().isSet(), " spatial coverage should be set");
+     
    }
 
    private List<Line> importLines() throws ChouetteException
@@ -317,6 +344,25 @@ public class NeptuneExportTests extends AbstractTestNGSpringContextTests
       SimpleParameterValue simpleParameterValue = new SimpleParameterValue(
             "inputFile");
       simpleParameterValue.setFilepathValue(path + "/" + neptuneFile);
+      parameters.add(simpleParameterValue);
+
+      ReportHolder report = new ReportHolder();
+      ReportHolder report2 = new ReportHolder();
+      List<Line> result = importLine.doImport(parameters, report, report2);
+
+      printReport(report2.getReport());
+      return result;
+
+   }
+
+   private List<Line> importZip() throws ChouetteException
+   {
+      // import data
+
+      List<ParameterValue> parameters = new ArrayList<ParameterValue>();
+      SimpleParameterValue simpleParameterValue = new SimpleParameterValue(
+            "inputFile");
+      simpleParameterValue.setFilepathValue(path + "/" + neptuneZipOK);
       parameters.add(simpleParameterValue);
 
       ReportHolder report = new ReportHolder();

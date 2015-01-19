@@ -11,7 +11,6 @@ import java.util.zip.ZipOutputStream;
 import javax.xml.datatype.DatatypeConfigurationException;
 
 import lombok.Getter;
-import lombok.Setter;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -25,7 +24,6 @@ public abstract class TemplateFileWriter
 
    private static final Logger logger = Logger.getLogger(TemplateFileWriter.class);
    @Getter
-   @Setter
    private VelocityEngine velocityEngine;
    // Prepare the model for velocity
    @Getter
@@ -33,6 +31,9 @@ public abstract class TemplateFileWriter
 
    public TemplateFileWriter()
    {
+      velocityEngine = new VelocityEngine();
+      velocityEngine.addProperty("resource.loader", "classpath");
+      velocityEngine.addProperty("classpath.resource.loader.class","org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
    }
 
 

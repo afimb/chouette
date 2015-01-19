@@ -16,6 +16,9 @@ import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReport;
 import fr.certu.chouette.exchange.gtfs.exporter.report.GtfsReportItem;
 import fr.certu.chouette.exchange.gtfs.refactor.exporter.GtfsExporter;
+import fr.certu.chouette.export.metadata.model.Metadata;
+import fr.certu.chouette.export.metadata.writer.DublinCoreFileWriter;
+import fr.certu.chouette.export.metadata.writer.TextFileWriter;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.plugin.exchange.FormatDescription;
 import fr.certu.chouette.plugin.exchange.IExportPlugin;
@@ -59,6 +62,10 @@ public class GtfsStopAreaExportPlugin implements IExportPlugin<StopArea>
          ParameterDescription param = new ParameterDescription("objectIdPrefix", ParameterDescription.TYPE.STRING, false, false);
          params.add(param);
       }
+      {
+         ParameterDescription param = new ParameterDescription("metadata", ParameterDescription.TYPE.OBJECT, false, false);
+         params.add(param);
+      }
       description.setParameterDescriptions(params);
    }
 
@@ -89,6 +96,8 @@ public class GtfsStopAreaExportPlugin implements IExportPlugin<StopArea>
       reportHolder.setReport(report);
       String fileName = null;
       String objectIdPrefix = null;
+      boolean addMetadata = false;
+      Metadata metadata = new Metadata();
 
       if (beans == null)
       {
@@ -111,6 +120,11 @@ public class GtfsStopAreaExportPlugin implements IExportPlugin<StopArea>
             else if (svalue.getName().equalsIgnoreCase("objectIdPrefix"))
             {
                objectIdPrefix = svalue.getStringValue();
+            }
+            else if (svalue.getName().equalsIgnoreCase("metadata"))
+            {
+               addMetadata = true;
+               metadata = (Metadata) svalue.getObjectValue();
             }
             else
             {
@@ -157,7 +171,7 @@ public class GtfsStopAreaExportPlugin implements IExportPlugin<StopArea>
       {
          exporter = new GtfsExporter(targetDirectory.toString());
          NeptuneData neptuneData = new NeptuneData();
-         neptuneData.saveStopAreas(beans, exporter, report, objectIdPrefix);
+         neptuneData.saveStopAreas(beans, exporter, report, objectIdPrefix,metadata);
       }
       catch (Exception e)
       {
@@ -173,6 +187,22 @@ public class GtfsStopAreaExportPlugin implements IExportPlugin<StopArea>
          return;
       }
       exporter.dispose();
+
+      // add metadata if required
+      if (addMetadata)
+      {
+         try
+         {
+            DublinCoreFileWriter dcWriter = new DublinCoreFileWriter();
+            dcWriter.writePlainFile(metadata, targetDirectory.toString());
+            TextFileWriter tWriter = new TextFileWriter();
+            tWriter.writePlainFile(metadata, targetDirectory.toString());         
+         }
+         catch (Exception e)
+         {
+            log.error("fail to produce metadata files ",e);
+         }
+      }
 
       // compress files to zip
       try
