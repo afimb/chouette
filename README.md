@@ -9,6 +9,7 @@ Chouette is a java open source project on transport offer. It's divided in diffe
 * chouette-exchange-neptune : Import/Export in neptune format
 * chouette-exchange-netex : Import/Export in netex format
 * chouette-export-geoportail : Export in geoportail format (deprecated)
+* chouette-export-metadata : Export metadata for all formats
 * chouette-gui-command : Command Line tool used by Ruby Chouette2 GUI for Import/Export/Validation purpose
 * chouette-hibernate-dao : Access to the database via hibernate 
 * chouette-jdbc-dao : Access to the database via jdbc (mass upload only)
@@ -34,6 +35,7 @@ Requirements
  
 This code has been run and tested on [Travis](http://travis-ci.org/afimb/chouette?branch=master) with : 
 * oraclejdk7
+* oraclejdk8
 * openjdk7
 
 

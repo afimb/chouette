@@ -1,5 +1,23 @@
+# Version 2.5.2 (21/01/15)
+* Nouvelles fonctionnalités
+  * Tests de validation avant export (Hub)
+  * Metadata à l'export
+
+* Amélioration
+  * Optimisation de jaxb
+  
+* Correction
+  * Détection d'absence de fin de ligne en fin de fichier gtfs (Mantis 30988)
+
+# Version 2.5.1 (09/12/14)
+* Nouvelles fonctionnalités
+  * refonte des échanges GTFS
+
+* Amélioration
+  * Complétude du javadoc pour chouette-model
+
 # Version 2.5.0 (23/10/14)
-* Nouvelles foctionnalités
+* Nouvelles fonctionnalités
   * Import d'arrêts en CSV/Excel (Mantis 26832)
   * Attributs vacances et jours fériés : comme étiquette (Mantis 26835)
   * Gestion de dates exclues dans les calendriers (Mantis 26837)
