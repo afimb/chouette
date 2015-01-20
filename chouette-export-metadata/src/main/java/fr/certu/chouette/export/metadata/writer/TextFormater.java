@@ -4,8 +4,10 @@
 package fr.certu.chouette.export.metadata.writer;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 import fr.certu.chouette.export.metadata.model.Metadata.Box;
 import fr.certu.chouette.export.metadata.model.Metadata.Period;
@@ -18,7 +20,7 @@ import fr.certu.chouette.export.metadata.model.Metadata.Resource;
 public class TextFormater implements Formater
 {
 
-   private static DecimalFormat doubleFormat = new DecimalFormat("#.000"); 
+   private static DecimalFormat doubleFormat = new DecimalFormat("#.000",DecimalFormatSymbols.getInstance(Locale.US)); 
    private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy"); 
    /* (non-Javadoc)
     * @see fr.certu.chouette.export.metadata.writer.Formater#format(fr.certu.chouette.export.metadata.model.Metadata.Period)
