@@ -9,6 +9,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
+import mobi.chouette.exchange.neptune.importer.NeptuneParserCommand;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -23,7 +24,7 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class NeptuneParserTest {
 
-	@EJB(beanName = "NeptuneParserCommand")
+	@EJB(beanName = NeptuneParserCommand.COMMAND)
 	private Command command;
 
 	@Deployment
@@ -33,32 +34,31 @@ public class NeptuneParserTest {
 
 		// TODO use POM
 
-		// File[] dependencies = Maven.resolver().loadPomFromFile("pom.xml")
-		// .importRuntimeAndTestDependencies().resolve()
-		// .withTransitivity().asFile();
+		File[] files = Maven.resolver().loadPomFromFile("pom.xml")
+				.resolve("mobi.chouette:mobi.chouette.exchange.neptune:1.0.0")
+				.withTransitivity().asFile();
+
+		result = ShrinkWrap.create(WebArchive.class, "test.war")
+				.addAsWebInfResource("wildfly-ds.xml").addAsLibraries(files)
+				.addAsManifestResource("C_NEPTUNE_3.xml")
+				.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
+
+		// String[] artifacts = {
+		// "mobi.chouette:mobi.chouette.exchange.neptune:1.0.0",
+		// "mobi.chouette:mobi.chouette.common:1.0.0",
+		// "mobi.chouette:mobi.chouette.model:1.0.0",
+		// "mobi.chouette:mobi.chouette.importer:1.0.0",
+		// "mobi.chouette:mobi.chouette.exporter:1.0.0",
+		// "mobi.chouette:mobi.chouette.validation:1.0.0",
+		// "mobi.chouette:mobi.chouette.exchange.neptune:1.0.0",
+		// "xpp3:xpp3:1.1.3.4.O", "com.google.guava:guava:18.0" };
+		// File[] dependencies = Maven.resolver().resolve(artifacts)
+		// .withoutTransitivity().asFile();
 		//
-		// result = ShrinkWrap.create(WebArchive.class, "test.war")
-		// .addAsWebInfResource("wildfly-ds.xml")
+		// result = ShrinkWrap.create(WebArchive.class)
 		// .addAsLibraries(dependencies)
 		// .addAsResource("xml/C_NEPTUNE_3.xml")
 		// .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
-
-		String[] artifacts = {
-				"mobi.chouette:mobi.chouette.exchange.neptune:1.0.0",
-				"mobi.chouette:mobi.chouette.common:1.0.0",
-				"mobi.chouette:mobi.chouette.model:1.0.0",
-				"mobi.chouette:mobi.chouette.importer:1.0.0",
-				"mobi.chouette:mobi.chouette.exporter:1.0.0",
-				"mobi.chouette:mobi.chouette.validation:1.0.0",
-				"mobi.chouette:mobi.chouette.exchange.neptune:1.0.0",
-				"xpp3:xpp3:1.1.3.4.O", "com.google.guava:guava:18.0" };
-		File[] dependencies = Maven.resolver().resolve(artifacts)
-				.withoutTransitivity().asFile();
-
-		result = ShrinkWrap.create(WebArchive.class)
-				.addAsLibraries(dependencies)
-				.addAsResource("xml/C_NEPTUNE_3.xml")
-				.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
 
 		return result;
 
@@ -67,12 +67,9 @@ public class NeptuneParserTest {
 	@Test
 	public void todo() throws Exception {
 		Context context = new Context();
-		URL url = this.getClass().getResource("test/C_NEPTUNE_3.xml");
-		log.info(Color.SUCCESS + "[DSU] url : " + url + Color.NORMAL);
-
-		context.put(
-				Constant.FILE,
-				"/home/dsuru/workspace-chouette/chouette/mobi.chouette.exchange.neptune/src/test/resources/xml/C_NEPTUNE_3.xml");
+		URL url = NeptuneParserTest.class
+				.getResource("/META-INF/C_NEPTUNE_3.xml");
+		context.put(Constant.FILE, url.toExternalForm());
 		command.execute(context);
 	}
 }

@@ -33,8 +33,10 @@ public class DefaultConnectionProvider implements
 	public Connection getConnection(String identifier) throws SQLException {
 		final Connection connection = getAnyConnection();
 		try {
-			connection.createStatement().execute(
-					"SET SCHEMA '" + identifier + "'");
+			if (identifier != null && !identifier.isEmpty()) {
+				connection.createStatement().execute(
+						"SET SCHEMA '" + identifier + "'");
+			}
 		} catch (SQLException e) {
 			throw new HibernateException(
 					"Could not alter JDBC connection to specified schema ["
@@ -45,14 +47,14 @@ public class DefaultConnectionProvider implements
 
 	@Override
 	public void releaseAnyConnection(Connection connection) throws SQLException {
-		try {
-			connection.createStatement().execute("SET SCHEMA 'public'");
-
-		} catch (SQLException e) {
-			throw new HibernateException(
-					"Could not alter JDBC connection to specified schema [public]",
-					e);
-		}
+//		try {
+//			connection.createStatement().execute("SET SCHEMA 'public'");
+//
+//		} catch (SQLException e) {
+//			throw new HibernateException(
+//					"Could not alter JDBC connection to specified schema [public]",
+//					e);
+//		}
 		connection.close();
 	}
 
@@ -90,7 +92,8 @@ public class DefaultConnectionProvider implements
 		Map<?, ?> settings = getSettings(registry);
 		String datasource = (String) settings.get(AvailableSettings.DATASOURCE);
 
-		ContextHolder.setDefaultSchema("public");
+		// TODO ContextHolder.setDefaultSchema("public");
+		ContextHolder.setDefaultSchema(null);
 
 		JndiService jndi = registry.getService(JndiService.class);
 		if (jndi == null) {

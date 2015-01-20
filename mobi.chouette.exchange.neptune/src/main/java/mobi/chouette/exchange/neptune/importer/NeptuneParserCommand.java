@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 
 import javax.ejb.Stateless;
 import javax.naming.InitialContext;
@@ -32,15 +33,15 @@ public class NeptuneParserCommand implements Command, Constant {
 	@Override
 	public boolean execute(Context context) throws Exception {
 
-		String path = (String) context.get(FILE);
-		InputStream input = new FileInputStream(path);
+		URL url = new URL((String) context.get(FILE));
+		InputStream input = url.openStream();
 		XmlPullParser xpp = XmlPullParserFactory.newInstance().newPullParser();
 		BufferedReader in = new BufferedReader(new InputStreamReader(input),
 				8192 * 10);
-		xpp.setInput(in);		
+		xpp.setInput(in);
 		context.put(XPP, xpp);
 		context.put(REFERENTIAL, new Referential());
-		
+
 		Parser parser = ParserFactory.create(ChouettePTNetworkParser.class
 				.getName());
 		parser.parse(context);

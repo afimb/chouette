@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.netex;
 
 import java.io.File;
+import java.net.URL;
 
 import javax.ejb.EJB;
 
@@ -29,34 +30,23 @@ public class NetexParserTest {
 
 		WebArchive result;
 
-		String[] artifacts = {
-				"mobi.chouette:mobi.chouette.exchange.netex:1.0.0",
-				"mobi.chouette:mobi.chouette.common:1.0.0",
-				"mobi.chouette:mobi.chouette.model:1.0.0",
-				"mobi.chouette:mobi.chouette.importer:1.0.0",
-				"mobi.chouette:mobi.chouette.exporter:1.0.0",
-				"mobi.chouette:mobi.chouette.validation:1.0.0",
-				"mobi.chouette:mobi.chouette.exchange.neptune:1.0.0",
-				"xpp3:xpp3:1.1.3.4.O", "com.google.guava:guava:18.0",
-				"commons-lang:commons-lang:2.6"};
-		File[] dependencies = Maven.resolver().resolve(artifacts)
-				.withoutTransitivity().asFile();
+		File[] files = Maven.resolver().loadPomFromFile("pom.xml")
+				.resolve("mobi.chouette:mobi.chouette.exchange.netex:1.0.0")
+				.withTransitivity().asFile();
 
-		result = ShrinkWrap.create(WebArchive.class)
-				.addAsLibraries(dependencies)
-				.addAsResource("xml/line_test.xml")
+		result = ShrinkWrap.create(WebArchive.class, "test.war")
+				.addAsWebInfResource("wildfly-ds.xml").addAsLibraries(files)
+				.addAsManifestResource("line_test.xml")
 				.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
 
 		return result;
-
 	}
 
 	@Test
 	public void todo() throws Exception {
 		Context context = new Context();
-		context.put(
-				Constant.FILE,
-				"/home/dsuru/workspace-chouette/chouette/mobi.chouette.exchange.netex/src/test/resources/xml/line_test.xml");
+		URL url = NetexParserTest.class.getResource("/META-INF/line_test.xml");
+		context.put(Constant.FILE, url.toExternalForm());
 		command.execute(context);
 	}
 }
