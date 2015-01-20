@@ -23,6 +23,8 @@ import mobi.chouette.model.type.ConnectionLinkTypeEnum;
 import mobi.chouette.model.type.LinkOrientationEnum;
 import mobi.chouette.model.type.UserNeedEnum;
 
+import com.google.common.collect.ComparisonChain;
+
 /**
  * Chouette AccessLink : relation between an AccessPoint and a StopArea
  * <p/>
@@ -38,6 +40,7 @@ import mobi.chouette.model.type.UserNeedEnum;
 public class AccessLink extends NeptuneIdentifiedObject {
 
 	private static final long serialVersionUID = 7835556134861322471L;
+
 
 	/**
 	 * name
@@ -106,7 +109,7 @@ public class AccessLink extends NeptuneIdentifiedObject {
 	@Getter
 	@Setter
 	@Column(name = "lift_availability")
-	private boolean liftAvailable = false;
+	private Boolean liftAvailable = false;
 
 	/**
 	 * mobility restriction indicator (such as wheel chairs) <br/>
@@ -123,7 +126,7 @@ public class AccessLink extends NeptuneIdentifiedObject {
 	@Getter
 	@Setter
 	@Column(name = "mobility_restricted_suitability")
-	private boolean mobilityRestrictedSuitable = false;
+	private Boolean mobilityRestrictedSuitable = false;
 
 	/**
 	 * stairs indicator <br/>
@@ -140,7 +143,7 @@ public class AccessLink extends NeptuneIdentifiedObject {
 	@Getter
 	@Setter
 	@Column(name = "stairs_availability")
-	private boolean stairsAvailable = false;
+	private Boolean stairsAvailable = false;
 
 	/**
 	 * medium time to follow the link <br/>
@@ -224,9 +227,11 @@ public class AccessLink extends NeptuneIdentifiedObject {
 	 * @return The actual value
 	 */
 
+	@Getter
+	@Setter
 	@Column(name = "int_user_needs")
 	private Integer intUserNeeds = 0;
-	
+
 	public List<UserNeedEnum> getUserNeeds() {
 		List<UserNeedEnum> result = new ArrayList<UserNeedEnum>();
 		for (UserNeedEnum userNeed : UserNeedEnum.values()) {
@@ -246,7 +251,6 @@ public class AccessLink extends NeptuneIdentifiedObject {
 		}
 		this.intUserNeeds = value;
 	}
-
 
 	/**
 	 * access link orientation

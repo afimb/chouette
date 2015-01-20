@@ -44,7 +44,7 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject {
 	 */
 	@Getter
 	@Column(name = "objectid", nullable = false, unique = true)
-	private String objectId;
+	protected String objectId;
 
 	public void setObjectId(String value) {
 		objectId = dataBaseSizeProtectedValue(value, "objectId", log);
@@ -60,7 +60,7 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject {
 	@Getter
 	@Setter
 	@Column(name = "object_version")
-	private Integer objectVersion = 1;
+	protected Integer objectVersion = 1;
 
 	/**
 	 * creation time
@@ -72,7 +72,7 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject {
 	@Getter
 	@Setter
 	@Column(name = "creation_time")
-	private Date creationTime = new Date();
+	protected Date creationTime = new Date();
 
 	/**
 	 * creator id
@@ -84,7 +84,7 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject {
 	@Getter
 	@Setter
 	@Column(name = "creator_id")
-	private String creatorId;
+	protected String creatorId;
 
 	@Transient
 	private String unsaved_name;

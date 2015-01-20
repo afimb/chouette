@@ -47,7 +47,7 @@ public abstract class NeptuneObject implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", nullable = false)
-	private Long id;
+	protected Long id;
 
 	/**
 	 * read annotation to get maximum size of database field
