@@ -67,17 +67,17 @@ public class Job implements Serializable {
 	@Setter
 	private String type;
 
-	@XmlAttribute(name = "parameters")
-	@Column(name = "parameters", columnDefinition = "TEXT")
-	@Getter
-	@Setter
-	private String parameters;
+//	@XmlAttribute(name = "parameters")
+//	@Column(name = "parameters", columnDefinition = "TEXT")
+//	@Getter
+//	@Setter
+//	private String parameters;
 
-	@XmlAttribute(name = "validation")
-	@Column(name = "validation", columnDefinition = "TEXT")
-	@Getter
-	@Setter
-	private String validation;
+//	@XmlAttribute(name = "validation")
+//	@Column(name = "validation", columnDefinition = "TEXT")
+//	@Getter
+//	@Setter
+//	private String validation;
 
 	@XmlAttribute(name = "filename")
 	@Column(name = "filename")
@@ -89,7 +89,7 @@ public class Job implements Serializable {
 	@Column(name = "date")
 	@Getter
 	@Setter
-	private Date date;
+	private Date updated;
 
 	@XmlAttribute(name = "status")
 	@Enumerated(EnumType.STRING)
@@ -108,7 +108,7 @@ public class Job implements Serializable {
 	public Job() {
 		super();
 		status = STATUS.CREATED;
-		date = new Date();
+		updated = new Date();
 	}
 
 	@XmlType

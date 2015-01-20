@@ -32,9 +32,6 @@
 			<artifactId>log4j</artifactId>
 		</dependency>
 
-		<!-- Test Dependencies -->
-
-
 		<!-- Other Dependencies -->
 		<dependency>
 			<groupId>com.google.guava</groupId>

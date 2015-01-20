@@ -18,6 +18,7 @@ import mobi.chouette.exchange.netex.Constant;
 import mobi.chouette.exchange.netex.parser.NetexParser;
 import mobi.chouette.importer.Parser;
 import mobi.chouette.importer.ParserFactory;
+import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -37,6 +38,8 @@ public class NetexParserCommand implements Command, Constant {
 		BufferedReader in = new BufferedReader(new InputStreamReader(input),
 				8192 * 10);
 		xpp.setInput(in);
+		context.put(XPP, xpp);
+		context.put(REFERENTIAL, new Referential());
 
 		Parser parser = ParserFactory.create(NetexParser.class
 				.getName());

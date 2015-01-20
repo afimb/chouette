@@ -145,6 +145,7 @@ public class VehicleJourneyParser implements Parser, Constant {
 					.getVehicleJourneyAtStop();
 
 			if (xpp.getName().equals("vehicleJourneyId")) {
+				String objectId = ParserUtils.getText(xpp.nextText());
 				vehicleJourneyAtStop.setVehicleJourney(vehicleJourney);
 			} else if (xpp.getName().equals("boardingAlightingPossibility")) {
 				BoardingAlightingPossibilityEnum value = ParserUtils.getEnum(

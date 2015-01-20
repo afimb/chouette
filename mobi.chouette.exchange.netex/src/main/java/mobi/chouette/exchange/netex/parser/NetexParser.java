@@ -23,7 +23,6 @@ public class NetexParser implements Parser, Constant {
 
 		XPPUtil.nextStartTag(xpp, CHILD_TAG);
 
-		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
 		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
 		context.put(LINE_NUMBER, xpp.getLineNumber());
 
@@ -134,8 +133,8 @@ public class NetexParser implements Parser, Constant {
 	}
 
 	static {
-		ParserFactory.register(LineParser.class.getName(), new ParserFactory() {
-			private LineParser instance = new LineParser();
+		ParserFactory.register(NetexParser.class.getName(), new ParserFactory() {
+			private NetexParser instance = new NetexParser();
 
 			@Override
 			protected Parser create() {

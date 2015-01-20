@@ -18,6 +18,7 @@ import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.neptune.parser.ChouettePTNetworkParser;
 import mobi.chouette.importer.Parser;
 import mobi.chouette.importer.ParserFactory;
+import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -36,8 +37,10 @@ public class NeptuneParserCommand implements Command, Constant {
 		XmlPullParser xpp = XmlPullParserFactory.newInstance().newPullParser();
 		BufferedReader in = new BufferedReader(new InputStreamReader(input),
 				8192 * 10);
-		xpp.setInput(in);
-
+		xpp.setInput(in);		
+		context.put(XPP, xpp);
+		context.put(REFERENTIAL, new Referential());
+		
 		Parser parser = ParserFactory.create(ChouettePTNetworkParser.class
 				.getName());
 		parser.parse(context);

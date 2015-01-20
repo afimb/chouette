@@ -23,6 +23,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
@@ -34,8 +35,8 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.dao.JobDAO;
 import mobi.chouette.dao.SchemaDAO;
 import mobi.chouette.model.api.Job;
-import mobi.chouette.model.api.Link;
 import mobi.chouette.model.api.Job.STATUS;
+import mobi.chouette.model.api.Link;
 import mobi.chouette.scheduler.Constant;
 import mobi.chouette.scheduler.Scheduler;
 
@@ -50,7 +51,7 @@ import com.google.common.collect.Collections2;
 @Path("/referentials")
 @Log4j
 @RequestScoped
-public class Service implements Constant{
+public class Service implements Constant {
 
 	public static final String REPORT = "report.json";
 	public static final String REPORT_VALIDATION = "validation.json";
@@ -62,7 +63,7 @@ public class Service implements Constant{
 	@Inject
 	SchemaDAO schemas;
 
-	@Inject 
+	@Inject
 	Scheduler scheduler;
 
 	// post asynchronous job
@@ -112,6 +113,16 @@ public class Service implements Constant{
 					job.getReferential(), job.getId()));
 			job.getLinks().add(link);
 
+			// mkdir
+			java.nio.file.Path dir = Paths.get(System.getProperty("user.home"),
+					ROOT_PATH, job.getReferential(), "data", job.getId()
+							.toString());
+			if (Files.exists(dir)) {
+				throw new WebApplicationException(Status.BAD_REQUEST);
+			} else {
+				Files.createDirectories(dir);
+			}
+
 			// upload data
 			Map<String, List<InputPart>> map = input.getFormDataMap();
 			List<InputPart> list = map.get("file");
@@ -120,14 +131,11 @@ public class Service implements Constant{
 				String header = headers
 						.getFirst(HttpHeaders.CONTENT_DISPOSITION);
 				String filename = getFilename(header);
-				if (filename.equals("param.json")) {
+
+				if (filename.equals("parameters.json")) {
 					InputStream in = part.getBody(InputStream.class, null);
-					String text = IOUtils.toString(in);
-					job.setParameters(text);
-				} else if (filename.equals("validation.json")) {
-					InputStream in = part.getBody(InputStream.class, null);
-					String text = IOUtils.toString(in);
-					job.setValidation(text);
+					java.nio.file.Path path = Paths.get(dir.toString(),filename);
+					Files.copy(in, path);					
 				} else {
 					InputStream in = part.getBody(InputStream.class, null);
 					if (in == null || filename == null || filename.isEmpty()) {
@@ -143,10 +151,7 @@ public class Service implements Constant{
 					if (Files.exists(path, LinkOption.NOFOLLOW_LINKS)) {
 						throw new WebApplicationException(Status.BAD_REQUEST);
 					} else {
-						java.nio.file.Path dir = Paths.get(System
-								.getProperty("user.home"), ROOT_PATH, job
-								.getReferential(), "data", job.getId()
-								.toString());
+
 						Files.createDirectories(dir);
 						Files.copy(in, path);
 					}
@@ -176,7 +181,7 @@ public class Service implements Constant{
 	// download attached file
 	@GET
 	@Path("/{ref}/data/{id}/{filepath: .*}")
-	@Produces(MediaType.APPLICATION_OCTET_STREAM)
+	@Produces({ MediaType.APPLICATION_OCTET_STREAM })
 	public Response download(@PathParam("ref") String referential,
 			@PathParam("id") Long id, @PathParam("filepath") String filename) {
 		Response result = null;
@@ -196,14 +201,20 @@ public class Service implements Constant{
 		ResponseBuilder builder = Response.ok(file);
 		builder.header(HttpHeaders.CONTENT_DISPOSITION,
 				MessageFormat.format("attachment; filename=\"{0}\"", filename));
+
+		// cache control
+		CacheControl cc = new CacheControl();
+		cc.setMaxAge(86400);
+		builder.cacheControl(cc);
+
 		result = builder.build();
 		return result;
 	}
 
 	// jobs listing
 	@GET
-	@Path("/{ref}/reports")
-	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/{ref}/jobs")
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public JobListing jobs(@PathParam("ref") String referential,
 			@DefaultValue("false") @QueryParam("scheduled") boolean scheduled) {
 
@@ -229,70 +240,10 @@ public class Service implements Constant{
 		return result;
 	}
 
-	// download report
-	@GET
-	@Path("/{ref}/reports/{id}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response report(@PathParam("ref") String referential,
-			@PathParam("id") Long id) {
-		Response result = null;
-
-		// check params
-		if (!schemas.getSchemaListing().contains(referential)) {
-			throw new WebApplicationException(Status.NOT_FOUND);
-		}
-
-		Job job = jobs.find(id);
-		if (job == null) {
-			throw new WebApplicationException(Status.NOT_FOUND);
-		}
-
-		if (job.getStatus().ordinal() < STATUS.TERMINATED.ordinal()) {
-			throw new WebApplicationException(Status.NOT_FOUND);
-		}
-
-		java.nio.file.Path report = Paths.get(System.getProperty("user.home"),
-				ROOT_PATH, referential, "data", id.toString(), REPORT);
-		if (!Files.exists(report, LinkOption.NOFOLLOW_LINKS)) {
-			throw new WebApplicationException(Status.NOT_FOUND);
-		}
-
-		// build response
-		File file = new File(report.toString());
-		ResponseBuilder builder = Response.ok(file);
-		builder.header(
-				HttpHeaders.CONTENT_DISPOSITION,
-				MessageFormat.format("attachment; filename=\"{0}\"",
-						report.getFileName()));
-
-		// add link to validation report
-		java.nio.file.Path validation = Paths.get(
-				System.getProperty("user.home"), ROOT_PATH, referential,
-				"data", id.toString(), REPORT_VALIDATION);
-		if (!Files.exists(validation, LinkOption.NOFOLLOW_LINKS)) {
-			builder.link(URI.create(MessageFormat.format(
-					"/{0}/{1}/data/{2}/{3}", ROOT_PATH, job.getReferential(),
-					job.getId(), REPORT_VALIDATION)), "validation");
-		}
-
-		// add link to exported data
-		java.nio.file.Path data = Paths.get(System.getProperty("user.home"),
-				ROOT_PATH, referential, "data", id.toString(), EXPORTED_DATA);
-		if (!Files.exists(data, LinkOption.NOFOLLOW_LINKS)) {
-			builder.link(URI.create(MessageFormat.format(
-					"/{0}/{1}/data/{2}/{3}", ROOT_PATH, job.getReferential(),
-					job.getId(), REPORT_VALIDATION)), "data");
-		}
-
-		result = builder.build();
-
-		return result;
-	}
-
 	// view job
 	@GET
 	@Path("/{ref}/jobs/{id}")
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces({ MediaType.APPLICATION_JSON })
 	public Response job(@PathParam("ref") String referential,
 			@PathParam("id") Long id) {
 		Response result = null;
@@ -365,6 +316,71 @@ public class Service implements Constant{
 		} else {
 			throw new WebApplicationException(Status.NOT_FOUND);
 		}
+		result = builder.build();
+
+		return result;
+	}
+
+	// download report
+	@GET
+	@Path("/{ref}/reports/{id}")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response report(@PathParam("ref") String referential,
+			@PathParam("id") Long id) {
+		Response result = null;
+
+		// check params
+		if (!schemas.getSchemaListing().contains(referential)) {
+			throw new WebApplicationException(Status.NOT_FOUND);
+		}
+
+		Job job = jobs.find(id);
+		if (job == null) {
+			throw new WebApplicationException(Status.NOT_FOUND);
+		}
+
+		if (job.getStatus().ordinal() < STATUS.TERMINATED.ordinal()) {
+			throw new WebApplicationException(Status.NOT_FOUND);
+		}
+
+		java.nio.file.Path report = Paths.get(System.getProperty("user.home"),
+				ROOT_PATH, referential, "data", id.toString(), REPORT);
+		if (!Files.exists(report, LinkOption.NOFOLLOW_LINKS)) {
+			throw new WebApplicationException(Status.NOT_FOUND);
+		}
+
+		// build response
+		File file = new File(report.toString());
+		ResponseBuilder builder = Response.ok(file);
+		builder.header(
+				HttpHeaders.CONTENT_DISPOSITION,
+				MessageFormat.format("attachment; filename=\"{0}\"",
+						report.getFileName()));
+
+		// cache control
+		CacheControl cc = new CacheControl();
+		cc.setMaxAge(86400);
+		builder.cacheControl(cc);
+
+		// add link to validation report
+		java.nio.file.Path validation = Paths.get(
+				System.getProperty("user.home"), ROOT_PATH, referential,
+				"data", id.toString(), REPORT_VALIDATION);
+		if (!Files.exists(validation, LinkOption.NOFOLLOW_LINKS)) {
+			builder.link(URI.create(MessageFormat.format(
+					"/{0}/{1}/data/{2}/{3}", ROOT_PATH, job.getReferential(),
+					job.getId(), REPORT_VALIDATION)), "validation");
+		}
+
+		// add link to exported data
+		java.nio.file.Path data = Paths.get(System.getProperty("user.home"),
+				ROOT_PATH, referential, "data", id.toString(), EXPORTED_DATA);
+		if (!Files.exists(data, LinkOption.NOFOLLOW_LINKS)) {
+			builder.link(URI.create(MessageFormat.format(
+					"/{0}/{1}/data/{2}/{3}", ROOT_PATH, job.getReferential(),
+					job.getId(), REPORT_VALIDATION)), "data");
+		}
+
 		result = builder.build();
 
 		return result;

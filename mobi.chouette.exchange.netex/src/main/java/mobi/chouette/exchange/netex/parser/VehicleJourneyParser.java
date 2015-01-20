@@ -50,7 +50,7 @@ public class VehicleJourneyParser implements Parser, Constant {
 		XmlPullParser xpp = (XmlPullParser) context.get(XPP);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
-		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
+		xpp.require(XmlPullParser.START_TAG, null, "ServiceJourney");
 		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
 		context.put(LINE_NUMBER, xpp.getLineNumber());
 

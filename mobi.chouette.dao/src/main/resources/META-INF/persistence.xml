@@ -5,6 +5,8 @@
 
 	<persistence-unit name="public">
 
+		<jta-data-source>java:jboss/datasources/chouette</jta-data-source>
+
 		<class>mobi.chouette.model.api.Job</class>
 
 		<exclude-unlisted-classes>true</exclude-unlisted-classes>
@@ -15,8 +17,9 @@
 			<property name="hibernate.format_sql" value="true" />
 			<property name="hibernate.jdbc.batch_size" value="50" />
 			<property name="hibernate.default_batch_fetch_size" value="50" />
-			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL9Dialect" />
-			<property name="hibernate.connection.datasource" value="java:jboss/datasources/chouette" />
+<!-- 			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL9Dialect" /> -->
+			<!-- <property name="hibernate.connection.datasource" value="java:jboss/datasources/chouette" 
+				/> -->
 			<property name="hibernate.cache.use_second_level_cache"
 				value="true" />
 			<property name="hibernate.cache.use_query_cache" value="true" />
@@ -27,6 +30,8 @@
 
 	<persistence-unit name="referential">
 
+		<jta-data-source>java:jboss/datasources/chouette</jta-data-source>
+
 		<exclude-unlisted-classes>true</exclude-unlisted-classes>
 		<validation-mode>NONE</validation-mode>
 		<properties>
@@ -35,8 +40,8 @@
 			<property name="hibernate.jdbc.batch_size" value="50" />
 			<property name="hibernate.default_batch_fetch_size" value="50" />
 			<property name="hibernate.multiTenancy" value="SCHEMA" />
-			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL9Dialect" />
-			<property name="hibernate.connection.datasource" value="java:jboss/datasources/chouette" />
+<!-- 			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL9Dialect" /> -->
+<!-- 			<property name="hibernate.connection.datasource" value="java:jboss/datasources/chouette" /> -->
 			<property name="hibernate.tenant_identifier_resolver"
 				value="mobi.chouette.util.DefaultTenantIdentifierResolver" />
 			<property name="hibernate.multi_tenant_connection_provider"

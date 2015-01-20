@@ -18,7 +18,7 @@ public class Application extends javax.ws.rs.core.Application {
 
 	@Override
 	public Set<Object> getSingletons() {
-		Set<Object> result = new HashSet<Object>();
+		Set<Object> result = new HashSet<Object>();		
 		return result;
 	}
 
