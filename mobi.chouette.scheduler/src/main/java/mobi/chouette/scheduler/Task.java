@@ -16,7 +16,7 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.model.api.Job;
 import mobi.chouette.model.api.Job.STATUS;
-import mobi.chouette.util.ContextHolder;
+import mobi.chouette.multitenant.ContextHolder;
 
 @Log4j
 @AllArgsConstructor

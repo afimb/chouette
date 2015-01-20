@@ -1,4 +1,4 @@
-package mobi.chouette.util;
+package mobi.chouette.multitenant;
 
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
 
