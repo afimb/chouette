@@ -132,7 +132,7 @@ public class AccessPoint extends NeptuneLocalizedObject {
 	@Getter
 	@Setter
 	@Column(name = "lift_availability")
-	private boolean liftAvailable = false;
+	private Boolean liftAvailable = false;
 
 	/**
 	 * mobility restriction indicator (such as wheel chairs) <br/>
@@ -149,7 +149,7 @@ public class AccessPoint extends NeptuneLocalizedObject {
 	@Getter
 	@Setter
 	@Column(name = "mobility_restricted_suitability")
-	private boolean mobilityRestrictedSuitable = false;
+	private Boolean mobilityRestrictedSuitable = false;
 
 	/**
 	 * stairs indicator <br/>
@@ -166,7 +166,7 @@ public class AccessPoint extends NeptuneLocalizedObject {
 	@Getter
 	@Setter
 	@Column(name = "stairs_availability")
-	private boolean stairsAvailable = false;
+	private Boolean stairsAvailable = false;
 
 	/**
 	 * access point owner <br/>
