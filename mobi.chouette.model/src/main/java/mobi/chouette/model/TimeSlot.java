@@ -12,6 +12,8 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * Chouette TimeSlot a peroid for vehicleJourney with frequency
  * <p>
@@ -47,7 +49,7 @@ public class TimeSlot extends NeptuneIdentifiedObject {
 	 *            New value
 	 */
 	public void setName(String value) {
-		name = dataBaseSizeProtectedValue(value, "name", log);
+		name = StringUtils.abbreviate(value, 255);
 	}
 
 	/**

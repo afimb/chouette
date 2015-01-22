@@ -1,7 +1,9 @@
 package mobi.chouette.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -19,6 +21,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Chouette Journey Pattern : pattern for vehicle journeys in a route
@@ -52,7 +56,7 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 	 *            New value
 	 */
 	public void setName(String value) {
-		name = dataBaseSizeProtectedValue(value, "name", log);
+		name = StringUtils.abbreviate(value, 255);
 	}
 
 	/**
@@ -72,7 +76,7 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 	 *            New value
 	 */
 	public void setComment(String value) {
-		comment = dataBaseSizeProtectedValue(value, "comment", log);
+		comment = StringUtils.abbreviate(value, 255);
 	}
 
 	/**
@@ -92,8 +96,7 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 	 *            New value
 	 */
 	public void setRegistrationNumber(String value) {
-		registrationNumber = dataBaseSizeProtectedValue(value,
-				"registrationNumber", log);
+		registrationNumber = StringUtils.abbreviate(value, 255);
 	}
 
 	/**
@@ -113,7 +116,7 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 	 *            New value
 	 */
 	public void setPublishedName(String value) {
-		publishedName = dataBaseSizeProtectedValue(value, "publishedName", log);
+		publishedName = StringUtils.abbreviate(value, 255);
 	}
 
 	/**
@@ -202,13 +205,9 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 	 * @param stopPoint
 	 */
 	public void addStopPoint(StopPoint stopPoint) {
-		if (stopPoints == null)
-			stopPoints = new ArrayList<StopPoint>();
 		if (!stopPoints.contains(stopPoint)) {
 			stopPoints.add(stopPoint);
-			refreshDepartureArrivals();
 		}
-
 	}
 
 	/**
@@ -217,28 +216,25 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 	 * @param stopPoint
 	 */
 	public void removeStopPoint(StopPoint stopPoint) {
-		if (stopPoints == null)
-			stopPoints = new ArrayList<StopPoint>();
 		if (stopPoints.contains(stopPoint)) {
 			stopPoints.remove(stopPoint);
-			refreshDepartureArrivals();
 		}
 	}
 
-	/* ---------------------------- */
-	/**
-	 * update departure and arrival <br/>
-	 * to be used after stopPoints update
-	 */
-	public void refreshDepartureArrivals() {
-		if (stopPoints == null || stopPoints.isEmpty()) {
-			departureStopPoint = null;
-			arrivalStopPoint = null;
-		} else {
-			departureStopPoint = stopPoints.get(0);
-			arrivalStopPoint = stopPoints.get(stopPoints.size() - 1);
-		}
-
-	}
+	/* TODO !!! -> sorter by position on route  refreshDepartureArrivals ??? ---------------------------- */
+//	/**
+//	 * update departure and arrival <br/>
+//	 * to be used after stopPoints update
+//	 */
+//	public void refreshDepartureArrivals() {
+//		if (stopPoints == null || stopPoints.isEmpty()) {
+//			departureStopPoint = null;
+//			arrivalStopPoint = null;
+//		} else {
+//			departureStopPoint = stopPoints.get(0);
+//			arrivalStopPoint = stopPoints.get(stopPoints.size() - 1);
+//		}
+//
+//	}
 
 }

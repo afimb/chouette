@@ -44,7 +44,7 @@
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-		</dependency>
+		</dependency>		
 		<dependency>
 			<groupId>xpp3</groupId>
 			<artifactId>xpp3</artifactId>

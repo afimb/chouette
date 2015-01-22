@@ -103,4 +103,11 @@ public abstract class NeptuneObject implements Serializable {
 
 	}
 
+	protected String truncate(String value, int size) {
+		if (value.length() > size) {
+			value = value.substring(0, size);
+		}
+		return value;
+	}
+
 }

@@ -22,6 +22,8 @@ import mobi.chouette.model.type.LongLatTypeEnum;
 import mobi.chouette.model.util.Coordinate;
 import mobi.chouette.model.util.CoordinateUtil;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * Abstract object used for all Localized Chouette Objects
  * <p/>
@@ -127,7 +129,7 @@ public abstract class NeptuneLocalizedObject extends NeptuneIdentifiedObject {
 	 *            New value
 	 */
 	public void setCountryCode(String value) {
-		countryCode = dataBaseSizeProtectedValue(value, "countryCode", log);
+		countryCode = StringUtils.abbreviate(value, 255);
 	}
 
 	/**
@@ -147,7 +149,7 @@ public abstract class NeptuneLocalizedObject extends NeptuneIdentifiedObject {
 	 *            New value
 	 */
 	public void setZipCode(String value) {
-		zipCode = dataBaseSizeProtectedValue(value, "zipCode", log);
+		zipCode = StringUtils.abbreviate(value, 255);
 	}
 
 	/**
@@ -167,7 +169,7 @@ public abstract class NeptuneLocalizedObject extends NeptuneIdentifiedObject {
 	 *            New value
 	 */
 	public void setCityName(String value) {
-		cityName = dataBaseSizeProtectedValue(value, "cityName", log);
+		cityName = StringUtils.abbreviate(value, 255);
 	}
 
 	/**
@@ -187,7 +189,7 @@ public abstract class NeptuneLocalizedObject extends NeptuneIdentifiedObject {
 	 *            New value
 	 */
 	public void setStreetName(String value) {
-		streetName = dataBaseSizeProtectedValue(value, "streetName", log);
+		streetName = StringUtils.abbreviate(value, 255);
 	}
 
 	/**
@@ -227,7 +229,7 @@ public abstract class NeptuneLocalizedObject extends NeptuneIdentifiedObject {
 	private boolean notEmptyString(String data) {
 		return data != null && !data.isEmpty();
 	}
-	
+
 	/**
 	 * project latitude and longitude on x and y if not already set<br/>
 	 * clears projection if no projection is given

@@ -22,6 +22,8 @@ import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.type.DayTypeEnum;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * Chouette Timetable
  * <p/>
@@ -61,7 +63,7 @@ public class Timetable extends NeptuneIdentifiedObject {
 	 *            New value
 	 */
 	public void setComment(String value) {
-		comment = dataBaseSizeProtectedValue(value, "comment", log);
+		comment = StringUtils.abbreviate(value, 255);
 	}
 
 	/**
@@ -82,7 +84,7 @@ public class Timetable extends NeptuneIdentifiedObject {
 	 *            New value
 	 */
 	public void setVersion(String value) {
-		version = dataBaseSizeProtectedValue(value, "version", log);
+		version = StringUtils.abbreviate(value, 255);
 	}
 
 	/**
@@ -93,6 +95,7 @@ public class Timetable extends NeptuneIdentifiedObject {
 	 * @return The actual value
 	 */
 
+	@Getter@Setter
 	@Column(name = "int_day_types")
 	private Integer intDayTypes;
 
@@ -442,22 +445,22 @@ public class Timetable extends NeptuneIdentifiedObject {
 	 * 
 	 * @return a copy
 	 */
-//	public Timetable copy() {
-//		Timetable tm = new Timetable();
-//		tm.setObjectId(getObjectId());
-//		tm.setObjectVersion(getObjectVersion());
-//		tm.setComment(getComment());
-//		tm.setVersion(getVersion());
-//		tm.setIntDayTypes(getIntDayTypes());
-//		tm.setPeriods(new ArrayList<Period>());
-//		for (Period period : getPeriods()) {
-//			tm.addPeriod(new Period(period.getStartDate(), period.getEndDate()));
-//		}
-//		tm.setCalendarDays(new ArrayList<CalendarDay>());
-//		for (CalendarDay day : getCalendarDays()) {
-//			tm.addCalendarDay(new CalendarDay(day.getDate(), day.getIncluded()));
-//		}
-//		return tm;
-//	}
+	// public Timetable copy() {
+	// Timetable tm = new Timetable();
+	// tm.setObjectId(getObjectId());
+	// tm.setObjectVersion(getObjectVersion());
+	// tm.setComment(getComment());
+	// tm.setVersion(getVersion());
+	// tm.setIntDayTypes(getIntDayTypes());
+	// tm.setPeriods(new ArrayList<Period>());
+	// for (Period period : getPeriods()) {
+	// tm.addPeriod(new Period(period.getStartDate(), period.getEndDate()));
+	// }
+	// tm.setCalendarDays(new ArrayList<CalendarDay>());
+	// for (CalendarDay day : getCalendarDays()) {
+	// tm.addCalendarDay(new CalendarDay(day.getDate(), day.getIncluded()));
+	// }
+	// return tm;
+	// }
 
 }

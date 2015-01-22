@@ -41,7 +41,6 @@ import mobi.chouette.scheduler.Constant;
 import mobi.chouette.scheduler.Scheduler;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
@@ -104,6 +103,15 @@ public class Service implements Constant {
 					job.getReferential(), job.getId()));
 			job.getLinks().add(link);
 
+			// add parameters link
+			link = new Link();
+			link.setType(MediaType.APPLICATION_JSON);
+			link.setRel(Link.PARAMETERS_REL);
+			link.setMethod(Link.GET_METHOD);
+			link.setHref(MessageFormat.format("/{0}/data/{1}/{2}", ROOT_PATH,
+					job.getReferential(), job.getId(), REPORT));
+			job.getLinks().add(link);
+
 			// add cancel link
 			link = new Link();
 			link.setType(MediaType.APPLICATION_JSON);
@@ -134,8 +142,9 @@ public class Service implements Constant {
 
 				if (filename.equals("parameters.json")) {
 					InputStream in = part.getBody(InputStream.class, null);
-					java.nio.file.Path path = Paths.get(dir.toString(),filename);
-					Files.copy(in, path);					
+					java.nio.file.Path path = Paths.get(dir.toString(),
+							filename);
+					Files.copy(in, path);
 				} else {
 					InputStream in = part.getBody(InputStream.class, null);
 					if (in == null || filename == null || filename.isEmpty()) {
@@ -214,10 +223,12 @@ public class Service implements Constant {
 	// jobs listing
 	@GET
 	@Path("/{ref}/jobs")
-	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Produces({ MediaType.APPLICATION_JSON })
 	public JobListing jobs(@PathParam("ref") String referential,
-			@DefaultValue("false") @QueryParam("scheduled") boolean scheduled) {
+			@DefaultValue("0") @QueryParam("version") final Long version) {
 
+		// TODO filter by action ??
+		
 		// check params
 		if (!schemas.getSchemaListing().contains(referential)) {
 			throw new WebApplicationException(Status.NOT_FOUND);
@@ -226,12 +237,12 @@ public class Service implements Constant {
 		// create jobs listing
 		JobListing result = new JobListing();
 		List<Job> list = jobs.findByReferential(referential);
-		if (scheduled) {
+		if (version >0) {
+			// TODO create finder by version
 			result.setList(Collections2.filter(list, new Predicate<Job>() {
 				@Override
 				public boolean apply(Job job) {
-					return job.getStatus().ordinal() < STATUS.TERMINATED
-							.ordinal();
+					return job.getUpdated().getTime() > version; 
 				}
 			}));
 		} else {
@@ -275,11 +286,21 @@ public class Service implements Constant {
 				builder = Response.ok();
 			}
 
+			// add parameters link
+			java.nio.file.Path parameters = Paths.get(
+					System.getProperty("user.home"), ROOT_PATH, referential,
+					"data", id.toString(), REPORT);
+			if (Files.exists(parameters)) {
+				builder.link(URI.create(MessageFormat.format(
+						"/{0}/data/{1}/{2}", ROOT_PATH, job.getReferential(),
+						job.getId(), REPORT)), Link.PARAMETERS_REL);
+			}
+
 			// add link to cancel
 			if (job.getStatus().equals(STATUS.CREATED)) {
 				builder.link(URI.create(MessageFormat.format(
 						"/{0}/{1}/jobs/{2}", ROOT_PATH, job.getReferential(),
-						job.getId())), "cancel");
+						job.getId())), Link.CANCEL_REL);
 			}
 
 		} else {
@@ -379,6 +400,16 @@ public class Service implements Constant {
 			builder.link(URI.create(MessageFormat.format(
 					"/{0}/{1}/data/{2}/{3}", ROOT_PATH, job.getReferential(),
 					job.getId(), REPORT_VALIDATION)), "data");
+		}
+
+		// add parameters link
+		java.nio.file.Path parameters = Paths.get(
+				System.getProperty("user.home"), ROOT_PATH, referential,
+				"data", id.toString(), REPORT);
+		if (Files.exists(parameters)) {
+			builder.link(URI.create(MessageFormat.format("/{0}/data/{1}/{2}",
+					ROOT_PATH, job.getReferential(), job.getId(), REPORT)),
+					Link.PARAMETERS_REL);
 		}
 
 		result = builder.build();

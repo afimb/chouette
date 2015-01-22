@@ -8,12 +8,7 @@
 package mobi.chouette.model;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -38,6 +33,8 @@ import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.type.UserNeedEnum;
 import mobi.chouette.model.util.ObjectIdTypes;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * Chouette Line : a group of Routes which is generally known to the public by a
  * similar name or number
@@ -49,7 +46,7 @@ import mobi.chouette.model.util.ObjectIdTypes;
 @Table(name = "lines")
 @NoArgsConstructor
 @Log4j
-public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes{
+public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	private static final long serialVersionUID = -8086291270595894778L;
 
 	/**
@@ -69,7 +66,7 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes{
 	 *            New value
 	 */
 	public void setName(String value) {
-		name = dataBaseSizeProtectedValue(value, "name", log);
+		name = StringUtils.abbreviate(value, 255);
 	}
 
 	/**
@@ -89,7 +86,7 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes{
 	 *            New value
 	 */
 	public void setComment(String value) {
-		comment = dataBaseSizeProtectedValue(value, "comment", log);
+		comment = StringUtils.abbreviate(value, 255);
 	}
 
 	/**
@@ -109,7 +106,7 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes{
 	 *            New value
 	 */
 	public void setNumber(String value) {
-		number = dataBaseSizeProtectedValue(value, "number", log);
+		number = StringUtils.abbreviate(value, 255);
 	}
 
 	/**
@@ -129,7 +126,7 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes{
 	 *            New value
 	 */
 	public void setPublishedName(String value) {
-		publishedName = dataBaseSizeProtectedValue(value, "publishedName", log);
+		publishedName = StringUtils.abbreviate(value, 255);
 	}
 
 	/**
@@ -149,8 +146,8 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes{
 	 *            New value
 	 */
 	public void setRegistrationNumber(String value) {
-		registrationNumber = dataBaseSizeProtectedValue(value,
-				"registrationNumber", log);
+		registrationNumber = StringUtils.abbreviate(value, 255);
+
 	}
 
 	/**
@@ -199,6 +196,8 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes{
 	 *            New value
 	 * @return The actual value
 	 */
+	@Getter
+	@Setter
 	@Column(name = "int_user_needs")
 	private Integer intUserNeeds = 0;
 
@@ -221,7 +220,7 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes{
 		}
 		this.intUserNeeds = value;
 	}
-	
+
 	/**
 	 * web site url
 	 * 
@@ -239,7 +238,7 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes{
 	 *            New value
 	 */
 	public void setUrl(String value) {
-		url = dataBaseSizeProtectedValue(value, "url", log);
+		url = StringUtils.abbreviate(value, 255);
 	}
 
 	/**
@@ -260,7 +259,7 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes{
 	 *            New value in RRGGBB hexadecimal format
 	 */
 	public void setColor(String value) {
-		color = dataBaseSizeProtectedValue(value, "color", log);
+		color = StringUtils.abbreviate(value, 6);
 	}
 
 	/**
@@ -280,7 +279,7 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes{
 	 *            New value in RRGGBB hexadecimal format
 	 */
 	public void setTextColor(String value) {
-		textColor = dataBaseSizeProtectedValue(value, "textColor", log);
+		textColor = StringUtils.abbreviate(value, 6);
 	}
 
 	/**
@@ -421,5 +420,4 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes{
 
 	}
 
-	
 }

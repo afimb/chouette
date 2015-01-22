@@ -21,6 +21,8 @@ import lombok.ToString;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.type.AccessPointTypeEnum;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * Chouette AccessPoint : relation between an AccessPoint and a StopArea
  * <p/>
@@ -55,7 +57,7 @@ public class AccessPoint extends NeptuneLocalizedObject {
 	 *            New value
 	 */
 	public void setName(String value) {
-		name = dataBaseSizeProtectedValue(value, "name", log);
+		name = StringUtils.abbreviate(value, 255);
 	}
 
 	/**
@@ -75,7 +77,7 @@ public class AccessPoint extends NeptuneLocalizedObject {
 	 *            New value
 	 */
 	public void setComment(String value) {
-		comment = dataBaseSizeProtectedValue(value, "comment", log);
+		comment = StringUtils.abbreviate(value, 255);
 	}
 
 	/**

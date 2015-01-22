@@ -27,6 +27,8 @@ import lombok.ToString;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.type.PTNetworkSourceTypeEnum;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * Chouette Public Transport Network : a set of lines
  * <p/>
@@ -59,7 +61,7 @@ public class PTNetwork extends NeptuneIdentifiedObject {
 	 *            New value
 	 */
 	public void setName(String value) {
-		name = dataBaseSizeProtectedValue(value, "name", log);
+		name = StringUtils.abbreviate(value, 255);
 	}
 
 	/**
@@ -79,7 +81,7 @@ public class PTNetwork extends NeptuneIdentifiedObject {
 	 *            New value
 	 */
 	public void setComment(String value) {
-		comment = dataBaseSizeProtectedValue(value, "comment", log);
+		comment = StringUtils.abbreviate(value, 255);
 	}
 
 	/**
@@ -112,7 +114,7 @@ public class PTNetwork extends NeptuneIdentifiedObject {
 	 *            New value
 	 */
 	public void setDescription(String value) {
-		description = dataBaseSizeProtectedValue(value, "description", log);
+		description = StringUtils.abbreviate(value, 255);
 	}
 
 	/**
@@ -132,8 +134,8 @@ public class PTNetwork extends NeptuneIdentifiedObject {
 	 *            New value
 	 */
 	public void setRegistrationNumber(String value) {
-		registrationNumber = dataBaseSizeProtectedValue(value,
-				"registrationNumber", log);
+		registrationNumber = StringUtils.abbreviate(value, 255);
+
 	}
 
 	/**
@@ -166,7 +168,7 @@ public class PTNetwork extends NeptuneIdentifiedObject {
 	 *            New value
 	 */
 	public void setSourceName(String value) {
-		sourceName = dataBaseSizeProtectedValue(value, "sourceName", log);
+		sourceName = StringUtils.abbreviate(value, 255);
 	}
 
 	/**
@@ -186,8 +188,8 @@ public class PTNetwork extends NeptuneIdentifiedObject {
 	 *            New value
 	 */
 	public void setSourceIdentifier(String value) {
-		sourceIdentifier = dataBaseSizeProtectedValue(value,
-				"sourceIdentifier", log);
+		sourceIdentifier = StringUtils.abbreviate(value, 255);
+
 	}
 
 	/**

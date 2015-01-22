@@ -23,7 +23,7 @@ import mobi.chouette.model.type.ConnectionLinkTypeEnum;
 import mobi.chouette.model.type.LinkOrientationEnum;
 import mobi.chouette.model.type.UserNeedEnum;
 
-import com.google.common.collect.ComparisonChain;
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Chouette AccessLink : relation between an AccessPoint and a StopArea
@@ -40,7 +40,6 @@ import com.google.common.collect.ComparisonChain;
 public class AccessLink extends NeptuneIdentifiedObject {
 
 	private static final long serialVersionUID = 7835556134861322471L;
-
 
 	/**
 	 * name
@@ -59,7 +58,7 @@ public class AccessLink extends NeptuneIdentifiedObject {
 	 *            New value
 	 */
 	public void setName(String value) {
-		name = dataBaseSizeProtectedValue(value, "name", log);
+		name = StringUtils.abbreviate(value, 255);
 	}
 
 	/**
@@ -79,7 +78,7 @@ public class AccessLink extends NeptuneIdentifiedObject {
 	 *            New value
 	 */
 	public void setComment(String value) {
-		comment = dataBaseSizeProtectedValue(value, "comment", log);
+		comment = StringUtils.abbreviate(value, 255);
 	}
 
 	/**

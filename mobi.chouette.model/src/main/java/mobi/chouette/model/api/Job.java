@@ -32,7 +32,7 @@ import lombok.extern.log4j.Log4j;
 
 @EqualsAndHashCode(of = { "id" })
 @Log4j
-@ToString(exclude = { "parameters", "validation" })
+@ToString()
 @XmlRootElement(name = "job")
 @Entity
 @Table(name = "jobs")
@@ -66,18 +66,13 @@ public class Job implements Serializable {
 	@Getter
 	@Setter
 	private String type;
-
-//	@XmlAttribute(name = "parameters")
-//	@Column(name = "parameters", columnDefinition = "TEXT")
-//	@Getter
-//	@Setter
-//	private String parameters;
-
-//	@XmlAttribute(name = "validation")
-//	@Column(name = "validation", columnDefinition = "TEXT")
-//	@Getter
-//	@Setter
-//	private String validation;
+	
+	
+	@XmlAttribute(name = "name")
+	@Column(name = "name")
+	@Getter
+	@Setter
+	private String name;
 
 	@XmlAttribute(name = "filename")
 	@Column(name = "filename")
@@ -85,8 +80,14 @@ public class Job implements Serializable {
 	@Setter
 	private String filename;
 
-	@XmlAttribute(name = "date")
-	@Column(name = "date")
+	@XmlAttribute(name = "created")
+	@Column(name = "created")
+	@Getter
+	@Setter
+	private Date created;
+	
+	@XmlAttribute(name = "updated")
+	@Column(name = "updated")
 	@Getter
 	@Setter
 	private Date updated;

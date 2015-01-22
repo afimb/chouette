@@ -23,6 +23,8 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.type.ServiceStatusValueEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * Chouette VehicleJourney
  * <p/>
@@ -59,7 +61,7 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 	 *            New value
 	 */
 	public void setComment(String value) {
-		comment = dataBaseSizeProtectedValue(value, "comment", log);
+		comment = StringUtils.abbreviate(value, 255);
 	}
 
 	/**
@@ -106,8 +108,8 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 	 *            New value
 	 */
 	public void setPublishedJourneyName(String value) {
-		publishedJourneyName = dataBaseSizeProtectedValue(value,
-				"publishedJourneyName", log);
+		publishedJourneyName = StringUtils.abbreviate(value, 255);
+
 	}
 
 	/**
@@ -127,8 +129,8 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 	 *            New value
 	 */
 	public void setPublishedJourneyIdentifier(String value) {
-		publishedJourneyIdentifier = dataBaseSizeProtectedValue(value,
-				"publishedJourneyIdentifier", log);
+		publishedJourneyIdentifier = StringUtils.abbreviate(value, 255);
+
 	}
 
 	/**
@@ -148,7 +150,7 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 	 *            New value
 	 */
 	public void setFacility(String value) {
-		facility = dataBaseSizeProtectedValue(value, "facility", log);
+		facility = StringUtils.abbreviate(value, 255);
 	}
 
 	/**
@@ -168,8 +170,8 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 	 *            New value
 	 */
 	public void setVehicleTypeIdentifier(String value) {
-		vehicleTypeIdentifier = dataBaseSizeProtectedValue(value,
-				"vehicleTypeIdentifier", log);
+		vehicleTypeIdentifier = StringUtils.abbreviate(value, 255);
+
 	}
 
 	/**

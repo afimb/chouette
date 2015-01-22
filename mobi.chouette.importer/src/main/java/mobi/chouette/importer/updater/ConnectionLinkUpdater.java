@@ -1,12 +1,25 @@
 package mobi.chouette.importer.updater;
 
-import mobi.chouette.model.AccessLink;
+import javax.ejb.EJB;
 
-public class AccessLinkUpdater implements Updater<AccessLink> {
+import mobi.chouette.dao.StopAreaDAO;
+import mobi.chouette.model.ConnectionLink;
+import mobi.chouette.model.StopArea;
+
+public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
+
+	/*
+	if (newValue.get != null
+			&& newValue.get.compareTo(oldValue.get) != 0) {
+		oldValue.set(newValue.get);
+	}
+	*/
+	@EJB
+	private StopAreaDAO stopAreaDAO;
 
 	@Override
-	public void update(AccessLink oldValue, AccessLink newValue) {
-
+	public void update(ConnectionLink oldValue, ConnectionLink newValue) {
+		
 		if (newValue.getObjectId() != null
 				&& newValue.getObjectId().compareTo(oldValue.getObjectId()) != 0) {
 			oldValue.setObjectId(newValue.getObjectId());
@@ -86,23 +99,34 @@ public class AccessLinkUpdater implements Updater<AccessLink> {
 						oldValue.getIntUserNeeds()) != 0) {
 			oldValue.setIntUserNeeds(newValue.getIntUserNeeds());
 		}
-		if (newValue.getLinkOrientation() != null
-				&& newValue.getLinkOrientation().compareTo(
-						oldValue.getLinkOrientation()) != 0) {
-			oldValue.setLinkOrientation(newValue.getLinkOrientation());
+
+		if (newValue.getStartOfLink() != null) {
+			StopArea startOfLink = stopAreaDAO.findByObjectId(newValue.getStartOfLink()
+					.getObjectId());
+			if (startOfLink != null) {
+				oldValue.setStartOfLink(startOfLink);
+			}
 		}
 
+		if (newValue.getEndOfLink() != null) {
+			StopArea endOfLink = stopAreaDAO.findByObjectId(newValue.getEndOfLink()
+					.getObjectId());
+			if (endOfLink != null) {
+				oldValue.setEndOfLink(endOfLink);
+			}
+		}
 	}
 
 	static {
-		UpdaterFactory.register(AccessLinkUpdater.class.getName(),
+		UpdaterFactory.register(ConnectionLinkUpdater.class.getName(),
 				new UpdaterFactory() {
-					private AccessLinkUpdater INSTANCE = new AccessLinkUpdater();
+					private ConnectionLinkUpdater INSTANCE = new ConnectionLinkUpdater();
 
 					@Override
-					protected Updater<AccessLink> create() {
+					protected Updater<ConnectionLink> create() {
 						return INSTANCE;
 					}
 				});
 	}
+
 }

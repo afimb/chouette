@@ -22,6 +22,8 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.type.ConnectionLinkTypeEnum;
 import mobi.chouette.model.type.UserNeedEnum;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * Chouette ConnectionLink : relation between 2 StopAreas
  * <p/>
@@ -55,7 +57,7 @@ public class ConnectionLink extends NeptuneIdentifiedObject {
 	 *            New value
 	 */
 	public void setName(String value) {
-		name = dataBaseSizeProtectedValue(value, "name", log);
+		name = StringUtils.abbreviate(value, 255);
 	}
 
 	/**
@@ -75,7 +77,7 @@ public class ConnectionLink extends NeptuneIdentifiedObject {
 	 *            New value
 	 */
 	public void setComment(String value) {
-		comment = dataBaseSizeProtectedValue(value, "comment", log);
+		comment = StringUtils.abbreviate(value, 255);
 	}
 
 	/**
@@ -105,7 +107,7 @@ public class ConnectionLink extends NeptuneIdentifiedObject {
 	@Getter
 	@Setter
 	@Column(name = "lift_availability")
-	private boolean liftAvailable = false;
+	private Boolean liftAvailable = false;
 
 	/**
 	 * mobility restriction indicator (such as wheel chairs) <br/>
@@ -122,7 +124,7 @@ public class ConnectionLink extends NeptuneIdentifiedObject {
 	@Getter
 	@Setter
 	@Column(name = "mobility_restricted_suitability")
-	private boolean mobilityRestrictedSuitable = false;
+	private Boolean mobilityRestrictedSuitable = false;
 
 	/**
 	 * stairs indicator <br/>
@@ -139,7 +141,7 @@ public class ConnectionLink extends NeptuneIdentifiedObject {
 	@Getter
 	@Setter
 	@Column(name = "stairs_availability")
-	private boolean stairsAvailable = false;
+	private Boolean stairsAvailable = false;
 
 	/**
 	 * medium time to follow the link <br/>
@@ -223,6 +225,8 @@ public class ConnectionLink extends NeptuneIdentifiedObject {
 	 * @return The actual value
 	 */
 	@Column(name = "int_user_needs")
+	@Getter
+	@Setter
 	private Integer intUserNeeds = 0;
 
 	public List<UserNeedEnum> getUserNeeds() {

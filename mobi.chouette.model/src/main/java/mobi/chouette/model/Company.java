@@ -21,6 +21,8 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * Chouette Company : a company providing public transport services.
  * <p/>
@@ -54,7 +56,7 @@ public class Company extends NeptuneIdentifiedObject {
 	 *            New value
 	 */
 	public void setName(String value) {
-		name = dataBaseSizeProtectedValue(value, "name", log);
+		name = StringUtils.abbreviate(value, 255);
 	}
 
 	/**
@@ -74,7 +76,7 @@ public class Company extends NeptuneIdentifiedObject {
 	 *            New value
 	 */
 	public void setShortName(String value) {
-		shortName = dataBaseSizeProtectedValue(value, "shortName", log);
+		shortName = StringUtils.abbreviate(value, 255);
 	}
 
 	/**
@@ -94,8 +96,8 @@ public class Company extends NeptuneIdentifiedObject {
 	 *            New value
 	 */
 	public void setOrganisationalUnit(String value) {
-		organisationalUnit = dataBaseSizeProtectedValue(value,
-				"organisationalUnit", log);
+		organisationalUnit = StringUtils.abbreviate(value, 255);
+
 	}
 
 	/**
@@ -115,8 +117,8 @@ public class Company extends NeptuneIdentifiedObject {
 	 *            New value
 	 */
 	public void setOperatingDepartmentName(String value) {
-		operatingDepartmentName = dataBaseSizeProtectedValue(value,
-				"operatingDepartmentName", log);
+		operatingDepartmentName = StringUtils.abbreviate(value, 255);
+
 	}
 
 	/**
@@ -137,7 +139,7 @@ public class Company extends NeptuneIdentifiedObject {
 	 *            New value
 	 */
 	public void setCode(String value) {
-		code = dataBaseSizeProtectedValue(value, "code", log);
+		code = StringUtils.abbreviate(value, 255);
 	}
 
 	/**
@@ -157,7 +159,7 @@ public class Company extends NeptuneIdentifiedObject {
 	 *            New value
 	 */
 	public void setPhone(String value) {
-		phone = dataBaseSizeProtectedValue(value, "phone", log);
+		phone = StringUtils.abbreviate(value, 255);
 	}
 
 	/**
@@ -177,7 +179,7 @@ public class Company extends NeptuneIdentifiedObject {
 	 *            New value
 	 */
 	public void setFax(String value) {
-		fax = dataBaseSizeProtectedValue(value, "fax", log);
+		fax = StringUtils.abbreviate(value, 255);
 	}
 
 	/**
@@ -197,7 +199,7 @@ public class Company extends NeptuneIdentifiedObject {
 	 *            New value
 	 */
 	public void setEmail(String value) {
-		email = dataBaseSizeProtectedValue(value, "email", log);
+		email = StringUtils.abbreviate(value, 255);
 	}
 
 	/**
@@ -217,8 +219,8 @@ public class Company extends NeptuneIdentifiedObject {
 	 *            New value
 	 */
 	public void setRegistrationNumber(String value) {
-		registrationNumber = dataBaseSizeProtectedValue(value,
-				"registrationNumber", log);
+		registrationNumber = StringUtils.abbreviate(value, 255);
+
 	}
 
 	/**
@@ -238,7 +240,7 @@ public class Company extends NeptuneIdentifiedObject {
 	 *            New value
 	 */
 	public void setUrl(String value) {
-		url = dataBaseSizeProtectedValue(value, "url", log);
+		url = StringUtils.abbreviate(value, 255);
 	}
 
 	/**
@@ -258,7 +260,7 @@ public class Company extends NeptuneIdentifiedObject {
 	 *            New value
 	 */
 	public void setTimeZone(String value) {
-		timeZone = dataBaseSizeProtectedValue(value, "timeZone", log);
+		timeZone = StringUtils.abbreviate(value, 255);
 	}
 
 	/**

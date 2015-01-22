@@ -4,13 +4,13 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import mobi.chouette.model.Company;
+import mobi.chouette.model.StopPoint;
 
 @Stateless
-public class StopPointDAO extends GenericDAOImpl<Company> {
+public class StopPointDAO extends GenericDAOImpl<StopPoint> {
 
 	public StopPointDAO() {
-		super(Company.class);
+		super(StopPoint.class);
 	}
 
 	@PersistenceContext(unitName = "referential")

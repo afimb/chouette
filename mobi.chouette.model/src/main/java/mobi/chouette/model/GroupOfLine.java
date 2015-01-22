@@ -14,6 +14,8 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * Chouette GroupOfLine : to associate lines with common purpose
  * <p/>
@@ -46,7 +48,7 @@ public class GroupOfLine extends NeptuneIdentifiedObject {
 	 *            New value
 	 */
 	public void setName(String value) {
-		name = dataBaseSizeProtectedValue(value, "name", log);
+		name = StringUtils.abbreviate(value, 255);
 	}
 
 	/**
@@ -66,7 +68,7 @@ public class GroupOfLine extends NeptuneIdentifiedObject {
 	 *            New value
 	 */
 	public void setComment(String value) {
-		comment = dataBaseSizeProtectedValue(value, "comment", log);
+		comment = StringUtils.abbreviate(value, 255);
 	}
 
 	/**

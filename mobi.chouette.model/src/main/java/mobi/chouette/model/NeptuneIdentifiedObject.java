@@ -19,6 +19,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * Abstract object used for all Identified Chouette Object
  * <p/>
@@ -47,7 +49,7 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject {
 	protected String objectId;
 
 	public void setObjectId(String value) {
-		objectId = dataBaseSizeProtectedValue(value, "objectId", log);
+		objectId = StringUtils.abbreviate(value, 255);
 	}
 
 	/**

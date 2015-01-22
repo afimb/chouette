@@ -29,6 +29,8 @@ import lombok.ToString;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.type.PTDirectionEnum;
 
+import org.apache.commons.lang.StringUtils;
+
 /**
  * Chouette Route : An ordered list of StopPoints defining one single path
  * through the network. <br/>
@@ -65,7 +67,7 @@ public class Route extends NeptuneIdentifiedObject {
 	 *            New value
 	 */
 	public void setName(String value) {
-		name = dataBaseSizeProtectedValue(value, "name", log);
+		name = StringUtils.abbreviate(value, 255);
 	}
 
 	/**
@@ -85,7 +87,7 @@ public class Route extends NeptuneIdentifiedObject {
 	 *            New value
 	 */
 	public void setComment(String value) {
-		comment = dataBaseSizeProtectedValue(value, "comment", log);
+		comment = StringUtils.abbreviate(value, 255);
 	}
 
 	/**
@@ -124,7 +126,7 @@ public class Route extends NeptuneIdentifiedObject {
 	 *            New value
 	 */
 	public void setPublishedName(String value) {
-		publishedName = dataBaseSizeProtectedValue(value, "publishedName", log);
+		publishedName = StringUtils.abbreviate(value, 255);
 	}
 
 	/**
@@ -144,7 +146,7 @@ public class Route extends NeptuneIdentifiedObject {
 	 *            New value
 	 */
 	public void setNumber(String value) {
-		number = dataBaseSizeProtectedValue(value, "number", log);
+		number = StringUtils.abbreviate(value, 255);
 	}
 
 	/**
@@ -182,7 +184,7 @@ public class Route extends NeptuneIdentifiedObject {
 	 *            New value
 	 */
 	public void setWayBack(String value) {
-		wayBack = dataBaseSizeProtectedValue(value, "wayBack", log);
+		wayBack = StringUtils.abbreviate(value, 255);
 	}
 
 	/**

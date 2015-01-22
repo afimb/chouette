@@ -27,6 +27,7 @@ public class Link implements java.io.Serializable {
 	public static final String DOWNLOAD_REL = "download";
 
 	public static final String VALIDATION_REL = "validation";
+	public static final String PARAMETERS_REL = "parameters";
 
 	@Column(name = "rel")
 	@Getter
