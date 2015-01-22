@@ -88,17 +88,17 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 						oldValue.getTransportMode()) != 0) {
 			oldValue.setTransportMode(newValue.getTransportMode());
 		}
-		if (newValue.getPublishedJourneyIdentifier() != null
-				&& newValue.getPublishedJourneyIdentifier().compareTo(
-						oldValue.getPublishedJourneyIdentifier()) != 0) {
-			oldValue.setPublishedJourneyIdentifier(newValue
-					.getPublishedJourneyIdentifier());
-		}
 		if (newValue.getPublishedJourneyName() != null
 				&& newValue.getPublishedJourneyName().compareTo(
 						oldValue.getPublishedJourneyName()) != 0) {
 			oldValue.setPublishedJourneyName(newValue.getPublishedJourneyName());
 		}
+		if (newValue.getPublishedJourneyIdentifier() != null
+				&& newValue.getPublishedJourneyIdentifier().compareTo(
+						oldValue.getPublishedJourneyIdentifier()) != 0) {
+			oldValue.setPublishedJourneyIdentifier(newValue
+					.getPublishedJourneyIdentifier());
+		}		
 		if (newValue.getFacility() != null
 				&& newValue.getFacility().compareTo(oldValue.getFacility()) != 0) {
 			oldValue.setFacility(newValue.getFacility());
@@ -114,6 +114,16 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 			oldValue.setNumber(newValue.getNumber());
 		}
 
+		
+		if (newValue.getMobilityRestrictedSuitability() != null
+				&& newValue.getMobilityRestrictedSuitability().compareTo(oldValue.getMobilityRestrictedSuitability()) != 0) {
+			oldValue.setMobilityRestrictedSuitability(newValue.getMobilityRestrictedSuitability());
+		}
+		if (newValue.getFlexibleService() != null
+				&& newValue.getFlexibleService().compareTo(oldValue.getFlexibleService()) != 0) {
+			oldValue.setFlexibleService(newValue.getFlexibleService());
+		}
+		
 		// Company
 		if (oldValue.getCompany() == null
 				|| !oldValue.getCompany().equals(newValue.getCompany())) {
@@ -207,6 +217,8 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 		for (Timetable item : removedTimetable) {
 			oldValue.removeTimetable(item);
 		}
+		
+		// TODO journey pattern Fk
 	}
 
 	static {

@@ -64,6 +64,8 @@ public class VehicleJourneyAtStopUpdater implements
 				oldValue.setStopPoint(stopPoint);
 			}
 		}
+		
+		// TODO vehicle journey Fk
 	}
 
 	static {

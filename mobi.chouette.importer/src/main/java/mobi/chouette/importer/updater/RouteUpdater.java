@@ -155,6 +155,8 @@ public class RouteUpdater implements Updater<Route> {
 			item.setRoute(null);
 			journeyPatternDAO.update(item);
 		}
+		
+		// TODO opposite_route_id && line Fk
 	}
 
 	static {

@@ -5,9 +5,6 @@ import mobi.chouette.model.StopArea;
 public class StopAreaUpdater implements Updater<StopArea> {
 	@Override
 	public void update(StopArea oldValue, StopArea newValue) {
-		// if new object unknown as ConnectionLink target, ignore update
-		if (newValue.getAreaType() == null)
-			return;
 
 		if (newValue.getObjectId() != null
 				&& newValue.getObjectId().compareTo(oldValue.getObjectId()) != 0) {
@@ -49,6 +46,14 @@ public class StopAreaUpdater implements Updater<StopArea> {
 						oldValue.getNearestTopicName()) != 0) {
 			oldValue.setNearestTopicName(newValue.getNearestTopicName());
 		}
+		if (newValue.getUrl() != null
+				&& newValue.getUrl().compareTo(oldValue.getUrl()) != 0) {
+			oldValue.setUrl(newValue.getUrl());
+		}
+		if (newValue.getTimeZone() != null
+				&& newValue.getTimeZone().compareTo(oldValue.getTimeZone()) != 0) {
+			oldValue.setTimeZone(newValue.getTimeZone());
+		}
 		if (newValue.getFareCode() != null
 				&& newValue.getFareCode().compareTo(oldValue.getFareCode()) != 0) {
 			oldValue.setFareCode(newValue.getFareCode());
@@ -69,6 +74,12 @@ public class StopAreaUpdater implements Updater<StopArea> {
 						oldValue.getStairsAvailable()) != 0) {
 			oldValue.setStairsAvailable(newValue.getStairsAvailable());
 		}
+		if (newValue.getIntUserNeeds() != null
+				&& newValue.getIntUserNeeds().compareTo(
+						oldValue.getIntUserNeeds()) != 0) {
+			oldValue.setIntUserNeeds(newValue.getIntUserNeeds());
+		}
+		
 		if (newValue.getLongitude() != null
 				&& newValue.getLongitude().compareTo(oldValue.getLongitude()) != 0) {
 			oldValue.setLongitude(newValue.getLongitude());
@@ -100,23 +111,28 @@ public class StopAreaUpdater implements Updater<StopArea> {
 						oldValue.getCountryCode()) != 0) {
 			oldValue.setCountryCode(newValue.getCountryCode());
 		}
+		if (newValue.getZipCode() != null
+				&& newValue.getZipCode().compareTo(oldValue.getZipCode()) != 0) {
+			oldValue.setZipCode(newValue.getZipCode());
+		}
+		if (newValue.getCityName() != null
+				&& newValue.getCityName().compareTo(oldValue.getCityName()) != 0) {
+			oldValue.setCityName(newValue.getCityName());
+		}
 		if (newValue.getStreetName() != null
 				&& newValue.getStreetName().compareTo(oldValue.getStreetName()) != 0) {
 			oldValue.setStreetName(newValue.getStreetName());
 		}
-		if (newValue.getUrl() != null
-				&& newValue.getUrl().compareTo(oldValue.getUrl()) != 0) {
-			oldValue.setUrl(newValue.getUrl());
-		}
-		if (newValue.getTimeZone() != null
-				&& newValue.getTimeZone().compareTo(oldValue.getTimeZone()) != 0) {
-			oldValue.setTimeZone(newValue.getTimeZone());
-		}
-		if (newValue.getIntUserNeeds() != null
-				&& newValue.getIntUserNeeds().compareTo(
-						oldValue.getIntUserNeeds()) != 0) {
-			oldValue.setIntUserNeeds(newValue.getIntUserNeeds());
-		}
+
+		// TODO Fk parent_id
+		// TODO list routing_constraints_lines (routingConstraintLines)
+		// TODO list stop_areas_stop_areas (routingConstraintAreas)
+		// TODO list stop area (containedStopAreas)
+		// TODO list stop point (containedStopPoints)
+		// TODO list access links (accessLinks)
+		// TODO list access links (connectionStartLinks)
+		// TODO list access links (connectionEndLinks)
+		// TODO list access points (accessPoints)
 
 	}
 

@@ -92,6 +92,7 @@ public class AccessLinkUpdater implements Updater<AccessLink> {
 			oldValue.setLinkOrientation(newValue.getLinkOrientation());
 		}
 
+		// TODO access point Fk stop area Fk
 	}
 
 	static {

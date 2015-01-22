@@ -33,6 +33,8 @@ public class GroupOfLineUpdater implements Updater<GroupOfLine> {
 				&& newValue.getComment().compareTo(oldValue.getComment()) != 0) {
 			oldValue.setComment(newValue.getComment());
 		}
+		
+		// TODO line list
 	}
 
 	static {

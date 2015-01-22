@@ -64,7 +64,16 @@ public class TimetableUpdater implements Updater<Timetable> {
 						oldValue.getIntDayTypes()) != 0) {
 			oldValue.setIntDayTypes(newValue.getIntDayTypes());
 		}
-
+		
+		if (newValue.getStartOfPeriod() != null
+				&& newValue.getStartOfPeriod().compareTo(oldValue.getStartOfPeriod()) != 0) {
+			oldValue.setStartOfPeriod(newValue.getStartOfPeriod());
+		}
+		if (newValue.getEndOfPeriod() != null
+				&& newValue.getEndOfPeriod().compareTo(oldValue.getEndOfPeriod()) != 0) {
+			oldValue.setEndOfPeriod(newValue.getEndOfPeriod());
+		}
+		
 		// Period
 		Collection<Period> addedPeriod = CollectionUtils
 				.substract(newValue.getPeriods(), oldValue.getPeriods(),
@@ -94,6 +103,8 @@ public class TimetableUpdater implements Updater<Timetable> {
 		for (CalendarDay item : removedCalendarDays) {
 			oldValue.getCalendarDays().remove(item);
 		}
+		
+		// TODO list vehicle journey (vehicleJourneys)
 	}
 
 	static {

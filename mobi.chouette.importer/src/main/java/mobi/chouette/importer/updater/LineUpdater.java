@@ -90,7 +90,19 @@ public class LineUpdater implements Updater<Line> {
 						oldValue.getIntUserNeeds()) != 0) {
 			oldValue.setIntUserNeeds(newValue.getIntUserNeeds());
 		}
-
+		if (newValue.getUrl() != null
+				&& newValue.getUrl().compareTo(oldValue.getUrl()) != 0) {
+			oldValue.setUrl(newValue.getUrl());
+		}
+		if (newValue.getColor() != null
+				&& newValue.getColor().compareTo(oldValue.getColor()) != 0) {
+			oldValue.setColor(newValue.getColor());
+		}
+		if (newValue.getTextColor() != null
+				&& newValue.getTextColor().compareTo(oldValue.getTextColor()) != 0) {
+			oldValue.setTextColor(newValue.getTextColor());
+		}
+		
 		// PTNetwork
 		PTNetwork ptNetwork = ptNetworkDAO.findByObjectId(newValue
 				.getPtNetwork().getObjectId());
@@ -185,6 +197,7 @@ public class LineUpdater implements Updater<Line> {
 			item.setLine(null);
 			routeDAO.update(item);
 		}
+		// TODO  stop area list (routingConstraintLines)
 	}
 
 	static {

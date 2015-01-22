@@ -119,7 +119,6 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 				vehicleJourney.setObjectId(item.getObjectId());
 				vehicleJourney.setJourneyPattern(oldValue);
 				vehicleJourneyDAO.create(vehicleJourney);
-				log.debug("[DSU] create " + vehicleJourney.getObjectId());
 			}
 			vehicleJourney.setJourneyPattern(oldValue);
 		}
@@ -133,7 +132,6 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 		for (Pair<VehicleJourney, VehicleJourney> pair : modifiedVehicleJourney) {
 			vehicleJourneyUpdater.update(pair.getLeft(), pair.getRight());
 			vehicleJourneyDAO.update(pair.getLeft());
-			log.debug("[DSU] update " + pair.getLeft().getObjectId());
 		}
 
 		Collection<VehicleJourney> removedVehicleJourney = CollectionUtils
@@ -143,8 +141,9 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 		for (VehicleJourney item : removedVehicleJourney) {
 			item.setJourneyPattern(null);
 			vehicleJourneyDAO.update(item);
-			log.debug("[DSU] update " + item.getObjectId());
 		}
+		
+		// TODO route Fk
 	}
 
 	static {
