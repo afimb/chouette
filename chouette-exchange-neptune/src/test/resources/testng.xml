@@ -14,8 +14,6 @@
 			<class name="fr.certu.chouette.exchange.xml.neptune.NeptuneExportTests" />
 		</classes>
     </test> 
-</suite>
-<suite name="producers" verbose="5">
 	<test name="ImportProducers">
 	    <packages>
 	      <package name="fr.certu.chouette.exchange.xml.neptune.importer.producer" >
