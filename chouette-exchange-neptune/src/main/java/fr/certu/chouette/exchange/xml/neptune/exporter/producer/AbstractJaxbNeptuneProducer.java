@@ -2,6 +2,7 @@ package fr.certu.chouette.exchange.xml.neptune.exporter.producer;
 
 import java.math.BigInteger;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -86,6 +87,17 @@ public abstract class AbstractJaxbNeptuneProducer<T extends TridentObjectType, U
          return null;
       return value;
    }
+   
+   protected boolean isEmpty(String value)
+   {
+      return (value == null || value.trim().isEmpty());
+   }
+
+   protected boolean isEmpty(Collection<?> value)
+   {
+      return (value == null || value.isEmpty());
+   }
+
 
    protected Duration toDuration(java.sql.Time time)
    {

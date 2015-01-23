@@ -10,6 +10,7 @@
 		<class>fr.certu.chouette.model.neptune.Company</class>
 		<class>fr.certu.chouette.model.neptune.ConnectionLink</class>
 		<!-- <class>fr.certu.chouette.model.neptune.Facility</class> -->
+		<class>fr.certu.chouette.model.neptune.Footnote</class>
 		<class>fr.certu.chouette.model.neptune.GroupOfLine</class>
 		<class>fr.certu.chouette.model.neptune.JourneyPattern</class>
 		<class>fr.certu.chouette.model.neptune.Line</class>

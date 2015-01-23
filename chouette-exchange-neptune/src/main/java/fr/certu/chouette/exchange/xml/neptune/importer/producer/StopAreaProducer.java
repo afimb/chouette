@@ -4,16 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.extern.log4j.Log4j;
-
+import fr.certu.chouette.exchange.xml.neptune.importer.Context;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
 import fr.certu.chouette.model.neptune.type.UserNeedEnum;
-import fr.certu.chouette.plugin.exchange.SharedImportedData;
-import fr.certu.chouette.plugin.exchange.UnsharedImportedData;
 import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
-import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 
 @Log4j
 public class StopAreaProducer
@@ -21,16 +18,13 @@ public class StopAreaProducer
       AbstractModelProducer<StopArea, org.trident.schema.trident.ChouettePTNetworkType.ChouetteArea.StopArea>
 {
    @Override
-   public StopArea produce(
-         String sourceFile,
-         org.trident.schema.trident.ChouettePTNetworkType.ChouetteArea.StopArea xmlStopArea,
-         ReportItem importReport, PhaseReportItem validationReport,
-         SharedImportedData sharedData, UnsharedImportedData unshareableData)
+   public StopArea produce(Context context,
+         org.trident.schema.trident.ChouettePTNetworkType.ChouetteArea.StopArea xmlStopArea)
    {
       StopArea stopArea = new StopArea();
 
       // objectId, objectVersion, creatorId, creationTime
-      populateFromCastorNeptune(stopArea, xmlStopArea, importReport);
+      populateFromCastorNeptune(context, stopArea, xmlStopArea);
 
       // AreaCentroid optional
       stopArea.setAreaCentroidId(getNonEmptyTrimedString(xmlStopArea
@@ -82,8 +76,8 @@ public class StopAreaProducer
                      .getNearestTopicName()));
 
          // RegistrationNumber optional
-         stopArea.setRegistrationNumber(getRegistrationNumber(
-               xmlStopAreaExtension.getRegistration(), importReport));
+         stopArea.setRegistrationNumber(getRegistrationNumber(context,
+               xmlStopAreaExtension.getRegistration()));
 
          // StairsAvailability optional
          if (xmlStopAreaExtension.isSetStairsAvailability())
@@ -109,7 +103,7 @@ public class StopAreaProducer
                         ExchangeReportItem.KEY.UNKNOWN_ENUM,
                         Report.STATE.ERROR, "UserNeed",
                         xmlAccessibilitySuitabilityDetailsItem.toString());
-                  importReport.addItem(item);
+                  context.getImportReport().addItem(item);
                }
 
             }
@@ -121,8 +115,7 @@ public class StopAreaProducer
       // remove unrelevant attributs
       xmlStopArea.unsetBoundaryPoint();
 
-      StopArea sharedBean = getOrAddSharedData(sharedData, stopArea,
-            sourceFile, xmlStopArea, validationReport);
+      StopArea sharedBean = getOrAddSharedData(context, stopArea, xmlStopArea);
       if (sharedBean != null)
          stopArea = sharedBean;
 

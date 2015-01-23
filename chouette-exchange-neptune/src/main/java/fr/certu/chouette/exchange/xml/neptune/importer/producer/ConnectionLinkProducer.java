@@ -4,15 +4,13 @@ import lombok.extern.log4j.Log4j;
 
 import org.trident.schema.trident.ConnectionLinkExtensionType;
 
+import fr.certu.chouette.exchange.xml.neptune.importer.Context;
 import fr.certu.chouette.model.neptune.ConnectionLink;
 import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
 import fr.certu.chouette.model.neptune.type.UserNeedEnum;
-import fr.certu.chouette.plugin.exchange.SharedImportedData;
-import fr.certu.chouette.plugin.exchange.UnsharedImportedData;
 import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
-import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 
 @Log4j
 public class ConnectionLinkProducer
@@ -21,17 +19,14 @@ public class ConnectionLinkProducer
 {
 
    @Override
-   public ConnectionLink produce(
-         String sourceFile,
-         org.trident.schema.trident.ChouettePTNetworkType.ConnectionLink xmlConnectionLink,
-         ReportItem importReport, PhaseReportItem validationReport,
-         SharedImportedData sharedData, UnsharedImportedData unshareableData)
+   public ConnectionLink produce(Context context,
+         org.trident.schema.trident.ChouettePTNetworkType.ConnectionLink xmlConnectionLink)
    {
 
       ConnectionLink connectionLink = new ConnectionLink();
 
       // objectId, objectVersion, creatorId, creationTime
-      populateFromCastorNeptune(connectionLink, xmlConnectionLink, importReport);
+      populateFromCastorNeptune(context, connectionLink, xmlConnectionLink);
 
       // Name optional
       connectionLink.setName(getNonEmptyTrimedString(xmlConnectionLink
@@ -91,7 +86,7 @@ public class ConnectionLinkProducer
                         ExchangeReportItem.KEY.UNKNOWN_ENUM,
                         Report.STATE.ERROR, "UserNeed",
                         xmlAccessibilitySuitabilityDetailsItem.toString());
-                  importReport.addItem(item);
+                  context.getImportReport().addItem(item);
                }
 
             }
@@ -128,8 +123,8 @@ public class ConnectionLinkProducer
          }
       }
 
-      ConnectionLink sharedBean = getOrAddSharedData(sharedData,
-            connectionLink, sourceFile, xmlConnectionLink, validationReport);
+      ConnectionLink sharedBean = getOrAddSharedData(context,
+            connectionLink, xmlConnectionLink);
       if (sharedBean != null)
          return sharedBean;
       return connectionLink;

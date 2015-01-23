@@ -3,6 +3,7 @@ package fr.certu.chouette.jdbc.dao;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -41,7 +42,7 @@ public class LineJdbcDao extends AbstractJdbcDao<Line>
    @Override
    protected void populateStatement(PreparedStatement ps, Line line)
          throws SQLException
-   {
+         {
       setId(ps, 1, line.getPtNetwork());
       setId(ps, 2, line.getCompany());
       ps.setString(3, line.getObjectId());
@@ -65,6 +66,10 @@ public class LineJdbcDao extends AbstractJdbcDao<Line>
       ps.setString(15, line.getColor());
       ps.setString(16, line.getTextColor());
       ps.setString(17, line.getUrl());
+      if (line.getFlexibleService() == null)
+         ps.setNull(18, Types.BOOLEAN);
+      else
+         ps.setBoolean(18, line.getFlexibleService());
    }
 
    /*
@@ -76,7 +81,7 @@ public class LineJdbcDao extends AbstractJdbcDao<Line>
    @Override
    protected void populateAttributeStatement(String attributeKey,
          PreparedStatement ps, Object attribute) throws SQLException
-   {
+         {
 
       if (attributeKey.equals("groupOfLines"))
       {
@@ -89,12 +94,12 @@ public class LineJdbcDao extends AbstractJdbcDao<Line>
 
       super.populateAttributeStatement(attributeKey, ps, attribute);
 
-   }
+         }
 
    @Override
    protected Collection<? extends Object> getAttributeValues(
          String attributeKey, Line item)
-   {
+         {
 
       if (attributeKey.equals("groupOfLines"))
       {
@@ -114,7 +119,7 @@ public class LineJdbcDao extends AbstractJdbcDao<Line>
       }
 
       return super.getAttributeValues(attributeKey, item);
-   }
+         }
 
    class JdbcLineGroupOfLine
    {

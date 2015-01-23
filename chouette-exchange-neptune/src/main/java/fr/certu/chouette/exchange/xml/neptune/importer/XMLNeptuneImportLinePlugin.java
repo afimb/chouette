@@ -74,7 +74,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
     * list of allowed file extensions
     */
    private List<String> allowedExtensions = Arrays.asList(new String[] { "xml",
-         "zip" });
+   "zip" });
 
    private JaxbNeptuneFileConverter reader;
 
@@ -151,8 +151,8 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
    @Override
    public List<Line> doImport(List<ParameterValue> parameters,
          ReportHolder importReport, ReportHolder validationReport)
-         throws ChouetteException
-   {
+               throws ChouetteException
+               {
 
       String filePath = null;
       boolean validate = true;
@@ -283,7 +283,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
       importReport.setReport(iReport);
 
       return lines;
-   }
+               }
 
    /**
     * import ZipFile
@@ -302,7 +302,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
    private List<Line> processZipImport(String filePath, boolean validate,
          Report importReport, Report validationReport, boolean optimizeMemory,
          SharedImportedData sharedData, UnsharedImportedData unsharedData)
-   {
+         {
       ZipFile zip = null;
       try
       {
@@ -412,9 +412,9 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
          }
          try
          {
-            Line line = processImport(holder, validate, fileReportItem,
-                  validationReport, entryName, sharedData, unsharedData,
-                  optimizeMemory);
+            Context context = new Context(entryName,fileReportItem,null,sharedData, unsharedData, null
+                  , optimizeMemory,null);
+            Line line = processImport(context, holder, validate, validationReport);
 
             if (line != null)
             {
@@ -453,7 +453,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
          return null;
       }
       return lines;
-   }
+         }
 
    /**
     * import simple Neptune file
@@ -474,7 +474,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
          ReportItem importReport, Report validationReport,
          boolean optimizeMemory, SharedImportedData sharedData,
          UnsharedImportedData unsharedData) throws ExchangeException
-   {
+         {
       ChouettePTNetworkHolder holder = null;
       try
       {
@@ -502,15 +502,15 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
          logger.error(e.getLocalizedMessage());
          return null;
       }
-      Line line = processImport(holder, validate, importReport,
-            validationReport, filePath, sharedData, unsharedData,
-            optimizeMemory);
+      Context context = new Context(filePath,importReport,null,sharedData, unsharedData, null
+            , optimizeMemory,null);
+      Line line = processImport(context, holder, validate, validationReport);
       if (line == null)
       {
          logger.error("import failed (build model)");
       }
       return line;
-   }
+         }
 
    /**
     * process conversion between JAXB format and CHOUETTE internal format
@@ -519,6 +519,7 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
     *           container for JAXB loaded XML file
     * @param validate
     *           validate on XSD rules
+    * @param validationReport 
     * @param importReport
     *           report to fill
     * @param entryName
@@ -526,12 +527,10 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
     * @return builded line
     * @throws ExchangeException
     */
-   private Line processImport(ChouettePTNetworkHolder holder, boolean validate,
-         ReportItem importReport, Report validationReport, String entryName,
-         SharedImportedData sharedData, UnsharedImportedData unsharedData,
-         boolean optimizeMemory) throws ExchangeException
+   private Line processImport(Context context, ChouettePTNetworkHolder holder, boolean validate, Report validationReport) throws ExchangeException
    {
       ChouettePTNetworkType rootObject = holder.getChouettePTNetwork();
+      ReportItem importReport = context.getImportReport();
       if (validate || rootObject == null)
       {
          if (rootObject == null)
@@ -570,186 +569,101 @@ public class XMLNeptuneImportLinePlugin implements IImportPlugin<Line>
 
       PhaseReportItem validationItem = new PhaseReportItem(
             PhaseReportItem.PHASE.TWO);
-      // init validation
-      initValidation(validationItem);
 
       // process Line
       // forward phase2 validation
-      ModelAssembler modelAssembler = new ModelAssembler(entryName, sharedData,
-            unsharedData, importItem, validationItem);
+      ModelAssembler modelAssembler = new ModelAssembler(context);
 
-      Level2Validator validator = new Level2Validator(entryName, validationItem);
-
-      Line line = converter.extractLine(entryName, rootObject, importItem,
-            validationItem, sharedData, unsharedData, validator);
-      // should be made in converter.extractLine
-      importItem.addMessageArgs(line.getName());
-
-      modelAssembler.setLine(line);
-      modelAssembler.setRoutes(converter.extractRoutes(entryName, rootObject,
-            importItem, validationItem, sharedData, unsharedData, validator));
-      modelAssembler.setCompanies(converter.extractCompanies(entryName,
-            rootObject, importItem, validationItem, sharedData, unsharedData,
-            validator));
-      modelAssembler.setPtNetwork(converter.extractPTNetwork(entryName,
-            rootObject, importItem, validationItem, sharedData, unsharedData,
-            validator));
-      modelAssembler.setJourneyPatterns(converter.extractJourneyPatterns(
-            entryName, rootObject, importItem, validationItem, sharedData,
-            unsharedData, validator));
-      modelAssembler.setPtLinks(converter.extractPTLinks(entryName, rootObject,
-            importItem, validationItem, sharedData, unsharedData, validator));
-      modelAssembler.setVehicleJourneys(converter.extractVehicleJourneys(
-            entryName, rootObject, importItem, validationItem, sharedData,
-            unsharedData, validator, optimizeMemory));
-      modelAssembler.setStopPoints(converter.extractStopPoints(entryName,
-            rootObject, importItem, validationItem, sharedData, unsharedData,
-            validator));
-      modelAssembler.setStopAreas(converter.extractStopAreas(entryName,
-            rootObject, importItem, validationItem, sharedData, unsharedData,
-            validator));
-      modelAssembler.setAreaCentroids(converter.extractAreaCentroids(entryName,
-            rootObject, importItem, validationItem, sharedData, unsharedData,
-            validator));
-      modelAssembler.setConnectionLinks(converter.extractConnectionLinks(
-            entryName, rootObject, importItem, validationItem, sharedData,
-            unsharedData, validator));
-      modelAssembler.setTimetables(converter.extractTimetables(entryName,
-            rootObject, importItem, validationItem, sharedData, unsharedData,
-            validator));
-      modelAssembler.setAccessLinks(converter.extractAccessLinks(entryName,
-            rootObject, importItem, validationItem, sharedData, unsharedData,
-            validator));
-      modelAssembler.setAccessPoints(converter.extractAccessPoints(entryName,
-            rootObject, importItem, validationItem, sharedData, unsharedData,
-            validator));
-      modelAssembler.setGroupOfLines(converter.extractGroupOfLines(entryName,
-            rootObject, importItem, validationItem, sharedData, unsharedData,
-            validator));
-      modelAssembler.setFacilities(converter.extractFacilities(entryName,
-            rootObject, importItem, validationItem, sharedData, unsharedData,
-            validator));
-      modelAssembler.setTimeSlots(converter.extractTimeSlots(entryName,
-            rootObject, importItem, validationItem, sharedData, unsharedData,
-            validator));
-      modelAssembler.setRoutingConstraints(converter.extractRoutingConstraints(
-            entryName, rootObject, importItem, validationItem, sharedData,
-            unsharedData, validator));
-      validator.validate();
-
-      validationItem.refreshStatus(); // check why this is needed
-
-      validationReport.addItem(validationItem);
-      validationReport.refreshStatus();
-      // check if validator failed !
-      logger.info("validation status = "
-            + validationItem.getStatus().toString());
-
-      if (!validationItem.getStatus().equals(Report.STATE.ERROR))
+      Level2Validator validator = new Level2Validator(context.getSourceFile(), validationItem);
+      context.setValidator(validator);
+      context.setAssembler(modelAssembler);
+      context.setValidationReport(validationItem);
+      context.setImportReport(importItem);
+      try
       {
-         modelAssembler.connect();
-         // report objects count
-         {
-            ExchangeReportItem countItem = new ExchangeReportItem(
-                  ExchangeReportItem.KEY.ROUTE_COUNT, Report.STATE.OK,
-                  modelAssembler.getRoutes().size());
-            importItem.addItem(countItem);
-            countItem = new ExchangeReportItem(
-                  ExchangeReportItem.KEY.JOURNEY_PATTERN_COUNT,
-                  Report.STATE.OK, modelAssembler.getJourneyPatterns().size());
-            importItem.addItem(countItem);
-            countItem = new ExchangeReportItem(
-                  ExchangeReportItem.KEY.VEHICLE_JOURNEY_COUNT,
-                  Report.STATE.OK, modelAssembler.getVehicleJourneys().size());
-            importItem.addItem(countItem);
-            countItem = new ExchangeReportItem(
-                  ExchangeReportItem.KEY.STOP_AREA_COUNT, Report.STATE.OK,
-                  modelAssembler.getStopAreas().size());
-            importItem.addItem(countItem);
-            countItem = new ExchangeReportItem(
-                  ExchangeReportItem.KEY.CONNECTION_LINK_COUNT,
-                  Report.STATE.OK, modelAssembler.getConnectionLinks().size());
-            importItem.addItem(countItem);
-            countItem = new ExchangeReportItem(
-                  ExchangeReportItem.KEY.ACCES_POINT_COUNT, Report.STATE.OK,
-                  modelAssembler.getAccessPoints().size());
-            importItem.addItem(countItem);
-            countItem = new ExchangeReportItem(
-                  ExchangeReportItem.KEY.TIME_TABLE_COUNT, Report.STATE.OK,
-                  modelAssembler.getTimetables().size());
-            importItem.addItem(countItem);
-         }
-         importReport.addItem(importItem);
-         return line;
-      }
 
-      ReportItem errorItem = new ExchangeReportItem(
-            ExchangeReportItem.KEY.VALIDATION_ERROR, Report.STATE.ERROR, "");
-      importReport.addItem(errorItem);
-      importReport.setMessageKey(ExchangeReportItem.KEY.FILE_ERROR.toString());
-      logger.error("level 2 validation failed");
+         Line line = converter.extractLine(context, rootObject);
+         // should be made in converter.extractLine
+         importItem.addMessageArgs(line.getName());
+
+         modelAssembler.setLine(line);
+         modelAssembler.setRoutes(converter.extractRoutes(context, rootObject));
+         modelAssembler.setCompanies(converter.extractCompanies(context, rootObject));
+         modelAssembler.setPtNetwork(converter.extractPTNetwork(context, rootObject));
+         modelAssembler.setJourneyPatterns(converter.extractJourneyPatterns(context, rootObject));
+         modelAssembler.setPtLinks(converter.extractPTLinks(context, rootObject));
+         modelAssembler.setVehicleJourneys(converter.extractVehicleJourneys(context, rootObject));
+         modelAssembler.setStopPoints(converter.extractStopPoints(context, rootObject));
+         modelAssembler.setStopAreas(converter.extractStopAreas(context, rootObject));
+         modelAssembler.setAreaCentroids(converter.extractAreaCentroids(context, rootObject));
+         modelAssembler.setConnectionLinks(converter.extractConnectionLinks(context, rootObject));
+         modelAssembler.setTimetables(converter.extractTimetables(context, rootObject));
+         modelAssembler.setAccessLinks(converter.extractAccessLinks(context, rootObject));
+         modelAssembler.setAccessPoints(converter.extractAccessPoints(context, rootObject));
+         modelAssembler.setGroupOfLines(converter.extractGroupOfLines(context, rootObject));
+         modelAssembler.setFacilities(converter.extractFacilities(context, rootObject));
+         modelAssembler.setTimeSlots(converter.extractTimeSlots(context, rootObject));
+         modelAssembler.setRoutingConstraints(converter.extractRoutingConstraints(context, rootObject));
+         validator.validate();
+
+         validationItem.refreshStatus(); // check why this is needed
+
+         validationReport.addItem(validationItem);
+         validationReport.refreshStatus();
+         // check if validator failed !
+         logger.info("validation status = "
+               + validationItem.getStatus().toString());
+
+         if (!validationItem.getStatus().equals(Report.STATE.ERROR))
+         {
+            modelAssembler.connect();
+            // report objects count
+            {
+               ExchangeReportItem countItem = new ExchangeReportItem(
+                     ExchangeReportItem.KEY.ROUTE_COUNT, Report.STATE.OK,
+                     modelAssembler.getRoutes().size());
+               importItem.addItem(countItem);
+               countItem = new ExchangeReportItem(
+                     ExchangeReportItem.KEY.JOURNEY_PATTERN_COUNT,
+                     Report.STATE.OK, modelAssembler.getJourneyPatterns().size());
+               importItem.addItem(countItem);
+               countItem = new ExchangeReportItem(
+                     ExchangeReportItem.KEY.VEHICLE_JOURNEY_COUNT,
+                     Report.STATE.OK, modelAssembler.getVehicleJourneys().size());
+               importItem.addItem(countItem);
+               countItem = new ExchangeReportItem(
+                     ExchangeReportItem.KEY.STOP_AREA_COUNT, Report.STATE.OK,
+                     modelAssembler.getStopAreas().size());
+               importItem.addItem(countItem);
+               countItem = new ExchangeReportItem(
+                     ExchangeReportItem.KEY.CONNECTION_LINK_COUNT,
+                     Report.STATE.OK, modelAssembler.getConnectionLinks().size());
+               importItem.addItem(countItem);
+               countItem = new ExchangeReportItem(
+                     ExchangeReportItem.KEY.ACCES_POINT_COUNT, Report.STATE.OK,
+                     modelAssembler.getAccessPoints().size());
+               importItem.addItem(countItem);
+               countItem = new ExchangeReportItem(
+                     ExchangeReportItem.KEY.TIME_TABLE_COUNT, Report.STATE.OK,
+                     modelAssembler.getTimetables().size());
+               importItem.addItem(countItem);
+            }
+            context.getImportReport().addItem(importItem);
+            return line;
+         }
+
+         ReportItem errorItem = new ExchangeReportItem(
+               ExchangeReportItem.KEY.VALIDATION_ERROR, Report.STATE.ERROR, "");
+         importReport.addItem(errorItem);
+         importReport.setMessageKey(ExchangeReportItem.KEY.FILE_ERROR.toString());
+         logger.error("level 2 validation failed");
+      }
+      finally
+      {
+         context.setImportReport(importReport);
+      }
 
       return null;
    }
 
-   private void initValidation(PhaseReportItem validationItem)
-   {
-      String prefix = "2-NEPTUNE-";
-      int order = addItemToValidation(validationItem, prefix, "Common", 2, 1,
-            "W", "E");
-      order = addItemToValidation(validationItem, prefix, "Network", 1, order,
-            "W");
-      order = addItemToValidation(validationItem, prefix, "GroupOfLine", 1,
-            order, "W");
-      order = addItemToValidation(validationItem, prefix, "StopArea", 6, order,
-            "E", "E", "E", "E", "E", "E");
-      order = addItemToValidation(validationItem, prefix, "ITL", 5, order, "E",
-            "E", "E", "E", "E");
-      order = addItemToValidation(validationItem, prefix, "AreaCentroid", 2,
-            order, "E", "E");
-      order = addItemToValidation(validationItem, prefix, "ConnectionLink", 1,
-            order, "E");
-      order = addItemToValidation(validationItem, prefix, "AccessPoint", 7,
-            order, "E", "E", "E", "E", "E", "E", "E");
-      order = addItemToValidation(validationItem, prefix, "AccessLink", 2,
-            order, "E", "E");
-      order = addItemToValidation(validationItem, prefix, "Line", 5, order,
-            "E", "W", "W", "E", "E");
-      order = addItemToValidation(validationItem, prefix, "Route", 12, order,
-            "E", "E", "E", "E", "E", "E", "E", "E", "W", "E", "W", "W");
-      order = addItemToValidation(validationItem, prefix, "PtLink", 1, order,
-            "E");
-      order = addItemToValidation(validationItem, prefix, "JourneyPattern", 3,
-            order, "E", "E", "E");
-      order = addItemToValidation(validationItem, prefix, "StopPoint", 4,
-            order, "E", "E", "E", "E");
-      order = addItemToValidation(validationItem, prefix, "Timetable", 2,
-            order, "W", "W");
-      order = addItemToValidation(validationItem, prefix, "VehicleJourney", 7,
-            order, "E", "E", "E", "E", "E", "E", "W");
-      order = addItemToValidation(validationItem, prefix,
-            "VehicleJourneyAtStop", 4, order, "E", "E", "E", "E");
-      order = addItemToValidation(validationItem, prefix, "Facility", 6, order,
-            "E", "E", "E", "E", "E", "E");
-   }
-
-   private int addItemToValidation(PhaseReportItem validationItem,
-         String prefix, String name, int count, int order, String... severities)
-   {
-      for (int i = 1; i <= count; i++)
-      {
-         if (severities[i - 1].equals("W"))
-         {
-            validationItem.addItem(new CheckPointReportItem(prefix + name + "-"
-                  + i, order++, Report.STATE.UNCHECK,
-                  CheckPointReportItem.SEVERITY.WARNING));
-         } else
-         {
-            validationItem.addItem(new CheckPointReportItem(prefix + name + "-"
-                  + i, order++, Report.STATE.UNCHECK,
-                  CheckPointReportItem.SEVERITY.ERROR));
-         }
-      }
-      return order;
-   }
 }

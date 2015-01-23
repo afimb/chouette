@@ -4,13 +4,10 @@ import org.trident.schema.trident.AddressType;
 import org.trident.schema.trident.PTAccessPointType;
 import org.trident.schema.trident.ProjectedPointType;
 
+import fr.certu.chouette.exchange.xml.neptune.importer.Context;
 import fr.certu.chouette.model.neptune.AccessPoint;
 import fr.certu.chouette.model.neptune.type.AccessPointTypeEnum;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
-import fr.certu.chouette.plugin.exchange.SharedImportedData;
-import fr.certu.chouette.plugin.exchange.UnsharedImportedData;
-import fr.certu.chouette.plugin.report.ReportItem;
-import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 
 /**
  * 
@@ -22,15 +19,13 @@ public class AccessPointProducer extends
 {
 
    @Override
-   public AccessPoint produce(String sourceFile,
-         PTAccessPointType xmlAccessPoint, ReportItem importReport,
-         PhaseReportItem validationReport, SharedImportedData sharedData,
-         UnsharedImportedData unshareableData)
+   public AccessPoint produce(Context context,
+         PTAccessPointType xmlAccessPoint)
    {
       AccessPoint accessPoint = new AccessPoint();
 
       // objectId, objectVersion, creatorId, creationTime
-      populateFromCastorNeptune(accessPoint, xmlAccessPoint, importReport);
+      populateFromCastorNeptune(context, accessPoint, xmlAccessPoint);
       // Name optional
       accessPoint.setName(getNonEmptyTrimedString(xmlAccessPoint.getName()));
       // Comment optional
@@ -103,6 +98,10 @@ public class AccessPointProducer extends
       // StairsAvailability optional
       if (xmlAccessPoint.isSetStairsAvailability())
          accessPoint.setStairsAvailable(xmlAccessPoint.isStairsAvailability());
+
+      AccessPoint sharedBean = getOrAddSharedData(context, accessPoint, xmlAccessPoint);
+      if (sharedBean != null)
+         return sharedBean;
 
       return accessPoint;
    }

@@ -40,13 +40,10 @@ import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
 import fr.certu.chouette.model.neptune.type.ChouetteAreaEnum;
-import fr.certu.chouette.plugin.exchange.SharedImportedData;
-import fr.certu.chouette.plugin.exchange.UnsharedImportedData;
 import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
 import fr.certu.chouette.plugin.exchange.tools.DbVehicleJourney;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
-import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 
 /**
  * Assemble every extracted object to object referring it with its objectId
@@ -234,25 +231,11 @@ public class ModelAssembler
     */
    private Map<String, TimeSlot> timeSlotDictionary = new HashMap<String, TimeSlot>();
 
-   private ReportItem importReport;
+   private Context context;
 
-   private PhaseReportItem validationReport;
-
-   private String sourceFile;
-
-   private SharedImportedData sharedData;
-
-   private UnsharedImportedData unsharedData;
-
-   public ModelAssembler(String sourceFile, SharedImportedData sharedData,
-         UnsharedImportedData unsharedData, ReportItem report,
-         PhaseReportItem validationItem)
+   public ModelAssembler(Context context)
    {
-      this.importReport = report;
-      this.validationReport = validationItem;
-      this.sourceFile = sourceFile;
-      this.sharedData = sharedData;
-      this.unsharedData = unsharedData;
+      this.context = context;
    }
 
    /**
@@ -393,7 +376,7 @@ public class ModelAssembler
                   ExchangeReportItem.KEY.BAD_REFERENCE, Report.STATE.WARNING,
                   "ITL", restriction.getObjectId(), "lineId",
                   restriction.getLineId());
-            importReport.addItem(item);
+            context.getImportReport().addItem(item);
          }
          for (String areaId : restriction.getRoutingConstraintIds())
          {
@@ -410,7 +393,7 @@ public class ModelAssembler
                      ExchangeReportItem.KEY.BAD_REFERENCE,
                      Report.STATE.WARNING, "ITL", restriction.getObjectId(),
                      "stopAreaId", areaId);
-               importReport.addItem(item);
+               context.getImportReport().addItem(item);
             }
          }
       }
@@ -547,7 +530,7 @@ public class ModelAssembler
             ReportItem item = new ExchangeReportItem(
                   ExchangeReportItem.KEY.EMPTY_JOURNEY_PATTERN,
                   Report.STATE.WARNING, journeyPattern.getObjectId());
-            importReport.addItem(item);
+            context.getImportReport().addItem(item);
             continue;
          }
          for (StopPoint point : journeyPattern.getStopPoints())
@@ -577,7 +560,7 @@ public class ModelAssembler
                   ExchangeReportItem.KEY.BAD_REFERENCE, Report.STATE.WARNING,
                   "JourneyPattern", journeyPattern.getObjectId(), "routeId",
                   journeyPattern.getRouteId());
-            importReport.addItem(item);
+            context.getImportReport().addItem(item);
          }
 
       }
@@ -619,7 +602,7 @@ public class ModelAssembler
                   ExchangeReportItem.KEY.BAD_REFERENCE, Report.STATE.WARNING,
                   "VehicleJourney", vehicleJourney.getObjectId(),
                   "journeyPatternId", vehicleJourney.getJourneyPatternId());
-            importReport.addItem(item);
+            context.getImportReport().addItem(item);
          }
          vehicleJourney.setRoute(getObjectFromId(vehicleJourney.getRouteId(),
                Route.class));
@@ -629,7 +612,7 @@ public class ModelAssembler
                   ExchangeReportItem.KEY.BAD_REFERENCE, Report.STATE.WARNING,
                   "VehicleJourney", vehicleJourney.getObjectId(), "routeId",
                   vehicleJourney.getRouteId());
-            importReport.addItem(item);
+            context.getImportReport().addItem(item);
          }
          for (VehicleJourneyAtStop vehicleJourneyAtStop : vehicleJourney
                .getVehicleJourneyAtStops())
@@ -643,7 +626,7 @@ public class ModelAssembler
                      Report.STATE.WARNING, "VehicleJourneyAtStop",
                      vehicleJourney.getObjectId(), "stopPointId",
                      vehicleJourneyAtStop.getStopPointId());
-               importReport.addItem(item);
+               context.getImportReport().addItem(item);
             }
             vehicleJourneyAtStop.setVehicleJourney(vehicleJourney);
          }
@@ -668,7 +651,7 @@ public class ModelAssembler
                   ExchangeReportItem.KEY.BAD_REFERENCE, Report.STATE.WARNING,
                   "StopPoint", stopPoint.getObjectId(), "containedInStopArea",
                   stopPoint.getContainedInStopAreaId());
-            importReport.addItem(item);
+            context.getImportReport().addItem(item);
          }
 
          // stopPoint.setLine(line);

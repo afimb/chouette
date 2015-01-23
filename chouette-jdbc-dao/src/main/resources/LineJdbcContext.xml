@@ -37,9 +37,11 @@
 				int_user_needs,
 				color,
 				text_color,
-				url)
+				url,
+				flexible_service
+				)
 				VALUES(?, ?, ?, ?, ?, ?, ?,
-				?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+				?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 			</value>
 		</property>
 		<property name="sqlSelectByObjectId">
@@ -74,7 +76,8 @@
 				int_user_needs = ?,
 				color = ?,
 				text_color = ?,
-				url = ?
+				url = ?,
+				flexible_service = ?
 				WHERE objectid = ?
 			</value>
 		</property>

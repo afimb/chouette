@@ -3,29 +3,23 @@ package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 import org.trident.schema.trident.AddressType;
 import org.trident.schema.trident.ProjectedPointType;
 
+import fr.certu.chouette.exchange.xml.neptune.importer.Context;
 import fr.certu.chouette.exchange.xml.neptune.model.Address;
 import fr.certu.chouette.exchange.xml.neptune.model.AreaCentroid;
 import fr.certu.chouette.exchange.xml.neptune.model.ProjectedPoint;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
-import fr.certu.chouette.plugin.exchange.SharedImportedData;
-import fr.certu.chouette.plugin.exchange.UnsharedImportedData;
-import fr.certu.chouette.plugin.report.ReportItem;
-import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 
 public class AreaCentroidProducer
       extends
       AbstractModelProducer<AreaCentroid, org.trident.schema.trident.ChouettePTNetworkType.ChouetteArea.AreaCentroid>
 {
    @Override
-   public AreaCentroid produce(
-         String sourceFile,
-         org.trident.schema.trident.ChouettePTNetworkType.ChouetteArea.AreaCentroid xmlAreaCentroid,
-         ReportItem importReport, PhaseReportItem validationReport,
-         SharedImportedData sharedData, UnsharedImportedData unshareableData)
+   public AreaCentroid produce(Context context,
+         org.trident.schema.trident.ChouettePTNetworkType.ChouetteArea.AreaCentroid xmlAreaCentroid)
    {
       AreaCentroid areaCentroid = new AreaCentroid();
       // objectId, objectVersion, creatorId, creationTime
-      populateFromCastorNeptune(areaCentroid, xmlAreaCentroid, importReport);
+      populateFromCastorNeptune(context, areaCentroid, xmlAreaCentroid);
 
       // Name mandatory
       areaCentroid.setName(getNonEmptyTrimedString(xmlAreaCentroid.getName()));
@@ -83,6 +77,9 @@ public class AreaCentroidProducer
                .setProjectionType(xmlProjectedPoint.getProjectionType());
          areaCentroid.setProjectedPoint(projectedPoint);
       }
+      AreaCentroid sharedBean = getOrAddSharedData(context, areaCentroid, xmlAreaCentroid);
+      if (sharedBean != null)
+         return sharedBean;
 
       return areaCentroid;
    }

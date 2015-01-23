@@ -2,24 +2,20 @@ package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
 import org.trident.schema.trident.PTLinkType;
 
+import fr.certu.chouette.exchange.xml.neptune.importer.Context;
 import fr.certu.chouette.model.neptune.PTLink;
-import fr.certu.chouette.plugin.exchange.SharedImportedData;
-import fr.certu.chouette.plugin.exchange.UnsharedImportedData;
-import fr.certu.chouette.plugin.report.ReportItem;
-import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 
+@SuppressWarnings("deprecation")
 public class PTLinkProducer extends AbstractModelProducer<PTLink, PTLinkType>
 {
 
    @Override
-   public PTLink produce(String sourceFile, PTLinkType xmlPTLink,
-         ReportItem importReport, PhaseReportItem validationReport,
-         SharedImportedData sharedData, UnsharedImportedData unshareableData)
+   public PTLink produce(Context context, PTLinkType xmlPTLink)
    {
       PTLink ptLink = new PTLink();
 
       // objectId, objectVersion, creatorId, creationTime
-      populateFromCastorNeptune(ptLink, xmlPTLink, importReport);
+      populateFromCastorNeptune(context, ptLink, xmlPTLink);
 
       // Name optional : unused and unchecked
       // ptLink.setName(getNonEmptyTrimedString(xmlPTLink.getName()));
@@ -37,7 +33,8 @@ public class PTLinkProducer extends AbstractModelProducer<PTLink, PTLinkType>
       // LinkDistance optional
       ptLink.setLinkDistance(xmlPTLink.getLinkDistance());
 
-      return ptLink;
+      // return null if in conflict with other files, else return object
+      return checkUnsharedData(context, ptLink, xmlPTLink);
    }
 
 }

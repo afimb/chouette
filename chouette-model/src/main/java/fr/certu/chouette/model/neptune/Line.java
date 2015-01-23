@@ -204,6 +204,24 @@ public class Line extends NeptuneIdentifiedObject
    @Setter
    @Column(name = "int_user_needs")
    private Integer intUserNeeds = 0;
+   
+   /**
+    * flexible service <br/>
+    * 
+    * <ul>
+    * <li>null if unknown or inherited from line
+    * <li>true for flexible service</li>
+    * <li>false for regular service</li>
+    * </ul>
+    * 
+    * @param flexibleService
+    *           New value
+    * @return The actual value
+    */
+   @Getter
+   @Setter
+   @Column(name = "flexible_service")
+   private Boolean flexibleService;
 
    /**
     * web site url
@@ -316,7 +334,20 @@ public class Line extends NeptuneIdentifiedObject
    @Setter
    @OneToMany(mappedBy = "line", cascade = { CascadeType.PERSIST,
          CascadeType.MERGE })
-   private List<Route> routes = new ArrayList<Route>(0);
+   private List<Route> routes = new ArrayList<>(0);
+
+   /**
+    * list of footnotes
+    * 
+    * @param footnotes
+    *           New value
+    * @return The actual value
+    */
+   @Getter
+   @Setter
+   @OneToMany(mappedBy = "line", cascade = { CascadeType.PERSIST,
+         CascadeType.MERGE })
+   private List<Footnote> footnotes = new ArrayList<>(0);
 
    /**
     * groups of lines reverse reference

@@ -4,26 +4,21 @@ import java.util.List;
 
 import org.trident.schema.trident.JourneyPatternType;
 
+import fr.certu.chouette.exchange.xml.neptune.importer.Context;
 import fr.certu.chouette.model.neptune.JourneyPattern;
-import fr.certu.chouette.plugin.exchange.SharedImportedData;
-import fr.certu.chouette.plugin.exchange.UnsharedImportedData;
-import fr.certu.chouette.plugin.report.ReportItem;
-import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 
 public class JourneyPatternProducer extends
       AbstractModelProducer<JourneyPattern, JourneyPatternType>
 {
 
    @Override
-   public JourneyPattern produce(String sourceFile,
-         JourneyPatternType xmlJourneyPattern, ReportItem importReport,
-         PhaseReportItem validationReport, SharedImportedData sharedData,
-         UnsharedImportedData unshareableData)
+   public JourneyPattern produce(Context context,
+         JourneyPatternType xmlJourneyPattern)
    {
       JourneyPattern journeyPattern = new JourneyPattern();
 
       // objectId, objectVersion, creatorId, creationTime
-      populateFromCastorNeptune(journeyPattern, xmlJourneyPattern, importReport);
+      populateFromCastorNeptune(context, journeyPattern, xmlJourneyPattern);
 
       // Name optional
       journeyPattern.setName(getNonEmptyTrimedString(xmlJourneyPattern
@@ -60,8 +55,8 @@ public class JourneyPatternProducer extends
       }
 
       // RegistrationNumber optional
-      journeyPattern.setRegistrationNumber(getRegistrationNumber(
-            xmlJourneyPattern.getRegistration(), importReport));
+      journeyPattern.setRegistrationNumber(getRegistrationNumber(context,
+            xmlJourneyPattern.getRegistration()));
 
       // Comment optional
       journeyPattern.setComment(getNonEmptyTrimedString(xmlJourneyPattern
@@ -71,8 +66,9 @@ public class JourneyPatternProducer extends
       journeyPattern
             .setLineIdShortcut(getNonEmptyTrimedString(xmlJourneyPattern
                   .getLineIdShortcut()));
-
-      return journeyPattern;
+      
+      // return null if in conflict with other files, else return object
+      return checkUnsharedData(context, journeyPattern, xmlJourneyPattern);
    }
 
 }
