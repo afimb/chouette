@@ -95,28 +95,6 @@ public class VehicleJourneyTest extends ChouetteModelTest
       }
    }
 
-   @Test(groups = { "TimetableFrame", "vehicleJourneys" }, description = "Validate presence of ServiceJourney with expected serviceStatusValue")
-   public void verifyServiceStatusValue() throws XPathExpressionException,
-         ParseException
-   {
-
-      List<VehicleJourney> vehicleJourneys = line.getVehicleJourneys();
-
-      for (VehicleJourney vehicleJourney : vehicleJourneys)
-      {
-         String xPathExpr = "boolean(//netex:TimetableFrame/netex:vehicleJourneys/"
-               + "netex:ServiceJourney"
-               + "[@id = '"
-               + modelTranslator.netexId(vehicleJourney)
-               + "']/"
-               + "netex:ServiceAlteration/"
-               + "text() = '"
-               + modelTranslator.toServiceAlteration(vehicleJourney
-                     .getServiceStatusValue()) + "')";
-         assertXPathTrue(xPathExpr);
-      }
-   }
-
    @Test(groups = { "TimetableFrame", "vehicleJourneys" }, description = "Validate presence of ServiceJourney with expected routeRef")
    public void verifyRouteRef() throws XPathExpressionException, ParseException
    {

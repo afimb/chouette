@@ -1,20 +1,25 @@
 package fr.certu.chouette.exchange.netex.importer.converters;
 
-import com.ximpleware.AutoPilot;
-import com.ximpleware.NavException;
-import com.ximpleware.VTDNav;
-import com.ximpleware.XPathEvalException;
-import com.ximpleware.XPathParseException;
-import fr.certu.chouette.exchange.netex.ModelTranslator;
-import fr.certu.chouette.model.neptune.VehicleJourney;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.xml.datatype.DatatypeConfigurationException;
+
 import lombok.Getter;
+
 import org.apache.log4j.Logger;
+
+import com.ximpleware.AutoPilot;
+import com.ximpleware.NavException;
+import com.ximpleware.VTDNav;
+import com.ximpleware.XPathEvalException;
+import com.ximpleware.XPathParseException;
+
+import fr.certu.chouette.exchange.netex.ModelTranslator;
+import fr.certu.chouette.model.neptune.VehicleJourney;
 
 public class VehicleJourneyConverter extends GenericConverter
 {
@@ -85,9 +90,6 @@ public class VehicleJourneyConverter extends GenericConverter
          vehicleJourney
                .setPublishedJourneyIdentifier((String) parseOptionnalElement(
                      nav, "ShortName"));
-         vehicleJourney.setServiceStatusValue(modelTranslator
-               .readServiceAlteration((String) parseOptionnalElement(nav,
-                     "ServiceAlteration")));
 
          Long number = modelTranslator
                .readTrainNumberId(subXpathSelection("netex:trainNumbers/netex:TrainNumberRef/@ref"));

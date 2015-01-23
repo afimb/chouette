@@ -17,9 +17,6 @@
         <netex:RailSubmode>unknown</netex:RailSubmode>
       </netex:TransportSubmode>
       -->
-      #if ( $vehicleJourney.serviceStatusValue)
-      <ServiceAlteration>$!esc.xml( $modelTranslator.toServiceAlteration( $vehicleJourney.serviceStatusValue))</ServiceAlteration>
-      #end
       <dayTypes>
         #foreach( $timetable in $vehicleJourney.timetables )  
         <DayTypeRef version="$timetable.objectVersion" ref="$modelTranslator.netexId( $timetable)"/>
