@@ -25,12 +25,12 @@ public class ChouetteUpdater {
 	@EJB
 	private LineDAO lineDAO;
 
-	public void update(Referential newValue) throws Exception {
+	public void update(Referential referential) throws Exception {
 		List<StopArea> stopAreas = stopAreaDAO.findAll();
 
 		// StopArea
 		Collection<StopArea> addedStopAreas = CollectionUtils.substract(
-				newValue.getStopAreas().values(), stopAreas,
+				referential.getStopAreas().values(), stopAreas,
 				NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (StopArea item : addedStopAreas) {
 			StopArea stopArea = new StopArea();
@@ -42,7 +42,7 @@ public class ChouetteUpdater {
 		Updater<StopArea> stopAreaUpdater = UpdaterFactory
 				.create(StopAreaUpdater.class.getName());
 		Collection<Pair<StopArea, StopArea>> modifiedStopAreas = CollectionUtils
-				.intersection(stopAreas, newValue.getStopAreas().values(),
+				.intersection(stopAreas, referential.getStopAreas().values(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<StopArea, StopArea> pair : modifiedStopAreas) {
 			stopAreaUpdater.update(pair.getLeft(), pair.getRight());
@@ -59,7 +59,7 @@ public class ChouetteUpdater {
 		// ConnectionLink
 		List<ConnectionLink> connectionLinks = connectionLinkDAO.findAll();
 		Collection<ConnectionLink> addedConnectionLink = CollectionUtils
-				.substract(newValue.getConnectionLinks().values(),
+				.substract(referential.getConnectionLinks().values(),
 						connectionLinks,
 						NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (ConnectionLink item : addedConnectionLink) {
@@ -71,7 +71,7 @@ public class ChouetteUpdater {
 		Updater<ConnectionLink> connectionLinkUpdater = UpdaterFactory
 				.create(ConnectionLinkUpdater.class.getName());
 		Collection<Pair<ConnectionLink, ConnectionLink>> modifiedConnectionLink = CollectionUtils
-				.intersection(connectionLinks, newValue.getConnectionLinks()
+				.intersection(connectionLinks, referential.getConnectionLinks()
 						.values(), NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<ConnectionLink, ConnectionLink> pair : modifiedConnectionLink) {
 			connectionLinkUpdater.update(pair.getLeft(), pair.getRight());
@@ -79,7 +79,7 @@ public class ChouetteUpdater {
 		}
 
 		// Line
-		for (Line newLine : newValue.getLines().values()) {
+		for (Line newLine : referential.getLines().values()) {
 			Line oldLine = lineDAO.findByObjectId(newLine.getObjectId());
 			if (oldLine == null) {
 				oldLine = new Line();

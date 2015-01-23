@@ -72,6 +72,8 @@ public class RouteUpdater implements Updater<Route> {
 			oldValue.setWayBack(newValue.getWayBack());
 		}
 
+		// TODO opposite_route_id
+
 		// oppositeRoute
 		// if (newValue.getOppositeRoute() != null)
 		// {
@@ -93,11 +95,9 @@ public class RouteUpdater implements Updater<Route> {
 			if (stopPoint == null) {
 				stopPoint = new StopPoint();
 				stopPoint.setObjectId(item.getObjectId());
-				stopPoint.setRoute(oldValue);
 				stopPointDAO.create(stopPoint);
-			} else {
-				stopPoint.setRoute(oldValue);
 			}
+			stopPoint.setRoute(oldValue);
 		}
 
 		Updater<StopPoint> stopPointUpdater = UpdaterFactory
@@ -108,15 +108,14 @@ public class RouteUpdater implements Updater<Route> {
 						NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<StopPoint, StopPoint> pair : modifiedStopPoint) {
 			stopPointUpdater.update(pair.getLeft(), pair.getRight());
-			stopPointDAO.update(pair.getLeft());
 		}
 
+		// TODO remove ?
 		Collection<StopPoint> removedStopPoint = CollectionUtils.substract(
 				oldValue.getStopPoints(), newValue.getStopPoints(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
-		for (StopPoint item : removedStopPoint) {
-			item.setRoute(null);
-			stopPointDAO.update(item);
+		for (StopPoint stopPoint : removedStopPoint) {
+			stopPoint.setRoute(null);
 		}
 
 		// JourneyPattern
@@ -130,7 +129,6 @@ public class RouteUpdater implements Updater<Route> {
 			if (journeyPattern == null) {
 				journeyPattern = new JourneyPattern();
 				journeyPattern.setObjectId(item.getObjectId());
-				journeyPattern.setRoute(oldValue);
 				journeyPatternDAO.create(journeyPattern);
 			}
 			journeyPattern.setRoute(oldValue);
@@ -144,19 +142,17 @@ public class RouteUpdater implements Updater<Route> {
 						NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<JourneyPattern, JourneyPattern> pair : modifiedJourneyPattern) {
 			journeyPatternUpdater.update(pair.getLeft(), pair.getRight());
-			journeyPatternDAO.update(pair.getLeft());
 		}
 
+		// TODO remove ?
 		Collection<JourneyPattern> removedJourneyPattern = CollectionUtils
 				.substract(oldValue.getJourneyPatterns(),
 						newValue.getJourneyPatterns(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);
-		for (JourneyPattern item : removedJourneyPattern) {
-			item.setRoute(null);
-			journeyPatternDAO.update(item);
+		for (JourneyPattern journeyPattern : removedJourneyPattern) {
+			journeyPattern.setRoute(null);
 		}
-		
-		// TODO opposite_route_id && line Fk
+
 	}
 
 	static {

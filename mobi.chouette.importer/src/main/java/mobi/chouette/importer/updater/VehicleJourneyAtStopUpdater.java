@@ -60,12 +60,9 @@ public class VehicleJourneyAtStopUpdater implements
 			StopPoint stopPoint = stopPointDAO.findByObjectId(newValue
 					.getStopPoint().getObjectId());
 			if (stopPoint != null) {
-
 				oldValue.setStopPoint(stopPoint);
 			}
-		}
-		
-		// TODO vehicle journey Fk
+		}		
 	}
 
 	static {

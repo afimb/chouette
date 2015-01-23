@@ -16,6 +16,7 @@ import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.PTNetwork;
 import mobi.chouette.model.Route;
+import mobi.chouette.model.StopArea;
 
 @Log4j
 public class LineUpdater implements Updater<Line> {
@@ -102,35 +103,41 @@ public class LineUpdater implements Updater<Line> {
 				&& newValue.getTextColor().compareTo(oldValue.getTextColor()) != 0) {
 			oldValue.setTextColor(newValue.getTextColor());
 		}
-		
+
 		// PTNetwork
-		PTNetwork ptNetwork = ptNetworkDAO.findByObjectId(newValue
-				.getPtNetwork().getObjectId());
-		if (ptNetwork == null) {
-			ptNetwork = new PTNetwork();
-			ptNetwork.setObjectId(newValue.getPtNetwork().getObjectId());
-			ptNetworkDAO.create(ptNetwork);
+		if (newValue.getPtNetwork() == null) {
+			oldValue.setPTNetwork(null);
+		} else {
+			PTNetwork ptNetwork = ptNetworkDAO.findByObjectId(newValue
+					.getPtNetwork().getObjectId());
+			if (ptNetwork == null) {
+				ptNetwork = new PTNetwork();
+				ptNetwork.setObjectId(newValue.getPtNetwork().getObjectId());
+				ptNetworkDAO.create(ptNetwork);
+			}
+			Updater<PTNetwork> ptNetworkUpdater = UpdaterFactory
+					.create(PTNetworkUpdater.class.getName());
+			ptNetworkUpdater.update(oldValue.getPtNetwork(),
+					newValue.getPtNetwork());
+			oldValue.setPTNetwork(ptNetwork);
 		}
-		oldValue.setPTNetwork(ptNetwork);
-		Updater<PTNetwork> ptNetworkUpdater = UpdaterFactory
-				.create(PTNetworkUpdater.class.getName());
-		ptNetworkUpdater.update(oldValue.getPtNetwork(),
-				newValue.getPtNetwork());
-		ptNetworkDAO.update(oldValue.getPtNetwork());
 
 		// Company
-		Company company = companyDAO.findByObjectId(newValue.getCompany()
-				.getObjectId());
-		if (company == null) {
-			company = new Company();
-			company.setObjectId(newValue.getCompany().getObjectId());
-			companyDAO.create(company);
+		if (newValue.getCompany() == null) {
+			oldValue.setPTNetwork(null);
+		} else {
+			Company company = companyDAO.findByObjectId(newValue.getPtNetwork()
+					.getObjectId());
+			if (company == null) {
+				company = new Company();
+				company.setObjectId(newValue.getCompany().getObjectId());
+				companyDAO.create(company);
+			}
+			Updater<Company> companyUpdater = UpdaterFactory
+					.create(CompanyUpdater.class.getName());
+			companyUpdater.update(oldValue.getCompany(), newValue.getCompany());
+			oldValue.setCompany(company);
 		}
-		oldValue.setCompany(company);
-		Updater companyUpdater = UpdaterFactory.create(CompanyUpdater.class
-				.getName());
-		companyUpdater.update(oldValue.getCompany(), newValue.getCompany());
-		companyDAO.update(oldValue.getCompany());
 
 		// GroupOfLine
 		Collection<GroupOfLine> addedGroupOfLine = CollectionUtils.substract(
@@ -144,7 +151,7 @@ public class LineUpdater implements Updater<Line> {
 				groupOfLine.setObjectId(item.getObjectId());
 				groupOfLineDAO.create(groupOfLine);
 			}
-			oldValue.addGroupOfLine(groupOfLine);
+			groupOfLine.addLine(oldValue);
 		}
 
 		Updater<GroupOfLine> groupOfLineUpdater = UpdaterFactory
@@ -155,15 +162,14 @@ public class LineUpdater implements Updater<Line> {
 						NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<GroupOfLine, GroupOfLine> pair : modifiedGroupOfLine) {
 			groupOfLineUpdater.update(pair.getLeft(), pair.getRight());
-			groupOfLineDAO.update(pair.getLeft());
 		}
 
+		// TODO remove ?
 		Collection<GroupOfLine> removedGroupOfLine = CollectionUtils.substract(
 				oldValue.getGroupOfLines(), newValue.getGroupOfLines(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
-		for (GroupOfLine item : removedGroupOfLine) {
-			oldValue.removeGroupOfLine(item);
-			groupOfLineDAO.update(item);
+		for (GroupOfLine groupOfLine : removedGroupOfLine) {
+			groupOfLine.removeLine(oldValue);
 		}
 
 		// Route
@@ -187,17 +193,17 @@ public class LineUpdater implements Updater<Line> {
 						NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<Route, Route> pair : modifiedRoute) {
 			routeUpdater.update(pair.getLeft(), pair.getRight());
-			routeDAO.update(pair.getLeft());
 		}
 
+		// TODO remove ?
 		Collection<Route> removedRoute = CollectionUtils.substract(
 				oldValue.getRoutes(), newValue.getRoutes(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
-		for (Route item : removedRoute) {
-			item.setLine(null);
-			routeDAO.update(item);
+		for (Route route : removedRoute) {
+			route.setLine(null);
 		}
-		// TODO  stop area list (routingConstraintLines)
+
+		// TODO stop area list (routingConstraintLines)
 	}
 
 	static {

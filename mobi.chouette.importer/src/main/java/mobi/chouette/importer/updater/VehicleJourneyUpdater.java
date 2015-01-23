@@ -98,7 +98,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 						oldValue.getPublishedJourneyIdentifier()) != 0) {
 			oldValue.setPublishedJourneyIdentifier(newValue
 					.getPublishedJourneyIdentifier());
-		}		
+		}
 		if (newValue.getFacility() != null
 				&& newValue.getFacility().compareTo(oldValue.getFacility()) != 0) {
 			oldValue.setFacility(newValue.getFacility());
@@ -114,16 +114,18 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 			oldValue.setNumber(newValue.getNumber());
 		}
 
-		
 		if (newValue.getMobilityRestrictedSuitability() != null
-				&& newValue.getMobilityRestrictedSuitability().compareTo(oldValue.getMobilityRestrictedSuitability()) != 0) {
-			oldValue.setMobilityRestrictedSuitability(newValue.getMobilityRestrictedSuitability());
+				&& newValue.getMobilityRestrictedSuitability().compareTo(
+						oldValue.getMobilityRestrictedSuitability()) != 0) {
+			oldValue.setMobilityRestrictedSuitability(newValue
+					.getMobilityRestrictedSuitability());
 		}
 		if (newValue.getFlexibleService() != null
-				&& newValue.getFlexibleService().compareTo(oldValue.getFlexibleService()) != 0) {
+				&& newValue.getFlexibleService().compareTo(
+						oldValue.getFlexibleService()) != 0) {
 			oldValue.setFlexibleService(newValue.getFlexibleService());
 		}
-		
+
 		// Company
 		if (oldValue.getCompany() == null
 				|| !oldValue.getCompany().equals(newValue.getCompany())) {
@@ -137,6 +139,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 				}
 			}
 		}
+		
 		// Route
 		if (oldValue.getRoute() == null
 				|| !oldValue.getRoute().equals(newValue.getRoute())) {
@@ -157,12 +160,10 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 			StopPoint stopPoint = stopPointDAO.findByObjectId(item
 					.getStopPoint().getObjectId());
 			if (stopPoint != null) {
-
 				vehicleJourneyAtStop.setStopPoint(stopPoint);
 			}
 			vehicleJourneyAtStop.setVehicleJourney(oldValue);
 			vehicleJourneyAtStopDAO.create(vehicleJourneyAtStop);
-
 		}
 
 		Updater<VehicleJourneyAtStop> vehicleJourneyAtStopUpdater = UpdaterFactory
@@ -173,16 +174,16 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 						VEHICLE_JOURNEY_AT_STOP_COMPARATOR);
 		for (Pair<VehicleJourneyAtStop, VehicleJourneyAtStop> pair : modifiedVehicleJourneyAtStop) {
 			vehicleJourneyAtStopUpdater.update(pair.getLeft(), pair.getRight());
-			vehicleJourneyAtStopDAO.update(pair.getLeft());
-
 		}
 
+		// TODO remove ?
 		Collection<VehicleJourneyAtStop> removedVehicleJourneyAtStop = CollectionUtils
 				.substract(oldValue.getVehicleJourneyAtStops(),
 						newValue.getVehicleJourneyAtStops(),
 						VEHICLE_JOURNEY_AT_STOP_COMPARATOR);
-		for (VehicleJourneyAtStop item : removedVehicleJourneyAtStop) {
-			vehicleJourneyAtStopDAO.delete(item);
+		for (VehicleJourneyAtStop vehicleJourneyAtStop : removedVehicleJourneyAtStop) {
+			vehicleJourneyAtStop.setVehicleJourney(null);
+			vehicleJourneyAtStopDAO.delete(vehicleJourneyAtStop);
 		}
 
 		// Timetable
@@ -197,7 +198,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 				timetable.setObjectId(item.getObjectId());
 				timetableDAO.create(timetable);
 			}
-			oldValue.addTimetable(timetable);
+			timetable.addVehicleJourney(oldValue);
 		}
 
 		Updater<Timetable> timetableUpdater = UpdaterFactory
@@ -208,17 +209,16 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 						NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<Timetable, Timetable> pair : modifiedTimetable) {
 			timetableUpdater.update(pair.getLeft(), pair.getRight());
-			timetableDAO.update(pair.getLeft());
 		}
 
+		// TODO remove ?
 		Collection<Timetable> removedTimetable = CollectionUtils.substract(
 				oldValue.getTimetables(), newValue.getTimetables(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
-		for (Timetable item : removedTimetable) {
-			oldValue.removeTimetable(item);
+		for (Timetable timetable : removedTimetable) {
+			timetable.removeVehicleJourney(oldValue);
 		}
-		
-		// TODO journey pattern Fk
+
 	}
 
 	static {

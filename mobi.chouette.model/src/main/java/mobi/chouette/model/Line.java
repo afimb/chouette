@@ -360,29 +360,29 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	@ManyToMany(mappedBy = "routingConstraintLines")
 	private List<StopArea> routingConstraints = new ArrayList<StopArea>(0);
 
-	/**
-	 * add a group of line
-	 * 
-	 * @param groupOfLine
-	 */
-	public void addGroupOfLine(GroupOfLine groupOfLine) {
-		if (groupOfLines == null)
-			groupOfLines = new ArrayList<GroupOfLine>();
-		if (!groupOfLines.contains(groupOfLine))
-			groupOfLines.add(groupOfLine);
-	}
-
-	/**
-	 * remove a group of line
-	 * 
-	 * @param groupOfLine
-	 */
-	public void removeGroupOfLine(GroupOfLine groupOfLine) {
-		if (groupOfLines == null)
-			groupOfLines = new ArrayList<GroupOfLine>();
-		if (groupOfLines.contains(groupOfLine))
-			groupOfLines.remove(groupOfLine);
-	}
+//	/**
+//	 * add a group of line
+//	 * 
+//	 * @param groupOfLine
+//	 */
+//	public void addGroupOfLine(GroupOfLine groupOfLine) {
+//		if (groupOfLines == null)
+//			groupOfLines = new ArrayList<GroupOfLine>();
+//		if (!groupOfLines.contains(groupOfLine))
+//			groupOfLines.add(groupOfLine);
+//	}
+//
+//	/**
+//	 * remove a group of line
+//	 * 
+//	 * @param groupOfLine
+//	 */
+//	public void removeGroupOfLine(GroupOfLine groupOfLine) {
+//		if (groupOfLines == null)
+//			groupOfLines = new ArrayList<GroupOfLine>();
+//		if (groupOfLines.contains(groupOfLine))
+//			groupOfLines.remove(groupOfLine);
+//	}
 
 	/* -------------------------------------- */
 

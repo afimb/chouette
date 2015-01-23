@@ -134,7 +134,7 @@ public class VehicleJourneyParser implements Parser, Constant {
 				String ref = xpp.getAttributeValue(null, REF);
 				Timetable timetable = referential.getTimetables().get(ref);
 				if (timetable != null) {
-					vehicleJourney.addTimetable(timetable);
+					timetable.addVehicleJourney(vehicleJourney);
 				}
 				XPPUtil.skipSubTree(log, xpp);
 			} else {

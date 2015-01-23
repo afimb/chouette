@@ -69,9 +69,7 @@ public class CompanyUpdater implements Updater<Company> {
 		if (newValue.getTimeZone() != null
 				&& newValue.getTimeZone().compareTo(oldValue.getTimeZone()) != 0) {
 			oldValue.setTimeZone(newValue.getTimeZone());
-		}
-		
-		// TODO line list
+		}		
 	}
 
 	static {

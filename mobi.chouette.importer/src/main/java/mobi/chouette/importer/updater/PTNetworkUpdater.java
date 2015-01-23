@@ -60,8 +60,6 @@ public class PTNetworkUpdater implements Updater<PTNetwork> {
 						oldValue.getSourceIdentifier()) != 0) {
 			oldValue.setSourceIdentifier(newValue.getSourceIdentifier());
 		}
-
-		// TODO line list
 	}
 
 	static {

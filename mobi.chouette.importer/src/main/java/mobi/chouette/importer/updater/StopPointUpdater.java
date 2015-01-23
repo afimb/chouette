@@ -4,6 +4,7 @@ import javax.ejb.EJB;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.dao.StopAreaDAO;
+import mobi.chouette.model.PTNetwork;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 
@@ -44,12 +45,20 @@ public class StopPointUpdater implements Updater<StopPoint> {
 		} else {
 			StopArea stopArea = stopAreaDAO.findByObjectId(newValue
 					.getContainedInStopArea().getObjectId());
-			if (stopArea != null) {
-				oldValue.setContainedInStopArea(stopArea);
+			if (stopArea == null) {
+				stopArea = new StopArea();
+				stopArea.setObjectId(newValue.getContainedInStopArea()
+						.getObjectId());
+				stopAreaDAO.create(stopArea);
 			}
+			Updater<StopArea> stopAreaUpdater = UpdaterFactory
+					.create(StopAreaUpdater.class.getName());
+			stopAreaUpdater.update(oldValue.getContainedInStopArea(),
+					newValue.getContainedInStopArea());
+			oldValue.setContainedInStopArea(stopArea);
 		}
+
 		// TODO position (list index in route)
-		// TODO route Fk
 	}
 
 	static {

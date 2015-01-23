@@ -163,5 +163,4 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject {
 		else
 			return "";
 	}
-
 }

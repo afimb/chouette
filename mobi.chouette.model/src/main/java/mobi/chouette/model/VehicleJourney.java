@@ -301,30 +301,30 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 	private List<VehicleJourneyAtStop> vehicleJourneyAtStops = new ArrayList<VehicleJourneyAtStop>(
 			0);
 
-	/**
-	 * add a timeTable if not already presents
-	 * 
-	 * @param timetable
-	 *            to add
-	 */
-	public void addTimetable(Timetable timetable) {
-		if (!getTimetables().contains(timetable)) {
-			getTimetables().add(timetable);
-		}
-		if (!timetable.getVehicleJourneys().contains(timetable)) {
-			timetable.getVehicleJourneys().add(this);
-		}
-
-	}
-
-	/**
-	 * remove a timetable if present
-	 * 
-	 * @param timetable
-	 */
-	public void removeTimetable(Timetable timetable) {
-		getTimetables().remove(timetable);
-		timetable.getVehicleJourneys().remove(this);
-	}
+//	/**
+//	 * add a timeTable if not already presents
+//	 * 
+//	 * @param timetable
+//	 *            to add
+//	 */
+//	public void addTimetable(Timetable timetable) {
+//		if (!getTimetables().contains(timetable)) {
+//			getTimetables().add(timetable);
+//		}
+//		if (!timetable.getVehicleJourneys().contains(timetable)) {
+//			timetable.getVehicleJourneys().add(this);
+//		}
+//
+//	}
+//
+//	/**
+//	 * remove a timetable if present
+//	 * 
+//	 * @param timetable
+//	 */
+//	public void removeTimetable(Timetable timetable) {
+//		getTimetables().remove(timetable);
+//		timetable.getVehicleJourneys().remove(this);
+//	}
 
 }
