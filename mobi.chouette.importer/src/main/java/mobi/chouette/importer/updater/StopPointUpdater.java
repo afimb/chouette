@@ -4,7 +4,6 @@ import javax.ejb.EJB;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.dao.StopAreaDAO;
-import mobi.chouette.model.PTNetwork;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 
@@ -16,6 +15,12 @@ public class StopPointUpdater implements Updater<StopPoint> {
 
 	@Override
 	public void update(StopPoint oldValue, StopPoint newValue) throws Exception {
+
+		if (newValue.isSaved()) {
+			return;
+		}
+		newValue.setSaved(true);
+
 		if (newValue.getObjectId() != null
 				&& newValue.getObjectId().compareTo(oldValue.getObjectId()) != 0) {
 			oldValue.setObjectId(newValue.getObjectId());

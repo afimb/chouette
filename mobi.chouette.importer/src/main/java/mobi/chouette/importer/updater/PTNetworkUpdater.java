@@ -6,6 +6,11 @@ public class PTNetworkUpdater implements Updater<PTNetwork> {
 	@Override
 	public void update(PTNetwork oldValue, PTNetwork newValue) {
 
+		if (newValue.isSaved()) {
+			return;
+		}
+		newValue.setSaved(true);
+
 		if (newValue.getObjectId() != null
 				&& newValue.getObjectId().compareTo(oldValue.getObjectId()) != 0) {
 			oldValue.setObjectId(newValue.getObjectId());

@@ -9,17 +9,20 @@ import mobi.chouette.model.StopArea;
 public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
 
 	/*
-	if (newValue.get != null
-			&& newValue.get.compareTo(oldValue.get) != 0) {
-		oldValue.set(newValue.get);
-	}
-	*/
+	 * if (newValue.get != null && newValue.get.compareTo(oldValue.get) != 0) {
+	 * oldValue.set(newValue.get); }
+	 */
 	@EJB
 	private StopAreaDAO stopAreaDAO;
 
 	@Override
 	public void update(ConnectionLink oldValue, ConnectionLink newValue) {
-		
+
+		if (newValue.isSaved()) {
+			return;
+		}
+		newValue.setSaved(true);
+
 		if (newValue.getObjectId() != null
 				&& newValue.getObjectId().compareTo(oldValue.getObjectId()) != 0) {
 			oldValue.setObjectId(newValue.getObjectId());
@@ -101,16 +104,16 @@ public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
 		}
 
 		if (newValue.getStartOfLink() != null) {
-			StopArea startOfLink = stopAreaDAO.findByObjectId(newValue.getStartOfLink()
-					.getObjectId());
+			StopArea startOfLink = stopAreaDAO.findByObjectId(newValue
+					.getStartOfLink().getObjectId());
 			if (startOfLink != null) {
 				oldValue.setStartOfLink(startOfLink);
 			}
 		}
 
 		if (newValue.getEndOfLink() != null) {
-			StopArea endOfLink = stopAreaDAO.findByObjectId(newValue.getEndOfLink()
-					.getObjectId());
+			StopArea endOfLink = stopAreaDAO.findByObjectId(newValue
+					.getEndOfLink().getObjectId());
 			if (endOfLink != null) {
 				oldValue.setEndOfLink(endOfLink);
 			}

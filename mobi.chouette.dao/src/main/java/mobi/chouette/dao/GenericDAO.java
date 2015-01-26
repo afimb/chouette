@@ -22,4 +22,6 @@ public interface GenericDAO<T> {
 
 	void detach(T entity);
 
+	void evictAll();
+
 }

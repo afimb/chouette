@@ -1,10 +1,40 @@
 package mobi.chouette.importer.updater;
 
+import java.util.Collection;
+
+import javax.ejb.EJB;
+
+import mobi.chouette.common.CollectionUtils;
+import mobi.chouette.common.Pair;
+import mobi.chouette.dao.AccessLinkDAO;
+import mobi.chouette.dao.AccessPointDAO;
+import mobi.chouette.dao.ConnectionLinkDAO;
+import mobi.chouette.dao.StopAreaDAO;
+import mobi.chouette.model.AccessPoint;
+import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.StopArea;
 
 public class StopAreaUpdater implements Updater<StopArea> {
+
+	@EJB
+	private StopAreaDAO stopAreaDAO;
+
+	@EJB
+	private AccessPointDAO accessPointDAO;
+
+	@EJB
+	private AccessLinkDAO accessLinkDAO;
+
+	@EJB
+	private ConnectionLinkDAO connectionLinkDAO;
+
 	@Override
-	public void update(StopArea oldValue, StopArea newValue) {
+	public void update(StopArea oldValue, StopArea newValue) throws Exception {
+
+		if (newValue.isSaved()) {
+			return;
+		}
+		newValue.setSaved(true);
 
 		if (newValue.getObjectId() != null
 				&& newValue.getObjectId().compareTo(oldValue.getObjectId()) != 0) {
@@ -79,7 +109,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 						oldValue.getIntUserNeeds()) != 0) {
 			oldValue.setIntUserNeeds(newValue.getIntUserNeeds());
 		}
-		
+
 		if (newValue.getLongitude() != null
 				&& newValue.getLongitude().compareTo(oldValue.getLongitude()) != 0) {
 			oldValue.setLongitude(newValue.getLongitude());
@@ -124,15 +154,62 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			oldValue.setStreetName(newValue.getStreetName());
 		}
 
-		// TODO Fk parent_id
-		// TODO list routing_constraints_lines (routingConstraintLines)
-		// TODO list stop_areas_stop_areas (routingConstraintAreas)
-		// TODO list stop area (containedStopAreas)
-		// TODO list stop point (containedStopPoints)
+		// StopArea Parent
+		if (newValue.getParent() == null) {
+			oldValue.setParent(null);
+		} else {
+			StopArea stopArea = stopAreaDAO.findByObjectId(newValue.getParent()
+					.getObjectId());
+			if (stopArea == null) {
+				stopArea = new StopArea();
+				stopArea.setObjectId(newValue.getParent().getObjectId());
+				stopAreaDAO.create(stopArea);
+			}
+			Updater<StopArea> stopAreaUpdater = UpdaterFactory
+					.create(StopAreaUpdater.class.getName());
+			stopAreaUpdater.update(oldValue.getParent(), newValue.getParent());
+			oldValue.setParent(stopArea);
+		}
+
+		// AccessPoint
+		Collection<AccessPoint> addedAccessPoint = CollectionUtils.substract(
+				newValue.getAccessPoints(), oldValue.getAccessPoints(),
+				NeptuneIdentifiedObjectComparator.INSTANCE);
+		for (AccessPoint item : addedAccessPoint) {
+			AccessPoint accessPoint = accessPointDAO.findByObjectId(item
+					.getObjectId());
+			if (accessPoint == null) {
+				accessPoint = new AccessPoint();
+				accessPoint.setObjectId(item.getObjectId());
+				accessPointDAO.create(accessPoint);
+			}
+			accessPoint.setContainedIn(oldValue);
+		}
+
+		Updater<AccessPoint> accessPointUpdater = UpdaterFactory
+				.create(AccessPointUpdater.class.getName());
+		Collection<Pair<AccessPoint, AccessPoint>> modifiedAccessPoint = CollectionUtils
+				.intersection(oldValue.getAccessPoints(),
+						newValue.getAccessPoints(),
+						NeptuneIdentifiedObjectComparator.INSTANCE);
+		for (Pair<AccessPoint, AccessPoint> pair : modifiedAccessPoint) {
+			accessPointUpdater.update(pair.getLeft(), pair.getRight());
+		}
+
+		Collection<AccessPoint> removedAccessPoint = CollectionUtils.substract(
+				oldValue.getAccessPoints(), newValue.getAccessPoints(),
+				NeptuneIdentifiedObjectComparator.INSTANCE);
+		for (AccessPoint accessPoint : removedAccessPoint) {
+			accessPoint.setContainedIn(null);
+			accessPointDAO.delete(accessPoint);
+		}
+
 		// TODO list access links (accessLinks)
 		// TODO list access links (connectionStartLinks)
 		// TODO list access links (connectionEndLinks)
-		// TODO list access points (accessPoints)
+
+		// TODO list routing_constraints_lines (routingConstraintLines)
+		// TODO list stop_areas_stop_areas (routingConstraintAreas)
 
 	}
 

@@ -1,12 +1,16 @@
 package mobi.chouette.importer.updater;
 
-import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
 
 public class AccessPointUpdater implements Updater<AccessPoint> {
 
 	@Override
 	public void update(AccessPoint oldValue, AccessPoint newValue) {
+
+		if (newValue.isSaved()) {
+			return;
+		}
+		newValue.setSaved(true);
 
 		if (newValue.getObjectId() != null
 				&& newValue.getObjectId().compareTo(oldValue.getObjectId()) != 0) {

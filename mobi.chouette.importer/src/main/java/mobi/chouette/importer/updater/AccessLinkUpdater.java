@@ -7,6 +7,11 @@ public class AccessLinkUpdater implements Updater<AccessLink> {
 	@Override
 	public void update(AccessLink oldValue, AccessLink newValue) {
 
+		if (newValue.isSaved()) {
+			return;
+		}
+		newValue.setSaved(true);
+
 		if (newValue.getObjectId() != null
 				&& newValue.getObjectId().compareTo(oldValue.getObjectId()) != 0) {
 			oldValue.setObjectId(newValue.getObjectId());

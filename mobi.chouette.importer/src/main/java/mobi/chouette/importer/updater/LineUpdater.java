@@ -16,7 +16,6 @@ import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.PTNetwork;
 import mobi.chouette.model.Route;
-import mobi.chouette.model.StopArea;
 
 @Log4j
 public class LineUpdater implements Updater<Line> {
@@ -34,6 +33,11 @@ public class LineUpdater implements Updater<Line> {
 
 	@Override
 	public void update(Line oldValue, Line newValue) throws Exception {
+
+		if (newValue.isSaved()) {
+			return;
+		}
+		newValue.setSaved(true);
 
 		if (newValue.getObjectId() != null
 				&& newValue.getObjectId().compareTo(oldValue.getObjectId()) != 0) {
@@ -124,9 +128,9 @@ public class LineUpdater implements Updater<Line> {
 
 		// Company
 		if (newValue.getCompany() == null) {
-			oldValue.setPTNetwork(null);
+			oldValue.setCompany(null);
 		} else {
-			Company company = companyDAO.findByObjectId(newValue.getPtNetwork()
+			Company company = companyDAO.findByObjectId(newValue.getCompany()
 					.getObjectId());
 			if (company == null) {
 				company = new Company();
@@ -164,7 +168,6 @@ public class LineUpdater implements Updater<Line> {
 			groupOfLineUpdater.update(pair.getLeft(), pair.getRight());
 		}
 
-		// TODO remove ?
 		Collection<GroupOfLine> removedGroupOfLine = CollectionUtils.substract(
 				oldValue.getGroupOfLines(), newValue.getGroupOfLines(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
@@ -195,13 +198,13 @@ public class LineUpdater implements Updater<Line> {
 			routeUpdater.update(pair.getLeft(), pair.getRight());
 		}
 
-		// TODO remove ?
-		Collection<Route> removedRoute = CollectionUtils.substract(
-				oldValue.getRoutes(), newValue.getRoutes(),
-				NeptuneIdentifiedObjectComparator.INSTANCE);
-		for (Route route : removedRoute) {
-			route.setLine(null);
-		}
+		// Collection<Route> removedRoute = CollectionUtils.substract(
+		// oldValue.getRoutes(), newValue.getRoutes(),
+		// NeptuneIdentifiedObjectComparator.INSTANCE);
+		// for (Route route : removedRoute) {
+		// route.setLine(null);
+		// routeDAO.delete(route);
+		// }
 
 		// TODO stop area list (routingConstraintLines)
 	}

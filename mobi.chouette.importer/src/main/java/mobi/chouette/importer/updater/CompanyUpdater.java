@@ -7,16 +7,23 @@ public class CompanyUpdater implements Updater<Company> {
 	@Override
 	public void update(Company oldValue, Company newValue) {
 
+		if (newValue.isSaved()) {
+			return;
+		}
+		newValue.setSaved(true);
+
 		if (newValue.getObjectId() != null
 				&& newValue.getObjectId().compareTo(oldValue.getObjectId()) != 0) {
 			oldValue.setObjectId(newValue.getObjectId());
 		}
 		if (newValue.getObjectVersion() != null
-				&& newValue.getObjectVersion().compareTo(oldValue.getObjectVersion()) != 0) {
+				&& newValue.getObjectVersion().compareTo(
+						oldValue.getObjectVersion()) != 0) {
 			oldValue.setObjectVersion(newValue.getObjectVersion());
 		}
 		if (newValue.getCreationTime() != null
-				&& newValue.getCreationTime().compareTo(oldValue.getCreationTime()) != 0) {
+				&& newValue.getCreationTime().compareTo(
+						oldValue.getCreationTime()) != 0) {
 			oldValue.setCreationTime(newValue.getCreationTime());
 		}
 		if (newValue.getCreatorId() != null
@@ -39,7 +46,8 @@ public class CompanyUpdater implements Updater<Company> {
 		if (newValue.getOperatingDepartmentName() != null
 				&& newValue.getOperatingDepartmentName().compareTo(
 						oldValue.getOperatingDepartmentName()) != 0) {
-			oldValue.setOperatingDepartmentName(newValue.getOperatingDepartmentName());
+			oldValue.setOperatingDepartmentName(newValue
+					.getOperatingDepartmentName());
 		}
 		if (newValue.getCode() != null
 				&& newValue.getCode().compareTo(oldValue.getCode()) != 0) {
@@ -69,7 +77,7 @@ public class CompanyUpdater implements Updater<Company> {
 		if (newValue.getTimeZone() != null
 				&& newValue.getTimeZone().compareTo(oldValue.getTimeZone()) != 0) {
 			oldValue.setTimeZone(newValue.getTimeZone());
-		}		
+		}
 	}
 
 	static {

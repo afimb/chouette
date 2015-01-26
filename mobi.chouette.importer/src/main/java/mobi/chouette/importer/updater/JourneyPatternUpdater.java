@@ -26,6 +26,11 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 	public void update(JourneyPattern oldValue, JourneyPattern newValue)
 			throws Exception {
 
+		if (newValue.isSaved()) {
+			return;
+		}
+		newValue.setSaved(true);
+
 		if (newValue.getObjectId() != null
 				&& newValue.getObjectId().compareTo(oldValue.getObjectId()) != 0) {
 			oldValue.setObjectId(newValue.getObjectId());
@@ -74,7 +79,7 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 				oldValue.addStopPoint(stopPoint);
 			}
 		}
-		// TODO remove ?
+
 		Collection<StopPoint> removedStopPoint = CollectionUtils.substract(
 				oldValue.getStopPoints(), newValue.getStopPoints(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
@@ -132,14 +137,14 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 			vehicleJourneyUpdater.update(pair.getLeft(), pair.getRight());
 		}
 
-		// TODO remove ?
-		Collection<VehicleJourney> removedVehicleJourney = CollectionUtils
-				.substract(oldValue.getVehicleJourneys(),
-						newValue.getVehicleJourneys(),
-						NeptuneIdentifiedObjectComparator.INSTANCE);
-		for (VehicleJourney item : removedVehicleJourney) {
-			item.setJourneyPattern(null);
-		}
+		// Collection<VehicleJourney> removedVehicleJourney = CollectionUtils
+		// .substract(oldValue.getVehicleJourneys(),
+		// newValue.getVehicleJourneys(),
+		// NeptuneIdentifiedObjectComparator.INSTANCE);
+		// for (VehicleJourney vehicleJourney : removedVehicleJourney) {
+		// vehicleJourney.setJourneyPattern(null);
+		// vehicleJourneyDAO.delete(vehicleJourney);
+		// }
 	}
 
 	static {

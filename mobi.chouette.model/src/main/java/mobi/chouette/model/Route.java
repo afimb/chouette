@@ -19,6 +19,7 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
 
@@ -101,13 +102,26 @@ public class Route extends NeptuneIdentifiedObject {
 	 *            New value
 	 * @return The actual value
 	 */
+
 	@Getter
-	@Setter
-	// mapped as id for database update facility
-	// @OneToOne(fetch = FetchType.LAZY)
-	// @JoinColumn(name = "opposite_route_id")
-	@Column(name = "opposite_route_id")
-	private Long oppositeRouteId;
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "opposite_route_id")
+	private Route oppositeRoute;
+
+	public void setOppositeRoute(Route oppositeRoute) {
+
+		if (this.oppositeRoute != oppositeRoute) {
+			if (this.oppositeRoute != null) {
+				Route tmp = this.oppositeRoute;
+				this.oppositeRoute = null;
+				tmp.setOppositeRoute(null);
+			}
+			this.oppositeRoute = oppositeRoute;
+			if (oppositeRoute != null) {
+				oppositeRoute.setOppositeRoute(this);
+			}
+		}
+	}
 
 	/**
 	 * published name

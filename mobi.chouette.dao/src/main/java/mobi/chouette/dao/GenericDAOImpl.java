@@ -2,7 +2,9 @@ package mobi.chouette.dao;
 
 import java.util.List;
 
+import javax.persistence.Cache;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -101,4 +103,10 @@ public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 		return result;
 	}
 
+	@Override
+	public void evictAll() {
+		EntityManagerFactory factory = em.getEntityManagerFactory();
+		Cache cache = factory.getCache();
+		cache.evictAll();
+	}
 }

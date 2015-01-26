@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 
+import javax.persistence.Cacheable;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
@@ -32,6 +33,7 @@ import org.apache.commons.lang.StringUtils;
  */
 @Entity
 @Table(name = "time_tables")
+@Cacheable
 @NoArgsConstructor
 @Log4j
 public class Timetable extends NeptuneIdentifiedObject {

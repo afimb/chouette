@@ -7,6 +7,11 @@ public class GroupOfLineUpdater implements Updater<GroupOfLine> {
 	@Override
 	public void update(GroupOfLine oldValue, GroupOfLine newValue) {
 
+		if (newValue.isSaved()) {
+			return;
+		}
+		newValue.setSaved(true);
+
 		if (newValue.getObjectId() != null
 				&& newValue.getObjectId().compareTo(oldValue.getObjectId()) != 0) {
 			oldValue.setObjectId(newValue.getObjectId());
@@ -32,7 +37,7 @@ public class GroupOfLineUpdater implements Updater<GroupOfLine> {
 		if (newValue.getComment() != null
 				&& newValue.getComment().compareTo(oldValue.getComment()) != 0) {
 			oldValue.setComment(newValue.getComment());
-		}		
+		}
 	}
 
 	static {

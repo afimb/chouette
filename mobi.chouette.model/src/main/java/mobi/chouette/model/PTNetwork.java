@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -37,6 +38,7 @@ import org.apache.commons.lang.StringUtils;
  */
 @Entity
 @Table(name = "networks")
+@Cacheable
 @NoArgsConstructor
 @ToString
 @Log4j

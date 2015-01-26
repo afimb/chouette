@@ -14,6 +14,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -182,6 +183,7 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 	@Getter
 	@Setter
 	@ManyToMany
+	@OrderBy("position")
 	@JoinTable(name = "journey_patterns_stop_points", joinColumns = { @JoinColumn(name = "journey_pattern_id", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "stop_point_id", nullable = false, updatable = false) })
 	private List<StopPoint> stopPoints = new ArrayList<StopPoint>(0);
 
@@ -220,21 +222,5 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 			stopPoints.remove(stopPoint);
 		}
 	}
-
-	/* TODO !!! -> sorter by position on route  refreshDepartureArrivals ??? ---------------------------- */
-//	/**
-//	 * update departure and arrival <br/>
-//	 * to be used after stopPoints update
-//	 */
-//	public void refreshDepartureArrivals() {
-//		if (stopPoints == null || stopPoints.isEmpty()) {
-//			departureStopPoint = null;
-//			arrivalStopPoint = null;
-//		} else {
-//			departureStopPoint = stopPoints.get(0);
-//			arrivalStopPoint = stopPoints.get(stopPoints.size() - 1);
-//		}
-//
-//	}
 
 }

@@ -39,10 +39,6 @@ public class Referential implements java.io.Serializable {
 	@Setter
 	private Map<String, PTLink> ptLink = new HashMap<String, PTLink>();
 
-	@Getter
-	@Setter
-	private Map<String, Timetable> timetable = new HashMap<String, Timetable>();
-
 	/* ------------------ */
 
 	@Getter
@@ -88,10 +84,14 @@ public class Referential implements java.io.Serializable {
 	@Getter
 	@Setter
 	private Map<String, Timetable> timetables = new HashMap<String, Timetable>();
-	
-	
-	void clear(){
-		// TODO DSU clear
+
+	public void clear() {
+		lines.clear();
+		routes.clear();
+		stopPoints.clear();
+		ptLink.clear();
+		journeyPatterns.clear();
+		vehicleJourneys.clear();
 	}
 
 }

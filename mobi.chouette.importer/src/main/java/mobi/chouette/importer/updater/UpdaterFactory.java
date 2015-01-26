@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public abstract class UpdaterFactory {
-	
+
 	protected static Map<String, UpdaterFactory> factories = new HashMap<String, UpdaterFactory>();
 
 	protected abstract <T> Updater<T> create();

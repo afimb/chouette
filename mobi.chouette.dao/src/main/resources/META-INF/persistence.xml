@@ -17,7 +17,8 @@
 			<property name="hibernate.format_sql" value="true" />
 			<property name="hibernate.jdbc.batch_size" value="50" />
 			<property name="hibernate.default_batch_fetch_size" value="50" />
-<!-- 			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL9Dialect" /> -->
+			<!-- <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL9Dialect" 
+				/> -->
 			<property name="hibernate.connection.datasource" value="java:jboss/datasources/chouette" />
 			<property name="hibernate.cache.use_second_level_cache"
 				value="true" />
@@ -39,14 +40,15 @@
 			<property name="hibernate.jdbc.batch_size" value="50" />
 			<property name="hibernate.default_batch_fetch_size" value="50" />
 			<property name="hibernate.multiTenancy" value="SCHEMA" />
-<!-- 			<property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL9Dialect" /> -->
+			<!-- <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQL9Dialect" 
+				/> -->
 			<property name="hibernate.connection.datasource" value="java:jboss/datasources/chouette" />
 			<property name="hibernate.tenant_identifier_resolver"
 				value="mobi.chouette.multitenant.DefaultTenantIdentifierResolver" />
 			<property name="hibernate.multi_tenant_connection_provider"
 				value="mobi.chouette.multitenant.DefaultConnectionProvider" />
 			<property name="hibernate.cache.use_second_level_cache"
-				value="false" />
+				value="true" />
 			<property name="hibernate.cache.use_query_cache" value="false" />
 			<property name="javax.persistence.validation.mode" value="none" />
 

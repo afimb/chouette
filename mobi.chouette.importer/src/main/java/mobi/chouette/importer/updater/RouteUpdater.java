@@ -28,6 +28,11 @@ public class RouteUpdater implements Updater<Route> {
 	@Override
 	public void update(Route oldValue, Route newValue) throws Exception {
 
+		if (newValue.isSaved()) {
+			return;
+		}
+		newValue.setSaved(true);
+
 		if (newValue.getObjectId() != null
 				&& newValue.getObjectId().compareTo(oldValue.getObjectId()) != 0) {
 			oldValue.setObjectId(newValue.getObjectId());
@@ -72,18 +77,24 @@ public class RouteUpdater implements Updater<Route> {
 			oldValue.setWayBack(newValue.getWayBack());
 		}
 
-		// TODO opposite_route_id
+		// OppositeRoute
+		if (newValue.getOppositeRoute() != null) {
+			Route opposite = routeDAO.findByObjectId(newValue
+					.getOppositeRoute().getObjectId());
+			if (opposite != null) {
+				oldValue.setOppositeRoute(opposite);
+			}
+		}
 
-		// oppositeRoute
-		// if (newValue.getOppositeRoute() != null)
-		// {
-		// Route opposite =
-		// routeDAO.getByObjectId(newValue.getOppositeRoute().getObjectId());
-		// if (opposite != null)
-		// {
-		// oldValue.setOppositeRoute(opposite);
-		// }
-		// }
+		if (newValue.getOppositeRoute() == null) {
+			oldValue.setOppositeRoute(null);
+		} else {
+			Route route = routeDAO.findByObjectId(newValue.getOppositeRoute()
+					.getObjectId());
+			if (route != null) {
+				oldValue.setOppositeRoute(route);
+			}
+		}
 
 		// StopPoint
 		Collection<StopPoint> addedStopPoint = CollectionUtils.substract(
@@ -110,12 +121,12 @@ public class RouteUpdater implements Updater<Route> {
 			stopPointUpdater.update(pair.getLeft(), pair.getRight());
 		}
 
-		// TODO remove ?
 		Collection<StopPoint> removedStopPoint = CollectionUtils.substract(
 				oldValue.getStopPoints(), newValue.getStopPoints(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (StopPoint stopPoint : removedStopPoint) {
 			stopPoint.setRoute(null);
+			stopPointDAO.delete(stopPoint);
 		}
 
 		// JourneyPattern
@@ -144,14 +155,14 @@ public class RouteUpdater implements Updater<Route> {
 			journeyPatternUpdater.update(pair.getLeft(), pair.getRight());
 		}
 
-		// TODO remove ?
-		Collection<JourneyPattern> removedJourneyPattern = CollectionUtils
-				.substract(oldValue.getJourneyPatterns(),
-						newValue.getJourneyPatterns(),
-						NeptuneIdentifiedObjectComparator.INSTANCE);
-		for (JourneyPattern journeyPattern : removedJourneyPattern) {
-			journeyPattern.setRoute(null);
-		}
+		// Collection<JourneyPattern> removedJourneyPattern = CollectionUtils
+		// .substract(oldValue.getJourneyPatterns(),
+		// newValue.getJourneyPatterns(),
+		// NeptuneIdentifiedObjectComparator.INSTANCE);
+		// for (JourneyPattern journeyPattern : removedJourneyPattern) {
+		// journeyPattern.setRoute(null);
+		// journeyPatternDAO.delete(journeyPattern);
+		// }
 
 	}
 

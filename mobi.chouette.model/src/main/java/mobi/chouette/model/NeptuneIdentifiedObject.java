@@ -88,6 +88,9 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject {
 	@Column(name = "creator_id")
 	protected String creatorId;
 
+	@Getter @Setter
+	private boolean saved = false;
+	
 	@Transient
 	private String unsaved_name;
 

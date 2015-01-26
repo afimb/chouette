@@ -52,6 +52,11 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 	public void update(VehicleJourney oldValue, VehicleJourney newValue)
 			throws Exception {
 
+		if (newValue.isSaved()) {
+			return;
+		}
+		newValue.setSaved(true);
+
 		if (newValue.getObjectId() != null
 				&& newValue.getObjectId().compareTo(oldValue.getObjectId()) != 0) {
 			oldValue.setObjectId(newValue.getObjectId());
@@ -127,19 +132,22 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 		}
 
 		// Company
-		if (oldValue.getCompany() == null
-				|| !oldValue.getCompany().equals(newValue.getCompany())) {
-			if (newValue.getCompany() == null) {
-				oldValue.setCompany(null);
-			} else {
-				Company company = companyDAO.findByObjectId(newValue
-						.getCompany().getObjectId());
-				if (company != null) {
-					oldValue.setCompany(company);
-				}
+		if (newValue.getCompany() == null) {
+			oldValue.setCompany(null);
+		} else {
+			Company company = companyDAO.findByObjectId(newValue.getCompany()
+					.getObjectId());
+			if (company == null) {
+				company = new Company();
+				company.setObjectId(newValue.getCompany().getObjectId());
+				companyDAO.create(company);
 			}
+			Updater<Company> companyUpdater = UpdaterFactory
+					.create(CompanyUpdater.class.getName());
+			companyUpdater.update(oldValue.getCompany(), newValue.getCompany());
+			oldValue.setCompany(company);
 		}
-		
+
 		// Route
 		if (oldValue.getRoute() == null
 				|| !oldValue.getRoute().equals(newValue.getRoute())) {
@@ -176,7 +184,6 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 			vehicleJourneyAtStopUpdater.update(pair.getLeft(), pair.getRight());
 		}
 
-		// TODO remove ?
 		Collection<VehicleJourneyAtStop> removedVehicleJourneyAtStop = CollectionUtils
 				.substract(oldValue.getVehicleJourneyAtStops(),
 						newValue.getVehicleJourneyAtStops(),
@@ -211,7 +218,6 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 			timetableUpdater.update(pair.getLeft(), pair.getRight());
 		}
 
-		// TODO remove ?
 		Collection<Timetable> removedTimetable = CollectionUtils.substract(
 				oldValue.getTimetables(), newValue.getTimetables(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);

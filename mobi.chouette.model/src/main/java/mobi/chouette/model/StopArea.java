@@ -3,6 +3,7 @@ package mobi.chouette.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -59,6 +60,7 @@ import org.apache.commons.lang.StringUtils;
  */
 @Entity
 @Table(name = "stop_areas")
+@Cacheable
 @NoArgsConstructor
 @Log4j
 public class StopArea extends NeptuneLocalizedObject implements ObjectIdTypes {

@@ -62,7 +62,7 @@ public class VehicleJourneyAtStopUpdater implements
 			if (stopPoint != null) {
 				oldValue.setStopPoint(stopPoint);
 			}
-		}		
+		}
 	}
 
 	static {

@@ -52,11 +52,11 @@ public class ObjectFactory {
 
 	public static Timetable getTimetable(Referential referential,
 			String objectId) {
-		Timetable result = referential.getTimetable().get(objectId);
+		Timetable result = referential.getTimetables().get(objectId);
 		if (result == null) {
 			result = new Timetable();
 			result.setObjectId(objectId);
-			referential.getTimetable().put(objectId, result);
+			referential.getTimetables().put(objectId, result);
 		}
 		return result;
 	}

@@ -3,6 +3,7 @@ package mobi.chouette.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
@@ -24,6 +25,7 @@ import org.apache.commons.lang.StringUtils;
  */
 @Entity
 @Table(name = "group_of_lines")
+@Cacheable
 @NoArgsConstructor
 @ToString
 @Log4j

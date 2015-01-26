@@ -10,6 +10,7 @@ package mobi.chouette.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -32,6 +33,7 @@ import org.apache.commons.lang.StringUtils;
 
 @Entity
 @Table(name = "companies")
+@Cacheable
 @NoArgsConstructor
 @ToString(exclude = { "lines" })
 @Log4j
