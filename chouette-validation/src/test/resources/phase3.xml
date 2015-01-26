@@ -1,7 +1,6 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
 <suite name="Validation phase 3" verbose="1"> 
-	<!--
 	<test name="Test_A_ok" preserve-order="true">
 		<classes>
 			<class name="fr.certu.chouette.validation.ValidationNominal" />
@@ -27,7 +26,6 @@
 			<class name="fr.certu.chouette.validation.ValidationVehicleJourneys" />
 		</classes>
 	</test>
-	-->
 	<test name="Test_F_stop_areas" preserve-order="true">
 		<classes>
 			<class name="fr.certu.chouette.validation.ValidationStopAreas" />
@@ -38,7 +36,6 @@
 			<class name="fr.certu.chouette.validation.ValidationConnectionLinks" />
 		</classes>
 	</test>
-	<!-- 
 	<test name="Test_H_access_points" preserve-order="true">
 		<classes>
 			<class name="fr.certu.chouette.validation.ValidationAccessPoints" />
@@ -69,6 +66,5 @@
 			<class name="fr.certu.chouette.validation.ValidationTimetables" />
 		</classes>
 	</test>
-	-->
 </suite>
 

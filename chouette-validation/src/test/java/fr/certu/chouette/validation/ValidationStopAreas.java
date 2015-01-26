@@ -41,6 +41,8 @@ public class ValidationStopAreas extends
    private StopArea bean1;
    private StopArea bean2;
    private StopArea bean3;
+   private StopArea bean4;
+   private StopArea bean5;
    private List<StopArea> beansFor4 = new ArrayList<>();
    private INeptuneManager<StopArea> stopAreaManager ;
 
@@ -67,16 +69,36 @@ public class ValidationStopAreas extends
          bean1.setObjectId("test1:StopArea:1");
          bean1.setName("test1");
          bean1.setAreaType(ChouetteAreaEnum.BoardingPosition);
+         bean1.setCountryCode("60124");
+         bean1.setCityName("Ville1");
          bean2 = new StopArea();
          bean2.setId(id++);
          bean2.setObjectId("test2:StopArea:1");
          bean2.setName("test2");
          bean2.setAreaType(ChouetteAreaEnum.BoardingPosition);
+         bean2.setCountryCode("60123");
+         bean2.setCityName("Ville1");
          bean3 = new StopArea();
          bean3.setId(id++);
          bean3.setObjectId("test2:StopArea:3");
          bean3.setName("test2");
          bean3.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
+         bean3.setCountryCode("60124");
+         bean3.setCityName("Ville1");
+         bean4 = new StopArea();
+         bean4.setId(id++);
+         bean4.setObjectId("test2:StopArea:4");
+         bean4.setName("test4");
+         bean4.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
+         bean4.setCountryCode("60124");
+         bean4.setCityName("Ville2");
+         bean5 = new StopArea();
+         bean5.setId(id++);
+         bean5.setObjectId("test2:StopArea:4");
+         bean5.setName("test4");
+         bean5.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
+         bean5.setCountryCode("50124");
+         bean5.setCityName("Ville1");
    
          beansFor4.add(bean1);
          beansFor4.add(bean2);
@@ -528,6 +550,74 @@ public class ValidationStopAreas extends
       Assert.assertEquals(report.getItem("4-StopArea-2").getItems().size(), 1, " checkpoint must have one detail");
 
    }
+
+   @Test(groups = { "StopArea" }, description = "4-StopArea-3")
+   public void verifyTest4_3() throws ChouetteException
+   {
+      // 4-StopArea-3 : check country code and city name
+      Assert.assertNotNull(fullparameters, "no parameters for test");
+      
+      PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
+      // valid datas
+      List<StopArea> list = new ArrayList<>();
+      list.add(bean1);
+      list.add(bean3);
+      list.add(bean5);
+      
+      // test not asked
+      fullparameters.put("check_country_code","0");
+      checkPoint.check(list, fullparameters, report, new HashMap<String, Object>());
+      report.refreshStatus();
+      Assert.assertFalse(report.hasItem("4-StopArea-3"), " report must not have item 4-StopArea-3");
+      
+      // test asked with no error
+      fullparameters.put("check_country_code","1");
+      report = new PhaseReportItem(PHASE.THREE);
+
+      checkPoint.check(list, fullparameters, report, new HashMap<String, Object>());
+      report.refreshStatus();
+      fullparameters.put("check_country_code","0");
+
+      Assert.assertTrue(report.hasItem("4-StopArea-3"), " report must have item 4-StopArea-3");
+      Assert.assertEquals(report.getItem("4-StopArea-3").getItems().size(), 0, " checkpoint must have no detail");
+
+      // test asked with code conflict
+      list.clear();
+      list.add(bean2);
+      list.add(bean3);
+      list.add(bean5);
+      
+      fullparameters.put("check_country_code","1");
+      report = new PhaseReportItem(PHASE.THREE);
+
+      checkPoint.check(list, fullparameters, report, new HashMap<String, Object>());
+      report.refreshStatus();
+      AbstractValidation.printReport(report);
+      fullparameters.put("check_country_code","0");
+
+      Assert.assertTrue(report.hasItem("4-StopArea-3"), " report must have item 4-StopArea-3");
+      Assert.assertEquals(report.getItem("4-StopArea-3").getItems().size(), 1, " checkpoint must have detail");
+
+      // test asked with name conflict
+      list.clear();
+      list.add(bean4);
+      list.add(bean3);
+      list.add(bean5);
+      
+      fullparameters.put("check_country_code","1");
+      report = new PhaseReportItem(PHASE.THREE);
+      AbstractValidation.printReport(report);
+
+      checkPoint.check(list, fullparameters, report, new HashMap<String, Object>());
+      report.refreshStatus();
+      AbstractValidation.printReport(report);
+      fullparameters.put("check_country_code","0");
+
+      Assert.assertTrue(report.hasItem("4-StopArea-3"), " report must have item 4-StopArea-3");
+      Assert.assertEquals(report.getItem("4-StopArea-3").getItems().size(), 1, " checkpoint must have detail");
+
+   }
+
 
 
 }

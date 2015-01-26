@@ -471,11 +471,11 @@ public class ValidationRoutes extends AbstractValidation
 		}
 		
 		Route route1 = line1.getRoutes().get(0);
-		
 		Route route2 = line1.getRoutes().get(1);
-		
 		route1.setObjectId("NINOXE:Route:first");
+		route1.setWayBackRoute(null);
 		route2.setObjectId("NINOXE:Route:second");
+      route2.setWayBackRoute(null);
 				
 		PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
 

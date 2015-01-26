@@ -1,3 +1,8 @@
+# Version 2.5.3 (en cours)
+* Nouvelles fonctionnalités
+  * Contrôle de cohérence (Mantis 31896)
+  * Ajout de champs dans les échanges Neptune en structurant le champ commentaire (Mantis 31897)
+
 # Version 2.5.2 (21/01/15)
 * Nouvelles fonctionnalités
   * Tests de validation avant export (Hub)

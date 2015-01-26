@@ -91,6 +91,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject>
    protected static final String L4_GROUP_OF_LINE_1 = "4-GroupOfLine-1";
    protected static final String L4_STOP_AREA_1 = "4-StopArea-1";
    protected static final String L4_STOP_AREA_2 = "4-StopArea-2";
+   protected static final String L4_STOP_AREA_3 = "4-StopArea-3";
    protected static final String L4_ACCESS_POINT_1 = "4-AccessPoint-1";
    protected static final String L4_ACCESS_LINK_1 = "4-AccessLink-1";
    protected static final String L4_CONNECTION_LINK_1 = "4-ConnectionLink-1";
@@ -130,6 +131,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject>
    protected static final String CHECK_LINES_IN_GROUPS = "check_lines_in_groups";
    protected static final String CHECK_LINE_ROUTES = "check_line_routes";
    protected static final String CHECK_STOP_PARENT = "check_stop_parent";
+   protected static final String CHECK_COUNTRY_CODE = "check_country_code";
    protected static final String CHECK_CONNECTION_LINK_ON_PHYSICAL = "check_connection_link_on_physical" ;
    protected static final String ALLOWED_TRANSPORT = "allowed_transport";
    protected static final String CHECK_OBJECT = "check_";
