@@ -63,7 +63,6 @@ public class StopPointUpdater implements Updater<StopPoint> {
 			oldValue.setContainedInStopArea(stopArea);
 		}
 
-		// TODO position (list index in route)
 	}
 
 	static {

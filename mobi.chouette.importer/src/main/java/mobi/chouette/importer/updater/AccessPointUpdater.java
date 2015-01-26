@@ -1,11 +1,23 @@
 package mobi.chouette.importer.updater;
 
+import java.util.Collection;
+
+import javax.ejb.EJB;
+
+import mobi.chouette.common.CollectionUtils;
+import mobi.chouette.common.Pair;
+import mobi.chouette.dao.AccessLinkDAO;
+import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
 
 public class AccessPointUpdater implements Updater<AccessPoint> {
 
+	@EJB
+	private AccessLinkDAO accessLinkDAO;
+
 	@Override
-	public void update(AccessPoint oldValue, AccessPoint newValue) {
+	public void update(AccessPoint oldValue, AccessPoint newValue)
+			throws Exception {
 
 		if (newValue.isSaved()) {
 			return;
@@ -72,8 +84,39 @@ public class AccessPointUpdater implements Updater<AccessPoint> {
 			oldValue.setStairsAvailable(newValue.getStairsAvailable());
 		}
 
-		// TODO stop area Fk (containedIn)
-		// TODO list access links (accessLinks)
+		// AccessLink
+		Collection<AccessLink> addedAccessLink = CollectionUtils.substract(
+				newValue.getAccessLinks(), oldValue.getAccessLinks(),
+				NeptuneIdentifiedObjectComparator.INSTANCE);
+		for (AccessLink item : addedAccessLink) {
+			AccessLink accessLink = accessLinkDAO.findByObjectId(item
+					.getObjectId());
+			if (accessLink == null) {
+				accessLink = new AccessLink();
+				accessLink.setObjectId(item.getObjectId());
+				accessLinkDAO.create(accessLink);
+			}
+			accessLink.setAccessPoint(oldValue);
+		}
+
+		Updater<AccessLink> accessLinkUpdater = UpdaterFactory
+				.create(AccessLinkUpdater.class.getName());
+		Collection<Pair<AccessLink, AccessLink>> modifiedAccessLink = CollectionUtils
+				.intersection(oldValue.getAccessLinks(),
+						newValue.getAccessLinks(),
+						NeptuneIdentifiedObjectComparator.INSTANCE);
+		for (Pair<AccessLink, AccessLink> pair : modifiedAccessLink) {
+			accessLinkUpdater.update(pair.getLeft(), pair.getRight());
+		}
+
+		// Collection<AccessLink> removedAccessLink = CollectionUtils.substract(
+		// oldValue.getAccessLinks(), newValue.getAccessLinks(),
+		// NeptuneIdentifiedObjectComparator.INSTANCE);
+		// for (AccessLink accessLink : removedAccessLink) {
+		// accessLink.setAccessPoint(null);
+		// accessLinkDAO.delete(accessLink);
+		// }
+
 	}
 
 	static {

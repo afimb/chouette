@@ -10,8 +10,9 @@ import mobi.chouette.dao.AccessLinkDAO;
 import mobi.chouette.dao.AccessPointDAO;
 import mobi.chouette.dao.ConnectionLinkDAO;
 import mobi.chouette.dao.StopAreaDAO;
+import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
-import mobi.chouette.model.JourneyPattern;
+import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
 
 public class StopAreaUpdater implements Updater<StopArea> {
@@ -196,17 +197,100 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			accessPointUpdater.update(pair.getLeft(), pair.getRight());
 		}
 
-		Collection<AccessPoint> removedAccessPoint = CollectionUtils.substract(
-				oldValue.getAccessPoints(), newValue.getAccessPoints(),
+		// Collection<AccessPoint> removedAccessPoint =
+		// CollectionUtils.substract(
+		// oldValue.getAccessPoints(), newValue.getAccessPoints(),
+		// NeptuneIdentifiedObjectComparator.INSTANCE);
+		// for (AccessPoint accessPoint : removedAccessPoint) {
+		// accessPoint.setContainedIn(null);
+		// accessPointDAO.delete(accessPoint);
+		// }
+
+		// AccessLink
+		Collection<AccessLink> addedAccessLink = CollectionUtils.substract(
+				newValue.getAccessLinks(), oldValue.getAccessLinks(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
-		for (AccessPoint accessPoint : removedAccessPoint) {
-			accessPoint.setContainedIn(null);
-			accessPointDAO.delete(accessPoint);
+		for (AccessLink item : addedAccessLink) {
+			AccessLink accessLink = accessLinkDAO.findByObjectId(item
+					.getObjectId());
+			if (accessLink == null) {
+				accessLink = new AccessLink();
+				accessLink.setObjectId(item.getObjectId());
+				accessLinkDAO.create(accessLink);
+			}
+			accessLink.setStopArea(oldValue);
 		}
 
-		// TODO list access links (accessLinks)
-		// TODO list access links (connectionStartLinks)
-		// TODO list access links (connectionEndLinks)
+		Updater<AccessLink> accessLinkUpdater = UpdaterFactory
+				.create(AccessLinkUpdater.class.getName());
+		Collection<Pair<AccessLink, AccessLink>> modifiedAccessLink = CollectionUtils
+				.intersection(oldValue.getAccessLinks(),
+						newValue.getAccessLinks(),
+						NeptuneIdentifiedObjectComparator.INSTANCE);
+		for (Pair<AccessLink, AccessLink> pair : modifiedAccessLink) {
+			accessLinkUpdater.update(pair.getLeft(), pair.getRight());
+		}
+
+		// Collection<AccessLink> removedAccessLink = CollectionUtils.substract(
+		// oldValue.getAccessLinks(), newValue.getAccessLinks(),
+		// NeptuneIdentifiedObjectComparator.INSTANCE);
+		// for (AccessLink accessLink : removedAccessLink) {
+		// accessLink.setStopArea(null);
+		// accessLinkDAO.delete(accessLink);
+		// }
+
+		// StartOfLink
+		Collection<ConnectionLink> addedStartOfLink = CollectionUtils
+				.substract(newValue.getConnectionStartLinks(),
+						oldValue.getConnectionStartLinks(),
+						NeptuneIdentifiedObjectComparator.INSTANCE);
+		for (ConnectionLink item : addedStartOfLink) {
+			ConnectionLink connectionLink = connectionLinkDAO
+					.findByObjectId(item.getObjectId());
+			if (connectionLink == null) {
+				connectionLink = new ConnectionLink();
+				connectionLink.setObjectId(item.getObjectId());
+				connectionLinkDAO.create(connectionLink);
+			}
+			connectionLink.setStartOfLink(oldValue);
+		}
+
+		Updater<ConnectionLink> connectionLinkUpdater = UpdaterFactory
+				.create(ConnectionLinkUpdater.class.getName());
+		Collection<Pair<ConnectionLink, ConnectionLink>> modifiedStartOfLink = CollectionUtils
+				.intersection(oldValue.getConnectionStartLinks(),
+						newValue.getConnectionStartLinks(),
+						NeptuneIdentifiedObjectComparator.INSTANCE);
+		for (Pair<ConnectionLink, ConnectionLink> pair : modifiedStartOfLink) {
+			connectionLinkUpdater.update(pair.getLeft(), pair.getRight());
+
+		}
+
+		// EndOfLink
+		Collection<ConnectionLink> addedEndOfLink = CollectionUtils.substract(
+				newValue.getConnectionEndLinks(),
+				oldValue.getConnectionEndLinks(),
+				NeptuneIdentifiedObjectComparator.INSTANCE);
+		for (ConnectionLink item : addedEndOfLink) {
+			ConnectionLink connectionLink = connectionLinkDAO
+					.findByObjectId(item.getObjectId());
+			if (connectionLink == null) {
+				connectionLink = new ConnectionLink();
+				connectionLink.setObjectId(item.getObjectId());
+				connectionLinkDAO.create(connectionLink);
+			}
+			connectionLink.setEndOfLink(oldValue);
+		}
+
+		connectionLinkUpdater = UpdaterFactory
+				.create(ConnectionLinkUpdater.class.getName());
+		Collection<Pair<ConnectionLink, ConnectionLink>> modifiedEndOfLink = CollectionUtils
+				.intersection(oldValue.getConnectionEndLinks(),
+						newValue.getConnectionEndLinks(),
+						NeptuneIdentifiedObjectComparator.INSTANCE);
+		for (Pair<ConnectionLink, ConnectionLink> pair : modifiedEndOfLink) {
+			connectionLinkUpdater.update(pair.getLeft(), pair.getRight());
+		}
 
 		// TODO list routing_constraints_lines (routingConstraintLines)
 		// TODO list stop_areas_stop_areas (routingConstraintAreas)

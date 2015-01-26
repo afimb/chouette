@@ -1,8 +1,15 @@
 package mobi.chouette.importer.updater;
 
+import javax.ejb.EJB;
+
+import mobi.chouette.dao.AccessPointDAO;
 import mobi.chouette.model.AccessLink;
+import mobi.chouette.model.AccessPoint;
 
 public class AccessLinkUpdater implements Updater<AccessLink> {
+
+	@EJB
+	private AccessPointDAO accessPointDAO;
 
 	@Override
 	public void update(AccessLink oldValue, AccessLink newValue) {
@@ -97,7 +104,15 @@ public class AccessLinkUpdater implements Updater<AccessLink> {
 			oldValue.setLinkOrientation(newValue.getLinkOrientation());
 		}
 
-		// TODO access point Fk stop area Fk
+		// AccessPoint
+		if (oldValue.getAccessPoint() == null) {
+			AccessPoint accessPoint = accessPointDAO.findByObjectId(newValue
+					.getAccessPoint().getObjectId());
+			if (accessPoint != null) {
+				oldValue.setAccessPoint(accessPoint);
+			}
+		}
+
 	}
 
 	static {
