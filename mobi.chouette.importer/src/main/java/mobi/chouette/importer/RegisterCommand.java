@@ -18,9 +18,9 @@ import mobi.chouette.importer.updater.UpdaterFactory;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.util.Referential;
 
-@Stateless(name = LineRegisterCommand.COMMAND)
+@Stateless(name = RegisterCommand.COMMAND)
 @Log4j
-public class LineRegisterCommand implements Command {
+public class RegisterCommand implements Command {
 
 	public static final String COMMAND = "LineRegisterCommand";
 
@@ -72,7 +72,7 @@ public class LineRegisterCommand implements Command {
 
 	static {
 		CommandFactory factory = new DefaultCommandFactory();
-		CommandFactory.factories.put(LineRegisterCommand.class.getName(),
+		CommandFactory.factories.put(RegisterCommand.class.getName(),
 				factory);
 	}
 }
