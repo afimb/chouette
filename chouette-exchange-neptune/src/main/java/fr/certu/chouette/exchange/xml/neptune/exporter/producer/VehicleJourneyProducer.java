@@ -11,7 +11,6 @@ import org.trident.schema.trident.VehicleJourneyType;
 
 import fr.certu.chouette.exchange.xml.neptune.JsonExtension;
 import fr.certu.chouette.model.neptune.Footnote;
-import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
 import fr.certu.chouette.model.neptune.type.BoardingAlightingPossibilityEnum;
@@ -23,7 +22,7 @@ public class VehicleJourneyProducer extends
 {
 
    @Override
-   public VehicleJourneyType produce(VehicleJourney vehicleJourney)
+   public VehicleJourneyType produce(VehicleJourney vehicleJourney, boolean addExtension)
    {
       VehicleJourneyType jaxbVehicleJourney = tridentFactory
             .createVehicleJourneyType();
@@ -31,7 +30,7 @@ public class VehicleJourneyProducer extends
       //
       populateFromModel(jaxbVehicleJourney, vehicleJourney);
 
-      jaxbVehicleJourney.setComment(buildComment(vehicleJourney));
+      jaxbVehicleJourney.setComment(buildComment(vehicleJourney,addExtension));
       
       jaxbVehicleJourney.setFacility(getNotEmptyString(vehicleJourney
             .getFacility()));
@@ -146,8 +145,9 @@ public class VehicleJourneyProducer extends
       return jaxbVehicleJourney;
    }
 
-   protected String buildComment(VehicleJourney vj)
+   protected String buildComment(VehicleJourney vj, boolean addExtension)
    {
+      if (!addExtension) return getNotEmptyString(vj.getComment());
       JSONObject jsonComment = new JSONObject();
       if (!isEmpty(vj.getFootnotes()))
       {

@@ -9,7 +9,7 @@ public class PTLinkProducer extends
 {
 
    @Override
-   public PTLinkType produce(PTLink ptLink)
+   public PTLinkType produce(PTLink ptLink, boolean addExtension)
    {
       PTLinkType jaxbPTLink = tridentFactory.createPTLinkType();
 

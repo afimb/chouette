@@ -25,7 +25,7 @@ public class ConnectionLinkProducer
 
    @Override
    public ChouettePTNetworkType.ConnectionLink produce(
-         ConnectionLink connectionLink)
+         ConnectionLink connectionLink, boolean addExtension)
    {
       ChouettePTNetworkType.ConnectionLink jaxbConnectionLink = tridentFactory
             .createChouettePTNetworkTypeConnectionLink();

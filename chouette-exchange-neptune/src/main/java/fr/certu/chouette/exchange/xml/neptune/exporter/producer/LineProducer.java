@@ -30,7 +30,7 @@ public class LineProducer
 {
 
    @Override
-   public ChouettePTNetworkType.ChouetteLineDescription.Line produce(Line line)
+   public ChouettePTNetworkType.ChouetteLineDescription.Line produce(Line line, boolean addExtension)
    {
       ChouettePTNetworkType.ChouetteLineDescription.Line jaxbLine = tridentFactory
             .createChouettePTNetworkTypeChouetteLineDescriptionLine();
@@ -38,7 +38,7 @@ public class LineProducer
       //
       populateFromModel(jaxbLine, line);
 
-      jaxbLine.setComment(buildComment(line));
+      jaxbLine.setComment(buildComment(line,addExtension));
       jaxbLine.setName(line.getName());
       jaxbLine.setNumber(line.getNumber());
       jaxbLine.setPublishedName(line.getPublishedName());
@@ -138,8 +138,10 @@ public class LineProducer
       return details;
    }
 
-   public String buildComment(Line line)
+   protected String buildComment(Line line, boolean addExtension)
    {
+      if (!addExtension) return getNotEmptyString(line.getComment());
+
       JSONObject jsonComment = new JSONObject();
       if (!isEmpty(line.getColor()))
       {

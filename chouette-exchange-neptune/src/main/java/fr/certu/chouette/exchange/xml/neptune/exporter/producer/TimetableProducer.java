@@ -16,7 +16,7 @@ public class TimetableProducer extends
 {
 
    @Override
-   public TimetableType produce(Timetable timetable)
+   public TimetableType produce(Timetable timetable, boolean addExtension)
    {
       TimetableType castorTimetable = tridentFactory.createTimetableType();
 

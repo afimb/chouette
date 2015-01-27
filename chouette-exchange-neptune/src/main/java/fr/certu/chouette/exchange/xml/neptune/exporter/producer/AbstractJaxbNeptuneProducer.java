@@ -77,7 +77,7 @@ public abstract class AbstractJaxbNeptuneProducer<T extends TridentObjectType, U
       return object.getObjectId();
    }
 
-   public abstract T produce(U o);
+   public abstract T produce(U o, boolean addExtension);
 
    protected String getNotEmptyString(String value)
    {

@@ -23,7 +23,7 @@ public class AccessLinkProducer extends
 {
 
    @Override
-   public ChouettePTNetworkType.AccessLink produce(AccessLink accessLink)
+   public ChouettePTNetworkType.AccessLink produce(AccessLink accessLink, boolean addExtension)
    {
       ChouettePTNetworkType.AccessLink jaxbAccessLink = tridentFactory
             .createChouettePTNetworkTypeAccessLink();

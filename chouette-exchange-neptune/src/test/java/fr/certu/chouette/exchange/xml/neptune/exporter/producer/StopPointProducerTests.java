@@ -24,7 +24,7 @@ public class StopPointProducerTests extends AbstractTestNGSpringContextTests
    {
       StopPoint point = new StopPoint();
 
-      String xmlComment = producer.buildComment(point);
+      String xmlComment = producer.buildComment(point,true);
       Assert.assertNull(xmlComment,"comment should be null");
    }
 
@@ -33,7 +33,7 @@ public class StopPointProducerTests extends AbstractTestNGSpringContextTests
    {
       StopPoint point = new StopPoint();
       point.setForAlighting(AlightingPossibilityEnum.forbidden);
-      String xmlComment = producer.buildComment(point);
+      String xmlComment = producer.buildComment(point,true);
       Reporter.log("comment = "+xmlComment);
       Assert.assertEquals(xmlComment,"{\"routing_constraints\":{\"alighting\":\"forbidden\"}}","comment should be correctly built");
    }
@@ -43,7 +43,7 @@ public class StopPointProducerTests extends AbstractTestNGSpringContextTests
    {
       StopPoint point = new StopPoint();
       point.setForBoarding(BoardingPossibilityEnum.forbidden);
-      String xmlComment = producer.buildComment(point);
+      String xmlComment = producer.buildComment(point,true);
       Reporter.log("comment = "+xmlComment);
       Assert.assertEquals(xmlComment,"{\"routing_constraints\":{\"boarding\":\"forbidden\"}}","comment should be correctly built");
 
@@ -56,7 +56,7 @@ public class StopPointProducerTests extends AbstractTestNGSpringContextTests
       point.setForBoarding(BoardingPossibilityEnum.forbidden);
       point.setForAlighting(AlightingPossibilityEnum.is_flexible);
       
-      String xmlComment = producer.buildComment(point);
+      String xmlComment = producer.buildComment(point,true);
       Reporter.log("comment = "+xmlComment);
       
       Assert.assertTrue(xmlComment.startsWith("{"),"comment should start with {");
@@ -67,4 +67,16 @@ public class StopPointProducerTests extends AbstractTestNGSpringContextTests
       Assert.assertTrue(xmlComment.contains("forbidden"),"comment should contain forbdden value");
 
    }
+   
+   @Test(groups = { "buildComment" }, description = "check empty comment with no extension asked")
+   public void verifyBuildNoExtension() throws ChouetteException
+   {
+      StopPoint point = new StopPoint();
+      point.setForBoarding(BoardingPossibilityEnum.forbidden);
+      point.setForAlighting(AlightingPossibilityEnum.is_flexible);
+
+      String xmlComment = producer.buildComment(point,false);
+      Assert.assertNull(xmlComment,"comment should be null");
+   }
+
 }

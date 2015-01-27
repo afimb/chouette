@@ -564,19 +564,10 @@ public class ValidationStopAreas extends
       list.add(bean3);
       list.add(bean5);
       
-      // test not asked
-      fullparameters.put("check_country_code","0");
-      checkPoint.check(list, fullparameters, report, new HashMap<String, Object>());
-      report.refreshStatus();
-      Assert.assertFalse(report.hasItem("4-StopArea-3"), " report must not have item 4-StopArea-3");
       
       // test asked with no error
-      fullparameters.put("check_country_code","1");
-      report = new PhaseReportItem(PHASE.THREE);
-
       checkPoint.check(list, fullparameters, report, new HashMap<String, Object>());
       report.refreshStatus();
-      fullparameters.put("check_country_code","0");
 
       Assert.assertTrue(report.hasItem("4-StopArea-3"), " report must have item 4-StopArea-3");
       Assert.assertEquals(report.getItem("4-StopArea-3").getItems().size(), 0, " checkpoint must have no detail");
@@ -587,13 +578,11 @@ public class ValidationStopAreas extends
       list.add(bean3);
       list.add(bean5);
       
-      fullparameters.put("check_country_code","1");
       report = new PhaseReportItem(PHASE.THREE);
 
       checkPoint.check(list, fullparameters, report, new HashMap<String, Object>());
       report.refreshStatus();
       AbstractValidation.printReport(report);
-      fullparameters.put("check_country_code","0");
 
       Assert.assertTrue(report.hasItem("4-StopArea-3"), " report must have item 4-StopArea-3");
       Assert.assertEquals(report.getItem("4-StopArea-3").getItems().size(), 1, " checkpoint must have detail");
@@ -604,18 +593,29 @@ public class ValidationStopAreas extends
       list.add(bean3);
       list.add(bean5);
       
-      fullparameters.put("check_country_code","1");
       report = new PhaseReportItem(PHASE.THREE);
-      AbstractValidation.printReport(report);
-
+ 
       checkPoint.check(list, fullparameters, report, new HashMap<String, Object>());
       report.refreshStatus();
       AbstractValidation.printReport(report);
-      fullparameters.put("check_country_code","0");
 
       Assert.assertTrue(report.hasItem("4-StopArea-3"), " report must have item 4-StopArea-3");
       Assert.assertEquals(report.getItem("4-StopArea-3").getItems().size(), 1, " checkpoint must have detail");
 
+      // test not asked
+      list.clear();
+      bean4.setCityName(null);
+      bean5.setCountryCode(null);
+      bean3.setCityName(null);
+      bean3.setCountryCode(null);
+      list.add(bean4);
+      list.add(bean3);
+      list.add(bean5);
+      
+      report = new PhaseReportItem(PHASE.THREE);
+      checkPoint.check(list, fullparameters, report, new HashMap<String, Object>());
+      report.refreshStatus();
+      Assert.assertFalse(report.hasItem("4-StopArea-3"), " report must not have item 4-StopArea-3");
    }
 
 

@@ -33,7 +33,7 @@ public class LineProducerTests extends AbstractTestNGSpringContextTests
    {
       Line line = new Line();
 
-      String xmlComment = producer.buildComment(line);
+      String xmlComment = producer.buildComment(line,true);
       Assert.assertNull(xmlComment,"comment should be null");
    }
 
@@ -43,7 +43,7 @@ public class LineProducerTests extends AbstractTestNGSpringContextTests
       Line line = new Line();
       line.setComment("dummy comment");
 
-      String xmlComment = producer.buildComment(line);
+      String xmlComment = producer.buildComment(line,true);
       Reporter.log("comment = "+xmlComment);
       Assert.assertEquals(xmlComment,"dummy comment","comment should be correctly built");
    }
@@ -55,7 +55,7 @@ public class LineProducerTests extends AbstractTestNGSpringContextTests
       line.setTextColor("ff23b3");
       line.setColor("00ff00");
 
-      String xmlComment = producer.buildComment(line);
+      String xmlComment = producer.buildComment(line,true);
       Reporter.log("comment = "+xmlComment);
       Assert.assertEquals(xmlComment,"{\"line_color\":\"00ff00\",\"text_color\":\"ff23b3\"}","comment should be correctly built");
    }
@@ -66,13 +66,13 @@ public class LineProducerTests extends AbstractTestNGSpringContextTests
       Line line = new Line();
       line.setFlexibleService(Boolean.TRUE);
 
-      String xmlComment = producer.buildComment(line);
+      String xmlComment = producer.buildComment(line,true);
       Reporter.log("comment = "+xmlComment);
       Assert.assertEquals(xmlComment,"{\"flexible_service\":true}","comment should be correctly built");
 
       line.setFlexibleService(Boolean.FALSE);
 
-      xmlComment = producer.buildComment(line);
+      xmlComment = producer.buildComment(line,true);
       Reporter.log("comment = "+xmlComment);
       Assert.assertEquals(xmlComment,"{\"flexible_service\":false}","comment should be correctly built");
 
@@ -85,7 +85,7 @@ public class LineProducerTests extends AbstractTestNGSpringContextTests
       line.getFootnotes().add(buildFootnote("1", line));
       line.getFootnotes().add(buildFootnote("2", line));
       
-      String xmlComment = producer.buildComment(line);
+      String xmlComment = producer.buildComment(line,true);
       Reporter.log("comment = "+xmlComment);
       Assert.assertEquals(xmlComment,"{\"footnotes\":["+
             "{\"label\":\"label1\",\"code\":\"code1\",\"key\":\"1\"},"+
@@ -104,7 +104,7 @@ public class LineProducerTests extends AbstractTestNGSpringContextTests
       line.setTextColor("ff23b3");
       line.setColor("00ff00");
       
-      String xmlComment = producer.buildComment(line);
+      String xmlComment = producer.buildComment(line,true);
       Reporter.log("comment = "+xmlComment);
       
       Assert.assertTrue(xmlComment.startsWith("{"),"comment should start with {");
@@ -117,6 +117,24 @@ public class LineProducerTests extends AbstractTestNGSpringContextTests
       Assert.assertTrue(xmlComment.contains(JsonExtension.FLEXIBLE_SERVICE),"comment should contain flexible service tag");
       Assert.assertTrue(xmlComment.contains(JsonExtension.TEXT_COLOR),"comment should contain text color tag");
       Assert.assertTrue(xmlComment.contains(JsonExtension.LINE_COLOR),"comment should contain line color tag");
+
+   }
+
+   @Test(groups = { "buildComment" }, description = "check comment with no extension asked")
+   public void verifyBuildNoExtension() throws ChouetteException
+   {
+      Line line = new Line();
+      line.getFootnotes().add(buildFootnote("1", line));
+      line.getFootnotes().add(buildFootnote("2", line));
+      line.setComment("dummy comment");
+      line.setFlexibleService(Boolean.FALSE);
+      line.setTextColor("ff23b3");
+      line.setColor("00ff00");
+      
+      String xmlComment = producer.buildComment(line,false);
+      Reporter.log("comment = "+xmlComment);
+      
+      Assert.assertEquals(xmlComment,"dummy comment","comment should be correctly built");
 
    }
 

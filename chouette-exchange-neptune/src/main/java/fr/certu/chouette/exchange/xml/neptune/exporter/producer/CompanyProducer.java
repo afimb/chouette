@@ -9,7 +9,7 @@ public class CompanyProducer extends
 {
 
    @Override
-   public CompanyType produce(Company company)
+   public CompanyType produce(Company company, boolean addExtension)
    {
       CompanyType jaxbCompany = tridentFactory.createCompanyType();
 

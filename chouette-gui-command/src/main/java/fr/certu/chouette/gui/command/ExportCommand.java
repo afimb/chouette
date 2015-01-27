@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.persistence.EntityManager;
 
@@ -63,7 +64,10 @@ import fr.certu.chouette.service.geographic.IGeographicService;
  * 
  * from database : -c validate -o line|network|company -validationId ZZZ [-id
  * list_of_ids_separated_by_commas]
- * 
+ * start_date: '2014-10-01'
+end_date: '2015-04-01'
+extensions: '1'
+
  */
 @NoArgsConstructor
 public class ExportCommand
@@ -126,6 +130,27 @@ public class ExportCommand
       logger.info("  reference ids : " + guiExport.getReferenceIds());
 
       startProcess(session, guiExport);
+      
+      // parse options 
+      if (guiExport.getOptions() != null)
+      {
+         String[] lines = guiExport.getOptions().split("\n");
+         for (String line : lines)
+         {
+            String[] tokens = line.split(":");
+            if (tokens.length == 2)
+            {
+               String param = tokens[0].trim();
+               String val = tokens[1].trim();
+               val = val.substring(1,val.lastIndexOf("'"));
+               logger.info("  "+param+" : " + val);
+               List<String> list = new ArrayList<>();
+               list.add(val);
+               parameters.put(param, list);
+            }
+           
+         }
+      }
 
       Referential referential = guiExport.getReferential();
       logger.info("Referential " + referential.getId());
@@ -460,10 +485,12 @@ public class ExportCommand
       for (ParameterDescription desc : description.getParameterDescriptions())
       {
          String name = desc.getName();
-         String key = name.toLowerCase();
-         if (excludedParams.contains(key))
+         String keyCC = name.toLowerCase();
+         String key = name.replaceAll("(.)(\\p{Upper})", "$1_$2").toLowerCase();
+         if (excludedParams.contains(key) || excludedParams.contains(keyCC))
             continue;
-         List<String> vals = parameters.get(key);
+         List<String> vals = parameters.get(keyCC);
+         if (vals == null) vals = parameters.get(key);
          if (vals == null)
          {
             if (desc.isMandatory())
@@ -515,7 +542,14 @@ public class ExportCommand
                   val.setFilenameValue(simpleval);
                   break;
                case BOOLEAN:
-                  val.setBooleanValue(Boolean.parseBoolean(simpleval));
+                  if (Pattern.matches("-?[0-9]+",simpleval)) 
+                  {
+                     val.setBooleanValue(Boolean.valueOf(Integer.parseInt(simpleval) != 0));
+                  }
+                  else
+                  {
+                     val.setBooleanValue(Boolean.parseBoolean(simpleval));
+                  }
                   break;
                case INTEGER:
                   val.setIntegerValue(Long.parseLong(simpleval));

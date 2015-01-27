@@ -12,7 +12,7 @@ public class PTNetworkProducer extends
 {
 
    @Override
-   public PTNetworkType produce(PTNetwork ptNetwork)
+   public PTNetworkType produce(PTNetwork ptNetwork, boolean addExtension)
    {
       PTNetworkType jaxbPTNetwork = tridentFactory.createPTNetworkType();
 

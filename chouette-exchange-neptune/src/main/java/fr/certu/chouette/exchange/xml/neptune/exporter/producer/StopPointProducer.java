@@ -1,14 +1,11 @@
 package fr.certu.chouette.exchange.xml.neptune.exporter.producer;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.trident.schema.trident.ChouettePTNetworkType;
 import org.trident.schema.trident.LongLatTypeType;
 import org.trident.schema.trident.ProjectedPointType;
 
 import fr.certu.chouette.exchange.xml.neptune.JsonExtension;
-import fr.certu.chouette.model.neptune.Footnote;
-import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.StopArea;
 import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
@@ -20,7 +17,7 @@ public class StopPointProducer extends
 
    @Override
    public ChouettePTNetworkType.ChouetteLineDescription.StopPoint produce(
-         StopPoint stopPoint)
+         StopPoint stopPoint, boolean addExtension)
    {
       ChouettePTNetworkType.ChouetteLineDescription.StopPoint jaxbStopPoint = tridentFactory
             .createChouettePTNetworkTypeChouetteLineDescriptionStopPoint();
@@ -28,7 +25,7 @@ public class StopPointProducer extends
       //
       populateFromModel(jaxbStopPoint, stopPoint);
 
-      jaxbStopPoint.setComment(buildComment(stopPoint));
+      jaxbStopPoint.setComment(buildComment(stopPoint,addExtension));
       jaxbStopPoint.setName(stopPoint.getName());
       jaxbStopPoint.setLineIdShortcut(stopPoint.getLineIdShortcut());
 
@@ -68,8 +65,9 @@ public class StopPointProducer extends
       return jaxbStopPoint;
    }
 
-   protected String buildComment(StopPoint stopPoint)
+   protected String buildComment(StopPoint stopPoint, boolean addExtension)
    {
+      if (!addExtension) return null;
       JSONObject jsonComment = new JSONObject();
       JSONObject jsonRC = new JSONObject();
       if (stopPoint.getForBoarding() != null)

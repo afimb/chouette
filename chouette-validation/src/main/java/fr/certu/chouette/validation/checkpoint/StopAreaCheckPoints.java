@@ -66,12 +66,6 @@ ICheckPointPlugin<StopArea>
          initCheckPoint(report, L4_STOP_AREA_2, CheckPointReportItem.SEVERITY.ERROR);
          prepareCheckPoint(report, L4_STOP_AREA_2);
       }
-      boolean test4_3 = parameters.optInt(CHECK_COUNTRY_CODE,0) == 1;
-      if (test4_3)
-      {
-         initCheckPoint(report, L4_STOP_AREA_3, CheckPointReportItem.SEVERITY.WARNING);
-         prepareCheckPoint(report, L4_STOP_AREA_3);
-      }
 
       Polygon enveloppe = getEnveloppe(parameters);
 
@@ -91,8 +85,7 @@ ICheckPointPlugin<StopArea>
          if (test4_2)
             check4StopArea2(report, stopArea);
          // 4-StopArea-3 : check country code and Cityname coherence
-         if (test4_3)
-            check4StopArea3(report, stopArea, context);
+         check4StopArea3(report, stopArea, context);
 
          for (int j = i + 1; j < beans.size(); j++)
          {
@@ -266,6 +259,10 @@ ICheckPointPlugin<StopArea>
          Map<String,Object> check4StopArea3Context = (Map<String, Object>) context.get("test4StopArea3");
          if (check4StopArea3Context == null) 
          {
+            // first call with data to be checked, initialize also checkpoint container
+            initCheckPoint(report, L4_STOP_AREA_3, CheckPointReportItem.SEVERITY.WARNING);
+            prepareCheckPoint(report, L4_STOP_AREA_3);
+
             check4StopArea3Context = new HashMap<>();
             context.put("test4StopArea3",check4StopArea3Context);
          }
