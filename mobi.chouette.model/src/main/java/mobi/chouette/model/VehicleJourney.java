@@ -294,37 +294,9 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 	 * 
 	 * @return The actual value
 	 */
-	@Getter
-	@OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST,
-			CascadeType.MERGE })
+	@Getter	
 	@JoinColumn(name = "vehicle_journey_id", updatable = false)
 	private List<VehicleJourneyAtStop> vehicleJourneyAtStops = new ArrayList<VehicleJourneyAtStop>(
 			0);
-
-//	/**
-//	 * add a timeTable if not already presents
-//	 * 
-//	 * @param timetable
-//	 *            to add
-//	 */
-//	public void addTimetable(Timetable timetable) {
-//		if (!getTimetables().contains(timetable)) {
-//			getTimetables().add(timetable);
-//		}
-//		if (!timetable.getVehicleJourneys().contains(timetable)) {
-//			timetable.getVehicleJourneys().add(this);
-//		}
-//
-//	}
-//
-//	/**
-//	 * remove a timetable if present
-//	 * 
-//	 * @param timetable
-//	 */
-//	public void removeTimetable(Timetable timetable) {
-//		getTimetables().remove(timetable);
-//		timetable.getVehicleJourneys().remove(this);
-//	}
 
 }

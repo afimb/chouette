@@ -1,11 +1,12 @@
 package mobi.chouette.importer.updater;
 
+import mobi.chouette.common.Context;
 import mobi.chouette.model.Company;
 
 public class CompanyUpdater implements Updater<Company> {
 
 	@Override
-	public void update(Company oldValue, Company newValue) {
+	public void update(Context context, Company oldValue, Company newValue) {
 
 		if (newValue.isSaved()) {
 			return;

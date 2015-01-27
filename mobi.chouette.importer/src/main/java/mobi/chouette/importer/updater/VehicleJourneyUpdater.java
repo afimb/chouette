@@ -6,6 +6,7 @@ import java.util.Comparator;
 import javax.ejb.EJB;
 
 import mobi.chouette.common.CollectionUtils;
+import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
 import mobi.chouette.dao.CompanyDAO;
 import mobi.chouette.dao.RouteDAO;
@@ -49,8 +50,8 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 	private TimetableDAO timetableDAO;
 
 	@Override
-	public void update(VehicleJourney oldValue, VehicleJourney newValue)
-			throws Exception {
+	public void update(Context context, VehicleJourney oldValue,
+			VehicleJourney newValue) throws Exception {
 
 		if (newValue.isSaved()) {
 			return;
@@ -144,7 +145,8 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 			}
 			Updater<Company> companyUpdater = UpdaterFactory
 					.create(CompanyUpdater.class.getName());
-			companyUpdater.update(oldValue.getCompany(), newValue.getCompany());
+			companyUpdater.update(null, oldValue.getCompany(),
+					newValue.getCompany());
 			oldValue.setCompany(company);
 		}
 
@@ -181,7 +183,8 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 						newValue.getVehicleJourneyAtStops(),
 						VEHICLE_JOURNEY_AT_STOP_COMPARATOR);
 		for (Pair<VehicleJourneyAtStop, VehicleJourneyAtStop> pair : modifiedVehicleJourneyAtStop) {
-			vehicleJourneyAtStopUpdater.update(pair.getLeft(), pair.getRight());
+			vehicleJourneyAtStopUpdater.update(null, pair.getLeft(),
+					pair.getRight());
 		}
 
 		Collection<VehicleJourneyAtStop> removedVehicleJourneyAtStop = CollectionUtils
@@ -215,7 +218,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 						newValue.getTimetables(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<Timetable, Timetable> pair : modifiedTimetable) {
-			timetableUpdater.update(pair.getLeft(), pair.getRight());
+			timetableUpdater.update(null, pair.getLeft(), pair.getRight());
 		}
 
 		Collection<Timetable> removedTimetable = CollectionUtils.substract(

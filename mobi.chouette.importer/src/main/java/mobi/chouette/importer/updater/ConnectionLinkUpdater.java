@@ -2,6 +2,7 @@ package mobi.chouette.importer.updater;
 
 import javax.ejb.EJB;
 
+import mobi.chouette.common.Context;
 import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
@@ -16,7 +17,8 @@ public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
 	private StopAreaDAO stopAreaDAO;
 
 	@Override
-	public void update(ConnectionLink oldValue, ConnectionLink newValue) {
+	public void update(Context context, ConnectionLink oldValue,
+			ConnectionLink newValue) {
 
 		if (newValue.isSaved()) {
 			return;

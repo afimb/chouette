@@ -6,6 +6,7 @@ import javax.ejb.EJB;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.CollectionUtils;
+import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
 import mobi.chouette.dao.JourneyPatternDAO;
 import mobi.chouette.dao.RouteDAO;
@@ -26,7 +27,8 @@ public class RouteUpdater implements Updater<Route> {
 	private JourneyPatternDAO journeyPatternDAO;
 
 	@Override
-	public void update(Route oldValue, Route newValue) throws Exception {
+	public void update(Context context, Route oldValue, Route newValue)
+			throws Exception {
 
 		if (newValue.isSaved()) {
 			return;
@@ -118,7 +120,7 @@ public class RouteUpdater implements Updater<Route> {
 						newValue.getStopPoints(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<StopPoint, StopPoint> pair : modifiedStopPoint) {
-			stopPointUpdater.update(pair.getLeft(), pair.getRight());
+			stopPointUpdater.update(null, pair.getLeft(), pair.getRight());
 		}
 
 		Collection<StopPoint> removedStopPoint = CollectionUtils.substract(
@@ -152,7 +154,7 @@ public class RouteUpdater implements Updater<Route> {
 						newValue.getJourneyPatterns(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<JourneyPattern, JourneyPattern> pair : modifiedJourneyPattern) {
-			journeyPatternUpdater.update(pair.getLeft(), pair.getRight());
+			journeyPatternUpdater.update(null, pair.getLeft(), pair.getRight());
 		}
 
 		// Collection<JourneyPattern> removedJourneyPattern = CollectionUtils

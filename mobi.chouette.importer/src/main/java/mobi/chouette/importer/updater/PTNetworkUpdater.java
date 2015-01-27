@@ -1,10 +1,11 @@
 package mobi.chouette.importer.updater;
 
+import mobi.chouette.common.Context;
 import mobi.chouette.model.PTNetwork;
 
 public class PTNetworkUpdater implements Updater<PTNetwork> {
 	@Override
-	public void update(PTNetwork oldValue, PTNetwork newValue) {
+	public void update(Context context, PTNetwork oldValue, PTNetwork newValue) {
 
 		if (newValue.isSaved()) {
 			return;

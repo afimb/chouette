@@ -32,6 +32,7 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Color;
 import mobi.chouette.dao.JobDAO;
 import mobi.chouette.dao.SchemaDAO;
 import mobi.chouette.model.api.Job;
@@ -57,13 +58,23 @@ public class Service implements Constant {
 	public static final String EXPORTED_DATA = "data.zip";
 
 	@Inject
-	JobDAO jobs;
+	JobDAO jobDAO;
 
 	@Inject
 	SchemaDAO schemas;
 
 	@Inject
 	Scheduler scheduler;
+
+	@GET
+	@Path("/todo")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Job todo() {
+		Job job = new Job();
+		jobDAO.create(job);		
+		log.info(Color.SUCCESS + job + Color.NORMAL);
+		return job;
+	}
 
 	// post asynchronous job
 	@POST
@@ -92,7 +103,7 @@ public class Service implements Constant {
 			job.setReferential(referential);
 			job.setAction(action);
 			job.setType(type);
-			jobs.create(job);
+			jobDAO.create(job);
 
 			// add location link
 			Link link = new Link();
@@ -168,7 +179,7 @@ public class Service implements Constant {
 			}
 
 			// schedule job
-			jobs.update(job);
+			jobDAO.update(job);
 			scheduler.schedule(job.getReferential());
 
 			// build response
@@ -228,7 +239,7 @@ public class Service implements Constant {
 			@DefaultValue("0") @QueryParam("version") final Long version) {
 
 		// TODO filter by action ??
-		
+
 		// check params
 		if (!schemas.getSchemaListing().contains(referential)) {
 			throw new WebApplicationException(Status.NOT_FOUND);
@@ -236,13 +247,13 @@ public class Service implements Constant {
 
 		// create jobs listing
 		JobListing result = new JobListing();
-		List<Job> list = jobs.findByReferential(referential);
-		if (version >0) {
+		List<Job> list = jobDAO.findByReferential(referential);
+		if (version > 0) {
 			// TODO create finder by version
 			result.setList(Collections2.filter(list, new Predicate<Job>() {
 				@Override
 				public boolean apply(Job job) {
-					return job.getUpdated().getTime() > version; 
+					return job.getUpdated().getTime() > version;
 				}
 			}));
 		} else {
@@ -264,7 +275,7 @@ public class Service implements Constant {
 			throw new WebApplicationException(Status.NOT_FOUND);
 		}
 
-		Job job = jobs.find(id);
+		Job job = jobDAO.find(id);
 		if (job == null) {
 			throw new WebApplicationException(Status.NOT_FOUND);
 		}
@@ -325,7 +336,7 @@ public class Service implements Constant {
 			throw new WebApplicationException(Status.NOT_FOUND);
 		}
 
-		Job job = jobs.find(id);
+		Job job = jobDAO.find(id);
 		if (job == null) {
 			throw new WebApplicationException(Status.NOT_FOUND);
 		}
@@ -355,7 +366,7 @@ public class Service implements Constant {
 			throw new WebApplicationException(Status.NOT_FOUND);
 		}
 
-		Job job = jobs.find(id);
+		Job job = jobDAO.find(id);
 		if (job == null) {
 			throw new WebApplicationException(Status.NOT_FOUND);
 		}
@@ -429,7 +440,7 @@ public class Service implements Constant {
 			throw new WebApplicationException(Status.NOT_FOUND);
 		}
 
-		Job job = jobs.find(id);
+		Job job = jobDAO.find(id);
 		if (job == null) {
 			throw new WebApplicationException(Status.NOT_FOUND);
 		}

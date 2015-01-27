@@ -3,6 +3,7 @@ package mobi.chouette.importer.updater;
 import javax.ejb.EJB;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Context;
 import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
@@ -14,7 +15,8 @@ public class StopPointUpdater implements Updater<StopPoint> {
 	private StopAreaDAO stopAreaDAO;
 
 	@Override
-	public void update(StopPoint oldValue, StopPoint newValue) throws Exception {
+	public void update(Context context, StopPoint oldValue, StopPoint newValue)
+			throws Exception {
 
 		if (newValue.isSaved()) {
 			return;
@@ -58,7 +60,7 @@ public class StopPointUpdater implements Updater<StopPoint> {
 			}
 			Updater<StopArea> stopAreaUpdater = UpdaterFactory
 					.create(StopAreaUpdater.class.getName());
-			stopAreaUpdater.update(oldValue.getContainedInStopArea(),
+			stopAreaUpdater.update(null, oldValue.getContainedInStopArea(),
 					newValue.getContainedInStopArea());
 			oldValue.setContainedInStopArea(stopArea);
 		}

@@ -6,6 +6,7 @@ import javax.ejb.EJB;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.CollectionUtils;
+import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
 import mobi.chouette.dao.CompanyDAO;
 import mobi.chouette.dao.GroupOfLineDAO;
@@ -32,7 +33,8 @@ public class LineUpdater implements Updater<Line> {
 	private RouteDAO routeDAO;
 
 	@Override
-	public void update(Line oldValue, Line newValue) throws Exception {
+	public void update(Context context, Line oldValue, Line newValue)
+			throws Exception {
 
 		if (newValue.isSaved()) {
 			return;
@@ -121,7 +123,7 @@ public class LineUpdater implements Updater<Line> {
 			}
 			Updater<PTNetwork> ptNetworkUpdater = UpdaterFactory
 					.create(PTNetworkUpdater.class.getName());
-			ptNetworkUpdater.update(oldValue.getPtNetwork(),
+			ptNetworkUpdater.update(null, oldValue.getPtNetwork(),
 					newValue.getPtNetwork());
 			oldValue.setPTNetwork(ptNetwork);
 		}
@@ -139,7 +141,8 @@ public class LineUpdater implements Updater<Line> {
 			}
 			Updater<Company> companyUpdater = UpdaterFactory
 					.create(CompanyUpdater.class.getName());
-			companyUpdater.update(oldValue.getCompany(), newValue.getCompany());
+			companyUpdater.update(null, oldValue.getCompany(),
+					newValue.getCompany());
 			oldValue.setCompany(company);
 		}
 
@@ -165,7 +168,7 @@ public class LineUpdater implements Updater<Line> {
 						newValue.getGroupOfLines(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<GroupOfLine, GroupOfLine> pair : modifiedGroupOfLine) {
-			groupOfLineUpdater.update(pair.getLeft(), pair.getRight());
+			groupOfLineUpdater.update(null, pair.getLeft(), pair.getRight());
 		}
 
 		Collection<GroupOfLine> removedGroupOfLine = CollectionUtils.substract(
@@ -195,7 +198,7 @@ public class LineUpdater implements Updater<Line> {
 				.intersection(oldValue.getRoutes(), newValue.getRoutes(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<Route, Route> pair : modifiedRoute) {
-			routeUpdater.update(pair.getLeft(), pair.getRight());
+			routeUpdater.update(null, pair.getLeft(), pair.getRight());
 		}
 
 		// Collection<Route> removedRoute = CollectionUtils.substract(

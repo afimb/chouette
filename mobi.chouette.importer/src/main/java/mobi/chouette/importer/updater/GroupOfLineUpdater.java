@@ -1,11 +1,13 @@
 package mobi.chouette.importer.updater;
 
+import mobi.chouette.common.Context;
 import mobi.chouette.model.GroupOfLine;
 
 public class GroupOfLineUpdater implements Updater<GroupOfLine> {
 
 	@Override
-	public void update(GroupOfLine oldValue, GroupOfLine newValue) {
+	public void update(Context context, GroupOfLine oldValue,
+			GroupOfLine newValue) {
 
 		if (newValue.isSaved()) {
 			return;

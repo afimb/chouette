@@ -2,6 +2,7 @@ package mobi.chouette.importer.updater;
 
 import javax.ejb.EJB;
 
+import mobi.chouette.common.Context;
 import mobi.chouette.dao.AccessPointDAO;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
@@ -12,7 +13,7 @@ public class AccessLinkUpdater implements Updater<AccessLink> {
 	private AccessPointDAO accessPointDAO;
 
 	@Override
-	public void update(AccessLink oldValue, AccessLink newValue) {
+	public void update(Context context, AccessLink oldValue, AccessLink newValue) {
 
 		if (newValue.isSaved()) {
 			return;

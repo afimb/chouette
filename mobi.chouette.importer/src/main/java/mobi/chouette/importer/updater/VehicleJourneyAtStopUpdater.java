@@ -3,6 +3,7 @@ package mobi.chouette.importer.updater;
 import javax.ejb.EJB;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Context;
 import mobi.chouette.dao.StopPointDAO;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourneyAtStop;
@@ -14,7 +15,7 @@ public class VehicleJourneyAtStopUpdater implements
 	private StopPointDAO stopPointDAO;
 
 	@Override
-	public void update(VehicleJourneyAtStop oldValue,
+	public void update(Context context, VehicleJourneyAtStop oldValue,
 			VehicleJourneyAtStop newValue) {
 
 		if (newValue.getConnectingServiceId() != null

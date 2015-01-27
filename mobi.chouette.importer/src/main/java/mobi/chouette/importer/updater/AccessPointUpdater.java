@@ -5,6 +5,7 @@ import java.util.Collection;
 import javax.ejb.EJB;
 
 import mobi.chouette.common.CollectionUtils;
+import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
 import mobi.chouette.dao.AccessLinkDAO;
 import mobi.chouette.model.AccessLink;
@@ -16,8 +17,8 @@ public class AccessPointUpdater implements Updater<AccessPoint> {
 	private AccessLinkDAO accessLinkDAO;
 
 	@Override
-	public void update(AccessPoint oldValue, AccessPoint newValue)
-			throws Exception {
+	public void update(Context context, AccessPoint oldValue,
+			AccessPoint newValue) throws Exception {
 
 		if (newValue.isSaved()) {
 			return;
@@ -106,7 +107,7 @@ public class AccessPointUpdater implements Updater<AccessPoint> {
 						newValue.getAccessLinks(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<AccessLink, AccessLink> pair : modifiedAccessLink) {
-			accessLinkUpdater.update(pair.getLeft(), pair.getRight());
+			accessLinkUpdater.update(null, pair.getLeft(), pair.getRight());
 		}
 
 		// Collection<AccessLink> removedAccessLink = CollectionUtils.substract(

@@ -5,6 +5,7 @@ import java.util.Collection;
 import javax.ejb.EJB;
 
 import mobi.chouette.common.CollectionUtils;
+import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
 import mobi.chouette.dao.AccessLinkDAO;
 import mobi.chouette.dao.AccessPointDAO;
@@ -30,7 +31,8 @@ public class StopAreaUpdater implements Updater<StopArea> {
 	private ConnectionLinkDAO connectionLinkDAO;
 
 	@Override
-	public void update(StopArea oldValue, StopArea newValue) throws Exception {
+	public void update(Context context, StopArea oldValue, StopArea newValue)
+			throws Exception {
 
 		if (newValue.isSaved()) {
 			return;
@@ -168,7 +170,8 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			}
 			Updater<StopArea> stopAreaUpdater = UpdaterFactory
 					.create(StopAreaUpdater.class.getName());
-			stopAreaUpdater.update(oldValue.getParent(), newValue.getParent());
+			stopAreaUpdater.update(null, oldValue.getParent(),
+					newValue.getParent());
 			oldValue.setParent(stopArea);
 		}
 
@@ -194,7 +197,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 						newValue.getAccessPoints(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<AccessPoint, AccessPoint> pair : modifiedAccessPoint) {
-			accessPointUpdater.update(pair.getLeft(), pair.getRight());
+			accessPointUpdater.update(null, pair.getLeft(), pair.getRight());
 		}
 
 		// Collection<AccessPoint> removedAccessPoint =
@@ -228,7 +231,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 						newValue.getAccessLinks(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<AccessLink, AccessLink> pair : modifiedAccessLink) {
-			accessLinkUpdater.update(pair.getLeft(), pair.getRight());
+			accessLinkUpdater.update(null, pair.getLeft(), pair.getRight());
 		}
 
 		// Collection<AccessLink> removedAccessLink = CollectionUtils.substract(
@@ -262,7 +265,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 						newValue.getConnectionStartLinks(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<ConnectionLink, ConnectionLink> pair : modifiedStartOfLink) {
-			connectionLinkUpdater.update(pair.getLeft(), pair.getRight());
+			connectionLinkUpdater.update(null, pair.getLeft(), pair.getRight());
 
 		}
 
@@ -289,7 +292,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 						newValue.getConnectionEndLinks(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<ConnectionLink, ConnectionLink> pair : modifiedEndOfLink) {
-			connectionLinkUpdater.update(pair.getLeft(), pair.getRight());
+			connectionLinkUpdater.update(null, pair.getLeft(), pair.getRight());
 		}
 
 		// TODO list routing_constraints_lines (routingConstraintLines)

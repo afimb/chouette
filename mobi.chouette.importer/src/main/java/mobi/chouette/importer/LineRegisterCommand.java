@@ -45,7 +45,7 @@ public class LineRegisterCommand implements Command {
 			}
 			Updater<Line> lineUpdater = UpdaterFactory.create(LineUpdater.class
 					.getName());
-			lineUpdater.update(oldValue, newValue);
+			lineUpdater.update(null, oldValue, newValue);
 			
 			result = SUCCESS;			
 		} catch (Exception e) {

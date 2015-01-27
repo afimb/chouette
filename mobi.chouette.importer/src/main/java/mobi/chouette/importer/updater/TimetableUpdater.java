@@ -5,6 +5,7 @@ import java.util.Comparator;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.CollectionUtils;
+import mobi.chouette.common.Context;
 import mobi.chouette.model.CalendarDay;
 import mobi.chouette.model.Period;
 import mobi.chouette.model.Timetable;
@@ -27,7 +28,8 @@ public class TimetableUpdater implements Updater<Timetable> {
 	};
 
 	@Override
-	public void update(Timetable oldValue, Timetable newValue) throws Exception {
+	public void update(Context context, Timetable oldValue, Timetable newValue)
+			throws Exception {
 
 		if (newValue.isSaved()) {
 			return;

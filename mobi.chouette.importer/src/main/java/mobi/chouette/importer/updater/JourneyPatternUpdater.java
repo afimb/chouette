@@ -6,6 +6,7 @@ import javax.ejb.EJB;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.CollectionUtils;
+import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
 import mobi.chouette.dao.StopPointDAO;
 import mobi.chouette.dao.VehicleJourneyDAO;
@@ -23,8 +24,8 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 	private VehicleJourneyDAO vehicleJourneyDAO;
 
 	@Override
-	public void update(JourneyPattern oldValue, JourneyPattern newValue)
-			throws Exception {
+	public void update(Context context, JourneyPattern oldValue,
+			JourneyPattern newValue) throws Exception {
 
 		if (newValue.isSaved()) {
 			return;
@@ -134,7 +135,7 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 						newValue.getVehicleJourneys(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<VehicleJourney, VehicleJourney> pair : modifiedVehicleJourney) {
-			vehicleJourneyUpdater.update(pair.getLeft(), pair.getRight());
+			vehicleJourneyUpdater.update(null, pair.getLeft(), pair.getRight());
 		}
 
 		// Collection<VehicleJourney> removedVehicleJourney = CollectionUtils
