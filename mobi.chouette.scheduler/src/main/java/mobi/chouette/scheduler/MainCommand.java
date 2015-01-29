@@ -32,13 +32,14 @@ public class MainCommand implements Command, Constant {
 	@Override
 	public boolean execute(Context context) throws Exception {
 		boolean result = false;
-		InitialContext ctx = new InitialContext();
 
 		Job job = (Job) context.get(JOB);
-		context.put(mobi.chouette.common.Constant.P, value)
+		context.put(PATH, job.getPath());
+		context.put(FILE, job.getFilename());
 		String name = "mobi.chouette.exchange." + job.getType() + "."
 				+ job.getAction() + ".MainCommand";
-		Command command = CommandFactory.create(ctx, name);
+		InitialContext ctx = (InitialContext) context.get(INITIAL_CONTEXT);
+		Command command = CommandFactory.create(ctx , name);
 		command.execute(context);
 
 		job.setStatus(STATUS.TERMINATED);

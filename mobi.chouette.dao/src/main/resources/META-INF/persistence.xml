@@ -44,9 +44,9 @@
 				/> -->
 			<property name="hibernate.connection.datasource" value="java:jboss/datasources/chouette" />
 			<property name="hibernate.tenant_identifier_resolver"
-				value="mobi.chouette.multitenant.DefaultTenantIdentifierResolver" />
+				value="mobi.chouette.persistence.hibernate.DefaultTenantIdentifierResolver" />
 			<property name="hibernate.multi_tenant_connection_provider"
-				value="mobi.chouette.multitenant.DefaultConnectionProvider" />
+				value="mobi.chouette.persistence.hibernate.DefaultConnectionProvider" />
 			<property name="hibernate.cache.use_second_level_cache"
 				value="true" />
 			<property name="hibernate.cache.use_query_cache" value="false" />

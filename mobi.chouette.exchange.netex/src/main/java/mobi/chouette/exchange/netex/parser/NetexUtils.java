@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.importer.ParserUtils;
+import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.model.type.ConnectionLinkTypeEnum;
 import mobi.chouette.model.type.DayTypeEnum;
 import mobi.chouette.model.type.PTDirectionEnum;

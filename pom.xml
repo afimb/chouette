@@ -323,12 +323,10 @@
 	</dependencyManagement>
 	<modules>
 		<module>mobi.chouette.common</module>
-		<module>mobi.chouette.multitenant</module>
+		<module>mobi.chouette.persistence.hibernate</module>
 		<module>mobi.chouette.model</module>
 		<module>mobi.chouette.dao</module>
-		<module>mobi.chouette.importer</module>
-		<module>mobi.chouette.exporter</module>
-		<module>mobi.chouette.validation</module>
+		<module>mobi.chouette.exchange</module>
 		<module>mobi.chouette.exchange.neptune</module>
 		<module>mobi.chouette.exchange.gtfs</module>
 		<module>mobi.chouette.exchange.netex</module>

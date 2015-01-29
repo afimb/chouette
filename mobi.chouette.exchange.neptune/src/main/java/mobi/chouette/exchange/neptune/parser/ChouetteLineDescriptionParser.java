@@ -2,10 +2,10 @@ package mobi.chouette.exchange.neptune.parser;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
+import mobi.chouette.exchange.importer.Parser;
+import mobi.chouette.exchange.importer.ParserFactory;
+import mobi.chouette.exchange.importer.XPPUtil;
 import mobi.chouette.exchange.neptune.importer.Constant;
-import mobi.chouette.importer.Parser;
-import mobi.chouette.importer.ParserFactory;
-import mobi.chouette.importer.XPPUtil;
 import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;

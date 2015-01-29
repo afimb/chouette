@@ -52,7 +52,7 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>mobi.chouette.multitenant</artifactId>
+			<artifactId>mobi.chouette.persistence.hibernate</artifactId>
 			<type>ejb</type>
 			<version>${project.version}</version>
 		</dependency>
@@ -70,13 +70,7 @@
 		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>mobi.chouette.importer</artifactId>
-			<type>ejb</type>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>mobi.chouette.exporter</artifactId>
+			<artifactId>mobi.chouette.exchange</artifactId>
 			<type>ejb</type>
 			<version>${project.version}</version>
 		</dependency>
