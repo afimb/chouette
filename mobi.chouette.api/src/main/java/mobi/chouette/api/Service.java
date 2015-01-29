@@ -42,6 +42,7 @@ import mobi.chouette.scheduler.Constant;
 import mobi.chouette.scheduler.Scheduler;
 
 import org.apache.commons.io.FileUtils;
+import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
@@ -68,12 +69,19 @@ public class Service implements Constant {
 
 	@GET
 	@Path("/todo")
+	@GZIP
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Job todo() {
+	public Response todo() {
 		Job job = new Job();
-		jobDAO.create(job);		
+		jobDAO.create(job);
 		log.info(Color.SUCCESS + job + Color.NORMAL);
-		return job;
+		ResponseBuilder builder = Response.ok(job);
+
+		CacheControl cc = new CacheControl();
+		cc.setMaxAge(10);
+		builder.cacheControl(cc);
+		Response result = builder.build();
+		return result;
 	}
 
 	// post asynchronous job
@@ -224,7 +232,7 @@ public class Service implements Constant {
 
 		// cache control
 		CacheControl cc = new CacheControl();
-		cc.setMaxAge(86400);
+		cc.setMaxAge(Integer.MAX_VALUE);
 		builder.cacheControl(cc);
 
 		result = builder.build();
@@ -391,7 +399,7 @@ public class Service implements Constant {
 
 		// cache control
 		CacheControl cc = new CacheControl();
-		cc.setMaxAge(86400);
+		cc.setMaxAge(Integer.MAX_VALUE);
 		builder.cacheControl(cc);
 
 		// add link to validation report

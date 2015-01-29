@@ -3,7 +3,6 @@ package mobi.chouette.common.chain;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import mobi.chouette.common.Context;
 
