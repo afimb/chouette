@@ -33,11 +33,14 @@ public class MainCommand implements Command, Constant {
 	public boolean execute(Context context) throws Exception {
 		boolean result = false;
 		InitialContext ctx = new InitialContext();
-		Command command = CommandFactory.create(ctx,
-				WaitCommand.class.getName());
-		command.execute(context);
 
 		Job job = (Job) context.get(JOB);
+		context.put(mobi.chouette.common.Constant.P, value)
+		String name = "mobi.chouette.exchange." + job.getType() + "."
+				+ job.getAction() + ".MainCommand";
+		Command command = CommandFactory.create(ctx, name);
+		command.execute(context);
+
 		job.setStatus(STATUS.TERMINATED);
 
 		// remove location link

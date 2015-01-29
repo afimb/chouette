@@ -42,7 +42,6 @@ import mobi.chouette.scheduler.Constant;
 import mobi.chouette.scheduler.Scheduler;
 
 import org.apache.commons.io.FileUtils;
-import org.jboss.resteasy.annotations.GZIP;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
@@ -69,7 +68,6 @@ public class Service implements Constant {
 
 	@GET
 	@Path("/todo")
-	@GZIP
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response todo() {
 		Job job = new Job();
@@ -145,9 +143,11 @@ public class Service implements Constant {
 					ROOT_PATH, job.getReferential(), "data", job.getId()
 							.toString());
 			if (Files.exists(dir)) {
+				jobDAO.delete(job);
 				throw new WebApplicationException(Status.BAD_REQUEST);
 			} else {
-				Files.createDirectories(dir);
+				Files.createDirectories(dir);				
+				job.setPath(dir.toString());
 			}
 
 			// upload data
@@ -174,12 +174,11 @@ public class Service implements Constant {
 							.getProperty("user.home"), ROOT_PATH, job
 							.getReferential(), "data", job.getId().toString(),
 							filename);
-					job.setFilename(path.toString());
+					job.setFilename(filename);
 
 					if (Files.exists(path, LinkOption.NOFOLLOW_LINKS)) {
 						throw new WebApplicationException(Status.BAD_REQUEST);
 					} else {
-
 						Files.createDirectories(dir);
 						Files.copy(in, path);
 					}

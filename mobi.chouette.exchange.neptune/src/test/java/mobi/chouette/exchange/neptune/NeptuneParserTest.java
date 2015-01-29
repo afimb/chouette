@@ -6,9 +6,9 @@ import java.net.URL;
 import javax.ejb.EJB;
 
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
+import mobi.chouette.exchange.neptune.importer.Constant;
 import mobi.chouette.exchange.neptune.importer.NeptuneParserCommand;
 
 import org.jboss.arquillian.container.test.api.Deployment;

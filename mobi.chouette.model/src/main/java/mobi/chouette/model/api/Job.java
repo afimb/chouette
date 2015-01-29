@@ -18,6 +18,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlEnum;
@@ -66,13 +67,19 @@ public class Job implements Serializable {
 	@Getter
 	@Setter
 	private String type;
+
+	@XmlElement(name = "parameters")
+	@Transient
+	public Object getParameters() {
+		return new Link();
+	}
 	
 	
-	@XmlAttribute(name = "name")
-	@Column(name = "name")
+	@XmlAttribute(name = "path")
+	@Column(name = "path")
 	@Getter
 	@Setter
-	private String name;
+	private String path;
 
 	@XmlAttribute(name = "filename")
 	@Column(name = "filename")
@@ -85,7 +92,7 @@ public class Job implements Serializable {
 	@Getter
 	@Setter
 	private Date created;
-	
+
 	@XmlAttribute(name = "updated")
 	@Column(name = "updated")
 	@Getter

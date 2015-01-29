@@ -2,7 +2,7 @@ package mobi.chouette.exchange.neptune.parser;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
-import mobi.chouette.exchange.neptune.Constant;
+import mobi.chouette.exchange.neptune.importer.Constant;
 import mobi.chouette.importer.Parser;
 import mobi.chouette.importer.ParserFactory;
 import mobi.chouette.importer.XPPUtil;

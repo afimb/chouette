@@ -7,8 +7,6 @@ import java.util.Set;
 
 import javax.ws.rs.ApplicationPath;
 
-import org.jboss.resteasy.plugins.cache.server.ServerCacheFeature;
-
 @ApplicationPath("/")
 public class Application extends javax.ws.rs.core.Application {
 
@@ -21,11 +19,15 @@ public class Application extends javax.ws.rs.core.Application {
 
 	@Override
 	public Set<Object> getSingletons() {
+
 		Set<Object> result = new HashSet<Object>();
 
-
-		 ServerCacheFeature serverCacheFeature = new ServerCacheFeature();
-		 result.add(serverCacheFeature);
+//		EmbeddedCacheManager manager = new DefaultCacheManager(false);
+//		manager.defineConfiguration("rest", new ConfigurationBuilder()
+//				.eviction().strategy(EvictionStrategy.LIRS).maxEntries(100)
+//				.build());
+//		Cache<Object, Object> cache = manager.getCache("rest");
+//		result.add(new ServerCacheFeature(new InfinispanCache(cache)));
 		return result;
 	}
 

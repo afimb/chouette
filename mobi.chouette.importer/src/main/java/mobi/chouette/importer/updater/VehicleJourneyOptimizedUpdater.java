@@ -10,6 +10,7 @@ import java.util.Comparator;
 import javax.ejb.EJB;
 
 import mobi.chouette.common.CollectionUtils;
+import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
 import mobi.chouette.dao.CompanyDAO;
@@ -17,7 +18,6 @@ import mobi.chouette.dao.RouteDAO;
 import mobi.chouette.dao.StopPointDAO;
 import mobi.chouette.dao.TimetableDAO;
 import mobi.chouette.dao.VehicleJourneyAtStopDAO;
-import mobi.chouette.importer.Constant;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopPoint;

@@ -57,6 +57,12 @@
 			<groupId>org.geotools</groupId>
 			<artifactId>gt-epsg-wkt</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-compress</artifactId>
+		</dependency>
+
+
 
 		<!-- Modules Dependencies -->
 

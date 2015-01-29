@@ -4,10 +4,10 @@ import java.util.Date;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
-import mobi.chouette.exchange.neptune.Constant;
-import mobi.chouette.importer.ParserUtils;
+import mobi.chouette.exchange.neptune.importer.Constant;
 import mobi.chouette.importer.Parser;
 import mobi.chouette.importer.ParserFactory;
+import mobi.chouette.importer.ParserUtils;
 import mobi.chouette.importer.XPPUtil;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
