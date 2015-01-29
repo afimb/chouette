@@ -2,18 +2,39 @@ package mobi.chouette.parameters;
 
 import javax.xml.bind.annotation.XmlAttribute;
 
-import lombok.Getter;
-import lombok.Setter;
-
 public class AbstractParameter {
-	@Getter
-	@Setter
-	@XmlAttribute(name = "name")
 	private String name;
 
-	@Getter
-	@Setter
-	@XmlAttribute(name = "user_name")
 	private String userName;
+
+	/**
+	 * @return the name
+	 */
+	@XmlAttribute(name = "name")
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * @return the userName
+	 */
+	@XmlAttribute(name = "user_name")
+	public String getUserName() {
+		return userName;
+	}
+
+	/**
+	 * @param userName the userName to set
+	 */
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
 
 }

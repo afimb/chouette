@@ -4,8 +4,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import lombok.Getter;
-import lombok.Setter;
 import mobi.chouette.parameters.AbstractParameter;
 import mobi.chouette.parameters.validation.ValidationParameters;
 
@@ -13,14 +11,38 @@ import mobi.chouette.parameters.validation.ValidationParameters;
 @XmlType (name= "neptuneImport")
 public class Parameters extends AbstractParameter{
 
-	@Getter
-	@Setter
-	@XmlElement(name = "no_save")
 	private Boolean noSave;
 	
-	@Getter
-	@Setter
-	@XmlElement(name = "validation")
 	private ValidationParameters validation;
+
+	/**
+	 * @return the noSave
+	 */
+	@XmlElement(name = "no_save")
+	public Boolean getNoSave() {
+		return noSave;
+	}
+
+	/**
+	 * @param noSave the noSave to set
+	 */
+	public void setNoSave(Boolean noSave) {
+		this.noSave = noSave;
+	}
+
+	/**
+	 * @return the validation
+	 */
+	@XmlElement(name = "validation")
+	public ValidationParameters getValidation() {
+		return validation;
+	}
+
+	/**
+	 * @param validation the validation to set
+	 */
+	public void setValidation(ValidationParameters validation) {
+		this.validation = validation;
+	}
 	
 }
