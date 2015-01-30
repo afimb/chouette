@@ -5,8 +5,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.parameters.AbstractParameter;
-import mobi.chouette.parameters.validation.ValidationParameters;
 
 @XmlRootElement(name = "")
 @XmlType (name= "gtfsImport")

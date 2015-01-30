@@ -16,6 +16,7 @@ import mobi.chouette.common.chain.Chain;
 import mobi.chouette.common.chain.ChainImpl;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.importer.RegisterCommand;
 import mobi.chouette.exchange.importer.TransactionnalCommand;
 import mobi.chouette.exchange.importer.UncompressCommand;
 
@@ -43,10 +44,21 @@ public class MainCommand implements Command, Constant {
 			DirectoryStream<Path> stream = Files.newDirectoryStream(path);
 			for (Path file : stream) {
 
-				Chain item = (Chain) CommandFactory.create(ctx,
+				Chain transac = (Chain) CommandFactory.create(ctx,
 						TransactionnalCommand.class.getName());
 
-				chain.add(item);
+				// parser
+				Command parser = CommandFactory.create(ctx,
+						NeptuneParserCommand.class.getName());
+
+				transac.add(parser);
+
+				// register
+				Command register = CommandFactory.create(ctx,
+						RegisterCommand.class.getName());
+				transac.add(register);
+
+				chain.add(transac);
 			}
 
 			chain.execute(context);

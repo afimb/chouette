@@ -1,13 +1,14 @@
-package mobi.chouette.parameters.validation;
+package mobi.chouette.exchange.validation.parameters;
 
 import javax.xml.bind.annotation.XmlElement;
 
-
-public class AccessPointParameters {
+public class StopAreaParameters {
 
 	private FieldParameters objectid;
 	
 	private FieldParameters name;
+	
+	private FieldParameters registrationNumber;
 	
 	private FieldParameters cityName;
 	
@@ -43,6 +44,21 @@ public class AccessPointParameters {
 	 */
 	public void setName(FieldParameters name) {
 		this.name = name;
+	}
+
+	/**
+	 * @return the registrationNumber
+	 */
+	@XmlElement(name = "registration_number")
+	public FieldParameters getRegistrationNumber() {
+		return registrationNumber;
+	}
+
+	/**
+	 * @param registrationNumber the registrationNumber to set
+	 */
+	public void setRegistrationNumber(FieldParameters registrationNumber) {
+		this.registrationNumber = registrationNumber;
 	}
 
 	/**

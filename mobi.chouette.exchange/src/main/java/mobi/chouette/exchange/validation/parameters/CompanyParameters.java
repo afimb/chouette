@@ -1,16 +1,14 @@
-package mobi.chouette.parameters.validation;
+package mobi.chouette.exchange.validation.parameters;
 
 import javax.xml.bind.annotation.XmlElement;
 
-public class RouteParameters {
+public class CompanyParameters {
 
 	private FieldParameters objectid;
 	
 	private FieldParameters name;
 	
 	private FieldParameters registrationNumber;
-	
-	private FieldParameters publishedName;
 
 	/**
 	 * @return the objectid
@@ -55,21 +53,6 @@ public class RouteParameters {
 	 */
 	public void setRegistrationNumber(FieldParameters registrationNumber) {
 		this.registrationNumber = registrationNumber;
-	}
-
-	/**
-	 * @return the publishedName
-	 */
-	@XmlElement(name = "published_name")
-	public FieldParameters getPublishedName() {
-		return publishedName;
-	}
-
-	/**
-	 * @param publishedName the publishedName to set
-	 */
-	public void setPublishedName(FieldParameters publishedName) {
-		this.publishedName = publishedName;
 	}
 	
 }

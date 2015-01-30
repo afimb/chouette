@@ -1,4 +1,4 @@
-package mobi.chouette.parameters.validation;
+package mobi.chouette.exchange.validation.parameters;
 
 import javax.xml.bind.annotation.XmlElement;
 

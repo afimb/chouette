@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -146,7 +147,7 @@ public class Service implements Constant {
 				jobDAO.delete(job);
 				throw new WebApplicationException(Status.BAD_REQUEST);
 			} else {
-				Files.createDirectories(dir);				
+				Files.createDirectories(dir);
 				job.setPath(dir.toString());
 			}
 
@@ -243,9 +244,8 @@ public class Service implements Constant {
 	@Path("/{ref}/jobs")
 	@Produces({ MediaType.APPLICATION_JSON })
 	public JobListing jobs(@PathParam("ref") String referential,
-			@DefaultValue("0") @QueryParam("version") final Long version) {
-
-		// TODO filter by action ??
+			@DefaultValue("0") @QueryParam("version") final Long version,
+			@QueryParam("action") final String action) {
 
 		// check params
 		if (!schemas.getSchemaListing().contains(referential)) {
@@ -255,17 +255,21 @@ public class Service implements Constant {
 		// create jobs listing
 		JobListing result = new JobListing();
 		List<Job> list = jobDAO.findByReferential(referential);
-		if (version > 0) {
-			// TODO create finder by version
-			result.setList(Collections2.filter(list, new Predicate<Job>() {
-				@Override
-				public boolean apply(Job job) {
-					return job.getUpdated().getTime() > version;
-				}
-			}));
-		} else {
-			result.setList(list);
-		}
+		Collection<Job> jobs = list;
+
+		// TODO [DSU] create finder by criteria
+		result.setList(Collections2.filter(list, new Predicate<Job>() {
+			@Override
+			public boolean apply(Job job) {
+
+				boolean result = ((version > 0) ? job.getUpdated().getTime() > version
+						: true)
+						&& ((action != null) ? job.getAction().equals(action)
+								: true);
+				return result;
+			}
+		}));
+
 		return result;
 	}
 

@@ -1,8 +1,8 @@
-package mobi.chouette.parameters.validation;
+package mobi.chouette.exchange.validation.parameters;
 
 import javax.xml.bind.annotation.XmlElement;
 
-public class JourneyPatternParameters {
+public class LineParameters {
 
 	private FieldParameters objectid;
 	

@@ -1,8 +1,8 @@
-package mobi.chouette.parameters.validation;
+package mobi.chouette.exchange.validation.parameters;
 
 import javax.xml.bind.annotation.XmlElement;
 
-public class StopAreaParameters {
+public class RouteParameters {
 
 	private FieldParameters objectid;
 	
@@ -10,11 +10,7 @@ public class StopAreaParameters {
 	
 	private FieldParameters registrationNumber;
 	
-	private FieldParameters cityName;
-	
-	private FieldParameters countryCode;
-	
-	private FieldParameters zipCode;
+	private FieldParameters publishedName;
 
 	/**
 	 * @return the objectid
@@ -62,48 +58,18 @@ public class StopAreaParameters {
 	}
 
 	/**
-	 * @return the cityName
+	 * @return the publishedName
 	 */
-	@XmlElement(name = "city_name")
-	public FieldParameters getCityName() {
-		return cityName;
+	@XmlElement(name = "published_name")
+	public FieldParameters getPublishedName() {
+		return publishedName;
 	}
 
 	/**
-	 * @param cityName the cityName to set
+	 * @param publishedName the publishedName to set
 	 */
-	public void setCityName(FieldParameters cityName) {
-		this.cityName = cityName;
+	public void setPublishedName(FieldParameters publishedName) {
+		this.publishedName = publishedName;
 	}
-
-	/**
-	 * @return the countryCode
-	 */
-	@XmlElement(name = "country_code")
-	public FieldParameters getCountryCode() {
-		return countryCode;
-	}
-
-	/**
-	 * @param countryCode the countryCode to set
-	 */
-	public void setCountryCode(FieldParameters countryCode) {
-		this.countryCode = countryCode;
-	}
-
-	/**
-	 * @return the zipCode
-	 */
-	@XmlElement(name = "zip_code")
-	public FieldParameters getZipCode() {
-		return zipCode;
-	}
-
-	/**
-	 * @param zipCode the zipCode to set
-	 */
-	public void setZipCode(FieldParameters zipCode) {
-		this.zipCode = zipCode;
-	}
-		
+	
 }
