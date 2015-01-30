@@ -41,9 +41,11 @@ public class MainCommand implements Command, Constant {
 			Chain chain = new ChainImpl();
 
 			Path path = Paths.get(context.get(PATH) + INPUT);
-			DirectoryStream<Path> stream = Files.newDirectoryStream(path);
+			DirectoryStream<Path> stream = Files.newDirectoryStream(path, "*.xml");
 			for (Path file : stream) {
 
+				context.put(FILE, path.toString());
+				
 				Chain transac = (Chain) CommandFactory.create(ctx,
 						TransactionnalCommand.class.getName());
 
@@ -54,9 +56,9 @@ public class MainCommand implements Command, Constant {
 				transac.add(parser);
 
 				// register
-				Command register = CommandFactory.create(ctx,
-						RegisterCommand.class.getName());
-				transac.add(register);
+//				Command register = CommandFactory.create(ctx,
+//						RegisterCommand.class.getName());
+//				transac.add(register);
 
 				chain.add(transac);
 			}

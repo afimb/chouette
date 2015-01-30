@@ -1,4 +1,4 @@
-package mobi.chouette.parameters;
+package mobi.chouette.exchange.parameters;
 
 import javax.xml.bind.annotation.XmlAttribute;
 

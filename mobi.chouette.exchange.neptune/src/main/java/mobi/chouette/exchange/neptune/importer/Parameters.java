@@ -1,13 +1,11 @@
 package mobi.chouette.exchange.neptune.importer;
 
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
-import mobi.chouette.parameters.AbstractParameter;
 
-@XmlRootElement(name = "")
 @XmlType (name= "neptuneImport")
 public class Parameters extends AbstractParameter{
 

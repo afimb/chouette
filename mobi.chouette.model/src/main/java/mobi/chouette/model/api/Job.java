@@ -25,6 +25,8 @@ import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.hibernate.procedure.ParameterStrategyException;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -71,7 +73,7 @@ public class Job implements Serializable {
 	@XmlElement(name = "parameters")
 	@Transient
 	public Object getParameters() {
-		return new Link();
+		return new  Todo("todo");
 	}
 	
 	
@@ -116,6 +118,7 @@ public class Job implements Serializable {
 	public Job() {
 		super();
 		status = STATUS.CREATED;
+		created = new Date();
 		updated = new Date();
 	}
 

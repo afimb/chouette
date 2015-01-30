@@ -28,7 +28,7 @@ public class UncompressCommand implements Command {
 
 		try {
 			String path = (String) context.get(PATH);
-			String file = (String) context.get(FILE);
+			String file = (String) context.get(ARCHIVE);
 			Path filename = Paths.get(path, file);
 			Path target = Paths.get(path, INPUT);
 			if (!Files.exists(target)) {

@@ -19,6 +19,7 @@ public interface Constant {
 	public static final String XPP = "parser";
 	
 	
+	public static final String ARCHIVE = "archive";
 	public static final String PATH = "path";
 	public static final String FILE = "file";
 	public static final String SCHEMA = "schema";

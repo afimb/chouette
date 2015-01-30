@@ -117,7 +117,7 @@ public class Service implements Constant {
 			link.setType(MediaType.APPLICATION_JSON);
 			link.setRel(Link.LOCATION_REL);
 			link.setMethod(Link.GET_METHOD);
-			link.setHref(MessageFormat.format("/{0}/{1}/jobs/{2}", ROOT_PATH,
+			link.setHref(MessageFormat.format("/{0}/{1}/jobs/{2,number,#}", ROOT_PATH,
 					job.getReferential(), job.getId()));
 			job.getLinks().add(link);
 
@@ -126,7 +126,7 @@ public class Service implements Constant {
 			link.setType(MediaType.APPLICATION_JSON);
 			link.setRel(Link.PARAMETERS_REL);
 			link.setMethod(Link.GET_METHOD);
-			link.setHref(MessageFormat.format("/{0}/data/{1}/{2}", ROOT_PATH,
+			link.setHref(MessageFormat.format("/{0}/data/{1}/{2,number,#}/{3}", ROOT_PATH,
 					job.getReferential(), job.getId(), REPORT));
 			job.getLinks().add(link);
 
@@ -135,7 +135,7 @@ public class Service implements Constant {
 			link.setType(MediaType.APPLICATION_JSON);
 			link.setRel(Link.CANCEL_REL);
 			link.setMethod(Link.DELETE_METHOD);
-			link.setHref(MessageFormat.format("/{0}/{1}/jobs/{2}", ROOT_PATH,
+			link.setHref(MessageFormat.format("/{0}/{1}/jobs/{2,number,#}", ROOT_PATH,
 					job.getReferential(), job.getId()));
 			job.getLinks().add(link);
 
@@ -192,7 +192,7 @@ public class Service implements Constant {
 
 			// build response
 			ResponseBuilder builder = Response.accepted();
-			builder.location(URI.create(MessageFormat.format("{0}/jobs/{1}",
+			builder.location(URI.create(MessageFormat.format("{0}/jobs/{1,number,#}",
 					ROOT_PATH, job.getId())));
 			result = builder.build();
 		} catch (WebApplicationException e) {
@@ -314,20 +314,20 @@ public class Service implements Constant {
 					"data", id.toString(), REPORT);
 			if (Files.exists(parameters)) {
 				builder.link(URI.create(MessageFormat.format(
-						"/{0}/data/{1}/{2}", ROOT_PATH, job.getReferential(),
+						"/{0}/data/{1,number,#}/{2}", ROOT_PATH, job.getReferential(),
 						job.getId(), REPORT)), Link.PARAMETERS_REL);
 			}
 
 			// add link to cancel
 			if (job.getStatus().equals(STATUS.CREATED)) {
 				builder.link(URI.create(MessageFormat.format(
-						"/{0}/{1}/jobs/{2}", ROOT_PATH, job.getReferential(),
+						"/{0}/{1}/jobs/{2,number,#}", ROOT_PATH, job.getReferential(),
 						job.getId())), Link.CANCEL_REL);
 			}
 
 		} else {
 			builder = Response.seeOther(URI.create(MessageFormat.format(
-					"/{0}/{1}/reports/{2}", ROOT_PATH, job.getReferential(),
+					"/{0}/{1}/reports/{2,number,#}", ROOT_PATH, job.getReferential(),
 					job.getId())));
 		}
 
@@ -411,7 +411,7 @@ public class Service implements Constant {
 				"data", id.toString(), REPORT_VALIDATION);
 		if (!Files.exists(validation, LinkOption.NOFOLLOW_LINKS)) {
 			builder.link(URI.create(MessageFormat.format(
-					"/{0}/{1}/data/{2}/{3}", ROOT_PATH, job.getReferential(),
+					"/{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH, job.getReferential(),
 					job.getId(), REPORT_VALIDATION)), "validation");
 		}
 
@@ -420,7 +420,7 @@ public class Service implements Constant {
 				ROOT_PATH, referential, "data", id.toString(), EXPORTED_DATA);
 		if (!Files.exists(data, LinkOption.NOFOLLOW_LINKS)) {
 			builder.link(URI.create(MessageFormat.format(
-					"/{0}/{1}/data/{2}/{3}", ROOT_PATH, job.getReferential(),
+					"/{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH, job.getReferential(),
 					job.getId(), REPORT_VALIDATION)), "data");
 		}
 
@@ -429,7 +429,7 @@ public class Service implements Constant {
 				System.getProperty("user.home"), ROOT_PATH, referential,
 				"data", id.toString(), REPORT);
 		if (Files.exists(parameters)) {
-			builder.link(URI.create(MessageFormat.format("/{0}/data/{1}/{2}",
+			builder.link(URI.create(MessageFormat.format("/{0}/data/{1}/{2,number,#}",
 					ROOT_PATH, job.getReferential(), job.getId(), REPORT)),
 					Link.PARAMETERS_REL);
 		}

@@ -4,11 +4,10 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
-import mobi.chouette.parameters.AbstractParameter;
 
 
-@XmlRootElement(name = "")
 @XmlType (name= "netexImport")
 public class Parameters  extends AbstractParameter{
 

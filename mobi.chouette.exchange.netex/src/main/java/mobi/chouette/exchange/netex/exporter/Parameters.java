@@ -7,9 +7,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import mobi.chouette.parameters.AbstractParameter;
+import mobi.chouette.exchange.parameters.AbstractParameter;
 
-@XmlRootElement(name = "")
 @XmlType (name= "netexExport")
 public class Parameters  extends AbstractParameter{
 	
