@@ -1,41 +1,19 @@
 package mobi.chouette.exchange.parameters;
 
-import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
 
+import lombok.Data;
+
+@Data
+@XmlAccessorType(XmlAccessType.FIELD)
 public class AbstractParameter {
-	
+
+	@XmlElement(name = "name")
 	private String name;
 
+	@XmlElement(name = "user_name")
 	private String userName;
-
-	/**
-	 * @return the name
-	 */
-	@XmlAttribute(name = "name")
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
-	 * @return the userName
-	 */
-	@XmlAttribute(name = "user_name")
-	public String getUserName() {
-		return userName;
-	}
-
-	/**
-	 * @param userName the userName to set
-	 */
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
 
 }

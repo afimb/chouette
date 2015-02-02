@@ -59,14 +59,6 @@
 			<groupId>org.jboss.marshalling</groupId>
 			<artifactId>jboss-marshalling-river</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-jackson-provider</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-jaxrs</artifactId>
-		</dependency>
 
 
 		<!-- Modules -->

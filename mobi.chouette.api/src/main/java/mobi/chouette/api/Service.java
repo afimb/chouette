@@ -34,12 +34,14 @@ import javax.ws.rs.core.Response.Status;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
+import mobi.chouette.common.JSONUtils;
 import mobi.chouette.dao.JobDAO;
 import mobi.chouette.dao.SchemaDAO;
 import mobi.chouette.model.api.Job;
 import mobi.chouette.model.api.Job.STATUS;
 import mobi.chouette.model.api.Link;
 import mobi.chouette.scheduler.Constant;
+import mobi.chouette.scheduler.Parameters;
 import mobi.chouette.scheduler.Scheduler;
 
 import org.apache.commons.io.FileUtils;
@@ -54,9 +56,10 @@ import com.google.common.collect.Collections2;
 @RequestScoped
 public class Service implements Constant {
 
-	public static final String REPORT = "report.json";
-	public static final String REPORT_VALIDATION = "validation.json";
-	public static final String EXPORTED_DATA = "data.zip";
+	public static final String PARAMETERS_FILE = "parameters.json";
+	public static final String REPORT_FILE = "report.json";
+	public static final String VALIDATION_FILE = "validation.json";
+	public static final String EXPORTED_FILE = "data.zip";
 
 	@Inject
 	JobDAO jobDAO;
@@ -117,17 +120,8 @@ public class Service implements Constant {
 			link.setType(MediaType.APPLICATION_JSON);
 			link.setRel(Link.LOCATION_REL);
 			link.setMethod(Link.GET_METHOD);
-			link.setHref(MessageFormat.format("/{0}/{1}/jobs/{2,number,#}", ROOT_PATH,
-					job.getReferential(), job.getId()));
-			job.getLinks().add(link);
-
-			// add parameters link
-			link = new Link();
-			link.setType(MediaType.APPLICATION_JSON);
-			link.setRel(Link.PARAMETERS_REL);
-			link.setMethod(Link.GET_METHOD);
-			link.setHref(MessageFormat.format("/{0}/data/{1}/{2,number,#}/{3}", ROOT_PATH,
-					job.getReferential(), job.getId(), REPORT));
+			link.setHref(MessageFormat.format("/{0}/{1}/jobs/{2,number,#}",
+					ROOT_PATH, job.getReferential(), job.getId()));
 			job.getLinks().add(link);
 
 			// add cancel link
@@ -135,8 +129,8 @@ public class Service implements Constant {
 			link.setType(MediaType.APPLICATION_JSON);
 			link.setRel(Link.CANCEL_REL);
 			link.setMethod(Link.DELETE_METHOD);
-			link.setHref(MessageFormat.format("/{0}/{1}/jobs/{2,number,#}", ROOT_PATH,
-					job.getReferential(), job.getId()));
+			link.setHref(MessageFormat.format("/{0}/{1}/jobs/{2,number,#}",
+					ROOT_PATH, job.getReferential(), job.getId()));
 			job.getLinks().add(link);
 
 			// mkdir
@@ -165,6 +159,17 @@ public class Service implements Constant {
 					java.nio.file.Path path = Paths.get(dir.toString(),
 							filename);
 					Files.copy(in, path);
+
+					// add download parameters link
+					link = new Link();
+					link.setType(MediaType.APPLICATION_JSON);
+					link.setRel(Link.DOWNLOAD_REL);
+					link.setMethod(Link.GET_METHOD);
+					link.setHref(MessageFormat.format(
+							"/{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH,
+							job.getReferential(), job.getId(), PARAMETERS_FILE));
+					job.getLinks().add(link);
+
 				} else {
 					InputStream in = part.getBody(InputStream.class, null);
 					if (in == null || filename == null || filename.isEmpty()) {
@@ -182,6 +187,17 @@ public class Service implements Constant {
 					} else {
 						Files.createDirectories(dir);
 						Files.copy(in, path);
+
+						// add download upload link
+						link = new Link();
+						link.setType(MediaType.APPLICATION_JSON);
+						link.setRel(Link.DOWNLOAD_REL);
+						link.setMethod(Link.GET_METHOD);
+						link.setHref(MessageFormat.format(
+								"/{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH,
+								job.getReferential(), job.getId(),
+								job.getFilename()));
+						job.getLinks().add(link);
 					}
 				}
 			}
@@ -190,10 +206,22 @@ public class Service implements Constant {
 			jobDAO.update(job);
 			scheduler.schedule(job.getReferential());
 
+			// TODO for debug
+			java.nio.file.Path path = Paths.get(
+					System.getProperty("user.home"), ROOT_PATH,
+					job.getReferential(), "data", job.getId().toString(),
+					REPORT_FILE);
+			Files.createFile(path);
+			path = Paths.get(System.getProperty("user.home"), ROOT_PATH,
+					job.getReferential(), "data", job.getId().toString(),
+					VALIDATION_FILE);
+			Files.createFile(path);
+
 			// build response
 			ResponseBuilder builder = Response.accepted();
-			builder.location(URI.create(MessageFormat.format("{0}/jobs/{1,number,#}",
-					ROOT_PATH, job.getId())));
+			builder.location(URI.create(MessageFormat.format(
+					"{0}/{1}/jobs/{2,number,#}", ROOT_PATH,
+					job.getReferential(), job.getId())));
 			result = builder.build();
 		} catch (WebApplicationException e) {
 			log.error(e);
@@ -258,18 +286,31 @@ public class Service implements Constant {
 		Collection<Job> jobs = list;
 
 		// TODO [DSU] create finder by criteria
-		result.setList(Collections2.filter(list, new Predicate<Job>() {
-			@Override
-			public boolean apply(Job job) {
+		Collection<Job> filtered = Collections2.filter(list,
+				new Predicate<Job>() {
+					@Override
+					public boolean apply(Job job) {
 
-				boolean result = ((version > 0) ? job.getUpdated().getTime() > version
-						: true)
-						&& ((action != null) ? job.getAction().equals(action)
-								: true);
-				return result;
-			}
-		}));
+						boolean result = ((version > 0) ? job.getUpdated()
+								.getTime() > version : true)
+								&& ((action != null) ? job.getAction().equals(
+										action) : true);
+						return result;
+					}
+				});
 
+		// TODO re factor Parameters dependencies
+		for (Job job : filtered) {
+
+			java.nio.file.Path path = Paths.get(
+					System.getProperty("user.home"), ROOT_PATH,
+					job.getReferential(), "data", job.getId().toString(),
+					PARAMETERS_FILE);
+
+			Parameters payload = JSONUtils.fromJSON(path, Parameters.class);
+			job.setParameters(payload.getConfiguration());
+		}
+		result.setList(filtered);
 		return result;
 	}
 
@@ -297,7 +338,7 @@ public class Service implements Constant {
 
 			java.nio.file.Path report = Paths.get(
 					System.getProperty("user.home"), ROOT_PATH, referential,
-					"data", id.toString(), REPORT);
+					"data", id.toString(), REPORT_FILE);
 			if (!Files.exists(report, LinkOption.NOFOLLOW_LINKS)) {
 				File file = new File(report.toString());
 				builder = Response.ok(file);
@@ -308,27 +349,15 @@ public class Service implements Constant {
 				builder = Response.ok();
 			}
 
-			// add parameters link
-			java.nio.file.Path parameters = Paths.get(
-					System.getProperty("user.home"), ROOT_PATH, referential,
-					"data", id.toString(), REPORT);
-			if (Files.exists(parameters)) {
-				builder.link(URI.create(MessageFormat.format(
-						"/{0}/data/{1,number,#}/{2}", ROOT_PATH, job.getReferential(),
-						job.getId(), REPORT)), Link.PARAMETERS_REL);
-			}
-
-			// add link to cancel
-			if (job.getStatus().equals(STATUS.CREATED)) {
-				builder.link(URI.create(MessageFormat.format(
-						"/{0}/{1}/jobs/{2,number,#}", ROOT_PATH, job.getReferential(),
-						job.getId())), Link.CANCEL_REL);
+			// add links
+			for (Link link : job.getLinks()) {
+				builder.link(link.getHref(), link.getRel());
 			}
 
 		} else {
 			builder = Response.seeOther(URI.create(MessageFormat.format(
-					"/{0}/{1}/reports/{2,number,#}", ROOT_PATH, job.getReferential(),
-					job.getId())));
+					"/{0}/{1}/reports/{2,number,#}", ROOT_PATH,
+					job.getReferential(), job.getId())));
 		}
 
 		result = builder.build();
@@ -387,7 +416,7 @@ public class Service implements Constant {
 		}
 
 		java.nio.file.Path report = Paths.get(System.getProperty("user.home"),
-				ROOT_PATH, referential, "data", id.toString(), REPORT);
+				ROOT_PATH, referential, "data", id.toString(), REPORT_FILE);
 		if (!Files.exists(report, LinkOption.NOFOLLOW_LINKS)) {
 			throw new WebApplicationException(Status.NOT_FOUND);
 		}
@@ -405,33 +434,9 @@ public class Service implements Constant {
 		cc.setMaxAge(Integer.MAX_VALUE);
 		builder.cacheControl(cc);
 
-		// add link to validation report
-		java.nio.file.Path validation = Paths.get(
-				System.getProperty("user.home"), ROOT_PATH, referential,
-				"data", id.toString(), REPORT_VALIDATION);
-		if (!Files.exists(validation, LinkOption.NOFOLLOW_LINKS)) {
-			builder.link(URI.create(MessageFormat.format(
-					"/{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH, job.getReferential(),
-					job.getId(), REPORT_VALIDATION)), "validation");
-		}
-
-		// add link to exported data
-		java.nio.file.Path data = Paths.get(System.getProperty("user.home"),
-				ROOT_PATH, referential, "data", id.toString(), EXPORTED_DATA);
-		if (!Files.exists(data, LinkOption.NOFOLLOW_LINKS)) {
-			builder.link(URI.create(MessageFormat.format(
-					"/{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH, job.getReferential(),
-					job.getId(), REPORT_VALIDATION)), "data");
-		}
-
-		// add parameters link
-		java.nio.file.Path parameters = Paths.get(
-				System.getProperty("user.home"), ROOT_PATH, referential,
-				"data", id.toString(), REPORT);
-		if (Files.exists(parameters)) {
-			builder.link(URI.create(MessageFormat.format("/{0}/data/{1}/{2,number,#}",
-					ROOT_PATH, job.getReferential(), job.getId(), REPORT)),
-					Link.PARAMETERS_REL);
+		// add links
+		for (Link link : job.getLinks()) {
+			builder.link(link.getHref(), link.getRel());
 		}
 
 		result = builder.build();

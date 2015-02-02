@@ -72,9 +72,9 @@ public class Job implements Serializable {
 
 	@XmlElement(name = "parameters")
 	@Transient
-	public Object getParameters() {
-		return new  Todo("todo");
-	}
+	@Getter
+	@Setter
+	private Object parameters;
 	
 	
 	@XmlAttribute(name = "path")

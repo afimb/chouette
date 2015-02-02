@@ -1,93 +1,28 @@
 package mobi.chouette.exchange.validation.parameters;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 
+import lombok.Data;
 
+@XmlAccessorType(XmlAccessType.FIELD)
+@Data
 public class AccessPointParameters {
 
+	@XmlElement(name = "objectid")
 	private FieldParameters objectid;
-	
+
+	@XmlElement(name = "name")
 	private FieldParameters name;
-	
+
+	@XmlElement(name = "city_name")
 	private FieldParameters cityName;
-	
+
+	@XmlElement(name = "country_code")
 	private FieldParameters countryCode;
-	
+
+	@XmlElement(name = "zip_code")
 	private FieldParameters zipCode;
 
-	/**
-	 * @return the objectid
-	 */
-	@XmlElement(name = "objectid")
-	public FieldParameters getObjectid() {
-		return objectid;
-	}
-
-	/**
-	 * @param objectid the objectid to set
-	 */
-	public void setObjectid(FieldParameters objectid) {
-		this.objectid = objectid;
-	}
-
-	/**
-	 * @return the name
-	 */
-	@XmlElement(name = "name")
-	public FieldParameters getName() {
-		return name;
-	}
-
-	/**
-	 * @param name the name to set
-	 */
-	public void setName(FieldParameters name) {
-		this.name = name;
-	}
-
-	/**
-	 * @return the cityName
-	 */
-	@XmlElement(name = "city_name")
-	public FieldParameters getCityName() {
-		return cityName;
-	}
-
-	/**
-	 * @param cityName the cityName to set
-	 */
-	public void setCityName(FieldParameters cityName) {
-		this.cityName = cityName;
-	}
-
-	/**
-	 * @return the countryCode
-	 */
-	@XmlElement(name = "country_code")
-	public FieldParameters getCountryCode() {
-		return countryCode;
-	}
-
-	/**
-	 * @param countryCode the countryCode to set
-	 */
-	public void setCountryCode(FieldParameters countryCode) {
-		this.countryCode = countryCode;
-	}
-
-	/**
-	 * @return the zipCode
-	 */
-	@XmlElement(name = "zip_code")
-	public FieldParameters getZipCode() {
-		return zipCode;
-	}
-
-	/**
-	 * @param zipCode the zipCode to set
-	 */
-	public void setZipCode(FieldParameters zipCode) {
-		this.zipCode = zipCode;
-	}
-		
 }

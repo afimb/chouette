@@ -103,8 +103,8 @@
             <phase>generate-resources</phase>
             <configuration>
                 <includes>
-                    <include>mobi/chouette/exchange/neptune/importer/Parameters.java</include>
-                    <include>mobi/chouette/exchange/neptune/exporter/Parameters.java</include>
+                    <include>mobi/chouette/exchange/neptune/importer/NeptuneParameters.java</include>
+<!--                     <include>mobi/chouette/exchange/neptune/exporter/Parameters.java</include> -->
                 </includes>
                 <outputDirectory>${project.build.directory}/schemas</outputDirectory>
             </configuration>

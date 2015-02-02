@@ -1,90 +1,78 @@
 package mobi.chouette.common;
 
-import java.util.HashMap;
+import java.io.StringWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.stream.XMLStreamWriter;
 
 import lombok.extern.log4j.Log4j;
 
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.databind.AnnotationIntrospector;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
+import org.codehaus.jettison.json.JSONObject;
+import org.codehaus.jettison.mapped.Configuration;
+import org.codehaus.jettison.mapped.MappedNamespaceConvention;
+import org.codehaus.jettison.mapped.MappedXMLStreamReader;
+import org.codehaus.jettison.mapped.MappedXMLStreamWriter;
+
 @Log4j
 public class JSONUtils {
-	
-	
-	
-	public static Object fromJSON(String text, Class type) {
-		Object result = null;
+
+	public static <T> T fromJSON(Path path, Class<T> type) {
+		T result = null;
+
 		try {
-			ObjectMapper mapper = createObjectMapper();
-			result = mapper.readValue(text, type);
-			// result = mapper.convertValue(text, type);
+			byte[] bytes = Files.readAllBytes(path);
+			String text = new String(bytes, "UTF-8");
+			return fromJSON(text, type);
 		} catch (Exception e) {
-			log.error(e.getMessage(), e);
+			log.error(e);
 		}
+
 		return result;
 	}
 
-	public static String toJSON(Object payload) {
+	public static <T> T fromJSON(String text, Class<T> type) {
+		T result = null;
+
+		try {
+			JAXBContext context = JAXBContext.newInstance(type);
+			JSONObject object = new JSONObject(text);
+			Configuration config = new Configuration();
+			MappedNamespaceConvention convention = new MappedNamespaceConvention(
+					config);
+			XMLStreamReader reader = new MappedXMLStreamReader(object,
+					convention);
+			Unmarshaller unmarshaller = context.createUnmarshaller();
+			result = (T) unmarshaller.unmarshal(reader);
+		} catch (Exception e) {
+			log.error(e);
+		}
+
+		return result;
+	}
+
+	public static <T> String toJSON(T payload) {
 		String result = null;
 		try {
-			HashMap<String, Object> map = new HashMap<String, Object>();
-			map.put(payload.getClass().getSimpleName(), payload);
-			ObjectMapper mapper = createObjectMapper();
-			result = mapper.writeValueAsString(map);
-
-		} catch (Exception e) {
-			log.error(e.getMessage(), e);
+			JAXBContext context = JAXBContext.newInstance(payload.getClass());
+			Configuration config = new Configuration();
+			MappedNamespaceConvention convention = new MappedNamespaceConvention(
+					config);
+			StringWriter out = new StringWriter();
+			XMLStreamWriter writer = new MappedXMLStreamWriter(convention, out);
+			Marshaller marshaller = context.createMarshaller();
+			marshaller.marshal(payload, writer);
+			result = out.toString();
+		} catch (JAXBException e) {
+			log.error(e);
 		}
 		return result;
-	}
-
-	public static ObjectMapper createObjectMapper() {
-		ObjectMapper mapper = new ObjectMapper();
-		AnnotationIntrospector introspector = new JaxbAnnotationIntrospector();
-		mapper.setAnnotationIntrospector(introspector);
-		mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
-		mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-		mapper.setSerializationInclusion(Include.NON_NULL);
-
-		return mapper;
 
 	}
-	
 
-//	public static Object fromJSON(String text, Class type) {
-//		Object result = null;
-//
-//		try {
-//			JAXBContext context = JAXBContext.newInstance(type);
-//			Unmarshaller unmarshaller = context.createUnmarshaller();
-//			result = unmarshaller.unmarshal(new StringReader(text));
-//		} catch (JAXBException e) {
-//			log.error(e);
-//		}
-//
-//		return result;
-//	}
-//
-//	public static String toJSON(Object payload) {
-//		String result = null;
-//		try {
-//			JAXBContext context = JAXBContext.newInstance(payload.getClass());
-//			
-//			Marshaller marshaller = context.createMarshaller();
-//			marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, new Boolean(true));
-//			 
-//			
-//			StringWriter out = new StringWriter();
-//			marshaller.marshal(payload, out);
-//			result = out.toString();
-//		} catch (JAXBException e) {
-//			log.error(e);
-//		}
-//		return result;
-//		
-//	}
-	
-	
 }

@@ -1,6 +1,8 @@
 package mobi.chouette.scheduler;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.MessageFormat;
 
 import javax.ejb.EJB;
@@ -40,7 +42,8 @@ public class MainCommand implements Command, Constant {
 				+ job.getAction() + ".MainCommand";
 		InitialContext ctx = (InitialContext) context.get(INITIAL_CONTEXT);
 		// Command command = CommandFactory.create(ctx , name);
-		Command command = CommandFactory.create(ctx , WaitCommand.class.getName());
+		Command command = CommandFactory.create(ctx,
+				WaitCommand.class.getName());
 		command.execute(context);
 
 		job.setStatus(STATUS.TERMINATED);
@@ -53,13 +56,13 @@ public class MainCommand implements Command, Constant {
 			}
 		});
 
-		// add download link
+		// add location link
 		Link link = new Link();
 		link.setType(MediaType.APPLICATION_JSON);
-		link.setRel(Link.DOWNLOAD_REL);
+		link.setRel(Link.LOCATION_REL);
 		link.setMethod(Link.GET_METHOD);
-		link.setHref(MessageFormat.format("/{0}/{1}/reports/{2}", ROOT_PATH,
-				job.getReferential(), job.getId()));
+		link.setHref(MessageFormat.format("/{0}/{1}/reports/{2,number,#}",
+				ROOT_PATH, job.getReferential(), job.getId()));
 		job.getLinks().add(link);
 
 		// add delete link
@@ -67,7 +70,17 @@ public class MainCommand implements Command, Constant {
 		link.setType("application/json");
 		link.setRel(Link.DELETE_REL);
 		link.setMethod(Link.DELETE_METHOD);
-		link.setHref(MessageFormat.format("/{0}/{1}/reports/{2}", ROOT_PATH,
+		link.setHref(MessageFormat.format("/{0}/{1}/reports/{2,number,#}",
+				ROOT_PATH, job.getReferential(), job.getId()));
+		job.getLinks().add(link);
+
+		// add validation download link
+		link = new Link();
+		link.setType(MediaType.APPLICATION_JSON);
+		link.setRel(Link.DOWNLOAD_REL);
+		link.setMethod(Link.GET_METHOD);
+		link.setHref(MessageFormat.format(
+				"/{0}/{1}/data/{2,number,#}/validation.json", ROOT_PATH,
 				job.getReferential(), job.getId()));
 		job.getLinks().add(link);
 

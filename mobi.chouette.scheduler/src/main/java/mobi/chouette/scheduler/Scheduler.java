@@ -82,13 +82,14 @@ public class Scheduler {
 				}
 			});
 
-			// add delete link
+			// set delete link
 			Link link = new Link();
 			link.setType(MediaType.APPLICATION_JSON);
 			link.setRel(Link.DELETE_REL);
 			link.setMethod(Link.DELETE_METHOD);
-			link.setHref(MessageFormat.format("/{0}/{1}/reports/{2}",
+			link.setHref(MessageFormat.format("/{0}/{1}/reports/{2,number,#}",
 					Constant.ROOT_PATH, job.getReferential(), job.getId()));
+			job.getLinks().clear();
 			job.getLinks().add(link);
 
 			dao.update(job);
@@ -111,22 +112,14 @@ public class Scheduler {
 
 		job.setStatus(STATUS.CANCELED);
 
-		// remove location & cancel link
-		Iterables.removeIf(job.getLinks(), new Predicate<Link>() {
-			@Override
-			public boolean apply(Link link) {
-				return link.getRel().equals(Link.LOCATION_REL)
-						|| link.getRel().equals(Link.CANCEL_REL);
-			}
-		});
-
-		// add delete link
+		// set delete link
 		Link link = new Link();
 		link.setType(MediaType.APPLICATION_JSON);
 		link.setRel(Link.DELETE_REL);
 		link.setMethod(Link.DELETE_METHOD);
-		link.setHref(MessageFormat.format("/{0}/{1}/reports/{2}", Constant.ROOT_PATH,
+		link.setHref(MessageFormat.format("/{0}/{1}/reports/{2,number,#}", Constant.ROOT_PATH,
 				job.getReferential(), job.getId()));
+		job.getLinks().clear();
 		job.getLinks().add(link);
 
 		dao.update(job);
