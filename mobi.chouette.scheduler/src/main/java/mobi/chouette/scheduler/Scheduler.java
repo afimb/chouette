@@ -50,7 +50,7 @@ public class Scheduler {
 					return link.getRel().equals(Link.CANCEL_REL);
 				}
 			});
-			// TODO dao.update(job);
+			dao.update(job);
 
 			Map<String, String> properties = new HashMap<String, String>();
 			Task task = new Task(job, properties, new TaskListener());

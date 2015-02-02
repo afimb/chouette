@@ -71,7 +71,7 @@ public class MainCommand implements Command, Constant {
 				job.getReferential(), job.getId()));
 		job.getLinks().add(link);
 
-		// TODO dao.update(job);
+		dao.update(job);
 
 		return result;
 	}

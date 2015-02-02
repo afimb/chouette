@@ -3,6 +3,7 @@ package mobi.chouette.exchange.parameters;
 import javax.xml.bind.annotation.XmlAttribute;
 
 public class AbstractParameter {
+	
 	private String name;
 
 	private String userName;
