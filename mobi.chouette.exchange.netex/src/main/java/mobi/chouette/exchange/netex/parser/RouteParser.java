@@ -29,7 +29,7 @@ public class RouteParser implements Parser, Constant {
 	@Override
 	public void parse(Context context) throws Exception {
 
-		XmlPullParser xpp = (XmlPullParser) context.get(XPP);
+		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 
 		if ((xpp.getEventType() == XmlPullParser.START_TAG)
 				&& xpp.getName().equals("directions")) {
@@ -62,7 +62,7 @@ public class RouteParser implements Parser, Constant {
 	}
 
 	private void parseDirection(Context context) throws Exception {
-		XmlPullParser xpp = (XmlPullParser) context.get(XPP);
+		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, "Direction");
@@ -88,7 +88,7 @@ public class RouteParser implements Parser, Constant {
 	}
 
 	private void parsePassengerStopAssignment(Context context) throws Exception {
-		XmlPullParser xpp = (XmlPullParser) context.get(XPP);
+		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, "PassengerStopAssignment");
@@ -127,7 +127,7 @@ public class RouteParser implements Parser, Constant {
 	}
 
 	private void parseRoute(Context context) throws Exception {
-		XmlPullParser xpp = (XmlPullParser) context.get(XPP);
+		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, "Route");
@@ -181,7 +181,7 @@ public class RouteParser implements Parser, Constant {
 
 	private void parsePointOnRoutes(Context context, Route route)
 			throws Exception {
-		XmlPullParser xpp = (XmlPullParser) context.get(XPP);
+		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, "pointsInSequence");
@@ -207,7 +207,7 @@ public class RouteParser implements Parser, Constant {
 	}
 
 	private void parseKeyValues(Context context, Route route) throws Exception {
-		XmlPullParser xpp = (XmlPullParser) context.get(XPP);
+		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, "keyList");

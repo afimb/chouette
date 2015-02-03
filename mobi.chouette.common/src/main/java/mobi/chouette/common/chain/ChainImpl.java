@@ -4,14 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.NoArgsConstructor;
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 
+@Log4j
 @NoArgsConstructor
 public class ChainImpl implements Chain {
 
 	private List<Command> commands = new ArrayList<Command>();
 	private boolean ignored = false;
-	
+
 	@Override
 	public void add(Command command) {
 		commands.add(command);
@@ -28,17 +30,28 @@ public class ChainImpl implements Chain {
 		for (Command command : commands) {
 			try {
 				result = command.execute(context);
-				if (result == ERROR && ! ignored) {
+				if (result == ERROR && !ignored) {
 					break;
 				}
 			} catch (Exception e) {
-				if(! ignored){
+				if (!ignored) {
 					result = ERROR;
 					throw e;
 				}
 			}
 		}
 		return result;
+	}
+
+	@Override
+	public void clear() {
+		for (Command command : commands) {
+			if (command instanceof Chain) {
+				Chain chain = (Chain) command;
+				chain.clear();
+			}
+		}
+		commands.clear();
 	}
 
 }

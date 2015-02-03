@@ -30,7 +30,7 @@ public class VehicleJourneyParser implements Parser, Constant {
 	@Override
 	public void parse(Context context) throws Exception {
 
-		XmlPullParser xpp = (XmlPullParser) context.get(XPP);
+		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
@@ -47,7 +47,7 @@ public class VehicleJourneyParser implements Parser, Constant {
 	}
 
 	private void parseServiceJourney(Context context) throws Exception {
-		XmlPullParser xpp = (XmlPullParser) context.get(XPP);
+		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, "ServiceJourney");
@@ -101,7 +101,7 @@ public class VehicleJourneyParser implements Parser, Constant {
 
 	private void parseTrainNumberRefs(Context context,
 			VehicleJourney vehicleJourney) throws Exception {
-		XmlPullParser xpp = (XmlPullParser) context.get(XPP);
+		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, "trainNumbers");
@@ -122,7 +122,7 @@ public class VehicleJourneyParser implements Parser, Constant {
 
 	private void parseDayTypeRefs(Context context, VehicleJourney vehicleJourney)
 			throws Exception {
-		XmlPullParser xpp = (XmlPullParser) context.get(XPP);
+		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, "dayTypes");
@@ -145,7 +145,7 @@ public class VehicleJourneyParser implements Parser, Constant {
 
 	public void parseCalls(Context context, VehicleJourney vehicleJourney)
 			throws Exception {
-		XmlPullParser xpp = (XmlPullParser) context.get(XPP);
+		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, "calls");
@@ -163,7 +163,7 @@ public class VehicleJourneyParser implements Parser, Constant {
 
 	private void parseCall(Context context, VehicleJourney vehicleJourney)
 			throws XmlPullParserException, IOException, ParseException {
-		XmlPullParser xpp = (XmlPullParser) context.get(XPP);
+		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, "Call");

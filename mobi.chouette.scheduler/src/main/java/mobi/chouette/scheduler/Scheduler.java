@@ -2,6 +2,7 @@ package mobi.chouette.scheduler;
 
 import java.text.MessageFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,10 +19,11 @@ import javax.ws.rs.core.MediaType;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
+import mobi.chouette.common.Constant;
 import mobi.chouette.dao.JobDAO;
 import mobi.chouette.model.api.Job;
-import mobi.chouette.model.api.Link;
 import mobi.chouette.model.api.Job.STATUS;
+import mobi.chouette.model.api.Link;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
@@ -33,13 +35,13 @@ import com.google.common.collect.Iterables;
 public class Scheduler {
 
 	@EJB
-	JobDAO dao;
+	JobDAO jobDAO;
 
 	@Resource(lookup = "java:comp/DefaultManagedExecutorService")
 	ManagedExecutorService executor;
 
 	public void schedule(String referential) {
-		Job job = dao.getNextJob(referential);
+		Job job = jobDAO.getNextJob(referential);
 		if (job != null) {
 			job.setStatus(STATUS.SCHEDULED);
 
@@ -50,7 +52,9 @@ public class Scheduler {
 					return link.getRel().equals(Link.CANCEL_REL);
 				}
 			});
-			dao.update(job);
+			
+			job.setUpdated(new Date());
+			jobDAO.update(job);
 
 			Map<String, String> properties = new HashMap<String, String>();
 			Task task = new Task(job, properties, new TaskListener());
@@ -61,7 +65,7 @@ public class Scheduler {
 	@PostConstruct
 	private void initialize() {
 
-		List<Job> list = dao.findAll();
+		List<Job> list = jobDAO.findAll();
 
 		// abort scheduled job
 		Collection<Job> scheduled = Collections2.filter(list,
@@ -91,8 +95,9 @@ public class Scheduler {
 					Constant.ROOT_PATH, job.getReferential(), job.getId()));
 			job.getLinks().clear();
 			job.getLinks().add(link);
-
-			dao.update(job);
+			
+			job.setUpdated(new Date());
+			jobDAO.update(job);
 		}
 
 		// schedule created job
@@ -108,8 +113,9 @@ public class Scheduler {
 		}
 	}
 
-	public boolean cancel(Job job) {
+	public boolean cancel(Long id) {
 
+		Job  job = jobDAO.find(id);
 		job.setStatus(STATUS.CANCELED);
 
 		// set delete link
@@ -122,13 +128,14 @@ public class Scheduler {
 		job.getLinks().clear();
 		job.getLinks().add(link);
 
-		dao.update(job);
+		job.setUpdated(new Date());
+		jobDAO.update(job);
 
 		return true;
 	}
 
 	public boolean delete(Job job) {
-		dao.delete(job);
+		jobDAO.delete(job);
 		return true;
 	}
 

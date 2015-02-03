@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.netex.importer;
+package mobi.chouette.exchange.netex;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,7 +16,6 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
-import mobi.chouette.exchange.netex.Constant;
 import mobi.chouette.exchange.netex.parser.NetexParser;
 import mobi.chouette.model.util.Referential;
 
@@ -38,7 +37,7 @@ public class NetexParserCommand implements Command, Constant {
 		BufferedReader in = new BufferedReader(new InputStreamReader(input),
 				8192 * 10);
 		xpp.setInput(in);
-		context.put(XPP, xpp);
+		context.put(PARSER, xpp);
 		context.put(REFERENTIAL, new Referential());
 
 		Parser parser = ParserFactory.create(NetexParser.class
@@ -54,7 +53,9 @@ public class NetexParserCommand implements Command, Constant {
 		protected Command create(InitialContext context) throws IOException {
 			Command result = null;
 			try {
-				result = (Command) context.lookup(JAVA_MODULE + COMMAND);
+				String name = "java:app/mobi.chouette.exchange.netex/"
+						+ COMMAND;
+				result = (Command) context.lookup(name);
 			} catch (NamingException e) {
 				log.error(e);
 			}

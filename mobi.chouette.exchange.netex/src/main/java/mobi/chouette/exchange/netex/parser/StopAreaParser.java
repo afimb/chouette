@@ -31,7 +31,7 @@ public class StopAreaParser implements Parser, Constant {
 	@Override
 	public void parse(Context context) throws Exception {
 
-		XmlPullParser xpp = (XmlPullParser) context.get(XPP);
+		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		if ((xpp.getEventType() == XmlPullParser.START_TAG)
@@ -68,7 +68,7 @@ public class StopAreaParser implements Parser, Constant {
 	}
 
 	private void parseTariffZone(Context context) throws Exception {
-		XmlPullParser xpp = (XmlPullParser) context.get(XPP);
+		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, "TariffZone");
@@ -92,7 +92,7 @@ public class StopAreaParser implements Parser, Constant {
 
 	private void parseStopPlace(Context context, Map<String, String> map)
 			throws Exception, IOException, ParseException {
-		XmlPullParser xpp = (XmlPullParser) context.get(XPP);
+		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, "StopPlace");
@@ -142,7 +142,7 @@ public class StopAreaParser implements Parser, Constant {
 	}
 
 	private void parseQuay(Context context, StopArea parent) throws Exception {
-		XmlPullParser xpp = (XmlPullParser) context.get(XPP);
+		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, "Quay");
@@ -180,7 +180,7 @@ public class StopAreaParser implements Parser, Constant {
 
 	private void parsePostalAddress(Context context, StopArea stopArea)
 			throws Exception {
-		XmlPullParser xpp = (XmlPullParser) context.get(XPP);
+		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, "PostalAddress");
@@ -200,7 +200,7 @@ public class StopAreaParser implements Parser, Constant {
 
 	private void parseCentroid(Context context, StopArea stopArea)
 			throws Exception {
-		XmlPullParser xpp = (XmlPullParser) context.get(XPP);
+		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, "Centroid");
@@ -250,7 +250,7 @@ public class StopAreaParser implements Parser, Constant {
 
 	private void parseTariffZoneRefs(Context context, StopArea stopArea)
 			throws Exception {
-		XmlPullParser xpp = (XmlPullParser) context.get(XPP);
+		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, "tariffZones");

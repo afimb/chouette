@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.importer;
+package mobi.chouette.exchange;
 
 import java.io.IOException;
 
@@ -22,7 +22,7 @@ import mobi.chouette.model.util.Referential;
 @Log4j
 public class RegisterCommand implements Command {
 
-	public static final String COMMAND = "LineRegisterCommand";
+	public static final String COMMAND = "RegisterCommand";
 
 	@EJB
 	private LineDAO lineDAO;
@@ -62,7 +62,9 @@ public class RegisterCommand implements Command {
 		protected Command create(InitialContext context) throws IOException {
 			Command result = null;
 			try {
-				result = (Command) context.lookup(JAVA_MODULE + COMMAND);
+				String name = "java:app/mobi.chouette.exchange.neptune/"
+						+ COMMAND;
+				result = (Command) context.lookup(name);
 			} catch (NamingException e) {
 				log.error(e);
 			}

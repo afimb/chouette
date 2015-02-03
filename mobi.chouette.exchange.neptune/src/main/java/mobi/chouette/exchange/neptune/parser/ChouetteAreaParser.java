@@ -6,12 +6,12 @@ import java.util.Date;
 import java.util.List;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.importer.XPPUtil;
-import mobi.chouette.exchange.neptune.importer.Constant;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.ChouetteAreaEnum;
@@ -32,7 +32,7 @@ public class ChouetteAreaParser implements Parser, Constant {
 	@Override
 	public void parse(Context context) throws Exception {
 
-		XmlPullParser xpp = (XmlPullParser) context.get(XPP);
+		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
@@ -55,7 +55,7 @@ public class ChouetteAreaParser implements Parser, Constant {
 
 	private void parseStopArea(Context context, BiMap<String, String> map)
 			throws Exception {
-		XmlPullParser xpp = (XmlPullParser) context.get(XPP);
+		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, "StopArea");
@@ -166,7 +166,7 @@ public class ChouetteAreaParser implements Parser, Constant {
 
 	private void parseAreaCentroid(Context context, BiMap<String, String> map)
 			throws Exception {
-		XmlPullParser xpp = (XmlPullParser) context.get(XPP);
+		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, "AreaCentroid");

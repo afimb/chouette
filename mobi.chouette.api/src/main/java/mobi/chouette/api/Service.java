@@ -34,13 +34,13 @@ import javax.ws.rs.core.Response.Status;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
+import mobi.chouette.common.Constant;
 import mobi.chouette.common.JSONUtils;
 import mobi.chouette.dao.JobDAO;
 import mobi.chouette.dao.SchemaDAO;
 import mobi.chouette.model.api.Job;
 import mobi.chouette.model.api.Job.STATUS;
 import mobi.chouette.model.api.Link;
-import mobi.chouette.scheduler.Constant;
 import mobi.chouette.scheduler.Parameters;
 import mobi.chouette.scheduler.Scheduler;
 
@@ -56,10 +56,7 @@ import com.google.common.collect.Collections2;
 @RequestScoped
 public class Service implements Constant {
 
-	public static final String PARAMETERS_FILE = "parameters.json";
-	public static final String REPORT_FILE = "report.json";
-	public static final String VALIDATION_FILE = "validation.json";
-	public static final String EXPORTED_FILE = "data.zip";
+
 
 	@Inject
 	JobDAO jobDAO;
@@ -383,7 +380,7 @@ public class Service implements Constant {
 
 		// build response
 		ResponseBuilder builder = null;
-		if (scheduler.cancel(job)) {
+		if (scheduler.cancel(job.getId())) {
 			builder = Response.ok();
 		} else {
 			throw new WebApplicationException(Status.NOT_FOUND);

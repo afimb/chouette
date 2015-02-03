@@ -10,10 +10,13 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.CompressUtils;
+import mobi.chouette.common.FileUtils;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
+
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
 
 @Stateless(name = UncompressCommand.COMMAND)
 @Log4j
@@ -25,6 +28,7 @@ public class UncompressCommand implements Command {
 	public boolean execute(Context context) throws Exception {
 
 		boolean result = ERROR;
+		Monitor monitor = MonitorFactory.start(COMMAND);
 
 		try {
 			String path = (String) context.get(PATH);
@@ -34,12 +38,13 @@ public class UncompressCommand implements Command {
 			if (!Files.exists(target)) {
 				Files.createDirectories(target);
 			}
-			CompressUtils.uncompress(filename.toString(), target.toString());
+			FileUtils.uncompress(filename.toString(), target.toString());
 			result = SUCCESS;
 		} catch (Exception e) {
 			log.error(e);
 		}
 
+		log.info("[DSU] " + monitor.stop());
 		return result;
 	}
 
@@ -49,7 +54,9 @@ public class UncompressCommand implements Command {
 		protected Command create(InitialContext context) throws IOException {
 			Command result = null;
 			try {
-				result = (Command) context.lookup(JAVA_MODULE + COMMAND);
+				String name = "java:app/mobi.chouette.exchange/"
+						+ COMMAND;
+				result = (Command) context.lookup(name);
 			} catch (NamingException e) {
 				log.error(e);
 			}

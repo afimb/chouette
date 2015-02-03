@@ -30,7 +30,7 @@ import com.jamonapi.MonitorFactory;
 @Log4j
 public class SAXParserCommand implements Command, Constant {
 
-	public static final String COMMAND = "NeptuneSAXParserCommand";
+	public static final String COMMAND = "SAXParserCommand";
 
 	private static final String FILE = "/xsd/neptune.xsd";
 
@@ -72,7 +72,9 @@ public class SAXParserCommand implements Command, Constant {
 		protected Command create(InitialContext context) throws IOException {
 			Command result = null;
 			try {
-				result = (Command) context.lookup(JAVA_MODULE + COMMAND);
+				String name = "java:app/mobi.chouette.exchange/"
+						+ COMMAND;
+				result = (Command) context.lookup(name);
 			} catch (NamingException e) {
 				log.error(e);
 			}

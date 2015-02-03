@@ -4,31 +4,42 @@ import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import lombok.ToString;
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
+import mobi.chouette.common.FileUtils;
 import mobi.chouette.common.chain.Chain;
 import mobi.chouette.common.chain.ChainImpl;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.importer.RegisterCommand;
-import mobi.chouette.exchange.importer.TransactionnalCommand;
+import mobi.chouette.exchange.TransactionnalCommand;
 import mobi.chouette.exchange.importer.UncompressCommand;
 
-@Stateless(name = MainCommand.COMMAND)
-@Log4j
-public class MainCommand implements Command, Constant {
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
 
-	public static final String COMMAND = "MainCommand";
+@Stateless(name = NeptuneImporterCommand.COMMAND)
+@ToString
+@Log4j
+public class NeptuneImporterCommand implements Command, Constant {
+
+	public static final String COMMAND = "NeptuneImporterCommand";
 
 	@Override
 	public boolean execute(Context context) throws Exception {
 		boolean result = ERROR;
+		Monitor monitor = MonitorFactory.start(COMMAND);
 
 		try {
 			InitialContext ctx = (InitialContext) context.get(INITIAL_CONTEXT);
@@ -40,27 +51,29 @@ public class MainCommand implements Command, Constant {
 
 			Chain chain = new ChainImpl();
 
-			Path path = Paths.get(context.get(PATH) + INPUT);
-			DirectoryStream<Path> stream = Files.newDirectoryStream(path, "*.xml");
+			Path path = Paths.get(context.get(PATH).toString(), INPUT);
+			List<Path> stream = FileUtils.listFiles(path, "*.xml");
+
 			for (Path file : stream) {
 
-				context.put(FILE, path.toString());
-				
-				Chain transac = (Chain) CommandFactory.create(ctx,
-						TransactionnalCommand.class.getName());
+				log.info("[DSU] import : " + file.toString());
+				context.put(FILE, file.toString());
+
+				Chain transaction = new ChainImpl();
 
 				// parser
 				Command parser = CommandFactory.create(ctx,
 						NeptuneParserCommand.class.getName());
-
-				transac.add(parser);
+				transaction.add(parser);
+				
 
 				// register
-//				Command register = CommandFactory.create(ctx,
-//						RegisterCommand.class.getName());
-//				transac.add(register);
-
-				chain.add(transac);
+				// Command register = CommandFactory.create(ctx,
+				// RegisterCommand.class.getName());
+				// transac.add(register);
+				
+				
+				chain.add(transaction);
 			}
 
 			chain.execute(context);
@@ -70,8 +83,11 @@ public class MainCommand implements Command, Constant {
 			log.error(e);
 		}
 
+		log.info("[DSU] " + monitor.stop());
 		return result;
 	}
+
+	
 
 	public static class DefaultCommandFactory extends CommandFactory {
 
@@ -79,7 +95,9 @@ public class MainCommand implements Command, Constant {
 		protected Command create(InitialContext context) throws IOException {
 			Command result = null;
 			try {
-				result = (Command) context.lookup(JAVA_MODULE + COMMAND);
+				String name = "java:app/mobi.chouette.exchange.neptune/"
+						+ COMMAND;
+				result = (Command) context.lookup(name);
 			} catch (NamingException e) {
 				log.error(e);
 			}
@@ -89,6 +107,7 @@ public class MainCommand implements Command, Constant {
 
 	static {
 		CommandFactory factory = new DefaultCommandFactory();
-		CommandFactory.factories.put(MainCommand.class.getName(), factory);
+		CommandFactory.factories.put(NeptuneImporterCommand.class.getName(),
+				factory);
 	}
 }

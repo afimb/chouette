@@ -1,5 +1,6 @@
 package mobi.chouette.scheduler;
 
+import java.nio.file.Paths;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
@@ -11,7 +12,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
+import mobi.chouette.common.JSONUtils;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.model.api.Job;
@@ -22,6 +25,7 @@ import mobi.chouette.persistence.hibernate.ContextHolder;
 @AllArgsConstructor
 @ToString(of = { "job" })
 public class Task implements Callable<Job.STATUS>, ManagedTask, Constant {
+
 
 	@Getter
 	private Job job;
@@ -40,6 +44,7 @@ public class Task implements Callable<Job.STATUS>, ManagedTask, Constant {
 			Context context = new Context();
 			context.put(INITIAL_CONTEXT, ctx);
 			context.put(JOB, job);
+		
 			Command command = CommandFactory.create(ctx,
 					MainCommand.class.getName());
 			command.execute(context);

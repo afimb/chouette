@@ -6,6 +6,9 @@ import java.util.Map;
 
 import javax.naming.InitialContext;
 
+import lombok.extern.log4j.Log4j;
+
+@Log4j
 public abstract class CommandFactory {
 
 	   public static Map<String, CommandFactory> factories = new HashMap<String, CommandFactory>();
@@ -16,6 +19,7 @@ public abstract class CommandFactory {
 	         throws ClassNotFoundException, IOException
 
 	   {
+		  //  log.info("[DSU] create : " + name);
 	      if (!factories.containsKey(name))
 	      {
 	         Class.forName(name);

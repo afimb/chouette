@@ -20,7 +20,7 @@ public class CompanyParser implements Parser, Constant {
 	@Override
 	public void parse(Context context) throws Exception {
 
-		XmlPullParser xpp = (XmlPullParser) context.get(XPP);
+		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
@@ -38,7 +38,7 @@ public class CompanyParser implements Parser, Constant {
 
 	private void parseOperator(Context context) throws Exception {
 
-		XmlPullParser xpp = (XmlPullParser) context.get(XPP);
+		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, "Operator");
@@ -75,7 +75,7 @@ public class CompanyParser implements Parser, Constant {
 
 	private void parseContactDetails(Context context, Company company)
 			throws Exception{
-		XmlPullParser xpp = (XmlPullParser) context.get(XPP);
+		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, "ContactDetails");
@@ -97,7 +97,7 @@ public class CompanyParser implements Parser, Constant {
 
 	private void parseOrganisationParts(Context context, Company company)
 			throws Exception {
-		XmlPullParser xpp = (XmlPullParser) context.get(XPP);
+		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, "parts");
@@ -121,7 +121,7 @@ public class CompanyParser implements Parser, Constant {
 
 	private void parseDepartments(Context context, Company company)
 			throws Exception{
-		XmlPullParser xpp = (XmlPullParser) context.get(XPP);
+		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, "departments");

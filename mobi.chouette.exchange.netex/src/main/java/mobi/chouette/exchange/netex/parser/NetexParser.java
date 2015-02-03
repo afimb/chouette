@@ -18,7 +18,7 @@ public class NetexParser implements Parser, Constant {
 	@Override
 	public void parse(Context context) throws Exception {
 
-		XmlPullParser xpp = (XmlPullParser) context.get(XPP);
+		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		XPPUtil.nextStartTag(xpp, CHILD_TAG);
@@ -46,7 +46,7 @@ public class NetexParser implements Parser, Constant {
 	}
 
 	private void parseResourceFrame(Context context) throws Exception {
-		XmlPullParser xpp = (XmlPullParser) context.get(XPP);
+		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
@@ -61,7 +61,7 @@ public class NetexParser implements Parser, Constant {
 	}
 
 	private void parseServiceFrame(Context context) throws Exception {
-		XmlPullParser xpp = (XmlPullParser) context.get(XPP);
+		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 			if (xpp.getName().equals("Network")) {
@@ -103,7 +103,7 @@ public class NetexParser implements Parser, Constant {
 	}
 
 	private void parseSiteFrame(Context context) throws Exception {
-		XmlPullParser xpp = (XmlPullParser) context.get(XPP);
+		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
@@ -118,7 +118,7 @@ public class NetexParser implements Parser, Constant {
 	}
 
 	private void parseTimetableFrame(Context context) throws Exception {
-		XmlPullParser xpp = (XmlPullParser) context.get(XPP);
+		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {

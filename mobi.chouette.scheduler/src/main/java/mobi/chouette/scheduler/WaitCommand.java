@@ -7,6 +7,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
@@ -19,8 +20,8 @@ public class WaitCommand implements Command, Constant {
 
 	@Override
 	public boolean execute(Context context) throws Exception {
-		sleep(60 * 1000);
-		return Constant.SUCCESS;
+		sleep(2 * 60 * 1000);
+		return SUCCESS;
 	}
 
 	private void sleep(long millis) {
@@ -36,7 +37,9 @@ public class WaitCommand implements Command, Constant {
 		protected Command create(InitialContext context) throws IOException {
 			Command result = null;
 			try {
-				result = (Command) context.lookup(JAVA_MODULE + COMMAND);
+				String name = "java:app/mobi.chouette.scheduler/"
+						+ COMMAND;
+				result = (Command) context.lookup(name);
 			} catch (NamingException e) {
 				log.error(e);
 			}
