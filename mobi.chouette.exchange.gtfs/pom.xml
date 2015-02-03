@@ -10,7 +10,7 @@
 	<packaging>ejb</packaging>
 
 	<dependencies>
-	
+
 		<!-- Default Dependencies -->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
@@ -19,7 +19,7 @@
 		</dependency>
 
 		<!-- Others Dependencies -->
-		
+
 		<!-- Modules -->
 		<dependency>
 			<groupId>${project.groupId}</groupId>
@@ -29,27 +29,27 @@
 		</dependency>
 	</dependencies>
 	<build>
-	<plugins>
-	<plugin>
-    <groupId>org.codehaus.mojo</groupId>
-    <artifactId>jaxb2-maven-plugin</artifactId>
-    <version>1.6</version>
-    <executions>
-        <execution>
-            <goals>
-                <goal>schemagen</goal>
-            </goals>
-            <phase>generate-resources</phase>
-            <configuration>
-                <includes>
-                    <include>mobi/chouette/exchange/gtfs/importer/Parameters.java</include>
-                    <include>mobi/chouette/exchange/gtfs/exporter/Parameters.java</include>
-                </includes>
-                <outputDirectory>${project.build.directory}/schemas</outputDirectory>
-            </configuration>
-        </execution>
-    </executions>
-</plugin>
-	</plugins>
-	</build>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>jaxb2-maven-plugin</artifactId>
+				<version>1.6</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>schemagen</goal>
+						</goals>
+						<phase>generate-resources</phase>
+						<configuration>
+							<includes>
+								<include>mobi/chouette/exchange/gtfs/importer/Parameters.java</include>
+								<include>mobi/chouette/exchange/gtfs/exporter/Parameters.java</include>
+							</includes>
+							<outputDirectory>${project.build.directory}/schemas</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>	
 </project>
