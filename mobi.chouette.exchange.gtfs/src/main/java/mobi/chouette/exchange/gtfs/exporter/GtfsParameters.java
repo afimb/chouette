@@ -5,13 +5,12 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import mobi.chouette.exchange.parameters.AbstractParameter;
 
 @XmlType (name= "gtfsExport")
-public class Parameters  extends AbstractParameter {
+public class GtfsParameters  extends AbstractParameter {
 	
 	private String referencesType;
 	

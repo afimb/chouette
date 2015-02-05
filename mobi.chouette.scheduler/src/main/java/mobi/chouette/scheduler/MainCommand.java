@@ -47,6 +47,8 @@ public class MainCommand implements Command, Constant {
 				PARAMETERS_FILE);
 		Parameters parameters = JSONUtils.fromJSON(path, Parameters.class);
 		context.put(PARAMETERS, parameters);
+		context.put(CONFIGURATION, parameters.getConfiguration());
+		context.put(VALIDATION, parameters.getValidation());
 		context.put(ACTION, job.getAction());
 		context.put(TYPE, job.getType());
 		

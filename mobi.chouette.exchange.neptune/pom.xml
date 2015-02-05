@@ -17,35 +17,7 @@
 			<artifactId>lombok</artifactId>
 			<scope>provided</scope>
 		</dependency>
-
-		<!-- Test Dependencies -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.wildfly</groupId>
-			<artifactId>wildfly-embedded</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.wildfly</groupId>
-			<artifactId>wildfly-arquillian-container-embedded</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.arquillian.junit</groupId>
-			<artifactId>arquillian-junit-container</artifactId>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.shrinkwrap.resolver</groupId>
-			<artifactId>shrinkwrap-resolver-depchain</artifactId>
-			<scope>test</scope>
-			<type>pom</type>
-		</dependency>
-
+		
 		<!-- Test Dependencies -->
 		<dependency>
 			<groupId>junit</groupId>

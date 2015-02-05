@@ -129,23 +129,24 @@ public class LineUpdater implements Updater<Line> {
 		}
 
 		// Company
-		if (newValue.getCompany() == null) {
-			oldValue.setCompany(null);
-		} else {
-			Company company = companyDAO.findByObjectId(newValue.getCompany()
-					.getObjectId());
-			if (company == null) {
-				company = new Company();
-				company.setObjectId(newValue.getCompany().getObjectId());
-				companyDAO.create(company);
+		if (!newValue.isSaved()) {
+			if (newValue.getCompany() == null) {
+				oldValue.setCompany(null);
+			} else {
+				Company company = companyDAO.findByObjectId(newValue
+						.getCompany().getObjectId());
+				if (company == null) {
+					company = new Company();
+					company.setObjectId(newValue.getCompany().getObjectId());
+					companyDAO.create(company);
+				}
+				Updater<Company> companyUpdater = UpdaterFactory
+						.create(CompanyUpdater.class.getName());
+				companyUpdater.update(null, oldValue.getCompany(),
+						newValue.getCompany());
+				oldValue.setCompany(company);
 			}
-			Updater<Company> companyUpdater = UpdaterFactory
-					.create(CompanyUpdater.class.getName());
-			companyUpdater.update(null, oldValue.getCompany(),
-					newValue.getCompany());
-			oldValue.setCompany(company);
 		}
-
 		// GroupOfLine
 		Collection<GroupOfLine> addedGroupOfLine = CollectionUtils.substract(
 				newValue.getGroupOfLines(), oldValue.getGroupOfLines(),

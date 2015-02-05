@@ -11,6 +11,9 @@ public interface Constant {
 	public static final String JOB = "job";
 	public static final String ROOT_PATH = "referentials";
 	public static final String PARAMETERS = "parameters";
+	public static final String CONFIGURATION = "configuration";
+	public static final String VALIDATION = "validation";
+
 	public static final String ARCHIVE = "archive";
 	public static final String PATH = "path";
 	public static final String FILE = "file";

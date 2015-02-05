@@ -63,7 +63,7 @@ import org.apache.commons.lang.StringUtils;
 @Cacheable
 @NoArgsConstructor
 @Log4j
-public class StopArea extends NeptuneLocalizedObject implements ObjectIdTypes {
+public class StopArea extends NeptuneLocalizedObject {
 	private static final long serialVersionUID = 4548672479038099240L;
 
 	/**
