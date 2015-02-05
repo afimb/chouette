@@ -17,7 +17,7 @@
 			<artifactId>lombok</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<!-- Test Dependencies -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -53,6 +53,11 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.hibernate.javax.persistence</groupId>
+			<artifactId>hibernate-jpa-2.1-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
 		</dependency>
@@ -64,30 +69,30 @@
 			<type>ejb</type>
 			<version>${project.version}</version>
 		</dependency>
-		
+
 	</dependencies>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>jaxb2-maven-plugin</artifactId>
-				<version>1.6</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>schemagen</goal>
-						</goals>
-						<phase>generate-resources</phase>
-						<configuration>
-							<includes>
-								<include>mobi/chouette/exchange/gtfs/importer/GtfsParameters.java</include>
+<!-- 	<build> -->
+<!-- 		<plugins> -->
+<!-- 			<plugin> -->
+<!-- 				<groupId>org.codehaus.mojo</groupId> -->
+<!-- 				<artifactId>jaxb2-maven-plugin</artifactId> -->
+<!-- 				<version>1.6</version> -->
+<!-- 				<executions> -->
+<!-- 					<execution> -->
+<!-- 						<goals> -->
+<!-- 							<goal>schemagen</goal> -->
+<!-- 						</goals> -->
+<!-- 						<phase>generate-resources</phase> -->
+<!-- 						<configuration> -->
+<!-- 							<includes> -->
+<!-- 								<include>mobi/chouette/exchange/gtfs/importer/GtfsParameters.java</include> -->
 <!-- 								<include>mobi/chouette/exchange/gtfs/exporter/Parameters.java</include> -->
-							</includes>
-							<outputDirectory>${project.build.directory}/schemas</outputDirectory>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>	
+<!-- 							</includes> -->
+<!-- 							<outputDirectory>${project.build.directory}/schemas</outputDirectory> -->
+<!-- 						</configuration> -->
+<!-- 					</execution> -->
+<!-- 				</executions> -->
+<!-- 			</plugin> -->
+<!-- 		</plugins> -->
+<!-- 	</build> -->
 </project>
