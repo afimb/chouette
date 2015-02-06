@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.neptune.importer;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -25,6 +26,8 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.TransactionnalCommand;
 import mobi.chouette.exchange.importer.UncompressCommand;
+import mobi.chouette.exchange.importer.report.FileItem;
+import mobi.chouette.exchange.importer.report.Report;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -44,6 +47,8 @@ public class NeptuneImporterCommand implements Command, Constant {
 		try {
 			InitialContext ctx = (InitialContext) context.get(INITIAL_CONTEXT);
 
+			Report report = new Report();
+			context.put(REPORT, report);
 			// uncompress data
 			Command command = CommandFactory.create(ctx,
 					UncompressCommand.class.getName());
@@ -56,6 +61,15 @@ public class NeptuneImporterCommand implements Command, Constant {
 
 			for (Path file : stream) {
 
+				// skip metadata file
+				if (file.toFile().getName().toLowerCase().contains("metadata"))
+				{
+					FileItem fileItem = new FileItem();
+					fileItem.setName(file.toFile().getName());
+					report.getFiles().getFilesDetail().getIgnored().add(fileItem);
+					continue;
+				}
+
 				log.info("[DSU] import : " + file.toString());
 				context.put(FILE, file.toString());
 
@@ -65,14 +79,14 @@ public class NeptuneImporterCommand implements Command, Constant {
 				Command parser = CommandFactory.create(ctx,
 						NeptuneParserCommand.class.getName());
 				transaction.add(parser);
-				
+
 
 				// register
 				// Command register = CommandFactory.create(ctx,
 				// RegisterCommand.class.getName());
 				// transac.add(register);
-				
-				
+
+
 				chain.add(transaction);
 			}
 
@@ -87,7 +101,7 @@ public class NeptuneImporterCommand implements Command, Constant {
 		return result;
 	}
 
-	
+
 
 	public static class DefaultCommandFactory extends CommandFactory {
 

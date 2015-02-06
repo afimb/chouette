@@ -1,44 +1,23 @@
 package mobi.chouette.exchange.importer.report;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
+import lombok.Data;
+
+@XmlAccessorType(XmlAccessType.FIELD)
+@Data
 public class FileItem {
 	
+	@XmlAttribute(name="name")
 	private String name;
 	
-	private List<String> errors;
-
-	/**
-	 * @return the name
-	 */
-	@XmlAttribute(name="name")
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
-	 * @return the errors
-	 */
 	@XmlElement(name="errors")
-	public List<String> getErrors() {
-		return errors;
-	}
-
-	/**
-	 * @param errors the errors to set
-	 */
-	public void setErrors(List<String> errors) {
-		this.errors = errors;
-	}
+	private List<String> errors = new ArrayList<>();
 
 }

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import mobi.chouette.model.NeptuneIdentifiedObject;
+import mobi.chouette.model.NeptuneLocalizedObject;
 import mobi.chouette.model.NeptuneObject;
 
 public abstract class NeptuneUtil {
@@ -103,6 +104,39 @@ public abstract class NeptuneUtil {
 		}
 		return map;
 	}
-	
+		
+	   /**
+	    * project latitude and longitude on x and y  if not already set<br/>
+	    * clears projection if no projection is given
+	    * 
+	    * @param projectionType type of projection (EPSG:xxx)
+	    */
+	   public static void toProjection(NeptuneLocalizedObject object, String projectionType)
+	   {
+	      if (!object.hasCoordinates())
+	         return;
+
+	      String projection = null;
+	      if (projectionType == null || projectionType.isEmpty())
+	      {
+	    	  object.setX(null);
+	    	  object.setY(null);
+	    	  object.setProjectionType(null);
+	         return;
+	      }
+	      if (object.hasProjection() )
+	         return;
+	      projection = projectionType.toUpperCase();
+	      
+	      Coordinate p = new Coordinate(object.getLongitude(), object.getLatitude());
+	      Coordinate coordinate = CoordinateUtil.transform(Coordinate.WGS84, projection, p);
+	      if (coordinate != null)
+	      {
+	    	  object.setX(coordinate.x);
+	    	  object.setY(coordinate.y);
+	    	  object.setProjectionType(projection);
+	      }
+	   }
+
 	
 }

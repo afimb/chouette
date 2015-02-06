@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<metadata xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:dcterms="http://purl.org/dc/terms/">
+	<!-- produced by Chouette -->
+	<dcterms:coverage xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:type="dcterms:Period">start=2014-05-02; end=2015-04-30; scheme=W3C-DTF;</dcterms:coverage>
+	<dcterms:spatial xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:type="dcterms:Box">northlimit=52.403; southlimit=52.275; westlimit=4.831; eastlimit=4.990</dcterms:spatial>
+	<dcterms:creator>Local</dcterms:creator>
+	<dcterms:date xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:type="dcterms:W3CDTF">2015-02-03</dcterms:date>
+	<dcterms:description>Exported data count = 5
+		Network Amsterdam Metro, Line 7 [54]
+		Network Amsterdam Metro, Line 1 [50]
+		Network Amsterdam Metro, Line 5 [52]
+		Network Amsterdam Metro, Line 4 [51]
+		Network Amsterdam Metro, Line 6 [53]
+	</dcterms:description>
+	<dcterms:format>text/csv</dcterms:format>
+	<dcterms:language xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:type="dcterms:W3CDTF">fr_FR.utf8</dcterms:language>
+	<dcterms:publisher>SCMA</dcterms:publisher>
+	<dcterms:relation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:type="dcterms:URI">https://developers.google.com/transit/gtfs/reference</dcterms:relation>
+	<dcterms:title>Export GTFS </dcterms:title>
+	<dcterms:type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:type="dcterms:DCMIType">Dataset</dcterms:type>
+</metadata>

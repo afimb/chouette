@@ -23,6 +23,8 @@ public interface Constant {
 	public static final String INPUT = "input";
 	public static final String OUTPUT = "output";
 	public static final String PARAMETERS_FILE = "parameters.json";
+	public static final String REPORT = "report";
+	public static final String VALIDATION_REPORT = "validation_report";
 	public static final String REPORT_FILE = "report.json";
 	public static final String VALIDATION_FILE = "validation.json";
 
@@ -31,6 +33,10 @@ public interface Constant {
 
 	public static final String REFERENTIAL = "referential";
 	public static final String PARSER = "parser";
+	
+	public static final String EXPORTABLE_DATA = "exportable_data";
+	public static final String METADATA = "metadata";
+	public static final String LINE = "line";
 
 	public static final String BUFFER = "buffer";
 	public static final char SEP = '|';

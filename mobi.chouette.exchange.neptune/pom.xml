@@ -17,6 +17,14 @@
 			<artifactId>lombok</artifactId>
 			<scope>provided</scope>
 		</dependency>
+      <dependency>
+         <groupId>javax.xml.bind</groupId>
+         <artifactId>jaxb-api</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>com.sun.xml.bind</groupId>
+         <artifactId>jaxb-impl</artifactId>
+      </dependency>
 		
 		<!-- Test Dependencies -->
 		<dependency>
@@ -61,8 +69,27 @@
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
-<!-- 	<build> -->
-<!-- 		<plugins> -->
+ 	<build>
+ 		<plugins>
+         <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>jaxb2-maven-plugin</artifactId>
+            <version>1.5</version>
+            <executions>
+               <execution>
+                  <id>xjc</id>
+                  <phase>generate-sources</phase>
+                  <goals>
+                     <goal>xjc</goal>
+                  </goals>
+               </execution>
+            </executions>
+            <configuration>
+               <schemaDirectory>${basedir}/src/main/resources/xsd</schemaDirectory>
+               <schemaFiles>neptune.xsd</schemaFiles>
+               <arguments>-extension -Xlocator -b ${basedir}/src/main/resources/xsd/bindings.xml</arguments>
+            </configuration>
+         </plugin>
 <!-- 			<plugin> -->
 <!-- 				<groupId>org.codehaus.mojo</groupId> -->
 <!-- 				<artifactId>jaxb2-maven-plugin</artifactId> -->
@@ -83,7 +110,7 @@
 <!-- 					</execution> -->
 <!-- 				</executions> -->
 <!-- 			</plugin> -->
-<!-- 		</plugins> -->
-<!-- 	</build> -->
+ 		</plugins>
+ 	</build>
 
 </project>

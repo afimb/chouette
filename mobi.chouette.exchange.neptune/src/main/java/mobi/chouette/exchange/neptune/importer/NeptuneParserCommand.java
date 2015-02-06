@@ -19,6 +19,8 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
+import mobi.chouette.exchange.importer.report.FileItem;
+import mobi.chouette.exchange.importer.report.Report;
 import mobi.chouette.exchange.neptune.parser.ChouettePTNetworkParser;
 import mobi.chouette.model.util.Referential;
 
@@ -34,30 +36,43 @@ import com.jamonapi.MonitorFactory;
 @Log4j
 public class NeptuneParserCommand implements Command, Constant {
 
-	
+
 	public static final String COMMAND = "NeptuneParserCommand";
 
 	@Override
 	public boolean execute(Context context) throws Exception {
 		boolean result = ERROR;
 		Monitor monitor = MonitorFactory.start(COMMAND);
+		Report report = (Report) context.get(REPORT);
 		File file = new File((String) context.get(FILE));
-		
-		InputStream input = new BOMInputStream(new FileInputStream(file));
-		BufferedReader in = new BufferedReader(new InputStreamReader(input),
-				8192 * 10);
-		XmlPullParser xpp = XmlPullParserFactory.newInstance().newPullParser();
-		xpp.setInput(in);
-		context.put(PARSER, xpp);
-		context.put(REFERENTIAL, new Referential());
+		FileItem fileItem = new FileItem();
+		fileItem.setName(file.getName());
 
-		Parser parser = ParserFactory.create(ChouettePTNetworkParser.class
-				.getName());
-		parser.parse(context);
-		
-		log.info("[DSU] " + monitor.stop());
-		result = SUCCESS;
-		return result;
+		try{
+
+			InputStream input = new BOMInputStream(new FileInputStream(file));
+			BufferedReader in = new BufferedReader(new InputStreamReader(input),
+					8192 * 10);
+			XmlPullParser xpp = XmlPullParserFactory.newInstance().newPullParser();
+			xpp.setInput(in);
+			context.put(PARSER, xpp);
+			context.put(REFERENTIAL, new Referential());
+
+			Parser parser = ParserFactory.create(ChouettePTNetworkParser.class
+					.getName());
+			parser.parse(context);
+
+			log.info("[DSU] " + monitor.stop());
+			report.getFiles().getFilesDetail().getOk().add(fileItem);
+			result = SUCCESS;
+			return result;
+		}
+		catch (Exception e)
+		{
+			report.getFiles().getFilesDetail().getError().add(fileItem);
+			fileItem.getErrors().add(e.getMessage());
+			throw e;
+		}
 	}
 
 	public static class DefaultCommandFactory extends CommandFactory {

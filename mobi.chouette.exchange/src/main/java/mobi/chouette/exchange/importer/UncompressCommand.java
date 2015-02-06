@@ -14,13 +14,16 @@ import mobi.chouette.common.FileUtils;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.importer.report.Report;
+import mobi.chouette.exchange.importer.report.ReportConstant;
+import mobi.chouette.exchange.importer.report.ZipItem;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
 @Stateless(name = UncompressCommand.COMMAND)
 @Log4j
-public class UncompressCommand implements Command {
+public class UncompressCommand implements Command,ReportConstant {
 
 	public static final String COMMAND = "UncompressCommand";
 
@@ -29,10 +32,14 @@ public class UncompressCommand implements Command {
 
 		boolean result = ERROR;
 		Monitor monitor = MonitorFactory.start(COMMAND);
+		Report report = (Report) context.get(REPORT);
 
+		ZipItem zip = new ZipItem();
 		try {
 			String path = (String) context.get(PATH);
 			String file = (String) context.get(ARCHIVE);
+			zip.setName(file);
+			report.setZip(zip);
 			Path filename = Paths.get(path, file);
 			Path target = Paths.get(path, INPUT);
 			if (!Files.exists(target)) {
@@ -40,7 +47,12 @@ public class UncompressCommand implements Command {
 			}
 			FileUtils.uncompress(filename.toString(), target.toString());
 			result = SUCCESS;
+			zip.setStatus(STATUS_OK);
 		} catch (Exception e) {
+			zip.getErrors().add(e.getMessage());
+			zip.setStatus(STATUS_ERROR);
+			report.setStatus(STATUS_ERROR);
+			report.setError("invalid_zip");
 			log.error(e);
 		}
 
