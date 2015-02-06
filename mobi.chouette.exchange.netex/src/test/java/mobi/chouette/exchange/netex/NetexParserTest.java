@@ -46,7 +46,7 @@ public class NetexParserTest {
 	public void todo() throws Exception {
 		Context context = new Context();
 		URL url = NetexParserTest.class.getResource("/META-INF/line_test.xml");
-		context.put(Constant.FILE, url.toExternalForm());
+		context.put(Constant.FILE_URL, url.toExternalForm());
 		command.execute(context);
 	}
 }

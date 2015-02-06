@@ -65,14 +65,22 @@ public class FileUtils {
 		while ((entry = in.getNextEntry()) != null) {
 
 			File file = new File(path, entry.getName());
-			file.getParentFile().mkdirs();
-			if (!entry.isDirectory()) {
+			if (entry.isDirectory()) {
+				if (!file.exists()) {
+					file.mkdirs();
+				}
+			} else {
+				if (file.exists()) {
+					file.delete();
+				}
+				file.createNewFile();
 				OutputStream out = new FileOutputStream(file);
 				IOUtils.copy(in, out);
-				IOUtils.closeQuietly(in);
 				IOUtils.closeQuietly(out);
 			}
 		}
+		IOUtils.closeQuietly(in);
+
 	}
 
 	public static void compress(String path, String filename)

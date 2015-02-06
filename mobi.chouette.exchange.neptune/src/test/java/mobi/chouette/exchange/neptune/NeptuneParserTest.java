@@ -9,6 +9,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
+import mobi.chouette.exchange.importer.SAXParserCommand;
 import mobi.chouette.exchange.neptune.importer.NeptuneParserCommand;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -25,51 +26,47 @@ import org.junit.runner.RunWith;
 public class NeptuneParserTest {
 
 	@EJB(beanName = NeptuneParserCommand.COMMAND)
-	private Command command;
+	private Command parser;
+
+	@EJB(beanName = SAXParserCommand.COMMAND)
+	private Command validation;
 
 	@Deployment
 	public static WebArchive createDeployment() {
 
 		WebArchive result;
 
-		// TODO use POM
-
 		File[] files = Maven.resolver().loadPomFromFile("pom.xml")
 				.resolve("mobi.chouette:mobi.chouette.exchange.neptune:1.0.0")
 				.withTransitivity().asFile();
 
-		result = ShrinkWrap.create(WebArchive.class, "test.war")
-				.addAsWebInfResource("wildfly-ds.xml").addAsLibraries(files)
+		result = ShrinkWrap
+				.create(WebArchive.class, "test.war")
+				.addAsWebInfResource("wildfly-ds.xml")
+				.addAsLibraries(files)
 				.addAsManifestResource("C_NEPTUNE_3.xml")
-				.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
-
-		// String[] artifacts = {
-		// "mobi.chouette:mobi.chouette.exchange.neptune:1.0.0",
-		// "mobi.chouette:mobi.chouette.common:1.0.0",
-		// "mobi.chouette:mobi.chouette.model:1.0.0",
-		// "mobi.chouette:mobi.chouette.importer:1.0.0",
-		// "mobi.chouette:mobi.chouette.exporter:1.0.0",
-		// "mobi.chouette:mobi.chouette.validation:1.0.0",
-		// "mobi.chouette:mobi.chouette.exchange.neptune:1.0.0",
-		// "xpp3:xpp3:1.1.3.4.O", "com.google.guava:guava:18.0" };
-		// File[] dependencies = Maven.resolver().resolve(artifacts)
-		// .withoutTransitivity().asFile();
-		//
-		// result = ShrinkWrap.create(WebArchive.class)
-		// .addAsLibraries(dependencies)
-		// .addAsResource("xml/C_NEPTUNE_3.xml")
-		// .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
+				.addAsManifestResource("neptune.xsd")
+				.addAsResource(EmptyAsset.INSTANCE, "beans.xml");
 
 		return result;
 
 	}
 
+//	@Test
+//	public void validation() throws Exception {
+//		Context context = new Context();
+//		URL schema = NeptuneParserTest.class.getResource("/META-INF/neptune.xsd");
+//		context.put(Constant.SCHEMA_FILE, schema.toExternalForm());
+//		URL file = NeptuneParserTest.class.getResource("/META-INF/C_NEPTUNE_3.xml");
+//		context.put(Constant.FILE_URL, file.toExternalForm());
+//		validation.execute(context);
+//	}
+
 	@Test
-	public void todo() throws Exception {
+	public void parser() throws Exception {
 		Context context = new Context();
-		URL url = NeptuneParserTest.class
-				.getResource("/META-INF/C_NEPTUNE_3.xml");
-		context.put(Constant.FILE, url.toExternalForm());
-		command.execute(context);
+		URL file = NeptuneParserTest.class.getResource("/META-INF/C_NEPTUNE_3.xml");
+		context.put(Constant.FILE_URL, file.toExternalForm());
+		parser.execute(context);
 	}
 }

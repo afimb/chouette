@@ -24,6 +24,7 @@ import mobi.chouette.common.chain.ChainImpl;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.TransactionnalCommand;
+import mobi.chouette.exchange.importer.SAXParserCommand;
 import mobi.chouette.exchange.importer.UncompressCommand;
 
 import com.jamonapi.Monitor;
@@ -54,13 +55,19 @@ public class NeptuneImporterCommand implements Command, Constant {
 			Path path = Paths.get(context.get(PATH).toString(), INPUT);
 			List<Path> stream = FileUtils.listFiles(path, "*.xml");
 
+			context.put(SCHEMA_FILE, "xsd/neptune.xsd");
 			for (Path file : stream) {
 
 				log.info("[DSU] import : " + file.toString());
-				context.put(FILE, file.toString());
+				context.put(FILE_URL, file.toString());
 
 				Chain transaction = new ChainImpl();
 
+				// validation
+				Command validation = CommandFactory.create(ctx,
+						SAXParserCommand.class.getName());
+				transaction.add(validation);
+				
 				// parser
 				Command parser = CommandFactory.create(ctx,
 						NeptuneParserCommand.class.getName());

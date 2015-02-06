@@ -37,3 +37,10 @@ bin/jboss-cli.sh connect, deploy --force  chouette.ear
 
 # shutdown
 bin/jboss-cli.sh --connect --command=:shutdown
+
+
+
+
+TODO :
+configurer le server HTTP : Max post size:  1G ?
+

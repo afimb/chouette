@@ -41,7 +41,7 @@ public class SAXParserCommand implements Command, Constant {
 
 		Schema schema = (Schema) context.get(SCHEMA);
 		if (schema != null) {
-			InputStream in = this.getClass().getResourceAsStream(FILE);
+			InputStream in = this.getClass().getResourceAsStream(SCHEMA_FILE);
 			Source source = new StreamSource(in);
 			SchemaFactory factory = SchemaFactory
 					.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);

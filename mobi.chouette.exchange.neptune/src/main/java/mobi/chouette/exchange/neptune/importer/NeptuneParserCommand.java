@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 
 import javax.ejb.Stateless;
 import javax.naming.InitialContext;
@@ -41,9 +42,12 @@ public class NeptuneParserCommand implements Command, Constant {
 	public boolean execute(Context context) throws Exception {
 		boolean result = ERROR;
 		Monitor monitor = MonitorFactory.start(COMMAND);
-		File file = new File((String) context.get(FILE));
 		
-		InputStream input = new BOMInputStream(new FileInputStream(file));
+		URL url = new URL((String) context.get(FILE_URL));
+		
+		// File file = new File((String) context.get(FILE_URL));
+		
+		InputStream input = new BOMInputStream(url.openStream());
 		BufferedReader in = new BufferedReader(new InputStreamReader(input),
 				8192 * 10);
 		XmlPullParser xpp = XmlPullParserFactory.newInstance().newPullParser();
