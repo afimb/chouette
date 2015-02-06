@@ -9,8 +9,8 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
-import mobi.chouette.exchange.importer.SAXParserCommand;
 import mobi.chouette.exchange.neptune.importer.NeptuneParserCommand;
+import mobi.chouette.exchange.neptune.importer.NeptuneSAXParserCommand;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -28,7 +28,7 @@ public class NeptuneParserTest {
 	@EJB(beanName = NeptuneParserCommand.COMMAND)
 	private Command parser;
 
-	@EJB(beanName = SAXParserCommand.COMMAND)
+	@EJB(beanName = NeptuneSAXParserCommand.COMMAND)
 	private Command validation;
 
 	@Deployment
@@ -40,32 +40,30 @@ public class NeptuneParserTest {
 				.resolve("mobi.chouette:mobi.chouette.exchange.neptune:1.0.0")
 				.withTransitivity().asFile();
 
-		result = ShrinkWrap
-				.create(WebArchive.class, "test.war")
-				.addAsWebInfResource("wildfly-ds.xml")
-				.addAsLibraries(files)
+		result = ShrinkWrap.create(WebArchive.class, "test.war")
+				.addAsWebInfResource("wildfly-ds.xml").addAsLibraries(files)
 				.addAsManifestResource("C_NEPTUNE_3.xml")
-				.addAsManifestResource("neptune.xsd")
+				.addAsManifestResource("1000252.xml")
 				.addAsResource(EmptyAsset.INSTANCE, "beans.xml");
 
 		return result;
 
 	}
 
-//	@Test
-//	public void validation() throws Exception {
-//		Context context = new Context();
-//		URL schema = NeptuneParserTest.class.getResource("/META-INF/neptune.xsd");
-//		context.put(Constant.SCHEMA_FILE, schema.toExternalForm());
-//		URL file = NeptuneParserTest.class.getResource("/META-INF/C_NEPTUNE_3.xml");
-//		context.put(Constant.FILE_URL, file.toExternalForm());
-//		validation.execute(context);
-//	}
+	@Test
+	public void validation() throws Exception {
+		Context context = new Context();
+		URL file = NeptuneParserTest.class
+				.getResource("/META-INF/1000252.xml");
+		context.put(Constant.FILE_URL, file.toExternalForm());
+		validation.execute(context);
+	}
 
 	@Test
 	public void parser() throws Exception {
 		Context context = new Context();
-		URL file = NeptuneParserTest.class.getResource("/META-INF/C_NEPTUNE_3.xml");
+		URL file = NeptuneParserTest.class
+				.getResource("/META-INF/C_NEPTUNE_3.xml");
 		context.put(Constant.FILE_URL, file.toExternalForm());
 		parser.execute(context);
 	}

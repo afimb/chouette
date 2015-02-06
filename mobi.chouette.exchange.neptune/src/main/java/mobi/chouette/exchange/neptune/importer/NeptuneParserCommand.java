@@ -14,6 +14,7 @@ import javax.naming.NamingException;
 
 import lombok.ToString;
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Color;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
@@ -44,9 +45,8 @@ public class NeptuneParserCommand implements Command, Constant {
 		Monitor monitor = MonitorFactory.start(COMMAND);
 		
 		URL url = new URL((String) context.get(FILE_URL));
-		
-		// File file = new File((String) context.get(FILE_URL));
-		
+		log.info("[DSU] parsing file : " + url );
+
 		InputStream input = new BOMInputStream(url.openStream());
 		BufferedReader in = new BufferedReader(new InputStreamReader(input),
 				8192 * 10);

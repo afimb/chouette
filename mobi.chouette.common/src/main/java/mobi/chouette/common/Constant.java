@@ -17,8 +17,7 @@ public interface Constant {
 	public static final String ARCHIVE = "archive";
 	public static final String PATH = "path";
 	public static final String FILE_URL = "file_url";
-	public static final String SCHEMA = "schema";
-	public static final String SCHEMA_FILE = "schema_file";
+	public static final String VALIDATOR = "validator";
 	public static final String ACTION = "action";
 	public static final String TYPE = "type";
 	public static final String INPUT = "input";

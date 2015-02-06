@@ -1,18 +1,15 @@
 package mobi.chouette.exchange.neptune.importer;
 
 import java.io.IOException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
+import javax.inject.Inject;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.transaction.UserTransaction;
 
 import lombok.ToString;
 import lombok.extern.log4j.Log4j;
@@ -23,8 +20,6 @@ import mobi.chouette.common.chain.Chain;
 import mobi.chouette.common.chain.ChainImpl;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.TransactionnalCommand;
-import mobi.chouette.exchange.importer.SAXParserCommand;
 import mobi.chouette.exchange.importer.UncompressCommand;
 
 import com.jamonapi.Monitor;
@@ -37,6 +32,7 @@ public class NeptuneImporterCommand implements Command, Constant {
 
 	public static final String COMMAND = "NeptuneImporterCommand";
 
+	
 	@Override
 	public boolean execute(Context context) throws Exception {
 		boolean result = ERROR;
@@ -55,17 +51,16 @@ public class NeptuneImporterCommand implements Command, Constant {
 			Path path = Paths.get(context.get(PATH).toString(), INPUT);
 			List<Path> stream = FileUtils.listFiles(path, "*.xml");
 
-			context.put(SCHEMA_FILE, "xsd/neptune.xsd");
 			for (Path file : stream) {
 
-				log.info("[DSU] import : " + file.toString());
-				context.put(FILE_URL, file.toString());
+				
+				context.put(FILE_URL, file.toUri().toURL().toExternalForm());
 
 				Chain transaction = new ChainImpl();
 
 				// validation
 				Command validation = CommandFactory.create(ctx,
-						SAXParserCommand.class.getName());
+						NeptuneSAXParserCommand.class.getName());
 				transaction.add(validation);
 				
 				// parser

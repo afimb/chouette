@@ -37,7 +37,7 @@ public class NetexParserTest {
 		result = ShrinkWrap.create(WebArchive.class, "test.war")
 				.addAsWebInfResource("wildfly-ds.xml").addAsLibraries(files)
 				.addAsManifestResource("line_test.xml")
-				.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
+				.addAsResource(EmptyAsset.INSTANCE, "beans.xml");
 
 		return result;
 	}
