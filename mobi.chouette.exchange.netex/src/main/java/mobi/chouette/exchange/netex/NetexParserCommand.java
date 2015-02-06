@@ -31,7 +31,7 @@ public class NetexParserCommand implements Command, Constant {
 	@Override
 	public boolean execute(Context context) throws Exception {
 
-		URL url = new URL((String) context.get(FILE));
+		URL url = new URL((String) context.get(FILE_URL));
 		InputStream input = url.openStream();
 		XmlPullParser xpp = XmlPullParserFactory.newInstance().newPullParser();
 		BufferedReader in = new BufferedReader(new InputStreamReader(input),

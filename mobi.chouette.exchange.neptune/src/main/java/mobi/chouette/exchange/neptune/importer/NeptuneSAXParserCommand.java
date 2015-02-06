@@ -1,8 +1,9 @@
-package mobi.chouette.exchange.importer;
+package mobi.chouette.exchange.neptune.importer;
 
-import java.io.File;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 
 import javax.ejb.Stateless;
 import javax.naming.InitialContext;
@@ -21,43 +22,45 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 
+import org.apache.commons.io.input.BOMInputStream;
 import org.xml.sax.SAXException;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
-@Stateless(name = SAXParserCommand.COMMAND)
+@Stateless(name = NeptuneSAXParserCommand.COMMAND)
 @Log4j
-public class SAXParserCommand implements Command, Constant {
+public class NeptuneSAXParserCommand implements Command, Constant {
 
-	public static final String COMMAND = "SAXParserCommand";
+	public static final String COMMAND = "NeptuneSAXParserCommand";
 
-	private static final String FILE = "/xsd/neptune.xsd";
+	public static final String SCHEMA_FILE = "/xsd/neptune.xsd";
 
 	@Override
 	public boolean execute(Context context) throws Exception {
 
-		Monitor monitor = MonitorFactory.start();
+		Monitor monitor = MonitorFactory.start(COMMAND);
 
-		Schema schema = (Schema) context.get(SCHEMA);
-		if (schema != null) {
-			InputStream in = this.getClass().getResourceAsStream(FILE);
-			Source source = new StreamSource(in);
+		Validator validator = (Validator) context.get(VALIDATOR);
+		if (validator == null) {
 			SchemaFactory factory = SchemaFactory
 					.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-			SAXErrorHandler handler = new SAXErrorHandler(context);
+			NeptuneSAXErrorHandler handler = new NeptuneSAXErrorHandler(context);
 			factory.setErrorHandler(handler);
-			schema = factory.newSchema(source);
-			context.put(SCHEMA, schema);
+			Schema schema = factory.newSchema(getClass().getResource(
+					SCHEMA_FILE));
+			validator = schema.newValidator();
+			context.put(VALIDATOR, validator);
 		}
 
-		String path = (String) context.get(FILE);
-		Source file = new StreamSource(new File(path));
+		URL url = new URL((String) context.get(FILE_URL));		
+		BufferedReader reader = new BufferedReader(new InputStreamReader(
+				new BOMInputStream(url.openStream())), 8192 * 10);
+		Source file = new StreamSource(reader);
 
-		Validator validator = schema.newValidator();
 		try {
 			validator.validate(file);
-			log.info(Color.SUCCESS + "[DSU] " + monitor.stop() + Color.NORMAL);
+			log.info(Color.MAGENTA + "[DSU] " + monitor.stop() + Color.NORMAL);
 		} catch (IOException | SAXException e) {
 			log.error(e);
 			monitor.stop();
@@ -72,8 +75,7 @@ public class SAXParserCommand implements Command, Constant {
 		protected Command create(InitialContext context) throws IOException {
 			Command result = null;
 			try {
-				String name = "java:app/mobi.chouette.exchange/"
-						+ COMMAND;
+				String name = "java:app/mobi.chouette.exchange.neptune/" + COMMAND;
 				result = (Command) context.lookup(name);
 			} catch (NamingException e) {
 				log.error(e);
@@ -84,7 +86,7 @@ public class SAXParserCommand implements Command, Constant {
 
 	static {
 		CommandFactory factory = new DefaultCommandFactory();
-		CommandFactory.factories.put(SAXParserCommand.class.getName(),
+		CommandFactory.factories.put(NeptuneSAXParserCommand.class.getName(),
 				factory);
 	}
 }

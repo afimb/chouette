@@ -37,7 +37,7 @@ public class NetexParserTest {
 		result = ShrinkWrap.create(WebArchive.class, "test.war")
 				.addAsWebInfResource("wildfly-ds.xml").addAsLibraries(files)
 				.addAsManifestResource("line_test.xml")
-				.addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
+				.addAsResource(EmptyAsset.INSTANCE, "beans.xml");
 
 		return result;
 	}
@@ -46,7 +46,7 @@ public class NetexParserTest {
 	public void todo() throws Exception {
 		Context context = new Context();
 		URL url = NetexParserTest.class.getResource("/META-INF/line_test.xml");
-		context.put(Constant.FILE, url.toExternalForm());
+		context.put(Constant.FILE_URL, url.toExternalForm());
 		command.execute(context);
 	}
 }

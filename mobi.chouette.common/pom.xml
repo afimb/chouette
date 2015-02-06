@@ -12,12 +12,7 @@
 	<dependencies>
 
 		<!-- Default Dependencies -->
-		<dependency>
-			<groupId>org.jboss.spec</groupId>
-			<artifactId>jboss-javaee-7.0</artifactId>
-			<type>pom</type>
-			<scope>provided</scope>
-		</dependency>
+
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -30,6 +25,34 @@
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
+		</dependency>
+
+		<!-- Test Dependencies -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.wildfly</groupId>
+			<artifactId>wildfly-embedded</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.wildfly</groupId>
+			<artifactId>wildfly-arquillian-container-embedded</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.arquillian.junit</groupId>
+			<artifactId>arquillian-junit-container</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.shrinkwrap.resolver</groupId>
+			<artifactId>shrinkwrap-resolver-depchain</artifactId>
+			<type>pom</type>
+			<scope>test</scope>
 		</dependency>
 
 		<!-- Other Dependencies -->
@@ -62,24 +85,24 @@
 			<artifactId>commons-compress</artifactId>
 		</dependency>
 
-<!-- 		<dependency> -->
-<!-- 			<groupId>com.fasterxml.jackson.core</groupId> -->
-<!-- 			<artifactId>jackson-annotations</artifactId> -->
-<!-- 		</dependency> -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>com.fasterxml.jackson.core</groupId> -->
-<!-- 			<artifactId>jackson-databind</artifactId> -->
-<!-- 		</dependency> -->
-<!-- 		<dependency> -->
-<!-- 			<groupId>com.fasterxml.jackson.module</groupId> -->
-<!-- 			<artifactId>jackson-module-jaxb-annotations</artifactId> -->
-<!-- 		</dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>com.fasterxml.jackson.core</groupId> -->
+		<!-- <artifactId>jackson-annotations</artifactId> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>com.fasterxml.jackson.core</groupId> -->
+		<!-- <artifactId>jackson-databind</artifactId> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>com.fasterxml.jackson.module</groupId> -->
+		<!-- <artifactId>jackson-module-jaxb-annotations</artifactId> -->
+		<!-- </dependency> -->
 
 
-<dependency>
-	<groupId>org.codehaus.jettison</groupId>
-	<artifactId>jettison</artifactId>
-</dependency>
+		<dependency>
+			<groupId>org.codehaus.jettison</groupId>
+			<artifactId>jettison</artifactId>
+		</dependency>
 
 
 		<!-- Modules Dependencies -->

@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 
 import javax.ejb.Stateless;
 import javax.naming.InitialContext;
@@ -13,6 +14,7 @@ import javax.naming.NamingException;
 
 import lombok.ToString;
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Color;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
@@ -44,13 +46,15 @@ public class NeptuneParserCommand implements Command, Constant {
 		boolean result = ERROR;
 		Monitor monitor = MonitorFactory.start(COMMAND);
 		Report report = (Report) context.get(REPORT);
-		File file = new File((String) context.get(FILE));
 		FileItem fileItem = new FileItem();
-		fileItem.setName(file.getName());
+		fileItem.setName((String) context.get(FILE_URL));
 
 		try{
 
-			InputStream input = new BOMInputStream(new FileInputStream(file));
+			URL url = new URL((String) context.get(FILE_URL));
+			log.info("[DSU] parsing file : " + url );
+
+			InputStream input = new BOMInputStream(url.openStream());
 			BufferedReader in = new BufferedReader(new InputStreamReader(input),
 					8192 * 10);
 			XmlPullParser xpp = XmlPullParserFactory.newInstance().newPullParser();
