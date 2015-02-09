@@ -1,5 +1,7 @@
 package mobi.chouette.exchange.neptune;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.net.URL;
 
@@ -9,6 +11,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
+import mobi.chouette.exchange.importer.report.Report;
 import mobi.chouette.exchange.neptune.importer.NeptuneParserCommand;
 import mobi.chouette.exchange.neptune.importer.NeptuneSAXParserCommand;
 
@@ -43,6 +46,9 @@ public class NeptuneParserTest {
 		result = ShrinkWrap.create(WebArchive.class, "test.war")
 				.addAsWebInfResource("wildfly-ds.xml").addAsLibraries(files)
 				.addAsManifestResource("C_NEPTUNE_3.xml")
+				.addAsManifestResource("broken_file.xml")
+				.addAsManifestResource("error_file.xml")
+				.addAsManifestResource("metadata_chouette_dc.xml")
 				.addAsManifestResource("1000252.xml")
 				.addAsResource(EmptyAsset.INSTANCE, "beans.xml");
 
@@ -60,11 +66,73 @@ public class NeptuneParserTest {
 	}
 
 	@Test
-	public void parser() throws Exception {
+	public void verifiyGoodFile() throws Exception {
 		Context context = new Context();
 		URL file = NeptuneParserTest.class
 				.getResource("/META-INF/C_NEPTUNE_3.xml");
+		Report report = new Report();
 		context.put(Constant.FILE_URL, file.toExternalForm());
+		context.put(Constant.REPORT, report);
 		parser.execute(context);
+		assertNull("no error should be reported",report.getError());
+		assertEquals("report one ok file",report.getFiles().getFilesDetail().getOk().size(),1);
+
+	}
+
+	@Test
+	public void verifiyWrongFile() throws Exception {
+		Context context = new Context();
+		URL file = NeptuneParserTest.class
+				.getResource("/META-INF/error_file.xml");
+		Report report = new Report();
+		context.put(Constant.FILE_URL, file.toExternalForm());
+		context.put(Constant.REPORT, report);
+		try
+		{
+			parser.execute(context);
+		}
+		catch (Exception e)
+		{
+			System.out.println("exception received "+e.getMessage());
+		}
+		assertNull("no error should be reported",report.getError());
+		assertEquals("report one error file",report.getFiles().getFilesDetail().getError().size(),1);
+		System.out.println("error message = "+report.getFiles().getFilesDetail().getError().get(0).getErrors().get(0));
+	}
+
+	@Test
+	public void verifiyBrokenFile() throws Exception {
+		Context context = new Context();
+		URL file = NeptuneParserTest.class
+				.getResource("/META-INF/broken_file.xml");
+		Report report = new Report();
+		context.put(Constant.FILE_URL, file.toExternalForm());
+		context.put(Constant.REPORT, report);
+		try
+		{
+			parser.execute(context);
+		}
+		catch (Exception e)
+		{
+			System.out.println("exception received "+e.getMessage());
+		}
+		assertNull("no error should be reported",report.getError());
+		assertEquals("report one error file",report.getFiles().getFilesDetail().getError().size(),1);
+		System.out.println("error message = "+report.getFiles().getFilesDetail().getError().get(0).getErrors().get(0));
+
+	}
+
+	@Test
+	public void verifiyIgnoredFile() throws Exception {
+		Context context = new Context();
+		URL file = NeptuneParserTest.class
+				.getResource("/META-INF/metadata_chouette_dc.xml");
+		Report report = new Report();
+		context.put(Constant.FILE_URL, file.toExternalForm());
+		context.put(Constant.REPORT, report);
+		parser.execute(context);
+		assertNull("no error should be reported",report.getError());
+		assertEquals("report one ignored file",report.getFiles().getFilesDetail().getIgnored().size(),1);
+
 	}
 }

@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.neptune.importer;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -28,6 +29,8 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.TransactionnalCommand;
 import mobi.chouette.exchange.importer.UncompressCommand;
+import mobi.chouette.exchange.importer.report.FileItem;
+import mobi.chouette.exchange.importer.report.Report;
 
 import com.google.common.collect.Lists;
 import com.jamonapi.Monitor;
@@ -55,7 +58,9 @@ public class NeptuneImporterCommand implements Command, Constant {
 			InitialContext initialContext = (InitialContext) context
 					.get(INITIAL_CONTEXT);
 
-			// uncompress
+			Report report = new Report();
+			context.put(REPORT, report);
+			// uncompress data
 			Command command = CommandFactory.create(initialContext,
 					UncompressCommand.class.getName());
 			command.execute(context);
@@ -75,6 +80,17 @@ public class NeptuneImporterCommand implements Command, Constant {
 
 			for (Path file : stream) {
 
+				// skip metadata file
+				if (file.toFile().getName().toLowerCase().contains("metadata"))
+				{
+					FileItem fileItem = new FileItem();
+					fileItem.setName(file.toFile().getName());
+					report.getFiles().getFilesDetail().getIgnored().add(fileItem);
+					continue;
+				}
+
+				log.info("[DSU] import : " + file.toString());
+				
 				context.put(FILE_URL, file.toUri().toURL().toExternalForm());
 
 				Chain chain = new ChainImpl();

@@ -1,8 +1,6 @@
 package mobi.chouette.exchange.neptune.importer;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -21,6 +19,8 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
+import mobi.chouette.exchange.importer.report.FileItem;
+import mobi.chouette.exchange.importer.report.Report;
 import mobi.chouette.exchange.neptune.parser.ChouettePTNetworkParser;
 import mobi.chouette.model.util.Referential;
 
@@ -43,29 +43,42 @@ public class NeptuneParserCommand implements Command, Constant {
 		boolean result = ERROR;
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
-		URL url = new URL((String) context.get(FILE_URL));
-		log.info("[DSU] parsing file : " + url);
+		Report report = (Report) context.get(REPORT);
+		FileItem fileItem = new FileItem();
+		fileItem.setName((String) context.get(FILE_URL));
 
-		Referential referential = (Referential) context.get(REFERENTIAL);
-		if (referential != null) {
-			referential.clear();
+		try {
+
+			URL url = new URL((String) context.get(FILE_URL));
+			log.info("[DSU] parsing file : " + url);
+
+			Referential referential = (Referential) context.get(REFERENTIAL);
+			if (referential != null) {
+				referential.clear();
+			}
+
+			InputStream input = new BOMInputStream(url.openStream());
+			BufferedReader in = new BufferedReader(
+					new InputStreamReader(input), 8192 * 10);
+			XmlPullParser xpp = XmlPullParserFactory.newInstance()
+					.newPullParser();
+			xpp.setInput(in);
+			context.put(PARSER, xpp);
+			context.put(REFERENTIAL, new Referential());
+
+			Parser parser = ParserFactory.create(ChouettePTNetworkParser.class
+					.getName());
+			parser.parse(context);
+
+			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
+			report.getFiles().getFilesDetail().getOk().add(fileItem);
+			result = SUCCESS;
+			return result;
+		} catch (Exception e) {
+			report.getFiles().getFilesDetail().getError().add(fileItem);
+			fileItem.getErrors().add(e.getMessage());
+			throw e;
 		}
-
-		InputStream input = new BOMInputStream(url.openStream());
-		BufferedReader in = new BufferedReader(new InputStreamReader(input),
-				8192 * 10);
-		XmlPullParser xpp = XmlPullParserFactory.newInstance().newPullParser();
-		xpp.setInput(in);
-		context.put(PARSER, xpp);
-		context.put(REFERENTIAL, new Referential());
-
-		Parser parser = ParserFactory.create(ChouettePTNetworkParser.class
-				.getName());
-		parser.parse(context);
-
-		log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
-		result = SUCCESS;
-		return result;
 	}
 
 	public static class DefaultCommandFactory extends CommandFactory {

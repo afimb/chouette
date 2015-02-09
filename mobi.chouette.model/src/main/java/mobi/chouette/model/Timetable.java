@@ -97,7 +97,8 @@ public class Timetable extends NeptuneIdentifiedObject {
 	 * @return The actual value
 	 */
 
-	@Getter@Setter
+	@Getter
+	@Setter
 	@Column(name = "int_day_types")
 	private Integer intDayTypes;
 
@@ -112,9 +113,9 @@ public class Timetable extends NeptuneIdentifiedObject {
 		return result;
 	}
 
-	public void setDayTypes(List<DayTypeEnum> dayTypes) {
+	public void setDayTypes(List<DayTypeEnum> arrayList) {
 		int value = 0;
-		for (DayTypeEnum dayType : dayTypes) {
+		for (DayTypeEnum dayType : arrayList) {
 			int mask = 1 << dayType.ordinal();
 			value |= mask;
 		}

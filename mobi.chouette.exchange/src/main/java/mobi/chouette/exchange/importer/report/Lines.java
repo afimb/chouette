@@ -1,44 +1,23 @@
 package mobi.chouette.exchange.importer.report;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 
+import lombok.Data;
 
+
+@XmlAccessorType(XmlAccessType.FIELD)
+@Data
 public class Lines {
 
+	@XmlElement(name = "stats")
 	private LineStats stats;
 
-	private List<LineItem> list;
-
-	/**
-	 * @return the stats
-	 */
-	@XmlElement(name = "stats")
-	public LineStats getStats() {
-		return stats;
-	}
-
-	/**
-	 * @param stats the stats to set
-	 */
-	public void setStats(LineStats stats) {
-		this.stats = stats;
-	}
-
-	/**
-	 * @return the list
-	 */
 	@XmlElement(name = "list")
-	public List<LineItem> getList() {
-		return list;
-	}
-
-	/**
-	 * @param list the list to set
-	 */
-	public void setList(List<LineItem> list) {
-		this.list = list;
-	}
+	private List<LineItem> list = new ArrayList<>();
 
 }

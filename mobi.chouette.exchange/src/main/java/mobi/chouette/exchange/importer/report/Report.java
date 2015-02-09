@@ -1,45 +1,32 @@
 package mobi.chouette.exchange.importer.report;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import lombok.Data;
+
 @XmlRootElement(name = "import")
+@XmlAccessorType(XmlAccessType.FIELD)
+@Data
 public class Report {
 
-	private Files files;
+	@XmlAttribute(name = "status")
+	private String status;
 	
-	private Lines lines;
+	@XmlElement(name = "zip")
+	private ZipItem zip;
 	
-	/**
-	 * @return the files
-	 */
 	@XmlElement(name = "files")
-	public Files getFiles() {
-		return files;
-	}
-
-	/**
-	 * @param files the files to set
-	 */
-	public void setFiles(Files files) {
-		this.files = files;
-	}
-
-
-
-	/**
-	 * @return the lines
-	 */
+	private Files files = new Files();
+	
 	@XmlElement(name = "lines")
-	public Lines getLines() {
-		return lines;
-	}
-
-	/**
-	 * @param lines the lines to set
-	 */
-	public void setLines(Lines lines) {
-		this.lines = lines;
-	}
-
+	private Lines lines = new Lines();
+	
+	@XmlAttribute(name = "error")
+	private String error;
+	
+	
 }

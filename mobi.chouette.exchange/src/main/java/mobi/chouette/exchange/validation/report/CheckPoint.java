@@ -10,6 +10,22 @@ import lombok.Data;
 
 @Data
 public class CheckPoint {
+	
+	private static final int maxDetails = 20;
+
+	public enum SEVERITY {
+		WARNING, ERROR, IMPROVMENT
+	};
+
+	public enum STATE {
+		UNCHECK, OK, WARNING, ERROR, FATAL
+	};
+
+	@XmlAttribute(name = "name")
+	private String name;
+
+	@XmlAttribute(name = "order")
+	private int order;
 
 	@XmlAttribute(name = "severity")
 	private SEVERITY severity;
@@ -23,11 +39,26 @@ public class CheckPoint {
 	@XmlElement(name = "details")
 	private List<Detail> details = new ArrayList<Detail>();
 
-	public enum SEVERITY {
-		WARNING, ERROR, IMPROVMENT
-	};
+	public CheckPoint(String name,int order, STATE state, SEVERITY severity)
+	{
+		this.name = name;
+		this.order = order;
+		this.severity = severity;
+		this.state = state;
+	}
 
-	public enum STATE {
-		UNCHECK, OK, WARNING, ERROR, FATAL
-	};
+	public void addDetail(Detail item) 
+	{
+		if (detailCount < maxDetails) 
+		{
+			details.add(item);
+		}
+		detailCount++;
+		// TODO manage common state enum
+	    if (item.getState().ordinal() > state.ordinal())
+	    {
+	    	state = STATE.values()[item.getState().ordinal()];
+	    }
+		
+	}
 }
