@@ -35,7 +35,6 @@ public class NeptuneImporterCommand implements Command, Constant {
 
 	public static final String COMMAND = "NeptuneImporterCommand";
 
-	
 	@Override
 	public boolean execute(Context context) throws Exception {
 		boolean result = ERROR;
@@ -56,6 +55,16 @@ public class NeptuneImporterCommand implements Command, Constant {
 			Path path = Paths.get(context.get(PATH).toString(), INPUT);
 			List<Path> stream = FileUtils.listFiles(path, "*.xml");
 
+			// validation
+			for (Path file : stream) {
+				context.put(FILE_URL, file.toUri().toURL().toExternalForm());
+			
+				Command validation = CommandFactory.create(ctx,
+						NeptuneSAXParserCommand.class.getName());
+				validation.execute(context)	;			
+			}
+
+			
 			for (Path file : stream) {
 
 				// skip metadata file
@@ -73,11 +82,6 @@ public class NeptuneImporterCommand implements Command, Constant {
 
 				Chain transaction = new ChainImpl();
 
-				// validation
-				Command validation = CommandFactory.create(ctx,
-						NeptuneSAXParserCommand.class.getName());
-				transaction.add(validation);
-				
 				// parser
 				Command parser = CommandFactory.create(ctx,
 						NeptuneParserCommand.class.getName());
@@ -103,8 +107,6 @@ public class NeptuneImporterCommand implements Command, Constant {
 		log.info("[DSU] " + monitor.stop());
 		return result;
 	}
-
-
 
 	public static class DefaultCommandFactory extends CommandFactory {
 
