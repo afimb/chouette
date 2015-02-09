@@ -17,11 +17,12 @@
 			<artifactId>lombok</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		 <dependency>
-<groupId>org.jboss.spec.javax.transaction</groupId>
-<artifactId>jboss-transaction-api_1.2_spec</artifactId>
-<scope>provided</scope>
-</dependency>
+		<dependency>
+			<groupId>org.jboss.spec.javax.transaction</groupId>
+			<artifactId>jboss-transaction-api_1.2_spec</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		
 		<!-- Test Dependencies -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -65,29 +66,29 @@
 			<version>${project.version}</version>
 		</dependency>
 	</dependencies>
-<!-- 	<build> -->
-<!-- 		<plugins> -->
-<!-- 			<plugin> -->
-<!-- 				<groupId>org.codehaus.mojo</groupId> -->
-<!-- 				<artifactId>jaxb2-maven-plugin</artifactId> -->
-<!-- 				<version>1.6</version> -->
-<!-- 				<executions> -->
-<!-- 					<execution> -->
-<!-- 						<goals> -->
-<!-- 							<goal>schemagen</goal> -->
-<!-- 						</goals> -->
-<!-- 						<phase>generate-resources</phase> -->
-<!-- 						<configuration> -->
-<!-- 							<includes> -->
-<!-- 								<include>mobi/chouette/exchange/neptune/importer/NeptuneParameters.java</include> -->
-<!-- 								<include>mobi/chouette/exchange/neptune/exporter/Parameters.java</include> -->
-<!-- 							</includes> -->
-<!-- 							<outputDirectory>${project.build.directory}/schemas</outputDirectory> -->
-<!-- 						</configuration> -->
-<!-- 					</execution> -->
-<!-- 				</executions> -->
-<!-- 			</plugin> -->
-<!-- 		</plugins> -->
-<!-- 	</build> -->
+	<!-- <build> -->
+	<!-- <plugins> -->
+	<!-- <plugin> -->
+	<!-- <groupId>org.codehaus.mojo</groupId> -->
+	<!-- <artifactId>jaxb2-maven-plugin</artifactId> -->
+	<!-- <version>1.6</version> -->
+	<!-- <executions> -->
+	<!-- <execution> -->
+	<!-- <goals> -->
+	<!-- <goal>schemagen</goal> -->
+	<!-- </goals> -->
+	<!-- <phase>generate-resources</phase> -->
+	<!-- <configuration> -->
+	<!-- <includes> -->
+	<!-- <include>mobi/chouette/exchange/neptune/importer/NeptuneParameters.java</include> -->
+	<!-- <include>mobi/chouette/exchange/neptune/exporter/Parameters.java</include> -->
+	<!-- </includes> -->
+	<!-- <outputDirectory>${project.build.directory}/schemas</outputDirectory> -->
+	<!-- </configuration> -->
+	<!-- </execution> -->
+	<!-- </executions> -->
+	<!-- </plugin> -->
+	<!-- </plugins> -->
+	<!-- </build> -->
 
 </project>
