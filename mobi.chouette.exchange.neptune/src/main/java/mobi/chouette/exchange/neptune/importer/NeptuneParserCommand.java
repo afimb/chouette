@@ -66,7 +66,7 @@ public class NeptuneParserCommand implements Command, Constant {
 					.getName());
 			parser.parse(context);
 
-			log.info("[DSU] " + monitor.stop());
+		log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 			report.getFiles().getFilesDetail().getOk().add(fileItem);
 			result = SUCCESS;
 			return result;

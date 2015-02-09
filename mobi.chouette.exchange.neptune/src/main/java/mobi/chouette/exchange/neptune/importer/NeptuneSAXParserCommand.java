@@ -3,6 +3,7 @@ package mobi.chouette.exchange.neptune.importer;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.net.URL;
 
 import javax.ejb.Stateless;
@@ -54,13 +55,14 @@ public class NeptuneSAXParserCommand implements Command, Constant {
 		}
 
 		URL url = new URL((String) context.get(FILE_URL));		
-		BufferedReader reader = new BufferedReader(new InputStreamReader(
-				new BOMInputStream(url.openStream())), 8192 * 10);
+		log.info("[DSU] validate file : " + url );
+
+		Reader reader = new InputStreamReader(new BOMInputStream(url.openStream()));
 		Source file = new StreamSource(reader);
 
 		try {
 			validator.validate(file);
-			log.info(Color.MAGENTA + "[DSU] " + monitor.stop() + Color.NORMAL);
+			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		} catch (IOException | SAXException e) {
 			log.error(e);
 			monitor.stop();
