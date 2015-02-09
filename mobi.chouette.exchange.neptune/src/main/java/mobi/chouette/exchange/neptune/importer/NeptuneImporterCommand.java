@@ -9,11 +9,11 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
 import javax.annotation.Resource;
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.transaction.UserTransaction;
 
 import lombok.AllArgsConstructor;
 import lombok.ToString;
@@ -43,6 +43,8 @@ public class NeptuneImporterCommand implements Command, Constant {
 	@Resource(lookup = "java:comp/DefaultManagedExecutorService")
 	ManagedExecutorService executor;
 
+	@EJB
+	TransactionnalCommand transactionnal;
 
 	@Override
 	public boolean execute(Context context) throws Exception {
@@ -63,11 +65,11 @@ public class NeptuneImporterCommand implements Command, Constant {
 
 			// validation
 			int n = Runtime.getRuntime().availableProcessors() / 1;
-			List<List<Path>> partition = Lists.partition(stream,
-					(int) Math.ceil(((double) stream.size()) / ((double) n)));
+			int size = (int )Math.ceil(stream.size() / n);
+			List<List<Path>> partition = Lists.partition(stream, size);
 			List<Task> tasks = new ArrayList<Task>();
 			for (int i = 0; i < n; i++) {
-				tasks.add(new Task(initialContext, partition.get(i)));
+				tasks.add(new Task(initialContext, context, partition.get(i)));
 			}
 			List<Future<Boolean>> futures = executor.invokeAll(tasks);
 
@@ -86,11 +88,7 @@ public class NeptuneImporterCommand implements Command, Constant {
 				// Command register = CommandFactory.create(ctx,
 				// RegisterCommand.class.getName());
 				// transac.add(register);
-				
-				
-				TransactionnalCommand transactionnal = (TransactionnalCommand) CommandFactory
-						.create(initialContext,
-								TransactionnalCommand.class.getName());
+
 				transactionnal.execute(context, chain);
 			}
 
@@ -107,13 +105,14 @@ public class NeptuneImporterCommand implements Command, Constant {
 	class Task implements Callable<Boolean> {
 
 		private InitialContext initialContext;
+		private Context context;
 		private List<Path> files = new ArrayList<Path>();
 
 		@Override
 		public Boolean call() throws Exception {
 			boolean result = SUCCESS;
 			log.info("[DSU] validate : " + files.size());
-			Context context = new Context();
+
 			for (Path file : files) {
 				context.put(FILE_URL, file.toUri().toURL().toExternalForm());
 				Command validation = CommandFactory.create(this.initialContext,

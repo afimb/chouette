@@ -36,20 +36,21 @@ import com.jamonapi.MonitorFactory;
 @Log4j
 public class NeptuneParserCommand implements Command, Constant {
 
-	
 	public static final String COMMAND = "NeptuneParserCommand";
 
 	@Override
 	public boolean execute(Context context) throws Exception {
 		boolean result = ERROR;
 		Monitor monitor = MonitorFactory.start(COMMAND);
-		
+
 		URL url = new URL((String) context.get(FILE_URL));
-		log.info("[DSU] parsing file : " + url );
+		log.info("[DSU] parsing file : " + url);
 
 		Referential referential = (Referential) context.get(REFERENTIAL);
-		referential.clear();
-		
+		if (referential != null) {
+			referential.clear();
+		}
+
 		InputStream input = new BOMInputStream(url.openStream());
 		BufferedReader in = new BufferedReader(new InputStreamReader(input),
 				8192 * 10);
@@ -61,7 +62,7 @@ public class NeptuneParserCommand implements Command, Constant {
 		Parser parser = ParserFactory.create(ChouettePTNetworkParser.class
 				.getName());
 		parser.parse(context);
-		
+
 		log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		result = SUCCESS;
 		return result;

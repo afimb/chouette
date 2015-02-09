@@ -42,26 +42,26 @@ public class NeptuneSAXParserCommand implements Command, Constant {
 
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
-		Validator validator = (Validator) context.get(VALIDATOR);
-		if (validator == null) {
+		Schema schema = (Schema) context.get(SCHEMA);
+		if (schema == null) {
 			SchemaFactory factory = SchemaFactory
 					.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 			NeptuneSAXErrorHandler handler = new NeptuneSAXErrorHandler(context);
 			factory.setErrorHandler(handler);
-			Schema schema = factory.newSchema(getClass().getResource(
+			schema = factory.newSchema(getClass().getResource(
 					SCHEMA_FILE));
-			validator = schema.newValidator();
-			context.put(VALIDATOR, validator);
+			context.put(SCHEMA, schema);
 		}
 
-		URL url = new URL((String) context.get(FILE_URL));		
-		log.info("[DSU] validate file : " + url );
+		URL url = new URL((String) context.get(FILE_URL));
+		log.info("[DSU] validate file : " + url);
 
-		Reader reader = new InputStreamReader(new BOMInputStream(url.openStream()));
+		Reader reader = new BufferedReader(new InputStreamReader(
+				new BOMInputStream(url.openStream())), 8192 * 10);
 		Source file = new StreamSource(reader);
 
 		try {
-			validator.validate(file);
+			schema.newValidator().validate(file);
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		} catch (IOException | SAXException e) {
 			log.error(e);
@@ -77,7 +77,8 @@ public class NeptuneSAXParserCommand implements Command, Constant {
 		protected Command create(InitialContext context) throws IOException {
 			Command result = null;
 			try {
-				String name = "java:app/mobi.chouette.exchange.neptune/" + COMMAND;
+				String name = "java:app/mobi.chouette.exchange.neptune/"
+						+ COMMAND;
 				result = (Command) context.lookup(name);
 			} catch (NamingException e) {
 				log.error(e);
