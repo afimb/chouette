@@ -10,6 +10,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Color;
 import mobi.chouette.common.FileUtils;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
@@ -44,7 +45,7 @@ public class UncompressCommand implements Command {
 			log.error(e);
 		}
 
-		log.info("[DSU] " + monitor.stop());
+		log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		return result;
 	}
 

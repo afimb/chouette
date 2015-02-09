@@ -47,6 +47,9 @@ public class NeptuneParserCommand implements Command, Constant {
 		URL url = new URL((String) context.get(FILE_URL));
 		log.info("[DSU] parsing file : " + url );
 
+		Referential referential = (Referential) context.get(REFERENTIAL);
+		referential.clear();
+		
 		InputStream input = new BOMInputStream(url.openStream());
 		BufferedReader in = new BufferedReader(new InputStreamReader(input),
 				8192 * 10);
@@ -59,7 +62,7 @@ public class NeptuneParserCommand implements Command, Constant {
 				.getName());
 		parser.parse(context);
 		
-		log.info("[DSU] " + monitor.stop());
+		log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		result = SUCCESS;
 		return result;
 	}

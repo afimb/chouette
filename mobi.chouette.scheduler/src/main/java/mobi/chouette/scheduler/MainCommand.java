@@ -6,6 +6,8 @@ import java.text.MessageFormat;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.naming.InitialContext;
 import javax.ws.rs.core.MediaType;
 
@@ -35,6 +37,7 @@ public class MainCommand implements Command, Constant {
 	JobDAO jobDAO;
 
 	@Override
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public boolean execute(Context context) throws Exception {
 		boolean result = false;
 
