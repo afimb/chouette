@@ -227,11 +227,11 @@ public class NetexExportPlugin implements IExportPlugin<Line>
       metadata.setTitle("Export NeTEx ");
       try
       {
-         metadata.setRelation(new URL("http://www.chouette.mobi"));
+         metadata.setRelation(new URL("http://www.chouette.mobi/pourquoi-chouette/convertir-des-donnees/"));
       }
       catch (MalformedURLException e1)
       {
-         log.error("problem with http://www.chouette.mobi url", e1);
+         log.error("problem with http://www.chouette.mobi/pourquoi-chouette/convertir-des-donnees/ url", e1);
       }
 
       try
