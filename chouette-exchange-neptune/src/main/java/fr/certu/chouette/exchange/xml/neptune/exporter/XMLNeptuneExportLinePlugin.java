@@ -331,11 +331,11 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
          metadata.setTitle("Export Neptune ");
          try
          {
-            metadata.setRelation(new URL("http://www.chouette.mobi"));
+            metadata.setRelation(new URL("http://www.normes-donnees-tc.org/format-dechange/donnees-theoriques/neptune/"));
          }
          catch (MalformedURLException e1)
          {
-            log.error("problem with http://www.chouette.mobi url", e1);
+            log.error("problem with http://www.normes-donnees-tc.org/format-dechange/donnees-theoriques/neptune/ url", e1);
          }
          try
          {
