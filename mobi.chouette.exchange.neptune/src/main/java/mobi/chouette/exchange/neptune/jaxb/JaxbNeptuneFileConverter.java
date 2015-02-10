@@ -41,6 +41,14 @@ public class JaxbNeptuneFileConverter
    private JAXBContext context = null;
 
    private Schema schema = null;
+   
+   private static JaxbNeptuneFileConverter instance = null;
+   
+   public static JaxbNeptuneFileConverter getInstance() throws Exception
+   {
+	   if (instance == null) instance = new JaxbNeptuneFileConverter();
+	   return instance;
+   }
 
    /**
     * constructor
@@ -50,7 +58,7 @@ public class JaxbNeptuneFileConverter
     * @throws SAXException
     * @throws IOException
     */
-   public JaxbNeptuneFileConverter() throws JAXBException, SAXException,
+   private JaxbNeptuneFileConverter() throws JAXBException, SAXException,
          URISyntaxException, IOException
    {
       context = JAXBContext.newInstance(ChouettePTNetworkType.class);
