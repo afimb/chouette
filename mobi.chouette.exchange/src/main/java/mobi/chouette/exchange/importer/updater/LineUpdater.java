@@ -3,6 +3,9 @@ package mobi.chouette.exchange.importer.updater;
 import java.util.Collection;
 
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.CollectionUtils;
@@ -19,7 +22,11 @@ import mobi.chouette.model.PTNetwork;
 import mobi.chouette.model.Route;
 
 @Log4j
+@Stateless(name = LineUpdater.BEAN_NAME)
 public class LineUpdater implements Updater<Line> {
+
+	public static final String BEAN_NAME = "LineUpdater";
+
 	@EJB
 	private PTNetworkDAO ptNetworkDAO;
 
@@ -36,77 +43,80 @@ public class LineUpdater implements Updater<Line> {
 	public void update(Context context, Line oldValue, Line newValue)
 			throws Exception {
 
+		InitialContext initialContext = (InitialContext) context
+				.get(INITIAL_CONTEXT);
+
 		if (newValue.isSaved()) {
 			return;
 		}
 		newValue.setSaved(true);
 
 		if (newValue.getObjectId() != null
-				&& newValue.getObjectId().compareTo(oldValue.getObjectId()) != 0) {
+				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {
 			oldValue.setObjectId(newValue.getObjectId());
 		}
 		if (newValue.getObjectVersion() != null
-				&& newValue.getObjectVersion().compareTo(
-						oldValue.getObjectVersion()) != 0) {
+				&& !newValue.getObjectVersion().equals(
+						oldValue.getObjectVersion())) {
 			oldValue.setObjectVersion(newValue.getObjectVersion());
 		}
 		if (newValue.getCreationTime() != null
-				&& newValue.getCreationTime().compareTo(
-						oldValue.getCreationTime()) != 0) {
+				&& !newValue.getCreationTime().equals(
+						oldValue.getCreationTime())) {
 			oldValue.setCreationTime(newValue.getCreationTime());
 		}
 		if (newValue.getCreatorId() != null
-				&& newValue.getCreatorId().compareTo(oldValue.getCreatorId()) != 0) {
+				&& !newValue.getCreatorId().equals(oldValue.getCreatorId())) {
 			oldValue.setCreatorId(newValue.getCreatorId());
 		}
 		if (newValue.getName() != null
-				&& newValue.getName().compareTo(oldValue.getName()) != 0) {
+				&& !!newValue.getName().equals(oldValue.getName())) {
 			oldValue.setName(newValue.getName());
 		}
 		if (newValue.getComment() != null
-				&& newValue.getComment().compareTo(oldValue.getComment()) != 0) {
+				&& !newValue.getComment().equals(oldValue.getComment())) {
 			oldValue.setComment(newValue.getComment());
 		}
 		if (newValue.getNumber() != null
-				&& newValue.getNumber().compareTo(oldValue.getNumber()) != 0) {
+				&& !newValue.getNumber().equals(oldValue.getNumber())) {
 			oldValue.setNumber(newValue.getNumber());
 		}
 		if (newValue.getPublishedName() != null
-				&& newValue.getPublishedName().compareTo(
-						oldValue.getPublishedName()) != 0) {
+				&& !newValue.getPublishedName().equals(
+						oldValue.getPublishedName())) {
 			oldValue.setPublishedName(newValue.getPublishedName());
 		}
 		if (newValue.getRegistrationNumber() != null
-				&& newValue.getRegistrationNumber().compareTo(
-						oldValue.getRegistrationNumber()) != 0) {
+				&& !newValue.getRegistrationNumber().equals(
+						oldValue.getRegistrationNumber())) {
 			oldValue.setRegistrationNumber(newValue.getRegistrationNumber());
 		}
 		if (newValue.getTransportModeName() != null
-				&& newValue.getTransportModeName().compareTo(
-						oldValue.getTransportModeName()) != 0) {
+				&& !newValue.getTransportModeName().equals(
+						oldValue.getTransportModeName())) {
 			oldValue.setTransportModeName(newValue.getTransportModeName());
 		}
 		if (newValue.getMobilityRestrictedSuitable() != null
-				&& newValue.getMobilityRestrictedSuitable().compareTo(
-						oldValue.getMobilityRestrictedSuitable()) != 0) {
+				&& !newValue.getMobilityRestrictedSuitable().equals(
+						oldValue.getMobilityRestrictedSuitable())) {
 			oldValue.setMobilityRestrictedSuitable(newValue
 					.getMobilityRestrictedSuitable());
 		}
 		if (newValue.getIntUserNeeds() != null
-				&& newValue.getIntUserNeeds().compareTo(
-						oldValue.getIntUserNeeds()) != 0) {
+				&& !newValue.getIntUserNeeds().equals(
+						oldValue.getIntUserNeeds())) {
 			oldValue.setIntUserNeeds(newValue.getIntUserNeeds());
 		}
 		if (newValue.getUrl() != null
-				&& newValue.getUrl().compareTo(oldValue.getUrl()) != 0) {
+				&& !newValue.getUrl().equals(oldValue.getUrl())) {
 			oldValue.setUrl(newValue.getUrl());
 		}
 		if (newValue.getColor() != null
-				&& newValue.getColor().compareTo(oldValue.getColor()) != 0) {
+				&& !newValue.getColor().equals(oldValue.getColor())) {
 			oldValue.setColor(newValue.getColor());
 		}
 		if (newValue.getTextColor() != null
-				&& newValue.getTextColor().compareTo(oldValue.getTextColor()) != 0) {
+				&& !newValue.getTextColor().equals(oldValue.getTextColor())) {
 			oldValue.setTextColor(newValue.getTextColor());
 		}
 
@@ -121,8 +131,8 @@ public class LineUpdater implements Updater<Line> {
 				ptNetwork.setObjectId(newValue.getPtNetwork().getObjectId());
 				ptNetworkDAO.create(ptNetwork);
 			}
-			Updater<PTNetwork> ptNetworkUpdater = UpdaterFactory
-					.create(PTNetworkUpdater.class.getName());
+			Updater<PTNetwork> ptNetworkUpdater = UpdaterFactory.create(
+					initialContext, PTNetworkUpdater.class.getName());
 			ptNetworkUpdater.update(null, oldValue.getPtNetwork(),
 					newValue.getPtNetwork());
 			oldValue.setPTNetwork(ptNetwork);
@@ -140,8 +150,8 @@ public class LineUpdater implements Updater<Line> {
 					company.setObjectId(newValue.getCompany().getObjectId());
 					companyDAO.create(company);
 				}
-				Updater<Company> companyUpdater = UpdaterFactory
-						.create(CompanyUpdater.class.getName());
+				Updater<Company> companyUpdater = UpdaterFactory.create(
+						initialContext, CompanyUpdater.class.getName());
 				companyUpdater.update(null, oldValue.getCompany(),
 						newValue.getCompany());
 				oldValue.setCompany(company);
@@ -162,8 +172,8 @@ public class LineUpdater implements Updater<Line> {
 			groupOfLine.addLine(oldValue);
 		}
 
-		Updater<GroupOfLine> groupOfLineUpdater = UpdaterFactory
-				.create(GroupOfLineUpdater.class.getName());
+		Updater<GroupOfLine> groupOfLineUpdater = UpdaterFactory.create(
+				initialContext, GroupOfLineUpdater.class.getName());
 		Collection<Pair<GroupOfLine, GroupOfLine>> modifiedGroupOfLine = CollectionUtils
 				.intersection(oldValue.getGroupOfLines(),
 						newValue.getGroupOfLines(),
@@ -193,8 +203,8 @@ public class LineUpdater implements Updater<Line> {
 			route.setLine(oldValue);
 		}
 
-		Updater<Route> routeUpdater = UpdaterFactory.create(RouteUpdater.class
-				.getName());
+		Updater<Route> routeUpdater = UpdaterFactory.create(initialContext,
+				RouteUpdater.class.getName());
 		Collection<Pair<Route, Route>> modifiedRoute = CollectionUtils
 				.intersection(oldValue.getRoutes(), newValue.getRoutes(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);
@@ -216,11 +226,18 @@ public class LineUpdater implements Updater<Line> {
 	static {
 		UpdaterFactory.register(LineUpdater.class.getName(),
 				new UpdaterFactory() {
-					private LineUpdater INSTANCE = new LineUpdater();
 
 					@Override
-					protected Updater<Line> create() {
-						return INSTANCE;
+					protected <T> Updater<T> create(InitialContext context) {
+						Updater result = null;
+						try {
+							result = (Updater) context
+									.lookup("java:app/mobi.chouette.exchange/"
+											+ BEAN_NAME);
+						} catch (NamingException e) {
+							log.error(e);
+						}
+						return result;
 					}
 				});
 	}

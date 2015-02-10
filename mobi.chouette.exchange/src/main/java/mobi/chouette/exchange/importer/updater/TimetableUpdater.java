@@ -3,6 +3,10 @@ package mobi.chouette.exchange.importer.updater;
 import java.util.Collection;
 import java.util.Comparator;
 
+import javax.ejb.Stateless;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.CollectionUtils;
 import mobi.chouette.common.Context;
@@ -11,8 +15,12 @@ import mobi.chouette.model.Period;
 import mobi.chouette.model.Timetable;
 
 @Log4j
+@Stateless(name=TimetableUpdater.BEAN_NAME)
 public class TimetableUpdater implements Updater<Timetable> {
 
+	public static final String BEAN_NAME = "TimetableUpdater";
+
+	
 	private static final Comparator<Period> PERIOD_COMPARATOR = new Comparator<Period>() {
 		@Override
 		public int compare(Period left, Period right) {
@@ -37,50 +45,48 @@ public class TimetableUpdater implements Updater<Timetable> {
 		newValue.setSaved(true);
 
 		if (newValue.getObjectId() != null
-				&& newValue.getObjectId().compareTo(oldValue.getObjectId()) != 0) {
+				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {
 			oldValue.setObjectId(newValue.getObjectId());
 		}
 		if (newValue.getObjectVersion() != null
-				&& newValue.getObjectVersion().compareTo(
-						oldValue.getObjectVersion()) != 0) {
+				&& !newValue.getObjectVersion().equals(
+						oldValue.getObjectVersion())) {
 			oldValue.setObjectVersion(newValue.getObjectVersion());
 		}
 		if (newValue.getCreationTime() != null
-				&& newValue.getCreationTime().compareTo(
-						oldValue.getCreationTime()) != 0) {
+				&& !newValue.getCreationTime().equals(
+						oldValue.getCreationTime())) {
 			oldValue.setCreationTime(newValue.getCreationTime());
 		}
 		if (newValue.getCreatorId() != null
-				&& newValue.getCreatorId().compareTo(oldValue.getCreatorId()) != 0) {
+				&& !newValue.getCreatorId().equals(oldValue.getCreatorId())) {
 			oldValue.setCreatorId(newValue.getCreatorId());
 		}
 		if (newValue.getName() != null
-				&& newValue.getName().compareTo(oldValue.getName()) != 0) {
+				&& !newValue.getName().equals(oldValue.getName())) {
 			oldValue.setName(newValue.getName());
 		}
 		if (newValue.getComment() != null
-				&& newValue.getComment().compareTo(oldValue.getComment()) != 0) {
+				&& !newValue.getComment().equals(oldValue.getComment())) {
 			oldValue.setComment(newValue.getComment());
 		}
 
 		if (newValue.getVersion() != null
-				&& newValue.getVersion().compareTo(oldValue.getVersion()) != 0) {
+				&& !newValue.getVersion().equals(oldValue.getVersion())) {
 			oldValue.setVersion(newValue.getVersion());
 		}
 		if (newValue.getIntDayTypes() != null
-				&& newValue.getIntDayTypes().compareTo(
-						oldValue.getIntDayTypes()) != 0) {
+				&& !newValue.getIntDayTypes().equals(oldValue.getIntDayTypes())) {
 			oldValue.setIntDayTypes(newValue.getIntDayTypes());
 		}
 
 		if (newValue.getStartOfPeriod() != null
-				&& newValue.getStartOfPeriod().compareTo(
-						oldValue.getStartOfPeriod()) != 0) {
+				&& !newValue.getStartOfPeriod().equals(
+						oldValue.getStartOfPeriod())) {
 			oldValue.setStartOfPeriod(newValue.getStartOfPeriod());
 		}
 		if (newValue.getEndOfPeriod() != null
-				&& newValue.getEndOfPeriod().compareTo(
-						oldValue.getEndOfPeriod()) != 0) {
+				&& !newValue.getEndOfPeriod().equals(oldValue.getEndOfPeriod())) {
 			oldValue.setEndOfPeriod(newValue.getEndOfPeriod());
 		}
 
@@ -117,13 +123,20 @@ public class TimetableUpdater implements Updater<Timetable> {
 	}
 
 	static {
-		UpdaterFactory.register(TimetableUpdater.class.getName(),
+		UpdaterFactory.register(LineUpdater.class.getName(),
 				new UpdaterFactory() {
-					private TimetableUpdater INSTANCE = new TimetableUpdater();
 
 					@Override
-					protected Updater<Timetable> create() {
-						return INSTANCE;
+					protected <T> Updater<T> create(InitialContext context) {
+						Updater result = null;
+						try {
+							result = (Updater) context
+									.lookup("java:app/mobi.chouette.exchange/"
+											+ BEAN_NAME);
+						} catch (NamingException e) {
+							log.error(e);
+						}
+						return result;
 					}
 				});
 	}

@@ -3,7 +3,11 @@ package mobi.chouette.exchange.importer.updater;
 import java.util.Collection;
 
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.CollectionUtils;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
@@ -16,7 +20,11 @@ import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
 
+@Log4j
+@Stateless(name = StopAreaUpdater.BEAN_NAME)
 public class StopAreaUpdater implements Updater<StopArea> {
+
+	public static final String BEAN_NAME = "StopAreaUpdater";
 
 	@EJB
 	private StopAreaDAO stopAreaDAO;
@@ -34,126 +42,125 @@ public class StopAreaUpdater implements Updater<StopArea> {
 	public void update(Context context, StopArea oldValue, StopArea newValue)
 			throws Exception {
 
+		InitialContext initialContext = (InitialContext) context
+				.get(INITIAL_CONTEXT);
+
 		if (newValue.isSaved()) {
 			return;
 		}
 		newValue.setSaved(true);
 
 		if (newValue.getObjectId() != null
-				&& newValue.getObjectId().compareTo(oldValue.getObjectId()) != 0) {
+				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {
 			oldValue.setObjectId(newValue.getObjectId());
 		}
 		if (newValue.getObjectVersion() != null
-				&& newValue.getObjectVersion().compareTo(
-						oldValue.getObjectVersion()) != 0) {
+				&& !newValue.getObjectVersion().equals(
+						oldValue.getObjectVersion())) {
 			oldValue.setObjectVersion(newValue.getObjectVersion());
 		}
 		if (newValue.getCreationTime() != null
-				&& newValue.getCreationTime().compareTo(
-						oldValue.getCreationTime()) != 0) {
+				&& !newValue.getCreationTime().equals(
+						oldValue.getCreationTime())) {
 			oldValue.setCreationTime(newValue.getCreationTime());
 		}
 		if (newValue.getCreatorId() != null
-				&& newValue.getCreatorId().compareTo(oldValue.getCreatorId()) != 0) {
+				&& !newValue.getCreatorId().equals(oldValue.getCreatorId())) {
 			oldValue.setCreatorId(newValue.getCreatorId());
 		}
 		if (newValue.getName() != null
-				&& newValue.getName().compareTo(oldValue.getName()) != 0) {
+				&& !newValue.getName().equals(oldValue.getName())) {
 			oldValue.setName(newValue.getName());
 		}
 		if (newValue.getComment() != null
-				&& newValue.getComment().compareTo(oldValue.getComment()) != 0) {
+				&& !newValue.getComment().equals(oldValue.getComment())) {
 			oldValue.setComment(newValue.getComment());
 		}
 		if (newValue.getAreaType() != null
-				&& newValue.getAreaType().compareTo(oldValue.getAreaType()) != 0) {
+				&& !newValue.getAreaType().equals(oldValue.getAreaType())) {
 			oldValue.setAreaType(newValue.getAreaType());
 		}
 		if (newValue.getRegistrationNumber() != null
-				&& newValue.getRegistrationNumber().compareTo(
-						oldValue.getRegistrationNumber()) != 0) {
+				&& !newValue.getRegistrationNumber().equals(
+						oldValue.getRegistrationNumber())) {
 			oldValue.setRegistrationNumber(newValue.getRegistrationNumber());
 		}
 		if (newValue.getNearestTopicName() != null
-				&& newValue.getNearestTopicName().compareTo(
-						oldValue.getNearestTopicName()) != 0) {
+				&& !newValue.getNearestTopicName().equals(
+						oldValue.getNearestTopicName())) {
 			oldValue.setNearestTopicName(newValue.getNearestTopicName());
 		}
 		if (newValue.getUrl() != null
-				&& newValue.getUrl().compareTo(oldValue.getUrl()) != 0) {
+				&& !newValue.getUrl().equals(oldValue.getUrl())) {
 			oldValue.setUrl(newValue.getUrl());
 		}
 		if (newValue.getTimeZone() != null
-				&& newValue.getTimeZone().compareTo(oldValue.getTimeZone()) != 0) {
+				&& !newValue.getTimeZone().equals(oldValue.getTimeZone())) {
 			oldValue.setTimeZone(newValue.getTimeZone());
 		}
 		if (newValue.getFareCode() != null
-				&& newValue.getFareCode().compareTo(oldValue.getFareCode()) != 0) {
+				&& !newValue.getFareCode().equals(oldValue.getFareCode())) {
 			oldValue.setFareCode(newValue.getFareCode());
 		}
 		if (newValue.getLiftAvailable() != null
-				&& newValue.getLiftAvailable().compareTo(
-						oldValue.getLiftAvailable()) != 0) {
+				&& !newValue.getLiftAvailable().equals(
+						oldValue.getLiftAvailable())) {
 			oldValue.setLiftAvailable(newValue.getLiftAvailable());
 		}
 		if (newValue.getMobilityRestrictedSuitable() != null
-				&& newValue.getMobilityRestrictedSuitable().compareTo(
-						oldValue.getMobilityRestrictedSuitable()) != 0) {
+				&& !newValue.getMobilityRestrictedSuitable().equals(
+						oldValue.getMobilityRestrictedSuitable())) {
 			oldValue.setMobilityRestrictedSuitable(newValue
 					.getMobilityRestrictedSuitable());
 		}
 		if (newValue.getStairsAvailable() != null
-				&& newValue.getStairsAvailable().compareTo(
-						oldValue.getStairsAvailable()) != 0) {
+				&& !newValue.getStairsAvailable().equals(
+						oldValue.getStairsAvailable())) {
 			oldValue.setStairsAvailable(newValue.getStairsAvailable());
 		}
 		if (newValue.getIntUserNeeds() != null
-				&& newValue.getIntUserNeeds().compareTo(
-						oldValue.getIntUserNeeds()) != 0) {
+				&& !newValue.getIntUserNeeds().equals(
+						oldValue.getIntUserNeeds())) {
 			oldValue.setIntUserNeeds(newValue.getIntUserNeeds());
 		}
 
 		if (newValue.getLongitude() != null
-				&& newValue.getLongitude().compareTo(oldValue.getLongitude()) != 0) {
+				&& !newValue.getLongitude().equals(oldValue.getLongitude())) {
 			oldValue.setLongitude(newValue.getLongitude());
 		}
 		if (newValue.getLatitude() != null
-				&& newValue.getLatitude().compareTo(oldValue.getLatitude()) != 0) {
+				&& !newValue.getLatitude().equals(oldValue.getLatitude())) {
 			oldValue.setLatitude(newValue.getLatitude());
 		}
 		if (newValue.getLongLatType() != null
-				&& newValue.getLongLatType().compareTo(
-						oldValue.getLongLatType()) != 0) {
+				&& !newValue.getLongLatType().equals(oldValue.getLongLatType())) {
 			oldValue.setLongLatType(newValue.getLongLatType());
 		}
-		if (newValue.getX() != null
-				&& newValue.getX().compareTo(oldValue.getX()) != 0) {
+		if (newValue.getX() != null && !newValue.getX().equals(oldValue.getX())) {
 			oldValue.setX(newValue.getX());
 		}
-		if (newValue.getY() != null
-				&& newValue.getY().compareTo(oldValue.getY()) != 0) {
+		if (newValue.getY() != null && !newValue.getY().equals(oldValue.getY())) {
 			oldValue.setY(newValue.getY());
 		}
 		if (newValue.getProjectionType() != null
-				&& newValue.getProjectionType().compareTo(
-						oldValue.getProjectionType()) != 0) {
+				&& !newValue.getProjectionType().equals(
+						oldValue.getProjectionType())) {
 			oldValue.setProjectionType(newValue.getProjectionType());
 		}
 		if (newValue.getCountryCode() != null
-				&& newValue.getCountryCode().compareTo(
-						oldValue.getCountryCode()) != 0) {
+				&& !newValue.getCountryCode().equals(oldValue.getCountryCode())) {
 			oldValue.setCountryCode(newValue.getCountryCode());
 		}
 		if (newValue.getZipCode() != null
-				&& newValue.getZipCode().compareTo(oldValue.getZipCode()) != 0) {
+				&& !newValue.getZipCode().equals(oldValue.getZipCode())) {
 			oldValue.setZipCode(newValue.getZipCode());
 		}
 		if (newValue.getCityName() != null
-				&& newValue.getCityName().compareTo(oldValue.getCityName()) != 0) {
+				&& !newValue.getCityName().equals(oldValue.getCityName())) {
 			oldValue.setCityName(newValue.getCityName());
 		}
 		if (newValue.getStreetName() != null
-				&& newValue.getStreetName().compareTo(oldValue.getStreetName()) != 0) {
+				&& !newValue.getStreetName().equals(oldValue.getStreetName())) {
 			oldValue.setStreetName(newValue.getStreetName());
 		}
 
@@ -168,8 +175,8 @@ public class StopAreaUpdater implements Updater<StopArea> {
 				stopArea.setObjectId(newValue.getParent().getObjectId());
 				stopAreaDAO.create(stopArea);
 			}
-			Updater<StopArea> stopAreaUpdater = UpdaterFactory
-					.create(StopAreaUpdater.class.getName());
+			Updater<StopArea> stopAreaUpdater = UpdaterFactory.create(
+					initialContext, StopAreaUpdater.class.getName());
 			stopAreaUpdater.update(null, oldValue.getParent(),
 					newValue.getParent());
 			oldValue.setParent(stopArea);
@@ -190,8 +197,8 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			accessPoint.setContainedIn(oldValue);
 		}
 
-		Updater<AccessPoint> accessPointUpdater = UpdaterFactory
-				.create(AccessPointUpdater.class.getName());
+		Updater<AccessPoint> accessPointUpdater = UpdaterFactory.create(
+				initialContext, AccessPointUpdater.class.getName());
 		Collection<Pair<AccessPoint, AccessPoint>> modifiedAccessPoint = CollectionUtils
 				.intersection(oldValue.getAccessPoints(),
 						newValue.getAccessPoints(),
@@ -224,8 +231,8 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			accessLink.setStopArea(oldValue);
 		}
 
-		Updater<AccessLink> accessLinkUpdater = UpdaterFactory
-				.create(AccessLinkUpdater.class.getName());
+		Updater<AccessLink> accessLinkUpdater = UpdaterFactory.create(
+				initialContext, AccessLinkUpdater.class.getName());
 		Collection<Pair<AccessLink, AccessLink>> modifiedAccessLink = CollectionUtils
 				.intersection(oldValue.getAccessLinks(),
 						newValue.getAccessLinks(),
@@ -258,8 +265,8 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			connectionLink.setStartOfLink(oldValue);
 		}
 
-		Updater<ConnectionLink> connectionLinkUpdater = UpdaterFactory
-				.create(ConnectionLinkUpdater.class.getName());
+		Updater<ConnectionLink> connectionLinkUpdater = UpdaterFactory.create(
+				initialContext, ConnectionLinkUpdater.class.getName());
 		Collection<Pair<ConnectionLink, ConnectionLink>> modifiedStartOfLink = CollectionUtils
 				.intersection(oldValue.getConnectionStartLinks(),
 						newValue.getConnectionStartLinks(),
@@ -285,8 +292,8 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			connectionLink.setEndOfLink(oldValue);
 		}
 
-		connectionLinkUpdater = UpdaterFactory
-				.create(ConnectionLinkUpdater.class.getName());
+		connectionLinkUpdater = UpdaterFactory.create(initialContext,
+				ConnectionLinkUpdater.class.getName());
 		Collection<Pair<ConnectionLink, ConnectionLink>> modifiedEndOfLink = CollectionUtils
 				.intersection(oldValue.getConnectionEndLinks(),
 						newValue.getConnectionEndLinks(),
@@ -301,13 +308,20 @@ public class StopAreaUpdater implements Updater<StopArea> {
 	}
 
 	static {
-		UpdaterFactory.register(StopAreaUpdater.class.getName(),
+		UpdaterFactory.register(LineUpdater.class.getName(),
 				new UpdaterFactory() {
-					private StopAreaUpdater INSTANCE = new StopAreaUpdater();
 
 					@Override
-					protected Updater<StopArea> create() {
-						return INSTANCE;
+					protected <T> Updater<T> create(InitialContext context) {
+						Updater result = null;
+						try {
+							result = (Updater) context
+									.lookup("java:app/mobi.chouette.exchange/"
+											+ BEAN_NAME);
+						} catch (NamingException e) {
+							log.error(e);
+						}
+						return result;
 					}
 				});
 	}

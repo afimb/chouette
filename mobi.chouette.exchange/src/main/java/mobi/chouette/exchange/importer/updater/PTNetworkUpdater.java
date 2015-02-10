@@ -1,81 +1,102 @@
 package mobi.chouette.exchange.importer.updater;
 
+import javax.ejb.Stateless;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.model.PTNetwork;
 
+@Log4j
+@Stateless(name=PTNetworkUpdater.BEAN_NAME)
 public class PTNetworkUpdater implements Updater<PTNetwork> {
+	
+	public static final String BEAN_NAME = "PTNetworkUpdater";
+	
 	@Override
 	public void update(Context context, PTNetwork oldValue, PTNetwork newValue) {
-
+		
 		if (newValue.isSaved()) {
 			return;
 		}
 		newValue.setSaved(true);
 
 		if (newValue.getObjectId() != null
-				&& newValue.getObjectId().compareTo(oldValue.getObjectId()) != 0) {
+				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {
 			oldValue.setObjectId(newValue.getObjectId());
 		}
 		if (newValue.getObjectVersion() != null
-				&& newValue.getObjectVersion().compareTo(
-						oldValue.getObjectVersion()) != 0) {
+				&& !newValue.getObjectVersion().equals(
+						oldValue.getObjectVersion())) {
 			oldValue.setObjectVersion(newValue.getObjectVersion());
 		}
 		if (newValue.getCreationTime() != null
-				&& newValue.getCreationTime().compareTo(
-						oldValue.getCreationTime()) != 0) {
+				&& !newValue.getCreationTime().equals(
+						oldValue.getCreationTime())) {
 			oldValue.setCreationTime(newValue.getCreationTime());
 		}
 		if (newValue.getCreatorId() != null
-				&& newValue.getCreatorId().compareTo(oldValue.getCreatorId()) != 0) {
+				&& !newValue.getCreatorId().equals(oldValue.getCreatorId())) {
 			oldValue.setCreatorId(newValue.getCreatorId());
 		}
+		
+		log.info("////////////////////////////////////////////////////////////////////" + oldValue);
+		log.info("////////////////////////////////////////////////////////////////////" + newValue);
+
 		if (newValue.getName() != null
-				&& newValue.getName().compareTo(oldValue.getName()) != 0) {
+				&& !newValue.getName().equals(oldValue.getName())) {
+			log.info("????????????" + newValue.getName());
+
 			oldValue.setName(newValue.getName());
 		}
 		if (newValue.getComment() != null
-				&& newValue.getComment().compareTo(oldValue.getComment()) != 0) {
+				&& !newValue.getComment().equals(oldValue.getComment())) {
 			oldValue.setComment(newValue.getComment());
 		}
 		if (newValue.getVersionDate() != null
-				&& newValue.getVersionDate().compareTo(
-						oldValue.getVersionDate()) != 0) {
+				&& !newValue.getVersionDate().equals(oldValue.getVersionDate())) {
 			oldValue.setVersionDate(newValue.getVersionDate());
 		}
 		if (newValue.getDescription() != null
-				&& newValue.getDescription().compareTo(
-						oldValue.getDescription()) != 0) {
+				&& !newValue.getDescription().equals(oldValue.getDescription())) {
 			oldValue.setDescription(newValue.getDescription());
 		}
 		if (newValue.getRegistrationNumber() != null
-				&& newValue.getRegistrationNumber().compareTo(
-						oldValue.getRegistrationNumber()) != 0) {
+				&& !newValue.getRegistrationNumber().equals(
+						oldValue.getRegistrationNumber())) {
 			oldValue.setRegistrationNumber(newValue.getRegistrationNumber());
 		}
 		if (newValue.getSourceType() != null
-				&& newValue.getSourceType().compareTo(oldValue.getSourceType()) != 0) {
+				&& !newValue.getSourceType().equals(oldValue.getSourceType())) {
 			oldValue.setSourceType(newValue.getSourceType());
 		}
 		if (newValue.getSourceName() != null
-				&& newValue.getSourceName().compareTo(oldValue.getSourceName()) != 0) {
+				&& !newValue.getSourceName().equals(oldValue.getSourceName())) {
 			oldValue.setSourceName(newValue.getSourceName());
 		}
 		if (newValue.getSourceIdentifier() != null
-				&& newValue.getSourceIdentifier().compareTo(
-						oldValue.getSourceIdentifier()) != 0) {
+				&& !newValue.getSourceIdentifier().equals(
+						oldValue.getSourceIdentifier())) {
 			oldValue.setSourceIdentifier(newValue.getSourceIdentifier());
 		}
 	}
 
 	static {
-		UpdaterFactory.register(PTNetworkUpdater.class.getName(),
+		UpdaterFactory.register(LineUpdater.class.getName(),
 				new UpdaterFactory() {
-					private PTNetworkUpdater INSTANCE = new PTNetworkUpdater();
 
 					@Override
-					protected Updater<PTNetwork> create() {
-						return INSTANCE;
+					protected <T> Updater<T> create(InitialContext context) {
+						Updater result = null;
+						try {
+							result = (Updater) context
+									.lookup("java:app/mobi.chouette.exchange/"
+											+ BEAN_NAME);
+						} catch (NamingException e) {
+							log.error(e);
+						}
+						return result;
 					}
 				});
 	}

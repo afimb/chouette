@@ -295,6 +295,7 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 	 * @return The actual value
 	 */
 	@Getter	
+	@OneToMany
 	@JoinColumn(name = "vehicle_journey_id", updatable = false)
 	private List<VehicleJourneyAtStop> vehicleJourneyAtStops = new ArrayList<VehicleJourneyAtStop>(
 			0);

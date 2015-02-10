@@ -40,7 +40,7 @@ import org.apache.commons.lang.StringUtils;
 @Table(name = "networks")
 @Cacheable
 @NoArgsConstructor
-@ToString
+@ToString(callSuper=true, exclude = { "lines" })
 @Log4j
 public class PTNetwork extends NeptuneIdentifiedObject {
 

@@ -1,13 +1,21 @@
 package mobi.chouette.exchange.importer.updater;
 
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.dao.AccessPointDAO;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
 
+@Log4j
+@Stateless(name=AccessLinkUpdater.BEAN_NAME)
 public class AccessLinkUpdater implements Updater<AccessLink> {
+
+	public static final String BEAN_NAME = "AccessLinkUpdater";
 
 	@EJB
 	private AccessPointDAO accessPointDAO;
@@ -21,87 +29,87 @@ public class AccessLinkUpdater implements Updater<AccessLink> {
 		newValue.setSaved(true);
 
 		if (newValue.getObjectId() != null
-				&& newValue.getObjectId().compareTo(oldValue.getObjectId()) != 0) {
+				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {
 			oldValue.setObjectId(newValue.getObjectId());
 		}
 		if (newValue.getObjectVersion() != null
-				&& newValue.getObjectVersion().compareTo(
-						oldValue.getObjectVersion()) != 0) {
+				&& !newValue.getObjectVersion().equals(
+						oldValue.getObjectVersion())) {
 			oldValue.setObjectVersion(newValue.getObjectVersion());
 		}
 		if (newValue.getCreationTime() != null
-				&& newValue.getCreationTime().compareTo(
-						oldValue.getCreationTime()) != 0) {
+				&& !newValue.getCreationTime().equals(
+						oldValue.getCreationTime())) {
 			oldValue.setCreationTime(newValue.getCreationTime());
 		}
 		if (newValue.getCreatorId() != null
-				&& newValue.getCreatorId().compareTo(oldValue.getCreatorId()) != 0) {
+				&& !newValue.getCreatorId().equals(oldValue.getCreatorId())) {
 			oldValue.setCreatorId(newValue.getCreatorId());
 		}
 		if (newValue.getName() != null
-				&& newValue.getName().compareTo(oldValue.getName()) != 0) {
+				&& !newValue.getName().equals(oldValue.getName())) {
 			oldValue.setName(newValue.getName());
 		}
 		if (newValue.getComment() != null
-				&& newValue.getComment().compareTo(oldValue.getComment()) != 0) {
+				&& !newValue.getComment().equals(oldValue.getComment())) {
 			oldValue.setComment(newValue.getComment());
 		}
 		if (newValue.getLinkDistance() != null
-				&& newValue.getLinkDistance().compareTo(
-						oldValue.getLinkDistance()) != 0) {
+				&& !newValue.getLinkDistance().equals(
+						oldValue.getLinkDistance())) {
 			oldValue.setLinkDistance(newValue.getLinkDistance());
 		}
 		if (newValue.getLiftAvailable() != null
-				&& newValue.getLiftAvailable().compareTo(
-						oldValue.getLiftAvailable()) != 0) {
+				&& !newValue.getLiftAvailable().equals(
+						oldValue.getLiftAvailable())) {
 			oldValue.setLiftAvailable(newValue.getLiftAvailable());
 		}
 		if (newValue.getMobilityRestrictedSuitable() != null
-				&& newValue.getMobilityRestrictedSuitable().compareTo(
-						oldValue.getMobilityRestrictedSuitable()) != 0) {
+				&& !newValue.getMobilityRestrictedSuitable().equals(
+						oldValue.getMobilityRestrictedSuitable())) {
 			oldValue.setMobilityRestrictedSuitable(newValue
 					.getMobilityRestrictedSuitable());
 		}
 		if (newValue.getStairsAvailable() != null
-				&& newValue.getStairsAvailable().compareTo(
-						oldValue.getStairsAvailable()) != 0) {
+				&& !newValue.getStairsAvailable().equals(
+						oldValue.getStairsAvailable())) {
 			oldValue.setStairsAvailable(newValue.getStairsAvailable());
 		}
 		if (newValue.getDefaultDuration() != null
-				&& newValue.getDefaultDuration().compareTo(
-						oldValue.getDefaultDuration()) != 0) {
+				&& !newValue.getDefaultDuration().equals(
+						oldValue.getDefaultDuration())) {
 			oldValue.setDefaultDuration(newValue.getDefaultDuration());
 		}
 		if (newValue.getFrequentTravellerDuration() != null
-				&& newValue.getFrequentTravellerDuration().compareTo(
-						oldValue.getFrequentTravellerDuration()) != 0) {
+				&& !newValue.getFrequentTravellerDuration().equals(
+						oldValue.getFrequentTravellerDuration())) {
 			oldValue.setFrequentTravellerDuration(newValue
 					.getFrequentTravellerDuration());
 		}
 		if (newValue.getOccasionalTravellerDuration() != null
-				&& newValue.getOccasionalTravellerDuration().compareTo(
-						oldValue.getOccasionalTravellerDuration()) != 0) {
+				&& !newValue.getOccasionalTravellerDuration().equals(
+						oldValue.getOccasionalTravellerDuration())) {
 			oldValue.setOccasionalTravellerDuration(newValue
 					.getOccasionalTravellerDuration());
 		}
 		if (newValue.getMobilityRestrictedTravellerDuration() != null
-				&& newValue.getMobilityRestrictedTravellerDuration().compareTo(
-						oldValue.getMobilityRestrictedTravellerDuration()) != 0) {
+				&& !newValue.getMobilityRestrictedTravellerDuration().equals(
+						oldValue.getMobilityRestrictedTravellerDuration())) {
 			oldValue.setMobilityRestrictedTravellerDuration(newValue
 					.getMobilityRestrictedTravellerDuration());
 		}
 		if (newValue.getLinkType() != null
-				&& newValue.getLinkType().compareTo(oldValue.getLinkType()) != 0) {
+				&& !newValue.getLinkType().equals(oldValue.getLinkType())) {
 			oldValue.setLinkType(newValue.getLinkType());
 		}
 		if (newValue.getIntUserNeeds() != null
-				&& newValue.getIntUserNeeds().compareTo(
-						oldValue.getIntUserNeeds()) != 0) {
+				&& !newValue.getIntUserNeeds().equals(
+						oldValue.getIntUserNeeds())) {
 			oldValue.setIntUserNeeds(newValue.getIntUserNeeds());
 		}
 		if (newValue.getLinkOrientation() != null
-				&& newValue.getLinkOrientation().compareTo(
-						oldValue.getLinkOrientation()) != 0) {
+				&& !newValue.getLinkOrientation().equals(
+						oldValue.getLinkOrientation())) {
 			oldValue.setLinkOrientation(newValue.getLinkOrientation());
 		}
 
@@ -117,13 +125,20 @@ public class AccessLinkUpdater implements Updater<AccessLink> {
 	}
 
 	static {
-		UpdaterFactory.register(AccessLinkUpdater.class.getName(),
+		UpdaterFactory.register(LineUpdater.class.getName(),
 				new UpdaterFactory() {
-					private AccessLinkUpdater INSTANCE = new AccessLinkUpdater();
 
 					@Override
-					protected Updater<AccessLink> create() {
-						return INSTANCE;
+					protected <T> Updater<T> create(InitialContext context) {
+						Updater result = null;
+						try {
+							result = (Updater) context
+									.lookup("java:app/mobi.chouette.exchange/"
+											+ BEAN_NAME);
+						} catch (NamingException e) {
+							log.error(e);
+						}
+						return result;
 					}
 				});
 	}

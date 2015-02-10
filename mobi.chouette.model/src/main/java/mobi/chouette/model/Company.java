@@ -35,7 +35,7 @@ import org.apache.commons.lang.StringUtils;
 @Table(name = "companies")
 @Cacheable
 @NoArgsConstructor
-@ToString(exclude = { "lines" })
+@ToString(callSuper=true, exclude = { "lines" })
 @Log4j
 public class Company extends NeptuneIdentifiedObject {
 

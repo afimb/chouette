@@ -19,10 +19,10 @@ public abstract class CommandFactory {
 	         throws ClassNotFoundException, IOException
 
 	   {
-		  //  log.info("[DSU] create : " + name);
 	      if (!factories.containsKey(name))
 	      {
 	         Class.forName(name);
+			 // log.info("[DSU] create : " + name);
 	         if (!factories.containsKey(name))
 	            throw new ClassNotFoundException(name);
 	      }

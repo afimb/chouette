@@ -1,9 +1,18 @@
 package mobi.chouette.exchange.importer.updater;
 
+import javax.ejb.Stateless;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.model.Company;
 
+@Log4j
+@Stateless(name = CompanyUpdater.BEAN_NAME)
 public class CompanyUpdater implements Updater<Company> {
+	
+	public static final String BEAN_NAME = "CompanyUpdater";
 
 	@Override
 	public void update(Context context, Company oldValue, Company newValue) {
@@ -14,81 +23,88 @@ public class CompanyUpdater implements Updater<Company> {
 		newValue.setSaved(true);
 
 		if (newValue.getObjectId() != null
-				&& newValue.getObjectId().compareTo(oldValue.getObjectId()) != 0) {
+				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {
 			oldValue.setObjectId(newValue.getObjectId());
 		}
 		if (newValue.getObjectVersion() != null
-				&& newValue.getObjectVersion().compareTo(
-						oldValue.getObjectVersion()) != 0) {
+				&& !newValue.getObjectVersion().equals(
+						oldValue.getObjectVersion())) {
 			oldValue.setObjectVersion(newValue.getObjectVersion());
 		}
 		if (newValue.getCreationTime() != null
-				&& newValue.getCreationTime().compareTo(
-						oldValue.getCreationTime()) != 0) {
+				&& !newValue.getCreationTime().equals(
+						oldValue.getCreationTime())) {
 			oldValue.setCreationTime(newValue.getCreationTime());
 		}
 		if (newValue.getCreatorId() != null
-				&& newValue.getCreatorId().compareTo(oldValue.getCreatorId()) != 0) {
+				&& !newValue.getCreatorId().equals(oldValue.getCreatorId())) {
 			oldValue.setCreatorId(newValue.getCreatorId());
 		}
 		if (newValue.getName() != null
-				&& newValue.getName().compareTo(oldValue.getName()) != 0) {
+				&& !newValue.getName().equals(oldValue.getName())) {
 			oldValue.setName(newValue.getName());
 		}
 		if (newValue.getShortName() != null
-				&& newValue.getShortName().compareTo(oldValue.getShortName()) != 0) {
+				&& !newValue.getShortName().equals(oldValue.getShortName())) {
 			oldValue.setShortName(newValue.getShortName());
 		}
 		if (newValue.getOrganisationalUnit() != null
-				&& newValue.getOrganisationalUnit().compareTo(
-						oldValue.getOrganisationalUnit()) != 0) {
+				&& !newValue.getOrganisationalUnit().equals(
+						oldValue.getOrganisationalUnit())) {
 			oldValue.setOrganisationalUnit(newValue.getOrganisationalUnit());
 		}
 		if (newValue.getOperatingDepartmentName() != null
-				&& newValue.getOperatingDepartmentName().compareTo(
-						oldValue.getOperatingDepartmentName()) != 0) {
+				&& !newValue.getOperatingDepartmentName().equals(
+						oldValue.getOperatingDepartmentName())) {
 			oldValue.setOperatingDepartmentName(newValue
 					.getOperatingDepartmentName());
 		}
 		if (newValue.getCode() != null
-				&& newValue.getCode().compareTo(oldValue.getCode()) != 0) {
+				&& !newValue.getCode().equals(oldValue.getCode())) {
 			oldValue.setCode(newValue.getCode());
 		}
 		if (newValue.getPhone() != null
-				&& newValue.getPhone().compareTo(oldValue.getPhone()) != 0) {
+				&& !newValue.getPhone().equals(oldValue.getPhone())) {
 			oldValue.setPhone(newValue.getPhone());
 		}
 		if (newValue.getFax() != null
-				&& newValue.getFax().compareTo(oldValue.getFax()) != 0) {
+				&& !newValue.getFax().equals(oldValue.getFax())) {
 			oldValue.setFax(newValue.getFax());
 		}
 		if (newValue.getEmail() != null
-				&& newValue.getEmail().compareTo(oldValue.getEmail()) != 0) {
+				&& !newValue.getEmail().equals(oldValue.getEmail())) {
 			oldValue.setEmail(newValue.getEmail());
 		}
 		if (newValue.getRegistrationNumber() != null
-				&& newValue.getRegistrationNumber().compareTo(
-						oldValue.getRegistrationNumber()) != 0) {
+				&& !newValue.getRegistrationNumber().equals(
+						oldValue.getRegistrationNumber())) {
 			oldValue.setRegistrationNumber(newValue.getRegistrationNumber());
 		}
 		if (newValue.getUrl() != null
-				&& newValue.getUrl().compareTo(oldValue.getUrl()) != 0) {
+				&& !newValue.getUrl().equals(oldValue.getUrl())) {
 			oldValue.setUrl(newValue.getUrl());
 		}
 		if (newValue.getTimeZone() != null
-				&& newValue.getTimeZone().compareTo(oldValue.getTimeZone()) != 0) {
+				&& !newValue.getTimeZone().equals(oldValue.getTimeZone())) {
 			oldValue.setTimeZone(newValue.getTimeZone());
 		}
 	}
 
 	static {
-		UpdaterFactory.register(CompanyUpdater.class.getName(),
+		UpdaterFactory.register(LineUpdater.class.getName(),
 				new UpdaterFactory() {
-					private CompanyUpdater INSTANCE = new CompanyUpdater();
 
 					@Override
-					protected Updater<Company> create() {
-						return INSTANCE;
+					protected <T> Updater<T> create(InitialContext context) {
+						Updater result = null;
+						try {
+							result = (Updater) context
+									.lookup("java:app/mobi.chouette.exchange/"
+											+ BEAN_NAME);
+						} catch (NamingException e) {
+							log.error(e);
+						}
+						return result;
 					}
 				});
 	}

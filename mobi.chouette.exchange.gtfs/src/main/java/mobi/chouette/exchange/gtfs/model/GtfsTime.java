@@ -13,20 +13,18 @@ import lombok.ToString;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class GtfsTime
-{
+public class GtfsTime {
 
-   @Getter
-   @Setter
-   private Time time;
+	@Getter
+	@Setter
+	private Time time;
 
-   @Getter
-   @Setter
-   private Integer day = 0;
+	@Getter
+	@Setter
+	private Integer day = 0;
 
-   public boolean moreOneDay()
-   {
-      return (day != 0);
-   }
+	public boolean moreOneDay() {
+		return (day != 0);
+	}
 
 }

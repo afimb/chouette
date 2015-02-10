@@ -14,6 +14,8 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.exchange.importer.report.Report;
 import mobi.chouette.exchange.neptune.importer.NeptuneParserCommand;
 import mobi.chouette.exchange.neptune.importer.NeptuneSAXParserCommand;
+import mobi.chouette.model.Line;
+import mobi.chouette.model.util.Referential;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -63,6 +65,18 @@ public class NeptuneParserTest {
 				.getResource("/META-INF/1000252.xml");
 		context.put(Constant.FILE_URL, file.toExternalForm());
 		validation.execute(context);
+	}
+	
+	@Test
+	public void test() throws Exception {
+		Context context = new Context();
+		URL file = NeptuneParserTest.class
+				.getResource("/META-INF/1000252.xml");
+		context.put(Constant.FILE_URL, file.toExternalForm());
+		parser.execute(context);
+		Referential referential = (Referential) context.get(Constant.REFERENTIAL);
+		Line line = referential.getLines().values().iterator().next();
+		log.info("[DSU] line : " + line);
 	}
 
 	@Test

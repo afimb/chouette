@@ -24,7 +24,7 @@ import com.jamonapi.MonitorFactory;
 
 @Stateless(name = UncompressCommand.COMMAND)
 @Log4j
-public class UncompressCommand implements Command,ReportConstant {
+public class UncompressCommand implements Command, ReportConstant {
 
 	public static final String COMMAND = "UncompressCommand";
 

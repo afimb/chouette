@@ -3,6 +3,9 @@ package mobi.chouette.exchange.importer.updater;
 import java.util.Collection;
 
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.CollectionUtils;
@@ -15,7 +18,10 @@ import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
 
 @Log4j
+@Stateless(name = JourneyPatternUpdater.BEAN_NAME)
 public class JourneyPatternUpdater implements Updater<JourneyPattern> {
+
+	public static final String BEAN_NAME = "JourneyPatternUpdater";
 
 	@EJB
 	private StopPointDAO stopPointDAO;
@@ -27,45 +33,48 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 	public void update(Context context, JourneyPattern oldValue,
 			JourneyPattern newValue) throws Exception {
 
+		InitialContext initialContext = (InitialContext) context
+				.get(INITIAL_CONTEXT);
+
 		if (newValue.isSaved()) {
 			return;
 		}
 		newValue.setSaved(true);
 
 		if (newValue.getObjectId() != null
-				&& newValue.getObjectId().compareTo(oldValue.getObjectId()) != 0) {
+				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {
 			oldValue.setObjectId(newValue.getObjectId());
 		}
 		if (newValue.getObjectVersion() != null
-				&& newValue.getObjectVersion().compareTo(
-						oldValue.getObjectVersion()) != 0) {
+				&& !newValue.getObjectVersion().equals(
+						oldValue.getObjectVersion())) {
 			oldValue.setObjectVersion(newValue.getObjectVersion());
 		}
 		if (newValue.getCreationTime() != null
-				&& newValue.getCreationTime().compareTo(
-						oldValue.getCreationTime()) != 0) {
+				&& !newValue.getCreationTime().equals(
+						oldValue.getCreationTime())) {
 			oldValue.setCreationTime(newValue.getCreationTime());
 		}
 		if (newValue.getCreatorId() != null
-				&& newValue.getCreatorId().compareTo(oldValue.getCreatorId()) != 0) {
+				&& !newValue.getCreatorId().equals(oldValue.getCreatorId())) {
 			oldValue.setCreatorId(newValue.getCreatorId());
 		}
 		if (newValue.getName() != null
-				&& newValue.getName().compareTo(oldValue.getName()) != 0) {
+				&& !newValue.getName().equals(oldValue.getName())) {
 			oldValue.setName(newValue.getName());
 		}
 		if (newValue.getComment() != null
-				&& newValue.getComment().compareTo(oldValue.getComment()) != 0) {
+				&& !newValue.getComment().equals(oldValue.getComment())) {
 			oldValue.setComment(newValue.getComment());
 		}
 		if (newValue.getRegistrationNumber() != null
-				&& newValue.getRegistrationNumber().compareTo(
-						oldValue.getRegistrationNumber()) != 0) {
+				&& !newValue.getRegistrationNumber().equals(
+						oldValue.getRegistrationNumber())) {
 			oldValue.setRegistrationNumber(newValue.getRegistrationNumber());
 		}
 		if (newValue.getPublishedName() != null
-				&& newValue.getPublishedName().compareTo(
-						oldValue.getPublishedName()) != 0) {
+				&& !newValue.getPublishedName().equals(
+						oldValue.getPublishedName())) {
 			oldValue.setPublishedName(newValue.getPublishedName());
 		}
 
@@ -128,8 +137,8 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 			vehicleJourney.setJourneyPattern(oldValue);
 		}
 
-		Updater<VehicleJourney> vehicleJourneyUpdater = UpdaterFactory
-				.create(VehicleJourneyUpdater.class.getName());
+		Updater<VehicleJourney> vehicleJourneyUpdater = UpdaterFactory.create(
+				initialContext, VehicleJourneyUpdater.class.getName());
 		Collection<Pair<VehicleJourney, VehicleJourney>> modifiedVehicleJourney = CollectionUtils
 				.intersection(oldValue.getVehicleJourneys(),
 						newValue.getVehicleJourneys(),
@@ -149,13 +158,20 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 	}
 
 	static {
-		UpdaterFactory.register(JourneyPatternUpdater.class.getName(),
+		UpdaterFactory.register(LineUpdater.class.getName(),
 				new UpdaterFactory() {
-					private JourneyPatternUpdater INSTANCE = new JourneyPatternUpdater();
 
 					@Override
-					protected Updater<JourneyPattern> create() {
-						return INSTANCE;
+					protected <T> Updater<T> create(InitialContext context) {
+						Updater result = null;
+						try {
+							result = (Updater) context
+									.lookup("java:app/mobi.chouette.exchange/"
+											+ BEAN_NAME);
+						} catch (NamingException e) {
+							log.error(e);
+						}
+						return result;
 					}
 				});
 	}

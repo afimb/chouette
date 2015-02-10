@@ -45,7 +45,7 @@ import org.apache.commons.lang.StringUtils;
 @Entity
 @Table(name = "routes")
 @NoArgsConstructor
-@ToString(exclude = { "line" })
+@ToString(callSuper=true, exclude = { "line" ,"oppositeRoute"})
 @Log4j
 public class Route extends NeptuneIdentifiedObject {
 

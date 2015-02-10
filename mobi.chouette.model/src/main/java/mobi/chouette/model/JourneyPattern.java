@@ -35,7 +35,7 @@ import org.apache.commons.lang.StringUtils;
 @Entity
 @Table(name = "journey_patterns")
 @NoArgsConstructor
-@ToString(exclude = { "route", "vehicleJourneys" })
+@ToString(callSuper=true, exclude = { "route", "vehicleJourneys" })
 @Log4j
 public class JourneyPattern extends NeptuneIdentifiedObject {
 	private static final long serialVersionUID = 7895941111990419404L;
@@ -183,7 +183,7 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 	@Getter
 	@Setter
 	@ManyToMany
-	@OrderBy("position")
+	// TODO [DSU] @OrderBy(value="position") : antlr.CommonToken cannot be cast to antlr.Token
 	@JoinTable(name = "journey_patterns_stop_points", joinColumns = { @JoinColumn(name = "journey_pattern_id", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "stop_point_id", nullable = false, updatable = false) })
 	private List<StopPoint> stopPoints = new ArrayList<StopPoint>(0);
 

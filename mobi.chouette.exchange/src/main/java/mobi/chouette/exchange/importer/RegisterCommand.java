@@ -1,9 +1,11 @@
-package mobi.chouette.exchange;
+package mobi.chouette.exchange.importer;
 
 import java.io.IOException;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
@@ -18,6 +20,7 @@ import mobi.chouette.exchange.importer.updater.UpdaterFactory;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.util.Referential;
 
+
 @Stateless(name = RegisterCommand.COMMAND)
 @Log4j
 public class RegisterCommand implements Command {
@@ -28,31 +31,35 @@ public class RegisterCommand implements Command {
 	private LineDAO lineDAO;
 
 	@Override
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public boolean execute(Context context) throws Exception {
 
 		boolean result = ERROR;
 
 		try {
+			InitialContext initialContext = (InitialContext) context.get(INITIAL_CONTEXT);
+
 			Referential referential = (Referential) context.get(REFERENTIAL);
-			String objectId = "TODO";
-			Line newValue = referential.getLines().get(objectId);
-			Line oldValue = lineDAO.findByObjectId(newValue
-					.getPtNetwork().getObjectId());
+			Line newValue = referential.getLines().values().iterator().next();
+			
+			log.info("[DSU] register : \n" + newValue);
+			
+			Line oldValue = lineDAO.findByObjectId(newValue.getObjectId());
 			if (oldValue == null) {
 				oldValue = new Line();
 				oldValue.setObjectId(newValue.getObjectId());
 				lineDAO.create(oldValue);
 			}
-			Updater<Line> lineUpdater = UpdaterFactory.create(LineUpdater.class
+			Updater<Line> lineUpdater = UpdaterFactory.create(initialContext, LineUpdater.class
 					.getName());
-			lineUpdater.update(null, oldValue, newValue);
-			
-			result = SUCCESS;			
+			lineUpdater.update(context, oldValue, newValue);
+
+			result = SUCCESS;
 		} catch (Exception e) {
 			log.error(e);
 			throw e;
 		}
-		
+
 		return result;
 	}
 
@@ -60,10 +67,11 @@ public class RegisterCommand implements Command {
 
 		@Override
 		protected Command create(InitialContext context) throws IOException {
+
 			Command result = null;
 			try {
-				String name = "java:app/mobi.chouette.exchange.neptune/"
-						+ COMMAND;
+				String name = "java:app/mobi.chouette.exchange/" + COMMAND;
+				log.info("[DSU] create : " + name);
 				result = (Command) context.lookup(name);
 			} catch (NamingException e) {
 				log.error(e);
@@ -74,7 +82,6 @@ public class RegisterCommand implements Command {
 
 	static {
 		CommandFactory factory = new DefaultCommandFactory();
-		CommandFactory.factories.put(RegisterCommand.class.getName(),
-				factory);
+		CommandFactory.factories.put(RegisterCommand.class.getName(), factory);
 	}
 }

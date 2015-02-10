@@ -1,6 +1,9 @@
 package mobi.chouette.exchange.importer.updater;
 
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
@@ -9,7 +12,10 @@ import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 
 @Log4j
+@Stateless(name = StopPointUpdater.BEAN_NAME)
 public class StopPointUpdater implements Updater<StopPoint> {
+
+	public static final String BEAN_NAME = "StopPointUpdater";
 
 	@EJB
 	private StopAreaDAO stopAreaDAO;
@@ -18,31 +24,34 @@ public class StopPointUpdater implements Updater<StopPoint> {
 	public void update(Context context, StopPoint oldValue, StopPoint newValue)
 			throws Exception {
 
+		InitialContext initialContext = (InitialContext) context
+				.get(INITIAL_CONTEXT);
+
 		if (newValue.isSaved()) {
 			return;
 		}
 		newValue.setSaved(true);
 
 		if (newValue.getObjectId() != null
-				&& newValue.getObjectId().compareTo(oldValue.getObjectId()) != 0) {
+				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {
 			oldValue.setObjectId(newValue.getObjectId());
 		}
 		if (newValue.getObjectVersion() != null
-				&& newValue.getObjectVersion().compareTo(
-						oldValue.getObjectVersion()) != 0) {
+				&& !newValue.getObjectVersion().equals(
+						oldValue.getObjectVersion())) {
 			oldValue.setObjectVersion(newValue.getObjectVersion());
 		}
 		if (newValue.getCreationTime() != null
-				&& newValue.getCreationTime().compareTo(
-						oldValue.getCreationTime()) != 0) {
+				&& !newValue.getCreationTime().equals(
+						oldValue.getCreationTime())) {
 			oldValue.setCreationTime(newValue.getCreationTime());
 		}
 		if (newValue.getCreatorId() != null
-				&& newValue.getCreatorId().compareTo(oldValue.getCreatorId()) != 0) {
+				&& !newValue.getCreatorId().equals(oldValue.getCreatorId())) {
 			oldValue.setCreatorId(newValue.getCreatorId());
 		}
 		if (newValue.getName() != null
-				&& newValue.getName().compareTo(oldValue.getName()) != 0) {
+				&& !newValue.getName().equals(oldValue.getName())) {
 			oldValue.setName(newValue.getName());
 		}
 
@@ -58,8 +67,8 @@ public class StopPointUpdater implements Updater<StopPoint> {
 						.getObjectId());
 				stopAreaDAO.create(stopArea);
 			}
-			Updater<StopArea> stopAreaUpdater = UpdaterFactory
-					.create(StopAreaUpdater.class.getName());
+			Updater<StopArea> stopAreaUpdater = UpdaterFactory.create(
+					initialContext, StopAreaUpdater.class.getName());
 			stopAreaUpdater.update(null, oldValue.getContainedInStopArea(),
 					newValue.getContainedInStopArea());
 			oldValue.setContainedInStopArea(stopArea);
@@ -68,13 +77,20 @@ public class StopPointUpdater implements Updater<StopPoint> {
 	}
 
 	static {
-		UpdaterFactory.register(StopPointUpdater.class.getName(),
+		UpdaterFactory.register(LineUpdater.class.getName(),
 				new UpdaterFactory() {
-					private StopPointUpdater INSTANCE = new StopPointUpdater();
 
 					@Override
-					protected Updater<StopPoint> create() {
-						return INSTANCE;
+					protected <T> Updater<T> create(InitialContext context) {
+						Updater result = null;
+						try {
+							result = (Updater) context
+									.lookup("java:app/mobi.chouette.exchange/"
+											+ BEAN_NAME);
+						} catch (NamingException e) {
+							log.error(e);
+						}
+						return result;
 					}
 				});
 	}

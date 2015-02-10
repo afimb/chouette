@@ -21,6 +21,7 @@ import javax.persistence.MappedSuperclass;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import org.apache.log4j.Logger;
 
@@ -30,6 +31,7 @@ import org.apache.log4j.Logger;
 @MappedSuperclass
 @Access(AccessType.FIELD)
 @EqualsAndHashCode(of = { "id" })
+@ToString
 public abstract class NeptuneObject implements Serializable {
 
 	private static final long serialVersionUID = -1406542019260386319L;

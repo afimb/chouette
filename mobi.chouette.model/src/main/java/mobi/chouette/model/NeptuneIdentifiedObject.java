@@ -17,6 +17,7 @@ import javax.persistence.Transient;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.util.ObjectIdTypes;
 
@@ -30,8 +31,10 @@ import org.apache.commons.lang.StringUtils;
 @Log4j
 @MappedSuperclass
 @EqualsAndHashCode(of = { "objectId" })
-public abstract class NeptuneIdentifiedObject extends NeptuneObject implements ObjectIdTypes {
-	   
+@ToString(callSuper=true)
+public abstract class NeptuneIdentifiedObject extends NeptuneObject implements
+		ObjectIdTypes {
+
 	/**
 	 * Neptune object id <br/>
 	 * composed of 3 items separated by a colon
@@ -89,9 +92,11 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject implements O
 	@Column(name = "creator_id")
 	protected String creatorId;
 
-	@Getter @Setter
+	@Getter
+	@Setter
+	@Transient
 	private boolean saved = false;
-	
+
 	@Transient
 	private String unsaved_name;
 

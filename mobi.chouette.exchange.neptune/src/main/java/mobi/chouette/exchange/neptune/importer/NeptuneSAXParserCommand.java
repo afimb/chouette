@@ -61,7 +61,11 @@ public class NeptuneSAXParserCommand implements Command, Constant {
 		Source file = new StreamSource(reader);
 
 		try {
-			schema.newValidator().validate(file);
+			Validator validator = schema.newValidator();
+			validator.setProperty(
+		               "http://apache.org/xml/properties/schema/external-noNamespaceSchemaLocation",
+		               "http://www.trident.org/schema/trident");
+			validator.validate(file);
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		} catch (IOException | SAXException e) {
 			log.error(e);

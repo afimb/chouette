@@ -1,6 +1,9 @@
 package mobi.chouette.exchange.importer.updater;
 
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
@@ -9,8 +12,12 @@ import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourneyAtStop;
 
 @Log4j
+@Stateless(name = VehicleJourneyAtStopUpdater.BEAN_NAME)
 public class VehicleJourneyAtStopUpdater implements
 		Updater<VehicleJourneyAtStop> {
+
+	public static final String BEAN_NAME = "VehicleJourneyAtStopUpdater";
+
 	@EJB
 	private StopPointDAO stopPointDAO;
 
@@ -19,39 +26,37 @@ public class VehicleJourneyAtStopUpdater implements
 			VehicleJourneyAtStop newValue) {
 
 		if (newValue.getConnectingServiceId() != null
-				&& newValue.getConnectingServiceId().compareTo(
-						oldValue.getConnectingServiceId()) != 0) {
+				&& !newValue.getConnectingServiceId().equals(
+						oldValue.getConnectingServiceId())) {
 			oldValue.setConnectingServiceId(newValue.getConnectingServiceId());
 		}
 		if (newValue.getBoardingAlightingPossibility() != null
-				&& newValue.getBoardingAlightingPossibility().compareTo(
-						oldValue.getBoardingAlightingPossibility()) != 0) {
+				&& !newValue.getBoardingAlightingPossibility().equals(
+						oldValue.getBoardingAlightingPossibility())) {
 			oldValue.setBoardingAlightingPossibility(newValue
 					.getBoardingAlightingPossibility());
 		}
 		if (newValue.getArrivalTime() != null
-				&& newValue.getArrivalTime().compareTo(
-						oldValue.getArrivalTime()) != 0) {
+				&& !newValue.getArrivalTime().equals(oldValue.getArrivalTime())) {
 			oldValue.setArrivalTime(newValue.getArrivalTime());
 		}
 		if (newValue.getDepartureTime() != null
-				&& newValue.getDepartureTime().compareTo(
-						oldValue.getDepartureTime()) != 0) {
+				&& !newValue.getDepartureTime().equals(
+						oldValue.getDepartureTime())) {
 			oldValue.setDepartureTime(newValue.getDepartureTime());
 		}
 		if (newValue.getWaitingTime() != null
-				&& newValue.getWaitingTime().compareTo(
-						oldValue.getWaitingTime()) != 0) {
+				&& !newValue.getWaitingTime().equals(oldValue.getWaitingTime())) {
 			oldValue.setWaitingTime(newValue.getWaitingTime());
 		}
 		if (newValue.getElapseDuration() != null
-				&& newValue.getElapseDuration().compareTo(
-						oldValue.getElapseDuration()) != 0) {
+				&& !newValue.getElapseDuration().equals(
+						oldValue.getElapseDuration())) {
 			oldValue.setElapseDuration(newValue.getElapseDuration());
 		}
 		if (newValue.getHeadwayFrequency() != null
-				&& newValue.getHeadwayFrequency().compareTo(
-						oldValue.getHeadwayFrequency()) != 0) {
+				&& !newValue.getHeadwayFrequency().equals(
+						oldValue.getHeadwayFrequency())) {
 			oldValue.setHeadwayFrequency(newValue.getHeadwayFrequency());
 		}
 
@@ -67,13 +72,20 @@ public class VehicleJourneyAtStopUpdater implements
 	}
 
 	static {
-		UpdaterFactory.register(VehicleJourneyAtStopUpdater.class.getName(),
+		UpdaterFactory.register(LineUpdater.class.getName(),
 				new UpdaterFactory() {
-					private VehicleJourneyAtStopUpdater INSTANCE = new VehicleJourneyAtStopUpdater();
 
 					@Override
-					protected Updater<VehicleJourneyAtStop> create() {
-						return INSTANCE;
+					protected <T> Updater<T> create(InitialContext context) {
+						Updater result = null;
+						try {
+							result = (Updater) context
+									.lookup("java:app/mobi.chouette.exchange/"
+											+ BEAN_NAME);
+						} catch (NamingException e) {
+							log.error(e);
+						}
+						return result;
 					}
 				});
 	}

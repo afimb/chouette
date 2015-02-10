@@ -1,6 +1,5 @@
 package mobi.chouette.exchange.neptune.importer;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -10,7 +9,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
 import javax.annotation.Resource;
-import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.naming.InitialContext;
@@ -23,11 +21,9 @@ import mobi.chouette.common.Color;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.FileUtils;
-import mobi.chouette.common.chain.Chain;
-import mobi.chouette.common.chain.ChainImpl;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.TransactionnalCommand;
+import mobi.chouette.exchange.importer.RegisterCommand;
 import mobi.chouette.exchange.importer.UncompressCommand;
 import mobi.chouette.exchange.importer.report.FileItem;
 import mobi.chouette.exchange.importer.report.Report;
@@ -45,10 +41,8 @@ public class NeptuneImporterCommand implements Command, Constant {
 
 	@Resource(lookup = "java:comp/DefaultManagedExecutorService")
 	ManagedExecutorService executor;
-
-	@EJB
-	TransactionnalCommand transactionnal;
-
+	
+	
 	@Override
 	public boolean execute(Context context) throws Exception {
 		boolean result = ERROR;
@@ -61,15 +55,15 @@ public class NeptuneImporterCommand implements Command, Constant {
 			Report report = new Report();
 			context.put(REPORT, report);
 			// uncompress data
-			Command command = CommandFactory.create(initialContext,
+			Command uncompress = CommandFactory.create(initialContext,
 					UncompressCommand.class.getName());
-			command.execute(context);
+			uncompress.execute(context);
 
 			Path path = Paths.get(context.get(PATH).toString(), INPUT);
 			List<Path> stream = FileUtils.listFiles(path, "*.xml");
 
 			// validation
-			int n = Runtime.getRuntime().availableProcessors() / 1;
+			int n = Runtime.getRuntime().availableProcessors() / 2;
 			int size = (int )Math.ceil(stream.size() / n);
 			List<List<Path>> partition = Lists.partition(stream, size);
 			List<Task> tasks = new ArrayList<Task>();
@@ -88,24 +82,21 @@ public class NeptuneImporterCommand implements Command, Constant {
 					report.getFiles().getFilesDetail().getIgnored().add(fileItem);
 					continue;
 				}
-
-				log.info("[DSU] import : " + file.toString());
 				
+				
+				log.info("[DSU] import : " + file.toString());				
 				context.put(FILE_URL, file.toUri().toURL().toExternalForm());
-
-				Chain chain = new ChainImpl();
-
+				
 				// parser
 				Command parser = CommandFactory.create(initialContext,
 						NeptuneParserCommand.class.getName());
-				chain.add(parser);
+				parser.execute(context);
 
 				// register
-				// Command register = CommandFactory.create(ctx,
-				// RegisterCommand.class.getName());
-				// transac.add(register);
+				Command register = CommandFactory.create(initialContext,
+						RegisterCommand.class.getName());
+				register.execute(context);
 
-				transactionnal.execute(context, chain);
 			}
 
 			result = SUCCESS;

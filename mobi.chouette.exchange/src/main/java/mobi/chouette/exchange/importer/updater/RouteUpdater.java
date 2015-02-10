@@ -3,6 +3,9 @@ package mobi.chouette.exchange.importer.updater;
 import java.util.Collection;
 
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.CollectionUtils;
@@ -16,7 +19,11 @@ import mobi.chouette.model.Route;
 import mobi.chouette.model.StopPoint;
 
 @Log4j
+@Stateless(name = RouteUpdater.BEAN_NAME)
 public class RouteUpdater implements Updater<Route> {
+
+	public static final String BEAN_NAME = "RouteUpdater";
+
 	@EJB
 	private RouteDAO routeDAO;
 
@@ -30,52 +37,55 @@ public class RouteUpdater implements Updater<Route> {
 	public void update(Context context, Route oldValue, Route newValue)
 			throws Exception {
 
+		InitialContext initialContext = (InitialContext) context
+				.get(INITIAL_CONTEXT);
+
 		if (newValue.isSaved()) {
 			return;
 		}
 		newValue.setSaved(true);
 
 		if (newValue.getObjectId() != null
-				&& newValue.getObjectId().compareTo(oldValue.getObjectId()) != 0) {
+				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {
 			oldValue.setObjectId(newValue.getObjectId());
 		}
 		if (newValue.getObjectVersion() != null
-				&& newValue.getObjectVersion().compareTo(
-						oldValue.getObjectVersion()) != 0) {
+				&& !newValue.getObjectVersion().equals(
+						oldValue.getObjectVersion())) {
 			oldValue.setObjectVersion(newValue.getObjectVersion());
 		}
 		if (newValue.getCreationTime() != null
-				&& newValue.getCreationTime().compareTo(
-						oldValue.getCreationTime()) != 0) {
+				&& !newValue.getCreationTime().equals(
+						oldValue.getCreationTime())) {
 			oldValue.setCreationTime(newValue.getCreationTime());
 		}
 		if (newValue.getCreatorId() != null
-				&& newValue.getCreatorId().compareTo(oldValue.getCreatorId()) != 0) {
+				&& !newValue.getCreatorId().equals(oldValue.getCreatorId())) {
 			oldValue.setCreatorId(newValue.getCreatorId());
 		}
 		if (newValue.getName() != null
-				&& newValue.getName().compareTo(oldValue.getName()) != 0) {
+				&& !newValue.getName().equals(oldValue.getName())) {
 			oldValue.setName(newValue.getName());
 		}
 		if (newValue.getComment() != null
-				&& newValue.getComment().compareTo(oldValue.getComment()) != 0) {
+				&& !newValue.getComment().equals(oldValue.getComment())) {
 			oldValue.setComment(newValue.getComment());
 		}
 		if (newValue.getPublishedName() != null
-				&& newValue.getPublishedName().compareTo(
-						oldValue.getPublishedName()) != 0) {
+				&& !newValue.getPublishedName().equals(
+						oldValue.getPublishedName())) {
 			oldValue.setPublishedName(newValue.getPublishedName());
 		}
 		if (newValue.getNumber() != null
-				&& newValue.getNumber().compareTo(oldValue.getNumber()) != 0) {
+				&& !newValue.getNumber().equals(oldValue.getNumber())) {
 			oldValue.setNumber(newValue.getNumber());
 		}
 		if (newValue.getDirection() != null
-				&& newValue.getDirection().compareTo(oldValue.getDirection()) != 0) {
+				&& !newValue.getDirection().equals(oldValue.getDirection())) {
 			oldValue.setDirection(newValue.getDirection());
 		}
 		if (newValue.getWayBack() != null
-				&& newValue.getWayBack().compareTo(oldValue.getWayBack()) != 0) {
+				&& !newValue.getWayBack().equals(oldValue.getWayBack())) {
 			oldValue.setWayBack(newValue.getWayBack());
 		}
 
@@ -113,8 +123,8 @@ public class RouteUpdater implements Updater<Route> {
 			stopPoint.setRoute(oldValue);
 		}
 
-		Updater<StopPoint> stopPointUpdater = UpdaterFactory
-				.create(StopPointUpdater.class.getName());
+		Updater<StopPoint> stopPointUpdater = UpdaterFactory.create(
+				initialContext, StopPointUpdater.class.getName());
 		Collection<Pair<StopPoint, StopPoint>> modifiedStopPoint = CollectionUtils
 				.intersection(oldValue.getStopPoints(),
 						newValue.getStopPoints(),
@@ -147,8 +157,8 @@ public class RouteUpdater implements Updater<Route> {
 			journeyPattern.setRoute(oldValue);
 		}
 
-		Updater<JourneyPattern> journeyPatternUpdater = UpdaterFactory
-				.create(JourneyPatternUpdater.class.getName());
+		Updater<JourneyPattern> journeyPatternUpdater = UpdaterFactory.create(
+				initialContext, JourneyPatternUpdater.class.getName());
 		Collection<Pair<JourneyPattern, JourneyPattern>> modifiedJourneyPattern = CollectionUtils
 				.intersection(oldValue.getJourneyPatterns(),
 						newValue.getJourneyPatterns(),
@@ -169,13 +179,20 @@ public class RouteUpdater implements Updater<Route> {
 	}
 
 	static {
-		UpdaterFactory.register(RouteUpdater.class.getName(),
+		UpdaterFactory.register(LineUpdater.class.getName(),
 				new UpdaterFactory() {
-					private RouteUpdater INSTANCE = new RouteUpdater();
 
 					@Override
-					protected Updater<Route> create() {
-						return INSTANCE;
+					protected <T> Updater<T> create(InitialContext context) {
+						Updater result = null;
+						try {
+							result = (Updater) context
+									.lookup("java:app/mobi.chouette.exchange/"
+											+ BEAN_NAME);
+						} catch (NamingException e) {
+							log.error(e);
+						}
+						return result;
 					}
 				});
 	}

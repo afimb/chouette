@@ -27,7 +27,7 @@ import org.apache.commons.lang.StringUtils;
 @Table(name = "group_of_lines")
 @Cacheable
 @NoArgsConstructor
-@ToString
+@ToString(callSuper=true, exclude = {"lines" })
 @Log4j
 public class GroupOfLine extends NeptuneIdentifiedObject {
 

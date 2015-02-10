@@ -25,6 +25,7 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.core.CoreExceptionCode;
 import mobi.chouette.core.CoreRuntimeException;
@@ -46,6 +47,7 @@ import org.apache.commons.lang.StringUtils;
 @Table(name = "lines")
 @NoArgsConstructor
 @Log4j
+@ToString(callSuper=true, exclude = { "routingConstraints" })
 public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	private static final long serialVersionUID = -8086291270595894778L;
 

@@ -4,7 +4,11 @@ import java.util.Collection;
 import java.util.Comparator;
 
 import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.CollectionUtils;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
@@ -20,8 +24,11 @@ import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
 
-//@Log4j
+@Log4j
+@Stateless(name = VehicleJourneyUpdater.BEAN_NAME)
 public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
+
+	public static final String BEAN_NAME = "VehicleJourneyUpdater";
 
 	private static final Comparator<VehicleJourneyAtStop> VEHICLE_JOURNEY_AT_STOP_COMPARATOR = new Comparator<VehicleJourneyAtStop>() {
 		@Override
@@ -53,82 +60,85 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 	public void update(Context context, VehicleJourney oldValue,
 			VehicleJourney newValue) throws Exception {
 
+		InitialContext initialContext = (InitialContext) context
+				.get(INITIAL_CONTEXT);
+
 		if (newValue.isSaved()) {
 			return;
 		}
 		newValue.setSaved(true);
 
 		if (newValue.getObjectId() != null
-				&& newValue.getObjectId().compareTo(oldValue.getObjectId()) != 0) {
+				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {
 			oldValue.setObjectId(newValue.getObjectId());
 		}
 		if (newValue.getObjectVersion() != null
-				&& newValue.getObjectVersion().compareTo(
-						oldValue.getObjectVersion()) != 0) {
+				&& !newValue.getObjectVersion().equals(
+						oldValue.getObjectVersion())) {
 			oldValue.setObjectVersion(newValue.getObjectVersion());
 		}
 		if (newValue.getCreationTime() != null
-				&& newValue.getCreationTime().compareTo(
-						oldValue.getCreationTime()) != 0) {
+				&& !newValue.getCreationTime().equals(
+						oldValue.getCreationTime())) {
 			oldValue.setCreationTime(newValue.getCreationTime());
 		}
 		if (newValue.getCreatorId() != null
-				&& newValue.getCreatorId().compareTo(oldValue.getCreatorId()) != 0) {
+				&& !newValue.getCreatorId().equals(oldValue.getCreatorId())) {
 			oldValue.setCreatorId(newValue.getCreatorId());
 		}
 		if (newValue.getName() != null
-				&& newValue.getName().compareTo(oldValue.getName()) != 0) {
+				&& !newValue.getName().equals(oldValue.getName())) {
 			oldValue.setName(newValue.getName());
 		}
 		if (newValue.getComment() != null
-				&& newValue.getComment().compareTo(oldValue.getComment()) != 0) {
+				&& !newValue.getComment().equals(oldValue.getComment())) {
 			oldValue.setComment(newValue.getComment());
 		}
 		if (newValue.getServiceStatusValue() != null
-				&& newValue.getServiceStatusValue().compareTo(
-						oldValue.getServiceStatusValue()) != 0) {
+				&& !newValue.getServiceStatusValue().equals(
+						oldValue.getServiceStatusValue())) {
 			oldValue.setServiceStatusValue(newValue.getServiceStatusValue());
 		}
 		if (newValue.getTransportMode() != null
-				&& newValue.getTransportMode().compareTo(
-						oldValue.getTransportMode()) != 0) {
+				&& !newValue.getTransportMode().equals(
+						oldValue.getTransportMode())) {
 			oldValue.setTransportMode(newValue.getTransportMode());
 		}
 		if (newValue.getPublishedJourneyName() != null
-				&& newValue.getPublishedJourneyName().compareTo(
-						oldValue.getPublishedJourneyName()) != 0) {
+				&& !newValue.getPublishedJourneyName().equals(
+						oldValue.getPublishedJourneyName())) {
 			oldValue.setPublishedJourneyName(newValue.getPublishedJourneyName());
 		}
 		if (newValue.getPublishedJourneyIdentifier() != null
-				&& newValue.getPublishedJourneyIdentifier().compareTo(
-						oldValue.getPublishedJourneyIdentifier()) != 0) {
+				&& !newValue.getPublishedJourneyIdentifier().equals(
+						oldValue.getPublishedJourneyIdentifier())) {
 			oldValue.setPublishedJourneyIdentifier(newValue
 					.getPublishedJourneyIdentifier());
 		}
 		if (newValue.getFacility() != null
-				&& newValue.getFacility().compareTo(oldValue.getFacility()) != 0) {
+				&& !newValue.getFacility().equals(oldValue.getFacility())) {
 			oldValue.setFacility(newValue.getFacility());
 		}
 		if (newValue.getVehicleTypeIdentifier() != null
-				&& newValue.getVehicleTypeIdentifier().compareTo(
-						oldValue.getVehicleTypeIdentifier()) != 0) {
+				&& !newValue.getVehicleTypeIdentifier().equals(
+						oldValue.getVehicleTypeIdentifier())) {
 			oldValue.setVehicleTypeIdentifier(newValue
 					.getVehicleTypeIdentifier());
 		}
 		if (newValue.getNumber() != null
-				&& newValue.getNumber().compareTo(oldValue.getNumber()) != 0) {
+				&& !newValue.getNumber().equals(oldValue.getNumber())) {
 			oldValue.setNumber(newValue.getNumber());
 		}
 
 		if (newValue.getMobilityRestrictedSuitability() != null
-				&& newValue.getMobilityRestrictedSuitability().compareTo(
-						oldValue.getMobilityRestrictedSuitability()) != 0) {
+				&& !newValue.getMobilityRestrictedSuitability().equals(
+						oldValue.getMobilityRestrictedSuitability())) {
 			oldValue.setMobilityRestrictedSuitability(newValue
 					.getMobilityRestrictedSuitability());
 		}
 		if (newValue.getFlexibleService() != null
-				&& newValue.getFlexibleService().compareTo(
-						oldValue.getFlexibleService()) != 0) {
+				&& !newValue.getFlexibleService().equals(
+						oldValue.getFlexibleService())) {
 			oldValue.setFlexibleService(newValue.getFlexibleService());
 		}
 
@@ -143,8 +153,8 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 				company.setObjectId(newValue.getCompany().getObjectId());
 				companyDAO.create(company);
 			}
-			Updater<Company> companyUpdater = UpdaterFactory
-					.create(CompanyUpdater.class.getName());
+			Updater<Company> companyUpdater = UpdaterFactory.create(
+					initialContext, CompanyUpdater.class.getName());
 			companyUpdater.update(null, oldValue.getCompany(),
 					newValue.getCompany());
 			oldValue.setCompany(company);
@@ -177,7 +187,8 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 		}
 
 		Updater<VehicleJourneyAtStop> vehicleJourneyAtStopUpdater = UpdaterFactory
-				.create(VehicleJourneyAtStopUpdater.class.getName());
+				.create(initialContext,
+						VehicleJourneyAtStopUpdater.class.getName());
 		Collection<Pair<VehicleJourneyAtStop, VehicleJourneyAtStop>> modifiedVehicleJourneyAtStop = CollectionUtils
 				.intersection(oldValue.getVehicleJourneyAtStops(),
 						newValue.getVehicleJourneyAtStops(),
@@ -211,8 +222,8 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 			timetable.addVehicleJourney(oldValue);
 		}
 
-		Updater<Timetable> timetableUpdater = UpdaterFactory
-				.create(TimetableUpdater.class.getName());
+		Updater<Timetable> timetableUpdater = UpdaterFactory.create(
+				initialContext, TimetableUpdater.class.getName());
 		Collection<Pair<Timetable, Timetable>> modifiedTimetable = CollectionUtils
 				.intersection(oldValue.getTimetables(),
 						newValue.getTimetables(),
@@ -231,13 +242,20 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 	}
 
 	static {
-		UpdaterFactory.register(VehicleJourneyUpdater.class.getName(),
+		UpdaterFactory.register(LineUpdater.class.getName(),
 				new UpdaterFactory() {
-					private VehicleJourneyUpdater INSTANCE = new VehicleJourneyUpdater();
 
 					@Override
-					protected Updater<VehicleJourney> create() {
-						return INSTANCE;
+					protected <T> Updater<T> create(InitialContext context) {
+						Updater result = null;
+						try {
+							result = (Updater) context
+									.lookup("java:app/mobi.chouette.exchange/"
+											+ BEAN_NAME);
+						} catch (NamingException e) {
+							log.error(e);
+						}
+						return result;
 					}
 				});
 	}
