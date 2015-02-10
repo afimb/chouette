@@ -1,7 +1,8 @@
 package mobi.chouette.exchange.validation.report;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -11,67 +12,73 @@ import lombok.Data;
 @Data
 public class Detail {
 
-	public enum STATE {
-		UNCHECK, OK, WARNING, ERROR, FATAL
-	};
+	@XmlElement(name = "source")
+	private Location source;
 
-	@XmlElement(name = "location")
-	private Location location;
+	@XmlElement(name = "targets")
+	private List<Location> targets = new ArrayList<>();
 
-	@XmlAttribute(name = "object_id")
-	private String objectId;
+	@XmlAttribute(name = "key")
+	private String key;
+
+	@XmlAttribute(name = "value")
+	private String value;
+
+	@XmlAttribute(name = "reference_value")
+	private String referenceValue;
 	
-	@XmlAttribute(name = "state")
-	private STATE state;
-
-	@XmlElement(name = "message_args")
-	private Map<String, String> messageArgs = new HashMap<String, String>();
-
-	@XmlAttribute(name = "message_key")
-	private String messageKey;
-
-	
-	   public Detail(String key, String objectId, STATE state,
-		         Location location, Map<String, Object> args)
+	   public Detail(String key, 
+		         Location source)
 		   {
 
-		      setMessageKey("detail_" + key.replaceAll("-", "_").toLowerCase());
-		      this.state = state;
-		      this.location = location;
-		      this.objectId = objectId;
-		      setArgs(args);
+			      setKey("detail_" + key.replaceAll("-", "_").toLowerCase());
+			      this.source = source;
+
+		   }
+	   
+	       public Detail(String key, 
+		         Location source, String value)
+		   {
+              this(key, source);
+		      this.value = value;
+		      
 
 		   }
 
-		   public Detail(String key, String objectId, STATE state,
-		         Location location)
-		   {
 
-		      setMessageKey("detail_" + key.replaceAll("-", "_").toLowerCase());
-		      this.state = state;
-		      this.location = location;
-		      this.objectId = objectId;
-		      this.messageArgs.clear();
+		   public Detail(String key, Location source,
+				   String value, String refValue)
+		   {
+			      this(key,source,value);
+			      this.referenceValue = refValue;
 
 		   }
-
-		   public Detail(String key, STATE state, Location location,
-		         Map<String, Object> args)
-		   {
-		      setMessageKey("detail_" + key.replaceAll("-", "_").toLowerCase());
-		      this.state = state;
-		      this.location = location;
-		      this.objectId = null;
-		      setArgs(args);
-
-		   }
-		   
-		   private void setArgs(Map<String, Object> args)
-		   {
-			   for (String key : args.keySet()) 
+		   public Detail(String key, 
+			         Location source, Location... targets)
 			   {
-				   messageArgs.put(key, args.get(key).toString());
-			}
-		   }
+
+	              this(key, source);
+                  this.getTargets().addAll(Arrays.asList(targets));
+
+			   }
+		   
+		       public Detail(String key, 
+			         Location source, String value, Location... targets)
+			   {
+	              this(key, source, value);
+                  this.getTargets().addAll(Arrays.asList(targets));
+			      
+
+			   }
+
+
+			   public Detail(String key, Location source,
+					   String value, String refValue, Location... targets)
+			   {
+				      this(key,source,value, refValue);
+	                  this.getTargets().addAll(Arrays.asList(targets));
+
+			   }
+	   
 
 }

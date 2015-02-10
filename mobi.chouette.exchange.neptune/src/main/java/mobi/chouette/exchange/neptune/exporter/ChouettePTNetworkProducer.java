@@ -1,10 +1,14 @@
 package mobi.chouette.exchange.neptune.exporter;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.metadata.Metadata;
+import mobi.chouette.exchange.metadata.NeptuneObjectPresenter;
 import mobi.chouette.exchange.neptune.exporter.model.PTLink;
 import mobi.chouette.exchange.neptune.exporter.producer.AbstractJaxbNeptuneProducer;
 import mobi.chouette.exchange.neptune.exporter.producer.AccessLinkProducer;
@@ -24,6 +28,7 @@ import mobi.chouette.exchange.neptune.exporter.producer.StopPointProducer;
 import mobi.chouette.exchange.neptune.exporter.producer.TimetableProducer;
 import mobi.chouette.exchange.neptune.exporter.producer.VehicleJourneyProducer;
 import mobi.chouette.exchange.neptune.exporter.util.NeptuneObjectUtil;
+import mobi.chouette.exchange.neptune.jaxb.JaxbNeptuneFileConverter;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.Company;
@@ -70,12 +75,14 @@ public class ChouettePTNetworkProducer implements Constant {
 	//	private static FacilityProducer facilityProducer = new FacilityProducer();
 	//	private static TimeSlotProducer timeSlotProducer = new TimeSlotProducer();
 
-	public void produce(Context context)
+	public void produce(Context context) throws Exception
 	{
 		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
+		String rootDirectory = (String) context.get(PATH);
 		
-		boolean addExtension = false; // TODO read from parameter
-		String projectionType = ""; // TODO read from parameter
+		NeptuneExportParameters parameters = (NeptuneExportParameters) context.get(PARAMETERS);
+		boolean addExtension = parameters.isAddExtension();
+		String projectionType = parameters.getProjectionType();
 		Metadata metadata = (Metadata) context.get(METADATA); 
 
 		ChouettePTNetworkType rootObject = AbstractJaxbNeptuneProducer.tridentFactory.createChouettePTNetworkType();
@@ -125,7 +132,7 @@ public class ChouettePTNetworkProducer implements Constant {
 					}
 				}
 			}
-			if (stopArea.hasCoordinates())
+			if (metadata != null && stopArea.hasCoordinates())
 				metadata.getSpatialCoverage().update(stopArea.getLongitude().doubleValue(), stopArea.getLatitude().doubleValue());
 			if (stopArea.hasAddress() || stopArea.hasCoordinates() || stopArea.hasProjection())
 			{
@@ -158,7 +165,7 @@ public class ChouettePTNetworkProducer implements Constant {
 					}
 				}
 			}
-
+			if (metadata != null)
 			metadata.getTemporalCoverage().update(timetable.getStartOfPeriod(), timetable.getEndOfPeriod());
 		}
 
@@ -189,11 +196,8 @@ public class ChouettePTNetworkProducer implements Constant {
 				}
 			}
 			// add ptLinks 
-			// TODO ptLinks should be created once
 			List<PTLink> ptLinks = NeptuneObjectUtil.getPtLinks(route);
-			// TODO ptLinks should be created once
-			jaxbObj.getPtLinkId().addAll(
-					NeptuneObjectUtil.extractObjectIds(ptLinks));
+			jaxbObj.getPtLinkId().addAll(NeptuneObjectUtil.extractObjectIds(ptLinks));
 			for (PTLink ptLink : ptLinks) 
 			{
 				PTLinkType jaxbLink = ptLinkProducer.produce(ptLink, addExtension);
@@ -231,7 +235,17 @@ public class ChouettePTNetworkProducer implements Constant {
 			rootObject.getAccessPoint().add(accessPointProducer.produce(accessPoint,addExtension));
 		}
 
-		// qui fait la sauvegarde ?? 
+		// sauvegarde
+		JaxbNeptuneFileConverter writer = JaxbNeptuneFileConverter.getInstance();
+		Path dir = Paths.get(rootDirectory,OUTPUT);
+		String fileName = collection.getLine().getId()+".xml";
+		File file = new File(dir.toFile(),fileName);
+		writer.write(AbstractJaxbNeptuneProducer.tridentFactory.createChouettePTNetwork(rootObject), file );
+		
+		if (metadata != null)
+			metadata.getResources().add(metadata.new Resource(fileName + ".xml", 
+                NeptuneObjectPresenter.getName(collection.getNetwork()), 
+                NeptuneObjectPresenter.getName(collection.getLine())));
 		
 
 	}

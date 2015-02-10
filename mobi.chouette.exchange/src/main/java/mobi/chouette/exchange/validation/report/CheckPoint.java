@@ -18,7 +18,7 @@ public class CheckPoint {
 	};
 
 	public enum STATE {
-		UNCHECK, OK, WARNING, ERROR, FATAL
+		UNCHECK, OK, NOK
 	};
 
 	@XmlAttribute(name = "name")
@@ -54,11 +54,9 @@ public class CheckPoint {
 			details.add(item);
 		}
 		detailCount++;
-		// TODO manage common state enum
-	    if (item.getState().ordinal() > state.ordinal())
-	    {
-	    	state = STATE.values()[item.getState().ordinal()];
-	    }
+		
+	    	state = STATE.NOK;
+	    
 		
 	}
 }
