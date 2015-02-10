@@ -130,7 +130,7 @@ public class ExportCommand
       logger.info("  reference ids : " + guiExport.getReferenceIds());
 
       startProcess(session, guiExport);
-      
+
       // parse options 
       if (guiExport.getOptions() != null)
       {
@@ -142,13 +142,14 @@ public class ExportCommand
             {
                String param = tokens[0].trim();
                String val = tokens[1].trim();
-               val = val.substring(1,val.lastIndexOf("'"));
+               if (val.contains("'"))
+                  val = val.substring(1,val.lastIndexOf("'"));
                logger.info("  "+param+" : " + val);
                List<String> list = new ArrayList<>();
                list.add(val);
                parameters.put(param, list);
             }
-           
+
          }
       }
 
@@ -157,9 +158,9 @@ public class ExportCommand
       logger.info("  name : " + referential.getName());
       logger.info("  slug : " + referential.getSlug());
       logger.info("  projection type : " + referential.getProjectionType());
-      
+
       Organisation organisation = referential.getOrganisation();
-      
+
       Metadata metadata = new Metadata();
       metadata.setCreator(organisation.getName());
       metadata.setPublisher(referential.getName());
@@ -230,7 +231,7 @@ public class ExportCommand
 
          List<ParameterValue> values = populateParameters(description,
                parameters);
-         
+
          SimpleParameterValue metadataParameter = new SimpleParameterValue("metadata");
          metadataParameter.setObjectValue(metadata);
          values.add(metadataParameter);
@@ -268,7 +269,7 @@ public class ExportCommand
    private List<NeptuneIdentifiedObject> executeGet(
          INeptuneManager<NeptuneIdentifiedObject> manager,
          Map<String, List<String>> parameters) throws ChouetteException
-   {
+         {
       Filter filter = null;
       if (parameters.containsKey("id"))
       {
@@ -376,7 +377,7 @@ public class ExportCommand
 
       System.out.println("beans count = " + beans.size());
       return beans;
-   }
+         }
 
    /**
     * @param parameters
@@ -420,7 +421,7 @@ public class ExportCommand
     */
    private INeptuneManager<NeptuneIdentifiedObject> getManager(
          Map<String, List<String>> parameters)
-   {
+         {
       String object = null;
       try
       {
@@ -440,7 +441,7 @@ public class ExportCommand
                + " are managed");
       }
       return manager;
-   }
+         }
 
    /**
     * @param string
@@ -479,7 +480,7 @@ public class ExportCommand
    private List<ParameterValue> populateParameters(
          FormatDescription description, Map<String, List<String>> parameters,
          String... excluded)
-   {
+         {
       List<ParameterValue> values = new ArrayList<ParameterValue>();
       List<String> excludedParams = Arrays.asList(excluded);
       for (ParameterDescription desc : description.getParameterDescriptions())
@@ -565,7 +566,7 @@ public class ExportCommand
          }
       }
       return values;
-   }
+         }
 
    private void startProcess(EntityManager session, GuiExport guiExport)
    {
