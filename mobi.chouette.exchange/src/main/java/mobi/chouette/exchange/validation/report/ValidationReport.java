@@ -10,7 +10,7 @@ import lombok.Data;
 
 @Data
 @XmlRootElement(name = "validation")
-public class Report {
+public class ValidationReport {
 
 	@XmlElement(name = "phase")
 	private List<Phase> phase = new ArrayList<Phase>();

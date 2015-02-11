@@ -63,7 +63,9 @@ public class NeptuneParserTest {
 		Context context = new Context();
 		URL file = NeptuneParserTest.class
 				.getResource("/META-INF/1000252.xml");
+		Report report = new Report();
 		context.put(Constant.FILE_URL, file.toExternalForm());
+		context.put(Constant.REPORT, report);
 		validation.execute(context);
 	}
 	
@@ -72,7 +74,9 @@ public class NeptuneParserTest {
 		Context context = new Context();
 		URL file = NeptuneParserTest.class
 				.getResource("/META-INF/1000252.xml");
+		Report report = new Report();
 		context.put(Constant.FILE_URL, file.toExternalForm());
+		context.put(Constant.REPORT, report);
 		parser.execute(context);
 		Referential referential = (Referential) context.get(Constant.REFERENTIAL);
 		Line line = referential.getLines().values().iterator().next();
@@ -103,14 +107,14 @@ public class NeptuneParserTest {
 		context.put(Constant.REPORT, report);
 		try
 		{
-			parser.execute(context);
+			validation.execute(context);
 		}
 		catch (Exception e)
 		{
 			System.out.println("exception received "+e.getMessage());
 		}
 		assertNull("no error should be reported",report.getError());
-		assertEquals("report one error file",report.getFiles().getFilesDetail().getError().size(),1);
+		assertEquals("report one error file",1,report.getFiles().getFilesDetail().getError().size());
 		System.out.println("error message = "+report.getFiles().getFilesDetail().getError().get(0).getErrors().get(0));
 	}
 
@@ -131,22 +135,22 @@ public class NeptuneParserTest {
 			System.out.println("exception received "+e.getMessage());
 		}
 		assertNull("no error should be reported",report.getError());
-		assertEquals("report one error file",report.getFiles().getFilesDetail().getError().size(),1);
+		assertEquals("report one error file",1,report.getFiles().getFilesDetail().getError().size());
 		System.out.println("error message = "+report.getFiles().getFilesDetail().getError().get(0).getErrors().get(0));
 
 	}
 
-	@Test
-	public void verifiyIgnoredFile() throws Exception {
-		Context context = new Context();
-		URL file = NeptuneParserTest.class
-				.getResource("/META-INF/metadata_chouette_dc.xml");
-		Report report = new Report();
-		context.put(Constant.FILE_URL, file.toExternalForm());
-		context.put(Constant.REPORT, report);
-		parser.execute(context);
-		assertNull("no error should be reported",report.getError());
-		assertEquals("report one ignored file",report.getFiles().getFilesDetail().getIgnored().size(),1);
-
-	}
+//	@Test
+//	public void verifiyIgnoredFile() throws Exception {
+//		Context context = new Context();
+//		URL file = NeptuneParserTest.class
+//				.getResource("/META-INF/metadata_chouette_dc.xml");
+//		Report report = new Report();
+//		context.put(Constant.FILE_URL, file.toExternalForm());
+//		context.put(Constant.REPORT, report);
+//		parser.execute(context);
+//		assertNull("no error should be reported",report.getError());
+//		assertEquals("report one ignored file",1,report.getFiles().getFilesDetail().getIgnored().size());
+//
+//	}
 }
