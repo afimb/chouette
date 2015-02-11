@@ -1,6 +1,9 @@
 package mobi.chouette.exchange.validation.report;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 
 import lombok.Data;
 import mobi.chouette.model.AccessLink;
@@ -17,6 +20,7 @@ import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 
 @Data
+@XmlAccessorType(XmlAccessType.FIELD)
 public class ObjectReference {
 
 	public enum TYPE  {
@@ -34,7 +38,7 @@ public class ObjectReference {
 		vehicle_journey
 	};
 
-	@XmlAttribute(name = "type")
+	@XmlElement(name = "type")
 	private TYPE type;
 
 	@XmlAttribute(name = "id")

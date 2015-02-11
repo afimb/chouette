@@ -35,10 +35,10 @@ public class NeptuneSAXErrorHandler implements ErrorHandler, Constant {
 	public NeptuneSAXErrorHandler(Context context)throws Exception
 	{
 	    validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
-	    Phase phaseOne = validationReport.findPhaseByName(Phase.PHASE.ONE.name());
+	    Phase phaseOne = validationReport.findPhaseByName(Phase.GROUP.ONE.name());
 	    if (phaseOne == null)
 	    {
-	    	phaseOne = new Phase(Phase.PHASE.ONE.name());
+	    	phaseOne = new Phase(Phase.GROUP.ONE.name());
 	    }
 	    
 	    report = phaseOne.findCheckPointByName(XML_2);

@@ -3,15 +3,18 @@ package mobi.chouette.exchange.validation.report;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
 import lombok.Data;
 
 @Data
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Phase {
 
-	public enum PHASE
+	public enum GROUP
 	{
 		ZERO, ONE, TWO, THREE
 	};

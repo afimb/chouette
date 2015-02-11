@@ -3,6 +3,8 @@ package mobi.chouette.exchange.validation.report;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
@@ -22,6 +24,7 @@ import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 
 @Data
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Location {
 
 	@XmlAttribute(name = "filename")

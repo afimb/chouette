@@ -3,12 +3,15 @@ package mobi.chouette.exchange.validation.report;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
 import lombok.Data;
 
 @Data
+@XmlAccessorType(XmlAccessType.FIELD)
 public class CheckPoint {
 	
 	private static final int maxDetails = 20;
@@ -27,10 +30,10 @@ public class CheckPoint {
 	@XmlAttribute(name = "order")
 	private int order;
 
-	@XmlAttribute(name = "severity")
+	@XmlElement(name = "severity")
 	private SEVERITY severity;
 
-	@XmlAttribute(name = "state")
+	@XmlElement(name = "state")
 	private STATE state;
 
 	@XmlAttribute(name = "detail_count")
