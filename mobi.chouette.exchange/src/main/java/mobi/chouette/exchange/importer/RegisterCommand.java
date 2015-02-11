@@ -42,7 +42,7 @@ public class RegisterCommand implements Command {
 			Referential referential = (Referential) context.get(REFERENTIAL);
 			Line newValue = referential.getLines().values().iterator().next();
 
-			// log.info("[DSU] register : \n" + newValue);
+			log.info("[DSU] register line : \n" + newValue.getObjectId());
 
 			Updater<Line> lineUpdater = UpdaterFactory.create(initialContext,
 					LineUpdater.class.getName());
@@ -50,12 +50,11 @@ public class RegisterCommand implements Command {
 			if (oldValue == null) {
 				oldValue = new Line();
 				oldValue.setObjectId(newValue.getObjectId());
-				lineUpdater.update(context, oldValue, newValue);
-				lineDAO.create(oldValue);
-			} else {
-				lineUpdater.update(context, oldValue, newValue);
-			}
 
+			}
+			lineUpdater.update(context, oldValue, newValue);
+			lineDAO.create(oldValue);
+			
 			result = SUCCESS;
 		} catch (Exception e) {
 			log.error(e);

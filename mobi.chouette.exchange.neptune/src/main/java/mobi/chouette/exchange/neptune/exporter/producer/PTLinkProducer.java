@@ -1,6 +1,6 @@
 package mobi.chouette.exchange.neptune.exporter.producer;
 
-import mobi.chouette.exchange.neptune.exporter.model.PTLink;
+import mobi.chouette.exchange.neptune.model.PTLink;
 
 import org.trident.schema.trident.PTLinkType;
 

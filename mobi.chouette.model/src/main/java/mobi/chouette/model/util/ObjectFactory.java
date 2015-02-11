@@ -7,7 +7,6 @@ import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
-import mobi.chouette.model.PTLink;
 import mobi.chouette.model.PTNetwork;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
@@ -36,16 +35,6 @@ public class ObjectFactory {
 			result = new AccessPoint();
 			result.setObjectId(objectId);
 			referential.getAccessPoint().put(objectId, result);
-		}
-		return result;
-	}
-
-	public static PTLink getPTLink(Referential referential, String objectId) {
-		PTLink result = referential.getPtLink().get(objectId);
-		if (result == null) {
-			result = new PTLink();
-			result.setObjectId(objectId);
-			referential.getPtLink().put(objectId, result);
 		}
 		return result;
 	}

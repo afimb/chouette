@@ -1,6 +1,6 @@
 package mobi.chouette.exchange.neptune.exporter.producer;
 
-import mobi.chouette.exchange.neptune.exporter.model.TimeSlot;
+import mobi.chouette.exchange.neptune.model.TimeSlot;
 
 import org.trident.schema.trident.TimeSlotType;
 

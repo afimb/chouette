@@ -1,12 +1,15 @@
 package mobi.chouette.dao;
 
+import java.util.Collection;
 import java.util.List;
 
-public interface GenericDAO<T> {
+public interface GenericDAO<T > {
 
 	T find(Object id);
 
 	T findByObjectId(String id);
+	
+	List<T> findByObjectId(Collection<String> objectIds);
 
 	List<T> findAll();
 
@@ -23,5 +26,11 @@ public interface GenericDAO<T> {
 	void detach(T entity);
 
 	void evictAll();
+
+
+	List<T> load(Collection<T> list);
+
+
+
 
 }

@@ -1,6 +1,8 @@
 package mobi.chouette.exchange.importer.updater;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -14,6 +16,7 @@ import mobi.chouette.common.Pair;
 import mobi.chouette.dao.StopPointDAO;
 import mobi.chouette.dao.VehicleJourneyDAO;
 import mobi.chouette.model.JourneyPattern;
+import mobi.chouette.model.Route;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
 
@@ -28,6 +31,9 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 
 	@EJB
 	private VehicleJourneyDAO vehicleJourneyDAO;
+
+	@EJB(beanName=VehicleJourneyUpdater.BEAN_NAME)
+	private VehicleJourneyUpdater vehicleJourneyUpdater;
 
 	@Override
 	public void update(Context context, JourneyPattern oldValue,
@@ -82,9 +88,11 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 		Collection<StopPoint> addedStopPoint = CollectionUtils.substract(
 				newValue.getStopPoints(), oldValue.getStopPoints(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
+
+		List<StopPoint> stopPoints = stopPointDAO.load (addedStopPoint);		
 		for (StopPoint item : addedStopPoint) {
-			StopPoint stopPoint = stopPointDAO.findByObjectId(item
-					.getObjectId());
+			int index = stopPoints.indexOf(item);
+			StopPoint stopPoint = (index != -1) ? stopPoints.get(index) : null;
 			if (stopPoint != null) {
 				oldValue.addStopPoint(stopPoint);
 			}
@@ -126,19 +134,20 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 				.substract(newValue.getVehicleJourneys(),
 						oldValue.getVehicleJourneys(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);
+		
+		List<VehicleJourney> vehicleJourneys = vehicleJourneyDAO.load(addedVehicleJourney);		
 		for (VehicleJourney item : addedVehicleJourney) {
-			VehicleJourney vehicleJourney = vehicleJourneyDAO
-					.findByObjectId(item.getObjectId());
+			int index = vehicleJourneys.indexOf(item);
+			VehicleJourney vehicleJourney = (index != -1) ? vehicleJourneys.get(index) : null;
 			if (vehicleJourney == null) {
 				vehicleJourney = new VehicleJourney();
 				vehicleJourney.setObjectId(item.getObjectId());
-				// vehicleJourneyDAO.create(vehicleJourney);
 			}
 			vehicleJourney.setJourneyPattern(oldValue);
 		}
 
-		Updater<VehicleJourney> vehicleJourneyUpdater = UpdaterFactory.create(
-				initialContext, VehicleJourneyUpdater.class.getName());
+//		Updater<VehicleJourney> vehicleJourneyUpdater = // UpdaterFactory.create(
+//				initialContext, VehicleJourneyUpdater.class.getName());
 		Collection<Pair<VehicleJourney, VehicleJourney>> modifiedVehicleJourney = CollectionUtils
 				.intersection(oldValue.getVehicleJourneys(),
 						newValue.getVehicleJourneys(),

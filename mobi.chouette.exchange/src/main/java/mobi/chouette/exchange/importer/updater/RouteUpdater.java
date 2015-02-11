@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.importer.updater;
 
 import java.util.Collection;
+import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -29,9 +30,17 @@ public class RouteUpdater implements Updater<Route> {
 
 	@EJB
 	private StopPointDAO stopPointDAO;
+	
+	@EJB(beanName=StopPointUpdater.BEAN_NAME)
+	private StopPointUpdater stopPointUpdater;
 
 	@EJB
 	private JourneyPatternDAO journeyPatternDAO;
+
+	@EJB(beanName=JourneyPatternUpdater.BEAN_NAME)
+	private JourneyPatternUpdater journeyPatternUpdater;
+
+	
 
 	@Override
 	public void update(Context context, Route oldValue, Route newValue)
@@ -112,19 +121,20 @@ public class RouteUpdater implements Updater<Route> {
 		Collection<StopPoint> addedStopPoint = CollectionUtils.substract(
 				newValue.getStopPoints(), oldValue.getStopPoints(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
+		
+		List<StopPoint> stopPoints = stopPointDAO.load(addedStopPoint);
 		for (StopPoint item : addedStopPoint) {
-			StopPoint stopPoint = stopPointDAO.findByObjectId(item
-					.getObjectId());
+			int index = stopPoints.indexOf(item);
+			StopPoint stopPoint = (index != -1) ? stopPoints.get(index) : null;
 			if (stopPoint == null) {
 				stopPoint = new StopPoint();
 				stopPoint.setObjectId(item.getObjectId());
-				// stopPointDAO.create(stopPoint);
 			}
 			stopPoint.setRoute(oldValue);
 		}
 
-		Updater<StopPoint> stopPointUpdater = UpdaterFactory.create(
-				initialContext, StopPointUpdater.class.getName());
+//		Updater<StopPoint> stopPointUpdater = UpdaterFactory.create(
+//				initialContext, StopPointUpdater.class.getName());
 		Collection<Pair<StopPoint, StopPoint>> modifiedStopPoint = CollectionUtils
 				.intersection(oldValue.getStopPoints(),
 						newValue.getStopPoints(),
@@ -146,19 +156,20 @@ public class RouteUpdater implements Updater<Route> {
 				.substract(newValue.getJourneyPatterns(),
 						oldValue.getJourneyPatterns(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);
+		
+		List<JourneyPattern> journeyPatterns = journeyPatternDAO.load(addedJourneyPattern);
 		for (JourneyPattern item : addedJourneyPattern) {
-			JourneyPattern journeyPattern = journeyPatternDAO
-					.findByObjectId(item.getObjectId());
+			int index = journeyPatterns.indexOf(item);
+			JourneyPattern journeyPattern = (index != -1) ? journeyPatterns.get(index) : null;			
 			if (journeyPattern == null) {
 				journeyPattern = new JourneyPattern();
 				journeyPattern.setObjectId(item.getObjectId());
-				// journeyPatternDAO.create(journeyPattern);
 			}
 			journeyPattern.setRoute(oldValue);
 		}
 
-		Updater<JourneyPattern> journeyPatternUpdater = UpdaterFactory.create(
-				initialContext, JourneyPatternUpdater.class.getName());
+//		Updater<JourneyPattern> journeyPatternUpdater = // UpdaterFactory.create(
+//				initialContext, JourneyPatternUpdater.class.getName());
 		Collection<Pair<JourneyPattern, JourneyPattern>> modifiedJourneyPattern = CollectionUtils
 				.intersection(oldValue.getJourneyPatterns(),
 						newValue.getJourneyPatterns(),

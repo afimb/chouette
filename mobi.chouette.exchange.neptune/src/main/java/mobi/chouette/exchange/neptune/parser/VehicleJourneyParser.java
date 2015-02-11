@@ -139,11 +139,9 @@ public class VehicleJourneyParser implements Parser, Constant {
 		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
 		context.put(LINE_NUMBER, xpp.getLineNumber());
 
+		VehicleJourneyAtStop vehicleJourneyAtStop = ObjectFactory
+				.getVehicleJourneyAtStop();
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
-
-			VehicleJourneyAtStop vehicleJourneyAtStop = ObjectFactory
-					.getVehicleJourneyAtStop();
-
 			
 			if (xpp.getName().equals("vehicleJourneyId")) {
 				String objectId = ParserUtils.getText(xpp.nextText());
@@ -158,7 +156,10 @@ public class VehicleJourneyParser implements Parser, Constant {
 				String objectId = ParserUtils.getText(xpp.nextText());
 				StopPoint stopPoint = ObjectFactory.getStopPoint(referential,
 						objectId);
+				
+
 				vehicleJourneyAtStop.setStopPoint(stopPoint);
+				
 			} else if (xpp.getName().equals("order")) {
 				Integer value = ParserUtils.getInt(xpp.nextText());
 				// TODO order

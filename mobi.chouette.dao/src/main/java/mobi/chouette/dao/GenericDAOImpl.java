@@ -1,5 +1,7 @@
 package mobi.chouette.dao;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.Cache;
@@ -14,6 +16,9 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.model.AccessLink;
+import mobi.chouette.model.NeptuneIdentifiedObject;
+import mobi.chouette.model.NeptuneObject;
 
 @Log4j
 public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
@@ -70,6 +75,30 @@ public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 		TypedQuery<T> query = em.createQuery(criteria);
 		result = query.getResultList();
 		return (result.size() == 0) ? null : result.get(0);
+	}
+
+	@Override
+	public List<T> load(Collection<T> list) {
+		final Collection<String> objectIds = new ArrayList<String>();
+		for (T o : list) {
+			if (o instanceof NeptuneIdentifiedObject) {
+				objectIds.add(((NeptuneIdentifiedObject) o).getObjectId());			}
+
+		}
+		return findByObjectId(objectIds);
+	}
+
+	@Override
+	public List<T> findByObjectId(final Collection<String> objectIds) {
+		List<T> result = null;
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<T> criteria = builder.createQuery(type);
+		Root<T> root = criteria.from(type);
+		Predicate predicate = builder.in(root.get("objectId")).value(objectIds);
+		criteria.where(predicate);
+		TypedQuery<T> query = em.createQuery(criteria);
+		result = query.getResultList();
+		return result;
 	}
 
 	@Override

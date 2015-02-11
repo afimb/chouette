@@ -1,6 +1,8 @@
 package mobi.chouette.exchange.importer.updater;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -14,9 +16,10 @@ import mobi.chouette.common.Pair;
 import mobi.chouette.dao.AccessLinkDAO;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
+import mobi.chouette.model.Route;
 
 @Log4j
-@Stateless(name=AccessPointUpdater.BEAN_NAME)
+@Stateless(name = AccessPointUpdater.BEAN_NAME)
 public class AccessPointUpdater implements Updater<AccessPoint> {
 
 	public static final String BEAN_NAME = "AccessPointUpdater";
@@ -31,7 +34,6 @@ public class AccessPointUpdater implements Updater<AccessPoint> {
 		InitialContext initialContext = (InitialContext) context
 				.get(INITIAL_CONTEXT);
 
-		
 		if (newValue.isSaved()) {
 			return;
 		}
@@ -99,19 +101,23 @@ public class AccessPointUpdater implements Updater<AccessPoint> {
 		Collection<AccessLink> addedAccessLink = CollectionUtils.substract(
 				newValue.getAccessLinks(), oldValue.getAccessLinks(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
+		
+		List<AccessLink> accessLinks = accessLinkDAO
+				.load(addedAccessLink);
+
 		for (AccessLink item : addedAccessLink) {
-			AccessLink accessLink = accessLinkDAO.findByObjectId(item
-					.getObjectId());
+			int index = accessLinks.indexOf(item);
+			AccessLink accessLink = (index != -1) ? accessLinks.get(index)
+					: null;
 			if (accessLink == null) {
 				accessLink = new AccessLink();
 				accessLink.setObjectId(item.getObjectId());
-				// accessLinkDAO.create(accessLink);
 			}
 			accessLink.setAccessPoint(oldValue);
 		}
 
-		Updater<AccessLink> accessLinkUpdater = UpdaterFactory
-				.create(initialContext,AccessLinkUpdater.class.getName());
+		Updater<AccessLink> accessLinkUpdater = UpdaterFactory.create(
+				initialContext, AccessLinkUpdater.class.getName());
 		Collection<Pair<AccessLink, AccessLink>> modifiedAccessLink = CollectionUtils
 				.intersection(oldValue.getAccessLinks(),
 						newValue.getAccessLinks(),

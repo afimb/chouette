@@ -120,8 +120,7 @@
 				<configuration>
 					<schemaDirectory>${basedir}/src/main/resources/xsd</schemaDirectory>
 					<schemaFiles>neptune.xsd</schemaFiles>
-					<arguments>-extension -Xlocator -b
-						${basedir}/src/main/resources/xsd/bindings.xml</arguments>
+					<arguments>-extension -Xlocator -b ${basedir}/src/main/resources/xsd/bindings.xml</arguments>
 				</configuration>
 			</plugin>
 			<!-- <plugin> -->

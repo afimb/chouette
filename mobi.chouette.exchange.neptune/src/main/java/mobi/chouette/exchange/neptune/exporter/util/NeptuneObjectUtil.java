@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import mobi.chouette.exchange.neptune.exporter.model.PTLink;
+import mobi.chouette.exchange.neptune.model.PTLink;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopPoint;

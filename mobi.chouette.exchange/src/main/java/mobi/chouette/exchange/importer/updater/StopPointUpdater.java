@@ -20,6 +20,9 @@ public class StopPointUpdater implements Updater<StopPoint> {
 	@EJB
 	private StopAreaDAO stopAreaDAO;
 
+	@EJB(beanName = StopAreaUpdater.BEAN_NAME)
+	private StopAreaUpdater stopAreaUpdater;
+
 	@Override
 	public void update(Context context, StopPoint oldValue, StopPoint newValue)
 			throws Exception {
@@ -68,10 +71,10 @@ public class StopPointUpdater implements Updater<StopPoint> {
 				// stopAreaDAO.create(stopArea);
 			}
 			oldValue.setContainedInStopArea(stopArea);
-			Updater<StopArea> stopAreaUpdater = UpdaterFactory.create(
-					initialContext, StopAreaUpdater.class.getName());
+			// Updater<StopArea> stopAreaUpdater = UpdaterFactory.create(
+			// initialContext, StopAreaUpdater.class.getName());
 			stopAreaUpdater.update(context, oldValue.getContainedInStopArea(),
-					newValue.getContainedInStopArea());			
+					newValue.getContainedInStopArea());
 		}
 
 	}
