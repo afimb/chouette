@@ -9,19 +9,22 @@ import mobi.chouette.common.Context;
 import mobi.chouette.model.PTNetwork;
 
 @Log4j
-@Stateless(name=PTNetworkUpdater.BEAN_NAME)
+@Stateless(name = PTNetworkUpdater.BEAN_NAME)
 public class PTNetworkUpdater implements Updater<PTNetwork> {
-	
+
 	public static final String BEAN_NAME = "PTNetworkUpdater";
-	
+
 	@Override
 	public void update(Context context, PTNetwork oldValue, PTNetwork newValue) {
-		
+
 		if (newValue.isSaved()) {
 			return;
 		}
 		newValue.setSaved(true);
-
+		
+		log.info("[DSU] old : " + oldValue);
+		log.info("[DSU] new : " + newValue);
+		
 		if (newValue.getObjectId() != null
 				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {
 			oldValue.setObjectId(newValue.getObjectId());
@@ -40,14 +43,8 @@ public class PTNetworkUpdater implements Updater<PTNetwork> {
 				&& !newValue.getCreatorId().equals(oldValue.getCreatorId())) {
 			oldValue.setCreatorId(newValue.getCreatorId());
 		}
-		
-		log.info("////////////////////////////////////////////////////////////////////" + oldValue);
-		log.info("////////////////////////////////////////////////////////////////////" + newValue);
-
 		if (newValue.getName() != null
 				&& !newValue.getName().equals(oldValue.getName())) {
-			log.info("????????????" + newValue.getName());
-
 			oldValue.setName(newValue.getName());
 		}
 		if (newValue.getComment() != null
@@ -83,7 +80,7 @@ public class PTNetworkUpdater implements Updater<PTNetwork> {
 	}
 
 	static {
-		UpdaterFactory.register(LineUpdater.class.getName(),
+		UpdaterFactory.register(PTNetworkUpdater.class.getName(),
 				new UpdaterFactory() {
 
 					@Override

@@ -127,7 +127,7 @@ public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
 	}
 
 	static {
-		UpdaterFactory.register(LineUpdater.class.getName(),
+		UpdaterFactory.register(ConnectionLinkUpdater.class.getName(),
 				new UpdaterFactory() {
 
 					@Override

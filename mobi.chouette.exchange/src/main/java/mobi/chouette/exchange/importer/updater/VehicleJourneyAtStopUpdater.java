@@ -72,7 +72,7 @@ public class VehicleJourneyAtStopUpdater implements
 	}
 
 	static {
-		UpdaterFactory.register(LineUpdater.class.getName(),
+		UpdaterFactory.register(VehicleJourneyAtStopUpdater.class.getName(),
 				new UpdaterFactory() {
 
 					@Override

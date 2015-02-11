@@ -118,7 +118,7 @@ public class RouteUpdater implements Updater<Route> {
 			if (stopPoint == null) {
 				stopPoint = new StopPoint();
 				stopPoint.setObjectId(item.getObjectId());
-				stopPointDAO.create(stopPoint);
+				// stopPointDAO.create(stopPoint);
 			}
 			stopPoint.setRoute(oldValue);
 		}
@@ -130,7 +130,7 @@ public class RouteUpdater implements Updater<Route> {
 						newValue.getStopPoints(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<StopPoint, StopPoint> pair : modifiedStopPoint) {
-			stopPointUpdater.update(null, pair.getLeft(), pair.getRight());
+			stopPointUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
 
 		Collection<StopPoint> removedStopPoint = CollectionUtils.substract(
@@ -152,7 +152,7 @@ public class RouteUpdater implements Updater<Route> {
 			if (journeyPattern == null) {
 				journeyPattern = new JourneyPattern();
 				journeyPattern.setObjectId(item.getObjectId());
-				journeyPatternDAO.create(journeyPattern);
+				// journeyPatternDAO.create(journeyPattern);
 			}
 			journeyPattern.setRoute(oldValue);
 		}
@@ -164,7 +164,7 @@ public class RouteUpdater implements Updater<Route> {
 						newValue.getJourneyPatterns(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<JourneyPattern, JourneyPattern> pair : modifiedJourneyPattern) {
-			journeyPatternUpdater.update(null, pair.getLeft(), pair.getRight());
+			journeyPatternUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
 
 		// Collection<JourneyPattern> removedJourneyPattern = CollectionUtils
@@ -179,7 +179,7 @@ public class RouteUpdater implements Updater<Route> {
 	}
 
 	static {
-		UpdaterFactory.register(LineUpdater.class.getName(),
+		UpdaterFactory.register(RouteUpdater.class.getName(),
 				new UpdaterFactory() {
 
 					@Override

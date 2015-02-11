@@ -125,7 +125,7 @@ public class AccessLinkUpdater implements Updater<AccessLink> {
 	}
 
 	static {
-		UpdaterFactory.register(LineUpdater.class.getName(),
+		UpdaterFactory.register(AccessLinkUpdater.class.getName(),
 				new UpdaterFactory() {
 
 					@Override

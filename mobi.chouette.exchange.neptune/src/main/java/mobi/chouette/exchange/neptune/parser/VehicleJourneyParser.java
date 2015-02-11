@@ -144,6 +144,7 @@ public class VehicleJourneyParser implements Parser, Constant {
 			VehicleJourneyAtStop vehicleJourneyAtStop = ObjectFactory
 					.getVehicleJourneyAtStop();
 
+			
 			if (xpp.getName().equals("vehicleJourneyId")) {
 				String objectId = ParserUtils.getText(xpp.nextText());
 				vehicleJourneyAtStop.setVehicleJourney(vehicleJourney);

@@ -60,13 +60,16 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 	public void update(Context context, VehicleJourney oldValue,
 			VehicleJourney newValue) throws Exception {
 
-		InitialContext initialContext = (InitialContext) context
-				.get(INITIAL_CONTEXT);
-
 		if (newValue.isSaved()) {
 			return;
 		}
 		newValue.setSaved(true);
+
+		log.info("[DSU] old : " + oldValue);
+		log.info("[DSU] new : " + newValue);
+		
+		InitialContext initialContext = (InitialContext) context
+				.get(INITIAL_CONTEXT);
 
 		if (newValue.getObjectId() != null
 				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {
@@ -151,13 +154,13 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 			if (company == null) {
 				company = new Company();
 				company.setObjectId(newValue.getCompany().getObjectId());
-				companyDAO.create(company);
+				// companyDAO.create(company);
 			}
+			oldValue.setCompany(company);
 			Updater<Company> companyUpdater = UpdaterFactory.create(
 					initialContext, CompanyUpdater.class.getName());
-			companyUpdater.update(null, oldValue.getCompany(),
-					newValue.getCompany());
-			oldValue.setCompany(company);
+			companyUpdater.update(context, oldValue.getCompany(),
+					newValue.getCompany());			
 		}
 
 		// Route
@@ -177,13 +180,14 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 						VEHICLE_JOURNEY_AT_STOP_COMPARATOR);
 		for (VehicleJourneyAtStop item : addedVehicleJourneyAtStop) {
 			VehicleJourneyAtStop vehicleJourneyAtStop = new VehicleJourneyAtStop();
+			log.info("[DSU] stopPoint " +  stopPointDAO + " / "  + item);
 			StopPoint stopPoint = stopPointDAO.findByObjectId(item
 					.getStopPoint().getObjectId());
 			if (stopPoint != null) {
 				vehicleJourneyAtStop.setStopPoint(stopPoint);
 			}
 			vehicleJourneyAtStop.setVehicleJourney(oldValue);
-			vehicleJourneyAtStopDAO.create(vehicleJourneyAtStop);
+			// vehicleJourneyAtStopDAO.create(vehicleJourneyAtStop);
 		}
 
 		Updater<VehicleJourneyAtStop> vehicleJourneyAtStopUpdater = UpdaterFactory
@@ -194,7 +198,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 						newValue.getVehicleJourneyAtStops(),
 						VEHICLE_JOURNEY_AT_STOP_COMPARATOR);
 		for (Pair<VehicleJourneyAtStop, VehicleJourneyAtStop> pair : modifiedVehicleJourneyAtStop) {
-			vehicleJourneyAtStopUpdater.update(null, pair.getLeft(),
+			vehicleJourneyAtStopUpdater.update(context, pair.getLeft(),
 					pair.getRight());
 		}
 
@@ -217,7 +221,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 			if (timetable == null) {
 				timetable = new Timetable();
 				timetable.setObjectId(item.getObjectId());
-				timetableDAO.create(timetable);
+				// timetableDAO.create(timetable);
 			}
 			timetable.addVehicleJourney(oldValue);
 		}
@@ -229,7 +233,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 						newValue.getTimetables(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<Timetable, Timetable> pair : modifiedTimetable) {
-			timetableUpdater.update(null, pair.getLeft(), pair.getRight());
+			timetableUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
 
 		Collection<Timetable> removedTimetable = CollectionUtils.substract(
@@ -242,7 +246,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 	}
 
 	static {
-		UpdaterFactory.register(LineUpdater.class.getName(),
+		UpdaterFactory.register(VehicleJourneyUpdater.class.getName(),
 				new UpdaterFactory() {
 
 					@Override

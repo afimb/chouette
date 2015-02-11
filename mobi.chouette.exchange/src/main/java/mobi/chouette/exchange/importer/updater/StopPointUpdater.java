@@ -65,19 +65,19 @@ public class StopPointUpdater implements Updater<StopPoint> {
 				stopArea = new StopArea();
 				stopArea.setObjectId(newValue.getContainedInStopArea()
 						.getObjectId());
-				stopAreaDAO.create(stopArea);
+				// stopAreaDAO.create(stopArea);
 			}
+			oldValue.setContainedInStopArea(stopArea);
 			Updater<StopArea> stopAreaUpdater = UpdaterFactory.create(
 					initialContext, StopAreaUpdater.class.getName());
-			stopAreaUpdater.update(null, oldValue.getContainedInStopArea(),
-					newValue.getContainedInStopArea());
-			oldValue.setContainedInStopArea(stopArea);
+			stopAreaUpdater.update(context, oldValue.getContainedInStopArea(),
+					newValue.getContainedInStopArea());			
 		}
 
 	}
 
 	static {
-		UpdaterFactory.register(LineUpdater.class.getName(),
+		UpdaterFactory.register(StopPointUpdater.class.getName(),
 				new UpdaterFactory() {
 
 					@Override

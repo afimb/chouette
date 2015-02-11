@@ -22,6 +22,9 @@ public class CompanyUpdater implements Updater<Company> {
 		}
 		newValue.setSaved(true);
 
+		log.info("[DSU] old : " + oldValue);
+		log.info("[DSU] new : " + newValue);
+		
 		if (newValue.getObjectId() != null
 				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {
 			oldValue.setObjectId(newValue.getObjectId());
@@ -91,7 +94,7 @@ public class CompanyUpdater implements Updater<Company> {
 	}
 
 	static {
-		UpdaterFactory.register(LineUpdater.class.getName(),
+		UpdaterFactory.register(CompanyUpdater.class.getName(),
 				new UpdaterFactory() {
 
 					@Override

@@ -20,7 +20,6 @@ import mobi.chouette.exchange.importer.updater.UpdaterFactory;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.util.Referential;
 
-
 @Stateless(name = RegisterCommand.COMMAND)
 @Log4j
 public class RegisterCommand implements Command {
@@ -37,22 +36,25 @@ public class RegisterCommand implements Command {
 		boolean result = ERROR;
 
 		try {
-			InitialContext initialContext = (InitialContext) context.get(INITIAL_CONTEXT);
+			InitialContext initialContext = (InitialContext) context
+					.get(INITIAL_CONTEXT);
 
 			Referential referential = (Referential) context.get(REFERENTIAL);
 			Line newValue = referential.getLines().values().iterator().next();
-			
-			log.info("[DSU] register : \n" + newValue);
-			
+
+			// log.info("[DSU] register : \n" + newValue);
+
+			Updater<Line> lineUpdater = UpdaterFactory.create(initialContext,
+					LineUpdater.class.getName());
 			Line oldValue = lineDAO.findByObjectId(newValue.getObjectId());
 			if (oldValue == null) {
 				oldValue = new Line();
 				oldValue.setObjectId(newValue.getObjectId());
+				lineUpdater.update(context, oldValue, newValue);
 				lineDAO.create(oldValue);
+			} else {
+				lineUpdater.update(context, oldValue, newValue);
 			}
-			Updater<Line> lineUpdater = UpdaterFactory.create(initialContext, LineUpdater.class
-					.getName());
-			lineUpdater.update(context, oldValue, newValue);
 
 			result = SUCCESS;
 		} catch (Exception e) {
@@ -71,7 +73,6 @@ public class RegisterCommand implements Command {
 			Command result = null;
 			try {
 				String name = "java:app/mobi.chouette.exchange/" + COMMAND;
-				log.info("[DSU] create : " + name);
 				result = (Command) context.lookup(name);
 			} catch (NamingException e) {
 				log.error(e);

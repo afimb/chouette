@@ -123,7 +123,7 @@ public class TimetableUpdater implements Updater<Timetable> {
 	}
 
 	static {
-		UpdaterFactory.register(LineUpdater.class.getName(),
+		UpdaterFactory.register(TimetableUpdater.class.getName(),
 				new UpdaterFactory() {
 
 					@Override

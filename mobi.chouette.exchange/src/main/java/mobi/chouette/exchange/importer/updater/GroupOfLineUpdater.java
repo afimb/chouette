@@ -52,7 +52,7 @@ public class GroupOfLineUpdater implements Updater<GroupOfLine> {
 	}
 
 	static {
-		UpdaterFactory.register(LineUpdater.class.getName(),
+		UpdaterFactory.register(GroupOfLineUpdater.class.getName(),
 				new UpdaterFactory() {
 
 					@Override
