@@ -22,8 +22,6 @@ public class CompanyUpdater implements Updater<Company> {
 		}
 		newValue.setSaved(true);
 
-		log.info("[DSU] old : " + oldValue);
-		log.info("[DSU] new : " + newValue);
 		
 		if (newValue.getObjectId() != null
 				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {

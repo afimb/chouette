@@ -21,7 +21,7 @@ public class StopPointUpdater implements Updater<StopPoint> {
 	private StopAreaDAO stopAreaDAO;
 
 	@EJB(beanName = StopAreaUpdater.BEAN_NAME)
-	private StopAreaUpdater stopAreaUpdater;
+	private Updater<StopArea> stopAreaUpdater;
 
 	@Override
 	public void update(Context context, StopPoint oldValue, StopPoint newValue)
@@ -68,7 +68,6 @@ public class StopPointUpdater implements Updater<StopPoint> {
 				stopArea = new StopArea();
 				stopArea.setObjectId(newValue.getContainedInStopArea()
 						.getObjectId());
-				// stopAreaDAO.create(stopArea);
 			}
 			oldValue.setContainedInStopArea(stopArea);
 			// Updater<StopArea> stopAreaUpdater = UpdaterFactory.create(

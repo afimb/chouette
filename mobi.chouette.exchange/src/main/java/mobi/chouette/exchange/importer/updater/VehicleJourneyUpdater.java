@@ -19,7 +19,6 @@ import mobi.chouette.dao.RouteDAO;
 import mobi.chouette.dao.StopPointDAO;
 import mobi.chouette.dao.TimetableDAO;
 import mobi.chouette.dao.VehicleJourneyAtStopDAO;
-import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopPoint;
@@ -48,7 +47,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 	private CompanyDAO companyDAO;
 
 	@EJB(beanName = CompanyUpdater.BEAN_NAME)
-	private CompanyUpdater companyUpdater;
+	private Updater<Company> companyUpdater;
 
 	@EJB
 	private RouteDAO routeDAO;
@@ -63,7 +62,10 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 	private TimetableDAO timetableDAO;
 
 	@EJB(beanName = TimetableUpdater.BEAN_NAME)
-	private TimetableUpdater timetableUpdater;
+	private Updater<Timetable> timetableUpdater;
+
+	@EJB(beanName = VehicleJourneyAtStopUpdater.BEAN_NAME)
+	private Updater<VehicleJourneyAtStop> vehicleJourneyAtStopUpdater;
 
 	@Override
 	public void update(Context context, VehicleJourney oldValue,
@@ -73,9 +75,6 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 			return;
 		}
 		newValue.setSaved(true);
-
-		log.info("[DSU] old : " + oldValue);
-		log.info("[DSU] new : " + newValue);
 
 		InitialContext initialContext = (InitialContext) context
 				.get(INITIAL_CONTEXT);
@@ -163,7 +162,6 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 			if (company == null) {
 				company = new Company();
 				company.setObjectId(newValue.getCompany().getObjectId());
-				// companyDAO.create(company);
 			}
 			oldValue.setCompany(company);
 			// Updater<Company> companyUpdater = UpdaterFactory.create(
@@ -204,9 +202,9 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 			vehicleJourneyAtStop.setVehicleJourney(oldValue);
 		}
 
-		Updater<VehicleJourneyAtStop> vehicleJourneyAtStopUpdater = UpdaterFactory
-				.create(initialContext,
-						VehicleJourneyAtStopUpdater.class.getName());
+//		Updater<VehicleJourneyAtStop> vehicleJourneyAtStopUpdater = UpdaterFactory
+//				.create(initialContext,
+//						VehicleJourneyAtStopUpdater.class.getName());
 		Collection<Pair<VehicleJourneyAtStop, VehicleJourneyAtStop>> modifiedVehicleJourneyAtStop = CollectionUtils
 				.intersection(oldValue.getVehicleJourneyAtStops(),
 						newValue.getVehicleJourneyAtStops(),

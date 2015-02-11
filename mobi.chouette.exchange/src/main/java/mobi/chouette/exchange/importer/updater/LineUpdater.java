@@ -9,8 +9,6 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.CollectionUtils;
@@ -32,32 +30,32 @@ public class LineUpdater implements Updater<Line> {
 
 	public static final String BEAN_NAME = "LineUpdater";
 
-	 @PersistenceContext(unitName = "referential")
-	 protected EntityManager em;
+	// @PersistenceContext(unitName = "referential")
+	// protected EntityManager em;
 
 	@EJB
 	private PTNetworkDAO ptNetworkDAO;
 
 	@EJB(beanName = PTNetworkUpdater.BEAN_NAME)
-	private PTNetworkUpdater ptNetworkUpdater;
+	private Updater<PTNetwork> ptNetworkUpdater;
 
 	@EJB
 	private CompanyDAO companyDAO;
 
 	@EJB(beanName = CompanyUpdater.BEAN_NAME)
-	private CompanyUpdater companyUpdater;
+	private Updater<Company> companyUpdater;
 
 	@EJB
 	private GroupOfLineDAO groupOfLineDAO;
 
 	@EJB(beanName = GroupOfLineUpdater.BEAN_NAME)
-	private GroupOfLineUpdater groupOfLineUpdater;
+	private Updater<GroupOfLine> groupOfLineUpdater;
 
 	@EJB
 	private RouteDAO routeDAO;
 
-	@EJB(beanName = LineUpdater.BEAN_NAME)
-	private RouteUpdater routeUpdater;
+	@EJB(beanName = RouteUpdater.BEAN_NAME)
+	private Updater<Route> routeUpdater;
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
@@ -183,7 +181,7 @@ public class LineUpdater implements Updater<Line> {
 		Collection<GroupOfLine> addedGroupOfLine = CollectionUtils.substract(
 				newValue.getGroupOfLines(), oldValue.getGroupOfLines(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
-		
+
 		List<GroupOfLine> groupOfLines = groupOfLineDAO
 				.load(addedGroupOfLine);
 		for (GroupOfLine item : addedGroupOfLine) {
@@ -192,7 +190,6 @@ public class LineUpdater implements Updater<Line> {
 			if (groupOfLine == null) {
 				groupOfLine = new GroupOfLine();
 				groupOfLine.setObjectId(item.getObjectId());
-				// groupOfLineDAO.create(groupOfLine);
 			}
 			groupOfLine.addLine(oldValue);
 		}

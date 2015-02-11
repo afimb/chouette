@@ -32,25 +32,25 @@ public class StopAreaUpdater implements Updater<StopArea> {
 	private StopAreaDAO stopAreaDAO;
 
 	@EJB(beanName = StopAreaUpdater.BEAN_NAME)
-	private StopAreaUpdater stopAreaUpdater;
+	private Updater<StopArea> stopAreaUpdater;
 
 	@EJB
 	private AccessPointDAO accessPointDAO;
 
 	@EJB(beanName = AccessPointUpdater.BEAN_NAME)
-	private AccessPointUpdater accessPointUpdater;
+	private Updater<AccessPoint> accessPointUpdater;
 
 	@EJB
 	private AccessLinkDAO accessLinkDAO;
 
 	@EJB(beanName = AccessLinkUpdater.BEAN_NAME)
-	private AccessLinkUpdater accessLinkUpdater;
+	private Updater<AccessLink> accessLinkUpdater;
 
 	@EJB
 	private ConnectionLinkDAO connectionLinkDAO;
 
 	@EJB(beanName = ConnectionLinkUpdater.BEAN_NAME)
-	private ConnectionLinkUpdater connectionLinkUpdater;
+	private Updater<ConnectionLink> connectionLinkUpdater;
 
 	@Override
 	public void update(Context context, StopArea oldValue, StopArea newValue)

@@ -32,13 +32,13 @@ public class RouteUpdater implements Updater<Route> {
 	private StopPointDAO stopPointDAO;
 	
 	@EJB(beanName=StopPointUpdater.BEAN_NAME)
-	private StopPointUpdater stopPointUpdater;
+	private Updater<StopPoint> stopPointUpdater;
 
 	@EJB
 	private JourneyPatternDAO journeyPatternDAO;
 
 	@EJB(beanName=JourneyPatternUpdater.BEAN_NAME)
-	private JourneyPatternUpdater journeyPatternUpdater;
+	private Updater<JourneyPattern> journeyPatternUpdater;
 
 	
 

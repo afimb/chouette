@@ -24,9 +24,7 @@ import mobi.chouette.dao.RouteDAO;
 import mobi.chouette.dao.StopPointDAO;
 import mobi.chouette.dao.TimetableDAO;
 import mobi.chouette.dao.VehicleJourneyAtStopDAO;
-import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.Company;
-import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timetable;
@@ -53,6 +51,9 @@ public class VehicleJourneyOptimizedUpdater implements Updater<VehicleJourney> {
 	@EJB
 	private CompanyDAO companyDAO;
 
+	@EJB(beanName = CompanyUpdater.BEAN_NAME)
+	private Updater<Company> companyUpdater;
+
 	@EJB
 	private RouteDAO routeDAO;
 
@@ -66,11 +67,8 @@ public class VehicleJourneyOptimizedUpdater implements Updater<VehicleJourney> {
 	private TimetableDAO timetableDAO;
 
 	@EJB(beanName = TimetableUpdater.BEAN_NAME)
-	private TimetableUpdater timetableUpdater;
+	private Updater<Timetable> timetableUpdater;
 
-	@EJB(beanName = CompanyUpdater.BEAN_NAME)
-	private CompanyUpdater companyUpdater;
-	
 	@Override
 	public void update(Context context, VehicleJourney oldValue,
 			VehicleJourney newValue) throws Exception {
@@ -166,13 +164,13 @@ public class VehicleJourneyOptimizedUpdater implements Updater<VehicleJourney> {
 			if (company == null) {
 				company = new Company();
 				company.setObjectId(newValue.getCompany().getObjectId());
-				//companyDAO.create(company);
+				// companyDAO.create(company);
 			}
 			oldValue.setCompany(company);
-//			Updater<Company> companyUpdater = UpdaterFactory.create(
-//					initialContext, CompanyUpdater.class.getName());
+			// Updater<Company> companyUpdater = UpdaterFactory.create(
+			// initialContext, CompanyUpdater.class.getName());
 			companyUpdater.update(context, oldValue.getCompany(),
-					newValue.getCompany());		
+					newValue.getCompany());
 		}
 
 		// Route
@@ -198,16 +196,15 @@ public class VehicleJourneyOptimizedUpdater implements Updater<VehicleJourney> {
 				.substract(newValue.getVehicleJourneyAtStops(),
 						oldValue.getVehicleJourneyAtStops(),
 						VEHICLE_JOURNEY_AT_STOP_COMPARATOR);
-		
+
 		final Collection<String> objectIds = new ArrayList<String>();
-		for (VehicleJourneyAtStop vehicleJourneyAtStop : addedVehicleJourneyAtStop) {			
-				objectIds.add(vehicleJourneyAtStop.getStopPoint().getObjectId());			
-		}		
-		List<StopPoint> stopPoints = stopPointDAO.findByObjectId(objectIds);		
+		for (VehicleJourneyAtStop vehicleJourneyAtStop : addedVehicleJourneyAtStop) {
+			objectIds.add(vehicleJourneyAtStop.getStopPoint().getObjectId());
+		}
+		List<StopPoint> stopPoints = stopPointDAO.findByObjectId(objectIds);
 		for (VehicleJourneyAtStop item : addedVehicleJourneyAtStop) {
 			int index = stopPoints.indexOf(item);
-			StopPoint stopPoint = (index != -1) ? stopPoints.get(index)
-					: null;			
+			StopPoint stopPoint = (index != -1) ? stopPoints.get(index) : null;
 			if (stopPoint != null) {
 				write(buffer, oldValue, stopPoint, item);
 			}
@@ -227,12 +224,11 @@ public class VehicleJourneyOptimizedUpdater implements Updater<VehicleJourney> {
 		Collection<Timetable> addedTimetable = CollectionUtils.substract(
 				newValue.getTimetables(), oldValue.getTimetables(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
-		
+
 		List<Timetable> timetables = timetableDAO.load(addedTimetable);
 		for (Timetable item : addedTimetable) {
 			int index = timetables.indexOf(item);
-			Timetable timetable = (index != -1) ? timetables.get(index)
-					: null;
+			Timetable timetable = (index != -1) ? timetables.get(index) : null;
 			if (timetable == null) {
 				timetable = new Timetable();
 				timetable.setObjectId(item.getObjectId());
@@ -240,8 +236,8 @@ public class VehicleJourneyOptimizedUpdater implements Updater<VehicleJourney> {
 			timetable.addVehicleJourney(oldValue);
 		}
 
-//		Updater<Timetable> timetableUpdater = UpdaterFactory.create(
-//				initialContext, TimetableUpdater.class.getName());
+		// Updater<Timetable> timetableUpdater = UpdaterFactory.create(
+		// initialContext, TimetableUpdater.class.getName());
 		Collection<Pair<Timetable, Timetable>> modifiedTimetable = CollectionUtils
 				.intersection(oldValue.getTimetables(),
 						newValue.getTimetables(),

@@ -22,9 +22,7 @@ public class PTNetworkUpdater implements Updater<PTNetwork> {
 		}
 		newValue.setSaved(true);
 		
-		log.info("[DSU] old : " + oldValue);
-		log.info("[DSU] new : " + newValue);
-		
+	
 		if (newValue.getObjectId() != null
 				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {
 			oldValue.setObjectId(newValue.getObjectId());

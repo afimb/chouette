@@ -104,7 +104,7 @@ public class Route extends NeptuneIdentifiedObject {
 	 */
 
 	@Getter
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.LAZY , cascade = { CascadeType.PERSIST })
 	@JoinColumn(name = "opposite_route_id")
 	private Route oppositeRoute;
 
@@ -237,8 +237,7 @@ public class Route extends NeptuneIdentifiedObject {
 	 */
 	@Getter
 	@Setter
-	@OneToMany(mappedBy = "route", cascade = { CascadeType.PERSIST,
-			CascadeType.MERGE })
+	@OneToMany(mappedBy = "route", cascade = { CascadeType.PERSIST})
 	private List<JourneyPattern> journeyPatterns = new ArrayList<JourneyPattern>(
 			0);
 
@@ -251,8 +250,7 @@ public class Route extends NeptuneIdentifiedObject {
 	 */
 	@Getter
 	@Setter
-	@OneToMany(mappedBy = "route", cascade = { CascadeType.PERSIST,
-			CascadeType.MERGE })
+	@OneToMany(mappedBy = "route", cascade = { CascadeType.PERSIST})
 	@OrderColumn(name = "position", nullable = false)
 	private List<StopPoint> stopPoints = new ArrayList<StopPoint>(0);
 

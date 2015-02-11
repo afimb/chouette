@@ -79,13 +79,17 @@ public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 
 	@Override
 	public List<T> load(Collection<T> list) {
-		final Collection<String> objectIds = new ArrayList<String>();
-		for (T o : list) {
-			if (o instanceof NeptuneIdentifiedObject) {
-				objectIds.add(((NeptuneIdentifiedObject) o).getObjectId());			}
-
+		if (list.isEmpty()) {
+			return (List<T>) list;
+		} else {
+			final Collection<String> objectIds = new ArrayList<String>();
+			for (T o : list) {
+				if (o instanceof NeptuneIdentifiedObject) {
+					objectIds.add(((NeptuneIdentifiedObject) o).getObjectId());
+				}
+			}
+			return findByObjectId(objectIds);
 		}
-		return findByObjectId(objectIds);
 	}
 
 	@Override

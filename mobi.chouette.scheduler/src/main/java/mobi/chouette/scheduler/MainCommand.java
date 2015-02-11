@@ -37,6 +37,7 @@ public class MainCommand implements Command, Constant {
 	JobDAO jobDAO;
 
 	@Override
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public boolean execute(Context context) throws Exception {
 		boolean result = false;
 

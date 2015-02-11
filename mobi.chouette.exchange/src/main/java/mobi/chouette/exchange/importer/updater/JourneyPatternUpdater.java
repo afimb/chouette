@@ -33,7 +33,7 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 	private VehicleJourneyDAO vehicleJourneyDAO;
 
 	@EJB(beanName=VehicleJourneyUpdater.BEAN_NAME)
-	private VehicleJourneyUpdater vehicleJourneyUpdater;
+	private Updater<VehicleJourney> vehicleJourneyUpdater;
 
 	@Override
 	public void update(Context context, JourneyPattern oldValue,

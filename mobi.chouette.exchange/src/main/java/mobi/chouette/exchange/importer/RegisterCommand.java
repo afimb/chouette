@@ -53,7 +53,7 @@ public class RegisterCommand implements Command {
 
 			}
 			lineUpdater.update(context, oldValue, newValue);
-			lineDAO.create(oldValue);
+			// lineDAO.create(oldValue);
 			
 			result = SUCCESS;
 		} catch (Exception e) {
