@@ -105,7 +105,7 @@ public class AccessPointUpdater implements Updater<AccessPoint> {
 			if (accessLink == null) {
 				accessLink = new AccessLink();
 				accessLink.setObjectId(item.getObjectId());
-				accessLinkDAO.create(accessLink);
+				// accessLinkDAO.create(accessLink);
 			}
 			accessLink.setAccessPoint(oldValue);
 		}
@@ -117,7 +117,7 @@ public class AccessPointUpdater implements Updater<AccessPoint> {
 						newValue.getAccessLinks(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<AccessLink, AccessLink> pair : modifiedAccessLink) {
-			accessLinkUpdater.update(null, pair.getLeft(), pair.getRight());
+			accessLinkUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
 
 		// Collection<AccessLink> removedAccessLink = CollectionUtils.substract(
@@ -131,7 +131,7 @@ public class AccessPointUpdater implements Updater<AccessPoint> {
 	}
 
 	static {
-		UpdaterFactory.register(LineUpdater.class.getName(),
+		UpdaterFactory.register(AccessPointUpdater.class.getName(),
 				new UpdaterFactory() {
 
 					@Override

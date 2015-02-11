@@ -35,7 +35,7 @@ import org.apache.commons.lang.StringUtils;
 @Entity
 @Table(name = "journey_patterns")
 @NoArgsConstructor
-@ToString(callSuper=true, exclude = { "route", "vehicleJourneys" })
+@ToString(callSuper=true, exclude = { "route" })
 @Log4j
 public class JourneyPattern extends NeptuneIdentifiedObject {
 	private static final long serialVersionUID = 7895941111990419404L;

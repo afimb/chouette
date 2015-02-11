@@ -132,7 +132,7 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 			if (vehicleJourney == null) {
 				vehicleJourney = new VehicleJourney();
 				vehicleJourney.setObjectId(item.getObjectId());
-				vehicleJourneyDAO.create(vehicleJourney);
+				// vehicleJourneyDAO.create(vehicleJourney);
 			}
 			vehicleJourney.setJourneyPattern(oldValue);
 		}
@@ -144,7 +144,7 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 						newValue.getVehicleJourneys(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<VehicleJourney, VehicleJourney> pair : modifiedVehicleJourney) {
-			vehicleJourneyUpdater.update(null, pair.getLeft(), pair.getRight());
+			vehicleJourneyUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
 
 		// Collection<VehicleJourney> removedVehicleJourney = CollectionUtils
@@ -158,7 +158,7 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 	}
 
 	static {
-		UpdaterFactory.register(LineUpdater.class.getName(),
+		UpdaterFactory.register(JourneyPatternUpdater.class.getName(),
 				new UpdaterFactory() {
 
 					@Override

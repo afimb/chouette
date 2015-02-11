@@ -19,6 +19,7 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.type.ServiceStatusValueEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
@@ -41,6 +42,7 @@ import org.apache.commons.lang.StringUtils;
 @Table(name = "vehicle_journeys")
 @NoArgsConstructor
 @Log4j
+@ToString(callSuper=true, exclude={"journeyPattern", "route", "timetables"})
 public class VehicleJourney extends NeptuneIdentifiedObject {
 	private static final long serialVersionUID = 304336286208135064L;
 

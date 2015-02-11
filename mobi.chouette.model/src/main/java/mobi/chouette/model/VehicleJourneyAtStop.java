@@ -29,7 +29,7 @@ import mobi.chouette.model.type.BoardingAlightingPossibilityEnum;
 @Table(name = "vehicle_journey_at_stops", uniqueConstraints = @UniqueConstraint(columnNames = {
 		"vehicle_journey_id", "stop_point_id" }, name = "index_vehicle_journey_at_stops_on_stop_point_id"))
 @NoArgsConstructor
-@ToString(exclude = { "vehicleJourney" })
+@ToString(callSuper=true, exclude = { "vehicleJourney" })
 public class VehicleJourneyAtStop extends NeptuneObject {
 
 	private static final long serialVersionUID = 194243517715939830L;

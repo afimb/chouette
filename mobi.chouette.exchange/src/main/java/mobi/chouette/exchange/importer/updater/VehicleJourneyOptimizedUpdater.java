@@ -156,13 +156,13 @@ public class VehicleJourneyOptimizedUpdater implements Updater<VehicleJourney> {
 			if (company == null) {
 				company = new Company();
 				company.setObjectId(newValue.getCompany().getObjectId());
-				companyDAO.create(company);
+				//companyDAO.create(company);
 			}
+			oldValue.setCompany(company);
 			Updater<Company> companyUpdater = UpdaterFactory.create(
 					initialContext, CompanyUpdater.class.getName());
-			companyUpdater.update(null, oldValue.getCompany(),
-					newValue.getCompany());
-			oldValue.setCompany(company);
+			companyUpdater.update(context, oldValue.getCompany(),
+					newValue.getCompany());		
 		}
 
 		// Route
@@ -216,7 +216,7 @@ public class VehicleJourneyOptimizedUpdater implements Updater<VehicleJourney> {
 			if (timetable == null) {
 				timetable = new Timetable();
 				timetable.setObjectId(item.getObjectId());
-				timetableDAO.create(timetable);
+				// timetableDAO.create(timetable);
 			}
 			timetable.addVehicleJourney(oldValue);
 		}
@@ -228,7 +228,7 @@ public class VehicleJourneyOptimizedUpdater implements Updater<VehicleJourney> {
 						newValue.getTimetables(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<Timetable, Timetable> pair : modifiedTimetable) {
-			timetableUpdater.update(null, pair.getLeft(), pair.getRight());
+			timetableUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
 
 		Collection<Timetable> removedTimetable = CollectionUtils.substract(
@@ -265,7 +265,7 @@ public class VehicleJourneyOptimizedUpdater implements Updater<VehicleJourney> {
 	}
 
 	static {
-		UpdaterFactory.register(LineUpdater.class.getName(),
+		UpdaterFactory.register(VehicleJourneyOptimizedUpdater.class.getName(),
 				new UpdaterFactory() {
 
 					@Override

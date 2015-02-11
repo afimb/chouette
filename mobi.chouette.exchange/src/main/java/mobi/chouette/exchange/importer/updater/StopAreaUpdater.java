@@ -173,13 +173,13 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			if (stopArea == null) {
 				stopArea = new StopArea();
 				stopArea.setObjectId(newValue.getParent().getObjectId());
-				stopAreaDAO.create(stopArea);
+				// stopAreaDAO.create(stopArea);
 			}
+			oldValue.setParent(stopArea);
 			Updater<StopArea> stopAreaUpdater = UpdaterFactory.create(
 					initialContext, StopAreaUpdater.class.getName());
-			stopAreaUpdater.update(null, oldValue.getParent(),
-					newValue.getParent());
-			oldValue.setParent(stopArea);
+			stopAreaUpdater.update(context, oldValue.getParent(),
+					newValue.getParent());			
 		}
 
 		// AccessPoint
@@ -192,7 +192,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			if (accessPoint == null) {
 				accessPoint = new AccessPoint();
 				accessPoint.setObjectId(item.getObjectId());
-				accessPointDAO.create(accessPoint);
+				//accessPointDAO.create(accessPoint);
 			}
 			accessPoint.setContainedIn(oldValue);
 		}
@@ -204,7 +204,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 						newValue.getAccessPoints(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<AccessPoint, AccessPoint> pair : modifiedAccessPoint) {
-			accessPointUpdater.update(null, pair.getLeft(), pair.getRight());
+			accessPointUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
 
 		// Collection<AccessPoint> removedAccessPoint =
@@ -226,7 +226,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			if (accessLink == null) {
 				accessLink = new AccessLink();
 				accessLink.setObjectId(item.getObjectId());
-				accessLinkDAO.create(accessLink);
+				// accessLinkDAO.create(accessLink);
 			}
 			accessLink.setStopArea(oldValue);
 		}
@@ -238,7 +238,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 						newValue.getAccessLinks(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<AccessLink, AccessLink> pair : modifiedAccessLink) {
-			accessLinkUpdater.update(null, pair.getLeft(), pair.getRight());
+			accessLinkUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
 
 		// Collection<AccessLink> removedAccessLink = CollectionUtils.substract(
@@ -260,7 +260,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			if (connectionLink == null) {
 				connectionLink = new ConnectionLink();
 				connectionLink.setObjectId(item.getObjectId());
-				connectionLinkDAO.create(connectionLink);
+				//connectionLinkDAO.create(connectionLink);
 			}
 			connectionLink.setStartOfLink(oldValue);
 		}
@@ -272,8 +272,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 						newValue.getConnectionStartLinks(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<ConnectionLink, ConnectionLink> pair : modifiedStartOfLink) {
-			connectionLinkUpdater.update(null, pair.getLeft(), pair.getRight());
-
+			connectionLinkUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
 
 		// EndOfLink
@@ -287,7 +286,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			if (connectionLink == null) {
 				connectionLink = new ConnectionLink();
 				connectionLink.setObjectId(item.getObjectId());
-				connectionLinkDAO.create(connectionLink);
+				// connectionLinkDAO.create(connectionLink);
 			}
 			connectionLink.setEndOfLink(oldValue);
 		}
@@ -299,7 +298,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 						newValue.getConnectionEndLinks(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<ConnectionLink, ConnectionLink> pair : modifiedEndOfLink) {
-			connectionLinkUpdater.update(null, pair.getLeft(), pair.getRight());
+			connectionLinkUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
 
 		// TODO list routing_constraints_lines (routingConstraintLines)
@@ -308,7 +307,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 	}
 
 	static {
-		UpdaterFactory.register(LineUpdater.class.getName(),
+		UpdaterFactory.register(StopAreaUpdater.class.getName(),
 				new UpdaterFactory() {
 
 					@Override
