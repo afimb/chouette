@@ -83,7 +83,6 @@ public class NeptuneImporterCommand implements Command, Constant {
 					continue;
 				}
 				
-				
 				log.info("[DSU] import : " + file.toString());				
 				context.put(FILE_URL, file.toUri().toURL().toExternalForm());
 				

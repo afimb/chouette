@@ -13,6 +13,15 @@ import lombok.Data;
 public class ValidationReport {
 
 	@XmlElement(name = "phase")
-	private List<Phase> phase = new ArrayList<Phase>();
+	private List<Phase> phases = new ArrayList<Phase>();
+	
+	public Phase findPhaseByName(String name)
+	{
+		for (Phase phase : phases) {
+			if (phase.getName().equals(name))
+				return phase;
+		}
+		return null;
+	}
 
 }

@@ -14,6 +14,7 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.exchange.importer.report.Report;
 import mobi.chouette.exchange.neptune.importer.NeptuneParserCommand;
 import mobi.chouette.exchange.neptune.importer.NeptuneSAXParserCommand;
+import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.util.Referential;
 
@@ -38,6 +39,7 @@ public class NeptuneParserTest {
 
 	@Deployment
 	public static WebArchive createDeployment() {
+		log.info("createDeployment");
 
 		WebArchive result;
 
@@ -53,6 +55,7 @@ public class NeptuneParserTest {
 				.addAsManifestResource("metadata_chouette_dc.xml")
 				.addAsManifestResource("1000252.xml")
 				.addAsResource(EmptyAsset.INSTANCE, "beans.xml");
+		log.info("end createDeployment");
 
 		return result;
 
@@ -60,23 +63,29 @@ public class NeptuneParserTest {
 
 	@Test
 	public void validation() throws Exception {
+		log.info("validation");
 		Context context = new Context();
 		URL file = NeptuneParserTest.class
 				.getResource("/META-INF/1000252.xml");
 		Report report = new Report();
+		ValidationReport validationReport = new ValidationReport();
 		context.put(Constant.FILE_URL, file.toExternalForm());
 		context.put(Constant.REPORT, report);
+		context.put(Constant.VALIDATION_REPORT, validationReport);
 		validation.execute(context);
 	}
 	
 	@Test
 	public void test() throws Exception {
+		log.info("test");
 		Context context = new Context();
 		URL file = NeptuneParserTest.class
 				.getResource("/META-INF/1000252.xml");
 		Report report = new Report();
+		ValidationReport validationReport = new ValidationReport();
 		context.put(Constant.FILE_URL, file.toExternalForm());
 		context.put(Constant.REPORT, report);
+		context.put(Constant.VALIDATION_REPORT, validationReport);
 		parser.execute(context);
 		Referential referential = (Referential) context.get(Constant.REFERENTIAL);
 		Line line = referential.getLines().values().iterator().next();
@@ -85,12 +94,15 @@ public class NeptuneParserTest {
 
 	@Test
 	public void verifiyGoodFile() throws Exception {
+		log.info("verifiyGoodFile");
 		Context context = new Context();
 		URL file = NeptuneParserTest.class
 				.getResource("/META-INF/C_NEPTUNE_3.xml");
 		Report report = new Report();
+		ValidationReport validationReport = new ValidationReport();
 		context.put(Constant.FILE_URL, file.toExternalForm());
 		context.put(Constant.REPORT, report);
+		context.put(Constant.VALIDATION_REPORT, validationReport);
 		parser.execute(context);
 		assertNull("no error should be reported",report.getError());
 		assertEquals("report one ok file",report.getFiles().getFilesDetail().getOk().size(),1);
@@ -99,12 +111,15 @@ public class NeptuneParserTest {
 
 	@Test
 	public void verifiyWrongFile() throws Exception {
+		log.info("verifiyWrongFile");
 		Context context = new Context();
 		URL file = NeptuneParserTest.class
 				.getResource("/META-INF/error_file.xml");
 		Report report = new Report();
+		ValidationReport validationReport = new ValidationReport();
 		context.put(Constant.FILE_URL, file.toExternalForm());
 		context.put(Constant.REPORT, report);
+		context.put(Constant.VALIDATION_REPORT, validationReport);
 		try
 		{
 			validation.execute(context);
@@ -120,12 +135,15 @@ public class NeptuneParserTest {
 
 	@Test
 	public void verifiyBrokenFile() throws Exception {
+		log.info("verifiyBrokenFile");
 		Context context = new Context();
 		URL file = NeptuneParserTest.class
 				.getResource("/META-INF/broken_file.xml");
 		Report report = new Report();
+		ValidationReport validationReport = new ValidationReport();
 		context.put(Constant.FILE_URL, file.toExternalForm());
 		context.put(Constant.REPORT, report);
+		context.put(Constant.VALIDATION_REPORT, validationReport);
 		try
 		{
 			parser.execute(context);

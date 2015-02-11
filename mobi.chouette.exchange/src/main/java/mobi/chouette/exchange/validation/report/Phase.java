@@ -21,11 +21,26 @@ public class Phase {
 	private String name;
 
 	@XmlElement(name = "check_point")
-	private List<CheckPoint> checkPoint = new ArrayList<CheckPoint>();
+	private List<CheckPoint> checkPoints = new ArrayList<CheckPoint>();
+	
+	public Phase(String name)
+	{
+		this.name = name;
+	}
 
 	public void addCheckPoint(CheckPoint checkPoint) 
 	{
-		this.checkPoint.add(checkPoint);
+		this.checkPoints.add(checkPoint);
 	}
+	
+	public CheckPoint findCheckPointByName(String name)
+	{
+		for (CheckPoint checkPoint : checkPoints) {
+			if (checkPoint.getName().equals(name))
+				return checkPoint;
+		}
+		return null;
+	}
+
 
 }

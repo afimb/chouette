@@ -34,7 +34,7 @@ public class CheckPoint {
 	private STATE state;
 
 	@XmlAttribute(name = "detail_count")
-	private Integer detailCount;
+	private int detailCount = 0;
 
 	@XmlElement(name = "details")
 	private List<Detail> details = new ArrayList<Detail>();
