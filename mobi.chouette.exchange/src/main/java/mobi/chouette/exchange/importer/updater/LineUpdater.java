@@ -5,8 +5,6 @@ import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
@@ -23,6 +21,8 @@ import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.PTNetwork;
 import mobi.chouette.model.Route;
+import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.model.util.Referential;
 
 @Log4j
 @Stateless(name = LineUpdater.BEAN_NAME)
@@ -58,17 +58,15 @@ public class LineUpdater implements Updater<Line> {
 	private Updater<Route> routeUpdater;
 
 	@Override
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void update(Context context, Line oldValue, Line newValue)
 			throws Exception {
-
-		InitialContext initialContext = (InitialContext) context
-				.get(INITIAL_CONTEXT);
 
 		if (newValue.isSaved()) {
 			return;
 		}
 		newValue.setSaved(true);
+
+		Referential cache = (Referential) context.get(CACHE);
 
 		if (newValue.getObjectId() != null
 				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {
@@ -144,11 +142,18 @@ public class LineUpdater implements Updater<Line> {
 			oldValue.setPTNetwork(null);
 		} else {
 
-			PTNetwork ptNetwork = ptNetworkDAO.findByObjectId(newValue
-					.getPtNetwork().getObjectId());
+			String objectId = newValue.getPtNetwork().getObjectId();
+			PTNetwork ptNetwork = cache.getPtNetworks().get(objectId);
 			if (ptNetwork == null) {
-				ptNetwork = new PTNetwork();
-				ptNetwork.setObjectId(newValue.getPtNetwork().getObjectId());
+				ptNetwork = ptNetworkDAO.findByObjectId(objectId);
+				if (ptNetwork != null) {
+					cache.getPtNetworks().put(objectId, ptNetwork);
+				}
+			}
+			
+			if (ptNetwork == null) {
+				ptNetwork = ObjectFactory.getPTNetwork(cache, objectId);
+				// ptNetwork.setObjectId(newValue.getPtNetwork().getObjectId());
 				// ptNetworkDAO.create(ptNetwork);
 			}
 			oldValue.setPTNetwork(ptNetwork);
@@ -162,12 +167,17 @@ public class LineUpdater implements Updater<Line> {
 		if (newValue.getCompany() == null) {
 			oldValue.setCompany(null);
 		} else {
-
-			Company company = companyDAO.findByObjectId(newValue.getCompany()
-					.getObjectId());
+			String objectId = newValue.getCompany().getObjectId();
+			Company company = cache.getCompanies().get(objectId);
 			if (company == null) {
-				company = new Company();
-				company.setObjectId(newValue.getCompany().getObjectId());
+				company = companyDAO.findByObjectId(objectId);
+				if (company != null) {
+					cache.getCompanies().put(objectId, company);
+				}
+			}
+			if (company == null) {
+				company = ObjectFactory.getCompany(cache, objectId);
+				// company.setObjectId(newValue.getCompany().getObjectId());
 				// companyDAO.create(company);
 			}
 			oldValue.setCompany(company);
@@ -182,14 +192,25 @@ public class LineUpdater implements Updater<Line> {
 				newValue.getGroupOfLines(), oldValue.getGroupOfLines(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
 
-		List<GroupOfLine> groupOfLines = groupOfLineDAO
-				.load(addedGroupOfLine);
+		List<GroupOfLine> groupOfLines = null;
 		for (GroupOfLine item : addedGroupOfLine) {
-			int index = groupOfLines.indexOf(item);
-			GroupOfLine groupOfLine = (index != -1) ? groupOfLines.get(index) : null;
+			
+			GroupOfLine groupOfLine = cache.getGroupOfLines().get(
+					item.getObjectId());
 			if (groupOfLine == null) {
-				groupOfLine = new GroupOfLine();
-				groupOfLine.setObjectId(item.getObjectId());
+				if (groupOfLines == null) {
+					groupOfLines = groupOfLineDAO.load(addedGroupOfLine);
+					for (GroupOfLine object : groupOfLines) {
+						cache.getGroupOfLines().put(object.getObjectId(), object);
+					}
+				}
+				groupOfLine = cache.getGroupOfLines().get(item.getObjectId());
+			}
+			
+			if (groupOfLine == null) {
+				groupOfLine = ObjectFactory.getGroupOfLine(cache,
+						item.getObjectId());
+				// groupOfLine.setObjectId(item.getObjectId());
 			}
 			groupOfLine.addLine(oldValue);
 		}
@@ -215,14 +236,24 @@ public class LineUpdater implements Updater<Line> {
 		Collection<Route> addedRoute = CollectionUtils.substract(
 				newValue.getRoutes(), oldValue.getRoutes(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
-		
-		List<Route> routes = routeDAO.load(addedRoute);
+
+		List<Route> routes = null;
 		for (Route item : addedRoute) {
-			int index = routes.indexOf(item);
-			Route route = (index != -1) ? routes.get(index) : null;
+			
+			Route route = cache.getRoutes().get(item.getObjectId());
 			if (route == null) {
-				route = new Route();
-				route.setObjectId(item.getObjectId());
+				if (routes == null) {
+					routes = routeDAO.load(addedRoute);
+					for (Route object : routes) {
+						cache.getRoutes().put(object.getObjectId(), object);
+					}
+				}
+				route = cache.getRoutes().get(item.getObjectId());
+			}
+			
+			if (route == null) {
+				route = ObjectFactory.getRoute(cache, item.getObjectId());
+				// route.setObjectId(item.getObjectId());
 			}
 			route.setLine(oldValue);
 		}

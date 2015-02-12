@@ -64,7 +64,7 @@ public class AccessLinkParser implements Parser, Constant {
 					accessLink.setStopArea(stopArea);
 					accessLink
 							.setLinkOrientation(LinkOrientationEnum.StopAreaToAccessPoint);
-				} else if (referential.getAccessPoint().containsKey(objectId)) {
+				} else if (referential.getAccessPoints().containsKey(objectId)) {
 					AccessPoint accessPoint = ObjectFactory.getAccessPoint(
 							referential, objectId);
 					accessLink.setAccessPoint(accessPoint);
@@ -77,7 +77,7 @@ public class AccessLinkParser implements Parser, Constant {
 					StopArea stopArea = ObjectFactory.getStopArea(referential,
 							objectId);
 					accessLink.setStopArea(stopArea);
-				} else if (referential.getAccessPoint().containsKey(objectId)) {
+				} else if (referential.getAccessPoints().containsKey(objectId)) {
 					AccessPoint accessPoint = ObjectFactory.getAccessPoint(
 							referential, objectId);
 					accessLink.setAccessPoint(accessPoint);

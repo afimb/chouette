@@ -15,9 +15,13 @@ import mobi.chouette.common.Pair;
 import mobi.chouette.dao.JourneyPatternDAO;
 import mobi.chouette.dao.RouteDAO;
 import mobi.chouette.dao.StopPointDAO;
+import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.JourneyPattern;
+import mobi.chouette.model.PTNetwork;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.model.util.Referential;
 
 @Log4j
 @Stateless(name = RouteUpdater.BEAN_NAME)
@@ -30,29 +34,26 @@ public class RouteUpdater implements Updater<Route> {
 
 	@EJB
 	private StopPointDAO stopPointDAO;
-	
-	@EJB(beanName=StopPointUpdater.BEAN_NAME)
+
+	@EJB(beanName = StopPointUpdater.BEAN_NAME)
 	private Updater<StopPoint> stopPointUpdater;
 
 	@EJB
 	private JourneyPatternDAO journeyPatternDAO;
 
-	@EJB(beanName=JourneyPatternUpdater.BEAN_NAME)
+	@EJB(beanName = JourneyPatternUpdater.BEAN_NAME)
 	private Updater<JourneyPattern> journeyPatternUpdater;
-
-	
 
 	@Override
 	public void update(Context context, Route oldValue, Route newValue)
 			throws Exception {
 
-		InitialContext initialContext = (InitialContext) context
-				.get(INITIAL_CONTEXT);
-
 		if (newValue.isSaved()) {
 			return;
 		}
 		newValue.setSaved(true);
+
+		Referential cache = (Referential) context.get(CACHE);
 
 		if (newValue.getObjectId() != null
 				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {
@@ -100,20 +101,17 @@ public class RouteUpdater implements Updater<Route> {
 
 		// OppositeRoute
 		if (newValue.getOppositeRoute() != null) {
-			Route opposite = routeDAO.findByObjectId(newValue
-					.getOppositeRoute().getObjectId());
+
+			String objectId = newValue.getOppositeRoute().getObjectId();
+			Route opposite = cache.getRoutes().get(objectId);
+			if (opposite == null) {
+				opposite = routeDAO.findByObjectId(objectId);
+				if (opposite != null) {
+					cache.getRoutes().put(objectId, opposite);
+				}
+			}
 			if (opposite != null) {
 				oldValue.setOppositeRoute(opposite);
-			}
-		}
-
-		if (newValue.getOppositeRoute() == null) {
-			oldValue.setOppositeRoute(null);
-		} else {
-			Route route = routeDAO.findByObjectId(newValue.getOppositeRoute()
-					.getObjectId());
-			if (route != null) {
-				oldValue.setOppositeRoute(route);
 			}
 		}
 
@@ -121,20 +119,31 @@ public class RouteUpdater implements Updater<Route> {
 		Collection<StopPoint> addedStopPoint = CollectionUtils.substract(
 				newValue.getStopPoints(), oldValue.getStopPoints(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
-		
-		List<StopPoint> stopPoints = stopPointDAO.load(addedStopPoint);
+
+		List<StopPoint> stopPoints = null;
 		for (StopPoint item : addedStopPoint) {
-			int index = stopPoints.indexOf(item);
-			StopPoint stopPoint = (index != -1) ? stopPoints.get(index) : null;
+
+			StopPoint stopPoint = cache.getStopPoints().get(item.getObjectId());
 			if (stopPoint == null) {
-				stopPoint = new StopPoint();
-				stopPoint.setObjectId(item.getObjectId());
+				if (stopPoints == null) {
+					stopPoints = stopPointDAO.load(addedStopPoint);
+					for (StopPoint object : stopPoints) {
+						cache.getStopPoints().put(object.getObjectId(), object);
+					}
+				}
+				stopPoint = cache.getStopPoints().get(item.getObjectId());
+			}
+
+			if (stopPoint == null) {
+				stopPoint = ObjectFactory.getStopPoint(cache,
+						item.getObjectId());
+				// stopPoint.setObjectId(item.getObjectId());
 			}
 			stopPoint.setRoute(oldValue);
 		}
 
-//		Updater<StopPoint> stopPointUpdater = UpdaterFactory.create(
-//				initialContext, StopPointUpdater.class.getName());
+		// Updater<StopPoint> stopPointUpdater = UpdaterFactory.create(
+		// initialContext, StopPointUpdater.class.getName());
 		Collection<Pair<StopPoint, StopPoint>> modifiedStopPoint = CollectionUtils
 				.intersection(oldValue.getStopPoints(),
 						newValue.getStopPoints(),
@@ -156,26 +165,43 @@ public class RouteUpdater implements Updater<Route> {
 				.substract(newValue.getJourneyPatterns(),
 						oldValue.getJourneyPatterns(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);
-		
-		List<JourneyPattern> journeyPatterns = journeyPatternDAO.load(addedJourneyPattern);
+
+		List<JourneyPattern> journeyPatterns = null;
 		for (JourneyPattern item : addedJourneyPattern) {
-			int index = journeyPatterns.indexOf(item);
-			JourneyPattern journeyPattern = (index != -1) ? journeyPatterns.get(index) : null;			
+
+			JourneyPattern journeyPattern = cache.getJourneyPatterns().get(
+					item.getObjectId());
 			if (journeyPattern == null) {
-				journeyPattern = new JourneyPattern();
-				journeyPattern.setObjectId(item.getObjectId());
+				if (journeyPatterns == null) {
+					journeyPatterns = journeyPatternDAO
+							.load(addedJourneyPattern);
+					for (JourneyPattern object : journeyPatterns) {
+						cache.getJourneyPatterns().put(object.getObjectId(),
+								object);
+					}
+				}
+				journeyPattern = cache.getJourneyPatterns().get(
+						item.getObjectId());
+			}
+
+			if (journeyPattern == null) {
+				journeyPattern = ObjectFactory.getJourneyPattern(cache,
+						item.getObjectId());
+				// journeyPattern.setObjectId(item.getObjectId());
 			}
 			journeyPattern.setRoute(oldValue);
 		}
 
-//		Updater<JourneyPattern> journeyPatternUpdater = // UpdaterFactory.create(
-//				initialContext, JourneyPatternUpdater.class.getName());
+		// Updater<JourneyPattern> journeyPatternUpdater = //
+		// UpdaterFactory.create(
+		// initialContext, JourneyPatternUpdater.class.getName());
 		Collection<Pair<JourneyPattern, JourneyPattern>> modifiedJourneyPattern = CollectionUtils
 				.intersection(oldValue.getJourneyPatterns(),
 						newValue.getJourneyPatterns(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<JourneyPattern, JourneyPattern> pair : modifiedJourneyPattern) {
-			journeyPatternUpdater.update(context, pair.getLeft(), pair.getRight());
+			journeyPatternUpdater.update(context, pair.getLeft(),
+					pair.getRight());
 		}
 
 		// Collection<JourneyPattern> removedJourneyPattern = CollectionUtils

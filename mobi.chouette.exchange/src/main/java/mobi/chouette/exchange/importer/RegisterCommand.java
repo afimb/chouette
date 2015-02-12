@@ -9,7 +9,11 @@ import javax.ejb.TransactionAttributeType;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
+
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
@@ -28,24 +32,27 @@ public class RegisterCommand implements Command {
 
 	@EJB
 	private LineDAO lineDAO;
+	
+	@EJB(beanName=LineUpdater.BEAN_NAME)
+	private Updater<Line> lineUpdater;
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public boolean execute(Context context) throws Exception {
 
 		boolean result = ERROR;
+		Monitor monitor = MonitorFactory.start(COMMAND);
 
 		try {
-			InitialContext initialContext = (InitialContext) context
-					.get(INITIAL_CONTEXT);
+			Referential cache  = new Referential();
+			context.put(CACHE, cache);
 
 			Referential referential = (Referential) context.get(REFERENTIAL);
 			Line newValue = referential.getLines().values().iterator().next();
+			log.info("[DSU] register line : " + newValue.getObjectId());
 
-			log.info("[DSU] register line : \n" + newValue.getObjectId());
-
-			Updater<Line> lineUpdater = UpdaterFactory.create(initialContext,
-					LineUpdater.class.getName());
+//			Updater<Line> lineUpdater = UpdaterFactory.create(initialContext,
+//					LineUpdater.class.getName());
 			Line oldValue = lineDAO.findByObjectId(newValue.getObjectId());
 			if (oldValue == null) {
 				oldValue = new Line();
@@ -53,14 +60,14 @@ public class RegisterCommand implements Command {
 
 			}
 			lineUpdater.update(context, oldValue, newValue);
-			// lineDAO.create(oldValue);
+			lineDAO.create(oldValue);
 			
 			result = SUCCESS;
 		} catch (Exception e) {
 			log.error(e);
 			throw e;
 		}
-
+		log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		return result;
 	}
 

@@ -18,9 +18,13 @@ import mobi.chouette.dao.ConnectionLinkDAO;
 import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
+import mobi.chouette.model.Company;
 import mobi.chouette.model.ConnectionLink;
+import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.StopArea;
+import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.model.util.Referential;
 
 @Log4j
 @Stateless(name = StopAreaUpdater.BEAN_NAME)
@@ -56,13 +60,12 @@ public class StopAreaUpdater implements Updater<StopArea> {
 	public void update(Context context, StopArea oldValue, StopArea newValue)
 			throws Exception {
 
-		InitialContext initialContext = (InitialContext) context
-				.get(INITIAL_CONTEXT);
-
 		if (newValue.isSaved()) {
 			return;
 		}
 		newValue.setSaved(true);
+
+		Referential cache = (Referential) context.get(CACHE);
 
 		if (newValue.getObjectId() != null
 				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {
@@ -182,11 +185,18 @@ public class StopAreaUpdater implements Updater<StopArea> {
 		if (newValue.getParent() == null) {
 			oldValue.setParent(null);
 		} else {
-			StopArea stopArea = stopAreaDAO.findByObjectId(newValue.getParent()
-					.getObjectId());
+			String objectId = newValue.getParent().getObjectId();
+			StopArea stopArea = cache.getStopAreas().get(objectId);
 			if (stopArea == null) {
-				stopArea = new StopArea();
-				stopArea.setObjectId(newValue.getParent().getObjectId());
+				stopArea = stopAreaDAO.findByObjectId(objectId);
+				if (stopArea != null) {
+					cache.getStopAreas().put(objectId, stopArea);
+				}
+			}
+
+			if (stopArea == null) {
+				stopArea = ObjectFactory.getStopArea(cache, objectId);
+				// stopArea.setObjectId(newValue.getParent().getObjectId());
 				// stopAreaDAO.create(stopArea);
 			}
 			oldValue.setParent(stopArea);
@@ -201,14 +211,26 @@ public class StopAreaUpdater implements Updater<StopArea> {
 				newValue.getAccessPoints(), oldValue.getAccessPoints(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
 
-		List<AccessPoint> accessPoints = accessPointDAO.load(addedAccessPoint);
+		List<AccessPoint> accessPoints = null;
 		for (AccessPoint item : addedAccessPoint) {
-			int index = accessPoints.indexOf(item);
-			AccessPoint accessPoint = (index != -1) ? accessPoints.get(index)
-					: null;
+
+			AccessPoint accessPoint = cache.getAccessPoints().get(
+					item.getObjectId());
 			if (accessPoint == null) {
-				accessPoint = new AccessPoint();
-				accessPoint.setObjectId(item.getObjectId());
+				if (accessPoints == null) {
+					accessPoints = accessPointDAO.load(addedAccessPoint);
+					for (AccessPoint object : accessPoints) {
+						cache.getAccessPoints().put(object.getObjectId(),
+								object);
+					}
+				}
+				accessPoint = cache.getAccessPoints().get(item.getObjectId());
+			}
+
+			if (accessPoint == null) {
+				accessPoint = ObjectFactory.getAccessPoint(cache,
+						item.getObjectId());
+				// accessPoint.setObjectId(item.getObjectId());
 			}
 			accessPoint.setContainedIn(oldValue);
 		}
@@ -237,14 +259,26 @@ public class StopAreaUpdater implements Updater<StopArea> {
 				newValue.getAccessLinks(), oldValue.getAccessLinks(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
 
-		List<AccessLink> accessLinks = accessLinkDAO.load(addedAccessLink);
+		List<AccessLink> accessLinks = null;
 		for (AccessLink item : addedAccessLink) {
-			int index = accessLinks.indexOf(item);
-			AccessLink accessLink = (index != -1) ? accessLinks.get(index)
-					: null;
+
+			AccessLink accessLink = cache.getAccessLinks().get(
+					item.getObjectId());
 			if (accessLink == null) {
-				accessLink = new AccessLink();
-				accessLink.setObjectId(item.getObjectId());
+				if (accessLinks == null) {
+					accessLinks = accessLinkDAO.load(addedAccessLink);
+					for (AccessLink object : accessLinks) {
+						cache.getAccessLinks()
+								.put(object.getObjectId(), object);
+					}
+				}
+				accessLink = cache.getAccessLinks().get(item.getObjectId());
+			}
+
+			if (accessLink == null) {
+				accessLink = ObjectFactory.getAccessLink(cache,
+						item.getObjectId());
+				// accessLink.setObjectId(item.getObjectId());
 			}
 			accessLink.setStopArea(oldValue);
 		}
@@ -272,18 +306,30 @@ public class StopAreaUpdater implements Updater<StopArea> {
 				.substract(newValue.getConnectionStartLinks(),
 						oldValue.getConnectionStartLinks(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);
-		
-		List<ConnectionLink> startOfLinks = connectionLinkDAO.load(addedStartOfLink);
+
+		List<ConnectionLink> startOfLinks = null;
 		for (ConnectionLink item : addedStartOfLink) {
-			
-			int index = startOfLinks.indexOf(item);
-			ConnectionLink connectionLink = (index != -1) ? startOfLinks.get(index)
-					: null;
-			if (connectionLink == null) {
-				connectionLink = new ConnectionLink();
-				connectionLink.setObjectId(item.getObjectId());
+
+			ConnectionLink startOfLink = cache.getConnectionLinks().get(
+					item.getObjectId());
+			if (startOfLink == null) {
+				if (startOfLinks == null) {
+					startOfLinks = connectionLinkDAO.load(addedStartOfLink);
+					for (ConnectionLink object : startOfLinks) {
+						cache.getConnectionLinks().put(object.getObjectId(),
+								object);
+					}
+				}
+				startOfLink = cache.getConnectionLinks()
+						.get(item.getObjectId());
 			}
-			connectionLink.setStartOfLink(oldValue);
+
+			if (startOfLink == null) {
+				startOfLink = ObjectFactory.getConnectionLink(cache,
+						item.getObjectId());
+				// startOfLink.setObjectId(item.getObjectId());
+			}
+			startOfLink.setStartOfLink(oldValue);
 		}
 
 		// Updater<ConnectionLink> connectionLinkUpdater =
@@ -303,17 +349,29 @@ public class StopAreaUpdater implements Updater<StopArea> {
 				newValue.getConnectionEndLinks(),
 				oldValue.getConnectionEndLinks(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
-		
-		List<ConnectionLink> endOfLinks = connectionLinkDAO.load(addedEndOfLink);
+
+		List<ConnectionLink> endOfLinks = null;
 		for (ConnectionLink item : addedEndOfLink) {
-			int index = endOfLinks.indexOf(item);
-			ConnectionLink connectionLink = (index != -1) ? endOfLinks.get(index)
-					: null;			
-			if (connectionLink == null) {
-				connectionLink = new ConnectionLink();
-				connectionLink.setObjectId(item.getObjectId());
+
+			ConnectionLink endOfLink = cache.getConnectionLinks().get(
+					item.getObjectId());
+			if (endOfLink == null) {
+				if (endOfLinks == null) {
+					endOfLinks = connectionLinkDAO.load(addedEndOfLink);
+					for (ConnectionLink object : endOfLinks) {
+						cache.getConnectionLinks().put(object.getObjectId(),
+								object);
+					}
+				}
+				endOfLink = cache.getConnectionLinks().get(item.getObjectId());
 			}
-			connectionLink.setEndOfLink(oldValue);
+
+			if (endOfLink == null) {
+				endOfLink = ObjectFactory.getConnectionLink(cache,
+						item.getObjectId());
+				// endOfLink.setObjectId(item.getObjectId());
+			}
+			endOfLink.setEndOfLink(oldValue);
 		}
 
 		// connectionLinkUpdater = UpdaterFactory.create(initialContext,

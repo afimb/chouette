@@ -319,7 +319,7 @@ public class StopArea extends NeptuneLocalizedObject {
 	 * @return The actual value
 	 */
 	@Getter
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY ,cascade = { CascadeType.PERSIST})
 	@JoinColumn(name = "parent_id")
 	private StopArea parent;
 
@@ -363,7 +363,7 @@ public class StopArea extends NeptuneLocalizedObject {
 	 */
 	@Getter
 	@Setter
-	@ManyToMany
+	@ManyToMany(cascade = { CascadeType.PERSIST})
 	@JoinTable(name = "stop_areas_stop_areas", joinColumns = { @JoinColumn(name = "parent_id", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "child_id", nullable = false, updatable = false) })
 	private List<StopArea> routingConstraintAreas = new ArrayList<StopArea>(0);
 

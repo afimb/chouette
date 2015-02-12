@@ -28,15 +28,15 @@ public class Referential implements java.io.Serializable {
 
 	@Getter
 	@Setter
-	private Map<String, AccessLink> accessLink = new HashMap<String, AccessLink>();
+	private Map<String, AccessLink> accessLinks = new HashMap<String, AccessLink>();
 
 	@Getter
 	@Setter
-	private Map<String, AccessPoint> accessPoint = new HashMap<String, AccessPoint>();
+	private Map<String, AccessPoint> accessPoints = new HashMap<String, AccessPoint>();
 
 	@Getter
 	@Setter
-	private Map<String, PTNetwork> networks = new HashMap<String, PTNetwork>();
+	private Map<String, PTNetwork> ptNetworks = new HashMap<String, PTNetwork>();
 
 	@Getter
 	@Setter

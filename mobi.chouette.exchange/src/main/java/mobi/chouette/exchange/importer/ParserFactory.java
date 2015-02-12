@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import lombok.extern.log4j.Log4j;
+
+@Log4j
 public abstract class ParserFactory {
 
 	protected static Map<String, ParserFactory> factories = new HashMap<String, ParserFactory>();
@@ -13,6 +16,7 @@ public abstract class ParserFactory {
 	public static final Parser create(String name)
 			throws ClassNotFoundException, IOException {
 		if (!factories.containsKey(name)) {
+			log.info("[DSU] load : " + name);
 			Class.forName(name);
 			if (!factories.containsKey(name))
 				throw new ClassNotFoundException(name);

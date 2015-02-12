@@ -19,4 +19,15 @@ public class SchemaDAO {
 		Query query = em.createNativeQuery(SQL);
 		return query.getResultList();
 	}
+
+	public String getCurrentSchema() {
+		Query query = em.createNativeQuery("SHOW search_path");
+		List<String> list = query.getResultList();
+		return (list != null && !list.isEmpty()) ? list.get(0) : "";
+	}
+	
+	public void setCurrentSchema(String identifier) {
+		Query query = em.createNativeQuery("SET SCHEMA '" + identifier + "'");
+		query.executeUpdate();
+	}
 }

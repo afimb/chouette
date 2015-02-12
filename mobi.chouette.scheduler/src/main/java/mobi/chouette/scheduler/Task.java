@@ -1,6 +1,5 @@
 package mobi.chouette.scheduler;
 
-import java.nio.file.Paths;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
@@ -14,7 +13,6 @@ import lombok.ToString;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
-import mobi.chouette.common.JSONUtils;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.model.api.Job;
@@ -40,12 +38,12 @@ public class Task implements Callable<Job.STATUS>, ManagedTask, Constant {
 		STATUS result = STATUS.TERMINATED;
 		ContextHolder.setContext(job.getReferential());
 		try {
-			InitialContext ctx = new InitialContext();
+			InitialContext initialContext = new InitialContext();
 			Context context = new Context();
-			context.put(INITIAL_CONTEXT, ctx);
-			context.put(JOB, job);
+			context.put(INITIAL_CONTEXT, initialContext);
+			context.put(JOB_ID, job.getId());
 		
-			Command command = CommandFactory.create(ctx,
+			Command command = CommandFactory.create(initialContext,
 					MainCommand.class.getName());
 			command.execute(context);
 			result = job.getStatus();

@@ -7,7 +7,7 @@
 -- Started on 2014-02-27 11:15:39 CET
 
 -- authentification 127.0.0.1 trust
--- USAGE : psql -h localhost -U chouette -v SCH=chouette -d chouette -f '/home/dsuru/workspace-chouette/chouette/chouette_schema.sql'
+-- USAGE : psql -h 127.0.0.1 -U chouette -v SCH=chouette  -d chouette -f chouette_schema.sql'
 
 SET statement_timeout = 0;
 SET client_encoding = 'UTF8';
@@ -162,7 +162,9 @@ CREATE TABLE companies (
     phone character varying(255),
     fax character varying(255),
     email character varying(255),
-    registration_number character varying(255)
+    registration_number character varying(255),
+    url character varying(255),
+    time_zone character varying(255)
 );
 
 
@@ -326,6 +328,34 @@ ALTER TABLE :SCH.facilities_id_seq OWNER TO chouette;
 ALTER SEQUENCE facilities_id_seq OWNED BY facilities.id;
 
 
+CREATE TABLE footnotes
+(
+  id bigserial NOT NULL,
+  line_id bigint,
+  code character varying(255),
+  label character varying(255),
+  created_at timestamp without time zone NOT NULL,
+  updated_at timestamp without time zone NOT NULL,
+  CONSTRAINT footnotes_pkey PRIMARY KEY (id)
+)
+WITH (
+  OIDS=FALSE
+);
+
+ALTER TABLE footnotes
+  OWNER TO chouette;
+
+CREATE TABLE footnotes_vehicle_journeys
+(
+  vehicle_journey_id bigint,
+  footnote_id bigint
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE footnotes_vehicle_journeys
+  OWNER TO chouette;
+
 --
 -- TOC entry 206 (class 1259 OID 480204)
 -- Dependencies: 5
@@ -339,6 +369,7 @@ CREATE TABLE group_of_lines (
     creation_time timestamp without time zone,
     creator_id character varying(255),
     name character varying(255),
+    registration_number character varying(255),
     comment character varying(255)
 );
 
@@ -469,7 +500,11 @@ CREATE TABLE lines (
     registration_number character varying(255),
     comment character varying(255),
     mobility_restricted_suitability boolean,
-    int_user_needs integer
+    flexible_service boolean,
+    int_user_needs integer,
+    url character varying(255),
+    color character varying(6),
+    text_color character varying(6)
 );
 
 
@@ -694,7 +729,9 @@ CREATE TABLE stop_areas (
     lift_availability boolean,
     int_user_needs integer,
     zip_code character varying(255),
-    city_name character varying(255)
+    city_name character varying(255),
+    url character varying(255),
+    time_zone character varying(255)
 );
 
 
@@ -753,7 +790,9 @@ CREATE TABLE stop_points (
     object_version integer,
     creation_time timestamp without time zone,
     creator_id character varying(255),
-    "position" integer
+    "position" integer,
+    for_boarding character varying(255),
+    for_alighting character varying(255)
 );
 
 
@@ -993,7 +1032,9 @@ CREATE TABLE vehicle_journey_at_stops (
     departure_time time without time zone,
     waiting_time time without time zone,
     elapse_duration time without time zone,
-    headway_frequency time without time zone
+    headway_frequency time without time zone,
+    for_boarding character varying(255),
+    for_alighting character varying(255)
 );
 
 
@@ -1047,7 +1088,9 @@ CREATE TABLE vehicle_journeys (
     published_journey_identifier character varying(255),
     facility character varying(255),
     vehicle_type_identifier character varying(255),
-    number bigint
+    number bigint,
+    mobility_restricted_suitability boolean,
+    flexible_service boolean
 );
 
 
@@ -2703,10 +2746,14 @@ ALTER TABLE ONLY import_tasks
     ADD CONSTRAINT import_tasks_referential_id_fk FOREIGN KEY (referential_id) REFERENCES referentials(id) ON DELETE CASCADE;
 
 
+DROP SEQUENCE hibernate_seq;
 
-
-
-
+CREATE SEQUENCE hibernate_seq
+    START WITH 1
+    INCREMENT BY 50
+    MINVALUE 1
+    NO MAXVALUE
+    CACHE 50;
 
 
 

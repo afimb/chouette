@@ -142,4 +142,9 @@ public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 		Cache cache = factory.getCache();
 		cache.evictAll();
 	}
+	
+	@Override
+	public void flush() {
+		em.flush();
+	}
 }

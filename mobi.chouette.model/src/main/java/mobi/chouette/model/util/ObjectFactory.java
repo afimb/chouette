@@ -19,22 +19,22 @@ public class ObjectFactory {
 
 	public static AccessLink getAccessLink(Referential referential,
 			String objectId) {
-		AccessLink result = referential.getAccessLink().get(objectId);
+		AccessLink result = referential.getAccessLinks().get(objectId);
 		if (result == null) {
 			result = new AccessLink();
 			result.setObjectId(objectId);
-			referential.getAccessLink().put(objectId, result);
+			referential.getAccessLinks().put(objectId, result);
 		}
 		return result;
 	}
 
 	public static AccessPoint getAccessPoint(Referential referential,
 			String objectId) {
-		AccessPoint result = referential.getAccessPoint().get(objectId);
+		AccessPoint result = referential.getAccessPoints().get(objectId);
 		if (result == null) {
 			result = new AccessPoint();
 			result.setObjectId(objectId);
-			referential.getAccessPoint().put(objectId, result);
+			referential.getAccessPoints().put(objectId, result);
 		}
 		return result;
 	}
@@ -56,15 +56,13 @@ public class ObjectFactory {
 		return result;
 	}
 
-	/*- ---------------- */
-
 	public static PTNetwork getPTNetwork(Referential referential,
 			String objectId) {
-		PTNetwork result = referential.getNetworks().get(objectId);
+		PTNetwork result = referential.getPtNetworks().get(objectId);
 		if (result == null) {
 			result = new PTNetwork();
 			result.setObjectId(objectId);
-			referential.getNetworks().put(objectId, result);
+			referential.getPtNetworks().put(objectId, result);
 		}
 		return result;
 	}

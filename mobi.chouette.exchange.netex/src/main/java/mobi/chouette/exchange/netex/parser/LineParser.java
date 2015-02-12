@@ -110,7 +110,7 @@ public class LineParser implements Parser, Constant {
 
 	private PTNetwork getPTNetwork(Referential referential) {
 		PTNetwork result = null;
-		Collection<PTNetwork> list = referential.getNetworks().values();
+		Collection<PTNetwork> list = referential.getPtNetworks().values();
 		PTNetwork[] array = list.toArray(new PTNetwork[list.size()]);
 		if (array != null && array.length == 1) {
 			result = array[0];

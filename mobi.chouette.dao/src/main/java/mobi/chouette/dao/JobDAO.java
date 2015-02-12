@@ -1,21 +1,25 @@
 package mobi.chouette.dao;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.api.Job;
 import mobi.chouette.model.api.Job.STATUS;
 import mobi.chouette.model.api.Job_;
 
 @Stateless
+@Log4j
 public class JobDAO extends GenericDAOImpl<Job> {
 
 	public JobDAO() {
@@ -30,7 +34,7 @@ public class JobDAO extends GenericDAOImpl<Job> {
 	public List<Job> findByReferential(String referential) {
 		List<Job> result;
 		CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery<Job> criteria = builder.createQuery(Job.class);
+		CriteriaQuery<Job> criteria = builder.createQuery(type);
 		Root<Job> root = criteria.from(type);
 		Predicate predicate = builder.equal(root.get(Job_.referential),
 				referential);
@@ -40,17 +44,39 @@ public class JobDAO extends GenericDAOImpl<Job> {
 		return result;
 	}
 
+	// public Job getNextJob(String referential) {
+	// log.info("[DSU] getNextJob : " + referential);
+	// Job result = null;
+	// CriteriaBuilder builder = em.getCriteriaBuilder();
+	// CriteriaQuery<Job> criteria = builder.createQuery(type);
+	// Root<Job> root = criteria.from(type);
+	// criteria.select(root);
+	// List<Predicate> predicates = new ArrayList<Predicate>();
+	// predicates.add(builder.equal(root.get(Job_.referential), referential));
+	// predicates.add(builder.lessThan(root.get(Job_.status),
+	// STATUS.TERMINATED));
+	// criteria.where(builder.and(predicates.toArray(new Predicate[0])));
+	// criteria.orderBy(builder.desc(root.get(Job_.status)));
+	// TypedQuery<Job> query = em.createQuery(criteria);
+	// List<Job> list = query.getResultList();
+	// if (list != null && !list.isEmpty()) {
+	// if (list.get(0).getStatus().equals(STATUS.CREATED)) {
+	// result = list.get(0);
+	// }
+	// }
+	// return result;
+	// }
+
 	public Job getNextJob(String referential) {
+		
+		// SHOW search_path;
+		log.info("[DSU] getNextJob : " + referential);
 		Job result = null;
-		CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery<Job> criteria = builder.createQuery(Job.class);
-		Root<Job> root = criteria.from(type);
-		Predicate p1 = builder.equal(root.get(Job_.referential), referential);
-		Predicate p2 = builder.lessThan(root.get(Job_.status),
-				STATUS.TERMINATED);
-		criteria.where(builder.and(p1, p2));
-		criteria.orderBy(builder.desc(root.get(Job_.status)));
-		TypedQuery<Job> query = em.createQuery(criteria);
+		Query query = em
+				.createQuery("from Job j where j.referential = ?1 and j.status in ( ?2 )");
+		query.setParameter(1, referential);
+		query.setParameter(2,
+				Arrays.asList(STATUS.CREATED, STATUS.SCHEDULED));
 		List<Job> list = query.getResultList();
 		if (list != null && !list.isEmpty()) {
 			if (list.get(0).getStatus().equals(STATUS.CREATED)) {

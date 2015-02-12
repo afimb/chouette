@@ -55,7 +55,7 @@
 		<validation-mode>NONE</validation-mode>
 		
 		<properties>
-			<property name="hibernate.show_sql" value="true" />
+			<property name="hibernate.show_sql" value="false" />
 			<property name="hibernate.format_sql" value="true" />
 			<property name="hibernate.jdbc.batch_size" value="50" />
 			<property name="hibernate.default_batch_fetch_size" value="50" />
