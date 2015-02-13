@@ -2,6 +2,7 @@ package mobi.chouette.exchange.importer.updater;
 
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.naming.InitialContext;
@@ -10,6 +11,7 @@ import javax.naming.NamingException;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.CollectionUtils;
 import mobi.chouette.common.Context;
+import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.CalendarDay;
 import mobi.chouette.model.Period;
 import mobi.chouette.model.Timetable;

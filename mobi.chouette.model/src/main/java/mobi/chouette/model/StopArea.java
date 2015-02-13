@@ -20,6 +20,7 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.core.CoreExceptionCode;
 import mobi.chouette.core.CoreRuntimeException;
@@ -62,6 +63,9 @@ import org.apache.commons.lang.StringUtils;
 @Table(name = "stop_areas")
 @Cacheable
 @NoArgsConstructor
+@ToString(callSuper = true, exclude = { "accessLinks", "accessPoints",
+		"connectionEndLinks", "connectionStartLinks", "containedStopAreas",
+		"containedStopPoints", "routingConstraintAreas", "routingConstraintLines" })
 @Log4j
 public class StopArea extends NeptuneLocalizedObject {
 	private static final long serialVersionUID = 4548672479038099240L;
@@ -281,7 +285,8 @@ public class StopArea extends NeptuneLocalizedObject {
 	 * @return The actual value
 	 */
 
-	@Getter@Setter
+	@Getter
+	@Setter
 	@Column(name = "int_user_needs")
 	private Integer intUserNeeds = 0;
 
@@ -314,7 +319,7 @@ public class StopArea extends NeptuneLocalizedObject {
 	 * @return The actual value
 	 */
 	@Getter
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY ,cascade = { CascadeType.PERSIST})
 	@JoinColumn(name = "parent_id")
 	private StopArea parent;
 
@@ -358,7 +363,7 @@ public class StopArea extends NeptuneLocalizedObject {
 	 */
 	@Getter
 	@Setter
-	@ManyToMany
+	@ManyToMany(cascade = { CascadeType.PERSIST})
 	@JoinTable(name = "stop_areas_stop_areas", joinColumns = { @JoinColumn(name = "parent_id", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "child_id", nullable = false, updatable = false) })
 	private List<StopArea> routingConstraintAreas = new ArrayList<StopArea>(0);
 
@@ -372,7 +377,7 @@ public class StopArea extends NeptuneLocalizedObject {
 	 */
 	@Getter
 	@Setter
-	@OneToMany(mappedBy = "parent")
+	@OneToMany(mappedBy = "parent",cascade = { CascadeType.PERSIST })
 	private List<StopArea> containedStopAreas = new ArrayList<StopArea>(0);
 
 	/**
@@ -398,7 +403,7 @@ public class StopArea extends NeptuneLocalizedObject {
 	 */
 	@Getter
 	@Setter
-	@OneToMany
+	@OneToMany(cascade = { CascadeType.PERSIST })
 	@JoinColumn(name = "stop_area_id", updatable = false)
 	private List<AccessLink> accessLinks = new ArrayList<AccessLink>(0);
 
@@ -412,7 +417,7 @@ public class StopArea extends NeptuneLocalizedObject {
 	 */
 	@Getter
 	@Setter
-	@OneToMany
+	@OneToMany(cascade = { CascadeType.PERSIST })
 	@JoinColumn(name = "departure_id", updatable = false)
 	private List<ConnectionLink> connectionStartLinks = new ArrayList<ConnectionLink>(
 			0);
@@ -427,7 +432,7 @@ public class StopArea extends NeptuneLocalizedObject {
 	 */
 	@Getter
 	@Setter
-	@OneToMany
+	@OneToMany(cascade = { CascadeType.PERSIST })
 	@JoinColumn(name = "arrival_id", updatable = false)
 	private List<ConnectionLink> connectionEndLinks = new ArrayList<ConnectionLink>(
 			0);
@@ -442,8 +447,7 @@ public class StopArea extends NeptuneLocalizedObject {
 	 */
 	@Getter
 	@Setter
-	@OneToMany(mappedBy = "containedIn", cascade = { CascadeType.PERSIST,
-			CascadeType.MERGE })
+	@OneToMany(mappedBy = "containedIn", cascade = { CascadeType.PERSIST })
 	private List<AccessPoint> accessPoints = new ArrayList<AccessPoint>(0);
 
 	// /**
@@ -553,59 +557,59 @@ public class StopArea extends NeptuneLocalizedObject {
 	// containedStopPoints.remove(containedStopPoint);
 	// }
 
-//	/**
-//	 * add an accessLink if not already present
-//	 * <p>
-//	 * WARNING : no check on accessLink stopAreaLink validity
-//	 * 
-//	 * @param accessLink
-//	 */
-//	public void addAccessLink(AccessLink accessLink) {
-//		if (accessLinks == null)
-//			accessLinks = new ArrayList<AccessLink>();
-//		if (accessLink != null && !accessLinks.contains(accessLink)) {
-//			accessLinks.add(accessLink);
-//			accessLink.setStopArea(this);
-//		}
-//	}
-//
-//	/**
-//	 * remove an accessLink
-//	 * 
-//	 * @param accessLink
-//	 */
-//	public void removeAccessLink(AccessLink accessLink) {
-//		if (accessLinks == null)
-//			accessLinks = new ArrayList<AccessLink>();
-//		if (accessLinks.contains(accessLink))
-//			accessLinks.remove(accessLink);
-//	}
-//
-//	/**
-//	 * add an accessPoint if not already present
-//	 * <p>
-//	 * 
-//	 * @param accessPoint
-//	 */
-//	public void addAccessPoint(AccessPoint accessPoint) {
-//		if (accessPoints == null)
-//			accessPoints = new ArrayList<AccessPoint>();
-//		if (accessPoint != null && !accessPoints.contains(accessPoint)) {
-//			accessPoints.add(accessPoint);
-//		}
-//	}
-//
-//	/**
-//	 * remove an accessPoint
-//	 * 
-//	 * @param accessPoint
-//	 */
-//	public void removeAccessPoint(AccessPoint accessPoint) {
-//		if (accessPoints == null)
-//			accessPoints = new ArrayList<AccessPoint>();
-//		if (accessPoints.contains(accessPoint))
-//			accessPoints.remove(accessPoint);
-//	}
+	// /**
+	// * add an accessLink if not already present
+	// * <p>
+	// * WARNING : no check on accessLink stopAreaLink validity
+	// *
+	// * @param accessLink
+	// */
+	// public void addAccessLink(AccessLink accessLink) {
+	// if (accessLinks == null)
+	// accessLinks = new ArrayList<AccessLink>();
+	// if (accessLink != null && !accessLinks.contains(accessLink)) {
+	// accessLinks.add(accessLink);
+	// accessLink.setStopArea(this);
+	// }
+	// }
+	//
+	// /**
+	// * remove an accessLink
+	// *
+	// * @param accessLink
+	// */
+	// public void removeAccessLink(AccessLink accessLink) {
+	// if (accessLinks == null)
+	// accessLinks = new ArrayList<AccessLink>();
+	// if (accessLinks.contains(accessLink))
+	// accessLinks.remove(accessLink);
+	// }
+	//
+	// /**
+	// * add an accessPoint if not already present
+	// * <p>
+	// *
+	// * @param accessPoint
+	// */
+	// public void addAccessPoint(AccessPoint accessPoint) {
+	// if (accessPoints == null)
+	// accessPoints = new ArrayList<AccessPoint>();
+	// if (accessPoint != null && !accessPoints.contains(accessPoint)) {
+	// accessPoints.add(accessPoint);
+	// }
+	// }
+	//
+	// /**
+	// * remove an accessPoint
+	// *
+	// * @param accessPoint
+	// */
+	// public void removeAccessPoint(AccessPoint accessPoint) {
+	// if (accessPoints == null)
+	// accessPoints = new ArrayList<AccessPoint>();
+	// if (accessPoints.contains(accessPoint))
+	// accessPoints.remove(accessPoint);
+	// }
 
 	/**
 	 * add a line if not already present

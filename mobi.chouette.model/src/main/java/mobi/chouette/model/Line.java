@@ -47,7 +47,7 @@ import org.apache.commons.lang.StringUtils;
 @Table(name = "lines")
 @NoArgsConstructor
 @Log4j
-@ToString(callSuper=true, exclude = { "routingConstraints" })
+@ToString(callSuper = true, exclude = { "routingConstraints" })
 public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	private static final long serialVersionUID = -8086291270595894778L;
 
@@ -292,7 +292,7 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	 * @return The actual value
 	 */
 	@Getter
-	@ManyToOne
+	@ManyToOne(cascade = { CascadeType.PERSIST })
 	@JoinColumn(name = "network_id")
 	private PTNetwork ptNetwork;
 
@@ -320,7 +320,7 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	 */
 	@Getter
 	@Setter
-	@ManyToOne
+	@ManyToOne(cascade = { CascadeType.PERSIST })
 	@JoinColumn(name = "company_id")
 	private Company company;
 
@@ -333,8 +333,7 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	 */
 	@Getter
 	@Setter
-	@OneToMany(mappedBy = "line", cascade = { CascadeType.PERSIST,
-			CascadeType.MERGE })
+	@OneToMany(mappedBy = "line", cascade = { CascadeType.PERSIST })
 	private List<Route> routes = new ArrayList<Route>(0);
 
 	/**
@@ -346,7 +345,7 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	 */
 	@Getter
 	@Setter
-	@ManyToMany
+	@ManyToMany(cascade = { CascadeType.PERSIST })
 	@JoinTable(name = "group_of_lines_lines", joinColumns = { @JoinColumn(name = "line_id", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "group_of_line_id", nullable = false, updatable = false) })
 	private List<GroupOfLine> groupOfLines = new ArrayList<GroupOfLine>(0);
 
@@ -362,29 +361,29 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	@ManyToMany(mappedBy = "routingConstraintLines")
 	private List<StopArea> routingConstraints = new ArrayList<StopArea>(0);
 
-//	/**
-//	 * add a group of line
-//	 * 
-//	 * @param groupOfLine
-//	 */
-//	public void addGroupOfLine(GroupOfLine groupOfLine) {
-//		if (groupOfLines == null)
-//			groupOfLines = new ArrayList<GroupOfLine>();
-//		if (!groupOfLines.contains(groupOfLine))
-//			groupOfLines.add(groupOfLine);
-//	}
-//
-//	/**
-//	 * remove a group of line
-//	 * 
-//	 * @param groupOfLine
-//	 */
-//	public void removeGroupOfLine(GroupOfLine groupOfLine) {
-//		if (groupOfLines == null)
-//			groupOfLines = new ArrayList<GroupOfLine>();
-//		if (groupOfLines.contains(groupOfLine))
-//			groupOfLines.remove(groupOfLine);
-//	}
+	// /**
+	// * add a group of line
+	// *
+	// * @param groupOfLine
+	// */
+	// public void addGroupOfLine(GroupOfLine groupOfLine) {
+	// if (groupOfLines == null)
+	// groupOfLines = new ArrayList<GroupOfLine>();
+	// if (!groupOfLines.contains(groupOfLine))
+	// groupOfLines.add(groupOfLine);
+	// }
+	//
+	// /**
+	// * remove a group of line
+	// *
+	// * @param groupOfLine
+	// */
+	// public void removeGroupOfLine(GroupOfLine groupOfLine) {
+	// if (groupOfLines == null)
+	// groupOfLines = new ArrayList<GroupOfLine>();
+	// if (groupOfLines.contains(groupOfLine))
+	// groupOfLines.remove(groupOfLine);
+	// }
 
 	/* -------------------------------------- */
 

@@ -13,7 +13,6 @@ import javax.naming.NamingException;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
-import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
@@ -21,6 +20,8 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.report.FileItem;
 import mobi.chouette.exchange.importer.report.Report;
+import mobi.chouette.exchange.neptune.Constant;
+import mobi.chouette.exchange.neptune.model.NeptuneObjectFactory;
 import mobi.chouette.exchange.neptune.parser.ChouettePTNetworkParser;
 import mobi.chouette.model.util.Referential;
 
@@ -65,7 +66,15 @@ public class NeptuneParserCommand implements Command, Constant {
 			xpp.setInput(in);
 			context.put(PARSER, xpp);
 			context.put(REFERENTIAL, new Referential());
-
+			
+			NeptuneObjectFactory factory = (NeptuneObjectFactory) context.get(NEPTUNE_OBJECT_FACTORY);
+			if (referential == null) {
+				factory = new NeptuneObjectFactory();
+				context.put(NEPTUNE_OBJECT_FACTORY, factory);
+			}else {
+				factory.clear();
+			}
+				
 			Parser parser = ParserFactory.create(ChouettePTNetworkParser.class
 					.getName());
 			parser.parse(context);

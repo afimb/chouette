@@ -196,8 +196,7 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 	 */
 	@Getter
 	@Setter
-	@OneToMany(mappedBy = "journeyPattern", cascade = { CascadeType.PERSIST,
-			CascadeType.MERGE })
+	@OneToMany(mappedBy = "journeyPattern", cascade = { CascadeType.PERSIST})
 	private List<VehicleJourney> vehicleJourneys = new ArrayList<VehicleJourney>(
 			0);
 

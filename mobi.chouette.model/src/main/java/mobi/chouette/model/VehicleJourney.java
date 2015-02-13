@@ -274,7 +274,7 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 	 */
 	@Getter
 	@Setter
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST})
 	@JoinColumn(name = "company_id")
 	private Company company;
 
@@ -287,7 +287,7 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 	 */
 	@Getter
 	@Setter
-	@ManyToMany
+	@ManyToMany(cascade = { CascadeType.PERSIST })
 	@JoinTable(name = "time_tables_vehicle_journeys", joinColumns = { @JoinColumn(name = "vehicle_journey_id", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "time_table_id", nullable = false, updatable = false) })
 	private List<Timetable> timetables = new ArrayList<Timetable>(0);
 
@@ -297,7 +297,7 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 	 * @return The actual value
 	 */
 	@Getter	
-	@OneToMany
+	@OneToMany(cascade = { CascadeType.PERSIST })
 	@JoinColumn(name = "vehicle_journey_id", updatable = false)
 	private List<VehicleJourneyAtStop> vehicleJourneyAtStops = new ArrayList<VehicleJourneyAtStop>(
 			0);

@@ -17,6 +17,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.SequenceGenerator;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -47,7 +48,9 @@ public abstract class NeptuneObject implements Serializable {
 	@Getter
 	@Setter
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	// @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@SequenceGenerator(name = "hibernate_seq", initialValue = 1, allocationSize = 50, sequenceName = "hibernate_seq")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hibernate_seq")
 	@Column(name = "id", nullable = false)
 	protected Long id;
 

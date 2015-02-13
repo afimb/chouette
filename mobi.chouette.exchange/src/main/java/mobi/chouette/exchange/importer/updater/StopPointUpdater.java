@@ -8,8 +8,11 @@ import javax.naming.NamingException;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.dao.StopAreaDAO;
+import mobi.chouette.model.Company;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.model.util.Referential;
 
 @Log4j
 @Stateless(name = StopPointUpdater.BEAN_NAME)
@@ -20,17 +23,19 @@ public class StopPointUpdater implements Updater<StopPoint> {
 	@EJB
 	private StopAreaDAO stopAreaDAO;
 
+	@EJB(beanName = StopAreaUpdater.BEAN_NAME)
+	private Updater<StopArea> stopAreaUpdater;
+
 	@Override
 	public void update(Context context, StopPoint oldValue, StopPoint newValue)
 			throws Exception {
-
-		InitialContext initialContext = (InitialContext) context
-				.get(INITIAL_CONTEXT);
 
 		if (newValue.isSaved()) {
 			return;
 		}
 		newValue.setSaved(true);
+		
+		Referential cache = (Referential) context.get(CACHE);
 
 		if (newValue.getObjectId() != null
 				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {
@@ -59,19 +64,25 @@ public class StopPointUpdater implements Updater<StopPoint> {
 		if (newValue.getContainedInStopArea() == null) {
 			oldValue.setContainedInStopArea(null);
 		} else {
-			StopArea stopArea = stopAreaDAO.findByObjectId(newValue
-					.getContainedInStopArea().getObjectId());
+			
+			String objectId = newValue
+					.getContainedInStopArea().getObjectId();
+			StopArea stopArea = cache.getStopAreas().get(objectId);
 			if (stopArea == null) {
-				stopArea = new StopArea();
-				stopArea.setObjectId(newValue.getContainedInStopArea()
-						.getObjectId());
-				// stopAreaDAO.create(stopArea);
+				stopArea = stopAreaDAO.findByObjectId(objectId);
+				if (stopArea != null) {
+					cache.getStopAreas().put(objectId, stopArea);
+				}
+			}
+			
+			if (stopArea == null) {
+				stopArea = ObjectFactory.getStopArea(cache, objectId);				
 			}
 			oldValue.setContainedInStopArea(stopArea);
-			Updater<StopArea> stopAreaUpdater = UpdaterFactory.create(
-					initialContext, StopAreaUpdater.class.getName());
+			// Updater<StopArea> stopAreaUpdater = UpdaterFactory.create(
+			// initialContext, StopAreaUpdater.class.getName());
 			stopAreaUpdater.update(context, oldValue.getContainedInStopArea(),
-					newValue.getContainedInStopArea());			
+					newValue.getContainedInStopArea());
 		}
 
 	}

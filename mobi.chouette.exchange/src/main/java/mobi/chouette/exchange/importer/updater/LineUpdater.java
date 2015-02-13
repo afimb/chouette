@@ -1,15 +1,12 @@
 package mobi.chouette.exchange.importer.updater;
 
 import java.util.Collection;
+import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.CollectionUtils;
@@ -24,6 +21,8 @@ import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.PTNetwork;
 import mobi.chouette.model.Route;
+import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.model.util.Referential;
 
 @Log4j
 @Stateless(name = LineUpdater.BEAN_NAME)
@@ -37,27 +36,37 @@ public class LineUpdater implements Updater<Line> {
 	@EJB
 	private PTNetworkDAO ptNetworkDAO;
 
+	@EJB(beanName = PTNetworkUpdater.BEAN_NAME)
+	private Updater<PTNetwork> ptNetworkUpdater;
+
 	@EJB
 	private CompanyDAO companyDAO;
+
+	@EJB(beanName = CompanyUpdater.BEAN_NAME)
+	private Updater<Company> companyUpdater;
 
 	@EJB
 	private GroupOfLineDAO groupOfLineDAO;
 
+	@EJB(beanName = GroupOfLineUpdater.BEAN_NAME)
+	private Updater<GroupOfLine> groupOfLineUpdater;
+
 	@EJB
 	private RouteDAO routeDAO;
 
+	@EJB(beanName = RouteUpdater.BEAN_NAME)
+	private Updater<Route> routeUpdater;
+
 	@Override
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void update(Context context, Line oldValue, Line newValue)
 			throws Exception {
-
-		InitialContext initialContext = (InitialContext) context
-				.get(INITIAL_CONTEXT);
 
 		if (newValue.isSaved()) {
 			return;
 		}
 		newValue.setSaved(true);
+
+		Referential cache = (Referential) context.get(CACHE);
 
 		if (newValue.getObjectId() != null
 				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {
@@ -132,17 +141,24 @@ public class LineUpdater implements Updater<Line> {
 		if (newValue.getPtNetwork() == null) {
 			oldValue.setPTNetwork(null);
 		} else {
-			
-			PTNetwork ptNetwork = ptNetworkDAO.findByObjectId(newValue
-					.getPtNetwork().getObjectId());
+
+			String objectId = newValue.getPtNetwork().getObjectId();
+			PTNetwork ptNetwork = cache.getPtNetworks().get(objectId);
 			if (ptNetwork == null) {
-				ptNetwork = new PTNetwork();
-				ptNetwork.setObjectId(newValue.getPtNetwork().getObjectId());
+				ptNetwork = ptNetworkDAO.findByObjectId(objectId);
+				if (ptNetwork != null) {
+					cache.getPtNetworks().put(objectId, ptNetwork);
+				}
+			}
+			
+			if (ptNetwork == null) {
+				ptNetwork = ObjectFactory.getPTNetwork(cache, objectId);
+				// ptNetwork.setObjectId(newValue.getPtNetwork().getObjectId());
 				// ptNetworkDAO.create(ptNetwork);
 			}
 			oldValue.setPTNetwork(ptNetwork);
-			Updater<PTNetwork> ptNetworkUpdater = UpdaterFactory.create(
-					initialContext, PTNetworkUpdater.class.getName());
+			// Updater<PTNetwork> ptNetworkUpdater = UpdaterFactory.create(
+			// initialContext, PTNetworkUpdater.class.getName());
 			ptNetworkUpdater.update(context, oldValue.getPtNetwork(),
 					newValue.getPtNetwork());
 		}
@@ -151,17 +167,22 @@ public class LineUpdater implements Updater<Line> {
 		if (newValue.getCompany() == null) {
 			oldValue.setCompany(null);
 		} else {
-			
-			Company company = companyDAO.findByObjectId(newValue.getCompany()
-					.getObjectId());
+			String objectId = newValue.getCompany().getObjectId();
+			Company company = cache.getCompanies().get(objectId);
 			if (company == null) {
-				company = new Company();
-				company.setObjectId(newValue.getCompany().getObjectId());
+				company = companyDAO.findByObjectId(objectId);
+				if (company != null) {
+					cache.getCompanies().put(objectId, company);
+				}
+			}
+			if (company == null) {
+				company = ObjectFactory.getCompany(cache, objectId);
+				// company.setObjectId(newValue.getCompany().getObjectId());
 				// companyDAO.create(company);
 			}
 			oldValue.setCompany(company);
-			Updater<Company> companyUpdater = UpdaterFactory.create(
-					initialContext, CompanyUpdater.class.getName());
+			// Updater<Company> companyUpdater = UpdaterFactory.create(
+			// initialContext, CompanyUpdater.class.getName());
 			companyUpdater.update(context, oldValue.getCompany(),
 					newValue.getCompany());
 		}
@@ -170,19 +191,32 @@ public class LineUpdater implements Updater<Line> {
 		Collection<GroupOfLine> addedGroupOfLine = CollectionUtils.substract(
 				newValue.getGroupOfLines(), oldValue.getGroupOfLines(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
+
+		List<GroupOfLine> groupOfLines = null;
 		for (GroupOfLine item : addedGroupOfLine) {
-			GroupOfLine groupOfLine = groupOfLineDAO.findByObjectId(item
-					.getObjectId());
+			
+			GroupOfLine groupOfLine = cache.getGroupOfLines().get(
+					item.getObjectId());
 			if (groupOfLine == null) {
-				groupOfLine = new GroupOfLine();
-				groupOfLine.setObjectId(item.getObjectId());
-				// groupOfLineDAO.create(groupOfLine);
+				if (groupOfLines == null) {
+					groupOfLines = groupOfLineDAO.load(addedGroupOfLine);
+					for (GroupOfLine object : groupOfLines) {
+						cache.getGroupOfLines().put(object.getObjectId(), object);
+					}
+				}
+				groupOfLine = cache.getGroupOfLines().get(item.getObjectId());
+			}
+			
+			if (groupOfLine == null) {
+				groupOfLine = ObjectFactory.getGroupOfLine(cache,
+						item.getObjectId());
+				// groupOfLine.setObjectId(item.getObjectId());
 			}
 			groupOfLine.addLine(oldValue);
 		}
 
-		Updater<GroupOfLine> groupOfLineUpdater = UpdaterFactory.create(
-				initialContext, GroupOfLineUpdater.class.getName());
+		// Updater<GroupOfLine> groupOfLineUpdater = UpdaterFactory.create(
+		// initialContext, GroupOfLineUpdater.class.getName());
 		Collection<Pair<GroupOfLine, GroupOfLine>> modifiedGroupOfLine = CollectionUtils
 				.intersection(oldValue.getGroupOfLines(),
 						newValue.getGroupOfLines(),
@@ -202,18 +236,31 @@ public class LineUpdater implements Updater<Line> {
 		Collection<Route> addedRoute = CollectionUtils.substract(
 				newValue.getRoutes(), oldValue.getRoutes(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
+
+		List<Route> routes = null;
 		for (Route item : addedRoute) {
-			Route route = routeDAO.findByObjectId(item.getObjectId());
+			
+			Route route = cache.getRoutes().get(item.getObjectId());
 			if (route == null) {
-				route = new Route();
-				route.setObjectId(item.getObjectId());
-				// routeDAO.create(route);
+				if (routes == null) {
+					routes = routeDAO.load(addedRoute);
+					for (Route object : routes) {
+						cache.getRoutes().put(object.getObjectId(), object);
+					}
+				}
+				route = cache.getRoutes().get(item.getObjectId());
+			}
+			
+			if (route == null) {
+				route = ObjectFactory.getRoute(cache, item.getObjectId());
+				// route.setObjectId(item.getObjectId());
 			}
 			route.setLine(oldValue);
 		}
 
-		Updater<Route> routeUpdater = UpdaterFactory.create(initialContext,
-				RouteUpdater.class.getName());
+		// Updater<Route> routeUpdater = //
+		// UpdaterFactory.create(initialContext,
+		// RouteUpdater.class.getName());
 		Collection<Pair<Route, Route>> modifiedRoute = CollectionUtils
 				.intersection(oldValue.getRoutes(), newValue.getRoutes(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);

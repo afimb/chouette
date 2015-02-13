@@ -89,7 +89,6 @@ public class NeptuneParserTest {
 		parser.execute(context);
 		Referential referential = (Referential) context.get(Constant.REFERENTIAL);
 		Line line = referential.getLines().values().iterator().next();
-		log.info("[DSU] line : " + line);
 	}
 
 	@Test

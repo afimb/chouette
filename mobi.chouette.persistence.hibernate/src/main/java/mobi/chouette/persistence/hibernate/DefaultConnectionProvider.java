@@ -31,6 +31,7 @@ public class DefaultConnectionProvider implements
 
 	@Override
 	public Connection getConnection(String identifier) throws SQLException {
+		// System.out.println("DefaultConnectionProvider.getConnection() " + identifier);
 		final Connection connection = getAnyConnection();
 		try {
 			if (identifier != null && !identifier.isEmpty()) {

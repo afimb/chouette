@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.importer.updater;
 
 import java.util.Collection;
+import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -14,9 +15,11 @@ import mobi.chouette.common.Pair;
 import mobi.chouette.dao.AccessLinkDAO;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
+import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.model.util.Referential;
 
 @Log4j
-@Stateless(name=AccessPointUpdater.BEAN_NAME)
+@Stateless(name = AccessPointUpdater.BEAN_NAME)
 public class AccessPointUpdater implements Updater<AccessPoint> {
 
 	public static final String BEAN_NAME = "AccessPointUpdater";
@@ -24,18 +27,19 @@ public class AccessPointUpdater implements Updater<AccessPoint> {
 	@EJB
 	private AccessLinkDAO accessLinkDAO;
 
+	@EJB(beanName = AccessLinkUpdater.BEAN_NAME)
+	private Updater<AccessLink> accessLinkUpdater;
+
 	@Override
 	public void update(Context context, AccessPoint oldValue,
 			AccessPoint newValue) throws Exception {
 
-		InitialContext initialContext = (InitialContext) context
-				.get(INITIAL_CONTEXT);
-
-		
 		if (newValue.isSaved()) {
 			return;
 		}
 		newValue.setSaved(true);
+
+		Referential cache = (Referential) context.get(CACHE);
 
 		if (newValue.getObjectId() != null
 				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {
@@ -99,19 +103,33 @@ public class AccessPointUpdater implements Updater<AccessPoint> {
 		Collection<AccessLink> addedAccessLink = CollectionUtils.substract(
 				newValue.getAccessLinks(), oldValue.getAccessLinks(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
+
+		List<AccessLink> accessLinks = null;
+
 		for (AccessLink item : addedAccessLink) {
-			AccessLink accessLink = accessLinkDAO.findByObjectId(item
-					.getObjectId());
+			
+			AccessLink accessLink = cache.getAccessLinks().get(
+					item.getObjectId());
 			if (accessLink == null) {
-				accessLink = new AccessLink();
-				accessLink.setObjectId(item.getObjectId());
-				// accessLinkDAO.create(accessLink);
+				if (accessLinks == null) {
+					accessLinks = accessLinkDAO.load(addedAccessLink);
+					for (AccessLink object : accessLinks) {
+						cache.getAccessLinks().put(object.getObjectId(), object);
+					}
+				}
+				accessLink = cache.getAccessLinks().get(item.getObjectId());
+			}
+			
+
+			if (accessLink == null) {
+				accessLink = ObjectFactory.getAccessLink(cache, item.getObjectId());
+				// accessLink.setObjectId(item.getObjectId());
 			}
 			accessLink.setAccessPoint(oldValue);
 		}
 
-		Updater<AccessLink> accessLinkUpdater = UpdaterFactory
-				.create(initialContext,AccessLinkUpdater.class.getName());
+		// Updater<AccessLink> accessLinkUpdater = UpdaterFactory.create(
+		// initialContext, AccessLinkUpdater.class.getName());
 		Collection<Pair<AccessLink, AccessLink>> modifiedAccessLink = CollectionUtils
 				.intersection(oldValue.getAccessLinks(),
 						newValue.getAccessLinks(),

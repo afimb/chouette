@@ -4,13 +4,14 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.importer.XPPUtil;
-import mobi.chouette.model.PTLink;
+import mobi.chouette.exchange.neptune.Constant;
+import mobi.chouette.exchange.neptune.model.NeptuneObjectFactory;
+import mobi.chouette.exchange.neptune.model.PTLink;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
@@ -26,6 +27,7 @@ public class PtLinkParser implements Parser, Constant {
 
 		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
+		NeptuneObjectFactory factory =  (NeptuneObjectFactory) context.get(NEPTUNE_OBJECT_FACTORY);
 
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
 		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
@@ -36,7 +38,7 @@ public class PtLinkParser implements Parser, Constant {
 
 			if (xpp.getName().equals("objectId")) {
 				String objectId = ParserUtils.getText(xpp.nextText());
-				ptLink = ObjectFactory.getPTLink(referential, objectId);
+				ptLink = factory.getPTLink(objectId);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
 				ptLink.setObjectVersion(version);

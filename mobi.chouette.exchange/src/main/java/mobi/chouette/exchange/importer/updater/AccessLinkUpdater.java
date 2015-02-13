@@ -10,6 +10,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.dao.AccessPointDAO;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
+import mobi.chouette.model.util.Referential;
 
 @Log4j
 @Stateless(name=AccessLinkUpdater.BEAN_NAME)
@@ -27,6 +28,8 @@ public class AccessLinkUpdater implements Updater<AccessLink> {
 			return;
 		}
 		newValue.setSaved(true);
+
+		Referential cache = (Referential) context.get(CACHE);
 
 		if (newValue.getObjectId() != null
 				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {
@@ -115,8 +118,15 @@ public class AccessLinkUpdater implements Updater<AccessLink> {
 
 		// AccessPoint
 		if (oldValue.getAccessPoint() == null) {
-			AccessPoint accessPoint = accessPointDAO.findByObjectId(newValue
-					.getAccessPoint().getObjectId());
+			String objectId = newValue.getAccessPoint().getObjectId();
+			AccessPoint accessPoint = cache.getAccessPoints().get(objectId);
+			if (accessPoint == null) {
+				accessPoint = accessPointDAO.findByObjectId(objectId);
+				if (accessPoint != null) {
+					cache.getAccessPoints().put(objectId, accessPoint);
+				}
+			}
+
 			if (accessPoint != null) {
 				oldValue.setAccessPoint(accessPoint);
 			}

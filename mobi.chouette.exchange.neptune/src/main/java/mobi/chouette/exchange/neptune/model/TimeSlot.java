@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.neptune.exporter.model;
+package mobi.chouette.exchange.neptune.model;
 
 import java.sql.Time;
 

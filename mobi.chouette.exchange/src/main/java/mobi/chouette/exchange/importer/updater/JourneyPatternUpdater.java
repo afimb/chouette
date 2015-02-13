@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.importer.updater;
 
 import java.util.Collection;
+import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -16,6 +17,8 @@ import mobi.chouette.dao.VehicleJourneyDAO;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
+import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.model.util.Referential;
 
 @Log4j
 @Stateless(name = JourneyPatternUpdater.BEAN_NAME)
@@ -29,18 +32,20 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 	@EJB
 	private VehicleJourneyDAO vehicleJourneyDAO;
 
+	@EJB(beanName=VehicleJourneyUpdater.BEAN_NAME)
+	private Updater<VehicleJourney> vehicleJourneyUpdater;
+
 	@Override
 	public void update(Context context, JourneyPattern oldValue,
 			JourneyPattern newValue) throws Exception {
-
-		InitialContext initialContext = (InitialContext) context
-				.get(INITIAL_CONTEXT);
 
 		if (newValue.isSaved()) {
 			return;
 		}
 		newValue.setSaved(true);
 
+		Referential cache = (Referential) context.get(CACHE);
+		
 		if (newValue.getObjectId() != null
 				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {
 			oldValue.setObjectId(newValue.getObjectId());
@@ -82,9 +87,21 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 		Collection<StopPoint> addedStopPoint = CollectionUtils.substract(
 				newValue.getStopPoints(), oldValue.getStopPoints(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
+
+		List<StopPoint> stopPoints = null;		
 		for (StopPoint item : addedStopPoint) {
-			StopPoint stopPoint = stopPointDAO.findByObjectId(item
-					.getObjectId());
+			
+			StopPoint stopPoint = cache.getStopPoints().get(item.getObjectId());
+			if (stopPoint == null) {
+				if (stopPoints == null) {
+					stopPoints = stopPointDAO.load(addedStopPoint);
+					for (StopPoint object : stopPoints) {
+						cache.getStopPoints().put(object.getObjectId(), object);
+					}
+				}
+				stopPoint = cache.getStopPoints().get(item.getObjectId());
+			}
+					
 			if (stopPoint != null) {
 				oldValue.addStopPoint(stopPoint);
 			}
@@ -102,8 +119,16 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 			oldValue.setArrivalStopPoint(null);
 		} else if (!newValue.getArrivalStopPoint().equals(
 				oldValue.getArrivalStopPoint())) {
-			StopPoint stopPoint = stopPointDAO.findByObjectId(newValue
-					.getArrivalStopPoint().getObjectId());
+			
+			String objectId = newValue.getArrivalStopPoint().getObjectId();
+			StopPoint stopPoint = cache.getStopPoints().get(objectId);
+			if (stopPoint == null) {
+				stopPoint =  stopPointDAO.findByObjectId(objectId);
+				if (stopPoint != null) {
+					cache.getStopPoints().put(objectId, stopPoint);
+				}
+			}
+
 			if (stopPoint != null) {
 				oldValue.setArrivalStopPoint(stopPoint);
 			}
@@ -114,8 +139,16 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 			oldValue.setDepartureStopPoint(null);
 		} else if (!newValue.getDepartureStopPoint().equals(
 				oldValue.getDepartureStopPoint())) {
-			StopPoint stopPoint = stopPointDAO.findByObjectId(newValue
-					.getDepartureStopPoint().getObjectId());
+			
+			String objectId = newValue.getDepartureStopPoint().getObjectId();
+			StopPoint stopPoint = cache.getStopPoints().get(objectId);
+			if (stopPoint == null) {
+				stopPoint =  stopPointDAO.findByObjectId(objectId);
+				if (stopPoint != null) {
+					cache.getStopPoints().put(objectId, stopPoint);
+				}
+			}
+			
 			if (stopPoint != null) {
 				oldValue.setDepartureStopPoint(stopPoint);
 			}
@@ -126,19 +159,30 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 				.substract(newValue.getVehicleJourneys(),
 						oldValue.getVehicleJourneys(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);
+		
+		List<VehicleJourney> vehicleJourneys = null;		
 		for (VehicleJourney item : addedVehicleJourney) {
-			VehicleJourney vehicleJourney = vehicleJourneyDAO
-					.findByObjectId(item.getObjectId());
+			
+			VehicleJourney vehicleJourney = cache.getVehicleJourneys().get(item.getObjectId());
 			if (vehicleJourney == null) {
-				vehicleJourney = new VehicleJourney();
-				vehicleJourney.setObjectId(item.getObjectId());
-				// vehicleJourneyDAO.create(vehicleJourney);
+				if (vehicleJourneys == null) {
+					vehicleJourneys = vehicleJourneyDAO.load(addedVehicleJourney);	
+					for (VehicleJourney object : vehicleJourneys) {
+						cache.getVehicleJourneys().put(object.getObjectId(), object);
+					}
+				}
+				vehicleJourney = cache.getVehicleJourneys().get(item.getObjectId());
+			}
+						
+			if (vehicleJourney == null) {
+				vehicleJourney = ObjectFactory.getVehicleJourney(cache, item.getObjectId());
+				// vehicleJourney.setObjectId(item.getObjectId());
 			}
 			vehicleJourney.setJourneyPattern(oldValue);
 		}
 
-		Updater<VehicleJourney> vehicleJourneyUpdater = UpdaterFactory.create(
-				initialContext, VehicleJourneyUpdater.class.getName());
+//		Updater<VehicleJourney> vehicleJourneyUpdater = // UpdaterFactory.create(
+//				initialContext, VehicleJourneyUpdater.class.getName());
 		Collection<Pair<VehicleJourney, VehicleJourney>> modifiedVehicleJourney = CollectionUtils
 				.intersection(oldValue.getVehicleJourneys(),
 						newValue.getVehicleJourneys(),

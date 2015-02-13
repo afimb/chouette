@@ -6,9 +6,8 @@ public interface Constant {
 	public static final boolean SUCCESS = true;
 
 	public static final String INITIAL_CONTEXT = "initial_context";
-
 	
-	public static final String JOB = "job";
+	public static final String JOB_ID = "job_id";
 	public static final String ROOT_PATH = "referentials";
 	public static final String PARAMETERS = "parameters";
 	public static final String CONFIGURATION = "configuration";
@@ -32,6 +31,7 @@ public interface Constant {
 	public static final String LINE_NUMBER = "line_number";
 
 	public static final String REFERENTIAL = "referential";
+	public static final String CACHE = "cache";
 	public static final String PARSER = "parser";
 	
 	public static final String EXPORTABLE_DATA = "exportable_data";

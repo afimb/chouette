@@ -4,8 +4,10 @@ import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -49,6 +51,9 @@ public class VehicleJourneyOptimizedUpdater implements Updater<VehicleJourney> {
 	@EJB
 	private CompanyDAO companyDAO;
 
+	@EJB(beanName = CompanyUpdater.BEAN_NAME)
+	private Updater<Company> companyUpdater;
+
 	@EJB
 	private RouteDAO routeDAO;
 
@@ -60,6 +65,9 @@ public class VehicleJourneyOptimizedUpdater implements Updater<VehicleJourney> {
 
 	@EJB
 	private TimetableDAO timetableDAO;
+
+	@EJB(beanName = TimetableUpdater.BEAN_NAME)
+	private Updater<Timetable> timetableUpdater;
 
 	@Override
 	public void update(Context context, VehicleJourney oldValue,
@@ -156,13 +164,13 @@ public class VehicleJourneyOptimizedUpdater implements Updater<VehicleJourney> {
 			if (company == null) {
 				company = new Company();
 				company.setObjectId(newValue.getCompany().getObjectId());
-				//companyDAO.create(company);
+				// companyDAO.create(company);
 			}
 			oldValue.setCompany(company);
-			Updater<Company> companyUpdater = UpdaterFactory.create(
-					initialContext, CompanyUpdater.class.getName());
+			// Updater<Company> companyUpdater = UpdaterFactory.create(
+			// initialContext, CompanyUpdater.class.getName());
 			companyUpdater.update(context, oldValue.getCompany(),
-					newValue.getCompany());		
+					newValue.getCompany());
 		}
 
 		// Route
@@ -188,9 +196,15 @@ public class VehicleJourneyOptimizedUpdater implements Updater<VehicleJourney> {
 				.substract(newValue.getVehicleJourneyAtStops(),
 						oldValue.getVehicleJourneyAtStops(),
 						VEHICLE_JOURNEY_AT_STOP_COMPARATOR);
+
+		final Collection<String> objectIds = new ArrayList<String>();
+		for (VehicleJourneyAtStop vehicleJourneyAtStop : addedVehicleJourneyAtStop) {
+			objectIds.add(vehicleJourneyAtStop.getStopPoint().getObjectId());
+		}
+		List<StopPoint> stopPoints = stopPointDAO.findByObjectId(objectIds);
 		for (VehicleJourneyAtStop item : addedVehicleJourneyAtStop) {
-			StopPoint stopPoint = stopPointDAO.findByObjectId(item
-					.getStopPoint().getObjectId());
+			int index = stopPoints.indexOf(item);
+			StopPoint stopPoint = (index != -1) ? stopPoints.get(index) : null;
 			if (stopPoint != null) {
 				write(buffer, oldValue, stopPoint, item);
 			}
@@ -210,19 +224,20 @@ public class VehicleJourneyOptimizedUpdater implements Updater<VehicleJourney> {
 		Collection<Timetable> addedTimetable = CollectionUtils.substract(
 				newValue.getTimetables(), oldValue.getTimetables(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
+
+		List<Timetable> timetables = timetableDAO.load(addedTimetable);
 		for (Timetable item : addedTimetable) {
-			Timetable timetable = timetableDAO.findByObjectId(item
-					.getObjectId());
+			int index = timetables.indexOf(item);
+			Timetable timetable = (index != -1) ? timetables.get(index) : null;
 			if (timetable == null) {
 				timetable = new Timetable();
 				timetable.setObjectId(item.getObjectId());
-				// timetableDAO.create(timetable);
 			}
 			timetable.addVehicleJourney(oldValue);
 		}
 
-		Updater<Timetable> timetableUpdater = UpdaterFactory.create(
-				initialContext, TimetableUpdater.class.getName());
+		// Updater<Timetable> timetableUpdater = UpdaterFactory.create(
+		// initialContext, TimetableUpdater.class.getName());
 		Collection<Pair<Timetable, Timetable>> modifiedTimetable = CollectionUtils
 				.intersection(oldValue.getTimetables(),
 						newValue.getTimetables(),

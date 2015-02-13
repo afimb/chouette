@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import lombok.Data;
-import mobi.chouette.exchange.neptune.exporter.model.Facility;
+import mobi.chouette.exchange.neptune.model.Facility;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.Company;

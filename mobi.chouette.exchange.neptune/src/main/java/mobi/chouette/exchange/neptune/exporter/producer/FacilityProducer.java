@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import mobi.chouette.exchange.neptune.exporter.model.Facility;
 import mobi.chouette.exchange.neptune.exporter.model.faclilty.AccessFacilityEnumeration;
 import mobi.chouette.exchange.neptune.exporter.model.faclilty.AccommodationFacilityEnumeration;
 import mobi.chouette.exchange.neptune.exporter.model.faclilty.AssistanceFacilityEnumeration;
@@ -22,6 +21,7 @@ import mobi.chouette.exchange.neptune.exporter.model.faclilty.ReservedSpaceFacil
 import mobi.chouette.exchange.neptune.exporter.model.faclilty.RetailFacilityEnumeration;
 import mobi.chouette.exchange.neptune.exporter.model.faclilty.SanitaryFacilityEnumeration;
 import mobi.chouette.exchange.neptune.exporter.model.faclilty.TicketingFacilityEnumeration;
+import mobi.chouette.exchange.neptune.model.Facility;
 import mobi.chouette.model.type.LongLatTypeEnum;
 
 import org.trident.schema.trident.AddressType;

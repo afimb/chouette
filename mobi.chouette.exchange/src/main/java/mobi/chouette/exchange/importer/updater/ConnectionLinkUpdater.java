@@ -10,6 +10,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
+import mobi.chouette.model.util.Referential;
 
 @Log4j
 @Stateless(name = ConnectionLinkUpdater.BEAN_NAME)
@@ -28,6 +29,8 @@ public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
 			return;
 		}
 		newValue.setSaved(true);
+
+		Referential cache = (Referential) context.get(CACHE);
 
 		if (newValue.getObjectId() != null
 				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {
@@ -110,16 +113,31 @@ public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
 		}
 
 		if (newValue.getStartOfLink() != null) {
-			StopArea startOfLink = stopAreaDAO.findByObjectId(newValue
-					.getStartOfLink().getObjectId());
+
+			String objectId = newValue.getStartOfLink().getObjectId();
+			StopArea startOfLink = cache.getStopAreas().get(objectId);
+			if (startOfLink == null) {
+				startOfLink = stopAreaDAO.findByObjectId(objectId);
+				if (startOfLink != null) {
+					cache.getStopAreas().put(objectId, startOfLink);
+				}
+			}
+
 			if (startOfLink != null) {
 				oldValue.setStartOfLink(startOfLink);
 			}
 		}
 
 		if (newValue.getEndOfLink() != null) {
-			StopArea endOfLink = stopAreaDAO.findByObjectId(newValue
-					.getEndOfLink().getObjectId());
+			String objectId = newValue.getEndOfLink().getObjectId();
+			StopArea endOfLink = cache.getStopAreas().get(objectId);
+			if (endOfLink == null) {
+				endOfLink = stopAreaDAO.findByObjectId(objectId);
+				if (endOfLink != null) {
+					cache.getStopAreas().put(objectId, endOfLink);
+				}
+			}
+
 			if (endOfLink != null) {
 				oldValue.setEndOfLink(endOfLink);
 			}

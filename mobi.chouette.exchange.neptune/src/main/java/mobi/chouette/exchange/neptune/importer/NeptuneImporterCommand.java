@@ -27,6 +27,7 @@ import mobi.chouette.exchange.importer.RegisterCommand;
 import mobi.chouette.exchange.importer.UncompressCommand;
 import mobi.chouette.exchange.importer.report.FileItem;
 import mobi.chouette.exchange.importer.report.Report;
+import mobi.chouette.exchange.validation.report.ValidationReport;
 
 import com.google.common.collect.Lists;
 import com.jamonapi.Monitor;
@@ -51,9 +52,13 @@ public class NeptuneImporterCommand implements Command, Constant {
 		try {
 			InitialContext initialContext = (InitialContext) context
 					.get(INITIAL_CONTEXT);
-
-			Report report = new Report();
-			context.put(REPORT, report);
+			
+			// report
+			Report report = new Report();			
+			ValidationReport validationReport = new ValidationReport();
+			context.put(Constant.REPORT, report);
+			context.put(Constant.VALIDATION_REPORT, validationReport);
+			
 			// uncompress data
 			Command uncompress = CommandFactory.create(initialContext,
 					UncompressCommand.class.getName());
