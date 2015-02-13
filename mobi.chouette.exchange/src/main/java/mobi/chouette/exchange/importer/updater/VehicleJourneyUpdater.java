@@ -79,6 +79,9 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 		newValue.setSaved(true);
 
 		Referential cache = (Referential) context.get(CACHE);
+		cache.getVehicleJourneys().put(oldValue.getObjectId(), oldValue);
+		
+		boolean optimized = (Boolean) context.get(OPTIMIZED);
 
 		if (newValue.getObjectId() != null
 				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {
@@ -197,58 +200,68 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 		}
 
 		// VehicleJourneyAtStop
-		Collection<VehicleJourneyAtStop> addedVehicleJourneyAtStop = CollectionUtils
-				.substract(newValue.getVehicleJourneyAtStops(),
-						oldValue.getVehicleJourneyAtStops(),
-						VEHICLE_JOURNEY_AT_STOP_COMPARATOR);
+		if (optimized) {
+//			for (VehicleJourneyAtStop vehicleJourneyAtStop : oldValue.getVehicleJourneyAtStops()) {
+//				vehicleJourneyAtStop.setVehicleJourney(null);
+//				vehicleJourneyAtStopDAO.delete(vehicleJourneyAtStop);
+//			}
+		} else {
+			Collection<VehicleJourneyAtStop> addedVehicleJourneyAtStop = CollectionUtils
+					.substract(newValue.getVehicleJourneyAtStops(),
+							oldValue.getVehicleJourneyAtStops(),
+							VEHICLE_JOURNEY_AT_STOP_COMPARATOR);
 
-		final Collection<String> objectIds = new ArrayList<String>();
-		for (VehicleJourneyAtStop vehicleJourneyAtStop : addedVehicleJourneyAtStop) {
-			objectIds.add(vehicleJourneyAtStop.getStopPoint().getObjectId());
-		}
-		List<StopPoint> stopPoints = null;
-		for (VehicleJourneyAtStop item : addedVehicleJourneyAtStop) {
-			VehicleJourneyAtStop vehicleJourneyAtStop = new VehicleJourneyAtStop();
+			final Collection<String> objectIds = new ArrayList<String>();
+			for (VehicleJourneyAtStop vehicleJourneyAtStop : addedVehicleJourneyAtStop) {
+				objectIds
+						.add(vehicleJourneyAtStop.getStopPoint().getObjectId());
+			}
+			List<StopPoint> stopPoints = null;
+			for (VehicleJourneyAtStop item : addedVehicleJourneyAtStop) {
+				VehicleJourneyAtStop vehicleJourneyAtStop = ObjectFactory
+						.getVehicleJourneyAtStop();
 
-			StopPoint stopPoint = cache.getStopPoints().get(
-					item.getStopPoint().getObjectId());
-			if (stopPoint == null) {
-				if (stopPoints == null) {
-					stopPoints = stopPointDAO.findByObjectId(objectIds);
-					for (StopPoint object : stopPoints) {
-						cache.getStopPoints().put(object.getObjectId(), object);
-					}
-				}
-				stopPoint = cache.getStopPoints().get(
+				StopPoint stopPoint = cache.getStopPoints().get(
 						item.getStopPoint().getObjectId());
+				if (stopPoint == null) {
+					if (stopPoints == null) {
+						stopPoints = stopPointDAO.findByObjectId(objectIds);
+						for (StopPoint object : stopPoints) {
+							cache.getStopPoints().put(object.getObjectId(),
+									object);
+						}
+					}
+					stopPoint = cache.getStopPoints().get(
+							item.getStopPoint().getObjectId());
+				}
+
+				if (stopPoint != null) {
+					vehicleJourneyAtStop.setStopPoint(stopPoint);
+				}
+				vehicleJourneyAtStop.setVehicleJourney(oldValue);
 			}
 
-			if (stopPoint != null) {
-				vehicleJourneyAtStop.setStopPoint(stopPoint);
+			// Updater<VehicleJourneyAtStop> vehicleJourneyAtStopUpdater =
+			// UpdaterFactory
+			// .create(initialContext,
+			// VehicleJourneyAtStopUpdater.class.getName());
+			Collection<Pair<VehicleJourneyAtStop, VehicleJourneyAtStop>> modifiedVehicleJourneyAtStop = CollectionUtils
+					.intersection(oldValue.getVehicleJourneyAtStops(),
+							newValue.getVehicleJourneyAtStops(),
+							VEHICLE_JOURNEY_AT_STOP_COMPARATOR);
+			for (Pair<VehicleJourneyAtStop, VehicleJourneyAtStop> pair : modifiedVehicleJourneyAtStop) {
+				vehicleJourneyAtStopUpdater.update(context, pair.getLeft(),
+						pair.getRight());
 			}
-			vehicleJourneyAtStop.setVehicleJourney(oldValue);
-		}
 
-		// Updater<VehicleJourneyAtStop> vehicleJourneyAtStopUpdater =
-		// UpdaterFactory
-		// .create(initialContext,
-		// VehicleJourneyAtStopUpdater.class.getName());
-		Collection<Pair<VehicleJourneyAtStop, VehicleJourneyAtStop>> modifiedVehicleJourneyAtStop = CollectionUtils
-				.intersection(oldValue.getVehicleJourneyAtStops(),
-						newValue.getVehicleJourneyAtStops(),
-						VEHICLE_JOURNEY_AT_STOP_COMPARATOR);
-		for (Pair<VehicleJourneyAtStop, VehicleJourneyAtStop> pair : modifiedVehicleJourneyAtStop) {
-			vehicleJourneyAtStopUpdater.update(context, pair.getLeft(),
-					pair.getRight());
-		}
-
-		Collection<VehicleJourneyAtStop> removedVehicleJourneyAtStop = CollectionUtils
-				.substract(oldValue.getVehicleJourneyAtStops(),
-						newValue.getVehicleJourneyAtStops(),
-						VEHICLE_JOURNEY_AT_STOP_COMPARATOR);
-		for (VehicleJourneyAtStop vehicleJourneyAtStop : removedVehicleJourneyAtStop) {
-			vehicleJourneyAtStop.setVehicleJourney(null);
-			vehicleJourneyAtStopDAO.delete(vehicleJourneyAtStop);
+			Collection<VehicleJourneyAtStop> removedVehicleJourneyAtStop = CollectionUtils
+					.substract(oldValue.getVehicleJourneyAtStops(),
+							newValue.getVehicleJourneyAtStops(),
+							VEHICLE_JOURNEY_AT_STOP_COMPARATOR);
+			for (VehicleJourneyAtStop vehicleJourneyAtStop : removedVehicleJourneyAtStop) {
+				vehicleJourneyAtStop.setVehicleJourney(null);
+				vehicleJourneyAtStopDAO.delete(vehicleJourneyAtStop);
+			}
 		}
 
 		// Timetable

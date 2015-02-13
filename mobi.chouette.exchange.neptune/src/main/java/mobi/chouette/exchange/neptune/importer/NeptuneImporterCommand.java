@@ -52,7 +52,7 @@ public class NeptuneImporterCommand implements Command, Constant {
 		try {
 			InitialContext initialContext = (InitialContext) context
 					.get(INITIAL_CONTEXT);
-			
+					
 			// report
 			Report report = new Report();			
 			ValidationReport validationReport = new ValidationReport();
@@ -68,6 +68,7 @@ public class NeptuneImporterCommand implements Command, Constant {
 			List<Path> stream = FileUtils.listFiles(path, "*.xml");
 
 			// validation
+			Monitor validation = MonitorFactory.start("Parallel" + NeptuneSAXParserCommand.COMMAND );			
 			int n = Runtime.getRuntime().availableProcessors() / 2;
 			int size = (int )Math.ceil(stream.size() / n);
 			List<List<Path>> partition = Lists.partition(stream, size);
@@ -76,6 +77,7 @@ public class NeptuneImporterCommand implements Command, Constant {
 				tasks.add(new Task(initialContext, context, partition.get(i)));
 			}
 			List<Future<Boolean>> futures = executor.invokeAll(tasks);
+			log.info(Color.YELLOW + validation.stop() + Color.NORMAL);
 
 			for (Path file : stream) {
 

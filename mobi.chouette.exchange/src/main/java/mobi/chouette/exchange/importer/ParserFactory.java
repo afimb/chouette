@@ -16,7 +16,7 @@ public abstract class ParserFactory {
 	public static final Parser create(String name)
 			throws ClassNotFoundException, IOException {
 		if (!factories.containsKey(name)) {
-			log.info("[DSU] load : " + name);
+			// log.info("[DSU] load : " + name);
 			Class.forName(name);
 			if (!factories.containsKey(name))
 				throw new ClassNotFoundException(name);

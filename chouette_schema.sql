@@ -2746,9 +2746,7 @@ ALTER TABLE ONLY import_tasks
     ADD CONSTRAINT import_tasks_referential_id_fk FOREIGN KEY (referential_id) REFERENCES referentials(id) ON DELETE CASCADE;
 
 
-DROP SEQUENCE hibernate_seq;
-
-CREATE SEQUENCE hibernate_seq
+CREATE SEQUENCE :SCH.hibernate_seq
     START WITH 1
     INCREMENT BY 50
     MINVALUE 1
@@ -2756,6 +2754,7 @@ CREATE SEQUENCE hibernate_seq
     CACHE 50;
 
 
+ALTER TABLE :SCH.hibernate_seq OWNER TO chouette;
 
 
 
