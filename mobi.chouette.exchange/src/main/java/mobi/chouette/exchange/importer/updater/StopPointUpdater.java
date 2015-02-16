@@ -36,6 +36,7 @@ public class StopPointUpdater implements Updater<StopPoint> {
 		newValue.setSaved(true);
 		
 		Referential cache = (Referential) context.get(CACHE);
+		cache.getStopPoints().put(oldValue.getObjectId(), oldValue);
 
 		if (newValue.getObjectId() != null
 				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {

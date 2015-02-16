@@ -61,6 +61,7 @@ public class LineUpdater implements Updater<Line> {
 	public void update(Context context, Line oldValue, Line newValue)
 			throws Exception {
 
+		log.info
 		if (newValue.isSaved()) {
 			return;
 		}
