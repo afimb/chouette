@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.neptune.validation;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,10 +16,16 @@ import mobi.chouette.exchange.validation.report.Detail;
 import mobi.chouette.exchange.validation.report.FileLocation;
 import mobi.chouette.exchange.validation.report.Location;
 import mobi.chouette.exchange.validation.report.ValidationReport;
+import mobi.chouette.model.AccessLink;
+import mobi.chouette.model.AccessPoint;
+import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.type.AccessPointTypeEnum;
 import mobi.chouette.model.type.ChouetteAreaEnum;
+import mobi.chouette.model.type.LinkOrientationEnum;
+import mobi.chouette.model.type.LongLatTypeEnum;
 import mobi.chouette.model.util.Referential;
 
 import com.google.common.collect.BiMap;
@@ -163,12 +170,12 @@ public class Level2Validator implements Constant
 			if (severities[i - 1].equals("W"))
 			{
 				validationReport.getCheckPoints().add(new CheckPoint(prefix + name + "-"
-						+ i, order++, CheckPoint.RESULT.UNCHECK,
+						+ i,  CheckPoint.RESULT.UNCHECK,
 						CheckPoint.SEVERITY.WARNING));
 			} else
 			{
 				validationReport.getCheckPoints().add(new CheckPoint(prefix + name + "-"
-						+ i, order++, CheckPoint.RESULT.UNCHECK,
+						+ i,  CheckPoint.RESULT.UNCHECK,
 						CheckPoint.SEVERITY.ERROR));
 			}
 		}
@@ -209,18 +216,18 @@ public class Level2Validator implements Constant
 		validateGroupOfLines();
 		validateStopAreas();
 		validateITL();
-//		validateAreaCentroids();
-//		validateConnectionLinks();
-//		validateAccessPoints();
-//		validateAccessLink();
-//		validateLine();
-//		validateRoutes();
-//		validatePtLink();
-//		validateJourneyPattern();
-//		validateStopPoints();
-//		validateTimetables();
-//		validateVehicleJourneys();
-//		validateFacilities();
+		validateAreaCentroids();
+		validateConnectionLinks();
+		validateAccessPoints();
+		validateAccessLink();
+		validateLine();
+		//		validateRoutes();
+		//		validatePtLink();
+		//		validateJourneyPattern();
+		//		validateStopPoints();
+		//		validateTimetables();
+		//		validateVehicleJourneys();
+		//		validateFacilities();
 		long endTime = System.currentTimeMillis();
 		long duration = (endTime - startTime) / 1000;
 		long millis = (endTime - startTime) % 1000;
@@ -552,5 +559,393 @@ public class Level2Validator implements Constant
 
 	}
 
+	private void validateAreaCentroids()
+	{
+		Map<String, AreaCentroid> areaCentroids = factory.getAreaCentroid();
+		Map<String, StopArea> stopAreas = referential.getStopAreas();
+		if (areaCentroids.isEmpty())
+			return;
+		// 2-NEPTUNE-AreaCentroid-1 : check reference to stoparea
+		prepareCheckPoint(AREA_CENTROID_1);
+		for (AreaCentroid centroid : areaCentroids.values())
+		{
+			if (centroid.getContainedInId() == null)
+				continue;
+			if (stopAreas.get(centroid.getContainedInId()) == null)
+			{
+				FileLocation sourceLocation = locations.get(centroid.getObjectId());
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("containedIn", centroid.getContainedInId());
+				Detail errorItem = new Detail(
+						AREA_CENTROID_1,
+						new Location(sourceLocation,centroid.getObjectId()), map);
+				addValidationError(AREA_CENTROID_1, errorItem);
+			}
+		}
+		// 2-NEPTUNE-AreaCentroid-2 : check centroid projection type as WSG84
+		prepareCheckPoint(AREA_CENTROID_2);
+		for (AreaCentroid centroid : areaCentroids.values())
+		{
+			if (centroid.getLongLatType().equals(LongLatTypeEnum.WGS84))
+				continue;
+			FileLocation sourceLocation = locations.get(centroid.getObjectId());
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("longLatType", centroid.getLongLatType().toString());
+			Detail errorItem = new Detail(
+					AREA_CENTROID_2,
+					new Location(sourceLocation,centroid.getObjectId()), map);
+			addValidationError(AREA_CENTROID_2, errorItem);
+		}
 
+	}
+
+
+	private void validateConnectionLinks()
+	{
+		Map<String, ConnectionLink> connectionLinks = referential.getConnectionLinks();
+		Map<String, StopArea> stopAreas = referential.getStopAreas();
+		if (connectionLinks.isEmpty())
+			return;
+		// 2-NEPTUNE-ConnectionLink-1 : check presence of start or end of link
+		prepareCheckPoint(CONNECTION_LINK_1);
+		for (ConnectionLink connectionLink : connectionLinks.values())
+		{
+			// TODO refactor or move into parser
+			if (stopAreas.get(connectionLink.getStartOfLink()) != null
+					|| stopAreas.get(connectionLink.getEndOfLink()) != null)
+				continue;
+			FileLocation sourceLocation = locations.get(connectionLink.getObjectId());
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("startOfLink", connectionLink.getStartOfLink().getObjectId());
+			map.put("endOfLink", connectionLink.getEndOfLink().getObjectId());
+			Detail errorItem = new Detail(
+					CONNECTION_LINK_1,
+					new Location(sourceLocation,connectionLink.getObjectId()), map);
+			addValidationError(CONNECTION_LINK_1, errorItem);
+		}
+
+	}
+
+
+	private void validateAccessPoints()
+	{
+		Map<String, AccessPoint> accessPoints = referential.getAccessPoints();
+		if (accessPoints.isEmpty())
+			return;
+		Map<String, StopArea> stopAreas = referential.getStopAreas();
+		Map<String, AccessLink> accessLinks = referential.getAccessLinks();
+
+		// build a map on link connected ids
+		Map<String, List<AccessLink>> mapAccessLinkByAccessPointId = new HashMap<String, List<AccessLink>>();
+		for (AccessLink link : accessLinks.values())
+		{
+			{
+				String id = link.getAccessPoint().getObjectId();
+				List<AccessLink> list = mapAccessLinkByAccessPointId.get(id);
+				if (list == null)
+				{
+					list = new ArrayList<AccessLink>();
+					mapAccessLinkByAccessPointId.put(id, list);
+				}
+				list.add(link);
+			}
+		}
+
+		prepareCheckPoint(ACCESS_POINT_1);
+		prepareCheckPoint(ACCESS_POINT_3);
+		prepareCheckPoint(ACCESS_POINT_7);
+
+		for (AccessPoint accessPoint : accessPoints.values())
+		{
+			// 2-NEPTUNE-AccessPoint-1 : check existence of containedIn stopArea
+			// TODO refactor or move into parser
+			StopArea parent = stopAreas.get(accessPoint.getContainedIn());
+			if (parent == null)
+			{
+				FileLocation sourceLocation = locations.get(accessPoint.getObjectId());
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("containedIn", accessPoint.getContainedIn().getObjectId());
+				Detail errorItem = new Detail(
+						ACCESS_POINT_1,
+						new Location(sourceLocation,accessPoint.getObjectId()), map);
+				addValidationError(ACCESS_POINT_1, errorItem);
+			} else
+			{
+				// 2-NEPTUNE-AccessPoint-2 : check type of containedIn stopArea
+				prepareCheckPoint(ACCESS_POINT_2);
+				if (parent.getAreaType().equals(ChouetteAreaEnum.ITL))
+				{
+					FileLocation sourceLocation = locations.get(accessPoint.getObjectId());
+					Map<String, Object> map = new HashMap<String, Object>();
+					map.put("containedIn", accessPoint.getContainedIn().getObjectId());
+					Detail errorItem = new Detail(
+							ACCESS_POINT_2,
+							new Location(sourceLocation,accessPoint.getObjectId()), map);
+					addValidationError(ACCESS_POINT_2, errorItem);
+				}
+			}
+
+			// 2-NEPTUNE-AccessPoint-3 : check presence of access links
+			List<AccessLink> links = mapAccessLinkByAccessPointId.get(accessPoint
+					.getObjectId());
+			if (links == null)
+			{
+				FileLocation sourceLocation = locations.get(accessPoint.getObjectId());
+				Detail errorItem = new Detail(
+						ACCESS_POINT_3,
+						new Location(sourceLocation,accessPoint.getObjectId()));
+				addValidationError(ACCESS_POINT_3, errorItem);
+
+			} else
+			{
+				boolean startFound = false;
+				boolean endFound = false;
+				for (AccessLink link : links)
+				{
+					if (link.getLinkOrientation().equals(LinkOrientationEnum.AccessPointToStopArea))
+						startFound = true;
+					if (link.getLinkOrientation().equals(LinkOrientationEnum.StopAreaToAccessPoint))
+						endFound = true;
+				}
+
+				if (accessPoint.getType().equals(AccessPointTypeEnum.In))
+				{
+					// 2-NEPTUNE-AccessPoint-4 : if type in : check only
+					// accesslinks on start
+					prepareCheckPoint(ACCESS_POINT_4);
+				if (endFound)
+				{
+					FileLocation sourceLocation = locations.get(accessPoint.getObjectId());
+					Detail errorItem = new Detail(
+							ACCESS_POINT_4,
+							new Location(sourceLocation,accessPoint.getObjectId()));
+					addValidationError(ACCESS_POINT_4, errorItem);
+				}
+				} else if (accessPoint.getType().equals(AccessPointTypeEnum.Out))
+				{
+					// 2-NEPTUNE-AccessPoint-5 : if type out : check only
+					// accesslinks on end
+					prepareCheckPoint(ACCESS_POINT_5);
+					if (startFound)
+					{
+						FileLocation sourceLocation = locations.get(accessPoint.getObjectId());
+						Detail errorItem = new Detail(
+								ACCESS_POINT_5,
+								new Location(sourceLocation,accessPoint.getObjectId()));
+						addValidationError(ACCESS_POINT_5, errorItem);
+					}
+
+				} else
+					// inout
+				{
+					// 2-NEPTUNE-AccessPoint-6 : if type inout : check minimum
+					// one accessLink in each direction
+					prepareCheckPoint(ACCESS_POINT_6);
+					if (!startFound || !endFound)
+					{
+						FileLocation sourceLocation = locations.get(accessPoint.getObjectId());
+						Detail errorItem = new Detail(
+								ACCESS_POINT_6,
+								new Location(sourceLocation,accessPoint.getObjectId()));
+						addValidationError(ACCESS_POINT_6, errorItem);
+					}
+				}
+			}
+
+			// 2-NEPTUNE-AccessPoint-7 : check centroid projection type as WSG84
+			if (accessPoint.getLongLatType().equals(LongLatTypeEnum.WGS84))
+				continue;
+			FileLocation sourceLocation = locations.get(accessPoint.getObjectId());
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("longLatType", accessPoint.getLongLatType().toString());
+			Detail errorItem = new Detail(
+					ACCESS_POINT_7,
+					new Location(sourceLocation,accessPoint.getObjectId()), map);
+			addValidationError(ACCESS_POINT_7, errorItem);
+		}
+
+	}
+
+
+	   private void validateAccessLink()
+	   {
+			Map<String, AccessLink> accessLinks = referential.getAccessLinks();
+		      if (accessLinks.isEmpty())
+		         return;
+			Map<String, AccessPoint> accessPoints = referential.getAccessPoints();
+			Map<String, StopArea> stopAreas = referential.getStopAreas();
+	      // 2-NEPTUNE-AccessLink-1 : check existence of start and end of links
+	      prepareCheckPoint(ACCESS_LINK_1);
+	      // 2-NEPTUNE-AccessLink-2 : check one target as accesspoint and other as
+	      // stoparea
+	      prepareCheckPoint(ACCESS_LINK_2);
+	      for (AccessLink link : accessLinks.values())
+	      {
+	         boolean step1 = true;
+	         // TODO refactor or move in parser
+	         if (!stopAreas.containsKey(link.getStopArea())
+	               && !accessPoints.containsKey(link.getAccessPoint()))
+	         {
+//	            Locator trdLocation = link.sourceLocation();
+//	            Map<String, Object> map = new HashMap<String, Object>();
+//	            map.put("link", "startOfLink");
+//	            map.put("target", link.getStartOfLink());
+//	            ReportLocation location = new ReportLocation(sourceFile,
+//	                  trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+//	            DetailReportItem errorItem = new DetailReportItem(ACCESS_LINK_1,
+//	                  link.getObjectId(), Report.STATE.ERROR, location, map);
+//	            addValidationError(ACCESS_LINK_1, errorItem);
+//	            step1 = false;
+	         }
+	         if (!step1)
+	            continue;
+	         // 2-NEPTUNE-AccessLink-2 : check one target as accesspoint and
+	         // other as stoparea
+	         prepareCheckPoint(ACCESS_LINK_2);
+	         // TODO refactor or move in parser
+
+//	         if (startObject instanceof StopArea
+//	               && endObject instanceof PTAccessPointType)
+//	            continue;
+//	         if (startObject instanceof PTAccessPointType
+//	               && endObject instanceof StopArea)
+//	            continue;
+//	         Locator trdLocation = link.sourceLocation();
+//	         Map<String, Object> map = new HashMap<String, Object>();
+//	         map.put("startOfLink", link.getStartOfLink());
+//	         map.put("endOfLink", link.getEndOfLink());
+//	         map.put("type", startObject.getClass().getSimpleName());
+//	         ReportLocation location = new ReportLocation(sourceFile,
+//	               trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+//	         DetailReportItem errorItem = new DetailReportItem(ACCESS_LINK_2,
+//	               link.getObjectId(), Report.STATE.ERROR, location, map);
+//	         addValidationError(ACCESS_LINK_2, errorItem);
+	      }
+
+	   }
+
+	   private void validateLine()
+	   {
+			Map<String, Line> lines = referential.getLines();
+			Line line = lines.values().iterator().next();
+
+		   // 2-NEPTUNE-Line-1 : check ptnetworkIdShortcut
+	         // TODO refactor or move in parser
+//	      if (line.isSetPtNetworkIdShortcut())
+//	      {
+//	         prepareCheckPoint(LINE_1);
+//	         if (!line.getPtNetworkIdShortcut().equals(ptNetwork.getObjectId()))
+//	         {
+//	            Locator trdLocation = line.sourceLocation();
+//	            Map<String, Object> map = new HashMap<String, Object>();
+//	            map.put("ptNetworkIdShortcut", line.getPtNetworkIdShortcut());
+//	            ReportLocation location = new ReportLocation(sourceFile,
+//	                  trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+//	            DetailReportItem errorItem = new DetailReportItem(LINE_1,
+//	                  line.getObjectId(), Report.STATE.ERROR, location, map);
+//	            addValidationError(LINE_1, errorItem);
+//	         }
+//	      }
+
+	         // TODO refactor or move in parser
+//	      if (!line.getLineEnd().isEmpty())
+//	      {
+//	         // 2-NEPTUNE-Line-2 : check existence of ends of line
+//	         prepareCheckPoint(LINE_2);
+//	         for (String endId : line.getLineEnd())
+//	         {
+//	            // endId must exists as stopPoint ?
+//	            if (!stopPoints.containsKey(endId))
+//	            {
+//	               Locator trdLocation = line.sourceLocation();
+//	               Map<String, Object> map = new HashMap<String, Object>();
+//	               map.put("lineEnd", endId);
+//	               ReportLocation location = new ReportLocation(sourceFile,
+//	                     trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+//	               DetailReportItem errorItem = new DetailReportItem(LINE_2,
+//	                     line.getObjectId(), Report.STATE.WARNING, location, map);
+//	               addValidationError(LINE_2, errorItem);
+//
+//	            } else
+//	            {
+//	               // 2-NEPTUNE-Line-3 : check ends of line
+//	               prepareCheckPoint(LINE_3);
+//
+//	               // endId must be referenced by one and only one ptLink
+//	               List<PTLinkType> startLinks = mapPTLinksByStartId.get(endId);
+//	               List<PTLinkType> endLinks = mapPTLinksByEndId.get(endId);
+//	               boolean oneRef = true;
+//	               // protect from null pointers
+//	               if (startLinks == null)
+//	                  startLinks = new ArrayList<PTLinkType>();
+//	               if (endLinks == null)
+//	                  endLinks = new ArrayList<PTLinkType>();
+//
+//	               if (startLinks.size() != 0 && endLinks.size() != 0)
+//	               {
+//	                  oneRef = false;
+//	               } else if (startLinks.size() > 1 || endLinks.size() > 1)
+//	               {
+//	                  oneRef = false;
+//	               }
+//	               if (!oneRef)
+//	               {
+//	                  Locator trdLocation = line.sourceLocation();
+//	                  Map<String, Object> map = new HashMap<String, Object>();
+//	                  map.put("lineEnd", endId);
+//	                  ReportLocation location = new ReportLocation(sourceFile,
+//	                        trdLocation.getLineNumber(),
+//	                        trdLocation.getColumnNumber());
+//	                  DetailReportItem errorItem = new DetailReportItem(LINE_3,
+//	                        line.getObjectId(), Report.STATE.WARNING, location, map);
+//	                  addValidationError(LINE_3, errorItem);
+//
+//	               }
+//	            }
+//
+//	         }
+//
+//	      }
+
+	      // 2-NEPTUNE-Line-4 : check routes references in Line
+	      prepareCheckPoint(LINE_4);
+	         // TODO refactor or move in parser
+//	      for (String routeId : line.getRouteId())
+//	      {
+//	         if (!routes.containsKey(routeId))
+//	         {
+//	            Locator trdLocation = line.sourceLocation();
+//	            Map<String, Object> map = new HashMap<String, Object>();
+//	            map.put("routeId", routeId);
+//	            ReportLocation location = new ReportLocation(sourceFile,
+//	                  trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+//	            DetailReportItem errorItem = new DetailReportItem(LINE_4,
+//	                  line.getObjectId(), Report.STATE.ERROR, location, map);
+//	            addValidationError(LINE_4, errorItem);
+//	         }
+//	      }
+
+	      // 2-NEPTUNE-Line-5 : check routes usage
+	      prepareCheckPoint(LINE_5);
+	         // TODO refactor or move in parser
+//	      for (String routeId : routes.keySet())
+//	      {
+//	         if (!line.getRouteId().contains(routeId))
+//	         {
+//	            Locator trdLocation = line.sourceLocation();
+//	            Map<String, Object> map = new HashMap<String, Object>();
+//	            map.put("routeId", routeId);
+//	            ReportLocation location = new ReportLocation(sourceFile,
+//	                  trdLocation.getLineNumber(), trdLocation.getColumnNumber());
+//	            DetailReportItem errorItem = new DetailReportItem(LINE_5,
+//	                  line.getObjectId(), Report.STATE.ERROR, location, map);
+//	            addValidationError(LINE_5, errorItem);
+//	         }
+//	      }
+
+	   }
+
+
+	   
+	   
 }

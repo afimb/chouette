@@ -38,7 +38,7 @@ public class NeptuneSAXErrorHandler implements ErrorHandler, Constant {
 	    report = validationReport.findCheckPointByName(XML_2);
 	    if (report == null)
 	    {
-	    report = new CheckPoint(XML_2, 2,
+	    report = new CheckPoint(XML_2, 
 				CheckPoint.RESULT.OK, CheckPoint.SEVERITY.WARNING);
 	    }
 	    URL url = new URL((String) context.get(FILE_URL));

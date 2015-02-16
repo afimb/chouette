@@ -1,7 +1,6 @@
 package mobi.chouette.exchange.neptune.parser;
 
 import java.util.Date;
-import java.util.Map;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
@@ -10,7 +9,8 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.importer.XPPUtil;
-import mobi.chouette.exchange.validation.report.FileLocation;
+import mobi.chouette.exchange.neptune.validation.PTNetworkValidator;
+import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.PTNetwork;
 import mobi.chouette.model.type.PTNetworkSourceTypeEnum;
@@ -30,19 +30,19 @@ public class PTNetworkParser implements Parser, Constant {
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
-		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
-		context.put(LINE_NUMBER, xpp.getLineNumber());
+		int columnNumber =  xpp.getColumnNumber();
+		int lineNumber =  xpp.getLineNumber();
 		
-		Map<String,FileLocation> locations = (Map<String, FileLocation>) context.get(OBJECT_LOCALISATION);
-		FileLocation location = new FileLocation((String) context.get(FILE_URL), xpp.getLineNumber(), xpp.getColumnNumber());
-		
+		PTNetworkValidator validator = (PTNetworkValidator) ValidatorFactory.create(PTNetworkValidator.NAME, context);
+				
 		PTNetwork network = null;
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 
+			String objectId = null;
 			if (xpp.getName().equals("objectId")) {
-				String objectId = ParserUtils.getText(xpp.nextText());
+				objectId = ParserUtils.getText(xpp.nextText());
 				network = ObjectFactory.getPTNetwork(referential, objectId);
-				locations.put(objectId, location);
+				validator.addLocation(context, objectId, lineNumber, columnNumber);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
 				network.setObjectVersion(version);
@@ -78,9 +78,11 @@ public class PTNetworkParser implements Parser, Constant {
 			} else if (xpp.getName().equals("comment")) {
 				network.setComment(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("lineId")) {
-				String objectId = ParserUtils.getText(xpp.nextText());
+				String lineId = ParserUtils.getText(xpp.nextText());
+				// TODO : revoir l'assemblage Network Line
 				Line line = ObjectFactory.getLine(referential, objectId);
 				line.setPTNetwork(network);
+				validator.addLineId(context, objectId, lineId);
 			} else {
 				XPPUtil.skipSubTree(log, xpp);
 			}

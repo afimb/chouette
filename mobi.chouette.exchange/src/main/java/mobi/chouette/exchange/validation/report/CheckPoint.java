@@ -48,10 +48,9 @@ public class CheckPoint {
 	@XmlElement(name = "error")
 	private List<Detail> details = new ArrayList<Detail>();
 
-	public CheckPoint(String name,int order, RESULT state, SEVERITY severity)
+	public CheckPoint(String name, RESULT state, SEVERITY severity)
 	{
 		this.name = name;
-		// this.order = order;
 		this.severity = severity;
 		this.state = state;
 
