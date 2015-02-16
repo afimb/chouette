@@ -88,7 +88,7 @@ public class LineParser implements Parser, Constant {
 
 				while (xpp.nextTag() == XmlPullParser.START_TAG) {
 					if (xpp.getName().equals("mobilityRestrictedSuitability")) {
-						line.setRegistrationNumber(ParserUtils.getText(xpp
+						line.setMobilityRestrictedSuitable(ParserUtils.getBoolean(xpp
 								.nextText()));
 					} else if (xpp.getName().equals(
 							"accessibilitySuitabilityDetails")) {

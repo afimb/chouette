@@ -6,6 +6,8 @@ import java.util.List;
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
@@ -16,6 +18,8 @@ import lombok.ToString;
 import lombok.extern.log4j.Log4j;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 /**
  * Chouette GroupOfLine : to associate lines with common purpose
@@ -33,6 +37,17 @@ public class GroupOfLine extends NeptuneIdentifiedObject {
 
 	private static final long serialVersionUID = 2900948915585746984L;
 
+	@Getter
+	@Setter
+	@GenericGenerator(name = "group_of_lines_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", 
+		parameters = {
+			@Parameter(name = "sequence_name", value = "group_of_lines_id_seq"),
+			@Parameter(name = "increment_size", value = "100") })
+	@Id
+	@GeneratedValue(generator = "group_of_lines_id_seq")
+	@Column(name = "id", nullable = false)
+	protected Long id;
+	
 	/**
 	 * name
 	 * 

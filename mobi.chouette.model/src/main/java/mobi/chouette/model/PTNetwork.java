@@ -16,6 +16,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -29,6 +31,8 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.type.PTNetworkSourceTypeEnum;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 /**
  * Chouette Public Transport Network : a set of lines
@@ -46,6 +50,17 @@ public class PTNetwork extends NeptuneIdentifiedObject {
 
 	private static final long serialVersionUID = -8986371268064619423L;
 
+	@Getter
+	@Setter
+	@GenericGenerator(name = "networks_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", 
+		parameters = {
+			@Parameter(name = "sequence_name", value = "networks_id_seq"),
+			@Parameter(name = "increment_size", value = "100") })
+	@Id
+	@GeneratedValue(generator = "networks_id_seq")
+	@Column(name = "id", nullable = false)
+	protected Long id;
+	
 	/**
 	 * name
 	 * 

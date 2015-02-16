@@ -9,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -25,6 +27,8 @@ import mobi.chouette.model.type.ServiceStatusValueEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 /**
  * Chouette VehicleJourney
@@ -44,8 +48,20 @@ import org.apache.commons.lang.StringUtils;
 @Log4j
 @ToString(callSuper=true, exclude={"journeyPattern", "route", "timetables"})
 public class VehicleJourney extends NeptuneIdentifiedObject {
+
 	private static final long serialVersionUID = 304336286208135064L;
 
+	@Getter
+	@Setter
+	@GenericGenerator(name = "vehicle_journeys_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", 
+		parameters = {
+			@Parameter(name = "sequence_name", value = "vehicle_journeys_id_seq"),
+			@Parameter(name = "increment_size", value = "100") })
+	@Id
+	@GeneratedValue(generator = "vehicle_journeys_id_seq")
+	@Column(name = "id", nullable = false)
+	protected Long id;
+	
 	/**
 	 * comment
 	 * 

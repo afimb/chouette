@@ -12,6 +12,8 @@ import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.OrderColumn;
@@ -24,6 +26,8 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.type.DayTypeEnum;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 /**
  * Chouette Timetable
@@ -40,6 +44,17 @@ public class Timetable extends NeptuneIdentifiedObject {
 	private static final long serialVersionUID = -1598554061982685113L;
 	private static final long ONE_DAY = 3600000 * 24;
 
+	@Getter
+	@Setter
+	@GenericGenerator(name = "time_tables_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", 
+		parameters = {
+			@Parameter(name = "sequence_name", value = "time_tables_id_seq"),
+			@Parameter(name = "increment_size", value = "100") })
+	@Id
+	@GeneratedValue(generator = "time_tables_id_seq")
+	@Column(name = "id", nullable = false)
+	protected Long id;
+	
 	/**
 	 * mapping day type with enumerations
 	 */

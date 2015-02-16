@@ -43,21 +43,27 @@ public class ChouetteIdentifierGenerator implements IdentifierGenerator,
 		this.identifierType = type;
 		this.sequenceName = determineSequenceName(params, dialect);
 		this.incrementSize = determineIncrementSize(params);
-		this.sql = getSequenceNextValString(sequenceName, incrementSize);
+		this.sql = getSequenceNextValString(sequenceName, incrementSize);	
 	}
 
 	@Override
 	public Serializable generate(SessionImplementor session, Object object)
 			throws HibernateException {
+
 		if (hiValue == null || !hiValue.gt(value)) {
 			hiValue = getNextValue(session);
-			value = hiValue.copy().subtract(incrementSize);
+			value = hiValue.copy().subtract(incrementSize +1);
+			// System.out.println("[DSU] ? nextval --------------> : " + value);
 		}
-		return value.makeValueThenIncrement();
+		Number result = value.makeValueThenIncrement();
+		// System.out.println("[DSU] nextval --------------> : " + value);
+		return result;
 	}
 
 	protected IntegralDataTypeHolder getNextValue(SessionImplementor session) {
 		try {
+
+			//System.out.println("ChouetteIdentifierGenerator.getNextValue() : " + sql);
 			PreparedStatement st = session.getTransactionCoordinator()
 					.getJdbcCoordinator().getStatementPreparer()
 					.prepareStatement(sql);
@@ -87,7 +93,7 @@ public class ChouetteIdentifierGenerator implements IdentifierGenerator,
 
 	protected String getSequenceNextValString(String sequenceName,
 			int incrementSize) {
-		return "select currval('" + sequenceName + "', nextval('"
+		return "select setval('" + sequenceName + "', nextval('"
 				+ sequenceName + "') + " + incrementSize + ")";
 	}
 

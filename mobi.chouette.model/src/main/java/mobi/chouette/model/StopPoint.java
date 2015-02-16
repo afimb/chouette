@@ -4,9 +4,14 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,6 +33,17 @@ public class StopPoint extends NeptuneIdentifiedObject {
 
 	private static final long serialVersionUID = -4913573673645997423L;
 
+	@Getter
+	@Setter
+	@GenericGenerator(name = "stop_points_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", 
+		parameters = {
+			@Parameter(name = "sequence_name", value = "stop_points_id_seq"),
+			@Parameter(name = "increment_size", value = "100") })
+	@Id
+	@GeneratedValue(generator = "stop_points_id_seq")
+	@Column(name = "id", nullable = false)
+	protected Long id;
+	
 	/**
 	 * position on the route
 	 * 

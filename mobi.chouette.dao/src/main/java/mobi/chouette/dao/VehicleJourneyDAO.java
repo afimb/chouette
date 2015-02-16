@@ -8,10 +8,10 @@ import java.sql.SQLException;
 import java.util.List;
 
 import javax.ejb.Stateless;
-import javax.naming.InitialContext;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.sql.DataSource;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.VehicleJourney;

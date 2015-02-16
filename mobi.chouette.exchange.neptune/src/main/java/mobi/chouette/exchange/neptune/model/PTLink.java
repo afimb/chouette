@@ -2,6 +2,13 @@ package mobi.chouette.exchange.neptune.model;
 
 import java.math.BigDecimal;
 
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,6 +31,17 @@ public class PTLink extends NeptuneIdentifiedObject
 {
    private static final long serialVersionUID = -3089442100133439163L;
 
+   @Getter
+	@Setter
+	@GenericGenerator(name = "pt_links_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", 
+		parameters = {
+			@Parameter(name = "sequence_name", value = "pt_links_id_seq"),
+			@Parameter(name = "increment_size", value = "100") })
+	@Id
+	@GeneratedValue(generator = "pt_links_id_seq")
+	@Column(name = "id", nullable = false)
+	protected Long id;
+   
    /**
     * name
     * 
