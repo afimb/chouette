@@ -22,6 +22,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.util.ObjectIdTypes;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.annotations.NaturalId;
 
 /**
  * Abstract object used for all Identified Chouette Object
@@ -49,6 +50,7 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject implements
 	 * @return The actual value
 	 */
 	@Getter
+	@NaturalId
 	@Column(name = "objectid", nullable = false, unique = true)
 	protected String objectId;
 

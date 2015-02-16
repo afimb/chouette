@@ -2748,10 +2748,10 @@ ALTER TABLE ONLY import_tasks
 
 CREATE SEQUENCE :SCH.hibernate_seq
     START WITH 1
-    INCREMENT BY 50
-    MINVALUE 1
+    INCREMENT BY 1
+    NO MINVALUE 
     NO MAXVALUE
-    CACHE 50;
+    CACHE 1;
 
 
 ALTER TABLE :SCH.hibernate_seq OWNER TO chouette;

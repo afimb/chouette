@@ -5,11 +5,15 @@ import java.io.StringWriter;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 
+import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
@@ -28,6 +32,7 @@ import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
 import mobi.chouette.model.util.Referential;
+import mobi.chouette.persistence.hibernate.ContextHolder;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -44,6 +49,9 @@ public class RegisterCommand implements Command {
 	@EJB(beanName = LineUpdater.BEAN_NAME)
 	private Updater<Line> lineUpdater;
 
+	@Resource(lookup = "java:comp/DefaultManagedExecutorService")
+	ManagedExecutorService executor;
+
 	@EJB
 	private VehicleJourneyDAO vehicleJourneyDAO;
 
@@ -55,7 +63,8 @@ public class RegisterCommand implements Command {
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
 		try {
-			Boolean optimized = Boolean.FALSE;
+			Boolean optimized = Boolean.TRUE;
+			context.put(OPTIMIZED, optimized);
 			Referential cache = new Referential();
 			context.put(CACHE, cache);
 
@@ -71,13 +80,13 @@ public class RegisterCommand implements Command {
 				oldValue.setObjectId(newValue.getObjectId());
 
 			}
-			context.put(OPTIMIZED, optimized);
 			lineUpdater.update(context, oldValue, newValue);
 			lineDAO.create(oldValue);
+			lineDAO.flush();
 
 			if (optimized) {
-				StringWriter buffer = new StringWriter(1024);
-				List<VehicleJourney> list = new ArrayList<VehicleJourney>(
+				final StringWriter buffer = new StringWriter(1024);
+				final List<VehicleJourney> list = new ArrayList<VehicleJourney>(
 						referential.getVehicleJourneys().values());
 				for (VehicleJourney item : list) {
 					VehicleJourney vehicleJourney = cache.getVehicleJourneys()
@@ -95,7 +104,23 @@ public class RegisterCommand implements Command {
 								vehicleJourneyAtStop);
 					}
 				}
+				
+
+				// System.out.println(buffer.toString());
 				vehicleJourneyDAO.update(list, buffer.toString());
+				
+//				final String schema =  ContextHolder.getContext();
+//				Future<Void> future = executor.submit(new Callable<Void>() {
+//
+//					@Override
+//					@TransactionAttribute(TransactionAttributeType.REQUIRED)
+//					public Void call() throws Exception {
+//						// System.out.println(buffer.toString());
+//						ContextHolder.setContext(schema);
+//						vehicleJourneyDAO.update(list, buffer.toString());
+//						return null;
+//					}
+//				});
 			}
 
 			result = SUCCESS;
@@ -122,24 +147,29 @@ public class RegisterCommand implements Command {
 					.toString());
 		buffer.append(SEP);
 		if (vehicleJourneyAtStop.getArrivalTime() != null)
-			buffer.write(DateTimeUtils.getTimeText(vehicleJourneyAtStop.getArrivalTime()));
+			buffer.write(DateTimeUtils.getTimeText(vehicleJourneyAtStop
+					.getArrivalTime()));
 		buffer.append(SEP);
 		if (vehicleJourneyAtStop.getDepartureTime() != null)
-			buffer.write(DateTimeUtils.getTimeText(vehicleJourneyAtStop.getDepartureTime()));
+			buffer.write(DateTimeUtils.getTimeText(vehicleJourneyAtStop
+					.getDepartureTime()));
 		buffer.append(SEP);
 		if (vehicleJourneyAtStop.getWaitingTime() != null)
-			buffer.write(DateTimeUtils.getTimeText(vehicleJourneyAtStop.getWaitingTime()));
+			buffer.write(DateTimeUtils.getTimeText(vehicleJourneyAtStop
+					.getWaitingTime()));
 		else
 			buffer.write(DateTimeUtils.getTimeText(new Time(0)));
 
 		buffer.append(SEP);
 		if (vehicleJourneyAtStop.getElapseDuration() != null)
-			buffer.write(DateTimeUtils.getTimeText(vehicleJourneyAtStop.getElapseDuration()));
+			buffer.write(DateTimeUtils.getTimeText(vehicleJourneyAtStop
+					.getElapseDuration()));
 		else
 			buffer.write(DateTimeUtils.getTimeText(new Time(0)));
 		buffer.append(SEP);
 		if (vehicleJourneyAtStop.getHeadwayFrequency() != null)
-			buffer.write(DateTimeUtils.getTimeText(vehicleJourneyAtStop.getHeadwayFrequency()));
+			buffer.write(DateTimeUtils.getTimeText(vehicleJourneyAtStop
+					.getHeadwayFrequency()));
 		else
 			buffer.write(DateTimeUtils.getTimeText(new Time(0)));
 		buffer.append('\n');

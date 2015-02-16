@@ -2,6 +2,13 @@ package mobi.chouette.exchange.neptune.model;
 
 import java.util.List;
 
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,6 +34,17 @@ public class Facility extends NeptuneLocalizedObject
 {
    private static final long serialVersionUID = -2150117548707325330L;
 
+   @Getter
+	@Setter
+	@GenericGenerator(name = "facilities_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", 
+		parameters = {
+			@Parameter(name = "sequence_name", value = "facilities_id_seq"),
+			@Parameter(name = "increment_size", value = "100") })
+	@Id
+	@GeneratedValue(generator = "facilities_id_seq")
+	@Column(name = "id", nullable = false)
+	protected Long id;
+   
    /**
     * name
     * 

@@ -14,10 +14,8 @@ import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-import javax.persistence.SequenceGenerator;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -25,6 +23,8 @@ import lombok.Setter;
 import lombok.ToString;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 /**
  * basic class for every Chouette object
@@ -45,15 +45,20 @@ public abstract class NeptuneObject implements Serializable {
 	 *            New value
 	 * @return The actual value
 	 */
-	@Getter
-	@Setter
-	@Id
-	// @GeneratedValue(strategy = GenerationType.IDENTITY)
-	@SequenceGenerator(name = "hibernate_seq", initialValue = 1, allocationSize = 50, sequenceName = "hibernate_seq")
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hibernate_seq")
-	@Column(name = "id", nullable = false)
-	protected Long id;
-
+//	@Getter
+//	@Setter
+//	@GeneratedValue(strategy = GenerationType.IDENTITY)
+//	@SequenceGenerator(name = "hibernate_seq", initialValue = 1, allocationSize = 50, sequenceName = "hibernate_seq")
+//	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hibernate_seq")
+//	@GenericGenerator(name = "hibernate_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", parameters = {
+//			@Parameter(name = "sequence_name", value = "hibernate_seq"),
+//			@Parameter(name = "increment_size", value = "50") })
+//	@Id
+//	@GeneratedValue(generator = "hibernate_seq")
+//	@Column(name = "id", nullable = false)
+//	protected Long id;
+	
+	public abstract Long getId();
 	/**
 	 * read annotation to get maximum size of database field
 	 * 
@@ -114,5 +119,7 @@ public abstract class NeptuneObject implements Serializable {
 		}
 		return value;
 	}
+
+	
 
 }

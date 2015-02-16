@@ -16,9 +16,10 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.NeptuneIdentifiedObject;
-import mobi.chouette.model.NeptuneObject;
+
+import org.hibernate.Session;
+import org.hibernate.jpa.HibernateEntityManager;
 
 @Log4j
 public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
@@ -66,16 +67,23 @@ public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 
 	@Override
 	public T findByObjectId(final String objectId) {
-		List<T> result = null;
-		CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery<T> criteria = builder.createQuery(type);
-		Root<T> root = criteria.from(type);
-		Predicate predicate = builder.equal(root.get("objectId"), objectId);
-		criteria.where(predicate);
-		TypedQuery<T> query = em.createQuery(criteria);
-		result = query.getResultList();
-		return (result.size() == 0) ? null : result.get(0);
+		Session session = em.unwrap(Session.class);		
+		T result = (T) session.bySimpleNaturalId(type).load(objectId);
+
+		return result;
 	}
+
+	// public T findByObjectId(final String objectId) {
+	// List<T> result = null;
+	// CriteriaBuilder builder = em.getCriteriaBuilder();
+	// CriteriaQuery<T> criteria = builder.createQuery(type);
+	// Root<T> root = criteria.from(type);
+	// Predicate predicate = builder.equal(root.get("objectId"), objectId);
+	// criteria.where(predicate);
+	// TypedQuery<T> query = em.createQuery(criteria);
+	// result = query.getResultList();
+	// return (result.size() == 0) ? null : result.get(0);
+	// }
 
 	@Override
 	public List<T> load(Collection<T> list) {
@@ -142,9 +150,11 @@ public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 		Cache cache = factory.getCache();
 		cache.evictAll();
 	}
-	
+
 	@Override
 	public void flush() {
+//		Session session = em.unwrap(Session.class);	
+//		session.flush();
 		em.flush();
 	}
 }
