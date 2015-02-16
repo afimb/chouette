@@ -4,14 +4,18 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.importer.XPPUtil;
+import mobi.chouette.exchange.neptune.Constant;
+import mobi.chouette.exchange.neptune.model.AreaCentroid;
+import mobi.chouette.exchange.neptune.model.NeptuneObjectFactory;
+import mobi.chouette.exchange.validation.report.FileLocation;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.ChouetteAreaEnum;
@@ -33,13 +37,15 @@ public class ChouetteAreaParser implements Parser, Constant {
 	public void parse(Context context) throws Exception {
 
 		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
-		Referential referential = (Referential) context.get(REFERENTIAL);
+		// Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
 		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
 		context.put(LINE_NUMBER, xpp.getLineNumber());
 
-		BiMap<String, String> map = HashBiMap.create();
+		
+		BiMap<String, String> map = HashBiMap.create(); 
+		context.put(STOPAREA_AREACENTROID_MAP, map);
 
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 
@@ -53,14 +59,18 @@ public class ChouetteAreaParser implements Parser, Constant {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void parseStopArea(Context context, BiMap<String, String> map)
 			throws Exception {
 		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
-
+		
 		xpp.require(XmlPullParser.START_TAG, null, "StopArea");
 		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
 		context.put(LINE_NUMBER, xpp.getLineNumber());
+		
+		Map<String,FileLocation> locations = (Map<String, FileLocation>) context.get(OBJECT_LOCALISATION);
+		FileLocation location = new FileLocation((String) context.get(FILE_URL), xpp.getLineNumber(), xpp.getColumnNumber());
 
 		StopArea stopArea = null;
 		List<String> contains = new ArrayList<String>();
@@ -70,6 +80,7 @@ public class ChouetteAreaParser implements Parser, Constant {
 			if (xpp.getName().equals("objectId")) {
 				String objectId = ParserUtils.getText(xpp.nextText());
 				stopArea = ObjectFactory.getStopArea(referential, objectId);
+				locations.put(objectId, location);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
 				stopArea.setObjectVersion(version);
@@ -164,46 +175,63 @@ public class ChouetteAreaParser implements Parser, Constant {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void parseAreaCentroid(Context context, BiMap<String, String> map)
 			throws Exception {
 		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
+		NeptuneObjectFactory factory =  (NeptuneObjectFactory) context.get(NEPTUNE_OBJECT_FACTORY);
 
 		xpp.require(XmlPullParser.START_TAG, null, "AreaCentroid");
 		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
 		context.put(LINE_NUMBER, xpp.getLineNumber());
+		
+		Map<String,FileLocation> locations = (Map<String, FileLocation>) context.get(OBJECT_LOCALISATION);
+		FileLocation location = new FileLocation((String) context.get(FILE_URL), xpp.getLineNumber(), xpp.getColumnNumber());
 
 		BiMap<String, String> inverse = map.inverse();
 		StopArea stopArea = null;
+		AreaCentroid areaCentroid = null;
 
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 
 			if (xpp.getName().equals("objectId")) {
-				String objectId = inverse.get(ParserUtils.getText(xpp
-						.nextText()));
-				stopArea = ObjectFactory.getStopArea(referential, objectId);
+				String objectId = ParserUtils.getText(xpp.nextText());
+				areaCentroid = factory.getAreaCentroid(objectId);
+				String areaId = inverse.get(objectId);
+				locations.put(objectId, location);
+				stopArea = ObjectFactory.getStopArea(referential, areaId);
 			} else if (xpp.getName().equals("name")) {
-				stopArea.setName(ParserUtils.getText(xpp.nextText()));
+				areaCentroid.setName(ParserUtils.getText(xpp.nextText()));
+				if (stopArea.getName() == null)
+					stopArea.setName(areaCentroid.getName());
 			} else if (xpp.getName().equals("comment")) {
-				stopArea.setComment(ParserUtils.getText(xpp.nextText()));
+				areaCentroid.setComment(ParserUtils.getText(xpp.nextText()));
+				if (stopArea.getComment() == null)
+					stopArea.setComment(areaCentroid.getComment());
 			} else if (xpp.getName().equals("longLatType")) {
 				stopArea.setLongLatType(ParserUtils.getEnum(
 						LongLatTypeEnum.class, xpp.nextText()));
+				areaCentroid.setLongLatType(stopArea.getLongLatType());
 			} else if (xpp.getName().equals("latitude")) {
 				stopArea.setLatitude(ParserUtils.getBigDecimal(xpp.nextText()));
+				// areaCentroid.setLatitude(stopArea.getLatitude()); // unsued in tests
 			} else if (xpp.getName().equals("longitude")) {
 				stopArea.setLongitude(ParserUtils.getBigDecimal(xpp.nextText()));
+				// areaCentroid.setLongitude(stopArea.getLongitude()); // unsued in tests
 			} else if (xpp.getName().equals("containedIn")) {
-				String objectId = ParserUtils.getText(xpp.nextText());
+				areaCentroid.setContainedInId(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("address")) {
 
 				while (xpp.nextTag() == XmlPullParser.START_TAG) {
 					if (xpp.getName().equals("countryCode")) {
 						stopArea.setCountryCode(ParserUtils.getText(xpp
 								.nextText()));
+						// areaCentroid.setCountryCode(stopArea.getCountryCode()); // unsued in tests
 					} else if (xpp.getName().equals("streetName")) {
 						stopArea.setStreetName(ParserUtils.getText(xpp
 								.nextText()));
+						// areaCentroid.setStreetName(stopArea.getStreetName()); // unsued in tests
 					} else {
 						XPPUtil.skipSubTree(log, xpp);
 					}
@@ -215,13 +243,16 @@ public class ChouetteAreaParser implements Parser, Constant {
 						BigDecimal value = ParserUtils.getBigDecimal(xpp
 								.nextText());
 						stopArea.setX(value);
+						// areaCentroid.setX(stopArea.getX()); // unsued in tests
 					} else if (xpp.getName().equals("Y")) {
 						BigDecimal value = ParserUtils.getBigDecimal(xpp
 								.nextText());
 						stopArea.setY(value);
+						// areaCentroid.setY(stopArea.getY()); // unsued in tests
 					} else if (xpp.getName().equals("projectionType")) {
 						String value = ParserUtils.getText(xpp.nextText());
 						stopArea.setProjectionType(value);
+						// areaCentroid.setProjectionType(stopArea.getProjectionType()); // unsued in tests
 					} else {
 						XPPUtil.skipSubTree(log, xpp);
 					}

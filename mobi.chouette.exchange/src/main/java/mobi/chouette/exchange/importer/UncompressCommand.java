@@ -15,9 +15,9 @@ import mobi.chouette.common.FileUtils;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.importer.report.Report;
-import mobi.chouette.exchange.importer.report.ReportConstant;
-import mobi.chouette.exchange.importer.report.ZipItem;
+import mobi.chouette.exchange.report.Report;
+import mobi.chouette.exchange.report.ReportConstant;
+import mobi.chouette.exchange.report.ZipItem;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -52,8 +52,8 @@ public class UncompressCommand implements Command, ReportConstant {
 		} catch (Exception e) {
 			zip.getErrors().add(e.getMessage());
 			zip.setStatus(STATUS_ERROR);
-			report.setStatus(STATUS_ERROR);
-			report.setError("invalid_zip");
+			report.setResult(STATUS_ERROR);
+			report.setFailure("invalid_zip");
 			log.error(e);
 		}
 

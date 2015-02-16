@@ -25,8 +25,8 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.importer.RegisterCommand;
 import mobi.chouette.exchange.importer.UncompressCommand;
-import mobi.chouette.exchange.importer.report.FileItem;
-import mobi.chouette.exchange.importer.report.Report;
+import mobi.chouette.exchange.report.FileInfo;
+import mobi.chouette.exchange.report.Report;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 
 import com.google.common.collect.Lists;
@@ -82,9 +82,10 @@ public class NeptuneImporterCommand implements Command, Constant {
 				// skip metadata file
 				if (file.toFile().getName().toLowerCase().contains("metadata"))
 				{
-					FileItem fileItem = new FileItem();
+					FileInfo fileItem = new FileInfo();
 					fileItem.setName(file.toFile().getName());
-					report.getFiles().getFilesDetail().getIgnored().add(fileItem);
+					fileItem.setStatus(FileInfo.STATE.UNCHECKED);
+					report.getFiles().getFileInfos().add(fileItem);
 					continue;
 				}
 				

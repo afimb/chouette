@@ -3,6 +3,7 @@ package mobi.chouette.exchange.neptune.parser;
 import java.math.BigDecimal;
 import java.sql.Time;
 import java.util.Date;
+import java.util.Map;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
@@ -11,6 +12,7 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.importer.XPPUtil;
+import mobi.chouette.exchange.validation.report.FileLocation;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.AccessPointTypeEnum;
@@ -31,6 +33,11 @@ public class AccessPointParser implements Parser, Constant {
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
+		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
+		context.put(LINE_NUMBER, xpp.getLineNumber());
+		
+		Map<String,FileLocation> locations = (Map<String, FileLocation>) context.get(OBJECT_LOCALISATION);
+		FileLocation location = new FileLocation((String) context.get(FILE_URL), xpp.getLineNumber(), xpp.getColumnNumber());
 
 		AccessPoint accessPoint = null;
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
@@ -39,6 +46,7 @@ public class AccessPointParser implements Parser, Constant {
 				String objectId = ParserUtils.getText(xpp.nextText());
 				accessPoint = ObjectFactory.getAccessPoint(referential,
 						objectId);
+				locations.put(objectId, location);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
 				accessPoint.setObjectVersion(version);

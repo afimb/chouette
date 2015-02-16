@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import mobi.chouette.exchange.neptune.exporter.model.faclilty.FacilityFeature;
+import mobi.chouette.exchange.neptune.model.facility.FacilityFeature;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.NeptuneLocalizedObject;

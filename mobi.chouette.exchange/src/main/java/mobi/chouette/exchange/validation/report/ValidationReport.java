@@ -15,14 +15,14 @@ import lombok.Data;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ValidationReport {
 
-	@XmlElement(name = "phase")
-	private List<Phase> phases = new ArrayList<Phase>();
+	@XmlElement(name = "tests")
+	private List<CheckPoint> checkPoints = new ArrayList<CheckPoint>();
 	
-	public Phase findPhaseByName(String name)
+	public CheckPoint findCheckPointByName(String name)
 	{
-		for (Phase phase : phases) {
-			if (phase.getName().equals(name))
-				return phase;
+		for (CheckPoint checkPoint : checkPoints) {
+			if (checkPoint.getName().equals(name))
+				return checkPoint;
 		}
 		return null;
 	}

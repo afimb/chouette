@@ -3,13 +3,13 @@ package mobi.chouette.exchange.gtfs.parser;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.gtfs.Constant;
-import mobi.chouette.exchange.gtfs.importer.GtfsParameters;
+import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.gtfs.model.GtfsStop;
 import mobi.chouette.exchange.gtfs.model.GtfsStop.WheelchairBoardingType;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsImporter;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
-import mobi.chouette.exchange.importer.report.Report;
+import mobi.chouette.exchange.report.Report;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.LongLatTypeEnum;
@@ -21,14 +21,14 @@ public class GtfsStopParser implements Parser, Constant {
 
 	private Referential referential;
 	private GtfsImporter importer;
-	private GtfsParameters configuration;
+	private GtfsImportParameters configuration;
 
 	@Override
 	public void parse(Context context) throws Exception {
 
 		referential = (Referential) context.get(REFERENTIAL);
 		importer = (GtfsImporter) context.get(IMPORTER);
-		configuration = (GtfsParameters) context.get(CONFIGURATION);
+		configuration = (GtfsImportParameters) context.get(CONFIGURATION);
 
 		for (GtfsStop gtfsStop : importer.getStopById()) {
 			if (gtfsStop.getLocationType() != GtfsStop.LocationType.Access) {

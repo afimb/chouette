@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.neptune.parser;
 
 import java.util.Date;
+import java.util.Map;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
@@ -9,6 +10,7 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.importer.XPPUtil;
+import mobi.chouette.exchange.validation.report.FileLocation;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.util.ObjectFactory;
@@ -20,6 +22,7 @@ import org.xmlpull.v1.XmlPullParser;
 public class StopPointParser implements Parser, Constant {
 	private static final String CHILD_TAG = "StopPoint";
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void parse(Context context) throws Exception {
 
@@ -29,6 +32,10 @@ public class StopPointParser implements Parser, Constant {
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
 		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
 		context.put(LINE_NUMBER, xpp.getLineNumber());
+		
+		Map<String,FileLocation> locations = (Map<String, FileLocation>) context.get(OBJECT_LOCALISATION);
+		FileLocation location = new FileLocation((String) context.get(FILE_URL), xpp.getLineNumber(), xpp.getColumnNumber());
+
 
 		StopPoint stopPoint = null;
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
@@ -36,6 +43,7 @@ public class StopPointParser implements Parser, Constant {
 			if (xpp.getName().equals("objectId")) {
 				String objectId = ParserUtils.getText(xpp.nextText());
 				stopPoint = ObjectFactory.getStopPoint(referential, objectId);
+				locations.put(objectId, location);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
 				stopPoint.setObjectVersion(version);

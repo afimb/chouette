@@ -3,7 +3,7 @@ package mobi.chouette.exchange.gtfs.parser;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.gtfs.Constant;
-import mobi.chouette.exchange.gtfs.importer.GtfsParameters;
+import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.gtfs.model.GtfsAgency;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsImporter;
 import mobi.chouette.exchange.importer.Parser;
@@ -17,14 +17,14 @@ public class GtfsAgencyParser implements Parser, Constant {
 
 	private Referential referential;
 	private GtfsImporter importer;
-	private GtfsParameters configuration;
+	private GtfsImportParameters configuration;
 
 	@Override
 	public void parse(Context context) throws Exception {
 
 		referential = (Referential) context.get(REFERENTIAL);
 		importer = (GtfsImporter) context.get(IMPORTER);
-		configuration = (GtfsParameters) context.get(CONFIGURATION);
+		configuration = (GtfsImportParameters) context.get(CONFIGURATION);
 
 
 		for (GtfsAgency gtfsAgency : importer.getAgencyById()) {

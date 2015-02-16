@@ -13,6 +13,7 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.importer.XPPUtil;
+import mobi.chouette.exchange.validation.report.FileLocation;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.type.TransportModeNameEnum;
@@ -38,6 +39,9 @@ public class LineParser implements Parser, Constant {
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
 		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
 		context.put(LINE_NUMBER, xpp.getLineNumber());
+		
+		Map<String,FileLocation> locations = (Map<String, FileLocation>) context.get(OBJECT_LOCALISATION);
+		FileLocation location = new FileLocation((String) context.get(FILE_URL), xpp.getLineNumber(), xpp.getColumnNumber());
 
 		Line line = null;
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
@@ -45,6 +49,7 @@ public class LineParser implements Parser, Constant {
 			if (xpp.getName().equals("objectId")) {
 				String objectId = ParserUtils.getText(xpp.nextText());
 				line = ObjectFactory.getLine(referential, objectId);
+				locations.put(objectId, location);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
 				line.setObjectVersion(version);

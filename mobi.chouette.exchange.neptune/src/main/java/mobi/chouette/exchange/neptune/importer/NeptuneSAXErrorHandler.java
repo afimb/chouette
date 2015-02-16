@@ -9,7 +9,6 @@ import mobi.chouette.common.Context;
 import mobi.chouette.exchange.validation.report.CheckPoint;
 import mobi.chouette.exchange.validation.report.Detail;
 import mobi.chouette.exchange.validation.report.Location;
-import mobi.chouette.exchange.validation.report.Phase;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 
 import org.xml.sax.ErrorHandler;
@@ -35,17 +34,12 @@ public class NeptuneSAXErrorHandler implements ErrorHandler, Constant {
 	public NeptuneSAXErrorHandler(Context context)throws Exception
 	{
 	    validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
-	    Phase phaseOne = validationReport.findPhaseByName(Phase.GROUP.ONE.name());
-	    if (phaseOne == null)
-	    {
-	    	phaseOne = new Phase(Phase.GROUP.ONE.name());
-	    }
 	    
-	    report = phaseOne.findCheckPointByName(XML_2);
+	    report = validationReport.findCheckPointByName(XML_2);
 	    if (report == null)
 	    {
 	    report = new CheckPoint(XML_2, 2,
-				CheckPoint.STATE.OK, CheckPoint.SEVERITY.WARNING);
+				CheckPoint.RESULT.OK, CheckPoint.SEVERITY.WARNING);
 	    }
 	    URL url = new URL((String) context.get(FILE_URL));
 	    fileName = url.getFile();

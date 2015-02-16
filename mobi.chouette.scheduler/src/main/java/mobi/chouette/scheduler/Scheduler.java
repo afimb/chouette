@@ -43,7 +43,7 @@ public class Scheduler {
 
 	@EJB
 	JobDAO jobDAO;
-	
+
 	@EJB
 	SchemaDAO schemaDAO;
 
@@ -54,12 +54,12 @@ public class Scheduler {
 	public void schedule(String referential) {
 		System.out.println("Scheduler.schedule() tenant "
 				+ ContextHolder.getContext()+ " >>>>>>>>>>>>>>> " + schemaDAO.getCurrentSchema());
-		
+
 		schemaDAO.setCurrentSchema("public");
 		System.out.println("Scheduler.schedule() tenant "
 				+ ContextHolder.getContext()+ " >>>>>>>>>>>>>>> " + schemaDAO.getCurrentSchema());
-	
-		
+
+
 		Job job = jobDAO.getNextJob(referential);
 		if (job != null) {
 			job.setStatus(STATUS.SCHEDULED);
@@ -89,11 +89,11 @@ public class Scheduler {
 		// abort scheduled job
 		Collection<Job> scheduled = Collections2.filter(list,
 				new Predicate<Job>() {
-					@Override
-					public boolean apply(Job job) {
-						return job.getStatus() == STATUS.SCHEDULED;
-					}
-				});
+			@Override
+			public boolean apply(Job job) {
+				return job.getStatus() == STATUS.SCHEDULED;
+			}
+		});
 		for (Job job : scheduled) {
 			job.setStatus(STATUS.ABORTED);
 
@@ -122,11 +122,11 @@ public class Scheduler {
 		// schedule created job
 		Collection<Job> created = Collections2.filter(list,
 				new Predicate<Job>() {
-					@Override
-					public boolean apply(Job job) {
-						return job.getStatus() == STATUS.CREATED;
-					}
-				});
+			@Override
+			public boolean apply(Job job) {
+				return job.getStatus() == STATUS.CREATED;
+			}
+		});
 		for (Job job : created) {
 			schedule(job.getReferential());
 		}
@@ -135,21 +135,24 @@ public class Scheduler {
 	public boolean cancel(Long id) {
 
 		Job job = jobDAO.find(id);
-		job.setStatus(STATUS.CANCELED);
+		if (job.getStatus().equals(STATUS.CREATED) || job.getStatus().equals(STATUS.SCHEDULED))
+		{
+			job.setStatus(STATUS.CANCELED);
 
-		// set delete link
-		Link link = new Link();
-		link.setType(MediaType.APPLICATION_JSON);
-		link.setRel(Link.DELETE_REL);
-		link.setMethod(Link.DELETE_METHOD);
-		link.setHref(MessageFormat.format("/{0}/{1}/reports/{2,number,#}",
-				Constant.ROOT_PATH, job.getReferential(), job.getId()));
-		job.getLinks().clear();
-		job.getLinks().add(link);
+			// set delete link
+			Link link = new Link();
+			link.setType(MediaType.APPLICATION_JSON);
+			link.setRel(Link.DELETE_REL);
+			link.setMethod(Link.DELETE_METHOD);
+			link.setHref(MessageFormat.format("/{0}/{1}/reports/{2,number,#}",
+					Constant.ROOT_PATH, job.getReferential(), job.getId()));
+			job.getLinks().clear();
+			job.getLinks().add(link);
 
-		job.setUpdated(new Date());
-		jobDAO.update(job);
+			job.setUpdated(new Date());
+			jobDAO.update(job);
 
+		}
 		return true;
 	}
 

@@ -4,6 +4,7 @@ import java.sql.Time;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Map;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
@@ -12,6 +13,7 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.importer.XPPUtil;
+import mobi.chouette.exchange.validation.report.FileLocation;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
@@ -20,7 +22,6 @@ import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
 import mobi.chouette.model.type.BoardingAlightingPossibilityEnum;
-import mobi.chouette.model.type.ServiceStatusValueEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
@@ -44,6 +45,7 @@ public class VehicleJourneyParser implements Parser, Constant {
 		}
 	};
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void parse(Context context) throws Exception {
 
@@ -53,6 +55,9 @@ public class VehicleJourneyParser implements Parser, Constant {
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
 		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
 		context.put(LINE_NUMBER, xpp.getLineNumber());
+		
+		Map<String,FileLocation> locations = (Map<String, FileLocation>) context.get(OBJECT_LOCALISATION);
+		FileLocation location = new FileLocation((String) context.get(FILE_URL), xpp.getLineNumber(), xpp.getColumnNumber());
 
 		VehicleJourney vehicleJourney = null;
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
@@ -61,6 +66,7 @@ public class VehicleJourneyParser implements Parser, Constant {
 				String objectId = ParserUtils.getText(xpp.nextText());
 				vehicleJourney = ObjectFactory.getVehicleJourney(referential,
 						objectId);
+				locations.put(objectId, location);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
 				vehicleJourney.setObjectVersion(version);
@@ -103,9 +109,9 @@ public class VehicleJourneyParser implements Parser, Constant {
 				// TODO lineIdShortcut
 
 			} else if (xpp.getName().equals("statusValue")) {
-				ServiceStatusValueEnum value = ParserUtils.getEnum(
-						ServiceStatusValueEnum.class, xpp.nextText());
-				vehicleJourney.setServiceStatusValue(value);
+//				ServiceStatusValueEnum value = ParserUtils.getEnum(
+//						ServiceStatusValueEnum.class, xpp.nextText());
+//				vehicleJourney.setServiceStatusValue(value);
 			} else if (xpp.getName().equals("timeSlotId")) {
 				String value = ParserUtils.getText(xpp.nextText());
 				// TODO timeSlotId
@@ -145,13 +151,14 @@ public class VehicleJourneyParser implements Parser, Constant {
 			
 			if (xpp.getName().equals("vehicleJourneyId")) {
 				String objectId = ParserUtils.getText(xpp.nextText());
+				// TODO check reverse reference
 				vehicleJourneyAtStop.setVehicleJourney(vehicleJourney);
 			} else if (xpp.getName().equals("boardingAlightingPossibility")) {
 				BoardingAlightingPossibilityEnum value = ParserUtils.getEnum(
 						BoardingAlightingPossibilityEnum.class, xpp.nextText());
 				vehicleJourneyAtStop.setBoardingAlightingPossibility(value);
-			} else if (xpp.getName().equals("connectingServiceId")) {
-				vehicleJourneyAtStop.setConnectingServiceId(xpp.nextText());
+//			} else if (xpp.getName().equals("connectingServiceId")) {
+//				vehicleJourneyAtStop.setConnectingServiceId(xpp.nextText());
 			} else if (xpp.getName().equals("stopPointId")) {
 				String objectId = ParserUtils.getText(xpp.nextText());
 				StopPoint stopPoint = ObjectFactory.getStopPoint(referential,
@@ -172,9 +179,9 @@ public class VehicleJourneyParser implements Parser, Constant {
 			} else if (xpp.getName().equals("departureTime")) {
 				Time value = ParserUtils.getSQLTime(xpp.nextText());
 				vehicleJourneyAtStop.setDepartureTime(value);
-			} else if (xpp.getName().equals("waitingTime")) {
-				Time value = ParserUtils.getSQLTime(xpp.nextText());
-				vehicleJourneyAtStop.setWaitingTime(value);
+//			} else if (xpp.getName().equals("waitingTime")) {
+//				Time value = ParserUtils.getSQLTime(xpp.nextText());
+//				vehicleJourneyAtStop.setWaitingTime(value);
 			} else if (xpp.getName().equals("headwayFrequency")) {
 				Time value = ParserUtils.getSQLDuration(xpp.nextText());
 				vehicleJourneyAtStop.setHeadwayFrequency(value);

@@ -13,6 +13,7 @@ import mobi.chouette.exchange.importer.XPPUtil;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.neptune.model.NeptuneObjectFactory;
 import mobi.chouette.exchange.neptune.model.PTLink;
+import mobi.chouette.exchange.validation.report.FileLocation;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.type.PTDirectionEnum;
@@ -36,6 +37,9 @@ public class ChouetteRouteParser implements Parser, Constant {
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
 		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
 		context.put(LINE_NUMBER, xpp.getLineNumber());
+		
+		Map<String,FileLocation> locations = (Map<String, FileLocation>) context.get(OBJECT_LOCALISATION);
+		FileLocation location = new FileLocation((String) context.get(FILE_URL), xpp.getLineNumber(), xpp.getColumnNumber());
 
 		Route route = null;
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
@@ -43,6 +47,7 @@ public class ChouetteRouteParser implements Parser, Constant {
 			if (xpp.getName().equals("objectId")) {
 				String objectId = ParserUtils.getText(xpp.nextText());
 				route = ObjectFactory.getRoute(referential, objectId);
+				locations.put(objectId, location);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
 				route.setObjectVersion(version);

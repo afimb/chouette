@@ -3,11 +3,13 @@ package mobi.chouette.exchange.validation.report;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import lombok.Data;
 
@@ -18,24 +20,38 @@ public class Detail {
 	@XmlElement(name = "source")
 	private Location source;
 
-	@XmlElement(name = "targets")
+	@XmlTransient
+	// @XmlElement(name = "targets")
 	private List<Location> targets = new ArrayList<>();
 
-	@XmlAttribute(name = "key")
+	@XmlAttribute(name = "error_id",required=true)
 	private String key;
 
-	@XmlAttribute(name = "value")
+	@XmlTransient
+	// @XmlAttribute(name = "error_value")
 	private String value;
 
-	@XmlAttribute(name = "reference_value")
+	@XmlTransient
+	// @XmlAttribute(name = "reference_value")
 	private String referenceValue;
+	
+	@XmlElement(name = "details")
+	private  Map<String, Object> map;
 
 	public Detail(String key, 
 			Location source)
 	{
-
-		setKey("detail_" + key.replaceAll("-", "_").toLowerCase());
+		setKey(key.replaceAll("-", "_").toLowerCase());
 		this.source = source;
+
+	}
+
+	public Detail(String key, 
+			Location source, Map<String, Object> map)
+	{
+
+		this(key,source);
+		this.map = map;
 
 	}
 

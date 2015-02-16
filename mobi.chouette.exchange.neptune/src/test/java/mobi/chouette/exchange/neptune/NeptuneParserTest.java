@@ -11,9 +11,10 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
-import mobi.chouette.exchange.importer.report.Report;
 import mobi.chouette.exchange.neptune.importer.NeptuneParserCommand;
 import mobi.chouette.exchange.neptune.importer.NeptuneSAXParserCommand;
+import mobi.chouette.exchange.report.FileInfo;
+import mobi.chouette.exchange.report.Report;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.util.Referential;
@@ -103,8 +104,9 @@ public class NeptuneParserTest {
 		context.put(Constant.REPORT, report);
 		context.put(Constant.VALIDATION_REPORT, validationReport);
 		parser.execute(context);
-		assertNull("no error should be reported",report.getError());
-		assertEquals("report one ok file",report.getFiles().getFilesDetail().getOk().size(),1);
+		assertNull("no error should be reported",report.getFailure());
+		assertEquals("report one file",1,report.getFiles().getFileInfos().size());
+		assertEquals("report one error file",FileInfo.STATE.OK,report.getFiles().getFileInfos().get(0).getStatus());
 
 	}
 
@@ -127,9 +129,10 @@ public class NeptuneParserTest {
 		{
 			System.out.println("exception received "+e.getMessage());
 		}
-		assertNull("no error should be reported",report.getError());
-		assertEquals("report one error file",1,report.getFiles().getFilesDetail().getError().size());
-		System.out.println("error message = "+report.getFiles().getFilesDetail().getError().get(0).getErrors().get(0));
+		assertNull("no error should be reported",report.getFailure());
+		assertEquals("report one file",1,report.getFiles().getFileInfos().size());
+		assertEquals("report one error file",FileInfo.STATE.NOK,report.getFiles().getFileInfos().get(0).getStatus());
+		System.out.println("error message = "+report.getFiles().getFileInfos().get(0).getErrors().get(0));
 	}
 
 	@Test
@@ -151,9 +154,10 @@ public class NeptuneParserTest {
 		{
 			System.out.println("exception received "+e.getMessage());
 		}
-		assertNull("no error should be reported",report.getError());
-		assertEquals("report one error file",1,report.getFiles().getFilesDetail().getError().size());
-		System.out.println("error message = "+report.getFiles().getFilesDetail().getError().get(0).getErrors().get(0));
+		assertNull("no error should be reported",report.getFailure());
+		assertEquals("report one file",1,report.getFiles().getFileInfos().size());
+		assertEquals("report one error file",FileInfo.STATE.NOK,report.getFiles().getFileInfos().get(0).getStatus());
+		System.out.println("error message = "+report.getFiles().getFileInfos().get(0).getErrors().get(0));
 
 	}
 
