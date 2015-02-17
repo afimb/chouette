@@ -108,7 +108,7 @@ public class VehicleJourneyParser implements Parser, Constant {
 				Line line = ObjectFactory.getLine(referential, lineIdShortcut);
 				// TODO lineIdShortcut
 
-			} else if (xpp.getName().equals("statusValue")) {
+//			} else if (xpp.getName().equals("statusValue")) {
 //				ServiceStatusValueEnum value = ParserUtils.getEnum(
 //						ServiceStatusValueEnum.class, xpp.nextText());
 //				vehicleJourney.setServiceStatusValue(value);

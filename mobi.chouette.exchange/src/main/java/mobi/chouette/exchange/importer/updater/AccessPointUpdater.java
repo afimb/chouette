@@ -13,6 +13,7 @@ import mobi.chouette.common.CollectionUtils;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
 import mobi.chouette.dao.AccessLinkDAO;
+import mobi.chouette.dao.GenericDAOImpl;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.util.ObjectFactory;
@@ -112,7 +113,7 @@ public class AccessPointUpdater implements Updater<AccessPoint> {
 					item.getObjectId());
 			if (accessLink == null) {
 				if (accessLinks == null) {
-					accessLinks = accessLinkDAO.load(addedAccessLink);
+					accessLinks = accessLinkDAO.findByObjectId(UpdaterUtils.getObjectIds(addedAccessLink));
 					for (AccessLink object : accessLinks) {
 						cache.getAccessLinks().put(object.getObjectId(), object);
 					}

@@ -95,7 +95,6 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 			
 	         // TODO 2-NEPTUNE-StopArea-1 : check if StopArea refers in field contains
 	         // only stopareas or stoppoints
-            log.info("validate Neptune stop area "+objectId);
 			
 			Context objectContext = (Context) localContext.get(objectId);
 			StopArea stopArea = stopAreas.get(objectId);

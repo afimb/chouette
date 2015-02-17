@@ -59,7 +59,7 @@ public class NeptuneParserCommand implements Command, Constant {
 			if (referential != null) {
 				referential.clear();
 			}
-
+						
 			InputStream input = new BOMInputStream(url.openStream());
 			BufferedReader in = new BufferedReader(
 					new InputStreamReader(input), 8192 * 10);

@@ -23,6 +23,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.FileUtils;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.importer.CopyCommand;
 import mobi.chouette.exchange.importer.RegisterCommand;
 import mobi.chouette.exchange.importer.UncompressCommand;
 import mobi.chouette.exchange.report.FileInfo;
@@ -108,6 +109,10 @@ public class NeptuneImporterCommand implements Command, Constant {
 				Command register = CommandFactory.create(initialContext,
 						RegisterCommand.class.getName());
 				register.execute(context);
+				
+				Command copy = CommandFactory.create(initialContext,
+						CopyCommand.class.getName());
+				copy.execute(context);
 
 			}
 
