@@ -54,12 +54,6 @@ public class Scheduler {
 	public void schedule(String referential) {
 		System.out.println("Scheduler.schedule() tenant "
 				+ ContextHolder.getContext()+ " >>>>>>>>>>>>>>> " + schemaDAO.getCurrentSchema());
-
-		schemaDAO.setCurrentSchema("public");
-		System.out.println("Scheduler.schedule() tenant "
-				+ ContextHolder.getContext()+ " >>>>>>>>>>>>>>> " + schemaDAO.getCurrentSchema());
-
-
 		Job job = jobDAO.getNextJob(referential);
 		if (job != null) {
 			job.setStatus(STATUS.SCHEDULED);

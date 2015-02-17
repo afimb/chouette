@@ -74,7 +74,7 @@ public class LineParser implements Parser, Constant {
 				// TODO [DSU] lineEnd
 			} else if (xpp.getName().equals("routeId")) {
 				String routeId = ParserUtils.getText(xpp.nextText());
-				Route route = ObjectFactory.getRoute(referential, objectId);
+				Route route = ObjectFactory.getRoute(referential, routeId);
 				route.setLine(line);
 			} else if (xpp.getName().equals("ptNetworkIdShortcut")) {
 				String ptNetworkIdShortcut = ParserUtils.getText(xpp.nextText());

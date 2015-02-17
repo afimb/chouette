@@ -58,6 +58,7 @@ public class CopyCommand implements Command {
 						ContextHolder.setContext(schema);
 						vehicleJourneyDAO.copy(buffer);
 						log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
+						ContextHolder.setContext(null);
 						return null;
 					}
 				});
