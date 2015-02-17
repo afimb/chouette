@@ -31,7 +31,6 @@ public class DefaultConnectionProvider implements
 
 	@Override
 	public Connection getConnection(String identifier) throws SQLException {
-		// System.out.println("DefaultConnectionProvider.getConnection() " + identifier);
 		final Connection connection = getAnyConnection();
 		try {
 			if (identifier != null && !identifier.isEmpty()) {
@@ -93,7 +92,6 @@ public class DefaultConnectionProvider implements
 		Map<?, ?> settings = getSettings(registry);
 		String datasource = (String) settings.get(AvailableSettings.DATASOURCE);
 
-		// TODO ContextHolder.setDefaultSchema("public");
 		ContextHolder.setDefaultSchema(null);
 
 		JndiService jndi = registry.getService(JndiService.class);

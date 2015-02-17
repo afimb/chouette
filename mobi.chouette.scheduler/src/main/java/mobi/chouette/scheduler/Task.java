@@ -50,6 +50,8 @@ public class Task implements Callable<Job.STATUS>, ManagedTask, Constant {
 		} catch (Exception e) {
 			log.error(e);
 			result = STATUS.ABORTED;
+		}finally{
+			ContextHolder.setContext(null);
 		}
 		return result;
 	}

@@ -14,8 +14,6 @@
 		<validation-mode>NONE</validation-mode>
 
 		<properties>
-			<property name="hibernate.default_schema" value="public" />
-		
 			<property name="hibernate.show_sql" value="false" />
 			<property name="hibernate.format_sql" value="true" />
 			<property name="hibernate.jdbc.batch_size" value="50" />
@@ -55,10 +53,9 @@
 
 		<exclude-unlisted-classes>true</exclude-unlisted-classes>
 		<validation-mode>NONE</validation-mode>
-		
+
 		<properties>
-			<property name="hibernate.default_schema" value="public" />
-		
+
 			<property name="hibernate.show_sql" value="false" />
 			<property name="hibernate.format_sql" value="true" />
 			<property name="hibernate.jdbc.batch_size" value="50" />
@@ -75,7 +72,7 @@
 				value="true" />
 			<property name="hibernate.cache.use_query_cache" value="true" />
 			<property name="javax.persistence.validation.mode" value="none" />
-<!-- 			<property name="hibernate.hbm2ddl.auto" value="validate" /> -->
+			<!-- <property name="hibernate.hbm2ddl.auto" value="validate" /> -->
 
 		</properties>
 
