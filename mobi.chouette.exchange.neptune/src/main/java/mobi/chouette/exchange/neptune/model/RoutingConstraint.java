@@ -49,6 +49,12 @@ public class RoutingConstraint extends NeptuneIdentifiedObject
    @Setter
    private StopArea area;
 
+@Override
+public Long getId() {
+	// TODO Auto-generated method stub
+	return null;
+}
+
 
 
 }

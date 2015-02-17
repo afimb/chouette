@@ -69,13 +69,13 @@ public class ChouetteAreaParser implements Parser, Constant {
 		int columnNumber =  xpp.getColumnNumber();
 		int lineNumber =  xpp.getLineNumber();
 		
-		StopAreaValidator validator = (StopAreaValidator) ValidatorFactory.create(StopAreaValidator.NAME, context);
+		StopAreaValidator validator = (StopAreaValidator) ValidatorFactory.create(StopAreaValidator.class.getName(), context);
 
 		StopArea stopArea = null;
 		List<String> contains = new ArrayList<String>();
 
+		String objectId = null;
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
-			String objectId = null;
 			if (xpp.getName().equals("objectId")) {
 				objectId = ParserUtils.getText(xpp.nextText());
 				stopArea = ObjectFactory.getStopArea(referential, objectId);
@@ -188,14 +188,14 @@ public class ChouetteAreaParser implements Parser, Constant {
 		int columnNumber =  xpp.getColumnNumber();
 		int lineNumber =  xpp.getLineNumber();
 		
-		AreaCentroidValidator validator = (AreaCentroidValidator) ValidatorFactory.create(AreaCentroidValidator.NAME, context);
+		AreaCentroidValidator validator = (AreaCentroidValidator) ValidatorFactory.create(AreaCentroidValidator.class.getName(), context);
 
 		BiMap<String, String> inverse = map.inverse();
 		StopArea stopArea = null;
 		AreaCentroid areaCentroid = null;
+		String objectId = null;
 
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
-			String objectId = null;
 			if (xpp.getName().equals("objectId")) {
 				objectId = ParserUtils.getText(xpp.nextText());
 				areaCentroid = factory.getAreaCentroid(objectId);
@@ -203,20 +203,24 @@ public class ChouetteAreaParser implements Parser, Constant {
 				validator.addLocation(context, objectId, lineNumber, columnNumber);
 				stopArea = ObjectFactory.getStopArea(referential, areaId);
 			} else if (xpp.getName().equals("name")) {
+				areaCentroid.setName(ParserUtils.getText(xpp.nextText()));
 				if (stopArea.getName() == null)
 					stopArea.setName(areaCentroid.getName());
 			} else if (xpp.getName().equals("comment")) {
+				areaCentroid.setComment(ParserUtils.getText(xpp.nextText()));
 				if (stopArea.getComment() == null)
 					stopArea.setComment(areaCentroid.getComment());
 			} else if (xpp.getName().equals("longLatType")) {
 				stopArea.setLongLatType(ParserUtils.getEnum(
 						LongLatTypeEnum.class, xpp.nextText()));
+				validator.addLongLatType(context, objectId, stopArea.getLongLatType());
 			} else if (xpp.getName().equals("latitude")) {
 				stopArea.setLatitude(ParserUtils.getBigDecimal(xpp.nextText()));
 			} else if (xpp.getName().equals("longitude")) {
 				stopArea.setLongitude(ParserUtils.getBigDecimal(xpp.nextText()));
 			} else if (xpp.getName().equals("containedIn")) {
-				validator.addContainedIn(context, objectId, ParserUtils.getText(xpp.nextText()));
+				String containedIn = ParserUtils.getText(xpp.nextText());
+				validator.addContainedIn(context, objectId, containedIn);
 			} else if (xpp.getName().equals("address")) {
 
 				while (xpp.nextTag() == XmlPullParser.START_TAG) {

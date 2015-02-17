@@ -99,6 +99,11 @@ public class NeptuneImporterCommand implements Command, Constant {
 						NeptuneParserCommand.class.getName());
 				parser.execute(context);
 
+				// validation
+				Command validator = CommandFactory.create(initialContext,
+						NeptuneValidationCommand.class.getName());
+				validator.execute(context);
+
 				// register
 				Command register = CommandFactory.create(initialContext,
 						RegisterCommand.class.getName());
@@ -106,6 +111,8 @@ public class NeptuneImporterCommand implements Command, Constant {
 
 			}
 
+			// save report 
+			
 			result = SUCCESS;
 		} catch (Exception e) {
 			log.error(e);

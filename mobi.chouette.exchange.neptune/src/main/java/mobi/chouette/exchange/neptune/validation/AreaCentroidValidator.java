@@ -2,7 +2,6 @@ package mobi.chouette.exchange.neptune.validation;
 
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import mobi.chouette.common.Context;
@@ -15,80 +14,106 @@ import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.exchange.validation.report.Detail;
 import mobi.chouette.exchange.validation.report.FileLocation;
 import mobi.chouette.exchange.validation.report.Location;
-import mobi.chouette.model.Line;
-import mobi.chouette.model.util.Referential;
+import mobi.chouette.model.type.LongLatTypeEnum;
 
 public class AreaCentroidValidator extends AbstractValidator implements Validator<AreaCentroid> , Constant{
 
 	public static String NAME = "AreaCentroidValidator";
-	
-	private static final String NETWORK_1 = "2-NEPTUNE-Network-1";
+
+	private static final String AREA_CENTROID_1 = "2-NEPTUNE-AreaCentroid-1";
+	private static final String AREA_CENTROID_2 = "2-NEPTUNE-AreaCentroid-2";
 
 	static final String LOCAL_CONTEXT = "AreaCentroid";
 
 
 	public AreaCentroidValidator(Context context) 
 	{
-		addItemToValidation(context, prefix, "Network", 1, "W");
-
+		addItemToValidation( context, prefix, "AreaCentroid", 2,
+				"E", "E");
 	}
 
 	public void addLocation(Context context, String objectId, int lineNumber, int columnNumber)
 	{
 		Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
-		objectContext.put(LINE_NUMBER, lineNumber);
-		objectContext.put(COLUMN_NUMBER, columnNumber);
-		
+		objectContext.put(LINE_NUMBER, Integer.valueOf(lineNumber));
+		objectContext.put(COLUMN_NUMBER, Integer.valueOf(columnNumber));
+
 	}
-	
+
 	public void addContainedIn(Context  context, String objectId, String containedIn)
 	{
 		Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
 		objectContext.put("containedIn", containedIn);
 	}
-	
-	
 
-	@SuppressWarnings("unchecked")
+	public void addLongLatType(Context  context, String objectId, LongLatTypeEnum longLatType)
+	{
+		Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
+		objectContext.put("longLatType", longLatType);
+	}
+
+
 	@Override
 	public ValidationConstraints validate(Context context, AreaCentroid target) throws ValidationException
 	{
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
-		Referential referential = (Referential) context.get(REFERENTIAL);
-		String fileName = (String) context.get(FILE_URL);
-		Line line = referential.getLines().values().iterator().next(); 
+		Context stopAreaContext = (Context) validationContext.get(StopAreaValidator.LOCAL_CONTEXT);
 
+		String fileName = (String) context.get(FILE_URL);
+
+		if (localContext == null || localContext.isEmpty())
+			return new ValidationConstraints();
+
+
+		// 2-NEPTUNE-AreaCentroid-1 : check reference to stoparea
+		prepareCheckPoint(context, AREA_CENTROID_1);
 		for (String objectId : localContext.keySet()) 
 		{
-			// 2-NEPTUNE-PtNetwork-1 : check if lineId of line is present in list
-			Context objectContext = (Context) localContext.get(objectId);
-			List<String> lineIds = (List<String>) objectContext.get("lineId");
-			if (lineIds != null)
-			{
-				prepareCheckPoint(context, NETWORK_1);
-				String lineId = line.getObjectId();
-				if (!lineIds.contains(lineId))
-				{
-					int lineNumber = (int) objectContext.get(LINE_NUMBER);
-					int columnNumber = (int) objectContext.get(COLUMN_NUMBER);
-					Map<String, Object> map = new HashMap<String, Object>();
-					map.put("lineId", lineId);
-					FileLocation sourceLocation = new FileLocation(fileName, lineNumber, columnNumber);
-					Detail errorItem = new Detail(
-							NETWORK_1,
-							new Location(sourceLocation ,objectId), map);
-					addValidationError(context, NETWORK_1, errorItem);
-				}
-			}
 
+			Context objectContext = (Context) localContext.get(objectId);
+			int lineNumber = ((Integer) objectContext.get(LINE_NUMBER)).intValue();
+			int columnNumber = ((Integer) objectContext.get(COLUMN_NUMBER)).intValue();
+			FileLocation sourceLocation = new FileLocation(fileName, lineNumber, columnNumber);
+
+			String containedIn = (String) objectContext.get("containedIn");
+			if (containedIn == null)
+				continue;
+			if (!stopAreaContext.containsKey(containedIn))
+			{
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("containedIn", containedIn);
+				Detail errorItem = new Detail(
+						AREA_CENTROID_1,
+						new Location(sourceLocation,objectId), map);
+				addValidationError(context, AREA_CENTROID_1, errorItem);
+			}
 		}
+		// 2-NEPTUNE-AreaCentroid-2 : check centroid projection type as WSG84
+		prepareCheckPoint(context,AREA_CENTROID_2);
+		for (String objectId : localContext.keySet()) 
+		{
+			Context objectContext = (Context) localContext.get(objectId);
+			int lineNumber = (int) objectContext.get(LINE_NUMBER);
+			int columnNumber = (int) objectContext.get(COLUMN_NUMBER);
+			FileLocation sourceLocation = new FileLocation(fileName, lineNumber, columnNumber);
+
+			if (objectContext.get("longLatType").equals(LongLatTypeEnum.WGS84))
+				continue;
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("longLatType", objectContext.get("longLatType").toString());
+			Detail errorItem = new Detail(
+					AREA_CENTROID_2,
+					new Location(sourceLocation,objectId), map);
+			addValidationError(context, AREA_CENTROID_2, errorItem);
+		}
+
+
+
 		return new ValidationConstraints();
 	}
 
 	public static class DefaultValidatorFactory extends ValidatorFactory {
-
-		
 
 		@Override
 		protected Validator<AreaCentroid> create(Context context) {

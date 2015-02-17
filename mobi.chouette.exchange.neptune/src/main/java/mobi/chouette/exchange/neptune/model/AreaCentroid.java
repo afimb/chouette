@@ -57,6 +57,12 @@ public class AreaCentroid extends NeptuneLocalizedObject
    @Setter
    private String containedInId;
 
+@Override
+public Long getId() {
+	// TODO Auto-generated method stub
+	return null;
+}
+
 
 
 }

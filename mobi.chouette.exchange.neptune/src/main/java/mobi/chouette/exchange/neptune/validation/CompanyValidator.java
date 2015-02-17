@@ -27,8 +27,8 @@ public class CompanyValidator extends AbstractValidator implements Validator<Com
 	public void addLocation(Context context, String objectId, int lineNumber, int columnNumber)
 	{
 		Context objectContext = getObjectContext(context,LOCAL_CONTEXT, objectId);
-		objectContext.put(LINE_NUMBER, lineNumber);
-		objectContext.put(COLUMN_NUMBER, columnNumber);
+		objectContext.put(LINE_NUMBER, Integer.valueOf(lineNumber));
+		objectContext.put(COLUMN_NUMBER, Integer.valueOf(columnNumber));
 		
 	}
 	

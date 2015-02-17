@@ -31,11 +31,11 @@ public class CompanyParser implements Parser, Constant {
 		int columnNumber =  xpp.getColumnNumber();
 		int lineNumber =  xpp.getLineNumber();
 		
-		CompanyValidator validator = (CompanyValidator) ValidatorFactory.create(CompanyValidator.NAME, context);
+		CompanyValidator validator = (CompanyValidator) ValidatorFactory.create(CompanyValidator.class.getName(), context);
 
 		Company company = null;
+		String objectId = null;
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
-			String objectId = null;
 			if (xpp.getName().equals("objectId")) {
 				objectId = ParserUtils.getText(xpp.nextText());
 				company = ObjectFactory.getCompany(referential, objectId);

@@ -33,12 +33,12 @@ public class PTNetworkParser implements Parser, Constant {
 		int columnNumber =  xpp.getColumnNumber();
 		int lineNumber =  xpp.getLineNumber();
 		
-		PTNetworkValidator validator = (PTNetworkValidator) ValidatorFactory.create(PTNetworkValidator.NAME, context);
+		PTNetworkValidator validator = (PTNetworkValidator) ValidatorFactory.create(PTNetworkValidator.class.getName(), context);
 				
 		PTNetwork network = null;
+		String objectId = null;
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 
-			String objectId = null;
 			if (xpp.getName().equals("objectId")) {
 				objectId = ParserUtils.getText(xpp.nextText());
 				network = ObjectFactory.getPTNetwork(referential, objectId);
@@ -80,7 +80,7 @@ public class PTNetworkParser implements Parser, Constant {
 			} else if (xpp.getName().equals("lineId")) {
 				String lineId = ParserUtils.getText(xpp.nextText());
 				// TODO : revoir l'assemblage Network Line
-				Line line = ObjectFactory.getLine(referential, objectId);
+				Line line = ObjectFactory.getLine(referential, lineId);
 				line.setPTNetwork(network);
 				validator.addLineId(context, objectId, lineId);
 			} else {

@@ -2,7 +2,6 @@ package mobi.chouette.exchange.neptune.validation;
 
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -12,29 +11,24 @@ import mobi.chouette.exchange.validation.ValidationConstraints;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
-import mobi.chouette.exchange.validation.report.Detail;
 import mobi.chouette.exchange.validation.report.FileLocation;
-import mobi.chouette.exchange.validation.report.Location;
-import mobi.chouette.model.Line;
-import mobi.chouette.model.PTNetwork;
-import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.StopArea;
+import mobi.chouette.model.Timetable;
 import mobi.chouette.model.util.Referential;
 
-public class StopPointValidator extends AbstractValidator implements Validator<StopPoint> , Constant{
+public class TimetableValidator extends AbstractValidator implements Validator<Timetable> , Constant{
 
-	public static String NAME = "StopPointValidator";
-	
-	private static final String STOP_POINT_1 = "2-NEPTUNE-StopPoint-1";
-	private static final String STOP_POINT_2 = "2-NEPTUNE-StopPoint-2";
-	private static final String STOP_POINT_3 = "2-NEPTUNE-StopPoint-3";
-	private static final String STOP_POINT_4 = "2-NEPTUNE-StopPoint-4";
+	public static String NAME = "TimetableValidator";
 
-	static final String LOCAL_CONTEXT = "StopPoint";
+	private static final String TIMETABLE_1 = "2-NEPTUNE-Timetable-1";
+	private static final String TIMETABLE_2 = "2-NEPTUNE-Timetable-2";
+
+	static final String LOCAL_CONTEXT = "Timetable";
 
 
-	public StopPointValidator(Context context) 
+	public TimetableValidator(Context context) 
 	{
-		addItemToValidation(context, prefix, "StopPoint", 4, "E", "E", "E", "E");
+		addItemToValidation(context, prefix, "Timetable", 2, "W", "W");
 
 	}
 
@@ -43,39 +37,53 @@ public class StopPointValidator extends AbstractValidator implements Validator<S
 		Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
 		objectContext.put(LINE_NUMBER, Integer.valueOf(lineNumber));
 		objectContext.put(COLUMN_NUMBER, Integer.valueOf(columnNumber));
-		
+
 	}
-	
-	@SuppressWarnings("unchecked")
-	public void addLineId(Context  context, String objectId, String lineId)
+
+	public void addAreaCentroidId(Context  context, String objectId, String centroidId)
 	{
 		Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
-		List<String> lineIds = (List<String>) objectContext.get("lineId");
-		if (lineIds == null)
-		{
-			lineIds = new ArrayList<>();
-			objectContext.put("lineId", lineIds);
-		}
-		lineIds.add(lineId);
+		objectContext.put("centroidOfArea", centroidId);
+
 	}
-	
-	
 
 	@SuppressWarnings("unchecked")
+	public void addContains(Context context, String objectId, String containsId) {
+		Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
+		List<String> contains = (List<String>) objectContext.get("contains");
+		if (contains == null)
+		{
+			contains = new ArrayList<>();
+			objectContext.put("contains", contains);
+		}
+		contains.add(containsId);
+		
+	}
+
+
+
 	@Override
-	public ValidationConstraints validate(Context context, StopPoint target) throws ValidationException
+	public ValidationConstraints validate(Context context, Timetable target) throws ValidationException
 	{
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 		if (localContext == null || localContext.isEmpty()) return new ValidationConstraints();
-
+		Context stopPointContext = (Context) validationContext.get(StopPointValidator.LOCAL_CONTEXT);
+		Context itlContext = (Context) validationContext.get(ITLValidator.LOCAL_CONTEXT);
+		Context areaCentroidContext = (Context) validationContext.get(AreaCentroidValidator.LOCAL_CONTEXT);
 		Referential referential = (Referential) context.get(REFERENTIAL);
+		Map<String, StopArea> stopAreas = referential.getStopAreas();
 		String fileName = (String) context.get(FILE_URL);
-		Line line = referential.getLines().values().iterator().next(); 
 
 		for (String objectId : localContext.keySet()) 
 		{
+			
+	         // TODO 2-NEPTUNE-StopArea-1 : check if StopArea refers in field contains
+	         // only stopareas or stoppoints
+
+			
 			Context objectContext = (Context) localContext.get(objectId);
+			StopArea stopArea = stopAreas.get(objectId);
 			int lineNumber = ((Integer) objectContext.get(LINE_NUMBER)).intValue();
 			int columnNumber = ((Integer) objectContext.get(COLUMN_NUMBER)).intValue();
 			FileLocation sourceLocation = new FileLocation(fileName, lineNumber, columnNumber);
@@ -86,13 +94,13 @@ public class StopPointValidator extends AbstractValidator implements Validator<S
 
 	public static class DefaultValidatorFactory extends ValidatorFactory {
 
-		
+
 
 		@Override
-		protected Validator<StopPoint> create(Context context) {
-			StopPointValidator instance = (StopPointValidator) context.get(NAME);
+		protected Validator<Timetable> create(Context context) {
+			TimetableValidator instance = (TimetableValidator) context.get(NAME);
 			if (instance == null) {
-				instance = new StopPointValidator(context);
+				instance = new TimetableValidator(context);
 				context.put(NAME, instance);
 			}
 			return instance;
@@ -102,7 +110,7 @@ public class StopPointValidator extends AbstractValidator implements Validator<S
 
 	static {
 		ValidatorFactory.factories
-		.put(StopPointValidator.class.getName(), new DefaultValidatorFactory());
+		.put(TimetableValidator.class.getName(), new DefaultValidatorFactory());
 	}
 
 

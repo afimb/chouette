@@ -37,8 +37,8 @@ public class PTNetworkValidator extends AbstractValidator implements Validator<P
 	public void addLocation(Context context, String objectId, int lineNumber, int columnNumber)
 	{
 		Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
-		objectContext.put(LINE_NUMBER, lineNumber);
-		objectContext.put(COLUMN_NUMBER, columnNumber);
+		objectContext.put(LINE_NUMBER, Integer.valueOf(lineNumber));
+		objectContext.put(COLUMN_NUMBER, Integer.valueOf(columnNumber));
 		
 	}
 	
@@ -63,6 +63,8 @@ public class PTNetworkValidator extends AbstractValidator implements Validator<P
 	{
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
+		if (localContext == null || localContext.isEmpty()) return new ValidationConstraints();
+
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		String fileName = (String) context.get(FILE_URL);
 		Line line = referential.getLines().values().iterator().next(); 
@@ -78,8 +80,8 @@ public class PTNetworkValidator extends AbstractValidator implements Validator<P
 				String lineId = line.getObjectId();
 				if (!lineIds.contains(lineId))
 				{
-					int lineNumber = (int) objectContext.get(LINE_NUMBER);
-					int columnNumber = (int) objectContext.get(COLUMN_NUMBER);
+					int lineNumber = ((Integer) objectContext.get(LINE_NUMBER)).intValue();
+					int columnNumber = ((Integer) objectContext.get(COLUMN_NUMBER)).intValue();
 					Map<String, Object> map = new HashMap<String, Object>();
 					map.put("lineId", lineId);
 					FileLocation sourceLocation = new FileLocation(fileName, lineNumber, columnNumber);

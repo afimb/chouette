@@ -2,7 +2,6 @@ package mobi.chouette.exchange.neptune.parser;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.Map;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
@@ -13,7 +12,8 @@ import mobi.chouette.exchange.importer.XPPUtil;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.neptune.model.NeptuneObjectFactory;
 import mobi.chouette.exchange.neptune.model.PTLink;
-import mobi.chouette.exchange.validation.report.FileLocation;
+import mobi.chouette.exchange.neptune.validation.PtLinkValidator;
+import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
@@ -24,7 +24,6 @@ import org.xmlpull.v1.XmlPullParser;
 public class PtLinkParser implements Parser, Constant {
 	private static final String CHILD_TAG = "PtLink";
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void parse(Context context) throws Exception {
 
@@ -33,19 +32,19 @@ public class PtLinkParser implements Parser, Constant {
 		NeptuneObjectFactory factory =  (NeptuneObjectFactory) context.get(NEPTUNE_OBJECT_FACTORY);
 
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
-		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
-		context.put(LINE_NUMBER, xpp.getLineNumber());
+		int columnNumber =  xpp.getColumnNumber();
+		int lineNumber =  xpp.getLineNumber();
 		
-		Map<String,FileLocation> locations = (Map<String, FileLocation>) context.get(OBJECT_LOCALISATION);
-		FileLocation location = new FileLocation((String) context.get(FILE_URL), xpp.getLineNumber(), xpp.getColumnNumber());
+		PtLinkValidator validator = (PtLinkValidator) ValidatorFactory.create(PtLinkValidator.class.getName(), context);
 
 		PTLink ptLink = null;
+		String objectId = null;
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 
 			if (xpp.getName().equals("objectId")) {
-				String objectId = ParserUtils.getText(xpp.nextText());
+				 objectId = ParserUtils.getText(xpp.nextText());
 				ptLink = factory.getPTLink(objectId);
-				locations.put(objectId, location);
+				validator.addLocation(context, objectId, lineNumber, columnNumber);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
 				ptLink.setObjectVersion(version);
@@ -55,14 +54,14 @@ public class PtLinkParser implements Parser, Constant {
 			} else if (xpp.getName().equals("creatorId")) {
 				ptLink.setCreatorId(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("startOfLink")) {
-				String objectId = ParserUtils.getText(xpp.nextText());
+				String startOfLinkId = ParserUtils.getText(xpp.nextText());
 				StopPoint startOfLink = ObjectFactory.getStopPoint(referential,
-						objectId);
+						startOfLinkId);
 				ptLink.setStartOfLink(startOfLink);
 			} else if (xpp.getName().equals("endOfLink")) {
-				String objectId = ParserUtils.getText(xpp.nextText());
+				String endOfLinkId = ParserUtils.getText(xpp.nextText());
 				StopPoint endOfLink = ObjectFactory.getStopPoint(referential,
-						objectId);
+						endOfLinkId);
 				ptLink.setEndOfLink(endOfLink);
 			} else if (xpp.getName().equals("linkDistance")) {
 				BigDecimal value = ParserUtils.getBigDecimal(xpp.nextText());

@@ -13,7 +13,8 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.importer.XPPUtil;
-import mobi.chouette.exchange.validation.report.FileLocation;
+import mobi.chouette.exchange.neptune.validation.LineValidator;
+import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.type.TransportModeNameEnum;
@@ -37,19 +38,19 @@ public class LineParser implements Parser, Constant {
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
-		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
-		context.put(LINE_NUMBER, xpp.getLineNumber());
+		int columnNumber =  xpp.getColumnNumber();
+		int lineNumber =  xpp.getLineNumber();
 		
-		Map<String,FileLocation> locations = (Map<String, FileLocation>) context.get(OBJECT_LOCALISATION);
-		FileLocation location = new FileLocation((String) context.get(FILE_URL), xpp.getLineNumber(), xpp.getColumnNumber());
+		LineValidator validator = (LineValidator) ValidatorFactory.create(LineValidator.class.getName(), context);
 
 		Line line = null;
+		String objectId = null;
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 
 			if (xpp.getName().equals("objectId")) {
-				String objectId = ParserUtils.getText(xpp.nextText());
+				objectId = ParserUtils.getText(xpp.nextText());
 				line = ObjectFactory.getLine(referential, objectId);
-				locations.put(objectId, location);
+				validator.addLocation(context, objectId, lineNumber, columnNumber);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
 				line.setObjectVersion(version);
@@ -68,15 +69,15 @@ public class LineParser implements Parser, Constant {
 				TransportModeNameEnum value = ParserUtils.getEnum(
 						TransportModeNameEnum.class, xpp.nextText());
 				line.setTransportModeName(value);
-			} else if (xpp.getName().equals("LineEnd")) {
-				String objectId = ParserUtils.getText(xpp.nextText());
-				// TODO [DSU] LineEnd
+			} else if (xpp.getName().equals("lineEnd")) {
+				String lineEnd = ParserUtils.getText(xpp.nextText());
+				// TODO [DSU] lineEnd
 			} else if (xpp.getName().equals("routeId")) {
-				String objectId = ParserUtils.getText(xpp.nextText());
+				String routeId = ParserUtils.getText(xpp.nextText());
 				Route route = ObjectFactory.getRoute(referential, objectId);
 				route.setLine(line);
 			} else if (xpp.getName().equals("ptNetworkIdShortcut")) {
-				final String objectId = ParserUtils.getText(xpp.nextText());
+				String ptNetworkIdShortcut = ParserUtils.getText(xpp.nextText());
 				// TODO [DSU] ptNetworkIdShortcut
 			} else if (xpp.getName().equals("registration")) {
 				while (xpp.nextTag() == XmlPullParser.START_TAG) {

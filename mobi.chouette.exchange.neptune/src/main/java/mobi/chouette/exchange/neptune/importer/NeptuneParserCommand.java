@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.ejb.Stateless;
 import javax.naming.InitialContext;
@@ -25,7 +23,6 @@ import mobi.chouette.exchange.neptune.model.NeptuneObjectFactory;
 import mobi.chouette.exchange.neptune.parser.ChouettePTNetworkParser;
 import mobi.chouette.exchange.report.FileInfo;
 import mobi.chouette.exchange.report.Report;
-import mobi.chouette.exchange.validation.report.FileLocation;
 import mobi.chouette.model.util.Referential;
 
 import org.apache.commons.io.input.BOMInputStream;
@@ -42,7 +39,6 @@ public class NeptuneParserCommand implements Command, Constant {
 
 	public static final String COMMAND = "NeptuneParserCommand";
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public boolean execute(Context context) throws Exception {
 		boolean result = ERROR;
@@ -53,13 +49,6 @@ public class NeptuneParserCommand implements Command, Constant {
 		fileItem.setName((String) context.get(FILE_URL));
 		
 		// prepare validation
-		Map<String,FileLocation> locations = (Map<String, FileLocation>) context.get(OBJECT_LOCALISATION);
-        if (locations == null) 
-        {
-    		locations = new HashMap<>();
-    		context.put(OBJECT_LOCALISATION,locations);
-        }
-		locations.clear();
 
 		try {
 

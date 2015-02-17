@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.validation.ValidationConstraints;
@@ -19,7 +20,7 @@ import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.util.Referential;
-
+@Log4j
 public class StopAreaValidator extends AbstractValidator implements Validator<StopArea> , Constant{
 
 	public static String NAME = "StopAreaValidator";
@@ -30,6 +31,8 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 	private static final String STOP_AREA_4 = "2-NEPTUNE-StopArea-4";
 	private static final String STOP_AREA_5 = "2-NEPTUNE-StopArea-5";
 	private static final String STOP_AREA_6 = "2-NEPTUNE-StopArea-6";
+	
+	// TODO move tests to ITLValidator
 	private static final String ITL_1 = "2-NEPTUNE-ITL-1";
 	private static final String ITL_2 = "2-NEPTUNE-ITL-2";
 
@@ -44,14 +47,15 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 
 	public void addLocation(Context context, String objectId, int lineNumber, int columnNumber)
 	{
+		if (objectId == null) throw new NullPointerException("null objectId");
 		Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
-		objectContext.put(LINE_NUMBER, lineNumber);
-		objectContext.put(COLUMN_NUMBER, columnNumber);
-
+		objectContext.put(LINE_NUMBER, Integer.valueOf(lineNumber));
+		objectContext.put(COLUMN_NUMBER, Integer.valueOf(columnNumber));
 	}
 
 	public void addAreaCentroidId(Context  context, String objectId, String centroidId)
 	{
+		if (objectId == null) throw new NullPointerException("null objectId");
 		Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
 		objectContext.put("centroidOfArea", centroidId);
 
@@ -59,6 +63,7 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 
 	@SuppressWarnings("unchecked")
 	public void addContains(Context context, String objectId, String containsId) {
+		if (objectId == null) throw new NullPointerException("null objectId");
 		Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
 		List<String> contains = (List<String>) objectContext.get("contains");
 		if (contains == null)
@@ -77,6 +82,7 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 	{
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
+		if (localContext == null || localContext.isEmpty()) return new ValidationConstraints();
 		Context stopPointContext = (Context) validationContext.get(StopPointValidator.LOCAL_CONTEXT);
 		Context itlContext = (Context) validationContext.get(ITLValidator.LOCAL_CONTEXT);
 		Context areaCentroidContext = (Context) validationContext.get(AreaCentroidValidator.LOCAL_CONTEXT);
@@ -89,12 +95,12 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 			
 	         // TODO 2-NEPTUNE-StopArea-1 : check if StopArea refers in field contains
 	         // only stopareas or stoppoints
-
+            log.info("validate Neptune stop area "+objectId);
 			
 			Context objectContext = (Context) localContext.get(objectId);
 			StopArea stopArea = stopAreas.get(objectId);
-			int lineNumber = (int) objectContext.get(LINE_NUMBER);
-			int columnNumber = (int) objectContext.get(COLUMN_NUMBER);
+			int lineNumber = ((Integer) objectContext.get(LINE_NUMBER)).intValue();
+			int columnNumber = ((Integer) objectContext.get(COLUMN_NUMBER)).intValue();
 			FileLocation sourceLocation = new FileLocation(fileName, lineNumber, columnNumber);
 
 			switch (stopArea.getAreaType())

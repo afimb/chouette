@@ -4,7 +4,6 @@ import java.sql.Time;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.Map;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
@@ -13,7 +12,8 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.importer.XPPUtil;
-import mobi.chouette.exchange.validation.report.FileLocation;
+import mobi.chouette.exchange.neptune.validation.VehicleJourneyValidator;
+import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
@@ -53,20 +53,20 @@ public class VehicleJourneyParser implements Parser, Constant {
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
-		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
-		context.put(LINE_NUMBER, xpp.getLineNumber());
+		int columnNumber =  xpp.getColumnNumber();
+		int lineNumber =  xpp.getLineNumber();
 		
-		Map<String,FileLocation> locations = (Map<String, FileLocation>) context.get(OBJECT_LOCALISATION);
-		FileLocation location = new FileLocation((String) context.get(FILE_URL), xpp.getLineNumber(), xpp.getColumnNumber());
+		VehicleJourneyValidator validator = (VehicleJourneyValidator) ValidatorFactory.create(VehicleJourneyValidator.class.getName(), context);
 
 		VehicleJourney vehicleJourney = null;
+		String objectId = null;
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 
 			if (xpp.getName().equals("objectId")) {
-				String objectId = ParserUtils.getText(xpp.nextText());
+				 objectId = ParserUtils.getText(xpp.nextText());
 				vehicleJourney = ObjectFactory.getVehicleJourney(referential,
 						objectId);
-				locations.put(objectId, location);
+				validator.addLocation(context, objectId, lineNumber, columnNumber);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
 				vehicleJourney.setObjectVersion(version);
@@ -81,17 +81,17 @@ public class VehicleJourneyParser implements Parser, Constant {
 			} else if (xpp.getName().equals("facility")) {
 				vehicleJourney.setFacility(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("journeyPatternId")) {
-				String objectId = ParserUtils.getText(xpp.nextText());
+				String journeyPatternId = ParserUtils.getText(xpp.nextText());
 				JourneyPattern journeyPattern = ObjectFactory
-						.getJourneyPattern(referential, objectId);
+						.getJourneyPattern(referential, journeyPatternId);
 				vehicleJourney.setJourneyPattern(journeyPattern);
 			} else if (xpp.getName().equals("number")) {
 				Long value = ParserUtils.getLong(xpp.nextText());
 				vehicleJourney.setNumber(value);
 			} else if (xpp.getName().equals("operatorId")) {
-				String objectId = ParserUtils.getText(xpp.nextText());
+				String operatorId = ParserUtils.getText(xpp.nextText());
 				Company company = ObjectFactory.getCompany(referential,
-						objectId);
+						operatorId);
 				vehicleJourney.setCompany(company);
 			} else if (xpp.getName().equals("publishedJourneyIdentifier")) {
 				vehicleJourney.setPublishedJourneyIdentifier(ParserUtils
@@ -100,12 +100,12 @@ public class VehicleJourneyParser implements Parser, Constant {
 				vehicleJourney.setPublishedJourneyName(ParserUtils.getText(xpp
 						.nextText()));
 			} else if (xpp.getName().equals("routeId")) {
-				String objectId = ParserUtils.getText(xpp.nextText());
-				Route route = ObjectFactory.getRoute(referential, objectId);
+				String routeId = ParserUtils.getText(xpp.nextText());
+				Route route = ObjectFactory.getRoute(referential, routeId);
 				vehicleJourney.setRoute(route);
 			} else if (xpp.getName().equals("lineIdShortcut")) {
-				String objectId = ParserUtils.getText(xpp.nextText());
-				Line line = ObjectFactory.getLine(referential, objectId);
+				String lineIdShortcut = ParserUtils.getText(xpp.nextText());
+				Line line = ObjectFactory.getLine(referential, lineIdShortcut);
 				// TODO lineIdShortcut
 
 			} else if (xpp.getName().equals("statusValue")) {

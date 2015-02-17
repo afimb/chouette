@@ -3,7 +3,6 @@ package mobi.chouette.exchange.neptune.parser;
 import java.math.BigDecimal;
 import java.sql.Time;
 import java.util.Date;
-import java.util.Map;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
@@ -12,7 +11,8 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.importer.XPPUtil;
-import mobi.chouette.exchange.validation.report.FileLocation;
+import mobi.chouette.exchange.neptune.validation.AccessPointValidator;
+import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.AccessPointTypeEnum;
@@ -33,20 +33,20 @@ public class AccessPointParser implements Parser, Constant {
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
-		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
-		context.put(LINE_NUMBER, xpp.getLineNumber());
+		int columnNumber =  xpp.getColumnNumber();
+		int lineNumber =  xpp.getLineNumber();
 		
-		Map<String,FileLocation> locations = (Map<String, FileLocation>) context.get(OBJECT_LOCALISATION);
-		FileLocation location = new FileLocation((String) context.get(FILE_URL), xpp.getLineNumber(), xpp.getColumnNumber());
+		AccessPointValidator validator = (AccessPointValidator) ValidatorFactory.create(AccessPointValidator.class.getName(), context);
 
 		AccessPoint accessPoint = null;
+		String objectId = null;
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 
 			if (xpp.getName().equals("objectId")) {
-				String objectId = ParserUtils.getText(xpp.nextText());
+				 objectId = ParserUtils.getText(xpp.nextText());
 				accessPoint = ObjectFactory.getAccessPoint(referential,
 						objectId);
-				locations.put(objectId, location);
+				validator.addLocation(context, objectId, lineNumber, columnNumber);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
 				accessPoint.setObjectVersion(version);
@@ -60,9 +60,10 @@ public class AccessPointParser implements Parser, Constant {
 			} else if (xpp.getName().equals("comment")) {
 				accessPoint.setComment(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("containedIn")) {
-				String objectId = ParserUtils.getText(xpp.nextText());
+				String containedInId = ParserUtils.getText(xpp.nextText());
+				validator.addContainedIn(context, objectId, containedInId);
 				StopArea stopArea = ObjectFactory.getStopArea(referential,
-						objectId);
+						containedInId);
 				accessPoint.setContainedIn(stopArea);
 			} else if (xpp.getName().equals("address")) {
 

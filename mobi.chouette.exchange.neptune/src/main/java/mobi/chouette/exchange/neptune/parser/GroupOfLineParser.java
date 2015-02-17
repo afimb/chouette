@@ -33,11 +33,11 @@ public class GroupOfLineParser implements Parser, Constant {
 		int columnNumber =  xpp.getColumnNumber();
 		int lineNumber =  xpp.getLineNumber();
 		
-		GroupOfLineValidator validator = (GroupOfLineValidator) ValidatorFactory.create(GroupOfLineValidator.NAME, context);
+		GroupOfLineValidator validator = (GroupOfLineValidator) ValidatorFactory.create(GroupOfLineValidator.class.getName(), context);
 				
 		GroupOfLine groupOfLine = null;
+		String objectId = null;
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
-			String objectId = null;
 			if (xpp.getName().equals("objectId")) {
 				objectId = ParserUtils.getText(xpp.nextText());
 				groupOfLine = ObjectFactory.getGroupOfLine(referential,

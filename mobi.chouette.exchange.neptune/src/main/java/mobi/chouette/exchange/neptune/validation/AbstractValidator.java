@@ -12,10 +12,33 @@ public class AbstractValidator implements Constant
 
 	protected static String prefix = "2-NEPTUNE-";
 
-	protected  Context getObjectContext(Context context, String localContextName, String objectId)
+	public static void resetContext(Context context)
 	{
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
+		if (validationContext != null) 
+		{
+			for (Object object : validationContext.values()) 
+			{
+				Context localContext = (Context) object;
+				localContext.clear();
+			}
+		}
+	}
+
+	protected static Context getObjectContext(Context context, String localContextName, String objectId)
+	{
+		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
+		if (validationContext == null)
+		{
+			validationContext = new Context();
+			context.put(VALIDATION_CONTEXT, validationContext);
+		}
 		Context localContext = (Context) validationContext.get(localContextName);
+		if (localContext == null)
+		{
+			localContext = new Context();
+			validationContext.put(localContextName, localContext);
+		}
 		Context objectContext = (Context) localContext.get(objectId);
 		if (objectContext == null) 
 		{
@@ -23,11 +46,11 @@ public class AbstractValidator implements Constant
 			localContext.put(objectId,objectContext);
 		}
 		return objectContext;
-		
+
 	}
 
-	
-	protected void addItemToValidation(
+
+	protected static void addItemToValidation(
 			Context context, String prefix, String name, int count,  String... severities)
 	{
 		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
@@ -56,7 +79,7 @@ public class AbstractValidator implements Constant
 	 * @param checkPointKey
 	 * @param item
 	 */
-	protected void addValidationError(Context context, String checkPointKey, Detail item)
+	protected static void addValidationError(Context context, String checkPointKey, Detail item)
 	{
 		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
 		CheckPoint checkPoint = validationReport.findCheckPointByName(checkPointKey);
@@ -70,7 +93,7 @@ public class AbstractValidator implements Constant
 	 * 
 	 * @param checkPointKey
 	 */
-	protected void prepareCheckPoint(Context context,String checkPointKey)
+	protected static void prepareCheckPoint(Context context,String checkPointKey)
 	{
 		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
 		CheckPoint checkPoint = validationReport.findCheckPointByName(checkPointKey);

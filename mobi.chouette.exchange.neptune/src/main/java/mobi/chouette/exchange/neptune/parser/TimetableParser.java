@@ -3,7 +3,6 @@ package mobi.chouette.exchange.neptune.parser;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
@@ -12,7 +11,8 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.importer.XPPUtil;
-import mobi.chouette.exchange.validation.report.FileLocation;
+import mobi.chouette.exchange.neptune.validation.TimetableValidator;
+import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.CalendarDay;
 import mobi.chouette.model.Period;
 import mobi.chouette.model.Timetable;
@@ -34,22 +34,23 @@ public class TimetableParser implements Parser, Constant {
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
-		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
-		context.put(LINE_NUMBER, xpp.getLineNumber());
+		int columnNumber =  xpp.getColumnNumber();
+		int lineNumber =  xpp.getLineNumber();
 		
-		Map<String,FileLocation> locations = (Map<String, FileLocation>) context.get(OBJECT_LOCALISATION);
-		FileLocation location = new FileLocation((String) context.get(FILE_URL), xpp.getLineNumber(), xpp.getColumnNumber());
+		TimetableValidator validator = (TimetableValidator) ValidatorFactory.create(TimetableValidator.class.getName(), context);
+				
 
 		Timetable timetable = null;
+		String objectId = null;
 		List<DayTypeEnum> dayTypes = new ArrayList<DayTypeEnum>();
 
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 
 			if (xpp.getName().equals("objectId")) {
-				String objectId = ParserUtils.getText(xpp.nextText());
+				 objectId = ParserUtils.getText(xpp.nextText());
 				timetable = ObjectFactory.getTimetable(referential, objectId);
 				timetable.setDayTypes(dayTypes);
-				locations.put(objectId, location);
+				validator.addLocation(context, objectId, lineNumber, columnNumber);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
 				timetable.setObjectVersion(version);
@@ -85,9 +86,9 @@ public class TimetableParser implements Parser, Constant {
 				Period period = new Period(startOfPeriod, endOfPeriod);
 				timetable.addPeriod(period);
 			} else if (xpp.getName().equals("vehicleJourneyId")) {
-				String objectId = ParserUtils.getText(xpp.nextText());
+				String vehicleJourneyId = ParserUtils.getText(xpp.nextText());
 				VehicleJourney vehicleJourney = ObjectFactory
-						.getVehicleJourney(referential, objectId);
+						.getVehicleJourney(referential, vehicleJourneyId);
 				timetable.addVehicleJourney(vehicleJourney);
 			} else {
 				XPPUtil.skipSubTree(log, xpp);
