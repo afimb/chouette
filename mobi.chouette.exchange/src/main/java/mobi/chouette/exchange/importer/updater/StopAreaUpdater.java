@@ -5,8 +5,6 @@ import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.CollectionUtils;
@@ -15,14 +13,10 @@ import mobi.chouette.common.Pair;
 import mobi.chouette.dao.AccessLinkDAO;
 import mobi.chouette.dao.AccessPointDAO;
 import mobi.chouette.dao.ConnectionLinkDAO;
-import mobi.chouette.dao.GenericDAOImpl;
 import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
-import mobi.chouette.model.Company;
 import mobi.chouette.model.ConnectionLink;
-import mobi.chouette.model.GroupOfLine;
-import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
@@ -197,12 +191,8 @@ public class StopAreaUpdater implements Updater<StopArea> {
 
 			if (stopArea == null) {
 				stopArea = ObjectFactory.getStopArea(cache, objectId);
-				// stopArea.setObjectId(newValue.getParent().getObjectId());
-				// stopAreaDAO.create(stopArea);
 			}
 			oldValue.setParent(stopArea);
-			// Updater<StopArea> stopAreaUpdater = UpdaterFactory.create(
-			// initialContext, StopAreaUpdater.class.getName());
 			stopAreaUpdater.update(context, oldValue.getParent(),
 					newValue.getParent());
 		}
@@ -219,7 +209,8 @@ public class StopAreaUpdater implements Updater<StopArea> {
 					item.getObjectId());
 			if (accessPoint == null) {
 				if (accessPoints == null) {
-					accessPoints = accessPointDAO.findByObjectId(UpdaterUtils.getObjectIds(addedAccessPoint));
+					accessPoints = accessPointDAO.findByObjectId(UpdaterUtils
+							.getObjectIds(addedAccessPoint));
 					for (AccessPoint object : accessPoints) {
 						cache.getAccessPoints().put(object.getObjectId(),
 								object);
@@ -231,13 +222,10 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			if (accessPoint == null) {
 				accessPoint = ObjectFactory.getAccessPoint(cache,
 						item.getObjectId());
-				// accessPoint.setObjectId(item.getObjectId());
 			}
 			accessPoint.setContainedIn(oldValue);
 		}
 
-		// Updater<AccessPoint> accessPointUpdater = UpdaterFactory.create(
-		// initialContext, AccessPointUpdater.class.getName());
 		Collection<Pair<AccessPoint, AccessPoint>> modifiedAccessPoint = CollectionUtils
 				.intersection(oldValue.getAccessPoints(),
 						newValue.getAccessPoints(),
@@ -267,7 +255,8 @@ public class StopAreaUpdater implements Updater<StopArea> {
 					item.getObjectId());
 			if (accessLink == null) {
 				if (accessLinks == null) {
-					accessLinks = accessLinkDAO.findByObjectId(UpdaterUtils.getObjectIds(addedAccessLink));
+					accessLinks = accessLinkDAO.findByObjectId(UpdaterUtils
+							.getObjectIds(addedAccessLink));
 					for (AccessLink object : accessLinks) {
 						cache.getAccessLinks()
 								.put(object.getObjectId(), object);
@@ -279,13 +268,10 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			if (accessLink == null) {
 				accessLink = ObjectFactory.getAccessLink(cache,
 						item.getObjectId());
-				// accessLink.setObjectId(item.getObjectId());
 			}
 			accessLink.setStopArea(oldValue);
 		}
 
-		// Updater<AccessLink> accessLinkUpdater = UpdaterFactory.create(
-		// initialContext, AccessLinkUpdater.class.getName());
 		Collection<Pair<AccessLink, AccessLink>> modifiedAccessLink = CollectionUtils
 				.intersection(oldValue.getAccessLinks(),
 						newValue.getAccessLinks(),
@@ -315,7 +301,9 @@ public class StopAreaUpdater implements Updater<StopArea> {
 					item.getObjectId());
 			if (startOfLink == null) {
 				if (startOfLinks == null) {
-					startOfLinks = connectionLinkDAO.findByObjectId(UpdaterUtils.getObjectIds(addedStartOfLink));
+					startOfLinks = connectionLinkDAO
+							.findByObjectId(UpdaterUtils
+									.getObjectIds(addedStartOfLink));
 					for (ConnectionLink object : startOfLinks) {
 						cache.getConnectionLinks().put(object.getObjectId(),
 								object);
@@ -333,9 +321,6 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			startOfLink.setStartOfLink(oldValue);
 		}
 
-		// Updater<ConnectionLink> connectionLinkUpdater =
-		// UpdaterFactory.create(
-		// initialContext, ConnectionLinkUpdater.class.getName());
 		Collection<Pair<ConnectionLink, ConnectionLink>> modifiedStartOfLink = CollectionUtils
 				.intersection(oldValue.getConnectionStartLinks(),
 						newValue.getConnectionStartLinks(),
@@ -358,7 +343,8 @@ public class StopAreaUpdater implements Updater<StopArea> {
 					item.getObjectId());
 			if (endOfLink == null) {
 				if (endOfLinks == null) {
-					endOfLinks = connectionLinkDAO.findByObjectId(UpdaterUtils.getObjectIds(addedEndOfLink));
+					endOfLinks = connectionLinkDAO.findByObjectId(UpdaterUtils
+							.getObjectIds(addedEndOfLink));
 					for (ConnectionLink object : endOfLinks) {
 						cache.getConnectionLinks().put(object.getObjectId(),
 								object);
@@ -370,13 +356,10 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			if (endOfLink == null) {
 				endOfLink = ObjectFactory.getConnectionLink(cache,
 						item.getObjectId());
-				// endOfLink.setObjectId(item.getObjectId());
 			}
 			endOfLink.setEndOfLink(oldValue);
 		}
 
-		// connectionLinkUpdater = UpdaterFactory.create(initialContext,
-		// ConnectionLinkUpdater.class.getName());
 		Collection<Pair<ConnectionLink, ConnectionLink>> modifiedEndOfLink = CollectionUtils
 				.intersection(oldValue.getConnectionEndLinks(),
 						newValue.getConnectionEndLinks(),
@@ -390,24 +373,4 @@ public class StopAreaUpdater implements Updater<StopArea> {
 		// TODO list stop_areas_stop_areas (routingConstraintAreas)
 
 	}
-
-	static {
-		UpdaterFactory.register(StopAreaUpdater.class.getName(),
-				new UpdaterFactory() {
-
-					@Override
-					protected <T> Updater<T> create(InitialContext context) {
-						Updater result = null;
-						try {
-							result = (Updater) context
-									.lookup("java:app/mobi.chouette.exchange/"
-											+ BEAN_NAME);
-						} catch (NamingException e) {
-							log.error(e);
-						}
-						return result;
-					}
-				});
-	}
-
 }

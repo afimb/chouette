@@ -5,20 +5,15 @@ import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.CollectionUtils;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
-import mobi.chouette.dao.GenericDAOImpl;
 import mobi.chouette.dao.JourneyPatternDAO;
 import mobi.chouette.dao.RouteDAO;
 import mobi.chouette.dao.StopPointDAO;
-import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.JourneyPattern;
-import mobi.chouette.model.PTNetwork;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.util.ObjectFactory;
@@ -127,7 +122,8 @@ public class RouteUpdater implements Updater<Route> {
 			StopPoint stopPoint = cache.getStopPoints().get(item.getObjectId());
 			if (stopPoint == null) {
 				if (stopPoints == null) {
-					stopPoints = stopPointDAO.findByObjectId(UpdaterUtils.getObjectIds(addedStopPoint));
+					stopPoints = stopPointDAO.findByObjectId(UpdaterUtils
+							.getObjectIds(addedStopPoint));
 					for (StopPoint object : stopPoints) {
 						cache.getStopPoints().put(object.getObjectId(), object);
 					}
@@ -138,13 +134,10 @@ public class RouteUpdater implements Updater<Route> {
 			if (stopPoint == null) {
 				stopPoint = ObjectFactory.getStopPoint(cache,
 						item.getObjectId());
-				// stopPoint.setObjectId(item.getObjectId());
 			}
 			stopPoint.setRoute(oldValue);
 		}
 
-		// Updater<StopPoint> stopPointUpdater = UpdaterFactory.create(
-		// initialContext, StopPointUpdater.class.getName());
 		Collection<Pair<StopPoint, StopPoint>> modifiedStopPoint = CollectionUtils
 				.intersection(oldValue.getStopPoints(),
 						newValue.getStopPoints(),
@@ -175,7 +168,8 @@ public class RouteUpdater implements Updater<Route> {
 			if (journeyPattern == null) {
 				if (journeyPatterns == null) {
 					journeyPatterns = journeyPatternDAO
-							.findByObjectId(UpdaterUtils.getObjectIds(addedJourneyPattern));
+							.findByObjectId(UpdaterUtils
+									.getObjectIds(addedJourneyPattern));
 					for (JourneyPattern object : journeyPatterns) {
 						cache.getJourneyPatterns().put(object.getObjectId(),
 								object);
@@ -188,14 +182,10 @@ public class RouteUpdater implements Updater<Route> {
 			if (journeyPattern == null) {
 				journeyPattern = ObjectFactory.getJourneyPattern(cache,
 						item.getObjectId());
-				// journeyPattern.setObjectId(item.getObjectId());
 			}
 			journeyPattern.setRoute(oldValue);
 		}
 
-		// Updater<JourneyPattern> journeyPatternUpdater = //
-		// UpdaterFactory.create(
-		// initialContext, JourneyPatternUpdater.class.getName());
 		Collection<Pair<JourneyPattern, JourneyPattern>> modifiedJourneyPattern = CollectionUtils
 				.intersection(oldValue.getJourneyPatterns(),
 						newValue.getJourneyPatterns(),
@@ -214,25 +204,6 @@ public class RouteUpdater implements Updater<Route> {
 		// journeyPatternDAO.delete(journeyPattern);
 		// }
 
-	}
-
-	static {
-		UpdaterFactory.register(RouteUpdater.class.getName(),
-				new UpdaterFactory() {
-
-					@Override
-					protected <T> Updater<T> create(InitialContext context) {
-						Updater result = null;
-						try {
-							result = (Updater) context
-									.lookup("java:app/mobi.chouette.exchange/"
-											+ BEAN_NAME);
-						} catch (NamingException e) {
-							log.error(e);
-						}
-						return result;
-					}
-				});
 	}
 
 }

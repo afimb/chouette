@@ -69,8 +69,6 @@ public class JobDAO extends GenericDAOImpl<Job> {
 
 	public Job getNextJob(String referential) {
 		
-		// SHOW search_path;
-		log.info("[DSU] getNextJob : " + referential);
 		Job result = null;
 		Query query = em
 				.createQuery("from Job j where j.referential = ?1 and j.status in ( ?2 )");

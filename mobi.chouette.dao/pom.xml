@@ -74,7 +74,7 @@
 				<configuration>
 					<archive>
 						<manifestEntries>
-							<Dependencies>org.postgres, org.jboss.ironjacamar.jdbcadapters</Dependencies>
+							<Dependencies>org.antlr, org.postgres, org.jboss.ironjacamar.jdbcadapters</Dependencies>
 						</manifestEntries>
 					</archive>
 				</configuration>

@@ -1,8 +1,6 @@
 package mobi.chouette.exchange.importer.updater;
 
 import javax.ejb.Stateless;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
@@ -21,8 +19,7 @@ public class PTNetworkUpdater implements Updater<PTNetwork> {
 			return;
 		}
 		newValue.setSaved(true);
-		
-	
+
 		if (newValue.getObjectId() != null
 				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {
 			oldValue.setObjectId(newValue.getObjectId());
@@ -75,25 +72,6 @@ public class PTNetworkUpdater implements Updater<PTNetwork> {
 						oldValue.getSourceIdentifier())) {
 			oldValue.setSourceIdentifier(newValue.getSourceIdentifier());
 		}
-	}
-
-	static {
-		UpdaterFactory.register(PTNetworkUpdater.class.getName(),
-				new UpdaterFactory() {
-
-					@Override
-					protected <T> Updater<T> create(InitialContext context) {
-						Updater result = null;
-						try {
-							result = (Updater) context
-									.lookup("java:app/mobi.chouette.exchange/"
-											+ BEAN_NAME);
-						} catch (NamingException e) {
-							log.error(e);
-						}
-						return result;
-					}
-				});
 	}
 
 }

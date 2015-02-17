@@ -2,8 +2,6 @@ package mobi.chouette.exchange.importer.updater;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
@@ -69,25 +67,6 @@ public class VehicleJourneyAtStopUpdater implements
 				oldValue.setStopPoint(stopPoint);
 			}
 		}
-	}
-
-	static {
-		UpdaterFactory.register(VehicleJourneyAtStopUpdater.class.getName(),
-				new UpdaterFactory() {
-
-					@Override
-					protected <T> Updater<T> create(InitialContext context) {
-						Updater result = null;
-						try {
-							result = (Updater) context
-									.lookup("java:app/mobi.chouette.exchange/"
-											+ BEAN_NAME);
-						} catch (NamingException e) {
-							log.error(e);
-						}
-						return result;
-					}
-				});
 	}
 
 }

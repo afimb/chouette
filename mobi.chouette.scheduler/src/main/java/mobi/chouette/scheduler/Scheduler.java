@@ -52,8 +52,6 @@ public class Scheduler {
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void schedule(String referential) {
-		System.out.println("Scheduler.schedule() tenant "
-				+ ContextHolder.getContext()+ " >>>>>>>>>>>>>>> " + schemaDAO.getCurrentSchema());
 			
 		Job job = jobDAO.getNextJob(referential);
 		if (job != null) {

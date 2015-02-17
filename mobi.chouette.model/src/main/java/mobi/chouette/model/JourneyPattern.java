@@ -1,9 +1,7 @@
 package mobi.chouette.model;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -198,7 +196,7 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 	@Getter
 	@Setter
 	@ManyToMany
-	// TODO [DSU] @OrderBy(value="position") : antlr.CommonToken cannot be cast to antlr.Token
+	@OrderBy(value="position")
 	@JoinTable(name = "journey_patterns_stop_points", joinColumns = { @JoinColumn(name = "journey_pattern_id", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "stop_point_id", nullable = false, updatable = false) })
 	private List<StopPoint> stopPoints = new ArrayList<StopPoint>(0);
 

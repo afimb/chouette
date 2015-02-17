@@ -7,15 +7,12 @@ import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.CollectionUtils;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
 import mobi.chouette.dao.CompanyDAO;
-import mobi.chouette.dao.GenericDAOImpl;
 import mobi.chouette.dao.RouteDAO;
 import mobi.chouette.dao.StopPointDAO;
 import mobi.chouette.dao.TimetableDAO;
@@ -81,7 +78,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 
 		Referential cache = (Referential) context.get(CACHE);
 		cache.getVehicleJourneys().put(oldValue.getObjectId(), oldValue);
-		
+
 		boolean optimized = (Boolean) context.get(OPTIMIZED);
 
 		if (newValue.getObjectId() != null
@@ -173,11 +170,8 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 
 			if (company == null) {
 				company = ObjectFactory.getCompany(cache, objectId);
-				// company.setObjectId(newValue.getCompany().getObjectId());
 			}
 			oldValue.setCompany(company);
-			// Updater<Company> companyUpdater = UpdaterFactory.create(
-			// initialContext, CompanyUpdater.class.getName());
 			companyUpdater.update(context, oldValue.getCompany(),
 					newValue.getCompany());
 		}
@@ -202,10 +196,11 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 
 		// VehicleJourneyAtStop
 		if (optimized) {
-//			for (VehicleJourneyAtStop vehicleJourneyAtStop : oldValue.getVehicleJourneyAtStops()) {
-//				vehicleJourneyAtStop.setVehicleJourney(null);
-//				vehicleJourneyAtStopDAO.delete(vehicleJourneyAtStop);
-//			}
+			// for (VehicleJourneyAtStop vehicleJourneyAtStop :
+			// oldValue.getVehicleJourneyAtStops()) {
+			// vehicleJourneyAtStop.setVehicleJourney(null);
+			// vehicleJourneyAtStopDAO.delete(vehicleJourneyAtStop);
+			// }
 		} else {
 			Collection<VehicleJourneyAtStop> addedVehicleJourneyAtStop = CollectionUtils
 					.substract(newValue.getVehicleJourneyAtStops(),
@@ -242,10 +237,6 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 				vehicleJourneyAtStop.setVehicleJourney(oldValue);
 			}
 
-			// Updater<VehicleJourneyAtStop> vehicleJourneyAtStopUpdater =
-			// UpdaterFactory
-			// .create(initialContext,
-			// VehicleJourneyAtStopUpdater.class.getName());
 			Collection<Pair<VehicleJourneyAtStop, VehicleJourneyAtStop>> modifiedVehicleJourneyAtStop = CollectionUtils
 					.intersection(oldValue.getVehicleJourneyAtStops(),
 							newValue.getVehicleJourneyAtStops(),
@@ -276,7 +267,8 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 			Timetable timetable = cache.getTimetables().get(item.getObjectId());
 			if (timetable == null) {
 				if (timetables == null) {
-					timetables = timetableDAO.findByObjectId(UpdaterUtils.getObjectIds(addedTimetable));
+					timetables = timetableDAO.findByObjectId(UpdaterUtils
+							.getObjectIds(addedTimetable));
 					for (Timetable object : timetables) {
 						cache.getTimetables().put(object.getObjectId(), object);
 					}
@@ -287,13 +279,10 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 			if (timetable == null) {
 				timetable = ObjectFactory.getTimetable(cache,
 						item.getObjectId());
-				// timetable.setObjectId(item.getObjectId());
 			}
 			timetable.addVehicleJourney(oldValue);
 		}
 
-		// Updater<Timetable> timetableUpdater = UpdaterFactory.create(
-		// initialContext, TimetableUpdater.class.getName());
 		Collection<Pair<Timetable, Timetable>> modifiedTimetable = CollectionUtils
 				.intersection(oldValue.getTimetables(),
 						newValue.getTimetables(),
@@ -309,24 +298,5 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 			timetable.removeVehicleJourney(oldValue);
 		}
 
-	}
-
-	static {
-		UpdaterFactory.register(VehicleJourneyUpdater.class.getName(),
-				new UpdaterFactory() {
-
-					@Override
-					protected <T> Updater<T> create(InitialContext context) {
-						Updater result = null;
-						try {
-							result = (Updater) context
-									.lookup("java:app/mobi.chouette.exchange/"
-											+ BEAN_NAME);
-						} catch (NamingException e) {
-							log.error(e);
-						}
-						return result;
-					}
-				});
 	}
 }

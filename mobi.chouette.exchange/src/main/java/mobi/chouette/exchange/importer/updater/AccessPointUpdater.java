@@ -5,15 +5,12 @@ import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.CollectionUtils;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
 import mobi.chouette.dao.AccessLinkDAO;
-import mobi.chouette.dao.GenericDAOImpl;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.util.ObjectFactory;
@@ -108,29 +105,28 @@ public class AccessPointUpdater implements Updater<AccessPoint> {
 		List<AccessLink> accessLinks = null;
 
 		for (AccessLink item : addedAccessLink) {
-			
+
 			AccessLink accessLink = cache.getAccessLinks().get(
 					item.getObjectId());
 			if (accessLink == null) {
 				if (accessLinks == null) {
-					accessLinks = accessLinkDAO.findByObjectId(UpdaterUtils.getObjectIds(addedAccessLink));
+					accessLinks = accessLinkDAO.findByObjectId(UpdaterUtils
+							.getObjectIds(addedAccessLink));
 					for (AccessLink object : accessLinks) {
-						cache.getAccessLinks().put(object.getObjectId(), object);
+						cache.getAccessLinks()
+								.put(object.getObjectId(), object);
 					}
 				}
 				accessLink = cache.getAccessLinks().get(item.getObjectId());
 			}
-			
 
 			if (accessLink == null) {
-				accessLink = ObjectFactory.getAccessLink(cache, item.getObjectId());
-				// accessLink.setObjectId(item.getObjectId());
+				accessLink = ObjectFactory.getAccessLink(cache,
+						item.getObjectId());
 			}
 			accessLink.setAccessPoint(oldValue);
 		}
 
-		// Updater<AccessLink> accessLinkUpdater = UpdaterFactory.create(
-		// initialContext, AccessLinkUpdater.class.getName());
 		Collection<Pair<AccessLink, AccessLink>> modifiedAccessLink = CollectionUtils
 				.intersection(oldValue.getAccessLinks(),
 						newValue.getAccessLinks(),
@@ -149,22 +145,4 @@ public class AccessPointUpdater implements Updater<AccessPoint> {
 
 	}
 
-	static {
-		UpdaterFactory.register(AccessPointUpdater.class.getName(),
-				new UpdaterFactory() {
-
-					@Override
-					protected <T> Updater<T> create(InitialContext context) {
-						Updater result = null;
-						try {
-							result = (Updater) context
-									.lookup("java:app/mobi.chouette.exchange/"
-											+ BEAN_NAME);
-						} catch (NamingException e) {
-							log.error(e);
-						}
-						return result;
-					}
-				});
-	}
 }

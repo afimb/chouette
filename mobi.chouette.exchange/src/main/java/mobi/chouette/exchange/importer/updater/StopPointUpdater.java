@@ -2,13 +2,10 @@ package mobi.chouette.exchange.importer.updater;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.dao.StopAreaDAO;
-import mobi.chouette.model.Company;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.util.ObjectFactory;
@@ -34,7 +31,7 @@ public class StopPointUpdater implements Updater<StopPoint> {
 			return;
 		}
 		newValue.setSaved(true);
-		
+
 		Referential cache = (Referential) context.get(CACHE);
 		cache.getStopPoints().put(oldValue.getObjectId(), oldValue);
 
@@ -65,9 +62,8 @@ public class StopPointUpdater implements Updater<StopPoint> {
 		if (newValue.getContainedInStopArea() == null) {
 			oldValue.setContainedInStopArea(null);
 		} else {
-			
-			String objectId = newValue
-					.getContainedInStopArea().getObjectId();
+
+			String objectId = newValue.getContainedInStopArea().getObjectId();
 			StopArea stopArea = cache.getStopAreas().get(objectId);
 			if (stopArea == null) {
 				stopArea = stopAreaDAO.findByObjectId(objectId);
@@ -75,36 +71,14 @@ public class StopPointUpdater implements Updater<StopPoint> {
 					cache.getStopAreas().put(objectId, stopArea);
 				}
 			}
-			
+
 			if (stopArea == null) {
-				stopArea = ObjectFactory.getStopArea(cache, objectId);				
+				stopArea = ObjectFactory.getStopArea(cache, objectId);
 			}
 			oldValue.setContainedInStopArea(stopArea);
-			// Updater<StopArea> stopAreaUpdater = UpdaterFactory.create(
-			// initialContext, StopAreaUpdater.class.getName());
 			stopAreaUpdater.update(context, oldValue.getContainedInStopArea(),
 					newValue.getContainedInStopArea());
 		}
 
 	}
-
-	static {
-		UpdaterFactory.register(StopPointUpdater.class.getName(),
-				new UpdaterFactory() {
-
-					@Override
-					protected <T> Updater<T> create(InitialContext context) {
-						Updater result = null;
-						try {
-							result = (Updater) context
-									.lookup("java:app/mobi.chouette.exchange/"
-											+ BEAN_NAME);
-						} catch (NamingException e) {
-							log.error(e);
-						}
-						return result;
-					}
-				});
-	}
-
 }

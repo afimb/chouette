@@ -5,6 +5,7 @@ import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -18,6 +19,7 @@ import mobi.chouette.model.VehicleJourney;
 import org.hibernate.Session;
 import org.hibernate.jdbc.Work;
 import org.jboss.jca.adapters.jdbc.WrappedConnection;
+import org.jboss.jca.adapters.jdbc.WrappedPreparedStatement;
 import org.postgresql.PGConnection;
 
 import com.jamonapi.Monitor;
@@ -45,10 +47,10 @@ public class VehicleJourneyDAO extends GenericDAOImpl<VehicleJourney> {
 			@Override
 			public void execute(Connection connection) throws SQLException {
 
-				Monitor monitor = MonitorFactory.start("COPY");
+				Monitor monitor = MonitorFactory.start("DELETE");
 
 				final String SQL = "DELETE FROM vehicle_journey_at_stops WHERE id IN ("
-						+ "SELECT h.id FROM vehicle_journey_at_stops h JOIN vehicle_journeys c ON h.vehicle_journey_id = c.id WHERE c.objectid IN ( ? )"
+						+ "SELECT h.id FROM vehicle_journey_at_stops h JOIN vehicle_journeys c ON h.vehicle_journey_id = c.id WHERE c.objectid IN ( %s )"
 						+ ")";
 
 				// delete
@@ -66,10 +68,10 @@ public class VehicleJourneyDAO extends GenericDAOImpl<VehicleJourney> {
 						}
 					}
 
-					PreparedStatement statement = connection
-							.prepareStatement(SQL);
-					statement.setString(1, buffer.toString());
-					int count = statement.executeUpdate();
+					Statement statement = connection.createStatement();
+					String sql = String.format(SQL, buffer.toString());
+					// System.out.println("execute SQL : " + sql);
+					int count = statement.executeUpdate(sql);
 					log.info("[DSU] delete " + count + " objects.");
 				}
 				log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);

@@ -2,8 +2,6 @@ package mobi.chouette.exchange.importer.updater;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
@@ -13,7 +11,7 @@ import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.util.Referential;
 
 @Log4j
-@Stateless(name=AccessLinkUpdater.BEAN_NAME)
+@Stateless(name = AccessLinkUpdater.BEAN_NAME)
 public class AccessLinkUpdater implements Updater<AccessLink> {
 
 	public static final String BEAN_NAME = "AccessLinkUpdater";
@@ -134,22 +132,4 @@ public class AccessLinkUpdater implements Updater<AccessLink> {
 
 	}
 
-	static {
-		UpdaterFactory.register(AccessLinkUpdater.class.getName(),
-				new UpdaterFactory() {
-
-					@Override
-					protected <T> Updater<T> create(InitialContext context) {
-						Updater result = null;
-						try {
-							result = (Updater) context
-									.lookup("java:app/mobi.chouette.exchange/"
-											+ BEAN_NAME);
-						} catch (NamingException e) {
-							log.error(e);
-						}
-						return result;
-					}
-				});
-	}
 }

@@ -1,8 +1,6 @@
 package mobi.chouette.exchange.importer.updater;
 
 import javax.ejb.Stateless;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
@@ -11,7 +9,7 @@ import mobi.chouette.model.Company;
 @Log4j
 @Stateless(name = CompanyUpdater.BEAN_NAME)
 public class CompanyUpdater implements Updater<Company> {
-	
+
 	public static final String BEAN_NAME = "CompanyUpdater";
 
 	@Override
@@ -22,7 +20,6 @@ public class CompanyUpdater implements Updater<Company> {
 		}
 		newValue.setSaved(true);
 
-		
 		if (newValue.getObjectId() != null
 				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {
 			oldValue.setObjectId(newValue.getObjectId());
@@ -89,25 +86,6 @@ public class CompanyUpdater implements Updater<Company> {
 				&& !newValue.getTimeZone().equals(oldValue.getTimeZone())) {
 			oldValue.setTimeZone(newValue.getTimeZone());
 		}
-	}
-
-	static {
-		UpdaterFactory.register(CompanyUpdater.class.getName(),
-				new UpdaterFactory() {
-
-					@Override
-					protected <T> Updater<T> create(InitialContext context) {
-						Updater result = null;
-						try {
-							result = (Updater) context
-									.lookup("java:app/mobi.chouette.exchange/"
-											+ BEAN_NAME);
-						} catch (NamingException e) {
-							log.error(e);
-						}
-						return result;
-					}
-				});
 	}
 
 }

@@ -2,27 +2,22 @@ package mobi.chouette.exchange.importer.updater;
 
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.List;
 
 import javax.ejb.Stateless;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.CollectionUtils;
 import mobi.chouette.common.Context;
-import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.CalendarDay;
 import mobi.chouette.model.Period;
 import mobi.chouette.model.Timetable;
 
 @Log4j
-@Stateless(name=TimetableUpdater.BEAN_NAME)
+@Stateless(name = TimetableUpdater.BEAN_NAME)
 public class TimetableUpdater implements Updater<Timetable> {
 
 	public static final String BEAN_NAME = "TimetableUpdater";
 
-	
 	private static final Comparator<Period> PERIOD_COMPARATOR = new Comparator<Period>() {
 		@Override
 		public int compare(Period left, Period right) {
@@ -123,24 +118,4 @@ public class TimetableUpdater implements Updater<Timetable> {
 		}
 
 	}
-
-	static {
-		UpdaterFactory.register(TimetableUpdater.class.getName(),
-				new UpdaterFactory() {
-
-					@Override
-					protected <T> Updater<T> create(InitialContext context) {
-						Updater result = null;
-						try {
-							result = (Updater) context
-									.lookup("java:app/mobi.chouette.exchange/"
-											+ BEAN_NAME);
-						} catch (NamingException e) {
-							log.error(e);
-						}
-						return result;
-					}
-				});
-	}
-
 }
