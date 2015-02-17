@@ -78,7 +78,6 @@ public class RegisterCommand implements Command {
 //			}
 
 			Referential referential = (Referential) context.get(REFERENTIAL);
-			log.info("[DSU] register line count  : " + referential.getLines().size());
 			Line newValue = referential.getLines().values().iterator().next();
 			log.info("[DSU] register line : " + newValue.getObjectId());
 
