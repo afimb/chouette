@@ -2,7 +2,6 @@ package mobi.chouette.exchange.neptune.parser;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
@@ -13,6 +12,8 @@ import mobi.chouette.exchange.importer.XPPUtil;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.neptune.model.NeptuneObjectFactory;
 import mobi.chouette.exchange.neptune.model.PTLink;
+import mobi.chouette.exchange.neptune.validation.ChouetteRouteValidator;
+import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.type.PTDirectionEnum;
@@ -34,15 +35,18 @@ public class ChouetteRouteParser implements Parser, Constant {
 				.get(NEPTUNE_OBJECT_FACTORY);
 
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
-		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
-		context.put(LINE_NUMBER, xpp.getLineNumber());
+		int columnNumber =  xpp.getColumnNumber();
+		int lineNumber =  xpp.getLineNumber();
+		
+		ChouetteRouteValidator validator = (ChouetteRouteValidator) ValidatorFactory.create(ChouetteRouteValidator.class.getName(), context);
 
 		Route route = null;
+		String objectId = null;
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
-
 			if (xpp.getName().equals("objectId")) {
-				String objectId = ParserUtils.getText(xpp.nextText());
+				 objectId = ParserUtils.getText(xpp.nextText());
 				route = ObjectFactory.getRoute(referential, objectId);
+				validator.addLocation(context, objectId, lineNumber, columnNumber);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
 				route.setObjectVersion(version);
@@ -58,15 +62,15 @@ public class ChouetteRouteParser implements Parser, Constant {
 						PTDirectionEnum.class, xpp.nextText());
 				route.setDirection(value);
 			} else if (xpp.getName().equals("journeyPatternId")) {
-				String objectId = ParserUtils.getText(xpp.nextText());
+				String journeyPatternId = ParserUtils.getText(xpp.nextText());
 				JourneyPattern journeyPattern = ObjectFactory
-						.getJourneyPattern(referential, objectId);
+						.getJourneyPattern(referential, journeyPatternId);
 				journeyPattern.setRoute(route);
 			} else if (xpp.getName().equals("number")) {
 				route.setNumber(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("ptLinkId")) {
-				String objectId = ParserUtils.getText(xpp.nextText());
-				PTLink ptLink = factory.getPTLink(objectId);
+				String ptLinkId = ParserUtils.getText(xpp.nextText());
+				PTLink ptLink = factory.getPTLink(ptLinkId);
 				List<PTLink> list = factory.getPTLinksOnRoute(route);
 				list.add(ptLink);
 			} else if (xpp.getName().equals("RouteExtension")) {
@@ -80,9 +84,9 @@ public class ChouetteRouteParser implements Parser, Constant {
 					}
 				}
 			} else if (xpp.getName().equals("wayBackRouteId")) {
-				String objectId = ParserUtils.getText(xpp.nextText());
+				String wayBackRouteId = ParserUtils.getText(xpp.nextText());
 				Route wayBackRoute = ObjectFactory.getRoute(referential,
-						objectId);
+						wayBackRouteId);
 				// TODO [DSU] wayBack oppositeRouteId
 
 			} else if (xpp.getName().equals("comment")) {

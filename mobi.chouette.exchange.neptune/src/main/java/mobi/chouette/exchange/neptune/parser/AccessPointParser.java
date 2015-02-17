@@ -11,6 +11,8 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.importer.XPPUtil;
+import mobi.chouette.exchange.neptune.validation.AccessPointValidator;
+import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.AccessPointTypeEnum;
@@ -31,14 +33,20 @@ public class AccessPointParser implements Parser, Constant {
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
+		int columnNumber =  xpp.getColumnNumber();
+		int lineNumber =  xpp.getLineNumber();
+		
+		AccessPointValidator validator = (AccessPointValidator) ValidatorFactory.create(AccessPointValidator.class.getName(), context);
 
 		AccessPoint accessPoint = null;
+		String objectId = null;
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 
 			if (xpp.getName().equals("objectId")) {
-				String objectId = ParserUtils.getText(xpp.nextText());
+				 objectId = ParserUtils.getText(xpp.nextText());
 				accessPoint = ObjectFactory.getAccessPoint(referential,
 						objectId);
+				validator.addLocation(context, objectId, lineNumber, columnNumber);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
 				accessPoint.setObjectVersion(version);
@@ -52,9 +60,10 @@ public class AccessPointParser implements Parser, Constant {
 			} else if (xpp.getName().equals("comment")) {
 				accessPoint.setComment(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("containedIn")) {
-				String objectId = ParserUtils.getText(xpp.nextText());
+				String containedInId = ParserUtils.getText(xpp.nextText());
+				validator.addContainedIn(context, objectId, containedInId);
 				StopArea stopArea = ObjectFactory.getStopArea(referential,
-						objectId);
+						containedInId);
 				accessPoint.setContainedIn(stopArea);
 			} else if (xpp.getName().equals("address")) {
 

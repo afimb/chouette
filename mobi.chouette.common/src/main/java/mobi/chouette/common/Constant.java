@@ -30,6 +30,8 @@ public interface Constant {
 
 	public static final String COLUMN_NUMBER = "column_number";
 	public static final String LINE_NUMBER = "line_number";
+	// public static final String OBJECT_LOCALISATION = "object_localisation";
+	public static final String VALIDATION_CONTEXT = "validation_context";
 
 	public static final String REFERENTIAL = "referential";
 	public static final String CACHE = "cache";

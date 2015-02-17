@@ -11,6 +11,8 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.importer.XPPUtil;
+import mobi.chouette.exchange.neptune.validation.TimetableValidator;
+import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.CalendarDay;
 import mobi.chouette.model.Period;
 import mobi.chouette.model.Timetable;
@@ -32,18 +34,23 @@ public class TimetableParser implements Parser, Constant {
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
-		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
-		context.put(LINE_NUMBER, xpp.getLineNumber());
+		int columnNumber =  xpp.getColumnNumber();
+		int lineNumber =  xpp.getLineNumber();
+		
+		TimetableValidator validator = (TimetableValidator) ValidatorFactory.create(TimetableValidator.class.getName(), context);
+				
 
 		Timetable timetable = null;
+		String objectId = null;
 		List<DayTypeEnum> dayTypes = new ArrayList<DayTypeEnum>();
 
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 
 			if (xpp.getName().equals("objectId")) {
-				String objectId = ParserUtils.getText(xpp.nextText());
+				 objectId = ParserUtils.getText(xpp.nextText());
 				timetable = ObjectFactory.getTimetable(referential, objectId);
 				timetable.setDayTypes(dayTypes);
+				validator.addLocation(context, objectId, lineNumber, columnNumber);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
 				timetable.setObjectVersion(version);
@@ -79,9 +86,9 @@ public class TimetableParser implements Parser, Constant {
 				Period period = new Period(startOfPeriod, endOfPeriod);
 				timetable.addPeriod(period);
 			} else if (xpp.getName().equals("vehicleJourneyId")) {
-				String objectId = ParserUtils.getText(xpp.nextText());
+				String vehicleJourneyId = ParserUtils.getText(xpp.nextText());
 				VehicleJourney vehicleJourney = ObjectFactory
-						.getVehicleJourney(referential, objectId);
+						.getVehicleJourney(referential, vehicleJourneyId);
 				timetable.addVehicleJourney(vehicleJourney);
 			} else {
 				XPPUtil.skipSubTree(log, xpp);

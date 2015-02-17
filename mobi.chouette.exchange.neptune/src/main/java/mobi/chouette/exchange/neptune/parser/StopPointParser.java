@@ -9,6 +9,8 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.importer.XPPUtil;
+import mobi.chouette.exchange.neptune.validation.StopPointValidator;
+import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.util.ObjectFactory;
@@ -20,6 +22,7 @@ import org.xmlpull.v1.XmlPullParser;
 public class StopPointParser implements Parser, Constant {
 	private static final String CHILD_TAG = "StopPoint";
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void parse(Context context) throws Exception {
 
@@ -27,15 +30,20 @@ public class StopPointParser implements Parser, Constant {
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
-		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
-		context.put(LINE_NUMBER, xpp.getLineNumber());
+		int columnNumber =  xpp.getColumnNumber();
+		int lineNumber =  xpp.getLineNumber();
+		
+		StopPointValidator validator = (StopPointValidator) ValidatorFactory.create(StopPointValidator.class.getName(), context);
+
 
 		StopPoint stopPoint = null;
+		String objectId = null;
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 
 			if (xpp.getName().equals("objectId")) {
-				String objectId = ParserUtils.getText(xpp.nextText());
+				 objectId = ParserUtils.getText(xpp.nextText());
 				stopPoint = ObjectFactory.getStopPoint(referential, objectId);
+				validator.addLocation(context, objectId, lineNumber, columnNumber);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
 				stopPoint.setObjectVersion(version);
@@ -47,15 +55,15 @@ public class StopPointParser implements Parser, Constant {
 			} else if (xpp.getName().equals("name")) {
 				stopPoint.setName(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("containedIn")) {
-				String objectId = ParserUtils.getText(xpp.nextText());
+				String containedIn = ParserUtils.getText(xpp.nextText());
 				StopArea stopArea = ObjectFactory.getStopArea(referential,
-						objectId);
+						containedIn);
 				stopPoint.setContainedInStopArea(stopArea);
 			} else if (xpp.getName().equals("lineIdShortcut")) {
-				String objectId = ParserUtils.getText(xpp.nextText());
+				String lineIdShortcut = ParserUtils.getText(xpp.nextText());
 				// TODO lineIdShortcut
 			} else if (xpp.getName().equals("ptNetworkIdShortcut")) {
-				String objectId = ParserUtils.getText(xpp.nextText());
+				String ptNetworkIdShortcut = ParserUtils.getText(xpp.nextText());
 				// TODO ptNetworkIdShortcut
 			} else {
 				XPPUtil.skipSubTree(log, xpp);

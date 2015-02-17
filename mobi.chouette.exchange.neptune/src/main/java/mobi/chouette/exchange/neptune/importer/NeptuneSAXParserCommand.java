@@ -22,8 +22,8 @@ import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.importer.report.FileItem;
-import mobi.chouette.exchange.importer.report.Report;
+import mobi.chouette.exchange.report.FileInfo;
+import mobi.chouette.exchange.report.Report;
 
 import org.apache.commons.io.input.BOMInputStream;
 import org.xml.sax.Attributes;
@@ -49,7 +49,7 @@ public class NeptuneSAXParserCommand implements Command, Constant {
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
 		Report report = (Report) context.get(REPORT);
-		FileItem fileItem = new FileItem();
+		FileInfo fileItem = new FileInfo();
 		fileItem.setName((String) context.get(FILE_URL));
 
 		Schema schema = (Schema) context.get(SCHEMA);
@@ -94,7 +94,8 @@ public class NeptuneSAXParserCommand implements Command, Constant {
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		} catch (IOException | SAXException e) {
 			log.error(e);
-			report.getFiles().getFilesDetail().getError().add(fileItem);
+			fileItem.setStatus(FileInfo.STATE.NOK);
+			report.getFiles().getFileInfos().add(fileItem);
 			fileItem.getErrors().add(e.getMessage());
 			monitor.stop();
 		}

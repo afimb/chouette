@@ -13,6 +13,8 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.importer.XPPUtil;
+import mobi.chouette.exchange.neptune.validation.ConnectionLinkValidator;
+import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ConnectionLinkTypeEnum;
@@ -33,16 +35,19 @@ public class ConnectionLinkParser implements Parser, Constant {
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
-		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
-		context.put(LINE_NUMBER, xpp.getLineNumber());
+		int columnNumber =  xpp.getColumnNumber();
+		int lineNumber =  xpp.getLineNumber();
+		
+		ConnectionLinkValidator validator = (ConnectionLinkValidator) ValidatorFactory.create(ConnectionLinkValidator.class.getName(), context);
 		
 		ConnectionLink connectionLink = null;
+		String objectId = null;
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
-
 			if (xpp.getName().equals("objectId")) {
-				String objectId = ParserUtils.getText(xpp.nextText());
+				objectId = ParserUtils.getText(xpp.nextText());
 				connectionLink = ObjectFactory.getConnectionLink(referential,
 						objectId);
+				validator.addLocation(context, objectId, lineNumber, columnNumber);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
 				connectionLink.setObjectVersion(version);
@@ -57,14 +62,14 @@ public class ConnectionLinkParser implements Parser, Constant {
 			} else if (xpp.getName().equals("comment")) {
 				connectionLink.setComment(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("startOfLink")) {
-				String objectId = ParserUtils.getText(xpp.nextText());
+				String startId = ParserUtils.getText(xpp.nextText());
 				StopArea startOfLink = ObjectFactory.getStopArea(referential,
-						objectId);
+						startId);
 				connectionLink.setStartOfLink(startOfLink);
 			} else if (xpp.getName().equals("endOfLink")) {
-				String objectId = ParserUtils.getText(xpp.nextText());
+				String endId = ParserUtils.getText(xpp.nextText());
 				StopArea endOfLink = ObjectFactory.getStopArea(referential,
-						objectId);
+						endId);
 				connectionLink.setStartOfLink(endOfLink);
 			} else if (xpp.getName().equals("linkDistance")) {
 				BigDecimal value = ParserUtils.getBigDecimal(xpp.nextText());

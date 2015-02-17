@@ -9,6 +9,8 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.importer.XPPUtil;
+import mobi.chouette.exchange.neptune.validation.PTNetworkValidator;
+import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.PTNetwork;
 import mobi.chouette.model.type.PTNetworkSourceTypeEnum;
@@ -28,15 +30,19 @@ public class PTNetworkParser implements Parser, Constant {
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
-		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
-		context.put(LINE_NUMBER, xpp.getLineNumber());
+		int columnNumber =  xpp.getColumnNumber();
+		int lineNumber =  xpp.getLineNumber();
 		
+		PTNetworkValidator validator = (PTNetworkValidator) ValidatorFactory.create(PTNetworkValidator.class.getName(), context);
+				
 		PTNetwork network = null;
+		String objectId = null;
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 
 			if (xpp.getName().equals("objectId")) {
-				String objectId = ParserUtils.getText(xpp.nextText());
+				objectId = ParserUtils.getText(xpp.nextText());
 				network = ObjectFactory.getPTNetwork(referential, objectId);
+				validator.addLocation(context, objectId, lineNumber, columnNumber);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
 				network.setObjectVersion(version);
@@ -72,9 +78,11 @@ public class PTNetworkParser implements Parser, Constant {
 			} else if (xpp.getName().equals("comment")) {
 				network.setComment(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("lineId")) {
-				String objectId = ParserUtils.getText(xpp.nextText());
-				Line line = ObjectFactory.getLine(referential, objectId);
+				String lineId = ParserUtils.getText(xpp.nextText());
+				// TODO : revoir l'assemblage Network Line
+				Line line = ObjectFactory.getLine(referential, lineId);
 				line.setPTNetwork(network);
+				validator.addLineId(context, objectId, lineId);
 			} else {
 				XPPUtil.skipSubTree(log, xpp);
 			}

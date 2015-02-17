@@ -28,7 +28,6 @@ import mobi.chouette.core.CoreExceptionCode;
 import mobi.chouette.core.CoreRuntimeException;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.UserNeedEnum;
-import mobi.chouette.model.util.ObjectIdTypes;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.GenericGenerator;

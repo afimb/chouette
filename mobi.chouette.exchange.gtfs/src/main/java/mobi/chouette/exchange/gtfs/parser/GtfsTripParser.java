@@ -13,7 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.gtfs.Constant;
-import mobi.chouette.exchange.gtfs.importer.GtfsParameters;
+import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.gtfs.model.GtfsFrequency;
 import mobi.chouette.exchange.gtfs.model.GtfsRoute;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime;
@@ -59,14 +59,14 @@ public class GtfsTripParser implements Parser, Constant {
 	private Referential referential;
 	private GtfsImporter importer;
 
-	private GtfsParameters configuration;
+	private GtfsImportParameters configuration;
 
 	@Override
 	public void parse(Context context) throws Exception {
 
 		referential = (Referential) context.get(REFERENTIAL);
 		importer = (GtfsImporter) context.get(IMPORTER);
-		configuration = (GtfsParameters) context.get(CONFIGURATION);
+		configuration = (GtfsImportParameters) context.get(CONFIGURATION);
 
 		GtfsRoute gtfsRoute = (GtfsRoute) context.get(GTFS_ROUTE);
 		Map<String, JourneyPattern> journeyPatternByStopSequence = new HashMap<String, JourneyPattern>();

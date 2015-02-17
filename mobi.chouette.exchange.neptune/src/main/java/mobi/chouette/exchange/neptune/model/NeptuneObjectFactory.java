@@ -13,11 +13,19 @@ public class NeptuneObjectFactory {
 
 	@Getter
 	@Setter
-	private Map<String, PTLink> ptLink = new HashMap<String, PTLink>();
+	private Map<String, AreaCentroid> areaCentroid = new HashMap<>();
 
 	@Getter
 	@Setter
-	private Map<Route, List<PTLink>> ptLinksOnRoute = new HashMap<Route, List<PTLink>>();
+	private Map<String, RoutingConstraint> routingConstraints = new HashMap<>();
+
+	@Getter
+	@Setter
+	private Map<String, PTLink> ptLink = new HashMap<>();
+
+	@Getter
+	@Setter
+	private Map<Route, List<PTLink>> ptLinksOnRoute = new HashMap<>();
 
 	public PTLink getPTLink(String objectId) {
 		PTLink result = ptLink.get(objectId);
@@ -29,6 +37,27 @@ public class NeptuneObjectFactory {
 		return result;
 	}
 
+	public AreaCentroid getAreaCentroid(String objectId) {
+		AreaCentroid result = areaCentroid.get(objectId);
+		if (result == null) {
+			result = new AreaCentroid();
+			result.setObjectId(objectId);
+			areaCentroid.put(objectId, result);
+		}
+		return result;
+	}
+
+	public RoutingConstraint getRoutingConstraint(String objectId) {
+		RoutingConstraint result = routingConstraints.get(objectId);
+		if (result == null) {
+			result = new RoutingConstraint();
+			result.setObjectId(objectId);
+			routingConstraints.put(objectId, result);
+		}
+		return result;
+	}
+
+	
 	public List<PTLink> getPTLinksOnRoute(Route route) {
 		List<PTLink> result = ptLinksOnRoute.get(route);
 		if(result == null){

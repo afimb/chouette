@@ -16,9 +16,13 @@ public class Parameters {
 
 	
 	@XmlElements(value = {
-			@XmlElement(name = "neptune-import", type = mobi.chouette.exchange.neptune.importer.NeptuneParameters.class),
-			@XmlElement(name = "gtfs-import", type = mobi.chouette.exchange.gtfs.importer.GtfsParameters.class),
-			@XmlElement(name = "netex-import", type = mobi.chouette.exchange.netex.importer.NetexParameters.class) })
+			@XmlElement(name = "neptune-import", type = mobi.chouette.exchange.neptune.importer.NeptuneImportParameters.class),
+			@XmlElement(name = "neptune-export", type = mobi.chouette.exchange.neptune.exporter.NeptuneExportParameters.class),
+			@XmlElement(name = "gtfs-import", type = mobi.chouette.exchange.gtfs.importer.GtfsImportParameters.class),
+			@XmlElement(name = "gtfs-export", type = mobi.chouette.exchange.gtfs.exporter.GtfsExportParameters.class),
+			@XmlElement(name = "netex-import", type = mobi.chouette.exchange.netex.importer.NetexImportParameters.class),
+			@XmlElement(name = "netex-export", type = mobi.chouette.exchange.netex.exporter.NetxtExportParameters.class),
+        	@XmlElement(name = "validate", type = mobi.chouette.exchange.validation.ValidateParameters.class) })
 	private Object configuration;
 
 	@XmlElement(name = "validation")

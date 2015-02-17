@@ -18,11 +18,11 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
-import mobi.chouette.exchange.importer.report.FileItem;
-import mobi.chouette.exchange.importer.report.Report;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.neptune.model.NeptuneObjectFactory;
 import mobi.chouette.exchange.neptune.parser.ChouettePTNetworkParser;
+import mobi.chouette.exchange.report.FileInfo;
+import mobi.chouette.exchange.report.Report;
 import mobi.chouette.model.util.Referential;
 
 import org.apache.commons.io.input.BOMInputStream;
@@ -45,8 +45,10 @@ public class NeptuneParserCommand implements Command, Constant {
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
 		Report report = (Report) context.get(REPORT);
-		FileItem fileItem = new FileItem();
+		FileInfo fileItem = new FileInfo();
 		fileItem.setName((String) context.get(FILE_URL));
+		
+		// prepare validation
 
 		try {
 
@@ -80,11 +82,13 @@ public class NeptuneParserCommand implements Command, Constant {
 			parser.parse(context);
 
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
-			report.getFiles().getFilesDetail().getOk().add(fileItem);
+			fileItem.setStatus(FileInfo.STATE.OK);
+			report.getFiles().getFileInfos().add(fileItem);
 			result = SUCCESS;
 			return result;
 		} catch (Exception e) {
-			report.getFiles().getFilesDetail().getError().add(fileItem);
+			fileItem.setStatus(FileInfo.STATE.NOK);
+			report.getFiles().getFileInfos().add(fileItem);
 			fileItem.getErrors().add(e.getMessage());
 			throw e;
 		}

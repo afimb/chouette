@@ -13,6 +13,8 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.importer.XPPUtil;
+import mobi.chouette.exchange.neptune.validation.AccessLinkValidator;
+import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.StopArea;
@@ -35,15 +37,19 @@ public class AccessLinkParser implements Parser, Constant {
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
-		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
-		context.put(LINE_NUMBER, xpp.getLineNumber());
+		int columnNumber =  xpp.getColumnNumber();
+		int lineNumber =  xpp.getLineNumber();
+		
+		AccessLinkValidator validator = (AccessLinkValidator) ValidatorFactory.create(AccessLinkValidator.class.getName(), context);
 		
 		AccessLink accessLink = null;
+		String objectId = null;
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 
 			if (xpp.getName().equals("objectId")) {
-				String objectId = ParserUtils.getText(xpp.nextText());
+			    objectId = ParserUtils.getText(xpp.nextText());
 				accessLink = ObjectFactory.getAccessLink(referential, objectId);
+				validator.addLocation(context, objectId, lineNumber, columnNumber);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
 				accessLink.setObjectVersion(version);
@@ -57,29 +63,31 @@ public class AccessLinkParser implements Parser, Constant {
 			} else if (xpp.getName().equals("comment")) {
 				accessLink.setComment(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("startOfLink")) {
-				String objectId = ParserUtils.getText(xpp.nextText());
-				if (referential.getStopAreas().containsKey(objectId)) {
+				String linkId = ParserUtils.getText(xpp.nextText());
+				validator.addStartOfLinkId(context, objectId, linkId);
+				if (referential.getStopAreas().containsKey(linkId)) {
 					StopArea stopArea = ObjectFactory.getStopArea(referential,
-							objectId);
+							linkId);
 					accessLink.setStopArea(stopArea);
 					accessLink
 							.setLinkOrientation(LinkOrientationEnum.StopAreaToAccessPoint);
-				} else if (referential.getAccessPoints().containsKey(objectId)) {
+				} else if (referential.getAccessPoints().containsKey(linkId)) {
 					AccessPoint accessPoint = ObjectFactory.getAccessPoint(
-							referential, objectId);
+							referential, linkId);
 					accessLink.setAccessPoint(accessPoint);
 					accessLink
 							.setLinkOrientation(LinkOrientationEnum.AccessPointToStopArea);
 				}
 			} else if (xpp.getName().equals("endOfLink")) {
-				String objectId = ParserUtils.getText(xpp.nextText());
-				if (referential.getStopAreas().containsKey(objectId)) {
+				String linkId = ParserUtils.getText(xpp.nextText());
+				validator.addEndOfLinkId(context, objectId, linkId);
+				if (referential.getStopAreas().containsKey(linkId)) {
 					StopArea stopArea = ObjectFactory.getStopArea(referential,
-							objectId);
+							linkId);
 					accessLink.setStopArea(stopArea);
-				} else if (referential.getAccessPoints().containsKey(objectId)) {
+				} else if (referential.getAccessPoints().containsKey(linkId)) {
 					AccessPoint accessPoint = ObjectFactory.getAccessPoint(
-							referential, objectId);
+							referential, linkId);
 					accessLink.setAccessPoint(accessPoint);
 				}
 			} else if (xpp.getName().equals("linkDistance")) {

@@ -6,12 +6,17 @@ import java.util.Date;
 import java.util.List;
 
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.importer.XPPUtil;
+import mobi.chouette.exchange.neptune.Constant;
+import mobi.chouette.exchange.neptune.model.AreaCentroid;
+import mobi.chouette.exchange.neptune.model.NeptuneObjectFactory;
+import mobi.chouette.exchange.neptune.validation.AreaCentroidValidator;
+import mobi.chouette.exchange.neptune.validation.StopAreaValidator;
+import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.ChouetteAreaEnum;
@@ -33,13 +38,15 @@ public class ChouetteAreaParser implements Parser, Constant {
 	public void parse(Context context) throws Exception {
 
 		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
-		Referential referential = (Referential) context.get(REFERENTIAL);
+		// Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
 		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
 		context.put(LINE_NUMBER, xpp.getLineNumber());
 
-		BiMap<String, String> map = HashBiMap.create();
+		
+		BiMap<String, String> map = HashBiMap.create(); 
+		context.put(STOPAREA_AREACENTROID_MAP, map);
 
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 
@@ -57,19 +64,22 @@ public class ChouetteAreaParser implements Parser, Constant {
 			throws Exception {
 		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
-
+		
 		xpp.require(XmlPullParser.START_TAG, null, "StopArea");
-		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
-		context.put(LINE_NUMBER, xpp.getLineNumber());
+		int columnNumber =  xpp.getColumnNumber();
+		int lineNumber =  xpp.getLineNumber();
+		
+		StopAreaValidator validator = (StopAreaValidator) ValidatorFactory.create(StopAreaValidator.class.getName(), context);
 
 		StopArea stopArea = null;
 		List<String> contains = new ArrayList<String>();
 
+		String objectId = null;
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
-
 			if (xpp.getName().equals("objectId")) {
-				String objectId = ParserUtils.getText(xpp.nextText());
+				objectId = ParserUtils.getText(xpp.nextText());
 				stopArea = ObjectFactory.getStopArea(referential, objectId);
+				validator.addLocation(context, objectId, lineNumber, columnNumber);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
 				stopArea.setObjectVersion(version);
@@ -91,15 +101,15 @@ public class ChouetteAreaParser implements Parser, Constant {
 								ChouetteAreaEnum.class, xpp.nextText()));
 						if (stopArea.getAreaType() == ChouetteAreaEnum.BoardingPosition
 								|| stopArea.getAreaType() == ChouetteAreaEnum.Quay) {
-							for (String objectId : contains) {
+							for (String childId : contains) {
 								StopPoint stopPoint = ObjectFactory
-										.getStopPoint(referential, objectId);
+										.getStopPoint(referential, childId);
 								stopPoint.setContainedInStopArea(stopArea);
 							}
 						} else {
-							for (String objectId : contains) {
+							for (String childId : contains) {
 								StopArea child = ObjectFactory.getStopArea(
-										referential, objectId);
+										referential, childId);
 								child.setParent(stopArea);
 							}
 						}
@@ -152,11 +162,14 @@ public class ChouetteAreaParser implements Parser, Constant {
 					}
 				}
 			} else if (xpp.getName().equals("contains")) {
-				contains.add(ParserUtils.getText(xpp.nextText()));
+				String containsId = ParserUtils.getText(xpp.nextText());
+				contains.add(containsId);
+				validator.addContains(context, objectId, containsId);
+
 			} else if (xpp.getName().equals("centroidOfArea")) {
-				String key = stopArea.getObjectId();
 				String value = ParserUtils.getText(xpp.nextText());
-				map.put(key, value);
+				validator.addAreaCentroidId(context, objectId, value);
+				map.put(objectId, value);
 
 			} else {
 				XPPUtil.skipSubTree(log, xpp);
@@ -164,37 +177,50 @@ public class ChouetteAreaParser implements Parser, Constant {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void parseAreaCentroid(Context context, BiMap<String, String> map)
 			throws Exception {
 		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
+		NeptuneObjectFactory factory =  (NeptuneObjectFactory) context.get(NEPTUNE_OBJECT_FACTORY);
 
 		xpp.require(XmlPullParser.START_TAG, null, "AreaCentroid");
-		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
-		context.put(LINE_NUMBER, xpp.getLineNumber());
+		int columnNumber =  xpp.getColumnNumber();
+		int lineNumber =  xpp.getLineNumber();
+		
+		AreaCentroidValidator validator = (AreaCentroidValidator) ValidatorFactory.create(AreaCentroidValidator.class.getName(), context);
 
 		BiMap<String, String> inverse = map.inverse();
 		StopArea stopArea = null;
+		AreaCentroid areaCentroid = null;
+		String objectId = null;
 
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
-
 			if (xpp.getName().equals("objectId")) {
-				String objectId = inverse.get(ParserUtils.getText(xpp
-						.nextText()));
-				stopArea = ObjectFactory.getStopArea(referential, objectId);
+				objectId = ParserUtils.getText(xpp.nextText());
+				areaCentroid = factory.getAreaCentroid(objectId);
+				String areaId = inverse.get(objectId);
+				validator.addLocation(context, objectId, lineNumber, columnNumber);
+				stopArea = ObjectFactory.getStopArea(referential, areaId);
 			} else if (xpp.getName().equals("name")) {
-				stopArea.setName(ParserUtils.getText(xpp.nextText()));
+				areaCentroid.setName(ParserUtils.getText(xpp.nextText()));
+				if (stopArea.getName() == null)
+					stopArea.setName(areaCentroid.getName());
 			} else if (xpp.getName().equals("comment")) {
-				stopArea.setComment(ParserUtils.getText(xpp.nextText()));
+				areaCentroid.setComment(ParserUtils.getText(xpp.nextText()));
+				if (stopArea.getComment() == null)
+					stopArea.setComment(areaCentroid.getComment());
 			} else if (xpp.getName().equals("longLatType")) {
 				stopArea.setLongLatType(ParserUtils.getEnum(
 						LongLatTypeEnum.class, xpp.nextText()));
+				validator.addLongLatType(context, objectId, stopArea.getLongLatType());
 			} else if (xpp.getName().equals("latitude")) {
 				stopArea.setLatitude(ParserUtils.getBigDecimal(xpp.nextText()));
 			} else if (xpp.getName().equals("longitude")) {
 				stopArea.setLongitude(ParserUtils.getBigDecimal(xpp.nextText()));
 			} else if (xpp.getName().equals("containedIn")) {
-				String objectId = ParserUtils.getText(xpp.nextText());
+				String containedIn = ParserUtils.getText(xpp.nextText());
+				validator.addContainedIn(context, objectId, containedIn);
 			} else if (xpp.getName().equals("address")) {
 
 				while (xpp.nextTag() == XmlPullParser.START_TAG) {

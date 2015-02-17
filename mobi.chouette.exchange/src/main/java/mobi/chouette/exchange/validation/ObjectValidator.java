@@ -5,8 +5,8 @@ import mobi.chouette.common.Context;
 public class ObjectValidator implements Validator<Object> {
 
 	@Override
-	public ValidationConstraints validate(Context context, Object target,
-			Object... params) throws ValidationException {
+	public ValidationConstraints validate(Context context, Object target
+			) throws ValidationException {
 		return new ValidationConstraints();
 	}
 
@@ -15,7 +15,7 @@ public class ObjectValidator implements Validator<Object> {
 		private ObjectValidator instance;
 
 		@Override
-		protected Validator<Object> create() {
+		protected Validator<Object> create(Context context) {
 			if (instance == null) {
 				instance = new ObjectValidator();
 			}
@@ -25,9 +25,8 @@ public class ObjectValidator implements Validator<Object> {
 	}
 
 	static {
-		ValidatorFactory factory = new DefaultValidatorFactory();
 		ValidatorFactory.factories
-				.put(ObjectValidator.class.getName(), factory);
+				.put(ObjectValidator.class.getName(), new DefaultValidatorFactory());
 	}
 
 
