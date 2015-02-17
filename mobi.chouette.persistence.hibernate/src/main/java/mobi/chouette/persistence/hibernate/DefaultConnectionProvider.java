@@ -48,14 +48,14 @@ public class DefaultConnectionProvider implements
 
 	@Override
 	public void releaseAnyConnection(Connection connection) throws SQLException {
-//		try {
-//			connection.createStatement().execute("SET SCHEMA 'public'");
-//
-//		} catch (SQLException e) {
-//			throw new HibernateException(
-//					"Could not alter JDBC connection to specified schema [public]",
-//					e);
-//		}
+		try {
+			connection.createStatement().execute("SET SCHEMA 'public'");
+
+		} catch (SQLException e) {
+			throw new HibernateException(
+					"Could not alter JDBC connection to specified schema [public]",
+					e);
+		}
 		connection.close();
 	}
 

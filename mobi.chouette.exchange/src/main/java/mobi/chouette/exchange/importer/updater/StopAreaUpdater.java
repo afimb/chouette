@@ -15,6 +15,7 @@ import mobi.chouette.common.Pair;
 import mobi.chouette.dao.AccessLinkDAO;
 import mobi.chouette.dao.AccessPointDAO;
 import mobi.chouette.dao.ConnectionLinkDAO;
+import mobi.chouette.dao.GenericDAOImpl;
 import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
@@ -218,7 +219,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 					item.getObjectId());
 			if (accessPoint == null) {
 				if (accessPoints == null) {
-					accessPoints = accessPointDAO.load(addedAccessPoint);
+					accessPoints = accessPointDAO.findByObjectId(UpdaterUtils.getObjectIds(addedAccessPoint));
 					for (AccessPoint object : accessPoints) {
 						cache.getAccessPoints().put(object.getObjectId(),
 								object);
@@ -266,7 +267,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 					item.getObjectId());
 			if (accessLink == null) {
 				if (accessLinks == null) {
-					accessLinks = accessLinkDAO.load(addedAccessLink);
+					accessLinks = accessLinkDAO.findByObjectId(UpdaterUtils.getObjectIds(addedAccessLink));
 					for (AccessLink object : accessLinks) {
 						cache.getAccessLinks()
 								.put(object.getObjectId(), object);
@@ -314,7 +315,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 					item.getObjectId());
 			if (startOfLink == null) {
 				if (startOfLinks == null) {
-					startOfLinks = connectionLinkDAO.load(addedStartOfLink);
+					startOfLinks = connectionLinkDAO.findByObjectId(UpdaterUtils.getObjectIds(addedStartOfLink));
 					for (ConnectionLink object : startOfLinks) {
 						cache.getConnectionLinks().put(object.getObjectId(),
 								object);
@@ -357,7 +358,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 					item.getObjectId());
 			if (endOfLink == null) {
 				if (endOfLinks == null) {
-					endOfLinks = connectionLinkDAO.load(addedEndOfLink);
+					endOfLinks = connectionLinkDAO.findByObjectId(UpdaterUtils.getObjectIds(addedEndOfLink));
 					for (ConnectionLink object : endOfLinks) {
 						cache.getConnectionLinks().put(object.getObjectId(),
 								object);

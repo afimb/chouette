@@ -3,6 +3,9 @@ package mobi.chouette.dao;
 import java.util.Collection;
 import java.util.List;
 
+import javax.ejb.Local;
+
+@Local
 public interface GenericDAO<T> {
 
 	T find(Object id);
@@ -26,8 +29,6 @@ public interface GenericDAO<T> {
 	void detach(T entity);
 
 	void evictAll();
-
-	List<T> load(Collection<T> list);
 
 	void flush();
 

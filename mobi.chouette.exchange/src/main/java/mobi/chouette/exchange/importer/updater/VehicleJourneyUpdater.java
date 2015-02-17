@@ -15,6 +15,7 @@ import mobi.chouette.common.CollectionUtils;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
 import mobi.chouette.dao.CompanyDAO;
+import mobi.chouette.dao.GenericDAOImpl;
 import mobi.chouette.dao.RouteDAO;
 import mobi.chouette.dao.StopPointDAO;
 import mobi.chouette.dao.TimetableDAO;
@@ -275,7 +276,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 			Timetable timetable = cache.getTimetables().get(item.getObjectId());
 			if (timetable == null) {
 				if (timetables == null) {
-					timetables = timetableDAO.load(addedTimetable);
+					timetables = timetableDAO.findByObjectId(UpdaterUtils.getObjectIds(addedTimetable));
 					for (Timetable object : timetables) {
 						cache.getTimetables().put(object.getObjectId(), object);
 					}

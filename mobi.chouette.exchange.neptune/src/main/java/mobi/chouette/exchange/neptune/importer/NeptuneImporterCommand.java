@@ -25,9 +25,11 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.importer.RegisterCommand;
 import mobi.chouette.exchange.importer.UncompressCommand;
+import mobi.chouette.exchange.importer.CopyCommand;
 import mobi.chouette.exchange.importer.report.FileItem;
 import mobi.chouette.exchange.importer.report.Report;
 import mobi.chouette.exchange.validation.report.ValidationReport;
+import mobi.chouette.model.VehicleJourneyAtStop;
 
 import com.google.common.collect.Lists;
 import com.jamonapi.Monitor;
@@ -102,6 +104,10 @@ public class NeptuneImporterCommand implements Command, Constant {
 				Command register = CommandFactory.create(initialContext,
 						RegisterCommand.class.getName());
 				register.execute(context);
+				
+				Command copy = CommandFactory.create(initialContext,
+						CopyCommand.class.getName());
+				copy.execute(context);
 
 			}
 

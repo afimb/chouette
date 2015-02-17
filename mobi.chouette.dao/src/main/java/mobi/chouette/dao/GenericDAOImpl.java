@@ -67,7 +67,7 @@ public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 
 	@Override
 	public T findByObjectId(final String objectId) {
-		Session session = em.unwrap(Session.class);		
+		Session session = em.unwrap(Session.class);
 		T result = (T) session.bySimpleNaturalId(type).load(objectId);
 
 		return result;
@@ -85,20 +85,7 @@ public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 	// return (result.size() == 0) ? null : result.get(0);
 	// }
 
-	@Override
-	public List<T> load(Collection<T> list) {
-		if (list.isEmpty()) {
-			return (List<T>) list;
-		} else {
-			final Collection<String> objectIds = new ArrayList<String>();
-			for (T o : list) {
-				if (o instanceof NeptuneIdentifiedObject) {
-					objectIds.add(((NeptuneIdentifiedObject) o).getObjectId());
-				}
-			}
-			return findByObjectId(objectIds);
-		}
-	}
+	
 
 	@Override
 	public List<T> findByObjectId(final Collection<String> objectIds) {
@@ -114,7 +101,7 @@ public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 	}
 
 	@Override
-	public void create(final T entity) {
+	public void create(final T entity) {		
 		em.persist(entity);
 	}
 
@@ -153,8 +140,15 @@ public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 
 	@Override
 	public void flush() {
-//		Session session = em.unwrap(Session.class);	
-//		session.flush();
+		// Session session = em.unwrap(Session.class);
+		// session.flush();
 		em.flush();
+	}
+
+	public void detach(Collection<?> list) {
+		// Session session = em.unwrap(Session.class);
+		for (Object object : list) {
+			em.detach(object);
+		}
 	}
 }

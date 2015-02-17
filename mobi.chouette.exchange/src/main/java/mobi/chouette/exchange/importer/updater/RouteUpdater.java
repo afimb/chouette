@@ -12,6 +12,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.CollectionUtils;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
+import mobi.chouette.dao.GenericDAOImpl;
 import mobi.chouette.dao.JourneyPatternDAO;
 import mobi.chouette.dao.RouteDAO;
 import mobi.chouette.dao.StopPointDAO;
@@ -126,7 +127,7 @@ public class RouteUpdater implements Updater<Route> {
 			StopPoint stopPoint = cache.getStopPoints().get(item.getObjectId());
 			if (stopPoint == null) {
 				if (stopPoints == null) {
-					stopPoints = stopPointDAO.load(addedStopPoint);
+					stopPoints = stopPointDAO.findByObjectId(UpdaterUtils.getObjectIds(addedStopPoint));
 					for (StopPoint object : stopPoints) {
 						cache.getStopPoints().put(object.getObjectId(), object);
 					}
@@ -174,7 +175,7 @@ public class RouteUpdater implements Updater<Route> {
 			if (journeyPattern == null) {
 				if (journeyPatterns == null) {
 					journeyPatterns = journeyPatternDAO
-							.load(addedJourneyPattern);
+							.findByObjectId(UpdaterUtils.getObjectIds(addedJourneyPattern));
 					for (JourneyPattern object : journeyPatterns) {
 						cache.getJourneyPatterns().put(object.getObjectId(),
 								object);

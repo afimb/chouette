@@ -13,6 +13,7 @@ import mobi.chouette.common.CollectionUtils;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
 import mobi.chouette.dao.CompanyDAO;
+import mobi.chouette.dao.GenericDAOImpl;
 import mobi.chouette.dao.GroupOfLineDAO;
 import mobi.chouette.dao.PTNetworkDAO;
 import mobi.chouette.dao.RouteDAO;
@@ -199,7 +200,7 @@ public class LineUpdater implements Updater<Line> {
 					item.getObjectId());
 			if (groupOfLine == null) {
 				if (groupOfLines == null) {
-					groupOfLines = groupOfLineDAO.load(addedGroupOfLine);
+					groupOfLines = groupOfLineDAO.findByObjectId(UpdaterUtils.getObjectIds(addedGroupOfLine));
 					for (GroupOfLine object : groupOfLines) {
 						cache.getGroupOfLines().put(object.getObjectId(), object);
 					}
@@ -243,7 +244,8 @@ public class LineUpdater implements Updater<Line> {
 			Route route = cache.getRoutes().get(item.getObjectId());
 			if (route == null) {
 				if (routes == null) {
-					routes = routeDAO.load(addedRoute);
+					Collection<String> objectIds = UpdaterUtils.getObjectIds(addedRoute);
+					routes = routeDAO.findByObjectId(objectIds);
 					for (Route object : routes) {
 						cache.getRoutes().put(object.getObjectId(), object);
 					}

@@ -65,8 +65,17 @@ public class RegisterCommand implements Command {
 		try {
 			Boolean optimized = Boolean.TRUE;
 			context.put(OPTIMIZED, optimized);
+
 			Referential cache = new Referential();
 			context.put(CACHE, cache);
+			
+//			Referential cache = (Referential) context.get(CACHE);
+//			if (cache == null) {
+//				cache = new Referential();
+//				context.put(CACHE, cache);
+//			} else {
+//				cache.clear();	
+//			}
 
 			Referential referential = (Referential) context.get(REFERENTIAL);
 			Line newValue = referential.getLines().values().iterator().next();
@@ -82,7 +91,7 @@ public class RegisterCommand implements Command {
 			}
 			lineUpdater.update(context, oldValue, newValue);
 			lineDAO.create(oldValue);
-			lineDAO.flush();
+			// lineDAO.flush();
 
 			if (optimized) {
 				final StringWriter buffer = new StringWriter(1024);
@@ -104,23 +113,8 @@ public class RegisterCommand implements Command {
 								vehicleJourneyAtStop);
 					}
 				}
-				
-
-				// System.out.println(buffer.toString());
-				vehicleJourneyDAO.update(list, buffer.toString());
-				
-//				final String schema =  ContextHolder.getContext();
-//				Future<Void> future = executor.submit(new Callable<Void>() {
-//
-//					@Override
-//					@TransactionAttribute(TransactionAttributeType.REQUIRED)
-//					public Void call() throws Exception {
-//						// System.out.println(buffer.toString());
-//						ContextHolder.setContext(schema);
-//						vehicleJourneyDAO.update(list, buffer.toString());
-//						return null;
-//					}
-//				});
+				vehicleJourneyDAO.delete(list);
+				context.put(BUFFER, buffer.toString());
 			}
 
 			result = SUCCESS;

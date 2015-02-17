@@ -307,7 +307,7 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	 * @return The actual value
 	 */
 	@Getter
-	@ManyToOne(cascade = { CascadeType.PERSIST })
+	@ManyToOne(cascade = { CascadeType.PERSIST  })
 	@JoinColumn(name = "network_id")
 	private PTNetwork ptNetwork;
 
