@@ -19,6 +19,6 @@ public class NeptuneImportParameters extends AbstractParameter {
 	
 	@Getter @Setter
 	@XmlElement(name = "no_save")
-	private Boolean noSave;
+	private Boolean noSave = Boolean.FALSE;
 
 }

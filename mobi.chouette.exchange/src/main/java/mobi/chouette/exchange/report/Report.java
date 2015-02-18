@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import lombok.Data;
 
-@XmlRootElement(name = "import")
+@XmlRootElement(name = "report")
 @XmlAccessorType(XmlAccessType.FIELD)
 @Data
 public class Report {
@@ -19,7 +19,7 @@ public class Report {
 	@XmlElement(name = "progression")
 	private Progression progression;
 
-	@XmlAttribute(name = "result")
+	@XmlElement(name = "result")
 	private String result;
 	
 	@XmlElement(name = "zip")

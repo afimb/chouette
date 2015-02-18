@@ -57,14 +57,25 @@ public class NeptuneImporterCommand implements Command, Constant {
 				.get(INITIAL_CONTEXT);
 
 		// report
+		Command reportCmd = CommandFactory.create(initialContext, ReportCommand.class.getName());
 		Report report = new Report();
 		ValidationReport validationReport = new ValidationReport();
 		context.put(Constant.REPORT, report);
 		context.put(Constant.VALIDATION_REPORT, validationReport);
+		// read parameters
+		Object conf = context.get(CONFIGURATION);
+		if (! (conf instanceof NeptuneImportParameters)) 
+		{
+			// fatal wrong parameters
+			log.error("invalid parameters for neptune import " + conf.getClass().getName());
+			report.setFailure("invalid parameters for neptune import " + conf.getClass().getName());
+			reportCmd.execute(context);
+			return false;
+		}
+		NeptuneImportParameters parameters = (NeptuneImportParameters) conf;
 		Progression progression = new Progression();
 		report.setProgression(progression );
 		progression.setStep(Progression.STEP.INITIALISATION);
-		Command reportCmd = CommandFactory.create(initialContext, ReportCommand.class.getName());
 		reportCmd.execute(context);
 		Command validationReportCmd = CommandFactory.create(initialContext, ValidationReportCommand.class.getName());
 		try {
@@ -93,16 +104,16 @@ public class NeptuneImporterCommand implements Command, Constant {
 				result = xmlvalidation.execute(context);
 			}
 			log.info(Color.YELLOW + validation.stop() + Color.NORMAL);
-//			Monitor validation = MonitorFactory.start("Parallel" + NeptuneSAXParserCommand.COMMAND );			
-//			int n = Runtime.getRuntime().availableProcessors() / 2;
-//			int size = (int )Math.ceil(stream.size() / n);
-//			List<List<Path>> partition = Lists.partition(stream, size);
-//			List<Task> tasks = new ArrayList<Task>();
-//			for (int i = 0; i < partition.size(); i++) {
-//				tasks.add(new Task(initialContext, context, partition.get(i)));
-//			}
-//			List<Future<Boolean>> futures = executor.invokeAll(tasks);
-//			log.info(Color.YELLOW + validation.stop() + Color.NORMAL);
+			//			Monitor validation = MonitorFactory.start("Parallel" + NeptuneSAXParserCommand.COMMAND );			
+			//			int n = Runtime.getRuntime().availableProcessors() / 2;
+			//			int size = (int )Math.ceil(stream.size() / n);
+			//			List<List<Path>> partition = Lists.partition(stream, size);
+			//			List<Task> tasks = new ArrayList<Task>();
+			//			for (int i = 0; i < partition.size(); i++) {
+			//				tasks.add(new Task(initialContext, context, partition.get(i)));
+			//			}
+			//			List<Future<Boolean>> futures = executor.invokeAll(tasks);
+			//			log.info(Color.YELLOW + validation.stop() + Color.NORMAL);
 
 			for (Path file : stream) {
 				progression.setRealized(progression.getRealized()+1);
@@ -113,7 +124,7 @@ public class NeptuneImporterCommand implements Command, Constant {
 
 				context.put(FILE_URL, file.toUri().toURL().toExternalForm());
 				context.put(FILE_NAME, file.toFile().getName());
-				
+
 				// check if file is xml ok
 				FileInfo info = report.getFiles().findFileFileInfo(file.getFileName().toString());
 				if (info != null && info.getStatus().equals(FileInfo.FILE_STATE.NOK))
@@ -139,18 +150,21 @@ public class NeptuneImporterCommand implements Command, Constant {
 					continue;
 				}
 
-				// register
-				Command register = CommandFactory.create(initialContext,
-						RegisterCommand.class.getName());
-				if (! register.execute(context))
+				if (parameters.getNoSave().equals(Boolean.FALSE))
 				{
-					log.warn("[ME] save failed : skipped");	
-					continue;
-				}
+					// register
+					Command register = CommandFactory.create(initialContext,
+							RegisterCommand.class.getName());
+					if (! register.execute(context))
+					{
+						log.warn("[ME] save failed : skipped");	
+						continue;
+					}
 
-				Command copy = CommandFactory.create(initialContext,
-						CopyCommand.class.getName());
-				copy.execute(context);
+					Command copy = CommandFactory.create(initialContext,
+							CopyCommand.class.getName());
+					copy.execute(context);
+				}
 
 			}
 			result = SUCCESS;
