@@ -2,10 +2,10 @@ package mobi.chouette.exchange.validation.report;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
 import lombok.Data;
+import lombok.ToString;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.Company;
@@ -20,6 +20,7 @@ import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 
 @Data
+@ToString
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ObjectReference {
 
@@ -41,7 +42,7 @@ public class ObjectReference {
 	@XmlElement(name = "type")
 	private TYPE type;
 
-	@XmlAttribute(name = "id")
+	@XmlElement(name = "id")
 	private Long id;
 
 	public ObjectReference(PTNetwork object)

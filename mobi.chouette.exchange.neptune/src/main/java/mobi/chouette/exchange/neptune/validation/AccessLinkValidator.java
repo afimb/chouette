@@ -62,7 +62,7 @@ public class AccessLinkValidator extends AbstractValidator implements Validator<
 		if (localContext == null || localContext.isEmpty()) return new ValidationConstraints();
 
 		Referential referential = (Referential) context.get(REFERENTIAL);
-		String fileName = (String) context.get(FILE_URL);
+		String fileName = (String) context.get(FILE_NAME);
 
 		for (String objectId : localContext.keySet()) 
 		{

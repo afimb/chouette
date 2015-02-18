@@ -97,8 +97,10 @@ public class ChouetteLineDescriptionParser implements Parser, Constant {
 		Map<String, PTLink> linkByEnd = new HashMap<String, PTLink>();
 
 		for (PTLink ptLink : ptLinks) {
-			linkByStart.put(ptLink.getStartOfLink().getObjectId(), ptLink);
-			linkByEnd.put(ptLink.getEndOfLink().getObjectId(), ptLink);
+			if (ptLink.getStartOfLink() != null)
+				linkByStart.put(ptLink.getStartOfLink().getObjectId(), ptLink);
+			if (ptLink.getEndOfLink() != null)
+				linkByEnd.put(ptLink.getEndOfLink().getObjectId(), ptLink);
 		}
 
 		// find first stop id
@@ -125,12 +127,12 @@ public class ChouetteLineDescriptionParser implements Parser, Constant {
 	static {
 		ParserFactory.register(ChouetteLineDescriptionParser.class.getName(),
 				new ParserFactory() {
-					private ChouetteLineDescriptionParser instance = new ChouetteLineDescriptionParser();
+			private ChouetteLineDescriptionParser instance = new ChouetteLineDescriptionParser();
 
-					@Override
-					protected Parser create() {
-						return instance;
-					}
-				});
+			@Override
+			protected Parser create() {
+				return instance;
+			}
+		});
 	}
 }

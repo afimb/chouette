@@ -5,12 +5,13 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
 import lombok.Data;
+import lombok.ToString;
 
 @Data
+@ToString
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CheckPoint {
 
@@ -24,16 +25,16 @@ public class CheckPoint {
 		UNCHECK, OK, NOK
 	};
 
-	@XmlAttribute(name = "test_id",required=true)
+	@XmlElement(name = "test_id",required=true)
 	private String name;
 
-	@XmlAttribute(name="level",required=true)
+	@XmlElement(name="level",required=true)
 	private String phase;
 
-	@XmlAttribute(name="object_type",required=true)
+	@XmlElement(name="object_type",required=true)
 	private String target;
 
-	@XmlAttribute(name = "rank",required=true)
+	@XmlElement(name = "rank",required=true)
 	private String rank;
 
 	@XmlElement(name = "severity",required=true)
@@ -42,7 +43,7 @@ public class CheckPoint {
 	@XmlElement(name = "result",required=true)
 	private RESULT state;
 
-	@XmlAttribute(name = "error_count")
+	@XmlElement(name = "error_count")
 	private int detailCount = 0;
 
 	@XmlElement(name = "error")

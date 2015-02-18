@@ -39,7 +39,9 @@ public class VehicleJourneyParser implements Parser, Constant {
 			StopPoint p1 = o1.getStopPoint();
 			StopPoint p2 = o2.getStopPoint();
 			if (p1 != null && p2 != null) {
-				return p1.getPosition() - p2.getPosition();
+				int pos1 = p1.getPosition() == null? 0: p1.getPosition().intValue();
+				int pos2 = p2.getPosition() == null? 0: p2.getPosition().intValue();
+				return pos1 - pos2;
 			}
 			return 0;
 		}

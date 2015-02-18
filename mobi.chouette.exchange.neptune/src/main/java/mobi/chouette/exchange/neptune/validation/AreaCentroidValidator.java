@@ -60,7 +60,7 @@ public class AreaCentroidValidator extends AbstractValidator implements Validato
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 		Context stopAreaContext = (Context) validationContext.get(StopAreaValidator.LOCAL_CONTEXT);
 
-		String fileName = (String) context.get(FILE_URL);
+		String fileName = (String) context.get(FILE_NAME);
 
 		if (localContext == null || localContext.isEmpty())
 			return new ValidationConstraints();
@@ -81,11 +81,9 @@ public class AreaCentroidValidator extends AbstractValidator implements Validato
 				continue;
 			if (!stopAreaContext.containsKey(containedIn))
 			{
-				Map<String, Object> map = new HashMap<String, Object>();
-				map.put("containedIn", containedIn);
 				Detail errorItem = new Detail(
 						AREA_CENTROID_1,
-						new Location(sourceLocation,objectId), map);
+						new Location(sourceLocation,objectId), containedIn);
 				addValidationError(context, AREA_CENTROID_1, errorItem);
 			}
 		}
@@ -100,11 +98,9 @@ public class AreaCentroidValidator extends AbstractValidator implements Validato
 
 			if (objectContext.get("longLatType").equals(LongLatTypeEnum.WGS84))
 				continue;
-			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("longLatType", objectContext.get("longLatType").toString());
 			Detail errorItem = new Detail(
 					AREA_CENTROID_2,
-					new Location(sourceLocation,objectId), map);
+					new Location(sourceLocation,objectId), objectContext.get("longLatType").toString());
 			addValidationError(context, AREA_CENTROID_2, errorItem);
 		}
 

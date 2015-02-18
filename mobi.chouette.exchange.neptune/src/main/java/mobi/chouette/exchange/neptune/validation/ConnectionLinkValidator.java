@@ -42,6 +42,20 @@ public class ConnectionLinkValidator extends AbstractValidator implements Valida
 
 	}
 
+	public void addStartOfLink(Context context, String objectId, String linkId)
+	{
+		Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
+		objectContext.put("startOfLink", linkId);
+
+	}
+
+	public void addEndOfLink(Context context, String objectId, String linkId)
+	{
+		Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
+		objectContext.put("endOfLink", linkId);
+
+	}
+
 
 	@Override
 	public ValidationConstraints validate(Context context, ConnectionLink target) throws ValidationException
@@ -52,7 +66,7 @@ public class ConnectionLinkValidator extends AbstractValidator implements Valida
 		if (localContext == null || localContext.isEmpty()) return new ValidationConstraints();
 
 		Referential referential = (Referential) context.get(REFERENTIAL);
-		String fileName = (String) context.get(FILE_URL);
+		String fileName = (String) context.get(FILE_NAME);
 
 		// 2-NEPTUNE-ConnectionLink-1 : check presence of start or end of link
 		prepareCheckPoint(context, CONNECTION_LINK_1);
@@ -67,12 +81,9 @@ public class ConnectionLinkValidator extends AbstractValidator implements Valida
 			if (stopAreaContext.containsKey(connectionLink.getStartOfLink().getObjectId()) 
 					|| stopAreaContext.containsKey(connectionLink.getEndOfLink().getObjectId()))
 				continue;
-			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("startOfLink", connectionLink.getStartOfLink().getObjectId());
-			map.put("endOfLink", connectionLink.getEndOfLink().getObjectId());
 			Detail errorItem = new Detail(
 					CONNECTION_LINK_1,
-					new Location(sourceLocation,connectionLink.getObjectId()), map);
+					new Location(sourceLocation,connectionLink.getObjectId()));
 			addValidationError(context, CONNECTION_LINK_1, errorItem);
 
 		}

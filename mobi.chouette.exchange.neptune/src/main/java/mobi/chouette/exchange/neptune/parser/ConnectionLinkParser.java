@@ -70,7 +70,7 @@ public class ConnectionLinkParser implements Parser, Constant {
 				String endId = ParserUtils.getText(xpp.nextText());
 				StopArea endOfLink = ObjectFactory.getStopArea(referential,
 						endId);
-				connectionLink.setStartOfLink(endOfLink);
+				connectionLink.setEndOfLink(endOfLink);
 			} else if (xpp.getName().equals("linkDistance")) {
 				BigDecimal value = ParserUtils.getBigDecimal(xpp.nextText());
 				connectionLink.setLinkDistance(value);

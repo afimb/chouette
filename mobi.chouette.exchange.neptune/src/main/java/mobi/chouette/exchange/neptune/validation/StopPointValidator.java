@@ -70,7 +70,7 @@ public class StopPointValidator extends AbstractValidator implements Validator<S
 		if (localContext == null || localContext.isEmpty()) return new ValidationConstraints();
 
 		Referential referential = (Referential) context.get(REFERENTIAL);
-		String fileName = (String) context.get(FILE_URL);
+		String fileName = (String) context.get(FILE_NAME);
 		Line line = referential.getLines().values().iterator().next(); 
 
 		for (String objectId : localContext.keySet()) 

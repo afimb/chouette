@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.report;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -21,6 +22,12 @@ public class ZipItem {
 	
 	@XmlElement(name="errors")
 	private List<String> errors;
+	
+	public void addError(String error)
+	{
+		if (errors == null) errors = new ArrayList<>();
+		errors.add(error);
+	}
 
 
 }

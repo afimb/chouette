@@ -9,8 +9,10 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import lombok.Data;
+import lombok.ToString;
 
 @Data
+@ToString
 @XmlRootElement(name = "validation")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ValidationReport {

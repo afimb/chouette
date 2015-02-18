@@ -35,7 +35,7 @@ public class ReportCommand implements Command {
         
         Path path = Paths.get(context.get(PATH).toString(), REPORT_FILE);
         
-        String data = JSONUtils.toJSON(report);
+        String data = JSONUtils.toJSON(report).replaceAll("\\}", "\n}\n").replaceAll("\\{", "{\n");
         
         FileUtils.writeStringToFile(path.toFile(), data);
 		

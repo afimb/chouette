@@ -5,10 +5,10 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
 import lombok.Data;
+import lombok.ToString;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.Company;
@@ -24,6 +24,7 @@ import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 
 @Data
+@ToString
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Location {
 
@@ -31,10 +32,10 @@ public class Location {
 	@XmlElement(name = "file")
 	private FileLocation file;
 
-	@XmlAttribute(name = "object_id")
+	@XmlElement(name = "object_id")
 	private String objectId;
 
-	@XmlAttribute(name = "label")
+	@XmlElement(name = "label")
 	private String name;
 
 	@XmlElement(name = "object_path")

@@ -73,7 +73,7 @@ public class TimetableValidator extends AbstractValidator implements Validator<T
 		Context areaCentroidContext = (Context) validationContext.get(AreaCentroidValidator.LOCAL_CONTEXT);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		Map<String, StopArea> stopAreas = referential.getStopAreas();
-		String fileName = (String) context.get(FILE_URL);
+		String fileName = (String) context.get(FILE_NAME);
 
 		for (String objectId : localContext.keySet()) 
 		{

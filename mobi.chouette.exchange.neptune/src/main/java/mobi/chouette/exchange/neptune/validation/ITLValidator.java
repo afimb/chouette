@@ -71,7 +71,7 @@ public class ITLValidator extends AbstractValidator implements Validator<Routing
 		Line line = referential.getLines().values().iterator().next(); 
 		Map<String, StopArea> stopAreas = referential.getStopAreas();
 
-		String fileName = (String) context.get(FILE_URL);
+		String fileName = (String) context.get(FILE_NAME);
 
 		// 2-NEPTUNE-ITL-3 : Check if ITL refers existing StopArea
 		prepareCheckPoint(context, ITL_3);
@@ -88,12 +88,9 @@ public class ITLValidator extends AbstractValidator implements Validator<Routing
 			if (!stopAreaContext.containsKey(stopAreaId) || !stopAreas.containsKey(stopAreaId))
 
 			{
-				Map<String, Object> map = new HashMap<String, Object>();
-				map.put("areaId", stopAreaId);
-				map.put("name", (String) objectContext.get("name"));
 				Detail errorItem = new Detail(
 						ITL_3,
-						new Location(sourceLocation,objectId), map);
+						new Location(sourceLocation,(String) objectContext.get("name")), stopAreaId);
 				addValidationError(context, ITL_3, errorItem);
 			} else
 			{
@@ -103,13 +100,10 @@ public class ITLValidator extends AbstractValidator implements Validator<Routing
 				StopArea stopArea = stopAreas.get(stopAreaId);
 				if (!stopArea.getAreaType().equals(ChouetteAreaEnum.ITL))
 				{
-					Map<String, Object> map = new HashMap<String, Object>();
-					map.put("areaId", objectId);
-					map.put("type", stopArea.getAreaType().toString());
-					map.put("name", (String) objectContext.get("name"));
 					Detail errorItem = new Detail(
 							ITL_4,
-							new Location(sourceLocation,objectId), map);
+							new Location(sourceLocation,(String) objectContext.get("name")), stopArea.getAreaType().toString());
+                    // TODO add target 
 					addValidationError(context, ITL_4, errorItem);
 
 				}
@@ -122,13 +116,10 @@ public class ITLValidator extends AbstractValidator implements Validator<Routing
 				prepareCheckPoint(context, ITL_5);
 				if (lineId != line.getObjectId())
 				{
-					Map<String, Object> map = new HashMap<String, Object>();
-					map.put("name", (String) objectContext.get("name"));
-					map.put("lineId", line.getObjectId());
-					map.put("lineIdShortCut", lineId);
 					Detail errorItem = new Detail(
 							ITL_5,
-							new Location(sourceLocation,objectId), map);
+							new Location(sourceLocation,objectId), lineId);
+					// TODO add line as target
 					addValidationError(context, ITL_5, errorItem);
 				}
 

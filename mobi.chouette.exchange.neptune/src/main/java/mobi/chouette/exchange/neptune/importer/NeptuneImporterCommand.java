@@ -104,6 +104,7 @@ public class NeptuneImporterCommand implements Command, Constant {
 				result = xmlvalidation.execute(context);
 			}
 			log.info(Color.YELLOW + validation.stop() + Color.NORMAL);
+			
 			//			Monitor validation = MonitorFactory.start("Parallel" + NeptuneSAXParserCommand.COMMAND );			
 			//			int n = Runtime.getRuntime().availableProcessors() / 2;
 			//			int size = (int )Math.ceil(stream.size() / n);
@@ -169,7 +170,7 @@ public class NeptuneImporterCommand implements Command, Constant {
 			}
 			result = SUCCESS;
 		} catch (Exception e) {
-			log.error(e);
+			log.error(e.getMessage(),e);
 		}
 		finally
 		{
