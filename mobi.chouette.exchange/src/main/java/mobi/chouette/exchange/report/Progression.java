@@ -5,6 +5,7 @@ package mobi.chouette.exchange.report;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 
 import lombok.Data;
 
@@ -17,7 +18,9 @@ public class Progression {
 		PROCESSING,
 		FINALISATION
 	};
-
+    @XmlElement( name = "step")
+    private STEP step;
+	
 	@XmlAttribute(name = "total")
 	private int total = 1;
 

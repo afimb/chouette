@@ -30,7 +30,7 @@ public class ITLValidator extends AbstractValidator implements Validator<Routing
 	private static final String ITL_4 = "2-NEPTUNE-ITL-4";
 	private static final String ITL_5 = "2-NEPTUNE-ITL-5";
 
-	static final String LOCAL_CONTEXT = "ITL";
+	public static final String LOCAL_CONTEXT = "ITL";
 
 
 	public ITLValidator(Context context) 

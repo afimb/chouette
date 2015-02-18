@@ -24,7 +24,7 @@ public class JourneyPatternValidator extends AbstractValidator implements Valida
 	private static final String JOURNEY_PATTERN_2 = "2-NEPTUNE-JourneyPattern-2";
 	private static final String JOURNEY_PATTERN_3 = "2-NEPTUNE-JourneyPattern-3";
 
-	static final String LOCAL_CONTEXT = "JourneyPattern";
+	public static final String LOCAL_CONTEXT = "JourneyPattern";
 
 
 	public JourneyPatternValidator(Context context) 

@@ -33,7 +33,7 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 	private static final String ROUTE_11 = "2-NEPTUNE-Route-11";
 	private static final String ROUTE_12 = "2-NEPTUNE-Route-12";
 
-	static final String LOCAL_CONTEXT = "Route";
+	public static final String LOCAL_CONTEXT = "Route";
 
 
 	public ChouetteRouteValidator(Context context) 

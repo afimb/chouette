@@ -29,7 +29,7 @@ public class StopPointValidator extends AbstractValidator implements Validator<S
 	private static final String STOP_POINT_3 = "2-NEPTUNE-StopPoint-3";
 	private static final String STOP_POINT_4 = "2-NEPTUNE-StopPoint-4";
 
-	static final String LOCAL_CONTEXT = "StopPoint";
+	public static final String LOCAL_CONTEXT = "StopPoint";
 
 
 	public StopPointValidator(Context context) 

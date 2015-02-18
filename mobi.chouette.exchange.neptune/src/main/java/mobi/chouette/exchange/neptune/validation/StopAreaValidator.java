@@ -36,7 +36,7 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 	private static final String ITL_1 = "2-NEPTUNE-ITL-1";
 	private static final String ITL_2 = "2-NEPTUNE-ITL-2";
 
-	static final String LOCAL_CONTEXT = "StopArea";
+	public static final String LOCAL_CONTEXT = "StopArea";
 
 
 	public StopAreaValidator(Context context) 

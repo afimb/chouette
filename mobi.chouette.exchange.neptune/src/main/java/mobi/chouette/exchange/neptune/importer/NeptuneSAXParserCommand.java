@@ -12,7 +12,6 @@ import javax.naming.NamingException;
 import javax.xml.XMLConstants;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import javax.xml.transform.sax.SAXSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
@@ -50,7 +49,7 @@ public class NeptuneSAXParserCommand implements Command, Constant {
 
 		Report report = (Report) context.get(REPORT);
 		FileInfo fileItem = new FileInfo();
-		fileItem.setName((String) context.get(FILE_URL));
+		fileItem.setName((String) context.get(FILE_NAME));
 
 		Schema schema = (Schema) context.get(SCHEMA);
 		if (schema == null) {
@@ -91,13 +90,17 @@ public class NeptuneSAXParserCommand implements Command, Constant {
 //			validator.setErrorHandler(errorHandler);
 //			validator.reset();
 //			validator.validate(file);
-			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
+	         return true;
 		} catch (IOException | SAXException e) {
 			log.error(e);
-			fileItem.setStatus(FileInfo.STATE.NOK);
+			fileItem.setStatus(FileInfo.FILE_STATE.NOK);
 			report.getFiles().getFileInfos().add(fileItem);
 			fileItem.getErrors().add(e.getMessage());
-			monitor.stop();
+			
+		}
+		finally
+		{
+			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		}
 
 		return false;

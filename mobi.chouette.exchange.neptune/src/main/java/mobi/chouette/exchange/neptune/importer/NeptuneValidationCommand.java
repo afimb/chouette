@@ -29,8 +29,12 @@ import mobi.chouette.exchange.neptune.validation.StopAreaValidator;
 import mobi.chouette.exchange.neptune.validation.StopPointValidator;
 import mobi.chouette.exchange.neptune.validation.TimetableValidator;
 import mobi.chouette.exchange.neptune.validation.VehicleJourneyValidator;
+import mobi.chouette.exchange.report.LineInfo;
+import mobi.chouette.exchange.report.LineStats;
 import mobi.chouette.exchange.report.Report;
 import mobi.chouette.exchange.validation.ValidatorFactory;
+import mobi.chouette.model.Line;
+import mobi.chouette.model.util.Referential;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -44,7 +48,7 @@ public class NeptuneValidationCommand implements Command, Constant {
 
 	@Override
 	public boolean execute(Context context) throws Exception {
-		boolean result = ERROR;
+		// boolean result = ERROR;
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
 		Report report = (Report) context.get(REPORT);
@@ -52,6 +56,7 @@ public class NeptuneValidationCommand implements Command, Constant {
 
 		try {
 			Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
+			Referential referential = (Referential) context.get(REFERENTIAL);
 			if (validationContext != null)
 			{
 				{
@@ -114,10 +119,12 @@ public class NeptuneValidationCommand implements Command, Constant {
 				VehicleJourneyValidator validator = (VehicleJourneyValidator) ValidatorFactory.create(VehicleJourneyValidator.class.getName(), context);
 				validator.validate(context, null);
 				}
-				
+				// add stats to report
+				addStats(report, validationContext, referential);				
 			}
 
-		} catch (Exception e) {
+		} catch (Exception e) 
+		{
 			throw e;
 		}
 		finally
@@ -126,6 +133,59 @@ public class NeptuneValidationCommand implements Command, Constant {
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		}
 		return true;
+	}
+
+	private void addStats(Report report, Context validationContext, Referential referential) 
+	{
+		Line line = referential.getLines().values().iterator().next();
+		LineInfo lineInfo = new LineInfo();
+		lineInfo.setName(line.getName());
+		lineInfo.setStatus(LineInfo.LINE_STATE.OK);
+		LineStats stats = new LineStats();
+		{
+		Context localContext = (Context) validationContext.get(ChouetteRouteValidator.LOCAL_CONTEXT);
+		stats.setRouteCount((localContext != null)?localContext.size():0 );
+		}
+		{
+		Context localContext = (Context) validationContext.get(ConnectionLinkValidator.LOCAL_CONTEXT);
+		stats.setConnectionLinkCount((localContext != null)?localContext.size():0 );
+		}
+		{
+		Context localContext = (Context) validationContext.get(TimetableValidator.LOCAL_CONTEXT);
+		stats.setTimeTableCount((localContext != null)?localContext.size():0 );
+		}
+		{
+		Context localContext = (Context) validationContext.get(StopAreaValidator.LOCAL_CONTEXT);
+		stats.setStopAreaCount((localContext != null)?localContext.size():0 );
+		}
+		{
+		Context localContext = (Context) validationContext.get(AccessPointValidator.LOCAL_CONTEXT);
+		stats.setAccesPointCount((localContext != null)?localContext.size():0 );
+		}
+		{
+		Context localContext = (Context) validationContext.get(VehicleJourneyValidator.LOCAL_CONTEXT);
+		stats.setVehicleJourneyCount((localContext != null)?localContext.size():0 );
+		}
+		{
+		Context localContext = (Context) validationContext.get(JourneyPatternValidator.LOCAL_CONTEXT);
+		stats.setJourneyPatternCount((localContext != null)?localContext.size():0 );
+		}
+		lineInfo.setStats(stats );
+		report.getLines().getList().add(lineInfo );
+		LineStats globalStats = report.getLines().getStats();
+		if (globalStats == null) 
+		{
+			globalStats = new LineStats();
+			report.getLines().setStats(globalStats);
+		}
+		globalStats.setAccesPointCount(globalStats.getAccesPointCount() + stats.getAccesPointCount());
+		globalStats.setRouteCount(globalStats.getRouteCount() + stats.getRouteCount());
+		globalStats.setConnectionLinkCount(globalStats.getConnectionLinkCount() + stats.getConnectionLinkCount());
+		globalStats.setVehicleJourneyCount(globalStats.getVehicleJourneyCount() + stats.getVehicleJourneyCount());
+		globalStats.setJourneyPatternCount(globalStats.getJourneyPatternCount() + stats.getJourneyPatternCount());
+		globalStats.setStopAreaCount(globalStats.getStopAreaCount() + stats.getStopAreaCount());
+		globalStats.setTimeTableCount(globalStats.getTimeTableCount() + stats.getTimeTableCount());
+
 	}
 
 	public static class DefaultCommandFactory extends CommandFactory {

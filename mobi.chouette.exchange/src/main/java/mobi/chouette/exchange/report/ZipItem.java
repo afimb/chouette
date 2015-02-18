@@ -13,10 +13,10 @@ import lombok.Data;
 @Data
 public class ZipItem {
 	
-	@XmlAttribute(name = "status")
+	@XmlElement(name = "status")
 	private String status;
 	
-	@XmlAttribute(name="name")
+	@XmlElement(name="name")
 	private String name;
 	
 	@XmlElement(name="errors")

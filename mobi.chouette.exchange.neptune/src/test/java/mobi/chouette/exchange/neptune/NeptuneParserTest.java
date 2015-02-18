@@ -106,7 +106,7 @@ public class NeptuneParserTest {
 		parser.execute(context);
 		assertNull("no error should be reported",report.getFailure());
 		assertEquals("report one file",1,report.getFiles().getFileInfos().size());
-		assertEquals("report one error file",FileInfo.STATE.OK,report.getFiles().getFileInfos().get(0).getStatus());
+		assertEquals("report one error file",FileInfo.FILE_STATE.OK,report.getFiles().getFileInfos().get(0).getStatus());
 
 	}
 
@@ -131,7 +131,7 @@ public class NeptuneParserTest {
 		}
 		assertNull("no error should be reported",report.getFailure());
 		assertEquals("report one file",1,report.getFiles().getFileInfos().size());
-		assertEquals("report one error file",FileInfo.STATE.NOK,report.getFiles().getFileInfos().get(0).getStatus());
+		assertEquals("report one error file",FileInfo.FILE_STATE.NOK,report.getFiles().getFileInfos().get(0).getStatus());
 		System.out.println("error message = "+report.getFiles().getFileInfos().get(0).getErrors().get(0));
 	}
 
@@ -156,7 +156,7 @@ public class NeptuneParserTest {
 		}
 		assertNull("no error should be reported",report.getFailure());
 		assertEquals("report one file",1,report.getFiles().getFileInfos().size());
-		assertEquals("report one error file",FileInfo.STATE.NOK,report.getFiles().getFileInfos().get(0).getStatus());
+		assertEquals("report one error file",FileInfo.FILE_STATE.NOK,report.getFiles().getFileInfos().get(0).getStatus());
 		System.out.println("error message = "+report.getFiles().getFileInfos().get(0).getErrors().get(0));
 
 	}

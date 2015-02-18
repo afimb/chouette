@@ -25,7 +25,7 @@ public class PTNetworkValidator extends AbstractValidator implements Validator<P
 	
 	private static final String NETWORK_1 = "2-NEPTUNE-Network-1";
 
-    static final String LOCAL_CONTEXT = "PTNetwork";
+	public static final String LOCAL_CONTEXT = "PTNetwork";
 
 
 	public PTNetworkValidator(Context context) 

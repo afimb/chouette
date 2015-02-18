@@ -18,7 +18,7 @@ public class PtLinkValidator extends AbstractValidator implements Validator<PTLi
 
 	private static final String PT_LINK_1 = "2-NEPTUNE-PtLink-1";
 
-	static final String LOCAL_CONTEXT = "PTLink";
+	public static final String LOCAL_CONTEXT = "PTLink";
 
 
 	public PtLinkValidator(Context context) 

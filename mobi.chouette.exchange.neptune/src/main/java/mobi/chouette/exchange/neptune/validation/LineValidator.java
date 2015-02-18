@@ -31,7 +31,7 @@ public class LineValidator extends AbstractValidator implements Validator<Line> 
 	private static final String LINE_4 = "2-NEPTUNE-Line-4";
 	private static final String LINE_5 = "2-NEPTUNE-Line-5";
 
-	static final String LOCAL_CONTEXT = "NeptuneLine";
+	public static final String LOCAL_CONTEXT = "NeptuneLine";
 
 
 	public LineValidator(Context context) 

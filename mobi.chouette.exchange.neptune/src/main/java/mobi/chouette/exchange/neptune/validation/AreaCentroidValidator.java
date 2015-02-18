@@ -23,7 +23,7 @@ public class AreaCentroidValidator extends AbstractValidator implements Validato
 	private static final String AREA_CENTROID_1 = "2-NEPTUNE-AreaCentroid-1";
 	private static final String AREA_CENTROID_2 = "2-NEPTUNE-AreaCentroid-2";
 
-	static final String LOCAL_CONTEXT = "AreaCentroid";
+	public static final String LOCAL_CONTEXT = "AreaCentroid";
 
 
 	public AreaCentroidValidator(Context context) 

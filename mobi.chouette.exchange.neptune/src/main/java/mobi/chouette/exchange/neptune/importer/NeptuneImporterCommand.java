@@ -27,7 +27,10 @@ import mobi.chouette.exchange.importer.CopyCommand;
 import mobi.chouette.exchange.importer.RegisterCommand;
 import mobi.chouette.exchange.importer.UncompressCommand;
 import mobi.chouette.exchange.report.FileInfo;
+import mobi.chouette.exchange.report.Progression;
 import mobi.chouette.exchange.report.Report;
+import mobi.chouette.exchange.report.ReportCommand;
+import mobi.chouette.exchange.validation.ValidationReportCommand;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 
 import com.google.common.collect.Lists;
@@ -43,84 +46,126 @@ public class NeptuneImporterCommand implements Command, Constant {
 
 	@Resource(lookup = "java:comp/DefaultManagedExecutorService")
 	ManagedExecutorService executor;
-	
-	
+
+
 	@Override
 	public boolean execute(Context context) throws Exception {
 		boolean result = ERROR;
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
+		InitialContext initialContext = (InitialContext) context
+				.get(INITIAL_CONTEXT);
+
+		// report
+		Report report = new Report();
+		ValidationReport validationReport = new ValidationReport();
+		context.put(Constant.REPORT, report);
+		context.put(Constant.VALIDATION_REPORT, validationReport);
+		Progression progression = new Progression();
+		report.setProgression(progression );
+		progression.setStep(Progression.STEP.INITIALISATION);
+		Command reportCmd = CommandFactory.create(initialContext, ReportCommand.class.getName());
+		reportCmd.execute(context);
+		Command validationReportCmd = CommandFactory.create(initialContext, ValidationReportCommand.class.getName());
 		try {
-			InitialContext initialContext = (InitialContext) context
-					.get(INITIAL_CONTEXT);
-					
-			// report
-			Report report = new Report();			
-			ValidationReport validationReport = new ValidationReport();
-			context.put(Constant.REPORT, report);
-			context.put(Constant.VALIDATION_REPORT, validationReport);
-			
+
 			// uncompress data
 			Command uncompress = CommandFactory.create(initialContext,
 					UncompressCommand.class.getName());
 			uncompress.execute(context);
 
 			Path path = Paths.get(context.get(PATH).toString(), INPUT);
-			List<Path> stream = FileUtils.listFiles(path, "*.xml");
+			List<Path> stream = FileUtils.listFiles(path, "*.xml", "*metadata*");
+			progression.setStep(Progression.STEP.PROCESSING);
+			progression.setTotal(stream.size() + 1);
+			progression.setRealized(1);
+			reportCmd.execute(context);
 
-			// validation
-			Monitor validation = MonitorFactory.start("Parallel" + NeptuneSAXParserCommand.COMMAND );			
-			int n = Runtime.getRuntime().availableProcessors() / 2;
-			int size = (int )Math.ceil(stream.size() / n);
-			List<List<Path>> partition = Lists.partition(stream, size);
-			List<Task> tasks = new ArrayList<Task>();
-			for (int i = 0; i < n; i++) {
-				tasks.add(new Task(initialContext, context, partition.get(i)));
+			// validation 
+			// TODO [ME] ne marche pas car le contexte est partagé et la valeur FILE_URL se téléscope
+			Monitor validation = MonitorFactory.start(NeptuneSAXParserCommand.COMMAND );			
+			for (Path file : stream) 
+			{
+				context.put(FILE_URL, file.toUri().toURL().toExternalForm());
+				context.put(FILE_NAME, file.toFile().getName());
+				Command xmlvalidation = CommandFactory.create(initialContext,
+						NeptuneSAXParserCommand.class.getName());
+				result = xmlvalidation.execute(context);
 			}
-			List<Future<Boolean>> futures = executor.invokeAll(tasks);
 			log.info(Color.YELLOW + validation.stop() + Color.NORMAL);
+//			Monitor validation = MonitorFactory.start("Parallel" + NeptuneSAXParserCommand.COMMAND );			
+//			int n = Runtime.getRuntime().availableProcessors() / 2;
+//			int size = (int )Math.ceil(stream.size() / n);
+//			List<List<Path>> partition = Lists.partition(stream, size);
+//			List<Task> tasks = new ArrayList<Task>();
+//			for (int i = 0; i < partition.size(); i++) {
+//				tasks.add(new Task(initialContext, context, partition.get(i)));
+//			}
+//			List<Future<Boolean>> futures = executor.invokeAll(tasks);
+//			log.info(Color.YELLOW + validation.stop() + Color.NORMAL);
 
 			for (Path file : stream) {
+				progression.setRealized(progression.getRealized()+1);
+				reportCmd.execute(context);
+				validationReportCmd.execute(context);
 
-				// skip metadata file
-				if (file.toFile().getName().toLowerCase().contains("metadata"))
+				log.info("[DSU] import : " + file.toString());	
+
+				context.put(FILE_URL, file.toUri().toURL().toExternalForm());
+				context.put(FILE_NAME, file.toFile().getName());
+				
+				// check if file is xml ok
+				FileInfo info = report.getFiles().findFileFileInfo(file.getFileName().toString());
+				if (info != null && info.getStatus().equals(FileInfo.FILE_STATE.NOK))
 				{
-					FileInfo fileItem = new FileInfo();
-					fileItem.setName(file.toFile().getName());
-					fileItem.setStatus(FileInfo.STATE.UNCHECKED);
-					report.getFiles().getFileInfos().add(fileItem);
+					log.warn("[ME] xml validation failed : skipped");	
 					continue;
 				}
-				
-				log.info("[DSU] import : " + file.toString());				
-				context.put(FILE_URL, file.toUri().toURL().toExternalForm());
-				
 				// parser
 				Command parser = CommandFactory.create(initialContext,
 						NeptuneParserCommand.class.getName());
-				parser.execute(context);
+				if (! parser.execute(context))
+				{
+					log.warn("[ME] xml parsing failed : skipped");	
+					continue;
+				}
 
 				// validation
 				Command validator = CommandFactory.create(initialContext,
 						NeptuneValidationCommand.class.getName());
-				validator.execute(context);
+				if (! validator.execute(context))
+				{
+					log.warn("[ME] level 2 validation failed : skipped");	
+					continue;
+				}
 
 				// register
 				Command register = CommandFactory.create(initialContext,
 						RegisterCommand.class.getName());
-				register.execute(context);
-				
+				if (! register.execute(context))
+				{
+					log.warn("[ME] save failed : skipped");	
+					continue;
+				}
+
 				Command copy = CommandFactory.create(initialContext,
 						CopyCommand.class.getName());
 				copy.execute(context);
 
 			}
-
-			// save report 
-			
 			result = SUCCESS;
 		} catch (Exception e) {
 			log.error(e);
+		}
+		finally
+		{
+			// save report 
+			report.setProgression(null);
+			reportCmd.execute(context);
+
+			// save validation report 
+			validationReportCmd.execute(context);
+
 		}
 
 		log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
@@ -141,6 +186,7 @@ public class NeptuneImporterCommand implements Command, Constant {
 
 			for (Path file : files) {
 				context.put(FILE_URL, file.toUri().toURL().toExternalForm());
+				context.put(FILE_NAME, file.toFile().getName());
 				Command validation = CommandFactory.create(this.initialContext,
 						NeptuneSAXParserCommand.class.getName());
 				result = validation.execute(context);

@@ -40,6 +40,7 @@ public class NeptuneSAXErrorHandler implements ErrorHandler, Constant {
 	    {
 	    report = new CheckPoint(XML_2, 
 				CheckPoint.RESULT.OK, CheckPoint.SEVERITY.WARNING);
+	    validationReport.getCheckPoints().add(report);
 	    }
 	    URL url = new URL((String) context.get(FILE_URL));
 	    fileName = url.getFile();
@@ -64,7 +65,7 @@ public class NeptuneSAXErrorHandler implements ErrorHandler, Constant {
 
 		Location location = new Location(fileName, error.getLineNumber(), error.getColumnNumber());
 		location.setName(key);
-		Detail item = new Detail(XML_1,
+		Detail item = new Detail(XML_2,
 				location, error.getMessage());
 		if (report.getSeverity().ordinal() < severity.ordinal())
 			report.setSeverity(severity);

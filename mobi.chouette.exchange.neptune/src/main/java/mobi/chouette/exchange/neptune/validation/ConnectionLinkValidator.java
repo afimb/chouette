@@ -24,7 +24,7 @@ public class ConnectionLinkValidator extends AbstractValidator implements Valida
 
 	private static final String CONNECTION_LINK_1 = "2-NEPTUNE-ConnectionLink-1";
 
-	static final String LOCAL_CONTEXT = "ConnectionLink";
+	public static final String LOCAL_CONTEXT = "ConnectionLink";
 
 
 	public ConnectionLinkValidator(Context context) 

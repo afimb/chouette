@@ -36,7 +36,7 @@ public class AccessPointValidator extends AbstractValidator implements Validator
 	private static final String ACCESS_POINT_6 = "2-NEPTUNE-AccessPoint-6";
 	private static final String ACCESS_POINT_7 = "2-NEPTUNE-AccessPoint-7";
 
-	static final String LOCAL_CONTEXT = "AccessPoint";
+	public static final String LOCAL_CONTEXT = "AccessPoint";
 
 
 	public AccessPointValidator(Context context) 

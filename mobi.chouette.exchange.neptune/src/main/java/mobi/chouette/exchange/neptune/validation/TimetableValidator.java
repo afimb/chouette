@@ -23,7 +23,7 @@ public class TimetableValidator extends AbstractValidator implements Validator<T
 	private static final String TIMETABLE_1 = "2-NEPTUNE-Timetable-1";
 	private static final String TIMETABLE_2 = "2-NEPTUNE-Timetable-2";
 
-	static final String LOCAL_CONTEXT = "Timetable";
+	public static final String LOCAL_CONTEXT = "Timetable";
 
 
 	public TimetableValidator(Context context) 

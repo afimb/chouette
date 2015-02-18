@@ -25,7 +25,7 @@ public class GroupOfLineValidator extends AbstractValidator implements Validator
 	
 	private static final String GROUP_OF_LINE_1 = "2-NEPTUNE-GroupOfLine-1";
 
-	static final String LOCAL_CONTEXT = "GroupOfLine";
+	public static final String LOCAL_CONTEXT = "GroupOfLine";
 
 
 	public GroupOfLineValidator(Context context) 

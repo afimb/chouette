@@ -32,7 +32,7 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 	private static final String VEHICLE_JOURNEY_AT_STOP_3 = "2-NEPTUNE-VehicleJourneyAtStop-3";
 	private static final String VEHICLE_JOURNEY_AT_STOP_4 = "2-NEPTUNE-VehicleJourneyAtStop-4";
 
-	static final String LOCAL_CONTEXT = "VehicleJourney";
+	public static final String LOCAL_CONTEXT = "VehicleJourney";
 
 
 	public VehicleJourneyValidator(Context context) 
