@@ -26,6 +26,8 @@ public class NeptuneSAXErrorHandler implements ErrorHandler, Constant {
 
 	private String fileName ;
 	
+	private static String NO_NAMESPACE_ERROR = "cvc-elt.1: Cannot find the declaration of element 'ChouettePTNetwork'.";
+	
 	@Getter
 	private boolean hasErrors = false;
 
@@ -109,8 +111,9 @@ public class NeptuneSAXErrorHandler implements ErrorHandler, Constant {
 
 	@Override
 	public void error(SAXParseException exception) throws SAXException {
+		// forward exception if it may be a namespace declaration problem
+		if (exception.getMessage().equals(NO_NAMESPACE_ERROR)) throw exception;
 		handleError(exception, CheckPoint.SEVERITY.ERROR);
-		// throw exception;
 
 	}
 
