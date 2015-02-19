@@ -2,11 +2,8 @@ package mobi.chouette.exchange.neptune.importer;
 
 import java.io.IOException;
 
-import javax.ejb.Stateless;
 import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
-import lombok.ToString;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
@@ -35,8 +32,7 @@ import mobi.chouette.exchange.validation.ValidatorFactory;
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
-@Stateless(name = NeptuneValidationCommand.COMMAND)
-@ToString
+//@Stateless(name = NeptuneValidationCommand.COMMAND)
 @Log4j
 public class NeptuneValidationCommand implements Command, Constant {
 
@@ -101,7 +97,8 @@ public class NeptuneValidationCommand implements Command, Constant {
 				{
 				JourneyPatternValidator validator = (JourneyPatternValidator) ValidatorFactory.create(JourneyPatternValidator.class.getName(), context);
 				validator.validate(context, null);
-				}
+				}		CommandFactory factory ;
+
 				{
 				StopPointValidator validator = (StopPointValidator) ValidatorFactory.create(StopPointValidator.class.getName(), context);
 				validator.validate(context, null);
@@ -132,21 +129,20 @@ public class NeptuneValidationCommand implements Command, Constant {
 
 		@Override
 		protected Command create(InitialContext context) throws IOException {
-			Command result = null;
-			try {
-				String name = "java:app/mobi.chouette.exchange.neptune/"
-						+ COMMAND;
-				result = (Command) context.lookup(name);
-			} catch (NamingException e) {
-				log.error(e);
-			}
+			Command result = new NeptuneValidationCommand();
+//			try {
+//				String name = "java:app/mobi.chouette.exchange.neptune/"
+//						+ COMMAND;
+//				result = (Command) context.lookup(name);
+//			} catch (NamingException e) {
+//				log.error(e);
+//			}
 			return result;
 		}
 	}
 
 	static {
-		CommandFactory factory = new DefaultCommandFactory();
 		CommandFactory.factories.put(NeptuneValidationCommand.class.getName(),
-				factory);
+				 new DefaultCommandFactory());
 	}
 }

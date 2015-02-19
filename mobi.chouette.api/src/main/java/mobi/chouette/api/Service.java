@@ -56,8 +56,6 @@ import com.google.common.collect.Collections2;
 @RequestScoped
 public class Service implements Constant {
 
-
-
 	@Inject
 	JobDAO jobDAO;
 
@@ -77,7 +75,7 @@ public class Service implements Constant {
 		ResponseBuilder builder = Response.ok(job);
 
 		CacheControl cc = new CacheControl();
-		cc.setMaxAge(10);
+		cc.setMaxAge(1000);
 		builder.cacheControl(cc);
 		Response result = builder.build();
 		return result;
@@ -268,7 +266,7 @@ public class Service implements Constant {
 	@GET
 	@Path("/{ref}/jobs")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public JobListing jobs(@PathParam("ref") String referential,
+	public Response jobs(@PathParam("ref") String referential,
 			@DefaultValue("0") @QueryParam("version") final Long version,
 			@QueryParam("action") final String action) {
 
@@ -308,7 +306,14 @@ public class Service implements Constant {
 			job.setParameters(payload.getConfiguration());
 		}
 		result.setList(filtered);
-		return result;
+
+		// cache control
+		ResponseBuilder builder = Response.ok(result);
+//		CacheControl cc = new CacheControl();
+//		cc.setMaxAge(-1);
+//		builder.cacheControl(cc);
+
+		return builder.build();
 	}
 
 	// view job

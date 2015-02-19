@@ -74,6 +74,16 @@ public class Scheduler {
 		}
 	}
 
+//	private void invalidate(ServerCache cache, Job job) {
+//		String referential = job.getReferential();
+//		String uri = "/referentials/" + referential + "/jobs";
+//		log.info(Color.YELLOW + "[DSU] invalidate cache : " + cache + " : "
+//				+ uri + Color.NORMAL);
+//		if (cache != null) {
+//			cache.remove(uri);
+//		}
+//	}
+
 	@PostConstruct
 	private void initialize() {
 
@@ -82,11 +92,11 @@ public class Scheduler {
 		// abort scheduled job
 		Collection<Job> scheduled = Collections2.filter(list,
 				new Predicate<Job>() {
-			@Override
-			public boolean apply(Job job) {
-				return job.getStatus() == STATUS.SCHEDULED;
-			}
-		});
+					@Override
+					public boolean apply(Job job) {
+						return job.getStatus() == STATUS.SCHEDULED;
+					}
+				});
 		for (Job job : scheduled) {
 			job.setStatus(STATUS.ABORTED);
 
@@ -115,11 +125,11 @@ public class Scheduler {
 		// schedule created job
 		Collection<Job> created = Collections2.filter(list,
 				new Predicate<Job>() {
-			@Override
-			public boolean apply(Job job) {
-				return job.getStatus() == STATUS.CREATED;
-			}
-		});
+					@Override
+					public boolean apply(Job job) {
+						return job.getStatus() == STATUS.CREATED;
+					}
+				});
 		for (Job job : created) {
 			schedule(job.getReferential());
 		}
@@ -128,8 +138,8 @@ public class Scheduler {
 	public boolean cancel(Long id) {
 
 		Job job = jobDAO.find(id);
-		if (job.getStatus().equals(STATUS.CREATED) || job.getStatus().equals(STATUS.SCHEDULED))
-		{
+		if (job.getStatus().equals(STATUS.CREATED)
+				|| job.getStatus().equals(STATUS.SCHEDULED)) {
 			job.setStatus(STATUS.CANCELED);
 
 			// set delete link
@@ -198,7 +208,7 @@ public class Scheduler {
 				@Override
 				public void run() {
 					ContextHolder.setContext(null);
-					try {						
+					try {
 						InitialContext initialContext = new InitialContext();
 						Scheduler scheduler = (Scheduler) initialContext
 								.lookup("java:app/mobi.chouette.scheduler/"

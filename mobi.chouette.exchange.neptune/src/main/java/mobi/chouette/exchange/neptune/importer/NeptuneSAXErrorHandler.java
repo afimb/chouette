@@ -31,7 +31,7 @@ public class NeptuneSAXErrorHandler implements ErrorHandler, Constant {
 	private boolean hasErrors = false;
 
 	
-	public NeptuneSAXErrorHandler(Context context)throws Exception
+	public NeptuneSAXErrorHandler(Context context, String fileURL)throws Exception
 	{
 	    validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
 	    
@@ -41,7 +41,7 @@ public class NeptuneSAXErrorHandler implements ErrorHandler, Constant {
 	    report = new CheckPoint(XML_2, 
 				CheckPoint.RESULT.OK, CheckPoint.SEVERITY.WARNING);
 	    }
-	    URL url = new URL((String) context.get(FILE_URL));
+	    URL url = new URL(fileURL);
 	    fileName = url.getFile();
 	}
 
