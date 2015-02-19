@@ -206,7 +206,6 @@ public class LineValidator extends AbstractValidator implements Validator<Line> 
 							LINE_4,
 							new Location(sourceLocation,objectId), routeId);
 					addValidationError(context,LINE_4, errorItem);
-					addValidationError(context,LINE_4, errorItem);
 				}
 			}
 
