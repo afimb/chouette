@@ -16,12 +16,16 @@ import mobi.chouette.exchange.validation.report.Detail;
 import mobi.chouette.exchange.validation.report.FileLocation;
 import mobi.chouette.exchange.validation.report.Location;
 import mobi.chouette.model.Line;
-import mobi.chouette.model.StopArea;
-import mobi.chouette.model.StopPoint;
-import mobi.chouette.model.type.ChouetteAreaEnum;
+import mobi.chouette.model.Route;
 import mobi.chouette.model.util.Referential;
 
 public class LineValidator extends AbstractValidator implements Validator<Line> , Constant{
+
+	public static final String ROUTE_ID = "routeId";
+
+	public static final String LINE_END = "lineEnd";
+
+	public static final String PT_NETWORK_ID_SHORTCUT = "ptNetworkIdShortcut";
 
 	public static String NAME = "LineValidator";
 
@@ -48,48 +52,182 @@ public class LineValidator extends AbstractValidator implements Validator<Line> 
 
 	}
 
-	public void addAreaCentroidId(Context  context, String objectId, String centroidId)
+	public void addPtNetworkIdShortcut(Context  context, String objectId, String ptNetworkIdShortcut)
 	{
 		Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
-		objectContext.put("centroidOfArea", centroidId);
+		objectContext.put(PT_NETWORK_ID_SHORTCUT, ptNetworkIdShortcut);
 
 	}
 
 	@SuppressWarnings("unchecked")
-	public void addContains(Context context, String objectId, String containsId) {
+	public void addLineEnd(Context context, String objectId, String lineEnd) {
 		Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
-		List<String> contains = (List<String>) objectContext.get("contains");
+		List<String> contains = (List<String>) objectContext.get(LINE_END);
 		if (contains == null)
 		{
 			contains = new ArrayList<>();
-			objectContext.put("contains", contains);
+			objectContext.put(LINE_END, contains);
 		}
-		contains.add(containsId);
-		
+		contains.add(lineEnd);
+
+	}
+
+	@SuppressWarnings("unchecked")
+	public void addRouteId(Context context, String objectId, String routeId) {
+		Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
+		List<String> contains = (List<String>) objectContext.get(ROUTE_ID);
+		if (contains == null)
+		{
+			contains = new ArrayList<>();
+			objectContext.put(ROUTE_ID, contains);
+		}
+		contains.add(routeId);
+
 	}
 
 
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public ValidationConstraints validate(Context context, Line target) throws ValidationException
 	{
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 		if (localContext == null || localContext.isEmpty()) return new ValidationConstraints();
+		Context networkContext = (Context) validationContext.get(PTNetworkValidator.LOCAL_CONTEXT);
 		Context stopPointContext = (Context) validationContext.get(StopPointValidator.LOCAL_CONTEXT);
-		Context itlContext = (Context) validationContext.get(ITLValidator.LOCAL_CONTEXT);
-		Context areaCentroidContext = (Context) validationContext.get(AreaCentroidValidator.LOCAL_CONTEXT);
-		Referential referential = (Referential) context.get(REFERENTIAL);
-		Map<String, StopArea> stopAreas = referential.getStopAreas();
+		Context routeContext = (Context) validationContext.get(ChouetteRouteValidator.LOCAL_CONTEXT);
 		String fileName = (String) context.get(FILE_NAME);
 
 		for (String objectId : localContext.keySet()) 
 		{
 			Context objectContext = (Context) localContext.get(objectId);
-			StopArea stopArea = stopAreas.get(objectId);
 			int lineNumber = ((Integer) objectContext.get(LINE_NUMBER)).intValue();
 			int columnNumber = ((Integer) objectContext.get(COLUMN_NUMBER)).intValue();
 			FileLocation sourceLocation = new FileLocation(fileName, lineNumber, columnNumber);
+
+			// 2-NEPTUNE-Line-1 : check ptnetworkIdShortcut
+			String ptnetworkIdShortcut = (String) objectContext.get(PT_NETWORK_ID_SHORTCUT);
+
+			if (ptnetworkIdShortcut != null)
+			{
+				prepareCheckPoint(context, LINE_1);
+				if (!networkContext.containsKey(ptnetworkIdShortcut))
+				{
+					Detail errorItem = new Detail(
+							LINE_1,
+							new Location(sourceLocation,objectId), ptnetworkIdShortcut);
+					addValidationError(context,LINE_1, errorItem);
+				}
+			}
+
+			// 2-NEPTUNE-Line-2 : check existence of ends of line
+			List<String> lineEnds = (List<String>) objectContext.get(LINE_END);
+			if (lineEnds != null)
+			{
+				prepareCheckPoint(context, LINE_2);
+				Map<String, List<String>> mapPTLinksByStartId = new HashMap<>();
+				Map<String, List<String>> mapPTLinksByEndId = new HashMap<>();
+				Context ptLinkContext = (Context) validationContext.get(PtLinkValidator.LOCAL_CONTEXT);
+				for (String ptLinkId : ptLinkContext.keySet()) 
+				{
+					Context ptlinkCtx = (Context) ptLinkContext.get(ptLinkId);
+					String start = (String) ptlinkCtx.get(PtLinkValidator.START_OF_LINK_ID);
+					String end = (String) ptlinkCtx.get(PtLinkValidator.END_OF_LINK_ID);
+					List<String> startIds = mapPTLinksByStartId.get(start);
+					if (startIds == null) 
+					{
+						startIds = new ArrayList<>();
+						mapPTLinksByStartId.put(start, startIds);
+					}
+					startIds.add(ptLinkId);
+					List<String> endIds = mapPTLinksByEndId.get(end);
+					if (endIds == null) 
+					{
+						endIds = new ArrayList<>();
+						mapPTLinksByEndId.put(end, endIds);
+					}
+					endIds.add(ptLinkId);
+				}
+
+				for (String endId : lineEnds)
+				{
+					// endId must exists as stopPoint ?
+					if (!stopPointContext.containsKey(endId))
+					{
+						Detail errorItem = new Detail(
+								LINE_2,
+								new Location(sourceLocation,objectId), endId);
+						addValidationError(context,LINE_2, errorItem);
+
+					} else
+					{
+						// 2-NEPTUNE-Line-3 : check ends of line
+						prepareCheckPoint(context,LINE_3);
+
+						// endId must be referenced by one and only one ptLink
+						List<String> startLinks = mapPTLinksByStartId.get(endId);
+						List<String> endLinks = mapPTLinksByEndId.get(endId);
+						boolean oneRef = true;
+						// protect from null pointers
+						if (startLinks == null)
+							startLinks = new ArrayList<String>();
+						if (endLinks == null)
+							endLinks = new ArrayList<String>();
+
+						if (startLinks.size() != 0 && endLinks.size() != 0)
+						{
+							oneRef = false;
+						} else if (startLinks.size() > 1 || endLinks.size() > 1)
+						{
+							oneRef = false;
+						}
+						if (!oneRef)
+						{
+							Detail errorItem = new Detail(
+									LINE_3,
+									new Location(sourceLocation,objectId), endId);
+							addValidationError(context,LINE_3, errorItem);
+
+						}
+					}
+				}
+
+			}
+		
+			// 2-NEPTUNE-Line-4 : check routes references
+			prepareCheckPoint(context,LINE_4);
+			List<String> routeIds = (List<String>) objectContext.get(ROUTE_ID);
+			for (String routeId : routeIds)
+			{
+				if (!routeContext.containsKey(routeId))
+				{
+					Detail errorItem = new Detail(
+							LINE_4,
+							new Location(sourceLocation,objectId), routeId);
+					addValidationError(context,LINE_4, errorItem);
+					addValidationError(context,LINE_4, errorItem);
+				}
+			}
+
+			// 2-NEPTUNE-Line-5 : check routes references
+			prepareCheckPoint(context,LINE_5);
+			for (String routeId : routeContext.keySet())
+			{
+				if (!routeIds.contains(routeId))
+				{
+					Detail errorItem = new Detail(
+							LINE_5,
+							new Location(sourceLocation,objectId), routeId);
+					Context routeCtx = (Context) routeContext.get(routeId);
+					lineNumber = ((Integer) routeCtx.get(LINE_NUMBER)).intValue();
+					columnNumber = ((Integer) routeCtx.get(COLUMN_NUMBER)).intValue();
+					FileLocation targetLocation = new FileLocation(fileName, lineNumber, columnNumber);
+					errorItem.getTargets().add(new Location(targetLocation,routeId));
+					addValidationError(context,LINE_5, errorItem);
+				}
+			}
+
 
 		}
 		return new ValidationConstraints();

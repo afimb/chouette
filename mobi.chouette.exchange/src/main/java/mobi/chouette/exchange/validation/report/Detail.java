@@ -19,7 +19,7 @@ public class Detail {
 	@XmlElement(name = "source")
 	private Location source;
 
-	@XmlElement(name = "targets")
+	@XmlElement(name = "target")
 	private List<Location> targets = new ArrayList<>();
 
 	@XmlElement(name = "error_id",required=true)

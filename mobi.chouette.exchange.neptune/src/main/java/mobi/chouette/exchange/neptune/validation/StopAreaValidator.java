@@ -83,6 +83,7 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 
 
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public ValidationConstraints validate(Context context, StopArea target) throws ValidationException
 	{
@@ -97,17 +98,31 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 		Map<String, StopArea> stopAreas = referential.getStopAreas();
 		String fileName = (String) context.get(FILE_NAME);
 
+		prepareCheckPoint(context,STOP_AREA_1);
+
 		for (String objectId : localContext.keySet()) 
 		{
-
-			// TODO 2-NEPTUNE-StopArea-1 : check if StopArea refers in field contains
-			// only stopareas or stoppoints
-
 			Context objectContext = (Context) localContext.get(objectId);
-			StopArea stopArea = stopAreas.get(objectId);
 			int lineNumber = ((Integer) objectContext.get(LINE_NUMBER)).intValue();
 			int columnNumber = ((Integer) objectContext.get(COLUMN_NUMBER)).intValue();
 			FileLocation sourceLocation = new FileLocation(fileName, lineNumber, columnNumber);
+
+			List<String> contains = (List<String>) objectContext.get("contains");
+			//  2-NEPTUNE-StopArea-1 : check if StopArea refers in field contains
+			for (String containedId : contains) 
+			{
+				// only stopareas or stoppoints
+				if (!localContext.containsKey(containedId) && !stopPointContext.containsKey(containedId))
+				{
+					// wrong or unknown reference type
+					Detail errorItem = new Detail(
+							STOP_AREA_1,
+							new Location(sourceLocation,objectId), containedId);
+					addValidationError(context,STOP_AREA_1, errorItem);
+				}
+			}
+
+			StopArea stopArea = stopAreas.get(objectId);
 
 			switch (stopArea.getAreaType())
 			{
@@ -119,36 +134,38 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 				// or commercialstoppoints
 				for (StopArea child : stopArea.getContainedStopAreas()) 
 				{
-					if (!localContext.containsKey(child.getObjectId())) continue;
-					if (!child.getAreaType().equals(ChouetteAreaEnum.StopPlace) && 
-							!child.getAreaType().equals(ChouetteAreaEnum.CommercialStopPoint))
+					if (localContext.containsKey(child.getObjectId()))
+					{
+						if (!child.getAreaType().equals(ChouetteAreaEnum.StopPlace) && 
+								!child.getAreaType().equals(ChouetteAreaEnum.CommercialStopPoint))
+						{
+							// wrong reference type
+							Detail errorItem = new Detail(
+									STOP_AREA_2,
+									new Location(sourceLocation,stopArea.getObjectId()), child.getAreaType().toString(),ChouetteAreaEnum.StopPlace.toString());
+							Context childContext = (Context) localContext.get(child.getObjectId());
+							lineNumber = ((Integer) childContext.get(LINE_NUMBER)).intValue();
+							columnNumber = ((Integer) childContext.get(COLUMN_NUMBER)).intValue();
+							FileLocation targetLocation = new FileLocation(fileName, lineNumber, columnNumber);
+							errorItem.getTargets().add(new Location(targetLocation, child.getObjectId()));
+
+							addValidationError(context,STOP_AREA_2, errorItem);
+						}
+					}
+					else if (stopPointContext.containsKey(child.getObjectId()))
 					{
 						// wrong reference type
 						Detail errorItem = new Detail(
 								STOP_AREA_2,
-								new Location(sourceLocation,stopArea.getObjectId()), child.getAreaType().toString(),ChouetteAreaEnum.StopPlace.toString());
-						Context childContext = (Context) localContext.get(child.getObjectId());
+								new Location(sourceLocation,stopArea.getObjectId()), "StopPoint",ChouetteAreaEnum.StopPlace.toString());
+						Context childContext = (Context) stopPointContext.get(child.getObjectId());
 						lineNumber = ((Integer) childContext.get(LINE_NUMBER)).intValue();
 						columnNumber = ((Integer) childContext.get(COLUMN_NUMBER)).intValue();
 						FileLocation targetLocation = new FileLocation(fileName, lineNumber, columnNumber);
 						errorItem.getTargets().add(new Location(targetLocation, child.getObjectId()));
-
 						addValidationError(context,STOP_AREA_2, errorItem);
+
 					}
-				}
-				for (StopPoint child : stopArea.getContainedStopPoints()) 
-				{
-					if (!stopPointContext.containsKey(child.getObjectId())) continue;
-					// wrong reference type
-					Detail errorItem = new Detail(
-							STOP_AREA_2,
-							new Location(sourceLocation,stopArea.getObjectId()), "StopPoint",ChouetteAreaEnum.StopPlace.toString());
-					Context childContext = (Context) stopPointContext.get(child.getObjectId());
-					lineNumber = ((Integer) childContext.get(LINE_NUMBER)).intValue();
-					columnNumber = ((Integer) childContext.get(COLUMN_NUMBER)).intValue();
-					FileLocation targetLocation = new FileLocation(fileName, lineNumber, columnNumber);
-					errorItem.getTargets().add(new Location(targetLocation, child.getObjectId()));
-					addValidationError(context,STOP_AREA_2, errorItem);
 				}
 			}
 			break;
@@ -160,35 +177,37 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 				prepareCheckPoint(context,STOP_AREA_3);
 				for (StopArea child : stopArea.getContainedStopAreas()) 
 				{
-					if (!localContext.containsKey(child.getObjectId())) continue;
-					if (!child.getAreaType().equals(ChouetteAreaEnum.Quay) && 
-							!child.getAreaType().equals(ChouetteAreaEnum.BoardingPosition))
+					if (localContext.containsKey(child.getObjectId())) 
+					{
+						if (!child.getAreaType().equals(ChouetteAreaEnum.Quay) && 
+								!child.getAreaType().equals(ChouetteAreaEnum.BoardingPosition))
+						{
+							// wrong reference type
+							Detail errorItem = new Detail(
+									STOP_AREA_3,
+									new Location(sourceLocation,stopArea.getObjectId()), child.getAreaType().toString(),ChouetteAreaEnum.CommercialStopPoint.toString());
+							Context childContext = (Context) localContext.get(child.getObjectId());
+							lineNumber = ((Integer) childContext.get(LINE_NUMBER)).intValue();
+							columnNumber = ((Integer) childContext.get(COLUMN_NUMBER)).intValue();
+							FileLocation targetLocation = new FileLocation(fileName, lineNumber, columnNumber);
+							errorItem.getTargets().add(new Location(targetLocation, child.getObjectId()));
+							addValidationError(context,STOP_AREA_3, errorItem);
+						}
+					}
+					else if (stopPointContext.containsKey(child.getObjectId()))
 					{
 						// wrong reference type
 						Detail errorItem = new Detail(
 								STOP_AREA_3,
-								new Location(sourceLocation,stopArea.getObjectId()), child.getAreaType().toString(),ChouetteAreaEnum.CommercialStopPoint.toString());
-						Context childContext = (Context) localContext.get(child.getObjectId());
+								new Location(sourceLocation,stopArea.getObjectId()), "StopPoint",ChouetteAreaEnum.CommercialStopPoint.toString());
+						Context childContext = (Context) stopPointContext.get(child.getObjectId());
 						lineNumber = ((Integer) childContext.get(LINE_NUMBER)).intValue();
 						columnNumber = ((Integer) childContext.get(COLUMN_NUMBER)).intValue();
 						FileLocation targetLocation = new FileLocation(fileName, lineNumber, columnNumber);
 						errorItem.getTargets().add(new Location(targetLocation, child.getObjectId()));
 						addValidationError(context,STOP_AREA_3, errorItem);
+
 					}
-				}
-				for (StopPoint child : stopArea.getContainedStopPoints()) 
-				{
-					if (!stopPointContext.containsKey(child.getObjectId())) continue;
-					// wrong reference type
-					Detail errorItem = new Detail(
-							STOP_AREA_3,
-							new Location(sourceLocation,stopArea.getObjectId()), "StopPoint",ChouetteAreaEnum.CommercialStopPoint.toString());
-					Context childContext = (Context) stopPointContext.get(child.getObjectId());
-					lineNumber = ((Integer) childContext.get(LINE_NUMBER)).intValue();
-					columnNumber = ((Integer) childContext.get(COLUMN_NUMBER)).intValue();
-					FileLocation targetLocation = new FileLocation(fileName, lineNumber, columnNumber);
-					errorItem.getTargets().add(new Location(targetLocation, child.getObjectId()));
-					addValidationError(context,STOP_AREA_3, errorItem);
 				}
 			}
 			break;
@@ -198,20 +217,22 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 				prepareCheckPoint(context,STOP_AREA_4);
 				// 2-NEPTUNE-StopArea-4 : if stoparea is quay or
 				// boardingPosition : check if it refers only StopPoints
-				for (StopArea child : stopArea.getContainedStopAreas()) 
+				for (StopPoint child : stopArea.getContainedStopPoints()) 
 				{
-					if (!localContext.containsKey(child.getObjectId())) continue;
-					// wrong reference type
-					Detail errorItem = new Detail(
-							STOP_AREA_4,
-							new Location(sourceLocation,stopArea.getObjectId()), child.getAreaType().toString(),stopArea.getAreaType().toString());
-					Context childContext = (Context) localContext.get(child.getObjectId());
-					lineNumber = ((Integer) childContext.get(LINE_NUMBER)).intValue();
-					columnNumber = ((Integer) childContext.get(COLUMN_NUMBER)).intValue();
-					FileLocation targetLocation = new FileLocation(fileName, lineNumber, columnNumber);
-					errorItem.getTargets().add(new Location(targetLocation, child.getObjectId()));
-					addValidationError(context,STOP_AREA_4, errorItem);
-
+					if (localContext.containsKey(child.getObjectId()))
+					{
+						StopArea area = stopAreas.get(child.getObjectId());
+						// wrong reference type
+						Detail errorItem = new Detail(
+								STOP_AREA_4,
+								new Location(sourceLocation,stopArea.getObjectId()), area.getAreaType().toString(),stopArea.getAreaType().toString());
+						Context childContext = (Context) localContext.get(child.getObjectId());
+						lineNumber = ((Integer) childContext.get(LINE_NUMBER)).intValue();
+						columnNumber = ((Integer) childContext.get(COLUMN_NUMBER)).intValue();
+						FileLocation targetLocation = new FileLocation(fileName, lineNumber, columnNumber);
+						errorItem.getTargets().add(new Location(targetLocation, child.getObjectId()));
+						addValidationError(context,STOP_AREA_4, errorItem);
+					}
 				}
 			}
 			break;
@@ -222,36 +243,40 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 				prepareCheckPoint(context,ITL_1);
 				for (StopArea child : stopArea.getContainedStopAreas()) 
 				{
-					if (!localContext.containsKey(child.getObjectId())) continue;
-					if (child.getAreaType().equals(ChouetteAreaEnum.ITL))
+					if (localContext.containsKey(child.getObjectId())) 
+					{
+						if (child.getAreaType().equals(ChouetteAreaEnum.ITL))
+						{
+							// wrong reference type
+
+							Detail errorItem = new Detail(
+									ITL_1,
+									new Location(sourceLocation,stopArea.getObjectId()), child.getAreaType().toString(),ChouetteAreaEnum.ITL.toString());
+							Context childContext = (Context) localContext.get(child.getObjectId());
+							lineNumber = ((Integer) childContext.get(LINE_NUMBER)).intValue();
+							columnNumber = ((Integer) childContext.get(COLUMN_NUMBER)).intValue();
+							FileLocation targetLocation = new FileLocation(fileName, lineNumber, columnNumber);
+							errorItem.getTargets().add(new Location(targetLocation, child.getObjectId()));
+							addValidationError(context,ITL_1, errorItem);
+						}
+					}
+					else if (stopPointContext.containsKey(child.getObjectId())) 
 					{
 						// wrong reference type
-
 						Detail errorItem = new Detail(
 								ITL_1,
-								new Location(sourceLocation,stopArea.getObjectId()), child.getAreaType().toString(),ChouetteAreaEnum.ITL.toString());
-						Context childContext = (Context) localContext.get(child.getObjectId());
+								new Location(sourceLocation,stopArea.getObjectId()), "StopPoint",ChouetteAreaEnum.ITL.toString());
+						Context childContext = (Context) stopPointContext.get(child.getObjectId());
 						lineNumber = ((Integer) childContext.get(LINE_NUMBER)).intValue();
 						columnNumber = ((Integer) childContext.get(COLUMN_NUMBER)).intValue();
 						FileLocation targetLocation = new FileLocation(fileName, lineNumber, columnNumber);
 						errorItem.getTargets().add(new Location(targetLocation, child.getObjectId()));
 						addValidationError(context,ITL_1, errorItem);
+
 					}
+
 				}
-				for (StopPoint child : stopArea.getContainedStopPoints()) 
-				{
-					if (!stopPointContext.containsKey(child.getObjectId())) continue;
-					// wrong reference type
-					Detail errorItem = new Detail(
-							ITL_1,
-							new Location(sourceLocation,stopArea.getObjectId()), "StopPoint",ChouetteAreaEnum.ITL.toString());
-					Context childContext = (Context) stopPointContext.get(child.getObjectId());
-					lineNumber = ((Integer) childContext.get(LINE_NUMBER)).intValue();
-					columnNumber = ((Integer) childContext.get(COLUMN_NUMBER)).intValue();
-					FileLocation targetLocation = new FileLocation(fileName, lineNumber, columnNumber);
-					errorItem.getTargets().add(new Location(targetLocation, child.getObjectId()));
-					addValidationError(context,ITL_1, errorItem);
-				}
+
 				// 2-NEPTUNE-ITL-2 : if stoparea is ITL : check if a ITLType
 				// object refers it
 				prepareCheckPoint(context,ITL_2);

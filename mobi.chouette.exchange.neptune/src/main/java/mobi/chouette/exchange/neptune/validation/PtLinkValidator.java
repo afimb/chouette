@@ -14,6 +14,10 @@ import mobi.chouette.model.util.Referential;
 
 public class PtLinkValidator extends AbstractValidator implements Validator<PTLink> , Constant{
 
+	public static final String END_OF_LINK_ID = "endOfLinkId";
+
+	public static final String START_OF_LINK_ID = "startOfLinkId";
+
 	public static String NAME = "PtLinkValidator";
 
 	private static final String PT_LINK_1 = "2-NEPTUNE-PtLink-1";
@@ -33,6 +37,20 @@ public class PtLinkValidator extends AbstractValidator implements Validator<PTLi
 		objectContext.put(LINE_NUMBER, Integer.valueOf(lineNumber));
 		objectContext.put(COLUMN_NUMBER, Integer.valueOf(columnNumber));
 
+	}
+	public void addStartOfLinkId(Context  context, String objectId, String linkId)
+	{
+		Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
+		
+			objectContext.put(START_OF_LINK_ID, linkId);
+		
+	}
+
+	public void addEndOfLinkId(Context  context, String objectId, String linkId)
+	{
+		Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
+		
+			objectContext.put(END_OF_LINK_ID, linkId);
 	}
 
 

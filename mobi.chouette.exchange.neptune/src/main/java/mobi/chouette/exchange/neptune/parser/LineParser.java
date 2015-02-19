@@ -71,14 +71,15 @@ public class LineParser implements Parser, Constant {
 				line.setTransportModeName(value);
 			} else if (xpp.getName().equals("lineEnd")) {
 				String lineEnd = ParserUtils.getText(xpp.nextText());
-				// TODO [DSU] lineEnd
+				validator.addLineEnd(context, objectId, lineEnd);
 			} else if (xpp.getName().equals("routeId")) {
 				String routeId = ParserUtils.getText(xpp.nextText());
+				validator.addRouteId(context, objectId, routeId);
 				Route route = ObjectFactory.getRoute(referential, routeId);
 				route.setLine(line);
 			} else if (xpp.getName().equals("ptNetworkIdShortcut")) {
 				String ptNetworkIdShortcut = ParserUtils.getText(xpp.nextText());
-				// TODO [DSU] ptNetworkIdShortcut
+				validator.addPtNetworkIdShortcut(context, objectId, ptNetworkIdShortcut);
 			} else if (xpp.getName().equals("registration")) {
 				while (xpp.nextTag() == XmlPullParser.START_TAG) {
 					if (xpp.getName().equals("registrationNumber")) {
