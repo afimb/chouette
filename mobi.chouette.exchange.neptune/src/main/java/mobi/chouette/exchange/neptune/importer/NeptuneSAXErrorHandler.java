@@ -1,7 +1,5 @@
 package mobi.chouette.exchange.neptune.importer;
 
-import java.net.URL;
-
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
@@ -23,7 +21,8 @@ public class NeptuneSAXErrorHandler implements ErrorHandler, Constant {
 
 	private ValidationReport validationReport;
 	
-	private CheckPoint report ;
+	private CheckPoint report1 ;
+	private CheckPoint report2 ;
 
 	private String fileName ;
 	
@@ -35,17 +34,45 @@ public class NeptuneSAXErrorHandler implements ErrorHandler, Constant {
 	{
 	    validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
 	    
-	    report = validationReport.findCheckPointByName(XML_2);
-	    if (report == null)
+	    report1 = validationReport.findCheckPointByName(XML_1);
+	    if (report1 == null)
 	    {
-	    report = new CheckPoint(XML_2, 
-				CheckPoint.RESULT.OK, CheckPoint.SEVERITY.WARNING);
-	    validationReport.getCheckPoints().add(report);
+	    report1 = new CheckPoint(XML_1, 
+				CheckPoint.RESULT.OK, CheckPoint.SEVERITY.ERROR);
+	    validationReport.getCheckPoints().add(report1);
 	    }
-	    URL url = new URL((String) context.get(FILE_URL));
-	    fileName = url.getFile();
+	    report2 = validationReport.findCheckPointByName(XML_2);
+	    if (report2 == null)
+	    {
+	    report2 = new CheckPoint(XML_2, 
+				CheckPoint.RESULT.OK, CheckPoint.SEVERITY.WARNING);
+	    validationReport.getCheckPoints().add(report2);
+	    }
+	    fileName = (String) context.get(FILE_NAME);
 	}
 
+	public void handleError(Exception error)
+	{
+		if (error instanceof SAXParseException)
+		{
+			SAXParseException cause = (SAXParseException) error;
+    		Location location = new Location(fileName, cause.getLineNumber(), cause.getColumnNumber());
+    		location.setName("xml-grammar");
+    		Detail item = new Detail(XML_1,
+    				location, cause.getMessage());
+            report1.addDetail(item);
+		}
+		else
+		{
+    		Location location = new Location(fileName, 1, 1);
+    		location.setName("xml-failure");
+    		Detail item = new Detail(XML_1,
+    				location, error.toString());
+            report1.addDetail(item);
+			
+		}
+	}
+	
 	private void handleError(SAXParseException error,CheckPoint.SEVERITY severity)
 	{
 		String key = "others";
@@ -67,9 +94,9 @@ public class NeptuneSAXErrorHandler implements ErrorHandler, Constant {
 		location.setName(key);
 		Detail item = new Detail(XML_2,
 				location, error.getMessage());
-		if (report.getSeverity().ordinal() < severity.ordinal())
-			report.setSeverity(severity);
-		report.addDetail(item);
+		if (report2.getSeverity().ordinal() < severity.ordinal())
+			report2.setSeverity(severity);
+		report2.addDetail(item);
 		log.info("error handled "+ error.getMessage());
 		return ;
 	}
@@ -83,7 +110,7 @@ public class NeptuneSAXErrorHandler implements ErrorHandler, Constant {
 	@Override
 	public void error(SAXParseException exception) throws SAXException {
 		handleError(exception, CheckPoint.SEVERITY.ERROR);
-		throw exception;
+		// throw exception;
 
 	}
 

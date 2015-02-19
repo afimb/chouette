@@ -79,11 +79,11 @@ public class NeptuneSAXParserCommand implements Command, Constant {
 				new BOMInputStream(url.openStream())), 8192 * 10);
 		StreamSource file = new StreamSource(reader);
 
+		NeptuneSAXErrorHandler errorHandler = new NeptuneSAXErrorHandler(context);
 		try {
-			NeptuneSAXErrorHandler errorHandler = new NeptuneSAXErrorHandler(context);
 			Validator validator = schema.newValidator();
 			validator.setErrorHandler(errorHandler);
-			validator.reset();
+			// validator.reset();
 			validator.validate(file);
 	         if (errorHandler.isHasErrors())
 	         {
@@ -106,6 +106,7 @@ public class NeptuneSAXParserCommand implements Command, Constant {
 				return res;
 			}
 			log.error(e);
+			errorHandler.handleError(e);
 			fileItem.setStatus(FileInfo.FILE_STATE.NOK);
 			report.getFiles().getFileInfos().add(fileItem);
 			fileItem.getErrors().add(e.getMessage());
