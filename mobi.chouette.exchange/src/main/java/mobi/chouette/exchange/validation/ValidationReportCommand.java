@@ -36,18 +36,8 @@ public class ValidationReportCommand implements Command {
         
         Path path = Paths.get(context.get(PATH).toString(), VALIDATION_FILE);
         
-        String data = null;
-        try
-        {
-        
-         data = JSONUtils.toJSON(report).replaceAll("\\}", "\n}\n").replaceAll("\\{", "{\n");
-        }
-        catch (Exception ex)
-        {
-        	log.error(ex.getMessage());
-        	data = report.toString().replaceAll("CheckPoint", "\n   CheckPoint").replaceAll("Detail", "\n     Detail").replaceAll("Location", "\n       Location");
-        }
-        
+        String data  = JSONUtils.toJSON(report).replaceAll("\\},\\{","\n},\n{");
+      
         FileUtils.writeStringToFile(path.toFile(), data);
 		
 		log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
