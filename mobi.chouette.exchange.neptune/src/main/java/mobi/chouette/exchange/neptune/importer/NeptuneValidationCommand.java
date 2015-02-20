@@ -36,7 +36,6 @@ import mobi.chouette.model.util.Referential;
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
-//@Stateless(name = NeptuneValidationCommand.COMMAND)
 @Log4j
 public class NeptuneValidationCommand implements Command, Constant {
 
@@ -232,13 +231,6 @@ public class NeptuneValidationCommand implements Command, Constant {
 		@Override
 		protected Command create(InitialContext context) throws IOException {
 			Command result = new NeptuneValidationCommand();
-			// try {
-			// String name = "java:app/mobi.chouette.exchange.neptune/"
-			// + COMMAND;
-			// result = (Command) context.lookup(name);
-			// } catch (NamingException e) {
-			// log.error(e);
-			// }
 			return result;
 		}
 	}

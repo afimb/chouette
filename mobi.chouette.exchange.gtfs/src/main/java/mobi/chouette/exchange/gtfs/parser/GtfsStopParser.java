@@ -7,9 +7,10 @@ import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.gtfs.model.GtfsStop;
 import mobi.chouette.exchange.gtfs.model.GtfsStop.WheelchairBoardingType;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsImporter;
+import mobi.chouette.exchange.gtfs.model.importer.Index;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
-import mobi.chouette.exchange.report.Report;
+import mobi.chouette.exchange.importer.Validator;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.LongLatTypeEnum;
@@ -17,7 +18,7 @@ import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 @Log4j
-public class GtfsStopParser implements Parser, Constant {
+public class GtfsStopParser implements Parser, Validator, Constant {
 
 	private Referential referential;
 	private GtfsImporter importer;
@@ -27,13 +28,14 @@ public class GtfsStopParser implements Parser, Constant {
 	public void parse(Context context) throws Exception {
 
 		referential = (Referential) context.get(REFERENTIAL);
-		importer = (GtfsImporter) context.get(IMPORTER);
+		importer = (GtfsImporter) context.get(PARSER);
 		configuration = (GtfsImportParameters) context.get(CONFIGURATION);
 
 		for (GtfsStop gtfsStop : importer.getStopById()) {
 			if (gtfsStop.getLocationType() != GtfsStop.LocationType.Access) {
 
-				String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
+				String objectId = AbstractConverter.composeObjectId(
+						configuration.getObjectIdPrefix(),
 						StopArea.STOPAREA_KEY, gtfsStop.getStopId(), log);
 
 				if (gtfsStop.getLocationType() != GtfsStop.LocationType.Access) {
@@ -45,32 +47,32 @@ public class GtfsStopParser implements Parser, Constant {
 		}
 	}
 
+	@Override
+	public void validate(Context context) throws Exception {
+
+		importer = (GtfsImporter) context.get(PARSER);
+
+		// stops.txt
+		Index<GtfsStop> parser = importer.getStopById();
+		for (GtfsStop bean : parser) {
+			parser.validate(bean, importer);
+		}
+	}
+
 	protected void convert(Context context, GtfsStop gtfsStop, StopArea stopArea) {
 		Referential referential = (Referential) context.get(REFERENTIAL);
-		Report report = (Report) context.get(REPORT);
-
-		// objectId, objectVersion, creatorId, creationTime
 
 		stopArea.setLatitude(gtfsStop.getStopLat());
 		stopArea.setLongitude(gtfsStop.getStopLon());
 		stopArea.setLongLatType(LongLatTypeEnum.WGS84);
-
-		// Name optional
 		stopArea.setName(AbstractConverter.getNonEmptyTrimedString(gtfsStop
 				.getStopName()));
 
-		// URL optional
 		stopArea.setUrl(AbstractConverter.toString(gtfsStop.getStopUrl()));
-
-		// Comment optional
 		stopArea.setComment(AbstractConverter.getNonEmptyTrimedString(gtfsStop
 				.getStopDesc()));
-
-		// timezone
 		stopArea.setTimeZone(AbstractConverter.toString(gtfsStop
 				.getStopTimezone()));
-
-		// farecode
 		stopArea.setFareCode(0);
 
 		if (gtfsStop.getLocationType() == GtfsStop.LocationType.Station) {
@@ -86,20 +88,17 @@ public class GtfsStopParser implements Parser, Constant {
 			}
 			stopArea.setAreaType(ChouetteAreaEnum.BoardingPosition);
 			StopArea parent = ObjectFactory.getStopArea(referential,
-					AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),StopArea.STOPAREA_KEY,
-							gtfsStop.getParentStation(), log));
+					AbstractConverter.composeObjectId(
+							configuration.getObjectIdPrefix(),
+							StopArea.STOPAREA_KEY, gtfsStop.getParentStation(),
+							log));
 
 			stopArea.setParent(parent);
 		}
 
-		// RegistrationNumber optional
 		stopArea.setRegistrationNumber(gtfsStop.getStopCode());
-
-		// MobilityRestrictedSuitable
 		stopArea.setMobilityRestrictedSuitable(WheelchairBoardingType.Allowed
 				.equals(gtfsStop.getWheelchairBoarding()));
-
-		// extension
 		stopArea.setStreetName(gtfsStop.getAddressLine());
 		stopArea.setCityName(gtfsStop.getLocality());
 		stopArea.setZipCode(gtfsStop.getPostalCode());

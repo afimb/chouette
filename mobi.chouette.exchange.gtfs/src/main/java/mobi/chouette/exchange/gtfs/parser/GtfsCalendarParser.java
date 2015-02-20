@@ -15,8 +15,10 @@ import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.gtfs.model.GtfsCalendar;
 import mobi.chouette.exchange.gtfs.model.GtfsCalendarDate;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsImporter;
+import mobi.chouette.exchange.gtfs.model.importer.Index;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
+import mobi.chouette.exchange.importer.Validator;
 import mobi.chouette.model.CalendarDay;
 import mobi.chouette.model.Period;
 import mobi.chouette.model.Timetable;
@@ -25,7 +27,7 @@ import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 @Log4j
-public class GtfsCalendarParser implements Parser, Constant {
+public class GtfsCalendarParser implements Parser, Validator, Constant {
 
 	public static final String AFTER_MIDNIGHT_SUFFIX = "_after_midnight";
 
@@ -48,13 +50,14 @@ public class GtfsCalendarParser implements Parser, Constant {
 	public void parse(Context context) throws Exception {
 
 		referential = (Referential) context.get(REFERENTIAL);
-		importer = (GtfsImporter) context.get(IMPORTER);
+		importer = (GtfsImporter) context.get(PARSER);
 		configuration = (GtfsImportParameters) context.get(CONFIGURATION);
 
 		if (importer.hasCalendarImporter()) {
 			for (GtfsCalendar gtfsCalendar : importer.getCalendarByService()) {
 
-				String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
+				String objectId = AbstractConverter.composeObjectId(
+						configuration.getObjectIdPrefix(),
 						Timetable.TIMETABLE_KEY, gtfsCalendar.getServiceId(),
 						log);
 				Timetable timetable = ObjectFactory.getTimetable(referential,
@@ -67,7 +70,8 @@ public class GtfsCalendarParser implements Parser, Constant {
 
 			for (String serviceId : importer.getCalendarDateByService().keys()) {
 
-				String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
+				String objectId = AbstractConverter.composeObjectId(
+						configuration.getObjectIdPrefix(),
 						Timetable.TIMETABLE_KEY, serviceId, log);
 
 				Timetable timetable = referential.getTimetables().get(objectId);
@@ -91,6 +95,30 @@ public class GtfsCalendarParser implements Parser, Constant {
 
 		for (Timetable timetable : list) {
 			referential.getTimetables().put(timetable.getObjectId(), timetable);
+		}
+
+	}
+
+	@Override
+	public void validate(Context context) throws Exception {
+
+		referential = (Referential) context.get(REFERENTIAL);
+		importer = (GtfsImporter) context.get(PARSER);
+		configuration = (GtfsImportParameters) context.get(CONFIGURATION);
+
+		// calendar.txt
+		Index<GtfsCalendar> calendarParser = importer.getCalendarByService();
+		for (GtfsCalendar gtfsCalendar : calendarParser) {
+			calendarParser.validate(gtfsCalendar, importer);
+		}
+
+		// calendar_dates.txt
+		if (importer.hasCalendarDateImporter()) {
+			Index<GtfsCalendarDate> calendarDateParser = importer
+					.getCalendarDateByService();
+			for (GtfsCalendarDate gtfsCalendarDate : calendarDateParser) {
+				calendarDateParser.validate(gtfsCalendarDate, importer);
+			}
 		}
 
 	}

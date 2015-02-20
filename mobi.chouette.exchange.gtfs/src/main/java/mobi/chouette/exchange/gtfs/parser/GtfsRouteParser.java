@@ -2,75 +2,107 @@ package mobi.chouette.exchange.gtfs.parser;
 
 import java.awt.Color;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.gtfs.Constant;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
-import mobi.chouette.exchange.gtfs.model.GtfsAgency;
 import mobi.chouette.exchange.gtfs.model.GtfsRoute;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsImporter;
+import mobi.chouette.exchange.gtfs.model.importer.Index;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
+import mobi.chouette.exchange.importer.Validator;
+import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.Line;
+import mobi.chouette.model.PTNetwork;
 import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 @Log4j
-public class GtfsRouteParser implements Parser, Constant {
+public class GtfsRouteParser implements Parser, Validator, Constant {
 
 	private Referential referential;
 	private GtfsImporter importer;
 	private GtfsImportParameters configuration;
+	private ValidationParameters validation;
+
+	@Getter
+	@Setter
+	private GtfsRoute gtfsRoute;
 
 	@Override
 	public void parse(Context context) throws Exception {
 
 		referential = (Referential) context.get(REFERENTIAL);
-		importer = (GtfsImporter) context.get(IMPORTER);
 		configuration = (GtfsImportParameters) context.get(CONFIGURATION);
+		validation = (ValidationParameters) context.get(VALIDATION);
+		importer = (GtfsImporter) context.get(PARSER);
 
-		GtfsRoute gtfsRoute = (GtfsRoute) context.get(GTFS_ROUTE);
-
-		String lineId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Line.LINE_KEY,
+		String lineId = AbstractConverter.composeObjectId(
+				configuration.getObjectIdPrefix(), Line.LINE_KEY,
 				gtfsRoute.getRouteId(), log);
 		Line line = ObjectFactory.getLine(referential, lineId);
 		convert(context, gtfsRoute, line);
 
-		// Route
-		Parser gtfsTripParser = ParserFactory.create(GtfsTripParser.class
-				.getName());
+		// PTNetwork
+		String ptNetworkId = configuration.getObjectIdPrefix() + ":"
+				+ PTNetwork.PTNETWORK_KEY + ":"
+				+ configuration.getObjectIdPrefix();
+		PTNetwork ptNetwork = ObjectFactory.getPTNetwork(referential,
+				ptNetworkId);
+		line.setPTNetwork(ptNetwork);
+
+		// Company
+		String companyId = AbstractConverter.composeObjectId(
+				configuration.getObjectIdPrefix(), Company.COMPANY_KEY,
+				gtfsRoute.getAgencyId(), log);
+		Company company = ObjectFactory.getCompany(referential, companyId);
+		line.setCompany(company);
+
+		// Route VehicleJourney VehicleJourneyAtStop , JourneyPattern ,StopPoint
+		GtfsTripParser gtfsTripParser = (GtfsTripParser) ParserFactory
+				.create(GtfsTripParser.class.getName());
+		gtfsTripParser.setGtfsRoute(gtfsRoute);
 		gtfsTripParser.parse(context);
 
 	}
 
+	@Override
+	public void validate(Context context) throws Exception {
+
+		importer = (GtfsImporter) context.get(PARSER);
+
+		// routes.txt
+		Index<GtfsRoute> parser = importer.getRouteById();
+		for (GtfsRoute bean : parser) {
+			parser.validate(bean, importer);
+		}
+	}
+
 	protected void convert(Context context, GtfsRoute gtfsRoute, Line line) {
 
-		Referential referential = (Referential) context.get(REFERENTIAL);
-
-		// Name optional
 		line.setName(AbstractConverter.getNonEmptyTrimedString(gtfsRoute
 				.getRouteLongName()));
 		if (line.getName() == null)
 			line.setName(AbstractConverter.getNonEmptyTrimedString(gtfsRoute
 					.getRouteShortName()));
 
-		// Number optional
 		line.setNumber(AbstractConverter.getNonEmptyTrimedString(gtfsRoute
 				.getRouteShortName()));
 
-		// PublishedName optional
 		line.setPublishedName(AbstractConverter
 				.getNonEmptyTrimedString(gtfsRoute.getRouteLongName()));
 
-		// Name = route_long_name oder route_short_name
 		if (line.getPublishedName() != null) {
 			line.setName(line.getPublishedName());
 		} else {
 			line.setName(line.getNumber());
 		}
-		// TransportModeName optional
+
 		switch (gtfsRoute.getRouteType()) {
 		case Tram:
 			line.setTransportModeName(TransportModeNameEnum.Tramway);
@@ -102,29 +134,12 @@ public class GtfsRouteParser implements Parser, Constant {
 
 		}
 
-		// Registration optional
 		String[] token = line.getObjectId().split(":");
 		line.setRegistrationNumber(token[2]);
-
-		// Comment optional
 		line.setComment(gtfsRoute.getRouteDesc());
-
-		// Company optional
-		if (gtfsRoute.getAgencyId() != null) {
-
-			String agencyId = (gtfsRoute.getAgencyId() != null) ? gtfsRoute.getAgencyId(): GtfsAgency.DEFAULT_ID;
-			String companyId = AbstractConverter
-					.getNonEmptyTrimedString(AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
-							Company.COMPANY_KEY, gtfsRoute.getAgencyId(), log));
-			Company company = ObjectFactory.getCompany(referential, companyId);
-
-			line.setCompany(company);
-		}
-
 		line.setColor(toHexa(gtfsRoute.getRouteColor()));
 		line.setTextColor(toHexa(gtfsRoute.getRouteTextColor()));
 		line.setUrl(AbstractConverter.toString(gtfsRoute.getRouteUrl()));
-
 	}
 
 	private String toHexa(Color color) {

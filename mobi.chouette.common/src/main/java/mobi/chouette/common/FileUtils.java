@@ -23,6 +23,7 @@ import org.apache.commons.compress.archivers.ArchiveInputStream;
 import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 
 @Log4j
@@ -86,8 +87,7 @@ public class FileUtils {
 		}
 		return result;
 	}
-
-
+	
 	public static void uncompress(String filename, String path)
 			throws IOException, ArchiveException {
 		ArchiveInputStream in = new ArchiveStreamFactory()
@@ -96,11 +96,13 @@ public class FileUtils {
 		ArchiveEntry entry = null;
 		while ((entry = in.getNextEntry()) != null) {
 
-			File file = new File(path, entry.getName());
+
+			String name = FilenameUtils.getName(entry.getName());
+			File file = new File(path, name);
 			if (entry.isDirectory()) {
-				if (!file.exists()) {
-					file.mkdirs();
-				}
+//				if (!file.exists()) {
+//					file.mkdirs();
+//				}
 			} else {
 				if (file.exists()) {
 					file.delete();

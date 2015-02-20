@@ -4,7 +4,9 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 
@@ -14,6 +16,7 @@ import lombok.ToString;
 public class AbstractImportParameter extends AbstractParameter{
 
 	@XmlElement(name = "no_save")
+	@Getter@Setter
 	private Boolean noSave;
 
 }

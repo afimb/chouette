@@ -30,14 +30,11 @@ import mobi.chouette.exchange.report.Report;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.input.BOMInputStream;
-import org.w3c.dom.ls.LSInput;
-import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.SAXException;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
-// @Stateless(name = NeptuneSAXParserCommand.COMMAND)
 @Log4j
 public class NeptuneSAXParserCommand implements Command, Constant {
 
@@ -58,7 +55,7 @@ public class NeptuneSAXParserCommand implements Command, Constant {
 
 		Report report = (Report) context.get(REPORT);
 		FileInfo fileItem = new FileInfo();
-		
+
 		String fileName = new File(new URL(fileURL).toURI()).getName();
 
 		fileItem.setName(fileName);
@@ -78,24 +75,24 @@ public class NeptuneSAXParserCommand implements Command, Constant {
 				new BOMInputStream(url.openStream())), 8192 * 10);
 		StreamSource file = new StreamSource(reader);
 
-		NeptuneSAXErrorHandler errorHandler = new NeptuneSAXErrorHandler(context, fileURL);
+		NeptuneSAXErrorHandler errorHandler = new NeptuneSAXErrorHandler(
+				context, fileURL);
 		try {
 			Validator validator = schema.newValidator();
 			validator.setErrorHandler(errorHandler);
 			// validator.reset();
 			validator.validate(file);
-	         if (errorHandler.isHasErrors())
-	         {
-	 			fileItem.setStatus(FileInfo.FILE_STATE.NOK);
+			if (errorHandler.isHasErrors()) {
+				fileItem.setStatus(FileInfo.FILE_STATE.NOK);
 				report.getFiles().getFileInfos().add(fileItem);
-				fileItem.getErrors().add("Xml errors");	     
-				return ERROR;
-	         }
-	         return SUCCESS;
+				fileItem.getErrors().add("Xml errors");
+				return result;
+			}
+			result = SUCCESS;
 		} catch (IOException | SAXException e) {
-		    
-			if (!context.containsKey("REPLAY_VALIDATOR") && e.getMessage().contains("ChouettePTNetwork"))
-			{
+
+			if (!context.containsKey("REPLAY_VALIDATOR")
+					&& e.getMessage().contains("ChouettePTNetwork")) {
 				log.warn(e);
 				reader.close();
 				addNameSpace(url);
@@ -109,37 +106,34 @@ public class NeptuneSAXParserCommand implements Command, Constant {
 			fileItem.setStatus(FileInfo.FILE_STATE.NOK);
 			report.getFiles().getFileInfos().add(fileItem);
 			fileItem.getErrors().add(e.getMessage());
-			
-		}
-		finally
-		{
+
+		} finally {
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		}
 
-		return ERROR;
+		return result;
 	}
-	
-	 private void addNameSpace(URL url) 
-	 {
+
+	private void addNameSpace(URL url) {
 		try {
 			File tmp = File.createTempFile("netpuneImport", ".xml");
 			FileUtils.copyInputStreamToFile(url.openStream(), tmp);
-			
+
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
 					new BOMInputStream(new FileInputStream(tmp))), 8192 * 10);
-			
+
 			File f = new File(url.toURI());
-			
+
 			PrintWriter writer = new PrintWriter(f);
-			
-			String l ;
-			while ((l = reader.readLine()) != null)
-			{
-				if (l.contains("<ChouettePTNetwork>"))
-				{
-					l = l.replace("<ChouettePTNetwork>", "<ChouettePTNetwork xmlns=\"http://www.trident.org/schema/trident\" " +
-							"xmlns:acsb=\"http://www.ifopt.org.uk/acsb\" " +
-							"xmlns:siri=\"http://www.siri.org.uk/siri\">");
+
+			String l;
+			while ((l = reader.readLine()) != null) {
+				if (l.contains("<ChouettePTNetwork>")) {
+					l = l.replace(
+							"<ChouettePTNetwork>",
+							"<ChouettePTNetwork xmlns=\"http://www.trident.org/schema/trident\" "
+									+ "xmlns:acsb=\"http://www.ifopt.org.uk/acsb\" "
+									+ "xmlns:siri=\"http://www.siri.org.uk/siri\">");
 					log.info(" <ChouettePTNetwork> replaced :" + l);
 				}
 				writer.println(l);
@@ -152,23 +146,14 @@ public class NeptuneSAXParserCommand implements Command, Constant {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
-	}
 
+	}
 
 	public static class DefaultCommandFactory extends CommandFactory {
 
 		@Override
 		protected Command create(InitialContext context) throws IOException {
 			Command result = new NeptuneSAXParserCommand();
-			// try {
-			// String name = "java:app/mobi.chouette.exchange.neptune/"
-			// + COMMAND;
-			// result = (Command) context.lookup(name);
-			// } catch (NamingException e) {
-			// log.error(e);
-			// }
 			return result;
 		}
 	}
