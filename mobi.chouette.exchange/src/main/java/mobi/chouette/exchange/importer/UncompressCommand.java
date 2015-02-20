@@ -7,6 +7,8 @@ import java.nio.file.Paths;
 
 import javax.naming.InitialContext;
 
+import org.apache.commons.io.FilenameUtils;
+
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
@@ -33,26 +35,34 @@ public class UncompressCommand implements Command, ReportConstant {
 		Monitor monitor = MonitorFactory.start(COMMAND);
 		Report report = (Report) context.get(REPORT);
 
-		ZipItem zip = new ZipItem();
-		try {
-			String path = (String) context.get(PATH);
-			String file = (String) context.get(ARCHIVE);
+		String path = (String) context.get(PATH);
+		String file = (String) context.get(ARCHIVE);
+		Path filename = Paths.get(path, file);
+		Path target = Paths.get(path, INPUT);
+		if (!Files.exists(target)) {
+			Files.createDirectories(target);
+		}
+		if (FilenameUtils.getExtension(filename.toString()).equalsIgnoreCase("zip"))
+		{
+			ZipItem zip = new ZipItem();
 			zip.setName(file);
-			report.setZip(zip);
-			Path filename = Paths.get(path, file);
-			Path target = Paths.get(path, INPUT);
-			if (!Files.exists(target)) {
-				Files.createDirectories(target);
+
+			try {
+				report.setZip(zip);
+				FileUtils.uncompress(filename.toString(), target.toString());
+				result = SUCCESS;
+				zip.setStatus(STATUS_OK);
+			} catch (Exception e) {
+				log.error(e.getMessage(),e);
+				zip.addError(e.getMessage());
+				zip.setStatus(STATUS_ERROR);
+				report.setResult(STATUS_ERROR);
+				report.setFailure("invalid_zip");
 			}
-			FileUtils.uncompress(filename.toString(), target.toString());
-			result = SUCCESS;
-			zip.setStatus(STATUS_OK);
-		} catch (Exception e) {
-			zip.getErrors().add(e.getMessage());
-			zip.setStatus(STATUS_ERROR);
-			report.setResult(STATUS_ERROR);
-			report.setFailure("invalid_zip");
-			log.error(e);
+		}
+		else
+		{
+			org.apache.commons.io.FileUtils.copyFileToDirectory(filename.toFile(), target.toFile());
 		}
 
 		log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);

@@ -29,7 +29,7 @@ public class StopPointValidator extends AbstractValidator implements Validator<S
 	private static final String STOP_POINT_3 = "2-NEPTUNE-StopPoint-3";
 	private static final String STOP_POINT_4 = "2-NEPTUNE-StopPoint-4";
 
-	static final String LOCAL_CONTEXT = "StopPoint";
+	public static final String LOCAL_CONTEXT = "StopPoint";
 
 
 	public StopPointValidator(Context context) 
@@ -70,7 +70,7 @@ public class StopPointValidator extends AbstractValidator implements Validator<S
 		if (localContext == null || localContext.isEmpty()) return new ValidationConstraints();
 
 		Referential referential = (Referential) context.get(REFERENTIAL);
-		String fileName = (String) context.get(FILE_URL);
+		String fileName = (String) context.get(FILE_NAME);
 		Line line = referential.getLines().values().iterator().next(); 
 
 		for (String objectId : localContext.keySet()) 

@@ -32,7 +32,7 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 	private static final String VEHICLE_JOURNEY_AT_STOP_3 = "2-NEPTUNE-VehicleJourneyAtStop-3";
 	private static final String VEHICLE_JOURNEY_AT_STOP_4 = "2-NEPTUNE-VehicleJourneyAtStop-4";
 
-	static final String LOCAL_CONTEXT = "VehicleJourney";
+	public static final String LOCAL_CONTEXT = "VehicleJourney";
 
 
 	public VehicleJourneyValidator(Context context) 
@@ -85,7 +85,7 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 		Context areaCentroidContext = (Context) validationContext.get(AreaCentroidValidator.LOCAL_CONTEXT);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		Map<String, StopArea> stopAreas = referential.getStopAreas();
-		String fileName = (String) context.get(FILE_URL);
+		String fileName = (String) context.get(FILE_NAME);
 
 		for (String objectId : localContext.keySet()) 
 		{

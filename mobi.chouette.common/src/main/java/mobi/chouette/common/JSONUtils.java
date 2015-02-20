@@ -61,6 +61,7 @@ public class JSONUtils {
 		try {
 			JAXBContext context = JAXBContext.newInstance(payload.getClass());
 			Configuration config = new Configuration();
+			config.setAttributeKey("");
 			MappedNamespaceConvention convention = new MappedNamespaceConvention(
 					config);
 			StringWriter out = new StringWriter();

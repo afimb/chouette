@@ -55,7 +55,38 @@ public class FileUtils {
 		}
 		return result;
 	}
-	
+
+	public static List<Path> listFiles(Path path, String glob, String exclusionGlob)
+			throws IOException {
+		final PathMatcher matcher = path.getFileSystem().getPathMatcher(
+				"glob:" + glob);
+		
+		final PathMatcher excludeMatcher = path.getFileSystem().getPathMatcher(
+				"glob:" + exclusionGlob);
+
+		final DirectoryStream.Filter<Path> filter = new DirectoryStream.Filter<Path>() {
+
+			@Override
+			public boolean accept(Path entry) throws IOException {
+				return Files.isDirectory(entry)
+						|| (matcher.matches(entry.getFileName()) && !excludeMatcher.matches(entry.getFileName()));
+			}
+		};
+		List<Path> result = new ArrayList<Path>();
+
+		try (DirectoryStream<Path> stream = Files.newDirectoryStream(path,
+				filter)) {
+			for (Path entry : stream) {
+				if (Files.isDirectory(entry)) {
+					result.addAll(listFiles(entry, glob,exclusionGlob));
+					return result;
+				}
+				result.add(entry);
+			}
+		}
+		return result;
+	}
+
 
 	public static void uncompress(String filename, String path)
 			throws IOException, ArchiveException {

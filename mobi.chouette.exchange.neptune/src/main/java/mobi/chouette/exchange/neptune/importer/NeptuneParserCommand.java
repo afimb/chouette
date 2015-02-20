@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.neptune.importer;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -48,10 +49,11 @@ public class NeptuneParserCommand implements Command, Constant {
 
 		context.put(FILE_URL, fileURL);
 
-		
 		Report report = (Report) context.get(REPORT);
 		FileInfo fileItem = new FileInfo();
-		fileItem.setName(fileURL);
+		String fileName = new File(new URL(fileURL).toURI()).getName();
+
+		fileItem.setName(fileName);
 
 		// prepare validation
 
@@ -59,7 +61,7 @@ public class NeptuneParserCommand implements Command, Constant {
 
 			URL url = new URL(fileURL);
 			log.info("[DSU] parsing file : " + url);
-			
+
 			Referential referential = (Referential) context.get(REFERENTIAL);
 			if (referential != null) {
 				referential.clear();
@@ -88,12 +90,12 @@ public class NeptuneParserCommand implements Command, Constant {
 			parser.parse(context);
 
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
-			fileItem.setStatus(FileInfo.STATE.OK);
+			fileItem.setStatus(FileInfo.FILE_STATE.OK);
 			report.getFiles().getFileInfos().add(fileItem);
 			result = SUCCESS;
 			return result;
 		} catch (Exception e) {
-			fileItem.setStatus(FileInfo.STATE.NOK);
+			fileItem.setStatus(FileInfo.FILE_STATE.NOK);
 			report.getFiles().getFileInfos().add(fileItem);
 			fileItem.getErrors().add(e.getMessage());
 			throw e;

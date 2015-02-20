@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.naming.InitialContext;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
@@ -16,12 +18,14 @@ public class ChainCommand implements Chain, Constant {
 	public static final String COMMAND = "ChainCommand";
 
 	private List<Command> commands = new ArrayList<Command>();
-	
+
+	@Getter
+	@Setter
 	private boolean ignored = false;
 
 	@Override
 	public void add(Command command) {
-		commands.add(command);		
+		commands.add(command);
 	}
 
 	@Override
@@ -35,7 +39,7 @@ public class ChainCommand implements Chain, Constant {
 		for (Command command : commands) {
 			try {
 				result = command.execute(context);
-				if (result == ERROR && !ignored) {					
+				if (result == ERROR && !ignored) {
 					break;
 				}
 			} catch (Exception e) {
@@ -64,13 +68,13 @@ public class ChainCommand implements Chain, Constant {
 		@Override
 		protected Command create(InitialContext context) throws IOException {
 			Command result = new ChainCommand();
-//			try {
-//				String name = "java:app/mobi.chouette.exchange/" + COMMAND;
-//
-//				result = (Command) context.lookup(name);
-//			} catch (NamingException e) {
-//				log.error(e);
-//			}
+			// try {
+			// String name = "java:app/mobi.chouette.exchange/" + COMMAND;
+			//
+			// result = (Command) context.lookup(name);
+			// } catch (NamingException e) {
+			// log.error(e);
+			// }
 			return result;
 		}
 	}

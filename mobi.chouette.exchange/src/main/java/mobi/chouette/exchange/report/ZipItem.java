@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.report;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -13,14 +14,20 @@ import lombok.Data;
 @Data
 public class ZipItem {
 	
-	@XmlAttribute(name = "status")
+	@XmlElement(name = "status")
 	private String status;
 	
-	@XmlAttribute(name="name")
+	@XmlElement(name="name")
 	private String name;
 	
 	@XmlElement(name="errors")
 	private List<String> errors;
+	
+	public void addError(String error)
+	{
+		if (errors == null) errors = new ArrayList<>();
+		errors.add(error);
+	}
 
 
 }

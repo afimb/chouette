@@ -1,17 +1,21 @@
 package mobi.chouette.exchange.neptune.importer;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.io.Reader;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import javax.naming.InitialContext;
 import javax.xml.XMLConstants;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -24,12 +28,11 @@ import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.report.FileInfo;
 import mobi.chouette.exchange.report.Report;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.input.BOMInputStream;
-import org.xml.sax.Attributes;
-import org.xml.sax.InputSource;
+import org.w3c.dom.ls.LSInput;
+import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
-import org.xml.sax.helpers.XMLFilterImpl;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -55,7 +58,10 @@ public class NeptuneSAXParserCommand implements Command, Constant {
 
 		Report report = (Report) context.get(REPORT);
 		FileInfo fileItem = new FileInfo();
-		fileItem.setName(fileURL);
+		
+		String fileName = new File(new URL(fileURL).toURI()).getName();
+
+		fileItem.setName(fileName);
 
 		Schema schema = (Schema) context.get(SCHEMA);
 		if (schema == null) {
@@ -66,64 +72,90 @@ public class NeptuneSAXParserCommand implements Command, Constant {
 		}
 
 		URL url = new URL(fileURL);
-		log.info("[DSU] validate file : " + url);
+		log.info("[DSU] validation schema (niv 1) : " + url);
 
 		Reader reader = new BufferedReader(new InputStreamReader(
 				new BOMInputStream(url.openStream())), 8192 * 10);
-		InputSource source = new InputSource(reader);
-		// StreamSource file = new StreamSource(reader);
+		StreamSource file = new StreamSource(reader);
 
+		NeptuneSAXErrorHandler errorHandler = new NeptuneSAXErrorHandler(context, fileURL);
 		try {
-			NeptuneSAXErrorHandler errorHandler = new NeptuneSAXErrorHandler(
-					context, fileURL);
-			SAXParserFactory factory = SAXParserFactory.newInstance();
-			// factory.setNamespaceAware(true);
-			factory.setSchema(schema);
-			SAXParser parser = factory.newSAXParser();
-
-			// parser.setProperty(
-			// "http://apache.org/xml/properties/schema/external-noNamespaceSchemaLocation",
-			// "http://www.trident.org/schema/trident");
-			XMLReader xmlReader = parser.getXMLReader();
-			xmlReader.setErrorHandler(errorHandler);
-			XMLFilterImpl xmlFilter = new NeptuneNamespaceFilter(xmlReader);
-			xmlFilter.parse(source);
-			// Validator validator = schema.newValidator();
-			// validator.setProperty(
-			// "http://apache.org/xml/properties/schema/external-noNamespaceSchemaLocation",
-			// "http://www.trident.org/schema/trident");
-			// validator.setErrorHandler(errorHandler);
+			Validator validator = schema.newValidator();
+			validator.setErrorHandler(errorHandler);
 			// validator.reset();
-			// validator.validate(file);
-			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
+			validator.validate(file);
+	         if (errorHandler.isHasErrors())
+	         {
+	 			fileItem.setStatus(FileInfo.FILE_STATE.NOK);
+				report.getFiles().getFileInfos().add(fileItem);
+				fileItem.getErrors().add("Xml errors");	     
+				return ERROR;
+	         }
+	         return SUCCESS;
 		} catch (IOException | SAXException e) {
+		    
+			if (!context.containsKey("REPLAY_VALIDATOR") && e.getMessage().contains("ChouettePTNetwork"))
+			{
+				log.warn(e);
+				reader.close();
+				addNameSpace(url);
+				context.put("REPLAY_VALIDATOR", Boolean.TRUE);
+				boolean res = execute(context);
+				context.remove("REPLAY_VALIDATOR");
+				return res;
+			}
 			log.error(e);
-			fileItem.setStatus(FileInfo.STATE.NOK);
+			errorHandler.handleError(e);
+			fileItem.setStatus(FileInfo.FILE_STATE.NOK);
 			report.getFiles().getFileInfos().add(fileItem);
 			fileItem.getErrors().add(e.getMessage());
-			monitor.stop();
+			
+		}
+		finally
+		{
+			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		}
 
-		result = SUCCESS;
+		return ERROR;
+	}
+	
+	 private void addNameSpace(URL url) 
+	 {
+		try {
+			File tmp = File.createTempFile("netpuneImport", ".xml");
+			FileUtils.copyInputStreamToFile(url.openStream(), tmp);
+			
+			BufferedReader reader = new BufferedReader(new InputStreamReader(
+					new BOMInputStream(new FileInputStream(tmp))), 8192 * 10);
+			
+			File f = new File(url.toURI());
+			
+			PrintWriter writer = new PrintWriter(f);
+			
+			String l ;
+			while ((l = reader.readLine()) != null)
+			{
+				if (l.contains("<ChouettePTNetwork>"))
+				{
+					l = l.replace("<ChouettePTNetwork>", "<ChouettePTNetwork xmlns=\"http://www.trident.org/schema/trident\" " +
+							"xmlns:acsb=\"http://www.ifopt.org.uk/acsb\" " +
+							"xmlns:siri=\"http://www.siri.org.uk/siri\">");
+					log.info(" <ChouettePTNetwork> replaced :" + l);
+				}
+				writer.println(l);
+			}
+			reader.close();
+			writer.close();
+			tmp.delete();
 
-		return result;
-
+		} catch (IOException | URISyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
 	}
 
-	private class NeptuneNamespaceFilter extends XMLFilterImpl {
-		public NeptuneNamespaceFilter(XMLReader arg0) {
-			super(arg0);
-
-		}
-
-		@Override
-		public void startElement(String uri, String localName, String qName,
-				Attributes attributes) throws SAXException {
-			if (uri.isEmpty())
-				uri = "http://www.trident.org/schema/trident";
-			super.startElement(uri, localName, qName, attributes);
-		}
-	}
 
 	public static class DefaultCommandFactory extends CommandFactory {
 

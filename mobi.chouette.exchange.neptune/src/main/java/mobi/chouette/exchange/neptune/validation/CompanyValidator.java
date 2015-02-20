@@ -15,7 +15,7 @@ public class CompanyValidator extends AbstractValidator implements Validator<Com
 	
 	// private static final String COMPANY_1 = "2-NEPTUNE-Company-1";
 
-	static final String LOCAL_CONTEXT = "Company";
+	public static final String LOCAL_CONTEXT = "Company";
 
 
 	public CompanyValidator(Context context) 

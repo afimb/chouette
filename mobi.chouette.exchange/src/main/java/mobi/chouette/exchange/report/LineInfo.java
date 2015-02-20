@@ -2,7 +2,6 @@ package mobi.chouette.exchange.report;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
 import lombok.Data;
@@ -12,17 +11,17 @@ import lombok.Data;
 @Data
 public class LineInfo {
 
-	public enum STATE 
+	public enum LINE_STATE 
 	{
 		OK,
 		WARNING,
 		ERROR
 	};
-	@XmlAttribute(name = "name")
+	@XmlElement(name = "name")
 	private String name;
 
-	@XmlAttribute(name = "status")
-	private String status;
+	@XmlElement(name = "status")
+	private LINE_STATE status;
 	
 	@XmlElement(name = "stats")
 	private LineStats stats;

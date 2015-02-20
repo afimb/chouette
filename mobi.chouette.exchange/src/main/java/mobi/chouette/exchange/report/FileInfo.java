@@ -5,7 +5,6 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
 import lombok.Data;
@@ -14,18 +13,18 @@ import lombok.Data;
 @Data
 public class FileInfo {
 	
-	public enum STATE 
+	public enum FILE_STATE 
 	{
 		UNCHECKED,
 		OK,
 		NOK
 	};
 	
-	@XmlAttribute(name="name",required=true)
+	@XmlElement(name="name",required=true)
 	private String name;
 	
-	@XmlAttribute(name="status",required=true)
-	private STATE status;
+	@XmlElement(name="status",required=true)
+	private FILE_STATE status;
 	
 	@XmlElement(name="errors")
 	private List<String> errors = new ArrayList<>();

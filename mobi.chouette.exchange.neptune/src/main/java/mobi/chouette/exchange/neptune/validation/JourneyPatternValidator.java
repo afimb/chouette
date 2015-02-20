@@ -24,7 +24,7 @@ public class JourneyPatternValidator extends AbstractValidator implements Valida
 	private static final String JOURNEY_PATTERN_2 = "2-NEPTUNE-JourneyPattern-2";
 	private static final String JOURNEY_PATTERN_3 = "2-NEPTUNE-JourneyPattern-3";
 
-	static final String LOCAL_CONTEXT = "JourneyPattern";
+	public static final String LOCAL_CONTEXT = "JourneyPattern";
 
 
 	public JourneyPatternValidator(Context context) 
@@ -74,7 +74,7 @@ public class JourneyPatternValidator extends AbstractValidator implements Valida
 		Context areaCentroidContext = (Context) validationContext.get(AreaCentroidValidator.LOCAL_CONTEXT);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		Map<String, StopArea> stopAreas = referential.getStopAreas();
-		String fileName = (String) context.get(FILE_URL);
+		String fileName = (String) context.get(FILE_NAME);
 
 		for (String objectId : localContext.keySet()) 
 		{

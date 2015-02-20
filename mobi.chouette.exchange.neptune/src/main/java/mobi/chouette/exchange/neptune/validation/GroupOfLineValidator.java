@@ -25,7 +25,7 @@ public class GroupOfLineValidator extends AbstractValidator implements Validator
 	
 	private static final String GROUP_OF_LINE_1 = "2-NEPTUNE-GroupOfLine-1";
 
-	static final String LOCAL_CONTEXT = "GroupOfLine";
+	public static final String LOCAL_CONTEXT = "GroupOfLine";
 
 
 	public GroupOfLineValidator(Context context) 
@@ -66,7 +66,7 @@ public class GroupOfLineValidator extends AbstractValidator implements Validator
 		if (localContext == null || localContext.isEmpty()) return new ValidationConstraints();
 		
 		Referential referential = (Referential) context.get(REFERENTIAL);
-		String fileName = (String) context.get(FILE_URL);
+		String fileName = (String) context.get(FILE_NAME);
 		Line line = referential.getLines().values().iterator().next(); 
 
 		
@@ -83,12 +83,10 @@ public class GroupOfLineValidator extends AbstractValidator implements Validator
 				{
 					int lineNumber = ((Integer) objectContext.get(LINE_NUMBER)).intValue();
 					int columnNumber = ((Integer) objectContext.get(COLUMN_NUMBER)).intValue();
-					Map<String, Object> map = new HashMap<String, Object>();
-					map.put("lineId", lineId);
 					FileLocation sourceLocation = new FileLocation(fileName, lineNumber, columnNumber);
 					Detail errorItem = new Detail(
 							GROUP_OF_LINE_1,
-							new Location(sourceLocation ,objectId), map);
+							new Location(sourceLocation ,objectId), lineId);
 					addValidationError(context, GROUP_OF_LINE_1, errorItem);
 				}
 			}

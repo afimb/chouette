@@ -17,5 +17,14 @@ public class Files {
 	@XmlElement(name = "file_info")
 	private List<FileInfo> fileInfos = new ArrayList<>();
 	
+	public FileInfo findFileFileInfo(String name)
+	{
+		for (FileInfo fileInfo : fileInfos) 
+		{
+			if (fileInfo.getName().equals(name)) return fileInfo;
+		}
+		return null;
+	}
+	
 
 }

@@ -4,7 +4,7 @@ package mobi.chouette.exchange.report;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 
 import lombok.Data;
 
@@ -12,25 +12,25 @@ import lombok.Data;
 @Data
 public class LineStats {
 
-	@XmlAttribute(name = "route_count")
-	private Long routeCount;
+	@XmlElement(name = "route_count")
+	private int routeCount;
 
-	@XmlAttribute(name = "connection_link_count")
-	private Long connectionLinkCount;
+	@XmlElement(name = "connection_link_count")
+	private int connectionLinkCount;
 
-	@XmlAttribute(name = "time_table_count")
-	private Long timeTableCount;
+	@XmlElement(name = "time_table_count")
+	private int timeTableCount;
 
-	@XmlAttribute(name = "stop_area_count")
-	private Long stopAreaCount;
+	@XmlElement(name = "stop_area_count")
+	private int stopAreaCount;
 
-	@XmlAttribute(name = "acces_point_count")
-	private Long accesPointCount;
+	@XmlElement(name = "acces_point_count")
+	private int accesPointCount;
 
-	@XmlAttribute(name = "vehicle_journey_count")
-	private Long vehicleJourneyCount;
+	@XmlElement(name = "vehicle_journey_count")
+	private int vehicleJourneyCount;
 
-	@XmlAttribute(name = "journey_pattern_count")
-	private Long journeyPatternCount;
+	@XmlElement(name = "journey_pattern_count")
+	private int journeyPatternCount;
 
 }

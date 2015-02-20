@@ -25,7 +25,7 @@ public class PTNetworkValidator extends AbstractValidator implements Validator<P
 	
 	private static final String NETWORK_1 = "2-NEPTUNE-Network-1";
 
-    static final String LOCAL_CONTEXT = "PTNetwork";
+	public static final String LOCAL_CONTEXT = "PTNetwork";
 
 
 	public PTNetworkValidator(Context context) 
@@ -63,11 +63,11 @@ public class PTNetworkValidator extends AbstractValidator implements Validator<P
 	{
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
+		Context lineContext = (Context) validationContext.get(LineValidator.LOCAL_CONTEXT);
 		if (localContext == null || localContext.isEmpty()) return new ValidationConstraints();
 
-		Referential referential = (Referential) context.get(REFERENTIAL);
-		String fileName = (String) context.get(FILE_URL);
-		Line line = referential.getLines().values().iterator().next(); 
+		String fileName = (String) context.get(FILE_NAME);
+		String lineId = lineContext.keySet().iterator().next(); 
 
 		for (String objectId : localContext.keySet()) 
 		{
@@ -77,17 +77,14 @@ public class PTNetworkValidator extends AbstractValidator implements Validator<P
 			if (lineIds != null)
 			{
 				prepareCheckPoint(context, NETWORK_1);
-				String lineId = line.getObjectId();
 				if (!lineIds.contains(lineId))
 				{
 					int lineNumber = ((Integer) objectContext.get(LINE_NUMBER)).intValue();
 					int columnNumber = ((Integer) objectContext.get(COLUMN_NUMBER)).intValue();
-					Map<String, Object> map = new HashMap<String, Object>();
-					map.put("lineId", lineId);
 					FileLocation sourceLocation = new FileLocation(fileName, lineNumber, columnNumber);
 					Detail errorItem = new Detail(
 							NETWORK_1,
-							new Location(sourceLocation ,objectId), map);
+							new Location(sourceLocation ,objectId), lineId);
 					addValidationError(context, NETWORK_1, errorItem);
 				}
 			}

@@ -2,21 +2,23 @@ package mobi.chouette.exchange.validation.report;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 
 import lombok.Data;
+import lombok.ToString;
 
 @Data
+@ToString
 @XmlAccessorType(XmlAccessType.FIELD)
 public class FileLocation {
 
-	@XmlAttribute(name = "filename",required=true)
+	@XmlElement(name = "filename",required=true)
 	private String filename;
 
-	@XmlAttribute(name = "line_number")
+	@XmlElement(name = "line_number")
 	private Integer lineNumber;
 
-	@XmlAttribute(name = "column_number")
+	@XmlElement(name = "column_number")
 	private Integer columnNumber;
 
 

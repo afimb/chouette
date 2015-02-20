@@ -36,7 +36,7 @@ public class AccessPointValidator extends AbstractValidator implements Validator
 	private static final String ACCESS_POINT_6 = "2-NEPTUNE-AccessPoint-6";
 	private static final String ACCESS_POINT_7 = "2-NEPTUNE-AccessPoint-7";
 
-	static final String LOCAL_CONTEXT = "AccessPoint";
+	public static final String LOCAL_CONTEXT = "AccessPoint";
 
 
 	public AccessPointValidator(Context context) 
@@ -68,9 +68,10 @@ public class AccessPointValidator extends AbstractValidator implements Validator
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 		if (localContext == null || localContext.isEmpty()) return new ValidationConstraints();
 		Context stopAreaContext = (Context) validationContext.get(StopAreaValidator.LOCAL_CONTEXT);
+		Context accessLinkContext = (Context) validationContext.get(AccessLinkValidator.LOCAL_CONTEXT);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		Map<String, AccessPoint> accessPoints = referential.getAccessPoints();
-		String fileName = (String) context.get(FILE_URL);
+		String fileName = (String) context.get(FILE_NAME);
 
 		Map<String, StopArea> stopAreas = referential.getStopAreas();
 		Map<String, AccessLink> accessLinks = referential.getAccessLinks();
@@ -79,15 +80,19 @@ public class AccessPointValidator extends AbstractValidator implements Validator
 		Map<String, List<AccessLink>> mapAccessLinkByAccessPointId = new HashMap<String, List<AccessLink>>();
 		for (AccessLink link : accessLinks.values())
 		{
+			if (accessLinkContext.containsKey(link.getObjectId()))
 			{
-				String id = link.getAccessPoint().getObjectId();
-				List<AccessLink> list = mapAccessLinkByAccessPointId.get(id);
-				if (list == null)
+				if (link.getAccessPoint() != null) // if link is invalid, skip it
 				{
-					list = new ArrayList<AccessLink>();
-					mapAccessLinkByAccessPointId.put(id, list);
+					String id = link.getAccessPoint().getObjectId();
+					List<AccessLink> list = mapAccessLinkByAccessPointId.get(id);
+					if (list == null)
+					{
+						list = new ArrayList<AccessLink>();
+						mapAccessLinkByAccessPointId.put(id, list);
+					}
+					list.add(link);
 				}
-				list.add(link);
 			}
 		}
 
@@ -107,11 +112,9 @@ public class AccessPointValidator extends AbstractValidator implements Validator
 			String containedIn = (String) objectContext.get("containedIn");
 			if (containedIn == null || !stopAreaContext.containsKey(containedIn))
 			{
-				Map<String, Object> map = new HashMap<String, Object>();
-				map.put("containedIn", containedIn);
 				Detail errorItem = new Detail(
 						ACCESS_POINT_1,
-						new Location(sourceLocation,accessPoint.getObjectId()), map);
+						new Location(sourceLocation,accessPoint.getObjectId()), containedIn);
 				addValidationError(context,ACCESS_POINT_1, errorItem);
 			} else
 			{
@@ -120,11 +123,16 @@ public class AccessPointValidator extends AbstractValidator implements Validator
 				prepareCheckPoint(context,ACCESS_POINT_2);
 				if (parent.getAreaType().equals(ChouetteAreaEnum.ITL))
 				{
+					Context parentContext = (Context) stopAreaContext.get(containedIn);
+					lineNumber = ((Integer) objectContext.get(LINE_NUMBER)).intValue();
+					columnNumber = ((Integer) objectContext.get(COLUMN_NUMBER)).intValue();
+					FileLocation targetLocation = new FileLocation(fileName, lineNumber, columnNumber);
 					Map<String, Object> map = new HashMap<String, Object>();
 					map.put("containedIn", containedIn);
 					Detail errorItem = new Detail(
 							ACCESS_POINT_2,
-							new Location(sourceLocation,accessPoint.getObjectId()), map);
+							new Location(sourceLocation,accessPoint.getObjectId()));
+					errorItem.getTargets().add(new Location(targetLocation,containedIn));
 					addValidationError(context,ACCESS_POINT_2, errorItem);
 				}
 			}
@@ -195,11 +203,9 @@ public class AccessPointValidator extends AbstractValidator implements Validator
 			// 2-NEPTUNE-AccessPoint-7 : check centroid projection type as WSG84
 			if (!accessPoint.getLongLatType().equals(LongLatTypeEnum.WGS84))
 			{
-				Map<String, Object> map = new HashMap<String, Object>();
-				map.put("longLatType", accessPoint.getLongLatType().toString());
 				Detail errorItem = new Detail(
 						ACCESS_POINT_7,
-						new Location(sourceLocation,accessPoint.getObjectId()), map);
+						new Location(sourceLocation,accessPoint.getObjectId()), accessPoint.getLongLatType().toString());
 				addValidationError(context,ACCESS_POINT_7, errorItem);
 			}
 		}

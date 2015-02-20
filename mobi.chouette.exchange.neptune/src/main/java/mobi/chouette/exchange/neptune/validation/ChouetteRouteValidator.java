@@ -33,7 +33,7 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 	private static final String ROUTE_11 = "2-NEPTUNE-Route-11";
 	private static final String ROUTE_12 = "2-NEPTUNE-Route-12";
 
-	static final String LOCAL_CONTEXT = "Route";
+	public static final String LOCAL_CONTEXT = "Route";
 
 
 	public ChouetteRouteValidator(Context context) 
@@ -84,7 +84,7 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 		Context areaCentroidContext = (Context) validationContext.get(AreaCentroidValidator.LOCAL_CONTEXT);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		Map<String, StopArea> stopAreas = referential.getStopAreas();
-		String fileName = (String) context.get(FILE_URL);
+		String fileName = (String) context.get(FILE_NAME);
 
 		for (String objectId : localContext.keySet()) 
 		{

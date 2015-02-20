@@ -11,7 +11,9 @@ import mobi.chouette.exchange.validation.ValidationConstraints;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
+import mobi.chouette.exchange.validation.report.Detail;
 import mobi.chouette.exchange.validation.report.FileLocation;
+import mobi.chouette.exchange.validation.report.Location;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.util.Referential;
@@ -23,7 +25,7 @@ public class TimetableValidator extends AbstractValidator implements Validator<T
 	private static final String TIMETABLE_1 = "2-NEPTUNE-Timetable-1";
 	private static final String TIMETABLE_2 = "2-NEPTUNE-Timetable-2";
 
-	static final String LOCAL_CONTEXT = "Timetable";
+	public static final String LOCAL_CONTEXT = "Timetable";
 
 
 	public TimetableValidator(Context context) 
@@ -40,23 +42,16 @@ public class TimetableValidator extends AbstractValidator implements Validator<T
 
 	}
 
-	public void addAreaCentroidId(Context  context, String objectId, String centroidId)
-	{
-		Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
-		objectContext.put("centroidOfArea", centroidId);
-
-	}
-
 	@SuppressWarnings("unchecked")
-	public void addContains(Context context, String objectId, String containsId) {
+	public void addVehicleJourneyId(Context context, String objectId, String vjId) {
 		Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
-		List<String> contains = (List<String>) objectContext.get("contains");
+		List<String> contains = (List<String>) objectContext.get("vehicleJourneyId");
 		if (contains == null)
 		{
 			contains = new ArrayList<>();
-			objectContext.put("contains", contains);
+			objectContext.put("vehicleJourneyId", contains);
 		}
-		contains.add(containsId);
+		contains.add(vjId);
 		
 	}
 
@@ -68,27 +63,59 @@ public class TimetableValidator extends AbstractValidator implements Validator<T
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 		if (localContext == null || localContext.isEmpty()) return new ValidationConstraints();
-		Context stopPointContext = (Context) validationContext.get(StopPointValidator.LOCAL_CONTEXT);
-		Context itlContext = (Context) validationContext.get(ITLValidator.LOCAL_CONTEXT);
-		Context areaCentroidContext = (Context) validationContext.get(AreaCentroidValidator.LOCAL_CONTEXT);
+		Context vehicleJourneyContext = (Context) validationContext.get(VehicleJourneyValidator.LOCAL_CONTEXT);
 		Referential referential = (Referential) context.get(REFERENTIAL);
-		Map<String, StopArea> stopAreas = referential.getStopAreas();
-		String fileName = (String) context.get(FILE_URL);
 
-		for (String objectId : localContext.keySet()) 
+		String fileName = (String) context.get(FILE_NAME);
+
+	      // 2-NEPTUNE-Timetable-1 : check if timetable refers at least one
+	      // existing vehiclejourney (w)
+	      prepareCheckPoint(context, TIMETABLE_1);
+	      // 2-NEPTUNE-Timetable-2 : check if vehiclejourney is referred by at
+	      // least one timetable (w)
+	      prepareCheckPoint(context, TIMETABLE_2);
+	      
+	      List<String> unreferencedVehicleJourneys = new ArrayList<String>(vehicleJourneyContext.keySet());
+
+	      for (String objectId : localContext.keySet()) 
 		{
-			
-	         // TODO 2-NEPTUNE-StopArea-1 : check if StopArea refers in field contains
-	         // only stopareas or stoppoints
-
-			
 			Context objectContext = (Context) localContext.get(objectId);
-			StopArea stopArea = stopAreas.get(objectId);
+	    	Timetable timetable = referential.getTimetables().get(objectId);
 			int lineNumber = ((Integer) objectContext.get(LINE_NUMBER)).intValue();
 			int columnNumber = ((Integer) objectContext.get(COLUMN_NUMBER)).intValue();
 			FileLocation sourceLocation = new FileLocation(fileName, lineNumber, columnNumber);
 
+	         boolean vjFound = false;
+	         for (String vjId : (List<String>) objectContext.get("vehicleJourneyId"))
+	         {
+	            if (vehicleJourneyContext.containsKey(vjId))
+	               vjFound = true;
+	            unreferencedVehicleJourneys.remove(vjId);
+	         }
+	         if (!vjFound)
+	         {
+				Detail errorItem = new Detail(
+						TIMETABLE_1,
+						new Location(sourceLocation,objectId));
+				addValidationError(context,TIMETABLE_1, errorItem);
+
+	         }
+
 		}
+	      if (!unreferencedVehicleJourneys.isEmpty())
+	      {
+	         for (String vjId : unreferencedVehicleJourneys)
+	         {
+	            Context vjctx = (Context) vehicleJourneyContext.get(vjId);
+	            int lineNumber = ((Integer) vjctx.get(LINE_NUMBER)).intValue();
+			    int columnNumber = ((Integer) vjctx.get(COLUMN_NUMBER)).intValue();
+				FileLocation sourceLocation = new FileLocation(fileName, lineNumber, columnNumber);
+				Detail errorItem = new Detail(
+						TIMETABLE_1,
+						new Location(sourceLocation,vjId));
+				addValidationError(context,TIMETABLE_2, errorItem);
+	         }
+	      }
 		return new ValidationConstraints();
 	}
 

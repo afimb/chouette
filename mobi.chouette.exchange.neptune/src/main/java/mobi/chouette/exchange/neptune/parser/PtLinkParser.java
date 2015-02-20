@@ -58,11 +58,13 @@ public class PtLinkParser implements Parser, Constant {
 				StopPoint startOfLink = ObjectFactory.getStopPoint(referential,
 						startOfLinkId);
 				ptLink.setStartOfLink(startOfLink);
+				validator.addStartOfLinkId(context, objectId, startOfLinkId);
 			} else if (xpp.getName().equals("endOfLink")) {
 				String endOfLinkId = ParserUtils.getText(xpp.nextText());
 				StopPoint endOfLink = ObjectFactory.getStopPoint(referential,
 						endOfLinkId);
 				ptLink.setEndOfLink(endOfLink);
+				validator.addEndOfLinkId(context, objectId, endOfLinkId);
 			} else if (xpp.getName().equals("linkDistance")) {
 				BigDecimal value = ParserUtils.getBigDecimal(xpp.nextText());
 				ptLink.setLinkDistance(value);
