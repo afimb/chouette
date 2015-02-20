@@ -5,10 +5,15 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.ws.rs.ApplicationPath;
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
 
-@ApplicationPath("/")
-public class Application extends javax.ws.rs.core.Application {
+import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Color;
+
+@Log4j
+public class Application extends javax.ws.rs.core.Application implements
+		ServletContextListener {
 
 	@Override
 	public Set<Class<?>> getClasses() {
@@ -19,15 +24,7 @@ public class Application extends javax.ws.rs.core.Application {
 
 	@Override
 	public Set<Object> getSingletons() {
-
 		Set<Object> result = new HashSet<Object>();
-
-//		EmbeddedCacheManager manager = new DefaultCacheManager(false);
-//		manager.defineConfiguration("rest", new ConfigurationBuilder()
-//				.eviction().strategy(EvictionStrategy.LIRS).maxEntries(100)
-//				.build());
-//		Cache<Object, Object> cache = manager.getCache("rest");
-//		result.add(new ServerCacheFeature(new InfinispanCache(cache)));
 		return result;
 	}
 
@@ -35,6 +32,16 @@ public class Application extends javax.ws.rs.core.Application {
 	public Map<String, Object> getProperties() {
 		Map<String, Object> result = new HashMap<String, Object>();
 		return result;
+	}
+
+	@Override
+	public void contextInitialized(ServletContextEvent sce) {
+
+	}
+
+	@Override
+	public void contextDestroyed(ServletContextEvent sce) {
+
 	}
 
 }

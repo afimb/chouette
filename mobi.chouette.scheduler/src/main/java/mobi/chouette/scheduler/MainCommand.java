@@ -3,12 +3,9 @@ package mobi.chouette.scheduler;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
-import java.util.concurrent.TimeUnit;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.naming.InitialContext;
 import javax.ws.rs.core.MediaType;
 
@@ -28,8 +25,8 @@ import org.apache.commons.lang.StringUtils;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 
-@Stateless(name = MainCommand.COMMAND)
 @Log4j
+@Stateless(name = MainCommand.COMMAND)
 public class MainCommand implements Command, Constant {
 
 	public static final String COMMAND = "MainCommand";
@@ -43,20 +40,19 @@ public class MainCommand implements Command, Constant {
 
 		Long id = (Long) context.get(JOB_ID);
 		Job job = jobDAO.find(id);
-		
+
 		context.put(PATH, job.getPath());
 		context.put(ARCHIVE, job.getFilename());
-		java.nio.file.Path path = Paths.get(
-				System.getProperty("user.home"), ROOT_PATH,
-				job.getReferential(), "data", job.getId().toString(),
-				PARAMETERS_FILE);
+		java.nio.file.Path path = Paths.get(System.getProperty("user.home"),
+				ROOT_PATH, job.getReferential(), "data",
+				job.getId().toString(), PARAMETERS_FILE);
 		Parameters parameters = JSONUtils.fromJSON(path, Parameters.class);
 		context.put(PARAMETERS, parameters);
 		context.put(CONFIGURATION, parameters.getConfiguration());
 		context.put(VALIDATION, parameters.getValidation());
 		context.put(ACTION, job.getAction());
 		context.put(TYPE, job.getType());
-		
+
 		String name = "mobi.chouette.exchange." + job.getType() + "."
 				+ job.getAction() + "." + StringUtils.capitalize(job.getType())
 				+ StringUtils.capitalize(job.getAction()) + "Command";
@@ -116,8 +112,7 @@ public class MainCommand implements Command, Constant {
 		protected Command create(InitialContext context) throws IOException {
 			Command result = null;
 			try {
-				String name = "java:app/mobi.chouette.scheduler/"
-						+ COMMAND;
+				String name = "java:app/mobi.chouette.scheduler/" + COMMAND;
 				result = (Command) context.lookup(name);
 			} catch (Exception e) {
 				log.error(e);
@@ -127,7 +122,7 @@ public class MainCommand implements Command, Constant {
 	}
 
 	static {
-		CommandFactory factory = new DefaultCommandFactory();
-		CommandFactory.factories.put(MainCommand.class.getName(), factory);
+		CommandFactory.factories.put(MainCommand.class.getName(),
+				new DefaultCommandFactory());
 	}
 }

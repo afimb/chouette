@@ -10,15 +10,15 @@ import java.io.Reader;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-import javax.ejb.Stateless;
 import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.xml.XMLConstants;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Constant;
@@ -32,13 +32,12 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.input.BOMInputStream;
 import org.w3c.dom.ls.LSInput;
 import org.w3c.dom.ls.LSResourceResolver;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
-@Stateless(name = NeptuneSAXParserCommand.COMMAND)
+// @Stateless(name = NeptuneSAXParserCommand.COMMAND)
 @Log4j
 public class NeptuneSAXParserCommand implements Command, Constant {
 
@@ -46,40 +45,40 @@ public class NeptuneSAXParserCommand implements Command, Constant {
 
 	public static final String SCHEMA_FILE = "/xsd/neptune.xsd";
 
-	static final String JAXP_SCHEMA_LANGUAGE =
-	        "http://java.sun.com/xml/jaxp/properties/schemaLanguage";
-	    
-	    static final String W3C_XML_SCHEMA =
-	        "http://www.w3.org/2001/XMLSchema";
+	@Getter
+	@Setter
+	private String fileURL;
 
-	    static final String JAXP_SCHEMA_SOURCE =
-	        "http://java.sun.com/xml/jaxp/properties/schemaSource";
 	@Override
 	public boolean execute(Context context) throws Exception {
+
+		boolean result = ERROR;
 
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
 		Report report = (Report) context.get(REPORT);
 		FileInfo fileItem = new FileInfo();
-		fileItem.setName((String) context.get(FILE_NAME));
+		
+		String fileName = new File(new URL(fileURL).toURI()).getName();
+
+		fileItem.setName(fileName);
 
 		Schema schema = (Schema) context.get(SCHEMA);
 		if (schema == null) {
 			SchemaFactory factory = SchemaFactory
 					.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-			schema = factory.newSchema(getClass().getResource(
-					SCHEMA_FILE));
+			schema = factory.newSchema(getClass().getResource(SCHEMA_FILE));
 			context.put(SCHEMA, schema);
 		}
 
-		URL url = new URL((String) context.get(FILE_URL));
-		log.info("[DSU] validate file : " + url);
+		URL url = new URL(fileURL);
+		log.info("[DSU] validation schema (niv 1) : " + url);
 
 		Reader reader = new BufferedReader(new InputStreamReader(
 				new BOMInputStream(url.openStream())), 8192 * 10);
 		StreamSource file = new StreamSource(reader);
 
-		NeptuneSAXErrorHandler errorHandler = new NeptuneSAXErrorHandler(context);
+		NeptuneSAXErrorHandler errorHandler = new NeptuneSAXErrorHandler(context, fileURL);
 		try {
 			Validator validator = schema.newValidator();
 			validator.setErrorHandler(errorHandler);
@@ -90,9 +89,9 @@ public class NeptuneSAXParserCommand implements Command, Constant {
 	 			fileItem.setStatus(FileInfo.FILE_STATE.NOK);
 				report.getFiles().getFileInfos().add(fileItem);
 				fileItem.getErrors().add("Xml errors");	     
-				return false;
+				return ERROR;
 	         }
-	         return true;
+	         return SUCCESS;
 		} catch (IOException | SAXException e) {
 		    
 			if (!context.containsKey("REPLAY_VALIDATOR") && e.getMessage().contains("ChouettePTNetwork"))
@@ -117,7 +116,7 @@ public class NeptuneSAXParserCommand implements Command, Constant {
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		}
 
-		return false;
+		return ERROR;
 	}
 	
 	 private void addNameSpace(URL url) 
@@ -157,48 +156,25 @@ public class NeptuneSAXParserCommand implements Command, Constant {
 		
 	}
 
-	private class NeptuneResolverResource implements LSResourceResolver
-	 {
-		 private LSResourceResolver delegate;
-		 public NeptuneResolverResource(LSResourceResolver arg0)
-	      {
-			 delegate = arg0;
-	      }
-		 
-		@Override
-		public LSInput resolveResource(String type, String namespaceURI,
-				String publicId, String systemId, String baseURI) 
-		{
-			log.warn("URI = "+namespaceURI);
-			
-			if (namespaceURI.isEmpty())
-				namespaceURI = "http://www.trident.org/schema/trident";
-			return delegate.resolveResource(type, namespaceURI, publicId, systemId, baseURI);
-		}
-		 
-	 }
-
-
 
 	public static class DefaultCommandFactory extends CommandFactory {
 
 		@Override
 		protected Command create(InitialContext context) throws IOException {
-			Command result = null;
-			try {
-				String name = "java:app/mobi.chouette.exchange.neptune/"
-						+ COMMAND;
-				result = (Command) context.lookup(name);
-			} catch (NamingException e) {
-				log.error(e);
-			}
+			Command result = new NeptuneSAXParserCommand();
+			// try {
+			// String name = "java:app/mobi.chouette.exchange.neptune/"
+			// + COMMAND;
+			// result = (Command) context.lookup(name);
+			// } catch (NamingException e) {
+			// log.error(e);
+			// }
 			return result;
 		}
 	}
 
 	static {
-		CommandFactory factory = new DefaultCommandFactory();
 		CommandFactory.factories.put(NeptuneSAXParserCommand.class.getName(),
-				factory);
+				new DefaultCommandFactory());
 	}
 }

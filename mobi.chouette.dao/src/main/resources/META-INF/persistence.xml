@@ -24,6 +24,7 @@
 			<property name="hibernate.cache.use_query_cache" value="true" />
 			<property name="javax.persistence.validation.mode" value="none" />
 			<property name="hibernate.hbm2ddl.auto" value="update" />
+			<property name="hibernate.default_schema" value="public" />
 		</properties>
 	</persistence-unit>
 
@@ -67,7 +68,6 @@
 				value="true" />
 			<property name="hibernate.cache.use_query_cache" value="true" />
 			<property name="javax.persistence.validation.mode" value="none" />
-			<property name="hibernate.hbm2ddl.auto" value="" />
 		</properties>
 	</persistence-unit>
 

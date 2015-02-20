@@ -24,8 +24,8 @@ import mobi.chouette.persistence.hibernate.ContextHolder;
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
-@Stateless(name = CopyCommand.COMMAND)
 @Log4j
+@Stateless(name = CopyCommand.COMMAND)
 public class CopyCommand implements Command {
 
 	public static final String COMMAND = "CopyCommand";
@@ -90,7 +90,7 @@ public class CopyCommand implements Command {
 	}
 
 	static {
-		CommandFactory factory = new DefaultCommandFactory();
-		CommandFactory.factories.put(CopyCommand.class.getName(), factory);
+		CommandFactory.factories.put(CopyCommand.class.getName(),
+				new DefaultCommandFactory());
 	}
 }

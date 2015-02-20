@@ -19,7 +19,7 @@ public class Progression {
 		FINALISATION
 	};
     @XmlElement( name = "step")
-    private STEP step;
+    private STEP step = STEP.INITIALISATION;
 	
 	@XmlAttribute(name = "total")
 	private int total = 1;

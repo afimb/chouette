@@ -19,34 +19,46 @@ public class ObjectFactory {
 
 	public static AccessLink getAccessLink(Referential referential,
 			String objectId) {
-		AccessLink result = referential.getAccessLinks().get(objectId);
+		AccessLink result = referential.getSharedAccessLinks().get(objectId);
 		if (result == null) {
 			result = new AccessLink();
 			result.setObjectId(objectId);
+			referential.getSharedAccessLinks().put(objectId, result);
+		}
+		if (!referential.getAccessLinks().containsKey(objectId)) {
 			referential.getAccessLinks().put(objectId, result);
 		}
+
 		return result;
 	}
 
 	public static AccessPoint getAccessPoint(Referential referential,
 			String objectId) {
-		AccessPoint result = referential.getAccessPoints().get(objectId);
+		AccessPoint result = referential.getSharedAccessPoints().get(objectId);
 		if (result == null) {
 			result = new AccessPoint();
 			result.setObjectId(objectId);
+			referential.getSharedAccessPoints().put(objectId, result);
+		}
+		if (!referential.getAccessPoints().containsKey(objectId)) {
 			referential.getAccessPoints().put(objectId, result);
 		}
+
 		return result;
 	}
 
 	public static Timetable getTimetable(Referential referential,
 			String objectId) {
-		Timetable result = referential.getTimetables().get(objectId);
+		Timetable result = referential.getSharedTimetables().get(objectId);
 		if (result == null) {
 			result = new Timetable();
 			result.setObjectId(objectId);
+			referential.getSharedTimetables().put(objectId, result);
+		}
+		if (!referential.getTimetables().containsKey(objectId)) {
 			referential.getTimetables().put(objectId, result);
 		}
+
 		return result;
 	}
 
@@ -58,22 +70,30 @@ public class ObjectFactory {
 
 	public static PTNetwork getPTNetwork(Referential referential,
 			String objectId) {
-		PTNetwork result = referential.getPtNetworks().get(objectId);
+		PTNetwork result = referential.getSharedPTNetworks().get(objectId);
 		if (result == null) {
 			result = new PTNetwork();
 			result.setObjectId(objectId);
+			referential.getSharedPTNetworks().put(objectId, result);
+		}
+		if (!referential.getPtNetworks().containsKey(objectId)) {
 			referential.getPtNetworks().put(objectId, result);
 		}
+
 		return result;
 	}
 
 	public static Company getCompany(Referential referential, String objectId) {
-		Company result = referential.getCompanies().get(objectId);
+		Company result = referential.getSharedCompanies().get(objectId);
 		if (result == null) {
 			result = new Company();
 			result.setObjectId(objectId);
+			referential.getSharedCompanies().put(objectId, result);
+		}
+		if (!referential.getCompanies().containsKey(objectId)) {
 			referential.getCompanies().put(objectId, result);
 		}
+
 		return result;
 	}
 
@@ -110,33 +130,46 @@ public class ObjectFactory {
 
 	public static ConnectionLink getConnectionLink(Referential referential,
 			String objectId) {
-		ConnectionLink result = referential.getConnectionLinks().get(objectId);
+		ConnectionLink result = referential.getSharedConnectionLinks().get(
+				objectId);
 		if (result == null) {
 			result = new ConnectionLink();
 			result.setObjectId(objectId);
+			referential.getSharedConnectionLinks().put(objectId, result);
+		}
+		if (!referential.getConnectionLinks().containsKey(objectId)) {
 			referential.getConnectionLinks().put(objectId, result);
 		}
+
 		return result;
 	}
 
 	public static StopArea getStopArea(Referential referential, String objectId) {
-		StopArea result = referential.getStopAreas().get(objectId);
+		StopArea result = referential.getSharedStopAreas().get(objectId);
 		if (result == null) {
 			result = new StopArea();
 			result.setObjectId(objectId);
-			referential.getStopAreas().put(objectId, result);
+			referential.getSharedStopAreas().put(objectId, result);
+		} else {
+			if (!referential.getStopAreas().containsKey(objectId)) {
+				referential.getStopAreas().put(objectId, result);
+			}
 		}
 		return result;
 	}
 
 	public static GroupOfLine getGroupOfLine(Referential referential,
 			String objectId) {
-		GroupOfLine result = referential.getGroupOfLines().get(objectId);
+		GroupOfLine result = referential.getSharedGroupOfLines().get(objectId);
 		if (result == null) {
 			result = new GroupOfLine();
 			result.setObjectId(objectId);
+			referential.getSharedGroupOfLines().put(objectId, result);
+		}
+		if (!referential.getGroupOfLines().containsKey(objectId)) {
 			referential.getGroupOfLines().put(objectId, result);
 		}
+
 		return result;
 	}
 

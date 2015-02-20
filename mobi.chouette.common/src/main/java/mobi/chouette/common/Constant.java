@@ -43,6 +43,7 @@ public interface Constant {
 	public static final String LINE = "line";
 
 	public static final char SEP = '|';
+	public static final String NULL = "\\N";
 	
 	
 	public static final String BUFFER = "buffer";

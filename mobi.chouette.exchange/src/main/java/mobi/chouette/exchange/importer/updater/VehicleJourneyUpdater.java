@@ -195,13 +195,8 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 		}
 
 		// VehicleJourneyAtStop
-		if (optimized) {
-			// for (VehicleJourneyAtStop vehicleJourneyAtStop :
-			// oldValue.getVehicleJourneyAtStops()) {
-			// vehicleJourneyAtStop.setVehicleJourney(null);
-			// vehicleJourneyAtStopDAO.delete(vehicleJourneyAtStop);
-			// }
-		} else {
+		if (!optimized) {
+
 			Collection<VehicleJourneyAtStop> addedVehicleJourneyAtStop = CollectionUtils
 					.substract(newValue.getVehicleJourneyAtStops(),
 							oldValue.getVehicleJourneyAtStops(),

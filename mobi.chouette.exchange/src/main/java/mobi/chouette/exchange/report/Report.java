@@ -17,7 +17,7 @@ public class Report {
 	 * indicate progression informations, will disapear when terminated
 	 */
 	@XmlElement(name = "progression")
-	private Progression progression;
+	private Progression progression = new Progression();
 
 	@XmlElement(name = "result")
 	private String result;

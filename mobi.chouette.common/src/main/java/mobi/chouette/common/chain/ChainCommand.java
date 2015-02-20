@@ -1,17 +1,26 @@
 package mobi.chouette.common.chain;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.NoArgsConstructor;
+import javax.naming.InitialContext;
+
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 
 @Log4j
-@NoArgsConstructor
-public class ChainImpl implements Chain {
+public class ChainCommand implements Chain, Constant {
+
+	public static final String COMMAND = "ChainCommand";
 
 	private List<Command> commands = new ArrayList<Command>();
+
+	@Getter
+	@Setter
 	private boolean ignored = false;
 
 	@Override
@@ -52,6 +61,27 @@ public class ChainImpl implements Chain {
 			}
 		}
 		commands.clear();
+	}
+
+	public static class DefaultCommandFactory extends CommandFactory {
+
+		@Override
+		protected Command create(InitialContext context) throws IOException {
+			Command result = new ChainCommand();
+			// try {
+			// String name = "java:app/mobi.chouette.exchange/" + COMMAND;
+			//
+			// result = (Command) context.lookup(name);
+			// } catch (NamingException e) {
+			// log.error(e);
+			// }
+			return result;
+		}
+	}
+
+	static {
+		CommandFactory.factories.put(ChainCommand.class.getName(),
+				new DefaultCommandFactory());
 	}
 
 }
