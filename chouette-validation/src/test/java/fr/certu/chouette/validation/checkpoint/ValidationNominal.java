@@ -1,4 +1,4 @@
-package fr.certu.chouette.validation;
+package fr.certu.chouette.validation.checkpoint;
 
 import java.io.IOException;
 import java.util.List;
@@ -100,7 +100,7 @@ public class ValidationNominal extends
       lineManager.validate(null, beans, parameters, report, null, true);
       report.refreshStatus();
 
-      AbstractValidation.printReport(report);
+      AbstractTestValidation.printReport(report);
 
       Assert.assertEquals(report.getStatus(), Report.STATE.OK,
             "report must be on level ok");

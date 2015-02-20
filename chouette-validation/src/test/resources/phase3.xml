@@ -4,69 +4,69 @@
 	<!--
 	<test name="Test_A_ok" preserve-order="true">
 		<classes>
-			<class name="fr.certu.chouette.validation.ValidationNominal" />
+			<class name="fr.certu.chouette.validation.checkpoint.ValidationNominal" />
 		</classes>
 	</test>
 	<test name="Test_B_lines" preserve-order="true">
 		<classes>
-			<class name="fr.certu.chouette.validation.ValidationLines" />
+			<class name="fr.certu.chouette.validation.checkpoint.ValidationLines" />
 		</classes>
 	</test>
 	<test name="Test_C_routes" preserve-order="true">
 		<classes>
-			<class name="fr.certu.chouette.validation.ValidationRoutes" />
+			<class name="fr.certu.chouette.validation.checkpoint.ValidationRoutes" />
 		</classes>
 	</test>
 	<test name="Test_D_journey_patterns" preserve-order="true">
 		<classes>
-			<class name="fr.certu.chouette.validation.ValidationJourneyPatterns" />
+			<class name="fr.certu.chouette.validation.checkpoint.ValidationJourneyPatterns" />
 		</classes>
 	</test>
 	<test name="Test_E_vehicle_journeys" preserve-order="true">
 		<classes>
-			<class name="fr.certu.chouette.validation.ValidationVehicleJourneys" />
+			<class name="fr.certu.chouette.validation.checkpoint.ValidationVehicleJourneys" />
 		</classes>
 	</test>
 	-->
 	<test name="Test_F_stop_areas" preserve-order="true">
 		<classes>
-			<class name="fr.certu.chouette.validation.ValidationStopAreas" />
+			<class name="fr.certu.chouette.validation.checkpoint.ValidationStopAreas" />
 		</classes>
 	</test>
 	<test name="Test_G_connection_links" preserve-order="true">
 		<classes>
-			<class name="fr.certu.chouette.validation.ValidationConnectionLinks" />
+			<class name="fr.certu.chouette.validation.checkpoint.ValidationConnectionLinks" />
 		</classes>
 	</test>
 	<!-- 
 	<test name="Test_H_access_points" preserve-order="true">
 		<classes>
-			<class name="fr.certu.chouette.validation.ValidationAccessPoints" />
+			<class name="fr.certu.chouette.validation.checkpoint.ValidationAccessPoints" />
 		</classes>
 	</test>
 	<test name="Test_I_access_links" preserve-order="true">
 		<classes>
-			<class name="fr.certu.chouette.validation.ValidationAccessLinks" />
+			<class name="fr.certu.chouette.validation.checkpoint.ValidationAccessLinks" />
 		</classes>
 	</test>
 	<test name="Test_J_Networks" preserve-order="true">
 		<classes>
-			<class name="fr.certu.chouette.validation.ValidationNetworks" />
+			<class name="fr.certu.chouette.validation.checkpoint.ValidationNetworks" />
 		</classes>
 	</test>
 	<test name="Test_K_Companies" preserve-order="true">
 		<classes>
-			<class name="fr.certu.chouette.validation.ValidationCompanies" />
+			<class name="fr.certu.chouette.validation.checkpoint.ValidationCompanies" />
 		</classes>
 	</test>
 	<test name="Test_L_GroupOfLines" preserve-order="true">
 		<classes>
-			<class name="fr.certu.chouette.validation.ValidationGroupOfLines" />
+			<class name="fr.certu.chouette.validation.checkpoint.ValidationGroupOfLines" />
 		</classes>
 	</test>
 	<test name="Test_L_Timetables" preserve-order="true">
 		<classes>
-			<class name="fr.certu.chouette.validation.ValidationTimetables" />
+			<class name="fr.certu.chouette.validation.checkpoint.ValidationTimetables" />
 		</classes>
 	</test>
 	-->

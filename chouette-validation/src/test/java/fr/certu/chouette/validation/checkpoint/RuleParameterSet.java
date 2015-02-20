@@ -1,4 +1,4 @@
-package fr.certu.chouette.validation;
+package fr.certu.chouette.validation.checkpoint;
 
 import java.io.File;
 import java.io.IOException;

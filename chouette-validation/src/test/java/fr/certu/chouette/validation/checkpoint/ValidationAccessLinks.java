@@ -1,4 +1,4 @@
-package fr.certu.chouette.validation;
+package fr.certu.chouette.validation.checkpoint;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -31,7 +31,7 @@ import fr.certu.chouette.validation.checkpoint.AccessLinkCheckPoints;
       "classpath*:chouetteContext.xml" })
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 public class ValidationAccessLinks extends
-      AbstractValidation
+      AbstractTestValidation
 {
    private AccessLinkCheckPoints checkPoint;
    private JSONObject fullparameters;
@@ -153,7 +153,7 @@ public class ValidationAccessLinks extends
       // accessLinkManager.validate(null, beans, parameters, report,null, true);
       report.refreshStatus();
 
-      AbstractValidation.printReport(report);
+      AbstractTestValidation.printReport(report);
 
       Assert.assertEquals(report.getStatus(), Report.STATE.WARNING,
             " report must be on level warning");
@@ -200,7 +200,7 @@ public class ValidationAccessLinks extends
 
       AccessLink link = beans.get(0);
 
-      double distance = AbstractValidation.distance(link.getStopArea(),
+      double distance = AbstractTestValidation.distance(link.getStopArea(),
             link.getAccessPoint());
 
       link.setLinkDistance(BigDecimal.valueOf(distance - 50));
@@ -209,7 +209,7 @@ public class ValidationAccessLinks extends
       checkPoint.check(beans, parameters, report, new HashMap<String, Object>());
       report.refreshStatus();
 
-      AbstractValidation.printReport(report);
+      AbstractTestValidation.printReport(report);
 
       Assert.assertEquals(report.getStatus(), Report.STATE.WARNING,
             " report must be on level warning");
@@ -262,7 +262,7 @@ public class ValidationAccessLinks extends
             break;
          }
       }
-      double distance = AbstractValidation.distance(link.getAccessPoint(),
+      double distance = AbstractTestValidation.distance(link.getAccessPoint(),
             link.getStopArea());
       link.setLinkDistance(BigDecimal.valueOf(distance));
       link.getDefaultDuration().setTime(
@@ -278,7 +278,7 @@ public class ValidationAccessLinks extends
       checkPoint.check(beans, parameters, report, new HashMap<String, Object>());
       report.refreshStatus();
 
-      AbstractValidation.printReport(report);
+      AbstractTestValidation.printReport(report);
 
       Assert.assertEquals(report.getStatus(), Report.STATE.WARNING,
             " report must be on level warning");

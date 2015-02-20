@@ -1,4 +1,4 @@
-package fr.certu.chouette.validation;
+package fr.certu.chouette.validation.checkpoint;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,7 +20,7 @@ import fr.certu.chouette.validation.checkpoint.CompanyCheckPoints;
 
 @ContextConfiguration(locations = { "classpath:testContext.xml",
 "classpath*:chouetteContext.xml" })
-public class ValidationCompanies extends AbstractValidation
+public class ValidationCompanies extends AbstractTestValidation
 {
    private CompanyCheckPoints checkPoint;
    private JSONObject parameters;

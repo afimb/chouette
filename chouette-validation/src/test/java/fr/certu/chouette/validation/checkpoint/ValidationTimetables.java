@@ -1,4 +1,4 @@
-package fr.certu.chouette.validation;
+package fr.certu.chouette.validation.checkpoint;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,7 +20,7 @@ import fr.certu.chouette.validation.checkpoint.TimetableCheckPoints;
 
 @ContextConfiguration(locations = { "classpath:testContext.xml",
 "classpath*:chouetteContext.xml" })
-public class ValidationTimetables extends AbstractValidation
+public class ValidationTimetables extends AbstractTestValidation
 {
    private TimetableCheckPoints checkPoint;
    private JSONObject parameters;

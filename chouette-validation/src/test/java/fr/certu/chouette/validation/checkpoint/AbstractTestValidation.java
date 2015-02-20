@@ -1,4 +1,4 @@
-package fr.certu.chouette.validation;
+package fr.certu.chouette.validation.checkpoint;
 
 import java.sql.Time;
 import java.util.List;
@@ -14,7 +14,7 @@ import fr.certu.chouette.plugin.validation.report.CheckPointReportItem;
 import fr.certu.chouette.plugin.validation.report.DetailReportItem;
 import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 
-public abstract class AbstractValidation extends
+public abstract class AbstractTestValidation extends
 AbstractTransactionalTestNGSpringContextTests
 {
 

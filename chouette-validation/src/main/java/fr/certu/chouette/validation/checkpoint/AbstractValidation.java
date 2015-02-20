@@ -145,6 +145,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject>
          + "\"speed_min\": 10, " + "\"inter_stop_duration_variation_max\": 10 "
          + "}");
 
+   protected static final String DEFAULT_ENVELOPPE = "[[-5.2,42.25],[-5.2,51.1],[8.23,51.1],[8.23,42.25],[-5.2,42.25]]";
    private GeometryFactory geometryFactory;
 
    /**
@@ -311,7 +312,11 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject>
    {
       // validationPerimeter : defalut = France
       String perimeter = parameters.optString(STOP_AREAS_AREA,
-            "[[-5.2,42.25],[-5.2,51.1],[8.23,51.1],[8.23,42.25],[-5.2,42.25]]");
+            "");
+      if (perimeter.isEmpty() || !perimeter.startsWith("["))
+      {
+         perimeter = DEFAULT_ENVELOPPE;
+      }
       JSONArray array = new JSONArray(perimeter);
       List<Coordinate> listCoordinates = new ArrayList<Coordinate>();
       for (int i = 0; i < array.length(); i++)

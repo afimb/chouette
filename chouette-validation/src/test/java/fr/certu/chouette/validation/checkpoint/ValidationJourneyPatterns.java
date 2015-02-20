@@ -1,4 +1,4 @@
-package fr.certu.chouette.validation;
+package fr.certu.chouette.validation.checkpoint;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ import fr.certu.chouette.validation.checkpoint.JourneyPatternCheckPoints;
 
 @ContextConfiguration(locations = { "classpath:testContext.xml",
       "classpath*:chouetteContext.xml" })
-public class ValidationJourneyPatterns extends AbstractValidation
+public class ValidationJourneyPatterns extends AbstractTestValidation
 {
    private JourneyPatternCheckPoints checkPoint;
    private JSONObject fullparameters;

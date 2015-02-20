@@ -1,4 +1,4 @@
-package fr.certu.chouette.validation;
+package fr.certu.chouette.validation.checkpoint;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -32,7 +32,7 @@ import fr.certu.chouette.validation.checkpoint.ConnectionLinkCheckPoints;
 @ContextConfiguration(locations = { "classpath:testContext.xml",
       "classpath*:chouetteContext.xml" })
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
-public class ValidationConnectionLinks extends AbstractValidation
+public class ValidationConnectionLinks extends AbstractTestValidation
 {
    private ConnectionLinkCheckPoints checkPoint;
    private JSONObject fullparameters;
@@ -132,7 +132,7 @@ public class ValidationConnectionLinks extends AbstractValidation
       connectionLinkManager.validate(null, beans, parameters, report,null, true);
       report.refreshStatus();
 
-      AbstractValidation.printReport(report);
+      AbstractTestValidation.printReport(report);
 
       Assert.assertEquals(report.getStatus(), Report.STATE.WARNING,
             " report must be on level warning");
@@ -178,7 +178,7 @@ public class ValidationConnectionLinks extends AbstractValidation
       Assert.assertFalse(beans.isEmpty(), "No data for test");
 
       ConnectionLink link = beans.get(0);
-      double distance = AbstractValidation.distance(link.getStartOfLink(),
+      double distance = AbstractTestValidation.distance(link.getStartOfLink(),
             link.getEndOfLink());
 
       link.setLinkDistance(BigDecimal.valueOf(distance - 50));
@@ -187,7 +187,7 @@ public class ValidationConnectionLinks extends AbstractValidation
       connectionLinkManager.validate(null, beans, parameters, report,null, true);
       report.refreshStatus();
 
-      AbstractValidation.printReport(report);
+      AbstractTestValidation.printReport(report);
 
       Assert.assertEquals(report.getStatus(), Report.STATE.WARNING,
             " report must be on level warning");
@@ -255,7 +255,7 @@ public class ValidationConnectionLinks extends AbstractValidation
       connectionLinkManager.validate(null, beans, parameters, report,null, true);
       report.refreshStatus();
 
-      AbstractValidation.printReport(report);
+      AbstractTestValidation.printReport(report);
 
       Assert.assertEquals(report.getStatus(), Report.STATE.WARNING,
             " report must be on level warning");

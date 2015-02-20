@@ -1,4 +1,4 @@
-package fr.certu.chouette.validation;
+package fr.certu.chouette.validation.checkpoint;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -32,7 +32,7 @@ import fr.certu.chouette.validation.checkpoint.AccessPointCheckPoints;
 @ContextConfiguration(locations = { "classpath:testContext.xml",
       "classpath*:chouetteContext.xml" })
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
-public class ValidationAccessPoints extends AbstractValidation
+public class ValidationAccessPoints extends AbstractTestValidation
 {
    private AccessPointCheckPoints checkPoint;
    private JSONObject fullparameters;
@@ -238,7 +238,7 @@ public class ValidationAccessPoints extends AbstractValidation
       checkPoint.check(beans, parameters, report, new HashMap<String, Object>());
       report.refreshStatus();
 
-      AbstractValidation.printReport(report);
+      AbstractTestValidation.printReport(report);
 
       Assert.assertEquals(report.getStatus(), Report.STATE.WARNING,
             " report must be on level warning");
@@ -300,7 +300,7 @@ public class ValidationAccessPoints extends AbstractValidation
       checkPoint.check(beans, parameters, report, new HashMap<String, Object>());
       report.refreshStatus();
 
-      AbstractValidation.printReport(report);
+      AbstractTestValidation.printReport(report);
 
       Assert.assertEquals(report.getStatus(), Report.STATE.WARNING,
             " report must be on level warning");

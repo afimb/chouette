@@ -1,4 +1,4 @@
-package fr.certu.chouette.validation;
+package fr.certu.chouette.validation.checkpoint;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -14,6 +14,8 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.testng.Assert;
 import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.Test;
+
+import com.vividsolutions.jts.geom.Polygon;
 
 import fr.certu.chouette.common.ChouetteException;
 import fr.certu.chouette.manager.INeptuneManager;
@@ -34,7 +36,7 @@ import fr.certu.chouette.validation.checkpoint.StopAreaCheckPoints;
       "classpath*:chouetteContext.xml" })
 @TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 public class ValidationStopAreas extends
-      AbstractValidation
+      AbstractTestValidation
 {
    private StopAreaCheckPoints checkPoint;
    private JSONObject fullparameters;
@@ -117,6 +119,34 @@ public class ValidationStopAreas extends
       lineManager.saveAll(null, beans, true, true);
 
    }
+   
+   
+
+   @Test(groups = { "stopArea" }, description = "enveloppe")
+   public void verifyEnveloppe() throws ChouetteException
+   {
+      JSONObject parameters = null;
+      try
+      {
+         parameters = new RuleParameterSet();
+      } catch (JSONException | IOException e)
+      {
+         e.printStackTrace();
+      }
+      Assert.assertNotNull(parameters, "no parameters for test");
+      
+      parameters.put("stop_areas_area", "");
+      
+      Polygon enveloppe = checkPoint.getEnveloppe(parameters);
+      Assert.assertNotNull(enveloppe, "enveloppe should be found");
+      
+      parameters.remove("stop_areas_area");
+      enveloppe = checkPoint.getEnveloppe(parameters);
+      Assert.assertNotNull(enveloppe, "enveloppe should be found");
+      
+   }
+   
+   
 
    @Test(groups = { "stopArea" }, description = "3-StopArea-1")
    public void verifyTest3_1() throws ChouetteException
@@ -145,7 +175,7 @@ public class ValidationStopAreas extends
       stopAreaManager.validate(null, beans, parameters, report, null, true);
       report.refreshStatus();
 
-      AbstractValidation.printReport(report);
+      AbstractTestValidation.printReport(report);
 
       Assert.assertEquals(report.getStatus(), Report.STATE.ERROR,
             " report must be on level error");
@@ -214,7 +244,7 @@ public class ValidationStopAreas extends
       stopAreaManager.validate(null, beans, parameters, report, null, true);
       report.refreshStatus();
 
-      AbstractValidation.printReport(report);
+      AbstractTestValidation.printReport(report);
 
       Assert.assertEquals(report.getStatus(), Report.STATE.WARNING,
             " report must be on level warning");
@@ -286,7 +316,7 @@ public class ValidationStopAreas extends
       stopAreaManager.validate(null, beans, parameters, report, null, true);
       report.refreshStatus();
 
-      AbstractValidation.printReport(report);
+      AbstractTestValidation.printReport(report);
 
       Assert.assertEquals(report.getStatus(), Report.STATE.WARNING,
             " report must be on level warning");
@@ -363,7 +393,7 @@ public class ValidationStopAreas extends
       stopAreaManager.validate(null, beans, parameters, report, null, true);
       report.refreshStatus();
 
-      AbstractValidation.printReport(report);
+      AbstractTestValidation.printReport(report);
 
       Assert.assertEquals(report.getStatus(), Report.STATE.WARNING,
             " report must be on level warning");
@@ -413,7 +443,7 @@ public class ValidationStopAreas extends
       stopAreaManager.validate(null, beans, parameters, report, null, true);
       report.refreshStatus();
 
-      AbstractValidation.printReport(report);
+      AbstractTestValidation.printReport(report);
 
       Assert.assertEquals(report.getStatus(), Report.STATE.WARNING,
             " report must be on level warning");

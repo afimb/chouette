@@ -1,4 +1,4 @@
-package fr.certu.chouette.validation;
+package fr.certu.chouette.validation.checkpoint;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,8 +36,8 @@ public class LineLoader
 
       if (lines == null || lines.isEmpty())
       {
-         AbstractValidation.printReport(ireport.getReport());
-         AbstractValidation.printReport(vreport.getReport());
+         AbstractTestValidation.printReport(ireport.getReport());
+         AbstractTestValidation.printReport(vreport.getReport());
          lines = new ArrayList<Line>();
       }
       return lines;
