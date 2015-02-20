@@ -43,12 +43,14 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 	public static final String LOCAL_CONTEXT = "StopArea";
 
 
-	public StopAreaValidator(Context context) 
+    @Override
+	protected void initializeCheckPoints(Context context)
 	{
 		addItemToValidation(context, prefix, "StopArea", 6, "E", "E", "E", "E", "E", "E");
 
 		try {
-			ValidatorFactory.create(ITLValidator.class.getName(), context);
+			ITLValidator validator = (ITLValidator) ValidatorFactory.create(ITLValidator.class.getName(), context);
+			validator.initializeCheckPoints(context);
 		} catch (ClassNotFoundException e) {
 		}
 
@@ -127,6 +129,16 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 			}
 
 			StopArea stopArea = stopAreas.get(objectId);
+			if (stopArea == null) 
+			{
+				log.error("null area " +objectId);
+				continue;
+			}
+			if (stopArea.getAreaType() == null)
+			{
+				log.error("null area type " +stopArea);
+				continue;
+			}
 
 			switch (stopArea.getAreaType())
 			{
@@ -356,7 +368,7 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 		protected Validator<StopArea> create(Context context) {
 			StopAreaValidator instance = (StopAreaValidator) context.get(NAME);
 			if (instance == null) {
-				instance = new StopAreaValidator(context);
+				instance = new StopAreaValidator();
 				context.put(NAME, instance);
 			}
 			return instance;

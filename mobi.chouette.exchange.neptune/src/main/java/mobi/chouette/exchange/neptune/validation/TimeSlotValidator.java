@@ -18,7 +18,8 @@ public class TimeSlotValidator extends AbstractValidator implements Validator<Ti
 	public static final String LOCAL_CONTEXT = "TimeSlot";
 
 
-	public TimeSlotValidator(Context context) 
+    @Override
+	protected void initializeCheckPoints(Context context)
 	{
 	}
 
@@ -44,7 +45,7 @@ public class TimeSlotValidator extends AbstractValidator implements Validator<Ti
 		protected Validator<TimeSlot> create(Context context) {
 			TimeSlotValidator instance = (TimeSlotValidator) context.get(NAME);
 			if (instance == null) {
-				instance = new TimeSlotValidator(context);
+				instance = new TimeSlotValidator();
 				context.put(NAME, instance);
 			}
 			return instance;

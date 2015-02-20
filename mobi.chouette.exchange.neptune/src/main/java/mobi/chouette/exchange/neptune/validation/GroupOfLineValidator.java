@@ -26,7 +26,8 @@ public class GroupOfLineValidator extends AbstractValidator implements Validator
 	public static final String LOCAL_CONTEXT = "GroupOfLine";
 
 
-	public GroupOfLineValidator(Context context) 
+    @Override
+	protected void initializeCheckPoints(Context context)
 	{
 		addItemToValidation( context, prefix, "GroupOfLine", 1, "W");
 
@@ -100,7 +101,7 @@ public class GroupOfLineValidator extends AbstractValidator implements Validator
 		protected Validator<GroupOfLine> create(Context context) {
 			GroupOfLineValidator instance = (GroupOfLineValidator) context.get(NAME);
 			if (instance == null) {
-				instance = new GroupOfLineValidator(context);
+				instance = new GroupOfLineValidator();
 				context.put(NAME, instance);
 			}
 			return instance;

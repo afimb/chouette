@@ -26,7 +26,8 @@ public class ConnectionLinkValidator extends AbstractValidator implements Valida
 	public static final String LOCAL_CONTEXT = "ConnectionLink";
 
 
-	public ConnectionLinkValidator(Context context) 
+    @Override
+	protected void initializeCheckPoints(Context context)
 	{
 		addItemToValidation( context, prefix, "ConnectionLink", 1,
 				"E");
@@ -97,7 +98,7 @@ public class ConnectionLinkValidator extends AbstractValidator implements Valida
 		protected Validator<ConnectionLink> create(Context context) {
 			ConnectionLinkValidator instance = (ConnectionLinkValidator) context.get(NAME);
 			if (instance == null) {
-				instance = new ConnectionLinkValidator(context);
+				instance = new ConnectionLinkValidator();
 				context.put(NAME, instance);
 			}
 			return instance;

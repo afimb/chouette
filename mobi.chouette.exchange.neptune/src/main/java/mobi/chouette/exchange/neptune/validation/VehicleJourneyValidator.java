@@ -55,7 +55,8 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 	public static final String LOCAL_CONTEXT = "VehicleJourney";
 
 
-	public VehicleJourneyValidator(Context context) 
+    @Override
+	protected void initializeCheckPoints(Context context)
 	{
 		addItemToValidation(context, prefix, "VehicleJourney", 7, "E", "E", "E",
 				"E", "E", "E", "W");
@@ -370,7 +371,7 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 		protected Validator<VehicleJourney> create(Context context) {
 			VehicleJourneyValidator instance = (VehicleJourneyValidator) context.get(NAME);
 			if (instance == null) {
-				instance = new VehicleJourneyValidator(context);
+				instance = new VehicleJourneyValidator();
 				context.put(NAME, instance);
 			}
 			return instance;

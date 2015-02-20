@@ -48,7 +48,8 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 	public static final String LOCAL_CONTEXT = "Route";
 
 
-	public ChouetteRouteValidator(Context context) 
+    @Override
+	protected void initializeCheckPoints(Context context)
 	{
 		addItemToValidation(context, prefix, "Route", 12, "E", "E", "E", "E",
 				"E", "E", "E", "E", "W", "E", "W", "W");
@@ -604,7 +605,7 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 		protected Validator<Route> create(Context context) {
 			ChouetteRouteValidator instance = (ChouetteRouteValidator) context.get(NAME);
 			if (instance == null) {
-				instance = new ChouetteRouteValidator(context);
+				instance = new ChouetteRouteValidator();
 				context.put(NAME, instance);
 			}
 			return instance;

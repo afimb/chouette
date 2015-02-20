@@ -35,7 +35,8 @@ public class StopPointValidator extends AbstractValidator implements Validator<S
 
 
 
-	public StopPointValidator(Context context) 
+    @Override
+	protected void initializeCheckPoints(Context context)
 	{
 		addItemToValidation(context, prefix, "StopPoint", 4, "E", "E", "E", "E");
 
@@ -160,7 +161,7 @@ public class StopPointValidator extends AbstractValidator implements Validator<S
 		protected Validator<StopPoint> create(Context context) {
 			StopPointValidator instance = (StopPointValidator) context.get(NAME);
 			if (instance == null) {
-				instance = new StopPointValidator(context);
+				instance = new StopPointValidator();
 				context.put(NAME, instance);
 			}
 			return instance;

@@ -25,6 +25,7 @@ public interface Constant {
 	public static final String OUTPUT = "output";
 	public static final String PARAMETERS_FILE = "parameters.json";
 	public static final String REPORT = "report";
+	public static final String MAIN_VALIDATION_REPORT = "main_validation_report";
 	public static final String VALIDATION_REPORT = "validation_report";
 	public static final String REPORT_FILE = "report.json";
 	public static final String VALIDATION_FILE = "validation.json";

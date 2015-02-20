@@ -25,7 +25,8 @@ public class PtLinkValidator extends AbstractValidator implements Validator<PTLi
 	public static final String LOCAL_CONTEXT = "PTLink";
 
 
-	public PtLinkValidator(Context context) 
+    @Override
+	protected void initializeCheckPoints(Context context)
 	{
 		addItemToValidation( context, prefix, "PtLink", 1, "E");
 
@@ -104,7 +105,7 @@ public class PtLinkValidator extends AbstractValidator implements Validator<PTLi
 		protected Validator<PTLink> create(Context context) {
 			PtLinkValidator instance = (PtLinkValidator) context.get(NAME);
 			if (instance == null) {
-				instance = new PtLinkValidator(context);
+				instance = new PtLinkValidator();
 				context.put(NAME, instance);
 			}
 			return instance;

@@ -26,7 +26,8 @@ public class AccessLinkValidator extends AbstractValidator implements Validator<
 	public static final String LOCAL_CONTEXT = "AccessLink";
 
 
-	public AccessLinkValidator(Context context) 
+    @Override
+	protected void initializeCheckPoints(Context context)
 	{
 		addItemToValidation( context, prefix, "AccessLink", 2,
 				"E", "E");
@@ -129,7 +130,7 @@ public class AccessLinkValidator extends AbstractValidator implements Validator<
 		protected Validator<AccessLink> create(Context context) {
 			AccessLinkValidator instance = (AccessLinkValidator) context.get(NAME);
 			if (instance == null) {
-				instance = new AccessLinkValidator(context);
+				instance = new AccessLinkValidator();
 				context.put(NAME, instance);
 			}
 			return instance;

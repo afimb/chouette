@@ -36,7 +36,8 @@ public class LineValidator extends AbstractValidator implements Validator<Line> 
 	public static final String LOCAL_CONTEXT = "NeptuneLine";
 
 
-	public LineValidator(Context context) 
+    @Override
+	protected void initializeCheckPoints(Context context)
 	{
 		addItemToValidation(context, prefix, "Line", 5, "E", "W", "W", "E", "E");
 
@@ -238,7 +239,7 @@ public class LineValidator extends AbstractValidator implements Validator<Line> 
 		protected Validator<Line> create(Context context) {
 			LineValidator instance = (LineValidator) context.get(NAME);
 			if (instance == null) {
-				instance = new LineValidator(context);
+				instance = new LineValidator();
 				context.put(NAME, instance);
 			}
 			return instance;

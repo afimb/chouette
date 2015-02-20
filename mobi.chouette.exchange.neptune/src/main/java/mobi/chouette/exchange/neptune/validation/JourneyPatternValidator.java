@@ -33,7 +33,8 @@ public class JourneyPatternValidator extends AbstractValidator implements Valida
 
 
 
-	public JourneyPatternValidator(Context context) 
+    @Override
+	protected void initializeCheckPoints(Context context)
 	{
 		addItemToValidation(context, prefix, "JourneyPattern", 3, "E", "E", "E");
 
@@ -155,7 +156,7 @@ public class JourneyPatternValidator extends AbstractValidator implements Valida
 		protected Validator<JourneyPattern> create(Context context) {
 			JourneyPatternValidator instance = (JourneyPatternValidator) context.get(NAME);
 			if (instance == null) {
-				instance = new JourneyPatternValidator(context);
+				instance = new JourneyPatternValidator();
 				context.put(NAME, instance);
 			}
 			return instance;

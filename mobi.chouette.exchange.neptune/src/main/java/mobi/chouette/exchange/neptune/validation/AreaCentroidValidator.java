@@ -30,7 +30,8 @@ public class AreaCentroidValidator extends AbstractValidator implements Validato
 	public static final String LOCAL_CONTEXT = "AreaCentroid";
 
 
-	public AreaCentroidValidator(Context context) 
+    @Override
+	protected void initializeCheckPoints(Context context)
 	{
 		addItemToValidation( context, prefix, "AreaCentroid", 2,
 				"E", "E");
@@ -119,7 +120,7 @@ public class AreaCentroidValidator extends AbstractValidator implements Validato
 		protected Validator<AreaCentroid> create(Context context) {
 			AreaCentroidValidator instance = (AreaCentroidValidator) context.get(NAME);
 			if (instance == null) {
-				instance = new AreaCentroidValidator(context);
+				instance = new AreaCentroidValidator();
 				context.put(NAME, instance);
 			}
 			return instance;

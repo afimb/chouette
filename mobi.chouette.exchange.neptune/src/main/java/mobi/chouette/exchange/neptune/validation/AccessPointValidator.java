@@ -41,7 +41,8 @@ public class AccessPointValidator extends AbstractValidator implements Validator
 	public static final String LOCAL_CONTEXT = "AccessPoint";
 
 
-	public AccessPointValidator(Context context) 
+    @Override
+	protected void initializeCheckPoints(Context context)
 	{
 		addItemToValidation(context, prefix, "AccessPoint", 7, "E", "E", "E", "E", "E", "E", "E");
 
@@ -222,7 +223,7 @@ public class AccessPointValidator extends AbstractValidator implements Validator
 		protected Validator<AccessPoint> create(Context context) {
 			AccessPointValidator instance = (AccessPointValidator) context.get(NAME);
 			if (instance == null) {
-				instance = new AccessPointValidator(context);
+				instance = new AccessPointValidator();
 				context.put(NAME, instance);
 			}
 			return instance;

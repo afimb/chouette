@@ -27,7 +27,8 @@ public class TimetableValidator extends AbstractValidator implements Validator<T
 	public static final String LOCAL_CONTEXT = "Timetable";
 
 
-	public TimetableValidator(Context context) 
+    @Override
+	protected void initializeCheckPoints(Context context)
 	{
 		addItemToValidation(context, prefix, "Timetable", 2, "W", "W");
 
@@ -125,7 +126,7 @@ public class TimetableValidator extends AbstractValidator implements Validator<T
 		protected Validator<Timetable> create(Context context) {
 			TimetableValidator instance = (TimetableValidator) context.get(NAME);
 			if (instance == null) {
-				instance = new TimetableValidator(context);
+				instance = new TimetableValidator();
 				context.put(NAME, instance);
 			}
 			return instance;

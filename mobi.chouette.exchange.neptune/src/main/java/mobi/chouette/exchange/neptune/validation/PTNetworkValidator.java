@@ -25,8 +25,8 @@ public class PTNetworkValidator extends AbstractValidator implements Validator<P
 
 	public static final String LOCAL_CONTEXT = "PTNetwork";
 
-
-	public PTNetworkValidator(Context context) 
+    @Override
+	protected void initializeCheckPoints(Context context)
 	{
 		addItemToValidation(context, prefix, "Network", 1, "W");
 
@@ -99,7 +99,7 @@ public class PTNetworkValidator extends AbstractValidator implements Validator<P
 		protected Validator<PTNetwork> create(Context context) {
 			PTNetworkValidator instance = (PTNetworkValidator) context.get(NAME);
 			if (instance == null) {
-				instance = new PTNetworkValidator(context);
+				instance = new PTNetworkValidator();
 				context.put(NAME, instance);
 			}
 			return instance;

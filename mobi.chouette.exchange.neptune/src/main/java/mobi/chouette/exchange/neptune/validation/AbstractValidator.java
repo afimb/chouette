@@ -9,7 +9,7 @@ import mobi.chouette.exchange.validation.report.Detail;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 
 
-public class AbstractValidator implements Constant
+public abstract class AbstractValidator implements Constant
 {
 
 	protected static String prefix = "2-NEPTUNE-";
@@ -30,11 +30,12 @@ public class AbstractValidator implements Constant
 	protected static Context getObjectContext(Context context, String localContextName, String objectId)
 	{
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
-		if (validationContext == null)
+		if (validationContext == null) 
 		{
 			validationContext = new Context();
 			context.put(VALIDATION_CONTEXT, validationContext);
 		}
+
 		Context localContext = (Context) validationContext.get(localContextName);
 		if (localContext == null)
 		{
@@ -81,7 +82,7 @@ public class AbstractValidator implements Constant
 	 * @param checkPointKey
 	 * @param item
 	 */
-	protected static void addValidationError(Context context, String checkPointKey, Detail item)
+	protected void addValidationError(Context context, String checkPointKey, Detail item)
 	{
 		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
 		CheckPoint checkPoint = validationReport.findCheckPointByName(checkPointKey);
@@ -95,10 +96,15 @@ public class AbstractValidator implements Constant
 	 * 
 	 * @param checkPointKey
 	 */
-	protected static void prepareCheckPoint(Context context,String checkPointKey)
+	protected void prepareCheckPoint(Context context,String checkPointKey)
 	{
 		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
 		CheckPoint checkPoint = validationReport.findCheckPointByName(checkPointKey);
+		if (checkPoint == null )
+		{
+			initializeCheckPoints(context);
+			checkPoint = validationReport.findCheckPointByName(checkPointKey);
+		}
 		if (checkPoint.getDetails().isEmpty())
 			checkPoint.setState(CheckPoint.RESULT.OK);
 	}
@@ -114,6 +120,7 @@ public class AbstractValidator implements Constant
 		return list == null || list.isEmpty();
 	}
 
+	protected abstract void initializeCheckPoints(Context context);
 
 
 }

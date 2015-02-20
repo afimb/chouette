@@ -36,7 +36,8 @@ public class ITLValidator extends AbstractValidator implements Validator<Routing
 	public static final String LOCAL_CONTEXT = "ITL";
 
 
-	public ITLValidator(Context context) 
+    @Override
+	protected void initializeCheckPoints(Context context)
 	{
 		addItemToValidation(context, prefix, "ITL", 5, "E",
 				"E", "E", "E", "E");
@@ -142,7 +143,7 @@ public class ITLValidator extends AbstractValidator implements Validator<Routing
 		protected Validator<RoutingConstraint> create(Context context) {
 			ITLValidator instance = (ITLValidator) context.get(NAME);
 			if (instance == null) {
-				instance = new ITLValidator(context);
+				instance = new ITLValidator();
 				context.put(NAME, instance);
 			}
 			return instance;

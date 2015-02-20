@@ -31,6 +31,7 @@ public class ObjectFactory {
 
 		return result;
 	}
+	
 
 	public static AccessPoint getAccessPoint(Referential referential,
 			String objectId) {
@@ -150,11 +151,11 @@ public class ObjectFactory {
 			result = new StopArea();
 			result.setObjectId(objectId);
 			referential.getSharedStopAreas().put(objectId, result);
-		} else {
+		} 
 			if (!referential.getStopAreas().containsKey(objectId)) {
 				referential.getStopAreas().put(objectId, result);
 			}
-		}
+		
 		return result;
 	}
 

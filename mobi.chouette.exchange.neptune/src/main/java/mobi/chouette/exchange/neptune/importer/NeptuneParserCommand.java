@@ -52,6 +52,7 @@ public class NeptuneParserCommand implements Command, Constant {
 		Report report = (Report) context.get(REPORT);
 		FileInfo fileItem = new FileInfo();
 		String fileName = new File(new URL(fileURL).toURI()).getName();
+		context.put(FILE_NAME, fileName);
 
 		fileItem.setName(fileName);
 
@@ -97,7 +98,8 @@ public class NeptuneParserCommand implements Command, Constant {
 		} catch (Exception e) {
 			fileItem.setStatus(FileInfo.FILE_STATE.NOK);
 			report.getFiles().getFileInfos().add(fileItem);
-			fileItem.getErrors().add(e.getMessage());
+			fileItem.getErrors().add(e.toString());
+			log.error("parsing failed ",e);
 			throw e;
 		}
 	}

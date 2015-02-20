@@ -18,7 +18,8 @@ public class CompanyValidator extends AbstractValidator implements Validator<Com
 	public static final String LOCAL_CONTEXT = "Company";
 
 
-	public CompanyValidator(Context context) 
+    @Override
+	protected void initializeCheckPoints(Context context)
 	{
 		// addItemToValidation(context, prefix, "Company", 1, "W");
 
@@ -48,7 +49,7 @@ public class CompanyValidator extends AbstractValidator implements Validator<Com
 		protected Validator<Company> create(Context context) {
 			CompanyValidator instance = (CompanyValidator) context.get(NAME);
 			if (instance == null) {
-				instance = new CompanyValidator(context);
+				instance = new CompanyValidator();
 				context.put(NAME, instance);
 			}
 			return instance;
