@@ -1,5 +1,7 @@
 package mobi.chouette.exchange.neptune.validation;
 
+import java.util.List;
+
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.validation.report.CheckPoint;
@@ -101,6 +103,16 @@ public class AbstractValidator implements Constant
 			checkPoint.setState(CheckPoint.RESULT.OK);
 	}
 
+	/**
+	 * check if a list is null or empty
+	 * 
+	 * @param list
+	 * @return
+	 */
+	protected boolean isListEmpty(List<?> list)
+	{
+		return list == null || list.isEmpty();
+	}
 
 
 

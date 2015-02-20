@@ -16,8 +16,6 @@ import mobi.chouette.exchange.validation.report.Detail;
 import mobi.chouette.exchange.validation.report.FileLocation;
 import mobi.chouette.exchange.validation.report.Location;
 import mobi.chouette.model.Line;
-import mobi.chouette.model.Route;
-import mobi.chouette.model.util.Referential;
 
 public class LineValidator extends AbstractValidator implements Validator<Line> , Constant{
 

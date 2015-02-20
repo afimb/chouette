@@ -23,6 +23,10 @@ import mobi.chouette.model.util.Referential;
 @Log4j
 public class StopAreaValidator extends AbstractValidator implements Validator<StopArea> , Constant{
 
+	public static final String CONTAINS2 = "contains";
+
+	public static final String CENTROID_OF_AREA = "centroidOfArea";
+
 	public static String NAME = "StopAreaValidator";
 
 	private static final String STOP_AREA_1 = "2-NEPTUNE-StopArea-1";
@@ -63,7 +67,7 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 	{
 		if (objectId == null) throw new NullPointerException("null objectId");
 		Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
-		objectContext.put("centroidOfArea", centroidId);
+		objectContext.put(CENTROID_OF_AREA, centroidId);
 
 	}
 
@@ -71,11 +75,11 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 	public void addContains(Context context, String objectId, String containsId) {
 		if (objectId == null) throw new NullPointerException("null objectId");
 		Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
-		List<String> contains = (List<String>) objectContext.get("contains");
+		List<String> contains = (List<String>) objectContext.get(CONTAINS2);
 		if (contains == null)
 		{
 			contains = new ArrayList<>();
-			objectContext.put("contains", contains);
+			objectContext.put(CONTAINS2, contains);
 		}
 		contains.add(containsId);
 
@@ -107,7 +111,7 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 			int columnNumber = ((Integer) objectContext.get(COLUMN_NUMBER)).intValue();
 			FileLocation sourceLocation = new FileLocation(fileName, lineNumber, columnNumber);
 
-			List<String> contains = (List<String>) objectContext.get("contains");
+			List<String> contains = (List<String>) objectContext.get(CONTAINS2);
 			//  2-NEPTUNE-StopArea-1 : check if StopArea refers in field contains
 			for (String containedId : contains) 
 			{
@@ -298,7 +302,7 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 			{
 				prepareCheckPoint(context,STOP_AREA_5);
 				prepareCheckPoint(context,STOP_AREA_6);
-				String centroidId = (String) objectContext.get("centroidOfArea");
+				String centroidId = (String) objectContext.get(CENTROID_OF_AREA);
 				if (centroidId != null)
 				{
 					// 2-NEPTUNE-StopArea-5 : if stoparea is not ITL : check if
@@ -324,7 +328,7 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 									stopArea.getObjectId()))
 							{
 								Map<String, Object> map = new HashMap<String, Object>();
-								map.put("centroidOfArea", centroidId);
+								map.put(CENTROID_OF_AREA, centroidId);
 								map.put("containedIn",containedIn);
 								Detail errorItem = new Detail(
 										STOP_AREA_6,

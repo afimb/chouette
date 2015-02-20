@@ -18,6 +18,10 @@ import mobi.chouette.model.type.LongLatTypeEnum;
 
 public class AreaCentroidValidator extends AbstractValidator implements Validator<AreaCentroid> , Constant{
 
+	public static final String LONG_LAT_TYPE = "longLatType";
+
+	public static final String CONTAINED_IN = "containedIn";
+
 	public static String NAME = "AreaCentroidValidator";
 
 	private static final String AREA_CENTROID_1 = "2-NEPTUNE-AreaCentroid-1";
@@ -43,13 +47,13 @@ public class AreaCentroidValidator extends AbstractValidator implements Validato
 	public void addContainedIn(Context  context, String objectId, String containedIn)
 	{
 		Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
-		objectContext.put("containedIn", containedIn);
+		objectContext.put(CONTAINED_IN, containedIn);
 	}
 
 	public void addLongLatType(Context  context, String objectId, LongLatTypeEnum longLatType)
 	{
 		Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
-		objectContext.put("longLatType", longLatType);
+		objectContext.put(LONG_LAT_TYPE, longLatType);
 	}
 
 
@@ -76,7 +80,7 @@ public class AreaCentroidValidator extends AbstractValidator implements Validato
 			int columnNumber = ((Integer) objectContext.get(COLUMN_NUMBER)).intValue();
 			FileLocation sourceLocation = new FileLocation(fileName, lineNumber, columnNumber);
 
-			String containedIn = (String) objectContext.get("containedIn");
+			String containedIn = (String) objectContext.get(CONTAINED_IN);
 			if (containedIn == null)
 				continue;
 			if (!stopAreaContext.containsKey(containedIn))
@@ -96,11 +100,11 @@ public class AreaCentroidValidator extends AbstractValidator implements Validato
 			int columnNumber = (int) objectContext.get(COLUMN_NUMBER);
 			FileLocation sourceLocation = new FileLocation(fileName, lineNumber, columnNumber);
 
-			if (objectContext.get("longLatType").equals(LongLatTypeEnum.WGS84))
+			if (objectContext.get(LONG_LAT_TYPE).equals(LongLatTypeEnum.WGS84))
 				continue;
 			Detail errorItem = new Detail(
 					AREA_CENTROID_2,
-					new Location(sourceLocation,objectId), objectContext.get("longLatType").toString());
+					new Location(sourceLocation,objectId), objectContext.get(LONG_LAT_TYPE).toString());
 			addValidationError(context, AREA_CENTROID_2, errorItem);
 		}
 

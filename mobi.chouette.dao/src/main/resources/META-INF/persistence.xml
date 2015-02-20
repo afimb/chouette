@@ -67,7 +67,7 @@
 				value="true" />
 			<property name="hibernate.cache.use_query_cache" value="true" />
 			<property name="javax.persistence.validation.mode" value="none" />
-			<property name="hibernate.hbm2ddl.auto" value="none" />
+			<property name="hibernate.hbm2ddl.auto" value="" />
 		</properties>
 	</persistence-unit>
 

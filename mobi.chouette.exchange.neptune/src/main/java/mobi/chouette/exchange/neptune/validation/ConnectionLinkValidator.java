@@ -1,11 +1,6 @@
 package mobi.chouette.exchange.neptune.validation;
 
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.validation.ValidationConstraints;
@@ -19,6 +14,10 @@ import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.util.Referential;
 
 public class ConnectionLinkValidator extends AbstractValidator implements Validator<ConnectionLink> , Constant{
+
+	public static final String END_OF_LINK = "endOfLink";
+
+	public static final String START_OF_LINK = "startOfLink";
 
 	public static String NAME = "ConnectionLinkValidator";
 
@@ -45,14 +44,14 @@ public class ConnectionLinkValidator extends AbstractValidator implements Valida
 	public void addStartOfLink(Context context, String objectId, String linkId)
 	{
 		Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
-		objectContext.put("startOfLink", linkId);
+		objectContext.put(START_OF_LINK, linkId);
 
 	}
 
 	public void addEndOfLink(Context context, String objectId, String linkId)
 	{
 		Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
-		objectContext.put("endOfLink", linkId);
+		objectContext.put(END_OF_LINK, linkId);
 
 	}
 

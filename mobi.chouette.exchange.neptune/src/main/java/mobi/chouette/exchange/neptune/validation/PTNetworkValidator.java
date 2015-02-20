@@ -2,9 +2,7 @@ package mobi.chouette.exchange.neptune.validation;
 
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
@@ -15,11 +13,11 @@ import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.exchange.validation.report.Detail;
 import mobi.chouette.exchange.validation.report.FileLocation;
 import mobi.chouette.exchange.validation.report.Location;
-import mobi.chouette.model.Line;
 import mobi.chouette.model.PTNetwork;
-import mobi.chouette.model.util.Referential;
 
 public class PTNetworkValidator extends AbstractValidator implements Validator<PTNetwork> , Constant{
+
+	public static final String LINE_ID = "lineId";
 
 	public static String NAME = "PTNetworkValidator";
 	
@@ -46,11 +44,11 @@ public class PTNetworkValidator extends AbstractValidator implements Validator<P
 	public void addLineId(Context  context, String objectId, String lineId)
 	{
 		Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
-		List<String> lineIds = (List<String>) objectContext.get("lineId");
+		List<String> lineIds = (List<String>) objectContext.get(LINE_ID);
 		if (lineIds == null)
 		{
 			lineIds = new ArrayList<>();
-			objectContext.put("lineId", lineIds);
+			objectContext.put(LINE_ID, lineIds);
 		}
 		lineIds.add(lineId);
 	}
@@ -63,8 +61,8 @@ public class PTNetworkValidator extends AbstractValidator implements Validator<P
 	{
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
-		Context lineContext = (Context) validationContext.get(LineValidator.LOCAL_CONTEXT);
 		if (localContext == null || localContext.isEmpty()) return new ValidationConstraints();
+		Context lineContext = (Context) validationContext.get(LineValidator.LOCAL_CONTEXT);
 
 		String fileName = (String) context.get(FILE_NAME);
 		String lineId = lineContext.keySet().iterator().next(); 
@@ -73,7 +71,7 @@ public class PTNetworkValidator extends AbstractValidator implements Validator<P
 		{
 			// 2-NEPTUNE-PtNetwork-1 : check if lineId of line is present in list
 			Context objectContext = (Context) localContext.get(objectId);
-			List<String> lineIds = (List<String>) objectContext.get("lineId");
+			List<String> lineIds = (List<String>) objectContext.get(LINE_ID);
 			if (lineIds != null)
 			{
 				prepareCheckPoint(context, NETWORK_1);

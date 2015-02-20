@@ -7,11 +7,16 @@ import mobi.chouette.exchange.validation.ValidationConstraints;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
+import mobi.chouette.exchange.validation.report.Detail;
 import mobi.chouette.exchange.validation.report.FileLocation;
+import mobi.chouette.exchange.validation.report.Location;
 import mobi.chouette.model.AccessLink;
-import mobi.chouette.model.util.Referential;
 
 public class AccessLinkValidator extends AbstractValidator implements Validator<AccessLink> , Constant{
+
+	public static final String END_OF_LINK_ID = "endOfLinkId";
+
+	public static final String START_OF_LINK_ID = "startOfLinkId";
 
 	public static String NAME = "AccessLinkValidator";
 
@@ -39,16 +44,16 @@ public class AccessLinkValidator extends AbstractValidator implements Validator<
 	public void addStartOfLinkId(Context  context, String objectId, String linkId)
 	{
 		Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
-		
-			objectContext.put("startOfLinkId", linkId);
-		
+
+		objectContext.put(START_OF_LINK_ID, linkId);
+
 	}
 
 	public void addEndOfLinkId(Context  context, String objectId, String linkId)
 	{
 		Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
-		
-			objectContext.put("endOfLinkId", linkId);
+
+		objectContext.put(END_OF_LINK_ID, linkId);
 	}
 
 
@@ -58,70 +63,59 @@ public class AccessLinkValidator extends AbstractValidator implements Validator<
 	{
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
-		Context stopAreaContext = (Context) validationContext.get(StopAreaValidator.LOCAL_CONTEXT);
+		Context stopAreasContext = (Context) validationContext.get(StopAreaValidator.LOCAL_CONTEXT);
+		Context accessPointsContext = (Context) validationContext.get(AccessPointValidator.LOCAL_CONTEXT);
 		if (localContext == null || localContext.isEmpty()) return new ValidationConstraints();
 
-		Referential referential = (Referential) context.get(REFERENTIAL);
 		String fileName = (String) context.get(FILE_NAME);
+
+		// 2-NEPTUNE-AccessLink-1 : check existence of start and end of links
+		prepareCheckPoint(context, ACCESS_LINK_1);
 
 		for (String objectId : localContext.keySet()) 
 		{
 			Context objectContext = (Context) localContext.get(objectId);
-			AccessLink accessLink = referential.getAccessLinks().get(objectId);
 			int lineNumber = ((Integer) objectContext.get(LINE_NUMBER)).intValue();
 			int columnNumber = ((Integer) objectContext.get(COLUMN_NUMBER)).intValue();
 			FileLocation sourceLocation = new FileLocation(fileName, lineNumber, columnNumber);
 
-//			if (stopAreaContext.containsKey(connectionLink.getStartOfLink().getObjectId()) 
-//					|| stopAreaContext.containsKey(connectionLink.getEndOfLink().getObjectId()))
-//				continue;
-//			Map<String, Object> map = new HashMap<String, Object>();
-//			map.put("startOfLink", connectionLink.getStartOfLink().getObjectId());
-//			map.put("endOfLink", connectionLink.getEndOfLink().getObjectId());
-//			Detail errorItem = new Detail(
-//					CONNECTION_LINK_1,
-//					new Location(sourceLocation,connectionLink.getObjectId()), map);
-//			addValidationError(context, CONNECTION_LINK_1, errorItem);
+			boolean step1 = true;
 
-	         boolean step1 = true;
-	         // TODO refactor or move in parser
-//	         if (!stopAreaContext.containsKey(link.getStopArea())
-//	               && !accessPoints.containsKey(link.getAccessPoint()))
-	         {
-//	            Locator trdLocation = link.sourceLocation();
-//	            Map<String, Object> map = new HashMap<String, Object>();
-//	            map.put("link", "startOfLink");
-//	            map.put("target", link.getStartOfLink());
-//	            ReportLocation location = new ReportLocation(sourceFile,
-//	                  trdLocation.getLineNumber(), trdLocation.getColumnNumber());
-//	            DetailReportItem errorItem = new DetailReportItem(ACCESS_LINK_1,
-//	                  link.getObjectId(), Report.STATE.ERROR, location, map);
-//	            addValidationError(ACCESS_LINK_1, errorItem);
-//	            step1 = false;
-	         }
+			String start = (String) objectContext.get(START_OF_LINK_ID);
+			if (!stopAreasContext.containsKey(start)
+					&& !accessPointsContext.containsKey(start))
+			{
+				Detail errorItem = new Detail(
+						ACCESS_LINK_1,
+						new Location(sourceLocation,objectId), start);
+				addValidationError(context,ACCESS_LINK_1, errorItem);
+				step1 = false;
+			}
+			String end = (String) objectContext.get(END_OF_LINK_ID);
+			if (!stopAreasContext.containsKey(end)
+					&& !accessPointsContext.containsKey(end))
+			{
+				Detail errorItem = new Detail(
+						ACCESS_LINK_1,
+						new Location(sourceLocation,objectId), end);
+				addValidationError(context,ACCESS_LINK_1, errorItem);
+				step1 = false;
+			}
 	         if (!step1)
-	            continue;
+	             continue;
 	         // 2-NEPTUNE-AccessLink-2 : check one target as accesspoint and
 	         // other as stoparea
 	         prepareCheckPoint(context, ACCESS_LINK_2);
-	         // TODO refactor or move in parser
-
-//	         if (startObject instanceof StopArea
-//	               && endObject instanceof PTAccessPointType)
-//	            continue;
-//	         if (startObject instanceof PTAccessPointType
-//	               && endObject instanceof StopArea)
-//	            continue;
-//	         Locator trdLocation = link.sourceLocation();
-//	         Map<String, Object> map = new HashMap<String, Object>();
-//	         map.put("startOfLink", link.getStartOfLink());
-//	         map.put("endOfLink", link.getEndOfLink());
-//	         map.put("type", startObject.getClass().getSimpleName());
-//	         ReportLocation location = new ReportLocation(sourceFile,
-//	               trdLocation.getLineNumber(), trdLocation.getColumnNumber());
-//	         DetailReportItem errorItem = new DetailReportItem(ACCESS_LINK_2,
-//	               link.getObjectId(), Report.STATE.ERROR, location, map);
-//	         addValidationError(ACCESS_LINK_2, errorItem);
+	         if (stopAreasContext.containsKey(start)
+	               && accessPointsContext.containsKey(end))
+	            continue;
+	         if (accessPointsContext.containsKey(start)
+	               && stopAreasContext.containsKey(end))
+	            continue;
+				Detail errorItem = new Detail(
+						ACCESS_LINK_2,
+						new Location(sourceLocation,objectId), start , end);
+				addValidationError(context,ACCESS_LINK_2, errorItem);
 
 		}
 		return new ValidationConstraints();
