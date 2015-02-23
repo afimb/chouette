@@ -1,12 +1,11 @@
 package mobi.chouette.exchange.neptune.validation;
 
 
-import java.util.HashMap;
 import java.util.Map;
 
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
-import mobi.chouette.exchange.neptune.model.RoutingConstraint;
 import mobi.chouette.exchange.validation.ValidationConstraints;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
@@ -19,7 +18,12 @@ import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.util.Referential;
 
-public class ITLValidator extends AbstractValidator implements Validator<RoutingConstraint> , Constant{
+@Log4j
+public class ITLValidator extends AbstractValidator implements Validator<StopArea> , Constant{
+
+	public static final String ITL_NAME = "name";
+
+	public static final String LINE_ID = "lineId";
 
 	public static String NAME = "ITLValidator";
 
@@ -33,7 +37,8 @@ public class ITLValidator extends AbstractValidator implements Validator<Routing
 	public static final String LOCAL_CONTEXT = "ITL";
 
 
-	public ITLValidator(Context context) 
+    @Override
+	protected void initializeCheckPoints(Context context)
 	{
 		addItemToValidation(context, prefix, "ITL", 5, "E",
 				"E", "E", "E", "E");
@@ -51,24 +56,25 @@ public class ITLValidator extends AbstractValidator implements Validator<Routing
 	public void addLineId(Context  context, String objectId, String lineId)
 	{
 		Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
-		objectContext.put("lineId", lineId);
+		objectContext.put(LINE_ID, lineId);
 	}
 
 	public void addName(Context  context, String objectId, String name)
 	{
 		Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
-		objectContext.put("name", name);
+		objectContext.put(ITL_NAME, name);
 	}
 
+
 	@Override
-	public ValidationConstraints validate(Context context, RoutingConstraint target) throws ValidationException
+	public ValidationConstraints validate(Context context, StopArea target) throws ValidationException
 	{
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 		if (localContext == null || localContext.isEmpty()) return new ValidationConstraints();
 		Context stopAreaContext = (Context) validationContext.get(StopAreaValidator.LOCAL_CONTEXT);
 		Referential referential = (Referential) context.get(REFERENTIAL);
-		Line line = referential.getLines().values().iterator().next(); 
+		Line line = getLine(referential);
 		Map<String, StopArea> stopAreas = referential.getStopAreas();
 
 		String fileName = (String) context.get(FILE_NAME);
@@ -83,14 +89,14 @@ public class ITLValidator extends AbstractValidator implements Validator<Routing
 			int columnNumber = ((Integer) objectContext.get(COLUMN_NUMBER)).intValue();
 			FileLocation sourceLocation = new FileLocation(fileName, lineNumber, columnNumber);
 
-			String stopAreaId = (String) objectContext.get("areaId");
-
+			String stopAreaId = objectId;
+			
 			if (!stopAreaContext.containsKey(stopAreaId) || !stopAreas.containsKey(stopAreaId))
 
 			{
 				Detail errorItem = new Detail(
 						ITL_3,
-						new Location(sourceLocation,(String) objectContext.get("name")), stopAreaId);
+						new Location(sourceLocation,(String) objectContext.get(ITL_NAME)), stopAreaId);
 				addValidationError(context, ITL_3, errorItem);
 			} else
 			{
@@ -102,7 +108,7 @@ public class ITLValidator extends AbstractValidator implements Validator<Routing
 				{
 					Detail errorItem = new Detail(
 							ITL_4,
-							new Location(sourceLocation,(String) objectContext.get("name")), stopArea.getAreaType().toString());
+							new Location(sourceLocation,(String) objectContext.get(ITL_NAME)), stopArea.getAreaType().toString());
                     // TODO add target 
 					addValidationError(context, ITL_4, errorItem);
 
@@ -110,11 +116,11 @@ public class ITLValidator extends AbstractValidator implements Validator<Routing
 			}
 
 			// 2-NEPTUNE-ITL-5 : Check if ITL refers Line
-			String lineId = (String) objectContext.get("lineId");
+			String lineId = (String) objectContext.get(LINE_ID);
 			if (lineId != null)
 			{
 				prepareCheckPoint(context, ITL_5);
-				if (lineId != line.getObjectId())
+				if (!lineId.equals(line.getObjectId()))
 				{
 					Detail errorItem = new Detail(
 							ITL_5,
@@ -136,10 +142,10 @@ public class ITLValidator extends AbstractValidator implements Validator<Routing
 
 
 		@Override
-		protected Validator<RoutingConstraint> create(Context context) {
+		protected Validator<StopArea> create(Context context) {
 			ITLValidator instance = (ITLValidator) context.get(NAME);
 			if (instance == null) {
-				instance = new ITLValidator(context);
+				instance = new ITLValidator();
 				context.put(NAME, instance);
 			}
 			return instance;

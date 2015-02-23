@@ -17,10 +17,6 @@ public class NeptuneObjectFactory {
 
 	@Getter
 	@Setter
-	private Map<String, RoutingConstraint> routingConstraints = new HashMap<>();
-
-	@Getter
-	@Setter
 	private Map<String, PTLink> ptLink = new HashMap<>();
 
 	@Getter
@@ -43,16 +39,6 @@ public class NeptuneObjectFactory {
 			result = new AreaCentroid();
 			result.setObjectId(objectId);
 			areaCentroid.put(objectId, result);
-		}
-		return result;
-	}
-
-	public RoutingConstraint getRoutingConstraint(String objectId) {
-		RoutingConstraint result = routingConstraints.get(objectId);
-		if (result == null) {
-			result = new RoutingConstraint();
-			result.setObjectId(objectId);
-			routingConstraints.put(objectId, result);
 		}
 		return result;
 	}

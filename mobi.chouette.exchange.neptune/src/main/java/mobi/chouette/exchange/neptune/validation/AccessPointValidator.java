@@ -26,6 +26,8 @@ import mobi.chouette.model.util.Referential;
 
 public class AccessPointValidator extends AbstractValidator implements Validator<AccessPoint> , Constant{
 
+	public static final String CONTAINED_IN = "containedIn";
+
 	public static String NAME = "AccessPointValidator";
 
 	private static final String ACCESS_POINT_1 = "2-NEPTUNE-AccessPoint-1";
@@ -39,7 +41,8 @@ public class AccessPointValidator extends AbstractValidator implements Validator
 	public static final String LOCAL_CONTEXT = "AccessPoint";
 
 
-	public AccessPointValidator(Context context) 
+    @Override
+	protected void initializeCheckPoints(Context context)
 	{
 		addItemToValidation(context, prefix, "AccessPoint", 7, "E", "E", "E", "E", "E", "E", "E");
 
@@ -56,7 +59,7 @@ public class AccessPointValidator extends AbstractValidator implements Validator
 	public void addContainedIn(Context  context, String objectId, String containedIn)
 	{
 		Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
-		objectContext.put("containedIn", containedIn);
+		objectContext.put(CONTAINED_IN, containedIn);
 
 	}
 
@@ -109,7 +112,7 @@ public class AccessPointValidator extends AbstractValidator implements Validator
 			int columnNumber = ((Integer) objectContext.get(COLUMN_NUMBER)).intValue();
 			FileLocation sourceLocation = new FileLocation(fileName, lineNumber, columnNumber);
 			// 2-NEPTUNE-AccessPoint-1 : check existence of containedIn stopArea
-			String containedIn = (String) objectContext.get("containedIn");
+			String containedIn = (String) objectContext.get(CONTAINED_IN);
 			if (containedIn == null || !stopAreaContext.containsKey(containedIn))
 			{
 				Detail errorItem = new Detail(
@@ -128,7 +131,7 @@ public class AccessPointValidator extends AbstractValidator implements Validator
 					columnNumber = ((Integer) objectContext.get(COLUMN_NUMBER)).intValue();
 					FileLocation targetLocation = new FileLocation(fileName, lineNumber, columnNumber);
 					Map<String, Object> map = new HashMap<String, Object>();
-					map.put("containedIn", containedIn);
+					map.put(CONTAINED_IN, containedIn);
 					Detail errorItem = new Detail(
 							ACCESS_POINT_2,
 							new Location(sourceLocation,accessPoint.getObjectId()));
@@ -220,7 +223,7 @@ public class AccessPointValidator extends AbstractValidator implements Validator
 		protected Validator<AccessPoint> create(Context context) {
 			AccessPointValidator instance = (AccessPointValidator) context.get(NAME);
 			if (instance == null) {
-				instance = new AccessPointValidator(context);
+				instance = new AccessPointValidator();
 				context.put(NAME, instance);
 			}
 			return instance;

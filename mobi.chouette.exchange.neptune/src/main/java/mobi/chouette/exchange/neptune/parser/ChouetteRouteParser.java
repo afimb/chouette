@@ -46,6 +46,7 @@ public class ChouetteRouteParser implements Parser, Constant {
 			if (xpp.getName().equals("objectId")) {
 				 objectId = ParserUtils.getText(xpp.nextText());
 				route = ObjectFactory.getRoute(referential, objectId);
+				route.setFilled(true);
 				validator.addLocation(context, objectId, lineNumber, columnNumber);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
@@ -63,6 +64,7 @@ public class ChouetteRouteParser implements Parser, Constant {
 				route.setDirection(value);
 			} else if (xpp.getName().equals("journeyPatternId")) {
 				String journeyPatternId = ParserUtils.getText(xpp.nextText());
+				validator.addJourneyPatternId(context, objectId, journeyPatternId);
 				JourneyPattern journeyPattern = ObjectFactory
 						.getJourneyPattern(referential, journeyPatternId);
 				journeyPattern.setRoute(route);
@@ -70,6 +72,7 @@ public class ChouetteRouteParser implements Parser, Constant {
 				route.setNumber(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("ptLinkId")) {
 				String ptLinkId = ParserUtils.getText(xpp.nextText());
+				validator.addPtLinkId(context, objectId, ptLinkId);
 				PTLink ptLink = factory.getPTLink(ptLinkId);
 				List<PTLink> list = factory.getPTLinksOnRoute(route);
 				list.add(ptLink);
@@ -85,9 +88,13 @@ public class ChouetteRouteParser implements Parser, Constant {
 				}
 			} else if (xpp.getName().equals("wayBackRouteId")) {
 				String wayBackRouteId = ParserUtils.getText(xpp.nextText());
-				Route wayBackRoute = ObjectFactory.getRoute(referential,
-						wayBackRouteId);
+				validator.addWayBackRouteId(context, objectId, wayBackRouteId);
+				Route wayBackRoute = referential.getRoutes().get(wayBackRouteId);
 				// TODO [DSU] wayBack oppositeRouteId
+				if (wayBackRoute != null)
+				{
+					wayBackRoute.setOppositeRoute(route);
+				}
 
 			} else if (xpp.getName().equals("comment")) {
 				route.setComment(ParserUtils.getText(xpp.nextText()));
@@ -96,7 +103,7 @@ public class ChouetteRouteParser implements Parser, Constant {
 			}
 		}
 		
-		List<PTLink> list = factory.getPTLinksOnRoute(route);
+		// List<PTLink> list = factory.getPTLinksOnRoute(route);
 	}
 
 	static {

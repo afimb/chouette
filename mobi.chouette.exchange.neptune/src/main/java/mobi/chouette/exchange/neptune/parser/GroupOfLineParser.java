@@ -42,6 +42,7 @@ public class GroupOfLineParser implements Parser, Constant {
 				objectId = ParserUtils.getText(xpp.nextText());
 				groupOfLine = ObjectFactory.getGroupOfLine(referential,
 						objectId);
+				groupOfLine.setFilled(true);
 				validator.addLocation(context, objectId, lineNumber, columnNumber);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());

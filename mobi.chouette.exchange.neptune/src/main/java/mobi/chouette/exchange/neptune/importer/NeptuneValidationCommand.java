@@ -18,6 +18,7 @@ import mobi.chouette.exchange.neptune.validation.ChouetteRouteValidator;
 import mobi.chouette.exchange.neptune.validation.CompanyValidator;
 import mobi.chouette.exchange.neptune.validation.ConnectionLinkValidator;
 import mobi.chouette.exchange.neptune.validation.GroupOfLineValidator;
+import mobi.chouette.exchange.neptune.validation.ITLValidator;
 import mobi.chouette.exchange.neptune.validation.JourneyPatternValidator;
 import mobi.chouette.exchange.neptune.validation.LineValidator;
 import mobi.chouette.exchange.neptune.validation.PTNetworkValidator;
@@ -26,10 +27,16 @@ import mobi.chouette.exchange.neptune.validation.StopAreaValidator;
 import mobi.chouette.exchange.neptune.validation.StopPointValidator;
 import mobi.chouette.exchange.neptune.validation.TimetableValidator;
 import mobi.chouette.exchange.neptune.validation.VehicleJourneyValidator;
+import mobi.chouette.exchange.report.FileInfo;
 import mobi.chouette.exchange.report.LineInfo;
 import mobi.chouette.exchange.report.LineStats;
 import mobi.chouette.exchange.report.Report;
+import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
 import mobi.chouette.exchange.validation.ValidatorFactory;
+import mobi.chouette.exchange.validation.report.CheckPoint;
+import mobi.chouette.exchange.validation.report.CheckPoint.RESULT;
+import mobi.chouette.exchange.validation.report.CheckPoint.SEVERITY;
+import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.util.Referential;
 
@@ -44,16 +51,22 @@ public class NeptuneValidationCommand implements Command, Constant {
 	@Override
 	public boolean execute(Context context) throws Exception {
 
+		boolean result = ERROR;
 		log.info("[DSU] validate file");
 		// boolean result = ERROR;
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
 		Report report = (Report) context.get(REPORT);
 
+		String fileName =  (String) context.get(FILE_NAME);
+
+		FileInfo fileInfo = report.getFiles().findFileFileInfo(fileName);
+
 		try {
 			Context validationContext = (Context) context
 					.get(VALIDATION_CONTEXT);
 			Referential referential = (Referential) context.get(REFERENTIAL);
+
 			if (validationContext != null) {
 				{
 					PTNetworkValidator validator = (PTNetworkValidator) ValidatorFactory
@@ -122,7 +135,6 @@ public class NeptuneValidationCommand implements Command, Constant {
 									context);
 					validator.validate(context, null);
 				}
-				CommandFactory factory;
 
 				{
 					StopPointValidator validator = (StopPointValidator) ValidatorFactory
@@ -140,17 +152,31 @@ public class NeptuneValidationCommand implements Command, Constant {
 									context);
 					validator.validate(context, null);
 				}
-				// add stats to report
-				addStats(report, validationContext, referential);
+				{
+					ITLValidator validator = (ITLValidator) ValidatorFactory
+							.create(ITLValidator.class.getName(),
+									context);
+					validator.validate(context, null);
+				}
+				// check if ok before add stats to report
+				result = checkValid(context);
+				if (result) addStats(report, validationContext, referential);
+
 			}
 
 		} catch (Exception e) {
+			log.error("Neptune validation failed ",e);
 			throw e;
 		} finally {
 			AbstractValidator.resetContext(context);
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		}
-		return SUCCESS;
+		if (result == ERROR)
+		{
+			fileInfo.setStatus(FILE_STATE.NOK);
+			fileInfo.getErrors().add("Neptune compliance failed");
+		}
+		return result;
 	}
 
 	private void addStats(Report report, Context validationContext,
@@ -224,6 +250,20 @@ public class NeptuneValidationCommand implements Command, Constant {
 		globalStats.setTimeTableCount(globalStats.getTimeTableCount()
 				+ stats.getTimeTableCount());
 
+	}
+
+	private boolean checkValid(Context context)
+	{
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
+
+		for (CheckPoint checkPoint : report.getCheckPoints()) 
+		{
+			if (checkPoint.getSeverity().equals(SEVERITY.ERROR) && checkPoint.getState().equals(RESULT.NOK))
+			{
+				return ERROR;
+			}
+		}
+		return SUCCESS;
 	}
 
 	public static class DefaultCommandFactory extends CommandFactory {

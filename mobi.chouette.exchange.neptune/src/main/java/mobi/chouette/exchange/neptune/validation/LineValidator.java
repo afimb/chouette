@@ -16,8 +16,6 @@ import mobi.chouette.exchange.validation.report.Detail;
 import mobi.chouette.exchange.validation.report.FileLocation;
 import mobi.chouette.exchange.validation.report.Location;
 import mobi.chouette.model.Line;
-import mobi.chouette.model.Route;
-import mobi.chouette.model.util.Referential;
 
 public class LineValidator extends AbstractValidator implements Validator<Line> , Constant{
 
@@ -38,7 +36,8 @@ public class LineValidator extends AbstractValidator implements Validator<Line> 
 	public static final String LOCAL_CONTEXT = "NeptuneLine";
 
 
-	public LineValidator(Context context) 
+    @Override
+	protected void initializeCheckPoints(Context context)
 	{
 		addItemToValidation(context, prefix, "Line", 5, "E", "W", "W", "E", "E");
 
@@ -240,7 +239,7 @@ public class LineValidator extends AbstractValidator implements Validator<Line> 
 		protected Validator<Line> create(Context context) {
 			LineValidator instance = (LineValidator) context.get(NAME);
 			if (instance == null) {
-				instance = new LineValidator(context);
+				instance = new LineValidator();
 				context.put(NAME, instance);
 			}
 			return instance;

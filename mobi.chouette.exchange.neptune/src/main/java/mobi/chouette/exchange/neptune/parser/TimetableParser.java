@@ -49,6 +49,7 @@ public class TimetableParser implements Parser, Constant {
 			if (xpp.getName().equals("objectId")) {
 				 objectId = ParserUtils.getText(xpp.nextText());
 				timetable = ObjectFactory.getTimetable(referential, objectId);
+				timetable.setFilled(true);
 				timetable.setDayTypes(dayTypes);
 				validator.addLocation(context, objectId, lineNumber, columnNumber);
 			} else if (xpp.getName().equals("objectVersion")) {

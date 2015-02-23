@@ -1,13 +1,17 @@
 package mobi.chouette.exchange.neptune.validation;
 
+import java.util.List;
+
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.validation.report.CheckPoint;
 import mobi.chouette.exchange.validation.report.Detail;
 import mobi.chouette.exchange.validation.report.ValidationReport;
+import mobi.chouette.model.Line;
+import mobi.chouette.model.util.Referential;
 
 
-public class AbstractValidator implements Constant
+public abstract class AbstractValidator implements Constant
 {
 
 	protected static String prefix = "2-NEPTUNE-";
@@ -28,11 +32,12 @@ public class AbstractValidator implements Constant
 	protected static Context getObjectContext(Context context, String localContextName, String objectId)
 	{
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
-		if (validationContext == null)
+		if (validationContext == null) 
 		{
 			validationContext = new Context();
 			context.put(VALIDATION_CONTEXT, validationContext);
 		}
+
 		Context localContext = (Context) validationContext.get(localContextName);
 		if (localContext == null)
 		{
@@ -79,7 +84,7 @@ public class AbstractValidator implements Constant
 	 * @param checkPointKey
 	 * @param item
 	 */
-	protected static void addValidationError(Context context, String checkPointKey, Detail item)
+	protected void addValidationError(Context context, String checkPointKey, Detail item)
 	{
 		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
 		CheckPoint checkPoint = validationReport.findCheckPointByName(checkPointKey);
@@ -93,15 +98,41 @@ public class AbstractValidator implements Constant
 	 * 
 	 * @param checkPointKey
 	 */
-	protected static void prepareCheckPoint(Context context,String checkPointKey)
+	protected void prepareCheckPoint(Context context,String checkPointKey)
 	{
 		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
 		CheckPoint checkPoint = validationReport.findCheckPointByName(checkPointKey);
+		if (checkPoint == null )
+		{
+			initializeCheckPoints(context);
+			checkPoint = validationReport.findCheckPointByName(checkPointKey);
+		}
 		if (checkPoint.getDetails().isEmpty())
 			checkPoint.setState(CheckPoint.RESULT.OK);
 	}
+	
+	protected static Line getLine(Referential referential)
+	{
+		for (Line line : referential.getLines().values()) 
+		{
+			if (line.isFilled()) return line;
+		}
+		return null;
+	}
 
 
+	/**
+	 * check if a list is null or empty
+	 * 
+	 * @param list
+	 * @return
+	 */
+	protected boolean isListEmpty(List<?> list)
+	{
+		return list == null || list.isEmpty();
+	}
+
+	protected abstract void initializeCheckPoints(Context context);
 
 
 }

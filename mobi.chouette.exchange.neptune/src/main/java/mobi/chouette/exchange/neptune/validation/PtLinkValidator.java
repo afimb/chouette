@@ -8,9 +8,9 @@ import mobi.chouette.exchange.validation.ValidationConstraints;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
+import mobi.chouette.exchange.validation.report.Detail;
 import mobi.chouette.exchange.validation.report.FileLocation;
-import mobi.chouette.model.ConnectionLink;
-import mobi.chouette.model.util.Referential;
+import mobi.chouette.exchange.validation.report.Location;
 
 public class PtLinkValidator extends AbstractValidator implements Validator<PTLink> , Constant{
 
@@ -25,7 +25,8 @@ public class PtLinkValidator extends AbstractValidator implements Validator<PTLi
 	public static final String LOCAL_CONTEXT = "PTLink";
 
 
-	public PtLinkValidator(Context context) 
+    @Override
+	protected void initializeCheckPoints(Context context)
 	{
 		addItemToValidation( context, prefix, "PtLink", 1, "E");
 
@@ -41,16 +42,16 @@ public class PtLinkValidator extends AbstractValidator implements Validator<PTLi
 	public void addStartOfLinkId(Context  context, String objectId, String linkId)
 	{
 		Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
-		
-			objectContext.put(START_OF_LINK_ID, linkId);
-		
+
+		objectContext.put(START_OF_LINK_ID, linkId);
+
 	}
 
 	public void addEndOfLinkId(Context  context, String objectId, String linkId)
 	{
 		Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
-		
-			objectContext.put(END_OF_LINK_ID, linkId);
+
+		objectContext.put(END_OF_LINK_ID, linkId);
 	}
 
 
@@ -59,19 +60,37 @@ public class PtLinkValidator extends AbstractValidator implements Validator<PTLi
 	{
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
-		Context stopAreaContext = (Context) validationContext.get(StopAreaValidator.LOCAL_CONTEXT);
 		if (localContext == null || localContext.isEmpty()) return new ValidationConstraints();
+		
+		Context stopPointsContext = (Context) validationContext.get(StopPointValidator.LOCAL_CONTEXT);
 
-		Referential referential = (Referential) context.get(REFERENTIAL);
 		String fileName = (String) context.get(FILE_NAME);
 
+		// 2-NEPTUNE-PtLink-1 : check existence of start and end of links
+		prepareCheckPoint(context, PT_LINK_1);
 		for (String objectId : localContext.keySet()) 
 		{
 			Context objectContext = (Context) localContext.get(objectId);
-			ConnectionLink connectionLink = referential.getConnectionLinks().get(objectId);
 			int lineNumber = ((Integer) objectContext.get(LINE_NUMBER)).intValue();
 			int columnNumber = ((Integer) objectContext.get(COLUMN_NUMBER)).intValue();
 			FileLocation sourceLocation = new FileLocation(fileName, lineNumber, columnNumber);
+
+			String start = (String) objectContext.get(START_OF_LINK_ID);
+			if (!stopPointsContext.containsKey(start))
+			{
+				Detail errorItem = new Detail(
+						PT_LINK_1,
+						new Location(sourceLocation,objectId), start);
+				addValidationError(context,PT_LINK_1, errorItem);
+			}
+			String end = (String) objectContext.get(END_OF_LINK_ID);
+			if (!stopPointsContext.containsKey(end))
+			{
+				Detail errorItem = new Detail(
+						PT_LINK_1,
+						new Location(sourceLocation,objectId), end);
+				addValidationError(context,PT_LINK_1, errorItem);
+			}
 
 
 		}
@@ -86,7 +105,7 @@ public class PtLinkValidator extends AbstractValidator implements Validator<PTLi
 		protected Validator<PTLink> create(Context context) {
 			PtLinkValidator instance = (PtLinkValidator) context.get(NAME);
 			if (instance == null) {
-				instance = new PtLinkValidator(context);
+				instance = new PtLinkValidator();
 				context.put(NAME, instance);
 			}
 			return instance;

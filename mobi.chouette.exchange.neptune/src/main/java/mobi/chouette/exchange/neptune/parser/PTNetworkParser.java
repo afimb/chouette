@@ -11,7 +11,6 @@ import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.neptune.validation.PTNetworkValidator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
-import mobi.chouette.model.Line;
 import mobi.chouette.model.PTNetwork;
 import mobi.chouette.model.type.PTNetworkSourceTypeEnum;
 import mobi.chouette.model.util.ObjectFactory;
@@ -42,6 +41,7 @@ public class PTNetworkParser implements Parser, Constant {
 			if (xpp.getName().equals("objectId")) {
 				objectId = ParserUtils.getText(xpp.nextText());
 				network = ObjectFactory.getPTNetwork(referential, objectId);
+				network.setFilled(true);
 				validator.addLocation(context, objectId, lineNumber, columnNumber);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
@@ -80,8 +80,8 @@ public class PTNetworkParser implements Parser, Constant {
 			} else if (xpp.getName().equals("lineId")) {
 				String lineId = ParserUtils.getText(xpp.nextText());
 				// TODO : revoir l'assemblage Network Line
-				Line line = ObjectFactory.getLine(referential, lineId);
-				line.setPTNetwork(network);
+//				Line line = ObjectFactory.getLine(referential, lineId);
+//				line.setPTNetwork(network);
 				validator.addLineId(context, objectId, lineId);
 			} else {
 				XPPUtil.skipSubTree(log, xpp);

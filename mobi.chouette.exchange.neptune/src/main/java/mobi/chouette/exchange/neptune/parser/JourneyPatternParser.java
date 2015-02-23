@@ -12,7 +12,6 @@ import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.neptune.validation.JourneyPatternValidator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.JourneyPattern;
-import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.util.ObjectFactory;
@@ -44,6 +43,7 @@ public class JourneyPatternParser implements Parser, Constant {
 				objectId = ParserUtils.getText(xpp.nextText());
 				journeyPattern = ObjectFactory.getJourneyPattern(referential,
 						objectId);
+				journeyPattern.setFilled(true);
 				validator.addLocation(context, objectId, lineNumber, columnNumber);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
@@ -61,6 +61,7 @@ public class JourneyPatternParser implements Parser, Constant {
 						.nextText()));
 			} else if (xpp.getName().equals("routeId")) {
 				String routeId = ParserUtils.getText(xpp.nextText());
+				validator.addRouteId(context, objectId, routeId);
 				Route route = ObjectFactory.getRoute(referential, routeId);
 				journeyPattern.setRoute(route);
 			} else if (xpp.getName().equals("origin")) {
@@ -79,6 +80,7 @@ public class JourneyPatternParser implements Parser, Constant {
 
 			} else if (xpp.getName().equals("stopPointList")) {
 				String stopPointId = ParserUtils.getText(xpp.nextText());
+				validator.addStopPointList(context, objectId, stopPointId);
 				StopPoint stopPoint = ObjectFactory.getStopPoint(referential,
 						stopPointId);
 				journeyPattern.addStopPoint(stopPoint);
@@ -96,8 +98,7 @@ public class JourneyPatternParser implements Parser, Constant {
 				journeyPattern.setComment(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("lineIdShortcut")) {
 				String lineIdShortcut = ParserUtils.getText(xpp.nextText());
-				Line line = ObjectFactory.getLine(referential, lineIdShortcut);
-				// TODO lineIdShortcut
+				validator.addLineIdShortcut(context, objectId, lineIdShortcut);
 			} else {
 				XPPUtil.skipSubTree(log, xpp);
 			}

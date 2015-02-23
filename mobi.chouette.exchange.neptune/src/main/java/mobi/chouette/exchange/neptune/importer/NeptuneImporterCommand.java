@@ -21,8 +21,6 @@ import mobi.chouette.exchange.importer.CopyCommand;
 import mobi.chouette.exchange.importer.LineRegisterCommand;
 import mobi.chouette.exchange.importer.UncompressCommand;
 import mobi.chouette.exchange.report.Report;
-import mobi.chouette.exchange.report.ReportCommand;
-import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.util.Referential;
 
 import com.jamonapi.Monitor;
@@ -41,32 +39,28 @@ public class NeptuneImporterCommand implements Command, Constant {
 		InitialContext initialContext = (InitialContext) context
 				.get(INITIAL_CONTEXT);
 
+		// initialize reporting and progression
+		ProgressionCommand progression = (ProgressionCommand) CommandFactory
+				.create(initialContext, ProgressionCommand.class.getName());
+		progression.initialize(context);
+
 		context.put(REFERENTIAL, new Referential());
 
-		
-		// TODO report service
-		Command reportCmd = CommandFactory.create(initialContext,
-				ReportCommand.class.getName());
-		Report report = new Report();
-		ValidationReport validationReport = new ValidationReport();
-		context.put(Constant.REPORT, report);
-		context.put(Constant.VALIDATION_REPORT, validationReport);
-		// read parameters
+				// read parameters
 		Object configuration = context.get(CONFIGURATION);
 		if (!(configuration instanceof NeptuneImportParameters)) {
 			// fatal wrong parameters
+			Report report = (Report) context.get(REPORT);
 			log.error("invalid parameters for neptune import "
 					+ configuration.getClass().getName());
 			report.setFailure("invalid parameters for neptune import "
 					+ configuration.getClass().getName());
-			reportCmd.execute(context);
+			progression.dispose(context);
 			return false;
 		}
 
 		NeptuneImportParameters parameters = (NeptuneImportParameters) configuration;
 
-		ProgressionCommand progression = (ProgressionCommand) CommandFactory
-				.create(initialContext, ProgressionCommand.class.getName());
 
 		try {
 
@@ -78,6 +72,8 @@ public class NeptuneImporterCommand implements Command, Constant {
 			Path path = Paths.get(context.get(PATH).toString(), INPUT);
 			List<Path> stream = FileUtils
 					.listFiles(path, "*.xml", "*metadata*");
+			
+			progression.start(context, stream.size());
 
 			ChainCommand master = (ChainCommand) CommandFactory.create(
 					initialContext, ChainCommand.class.getName());
@@ -127,17 +123,12 @@ public class NeptuneImporterCommand implements Command, Constant {
 			master.execute(context);
 
 		} catch (Exception e) {
+			Report report = (Report) context.get(REPORT);
+			log.error(e);
+			report.setFailure("Fatal :"+e);
 
 		} finally {
-			// TODO report service
-
-			// save report
-			report.setProgression(null);
-			reportCmd.execute(context);
-
-			// save validation report
-			// validationReportCmd.execute(context);
-
+			progression.dispose(context);
 		}
 
 		log.info(Color.YELLOW + monitor.stop() + Color.NORMAL);

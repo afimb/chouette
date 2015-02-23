@@ -85,6 +85,7 @@ public class Service implements Constant {
 	@POST
 	@Path("/{ref}/{action}/{type}")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces({ MediaType.APPLICATION_JSON })
 	public Response upload(@PathParam("ref") String referential,
 			@PathParam("action") String action, @PathParam("type") String type,
 			MultipartFormDataInput input) {
@@ -97,7 +98,7 @@ public class Service implements Constant {
 		if (action == null || action.isEmpty()) {
 			throw new WebApplicationException(Status.BAD_REQUEST);
 		}
-		if (type == null || type.isEmpty()) {
+		if (!action.equals("validation") && (type == null || type.isEmpty())) {
 			throw new WebApplicationException(Status.BAD_REQUEST);
 		}
 
@@ -301,6 +302,7 @@ public class Service implements Constant {
 					PARAMETERS_FILE);
 
 			Parameters payload = JSONUtils.fromJSON(path, Parameters.class);
+			if (payload != null)
 			job.setParameters(payload.getConfiguration());
 		}
 		result.setList(filtered);

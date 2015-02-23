@@ -13,6 +13,7 @@ import mobi.chouette.exchange.neptune.validation.StopPointValidator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.type.LongLatTypeEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
@@ -22,7 +23,6 @@ import org.xmlpull.v1.XmlPullParser;
 public class StopPointParser implements Parser, Constant {
 	private static final String CHILD_TAG = "StopPoint";
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void parse(Context context) throws Exception {
 
@@ -43,6 +43,7 @@ public class StopPointParser implements Parser, Constant {
 			if (xpp.getName().equals("objectId")) {
 				 objectId = ParserUtils.getText(xpp.nextText());
 				stopPoint = ObjectFactory.getStopPoint(referential, objectId);
+				stopPoint.setFilled(true);
 				validator.addLocation(context, objectId, lineNumber, columnNumber);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
@@ -56,15 +57,20 @@ public class StopPointParser implements Parser, Constant {
 				stopPoint.setName(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("containedIn")) {
 				String containedIn = ParserUtils.getText(xpp.nextText());
+				validator.addContainedIn(context, objectId, containedIn);
 				StopArea stopArea = ObjectFactory.getStopArea(referential,
 						containedIn);
 				stopPoint.setContainedInStopArea(stopArea);
 			} else if (xpp.getName().equals("lineIdShortcut")) {
 				String lineIdShortcut = ParserUtils.getText(xpp.nextText());
-				// TODO lineIdShortcut
+				validator.addLineIdShortcut(context, objectId, lineIdShortcut);
 			} else if (xpp.getName().equals("ptNetworkIdShortcut")) {
 				String ptNetworkIdShortcut = ParserUtils.getText(xpp.nextText());
-				// TODO ptNetworkIdShortcut
+				validator.addPtNetworkIdShortcut(context, objectId, ptNetworkIdShortcut);
+			} else if (xpp.getName().equals("longLatType")) {
+				LongLatTypeEnum longLatType = ParserUtils.getEnum(
+						LongLatTypeEnum.class, xpp.nextText());
+				validator.addLongLatType(context, objectId, longLatType);
 			} else {
 				XPPUtil.skipSubTree(log, xpp);
 			}

@@ -44,7 +44,7 @@ public class ChouetteAreaParser implements Parser, Constant {
 		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
 		context.put(LINE_NUMBER, xpp.getLineNumber());
 
-		
+
 		BiMap<String, String> map = HashBiMap.create(); 
 		context.put(STOPAREA_AREACENTROID_MAP, map);
 
@@ -64,11 +64,11 @@ public class ChouetteAreaParser implements Parser, Constant {
 			throws Exception {
 		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
-		
+
 		xpp.require(XmlPullParser.START_TAG, null, "StopArea");
 		int columnNumber =  xpp.getColumnNumber();
 		int lineNumber =  xpp.getLineNumber();
-		
+
 		StopAreaValidator validator = (StopAreaValidator) ValidatorFactory.create(StopAreaValidator.class.getName(), context);
 
 		StopArea stopArea = null;
@@ -79,6 +79,7 @@ public class ChouetteAreaParser implements Parser, Constant {
 			if (xpp.getName().equals("objectId")) {
 				objectId = ParserUtils.getText(xpp.nextText());
 				stopArea = ObjectFactory.getStopArea(referential, objectId);
+				stopArea.setFilled(true);
 				validator.addLocation(context, objectId, lineNumber, columnNumber);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
@@ -105,6 +106,12 @@ public class ChouetteAreaParser implements Parser, Constant {
 								StopPoint stopPoint = ObjectFactory
 										.getStopPoint(referential, childId);
 								stopPoint.setContainedInStopArea(stopArea);
+							}
+						} else if (stopArea.getAreaType() == ChouetteAreaEnum.ITL) {
+							for (String childId : contains) {
+								StopArea child = ObjectFactory.getStopArea(
+										referential, childId);
+								stopArea.addRoutingConstraintStopArea(child);
 							}
 						} else {
 							for (String childId : contains) {
@@ -137,7 +144,7 @@ public class ChouetteAreaParser implements Parser, Constant {
 						while (xpp.nextTag() == XmlPullParser.START_TAG) {
 							if (xpp.getName().equals("MobilityNeed")
 									|| xpp.getName()
-											.equals("PsychosensoryNeed")
+									.equals("PsychosensoryNeed")
 									|| xpp.getName().equals("MedicalNeed")
 									|| xpp.getName().equals("EncumbranceNeed")) {
 								UserNeedEnum userNeed = ParserUtils.getEnum(
@@ -187,7 +194,7 @@ public class ChouetteAreaParser implements Parser, Constant {
 		xpp.require(XmlPullParser.START_TAG, null, "AreaCentroid");
 		int columnNumber =  xpp.getColumnNumber();
 		int lineNumber =  xpp.getLineNumber();
-		
+
 		AreaCentroidValidator validator = (AreaCentroidValidator) ValidatorFactory.create(AreaCentroidValidator.class.getName(), context);
 
 		BiMap<String, String> inverse = map.inverse();
@@ -261,12 +268,12 @@ public class ChouetteAreaParser implements Parser, Constant {
 	static {
 		ParserFactory.register(ChouetteAreaParser.class.getName(),
 				new ParserFactory() {
-					private ChouetteAreaParser instance = new ChouetteAreaParser();
+			private ChouetteAreaParser instance = new ChouetteAreaParser();
 
-					@Override
-					protected Parser create() {
-						return instance;
-					}
-				});
+			@Override
+			protected Parser create() {
+				return instance;
+			}
+		});
 	}
 }

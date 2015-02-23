@@ -15,7 +15,9 @@ import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.neptune.validation.LineValidator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
+import mobi.chouette.model.Company;
 import mobi.chouette.model.Line;
+import mobi.chouette.model.PTNetwork;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.type.UserNeedEnum;
@@ -50,6 +52,9 @@ public class LineParser implements Parser, Constant {
 			if (xpp.getName().equals("objectId")) {
 				objectId = ParserUtils.getText(xpp.nextText());
 				line = ObjectFactory.getLine(referential, objectId);
+				line.setFilled(true);
+				line.setPTNetwork(getPtNetwork(referential));
+				line.setCompany(getFirstCompany(referential));
 				validator.addLocation(context, objectId, lineNumber, columnNumber);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
@@ -126,6 +131,25 @@ public class LineParser implements Parser, Constant {
 		}
 	}
 
+	private Company getFirstCompany(Referential referential)
+	{
+		for (Company company : referential.getCompanies().values()) 
+		{
+			if (company.isFilled()) return company;
+		}
+		return null;
+	}
+	
+	private PTNetwork getPtNetwork(Referential referential)
+	{
+		for (PTNetwork network : referential.getPtNetworks().values()) 
+		{
+			if (network.isFilled()) return network;
+		}
+		return null;
+	}
+	
+	
 	private void todo(Referential referential, final Line line) {
 
 		Map<String, Line> removed = Maps.filterEntries(referential.getLines(),

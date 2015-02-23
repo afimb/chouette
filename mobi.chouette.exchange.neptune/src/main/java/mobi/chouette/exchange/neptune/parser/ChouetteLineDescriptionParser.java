@@ -52,6 +52,10 @@ public class ChouetteLineDescriptionParser implements Parser, Constant {
 				Parser parser = ParserFactory.create(StopPointParser.class
 						.getName());
 				parser.parse(context);
+			} else if (xpp.getName().equals("ITL")) {
+				Parser parser = ParserFactory.create(ITLParser.class
+						.getName());
+				parser.parse(context);
 			} else if (xpp.getName().equals("PtLink")) {
 				Parser parser = ParserFactory.create(PtLinkParser.class
 						.getName());

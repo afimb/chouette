@@ -39,6 +39,7 @@ public class CompanyParser implements Parser, Constant {
 			if (xpp.getName().equals("objectId")) {
 				objectId = ParserUtils.getText(xpp.nextText());
 				company = ObjectFactory.getCompany(referential, objectId);
+				company.setFilled(true);
 				validator.addLocation(context, objectId, lineNumber, columnNumber);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());

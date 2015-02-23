@@ -259,7 +259,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 							.getObjectIds(addedAccessLink));
 					for (AccessLink object : accessLinks) {
 						cache.getAccessLinks()
-								.put(object.getObjectId(), object);
+						.put(object.getObjectId(), object);
 					}
 				}
 				accessLink = cache.getAccessLinks().get(item.getObjectId());
@@ -299,26 +299,28 @@ public class StopAreaUpdater implements Updater<StopArea> {
 
 			ConnectionLink startOfLink = cache.getConnectionLinks().get(
 					item.getObjectId());
-			if (startOfLink == null) {
-				if (startOfLinks == null) {
-					startOfLinks = connectionLinkDAO
-							.findByObjectId(UpdaterUtils
-									.getObjectIds(addedStartOfLink));
-					for (ConnectionLink object : startOfLinks) {
-						cache.getConnectionLinks().put(object.getObjectId(),
-								object);
-					}
-				}
-				startOfLink = cache.getConnectionLinks()
-						.get(item.getObjectId());
-			}
+			//			if (startOfLink == null) {
+			//				if (startOfLinks == null) {
+			//					startOfLinks = connectionLinkDAO
+			//							.findByObjectId(UpdaterUtils
+			//									.getObjectIds(addedStartOfLink));
+			//					for (ConnectionLink object : startOfLinks) {
+			//						cache.getConnectionLinks().put(object.getObjectId(),
+			//								object);
+			//					}
+			//				}
+			//				startOfLink = cache.getConnectionLinks()
+			//						.get(item.getObjectId());
+			//			}
+			//
+			//			if (startOfLink == null) {
+			//				startOfLink = ObjectFactory.getConnectionLink(cache,
+			//						item.getObjectId());
+			//				// startOfLink.setObjectId(item.getObjectId());
+			//			}
+			if (!item.getEndOfLink().isDetached() || item.getEndOfLink().isFilled())
 
-			if (startOfLink == null) {
-				startOfLink = ObjectFactory.getConnectionLink(cache,
-						item.getObjectId());
-				// startOfLink.setObjectId(item.getObjectId());
-			}
-			startOfLink.setStartOfLink(oldValue);
+				startOfLink.setStartOfLink(oldValue);
 		}
 
 		Collection<Pair<ConnectionLink, ConnectionLink>> modifiedStartOfLink = CollectionUtils
@@ -341,23 +343,24 @@ public class StopAreaUpdater implements Updater<StopArea> {
 
 			ConnectionLink endOfLink = cache.getConnectionLinks().get(
 					item.getObjectId());
-			if (endOfLink == null) {
-				if (endOfLinks == null) {
-					endOfLinks = connectionLinkDAO.findByObjectId(UpdaterUtils
-							.getObjectIds(addedEndOfLink));
-					for (ConnectionLink object : endOfLinks) {
-						cache.getConnectionLinks().put(object.getObjectId(),
-								object);
-					}
-				}
-				endOfLink = cache.getConnectionLinks().get(item.getObjectId());
-			}
-
-			if (endOfLink == null) {
-				endOfLink = ObjectFactory.getConnectionLink(cache,
-						item.getObjectId());
-			}
-			endOfLink.setEndOfLink(oldValue);
+			//			if (endOfLink == null) {
+			//				if (endOfLinks == null) {
+			//					endOfLinks = connectionLinkDAO.findByObjectId(UpdaterUtils
+			//							.getObjectIds(addedEndOfLink));
+			//					for (ConnectionLink object : endOfLinks) {
+			//						cache.getConnectionLinks().put(object.getObjectId(),
+			//								object);
+			//					}
+			//				}
+			//				endOfLink = cache.getConnectionLinks().get(item.getObjectId());
+			//			}
+			//
+			//			if (endOfLink == null) {
+			//				endOfLink = ObjectFactory.getConnectionLink(cache,
+			//						item.getObjectId());
+			//			}
+			if (!item.getStartOfLink().isDetached() || item.getStartOfLink().isFilled())
+				endOfLink.setEndOfLink(oldValue);
 		}
 
 		Collection<Pair<ConnectionLink, ConnectionLink>> modifiedEndOfLink = CollectionUtils
@@ -369,8 +372,47 @@ public class StopAreaUpdater implements Updater<StopArea> {
 					pair.getRight());
 		}
 
-		// TODO list routing_constraints_lines (routingConstraintLines)
+		// TODO list routing_constraints_lines (routingConstraintLines) 
 		// TODO list stop_areas_stop_areas (routingConstraintAreas)
+		Collection<StopArea> addedStopAreas = CollectionUtils.substract(
+				newValue.getRoutingConstraintAreas(),
+				oldValue.getRoutingConstraintAreas(),
+				NeptuneIdentifiedObjectComparator.INSTANCE);
+
+		List<StopArea> stopAreas = null;
+		for (StopArea item : addedStopAreas) {
+
+			StopArea area = cache.getStopAreas().get(
+					item.getObjectId());
+			if (area == null) {
+				if (stopAreas == null) {
+					stopAreas = stopAreaDAO.findByObjectId(UpdaterUtils
+							.getObjectIds(addedEndOfLink));
+					for (StopArea object : addedStopAreas) {
+						cache.getStopAreas().put(object.getObjectId(),
+								object);
+					}
+				}
+				area = cache.getStopAreas().get(item.getObjectId());
+			}
+
+			if (area == null) {
+				area = ObjectFactory.getStopArea(cache,
+						item.getObjectId());
+			}
+			if (!area.isDetached() || area.isFilled())
+			   oldValue.getRoutingConstraintAreas().add(area);
+		}
+
+		Collection<Pair<StopArea, StopArea>> modifiedStopArea = CollectionUtils
+				.intersection(oldValue.getRoutingConstraintAreas(),
+						newValue.getRoutingConstraintAreas(),
+						NeptuneIdentifiedObjectComparator.INSTANCE);
+		for (Pair<StopArea, StopArea> pair : modifiedStopArea) {
+			stopAreaUpdater.update(context, pair.getLeft(),
+					pair.getRight());
+		}
+
 
 	}
 }

@@ -16,7 +16,6 @@ import mobi.chouette.exchange.neptune.validation.VehicleJourneyValidator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.JourneyPattern;
-import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
@@ -47,7 +46,6 @@ public class VehicleJourneyParser implements Parser, Constant {
 		}
 	};
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void parse(Context context) throws Exception {
 
@@ -68,6 +66,7 @@ public class VehicleJourneyParser implements Parser, Constant {
 				 objectId = ParserUtils.getText(xpp.nextText());
 				vehicleJourney = ObjectFactory.getVehicleJourney(referential,
 						objectId);
+				vehicleJourney.setFilled(true);
 				validator.addLocation(context, objectId, lineNumber, columnNumber);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
@@ -84,6 +83,7 @@ public class VehicleJourneyParser implements Parser, Constant {
 				vehicleJourney.setFacility(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("journeyPatternId")) {
 				String journeyPatternId = ParserUtils.getText(xpp.nextText());
+				validator.addJourneyPatternId(context, objectId, journeyPatternId);
 				JourneyPattern journeyPattern = ObjectFactory
 						.getJourneyPattern(referential, journeyPatternId);
 				vehicleJourney.setJourneyPattern(journeyPattern);
@@ -92,6 +92,7 @@ public class VehicleJourneyParser implements Parser, Constant {
 				vehicleJourney.setNumber(value);
 			} else if (xpp.getName().equals("operatorId")) {
 				String operatorId = ParserUtils.getText(xpp.nextText());
+				validator.addOperatorId(context, objectId, operatorId);
 				Company company = ObjectFactory.getCompany(referential,
 						operatorId);
 				vehicleJourney.setCompany(company);
@@ -103,20 +104,20 @@ public class VehicleJourneyParser implements Parser, Constant {
 						.nextText()));
 			} else if (xpp.getName().equals("routeId")) {
 				String routeId = ParserUtils.getText(xpp.nextText());
+				validator.addRouteId(context, objectId, routeId);
 				Route route = ObjectFactory.getRoute(referential, routeId);
 				vehicleJourney.setRoute(route);
 			} else if (xpp.getName().equals("lineIdShortcut")) {
 				String lineIdShortcut = ParserUtils.getText(xpp.nextText());
-				Line line = ObjectFactory.getLine(referential, lineIdShortcut);
-				// TODO lineIdShortcut
+				validator.addLineIdShortcut(context, objectId, lineIdShortcut);
 
 //			} else if (xpp.getName().equals("statusValue")) {
 //				ServiceStatusValueEnum value = ParserUtils.getEnum(
 //						ServiceStatusValueEnum.class, xpp.nextText());
 //				vehicleJourney.setServiceStatusValue(value);
 			} else if (xpp.getName().equals("timeSlotId")) {
-				String value = ParserUtils.getText(xpp.nextText());
-				// TODO timeSlotId
+				String timeSlotId = ParserUtils.getText(xpp.nextText());
+				validator.addTimeSlotId(context, objectId, timeSlotId);
 
 			} else if (xpp.getName().equals("transportMode")) {
 				TransportModeNameEnum value = ParserUtils.getEnum(
@@ -149,11 +150,18 @@ public class VehicleJourneyParser implements Parser, Constant {
 
 		VehicleJourneyAtStop vehicleJourneyAtStop = ObjectFactory
 				.getVehicleJourneyAtStop();
+		
+		VehicleJourneyValidator validator = (VehicleJourneyValidator) ValidatorFactory.create(VehicleJourneyValidator.class.getName(), context);
+
+		Context vehicleJourneyAtStopContext = validator.addVehicleJourneyAtStopContext(context, vehicleJourney.getObjectId());
+		int columnNumber =  xpp.getColumnNumber();
+		int lineNumber =  xpp.getLineNumber();
+		validator.addVehicleJourneyAtStopLocation(vehicleJourneyAtStopContext, lineNumber, columnNumber);
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 			
 			if (xpp.getName().equals("vehicleJourneyId")) {
 				String objectId = ParserUtils.getText(xpp.nextText());
-				// TODO check reverse reference
+				validator.addVehicleJourneyId(vehicleJourneyAtStopContext, objectId);
 				vehicleJourneyAtStop.setVehicleJourney(vehicleJourney);
 			} else if (xpp.getName().equals("boardingAlightingPossibility")) {
 				BoardingAlightingPossibilityEnum value = ParserUtils.getEnum(
@@ -163,15 +171,14 @@ public class VehicleJourneyParser implements Parser, Constant {
 //				vehicleJourneyAtStop.setConnectingServiceId(xpp.nextText());
 			} else if (xpp.getName().equals("stopPointId")) {
 				String objectId = ParserUtils.getText(xpp.nextText());
+				validator.addStopPointId(vehicleJourneyAtStopContext, objectId);
 				StopPoint stopPoint = ObjectFactory.getStopPoint(referential,
 						objectId);
-				
-
 				vehicleJourneyAtStop.setStopPoint(stopPoint);
 				
 			} else if (xpp.getName().equals("order")) {
 				Integer value = ParserUtils.getInt(xpp.nextText());
-				// TODO order
+				validator.addOrder(vehicleJourneyAtStopContext, value);
 			} else if (xpp.getName().equals("elapseDuration")) {
 				Time value = ParserUtils.getSQLDuration(xpp.nextText());
 				vehicleJourneyAtStop.setElapseDuration(value);

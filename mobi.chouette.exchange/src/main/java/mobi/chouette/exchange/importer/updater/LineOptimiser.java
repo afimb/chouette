@@ -79,6 +79,7 @@ public class LineOptimiser {
 	@EJB
 	private StopPointDAO stopPointDAO;
 
+
 	public void initialize(Referential cache, Referential referential) {
 
 		initializeStopArea(cache, referential.getStopAreas().values());
@@ -92,6 +93,7 @@ public class LineOptimiser {
 		initializePTNetwork(cache, referential.getPtNetworks().values());
 		initializeCompany(cache, referential.getCompanies().values());
 		initializeGroupOfLine(cache, referential.getGroupOfLines().values());
+		initializeConnectionLink(cache, referential.getConnectionLinks().values());
 
 		initializeLine(cache, referential.getLines().values());
 		initializeRoute(cache, referential.getRoutes().values());
@@ -172,6 +174,7 @@ public class LineOptimiser {
 				cache.getStopAreas().put(object.getObjectId(), object);
 			}
 
+			// TODO check if stoparea really exists
 			for (StopArea item : list) {
 				StopArea object = cache.getStopAreas().get(item.getObjectId());
 				if (object == null) {
