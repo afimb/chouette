@@ -318,6 +318,8 @@ public class StopAreaUpdater implements Updater<StopArea> {
 						item.getObjectId());
 				// startOfLink.setObjectId(item.getObjectId());
 			}
+			if (item.getEndOfLink().isSaved())
+			
 			startOfLink.setStartOfLink(oldValue);
 		}
 
@@ -369,8 +371,46 @@ public class StopAreaUpdater implements Updater<StopArea> {
 					pair.getRight());
 		}
 
-		// TODO list routing_constraints_lines (routingConstraintLines)
+		// TODO list routing_constraints_lines (routingConstraintLines) 
 		// TODO list stop_areas_stop_areas (routingConstraintAreas)
+		Collection<StopArea> addedStopAreas = CollectionUtils.substract(
+				newValue.getRoutingConstraintAreas(),
+				oldValue.getRoutingConstraintAreas(),
+				NeptuneIdentifiedObjectComparator.INSTANCE);
+
+		List<StopArea> stopAreas = null;
+		for (StopArea item : addedStopAreas) {
+
+			StopArea area = cache.getStopAreas().get(
+					item.getObjectId());
+			if (area == null) {
+				if (stopAreas == null) {
+					stopAreas = stopAreaDAO.findByObjectId(UpdaterUtils
+							.getObjectIds(addedEndOfLink));
+					for (StopArea object : addedStopAreas) {
+						cache.getStopAreas().put(object.getObjectId(),
+								object);
+					}
+				}
+				area = cache.getStopAreas().get(item.getObjectId());
+			}
+
+			if (area == null) {
+				area = ObjectFactory.getStopArea(cache,
+						item.getObjectId());
+			}
+			newValue.getRoutingConstraintAreas().add(area);
+		}
+
+		Collection<Pair<StopArea, StopArea>> modifiedStopArea = CollectionUtils
+				.intersection(oldValue.getRoutingConstraintAreas(),
+						newValue.getRoutingConstraintAreas(),
+						NeptuneIdentifiedObjectComparator.INSTANCE);
+		for (Pair<StopArea, StopArea> pair : modifiedStopArea) {
+			stopAreaUpdater.update(context, pair.getLeft(),
+					pair.getRight());
+		}
+		
 
 	}
 }

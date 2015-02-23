@@ -14,11 +14,13 @@ import mobi.chouette.dao.CompanyDAO;
 import mobi.chouette.dao.GroupOfLineDAO;
 import mobi.chouette.dao.PTNetworkDAO;
 import mobi.chouette.dao.RouteDAO;
+import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.PTNetwork;
 import mobi.chouette.model.Route;
+import mobi.chouette.model.StopArea;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
@@ -54,6 +56,12 @@ public class LineUpdater implements Updater<Line> {
 
 	@EJB(beanName = RouteUpdater.BEAN_NAME)
 	private Updater<Route> routeUpdater;
+
+	@EJB
+	private StopAreaDAO stopAreaDAO;
+
+	@EJB(beanName = StopAreaUpdater.BEAN_NAME)
+	private Updater<StopArea> stopAreaUpdater;
 
 	@Override
 	public void update(Context context, Line oldValue, Line newValue)
@@ -265,6 +273,50 @@ public class LineUpdater implements Updater<Line> {
 		// }
 
 		// TODO stop area list (routingConstraintLines)
+		Collection<StopArea> addedRoutingConstraint = CollectionUtils.substract(
+				newValue.getRoutingConstraints(), oldValue.getRoutingConstraints(),
+				NeptuneIdentifiedObjectComparator.INSTANCE);
+
+		List<StopArea> routingConstraints = null;
+		for (StopArea item : addedRoutingConstraint) {
+
+			StopArea routingConstraint = cache.getStopAreas().get(
+					item.getObjectId());
+			if (routingConstraint == null) {
+				if (routingConstraints == null) {
+					routingConstraints = stopAreaDAO.findByObjectId(UpdaterUtils
+							.getObjectIds(addedRoutingConstraint));
+					for (StopArea object : routingConstraints) {
+						cache.getStopAreas().put(object.getObjectId(),
+								object);
+					}
+				}
+				routingConstraint = cache.getStopAreas().get(item.getObjectId());
+			}
+
+			if (routingConstraint == null) {
+				routingConstraint = ObjectFactory.getStopArea(cache,
+						item.getObjectId());
+			}
+			routingConstraint.addRoutingConstraintLine(oldValue);
+		}
+
+		Collection<Pair<StopArea, StopArea>> modifiedRoutingConstraint = CollectionUtils
+				.intersection(oldValue.getRoutingConstraints(),
+						newValue.getRoutingConstraints(),
+						NeptuneIdentifiedObjectComparator.INSTANCE);
+		for (Pair<StopArea, StopArea> pair : modifiedRoutingConstraint) {
+			stopAreaUpdater.update(context, pair.getLeft(), pair.getRight());
+		}
+
+		Collection<StopArea> removedRoutingConstraint = CollectionUtils.substract(
+				oldValue.getRoutingConstraints(), newValue.getRoutingConstraints(),
+				NeptuneIdentifiedObjectComparator.INSTANCE);
+		for (StopArea stopArea : removedRoutingConstraint) {
+			stopArea.removeRoutingConstraintLine(oldValue);
+		}
+		
+		
 	}
 
 }

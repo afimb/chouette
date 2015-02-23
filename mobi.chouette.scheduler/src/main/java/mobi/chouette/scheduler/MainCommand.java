@@ -52,9 +52,11 @@ public class MainCommand implements Command, Constant {
 		context.put(VALIDATION, parameters.getValidation());
 		context.put(ACTION, job.getAction());
 		context.put(TYPE, job.getType());
+		
+		String type = job.getType() == null ? "": job.getType() + ".";
 
-		String name = "mobi.chouette.exchange." + job.getType() + "."
-				+ job.getAction() + "." + StringUtils.capitalize(job.getType())
+		String name = "mobi.chouette.exchange." + type
+				+ job.getAction() + "." + StringUtils.capitalize(type)
 				+ StringUtils.capitalize(job.getAction()) + "Command";
 
 		InitialContext ctx = (InitialContext) context.get(INITIAL_CONTEXT);

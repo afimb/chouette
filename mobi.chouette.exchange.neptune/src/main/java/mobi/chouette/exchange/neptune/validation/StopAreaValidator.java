@@ -257,7 +257,7 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 				// 2-NEPTUNE-ITL-1 : if stoparea is ITL : check if it
 				// refers only non ITL stopAreas
 				prepareCheckPoint(context,ITL_1);
-				for (StopArea child : stopArea.getContainedStopAreas()) 
+				for (StopArea child : stopArea.getRoutingConstraintAreas()) 
 				{
 					if (localContext.containsKey(child.getObjectId())) 
 					{
@@ -276,21 +276,6 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 							addValidationError(context,ITL_1, errorItem);
 						}
 					}
-					else if (stopPointContext.containsKey(child.getObjectId())) 
-					{
-						// wrong reference type
-						Detail errorItem = new Detail(
-								ITL_1,
-								new Location(sourceLocation,stopArea.getObjectId()), "StopPoint",ChouetteAreaEnum.ITL.toString());
-						Context childContext = (Context) stopPointContext.get(child.getObjectId());
-						lineNumber = ((Integer) childContext.get(LINE_NUMBER)).intValue();
-						columnNumber = ((Integer) childContext.get(COLUMN_NUMBER)).intValue();
-						FileLocation targetLocation = new FileLocation(fileName, lineNumber, columnNumber);
-						errorItem.getTargets().add(new Location(targetLocation, child.getObjectId()));
-						addValidationError(context,ITL_1, errorItem);
-
-					}
-
 				}
 
 				// 2-NEPTUNE-ITL-2 : if stoparea is ITL : check if a ITLType

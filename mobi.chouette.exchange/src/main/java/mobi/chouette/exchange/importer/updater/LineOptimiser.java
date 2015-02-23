@@ -9,6 +9,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import mobi.chouette.dao.CompanyDAO;
+import mobi.chouette.dao.ConnectionLinkDAO;
 import mobi.chouette.dao.GroupOfLineDAO;
 import mobi.chouette.dao.JourneyPatternDAO;
 import mobi.chouette.dao.LineDAO;
@@ -19,6 +20,7 @@ import mobi.chouette.dao.StopPointDAO;
 import mobi.chouette.dao.TimetableDAO;
 import mobi.chouette.dao.VehicleJourneyDAO;
 import mobi.chouette.model.Company;
+import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
@@ -64,6 +66,9 @@ public class LineOptimiser {
 	@EJB
 	private StopPointDAO stopPointDAO;
 
+	@EJB
+	private ConnectionLinkDAO connectionLinkDAO;
+
 	public void initialize(Referential cache, Referential referential) {
 
 		initializeStopArea(cache, referential.getStopAreas().values());
@@ -71,6 +76,7 @@ public class LineOptimiser {
 		initializePTNetwork(cache, referential.getPtNetworks().values());
 		initializeCompany(cache, referential.getCompanies().values());
 		initializeGroupOfLine(cache, referential.getGroupOfLines().values());
+		initializeConnectionLink(cache, referential.getConnectionLinks().values());
 
 		initializeLine(cache, referential.getLines().values());
 		initializeRoute(cache, referential.getRoutes().values());
@@ -81,6 +87,28 @@ public class LineOptimiser {
 				.values());
 	}
 
+	private void initializeConnectionLink(Referential cache,
+			Collection<ConnectionLink> list) {
+		if (list != null && !list.isEmpty()) {
+			Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
+			List<ConnectionLink> objects = connectionLinkDAO.findByObjectId(objectIds);
+			for (ConnectionLink object : objects) {
+				cache.getConnectionLinks().put(object.getObjectId(), object);
+			}
+
+			for (ConnectionLink item : list) {
+				ConnectionLink object = cache.getConnectionLinks().get(item.getObjectId());
+				if (object == null) {
+					
+						object = ObjectFactory.getConnectionLink(cache,
+								item.getObjectId());
+					
+				}
+			}
+		}
+
+	}
+
 	private void initializeStopArea(Referential cache, Collection<StopArea> list) {
 		if (list != null && !list.isEmpty()) {
 			Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
@@ -89,6 +117,7 @@ public class LineOptimiser {
 				cache.getStopAreas().put(object.getObjectId(), object);
 			}
 
+			// TODO check if stoparea really exists
 			for (StopArea item : list) {
 				StopArea object = cache.getStopAreas().get(item.getObjectId());
 				if (object == null) {

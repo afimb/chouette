@@ -633,11 +633,6 @@ public class StopArea extends NeptuneLocalizedObject {
 	 * @param line
 	 */
 	public void addRoutingConstraintLine(Line line) {
-		if (!areaType.equals(ChouetteAreaEnum.ITL)) {
-			// only routing constraints can contains lines
-			throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE,
-					areaType.toString(), STOPAREA_KEY, "routingConstraintLines");
-		}
 		if (routingConstraintLines == null)
 			routingConstraintLines = new ArrayList<Line>();
 		if (!routingConstraintLines.contains(line))
@@ -650,11 +645,6 @@ public class StopArea extends NeptuneLocalizedObject {
 	 * @param line
 	 */
 	public void removeRoutingConstraintLine(Line line) {
-		if (!areaType.equals(ChouetteAreaEnum.ITL)) {
-			// only routing constraints can contains lines
-			throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE,
-					areaType.toString(), STOPAREA_KEY, "routingConstraintLines");
-		}
 		if (routingConstraintLines == null)
 			routingConstraintLines = new ArrayList<Line>();
 		if (routingConstraintLines.contains(line))
@@ -668,12 +658,7 @@ public class StopArea extends NeptuneLocalizedObject {
 	 * 
 	 * @param area
 	 */
-	public void addRoutingConstraintLine(StopArea area) {
-		if (!areaType.equals(ChouetteAreaEnum.ITL)) {
-			// only routing constraints can contains lines
-			throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE,
-					areaType.toString(), STOPAREA_KEY, "routingConstraintAreas");
-		}
+	public void addRoutingConstraintStopArea(StopArea area) {
 		if (routingConstraintAreas == null)
 			routingConstraintAreas = new ArrayList<StopArea>();
 		if (!routingConstraintAreas.contains(area))
@@ -686,11 +671,6 @@ public class StopArea extends NeptuneLocalizedObject {
 	 * @param area
 	 */
 	public void removeRoutingConstraintArea(StopArea area) {
-		if (!areaType.equals(ChouetteAreaEnum.ITL)) {
-			// only routing constraints can contains lines
-			throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE,
-					areaType.toString(), STOPAREA_KEY, "routingConstraintAreas");
-		}
 		if (routingConstraintAreas == null)
 			routingConstraintAreas = new ArrayList<StopArea>();
 		if (routingConstraintAreas.contains(area))
