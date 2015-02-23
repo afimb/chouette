@@ -5,11 +5,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import javax.annotation.Resource;
-import javax.ejb.Stateless;
-import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
@@ -30,13 +26,9 @@ import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
 @Log4j
-@Stateless(name = NeptuneImporterCommand.COMMAND)
 public class NeptuneImporterCommand implements Command, Constant {
 
 	public static final String COMMAND = "NeptuneImporterCommand";
-
-	@Resource(lookup = "java:comp/DefaultManagedExecutorService")
-	ManagedExecutorService executor;
 
 	@Override
 	public boolean execute(Context context) throws Exception {
@@ -92,7 +84,7 @@ public class NeptuneImporterCommand implements Command, Constant {
 
 				chain.add(progression);
 
-				// validation schema (niv 1)
+				// validation schema
 				String url = file.toUri().toURL().toExternalForm();
 				NeptuneSAXParserCommand schema = (NeptuneSAXParserCommand) CommandFactory
 						.create(initialContext,
@@ -144,14 +136,7 @@ public class NeptuneImporterCommand implements Command, Constant {
 
 		@Override
 		protected Command create(InitialContext context) throws IOException {
-			Command result = null;
-			try {
-				String name = "java:app/mobi.chouette.exchange.neptune/"
-						+ COMMAND;
-				result = (Command) context.lookup(name);
-			} catch (NamingException e) {
-				log.error(e);
-			}
+			Command result = new NeptuneImporterCommand();
 			return result;
 		}
 	}

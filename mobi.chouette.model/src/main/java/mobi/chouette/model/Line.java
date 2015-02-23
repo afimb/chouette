@@ -334,11 +334,19 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	 * @return The actual value
 	 */
 	@Getter
-	@Setter
 	@ManyToOne(cascade = { CascadeType.PERSIST })
 	@JoinColumn(name = "company_id")
 	private Company company;
-
+	public void setCompany(Company company) {
+		if (this.company != null) {
+			this.company.getLines().remove(this);
+		}
+		this.company = company;
+		if (company != null) {
+			company.getLines().add(this);
+		}
+	}
+	
 	/**
 	 * list of routes
 	 * 
@@ -375,30 +383,6 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	@Setter
 	@ManyToMany(mappedBy = "routingConstraintLines")
 	private List<StopArea> routingConstraints = new ArrayList<StopArea>(0);
-
-	// /**
-	// * add a group of line
-	// *
-	// * @param groupOfLine
-	// */
-	// public void addGroupOfLine(GroupOfLine groupOfLine) {
-	// if (groupOfLines == null)
-	// groupOfLines = new ArrayList<GroupOfLine>();
-	// if (!groupOfLines.contains(groupOfLine))
-	// groupOfLines.add(groupOfLine);
-	// }
-	//
-	// /**
-	// * remove a group of line
-	// *
-	// * @param groupOfLine
-	// */
-	// public void removeGroupOfLine(GroupOfLine groupOfLine) {
-	// if (groupOfLines == null)
-	// groupOfLines = new ArrayList<GroupOfLine>();
-	// if (groupOfLines.contains(groupOfLine))
-	// groupOfLines.remove(groupOfLine);
-	// }
 
 	/* -------------------------------------- */
 

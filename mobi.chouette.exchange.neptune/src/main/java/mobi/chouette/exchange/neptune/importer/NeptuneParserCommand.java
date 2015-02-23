@@ -33,7 +33,6 @@ import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
 @Log4j
-// @Stateless(name = NeptuneParserCommand.COMMAND)
 public class NeptuneParserCommand implements Command, Constant {
 
 	public static final String COMMAND = "NeptuneParserCommand";
@@ -45,18 +44,18 @@ public class NeptuneParserCommand implements Command, Constant {
 	@Override
 	public boolean execute(Context context) throws Exception {
 		boolean result = ERROR;
+		
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
 		context.put(FILE_URL, fileURL);
 
+		// TODO report service
 		Report report = (Report) context.get(REPORT);
 		FileInfo fileItem = new FileInfo();
 		String fileName = new File(new URL(fileURL).toURI()).getName();
 		context.put(FILE_NAME, fileName);
 
 		fileItem.setName(fileName);
-
-		// prepare validation
 
 		try {
 
@@ -91,17 +90,23 @@ public class NeptuneParserCommand implements Command, Constant {
 			parser.parse(context);
 
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
+			
+			// TODO report service
 			fileItem.setStatus(FileInfo.FILE_STATE.OK);
 			report.getFiles().getFileInfos().add(fileItem);
+			
 			result = SUCCESS;
-			return result;
 		} catch (Exception e) {
+			
+			// TODO report service
 			fileItem.setStatus(FileInfo.FILE_STATE.NOK);
 			report.getFiles().getFileInfos().add(fileItem);
 			fileItem.getErrors().add(e.toString());
 			log.error("parsing failed ",e);
 			throw e;
 		}
+		
+		return result;
 	}
 
 	public static class DefaultCommandFactory extends CommandFactory {
@@ -109,13 +114,6 @@ public class NeptuneParserCommand implements Command, Constant {
 		@Override
 		protected Command create(InitialContext context) throws IOException {
 			Command result = new NeptuneParserCommand();
-			// try {
-			// String name = "java:app/mobi.chouette.exchange.neptune/"
-			// + COMMAND;
-			// result = (Command) context.lookup(name);
-			// } catch (NamingException e) {
-			// log.error(e);
-			// }
 			return result;
 		}
 	}

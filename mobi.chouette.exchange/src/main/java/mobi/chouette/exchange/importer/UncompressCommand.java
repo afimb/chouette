@@ -22,7 +22,6 @@ import mobi.chouette.exchange.report.ZipItem;
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
-// @Stateless(name = UncompressCommand.COMMAND)
 @Log4j
 public class UncompressCommand implements Command, ReportConstant {
 
@@ -74,13 +73,6 @@ public class UncompressCommand implements Command, ReportConstant {
 		@Override
 		protected Command create(InitialContext context) throws IOException {
 			Command result = new UncompressCommand();
-//			try {
-//				String name = "java:app/mobi.chouette.exchange/"
-//						+ COMMAND;
-//				result = (Command) context.lookup(name);
-//			} catch (NamingException e) {
-//				log.error(e);
-//			}
 			return result;
 		}
 	}

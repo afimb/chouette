@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Set;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.gtfs.Constant;
@@ -23,6 +25,7 @@ import mobi.chouette.exchange.gtfs.model.importer.GtfsImporter;
 import mobi.chouette.exchange.gtfs.model.importer.Index;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
+import mobi.chouette.exchange.importer.Validator;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
@@ -37,7 +40,7 @@ import mobi.chouette.model.util.Referential;
 import org.apache.commons.beanutils.BeanUtils;
 
 @Log4j
-public class GtfsTripParser implements Parser, Constant {
+public class GtfsTripParser implements Parser, Validator, Constant {
 
 	@AllArgsConstructor
 	class VehicleJourneyAtStopWrapper extends VehicleJourneyAtStop {
@@ -56,25 +59,29 @@ public class GtfsTripParser implements Parser, Constant {
 
 	};
 
+
 	private Referential referential;
 	private GtfsImporter importer;
 
 	private GtfsImportParameters configuration;
 
+	@Getter
+	@Setter
+	private GtfsRoute gtfsRoute;
+	
 	@Override
 	public void parse(Context context) throws Exception {
 
 		referential = (Referential) context.get(REFERENTIAL);
-		importer = (GtfsImporter) context.get(IMPORTER);
+		importer = (GtfsImporter) context.get(PARSER);
 		configuration = (GtfsImportParameters) context.get(CONFIGURATION);
 
-		GtfsRoute gtfsRoute = (GtfsRoute) context.get(GTFS_ROUTE);
 		Map<String, JourneyPattern> journeyPatternByStopSequence = new HashMap<String, JourneyPattern>();
 
 		// VehicleJourney
-		Index<GtfsTrip> trips = importer.getTripByRoute();
+		Index<GtfsTrip> gtfsTrips = importer.getTripByRoute();
 
-		for (GtfsTrip gtfsTrip : trips.values(gtfsRoute.getRouteId())) {
+		for (GtfsTrip gtfsTrip : gtfsTrips.values(gtfsRoute.getRouteId())) {
 
 			String objectId = AbstractConverter.composeObjectId(
 					configuration.getObjectIdPrefix(),
@@ -215,6 +222,34 @@ public class GtfsTripParser implements Parser, Constant {
 				}
 			}
 		}
+	}
+
+	@Override
+	public void validate(Context context) throws Exception {
+
+		importer = (GtfsImporter) context.get(PARSER);
+
+		// stop_times.txt
+		Index<GtfsStopTime> parser = importer.getStopTimeByTrip();
+		for (GtfsStopTime bean : parser) {
+			parser.validate(bean, importer);
+		}
+
+		// trips.txt
+		Index<GtfsTrip> tripParser = importer.getTripById();
+		for (GtfsTrip bean : tripParser) {
+			tripParser.validate(bean, importer);
+		}
+
+		// frequencies.txt
+		if (importer.hasFrequencyImporter()) {
+			Index<GtfsFrequency> frequencyParser = importer
+					.getFrequencyByTrip();
+			for (GtfsFrequency bean : frequencyParser) {
+				frequencyParser.validate(bean, importer);
+			}
+		}
+
 	}
 
 	protected void convert(Context context, GtfsStopTime gtfsStopTime,
