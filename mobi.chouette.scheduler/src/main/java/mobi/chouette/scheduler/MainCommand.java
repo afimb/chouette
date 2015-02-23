@@ -59,8 +59,6 @@ public class MainCommand implements Command, Constant {
 
 		InitialContext ctx = (InitialContext) context.get(INITIAL_CONTEXT);
 		Command command = CommandFactory.create(ctx, name);
-		// Command command = CommandFactory.create(ctx,
-		// WaitCommand.class.getName());
 		command.execute(context);
 
 		job.setStatus(STATUS.TERMINATED);

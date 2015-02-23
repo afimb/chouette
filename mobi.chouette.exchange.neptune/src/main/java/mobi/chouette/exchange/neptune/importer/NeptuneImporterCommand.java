@@ -23,6 +23,7 @@ import mobi.chouette.exchange.importer.UncompressCommand;
 import mobi.chouette.exchange.report.Report;
 import mobi.chouette.exchange.report.ReportCommand;
 import mobi.chouette.exchange.validation.report.ValidationReport;
+import mobi.chouette.model.util.Referential;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -40,6 +41,9 @@ public class NeptuneImporterCommand implements Command, Constant {
 		InitialContext initialContext = (InitialContext) context
 				.get(INITIAL_CONTEXT);
 
+		context.put(REFERENTIAL, new Referential());
+
+		
 		// TODO report service
 		Command reportCmd = CommandFactory.create(initialContext,
 				ReportCommand.class.getName());

@@ -72,7 +72,6 @@ public class NeptuneParserCommand implements Command, Constant {
 					.newPullParser();
 			xpp.setInput(in);
 			context.put(PARSER, xpp);
-			context.put(REFERENTIAL, new Referential());
 
 			NeptuneObjectFactory factory = (NeptuneObjectFactory) context
 					.get(NEPTUNE_OBJECT_FACTORY);

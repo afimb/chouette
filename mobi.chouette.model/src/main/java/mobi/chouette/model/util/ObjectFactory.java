@@ -23,6 +23,7 @@ public class ObjectFactory {
 		if (result == null) {
 			result = new AccessLink();
 			result.setObjectId(objectId);
+			result.setDetached(true);
 			referential.getSharedAccessLinks().put(objectId, result);
 		}
 		if (!referential.getAccessLinks().containsKey(objectId)) {
@@ -38,6 +39,7 @@ public class ObjectFactory {
 		if (result == null) {
 			result = new AccessPoint();
 			result.setObjectId(objectId);
+			result.setDetached(true);
 			referential.getSharedAccessPoints().put(objectId, result);
 		}
 		if (!referential.getAccessPoints().containsKey(objectId)) {
@@ -52,6 +54,7 @@ public class ObjectFactory {
 		Timetable result = referential.getSharedTimetables().get(objectId);
 		if (result == null) {
 			result = new Timetable();
+			result.setDetached(true);
 			result.setObjectId(objectId);
 			referential.getSharedTimetables().put(objectId, result);
 		}
@@ -73,6 +76,7 @@ public class ObjectFactory {
 		PTNetwork result = referential.getSharedPTNetworks().get(objectId);
 		if (result == null) {
 			result = new PTNetwork();
+			result.setDetached(true);
 			result.setObjectId(objectId);
 			referential.getSharedPTNetworks().put(objectId, result);
 		}
@@ -88,6 +92,7 @@ public class ObjectFactory {
 		if (result == null) {
 			result = new Company();
 			result.setObjectId(objectId);
+			result.setDetached(true);
 			referential.getSharedCompanies().put(objectId, result);
 		}
 		if (!referential.getCompanies().containsKey(objectId)) {
@@ -101,6 +106,7 @@ public class ObjectFactory {
 		Route result = referential.getRoutes().get(objectId);
 		if (result == null) {
 			result = new Route();
+			result.setDetached(true);
 			result.setObjectId(objectId);
 			referential.getRoutes().put(objectId, result);
 		}
@@ -111,6 +117,7 @@ public class ObjectFactory {
 		Line result = referential.getLines().get(objectId);
 		if (result == null) {
 			result = new Line();
+			result.setDetached(true);
 			result.setObjectId(objectId);
 			referential.getLines().put(objectId, result);
 		}
@@ -123,6 +130,7 @@ public class ObjectFactory {
 		if (result == null) {
 			result = new JourneyPattern();
 			result.setObjectId(objectId);
+			result.setDetached(true);
 			referential.getJourneyPatterns().put(objectId, result);
 		}
 		return result;
@@ -135,6 +143,7 @@ public class ObjectFactory {
 		if (result == null) {
 			result = new ConnectionLink();
 			result.setObjectId(objectId);
+			result.setDetached(true);
 			referential.getSharedConnectionLinks().put(objectId, result);
 		}
 		if (!referential.getConnectionLinks().containsKey(objectId)) {
@@ -149,6 +158,7 @@ public class ObjectFactory {
 		if (result == null) {
 			result = new StopArea();
 			result.setObjectId(objectId);
+			result.setDetached(true);
 			referential.getSharedStopAreas().put(objectId, result);
 		} else {
 			if (!referential.getStopAreas().containsKey(objectId)) {
@@ -164,6 +174,7 @@ public class ObjectFactory {
 		if (result == null) {
 			result = new GroupOfLine();
 			result.setObjectId(objectId);
+			result.setDetached(true);
 			referential.getSharedGroupOfLines().put(objectId, result);
 		}
 		if (!referential.getGroupOfLines().containsKey(objectId)) {
@@ -179,6 +190,7 @@ public class ObjectFactory {
 		if (result == null) {
 			result = new StopPoint();
 			result.setObjectId(objectId);
+			result.setDetached(true);
 			referential.getStopPoints().put(objectId, result);
 		}
 		return result;
@@ -190,6 +202,7 @@ public class ObjectFactory {
 		if (result == null) {
 			result = new VehicleJourney();
 			result.setObjectId(objectId);
+			result.setDetached(true);
 			referential.getVehicleJourneys().put(objectId, result);
 		}
 		return result;

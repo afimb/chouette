@@ -37,7 +37,6 @@ public class GtfsParserCommand implements Command, Constant {
 	public boolean execute(Context context) throws Exception {
 		boolean result = ERROR;
 		try {
-
 			Referential referential = (Referential) context.get(REFERENTIAL);
 			GtfsImportParameters configuration = (GtfsImportParameters) context
 					.get(CONFIGURATION);
@@ -73,24 +72,26 @@ public class GtfsParserCommand implements Command, Constant {
 					gtfsTransferParser.parse(context);
 				}
 			}
+
 			// Timetable
 			if (referential.getSharedTimetables().isEmpty()) {
 				GtfsCalendarParser gtfsCalendarParser = (GtfsCalendarParser) ParserFactory
 						.create(GtfsCalendarParser.class.getName());
 				gtfsCalendarParser.parse(context);
 			}
-			
-			//TODO lazy loading for  PTNetwork, Company, StopArea, ConnectionLink
-			
+
+			// TODO lazy loading for PTNetwork, Company, StopArea,
+			// ConnectionLink
+
 			// Line
 			GtfsRouteParser gtfsRouteParser = (GtfsRouteParser) ParserFactory
 					.create(GtfsRouteParser.class.getName());
 			gtfsRouteParser.setGtfsRoute(gtfsRoute);
 			gtfsRouteParser.parse(context);
-
+			
 			result = SUCCESS;
 		} catch (Exception e) {
-			log.error(e);
+			log.error("[DSU] error : ", e);
 			throw e;
 		}
 
@@ -99,12 +100,16 @@ public class GtfsParserCommand implements Command, Constant {
 
 	private PTNetwork createPTNetwork(Referential referential,
 			GtfsImportParameters configuration) {
+		System.out.println("GtfsParserCommand.createPTNetwork() ");
+
 		String prefix = configuration.getObjectIdPrefix();
 		String ptNetworkId = prefix + ":" + PTNetwork.PTNETWORK_KEY + ":"
 				+ prefix;
 
 		PTNetwork ptNetwork = ObjectFactory.getPTNetwork(referential,
 				ptNetworkId);
+
+		System.out.println("GtfsParserCommand.createPTNetwork() " + ptNetwork);
 		ptNetwork.setVersionDate(Calendar.getInstance().getTime());
 		ptNetwork.setName(prefix);
 		ptNetwork.setRegistrationNumber(prefix);

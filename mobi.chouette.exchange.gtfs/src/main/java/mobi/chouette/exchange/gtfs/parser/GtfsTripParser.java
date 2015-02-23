@@ -148,7 +148,8 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 						gtfsTrip.getRouteId() + "_"
 								+ gtfsTrip.getDirectionId().ordinal()
 								+ line.getRoutes().size(), log);
-				Route route = referential.getRoutes().get(routeId);
+				
+				Route route = ObjectFactory.getRoute(referential, routeId);
 				route.setLine(line);
 				String wayBack = gtfsTrip.getDirectionId().equals(
 						DirectionType.Outbound) ? "A" : "R";
@@ -393,7 +394,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			String stopAreaId = AbstractConverter.composeObjectId(
 					configuration.getObjectIdPrefix(), StopArea.STOPAREA_KEY,
 					wrapper.stopId, log);
-			StopArea stopArea = referential.getStopAreas().get(stopAreaId);
+			StopArea stopArea = ObjectFactory.getStopArea(referential, stopAreaId);
 			stopPoint.setContainedInStopArea(stopArea);
 			stopPoint.setName(stopArea.getName());
 			stopPoint.setRoute(route);
