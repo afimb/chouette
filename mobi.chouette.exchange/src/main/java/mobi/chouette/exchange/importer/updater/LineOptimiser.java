@@ -8,6 +8,8 @@ import java.util.Set;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import mobi.chouette.dao.AccessLinkDAO;
+import mobi.chouette.dao.AccessPointDAO;
 import mobi.chouette.dao.CompanyDAO;
 import mobi.chouette.dao.ConnectionLinkDAO;
 import mobi.chouette.dao.GroupOfLineDAO;
@@ -19,6 +21,8 @@ import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.dao.StopPointDAO;
 import mobi.chouette.dao.TimetableDAO;
 import mobi.chouette.dao.VehicleJourneyDAO;
+import mobi.chouette.model.AccessLink;
+import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.GroupOfLine;
@@ -35,6 +39,15 @@ import mobi.chouette.model.util.Referential;
 
 @Stateless
 public class LineOptimiser {
+
+	@EJB
+	private ConnectionLinkDAO connectionLinkDAO;
+
+	@EJB
+	private AccessLinkDAO accessLinkDAO;
+
+	@EJB
+	private AccessPointDAO accessPointDAO;
 
 	@EJB
 	private StopAreaDAO stopAreaDAO;
@@ -66,12 +79,16 @@ public class LineOptimiser {
 	@EJB
 	private StopPointDAO stopPointDAO;
 
-	@EJB
-	private ConnectionLinkDAO connectionLinkDAO;
 
 	public void initialize(Referential cache, Referential referential) {
 
 		initializeStopArea(cache, referential.getStopAreas().values());
+
+		initializeConnectionLink(cache, referential.getConnectionLinks()
+				.values());
+		initializeAccessLink(cache, referential.getAccessLinks().values());
+		initializeAccessPoint(cache, referential.getAccessPoints().values());
+
 		initializeTimetable(cache, referential.getTimetables().values());
 		initializePTNetwork(cache, referential.getPtNetworks().values());
 		initializeCompany(cache, referential.getCompanies().values());
@@ -91,22 +108,62 @@ public class LineOptimiser {
 			Collection<ConnectionLink> list) {
 		if (list != null && !list.isEmpty()) {
 			Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
-			List<ConnectionLink> objects = connectionLinkDAO.findByObjectId(objectIds);
+			List<ConnectionLink> objects = connectionLinkDAO
+					.findByObjectId(objectIds);
 			for (ConnectionLink object : objects) {
 				cache.getConnectionLinks().put(object.getObjectId(), object);
 			}
 
 			for (ConnectionLink item : list) {
-				ConnectionLink object = cache.getConnectionLinks().get(item.getObjectId());
+				ConnectionLink object = cache.getConnectionLinks().get(
+						item.getObjectId());
 				if (object == null) {
-					
-						object = ObjectFactory.getConnectionLink(cache,
-								item.getObjectId());
-					
+					object = ObjectFactory.getConnectionLink(cache,
+							item.getObjectId());
 				}
 			}
 		}
+	}
 
+	private void initializeAccessLink(Referential cache,
+			Collection<AccessLink> list) {
+		if (list != null && !list.isEmpty()) {
+			Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
+			List<AccessLink> objects = accessLinkDAO.findByObjectId(objectIds);
+			for (AccessLink object : objects) {
+				cache.getAccessLinks().put(object.getObjectId(), object);
+			}
+
+			for (AccessLink item : list) {
+				AccessLink object = cache.getAccessLinks().get(
+						item.getObjectId());
+				if (object == null) {
+					object = ObjectFactory.getAccessLink(cache,
+							item.getObjectId());
+				}
+			}
+		}
+	}
+
+	private void initializeAccessPoint(Referential cache,
+			Collection<AccessPoint> list) {
+		if (list != null && !list.isEmpty()) {
+			Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
+			List<AccessPoint> objects = accessPointDAO
+					.findByObjectId(objectIds);
+			for (AccessPoint object : objects) {
+				cache.getAccessPoints().put(object.getObjectId(), object);
+			}
+
+			for (AccessPoint item : list) {
+				AccessPoint object = cache.getAccessPoints().get(
+						item.getObjectId());
+				if (object == null) {
+					object = ObjectFactory.getAccessPoint(cache,
+							item.getObjectId());
+				}
+			}
+		}
 	}
 
 	private void initializeStopArea(Referential cache, Collection<StopArea> list) {

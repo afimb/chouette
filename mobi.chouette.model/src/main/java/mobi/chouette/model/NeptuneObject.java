@@ -16,6 +16,7 @@ import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -37,6 +38,12 @@ public abstract class NeptuneObject implements Serializable {
 
 	private static final long serialVersionUID = -1406542019260386319L;
 
+	
+	@Getter
+	@Setter
+	@Transient
+	private boolean detached = false;
+	
 	/**
 	 * database id <br/>
 	 * null if not saved

@@ -86,14 +86,17 @@ public class GtfsStopParser implements Parser, Validator, Constant {
 					.containsKey(gtfsStop.getParentStation())) {
 				// TODO report
 			}
-			stopArea.setAreaType(ChouetteAreaEnum.BoardingPosition);
-			StopArea parent = ObjectFactory.getStopArea(referential,
-					AbstractConverter.composeObjectId(
-							configuration.getObjectIdPrefix(),
-							StopArea.STOPAREA_KEY, gtfsStop.getParentStation(),
-							log));
-
-			stopArea.setParent(parent);
+			System.out.println("GtfsStopParser.convert() : " + gtfsStop);
+			if (gtfsStop.getParentStation() != null) {
+				stopArea.setAreaType(ChouetteAreaEnum.BoardingPosition);
+				String parenId = AbstractConverter
+						.composeObjectId(configuration.getObjectIdPrefix(),
+								StopArea.STOPAREA_KEY,
+								gtfsStop.getParentStation(), log);
+				StopArea parent = ObjectFactory.getStopArea(referential,
+						parenId);
+				stopArea.setParent(parent);
+			}
 		}
 
 		stopArea.setRegistrationNumber(gtfsStop.getStopCode());

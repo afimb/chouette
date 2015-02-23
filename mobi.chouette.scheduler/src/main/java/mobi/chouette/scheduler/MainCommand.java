@@ -53,16 +53,14 @@ public class MainCommand implements Command, Constant {
 		context.put(ACTION, job.getAction());
 		context.put(TYPE, job.getType());
 		
-		String type = job.getType() == null ? "": job.getType() + ".";
+		String type = job.getType() == null ? "": job.getType();
 
-		String name = "mobi.chouette.exchange." + type
+		String name = "mobi.chouette.exchange." + (type.isEmpty()? "": type+".")
 				+ job.getAction() + "." + StringUtils.capitalize(type)
 				+ StringUtils.capitalize(job.getAction()) + "Command";
 
 		InitialContext ctx = (InitialContext) context.get(INITIAL_CONTEXT);
 		Command command = CommandFactory.create(ctx, name);
-		// Command command = CommandFactory.create(ctx,
-		// WaitCommand.class.getName());
 		command.execute(context);
 
 		job.setStatus(STATUS.TERMINATED);

@@ -298,7 +298,7 @@ public class LineUpdater implements Updater<Line> {
 				routingConstraint = ObjectFactory.getStopArea(cache,
 						item.getObjectId());
 			}
-			routingConstraint.addRoutingConstraintLine(oldValue);
+			oldValue.addRoutingConstraint(routingConstraint);
 		}
 
 		Collection<Pair<StopArea, StopArea>> modifiedRoutingConstraint = CollectionUtils
@@ -313,7 +313,7 @@ public class LineUpdater implements Updater<Line> {
 				oldValue.getRoutingConstraints(), newValue.getRoutingConstraints(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (StopArea stopArea : removedRoutingConstraint) {
-			stopArea.removeRoutingConstraintLine(oldValue);
+			oldValue.removeRoutingConstraint(stopArea);
 		}
 		
 		

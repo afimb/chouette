@@ -21,6 +21,7 @@ import mobi.chouette.exchange.importer.CopyCommand;
 import mobi.chouette.exchange.importer.LineRegisterCommand;
 import mobi.chouette.exchange.importer.UncompressCommand;
 import mobi.chouette.exchange.report.Report;
+import mobi.chouette.model.util.Referential;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -43,7 +44,9 @@ public class NeptuneImporterCommand implements Command, Constant {
 				.create(initialContext, ProgressionCommand.class.getName());
 		progression.initialize(context);
 
-		// read parameters
+		context.put(REFERENTIAL, new Referential());
+
+				// read parameters
 		Object configuration = context.get(CONFIGURATION);
 		if (!(configuration instanceof NeptuneImportParameters)) {
 			// fatal wrong parameters

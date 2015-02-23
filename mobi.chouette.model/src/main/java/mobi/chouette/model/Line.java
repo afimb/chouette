@@ -381,7 +381,7 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	 */
 	@Getter
 	@Setter
-	@ManyToMany(mappedBy = "routingConstraintLines")
+	@ManyToMany(mappedBy = "routingConstraintLines",cascade = { CascadeType.PERSIST })
 	private List<StopArea> routingConstraints = new ArrayList<StopArea>(0);
 
 	/* -------------------------------------- */

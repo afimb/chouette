@@ -22,6 +22,7 @@ import mobi.chouette.exchange.importer.LineRegisterCommand;
 import mobi.chouette.exchange.importer.UncompressCommand;
 import mobi.chouette.exchange.report.Report;
 import mobi.chouette.exchange.validation.report.ValidationReport;
+import mobi.chouette.model.util.Referential;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -37,12 +38,15 @@ public class GtfsImporterCommand implements Command, Constant {
 
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
+		context.put(REFERENTIAL, new Referential());
+
+		
 		// TODO report service
 		Report report = new Report();
 		ValidationReport validationReport = new ValidationReport();
 		context.put(Constant.REPORT, report);
 		context.put(Constant.VALIDATION_REPORT, validationReport);
-		
+
 		// check param
 		InitialContext initialContext = (InitialContext) context
 				.get(INITIAL_CONTEXT);
@@ -62,10 +66,10 @@ public class GtfsImporterCommand implements Command, Constant {
 			context.put(PARSER, importer);
 		}
 
-		ProgressionCommand progression = (ProgressionCommand) CommandFactory
-				.create(initialContext, ProgressionCommand.class.getName());
-
 		try {
+
+			ProgressionCommand progression = (ProgressionCommand) CommandFactory
+					.create(initialContext, ProgressionCommand.class.getName());
 
 			// uncompress data
 			Command uncompress = CommandFactory.create(initialContext,
@@ -83,7 +87,6 @@ public class GtfsImporterCommand implements Command, Constant {
 
 			for (GtfsRoute gtfsRoute : importer.getRouteById()) {
 
-				System.out.println("GtfsImporterCommand.execute()" +  gtfsRoute);
 				Chain chain = (Chain) CommandFactory.create(initialContext,
 						ChainCommand.class.getName());
 				master.add(chain);
@@ -111,6 +114,7 @@ public class GtfsImporterCommand implements Command, Constant {
 
 			}
 
+			System.out.println("GtfsImporterCommand.execute()");
 			master.execute(context);
 
 			result = SUCCESS;

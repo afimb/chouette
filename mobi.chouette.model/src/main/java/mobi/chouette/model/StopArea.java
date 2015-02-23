@@ -625,31 +625,6 @@ public class StopArea extends NeptuneLocalizedObject {
 	// accessPoints.remove(accessPoint);
 	// }
 
-	/**
-	 * add a line if not already present
-	 * <p>
-	 * stop
-	 * 
-	 * @param line
-	 */
-	public void addRoutingConstraintLine(Line line) {
-		if (routingConstraintLines == null)
-			routingConstraintLines = new ArrayList<Line>();
-		if (!routingConstraintLines.contains(line))
-			routingConstraintLines.add(line);
-	}
-
-	/**
-	 * remove a line
-	 * 
-	 * @param line
-	 */
-	public void removeRoutingConstraintLine(Line line) {
-		if (routingConstraintLines == null)
-			routingConstraintLines = new ArrayList<Line>();
-		if (routingConstraintLines.contains(line))
-			routingConstraintLines.remove(line);
-	}
 
 	/**
 	 * add a line if not already present
@@ -659,8 +634,6 @@ public class StopArea extends NeptuneLocalizedObject {
 	 * @param area
 	 */
 	public void addRoutingConstraintStopArea(StopArea area) {
-		if (routingConstraintAreas == null)
-			routingConstraintAreas = new ArrayList<StopArea>();
 		if (!routingConstraintAreas.contains(area))
 			routingConstraintAreas.add(area);
 	}
@@ -671,8 +644,6 @@ public class StopArea extends NeptuneLocalizedObject {
 	 * @param area
 	 */
 	public void removeRoutingConstraintArea(StopArea area) {
-		if (routingConstraintAreas == null)
-			routingConstraintAreas = new ArrayList<StopArea>();
 		if (routingConstraintAreas.contains(area))
 			routingConstraintAreas.remove(area);
 	}

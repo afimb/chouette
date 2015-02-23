@@ -156,11 +156,10 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 	static {
 		ParserFactory.register(GtfsRouteParser.class.getName(),
 				new ParserFactory() {
-					private GtfsRouteParser instance = new GtfsRouteParser();
 
 					@Override
 					protected Parser create() {
-						return instance;
+						return new GtfsRouteParser();
 					}
 				});
 	}
