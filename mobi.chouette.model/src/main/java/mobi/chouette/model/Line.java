@@ -392,17 +392,12 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	 * @param routingConstraint
 	 */
 	public void addRoutingConstraint(StopArea routingConstraint) {
-		if (routingConstraints == null)
-			routingConstraints = new ArrayList<StopArea>();
-		if (!routingConstraint.getAreaType().equals(ChouetteAreaEnum.ITL)) {
-			// routingConstraint must be of ITL type
-			throw new CoreRuntimeException(CoreExceptionCode.UNVALID_TYPE,
-					routingConstraint.getAreaType().toString(), STOPAREA_KEY,
-					"routingConstraints");
-		}
 		if (routingConstraint != null
 				&& !routingConstraints.contains(routingConstraint))
+		{
 			routingConstraints.add(routingConstraint);
+			routingConstraint.getRoutingConstraintLines().add(this);
+		}
 
 	}
 
@@ -412,11 +407,12 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	 * @param routingConstraint
 	 */
 	public void removeRoutingConstraint(StopArea routingConstraint) {
-		if (routingConstraints == null)
-			routingConstraints = new ArrayList<StopArea>();
 		if (routingConstraint != null
 				&& routingConstraints.contains(routingConstraint))
+		{
 			routingConstraints.remove(routingConstraint);
+			routingConstraint.getRoutingConstraintLines().remove(this);
+		}
 
 	}
 

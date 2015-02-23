@@ -43,6 +43,7 @@ public class StopPointParser implements Parser, Constant {
 			if (xpp.getName().equals("objectId")) {
 				 objectId = ParserUtils.getText(xpp.nextText());
 				stopPoint = ObjectFactory.getStopPoint(referential, objectId);
+				stopPoint.setFilled(true);
 				validator.addLocation(context, objectId, lineNumber, columnNumber);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());

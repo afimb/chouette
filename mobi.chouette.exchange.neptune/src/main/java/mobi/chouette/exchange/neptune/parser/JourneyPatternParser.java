@@ -43,6 +43,7 @@ public class JourneyPatternParser implements Parser, Constant {
 				objectId = ParserUtils.getText(xpp.nextText());
 				journeyPattern = ObjectFactory.getJourneyPattern(referential,
 						objectId);
+				journeyPattern.setFilled(true);
 				validator.addLocation(context, objectId, lineNumber, columnNumber);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());

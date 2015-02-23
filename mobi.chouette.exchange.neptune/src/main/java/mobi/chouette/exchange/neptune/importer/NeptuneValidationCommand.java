@@ -18,6 +18,7 @@ import mobi.chouette.exchange.neptune.validation.ChouetteRouteValidator;
 import mobi.chouette.exchange.neptune.validation.CompanyValidator;
 import mobi.chouette.exchange.neptune.validation.ConnectionLinkValidator;
 import mobi.chouette.exchange.neptune.validation.GroupOfLineValidator;
+import mobi.chouette.exchange.neptune.validation.ITLValidator;
 import mobi.chouette.exchange.neptune.validation.JourneyPatternValidator;
 import mobi.chouette.exchange.neptune.validation.LineValidator;
 import mobi.chouette.exchange.neptune.validation.PTNetworkValidator;
@@ -56,16 +57,16 @@ public class NeptuneValidationCommand implements Command, Constant {
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
 		Report report = (Report) context.get(REPORT);
-		
+
 		String fileName =  (String) context.get(FILE_NAME);
-		
+
 		FileInfo fileInfo = report.getFiles().findFileFileInfo(fileName);
 
 		try {
 			Context validationContext = (Context) context
 					.get(VALIDATION_CONTEXT);
 			Referential referential = (Referential) context.get(REFERENTIAL);
-			
+
 			if (validationContext != null) {
 				{
 					PTNetworkValidator validator = (PTNetworkValidator) ValidatorFactory
@@ -151,10 +152,16 @@ public class NeptuneValidationCommand implements Command, Constant {
 									context);
 					validator.validate(context, null);
 				}
+				{
+					ITLValidator validator = (ITLValidator) ValidatorFactory
+							.create(ITLValidator.class.getName(),
+									context);
+					validator.validate(context, null);
+				}
 				// check if ok before add stats to report
 				result = checkValid(context);
 				if (result) addStats(report, validationContext, referential);
-				
+
 			}
 
 		} catch (Exception e) {
@@ -244,10 +251,10 @@ public class NeptuneValidationCommand implements Command, Constant {
 				+ stats.getTimeTableCount());
 
 	}
-	
+
 	private boolean checkValid(Context context)
 	{
-        ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 
 		for (CheckPoint checkPoint : report.getCheckPoints()) 
 		{

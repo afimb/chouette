@@ -99,6 +99,11 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject implements
 	@Transient
 	private boolean saved = false;
 
+	@Getter
+	@Setter
+	@Transient
+	private boolean isFilled = false;
+
 	@Transient
 	private String unsaved_name;
 

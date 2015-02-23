@@ -85,6 +85,7 @@ public class Service implements Constant {
 	@POST
 	@Path("/{ref}/{action}/{type}")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces({ MediaType.APPLICATION_JSON })
 	public Response upload(@PathParam("ref") String referential,
 			@PathParam("action") String action, @PathParam("type") String type,
 			MultipartFormDataInput input) {
@@ -303,6 +304,7 @@ public class Service implements Constant {
 					PARAMETERS_FILE);
 
 			Parameters payload = JSONUtils.fromJSON(path, Parameters.class);
+			if (payload != null)
 			job.setParameters(payload.getConfiguration());
 		}
 		result.setList(filtered);

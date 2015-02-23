@@ -66,6 +66,7 @@ public class VehicleJourneyParser implements Parser, Constant {
 				 objectId = ParserUtils.getText(xpp.nextText());
 				vehicleJourney = ObjectFactory.getVehicleJourney(referential,
 						objectId);
+				vehicleJourney.setFilled(true);
 				validator.addLocation(context, objectId, lineNumber, columnNumber);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());

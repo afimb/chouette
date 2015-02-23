@@ -7,6 +7,8 @@ import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.validation.report.CheckPoint;
 import mobi.chouette.exchange.validation.report.Detail;
 import mobi.chouette.exchange.validation.report.ValidationReport;
+import mobi.chouette.model.Line;
+import mobi.chouette.model.util.Referential;
 
 
 public abstract class AbstractValidator implements Constant
@@ -108,6 +110,16 @@ public abstract class AbstractValidator implements Constant
 		if (checkPoint.getDetails().isEmpty())
 			checkPoint.setState(CheckPoint.RESULT.OK);
 	}
+	
+	protected static Line getLine(Referential referential)
+	{
+		for (Line line : referential.getLines().values()) 
+		{
+			if (line.isFilled()) return line;
+		}
+		return null;
+	}
+
 
 	/**
 	 * check if a list is null or empty
