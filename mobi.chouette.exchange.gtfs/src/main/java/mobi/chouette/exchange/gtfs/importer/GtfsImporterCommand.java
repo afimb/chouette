@@ -39,7 +39,6 @@ public class GtfsImporterCommand implements Command, Constant {
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
 		context.put(REFERENTIAL, new Referential());
-
 		
 		// TODO report service
 		Report report = new Report();
@@ -86,7 +85,7 @@ public class GtfsImporterCommand implements Command, Constant {
 			master.setIgnored(true);
 
 			for (GtfsRoute gtfsRoute : importer.getRouteById()) {
-
+				
 				Chain chain = (Chain) CommandFactory.create(initialContext,
 						ChainCommand.class.getName());
 				master.add(chain);
@@ -97,7 +96,8 @@ public class GtfsImporterCommand implements Command, Constant {
 				GtfsParserCommand parser = (GtfsParserCommand) CommandFactory
 						.create(initialContext,
 								GtfsParserCommand.class.getName());
-				parser.setGtfsRoute(gtfsRoute);
+				parser.setGtfsRouteId(gtfsRoute.getRouteId());
+				
 				chain.add(parser);
 
 				if (parameters.getNoSave().equals(Boolean.FALSE)) {
@@ -114,7 +114,6 @@ public class GtfsImporterCommand implements Command, Constant {
 
 			}
 
-			System.out.println("GtfsImporterCommand.execute()");
 			master.execute(context);
 
 			result = SUCCESS;
