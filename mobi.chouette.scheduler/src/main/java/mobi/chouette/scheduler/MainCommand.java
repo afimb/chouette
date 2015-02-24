@@ -94,7 +94,7 @@ public class MainCommand implements Command, Constant {
 		// add validation download link
 		link = new Link();
 		link.setType(MediaType.APPLICATION_JSON);
-		link.setRel(Link.DOWNLOAD_REL);
+		link.setRel(Link.VALIDATION_REL);
 		link.setMethod(Link.GET_METHOD);
 		link.setHref(MessageFormat.format(
 				"/{0}/{1}/data/{2,number,#}/validation.json", ROOT_PATH,

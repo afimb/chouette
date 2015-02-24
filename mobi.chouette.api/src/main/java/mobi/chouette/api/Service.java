@@ -157,7 +157,7 @@ public class Service implements Constant {
 					// add download parameters link
 					link = new Link();
 					link.setType(MediaType.APPLICATION_JSON);
-					link.setRel(Link.DOWNLOAD_REL);
+					link.setRel(Link.PARAMETERS_REL);
 					link.setMethod(Link.GET_METHOD);
 					link.setHref(MessageFormat.format(
 							"/{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH,
@@ -185,7 +185,7 @@ public class Service implements Constant {
 						// add download upload link
 						link = new Link();
 						link.setType(MediaType.APPLICATION_JSON);
-						link.setRel(Link.DOWNLOAD_REL);
+						link.setRel(Link.DATA_REL);
 						link.setMethod(Link.GET_METHOD);
 						link.setHref(MessageFormat.format(
 								"/{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH,
