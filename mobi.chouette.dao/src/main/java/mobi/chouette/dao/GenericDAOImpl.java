@@ -17,6 +17,7 @@ import javax.persistence.criteria.Root;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.NeptuneIdentifiedObject;
+import mobi.chouette.model.NeptuneObject_;
 
 import org.hibernate.Session;
 import org.hibernate.jpa.HibernateEntityManager;
@@ -54,6 +55,19 @@ public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 		return result;
 	}
 
+	@Override
+	public List<T> findAll(final Collection<Object> ids) {
+		List<T> result = null;
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<T> criteria = builder.createQuery(type);
+		Root<T> root = criteria.from(type);
+		Predicate predicate = builder.in(root.get("id")).value(ids);
+		criteria.where(predicate);
+		TypedQuery<T> query = em.createQuery(criteria);
+		result = query.getResultList();
+		return result;
+	}
+	
 	@Override
 	public List<T> findAll() {
 		List<T> result = null;

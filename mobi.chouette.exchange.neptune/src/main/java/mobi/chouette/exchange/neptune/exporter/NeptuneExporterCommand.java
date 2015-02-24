@@ -4,38 +4,58 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
-import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
-import mobi.chouette.common.FileUtils;
-import mobi.chouette.common.chain.Chain;
-import mobi.chouette.common.chain.ChainCommand;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.dao.CompanyDAO;
+import mobi.chouette.dao.GroupOfLineDAO;
+import mobi.chouette.dao.LineDAO;
+import mobi.chouette.dao.PTNetworkDAO;
 import mobi.chouette.exchange.ProgressionCommand;
-import mobi.chouette.exchange.importer.CopyCommand;
-import mobi.chouette.exchange.importer.LineRegisterCommand;
-import mobi.chouette.exchange.importer.UncompressCommand;
+import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.report.Report;
+import mobi.chouette.model.Company;
+import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.Line;
+import mobi.chouette.model.PTNetwork;
 import mobi.chouette.model.util.Referential;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
 @Log4j
+@Stateless(name = NeptuneExporterCommand.COMMAND)
 public class NeptuneExporterCommand implements Command, Constant {
 
 	public static final String COMMAND = "NeptuneExporterCommand";
 
+	@EJB
+	private LineDAO lineDAO;
+
+	@EJB
+	private PTNetworkDAO ptNetworkDAO;
+
+	@EJB
+	private CompanyDAO companyDAO;
+
+	@EJB
+	private GroupOfLineDAO groupOfLineDAO;
+
 	@Override
 	public boolean execute(Context context) throws Exception {
-		boolean result = SUCCESS;
+		boolean result = ERROR;
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
 		InitialContext initialContext = (InitialContext) context
@@ -48,7 +68,7 @@ public class NeptuneExporterCommand implements Command, Constant {
 
 		context.put(REFERENTIAL, new Referential());
 
-				// read parameters
+		// read parameters
 		Object configuration = context.get(CONFIGURATION);
 		if (!(configuration instanceof NeptuneExportParameters)) {
 			// fatal wrong parameters
@@ -58,64 +78,70 @@ public class NeptuneExporterCommand implements Command, Constant {
 			report.setFailure("invalid parameters for neptune export "
 					+ configuration.getClass().getName());
 			progression.dispose(context);
-			return false;
+			return ERROR;
 		}
 
 		NeptuneExportParameters parameters = (NeptuneExportParameters) configuration;
 
 		String type = parameters.getReferencesType().toLowerCase();
-		List<Integer> ids = parameters.getIds();
-        if (ids != null || ids.isEmpty())
-        {
-        	// load all lines
-        }
-        else
-        {
-        	// filter lines on query
-        	// types vaut "line", "network", "company" ou "groupofline"
-        	// ids est la liste d'id base (pk)
-        }
-		int lineCount = 1; // positionner ici le nombre de lignes à traiter
-		List<Line> lines = null; // la liste des lignes à traiter
-		
+		List<Object> ids = null;
+		if (parameters.getIds() != null) {
+			ids = new ArrayList<Object>(parameters.getIds());
+		}
+
+		Set<Line> lines = new HashSet<Line>();
+		if (ids == null || ids.isEmpty()) {
+			lines.addAll(lineDAO.findAll());
+		} else {
+			if (type.equals("line")) {
+				lines.addAll(lineDAO.findAll(ids));
+			} else if (type.equals("network")) {
+				List<PTNetwork> list = ptNetworkDAO.findAll(ids);
+				for (PTNetwork ptNetwork : list) {
+					lines.addAll(ptNetwork.getLines());
+				}
+			} else if (type.equals("company")) {
+				List<Company> list = companyDAO.findAll(ids);
+				for (Company company : list) {
+					lines.addAll(company.getLines());
+				}
+			} else if (type.equals("groupofline")) {
+				List<GroupOfLine> list = groupOfLineDAO.findAll(ids);
+				for (GroupOfLine groupOfLine : list) {
+					lines.addAll(groupOfLine.getLines());
+				}
+			}
+		}
+
 		try {
 
 			Path path = Paths.get(context.get(PATH).toString(), OUTPUT);
 			if (!Files.exists(path)) {
 				Files.createDirectories(path);
 			}
-			
-			progression.start(context, lineCount);
 
-			ChainCommand master = (ChainCommand) CommandFactory.create(
-					initialContext, ChainCommand.class.getName());
-			master.setIgnored(true);
+			progression.start(context, lines.size());
+			Command export = CommandFactory.create(initialContext,
+					NeptuneProducerCommand.class.getName());
 
-			for (Line line : lines) 
-			{
-
-				Chain chain = (Chain) CommandFactory.create(initialContext,
-						ChainCommand.class.getName());
-				master.add(chain);
-
-				chain.add(progression);
-
-				// ajouter ici la commande NeptuneProducerCommand
-				
-
+			for (Line line : lines) {
+				context.put(LINE_ID, line.getId());
+				progression.execute(context);
+				if (export.execute(context) == ERROR) {
+					continue;
+				}
 			}
-			master.execute(context);
 
+			result = SUCCESS;
 		} catch (Exception e) {
 			Report report = (Report) context.get(REPORT);
-			log.error(e);
-			report.setFailure("Fatal :"+e);
-
+			report.setFailure("Fatal :" + e);
+			log.error(e.getMessage(), e);
 		} finally {
 			progression.dispose(context);
+			log.info(Color.YELLOW + monitor.stop() + Color.NORMAL);
 		}
 
-		log.info(Color.YELLOW + monitor.stop() + Color.NORMAL);
 		return result;
 	}
 
@@ -123,7 +149,14 @@ public class NeptuneExporterCommand implements Command, Constant {
 
 		@Override
 		protected Command create(InitialContext context) throws IOException {
-			Command result = new NeptuneExporterCommand();
+			Command result = null;
+			try {
+				String name = "java:app/mobi.chouette.exchange.neptune/"
+						+ COMMAND;
+				result = (Command) context.lookup(name);
+			} catch (NamingException e) {
+				log.error(e);
+			}
 			return result;
 		}
 	}
