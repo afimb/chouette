@@ -44,13 +44,13 @@ public class GtfsParserCommand implements Command, Constant {
 		boolean result = ERROR;
 		
 		Monitor monitor = MonitorFactory.start(COMMAND);
-		
+
 		try {
 			Referential referential = (Referential) context.get(REFERENTIAL);
 			if (referential != null) {
 				referential.clear();
 			}
-			
+
 			GtfsImportParameters configuration = (GtfsImportParameters) context
 					.get(CONFIGURATION);
 
@@ -104,6 +104,8 @@ public class GtfsParserCommand implements Command, Constant {
 			
 			// System.out.println("[DSU] break Line");
 			// Line
+			log.info("[DSU] parse route : " + gtfsRouteId);
+
 			GtfsRouteParser gtfsRouteParser = (GtfsRouteParser) ParserFactory
 					.create(GtfsRouteParser.class.getName());
 			gtfsRouteParser.setGtfsRouteId(gtfsRouteId);

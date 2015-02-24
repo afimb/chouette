@@ -6,6 +6,8 @@ import java.nio.file.Paths;
 
 import javax.naming.InitialContext;
 
+import org.omg.CosNaming.IstringHelper;
+
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
@@ -90,7 +92,7 @@ public class GtfsImporterCommand implements Command, Constant {
 						ChainCommand.class.getName());
 				master.add(chain);
 
-				chain.add(progression);
+				//chain.add(progression);
 
 				// parser
 				GtfsParserCommand parser = (GtfsParserCommand) CommandFactory
