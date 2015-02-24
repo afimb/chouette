@@ -44,13 +44,13 @@ public class GtfsParserCommand implements Command, Constant {
 		boolean result = ERROR;
 		
 		Monitor monitor = MonitorFactory.start(COMMAND);
-		
+
 		try {
 			Referential referential = (Referential) context.get(REFERENTIAL);
 			if (referential != null) {
 				referential.clear();
 			}
-			
+
 			GtfsImportParameters configuration = (GtfsImportParameters) context
 					.get(CONFIGURATION);
 
@@ -58,13 +58,11 @@ public class GtfsParserCommand implements Command, Constant {
 			ValidationParameters validation = (ValidationParameters) context
 					.get(VALIDATION);
 
-			// System.out.println("[DSU] break PTNetwork");
 			// PTNetwork
 			if (referential.getSharedPTNetworks().isEmpty()) {
 				createPTNetwork(referential, configuration);
 			}
 			
-			// System.out.println("[DSU] break Company");
 			// Company
 			if (referential.getSharedCompanies().isEmpty()) {
 				GtfsAgencyParser gtfsAgencyParser = (GtfsAgencyParser) ParserFactory
@@ -72,7 +70,6 @@ public class GtfsParserCommand implements Command, Constant {
 				gtfsAgencyParser.parse(context);
 			}
 
-			// System.out.println("[DSU] break StopArea");
 			// StopArea
 			if (referential.getSharedStopAreas().isEmpty()) {
 				GtfsStopParser gtfsStopParser = (GtfsStopParser) ParserFactory
@@ -80,7 +77,6 @@ public class GtfsParserCommand implements Command, Constant {
 				gtfsStopParser.parse(context);
 			}
 
-			// System.out.println("[DSU] break ConnectionLink");
 			// ConnectionLink
 			if (importer.hasTransferImporter()) {
 				if (referential.getSharedConnectionLinks().isEmpty()) {
@@ -90,7 +86,6 @@ public class GtfsParserCommand implements Command, Constant {
 				}
 			}
 
-			// System.out.println("[DSU] break Timetable");
 			// Timetable
 			if (referential.getSharedTimetables().isEmpty()) {
 				GtfsCalendarParser gtfsCalendarParser = (GtfsCalendarParser) ParserFactory
@@ -102,8 +97,8 @@ public class GtfsParserCommand implements Command, Constant {
 			// ConnectionLink
 
 			
-			// System.out.println("[DSU] break Line");
 			// Line
+			log.info("[DSU] parse route : " + gtfsRouteId);
 			GtfsRouteParser gtfsRouteParser = (GtfsRouteParser) ParserFactory
 					.create(GtfsRouteParser.class.getName());
 			gtfsRouteParser.setGtfsRouteId(gtfsRouteId);
