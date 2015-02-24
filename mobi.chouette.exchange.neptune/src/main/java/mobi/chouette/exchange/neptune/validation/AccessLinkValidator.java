@@ -3,13 +3,13 @@ package mobi.chouette.exchange.neptune.validation;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
-import mobi.chouette.exchange.validation.ValidationConstraints;
-import mobi.chouette.exchange.validation.ValidationException;
-import mobi.chouette.exchange.validation.Validator;
-import mobi.chouette.exchange.validation.ValidatorFactory;
-import mobi.chouette.exchange.validation.report.Detail;
-import mobi.chouette.exchange.validation.report.FileLocation;
-import mobi.chouette.exchange.validation.report.Location;
+import mobi.chouette.exchange.validator.ValidationConstraints;
+import mobi.chouette.exchange.validator.ValidationException;
+import mobi.chouette.exchange.validator.Validator;
+import mobi.chouette.exchange.validator.ValidatorFactory;
+import mobi.chouette.exchange.validator.report.Detail;
+import mobi.chouette.exchange.validator.report.FileLocation;
+import mobi.chouette.exchange.validator.report.Location;
 import mobi.chouette.model.AccessLink;
 
 public class AccessLinkValidator extends AbstractValidator implements Validator<AccessLink> , Constant{

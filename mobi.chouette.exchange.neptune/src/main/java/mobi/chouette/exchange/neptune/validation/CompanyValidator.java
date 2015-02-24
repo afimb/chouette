@@ -3,10 +3,10 @@ package mobi.chouette.exchange.neptune.validation;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
-import mobi.chouette.exchange.validation.ValidationConstraints;
-import mobi.chouette.exchange.validation.ValidationException;
-import mobi.chouette.exchange.validation.Validator;
-import mobi.chouette.exchange.validation.ValidatorFactory;
+import mobi.chouette.exchange.validator.ValidationConstraints;
+import mobi.chouette.exchange.validator.ValidationException;
+import mobi.chouette.exchange.validator.Validator;
+import mobi.chouette.exchange.validator.ValidatorFactory;
 import mobi.chouette.model.Company;
 
 public class CompanyValidator extends AbstractValidator implements Validator<Company> , Constant{

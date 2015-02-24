@@ -98,7 +98,7 @@ public class Service implements Constant {
 		if (action == null || action.isEmpty()) {
 			throw new WebApplicationException(Status.BAD_REQUEST);
 		}
-		if (!action.equals("validation") && (type == null || type.isEmpty())) {
+		if (!action.equals("validator") && (type == null || type.isEmpty())) {
 			throw new WebApplicationException(Status.BAD_REQUEST);
 		}
 

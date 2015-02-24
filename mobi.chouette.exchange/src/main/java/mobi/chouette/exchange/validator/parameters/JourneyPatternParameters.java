@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.validation.parameters;
+package mobi.chouette.exchange.validator.parameters;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -8,7 +8,7 @@ import lombok.Data;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @Data
-public class ConnectionLinkParameters {
+public class JourneyPatternParameters {
 
 	@XmlElement(name = "objectid")
 	private FieldParameters objectid;
@@ -16,10 +16,10 @@ public class ConnectionLinkParameters {
 	@XmlElement(name = "name")
 	private FieldParameters name;
 
-	@XmlElement(name = "link_distance")
-	private FieldParameters linkDistance;
+	@XmlElement(name = "registration_number")
+	private FieldParameters registrationNumber;
 
-	@XmlElement(name = "default_duration")
-	private FieldParameters defaultDuration;
+	@XmlElement(name = "published_name")
+	private FieldParameters publishedName;
 
 }

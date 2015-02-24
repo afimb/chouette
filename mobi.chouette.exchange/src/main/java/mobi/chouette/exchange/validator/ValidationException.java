@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.validation;
+package mobi.chouette.exchange.validator;
 
 public class ValidationException extends Exception {
 

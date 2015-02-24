@@ -32,11 +32,11 @@ import mobi.chouette.exchange.report.LineInfo;
 import mobi.chouette.exchange.report.LineStats;
 import mobi.chouette.exchange.report.Report;
 import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
-import mobi.chouette.exchange.validation.ValidatorFactory;
-import mobi.chouette.exchange.validation.report.CheckPoint;
-import mobi.chouette.exchange.validation.report.CheckPoint.RESULT;
-import mobi.chouette.exchange.validation.report.CheckPoint.SEVERITY;
-import mobi.chouette.exchange.validation.report.ValidationReport;
+import mobi.chouette.exchange.validator.ValidatorFactory;
+import mobi.chouette.exchange.validator.report.CheckPoint;
+import mobi.chouette.exchange.validator.report.ValidationReport;
+import mobi.chouette.exchange.validator.report.CheckPoint.RESULT;
+import mobi.chouette.exchange.validator.report.CheckPoint.SEVERITY;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.util.Referential;
 

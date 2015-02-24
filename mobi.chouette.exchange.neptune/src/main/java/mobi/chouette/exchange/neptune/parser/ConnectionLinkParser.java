@@ -14,7 +14,7 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.neptune.validation.ConnectionLinkValidator;
-import mobi.chouette.exchange.validation.ValidatorFactory;
+import mobi.chouette.exchange.validator.ValidatorFactory;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ConnectionLinkTypeEnum;

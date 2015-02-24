@@ -16,9 +16,9 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.report.Report;
 import mobi.chouette.exchange.report.Progression.STEP;
-import mobi.chouette.exchange.validation.report.CheckPoint;
-import mobi.chouette.exchange.validation.report.Detail;
-import mobi.chouette.exchange.validation.report.ValidationReport;
+import mobi.chouette.exchange.validator.report.CheckPoint;
+import mobi.chouette.exchange.validator.report.Detail;
+import mobi.chouette.exchange.validator.report.ValidationReport;
 
 @Log4j
 public class ProgressionCommand implements Command, Constant {

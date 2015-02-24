@@ -13,7 +13,7 @@ import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.neptune.model.NeptuneObjectFactory;
 import mobi.chouette.exchange.neptune.model.PTLink;
 import mobi.chouette.exchange.neptune.validation.ChouetteRouteValidator;
-import mobi.chouette.exchange.validation.ValidatorFactory;
+import mobi.chouette.exchange.validator.ValidatorFactory;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.type.PTDirectionEnum;

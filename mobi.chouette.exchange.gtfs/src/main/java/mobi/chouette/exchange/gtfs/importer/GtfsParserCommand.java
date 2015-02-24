@@ -22,7 +22,7 @@ import mobi.chouette.exchange.gtfs.parser.GtfsRouteParser;
 import mobi.chouette.exchange.gtfs.parser.GtfsStopParser;
 import mobi.chouette.exchange.gtfs.parser.GtfsTransferParser;
 import mobi.chouette.exchange.importer.ParserFactory;
-import mobi.chouette.exchange.validation.parameters.ValidationParameters;
+import mobi.chouette.exchange.validator.parameters.ValidationParameters;
 import mobi.chouette.model.PTNetwork;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
