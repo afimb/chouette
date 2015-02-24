@@ -2,6 +2,8 @@ package mobi.chouette.model.api;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 
 import lombok.Getter;
@@ -11,6 +13,7 @@ import lombok.ToString;
 
 @Embeddable
 @NoArgsConstructor
+@XmlAccessorType(XmlAccessType.FIELD)
 @ToString
 public class Link implements java.io.Serializable {
 

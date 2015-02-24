@@ -18,6 +18,9 @@
 		<version.war.plugin>2.5</version.war.plugin>
 		<version.ejb.plugin>2.4</version.ejb.plugin>
 		<version.ear.plugin>2.9.1</version.ear.plugin>
+		<shrinkwrap.bom-version>2.1.1</shrinkwrap.bom-version>
+		<postgreslq.version>9.3-1101.jdbc41</postgreslq.version>
+		<arquillian-version>1.1.4.Final</arquillian-version>
 	</properties>
 	<repositories>
 		<repository>
@@ -67,8 +70,7 @@
 					<forkMode>always</forkMode>
 					<systemPropertyVariables>
 						<java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-						<!-- the maven dependency plugin will have already downloaded the server 
-							on /target -->
+						<!-- the maven dependency plugin will have already downloaded the server on /target -->
 						<jboss.home>${project.basedir}/target/${version.wildfly}</jboss.home>
 						<module.path>${project.basedir}/target/wildfly-${version.wildfly}/modules</module.path>
 					</systemPropertyVariables>
@@ -92,11 +94,39 @@
 					<ejbVersion>3.2</ejbVersion>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.projectlombok</groupId>
+				<artifactId>lombok-maven-plugin</artifactId>
+				<version>1.12.4.0</version>
+				<dependencies>
+					<dependency>
+						<groupId>sun.jdk</groupId>
+						<artifactId>tools</artifactId>
+						<version>1.6</version>
+						<scope>system</scope>
+						<systemPath>${java.home}/../lib/tools.jar</systemPath>
+					</dependency>
+				</dependencies>
+				<executions>
+					<execution>
+						<id>delombok</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>delombok</goal>
+						</goals>
+						<configuration>
+							<addOutputDirectory>false</addOutputDirectory>
+							<sourceDirectory>src/main/java</sourceDirectory>
+							<verbose>true</verbose>
+							<skip>${skipDelombok}</skip>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings 
-					only. It has no influence on the Maven build itself. -->
+				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
@@ -155,6 +185,19 @@
 										</versionRange>
 										<goals>
 											<goal>unpack</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.projectlombok</groupId>
+										<artifactId>lombok-maven-plugin</artifactId>
+										<versionRange>[1.12.4.0,)</versionRange>
+										<goals>
+											<goal>delombok</goal>
 										</goals>
 									</pluginExecutionFilter>
 									<action>
@@ -246,6 +289,33 @@
 				<version>2.76</version>
 			</dependency>
 
+			<!-- postgres intergration in arquillian -->
+			<!-- shrinkwrap BOM -->
+			<dependency>
+				<groupId>org.jboss.shrinkwrap.resolver</groupId>
+				<artifactId>shrinkwrap-resolver-bom</artifactId>
+				<version>${shrinkwrap.bom-version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<!-- shrinkwrap dependency chain -->
+			<dependency>
+				<groupId>org.jboss.shrinkwrap.resolver</groupId>
+				<artifactId>shrinkwrap-resolver-depchain</artifactId>
+				<version>${shrinkwrap.bom-version}</version>
+				<type>pom</type>
+			</dependency>
+
+			<!-- arquillian itself -->
+			<dependency>
+				<groupId>org.jboss.arquillian</groupId>
+				<artifactId>arquillian-bom</artifactId>
+				<version>${arquillian-version}</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
+
+
 			<!-- JAXB -->
 			<!-- <dependency> -->
 			<!-- <groupId>javax.xml.bind</groupId> -->
@@ -327,17 +397,28 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-   <profiles>
-      <profile>
-         <id>default</id>
-         <activation>
-            <activeByDefault>true</activeByDefault>
-         </activation>
-         <properties>
-            <skipWildfly>false</skipWildfly>
-         </properties>
-      </profile>
-   </profiles>
+	<profiles>
+		<profile>
+			<id>default</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<skipWildfly>false</skipWildfly>
+			</properties>
+		</profile>
+		<profile>
+			<id>lombok-needs-tools-jar</id>
+			<activation>
+				<file>
+					<missing>${java.home}/../lib/tools.jar</missing>
+				</file>
+			</activation>
+			<properties>
+				<skipDelombok>true</skipDelombok>
+			</properties>
+		</profile>
+	</profiles>
 	<modules>
 		<module>mobi.chouette.common</module>
 		<module>mobi.chouette.persistence.hibernate</module>

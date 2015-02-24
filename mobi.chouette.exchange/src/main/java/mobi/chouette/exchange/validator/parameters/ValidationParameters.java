@@ -46,20 +46,20 @@ public class ValidationParameters {
 	@XmlElement(name = "facility_stop_area_distance_max")
 	private Integer facilityStopAreaDistanceMax;
 
-	@XmlElement(name = "check_allowed_transport_modes")
-	private Integer checkAllowedTransportModes;
+	@XmlElement(name = "check_allowed_transport_modes", defaultValue="0")
+	private int checkAllowedTransportModes = 0;
 
-	@XmlElement(name = "check_lines_in_groups")
-	private Integer checkLinesInGroups;
+	@XmlElement(name = "check_lines_in_groups", defaultValue="0")
+	private int checkLinesInGroups = 0;
 
-	@XmlElement(name = "check_line_routes")
-	private Integer checkLineRoutes;
+	@XmlElement(name = "check_line_routes", defaultValue="0")
+	private int checkLineRoutes = 0;
 
-	@XmlElement(name = "check_stop_parent")
-	private Integer checkStopParent;
+	@XmlElement(name = "check_stop_parent", defaultValue="0")
+	private int checkStopParent = 0;
 
-	@XmlElement(name = "check_connection_link_on_physical")
-	private Integer checkConnectionLinkOnPhysical;
+	@XmlElement(name = "check_connection_link_on_physical", defaultValue="0")
+	private int checkConnectionLinkOnPhysical = 0;
 
 	@XmlElement(name = "mode_coach")
 	private TransportModeParameters modeCoach;
@@ -112,77 +112,80 @@ public class ValidationParameters {
 	@XmlElement(name = "mode_tramway")
 	private TransportModeParameters modeTramway;
 
+	@XmlElement(name = "mode_val")
+	private TransportModeParameters modeVal;
+
 	@XmlElement(name = "mode_other")
 	private TransportModeParameters modeOther;
 
-	@XmlElement(name = "check_network")
-	private Integer checkNetwork;
+	@XmlElement(name = "check_network", defaultValue="0")
+	private int checkNetwork = 0;
 
 	@XmlElement(name = "network")
 	private NetworkParameters network;
 
-	@XmlElement(name = "check_company")
-	private Integer checkCompany;
+	@XmlElement(name = "check_company", defaultValue="0")
+	private int checkCompany = 0;
 
 	@XmlElement(name = "company")
 	private CompanyParameters company;
 
-	@XmlElement(name = "check_group_of_line")
-	private Integer checkGroupOfLine;
+	@XmlElement(name = "check_group_of_line", defaultValue="0")
+	private int checkGroupOfLine = 0;
 
 	@XmlElement(name = "group_of_line")
 	private GroupOfLineParameters groupOfLine;
 
-	@XmlElement(name = "check_stop_area")
-	private Integer checkStopArea;
+	@XmlElement(name = "check_stop_area", defaultValue="0")
+	private int checkStopArea = 0;
 
 	@XmlElement(name = "stop_area")
 	private StopAreaParameters stopArea;
 
-	@XmlElement(name = "check_access_point")
-	private Integer checkAccessPoint;
+	@XmlElement(name = "check_access_point", defaultValue="0")
+	private int checkAccessPoint = 0;
 
 	@XmlElement(name = "access_point")
 	private AccessPointParameters accessPoint;
 
-	@XmlElement(name = "check_access_link")
-	private Integer checkAccessLink;
+	@XmlElement(name = "check_access_link", defaultValue="0")
+	private int checkAccessLink = 0;
 
 	@XmlElement(name = "access_link")
 	private AccessLinkParameters accessLink;
 
-	@XmlElement(name = "check_connection_link")
-	private Integer checkConnectionLink;
+	@XmlElement(name = "check_connection_link", defaultValue="0")
+	private int checkConnectionLink = 0;
 
 	@XmlElement(name = "connection_link")
 	private ConnectionLinkParameters connectionLink;
 
-	@XmlElement(name = "check_time_table")
-	private Integer checkTimetable;
+	@XmlElement(name = "check_time_table", defaultValue="0")
+	private int checkTimetable = 0;
 
 	@XmlElement(name = "time_table")
 	private TimetableParameters timetable;
 
-	@XmlElement(name = "check_line")
-	private Integer checkLine;
+	@XmlElement(name = "check_line", defaultValue="0")
+	private int checkLine = 0;
 
 	@XmlElement(name = "line")
 	private LineParameters line;
 
-	@XmlElement(name = "check_route")
-	private Integer checkRoute;
+	@XmlElement(name = "check_route", defaultValue="0")
+	private int checkRoute = 0;
 
 	@XmlElement(name = "route")
 	private RouteParameters route;
 
-	@XmlElement(name = "check_journey_pattern")
-	private Integer checkJourneyPattern;
+	@XmlElement(name = "check_journey_pattern", defaultValue="0")
+	private int checkJourneyPattern = 0;
 
 	@XmlElement(name = "journey_pattern")
 	private JourneyPatternParameters journeyPattern;
 
-	@XmlElement(name = "check_vehicle_journey")
-	private Integer checkVehicleJourney;
+	@XmlElement(name = "check_vehicle_journey", defaultValue="0")
+	private int checkVehicleJourney = 0;
 
 	@XmlElement(name = "vehicle_journey")
 	private VehicleJourneyParameters vehicleJourney;
