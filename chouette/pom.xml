@@ -27,7 +27,7 @@
 				<version>${version.wildfly.maven.plugin}</version>
 				<configuration>
 					<filename>${project.artifactId}.ear</filename>
-					<skip>false</skip>
+					<skip>${skipWildfly}</skip>
 				</configuration>
 				<executions>
 					<execution>
