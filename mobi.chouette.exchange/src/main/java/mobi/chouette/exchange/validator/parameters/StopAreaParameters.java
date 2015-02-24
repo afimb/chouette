@@ -1,18 +1,25 @@
 package mobi.chouette.exchange.validator.parameters;
 
+import java.util.Arrays;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 import lombok.Data;
+import mobi.chouette.model.StopArea;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @Data
 public class StopAreaParameters {
 
 	@XmlTransient
-	public enum fields { Objectid, Name, RegistrationNumber, CityName, CountryCode, ZipCode} ;
+	public static String[] fields = { "Objectid", "Name", "RegistrationNumber","CityName","CountryCode", "ZipCode"} ;
+	
+	static {
+		ValidationParametersUtil.addFieldList(StopArea.class.getSimpleName(), Arrays.asList(fields));
+	}
 
 	@XmlElement(name = "objectid")
 	private FieldParameters objectid;

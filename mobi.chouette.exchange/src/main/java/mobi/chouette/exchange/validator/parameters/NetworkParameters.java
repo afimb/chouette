@@ -1,11 +1,14 @@
 package mobi.chouette.exchange.validator.parameters;
 
+import java.util.Arrays;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 import lombok.Data;
+import mobi.chouette.model.PTNetwork;
 
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -13,7 +16,11 @@ import lombok.Data;
 public class NetworkParameters {
 
 	@XmlTransient
-	public enum fields { Objectid, Name, RegistrationNumber} ;
+	public static String[] fields = { "Objectid", "Name", "RegistrationNumber"} ;
+	
+	static {
+		ValidationParametersUtil.addFieldList(PTNetwork.class.getSimpleName(), Arrays.asList(fields));
+	}
 
 	@XmlElement(name = "objectid")
 	private FieldParameters objectid;

@@ -1,18 +1,25 @@
 package mobi.chouette.exchange.validator.parameters;
 
+import java.util.Arrays;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 import lombok.Data;
+import mobi.chouette.model.JourneyPattern;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @Data
 public class JourneyPatternParameters {
 
 	@XmlTransient
-	public enum fields { Objectid, Name, PublishedName, RegistrationNumber} ;
+	public static String[] fields = { "Objectid", "Name", "RegistrationNumber","PublishedName"} ;
+	
+	static {
+		ValidationParametersUtil.addFieldList(JourneyPattern.class.getSimpleName(), Arrays.asList(fields));
+	}
 
 	@XmlElement(name = "objectid")
 	private FieldParameters objectid;

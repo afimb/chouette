@@ -10,11 +10,11 @@ import lombok.Data;
 @Data
 public class FieldParameters {
 
-	@XmlElement(name = "unique")
-	private Integer unique;
+	@XmlElement(name = "unique", defaultValue="0")
+	private int unique = 0;
 
-	@XmlElement(name = "pattern")
-	private Integer pattern;
+	@XmlElement(name = "pattern", defaultValue="0")
+	private int pattern = 0;
 
 	@XmlElement(name = "min_size")
 	private Integer minSize;

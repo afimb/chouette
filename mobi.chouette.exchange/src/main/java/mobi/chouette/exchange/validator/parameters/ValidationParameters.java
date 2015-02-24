@@ -19,8 +19,8 @@ public class ValidationParameters {
 	@XmlElement(name = "parent_stop_area_distance_max")
 	private Integer parentStopAreaDistanceMax;
 
-	@XmlElement(name = "inter_access_point_distance_min")
-	private Integer interAccessPointDistanceMin;
+	@XmlElement(name = "inter_access_point_distance_min", defaultValue = "20")
+	private int  interAccessPointDistanceMin = 20;
 
 	@XmlElement(name = "inter_connection_link_distance_max")
 	private Integer interConnectionLinkDistanceMax;
