@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.validation.report;
+package mobi.chouette.exchange.validator.report;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

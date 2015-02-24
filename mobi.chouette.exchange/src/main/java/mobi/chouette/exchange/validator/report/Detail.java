@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.validation.report;
+package mobi.chouette.exchange.validator.report;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.validation.parameters;
+package mobi.chouette.exchange.validator.parameters;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -8,7 +8,7 @@ import lombok.Data;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @Data
-public class AccessPointParameters {
+public class RouteParameters {
 
 	@XmlElement(name = "objectid")
 	private FieldParameters objectid;
@@ -16,13 +16,10 @@ public class AccessPointParameters {
 	@XmlElement(name = "name")
 	private FieldParameters name;
 
-	@XmlElement(name = "city_name")
-	private FieldParameters cityName;
+	@XmlElement(name = "number")
+	private FieldParameters number;
 
-	@XmlElement(name = "country_code")
-	private FieldParameters countryCode;
-
-	@XmlElement(name = "zip_code")
-	private FieldParameters zipCode;
+	@XmlElement(name = "published_name")
+	private FieldParameters publishedName;
 
 }

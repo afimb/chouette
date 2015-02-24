@@ -15,7 +15,7 @@ import mobi.chouette.exchange.neptune.importer.NeptuneParserCommand;
 import mobi.chouette.exchange.neptune.importer.NeptuneSAXParserCommand;
 import mobi.chouette.exchange.report.FileInfo;
 import mobi.chouette.exchange.report.Report;
-import mobi.chouette.exchange.validation.report.ValidationReport;
+import mobi.chouette.exchange.validator.report.ValidationReport;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.util.Referential;
 

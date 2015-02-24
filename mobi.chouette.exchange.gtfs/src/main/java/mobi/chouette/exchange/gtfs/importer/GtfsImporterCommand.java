@@ -21,7 +21,7 @@ import mobi.chouette.exchange.importer.CopyCommand;
 import mobi.chouette.exchange.importer.LineRegisterCommand;
 import mobi.chouette.exchange.importer.UncompressCommand;
 import mobi.chouette.exchange.report.Report;
-import mobi.chouette.exchange.validation.report.ValidationReport;
+import mobi.chouette.exchange.validator.report.ValidationReport;
 import mobi.chouette.model.util.Referential;
 
 import com.jamonapi.Monitor;
