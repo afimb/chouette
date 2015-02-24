@@ -19,14 +19,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.hibernate.procedure.ParameterStrategyException;
-
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -37,14 +38,14 @@ import lombok.extern.log4j.Log4j;
 @Log4j
 @ToString()
 @XmlRootElement(name = "job")
+@XmlAccessorType(XmlAccessType.FIELD)
 @Entity
 @Table(name = "jobs")
+@Data
 public class Job implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	@Getter
-	@Setter
 	@Id
 	@SequenceGenerator(name = "jobs_seq", sequenceName = "jobs_seq")
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "jobs_seq")
@@ -54,65 +55,45 @@ public class Job implements Serializable {
 
 	@XmlAttribute(name = "referential")
 	@Column(name = "referential")
-	@Getter
-	@Setter
 	private String referential;
 
 	@XmlAttribute(name = "action")
 	@Column(name = "action")
-	@Getter
-	@Setter
 	private String action;
 
 	@XmlAttribute(name = "type")
 	@Column(name = "type")
-	@Getter
-	@Setter
 	private String type;
 
 	@XmlElement(name = "parameters")
 	@Transient
-	@Getter
-	@Setter
 	private Object parameters;
 	
 	
 	@XmlAttribute(name = "path")
 	@Column(name = "path")
-	@Getter
-	@Setter
 	private String path;
 
 	@XmlAttribute(name = "filename")
 	@Column(name = "filename")
-	@Getter
-	@Setter
 	private String filename;
 
 	@XmlAttribute(name = "created")
 	@Column(name = "created")
-	@Getter
-	@Setter
 	private Date created;
 
 	@XmlAttribute(name = "updated")
 	@Column(name = "updated")
-	@Getter
-	@Setter
 	private Date updated;
 
 	@XmlAttribute(name = "status")
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status")
-	@Getter
-	@Setter
 	private STATUS status;
 
 	@XmlElement(name = "links")
 	@ElementCollection(targetClass = Link.class, fetch = FetchType.EAGER)
 	@CollectionTable(name = "links", joinColumns = @JoinColumn(name = "job_id"))
-	@Getter
-	@Setter
 	private List<Link> links = new ArrayList<Link>();
 
 	public Job() {

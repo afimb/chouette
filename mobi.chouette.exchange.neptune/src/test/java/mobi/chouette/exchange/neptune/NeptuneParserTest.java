@@ -48,8 +48,17 @@ public class NeptuneParserTest {
 				.resolve("mobi.chouette:mobi.chouette.exchange.neptune:1.0.0")
 				.withTransitivity().asFile();
 
+//		result = ShrinkWrap.create(WebArchive.class, "test.war")
+//				.addAsWebInfResource("wildfly-ds.xml").addAsLibraries(files)
+//				.addAsManifestResource("C_NEPTUNE_3.xml")
+//				.addAsManifestResource("broken_file.xml")
+//				.addAsManifestResource("error_file.xml")
+//				.addAsManifestResource("metadata_chouette_dc.xml")
+//				.addAsManifestResource("1000252.xml")
+//				.addAsResource(EmptyAsset.INSTANCE, "beans.xml");
 		result = ShrinkWrap.create(WebArchive.class, "test.war")
-				.addAsWebInfResource("wildfly-ds.xml").addAsLibraries(files)
+				.addAsWebInfResource("web.xml").addAsLibraries(files)
+				.addAsResource("persistence.xml","META-INF/persistence.xml")
 				.addAsManifestResource("C_NEPTUNE_3.xml")
 				.addAsManifestResource("broken_file.xml")
 				.addAsManifestResource("error_file.xml")
