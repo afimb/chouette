@@ -135,11 +135,9 @@ public class Service implements Constant {
 							.toString());
 			if (Files.exists(dir)) {
 				jobDAO.delete(job);
-				throw new WebApplicationException(Status.BAD_REQUEST);
-			} else {
-				Files.createDirectories(dir);
-				job.setPath(dir.toString());
 			}
+			Files.createDirectories(dir);
+			job.setPath(dir.toString());
 
 			// upload data
 			Map<String, List<InputPart>> map = input.getFormDataMap();
@@ -311,9 +309,9 @@ public class Service implements Constant {
 
 		// cache control
 		ResponseBuilder builder = Response.ok(result);
-//		CacheControl cc = new CacheControl();
-//		cc.setMaxAge(-1);
-//		builder.cacheControl(cc);
+		// CacheControl cc = new CacheControl();
+		// cc.setMaxAge(-1);
+		// builder.cacheControl(cc);
 
 		return builder.build();
 	}

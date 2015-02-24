@@ -28,7 +28,7 @@ import lombok.ToString;
 @Entity
 @Table(name = "stop_points")
 @NoArgsConstructor
-@ToString(exclude = { "route" })
+@ToString(callSuper=true, exclude = { "route" })
 public class StopPoint extends NeptuneIdentifiedObject {
 
 	private static final long serialVersionUID = -4913573673645997423L;

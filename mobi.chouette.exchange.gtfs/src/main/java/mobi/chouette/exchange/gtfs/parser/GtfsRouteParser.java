@@ -8,6 +8,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.gtfs.Constant;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
+import mobi.chouette.exchange.gtfs.model.GtfsAgency;
 import mobi.chouette.exchange.gtfs.model.GtfsRoute;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsImporter;
 import mobi.chouette.exchange.gtfs.model.importer.Index;
@@ -32,7 +33,7 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 
 	@Getter
 	@Setter
-	private GtfsRoute gtfsRoute;
+	private String gtfsRouteId;
 
 	@Override
 	public void parse(Context context) throws Exception {
@@ -42,9 +43,12 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 		validation = (ValidationParameters) context.get(VALIDATION);
 		importer = (GtfsImporter) context.get(PARSER);
 
+		Index<GtfsRoute> routes = importer.getRouteById();
+		GtfsRoute gtfsRoute = routes.getValue(gtfsRouteId);
+		
 		String lineId = AbstractConverter.composeObjectId(
 				configuration.getObjectIdPrefix(), Line.LINE_KEY,
-				gtfsRoute.getRouteId(), log);
+				gtfsRouteId, log);
 		Line line = ObjectFactory.getLine(referential, lineId);
 		convert(context, gtfsRoute, line);
 
@@ -66,7 +70,7 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 		// Route VehicleJourney VehicleJourneyAtStop , JourneyPattern ,StopPoint
 		GtfsTripParser gtfsTripParser = (GtfsTripParser) ParserFactory
 				.create(GtfsTripParser.class.getName());
-		gtfsTripParser.setGtfsRoute(gtfsRoute);
+		gtfsTripParser.setGtfsRouteId(gtfsRouteId);
 		gtfsTripParser.parse(context);
 
 	}
