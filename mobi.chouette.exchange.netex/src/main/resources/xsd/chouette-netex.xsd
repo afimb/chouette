@@ -1,0 +1,2625 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://www.netex.org.uk/netex" xmlns:netex="http://www.netex.org.uk/netex" xmlns:gml="http://www.opengis.net/gml/3.2">
+  <xs:import namespace="http://www.opengis.net/gml/3.2" schemaLocation="http://schemas.opengis.net/gml/3.2.1/gml.xsd"/>
+
+  <xs:annotation>
+    <xs:documentation xml:lang="en">
+      NeTEx exchange schema (NeTEx 0.99.3 compliant).
+      Version 1.0
+      Date: 31-05-2013 
+      Author: Marc Florisson (Cityway SAS).
+      Object: designed for an "import / export" function through NeTEx exchange format 
+      Documentation: see http://www.chouette.mobi/
+    </xs:documentation>
+  </xs:annotation>
+  <xs:complexType name="RoutesType">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" ref="netex:Route" minOccurs="1"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="RoutesRefType">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" ref="netex:RouteRef"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="PointsInSequenceType">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" ref="netex:StopPointInJourneyPattern"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="LinesRefType">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" ref="netex:LineRef"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="FromToStopPlaceRef">
+    <xs:sequence>
+      <xs:element ref="netex:StopPlaceRef"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="FromToPlaceEntranceRef">
+    <xs:sequence>
+      <xs:element ref="netex:PlaceRef"/>
+      <xs:element maxOccurs="1" minOccurs="0" ref="netex:EntranceRef"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="TariffZonesRefs">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" ref="netex:TariffZoneRef"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="TariffZonesType">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" ref="netex:TariffZone"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="DayTypesType">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" ref="netex:DayType"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="DayTypeRefsType">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" ref="netex:DayTypeRef"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="TrainNumbersType">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" ref="netex:TrainNumber"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="TrainNumberRefsType">
+    <xs:sequence>
+      <xs:element maxOccurs="unbounded" ref="netex:TrainNumberRef"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="PublicationDelivery">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:PublicationTimestamp"/>
+        <xs:element ref="netex:ParticipantRef"/>
+        <xs:element ref="netex:PublicationRequest" minOccurs="0"/>
+        <xs:element ref="netex:Description" minOccurs="0"/>
+        <xs:element ref="netex:dataObjects" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="version" use="required" type="xs:NMTOKEN"/>
+    </xs:complexType>
+    <xs:unique name="KeyValuePair">
+      <xs:annotation>
+        <xs:documentation>Every Key Value Pair must be unique.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:KeyValue"/>
+      <xs:field xpath="netex:System"/>
+      <xs:field xpath="netex:Value"/>
+    </xs:unique>
+    <xs:unique name="Codespace_UniqueId">
+      <xs:annotation>
+        <xs:documentation>Every Codespace ID must be unique.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:Codespace"/>
+      <xs:field xpath="@id"/>
+    </xs:unique>
+    <xs:keyref name="Codespace_AnyKeyRef" refer="netex:Codespace_AnyVersionedKey">
+      <xs:selector xpath=".//netex:CodespaceRef"/>
+      <xs:field xpath="@ref"/>
+    </xs:keyref>
+    <xs:key name="Codespace_AnyVersionedKey">
+      <xs:selector xpath=".//netex:Codespace"/>
+      <xs:field xpath="@id"/>
+    </xs:key>
+    <xs:unique name="Codespace_Unique_Xmlns">
+      <xs:annotation>
+        <xs:documentation>Every Name Space XMLMS must be unique.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:Codespace/Xmlns"/>
+      <xs:field xpath="."/>
+    </xs:unique>
+    <xs:key name="Codespace_AnyVersionedKey_Xmlns">
+      <xs:selector xpath=".//netex:Codespace/Xmlns"/>
+      <xs:field xpath="."/>
+    </xs:key>
+    <xs:unique name="DataSource_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [DataSource Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:DataSource"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="DataSource_AnyKeyRef" refer="netex:DataSource_AnyVersionedKey">
+      <xs:selector xpath=".//netex:DataSourceRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="DataSource_AnyVersionedKey">
+      <xs:selector xpath=".//netex:DataSource"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:key name="DataSource_AnyKey">
+      <xs:selector xpath=".//netex:DataSource"/>
+      <xs:field xpath="@id"/>
+    </xs:key>
+    <xs:unique name="ResponsibilitySet_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [ResponsibilitySet Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:ResponsibilitySet"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="ResponsibilitySet_AnyKeyRef" refer="netex:ResponsibilitySet_AnyVersionedKey">
+      <xs:selector xpath=".//netex:ResponsibilitySetRef | .//netex:DefaultResponsibilitySetRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="ResponsibilitySet_AnyVersionedKey">
+      <xs:selector xpath=".//netex:ResponsibilitySet"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="TypeOfResponsibilityRole_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [TypeOfResponsibilityRole Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:TypeOfResponsibilityRole"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="TypeOfResponsibilityRole_AnyKeyRef" refer="netex:TypeOfResponsibilityRole_AnyVersionedKey">
+      <xs:selector xpath=".//netex:TypeOfResponsibilityRoleRef "/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="TypeOfResponsibilityRole_AnyVersionedKey">
+      <xs:selector xpath=".//netex:TypeOfResponsibilityRole"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="Entity_Entity_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [Entity_Entity Id ] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:Entity_Entity"/>
+      <xs:field xpath="@id"/>
+    </xs:unique>
+    <xs:keyref name="Entity_Entity_AnyKeyRef" refer="netex:Entity_Entity_AnyVersionedKey">
+      <xs:selector xpath=".//netex:Entity_EntityRef | .//netex:DefaultEntity_EntityRef"/>
+      <xs:field xpath="@ref"/>
+    </xs:keyref>
+    <xs:key name="Entity_Entity_AnyVersionedKey">
+      <xs:selector xpath=".//netex:Entity_Entity"/>
+      <xs:field xpath="@id"/>
+    </xs:key>
+    <xs:unique name="TypeOfEntity_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [TypeOfEntity Id + TypeOfEntity] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:TypeOfEntity"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="TypeOfEntity_AnyKeyRef" refer="netex:TypeOfEntity_AnyVersionedKey">
+      <xs:selector xpath=".//netex:TypeOfEntityRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="TypeOfEntity_AnyVersionedKey">
+      <xs:selector xpath=".//netex:TypeOfEntity"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="Version_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [Version Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:Version"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="Version_AnyKeyRef" refer="netex:Version_AnyVersionedKey">
+      <xs:selector xpath=".//netex:VersionRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="Version_AnyVersionedKey">
+      <xs:selector xpath=".//netex:Version"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="TypeOfFrame_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [TypeOfFrame Id + TypeOfFrame] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:TypeOfFrame"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="TypeOfFrame_AnyKeyRef" refer="netex:TypeOfFrame_AnyVersionedKey">
+      <xs:selector xpath=".//netex:TypeOfFrameRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="TypeOfFrame_AnyVersionedKey">
+      <xs:selector xpath=".//netex:TypeOfFrame"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="TypeOfValidity_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [TypeOfValidity Id + TypeOfValidity] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:TypeOfValidity"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+<!--     <xs:keyref name="TypeOfValidity_AnyKeyRef" refer="netex:TypeOfValidity_AnyVersionedKey"> -->
+<!--       <xs:selector xpath=".//netex:TypeOfValidityRef"/> -->
+<!--       <xs:field xpath="@ref"/> -->
+<!--       <xs:field xpath="@version"/> -->
+<!--     </xs:keyref> -->
+    <xs:key name="TypeOfValidity_AnyVersionedKey">
+      <xs:selector xpath=".//netex:TypeOfValidity"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="ResourceFrame_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [ResourceFrame Id + ResourceFrame] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:ResourceFrame"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:unique name="CompositeFrame_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [CompositeFrame Id + CompositeFrame] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:CompositeFrame"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:unique name="ServiceCalendarFrame_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [ServiceCalendarFrame Id + ServiceCalendarFrame] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:ServiceCalendarFrame"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:unique name="SiteFrame_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [SiteFrame Id + SiteFrame] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:SiteFrame"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:unique name="ServiceFrame_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [ServiceFrame Id + ServiceFrame] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:ServiceFrame"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:unique name="TimetableFrame_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [TimetableFrame Id + TimetableFrame] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:TimetableFrame"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="VersionFrame_AnyKeyRef" refer="netex:VersionFrame_AnyVersionedKey">
+      <xs:selector xpath=".//netex:VersionFrameRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="VersionFrame_AnyVersionedKey">
+      <xs:selector xpath=".//netex:VersionFrame | .//netex:ResourceFrame | .//netex:InfrastructureFrame | .//netex:ServiceCalendarFrame| .//netex:SiteFrame| .//netex:TimetableFrame | .//netex:GeneralFrame| .//netex:CompositeFrame | .//netex:VehicleScheduleFrame"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:keyref name="Zone_AnyKeyRef" refer="netex:Zone_AnyVersionedKey">
+      <xs:selector xpath=".//netex:ZoneRef | .//netex:ParentZoneRef | .//netex:ProjectedZoneRef | .//netex:ProjectToZoneRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="Zone_AnyVersionedKey">
+      <xs:selector xpath=".//netex:Zone | .//netex:TariffZone | .//netex:RoutingConstraintZone | .//netex:ConnectionZone | .//netex:AdministrativeZone | .//netex:PointOfInterest | .//netex:Parking | .//netex:ParkingArea | .//netex:ParkingBay | .//netex:TopographicPlace | .//netex:Quay | .//netex:AccessSpace | .//netex:PointOfInterestSpace | .//netex:StopPlace| .//netex:Garage| .//netex:EquipmentPlace | .//netex:FlexibleArea | .//netex:HailAndRideArea | .//netex:FlexibleQuay| .//netex:StopPlaceEntance | .//netex:Entrance | .//netex:PointOfInterestEntrance | .//netex:BoardingPosition | .//netex:VehicleStoppingPlace | .//netex:VehicleEntrance "/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="TariffZone_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [TariffZone Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:TariffZone"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="TariffZone_AnyKeyRef" refer="netex:TariffZone_AnyVersionedKey">
+      <xs:selector xpath=".//netex:TariffZoneRef | .//netex:ParentTariffZoneRef | .//netex:StartTariffZoneRef | .//netex:EndTariffZoneRef "/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="TariffZone_AnyVersionedKey">
+      <xs:selector xpath=".//netex:TariffZone "/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="PointProjection_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [PointProjection Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:PointProjection"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="PointProjection_AnyKeyRef" refer="netex:PointProjection_AnyVersionedKey">
+      <xs:selector xpath=".//netex:PointProjectionRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="PointProjection_AnyVersionedKey">
+      <xs:selector xpath=".//netex:PointProjection"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:keyref name="Organisation_AnyKeyRef" refer="netex:Organisation_AnyVersionedKey">
+      <xs:selector xpath=".//netex:OrganisationRef | .//netex:ResponsibleOrganisationRef | .//netex:ProvidedByRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="Organisation_AnyVersionedKey">
+      <xs:selector xpath=".//netex:GeneralOrganisation | .//netex:Authority | .//netex:Operator | .//netex:ServicedOrganisation | .//netex:TravelAgent | .//netex:ManagementAgent"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="OrganisationPart_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [OrganisationPart Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:OrganisationPart"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="OrganisationPart_KeyRef" refer="netex:OrganisationPart_AnyVersionedKey">
+      <xs:selector xpath=".//netex:OrganisationPartRef |.//netex:ResponsibilityRoleAssignment/ResponsiblePartRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="OrganisationPart_AnyVersionedKey">
+      <xs:selector xpath=".//netex:OrganisationPart"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="OperatingUnit_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [OperatingUnit Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:OperatingUnit"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="OperatingUnit_KeyRef" refer="netex:OperatingUnit_AnyVersionedKey">
+      <xs:selector xpath=".//netex:OperatingUnitRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="OperatingUnit_AnyVersionedKey">
+      <xs:selector xpath=".//netex:OperatingUnit"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="Department_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [Department Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:Department"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="Department_KeyRef" refer="netex:Department_AnyVersionedKey">
+      <xs:selector xpath=".//netex:DepartmentRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="Department_AnyVersionedKey">
+      <xs:selector xpath=".//netex:Department | .//netex:OperatingDepartment"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:keyref name="Address_AnyKeyRef" refer="netex:Address_AnyVersionedKey">
+      <xs:selector xpath=".//netex:RoadAddressRef | .//netex:PostalAddressRef | .//netex:AddressRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="Address_AnyVersionedKey">
+      <xs:selector xpath=".//netex:RoadAddress | .//netex:PostalAddress"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="PostalAddress_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [PostalAddress Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:PostalAddress"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="PostalAddress_KeyRef" refer="netex:PostalAddress_AnyVersionedKey">
+      <xs:selector xpath=".//netex:PostalAddressRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="PostalAddress_AnyVersionedKey">
+      <xs:selector xpath=".//netex:PostalAddress"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="Operator_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [Operator Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:Operator"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="Operator_KeyRef" refer="netex:Operator_AnyVersionedKey">
+      <xs:selector xpath=".//netex:OperatorRef | .//netex:ParentOperatorRef |.//netex:ServiceFacilitySet/ProvidedByRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="Operator_AnyVersionedKey">
+      <xs:selector xpath=".//netex:Operator"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="OperatingDepartment_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [OperatingDepartment Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:OperatingDepartment"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="OperatingDepartment_KeyRef" refer="netex:OperatingDepartment_AnyVersionedKey">
+      <xs:selector xpath=".//netex:OperatingDepartmentRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="OperatingDepartment_AnyVersionedKey">
+      <xs:selector xpath=".//netex:OperatingDepartment"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:keyref name="AccessibilityAssessment_AnyKeyRef" refer="netex:AccessibilityAssessment_AnyVersionedKey">
+      <xs:selector xpath=".//netex:AccessibilityAssessmentRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="AccessibilityAssessment_AnyVersionedKey">
+      <xs:selector xpath=".//netex:AccessibilityAssessment"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="DayType_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [DayType Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:DayType"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="DayType_AnyKeyRef" refer="netex:DayType_AnyVersionedKey">
+      <xs:selector xpath=".//netex:DayTypeRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="DayType_AnyVersionedKey">
+      <xs:selector xpath=".//netex:DayType | .//netex:OrganisationDayType"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="Timeband_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [Timeband Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:Timeband"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="Timeband_AnyKeyRef" refer="netex:Timeband_AnyVersionedKey">
+      <xs:selector xpath=".//netex:TimebandRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="Timeband_AnyVersionedKey">
+      <xs:selector xpath=".//netex:Timeband"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="GroupOfTimebands_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [GroupOfTimebands Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:GroupOfTimebands"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="GroupOfTimebands_AnyKeyRef" refer="netex:GroupOfTimebands_AnyVersionedKey">
+      <xs:selector xpath=".//netex:GroupOfTimebandsRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="GroupOfTimebands_AnyVersionedKey">
+      <xs:selector xpath=".//netex:GroupOfTimebands"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="ServiceCalendar_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [ServiceCalendar Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:ServiceCalendar"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="ServiceCalendar_KeyRef" refer="netex:ServiceCalendar_AnyVersionedKey">
+      <xs:selector xpath=".//netex:ServiceCalendarRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="ServiceCalendar_AnyVersionedKey">
+      <xs:selector xpath=".//netex:ServiceCalendar"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="OperatingDay_UniqueCalendarDateInCalendar">
+      <xs:annotation>
+        <xs:documentation>Each date is only allowed once per calendar.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:ServiceCalendarFrame/operatingDays/OperatingDay"/>
+      <xs:field xpath="CalendarDate"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="OperatingDay_KeyRef" refer="netex:OperatingDay_AnyVersionedKey">
+      <xs:selector xpath=".//netex:OperatingDayRef | .//netex:FromOperatingDayRef | .//netex:ToOperatingDayRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="OperatingDay_AnyVersionedKey">
+      <xs:selector xpath=".//netex:OperatingDay"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="OperatingPeriod_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [OperatingPeriod Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:OperatingPeriod"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="OperatingPeriod_KeyRef" refer="netex:OperatingPeriod_AnyVersionedKey">
+      <xs:selector xpath=".//netex:OperatingPeriodRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="OperatingPeriod_AnyVersionedKey">
+      <xs:selector xpath=".//netex:OperatingPeriod"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="ValidityCondition_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [ValidityCondition Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:ValidityCondition | .//netex:ValidityTrigger | .//netex:ValidityRuleParameter"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="ValidityCondition_KeyRef" refer="netex:ValidityCondition_AnyVersionedKey">
+      <xs:selector xpath=".//netex:ValidityConditionRef | .//netex:ValidityTriggerRef | .//netex:ValidityRuleParameterRef | .//netex:WithConditionRef "/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="ValidityCondition_AnyVersionedKey">
+      <xs:selector xpath=".//netex:ValidityCondition | .//netex:ValidityTrigger | .//netex:ValidityRuleParameter | .//netex:AvailabilityCondition"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:keyref name="AvailabilityCondition_AnyKeyRef" refer="netex:AvailabilityCondition_AnyVersionedKey">
+      <xs:selector xpath=".//netex:AvailabilityConditionRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="AvailabilityCondition_AnyVersionedKey">
+      <xs:selector xpath=".//netex:AvailabilityCondition"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="Access_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [Access Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:Access"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="Access_KeyRef" refer="netex:Access_AnyVersionedKey">
+      <xs:selector xpath=".//netex:AccessRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="Access_AnyVersionedKey">
+      <xs:selector xpath=".//netex:Access"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:keyref name="Entrance_AnyKeyRef" refer="netex:Entrance_AnyVersionedKey">
+      <xs:selector xpath=".//netex:EntranceRef | .//netex:StopPlaceEntranceRef | .//netex:PointOfInterestEntranceRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="Entrance_AnyVersionedKey">
+      <xs:selector xpath=".//netex:Entrance | .//netex:StopPlaceEntrance| .//netex:PointOfInterestEntrance"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="StopPlace_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [StopPlace Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:StopPlace"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="StopPlace_KeyRef" refer="netex:StopPlace_AnyVersionedKey">
+      <xs:selector xpath=".//netex:StopPlaceRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="StopPlace_AnyVersionedKey">
+      <xs:selector xpath=".//netex:StopPlace"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="StopPlaceEntrance_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [StopPlaceEntrance Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:StopPlaceEntrance"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="StopPlaceEntrance_KeyRef" refer="netex:StopPlaceEntrance_AnyVersionedKey">
+      <xs:selector xpath=".//netex:StopPlaceEntranceRef | .//netex:ParentStopPlaceEntranceRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="StopPlaceEntrance_AnyVersionedKey">
+      <xs:selector xpath=".//netex:StopPlaceEntrance"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <!-- =====Quay============================== -->
+    <!-- =====Quay unique========================== -->
+    <xs:unique name="Quay_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [Quay Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:Quay"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+<!--     <xs:keyref name="Quay_KeyRef" refer="netex:Quay_AnyVersionedKey"> -->
+<!--       <xs:selector xpath=".//netex:QuayRef | .//netex:ParentQuayRef"/> -->
+<!--       <xs:field xpath="@ref"/> -->
+<!--       <xs:field xpath="@version"/> -->
+<!--     </xs:keyref> -->
+    <xs:key name="Quay_AnyVersionedKey">
+      <xs:selector xpath=".//netex:frames/netex:SiteFrame/netex:stopPlaces/netex:StopPlace/netex:quays/netex:Quay"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="BoardingPosition_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [BoardingPosition Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:BoardingPosition"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="BoardingPosition_KeyRef" refer="netex:BoardingPosition_AnyVersionedKey">
+      <xs:selector xpath=".//netex:BoardingPositionRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="BoardingPosition_AnyVersionedKey">
+      <xs:selector xpath=".//netex:BoardingPosition"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="PathLink_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [PathLink Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:PathLink"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="PathLink_KeyRef" refer="netex:PathLink_AnyVersionedKey">
+      <xs:selector xpath=".//netex:PathLinkRef | .//netex:SitePathLinkRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="PathLink_AnyVersionedKey">
+      <xs:selector xpath=".//netex:PathLink | .//netex:SitePathLink"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="NavigationPath_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [NavigationPath Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:NavigationPath"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="NavigationPath_KeyRef" refer="netex:NavigationPath_AnyVersionedKey">
+      <xs:selector xpath=".//netex:NavigationPathRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="NavigationPath_AnyVersionedKey">
+      <xs:selector xpath=".//netex:NavigationPath"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="NavigationPathAssignment_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [NavigationPathAssignment Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:NavigationPathAssignment"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="NavigationPathAssignment_KeyRef" refer="netex:NavigationPathAssignment_AnyVersionedKey">
+      <xs:selector xpath=".//netex:NavigationPathAssignmentRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="NavigationPathAssignment_AnyVersionedKey">
+      <xs:selector xpath=".//netex:NavigationPathAssignment"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="PathLinkInSequence_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [PathLinkInSequence Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:PathLinkInSequence"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="PathLinkInSequence_KeyRef" refer="netex:PathLinkInSequence_AnyVersionedKey">
+      <xs:selector xpath=".//netex:PathLinkInSequenceRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="PathLinkInSequence_AnyVersionedKey">
+      <xs:selector xpath=".//netex:PathLinkInSequence"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="Network_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [Network Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:Network"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="Network_KeyRef" refer="netex:Network_AnyVersionedKey">
+      <xs:selector xpath=".//netex:NetworkRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="Network_AnyVersionedKey">
+      <xs:selector xpath=".//netex:Network "/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="Line_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [Line Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:Line"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="Line_KeyRef" refer="netex:Line_AnyVersionedKey">
+      <xs:selector xpath=".//netex:LineRef| .//netex:FlexibleLineRef | .//netex:MainLineRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="Line_AnyVersionedKey">
+      <xs:selector xpath=".//netex:Line | .//netex:FlexibleLine"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="GroupOfLines_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [GroupOfLines Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:GroupOfLines"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="GroupOfLines_KeyRef" refer="netex:GroupOfLines_AnyVersionedKey">
+      <xs:selector xpath=".//netex:GroupOfLinesRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="GroupOfLines_AnyVersionedKey">
+      <xs:selector xpath=".//netex:GroupOfLines |.//netex:Network "/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="Direction_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [Direction Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:Direction"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="Direction_KeyRef" refer="netex:Direction_AnyVersionedKey">
+      <xs:selector xpath=".//netex:DirectionRef |.//netex:ReverseDirectionRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="Direction_AnyVersionedKey">
+      <xs:selector xpath=".//netex:Direction "/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="Route_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [Route Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:Route"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="Route_KeyRef" refer="netex:Route_AnyVersionedKey">
+      <xs:selector xpath=".//netex:RouteRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="Route_AnyVersionedKey">
+      <xs:selector xpath=".//netex:Route "/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="RoutePoint_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [RoutePoint Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:RoutePoint"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="RoutePoint_KeyRef" refer="netex:RoutePoint_AnyVersionedKey">
+      <xs:selector xpath=".//netex:RoutePointRef "/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:keyref name="RoutePoint_LinkKeyRef" refer="netex:RoutePoint_AnyVersionedKey">
+      <xs:selector xpath=" .//netex:RouteLink/netex:FromPointRef | .//netex:RouteLink/netex:ToPointRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="RoutePoint_AnyVersionedKey">
+      <xs:selector xpath=".//netex:RoutePoint | .//netex:ScheduledStopPoint | .//netex:GaragePoint | .//netex:ParkingPoint | .//netex:ReliefPoint | .//netex:ActivationPoint | .//netex:TimingPoint |.//netex:FareScheduledStopPoint  "/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="RouteLink_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [RouteLink Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:RouteLink"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="RouteLink_KeyRef" refer="netex:RouteLink_AnyVersionedKey">
+      <xs:selector xpath=".//netex:RouteLinkRef | .//netex:OnwardRouteLinkRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="RouteLink_AnyVersionedKey">
+      <xs:selector xpath=".//netex:RouteLink "/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="PointOnRoute_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [PointOnRoute Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:PointOnRoute"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="PointOnRoute_KeyRef" refer="netex:PointOnRoute_AnyVersionedKey">
+      <xs:selector xpath=".//netex:PointOnRouteRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="PointOnRoute_AnyVersionedKey">
+      <xs:selector xpath=".//netex:PointOnRoute "/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="LineNetwork_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [LineNetwork Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:LineNetwork"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="LineNetwork_KeyRef" refer="netex:LineNetwork_AnyVersionedKey">
+      <xs:selector xpath=".//netex:LineNetworkRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="LineNetwork_AnyVersionedKey">
+      <xs:selector xpath=".//netex:LineNetwork "/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="TimingPoint_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [TimingPoint Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:TimingPoint"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="TimingPoint_KeyRef" refer="netex:TimingPoint_AnyVersionedKey">
+      <xs:selector xpath=".//netex:TimingPointRef | .//netex:TimingLink/netex:FromPointRef | .//netex:TimingLink/netex:ToPointRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="TimingPoint_AnyVersionedKey">
+      <xs:selector xpath=".//netex:TimingPoint | .//netex:ScheduledStopPoint | .//netex:ReliefPoint | .//netex:GaragePoint | .//netex:ParkingPoint  |.//netex:FareScheduledStopPoint "/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:key name="TimingPattern_AnyVersionedKey">
+      <xs:selector xpath=".//netex:TimingPattern "/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:key name="PointInTimingPatternChild_AnyVersionedKey">
+      <xs:selector xpath=".//netex:PointInTimingPattern "/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="ScheduledStopPoint_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [ScheduledStopPoint Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:ScheduledStopPoint  |.//netex:FareScheduledStopPoint "/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="ScheduledStopPoint_KeyRef" refer="netex:ScheduledStopPoint_AnyVersionedKey">
+      <xs:selector xpath=".//netex:ScheduledStopPointRef | .//netex:ServiceLink/netex:FromPointRef | .//netex:ServiceLink/netex:ToPointRef | .//netex:FromStopPointRef | .//netex:ToStopPointRef | .//netex:NextStopPointRef | .//netex:AtStopPointRef | .//netex:StartStopPointRef | .//netex:EndStopPointRef  |.//netex:FareScheduledStopPointRef  |.//netex:AccountingStopPointRef  "/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="ScheduledStopPoint_AnyVersionedKey">
+      <xs:selector xpath=".//netex:ScheduledStopPoint  |.//netex:FareScheduledStopPoint  "/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="StopArea_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [StopArea Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:StopArea"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="StopArea_KeyRef" refer="netex:StopArea_AnyVersionedKey">
+      <xs:selector xpath=".//netex:StopAreaRef | .//netex:ParentStopAreaRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="StopArea_AnyVersionedKey">
+      <xs:selector xpath=".//netex:StopArea"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="Connection_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [Connection Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:Connection"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="Connection_KeyRef" refer="netex:Connection_AnyVersionedKey">
+      <xs:selector xpath=".//netex:ConnectionRef  | .//netex:FromConnectionRef | .//netex:ToConnectionRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="Connection_AnyVersionedKey">
+      <xs:selector xpath=".//netex:Connection"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="SiteConnection_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [SiteConnection Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:SiteConnection"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="SiteConnection_KeyRef" refer="netex:SiteConnection_AnyVersionedKey">
+      <xs:selector xpath=".//netex:SiteConnectionRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="SiteConnection_AnyVersionedKey">
+      <xs:selector xpath=".//netex:SiteConnection"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="RoutingConstraintZone_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [RoutingConstraintZone Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:RoutingConstraintZone"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="RoutingConstraintZone_KeyRef" refer="netex:RoutingConstraintZone_AnyVersionedKey">
+      <xs:selector xpath=".//netex:RoutingConstraintZoneRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="RoutingConstraintZone_AnyVersionedKey">
+      <xs:selector xpath=".//netex:RoutingConstraintZone"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="PassengerStopAssignment_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [PassengerStopAssignment Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:PassengerStopAssignment"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="PassengerStopAssignment_KeyRef" refer="netex:PassengerStopAssignment_AnyVersionedKey">
+      <xs:selector xpath=".//netex:PassengerStopAssignmentRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="PassengerStopAssignment_AnyVersionedKey">
+      <xs:selector xpath=".//netex:PassengerStopAssignment"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="JourneyPattern_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [JourneyPattern Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:JourneyPattern | .//netex:ServiceJourneyPattern |.//netex:DeadRunJourneyPattern "/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="JourneyPattern_KeyRef" refer="netex:JourneyPattern_AnyVersionedKey">
+      <xs:selector xpath=".//netex:JourneyPatternRef | .//netex:ServiceJourneyPatternRef |.//netex:FromJourneyPatternRef | .//netex:ToJourneyPatternRef | .//netex:DeadRunJourneyPatternRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="JourneyPattern_AnyVersionedKey">
+      <xs:selector xpath=".//netex:JourneyPattern| .//netex:ServiceJourneyPattern |.//netex:DeadRunJourneyPattern "/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:keyref name="PointInJourneyPattern_KeyRef" refer="netex:PointInJourneyPattern_AnyVersionedKey">
+      <xs:selector xpath=".//netex:PointInJourneyPatternRef | .//netex:FromPointInPatternRef | .//netex:ToPointInPatternRef  "/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="PointInJourneyPattern_AnyVersionedKey">
+      <xs:selector xpath=".//netex:PointInJourneyPattern | .//netex:TimingPointInJourneyPattern| .//netex:StopPointInJourneyPattern|  .//netex:FarePointInJourneyPattern"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:keyref name="TimingPointInJourneyPattern_KeyRef" refer="netex:TimingPointInJourneyPattern_AnyVersionedKey">
+      <xs:selector xpath=".//netex:TimingPointInJourneyPatternRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="TimingPointInJourneyPattern_AnyVersionedKey">
+      <xs:selector xpath=".//netex:TimingPointInJourneyPattern"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:keyref name="StopPointInJourneyPattern_KeyRef" refer="netex:StopPointInJourneyPattern_AnyVersionedKey">
+      <xs:selector xpath=".//netex:StopPointInJourneyPatternRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="StopPointInJourneyPattern_AnyVersionedKey">
+      <xs:selector xpath=".//netex:StopPointInJourneyPattern"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="ServicePattern_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [ServicePattern Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:ServicePattern |.//netex:DeadRunPattern"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="ServicePattern_KeyRef" refer="netex:ServicePattern_AnyVersionedKey">
+      <xs:selector xpath=".//netex:ServicePatternRef | .//netex:DeadRunServicePatternRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="ServicePattern_AnyVersionedKey">
+      <xs:selector xpath=".//netex:ServicePattern |.//netex:DeadRunPattern "/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="ServiceJourney_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [ServiceJourney Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:ServiceJourney"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:unique name="TrainNumber_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [TrainNumber Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:TrainNumber"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="TrainNumber_KeyRef" refer="netex:TrainNumber_AnyVersionedKey">
+      <xs:selector xpath=".//netex:TrainNumberRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="TrainNumber_AnyVersionedKey">
+      <xs:selector xpath=".//netex:TrainNumber "/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="VehicleService_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [VehicleService Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:VehicleService"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="VehicleService_KeyRef" refer="netex:VehicleService_AnyVersionedKey">
+      <xs:selector xpath=".//netex:VehicleServiceRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="VehicleService_AnyVersionedKey">
+      <xs:selector xpath=".//netex:VehicleService "/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="VehicleServicePart_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [VehicleServicePart Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:VehicleServicePart"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="VehicleServicePart_KeyRef" refer="netex:VehicleServicePart_AnyVersionedKey">
+      <xs:selector xpath=".//netex:VehicleServicePartRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="VehicleServicePart_AnyVersionedKey">
+      <xs:selector xpath=".//netex:VehicleServicePart "/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="Tariff_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [Tariff Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:Tariff"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="Tariff_KeyRef" refer="netex:Tariff_AnyVersionedKey">
+      <xs:selector xpath=".//netex:TariffRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="Tariff_AnyVersionedKey">
+      <xs:selector xpath=".//netex:Tariff"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:keyref name="TypeOfTariff_AnyKeyRef" refer="netex:TypeOfTariff_AnyVersionedKey">
+      <xs:selector xpath=".//netex:TypeOfTariffRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="TypeOfTariff_AnyVersionedKey">
+      <xs:selector xpath=".//netex:TypeOfTariff"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="FareZone_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [FareZone Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:FareZone"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="FareZone_KeyRef" refer="netex:FareZone_AnyVersionedKey">
+      <xs:selector xpath=".//netex:FareZoneRef | .//netex:FromFareZoneRef | .//netex:ToFareZoneRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="FareZone_AnyVersionedKey">
+      <xs:selector xpath=".//netex:FareZone  "/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="GeographicalUnit_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [GeographicalUnit Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:GeographicalUnit"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="GeographicalUnit_KeyRef" refer="netex:GeographicalUnit_AnyVersionedKey">
+      <xs:selector xpath=".//netex:GeographicalUnitRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="GeographicalUnit_AnyVersionedKey">
+      <xs:selector xpath=".//netex:GeographicalUnit"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:keyref name="Interchanging_KeyRef" refer="netex:Interchanging_AnyVersionedKey">
+      <xs:selector xpath=" .//netex:InterchangingRef "/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="Interchanging_AnyVersionedKey">
+      <xs:selector xpath=".//netex:Interchanging"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:keyref name="UsageValidityPeriod_KeyRef" refer="netex:UsageValidityPeriod_AnyVersionedKey">
+      <xs:selector xpath=" .//netex:UsageValidityPeriodRef "/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="UsageValidityPeriod_AnyVersionedKey">
+      <xs:selector xpath=".//netex:UsageValidityPeriod"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="AccessRightParameterAssignment_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [AccessRightParameterAssignment Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:AccessRightParameterAssignment | .//netex:ValidityParameterAssignment"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="ValidityParameterAssignment_KeyRef" refer="netex:ValidityParameterAssignment_AnyVersionedKey">
+      <xs:selector xpath=".//netex:ValidityParameterAssignmentRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="ValidityParameterAssignment_AnyVersionedKey">
+      <xs:selector xpath=".//netex:ValidityParameterAssignment "/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="GeographicalStructureFactor_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [GeographicalStructureFactor Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:GeographicalStructureFactor"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="GeographicalStructureFactor_KeyRef" refer="netex:GeographicalStructureFactor_AnyVersionedKey">
+      <xs:selector xpath=".//netex:GeographicalStructureFactorRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="GeographicalStructureFactor_AnyVersionedKey">
+      <xs:selector xpath=".//netex:GeographicalStructureFactor"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="TimeUnit_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [TimeUnit Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:TimeUnit"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="TimeUnit_KeyRef" refer="netex:TimeUnit_AnyVersionedKey">
+      <xs:selector xpath=".//netex:TimeUnitRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="TimeUnit_AnyVersionedKey">
+      <xs:selector xpath=".//netex:TimeUnit"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+    <xs:unique name="TimeInterval_UniqueIdAndVersion">
+      <xs:annotation>
+        <xs:documentation>Every [TimeInterval Id + Version] must be unique within document.</xs:documentation>
+      </xs:annotation>
+      <xs:selector xpath=".//netex:TimeInterval"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:unique>
+    <xs:keyref name="TimeInterval_KeyRef" refer="netex:TimeInterval_AnyVersionedKey">
+      <xs:selector xpath=".//netex:TimeIntervalRef"/>
+      <xs:field xpath="@ref"/>
+      <xs:field xpath="@version"/>
+    </xs:keyref>
+    <xs:key name="TimeInterval_AnyVersionedKey">
+      <xs:selector xpath=".//netex:TimeInterval"/>
+      <xs:field xpath="@id"/>
+      <xs:field xpath="@version"/>
+    </xs:key>
+  </xs:element>
+  <xs:element name="PublicationTimestamp" type="xs:dateTime"/>
+  <xs:element name="PublicationRequest">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:RequestTimestamp"/>
+        <xs:element ref="netex:ParticipantRef" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="version" use="required" type="xs:NMTOKEN"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RequestTimestamp" type="xs:dateTime"/>
+  <xs:element name="dataObjects">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:CompositeFrame"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CompositeFrame">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:Name" minOccurs="0"/>
+        <xs:element ref="netex:TypeOfFrameRef" minOccurs="0"/>
+        <xs:element ref="netex:codespaces" minOccurs="0"/>
+        <xs:element ref="netex:FrameDefaults" minOccurs="0"/>
+        <xs:element ref="netex:frames" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="created" use="optional" type="xs:dateTime"/>
+      <xs:attribute name="id" use="optional" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="TypeOfFrameRef">
+    <xs:complexType>
+      <xs:attribute name="ref" use="required" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="frames">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:ResourceFrame"/>
+        <xs:element ref="netex:ServiceFrame"/>
+        <xs:element ref="netex:SiteFrame"/>
+        <xs:element maxOccurs="unbounded" ref="netex:ServiceCalendarFrame" minOccurs="0"/>
+        <xs:element ref="netex:TimetableFrame"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ResourceFrame">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:Name" minOccurs="0"/>
+        <xs:element ref="netex:codespaces" minOccurs="0"/>
+        <xs:element ref="netex:FrameDefaults" minOccurs="0"/>
+        <xs:element ref="netex:dataSources" minOccurs="0"/>
+        <xs:element ref="netex:typesOfValue" minOccurs="0"/>
+        <xs:element ref="netex:organisations"/>
+      </xs:sequence>
+      <xs:attribute name="created" use="optional" type="xs:dateTime"/>
+      <xs:attribute name="id" use="optional" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="dataSources">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:DataSource" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DataSource">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:Name" minOccurs="0"/>
+        <xs:element ref="netex:Description" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="id" use="optional" type="xs:NCName"/>
+      <xs:attribute name="version" use="optional" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="typesOfValue">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:TypeOfValidity"/>
+        <xs:element ref="netex:TypeOfFrame"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="TypeOfValidity">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:Name" minOccurs="0"/>
+        <xs:element ref="netex:Periodicity" minOccurs="0"/>
+        <xs:element ref="netex:Nature" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="id" use="optional" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Periodicity" type="xs:duration"/>
+  <xs:element name="Nature" type="xs:normalizedString"/>
+  <xs:element name="organisations">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:Operator" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Operator">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:PublicCode" minOccurs="0"/>
+        <xs:element ref="netex:CompanyNumber" minOccurs="0"/>
+        <xs:element ref="netex:Name" minOccurs="0"/>
+        <xs:element ref="netex:ShortName" minOccurs="0"/>
+        <xs:element ref="netex:ContactDetails" minOccurs="0"/>
+        <xs:element ref="netex:parts" minOccurs="0"/>
+        <xs:element ref="netex:departments" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="id" use="required" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CompanyNumber" type="xs:normalizedString"/>
+  <xs:element name="ContactDetails">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:Email" minOccurs="0"/>
+        <xs:element ref="netex:Phone" minOccurs="0"/>
+        <xs:element ref="netex:Fax" minOccurs="0"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Email" type="xs:normalizedString"/>
+  <xs:element name="Phone" type="xs:normalizedString"/>
+  <xs:element name="Fax" type="xs:normalizedString"/>
+  <xs:element name="parts">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:OrganisationPart" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="OrganisationPart">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:Name" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="id" use="optional" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="departments">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:Department" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Department">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:Name" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="id" use="optional" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ServiceFrame">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:Network"/>
+        <xs:element ref="netex:directions" minOccurs="0"/>
+        <xs:element ref="netex:routePoints" minOccurs="0"/>
+        <xs:element minOccurs="0" name="routes" type="netex:RoutesType"/>
+        <xs:element ref="netex:lines"/>
+        <xs:element ref="netex:groupsOfLines" minOccurs="0"/>
+        <xs:element ref="netex:scheduledStopPoints" minOccurs="0"/>
+        <xs:element ref="netex:servicePatterns" minOccurs="0"/>
+        <xs:element ref="netex:connections" minOccurs="0"/>
+        <xs:element minOccurs="0" name="tariffZones" type="netex:TariffZonesType"/>
+        <xs:element ref="netex:stopAssignments" minOccurs="0"/>
+        <xs:element ref="netex:routingConstraintZones" maxOccurs="1" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="created" use="optional" type="xs:dateTime"/>
+      <xs:attribute name="id" use="optional" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Network">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:keyList" minOccurs="0"/>
+        <xs:element ref="netex:Name" minOccurs="0"/>
+        <xs:element ref="netex:Description" minOccurs="0"/>
+        <xs:element ref="netex:PrivateCode" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="created" use="optional" type="xs:dateTime"/>
+      <xs:attribute name="changed" type="xs:dateTime" use="optional">
+        <xs:annotation>
+          <xs:documentation>Date ENTITY or version was last changed.</xs:documentation>
+        </xs:annotation>
+      </xs:attribute>
+      <xs:attribute name="id" use="required" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="directions">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="netex:Direction"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Direction">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:Name" minOccurs="0"/>
+        <xs:element ref="netex:DirectionType" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="created" use="optional" type="xs:dateTime"/>
+      <xs:attribute name="id" use="optional" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DirectionType" type="netex:DirectionTypeEnumeration"/>
+  <xs:element name="routePoints">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="netex:RoutePoint"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RoutePoint">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:projections"/>
+      </xs:sequence>
+      <xs:attribute name="created" use="optional" type="xs:dateTime"/>
+      <xs:attribute name="id" use="required" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="projections">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:PointProjection" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PointProjection">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:ProjectedPointRef"/>
+      </xs:sequence>
+      <xs:attribute name="created" use="optional" type="xs:dateTime"/>
+      <xs:attribute name="id" use="required" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ProjectedPointRef">
+    <xs:complexType>
+      <xs:attribute name="ref" use="required" type="xs:NMTOKEN"/>
+      <xs:attribute name="version" use="required" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="groupsOfLines">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="netex:GroupOfLines"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GroupOfLines">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:Name" minOccurs="0"/>
+        <xs:element ref="netex:Description" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="created" use="optional" type="xs:dateTime"/>
+      <xs:attribute name="id" use="required" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="scheduledStopPoints">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="netex:ScheduledStopPoint"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ScheduledStopPoint">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:Name" minOccurs="0"/>
+        <xs:element ref="netex:TimingPointStatus" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="created" use="optional" type="xs:dateTime"/>
+      <xs:attribute name="id" use="required" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="TimingPointStatus" type="xs:normalizedString"/>
+  <xs:element name="servicePatterns">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="netex:ServicePattern"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ServicePattern">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:keyList" minOccurs="0"/>
+        <xs:element ref="netex:Name" minOccurs="0"/>
+        <xs:element ref="netex:ShortName" minOccurs="0"/>
+        <xs:element ref="netex:PrivateCode" minOccurs="0"/>
+        <xs:element ref="netex:RouteRef"/>
+        <xs:element minOccurs="0" name="pointsInSequence" type="netex:PointsInSequenceType"/>
+      </xs:sequence>
+      <xs:attribute name="created" use="optional" type="xs:dateTime"/>
+      <xs:attribute name="id" use="required" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="connections">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:SiteConnection" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SiteConnection">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:Name" minOccurs="0"/>
+        <xs:element ref="netex:Description" minOccurs="0"/>
+        <xs:element ref="netex:Distance" minOccurs="0"/>
+        <xs:element ref="netex:TransferDuration" minOccurs="0"/>
+        <xs:element name="From" type="netex:FromToStopPlaceRef"/>
+        <xs:element name="To" type="netex:FromToStopPlaceRef"/>
+        <xs:element ref="netex:navigationPaths" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="created" use="optional" type="xs:dateTime"/>
+      <xs:attribute name="id" use="required" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="navigationPaths">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:NavigationPath"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NavigationPath">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:Covered" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="created" use="optional" type="xs:dateTime"/>
+      <xs:attribute name="id" use="required" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="stopAssignments">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="netex:PassengerStopAssignment"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PassengerStopAssignment">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:ScheduledStopPointRef"/>
+        <xs:element ref="netex:StopPlaceRef" minOccurs="0"/>
+        <xs:element ref="netex:QuayRef"/>
+      </xs:sequence>
+      <xs:attribute name="created" use="optional" type="xs:dateTime"/>
+      <xs:attribute name="id" use="required" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="QuayRef">
+    <xs:complexType>
+      <xs:attribute name="ref" use="required" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="routingConstraintZones">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="netex:RoutingConstraintZone"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RoutingConstraintZone">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:Name" minOccurs="0"/>
+        <xs:element ref="netex:Description" minOccurs="0"/>
+        <xs:element ref="netex:PrivateCode" minOccurs="0"/>
+        <xs:element ref="netex:members" minOccurs="0"/>
+        <xs:element ref="netex:Centroid" minOccurs="0"/>
+        <xs:element ref="netex:ZoneUse"/>
+        <xs:element minOccurs="0" name="lines" type="netex:LinesRefType"/>
+      </xs:sequence>
+      <xs:attribute name="created" use="optional" type="xs:dateTime"/>
+      <xs:attribute name="id" use="required" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="members">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="netex:ScheduledStopPointRef"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ZoneUse" type="xs:NCName"/>
+  <xs:element name="SiteFrame">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:stopPlaces" minOccurs="0"/>
+        <xs:element ref="netex:pathLinks" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="created" use="optional" type="xs:dateTime"/>
+      <xs:attribute name="id" use="optional" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="stopPlaces">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="netex:StopPlace"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="StopPlace">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:Name" minOccurs="0"/>
+        <xs:element ref="netex:Description" minOccurs="0"/>
+        <xs:element ref="netex:PrivateCode" minOccurs="0"/>
+        <xs:element ref="netex:Centroid" minOccurs="0"/>
+        <xs:element minOccurs="0" ref="netex:ParentZoneRef"/>
+        <xs:element ref="netex:Landmark" minOccurs="0"/>
+        <xs:element ref="netex:PostalAddress" minOccurs="0"/>
+        <xs:element minOccurs="0" ref="netex:entrances"/>
+        <xs:element minOccurs="0" name="tariffZones" type="netex:TariffZonesRefs"/>
+        <xs:element minOccurs="0" ref="netex:quays"/>
+      </xs:sequence>
+      <xs:attribute name="created" use="optional" type="xs:dateTime"/>
+      <xs:attribute name="id" use="required" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ParentZoneRef">
+    <xs:complexType>
+      <xs:attribute name="ref" use="required" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="entrances">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:StopPlaceEntrance"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="StopPlaceEntrance">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:Name" minOccurs="0"/>
+        <xs:element ref="netex:Description" minOccurs="0"/>
+        <xs:element ref="netex:Centroid" minOccurs="0"/>
+        <xs:element ref="netex:validityConditions" minOccurs="0"/>
+        <xs:element ref="netex:IsEntry"/>
+        <xs:element ref="netex:IsExit"/>
+      </xs:sequence>
+      <xs:attribute name="created" use="optional" type="xs:dateTime"/>
+      <xs:attribute name="id" use="required" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="validityConditions">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:AvailabilityCondition"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AvailabilityCondition">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:timebands"/>
+      </xs:sequence>
+      <xs:attribute name="created" use="optional" type="xs:dateTime"/>
+      <xs:attribute name="id" use="optional" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="timebands">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:Timeband"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Timeband">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:StartTime"/>
+        <xs:element ref="netex:EndTime"/>
+      </xs:sequence>
+      <xs:attribute name="id" use="required"/>
+      <xs:attribute name="version" use="required" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="StartTime" type="xs:time"/>
+  <xs:element name="EndTime" type="xs:time"/>
+  <xs:element name="IsEntry" type="xs:boolean"/>
+  <xs:element name="IsExit" type="xs:boolean"/>
+  <xs:element name="quays">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:Quay" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Quay">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:Name" minOccurs="0"/>
+        <xs:element ref="netex:Description" minOccurs="0"/>
+        <xs:element ref="netex:PrivateCode" minOccurs="0"/>
+        <xs:element ref="netex:Centroid" minOccurs="0"/>
+        <xs:element ref="netex:Landmark" minOccurs="0"/>
+        <xs:element ref="netex:PostalAddress" minOccurs="0"/>
+        <xs:element ref="netex:tariffZones" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="id" use="required" type="xs:NMTOKEN"/>
+      <xs:attribute name="version" use="required" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="pathLinks">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:PathLink"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PathLink">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:Name" minOccurs="0"/>
+        <xs:element ref="netex:Distance" minOccurs="0"/>
+        <xs:element name="From" type="netex:FromToPlaceEntranceRef"/>
+        <xs:element name="To" type="netex:FromToPlaceEntranceRef"/>
+        <xs:element ref="netex:Covered" minOccurs="0"/>
+        <xs:element ref="netex:TransferDuration" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="id" use="required"/>
+      <xs:attribute name="version" use="required" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ServiceCalendarFrame">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:ServiceCalendar"/>
+        <xs:element name="dayTypes" type="netex:DayTypesType"/>
+        <xs:element ref="netex:operatingDays" minOccurs="0"/>
+        <xs:element ref="netex:operatingPeriods" minOccurs="0"/>
+        <xs:element ref="netex:dayTypeAssignments" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="created" use="optional" type="xs:dateTime"/>
+      <xs:attribute name="id" use="optional" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ServiceCalendar">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:FromDate" minOccurs="0"/>
+        <xs:element ref="netex:ToDate" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="created" use="optional" type="xs:dateTime"/>
+      <xs:attribute name="id" use="optional" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="operatingDays">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="netex:OperatingDay"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="OperatingDay">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:CalendarDate"/>
+      </xs:sequence>
+      <xs:attribute name="created" use="optional" type="xs:dateTime"/>
+      <xs:attribute name="id" use="optional" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CalendarDate" type="xs:date"/>
+  <xs:element name="operatingPeriods">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="netex:OperatingPeriod"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="OperatingPeriod">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="FromDate" type="xs:dateTime"/>
+        <xs:element name="ToDate" type="xs:dateTime"/>
+      </xs:sequence>
+      <xs:attribute name="created" use="optional" type="xs:dateTime"/>
+      <xs:attribute name="id" use="optional" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="dayTypeAssignments">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="netex:DayTypeAssignment"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DayTypeAssignment">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:choice>
+          <xs:element ref="netex:OperatingDayRef"/>
+          <xs:element ref="netex:OperatingPeriodRef"/>
+        </xs:choice>
+        <xs:element ref="netex:DayTypeRef"/>
+      </xs:sequence>
+      <xs:attribute name="created" use="optional" type="xs:dateTime"/>
+      <xs:attribute name="id" use="optional" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="OperatingDayRef">
+    <xs:complexType>
+      <xs:attribute name="ref" use="required" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="OperatingPeriodRef">
+    <xs:complexType>
+      <xs:attribute name="ref" use="required" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="TimetableFrame">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:vehicleJourneys" minOccurs="0"/>
+        <xs:element minOccurs="0" name="trainNumbers" type="netex:TrainNumbersType"/>
+      </xs:sequence>
+      <xs:attribute name="created" use="optional" type="xs:dateTime"/>
+      <xs:attribute name="id" use="optional" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="vehicleJourneys">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="netex:ServiceJourney"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ServiceJourney">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:Name" minOccurs="0"/>
+        <xs:element ref="netex:ShortName" minOccurs="0"/>
+        <xs:element ref="netex:Description" minOccurs="0"/>
+        <xs:element ref="netex:ServiceAlteration" minOccurs="0"/>
+        <xs:element minOccurs="0" name="dayTypes" type="netex:DayTypeRefsType"/>
+        <xs:element ref="netex:RouteRef"/>
+        <xs:element ref="netex:ServicePatternRef"/>
+        <xs:element ref="netex:OperatorRef" minOccurs="0"/>
+        <xs:element minOccurs="0" name="trainNumbers" type="netex:TrainNumberRefsType"/>
+        <xs:element ref="netex:calls" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="created" use="optional" type="xs:dateTime"/>
+      <xs:attribute name="id" use="required" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ServiceAlteration" type="netex:ServiceAlterationEnumeration"/>
+  <xs:element name="ServicePatternRef">
+    <xs:complexType>
+      <xs:attribute name="ref" use="required" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="OperatorRef">
+    <xs:complexType>
+      <xs:attribute name="ref" use="required" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="calls">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="netex:Call"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Call">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:ScheduledStopPointRef"/>
+        <xs:element ref="netex:Arrival" minOccurs="1"/>
+        <xs:element ref="netex:Departure" minOccurs="1"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Arrival" type="netex:Time"/>
+  <xs:element name="Departure" type="netex:Time"/>
+  <xs:element name="ParticipantRef" type="xs:NMTOKEN"/>
+  <xs:element name="Description" type="xs:normalizedString"/>
+  <xs:element name="Name" type="xs:normalizedString"/>
+  <xs:element name="codespaces">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:Codespace" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Codespace">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:Xmlns"/>
+        <xs:sequence minOccurs="0">
+          <xs:element ref="netex:XmlnsUrl" minOccurs="0"/>
+          <xs:element ref="netex:Description" minOccurs="0"/>
+        </xs:sequence>
+      </xs:sequence>
+      <xs:attribute name="id" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Xmlns" type="xs:normalizedString"/>
+  <xs:element name="XmlnsUrl" type="xs:anyURI"/>
+  <xs:element name="FrameDefaults">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:DefaultCodespaceRef" minOccurs="0"/>
+        <xs:sequence minOccurs="0">
+          <xs:element ref="netex:DefaultLocale" minOccurs="0"/>
+          <xs:element ref="netex:DefaultLocationSystem" minOccurs="0"/>
+        </xs:sequence>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DefaultCodespaceRef">
+    <xs:complexType>
+      <xs:attribute name="ref" use="required" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DefaultLocale">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:TimeZoneOffset" minOccurs="0"/>
+        <xs:element ref="netex:SummerTimeZoneOffset" minOccurs="0"/>
+        <xs:element ref="netex:DefaultLanguage" minOccurs="0"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="TimeZoneOffset" type="xs:decimal"/>
+  <xs:element name="SummerTimeZoneOffset" type="xs:normalizedString"/>
+  <xs:element name="DefaultLanguage" type="xs:language"/>
+  <xs:element name="DefaultLocationSystem" type="xs:normalizedString"/>
+  <xs:element name="TypeOfFrame">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element ref="netex:Name" minOccurs="0"/>
+        <xs:element ref="netex:Description" minOccurs="0"/>
+        <xs:element ref="netex:FrameClassRef" minOccurs="0"/>
+        <xs:element ref="netex:TypeOfValidityRef" minOccurs="0"/>
+        <xs:element ref="netex:classes" minOccurs="0"/>
+        <xs:element ref="netex:typesOfFrame" minOccurs="0"/>
+      </xs:choice>
+      <xs:attribute name="id" use="optional" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="FrameClassRef">
+    <xs:complexType>
+      <xs:attribute name="nameOfClass" use="required" type="xs:Name"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="TypeOfValidityRef">
+    <xs:complexType>
+      <xs:attribute name="ref" use="required" type="xs:anyURI"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="classes">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="netex:ClassInContextRef"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ClassInContextRef">
+    <xs:complexType>
+      <xs:attribute name="classRefType" use="optional" type="xs:normalizedString"/>
+      <xs:attribute name="nameOfClass" use="required" type="xs:Name"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="typesOfFrame">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="netex:TypeOfFrame"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PublicCode" type="xs:normalizedString"/>
+  <xs:element name="ShortName" type="xs:normalizedString"/>
+  <xs:element name="keyList">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="netex:KeyValue"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="KeyValue">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:Key"/>
+        <xs:element ref="netex:Value"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Key" type="xs:normalizedString"/>
+  <xs:element name="Value" type="xs:normalizedString"/>
+  <xs:element name="PrivateCode" type="xs:normalizedString"/>
+  <xs:element name="routes">
+    <xs:complexType>
+      <xs:choice>
+        <xs:element maxOccurs="unbounded" ref="netex:Route" minOccurs="1"/>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Route">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:keyList" minOccurs="0"/>
+        <xs:element ref="netex:Name" minOccurs="0"/>
+        <xs:element ref="netex:ShortName" minOccurs="0"/>
+        <xs:element ref="netex:DirectionRef" minOccurs="0"/>
+        <xs:element ref="netex:pointsInSequence" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="created" use="optional" type="xs:dateTime"/>
+      <xs:attribute name="id" use="required" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DirectionRef">
+    <xs:complexType>
+      <xs:attribute name="ref" use="required" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="lines">
+    <xs:complexType>
+      <xs:choice>
+        <xs:element ref="netex:Line" maxOccurs="unbounded"/>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Line">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:Name" minOccurs="1"/>
+        <xs:element ref="netex:ShortName" minOccurs="0"/>
+        <xs:element ref="netex:Description" minOccurs="0"/>
+        <xs:element ref="netex:TransportMode" minOccurs="0"/>
+        <xs:element ref="netex:PublicCode" minOccurs="0"/>
+        <xs:element ref="netex:PrivateCode" minOccurs="0"/>
+        <xs:element minOccurs="0" name="routes" type="netex:RoutesRefType"/>
+      </xs:sequence>
+      <xs:attribute name="created" use="optional" type="xs:dateTime"/>
+      <xs:attribute name="id" use="required" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="TransportMode" type="netex:AllVehicleModesOfTransportEnumeration"/>
+  <xs:element name="LineRef">
+    <xs:complexType>
+      <xs:attribute name="ref" use="required" type="xs:NMTOKEN"/>
+      <xs:attribute name="version" use="required" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RouteRef">
+    <xs:complexType>
+      <xs:attribute name="ref" use="required" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="pointsInSequence">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="netex:PointOnRoute" minOccurs="2"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PointOnRoute">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:RoutePointRef"/>
+      </xs:sequence>
+      <xs:attribute name="id" use="required" type="xs:normalizedString"/>
+      <xs:attribute name="order" use="required" type="xs:integer"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RoutePointRef">
+    <xs:complexType>
+      <xs:attribute name="ref" use="required" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="StopPointInJourneyPattern">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:ScheduledStopPointRef"/>
+      </xs:sequence>
+      <xs:attribute name="created" use="optional" type="xs:dateTime"/>
+      <xs:attribute name="id" use="required" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Distance" type="xs:decimal"/>
+  <xs:element name="TransferDuration">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:DefaultDuration" minOccurs="0"/>
+        <xs:element ref="netex:FrequentTravellerDuration" minOccurs="0"/>
+        <xs:element ref="netex:OccasionalTravellerDuration" minOccurs="0"/>
+        <xs:element minOccurs="0" ref="netex:MobilityRestrictedTravellerDuration"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DefaultDuration" type="xs:duration"/>
+  <xs:element name="FrequentTravellerDuration" type="xs:duration"/>
+  <xs:element name="OccasionalTravellerDuration" type="xs:duration"/>
+  <xs:element name="MobilityRestrictedTravellerDuration" type="xs:duration"/>
+  <xs:element name="From">
+    <xs:complexType>
+      <xs:choice>
+        <xs:element ref="netex:StopPlaceRef"/>
+        <xs:sequence>
+          <xs:element ref="netex:PlaceRef" minOccurs="0"/>
+          <xs:element ref="netex:EntranceRef"/>
+        </xs:sequence>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="EntranceRef">
+    <xs:complexType>
+      <xs:attribute name="ref" use="required" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="To">
+    <xs:complexType>
+      <xs:choice>
+        <xs:sequence>
+          <xs:element ref="netex:PlaceRef" minOccurs="0"/>
+          <xs:element ref="netex:EntranceRef"/>
+        </xs:sequence>
+        <xs:element ref="netex:StopPlaceRef"/>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Covered" type="netex:CoveredEnumeration"/>
+  <xs:element name="tariffZones">
+    <xs:complexType>
+      <xs:choice>
+        <xs:element ref="netex:TariffZoneRef"/>
+        <xs:element maxOccurs="unbounded" ref="netex:TariffZone"/>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="TariffZoneRef">
+    <xs:complexType>
+      <xs:attribute name="ref" use="required" type="xs:NMTOKEN"/>
+      <xs:attribute name="version" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="TariffZone">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:Name"/>
+      </xs:sequence>
+      <xs:attribute name="created" use="optional" type="xs:dateTime"/>
+      <xs:attribute name="id" use="required" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ScheduledStopPointRef">
+    <xs:complexType>
+      <xs:attribute name="ref" use="required" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="StopPlaceRef">
+    <xs:complexType>
+      <xs:attribute name="ref" use="required" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Centroid">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:Location"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Location">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:Longitude"/>
+        <xs:element ref="netex:Latitude"/>
+        <xs:element minOccurs="0" ref="gml:pos"/>
+      </xs:sequence>
+      <xs:attribute name="id"/>
+      <xs:attribute name="srsName" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Longitude" type="xs:string"/>
+  <xs:element name="Latitude" type="xs:string"/>
+  <xs:element name="Landmark" type="xs:string"/>
+  <xs:element name="PostalAddress">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:CountryRef" minOccurs="0"/>
+        <xs:element ref="netex:AddressLine1" minOccurs="0"/>
+        <xs:element ref="netex:PostCode" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="created" use="optional" type="xs:dateTime"/>
+      <xs:attribute name="id" use="required" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CountryRef">
+    <xs:complexType>
+      <xs:attribute name="ref" use="required" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddressLine1" type="xs:string"/>
+  <xs:element name="PostCode" type="xs:string"/>
+  <xs:element name="FromDate" type="xs:date"/>
+  <xs:element name="ToDate" type="xs:date"/>
+  <xs:element name="dayTypes">
+    <xs:complexType mixed="false">
+      <xs:choice>
+        <xs:element ref="netex:DayType"/>
+        <xs:element maxOccurs="unbounded" ref="netex:DayTypeRef"/>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DayType">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:Name" minOccurs="0"/>
+        <xs:element ref="netex:ShortName" minOccurs="0"/>
+        <xs:element ref="netex:properties" minOccurs="0"/>
+      </xs:sequence>
+      <xs:attribute name="created" use="optional" type="xs:dateTime"/>
+      <xs:attribute name="id" use="required" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="properties">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="1" maxOccurs="unbounded" ref="netex:PropertyOfDay"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="PropertyOfDay">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="DaysOfWeek" type="netex:DayOfWeekEnumeration"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="DayTypeRef">
+    <xs:complexType>
+      <xs:attribute name="ref" use="required" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="trainNumbers">
+    <xs:complexType>
+      <xs:choice>
+        <xs:element ref="netex:TrainNumberRef"/>
+        <xs:element maxOccurs="unbounded" ref="netex:TrainNumber"/>
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="TrainNumberRef">
+    <xs:complexType>
+      <xs:attribute name="ref" use="required" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="TrainNumber">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="netex:Description"/>
+      </xs:sequence>
+      <xs:attribute name="created" use="optional" type="xs:dateTime"/>
+      <xs:attribute name="id" use="required" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="Time">
+    <xs:sequence>
+      <xs:element ref="netex:Time"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Time" type="xs:time"/>
+  <xs:element name="PlaceRef">
+    <xs:complexType>
+      <xs:attribute name="ref" use="required" type="xs:normalizedString"/>
+      <xs:attribute name="version" use="optional" type="xs:normalizedString"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:simpleType name="CoveredEnumeration">
+    <xs:annotation>
+      <xs:documentation>Allowed values for covered.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="indoors"/>
+      <xs:enumeration value="outdoors"/>
+      <xs:enumeration value="covered"/>
+      <xs:enumeration value="mixed"/>
+      <xs:enumeration value="unknown"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="DayOfWeekEnumeration">
+    <xs:annotation>
+      <xs:documentation>Allowed values for Day of the Week.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Monday"/>
+      <xs:enumeration value="Tuesday"/>
+      <xs:enumeration value="Wednesday"/>
+      <xs:enumeration value="Thursday"/>
+      <xs:enumeration value="Friday"/>
+      <xs:enumeration value="Saturday"/>
+      <xs:enumeration value="Sunday"/>
+      <xs:enumeration value="Everyday"/>
+      <xs:enumeration value="Weekdays"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="ServiceAlterationEnumeration">
+    <xs:annotation>
+      <xs:documentation>Allowed values for Service Alteration</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="extraJourney"/>
+      <xs:enumeration value="cancellation"/>
+      <xs:enumeration value="planned"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="AllVehicleModesOfTransportEnumeration">
+    <xs:annotation>
+      <xs:documentation>Allowed values for MODES of Transport : TPEG pti_table 01.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:NMTOKEN">
+      <xs:enumeration value="all"/>
+      <xs:enumeration value="unknown"/>
+      <xs:enumeration value="bus"/>
+      <xs:enumeration value="trolleyBus"/>
+      <xs:enumeration value="tram"/>
+      <xs:enumeration value="coach"/>
+      <xs:enumeration value="rail"/>
+      <xs:enumeration value="intercityRail"/>
+      <xs:enumeration value="urbanRail"/>
+      <xs:enumeration value="metro"/>
+      <xs:enumeration value="air"/>
+      <xs:enumeration value="water"/>
+      <xs:enumeration value="cableway"/>
+      <xs:enumeration value="funicular"/>
+      <xs:enumeration value="taxi"/>
+      <xs:enumeration value="selfDrive">
+        <xs:annotation>
+          <xs:documentation>See pti12_x.</xs:documentation>
+        </xs:annotation>
+      </xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="DirectionTypeEnumeration">
+    <xs:annotation>
+      <xs:documentation>Allowed values for DIRECTION.</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:normalizedString">
+      <xs:enumeration value="inbound"/>
+      <xs:enumeration value="outbound"/>
+      <xs:enumeration value="clockwise"/>
+      <xs:enumeration value="anticlockwise"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>
