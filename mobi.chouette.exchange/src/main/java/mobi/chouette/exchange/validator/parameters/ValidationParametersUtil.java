@@ -1,6 +1,9 @@
 package mobi.chouette.exchange.validator.parameters;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.NeptuneIdentifiedObject;
@@ -9,6 +12,17 @@ import mobi.chouette.model.type.TransportModeNameEnum;
 
 @Log4j
 public class ValidationParametersUtil {
+	
+	private static Map<String,List<String>> fieldsMap = new HashMap<>();
+	protected static void addFieldList(String key, List<String> fields)
+	{
+		fieldsMap.put(key,fields);
+	}
+	
+	public static List<String> getFields(NeptuneIdentifiedObject object)
+	{
+		return fieldsMap.get(object.getClass().getSimpleName());
+	}
 	
 	public static TransportModeParameters getTransportModeParameters(ValidationParameters parameter, TransportModeNameEnum mode)
 	{

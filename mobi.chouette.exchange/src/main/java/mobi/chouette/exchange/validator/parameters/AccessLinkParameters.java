@@ -1,18 +1,25 @@
 package mobi.chouette.exchange.validator.parameters;
 
+import java.util.Arrays;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 import lombok.Data;
+import mobi.chouette.model.AccessLink;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @Data
 public class AccessLinkParameters {
 
 	@XmlTransient
-	public enum fields { Objectid, Name, LinkDistance, DefaultDuration} ;
+	public static String[] fields = { "Objectid", "Name", "LinkDistance", "DefaultDuration"} ;
+	
+	static {
+		ValidationParametersUtil.addFieldList(AccessLink.class.getSimpleName(), Arrays.asList(fields));
+	}
 
 	@XmlElement(name = "objectid")
 	private FieldParameters objectid;
