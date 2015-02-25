@@ -71,7 +71,7 @@ public class LineRegisterCommand implements Command {
 
 			Referential referential = (Referential) context.get(REFERENTIAL);
 			Line newValue = referential.getLines().values().iterator().next();
-			log.info("[DSU] register line : " + newValue.getObjectId());
+			log.info("[DSU] register line : " + newValue.getObjectId()+" "+newValue.getName());
 
 			optimiser.initialize(cache, referential);
 

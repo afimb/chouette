@@ -99,10 +99,6 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 				&& !newValue.getCreatorId().equals(oldValue.getCreatorId())) {
 			oldValue.setCreatorId(newValue.getCreatorId());
 		}
-		if (newValue.getName() != null
-				&& !newValue.getName().equals(oldValue.getName())) {
-			oldValue.setName(newValue.getName());
-		}
 		if (newValue.getComment() != null
 				&& !newValue.getComment().equals(oldValue.getComment())) {
 			oldValue.setComment(newValue.getComment());

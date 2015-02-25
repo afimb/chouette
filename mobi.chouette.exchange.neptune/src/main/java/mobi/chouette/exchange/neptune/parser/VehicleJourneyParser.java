@@ -127,8 +127,8 @@ public class VehicleJourneyParser implements Parser, Constant {
 				vehicleJourney.setVehicleTypeIdentifier(xpp.nextText());
 			} else if (xpp.getName().equals("vehicleJourneyAtStop")) {
 				parseVehicleJourneyAtStop(context, vehicleJourney);
-			} else if (xpp.getName().equals("name")) {
-				vehicleJourney.setName(ParserUtils.getText(xpp.nextText()));
+//			} else if (xpp.getName().equals("name")) {
+//				vehicleJourney.setName(ParserUtils.getText(xpp.nextText()));
 			} else {
 				XPPUtil.skipSubTree(log, xpp);
 			}

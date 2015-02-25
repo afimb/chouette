@@ -93,7 +93,7 @@ public class LineUpdater implements Updater<Line> {
 			oldValue.setCreatorId(newValue.getCreatorId());
 		}
 		if (newValue.getName() != null
-				&& !!newValue.getName().equals(oldValue.getName())) {
+				&& !newValue.getName().equals(oldValue.getName())) {
 			oldValue.setName(newValue.getName());
 		}
 		if (newValue.getComment() != null
