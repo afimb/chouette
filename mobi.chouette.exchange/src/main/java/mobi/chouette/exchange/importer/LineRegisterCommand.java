@@ -34,8 +34,8 @@ import mobi.chouette.model.util.Referential;
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
-@Stateless(name = LineRegisterCommand.COMMAND)
 @Log4j
+@Stateless(name = LineRegisterCommand.COMMAND)
 public class LineRegisterCommand implements Command {
 
 	public static final String COMMAND = "LineRegisterCommand";
@@ -167,7 +167,6 @@ public class LineRegisterCommand implements Command {
 
 		@Override
 		protected Command create(InitialContext context) throws IOException {
-
 			Command result = null;
 			try {
 				String name = "java:app/mobi.chouette.exchange/" + COMMAND;

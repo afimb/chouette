@@ -7,12 +7,9 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import mobi.chouette.exchange.parameters.AbstractImportParameter;
 
-
 @NoArgsConstructor
 @ToString(callSuper = true)
 @XmlAccessorType(XmlAccessType.FIELD)
 public class NeptuneImportParameters extends AbstractImportParameter {
-
-	
 
 }

@@ -16,6 +16,8 @@ public interface GenericDAO<T> {
 
 	List<T> findAll();
 
+	List<T> findAll(Collection<Object> ids);
+
 	List<T> find(String hql, List<Object> values);
 
 	void create(T entity);

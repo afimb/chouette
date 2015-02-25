@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.netex;
+package mobi.chouette.exchange.netex.importer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,18 +11,23 @@ import javax.naming.InitialContext;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
+import mobi.chouette.exchange.netex.Constant;
 import mobi.chouette.exchange.netex.parser.NetexParser;
 import mobi.chouette.model.util.Referential;
 
+import org.apache.commons.io.input.BOMInputStream;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-//@Stateless(name = NetexParserCommand.COMMAND)
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
+
 @Log4j
 public class NetexParserCommand implements Command, Constant {
 
@@ -34,20 +39,40 @@ public class NetexParserCommand implements Command, Constant {
 
 	@Override
 	public boolean execute(Context context) throws Exception {
+		boolean result = ERROR;
 
-		URL url = new URL((String) context.get(fileURL));
-		InputStream input = url.openStream();
-		XmlPullParser xpp = XmlPullParserFactory.newInstance().newPullParser();
-		BufferedReader in = new BufferedReader(new InputStreamReader(input),
-				8192 * 10);
-		xpp.setInput(in);
-		context.put(PARSER, xpp);
-		context.put(REFERENTIAL, new Referential());
+		Monitor monitor = MonitorFactory.start(COMMAND);
+		context.put(FILE_URL, fileURL);
 
-		Parser parser = ParserFactory.create(NetexParser.class.getName());
-		parser.parse(context);
+		try {
 
-		return Constant.SUCCESS;
+			URL url = new URL(fileURL);
+			log.info("[DSU] parsing file : " + url);
+
+			Referential referential = (Referential) context.get(REFERENTIAL);
+			if (referential != null) {
+				referential.clear();
+			}
+
+			InputStream input = new BOMInputStream(url.openStream());
+			BufferedReader in = new BufferedReader(
+					new InputStreamReader(input), 8192 * 10);
+			XmlPullParser xpp = XmlPullParserFactory.newInstance()
+					.newPullParser();
+			xpp.setInput(in);
+			context.put(PARSER, xpp);
+
+			Parser parser = ParserFactory.create(NetexParser.class.getName());
+			parser.parse(context);
+
+			result = SUCCESS;
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+		} finally {
+			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
+		}
+
+		return result;
 	}
 
 	public static class DefaultCommandFactory extends CommandFactory {
@@ -55,13 +80,6 @@ public class NetexParserCommand implements Command, Constant {
 		@Override
 		protected Command create(InitialContext context) throws IOException {
 			Command result = new NetexParserCommand();
-			// try {
-			// String name = "java:app/mobi.chouette.exchange.netex/"
-			// + COMMAND;
-			// result = (Command) context.lookup(name);
-			// } catch (NamingException e) {
-			// log.error(e);
-			// }
 			return result;
 		}
 	}
