@@ -29,6 +29,9 @@ import mobi.chouette.exchange.neptune.exporter.producer.VehicleJourneyProducer;
 import mobi.chouette.exchange.neptune.exporter.util.NeptuneObjectUtil;
 import mobi.chouette.exchange.neptune.jaxb.JaxbNeptuneFileConverter;
 import mobi.chouette.exchange.neptune.model.PTLink;
+import mobi.chouette.exchange.report.FileInfo;
+import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
+import mobi.chouette.exchange.report.Report;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.Company;
@@ -242,6 +245,12 @@ public class ChouettePTNetworkProducer implements Constant {
 		String fileName = collection.getLine().getId()+".xml";
 		File file = new File(dir.toFile(),fileName);
 		writer.write(AbstractJaxbNeptuneProducer.tridentFactory.createChouettePTNetwork(rootObject), file );
+
+		Report report = (Report) context.get(REPORT);
+		FileInfo fileItem = new FileInfo();
+		fileItem.setName(fileName);
+		fileItem.setStatus(FILE_STATE.OK);
+		report.getFiles().getFileInfos().add(fileItem);
 		
 		if (metadata != null)
 			metadata.getResources().add(metadata.new Resource(fileName + ".xml", 

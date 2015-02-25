@@ -17,6 +17,10 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.LineDAO;
 import mobi.chouette.exchange.neptune.Constant;
+import mobi.chouette.exchange.report.LineInfo;
+import mobi.chouette.exchange.report.LineInfo.LINE_STATE;
+import mobi.chouette.exchange.report.LineStats;
+import mobi.chouette.exchange.report.Report;
 import mobi.chouette.model.Line;
 
 import com.jamonapi.Monitor;
@@ -39,6 +43,7 @@ public class NeptuneProducerCommand implements Command, Constant {
 
 		boolean result = ERROR;
 		Monitor monitor = MonitorFactory.start(COMMAND);
+		Report report = (Report) context.get(REPORT);
 
 		try {
 
@@ -48,25 +53,66 @@ public class NeptuneProducerCommand implements Command, Constant {
 					.get(CONFIGURATION);
 
 			ExportableData collection = new ExportableData();
-			
+
 			Date startDate = null;
 			if(configuration.getStartDate() != null){
 				startDate = new Date(configuration.getStartDate().getTime());
 			}
-			
+
 			Date endDate = null;
 			if(configuration.getEndDate() != null){
 				endDate = new Date(configuration.getEndDate().getTime());
 			}
-			
+
 			NeptuneDataCollector collector = new NeptuneDataCollector();
-			collector.collect(collection, line, startDate, endDate);
-			context.put(EXPORTABLE_DATA, collection);
+			boolean cont =  (collector.collect(collection, line, startDate, endDate));
+			LineInfo lineInfo = new LineInfo();
+			lineInfo.setName(line.getName()+" ("+line.getNumber()+")");
+			LineStats stats = new LineStats();
+			stats.setAccesPointCount(collection.getAccessPoints().size());
+			stats.setConnectionLinkCount(collection.getConnectionLinks().size());
+			stats.setJourneyPatternCount(collection.getJourneyPatterns().size());
+			stats.setRouteCount(collection.getRoutes().size());
+			stats.setStopAreaCount(collection.getStopAreas().size());
+			stats.setTimeTableCount(collection.getTimetables().size());
+			stats.setVehicleJourneyCount(collection.getVehicleJourneys().size());
 
-			ChouettePTNetworkProducer producer = new ChouettePTNetworkProducer();
-			producer.produce(context);
+			if (cont)
+			{
+				context.put(EXPORTABLE_DATA, collection);
 
-			result = SUCCESS;
+				ChouettePTNetworkProducer producer = new ChouettePTNetworkProducer();
+				producer.produce(context);
+
+				lineInfo.setStatus(LINE_STATE.OK);
+				// merge lineStats to global ones
+				LineStats globalStats = report.getLines().getStats();
+				if (globalStats == null) {
+					globalStats = new LineStats();
+					report.getLines().setStats(globalStats);
+				}
+				globalStats.setAccesPointCount(globalStats.getAccesPointCount()
+						+ stats.getAccesPointCount());
+				globalStats.setRouteCount(globalStats.getRouteCount()
+						+ stats.getRouteCount());
+				globalStats.setConnectionLinkCount(globalStats.getConnectionLinkCount()
+						+ stats.getConnectionLinkCount());
+				globalStats.setVehicleJourneyCount(globalStats.getVehicleJourneyCount()
+						+ stats.getVehicleJourneyCount());
+				globalStats.setJourneyPatternCount(globalStats.getJourneyPatternCount()
+						+ stats.getJourneyPatternCount());
+				globalStats.setStopAreaCount(globalStats.getStopAreaCount()
+						+ stats.getStopAreaCount());
+				globalStats.setTimeTableCount(globalStats.getTimeTableCount()
+						+ stats.getTimeTableCount());
+				result = SUCCESS;
+			}
+			else
+			{
+				lineInfo.setStatus(LINE_STATE.ERROR);
+				result=ERROR;
+			}
+			report.getLines().getList().add(lineInfo);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		} finally {
