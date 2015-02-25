@@ -15,8 +15,12 @@ import lombok.ToString;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AbstractImportParameter extends AbstractParameter{
 
-	@XmlElement(name = "no_save")
+	@XmlElement(name = "no_save", defaultValue="false")
 	@Getter@Setter
-	private Boolean noSave;
-
+	private boolean noSave = false;
+	
+	@XmlElement(name = "clean_repository", defaultValue="false")
+	@Getter@Setter
+	private boolean cleanRepository = false;
+	
 }

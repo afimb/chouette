@@ -53,8 +53,8 @@ public class StopPointParser implements Parser, Constant {
 				stopPoint.setCreationTime(creationTime);
 			} else if (xpp.getName().equals("creatorId")) {
 				stopPoint.setCreatorId(ParserUtils.getText(xpp.nextText()));
-			} else if (xpp.getName().equals("name")) {
-				stopPoint.setName(ParserUtils.getText(xpp.nextText()));
+//			} else if (xpp.getName().equals("name")) {
+//				stopPoint.setName(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("containedIn")) {
 				String containedIn = ParserUtils.getText(xpp.nextText());
 				validator.addContainedIn(context, objectId, containedIn);

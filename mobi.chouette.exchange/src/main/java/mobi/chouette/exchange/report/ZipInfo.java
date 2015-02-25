@@ -5,14 +5,13 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
 import lombok.Data;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @Data
-public class ZipItem {
+public class ZipInfo {
 	
 	@XmlElement(name = "status")
 	private String status;
@@ -20,7 +19,7 @@ public class ZipItem {
 	@XmlElement(name="name")
 	private String name;
 	
-	@XmlElement(name="errors")
+	@XmlElement(name="error")
 	private List<String> errors;
 	
 	public void addError(String error)

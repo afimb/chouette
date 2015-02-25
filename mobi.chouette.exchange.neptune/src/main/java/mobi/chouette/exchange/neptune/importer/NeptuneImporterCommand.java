@@ -17,6 +17,7 @@ import mobi.chouette.common.chain.ChainCommand;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.ProgressionCommand;
+import mobi.chouette.exchange.importer.CleanRepositoryCommand;
 import mobi.chouette.exchange.importer.CopyCommand;
 import mobi.chouette.exchange.importer.LineRegisterCommand;
 import mobi.chouette.exchange.importer.UncompressCommand;
@@ -46,7 +47,7 @@ public class NeptuneImporterCommand implements Command, Constant {
 
 		context.put(REFERENTIAL, new Referential());
 
-				// read parameters
+		// read parameters
 		Object configuration = context.get(CONFIGURATION);
 		if (!(configuration instanceof NeptuneImportParameters)) {
 			// fatal wrong parameters
@@ -64,6 +65,14 @@ public class NeptuneImporterCommand implements Command, Constant {
 
 		try {
 
+			// clean repository if asked
+			if (parameters.isCleanRepository())
+			{
+				Command clean = CommandFactory.create(initialContext,
+						CleanRepositoryCommand.class.getName());
+				clean.execute(context);
+			}
+
 			// uncompress data
 			Command uncompress = CommandFactory.create(initialContext,
 					UncompressCommand.class.getName());
@@ -72,7 +81,7 @@ public class NeptuneImporterCommand implements Command, Constant {
 			Path path = Paths.get(context.get(PATH).toString(), INPUT);
 			List<Path> stream = FileUtils
 					.listFiles(path, "*.xml", "*metadata*");
-			
+
 			progression.start(context, stream.size());
 
 			ChainCommand master = (ChainCommand) CommandFactory.create(
@@ -107,7 +116,7 @@ public class NeptuneImporterCommand implements Command, Constant {
 						NeptuneValidationCommand.class.getName());
 				chain.add(validation);
 
-				if (parameters.getNoSave().equals(Boolean.FALSE)) {
+				if (!parameters.isNoSave()) {
 
 					// register
 					Command register = CommandFactory.create(initialContext,

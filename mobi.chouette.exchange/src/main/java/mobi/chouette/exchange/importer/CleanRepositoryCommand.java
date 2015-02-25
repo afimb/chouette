@@ -1,0 +1,109 @@
+package mobi.chouette.exchange.importer;
+
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Resource;
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
+import javax.enterprise.concurrent.ManagedExecutorService;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+
+import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Color;
+import mobi.chouette.common.Context;
+import mobi.chouette.common.DateTimeUtils;
+import mobi.chouette.common.chain.Command;
+import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.dao.CompanyDAO;
+import mobi.chouette.dao.GroupOfLineDAO;
+import mobi.chouette.dao.LineDAO;
+import mobi.chouette.dao.PTNetworkDAO;
+import mobi.chouette.dao.StopAreaDAO;
+import mobi.chouette.dao.TimetableDAO;
+import mobi.chouette.model.Line;
+import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.VehicleJourney;
+import mobi.chouette.model.VehicleJourneyAtStop;
+import mobi.chouette.model.util.Referential;
+
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
+
+@Log4j
+@Stateless(name = CleanRepositoryCommand.COMMAND)
+public class CleanRepositoryCommand implements Command {
+
+	public static final String COMMAND = "CleanRepositoryCommand";
+
+	@Resource(lookup = "java:comp/DefaultManagedExecutorService")
+	ManagedExecutorService executor;
+
+	@EJB
+	private LineDAO lineDAO;
+
+	@EJB
+	private PTNetworkDAO networkDAO;
+	
+	@EJB
+	private StopAreaDAO stopAreaDAO;
+
+	@EJB
+	private CompanyDAO companyDAO;
+	
+	@EJB
+	private TimetableDAO timetableDAO;
+	
+	@EJB
+	private GroupOfLineDAO groupOfLineDAO;
+	
+	@Override
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	public boolean execute(Context context) throws Exception {
+
+		boolean result = ERROR;
+		Monitor monitor = MonitorFactory.start(COMMAND);
+
+		try {
+			lineDAO.deleteAll();
+			companyDAO.deleteAll();
+			networkDAO.deleteAll();
+			stopAreaDAO.deleteAll();
+			timetableDAO.deleteAll();
+			groupOfLineDAO.deleteAll();
+
+			result = SUCCESS;
+		} catch (Exception e) {
+			log.error(e);
+			throw e;
+		}
+		log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
+		return result;
+	}
+
+
+	public static class DefaultCommandFactory extends CommandFactory {
+
+		@Override
+		protected Command create(InitialContext context) throws IOException {
+			Command result = null;
+			try {
+				String name = "java:app/mobi.chouette.exchange/" + COMMAND;
+				result = (Command) context.lookup(name);
+			} catch (NamingException e) {
+				log.error(e);
+			}
+			return result;
+		}
+	}
+
+	static {
+		CommandFactory.factories.put(CleanRepositoryCommand.class.getName(),
+				new DefaultCommandFactory());
+	}
+}

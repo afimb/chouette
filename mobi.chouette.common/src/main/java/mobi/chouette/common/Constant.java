@@ -45,6 +45,7 @@ public interface Constant {
 	public static final String EXPORTABLE_DATA = "exportable_data";
 	public static final String METADATA = "metadata";
 	public static final String LINE = "line";
+	public static final String LINE_ID = "line_id";
 
 	public static final char SEP = '|';
 	public static final String NULL = "\\N";

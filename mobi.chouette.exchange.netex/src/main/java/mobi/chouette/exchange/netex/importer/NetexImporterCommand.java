@@ -86,7 +86,7 @@ public class NetexImporterCommand implements Command, Constant {
 				parser.setFileURL(file.toUri().toURL().toExternalForm());
 				chain.add(parser);
 
-				if (parameters.getNoSave().equals(Boolean.FALSE)) {
+				if (!parameters.isNoSave()) {
 
 					// register
 					Command register = CommandFactory.create(initialContext,

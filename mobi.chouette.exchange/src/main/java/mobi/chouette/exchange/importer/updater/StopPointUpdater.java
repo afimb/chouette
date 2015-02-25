@@ -53,10 +53,6 @@ public class StopPointUpdater implements Updater<StopPoint> {
 				&& !newValue.getCreatorId().equals(oldValue.getCreatorId())) {
 			oldValue.setCreatorId(newValue.getCreatorId());
 		}
-		if (newValue.getName() != null
-				&& !newValue.getName().equals(oldValue.getName())) {
-			oldValue.setName(newValue.getName());
-		}
 
 		// StopArea
 		if (newValue.getContainedInStopArea() == null) {
