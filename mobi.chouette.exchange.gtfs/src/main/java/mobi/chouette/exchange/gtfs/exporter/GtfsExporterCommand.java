@@ -125,7 +125,7 @@ public class GtfsExporterCommand implements Command, Constant {
 
 			progression.start(context, lines.size());
 			Command export = CommandFactory.create(initialContext,
-					NeptuneProducerCommand.class.getName());
+					GtfsLineProducerCommand.class.getName());
 
 			for (Line line : lines) {
 				context.put(LINE_ID, line.getId());
