@@ -24,6 +24,7 @@ import mobi.chouette.dao.GroupOfLineDAO;
 import mobi.chouette.dao.LineDAO;
 import mobi.chouette.dao.PTNetworkDAO;
 import mobi.chouette.exchange.ProgressionCommand;
+import mobi.chouette.exchange.exporter.CompressCommand;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.report.Report;
 import mobi.chouette.model.Company;
@@ -124,6 +125,7 @@ public class NeptuneExporterCommand implements Command, Constant {
 			Command export = CommandFactory.create(initialContext,
 					NeptuneProducerCommand.class.getName());
 
+			// export each line
 			for (Line line : lines) {
 				context.put(LINE_ID, line.getId());
 				progression.execute(context);
@@ -131,6 +133,11 @@ public class NeptuneExporterCommand implements Command, Constant {
 					continue;
 				}
 			}
+			
+			// compress
+			Command compress = CommandFactory.create(initialContext,
+					CompressCommand.class.getName());
+			compress.execute(context);
 
 			result = SUCCESS;
 		} catch (Exception e) {

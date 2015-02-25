@@ -428,7 +428,7 @@
 		<module>mobi.chouette.exchange.neptune</module>
 		<module>mobi.chouette.exchange.gtfs</module>
 		<module>mobi.chouette.exchange.netex</module>
-		<module>mobi.chouette.scheduler</module>
+		<module>mobi.chouette.scheduler</module>		
 		<module>mobi.chouette.api</module>
 		<module>chouette</module>
 	</modules>

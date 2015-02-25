@@ -7,14 +7,18 @@ import java.util.Set;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.UriInfo;
 
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.Color;
 
 @Log4j
 public class Application extends javax.ws.rs.core.Application implements
 		ServletContextListener {
 
+	@Context
+	private UriInfo uriInfo;
+	
 	@Override
 	public Set<Class<?>> getClasses() {
 		Set<Class<?>> result = new HashSet<Class<?>>();

@@ -25,12 +25,15 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.CacheControl;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
@@ -64,6 +67,9 @@ public class Service implements Constant {
 
 	@Inject
 	Scheduler scheduler;
+
+	@Context
+	UriInfo uriInfo;
 
 	@GET
 	@Path("/todo")
@@ -116,8 +122,9 @@ public class Service implements Constant {
 			link.setType(MediaType.APPLICATION_JSON);
 			link.setRel(Link.LOCATION_REL);
 			link.setMethod(Link.GET_METHOD);
-			link.setHref(MessageFormat.format("/{0}/{1}/jobs/{2,number,#}",
-					ROOT_PATH, job.getReferential(), job.getId()));
+			String href = MessageFormat.format("{0}/{1}/jobs/{2,number,#}",
+					ROOT_PATH, job.getReferential(), job.getId());
+			link.setHref( uriInfo.getBaseUri().toString() + href);
 			job.getLinks().add(link);
 
 			// add cancel link
@@ -125,8 +132,9 @@ public class Service implements Constant {
 			link.setType(MediaType.APPLICATION_JSON);
 			link.setRel(Link.CANCEL_REL);
 			link.setMethod(Link.DELETE_METHOD);
-			link.setHref(MessageFormat.format("/{0}/{1}/jobs/{2,number,#}",
-					ROOT_PATH, job.getReferential(), job.getId()));
+			href = MessageFormat.format("/{0}/{1}/jobs/{2,number,#}",
+					ROOT_PATH, job.getReferential(), job.getId());
+			link.setHref( uriInfo.getBaseUri().toASCIIString() + href);
 			job.getLinks().add(link);
 
 			// mkdir
@@ -154,14 +162,15 @@ public class Service implements Constant {
 							filename);
 					Files.copy(in, path);
 
-					// add download parameters link
+					// add parameters link
 					link = new Link();
 					link.setType(MediaType.APPLICATION_JSON);
 					link.setRel(Link.PARAMETERS_REL);
 					link.setMethod(Link.GET_METHOD);
-					link.setHref(MessageFormat.format(
-							"/{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH,
-							job.getReferential(), job.getId(), PARAMETERS_FILE));
+					href = MessageFormat.format(
+							"{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH,
+							job.getReferential(), job.getId(), PARAMETERS_FILE);
+					link.setHref(uriInfo.getBaseUri().toASCIIString()+href);
 					job.getLinks().add(link);
 
 				} else {
@@ -182,23 +191,28 @@ public class Service implements Constant {
 						Files.createDirectories(dir);
 						Files.copy(in, path);
 
-						// add download upload link
+						// add data upload link
 						link = new Link();
-						link.setType(MediaType.APPLICATION_JSON);
+						link.setType(MediaType.APPLICATION_OCTET_STREAM);
 						link.setRel(Link.DATA_REL);
 						link.setMethod(Link.GET_METHOD);
-						link.setHref(MessageFormat.format(
-								"/{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH,
+						href = MessageFormat.format(
+								"{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH,
 								job.getReferential(), job.getId(),
-								job.getFilename()));
+								job.getFilename());
+						link.setHref( uriInfo.getBaseUri().toASCIIString() + href);
 						job.getLinks().add(link);
 					}
+				}
+
+				if (job.getAction().equals(EXPORTER)) {
+					job.setFilename("export_" + job.getId() + ".zip");
 				}
 			}
 
 			// schedule job
 			jobDAO.update(job);
-			scheduler.schedule(job.getReferential());
+			scheduler.schedule(uriInfo.getBaseUri(), job.getReferential());
 
 			// TODO for debug
 			java.nio.file.Path path = Paths.get(
@@ -303,7 +317,7 @@ public class Service implements Constant {
 
 			Parameters payload = JSONUtils.fromJSON(path, Parameters.class);
 			if (payload != null)
-			job.setParameters(payload.getConfiguration());
+				job.setParameters(payload.getConfiguration());
 		}
 		result.setList(filtered);
 
@@ -353,7 +367,7 @@ public class Service implements Constant {
 
 			// add links
 			for (Link link : job.getLinks()) {
-				builder.link(link.getHref(), link.getRel());
+				builder.link(URI.create(link.getHref()), link.getRel());
 			}
 
 		} else {
@@ -385,7 +399,7 @@ public class Service implements Constant {
 
 		// build response
 		ResponseBuilder builder = null;
-		if (scheduler.cancel(job.getId())) {
+		if (scheduler.cancel(uriInfo.getBaseUri(), job.getId())) {
 			builder = Response.ok();
 		} else {
 			throw new WebApplicationException(Status.NOT_FOUND);
@@ -438,7 +452,7 @@ public class Service implements Constant {
 
 		// add links
 		for (Link link : job.getLinks()) {
-			builder.link(link.getHref(), link.getRel());
+			builder.link(URI.create(link.getHref()), link.getRel());
 		}
 
 		result = builder.build();
@@ -465,7 +479,7 @@ public class Service implements Constant {
 
 		// build response
 		ResponseBuilder builder = null;
-		if (scheduler.delete(job)) {
+		if (scheduler.delete(job.getId())) {
 			java.nio.file.Path path = Paths.get(
 					System.getProperty("user.home"), ROOT_PATH,
 					job.getReferential(), "data", job.getId().toString());

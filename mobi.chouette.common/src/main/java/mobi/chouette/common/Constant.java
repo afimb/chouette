@@ -6,7 +6,7 @@ public interface Constant {
 	public static final boolean SUCCESS = true;
 
 	public static final String INITIAL_CONTEXT = "initial_context";
-	
+	public static final String BASE_URI = "base_uri";
 	public static final String JOB_ID = "job_id";
 	public static final String ROOT_PATH = "referentials";
 	public static final String PARAMETERS = "parameters";
@@ -20,6 +20,9 @@ public interface Constant {
 	public static final String FILE_NAME = "file_name";
 	public static final String SCHEMA = "schema";
 	public static final String ACTION = "action";
+	public static final String IMPORTER = "importer";
+	public static final String EXPORTER = "exporter";
+	public static final String VALIDATOR = "validator";	
 	public static final String TYPE = "type";
 	public static final String INPUT = "input";
 	public static final String OUTPUT = "output";
@@ -45,7 +48,6 @@ public interface Constant {
 
 	public static final char SEP = '|';
 	public static final String NULL = "\\N";
-	
 	
 	public static final String BUFFER = "buffer";
 
