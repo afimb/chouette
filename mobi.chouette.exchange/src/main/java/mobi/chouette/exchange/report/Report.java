@@ -2,7 +2,6 @@ package mobi.chouette.exchange.report;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -23,7 +22,7 @@ public class Report {
 	private String result;
 	
 	@XmlElement(name = "zip")
-	private ZipItem zip;
+	private ZipInfo zip;
 	
 	@XmlElement(name = "files")
 	private Files files = new Files();

@@ -16,11 +16,11 @@ import lombok.ToString;
 public class AbstractParameter {
 
 	@Getter@Setter
-	@XmlElement(name = "name")
+	@XmlElement(name = "name", required=true)
 	private String name;
 
 	@Getter@Setter
-	@XmlElement(name = "user_name")
+	@XmlElement(name = "user_name", required=true)
 	private String userName;
 
 }

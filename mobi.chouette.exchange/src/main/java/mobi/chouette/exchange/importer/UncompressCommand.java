@@ -17,7 +17,7 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.report.Report;
 import mobi.chouette.exchange.report.ReportConstant;
-import mobi.chouette.exchange.report.ZipItem;
+import mobi.chouette.exchange.report.ZipInfo;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -43,7 +43,7 @@ public class UncompressCommand implements Command, ReportConstant {
 		}
 		if (FilenameUtils.getExtension(filename.toString()).equalsIgnoreCase("zip"))
 		{
-			ZipItem zip = new ZipItem();
+			ZipInfo zip = new ZipInfo();
 			zip.setName(file);
 
 			try {

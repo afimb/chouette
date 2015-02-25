@@ -23,9 +23,5 @@ public class NeptuneExportParameters  extends AbstractExportParameter {
 	@XmlElement(name = "add_extension")
 	private boolean addExtension = false;
 	
-	@Getter @Setter
-	@XmlElement(name = "add_metadata")
-	private boolean addMetadata = false;
-
 
 }

@@ -23,7 +23,7 @@ public class AbstractExportParameter extends AbstractParameter{
 	private String referencesType;
 	
 	@Getter @Setter
-	@XmlElement(name = "ids")
+	@XmlElement(name = "id")
 	private List<Integer> ids;
 	
 	@Getter @Setter
@@ -34,4 +34,9 @@ public class AbstractExportParameter extends AbstractParameter{
 	@XmlElement(name = "end_date")
 	private Date endDate;
 
+	@Getter @Setter
+	@XmlElement(name = "add_metadata", defaultValue="false")
+	private boolean addMetadata = false;
+
+	
 }

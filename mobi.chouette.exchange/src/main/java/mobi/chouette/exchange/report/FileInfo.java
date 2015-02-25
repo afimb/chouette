@@ -26,7 +26,7 @@ public class FileInfo {
 	@XmlElement(name="status",required=true)
 	private FILE_STATE status;
 	
-	@XmlElement(name="errors")
+	@XmlElement(name="error")
 	private List<String> errors = new ArrayList<>();
 
 }
