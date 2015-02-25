@@ -104,7 +104,7 @@
 				<configuration>
 					<archive>
 						<manifestEntries>
-							<Dependencies>org.antlr, org.postgres, org.jboss.ironjacamar.jdbcadapters</Dependencies>
+							<Dependencies>org.antlr, org.postgres, org.jboss.ironjacamar.jdbcadapters, com.sun.xml.bind</Dependencies>
 						</manifestEntries>
 					</archive>
 				</configuration>

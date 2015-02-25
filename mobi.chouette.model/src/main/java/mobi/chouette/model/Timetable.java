@@ -46,15 +46,14 @@ public class Timetable extends NeptuneIdentifiedObject {
 
 	@Getter
 	@Setter
-	@GenericGenerator(name = "time_tables_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", 
-		parameters = {
+	@GenericGenerator(name = "time_tables_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", parameters = {
 			@Parameter(name = "sequence_name", value = "time_tables_id_seq"),
 			@Parameter(name = "increment_size", value = "100") })
 	@Id
 	@GeneratedValue(generator = "time_tables_id_seq")
 	@Column(name = "id", nullable = false)
 	protected Long id;
-	
+
 	/**
 	 * mapping day type with enumerations
 	 */
@@ -119,10 +118,12 @@ public class Timetable extends NeptuneIdentifiedObject {
 
 	public List<DayTypeEnum> getDayTypes() {
 		List<DayTypeEnum> result = new ArrayList<DayTypeEnum>();
-		for (DayTypeEnum dayType : DayTypeEnum.values()) {
-			int mask = 1 << dayType.ordinal();
-			if ((this.intDayTypes & mask) == mask) {
-				result.add(dayType);
+		if (this.intDayTypes != null) {
+			for (DayTypeEnum dayType : DayTypeEnum.values()) {
+				int mask = 1 << dayType.ordinal();
+				if ((this.intDayTypes & mask) == mask) {
+					result.add(dayType);
+				}
 			}
 		}
 		return result;

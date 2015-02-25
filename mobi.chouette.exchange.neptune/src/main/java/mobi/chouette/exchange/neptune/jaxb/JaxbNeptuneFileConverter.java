@@ -65,7 +65,7 @@ public class JaxbNeptuneFileConverter
       SchemaFactory schemaFactory = SchemaFactory
             .newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
       schema = schemaFactory.newSchema(getClass().getClassLoader().getResource(
-            "neptune.xsd"));
+            "/xsd/neptune.xsd"));
    }
 
 

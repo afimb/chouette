@@ -80,7 +80,7 @@ public class ChouettePTNetworkProducer implements Constant {
 		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
 		String rootDirectory = (String) context.get(PATH);
 		
-		NeptuneExportParameters parameters = (NeptuneExportParameters) context.get(PARAMETERS);
+		NeptuneExportParameters parameters = (NeptuneExportParameters) context.get(CONFIGURATION);
 		boolean addExtension = parameters.isAddExtension();
 		String projectionType = parameters.getProjectionType();
 		Metadata metadata = (Metadata) context.get(METADATA); 
