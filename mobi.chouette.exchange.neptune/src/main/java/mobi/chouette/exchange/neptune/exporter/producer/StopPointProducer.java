@@ -25,7 +25,7 @@ public class StopPointProducer extends
       populateFromModel(jaxbStopPoint, stopPoint);
 
       jaxbStopPoint.setComment(buildComment(stopPoint,addExtension));
-      jaxbStopPoint.setName(stopPoint.getName());
+      jaxbStopPoint.setName(stopPoint.getContainedInStopArea().getName());
 //      jaxbStopPoint.setLineIdShortcut(stopPoint.getLineIdShortcut());
 
       StopArea area = stopPoint.getContainedInStopArea();

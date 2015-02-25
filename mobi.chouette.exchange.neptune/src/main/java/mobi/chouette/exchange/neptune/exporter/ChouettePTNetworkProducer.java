@@ -173,7 +173,8 @@ public class ChouettePTNetworkProducer implements Constant {
 		ChouetteLineDescription chouetteLineDescription = new ChouetteLineDescription();
 		ChouetteLineDescription.Line jaxbLine = lineProducer.produce(collection.getLine(),addExtension);
 		chouetteLineDescription.setLine(jaxbLine);
-
+		rootObject.setChouetteLineDescription(chouetteLineDescription);
+		
 		if (collection.getLine().getRoutingConstraints() != null)
 		{
 			for (StopArea routingConstraint : collection.getLine().getRoutingConstraints())

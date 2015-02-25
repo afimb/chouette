@@ -85,7 +85,7 @@ public class VehicleJourneyProducer extends
     	 List<VehicleJourneyAtStop> lvjas = vehicleJourney.getVehicleJourneyAtStops();
     	 Collections.sort(lvjas,VEHICLE_JOURNEY_AT_STOP_SORTER);
     	 
-    	 int order = 0;
+    	 int order = 1;
          for (VehicleJourneyAtStop vehicleJourneyAtStop : vehicleJourney
                .getVehicleJourneyAtStops())
          {
