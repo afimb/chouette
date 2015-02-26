@@ -154,7 +154,7 @@ public class GtfsExporterCommand implements Command, Constant {
 		protected Command create(InitialContext context) throws IOException {
 			Command result = null;
 			try {
-				String name = "java:app/mobi.chouette.exchange.neptune/"
+				String name = "java:app/mobi.chouette.exchange.gtfs/"
 						+ COMMAND;
 				result = (Command) context.lookup(name);
 			} catch (NamingException e) {

@@ -11,11 +11,13 @@ package mobi.chouette.exchange.gtfs.exporter;
 import java.io.IOException;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -31,9 +33,11 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.LineDAO;
 import mobi.chouette.exchange.gtfs.Constant;
+import mobi.chouette.exchange.gtfs.exporter.producer.GtfsAgencyProducer;
 import mobi.chouette.exchange.gtfs.exporter.producer.GtfsExtendedStopProducer;
 import mobi.chouette.exchange.gtfs.exporter.producer.GtfsRouteProducer;
 import mobi.chouette.exchange.gtfs.exporter.producer.GtfsServiceProducer;
+import mobi.chouette.exchange.gtfs.exporter.producer.GtfsStopProducer;
 import mobi.chouette.exchange.gtfs.exporter.producer.GtfsTransferProducer;
 import mobi.chouette.exchange.gtfs.exporter.producer.GtfsTripProducer;
 import mobi.chouette.exchange.gtfs.model.exporter.GtfsExporter;
@@ -43,6 +47,7 @@ import mobi.chouette.exchange.report.LineInfo;
 import mobi.chouette.exchange.report.LineInfo.LINE_STATE;
 import mobi.chouette.exchange.report.LineStats;
 import mobi.chouette.exchange.report.Report;
+import mobi.chouette.model.Company;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.StopArea;
@@ -58,9 +63,9 @@ import com.jamonapi.MonitorFactory;
  */
 @Log4j
 
-@Stateless(name = GtfsLineProducerCommand.COMMAND)
+@Stateless(name = GtfsSharedDataProducerCommand.COMMAND)
 
-public class GtfsLineProducerCommand implements Command, Constant 
+public class GtfsSharedDataProducerCommand implements Command, Constant 
 {
 	public static final String COMMAND = "GtfsLineProducerCommand";
 
@@ -148,6 +153,93 @@ public class GtfsLineProducerCommand implements Command, Constant
 		return result;
 	}
 
+
+	/**
+	 * @param lines
+	 * @param report
+	 * @param timeZone 
+	 */
+	public void saveLines(List<Line> lines, GtfsExporter exporter, Report report, String prefix, String sharedPrefix, TimeZone timeZone, Metadata metadata)
+	{
+		// à reprendre pour créer le GtfsExporterCommand; celui-ci doit appeler saveLine ou saveStopArea selon le type d'objets à exporter
+
+		// l'export devra d'abord exporter les lignes une par une et collecter les objets communs pour les sauver en dernier
+		// il est possible d'utilise le GtfsDataCollector pour ça; 
+		// celui-ci remplit la structure ExportableData avec uniquement les objets utiles 
+		// pour une période calendaire fournie
+		// la progression se limitera à compter les lignes, les sauvegardes d'objets partagés se feront en phase finale.
+
+		Map<String, List<Timetable>> timetables = new HashMap<String, List<Timetable>>();
+		Set<StopArea> physicalStops = new HashSet<StopArea>();
+		Set<StopArea> commercialStops = new HashSet<StopArea>();
+		Set<Company> companies = new HashSet<Company>();
+		Set<ConnectionLink> connectionLinks = new HashSet<ConnectionLink>();
+		GtfsServiceProducer calendarProducer = new GtfsServiceProducer(exporter);
+		GtfsTripProducer tripProducer = new GtfsTripProducer(exporter);
+		GtfsAgencyProducer agencyProducer = new GtfsAgencyProducer(exporter);
+		GtfsStopProducer stopProducer = new GtfsStopProducer(exporter);
+		GtfsRouteProducer routeProducer = new GtfsRouteProducer(exporter);
+		GtfsTransferProducer transferProducer = new GtfsTransferProducer(exporter);
+		boolean hasLines = false;
+		for (Iterator<Line> lineIterator = lines.iterator(); lineIterator.hasNext();)
+		{
+			Line line = lineIterator.next();
+			lineIterator.remove();
+
+			hasLines = false;
+		}
+		if (hasLines)
+		{
+			for (Iterator<StopArea> iterator = commercialStops.iterator(); iterator.hasNext();)
+			{
+				StopArea stop = iterator.next();
+				if (!stopProducer.save(stop, report, sharedPrefix, null))
+				{
+					iterator.remove();
+				}
+				else
+				{
+					if (stop.hasCoordinates())
+						metadata.getSpatialCoverage().update(stop.getLongitude().doubleValue(), stop.getLatitude().doubleValue());
+				}
+			}
+			for (StopArea stop : physicalStops)
+			{
+				stopProducer.save(stop, report, sharedPrefix, commercialStops);
+				if (stop.hasCoordinates())
+					metadata.getSpatialCoverage().update(stop.getLongitude().doubleValue(), stop.getLatitude().doubleValue());
+			}
+			// remove incomplete connectionlinks
+			for (ConnectionLink link : connectionLinks)
+			{
+				if (!physicalStops.contains(link.getStartOfLink()) && !commercialStops.contains(link.getStartOfLink()))
+				{
+					continue;
+				}
+				else if (!physicalStops.contains(link.getEndOfLink()) && !commercialStops.contains(link.getEndOfLink()))
+				{
+					continue;
+				}
+				transferProducer.save(link, report, sharedPrefix);
+			}
+
+			for (Company company : companies)
+			{
+				agencyProducer.save(company, report, prefix, timeZone);
+			}
+
+			for (List<Timetable> tms : timetables.values())
+			{
+				calendarProducer.save(tms, report, sharedPrefix);
+				for (Timetable tm : tms)
+				{
+					metadata.getTemporalCoverage().update(tm.getStartOfPeriod(), tm.getEndOfPeriod());
+				}
+			}
+
+		}
+
+	}
 
 
 	private boolean saveLine(Context context,
@@ -283,7 +375,7 @@ public class GtfsLineProducerCommand implements Command, Constant
 	}
 
 	static {
-		CommandFactory.factories.put(GtfsLineProducerCommand.class.getName(),
+		CommandFactory.factories.put(GtfsSharedDataProducerCommand.class.getName(),
 				new DefaultCommandFactory());
 	}
 
