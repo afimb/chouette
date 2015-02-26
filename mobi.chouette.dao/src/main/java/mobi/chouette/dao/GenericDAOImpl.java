@@ -155,13 +155,11 @@ public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 
 	@Override
 	public void flush() {
-		// Session session = em.unwrap(Session.class);
-		// session.flush();
 		em.flush();
 	}
 
+	@Override
 	public void detach(Collection<?> list) {
-		// Session session = em.unwrap(Session.class);
 		for (Object object : list) {
 			em.detach(object);
 		}
