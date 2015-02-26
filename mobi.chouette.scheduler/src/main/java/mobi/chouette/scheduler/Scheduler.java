@@ -170,6 +170,11 @@ public class Scheduler {
 		return true;
 	}
 
+	public boolean deleteAll() {
+		jobDAO.deleteAll();
+		return true;
+	}
+
 	class TaskListener implements ManagedTaskListener {
 
 		@Override

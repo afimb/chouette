@@ -68,13 +68,12 @@ public class JobDAO extends GenericDAOImpl<Job> {
 	// }
 
 	public Job getNextJob(String referential) {
-		
+
 		Job result = null;
 		Query query = em
 				.createQuery("from Job j where j.referential = ?1 and j.status in ( ?2 )");
 		query.setParameter(1, referential);
-		query.setParameter(2,
-				Arrays.asList(STATUS.CREATED, STATUS.SCHEDULED));
+		query.setParameter(2, Arrays.asList(STATUS.CREATED, STATUS.SCHEDULED));
 		List<Job> list = query.getResultList();
 		if (list != null && !list.isEmpty()) {
 			if (list.get(0).getStatus().equals(STATUS.CREATED)) {
@@ -84,4 +83,12 @@ public class JobDAO extends GenericDAOImpl<Job> {
 		return result;
 	}
 
+	@Override
+	public int deleteAll() {
+		List<Job> list = findAll();
+		for (Job entity : list) {
+			delete(entity);
+		}
+		return list.size();
+	}
 }

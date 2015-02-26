@@ -34,4 +34,6 @@ public interface GenericDAO<T> {
 
 	void flush();
 
+	void detach(Collection<?> list);
+
 }

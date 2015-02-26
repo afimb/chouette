@@ -124,7 +124,7 @@ public class Service implements Constant {
 			link.setMethod(Link.GET_METHOD);
 			String href = MessageFormat.format("{0}/{1}/jobs/{2,number,#}",
 					ROOT_PATH, job.getReferential(), job.getId());
-			link.setHref( uriInfo.getBaseUri().toString() + href);
+			link.setHref(uriInfo.getBaseUri().toString() + href);
 			job.getLinks().add(link);
 
 			// add cancel link
@@ -134,7 +134,7 @@ public class Service implements Constant {
 			link.setMethod(Link.DELETE_METHOD);
 			href = MessageFormat.format("/{0}/{1}/jobs/{2,number,#}",
 					ROOT_PATH, job.getReferential(), job.getId());
-			link.setHref( uriInfo.getBaseUri().toASCIIString() + href);
+			link.setHref(uriInfo.getBaseUri().toASCIIString() + href);
 			job.getLinks().add(link);
 
 			// mkdir
@@ -170,7 +170,7 @@ public class Service implements Constant {
 					href = MessageFormat.format(
 							"{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH,
 							job.getReferential(), job.getId(), PARAMETERS_FILE);
-					link.setHref(uriInfo.getBaseUri().toASCIIString()+href);
+					link.setHref(uriInfo.getBaseUri().toASCIIString() + href);
 					job.getLinks().add(link);
 
 				} else {
@@ -200,7 +200,8 @@ public class Service implements Constant {
 								"{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH,
 								job.getReferential(), job.getId(),
 								job.getFilename());
-						link.setHref( uriInfo.getBaseUri().toASCIIString() + href);
+						link.setHref(uriInfo.getBaseUri().toASCIIString()
+								+ href);
 						job.getLinks().add(link);
 					}
 				}
@@ -488,6 +489,7 @@ public class Service implements Constant {
 			} catch (IOException e) {
 				throw new WebApplicationException(Status.NOT_FOUND);
 			}
+			log.info("[DSU] job deleted : " + job.getId());
 			builder = Response.ok();
 		} else {
 			throw new WebApplicationException(Status.NOT_FOUND);
@@ -499,7 +501,7 @@ public class Service implements Constant {
 
 	// delete referential
 	@DELETE
-	@Path("/{ref}")
+	@Path("/{ref}/reports")
 	public Response drop(@PathParam("ref") String referential) {
 		Response result = null;
 
@@ -510,14 +512,16 @@ public class Service implements Constant {
 
 		// build response
 		ResponseBuilder builder = null;
-		java.nio.file.Path path = Paths.get(System.getProperty("user.home"),
-				ROOT_PATH, referential);
-		if (Files.exists(path, LinkOption.NOFOLLOW_LINKS)) {
+		if (scheduler.deleteAll()) {
+			java.nio.file.Path path = Paths.get(
+					System.getProperty("user.home"), ROOT_PATH, referential);
+
 			try {
 				FileUtils.deleteDirectory(path.toFile());
 			} catch (IOException e) {
 				throw new WebApplicationException(Status.NOT_FOUND);
 			}
+			log.info("[DSU] referential deleted : " + referential);
 			builder = Response.ok();
 		} else {
 			throw new WebApplicationException(Status.NOT_FOUND);
