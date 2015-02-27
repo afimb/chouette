@@ -155,6 +155,7 @@ public class ChouettePTNetworkProducer implements Constant {
 
 		for (Timetable timetable : collection.getTimetables())
 		{
+			timetable.computeLimitOfPeriods();
 			TimetableType jaxbObj = timetableProducer.produce(timetable,addExtension);
 			rootObject.getTimetable().add(jaxbObj);
 			// add vehiclejourney only for exported ones

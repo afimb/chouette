@@ -64,6 +64,8 @@ public abstract class CopyUtil {
 	      tm.setComment(object.getComment());
 	      tm.setVersion(object.getVersion());
 	      tm.setIntDayTypes(object.getIntDayTypes());
+	      tm.setStartOfPeriod(object.getStartOfPeriod());
+	      tm.setEndOfPeriod(object.getEndOfPeriod());
 	      tm.setPeriods(new ArrayList<Period>());
 	      for (Period period : object.getPeriods())
 	      {

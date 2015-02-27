@@ -23,4 +23,12 @@ public class AbstractParameter {
 	@XmlElement(name = "user_name", required=true)
 	private String userName;
 
+	@Getter@Setter
+	@XmlElement(name = "organisation_name")
+	private String organisationName;
+
+	@Getter@Setter
+	@XmlElement(name = "referential_name")
+	private String referentialName;
+
 }

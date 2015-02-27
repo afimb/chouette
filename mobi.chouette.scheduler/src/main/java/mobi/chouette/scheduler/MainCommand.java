@@ -54,6 +54,7 @@ public class MainCommand implements Command, Constant {
 		context.put(PARAMETERS, parameters);
 		context.put(CONFIGURATION, parameters.getConfiguration());
 		context.put(VALIDATION, parameters.getValidation());
+		context.put(JOB_REFERENTIAL, job.getReferential());
 		context.put(ACTION, job.getAction());
 		context.put(TYPE, job.getType());
 

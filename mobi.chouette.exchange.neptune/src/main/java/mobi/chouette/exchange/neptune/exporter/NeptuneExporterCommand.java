@@ -1,10 +1,13 @@
 package mobi.chouette.exchange.neptune.exporter;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -25,6 +28,8 @@ import mobi.chouette.dao.LineDAO;
 import mobi.chouette.dao.PTNetworkDAO;
 import mobi.chouette.exchange.ProgressionCommand;
 import mobi.chouette.exchange.exporter.CompressCommand;
+import mobi.chouette.exchange.exporter.SaveMetadataCommand;
+import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.report.Report;
 import mobi.chouette.model.Company;
@@ -68,6 +73,20 @@ public class NeptuneExporterCommand implements Command, Constant {
 		progression.initialize(context);
 
 		context.put(REFERENTIAL, new Referential());
+		Metadata metadata = new Metadata(); // if not asked, will be used as dummy
+        metadata.setDate(Calendar.getInstance());
+        metadata.setFormat("application/xml");
+        metadata.setTitle("Export Neptune ");
+        try
+        {
+           metadata.setRelation(new URL("http://www.normes-donnees-tc.org/format-dechange/donnees-theoriques/neptune/"));
+        }
+        catch (MalformedURLException e1)
+        {
+           log.error("problem with http://www.normes-donnees-tc.org/format-dechange/donnees-theoriques/neptune/ url", e1);
+        }
+
+		context.put(METADATA, metadata);
 
 		// read parameters
 		Object configuration = context.get(CONFIGURATION);
@@ -132,6 +151,15 @@ public class NeptuneExporterCommand implements Command, Constant {
 				if (export.execute(context) == ERROR) {
 					continue;
 				}
+			}
+			
+			// save metadata
+			progression.terminate(context);
+			if (parameters.isAddMetadata())
+			{
+				Command saveMetadata = CommandFactory.create(initialContext,
+						SaveMetadataCommand.class.getName());
+				saveMetadata.execute(context);
 			}
 			
 			// compress

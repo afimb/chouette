@@ -64,7 +64,7 @@ public abstract class TemplateFileWriter
       return entry;
    }
 
-   protected File writePlainFile(String filename, String templateName) throws IOException,
+   protected File writePlainFile(File directory,String filename, String templateName) throws IOException,
          DatatypeConfigurationException
    {
 
@@ -75,7 +75,7 @@ public abstract class TemplateFileWriter
       velocityEngine.mergeTemplate(templateName, "UTF-8",
             velocityContext, output);
 
-      File file = new File(filename);
+      File file = new File(directory, filename);
       FileUtils.write(file, output.toString(), "UTF-8");
 
       logger.debug("File : " + filename + "created");

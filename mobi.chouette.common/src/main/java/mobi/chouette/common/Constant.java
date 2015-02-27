@@ -15,6 +15,7 @@ public interface Constant {
 
 	public static final String OPTIMIZED = "optimized";
 	public static final String ARCHIVE = "archive";
+	public static final String JOB_REFERENTIAL = "job_referential";	
 	public static final String PATH = "path";
 	public static final String FILE_URL = "file_url";
 	public static final String FILE_NAME = "file_name";

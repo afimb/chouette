@@ -1,10 +1,13 @@
 package mobi.chouette.exchange.gtfs.exporter;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -25,6 +28,9 @@ import mobi.chouette.dao.GroupOfLineDAO;
 import mobi.chouette.dao.LineDAO;
 import mobi.chouette.dao.PTNetworkDAO;
 import mobi.chouette.exchange.ProgressionCommand;
+import mobi.chouette.exchange.exporter.CompressCommand;
+import mobi.chouette.exchange.exporter.SaveMetadataCommand;
+import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.report.Report;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.GroupOfLine;
@@ -52,7 +58,7 @@ public class GtfsExporterCommand implements Command, Constant {
 
 	@EJB
 	private GroupOfLineDAO groupOfLineDAO;
-	
+
 	@EJB
 	private GroupOfLineDAO stopAreaDAO;
 
@@ -70,6 +76,20 @@ public class GtfsExporterCommand implements Command, Constant {
 		progression.initialize(context);
 
 		context.put(REFERENTIAL, new Referential());
+		Metadata metadata = new Metadata(); // if not asked, will be used as dummy
+        metadata.setDate(Calendar.getInstance());
+        metadata.setFormat("text/csv");
+        metadata.setTitle("Export GTFS ");
+        try
+        {
+           metadata.setRelation(new URL("https://developers.google.com/transit/gtfs/reference"));
+        }
+        catch (MalformedURLException e1)
+        {
+           log.error("problem with https://developers.google.com/transit/gtfs/reference url", e1);
+        }
+
+		context.put(METADATA, metadata);
 
 		// read parameters
 		Object configuration = context.get(CONFIGURATION);
@@ -123,19 +143,46 @@ public class GtfsExporterCommand implements Command, Constant {
 				Files.createDirectories(path);
 			}
 
-			progression.start(context, lines.size());
-			Command export = CommandFactory.create(initialContext,
+			progression.start(context, lines.size()+1);
+			Command exportLine = CommandFactory.create(initialContext,
 					GtfsLineProducerCommand.class.getName());
 
+			int lineCount = 0;
 			for (Line line : lines) {
 				context.put(LINE_ID, line.getId());
 				progression.execute(context);
-				if (export.execute(context) == ERROR) {
+				if (exportLine.execute(context) == ERROR) 
+				{
 					continue;
+				}
+				else
+				{
+					lineCount ++;
 				}
 			}
 
-			result = SUCCESS;
+			if (lineCount > 0)
+			{
+				progression.execute(context);
+				Command exportSharedData = CommandFactory.create(initialContext,
+						GtfsSharedDataProducerCommand.class.getName());
+				result = exportSharedData.execute(context);
+			}
+
+			// save metadata
+			progression.terminate(context);
+			if (parameters.isAddMetadata())
+			{
+				Command saveMetadata = CommandFactory.create(initialContext,
+						SaveMetadataCommand.class.getName());
+				saveMetadata.execute(context);
+			}			
+			
+			// compress
+			Command compress = CommandFactory.create(initialContext,
+					CompressCommand.class.getName());
+			compress.execute(context);
+
 		} catch (Exception e) {
 			Report report = (Report) context.get(REPORT);
 			report.setFailure("Fatal :" + e);

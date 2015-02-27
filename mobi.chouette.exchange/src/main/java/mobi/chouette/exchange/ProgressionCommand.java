@@ -41,6 +41,14 @@ public class ProgressionCommand implements Command, Constant {
 		saveReport(context);
 
 	}
+	
+	public void terminate(Context context)
+	{
+		Report report =  (Report) context.get(REPORT);
+		report.getProgression().setStep(STEP.FINALISATION);
+		saveReport(context);
+
+	}
 
 	public void dispose(Context context)
 	{

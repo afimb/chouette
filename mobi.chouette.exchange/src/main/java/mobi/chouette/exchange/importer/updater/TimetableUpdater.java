@@ -40,6 +40,8 @@ public class TimetableUpdater implements Updater<Timetable> {
 			return;
 		}
 		newValue.setSaved(true);
+		
+		newValue.computeLimitOfPeriods();
 
 		if (newValue.getObjectId() != null
 				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {

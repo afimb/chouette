@@ -265,6 +265,7 @@ AbstractProducer
          }
          merged.setObjectId(prefix+":"+Timetable.TIMETABLE_KEY+":"+key(timetables,prefix));
       }
+      merged.computeLimitOfPeriods();
       return merged;
    }
 

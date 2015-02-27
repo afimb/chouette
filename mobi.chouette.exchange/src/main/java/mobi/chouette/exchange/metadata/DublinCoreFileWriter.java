@@ -2,6 +2,7 @@ package mobi.chouette.exchange.metadata;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -28,15 +29,16 @@ public class DublinCoreFileWriter extends TemplateFileWriter
       return writeZipEntry("metadata_chouette_dc.xml","templates/metadata_dc.vm", zipFile);
    }
 
-   public File writePlainFile(Metadata data, String directory) throws IOException,
+   public File writePlainFile(Metadata data, Path target) throws IOException,
          DatatypeConfigurationException
    {
 
       // Prepare the model for velocity
       getModel().put("data",data);
       getModel().put("formater", new DublinCoreFormater());
+     
 
-      return writePlainFile(directory+"/metadata_chouette_dc.xml","templates/metadata_dc.vm");
+      return writePlainFile(target.toFile(),"metadata_chouette_dc.xml","templates/metadata_dc.vm");
 
    }
 
