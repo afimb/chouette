@@ -16,7 +16,6 @@ import java.util.Set;
 import java.util.TimeZone;
 
 import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
@@ -56,17 +55,13 @@ public class GtfsSharedDataProducerCommand implements Command, Constant
 
 		try {
 
-			GtfsExportParameters configuration = (GtfsExportParameters) context
-					.get(CONFIGURATION);
-
 			ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
 			if (collection == null)
 			{
 				return ERROR;
 			}
 
-			TimeZone timezone = TimeZone.getTimeZone(configuration.getTimeZone());
-			saveData(context,null,timezone);	
+			saveData(context);	
 			LineStats globalStats = report.getLines().getStats();
 			if (globalStats == null) {
 				globalStats = new LineStats();
@@ -87,18 +82,19 @@ public class GtfsSharedDataProducerCommand implements Command, Constant
 
 
 
-	private void saveData(Context context,
-			Metadata metadata, TimeZone timeZone) 
+	private void saveData(Context context) 
 	{
+		Metadata metadata = (Metadata) context.get(METADATA);
 		GtfsExporter exporter = (GtfsExporter) context.get(GTFS_EXPORTER);
 		GtfsStopProducer stopProducer = new GtfsStopProducer(exporter);
-		GtfsServiceProducer calendarProducer = new GtfsServiceProducer(exporter);		
 		GtfsTransferProducer transferProducer = new GtfsTransferProducer(exporter);
-		GtfsAgencyProducer agencyProducer = new GtfsAgencyProducer(exporter);
+		GtfsAgencyProducer agencyProducer = null;
+		GtfsServiceProducer calendarProducer = null;		
 
 		Report report = (Report) context.get(REPORT);
 		GtfsExportParameters configuration = (GtfsExportParameters) context
 				.get(CONFIGURATION);
+		TimeZone timezone = TimeZone.getTimeZone(configuration.getTimeZone());
 		String prefix = configuration.getObjectIdPrefix();
 		String sharedPrefix = prefix;
 		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
@@ -107,7 +103,14 @@ public class GtfsSharedDataProducerCommand implements Command, Constant
 		Set<StopArea> physicalStops = collection.getPhysicalStops();
 		Set<ConnectionLink> connectionLinks = collection.getConnectionLinks();
 		Set<Company> companies = collection.getCompanies();
-
+        if (!companies.isEmpty())
+        {
+        	agencyProducer = new GtfsAgencyProducer(exporter);
+        }
+        if (!timetables.isEmpty())
+        {
+        	calendarProducer = new GtfsServiceProducer(exporter);
+        }
 
 		for (Iterator<StopArea> iterator = commercialStops.iterator(); iterator.hasNext();)
 		{
@@ -144,7 +147,7 @@ public class GtfsSharedDataProducerCommand implements Command, Constant
 
 		for (Company company : companies)
 		{
-			agencyProducer.save(company, report, prefix, timeZone);
+			agencyProducer.save(company, report, prefix, timezone);
 		}
 
 		for (List<Timetable> tms : timetables.values())
@@ -162,14 +165,7 @@ public class GtfsSharedDataProducerCommand implements Command, Constant
 
 		@Override
 		protected Command create(InitialContext context) throws IOException {
-			Command result = null;
-			try {
-				String name = "java:app/mobi.chouette.exchange.gtfs/"
-						+ COMMAND;
-				result = (Command) context.lookup(name);
-			} catch (NamingException e) {
-				log.error(e);
-			}
+			Command result = new GtfsSharedDataProducerCommand();
 			return result;
 		}
 	}

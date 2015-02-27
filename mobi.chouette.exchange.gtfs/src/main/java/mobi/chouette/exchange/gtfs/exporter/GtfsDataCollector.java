@@ -2,6 +2,7 @@ package mobi.chouette.exchange.gtfs.exporter;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -112,6 +113,15 @@ public class GtfsDataCollector
 			}
 		}
 		return validLine;
+	}
+
+	public boolean collect(ExportableData collection, Collection<StopArea> stopAreas)
+	{
+		for (StopArea stopArea : stopAreas) {
+			collectStopAreas(collection,stopArea);
+		}
+		return !collection.getPhysicalStops().isEmpty();
+
 	}
 
 	private void collectStopAreas(ExportableData collection,StopArea stopArea)

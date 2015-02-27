@@ -19,7 +19,6 @@ import javax.naming.NamingException;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
-import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
@@ -27,9 +26,12 @@ import mobi.chouette.dao.CompanyDAO;
 import mobi.chouette.dao.GroupOfLineDAO;
 import mobi.chouette.dao.LineDAO;
 import mobi.chouette.dao.PTNetworkDAO;
+import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.exchange.ProgressionCommand;
 import mobi.chouette.exchange.exporter.CompressCommand;
 import mobi.chouette.exchange.exporter.SaveMetadataCommand;
+import mobi.chouette.exchange.gtfs.Constant;
+import mobi.chouette.exchange.gtfs.model.exporter.GtfsExporter;
 import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.report.Report;
 import mobi.chouette.model.Company;
@@ -60,7 +62,7 @@ public class GtfsExporterCommand implements Command, Constant {
 	private GroupOfLineDAO groupOfLineDAO;
 
 	@EJB
-	private GroupOfLineDAO stopAreaDAO;
+	private StopAreaDAO stopAreaDAO;
 
 	@Override
 	public boolean execute(Context context) throws Exception {
@@ -77,17 +79,17 @@ public class GtfsExporterCommand implements Command, Constant {
 
 		context.put(REFERENTIAL, new Referential());
 		Metadata metadata = new Metadata(); // if not asked, will be used as dummy
-        metadata.setDate(Calendar.getInstance());
-        metadata.setFormat("text/csv");
-        metadata.setTitle("Export GTFS ");
-        try
-        {
-           metadata.setRelation(new URL("https://developers.google.com/transit/gtfs/reference"));
-        }
-        catch (MalformedURLException e1)
-        {
-           log.error("problem with https://developers.google.com/transit/gtfs/reference url", e1);
-        }
+		metadata.setDate(Calendar.getInstance());
+		metadata.setFormat("text/csv");
+		metadata.setTitle("Export GTFS ");
+		try
+		{
+			metadata.setRelation(new URL("https://developers.google.com/transit/gtfs/reference"));
+		}
+		catch (MalformedURLException e1)
+		{
+			log.error("problem with https://developers.google.com/transit/gtfs/reference url", e1);
+		}
 
 		context.put(METADATA, metadata);
 
@@ -107,76 +109,92 @@ public class GtfsExporterCommand implements Command, Constant {
 		GtfsExportParameters parameters = (GtfsExportParameters) configuration;
 
 		String type = parameters.getReferencesType().toLowerCase();
-		List<Object> ids = null;
-		if (parameters.getIds() != null) {
-			ids = new ArrayList<Object>(parameters.getIds());
-		}
-
-		Set<Line> lines = new HashSet<Line>();
-		if (ids == null || ids.isEmpty()) {
-			lines.addAll(lineDAO.findAll());
-		} else {
-			if (type.equals("line")) {
-				lines.addAll(lineDAO.findAll(ids));
-			} else if (type.equals("network")) {
-				List<PTNetwork> list = ptNetworkDAO.findAll(ids);
-				for (PTNetwork ptNetwork : list) {
-					lines.addAll(ptNetwork.getLines());
-				}
-			} else if (type.equals("company")) {
-				List<Company> list = companyDAO.findAll(ids);
-				for (Company company : list) {
-					lines.addAll(company.getLines());
-				}
-			} else if (type.equals("groupofline")) {
-				List<GroupOfLine> list = groupOfLineDAO.findAll(ids);
-				for (GroupOfLine groupOfLine : list) {
-					lines.addAll(groupOfLine.getLines());
-				}
-			}
-		}
+		
 
 		try {
-
 			Path path = Paths.get(context.get(PATH).toString(), OUTPUT);
 			if (!Files.exists(path)) {
 				Files.createDirectories(path);
 			}
+			GtfsExporter gtfsExporter = new GtfsExporter(path.toString());
+			context.put(GTFS_EXPORTER, gtfsExporter);
 
-			progression.start(context, lines.size()+1);
-			Command exportLine = CommandFactory.create(initialContext,
-					GtfsLineProducerCommand.class.getName());
-
-			int lineCount = 0;
-			for (Line line : lines) {
-				context.put(LINE_ID, line.getId());
-				progression.execute(context);
-				if (exportLine.execute(context) == ERROR) 
-				{
-					continue;
-				}
-				else
-				{
-					lineCount ++;
-				}
-			}
-
-			if (lineCount > 0)
+			if (type.equals("stop_area"))
 			{
+				progression.start(context, 1);
+				Command exportStopArea = CommandFactory.create(initialContext,
+						GtfsStopAreaProducerCommand.class.getName());
+				result = exportStopArea.execute(context);
 				progression.execute(context);
-				Command exportSharedData = CommandFactory.create(initialContext,
-						GtfsSharedDataProducerCommand.class.getName());
-				result = exportSharedData.execute(context);
+				progression.terminate(context);
 			}
-
-			// save metadata
-			progression.terminate(context);
-			if (parameters.isAddMetadata())
+			else
 			{
-				Command saveMetadata = CommandFactory.create(initialContext,
-						SaveMetadataCommand.class.getName());
-				saveMetadata.execute(context);
-			}			
+				List<Object> ids = null;
+				if (parameters.getIds() != null) {
+					ids = new ArrayList<Object>(parameters.getIds());
+				}
+
+				Set<Line> lines = new HashSet<Line>();
+				if (ids == null || ids.isEmpty()) {
+					lines.addAll(lineDAO.findAll());
+				} else {
+					if (type.equals("line")) {
+						lines.addAll(lineDAO.findAll(ids));
+					} else if (type.equals("network")) {
+						List<PTNetwork> list = ptNetworkDAO.findAll(ids);
+						for (PTNetwork ptNetwork : list) {
+							lines.addAll(ptNetwork.getLines());
+						}
+					} else if (type.equals("company")) {
+						List<Company> list = companyDAO.findAll(ids);
+						for (Company company : list) {
+							lines.addAll(company.getLines());
+						}
+					} else if (type.equals("groupofline")) {
+						List<GroupOfLine> list = groupOfLineDAO.findAll(ids);
+						for (GroupOfLine groupOfLine : list) {
+							lines.addAll(groupOfLine.getLines());
+						}
+					}
+				}
+
+				progression.start(context, lines.size()+1);
+				Command exportLine = CommandFactory.create(initialContext,
+						GtfsLineProducerCommand.class.getName());
+
+				int lineCount = 0;
+				for (Line line : lines) {
+					context.put(LINE_ID, line.getId());
+					progression.execute(context);
+					if (exportLine.execute(context) == ERROR) 
+					{
+						continue;
+					}
+					else
+					{
+						lineCount ++;
+					}
+				}
+
+				if (lineCount > 0)
+				{
+					progression.execute(context);
+					Command exportSharedData = CommandFactory.create(initialContext,
+							GtfsSharedDataProducerCommand.class.getName());
+					result = exportSharedData.execute(context);
+				}
+
+				// save metadata
+				progression.terminate(context);
+				if (parameters.isAddMetadata())
+				{
+					Command saveMetadata = CommandFactory.create(initialContext,
+							SaveMetadataCommand.class.getName());
+					saveMetadata.execute(context);
+				}		
+			}
+			gtfsExporter.dispose();
 			
 			// compress
 			Command compress = CommandFactory.create(initialContext,

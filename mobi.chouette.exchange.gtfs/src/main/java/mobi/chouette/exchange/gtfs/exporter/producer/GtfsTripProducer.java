@@ -9,6 +9,10 @@
 package mobi.chouette.exchange.gtfs.exporter.producer;
 
 import java.sql.Time;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime;
@@ -62,7 +66,16 @@ AbstractProducer
       Time previousDeparture = null;
       String tripId = toGtfsId(vj.getObjectId(),prefix);
       time.setTripId(tripId);
-      for (VehicleJourneyAtStop vjas : vj.getVehicleJourneyAtStops())
+      List<VehicleJourneyAtStop> lvjas = new ArrayList<>(vj.getVehicleJourneyAtStops());
+      Collections.sort(lvjas, new Comparator<VehicleJourneyAtStop>() {
+
+		@Override
+		public int compare(VehicleJourneyAtStop o1, VehicleJourneyAtStop o2) {
+			// TODO Auto-generated method stub
+			return o1.getStopPoint().getPosition().compareTo(o2.getStopPoint().getPosition());
+		}
+	});
+      for (VehicleJourneyAtStop vjas : lvjas)
       {
          time.setStopId(toGtfsId(vjas.getStopPoint().getContainedInStopArea()
                .getObjectId(),sharedPrefix));
@@ -177,7 +190,6 @@ AbstractProducer
       }
       return true;
    }
-
 
 
 }

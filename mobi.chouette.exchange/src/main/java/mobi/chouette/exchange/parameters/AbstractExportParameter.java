@@ -14,7 +14,7 @@ import lombok.ToString;
 
 
 @NoArgsConstructor
-@ToString
+@ToString(callSuper=true)
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AbstractExportParameter extends AbstractParameter{
 
@@ -24,7 +24,7 @@ public class AbstractExportParameter extends AbstractParameter{
 	
 	@Getter @Setter
 	@XmlElement(name = "id")
-	private List<Integer> ids;
+	private List<Long> ids;
 	
 	@Getter @Setter
 	@XmlElement(name = "start_date")

@@ -11,11 +11,8 @@ package mobi.chouette.exchange.gtfs.exporter;
 import java.io.IOException;
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -31,10 +28,8 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.LineDAO;
 import mobi.chouette.exchange.gtfs.Constant;
-import mobi.chouette.exchange.gtfs.exporter.producer.GtfsExtendedStopProducer;
 import mobi.chouette.exchange.gtfs.exporter.producer.GtfsRouteProducer;
 import mobi.chouette.exchange.gtfs.exporter.producer.GtfsServiceProducer;
-import mobi.chouette.exchange.gtfs.exporter.producer.GtfsTransferProducer;
 import mobi.chouette.exchange.gtfs.exporter.producer.GtfsTripProducer;
 import mobi.chouette.exchange.gtfs.model.exporter.GtfsExporter;
 import mobi.chouette.exchange.metadata.Metadata;
@@ -43,12 +38,9 @@ import mobi.chouette.exchange.report.LineInfo;
 import mobi.chouette.exchange.report.LineInfo.LINE_STATE;
 import mobi.chouette.exchange.report.LineStats;
 import mobi.chouette.exchange.report.Report;
-import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.Line;
-import mobi.chouette.model.StopArea;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
-import mobi.chouette.model.type.ChouetteAreaEnum;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -115,7 +107,7 @@ public class GtfsLineProducerCommand implements Command, Constant
 			{
 				context.put(EXPORTABLE_DATA, collection);
 
-				saveLine(context,null,line);	
+				saveLine(context,line);	
 				// producer.produce(context);
 
 				lineInfo.setStatus(LINE_STATE.OK);
@@ -151,10 +143,10 @@ public class GtfsLineProducerCommand implements Command, Constant
 
 
 	private boolean saveLine(Context context,
-			Metadata metadata, 
 
 			Line line) 
 	{
+		Metadata metadata = (Metadata) context.get(METADATA);
 		GtfsExporter exporter = (GtfsExporter) context.get(GTFS_EXPORTER);
 		GtfsServiceProducer calendarProducer = new GtfsServiceProducer(exporter);
 		GtfsTripProducer tripProducer = new GtfsTripProducer(exporter);
@@ -199,72 +191,6 @@ public class GtfsLineProducerCommand implements Command, Constant
 		return hasLine;
 	}
 
-	public void saveStopAreas(List<StopArea> beans, GtfsExporter exporter, Report report, String sharedPrefix, Metadata metadata)
-	{
-		Set<StopArea> physicalStops = new HashSet<StopArea>();
-		Set<StopArea> commercialStops = new HashSet<StopArea>();
-		Set<ConnectionLink> connectionLinks = new HashSet<ConnectionLink>();
-		GtfsExtendedStopProducer stopProducer = new GtfsExtendedStopProducer(exporter);
-		GtfsTransferProducer transferProducer = new GtfsTransferProducer(exporter);
-		metadata.setDescription("limited to stops and transfers");
-		for (StopArea area : beans)
-		{
-			if (area.getAreaType().equals(ChouetteAreaEnum.BoardingPosition) || area.getAreaType().equals(ChouetteAreaEnum.Quay))
-			{
-				if (area.hasCoordinates())
-				{
-					physicalStops.add(area);
-					if (area.getConnectionStartLinks() != null)
-						connectionLinks.addAll(area.getConnectionStartLinks());
-					if (area.getConnectionEndLinks() != null)
-						connectionLinks.addAll(area.getConnectionEndLinks());
-
-					if (area.getParent() != null && area.getParent().hasCoordinates())
-					{
-						commercialStops.add(area.getParent());
-						if (area.getParent().getConnectionStartLinks() != null)
-							connectionLinks.addAll(area.getParent().getConnectionStartLinks());
-						if (area.getParent().getConnectionEndLinks() != null)
-							connectionLinks.addAll(area.getParent().getConnectionEndLinks());
-					}
-				}
-			}
-
-		}
-		for (Iterator<StopArea> iterator = commercialStops.iterator(); iterator.hasNext();)
-		{
-			StopArea stop = iterator.next();
-			if (!stopProducer.save(stop, report, sharedPrefix, null))
-			{
-				iterator.remove();
-			}
-			else
-			{
-				if (stop.hasCoordinates())
-					metadata.getSpatialCoverage().update(stop.getLongitude().doubleValue(), stop.getLatitude().doubleValue());
-			}
-		}
-		for (StopArea stop : physicalStops)
-		{
-			stopProducer.save(stop, report, sharedPrefix, commercialStops);
-			if (stop.hasCoordinates())
-				metadata.getSpatialCoverage().update(stop.getLongitude().doubleValue(), stop.getLatitude().doubleValue());
-		}
-		// remove incomplete connectionlinks
-		for (ConnectionLink link : connectionLinks)
-		{
-			if (!physicalStops.contains(link.getStartOfLink()) && !commercialStops.contains(link.getStartOfLink()))
-			{
-				continue;
-			}
-			else if (!physicalStops.contains(link.getEndOfLink()) && !commercialStops.contains(link.getEndOfLink()))
-			{
-				continue;
-			}
-			transferProducer.save(link, report, sharedPrefix);
-		}
-
-	}
 
 	public static class DefaultCommandFactory extends CommandFactory {
 

@@ -2,7 +2,7 @@ package mobi.chouette.exchange.gtfs.exporter;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,10 +17,10 @@ import mobi.chouette.exchange.parameters.AbstractExportParameter;
 public class GtfsExportParameters  extends AbstractExportParameter {
 		
 	@Getter @Setter
-	@XmlAttribute(name = "time_zone")
+	@XmlElement(name = "time_zone",required = true)
 	private String timeZone;
 	
 	@Getter @Setter
-	@XmlAttribute(name = "object_id_prefix")
+	@XmlElement(name = "object_id_prefix",required = true)
 	private String objectIdPrefix;
 }
