@@ -1,6 +1,5 @@
 package mobi.chouette.scheduler;
 
-import java.net.URI;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
@@ -26,9 +25,6 @@ import mobi.chouette.persistence.hibernate.ContextHolder;
 public class Task implements Callable<Job.STATUS>, ManagedTask, Constant {
 
 	@Getter
-	private URI baseURI;
-
-	@Getter
 	private Job job;
 
 	private Map<String, String> properties;
@@ -45,7 +41,7 @@ public class Task implements Callable<Job.STATUS>, ManagedTask, Constant {
 			Context context = new Context();
 			context.put(INITIAL_CONTEXT, initialContext);
 			context.put(JOB_ID, job.getId());
-			context.put(BASE_URI, baseURI);
+			Thread.sleep(1000);
 			Command command = CommandFactory.create(initialContext,
 					MainCommand.class.getName());
 			command.execute(context);

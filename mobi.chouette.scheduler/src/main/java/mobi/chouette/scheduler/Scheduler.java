@@ -1,6 +1,5 @@
 package mobi.chouette.scheduler;
 
-import java.net.URI;
 import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.Date;
@@ -9,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
@@ -19,8 +19,6 @@ import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.concurrent.ManagedTaskListener;
 import javax.naming.InitialContext;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriInfo;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
@@ -52,14 +50,8 @@ public class Scheduler {
 	@Resource(lookup = "java:comp/DefaultManagedExecutorService")
 	ManagedExecutorService executor;
 
-	private boolean initialized = false;
-
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void schedule(URI baseURI, String referential) {
-
-		if (!initialized) {
-			initialize(baseURI);
-		}
+	public void schedule(String referential) {
 
 		Job job = jobDAO.getNextJob(referential);
 		if (job != null) {
@@ -77,14 +69,13 @@ public class Scheduler {
 			jobDAO.update(job);
 
 			Map<String, String> properties = new HashMap<String, String>();
-			Task task = new Task(baseURI, job, properties, new TaskListener());
+			Task task = new Task(job, properties, new TaskListener());
 			Future<?> future = executor.submit(task);
 		}
 	}
 
-	private void initialize(URI baseURI) {
-
-		initialized = true;
+	@PostConstruct
+	private void initialize() {
 
 		List<Job> list = jobDAO.findAll();
 
@@ -114,7 +105,7 @@ public class Scheduler {
 			link.setMethod(Link.DELETE_METHOD);
 			String href = MessageFormat.format("/{0}/{1}/reports/{2,number,#}",
 					Constant.ROOT_PATH, job.getReferential(), job.getId());
-			link.setHref(baseURI.toASCIIString() + href);
+			link.setHref(href);
 			job.getLinks().clear();
 			job.getLinks().add(link);
 
@@ -131,16 +122,11 @@ public class Scheduler {
 					}
 				});
 		for (Job job : created) {
-			schedule(baseURI, job.getReferential());
+			schedule(job.getReferential());
 		}
 	}
 
-	public boolean cancel(URI baseURI, Long id) {
-
-		if (!initialized) {
-			initialize(baseURI);
-		}
-
+	public boolean cancel(Long id) {
 		Job job = jobDAO.find(id);
 		if (job.getStatus().equals(STATUS.CREATED)
 				|| job.getStatus().equals(STATUS.SCHEDULED)) {
@@ -153,7 +139,7 @@ public class Scheduler {
 			link.setMethod(Link.DELETE_METHOD);
 			String href = MessageFormat.format("/{0}/{1}/reports/{2,number,#}",
 					Constant.ROOT_PATH, job.getReferential(), job.getId());
-			link.setHref(baseURI.toASCIIString() + href);
+			link.setHref(href);
 			job.getLinks().clear();
 			job.getLinks().add(link);
 
@@ -217,14 +203,12 @@ public class Scheduler {
 					ContextHolder.setContext(null);
 					try {
 						String referential = task.getJob().getReferential();
-						URI baseUri = task.getBaseURI();
-
 						InitialContext initialContext = new InitialContext();
 						Scheduler scheduler = (Scheduler) initialContext
 								.lookup("java:app/mobi.chouette.scheduler/"
 										+ BEAN_NAME);
 
-						scheduler.schedule(baseUri, referential);
+						scheduler.schedule(referential);
 					} catch (Exception e) {
 						log.error(e);
 					}

@@ -40,8 +40,6 @@ public class MainCommand implements Command, Constant {
 	public boolean execute(Context context) throws Exception {
 		boolean result = false;
 
-		URI baseURI = (URI) context.get(BASE_URI);
-
 		Long id = (Long) context.get(JOB_ID);
 		Job job = jobDAO.find(id);
 
@@ -85,9 +83,9 @@ public class MainCommand implements Command, Constant {
 		link.setType(MediaType.APPLICATION_JSON);
 		link.setRel(Link.LOCATION_REL);
 		link.setMethod(Link.GET_METHOD);
-		String href = MessageFormat.format("{0}/{1}/reports/{2,number,#}",
+		String href = MessageFormat.format("/{0}/{1}/reports/{2,number,#}",
 				ROOT_PATH, job.getReferential(), job.getId());
-		link.setHref(baseURI.toASCIIString() + href);
+		link.setHref(href);
 		job.getLinks().add(link);
 
 		// add delete link
@@ -95,9 +93,9 @@ public class MainCommand implements Command, Constant {
 		link.setType("application/json");
 		link.setRel(Link.DELETE_REL);
 		link.setMethod(Link.DELETE_METHOD);
-		href = MessageFormat.format("{0}/{1}/reports/{2,number,#}",
+		href = MessageFormat.format("/{0}/{1}/reports/{2,number,#}",
 				ROOT_PATH, job.getReferential(), job.getId());
-		link.setHref(baseURI.toASCIIString() + href);
+		link.setHref(href);
 		job.getLinks().add(link);
 
 		// add validation link
@@ -106,16 +104,16 @@ public class MainCommand implements Command, Constant {
 		link.setRel(Link.VALIDATION_REL);
 		link.setMethod(Link.GET_METHOD);
 		href = MessageFormat.format(
-				"{0}/{1}/data/{2,number,#}/validation.json", ROOT_PATH,
+				"/{0}/{1}/data/{2,number,#}/validation.json", ROOT_PATH,
 				job.getReferential(), job.getId());
-		link.setHref(baseURI.toASCIIString() + href);
+		link.setHref(href);
 		job.getLinks().add(link);
 
 		// add data upload link
 		if (job.getAction().equals(EXPORTER)) {
 
 			href = MessageFormat.format(
-					"{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH,
+					"/{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH,
 					job.getReferential(), job.getId(), job.getFilename());
 
 			// if (Files.exists(Paths.get(System.getProperty("user.home"), href))) {
@@ -123,7 +121,7 @@ public class MainCommand implements Command, Constant {
 				link.setType(MediaType.APPLICATION_OCTET_STREAM);
 				link.setRel(Link.DATA_REL);
 				link.setMethod(Link.GET_METHOD);
-				link.setHref(baseURI.toASCIIString() + href);
+				link.setHref(href);
 
 				job.getLinks().add(link);
 			//}

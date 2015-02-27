@@ -32,7 +32,6 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 
 import lombok.extern.log4j.Log4j;
@@ -122,9 +121,9 @@ public class Service implements Constant {
 			link.setType(MediaType.APPLICATION_JSON);
 			link.setRel(Link.LOCATION_REL);
 			link.setMethod(Link.GET_METHOD);
-			String href = MessageFormat.format("{0}/{1}/jobs/{2,number,#}",
+			String href = MessageFormat.format("/{0}/{1}/jobs/{2,number,#}",
 					ROOT_PATH, job.getReferential(), job.getId());
-			link.setHref(uriInfo.getBaseUri().toString() + href);
+			link.setHref(href);
 			job.getLinks().add(link);
 
 			// add cancel link
@@ -134,7 +133,7 @@ public class Service implements Constant {
 			link.setMethod(Link.DELETE_METHOD);
 			href = MessageFormat.format("/{0}/{1}/jobs/{2,number,#}",
 					ROOT_PATH, job.getReferential(), job.getId());
-			link.setHref(uriInfo.getBaseUri().toASCIIString() + href);
+			link.setHref(href);
 			job.getLinks().add(link);
 
 			// mkdir
@@ -168,9 +167,9 @@ public class Service implements Constant {
 					link.setRel(Link.PARAMETERS_REL);
 					link.setMethod(Link.GET_METHOD);
 					href = MessageFormat.format(
-							"{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH,
+							"/{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH,
 							job.getReferential(), job.getId(), PARAMETERS_FILE);
-					link.setHref(uriInfo.getBaseUri().toASCIIString() + href);
+					link.setHref(href);
 					job.getLinks().add(link);
 
 				} else {
@@ -197,11 +196,10 @@ public class Service implements Constant {
 						link.setRel(Link.DATA_REL);
 						link.setMethod(Link.GET_METHOD);
 						href = MessageFormat.format(
-								"{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH,
+								"/{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH,
 								job.getReferential(), job.getId(),
 								job.getFilename());
-						link.setHref(uriInfo.getBaseUri().toASCIIString()
-								+ href);
+						link.setHref(href);
 						job.getLinks().add(link);
 					}
 				}
@@ -213,7 +211,7 @@ public class Service implements Constant {
 
 			// schedule job
 			jobDAO.update(job);
-			scheduler.schedule(uriInfo.getBaseUri(), job.getReferential());
+			scheduler.schedule(job.getReferential());
 
 			// TODO for debug
 			java.nio.file.Path path = Paths.get(
@@ -320,7 +318,7 @@ public class Service implements Constant {
 			if (payload != null)
 				job.setParameters(payload.getConfiguration());
 		}
-		result.setList(filtered);
+		result.setList(build(filtered));
 
 		// cache control
 		ResponseBuilder builder = Response.ok(result);
@@ -368,7 +366,9 @@ public class Service implements Constant {
 
 			// add links
 			for (Link link : job.getLinks()) {
-				builder.link(URI.create(link.getHref()), link.getRel());
+				URI uri = uriInfo.getAbsolutePathBuilder().path(link.getHref())
+						.build();
+				builder.link(URI.create(uri.toASCIIString()), link.getRel());
 			}
 
 		} else {
@@ -400,7 +400,7 @@ public class Service implements Constant {
 
 		// build response
 		ResponseBuilder builder = null;
-		if (scheduler.cancel(uriInfo.getBaseUri(), job.getId())) {
+		if (scheduler.cancel(job.getId())) {
 			builder = Response.ok();
 		} else {
 			throw new WebApplicationException(Status.NOT_FOUND);
@@ -453,7 +453,9 @@ public class Service implements Constant {
 
 		// add links
 		for (Link link : job.getLinks()) {
-			builder.link(URI.create(link.getHref()), link.getRel());
+			URI uri = uriInfo.getAbsolutePathBuilder().path(link.getHref())
+					.build();
+			builder.link(URI.create(uri.toASCIIString()), link.getRel());
 		}
 
 		result = builder.build();
@@ -528,6 +530,22 @@ public class Service implements Constant {
 		}
 		result = builder.build();
 
+		return result;
+	}
+	
+	private Collection<Job> build(Collection<Job> list) {
+
+		Collection<Job> result = list;
+		for (Job job : list) {
+			jobDAO.detach(job);
+
+			for (Link link : job.getLinks()) {
+
+				URI uri = uriInfo.getAbsolutePathBuilder().path(link.getHref())
+						.build();
+				link.setHref(uri.toASCIIString());
+			}
+		}
 		return result;
 	}
 
