@@ -612,7 +612,7 @@ public class ValidationStopAreas extends
 
       checkPoint.check(list, fullparameters, report, new HashMap<String, Object>());
       report.refreshStatus();
-      AbstractValidation.printReport(report);
+      printReport(report);
 
       Assert.assertTrue(report.hasItem("4-StopArea-3"), " report must have item 4-StopArea-3");
       Assert.assertEquals(report.getItem("4-StopArea-3").getItems().size(), 1, " checkpoint must have detail");
@@ -627,7 +627,7 @@ public class ValidationStopAreas extends
  
       checkPoint.check(list, fullparameters, report, new HashMap<String, Object>());
       report.refreshStatus();
-      AbstractValidation.printReport(report);
+      printReport(report);
 
       Assert.assertTrue(report.hasItem("4-StopArea-3"), " report must have item 4-StopArea-3");
       Assert.assertEquals(report.getItem("4-StopArea-3").getItems().size(), 1, " checkpoint must have detail");
