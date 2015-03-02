@@ -17,6 +17,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.persistence.EntityManager;
 
@@ -63,7 +64,10 @@ import fr.certu.chouette.service.geographic.IGeographicService;
  * 
  * from database : -c validate -o line|network|company -validationId ZZZ [-id
  * list_of_ids_separated_by_commas]
- * 
+ * start_date: '2014-10-01'
+end_date: '2015-04-01'
+extensions: '1'
+
  */
 @NoArgsConstructor
 public class ExportCommand
@@ -127,14 +131,36 @@ public class ExportCommand
 
       startProcess(session, guiExport);
 
+      // parse options 
+      if (guiExport.getOptions() != null)
+      {
+         String[] lines = guiExport.getOptions().split("\n");
+         for (String line : lines)
+         {
+            String[] tokens = line.split(":");
+            if (tokens.length == 2)
+            {
+               String param = tokens[0].trim();
+               String val = tokens[1].trim();
+               if (val.contains("'"))
+                  val = val.substring(1,val.lastIndexOf("'"));
+               logger.info("  "+param+" : " + val);
+               List<String> list = new ArrayList<>();
+               list.add(val);
+               parameters.put(param, list);
+            }
+
+         }
+      }
+
       Referential referential = guiExport.getReferential();
       logger.info("Referential " + referential.getId());
       logger.info("  name : " + referential.getName());
       logger.info("  slug : " + referential.getSlug());
       logger.info("  projection type : " + referential.getProjectionType());
-      
+
       Organisation organisation = referential.getOrganisation();
-      
+
       Metadata metadata = new Metadata();
       metadata.setCreator(organisation.getName());
       metadata.setPublisher(referential.getName());
@@ -205,7 +231,7 @@ public class ExportCommand
 
          List<ParameterValue> values = populateParameters(description,
                parameters);
-         
+
          SimpleParameterValue metadataParameter = new SimpleParameterValue("metadata");
          metadataParameter.setObjectValue(metadata);
          values.add(metadataParameter);
@@ -243,7 +269,7 @@ public class ExportCommand
    private List<NeptuneIdentifiedObject> executeGet(
          INeptuneManager<NeptuneIdentifiedObject> manager,
          Map<String, List<String>> parameters) throws ChouetteException
-   {
+         {
       Filter filter = null;
       if (parameters.containsKey("id"))
       {
@@ -351,7 +377,7 @@ public class ExportCommand
 
       System.out.println("beans count = " + beans.size());
       return beans;
-   }
+         }
 
    /**
     * @param parameters
@@ -395,7 +421,7 @@ public class ExportCommand
     */
    private INeptuneManager<NeptuneIdentifiedObject> getManager(
          Map<String, List<String>> parameters)
-   {
+         {
       String object = null;
       try
       {
@@ -415,7 +441,7 @@ public class ExportCommand
                + " are managed");
       }
       return manager;
-   }
+         }
 
    /**
     * @param string
@@ -454,16 +480,18 @@ public class ExportCommand
    private List<ParameterValue> populateParameters(
          FormatDescription description, Map<String, List<String>> parameters,
          String... excluded)
-   {
+         {
       List<ParameterValue> values = new ArrayList<ParameterValue>();
       List<String> excludedParams = Arrays.asList(excluded);
       for (ParameterDescription desc : description.getParameterDescriptions())
       {
          String name = desc.getName();
-         String key = name.toLowerCase();
-         if (excludedParams.contains(key))
+         String keyCC = name.toLowerCase();
+         String key = name.replaceAll("(.)(\\p{Upper})", "$1_$2").toLowerCase();
+         if (excludedParams.contains(key) || excludedParams.contains(keyCC))
             continue;
-         List<String> vals = parameters.get(key);
+         List<String> vals = parameters.get(keyCC);
+         if (vals == null) vals = parameters.get(key);
          if (vals == null)
          {
             if (desc.isMandatory())
@@ -515,7 +543,14 @@ public class ExportCommand
                   val.setFilenameValue(simpleval);
                   break;
                case BOOLEAN:
-                  val.setBooleanValue(Boolean.parseBoolean(simpleval));
+                  if (Pattern.matches("-?[0-9]+",simpleval)) 
+                  {
+                     val.setBooleanValue(Boolean.valueOf(Integer.parseInt(simpleval) != 0));
+                  }
+                  else
+                  {
+                     val.setBooleanValue(Boolean.parseBoolean(simpleval));
+                  }
                   break;
                case INTEGER:
                   val.setIntegerValue(Long.parseLong(simpleval));
@@ -531,7 +566,7 @@ public class ExportCommand
          }
       }
       return values;
-   }
+         }
 
    private void startProcess(EntityManager session, GuiExport guiExport)
    {

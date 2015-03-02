@@ -9,7 +9,7 @@ public class GroupOfLineProducer extends
 {
 
    @Override
-   public GroupOfLineType produce(GroupOfLine bean)
+   public GroupOfLineType produce(GroupOfLine bean, boolean addExtension)
    {
       GroupOfLineType jaxbGroupOfLine = tridentFactory.createGroupOfLineType();
 

@@ -328,6 +328,34 @@ ALTER TABLE chouette_gui.facilities_id_seq OWNER TO chouette;
 ALTER SEQUENCE facilities_id_seq OWNED BY facilities.id;
 
 
+CREATE TABLE footnotes
+(
+  id bigserial NOT NULL,
+  line_id bigint,
+  code character varying(255),
+  label character varying(255),
+  created_at timestamp without time zone NOT NULL,
+  updated_at timestamp without time zone NOT NULL,
+  CONSTRAINT footnotes_pkey PRIMARY KEY (id)
+)
+WITH (
+  OIDS=FALSE
+);
+
+ALTER TABLE footnotes
+  OWNER TO chouette;
+
+CREATE TABLE footnotes_vehicle_journeys
+(
+  vehicle_journey_id bigint,
+  footnote_id bigint
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE footnotes_vehicle_journeys
+  OWNER TO chouette;
+
 --
 -- TOC entry 206 (class 1259 OID 480204)
 -- Dependencies: 5
@@ -472,6 +500,7 @@ CREATE TABLE lines (
     registration_number character varying(255),
     comment character varying(255),
     mobility_restricted_suitability boolean,
+    flexible_service boolean,
     int_user_needs integer,
     url character varying(255),
     color character varying(6),

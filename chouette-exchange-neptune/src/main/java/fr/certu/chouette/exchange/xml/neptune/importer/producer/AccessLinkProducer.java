@@ -2,15 +2,12 @@ package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
 import org.trident.schema.trident.ConnectionLinkExtensionType;
 
+import fr.certu.chouette.exchange.xml.neptune.importer.Context;
 import fr.certu.chouette.model.neptune.AccessLink;
 import fr.certu.chouette.model.neptune.AccessPoint;
 import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
 import fr.certu.chouette.model.neptune.type.LinkOrientationEnum;
 import fr.certu.chouette.model.neptune.type.UserNeedEnum;
-import fr.certu.chouette.plugin.exchange.SharedImportedData;
-import fr.certu.chouette.plugin.exchange.UnsharedImportedData;
-import fr.certu.chouette.plugin.report.ReportItem;
-import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 
 /**
  * 
@@ -23,15 +20,12 @@ public class AccessLinkProducer
 {
 
    @Override
-   public AccessLink produce(
-         String sourceFile,
-         org.trident.schema.trident.ChouettePTNetworkType.AccessLink xmlAccessLink,
-         ReportItem importReport, PhaseReportItem validationReport,
-         SharedImportedData sharedData, UnsharedImportedData unshareableData)
+   public AccessLink produce(Context context,
+         org.trident.schema.trident.ChouettePTNetworkType.AccessLink xmlAccessLink)
    {
       AccessLink accessLink = new AccessLink();
       // objectId, objectVersion, creatorId, creationTime
-      populateFromCastorNeptune(accessLink, xmlAccessLink, importReport);
+      populateFromCastorNeptune(context,accessLink, xmlAccessLink);
       // Name optional
       accessLink.setName(getNonEmptyTrimedString(xmlAccessLink.getName()));
 
@@ -129,6 +123,10 @@ public class AccessLinkProducer
          accessLink
                .setLinkOrientation(LinkOrientationEnum.StopAreaToAccessPoint);
       }
+      
+      AccessLink sharedBean = getOrAddSharedData(context, accessLink, xmlAccessLink);
+      if (sharedBean != null)
+         return sharedBean;
 
       return accessLink;
    }

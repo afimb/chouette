@@ -19,7 +19,7 @@ public class RouteProducer extends
 {
 
    @Override
-   public ChouetteRoute produce(Route route)
+   public ChouetteRoute produce(Route route, boolean addExtension)
    {
       ChouetteRoute jaxbRoute = tridentFactory
             .createChouettePTNetworkTypeChouetteLineDescriptionChouetteRoute();

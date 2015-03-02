@@ -137,10 +137,10 @@ public class NeptuneExportTests extends AbstractTestNGSpringContextTests
       List<ParameterDescription> params = description
             .getParameterDescriptions();
 
+      Reporter.log("Description \n " + description.toString());
       Assert.assertEquals(description.getName(), "NEPTUNE");
       Assert.assertNotNull(params, "params should not be null");
-      Assert.assertEquals(params.size(), 5, " params size must equal 5");
-      Reporter.log("Description \n " + description.toString());
+      Assert.assertEquals(params.size(), 6 , " params size must equal 6");
 
    }
 

@@ -13,7 +13,7 @@ public class AreaCentroidProducer extends
 {
 
    @Override
-   public ChouetteArea.AreaCentroid produce(StopArea area)
+   public ChouetteArea.AreaCentroid produce(StopArea area, boolean addExtension)
    {
       ChouetteArea.AreaCentroid jaxbAreaCentroid = tridentFactory
             .createChouettePTNetworkTypeChouetteAreaAreaCentroid();

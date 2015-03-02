@@ -1,37 +1,38 @@
 package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
+import java.awt.Color;
 import java.util.List;
 
 import lombok.extern.log4j.Log4j;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.trident.schema.trident.LineExtensionType;
 
+import fr.certu.chouette.exchange.xml.neptune.JsonExtension;
+import fr.certu.chouette.exchange.xml.neptune.importer.Context;
+import fr.certu.chouette.model.neptune.Footnote;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.PTNetwork;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 import fr.certu.chouette.model.neptune.type.UserNeedEnum;
-import fr.certu.chouette.plugin.exchange.SharedImportedData;
-import fr.certu.chouette.plugin.exchange.UnsharedImportedData;
 import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
-import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 
 @Log4j
-public class LineProducer
+public class LineProducer 
       extends
       AbstractModelProducer<Line, org.trident.schema.trident.ChouettePTNetworkType.ChouetteLineDescription.Line>
+      implements JsonExtension
 {
    @Override
-   public Line produce(
-         String sourceFile,
-         org.trident.schema.trident.ChouettePTNetworkType.ChouetteLineDescription.Line xmlLine,
-         ReportItem importReport, PhaseReportItem validationReport,
-         SharedImportedData sharedData, UnsharedImportedData unshareableData)
+   public Line produce(Context context,
+         org.trident.schema.trident.ChouettePTNetworkType.ChouetteLineDescription.Line xmlLine)
    {
       Line line = new Line();
       // objectId, objectVersion, creatorId, creationTime
-      populateFromCastorNeptune(line, xmlLine, importReport);
+      populateFromCastorNeptune(context, line, xmlLine);
 
       // Name optional
       line.setName(getNonEmptyTrimedString(xmlLine.getName()));
@@ -54,7 +55,7 @@ public class LineProducer
             ReportItem item = new ExchangeReportItem(
                   ExchangeReportItem.KEY.UNKNOWN_ENUM, Report.STATE.ERROR,
                   "TransportModeName", xmlLine.getTransportModeName().value());
-            importReport.addItem(item);
+            context.getImportReport().addItem(item);
          }
       } else
       {
@@ -73,7 +74,7 @@ public class LineProducer
             ReportItem item = new ExchangeReportItem(
                   ExchangeReportItem.KEY.EMPTY_TAG, Report.STATE.ERROR,
                   "LineEnd");
-            importReport.addItem(item);
+            context.getImportReport().addItem(item);
          } else
          {
             line.addLineEnd(realLineEnd);
@@ -90,7 +91,7 @@ public class LineProducer
             ReportItem item = new ExchangeReportItem(
                   ExchangeReportItem.KEY.EMPTY_TAG, Report.STATE.ERROR,
                   "RouteId");
-            importReport.addItem(item);
+            context.getImportReport().addItem(item);
          } else
          {
             line.addRouteId(realRouteId);
@@ -101,12 +102,12 @@ public class LineProducer
          ReportItem item = new ExchangeReportItem(
                ExchangeReportItem.KEY.EMPTY_LINE, Report.STATE.ERROR,
                line.getObjectId());
-         importReport.addItem(item);
+         context.getImportReport().addItem(item);
       }
 
       // Registration optional
-      line.setRegistrationNumber(getRegistrationNumber(
-            xmlLine.getRegistration(), importReport));
+      line.setRegistrationNumber(getRegistrationNumber(context,
+            xmlLine.getRegistration()));
 
       // PtNetworkShortcut optional : correct old fashioned form
       String ptNetworkId = getNonEmptyTrimedString(xmlLine
@@ -119,7 +120,7 @@ public class LineProducer
       line.setPtNetworkIdShortcut(ptNetworkId);
 
       // Comment optional
-      line.setComment(getNonEmptyTrimedString(xmlLine.getComment()));
+      parseComment(getNonEmptyTrimedString(xmlLine.getComment()),line);
 
       // LineExtension optional
       LineExtensionType xmlLineExtension = xmlLine.getLineExtension();
@@ -151,7 +152,7 @@ public class LineProducer
                         ExchangeReportItem.KEY.UNKNOWN_ENUM,
                         Report.STATE.ERROR, "UserNeed",
                         xmlAccessibilitySuitabilityDetailsItem.toString());
-                  importReport.addItem(item);
+                  context.getImportReport().addItem(item);
                }
 
             }
@@ -159,7 +160,73 @@ public class LineProducer
 
       }
 
-      return line;
+      // return null if in conflict with other files, else return object
+      return checkUnsharedData(context, line, xmlLine);
+   }
+   
+   protected void parseComment(String comment, Line line)
+   {
+      if (comment != null && comment.startsWith("{") && comment.endsWith("}"))
+      {
+         // parse json comment
+         JSONObject json = new JSONObject(comment);
+         line.setComment(json.optString(COMMENT,null));
+         if (json.has(FOOTNOTES))
+         {
+            // scan footnotes
+            JSONArray footNotes = json.getJSONArray(FOOTNOTES);
+            for (int i = 0; i < footNotes.length(); i++)
+            {
+               JSONObject footNote = footNotes.getJSONObject(i);
+               String key = footNote.optString(KEY,null);
+               String code = footNote.optString(CODE,null);
+               String label = footNote.optString(LABEL,null);
+               if (key != null && code != null && label != null)
+               {
+                  Footnote note = new Footnote();
+                  note.setLine(line);
+                  note.setLabel(label);
+                  note.setCode(code);
+                  note.setKey(key);
+                  line.getFootnotes().add(note);
+               }
+               
+            }
+         }
+         if (json.has(FLEXIBLE_SERVICE))
+         {
+            line.setFlexibleService(Boolean.valueOf(json.getBoolean(FLEXIBLE_SERVICE)));
+         }
+         if (json.has(TEXT_COLOR))
+         {
+            try
+            {
+               Color.decode("0x"+json.getString(TEXT_COLOR));
+               line.setTextColor(json.getString(TEXT_COLOR));
+            }
+            catch (Exception e)
+            {
+               log.error("cannot parse text color "+json.getString(TEXT_COLOR),e);
+            }
+         }
+         if (json.has(LINE_COLOR))
+         {
+            try
+            {
+               Color.decode("0x"+json.getString(LINE_COLOR));
+               line.setColor(json.getString(LINE_COLOR));
+            }
+            catch (Exception e)
+            {
+               log.error("cannot parse color "+json.getString(LINE_COLOR),e);
+            }
+         }
+      }
+      else
+      {
+         // normal comment
+         line.setComment(comment);
+      }
    }
 
 }

@@ -4,25 +4,21 @@ import java.util.List;
 
 import org.trident.schema.trident.ChouettePTNetworkType.ChouetteLineDescription.ChouetteRoute;
 
+import fr.certu.chouette.exchange.xml.neptune.importer.Context;
 import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
-import fr.certu.chouette.plugin.exchange.SharedImportedData;
-import fr.certu.chouette.plugin.exchange.UnsharedImportedData;
 import fr.certu.chouette.plugin.exchange.report.ExchangeReportItem;
 import fr.certu.chouette.plugin.report.Report;
 import fr.certu.chouette.plugin.report.ReportItem;
-import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 
 public class RouteProducer extends AbstractModelProducer<Route, ChouetteRoute>
 {
-   public Route produce(String sourceFile, ChouetteRoute xmlRoute,
-         ReportItem importReport, PhaseReportItem validationReport,
-         SharedImportedData sharedData, UnsharedImportedData unshareableData)
+   public Route produce(Context context, ChouetteRoute xmlRoute)
    {
       Route route = new Route();
 
       // objectId, objectVersion, creatorId, creationTime
-      populateFromCastorNeptune(route, xmlRoute, importReport);
+      populateFromCastorNeptune(context, route, xmlRoute);
 
       // Name optional
       route.setName(getNonEmptyTrimedString(xmlRoute.getName()));
@@ -51,7 +47,7 @@ public class RouteProducer extends AbstractModelProducer<Route, ChouetteRoute>
             ReportItem item = new ExchangeReportItem(
                   ExchangeReportItem.KEY.EMPTY_ROUTE, Report.STATE.WARNING,
                   route.getObjectId());
-            importReport.addItem(item);
+            context.getImportReport().addItem(item);
          } else
          {
             route.addJourneyPatternId(journeyPatternId);
@@ -71,7 +67,7 @@ public class RouteProducer extends AbstractModelProducer<Route, ChouetteRoute>
             ReportItem item = new ExchangeReportItem(
                   ExchangeReportItem.KEY.EMPTY_ROUTE, Report.STATE.WARNING,
                   route.getObjectId());
-            importReport.addItem(item);
+            context.getImportReport().addItem(item);
          } else
          {
             route.addPTLinkId(ptLinkId);
@@ -98,6 +94,7 @@ public class RouteProducer extends AbstractModelProducer<Route, ChouetteRoute>
       // Comment optional
       route.setComment(getNonEmptyTrimedString(xmlRoute.getComment()));
 
-      return route;
+      // return null if in conflict with other files, else return object
+      return checkUnsharedData(context, route, xmlRoute);
    }
 }

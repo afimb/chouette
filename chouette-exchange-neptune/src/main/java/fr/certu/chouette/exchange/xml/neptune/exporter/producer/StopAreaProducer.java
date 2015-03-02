@@ -26,7 +26,7 @@ public class StopAreaProducer extends
 {
 
    @Override
-   public ChouetteArea.StopArea produce(StopArea stopArea)
+   public ChouetteArea.StopArea produce(StopArea stopArea, boolean addExtension)
    {
       ChouetteArea.StopArea jaxbStopArea = tridentFactory
             .createChouettePTNetworkTypeChouetteAreaStopArea();

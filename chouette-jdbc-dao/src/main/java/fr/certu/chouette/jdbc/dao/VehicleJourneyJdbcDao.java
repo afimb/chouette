@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -41,27 +42,28 @@ public class VehicleJourneyJdbcDao extends AbstractJdbcDao<VehicleJourney>
       ps.setTimestamp(3, timestamp);
       ps.setString(4, vehicleJourney.getCreatorId());
       ps.setString(5, vehicleJourney.getComment());
-      String statusValue = null, transportMode = null;
+      String transportMode = null;
 
-      if (vehicleJourney.getServiceStatusValue() != null)
-         statusValue = vehicleJourney.getServiceStatusValue().name();
+      ps.setString(6, transportMode);
+      ps.setString(7, vehicleJourney.getPublishedJourneyName());
+      ps.setString(8, vehicleJourney.getPublishedJourneyIdentifier());
+      ps.setString(9, vehicleJourney.getFacility());
+      ps.setString(10, vehicleJourney.getVehicleTypeIdentifier());
+      setLong(ps, 11, vehicleJourney.getNumber());
 
-      if (vehicleJourney.getTransportMode() != null)
-         transportMode = vehicleJourney.getTransportMode().name();
-
-      ps.setString(6, statusValue);
-      ps.setString(7, transportMode);
-      ps.setString(8, vehicleJourney.getPublishedJourneyName());
-      ps.setString(9, vehicleJourney.getPublishedJourneyIdentifier());
-      ps.setString(10, vehicleJourney.getFacility());
-      ps.setString(11, vehicleJourney.getVehicleTypeIdentifier());
-      setLong(ps, 12, vehicleJourney.getNumber());
-
-      setId(ps, 13, vehicleJourney.getRoute(), true, "route_id");
-      setId(ps, 14, vehicleJourney.getJourneyPattern(), true,
+      setId(ps, 12, vehicleJourney.getRoute(), true, "route_id");
+      setId(ps, 13, vehicleJourney.getJourneyPattern(), true,
             "journey_pattern_id");
-      setId(ps, 15, vehicleJourney.getCompany());
-      // setId(ps,16,vehicleJourney.getTimeSlot());
+      setId(ps, 14, vehicleJourney.getCompany());
+      if (vehicleJourney.getFlexibleService() == null)
+         ps.setNull(15, Types.BOOLEAN);
+      else
+         ps.setBoolean(15, vehicleJourney.getFlexibleService());
+      if (vehicleJourney.getMobilityRestrictedSuitability() == null)
+         ps.setNull(16, Types.BOOLEAN);
+      else
+         ps.setBoolean(16, vehicleJourney.getMobilityRestrictedSuitability());
+      // setId(ps,15,vehicleJourney.getTimeSlot());
 
    }
 

@@ -27,7 +27,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
-import fr.certu.chouette.model.neptune.type.ServiceStatusValueEnum;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 
 /**
@@ -70,20 +69,6 @@ public class VehicleJourney extends NeptuneIdentifiedObject
    {
       comment = dataBaseSizeProtectedValue(value, "comment", log);
    }
-
-   /**
-    * service status
-    * 
-    * @param serviceStatusValue
-    *           New value
-    * @return The actual value
-    */
-   @Getter
-   @Setter
-   @Enumerated(EnumType.STRING)
-   @Column(name = "status_value")
-   @Deprecated
-   private ServiceStatusValueEnum serviceStatusValue;
 
    /**
     * Transport mode when different from line transport mode
@@ -271,6 +256,19 @@ public class VehicleJourney extends NeptuneIdentifiedObject
    private Company company;
 
    /**
+    * footnotes refs
+    * 
+    * @param footnotes
+    *           New value
+    * @return The actual value
+    */
+   @Getter
+   @Setter
+   @ManyToMany
+   @JoinTable(name = "footnotes_vehicle_journeys", joinColumns = { @JoinColumn(name = "vehicle_journey_id", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "footnote_id", nullable = false, updatable = false) })
+   private List<Footnote> footnotes = new ArrayList<>(0);
+
+   /**
     * timtables
     * 
     * @param timetables
@@ -281,7 +279,7 @@ public class VehicleJourney extends NeptuneIdentifiedObject
    @Setter
    @ManyToMany
    @JoinTable(name = "time_tables_vehicle_journeys", joinColumns = { @JoinColumn(name = "vehicle_journey_id", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "time_table_id", nullable = false, updatable = false) })
-   private List<Timetable> timetables = new ArrayList<Timetable>(0);
+   private List<Timetable> timetables = new ArrayList<>(0);
 
    /**
     * vehicle journey at stops : passing times
@@ -291,7 +289,7 @@ public class VehicleJourney extends NeptuneIdentifiedObject
    @Getter
    @OneToMany(fetch = FetchType.EAGER, cascade = { CascadeType.PERSIST, CascadeType.MERGE })
    @JoinColumn(name = "vehicle_journey_id", updatable = false)
-   private List<VehicleJourneyAtStop> vehicleJourneyAtStops = new ArrayList<VehicleJourneyAtStop>(0);
+   private List<VehicleJourneyAtStop> vehicleJourneyAtStops = new ArrayList<>(0);
    /**
     * set and order vehicleJourneyAtStops
     * 
@@ -706,7 +704,6 @@ public class VehicleJourney extends NeptuneIdentifiedObject
    public String toString(String indent, int level)
    {
       StringBuilder sb = new StringBuilder(super.toString(indent, level));
-      sb.append("\n").append(indent).append("serviceStatusValue = ").append(serviceStatusValue);
       sb.append("\n").append(indent).append("transportMode = ").append(transportMode);
       sb.append("\n").append(indent).append("comment = ").append(comment);
       sb.append("\n").append(indent).append("facility = ").append(facility);
@@ -879,8 +876,6 @@ public class VehicleJourney extends NeptuneIdentifiedObject
          if (!sameValue(this.getEndOfPeriod(), another.getEndOfPeriod()))
             return false;
          if (!sameValue(this.getFacility(), another.getFacility()))
-            return false;
-         if (!sameValue(this.getServiceStatusValue(), another.getServiceStatusValue()))
             return false;
          if (!sameValue(this.getStartOfPeriod(), another.getStartOfPeriod()))
             return false;

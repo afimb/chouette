@@ -2,24 +2,27 @@ package fr.certu.chouette.exchange.xml.neptune.exporter.producer;
 
 import java.math.BigInteger;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.trident.schema.trident.BoardingAlightingPossibilityType;
-import org.trident.schema.trident.ServiceStatusValueType;
 import org.trident.schema.trident.TransportModeNameType;
 import org.trident.schema.trident.VehicleJourneyAtStopType;
 import org.trident.schema.trident.VehicleJourneyType;
 
+import fr.certu.chouette.exchange.xml.neptune.JsonExtension;
+import fr.certu.chouette.model.neptune.Footnote;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
 import fr.certu.chouette.model.neptune.type.BoardingAlightingPossibilityEnum;
-import fr.certu.chouette.model.neptune.type.ServiceStatusValueEnum;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 
 public class VehicleJourneyProducer extends
       AbstractJaxbNeptuneProducer<VehicleJourneyType, VehicleJourney>
+      implements JsonExtension
 {
 
    @Override
-   public VehicleJourneyType produce(VehicleJourney vehicleJourney)
+   public VehicleJourneyType produce(VehicleJourney vehicleJourney, boolean addExtension)
    {
       VehicleJourneyType jaxbVehicleJourney = tridentFactory
             .createVehicleJourneyType();
@@ -27,8 +30,8 @@ public class VehicleJourneyProducer extends
       //
       populateFromModel(jaxbVehicleJourney, vehicleJourney);
 
-      jaxbVehicleJourney.setComment(getNotEmptyString(vehicleJourney
-            .getComment()));
+      jaxbVehicleJourney.setComment(buildComment(vehicleJourney,addExtension));
+      
       jaxbVehicleJourney.setFacility(getNotEmptyString(vehicleJourney
             .getFacility()));
       jaxbVehicleJourney.setJourneyPatternId(getNonEmptyObjectId(vehicleJourney
@@ -47,19 +50,7 @@ public class VehicleJourneyProducer extends
                   .getPublishedJourneyName()));
       jaxbVehicleJourney.setRouteId(getNonEmptyObjectId(vehicleJourney
             .getRoute()));
-      if (vehicleJourney.getServiceStatusValue() != null)
-      {
-         ServiceStatusValueEnum serviceStatusValue = vehicleJourney
-               .getServiceStatusValue();
-         try
-         {
-            jaxbVehicleJourney.setStatusValue(ServiceStatusValueType
-                  .fromValue(serviceStatusValue.name()));
-         } catch (IllegalArgumentException e)
-         {
-            // TODO generate report
-         }
-      }
+
       jaxbVehicleJourney.setTimeSlotId(getNonEmptyObjectId(vehicleJourney
             .getTimeSlot()));
       if (vehicleJourney.getTransportMode() != null)
@@ -77,6 +68,7 @@ public class VehicleJourneyProducer extends
       }
       jaxbVehicleJourney.setVehicleTypeIdentifier(vehicleJourney
             .getVehicleTypeIdentifier());
+      
 
       if (vehicleJourney.getVehicleJourneyAtStops() != null)
       {
@@ -152,5 +144,42 @@ public class VehicleJourneyProducer extends
       }
       return jaxbVehicleJourney;
    }
+
+   protected String buildComment(VehicleJourney vj, boolean addExtension)
+   {
+      if (!addExtension) return getNotEmptyString(vj.getComment());
+      JSONObject jsonComment = new JSONObject();
+      if (!isEmpty(vj.getFootnotes()))
+      {
+         JSONArray noteRefs = new JSONArray();
+         for (Footnote footNote : vj.getFootnotes())
+         {
+            noteRefs.put(footNote.getKey());
+         }
+         jsonComment.put(FOOTNOTE_REFS, noteRefs);
+      }
+      if (vj.getFlexibleService() != null)
+      {
+         jsonComment.put(FLEXIBLE_SERVICE, vj.getFlexibleService());
+      }
+      if (vj.getMobilityRestrictedSuitability() != null)
+      {
+         jsonComment.put(MOBILITY_RESTRICTION, vj.getMobilityRestrictedSuitability());
+      }
+
+      if (jsonComment.length() == 0)
+      {
+         return getNotEmptyString(vj.getComment());
+      }
+      else
+      {
+         if (!isEmpty(vj.getComment()))
+         {
+            jsonComment.put(COMMENT, vj.getComment().trim());
+         }
+      }
+      return jsonComment.toString();
+   }
+
 
 }

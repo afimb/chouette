@@ -3,6 +3,8 @@ package fr.certu.chouette.exchange.xml.neptune.exporter.producer;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.trident.schema.trident.ChouettePTNetworkType;
 import org.trident.schema.trident.LineExtensionType;
 import org.trident.schema.trident.TransportModeNameType;
@@ -14,6 +16,8 @@ import uk.org.ifopt.acsb.MobilityEnumeration;
 import uk.org.ifopt.acsb.PyschosensoryNeedEnumeration;
 import uk.org.ifopt.acsb.UserNeedStructure;
 
+import fr.certu.chouette.exchange.xml.neptune.JsonExtension;
+import fr.certu.chouette.model.neptune.Footnote;
 import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.NeptuneIdentifiedObject;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
@@ -22,10 +26,11 @@ import fr.certu.chouette.model.neptune.type.UserNeedEnum;
 public class LineProducer
       extends
       AbstractJaxbNeptuneProducer<ChouettePTNetworkType.ChouetteLineDescription.Line, Line>
+      implements JsonExtension
 {
 
    @Override
-   public ChouettePTNetworkType.ChouetteLineDescription.Line produce(Line line)
+   public ChouettePTNetworkType.ChouetteLineDescription.Line produce(Line line, boolean addExtension)
    {
       ChouettePTNetworkType.ChouetteLineDescription.Line jaxbLine = tridentFactory
             .createChouettePTNetworkTypeChouetteLineDescriptionLine();
@@ -33,7 +38,7 @@ public class LineProducer
       //
       populateFromModel(jaxbLine, line);
 
-      jaxbLine.setComment(getNotEmptyString(line.getComment()));
+      jaxbLine.setComment(buildComment(line,addExtension));
       jaxbLine.setName(line.getName());
       jaxbLine.setNumber(line.getNumber());
       jaxbLine.setPublishedName(line.getPublishedName());
@@ -133,4 +138,50 @@ public class LineProducer
       return details;
    }
 
+   protected String buildComment(Line line, boolean addExtension)
+   {
+      if (!addExtension) return getNotEmptyString(line.getComment());
+
+      JSONObject jsonComment = new JSONObject();
+      if (!isEmpty(line.getColor()))
+      {
+         jsonComment.put(LINE_COLOR, line.getColor());
+      }
+      if (line.getFlexibleService() != null)
+      {
+         jsonComment.put(FLEXIBLE_SERVICE, line.getFlexibleService());
+      }
+      if (!isEmpty(line.getTextColor()))
+      {
+         jsonComment.put(TEXT_COLOR, line.getTextColor());
+      }
+      if (!isEmpty(line.getFootnotes()))
+      {
+         JSONArray notes = new JSONArray();
+         int i = 1;
+         for (Footnote footnote:  line.getFootnotes())
+         {
+            footnote.setKey(Integer.toString(i++));
+            JSONObject note = new JSONObject();
+            note.put(KEY, footnote.getKey());
+            note.put(CODE, footnote.getCode());
+            note.put(LABEL, footnote.getLabel());
+            notes.put(note);
+         }
+         jsonComment.put(FOOTNOTES, notes);
+      }
+      if (jsonComment.length() == 0)
+      {
+         return getNotEmptyString(line.getComment());
+      }
+      else
+      {
+         if (!isEmpty(line.getComment()))
+         {
+            jsonComment.put(COMMENT, line.getComment().trim());
+         }
+      }
+      return jsonComment.toString();
+   }
+   
 }

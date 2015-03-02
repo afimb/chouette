@@ -2,11 +2,8 @@ package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
 import org.trident.schema.trident.TimeSlotType;
 
+import fr.certu.chouette.exchange.xml.neptune.importer.Context;
 import fr.certu.chouette.model.neptune.TimeSlot;
-import fr.certu.chouette.plugin.exchange.SharedImportedData;
-import fr.certu.chouette.plugin.exchange.UnsharedImportedData;
-import fr.certu.chouette.plugin.report.ReportItem;
-import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 
 /**
  * 
@@ -18,13 +15,11 @@ public class TimeSlotProducer extends
 {
 
    @Override
-   public TimeSlot produce(String sourceFile, TimeSlotType xmlTimeSlot,
-         ReportItem importReport, PhaseReportItem validationReport,
-         SharedImportedData sharedData, UnsharedImportedData unshareableData)
+   public TimeSlot produce(Context context, TimeSlotType xmlTimeSlot)
    {
       TimeSlot timeSlot = new TimeSlot();
       // objectId, objectVersion, creatorId, creationTime
-      populateFromCastorNeptune(timeSlot, xmlTimeSlot, importReport);
+      populateFromCastorNeptune(context, timeSlot, xmlTimeSlot);
       // beginningSlotTime mandatory
       timeSlot
             .setBeginningSlotTime(getTime(xmlTimeSlot.getBeginningSlotTime()));
@@ -37,6 +32,7 @@ public class TimeSlotProducer extends
       timeSlot.setLastDepartureTimeInSlot(getTime(xmlTimeSlot
             .getLastDepartureTimeInSlot()));
 
+      // TODO shared or unshared ???
       return timeSlot;
    }
 

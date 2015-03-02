@@ -24,7 +24,6 @@ import fr.certu.chouette.model.neptune.type.ConnectionLinkTypeEnum;
 import fr.certu.chouette.model.neptune.type.DayTypeEnum;
 import fr.certu.chouette.model.neptune.type.PTDirectionEnum;
 import fr.certu.chouette.model.neptune.type.PTNetworkSourceTypeEnum;
-import fr.certu.chouette.model.neptune.type.ServiceStatusValueEnum;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 
 /**
@@ -178,44 +177,6 @@ public class ModelTranslator
                + " as PTNetworkSourceType");
       }
       return sourceType;
-   }
-
-   public ServiceStatusValueEnum readServiceAlteration(
-         String netexServiceAlteration)
-   {
-      if (netexServiceAlteration == null)
-         return null;
-      if (netexServiceAlteration.equals("planned"))
-         return ServiceStatusValueEnum.Normal;
-      else if (netexServiceAlteration.equals("cancellation"))
-         return ServiceStatusValueEnum.Cancelled;
-      else if (netexServiceAlteration.equals("extraJourney"))
-         return ServiceStatusValueEnum.IncreasedService;
-      else
-         return null;
-   }
-
-   public String toServiceAlteration(ServiceStatusValueEnum serviceStatusValue)
-   {
-      if (serviceStatusValue == null)
-         return null;
-      switch (serviceStatusValue)
-      {
-      case Normal:
-      case Delayed:
-      case Early:
-         return "planned";
-      case Cancelled:
-      case Disrupted:
-      case NotStopping:
-      case Rerouted:
-      case ReducedService:
-         return "cancellation";
-      case IncreasedService:
-         return "extraJourney";
-      default:
-         return null;
-      }
    }
 
    public String toLinkType(ConnectionLinkTypeEnum linkType)

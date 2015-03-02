@@ -9,28 +9,23 @@ import org.trident.schema.trident.DayTypeType;
 import org.trident.schema.trident.PeriodType;
 import org.trident.schema.trident.TimetableType;
 
+import fr.certu.chouette.exchange.xml.neptune.importer.Context;
 import fr.certu.chouette.model.neptune.CalendarDay;
 import fr.certu.chouette.model.neptune.Period;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.type.DayTypeEnum;
-import fr.certu.chouette.plugin.exchange.SharedImportedData;
-import fr.certu.chouette.plugin.exchange.UnsharedImportedData;
-import fr.certu.chouette.plugin.report.ReportItem;
-import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 
 public class TimetableProducer extends
       AbstractModelProducer<Timetable, TimetableType>
 {
 
    @Override
-   public Timetable produce(String sourceFile, TimetableType xmlTimetable,
-         ReportItem importReport, PhaseReportItem validationReport,
-         SharedImportedData sharedData, UnsharedImportedData unshareableData)
+   public Timetable produce(Context context, TimetableType xmlTimetable)
    {
       Timetable timetable = new Timetable();
 
       // objectId, objectVersion, creatorId, creationTime
-      populateFromCastorNeptune(timetable, xmlTimetable, importReport);
+      populateFromCastorNeptune(context, timetable, xmlTimetable);
 
       timetable.setComment(getNonEmptyTrimedString(xmlTimetable.getComment()));
 
@@ -74,8 +69,7 @@ public class TimetableProducer extends
             xmlTimetable.getVehicleJourneyId());
       xmlTimetable.getVehicleJourneyId().clear();
 
-      Timetable sharedBean = getOrAddSharedData(sharedData, timetable,
-            sourceFile, xmlTimetable, validationReport);
+      Timetable sharedBean = getOrAddSharedData(context, timetable, xmlTimetable);
       if (sharedBean != null)
          timetable = sharedBean;
       xmlTimetable.getVehicleJourneyId().addAll(vehicleJourneys);

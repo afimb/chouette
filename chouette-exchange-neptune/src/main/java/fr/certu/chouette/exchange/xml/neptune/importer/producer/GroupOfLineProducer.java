@@ -5,11 +5,8 @@ import java.util.List;
 
 import org.trident.schema.trident.GroupOfLineType;
 
+import fr.certu.chouette.exchange.xml.neptune.importer.Context;
 import fr.certu.chouette.model.neptune.GroupOfLine;
-import fr.certu.chouette.plugin.exchange.SharedImportedData;
-import fr.certu.chouette.plugin.exchange.UnsharedImportedData;
-import fr.certu.chouette.plugin.report.ReportItem;
-import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 
 /**
  * 
@@ -21,14 +18,12 @@ public class GroupOfLineProducer extends
 {
 
    @Override
-   public GroupOfLine produce(String sourceFile,
-         GroupOfLineType xmlGroupOfLine, ReportItem importReport,
-         PhaseReportItem validationReport, SharedImportedData sharedData,
-         UnsharedImportedData unshareableData)
+   public GroupOfLine produce(Context context,
+         GroupOfLineType xmlGroupOfLine)
    {
       GroupOfLine groupOfLine = new GroupOfLine();
       // objectId, objectVersion, creatorId, creationTime
-      populateFromCastorNeptune(groupOfLine, xmlGroupOfLine, importReport);
+      populateFromCastorNeptune(context, groupOfLine, xmlGroupOfLine);
       // Name optional
       groupOfLine.setName(getNonEmptyTrimedString(xmlGroupOfLine.getName()));
 
@@ -40,8 +35,7 @@ public class GroupOfLineProducer extends
             xmlGroupOfLine.getLineId());
       xmlGroupOfLine.getLineId().clear();
 
-      GroupOfLine sharedBean = getOrAddSharedData(sharedData, groupOfLine,
-            sourceFile, xmlGroupOfLine, validationReport);
+      GroupOfLine sharedBean = getOrAddSharedData(context, groupOfLine,  xmlGroupOfLine);
       if (sharedBean != null)
          groupOfLine = sharedBean;
 

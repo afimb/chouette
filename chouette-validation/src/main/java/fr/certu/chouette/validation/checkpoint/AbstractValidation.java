@@ -91,6 +91,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject>
    protected static final String L4_GROUP_OF_LINE_1 = "4-GroupOfLine-1";
    protected static final String L4_STOP_AREA_1 = "4-StopArea-1";
    protected static final String L4_STOP_AREA_2 = "4-StopArea-2";
+   protected static final String L4_STOP_AREA_3 = "4-StopArea-3";
    protected static final String L4_ACCESS_POINT_1 = "4-AccessPoint-1";
    protected static final String L4_ACCESS_LINK_1 = "4-AccessLink-1";
    protected static final String L4_CONNECTION_LINK_1 = "4-ConnectionLink-1";

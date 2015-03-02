@@ -2,26 +2,21 @@ package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
 import org.trident.schema.trident.CompanyType;
 
+import fr.certu.chouette.exchange.xml.neptune.importer.Context;
 import fr.certu.chouette.model.neptune.Company;
-import fr.certu.chouette.plugin.exchange.SharedImportedData;
-import fr.certu.chouette.plugin.exchange.UnsharedImportedData;
-import fr.certu.chouette.plugin.report.ReportItem;
-import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 
 public class CompanyProducer extends
       AbstractModelProducer<Company, CompanyType>
 {
 
    @Override
-   public Company produce(String sourceFile, CompanyType xmlCompany,
-         ReportItem importReport, PhaseReportItem validationReport,
-         SharedImportedData sharedData, UnsharedImportedData unshareableData)
+   public Company produce(Context context, CompanyType xmlCompany)
    {
 
       Company company = new Company();
 
       // objectId, objectVersion, creatorId, creationTime
-      populateFromCastorNeptune(company, xmlCompany, importReport);
+      populateFromCastorNeptune(context, company, xmlCompany);
       // Name mandatory
       company.setName(getNonEmptyTrimedString(xmlCompany.getName()));
 
@@ -41,8 +36,8 @@ public class CompanyProducer extends
       company.setEmail(getNonEmptyTrimedString(xmlCompany.getEmail()));
 
       // RegistrationNumber optional
-      company.setRegistrationNumber(getRegistrationNumber(
-            xmlCompany.getRegistration(), importReport));
+      company.setRegistrationNumber(getRegistrationNumber(context, 
+            xmlCompany.getRegistration()));
 
       // OperatingDepartmentName optional
       company.setOperatingDepartmentName(getNonEmptyTrimedString(xmlCompany
@@ -52,8 +47,7 @@ public class CompanyProducer extends
       company.setOrganisationalUnit(getNonEmptyTrimedString(xmlCompany
             .getOrganisationalUnit()));
 
-      Company sharedBean = getOrAddSharedData(sharedData, company, sourceFile,
-            xmlCompany, validationReport);
+      Company sharedBean = getOrAddSharedData(context, company, xmlCompany);
       if (sharedBean != null)
          return sharedBean;
       return company;

@@ -1,6 +1,6 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<suite name="Factory" verbose="5">
+<suite name="exchangeNeptune" verbose="5">
 	<test name="ExchangeNeptune">
 		<parameter name="neptuneFile" value="C_NEPTUNE_1.xml" />
 		<parameter name="neptuneFileUtf8" value="C_NEPTUNE_1_utf8.xml" />
@@ -13,6 +13,18 @@
 			<class name="fr.certu.chouette.exchange.xml.neptune.NeptuneImportTests" />
 			<class name="fr.certu.chouette.exchange.xml.neptune.NeptuneExportTests" />
 		</classes>
+    </test> 
+	<test name="ImportProducers">
+	    <packages>
+	      <package name="fr.certu.chouette.exchange.xml.neptune.importer.producer" >
+	      </package>
+	    </packages>
+	</test> 
+	<test name="ExportProducers">
+	    <packages>
+	      <package name="fr.certu.chouette.exchange.xml.neptune.exporter.producer" >
+	      </package>
+	    </packages>
 	</test>
 
 </suite>

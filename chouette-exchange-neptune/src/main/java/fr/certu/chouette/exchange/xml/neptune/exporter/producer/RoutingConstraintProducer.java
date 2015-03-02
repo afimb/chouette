@@ -12,7 +12,7 @@ public class RoutingConstraintProducer
     * @param routingConstraint
     * @return
     */
-   public ITLType produceITL(Line line, StopArea routingConstraint)
+   public ITLType produceITL(Line line, StopArea routingConstraint, boolean addExtension)
    {
       ITLType jaxbITL = AbstractJaxbNeptuneProducer.tridentFactory
             .createITLType();

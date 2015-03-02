@@ -10,7 +10,7 @@ public class JourneyPatternProducer extends
 {
 
    @Override
-   public JourneyPatternType produce(JourneyPattern journeyPattern)
+   public JourneyPatternType produce(JourneyPattern journeyPattern, boolean addExtension)
    {
       JourneyPatternType jaxbJourneyPattern = tridentFactory
             .createJourneyPatternType();

@@ -2,31 +2,32 @@ package fr.certu.chouette.exchange.xml.neptune.importer.producer;
 
 import lombok.Setter;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.trident.schema.trident.VehicleJourneyAtStopType;
 import org.trident.schema.trident.VehicleJourneyType;
 
+import fr.certu.chouette.exchange.xml.neptune.JsonExtension;
+import fr.certu.chouette.exchange.xml.neptune.importer.Context;
+import fr.certu.chouette.model.neptune.Footnote;
+import fr.certu.chouette.model.neptune.Line;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
 import fr.certu.chouette.model.neptune.type.BoardingAlightingPossibilityEnum;
-import fr.certu.chouette.model.neptune.type.ServiceStatusValueEnum;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
-import fr.certu.chouette.plugin.exchange.SharedImportedData;
-import fr.certu.chouette.plugin.exchange.UnsharedImportedData;
 import fr.certu.chouette.plugin.exchange.tools.DbVehicleJourneyFactory;
-import fr.certu.chouette.plugin.report.ReportItem;
-import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 
 public class VehicleJourneyProducer extends
       AbstractModelProducer<VehicleJourney, VehicleJourneyType>
+      implements JsonExtension
 {
    @Setter
    private DbVehicleJourneyFactory factory;
+   private JSONArray keys;
 
+   @SuppressWarnings("deprecation")
    @Override
-   public VehicleJourney produce(String sourceFile,
-         VehicleJourneyType xmlVehicleJourney, ReportItem importReport,
-         PhaseReportItem validationReport, SharedImportedData sharedData,
-         UnsharedImportedData unshareableData)
+   public VehicleJourney produce(Context context, VehicleJourneyType xmlVehicleJourney)
    {
       VehicleJourney vehicleJourney = null;
       if (factory == null)
@@ -35,11 +36,12 @@ public class VehicleJourneyProducer extends
          vehicleJourney = factory.getNewVehicleJourney();
 
       // objectId, objectVersion, creatorId, creationTime
-      populateFromCastorNeptune(vehicleJourney, xmlVehicleJourney, importReport);
+      populateFromCastorNeptune(context, vehicleJourney, xmlVehicleJourney);
 
+      Line line = context.getAssembler().getLine();
       // Comment optional
-      vehicleJourney.setComment(getNonEmptyTrimedString(xmlVehicleJourney
-            .getComment()));
+      parseComment(getNonEmptyTrimedString(xmlVehicleJourney
+            .getComment()), vehicleJourney, line);
 
       // Facility optional
       vehicleJourney.setFacility(getNonEmptyTrimedString(xmlVehicleJourney
@@ -77,18 +79,7 @@ public class VehicleJourneyProducer extends
             .setLineIdShortcut(getNonEmptyTrimedString(xmlVehicleJourney
                   .getLineIdShortcut()));
 
-      // ServiceStatusValue optional
-      if (xmlVehicleJourney.getStatusValue() != null)
-      {
-         try
-         {
-            vehicleJourney.setServiceStatusValue(ServiceStatusValueEnum
-                  .valueOf(xmlVehicleJourney.getStatusValue().value()));
-         } catch (IllegalArgumentException e)
-         {
-            // TODO: traiter le cas de non correspondance
-         }
-      }
+      // ServiceStatusValue optional but ignored in Neptube
 
       // TimeSlotId optional
       vehicleJourney.setTimeSlotId(getNonEmptyTrimedString(xmlVehicleJourney
@@ -195,7 +186,48 @@ public class VehicleJourneyProducer extends
          vehicleJourney.addVehicleJourneyAtStop(vehicleJourneyAtStop);
       }
       vehicleJourney.sortVehicleJourneyAtStops();
-      return vehicleJourney;
+      // return null if in conflict with other files, else return object
+      return checkUnsharedData(context, vehicleJourney, xmlVehicleJourney);
+   }
+   
+   protected void parseComment(String comment, VehicleJourney vj, Line line)
+   {
+      if (comment != null && comment.startsWith("{") && comment.endsWith("}"))
+      {
+         // parse json comment
+         JSONObject json = new JSONObject(comment);
+         vj.setComment(json.optString(COMMENT,null));
+
+         if (json.has(FOOTNOTE_REFS))
+         {
+            keys = json.getJSONArray(FOOTNOTE_REFS);
+            for (int i = 0; i < keys.length(); i++)
+            {
+               String key = keys.getString(i);
+               for (Footnote footnote : line.getFootnotes())
+               {
+                  if (footnote.getKey().equals(key))
+                  {
+                     vj.getFootnotes().add(footnote);
+                  }
+               }
+            }
+         }
+         if (json.has(FLEXIBLE_SERVICE))
+         {
+            vj.setFlexibleService(json.getBoolean(FLEXIBLE_SERVICE));
+         }
+         if (json.has(MOBILITY_RESTRICTION))
+         {
+            vj.setMobilityRestrictedSuitability(json.getBoolean(MOBILITY_RESTRICTION));
+         }
+      }
+      else
+      {
+         // normal comment
+         vj.setComment(comment);
+      }
+      
    }
 
 }

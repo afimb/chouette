@@ -162,7 +162,9 @@ CREATE TABLE companies (
     phone character varying(255),
     fax character varying(255),
     email character varying(255),
-    registration_number character varying(255)
+    registration_number character varying(255),
+    url character varying(255),
+    time_zone character varying(255)
 );
 
 
@@ -326,6 +328,34 @@ ALTER TABLE :SCH.facilities_id_seq OWNER TO chouette;
 ALTER SEQUENCE facilities_id_seq OWNED BY facilities.id;
 
 
+CREATE TABLE footnotes
+(
+  id bigserial NOT NULL,
+  line_id bigint,
+  code character varying(255),
+  label character varying(255),
+  created_at timestamp without time zone NOT NULL,
+  updated_at timestamp without time zone NOT NULL,
+  CONSTRAINT footnotes_pkey PRIMARY KEY (id)
+)
+WITH (
+  OIDS=FALSE
+);
+
+ALTER TABLE :SCH.footnotes
+  OWNER TO chouette;
+
+CREATE TABLE footnotes_vehicle_journeys
+(
+  vehicle_journey_id bigint,
+  footnote_id bigint
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE :SCH.footnotes_vehicle_journeys
+  OWNER TO chouette;
+
 --
 -- TOC entry 206 (class 1259 OID 480204)
 -- Dependencies: 5
@@ -470,7 +500,11 @@ CREATE TABLE lines (
     registration_number character varying(255),
     comment character varying(255),
     mobility_restricted_suitability boolean,
-    int_user_needs integer
+    int_user_needs integer,
+    flexible_service boolean,
+    url character varying(255),
+    color character varying(6),
+    text_color character varying(6)
 );
 
 
@@ -695,7 +729,9 @@ CREATE TABLE stop_areas (
     lift_availability boolean,
     int_user_needs integer,
     zip_code character varying(255),
-    city_name character varying(255)
+    city_name character varying(255),
+    url character varying(255),
+    time_zone character varying(255)
 );
 
 

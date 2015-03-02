@@ -16,7 +16,6 @@ import fr.certu.chouette.model.neptune.Route;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
 import fr.certu.chouette.model.neptune.VehicleJourneyAtStop;
-import fr.certu.chouette.model.neptune.type.ServiceStatusValueEnum;
 import fr.certu.chouette.model.neptune.type.TransportModeNameEnum;
 
 @Blueprint(VehicleJourney.class)
@@ -43,9 +42,6 @@ public class VehicleJourneyBlueprint
 
    @Default
    String comment = "comment " + UUID.randomUUID().toString();
-
-   @Default
-   ServiceStatusValueEnum serviceStatusValue = ServiceStatusValueEnum.Normal;
 
    @Default
    TransportModeNameEnum transportMode = TransportModeNameEnum.Coach;

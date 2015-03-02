@@ -84,6 +84,8 @@ ICheckPointPlugin<StopArea>
          // 4-StopArea-2 : check parent
          if (test4_2)
             check4StopArea2(report, stopArea);
+         // 4-StopArea-3 : check country code and Cityname coherence
+         check4StopArea3(report, stopArea, context);
 
          for (int j = i + 1; j < beans.size(); j++)
          {
@@ -93,6 +95,7 @@ ICheckPointPlugin<StopArea>
 
       }
    }
+
 
 
    private void check3StopArea1(PhaseReportItem report, StopArea stopArea)
@@ -247,6 +250,91 @@ ICheckPointPlugin<StopArea>
       }
    }
 
+   @SuppressWarnings("unchecked")
+   private void check4StopArea3(PhaseReportItem report, StopArea stopArea, Map<String, Object> context)
+   {
+      // 4-StopArea-3 : check if city name and code are unique in area set
+      if (!isEmpty(stopArea.getCityName()) && !isEmpty(stopArea.getCountryCode()) && stopArea.getCountryCode().length() == 5)
+      {
+         Map<String,Object> check4StopArea3Context = (Map<String, Object>) context.get("test4StopArea3");
+         if (check4StopArea3Context == null) 
+         {
+            // first call with data to be checked, initialize also checkpoint container
+            initCheckPoint(report, L4_STOP_AREA_3, CheckPointReportItem.SEVERITY.WARNING);
+            prepareCheckPoint(report, L4_STOP_AREA_3);
+
+            check4StopArea3Context = new HashMap<>();
+            context.put("test4StopArea3",check4StopArea3Context);
+         }
+         String departmentCode = stopArea.getCountryCode().substring(0, 2);
+         String cityKey = departmentCode+"_"+stopArea.getCityName();
+         Map<String, City> countryCodeMap = (Map<String, City>) check4StopArea3Context.get("countryCodeMap");
+         if (countryCodeMap == null) 
+         {
+            countryCodeMap = new HashMap<>();
+            check4StopArea3Context.put("countryCodeMap",countryCodeMap);
+         }
+         Map<String, City> cityMap = (Map<String, City>) check4StopArea3Context.get("cityMap");
+         if (cityMap == null) 
+         {
+            cityMap = new HashMap<>();
+            check4StopArea3Context.put("cityMap",cityMap);
+         }
+         City localCity = new City();
+         localCity.cityName = stopArea.getCityName();
+         localCity.countryCode = stopArea.getCountryCode();
+         localCity.stopOwner = stopArea;
+         City cityByCountryCode = countryCodeMap.get(stopArea.getCountryCode());
+         if (cityByCountryCode == null)
+         {
+            countryCodeMap.put(stopArea.getCountryCode(), localCity);
+         }
+         else
+         {
+            if (!cityByCountryCode.cityName.equals(localCity.cityName))
+            {
+               // error conflict between city names for same code
+               ReportLocation location = new ReportLocation(stopArea);
+               Map<String, Object> map = new HashMap<String, Object>();
+               map.put("name", stopArea.getName());
+               map.put("countryCode", stopArea.getCountryCode());
+               map.put("cityName", stopArea.getCityName());
+               map.put("alternateCityName",cityByCountryCode.cityName);
+               map.put("alternateStopareaName",cityByCountryCode.stopOwner.getName());
+               map.put("alternateStopareaId",cityByCountryCode.stopOwner.getObjectId());
+               DetailReportItem detail = new DetailReportItem(L4_STOP_AREA_3+"_1",
+                     stopArea.getObjectId(), Report.STATE.WARNING, location, map);
+               addValidationError(report, L4_STOP_AREA_3, detail);
+            }
+         }
+         City cityByName = cityMap.get(cityKey);
+         if (cityByName == null)
+         {
+            cityMap.put(cityKey, localCity);
+         }
+         else
+         {
+            if (!cityByName.countryCode.equals(localCity.countryCode))
+            {
+               // error conflict between city codes for same name in same department
+               ReportLocation location = new ReportLocation(stopArea);
+               Map<String, Object> map = new HashMap<String, Object>();
+               map.put("name", stopArea.getName());
+               map.put("cityName", stopArea.getCityName());
+               map.put("countryCode", stopArea.getCountryCode());
+               map.put("alternateCountryCode",cityByName.countryCode);
+               map.put("alternateStopareaName",cityByName.stopOwner.getName());
+               map.put("alternateStopareaId",cityByName.stopOwner.getObjectId());
+               DetailReportItem detail = new DetailReportItem(L4_STOP_AREA_3+"_2",
+                     stopArea.getObjectId(), Report.STATE.WARNING, location, map);
+               addValidationError(report, L4_STOP_AREA_3, detail);
+            }
+         }
+      }
+
+   }
+
+
 
    private Collection<Line> getLines(StopArea area)
    {
@@ -266,6 +354,13 @@ ICheckPointPlugin<StopArea>
          }
       }
       return lines;
+   }
+
+   private class City 
+   {
+      private String countryCode;
+      private String cityName;
+      private StopArea stopOwner;
    }
 
 }

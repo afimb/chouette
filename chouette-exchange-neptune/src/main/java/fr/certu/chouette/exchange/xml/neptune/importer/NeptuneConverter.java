@@ -64,11 +64,7 @@ import fr.certu.chouette.model.neptune.StopPoint;
 import fr.certu.chouette.model.neptune.TimeSlot;
 import fr.certu.chouette.model.neptune.Timetable;
 import fr.certu.chouette.model.neptune.VehicleJourney;
-import fr.certu.chouette.plugin.exchange.SharedImportedData;
-import fr.certu.chouette.plugin.exchange.UnsharedImportedData;
 import fr.certu.chouette.plugin.exchange.tools.DbVehicleJourneyFactory;
-import fr.certu.chouette.plugin.report.ReportItem;
-import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 
 /**
  * convert each Neptune item in corresponding Chouette Neptune one
@@ -197,20 +193,16 @@ public class NeptuneConverter
     *           error report
     * @return line produced from ChouetteLineDescription
     */
-   public Line extractLine(String sourceFile, ChouettePTNetworkType rootObject,
-         ReportItem importReport, PhaseReportItem validationReport,
-         SharedImportedData sharedData, UnsharedImportedData unshareableData,
-         Level2Validator validator)
+   public Line extractLine(Context context, ChouettePTNetworkType rootObject)
    {
       ChouetteLineDescription lineDescription = rootObject
             .getChouetteLineDescription();
       org.trident.schema.trident.ChouettePTNetworkType.ChouetteLineDescription.Line xmlLine = lineDescription
             .getLine();
 
-      Line line = lineProducer.produce(sourceFile, xmlLine, importReport,
-            validationReport, sharedData, unshareableData);
+      Line line = lineProducer.produce(context, xmlLine);
 
-      validator.setLine(xmlLine);
+      context.getValidator().setLine(xmlLine);
       return line;
    }
 
@@ -223,10 +215,8 @@ public class NeptuneConverter
     *           error report
     * @return routes produced from ChouetteLineDescription.ChouetteRoute
     */
-   public List<Route> extractRoutes(String sourceFile,
-         ChouettePTNetworkType rootObject, ReportItem importReport,
-         PhaseReportItem validationReport, SharedImportedData sharedData,
-         UnsharedImportedData unshareableData, Level2Validator validator)
+   public List<Route> extractRoutes(Context context,
+         ChouettePTNetworkType rootObject)
    {
       ChouetteLineDescription lineDescription = rootObject
             .getChouetteLineDescription();
@@ -236,11 +226,10 @@ public class NeptuneConverter
 
       for (ChouetteRoute xmlRoute : xmlRoutes)
       {
-         Route route = routeProducer.produce(sourceFile, xmlRoute,
-               importReport, validationReport, sharedData, unshareableData);
+         Route route = routeProducer.produce(context, xmlRoute);
          routes.add(route);
       }
-      validator.addRoutes(xmlRoutes);
+      context.getValidator().addRoutes(xmlRoutes);
 
       return routes;
    }
@@ -255,20 +244,16 @@ public class NeptuneConverter
     * @return NeptuneRoutingConstraint produced from ChouetteLineDescription.ITL
     */
    public List<NeptuneRoutingConstraint> extractRoutingConstraints(
-         String sourceFile, ChouettePTNetworkType rootObject,
-         ReportItem importReport, PhaseReportItem validationReport,
-         SharedImportedData sharedData, UnsharedImportedData unshareableData,
-         Level2Validator validator)
+         Context context, ChouettePTNetworkType rootObject)
    {
       ChouetteLineDescription lineDescription = rootObject
             .getChouetteLineDescription();
       List<ITLType> itls = lineDescription.getITL();
 
       List<NeptuneRoutingConstraint> restrictionConstraints = routingConstraintProducer
-            .produce(sourceFile, itls, importReport, validationReport,
-                  sharedData, unshareableData);
+            .produce(context, itls);
 
-      validator.addRoutingConstraints(itls);
+      context.getValidator().addRoutingConstraints(itls);
       return restrictionConstraints;
    }
 
@@ -281,10 +266,8 @@ public class NeptuneConverter
     *           error report
     * @return companies produced from Company
     */
-   public List<Company> extractCompanies(String sourceFile,
-         ChouettePTNetworkType rootObject, ReportItem importReport,
-         PhaseReportItem validationReport, SharedImportedData sharedData,
-         UnsharedImportedData unshareableData, Level2Validator validator)
+   public List<Company> extractCompanies(Context context,
+         ChouettePTNetworkType rootObject)
    {
       List<CompanyType> xmlCompanies = rootObject.getCompany();
 
@@ -292,12 +275,11 @@ public class NeptuneConverter
 
       for (CompanyType xmlCompany : xmlCompanies)
       {
-         Company company = companyProducer.produce(sourceFile, xmlCompany,
-               importReport, validationReport, sharedData, unshareableData);
+         Company company = companyProducer.produce(context, xmlCompany);
          companies.add(company);
       }
 
-      validator.addCompanies(xmlCompanies);
+      context.getValidator().addCompanies(xmlCompanies);
       return companies;
    }
 
@@ -310,17 +292,14 @@ public class NeptuneConverter
     *           error report
     * @return network produced from PTNetwork
     */
-   public PTNetwork extractPTNetwork(String sourceFile,
-         ChouettePTNetworkType rootObject, ReportItem importReport,
-         PhaseReportItem validationReport, SharedImportedData sharedData,
-         UnsharedImportedData unshareableData, Level2Validator validator)
+   public PTNetwork extractPTNetwork(Context context,
+         ChouettePTNetworkType rootObject)
    {
       PTNetworkType xmlPTNetwork = rootObject.getPTNetwork();
 
-      PTNetwork ptNetwork = networkProducer.produce(sourceFile, xmlPTNetwork,
-            importReport, validationReport, sharedData, unshareableData);
+      PTNetwork ptNetwork = networkProducer.produce(context, xmlPTNetwork);
 
-      validator.setPtNetwork(xmlPTNetwork);
+      context.getValidator().setPtNetwork(xmlPTNetwork);
       return ptNetwork;
    }
 
@@ -334,10 +313,8 @@ public class NeptuneConverter
     * @return journeyPatterns produced from
     *         ChouetteLineDescription.JourneyPattern
     */
-   public List<JourneyPattern> extractJourneyPatterns(String sourceFile,
-         ChouettePTNetworkType rootObject, ReportItem importReport,
-         PhaseReportItem validationReport, SharedImportedData sharedData,
-         UnsharedImportedData unshareableData, Level2Validator validator)
+   public List<JourneyPattern> extractJourneyPatterns(Context context,
+         ChouettePTNetworkType rootObject)
    {
       ChouetteLineDescription lineDescription = rootObject
             .getChouetteLineDescription();
@@ -349,11 +326,10 @@ public class NeptuneConverter
       for (JourneyPatternType xmlJourneyPattern : xmlJourneyPatterns)
       {
          JourneyPattern journeyPattern = journeyPatternProducer.produce(
-               sourceFile, xmlJourneyPattern, validationReport,
-               validationReport, sharedData, unshareableData);
+               context, xmlJourneyPattern);
          journeyPatterns.add(journeyPattern);
       }
-      validator.addJourneyPatterns(xmlJourneyPatterns);
+      context.getValidator().addJourneyPatterns(xmlJourneyPatterns);
 
       return journeyPatterns;
    }
@@ -367,10 +343,8 @@ public class NeptuneConverter
     *           error report
     * @return PTLinks produced from ChouetteLineDescription.PtLink
     */
-   public List<PTLink> extractPTLinks(String sourceFile,
-         ChouettePTNetworkType rootObject, ReportItem importReport,
-         PhaseReportItem validationReport, SharedImportedData sharedData,
-         UnsharedImportedData unshareableData, Level2Validator validator)
+   public List<PTLink> extractPTLinks(Context context,
+         ChouettePTNetworkType rootObject)
    {
       ChouetteLineDescription lineDescription = rootObject
             .getChouetteLineDescription();
@@ -380,12 +354,11 @@ public class NeptuneConverter
 
       for (PTLinkType xmlPTLink : xmlPTLinks)
       {
-         PTLink ptLink = ptLinkProducer.produce(sourceFile, xmlPTLink,
-               importReport, validationReport, sharedData, unshareableData);
+         PTLink ptLink = ptLinkProducer.produce(context, xmlPTLink);
          ptLinks.add(ptLink);
       }
 
-      validator.addPTLinks(xmlPTLinks);
+      context.getValidator().addPTLinks(xmlPTLinks);
       return ptLinks;
    }
 
@@ -399,14 +372,11 @@ public class NeptuneConverter
     * @return VehicleJourneys produced from
     *         ChouetteLineDescription.VehicleJourney
     */
-   public List<VehicleJourney> extractVehicleJourneys(String sourceFile,
-         ChouettePTNetworkType rootObject, ReportItem importReport,
-         PhaseReportItem validationReport, SharedImportedData sharedData,
-         UnsharedImportedData unshareableData, Level2Validator validator,
-         boolean optimizeMemory)
+   public List<VehicleJourney> extractVehicleJourneys(Context context,
+         ChouettePTNetworkType rootObject)
    {
       DbVehicleJourneyFactory vjFactory = new DbVehicleJourneyFactory(
-            "Neptune", optimizeMemory);
+            "Neptune", context.isOptimizeMemory());
       vehicleJourneyProducer.setFactory(vjFactory);
       ChouetteLineDescription lineDescription = rootObject
             .getChouetteLineDescription();
@@ -417,12 +387,10 @@ public class NeptuneConverter
 
       for (VehicleJourneyType xmlVehicleJourney : xmlVehicleJourneys)
       {
-         VehicleJourney vehicleJourney = vehicleJourneyProducer.produce(
-               sourceFile, xmlVehicleJourney, importReport, validationReport,
-               sharedData, unshareableData);
+         VehicleJourney vehicleJourney = vehicleJourneyProducer.produce(context, xmlVehicleJourney);
          vehicleJourneys.add(vehicleJourney);
       }
-      validator.addVehicleJourneys(xmlVehicleJourneys);
+      context.getValidator().addVehicleJourneys(xmlVehicleJourneys);
       return vehicleJourneys;
    }
 
@@ -435,10 +403,8 @@ public class NeptuneConverter
     *           error report
     * @return StopPoints produced from ChouetteLineDescription.StopPoint
     */
-   public List<StopPoint> extractStopPoints(String sourceFile,
-         ChouettePTNetworkType rootObject, ReportItem importReport,
-         PhaseReportItem validationReport, SharedImportedData sharedData,
-         UnsharedImportedData unshareableData, Level2Validator validator)
+   public List<StopPoint> extractStopPoints(Context context,
+         ChouettePTNetworkType rootObject)
    {
       ChouetteLineDescription lineDescription = rootObject
             .getChouetteLineDescription();
@@ -449,12 +415,10 @@ public class NeptuneConverter
 
       for (org.trident.schema.trident.ChouettePTNetworkType.ChouetteLineDescription.StopPoint xmlStopPoint : xmlStopPoints)
       {
-         StopPoint stopPoint = stopPointProducer.produce(sourceFile,
-               xmlStopPoint, importReport, validationReport, sharedData,
-               unshareableData);
+         StopPoint stopPoint = stopPointProducer.produce(context, xmlStopPoint);
          stopPoints.add(stopPoint);
       }
-      validator.addStopPoints(xmlStopPoints);
+      context.getValidator().addStopPoints(xmlStopPoints);
 
       return stopPoints;
    }
@@ -468,10 +432,8 @@ public class NeptuneConverter
     *           error report
     * @return StopAreas produced from ChouetteArea.StopArea
     */
-   public List<StopArea> extractStopAreas(String sourceFile,
-         ChouettePTNetworkType rootObject, ReportItem importReport,
-         PhaseReportItem validationReport, SharedImportedData sharedData,
-         UnsharedImportedData unshareableData, Level2Validator validator)
+   public List<StopArea> extractStopAreas(Context context,
+         ChouettePTNetworkType rootObject)
    {
       List<org.trident.schema.trident.ChouettePTNetworkType.ChouetteArea.StopArea> xmlStopAreas = rootObject
             .getChouetteArea().getStopArea();
@@ -480,11 +442,10 @@ public class NeptuneConverter
 
       for (org.trident.schema.trident.ChouettePTNetworkType.ChouetteArea.StopArea xmlStopArea : xmlStopAreas)
       {
-         StopArea stopArea = stopAreaProducer.produce(sourceFile, xmlStopArea,
-               importReport, validationReport, sharedData, unshareableData);
+         StopArea stopArea = stopAreaProducer.produce(context, xmlStopArea);
          stopAreas.add(stopArea);
       }
-      validator.addStopAreas(xmlStopAreas);
+      context.getValidator().addStopAreas(xmlStopAreas);
 
       return stopAreas;
    }
@@ -498,10 +459,8 @@ public class NeptuneConverter
     *           error report
     * @return AreaCentroids produced from ChouetteArea.AreaCentroid
     */
-   public List<AreaCentroid> extractAreaCentroids(String sourceFile,
-         ChouettePTNetworkType rootObject, ReportItem importReport,
-         PhaseReportItem validationReport, SharedImportedData sharedData,
-         UnsharedImportedData unshareableData, Level2Validator validator)
+   public List<AreaCentroid> extractAreaCentroids(Context context,
+         ChouettePTNetworkType rootObject)
    {
       List<org.trident.schema.trident.ChouettePTNetworkType.ChouetteArea.AreaCentroid> xmlAreaCentroids = rootObject
             .getChouetteArea().getAreaCentroid();
@@ -510,13 +469,11 @@ public class NeptuneConverter
 
       for (org.trident.schema.trident.ChouettePTNetworkType.ChouetteArea.AreaCentroid xmlAreaCentroid : xmlAreaCentroids)
       {
-         AreaCentroid areaCentroid = areaCentroidProducer.produce(sourceFile,
-               xmlAreaCentroid, importReport, validationReport, sharedData,
-               unshareableData);
+         AreaCentroid areaCentroid = areaCentroidProducer.produce(context, xmlAreaCentroid);
          areaCentroids.add(areaCentroid);
       }
 
-      validator.addAreaCentroids(xmlAreaCentroids);
+      context.getValidator().addAreaCentroids(xmlAreaCentroids);
       return areaCentroids;
    }
 
@@ -529,10 +486,8 @@ public class NeptuneConverter
     *           error report
     * @return ConnectionLinks produced from ConnectionLink
     */
-   public List<ConnectionLink> extractConnectionLinks(String sourceFile,
-         ChouettePTNetworkType rootObject, ReportItem importReport,
-         PhaseReportItem validationReport, SharedImportedData sharedData,
-         UnsharedImportedData unshareableData, Level2Validator validator)
+   public List<ConnectionLink> extractConnectionLinks(Context context,
+         ChouettePTNetworkType rootObject)
    {
       List<org.trident.schema.trident.ChouettePTNetworkType.ConnectionLink> xmlConnectionLinks = rootObject
             .getConnectionLink();
@@ -541,12 +496,10 @@ public class NeptuneConverter
 
       for (org.trident.schema.trident.ChouettePTNetworkType.ConnectionLink xmlConnectionLink : xmlConnectionLinks)
       {
-         ConnectionLink connectionLink = connectionLinkProducer.produce(
-               sourceFile, xmlConnectionLink, importReport, validationReport,
-               sharedData, unshareableData);
+         ConnectionLink connectionLink = connectionLinkProducer.produce(context, xmlConnectionLink);
          connectionLinks.add(connectionLink);
       }
-      validator.addConnectionLinks(xmlConnectionLinks);
+      context.getValidator().addConnectionLinks(xmlConnectionLinks);
 
       return connectionLinks;
    }
@@ -560,10 +513,8 @@ public class NeptuneConverter
     *           error report
     * @return Timetables produced from Timetable
     */
-   public List<Timetable> extractTimetables(String sourceFile,
-         ChouettePTNetworkType rootObject, ReportItem importReport,
-         PhaseReportItem validationReport, SharedImportedData sharedData,
-         UnsharedImportedData unshareableData, Level2Validator validator)
+   public List<Timetable> extractTimetables(Context context,
+         ChouettePTNetworkType rootObject)
    {
       List<TimetableType> xmlTimetables = rootObject.getTimetable();
 
@@ -571,12 +522,10 @@ public class NeptuneConverter
 
       for (TimetableType xmlTimetable : xmlTimetables)
       {
-         Timetable timetable = timetableProducer.produce(sourceFile,
-               xmlTimetable, importReport, validationReport, sharedData,
-               unshareableData);
+         Timetable timetable = timetableProducer.produce(context, xmlTimetable);
          timetables.add(timetable);
       }
-      validator.addTimetables(xmlTimetables);
+      context.getValidator().addTimetables(xmlTimetables);
 
       return timetables;
    }
@@ -590,10 +539,8 @@ public class NeptuneConverter
     *           error report
     * @return AccessLinks produced from AccessLink
     */
-   public List<AccessLink> extractAccessLinks(String sourceFile,
-         ChouettePTNetworkType rootObject, ReportItem importReport,
-         PhaseReportItem validationReport, SharedImportedData sharedData,
-         UnsharedImportedData unshareableData, Level2Validator validator)
+   public List<AccessLink> extractAccessLinks(Context context,
+         ChouettePTNetworkType rootObject)
    {
       List<org.trident.schema.trident.ChouettePTNetworkType.AccessLink> xmlAccessLinks = rootObject
             .getAccessLink();
@@ -602,12 +549,10 @@ public class NeptuneConverter
 
       for (org.trident.schema.trident.ChouettePTNetworkType.AccessLink xmlAccessLink : xmlAccessLinks)
       {
-         AccessLink accessLink = accessLinkProducer.produce(sourceFile,
-               xmlAccessLink, importReport, validationReport, sharedData,
-               unshareableData);
+         AccessLink accessLink = accessLinkProducer.produce(context, xmlAccessLink);
          accessLinks.add(accessLink);
       }
-      validator.addAccessLinks(xmlAccessLinks);
+      context.getValidator().addAccessLinks(xmlAccessLinks);
 
       return accessLinks;
    }
@@ -621,10 +566,8 @@ public class NeptuneConverter
     *           error report
     * @return AccessPoints produced from AccessPoint
     */
-   public List<AccessPoint> extractAccessPoints(String sourceFile,
-         ChouettePTNetworkType rootObject, ReportItem importReport,
-         PhaseReportItem validationReport, SharedImportedData sharedData,
-         UnsharedImportedData unshareableData, Level2Validator validator)
+   public List<AccessPoint> extractAccessPoints(Context context,
+         ChouettePTNetworkType rootObject)
    {
       List<PTAccessPointType> xmlAccessPoints = rootObject.getAccessPoint();
 
@@ -632,13 +575,11 @@ public class NeptuneConverter
 
       for (PTAccessPointType xmlAccessPoint : xmlAccessPoints)
       {
-         AccessPoint accessPoint = accessPointProducer.produce(sourceFile,
-               xmlAccessPoint, importReport, validationReport, sharedData,
-               unshareableData);
+         AccessPoint accessPoint = accessPointProducer.produce(context, xmlAccessPoint);
          accessPoints.add(accessPoint);
       }
 
-      validator.addAccessPoints(xmlAccessPoints);
+      context.getValidator().addAccessPoints(xmlAccessPoints);
       return accessPoints;
    }
 
@@ -651,22 +592,18 @@ public class NeptuneConverter
     *           error report
     * @return GroupOfLines produced from GroupOfLine
     */
-   public List<GroupOfLine> extractGroupOfLines(String sourceFile,
-         ChouettePTNetworkType rootObject, ReportItem importReport,
-         PhaseReportItem validationReport, SharedImportedData sharedData,
-         UnsharedImportedData unshareableData, Level2Validator validator)
+   public List<GroupOfLine> extractGroupOfLines(Context context,
+         ChouettePTNetworkType rootObject)
    {
       List<GroupOfLine> groupOfLines = new ArrayList<GroupOfLine>();
 
       List<GroupOfLineType> xmlGroupOfLines = rootObject.getGroupOfLine();
       for (GroupOfLineType xmlGroupOfLine : xmlGroupOfLines)
       {
-         GroupOfLine groupOfLine = groupOfLineProducer.produce(sourceFile,
-               xmlGroupOfLine, importReport, validationReport, sharedData,
-               unshareableData);
+         GroupOfLine groupOfLine = groupOfLineProducer.produce(context, xmlGroupOfLine);
          groupOfLines.add(groupOfLine);
       }
-      validator.addGroupOfLines(xmlGroupOfLines);
+      context.getValidator().addGroupOfLines(xmlGroupOfLines);
 
       return groupOfLines;
    }
@@ -680,20 +617,17 @@ public class NeptuneConverter
     *           error report
     * @return Facilities produced from Facility
     */
-   public List<Facility> extractFacilities(String sourceFile,
-         ChouettePTNetworkType rootObject, ReportItem importReport,
-         PhaseReportItem validationReport, SharedImportedData sharedData,
-         UnsharedImportedData unshareableData, Level2Validator validator)
+   public List<Facility> extractFacilities(Context context,
+         ChouettePTNetworkType rootObject)
    {
       List<Facility> facilities = new ArrayList<Facility>();
       List<ChouetteFacilityType> xmlFacilities = rootObject.getFacility();
       for (ChouetteFacilityType xmlFacility : xmlFacilities)
       {
-         Facility facility = facilityProducer.produce(sourceFile, xmlFacility,
-               importReport, validationReport, sharedData, unshareableData);
+         Facility facility = facilityProducer.produce(context, xmlFacility);
          facilities.add(facility);
       }
-      validator.addFacilities(xmlFacilities);
+      context.getValidator().addFacilities(xmlFacilities);
       return facilities;
    }
 
@@ -706,20 +640,17 @@ public class NeptuneConverter
     *           error report
     * @return TimeSlots produced from TimeSlot
     */
-   public List<TimeSlot> extractTimeSlots(String sourceFile,
-         ChouettePTNetworkType rootObject, ReportItem importReport,
-         PhaseReportItem validationReport, SharedImportedData sharedData,
-         UnsharedImportedData unshareableData, Level2Validator validator)
+   public List<TimeSlot> extractTimeSlots(Context context,
+         ChouettePTNetworkType rootObject)
    {
       List<TimeSlot> timeSlots = new ArrayList<TimeSlot>();
       List<TimeSlotType> xmlTimeSlots = rootObject.getTimeSlot();
       for (TimeSlotType xmlTimeSlot : xmlTimeSlots)
       {
-         TimeSlot timeSlot = timeSlotProducer.produce(sourceFile, xmlTimeSlot,
-               importReport, validationReport, sharedData, unshareableData);
+         TimeSlot timeSlot = timeSlotProducer.produce(context, xmlTimeSlot);
          timeSlots.add(timeSlot);
       }
-      validator.addTimeSlots(xmlTimeSlots);
+      context.getValidator().addTimeSlots(xmlTimeSlots);
 
       return timeSlots;
    }

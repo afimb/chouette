@@ -354,8 +354,71 @@ public class Level2Validator
    {
       this.sourceFile = sourceFile;
       this.validationReport = validationReport;
+      initValidation(validationReport);
    }
 
+   private void initValidation(PhaseReportItem validationItem)
+   {
+      String prefix = "2-NEPTUNE-";
+      int order = addItemToValidation(validationItem, prefix, "Common", 3, 1,
+            "W", "E", "E");
+      order = addItemToValidation(validationItem, prefix, "Network", 1, order,
+            "W");
+      order = addItemToValidation(validationItem, prefix, "GroupOfLine", 1,
+            order, "W");
+      order = addItemToValidation(validationItem, prefix, "StopArea", 6, order,
+            "E", "E", "E", "E", "E", "E");
+      order = addItemToValidation(validationItem, prefix, "ITL", 5, order, "E",
+            "E", "E", "E", "E");
+      order = addItemToValidation(validationItem, prefix, "AreaCentroid", 2,
+            order, "E", "E");
+      order = addItemToValidation(validationItem, prefix, "ConnectionLink", 1,
+            order, "E");
+      order = addItemToValidation(validationItem, prefix, "AccessPoint", 7,
+            order, "E", "E", "E", "E", "E", "E", "E");
+      order = addItemToValidation(validationItem, prefix, "AccessLink", 2,
+            order, "E", "E");
+      order = addItemToValidation(validationItem, prefix, "Line", 5, order,
+            "E", "W", "W", "E", "E");
+      order = addItemToValidation(validationItem, prefix, "Route", 12, order,
+            "E", "E", "E", "E", "E", "E", "E", "E", "W", "E", "W", "W");
+      order = addItemToValidation(validationItem, prefix, "PtLink", 1, order,
+            "E");
+      order = addItemToValidation(validationItem, prefix, "JourneyPattern", 3,
+            order, "E", "E", "E");
+      order = addItemToValidation(validationItem, prefix, "StopPoint", 4,
+            order, "E", "E", "E", "E");
+      order = addItemToValidation(validationItem, prefix, "Timetable", 2,
+            order, "W", "W");
+      order = addItemToValidation(validationItem, prefix, "VehicleJourney", 7,
+            order, "E", "E", "E", "E", "E", "E", "W");
+      order = addItemToValidation(validationItem, prefix,
+            "VehicleJourneyAtStop", 4, order, "E", "E", "E", "E");
+      order = addItemToValidation(validationItem, prefix, "Facility", 6, order,
+            "E", "E", "E", "E", "E", "E");
+   }
+
+   private int addItemToValidation(PhaseReportItem validationItem,
+         String prefix, String name, int count, int order, String... severities)
+   {
+      for (int i = 1; i <= count; i++)
+      {
+         if (severities[i - 1].equals("W"))
+         {
+            validationItem.addItem(new CheckPointReportItem(prefix + name + "-"
+                  + i, order++, Report.STATE.UNCHECK,
+                  CheckPointReportItem.SEVERITY.WARNING));
+         } else
+         {
+            validationItem.addItem(new CheckPointReportItem(prefix + name + "-"
+                  + i, order++, Report.STATE.UNCHECK,
+                  CheckPointReportItem.SEVERITY.ERROR));
+         }
+      }
+      return order;
+   }
+
+   
    public void validate()
    {
       long startTime = System.currentTimeMillis();

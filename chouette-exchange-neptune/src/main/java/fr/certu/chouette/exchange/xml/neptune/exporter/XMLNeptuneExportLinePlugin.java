@@ -169,6 +169,10 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
          ParameterDescription param = new ParameterDescription("metadata", ParameterDescription.TYPE.OBJECT, false, false);
          params.add(param);
       }
+      {
+         ParameterDescription param = new ParameterDescription("extensions", ParameterDescription.TYPE.BOOLEAN, false, false);
+         params.add(param);
+      }
       description.setParameterDescriptions(params);
    }
 
@@ -205,6 +209,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
       Date endDate = null;
 
       boolean addMetadata = false;
+      boolean addExtensions = false;
       Metadata metadata = new Metadata(); // if not asked, will be used as dummy
 
       for (ParameterValue value : parameters)
@@ -241,6 +246,10 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
             {
                addMetadata = true;
                metadata = (Metadata) svalue.getObjectValue();
+            }
+            else if (svalue.getName().equalsIgnoreCase("extensions"))
+            {
+               addExtensions = svalue.getBooleanValue().booleanValue();
             }
             else
             {
@@ -297,7 +306,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
             Line line = beans.get(0);
             ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.EXPORTED_LINE, Report.STATE.OK, line.getName(), line.getObjectId());
             report.addItem(item);
-            JAXBElement<ChouettePTNetworkType> rootObject = exportLine(line, startDate, endDate, projectionType, item,metadata);
+            JAXBElement<ChouettePTNetworkType> rootObject = exportLine(line, startDate, endDate, projectionType, item,metadata,addExtensions);
             if (rootObject != null)
             {
                log.info("exporting " + line.getName() + " (" + line.getObjectId() + ")");
@@ -342,7 +351,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
                ExchangeReportItem item = new ExchangeReportItem(ExchangeReportItem.KEY.EXPORTED_LINE, Report.STATE.OK, line.getName(), line.getObjectId());
                report.addItem(item);
 
-               JAXBElement<ChouettePTNetworkType> rootObject = exportLine(line, startDate, endDate, projectionType, item, metadata);
+               JAXBElement<ChouettePTNetworkType> rootObject = exportLine(line, startDate, endDate, projectionType, item, metadata,addExtensions);
                if (rootObject != null)
                {
                   log.info("exporting " + line.getName() + " (" + line.getObjectId() + ")");
@@ -414,7 +423,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
     * @param report
     * @return chouetteLine or null if line has no valid vehicleJourneys
     */
-   private JAXBElement<ChouettePTNetworkType> exportLine(Line line, Date startDate, Date endDate, String projectionType, ReportItem report, Metadata metadata)
+   private JAXBElement<ChouettePTNetworkType> exportLine(Line line, Date startDate, Date endDate, String projectionType, ReportItem report, Metadata metadata, boolean addExtension)
    {
       ObjectFactory factory = AbstractJaxbNeptuneProducer.tridentFactory;
       ChouettePTNetworkType rootObject = factory.createChouettePTNetworkType();
@@ -426,14 +435,14 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
 
          if (line.getPtNetwork() != null)
          {
-            rootObject.setPTNetwork(networkProducer.produce(line.getPtNetwork()));
+            rootObject.setPTNetwork(networkProducer.produce(line.getPtNetwork(),addExtension));
          }
 
          if (line.getGroupOfLines() != null)
          {
             for (GroupOfLine group : line.getGroupOfLines())
             {
-               GroupOfLineType jaxbGroup = groupOfLineProducer.produce(group);
+               GroupOfLineType jaxbGroup = groupOfLineProducer.produce(group,addExtension);
                jaxbGroup.getLineId().clear();
                jaxbGroup.getLineId().add(line.getObjectId());
                rootObject.getGroupOfLine().add(jaxbGroup);
@@ -522,14 +531,14 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
             return null;
 
          ChouetteLineDescription chouetteLineDescription = new ChouetteLineDescription();
-         ChouetteLineDescription.Line jaxbLine = lineProducer.produce(line);
+         ChouetteLineDescription.Line jaxbLine = lineProducer.produce(line,addExtension);
          chouetteLineDescription.setLine(jaxbLine);
 
          // insert routes, journeyPatterns and stoppoints
          HashSet<StopPoint> stopPoints = new HashSet<StopPoint>();
          for (JourneyPattern journeyPattern : validJourneyPatterns)
          {
-            JourneyPatternType jaxbObj = journeyPatternProducer.produce(journeyPattern);
+            JourneyPatternType jaxbObj = journeyPatternProducer.produce(journeyPattern,addExtension);
             validObjectIds.add(jaxbObj.getObjectId());
             chouetteLineDescription.getJourneyPattern().add(jaxbObj);
          }
@@ -537,7 +546,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
          HashSet<PTLink> ptLinks = new HashSet<PTLink>();
          for (Route route : validRoutes)
          {
-            ChouetteRoute jaxbObj = routeProducer.produce(route);
+            ChouetteRoute jaxbObj = routeProducer.produce(route,addExtension);
 
             // add all stoppoints of route
             if (route.getStopPoints() != null)
@@ -580,7 +589,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
                vehicleJourney.setCompany(line.getCompany());
             }
 
-            chouetteLineDescription.getVehicleJourney().add(vehicleJourneyProducer.produce(vehicleJourney));
+            chouetteLineDescription.getVehicleJourney().add(vehicleJourneyProducer.produce(vehicleJourney,addExtension));
          }
 
          HashSet<StopArea> stopAreas = new HashSet<StopArea>();
@@ -591,7 +600,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
          for (StopPoint stopPoint : stopPoints)
          {
             stopRefs.add(stopPoint.getObjectId());
-            chouetteLineDescription.getStopPoint().add(stopPointProducer.produce(stopPoint));
+            chouetteLineDescription.getStopPoint().add(stopPointProducer.produce(stopPoint,addExtension));
             stopAreas.addAll(extractStopAreaHierarchy(stopPoint.getContainedInStopArea(), line));
             if (stopPoint.getFacilities() != null)
             {
@@ -606,12 +615,12 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
 
          for (PTLink ptLink : ptLinks)
          {
-            chouetteLineDescription.getPtLink().add(ptLinkProducer.produce(ptLink));
+            chouetteLineDescription.getPtLink().add(ptLinkProducer.produce(ptLink,addExtension));
          }
 
          for (Company company : companies)
          {
-            rootObject.getCompany().add(companyProducer.produce(company));
+            rootObject.getCompany().add(companyProducer.produce(company,addExtension));
          }
 
          ChouetteArea chouetteArea = new ChouetteArea();
@@ -630,7 +639,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
          for (StopArea stopArea : stopAreas)
          {
             stopArea.toProjection(projectionType);
-            ChouetteArea.StopArea chouetteStopArea = stopAreaProducer.produce(stopArea);
+            ChouetteArea.StopArea chouetteStopArea = stopAreaProducer.produce(stopArea,addExtension);
             // remove external stopPoints or stopareas
             List<String> pointRefs = chouetteStopArea.getContains();
             if (pointRefs.isEmpty())
@@ -657,7 +666,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
                metadata.getSpatialCoverage().update(stopArea.getLongitude().doubleValue(), stopArea.getLatitude().doubleValue());
             if (stopArea.hasAddress() || stopArea.hasCoordinates() || stopArea.hasProjection())
             {
-               ChouetteArea.AreaCentroid centroid = areaCentroidProducer.produce(stopArea);
+               ChouetteArea.AreaCentroid centroid = areaCentroidProducer.produce(stopArea,addExtension);
                chouetteArea.getAreaCentroid().add(centroid);
                chouetteStopArea.setCentroidOfArea(centroid.getObjectId());
             }
@@ -676,7 +685,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
 
          for (ConnectionLink connectionLink : connectionLinks)
          {
-            rootObject.getConnectionLink().add(connectionLinkProducer.produce(connectionLink));
+            rootObject.getConnectionLink().add(connectionLinkProducer.produce(connectionLink,addExtension));
             if (connectionLink.getFacilities() != null)
             {
                facilities.addAll(connectionLink.getFacilities());
@@ -685,30 +694,30 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
 
          for (TimeSlot timeSlot : validTimeSlots)
          {
-            rootObject.getTimeSlot().add(timeSlotProducer.produce(timeSlot));
+            rootObject.getTimeSlot().add(timeSlotProducer.produce(timeSlot,addExtension));
          }
 
          for (Facility facility : facilities)
          {
             facility.toProjection(projectionType);
-            rootObject.getFacility().add(facilityProducer.produce(facility));
+            rootObject.getFacility().add(facilityProducer.produce(facility,addExtension));
          }
 
          for (AccessLink accessLink : accessLinks)
          {
-            rootObject.getAccessLink().add(accessLinkProducer.produce(accessLink));
+            rootObject.getAccessLink().add(accessLinkProducer.produce(accessLink,addExtension));
             accessPoints.add(accessLink.getAccessPoint());
          }
 
          for (AccessPoint accessPoint : accessPoints)
          {
             accessPoint.toProjection(projectionType);
-            rootObject.getAccessPoint().add(accessPointProducer.produce(accessPoint));
+            rootObject.getAccessPoint().add(accessPointProducer.produce(accessPoint,addExtension));
          }
 
          for (Timetable timetable : timetables)
          {
-            rootObject.getTimetable().add(timetableProducer.produce(timetable));
+            rootObject.getTimetable().add(timetableProducer.produce(timetable,addExtension));
             metadata.getTemporalCoverage().update(timetable.getStartOfPeriod(), timetable.getEndOfPeriod());
          }
 
@@ -719,7 +728,7 @@ public class XMLNeptuneExportLinePlugin implements IExportPlugin<Line>
             {
                if (stopRefs.contains(routingConstraint.getObjectId()))
                {
-                  ITLType jaxbITL = routingConstraintProducer.produceITL(line, routingConstraint);
+                  ITLType jaxbITL = routingConstraintProducer.produceITL(line, routingConstraint,addExtension);
                   chouetteLineDescription.getITL().add(jaxbITL);
                }
                else

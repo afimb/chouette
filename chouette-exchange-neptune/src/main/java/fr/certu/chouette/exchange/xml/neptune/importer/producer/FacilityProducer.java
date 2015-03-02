@@ -8,6 +8,7 @@ import org.trident.schema.trident.ChouetteFacilityType.FacilityLocation;
 import org.trident.schema.trident.ProjectedPointType;
 
 import uk.org.siri.siri.AllFacilitiesFeatureStructure;
+import fr.certu.chouette.exchange.xml.neptune.importer.Context;
 import fr.certu.chouette.model.neptune.Facility;
 import fr.certu.chouette.model.neptune.type.LongLatTypeEnum;
 import fr.certu.chouette.model.neptune.type.facility.AccessFacilityEnumeration;
@@ -27,10 +28,6 @@ import fr.certu.chouette.model.neptune.type.facility.ReservedSpaceFacilityEnumer
 import fr.certu.chouette.model.neptune.type.facility.RetailFacilityEnumeration;
 import fr.certu.chouette.model.neptune.type.facility.SanitaryFacilityEnumeration;
 import fr.certu.chouette.model.neptune.type.facility.TicketingFacilityEnumeration;
-import fr.certu.chouette.plugin.exchange.SharedImportedData;
-import fr.certu.chouette.plugin.exchange.UnsharedImportedData;
-import fr.certu.chouette.plugin.report.ReportItem;
-import fr.certu.chouette.plugin.validation.report.PhaseReportItem;
 
 /**
  * 
@@ -42,13 +39,11 @@ public class FacilityProducer extends
 {
 
    @Override
-   public Facility produce(String sourceFile, ChouetteFacilityType xmlFacility,
-         ReportItem importReport, PhaseReportItem validationReport,
-         SharedImportedData sharedData, UnsharedImportedData unshareableData)
+   public Facility produce(Context context, ChouetteFacilityType xmlFacility)
    {
       Facility facility = new Facility();
       // objectId, objectVersion, creatorId, creationTime
-      populateFromCastorNeptune(facility, xmlFacility, importReport);
+      populateFromCastorNeptune(context,facility, xmlFacility);
       // Name optional
       facility.setName(getNonEmptyTrimedString(xmlFacility.getName()));
       // Comment optional
@@ -182,6 +177,10 @@ public class FacilityProducer extends
 
          facility.addFacilityFeature(facilityFeature);
       }
+      
+      Facility sharedBean = getOrAddSharedData(context, facility,  xmlFacility);
+      if (sharedBean != null)
+         return sharedBean;
 
       return facility;
    }

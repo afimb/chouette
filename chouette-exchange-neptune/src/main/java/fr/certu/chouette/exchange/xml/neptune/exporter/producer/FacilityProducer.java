@@ -70,7 +70,7 @@ public class FacilityProducer extends
    }
 
    @Override
-   public ChouetteFacilityType produce(Facility facility)
+   public ChouetteFacilityType produce(Facility facility, boolean addExtension)
    {
       ChouetteFacilityType jaxbFacility = tridentFactory
             .createChouetteFacilityType();

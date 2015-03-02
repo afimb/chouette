@@ -1,23 +1,25 @@
 package fr.certu.chouette.exchange.netex.importer.converters;
 
-import com.ximpleware.AutoPilot;
-import com.ximpleware.NavException;
-import com.ximpleware.VTDGen;
-import com.ximpleware.VTDNav;
-import com.ximpleware.XPathEvalException;
-import com.ximpleware.XPathParseException;
-import fr.certu.chouette.model.neptune.VehicleJourney;
-import fr.certu.chouette.model.neptune.type.ServiceStatusValueEnum;
 import java.io.File;
 import java.io.FileInputStream;
 import java.text.ParseException;
 import java.util.List;
+
 import org.apache.commons.io.FileUtils;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import com.ximpleware.AutoPilot;
+import com.ximpleware.NavException;
+import com.ximpleware.VTDGen;
+import com.ximpleware.VTDNav;
+import com.ximpleware.XPathEvalException;
+import com.ximpleware.XPathParseException;
+
+import fr.certu.chouette.model.neptune.VehicleJourney;
 
 @ContextConfiguration(locations = { "classpath:testContext.xml",
       "classpath*:chouetteContext.xml" })
@@ -88,14 +90,6 @@ public class VehicleJourneyConverterTest extends
             "short 0");
    }
 
-   @Test(groups = { "TimeTableFrame" }, description = "VehicleJourney's ServiceStatusValue attribute reading")
-   public void verifyServiceStatusValue() throws XPathEvalException,
-         NavException, XPathParseException, ParseException
-   {
-      VehicleJourney selectedVehicle = getByObjectId("T:VehicleJourney:1-0-1-0");
-      Assert.assertEquals(selectedVehicle.getServiceStatusValue(),
-            ServiceStatusValueEnum.Normal);
-   }
 
    @Test(groups = { "TimeTableFrame" }, description = "VehicleJourney's Number attribute reading")
    public void verifyNumber() throws XPathEvalException, NavException,
