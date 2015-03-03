@@ -1,6 +1,8 @@
 package mobi.chouette.model.util;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +10,9 @@ import java.util.Map;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.NeptuneLocalizedObject;
 import mobi.chouette.model.NeptuneObject;
+import mobi.chouette.model.Route;
+import mobi.chouette.model.StopArea;
+import mobi.chouette.model.StopPoint;
 
 public abstract class NeptuneUtil {
 
@@ -138,5 +143,22 @@ public abstract class NeptuneUtil {
 	      }
 	   }
 
+	public static List<StopArea> getStopAreaOfRoute(Route route)
+	{
+		ArrayList<StopArea> areas = new ArrayList<>();
+		ArrayList<StopPoint> points = new ArrayList<>(route.getStopPoints());
+		Collections.sort(points,new Comparator<StopPoint>() {
+
+			@Override
+			public int compare(StopPoint arg0, StopPoint arg1) {
+				// TODO Auto-generated method stub
+				return arg0.getPosition().intValue() - arg1.getPosition().intValue();
+			}
+		});
+		for (StopPoint point : points) {
+			areas.add(point.getContainedInStopArea());
+		}
+		return areas;
+	}
 	
 }

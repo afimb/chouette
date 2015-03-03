@@ -13,37 +13,30 @@ import java.lang.reflect.Field;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
 import org.apache.log4j.Logger;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
 
 /**
  * basic class for every Chouette object
  */
 @MappedSuperclass
 @Access(AccessType.FIELD)
-@EqualsAndHashCode(of = { "id" })
 @ToString
 public abstract class NeptuneObject implements Serializable {
 
 	private static final long serialVersionUID = -1406542019260386319L;
 
-	
 	@Getter
 	@Setter
 	@Transient
 	private boolean detached = false;
-	
+
 	/**
 	 * database id <br/>
 	 * null if not saved
@@ -52,20 +45,27 @@ public abstract class NeptuneObject implements Serializable {
 	 *            New value
 	 * @return The actual value
 	 */
-//	@Getter
-//	@Setter
-//	@GeneratedValue(strategy = GenerationType.IDENTITY)
-//	@SequenceGenerator(name = "hibernate_seq", initialValue = 1, allocationSize = 50, sequenceName = "hibernate_seq")
-//	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hibernate_seq")
-//	@GenericGenerator(name = "hibernate_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", parameters = {
-//			@Parameter(name = "sequence_name", value = "hibernate_seq"),
-//			@Parameter(name = "increment_size", value = "50") })
-//	@Id
-//	@GeneratedValue(generator = "hibernate_seq")
-//	@Column(name = "id", nullable = false)
-//	protected Long id;
-	
+	// @Getter
+	// @Setter
+	// @GeneratedValue(strategy = GenerationType.IDENTITY)
+	// @SequenceGenerator(name = "hibernate_seq", initialValue = 1,
+	// allocationSize = 50, sequenceName = "hibernate_seq")
+	// @GeneratedValue(strategy = GenerationType.SEQUENCE, generator =
+	// "hibernate_seq")
+	// @GenericGenerator(name = "hibernate_seq", strategy =
+	// "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator",
+	// parameters = {
+	// @Parameter(name = "sequence_name", value = "hibernate_seq"),
+	// @Parameter(name = "increment_size", value = "50") })
+	// @Id
+	// @GeneratedValue(generator = "hibernate_seq")
+	// @Column(name = "id", nullable = false)
+	// protected Long id;
+
 	public abstract Long getId();
+	
+	public abstract void setId(Long id);
+
 	/**
 	 * read annotation to get maximum size of database field
 	 * 
@@ -127,6 +127,37 @@ public abstract class NeptuneObject implements Serializable {
 		return value;
 	}
 
-	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		if (getId() == null)
+			return 0;
+		return getId().hashCode();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		NeptuneObject other = (NeptuneObject) obj;
+		if (getId() == null)
+			return (other.getId() == null);
+		if (getId().equals(other.getId()))
+			return false;
+		return true;
+	}
 
 }

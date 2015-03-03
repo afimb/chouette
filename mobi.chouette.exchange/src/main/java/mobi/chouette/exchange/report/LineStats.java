@@ -24,8 +24,8 @@ public class LineStats {
 	@XmlElement(name = "stop_area_count")
 	private int stopAreaCount;
 
-	@XmlElement(name = "acces_point_count")
-	private int accesPointCount;
+	@XmlElement(name = "access_point_count")
+	private int accessPointCount;
 
 	@XmlElement(name = "vehicle_journey_count")
 	private int vehicleJourneyCount;

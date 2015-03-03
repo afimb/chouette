@@ -1,6 +1,5 @@
 package mobi.chouette.dao;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -16,11 +15,8 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.model.NeptuneIdentifiedObject;
-import mobi.chouette.model.NeptuneObject_;
 
 import org.hibernate.Session;
-import org.hibernate.jpa.HibernateEntityManager;
 
 @Log4j
 public abstract class GenericDAOImpl<T> implements GenericDAO<T> {

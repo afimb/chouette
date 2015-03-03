@@ -1,0 +1,47 @@
+package mobi.chouette.exchange.validator.checkpoint;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Context;
+import mobi.chouette.exchange.validator.ValidationConstraints;
+import mobi.chouette.exchange.validator.ValidationData;
+import mobi.chouette.exchange.validator.Validator;
+import mobi.chouette.exchange.validator.parameters.ValidationParameters;
+import mobi.chouette.exchange.validator.report.CheckPoint;
+import mobi.chouette.exchange.validator.report.ValidationReport;
+import mobi.chouette.model.PTNetwork;
+
+@Log4j
+public class NetworkCheckPoints extends AbstractValidation<PTNetwork> implements Validator<PTNetwork> {
+
+	@Override
+	public ValidationConstraints validate(Context context, PTNetwork target) {
+		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
+		List<PTNetwork> beans = new ArrayList<>(data.getNetworks());
+		ValidationParameters parameters = (ValidationParameters) context.get(VALIDATION);
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
+		if (isEmpty(beans))
+			return null;
+
+		boolean test4_1 = (parameters.getCheckNetwork() != 0);
+		if (test4_1) {
+			initCheckPoint(report, L4_NETWORK_1, CheckPoint.SEVERITY.ERROR);
+			prepareCheckPoint(report, L4_NETWORK_1);
+		} else // no other tests for this object
+		{
+			return null;
+		}
+		for (int i = 0; i < beans.size(); i++) {
+			PTNetwork bean = beans.get(i);
+
+			// 4-Network-1 : check columns constraints
+			if (test4_1)
+				check4Generic1(report, bean, L4_NETWORK_1, parameters, context, log);
+
+		}
+		return null;
+	}
+
+}

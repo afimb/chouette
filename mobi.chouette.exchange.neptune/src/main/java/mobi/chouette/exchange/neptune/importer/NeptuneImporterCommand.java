@@ -22,6 +22,9 @@ import mobi.chouette.exchange.importer.CopyCommand;
 import mobi.chouette.exchange.importer.LineRegisterCommand;
 import mobi.chouette.exchange.importer.UncompressCommand;
 import mobi.chouette.exchange.report.Report;
+import mobi.chouette.exchange.validator.DaoSharedDataValidatorCommand;
+import mobi.chouette.exchange.validator.ImportedLineValidatorCommand;
+import mobi.chouette.exchange.validator.ValidationData;
 import mobi.chouette.model.util.Referential;
 
 import com.jamonapi.Monitor;
@@ -61,6 +64,11 @@ public class NeptuneImporterCommand implements Command, Constant {
 		}
 
 		NeptuneImportParameters parameters = (NeptuneImportParameters) configuration;
+
+		boolean level3validation = context.get(VALIDATION) != null;
+		
+		if (level3validation) context.put(VALIDATION_DATA, new ValidationData());
+		
 
 
 		try {
@@ -126,10 +134,29 @@ public class NeptuneImporterCommand implements Command, Constant {
 					Command copy = CommandFactory.create(initialContext,
 							CopyCommand.class.getName());
 					chain.add(copy);
+
 				}
+					if (level3validation)
+					{
+						// add validation
+						Command validate = CommandFactory.create(initialContext,
+								ImportedLineValidatorCommand.class.getName());
+						chain.add(validate);
+					}
+				
 
 			}
 			master.execute(context);
+
+			progression.terminate(context);
+			if (level3validation)
+			{
+			    // add shared data validation
+				Command validate = CommandFactory.create(initialContext,
+						DaoSharedDataValidatorCommand.class.getName());
+				validate.execute(context);
+			}
+			
 
 		} catch (Exception e) {
 			Report report = (Report) context.get(REPORT);

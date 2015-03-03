@@ -43,6 +43,7 @@ public interface Constant {
 	public static final String CACHE = "cache";
 	public static final String PARSER = "parser";
 	
+	public static final String VALIDATION_DATA = "validation_data";
 	public static final String EXPORTABLE_DATA = "exportable_data";
 	public static final String METADATA = "metadata";
 	public static final String LINE = "line";

@@ -69,7 +69,7 @@ public class NeptuneProducerCommand implements Command, Constant {
 			LineInfo lineInfo = new LineInfo();
 			lineInfo.setName(line.getName()+" ("+line.getNumber()+")");
 			LineStats stats = new LineStats();
-			stats.setAccesPointCount(collection.getAccessPoints().size());
+			stats.setAccessPointCount(collection.getAccessPoints().size());
 			stats.setConnectionLinkCount(collection.getConnectionLinks().size());
 			stats.setJourneyPatternCount(collection.getJourneyPatterns().size());
 			stats.setRouteCount(collection.getRoutes().size());
@@ -91,8 +91,8 @@ public class NeptuneProducerCommand implements Command, Constant {
 					globalStats = new LineStats();
 					report.getLines().setStats(globalStats);
 				}
-				globalStats.setAccesPointCount(globalStats.getAccesPointCount()
-						+ stats.getAccesPointCount());
+				globalStats.setAccessPointCount(globalStats.getAccessPointCount()
+						+ stats.getAccessPointCount());
 				globalStats.setRouteCount(globalStats.getRouteCount()
 						+ stats.getRouteCount());
 				globalStats.setConnectionLinkCount(globalStats.getConnectionLinkCount()

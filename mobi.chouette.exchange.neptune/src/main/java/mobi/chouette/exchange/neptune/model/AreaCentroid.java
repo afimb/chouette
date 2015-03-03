@@ -24,6 +24,9 @@ public class AreaCentroid extends NeptuneLocalizedObject
 	 */
 	private static final long serialVersionUID = -7188145272527483007L;
 
+	@Getter @Setter
+	private Long id;
+	
 /**
     * name
     * 
@@ -56,12 +59,6 @@ public class AreaCentroid extends NeptuneLocalizedObject
    @Getter
    @Setter
    private String containedInId;
-
-@Override
-public Long getId() {
-	// TODO Auto-generated method stub
-	return null;
-}
 
 
 

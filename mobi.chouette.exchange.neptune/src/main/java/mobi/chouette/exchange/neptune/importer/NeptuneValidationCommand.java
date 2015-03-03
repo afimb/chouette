@@ -58,175 +58,150 @@ public class NeptuneValidationCommand implements Command, Constant {
 
 		Report report = (Report) context.get(REPORT);
 
-		String fileName =  (String) context.get(FILE_NAME);
+		String fileName = (String) context.get(FILE_NAME);
 
 		FileInfo fileInfo = report.getFiles().findFileFileInfo(fileName);
 
 		try {
-			Context validationContext = (Context) context
-					.get(VALIDATION_CONTEXT);
+			Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 			Referential referential = (Referential) context.get(REFERENTIAL);
 
 			if (validationContext != null) {
 				{
-					PTNetworkValidator validator = (PTNetworkValidator) ValidatorFactory
-							.create(PTNetworkValidator.class.getName(), context);
+					PTNetworkValidator validator = (PTNetworkValidator) ValidatorFactory.create(
+							PTNetworkValidator.class.getName(), context);
 					validator.validate(context, null);
 				}
 				{
-					GroupOfLineValidator validator = (GroupOfLineValidator) ValidatorFactory
-							.create(GroupOfLineValidator.class.getName(),
-									context);
+					GroupOfLineValidator validator = (GroupOfLineValidator) ValidatorFactory.create(
+							GroupOfLineValidator.class.getName(), context);
 					validator.validate(context, null);
 				}
 				{
-					CompanyValidator validator = (CompanyValidator) ValidatorFactory
-							.create(CompanyValidator.class.getName(), context);
+					CompanyValidator validator = (CompanyValidator) ValidatorFactory.create(
+							CompanyValidator.class.getName(), context);
 					validator.validate(context, null);
 				}
 				{
-					StopAreaValidator validator = (StopAreaValidator) ValidatorFactory
-							.create(StopAreaValidator.class.getName(), context);
+					StopAreaValidator validator = (StopAreaValidator) ValidatorFactory.create(
+							StopAreaValidator.class.getName(), context);
 					validator.validate(context, null);
 				}
 				{
-					AreaCentroidValidator validator = (AreaCentroidValidator) ValidatorFactory
-							.create(AreaCentroidValidator.class.getName(),
-									context);
+					AreaCentroidValidator validator = (AreaCentroidValidator) ValidatorFactory.create(
+							AreaCentroidValidator.class.getName(), context);
 					validator.validate(context, null);
 				}
 				{
-					ConnectionLinkValidator validator = (ConnectionLinkValidator) ValidatorFactory
-							.create(ConnectionLinkValidator.class.getName(),
-									context);
+					ConnectionLinkValidator validator = (ConnectionLinkValidator) ValidatorFactory.create(
+							ConnectionLinkValidator.class.getName(), context);
 					validator.validate(context, null);
 				}
 				{
-					AccessPointValidator validator = (AccessPointValidator) ValidatorFactory
-							.create(AccessPointValidator.class.getName(),
-									context);
+					AccessPointValidator validator = (AccessPointValidator) ValidatorFactory.create(
+							AccessPointValidator.class.getName(), context);
 					validator.validate(context, null);
 				}
 				{
-					AccessLinkValidator validator = (AccessLinkValidator) ValidatorFactory
-							.create(AccessLinkValidator.class.getName(),
-									context);
+					AccessLinkValidator validator = (AccessLinkValidator) ValidatorFactory.create(
+							AccessLinkValidator.class.getName(), context);
 					validator.validate(context, null);
 				}
 				{
-					LineValidator validator = (LineValidator) ValidatorFactory
-							.create(LineValidator.class.getName(), context);
+					LineValidator validator = (LineValidator) ValidatorFactory.create(LineValidator.class.getName(),
+							context);
 					validator.validate(context, null);
 				}
 				{
-					ChouetteRouteValidator validator = (ChouetteRouteValidator) ValidatorFactory
-							.create(ChouetteRouteValidator.class.getName(),
-									context);
+					ChouetteRouteValidator validator = (ChouetteRouteValidator) ValidatorFactory.create(
+							ChouetteRouteValidator.class.getName(), context);
 					validator.validate(context, null);
 				}
 				{
-					PtLinkValidator validator = (PtLinkValidator) ValidatorFactory
-							.create(PtLinkValidator.class.getName(), context);
+					PtLinkValidator validator = (PtLinkValidator) ValidatorFactory.create(
+							PtLinkValidator.class.getName(), context);
 					validator.validate(context, null);
 				}
 				{
-					JourneyPatternValidator validator = (JourneyPatternValidator) ValidatorFactory
-							.create(JourneyPatternValidator.class.getName(),
-									context);
+					JourneyPatternValidator validator = (JourneyPatternValidator) ValidatorFactory.create(
+							JourneyPatternValidator.class.getName(), context);
 					validator.validate(context, null);
 				}
 
 				{
-					StopPointValidator validator = (StopPointValidator) ValidatorFactory
-							.create(StopPointValidator.class.getName(), context);
+					StopPointValidator validator = (StopPointValidator) ValidatorFactory.create(
+							StopPointValidator.class.getName(), context);
 					validator.validate(context, null);
 				}
 				{
-					TimetableValidator validator = (TimetableValidator) ValidatorFactory
-							.create(TimetableValidator.class.getName(), context);
+					TimetableValidator validator = (TimetableValidator) ValidatorFactory.create(
+							TimetableValidator.class.getName(), context);
 					validator.validate(context, null);
 				}
 				{
-					VehicleJourneyValidator validator = (VehicleJourneyValidator) ValidatorFactory
-							.create(VehicleJourneyValidator.class.getName(),
-									context);
+					VehicleJourneyValidator validator = (VehicleJourneyValidator) ValidatorFactory.create(
+							VehicleJourneyValidator.class.getName(), context);
 					validator.validate(context, null);
 				}
 				{
-					ITLValidator validator = (ITLValidator) ValidatorFactory
-							.create(ITLValidator.class.getName(),
-									context);
+					ITLValidator validator = (ITLValidator) ValidatorFactory.create(ITLValidator.class.getName(),
+							context);
 					validator.validate(context, null);
 				}
 				// check if ok before add stats to report
 				result = checkValid(context);
-				if (result) addStats(report, validationContext, referential);
+				if (result)
+					addStats(report, validationContext, referential);
 
 			}
 
 		} catch (Exception e) {
-			log.error("Neptune validation failed ",e);
+			log.error("Neptune validation failed ", e);
 			throw e;
 		} finally {
 			AbstractValidator.resetContext(context);
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		}
-		if (result == ERROR)
-		{
+		if (result == ERROR) {
 			fileInfo.setStatus(FILE_STATE.NOK);
 			fileInfo.getErrors().add("Neptune compliance failed");
 		}
 		return result;
 	}
 
-	private void addStats(Report report, Context validationContext,
-			Referential referential) {
+	private void addStats(Report report, Context validationContext, Referential referential) {
 		Line line = referential.getLines().values().iterator().next();
 		LineInfo lineInfo = new LineInfo();
 		lineInfo.setName(line.getName());
 		lineInfo.setStatus(LineInfo.LINE_STATE.OK);
 		LineStats stats = new LineStats();
 		{
-			Context localContext = (Context) validationContext
-					.get(ChouetteRouteValidator.LOCAL_CONTEXT);
-			stats.setRouteCount((localContext != null) ? localContext.size()
-					: 0);
+			Context localContext = (Context) validationContext.get(ChouetteRouteValidator.LOCAL_CONTEXT);
+			stats.setRouteCount((localContext != null) ? localContext.size() : 0);
 		}
 		{
-			Context localContext = (Context) validationContext
-					.get(ConnectionLinkValidator.LOCAL_CONTEXT);
-			stats.setConnectionLinkCount((localContext != null) ? localContext
-					.size() : 0);
+			Context localContext = (Context) validationContext.get(ConnectionLinkValidator.LOCAL_CONTEXT);
+			stats.setConnectionLinkCount((localContext != null) ? localContext.size() : 0);
 		}
 		{
-			Context localContext = (Context) validationContext
-					.get(TimetableValidator.LOCAL_CONTEXT);
-			stats.setTimeTableCount((localContext != null) ? localContext
-					.size() : 0);
+			Context localContext = (Context) validationContext.get(TimetableValidator.LOCAL_CONTEXT);
+			stats.setTimeTableCount((localContext != null) ? localContext.size() : 0);
 		}
 		{
-			Context localContext = (Context) validationContext
-					.get(StopAreaValidator.LOCAL_CONTEXT);
-			stats.setStopAreaCount((localContext != null) ? localContext.size()
-					: 0);
+			Context localContext = (Context) validationContext.get(StopAreaValidator.LOCAL_CONTEXT);
+			stats.setStopAreaCount((localContext != null) ? localContext.size() : 0);
 		}
 		{
-			Context localContext = (Context) validationContext
-					.get(AccessPointValidator.LOCAL_CONTEXT);
-			stats.setAccesPointCount((localContext != null) ? localContext
-					.size() : 0);
+			Context localContext = (Context) validationContext.get(AccessPointValidator.LOCAL_CONTEXT);
+			stats.setAccessPointCount((localContext != null) ? localContext.size() : 0);
 		}
 		{
-			Context localContext = (Context) validationContext
-					.get(VehicleJourneyValidator.LOCAL_CONTEXT);
-			stats.setVehicleJourneyCount((localContext != null) ? localContext
-					.size() : 0);
+			Context localContext = (Context) validationContext.get(VehicleJourneyValidator.LOCAL_CONTEXT);
+			stats.setVehicleJourneyCount((localContext != null) ? localContext.size() : 0);
 		}
 		{
-			Context localContext = (Context) validationContext
-					.get(JourneyPatternValidator.LOCAL_CONTEXT);
-			stats.setJourneyPatternCount((localContext != null) ? localContext
-					.size() : 0);
+			Context localContext = (Context) validationContext.get(JourneyPatternValidator.LOCAL_CONTEXT);
+			stats.setJourneyPatternCount((localContext != null) ? localContext.size() : 0);
 		}
 		lineInfo.setStats(stats);
 		report.getLines().getList().add(lineInfo);
@@ -235,31 +210,21 @@ public class NeptuneValidationCommand implements Command, Constant {
 			globalStats = new LineStats();
 			report.getLines().setStats(globalStats);
 		}
-		globalStats.setAccesPointCount(globalStats.getAccesPointCount()
-				+ stats.getAccesPointCount());
-		globalStats.setRouteCount(globalStats.getRouteCount()
-				+ stats.getRouteCount());
-		globalStats.setConnectionLinkCount(globalStats.getConnectionLinkCount()
-				+ stats.getConnectionLinkCount());
-		globalStats.setVehicleJourneyCount(globalStats.getVehicleJourneyCount()
-				+ stats.getVehicleJourneyCount());
-		globalStats.setJourneyPatternCount(globalStats.getJourneyPatternCount()
-				+ stats.getJourneyPatternCount());
-		globalStats.setStopAreaCount(globalStats.getStopAreaCount()
-				+ stats.getStopAreaCount());
-		globalStats.setTimeTableCount(globalStats.getTimeTableCount()
-				+ stats.getTimeTableCount());
+		globalStats.setAccessPointCount(globalStats.getAccessPointCount() + stats.getAccessPointCount());
+		globalStats.setRouteCount(globalStats.getRouteCount() + stats.getRouteCount());
+		globalStats.setConnectionLinkCount(globalStats.getConnectionLinkCount() + stats.getConnectionLinkCount());
+		globalStats.setVehicleJourneyCount(globalStats.getVehicleJourneyCount() + stats.getVehicleJourneyCount());
+		globalStats.setJourneyPatternCount(globalStats.getJourneyPatternCount() + stats.getJourneyPatternCount());
+		globalStats.setStopAreaCount(globalStats.getStopAreaCount() + stats.getStopAreaCount());
+		globalStats.setTimeTableCount(globalStats.getTimeTableCount() + stats.getTimeTableCount());
 
 	}
 
-	private boolean checkValid(Context context)
-	{
+	private boolean checkValid(Context context) {
 		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 
-		for (CheckPoint checkPoint : report.getCheckPoints()) 
-		{
-			if (checkPoint.getSeverity().equals(SEVERITY.ERROR) && checkPoint.getState().equals(RESULT.NOK))
-			{
+		for (CheckPoint checkPoint : report.getCheckPoints()) {
+			if (checkPoint.getSeverity().equals(SEVERITY.ERROR) && checkPoint.getState().equals(RESULT.NOK)) {
 				return ERROR;
 			}
 		}
@@ -276,7 +241,6 @@ public class NeptuneValidationCommand implements Command, Constant {
 	}
 
 	static {
-		CommandFactory.factories.put(NeptuneValidationCommand.class.getName(),
-				new DefaultCommandFactory());
+		CommandFactory.factories.put(NeptuneValidationCommand.class.getName(), new DefaultCommandFactory());
 	}
 }

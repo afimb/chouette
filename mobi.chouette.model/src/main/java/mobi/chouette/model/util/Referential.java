@@ -76,6 +76,10 @@ public class Referential implements java.io.Serializable {
 
 	@Getter
 	@Setter
+	private Map<String, Line> sharedLines = new HashMap<String, Line>();
+	
+	@Getter
+	@Setter
 	private Map<String, Timetable> sharedTimetables = new HashMap<String, Timetable>();
 
 	public void clear() {

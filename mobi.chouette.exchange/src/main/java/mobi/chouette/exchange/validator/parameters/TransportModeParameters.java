@@ -4,10 +4,14 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class TransportModeParameters {
 	@XmlElement(name = "allowed_transport",defaultValue="0")
 	private int allowedTransport=0;
