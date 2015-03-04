@@ -1,5 +1,8 @@
 package mobi.chouette.exchange.report;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -25,13 +28,24 @@ public class Report {
 	private ZipInfo zip;
 	
 	@XmlElement(name = "files")
-	private Files files = new Files();
+	private List<FileInfo> files = new ArrayList<>();
 	
 	@XmlElement(name = "lines")
-	private Lines lines = new Lines();
+	private List<LineInfo> lines = new ArrayList<>();
 	
+	@XmlElement(name = "stats")
+	private LineStats stats;
+
 	@XmlElement(name = "failure")
 	private String failure;
 	
+	public FileInfo findFileFileInfo(String name)
+	{
+		for (FileInfo fileInfo : files) 
+		{
+			if (fileInfo.getName().equals(name)) return fileInfo;
+		}
+		return null;
+	}
 	
 }

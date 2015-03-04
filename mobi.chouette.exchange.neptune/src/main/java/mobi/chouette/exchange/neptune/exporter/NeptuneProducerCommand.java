@@ -86,10 +86,10 @@ public class NeptuneProducerCommand implements Command, Constant {
 
 				lineInfo.setStatus(LINE_STATE.OK);
 				// merge lineStats to global ones
-				LineStats globalStats = report.getLines().getStats();
+				LineStats globalStats = report.getStats();
 				if (globalStats == null) {
 					globalStats = new LineStats();
-					report.getLines().setStats(globalStats);
+					report.setStats(globalStats);
 				}
 				globalStats.setAccessPointCount(globalStats.getAccessPointCount()
 						+ stats.getAccessPointCount());
@@ -112,7 +112,7 @@ public class NeptuneProducerCommand implements Command, Constant {
 				lineInfo.setStatus(LINE_STATE.ERROR);
 				result=ERROR;
 			}
-			report.getLines().getList().add(lineInfo);
+			report.getLines().add(lineInfo);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		} finally {

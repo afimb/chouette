@@ -1,0 +1,21 @@
+$data.title
+Origine : $data.creator
+Publié par $data.publisher
+Publié le $formater.formatDate($data.date)
+#if ( $data.temporalCoverage.isSet() )
+Valide $formater.format($data.temporalCoverage)
+#end
+#if ( $data.resources.size() > 0)
+Nombre de lignes : $data.resources.size()
+#foreach( $resource in $data.resources )
+$formater.format($resource)
+#end
+#else
+Description : $data.description
+#end
+#if ( $data.spatialCoverage.isSet() )
+Emprise géographique : 
+$formater.format($data.spatialCoverage)
+#end
+Format des données : $data.format
+Description du format disponible à l'adresse $data.relation

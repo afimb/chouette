@@ -76,15 +76,15 @@ public class DaoLineValidatorCommand implements Command, Constant {
 
 				lineInfo.setStatus(LINE_STATE.OK);
 				// merge lineStats to global ones
-				LineStats globalStats = report.getLines().getStats();
+				LineStats globalStats = report.getStats();
 				if (globalStats == null) {
 					globalStats = new LineStats();
-					report.getLines().setStats(globalStats);
+					report.setStats(globalStats);
 				}
 				globalStats.setRouteCount(globalStats.getRouteCount() + stats.getRouteCount());
 				globalStats.setVehicleJourneyCount(globalStats.getVehicleJourneyCount() + stats.getVehicleJourneyCount());
 				globalStats.setJourneyPatternCount(globalStats.getJourneyPatternCount() + stats.getJourneyPatternCount());
-				report.getLines().getList().add(lineInfo);
+				report.getLines().add(lineInfo);
 			}
 			result = SUCCESS;
 		} catch (Exception e) {

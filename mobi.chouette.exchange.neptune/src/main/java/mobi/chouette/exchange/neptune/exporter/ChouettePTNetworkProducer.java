@@ -251,7 +251,7 @@ public class ChouettePTNetworkProducer implements Constant {
 		FileInfo fileItem = new FileInfo();
 		fileItem.setName(fileName);
 		fileItem.setStatus(FILE_STATE.OK);
-		report.getFiles().getFileInfos().add(fileItem);
+		report.getFiles().add(fileItem);
 		
 		if (metadata != null)
 			metadata.getResources().add(metadata.new Resource(fileName + ".xml", 

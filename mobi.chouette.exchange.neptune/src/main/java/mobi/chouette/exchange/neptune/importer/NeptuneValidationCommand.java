@@ -60,7 +60,7 @@ public class NeptuneValidationCommand implements Command, Constant {
 
 		String fileName = (String) context.get(FILE_NAME);
 
-		FileInfo fileInfo = report.getFiles().findFileFileInfo(fileName);
+		FileInfo fileInfo = report.findFileFileInfo(fileName);
 
 		try {
 			Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
@@ -204,11 +204,11 @@ public class NeptuneValidationCommand implements Command, Constant {
 			stats.setJourneyPatternCount((localContext != null) ? localContext.size() : 0);
 		}
 		lineInfo.setStats(stats);
-		report.getLines().getList().add(lineInfo);
-		LineStats globalStats = report.getLines().getStats();
+		report.getLines().add(lineInfo);
+		LineStats globalStats = report.getStats();
 		if (globalStats == null) {
 			globalStats = new LineStats();
-			report.getLines().setStats(globalStats);
+			report.setStats(globalStats);
 		}
 		globalStats.setAccessPointCount(globalStats.getAccessPointCount() + stats.getAccessPointCount());
 		globalStats.setRouteCount(globalStats.getRouteCount() + stats.getRouteCount());

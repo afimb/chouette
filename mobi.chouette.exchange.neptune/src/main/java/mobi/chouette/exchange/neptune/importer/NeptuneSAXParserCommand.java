@@ -84,7 +84,7 @@ public class NeptuneSAXParserCommand implements Command, Constant {
 			validator.validate(file);
 			if (errorHandler.isHasErrors()) {
 				fileItem.setStatus(FileInfo.FILE_STATE.NOK);
-				report.getFiles().getFileInfos().add(fileItem);
+				report.getFiles().add(fileItem);
 				fileItem.getErrors().add("Xml errors");
 				return result;
 			}
@@ -104,7 +104,7 @@ public class NeptuneSAXParserCommand implements Command, Constant {
 			log.error(e);
 			errorHandler.handleError(e);
 			fileItem.setStatus(FileInfo.FILE_STATE.NOK);
-			report.getFiles().getFileInfos().add(fileItem);
+			report.getFiles().add(fileItem);
 			fileItem.getErrors().add(e.getMessage());
 
 		} finally {

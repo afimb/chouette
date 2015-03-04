@@ -106,10 +106,10 @@ public class DaoSharedDataValidatorCommand implements Command, Constant {
 			if (context.get(ACTION).equals(VALIDATOR))
 			{
 				Report report = (Report) context.get(REPORT);
-				LineStats globalStats = report.getLines().getStats();
+				LineStats globalStats = report.getStats();
 				if (globalStats == null) {
 					globalStats = new LineStats();
-					report.getLines().setStats(globalStats);
+					report.setStats(globalStats);
 				}
 				globalStats.setConnectionLinkCount(data.getConnectionLinks().size());
 				globalStats.setAccessPointCount(data.getAccessPoints().size());
