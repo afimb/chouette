@@ -1,16 +1,16 @@
 package mobi.chouette.exchange.neptune;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.io.File;
-import java.net.URL;
 
-import javax.ejb.EJB;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
-import mobi.chouette.common.chain.Command;
+import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.neptune.importer.NeptuneParserCommand;
 import mobi.chouette.exchange.neptune.importer.NeptuneSAXParserCommand;
 import mobi.chouette.exchange.report.FileInfo;
@@ -30,13 +30,9 @@ import org.junit.runner.RunWith;
 
 @Log4j
 @RunWith(Arquillian.class)
-public class NeptuneParserTest {
+public class NeptuneParserTest implements Constant {
 
-	@EJB(beanName = NeptuneParserCommand.COMMAND)
-	private Command parser;
-
-	@EJB(beanName = NeptuneSAXParserCommand.COMMAND)
-	private Command validation;
+	private InitialContext initialContext ;
 
 	@Deployment
 	public static WebArchive createDeployment() {
@@ -48,22 +44,9 @@ public class NeptuneParserTest {
 				.resolve("mobi.chouette:mobi.chouette.exchange.neptune:1.0.0")
 				.withTransitivity().asFile();
 
-//		result = ShrinkWrap.create(WebArchive.class, "test.war")
-//				.addAsWebInfResource("wildfly-ds.xml").addAsLibraries(files)
-//				.addAsManifestResource("C_NEPTUNE_3.xml")
-//				.addAsManifestResource("broken_file.xml")
-//				.addAsManifestResource("error_file.xml")
-//				.addAsManifestResource("metadata_chouette_dc.xml")
-//				.addAsManifestResource("1000252.xml")
-//				.addAsResource(EmptyAsset.INSTANCE, "beans.xml");
 		result = ShrinkWrap.create(WebArchive.class, "test.war")
-				.addAsWebInfResource("web.xml").addAsLibraries(files)
-				.addAsResource("persistence.xml","META-INF/persistence.xml")
-				.addAsManifestResource("C_NEPTUNE_3.xml")
-				.addAsManifestResource("broken_file.xml")
-				.addAsManifestResource("error_file.xml")
-				.addAsManifestResource("metadata_chouette_dc.xml")
-				.addAsManifestResource("1000252.xml")
+				.addAsWebInfResource("postgres-ds.xml")
+				.addAsLibraries(files)
 				.addAsResource(EmptyAsset.INSTANCE, "beans.xml");
 		log.info("end createDeployment");
 
@@ -71,30 +54,49 @@ public class NeptuneParserTest {
 
 	}
 
+	private void init()
+	{
+		if (initialContext == null)
+		{
+			try {
+				initialContext = new InitialContext();
+			} catch (NamingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	@Test
 	public void validation() throws Exception {
+		init();
 		log.info("validation");
 		Context context = new Context();
-		URL file = NeptuneParserTest.class
-				.getResource("/META-INF/1000252.xml");
+		context.put(INITIAL_CONTEXT, initialContext);
+		NeptuneSAXParserCommand validation = (NeptuneSAXParserCommand) CommandFactory.create(initialContext, NeptuneSAXParserCommand.class.getName());
+		File f = new File("src/test/resources/1000252.xml");
 		Report report = new Report();
 		ValidationReport validationReport = new ValidationReport();
-		context.put(Constant.FILE_URL, file.toExternalForm());
+		validation.setFileURL("file://"+f.getAbsolutePath());
 		context.put(Constant.REPORT, report);
+		context.put(REFERENTIAL, new Referential());
 		context.put(Constant.VALIDATION_REPORT, validationReport);
 		validation.execute(context);
 	}
 	
 	@Test
 	public void test() throws Exception {
+		init();
 		log.info("test");
 		Context context = new Context();
-		URL file = NeptuneParserTest.class
-				.getResource("/META-INF/1000252.xml");
+		context.put(INITIAL_CONTEXT, initialContext);
+		NeptuneParserCommand parser = (NeptuneParserCommand) CommandFactory.create(initialContext, NeptuneParserCommand.class.getName());
+		File f = new File("src/test/resources/1000252.xml");
 		Report report = new Report();
 		ValidationReport validationReport = new ValidationReport();
-		context.put(Constant.FILE_URL, file.toExternalForm());
+		parser.setFileURL("file://"+f.getAbsolutePath());
 		context.put(Constant.REPORT, report);
+		context.put(REFERENTIAL, new Referential());
 		context.put(Constant.VALIDATION_REPORT, validationReport);
 		parser.execute(context);
 		Referential referential = (Referential) context.get(Constant.REFERENTIAL);
@@ -103,14 +105,17 @@ public class NeptuneParserTest {
 
 	@Test
 	public void verifiyGoodFile() throws Exception {
+		init();
 		log.info("verifiyGoodFile");
 		Context context = new Context();
-		URL file = NeptuneParserTest.class
-				.getResource("/META-INF/C_NEPTUNE_3.xml");
+		context.put(INITIAL_CONTEXT, initialContext);
+		NeptuneParserCommand parser = (NeptuneParserCommand) CommandFactory.create(initialContext, NeptuneParserCommand.class.getName());
+		File f = new File("src/test/resources/C_NEPTUNE_3.xml");
 		Report report = new Report();
 		ValidationReport validationReport = new ValidationReport();
-		context.put(Constant.FILE_URL, file.toExternalForm());
+		parser.setFileURL("file://"+f.getAbsolutePath());
 		context.put(Constant.REPORT, report);
+		context.put(REFERENTIAL, new Referential());
 		context.put(Constant.VALIDATION_REPORT, validationReport);
 		parser.execute(context);
 		assertNull("no error should be reported",report.getFailure());
@@ -121,14 +126,17 @@ public class NeptuneParserTest {
 
 	@Test
 	public void verifiyWrongFile() throws Exception {
+		init();
 		log.info("verifiyWrongFile");
 		Context context = new Context();
-		URL file = NeptuneParserTest.class
-				.getResource("/META-INF/error_file.xml");
+		context.put(INITIAL_CONTEXT, initialContext);
+		NeptuneSAXParserCommand validation = (NeptuneSAXParserCommand) CommandFactory.create(initialContext, NeptuneSAXParserCommand.class.getName());
+		File f = new File("src/test/resources/error_file.xml");
 		Report report = new Report();
 		ValidationReport validationReport = new ValidationReport();
-		context.put(Constant.FILE_URL, file.toExternalForm());
+		validation.setFileURL("file://"+f.getAbsolutePath());
 		context.put(Constant.REPORT, report);
+		context.put(REFERENTIAL, new Referential());
 		context.put(Constant.VALIDATION_REPORT, validationReport);
 		try
 		{
@@ -146,14 +154,17 @@ public class NeptuneParserTest {
 
 	@Test
 	public void verifiyBrokenFile() throws Exception {
+		init();
 		log.info("verifiyBrokenFile");
 		Context context = new Context();
-		URL file = NeptuneParserTest.class
-				.getResource("/META-INF/broken_file.xml");
+		context.put(INITIAL_CONTEXT, initialContext);
+		NeptuneParserCommand parser = (NeptuneParserCommand) CommandFactory.create(initialContext, NeptuneParserCommand.class.getName());
+		File f = new File("src/test/resources/broken_file.xml");
 		Report report = new Report();
 		ValidationReport validationReport = new ValidationReport();
-		context.put(Constant.FILE_URL, file.toExternalForm());
+		parser.setFileURL("file://"+f.getAbsolutePath());
 		context.put(Constant.REPORT, report);
+		context.put(REFERENTIAL, new Referential());
 		context.put(Constant.VALIDATION_REPORT, validationReport);
 		try
 		{
@@ -163,6 +174,7 @@ public class NeptuneParserTest {
 		{
 			System.out.println("exception received "+e.getMessage());
 		}
+		
 		assertNull("no error should be reported",report.getFailure());
 		assertEquals("report one file",1,report.getFiles().getFileInfos().size());
 		assertEquals("report one error file",FileInfo.FILE_STATE.NOK,report.getFiles().getFileInfos().get(0).getStatus());
@@ -173,10 +185,9 @@ public class NeptuneParserTest {
 //	@Test
 //	public void verifiyIgnoredFile() throws Exception {
 //		Context context = new Context();
-//		URL file = NeptuneParserTest.class
-//				.getResource("/META-INF/metadata_chouette_dc.xml");
+//		File f = new File("src/test/resources/metadata_chouette_dc.xml");
 //		Report report = new Report();
-//		context.put(Constant.FILE_URL, file.toExternalForm());
+//		parser.setFileURL("file://"+f.getAbsolutePath());
 //		context.put(Constant.REPORT, report);
 //		parser.execute(context);
 //		assertNull("no error should be reported",report.getError());

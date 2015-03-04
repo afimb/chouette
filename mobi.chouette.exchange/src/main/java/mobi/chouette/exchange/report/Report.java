@@ -21,7 +21,7 @@ public class Report {
 	@XmlElement(name = "result")
 	private String result;
 	
-	@XmlElement(name = "zip")
+	@XmlElement(name = "zip_file")
 	private ZipInfo zip;
 	
 	@XmlElement(name = "files")

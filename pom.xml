@@ -19,8 +19,8 @@
 		<version.ejb.plugin>2.4</version.ejb.plugin>
 		<version.ear.plugin>2.9.1</version.ear.plugin>
 		<shrinkwrap.bom-version>2.1.1</shrinkwrap.bom-version>
-		<postgreslq.version>9.3-1101.jdbc41</postgreslq.version>
-		<arquillian-version>1.1.4.Final</arquillian-version>
+		<postgresql.version>9.3-1102-jdbc41</postgresql.version>
+		<arquillian-version>1.1.7.Final</arquillian-version>
 	</properties>
 	<repositories>
 		<repository>
@@ -47,6 +47,7 @@
 							<goal>unpack</goal>
 						</goals>
 						<configuration>
+						<verbose>true</verbose>
 							<artifactItems>
 								<artifactItem>
 									<groupId>org.wildfly</groupId>
@@ -59,6 +60,25 @@
 							</artifactItems>
 						</configuration>
 					</execution>
+               <execution>
+                  <id>copy</id>
+                  <phase>process-test-classes</phase>
+                  <goals>
+                     <goal>copy</goal>
+                  </goals>
+                  <configuration>
+                  <verbose>true</verbose>
+                     <artifactItems>
+                        <artifactItem>
+                           <groupId>org.postgresql</groupId>
+                           <artifactId>postgresql</artifactId>
+                           <version>${postgresql.version}</version>
+                           <overWrite>false</overWrite>
+                           <outputDirectory>target/wildfly-${version.wildfly}/standalone/deployments</outputDirectory>
+                        </artifactItem>
+                     </artifactItems>
+                  </configuration>
+               </execution>
 				</executions>
 			</plugin>
 			<plugin>
@@ -66,6 +86,7 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.17</version>
 				<configuration>
+					<argLine>-Djboss.socket.binding.port-offset=300</argLine>
 					<!-- Fork every test because it will launch a separate AS instance -->
 					<forkMode>always</forkMode>
 					<systemPropertyVariables>
@@ -110,14 +131,14 @@
 				<executions>
 					<execution>
 						<id>delombok</id>
-						<phase>generate-sources</phase>
+						<phase>process-sources</phase>
 						<goals>
 							<goal>delombok</goal>
 						</goals>
 						<configuration>
 							<addOutputDirectory>false</addOutputDirectory>
 							<sourceDirectory>src/main/java</sourceDirectory>
-							<verbose>true</verbose>
+							<verbose>false</verbose>
 							<skip>${skipDelombok}</skip>
 						</configuration>
 					</execution>
@@ -261,16 +282,35 @@
 			<dependency>
 				<groupId>org.postgresql</groupId>
 				<artifactId>postgresql</artifactId>
-				<version>9.3-1102-jdbc41</version>
+				<version>${postgresql.version}</version>
 			</dependency>
+         <!-- postgres intergration in arquillian -->
+         <!-- shrinkwrap BOM -->
+         <dependency>
+            <groupId>org.jboss.shrinkwrap.resolver</groupId>
+            <artifactId>shrinkwrap-resolver-bom</artifactId>
+            <version>${shrinkwrap.bom-version}</version>
+            <type>pom</type>
+            <scope>import</scope>
+         </dependency>
+         <!-- shrinkwrap dependency chain -->
+         <dependency>
+            <groupId>org.jboss.shrinkwrap.resolver</groupId>
+            <artifactId>shrinkwrap-resolver-depchain</artifactId>
+            <version>${shrinkwrap.bom-version}</version>
+            <type>pom</type>
+            <scope>test</scope>
+         </dependency>
 
-			<dependency>
-				<groupId>org.jboss.shrinkwrap.resolver</groupId>
-				<artifactId>shrinkwrap-resolver-depchain</artifactId>
-				<version>2.1.1</version>
-				<scope>test</scope>
-				<type>pom</type>
-			</dependency>
+         <!-- arquillian itself -->
+         <dependency>
+            <groupId>org.jboss.arquillian</groupId>
+            <artifactId>arquillian-bom</artifactId>
+            <version>${arquillian-version}</version>
+            <scope>import</scope>
+            <type>pom</type>
+         </dependency>
+
 
 			<!-- Other Dependencies -->
 			<dependency>
@@ -289,31 +329,6 @@
 				<version>2.76</version>
 			</dependency>
 
-			<!-- postgres intergration in arquillian -->
-			<!-- shrinkwrap BOM -->
-			<dependency>
-				<groupId>org.jboss.shrinkwrap.resolver</groupId>
-				<artifactId>shrinkwrap-resolver-bom</artifactId>
-				<version>${shrinkwrap.bom-version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-			<!-- shrinkwrap dependency chain -->
-			<dependency>
-				<groupId>org.jboss.shrinkwrap.resolver</groupId>
-				<artifactId>shrinkwrap-resolver-depchain</artifactId>
-				<version>${shrinkwrap.bom-version}</version>
-				<type>pom</type>
-			</dependency>
-
-			<!-- arquillian itself -->
-			<dependency>
-				<groupId>org.jboss.arquillian</groupId>
-				<artifactId>arquillian-bom</artifactId>
-				<version>${arquillian-version}</version>
-				<scope>import</scope>
-				<type>pom</type>
-			</dependency>
 
 
 			<!-- JAXB -->
@@ -428,7 +443,7 @@
 		<module>mobi.chouette.exchange.neptune</module>
 		<module>mobi.chouette.exchange.gtfs</module>
 		<module>mobi.chouette.exchange.netex</module>
-		<module>mobi.chouette.scheduler</module>		
+		<module>mobi.chouette.scheduler</module>
 		<module>mobi.chouette.api</module>
 		<module>chouette</module>
 	</modules>

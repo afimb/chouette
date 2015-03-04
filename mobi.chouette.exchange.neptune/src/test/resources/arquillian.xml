@@ -6,6 +6,8 @@
     <container qualifier="wildfly-embedded" default="true">
         <configuration>
             <property name="jbossHome">target/wildfly-8.2.0.Final</property>
-        </configuration>
+            <property name="managementPort">10290</property>
+            <property name="serverConfig">standalone.xml</property>
+       </configuration>
     </container>
 </arquillian>
