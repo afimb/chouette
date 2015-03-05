@@ -4,11 +4,15 @@
 	<parent>
 		<groupId>mobi.chouette</groupId>
 		<artifactId>mobi.chouette</artifactId>
-		<version>1.0.0</version>
+		<version>3.0.0</version>
 	</parent>
 	<artifactId>mobi.chouette.exchange.gtfs</artifactId>
 	<packaging>ejb</packaging>
 
+   <properties>
+      <project.rootDir>${project.basedir}/..</project.rootDir>
+      <skipInitDb>true</skipInitDb>
+   </properties>
 	<dependencies>
 
 		<!-- Default Dependencies -->

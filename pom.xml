@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>mobi.chouette</groupId>
 	<artifactId>mobi.chouette</artifactId>
-	<version>1.0.0</version>
+	<version>3.0.0</version>
 	<packaging>pom</packaging>
 
 	<properties>
@@ -21,6 +21,7 @@
 		<shrinkwrap.bom-version>2.1.1</shrinkwrap.bom-version>
 		<postgresql.version>9.3-1102-jdbc41</postgresql.version>
 		<arquillian-version>1.1.7.Final</arquillian-version>
+		<project.rootDir>${project.basedir}</project.rootDir>
 	</properties>
 	<repositories>
 		<repository>
@@ -35,6 +36,43 @@
 	</repositories>
 	<build>
 		<plugins>
+         <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>sql-maven-plugin</artifactId>
+            <version>1.5</version>
+            <dependencies>
+               <!-- specify the dependent jdbc driver here -->
+               <dependency>
+                  <groupId>org.postgresql</groupId>
+                  <artifactId>postgresql</artifactId>
+                  <version>${postgresql.version}</version>
+               </dependency>
+            </dependencies>
+            <!-- common configuration shared by all executions -->
+            <configuration>
+               <driver>org.postgresql.Driver</driver>
+               <url>jdbc:postgresql://localhost:5432/chouette_test</url>
+               <username>chouette</username>
+               <password>chouette</password>
+               <!--all executions are ignored if -Dmaven.test.skip=true or -DskipTests=true -->
+               <skip>${skipInitDb}</skip>
+            </configuration>
+            <executions>
+               <execution>
+                  <id>create-schema</id>
+                  <phase>process-test-resources</phase>
+                  <goals>
+                     <goal>execute</goal>
+                  </goals>
+                  <configuration>
+                     <autocommit>true</autocommit>
+                     <srcFiles>
+                        <srcFile>${project.rootDir}/src/test/sql/chouette_test.sql</srcFile>
+                     </srcFiles>
+                  </configuration>
+               </execution>
+            </executions>
+         </plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
@@ -55,7 +93,7 @@
 									<version>${version.wildfly}</version>
 									<type>zip</type>
 									<overWrite>false</overWrite>
-									<outputDirectory>target</outputDirectory>
+									<outputDirectory>${project.rootDir}/target</outputDirectory>
 								</artifactItem>
 							</artifactItems>
 						</configuration>
@@ -74,14 +112,14 @@
 									<artifactId>postgresql</artifactId>
 									<version>${postgresql.version}</version>
 									<overWrite>false</overWrite>
-									<outputDirectory>target/wildfly-${version.wildfly}/modules/org/postgres/main</outputDirectory>
+									<outputDirectory>${project.rootDir}/target/wildfly-${version.wildfly}/modules/org/postgres/main</outputDirectory>
 								</artifactItem>
                         <artifactItem>
                            <groupId>org.postgresql</groupId>
                            <artifactId>postgresql</artifactId>
                            <version>${postgresql.version}</version>
                            <overWrite>false</overWrite>
-                           <outputDirectory>target/wildfly-${version.wildfly}/standalone/deployments</outputDirectory>
+                           <outputDirectory>${project.rootDir}/target/wildfly-${version.wildfly}/standalone/deployments</outputDirectory>
                         </artifactItem>
 							</artifactItems>
 						</configuration>
@@ -100,7 +138,7 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>target/wildfly-${version.wildfly}</outputDirectory>
+							<outputDirectory>${project.rootDir}/target/wildfly-${version.wildfly}</outputDirectory>
 							<resources>
 								<resource>
 									<directory>src/test/resources-wildfly-configuration</directory>
@@ -116,14 +154,14 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.17</version>
 				<configuration>
-					<argLine>-Djboss.socket.binding.port-offset=300 -XX:MaxPermSize=512m</argLine>
+					<argLine>-Djboss.socket.binding.port-offset=300 -XX:MaxPermSize=256m</argLine>
 					<!-- Fork every test because it will launch a separate AS instance -->
 					<forkMode>always</forkMode>
 					<systemPropertyVariables>
 						<java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
 						<!-- the maven dependency plugin will have already downloaded the server on /target -->
-						<jboss.home>${project.basedir}/target/wildfly-${version.wildfly}</jboss.home>
-						<module.path>${project.basedir}/target/wildfly-${version.wildfly}/modules</module.path>
+						<jboss.home>${project.rootDir}/target/wildfly-${version.wildfly}</jboss.home>
+						<module.path>${project.rootDir}/target/wildfly-${version.wildfly}/modules</module.path>
 					</systemPropertyVariables>
 					<redirectTestOutputToFile>false</redirectTestOutputToFile>
 				</configuration>
@@ -450,8 +488,32 @@
 			</activation>
 			<properties>
 				<skipWildfly>false</skipWildfly>
+            <skipInitDb>false</skipInitDb>
 			</properties>
 		</profile>
+      <profile>
+         <id>skipTestCompileAndRun</id>
+         <activation>
+            <property>
+               <name>maven.test.skip</name>
+               <value>true</value>
+            </property>
+         </activation>
+         <properties>
+            <skipInitDb>true</skipInitDb>
+         </properties>
+      </profile>
+      <profile>
+         <id>skipTestRun</id>
+         <activation>
+            <property>
+               <name>skipTests</name>
+            </property>
+         </activation>
+         <properties>
+            <skipInitDb>true</skipInitDb>
+         </properties>
+      </profile>
 		<profile>
 			<id>lombok-needs-tools-jar</id>
 			<activation>
@@ -463,6 +525,17 @@
 				<skipDelombok>true</skipDelombok>
 			</properties>
 		</profile>
+      <profile>
+         <id>skipInitDb</id>
+         <activation>
+            <property>
+               <name>skipInitDb</name>
+            </property>
+         </activation>
+         <properties>
+            <skipInitDb>true</skipInitDb>
+         </properties>
+      </profile>
 	</profiles>
 	<modules>
 		<module>mobi.chouette.common</module>

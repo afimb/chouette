@@ -41,7 +41,7 @@ public class NeptuneParserTest implements Constant {
 		WebArchive result;
 
 		File[] files = Maven.resolver().loadPomFromFile("pom.xml")
-				.resolve("mobi.chouette:mobi.chouette.exchange.neptune:1.0.0")
+				.resolve("mobi.chouette:mobi.chouette.exchange.neptune:3.0.0")
 				.withTransitivity().asFile();
 
 		result = ShrinkWrap.create(WebArchive.class, "test.war")
