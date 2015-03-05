@@ -19,6 +19,7 @@ import mobi.chouette.exchange.ProgressionCommand;
 import mobi.chouette.exchange.gtfs.Constant;
 import mobi.chouette.exchange.gtfs.model.GtfsRoute;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsImporter;
+import mobi.chouette.exchange.gtfs.model.importer.Index;
 import mobi.chouette.exchange.importer.CopyCommand;
 import mobi.chouette.exchange.importer.LineRegisterCommand;
 import mobi.chouette.exchange.importer.UncompressCommand;
@@ -40,18 +41,20 @@ public class GtfsImporterCommand implements Command, Constant {
 
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
-		context.put(REFERENTIAL, new Referential());
-		
-		// TODO report service
-		Report report = new Report();
-		ValidationReport validationReport = new ValidationReport();
-		context.put(Constant.REPORT, report);
-		context.put(Constant.VALIDATION_REPORT, validationReport);
-
-		// check param
 		InitialContext initialContext = (InitialContext) context
 				.get(INITIAL_CONTEXT);
 
+		ProgressionCommand progression = (ProgressionCommand) CommandFactory
+				.create(initialContext, ProgressionCommand.class.getName());
+		progression.initialize(context);
+
+		context.put(REFERENTIAL, new Referential());
+		
+		// report service
+		ValidationReport validationReport = new ValidationReport();
+		context.put(Constant.VALIDATION_REPORT, validationReport);
+
+        // check params
 		Object configuration = context.get(CONFIGURATION);
 		if (!(configuration instanceof GtfsImportParameters)) {
 			// TODO report service
@@ -69,8 +72,6 @@ public class GtfsImporterCommand implements Command, Constant {
 
 		try {
 
-			ProgressionCommand progression = (ProgressionCommand) CommandFactory
-					.create(initialContext, ProgressionCommand.class.getName());
 
 			// uncompress data
 			Command uncompress = CommandFactory.create(initialContext,
@@ -86,13 +87,15 @@ public class GtfsImporterCommand implements Command, Constant {
 					initialContext, ChainCommand.class.getName());
 			master.setIgnored(true);
 
-			for (GtfsRoute gtfsRoute : importer.getRouteById()) {
+			Index<GtfsRoute> index = importer.getRouteById();
+			progression.start(context, index.getLength());
+			for (GtfsRoute gtfsRoute : index) {
 				
 				Chain chain = (Chain) CommandFactory.create(initialContext,
 						ChainCommand.class.getName());
 				master.add(chain);
 
-				//chain.add(progression);
+				chain.add(progression);
 
 				// parser
 				GtfsParserCommand parser = (GtfsParserCommand) CommandFactory
@@ -117,12 +120,14 @@ public class GtfsImporterCommand implements Command, Constant {
 			}
 
 			master.execute(context);
+			progression.terminate(context);
 
 			result = SUCCESS;
 
 		} catch (Exception e) {
 			// TODO report service
 		} finally {
+			progression.dispose(context);
 			// TODO report service
 		}
 

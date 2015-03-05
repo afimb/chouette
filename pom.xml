@@ -47,7 +47,7 @@
 							<goal>unpack</goal>
 						</goals>
 						<configuration>
-						<verbose>true</verbose>
+							<verbose>true</verbose>
 							<artifactItems>
 								<artifactItem>
 									<groupId>org.wildfly</groupId>
@@ -60,15 +60,22 @@
 							</artifactItems>
 						</configuration>
 					</execution>
-               <execution>
-                  <id>copy</id>
-                  <phase>process-test-classes</phase>
-                  <goals>
-                     <goal>copy</goal>
-                  </goals>
-                  <configuration>
-                  <verbose>true</verbose>
-                     <artifactItems>
+					<execution>
+						<id>copy</id>
+						<phase>process-test-classes</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<verbose>true</verbose>
+							<artifactItems>
+								<artifactItem>
+									<groupId>org.postgresql</groupId>
+									<artifactId>postgresql</artifactId>
+									<version>${postgresql.version}</version>
+									<overWrite>false</overWrite>
+									<outputDirectory>target/wildfly-${version.wildfly}/modules/org/postgres/main</outputDirectory>
+								</artifactItem>
                         <artifactItem>
                            <groupId>org.postgresql</groupId>
                            <artifactId>postgresql</artifactId>
@@ -76,9 +83,32 @@
                            <overWrite>false</overWrite>
                            <outputDirectory>target/wildfly-${version.wildfly}/standalone/deployments</outputDirectory>
                         </artifactItem>
-                     </artifactItems>
-                  </configuration>
-               </execution>
+							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.6</version>
+				<executions>
+					<!-- WildFly test configuration files copy -->
+					<execution>
+						<id>copy-wildfly-configuration</id>
+						<phase>process-test-resources</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>target/wildfly-${version.wildfly}</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src/test/resources-wildfly-configuration</directory>
+									<filtering>true</filtering>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
 				</executions>
 			</plugin>
 			<plugin>
@@ -92,7 +122,7 @@
 					<systemPropertyVariables>
 						<java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
 						<!-- the maven dependency plugin will have already downloaded the server on /target -->
-						<jboss.home>${project.basedir}/target/${version.wildfly}</jboss.home>
+						<jboss.home>${project.basedir}/target/wildfly-${version.wildfly}</jboss.home>
 						<module.path>${project.basedir}/target/wildfly-${version.wildfly}/modules</module.path>
 					</systemPropertyVariables>
 					<redirectTestOutputToFile>false</redirectTestOutputToFile>
@@ -284,32 +314,32 @@
 				<artifactId>postgresql</artifactId>
 				<version>${postgresql.version}</version>
 			</dependency>
-         <!-- postgres intergration in arquillian -->
-         <!-- shrinkwrap BOM -->
-         <dependency>
-            <groupId>org.jboss.shrinkwrap.resolver</groupId>
-            <artifactId>shrinkwrap-resolver-bom</artifactId>
-            <version>${shrinkwrap.bom-version}</version>
-            <type>pom</type>
-            <scope>import</scope>
-         </dependency>
-         <!-- shrinkwrap dependency chain -->
-         <dependency>
-            <groupId>org.jboss.shrinkwrap.resolver</groupId>
-            <artifactId>shrinkwrap-resolver-depchain</artifactId>
-            <version>${shrinkwrap.bom-version}</version>
-            <type>pom</type>
-            <scope>test</scope>
-         </dependency>
+			<!-- postgres intergration in arquillian -->
+			<!-- shrinkwrap BOM -->
+			<dependency>
+				<groupId>org.jboss.shrinkwrap.resolver</groupId>
+				<artifactId>shrinkwrap-resolver-bom</artifactId>
+				<version>${shrinkwrap.bom-version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<!-- shrinkwrap dependency chain -->
+			<dependency>
+				<groupId>org.jboss.shrinkwrap.resolver</groupId>
+				<artifactId>shrinkwrap-resolver-depchain</artifactId>
+				<version>${shrinkwrap.bom-version}</version>
+				<type>pom</type>
+				<scope>test</scope>
+			</dependency>
 
-         <!-- arquillian itself -->
-         <dependency>
-            <groupId>org.jboss.arquillian</groupId>
-            <artifactId>arquillian-bom</artifactId>
-            <version>${arquillian-version}</version>
-            <scope>import</scope>
-            <type>pom</type>
-         </dependency>
+			<!-- arquillian itself -->
+			<dependency>
+				<groupId>org.jboss.arquillian</groupId>
+				<artifactId>arquillian-bom</artifactId>
+				<version>${arquillian-version}</version>
+				<scope>import</scope>
+				<type>pom</type>
+			</dependency>
 
 
 			<!-- Other Dependencies -->

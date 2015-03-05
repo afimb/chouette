@@ -47,7 +47,6 @@ public class NeptuneParserTest implements Constant {
 		result = ShrinkWrap.create(WebArchive.class, "test.war")
 				.addAsWebInfResource("postgres-ds.xml")
 				.addAsLibraries(files)
-				.addAsManifestResource("C_NEPTUNE_3.xml")
 				.addAsResource(EmptyAsset.INSTANCE, "beans.xml");
 		log.info("end createDeployment");
 
@@ -75,7 +74,7 @@ public class NeptuneParserTest implements Constant {
 		Context context = new Context();
 		context.put(INITIAL_CONTEXT, initialContext);
 		NeptuneSAXParserCommand validation = (NeptuneSAXParserCommand) CommandFactory.create(initialContext, NeptuneSAXParserCommand.class.getName());
-		File f = new File("src/test/resources/1000252.xml");
+		File f = new File("src/test/data/1000252.xml");
 		Report report = new Report();
 		ValidationReport validationReport = new ValidationReport();
 		validation.setFileURL("file://"+f.getAbsolutePath());
@@ -92,7 +91,7 @@ public class NeptuneParserTest implements Constant {
 		Context context = new Context();
 		context.put(INITIAL_CONTEXT, initialContext);
 		NeptuneParserCommand parser = (NeptuneParserCommand) CommandFactory.create(initialContext, NeptuneParserCommand.class.getName());
-		File f = new File("src/test/resources/1000252.xml");
+		File f = new File("src/test/data/1000252.xml");
 		Report report = new Report();
 		ValidationReport validationReport = new ValidationReport();
 		parser.setFileURL("file://"+f.getAbsolutePath());
@@ -111,7 +110,7 @@ public class NeptuneParserTest implements Constant {
 		Context context = new Context();
 		context.put(INITIAL_CONTEXT, initialContext);
 		NeptuneParserCommand parser = (NeptuneParserCommand) CommandFactory.create(initialContext, NeptuneParserCommand.class.getName());
-		File f = new File("src/test/resources/C_NEPTUNE_3.xml");
+		File f = new File("src/test/data/C_NEPTUNE_3.xml");
 		Report report = new Report();
 		ValidationReport validationReport = new ValidationReport();
 		parser.setFileURL("file://"+f.getAbsolutePath());
@@ -132,7 +131,7 @@ public class NeptuneParserTest implements Constant {
 		Context context = new Context();
 		context.put(INITIAL_CONTEXT, initialContext);
 		NeptuneSAXParserCommand validation = (NeptuneSAXParserCommand) CommandFactory.create(initialContext, NeptuneSAXParserCommand.class.getName());
-		File f = new File("src/test/resources/error_file.xml");
+		File f = new File("src/test/data/error_file.xml");
 		Report report = new Report();
 		ValidationReport validationReport = new ValidationReport();
 		validation.setFileURL("file://"+f.getAbsolutePath());
@@ -160,7 +159,7 @@ public class NeptuneParserTest implements Constant {
 		Context context = new Context();
 		context.put(INITIAL_CONTEXT, initialContext);
 		NeptuneParserCommand parser = (NeptuneParserCommand) CommandFactory.create(initialContext, NeptuneParserCommand.class.getName());
-		File f = new File("src/test/resources/broken_file.xml");
+		File f = new File("src/test/data/broken_file.xml");
 		Report report = new Report();
 		ValidationReport validationReport = new ValidationReport();
 		parser.setFileURL("file://"+f.getAbsolutePath());
@@ -186,7 +185,7 @@ public class NeptuneParserTest implements Constant {
 //	@Test
 //	public void verifiyIgnoredFile() throws Exception {
 //		Context context = new Context();
-//		File f = new File("src/test/resources/metadata_chouette_dc.xml");
+//		File f = new File("src/test/data/metadata_chouette_dc.xml");
 //		Report report = new Report();
 //		parser.setFileURL("file://"+f.getAbsolutePath());
 //		context.put(Constant.REPORT, report);

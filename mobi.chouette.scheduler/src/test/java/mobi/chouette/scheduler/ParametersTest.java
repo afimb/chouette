@@ -17,7 +17,7 @@ public class ParametersTest {
 		
 		BasicConfigurator.configure();
 		
-		String filename = "/home/dsuru/workspace-chouette/chouette/mobi.chouette.scheduler/src/test/resources/parameters.json";
+		String filename = "src/test/resources/parameters.json";
 		File f = new File(filename);
 		byte[] bytes = Files.readAllBytes(f.toPath());
 		String text = new String(bytes, "UTF-8");

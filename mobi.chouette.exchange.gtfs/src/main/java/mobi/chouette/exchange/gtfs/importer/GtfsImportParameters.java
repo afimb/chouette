@@ -16,24 +16,24 @@ import mobi.chouette.exchange.parameters.AbstractImportParameter;
 public class GtfsImportParameters extends AbstractImportParameter {
 
 	@Getter@Setter
-	@XmlElement(name = "object_id_prefix")
+	@XmlElement(name = "object_id_prefix", required=true)
 	private String objectIdPrefix;
 
 	@Getter@Setter
-	@XmlElement(name = "max_distance_for_connection_link")
-	private Integer maxDistanceForConnectionLink;
+	@XmlElement(name = "max_distance_for_connection_link", defaultValue="0")
+	private int maxDistanceForConnectionLink = 0;
 
 	@Getter@Setter
-	@XmlElement(name = "max_distance_for_commercial")
-	private String maxDistanceForCommercial;
+	@XmlElement(name = "max_distance_for_commercial", defaultValue="0")
+	private int maxDistanceForCommercial = 0;
 
 	@Getter@Setter
-	@XmlElement(name = "ignore_end_chars")
-	private Integer ignoreEndChars;
+	@XmlElement(name = "ignore_end_chars", defaultValue="0")
+	private int ignoreEndChars = 0;
 
 	@Getter@Setter
-	@XmlElement(name = "ignore_last_word")
-	private Boolean ignoreLastWord;
+	@XmlElement(name = "ignore_last_word", defaultValue="false")
+	private boolean ignoreLastWord = false;
 
 	@Getter@Setter
 	@XmlElement(name = "references_type")

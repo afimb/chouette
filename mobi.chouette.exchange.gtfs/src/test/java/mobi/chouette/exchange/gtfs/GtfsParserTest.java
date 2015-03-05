@@ -1,16 +1,19 @@
 package mobi.chouette.exchange.gtfs;
 
 import java.io.File;
-import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
-import javax.ejb.EJB;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
-import mobi.chouette.common.chain.Command;
+import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
+import mobi.chouette.exchange.gtfs.importer.GtfsParserCommand;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsImporter;
+import mobi.chouette.exchange.report.Report;
+import mobi.chouette.exchange.validator.report.ValidationReport;
+import mobi.chouette.model.util.Referential;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -23,10 +26,10 @@ import org.junit.runner.RunWith;
 
 @Log4j
 @RunWith(Arquillian.class)
-public class GtfsParserTest {
+public class GtfsParserTest implements Constant{
 
-	@EJB(beanName = "GtfsParserCommand")
-	private Command command;
+	private InitialContext initialContext ;
+	private GtfsImportParameters configuration;
 
 	@Deployment
 	public static WebArchive createDeployment() {
@@ -38,25 +41,46 @@ public class GtfsParserTest {
 				.withTransitivity().asFile();
 
 		result = ShrinkWrap.create(WebArchive.class, "test.war")
-				.addAsWebInfResource("wildfly-ds.xml").addAsLibraries(files)
-				.addAsManifestResource("agency.txt")
-				.addAsManifestResource("calendar_dates.txt")
-				.addAsManifestResource("calendar.txt")
-				.addAsManifestResource("routes.txt")
-				.addAsManifestResource("stops.txt")
-				.addAsManifestResource("stop_times.txt")
-				.addAsManifestResource("trips.txt")
+				.addAsWebInfResource("postgres-ds.xml").addAsLibraries(files)
 				.addAsResource(EmptyAsset.INSTANCE, "beans.xml");
 
 		return result;
 	}
 
+	private void init()
+	{
+		if (initialContext == null)
+		{
+			try {
+				initialContext = new InitialContext();
+			} catch (NamingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		if (configuration == null)
+		{
+			configuration = new GtfsImportParameters();
+			configuration.setObjectIdPrefix("GtfsTest");
+		}
+				
+	}
+
 	@Test
-	public void agency() throws Exception {
+	public void validData() throws Exception {
+		init();
 		Context context = new Context();
-		URL url = GtfsParserTest.class.getResource("/META-INF");		
-		GtfsImporter importer = new GtfsImporter(url.toExternalForm());
-		context.put(Constant.PARSER, importer);
+		context.put(INITIAL_CONTEXT, initialContext);
+		Report report = new Report();
+		ValidationReport validationReport = new ValidationReport();
+		GtfsParserCommand command = (GtfsParserCommand) CommandFactory.create(initialContext, GtfsParserCommand.class.getName());
+		GtfsImporter importer = new GtfsImporter("src/test/data/valid");
+		context.put(PARSER, importer);
+		context.put(REPORT, report);
+		context.put(REFERENTIAL, new Referential());
+		context.put(VALIDATION_REPORT, validationReport);
+		context.put(CONFIGURATION, configuration);
+		command.setGtfsRouteId("0001");
 		
 		command.execute(context);
 	}

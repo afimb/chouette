@@ -7,14 +7,12 @@ import javax.naming.InitialContext;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.gtfs.Constant;
-import mobi.chouette.exchange.gtfs.model.GtfsRoute;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsImporter;
 import mobi.chouette.exchange.gtfs.parser.GtfsAgencyParser;
 import mobi.chouette.exchange.gtfs.parser.GtfsCalendarParser;

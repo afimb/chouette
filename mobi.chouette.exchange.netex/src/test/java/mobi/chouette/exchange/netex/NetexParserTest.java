@@ -1,13 +1,17 @@
 package mobi.chouette.exchange.netex;
 
 import java.io.File;
-import java.net.URL;
 
-import javax.ejb.EJB;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
-import mobi.chouette.common.chain.Command;
+import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.netex.importer.NetexParserCommand;
+import mobi.chouette.exchange.report.Report;
+import mobi.chouette.exchange.validator.report.ValidationReport;
+import mobi.chouette.model.util.Referential;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
@@ -20,10 +24,9 @@ import org.junit.runner.RunWith;
 
 @Log4j
 @RunWith(Arquillian.class)
-public class NetexParserTest {
+public class NetexParserTest implements mobi.chouette.common.Constant{
 
-	@EJB(beanName = "NetexParserCommand")
-	private Command command;
+	private InitialContext initialContext ;
 
 	@Deployment
 	public static WebArchive createDeployment() {
@@ -35,18 +38,38 @@ public class NetexParserTest {
 				.withTransitivity().asFile();
 
 		result = ShrinkWrap.create(WebArchive.class, "test.war")
-				.addAsWebInfResource("wildfly-ds.xml").addAsLibraries(files)
-				.addAsManifestResource("line_test.xml")
+				.addAsWebInfResource("postgres-ds.xml").addAsLibraries(files)
 				.addAsResource(EmptyAsset.INSTANCE, "beans.xml");
 
 		return result;
 	}
+	
+	private void init()
+	{
+		if (initialContext == null)
+		{
+			try {
+				initialContext = new InitialContext();
+			} catch (NamingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+	}
 
 	@Test
-	public void todo() throws Exception {
+	public void valid() throws Exception {
+		init();
 		Context context = new Context();
-		URL url = NetexParserTest.class.getResource("/META-INF/line_test.xml");
-		context.put(Constant.FILE_URL, url.toExternalForm());
+		context.put(INITIAL_CONTEXT, initialContext);
+		NetexParserCommand command = (NetexParserCommand) CommandFactory.create(initialContext, NetexParserCommand.class.getName());
+		File f = new File("src/test/data/valid/line_test.xml");
+		Report report = new Report();
+		ValidationReport validationReport = new ValidationReport();
+		command.setFileURL("file://"+f.getAbsolutePath());
+		context.put(Constant.REPORT, report);
+		context.put(REFERENTIAL, new Referential());
+		context.put(Constant.VALIDATION_REPORT, validationReport);
 		command.execute(context);
 	}
 }
