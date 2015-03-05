@@ -116,7 +116,7 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.17</version>
 				<configuration>
-					<argLine>-Djboss.socket.binding.port-offset=300</argLine>
+					<argLine>-Djboss.socket.binding.port-offset=300 -XX:MaxPermSize=512m</argLine>
 					<!-- Fork every test because it will launch a separate AS instance -->
 					<forkMode>always</forkMode>
 					<systemPropertyVariables>
