@@ -163,11 +163,8 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	 * @param checkPointKey
 	 */
 	protected static void prepareCheckPoint(ValidationReport validationReport, String checkPointKey) {
-		// ValidationReport validationReport = (ValidationReport)
-		// validationReport.get(VALIDATION_REPORT);
 		CheckPoint checkPoint = validationReport.findCheckPointByName(checkPointKey);
 		if (checkPoint == null) {
-			// TODO initializeCheckPoints(context);
 			checkPoint = validationReport.findCheckPointByName(checkPointKey);
 		}
 		if (checkPoint.getDetails().isEmpty())
@@ -182,8 +179,6 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	 * @param item
 	 */
 	protected static void addValidationError(ValidationReport validationReport, String checkPointKey, Detail item) {
-		// ValidationReport validationReport = (ValidationReport)
-		// validationReport.get(VALIDATION_REPORT);
 		CheckPoint checkPoint = validationReport.findCheckPointByName(checkPointKey);
 		checkPoint.addDetail(item);
 
@@ -382,7 +377,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 					value = objVal.toString();
 				}
 				// if objectId : check only third part
-				if (column.equalsIgnoreCase("objectId") && !value.isEmpty()) {
+				if (column.equalsIgnoreCase("objectid") && !value.isEmpty()) {
 					value = value.split(":")[2];
 				}
 				// uniqueness ?

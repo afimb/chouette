@@ -15,13 +15,14 @@ import mobi.chouette.common.JSONUtils;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.report.Report;
+import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.exchange.report.Progression.STEP;
 import mobi.chouette.exchange.validator.report.CheckPoint;
 import mobi.chouette.exchange.validator.report.Detail;
 import mobi.chouette.exchange.validator.report.ValidationReport;
 
 @Log4j
-public class ProgressionCommand implements Command, Constant {
+public class ProgressionCommand implements Command, Constant, ReportConstant {
 
 	public static final String COMMAND = "ProgressionCommand";
 	
@@ -47,13 +48,14 @@ public class ProgressionCommand implements Command, Constant {
 		Report report =  (Report) context.get(REPORT);
 		report.getProgression().setStep(STEP.FINALISATION);
 		saveReport(context);
-
 	}
 
 	public void dispose(Context context)
 	{
 		Report report =  (Report) context.get(REPORT);
 		report.setProgression(null);
+		if (report.getResult() == null)
+			report.setResult(STATUS_OK);
 		saveReport(context);
 		if (context.containsKey(VALIDATION_REPORT))
 		{

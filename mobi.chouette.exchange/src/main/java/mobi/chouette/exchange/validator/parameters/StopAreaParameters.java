@@ -15,14 +15,14 @@ import mobi.chouette.model.StopArea;
 public class StopAreaParameters {
 
 	@XmlTransient
-	public static String[] fields = { "Objectid", "Name", "RegistrationNumber","CityName","CountryCode", "ZipCode"} ;
+	public static String[] fields = { "ObjectId", "Name", "RegistrationNumber","CityName","CountryCode", "ZipCode"} ;
 	
 	static {
 		ValidationParametersUtil.addFieldList(StopArea.class.getSimpleName(), Arrays.asList(fields));
 	}
 
 	@XmlElement(name = "objectid")
-	private FieldParameters objectid;
+	private FieldParameters objectId;
 
 	@XmlElement(name = "name")
 	private FieldParameters name;

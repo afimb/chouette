@@ -15,7 +15,7 @@ import lombok.ToString;
 @XmlAccessorType(XmlAccessType.FIELD)
 public class CheckPoint {
 
-	private static final int maxDetails = 20;
+	private static final int maxDetails = 50;
 
 	public enum SEVERITY {
 		WARNING, ERROR, IMPROVMENT

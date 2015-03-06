@@ -57,9 +57,8 @@ public class Timetable extends NeptuneIdentifiedObject {
 	/**
 	 * mapping day type with enumerations
 	 */
-	private static final DayTypeEnum[] dayTypeByInt = { DayTypeEnum.Sunday,
-			DayTypeEnum.Monday, DayTypeEnum.Tuesday, DayTypeEnum.Wednesday,
-			DayTypeEnum.Thursday, DayTypeEnum.Friday, DayTypeEnum.Saturday };
+	private static final DayTypeEnum[] dayTypeByInt = { DayTypeEnum.Sunday, DayTypeEnum.Monday, DayTypeEnum.Tuesday,
+			DayTypeEnum.Wednesday, DayTypeEnum.Thursday, DayTypeEnum.Friday, DayTypeEnum.Saturday };
 
 	/**
 	 * comment <br/>
@@ -114,7 +113,7 @@ public class Timetable extends NeptuneIdentifiedObject {
 	@Getter
 	@Setter
 	@Column(name = "int_day_types")
-	private Integer intDayTypes;
+	private Integer intDayTypes = 0;
 
 	public List<DayTypeEnum> getDayTypes() {
 		List<DayTypeEnum> result = new ArrayList<DayTypeEnum>();
@@ -136,6 +135,30 @@ public class Timetable extends NeptuneIdentifiedObject {
 			value |= mask;
 		}
 		this.intDayTypes = value;
+	}
+
+	/**
+	 * add a dayType if not already present
+	 * 
+	 * @param dayType
+	 */
+	public void addDayType(DayTypeEnum dayType) {
+		if (dayType != null) {
+			int mask = 1 << dayType.ordinal();
+			this.intDayTypes |= mask;
+		}
+	}
+
+	/**
+	 * remove a daytype
+	 * 
+	 * @param dayType
+	 */
+	public void removeDayType(DayTypeEnum dayType) {
+		if (dayType != null) {
+			int mask = 1 << dayType.ordinal();
+			this.intDayTypes &= ~mask;
+		}
 	}
 
 	/**
@@ -200,8 +223,7 @@ public class Timetable extends NeptuneIdentifiedObject {
 	@Getter
 	@Setter
 	@ManyToMany(mappedBy = "timetables")
-	private List<VehicleJourney> vehicleJourneys = new ArrayList<VehicleJourney>(
-			0);
+	private List<VehicleJourney> vehicleJourneys = new ArrayList<VehicleJourney>(0);
 
 	/**
 	 * add a day if not already present
@@ -379,8 +401,7 @@ public class Timetable extends NeptuneIdentifiedObject {
 		startOfPeriod = null;
 		endOfPeriod = null;
 		for (Period period : periods) {
-			if (startOfPeriod == null
-					|| startOfPeriod.after(period.getStartDate())) {
+			if (startOfPeriod == null || startOfPeriod.after(period.getStartDate())) {
 				startOfPeriod = period.getStartDate();
 			}
 			if (endOfPeriod == null || endOfPeriod.before(period.getEndDate())) {
@@ -390,8 +411,7 @@ public class Timetable extends NeptuneIdentifiedObject {
 		// check DayType
 		Calendar c = Calendar.getInstance();
 		if (startOfPeriod != null && endOfPeriod != null) {
-			while (startOfPeriod.before(endOfPeriod)
-					&& !isActiveOn(startOfPeriod)) {
+			while (startOfPeriod.before(endOfPeriod) && !isActiveOn(startOfPeriod)) {
 				c.setTime(startOfPeriod);
 				c.add(Calendar.DATE, 1);
 				startOfPeriod.setTime(c.getTimeInMillis());
@@ -425,29 +445,24 @@ public class Timetable extends NeptuneIdentifiedObject {
 		List<Period> effectivePeriods = new ArrayList<Period>();
 		// copy periods
 		for (Period period : periods) {
-			effectivePeriods.add(new Period(period.getStartDate(), period
-					.getEndDate()));
+			effectivePeriods.add(new Period(period.getStartDate(), period.getEndDate()));
 		}
 		if (!effectivePeriods.isEmpty()) {
 			for (Date aDay : dates) {
 				// reduce or split periods around excluded date
-				for (ListIterator<Period> iterator = effectivePeriods
-						.listIterator(); iterator.hasNext();) {
+				for (ListIterator<Period> iterator = effectivePeriods.listIterator(); iterator.hasNext();) {
 					Period period = iterator.next();
 					if (period.getStartDate().equals(aDay)) {
-						period.getStartDate().setTime(
-								period.getStartDate().getTime() + ONE_DAY);
+						period.getStartDate().setTime(period.getStartDate().getTime() + ONE_DAY);
 						if (period.getStartDate().after(period.getEndDate()))
 							iterator.remove();
 					} else if (period.getEndDate().equals(aDay)) {
-						period.getEndDate().setTime(
-								period.getEndDate().getTime() + ONE_DAY);
+						period.getEndDate().setTime(period.getEndDate().getTime() + ONE_DAY);
 						if (period.getStartDate().after(period.getEndDate()))
 							iterator.remove();
 					} else if (period.contains(aDay)) {
 						// split period
-						Period before = new Period(period.getStartDate(),
-								new Date(aDay.getTime() - ONE_DAY));
+						Period before = new Period(period.getStartDate(), new Date(aDay.getTime() - ONE_DAY));
 						period.setStartDate(new Date(aDay.getTime() + ONE_DAY));
 						iterator.add(before);
 					}

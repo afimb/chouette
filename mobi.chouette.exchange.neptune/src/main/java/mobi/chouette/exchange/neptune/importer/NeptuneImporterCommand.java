@@ -21,7 +21,9 @@ import mobi.chouette.exchange.importer.CleanRepositoryCommand;
 import mobi.chouette.exchange.importer.CopyCommand;
 import mobi.chouette.exchange.importer.LineRegisterCommand;
 import mobi.chouette.exchange.importer.UncompressCommand;
+import mobi.chouette.exchange.report.FileInfo;
 import mobi.chouette.exchange.report.Report;
+import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
 import mobi.chouette.exchange.validator.DaoSharedDataValidatorCommand;
 import mobi.chouette.exchange.validator.ImportedLineValidatorCommand;
 import mobi.chouette.exchange.validator.ValidationData;
@@ -89,6 +91,19 @@ public class NeptuneImporterCommand implements Command, Constant {
 			Path path = Paths.get(context.get(PATH).toString(), INPUT);
 			List<Path> stream = FileUtils
 					.listFiles(path, "*.xml", "*metadata*");
+			
+			List<Path> excluded = FileUtils
+					.listFiles(path, "*", "*.xml");
+			if (!excluded.isEmpty())
+			{
+				Report report = (Report) context.get(REPORT);
+				for (Path exclude : excluded) {
+					FileInfo file = new FileInfo();
+					file.setName(exclude.getName(-1).toString());
+					file.setStatus(FILE_STATE.UNCHECKED);
+					report.getFiles().add(file);
+				}
+			}
 
 			progression.start(context, stream.size());
 

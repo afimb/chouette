@@ -7,7 +7,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.JSONUtils;
 
 import org.apache.log4j.BasicConfigurator;
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 @Log4j
 public class ParametersTest {

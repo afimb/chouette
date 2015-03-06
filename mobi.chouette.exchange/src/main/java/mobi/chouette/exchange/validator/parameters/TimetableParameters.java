@@ -15,14 +15,14 @@ import mobi.chouette.model.Timetable;
 public class TimetableParameters {
 
 	@XmlTransient
-	public static String[] fields = { "Objectid", "Comment", "Version"} ;
+	public static String[] fields = { "ObjectId", "Comment", "Version"} ;
 	
 	static {
 		ValidationParametersUtil.addFieldList(Timetable.class.getSimpleName(), Arrays.asList(fields));
 	}
 
 	@XmlElement(name = "objectid")
-	private FieldParameters objectid;
+	private FieldParameters objectId;
 
 	@XmlElement(name = "comment")
 	private FieldParameters comment;

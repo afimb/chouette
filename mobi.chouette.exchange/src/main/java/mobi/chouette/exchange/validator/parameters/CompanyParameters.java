@@ -15,14 +15,14 @@ import mobi.chouette.model.Company;
 public class CompanyParameters {
 
 	@XmlTransient
-	public static String[] fields = { "Objectid", "Name", "RegistrationNumber"} ;
+	public static String[] fields = { "ObjectId", "Name", "RegistrationNumber"} ;
 	
 	static {
 		ValidationParametersUtil.addFieldList(Company.class.getSimpleName(), Arrays.asList(fields));
 	}
 
 	@XmlElement(name = "objectid")
-	private FieldParameters objectid;
+	private FieldParameters objectId;
 
 	@XmlElement(name = "name")
 	private FieldParameters name;

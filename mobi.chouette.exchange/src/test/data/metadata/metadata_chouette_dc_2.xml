@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<metadata xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:dcterms="http://purl.org/dc/terms/">
+	<!-- produced by Chouette -->
+	<dcterms:coverage xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:type="dcterms:Period">start=2014-12-01; end=2015-03-31; scheme=W3C-DTF;</dcterms:coverage>
+	<dcterms:spatial xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:type="dcterms:Box">northlimit=45.790; southlimit=45.790; westlimit=3.457; eastlimit=3.457</dcterms:spatial>
+	<dcterms:creator>the creator</dcterms:creator>
+	<dcterms:date xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:type="dcterms:W3CDTF">2015-01-15</dcterms:date>
+	<dcterms:description>Exported data count = 4
+		Line ligne 1
+		Network réseau 1, Line ligne 2
+		fichier1.xml : Network réseau 2, Line ligne 3
+		fichier2.xml : Line ligne 4
+	</dcterms:description>
+	<dcterms:format>the format</dcterms:format>
+	<dcterms:language xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:type="dcterms:W3CDTF">fr_FR.utf8</dcterms:language>
+	<dcterms:publisher>the publisher</dcterms:publisher>
+	<dcterms:relation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:type="dcterms:URI">http://the.relation.com</dcterms:relation>
+	<dcterms:title>the title</dcterms:title>
+	<dcterms:type xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:type="dcterms:DCMIType">Dataset</dcterms:type>
+</metadata>

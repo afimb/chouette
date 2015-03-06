@@ -58,7 +58,7 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 				+ configuration.getObjectIdPrefix();
 		PTNetwork ptNetwork = ObjectFactory.getPTNetwork(referential,
 				ptNetworkId);
-		line.setPTNetwork(ptNetwork);
+		line.setPtNetwork(ptNetwork);
 
 		// Company
 		String companyId = AbstractConverter.composeObjectId(

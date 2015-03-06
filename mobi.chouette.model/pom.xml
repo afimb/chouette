@@ -73,6 +73,13 @@
 			<type>ejb</type>
 			<version>${project.version}</version>
 		</dependency>
+		
+		<!-- tests -->
+		<dependency>
+         <groupId>org.testng</groupId>
+         <artifactId>testng</artifactId>
+         <scope>test</scope>
+      </dependency>
 
 	</dependencies>
 </project>

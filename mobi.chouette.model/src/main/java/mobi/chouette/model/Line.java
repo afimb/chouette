@@ -316,7 +316,7 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	 * 
 	 * @param ptNetwork
 	 */
-	public void setPTNetwork(PTNetwork ptNetwork) {
+	public void setPtNetwork(PTNetwork ptNetwork) {
 		if (this.ptNetwork != null) {
 			this.ptNetwork.getLines().remove(this);
 		}

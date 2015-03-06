@@ -16,14 +16,14 @@ import mobi.chouette.model.PTNetwork;
 public class NetworkParameters {
 
 	@XmlTransient
-	public static String[] fields = { "Objectid", "Name", "RegistrationNumber"} ;
+	public static String[] fields = { "ObjectId", "Name", "RegistrationNumber"} ;
 	
 	static {
 		ValidationParametersUtil.addFieldList(PTNetwork.class.getSimpleName(), Arrays.asList(fields));
 	}
 
 	@XmlElement(name = "objectid")
-	private FieldParameters objectid;
+	private FieldParameters objectId;
 
 	@XmlElement(name = "name")
 	private FieldParameters name;

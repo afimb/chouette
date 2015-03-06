@@ -14,17 +14,15 @@ import mobi.chouette.exchange.validator.report.ValidationReport;
 import mobi.chouette.model.util.Referential;
 
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.testng.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.testng.annotations.Test;
 
 @Log4j
-@RunWith(Arquillian.class)
-public class NetexParserTest implements mobi.chouette.common.Constant{
+public class NetexParserTest  extends Arquillian implements mobi.chouette.common.Constant{
 
 	private InitialContext initialContext ;
 

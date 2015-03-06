@@ -1,9 +1,8 @@
 package mobi.chouette.exchange.neptune;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 import java.io.File;
+import java.io.IOException;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -11,6 +10,8 @@ import javax.naming.NamingException;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
+import mobi.chouette.exchange.neptune.importer.NeptuneImporterCommand;
 import mobi.chouette.exchange.neptune.importer.NeptuneParserCommand;
 import mobi.chouette.exchange.neptune.importer.NeptuneSAXParserCommand;
 import mobi.chouette.exchange.report.FileInfo;
@@ -18,19 +19,20 @@ import mobi.chouette.exchange.report.Report;
 import mobi.chouette.exchange.validator.report.ValidationReport;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.util.Referential;
+import mobi.chouette.persistence.hibernate.ContextHolder;
 
+import org.apache.commons.io.FileUtils;
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.testng.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 @Log4j
-@RunWith(Arquillian.class)
-public class NeptuneParserTest implements Constant {
+public class NeptuneParserTest extends Arquillian implements Constant {
 
 	private InitialContext initialContext ;
 
@@ -64,40 +66,60 @@ public class NeptuneParserTest implements Constant {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			ContextHolder.setContext("chouette_gui"); // set tenant schema
 		}
+	}
+	
+	private Context initContext()
+	{
+		init();
+		Context context = new Context();
+		context.put(INITIAL_CONTEXT, initialContext);
+		context.put(REPORT,new Report());
+		context.put(REFERENTIAL, new Referential());
+		context.put(VALIDATION_REPORT, new ValidationReport());
+		NeptuneImportParameters configuration = new NeptuneImportParameters();
+		context.put(CONFIGURATION, configuration);
+		configuration.setName("name");
+		configuration.setUserName("userName");
+		configuration.setNoSave(true);
+		configuration.setOrganisationName("organisation");
+		configuration.setReferentialName("test");
+		context.put(PATH, "target/referential/test");
+		File f = new File("target/referential/test");
+		if (f.exists())
+			try {
+				FileUtils.deleteDirectory(f);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		f.mkdirs();
+		context.put(JOB_REFERENTIAL, "chouette_gui");
+		context.put(ACTION, IMPORTER);
+		context.put(TYPE, "neptune");
+		
+		return context;
+
 	}
 	
 	@Test
 	public void validation() throws Exception {
-		init();
 		log.info("validation");
-		Context context = new Context();
-		context.put(INITIAL_CONTEXT, initialContext);
+		Context context = initContext();
 		NeptuneSAXParserCommand validation = (NeptuneSAXParserCommand) CommandFactory.create(initialContext, NeptuneSAXParserCommand.class.getName());
 		File f = new File("src/test/data/1000252.xml");
-		Report report = new Report();
-		ValidationReport validationReport = new ValidationReport();
+		context.put(ARCHIVE, "src/test/data/1000252.xml");
 		validation.setFileURL("file://"+f.getAbsolutePath());
-		context.put(Constant.REPORT, report);
-		context.put(REFERENTIAL, new Referential());
-		context.put(Constant.VALIDATION_REPORT, validationReport);
 		validation.execute(context);
 	}
 	
 	@Test
 	public void test() throws Exception {
-		init();
 		log.info("test");
-		Context context = new Context();
-		context.put(INITIAL_CONTEXT, initialContext);
+		Context context = initContext();
 		NeptuneParserCommand parser = (NeptuneParserCommand) CommandFactory.create(initialContext, NeptuneParserCommand.class.getName());
 		File f = new File("src/test/data/1000252.xml");
-		Report report = new Report();
-		ValidationReport validationReport = new ValidationReport();
 		parser.setFileURL("file://"+f.getAbsolutePath());
-		context.put(Constant.REPORT, report);
-		context.put(REFERENTIAL, new Referential());
-		context.put(Constant.VALIDATION_REPORT, validationReport);
 		parser.execute(context);
 		Referential referential = (Referential) context.get(Constant.REFERENTIAL);
 		Line line = referential.getLines().values().iterator().next();
@@ -105,39 +127,28 @@ public class NeptuneParserTest implements Constant {
 
 	@Test
 	public void verifiyGoodFile() throws Exception {
-		init();
 		log.info("verifiyGoodFile");
-		Context context = new Context();
-		context.put(INITIAL_CONTEXT, initialContext);
+		Context context = initContext();
 		NeptuneParserCommand parser = (NeptuneParserCommand) CommandFactory.create(initialContext, NeptuneParserCommand.class.getName());
 		File f = new File("src/test/data/C_NEPTUNE_3.xml");
-		Report report = new Report();
-		ValidationReport validationReport = new ValidationReport();
 		parser.setFileURL("file://"+f.getAbsolutePath());
-		context.put(Constant.REPORT, report);
-		context.put(REFERENTIAL, new Referential());
-		context.put(Constant.VALIDATION_REPORT, validationReport);
+		Report report = (Report) context.get(REPORT);
+		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
 		parser.execute(context);
-		assertNull("no error should be reported",report.getFailure());
-		assertEquals("report one file",1,report.getFiles().size());
-		assertEquals("report one error file",FileInfo.FILE_STATE.OK,report.getFiles().get(0).getStatus());
+		Assert.assertNull(report.getFailure(),"no error should be reported");
+		Assert.assertEquals(report.getFiles().size(),1,"report one file");
+		Assert.assertEquals(report.getFiles().get(0).getStatus(),FileInfo.FILE_STATE.OK,"report one error file");
 
 	}
 
 	@Test
 	public void verifiyWrongFile() throws Exception {
-		init();
 		log.info("verifiyWrongFile");
-		Context context = new Context();
+		Context context = initContext();
 		context.put(INITIAL_CONTEXT, initialContext);
 		NeptuneSAXParserCommand validation = (NeptuneSAXParserCommand) CommandFactory.create(initialContext, NeptuneSAXParserCommand.class.getName());
 		File f = new File("src/test/data/error_file.xml");
-		Report report = new Report();
-		ValidationReport validationReport = new ValidationReport();
 		validation.setFileURL("file://"+f.getAbsolutePath());
-		context.put(Constant.REPORT, report);
-		context.put(REFERENTIAL, new Referential());
-		context.put(Constant.VALIDATION_REPORT, validationReport);
 		try
 		{
 			validation.execute(context);
@@ -146,26 +157,20 @@ public class NeptuneParserTest implements Constant {
 		{
 			System.out.println("exception received "+e.getMessage());
 		}
-		assertNull("no error should be reported",report.getFailure());
-		assertEquals("report one file",1,report.getFiles().size());
-		assertEquals("report one error file",FileInfo.FILE_STATE.NOK,report.getFiles().get(0).getStatus());
+		Report report = (Report) context.get(REPORT);
+		Assert.assertNull(report.getFailure(),"no error should be reported");
+		Assert.assertEquals(report.getFiles().size(),1,"report one file");
+		Assert.assertEquals(report.getFiles().get(0).getStatus(),FileInfo.FILE_STATE.NOK,"report one error file");
 		System.out.println("error message = "+report.getFiles().get(0).getErrors().get(0));
 	}
 
 	@Test
 	public void verifiyBrokenFile() throws Exception {
-		init();
 		log.info("verifiyBrokenFile");
-		Context context = new Context();
-		context.put(INITIAL_CONTEXT, initialContext);
+		Context context = initContext();
 		NeptuneParserCommand parser = (NeptuneParserCommand) CommandFactory.create(initialContext, NeptuneParserCommand.class.getName());
 		File f = new File("src/test/data/broken_file.xml");
-		Report report = new Report();
-		ValidationReport validationReport = new ValidationReport();
 		parser.setFileURL("file://"+f.getAbsolutePath());
-		context.put(Constant.REPORT, report);
-		context.put(REFERENTIAL, new Referential());
-		context.put(Constant.VALIDATION_REPORT, validationReport);
 		try
 		{
 			parser.execute(context);
@@ -175,23 +180,19 @@ public class NeptuneParserTest implements Constant {
 			System.out.println("exception received "+e.getMessage());
 		}
 		
-		assertNull("no error should be reported",report.getFailure());
-		assertEquals("report one file",1,report.getFiles().size());
-		assertEquals("report one error file",FileInfo.FILE_STATE.NOK,report.getFiles().get(0).getStatus());
+		Report report = (Report) context.get(REPORT);
+		Assert.assertNull(report.getFailure(),"no error should be reported");
+		Assert.assertEquals(report.getFiles().size(),1,"report one file");
+		Assert.assertEquals(report.getFiles().get(0).getStatus(),FileInfo.FILE_STATE.NOK,"report one error file");
 		System.out.println("error message = "+report.getFiles().get(0).getErrors().get(0));
 
 	}
 
-//	@Test
-//	public void verifiyIgnoredFile() throws Exception {
-//		Context context = new Context();
-//		File f = new File("src/test/data/metadata_chouette_dc.xml");
-//		Report report = new Report();
-//		parser.setFileURL("file://"+f.getAbsolutePath());
-//		context.put(Constant.REPORT, report);
-//		parser.execute(context);
-//		assertNull("no error should be reported",report.getError());
-//		assertEquals("report one ignored file",1,report.getFiles().getFilesDetail().getIgnored().size());
-//
-//	}
+	@Test
+	public void verifiyIgnoredFile() throws Exception {
+		Context context = initContext();
+		File f = new File("src/test/data/metadata_chouette_dc.xml");
+		NeptuneImporterCommand command =  (NeptuneImporterCommand) CommandFactory.create(initialContext, NeptuneImporterCommand.class.getName());
+
+	}
 }

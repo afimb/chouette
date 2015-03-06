@@ -86,133 +86,21 @@ public class Service implements Constant {
 		return result;
 	}
 
-	@POST
-	@Path("/{ref}/validator")
-	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	@Produces({ MediaType.APPLICATION_JSON })
-	public Response upload(@PathParam("ref") String referential,
-			MultipartFormDataInput input) {
-		Response result = null;
-		String action = VALIDATOR;
-		// check params
-		if (!schemas.getSchemaListing().contains(referential)) {
-			throw new WebApplicationException(Status.BAD_REQUEST);
-		}
-		try {
-
-			// create job
-			Job job = new Job();
-			job.setReferential(referential);
-			job.setAction(action);
-			job.setType(null);
-			jobDAO.create(job);
-
-			// add location link
-			Link link = new Link();
-			link.setType(MediaType.APPLICATION_JSON);
-			link.setRel(Link.LOCATION_REL);
-			link.setMethod(Link.GET_METHOD);
-			String href = MessageFormat.format("/{0}/{1}/jobs/{2,number,#}",
-					ROOT_PATH, job.getReferential(), job.getId());
-			link.setHref(href);
-			job.getLinks().add(link);
-
-			// add cancel link
-			link = new Link();
-			link.setType(MediaType.APPLICATION_JSON);
-			link.setRel(Link.CANCEL_REL);
-			link.setMethod(Link.DELETE_METHOD);
-			href = MessageFormat.format("/{0}/{1}/jobs/{2,number,#}",
-					ROOT_PATH, job.getReferential(), job.getId());
-			link.setHref(href);
-			job.getLinks().add(link);
-
-			// mkdir
-			java.nio.file.Path dir = Paths.get(System.getProperty("user.home"),
-					ROOT_PATH, job.getReferential(), "data", job.getId()
-							.toString());
-			if (Files.exists(dir)) {
-				jobDAO.delete(job);
-			}
-			Files.createDirectories(dir);
-			job.setPath(dir.toString());
-
-			// upload data
-			Map<String, List<InputPart>> map = input.getFormDataMap();
-			List<InputPart> list = map.get("file");
-			for (InputPart part : list) {
-				MultivaluedMap<String, String> headers = part.getHeaders();
-				String header = headers
-						.getFirst(HttpHeaders.CONTENT_DISPOSITION);
-				String filename = getFilename(header);
-
-				if (filename.equals("parameters.json")) {
-					InputStream in = part.getBody(InputStream.class, null);
-					java.nio.file.Path path = Paths.get(dir.toString(),
-							filename);
-					Files.copy(in, path);
-
-					// add parameters link
-					link = new Link();
-					link.setType(MediaType.APPLICATION_JSON);
-					link.setRel(Link.PARAMETERS_REL);
-					link.setMethod(Link.GET_METHOD);
-					href = MessageFormat.format(
-							"/{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH,
-							job.getReferential(), job.getId(), PARAMETERS_FILE);
-					link.setHref(href);
-					job.getLinks().add(link);
-
-				} else {
-
-					throw new WebApplicationException(Status.BAD_REQUEST);
-
-				}
-
-			}
-
-			// schedule job
-			jobDAO.update(job);
-			scheduler.schedule(job.getReferential());
-
-			// TODO for debug
-			java.nio.file.Path path = Paths.get(
-					System.getProperty("user.home"), ROOT_PATH,
-					job.getReferential(), "data", job.getId().toString(),
-					REPORT_FILE);
-			Files.createFile(path);
-			path = Paths.get(System.getProperty("user.home"), ROOT_PATH,
-					job.getReferential(), "data", job.getId().toString(),
-					VALIDATION_FILE);
-			Files.createFile(path);
-
-			// build response
-			ResponseBuilder builder = Response.accepted();
-			builder.location(URI.create(MessageFormat.format(
-					"{0}/{1}/jobs/{2,number,#}", ROOT_PATH,
-					job.getReferential(), job.getId())));
-			result = builder.build();
-		} catch (WebApplicationException e) {
-			log.error(e);
-			throw e;
-		} catch (IOException e) {
-			log.error(e);
-			throw new WebApplicationException(Status.INTERNAL_SERVER_ERROR);
-		}
-
-		return result;
-	}
 
 	// post asynchronous job
 	@POST
-	@Path("/{ref}/{action}/{type}")
+	@Path("/{ref}/{action}{type:(/[^/]+?)?}")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response upload(@PathParam("ref") String referential,
 			@PathParam("action") String action, @PathParam("type") String type,
 			MultipartFormDataInput input) {
 		Response result = null;
-
+		
+        if (type != null && type.startsWith("/"))
+        {
+        	type = type.substring(1);
+        }
 		// check params
 		if (!schemas.getSchemaListing().contains(referential)) {
 			throw new WebApplicationException(Status.BAD_REQUEST);
@@ -220,10 +108,19 @@ public class Service implements Constant {
 		if (action == null || action.isEmpty()) {
 			throw new WebApplicationException(Status.BAD_REQUEST);
 		}
-		if (!action.equals(IMPORTER) && !action.equals(EXPORTER)) {
+		if (!action.equals(IMPORTER) && !action.equals(EXPORTER) && !action.equals(VALIDATOR)) {
 			throw new WebApplicationException(Status.BAD_REQUEST);
 		}
-
+		if ((action.equals(IMPORTER)  || action.equals(EXPORTER)) && (type == null || type.isEmpty()))
+		{
+			throw new WebApplicationException(Status.BAD_REQUEST);
+		}
+        if (action.equals(VALIDATOR) && type != null && !type.isEmpty())
+        {
+			throw new WebApplicationException(Status.BAD_REQUEST);        	
+        }
+        if (type.isEmpty()) type = null;
+		
 		try {
 
 			// create job
@@ -327,6 +224,7 @@ public class Service implements Constant {
 			}
 
 			// schedule job
+			
 			jobDAO.update(job);
 			scheduler.schedule(job.getReferential());
 
@@ -483,7 +381,7 @@ public class Service implements Constant {
 
 			// add links
 			for (Link link : job.getLinks()) {
-				URI uri = uriInfo.getAbsolutePathBuilder().path(link.getHref())
+				URI uri = uriInfo.getBaseUriBuilder().path(link.getHref())
 						.build();
 				builder.link(URI.create(uri.toASCIIString()), link.getRel());
 			}
@@ -570,7 +468,7 @@ public class Service implements Constant {
 
 		// add links
 		for (Link link : job.getLinks()) {
-			URI uri = uriInfo.getAbsolutePathBuilder().path(link.getHref())
+			URI uri = uriInfo.getBaseUriBuilder().path(link.getHref())
 					.build();
 			builder.link(URI.create(uri.toASCIIString()), link.getRel());
 		}
@@ -620,7 +518,7 @@ public class Service implements Constant {
 
 	// delete referential
 	@DELETE
-	@Path("/{ref}/all")
+	@Path("/{ref}/reports")
 	public Response drop(@PathParam("ref") String referential) {
 		Response result = null;
 
@@ -658,7 +556,7 @@ public class Service implements Constant {
 
 			for (Link link : job.getLinks()) {
 
-				URI uri = uriInfo.getAbsolutePathBuilder().path(link.getHref())
+				URI uri = uriInfo.getBaseUriBuilder().path(link.getHref())
 						.build();
 				link.setHref(uri.toASCIIString());
 			}

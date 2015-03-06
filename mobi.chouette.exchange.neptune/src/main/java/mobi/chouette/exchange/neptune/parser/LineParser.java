@@ -53,7 +53,7 @@ public class LineParser implements Parser, Constant {
 				objectId = ParserUtils.getText(xpp.nextText());
 				line = ObjectFactory.getLine(referential, objectId);
 				line.setFilled(true);
-				line.setPTNetwork(getPtNetwork(referential));
+				line.setPtNetwork(getPtNetwork(referential));
 				line.setCompany(getFirstCompany(referential));
 				validator.addLocation(context, objectId, lineNumber, columnNumber);
 			} else if (xpp.getName().equals("objectVersion")) {
@@ -160,7 +160,7 @@ public class LineParser implements Parser, Constant {
 						Line item = input.getValue();
 
 						if (!item.equals(line)) {
-							item.setPTNetwork(null);
+							item.setPtNetwork(null);
 							result = true;
 						}
 						return result;

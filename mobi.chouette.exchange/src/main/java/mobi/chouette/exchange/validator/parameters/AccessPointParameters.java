@@ -15,14 +15,14 @@ import mobi.chouette.model.AccessPoint;
 public class AccessPointParameters {
 
 	@XmlTransient
-	public static String[] fields = { "Objectid", "Name", "CityName", "CountryCode", "ZipCode"} ;
+	public static String[] fields = { "ObjectId", "Name", "CityName", "CountryCode", "ZipCode"} ;
 	
 	static {
 		ValidationParametersUtil.addFieldList(AccessPoint.class.getSimpleName(), Arrays.asList(fields));
 	}
 
 	@XmlElement(name = "objectid")
-	private FieldParameters objectid;
+	private FieldParameters objectId;
 
 	@XmlElement(name = "name")
 	private FieldParameters name;

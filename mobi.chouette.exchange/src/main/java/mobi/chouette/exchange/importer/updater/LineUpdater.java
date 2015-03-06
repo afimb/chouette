@@ -145,7 +145,7 @@ public class LineUpdater implements Updater<Line> {
 
 		// PTNetwork
 		if (newValue.getPtNetwork() == null) {
-			oldValue.setPTNetwork(null);
+			oldValue.setPtNetwork(null);
 		} else {
 
 			String objectId = newValue.getPtNetwork().getObjectId();
@@ -160,7 +160,7 @@ public class LineUpdater implements Updater<Line> {
 			if (ptNetwork == null) {
 				ptNetwork = ObjectFactory.getPTNetwork(cache, objectId);
 			}
-			oldValue.setPTNetwork(ptNetwork);
+			oldValue.setPtNetwork(ptNetwork);
 			ptNetworkUpdater.update(context, oldValue.getPtNetwork(),
 					newValue.getPtNetwork());
 		}

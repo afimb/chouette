@@ -15,14 +15,14 @@ import mobi.chouette.model.ConnectionLink;
 public class ConnectionLinkParameters {
 
 	@XmlTransient
-	public static String[] fields = { "Objectid", "Name", "LinkDistance", "DefaultDuration"} ;
+	public static String[] fields = { "ObjectId", "Name", "LinkDistance", "DefaultDuration"} ;
 	
 	static {
 		ValidationParametersUtil.addFieldList(ConnectionLink.class.getSimpleName(), Arrays.asList(fields));
 	}
 
 	@XmlElement(name = "objectid")
-	private FieldParameters objectid;
+	private FieldParameters objectId;
 
 	@XmlElement(name = "name")
 	private FieldParameters name;

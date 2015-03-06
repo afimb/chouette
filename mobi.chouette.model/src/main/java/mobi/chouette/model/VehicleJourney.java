@@ -312,7 +312,8 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 	 * 
 	 * @return The actual value
 	 */
-	@Getter	
+	@Getter
+	@Setter
 	@OneToMany(cascade = { CascadeType.PERSIST })
 	@JoinColumn(name = "vehicle_journey_id", updatable = false)
 	private List<VehicleJourneyAtStop> vehicleJourneyAtStops = new ArrayList<VehicleJourneyAtStop>(

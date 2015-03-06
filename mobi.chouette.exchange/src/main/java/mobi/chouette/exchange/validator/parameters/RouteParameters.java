@@ -15,14 +15,14 @@ import mobi.chouette.model.Route;
 public class RouteParameters {
 
 	@XmlTransient
-	public static String[] fields = { "Objectid", "Name", "Number","PublishedName"} ;
+	public static String[] fields = { "ObjectId", "Name", "Number","PublishedName"} ;
 	
 	static {
 		ValidationParametersUtil.addFieldList(Route.class.getSimpleName(), Arrays.asList(fields));
 	}
 
 	@XmlElement(name = "objectid")
-	private FieldParameters objectid;
+	private FieldParameters objectId;
 
 	@XmlElement(name = "name")
 	private FieldParameters name;

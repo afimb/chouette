@@ -1,0 +1,14 @@
+the title
+Origine : the creator
+Publié par the publisher
+Publié le 15/01/2015
+Valide du 01/12/2014 au 31/03/2015
+Nombre de lignes : 4
+ligne ligne 1
+réseau réseau 1, ligne ligne 2
+fichier1.xml : réseau réseau 2, ligne ligne 3
+fichier2.xml : ligne ligne 4
+Emprise géographique : 
+ nord 45.790, sud 45.790, ouest 3.457, est 3.457
+Format des données : the format
+Description du format disponible à l'adresse http://the.relation.com

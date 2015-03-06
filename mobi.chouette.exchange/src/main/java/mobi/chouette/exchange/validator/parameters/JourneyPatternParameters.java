@@ -15,14 +15,14 @@ import mobi.chouette.model.JourneyPattern;
 public class JourneyPatternParameters {
 
 	@XmlTransient
-	public static String[] fields = { "Objectid", "Name", "RegistrationNumber","PublishedName"} ;
+	public static String[] fields = { "ObjectId", "Name", "RegistrationNumber","PublishedName"} ;
 	
 	static {
 		ValidationParametersUtil.addFieldList(JourneyPattern.class.getSimpleName(), Arrays.asList(fields));
 	}
 
 	@XmlElement(name = "objectid")
-	private FieldParameters objectid;
+	private FieldParameters objectId;
 
 	@XmlElement(name = "name")
 	private FieldParameters name;
