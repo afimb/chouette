@@ -70,142 +70,126 @@ public class Service implements Constant {
 	@Context
 	UriInfo uriInfo;
 
-	@GET
-	@Path("/todo")
-	@Produces({ MediaType.APPLICATION_JSON })
-	public Response todo() {
-		Job job = new Job();
-		jobDAO.create(job);
-		log.info(Color.SUCCESS + job + Color.NORMAL);
-		ResponseBuilder builder = Response.ok(job);
-
-		CacheControl cc = new CacheControl();
-		cc.setMaxAge(1000);
-		builder.cacheControl(cc);
-		Response result = builder.build();
-		return result;
-	}
-
-	@POST
-	@Path("/{ref}/validator")
-	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	@Produces({ MediaType.APPLICATION_JSON })
-	public Response upload(@PathParam("ref") String referential,
-			MultipartFormDataInput input) {
-		Response result = null;
-		String action = VALIDATOR;
-		// check params
-		if (!schemas.getSchemaListing().contains(referential)) {
-			throw new WebApplicationException(Status.BAD_REQUEST);
-		}
-		try {
-
-			// create job
-			Job job = new Job();
-			job.setReferential(referential);
-			job.setAction(action);
-			job.setType(null);
-			jobDAO.create(job);
-
-			// add location link
-			Link link = new Link();
-			link.setType(MediaType.APPLICATION_JSON);
-			link.setRel(Link.LOCATION_REL);
-			link.setMethod(Link.GET_METHOD);
-			String href = MessageFormat.format("/{0}/{1}/jobs/{2,number,#}",
-					ROOT_PATH, job.getReferential(), job.getId());
-			link.setHref(href);
-			job.getLinks().add(link);
-
-			// add cancel link
-			link = new Link();
-			link.setType(MediaType.APPLICATION_JSON);
-			link.setRel(Link.CANCEL_REL);
-			link.setMethod(Link.DELETE_METHOD);
-			href = MessageFormat.format("/{0}/{1}/jobs/{2,number,#}",
-					ROOT_PATH, job.getReferential(), job.getId());
-			link.setHref(href);
-			job.getLinks().add(link);
-
-			// mkdir
-			java.nio.file.Path dir = Paths.get(System.getProperty("user.home"),
-					ROOT_PATH, job.getReferential(), "data", job.getId()
-							.toString());
-			if (Files.exists(dir)) {
-				jobDAO.delete(job);
-			}
-			Files.createDirectories(dir);
-			job.setPath(dir.toString());
-
-			// upload data
-			Map<String, List<InputPart>> map = input.getFormDataMap();
-			List<InputPart> list = map.get("file");
-			for (InputPart part : list) {
-				MultivaluedMap<String, String> headers = part.getHeaders();
-				String header = headers
-						.getFirst(HttpHeaders.CONTENT_DISPOSITION);
-				String filename = getFilename(header);
-
-				if (filename.equals("parameters.json")) {
-					InputStream in = part.getBody(InputStream.class, null);
-					java.nio.file.Path path = Paths.get(dir.toString(),
-							filename);
-					Files.copy(in, path);
-
-					// add parameters link
-					link = new Link();
-					link.setType(MediaType.APPLICATION_JSON);
-					link.setRel(Link.PARAMETERS_REL);
-					link.setMethod(Link.GET_METHOD);
-					href = MessageFormat.format(
-							"/{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH,
-							job.getReferential(), job.getId(), PARAMETERS_FILE);
-					link.setHref(href);
-					job.getLinks().add(link);
-
-				} else {
-
-					throw new WebApplicationException(Status.BAD_REQUEST);
-
-				}
-
-			}
-
-			// schedule job
-			jobDAO.update(job);
-			scheduler.schedule(job.getReferential());
-
-			// TODO for debug
-			java.nio.file.Path path = Paths.get(
-					System.getProperty("user.home"), ROOT_PATH,
-					job.getReferential(), "data", job.getId().toString(),
-					REPORT_FILE);
-			Files.createFile(path);
-			path = Paths.get(System.getProperty("user.home"), ROOT_PATH,
-					job.getReferential(), "data", job.getId().toString(),
-					VALIDATION_FILE);
-			Files.createFile(path);
-
-			// build response
-			ResponseBuilder builder = Response.accepted();
-			builder.location(URI.create(MessageFormat.format(
-					"{0}/{1}/jobs/{2,number,#}", ROOT_PATH,
-					job.getReferential(), job.getId())));
-			result = builder.build();
-		} catch (WebApplicationException e) {
-			log.error(e);
-			throw e;
-		} catch (IOException e) {
-			log.error(e);
-			throw new WebApplicationException(Status.INTERNAL_SERVER_ERROR);
-		}
-
-		return result;
-	}
+	// @POST
+	// @Path("/{ref}/validator")
+	// @Consumes(MediaType.MULTIPART_FORM_DATA)
+	// @Produces({ MediaType.APPLICATION_JSON })
+	// public Response upload(@PathParam("ref") String referential,
+	// MultipartFormDataInput input) {
+	// Response result = null;
+	// String action = VALIDATOR;
+	// // check params
+	// if (!schemas.getSchemaListing().contains(referential)) {
+	// throw new WebApplicationException(Status.BAD_REQUEST);
+	// }
+	// try {
+	//
+	// // create job
+	// Job job = new Job();
+	// job.setReferential(referential);
+	// job.setAction(action);
+	// job.setType(null);
+	// jobDAO.create(job);
+	//
+	// // add location link
+	// Link link = new Link();
+	// link.setType(MediaType.APPLICATION_JSON);
+	// link.setRel(Link.LOCATION_REL);
+	// link.setMethod(Link.GET_METHOD);
+	// String href = MessageFormat.format("/{0}/{1}/jobs/{2,number,#}",
+	// ROOT_PATH, job.getReferential(), job.getId());
+	// link.setHref(href);
+	// job.getLinks().add(link);
+	//
+	// // add cancel link
+	// link = new Link();
+	// link.setType(MediaType.APPLICATION_JSON);
+	// link.setRel(Link.CANCEL_REL);
+	// link.setMethod(Link.DELETE_METHOD);
+	// href = MessageFormat.format("/{0}/{1}/jobs/{2,number,#}",
+	// ROOT_PATH, job.getReferential(), job.getId());
+	// link.setHref(href);
+	// job.getLinks().add(link);
+	//
+	// // mkdir
+	// java.nio.file.Path dir = Paths.get(System.getProperty("user.home"),
+	// ROOT_PATH, job.getReferential(), "data", job.getId()
+	// .toString());
+	// if (Files.exists(dir)) {
+	// jobDAO.delete(job);
+	// }
+	// Files.createDirectories(dir);
+	// job.setPath(dir.toString());
+	//
+	// // upload data
+	// Map<String, List<InputPart>> map = input.getFormDataMap();
+	// List<InputPart> list = map.get("file");
+	// for (InputPart part : list) {
+	// MultivaluedMap<String, String> headers = part.getHeaders();
+	// String header = headers
+	// .getFirst(HttpHeaders.CONTENT_DISPOSITION);
+	// String filename = getFilename(header);
+	//
+	// if (filename.equals("parameters.json")) {
+	// InputStream in = part.getBody(InputStream.class, null);
+	// java.nio.file.Path path = Paths.get(dir.toString(),
+	// filename);
+	// Files.copy(in, path);
+	//
+	// // add parameters link
+	// link = new Link();
+	// link.setType(MediaType.APPLICATION_JSON);
+	// link.setRel(Link.PARAMETERS_REL);
+	// link.setMethod(Link.GET_METHOD);
+	// href = MessageFormat.format(
+	// "/{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH,
+	// job.getReferential(), job.getId(), PARAMETERS_FILE);
+	// link.setHref(href);
+	// job.getLinks().add(link);
+	//
+	// } else {
+	//
+	// throw new WebApplicationException(Status.BAD_REQUEST);
+	//
+	// }
+	//
+	// }
+	//
+	// // schedule job
+	// jobDAO.update(job);
+	// scheduler.schedule(job.getReferential());
+	//
+	// // TODO for debug
+	// java.nio.file.Path path = Paths.get(
+	// System.getProperty("user.home"), ROOT_PATH,
+	// job.getReferential(), "data", job.getId().toString(),
+	// REPORT_FILE);
+	// Files.createFile(path);
+	// path = Paths.get(System.getProperty("user.home"), ROOT_PATH,
+	// job.getReferential(), "data", job.getId().toString(),
+	// VALIDATION_FILE);
+	// Files.createFile(path);
+	//
+	// // build response
+	// ResponseBuilder builder = Response.accepted();
+	// builder.location(URI.create(MessageFormat.format(
+	// "{0}/{1}/jobs/{2,number,#}", ROOT_PATH,
+	// job.getReferential(), job.getId())));
+	// result = builder.build();
+	// } catch (WebApplicationException e) {
+	// log.error(e);
+	// throw e;
+	// } catch (IOException e) {
+	// log.error(e);
+	// throw new WebApplicationException(Status.INTERNAL_SERVER_ERROR);
+	// }
+	//
+	// return result;
+	// }
 
 	// post asynchronous job
 	@POST
-	@Path("/{ref}/{action}/{type}")
+	@Path("/{ref}/{action}{type:(/[^/]+?)?}")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response upload(@PathParam("ref") String referential,
@@ -220,9 +204,14 @@ public class Service implements Constant {
 		if (action == null || action.isEmpty()) {
 			throw new WebApplicationException(Status.BAD_REQUEST);
 		}
-		if (!action.equals(IMPORTER) && !action.equals(EXPORTER)) {
-			throw new WebApplicationException(Status.BAD_REQUEST);
+
+		if (type != null && type.startsWith("/")) {
+			type = type.substring(1);
 		}
+
+		log.info(Color.YELLOW + "[DSU] schedule action referential : "
+				+ referential + " action: " + action + " type : " + type
+				+ Color.NORMAL);
 
 		try {
 
@@ -483,9 +472,9 @@ public class Service implements Constant {
 
 			// add links
 			for (Link link : job.getLinks()) {
-				URI uri = uriInfo.getAbsolutePathBuilder().path(link.getHref())
-						.build();
-				builder.link(URI.create(uri.toASCIIString()), link.getRel());
+				URI uri = URI.create(uriInfo.getBaseUri()
+						+ link.getHref().substring(1));
+				builder.link(uri, link.getRel());
 			}
 
 		} else {
@@ -570,8 +559,8 @@ public class Service implements Constant {
 
 		// add links
 		for (Link link : job.getLinks()) {
-			URI uri = uriInfo.getAbsolutePathBuilder().path(link.getHref())
-					.build();
+			URI uri = URI.create(uriInfo.getBaseUri()
+					+ link.getHref().substring(1));
 			builder.link(URI.create(uri.toASCIIString()), link.getRel());
 		}
 
@@ -657,9 +646,8 @@ public class Service implements Constant {
 			jobDAO.detach(job);
 
 			for (Link link : job.getLinks()) {
-
-				URI uri = uriInfo.getAbsolutePathBuilder().path(link.getHref())
-						.build();
+				URI uri = URI.create(uriInfo.getBaseUri()
+						+ link.getHref().substring(1));
 				link.setHref(uri.toASCIIString());
 			}
 		}
