@@ -121,6 +121,11 @@ public class Service implements Constant {
         }
         if (type.isEmpty()) type = null;
 		
+        
+		log.info(Color.YELLOW + "[DSU] schedule action referential : "
+				+ referential + " action: " + action + " type : " + type
+				+ Color.NORMAL);
+
 		try {
 
 			// create job
@@ -381,9 +386,9 @@ public class Service implements Constant {
 
 			// add links
 			for (Link link : job.getLinks()) {
-				URI uri = uriInfo.getBaseUriBuilder().path(link.getHref())
-						.build();
-				builder.link(URI.create(uri.toASCIIString()), link.getRel());
+				URI uri = URI.create(uriInfo.getBaseUri()
+						+ link.getHref().substring(1));
+				builder.link(uri, link.getRel());
 			}
 
 		} else {
@@ -468,8 +473,8 @@ public class Service implements Constant {
 
 		// add links
 		for (Link link : job.getLinks()) {
-			URI uri = uriInfo.getBaseUriBuilder().path(link.getHref())
-					.build();
+			URI uri = URI.create(uriInfo.getBaseUri()
+					+ link.getHref().substring(1));
 			builder.link(URI.create(uri.toASCIIString()), link.getRel());
 		}
 
