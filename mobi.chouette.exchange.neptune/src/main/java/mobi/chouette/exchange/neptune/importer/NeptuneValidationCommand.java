@@ -175,6 +175,7 @@ public class NeptuneValidationCommand implements Command, Constant {
 		lineInfo.setName(line.getName());
 		lineInfo.setStatus(LineInfo.LINE_STATE.OK);
 		LineStats stats = new LineStats();
+		stats.setLineCount(1);
 		{
 			Context localContext = (Context) validationContext.get(ChouetteRouteValidator.LOCAL_CONTEXT);
 			stats.setRouteCount((localContext != null) ? localContext.size() : 0);
@@ -210,6 +211,7 @@ public class NeptuneValidationCommand implements Command, Constant {
 			globalStats = new LineStats();
 			report.setStats(globalStats);
 		}
+		globalStats.setLineCount(globalStats.getLineCount() + stats.getLineCount());
 		globalStats.setAccessPointCount(globalStats.getAccessPointCount() + stats.getAccessPointCount());
 		globalStats.setRouteCount(globalStats.getRouteCount() + stats.getRouteCount());
 		globalStats.setConnectionLinkCount(globalStats.getConnectionLinkCount() + stats.getConnectionLinkCount());

@@ -85,12 +85,15 @@ public class NeptuneProducerCommand implements Command, Constant {
 				producer.produce(context);
 
 				lineInfo.setStatus(LINE_STATE.OK);
+				stats.setLineCount(1);
 				// merge lineStats to global ones
 				LineStats globalStats = report.getStats();
 				if (globalStats == null) {
 					globalStats = new LineStats();
 					report.setStats(globalStats);
 				}
+				globalStats.setLineCount(globalStats.getLineCount()
+						+ stats.getLineCount());
 				globalStats.setAccessPointCount(globalStats.getAccessPointCount()
 						+ stats.getAccessPointCount());
 				globalStats.setRouteCount(globalStats.getRouteCount()

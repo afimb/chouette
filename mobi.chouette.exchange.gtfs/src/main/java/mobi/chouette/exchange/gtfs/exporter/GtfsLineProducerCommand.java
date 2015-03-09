@@ -117,6 +117,8 @@ public class GtfsLineProducerCommand implements Command, Constant
 					globalStats = new LineStats();
 					report.setStats(globalStats);
 				}
+				globalStats.setLineCount(globalStats.getLineCount()
+						+ stats.getLineCount());
 				globalStats.setRouteCount(globalStats.getRouteCount()
 						+ stats.getRouteCount());
 				globalStats.setVehicleJourneyCount(globalStats.getVehicleJourneyCount()
