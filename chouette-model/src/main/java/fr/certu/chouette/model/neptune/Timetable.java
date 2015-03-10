@@ -102,7 +102,7 @@ public class Timetable extends NeptuneIdentifiedObject
    @Getter
    @Setter
    @Column(name = "int_day_types")
-   private Integer intDayTypes;
+   private Integer intDayTypes = Integer.valueOf(0);
 
    /**
     * first valid day in timetable
@@ -574,7 +574,7 @@ public class Timetable extends NeptuneIdentifiedObject
          if (calendarDays.contains(excludedDay))
             return false;
       }
-      if (intDayTypes.intValue() != 0 && periods != null)
+      if (intDayTypes != null && intDayTypes.intValue() != 0 && periods != null)
       {
          Calendar c = Calendar.getInstance();
          c.setTime(aDay);
