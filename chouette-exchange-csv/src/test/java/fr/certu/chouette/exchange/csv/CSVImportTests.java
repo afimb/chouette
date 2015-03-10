@@ -258,7 +258,7 @@ public class CSVImportTests extends AbstractTestNGSpringContextTests
       {
          Assert.assertEquals(tm.getCalendarDays().size(), 8,
                " when tm has dates, 8 dates are expected");
-         Assert.assertNull(tm.getIntDayTypes(),
+         Assert.assertTrue(tm.getIntDayTypes() == null || tm.getIntDayTypes().intValue() == 0,
                "when tm has dates, no day type expected");
       }
 
