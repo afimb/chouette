@@ -3,14 +3,12 @@ package mobi.chouette.exchange.importer.updater;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
-import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.util.Referential;
 
-@Log4j
 @Stateless(name = ConnectionLinkUpdater.BEAN_NAME)
 public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
 

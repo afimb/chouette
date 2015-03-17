@@ -13,13 +13,11 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.api.Job;
 import mobi.chouette.model.api.Job.STATUS;
 import mobi.chouette.model.api.Job_;
 
 @Stateless
-@Log4j
 public class JobDAO extends GenericDAOImpl<Job> {
 
 	public JobDAO() {
@@ -67,25 +65,25 @@ public class JobDAO extends GenericDAOImpl<Job> {
 	// return result;
 	// }
 
+	@SuppressWarnings("unchecked")
 	public Job getNextJob(String referential) {
 
 		Job result = null;
 		Query query = em
 				.createQuery("from Job j where j.referential = ?1 and j.status in ( ?2 )");
 		query.setParameter(1, referential);
-		query.setParameter(2, Arrays.asList(STATUS.CREATED, STATUS.SCHEDULED));
+		query.setParameter(2, Arrays.asList(STATUS.STARTED, STATUS.SCHEDULED));
 		List<Job> list = query.getResultList();
 		if (list != null && !list.isEmpty()) {
-			if (list.get(0).getStatus().equals(STATUS.CREATED)) {
+			if (list.get(0).getStatus().equals(STATUS.SCHEDULED)) {
 				result = list.get(0);
 			}
 		}
 		return result;
 	}
 
-	@Override
-	public int deleteAll() {
-		List<Job> list = findAll();
+	public int deleteAll(String referential) {
+		List<Job> list = findByReferential(referential);
 		for (Job entity : list) {
 			delete(entity);
 		}

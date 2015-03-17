@@ -3,6 +3,7 @@ package mobi.chouette.exchange.validator.parameters;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@XmlType(propOrder={})
 public class TransportModeParameters {
 	@XmlElement(name = "allowed_transport",defaultValue="0")
 	private int allowedTransport=0;

@@ -22,7 +22,7 @@ import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.neptune.model.NeptuneObjectFactory;
 import mobi.chouette.exchange.neptune.parser.ChouettePTNetworkParser;
 import mobi.chouette.exchange.report.FileInfo;
-import mobi.chouette.exchange.report.Report;
+import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.model.util.Referential;
 
 import org.apache.commons.io.input.BOMInputStream;
@@ -50,7 +50,7 @@ public class NeptuneParserCommand implements Command, Constant {
 		context.put(FILE_URL, fileURL);
 
 		// TODO report service
-		Report report = (Report) context.get(REPORT);
+		ActionReport report = (ActionReport) context.get(REPORT);
 		FileInfo fileItem = new FileInfo();
 		String fileName = new File(new URL(fileURL).toURI()).getName();
 		context.put(FILE_NAME, fileName);

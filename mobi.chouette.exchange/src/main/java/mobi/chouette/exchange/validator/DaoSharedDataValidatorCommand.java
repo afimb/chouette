@@ -33,7 +33,7 @@ import mobi.chouette.dao.PTNetworkDAO;
 import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.dao.TimetableDAO;
 import mobi.chouette.exchange.report.LineStats;
-import mobi.chouette.exchange.report.Report;
+import mobi.chouette.exchange.report.ActionReport;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -105,7 +105,7 @@ public class DaoSharedDataValidatorCommand implements Command, Constant {
 
 			if (context.get(ACTION).equals(VALIDATOR))
 			{
-				Report report = (Report) context.get(REPORT);
+				ActionReport report = (ActionReport) context.get(REPORT);
 				LineStats globalStats = report.getStats();
 				if (globalStats == null) {
 					globalStats = new LineStats();

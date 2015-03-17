@@ -31,7 +31,7 @@ import mobi.chouette.exchange.neptune.jaxb.JaxbNeptuneFileConverter;
 import mobi.chouette.exchange.neptune.model.PTLink;
 import mobi.chouette.exchange.report.FileInfo;
 import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
-import mobi.chouette.exchange.report.Report;
+import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.Company;
@@ -44,6 +44,7 @@ import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.type.ChouetteAreaEnum;
+import mobi.chouette.model.util.NeptuneUtil;
 
 import org.trident.schema.trident.ChouettePTNetworkType;
 import org.trident.schema.trident.ChouettePTNetworkType.ChouetteArea;
@@ -155,7 +156,7 @@ public class ChouettePTNetworkProducer implements Constant {
 
 		for (Timetable timetable : collection.getTimetables())
 		{
-			timetable.computeLimitOfPeriods();
+			NeptuneUtil.computeLimitOfPeriods(timetable);
 			TimetableType jaxbObj = timetableProducer.produce(timetable,addExtension);
 			rootObject.getTimetable().add(jaxbObj);
 			// add vehiclejourney only for exported ones
@@ -247,7 +248,7 @@ public class ChouettePTNetworkProducer implements Constant {
 		File file = new File(dir.toFile(),fileName);
 		writer.write(AbstractJaxbNeptuneProducer.tridentFactory.createChouettePTNetwork(rootObject), file );
 
-		Report report = (Report) context.get(REPORT);
+		ActionReport report = (ActionReport) context.get(REPORT);
 		FileInfo fileItem = new FileInfo();
 		fileItem.setName(fileName);
 		fileItem.setStatus(FILE_STATE.OK);

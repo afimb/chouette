@@ -8,8 +8,9 @@ import mobi.chouette.model.type.PTNetworkSourceTypeEnum;
 
 import com.tobedevoured.modelcitizen.annotation.Blueprint;
 import com.tobedevoured.modelcitizen.annotation.Default;
-import com.tobedevoured.modelcitizen.callback.FieldCallback;
+import com.tobedevoured.modelcitizen.field.FieldCallback;
 
+@SuppressWarnings("deprecation")
 @Blueprint(PTNetwork.class)
 public class NetworkBlueprint
 {

@@ -1,5 +1,6 @@
 package mobi.chouette.common;
 
+import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -13,6 +14,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import lombok.extern.log4j.Log4j;
 
+import org.apache.commons.io.FileUtils;
 import org.codehaus.jettison.json.JSONObject;
 import org.codehaus.jettison.mapped.Configuration;
 import org.codehaus.jettison.mapped.MappedNamespaceConvention;
@@ -36,6 +38,7 @@ public class JSONUtils {
 		return result;
 	}
 
+	@SuppressWarnings("unchecked")
 	public static <T> T fromJSON(String text, Class<T> type) {
 		T result = null;
 
@@ -75,5 +78,18 @@ public class JSONUtils {
 		return result;
 
 	}
+
+	public static <T> boolean toJSON(Path path, T payload) {
+		String data = JSONUtils.toJSON(payload);
+		try {
+			FileUtils.writeStringToFile(path.toFile(), data);
+			return true;
+		} catch (IOException e) 
+		{
+			log.error("failed to save report",e);
+			return false;
+		}
+	}
+
 
 }

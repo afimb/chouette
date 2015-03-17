@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +48,7 @@ import mobi.chouette.scheduler.Parameters;
 import mobi.chouette.scheduler.Scheduler;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
@@ -69,23 +71,6 @@ public class Service implements Constant {
 
 	@Context
 	UriInfo uriInfo;
-
-	@GET
-	@Path("/todo")
-	@Produces({ MediaType.APPLICATION_JSON })
-	public Response todo() {
-		Job job = new Job();
-		jobDAO.create(job);
-		log.info(Color.SUCCESS + job + Color.NORMAL);
-		ResponseBuilder builder = Response.ok(job);
-
-		CacheControl cc = new CacheControl();
-		cc.setMaxAge(1000);
-		builder.cacheControl(cc);
-		Response result = builder.build();
-		return result;
-	}
-
 
 	// post asynchronous job
 	@POST
@@ -140,7 +125,7 @@ public class Service implements Constant {
 			link.setType(MediaType.APPLICATION_JSON);
 			link.setRel(Link.LOCATION_REL);
 			link.setMethod(Link.GET_METHOD);
-			String href = MessageFormat.format("/{0}/{1}/jobs/{2,number,#}",
+			String href = MessageFormat.format("/{0}/{1}/scheduled_jobs/{2,number,#}",
 					ROOT_PATH, job.getReferential(), job.getId());
 			link.setHref(href);
 			job.getLinks().add(link);
@@ -150,7 +135,7 @@ public class Service implements Constant {
 			link.setType(MediaType.APPLICATION_JSON);
 			link.setRel(Link.CANCEL_REL);
 			link.setMethod(Link.DELETE_METHOD);
-			href = MessageFormat.format("/{0}/{1}/jobs/{2,number,#}",
+			href = MessageFormat.format("/{0}/{1}/scheduled_jobs/{2,number,#}",
 					ROOT_PATH, job.getReferential(), job.getId());
 			link.setHref(href);
 			job.getLinks().add(link);
@@ -179,8 +164,48 @@ public class Service implements Constant {
 					java.nio.file.Path path = Paths.get(dir.toString(),
 							filename);
 					Files.copy(in, path);
-
-					// add parameters link
+					
+					// save separately action and validation parameters if possible
+					Parameters payload = JSONUtils.fromJSON(path, Parameters.class);
+					if (payload != null)
+					{
+						Parameters validation = new Parameters();
+						validation.setValidation(payload.getValidation());
+						payload.setValidation(null);
+						java.nio.file.Path actionPath =  Paths.get(dir.toString(),
+								ACTION_PARAMETERS_FILE);
+						if (JSONUtils.toJSON(actionPath, payload))
+						{
+							// add link
+							link = new Link();
+							link.setType(MediaType.APPLICATION_JSON);
+							link.setRel(Link.ACTION_PARAMETERS_REL);
+							link.setMethod(Link.GET_METHOD);
+							href = MessageFormat.format(
+									"/{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH,
+									job.getReferential(), job.getId(), ACTION_PARAMETERS_FILE);
+							link.setHref(href);
+							job.getLinks().add(link);
+						}
+						java.nio.file.Path validationPath =  Paths.get(dir.toString(),
+								VALIDATION_PARAMETERS_FILE);
+						if (JSONUtils.toJSON(validationPath, validation))
+						{
+							// add link
+							link = new Link();
+							link.setType(MediaType.APPLICATION_JSON);
+							link.setRel(Link.VALIDATION_PARAMETERS_REL);
+							link.setMethod(Link.GET_METHOD);
+							href = MessageFormat.format(
+									"/{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH,
+									job.getReferential(), job.getId(), VALIDATION_PARAMETERS_FILE);
+							link.setHref(href);
+							job.getLinks().add(link);
+						}
+					}
+					else
+					{
+					// add parameters link when invalid
 					link = new Link();
 					link.setType(MediaType.APPLICATION_JSON);
 					link.setRel(Link.PARAMETERS_REL);
@@ -190,6 +215,7 @@ public class Service implements Constant {
 							job.getReferential(), job.getId(), PARAMETERS_FILE);
 					link.setHref(href);
 					job.getLinks().add(link);
+					}
 
 				} else {
 					InputStream in = part.getBody(InputStream.class, null);
@@ -224,7 +250,7 @@ public class Service implements Constant {
 				}
 
 				if (job.getAction().equals(EXPORTER)) {
-					job.setFilename("export_" + job.getId() + ".zip");
+					job.setFilename("export_"+job.getType()+"_" + job.getId() + ".zip");
 				}
 			}
 
@@ -247,7 +273,7 @@ public class Service implements Constant {
 			// build response
 			ResponseBuilder builder = Response.accepted();
 			builder.location(URI.create(MessageFormat.format(
-					"{0}/{1}/jobs/{2,number,#}", ROOT_PATH,
+					"{0}/{1}/scheduled_jobs/{2,number,#}", ROOT_PATH,
 					job.getReferential(), job.getId())));
 			result = builder.build();
 		} catch (WebApplicationException e) {
@@ -264,7 +290,7 @@ public class Service implements Constant {
 	// download attached file
 	@GET
 	@Path("/{ref}/data/{id}/{filepath: .*}")
-	@Produces({ MediaType.APPLICATION_OCTET_STREAM })
+	@Produces({ MediaType.APPLICATION_OCTET_STREAM , MediaType.APPLICATION_JSON})
 	public Response download(@PathParam("ref") String referential,
 			@PathParam("id") Long id, @PathParam("filepath") String filename) {
 		Response result = null;
@@ -285,12 +311,15 @@ public class Service implements Constant {
 		builder.header(HttpHeaders.CONTENT_DISPOSITION,
 				MessageFormat.format("attachment; filename=\"{0}\"", filename));
 
+		MediaType type = FilenameUtils.getExtension(filename).toLowerCase().equals("json")? MediaType.APPLICATION_JSON_TYPE : MediaType.APPLICATION_OCTET_STREAM_TYPE;
+		
 		// cache control
 		CacheControl cc = new CacheControl();
 		cc.setMaxAge(Integer.MAX_VALUE);
 		builder.cacheControl(cc);
+		
 
-		result = builder.build();
+		result = builder.type(type).build();
 		return result;
 	}
 
@@ -326,8 +355,9 @@ public class Service implements Constant {
 					}
 				});
 
-		// TODO re factor Parameters dependencies
-		for (Job job : filtered) {
+		// re factor Parameters dependencies
+		result.setList(build(filtered));
+		for (JobInfo job : result.getList()) {
 
 			java.nio.file.Path path = Paths.get(
 					System.getProperty("user.home"), ROOT_PATH,
@@ -336,9 +366,11 @@ public class Service implements Constant {
 
 			Parameters payload = JSONUtils.fromJSON(path, Parameters.class);
 			if (payload != null)
-				job.setParameters(payload.getConfiguration());
+			{
+				payload.setValidation(null);
+				job.setParameters(payload);
+			}
 		}
-		result.setList(build(filtered));
 
 		// cache control
 		ResponseBuilder builder = Response.ok(result);
@@ -349,11 +381,11 @@ public class Service implements Constant {
 		return builder.build();
 	}
 
-	// view job
+	// view scheduled job
 	@GET
-	@Path("/{ref}/jobs/{id}")
+	@Path("/{ref}/scheduled_jobs/{id}")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response job(@PathParam("ref") String referential,
+	public Response scheduledJob(@PathParam("ref") String referential,
 			@PathParam("id") Long id) {
 		Response result = null;
 
@@ -371,18 +403,19 @@ public class Service implements Constant {
 		ResponseBuilder builder = null;
 		if (job.getStatus().ordinal() < STATUS.TERMINATED.ordinal()) {
 
-			java.nio.file.Path report = Paths.get(
-					System.getProperty("user.home"), ROOT_PATH, referential,
-					"data", id.toString(), REPORT_FILE);
-			if (!Files.exists(report, LinkOption.NOFOLLOW_LINKS)) {
-				File file = new File(report.toString());
-				builder = Response.ok(file);
-				builder.header(HttpHeaders.CONTENT_DISPOSITION, MessageFormat
-						.format("attachment; filename=\"{0}\"",
-								report.getFileName()));
-			} else {
-				builder = Response.ok();
+			JobInfo info = new JobInfo(job,false);
+			java.nio.file.Path path = Paths.get(
+					System.getProperty("user.home"), ROOT_PATH,
+					job.getReferential(), "data", job.getId().toString(),
+					PARAMETERS_FILE);
+
+			Parameters payload = JSONUtils.fromJSON(path, Parameters.class);
+			if (payload != null)
+			{
+				payload.setValidation(null);
+				info.setParameters(payload);
 			}
+			builder = Response.ok(info);
 
 			// add links
 			for (Link link : job.getLinks()) {
@@ -393,7 +426,7 @@ public class Service implements Constant {
 
 		} else {
 			builder = Response.seeOther(URI.create(MessageFormat.format(
-					"/{0}/{1}/reports/{2,number,#}", ROOT_PATH,
+					"/{0}/{1}/terminated_jobs/{2,number,#}", ROOT_PATH,
 					job.getReferential(), job.getId())));
 		}
 
@@ -403,7 +436,7 @@ public class Service implements Constant {
 
 	// cancel job
 	@DELETE
-	@Path("/{ref}/jobs/{id}")
+	@Path("/{ref}/scheduled_jobs/{id}")
 	public Response cancel(@PathParam("ref") String referential,
 			@PathParam("id") Long id) {
 		Response result = null;
@@ -432,9 +465,9 @@ public class Service implements Constant {
 
 	// download report
 	@GET
-	@Path("/{ref}/reports/{id}")
+	@Path("/{ref}/terminated_jobs/{id}")
 	@Produces({ MediaType.APPLICATION_JSON })
-	public Response report(@PathParam("ref") String referential,
+	public Response terminatedJob(@PathParam("ref") String referential,
 			@PathParam("id") Long id) {
 		Response result = null;
 
@@ -452,19 +485,20 @@ public class Service implements Constant {
 			throw new WebApplicationException(Status.NOT_FOUND);
 		}
 
-		java.nio.file.Path report = Paths.get(System.getProperty("user.home"),
-				ROOT_PATH, referential, "data", id.toString(), REPORT_FILE);
-		if (!Files.exists(report, LinkOption.NOFOLLOW_LINKS)) {
-			throw new WebApplicationException(Status.NOT_FOUND);
+		JobInfo info = new JobInfo(job,false);
+		java.nio.file.Path path = Paths.get(
+				System.getProperty("user.home"), ROOT_PATH,
+				job.getReferential(), "data", job.getId().toString(),
+				PARAMETERS_FILE);
+
+		Parameters payload = JSONUtils.fromJSON(path, Parameters.class);
+		if (payload != null)
+		{
+			payload.setValidation(null);
+			info.setParameters(payload);
 		}
 
-		// build response
-		File file = new File(report.toString());
-		ResponseBuilder builder = Response.ok(file);
-		builder.header(
-				HttpHeaders.CONTENT_DISPOSITION,
-				MessageFormat.format("attachment; filename=\"{0}\"",
-						report.getFileName()));
+		ResponseBuilder builder = Response.ok(info);
 
 		// cache control
 		CacheControl cc = new CacheControl();
@@ -485,7 +519,7 @@ public class Service implements Constant {
 
 	// delete report
 	@DELETE
-	@Path("/{ref}/reports/{id}")
+	@Path("/{ref}/terminated_jobs/{id}")
 	public Response remove(@PathParam("ref") String referential,
 			@PathParam("id") Long id) {
 		Response result = null;
@@ -523,7 +557,7 @@ public class Service implements Constant {
 
 	// delete referential
 	@DELETE
-	@Path("/{ref}/reports")
+	@Path("/{ref}/jobs")
 	public Response drop(@PathParam("ref") String referential) {
 		Response result = null;
 
@@ -534,7 +568,7 @@ public class Service implements Constant {
 
 		// build response
 		ResponseBuilder builder = null;
-		if (scheduler.deleteAll()) {
+		if (scheduler.deleteAll(referential)) {
 			java.nio.file.Path path = Paths.get(
 					System.getProperty("user.home"), ROOT_PATH, referential);
 
@@ -553,18 +587,11 @@ public class Service implements Constant {
 		return result;
 	}
 
-	private Collection<Job> build(Collection<Job> list) {
+	private Collection<JobInfo> build(Collection<Job> list) {
 
-		Collection<Job> result = list;
+		Collection<JobInfo> result = new ArrayList<>();
 		for (Job job : list) {
-			jobDAO.detach(job);
-
-			for (Link link : job.getLinks()) {
-
-				URI uri = uriInfo.getBaseUriBuilder().path(link.getHref())
-						.build();
-				link.setHref(uri.toASCIIString());
-			}
+            result.add(new JobInfo(job,true));
 		}
 		return result;
 	}

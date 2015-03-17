@@ -49,8 +49,7 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 		this(name, id, "", unique);
 	}
 
-	public IndexImpl(String name, String id, String value, boolean unique)
-			throws IOException {
+	public IndexImpl(String name, String id, String value, boolean unique) throws IOException {
 		_path = name;
 		_key = id;
 		_value = value;
@@ -68,27 +67,32 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 		boolean bom = hasBOM(_path);
 		int offset = (bom) ? 3 : 0;
 		RandomAccessFile file = new RandomAccessFile(_path, "r");
-		_channel1 = file.getChannel();
-		long length = (bom) ? _channel1.size() - 3 : _channel1.size();
+		try {
+			_channel1 = file.getChannel();
+			long length = (bom) ? _channel1.size() - 3 : _channel1.size();
 
-		_buffer = _channel1.map(FileChannel.MapMode.READ_ONLY, offset, length);
-		_buffer.load();
-		_reader = new GtfsIteratorImpl(_buffer, 0);
-		if (_reader.next()) {
-			_fields = new HashMap<String, Integer>();
-			for (int i = 0; i < _reader.getFieldCount(); i++) {
-				String key = _reader.getValue(i);
-				_fields.put(key, i);
+			_buffer = _channel1.map(FileChannel.MapMode.READ_ONLY, offset, length);
+			_buffer.load();
+			_reader = new GtfsIteratorImpl(_buffer, 0);
+			if (_reader.next()) {
+				_fields = new HashMap<String, Integer>();
+				for (int i = 0; i < _reader.getFieldCount(); i++) {
+					String key = _reader.getValue(i);
+					_fields.put(key, i);
+				}
+				index();
+			} else {
+				Context context = new Context();
+				context.put(Context.PATH, _path);
+				context.put(Context.ID, _total);
+				context.put(Context.ERROR, GtfsException.ERROR.INVALID_FILE_FORMAT);
+				throw new GtfsException(context);
 			}
-			index();
-		} else {
-			Context context = new Context();
-			context.put(Context.PATH, _path);
-			context.put(Context.ID, _total);
-			context.put(Context.ERROR, GtfsException.ERROR.INVALID_FILE_FORMAT);
-			throw new GtfsException(context);
 		}
-		file.close();
+
+		finally {
+			file.close();
+		}
 
 	}
 
@@ -214,8 +218,7 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 					context.put(Context.PATH, _path);
 					context.put(Context.ID, _total);
 					context.put(Context.FIELD, _key);
-					context.put(Context.ERROR,
-							GtfsException.ERROR.MISSING_FIELD);
+					context.put(Context.ERROR, GtfsException.ERROR.MISSING_FIELD);
 					throw new GtfsException(context);
 				}
 
@@ -231,8 +234,7 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 						context.put(Context.PATH, _path);
 						context.put(Context.ID, _total);
 						context.put(Context.FIELD, _key);
-						context.put(Context.ERROR,
-								GtfsException.ERROR.DUPLICATE_FIELD);
+						context.put(Context.ERROR, GtfsException.ERROR.DUPLICATE_FIELD);
 						throw new GtfsException(context);
 					}
 					token.lenght++;
@@ -241,8 +243,7 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 				Context context = new Context();
 				context.put(Context.PATH, _path);
 				context.put(Context.ID, _total);
-				context.put(Context.ERROR,
-						GtfsException.ERROR.INVALID_FILE_FORMAT);
+				context.put(Context.ERROR, GtfsException.ERROR.INVALID_FILE_FORMAT);
 				throw new GtfsException(context);
 			}
 		}
@@ -252,8 +253,7 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 		_temp.deleteOnExit();
 		RandomAccessFile file = new RandomAccessFile(_temp, "rw");
 		_channel2 = file.getChannel();
-		_index = _channel2.map(FileChannel.MapMode.READ_WRITE, 0, _total * 8)
-				.asIntBuffer();
+		_index = _channel2.map(FileChannel.MapMode.READ_WRITE, 0, _total * 8).asIntBuffer();
 		for (int i = 0; i < _total; i++) {
 			_index.put(-1);
 			_index.put(-1);
@@ -288,8 +288,7 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 			}
 		}
 
-		log.debug("[DSU] index " + _path + " " + _tokens.size() + " objects "
-				+ monitor.stop());
+		log.debug("[DSU] index " + _path + " " + _tokens.size() + " objects " + monitor.stop());
 		file.close();
 	}
 

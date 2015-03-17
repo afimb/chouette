@@ -28,11 +28,13 @@ public interface Constant {
 	public static final String INPUT = "input";
 	public static final String OUTPUT = "output";
 	public static final String PARAMETERS_FILE = "parameters.json";
+	public static final String ACTION_PARAMETERS_FILE = "action_parameters.json";
+	public static final String VALIDATION_PARAMETERS_FILE = "validation_parameters.json";
 	public static final String REPORT = "report";
 	public static final String MAIN_VALIDATION_REPORT = "main_validation_report";
 	public static final String VALIDATION_REPORT = "validation_report";
-	public static final String REPORT_FILE = "report.json";
-	public static final String VALIDATION_FILE = "validation.json";
+	public static final String REPORT_FILE = "action_report.json";
+	public static final String VALIDATION_FILE = "validation_report.json";
 
 	public static final String COLUMN_NUMBER = "column_number";
 	public static final String LINE_NUMBER = "line_number";

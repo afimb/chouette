@@ -184,7 +184,6 @@ public class ChouetteAreaParser implements Parser, Constant {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	private void parseAreaCentroid(Context context, BiMap<String, String> map)
 			throws Exception {
 		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);

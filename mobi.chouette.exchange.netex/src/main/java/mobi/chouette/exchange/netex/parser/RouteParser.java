@@ -63,7 +63,6 @@ public class RouteParser implements Parser, Constant {
 
 	private void parseDirection(Context context) throws Exception {
 		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
-		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, "Direction");
 		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
@@ -208,7 +207,6 @@ public class RouteParser implements Parser, Constant {
 
 	private void parseKeyValues(Context context, Route route) throws Exception {
 		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
-		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, "keyList");
 		context.put(COLUMN_NUMBER, xpp.getColumnNumber());

@@ -22,7 +22,7 @@ import mobi.chouette.exchange.importer.CopyCommand;
 import mobi.chouette.exchange.importer.LineRegisterCommand;
 import mobi.chouette.exchange.importer.UncompressCommand;
 import mobi.chouette.exchange.report.FileInfo;
-import mobi.chouette.exchange.report.Report;
+import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
 import mobi.chouette.exchange.validator.DaoSharedDataValidatorCommand;
 import mobi.chouette.exchange.validator.ImportedLineValidatorCommand;
@@ -48,15 +48,15 @@ public class NeptuneImporterCommand implements Command, Constant {
 		// initialize reporting and progression
 		ProgressionCommand progression = (ProgressionCommand) CommandFactory
 				.create(initialContext, ProgressionCommand.class.getName());
-		progression.initialize(context);
 
+		progression.initialize(context,2);
 		context.put(REFERENTIAL, new Referential());
 
 		// read parameters
 		Object configuration = context.get(CONFIGURATION);
 		if (!(configuration instanceof NeptuneImportParameters)) {
 			// fatal wrong parameters
-			Report report = (Report) context.get(REPORT);
+			ActionReport report = (ActionReport) context.get(REPORT);
 			log.error("invalid parameters for neptune import "
 					+ configuration.getClass().getName());
 			report.setFailure("invalid parameters for neptune import "
@@ -66,6 +66,8 @@ public class NeptuneImporterCommand implements Command, Constant {
 		}
 
 		NeptuneImportParameters parameters = (NeptuneImportParameters) configuration;
+		int initCount = 2 + (parameters.isCleanRepository()?1:0);
+		progression.initialize(context,initCount);
 
 		boolean level3validation = context.get(VALIDATION) != null;
 		
@@ -81,13 +83,15 @@ public class NeptuneImporterCommand implements Command, Constant {
 				Command clean = CommandFactory.create(initialContext,
 						CleanRepositoryCommand.class.getName());
 				clean.execute(context);
+				progression.execute(context);
 			}
 
 			// uncompress data
 			Command uncompress = CommandFactory.create(initialContext,
 					UncompressCommand.class.getName());
 			uncompress.execute(context);
-
+			progression.execute(context);
+			
 			Path path = Paths.get(context.get(PATH).toString(), INPUT);
 			List<Path> stream = FileUtils
 					.listFiles(path, "*.xml", "*metadata*");
@@ -96,7 +100,7 @@ public class NeptuneImporterCommand implements Command, Constant {
 					.listFiles(path, "*", "*.xml");
 			if (!excluded.isEmpty())
 			{
-				Report report = (Report) context.get(REPORT);
+				ActionReport report = (ActionReport) context.get(REPORT);
 				for (Path exclude : excluded) {
 					FileInfo file = new FileInfo();
 					file.setName(exclude.getName(-1).toString());
@@ -105,7 +109,6 @@ public class NeptuneImporterCommand implements Command, Constant {
 				}
 			}
 
-			progression.start(context, stream.size());
 
 			ChainCommand master = (ChainCommand) CommandFactory.create(
 					initialContext, ChainCommand.class.getName());
@@ -161,20 +164,25 @@ public class NeptuneImporterCommand implements Command, Constant {
 				
 
 			}
+			progression.execute(context);
+			progression.start(context, stream.size());
 			master.execute(context);
 
-			progression.terminate(context);
+			progression.terminate(context,level3validation?2:1);
 			if (level3validation)
 			{
 			    // add shared data validation
 				Command validate = CommandFactory.create(initialContext,
 						DaoSharedDataValidatorCommand.class.getName());
 				validate.execute(context);
+				progression.execute(context);
+
 			}
-			
+			progression.execute(context);
+
 
 		} catch (Exception e) {
-			Report report = (Report) context.get(REPORT);
+			ActionReport report = (ActionReport) context.get(REPORT);
 			log.error(e);
 			report.setFailure("Fatal :"+e);
 

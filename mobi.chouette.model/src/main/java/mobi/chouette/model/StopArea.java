@@ -23,9 +23,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import lombok.extern.log4j.Log4j;
-import mobi.chouette.core.CoreExceptionCode;
-import mobi.chouette.core.CoreRuntimeException;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.UserNeedEnum;
 
@@ -69,7 +66,6 @@ import org.hibernate.annotations.Parameter;
 @ToString(callSuper = true, exclude = { "accessLinks", "accessPoints",
 		"connectionEndLinks", "connectionStartLinks", "containedStopAreas",
 		"containedStopPoints", "routingConstraintAreas", "routingConstraintLines" })
-@Log4j
 public class StopArea extends NeptuneLocalizedObject {
 	private static final long serialVersionUID = 4548672479038099240L;
 

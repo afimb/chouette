@@ -31,7 +31,7 @@ public class FrequencyByTrip extends IndexImpl<GtfsFrequency> implements
 		}
 
 		i = 0;
-		int id = (int) context.get(Context.ID);
+		// int id = (int) context.get(Context.ID);
 		bean.setTripId(STRING_CONVERTER.from(context, FIELDS.trip_id,
 				array[i++], true));
 		bean.setStartTime(GTFSTIME_CONVERTER.from(context, FIELDS.start_time,

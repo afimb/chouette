@@ -22,7 +22,7 @@ import mobi.chouette.dao.GroupOfLineDAO;
 import mobi.chouette.dao.LineDAO;
 import mobi.chouette.dao.PTNetworkDAO;
 import mobi.chouette.exchange.ProgressionCommand;
-import mobi.chouette.exchange.report.Report;
+import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.validator.parameters.ValidationParameters;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.GroupOfLine;
@@ -60,7 +60,7 @@ public class ValidatorCommand implements Command, Constant {
 		// initialize reporting and progression
 		ProgressionCommand progression = (ProgressionCommand) CommandFactory.create(initialContext,
 				ProgressionCommand.class.getName());
-		progression.initialize(context);
+		progression.initialize(context,1);
 
 		context.put(VALIDATION_DATA, new ValidationData());
 
@@ -68,7 +68,7 @@ public class ValidatorCommand implements Command, Constant {
 		Object configuration = context.get(CONFIGURATION);
 		if (!(configuration instanceof ValidateParameters)) {
 			// fatal wrong parameters
-			Report report = (Report) context.get(REPORT);
+			ActionReport report = (ActionReport) context.get(REPORT);
 			log.error("invalid parameters for validation " + configuration.getClass().getName());
 			report.setFailure("invalid parameters for validation " + configuration.getClass().getName());
 			progression.dispose(context);
@@ -78,7 +78,7 @@ public class ValidatorCommand implements Command, Constant {
 		ValidationParameters validationParameters = (ValidationParameters) context.get(VALIDATION);
 		if (validationParameters == null)
 		{
-			Report report = (Report) context.get(REPORT);
+			ActionReport report = (ActionReport) context.get(REPORT);
 			log.error("no validation parameters for validation ");
 			report.setFailure("no validation parameters for validation ");
 			progression.dispose(context);
@@ -120,7 +120,7 @@ public class ValidatorCommand implements Command, Constant {
 					}
 				}
 			}
-
+			progression.execute(context);
 			progression.start(context, lines.size() + 1);
 			Command validateLine = CommandFactory.create(initialContext, DaoLineValidatorCommand.class.getName());
 
@@ -142,11 +142,12 @@ public class ValidatorCommand implements Command, Constant {
 				result = validateSharedData.execute(context);
 			}
 
-			// save metadata
-			progression.terminate(context);
+			// terminate : nothing to do
+			progression.terminate(context,1);
+			progression.execute(context);
 
 		} catch (Exception e) {
-			Report report = (Report) context.get(REPORT);
+			ActionReport report = (ActionReport) context.get(REPORT);
 			report.setFailure("Fatal :" + e);
 			log.error(e.getMessage(), e);
 		} finally {

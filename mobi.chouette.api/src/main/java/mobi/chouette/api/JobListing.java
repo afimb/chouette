@@ -2,17 +2,21 @@ package mobi.chouette.api;
 
 import java.util.Collection;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 import lombok.Data;
-import mobi.chouette.model.api.Job;
 
 @Data
-@XmlRootElement
+@XmlRootElement (name="job_listings")
+@XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(propOrder={})
 public class JobListing {
 
 	@XmlElement(name = "jobs")
-	private Collection<Job> list;
+	private Collection<JobInfo> list;
 
 }

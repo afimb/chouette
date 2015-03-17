@@ -19,7 +19,6 @@ import mobi.chouette.exchange.importer.CopyCommand;
 import mobi.chouette.exchange.importer.LineRegisterCommand;
 import mobi.chouette.exchange.importer.UncompressCommand;
 import mobi.chouette.exchange.netex.Constant;
-import mobi.chouette.exchange.report.Report;
 import mobi.chouette.model.util.Referential;
 
 import com.jamonapi.Monitor;
@@ -39,8 +38,6 @@ public class NetexImporterCommand implements Command, Constant {
 				.get(INITIAL_CONTEXT);
 
 		context.put(REFERENTIAL, new Referential());
-
-		context.put(REPORT, new Report());
 
 		Object configuration = context.get(CONFIGURATION);
 		if (!(configuration instanceof NetexImportParameters)) {

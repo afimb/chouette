@@ -1,11 +1,12 @@
 package mobi.chouette.exchange.parameters;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,6 +17,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString(callSuper=true)
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(propOrder={})
 public class AbstractExportParameter extends AbstractParameter{
 
 	@Getter @Setter

@@ -3,8 +3,6 @@ package mobi.chouette.exchange.neptune.parser;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
@@ -25,9 +23,6 @@ import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
-
-import com.google.common.base.Predicate;
-import com.google.common.collect.Maps;
 
 @Log4j
 public class LineParser implements Parser, Constant {
@@ -150,28 +145,6 @@ public class LineParser implements Parser, Constant {
 	}
 	
 	
-	private void todo(Referential referential, final Line line) {
-
-		Map<String, Line> removed = Maps.filterEntries(referential.getLines(),
-				new Predicate<Map.Entry<String, Line>>() {
-					@Override
-					public boolean apply(Entry<String, Line> input) {
-						boolean result = false;
-						Line item = input.getValue();
-
-						if (!item.equals(line)) {
-							item.setPtNetwork(null);
-							result = true;
-						}
-						return result;
-					}
-				});
-
-		for (String key : removed.keySet()) {
-			referential.getLines().remove(key);
-		}
-	}
-
 	static {
 		ParserFactory.register(LineParser.class.getName(), new ParserFactory() {
 			private LineParser instance = new LineParser();

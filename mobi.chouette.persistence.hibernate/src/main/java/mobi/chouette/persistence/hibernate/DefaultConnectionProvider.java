@@ -69,6 +69,7 @@ public class DefaultConnectionProvider implements
 		return true;
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	public boolean isUnwrappableAs(Class unwrapType) {
 		return MultiTenantConnectionProvider.class.equals(unwrapType)

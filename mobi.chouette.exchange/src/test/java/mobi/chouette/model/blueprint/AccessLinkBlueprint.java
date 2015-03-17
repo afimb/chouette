@@ -11,13 +11,15 @@ import mobi.chouette.model.type.LinkOrientationEnum;
 import com.tobedevoured.modelcitizen.annotation.Blueprint;
 import com.tobedevoured.modelcitizen.annotation.Default;
 import com.tobedevoured.modelcitizen.annotation.Mapped;
-import com.tobedevoured.modelcitizen.callback.FieldCallback;
+import com.tobedevoured.modelcitizen.field.FieldCallback;
 
+@SuppressWarnings("deprecation")
 @Blueprint(AccessLink.class)
 public class AccessLinkBlueprint
 {
 
-   @Default
+@Default
+//   String objectId = "TEST:AccessLink:" + UUID.randomUUID();
    FieldCallback objectId = new FieldCallback()
    {
       @Override

@@ -23,6 +23,7 @@ import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonReader;
 
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 import mobi.chouette.exchange.validator.parameters.FieldParameters;
 import mobi.chouette.exchange.validator.parameters.TransportModeParameters;
@@ -49,6 +50,7 @@ import com.vividsolutions.jts.geom.PrecisionModel;
  * @author michel
  * 
  */
+@Log4j
 public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> implements Constant {
 
 	protected enum PATTERN_OPTION {
@@ -374,7 +376,10 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 						Time t = (Time) objVal;
 						value = Long.toString(t.getTime() / 1000);
 					}
-					value = objVal.toString();
+					else
+					{
+						value = objVal.toString();
+					}
 				}
 				// if objectId : check only third part
 				if (column.equalsIgnoreCase("objectid") && !value.isEmpty()) {
@@ -391,12 +396,12 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 				check4Generic1Pattern(report, object, testName, column, value, pattern_opt);
 
 				// min size ?
-				if (colParam.getMinSize() != null) {
+				if (colParam.getMinSize() != null && !colParam.getMinSize().isEmpty()) {
 					check4Generic1MinSize(report, object, testName, column, colParam, objVal, value, pattern_opt);
 				}
 
 				// max_size ?
-				if (colParam.getMaxSize() != null && !value.isEmpty()) {
+				if (colParam.getMaxSize() != null  && !colParam.getMaxSize().isEmpty() && !value.isEmpty()) {
 					check4Generic1MaxSize(report, object, testName, column, colParam, objVal, value, pattern_opt);
 				}
 
@@ -419,7 +424,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	 */
 	private void check4Generic1MaxSize(ValidationReport report, T object, String testName, String column,
 			FieldParameters colParam, Object objVal, String value, PATTERN_OPTION pattern_opt) {
-		int maxSize = colParam.getMaxSize().intValue();
+		int maxSize = Integer.parseInt(colParam.getMaxSize());
 		if (maxSize != 0) {
 			if (objVal instanceof Number || objVal instanceof Time || pattern_opt == PATTERN_OPTION.num) {
 				// check numeric value
@@ -454,7 +459,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	 */
 	private void check4Generic1MinSize(ValidationReport report, T object, String testName, String column,
 			FieldParameters colParam, Object objVal, String value, PATTERN_OPTION pattern_opt) {
-		int minSize = colParam.getMinSize().intValue();
+		int minSize = Integer.parseInt(colParam.getMinSize());
 		if (minSize > 0 && value.isEmpty()) {
 			Location location = new Location(object);
 

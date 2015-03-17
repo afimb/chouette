@@ -37,7 +37,7 @@ import mobi.chouette.exchange.metadata.NeptuneObjectPresenter;
 import mobi.chouette.exchange.report.LineInfo;
 import mobi.chouette.exchange.report.LineInfo.LINE_STATE;
 import mobi.chouette.exchange.report.LineStats;
-import mobi.chouette.exchange.report.Report;
+import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
@@ -64,7 +64,7 @@ public class GtfsLineProducerCommand implements Command, Constant
 	public boolean execute(Context context) throws Exception {
 		boolean result = ERROR;
 		Monitor monitor = MonitorFactory.start(COMMAND);
-		Report report = (Report) context.get(REPORT);
+		ActionReport report = (ActionReport) context.get(REPORT);
 
 		try {
 
@@ -154,7 +154,7 @@ public class GtfsLineProducerCommand implements Command, Constant
 		GtfsTripProducer tripProducer = new GtfsTripProducer(exporter);
 		GtfsRouteProducer routeProducer = new GtfsRouteProducer(exporter);
 
-		Report report = (Report) context.get(REPORT);
+		ActionReport report = (ActionReport) context.get(REPORT);
 		GtfsExportParameters configuration = (GtfsExportParameters) context
 				.get(CONFIGURATION);
 		String prefix = configuration.getObjectIdPrefix();

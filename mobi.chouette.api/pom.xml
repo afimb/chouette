@@ -76,7 +76,7 @@
 				<artifactId>maven-war-plugin</artifactId>
 				<version>${version.war.plugin}</version>
 				<configuration>
-					<failOnMissingWebXml>false</failOnMissingWebXml>
+					<failOnMissingWebXml>true</failOnMissingWebXml>
 					<archive>
 						<manifestEntries>
 							<Dependencies>org.jboss.resteasy.resteasy-jaxrs, org.jboss.resteasy.resteasy-jaxb-provider, org.jboss.resteasy.resteasy-multipart-provider, org.infinispan

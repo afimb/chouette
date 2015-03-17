@@ -67,10 +67,10 @@ public class Scheduler {
 
 			job.setUpdated(new Date());
 			jobDAO.update(job);
-
+			
 			Map<String, String> properties = new HashMap<String, String>();
 			Task task = new Task(job, properties, new TaskListener());
-			Future<?> future = executor.submit(task);
+			executor.submit(task);
 		}
 	}
 
@@ -84,7 +84,7 @@ public class Scheduler {
 				new Predicate<Job>() {
 					@Override
 					public boolean apply(Job job) {
-						return job.getStatus() == STATUS.SCHEDULED;
+						return job.getStatus() == STATUS.STARTED;
 					}
 				});
 		for (Job job : scheduled) {
@@ -103,7 +103,7 @@ public class Scheduler {
 			link.setType(MediaType.APPLICATION_JSON);
 			link.setRel(Link.DELETE_REL);
 			link.setMethod(Link.DELETE_METHOD);
-			String href = MessageFormat.format("/{0}/{1}/reports/{2,number,#}",
+			String href = MessageFormat.format("/{0}/{1}/terminated_jobs/{2,number,#}",
 					Constant.ROOT_PATH, job.getReferential(), job.getId());
 			link.setHref(href);
 			job.getLinks().clear();
@@ -118,7 +118,7 @@ public class Scheduler {
 				new Predicate<Job>() {
 					@Override
 					public boolean apply(Job job) {
-						return job.getStatus() == STATUS.CREATED;
+						return job.getStatus() == STATUS.SCHEDULED;
 					}
 				});
 		for (Job job : created) {
@@ -128,7 +128,7 @@ public class Scheduler {
 
 	public boolean cancel(Long id) {
 		Job job = jobDAO.find(id);
-		if (job.getStatus().equals(STATUS.CREATED)
+		if (job.getStatus().equals(STATUS.STARTED)
 				|| job.getStatus().equals(STATUS.SCHEDULED)) {
 			job.setStatus(STATUS.CANCELED);
 
@@ -137,9 +137,10 @@ public class Scheduler {
 			link.setType(MediaType.APPLICATION_JSON);
 			link.setRel(Link.DELETE_REL);
 			link.setMethod(Link.DELETE_METHOD);
-			String href = MessageFormat.format("/{0}/{1}/reports/{2,number,#}",
+			String href = MessageFormat.format("/{0}/{1}/terminated_jobs/{2,number,#}",
 					Constant.ROOT_PATH, job.getReferential(), job.getId());
 			link.setHref(href);
+			// remove location and cancel link only
 			job.getLinks().clear();
 			job.getLinks().add(link);
 
@@ -156,8 +157,8 @@ public class Scheduler {
 		return true;
 	}
 
-	public boolean deleteAll() {
-		jobDAO.deleteAll();
+	public boolean deleteAll(String referential) {
+		jobDAO.deleteAll(referential);
 		return true;
 	}
 

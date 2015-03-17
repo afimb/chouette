@@ -8,11 +8,9 @@ import javax.naming.InitialContext;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 
-@Log4j
 public class ChainCommand implements Chain, Constant {
 
 	public static final String COMMAND = "ChainCommand";

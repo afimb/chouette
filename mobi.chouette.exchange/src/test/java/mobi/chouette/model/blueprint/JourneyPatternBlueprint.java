@@ -10,8 +10,9 @@ import mobi.chouette.model.VehicleJourney;
 import com.tobedevoured.modelcitizen.annotation.Blueprint;
 import com.tobedevoured.modelcitizen.annotation.Default;
 import com.tobedevoured.modelcitizen.annotation.MappedList;
-import com.tobedevoured.modelcitizen.callback.FieldCallback;
+import com.tobedevoured.modelcitizen.field.FieldCallback;
 
+@SuppressWarnings("deprecation")
 @Blueprint(JourneyPattern.class)
 public class JourneyPatternBlueprint
 {

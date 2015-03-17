@@ -11,7 +11,7 @@ package mobi.chouette.exchange.gtfs.exporter.producer;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.gtfs.model.GtfsRoute;
 import mobi.chouette.exchange.gtfs.model.exporter.GtfsExporterInterface;
-import mobi.chouette.exchange.report.Report;
+import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.model.Line;
 
 /**
@@ -29,7 +29,7 @@ public class GtfsRouteProducer extends AbstractProducer
 
    private GtfsRoute route = new GtfsRoute();
 
-   public boolean save(Line neptuneObject, Report report, String prefix)
+   public boolean save(Line neptuneObject, ActionReport report, String prefix)
    {
       route.setRouteId(toGtfsId(neptuneObject.getObjectId(), prefix));
       route.setAgencyId(toGtfsId(neptuneObject.getCompany().getObjectId(), prefix));

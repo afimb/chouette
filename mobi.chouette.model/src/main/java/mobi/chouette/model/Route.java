@@ -29,7 +29,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.type.PTDirectionEnum;
 
 import org.apache.commons.lang.StringUtils;
@@ -50,7 +49,6 @@ import org.hibernate.annotations.Parameter;
 @Table(name = "routes")
 @NoArgsConstructor
 @ToString(callSuper=true, exclude = { "line" ,"oppositeRoute"})
-@Log4j
 public class Route extends NeptuneIdentifiedObject {
 
 	private static final long serialVersionUID = -2249654966081042738L;

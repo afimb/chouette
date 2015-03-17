@@ -10,7 +10,6 @@ import mobi.chouette.model.type.ConnectionLinkTypeEnum;
 import mobi.chouette.model.type.DayTypeEnum;
 import mobi.chouette.model.type.PTDirectionEnum;
 import mobi.chouette.model.type.PTNetworkSourceTypeEnum;
-import mobi.chouette.model.type.ServiceStatusValueEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
 
 import org.apache.commons.lang.StringUtils;
@@ -164,39 +163,6 @@ public class NetexUtils extends ParserUtils {
 			return TransportModeNameEnum.Other;
 	}
 
-	public static ServiceStatusValueEnum toServiceStatusValueType(String value) {
-		if (value == null)
-			return null;
-		if (value.equals("planned"))
-			return ServiceStatusValueEnum.Normal;
-		else if (value.equals("cancellation"))
-			return ServiceStatusValueEnum.Cancelled;
-		else if (value.equals("extraJourney"))
-			return ServiceStatusValueEnum.IncreasedService;
-		else
-			return null;
-	}
-
-	public static String fromServiceStatusValueType(ServiceStatusValueEnum type) {
-		if (type == null)
-			return null;
-		switch (type) {
-		case Normal:
-		case Delayed:
-		case Early:
-			return "planned";
-		case Cancelled:
-		case Disrupted:
-		case NotStopping:
-		case Rerouted:
-		case ReducedService:
-			return "cancellation";
-		case IncreasedService:
-			return "extraJourney";
-		default:
-			return null;
-		}
-	}
 
 	public static List<DayTypeEnum> getDayTypes(List<String> values) {
 		List<DayTypeEnum> result = new ArrayList<DayTypeEnum>();

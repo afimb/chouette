@@ -5,14 +5,13 @@ import java.util.Comparator;
 
 import javax.ejb.Stateless;
 
-import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.CollectionUtils;
 import mobi.chouette.common.Context;
 import mobi.chouette.model.CalendarDay;
 import mobi.chouette.model.Period;
 import mobi.chouette.model.Timetable;
+import mobi.chouette.model.util.NeptuneUtil;
 
-@Log4j
 @Stateless(name = TimetableUpdater.BEAN_NAME)
 public class TimetableUpdater implements Updater<Timetable> {
 
@@ -41,7 +40,7 @@ public class TimetableUpdater implements Updater<Timetable> {
 		}
 		newValue.setSaved(true);
 		
-		newValue.computeLimitOfPeriods();
+		NeptuneUtil.computeLimitOfPeriods(newValue);
 
 		if (newValue.getObjectId() != null
 				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {

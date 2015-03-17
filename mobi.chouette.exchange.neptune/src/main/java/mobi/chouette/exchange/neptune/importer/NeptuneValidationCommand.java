@@ -30,7 +30,7 @@ import mobi.chouette.exchange.neptune.validation.VehicleJourneyValidator;
 import mobi.chouette.exchange.report.FileInfo;
 import mobi.chouette.exchange.report.LineInfo;
 import mobi.chouette.exchange.report.LineStats;
-import mobi.chouette.exchange.report.Report;
+import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
 import mobi.chouette.exchange.validator.ValidatorFactory;
 import mobi.chouette.exchange.validator.report.CheckPoint;
@@ -56,7 +56,7 @@ public class NeptuneValidationCommand implements Command, Constant {
 		// boolean result = ERROR;
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
-		Report report = (Report) context.get(REPORT);
+		ActionReport report = (ActionReport) context.get(REPORT);
 
 		String fileName = (String) context.get(FILE_NAME);
 
@@ -169,7 +169,7 @@ public class NeptuneValidationCommand implements Command, Constant {
 		return result;
 	}
 
-	private void addStats(Report report, Context validationContext, Referential referential) {
+	private void addStats(ActionReport report, Context validationContext, Referential referential) {
 		Line line = referential.getLines().values().iterator().next();
 		LineInfo lineInfo = new LineInfo();
 		lineInfo.setName(line.getName());

@@ -31,7 +31,7 @@ import mobi.chouette.exchange.exporter.CompressCommand;
 import mobi.chouette.exchange.exporter.SaveMetadataCommand;
 import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.neptune.Constant;
-import mobi.chouette.exchange.report.Report;
+import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.Line;
@@ -70,7 +70,7 @@ public class NeptuneExporterCommand implements Command, Constant {
 		// initialize reporting and progression
 		ProgressionCommand progression = (ProgressionCommand) CommandFactory
 				.create(initialContext, ProgressionCommand.class.getName());
-		progression.initialize(context);
+		progression.initialize(context,1);
 
 		context.put(REFERENTIAL, new Referential());
 		Metadata metadata = new Metadata(); // if not asked, will be used as dummy
@@ -92,7 +92,7 @@ public class NeptuneExporterCommand implements Command, Constant {
 		Object configuration = context.get(CONFIGURATION);
 		if (!(configuration instanceof NeptuneExportParameters)) {
 			// fatal wrong parameters
-			Report report = (Report) context.get(REPORT);
+			ActionReport report = (ActionReport) context.get(REPORT);
 			log.error("invalid parameters for neptune export "
 					+ configuration.getClass().getName());
 			report.setFailure("invalid parameters for neptune export "
@@ -132,6 +132,7 @@ public class NeptuneExporterCommand implements Command, Constant {
 				}
 			}
 		}
+		progression.execute(context);
 
 		try {
 
@@ -154,22 +155,28 @@ public class NeptuneExporterCommand implements Command, Constant {
 			}
 			
 			// save metadata
-			progression.terminate(context);
 			if (parameters.isAddMetadata())
 			{
+				progression.terminate(context,2);
 				Command saveMetadata = CommandFactory.create(initialContext,
 						SaveMetadataCommand.class.getName());
 				saveMetadata.execute(context);
+				progression.execute(context);
+			}
+			else
+			{
+				progression.terminate(context,1);
 			}
 			
 			// compress
 			Command compress = CommandFactory.create(initialContext,
 					CompressCommand.class.getName());
 			compress.execute(context);
+			progression.execute(context);
 
 			result = SUCCESS;
 		} catch (Exception e) {
-			Report report = (Report) context.get(REPORT);
+			ActionReport report = (ActionReport) context.get(REPORT);
 			report.setFailure("Fatal :" + e);
 			log.error(e.getMessage(), e);
 		} finally {

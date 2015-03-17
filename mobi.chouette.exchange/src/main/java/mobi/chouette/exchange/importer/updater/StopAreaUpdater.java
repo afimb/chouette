@@ -6,7 +6,6 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
-import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.CollectionUtils;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
@@ -21,7 +20,6 @@ import mobi.chouette.model.StopArea;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
-@Log4j
 @Stateless(name = StopAreaUpdater.BEAN_NAME)
 public class StopAreaUpdater implements Updater<StopArea> {
 
@@ -294,7 +292,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 						oldValue.getConnectionStartLinks(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);
 
-		List<ConnectionLink> startOfLinks = null;
+		// List<ConnectionLink> startOfLinks = null;
 		for (ConnectionLink item : addedStartOfLink) {
 
 			ConnectionLink startOfLink = cache.getConnectionLinks().get(
@@ -338,7 +336,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 				oldValue.getConnectionEndLinks(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
 
-		List<ConnectionLink> endOfLinks = null;
+		// List<ConnectionLink> endOfLinks = null;
 		for (ConnectionLink item : addedEndOfLink) {
 
 			ConnectionLink endOfLink = cache.getConnectionLinks().get(

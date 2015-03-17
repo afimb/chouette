@@ -18,6 +18,7 @@ import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.DayTypeEnum;
+import mobi.chouette.model.util.NeptuneUtil;
 
 @Log4j
 public class GtfsDataCollector 
@@ -198,7 +199,7 @@ public class GtfsDataCollector
 		}
 		reduced.setCalendarDays(dates);
 		reduced.setPeriods(periods);
-		reduced.computeLimitOfPeriods();
+		NeptuneUtil.computeLimitOfPeriods(reduced);
 		return reduced;
 
 	}

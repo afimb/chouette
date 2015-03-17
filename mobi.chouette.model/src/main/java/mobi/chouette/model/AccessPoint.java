@@ -21,7 +21,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.type.AccessPointTypeEnum;
 
 import org.apache.commons.lang.StringUtils;
@@ -40,7 +39,6 @@ import org.hibernate.annotations.Parameter;
 @Table(name = "access_points")
 @NoArgsConstructor
 @ToString(exclude = { "containedIn", "accessLinks" })
-@Log4j
 public class AccessPoint extends NeptuneLocalizedObject {
 
 	private static final long serialVersionUID = 7520070228185917225L;

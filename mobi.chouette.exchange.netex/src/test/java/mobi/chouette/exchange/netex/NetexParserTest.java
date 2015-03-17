@@ -5,12 +5,12 @@ import java.io.File;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.netex.importer.NetexParserCommand;
-import mobi.chouette.exchange.report.Report;
+import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.validator.report.ValidationReport;
+import mobi.chouette.model.api.Job;
 import mobi.chouette.model.util.Referential;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -21,7 +21,6 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.testng.annotations.Test;
 
-@Log4j
 public class NetexParserTest  extends Arquillian implements mobi.chouette.common.Constant{
 
 	private InitialContext initialContext ;
@@ -62,7 +61,14 @@ public class NetexParserTest  extends Arquillian implements mobi.chouette.common
 		context.put(INITIAL_CONTEXT, initialContext);
 		NetexParserCommand command = (NetexParserCommand) CommandFactory.create(initialContext, NetexParserCommand.class.getName());
 		File f = new File("src/test/data/valid/line_test.xml");
-		Report report = new Report();
+		Job job = new Job();
+		job.setAction("importer");
+		job.setType("netex");
+		job.setPath("/tmp/test/1");
+		job.setReferential("chouette_gui");
+		job.setStatus(Job.STATUS.SCHEDULED);
+		
+		ActionReport report = new ActionReport();
 		ValidationReport validationReport = new ValidationReport();
 		command.setFileURL("file://"+f.getAbsolutePath());
 		context.put(Constant.REPORT, report);

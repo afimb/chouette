@@ -14,8 +14,9 @@ import com.tobedevoured.modelcitizen.annotation.Default;
 import com.tobedevoured.modelcitizen.annotation.Mapped;
 import com.tobedevoured.modelcitizen.annotation.MappedList;
 import com.tobedevoured.modelcitizen.annotation.Nullable;
-import com.tobedevoured.modelcitizen.callback.FieldCallback;
+import com.tobedevoured.modelcitizen.field.FieldCallback;
 
+@SuppressWarnings("deprecation")
 @Blueprint(StopArea.class)
 public class StopAreaBlueprint
 {

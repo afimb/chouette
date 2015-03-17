@@ -20,7 +20,7 @@ import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.report.LineInfo;
 import mobi.chouette.exchange.report.LineInfo.LINE_STATE;
 import mobi.chouette.exchange.report.LineStats;
-import mobi.chouette.exchange.report.Report;
+import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.model.Line;
 
 import com.jamonapi.Monitor;
@@ -43,7 +43,7 @@ public class NeptuneProducerCommand implements Command, Constant {
 
 		boolean result = ERROR;
 		Monitor monitor = MonitorFactory.start(COMMAND);
-		Report report = (Report) context.get(REPORT);
+		ActionReport report = (ActionReport) context.get(REPORT);
 
 		try {
 

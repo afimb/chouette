@@ -22,7 +22,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.type.ServiceStatusValueEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
 
@@ -45,7 +44,6 @@ import org.hibernate.annotations.Parameter;
 @Entity
 @Table(name = "vehicle_journeys")
 @NoArgsConstructor
-@Log4j
 @ToString(callSuper=true, exclude={"journeyPattern", "route", "timetables"})
 public class VehicleJourney extends NeptuneIdentifiedObject {
 

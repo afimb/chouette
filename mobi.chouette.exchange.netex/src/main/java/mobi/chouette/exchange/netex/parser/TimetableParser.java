@@ -59,7 +59,6 @@ public class TimetableParser implements Parser, Constant {
 	private void parseDayTypes(Context context, Timetable timetable)
 			throws Exception {
 		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
-		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, "dayTypes");
 		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
@@ -95,7 +94,6 @@ public class TimetableParser implements Parser, Constant {
 	private void parseDaysOfWeeks(Context context, Timetable timetable)
 			throws Exception {
 		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
-		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, "properties");
 		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
@@ -122,7 +120,6 @@ public class TimetableParser implements Parser, Constant {
 	private void parseOperatingDays(Context context, Timetable timetable)
 			throws Exception {
 		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
-		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, "operatingDays");
 		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
@@ -148,7 +145,6 @@ public class TimetableParser implements Parser, Constant {
 	private void parseOperatingPeriods(Context context, Timetable timetable)
 			throws Exception {
 		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
-		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, "operatingPeriods");
 		context.put(COLUMN_NUMBER, xpp.getColumnNumber());

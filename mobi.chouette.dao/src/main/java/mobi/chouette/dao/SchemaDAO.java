@@ -15,11 +15,13 @@ public class SchemaDAO {
 	@PersistenceContext(unitName = "public")
 	EntityManager em;
 
+	@SuppressWarnings("unchecked")
 	public List<String> getSchemaListing() {
 		Query query = em.createNativeQuery(SQL);
 		return query.getResultList();
 	}
 
+	@SuppressWarnings("unchecked")
 	public String getCurrentSchema() {
 		Query query = em.createNativeQuery("SHOW search_path");
 		List<String> list = query.getResultList();

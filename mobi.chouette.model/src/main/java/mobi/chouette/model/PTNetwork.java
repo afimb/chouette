@@ -27,7 +27,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.type.PTNetworkSourceTypeEnum;
 
 import org.apache.commons.lang.StringUtils;
@@ -45,7 +44,6 @@ import org.hibernate.annotations.Parameter;
 @Cacheable
 @NoArgsConstructor
 @ToString(callSuper=true, exclude = { "lines" })
-@Log4j
 public class PTNetwork extends NeptuneIdentifiedObject {
 
 	private static final long serialVersionUID = -8986371268064619423L;

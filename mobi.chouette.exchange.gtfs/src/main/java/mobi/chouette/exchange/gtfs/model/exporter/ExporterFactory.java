@@ -6,11 +6,11 @@ import java.util.Map;
 
 public abstract class ExporterFactory {
 
-	public static Map factories = new HashMap();
+	public static Map<String,ExporterFactory> factories = new HashMap<>();
 
-	protected abstract Exporter create(String path) throws IOException;
+	protected abstract Exporter<?> create(String path) throws IOException;
 
-	public static final Exporter build(String path, String clazz)
+	public static final Exporter<?> build(String path, String clazz)
 			throws ClassNotFoundException, IOException {
 		if (!factories.containsKey(clazz)) {
 			Class.forName(clazz);

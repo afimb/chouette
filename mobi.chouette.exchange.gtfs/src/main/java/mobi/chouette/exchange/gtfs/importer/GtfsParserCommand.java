@@ -20,7 +20,6 @@ import mobi.chouette.exchange.gtfs.parser.GtfsRouteParser;
 import mobi.chouette.exchange.gtfs.parser.GtfsStopParser;
 import mobi.chouette.exchange.gtfs.parser.GtfsTransferParser;
 import mobi.chouette.exchange.importer.ParserFactory;
-import mobi.chouette.exchange.validator.parameters.ValidationParameters;
 import mobi.chouette.model.PTNetwork;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
@@ -53,8 +52,6 @@ public class GtfsParserCommand implements Command, Constant {
 					.get(CONFIGURATION);
 
 			GtfsImporter importer = (GtfsImporter) context.get(PARSER);
-			ValidationParameters validation = (ValidationParameters) context
-					.get(VALIDATION);
 
 			// PTNetwork
 			if (referential.getSharedPTNetworks().isEmpty()) {

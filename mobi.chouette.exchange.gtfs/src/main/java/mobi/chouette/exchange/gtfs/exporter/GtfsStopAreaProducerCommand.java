@@ -33,7 +33,7 @@ import mobi.chouette.exchange.gtfs.Constant;
 import mobi.chouette.exchange.gtfs.exporter.producer.GtfsExtendedStopProducer;
 import mobi.chouette.exchange.gtfs.exporter.producer.GtfsTransferProducer;
 import mobi.chouette.exchange.gtfs.model.exporter.GtfsExporter;
-import mobi.chouette.exchange.report.Report;
+import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
@@ -103,7 +103,7 @@ public class GtfsStopAreaProducerCommand implements Command, Constant
 		Set<ConnectionLink> connectionLinks = new HashSet<ConnectionLink>();
 		GtfsExtendedStopProducer stopProducer = new GtfsExtendedStopProducer(exporter);
 		GtfsTransferProducer transferProducer = new GtfsTransferProducer(exporter);
-		Report report = (Report) context.get(REPORT);
+		ActionReport report = (ActionReport) context.get(REPORT);
 		GtfsExportParameters configuration = (GtfsExportParameters) context
 				.get(CONFIGURATION);
 		String prefix = configuration.getObjectIdPrefix();

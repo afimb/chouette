@@ -105,6 +105,28 @@
 	<build>
 		<plugins>
 			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>properties-maven-plugin</artifactId>
+				<version>1.0-alpha-2</version>
+				<executions>
+					<execution>
+						<id>set-additional-system-properties</id>
+						<goals>
+							<goal>set-system-properties</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<properties>
+						<property>
+							<name>javax.xml.accessExternalSchema</name>
+							<value>file,http</value>
+						</property>
+					</properties>
+				</configuration>
+			</plugin>
+
+			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>
 				<version>2.6</version>
 				<executions>
@@ -157,26 +179,6 @@
 					<arguments>-extension -Xlocator -b ${basedir}/src/main/resources/xsd/bindings.xml</arguments>
 				</configuration>
 			</plugin>
-			<!-- <plugin> -->
-			<!-- <groupId>org.codehaus.mojo</groupId> -->
-			<!-- <artifactId>jaxb2-maven-plugin</artifactId> -->
-			<!-- <version>1.6</version> -->
-			<!-- <executions> -->
-			<!-- <execution> -->
-			<!-- <goals> -->
-			<!-- <goal>schemagen</goal> -->
-			<!-- </goals> -->
-			<!-- <phase>generate-resources</phase> -->
-			<!-- <configuration> -->
-			<!-- <includes> -->
-			<!-- <include>mobi/chouette/exchange/neptune/importer/NeptuneParameters.java</include> -->
-			<!-- <include>mobi/chouette/exchange/neptune/exporter/Parameters.java</include> -->
-			<!-- </includes> -->
-			<!-- <outputDirectory>${project.build.directory}/schemas</outputDirectory> -->
-			<!-- </configuration> -->
-			<!-- </execution> -->
-			<!-- </executions> -->
-			<!-- </plugin> -->
 		</plugins>
 	</build>
 

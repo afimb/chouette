@@ -20,7 +20,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.type.ConnectionLinkTypeEnum;
 import mobi.chouette.model.type.UserNeedEnum;
 
@@ -40,7 +39,6 @@ import org.hibernate.annotations.Parameter;
 @Table(name = "connection_links")
 @NoArgsConstructor
 @ToString
-@Log4j
 public class ConnectionLink extends NeptuneIdentifiedObject {
 	private static final long serialVersionUID = 8490105295077539089L;
 

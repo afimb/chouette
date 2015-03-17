@@ -3,6 +3,7 @@ package mobi.chouette.exchange.validator.report;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 
 import lombok.Data;
 import lombok.ToString;
@@ -22,6 +23,7 @@ import mobi.chouette.model.VehicleJourney;
 @Data
 @ToString
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(propOrder={})
 public class ObjectReference {
 
 	public enum TYPE  {

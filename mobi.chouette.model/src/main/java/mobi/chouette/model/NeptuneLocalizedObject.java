@@ -18,7 +18,6 @@ import javax.persistence.Transient;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.type.LongLatTypeEnum;
 import mobi.chouette.model.util.Coordinate;
 import mobi.chouette.model.util.CoordinateUtil;
@@ -32,7 +31,6 @@ import org.apache.commons.lang.StringUtils;
 @SuppressWarnings("serial")
 @MappedSuperclass
 @ToString(callSuper=true)
-@Log4j
 public abstract class NeptuneLocalizedObject extends NeptuneIdentifiedObject {
 
 	/**

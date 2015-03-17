@@ -2,7 +2,6 @@ package mobi.chouette.exchange.importer;
 
 import java.io.IOException;
 import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
 
 import javax.annotation.Resource;
 import javax.ejb.EJB;
@@ -49,7 +48,7 @@ public class CopyCommand implements Command {
 
 				final String buffer = new String((String) context.get(BUFFER));
 				final String schema = ContextHolder.getContext();
-				Future<Void> future = executor.submit(new Callable<Void>() {
+				executor.submit(new Callable<Void>() {
 
 					@Override
 					@TransactionAttribute(TransactionAttributeType.REQUIRED)

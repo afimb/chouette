@@ -3,7 +3,6 @@ package mobi.chouette.dao;
 import java.io.IOException;
 import java.io.StringReader;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
@@ -19,7 +18,6 @@ import mobi.chouette.model.VehicleJourney;
 import org.hibernate.Session;
 import org.hibernate.jdbc.Work;
 import org.jboss.jca.adapters.jdbc.WrappedConnection;
-import org.jboss.jca.adapters.jdbc.WrappedPreparedStatement;
 import org.postgresql.PGConnection;
 
 import com.jamonapi.Monitor;
@@ -98,8 +96,8 @@ public class VehicleJourneyDAO extends GenericDAOImpl<VehicleJourney> {
 					manager.copyIn(
 							"COPY vehicle_journey_at_stops("
 									+ "vehicle_journey_id, stop_point_id, "
-									+ "connecting_service_id, boarding_alighting_possibility,"
-									+ "arrival_time, departure_time, waiting_time, "
+									+ "boarding_alighting_possibility,"
+									+ "arrival_time, departure_time, "
 									+ "elapse_duration, headway_frequency)"
 									+ " FROM STDIN WITH DELIMITER '|'", from);
 

@@ -127,8 +127,8 @@ public class AccessPointValidator extends AbstractValidator implements Validator
 				if (parent.getAreaType().equals(ChouetteAreaEnum.ITL))
 				{
 					Context parentContext = (Context) stopAreaContext.get(containedIn);
-					lineNumber = ((Integer) objectContext.get(LINE_NUMBER)).intValue();
-					columnNumber = ((Integer) objectContext.get(COLUMN_NUMBER)).intValue();
+					lineNumber = ((Integer) parentContext.get(LINE_NUMBER)).intValue();
+					columnNumber = ((Integer) parentContext.get(COLUMN_NUMBER)).intValue();
 					FileLocation targetLocation = new FileLocation(fileName, lineNumber, columnNumber);
 					Map<String, Object> map = new HashMap<String, Object>();
 					map.put(CONTAINED_IN, containedIn);

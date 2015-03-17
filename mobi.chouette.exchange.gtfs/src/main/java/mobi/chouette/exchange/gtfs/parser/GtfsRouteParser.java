@@ -8,14 +8,12 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.gtfs.Constant;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
-import mobi.chouette.exchange.gtfs.model.GtfsAgency;
 import mobi.chouette.exchange.gtfs.model.GtfsRoute;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsImporter;
 import mobi.chouette.exchange.gtfs.model.importer.Index;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.Validator;
-import mobi.chouette.exchange.validator.parameters.ValidationParameters;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.PTNetwork;
@@ -29,7 +27,6 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 	private Referential referential;
 	private GtfsImporter importer;
 	private GtfsImportParameters configuration;
-	private ValidationParameters validation;
 
 	@Getter
 	@Setter
@@ -40,7 +37,6 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 
 		referential = (Referential) context.get(REFERENTIAL);
 		configuration = (GtfsImportParameters) context.get(CONFIGURATION);
-		validation = (ValidationParameters) context.get(VALIDATION);
 		importer = (GtfsImporter) context.get(PARSER);
 
 		Index<GtfsRoute> routes = importer.getRouteById();

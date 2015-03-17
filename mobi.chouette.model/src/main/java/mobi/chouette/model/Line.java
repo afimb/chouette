@@ -28,10 +28,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import lombok.extern.log4j.Log4j;
-import mobi.chouette.core.CoreExceptionCode;
-import mobi.chouette.core.CoreRuntimeException;
-import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.type.UserNeedEnum;
 import mobi.chouette.model.util.ObjectIdTypes;
@@ -50,7 +46,6 @@ import org.hibernate.annotations.Parameter;
 @Entity
 @Table(name = "lines")
 @NoArgsConstructor
-@Log4j
 @ToString(callSuper = true, exclude = { "routingConstraints" })
 public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	private static final long serialVersionUID = -8086291270595894778L;

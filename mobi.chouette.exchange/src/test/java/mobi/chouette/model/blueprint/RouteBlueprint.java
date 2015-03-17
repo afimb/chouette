@@ -11,8 +11,9 @@ import mobi.chouette.model.type.PTDirectionEnum;
 import com.tobedevoured.modelcitizen.annotation.Blueprint;
 import com.tobedevoured.modelcitizen.annotation.Default;
 import com.tobedevoured.modelcitizen.annotation.MappedList;
-import com.tobedevoured.modelcitizen.callback.FieldCallback;
+import com.tobedevoured.modelcitizen.field.FieldCallback;
 
+@SuppressWarnings("deprecation")
 @Blueprint(Route.class)
 public class RouteBlueprint
 {

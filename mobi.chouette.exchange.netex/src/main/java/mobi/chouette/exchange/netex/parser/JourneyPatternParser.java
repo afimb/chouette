@@ -25,7 +25,6 @@ public class JourneyPatternParser implements Parser, Constant {
 	public void parse(Context context) throws Exception {
 
 		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
-		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
 		context.put(COLUMN_NUMBER, xpp.getColumnNumber());

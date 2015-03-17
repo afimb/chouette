@@ -3,13 +3,11 @@ package mobi.chouette.exchange.importer.updater;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
-import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.dao.StopPointDAO;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourneyAtStop;
 
-@Log4j
 @Stateless(name = VehicleJourneyAtStopUpdater.BEAN_NAME)
 public class VehicleJourneyAtStopUpdater implements
 		Updater<VehicleJourneyAtStop> {
@@ -23,11 +21,6 @@ public class VehicleJourneyAtStopUpdater implements
 	public void update(Context context, VehicleJourneyAtStop oldValue,
 			VehicleJourneyAtStop newValue) {
 
-		if (newValue.getConnectingServiceId() != null
-				&& !newValue.getConnectingServiceId().equals(
-						oldValue.getConnectingServiceId())) {
-			oldValue.setConnectingServiceId(newValue.getConnectingServiceId());
-		}
 		if (newValue.getBoardingAlightingPossibility() != null
 				&& !newValue.getBoardingAlightingPossibility().equals(
 						oldValue.getBoardingAlightingPossibility())) {
@@ -42,10 +35,6 @@ public class VehicleJourneyAtStopUpdater implements
 				&& !newValue.getDepartureTime().equals(
 						oldValue.getDepartureTime())) {
 			oldValue.setDepartureTime(newValue.getDepartureTime());
-		}
-		if (newValue.getWaitingTime() != null
-				&& !newValue.getWaitingTime().equals(oldValue.getWaitingTime())) {
-			oldValue.setWaitingTime(newValue.getWaitingTime());
 		}
 		if (newValue.getElapseDuration() != null
 				&& !newValue.getElapseDuration().equals(

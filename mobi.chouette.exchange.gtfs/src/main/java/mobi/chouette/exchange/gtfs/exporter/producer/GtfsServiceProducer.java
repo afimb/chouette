@@ -21,12 +21,13 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.gtfs.model.GtfsCalendar;
 import mobi.chouette.exchange.gtfs.model.GtfsCalendarDate;
 import mobi.chouette.exchange.gtfs.model.exporter.GtfsExporterInterface;
-import mobi.chouette.exchange.report.Report;
+import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.model.CalendarDay;
 import mobi.chouette.model.Period;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.type.DayTypeEnum;
 import mobi.chouette.model.util.CopyUtil;
+import mobi.chouette.model.util.NeptuneUtil;
 
 /**
  * convert Timetable to Gtfs Calendar and CalendarDate
@@ -47,7 +48,7 @@ AbstractProducer
    GtfsCalendar calendar = new GtfsCalendar();
    GtfsCalendarDate calendarDate = new GtfsCalendarDate();
 
-   public boolean save(List<Timetable> timetables, Report report, String prefix)
+   public boolean save(List<Timetable> timetables, ActionReport report, String prefix)
    {
 
       Timetable reduced = merge(timetables, prefix);
@@ -157,7 +158,7 @@ AbstractProducer
       return reduced;
    }
 
-   private boolean saveDay(String serviceId,CalendarDay day,Report report)
+   private boolean saveDay(String serviceId,CalendarDay day,ActionReport report)
    {
 
       calendarDate.setDate(day.getDate());
@@ -179,9 +180,9 @@ AbstractProducer
    public Timetable removePeriods(Timetable timetable)
    {
       Set<Date> excludedDates = new HashSet<Date>(
-            timetable.getExcludedDates());
+            NeptuneUtil.getExcludedDates(timetable));
       Set<Date> includedDates = new HashSet<Date>(
-            timetable.getPeculiarDates());
+    		  NeptuneUtil.getPeculiarDates(timetable));
 
       for (Period period : timetable.getPeriods())
       {
@@ -265,7 +266,7 @@ AbstractProducer
          }
          merged.setObjectId(prefix+":"+Timetable.TIMETABLE_KEY+":"+key(timetables,prefix));
       }
-      merged.computeLimitOfPeriods();
+      NeptuneUtil.computeLimitOfPeriods(merged);
       return merged;
    }
 

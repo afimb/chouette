@@ -89,7 +89,7 @@ public class AgencyExporter extends ExporterImpl<GtfsAgency> implements
 	public static class DefaultExporterFactory extends ExporterFactory {
 
 		@Override
-		protected Exporter create(String path) throws IOException {
+		protected Exporter<GtfsAgency> create(String path) throws IOException {
 			return new AgencyExporter(path);
 		}
 	}

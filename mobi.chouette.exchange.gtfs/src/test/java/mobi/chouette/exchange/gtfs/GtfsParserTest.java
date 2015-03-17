@@ -5,14 +5,14 @@ import java.io.File;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
-import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.gtfs.importer.GtfsParserCommand;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsImporter;
-import mobi.chouette.exchange.report.Report;
+import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.validator.report.ValidationReport;
+import mobi.chouette.model.api.Job;
 import mobi.chouette.model.util.Referential;
 
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -23,7 +23,6 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.testng.annotations.Test;
 
-@Log4j
 public class GtfsParserTest  extends Arquillian implements Constant{
 
 	private InitialContext initialContext ;
@@ -69,7 +68,8 @@ public class GtfsParserTest  extends Arquillian implements Constant{
 		init();
 		Context context = new Context();
 		context.put(INITIAL_CONTEXT, initialContext);
-		Report report = new Report();
+		
+		ActionReport report = new ActionReport();
 		ValidationReport validationReport = new ValidationReport();
 		GtfsParserCommand command = (GtfsParserCommand) CommandFactory.create(initialContext, GtfsParserCommand.class.getName());
 		GtfsImporter importer = new GtfsImporter("src/test/data/valid");

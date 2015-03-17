@@ -3,14 +3,12 @@ package mobi.chouette.exchange.importer.updater;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
-import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.dao.AccessPointDAO;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.util.Referential;
 
-@Log4j
 @Stateless(name = AccessLinkUpdater.BEAN_NAME)
 public class AccessLinkUpdater implements Updater<AccessLink> {
 

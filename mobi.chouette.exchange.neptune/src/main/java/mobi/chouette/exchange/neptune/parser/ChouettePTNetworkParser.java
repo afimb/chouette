@@ -6,7 +6,6 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.XPPUtil;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
-import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
 
@@ -18,7 +17,6 @@ public class ChouettePTNetworkParser implements Parser, Constant {
 	public void parse(Context context) throws Exception {
 
 		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
-		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		XPPUtil.nextStartTag(xpp, CHILD_TAG);
 

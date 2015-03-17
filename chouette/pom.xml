@@ -23,6 +23,15 @@
 					<version>6</version>
 					<defaultLibBundleDir>lib</defaultLibBundleDir>
 					<fileNameMapping>no-version</fileNameMapping>
+		        <modules>
+		            <webModule>
+		                <groupId>mobi.chouette</groupId>
+		                <artifactId>mobi.chouette.api</artifactId>
+		                <uri>mobi.chouette.api.war</uri>
+		                <bundleFileName>mobi.chouette.api.war</bundleFileName>
+		                <contextRoot>/chouette_iev</contextRoot>
+		            </webModule>
+		        </modules>
 				</configuration>
 			</plugin>
 			<plugin>

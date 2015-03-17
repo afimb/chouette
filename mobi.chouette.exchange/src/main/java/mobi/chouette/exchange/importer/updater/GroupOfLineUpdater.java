@@ -2,11 +2,9 @@ package mobi.chouette.exchange.importer.updater;
 
 import javax.ejb.Stateless;
 
-import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.model.GroupOfLine;
 
-@Log4j
 @Stateless(name = GroupOfLineUpdater.BEAN_NAME)
 public class GroupOfLineUpdater implements Updater<GroupOfLine> {
 

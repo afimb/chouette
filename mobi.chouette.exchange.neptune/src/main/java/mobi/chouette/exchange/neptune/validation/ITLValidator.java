@@ -3,7 +3,6 @@ package mobi.chouette.exchange.neptune.validation;
 
 import java.util.Map;
 
-import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.validator.ValidationConstraints;
@@ -18,7 +17,6 @@ import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.util.Referential;
 
-@Log4j
 public class ITLValidator extends AbstractValidator implements Validator<StopArea> , Constant{
 
 	public static final String ITL_NAME = "name";

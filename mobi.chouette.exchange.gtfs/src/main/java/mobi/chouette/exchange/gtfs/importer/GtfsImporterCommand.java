@@ -6,8 +6,6 @@ import java.nio.file.Paths;
 
 import javax.naming.InitialContext;
 
-import org.omg.CosNaming.IstringHelper;
-
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
@@ -23,7 +21,6 @@ import mobi.chouette.exchange.gtfs.model.importer.Index;
 import mobi.chouette.exchange.importer.CopyCommand;
 import mobi.chouette.exchange.importer.LineRegisterCommand;
 import mobi.chouette.exchange.importer.UncompressCommand;
-import mobi.chouette.exchange.report.Report;
 import mobi.chouette.exchange.validator.report.ValidationReport;
 import mobi.chouette.model.util.Referential;
 
@@ -46,7 +43,7 @@ public class GtfsImporterCommand implements Command, Constant {
 
 		ProgressionCommand progression = (ProgressionCommand) CommandFactory
 				.create(initialContext, ProgressionCommand.class.getName());
-		progression.initialize(context);
+		progression.initialize(context,3);
 
 		context.put(REFERENTIAL, new Referential());
 		
@@ -71,24 +68,24 @@ public class GtfsImporterCommand implements Command, Constant {
 		}
 
 		try {
-
-
 			// uncompress data
 			Command uncompress = CommandFactory.create(initialContext,
 					UncompressCommand.class.getName());
 			uncompress.execute(context);
+			progression.execute(context);
 
 			// validation
 			Command validation = CommandFactory.create(initialContext,
 					GtfsValidationCommand.class.getName());
 			validation.execute(context);
+			progression.execute(context);
 
 			ChainCommand master = (ChainCommand) CommandFactory.create(
 					initialContext, ChainCommand.class.getName());
 			master.setIgnored(true);
 
 			Index<GtfsRoute> index = importer.getRouteById();
-			progression.start(context, index.getLength());
+			
 			for (GtfsRoute gtfsRoute : index) {
 				
 				Chain chain = (Chain) CommandFactory.create(initialContext,
@@ -118,10 +115,11 @@ public class GtfsImporterCommand implements Command, Constant {
 				}
 
 			}
-
+			progression.execute(context);
+			progression.start(context, index.getLength());
 			master.execute(context);
-			progression.terminate(context);
-
+			progression.terminate(context,1);
+			progression.execute(context);
 			result = SUCCESS;
 
 		} catch (Exception e) {

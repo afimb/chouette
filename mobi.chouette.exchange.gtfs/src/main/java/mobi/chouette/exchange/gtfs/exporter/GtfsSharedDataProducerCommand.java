@@ -30,7 +30,7 @@ import mobi.chouette.exchange.gtfs.exporter.producer.GtfsTransferProducer;
 import mobi.chouette.exchange.gtfs.model.exporter.GtfsExporter;
 import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.report.LineStats;
-import mobi.chouette.exchange.report.Report;
+import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
@@ -51,7 +51,7 @@ public class GtfsSharedDataProducerCommand implements Command, Constant
 	public boolean execute(Context context) throws Exception {
 		boolean result = ERROR;
 		Monitor monitor = MonitorFactory.start(COMMAND);
-		Report report = (Report) context.get(REPORT);
+		ActionReport report = (ActionReport) context.get(REPORT);
 
 		try {
 
@@ -91,7 +91,7 @@ public class GtfsSharedDataProducerCommand implements Command, Constant
 		GtfsAgencyProducer agencyProducer = null;
 		GtfsServiceProducer calendarProducer = null;		
 
-		Report report = (Report) context.get(REPORT);
+		ActionReport report = (ActionReport) context.get(REPORT);
 		GtfsExportParameters configuration = (GtfsExportParameters) context
 				.get(CONFIGURATION);
 		TimeZone timezone = TimeZone.getTimeZone(configuration.getTimeZone());

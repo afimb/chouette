@@ -7,17 +7,20 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
-@Data
 @ToString
-@XmlRootElement(name = "validation")
+@XmlRootElement(name = "validation_report")
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(propOrder={})
 public class ValidationReport {
 
 	@XmlElement(name = "tests")
+	@Getter @Setter
 	private List<CheckPoint> checkPoints = new ArrayList<CheckPoint>();
 	
 	public CheckPoint findCheckPointByName(String name)

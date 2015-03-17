@@ -17,7 +17,6 @@ import mobi.chouette.common.Context;
 import mobi.chouette.exchange.gtfs.Constant;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.gtfs.model.GtfsFrequency;
-import mobi.chouette.exchange.gtfs.model.GtfsRoute;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime;
 import mobi.chouette.exchange.gtfs.model.GtfsTrip;
 import mobi.chouette.exchange.gtfs.model.GtfsTrip.DirectionType;
@@ -44,6 +43,10 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 
 	@AllArgsConstructor
 	class VehicleJourneyAtStopWrapper extends VehicleJourneyAtStop {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 5052093726657799027L;
 		String stopId;
 		int stopSequence;
 	}

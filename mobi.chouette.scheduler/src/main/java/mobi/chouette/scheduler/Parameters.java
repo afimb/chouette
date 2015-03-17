@@ -5,12 +5,14 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
 import lombok.Data;
 import mobi.chouette.exchange.validator.parameters.ValidationParameters;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(propOrder={})
 @Data
 public class Parameters {
 
@@ -21,7 +23,7 @@ public class Parameters {
 			@XmlElement(name = "gtfs-import", type = mobi.chouette.exchange.gtfs.importer.GtfsImportParameters.class),
 			@XmlElement(name = "gtfs-export", type = mobi.chouette.exchange.gtfs.exporter.GtfsExportParameters.class),
 			@XmlElement(name = "netex-import", type = mobi.chouette.exchange.netex.importer.NetexImportParameters.class),
-			@XmlElement(name = "netex-export", type = mobi.chouette.exchange.netex.exporter.NetxtExportParameters.class),
+			@XmlElement(name = "netex-export", type = mobi.chouette.exchange.netex.exporter.NetexExportParameters.class),
         	@XmlElement(name = "validate", type = mobi.chouette.exchange.validator.ValidateParameters.class) })
 	private Object configuration;
 

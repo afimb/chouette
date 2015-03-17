@@ -11,7 +11,6 @@ package mobi.chouette.exchange.validator;
 import java.io.IOException;
 
 import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
@@ -19,10 +18,6 @@ import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.report.LineInfo;
-import mobi.chouette.exchange.report.LineInfo.LINE_STATE;
-import mobi.chouette.exchange.report.LineStats;
-import mobi.chouette.exchange.report.Report;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.util.Referential;
 

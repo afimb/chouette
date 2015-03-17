@@ -26,7 +26,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.report.FileInfo;
-import mobi.chouette.exchange.report.Report;
+import mobi.chouette.exchange.report.ActionReport;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.input.BOMInputStream;
@@ -53,7 +53,7 @@ public class NeptuneSAXParserCommand implements Command, Constant {
 
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
-		Report report = (Report) context.get(REPORT);
+		ActionReport report = (ActionReport) context.get(REPORT);
 		FileInfo fileItem = new FileInfo();
 
 		String fileName = new File(new URL(fileURL).toURI()).getName();

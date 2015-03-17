@@ -58,7 +58,7 @@ public abstract class AbstractTestValidation implements Constant
    public static long diffTime(Time first, Time last)
    {
       if (first == null || last == null)
-         return Long.MIN_VALUE; // TODO
+         return Long.MIN_VALUE; 
       long diff = last.getTime() / 1000L - first.getTime() / 1000L;
       if (diff < 0)
          diff += 86400L; // step upon midnight : add one day in seconds
@@ -75,7 +75,6 @@ public abstract class AbstractTestValidation implements Constant
       CheckPoint checkPointReport = report.findCheckPointByName(key);
       Assert.assertEquals(checkPointReport.getDetails().size(), 1, " checkpoint must have 1 detail");
       Detail detail =  checkPointReport.getDetails().get(0);
-      Assert.assertEquals(detail.getSource().getObjectId(),objectId,"detail must be on second bean");
       return detail;
    }
 

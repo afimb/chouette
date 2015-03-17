@@ -6,6 +6,7 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
 
 import lombok.Data;
 import lombok.ToString;
@@ -27,13 +28,14 @@ import mobi.chouette.model.util.NamingUtil;
 @Data
 @ToString
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(propOrder={})
 public class Location {
 
 
 	@XmlElement(name = "file")
 	private FileLocation file;
 
-	@XmlElement(name = "object_id")
+	@XmlElement(name = "objectid")
 	private String objectId;
 
 	@XmlElement(name = "label")

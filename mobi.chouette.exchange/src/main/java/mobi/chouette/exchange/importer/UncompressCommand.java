@@ -15,7 +15,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.FileUtils;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.report.Report;
+import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.exchange.report.ZipInfo;
 
@@ -32,7 +32,7 @@ public class UncompressCommand implements Command, ReportConstant {
 
 		boolean result = ERROR;
 		Monitor monitor = MonitorFactory.start(COMMAND);
-		Report report = (Report) context.get(REPORT);
+		ActionReport report = (ActionReport) context.get(REPORT);
 
 		String path = (String) context.get(PATH);
 		String file = (String) context.get(ARCHIVE);

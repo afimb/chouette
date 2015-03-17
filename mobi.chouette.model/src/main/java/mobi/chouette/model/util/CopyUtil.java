@@ -105,8 +105,4 @@ public abstract class CopyUtil {
 	}
 	
 	
-	private static boolean isFilled(String data)
-	{
-		return (data != null && !data.isEmpty());
-	}
 }

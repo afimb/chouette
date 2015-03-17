@@ -14,11 +14,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import lombok.extern.log4j.Log4j;
-
 import org.hibernate.Session;
 
-@Log4j
 public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 
 	protected EntityManager em;
@@ -69,12 +66,13 @@ public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 		List<T> result = null;
 		CriteriaBuilder builder = em.getCriteriaBuilder();
 		CriteriaQuery<T> criteria = builder.createQuery(type);
-		Root<T> root = criteria.from(type);
+		criteria.from(type);
 		TypedQuery<T> query = em.createQuery(criteria);
 		result = query.getResultList();
 		return result;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public T findByObjectId(final String objectId) {
 		Session session = em.unwrap(Session.class);
@@ -136,7 +134,7 @@ public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 		int result = 0;
 		CriteriaBuilder builder = em.getCriteriaBuilder();
 		CriteriaDelete<T> criteria = builder.createCriteriaDelete(type);
-		Root<T> root = criteria.from(type);
+		criteria.from(type);
 		Query query = em.createQuery(criteria);
 		result = query.executeUpdate();
 		return result;

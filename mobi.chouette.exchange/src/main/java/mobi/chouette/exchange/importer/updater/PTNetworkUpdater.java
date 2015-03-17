@@ -2,11 +2,10 @@ package mobi.chouette.exchange.importer.updater;
 
 import javax.ejb.Stateless;
 
-import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.model.PTNetwork;
 
-@Log4j
+
 @Stateless(name = PTNetworkUpdater.BEAN_NAME)
 public class PTNetworkUpdater implements Updater<PTNetwork> {
 

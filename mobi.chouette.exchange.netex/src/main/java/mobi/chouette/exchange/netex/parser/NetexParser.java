@@ -6,7 +6,6 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.XPPUtil;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
-import mobi.chouette.model.util.Referential;
 
 import org.xmlpull.v1.XmlPullParser;
 
@@ -19,7 +18,6 @@ public class NetexParser implements Parser, Constant {
 	public void parse(Context context) throws Exception {
 
 		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
-		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		XPPUtil.nextStartTag(xpp, CHILD_TAG);
 
@@ -47,7 +45,6 @@ public class NetexParser implements Parser, Constant {
 
 	private void parseResourceFrame(Context context) throws Exception {
 		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
-		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 			if (xpp.getName().equals("organisations")) {
@@ -104,7 +101,6 @@ public class NetexParser implements Parser, Constant {
 
 	private void parseSiteFrame(Context context) throws Exception {
 		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
-		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 			if (xpp.getName().equals("stopPlaces")) {
@@ -119,7 +115,6 @@ public class NetexParser implements Parser, Constant {
 
 	private void parseTimetableFrame(Context context) throws Exception {
 		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
-		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 			if (xpp.getName().equals("vehicleJourneys")) {

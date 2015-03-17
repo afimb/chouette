@@ -21,8 +21,6 @@ import javax.xml.bind.Marshaller;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
-import lombok.extern.log4j.Log4j;
-
 import org.trident.schema.trident.ChouettePTNetworkType;
 import org.xml.sax.SAXException;
 
@@ -34,7 +32,6 @@ import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
  * Reader tool to extract XML Neptune Schema Objects (jaxb) from a file or a
  * stream
  */
-@Log4j
 public class JaxbNeptuneFileConverter
 {
 

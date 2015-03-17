@@ -31,7 +31,6 @@ public class VehicleJourneyParser implements Parser, Constant {
 	public void parse(Context context) throws Exception {
 
 		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
-		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
 		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
@@ -66,9 +65,6 @@ public class VehicleJourneyParser implements Parser, Constant {
 				vehicleJourney.setPublishedJourneyName(xpp.nextText());
 			} else if (xpp.getName().equals("ShortName")) {
 				vehicleJourney.setPublishedJourneyIdentifier(xpp.nextText());
-			} else if (xpp.getName().equals("ServiceAlteration")) {
-				vehicleJourney.setServiceStatusValue(NetexUtils
-						.toServiceStatusValueType(xpp.nextText()));
 			} else if (xpp.getName().equals("dayTypes")) {
 				parseDayTypeRefs(context, vehicleJourney);
 			} else if (xpp.getName().equals("RouteRef")) {
@@ -102,8 +98,6 @@ public class VehicleJourneyParser implements Parser, Constant {
 	private void parseTrainNumberRefs(Context context,
 			VehicleJourney vehicleJourney) throws Exception {
 		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
-		Referential referential = (Referential) context.get(REFERENTIAL);
-
 		xpp.require(XmlPullParser.START_TAG, null, "trainNumbers");
 		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
 		context.put(LINE_NUMBER, xpp.getLineNumber());
@@ -146,7 +140,6 @@ public class VehicleJourneyParser implements Parser, Constant {
 	public void parseCalls(Context context, VehicleJourney vehicleJourney)
 			throws Exception {
 		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
-		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, "calls");
 		context.put(COLUMN_NUMBER, xpp.getColumnNumber());

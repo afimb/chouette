@@ -15,9 +15,10 @@ import mobi.chouette.exchange.neptune.importer.NeptuneImporterCommand;
 import mobi.chouette.exchange.neptune.importer.NeptuneParserCommand;
 import mobi.chouette.exchange.neptune.importer.NeptuneSAXParserCommand;
 import mobi.chouette.exchange.report.FileInfo;
-import mobi.chouette.exchange.report.Report;
+import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.validator.report.ValidationReport;
 import mobi.chouette.model.Line;
+import mobi.chouette.model.api.Job;
 import mobi.chouette.model.util.Referential;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
@@ -73,9 +74,16 @@ public class NeptuneParserTest extends Arquillian implements Constant {
 	private Context initContext()
 	{
 		init();
+		Job job = new Job();
+		job.setAction("importer");
+		job.setType("neptune");
+		job.setPath("/tmp/test/1");
+		job.setReferential("chouette_gui");
+		job.setStatus(Job.STATUS.SCHEDULED);
+		
 		Context context = new Context();
 		context.put(INITIAL_CONTEXT, initialContext);
-		context.put(REPORT,new Report());
+		context.put(REPORT,new ActionReport());
 		context.put(REFERENTIAL, new Referential());
 		context.put(VALIDATION_REPORT, new ValidationReport());
 		NeptuneImportParameters configuration = new NeptuneImportParameters();
@@ -132,7 +140,7 @@ public class NeptuneParserTest extends Arquillian implements Constant {
 		NeptuneParserCommand parser = (NeptuneParserCommand) CommandFactory.create(initialContext, NeptuneParserCommand.class.getName());
 		File f = new File("src/test/data/C_NEPTUNE_3.xml");
 		parser.setFileURL("file://"+f.getAbsolutePath());
-		Report report = (Report) context.get(REPORT);
+		ActionReport report = (ActionReport) context.get(REPORT);
 		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
 		parser.execute(context);
 		Assert.assertNull(report.getFailure(),"no error should be reported");
@@ -157,7 +165,7 @@ public class NeptuneParserTest extends Arquillian implements Constant {
 		{
 			System.out.println("exception received "+e.getMessage());
 		}
-		Report report = (Report) context.get(REPORT);
+		ActionReport report = (ActionReport) context.get(REPORT);
 		Assert.assertNull(report.getFailure(),"no error should be reported");
 		Assert.assertEquals(report.getFiles().size(),1,"report one file");
 		Assert.assertEquals(report.getFiles().get(0).getStatus(),FileInfo.FILE_STATE.NOK,"report one error file");
@@ -180,7 +188,7 @@ public class NeptuneParserTest extends Arquillian implements Constant {
 			System.out.println("exception received "+e.getMessage());
 		}
 		
-		Report report = (Report) context.get(REPORT);
+		ActionReport report = (ActionReport) context.get(REPORT);
 		Assert.assertNull(report.getFailure(),"no error should be reported");
 		Assert.assertEquals(report.getFiles().size(),1,"report one file");
 		Assert.assertEquals(report.getFiles().get(0).getStatus(),FileInfo.FILE_STATE.NOK,"report one error file");

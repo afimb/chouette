@@ -119,11 +119,6 @@ public class LineRegisterCommand implements Command {
 		buffer.append(SEP);
 		buffer.write(stopPoint.getId().toString());
 		buffer.append(SEP);
-		if (vehicleJourneyAtStop.getConnectingServiceId() != null)
-			buffer.write(vehicleJourneyAtStop.getConnectingServiceId());
-		else
-			buffer.write(NULL);
-		buffer.append(SEP);
 		if (vehicleJourneyAtStop.getBoardingAlightingPossibility() != null)
 			buffer.write(vehicleJourneyAtStop.getBoardingAlightingPossibility()
 					.toString());
@@ -142,13 +137,7 @@ public class LineRegisterCommand implements Command {
 		else
 			buffer.write(NULL);
 		buffer.append(SEP);
-		if (vehicleJourneyAtStop.getWaitingTime() != null)
-			buffer.write(DateTimeUtils.getTimeText(vehicleJourneyAtStop
-					.getWaitingTime()));
-		else
-			buffer.write(NULL);
 
-		buffer.append(SEP);
 		if (vehicleJourneyAtStop.getElapseDuration() != null)
 			buffer.write(DateTimeUtils.getTimeText(vehicleJourneyAtStop
 					.getElapseDuration()));

@@ -56,6 +56,15 @@ public class ComplexModelFactory
    private List<StopArea> stopPlaces;
    @Getter
    @Setter
+   private List<AccessLink> accessLinks;
+   @Getter
+   @Setter
+   private List<AccessPoint> accessPoints;
+   @Getter
+   @Setter
+   private List<ConnectionLink> connectionLinks;
+   @Getter
+   @Setter
    int quayCount = 21;
    @Getter
    @Setter
@@ -93,9 +102,12 @@ public class ComplexModelFactory
       {
          throw new RuntimeException(ex.getMessage(), ex);
       }
-      quays = new ArrayList<StopArea>(quayCount);
-      stopPlaces = new ArrayList<StopArea>();
-      timetables = new ArrayList<Timetable>(timetablesCount);
+      quays = new ArrayList<>(quayCount);
+      stopPlaces = new ArrayList<>();
+      timetables = new ArrayList<>(timetablesCount);
+      connectionLinks = new ArrayList<>();
+      accessLinks = new ArrayList<>();
+      accessPoints = new ArrayList<>();
 
       createStopAreas();
       createTimetables();
@@ -156,6 +168,7 @@ public class ComplexModelFactory
 
             ConnectionLink connectionLink = modelFactory
                   .createModel(ConnectionLink.class);
+            connectionLinks.add(connectionLink);
             connectionLink.setStartOfLink(startOfLink);
             connectionLink.setEndOfLink(endOfLink);
 
@@ -170,17 +183,21 @@ public class ComplexModelFactory
    {
       try
       {
-         if (!stopPlaces.isEmpty() && stopPlaces.size() > 1)
+         if (stopPlaces.size() > 1)
          {
-            StopArea stopArea = stopPlaces.get(0);
+        	 for (int i = 0; i < 2; i++)
+        	 {
+            StopArea stopArea = stopPlaces.get(i);
 
             AccessLink accessLink = modelFactory.createModel(AccessLink.class);
+            accessLinks.add(accessLink);
             AccessPoint accessPoint = modelFactory
                   .createModel(AccessPoint.class);
-
+            accessPoints.add(accessPoint);
             accessLink.setAccessPoint(accessPoint);
             accessPoint.setContainedIn(stopArea);
             accessLink.setStopArea(stopArea);
+        	 }
 
          }
       } catch (CreateModelException ex)
@@ -384,8 +401,8 @@ public class ComplexModelFactory
       {
          try
          {
-            line.getGroupOfLines().add(
-                  modelFactory.createModel(GroupOfLine.class));
+            GroupOfLine g = modelFactory.createModel(GroupOfLine.class);
+            g.addLine(line);
          } catch (CreateModelException ex)
          {
             throw new RuntimeException(ex.getMessage(), ex);
@@ -397,9 +414,9 @@ public class ComplexModelFactory
 
    private Route nominalRoute(int index, Line line)
    {
-      Route route = new Route();
       try
       {
+          Route route = new Route();
          route.setObjectId("T:Route:" + line.objectIdSuffix() + "-" + index);
 
          List<StopPoint> stopPoints = stopPointList(route);
@@ -410,14 +427,14 @@ public class ComplexModelFactory
          route.setJourneyPatterns(journeyPatterns);
          route.setStopPoints(stopPoints);
 
+         assert route.getJourneyPatterns().get(0).getVehicleJourneys().get(0)
+         .getJourneyPattern() != null;
+
+          return route;
       } catch (Exception ex)
       {
          throw new RuntimeException(ex.getMessage(), ex);
       }
-      assert route.getJourneyPatterns().get(0).getVehicleJourneys().get(0)
-            .getJourneyPattern() != null;
-
-      return route;
    }
 
    private List<VehicleJourney> vehicleJourneyList(JourneyPattern journeyPattern)

@@ -27,7 +27,7 @@ import mobi.chouette.dao.LineDAO;
 import mobi.chouette.exchange.report.LineInfo;
 import mobi.chouette.exchange.report.LineInfo.LINE_STATE;
 import mobi.chouette.exchange.report.LineStats;
-import mobi.chouette.exchange.report.Report;
+import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.model.Line;
 
 import com.jamonapi.Monitor;
@@ -66,7 +66,7 @@ public class DaoLineValidatorCommand implements Command, Constant {
 			lineValidatorCommand.execute(context);
 			if (context.get(ACTION).equals(VALIDATOR))
 			{
-				Report report = (Report) context.get(REPORT);
+				ActionReport report = (ActionReport) context.get(REPORT);
 				LineInfo lineInfo = new LineInfo();
 				lineInfo.setName(line.getName() + " (" + line.getNumber() + ")");
 				LineStats stats = new LineStats();

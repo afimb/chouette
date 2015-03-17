@@ -2,6 +2,9 @@
 package mobi.chouette.exchange.report;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -12,19 +15,18 @@ import lombok.Data;
 @Data
 public class Progression {
 	
-	public enum STEP {
-		INITIALISATION,
-		PROCESSING,
-		FINALISATION
-	};
-    @XmlElement( name = "step")
-    private STEP step = STEP.INITIALISATION;
 	
-    @XmlElement(name = "total")
-	private int total = 1;
+    @XmlElement( name = "current_step")
+    private int currentStep = 0;
+	
+    @XmlElement(name = "steps")
+	private List<StepProgression> steps = new ArrayList<>();
 
-    @XmlElement(name = "realized")
-	private int realized = 0;
-
+    public Progression()
+    {
+    	steps.add(new StepProgression(StepProgression.STEP.INITIALISATION,0,0));
+    	steps.add(new StepProgression(StepProgression.STEP.PROCESSING,0,0));
+    	steps.add(new StepProgression(StepProgression.STEP.FINALISATION,0,0));    	
+    }
 
 }

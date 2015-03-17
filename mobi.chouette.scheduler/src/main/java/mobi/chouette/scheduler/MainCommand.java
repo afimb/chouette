@@ -1,12 +1,14 @@
 package mobi.chouette.scheduler;
 
 import java.io.IOException;
-import java.net.URI;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.naming.InitialContext;
 import javax.ws.rs.core.MediaType;
 
@@ -17,6 +19,8 @@ import mobi.chouette.common.JSONUtils;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.JobDAO;
+import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.validator.report.ValidationReport;
 import mobi.chouette.model.api.Job;
 import mobi.chouette.model.api.Job.STATUS;
 import mobi.chouette.model.api.Link;
@@ -37,13 +41,36 @@ public class MainCommand implements Command, Constant {
 	
 
 	@Override
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public boolean execute(Context context) throws Exception {
 		boolean result = false;
 
 		Long id = (Long) context.get(JOB_ID);
 		Job job = jobDAO.find(id);
+	    // set job status to started
+		job.setStatus(STATUS.STARTED);
+		// add action report link
+		Link link = new Link();
+		link.setType(MediaType.APPLICATION_JSON);
+		link.setRel(Link.REPORT_REL);
+		link.setMethod(Link.GET_METHOD);
+		String href = MessageFormat.format(
+				"/{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH,
+				job.getReferential(), job.getId(),REPORT_FILE);
+		link.setHref(href);
+		job.getLinks().add(link);
+		// add validation report link
+		link = new Link();
+		link.setType(MediaType.APPLICATION_JSON);
+		link.setRel(Link.VALIDATION_REL);
+		link.setMethod(Link.GET_METHOD);
+		 href = MessageFormat.format(
+				"/{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH,
+				job.getReferential(), job.getId(),VALIDATION_FILE);
+		link.setHref(href);
+		job.getLinks().add(link);
+		jobDAO.update(job);
 
-		context.put(PATH, job.getPath());
 		context.put(ARCHIVE, job.getFilename());
 		java.nio.file.Path path = Paths.get(System.getProperty("user.home"),
 				ROOT_PATH, job.getReferential(), "data",
@@ -53,6 +80,8 @@ public class MainCommand implements Command, Constant {
 		context.put(CONFIGURATION, parameters.getConfiguration());
 		context.put(VALIDATION, parameters.getValidation());
 		context.put(JOB_REFERENTIAL, job.getReferential());
+		context.put(REPORT, new ActionReport());
+		context.put(MAIN_VALIDATION_REPORT, new ValidationReport());
 		context.put(ACTION, job.getAction());
 		context.put(TYPE, job.getType());
 
@@ -79,11 +108,11 @@ public class MainCommand implements Command, Constant {
 		});
 
 		// add location link
-		Link link = new Link();
+		link = new Link();
 		link.setType(MediaType.APPLICATION_JSON);
 		link.setRel(Link.LOCATION_REL);
 		link.setMethod(Link.GET_METHOD);
-		String href = MessageFormat.format("/{0}/{1}/reports/{2,number,#}",
+		href = MessageFormat.format("/{0}/{1}/terminated_jobs/{2,number,#}",
 				ROOT_PATH, job.getReferential(), job.getId());
 		link.setHref(href);
 		job.getLinks().add(link);
@@ -93,21 +122,11 @@ public class MainCommand implements Command, Constant {
 		link.setType("application/json");
 		link.setRel(Link.DELETE_REL);
 		link.setMethod(Link.DELETE_METHOD);
-		href = MessageFormat.format("/{0}/{1}/reports/{2,number,#}",
+		href = MessageFormat.format("/{0}/{1}/terminated_jobs/{2,number,#}",
 				ROOT_PATH, job.getReferential(), job.getId());
 		link.setHref(href);
 		job.getLinks().add(link);
 
-		// add validation link
-		link = new Link();
-		link.setType(MediaType.APPLICATION_JSON);
-		link.setRel(Link.VALIDATION_REL);
-		link.setMethod(Link.GET_METHOD);
-		href = MessageFormat.format(
-				"/{0}/{1}/data/{2,number,#}/validation.json", ROOT_PATH,
-				job.getReferential(), job.getId());
-		link.setHref(href);
-		job.getLinks().add(link);
 
 		// add data upload link
 		if (job.getAction().equals(EXPORTER)) {
@@ -116,7 +135,7 @@ public class MainCommand implements Command, Constant {
 					"/{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH,
 					job.getReferential(), job.getId(), job.getFilename());
 
-			// if (Files.exists(Paths.get(System.getProperty("user.home"), href))) {
+			if (Files.exists(Paths.get(System.getProperty("user.home"), href))) {
 				link = new Link();
 				link.setType(MediaType.APPLICATION_OCTET_STREAM);
 				link.setRel(Link.DATA_REL);
@@ -124,7 +143,7 @@ public class MainCommand implements Command, Constant {
 				link.setHref(href);
 
 				job.getLinks().add(link);
-			//}
+			}
 		}
 
 		jobDAO.update(job);

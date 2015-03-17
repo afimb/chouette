@@ -6,9 +6,6 @@ import java.util.Map;
 
 import javax.naming.InitialContext;
 
-import lombok.extern.log4j.Log4j;
-
-@Log4j
 public abstract class CommandFactory {
 
 	   public static Map<String, CommandFactory> factories = new HashMap<String, CommandFactory>();
