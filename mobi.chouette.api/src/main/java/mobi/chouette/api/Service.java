@@ -81,11 +81,11 @@ public class Service implements Constant {
 			@PathParam("action") String action, @PathParam("type") String type,
 			MultipartFormDataInput input) {
 		Response result = null;
-		
-        if (type != null && type.startsWith("/"))
-        {
-        	type = type.substring(1);
-        }
+
+		if (type != null && type.startsWith("/"))
+		{
+			type = type.substring(1);
+		}
 		// check params
 		if (!schemas.getSchemaListing().contains(referential)) {
 			throw new WebApplicationException(Status.BAD_REQUEST);
@@ -100,13 +100,13 @@ public class Service implements Constant {
 		{
 			throw new WebApplicationException(Status.BAD_REQUEST);
 		}
-        if (action.equals(VALIDATOR) && type != null && !type.isEmpty())
-        {
+		if (action.equals(VALIDATOR) && type != null && !type.isEmpty())
+		{
 			throw new WebApplicationException(Status.BAD_REQUEST);        	
-        }
-        if (type.isEmpty()) type = null;
-		
-        
+		}
+		if (type.isEmpty()) type = null;
+
+
 		log.info(Color.YELLOW + "[DSU] schedule action referential : "
 				+ referential + " action: " + action + " type : " + type
 				+ Color.NORMAL);
@@ -143,7 +143,7 @@ public class Service implements Constant {
 			// mkdir
 			java.nio.file.Path dir = Paths.get(System.getProperty("user.home"),
 					ROOT_PATH, job.getReferential(), "data", job.getId()
-							.toString());
+					.toString());
 			if (Files.exists(dir)) {
 				jobDAO.delete(job);
 			}
@@ -164,17 +164,14 @@ public class Service implements Constant {
 					java.nio.file.Path path = Paths.get(dir.toString(),
 							filename);
 					Files.copy(in, path);
-					
+
 					// save separately action and validation parameters if possible
 					Parameters payload = JSONUtils.fromJSON(path, Parameters.class);
 					if (payload != null)
 					{
-						Parameters validation = new Parameters();
-						validation.setValidation(payload.getValidation());
-						payload.setValidation(null);
 						java.nio.file.Path actionPath =  Paths.get(dir.toString(),
 								ACTION_PARAMETERS_FILE);
-						if (JSONUtils.toJSON(actionPath, payload))
+						if (JSONUtils.toJSON(actionPath, payload.getConfiguration()))
 						{
 							// add link
 							link = new Link();
@@ -187,34 +184,37 @@ public class Service implements Constant {
 							link.setHref(href);
 							job.getLinks().add(link);
 						}
-						java.nio.file.Path validationPath =  Paths.get(dir.toString(),
-								VALIDATION_PARAMETERS_FILE);
-						if (JSONUtils.toJSON(validationPath, validation))
+						if (payload.getValidation() != null)
 						{
-							// add link
-							link = new Link();
-							link.setType(MediaType.APPLICATION_JSON);
-							link.setRel(Link.VALIDATION_PARAMETERS_REL);
-							link.setMethod(Link.GET_METHOD);
-							href = MessageFormat.format(
-									"/{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH,
-									job.getReferential(), job.getId(), VALIDATION_PARAMETERS_FILE);
-							link.setHref(href);
-							job.getLinks().add(link);
+							java.nio.file.Path validationPath =  Paths.get(dir.toString(),
+									VALIDATION_PARAMETERS_FILE);
+							if (JSONUtils.toJSON(validationPath, payload.getValidation()))
+							{
+								// add link
+								link = new Link();
+								link.setType(MediaType.APPLICATION_JSON);
+								link.setRel(Link.VALIDATION_PARAMETERS_REL);
+								link.setMethod(Link.GET_METHOD);
+								href = MessageFormat.format(
+										"/{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH,
+										job.getReferential(), job.getId(), VALIDATION_PARAMETERS_FILE);
+								link.setHref(href);
+								job.getLinks().add(link);
+							}
 						}
 					}
 					else
 					{
-					// add parameters link when invalid
-					link = new Link();
-					link.setType(MediaType.APPLICATION_JSON);
-					link.setRel(Link.PARAMETERS_REL);
-					link.setMethod(Link.GET_METHOD);
-					href = MessageFormat.format(
-							"/{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH,
-							job.getReferential(), job.getId(), PARAMETERS_FILE);
-					link.setHref(href);
-					job.getLinks().add(link);
+						// add parameters link when invalid
+						link = new Link();
+						link.setType(MediaType.APPLICATION_JSON);
+						link.setRel(Link.PARAMETERS_REL);
+						link.setMethod(Link.GET_METHOD);
+						href = MessageFormat.format(
+								"/{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH,
+								job.getReferential(), job.getId(), PARAMETERS_FILE);
+						link.setHref(href);
+						job.getLinks().add(link);
 					}
 
 				} else {
@@ -255,7 +255,7 @@ public class Service implements Constant {
 			}
 
 			// schedule job
-			
+
 			jobDAO.update(job);
 			scheduler.schedule(job.getReferential());
 
@@ -312,12 +312,12 @@ public class Service implements Constant {
 				MessageFormat.format("attachment; filename=\"{0}\"", filename));
 
 		MediaType type = FilenameUtils.getExtension(filename).toLowerCase().equals("json")? MediaType.APPLICATION_JSON_TYPE : MediaType.APPLICATION_OCTET_STREAM_TYPE;
-		
+
 		// cache control
 		CacheControl cc = new CacheControl();
 		cc.setMaxAge(Integer.MAX_VALUE);
 		builder.cacheControl(cc);
-		
+
 
 		result = builder.type(type).build();
 		return result;
@@ -344,16 +344,16 @@ public class Service implements Constant {
 		// TODO [DSU] create finder by criteria
 		Collection<Job> filtered = Collections2.filter(list,
 				new Predicate<Job>() {
-					@Override
-					public boolean apply(Job job) {
+			@Override
+			public boolean apply(Job job) {
 
-						boolean result = ((version > 0) ? job.getUpdated()
-								.getTime() > version : true)
-								&& ((action != null) ? job.getAction().equals(
-										action) : true);
-						return result;
-					}
-				});
+				boolean result = ((version > 0) ? job.getUpdated()
+						.getTime() > version : true)
+						&& ((action != null) ? job.getAction().equals(
+								action) : true);
+				return result;
+			}
+		});
 
 		// re factor Parameters dependencies
 		result.setList(build(filtered));
@@ -367,8 +367,7 @@ public class Service implements Constant {
 			Parameters payload = JSONUtils.fromJSON(path, Parameters.class);
 			if (payload != null)
 			{
-				payload.setValidation(null);
-				job.setParameters(payload);
+				job.setAction_parameters(payload.getConfiguration());
 			}
 		}
 
@@ -412,8 +411,7 @@ public class Service implements Constant {
 			Parameters payload = JSONUtils.fromJSON(path, Parameters.class);
 			if (payload != null)
 			{
-				payload.setValidation(null);
-				info.setParameters(payload);
+				info.setAction_parameters(payload.getConfiguration());
 			}
 			builder = Response.ok(info);
 
@@ -494,8 +492,7 @@ public class Service implements Constant {
 		Parameters payload = JSONUtils.fromJSON(path, Parameters.class);
 		if (payload != null)
 		{
-			payload.setValidation(null);
-			info.setParameters(payload);
+			info.setAction_parameters(payload.getConfiguration());
 		}
 
 		ResponseBuilder builder = Response.ok(info);
@@ -591,7 +588,7 @@ public class Service implements Constant {
 
 		Collection<JobInfo> result = new ArrayList<>();
 		for (Job job : list) {
-            result.add(new JobInfo(job,true));
+			result.add(new JobInfo(job,true));
 		}
 		return result;
 	}

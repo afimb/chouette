@@ -14,7 +14,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder={})
+@XmlType(propOrder={},name="actionImportParameter")
 public class AbstractImportParameter extends AbstractParameter{
 
 	@XmlElement(name = "no_save", defaultValue="false")
