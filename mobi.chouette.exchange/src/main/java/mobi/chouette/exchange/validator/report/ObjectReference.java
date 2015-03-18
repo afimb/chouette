@@ -3,6 +3,7 @@ package mobi.chouette.exchange.validator.report;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlType;
 
 import lombok.Data;
@@ -26,6 +27,8 @@ import mobi.chouette.model.VehicleJourney;
 @XmlType(propOrder={})
 public class ObjectReference {
 
+	@XmlType(name="referenceType")
+	@XmlEnum
 	public enum TYPE  {
 		network, 
 		company, 
@@ -41,10 +44,10 @@ public class ObjectReference {
 		vehicle_journey
 	};
 
-	@XmlElement(name = "type")
+	@XmlElement(name = "type",required=true)
 	private TYPE type;
 
-	@XmlElement(name = "id")
+	@XmlElement(name = "id",required=true)
 	private Long id;
 
 	public ObjectReference(PTNetwork object)

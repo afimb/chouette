@@ -15,16 +15,16 @@ import mobi.chouette.model.api.Link;
 @XmlType(propOrder={})
 public class LinkInfo {
 
-	@XmlElement(name = "rel")
+	@XmlElement(name = "rel", required=true)
 	private String rel;
 
-	@XmlElement(name = "href")
+	@XmlElement(name = "href", required=true)
 	private String href;
 
-	@XmlElement(name = "type")
+	@XmlElement(name = "type", required=true)
 	private String type;
 
-	@XmlElement(name = "method")
+	@XmlElement(name = "method", required=true)
 	private String method;
 	
 	public LinkInfo(Link link)

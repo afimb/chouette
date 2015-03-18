@@ -367,7 +367,7 @@ public class Service implements Constant {
 			Parameters payload = JSONUtils.fromJSON(path, Parameters.class);
 			if (payload != null)
 			{
-				job.setAction_parameters(payload.getConfiguration());
+				job.setActionParameters(payload.getConfiguration());
 			}
 		}
 
@@ -411,7 +411,7 @@ public class Service implements Constant {
 			Parameters payload = JSONUtils.fromJSON(path, Parameters.class);
 			if (payload != null)
 			{
-				info.setAction_parameters(payload.getConfiguration());
+				info.setActionParameters(payload.getConfiguration());
 			}
 			builder = Response.ok(info);
 
@@ -492,7 +492,7 @@ public class Service implements Constant {
 		Parameters payload = JSONUtils.fromJSON(path, Parameters.class);
 		if (payload != null)
 		{
-			info.setAction_parameters(payload.getConfiguration());
+			info.setActionParameters(payload.getConfiguration());
 		}
 
 		ResponseBuilder builder = Response.ok(info);

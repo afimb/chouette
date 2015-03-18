@@ -19,7 +19,7 @@ public class Progression {
     @XmlElement( name = "current_step")
     private int currentStep = 0;
 	
-    @XmlElement(name = "steps")
+    @XmlElement(name = "steps",required=true)
 	private List<StepProgression> steps = new ArrayList<>();
 
     public Progression()
