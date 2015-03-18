@@ -33,5 +33,10 @@ public class FileInfo {
 	
 	@XmlElement(name="errors")
 	private List<String> errors = new ArrayList<>();
+	
+	public void addError(String error)
+	{
+		errors.add(error);
+	}
 
 }

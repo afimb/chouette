@@ -32,7 +32,7 @@ public class ActionReport {
 	
 	@XmlElement(name = "zip_file")
 	@Getter @Setter
-	private ZipInfo zip;
+	private FileInfo zip;
 	
 	@XmlElement(name = "files")
 	@Getter @Setter
