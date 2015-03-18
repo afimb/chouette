@@ -13,7 +13,7 @@ import mobi.chouette.model.Company;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @Data
-@XmlType(propOrder={})
+//@XmlType(propOrder={})
 public class CompanyParameters {
 
 	@XmlTransient

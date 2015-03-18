@@ -30,7 +30,7 @@ import mobi.chouette.model.api.Link;
 @NoArgsConstructor
 @XmlRootElement(name="job")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder={"id","referential","action","type","created","updated","status","links","action_parameters"})
+@XmlType(propOrder={"id","referential","action","type","created","updated","status","linkInfos","actionParameters"})
 @XmlSeeAlso({NeptuneExportParameters.class,
 	         NeptuneImportParameters.class,
 	         GtfsImportParameters.class,

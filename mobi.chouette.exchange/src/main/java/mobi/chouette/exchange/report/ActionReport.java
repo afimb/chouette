@@ -15,7 +15,7 @@ import lombok.Setter;
 
 @XmlRootElement(name = "action_report")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder={"progression","result","zip_file","files","lines","stats","failure"})
+@XmlType(propOrder={"progression","result","zip","files","lines","stats","failure"})
 @NoArgsConstructor
 public class ActionReport {
 

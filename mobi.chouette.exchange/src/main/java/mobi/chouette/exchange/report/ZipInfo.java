@@ -11,7 +11,7 @@ import javax.xml.bind.annotation.XmlType;
 import lombok.Data;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder={"name","status","error"})
+@XmlType(propOrder={"name","status","errors"})
 @Data
 public class ZipInfo {
 	
@@ -21,7 +21,7 @@ public class ZipInfo {
 	@XmlElement(name="name",required=true)
 	private String name;
 	
-	@XmlElement(name="error")
+	@XmlElement(name="errors")
 	private List<String> errors;
 	
 	public void addError(String error)

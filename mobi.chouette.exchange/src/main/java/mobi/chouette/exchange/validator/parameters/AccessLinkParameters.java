@@ -13,7 +13,7 @@ import mobi.chouette.model.AccessLink;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @Data
-@XmlType(propOrder={})
+//@XmlType(propOrder={})
 public class AccessLinkParameters {
 
 	@XmlTransient

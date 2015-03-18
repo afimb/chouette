@@ -13,7 +13,7 @@ import javax.xml.bind.annotation.XmlType;
 import lombok.Data;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder={"current_step","steps"})
+@XmlType(propOrder={"currentStep","steps"})
 @Data
 public class Progression {
 	

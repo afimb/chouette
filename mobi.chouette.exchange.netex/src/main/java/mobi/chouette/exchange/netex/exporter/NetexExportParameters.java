@@ -12,7 +12,7 @@ import mobi.chouette.exchange.parameters.AbstractExportParameter;
 
 
 @XmlRootElement(name = "netex-export")
-@XmlType(propOrder={})
+@XmlType(propOrder={"projectionType"})
 @XmlAccessorType(XmlAccessType.FIELD)
 public class NetexExportParameters  extends AbstractExportParameter{
 	

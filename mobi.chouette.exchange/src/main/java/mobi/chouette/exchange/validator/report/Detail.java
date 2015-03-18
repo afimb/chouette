@@ -15,7 +15,7 @@ import lombok.ToString;
 @Data
 @ToString
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder={})
+@XmlType(propOrder={"key","source","targets","value","referenceValue"})
 public class Detail {
 
 	@XmlElement(name = "source")

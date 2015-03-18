@@ -16,7 +16,7 @@ import lombok.ToString;
 @ToString
 @XmlRootElement(name = "validation_report")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder={})
+@XmlType(propOrder={"checkPoints"})
 public class ValidationReport {
 
 	@XmlElement(name = "tests")

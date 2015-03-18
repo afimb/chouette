@@ -11,7 +11,7 @@ import lombok.ToString;
 @Data
 @ToString
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder={})
+@XmlType(propOrder={"filename","lineNumber","columnNumber"})
 public class FileLocation {
 
 	@XmlElement(name = "filename",required=true)

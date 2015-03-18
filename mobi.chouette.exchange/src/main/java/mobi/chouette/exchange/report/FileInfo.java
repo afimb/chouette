@@ -12,7 +12,7 @@ import javax.xml.bind.annotation.XmlType;
 import lombok.Data;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder={"name","status","error"})
+@XmlType(propOrder={"name","status","errors"})
 @Data
 public class FileInfo {
 	
@@ -31,7 +31,7 @@ public class FileInfo {
 	@XmlElement(name="status",required=true)
 	private FILE_STATE status;
 	
-	@XmlElement(name="error")
+	@XmlElement(name="errors")
 	private List<String> errors = new ArrayList<>();
 
 }

@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import javax.naming.InitialContext;
 
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.CommandFactory;
@@ -20,6 +21,7 @@ import org.apache.commons.io.FileUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+@Log4j
 public class ProgressionCommandTest implements Constant 
 {
 	private ProgressionCommand progression = null;
@@ -33,6 +35,7 @@ public void testProgressionInitialize() throws Exception
 	context.put(INITIAL_CONTEXT, initialContext);
 	context.put(PATH, "target/referential/test");
 	context.put(REPORT, new ActionReport());
+	ActionReport report = (ActionReport)  context.get(REPORT);
 	context.put(MAIN_VALIDATION_REPORT, new ValidationReport());
 	if (d.exists())
 		try {
@@ -43,8 +46,8 @@ public void testProgressionInitialize() throws Exception
 	d.mkdirs();
 	progression = (ProgressionCommand) CommandFactory
 			.create(initialContext, ProgressionCommand.class.getName());
+	log.info(report);
 	progression.initialize(context,2);
-	ActionReport report = (ActionReport)  context.get(REPORT);
 	File reportFile = new File(d,REPORT_FILE);
 	File validationFile = new File(d,VALIDATION_FILE);
 	Assert.assertTrue (reportFile.exists(), REPORT_FILE + "should exists");

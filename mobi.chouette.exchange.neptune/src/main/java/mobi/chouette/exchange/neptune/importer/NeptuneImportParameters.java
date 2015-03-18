@@ -13,7 +13,7 @@ import mobi.chouette.exchange.parameters.AbstractImportParameter;
 @NoArgsConstructor
 @ToString(callSuper = true)
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder={})
+//@XmlType(propOrder={})
 public class NeptuneImportParameters extends AbstractImportParameter {
 
 }

@@ -16,7 +16,12 @@ import mobi.chouette.exchange.parameters.AbstractImportParameter;
 @NoArgsConstructor
 @ToString(callSuper=true)
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder={})
+@XmlType(propOrder={"objectIdPrefix",
+		"maxDistanceForConnectionLink",
+		"maxDistanceForCommercial",
+		"ignoreEndChars",
+		"ignoreLastWord",
+		"referencesType"})
 public class GtfsImportParameters extends AbstractImportParameter {
 
 	@Getter@Setter

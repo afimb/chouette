@@ -10,14 +10,14 @@ import javax.xml.bind.annotation.XmlType;
 import lombok.Data;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder={"line_count",
-		"route_count",
-		"connection_link_count",
-		"time_table_count",
-		"stop_area_count",
-		"access_point_count",
-		"vehicle_journey_count",
-		"journey_pattern_count"})
+@XmlType(propOrder={"lineCount",
+		"routeCount",
+		"connectionLinkCount",
+		"timeTableCount",
+		"stopAreaCount",
+		"accessPointCount",
+		"vehicleJourneyCount",
+		"journeyPatternCount"})
 @Data
 public class LineStats {
 

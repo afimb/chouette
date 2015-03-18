@@ -28,7 +28,7 @@ import mobi.chouette.model.util.NamingUtil;
 @Data
 @ToString
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder={})
+@XmlType(propOrder={"file","objectId","name","objectRefs"})
 public class Location {
 
 

@@ -14,7 +14,7 @@ import lombok.ToString;
 @Data
 @ToString
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder={"test_id","level","object_type","rank","severity","result","error_count","errors"})
+@XmlType(propOrder={"name","phase","target","rank","severity","state","detailCount","details"})
 public class CheckPoint {
 
 	private static final int maxDetails = 50;
@@ -48,7 +48,7 @@ public class CheckPoint {
 	@XmlElement(name = "error_count")
 	private int detailCount = 0;
 
-	@XmlElement(name = "error")
+	@XmlElement(name = "errors")
 	private List<Detail> details = new ArrayList<Detail>();
 
 	public CheckPoint(String name, RESULT state, SEVERITY severity)

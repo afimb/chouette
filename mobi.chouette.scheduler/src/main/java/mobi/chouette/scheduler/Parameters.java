@@ -13,7 +13,7 @@ import mobi.chouette.exchange.validator.parameters.ValidationParameters;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder={})
+@XmlType(propOrder={"configuration","validation"})
 @Data
 public class Parameters {
 

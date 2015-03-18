@@ -14,7 +14,7 @@ import mobi.chouette.model.PTNetwork;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @Data
-@XmlType(propOrder={})
+//@XmlType(propOrder={})
 public class NetworkParameters {
 
 	@XmlTransient

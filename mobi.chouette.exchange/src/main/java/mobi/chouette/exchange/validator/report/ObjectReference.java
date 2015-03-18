@@ -24,7 +24,7 @@ import mobi.chouette.model.VehicleJourney;
 @Data
 @ToString
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder={})
+@XmlType(propOrder={"type","id"})
 public class ObjectReference {
 
 	@XmlType(name="referenceType")

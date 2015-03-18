@@ -13,7 +13,13 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@XmlType(propOrder={})
+@XmlType(propOrder={"allowedTransport",
+		"interStopAreaDistanceMin",
+		"interStopAreaDistanceMax",
+		"speedMax",
+		"speedMin",
+		"interStopDurationVariationMax"
+		})
 public class TransportModeParameters {
 	@XmlElement(name = "allowed_transport",defaultValue="0")
 	private int allowedTransport=0;

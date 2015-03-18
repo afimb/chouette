@@ -9,7 +9,7 @@ import lombok.Data;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @Data
-@XmlType(propOrder={})
+@XmlType(propOrder={"unique","pattern","minSize","maxSize"})
 public class FieldParameters {
 
 	@XmlElement(name = "unique", defaultValue="0")

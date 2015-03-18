@@ -14,7 +14,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder={"name","user_name","organisation_name","referential_name"},name="actionParameters")
+@XmlType(propOrder={"name","userName","organisationName","referentialName"},name="actionParameters")
 public class AbstractParameter {
 
 	@Getter@Setter
