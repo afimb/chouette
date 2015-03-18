@@ -14,7 +14,7 @@ import lombok.ToString;
 @Data
 @ToString
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder={})
+@XmlType(propOrder={"test_id","level","object_type","rank","severity","result","error_count","errors"})
 public class CheckPoint {
 
 	private static final int maxDetails = 50;

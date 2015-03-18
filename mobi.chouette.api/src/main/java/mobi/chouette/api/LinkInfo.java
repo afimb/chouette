@@ -12,7 +12,7 @@ import mobi.chouette.model.api.Link;
 @Data
 @NoArgsConstructor
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder={})
+@XmlType(propOrder={"rel","href","type","method"})
 public class LinkInfo {
 
 	@XmlElement(name = "rel", required=true)

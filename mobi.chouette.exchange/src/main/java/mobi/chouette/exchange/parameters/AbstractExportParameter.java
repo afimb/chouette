@@ -17,7 +17,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString(callSuper=true)
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder={},name="actionExportParameter")
+@XmlType(propOrder={"references_type","id","start_date","end_date","add_metadata"},name="actionExportParameter")
 public class AbstractExportParameter extends AbstractParameter{
 
 	@Getter @Setter

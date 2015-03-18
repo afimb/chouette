@@ -13,7 +13,7 @@ import lombok.Data;
 @Data
 @XmlRootElement (name="job_listings")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder={})
+@XmlType(propOrder={"jobs"})
 public class JobListing {
 
 	@XmlElement(name = "jobs")

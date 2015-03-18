@@ -22,7 +22,7 @@ import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.netex.exporter.NetexExportParameters;
 import mobi.chouette.exchange.netex.importer.NetexImportParameters;
 import mobi.chouette.exchange.parameters.AbstractParameter;
-import mobi.chouette.exchange.validator.parameters.ValidationParameters;
+import mobi.chouette.exchange.validator.ValidateParameters;
 import mobi.chouette.model.api.Job;
 import mobi.chouette.model.api.Link;
 
@@ -30,14 +30,14 @@ import mobi.chouette.model.api.Link;
 @NoArgsConstructor
 @XmlRootElement(name="job")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder={})
+@XmlType(propOrder={"id","referential","action","type","created","updated","status","links","action_parameters"})
 @XmlSeeAlso({NeptuneExportParameters.class,
 	         NeptuneImportParameters.class,
 	         GtfsImportParameters.class,
 	         GtfsExportParameters.class,
 	         NetexImportParameters.class,
 	         NetexExportParameters.class,
-	         ValidationParameters.class})
+	         ValidateParameters.class})
 public class JobInfo {
 
 	@XmlElement(name = "id", required = true)

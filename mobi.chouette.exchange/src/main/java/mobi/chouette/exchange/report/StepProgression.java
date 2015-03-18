@@ -13,6 +13,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @XmlAccessorType(XmlAccessType.FIELD)
+@XmlType(propOrder={"step","total","realized"})
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

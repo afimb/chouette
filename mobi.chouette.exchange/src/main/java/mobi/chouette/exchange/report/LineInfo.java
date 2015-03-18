@@ -10,7 +10,7 @@ import lombok.Data;
 
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder={})
+@XmlType(propOrder={"name","status","stats"})
 @Data
 public class LineInfo {
 
