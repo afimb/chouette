@@ -159,8 +159,8 @@ public class GtfsImportDataTests extends AbstractTestNGSpringContextTests
             errors++;
          }
       }
-      Assert.assertEquals(ok, 1, "only 1 Route must be loaded");
-      Assert.assertEquals(errors, 3,"report must have errors ");
+      Assert.assertEquals(ok, 3, "only 3 Route must be loaded");
+      Assert.assertEquals(errors, 2,"report must have errors ");
    }
 
    @Test(groups = { "GtfsImporter" }, description = "GtfsImporter should report missing mandatory data on stop_times.txt")
