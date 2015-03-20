@@ -59,6 +59,9 @@ import com.google.common.collect.Collections2;
 @Log4j
 @RequestScoped
 public class Service implements Constant {
+	
+	private static String api_version_key = "X-ChouetteIEV-Media-Type";
+	private static String api_version = "iev.v1.0; format=json";
 
 	@Inject
 	JobDAO jobDAO;
@@ -311,13 +314,21 @@ public class Service implements Constant {
 		builder.header(HttpHeaders.CONTENT_DISPOSITION,
 				MessageFormat.format("attachment; filename=\"{0}\"", filename));
 
-		MediaType type = FilenameUtils.getExtension(filename).toLowerCase().equals("json")? MediaType.APPLICATION_JSON_TYPE : MediaType.APPLICATION_OCTET_STREAM_TYPE;
+		MediaType type = null;
+		if (FilenameUtils.getExtension(filename).toLowerCase().equals("json"))
+		{
+			type = MediaType.APPLICATION_JSON_TYPE;
+			builder.header(api_version_key,api_version);
+		}
+		else
+		{
+			type = MediaType.APPLICATION_OCTET_STREAM_TYPE;
+		}
 
 		// cache control
 		CacheControl cc = new CacheControl();
 		cc.setMaxAge(Integer.MAX_VALUE);
 		builder.cacheControl(cc);
-
 
 		result = builder.type(type).build();
 		return result;
@@ -373,6 +384,7 @@ public class Service implements Constant {
 
 		// cache control
 		ResponseBuilder builder = Response.ok(result);
+		builder.header(api_version_key,api_version);
 		// CacheControl cc = new CacheControl();
 		// cc.setMaxAge(-1);
 		// builder.cacheControl(cc);
@@ -428,6 +440,7 @@ public class Service implements Constant {
 					job.getReferential(), job.getId())));
 		}
 
+		builder.header(api_version_key,api_version);
 		result = builder.build();
 		return result;
 	}
@@ -457,6 +470,7 @@ public class Service implements Constant {
 			throw new WebApplicationException(Status.NOT_FOUND);
 		}
 		result = builder.build();
+		builder.header(api_version_key,api_version);
 
 		return result;
 	}
@@ -509,6 +523,7 @@ public class Service implements Constant {
 			builder.link(URI.create(uri.toASCIIString()), link.getRel());
 		}
 
+		builder.header(api_version_key,api_version);
 		result = builder.build();
 
 		return result;
@@ -547,6 +562,7 @@ public class Service implements Constant {
 		} else {
 			throw new WebApplicationException(Status.NOT_FOUND);
 		}
+		builder.header(api_version_key,api_version);
 		result = builder.build();
 
 		return result;
@@ -579,6 +595,7 @@ public class Service implements Constant {
 		} else {
 			throw new WebApplicationException(Status.NOT_FOUND);
 		}
+		builder.header(api_version_key,api_version);
 		result = builder.build();
 
 		return result;

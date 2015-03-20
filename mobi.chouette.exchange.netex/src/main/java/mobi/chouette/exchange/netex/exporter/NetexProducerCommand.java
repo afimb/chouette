@@ -1,36 +1,31 @@
-package mobi.chouette.exchange.neptune.exporter;
+package mobi.chouette.exchange.netex.exporter;
 
-import java.io.IOException;
 import java.sql.Date;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
-import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.LineDAO;
-import mobi.chouette.exchange.neptune.Constant;
-import mobi.chouette.exchange.report.LineInfo;
-import mobi.chouette.exchange.report.LineInfo.LINE_STATE;
-import mobi.chouette.exchange.report.LineStats;
+import mobi.chouette.exchange.netex.Constant;
 import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.LineInfo;
+import mobi.chouette.exchange.report.LineStats;
+import mobi.chouette.exchange.report.LineInfo.LINE_STATE;
 import mobi.chouette.model.Line;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
 @Log4j
-@Stateless(name = NeptuneProducerCommand.COMMAND)
-public class NeptuneProducerCommand implements Command, Constant {
-
-	public static final String COMMAND = "NeptuneProducerCommand";
+@Stateless(name = NetexProducerCommand.COMMAND)
+public class NetexProducerCommand implements Command, Constant {
+	public static final String COMMAND = "NetexProducerCommand";
 
 	@EJB
 	private LineDAO lineDAO;
@@ -47,7 +42,7 @@ public class NeptuneProducerCommand implements Command, Constant {
 
 			Long lineId = (Long) context.get(LINE_ID);
 			Line line = lineDAO.find(lineId);
-			NeptuneExportParameters configuration = (NeptuneExportParameters) context.get(CONFIGURATION);
+			NetexExportParameters configuration = (NetexExportParameters) context.get(CONFIGURATION);
 
 			ExportableData collection = new ExportableData();
 
@@ -61,7 +56,7 @@ public class NeptuneProducerCommand implements Command, Constant {
 				endDate = new Date(configuration.getEndDate().getTime());
 			}
 
-			NeptuneDataCollector collector = new NeptuneDataCollector();
+			NetexDataCollector collector = new NetexDataCollector();
 			boolean cont = (collector.collect(collection, line, startDate, endDate));
 			LineInfo lineInfo = new LineInfo();
 			lineInfo.setName(line.getName() + " (" + line.getNumber() + ")");
@@ -77,7 +72,7 @@ public class NeptuneProducerCommand implements Command, Constant {
 			if (cont) {
 				context.put(EXPORTABLE_DATA, collection);
 
-				ChouettePTNetworkProducer producer = new ChouettePTNetworkProducer();
+				NetexLineProducer producer = new NetexLineProducer();
 				producer.produce(context);
 
 				lineInfo.setStatus(LINE_STATE.OK);
@@ -105,31 +100,13 @@ public class NeptuneProducerCommand implements Command, Constant {
 				result = ERROR;
 			}
 			report.getLines().add(lineInfo);
+
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		} finally {
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		}
-
 		return result;
 	}
 
-	public static class DefaultCommandFactory extends CommandFactory {
-
-		@Override
-		protected Command create(InitialContext context) throws IOException {
-			Command result = null;
-			try {
-				String name = "java:app/mobi.chouette.exchange.neptune/" + COMMAND;
-				result = (Command) context.lookup(name);
-			} catch (NamingException e) {
-				log.error(e);
-			}
-			return result;
-		}
-	}
-
-	static {
-		CommandFactory.factories.put(NeptuneProducerCommand.class.getName(), new DefaultCommandFactory());
-	}
 }

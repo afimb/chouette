@@ -1,0 +1,323 @@
+<!-- ServiceFrame to map the PTNetwork  NEPTUNE Object -->
+<ServiceFrame version="any"  id="${line.objectIdPrefix()}:ServiceFrame:${line.objectIdSuffix()}">
+  <!-- NEPTUNE PTNetwork Mappling =========================================== -->
+  <Network version="$network.objectVersion" changed="$date.format($dateFormat, $network.versionDate)" 
+           id="$modelTranslator.netexId( $network)" >
+      #if ( $network.comment )
+      <keyList>
+          <KeyValue>
+              <Key>Comment</Key>
+              <Value>$!esc.xml($network.comment)</Value>
+          </KeyValue>
+      </keyList>
+      #end
+    #if ( $network.name )
+    <Name>$!esc.xml($network.name)</Name>
+    #end
+    #if ( $network.description )
+    <Description>$!esc.xml($network.description)</Description>
+    #end
+    #if ( $network.registrationNumber )
+    <PrivateCode>$!esc.xml($network.registrationNumber)</PrivateCode>
+    #end
+  </Network>
+  <!-- NEPTUNE Route Mapping (part 1 : directions ) =========================================== -->
+  <directions>
+    #foreach( $route in $line.routes )   
+    <Direction version="any" id="${route.objectIdPrefix()}:Route:${route.objectIdSuffix()}:Direction">
+      #if ( $route.direction )
+      <Name>$!esc.xml( $route.direction)</Name>
+      #end
+      #if ($route.wayBack == "A")
+      <DirectionType>outbound</DirectionType>
+      #elseif( $route.wayBack == "R" )
+      <DirectionType>inbound</DirectionType>
+      #end
+    </Direction>
+    #end                  
+  </directions>
+  <!-- NEPTUNE StopPoint (RoutePoint)  mapping=========================================== -->
+  <routePoints>
+    #foreach( $route in $line.routes ) 
+      #foreach( $stopPoint in $route.stopPoints )
+      #set($routePointId = ${route.objectIdSuffix()} + 'A' + $stopPoint.position + 'A' + ${stopPoint.objectIdSuffix()} )
+    <RoutePoint version="$stopPoint.objectVersion" id="${stopPoint.objectIdPrefix()}:RoutePoint:${routePointId}">
+      <projections>
+        <PointProjection version="any" id="${stopPoint.objectIdPrefix()}:PointProjection:${routePointId}">
+          <ProjectedPointRef version="$stopPoint.containedInStopArea.objectVersion" ref="$modelTranslator.netexId( $stopPoint)"/>
+        </PointProjection>
+      </projections>
+    </RoutePoint>
+      #end
+    #end
+  </routePoints>
+  <!-- NEPTUNE Route Mapping (part 2 : routes ) =========================================== -->
+  <routes>
+    #foreach( $route in $line.routes )   
+    <Route version="$route.objectVersion" id="$modelTranslator.netexId( $route)">
+      #if ( $route.comment || $route.number )
+      <keyList>
+          #if ( $route.comment )
+          <KeyValue>
+              <Key>Comment</Key>
+              <Value>$!esc.xml($route.comment)</Value>
+          </KeyValue>
+          #end
+          #if ( $route.number )
+          <KeyValue>
+              <Key>Number</Key>
+              <Value>$!esc.xml($route.number)</Value>
+          </KeyValue>
+          #end
+      </keyList>
+      #end
+      #if ( $route.name )
+      <Name>$!esc.xml($route.name)</Name>
+      #end
+      #if ( $route.publishedName )
+      <ShortName>$!esc.xml($route.publishedName)</ShortName>
+      #end
+      <!-- NEPTUNE [mapping:variable] : Route->DirectionRef reference of Direction object mapping to NEPTUNE Route->publishedName and Route->RouteExtension->wayBack -->
+      <DirectionRef version="any" ref="${route.objectIdPrefix()}:Route:${route.objectIdSuffix()}:Direction"/>
+      <pointsInSequence>                               
+        #foreach( $stopPoint in $route.stopPoints )
+        #set($routePointId = ${route.objectIdSuffix()} + 'A' + $stopPoint.position + 'A' + ${stopPoint.objectIdSuffix()} )
+        #set($pointOnRouteId = ${stopPoint.objectIdSuffix()} + '-' + $stopPoint.position )
+        #set($netex_order = 1 + $stopPoint.position)
+        <PointOnRoute version="any" id="${stopPoint.objectIdPrefix()}:PointOnRoute:${pointOnRouteId}" order="$netex_order">
+          <RoutePointRef version="$route.objectVersion" ref="${stopPoint.objectIdPrefix()}:RoutePoint:${routePointId}"/>
+        </PointOnRoute>
+        #end
+      </pointsInSequence>
+      #if ( $route.wayBackRouteId )
+      <InverseRouteRef version="any" ref="$modelTranslator.netexId( $route.wayBackRoute)"/>
+      #end
+    </Route>
+    #end
+  </routes>
+  <!-- NEPTUNE Line Mapping =========================================== -->
+  <lines>
+    <Line version="$line.objectVersion" id="$modelTranslator.netexId( $line)">
+      #if ( $line.name )
+      <Name>$!esc.xml($line.name)</Name>
+      #end
+      #if ( $line.publishedName )
+      <ShortName>$!esc.xml($line.publishedName)</ShortName>
+      #end
+      #if ( $line.comment )
+      <Description>$!esc.xml($line.comment)</Description>
+      #end
+      #if ( $line.transportModeName )
+      <TransportMode>$modelTranslator.toTransportModeNetex( $line.transportModeName)</TransportMode>
+      #end
+      #if ( $line.number )
+      <PublicCode>$!esc.xml($line.number)</PublicCode>
+      #end
+      #if ( $line.registrationNumber )
+      <PrivateCode>$!esc.xml($line.registrationNumber)</PrivateCode>
+      #end
+      <routes>
+        #foreach( $route in $line.routes )
+        <RouteRef version="$route.objectVersion" ref="$modelTranslator.netexId( $route)"/>
+        #end
+      </routes>
+    </Line>
+  </lines>
+  #set($groupCount = ${line.groupOfLines.size()} )
+  #if ( $groupCount > 0 )
+  <groupsOfLines>
+    #foreach( $group in $line.groupOfLines )
+    <GroupOfLines version="$group.objectVersion" id="$modelTranslator.netexId( $group)">      
+      #if ( $group.name )
+      <Name>$!esc.xml($group.name)</Name>
+      #end
+      #if ( $group.comment )
+      <Description>$!esc.xml($group.comment)</Description>
+      #end
+    </GroupOfLines>
+    #end
+  </groupsOfLines>
+  #end
+  <!-- NEPTUNE Stop Area with "Quay" or "BoardingPosition" type  =========================================== -->
+  <scheduledStopPoints>
+    #foreach( $route in $line.routes )
+      #foreach( $stopPoint in $route.stopPoints )
+    <ScheduledStopPoint version="$stopPoint.objectVersion" id="$modelTranslator.netexId( $stopPoint)">
+      #if ( $stopPoint.name )
+      <Name>$!esc.xml($stopPoint.name)</Name>
+      #end
+      <TimingPointStatus>timingPoint</TimingPointStatus>
+    </ScheduledStopPoint>
+      #end
+    #end
+  </scheduledStopPoints>
+  <!--  SERVICE PATTERN : Service Links are not mapped (they are not mandatory in NeTeEx), the sequence of Scheduled Stop Point is used instead -->
+  <servicePatterns>
+    #foreach( $route in $line.routes )
+      #foreach( $journeyPattern in $route.journeyPatterns )      
+    <ServicePattern version="$journeyPattern.objectVersion" id="$modelTranslator.netexId( $journeyPattern)">
+      #if ( $journeyPattern.comment )
+      <keyList>
+          <KeyValue>
+              <Key>Comment</Key>
+              <Value>$!esc.xml($journeyPattern.comment)</Value>
+          </KeyValue>
+      </keyList>
+      #end
+      #if ( $journeyPattern.name )
+      <Name>$!esc.xml($journeyPattern.name)</Name>
+      #end
+      #if ( $journeyPattern.publishedName )
+      <ShortName>$!esc.xml($journeyPattern.publishedName)</ShortName>
+      #end
+      #if ( $journeyPattern.registrationNumber )
+      <PrivateCode>$!esc.xml($journeyPattern.registrationNumber)</PrivateCode>
+      #end
+      <!-- NEPTUNE [mapping:variable] : ServicePattern->RouteRef mapped to NEPTUNE JourneyPattern->routeId -->
+      <RouteRef version="1" ref="$modelTranslator.netexId( $route)"/>
+      <pointsInSequence>
+        #foreach( $stopPoint in $journeyPattern.stopPoints )
+        <StopPointInJourneyPattern version="1" id="${stopPoint.objectIdPrefix()}:StopPointInJourneyPattern:${stopPoint.objectIdSuffix()}">
+          <ScheduledStopPointRef version="$stopPoint.objectVersion" ref="$modelTranslator.netexId( $stopPoint)"/>
+        </StopPointInJourneyPattern>
+        #end       
+      </pointsInSequence>
+    </ServicePattern>
+      #end    
+    #end
+  </servicePatterns>
+
+  #if ( $connectionLinks && $connectionLinks.size() > 0 )
+  <!-- Assignments of Connection Links -->
+  <connections>
+    #foreach( $connectionLink in $connectionLinks )       
+    <SiteConnection id="$modelTranslator.netexId( $connectionLink)" version="$connectionLink.objectVersion">      
+      #if ( $connectionLink.name )
+      <Name>$!esc.xml($connectionLink.name)</Name>
+      #end     
+      #if ( $connectionLink.comment )
+      <Description>$!esc.xml($connectionLink.comment)</Description>
+      #end 
+      #if ( $connectionLink.linkDistance )
+      <Distance>$connectionLink.linkDistance</Distance>
+      #end 
+      #if ( $connectionLink.defaultDuration || $connectionLink.frequentTravellerDuration ||
+            $connectionLink.occasionalTravellerDuration || $connectionLink.mobilityRestrictedTravellerDuration)
+      <TransferDuration>
+        #if ( $connectionLink.defaultDuration)
+        <DefaultDuration>$!durationFactory.newDuration($!connectionLink.defaultDuration.time)</DefaultDuration>
+        #end
+        #if ( $connectionLink.frequentTravellerDuration)
+        <FrequentTravellerDuration>$!durationFactory.newDuration($!connectionLink.frequentTravellerDuration.time)</FrequentTravellerDuration>
+        #end
+        #if ( $connectionLink.occasionalTravellerDuration)
+        <OccasionalTravellerDuration>$!durationFactory.newDuration($!connectionLink.occasionalTravellerDuration.time)</OccasionalTravellerDuration>
+        #end
+        #if ( $connectionLink.mobilityRestrictedTravellerDuration)
+        <MobilityRestrictedTravellerDuration>$!durationFactory.newDuration($!connectionLink.mobilityRestrictedTravellerDuration.time)</MobilityRestrictedTravellerDuration> 
+        #end
+      </TransferDuration>
+      #end
+      #if ( $connectionLink.startOfLink)
+      <From>
+         <StopPlaceRef ref="$modelTranslator.netexId( $connectionLink.startOfLink)" />
+      </From> 
+      #end
+      #if ( $connectionLink.endOfLink)
+      <To>         
+         <StopPlaceRef ref="$modelTranslator.netexId( $connectionLink.endOfLink)" />
+      </To>  
+      #end
+      <navigationPaths>
+        <NavigationPath version="$connectionLink.objectVersion" id="${connectionLink.objectIdPrefix()}:NavigationPath:${connectionLink.objectIdSuffix()}N1">
+          #if ( $connectionLink.mobilityRestrictedSuitable)
+          <AccessibilityAssessment version="$connectionLink.objectVersion" id="${connectionLink.objectIdPrefix()}:AccessibilityAssessment:${connectionLink.objectIdSuffix()}">
+            <MobilityImpairedAccess>$connectionLink.mobilityRestrictedSuitable</MobilityImpairedAccess>
+          </AccessibilityAssessment>
+          #end
+          #if ( $connectionLink.linkType)
+          <Covered>$modelTranslator.toLinkType($connectionLink.linkType)</Covered>
+          #end
+        </NavigationPath>
+      </navigationPaths>     
+    </SiteConnection>  
+    #end
+  </connections>
+  #end
+  <!--   -->
+  <!-- Tarif zone  : Not really available in NEPTUNE, but there is a need to map Tariff Zone 1 (which is an attribute in NEPTUNE -->
+  <!-- This object needs to be created inside the mapping mechanism -->
+  #if ( $tariffs && $tariffs.size() > 0)
+  <tariffZones>
+    #foreach( $tariff in $tariffs) 
+    <TariffZone version="any" id="Local:TariffZone:$tariff">
+      <Name>$!esc.xml( $tariff)</Name>
+    </TariffZone>
+    #end 
+  </tariffZones>
+  #end
+  <!--   -->
+  <!-- Assignments of Schedules Stop Points to Stop Places -->
+  <stopAssignments>
+  #foreach( $route in $line.routes )       
+    #foreach( $stopPoint in $route.stopPoints )     
+    <PassengerStopAssignment version="any" id="${stopPoint.objectIdPrefix()}:PassengerStopAssignment:${stopPoint.objectIdSuffix()}">
+      <ScheduledStopPointRef version="1" ref="$modelTranslator.netexId( $stopPoint)"/>
+      #if ($stopPoint.containedInStopArea && $stopPoint.containedInStopArea.parent) 
+      <StopPlaceRef version="$stopPoint.containedInStopArea.parent.objectVersion" ref="$modelTranslator.netexId( $stopPoint.containedInStopArea.parent)"/>      
+      #end 
+      #if ($stopPoint.containedInStopArea) 
+      <QuayRef version="$stopPoint.containedInStopArea.objectVersion" ref="$modelTranslator.netexId( $stopPoint.containedInStopArea)"/>
+      #end 
+    </PassengerStopAssignment>    
+    #end
+  #end  
+  </stopAssignments>
+  <!-- routingConstraintZone : for ITL NEPTUNE-->
+  #if ( $routingConstraints && $routingConstraints.size() > 0)
+  <routingConstraintZones>
+    #foreach( $routingConstraint in $routingConstraints )     
+    <RoutingConstraintZone version="any" id="$modelTranslator.netexId( $routingConstraint)">
+      #if ( $routingConstraint.name)
+      <Name>$!esc.xml( $routingConstraint.name)</Name> 
+      #end
+      #if ( $routingConstraint.comment)
+      <Description>$!esc.xml( $routingConstraint.comment)</Description> 
+      #end
+      #if ( $routingConstraint.registrationNumber)
+      <PrivateCode>$!esc.xml( $routingConstraint.registrationNumber)</PrivateCode> 
+      #end
+      #if ( $routingConstraint.routingConstraintAreas && $routingConstraint.routingConstraintAreas.size() > 0)
+      <members>
+          #foreach( $routingConstraintArea in $routingConstraint.routingConstraintAreas )     
+          <ScheduledStopPointRef version="1" ref="$modelTranslator.netexId( $routingConstraintArea)"/>
+          #end
+      </members>
+      #end
+      #if( ( $routingConstraint.latitude && $routingConstraint.longitude) || ( $routingConstraint.x && $routingConstraint.y && $routingConstraint.projectionType))
+      <Centroid>
+        <Location id="${routingConstraint.objectIdPrefix()}:Location:${routingConstraint.objectIdSuffix()}">
+          #if ( $routingConstraint.longitude && $routingConstraint.latitude )
+          <Longitude>$routingConstraint.longitude</Longitude>
+          <Latitude>$routingConstraint.latitude</Latitude>
+          #end
+          #if ( $routingConstraint.x && $routingConstraint.y && $routingConstraint.projectionType)
+          <gml:pos srsName="$routingConstraint.projectionType">$routingConstraint.x $routingConstraint.y</gml:pos>
+          #end
+        </Location>
+      </Centroid>
+      #end
+      <ZoneUse>cannotBoardAndAlightInSameZone</ZoneUse>
+      #if ( $routingConstraint.routingConstraintLines && $routingConstraint.routingConstraintLines.size() > 0)
+      <lines>
+          #foreach( $routingConstraintLine in $routingConstraint.routingConstraintLines )     
+          <LineRef version="1" ref="$modelTranslator.netexId( $routingConstraintLine)"/>
+          #end
+      </lines>
+      #end
+    
+    </RoutingConstraintZone>    
+    #end
+  </routingConstraintZones>
+  #end
+</ServiceFrame>

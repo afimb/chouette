@@ -1,0 +1,219 @@
+<!-- =========================================== -->
+<!-- NEPTUNE StopPlaces (StopArea of type StopPlace) are mapped to NeTEx StopPlace -->
+<SiteFrame version="any" id="${line.objectIdPrefix()}:SiteFrame:SF01"> 
+  <stopPlaces>
+    #foreach( $stopPlace in $stopPlaces )
+    <StopPlace version="$stopPlace.objectVersion" id="$modelTranslator.netexId( $stopPlace)">
+     #if( $stopPlace.name )
+     <Name>$!esc.xml( $stopPlace.name)</Name>
+     #end
+
+     #if( $stopPlace.comment )
+     <Description>$!esc.xml( $stopPlace.comment)</Description>
+     #end
+
+     #if( $stopPlace.registrationNumber )
+     <PrivateCode>$!esc.xml( $stopPlace.registrationNumber)</PrivateCode>
+     #end
+
+      #if( ( $stopPlace.latitude && $stopPlace.longitude) || ( $stopPlace.x && $stopPlace.y && $stopPlace.projectionType))
+      <Centroid>
+        <Location id="${stopPlace.objectIdPrefix()}:Location:${stopPlace.objectIdSuffix()}">
+          #if ( $stopPlace.longitude && $stopPlace.latitude )
+          <Longitude>$stopPlace.longitude</Longitude>
+          <Latitude>$stopPlace.latitude</Latitude>
+          #end
+          #if ( $stopPlace.x && $stopPlace.y && $stopPlace.projectionType)
+          <gml:pos srsName="$stopPlace.projectionType">$stopPlace.x $stopPlace.y</gml:pos>
+          #end
+        </Location>
+      </Centroid>
+      #end
+
+      #if( $stopPlace.parent )
+      <ParentZoneRef version="$stopPlace.parent.objectVersion" ref="$modelTranslator.netexId( $stopPlace.parent)" />
+      #end
+      
+      #if( $stopPlace.nearestTopicName )
+      <Landmark>$!esc.xml( $stopPlace.nearestTopicName)</Landmark>
+      #end
+
+      #if($stopPlace.streetName || $stopPlace.countryCode)
+      <PostalAddress version="any" id="${stopPlace.objectIdPrefix()}:PostalAddress:${stopPlace.objectIdSuffix()}">
+        <CountryRef ref="fr"/>
+        #if ( $stopPlace.streetName )
+        <AddressLine1>$!esc.xml( $stopPlace.streetName)</AddressLine1>
+        #end
+        #if ( $stopPlace.countryCode )
+        <PostCode>$!esc.xml( $stopPlace.countryCode)</PostCode>
+        #end
+      </PostalAddress>
+      #end
+
+      #if ( $stopPlace.accessLinks && $stopPlace.accessLinks.size() > 0 )
+      <entrances>
+        #foreach( $accessLink in $stopPlace.accessLinks )
+        #set( $accessPoint = $accessLink.accessPoint )
+        #if ( $accessPoint )
+        <StopPlaceEntrance version="$accessPoint.objectVersion" id="$modelTranslator.netexId( $accessPoint)">
+          #if ( $accessPoint.name )
+          <Name>$!esc.xml($accessPoint.name)</Name>          
+          #end
+          #if ( $accessPoint.comment )
+          <Description>$!esc.xml($accessPoint.comment)</Description>  
+          #end
+          #if ( $accessPoint.longitude && $accessPoint.latitude)
+          <Centroid>
+            <Location srsName="$!accessPoint.longLatType" >
+              <Longitude>$!accessPoint.longitude</Longitude>
+              <Latitude>$!accessPoint.latitude</Latitude>
+            </Location>
+          </Centroid>
+          #end
+          #if ( $accessPoint.openingTime && $accessPoint.closingTime)
+          <validityConditions>
+            <AvailabilityCondition version="$accessPoint.objectVersion" id="${accessPoint.objectIdPrefix()}:AvailabilityCondition:${accessPoint.objectIdSuffix()}">
+                <timebands>
+                    <Timeband version="$accessPoint.objectVersion" id="${accessPoint.objectIdPrefix()}:Timeband:${accessPoint.objectIdSuffix()}">
+                        <StartTime>$accessPoint.openingTime</StartTime>
+                        <EndTime>$accessPoint.closingTime</EndTime>
+                    </Timeband>
+                </timebands>
+            </AvailabilityCondition>
+          </validityConditions>
+          #end
+          <IsEntry>#if( $accessPoint.type == "In" || $accessPoint.type == "InOut")true#{else}false#end</IsEntry>
+          <IsExit>#if( $accessPoint.type == "Out" || $accessPoint.type == "InOut")true#{else}false#end</IsExit>         
+        </StopPlaceEntrance>
+        #end  
+        #end
+      </entrances> 
+      #end
+
+      #if($stopPlace.fareCode)
+      <tariffZones>
+        <TariffZoneRef version="any" ref="Local:TariffZone:${stopPlace.fareCode}"/>
+      </tariffZones>
+      #end
+
+      #if ( ( $stopPlace.areaType.toString() == "CommercialStopPoint") &&
+            $stopPlace.containedStopAreas &&
+            $stopPlace.containedStopAreas.size() > 0    )
+      <quays>
+        #foreach( $quay in $stopPlace.containedStopAreas )
+        <Quay version="$quay.objectVersion" id="$modelTranslator.netexId( $quay)">
+         #if( $quay.name )
+         <Name>$!esc.xml( $quay.name)</Name>
+         #end
+
+         #if( $quay.comment )
+         <Description>$!esc.xml( $quay.comment)</Description>
+         #end
+
+         #if( $quay.registrationNumber )
+         <PrivateCode>$!esc.xml( $quay.registrationNumber)</PrivateCode>
+         #end
+
+         #if( ( $quay.latitude && $quay.longitude) || ($quay.x && $quay.y && $quay.projectionType))
+         <Centroid>
+            <Location id="${quay.objectIdPrefix()}:Location:${quay.objectIdSuffix()}">
+              #if ( $quay.longitude && $quay.latitude )
+              <Longitude>$quay.longitude</Longitude>
+              <Latitude>$quay.latitude</Latitude>
+              #end
+              #if ( $quay.x && $quay.y && $quay.projectionType)
+              <gml:pos srsName="$quay.projectionType">$quay.x $quay.y</gml:pos>
+              #end
+            </Location>
+          </Centroid>
+          #end
+
+         #if( $quay.nearestTopicName )
+         <Landmark>$!esc.xml( $quay.nearestTopicName)</Landmark>
+         #end
+
+          #if($quay.streetName || $quay.countryCode)
+          <PostalAddress version="any" id="${quay.objectIdPrefix()}:PostalAddress:${quay.objectIdSuffix()}">
+            <CountryRef ref="fr"/>
+            #if ( $quay.streetName )
+            <AddressLine1>$!esc.xml( $quay.streetName)</AddressLine1>
+            #end
+            #if ( $quay.countryCode )
+            <PostCode>$!esc.xml( $quay.countryCode)</PostCode>
+            #end
+          </PostalAddress>
+          #end
+          #if($quay.fareCode)
+          <tariffZones>
+            <TariffZoneRef version="any" ref="Local:TariffZone:${quay.fareCode}"/>
+          </tariffZones>
+          #end
+        </Quay>	
+        #end	
+      </quays>
+      #end	
+    </StopPlace>
+    #end
+  </stopPlaces>
+  #if ( $accessLinks && $accessLinks.size() > 0 )
+  <!-- Assignments of Path Links -->
+  <pathLinks>
+    #foreach( $accessLink in $accessLinks )       
+    <PathLink id="$modelTranslator.netexId( $accessLink)" version="$accessLink.objectVersion">  
+      #if ( $accessLink.name )
+      <Name>$!esc.xml($accessLink.name)</Name>
+      #end
+      #if ( $accessLink.linkDistance)
+      <Distance>$!accessLink.linkDistance</Distance>
+      #end
+      #if($accessLink.accessPoint && $accessLink.stopArea && $accessLink.linkOrientation) 
+          #if($accessLink.linkOrientation == "AccessPointToStopArea")
+          <From>
+            <PlaceRef ref="$modelTranslator.netexId( $accessLink.accessPoint.containedIn)" />
+            <EntranceRef ref="$modelTranslator.netexId( $accessLink.accessPoint)" />        
+          </From> 
+          <To> 
+            <PlaceRef ref="$modelTranslator.netexId( $accessLink.stopArea)" /> 
+          </To>
+          #else
+          <From>
+            <PlaceRef ref="$modelTranslator.netexId( $accessLink.stopArea)" />  
+          </From> 
+          <To> 
+            <PlaceRef ref="$modelTranslator.netexId( $accessLink.accessPoint.containedIn)" /> 
+            <EntranceRef ref="$modelTranslator.netexId( $accessLink.accessPoint)" />       
+          </To>
+          #end
+      #end
+      #if ( $accessLink.mobilityRestrictedSuitable)
+      <AccessibilityAssessment version="$accessLink.objectVersion" id="${accessLink.objectIdPrefix()}:AccessibilityAssessment:${accessLink.objectIdSuffix()}">
+        <MobilityImpairedAccess>$accessLink.mobilityRestrictedSuitable</MobilityImpairedAccess>
+      </AccessibilityAssessment>
+      #end
+      #if ( $accessLink.linkType)
+      <Covered>$modelTranslator.toLinkType($accessLink.linkType)</Covered>
+      #end
+      #if ( $accessLink.defaultDuration || $accessLink.frequentTravellerDuration ||
+            $accessLink.occasionalTravellerDuration || $accessLink.mobilityRestrictedTravellerDuration)
+      <TransferDuration>
+        #if ( $accessLink.defaultDuration)
+        <DefaultDuration>$!durationFactory.newDuration($!accessLink.defaultDuration.time)</DefaultDuration>
+        #end
+        #if ( $accessLink.frequentTravellerDuration)
+        <FrequentTravellerDuration>$!durationFactory.newDuration($!accessLink.frequentTravellerDuration.time)</FrequentTravellerDuration>
+        #end
+        #if ( $accessLink.occasionalTravellerDuration)
+        <OccasionalTravellerDuration>$!durationFactory.newDuration($!accessLink.occasionalTravellerDuration.time)</OccasionalTravellerDuration>
+        #end
+        #if ( $accessLink.mobilityRestrictedTravellerDuration)
+        <MobilityRestrictedTravellerDuration>$!durationFactory.newDuration($!accessLink.mobilityRestrictedTravellerDuration.time) </MobilityRestrictedTravellerDuration> 
+        #end
+      </TransferDuration>
+      #end
+      ## TODO : Add enum  
+    </PathLink>
+    #end
+  </pathLinks>  
+  #end
+
+</SiteFrame>

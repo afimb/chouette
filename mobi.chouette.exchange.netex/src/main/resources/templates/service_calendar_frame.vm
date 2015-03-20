@@ -1,0 +1,71 @@
+<!--   -->
+<!-- Calendars : NeTEx Day Types and Day Type Assignment mapped to NEPTUNE timetable -->
+<!-- Each NEPTUNE timetable is mapped to a separate ServiceCalendarFrame  -->
+#set($counter = 0)
+#foreach( $timetable in $timetables )
+<ServiceCalendarFrame version="any" id="${timetable.objectIdPrefix()}:ServiceCalendarFrame:SFC$counter">
+  <ServiceCalendar version="any" id="${timetable.objectIdPrefix()}:ServiceCalendar:SFC$counter">
+    <FromDate>$!date.format($shortDateFormat, $!timetable.startOfPeriod)</FromDate>
+    <ToDate>$!date.format($shortDateFormat, $!timetable.endOfPeriod)</ToDate>
+  </ServiceCalendar>
+  <!--- === Day Types ==== -->
+  <dayTypes>
+    <DayType version="$timetable.objectVersion" id="$modelTranslator.netexId( $timetable)">
+      #if ( $timetable.version )
+      <Name>$!esc.xml( $timetable.version)</Name>
+      #end
+      #if ( $timetable.comment )
+      <ShortName>$!esc.xml( $timetable.comment)</ShortName>
+      #end
+      #if ( $timetable.dayTypes && $timetable.dayTypes.size() > 0 )
+      <properties>
+        #foreach( $dayType in $timetable.getDayTypes() )
+            #if($dayType && $!modelTranslator.toDayTypeNetex($!dayType))      
+        <PropertyOfDay>
+          <DaysOfWeek>$!modelTranslator.toDayTypeNetex($!dayType)</DaysOfWeek>
+        </PropertyOfDay>
+            #end
+        #end
+      </properties>
+      #end
+    </DayType>
+  </dayTypes>
+  <!--- === Day assignments ==== -->
+  #if ( $timetable.peculiarDates.size() > 0 )
+  <operatingDays>
+    #foreach( $day in $timetable.peculiarDates )
+    <OperatingDay version="any" id="${timetable.objectIdPrefix()}:OperatingDay:${timetable.objectIdSuffix()}D${date.format($shortDateFormat, ${day})}">
+      <CalendarDate>$date.format($shortDateFormat, ${day})</CalendarDate>
+    </OperatingDay>
+    #end		
+  </operatingDays>  
+  #end		
+  <!--- === Period assignments ==== -->
+  #if ( $timetable.effectivePeriods.size() > 0 )
+  <operatingPeriods>
+    #foreach( $period in $timetable.effectivePeriods )
+    <OperatingPeriod version="any" id="${timetable.objectIdPrefix()}:OperatingPeriod:${timetable.objectIdSuffix()}S${date.format($shortDateFormat, $period.startDate)}E${date.format($shortDateFormat, $period.endDate)}">
+      <FromDate>$date.format($dateTimeFormat, $period.startDate)</FromDate>
+      <ToDate>$date.format($dateTimeFormat, $period.endDate)</ToDate>
+    </OperatingPeriod>
+    #end		
+  </operatingPeriods>  
+  #end		
+  <!--- === Day Type assignments ==== -->
+  <dayTypeAssignments>
+    #foreach( $period in $timetable.effectivePeriods )
+    <DayTypeAssignment version="any">
+      <OperatingPeriodRef ref="${timetable.objectIdPrefix()}:OperatingPeriod:${timetable.objectIdSuffix()}S${date.format($shortDateFormat, $period.startDate)}E${date.format($shortDateFormat, $period.endDate)}"/>
+      <DayTypeRef version="$timetable.objectVersion" ref="$modelTranslator.netexId( $timetable)"/>
+    </DayTypeAssignment>
+    #end		
+    #foreach( $day in $timetable.peculiarDates )
+    <DayTypeAssignment version="any">
+      <OperatingDayRef ref="${timetable.objectIdPrefix()}:OperatingDay:${timetable.objectIdSuffix()}D${date.format($shortDateFormat, ${day})}"/>
+      <DayTypeRef version="$timetable.objectVersion" ref="$modelTranslator.netexId( $timetable)"/>
+    </DayTypeAssignment>
+    #end
+  </dayTypeAssignments>  
+</ServiceCalendarFrame>
+#set($counter = $counter + 1)
+#end

@@ -62,7 +62,7 @@ public class NeptuneImporterCommand implements Command, Constant {
 			report.setFailure("invalid parameters for neptune import "
 					+ configuration.getClass().getName());
 			progression.dispose(context);
-			return false;
+			return ERROR;
 		}
 
 		NeptuneImportParameters parameters = (NeptuneImportParameters) configuration;
@@ -72,8 +72,6 @@ public class NeptuneImporterCommand implements Command, Constant {
 		boolean level3validation = context.get(VALIDATION) != null;
 		
 		if (level3validation) context.put(VALIDATION_DATA, new ValidationData());
-		
-
 
 		try {
 
@@ -108,7 +106,6 @@ public class NeptuneImporterCommand implements Command, Constant {
 					report.getFiles().add(file);
 				}
 			}
-
 
 			ChainCommand master = (ChainCommand) CommandFactory.create(
 					initialContext, ChainCommand.class.getName());
@@ -179,7 +176,7 @@ public class NeptuneImporterCommand implements Command, Constant {
 
 			}
 			progression.execute(context);
-
+			result = SUCCESS;
 
 		} catch (Exception e) {
 			ActionReport report = (ActionReport) context.get(REPORT);

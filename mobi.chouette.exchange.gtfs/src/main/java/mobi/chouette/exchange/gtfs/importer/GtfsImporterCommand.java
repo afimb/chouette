@@ -18,9 +18,13 @@ import mobi.chouette.exchange.gtfs.Constant;
 import mobi.chouette.exchange.gtfs.model.GtfsRoute;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsImporter;
 import mobi.chouette.exchange.gtfs.model.importer.Index;
+import mobi.chouette.exchange.importer.CleanRepositoryCommand;
 import mobi.chouette.exchange.importer.CopyCommand;
 import mobi.chouette.exchange.importer.LineRegisterCommand;
 import mobi.chouette.exchange.importer.UncompressCommand;
+import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.validator.DaoSharedDataValidatorCommand;
+import mobi.chouette.exchange.validator.ValidationData;
 import mobi.chouette.exchange.validator.report.ValidationReport;
 import mobi.chouette.model.util.Referential;
 
@@ -54,11 +58,21 @@ public class GtfsImporterCommand implements Command, Constant {
         // check params
 		Object configuration = context.get(CONFIGURATION);
 		if (!(configuration instanceof GtfsImportParameters)) {
-			// TODO report service
-			log.error(new IllegalArgumentException(configuration.toString()));
+			// fatal wrong parameters
+			ActionReport report = (ActionReport) context.get(REPORT);
+			log.error("invalid parameters for gtfs import "
+					+ configuration.getClass().getName());
+			report.setFailure("invalid parameters for gtfs import "
+					+ configuration.getClass().getName());
+			progression.dispose(context);
 			return ERROR;
 		}
 		GtfsImportParameters parameters = (GtfsImportParameters) configuration;
+		boolean level3validation = context.get(VALIDATION) != null;
+		int initCount = 2 + (parameters.isCleanRepository()?1:0);
+		progression.initialize(context,initCount);
+		
+		if (level3validation) context.put(VALIDATION_DATA, new ValidationData());
 
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		if (importer == null) {
@@ -68,6 +82,15 @@ public class GtfsImporterCommand implements Command, Constant {
 		}
 
 		try {
+			// clean repository if asked
+			if (parameters.isCleanRepository())
+			{
+				Command clean = CommandFactory.create(initialContext,
+						CleanRepositoryCommand.class.getName());
+				clean.execute(context);
+				progression.execute(context);
+			}
+
 			// uncompress data
 			Command uncompress = CommandFactory.create(initialContext,
 					UncompressCommand.class.getName());
@@ -85,6 +108,7 @@ public class GtfsImporterCommand implements Command, Constant {
 			master.setIgnored(true);
 
 			Index<GtfsRoute> index = importer.getRouteById();
+			progression.start(context, index.getLength());
 			
 			for (GtfsRoute gtfsRoute : index) {
 				
@@ -118,15 +142,25 @@ public class GtfsImporterCommand implements Command, Constant {
 			progression.execute(context);
 			progression.start(context, index.getLength());
 			master.execute(context);
-			progression.terminate(context,1);
+			progression.terminate(context,level3validation?2:1);
+			if (level3validation)
+			{
+			    // add shared data validation
+				Command validate = CommandFactory.create(initialContext,
+						DaoSharedDataValidatorCommand.class.getName());
+				validate.execute(context);
+				progression.execute(context);
+
+			}
 			progression.execute(context);
 			result = SUCCESS;
 
 		} catch (Exception e) {
-			// TODO report service
+			ActionReport report = (ActionReport) context.get(REPORT);
+			log.error(e);
+			report.setFailure("Fatal :"+e);
 		} finally {
 			progression.dispose(context);
-			// TODO report service
 		}
 
 		log.info(Color.YELLOW + monitor.stop() + Color.NORMAL);

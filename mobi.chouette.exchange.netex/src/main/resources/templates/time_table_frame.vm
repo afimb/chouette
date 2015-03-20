@@ -1,0 +1,64 @@
+<!-- =========================================== -->
+<TimetableFrame version="any" id="${line.objectIdPrefix()}:TimetableFrame:TF02"> 
+  <vehicleJourneys>
+    #foreach( $vehicleJourney in $vehicleJourneys )
+    <ServiceJourney version="$vehicleJourney.objectVersion" id="$modelTranslator.netexId( $vehicleJourney)">
+      #if ( $vehicleJourney.publishedJourneyName)
+      <Name>$!esc.xml( $vehicleJourney.publishedJourneyName)</Name>
+      #end
+      #if ( $vehicleJourney.publishedJourneyIdentifier)
+      <ShortName>$!esc.xml( $vehicleJourney.publishedJourneyIdentifier)</ShortName>
+      #end
+      #if ( $vehicleJourney.comment)
+      <Description>$!esc.xml( $vehicleJourney.comment)</Description>
+      #end
+      <!--
+      <netex:TransportSubmode>
+        <netex:RailSubmode>unknown</netex:RailSubmode>
+      </netex:TransportSubmode>
+      -->
+      <dayTypes>
+        #foreach( $timetable in $vehicleJourney.timetables )  
+        <DayTypeRef version="$timetable.objectVersion" ref="$modelTranslator.netexId( $timetable)"/>
+        #end 
+      </dayTypes>
+      #if($vehicleJourney.route) 
+      <RouteRef version="$vehicleJourney.route.objectVersion" ref="$modelTranslator.netexId( $vehicleJourney.route)"/>
+      #end
+      #if($vehicleJourney.journeyPattern) 
+      <ServicePatternRef ref="$modelTranslator.netexId( $vehicleJourney.journeyPattern)" />
+      #end
+      #if ( $vehicleJourney.company)
+      <OperatorRef version="$vehicleJourney.company.objectVersion" ref="$modelTranslator.netexId( $vehicleJourney.company)" />
+      #end
+      #if ( $vehicleJourney.number) 
+      <trainNumbers>
+        <TrainNumberRef ref="$modelTranslator.trainNumberId( $vehicleJourney.number)" />
+      </trainNumbers>
+      #end
+      <calls>
+        #foreach( $vehicleJourneyAtStop in $vehicleJourney.vehicleJourneyAtStops ) 
+        <Call>
+          <ScheduledStopPointRef version="$vehicleJourneyAtStop.stopPoint.objectVersion" ref="$modelTranslator.netexId( $vehicleJourneyAtStop.stopPoint)"/>
+          <Arrival>
+            <Time>$vehicleJourneyAtStop.departureTime</Time>
+          </Arrival>
+          <Departure>
+            <Time>$vehicleJourneyAtStop.departureTime</Time>
+          </Departure>
+        </Call>				
+        #end
+      </calls>
+    </ServiceJourney>
+    #end
+  </vehicleJourneys>
+  #if ( $vehicleNumbers && $vehicleNumbers.size() > 0 )
+  <trainNumbers>
+    #foreach( $vehicleNumber in $vehicleNumbers )
+    <TrainNumber version="1" id="$modelTranslator.trainNumberId( $vehicleNumber)">
+      <Description>$vehicleNumber</Description>
+    </TrainNumber>
+    #end
+  </trainNumbers>
+  #end
+</TimetableFrame>
