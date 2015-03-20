@@ -414,7 +414,7 @@ public class Service implements Constant {
 		ResponseBuilder builder = null;
 		if (job.getStatus().ordinal() < STATUS.TERMINATED.ordinal()) {
 
-			JobInfo info = new JobInfo(job,false);
+			JobInfo info = new JobInfo(job,true);
 			java.nio.file.Path path = Paths.get(
 					System.getProperty("user.home"), ROOT_PATH,
 					job.getReferential(), "data", job.getId().toString(),
@@ -497,7 +497,7 @@ public class Service implements Constant {
 			throw new WebApplicationException(Status.NOT_FOUND);
 		}
 
-		JobInfo info = new JobInfo(job,false);
+		JobInfo info = new JobInfo(job,true);
 		java.nio.file.Path path = Paths.get(
 				System.getProperty("user.home"), ROOT_PATH,
 				job.getReferential(), "data", job.getId().toString(),

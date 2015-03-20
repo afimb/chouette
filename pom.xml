@@ -588,5 +588,6 @@
 		<module>mobi.chouette.scheduler</module>
 		<module>mobi.chouette.api</module>
 		<module>chouette</module>
+		<module>mobi.chouette.exchange.kml</module>
 	</modules>
 </project>
