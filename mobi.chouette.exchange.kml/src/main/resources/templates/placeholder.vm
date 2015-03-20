@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>$data.name</name>
+#foreach( $item in $data.items )
+      <Placemark id="$item.objectId" >
+        <name>$item.name</name>
+        <ExtendedData>
+#foreach ( $key in $item.attributes.keyList() )
+          <Data name="$key">
+            <value>$item.attributes.get($key)</value>
+          </Data>
+#end
+        </ExtendedData>
+#if ($item.point.isSet()
+        <Point>
+           <coordinates>$item.point.longitude,$item.point.latitude</coordinates>
+        </Point>
+#end
+#if ($item.lineString.isSet()
+        <LineString>
+           <coordinates>
+#foreach ($point in $item.lineString)
+             $point.longitude,$point.latitude
+#end
+           </coordinates>
+</LineString>
+#end
+      </Placemark>
+#end
+  </Document>
+</kml>

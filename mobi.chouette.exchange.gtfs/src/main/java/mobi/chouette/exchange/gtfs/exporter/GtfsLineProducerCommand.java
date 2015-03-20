@@ -95,7 +95,7 @@ public class GtfsLineProducerCommand implements Command, Constant
 			LineInfo lineInfo = new LineInfo();
 			lineInfo.setName(line.getName()+" ("+line.getNumber()+")");
 			LineStats stats = new LineStats();
-			// stats.setAccesPointCount(collection.getAccessPoints().size());
+			// stats.setAccessPointCount(collection.getAccessPoints().size());
 			// stats.setConnectionLinkCount(collection.getConnectionLinks().size());
 			stats.setJourneyPatternCount(collection.getJourneyPatterns().size());
 			stats.setRouteCount(collection.getRoutes().size());
@@ -108,7 +108,6 @@ public class GtfsLineProducerCommand implements Command, Constant
 				context.put(EXPORTABLE_DATA, collection);
 
 				saveLine(context,line);	
-				// producer.produce(context);
 
 				lineInfo.setStatus(LINE_STATE.OK);
 				// merge lineStats to global ones
@@ -141,7 +140,6 @@ public class GtfsLineProducerCommand implements Command, Constant
 
 		return result;
 	}
-
 
 
 	private boolean saveLine(Context context,
