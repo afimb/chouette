@@ -13,7 +13,7 @@ import mobi.chouette.model.VehicleJourney;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @Data
-//@XmlType(propOrder={})
+@XmlType(propOrder={"objectId", "number","publishedJourneyName","publishedJourneyIdentifier"})
 public class VehicleJourneyParameters {
 
 	@XmlTransient

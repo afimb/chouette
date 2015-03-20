@@ -13,7 +13,7 @@ import mobi.chouette.model.Route;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @Data
-//@XmlType(propOrder={})
+@XmlType(propOrder={"objectId", "name", "number","publishedName"})
 public class RouteParameters {
 
 	@XmlTransient

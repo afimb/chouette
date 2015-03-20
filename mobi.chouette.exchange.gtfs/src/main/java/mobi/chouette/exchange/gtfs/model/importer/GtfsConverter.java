@@ -197,6 +197,7 @@ public interface GtfsConverter {
 
 	public static DefaultFieldConverter<GtfsTime> GTFSTIME_CONVERTER = new DefaultFieldConverter<GtfsTime>() {
 
+		@SuppressWarnings("deprecation")
 		@Override
 		protected GtfsTime convertFrom(String input) throws Exception {
 			GtfsTime result = new GtfsTime();
@@ -230,6 +231,7 @@ public interface GtfsConverter {
 			return result;
 		}
 
+		@SuppressWarnings("deprecation")
 		@Override
 		protected String convertTo(GtfsTime input) throws Exception {
 			String result = "";
@@ -412,6 +414,7 @@ public interface GtfsConverter {
 
 	public abstract class DefaultFieldConverter<T> extends
 			FieldConverter<String, T> {
+		@SuppressWarnings("rawtypes")
 		@Override
 		public T from(Context context, Enum field, String input, T value,
 				boolean required) {
@@ -437,6 +440,7 @@ public interface GtfsConverter {
 			return result;
 		}
 
+		@SuppressWarnings("rawtypes")
 		@Override
 		public String to(Context context, Enum field, T input, boolean required) {
 			String result = "";
@@ -467,13 +471,16 @@ public interface GtfsConverter {
 
 	public abstract class FieldConverter<F, T> {
 
+		@SuppressWarnings("rawtypes")
 		public T from(Context context, Enum field, F input, boolean required) {
 			return from(context, field, input, null, required);
 		}
 
+		@SuppressWarnings("rawtypes")
 		public abstract T from(Context context, Enum field, F input, T value,
 				boolean required);
 
+		@SuppressWarnings("rawtypes")
 		public abstract F to(Context context, Enum field, T input,
 				boolean required);
 	}

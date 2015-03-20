@@ -100,6 +100,7 @@ public class TripExporter extends ExporterImpl<GtfsTrip> implements
 
 	public static class DefaultExporterFactory extends ExporterFactory {
 
+		@SuppressWarnings({ "unchecked", "rawtypes" })
 		@Override
 		protected Exporter create(String path) throws IOException {
 			return new TripExporter(path);

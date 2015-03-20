@@ -8,8 +8,10 @@ public abstract class IndexFactory {
 
 	public static Map<String, IndexFactory> factories = new HashMap<String, IndexFactory>();
 
+	@SuppressWarnings("rawtypes")
 	protected abstract Index create(String path) throws IOException;
 
+	@SuppressWarnings("rawtypes")
 	public static final Index build(String path, String clazz)
 			throws ClassNotFoundException, IOException
 

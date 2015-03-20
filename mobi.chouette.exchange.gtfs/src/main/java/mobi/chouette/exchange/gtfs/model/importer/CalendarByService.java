@@ -61,6 +61,7 @@ public class CalendarByService extends IndexImpl<GtfsCalendar> implements
 	}
 
 	public static class DefaultImporterFactory extends IndexFactory {
+		@SuppressWarnings("rawtypes")
 		@Override
 		protected Index create(String name) throws IOException {
 			return new CalendarByService(name);

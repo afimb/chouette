@@ -13,7 +13,7 @@ import mobi.chouette.model.Timetable;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @Data
-//@XmlType(propOrder={})
+@XmlType(propOrder={"objectId", "comment", "version"})
 public class TimetableParameters {
 
 	@XmlTransient

@@ -29,7 +29,7 @@ import mobi.chouette.dao.CompanyDAO;
 import mobi.chouette.dao.ConnectionLinkDAO;
 import mobi.chouette.dao.GroupOfLineDAO;
 import mobi.chouette.dao.LineDAO;
-import mobi.chouette.dao.PTNetworkDAO;
+import mobi.chouette.dao.NetworkDAO;
 import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.dao.TimetableDAO;
 import mobi.chouette.exchange.report.LineStats;
@@ -50,7 +50,7 @@ public class DaoSharedDataValidatorCommand implements Command, Constant {
 	private LineDAO lineDAO;
 
 	@EJB
-	private PTNetworkDAO ptNetworkDAO;
+	private NetworkDAO ptNetworkDAO;
 
 	@EJB
 	private CompanyDAO companyDAO;

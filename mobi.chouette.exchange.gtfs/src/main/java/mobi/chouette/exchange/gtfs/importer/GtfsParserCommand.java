@@ -20,7 +20,7 @@ import mobi.chouette.exchange.gtfs.parser.GtfsRouteParser;
 import mobi.chouette.exchange.gtfs.parser.GtfsStopParser;
 import mobi.chouette.exchange.gtfs.parser.GtfsTransferParser;
 import mobi.chouette.exchange.importer.ParserFactory;
-import mobi.chouette.model.PTNetwork;
+import mobi.chouette.model.Network;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
@@ -109,12 +109,12 @@ public class GtfsParserCommand implements Command, Constant {
 		return result;
 	}
 
-	private PTNetwork createPTNetwork(Referential referential,
+	private Network createPTNetwork(Referential referential,
 			GtfsImportParameters configuration) {
 		String prefix = configuration.getObjectIdPrefix();
-		String ptNetworkId = prefix + ":" + PTNetwork.PTNETWORK_KEY + ":"
+		String ptNetworkId = prefix + ":" + Network.PTNETWORK_KEY + ":"
 				+ prefix;
-		PTNetwork ptNetwork = ObjectFactory.getPTNetwork(referential,
+		Network ptNetwork = ObjectFactory.getPTNetwork(referential,
 				ptNetworkId);
 		ptNetwork.setVersionDate(Calendar.getInstance().getTime());
 		ptNetwork.setName(prefix);

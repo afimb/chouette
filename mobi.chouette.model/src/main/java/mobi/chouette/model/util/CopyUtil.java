@@ -10,7 +10,7 @@ import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
-import mobi.chouette.model.PTNetwork;
+import mobi.chouette.model.Network;
 import mobi.chouette.model.Period;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
@@ -21,7 +21,7 @@ import mobi.chouette.model.VehicleJourney;
 
 public abstract class CopyUtil {
 
-	public static PTNetwork copy(PTNetwork object)
+	public static Network copy(Network object)
 	{
 		throw new RuntimeException("not implemented");
 	}

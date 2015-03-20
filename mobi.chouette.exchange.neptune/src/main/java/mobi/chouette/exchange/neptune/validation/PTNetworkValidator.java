@@ -13,9 +13,9 @@ import mobi.chouette.exchange.validator.ValidatorFactory;
 import mobi.chouette.exchange.validator.report.Detail;
 import mobi.chouette.exchange.validator.report.FileLocation;
 import mobi.chouette.exchange.validator.report.Location;
-import mobi.chouette.model.PTNetwork;
+import mobi.chouette.model.Network;
 
-public class PTNetworkValidator extends AbstractValidator implements Validator<PTNetwork> , Constant{
+public class PTNetworkValidator extends AbstractValidator implements Validator<Network> , Constant{
 
 	public static final String LINE_ID = "lineId";
 
@@ -57,7 +57,7 @@ public class PTNetworkValidator extends AbstractValidator implements Validator<P
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public ValidationConstraints validate(Context context, PTNetwork target) throws ValidationException
+	public ValidationConstraints validate(Context context, Network target) throws ValidationException
 	{
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
@@ -96,7 +96,7 @@ public class PTNetworkValidator extends AbstractValidator implements Validator<P
 		
 
 		@Override
-		protected Validator<PTNetwork> create(Context context) {
+		protected Validator<Network> create(Context context) {
 			PTNetworkValidator instance = (PTNetworkValidator) context.get(NAME);
 			if (instance == null) {
 				instance = new PTNetworkValidator();

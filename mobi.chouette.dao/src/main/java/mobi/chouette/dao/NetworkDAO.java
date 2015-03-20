@@ -4,13 +4,13 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import mobi.chouette.model.PTNetwork;
+import mobi.chouette.model.Network;
 
 @Stateless
-public class PTNetworkDAO extends GenericDAOImpl<PTNetwork> {
+public class NetworkDAO extends GenericDAOImpl<Network> {
 
-	public PTNetworkDAO() {
-		super(PTNetwork.class);
+	public NetworkDAO() {
+		super(Network.class);
 	}
 
 	@PersistenceContext(unitName = "referential")

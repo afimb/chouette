@@ -107,7 +107,7 @@ public class RouteParser implements Parser, Constant {
 				stopAreaId = xpp.getAttributeValue(null, REF);
 				XPPUtil.skipSubTree(log, xpp);
 			} else if (xpp.getName().equals("QuayRef")) {
-				String ref = xpp.getAttributeValue(null, REF);
+				// String ref = xpp.getAttributeValue(null, REF);
 				XPPUtil.skipSubTree(log, xpp);
 			} else {
 				XPPUtil.skipSubTree(log, xpp);

@@ -6,7 +6,7 @@ import mobi.chouette.common.XPPUtil;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netex.Constant;
-import mobi.chouette.model.PTNetwork;
+import mobi.chouette.model.Network;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
@@ -29,7 +29,7 @@ public class PTNetworkParser implements Parser, Constant {
 
 		String id = xpp.getAttributeValue(null, ID);
 
-		PTNetwork network = ObjectFactory.getPTNetwork(referential, id);
+		Network network = ObjectFactory.getPTNetwork(referential, id);
 
 		Integer version = Integer.valueOf(xpp.getAttributeValue(null, VERSION));
 		network.setObjectVersion(version != null ? version : 0);

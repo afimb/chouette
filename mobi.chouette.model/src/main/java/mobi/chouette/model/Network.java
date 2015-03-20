@@ -44,7 +44,7 @@ import org.hibernate.annotations.Parameter;
 @Cacheable
 @NoArgsConstructor
 @ToString(callSuper=true, exclude = { "lines" })
-public class PTNetwork extends NeptuneIdentifiedObject {
+public class Network extends NeptuneIdentifiedObject {
 
 	private static final long serialVersionUID = -8986371268064619423L;
 
@@ -216,7 +216,7 @@ public class PTNetwork extends NeptuneIdentifiedObject {
 	 */
 	@Getter
 	@Setter
-	@OneToMany(mappedBy = "ptNetwork")
+	@OneToMany(mappedBy = "network")
 	private List<Line> lines = new ArrayList<Line>(0);
 
 }

@@ -13,7 +13,7 @@ import mobi.chouette.model.StopArea;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @Data
-//@XmlType(propOrder={})
+@XmlType(propOrder={"objectId", "name", "registrationNumber","cityName","countryCode", "zipCode"})
 public class StopAreaParameters {
 
 	@XmlTransient

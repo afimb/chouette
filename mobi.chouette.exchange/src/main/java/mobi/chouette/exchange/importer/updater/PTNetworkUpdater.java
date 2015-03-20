@@ -3,16 +3,16 @@ package mobi.chouette.exchange.importer.updater;
 import javax.ejb.Stateless;
 
 import mobi.chouette.common.Context;
-import mobi.chouette.model.PTNetwork;
+import mobi.chouette.model.Network;
 
 
 @Stateless(name = PTNetworkUpdater.BEAN_NAME)
-public class PTNetworkUpdater implements Updater<PTNetwork> {
+public class PTNetworkUpdater implements Updater<Network> {
 
 	public static final String BEAN_NAME = "PTNetworkUpdater";
 
 	@Override
-	public void update(Context context, PTNetwork oldValue, PTNetwork newValue) {
+	public void update(Context context, Network oldValue, Network newValue) {
 
 		if (newValue.isSaved()) {
 			return;

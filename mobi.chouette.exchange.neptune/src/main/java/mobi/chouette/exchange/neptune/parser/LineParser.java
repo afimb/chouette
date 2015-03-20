@@ -1,5 +1,7 @@
 package mobi.chouette.exchange.neptune.parser;
 
+import java.awt.Color;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -11,21 +13,26 @@ import mobi.chouette.common.XPPUtil;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
+import mobi.chouette.exchange.neptune.JsonExtension;
 import mobi.chouette.exchange.neptune.validation.LineValidator;
 import mobi.chouette.exchange.validator.ValidatorFactory;
 import mobi.chouette.model.Company;
+import mobi.chouette.model.Footnote;
 import mobi.chouette.model.Line;
-import mobi.chouette.model.PTNetwork;
+import mobi.chouette.model.Network;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.type.UserNeedEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
-public class LineParser implements Parser, Constant {
+public class LineParser implements Parser, Constant, JsonExtension {
 	private static final String CHILD_TAG = "Line";
 
 	@Override
@@ -35,9 +42,9 @@ public class LineParser implements Parser, Constant {
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
-		int columnNumber =  xpp.getColumnNumber();
-		int lineNumber =  xpp.getLineNumber();
-		
+		int columnNumber = xpp.getColumnNumber();
+		int lineNumber = xpp.getLineNumber();
+
 		LineValidator validator = (LineValidator) ValidatorFactory.create(LineValidator.class.getName(), context);
 
 		Line line = null;
@@ -48,7 +55,7 @@ public class LineParser implements Parser, Constant {
 				objectId = ParserUtils.getText(xpp.nextText());
 				line = ObjectFactory.getLine(referential, objectId);
 				line.setFilled(true);
-				line.setPtNetwork(getPtNetwork(referential));
+				line.setNetwork(getPtNetwork(referential));
 				line.setCompany(getFirstCompany(referential));
 				validator.addLocation(context, objectId, lineNumber, columnNumber);
 			} else if (xpp.getName().equals("objectVersion")) {
@@ -66,8 +73,7 @@ public class LineParser implements Parser, Constant {
 			} else if (xpp.getName().equals("publishedName")) {
 				line.setPublishedName(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("transportModeName")) {
-				TransportModeNameEnum value = ParserUtils.getEnum(
-						TransportModeNameEnum.class, xpp.nextText());
+				TransportModeNameEnum value = ParserUtils.getEnum(TransportModeNameEnum.class, xpp.nextText());
 				line.setTransportModeName(value);
 			} else if (xpp.getName().equals("lineEnd")) {
 				String lineEnd = ParserUtils.getText(xpp.nextText());
@@ -83,30 +89,24 @@ public class LineParser implements Parser, Constant {
 			} else if (xpp.getName().equals("registration")) {
 				while (xpp.nextTag() == XmlPullParser.START_TAG) {
 					if (xpp.getName().equals("registrationNumber")) {
-						line.setRegistrationNumber(ParserUtils.getText(xpp
-								.nextText()));
+						line.setRegistrationNumber(ParserUtils.getText(xpp.nextText()));
 					} else {
 						XPPUtil.skipSubTree(log, xpp);
 					}
 				}
 			} else if (xpp.getName().equals("comment")) {
-				line.setComment(ParserUtils.getText(xpp.nextText()));
+				parseComment(ParserUtils.getText(xpp.nextText()), line);
 			} else if (xpp.getName().equals("LineExtension")) {
 
 				while (xpp.nextTag() == XmlPullParser.START_TAG) {
 					if (xpp.getName().equals("mobilityRestrictedSuitability")) {
-						line.setMobilityRestrictedSuitable(ParserUtils.getBoolean(xpp
-								.nextText()));
-					} else if (xpp.getName().equals(
-							"accessibilitySuitabilityDetails")) {
+						line.setMobilityRestrictedSuitable(ParserUtils.getBoolean(xpp.nextText()));
+					} else if (xpp.getName().equals("accessibilitySuitabilityDetails")) {
 						List<UserNeedEnum> userNeeds = new ArrayList<UserNeedEnum>();
 						while (xpp.nextTag() == XmlPullParser.START_TAG) {
-							if (xpp.getName().equals("MobilityNeed")
-									|| xpp.getName()
-											.equals("PsychosensoryNeed")
+							if (xpp.getName().equals("MobilityNeed") || xpp.getName().equals("PsychosensoryNeed")
 									|| xpp.getName().equals("MedicalNeed")) {
-								UserNeedEnum userNeed = ParserUtils.getEnum(
-										UserNeedEnum.class, xpp.nextText());
+								UserNeedEnum userNeed = ParserUtils.getEnum(UserNeedEnum.class, xpp.nextText());
 								if (userNeed != null) {
 									userNeeds.add(userNeed);
 								}
@@ -126,25 +126,85 @@ public class LineParser implements Parser, Constant {
 		}
 	}
 
-	private Company getFirstCompany(Referential referential)
-	{
-		for (Company company : referential.getCompanies().values()) 
-		{
-			if (company.isFilled()) return company;
+	protected void parseComment(String comment, Line line) {
+		if (comment != null && comment.trim().startsWith("{") && comment.trim().endsWith("}")) {
+			try {
+				// parse json comment
+				JSONObject json = new JSONObject(comment);
+				line.setComment(json.optString(COMMENT, null));
+				if (json.has(FOOTNOTES)) {
+					// scan footnotes
+					JSONArray footNotes = json.getJSONArray(FOOTNOTES);
+					for (int i = 0; i < footNotes.length(); i++) {
+						JSONObject footNote = footNotes.getJSONObject(i);
+						String key = footNote.optString(KEY, null);
+						String code = footNote.optString(CODE, null);
+						String label = footNote.optString(LABEL, null);
+						if (key != null && code != null && label != null) {
+							Footnote note = new Footnote();
+							note.setLine(line);
+							note.setLabel(label);
+							note.setCode(code);
+							note.setKey(key);
+							line.getFootnotes().add(note);
+						}
+
+					}
+				}
+				if (json.has(FLEXIBLE_SERVICE)) {
+					line.setFlexibleService(Boolean.valueOf(json.getBoolean(FLEXIBLE_SERVICE)));
+				}
+				if (json.has(TEXT_COLOR)) {
+					try {
+						Color.decode("0x" + json.getString(TEXT_COLOR));
+						line.setTextColor(json.getString(TEXT_COLOR));
+					} catch (Exception e) {
+						log.error("cannot parse text color " + json.getString(TEXT_COLOR), e);
+					}
+				}
+				if (json.has(LINE_COLOR)) {
+					try {
+						Color.decode("0x" + json.getString(LINE_COLOR));
+						line.setColor(json.getString(LINE_COLOR));
+					} catch (Exception e) {
+						log.error("cannot parse color " + json.getString(LINE_COLOR), e);
+					}
+				}
+				if (json.has(URL_REF))
+				{
+					try {
+						new URL(json.getString(URL_REF));
+						line.setUrl(json.getString(URL_REF));
+					} catch (Exception e) {
+						log.error("cannot parse url " + json.getString(URL_REF), e);
+					}
+				}
+			} catch (JSONException e1) {
+				log.warn("unparsable json : "+comment);
+				line.setComment(comment);
+			}
+		} else {
+			// normal comment
+			line.setComment(comment);
+		}
+	}
+
+	private Company getFirstCompany(Referential referential) {
+		for (Company company : referential.getCompanies().values()) {
+			if (company.isFilled())
+				return company;
 		}
 		return null;
 	}
-	
-	private PTNetwork getPtNetwork(Referential referential)
-	{
-		for (PTNetwork network : referential.getPtNetworks().values()) 
-		{
-			if (network.isFilled()) return network;
+
+	private Network getPtNetwork(Referential referential) {
+		for (Network network : referential.getPtNetworks().values()) {
+			if (network.isFilled())
+				return network;
 		}
 		return null;
 	}
-	
-	
+
 	static {
 		ParserFactory.register(LineParser.class.getName(), new ParserFactory() {
 			private LineParser instance = new LineParser();

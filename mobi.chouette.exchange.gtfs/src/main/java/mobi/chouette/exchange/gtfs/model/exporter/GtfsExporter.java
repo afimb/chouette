@@ -33,6 +33,7 @@ public class GtfsExporter implements GtfsExporterInterface {
 		_path = path;
 	}
 
+	@SuppressWarnings("rawtypes")
 	public void dispose() {
 		for (Exporter exporter : _map.values()) {
 			try {
@@ -44,6 +45,7 @@ public class GtfsExporter implements GtfsExporterInterface {
 		_map.clear();
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Exporter getExporter(String name, String path, Class clazz) {
 		Exporter result = _map.get(name);
 
@@ -63,53 +65,63 @@ public class GtfsExporter implements GtfsExporterInterface {
 		return result;
 	}
 
+	@SuppressWarnings("unchecked")
 	public Exporter<GtfsAgency> getAgencyExporter() throws Exception {
 		return getExporter(EXPORTER.AGENCY.name(), AgencyExporter.FILENAME,
 				AgencyExporter.class);
 
 	}
 
+	@SuppressWarnings("unchecked")
 	public Exporter<GtfsCalendarDate> getCalendarDateExporter()
 			throws Exception {
 		return getExporter(EXPORTER.CALENDAR_DATE.name(),
 				CalendarDateExporter.FILENAME, CalendarDateExporter.class);
 	}
 
+	@SuppressWarnings("unchecked")
 	public Exporter<GtfsCalendar> getCalendarExporter() throws Exception {
 		return getExporter(EXPORTER.CALENDAR.name(), CalendarExporter.FILENAME,
 				CalendarExporter.class);
 	}
 
+	@SuppressWarnings("unchecked")
 	public Exporter<GtfsFrequency> getFrequencyExporter() throws Exception {
 		return getExporter(EXPORTER.FREQUENCY.name(),
 				FrequencyExporter.FILENAME, FrequencyExporter.class);
 	}
 
+	@SuppressWarnings("unchecked")
 	public Exporter<GtfsRoute> getRouteExporter() throws Exception {
 		return getExporter(EXPORTER.ROUTE.name(), RouteExporter.FILENAME,
 				RouteExporter.class);
 	}
 
+	@SuppressWarnings("unchecked")
 	public Exporter<GtfsStop> getStopExporter() throws Exception {
 		return getExporter(EXPORTER.STOP.name(), StopExporter.FILENAME,
 				StopExporter.class);
 	}
 
+	@SuppressWarnings("unchecked")
 	public Exporter<GtfsStop> getStopExtendedExporter() throws Exception {
 		return getExporter(EXPORTER.STOP.name(), StopExporter.FILENAME,
 				StopExtendedExporter.class);
 	}
 
+	@SuppressWarnings("unchecked")
 	public Exporter<GtfsStopTime> getStopTimeExporter() throws Exception {
 		return getExporter(EXPORTER.STOP_TIME.name(),
 				StopTimeExporter.FILENAME, StopTimeExporter.class);
 	}
 
+	@SuppressWarnings("unchecked")
 	public Exporter<GtfsTransfer> getTransferExporter() throws Exception {
 		return getExporter(EXPORTER.TRANSFER.name(), TransferExporter.FILENAME,
 				TransferExporter.class);
 	}
 
+	@SuppressWarnings("unchecked")
 	public Exporter<GtfsTrip> getTripExporter() throws Exception {
 		return getExporter(EXPORTER.TRIP.name(), TripExporter.FILENAME,
 				TripExporter.class);

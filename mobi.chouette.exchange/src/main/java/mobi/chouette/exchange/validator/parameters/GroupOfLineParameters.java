@@ -13,7 +13,7 @@ import mobi.chouette.model.GroupOfLine;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @Data
-//@XmlType(propOrder={})
+@XmlType(propOrder={"objectId", "name", "registrationNumber"})
 public class GroupOfLineParameters {
 
 	@XmlTransient

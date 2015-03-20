@@ -3,10 +3,13 @@ package mobi.chouette.exchange.neptune.exporter.producer;
 import java.util.ArrayList;
 import java.util.List;
 
+import mobi.chouette.exchange.neptune.JsonExtension;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.UserNeedEnum;
 
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.trident.schema.trident.ChouetteAreaType;
 import org.trident.schema.trident.ChouettePTNetworkType.ChouetteArea;
 import org.trident.schema.trident.StopAreaExtensionType;
@@ -20,7 +23,7 @@ import uk.org.ifopt.acsb.UserNeedStructure;
 
 
 public class StopAreaProducer extends
-      AbstractJaxbNeptuneProducer<ChouetteArea.StopArea, StopArea>
+      AbstractJaxbNeptuneProducer<ChouetteArea.StopArea, StopArea> implements JsonExtension
 {
 
    @Override
@@ -31,7 +34,7 @@ public class StopAreaProducer extends
 
       populateFromModel(jaxbStopArea, stopArea);
 
-      jaxbStopArea.setComment(getNotEmptyString(stopArea.getComment()));
+      jaxbStopArea.setComment(buildComment(stopArea,addExtension));
       jaxbStopArea.setName(stopArea.getName());
 
       StopAreaExtensionType stopAreaExtension = tridentFactory
@@ -76,6 +79,32 @@ public class StopAreaProducer extends
 
       return jaxbStopArea;
    }
+
+	protected String buildComment(StopArea area, boolean addExtension) {
+		if (!addExtension)
+			return getNotEmptyString(area.getComment());
+
+		try {
+
+			JSONObject jsonComment = new JSONObject();
+			if (!isEmpty(area.getUrl())) {
+				jsonComment.put(URL_REF, area.getUrl());
+			}
+			if (!isEmpty(area.getTimeZone())) {
+				jsonComment.put(TIME_ZONE, area.getTimeZone());
+			}
+			if (jsonComment.length() == 0) {
+				return getNotEmptyString(area.getComment());
+			} else {
+				if (!isEmpty(area.getComment())) {
+					jsonComment.put(COMMENT, area.getComment().trim());
+				}
+			}
+			return jsonComment.toString();
+		} catch (JSONException e) {
+			return getNotEmptyString(area.getComment());
+		}
+	}
 
    protected AccessibilitySuitabilityDetails extractAccessibilitySuitabilityDetails(
          List<UserNeedEnum> userNeeds)

@@ -7,11 +7,15 @@ import java.util.Comparator;
 import java.util.List;
 
 import mobi.chouette.exchange.neptune.JsonExtension;
+import mobi.chouette.model.Footnote;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
 import mobi.chouette.model.type.BoardingAlightingPossibilityEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
 
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.trident.schema.trident.BoardingAlightingPossibilityType;
 import org.trident.schema.trident.TransportModeNameType;
 import org.trident.schema.trident.VehicleJourneyAtStopType;
@@ -152,39 +156,46 @@ public class VehicleJourneyProducer extends
 
    protected String buildComment(VehicleJourney vj, boolean addExtension)
    {
-//      if (!addExtension) 
+      if (!addExtension) 
     	  return getNotEmptyString(vj.getComment());
-//      JSONObject jsonComment = new JSONObject();
-//      if (!isEmpty(vj.getFootnotes()))
-//      {
-//         JSONArray noteRefs = new JSONArray();
-//         for (Footnote footNote : vj.getFootnotes())
-//         {
-//            noteRefs.put(footNote.getKey());
-//         }
-//         jsonComment.put(FOOTNOTE_REFS, noteRefs);
-//      }
-//      if (vj.getFlexibleService() != null)
-//      {
-//         jsonComment.put(FLEXIBLE_SERVICE, vj.getFlexibleService());
-//      }
-//      if (vj.getMobilityRestrictedSuitability() != null)
-//      {
-//         jsonComment.put(MOBILITY_RESTRICTION, vj.getMobilityRestrictedSuitability());
-//      }
-//
-//      if (jsonComment.length() == 0)
-//      {
-//         return getNotEmptyString(vj.getComment());
-//      }
-//      else
-//      {
-//         if (!isEmpty(vj.getComment()))
-//         {
-//            jsonComment.put(COMMENT, vj.getComment().trim());
-//         }
-//      }
-//      return jsonComment.toString();
+      try
+      {
+      JSONObject jsonComment = new JSONObject();
+      if (!isEmpty(vj.getFootnotes()))
+      {
+         JSONArray noteRefs = new JSONArray();
+         for (Footnote footNote : vj.getFootnotes())
+         {
+            noteRefs.put(footNote.getKey());
+         }
+         jsonComment.put(FOOTNOTE_REFS, noteRefs);
+      }
+      if (vj.getFlexibleService() != null)
+      {
+         jsonComment.put(FLEXIBLE_SERVICE, vj.getFlexibleService());
+      }
+      if (vj.getMobilityRestrictedSuitability() != null)
+      {
+         jsonComment.put(MOBILITY_RESTRICTION, vj.getMobilityRestrictedSuitability());
+      }
+
+      if (jsonComment.length() == 0)
+      {
+         return getNotEmptyString(vj.getComment());
+      }
+      else
+      {
+         if (!isEmpty(vj.getComment()))
+         {
+            jsonComment.put(COMMENT, vj.getComment().trim());
+         }
+      }
+      return jsonComment.toString();
+      }
+      catch (JSONException e)
+      {
+    	  return getNotEmptyString(vj.getComment());
+      }
    }
 
 

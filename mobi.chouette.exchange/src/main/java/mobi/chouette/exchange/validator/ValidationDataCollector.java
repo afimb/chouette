@@ -54,8 +54,8 @@ public class ValidationDataCollector {
 		}// end route loop
 		updateId(line, cache.getLines());
 		collection.getLineIds().add(line.getObjectId());
-		updateId(line.getPtNetwork(), cache.getPtNetworks());
-		collection.getNetworkIds().add(line.getPtNetwork().getObjectId());
+		updateId(line.getNetwork(), cache.getPtNetworks());
+		collection.getNetworkIds().add(line.getNetwork().getObjectId());
 		if (line.getCompany() != null) {
 			updateId(line.getCompany(), cache.getCompanies());
 			collection.getCompanyIds().add(line.getCompany().getObjectId());

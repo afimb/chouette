@@ -15,4 +15,6 @@ public interface JsonExtension
    public static final String ALIGHTING = "alighting"; 
    public static final String FLEXIBLE_SERVICE = "flexible_service";
    public static final String MOBILITY_RESTRICTION = "mobility_restriction";
+   public static final String URL_REF = "url";
+   public static final String TIME_ZONE = "time_zone";
 }

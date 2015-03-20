@@ -9,19 +9,19 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import lombok.Data;
-import mobi.chouette.model.PTNetwork;
+import mobi.chouette.model.Network;
 
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @Data
-//@XmlType(propOrder={})
+@XmlType(propOrder={"objectId", "name", "registrationNumber"})
 public class NetworkParameters {
 
 	@XmlTransient
 	public static String[] fields = { "ObjectId", "Name", "RegistrationNumber"} ;
 	
 	static {
-		ValidationParametersUtil.addFieldList(PTNetwork.class.getSimpleName(), Arrays.asList(fields));
+		ValidationParametersUtil.addFieldList(Network.class.getSimpleName(), Arrays.asList(fields));
 	}
 
 	@XmlElement(name = "objectid")

@@ -52,15 +52,14 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 
 	@Getter
 	@Setter
-	@GenericGenerator(name = "lines_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", 
-		parameters = {
+	@GenericGenerator(name = "lines_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", parameters = {
 			@Parameter(name = "sequence_name", value = "lines_id_seq"),
 			@Parameter(name = "increment_size", value = "100") })
 	@Id
 	@GeneratedValue(generator = "lines_id_seq")
 	@Column(name = "id", nullable = false)
 	protected Long id;
-	
+
 	/**
 	 * name
 	 * 
@@ -234,6 +233,24 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	}
 
 	/**
+	 * flexible service <br/>
+	 * 
+	 * <ul>
+	 * <li>null if unknown or inherited from line
+	 * <li>true for flexible service</li>
+	 * <li>false for regular service</li>
+	 * </ul>
+	 * 
+	 * @param flexibleService
+	 *           New value
+	 * @return The actual value
+	 */
+	@Getter
+	@Setter
+	@Column(name = "flexible_service")
+	private Boolean flexibleService;
+
+	/**
 	 * web site url
 	 * 
 	 * @return The actual value
@@ -302,22 +319,22 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	 * @return The actual value
 	 */
 	@Getter
-	@ManyToOne(cascade = { CascadeType.PERSIST  })
+	@ManyToOne(cascade = { CascadeType.PERSIST })
 	@JoinColumn(name = "network_id")
-	private PTNetwork ptNetwork;
+	private Network network;
 
 	/**
 	 * set network
 	 * 
 	 * @param ptNetwork
 	 */
-	public void setPtNetwork(PTNetwork ptNetwork) {
-		if (this.ptNetwork != null) {
-			this.ptNetwork.getLines().remove(this);
+	public void setNetwork(Network network) {
+		if (this.network != null) {
+			this.network.getLines().remove(this);
 		}
-		this.ptNetwork = ptNetwork;
-		if (ptNetwork != null) {
-			ptNetwork.getLines().add(this);
+		this.network = network;
+		if (network != null) {
+			network.getLines().add(this);
 		}
 	}
 
@@ -332,6 +349,7 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	@ManyToOne(cascade = { CascadeType.PERSIST })
 	@JoinColumn(name = "company_id")
 	private Company company;
+
 	public void setCompany(Company company) {
 		if (this.company != null) {
 			this.company.getLines().remove(this);
@@ -341,7 +359,7 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 			company.getLines().add(this);
 		}
 	}
-	
+
 	/**
 	 * list of routes
 	 * 
@@ -353,6 +371,20 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	@Setter
 	@OneToMany(mappedBy = "line", cascade = { CascadeType.PERSIST })
 	private List<Route> routes = new ArrayList<Route>(0);
+
+	/**
+	 * list of footnotes
+	 * 
+	 * @param footnotes
+	 *            New value
+	 * @return The actual value
+	 * 
+	 * @since 2.5.3
+	 */
+	@Getter
+	@Setter
+	@OneToMany(mappedBy = "line", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+	private List<Footnote> footnotes = new ArrayList<>(0);
 
 	/**
 	 * groups of lines reverse reference
@@ -376,7 +408,7 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	 */
 	@Getter
 	@Setter
-	@ManyToMany(mappedBy = "routingConstraintLines",cascade = { CascadeType.PERSIST })
+	@ManyToMany(mappedBy = "routingConstraintLines", cascade = { CascadeType.PERSIST })
 	private List<StopArea> routingConstraints = new ArrayList<StopArea>(0);
 
 	/* -------------------------------------- */
@@ -387,9 +419,7 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	 * @param routingConstraint
 	 */
 	public void addRoutingConstraint(StopArea routingConstraint) {
-		if (routingConstraint != null
-				&& !routingConstraints.contains(routingConstraint))
-		{
+		if (routingConstraint != null && !routingConstraints.contains(routingConstraint)) {
 			routingConstraints.add(routingConstraint);
 			routingConstraint.getRoutingConstraintLines().add(this);
 		}
@@ -402,9 +432,7 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	 * @param routingConstraint
 	 */
 	public void removeRoutingConstraint(StopArea routingConstraint) {
-		if (routingConstraint != null
-				&& routingConstraints.contains(routingConstraint))
-		{
+		if (routingConstraint != null && routingConstraints.contains(routingConstraint)) {
 			routingConstraints.remove(routingConstraint);
 			routingConstraint.getRoutingConstraintLines().remove(this);
 		}

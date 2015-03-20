@@ -19,7 +19,7 @@ import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.CompanyDAO;
 import mobi.chouette.dao.GroupOfLineDAO;
 import mobi.chouette.dao.LineDAO;
-import mobi.chouette.dao.PTNetworkDAO;
+import mobi.chouette.dao.NetworkDAO;
 import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.dao.TimetableDAO;
 
@@ -39,7 +39,7 @@ public class CleanRepositoryCommand implements Command {
 	private LineDAO lineDAO;
 
 	@EJB
-	private PTNetworkDAO networkDAO;
+	private NetworkDAO networkDAO;
 	
 	@EJB
 	private StopAreaDAO stopAreaDAO;

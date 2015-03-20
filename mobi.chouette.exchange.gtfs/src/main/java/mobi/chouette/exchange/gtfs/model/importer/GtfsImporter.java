@@ -30,6 +30,7 @@ public class GtfsImporter {
 		_path = path;
 	}
 
+	@SuppressWarnings("rawtypes")
 	public void dispose() {
 		for (Index importer : _map.values()) {
 			importer.dispose();
@@ -37,6 +38,7 @@ public class GtfsImporter {
 		_map.clear();
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Index getImporter(String name, String path, Class clazz) {
 		Index importer = _map.get(name);
 
@@ -97,56 +99,67 @@ public class GtfsImporter {
 		return f.exists();
 	}
 
+	@SuppressWarnings("unchecked")
 	public Index<GtfsAgency> getAgencyById() {
 		return getImporter(INDEX.AGENCY_BY_ID.name(), AgencyById.FILENAME,
 				AgencyById.class);
 	}
 
+	@SuppressWarnings("unchecked")
 	public Index<GtfsCalendar> getCalendarByService() {
 		return getImporter(INDEX.CALENDAR_BY_SERVICE.name(),
 				CalendarByService.FILENAME, CalendarByService.class);
 	}
 
+	@SuppressWarnings("unchecked")
 	public Index<GtfsCalendarDate> getCalendarDateByService() {
 		return getImporter(INDEX.CALENDAR_DATE_BY_SERVICE.name(),
 				CalendarDateByService.FILENAME, CalendarDateByService.class);
 	}
 
+	@SuppressWarnings("unchecked")
 	public Index<GtfsFrequency> getFrequencyByTrip() {
 		return getImporter(INDEX.FREQUENCY_BY_TRIP.name(),
 				FrequencyByTrip.FILENAME, FrequencyByTrip.class);
 	}
 
+	@SuppressWarnings("unchecked")
 	public Index<GtfsRoute> getRouteById() {
 		return getImporter(INDEX.ROUTE_BY_ID.name(), RouteById.FILENAME,
 				RouteById.class);
 	}
 
+	@SuppressWarnings("unchecked")
 	public Index<GtfsStop> getStopById() {
 		return getImporter(INDEX.STOP_BY_ID.name(), StopById.FILENAME,
 				StopById.class);
 	}
 
+	@SuppressWarnings("unchecked")
 	public Index<GtfsStopTime> getStopTimeByTrip() {
 		return getImporter(INDEX.STOP_TIME_BY_TRIP.name(),
 				StopTimeByTrip.FILENAME, StopTimeByTrip.class);
 	}
 
+	@SuppressWarnings("unchecked")
 	public Index<GtfsTransfer> getTransferByFromStop() {
 		return getImporter(INDEX.TRANSFER_BY_FROM_STOP.name(),
 				TransferByFromStop.FILENAME, TransferByFromStop.class);
 	}
 
+	@SuppressWarnings("unchecked")
 	public Index<GtfsTrip> getTripById() {
 		return getImporter(INDEX.TRIP_BY_ID.name(), TripById.FILENAME,
 				TripById.class);
 	}
 
+	@SuppressWarnings("unchecked")
 	public Index<GtfsTrip> getTripByRoute() {
 		return getImporter(INDEX.TRIP_BY_ROUTE.name(), TripById.FILENAME,
 				TripByRoute.class);
 	}
 
+	@SuppressWarnings("unchecked")
 	public Index<GtfsTrip> getTripByService() {
 		return getImporter(INDEX.TRIP_BY_SERVICE.name(), TripById.FILENAME,
 				TripByRoute.class);

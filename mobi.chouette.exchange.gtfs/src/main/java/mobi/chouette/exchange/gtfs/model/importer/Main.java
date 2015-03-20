@@ -15,6 +15,7 @@ import mobi.chouette.exchange.gtfs.model.GtfsTrip;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -27,7 +28,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		BasicConfigurator.configure();
-		log.getLogger("org.infinispan").setLevel(Level.WARN);
+		Logger.getLogger("org.infinispan").setLevel(Level.WARN);
 		Main main = new Main();
 
 		Monitor monitor = MonitorFactory.start();
@@ -35,6 +36,7 @@ public class Main {
 		log.debug("[DSU] total : " + monitor.stop());
 	}
 
+	@SuppressWarnings("rawtypes")
 	private void parse(GtfsImporter dao, String name, String path, Class clazz) {
 
 		try {
@@ -55,6 +57,7 @@ public class Main {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	private void todo() {
 		GtfsImporter dao = new GtfsImporter(PATH);
 
@@ -71,6 +74,7 @@ public class Main {
 
 	}
 
+	@SuppressWarnings("unused")
 	private void execute() {
 		GtfsImporter dao = new GtfsImporter(PATH);
 
@@ -121,6 +125,7 @@ public class Main {
 
 	}
 
+	@SuppressWarnings("unused")
 	private void test() {
 
 		printMemory();

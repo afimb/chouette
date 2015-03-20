@@ -15,7 +15,7 @@ import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
-import mobi.chouette.model.PTNetwork;
+import mobi.chouette.model.Network;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.Timetable;
@@ -50,7 +50,7 @@ public class ObjectReference {
 	@XmlElement(name = "id",required=true)
 	private Long id;
 
-	public ObjectReference(PTNetwork object)
+	public ObjectReference(Network object)
 	{
 		this.type = TYPE.network;
 		this.id = object.getId();

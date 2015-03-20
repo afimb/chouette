@@ -13,7 +13,7 @@ import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
-import mobi.chouette.model.PTNetwork;
+import mobi.chouette.model.Network;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
@@ -22,7 +22,7 @@ import mobi.chouette.model.VehicleJourney;
 
 @Data
 public class ValidationData {
-	private Set<PTNetwork> networks = new HashSet<>();
+	private Set<Network> networks = new HashSet<>();
 	private Set<String> networkIds = new HashSet<>();
 	private Set<Line> lines = new HashSet<>();
 	private Set<String> lineIds = new HashSet<>();

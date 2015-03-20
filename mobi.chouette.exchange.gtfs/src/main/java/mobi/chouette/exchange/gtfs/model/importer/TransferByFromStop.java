@@ -66,6 +66,7 @@ public class TransferByFromStop extends IndexImpl<GtfsTransfer> implements
 	}
 
 	public static class DefaultImporterFactory extends IndexFactory {
+		@SuppressWarnings("rawtypes")
 		@Override
 		protected Index create(String name) throws IOException {
 			return new TransferByFromStop(name);

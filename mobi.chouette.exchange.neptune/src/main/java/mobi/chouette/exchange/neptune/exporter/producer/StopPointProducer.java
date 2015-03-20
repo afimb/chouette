@@ -5,6 +5,8 @@ import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.LongLatTypeEnum;
 
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 import org.trident.schema.trident.ChouettePTNetworkType;
 import org.trident.schema.trident.LongLatTypeType;
 import org.trident.schema.trident.ProjectedPointType;
@@ -66,24 +68,31 @@ public class StopPointProducer extends
 
    protected String buildComment(StopPoint stopPoint, boolean addExtension)
    {
-//      if (!addExtension) 
+      if (!addExtension) 
     	  return null;
-//      JSONObject jsonComment = new JSONObject();
-//      JSONObject jsonRC = new JSONObject();
-//      if (stopPoint.getForBoarding() != null)
-//      {
-//         jsonRC.put(BOARDING, stopPoint.getForBoarding().name());
-//      }
-//      if (stopPoint.getForAlighting() != null)
-//      {
-//         jsonRC.put(ALIGHTING, stopPoint.getForAlighting().name());
-//      }
-//      if (jsonRC.length() == 0)
-//      {
-//         return null;
-//      }
-//      jsonComment.put(ROUTING_CONSTRAINTS, jsonRC);
-//      return jsonComment.toString();
+      try
+      {
+      JSONObject jsonComment = new JSONObject();
+      JSONObject jsonRC = new JSONObject();
+      if (stopPoint.getForBoarding() != null)
+      {
+         jsonRC.put(BOARDING, stopPoint.getForBoarding().name());
+      }
+      if (stopPoint.getForAlighting() != null)
+      {
+         jsonRC.put(ALIGHTING, stopPoint.getForAlighting().name());
+      }
+      if (jsonRC.length() == 0)
+      {
+         return null;
+      }
+      jsonComment.put(ROUTING_CONSTRAINTS, jsonRC);
+      return jsonComment.toString();
+      }
+      catch (JSONException e)
+      {
+    	  return null;
+      }
    }
 
 

@@ -3,7 +3,7 @@ package mobi.chouette.model.blueprint;
 import java.util.Date;
 import java.util.UUID;
 
-import mobi.chouette.model.PTNetwork;
+import mobi.chouette.model.Network;
 import mobi.chouette.model.type.PTNetworkSourceTypeEnum;
 
 import com.tobedevoured.modelcitizen.annotation.Blueprint;
@@ -11,7 +11,7 @@ import com.tobedevoured.modelcitizen.annotation.Default;
 import com.tobedevoured.modelcitizen.field.FieldCallback;
 
 @SuppressWarnings("deprecation")
-@Blueprint(PTNetwork.class)
+@Blueprint(Network.class)
 public class NetworkBlueprint
 {
 

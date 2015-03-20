@@ -40,6 +40,7 @@ public abstract class ExporterImpl<T> implements Exporter<T> {
 		_writer.close();
 	}
 
+	@SuppressWarnings("rawtypes")
 	void write(Enum[] values) throws IOException {
 		StringBuilder builder = new StringBuilder();
 		final int length = values.length;

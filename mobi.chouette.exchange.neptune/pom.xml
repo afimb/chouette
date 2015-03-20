@@ -77,6 +77,11 @@
 			<artifactId>jboss-concurrency-api_1.0_spec</artifactId>
 			<scope>provided</scope>
 		</dependency>
+      <dependency>
+         <groupId>org.codehaus.jettison</groupId>
+         <artifactId>jettison</artifactId>
+         <scope>provided</scope>
+      </dependency>
 
 		<!-- Modules -->
 		<dependency>

@@ -13,7 +13,7 @@ import mobi.chouette.model.AccessPoint;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @Data
-//@XmlType(propOrder={})
+@XmlType(propOrder={"objectId", "name", "cityName", "countryCode", "zipCode"})
 public class AccessPointParameters {
 
 	@XmlTransient

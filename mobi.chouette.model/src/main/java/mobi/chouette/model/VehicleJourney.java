@@ -22,7 +22,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import mobi.chouette.model.type.ServiceStatusValueEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
 
 import org.apache.commons.lang.StringUtils;
@@ -44,22 +43,21 @@ import org.hibernate.annotations.Parameter;
 @Entity
 @Table(name = "vehicle_journeys")
 @NoArgsConstructor
-@ToString(callSuper=true, exclude={"journeyPattern", "route", "timetables"})
+@ToString(callSuper = true, exclude = { "journeyPattern", "route", "timetables" })
 public class VehicleJourney extends NeptuneIdentifiedObject {
 
 	private static final long serialVersionUID = 304336286208135064L;
 
 	@Getter
 	@Setter
-	@GenericGenerator(name = "vehicle_journeys_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", 
-		parameters = {
+	@GenericGenerator(name = "vehicle_journeys_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", parameters = {
 			@Parameter(name = "sequence_name", value = "vehicle_journeys_id_seq"),
 			@Parameter(name = "increment_size", value = "100") })
 	@Id
 	@GeneratedValue(generator = "vehicle_journeys_id_seq")
 	@Column(name = "id", nullable = false)
 	protected Long id;
-	
+
 	/**
 	 * comment
 	 * 
@@ -79,20 +77,6 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 	public void setComment(String value) {
 		comment = StringUtils.abbreviate(value, 255);
 	}
-
-	/**
-	 * service status
-	 * 
-	 * @param serviceStatusValue
-	 *            New value
-	 * @return The actual value
-	 */
-	@Getter
-	@Setter
-	@Enumerated(EnumType.STRING)
-	@Column(name = "status_value")
-	@Deprecated
-	private ServiceStatusValueEnum serviceStatusValue;
 
 	/**
 	 * Transport mode when different from line transport mode
@@ -288,12 +272,25 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 	 */
 	@Getter
 	@Setter
-	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST})
+	@ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST })
 	@JoinColumn(name = "company_id")
 	private Company company;
 
 	/**
-	 * timtables
+	 * footnotes refs
+	 * 
+	 * @param footnotes
+	 *            New value
+	 * @return The actual value
+	 */
+	@Getter
+	@Setter
+	@ManyToMany
+	@JoinTable(name = "footnotes_vehicle_journeys", joinColumns = { @JoinColumn(name = "vehicle_journey_id", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "footnote_id", nullable = false, updatable = false) })
+	private List<Footnote> footnotes = new ArrayList<>(0);
+
+	/**
+	 * timetables
 	 * 
 	 * @param timetables
 	 *            New value
@@ -314,7 +311,6 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 	@Setter
 	@OneToMany(cascade = { CascadeType.PERSIST })
 	@JoinColumn(name = "vehicle_journey_id", updatable = false)
-	private List<VehicleJourneyAtStop> vehicleJourneyAtStops = new ArrayList<VehicleJourneyAtStop>(
-			0);
+	private List<VehicleJourneyAtStop> vehicleJourneyAtStops = new ArrayList<VehicleJourneyAtStop>(0);
 
 }

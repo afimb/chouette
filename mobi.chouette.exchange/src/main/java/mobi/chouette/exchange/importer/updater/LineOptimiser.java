@@ -13,7 +13,7 @@ import mobi.chouette.dao.ConnectionLinkDAO;
 import mobi.chouette.dao.GroupOfLineDAO;
 import mobi.chouette.dao.JourneyPatternDAO;
 import mobi.chouette.dao.LineDAO;
-import mobi.chouette.dao.PTNetworkDAO;
+import mobi.chouette.dao.NetworkDAO;
 import mobi.chouette.dao.RouteDAO;
 import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.dao.StopPointDAO;
@@ -26,7 +26,7 @@ import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
-import mobi.chouette.model.PTNetwork;
+import mobi.chouette.model.Network;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
@@ -54,7 +54,7 @@ public class LineOptimiser {
 	private TimetableDAO timetableDAO;
 
 	@EJB
-	private PTNetworkDAO ptNetworkDAO;
+	private NetworkDAO ptNetworkDAO;
 
 	@EJB
 	private CompanyDAO companyDAO;
@@ -204,16 +204,16 @@ public class LineOptimiser {
 	}
 
 	private void initializePTNetwork(Referential cache,
-			Collection<PTNetwork> list) {
+			Collection<Network> list) {
 		if (list != null && !list.isEmpty()) {
 			Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
-			List<PTNetwork> objects = ptNetworkDAO.findByObjectId(objectIds);
-			for (PTNetwork object : objects) {
+			List<Network> objects = ptNetworkDAO.findByObjectId(objectIds);
+			for (Network object : objects) {
 				cache.getPtNetworks().put(object.getObjectId(), object);
 			}
 
-			for (PTNetwork item : list) {
-				PTNetwork object = cache.getPtNetworks()
+			for (Network item : list) {
+				Network object = cache.getPtNetworks()
 						.get(item.getObjectId());
 				if (object == null) {
 					object = ObjectFactory.getPTNetwork(cache,

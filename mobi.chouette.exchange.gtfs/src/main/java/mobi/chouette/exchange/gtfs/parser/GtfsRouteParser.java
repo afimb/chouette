@@ -16,7 +16,7 @@ import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.Validator;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.Line;
-import mobi.chouette.model.PTNetwork;
+import mobi.chouette.model.Network;
 import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
@@ -50,11 +50,11 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 
 		// PTNetwork
 		String ptNetworkId = configuration.getObjectIdPrefix() + ":"
-				+ PTNetwork.PTNETWORK_KEY + ":"
+				+ Network.PTNETWORK_KEY + ":"
 				+ configuration.getObjectIdPrefix();
-		PTNetwork ptNetwork = ObjectFactory.getPTNetwork(referential,
+		Network ptNetwork = ObjectFactory.getPTNetwork(referential,
 				ptNetworkId);
-		line.setPtNetwork(ptNetwork);
+		line.setNetwork(ptNetwork);
 
 		// Company
 		String companyId = AbstractConverter.composeObjectId(

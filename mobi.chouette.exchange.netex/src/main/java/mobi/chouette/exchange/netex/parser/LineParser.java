@@ -10,7 +10,7 @@ import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netex.Constant;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.Line;
-import mobi.chouette.model.PTNetwork;
+import mobi.chouette.model.Network;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.util.ObjectFactory;
@@ -86,7 +86,7 @@ public class LineParser implements Parser, Constant {
 			}
 		}
 
-		line.setPtNetwork(getPTNetwork(referential));
+		line.setNetwork(getPTNetwork(referential));
 		line.setCompany(getCompany(referential));
 
 		// TODO for (GroupOfLine groupOfLine :
@@ -107,10 +107,10 @@ public class LineParser implements Parser, Constant {
 		return result;
 	}
 
-	private PTNetwork getPTNetwork(Referential referential) {
-		PTNetwork result = null;
-		Collection<PTNetwork> list = referential.getPtNetworks().values();
-		PTNetwork[] array = list.toArray(new PTNetwork[list.size()]);
+	private Network getPTNetwork(Referential referential) {
+		Network result = null;
+		Collection<Network> list = referential.getPtNetworks().values();
+		Network[] array = list.toArray(new Network[list.size()]);
 		if (array != null && array.length == 1) {
 			result = array[0];
 		}

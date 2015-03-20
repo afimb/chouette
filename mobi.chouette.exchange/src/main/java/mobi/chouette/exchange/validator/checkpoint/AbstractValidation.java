@@ -23,7 +23,6 @@ import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonReader;
 
-import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 import mobi.chouette.exchange.validator.parameters.FieldParameters;
 import mobi.chouette.exchange.validator.parameters.TransportModeParameters;
@@ -50,7 +49,6 @@ import com.vividsolutions.jts.geom.PrecisionModel;
  * @author michel
  * 
  */
-@Log4j
 public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> implements Constant {
 
 	protected enum PATTERN_OPTION {

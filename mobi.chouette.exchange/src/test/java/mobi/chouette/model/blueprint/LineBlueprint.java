@@ -6,7 +6,7 @@ import java.util.UUID;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.Line;
-import mobi.chouette.model.PTNetwork;
+import mobi.chouette.model.Network;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.type.TransportModeNameEnum;
 
@@ -54,7 +54,7 @@ public class LineBlueprint
    String registrationNumber = "100110107";
 
    @Mapped
-   PTNetwork ptNetwork;
+   Network network;
 
    @Mapped
    Company company;

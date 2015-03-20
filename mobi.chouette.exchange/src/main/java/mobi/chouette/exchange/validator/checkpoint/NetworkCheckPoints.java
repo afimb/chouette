@@ -11,15 +11,15 @@ import mobi.chouette.exchange.validator.Validator;
 import mobi.chouette.exchange.validator.parameters.ValidationParameters;
 import mobi.chouette.exchange.validator.report.CheckPoint;
 import mobi.chouette.exchange.validator.report.ValidationReport;
-import mobi.chouette.model.PTNetwork;
+import mobi.chouette.model.Network;
 
 @Log4j
-public class NetworkCheckPoints extends AbstractValidation<PTNetwork> implements Validator<PTNetwork> {
+public class NetworkCheckPoints extends AbstractValidation<Network> implements Validator<Network> {
 
 	@Override
-	public ValidationConstraints validate(Context context, PTNetwork target) {
+	public ValidationConstraints validate(Context context, Network target) {
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
-		List<PTNetwork> beans = new ArrayList<>(data.getNetworks());
+		List<Network> beans = new ArrayList<>(data.getNetworks());
 		ValidationParameters parameters = (ValidationParameters) context.get(VALIDATION);
 		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 		if (isEmpty(beans))
@@ -34,7 +34,7 @@ public class NetworkCheckPoints extends AbstractValidation<PTNetwork> implements
 			return null;
 		}
 		for (int i = 0; i < beans.size(); i++) {
-			PTNetwork bean = beans.get(i);
+			Network bean = beans.get(i);
 
 			// 4-Network-1 : check columns constraints
 			if (test4_1)

@@ -1,7 +1,7 @@
 package mobi.chouette.exchange.metadata;
 
 import mobi.chouette.model.Line;
-import mobi.chouette.model.PTNetwork;
+import mobi.chouette.model.Network;
 
 public class NeptuneObjectPresenter
 {
@@ -23,7 +23,7 @@ public class NeptuneObjectPresenter
       return name;
    }
 
-   public static String getName(PTNetwork network)
+   public static String getName(Network network)
    {
       String name = network.getObjectId(); // maybe name empty
       if (!isEmpty(network.getName()))

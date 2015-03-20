@@ -18,7 +18,7 @@ import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.NeptuneIdentifiedObject;
-import mobi.chouette.model.PTNetwork;
+import mobi.chouette.model.Network;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.Timetable;
@@ -120,9 +120,9 @@ public class Location {
 			this.name = NamingUtil.getName(object);
 			objectRefs.add(new ObjectReference(object));
 		}
-		else if (chouetteObject instanceof PTNetwork)
+		else if (chouetteObject instanceof Network)
 		{
-			PTNetwork object = (PTNetwork) chouetteObject;
+			Network object = (Network) chouetteObject;
 			this.name = NamingUtil.getName(object);
 			objectRefs.add(new ObjectReference(object));
 		}

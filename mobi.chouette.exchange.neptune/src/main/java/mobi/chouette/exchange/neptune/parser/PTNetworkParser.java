@@ -11,7 +11,7 @@ import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.neptune.validation.PTNetworkValidator;
 import mobi.chouette.exchange.validator.ValidatorFactory;
-import mobi.chouette.model.PTNetwork;
+import mobi.chouette.model.Network;
 import mobi.chouette.model.type.PTNetworkSourceTypeEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
@@ -34,7 +34,7 @@ public class PTNetworkParser implements Parser, Constant {
 		
 		PTNetworkValidator validator = (PTNetworkValidator) ValidatorFactory.create(PTNetworkValidator.class.getName(), context);
 				
-		PTNetwork network = null;
+		Network network = null;
 		String objectId = null;
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 

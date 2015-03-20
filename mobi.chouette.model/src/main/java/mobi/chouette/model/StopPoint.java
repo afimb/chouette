@@ -3,6 +3,8 @@ package mobi.chouette.model;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -10,13 +12,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import mobi.chouette.model.type.AlightingPossibilityEnum;
+import mobi.chouette.model.type.BoardingPossibilityEnum;
+
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 /**
  * Chouette StopPoint : a StopPoint on a route
@@ -56,7 +60,37 @@ public class StopPoint extends NeptuneIdentifiedObject {
 	@Column(name = "position")
 	private Integer position;
 
-	/**
+	   /**
+	    * boarding possibility
+	    * 
+	    * @param forBoarding
+	    *           New value
+	    * @return The actual value
+	    * 
+	    * @since 2.5.2
+	    */
+	   @Getter
+	   @Setter
+	   @Enumerated(EnumType.STRING)
+	   @Column(name = "for_boarding")
+	   private BoardingPossibilityEnum forBoarding;
+
+	   /**
+	    * alighting possibility
+	    * 
+	    * @param forAlighting
+	    *           New value
+	    * @return The actual value
+	    * 
+	    * @since 2.5.2
+	    */
+	   @Getter
+	   @Setter
+	   @Enumerated(EnumType.STRING)
+	   @Column(name = "for_alighting")
+	   private AlightingPossibilityEnum forAlighting;
+
+	   /**
 	 * stop area container
 	 * 
 	 * @param containedInStopArea

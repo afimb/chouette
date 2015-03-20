@@ -14,7 +14,7 @@ import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
-import mobi.chouette.model.PTNetwork;
+import mobi.chouette.model.Network;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
@@ -36,7 +36,7 @@ public class Referential implements java.io.Serializable {
 
 	@Getter
 	@Setter
-	private Map<String, PTNetwork> sharedPTNetworks = new HashMap<String, PTNetwork>();
+	private Map<String, Network> sharedPTNetworks = new HashMap<String, Network>();
 
 	@Getter
 	@Setter
@@ -109,7 +109,7 @@ public class Referential implements java.io.Serializable {
 
 	@Getter
 	@Setter
-	private Map<String, PTNetwork> ptNetworks = new HashMap<String, PTNetwork>();
+	private Map<String, Network> ptNetworks = new HashMap<String, Network>();
 
 	@Getter
 	@Setter

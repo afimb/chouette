@@ -7,7 +7,7 @@ import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
-import mobi.chouette.model.PTNetwork;
+import mobi.chouette.model.Network;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
@@ -72,11 +72,11 @@ public class ObjectFactory {
 		return result;
 	}
 
-	public static PTNetwork getPTNetwork(Referential referential,
+	public static Network getPTNetwork(Referential referential,
 			String objectId) {
-		PTNetwork result = referential.getSharedPTNetworks().get(objectId);
+		Network result = referential.getSharedPTNetworks().get(objectId);
 		if (result == null) {
-			result = new PTNetwork();
+			result = new Network();
 			result.setDetached(true);
 			result.setObjectId(objectId);
 			referential.getSharedPTNetworks().put(objectId, result);

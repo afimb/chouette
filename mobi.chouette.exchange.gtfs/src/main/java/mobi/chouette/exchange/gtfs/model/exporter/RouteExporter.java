@@ -93,6 +93,7 @@ public class RouteExporter extends ExporterImpl<GtfsRoute> implements
 
 	public static class DefaultExporterFactory extends ExporterFactory {
 
+		@SuppressWarnings({ "unchecked", "rawtypes" })
 		@Override
 		protected Exporter create(String path) throws IOException {
 			return new RouteExporter(path);

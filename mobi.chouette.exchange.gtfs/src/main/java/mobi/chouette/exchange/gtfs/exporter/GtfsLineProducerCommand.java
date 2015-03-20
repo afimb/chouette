@@ -187,7 +187,7 @@ public class GtfsLineProducerCommand implements Command, Constant
 				routeProducer.save(line, report, prefix);
 				hasLine = true;
 				metadata.getResources().add(metadata.new Resource( 
-						NeptuneObjectPresenter.getName(line.getPtNetwork()), NeptuneObjectPresenter.getName(line)));
+						NeptuneObjectPresenter.getName(line.getNetwork()), NeptuneObjectPresenter.getName(line)));
 			}
 		}
 		return hasLine;

@@ -51,19 +51,19 @@ public class SharedLineCheckPoints extends AbstractValidation<Line> implements V
 		if (beans.size() <= 1)
 			return;
 		boolean error_1 = false; // if true, add detail for this line
-		if (line1.getPtNetwork() == null)
+		if (line1.getNetwork() == null)
 			return;
 		prepareCheckPoint(report, LINE_1);
 		for (int j = lineRank + 1; j < beans.size(); j++) {
 			Line line2 = beans.get(j);
-			if (line2.getPtNetwork() == null)
+			if (line2.getNetwork() == null)
 				continue;
 
-			if (line2.getPtNetwork().equals(line1.getPtNetwork())) {
+			if (line2.getNetwork().equals(line1.getNetwork())) {
 				if (line1.getName().equals(line2.getName()) && line1.getNumber().equals(line2.getNumber())) {
 					// failure ! add only line2 location
 					Location location = new Location(line2);
-					Location networkLocation = new Location(line2.getPtNetwork());
+					Location networkLocation = new Location(line2.getNetwork());
 					Detail detail = new Detail(LINE_1, location, networkLocation);
 					addValidationError(report, LINE_1, detail);
 
@@ -75,7 +75,7 @@ public class SharedLineCheckPoints extends AbstractValidation<Line> implements V
 		if (error_1) {
 			// failure encountered, add line 1
 			Location location = new Location(line1);
-			Location networkLocation = new Location(line1.getPtNetwork());
+			Location networkLocation = new Location(line1.getNetwork());
 
 			Detail detail = new Detail(LINE_1, location, networkLocation);
 			addValidationError(report, LINE_1, detail);

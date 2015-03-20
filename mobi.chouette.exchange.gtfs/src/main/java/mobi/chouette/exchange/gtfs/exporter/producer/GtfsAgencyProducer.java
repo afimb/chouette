@@ -68,14 +68,14 @@ public class GtfsAgencyProducer extends AbstractProducer
       agency.setAgencyTimezone(tz);
 
       // manage agency_url mandatory
-      String urlData = "Url";
+      // String urlData = "Url";
       String url = getValue(neptuneObject.getUrl());
       if (url == null)
       {
          if (neptuneObject.getOrganisationalUnit() != null
                && neptuneObject.getOrganisationalUnit().startsWith("http"))
          {
-            urlData = "OrganisationalUnit";
+            // urlData = "OrganisationalUnit";
             url = neptuneObject.getOrganisationalUnit();
          } else
          {

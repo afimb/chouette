@@ -54,6 +54,7 @@ public class AgencyById extends IndexImpl<GtfsAgency> implements GtfsConverter {
 	}
 
 	public static class DefaultImporterFactory extends IndexFactory {
+		@SuppressWarnings("rawtypes")
 		@Override
 		protected Index create(String name) throws IOException {
 			return new AgencyById(name);

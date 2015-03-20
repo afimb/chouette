@@ -12,7 +12,7 @@ import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.NeptuneIdentifiedObject;
-import mobi.chouette.model.PTNetwork;
+import mobi.chouette.model.Network;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
@@ -91,7 +91,7 @@ public class ModelTranslator
       } else if (model instanceof StopPoint)
       {
          return "StopPoint";
-      } else if (model instanceof PTNetwork)
+      } else if (model instanceof Network)
       {
          return "GroupOfLine";
       } else if (model instanceof Line)

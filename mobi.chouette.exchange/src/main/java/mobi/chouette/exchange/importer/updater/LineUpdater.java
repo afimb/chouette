@@ -11,13 +11,13 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
 import mobi.chouette.dao.CompanyDAO;
 import mobi.chouette.dao.GroupOfLineDAO;
-import mobi.chouette.dao.PTNetworkDAO;
+import mobi.chouette.dao.NetworkDAO;
 import mobi.chouette.dao.RouteDAO;
 import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.Line;
-import mobi.chouette.model.PTNetwork;
+import mobi.chouette.model.Network;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.util.ObjectFactory;
@@ -32,10 +32,10 @@ public class LineUpdater implements Updater<Line> {
 	// protected EntityManager em;
 
 	@EJB
-	private PTNetworkDAO ptNetworkDAO;
+	private NetworkDAO ptNetworkDAO;
 
 	@EJB(beanName = PTNetworkUpdater.BEAN_NAME)
-	private Updater<PTNetwork> ptNetworkUpdater;
+	private Updater<Network> ptNetworkUpdater;
 
 	@EJB
 	private CompanyDAO companyDAO;
@@ -142,12 +142,12 @@ public class LineUpdater implements Updater<Line> {
 		}
 
 		// PTNetwork
-		if (newValue.getPtNetwork() == null) {
-			oldValue.setPtNetwork(null);
+		if (newValue.getNetwork() == null) {
+			oldValue.setNetwork(null);
 		} else {
 
-			String objectId = newValue.getPtNetwork().getObjectId();
-			PTNetwork ptNetwork = cache.getPtNetworks().get(objectId);
+			String objectId = newValue.getNetwork().getObjectId();
+			Network ptNetwork = cache.getPtNetworks().get(objectId);
 			if (ptNetwork == null) {
 				ptNetwork = ptNetworkDAO.findByObjectId(objectId);
 				if (ptNetwork != null) {
@@ -158,9 +158,9 @@ public class LineUpdater implements Updater<Line> {
 			if (ptNetwork == null) {
 				ptNetwork = ObjectFactory.getPTNetwork(cache, objectId);
 			}
-			oldValue.setPtNetwork(ptNetwork);
-			ptNetworkUpdater.update(context, oldValue.getPtNetwork(),
-					newValue.getPtNetwork());
+			oldValue.setNetwork(ptNetwork);
+			ptNetworkUpdater.update(context, oldValue.getNetwork(),
+					newValue.getNetwork());
 		}
 
 		// Company

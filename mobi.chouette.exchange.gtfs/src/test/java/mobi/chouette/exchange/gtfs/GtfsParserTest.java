@@ -12,7 +12,6 @@ import mobi.chouette.exchange.gtfs.importer.GtfsParserCommand;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsImporter;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.validator.report.ValidationReport;
-import mobi.chouette.model.api.Job;
 import mobi.chouette.model.util.Referential;
 
 import org.jboss.arquillian.container.test.api.Deployment;

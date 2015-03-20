@@ -20,14 +20,14 @@ import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.CompanyDAO;
 import mobi.chouette.dao.GroupOfLineDAO;
 import mobi.chouette.dao.LineDAO;
-import mobi.chouette.dao.PTNetworkDAO;
+import mobi.chouette.dao.NetworkDAO;
 import mobi.chouette.exchange.ProgressionCommand;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.validator.parameters.ValidationParameters;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.Line;
-import mobi.chouette.model.PTNetwork;
+import mobi.chouette.model.Network;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -42,7 +42,7 @@ public class ValidatorCommand implements Command, Constant {
 	private LineDAO lineDAO;
 
 	@EJB
-	private PTNetworkDAO ptNetworkDAO;
+	private NetworkDAO ptNetworkDAO;
 
 	@EJB
 	private CompanyDAO companyDAO;
@@ -104,8 +104,8 @@ public class ValidatorCommand implements Command, Constant {
 				if (type.equals("line")) {
 					lines.addAll(lineDAO.findAll(ids));
 				} else if (type.equals("network")) {
-					List<PTNetwork> list = ptNetworkDAO.findAll(ids);
-					for (PTNetwork ptNetwork : list) {
+					List<Network> list = ptNetworkDAO.findAll(ids);
+					for (Network ptNetwork : list) {
 						lines.addAll(ptNetwork.getLines());
 					}
 				} else if (type.equals("company")) {

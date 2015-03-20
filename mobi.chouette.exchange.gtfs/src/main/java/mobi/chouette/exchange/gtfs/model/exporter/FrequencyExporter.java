@@ -75,6 +75,7 @@ public class FrequencyExporter extends ExporterImpl<GtfsFrequency> implements
 
 	public static class DefaultExporterFactory extends ExporterFactory {
 
+		@SuppressWarnings({ "unchecked", "rawtypes" })
 		@Override
 		protected Exporter create(String path) throws IOException {
 			return new FrequencyExporter(path);

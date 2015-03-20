@@ -9,7 +9,7 @@ import java.util.List;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
-import mobi.chouette.model.PTNetwork;
+import mobi.chouette.model.Network;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
@@ -74,7 +74,7 @@ public class ComplexModelFactoryTest {
 		complexModelFactory.init();
 
 		Line l = complexModelFactory.nominalLine("1");
-		PTNetwork network = l.getPtNetwork();
+		Network network = l.getNetwork();
 		Assert.assertNotNull(network);
 		Assert.assertTrue(network.getLines().contains(l));
 	}

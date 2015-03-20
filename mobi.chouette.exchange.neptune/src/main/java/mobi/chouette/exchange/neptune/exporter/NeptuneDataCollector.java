@@ -100,7 +100,7 @@ public class NeptuneDataCollector
 		if (validLine)
 		{
 			collection.setLine(line);
-			collection.setNetwork(line.getPtNetwork());
+			collection.setNetwork(line.getNetwork());
 			if (line.getCompany() != null)
 			{
 				collection.getCompanies().add(line.getCompany());

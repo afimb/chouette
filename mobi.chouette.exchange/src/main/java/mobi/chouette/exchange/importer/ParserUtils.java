@@ -73,6 +73,7 @@ public class ParserUtils {
 		return result;
 	}
 
+	@SuppressWarnings("deprecation")
 	public static Time getSQLDuration(String value) {
 		Time result = null;
 		assert value != null : "[DSU] invalid value : " + value;

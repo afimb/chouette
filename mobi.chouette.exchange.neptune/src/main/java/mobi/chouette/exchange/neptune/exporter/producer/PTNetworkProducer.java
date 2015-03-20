@@ -2,17 +2,17 @@ package mobi.chouette.exchange.neptune.exporter.producer;
 
 import java.util.Calendar;
 
-import mobi.chouette.model.PTNetwork;
+import mobi.chouette.model.Network;
 import mobi.chouette.model.type.PTNetworkSourceTypeEnum;
 
 import org.trident.schema.trident.PTNetworkType;
 
 public class PTNetworkProducer extends
-      AbstractJaxbNeptuneProducer<PTNetworkType, PTNetwork>
+      AbstractJaxbNeptuneProducer<PTNetworkType, Network>
 {
 
    @Override
-   public PTNetworkType produce(PTNetwork ptNetwork, boolean addExtension)
+   public PTNetworkType produce(Network ptNetwork, boolean addExtension)
    {
       PTNetworkType jaxbPTNetwork = tridentFactory.createPTNetworkType();
 
