@@ -8,7 +8,6 @@ import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.UserNeedEnum;
 
-import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.trident.schema.trident.ChouetteAreaType;
 import org.trident.schema.trident.ChouettePTNetworkType.ChouetteArea;
@@ -21,64 +20,49 @@ import uk.org.ifopt.acsb.MobilityEnumeration;
 import uk.org.ifopt.acsb.PyschosensoryNeedEnumeration;
 import uk.org.ifopt.acsb.UserNeedStructure;
 
+public class StopAreaProducer extends AbstractJaxbNeptuneProducer<ChouetteArea.StopArea, StopArea> implements
+		JsonExtension {
 
-public class StopAreaProducer extends
-      AbstractJaxbNeptuneProducer<ChouetteArea.StopArea, StopArea> implements JsonExtension
-{
+	@Override
+	public ChouetteArea.StopArea produce(StopArea stopArea, boolean addExtension) {
+		ChouetteArea.StopArea jaxbStopArea = tridentFactory.createChouettePTNetworkTypeChouetteAreaStopArea();
 
-   @Override
-   public ChouetteArea.StopArea produce(StopArea stopArea, boolean addExtension)
-   {
-      ChouetteArea.StopArea jaxbStopArea = tridentFactory
-            .createChouettePTNetworkTypeChouetteAreaStopArea();
+		populateFromModel(jaxbStopArea, stopArea);
 
-      populateFromModel(jaxbStopArea, stopArea);
+		jaxbStopArea.setComment(buildComment(stopArea, addExtension));
+		jaxbStopArea.setName(stopArea.getName());
 
-      jaxbStopArea.setComment(buildComment(stopArea,addExtension));
-      jaxbStopArea.setName(stopArea.getName());
+		StopAreaExtensionType stopAreaExtension = tridentFactory.createStopAreaExtensionType();
+		stopAreaExtension.setAccessibilitySuitabilityDetails(extractAccessibilitySuitabilityDetails(stopArea
+				.getUserNeeds()));
 
-      StopAreaExtensionType stopAreaExtension = tridentFactory
-            .createStopAreaExtensionType();
-      stopAreaExtension
-            .setAccessibilitySuitabilityDetails(extractAccessibilitySuitabilityDetails(stopArea
-                  .getUserNeeds()));
+		try {
+			ChouetteAreaEnum areaType = stopArea.getAreaType();
+			if (areaType != null) {
+				stopAreaExtension.setAreaType(ChouetteAreaType.fromValue(areaType.name()));
+			}
+		} catch (IllegalArgumentException e) {
+			// TODO generate report
+		}
 
-      try
-      {
-         ChouetteAreaEnum areaType = stopArea.getAreaType();
-         if (areaType != null)
-         {
-            stopAreaExtension.setAreaType(ChouetteAreaType.fromValue(areaType
-                  .name()));
-         }
-      } catch (IllegalArgumentException e)
-      {
-         // TODO generate report
-      }
+		stopAreaExtension.setNearestTopicName(getNotEmptyString(stopArea.getNearestTopicName()));
+		stopAreaExtension.setRegistration(getRegistration(stopArea.getRegistrationNumber()));
+		if (stopArea.getFareCode() != null)
+			stopAreaExtension.setFareCode(stopArea.getFareCode());
+		if (stopArea.getLiftAvailable() != null) {
+			stopAreaExtension.setLiftAvailability(stopArea.getLiftAvailable().booleanValue());
+		}
+		if (stopArea.getMobilityRestrictedSuitable() != null) {
+			stopAreaExtension.setMobilityRestrictedSuitability(stopArea.getMobilityRestrictedSuitable().booleanValue());
+		}
+		if (stopArea.getStairsAvailable() != null) {
+			stopAreaExtension.setStairsAvailability(stopArea.getStairsAvailable().booleanValue());
+		}
 
-      stopAreaExtension.setNearestTopicName(getNotEmptyString(stopArea
-            .getNearestTopicName()));
-      stopAreaExtension.setRegistration(getRegistration(stopArea
-            .getRegistrationNumber()));
-      if (stopArea.getFareCode() != null)
-         stopAreaExtension.setFareCode(stopArea.getFareCode());
-      if (stopArea.getLiftAvailable() != null)
-      {
-         stopAreaExtension.setLiftAvailability(stopArea.getLiftAvailable().booleanValue());
-      }
-      if (stopArea.getMobilityRestrictedSuitable() != null)
-      {
-         stopAreaExtension.setMobilityRestrictedSuitability(stopArea.getMobilityRestrictedSuitable().booleanValue());
-      }
-      if (stopArea.getStairsAvailable() != null)
-      {
-         stopAreaExtension.setStairsAvailability(stopArea.getStairsAvailable().booleanValue());
-      }
+		jaxbStopArea.setStopAreaExtension(stopAreaExtension);
 
-      jaxbStopArea.setStopAreaExtension(stopAreaExtension);
-
-      return jaxbStopArea;
-   }
+		return jaxbStopArea;
+	}
 
 	protected String buildComment(StopArea area, boolean addExtension) {
 		if (!addExtension)
@@ -101,58 +85,46 @@ public class StopAreaProducer extends
 				}
 			}
 			return jsonComment.toString();
-		} catch (JSONException e) {
+		} catch (Exception e) {
 			return getNotEmptyString(area.getComment());
 		}
 	}
 
-   protected AccessibilitySuitabilityDetails extractAccessibilitySuitabilityDetails(
-         List<UserNeedEnum> userNeeds)
-   {
-      AccessibilitySuitabilityDetails details = new AccessibilitySuitabilityDetails();
-      List<UserNeedStructure> detailsItems = new ArrayList<UserNeedStructure>();
-      if (userNeeds != null)
-      {
-         for (UserNeedEnum userNeed : userNeeds)
-         {
-            if (userNeed != null)
-            {
-               UserNeedStructure userNeedGroup = new UserNeedStructure();
+	protected AccessibilitySuitabilityDetails extractAccessibilitySuitabilityDetails(List<UserNeedEnum> userNeeds) {
+		AccessibilitySuitabilityDetails details = new AccessibilitySuitabilityDetails();
+		List<UserNeedStructure> detailsItems = new ArrayList<UserNeedStructure>();
+		if (userNeeds != null) {
+			for (UserNeedEnum userNeed : userNeeds) {
+				if (userNeed != null) {
+					UserNeedStructure userNeedGroup = new UserNeedStructure();
 
-               switch (userNeed.category())
-               {
-               case ENCUMBRANCE:
-                  userNeedGroup.setEncumbranceNeed(EncumbranceEnumeration
-                        .fromValue(userNeed.value()));
-                  break;
-               case MEDICAL:
-                  userNeedGroup.setMedicalNeed(MedicalNeedEnumeration
-                        .fromValue(userNeed.value()));
-                  break;
-               case PSYCHOSENSORY:
-                  userNeedGroup
-                        .setPsychosensoryNeed(PyschosensoryNeedEnumeration
-                              .fromValue(userNeed.value()));
-                  break;
-               case MOBILITY:
-                  userNeedGroup.setMobilityNeed(MobilityEnumeration
-                        .fromValue(userNeed.value()));
-                  break;
-               default:
-                  throw new IllegalArgumentException("bad value of userNeed");
-               }
+					switch (userNeed.category()) {
+					case ENCUMBRANCE:
+						userNeedGroup.setEncumbranceNeed(EncumbranceEnumeration.fromValue(userNeed.value()));
+						break;
+					case MEDICAL:
+						userNeedGroup.setMedicalNeed(MedicalNeedEnumeration.fromValue(userNeed.value()));
+						break;
+					case PSYCHOSENSORY:
+						userNeedGroup.setPsychosensoryNeed(PyschosensoryNeedEnumeration.fromValue(userNeed.value()));
+						break;
+					case MOBILITY:
+						userNeedGroup.setMobilityNeed(MobilityEnumeration.fromValue(userNeed.value()));
+						break;
+					default:
+						throw new IllegalArgumentException("bad value of userNeed");
+					}
 
-               detailsItems.add(userNeedGroup);
+					detailsItems.add(userNeedGroup);
 
-            }
-         }
-      }
+				}
+			}
+		}
 
-      if (detailsItems.isEmpty())
-         return null;
-      details.getMobilityNeedOrPsychosensoryNeedOrMedicalNeed().addAll(
-            detailsItems);
-      return details;
-   }
+		if (detailsItems.isEmpty())
+			return null;
+		details.getMobilityNeedOrPsychosensoryNeedOrMedicalNeed().addAll(detailsItems);
+		return details;
+	}
 
 }

@@ -20,7 +20,6 @@ import mobi.chouette.model.type.LongLatTypeEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
-import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.xmlpull.v1.XmlPullParser;
 
@@ -106,7 +105,7 @@ public class StopPointParser implements Parser, Constant, JsonExtension {
 						}
 					}
 				}
-			} catch (JSONException e1) {
+			} catch (Exception e1) {
 				log.warn("unparsable json : " + comment);
 			}
 		}

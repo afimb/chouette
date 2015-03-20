@@ -27,7 +27,6 @@ import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.xmlpull.v1.XmlPullParser;
 
@@ -179,7 +178,7 @@ public class LineParser implements Parser, Constant, JsonExtension {
 						log.error("cannot parse url " + json.getString(URL_REF), e);
 					}
 				}
-			} catch (JSONException e1) {
+			} catch (Exception e1) {
 				log.warn("unparsable json : "+comment);
 				line.setComment(comment);
 			}

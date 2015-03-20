@@ -1,9 +1,11 @@
 package mobi.chouette.exchange.neptune.parser;
 
 import java.math.BigDecimal;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
@@ -12,6 +14,7 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.neptune.Constant;
+import mobi.chouette.exchange.neptune.JsonExtension;
 import mobi.chouette.exchange.neptune.model.AreaCentroid;
 import mobi.chouette.exchange.neptune.model.NeptuneObjectFactory;
 import mobi.chouette.exchange.neptune.validation.AreaCentroidValidator;
@@ -25,13 +28,14 @@ import mobi.chouette.model.type.UserNeedEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
+import org.codehaus.jettison.json.JSONObject;
 import org.xmlpull.v1.XmlPullParser;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
 @Log4j
-public class ChouetteAreaParser implements Parser, Constant {
+public class ChouetteAreaParser implements Parser, Constant, JsonExtension {
 	private static final String CHILD_TAG = "ChouetteArea";
 
 	@Override
@@ -261,6 +265,40 @@ public class ChouetteAreaParser implements Parser, Constant {
 			} else {
 				XPPUtil.skipSubTree(log, xpp);
 			}
+		}
+	}
+
+	protected void parseComment(String comment, StopArea area) {
+		if (comment != null && comment.trim().startsWith("{") && comment.trim().endsWith("}")) {
+			try {
+				// parse json comment
+				JSONObject json = new JSONObject(comment);
+				area.setComment(json.optString(COMMENT, null));
+				if (json.has(URL_REF))
+				{
+					try {
+						new URL(json.getString(URL_REF));
+						area.setUrl(json.getString(URL_REF));
+					} catch (Exception e) {
+						log.error("cannot parse url " + json.getString(URL_REF), e);
+					}
+				}
+				if (json.has(TIME_ZONE))
+				{
+					try {
+						TimeZone.getTimeZone(json.getString(TIME_ZONE));
+						area.setTimeZone(json.getString(TIME_ZONE));
+					} catch (Exception e) {
+						log.error("cannot parse time_zone " + json.getString(TIME_ZONE), e);
+					}
+				}
+			} catch (Exception e1) {
+				log.warn("unparsable json : "+comment);
+				area.setComment(comment);
+			}
+		} else {
+			// normal comment
+			area.setComment(comment);
 		}
 	}
 

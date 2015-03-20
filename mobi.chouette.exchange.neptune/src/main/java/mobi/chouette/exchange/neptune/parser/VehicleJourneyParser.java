@@ -29,7 +29,6 @@ import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.xmlpull.v1.XmlPullParser;
 
@@ -216,7 +215,7 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 				vj.setMobilityRestrictedSuitability(json.getBoolean(MOBILITY_RESTRICTION));
 			}
 			}
-			catch (JSONException e)
+			catch (Exception e)
 			{
 				log.warn("unparsable json : " + comment);
 				vj.setComment(comment);				

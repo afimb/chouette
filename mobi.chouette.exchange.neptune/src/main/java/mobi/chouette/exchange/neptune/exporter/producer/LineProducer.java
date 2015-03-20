@@ -11,7 +11,6 @@ import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.type.UserNeedEnum;
 
 import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.trident.schema.trident.ChouettePTNetworkType;
 import org.trident.schema.trident.LineExtensionType;
@@ -149,7 +148,7 @@ public class LineProducer extends AbstractJaxbNeptuneProducer<ChouettePTNetworkT
 				}
 			}
 			return jsonComment.toString();
-		} catch (JSONException e) {
+		} catch (Exception e) {
 			return getNotEmptyString(line.getComment());
 		}
 	}
