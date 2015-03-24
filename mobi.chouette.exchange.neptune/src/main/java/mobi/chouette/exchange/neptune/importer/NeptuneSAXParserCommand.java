@@ -25,11 +25,10 @@ import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.report.FileInfo;
 import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.FileInfo;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.input.BOMInputStream;
 import org.xml.sax.SAXException;
 
 import com.jamonapi.Monitor;
@@ -71,8 +70,7 @@ public class NeptuneSAXParserCommand implements Command, Constant {
 		URL url = new URL(fileURL);
 		log.info("[DSU] validation schema (niv 1) : " + url);
 
-		Reader reader = new BufferedReader(new InputStreamReader(
-				new BOMInputStream(url.openStream())), 8192 * 10);
+		Reader reader = new BufferedReader(CharSetChecker.getEncodedInputStreamReader(url.toString(), url.openStream()), 8192 * 10);
 		StreamSource file = new StreamSource(reader);
 
 		NeptuneSAXErrorHandler errorHandler = new NeptuneSAXErrorHandler(
@@ -108,6 +106,7 @@ public class NeptuneSAXParserCommand implements Command, Constant {
 			fileItem.getErrors().add(e.getMessage());
 
 		} finally {
+			reader.close();
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		}
 
@@ -118,13 +117,14 @@ public class NeptuneSAXParserCommand implements Command, Constant {
 		try {
 			File tmp = File.createTempFile("netpuneImport", ".xml");
 			FileUtils.copyInputStreamToFile(url.openStream(), tmp);
+			
+			InputStreamReader isr = CharSetChecker.getEncodedInputStreamReader(tmp.getName(), new FileInputStream(tmp));
 
-			BufferedReader reader = new BufferedReader(new InputStreamReader(
-					new BOMInputStream(new FileInputStream(tmp))), 8192 * 10);
+			BufferedReader reader = new BufferedReader(isr, 8192);
 
 			File f = new File(url.toURI());
 
-			PrintWriter writer = new PrintWriter(f);
+			PrintWriter writer = new PrintWriter(f,isr.getEncoding());
 
 			String l;
 			while ((l = reader.readLine()) != null) {

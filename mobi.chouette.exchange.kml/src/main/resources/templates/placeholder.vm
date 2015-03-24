@@ -1,26 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <kml xmlns="http://www.opengis.net/kml/2.2">
   <Document>
+#if( $data.name)
     <name>$data.name</name>
-#foreach( $item in $data.items )
-      <Placemark id="$item.objectId" >
-        <name>$item.name</name>
+#end
+#if ( ! $data.extraData.isEmpty() )
         <ExtendedData>
-#foreach ( $key in $item.attributes.keyList() )
+#foreach( $key in $data.extraData.keyList() )
           <Data name="$key">
-            <value>$item.attributes.get($key)</value>
+            <value>$data.extraData.get($key)</value>
           </Data>
 #end
         </ExtendedData>
-#if ($item.point.isSet()
+#end
+#foreach( $item in $data.items )
+      <Placemark id="$item.getId" >
+#foreach ( $key in $item.attributes.keyList() )
+        <$key>$item.attributes.get($key)</$key>
+#end
+#if ( ! $item.extraData.isEmpty() )
+        <ExtendedData>
+#foreach( $key in $item.extraData.keyList() )
+          <Data name="$key">
+            <value>$item.extraData.get($key)</value>
+          </Data>
+#end
+        </ExtendedData>
+#end
+#if( $item.point)
         <Point>
            <coordinates>$item.point.longitude,$item.point.latitude</coordinates>
         </Point>
 #end
-#if ($item.lineString.isSet()
+#if( $item.lineString)
         <LineString>
            <coordinates>
-#foreach ($point in $item.lineString)
+#foreach( $point in $item.lineString )
              $point.longitude,$point.latitude
 #end
            </coordinates>

@@ -2,12 +2,14 @@ package mobi.chouette.exchange.kml.exporter;
 
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.model.AccessLink;
+import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.CalendarDay;
+import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Period;
@@ -16,7 +18,6 @@ import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
-import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.DayTypeEnum;
 import mobi.chouette.model.util.NeptuneUtil;
 
@@ -98,6 +99,8 @@ public class KmlDataCollector {
 		if (collection.getStopAreas().contains(stopArea))
 			return;
 
+		if (stopArea.hasCoordinates())
+		{
 		switch (stopArea.getAreaType()) {
 		case BoardingPosition:
 			collection.getBoardingPositions().add(stopArea);
@@ -113,14 +116,51 @@ public class KmlDataCollector {
 			break;
 		default:
 		}
-		collection.getConnectionLinks().addAll(stopArea.getConnectionStartLinks());
-		collection.getConnectionLinks().addAll(stopArea.getConnectionEndLinks());
-		collection.getAccessPoints().addAll(stopArea.getAccessPoints());
-		collection.getAccessLinks().addAll(stopArea.getAccessLinks());
+		addConnectionLinks(collection,stopArea.getConnectionStartLinks());
+		addConnectionLinks(collection,stopArea.getConnectionEndLinks());
+		addAccessPoints(collection,stopArea.getAccessPoints());
+		addAccessLinks(collection,stopArea.getAccessLinks());
 		if (stopArea.getParent() != null)
 			collectStopAreas(collection, stopArea.getParent());
+		}
 
 	}
+	
+	private void addAccessPoints(ExportableData collection, List<AccessPoint> accessPoints) 
+	{
+		for (AccessPoint point : accessPoints) 
+		{
+			if (collection.getAccessPoints().contains(point)) continue;
+			if (!point.hasCoordinates() ) continue;
+			collection.getAccessPoints().add(point);
+		}
+		
+	}
+
+	private void addConnectionLinks(ExportableData collection, List<ConnectionLink> links)
+	{
+		for (ConnectionLink link : links) 
+		{
+			if (collection.getConnectionLinks().contains(link)) continue;
+			if (link.getStartOfLink() == null || link.getEndOfLink() == null) continue;
+			if (!link.getStartOfLink().hasCoordinates() || !link.getEndOfLink().hasCoordinates() ) continue;
+			collection.getConnectionLinks().add(link);
+			collectStopAreas(collection, link.getStartOfLink());
+			collectStopAreas(collection, link.getEndOfLink());
+		}
+	}
+	
+	private void addAccessLinks(ExportableData collection, List<AccessLink> links)
+	{
+		for (AccessLink link : links) 
+		{
+			if (collection.getAccessLinks().contains(link)) continue;
+			if (link.getAccessPoint() == null) continue;
+			if (!link.getAccessPoint().hasCoordinates() ) continue;
+			collection.getAccessLinks().add(link);
+		}
+	}
+
 
 	/**
 	 * produce a timetable reduced to a date

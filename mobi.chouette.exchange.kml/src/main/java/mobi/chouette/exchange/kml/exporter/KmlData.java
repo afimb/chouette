@@ -1,11 +1,17 @@
 package mobi.chouette.exchange.kml.exporter;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
+import mobi.chouette.model.AccessLink;
+import mobi.chouette.model.AccessPoint;
+import mobi.chouette.model.ConnectionLink;
+import mobi.chouette.model.NeptuneLocalizedObject;
+import mobi.chouette.model.StopArea;
 
 import org.apache.commons.collections.map.ListOrderedMap;
 
@@ -14,50 +20,81 @@ public class KmlData {
 	@Setter
 	private String name;
 	@Getter
-	@Setter
+	private ListOrderedMap extraData = new ListOrderedMap();
+	@Getter
 	private List<KmlItem> items = new ArrayList<>();
+	
+	public void addExtraData(String key, Object value)
+	{
+		extraData.put(key,valueOf(value));
+	}
+
+	public KmlItem addNewItem()
+	{
+		KmlItem item = new KmlItem();
+		items.add(item);
+		return item;
+	}
 
 	public class KmlItem {
+		
 		@Getter
 		@Setter
-		private String name;
+		private String id;
+		
 		@Getter
-		@Setter
-		private String objectId;
-		@Getter
-		@Setter
 		private ListOrderedMap attributes = new ListOrderedMap();
 		@Getter
-		@Setter
+		private ListOrderedMap extraData = new ListOrderedMap();
+		@Getter
 		private List<KmlPoint> lineString;
 		@Getter
-		@Setter
+		private List<List<KmlPoint>> multiLineString;
+		@Getter
 		private KmlPoint point;
 		
 		public void addAttribute(String key, Object value)
 		{
-			attributes.put(key,value);
+			attributes.put(key,valueOf(value));
 		}
-		
-		public void setPoint(BigDecimal latitude, BigDecimal longitude)
+		public void addExtraData(String key, Object value)
 		{
-			point = new KmlPoint(latitude,longitude);
+			extraData.put(key,valueOf(value));
 		}
 		
-		public void addPoint(BigDecimal latitude, BigDecimal longitude)
+		public void setPoint(NeptuneLocalizedObject object)
+		{
+			point = new KmlPoint(object);
+		}
+		
+		public void addPoint(NeptuneLocalizedObject object)
 		{
 			if (lineString == null) lineString = new ArrayList<>();
-			lineString.add(new KmlPoint(latitude, longitude));
+			lineString.add(new KmlPoint(object));
+		}
+		public void addLineString(NeptuneLocalizedObject... objects)
+		{
+			if (multiLineString == null) multiLineString = new ArrayList<>();
+			List<KmlPoint> ls = new ArrayList<>();
+			multiLineString.add(ls);
+			for (NeptuneLocalizedObject object : objects) {
+				ls.add(new KmlPoint(object));
+			}
+				
 		}
 	}
 
 	public class KmlPoint {
 		@Getter
-		@Setter
 		private double latitude;
 		@Getter
-		@Setter
 		private double longitude;
+		
+		public KmlPoint(NeptuneLocalizedObject object)
+		{
+			this.latitude = object.getLatitude().doubleValue(); 
+			this.longitude = object.getLongitude().doubleValue(); 
+		}
 		
 		public KmlPoint(BigDecimal latitude, BigDecimal longitude)
 		{
@@ -65,5 +102,142 @@ public class KmlData {
 			this.longitude = longitude.doubleValue(); 
 		}
 	}
+	
+	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss Z");
+	private static final SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm:ss");
+	private static String valueOf(Object data)
+	{
+		if (data == null) return "";
+		if (data instanceof java.sql.Time)
+		{
+			return timeFormat.format(data);
+		}
+		if (data instanceof java.util.Date)
+		{
+			return dateFormat.format(data);
+		}
+		
+		return data.toString();
+	}
+
+	public KmlItem addStopArea(StopArea area) {
+		KmlItem item = addNewItem();
+		item.setId(area.getObjectId());
+		item.addAttribute("name", area.getName());
+		item.addExtraData("objectid", area.getObjectId());
+		item.addExtraData("object_version", area.getObjectVersion());
+		item.addExtraData("creation_time", area.getCreationTime());
+		item.addExtraData("creator_id", area.getCreatorId());
+		item.addExtraData("name", area.getName());
+		item.addExtraData("comment", area.getComment());
+		item.addExtraData("area_type", area.getAreaType());
+		item.addExtraData("registration_number", area.getRegistrationNumber());
+		item.addExtraData("nearest_topic_name", area.getNearestTopicName());
+		item.addExtraData("fare_code", area.getFareCode());
+		item.addExtraData("longitude", area.getLongitude());
+		item.addExtraData("latitude", area.getLatitude());
+		item.addExtraData("long_lat_type", area.getLongLatType());
+		item.addExtraData("country_code", area.getCountryCode());
+		item.addExtraData("street_name", area.getStreetName());
+		item.addExtraData("mobility_restricted_suitability", area.getMobilityRestrictedSuitable());
+		item.addExtraData("stairs_availability", area.getStairsAvailable());
+		item.addExtraData("lift_availability", area.getLiftAvailable());
+		item.addExtraData("int_user_needs", area.getIntUserNeeds());
+		if (area.getParent() != null)
+		   item.addExtraData("parent_objectid", area.getParent().getObjectId());
+		item.setPoint(area);
+		return item;
+	}
+	
+	public KmlItem addConnectionLink(ConnectionLink link) {
+		KmlItem item = addNewItem();
+		item.setId(link.getObjectId());
+		item.addAttribute("name", link.getName());
+		item.addExtraData("connection_link_type", link.getLinkType());
+		item.addExtraData("objectid", link.getObjectId());
+		item.addExtraData("object_version", link.getObjectVersion());
+		item.addExtraData("creation_time", link.getCreationTime());
+		item.addExtraData("creator_id", link.getCreatorId());
+		item.addExtraData("name", link.getName());
+		item.addExtraData("comment", link.getComment());
+		item.addExtraData("link_distance", link.getLinkDistance());
+		item.addExtraData("link_type", link.getLinkType());
+		item.addExtraData("default_duration", link.getDefaultDuration());
+		item.addExtraData("frequent_traveller_duration", link.getFrequentTravellerDuration());
+		item.addExtraData("occasional_traveller_duration", link.getOccasionalTravellerDuration());
+		item.addExtraData("mobility_restricted_traveller_duration", link.getMobilityRestrictedTravellerDuration());
+		item.addExtraData("mobility_restricted_suitability", link.getMobilityRestrictedSuitable());
+		item.addExtraData("stairs_availability", link.getStairsAvailable());
+		item.addExtraData("lift_availability", link.getLiftAvailable());
+		item.addExtraData("int_user_needs", link.getIntUserNeeds());
+		if (link.getStartOfLink() != null && link.getEndOfLink() != null)
+		{
+		   item.addExtraData("departure_objectid", link.getStartOfLink().getObjectId());
+		   item.addPoint(link.getStartOfLink());
+		   item.addExtraData("arrival_objectid", link.getEndOfLink().getObjectId());
+		   item.addPoint(link.getEndOfLink());
+		}
+		return item;
+	}
+
+	public KmlItem addAccessPoint(AccessPoint point) {
+		KmlItem item = addNewItem();
+		item.setId(point.getObjectId());
+		item.addAttribute("name", point.getName());
+		item.addExtraData("objectid", point.getObjectId());
+		item.addExtraData("object_version", point.getObjectVersion());
+		item.addExtraData("creation_time", point.getCreationTime());
+		item.addExtraData("creator_id", point.getCreatorId());
+		item.addExtraData("name", point.getName());
+		item.addExtraData("comment", point.getComment());
+		item.addExtraData("longitude", point.getLongitude());
+		item.addExtraData("latitude", point.getLatitude());
+		item.addExtraData("long_lat_type", point.getLongLatType());
+		item.addExtraData("country_code", point.getCountryCode());
+		item.addExtraData("street_name", point.getStreetName());
+		item.addExtraData("openning_time", point.getOpeningTime());
+		item.addExtraData("closing_time", point.getClosingTime());
+		item.addExtraData("access_type", point.getType());
+		item.addExtraData("access_point_type", point.getType());
+		item.addExtraData("mobility_restricted_suitability", point.getMobilityRestrictedSuitable());
+		item.addExtraData("stairs_availability", point.getStairsAvailable());
+		item.addExtraData("lift_availability", point.getLiftAvailable());
+		item.addExtraData("stop_area_objectid", point.getContainedIn().getObjectId());
+		item.setPoint(point);
+		return item;
+	}
+
+	public KmlItem addAccessLink(AccessLink link) {
+		KmlItem item = addNewItem();
+		item.setId(link.getObjectId());
+		item.addAttribute("name", link.getName());
+		item.addExtraData("access_link_type", link.getLinkType());
+		item.addExtraData("objectid", link.getObjectId());
+		item.addExtraData("object_version", link.getObjectVersion());
+		item.addExtraData("creation_time", link.getCreationTime());
+		item.addExtraData("creator_id", link.getCreatorId());
+		item.addExtraData("name", link.getName());
+		item.addExtraData("comment", link.getComment());
+		item.addExtraData("link_distance", link.getLinkDistance());
+		item.addExtraData("link_type", link.getLinkType());
+		item.addExtraData("default_duration", link.getDefaultDuration());
+		item.addExtraData("frequent_traveller_duration", link.getFrequentTravellerDuration());
+		item.addExtraData("occasional_traveller_duration", link.getOccasionalTravellerDuration());
+		item.addExtraData("mobility_restricted_traveller_duration", link.getMobilityRestrictedTravellerDuration());
+		item.addExtraData("mobility_restricted_suitability", link.getMobilityRestrictedSuitable());
+		item.addExtraData("stairs_availability", link.getStairsAvailable());
+		item.addExtraData("lift_availability", link.getLiftAvailable());
+		item.addExtraData("int_user_needs", link.getIntUserNeeds());
+		item.addExtraData("link_orientation", link.getLinkOrientation());
+		if (link.getAccessPoint() != null && link.getStopArea() != null)
+		{
+		   item.addExtraData("access_point_objectid", link.getAccessPoint().getObjectId());
+		   item.addPoint(link.getAccessPoint());
+		   item.addExtraData("stop_area_objectid", link.getStopArea().getObjectId());
+		   item.addPoint(link.getStopArea());
+		}
+		return item;
+	}
+
 
 }

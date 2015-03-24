@@ -3,7 +3,6 @@ package mobi.chouette.exchange.neptune.importer;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 
@@ -21,11 +20,10 @@ import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.neptune.model.NeptuneObjectFactory;
 import mobi.chouette.exchange.neptune.parser.ChouettePTNetworkParser;
-import mobi.chouette.exchange.report.FileInfo;
 import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.FileInfo;
 import mobi.chouette.model.util.Referential;
 
-import org.apache.commons.io.input.BOMInputStream;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
@@ -44,7 +42,7 @@ public class NeptuneParserCommand implements Command, Constant {
 	@Override
 	public boolean execute(Context context) throws Exception {
 		boolean result = ERROR;
-		
+
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
 		context.put(FILE_URL, fileURL);
@@ -67,12 +65,19 @@ public class NeptuneParserCommand implements Command, Constant {
 				referential.clear();
 			}
 
-			InputStream input = new BOMInputStream(url.openStream());
-			BufferedReader in = new BufferedReader(
-					new InputStreamReader(input), 8192 * 10);
+			InputStreamReader input = CharSetChecker.getEncodedInputStreamReader(url.toString(), url.openStream());
+				
+			// TODO report invalid charset
+			
+
+			BufferedReader in = new BufferedReader(input
+					, 8192 * 10);
+			
+			
 			XmlPullParser xpp = XmlPullParserFactory.newInstance()
 					.newPullParser();
 			xpp.setInput(in);
+
 			context.put(PARSER, xpp);
 
 			NeptuneObjectFactory factory = (NeptuneObjectFactory) context
@@ -89,14 +94,14 @@ public class NeptuneParserCommand implements Command, Constant {
 			parser.parse(context);
 
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
-			
+
 			// TODO report service
 			fileItem.setStatus(FileInfo.FILE_STATE.OK);
 			report.getFiles().add(fileItem);
-			
+
 			result = SUCCESS;
 		} catch (Exception e) {
-			
+
 			// TODO report service
 			fileItem.setStatus(FileInfo.FILE_STATE.NOK);
 			report.getFiles().add(fileItem);
@@ -104,7 +109,7 @@ public class NeptuneParserCommand implements Command, Constant {
 			log.error("parsing failed ",e);
 			throw e;
 		}
-		
+
 		return result;
 	}
 
