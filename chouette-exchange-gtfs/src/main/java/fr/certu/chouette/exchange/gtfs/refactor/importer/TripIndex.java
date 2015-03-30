@@ -50,7 +50,7 @@ public abstract class TripIndex extends IndexImpl<GtfsTrip> implements
       bean.setTripShortName(STRING_CONVERTER.from(context,
             FIELDS.trip_short_name, array[i++], false));
       bean.setDirectionId(DIRECTIONTYPE_CONVERTER.from(context,
-            FIELDS.direction_id, array[i++], false));
+            FIELDS.direction_id, array[i++],GtfsTrip.DirectionType.Outbound, false));
       bean.setBlockId(STRING_CONVERTER.from(context, FIELDS.block_id,
             array[i++], false));
       bean.setShapeId(STRING_CONVERTER.from(context, FIELDS.shape_id,
