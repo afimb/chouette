@@ -383,7 +383,7 @@ public class Service implements Constant {
 		}
 
 		// cache control
-		ResponseBuilder builder = Response.ok(result);
+		ResponseBuilder builder = Response.ok(result.getList());
 		builder.header(api_version_key,api_version);
 		// CacheControl cc = new CacheControl();
 		// cc.setMaxAge(-1);

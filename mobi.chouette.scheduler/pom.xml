@@ -127,6 +127,12 @@
          <type>ejb</type>
          <version>${project.version}</version>
       </dependency>
+      <dependency>
+         <groupId>${project.groupId}</groupId>
+         <artifactId>mobi.chouette.exchange.hub</artifactId>
+         <type>ejb</type>
+         <version>${project.version}</version>
+      </dependency>
 
 	</dependencies>
 	

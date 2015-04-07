@@ -589,5 +589,6 @@
 		<module>mobi.chouette.api</module>
 		<module>chouette</module>
 		<module>mobi.chouette.exchange.kml</module>
+		<module>mobi.chouette.exchange.hub</module>
 	</modules>
 </project>

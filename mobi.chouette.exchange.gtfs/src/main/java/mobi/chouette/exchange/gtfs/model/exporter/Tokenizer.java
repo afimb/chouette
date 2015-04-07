@@ -15,7 +15,7 @@ public class Tokenizer {
 		final int size = values.size();
 		for (int i = 0; i < size; i++) {
 			String value = values.get(i);
-			if (value.contains("\"")) {
+			if (value.contains("\"") || value.contains(""+DELIMITER)) {
 				builder.append(DQUOTE);
 				final int length = value.length();
 				for (int j = 0; j < length; j++) {

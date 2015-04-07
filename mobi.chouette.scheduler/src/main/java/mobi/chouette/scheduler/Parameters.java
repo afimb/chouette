@@ -26,6 +26,7 @@ public class Parameters {
 			@XmlElement(name = "netex-import", type = mobi.chouette.exchange.netex.importer.NetexImportParameters.class),
 			@XmlElement(name = "netex-export", type = mobi.chouette.exchange.netex.exporter.NetexExportParameters.class),
 			@XmlElement(name = "kml-export", type = mobi.chouette.exchange.kml.exporter.KmlExportParameters.class),
+			@XmlElement(name = "hub-export", type = mobi.chouette.exchange.hub.exporter.HubExportParameters.class),
         	@XmlElement(name = "validate", type = mobi.chouette.exchange.validator.ValidateParameters.class) })
 	private AbstractParameter configuration;
 
