@@ -59,7 +59,7 @@ import com.google.common.collect.Collections2;
 @Log4j
 @RequestScoped
 public class Service implements Constant {
-	
+
 	private static String api_version_key = "X-ChouetteIEV-Media-Type";
 	private static String api_version = "iev.v1.0; format=json";
 
@@ -302,6 +302,12 @@ public class Service implements Constant {
 		if (!schemas.getSchemaListing().contains(referential)) {
 			throw new WebApplicationException(Status.NOT_FOUND);
 		}
+
+		Job job = jobDAO.find(id);
+		if (job == null) {
+			throw new WebApplicationException(Status.NOT_FOUND);
+		}
+
 		java.nio.file.Path path = Paths.get(System.getProperty("user.home"),
 				ROOT_PATH, referential, "data", id.toString(), filename);
 		if (!Files.exists(path, LinkOption.NOFOLLOW_LINKS)) {
@@ -326,9 +332,12 @@ public class Service implements Constant {
 		}
 
 		// cache control
-		CacheControl cc = new CacheControl();
-		cc.setMaxAge(Integer.MAX_VALUE);
-		builder.cacheControl(cc);
+		if (job.getStatus().ordinal() >= Job.STATUS.TERMINATED.ordinal() )
+		{
+			CacheControl cc = new CacheControl();
+			cc.setMaxAge(Integer.MAX_VALUE);
+			builder.cacheControl(cc);
+		}
 
 		result = builder.type(type).build();
 		return result;
@@ -414,7 +423,7 @@ public class Service implements Constant {
 		ResponseBuilder builder = null;
 		if (job.getStatus().ordinal() < STATUS.TERMINATED.ordinal()) {
 
-			JobInfo info = new JobInfo(job,true);
+			JobInfo info = new JobInfo(job,true,uriInfo);
 			java.nio.file.Path path = Paths.get(
 					System.getProperty("user.home"), ROOT_PATH,
 					job.getReferential(), "data", job.getId().toString(),
@@ -497,7 +506,7 @@ public class Service implements Constant {
 			throw new WebApplicationException(Status.NOT_FOUND);
 		}
 
-		JobInfo info = new JobInfo(job,true);
+		JobInfo info = new JobInfo(job,true,uriInfo);
 		java.nio.file.Path path = Paths.get(
 				System.getProperty("user.home"), ROOT_PATH,
 				job.getReferential(), "data", job.getId().toString(),
@@ -605,7 +614,7 @@ public class Service implements Constant {
 
 		Collection<JobInfo> result = new ArrayList<>();
 		for (Job job : list) {
-			result.add(new JobInfo(job,true));
+			result.add(new JobInfo(job,true,uriInfo));
 		}
 		return result;
 	}

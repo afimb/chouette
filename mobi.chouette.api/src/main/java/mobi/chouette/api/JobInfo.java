@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.ws.rs.core.UriInfo;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -67,7 +68,7 @@ public class JobInfo {
 	@XmlElementRef(name="action_parameters")
 	private AbstractParameter actionParameters;
 	
-	public JobInfo(Job job,boolean addLink)
+	public JobInfo(Job job,boolean addLink,UriInfo uriInfo)
 	{
 		id = job.getId();
 		referential = job.getReferential();
@@ -81,7 +82,7 @@ public class JobInfo {
 			linkInfos = new ArrayList<>();
 			for (Link link : job.getLinks()) 
 			{
-				linkInfos.add(new LinkInfo(link));
+				linkInfos.add(new LinkInfo(link,uriInfo));
 			}
 		}
 	}

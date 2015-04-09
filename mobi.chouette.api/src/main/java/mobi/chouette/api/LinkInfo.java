@@ -1,5 +1,6 @@
 package mobi.chouette.api;
 
+import javax.ws.rs.core.UriInfo;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -27,10 +28,10 @@ public class LinkInfo {
 	@XmlElement(name = "method", required=true)
 	private String method;
 	
-	public LinkInfo(Link link)
+	public LinkInfo(Link link,UriInfo uriInfo)
 	{
 		rel = link.getRel();
-		href = link.getHref();
+		href = uriInfo.getBaseUri()+link.getHref().substring(1);
 		type = link.getType();
 		method = link.getMethod();
 	}
