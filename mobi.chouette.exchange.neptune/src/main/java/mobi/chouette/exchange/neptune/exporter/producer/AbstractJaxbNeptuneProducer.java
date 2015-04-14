@@ -19,7 +19,7 @@ import org.trident.schema.trident.RegistrationType;
 import org.trident.schema.trident.TridentObjectType;
 
 public abstract class AbstractJaxbNeptuneProducer<T extends TridentObjectType, U extends NeptuneIdentifiedObject>
-      implements IJaxbNeptuneProducer<T, U>
+      // implements IJaxbNeptuneProducer<T, U>
 {
    public static DatatypeFactory typeFactory = null;
    public static ObjectFactory tridentFactory = null;
@@ -77,7 +77,7 @@ public abstract class AbstractJaxbNeptuneProducer<T extends TridentObjectType, U
       return object.getObjectId();
    }
 
-   public abstract T produce(U o, boolean addExtension);
+   // public abstract T produce(U o, boolean addExtension);
 
    protected String getNotEmptyString(String value)
    {

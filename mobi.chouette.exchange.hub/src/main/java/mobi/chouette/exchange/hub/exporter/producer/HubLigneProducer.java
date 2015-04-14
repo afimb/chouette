@@ -8,6 +8,9 @@
 
 package mobi.chouette.exchange.hub.exporter.producer;
 
+import java.io.IOException;
+
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.hub.model.HubLigne;
 import mobi.chouette.exchange.hub.model.exporter.HubExporterInterface;
 import mobi.chouette.exchange.report.ActionReport;
@@ -19,6 +22,7 @@ import mobi.chouette.model.Line;
  * <p>
  * optimise multiple period timetable with calendarDate inclusion or exclusion
  */
+@Log4j
 public class HubLigneProducer extends AbstractProducer {
 	public HubLigneProducer(HubExporterInterface exporter) {
 		super(exporter);
@@ -47,9 +51,8 @@ public class HubLigneProducer extends AbstractProducer {
 
 		try {
 			getExporter().getLigneExporter().export(hubObject);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (IOException e) {
+			log.error("fail to save ligne",e);
 			return false;
 		}
 		return true;

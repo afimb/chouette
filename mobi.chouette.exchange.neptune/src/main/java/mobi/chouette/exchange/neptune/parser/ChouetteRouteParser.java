@@ -90,7 +90,6 @@ public class ChouetteRouteParser implements Parser, Constant {
 				String wayBackRouteId = ParserUtils.getText(xpp.nextText());
 				validator.addWayBackRouteId(context, objectId, wayBackRouteId);
 				Route wayBackRoute = referential.getRoutes().get(wayBackRouteId);
-				// TODO [DSU] wayBack oppositeRouteId
 				if (wayBackRoute != null)
 				{
 					wayBackRoute.setOppositeRoute(route);

@@ -85,14 +85,6 @@
 			<groupId>xpp3</groupId>
 			<artifactId>xpp3</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.geotools</groupId>
-			<artifactId>gt-jts-wrapper</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.geotools</groupId>
-			<artifactId>gt-epsg-wkt</artifactId>
-		</dependency>
 		
 		<dependency>
 			<groupId>org.codehaus.jettison</groupId>

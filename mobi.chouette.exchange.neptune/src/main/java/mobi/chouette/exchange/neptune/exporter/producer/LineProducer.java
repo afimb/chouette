@@ -26,7 +26,7 @@ import uk.org.ifopt.acsb.UserNeedStructure;
 public class LineProducer extends AbstractJaxbNeptuneProducer<ChouettePTNetworkType.ChouetteLineDescription.Line, Line>
 		implements JsonExtension {
 
-	@Override
+	//@Override
 	public ChouettePTNetworkType.ChouetteLineDescription.Line produce(Line line, boolean addExtension) {
 		ChouettePTNetworkType.ChouetteLineDescription.Line jaxbLine = tridentFactory
 				.createChouettePTNetworkTypeChouetteLineDescriptionLine();

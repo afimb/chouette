@@ -45,7 +45,8 @@ public class Task implements Callable<Job.STATUS>, ManagedTask, Constant {
 	public STATUS call() throws Exception {
 
 		STATUS result = STATUS.TERMINATED;
-		Thread.sleep(20000);
+		// TODO wait for tests 
+		// Thread.sleep(20000);
 		ContextHolder.setContext(job.getReferential());
 		try {
 			InitialContext initialContext = new InitialContext();

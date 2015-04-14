@@ -15,7 +15,7 @@ public class TimetableProducer extends
       AbstractJaxbNeptuneProducer<TimetableType, Timetable>
 {
 
-   @Override
+   //@Override
    public TimetableType produce(Timetable timetable, boolean addExtension)
    {
       TimetableType jaxbTimetable = tridentFactory.createTimetableType();

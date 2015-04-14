@@ -23,7 +23,7 @@ import uk.org.ifopt.acsb.UserNeedStructure;
 public class StopAreaProducer extends AbstractJaxbNeptuneProducer<ChouetteArea.StopArea, StopArea> implements
 		JsonExtension {
 
-	@Override
+	//@Override
 	public ChouetteArea.StopArea produce(StopArea stopArea, boolean addExtension) {
 		ChouetteArea.StopArea jaxbStopArea = tridentFactory.createChouettePTNetworkTypeChouetteAreaStopArea();
 

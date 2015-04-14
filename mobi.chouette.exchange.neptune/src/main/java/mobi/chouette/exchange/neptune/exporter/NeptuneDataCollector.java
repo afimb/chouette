@@ -90,6 +90,7 @@ public class NeptuneDataCollector
 			if (validRoute) 
 			{
 				collection.getRoutes().add(route);
+				route.getOppositeRoute(); // to avoid lazy loading afterward
 				collection.getStopPoints().addAll(route.getStopPoints());
 				for (StopPoint stopPoint : route.getStopPoints()) 
 				{

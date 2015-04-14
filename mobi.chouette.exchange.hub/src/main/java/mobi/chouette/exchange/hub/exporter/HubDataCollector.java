@@ -6,8 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.model.AccessLink;
-import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.CalendarDay;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.JourneyPattern;
@@ -59,7 +57,7 @@ public class HubDataCollector {
 								if (validTimetable != null && endDate != null)
 									validTimetable = reduceTimetable(validTimetable, endDate, false);
 								if (validTimetable != null) {
-									collection.getTimetables().add(timetable);
+									collection.getTimetables().add(validTimetable);
 									isValid = true;
 								}
 							}
@@ -81,61 +79,49 @@ public class HubDataCollector {
 				collection.getRoutes().add(route);
 				collection.getStopPoints().addAll(route.getStopPoints());
 				for (StopPoint stopPoint : route.getStopPoints()) {
-					collectStopAreas(collection, stopPoint.getContainedInStopArea());
+					collectStopAreas(collection, stopPoint.getContainedInStopArea(),true);
 				}
 			}
 		}// end route loop
 		if (validLine) {
 			collection.setLine(line);
-			collection.setNetwork(line.getNetwork());
+			collection.getNetworks().add(line.getNetwork());
 			if (line.getCompany() != null) {
 				collection.getCompanies().add(line.getCompany());
+			}
+			if (!line.getGroupOfLines().isEmpty())
+			{
+				collection.getGroupOfLines().add(line.getGroupOfLines().get(0));
 			}
 		}
 		return validLine;
 	}
 
-	private void collectStopAreas(ExportableData collection, StopArea stopArea) {
+	private void collectStopAreas(ExportableData collection, StopArea stopArea, boolean followLinks) {
 		if (collection.getStopAreas().contains(stopArea))
 			return;
-
-		if (stopArea.hasCoordinates())
-		{
+		collection.getStopAreas().add(stopArea);
 		switch (stopArea.getAreaType()) {
 		case BoardingPosition:
-			collection.getBoardingPositions().add(stopArea);
-			break;
 		case Quay:
-			collection.getQuays().add(stopArea);
+			collection.getPhysicalStopPoints().add(stopArea);
+			if (followLinks)
+			{
+				addConnectionLinks(collection,stopArea.getConnectionStartLinks());
+				addConnectionLinks(collection,stopArea.getConnectionEndLinks());
+			}
+			if (stopArea.getParent() != null)
+				collectStopAreas(collection, stopArea.getParent(), false);
 			break;
 		case CommercialStopPoint:
 			collection.getCommercialStopPoints().add(stopArea);
 			break;
-		case StopPlace:
-			collection.getStopPlaces().add(stopArea);
-			break;
 		default:
-		}
-		addConnectionLinks(collection,stopArea.getConnectionStartLinks());
-		addConnectionLinks(collection,stopArea.getConnectionEndLinks());
-		addAccessPoints(collection,stopArea.getAccessPoints());
-		addAccessLinks(collection,stopArea.getAccessLinks());
-		if (stopArea.getParent() != null)
-			collectStopAreas(collection, stopArea.getParent());
+
 		}
 
 	}
-	
-	private void addAccessPoints(ExportableData collection, List<AccessPoint> accessPoints) 
-	{
-		for (AccessPoint point : accessPoints) 
-		{
-			if (collection.getAccessPoints().contains(point)) continue;
-			if (!point.hasCoordinates() ) continue;
-			collection.getAccessPoints().add(point);
-		}
-		
-	}
+
 
 	private void addConnectionLinks(ExportableData collection, List<ConnectionLink> links)
 	{
@@ -144,20 +130,10 @@ public class HubDataCollector {
 			if (collection.getConnectionLinks().contains(link)) continue;
 			if (link.getStartOfLink() == null || link.getEndOfLink() == null) continue;
 			if (!link.getStartOfLink().hasCoordinates() || !link.getEndOfLink().hasCoordinates() ) continue;
+			if (link.getLinkDistance() == null) continue;
 			collection.getConnectionLinks().add(link);
-			collectStopAreas(collection, link.getStartOfLink());
-			collectStopAreas(collection, link.getEndOfLink());
-		}
-	}
-	
-	private void addAccessLinks(ExportableData collection, List<AccessLink> links)
-	{
-		for (AccessLink link : links) 
-		{
-			if (collection.getAccessLinks().contains(link)) continue;
-			if (link.getAccessPoint() == null) continue;
-			if (!link.getAccessPoint().hasCoordinates() ) continue;
-			collection.getAccessLinks().add(link);
+			collectStopAreas(collection, link.getStartOfLink(), false);
+			collectStopAreas(collection, link.getEndOfLink(), false);
 		}
 	}
 

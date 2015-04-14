@@ -102,30 +102,6 @@ public abstract class NeptuneIdentifiedObject extends NeptuneObject implements
 	@Transient
 	private boolean isFilled = false;
 
-	// @Transient
-	// private String unsaved_name;
-	//
-	// /**
-	// * virtual name for object without name attribute<br>
-	// * use to maintain coherence for generic interfaces
-	// *
-	// * @return The actual value
-	// */
-	// public String getName() {
-	// return unsaved_name;
-	// }
-	//
-	// /**
-	// * virtual name for object without name attribute<br>
-	// * use to maintain coherence for generic interfaces
-	// *
-	// * @param name
-	// * New value
-	// */
-	// public void setName(String name) {
-	// this.unsaved_name = name;
-	// }
-
 	/**
 	 * to be overrided; facility to check registration number on any object
 	 * 

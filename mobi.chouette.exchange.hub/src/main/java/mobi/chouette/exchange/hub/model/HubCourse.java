@@ -128,7 +128,7 @@ public class HubCourse extends HubObject implements Comparable<HubCourse>{
 	 * TailleMax = 8 par identifiant
 	 */
 	@Getter @Setter
-	private List<Integer> identifiantsRenvoi;
+	private List<Integer> identifiantsRenvoi = new ArrayList<>();
 
 	/**
 	 * rang = 14

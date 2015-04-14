@@ -23,7 +23,7 @@ public class ConnectionLinkProducer
       AbstractJaxbNeptuneProducer<ChouettePTNetworkType.ConnectionLink, ConnectionLink>
 {
 
-   @Override
+   //@Override
    public ChouettePTNetworkType.ConnectionLink produce(
          ConnectionLink connectionLink, boolean addExtension)
    {

@@ -12,7 +12,7 @@ public class AreaCentroidProducer extends
       AbstractJaxbNeptuneProducer<ChouetteArea.AreaCentroid, StopArea>
 {
 
-   @Override
+   //@Override
    public ChouetteArea.AreaCentroid produce(StopArea area, boolean addExtension)
    {
       ChouetteArea.AreaCentroid jaxbAreaCentroid = tridentFactory

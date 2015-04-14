@@ -20,37 +20,37 @@ import mobi.chouette.exchange.hub.model.HubTransporteur;
 
 
 public interface HubExporterInterface {
-	Exporter<HubArret> getArretExporter() throws Exception;
+	Exporter<HubArret> getArretExporter();
 
-	Exporter<HubChemin> getCheminExporter() throws Exception;
+	Exporter<HubChemin> getCheminExporter();
 
-	Exporter<HubCommune> getCommuneExporter() throws Exception;
+	Exporter<HubCommune> getCommuneExporter();
 
-	Exporter<HubCorrespondance> getCorrespondanceExporter() throws Exception;
+	Exporter<HubCorrespondance> getCorrespondanceExporter();
 
-	Exporter<HubCourse> getCourseExporter() throws Exception;
+	Exporter<HubCourse> getCourseExporter();
 
-	Exporter<HubCourseOperation> getCourseOperationExporter() throws Exception;
+	Exporter<HubCourseOperation> getCourseOperationExporter();
 
-	Exporter<HubDirection> getDirectionExporter() throws Exception;
+	Exporter<HubDirection> getDirectionExporter();
 
-	Exporter<HubGroupeDeLigne> getGroupeDeLigneExporter() throws Exception;
+	Exporter<HubGroupeDeLigne> getGroupeDeLigneExporter();
 
-	Exporter<HubHoraire> getHoraireExporter() throws Exception;
+	Exporter<HubHoraire> getHoraireExporter();
 
-	Exporter<HubItl> getItlExporter() throws Exception;
+	Exporter<HubItl> getItlExporter();
 
-	Exporter<HubLigne> getLigneExporter() throws Exception;
+	Exporter<HubLigne> getLigneExporter();
 
-	Exporter<HubModeTransport> getModeTransportExporter() throws Exception;
+	Exporter<HubModeTransport> getModeTransportExporter();
 
-	Exporter<HubPeriode> getPeriodeExporter() throws Exception;
+	Exporter<HubPeriode> getPeriodeExporter();
 
-	Exporter<HubRenvoi> getRenvoiExporter() throws Exception;
+	Exporter<HubRenvoi> getRenvoiExporter();
 
-	Exporter<HubReseau> getReseauExporter() throws Exception;
+	Exporter<HubReseau> getReseauExporter();
 
-	Exporter<HubSchema> getSchemaExporter() throws Exception;
+	Exporter<HubSchema> getSchemaExporter();
 
-	Exporter<HubTransporteur> getTransporteurExporter() throws Exception;
+	Exporter<HubTransporteur> getTransporteurExporter();
 }

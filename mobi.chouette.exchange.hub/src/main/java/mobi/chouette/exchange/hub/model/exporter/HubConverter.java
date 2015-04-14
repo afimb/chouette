@@ -35,6 +35,16 @@ public interface HubConverter {
 
 	};
 	
+	@SuppressWarnings("rawtypes")
+	public static DefaultFieldConverter<Enum> ENUM_CONVERTER = new DefaultFieldConverter<Enum>() {
+
+		@Override
+		protected String convertTo(Enum input) throws Exception {
+			return (input != null) ? input.name() : "";
+		}
+
+	};
+	
 	public static DefaultFieldConverter<Boolean> BOOLEAN_CONVERTER = new DefaultFieldConverter<Boolean>() {
 
 		@Override

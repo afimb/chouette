@@ -252,7 +252,7 @@ public abstract class NeptuneLocalizedObject extends NeptuneIdentifiedObject {
 			return;
 		projection = projectionType.toUpperCase();
 
-		Coordinate p = new Coordinate(longitude, latitude);
+		Coordinate p = new Coordinate(latitude, longitude);
 		Coordinate coordinate = CoordinateUtil.transform(Coordinate.WGS84,
 				projection, p);
 		if (coordinate != null) {
@@ -284,8 +284,8 @@ public abstract class NeptuneLocalizedObject extends NeptuneIdentifiedObject {
 		Coordinate coordinate = CoordinateUtil.transform(projection,
 				Coordinate.WGS84, p);
 		if (coordinate != null) {
-			longitude = coordinate.x;
-			latitude = coordinate.y;
+			latitude = coordinate.x;
+			longitude = coordinate.y;
 		}
 	}
 

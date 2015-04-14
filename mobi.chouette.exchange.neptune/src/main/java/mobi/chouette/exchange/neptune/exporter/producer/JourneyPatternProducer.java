@@ -9,7 +9,7 @@ public class JourneyPatternProducer extends
       AbstractJaxbNeptuneProducer<JourneyPatternType, JourneyPattern>
 {
 
-   @Override
+   //@Override
    public JourneyPatternType produce(JourneyPattern journeyPattern, boolean addExtension)
    {
       JourneyPatternType jaxbJourneyPattern = tridentFactory

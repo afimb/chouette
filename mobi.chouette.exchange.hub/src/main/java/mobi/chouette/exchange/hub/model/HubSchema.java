@@ -6,7 +6,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
-public class HubSchema extends HubObject implements Comparable<HubSchema>{
+public class HubSchema extends HubObject{
 	/**
 	 * rang = 1
 	 * Ligne de rattachement du chemin
@@ -60,16 +60,7 @@ public class HubSchema extends HubObject implements Comparable<HubSchema>{
 		 * TailleMax = 8
 		 */
 		@Getter @Setter
-		private Long identifiant;
-	}
-
-
-	@Override
-	public int compareTo(HubSchema arg0) {
-		int result = codeLigne.compareTo(arg0.codeLigne);
-		if (result == 0) result = sens - arg0.sens;
-		// TODO à vérifier
-		return result;
+		private Integer identifiant;
 	}
 
 

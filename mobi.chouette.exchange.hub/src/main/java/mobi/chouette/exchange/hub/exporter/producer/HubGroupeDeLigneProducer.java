@@ -8,6 +8,8 @@
 
 package mobi.chouette.exchange.hub.exporter.producer;
 
+import java.io.IOException;
+
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.hub.model.HubGroupeDeLigne;
 import mobi.chouette.exchange.hub.model.exporter.HubExporterInterface;
@@ -48,9 +50,8 @@ public class HubGroupeDeLigneProducer extends AbstractProducer {
 
 		try {
 			getExporter().getGroupeDeLigneExporter().export(hubObject);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (IOException e) {
+			log.error("fail to save groupe de ligne",e);
 			return false;
 		}
 		return true;

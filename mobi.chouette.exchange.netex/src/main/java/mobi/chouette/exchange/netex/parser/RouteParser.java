@@ -167,7 +167,10 @@ public class RouteParser implements Parser, Constant {
 			} else if (xpp.getName().equals("InverseRouteRef")) {
 				String ref = xpp.getAttributeValue(null, REF);
 				Route wayBackRoute = ObjectFactory.getRoute(referential, ref);
-				// TODO [DSU] wayBack oppositeRouteId
+				if (wayBackRoute != null)
+				{
+					wayBackRoute.setOppositeRoute(route);
+				}
 
 				XPPUtil.skipSubTree(log, xpp);
 			} else if (xpp.getName().equals("pointsInSequence")) {

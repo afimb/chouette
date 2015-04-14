@@ -36,7 +36,7 @@ public class ModeTransportExporter extends ExporterImpl<HubModeTransport> implem
 		public String to(Context context, HubModeTransport input) {
 			String result = null;
 			List<String> values = new ArrayList<String>();
-			values.add(STRING_CONVERTER.to(context, FIELDS.code,
+			values.add(ENUM_CONVERTER.to(context, FIELDS.code,
 					input.getCode(), true));
 			values.add(STRING_CONVERTER.to(context, FIELDS.commentaire,
 					input.getCommentaire(), false));

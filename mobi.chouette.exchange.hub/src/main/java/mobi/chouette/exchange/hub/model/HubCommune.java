@@ -1,8 +1,10 @@
 package mobi.chouette.exchange.hub.model;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
+@EqualsAndHashCode (callSuper=false)
 public class HubCommune extends HubObject implements Comparable<HubCommune>{
 	/**
 	 * rang = 1

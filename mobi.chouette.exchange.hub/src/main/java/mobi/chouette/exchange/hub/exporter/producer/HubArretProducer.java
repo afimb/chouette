@@ -8,6 +8,8 @@
 
 package mobi.chouette.exchange.hub.exporter.producer;
 
+import java.io.IOException;
+
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.hub.model.HubArret;
 import mobi.chouette.exchange.hub.model.exporter.HubExporterInterface;
@@ -76,11 +78,23 @@ public class HubArretProducer extends AbstractProducer {
 			hubObject.setNomReduit(toHubId(neptuneObject.getParent()));
 		}
 
-		// X et Y
-		neptuneObject.toProjection(Coordinate.LAMBERT);
-		if (neptuneObject.hasProjection()) {
-			hubObject.setX(neptuneObject.getX().intValue());
-			hubObject.setY(neptuneObject.getY().intValue());
+		// X et Y sur arrêt physique uniquement
+		if (neptuneObject.getAreaType().equals(ChouetteAreaEnum.BoardingPosition) 
+				|| neptuneObject.getAreaType().equals(ChouetteAreaEnum.Quay))
+		{
+			if (neptuneObject.hasCoordinates())
+			{
+				neptuneObject.toProjection(Coordinate.LAMBERT);
+				if (neptuneObject.hasProjection()) {
+					hubObject.setX(neptuneObject.getX().intValue());
+					hubObject.setY(neptuneObject.getY().intValue());
+				}
+			}
+			else
+			{
+				hubObject.setX(-1);
+				hubObject.setY(-1);
+			}
 		}
 		hubObject.setCommune(neptuneObject.getCityName());
 		if (neptuneObject.getCountryCode() != null) {
@@ -90,15 +104,14 @@ public class HubArretProducer extends AbstractProducer {
 
 		if (neptuneObject.getAreaType().equals(ChouetteAreaEnum.BoardingPosition)
 				|| neptuneObject.getAreaType().equals(ChouetteAreaEnum.Quay)) {
-			
-				hubObject.setIdentifiant(toInt(neptuneObject.getRegistrationNumber()));
-			
+
+			hubObject.setIdentifiant(toInt(neptuneObject.getRegistrationNumber()));
+
 		}
 		try {
 			getExporter().getArretExporter().export(hubObject);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (IOException e) {
+			log.error("fail to save arret",e);
 			return false;
 		}
 		return true;

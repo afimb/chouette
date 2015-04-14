@@ -8,7 +8,7 @@ public class CompanyProducer extends
       AbstractJaxbNeptuneProducer<CompanyType, Company>
 {
 
-   @Override
+   //@Override
    public CompanyType produce(Company company, boolean addExtension)
    {
       CompanyType jaxbCompany = tridentFactory.createCompanyType();

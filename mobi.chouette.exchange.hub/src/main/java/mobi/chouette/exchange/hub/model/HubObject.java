@@ -21,4 +21,23 @@ public abstract class HubObject {
     public static final int dimanche = 64;
     
     public abstract void clear();
+    
+	public enum MODE_TRANSPORT {
+	AVION,
+	BATEAU,
+	BUS,
+	BUS_PMR,
+	CAR,
+	CAR_PMR,
+	FUNICULAIRE,
+	METRO, 
+	TAD, 
+	TAD_PMR, 
+	TAXIBUS, 
+	TRAIN, 
+	TRAM, 
+	TROLLEY, 
+	VELO
+	};
+
 }

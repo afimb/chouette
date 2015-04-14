@@ -2,6 +2,7 @@ package mobi.chouette.model;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -16,7 +17,6 @@ import lombok.ToString;
  * peculiar date for Timetables
  */
 @Embeddable
-@EqualsAndHashCode
 @NoArgsConstructor
 @ToString
 public class CalendarDay implements Serializable, Comparable<CalendarDay> {
@@ -87,5 +87,34 @@ public class CalendarDay implements Serializable, Comparable<CalendarDay> {
 	public int compareTo(CalendarDay o) {
 		return getDate().compareTo(o.getDate());
 	}
+	
+	private static final SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
+	@Override
+	public String toString()
+	{
+		return (included? "I":"E")+format.format(date);
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		return toString().hashCode();
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		return toString().equals(obj.toString());
+	}
+	
+	
 
 }

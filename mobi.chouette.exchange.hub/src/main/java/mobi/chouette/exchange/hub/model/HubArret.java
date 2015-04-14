@@ -104,6 +104,7 @@ public class HubArret extends HubObject implements Comparable<HubArret> {
 		type = null;
 		nomReduit = null;
 		x = null;
+		y = null;
 		commune = null;
 		codeInsee = null;
 		commentaire = null;

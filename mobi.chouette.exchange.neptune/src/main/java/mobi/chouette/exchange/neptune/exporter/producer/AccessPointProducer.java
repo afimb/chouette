@@ -12,7 +12,7 @@ import org.trident.schema.trident.ProjectedPointType;
 public class AccessPointProducer extends
       AbstractJaxbNeptuneProducer<PTAccessPointType, AccessPoint>
 {
-   @Override
+   // @Override
    public PTAccessPointType produce(AccessPoint accessPoint, boolean addExtension)
    {
       PTAccessPointType jaxbAccessPoint = tridentFactory

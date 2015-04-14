@@ -35,6 +35,7 @@ public class ArretExporter extends ExporterImpl<HubArret> implements
 		@Override
 		public String to(Context context, HubArret input) {
 			String result = null;
+			boolean physique = input.getType().startsWith("N");
 			List<String> values = new ArrayList<String>();
 			values.add(STRING_CONVERTER.to(context, FIELDS.code,
 					input.getCode(), true));
@@ -45,11 +46,11 @@ public class ArretExporter extends ExporterImpl<HubArret> implements
 			values.add(STRING_CONVERTER.to(context, FIELDS.type,
 					input.getType(), true));
 			values.add(STRING_CONVERTER.to(context, FIELDS.nom_reduit,
-					input.getNomReduit(), true));
+					input.getNomReduit(), physique));
 			values.add(INTEGER_CONVERTER.to(context, FIELDS.x,
-					input.getX(), true));
+					input.getX(), false));
 			values.add(INTEGER_CONVERTER.to(context, FIELDS.y,
-					input.getY(), true));
+					input.getY(), false));
 			values.add(STRING_CONVERTER.to(context, FIELDS.commune,
 					input.getCommune(), true));
 			values.add(INTEGER_CONVERTER.to(context, FIELDS.code_insee,
@@ -57,7 +58,7 @@ public class ArretExporter extends ExporterImpl<HubArret> implements
 			values.add(STRING_CONVERTER.to(context, FIELDS.commentaire,
 					input.getCommentaire(), false));
 			values.add(INTEGER_CONVERTER.to(context, FIELDS.identifiant,
-					input.getIdentifiant(), true));
+					input.getIdentifiant(), physique));
 			result = Tokenizer.untokenize(values);
 			return result;
 		}

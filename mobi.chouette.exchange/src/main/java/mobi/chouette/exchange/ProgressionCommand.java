@@ -69,7 +69,7 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 		// pseudo pretty print
 		String data = JSONUtils.toJSON(report).replaceAll("\\},\\{", "\n},\n{");
 		try {
-			FileUtils.writeStringToFile(path.toFile(), data);
+			FileUtils.writeStringToFile(path.toFile(), data, "UTF-8");
 		} catch (IOException e) {
 			log.error("failed to save report", e);
 		}

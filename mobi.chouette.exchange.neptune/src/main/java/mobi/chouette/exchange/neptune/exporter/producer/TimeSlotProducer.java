@@ -8,7 +8,7 @@ import org.trident.schema.trident.TimeSlotType;
 public class TimeSlotProducer extends
       AbstractJaxbNeptuneProducer<TimeSlotType, TimeSlot>
 {
-   @Override
+   //@Override
    public TimeSlotType produce(TimeSlot timeSlot, boolean addExtension)
    {
       TimeSlotType castorTimeSlot = tridentFactory.createTimeSlotType();

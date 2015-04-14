@@ -64,6 +64,18 @@
 			<artifactId>hibernate-entitymanager</artifactId>
 			<scope>provided</scope>
 		</dependency>
+      <dependency>
+         <groupId>org.geotools</groupId>
+         <artifactId>gt-jts-wrapper</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>org.geotools</groupId>
+         <artifactId>gt-epsg-wkt</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>org.geotools</groupId>
+         <artifactId>gt-epsg-hsql</artifactId>
+      </dependency>
 
 
 		<!-- Modules -->
@@ -80,6 +92,12 @@
          <artifactId>testng</artifactId>
          <scope>test</scope>
       </dependency>
+            <dependency>
+         <groupId>org.jboss.logmanager</groupId>
+         <artifactId>log4j-jboss-logmanager</artifactId>
+         <scope>test</scope>
+      </dependency>
+      
 
 	</dependencies>
 </project>

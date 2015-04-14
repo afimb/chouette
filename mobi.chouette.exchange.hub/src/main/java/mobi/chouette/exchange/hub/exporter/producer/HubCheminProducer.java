@@ -8,6 +8,9 @@
 
 package mobi.chouette.exchange.hub.exporter.producer;
 
+import java.io.IOException;
+
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.hub.model.HubChemin;
 import mobi.chouette.exchange.hub.model.exporter.HubExporterInterface;
 import mobi.chouette.exchange.report.ActionReport;
@@ -20,6 +23,7 @@ import mobi.chouette.model.StopPoint;
  * <p>
  * optimise multiple period timetable with calendarDate inclusion or exclusion
  */
+@Log4j
 public class HubCheminProducer extends AbstractProducer {
 	public HubCheminProducer(HubExporterInterface exporter) {
 		super(exporter);
@@ -49,9 +53,8 @@ public class HubCheminProducer extends AbstractProducer {
 		
 		try {
 			getExporter().getCheminExporter().export(hubObject);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (IOException e) {
+			log.error("fail to save chemin",e);
 			return false;
 		}
 		return true;

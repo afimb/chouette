@@ -31,7 +31,7 @@ public class VehicleJourneyProducer extends AbstractJaxbNeptuneProducer<VehicleJ
 
 	};
 
-	@Override
+	//@Override
 	public VehicleJourneyType produce(VehicleJourney vehicleJourney, boolean addExtension) {
 		VehicleJourneyType jaxbVehicleJourney = tridentFactory.createVehicleJourneyType();
 

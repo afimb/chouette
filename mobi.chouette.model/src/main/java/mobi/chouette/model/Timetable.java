@@ -9,6 +9,7 @@ import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -22,6 +23,8 @@ import lombok.Setter;
 import mobi.chouette.model.type.DayTypeEnum;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
@@ -189,7 +192,8 @@ public class Timetable extends NeptuneIdentifiedObject {
 	 */
 	@Getter
 	@Setter
-	@ElementCollection
+	@ElementCollection(fetch=FetchType.EAGER)
+	@Fetch(FetchMode.JOIN)
 	@CollectionTable(name = "time_table_dates", joinColumns = @JoinColumn(name = "time_table_id"))
 	@OrderColumn(name = "position", nullable = false)
 	private List<CalendarDay> calendarDays = new ArrayList<CalendarDay>(0);
@@ -203,7 +207,8 @@ public class Timetable extends NeptuneIdentifiedObject {
 	 */
 	@Getter
 	@Setter
-	@ElementCollection
+	@ElementCollection(fetch=FetchType.EAGER)
+	@Fetch(FetchMode.JOIN)
 	@CollectionTable(name = "time_table_periods", joinColumns = @JoinColumn(name = "time_table_id"))
 	@OrderColumn(name = "position", nullable = false)
 	private List<Period> periods = new ArrayList<Period>(0);

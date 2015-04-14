@@ -32,6 +32,15 @@ public class CoordinateUtil
       }
       return transform;
    }
+   
+   private static Exception ex;
+   
+   public static Exception getLastException()
+   {
+	   Exception val = ex;
+	   ex = null;
+	   return val;
+   }
 
    public static Coordinate transform(String source, String target, Coordinate p)
    {
@@ -48,6 +57,7 @@ public class CoordinateUtil
 
       } catch (Exception e)
       {
+    	  ex = e;
          log.error("fail to convert from " + source + " to " + target
                + " projected point " + p + " : " + e.getMessage());
       }

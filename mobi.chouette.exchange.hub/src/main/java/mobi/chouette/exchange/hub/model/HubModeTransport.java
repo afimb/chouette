@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class HubModeTransport extends HubObject implements Comparable<HubModeTransport>{
+	
 
 	/**
 	 * rang = 1
@@ -15,7 +16,7 @@ public class HubModeTransport extends HubObject implements Comparable<HubModeTra
 	 * TailleMax = 50
 	 */
 	@Getter @Setter
-	private String code;
+	private MODE_TRANSPORT code;
 	
 	/**
 	 * rang = 2

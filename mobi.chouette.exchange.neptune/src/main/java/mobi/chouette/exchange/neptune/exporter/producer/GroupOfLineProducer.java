@@ -8,7 +8,7 @@ public class GroupOfLineProducer extends
       AbstractJaxbNeptuneProducer<GroupOfLineType, GroupOfLine>
 {
 
-   @Override
+   //@Override
    public GroupOfLineType produce(GroupOfLine bean, boolean addExtension)
    {
       GroupOfLineType jaxbGroupOfLine = tridentFactory.createGroupOfLineType();

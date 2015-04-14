@@ -14,7 +14,7 @@ public class StopPointProducer extends
 		AbstractJaxbNeptuneProducer<ChouettePTNetworkType.ChouetteLineDescription.StopPoint, StopPoint> implements
 		JsonExtension {
 
-	@Override
+	//@Override
 	public ChouettePTNetworkType.ChouetteLineDescription.StopPoint produce(StopPoint stopPoint, boolean addExtension) {
 		ChouettePTNetworkType.ChouetteLineDescription.StopPoint jaxbStopPoint = tridentFactory
 				.createChouettePTNetworkTypeChouetteLineDescriptionStopPoint();

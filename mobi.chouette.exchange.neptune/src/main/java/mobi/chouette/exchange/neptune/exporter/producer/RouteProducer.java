@@ -1,5 +1,7 @@
 package mobi.chouette.exchange.neptune.exporter.producer;
 
+import java.util.Collection;
+
 import mobi.chouette.model.Route;
 import mobi.chouette.model.type.PTDirectionEnum;
 
@@ -11,8 +13,8 @@ public class RouteProducer extends
 AbstractJaxbNeptuneProducer<ChouetteRoute, Route>
 {
 
-	@Override
-	public ChouetteRoute produce(Route route, boolean addExtension)
+	//@Override
+	public ChouetteRoute produce(Route route, Collection<Route> exportableRoutes, boolean addExtension)
 	{
 		ChouetteRoute jaxbRoute = tridentFactory
 				.createChouettePTNetworkTypeChouetteLineDescriptionChouetteRoute();
@@ -38,7 +40,7 @@ AbstractJaxbNeptuneProducer<ChouetteRoute, Route>
 		}
 
 
-		if (route.getOppositeRoute() != null)
+		if (route.getOppositeRoute() != null && exportableRoutes.contains(route.getOppositeRoute()))
 		{
 			jaxbRoute.setWayBackRouteId(route.getOppositeRoute().getObjectId());
 		}

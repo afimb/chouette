@@ -87,6 +87,8 @@ public class ChouettePTNetworkProducer implements Constant {
 		NeptuneExportParameters parameters = (NeptuneExportParameters) context.get(CONFIGURATION);
 		boolean addExtension = parameters.isAddExtension();
 		String projectionType = parameters.getProjectionType();
+		if (!projectionType.toUpperCase().startsWith("EPSG:"))
+			projectionType = "EPSG:"+projectionType;
 		Metadata metadata = (Metadata) context.get(METADATA); 
 
 		ChouettePTNetworkType rootObject = AbstractJaxbNeptuneProducer.tridentFactory.createChouettePTNetworkType();
@@ -191,7 +193,7 @@ public class ChouettePTNetworkProducer implements Constant {
 
 		for (Route route : collection.getRoutes())
 		{
-			ChouetteRoute jaxbObj = routeProducer.produce(route,addExtension);
+			ChouetteRoute jaxbObj = routeProducer.produce(route,collection.getRoutes(),addExtension);
 			// reduce journeyPatternId at exported ones
 			jaxbObj.getJourneyPatternId().clear();
 			for (JourneyPattern jp : route.getJourneyPatterns())

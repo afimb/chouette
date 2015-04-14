@@ -13,13 +13,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.extern.log4j.Log4j;
+
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 /**
  * Chouette Footnote : a note for vehicle journeys
@@ -31,7 +31,6 @@ import lombok.extern.log4j.Log4j;
  * @since 2.5.3
  */
 
-@Log4j
 @Entity
 @Table(name = "footnotes")
 @NoArgsConstructor
@@ -81,7 +80,7 @@ public class Footnote extends NeptuneObject {
 	 *            New value
 	 */
 	public void setLabel(String value) {
-		label = dataBaseSizeProtectedValue(value, "label", log);
+		label = StringUtils.abbreviate(value, 255);
 	}
 
 	/**
@@ -101,7 +100,7 @@ public class Footnote extends NeptuneObject {
 	 *            New value
 	 */
 	public void setCode(String value) {
-		code = dataBaseSizeProtectedValue(value, "code", log);
+		code = StringUtils.abbreviate(value, 255);
 	}
 
 	/**

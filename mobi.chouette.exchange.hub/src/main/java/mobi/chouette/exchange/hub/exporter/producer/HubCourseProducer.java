@@ -23,6 +23,8 @@ import mobi.chouette.model.VehicleJourneyAtStop;
  * optimise multiple period timetable with calendarDate inclusion or exclusion
  */
 public class HubCourseProducer extends AbstractProducer {
+	
+	
 	public HubCourseProducer(HubExporterInterface exporter) {
 		super(exporter);
 	}
@@ -53,11 +55,11 @@ public class HubCourseProducer extends AbstractProducer {
 		// renvois
 		if (isTrue(neptuneObject.getFlexibleService()) || (neptuneObject.getFlexibleService() == null && isTrue(neptuneObject.getRoute().getLine().getFlexibleService())))
 		{
-            hubObject.getIdentifiantsRenvoi().add(Integer.valueOf(1));
+            hubObject.getIdentifiantsRenvoi().add(Integer.valueOf(1)); // semble faux
 		}
 		for (Footnote footnote : neptuneObject.getRoute().getLine().getFootnotes()) 
 		{
-			// TODO hubObject.getIdentifiantsRenvoi().add(footnote.get) ???
+			hubObject.getIdentifiantsRenvoi().add(Integer.decode(footnote.getKey()));
 		}
 
 		
@@ -74,6 +76,7 @@ public class HubCourseProducer extends AbstractProducer {
 		VehicleJourneyAtStop vjas2 = neptuneObject.getVehicleJourneyAtStops().get(neptuneObject.getVehicleJourneyAtStops().size()-1);
 		hubObject.setCodeArret(toHubId(vjas2.getStopPoint().getContainedInStopArea()));
 		hubObject.setHeure(toHubTime(vjas2.getArrivalTime()));
+		hubObject.setType(HubCourse.TYPE_ARRIVEE);
 		hubObject.setIdentifiantArret(toInt(vjas2.getStopPoint().getContainedInStopArea().getRegistrationNumber()));
 		try {
 			getExporter().getCourseExporter().export(hubObject);

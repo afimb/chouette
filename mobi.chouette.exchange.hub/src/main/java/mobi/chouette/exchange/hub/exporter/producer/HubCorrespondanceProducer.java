@@ -8,6 +8,9 @@
 
 package mobi.chouette.exchange.hub.exporter.producer;
 
+import java.io.IOException;
+
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.hub.model.HubCorrespondance;
 import mobi.chouette.exchange.hub.model.exporter.HubExporterInterface;
 import mobi.chouette.exchange.report.ActionReport;
@@ -19,6 +22,7 @@ import mobi.chouette.model.ConnectionLink;
  * <p>
  * optimise multiple period timetable with calendarDate inclusion or exclusion
  */
+@Log4j
 public class HubCorrespondanceProducer extends AbstractProducer {
 	public HubCorrespondanceProducer(HubExporterInterface exporter) {
 		super(exporter);
@@ -43,9 +47,8 @@ public class HubCorrespondanceProducer extends AbstractProducer {
 
 		try {
 			getExporter().getCorrespondanceExporter().export(hubObject);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (IOException e) {
+			log.error("fail to save correspondance",e);
 			return false;
 		}
 		return true;

@@ -52,7 +52,7 @@ public class HubCourseOperation extends HubObject implements Comparable<HubCours
 	 * optionnel
 	 */
 	@Getter @Setter
-	private String modeTransport;
+	private MODE_TRANSPORT modeTransport;
 	
 	/**
 	 * rang = 6

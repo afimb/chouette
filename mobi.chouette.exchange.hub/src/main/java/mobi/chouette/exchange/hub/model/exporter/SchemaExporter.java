@@ -47,7 +47,7 @@ public class SchemaExporter extends ExporterImpl<HubSchema> implements
 			for (ArretSchema arret : input.getArrets()) {
 				values.add(STRING_CONVERTER.to(context, FIELDS.code_arret,
 						arret.getCode(), false));
-				values.add(LONG_CONVERTER.to(context, FIELDS.identifiant_arret,
+				values.add(INTEGER_CONVERTER.to(context, FIELDS.identifiant_arret,
 						arret.getIdentifiant(), true));
 			}
 			result = Tokenizer.untokenize(values);

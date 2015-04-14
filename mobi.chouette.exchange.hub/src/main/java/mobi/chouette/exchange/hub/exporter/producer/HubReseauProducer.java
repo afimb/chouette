@@ -8,6 +8,8 @@
 
 package mobi.chouette.exchange.hub.exporter.producer;
 
+import java.io.IOException;
+
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.hub.model.HubReseau;
 import mobi.chouette.exchange.hub.model.exporter.HubExporterInterface;
@@ -48,9 +50,8 @@ public class HubReseauProducer extends AbstractProducer {
 
 		try {
 			getExporter().getReseauExporter().export(hubObject);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (IOException e) {
+			log.error("fail to save reseau",e);
 			return false;
 		}
 		return true;
