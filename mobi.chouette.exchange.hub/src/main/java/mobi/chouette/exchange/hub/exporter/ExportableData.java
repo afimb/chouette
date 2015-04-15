@@ -32,6 +32,7 @@ private Set<Timetable> timetables = new HashSet<>();
 private int vehicleJourneyRank = 0;
 // refilled line by line
 private Line line;
+private int pmrFootenoteId = -1;
 private List<JourneyPattern> journeyPatterns = new ArrayList<>();
 private List<Route> routes = new ArrayList<>();
 private List<VehicleJourney> vehicleJourneys = new ArrayList<>();

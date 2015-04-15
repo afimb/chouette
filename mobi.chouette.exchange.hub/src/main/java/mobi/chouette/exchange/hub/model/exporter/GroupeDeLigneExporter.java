@@ -40,7 +40,7 @@ public class GroupeDeLigneExporter extends ExporterImpl<HubGroupeDeLigne> implem
 					input.getCode(), true));
 			values.add(STRING_CONVERTER.to(context, FIELDS.nom,
 					input.getNom(), true));
-			values.add(LONG_CONVERTER.to(context, FIELDS.identifiant,
+			values.add(NUMBER_CONVERTER.to(context, FIELDS.identifiant,
 					input.getIdentifiant(), false));
 			result = Tokenizer.untokenize(values);
 			return result;

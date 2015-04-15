@@ -17,19 +17,11 @@ public interface HubConverter {
 
 	};
 
-	public static DefaultFieldConverter<Long> LONG_CONVERTER = new DefaultFieldConverter<Long>() {
+
+	public static DefaultFieldConverter<Number> NUMBER_CONVERTER = new DefaultFieldConverter<Number>() {
 
 		@Override
-		protected String convertTo(Long input) throws Exception {
-			return (input != null) ? input.toString() : "";
-		}
-
-	};
-
-	public static DefaultFieldConverter<Integer> INTEGER_CONVERTER = new DefaultFieldConverter<Integer>() {
-
-		@Override
-		protected String convertTo(Integer input) throws Exception {
+		protected String convertTo(Number input) throws Exception {
 			return (input != null) ? input.toString() : "";
 		}
 

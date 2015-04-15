@@ -54,6 +54,10 @@ import com.jamonapi.MonitorFactory;
 @Stateless(name = HubLineProducerCommand.COMMAND)
 public class HubLineProducerCommand implements Command, Constant {
 	public static final String COMMAND = "HubLineProducerCommand";
+	
+	private static final String PMR_CODE = "pmr";
+	private static final String PMR_LABEL = "PMR";
+	
 
 	@EJB
 	private LineDAO lineDAO;
@@ -104,7 +108,7 @@ public class HubLineProducerCommand implements Command, Constant {
 				context.put(EXPORTABLE_DATA, collection);
 				try
 				{
-				   saveLine(context, line, collection);
+				   saveData(context);
 					lineInfo.setStatus(LINE_STATE.OK);
 					// merge lineStats to global ones
 					LineStats globalStats = report.getStats();
@@ -164,32 +168,114 @@ public class HubLineProducerCommand implements Command, Constant {
 	 * @throws IOException
 	 * @throws DatatypeConfigurationException
 	 */
-	private void saveLine(Context context, Line line, ExportableData collection) throws IOException,
+	private void saveData(Context context) throws IOException,
 			DatatypeConfigurationException {
 		Metadata metadata = (Metadata) context.get(METADATA);
 
+
+		saveLine(context);
+		saveModeTransport(context);
+		saveRenvois(context); // must be called before saveCoursesOperationsAndHoraires()
+		saveSchema(context);
+		saveItls(context);
+		saveCheminsAndDirections(context);
+		saveCoursesOperationsAndHoraires(context);
+		
+		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
+		
+		metadata.getResources().add(metadata.new Resource( 
+				NeptuneObjectPresenter.getName(collection.getLine().getNetwork()), NeptuneObjectPresenter.getName(collection.getLine())));
+
+
+	}
+
+	private void saveLine(Context context) {
 		HubExporter exporter = (HubExporter) context.get(HUB_EXPORTER);
 		HubLigneProducer ligneProducer = (HubLigneProducer) context.get(HUB_LIGNE_PRODUCER);
 		if (ligneProducer == null) {
 			ligneProducer = new HubLigneProducer(exporter);
 			context.put(HUB_LIGNE_PRODUCER, ligneProducer);
 		}
-		HubRenvoiProducer renvoiProducer = (HubRenvoiProducer) context.get(HUB_RENVOI_PRODUCER);
-		if (renvoiProducer == null) {
-			renvoiProducer = new HubRenvoiProducer(exporter);
-			context.put(HUB_RENVOI_PRODUCER, renvoiProducer);
-		}
+		ActionReport report = (ActionReport) context.get(REPORT);
+		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
+		ligneProducer.save(collection.getLine(), report);
+		
+	}
+
+	private void saveModeTransport(Context context) {
+		HubExporter exporter = (HubExporter) context.get(HUB_EXPORTER);
 		HubModeTransportProducer modeTransportProducer = (HubModeTransportProducer) context
 				.get(HUB_MODETRANSPORT_PRODUCER);
 		if (modeTransportProducer == null) {
 			modeTransportProducer = new HubModeTransportProducer(exporter);
 			context.put(HUB_MODETRANSPORT_PRODUCER, modeTransportProducer);
 		}
+		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
+		modeTransportProducer.addLine(collection.getLine());
+		
+	}
+
+	private void saveRenvois(Context context) {
+		HubExporter exporter = (HubExporter) context.get(HUB_EXPORTER);
+		HubRenvoiProducer renvoiProducer = (HubRenvoiProducer) context.get(HUB_RENVOI_PRODUCER);
+		if (renvoiProducer == null) {
+			renvoiProducer = new HubRenvoiProducer(exporter);
+			context.put(HUB_RENVOI_PRODUCER, renvoiProducer);
+		}
+		ActionReport report = (ActionReport) context.get(REPORT);
+		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
+		// add PMR footnote if required
+		if (collection.getPmrFootenoteId() == 0)
+		{
+			Footnote pmr = new Footnote();
+			pmr.setCode(PMR_CODE);
+			pmr.setLabel(PMR_LABEL);
+			renvoiProducer.save(pmr, report);
+			collection.setPmrFootenoteId(Integer.parseInt(pmr.getKey())); // preserve id for vehicle journeys
+		}
+		
+		for (Footnote footnote : collection.getLine().getFootnotes()) 
+		{
+			renvoiProducer.save(footnote, report);
+		}
+		
+	}
+
+	private void saveSchema(Context context) {
+		HubExporter exporter = (HubExporter) context.get(HUB_EXPORTER);
 		HubSchemaProducer schemaProducer = (HubSchemaProducer) context.get(HUB_SCHEMA_PRODUCER);
 		if (schemaProducer == null) {
 			schemaProducer = new HubSchemaProducer(exporter);
 			context.put(HUB_SCHEMA_PRODUCER, schemaProducer);
 		}
+		ActionReport report = (ActionReport) context.get(REPORT);
+		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
+		Collections.sort(collection.getRoutes(),new RouteSorter());
+		for (Route route : collection.getRoutes()) 
+		{
+			schemaProducer.save(route, report);
+		}
+		
+	}
+
+	private void saveItls(Context context) {
+		HubExporter exporter = (HubExporter) context.get(HUB_EXPORTER);
+		HubItlProducer itlProducer = (HubItlProducer) context.get(HUB_ITL_PRODUCER);
+		if (itlProducer == null) {
+			itlProducer = new HubItlProducer(exporter);
+			context.put(HUB_ITL_PRODUCER, itlProducer);
+		}
+		ActionReport report = (ActionReport) context.get(REPORT);
+		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
+		for (StopPoint stopPoint : collection.getStopPoints()) 
+		{
+			itlProducer.save(stopPoint, report);
+		}
+		
+	}
+
+	private void saveCheminsAndDirections(Context context) {
+		HubExporter exporter = (HubExporter) context.get(HUB_EXPORTER);
 		HubCheminProducer cheminProducer = (HubCheminProducer) context.get(HUB_CHEMIN_PRODUCER);
 		if (cheminProducer == null) {
 			cheminProducer = new HubCheminProducer(exporter);
@@ -200,11 +286,19 @@ public class HubLineProducerCommand implements Command, Constant {
 			directionProducer = new HubDirectionProducer(exporter);
 			context.put(HUB_DIRECTION_PRODUCER, directionProducer);
 		}
-		HubItlProducer itlProducer = (HubItlProducer) context.get(HUB_ITL_PRODUCER);
-		if (itlProducer == null) {
-			itlProducer = new HubItlProducer(exporter);
-			context.put(HUB_ITL_PRODUCER, itlProducer);
+		ActionReport report = (ActionReport) context.get(REPORT);
+		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
+		Collections.sort(collection.getJourneyPatterns(),new JourneyPatternSorter());
+		for (JourneyPattern journeyPattern : collection.getJourneyPatterns()) 
+		{
+			cheminProducer.save(journeyPattern, report);
+			directionProducer.save(journeyPattern, report);
 		}
+		
+	}
+
+	private void saveCoursesOperationsAndHoraires(Context context) {
+		HubExporter exporter = (HubExporter) context.get(HUB_EXPORTER);
 		HubCourseProducer courseProducer = (HubCourseProducer) context.get(HUB_COURSE_PRODUCER);
 		if (courseProducer == null) {
 			courseProducer = new HubCourseProducer(exporter);
@@ -222,35 +316,11 @@ public class HubLineProducerCommand implements Command, Constant {
 			context.put(HUB_HORAIRE_PRODUCER, horaireProducer);
 		}
 		ActionReport report = (ActionReport) context.get(REPORT);
-
-		ligneProducer.save(line, report);
-		modeTransportProducer.addLine(line);
-		// TODO add PMR footnote if required
-		for (Footnote footnote : line.getFootnotes()) 
-		{
-			renvoiProducer.save(footnote, report);
-		}
-		
-		Collections.sort(collection.getRoutes(),new RouteSorter());
-		Collections.sort(collection.getJourneyPatterns(),new JourneyPatternSorter());
+		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
 		Collections.sort(collection.getVehicleJourneys(),new VehicleJourneySorter());
-
-		for (Route route : collection.getRoutes()) 
-		{
-			schemaProducer.save(route, report);
-		}
-		for (StopPoint stopPoint : collection.getStopPoints()) 
-		{
-			itlProducer.save(stopPoint, report);
-		}
-		for (JourneyPattern journeyPattern : collection.getJourneyPatterns()) 
-		{
-			cheminProducer.save(journeyPattern, report);
-			directionProducer.save(journeyPattern, report);
-		}
 		for (VehicleJourney vehicleJourney : collection.getVehicleJourneys()) 
 		{
-			courseProducer.save(vehicleJourney, report, collection.getVehicleJourneyRank());
+			courseProducer.save(vehicleJourney, collection.getPmrFootenoteId(), report, collection.getVehicleJourneyRank());
 			courseOperationProducer.save(vehicleJourney, report, collection.getVehicleJourneyRank());
 			int lastItem = vehicleJourney.getVehicleJourneyAtStops().size() - 1;
 			for (int i = 0; i <= lastItem; i++)
@@ -260,10 +330,6 @@ public class HubLineProducerCommand implements Command, Constant {
 			collection.setVehicleJourneyRank(collection.getVehicleJourneyRank()+1);
 		}
 		
-		metadata.getResources().add(metadata.new Resource( 
-				NeptuneObjectPresenter.getName(line.getNetwork()), NeptuneObjectPresenter.getName(line)));
-
-
 	}
 
 	public class RouteSorter implements Comparator<Route> {

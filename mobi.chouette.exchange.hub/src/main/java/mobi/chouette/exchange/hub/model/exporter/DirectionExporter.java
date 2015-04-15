@@ -40,7 +40,7 @@ public class DirectionExporter extends ExporterImpl<HubDirection> implements
 					input.getDirection(), true));
 			values.add(STRING_CONVERTER.to(context, FIELDS.code_ligne,
 					input.getCodeLigne(), true));
-			values.add(INTEGER_CONVERTER.to(context, FIELDS.sens,
+			values.add(NUMBER_CONVERTER.to(context, FIELDS.sens,
 					input.getSens(), true));
 			values.add(STRING_CONVERTER.to(context, FIELDS.code_chemin,
 					input.getCodeChemin(), false));

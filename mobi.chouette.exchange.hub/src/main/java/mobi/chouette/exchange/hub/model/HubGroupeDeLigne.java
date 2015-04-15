@@ -30,7 +30,7 @@ public class HubGroupeDeLigne extends HubObject implements Comparable<HubGroupeD
 	 * TailleMax = 8
 	 */
 	@Getter @Setter
-	private Long identifiant;
+	private Integer identifiant;
 
 	@Override
 	public int compareTo(HubGroupeDeLigne arg0) {

@@ -88,7 +88,7 @@ public class HubLigne extends HubObject implements Comparable<HubLigne>{
 	 * TailleMax = 8
 	 */
 	@Getter @Setter
-	private Long identifiant;
+	private Integer identifiant;
 
 	@Override
 	public int compareTo(HubLigne arg0) {

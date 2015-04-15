@@ -47,17 +47,17 @@ public class ArretExporter extends ExporterImpl<HubArret> implements
 					input.getType(), true));
 			values.add(STRING_CONVERTER.to(context, FIELDS.nom_reduit,
 					input.getNomReduit(), physique));
-			values.add(INTEGER_CONVERTER.to(context, FIELDS.x,
+			values.add(NUMBER_CONVERTER.to(context, FIELDS.x,
 					input.getX(), false));
-			values.add(INTEGER_CONVERTER.to(context, FIELDS.y,
+			values.add(NUMBER_CONVERTER.to(context, FIELDS.y,
 					input.getY(), false));
 			values.add(STRING_CONVERTER.to(context, FIELDS.commune,
 					input.getCommune(), true));
-			values.add(INTEGER_CONVERTER.to(context, FIELDS.code_insee,
+			values.add(NUMBER_CONVERTER.to(context, FIELDS.code_insee,
 					input.getCodeInsee(), true));
 			values.add(STRING_CONVERTER.to(context, FIELDS.commentaire,
 					input.getCommentaire(), false));
-			values.add(INTEGER_CONVERTER.to(context, FIELDS.identifiant,
+			values.add(NUMBER_CONVERTER.to(context, FIELDS.identifiant,
 					input.getIdentifiant(), physique));
 			result = Tokenizer.untokenize(values);
 			return result;

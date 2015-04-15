@@ -7,18 +7,16 @@ import java.text.SimpleDateFormat;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 /**
  * peculiar date for Timetables
  */
 @Embeddable
 @NoArgsConstructor
-@ToString
+
 public class CalendarDay implements Serializable, Comparable<CalendarDay> {
 
 	private static final long serialVersionUID = -1964071056103739954L;

@@ -24,10 +24,14 @@ public class HubDataCollector {
 	public boolean collect(ExportableData collection, Line line, Date startDate, Date endDate) {
 		boolean validLine = false;
 		collection.setLine(null);
+		collection.setPmrFootenoteId(-1);
 		collection.getRoutes().clear();
 		collection.getJourneyPatterns().clear();
 		collection.getStopPoints().clear();
 		collection.getVehicleJourneys().clear();
+		if (isTrue(line.getMobilityRestrictedSuitable()))
+			collection.setPmrFootenoteId(0);
+		
 		for (Route route : line.getRoutes()) {
 			boolean validRoute = false;
 			for (JourneyPattern jp : route.getJourneyPatterns()) {
@@ -43,6 +47,8 @@ public class HubDataCollector {
 								validJourneyPattern = true;
 								validRoute = true;
 								validLine = true;
+								if (isTrue(vehicleJourney.getMobilityRestrictedSuitability()))
+									collection.setPmrFootenoteId(0);
 							}
 						}
 					} else {
@@ -64,9 +70,8 @@ public class HubDataCollector {
 						}
 						if (isValid) {
 							collection.getVehicleJourneys().add(vehicleJourney);
-							if (vehicleJourney.getCompany() != null) {
-								collection.getCompanies().add(vehicleJourney.getCompany());
-							}
+							if (isTrue(vehicleJourney.getMobilityRestrictedSuitability()))
+								collection.setPmrFootenoteId(0);
 							validJourneyPattern = true;
 							validRoute = true;
 						}
@@ -235,6 +240,10 @@ public class HubDataCollector {
 			return date.getDate().before(boundaryDate);
 		}
 		return date.getDate().after(boundaryDate);
+	}
+
+    private boolean isTrue(Boolean b) {
+		return b != null && b;
 	}
 
 }

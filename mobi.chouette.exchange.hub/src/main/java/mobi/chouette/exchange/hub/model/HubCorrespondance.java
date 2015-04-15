@@ -20,7 +20,7 @@ public class HubCorrespondance extends HubObject implements Comparable<HubCorres
 	 * TailleMax = 8
 	 */
 	@Getter @Setter
-	private Long identifiantArret1;
+	private Integer identifiantArret1;
 
 	/**
 	 * rang = 3
@@ -38,7 +38,7 @@ public class HubCorrespondance extends HubObject implements Comparable<HubCorres
 	 * TailleMax = 8
 	 */
 	@Getter @Setter
-	private Long identifiantArret2;
+	private Integer identifiantArret2;
 	
 	/**
 	 * rang = 5
@@ -65,7 +65,7 @@ public class HubCorrespondance extends HubObject implements Comparable<HubCorres
 	 * TailleMax = 8
 	 */
 	@Getter @Setter
-	private Long identifiant;
+	private Integer identifiant;
 
 	@Override
 	public int compareTo(HubCorrespondance arg0) {

@@ -29,7 +29,7 @@ public class HubTransporteur extends HubObject implements Comparable<HubTranspor
 	 * TailleMax = 8
 	 */
 	@Getter @Setter
-	private Long identifiant;
+	private Integer identifiant;
 
 	@Override
 	public int compareTo(HubTransporteur arg0) 

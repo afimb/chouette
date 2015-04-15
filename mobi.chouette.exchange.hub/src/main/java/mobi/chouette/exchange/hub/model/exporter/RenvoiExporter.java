@@ -40,7 +40,7 @@ public class RenvoiExporter extends ExporterImpl<HubRenvoi> implements
 					input.getCode(), true));
 			values.add(STRING_CONVERTER.to(context, FIELDS.nom,
 					input.getNom(), true));
-			values.add(INTEGER_CONVERTER.to(context, FIELDS.identifiant,
+			values.add(NUMBER_CONVERTER.to(context, FIELDS.identifiant,
 					input.getIdentifiant(), false));
 			result = Tokenizer.untokenize(values);
 			return result;

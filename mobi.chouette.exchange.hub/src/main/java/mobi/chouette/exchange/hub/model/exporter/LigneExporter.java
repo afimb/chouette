@@ -43,7 +43,7 @@ public class LigneExporter extends ExporterImpl<HubLigne> implements
 					input.getCodeCommercial(), true));
 			values.add(STRING_CONVERTER.to(context, FIELDS.nom,
 					input.getNom(), false));
-			values.add(INTEGER_CONVERTER.to(context, FIELDS.code_representation,
+			values.add(NUMBER_CONVERTER.to(context, FIELDS.code_representation,
 					input.getCodeRepresentation(), false));
 			values.add(STRING_CONVERTER.to(context, FIELDS.code_sous_traitant,
 					input.getCodeSousTraitant(), false));
@@ -53,7 +53,7 @@ public class LigneExporter extends ExporterImpl<HubLigne> implements
 					input.getCodeReseau(), true));
 			values.add(STRING_CONVERTER.to(context, FIELDS.code_groupe_de_ligne,
 					input.getCodeGroupeDeLigne(), true));
-			values.add(LONG_CONVERTER.to(context, FIELDS.identifiant,
+			values.add(NUMBER_CONVERTER.to(context, FIELDS.identifiant,
 					input.getIdentifiant(), false));
 			result = Tokenizer.untokenize(values);
 			return result;

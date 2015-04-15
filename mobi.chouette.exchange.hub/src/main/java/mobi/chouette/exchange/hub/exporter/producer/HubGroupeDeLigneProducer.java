@@ -46,7 +46,7 @@ public class HubGroupeDeLigneProducer extends AbstractProducer {
 
 		hubObject.setNom(name);
 
-		hubObject.setIdentifiant(neptuneObject.getId());
+		hubObject.setIdentifiant(toInt(neptuneObject.getRegistrationNumber()));
 
 		try {
 			getExporter().getGroupeDeLigneExporter().export(hubObject);

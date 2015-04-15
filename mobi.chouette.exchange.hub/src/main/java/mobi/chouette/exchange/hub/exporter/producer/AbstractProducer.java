@@ -39,6 +39,11 @@ public abstract class AbstractProducer {
 		return b != null && b;
 	}
 
+	static protected boolean isFalse(Boolean b) {
+		return b != null && !b;
+	}
+
+
 	static protected boolean isEmpty(Collection<? extends Object> s) {
 		return s == null || s.isEmpty();
 	}

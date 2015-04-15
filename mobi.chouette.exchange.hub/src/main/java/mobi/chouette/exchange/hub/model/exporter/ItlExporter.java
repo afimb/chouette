@@ -39,17 +39,17 @@ public class ItlExporter extends ExporterImpl<HubItl> implements
 			List<String> values = new ArrayList<String>();
 			values.add(STRING_CONVERTER.to(context, FIELDS.code_ligne,
 					input.getCodeLigne(), true));
-			values.add(INTEGER_CONVERTER.to(context, FIELDS.sens,
+			values.add(NUMBER_CONVERTER.to(context, FIELDS.sens,
 					input.getSens(), true));
 			values.add(STRING_CONVERTER.to(context, FIELDS.code_arret,
 					input.getCodeArret(), true));
-			values.add(INTEGER_CONVERTER.to(context, FIELDS.identifiant_arret,
+			values.add(NUMBER_CONVERTER.to(context, FIELDS.identifiant_arret,
 					input.getIdentifiantArret(), true));
-			values.add(INTEGER_CONVERTER.to(context, FIELDS.ordre,
+			values.add(NUMBER_CONVERTER.to(context, FIELDS.ordre,
 					input.getOrdre(), true));
-			values.add(INTEGER_CONVERTER.to(context, FIELDS.type,
+			values.add(NUMBER_CONVERTER.to(context, FIELDS.type,
 					input.getType(), true));
-			values.add(INTEGER_CONVERTER.to(context, FIELDS.identifiant,
+			values.add(NUMBER_CONVERTER.to(context, FIELDS.identifiant,
 					input.getIdentifiant(), false));
 			result = Tokenizer.untokenize(values);
 			return result;

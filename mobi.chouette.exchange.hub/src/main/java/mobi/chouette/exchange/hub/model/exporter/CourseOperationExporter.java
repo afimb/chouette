@@ -37,7 +37,7 @@ public class CourseOperationExporter extends ExporterImpl<HubCourseOperation> im
 		public String to(Context context, HubCourseOperation input) {
 			String result = null;
 			List<String> values = new ArrayList<String>();
-			values.add(INTEGER_CONVERTER.to(context, FIELDS.numero_course,
+			values.add(NUMBER_CONVERTER.to(context, FIELDS.numero_course,
 					input.getNumeroCourse(), true));
 			values.add(STRING_CONVERTER.to(context, FIELDS.code_operation,
 					input.getCodeOperation(), false));

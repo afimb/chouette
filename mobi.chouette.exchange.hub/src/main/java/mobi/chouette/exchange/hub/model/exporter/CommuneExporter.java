@@ -36,7 +36,7 @@ public class CommuneExporter extends ExporterImpl<HubCommune> implements
 		public String to(Context context, HubCommune input) {
 			String result = null;
 			List<String> values = new ArrayList<String>();
-			values.add(INTEGER_CONVERTER.to(context, FIELDS.code_insee,
+			values.add(NUMBER_CONVERTER.to(context, FIELDS.code_insee,
 					input.getCodeInsee(), true));
 			values.add(STRING_CONVERTER.to(context, FIELDS.nom,
 					input.getNom(), true));

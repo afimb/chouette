@@ -39,17 +39,17 @@ public class HoraireExporter extends ExporterImpl<HubHoraire> implements
 			List<String> values = new ArrayList<String>();
 			values.add(STRING_CONVERTER.to(context, FIELDS.code_arret,
 					input.getCodeArret(), false));
-			values.add(INTEGER_CONVERTER.to(context, FIELDS.heure,
+			values.add(NUMBER_CONVERTER.to(context, FIELDS.heure,
 					input.getHeure(), true));
 			values.add(STRING_CONVERTER.to(context, FIELDS.type,
 					input.getType(), true));
-			values.add(INTEGER_CONVERTER.to(context, FIELDS.numero_course,
+			values.add(NUMBER_CONVERTER.to(context, FIELDS.numero_course,
 					input.getNumeroCourse(), true));
-			values.add(INTEGER_CONVERTER.to(context, FIELDS.numero_mission,
+			values.add(NUMBER_CONVERTER.to(context, FIELDS.numero_mission,
 					input.getNumeroMission(), false));
-			values.add(INTEGER_CONVERTER.to(context, FIELDS.identifiant_arret,
+			values.add(NUMBER_CONVERTER.to(context, FIELDS.identifiant_arret,
 					input.getIdentifiantArret(), true));
-			values.add(INTEGER_CONVERTER.to(context, FIELDS.identifiant,
+			values.add(NUMBER_CONVERTER.to(context, FIELDS.identifiant,
 					input.getIdentifiant(), false));
 			result = Tokenizer.untokenize(values);
 			return result;

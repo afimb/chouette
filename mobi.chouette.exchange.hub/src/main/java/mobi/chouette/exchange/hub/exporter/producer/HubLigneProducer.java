@@ -47,7 +47,7 @@ public class HubLigneProducer extends AbstractProducer {
 			hubObject.setCodeGroupeDeLigne(toHubId(neptuneObject.getGroupOfLines().get(0)));
 		}
 
-		hubObject.setIdentifiant(neptuneObject.getId());
+		hubObject.setIdentifiant(toInt(neptuneObject.getRegistrationNumber()));
 
 		try {
 			getExporter().getLigneExporter().export(hubObject);

@@ -50,7 +50,7 @@ public class PeriodeExporter extends ExporterImpl<HubPeriode> implements
 					jour, true));
 			}
 			values.add(list.toString());
-			values.add(INTEGER_CONVERTER.to(context, FIELDS.identifiant,
+			values.add(NUMBER_CONVERTER.to(context, FIELDS.identifiant,
 					input.getIdentifiant(), true));
 			result = Tokenizer.untokenize(values);
 			return result;

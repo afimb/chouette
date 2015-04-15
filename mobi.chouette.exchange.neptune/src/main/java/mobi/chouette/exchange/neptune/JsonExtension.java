@@ -17,4 +17,5 @@ public interface JsonExtension
    public static final String MOBILITY_RESTRICTION = "mobility_restriction";
    public static final String URL_REF = "url";
    public static final String TIME_ZONE = "time_zone";
+   public static final String REGISTRATION_NUMBER = "registration_number";
 }

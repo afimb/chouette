@@ -24,6 +24,8 @@ import mobi.chouette.model.ConnectionLink;
  */
 @Log4j
 public class HubCorrespondanceProducer extends AbstractProducer {
+	
+	private int compteur = 1;
 	public HubCorrespondanceProducer(HubExporterInterface exporter) {
 		super(exporter);
 	}
@@ -34,16 +36,16 @@ public class HubCorrespondanceProducer extends AbstractProducer {
 
 		hubObject.clear();
 		hubObject.setCodeArret1(toHubId(neptuneObject.getStartOfLink()));
-		hubObject.setIdentifiantArret1(neptuneObject.getStartOfLink().getId());
+		hubObject.setIdentifiantArret1(toInt(neptuneObject.getStartOfLink().getRegistrationNumber()));
 		hubObject.setCodeArret2(toHubId(neptuneObject.getEndOfLink()));
-		hubObject.setIdentifiantArret2(neptuneObject.getEndOfLink().getId());
+		hubObject.setIdentifiantArret2(toInt(neptuneObject.getEndOfLink().getRegistrationNumber()));
 		
 		if (neptuneObject.getLinkDistance() != null)
 		   hubObject.setDistance(neptuneObject.getLinkDistance().intValue());
 		
 		hubObject.setTempsParcours(toHubTime(neptuneObject.getDefaultDuration()));
 		
-		hubObject.setIdentifiant(neptuneObject.getId());
+		hubObject.setIdentifiant(Integer.valueOf(compteur++));
 
 		try {
 			getExporter().getCorrespondanceExporter().export(hubObject);

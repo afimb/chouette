@@ -39,17 +39,17 @@ public class CorrespondanceExporter extends ExporterImpl<HubCorrespondance> impl
 			List<String> values = new ArrayList<String>();
 			values.add(STRING_CONVERTER.to(context, FIELDS.code_arret_1,
 					input.getCodeArret1(), false));
-			values.add(LONG_CONVERTER.to(context, FIELDS.identifiant_arret_1,
+			values.add(NUMBER_CONVERTER.to(context, FIELDS.identifiant_arret_1,
 					input.getIdentifiantArret1(), true));
 			values.add(STRING_CONVERTER.to(context, FIELDS.code_arret_2,
 					input.getCodeArret2(), false));
-			values.add(LONG_CONVERTER.to(context, FIELDS.identifiant_arret_2,
+			values.add(NUMBER_CONVERTER.to(context, FIELDS.identifiant_arret_2,
 					input.getIdentifiantArret2(), true));
-			values.add(INTEGER_CONVERTER.to(context, FIELDS.distance,
+			values.add(NUMBER_CONVERTER.to(context, FIELDS.distance,
 					input.getDistance(), true));
-			values.add(INTEGER_CONVERTER.to(context, FIELDS.temps_parcours,
+			values.add(NUMBER_CONVERTER.to(context, FIELDS.temps_parcours,
 					input.getTempsParcours(), false));
-			values.add(LONG_CONVERTER.to(context, FIELDS.identifiant,
+			values.add(NUMBER_CONVERTER.to(context, FIELDS.identifiant,
 					input.getIdentifiant(), false));
 			result = Tokenizer.untokenize(values);
 			return result;

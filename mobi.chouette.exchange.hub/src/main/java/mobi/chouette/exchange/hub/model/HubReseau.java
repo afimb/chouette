@@ -29,7 +29,7 @@ public class HubReseau extends HubObject implements Comparable<HubReseau>{
 	 * TailleMax = 8
 	 */
 	@Getter @Setter
-	private Long identifiant;
+	private Integer identifiant;
 
 	@Override
 	public int compareTo(HubReseau arg0) {

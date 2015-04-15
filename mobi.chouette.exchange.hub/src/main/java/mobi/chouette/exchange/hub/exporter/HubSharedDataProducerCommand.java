@@ -257,6 +257,7 @@ public class HubSharedDataProducerCommand implements Command, Constant {
 		ActionReport report = (ActionReport) context.get(REPORT);
 
 		List<ConnectionLink> links = new ArrayList<>(collection.getConnectionLinks());
+		log.info(Color.CYAN + "saving "+links.size()+ " connection links" + Color.NORMAL);
 		Collections.sort(links,new ObjectIdSorter());
 		for (ConnectionLink link : links) {
 			producer.save(link, report);

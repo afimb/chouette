@@ -39,15 +39,15 @@ public class SchemaExporter extends ExporterImpl<HubSchema> implements
 			List<String> values = new ArrayList<String>();
 			values.add(STRING_CONVERTER.to(context, FIELDS.code_ligne,
 					input.getCodeLigne(), true));
-			values.add(INTEGER_CONVERTER.to(context, FIELDS.sens,
+			values.add(NUMBER_CONVERTER.to(context, FIELDS.sens,
 					input.getSens(), true));
-			values.add(INTEGER_CONVERTER.to(context, FIELDS.identifiant,
+			values.add(NUMBER_CONVERTER.to(context, FIELDS.identifiant,
 					input.getIdentifiant(), false));
 			// arrêts
 			for (ArretSchema arret : input.getArrets()) {
 				values.add(STRING_CONVERTER.to(context, FIELDS.code_arret,
 						arret.getCode(), false));
-				values.add(INTEGER_CONVERTER.to(context, FIELDS.identifiant_arret,
+				values.add(NUMBER_CONVERTER.to(context, FIELDS.identifiant_arret,
 						arret.getIdentifiant(), true));
 			}
 			result = Tokenizer.untokenize(values);

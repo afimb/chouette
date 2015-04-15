@@ -40,7 +40,6 @@ import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.Line;
-import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.Network;
 import mobi.chouette.model.util.Referential;
 

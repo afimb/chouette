@@ -41,23 +41,23 @@ public class CheminExporter extends ExporterImpl<HubChemin> implements
 					input.getCodeLigne(), true));
 			values.add(STRING_CONVERTER.to(context, FIELDS.code_chemin,
 					input.getCodeChemin(), true));
-			values.add(INTEGER_CONVERTER.to(context, FIELDS.identifiant,
+			values.add(NUMBER_CONVERTER.to(context, FIELDS.identifiant,
 					input.getIdentifiant(), false));
 			values.add(STRING_CONVERTER.to(context, FIELDS.nom,
 					input.getNom(), false));
-			values.add(INTEGER_CONVERTER.to(context, FIELDS.sens,
+			values.add(NUMBER_CONVERTER.to(context, FIELDS.sens,
 					input.getSens(), true));
 			values.add(STRING_CONVERTER.to(context, FIELDS.type,
 					input.getType(), true));
-			values.add(INTEGER_CONVERTER.to(context, FIELDS.code_representation,
+			values.add(NUMBER_CONVERTER.to(context, FIELDS.code_representation,
 					input.getCodeRepresentation(), false));
 			// arrêts
 			for (ArretChemin arret : input.getArrets()) {
 				values.add(STRING_CONVERTER.to(context, FIELDS.code,
 						arret.getCode(), false));
-				values.add(INTEGER_CONVERTER.to(context, FIELDS.identifiant,
+				values.add(NUMBER_CONVERTER.to(context, FIELDS.identifiant,
 						arret.getIdentifiant(), true));
-				values.add(INTEGER_CONVERTER.to(context, FIELDS.distance,
+				values.add(NUMBER_CONVERTER.to(context, FIELDS.distance,
 						arret.getDistance(), false));
 				values.add(STRING_CONVERTER.to(context, FIELDS.type,
 						arret.getType(), false));				

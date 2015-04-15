@@ -9,6 +9,7 @@ import mobi.chouette.common.XPPUtil;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
+import mobi.chouette.exchange.neptune.JsonExtension;
 import mobi.chouette.exchange.neptune.validation.GroupOfLineValidator;
 import mobi.chouette.exchange.validator.ValidatorFactory;
 import mobi.chouette.model.GroupOfLine;
@@ -16,10 +17,11 @@ import mobi.chouette.model.Line;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
+import org.codehaus.jettison.json.JSONObject;
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
-public class GroupOfLineParser implements Parser, Constant {
+public class GroupOfLineParser implements Parser, Constant, JsonExtension {
 
 	private static final String CHILD_TAG = "GroupOfLine";
 
@@ -55,7 +57,7 @@ public class GroupOfLineParser implements Parser, Constant {
 			} else if (xpp.getName().equals("name")) {
 				groupOfLine.setName(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("comment")) {
-				groupOfLine.setComment(ParserUtils.getText(xpp.nextText()));
+				parseComment(ParserUtils.getText(xpp.nextText()), groupOfLine);
 			} else if (xpp.getName().equals("lineId")) {
 				String lineId = ParserUtils.getText(xpp.nextText());
 				// TODO : revoir l'assemblage groupOfLine Line
@@ -67,6 +69,26 @@ public class GroupOfLineParser implements Parser, Constant {
 			}
 		}
 	}
+	
+	protected void parseComment(String comment, GroupOfLine groupOfLine) {
+		if (comment != null && comment.trim().startsWith("{") && comment.trim().endsWith("}")) {
+			try {
+				// parse json comment
+				JSONObject json = new JSONObject(comment);
+				groupOfLine.setComment(json.optString(COMMENT, null));
+				if (json.has(REGISTRATION_NUMBER)) {
+					groupOfLine.setRegistrationNumber(json.getString(REGISTRATION_NUMBER));
+				}
+			} catch (Exception e1) {
+				log.warn("unparsable json : "+comment);
+				groupOfLine.setComment(comment);
+			}
+		} else {
+			// normal comment
+			groupOfLine.setComment(comment);
+		}
+	}
+
 
 	static {
 		ParserFactory.register(GroupOfLineParser.class.getName(),
