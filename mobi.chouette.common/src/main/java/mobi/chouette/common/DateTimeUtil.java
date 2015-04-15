@@ -8,7 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-public class DateTimeUtils {
+public class DateTimeUtil {
 
 	public static final DateFormat dateTimeFormat = new SimpleDateFormat(
 			"dd/MM/yyyy HH:mm:ss");
@@ -19,7 +19,7 @@ public class DateTimeUtils {
 	public static final DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
 
 	public static String getDateText(Date date) {
-		return dateTimeFormat.format(date);
+		return dateFormat.format(date);
 	}
 
 	public static String getTimeText(Time time) {

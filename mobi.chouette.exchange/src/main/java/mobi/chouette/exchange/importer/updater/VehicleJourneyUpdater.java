@@ -8,7 +8,7 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
-import mobi.chouette.common.CollectionUtils;
+import mobi.chouette.common.CollectionUtil;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
 import mobi.chouette.dao.CompanyDAO;
@@ -186,7 +186,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 		// VehicleJourneyAtStop
 		if (!optimized) {
 
-			Collection<VehicleJourneyAtStop> addedVehicleJourneyAtStop = CollectionUtils
+			Collection<VehicleJourneyAtStop> addedVehicleJourneyAtStop = CollectionUtil
 					.substract(newValue.getVehicleJourneyAtStops(),
 							oldValue.getVehicleJourneyAtStops(),
 							VEHICLE_JOURNEY_AT_STOP_COMPARATOR);
@@ -221,7 +221,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 				vehicleJourneyAtStop.setVehicleJourney(oldValue);
 			}
 
-			Collection<Pair<VehicleJourneyAtStop, VehicleJourneyAtStop>> modifiedVehicleJourneyAtStop = CollectionUtils
+			Collection<Pair<VehicleJourneyAtStop, VehicleJourneyAtStop>> modifiedVehicleJourneyAtStop = CollectionUtil
 					.intersection(oldValue.getVehicleJourneyAtStops(),
 							newValue.getVehicleJourneyAtStops(),
 							VEHICLE_JOURNEY_AT_STOP_COMPARATOR);
@@ -230,7 +230,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 						pair.getRight());
 			}
 
-			Collection<VehicleJourneyAtStop> removedVehicleJourneyAtStop = CollectionUtils
+			Collection<VehicleJourneyAtStop> removedVehicleJourneyAtStop = CollectionUtil
 					.substract(oldValue.getVehicleJourneyAtStops(),
 							newValue.getVehicleJourneyAtStops(),
 							VEHICLE_JOURNEY_AT_STOP_COMPARATOR);
@@ -241,7 +241,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 		}
 
 		// Timetable
-		Collection<Timetable> addedTimetable = CollectionUtils.substract(
+		Collection<Timetable> addedTimetable = CollectionUtil.substract(
 				newValue.getTimetables(), oldValue.getTimetables(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
 
@@ -267,7 +267,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 			timetable.addVehicleJourney(oldValue);
 		}
 
-		Collection<Pair<Timetable, Timetable>> modifiedTimetable = CollectionUtils
+		Collection<Pair<Timetable, Timetable>> modifiedTimetable = CollectionUtil
 				.intersection(oldValue.getTimetables(),
 						newValue.getTimetables(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);
@@ -275,7 +275,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 			timetableUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
 
-		Collection<Timetable> removedTimetable = CollectionUtils.substract(
+		Collection<Timetable> removedTimetable = CollectionUtil.substract(
 				oldValue.getTimetables(), newValue.getTimetables(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Timetable timetable : removedTimetable) {

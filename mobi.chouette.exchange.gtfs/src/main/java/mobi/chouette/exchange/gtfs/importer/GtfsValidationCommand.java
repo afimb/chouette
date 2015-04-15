@@ -11,7 +11,7 @@ import javax.naming.InitialContext;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
-import mobi.chouette.common.FileUtils;
+import mobi.chouette.common.FileUtil;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.gtfs.Constant;
@@ -54,7 +54,7 @@ public class GtfsValidationCommand implements Command, Constant {
 		
 		// check ignored files
 		Path path = Paths.get(context.get(PATH).toString(), INPUT);
-		List<Path> list = FileUtils
+		List<Path> list = FileUtil
 				.listFiles(path, "*");
 		ActionReport report = (ActionReport) context.get(REPORT);
 		for (Path fileName : list) {

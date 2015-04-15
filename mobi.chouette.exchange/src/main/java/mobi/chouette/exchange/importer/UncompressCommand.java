@@ -10,7 +10,7 @@ import javax.naming.InitialContext;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
-import mobi.chouette.common.FileUtils;
+import mobi.chouette.common.FileUtil;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.report.ActionReport;
@@ -49,7 +49,7 @@ public class UncompressCommand implements Command, ReportConstant {
 
 			try {
 				report.setZip(zip);
-				FileUtils.uncompress(filename.toString(), target.toString());
+				FileUtil.uncompress(filename.toString(), target.toString());
 				result = SUCCESS;
 				zip.setStatus(FILE_STATE.OK);
 			} catch (Exception e) {

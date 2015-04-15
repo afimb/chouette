@@ -75,10 +75,18 @@ public class Job implements Serializable {
 		created = new Date();
 		updated = new Date();
 	}
+	
+	public Job(String referential, String action, String type)
+	{
+		this();
+		this.referential = referential;
+		this.action = action;
+		this.type = type;
+	}
 
 	@XmlType
 	@XmlEnum(String.class)
 	public enum STATUS implements java.io.Serializable {
-		CREATED, SCHEDULED, STARTED, TERMINATED, CANCELED, ABORTED
+		CREATED, SCHEDULED, STARTED, TERMINATED, CANCELED, ABORTED, DELETED
 	}
 }

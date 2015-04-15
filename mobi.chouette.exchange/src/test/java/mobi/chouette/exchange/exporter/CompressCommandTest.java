@@ -7,7 +7,7 @@ import javax.naming.InitialContext;
 
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
-import mobi.chouette.common.FileUtils;
+import mobi.chouette.common.FileUtil;
 import mobi.chouette.common.chain.CommandFactory;
 
 import org.testng.Assert;
@@ -35,7 +35,7 @@ public class CompressCommandTest implements Constant
 		File source = new File("src/test/data/compressTest.zip");
 		File output = new File(d,OUTPUT);
 		output.mkdir();
-		FileUtils.uncompress(source.getAbsolutePath(), d.getAbsolutePath());
+		FileUtil.uncompress(source.getAbsolutePath(), d.getAbsolutePath());
 		CompressCommand command = (CompressCommand) CommandFactory
 				.create(initialContext, CompressCommand.class.getName());
 		command.execute(context);

@@ -24,7 +24,7 @@ import org.apache.commons.compress.archivers.zip.ZipArchiveOutputStream;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 
-public class FileUtils {
+public class FileUtil {
 
 	public static List<Path> listFiles(Path path, String glob)
 			throws IOException {

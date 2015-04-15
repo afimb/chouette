@@ -6,7 +6,7 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
-import mobi.chouette.common.CollectionUtils;
+import mobi.chouette.common.CollectionUtil;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
 import mobi.chouette.dao.AccessLinkDAO;
@@ -196,7 +196,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 		}
 
 		// AccessPoint
-		Collection<AccessPoint> addedAccessPoint = CollectionUtils.substract(
+		Collection<AccessPoint> addedAccessPoint = CollectionUtil.substract(
 				newValue.getAccessPoints(), oldValue.getAccessPoints(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
 
@@ -224,7 +224,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			accessPoint.setContainedIn(oldValue);
 		}
 
-		Collection<Pair<AccessPoint, AccessPoint>> modifiedAccessPoint = CollectionUtils
+		Collection<Pair<AccessPoint, AccessPoint>> modifiedAccessPoint = CollectionUtil
 				.intersection(oldValue.getAccessPoints(),
 						newValue.getAccessPoints(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);
@@ -242,7 +242,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 		// }
 
 		// AccessLink
-		Collection<AccessLink> addedAccessLink = CollectionUtils.substract(
+		Collection<AccessLink> addedAccessLink = CollectionUtil.substract(
 				newValue.getAccessLinks(), oldValue.getAccessLinks(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
 
@@ -270,7 +270,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			accessLink.setStopArea(oldValue);
 		}
 
-		Collection<Pair<AccessLink, AccessLink>> modifiedAccessLink = CollectionUtils
+		Collection<Pair<AccessLink, AccessLink>> modifiedAccessLink = CollectionUtil
 				.intersection(oldValue.getAccessLinks(),
 						newValue.getAccessLinks(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);
@@ -287,7 +287,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 		// }
 
 		// StartOfLink
-		Collection<ConnectionLink> addedStartOfLink = CollectionUtils
+		Collection<ConnectionLink> addedStartOfLink = CollectionUtil
 				.substract(newValue.getConnectionStartLinks(),
 						oldValue.getConnectionStartLinks(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);
@@ -321,7 +321,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 				startOfLink.setStartOfLink(oldValue);
 		}
 
-		Collection<Pair<ConnectionLink, ConnectionLink>> modifiedStartOfLink = CollectionUtils
+		Collection<Pair<ConnectionLink, ConnectionLink>> modifiedStartOfLink = CollectionUtil
 				.intersection(oldValue.getConnectionStartLinks(),
 						newValue.getConnectionStartLinks(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);
@@ -331,7 +331,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 		}
 
 		// EndOfLink
-		Collection<ConnectionLink> addedEndOfLink = CollectionUtils.substract(
+		Collection<ConnectionLink> addedEndOfLink = CollectionUtil.substract(
 				newValue.getConnectionEndLinks(),
 				oldValue.getConnectionEndLinks(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
@@ -361,7 +361,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 				endOfLink.setEndOfLink(oldValue);
 		}
 
-		Collection<Pair<ConnectionLink, ConnectionLink>> modifiedEndOfLink = CollectionUtils
+		Collection<Pair<ConnectionLink, ConnectionLink>> modifiedEndOfLink = CollectionUtil
 				.intersection(oldValue.getConnectionEndLinks(),
 						newValue.getConnectionEndLinks(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);
@@ -372,7 +372,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 
 		// TODO list routing_constraints_lines (routingConstraintLines) 
 		// TODO list stop_areas_stop_areas (routingConstraintAreas)
-		Collection<StopArea> addedStopAreas = CollectionUtils.substract(
+		Collection<StopArea> addedStopAreas = CollectionUtil.substract(
 				newValue.getRoutingConstraintAreas(),
 				oldValue.getRoutingConstraintAreas(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
@@ -402,7 +402,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			   oldValue.getRoutingConstraintAreas().add(area);
 		}
 
-		Collection<Pair<StopArea, StopArea>> modifiedStopArea = CollectionUtils
+		Collection<Pair<StopArea, StopArea>> modifiedStopArea = CollectionUtil
 				.intersection(oldValue.getRoutingConstraintAreas(),
 						newValue.getRoutingConstraintAreas(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);

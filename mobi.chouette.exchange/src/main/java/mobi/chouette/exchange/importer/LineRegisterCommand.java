@@ -17,7 +17,7 @@ import javax.naming.NamingException;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
-import mobi.chouette.common.DateTimeUtils;
+import mobi.chouette.common.DateTimeUtil;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.LineDAO;
@@ -126,26 +126,26 @@ public class LineRegisterCommand implements Command {
 			buffer.write(NULL);
 		buffer.append(SEP);
 		if (vehicleJourneyAtStop.getArrivalTime() != null)
-			buffer.write(DateTimeUtils.getTimeText(vehicleJourneyAtStop
+			buffer.write(DateTimeUtil.getTimeText(vehicleJourneyAtStop
 					.getArrivalTime()));
 		else
 			buffer.write(NULL);
 		buffer.append(SEP);
 		if (vehicleJourneyAtStop.getDepartureTime() != null)
-			buffer.write(DateTimeUtils.getTimeText(vehicleJourneyAtStop
+			buffer.write(DateTimeUtil.getTimeText(vehicleJourneyAtStop
 					.getDepartureTime()));
 		else
 			buffer.write(NULL);
 		buffer.append(SEP);
 
 		if (vehicleJourneyAtStop.getElapseDuration() != null)
-			buffer.write(DateTimeUtils.getTimeText(vehicleJourneyAtStop
+			buffer.write(DateTimeUtil.getTimeText(vehicleJourneyAtStop
 					.getElapseDuration()));
 		else
 			buffer.write(NULL);
 		buffer.append(SEP);
 		if (vehicleJourneyAtStop.getHeadwayFrequency() != null)
-			buffer.write(DateTimeUtils.getTimeText(vehicleJourneyAtStop
+			buffer.write(DateTimeUtil.getTimeText(vehicleJourneyAtStop
 					.getHeadwayFrequency()));
 		else
 			buffer.write(NULL);

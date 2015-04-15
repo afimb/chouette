@@ -6,7 +6,7 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
-import mobi.chouette.common.CollectionUtils;
+import mobi.chouette.common.CollectionUtil;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
 import mobi.chouette.dao.CompanyDAO;
@@ -185,7 +185,7 @@ public class LineUpdater implements Updater<Line> {
 		}
 
 		// GroupOfLine
-		Collection<GroupOfLine> addedGroupOfLine = CollectionUtils.substract(
+		Collection<GroupOfLine> addedGroupOfLine = CollectionUtil.substract(
 				newValue.getGroupOfLines(), oldValue.getGroupOfLines(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
 
@@ -213,7 +213,7 @@ public class LineUpdater implements Updater<Line> {
 			groupOfLine.addLine(oldValue);
 		}
 
-		Collection<Pair<GroupOfLine, GroupOfLine>> modifiedGroupOfLine = CollectionUtils
+		Collection<Pair<GroupOfLine, GroupOfLine>> modifiedGroupOfLine = CollectionUtil
 				.intersection(oldValue.getGroupOfLines(),
 						newValue.getGroupOfLines(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);
@@ -221,7 +221,7 @@ public class LineUpdater implements Updater<Line> {
 			groupOfLineUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
 
-		Collection<GroupOfLine> removedGroupOfLine = CollectionUtils.substract(
+		Collection<GroupOfLine> removedGroupOfLine = CollectionUtil.substract(
 				oldValue.getGroupOfLines(), newValue.getGroupOfLines(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (GroupOfLine groupOfLine : removedGroupOfLine) {
@@ -229,7 +229,7 @@ public class LineUpdater implements Updater<Line> {
 		}
 
 		// Route
-		Collection<Route> addedRoute = CollectionUtils.substract(
+		Collection<Route> addedRoute = CollectionUtil.substract(
 				newValue.getRoutes(), oldValue.getRoutes(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
 
@@ -255,7 +255,7 @@ public class LineUpdater implements Updater<Line> {
 			route.setLine(oldValue);
 		}
 
-		Collection<Pair<Route, Route>> modifiedRoute = CollectionUtils
+		Collection<Pair<Route, Route>> modifiedRoute = CollectionUtil
 				.intersection(oldValue.getRoutes(), newValue.getRoutes(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<Route, Route> pair : modifiedRoute) {
@@ -271,7 +271,7 @@ public class LineUpdater implements Updater<Line> {
 		// }
 
 		// TODO stop area list (routingConstraintLines)
-		Collection<StopArea> addedRoutingConstraint = CollectionUtils.substract(
+		Collection<StopArea> addedRoutingConstraint = CollectionUtil.substract(
 				newValue.getRoutingConstraints(), oldValue.getRoutingConstraints(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
 
@@ -299,7 +299,7 @@ public class LineUpdater implements Updater<Line> {
 			oldValue.addRoutingConstraint(routingConstraint);
 		}
 
-		Collection<Pair<StopArea, StopArea>> modifiedRoutingConstraint = CollectionUtils
+		Collection<Pair<StopArea, StopArea>> modifiedRoutingConstraint = CollectionUtil
 				.intersection(oldValue.getRoutingConstraints(),
 						newValue.getRoutingConstraints(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);
@@ -307,7 +307,7 @@ public class LineUpdater implements Updater<Line> {
 			stopAreaUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
 
-		Collection<StopArea> removedRoutingConstraint = CollectionUtils.substract(
+		Collection<StopArea> removedRoutingConstraint = CollectionUtil.substract(
 				oldValue.getRoutingConstraints(), newValue.getRoutingConstraints(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (StopArea stopArea : removedRoutingConstraint) {

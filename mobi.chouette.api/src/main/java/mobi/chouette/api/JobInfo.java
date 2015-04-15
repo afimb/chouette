@@ -18,6 +18,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import mobi.chouette.exchange.gtfs.exporter.GtfsExportParameters;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
+import mobi.chouette.exchange.hub.exporter.HubExportParameters;
+import mobi.chouette.exchange.kml.exporter.KmlExportParameters;
 import mobi.chouette.exchange.neptune.exporter.NeptuneExportParameters;
 import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.netex.exporter.NetexExportParameters;
@@ -38,6 +40,8 @@ import mobi.chouette.model.api.Link;
 	         GtfsExportParameters.class,
 	         NetexImportParameters.class,
 	         NetexExportParameters.class,
+	         HubExportParameters.class,
+	         KmlExportParameters.class,
 	         ValidateParameters.class})
 public class JobInfo {
 

@@ -3,6 +3,7 @@ package mobi.chouette.model.api;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,6 +11,7 @@ import lombok.ToString;
 
 @Embeddable
 @NoArgsConstructor
+@AllArgsConstructor
 @ToString
 public class Link implements java.io.Serializable {
 
@@ -32,24 +34,26 @@ public class Link implements java.io.Serializable {
 	public static final String VALIDATION_REL = "validation_report";
 	public static final String REPORT_REL = "action_report";
 
+	@Column(name = "type")
+	@Getter
+	@Setter
+	private String type;
+ 
 	@Column(name = "rel")
 	@Getter
 	@Setter
 	private String rel;
+
+	@Column(name = "method")
+	@Getter
+	@Setter
+	private String method;
 
 	@Column(name = "href")
 	@Getter
 	@Setter
 	private String href;
 
-	@Column(name = "type")
-	@Getter
-	@Setter
-	private String type;
 
-	@Column(name = "method")
-	@Getter
-	@Setter
-	private String method;
 
 }

@@ -10,7 +10,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
-import mobi.chouette.common.FileUtils;
+import mobi.chouette.common.FileUtil;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 
@@ -34,7 +34,7 @@ public class CompressCommand implements Command, Constant {
 			String file = (String) context.get(ARCHIVE);
 			Path target = Paths.get(path, OUTPUT);
 			Path filename = Paths.get(path, file);
-			FileUtils.compress(target.toString(), filename.toString());
+			FileUtil.compress(target.toString(), filename.toString());
 			result = SUCCESS;
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);

@@ -6,7 +6,7 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
-import mobi.chouette.common.CollectionUtils;
+import mobi.chouette.common.CollectionUtil;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
 import mobi.chouette.dao.JourneyPatternDAO;
@@ -110,7 +110,7 @@ public class RouteUpdater implements Updater<Route> {
 		}
 
 		// StopPoint
-		Collection<StopPoint> addedStopPoint = CollectionUtils.substract(
+		Collection<StopPoint> addedStopPoint = CollectionUtil.substract(
 				newValue.getStopPoints(), oldValue.getStopPoints(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
 
@@ -136,7 +136,7 @@ public class RouteUpdater implements Updater<Route> {
 			stopPoint.setRoute(oldValue);
 		}
 
-		Collection<Pair<StopPoint, StopPoint>> modifiedStopPoint = CollectionUtils
+		Collection<Pair<StopPoint, StopPoint>> modifiedStopPoint = CollectionUtil
 				.intersection(oldValue.getStopPoints(),
 						newValue.getStopPoints(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);
@@ -144,7 +144,7 @@ public class RouteUpdater implements Updater<Route> {
 			stopPointUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
 
-		Collection<StopPoint> removedStopPoint = CollectionUtils.substract(
+		Collection<StopPoint> removedStopPoint = CollectionUtil.substract(
 				oldValue.getStopPoints(), newValue.getStopPoints(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (StopPoint stopPoint : removedStopPoint) {
@@ -153,7 +153,7 @@ public class RouteUpdater implements Updater<Route> {
 		}
 
 		// JourneyPattern
-		Collection<JourneyPattern> addedJourneyPattern = CollectionUtils
+		Collection<JourneyPattern> addedJourneyPattern = CollectionUtil
 				.substract(newValue.getJourneyPatterns(),
 						oldValue.getJourneyPatterns(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);
@@ -184,7 +184,7 @@ public class RouteUpdater implements Updater<Route> {
 			journeyPattern.setRoute(oldValue);
 		}
 
-		Collection<Pair<JourneyPattern, JourneyPattern>> modifiedJourneyPattern = CollectionUtils
+		Collection<Pair<JourneyPattern, JourneyPattern>> modifiedJourneyPattern = CollectionUtil
 				.intersection(oldValue.getJourneyPatterns(),
 						newValue.getJourneyPatterns(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);

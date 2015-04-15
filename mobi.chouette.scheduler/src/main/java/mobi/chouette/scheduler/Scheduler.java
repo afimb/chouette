@@ -50,6 +50,7 @@ public class Scheduler {
 	@Resource(lookup = "java:comp/DefaultManagedExecutorService")
 	ManagedExecutorService executor;
 
+
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void schedule(String referential) {
 
@@ -67,7 +68,7 @@ public class Scheduler {
 
 			job.setUpdated(new Date());
 			jobDAO.update(job);
-			
+
 			Map<String, String> properties = new HashMap<String, String>();
 			Task task = new Task(job, properties, new TaskListener());
 			executor.submit(task);
@@ -80,13 +81,12 @@ public class Scheduler {
 		List<Job> list = jobDAO.findAll();
 
 		// abort scheduled job
-		Collection<Job> scheduled = Collections2.filter(list,
-				new Predicate<Job>() {
-					@Override
-					public boolean apply(Job job) {
-						return job.getStatus() == STATUS.STARTED;
-					}
-				});
+		Collection<Job> scheduled = Collections2.filter(list, new Predicate<Job>() {
+			@Override
+			public boolean apply(Job job) {
+				return job.getStatus() == STATUS.STARTED;
+			}
+		});
 		for (Job job : scheduled) {
 			job.setStatus(STATUS.ABORTED);
 
@@ -103,8 +103,8 @@ public class Scheduler {
 			link.setType(MediaType.APPLICATION_JSON);
 			link.setRel(Link.DELETE_REL);
 			link.setMethod(Link.DELETE_METHOD);
-			String href = MessageFormat.format("/{0}/{1}/terminated_jobs/{2,number,#}",
-					Constant.ROOT_PATH, job.getReferential(), job.getId());
+			String href = MessageFormat.format("/{0}/{1}/terminated_jobs/{2,number,#}", Constant.ROOT_PATH,
+					job.getReferential(), job.getId());
 			link.setHref(href);
 			job.getLinks().clear();
 			job.getLinks().add(link);
@@ -114,13 +114,12 @@ public class Scheduler {
 		}
 
 		// schedule created job
-		Collection<Job> created = Collections2.filter(list,
-				new Predicate<Job>() {
-					@Override
-					public boolean apply(Job job) {
-						return job.getStatus() == STATUS.SCHEDULED;
-					}
-				});
+		Collection<Job> created = Collections2.filter(list, new Predicate<Job>() {
+			@Override
+			public boolean apply(Job job) {
+				return job.getStatus() == STATUS.SCHEDULED;
+			}
+		});
 		for (Job job : created) {
 			schedule(job.getReferential());
 		}
@@ -128,8 +127,7 @@ public class Scheduler {
 
 	public boolean cancel(Long id) {
 		Job job = jobDAO.find(id);
-		if (job.getStatus().equals(STATUS.STARTED)
-				|| job.getStatus().equals(STATUS.SCHEDULED)) {
+		if (job.getStatus().ordinal() <= STATUS.STARTED.ordinal()) {
 			job.setStatus(STATUS.CANCELED);
 
 			// set delete link
@@ -137,63 +135,62 @@ public class Scheduler {
 			link.setType(MediaType.APPLICATION_JSON);
 			link.setRel(Link.DELETE_REL);
 			link.setMethod(Link.DELETE_METHOD);
-			String href = MessageFormat.format("/{0}/{1}/terminated_jobs/{2,number,#}",
-					Constant.ROOT_PATH, job.getReferential(), job.getId());
+			String href = MessageFormat.format("/{0}/{1}/terminated_jobs/{2,number,#}", Constant.ROOT_PATH,
+					job.getReferential(), job.getId());
 			link.setHref(href);
-			// remove location and cancel link only
+			// TODO remove location and cancel link only
 			job.getLinks().clear();
 			job.getLinks().add(link);
 
 			job.setUpdated(new Date());
 			jobDAO.update(job);
+			return true;
 
 		}
-		return true;
+		return false;
 	}
 
 	public boolean delete(Long id) {
+		// TODO refactor to maintain deleted jobs without data
 		Job job = jobDAO.find(id);
-		jobDAO.delete(job);
-		return true;
+		if (job.getStatus().ordinal() > STATUS.STARTED.ordinal()) {
+			jobDAO.delete(job);
+			return true;
+		}
+		return false;
 	}
 
 	public boolean deleteAll(String referential) {
 		jobDAO.deleteAll(referential);
 		return true;
 	}
+	
+
 
 	class TaskListener implements ManagedTaskListener {
 
 		@Override
-		public void taskAborted(Future<?> future,
-				ManagedExecutorService executor, Object task,
-				Throwable exception) {
-			log.info(Color.FAILURE + "[DSU] task aborted : "
-					+ ContextHolder.getContext() + " -> " + task + Color.NORMAL);
+		public void taskAborted(Future<?> future, ManagedExecutorService executor, Object task, Throwable exception) {
+			log.info(Color.FAILURE + "task aborted : " + ContextHolder.getContext() + " -> " + task
+					+ Color.NORMAL);
 			schedule((Task) task);
 		}
 
 		@Override
-		public void taskDone(Future<?> future, ManagedExecutorService executor,
-				Object task, Throwable exception) {
-			log.info(Color.SUCCESS + "[DSU] task done : "
-					+ ContextHolder.getContext() + " -> " + task + Color.NORMAL);
+		public void taskDone(Future<?> future, ManagedExecutorService executor, Object task, Throwable exception) {
+			log.info(Color.SUCCESS + "task done : " + ContextHolder.getContext() + " -> " + task + Color.NORMAL);
 			schedule((Task) task);
 		}
 
 		@Override
-		public void taskStarting(Future<?> future,
-				ManagedExecutorService executor, Object task) {
-			log.info(Color.SUCCESS + "[DSU] task starting : " + task
-					+ Color.NORMAL);
+		public void taskStarting(Future<?> future, ManagedExecutorService executor, Object task) {
+			log.info(Color.SUCCESS + "task starting : " + task + Color.NORMAL);
 
 		}
 
 		@Override
-		public void taskSubmitted(Future<?> future,
-				ManagedExecutorService executor, Object task) {
-			log.info(Color.SUCCESS + "[DSU] task submitted : " + task
-					+ Color.NORMAL);
+		public void taskSubmitted(Future<?> future, ManagedExecutorService executor, Object task) {
+			log.info(Color.SUCCESS + "task submitted : " + task + Color.NORMAL);
 		}
 
 		private void schedule(final Task task) {
@@ -205,9 +202,8 @@ public class Scheduler {
 					try {
 						String referential = task.getJob().getReferential();
 						InitialContext initialContext = new InitialContext();
-						Scheduler scheduler = (Scheduler) initialContext
-								.lookup("java:app/mobi.chouette.scheduler/"
-										+ BEAN_NAME);
+						Scheduler scheduler = (Scheduler) initialContext.lookup("java:app/mobi.chouette.scheduler/"
+								+ BEAN_NAME);
 
 						scheduler.schedule(referential);
 					} catch (Exception e) {
@@ -218,4 +214,5 @@ public class Scheduler {
 		}
 
 	}
+
 }

@@ -95,14 +95,14 @@ public class NeptuneParserCommand implements Command, Constant {
 
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 
-			// TODO report service
+			// report service
 			fileItem.setStatus(FileInfo.FILE_STATE.OK);
 			report.getFiles().add(fileItem);
 
 			result = SUCCESS;
 		} catch (Exception e) {
 
-			// TODO report service
+			// report service
 			fileItem.setStatus(FileInfo.FILE_STATE.NOK);
 			report.getFiles().add(fileItem);
 			fileItem.getErrors().add(e.toString());

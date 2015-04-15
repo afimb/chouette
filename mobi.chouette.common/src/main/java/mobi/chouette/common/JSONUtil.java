@@ -22,7 +22,7 @@ import org.codehaus.jettison.mapped.MappedXMLStreamReader;
 import org.codehaus.jettison.mapped.MappedXMLStreamWriter;
 
 @Log4j
-public class JSONUtils {
+public class JSONUtil {
 
 	public static <T> T fromJSON(Path path, Class<T> type) {
 		T result = null;
@@ -80,7 +80,7 @@ public class JSONUtils {
 	}
 
 	public static <T> boolean toJSON(Path path, T payload) {
-		String data = JSONUtils.toJSON(payload);
+		String data = JSONUtil.toJSON(payload);
 		try {
 			FileUtils.writeStringToFile(path.toFile(), data);
 			return true;

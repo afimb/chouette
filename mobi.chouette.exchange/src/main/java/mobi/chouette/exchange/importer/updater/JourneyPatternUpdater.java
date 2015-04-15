@@ -6,7 +6,7 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
-import mobi.chouette.common.CollectionUtils;
+import mobi.chouette.common.CollectionUtil;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
 import mobi.chouette.dao.StopPointDAO;
@@ -80,7 +80,7 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 		}
 
 		// StopPoint
-		Collection<StopPoint> addedStopPoint = CollectionUtils.substract(
+		Collection<StopPoint> addedStopPoint = CollectionUtil.substract(
 				newValue.getStopPoints(), oldValue.getStopPoints(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
 
@@ -104,7 +104,7 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 			}
 		}
 
-		Collection<StopPoint> removedStopPoint = CollectionUtils.substract(
+		Collection<StopPoint> removedStopPoint = CollectionUtil.substract(
 				oldValue.getStopPoints(), newValue.getStopPoints(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (StopPoint stopPoint : removedStopPoint) {
@@ -152,7 +152,7 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 		}
 
 		// VehicleJourney
-		Collection<VehicleJourney> addedVehicleJourney = CollectionUtils
+		Collection<VehicleJourney> addedVehicleJourney = CollectionUtil
 				.substract(newValue.getVehicleJourneys(),
 						oldValue.getVehicleJourneys(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);
@@ -183,7 +183,7 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 			vehicleJourney.setJourneyPattern(oldValue);
 		}
 
-		Collection<Pair<VehicleJourney, VehicleJourney>> modifiedVehicleJourney = CollectionUtils
+		Collection<Pair<VehicleJourney, VehicleJourney>> modifiedVehicleJourney = CollectionUtil
 				.intersection(oldValue.getVehicleJourneys(),
 						newValue.getVehicleJourneys(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);

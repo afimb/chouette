@@ -10,7 +10,7 @@ import javax.naming.InitialContext;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
-import mobi.chouette.common.FileUtils;
+import mobi.chouette.common.FileUtil;
 import mobi.chouette.common.chain.Chain;
 import mobi.chouette.common.chain.ChainCommand;
 import mobi.chouette.common.chain.Command;
@@ -90,10 +90,10 @@ public class NetexImporterCommand implements Command, Constant {
 			progression.execute(context);
 
 			Path path = Paths.get(context.get(PATH).toString(), INPUT);
-			List<Path> stream = FileUtils
+			List<Path> stream = FileUtil
 					.listFiles(path, "*.xml", "*metadata*");
 
-			List<Path> excluded = FileUtils
+			List<Path> excluded = FileUtil
 					.listFiles(path, "*", "*.xml");
 			if (!excluded.isEmpty())
 			{

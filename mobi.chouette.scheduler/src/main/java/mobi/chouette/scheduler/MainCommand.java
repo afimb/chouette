@@ -15,7 +15,7 @@ import javax.ws.rs.core.MediaType;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
-import mobi.chouette.common.JSONUtils;
+import mobi.chouette.common.JSONUtil;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.JobDAO;
@@ -24,8 +24,6 @@ import mobi.chouette.exchange.validator.report.ValidationReport;
 import mobi.chouette.model.api.Job;
 import mobi.chouette.model.api.Job.STATUS;
 import mobi.chouette.model.api.Link;
-
-import org.apache.commons.lang.StringUtils;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
@@ -75,7 +73,7 @@ public class MainCommand implements Command, Constant {
 		java.nio.file.Path path = Paths.get(System.getProperty("user.home"),
 				ROOT_PATH, job.getReferential(), "data",
 				job.getId().toString(), PARAMETERS_FILE);
-		Parameters parameters = JSONUtils.fromJSON(path, Parameters.class);
+		Parameters parameters = JSONUtil.fromJSON(path, Parameters.class);
 		context.put(PARAMETERS, parameters);
 		context.put(CONFIGURATION, parameters.getConfiguration());
 		context.put(VALIDATION, parameters.getValidation());
@@ -85,12 +83,7 @@ public class MainCommand implements Command, Constant {
 		context.put(ACTION, job.getAction());
 		context.put(TYPE, job.getType());
 
-		String type = job.getType() == null ? "" : job.getType();
-
-		String name = "mobi.chouette.exchange."
-				+ (type.isEmpty() ? "" : type + ".") + job.getAction() + "."
-				+ StringUtils.capitalize(type)
-				+ StringUtils.capitalize(job.getAction()) + "Command";
+		String name = CommandNamingRules.getCommandName(job.getAction(),job.getType());
 
 		InitialContext ctx = (InitialContext) context.get(INITIAL_CONTEXT);
 		Command command = CommandFactory.create(ctx, name);
@@ -150,6 +143,8 @@ public class MainCommand implements Command, Constant {
 
 		return result;
 	}
+	
+	
 
 	public static class DefaultCommandFactory extends CommandFactory {
 

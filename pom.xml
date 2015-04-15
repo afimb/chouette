@@ -591,9 +591,9 @@
 		<module>mobi.chouette.exchange.gtfs</module>
 		<module>mobi.chouette.exchange.netex</module>
 		<module>mobi.chouette.scheduler</module>
+      <module>mobi.chouette.exchange.kml</module>
+      <module>mobi.chouette.exchange.hub</module>
 		<module>mobi.chouette.api</module>
 		<module>chouette</module>
-		<module>mobi.chouette.exchange.kml</module>
-		<module>mobi.chouette.exchange.hub</module>
 	</modules>
 </project>

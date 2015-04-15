@@ -6,7 +6,7 @@ import java.nio.file.Files;
 import java.sql.Time;
 
 import mobi.chouette.common.Constant;
-import mobi.chouette.common.JSONUtils;
+import mobi.chouette.common.JSONUtil;
 import mobi.chouette.exchange.validator.parameters.ValidationParameters;
 import mobi.chouette.exchange.validator.report.CheckPoint;
 import mobi.chouette.exchange.validator.report.Detail;
@@ -85,7 +85,7 @@ public abstract class AbstractTestValidation implements Constant
 		byte[] bytes = Files.readAllBytes(f.toPath());
 		String text = new String(bytes, "UTF-8");
 		
-		return (ValidationParameters) JSONUtils.fromJSON(text, ValidationParameters.class);
+		return (ValidationParameters) JSONUtil.fromJSON(text, ValidationParameters.class);
 
    }
    
@@ -95,7 +95,7 @@ public abstract class AbstractTestValidation implements Constant
 		File f = new File(filename);
 		byte[] bytes = Files.readAllBytes(f.toPath());
 		String text = new String(bytes, "UTF-8");
-		return (ValidationParameters) JSONUtils.fromJSON(text, ValidationParameters.class);
+		return (ValidationParameters) JSONUtil.fromJSON(text, ValidationParameters.class);
 
    }
 

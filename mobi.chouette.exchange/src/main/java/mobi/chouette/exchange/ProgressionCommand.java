@@ -9,7 +9,7 @@ import javax.naming.InitialContext;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
-import mobi.chouette.common.JSONUtils;
+import mobi.chouette.common.JSONUtil;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.report.ActionReport;
@@ -67,7 +67,7 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 		ActionReport report = (ActionReport) context.get(REPORT);
 		Path path = Paths.get(context.get(PATH).toString(), REPORT_FILE);
 		// pseudo pretty print
-		String data = JSONUtils.toJSON(report).replaceAll("\\},\\{", "\n},\n{");
+		String data = JSONUtil.toJSON(report).replaceAll("\\},\\{", "\n},\n{");
 		try {
 			FileUtils.writeStringToFile(path.toFile(), data, "UTF-8");
 		} catch (IOException e) {
@@ -83,7 +83,7 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 		Path path = Paths.get(context.get(PATH).toString(), VALIDATION_FILE);
 
 		// pseudo pretty print
-		String data = JSONUtils.toJSON(report).replaceAll("\\},\\{", "\n},\n{");
+		String data = JSONUtil.toJSON(report).replaceAll("\\},\\{", "\n},\n{");
 
 		try {
 			FileUtils.writeStringToFile(path.toFile(), data);

@@ -5,7 +5,7 @@ import java.util.Comparator;
 
 import javax.ejb.Stateless;
 
-import mobi.chouette.common.CollectionUtils;
+import mobi.chouette.common.CollectionUtil;
 import mobi.chouette.common.Context;
 import mobi.chouette.model.CalendarDay;
 import mobi.chouette.model.Period;
@@ -85,14 +85,14 @@ public class TimetableUpdater implements Updater<Timetable> {
 		}
 
 		// Period
-		Collection<Period> addedPeriod = CollectionUtils
+		Collection<Period> addedPeriod = CollectionUtil
 				.substract(newValue.getPeriods(), oldValue.getPeriods(),
 						PERIOD_COMPARATOR);
 		for (Period item : addedPeriod) {
 			oldValue.getPeriods().add(item);
 		}
 
-		Collection<Period> removedPeriod = CollectionUtils
+		Collection<Period> removedPeriod = CollectionUtil
 				.substract(oldValue.getPeriods(), newValue.getPeriods(),
 						PERIOD_COMPARATOR);
 		for (Period item : removedPeriod) {
@@ -100,14 +100,14 @@ public class TimetableUpdater implements Updater<Timetable> {
 		}
 
 		// Calendar Days
-		Collection<CalendarDay> addedCalendarDays = CollectionUtils.substract(
+		Collection<CalendarDay> addedCalendarDays = CollectionUtil.substract(
 				newValue.getCalendarDays(), oldValue.getCalendarDays(),
 				CALENDAR_DAY_COMPARATOR);
 		for (CalendarDay item : addedCalendarDays) {
 			oldValue.getCalendarDays().add(item);
 		}
 
-		Collection<CalendarDay> removedCalendarDays = CollectionUtils
+		Collection<CalendarDay> removedCalendarDays = CollectionUtil
 				.substract(oldValue.getCalendarDays(),
 						newValue.getCalendarDays(), CALENDAR_DAY_COMPARATOR);
 		for (CalendarDay item : removedCalendarDays) {
