@@ -1,21 +1,21 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
 <suite name="exchangeNeptune" verbose="5">
-   <!--
+   
 	<test name="ExchangeNeptune">
 		<classes>
 			<class name="mobi.chouette.exchange.neptune.importer.NeptuneImportTests" /> 
 			<class name="mobi.chouette.exchange.neptune.exporter.NeptuneExportTests" />
 		</classes>
     </test>
-    -->
+   
    <test name="ValidationNeptune">
        <packages>
          <package name="mobi.chouette.exchange.neptune.validation" >
          </package>
        </packages>
     </test>
-   <!--
+   
 	 <test name="ImportParsers">
 	    <packages>
 	      <package name="mobi.chouette.exchange.neptune.parser" >
@@ -28,5 +28,5 @@
 	      </package>
 	    </packages>
 	</test> 
-   -->
+   
 </suite>

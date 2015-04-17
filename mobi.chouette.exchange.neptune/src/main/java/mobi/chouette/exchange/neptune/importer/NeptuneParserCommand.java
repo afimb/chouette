@@ -47,7 +47,7 @@ public class NeptuneParserCommand implements Command, Constant {
 
 		context.put(FILE_URL, fileURL);
 
-		// TODO report service
+		// report service
 		ActionReport report = (ActionReport) context.get(REPORT);
 		FileInfo fileItem = new FileInfo();
 		String fileName = new File(new URL(fileURL).toURI()).getName();
