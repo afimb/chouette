@@ -25,7 +25,6 @@ public class ChouettePTNetworkParser implements Parser, Constant {
 		context.put(LINE_NUMBER, xpp.getLineNumber());
 
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
-
 			if (xpp.getName().equals("PTNetwork")) {
 				Parser parser = ParserFactory.create(PTNetworkParser.class
 						.getName());
@@ -52,6 +51,7 @@ public class ChouettePTNetworkParser implements Parser, Constant {
 				parser.parse(context);
 			} else if (xpp.getName().equals("TimeSlot")) {
 				// TODO [DSU] TimeSlot
+				XPPUtil.skipSubTree(log, xpp);
 				
 			} else if (xpp.getName().equals("ChouetteLineDescription")) {
 				Parser parser = ParserFactory
@@ -59,6 +59,7 @@ public class ChouettePTNetworkParser implements Parser, Constant {
 				parser.parse(context);
 			} else if (xpp.getName().equals("Facility")) {
 				// TODO [DSU] Facility
+				XPPUtil.skipSubTree(log, xpp);
 				
 			} else if (xpp.getName().equals("AccessPoint")) {
 				Parser parser = ParserFactory.create(AccessPointParser.class

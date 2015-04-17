@@ -36,7 +36,13 @@ public class UncompressCommand implements Command, ReportConstant {
 		ActionReport report = (ActionReport) context.get(REPORT);
 
 		String path = (String) context.get(PATH);
-		String file = (String) context.get(ARCHIVE);
+		String file = (String) context.get(ARCHIVE); 
+		if (file == null)
+		{
+			report.setResult(STATUS_ERROR);
+			report.setFailure("Missing input file");
+			return result;
+		}
 		Path filename = Paths.get(path, file);
 		Path target = Paths.get(path, INPUT);
 		if (!Files.exists(target)) {
@@ -63,6 +69,7 @@ public class UncompressCommand implements Command, ReportConstant {
 		else
 		{
 			org.apache.commons.io.FileUtils.copyFileToDirectory(filename.toFile(), target.toFile());
+			result = SUCCESS;
 		}
 
 		log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);

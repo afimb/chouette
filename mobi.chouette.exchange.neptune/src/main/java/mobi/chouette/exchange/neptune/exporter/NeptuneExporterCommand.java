@@ -32,6 +32,7 @@ import mobi.chouette.exchange.exporter.SaveMetadataCommand;
 import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.Line;
@@ -43,7 +44,7 @@ import com.jamonapi.MonitorFactory;
 
 @Log4j
 @Stateless(name = NeptuneExporterCommand.COMMAND)
-public class NeptuneExporterCommand implements Command, Constant {
+public class NeptuneExporterCommand implements Command, Constant, ReportConstant {
 
 	public static final String COMMAND = "NeptuneExporterCommand";
 
@@ -71,7 +72,9 @@ public class NeptuneExporterCommand implements Command, Constant {
 		ProgressionCommand progression = (ProgressionCommand) CommandFactory
 				.create(initialContext, ProgressionCommand.class.getName());
 		progression.initialize(context,1);
-
+        try
+        {
+		
 		context.put(REFERENTIAL, new Referential());
 		Metadata metadata = new Metadata(); // if not asked, will be used as dummy
         metadata.setDate(Calendar.getInstance());
@@ -97,11 +100,22 @@ public class NeptuneExporterCommand implements Command, Constant {
 					+ configuration.getClass().getName());
 			report.setFailure("invalid parameters for neptune export "
 					+ configuration.getClass().getName());
-			progression.dispose(context);
 			return ERROR;
 		}
 
 		NeptuneExportParameters parameters = (NeptuneExportParameters) configuration;
+		if (parameters.getStartDate() != null && parameters.getEndDate() != null)
+		{
+			if (parameters.getStartDate().after(parameters.getEndDate()))
+			{
+				ActionReport report = (ActionReport) context.get(REPORT);
+				report.setResult(STATUS_ERROR);
+				report.setFailure("end date before start date");
+				return ERROR;
+				
+			}
+		}
+		
 
 		String type = parameters.getReferencesType().toLowerCase();
 		List<Object> ids = null;
@@ -132,9 +146,16 @@ public class NeptuneExporterCommand implements Command, Constant {
 				}
 			}
 		}
+		if (lines.isEmpty())
+		{
+			ActionReport report = (ActionReport) context.get(REPORT);
+			report.setResult(STATUS_ERROR);
+			report.setFailure("no data to export");
+			return ERROR;
+			
+		}
 		progression.execute(context);
 
-		try {
 
 			Path path = Paths.get(context.get(PATH).toString(), OUTPUT);
 			if (!Files.exists(path)) {
@@ -177,6 +198,7 @@ public class NeptuneExporterCommand implements Command, Constant {
 			result = SUCCESS;
 		} catch (Exception e) {
 			ActionReport report = (ActionReport) context.get(REPORT);
+			report.setResult(STATUS_ERROR);
 			report.setFailure("Fatal :" + e);
 			log.error(e.getMessage(), e);
 		} finally {
@@ -197,7 +219,13 @@ public class NeptuneExporterCommand implements Command, Constant {
 						+ COMMAND;
 				result = (Command) context.lookup(name);
 			} catch (NamingException e) {
-				log.error(e);
+				// try another way on test context
+				String name = "java:module/" + COMMAND;
+				try {
+					result = (Command) context.lookup(name);
+				} catch (NamingException e1) {
+					log.error(e);
+				}
 			}
 			return result;
 		}

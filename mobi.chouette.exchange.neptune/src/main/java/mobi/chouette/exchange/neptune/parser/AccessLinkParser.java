@@ -41,7 +41,6 @@ public class AccessLinkParser implements Parser, Constant {
 		int lineNumber =  xpp.getLineNumber();
 		
 		AccessLinkValidator validator = (AccessLinkValidator) ValidatorFactory.create(AccessLinkValidator.class.getName(), context);
-		
 		AccessLink accessLink = null;
 		String objectId = null;
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {

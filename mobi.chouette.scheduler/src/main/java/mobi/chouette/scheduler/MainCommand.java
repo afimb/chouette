@@ -24,6 +24,7 @@ import mobi.chouette.exchange.validator.report.ValidationReport;
 import mobi.chouette.model.api.Job;
 import mobi.chouette.model.api.Job.STATUS;
 import mobi.chouette.model.api.Link;
+import mobi.chouette.model.util.JobUtil;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
@@ -56,7 +57,7 @@ public class MainCommand implements Command, Constant {
 				"/{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH,
 				job.getReferential(), job.getId(),REPORT_FILE);
 		link.setHref(href);
-		job.getLinks().add(link);
+		JobUtil.updateLink(job, link); //job.getLinks().add(link);
 		// add validation report link
 		link = new Link();
 		link.setType(MediaType.APPLICATION_JSON);
@@ -66,7 +67,7 @@ public class MainCommand implements Command, Constant {
 				"/{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH,
 				job.getReferential(), job.getId(),VALIDATION_FILE);
 		link.setHref(href);
-		job.getLinks().add(link);
+		JobUtil.updateLink(job, link); //job.getLinks().add(link);
 		jobDAO.update(job);
 
 		context.put(ARCHIVE, job.getFilename());
@@ -91,7 +92,7 @@ public class MainCommand implements Command, Constant {
 
 		job.setStatus(STATUS.TERMINATED);
 
-		// remove location cancellink
+		// remove location and cancel link
 		Iterables.removeIf(job.getLinks(), new Predicate<Link>() {
 			@Override
 			public boolean apply(Link link) {
@@ -108,7 +109,7 @@ public class MainCommand implements Command, Constant {
 		href = MessageFormat.format("/{0}/{1}/terminated_jobs/{2,number,#}",
 				ROOT_PATH, job.getReferential(), job.getId());
 		link.setHref(href);
-		job.getLinks().add(link);
+		JobUtil.updateLink(job, link); //job.getLinks().add(link);
 
 		// add delete link
 		link = new Link();
@@ -118,7 +119,7 @@ public class MainCommand implements Command, Constant {
 		href = MessageFormat.format("/{0}/{1}/terminated_jobs/{2,number,#}",
 				ROOT_PATH, job.getReferential(), job.getId());
 		link.setHref(href);
-		job.getLinks().add(link);
+		JobUtil.updateLink(job, link); //job.getLinks().add(link);
 
 
 		// add data upload link
@@ -135,7 +136,7 @@ public class MainCommand implements Command, Constant {
 				link.setMethod(Link.GET_METHOD);
 				link.setHref(href);
 
-				job.getLinks().add(link);
+				JobUtil.updateLink(job, link); //job.getLinks().add(link);
 			}
 		}
 

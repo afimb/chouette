@@ -123,7 +123,13 @@ public class NeptuneProducerCommand implements Command, Constant {
 				String name = "java:app/mobi.chouette.exchange.neptune/" + COMMAND;
 				result = (Command) context.lookup(name);
 			} catch (NamingException e) {
-				log.error(e);
+				// try another way on test context
+				String name = "java:module/" + COMMAND;
+				try {
+					result = (Command) context.lookup(name);
+				} catch (NamingException e1) {
+					log.error(e);
+				}
 			}
 			return result;
 		}

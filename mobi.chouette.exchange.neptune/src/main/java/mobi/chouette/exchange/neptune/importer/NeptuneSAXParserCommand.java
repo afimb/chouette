@@ -70,12 +70,13 @@ public class NeptuneSAXParserCommand implements Command, Constant {
 		URL url = new URL(fileURL);
 		log.info("[DSU] validation schema (niv 1) : " + url);
 
-		Reader reader = new BufferedReader(CharSetChecker.getEncodedInputStreamReader(url.toString(), url.openStream()), 8192 * 10);
-		StreamSource file = new StreamSource(reader);
 
 		NeptuneSAXErrorHandler errorHandler = new NeptuneSAXErrorHandler(
 				context, fileURL);
+		Reader reader = null;
 		try {
+			reader = new BufferedReader(CharSetChecker.getEncodedInputStreamReader(url.toString(), url.openStream()), 8192 * 10);
+			StreamSource file = new StreamSource(reader);
 			Validator validator = schema.newValidator();
 			validator.setErrorHandler(errorHandler);
 			// validator.reset();
@@ -92,7 +93,7 @@ public class NeptuneSAXParserCommand implements Command, Constant {
 			if (!context.containsKey("REPLAY_VALIDATOR")
 					&& e.getMessage().contains("ChouettePTNetwork")) {
 				log.warn(e);
-				reader.close();
+				if (reader != null ) reader.close();
 				addNameSpace(url);
 				context.put("REPLAY_VALIDATOR", Boolean.TRUE);
 				boolean res = execute(context);
@@ -104,9 +105,15 @@ public class NeptuneSAXParserCommand implements Command, Constant {
 			fileItem.setStatus(FileInfo.FILE_STATE.NOK);
 			report.getFiles().add(fileItem);
 			fileItem.getErrors().add(e.getMessage());
+		} catch (Exception e) {
+
+			log.error(e);
+			fileItem.setStatus(FileInfo.FILE_STATE.NOK);
+			report.getFiles().add(fileItem);
+			fileItem.getErrors().add(e.getMessage());
 
 		} finally {
-			reader.close();
+			if (reader != null ) reader.close();
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		}
 

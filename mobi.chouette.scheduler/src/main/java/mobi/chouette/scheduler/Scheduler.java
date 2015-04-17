@@ -28,6 +28,7 @@ import mobi.chouette.dao.SchemaDAO;
 import mobi.chouette.model.api.Job;
 import mobi.chouette.model.api.Job.STATUS;
 import mobi.chouette.model.api.Link;
+import mobi.chouette.model.util.JobUtil;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
 import com.google.common.base.Predicate;
@@ -56,15 +57,15 @@ public class Scheduler {
 
 		Job job = jobDAO.getNextJob(referential);
 		if (job != null) {
-			job.setStatus(STATUS.SCHEDULED);
+			job.setStatus(STATUS.STARTED);
 
 			// remove cancel link
-			Iterables.removeIf(job.getLinks(), new Predicate<Link>() {
-				@Override
-				public boolean apply(Link link) {
-					return link.getRel().equals(Link.CANCEL_REL);
-				}
-			});
+//			Iterables.removeIf(job.getLinks(), new Predicate<Link>() {
+//				@Override
+//				public boolean apply(Link link) {
+//					return link.getRel().equals(Link.CANCEL_REL);
+//				}
+//			});
 
 			job.setUpdated(new Date());
 			jobDAO.update(job);
@@ -80,11 +81,11 @@ public class Scheduler {
 
 		List<Job> list = jobDAO.findAll();
 
-		// abort scheduled job
+		// abort started job
 		Collection<Job> scheduled = Collections2.filter(list, new Predicate<Job>() {
 			@Override
 			public boolean apply(Job job) {
-				return job.getStatus() == STATUS.STARTED;
+				return job.getStatus() == STATUS.STARTED ;
 			}
 		});
 		for (Job job : scheduled) {
@@ -94,11 +95,12 @@ public class Scheduler {
 			Iterables.removeIf(job.getLinks(), new Predicate<Link>() {
 				@Override
 				public boolean apply(Link link) {
-					return link.getRel().equals(Link.LOCATION_REL);
+					return link.getRel().equals(Link.LOCATION_REL) || link.getRel().equals(Link.CANCEL_REL);
 				}
 			});
 
 			// set delete link
+			job.getLinks().clear();
 			Link link = new Link();
 			link.setType(MediaType.APPLICATION_JSON);
 			link.setRel(Link.DELETE_REL);
@@ -106,8 +108,15 @@ public class Scheduler {
 			String href = MessageFormat.format("/{0}/{1}/terminated_jobs/{2,number,#}", Constant.ROOT_PATH,
 					job.getReferential(), job.getId());
 			link.setHref(href);
-			job.getLinks().clear();
-			job.getLinks().add(link);
+			JobUtil.updateLink(job, link); //job.getLinks().add(link);
+			link = new Link();
+			link.setType(MediaType.APPLICATION_JSON);
+			link.setRel(Link.LOCATION_REL);
+			link.setMethod(Link.GET_METHOD);
+			href = MessageFormat.format("/{0}/{1}/terminated_jobs/{2,number,#}",
+					Constant.ROOT_PATH, job.getReferential(), job.getId());
+			link.setHref(href);
+			JobUtil.updateLink(job, link); //job.getLinks().add(link);
 
 			job.setUpdated(new Date());
 			jobDAO.update(job);
@@ -130,6 +139,8 @@ public class Scheduler {
 		if (job.getStatus().ordinal() <= STATUS.STARTED.ordinal()) {
 			job.setStatus(STATUS.CANCELED);
 
+			// TODO remove location and cancel link only
+			job.getLinks().clear();
 			// set delete link
 			Link link = new Link();
 			link.setType(MediaType.APPLICATION_JSON);
@@ -138,9 +149,15 @@ public class Scheduler {
 			String href = MessageFormat.format("/{0}/{1}/terminated_jobs/{2,number,#}", Constant.ROOT_PATH,
 					job.getReferential(), job.getId());
 			link.setHref(href);
-			// TODO remove location and cancel link only
-			job.getLinks().clear();
-			job.getLinks().add(link);
+			JobUtil.updateLink(job, link); //job.getLinks().add(link);
+			link = new Link();
+			link.setType(MediaType.APPLICATION_JSON);
+			link.setRel(Link.LOCATION_REL);
+			link.setMethod(Link.GET_METHOD);
+			href = MessageFormat.format("/{0}/{1}/terminated_jobs/{2,number,#}",
+					Constant.ROOT_PATH, job.getReferential(), job.getId());
+			link.setHref(href);
+			JobUtil.updateLink(job, link); //job.getLinks().add(link);
 
 			job.setUpdated(new Date());
 			jobDAO.update(job);

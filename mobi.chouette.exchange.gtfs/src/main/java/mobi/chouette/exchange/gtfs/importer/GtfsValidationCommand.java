@@ -58,10 +58,10 @@ public class GtfsValidationCommand implements Command, Constant {
 				.listFiles(path, "*");
 		ActionReport report = (ActionReport) context.get(REPORT);
 		for (Path fileName : list) {
-			if (!processableFiles.contains(fileName.getName(-1).toString()))
+			if (!processableFiles.contains(fileName.getFileName().toString()))
 			{
 				FileInfo file = new FileInfo();
-				file.setName(fileName.getName(-1).toString());
+				file.setName(fileName.getFileName().toString());
 				file.setStatus(FILE_STATE.UNCHECKED);
 				report.getFiles().add(file);
 			}

@@ -64,6 +64,7 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 	}
 
 	private void saveReport(Context context) {
+		if (context.containsKey("testng")) return;
 		ActionReport report = (ActionReport) context.get(REPORT);
 		Path path = Paths.get(context.get(PATH).toString(), REPORT_FILE);
 		// pseudo pretty print
@@ -77,6 +78,7 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 	}
 
 	private void saveMainValidationReport(Context context) {
+		if (context.containsKey("testng")) return;
 		ValidationReport report = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
 		if (report == null)
 			return;

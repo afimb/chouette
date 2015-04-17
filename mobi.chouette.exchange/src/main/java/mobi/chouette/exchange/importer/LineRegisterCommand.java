@@ -63,9 +63,11 @@ public class LineRegisterCommand implements Command {
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
 		try {
-			Boolean optimized = Boolean.TRUE;
-			context.put(OPTIMIZED, optimized);
-
+			if (!context.containsKey(OPTIMIZED))
+			{
+				context.put(OPTIMIZED, Boolean.TRUE);
+			}
+			Boolean optimized = (Boolean) context.get(OPTIMIZED);
 			Referential cache = new Referential();
 			context.put(CACHE, cache);
 
@@ -93,7 +95,7 @@ public class LineRegisterCommand implements Command {
 
 						StopPoint stopPoint = cache.getStopPoints().get(
 								vehicleJourneyAtStop.getStopPoint()
-										.getObjectId());
+								.getObjectId());
 
 						write(buffer, vehicleJourney, stopPoint,
 								vehicleJourneyAtStop);
@@ -114,7 +116,7 @@ public class LineRegisterCommand implements Command {
 
 	private void write(StringWriter buffer, VehicleJourney vehicleJourney,
 			StopPoint stopPoint, VehicleJourneyAtStop vehicleJourneyAtStop)
-			throws IOException {
+					throws IOException {
 		buffer.write(vehicleJourney.getId().toString());
 		buffer.append(SEP);
 		buffer.write(stopPoint.getId().toString());
@@ -161,7 +163,13 @@ public class LineRegisterCommand implements Command {
 				String name = "java:app/mobi.chouette.exchange/" + COMMAND;
 				result = (Command) context.lookup(name);
 			} catch (NamingException e) {
-				log.error(e);
+				// try another way on test context
+				String name = "java:module/" + COMMAND;
+				try {
+					result = (Command) context.lookup(name);
+				} catch (NamingException e1) {
+					log.error(e);
+				}
 			}
 			return result;
 		}

@@ -184,6 +184,17 @@
 					<arguments>-extension -Xlocator -b ${basedir}/src/main/resources/xsd/bindings.xml</arguments>
 				</configuration>
 			</plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+               <suiteXmlFiles>
+                  <suiteXmlFile>src/test/resources/testng.xml</suiteXmlFile>
+                  <!-- <suiteXmlFile>src/test/resources/phase1.xml</suiteXmlFile>
+                  <suiteXmlFile>src/test/resources/phase2.xml</suiteXmlFile>   -->
+               </suiteXmlFiles>
+            </configuration>
+         </plugin>
 		</plugins>
 	</build>
 

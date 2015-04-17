@@ -70,7 +70,7 @@ public class JobDAO extends GenericDAOImpl<Job> {
 
 		Job result = null;
 		Query query = em
-				.createQuery("from Job j where j.referential = ?1 and j.status in ( ?2 )");
+				.createQuery("from Job j where j.referential = ?1 and j.status in ( ?2 ) order by id");
 		query.setParameter(1, referential);
 		query.setParameter(2, Arrays.asList(STATUS.STARTED, STATUS.SCHEDULED));
 		List<Job> list = query.getResultList();
