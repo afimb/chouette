@@ -93,12 +93,12 @@ public class GtfsExporterCommand implements Command, Constant {
 		}
 
 		context.put(METADATA, metadata);
+		ActionReport report = (ActionReport) context.get(REPORT);
 
 		// read parameters
 		Object configuration = context.get(CONFIGURATION);
 		if (!(configuration instanceof GtfsExportParameters)) {
 			// fatal wrong parameters
-			ActionReport report = (ActionReport) context.get(REPORT);
 			log.error("invalid parameters for gtfs export "
 					+ configuration.getClass().getName());
 			report.setFailure("invalid parameters for gtfs export "
@@ -202,7 +202,7 @@ public class GtfsExporterCommand implements Command, Constant {
 					progression.terminate(context,1);
 				}
 			}
-			gtfsExporter.dispose();
+			gtfsExporter.dispose(report);
 			
 			// compress
 			Command compress = CommandFactory.create(initialContext,
@@ -211,7 +211,6 @@ public class GtfsExporterCommand implements Command, Constant {
 			progression.execute(context);
 
 		} catch (Exception e) {
-			ActionReport report = (ActionReport) context.get(REPORT);
 			report.setFailure("Fatal :" + e);
 			log.error(e.getMessage(), e);
 		} finally {
@@ -232,7 +231,13 @@ public class GtfsExporterCommand implements Command, Constant {
 						+ COMMAND;
 				result = (Command) context.lookup(name);
 			} catch (NamingException e) {
-				log.error(e);
+				// try another way on test context
+				String name = "java:module/" + COMMAND;
+				try {
+					result = (Command) context.lookup(name);
+				} catch (NamingException e1) {
+					log.error(e);
+				}
 			}
 			return result;
 		}

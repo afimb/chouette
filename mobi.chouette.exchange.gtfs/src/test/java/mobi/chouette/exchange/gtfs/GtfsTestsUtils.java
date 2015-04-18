@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.neptune;
+package mobi.chouette.exchange.gtfs;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,7 +21,7 @@ import mobi.chouette.model.util.Referential;
 import org.apache.commons.io.FileUtils;
 import org.testng.Assert;
 
-public class NeptuneTestsUtils implements Constant, ReportConstant{
+public class GtfsTestsUtils implements Constant, ReportConstant{
 
 	
 

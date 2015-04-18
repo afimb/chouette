@@ -79,6 +79,13 @@
 			<version>${project.version}</version>
 		</dependency>
 
+      <dependency>
+         <groupId>${project.groupId}</groupId>
+         <artifactId>mobi.chouette.exchange.neptune</artifactId>
+         <type>ejb</type>
+         <version>${project.version}</version>
+      </dependency>
+
 	</dependencies>
  	<build> 
  		<plugins> 
@@ -104,6 +111,15 @@
                   </configuration>
                </execution>
             </executions>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+               <suiteXmlFiles>
+                  <suiteXmlFile>src/test/resources/testng.xml</suiteXmlFile>
+               </suiteXmlFiles>
+            </configuration>
          </plugin>
 <!-- 			<plugin> -->
 <!-- 				<groupId>org.codehaus.mojo</groupId> -->

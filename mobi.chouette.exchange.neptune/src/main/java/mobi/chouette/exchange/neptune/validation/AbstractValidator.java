@@ -1,6 +1,8 @@
 package mobi.chouette.exchange.neptune.validation;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
@@ -14,21 +16,34 @@ import mobi.chouette.model.util.Referential;
 public abstract class AbstractValidator implements Constant
 {
 
-	protected static String prefix = "2-NEPTUNE-";
+	protected static final String prefix = "2-NEPTUNE-";
+	
+	protected static final String OBJECT_IDS = "encontered_ids";
 
+	@SuppressWarnings("unchecked")
 	public static void resetContext(Context context)
 	{
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		if (validationContext != null) 
 		{
-			for (Object object : validationContext.values()) 
+			for (String key : validationContext.keySet()) 
 			{
-				Context localContext = (Context) object;
-				localContext.clear();
+				if (key.equals(OBJECT_IDS))
+				{
+					Set<String> objects = (Set<String>) validationContext.get(key);
+					objects.clear();
+				}
+				else
+				{
+					Context localContext = (Context) validationContext.get(key);
+					localContext.clear();
+				}
+				
 			}
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	protected static Context getObjectContext(Context context, String localContextName, String objectId)
 	{
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
@@ -36,7 +51,11 @@ public abstract class AbstractValidator implements Constant
 		{
 			validationContext = new Context();
 			context.put(VALIDATION_CONTEXT, validationContext);
+			validationContext.put(OBJECT_IDS, new HashSet<String>());
 		}
+		
+		Set<String> objectIds = (Set<String>) validationContext.get(OBJECT_IDS);
+		objectIds.add(objectId);
 
 		Context localContext = (Context) validationContext.get(localContextName);
 		if (localContext == null)

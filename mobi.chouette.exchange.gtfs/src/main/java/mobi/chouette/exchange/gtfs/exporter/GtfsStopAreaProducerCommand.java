@@ -62,8 +62,6 @@ public class GtfsStopAreaProducerCommand implements Command, Constant
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
 		try {
-
-
 			GtfsExportParameters parameters = (GtfsExportParameters) context
 					.get(CONFIGURATION);
 
@@ -178,7 +176,13 @@ public class GtfsStopAreaProducerCommand implements Command, Constant
 						+ COMMAND;
 				result = (Command) context.lookup(name);
 			} catch (NamingException e) {
-				log.error(e);
+				// try another way on test context
+				String name = "java:module/" + COMMAND;
+				try {
+					result = (Command) context.lookup(name);
+				} catch (NamingException e1) {
+					log.error(e);
+				}
 			}
 			return result;
 		}

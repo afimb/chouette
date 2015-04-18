@@ -90,10 +90,10 @@ public class Service implements Constant {
 		}
 		// check params
 		if (!schemas.getSchemaListing().contains(referential)) {
-			throw new WebApplicationException(Status.BAD_REQUEST);
+			throw new WebApplicationException("unknown referential",Status.BAD_REQUEST);
 		}
 		if (!checkCommand(action, type)) {
-			throw new WebApplicationException(Status.BAD_REQUEST);
+			throw new WebApplicationException("unknown action or type",Status.BAD_REQUEST);
 		}
 
 		log.info(Color.YELLOW + "[DSU] schedule action referential : " + referential + " action: " + action
@@ -158,7 +158,7 @@ public class Service implements Constant {
 			throw e;
 		} catch (IOException e) {
 			log.error(e);
-			throw new WebApplicationException(Status.INTERNAL_SERVER_ERROR);
+			throw new WebApplicationException(e.getMessage(),Status.INTERNAL_SERVER_ERROR);
 		}
 
 		return result;
@@ -172,6 +172,10 @@ public class Service implements Constant {
 			String header = headers.getFirst(HttpHeaders.CONTENT_DISPOSITION);
 			String filename = getFilename(header);
 
+			if (filename == null)
+			{
+				throw new WebApplicationException("missing filename in part",Status.BAD_REQUEST);
+			}
 			if (filename.equals(PARAMETERS_FILE)) {
 				uploadParametersPart(part, filename, job);
 			} else {
@@ -184,13 +188,13 @@ public class Service implements Constant {
 	private void uploadDataPart(InputPart part, String filename, Job job) throws IOException {
 		InputStream in = part.getBody(InputStream.class, null);
 		if (in == null || filename == null || filename.isEmpty()) {
-			throw new WebApplicationException(Status.BAD_REQUEST);
+			throw new WebApplicationException("incomplete part",Status.BAD_REQUEST);
 		}
 
 		java.nio.file.Path path = Paths.get(job.getPath(), filename);
 
 		if (Files.exists(path, LinkOption.NOFOLLOW_LINKS)) {
-			throw new WebApplicationException(Status.BAD_REQUEST);
+			throw new WebApplicationException("request conflict",Status.BAD_REQUEST);
 		} else {
 			job.setFilename(filename);
 			Files.copy(in, path);
@@ -223,7 +227,7 @@ public class Service implements Constant {
 
 		java.nio.file.Path path = Paths.get(job.getPath(), filename);
 		if (!Files.exists(path, LinkOption.NOFOLLOW_LINKS)) {
-			throw new WebApplicationException(Status.NOT_FOUND);
+			throw new WebApplicationException("request conflict",Status.NOT_FOUND);
 		}
 
 		// build response
@@ -259,7 +263,7 @@ public class Service implements Constant {
 
 		// check params
 		if (!schemas.getSchemaListing().contains(referential)) {
-			throw new WebApplicationException(Status.NOT_FOUND);
+			throw new WebApplicationException("unknown referential",Status.NOT_FOUND);
 		}
 
 		// create jobs listing
@@ -311,7 +315,7 @@ public class Service implements Constant {
 
 		// check params
 		if (!schemas.getSchemaListing().contains(referential)) {
-			throw new WebApplicationException(Status.NOT_FOUND);
+			throw new WebApplicationException("unknown referential",Status.NOT_FOUND);
 		}
 
 		Job job = getJob(id, referential);
@@ -446,7 +450,7 @@ public class Service implements Constant {
 
 		// check params
 		if (!schemas.getSchemaListing().contains(referential)) {
-			throw new WebApplicationException(Status.NOT_FOUND);
+			throw new WebApplicationException("unknown referential",Status.NOT_FOUND);
 		}
 
 		// build response
@@ -485,14 +489,14 @@ public class Service implements Constant {
 	private Job getJob(Long id, String referential) {
 		// check params
 		if (!schemas.getSchemaListing().contains(referential)) {
-			throw new WebApplicationException(Status.NOT_FOUND);
+			throw new WebApplicationException("unknown referential",Status.NOT_FOUND);
 		}
 		Job job = jobDAO.find(id);
 		if (job == null) {
-			throw new WebApplicationException(Status.NOT_FOUND);
+			throw new WebApplicationException("unknown job",Status.NOT_FOUND);
 		}
 		if (!job.getReferential().equals(referential)) {
-			throw new WebApplicationException(Status.NOT_FOUND);
+			throw new WebApplicationException("unknown job",Status.NOT_FOUND);
 		}
 		return job;
 	}

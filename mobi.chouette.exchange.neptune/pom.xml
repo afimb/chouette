@@ -190,8 +190,6 @@
             <configuration>
                <suiteXmlFiles>
                   <suiteXmlFile>src/test/resources/testng.xml</suiteXmlFile>
-                  <!-- <suiteXmlFile>src/test/resources/phase1.xml</suiteXmlFile>
-                  <suiteXmlFile>src/test/resources/phase2.xml</suiteXmlFile>   -->
                </suiteXmlFiles>
             </configuration>
          </plugin>

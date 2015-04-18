@@ -1,0 +1,30 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="Factory" verbose="5" >
+   <test name="ExportGTFS" >
+     <packages>
+      <package name="mobi.chouette.exchange.gtfs.exporter" >
+      </package>
+   </packages>
+ </test>
+ <test name="ExportGTFSProducers" >
+    <packages>
+      <package name="mobi.chouette.exchange.gtfs.exporter.producer" >
+      </package>
+   </packages>
+  </test>
+  <!--
+  <test name="ImportGTFS" >
+    <packages>
+      <package name="mobi.chouette.exchange.gtfs.importer" >
+      </package>
+   </packages>
+  </test> 
+  <test name="ImportGTFSProducers" >
+    <packages>
+      <package name="mobi.chouette.exchange.gtfs.importer.producer" >
+      </package>
+   </packages>
+  </test>
+  -->
+</suite>

@@ -20,6 +20,11 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
+import org.jboss.shrinkwrap.resolver.api.maven.strategy.AcceptScopesStrategy;
+import org.jboss.shrinkwrap.resolver.api.maven.strategy.CombinedStrategy;
+import org.jboss.shrinkwrap.resolver.api.maven.strategy.MavenResolutionStrategy;
+import org.jboss.shrinkwrap.resolver.api.maven.strategy.TransitiveStrategy;
 import org.testng.annotations.Test;
 
 public class GtfsParserTest  extends Arquillian implements Constant{
@@ -31,10 +36,13 @@ public class GtfsParserTest  extends Arquillian implements Constant{
 	public static WebArchive createDeployment() {
 
 		WebArchive result;
+		
+		MavenResolutionStrategy strategy = new CombinedStrategy(TransitiveStrategy.INSTANCE,new AcceptScopesStrategy(ScopeType.COMPILE,
+                ScopeType.TEST));
 
 		File[] files = Maven.resolver().loadPomFromFile("pom.xml")
-				.resolve("mobi.chouette:mobi.chouette.exchange.gtfs:3.0.0")
-				.withTransitivity().asFile();
+				.resolve("mobi.chouette:mobi.chouette.exchange.gtfs:3.0.0").using(strategy)
+				.asFile();
 
 		result = ShrinkWrap.create(WebArchive.class, "test.war")
 				.addAsWebInfResource("postgres-ds.xml").addAsLibraries(files)

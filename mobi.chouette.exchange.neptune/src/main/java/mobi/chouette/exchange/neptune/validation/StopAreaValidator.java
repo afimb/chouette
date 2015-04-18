@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
@@ -95,6 +96,8 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 	{
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
+		Set<String> objectIds = (Set<String>) validationContext.get(OBJECT_IDS);
+
 		if (localContext == null || localContext.isEmpty()) return new ValidationConstraints();
 		Context stopPointContext = (Context) validationContext.get(StopPointValidator.LOCAL_CONTEXT);
 		Context itlContext = (Context) validationContext.get(ITLValidator.LOCAL_CONTEXT);
@@ -117,8 +120,9 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 			//  2-NEPTUNE-StopArea-1 : check if StopArea refers in field contains
 			for (String containedId : contains) 
 			{
-				// only stopareas or stoppoints
-				if (!localContext.containsKey(containedId) && !stopPointContext.containsKey(containedId))
+				// only stopareas or stoppoints or external ref
+				
+				if (objectIds.contains(containedId) && !localContext.containsKey(containedId) && !stopPointContext.containsKey(containedId))
 				{
 					// wrong or unknown reference type
 					Detail errorItem = new Detail(
