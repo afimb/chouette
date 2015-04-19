@@ -165,8 +165,9 @@ public class Service implements Constant {
 	}
 
 	private void uploadParts(MultipartFormDataInput input, Job job) throws IOException {
-		Map<String, List<InputPart>> map = input.getFormDataMap();
-		List<InputPart> list = map.get("file");
+		
+		// Map<String, List<InputPart>> map = input.getFormDataMap();
+		List<InputPart> list = input.getParts();
 		for (InputPart part : list) {
 			MultivaluedMap<String, String> headers = part.getHeaders();
 			String header = headers.getFirst(HttpHeaders.CONTENT_DISPOSITION);
