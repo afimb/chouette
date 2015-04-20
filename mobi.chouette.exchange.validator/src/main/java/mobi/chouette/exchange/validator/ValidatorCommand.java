@@ -167,7 +167,7 @@ public class ValidatorCommand implements Command, Constant {
 		protected Command create(InitialContext context) throws IOException {
 			Command result = null;
 			try {
-				String name = "java:app/mobi.chouette.exchange/" + COMMAND;
+				String name = "java:app/mobi.chouette.exchange.validator/" + COMMAND;
 				result = (Command) context.lookup(name);
 			} catch (NamingException e) {
 				log.error(e);
