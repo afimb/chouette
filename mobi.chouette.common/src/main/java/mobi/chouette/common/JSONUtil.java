@@ -9,12 +9,14 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import lombok.extern.log4j.Log4j;
 
 import org.apache.commons.io.FileUtils;
+import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.codehaus.jettison.mapped.Configuration;
 import org.codehaus.jettison.mapped.MappedNamespaceConvention;
@@ -24,25 +26,16 @@ import org.codehaus.jettison.mapped.MappedXMLStreamWriter;
 @Log4j
 public class JSONUtil {
 
-	public static <T> T fromJSON(Path path, Class<T> type) {
-		T result = null;
-
-		try {
+	public static <T> T fromJSON(Path path, Class<T> type) throws IOException, JAXBException, JSONException, XMLStreamException {
 			byte[] bytes = Files.readAllBytes(path);
 			String text = new String(bytes, "UTF-8");
 			return fromJSON(text, type);
-		} catch (Exception e) {
-			log.error(e);
-		}
-
-		return result;
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T> T fromJSON(String text, Class<T> type) {
-		T result = null;
+	public static <T> T fromJSON(String text, Class<T> type) throws JAXBException, JSONException, XMLStreamException {
 
-		try {
+		
 			JAXBContext context = JAXBContext.newInstance(type);
 			JSONObject object = new JSONObject(text);
 			Configuration config = new Configuration();
@@ -51,17 +44,11 @@ public class JSONUtil {
 			XMLStreamReader reader = new MappedXMLStreamReader(object,
 					convention);
 			Unmarshaller unmarshaller = context.createUnmarshaller();
-			result = (T) unmarshaller.unmarshal(reader);
-		} catch (Exception e) {
-			log.error(e);
-		}
+			return (T) unmarshaller.unmarshal(reader);
 
-		return result;
 	}
 
-	public static <T> String toJSON(T payload) {
-		String result = null;
-		try {
+	public static <T> String toJSON(T payload) throws JAXBException {
 			JAXBContext context = JAXBContext.newInstance(payload.getClass());
 			Configuration config = new Configuration();
 			config.setAttributeKey("");
@@ -71,24 +58,14 @@ public class JSONUtil {
 			XMLStreamWriter writer = new MappedXMLStreamWriter(convention, out);
 			Marshaller marshaller = context.createMarshaller();
 			marshaller.marshal(payload, writer);
-			result = out.toString();
-		} catch (JAXBException e) {
-			log.error(e);
-		}
-		return result;
+			return  out.toString();
 
 	}
 
-	public static <T> boolean toJSON(Path path, T payload) {
+	public static <T> void toJSON(Path path, T payload) throws JAXBException, IOException {
 		String data = JSONUtil.toJSON(payload);
-		try {
 			FileUtils.writeStringToFile(path.toFile(), data);
-			return true;
-		} catch (IOException e) 
-		{
-			log.error("failed to save report",e);
-			return false;
-		}
+			return ;
 	}
 
 

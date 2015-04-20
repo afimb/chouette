@@ -11,7 +11,6 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -90,18 +89,18 @@ public class Service implements Constant {
 		}
 		// check params
 		if (!schemas.getSchemaListing().contains(referential)) {
-			throw new WebApplicationException("unknown referential",Status.BAD_REQUEST);
+			throw new WebApplicationException("unknown referential", Status.BAD_REQUEST);
 		}
 		if (!checkCommand(action, type)) {
-			throw new WebApplicationException("unknown action or type",Status.BAD_REQUEST);
+			throw new WebApplicationException("unknown action or type", Status.BAD_REQUEST);
 		}
 
 		log.info(Color.YELLOW + "[DSU] schedule action referential : " + referential + " action: " + action
 				+ (type == null ? "" : " type : " + type) + Color.NORMAL);
 
+		Job job = new Job(referential, action, type);
 		try {
 			// create job
-			Job job = new Job(referential, action, type);
 			jobDAO.create(job);
 
 			// add location link
@@ -155,31 +154,44 @@ public class Service implements Constant {
 			result = builder.build();
 		} catch (WebApplicationException e) {
 			log.error(e);
+			if (job.getId() != null) {
+				jobDAO.delete(job);
+			}
 			throw e;
-		} catch (IOException e) {
+		} catch (Exception e) {
 			log.error(e);
-			throw new WebApplicationException(e.getMessage(),Status.INTERNAL_SERVER_ERROR);
+			if (job.getId() != null) {
+				jobDAO.delete(job);
+			}
+			throw new WebApplicationException(e.getMessage(), Status.INTERNAL_SERVER_ERROR);
 		}
 
 		return result;
 	}
 
 	private void uploadParts(MultipartFormDataInput input, Job job) throws IOException {
-		
+
 		// Map<String, List<InputPart>> map = input.getFormDataMap();
 		List<InputPart> list = input.getParts();
+		boolean parameterFound = false;
+		boolean dataFound = false;
 		for (InputPart part : list) {
 			MultivaluedMap<String, String> headers = part.getHeaders();
 			String header = headers.getFirst(HttpHeaders.CONTENT_DISPOSITION);
 			String filename = getFilename(header);
 
-			if (filename == null)
-			{
-				throw new WebApplicationException("missing filename in part",Status.BAD_REQUEST);
+			if (filename == null) {
+				throw new WebApplicationException("missing filename in part", Status.BAD_REQUEST);
 			}
 			if (filename.equals(PARAMETERS_FILE)) {
+				if (parameterFound)
+					throw new WebApplicationException("dupplicate parameter part", Status.BAD_REQUEST);
+				parameterFound = true;
 				uploadParametersPart(part, filename, job);
 			} else {
+				if (dataFound)
+					throw new WebApplicationException("dupplicate data part", Status.BAD_REQUEST);
+				dataFound = true;
 				uploadDataPart(part, filename, job);
 			}
 
@@ -189,21 +201,21 @@ public class Service implements Constant {
 	private void uploadDataPart(InputPart part, String filename, Job job) throws IOException {
 		InputStream in = part.getBody(InputStream.class, null);
 		if (in == null || filename == null || filename.isEmpty()) {
-			throw new WebApplicationException("incomplete part",Status.BAD_REQUEST);
+			throw new WebApplicationException("incomplete part", Status.BAD_REQUEST);
 		}
 
 		java.nio.file.Path path = Paths.get(job.getPath(), filename);
 
 		if (Files.exists(path, LinkOption.NOFOLLOW_LINKS)) {
-			throw new WebApplicationException("request conflict",Status.BAD_REQUEST);
+			throw new WebApplicationException("request conflict", Status.BAD_REQUEST);
 		} else {
 			job.setFilename(filename);
 			Files.copy(in, path);
 
 			// add data upload link
-			String href = MessageFormat.format("/{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH, job.getReferential(), job.getId(),
-					job.getFilename());
-			Link link = new Link(MediaType.APPLICATION_OCTET_STREAM,Link.DATA_REL,Link.GET_METHOD,href);
+			String href = MessageFormat.format("/{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH, job.getReferential(),
+					job.getId(), job.getFilename());
+			Link link = new Link(MediaType.APPLICATION_OCTET_STREAM, Link.DATA_REL, Link.GET_METHOD, href);
 			job.getLinks().add(link);
 		}
 	}
@@ -228,7 +240,7 @@ public class Service implements Constant {
 
 		java.nio.file.Path path = Paths.get(job.getPath(), filename);
 		if (!Files.exists(path, LinkOption.NOFOLLOW_LINKS)) {
-			throw new WebApplicationException("request conflict",Status.NOT_FOUND);
+			throw new WebApplicationException("request conflict", Status.NOT_FOUND);
 		}
 
 		// build response
@@ -264,7 +276,7 @@ public class Service implements Constant {
 
 		// check params
 		if (!schemas.getSchemaListing().contains(referential)) {
-			throw new WebApplicationException("unknown referential",Status.NOT_FOUND);
+			throw new WebApplicationException("unknown referential", Status.NOT_FOUND);
 		}
 
 		// create jobs listing
@@ -291,9 +303,13 @@ public class Service implements Constant {
 			java.nio.file.Path path = Paths.get(getJobDataDirectory(job.getReferential(), job.getId()).toString(),
 					PARAMETERS_FILE);
 
-			Parameters payload = JSONUtil.fromJSON(path, Parameters.class);
-			if (payload != null) {
-				job.setActionParameters(payload.getConfiguration());
+			try {
+				Parameters payload = JSONUtil.fromJSON(path, Parameters.class);
+				if (payload != null) {
+					job.setActionParameters(payload.getConfiguration());
+				}
+			} catch (Exception ex) {
+				// don't add invalid parameters
 			}
 		}
 
@@ -316,7 +332,7 @@ public class Service implements Constant {
 
 		// check params
 		if (!schemas.getSchemaListing().contains(referential)) {
-			throw new WebApplicationException("unknown referential",Status.NOT_FOUND);
+			throw new WebApplicationException("unknown referential", Status.NOT_FOUND);
 		}
 
 		Job job = getJob(id, referential);
@@ -329,9 +345,13 @@ public class Service implements Constant {
 			java.nio.file.Path path = Paths.get(System.getProperty("user.home"), ROOT_PATH, job.getReferential(),
 					"data", job.getId().toString(), PARAMETERS_FILE);
 
-			Parameters payload = JSONUtil.fromJSON(path, Parameters.class);
-			if (payload != null) {
-				info.setActionParameters(payload.getConfiguration());
+			try {
+				Parameters payload = JSONUtil.fromJSON(path, Parameters.class);
+				if (payload != null) {
+					info.setActionParameters(payload.getConfiguration());
+				}
+			} catch (Exception ex) {
+				// don't add invalid parameters
 			}
 			builder = Response.ok(info);
 
@@ -390,9 +410,13 @@ public class Service implements Constant {
 		java.nio.file.Path path = Paths.get(System.getProperty("user.home"), ROOT_PATH, job.getReferential(), "data",
 				job.getId().toString(), PARAMETERS_FILE);
 
-		Parameters payload = JSONUtil.fromJSON(path, Parameters.class);
-		if (payload != null) {
-			info.setActionParameters(payload.getConfiguration());
+		try {
+			Parameters payload = JSONUtil.fromJSON(path, Parameters.class);
+			if (payload != null) {
+				info.setActionParameters(payload.getConfiguration());
+			}
+		} catch (Exception ex) {
+			// don't add invalid parameters
 		}
 
 		ResponseBuilder builder = Response.ok(info);
@@ -451,7 +475,7 @@ public class Service implements Constant {
 
 		// check params
 		if (!schemas.getSchemaListing().contains(referential)) {
-			throw new WebApplicationException("unknown referential",Status.NOT_FOUND);
+			throw new WebApplicationException("unknown referential", Status.NOT_FOUND);
 		}
 
 		// build response
@@ -490,60 +514,56 @@ public class Service implements Constant {
 	private Job getJob(Long id, String referential) {
 		// check params
 		if (!schemas.getSchemaListing().contains(referential)) {
-			throw new WebApplicationException("unknown referential",Status.NOT_FOUND);
+			throw new WebApplicationException("unknown referential", Status.NOT_FOUND);
 		}
 		Job job = jobDAO.find(id);
 		if (job == null) {
-			throw new WebApplicationException("unknown job",Status.NOT_FOUND);
+			throw new WebApplicationException("unknown job", Status.NOT_FOUND);
 		}
 		if (!job.getReferential().equals(referential)) {
-			throw new WebApplicationException("unknown job",Status.NOT_FOUND);
+			throw new WebApplicationException("unknown job", Status.NOT_FOUND);
 		}
 		return job;
 	}
-	
+
 	private void processParameters(Job job) {
 		java.nio.file.Path path = Paths.get(job.getPath(), PARAMETERS_FILE);
 		// save separately action and validation parameters if possible
-		Parameters payload = JSONUtil.fromJSON(path, Parameters.class);
-		if (payload != null) {
+		try {
+			Parameters payload = JSONUtil.fromJSON(path, Parameters.class);
+
 			java.nio.file.Path actionPath = Paths.get(job.getPath(), ACTION_PARAMETERS_FILE);
-			if (JSONUtil.toJSON(actionPath, payload.getConfiguration())) {
-				// add link
-				String href = MessageFormat.format("/{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH, job.getReferential(),
-						job.getId(), ACTION_PARAMETERS_FILE);
-				Link link = new Link(MediaType.APPLICATION_JSON,Link.ACTION_PARAMETERS_REL,Link.GET_METHOD,href);
-				job.getLinks().add(link);
-			}
+			JSONUtil.toJSON(actionPath, payload.getConfiguration());
+			// add link
+			String href = MessageFormat.format("/{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH, job.getReferential(),
+					job.getId(), ACTION_PARAMETERS_FILE);
+			Link link = new Link(MediaType.APPLICATION_JSON, Link.ACTION_PARAMETERS_REL, Link.GET_METHOD, href);
+			job.getLinks().add(link);
+
 			if (payload.getValidation() != null) {
 				java.nio.file.Path validationPath = Paths.get(job.getPath(), VALIDATION_PARAMETERS_FILE);
-				if (JSONUtil.toJSON(validationPath, payload.getValidation())) {
-					// add link
-					String href = MessageFormat.format("/{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH, job.getReferential(),
-							job.getId(), VALIDATION_PARAMETERS_FILE);
-					Link link = new Link(MediaType.APPLICATION_JSON,Link.VALIDATION_PARAMETERS_REL,Link.GET_METHOD,href);
-					job.getLinks().add(link);
-				}
+				JSONUtil.toJSON(validationPath, payload.getValidation());
+				// add link
+				href = MessageFormat.format("/{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH, job.getReferential(),
+						job.getId(), VALIDATION_PARAMETERS_FILE);
+				link = new Link(MediaType.APPLICATION_JSON, Link.VALIDATION_PARAMETERS_REL, Link.GET_METHOD, href);
+				job.getLinks().add(link);
 			}
-		} else {
-			// add parameters link when invalid
-			String href = MessageFormat.format("/{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH, job.getReferential(), job.getId(),
-					PARAMETERS_FILE);
-			Link link = new Link(MediaType.APPLICATION_JSON,Link.PARAMETERS_REL,Link.GET_METHOD,href);
-			job.getLinks().add(link);
+		} catch (Exception ex) {
+			log.error(ex);
+			throw new WebApplicationException("invalid parameters " + ex.getMessage(), Status.BAD_REQUEST);
 		}
 
 	}
 
 	private boolean checkCommand(String action, String type) {
-	try {
-		Class.forName(CommandNamingRules.getCommandName(action, type));
-	} catch (ClassNotFoundException e) {
-		return false;
+		try {
+			Class.forName(CommandNamingRules.getCommandName(action, type));
+		} catch (ClassNotFoundException e) {
+			return false;
+		}
+		return true;
 	}
-	return true;
-}
-
 
 	private Collection<JobInfo> build(Collection<Job> list) {
 

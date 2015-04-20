@@ -68,10 +68,10 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 		ActionReport report = (ActionReport) context.get(REPORT);
 		Path path = Paths.get(context.get(PATH).toString(), REPORT_FILE);
 		// pseudo pretty print
-		String data = JSONUtil.toJSON(report).replaceAll("\\},\\{", "\n},\n{");
 		try {
+			String data = JSONUtil.toJSON(report).replaceAll("\\},\\{", "\n},\n{");
 			FileUtils.writeStringToFile(path.toFile(), data, "UTF-8");
-		} catch (IOException e) {
+		} catch (Exception e) {
 			log.error("failed to save report", e);
 		}
 
@@ -85,12 +85,11 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 		Path path = Paths.get(context.get(PATH).toString(), VALIDATION_FILE);
 
 		// pseudo pretty print
-		String data = JSONUtil.toJSON(report).replaceAll("\\},\\{", "\n},\n{");
 
 		try {
+			String data = JSONUtil.toJSON(report).replaceAll("\\},\\{", "\n},\n{");
 			FileUtils.writeStringToFile(path.toFile(), data);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+		} catch (Exception e) {
 			log.error("failed to save validation report", e);
 		}
 

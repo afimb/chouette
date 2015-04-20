@@ -46,6 +46,8 @@ public class MainCommand implements Command, Constant {
 
 		Long id = (Long) context.get(JOB_ID);
 		Job job = jobDAO.find(id);
+		try
+		{
 	    // set job status to started
 		job.setStatus(STATUS.STARTED);
 		// add action report link
@@ -62,7 +64,8 @@ public class MainCommand implements Command, Constant {
 		link = new Link();
 		link.setType(MediaType.APPLICATION_JSON);
 		link.setRel(Link.VALIDATION_REL);
-		link.setMethod(Link.GET_METHOD);
+		link.setMethod(Link.GET_METHOD);		jobDAO.update(job);
+
 		 href = MessageFormat.format(
 				"/{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH,
 				job.getReferential(), job.getId(),VALIDATION_FILE);
@@ -142,6 +145,14 @@ public class MainCommand implements Command, Constant {
 
 		jobDAO.update(job);
 
+		}
+		catch (Exception ex)
+		{
+			log.error(ex);
+			job.setStatus(Job.STATUS.ABORTED);
+			jobDAO.update(job);
+			
+		}
 		return result;
 	}
 	

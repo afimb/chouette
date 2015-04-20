@@ -1,7 +1,6 @@
 package mobi.chouette.exchange.validation.checkpoint;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.sql.Time;
 
@@ -78,7 +77,7 @@ public abstract class AbstractTestValidation implements Constant
       return detail;
    }
 
-   protected ValidationParameters loadFullParameters() throws IOException
+   protected ValidationParameters loadFullParameters() throws Exception
    {
 		String filename = "src/test/data/checkPoints/fullparameterset.json";
 		File f = new File(filename);
@@ -89,7 +88,7 @@ public abstract class AbstractTestValidation implements Constant
 
    }
    
-   protected ValidationParameters loadParameters() throws IOException
+   protected ValidationParameters loadParameters() throws Exception
    {
 		String filename = "src/test/data/checkPoints/parameterset.json";
 		File f = new File(filename);

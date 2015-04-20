@@ -30,6 +30,11 @@
 		</dependency>
 
 		<!-- Others Dependencies -->
+      <dependency>
+         <groupId>org.codehaus.jettison</groupId>
+         <artifactId>jettison</artifactId>
+         <scope>provided</scope>
+      </dependency>
 
 		<!-- JBoss RESTEasy -->
 		<dependency>
