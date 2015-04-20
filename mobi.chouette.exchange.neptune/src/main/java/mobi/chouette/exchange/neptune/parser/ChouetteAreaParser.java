@@ -19,7 +19,7 @@ import mobi.chouette.exchange.neptune.model.AreaCentroid;
 import mobi.chouette.exchange.neptune.model.NeptuneObjectFactory;
 import mobi.chouette.exchange.neptune.validation.AreaCentroidValidator;
 import mobi.chouette.exchange.neptune.validation.StopAreaValidator;
-import mobi.chouette.exchange.validator.ValidatorFactory;
+import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.ChouetteAreaEnum;

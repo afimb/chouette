@@ -1,6 +1,6 @@
 package mobi.chouette.exchange.neptune.validation;
 
-import mobi.chouette.exchange.validator.report.CheckPoint;
+import mobi.chouette.exchange.validation.report.CheckPoint;
 
 import org.testng.annotations.Test;
 

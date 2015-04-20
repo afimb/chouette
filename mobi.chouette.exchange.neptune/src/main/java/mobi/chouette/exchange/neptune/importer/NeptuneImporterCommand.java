@@ -25,9 +25,9 @@ import mobi.chouette.exchange.report.FileInfo;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
 import mobi.chouette.exchange.report.ReportConstant;
-import mobi.chouette.exchange.validator.DaoSharedDataValidatorCommand;
-import mobi.chouette.exchange.validator.ImportedLineValidatorCommand;
-import mobi.chouette.exchange.validator.ValidationData;
+import mobi.chouette.exchange.validation.DaoSharedDataValidatorCommand;
+import mobi.chouette.exchange.validation.ImportedLineValidatorCommand;
+import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.model.util.Referential;
 
 import com.jamonapi.Monitor;

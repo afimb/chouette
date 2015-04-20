@@ -9,7 +9,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.netex.importer.NetexParserCommand;
 import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.validator.report.ValidationReport;
+import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.api.Job;
 import mobi.chouette.model.util.Referential;
 

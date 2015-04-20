@@ -11,7 +11,7 @@ import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.neptune.JsonExtension;
 import mobi.chouette.exchange.neptune.validation.GroupOfLineValidator;
-import mobi.chouette.exchange.validator.ValidatorFactory;
+import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.util.ObjectFactory;

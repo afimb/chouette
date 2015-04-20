@@ -20,8 +20,8 @@ import mobi.chouette.exchange.report.FileInfo;
 import mobi.chouette.exchange.report.LineInfo;
 import mobi.chouette.exchange.report.LineInfo.LINE_STATE;
 import mobi.chouette.exchange.report.ReportConstant;
-import mobi.chouette.exchange.validator.report.CheckPoint;
-import mobi.chouette.exchange.validator.report.ValidationReport;
+import mobi.chouette.exchange.validation.report.CheckPoint;
+import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.api.Job;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 

@@ -8,7 +8,7 @@ import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.ParserUtils;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.neptune.validation.ITLValidator;
-import mobi.chouette.exchange.validator.ValidatorFactory;
+import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.util.ObjectFactory;

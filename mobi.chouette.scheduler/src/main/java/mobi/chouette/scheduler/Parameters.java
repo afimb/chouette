@@ -9,7 +9,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import lombok.Data;
 import mobi.chouette.exchange.parameters.AbstractParameter;
-import mobi.chouette.exchange.validator.parameters.ValidationParameters;
+import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)

@@ -12,10 +12,10 @@ import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.exchange.report.StepProgression.STEP;
-import mobi.chouette.exchange.validator.report.CheckPoint;
-import mobi.chouette.exchange.validator.report.CheckPoint.RESULT;
-import mobi.chouette.exchange.validator.report.CheckPoint.SEVERITY;
-import mobi.chouette.exchange.validator.report.ValidationReport;
+import mobi.chouette.exchange.validation.report.CheckPoint;
+import mobi.chouette.exchange.validation.report.ValidationReport;
+import mobi.chouette.exchange.validation.report.CheckPoint.RESULT;
+import mobi.chouette.exchange.validation.report.CheckPoint.SEVERITY;
 
 import org.apache.commons.io.FileUtils;
 import org.testng.Assert;

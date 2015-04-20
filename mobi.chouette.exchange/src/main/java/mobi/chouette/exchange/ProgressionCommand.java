@@ -17,9 +17,9 @@ import mobi.chouette.exchange.report.Progression;
 import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.exchange.report.StepProgression;
 import mobi.chouette.exchange.report.StepProgression.STEP;
-import mobi.chouette.exchange.validator.report.CheckPoint;
-import mobi.chouette.exchange.validator.report.Detail;
-import mobi.chouette.exchange.validator.report.ValidationReport;
+import mobi.chouette.exchange.validation.report.CheckPoint;
+import mobi.chouette.exchange.validation.report.Detail;
+import mobi.chouette.exchange.validation.report.ValidationReport;
 
 import org.apache.commons.io.FileUtils;
 

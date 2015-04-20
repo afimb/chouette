@@ -7,10 +7,10 @@ import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
-import mobi.chouette.exchange.validator.report.CheckPoint;
-import mobi.chouette.exchange.validator.report.Detail;
-import mobi.chouette.exchange.validator.report.Location;
-import mobi.chouette.exchange.validator.report.ValidationReport;
+import mobi.chouette.exchange.validation.report.CheckPoint;
+import mobi.chouette.exchange.validation.report.Detail;
+import mobi.chouette.exchange.validation.report.Location;
+import mobi.chouette.exchange.validation.report.ValidationReport;
 
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;

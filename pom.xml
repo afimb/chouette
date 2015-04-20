@@ -595,5 +595,6 @@
       <module>mobi.chouette.exchange.hub</module>
 		<module>mobi.chouette.api</module>
 		<module>chouette</module>
+		<module>mobi.chouette.exchange.validator</module>
 	</modules>
 </project>
