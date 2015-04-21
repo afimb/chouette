@@ -52,7 +52,7 @@ public class ChouetteIdentifierGenerator implements IdentifierGenerator,
 
 		if (hiValue == null || !hiValue.gt(value)) {
 			hiValue = getNextValue(session);
-			value = hiValue.copy().subtract(incrementSize +1);
+			value = hiValue.copy().subtract(incrementSize);
 			// System.out.println("[DSU] ? nextval --------------> : " + value);
 		}
 		Number result = value.makeValueThenIncrement();

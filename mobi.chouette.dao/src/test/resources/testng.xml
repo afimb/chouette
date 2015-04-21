@@ -1,0 +1,12 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="DAO" verbose="5">
+   
+	<test name="dao">
+		<packages>
+         <package name="mobi.chouette.dao" >
+         </package>
+       </packages>
+    </test>
+   
+</suite>
