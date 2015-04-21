@@ -44,7 +44,7 @@ public class LineDaoTest extends Arquillian
 		{
 			Line l = createLine();
 			lineDao.create(l);
-			Assert.assertEquals(l.getId(), Integer.valueOf(i+1),"line id");
+			Assert.assertEquals(l.getId(), Long.valueOf(i+1),"line id");
 		}
 	}
 	

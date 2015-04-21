@@ -50,7 +50,7 @@ public class ChouetteIdentifierGenerator implements IdentifierGenerator,
 	public Serializable generate(SessionImplementor session, Object object)
 			throws HibernateException {
 
-		if (hiValue == null || !hiValue.gt(value)) {
+		if (hiValue == null || hiValue.lt(value) ) {
 			hiValue = getNextValue(session);
 			value = hiValue.copy().subtract(incrementSize);
 			// System.out.println("[DSU] ? nextval --------------> : " + value);
