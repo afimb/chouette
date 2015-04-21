@@ -37,7 +37,6 @@ public class MainCommand implements Command, Constant {
 
 	@EJB
 	JobDAO jobDAO;
-	
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
@@ -46,117 +45,107 @@ public class MainCommand implements Command, Constant {
 
 		Long id = (Long) context.get(JOB_ID);
 		Job job = jobDAO.find(id);
-		try
-		{
-	    // set job status to started
-		job.setStatus(STATUS.STARTED);
-		// add action report link
-		Link link = new Link();
-		link.setType(MediaType.APPLICATION_JSON);
-		link.setRel(Link.REPORT_REL);
-		link.setMethod(Link.GET_METHOD);
-		String href = MessageFormat.format(
-				"/{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH,
-				job.getReferential(), job.getId(),REPORT_FILE);
-		link.setHref(href);
-		JobUtil.updateLink(job, link); //job.getLinks().add(link);
-		// add validation report link
-		link = new Link();
-		link.setType(MediaType.APPLICATION_JSON);
-		link.setRel(Link.VALIDATION_REL);
-		link.setMethod(Link.GET_METHOD);		jobDAO.update(job);
+		try {
+			// set job status to started
+			job.setStatus(STATUS.STARTED);
+			// add action report link
+			Link link = new Link();
+			link.setType(MediaType.APPLICATION_JSON);
+			link.setRel(Link.REPORT_REL);
+			link.setMethod(Link.GET_METHOD);
+			String href = MessageFormat.format("/{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH, job.getReferential(),
+					job.getId(), REPORT_FILE);
+			link.setHref(href);
+			JobUtil.updateLink(job, link); // job.getLinks().add(link);
+			// add validation report link
+			link = new Link();
+			link.setType(MediaType.APPLICATION_JSON);
+			link.setRel(Link.VALIDATION_REL);
+			link.setMethod(Link.GET_METHOD);
+			jobDAO.update(job);
 
-		 href = MessageFormat.format(
-				"/{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH,
-				job.getReferential(), job.getId(),VALIDATION_FILE);
-		link.setHref(href);
-		JobUtil.updateLink(job, link); //job.getLinks().add(link);
-		jobDAO.update(job);
+			href = MessageFormat.format("/{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH, job.getReferential(), job.getId(),
+					VALIDATION_FILE);
+			link.setHref(href);
+			JobUtil.updateLink(job, link); // job.getLinks().add(link);
+			jobDAO.update(job);
 
-		context.put(ARCHIVE, job.getFilename());
-		java.nio.file.Path path = Paths.get(System.getProperty("user.home"),
-				ROOT_PATH, job.getReferential(), "data",
-				job.getId().toString(), PARAMETERS_FILE);
-		Parameters parameters = JSONUtil.fromJSON(path, Parameters.class);
-		context.put(PARAMETERS, parameters);
-		context.put(CONFIGURATION, parameters.getConfiguration());
-		context.put(VALIDATION, parameters.getValidation());
-		context.put(JOB_REFERENTIAL, job.getReferential());
-		context.put(REPORT, new ActionReport());
-		context.put(MAIN_VALIDATION_REPORT, new ValidationReport());
-		context.put(ACTION, job.getAction());
-		context.put(TYPE, job.getType());
+			context.put(ARCHIVE, job.getFilename());
+			java.nio.file.Path path = Paths.get(System.getProperty("user.home"), ROOT_PATH, job.getReferential(),
+					"data", job.getId().toString(), PARAMETERS_FILE);
+			Parameters parameters = JSONUtil.fromJSON(path, Parameters.class);
+			context.put(PARAMETERS, parameters);
+			context.put(CONFIGURATION, parameters.getConfiguration());
+			context.put(VALIDATION, parameters.getValidation());
+			context.put(JOB_REFERENTIAL, job.getReferential());
+			context.put(REPORT, new ActionReport());
+			context.put(MAIN_VALIDATION_REPORT, new ValidationReport());
+			context.put(ACTION, job.getAction());
+			context.put(TYPE, job.getType());
 
-		String name = CommandNamingRules.getCommandName(job.getAction(),job.getType());
+			String name = CommandNamingRules.getCommandName(job.getAction(), job.getType());
 
-		InitialContext ctx = (InitialContext) context.get(INITIAL_CONTEXT);
-		Command command = CommandFactory.create(ctx, name);
-		command.execute(context);
+			InitialContext ctx = (InitialContext) context.get(INITIAL_CONTEXT);
+			Command command = CommandFactory.create(ctx, name);
+			command.execute(context);
 
-		job.setStatus(STATUS.TERMINATED);
+			job.setStatus(STATUS.TERMINATED);
 
-		// remove location and cancel link
-		Iterables.removeIf(job.getLinks(), new Predicate<Link>() {
-			@Override
-			public boolean apply(Link link) {
-				return link.getRel().equals(Link.LOCATION_REL) 
-						|| link.getRel().equals(Link.CANCEL_REL)  ;
+			// remove location and cancel link
+			Iterables.removeIf(job.getLinks(), new Predicate<Link>() {
+				@Override
+				public boolean apply(Link link) {
+					return link.getRel().equals(Link.LOCATION_REL) || link.getRel().equals(Link.CANCEL_REL);
+				}
+			});
+
+			// add location link
+			link = new Link();
+			link.setType(MediaType.APPLICATION_JSON);
+			link.setRel(Link.LOCATION_REL);
+			link.setMethod(Link.GET_METHOD);
+			href = MessageFormat.format("/{0}/{1}/terminated_jobs/{2,number,#}", ROOT_PATH, job.getReferential(),
+					job.getId());
+			link.setHref(href);
+			JobUtil.updateLink(job, link); // job.getLinks().add(link);
+
+			// add delete link
+			link = new Link();
+			link.setType("application/json");
+			link.setRel(Link.DELETE_REL);
+			link.setMethod(Link.DELETE_METHOD);
+			href = MessageFormat.format("/{0}/{1}/terminated_jobs/{2,number,#}", ROOT_PATH, job.getReferential(),
+					job.getId());
+			link.setHref(href);
+			JobUtil.updateLink(job, link); // job.getLinks().add(link);
+
+			// add data upload link
+			if (job.getAction().equals(EXPORTER)) {
+
+				href = MessageFormat.format("/{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH, job.getReferential(),
+						job.getId(), job.getFilename());
+
+				if (Files.exists(Paths.get(System.getProperty("user.home"), href))) {
+					link = new Link();
+					link.setType(MediaType.APPLICATION_OCTET_STREAM);
+					link.setRel(Link.DATA_REL);
+					link.setMethod(Link.GET_METHOD);
+					link.setHref(href);
+
+					JobUtil.updateLink(job, link); // job.getLinks().add(link);
+				}
 			}
-		});
 
-		// add location link
-		link = new Link();
-		link.setType(MediaType.APPLICATION_JSON);
-		link.setRel(Link.LOCATION_REL);
-		link.setMethod(Link.GET_METHOD);
-		href = MessageFormat.format("/{0}/{1}/terminated_jobs/{2,number,#}",
-				ROOT_PATH, job.getReferential(), job.getId());
-		link.setHref(href);
-		JobUtil.updateLink(job, link); //job.getLinks().add(link);
+			jobDAO.update(job);
 
-		// add delete link
-		link = new Link();
-		link.setType("application/json");
-		link.setRel(Link.DELETE_REL);
-		link.setMethod(Link.DELETE_METHOD);
-		href = MessageFormat.format("/{0}/{1}/terminated_jobs/{2,number,#}",
-				ROOT_PATH, job.getReferential(), job.getId());
-		link.setHref(href);
-		JobUtil.updateLink(job, link); //job.getLinks().add(link);
-
-
-		// add data upload link
-		if (job.getAction().equals(EXPORTER)) {
-
-			href = MessageFormat.format(
-					"/{0}/{1}/data/{2,number,#}/{3}", ROOT_PATH,
-					job.getReferential(), job.getId(), job.getFilename());
-
-			if (Files.exists(Paths.get(System.getProperty("user.home"), href))) {
-				link = new Link();
-				link.setType(MediaType.APPLICATION_OCTET_STREAM);
-				link.setRel(Link.DATA_REL);
-				link.setMethod(Link.GET_METHOD);
-				link.setHref(href);
-
-				JobUtil.updateLink(job, link); //job.getLinks().add(link);
-			}
-		}
-
-		jobDAO.update(job);
-
-		}
-		catch (Exception ex)
-		{
+		} catch (Exception ex) {
 			log.error(ex);
 			job.setStatus(Job.STATUS.ABORTED);
 			jobDAO.update(job);
-			
+
 		}
 		return result;
 	}
-	
-	
 
 	public static class DefaultCommandFactory extends CommandFactory {
 
@@ -174,7 +163,6 @@ public class MainCommand implements Command, Constant {
 	}
 
 	static {
-		CommandFactory.factories.put(MainCommand.class.getName(),
-				new DefaultCommandFactory());
+		CommandFactory.factories.put(MainCommand.class.getName(), new DefaultCommandFactory());
 	}
 }
