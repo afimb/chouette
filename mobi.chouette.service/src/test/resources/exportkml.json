@@ -1,0 +1,12 @@
+{
+"parameters" :  {
+    "kml-export": {
+        "user_name" : "Michel",
+        "name" : "job 1",
+        "organisation_name" : "Cityway",
+        "referential_name" : "données de test",
+        "add_metadata" : false,
+        "references_type" : "line"
+        }
+    }
+}

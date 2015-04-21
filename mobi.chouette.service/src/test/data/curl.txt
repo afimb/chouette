@@ -1,0 +1,29 @@
+# import neptune avec clean du repository
+curl -v -F "file=@data/tatrobus.zip;filename=tatrobus.zip" -F "file=@resources/import_val.json;filename=parameters.json" http://localhost:8080/chouette_iev/referentials/bidon/importer/neptune
+
+# export neptune
+curl -v -F "file=@resources/exportneptune.json;filename=parameters.json" http://localhost:8080/chouette_iev/referentials/bidon/exporter/neptune
+
+# validation
+curl -v -F "file=@resources/validate.json;filename=parameters.json" http://localhost:8080/chouette_iev/referentials/bidon/validator
+
+# list des jobs
+curl -v http://localhost:8080/chouette_iev/referentials/bidon/jobs
+
+# detail d'un job en cours
+curl -v http://localhost:8080/chouette_iev/referentials/bidon/scheduled_jobs/<id>
+
+#cancel d'un job 
+curl -v -X DELETE http://localhost:8080/chouette_iev/referentials/bidon/scheduled_jobs/<id>
+
+# detail d'un job terminé
+curl -v http://localhost:8080/chouette_iev/referentials/bidon/terminated_jobs/<id>
+
+suppression d'un job 
+curl -v -X DELETE http://localhost:8080/chouette_iev/referentials/bidon/terminated_jobs/<id>
+
+# supression de tous les jobs
+curl -v -X DELETE http://localhost:8080/chouette_iev/referentials/bidon/jobs
+
+# récup de données : 
+#voir link dans les lists ou détails

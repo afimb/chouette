@@ -19,5 +19,21 @@ public class Todo implements java.io.Serializable {
 	@Setter
 	@XmlAttribute(name = "name")
 	private String name;
+	
+	private int toto;
+
+	/**
+	 * @return the toto
+	 */
+	public int getToto() {
+		return toto;
+	}
+
+	/**
+	 * @param toto the toto to set
+	 */
+	public void setToto(int toto) {
+		this.toto = toto;
+	}
 
 }

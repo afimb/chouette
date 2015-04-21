@@ -1,0 +1,10 @@
+{
+"parameters" :  {
+    "neptune-import": {
+        "user_name" : "Michel",
+        "name" : "job 1",
+        "clean_repository" : true,
+        "no_save" : false
+        }
+    }
+}

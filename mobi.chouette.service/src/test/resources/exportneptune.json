@@ -1,0 +1,13 @@
+{
+"parameters" :  {
+    "neptune-export": {
+        "user_name" : "Michel",
+        "name" : "job 1",
+        "organisation_name" : "Cityway",
+        "referential_name" : "données de test",
+        "add_metadata" : true,
+        "projection_type" : "27572",
+        "references_type" : "line"
+        }
+    }
+}

@@ -1,0 +1,15 @@
+{
+"parameters" :  {
+    "gtfs-export": {
+        "user_name" : "Michel",
+        "name" : "job 1",
+        "organisation_name" : "Cityway",
+        "referential_name" : "données de test",
+        "add_metadata" : true,
+        "references_type" : "line",
+        "id" : 909,
+        "object_id_prefix" : "Hastuscitura",
+        "time_zone" : "Europe/Paris"
+        }
+    }
+}
