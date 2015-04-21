@@ -16,15 +16,21 @@ public class JSONUtilTest {
 		model.setName("theName");
 		model.setUserName("theUserName");
 		model.setValue(Integer.valueOf(12));
+		model.getList().add("test");
+		JsonChildModel childModel = new JsonChildModel();
+		childModel.setData("myData");
+		childModel.getNames().add("myName");
+		model.setChild(childModel);
 		
 		String json = JSONUtil.toJSON(model);
-		Assert.assertEquals(json, "{\"json_model\":{\"name\":\"theName\",\"user_name\":\"theUserName\",\"value\":12}}", "json string");
+		Assert.assertEquals(json, "{\"json_model\":{\"name\":\"theName\",\"user_name\":\"theUserName\",\"value\":12,\"list\":[\"test\"],\"child\":{\"data\":\"myData\",\"names\":[\"myName\"]}}}", "json string");
 
 		JsonModel model2 = JSONUtil.fromJSON(json, JsonModel.class);
 		Assert.assertEquals(model2.getName(),model.getName(),"name");
 		Assert.assertEquals(model2.getUserName(),model.getUserName(),"user name");
 		Assert.assertEquals(model2.getValue(),model.getValue(),"value");
 	}
+
 	
 	@Test(groups = { "JSONUtil" }, description = "file conversion")
 	public void testFile() throws Exception {

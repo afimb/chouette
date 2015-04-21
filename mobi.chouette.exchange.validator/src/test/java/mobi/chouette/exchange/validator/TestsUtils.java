@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Set;
 
+import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.model.AccessLink;
