@@ -43,7 +43,7 @@ public class ActionReport {
 	@XmlElement(name = "failure")
 	private String failure;
 		
-	public FileInfo findFileFileInfo(String name)
+	public FileInfo findFileInfo(String name)
 	{
 		for (FileInfo fileInfo : files) 
 		{

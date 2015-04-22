@@ -11,6 +11,7 @@ import javax.ws.rs.core.MediaType;
 
 import mobi.chouette.dao.JobDAO;
 import mobi.chouette.dao.SchemaDAO;
+import mobi.chouette.model.api.Job;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -158,6 +159,38 @@ public class JobServiceManager implements ServiceConstants {
 		}
 		return true;
 	}
+	
+	
+	/**
+	 * find next waiting job on referential <br/>
+	 * return null if a job is STARTED or if no job is SCHEDULED
+	 * 
+	 * @param referential
+	 * @return
+	 */
+	public JobService getNextJob(String referential)
+	{
+		Job job = jobDAO.getNextJob(referential);
+		if (job == null) return null;
+		return new JobService(job);
+	}
+	
+	
+	public void start(JobService jobService)
+	{
+		
+	}
+	
+	public void terminate(JobService jobService)
+	{
+		
+	}
+
+	public void abort(JobService jobService)
+	{
+		
+	}
+
 	
 	public static String getCommandName(String action, String type)
 	{

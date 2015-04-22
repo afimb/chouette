@@ -60,7 +60,7 @@ public class NeptuneValidationCommand implements Command, Constant {
 
 		String fileName = (String) context.get(FILE_NAME);
 
-		FileInfo fileInfo = report.findFileFileInfo(fileName);
+		FileInfo fileInfo = report.findFileInfo(fileName);
 
 		try {
 			Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
