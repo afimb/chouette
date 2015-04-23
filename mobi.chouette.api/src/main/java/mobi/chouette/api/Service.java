@@ -374,7 +374,8 @@ public class Service implements Constant {
 	// cancel job
 	@DELETE
 	@Path("/{ref}/scheduled_jobs/{id}")
-	public Response cancel(@PathParam("ref") String referential, @PathParam("id") Long id) {
+	public Response cancel(@PathParam("ref") String referential, @PathParam("id") Long id, String dummy) {
+		// dummy uses when sender call url with content (prevent a NullPointerException)
 		Response result = null;
 
 		Job job = getJob(id, referential);
@@ -441,7 +442,8 @@ public class Service implements Constant {
 	// delete report
 	@DELETE
 	@Path("/{ref}/terminated_jobs/{id}")
-	public Response remove(@PathParam("ref") String referential, @PathParam("id") Long id) {
+	public Response remove(@PathParam("ref") String referential, @PathParam("id") Long id, String dummy) {
+		// dummy uses when sender call url with content (prevent a NullPointerException)
 		Response result = null;
 
 		Job job = getJob(id, referential);
@@ -454,11 +456,13 @@ public class Service implements Constant {
 			try {
 				FileUtils.deleteDirectory(path.toFile());
 			} catch (IOException e) {
+				log.error("fail to delete directory",e);
 				throw new WebApplicationException(Status.NOT_FOUND);
 			}
 			log.info("[DSU] job deleted : " + job.getId());
-			builder = Response.ok();
+			builder = Response.ok("deleted");
 		} else {
+			log.error("fail to delete job");
 			throw new WebApplicationException(Status.NOT_FOUND);
 		}
 		builder.header(api_version_key, api_version);
@@ -470,7 +474,8 @@ public class Service implements Constant {
 	// delete referential
 	@DELETE
 	@Path("/{ref}/jobs")
-	public Response drop(@PathParam("ref") String referential) {
+	public Response drop(@PathParam("ref") String referential, String dummy) {
+		// dummy uses when sender call url with content (prevent a NullPointerException)
 		Response result = null;
 
 		// check params
