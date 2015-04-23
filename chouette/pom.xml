@@ -111,6 +111,12 @@
 			<type>ejb</type>			
 			<version>${project.version}</version>
 		</dependency>
+      <dependency>
+         <groupId>${project.groupId}</groupId>
+         <artifactId>mobi.chouette.service</artifactId>
+         <type>ejb</type>        
+         <version>${project.version}</version>
+      </dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>mobi.chouette.api</artifactId>

@@ -43,9 +43,10 @@ import mobi.chouette.dao.SchemaDAO;
 import mobi.chouette.model.api.Job;
 import mobi.chouette.model.api.Job.STATUS;
 import mobi.chouette.model.api.Link;
-import mobi.chouette.scheduler.CommandNamingRules;
 import mobi.chouette.scheduler.Parameters;
 import mobi.chouette.scheduler.Scheduler;
+import mobi.chouette.service.JobService;
+import mobi.chouette.service.JobServiceManager;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -54,8 +55,6 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
-import mobi.chouette.service.JobService;
-import mobi.chouette.service.JobServiceManager;
 
 @Path("/referentials")
 @Log4j

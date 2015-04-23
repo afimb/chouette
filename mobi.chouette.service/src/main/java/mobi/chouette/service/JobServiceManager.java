@@ -8,6 +8,8 @@ import java.util.Map;
 
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
+import javax.ejb.Startup;
+import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
@@ -19,11 +21,13 @@ import mobi.chouette.model.api.Job;
 import org.apache.commons.lang.StringUtils;
 
 @Singleton(name = JobServiceManager.BEAN_NAME)
-public class JobServiceManager implements ServiceConstants {
+@Startup
+
+public class JobServiceManager {
 
 	public static final String BEAN_NAME = "JobServiceManager";
 	
-    @Inject
+	@EJB
     SchemaDAO schemas;
 
     @EJB
@@ -82,10 +86,10 @@ public class JobServiceManager implements ServiceConstants {
     
     private void validateParams( String referential, String action, String type, Map<String, InputStream> parts) throws Exception {
         if (!schemaDAO.getSchemaListing().contains(referential)) {
-            throw new Exception(UNKNOWN_REFERENTIAL);
+            throw new Exception(ServiceConstants.UNKNOWN_REFERENTIAL);
         }
         if (!commandExists(action, type)) {
-            throw new Exception(UNKNOWN_ACTION);
+            throw new Exception(ServiceConstants.UNKNOWN_ACTION);
         }
     }
 
