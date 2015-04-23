@@ -54,6 +54,8 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import mobi.chouette.service.JobService;
+import mobi.chouette.service.JobServiceManager;
 
 @Path("/referentials")
 @Log4j
@@ -65,6 +67,9 @@ public class Service implements Constant {
 
 	@Inject
 	JobDAO jobDAO;
+
+	@Inject
+	JobServiceManager jobServiceManager;
 
 	@Inject
 	SchemaDAO schemas;
@@ -82,58 +87,24 @@ public class Service implements Constant {
 	@Produces({ MediaType.APPLICATION_JSON })
 	public Response upload(@PathParam("ref") String referential, @PathParam("action") String action,
 			@PathParam("type") String type, MultipartFormDataInput input) {
-		Response result = null;
-
-		if (type != null && type.startsWith("/")) {
-			type = type.substring(1);
-		}
-		// check params
-		if (!schemas.getSchemaListing().contains(referential)) {
-			throw new WebApplicationException("unknown referential", Status.BAD_REQUEST);
-		}
-		if (!checkCommand(action, type)) {
-			throw new WebApplicationException("unknown action or type", Status.BAD_REQUEST);
-		}
-
-		log.info(Color.YELLOW + "[DSU] schedule action referential : " + referential + " action: " + action
-				+ (type == null ? "" : " type : " + type) + Color.NORMAL);
-
-		Job job = new Job(referential, action, type);
+            
+		log.info(Color.CYAN + "Call upload referential = " + referential + ", action = " + action
+				+ (type == null ? "" : ", type = " + type) + Color.NORMAL);
+ 
+                // convertir MultipartFormDataInput input en Map<String, InputStream> parts
+                JobService job = null;
 		try {
-			// create job
-			jobDAO.create(job);
-
-			// add location link
-			{
-				String href = MessageFormat.format("/{0}/{1}/scheduled_jobs/{2,number,#}", ROOT_PATH,
-						job.getReferential(), job.getId());
-				Link link = new Link(MediaType.APPLICATION_JSON, Link.LOCATION_REL, Link.GET_METHOD, href);
-				job.getLinks().add(link);
-			}
-			// add cancel link
-			{
-				String href = MessageFormat.format("/{0}/{1}/scheduled_jobs/{2,number,#}", ROOT_PATH,
-						job.getReferential(), job.getId());
-				Link link = new Link(MediaType.APPLICATION_JSON, Link.CANCEL_REL, Link.DELETE_METHOD, href);
-				job.getLinks().add(link);
-			}
-
-			// mkdir
-			java.nio.file.Path dir = getJobDataDirectory(job.getReferential(), job.getId());
-			if (Files.exists(dir)) {
-				jobDAO.delete(job);
-			}
-			Files.createDirectories(dir);
-			job.setPath(dir.toString());
+			// create job service
+                        job = jobServiceManager.upload(referential, action, type, null);
 
 			// upload data
-			uploadParts(input, job);
+			uploadParts(input, job.getJob());
 			if (job.getAction().equals(EXPORTER)) {
 				job.setFilename("export_" + job.getType() + "_" + job.getId() + ".zip");
 			}
 
 			// schedule job
-			jobDAO.update(job);
+			jobDAO.update(job.getJob());
 			scheduler.schedule(job.getReferential());
 
 			// // TODO for debug
@@ -151,22 +122,21 @@ public class Service implements Constant {
 			ResponseBuilder builder = Response.accepted();
 			builder.location(URI.create(MessageFormat.format("{0}/{1}/scheduled_jobs/{2,number,#}", ROOT_PATH,
 					job.getReferential(), job.getId())));
-			result = builder.build();
+                        
+			return builder.build();
 		} catch (WebApplicationException e) {
 			log.error(e);
-			if (job.getId() != null) {
-				jobDAO.delete(job);
+			if (job!=null && job.getId() != null) {
+				jobDAO.delete( job.getJob());
 			}
 			throw e;
 		} catch (Exception e) {
 			log.error(e);
-			if (job.getId() != null) {
-				jobDAO.delete(job);
+			if (job!=null && job.getId() != null) {
+				jobDAO.delete( job.getJob());
 			}
 			throw new WebApplicationException(e.getMessage(), Status.INTERNAL_SERVER_ERROR);
 		}
-
-		return result;
 	}
 
 	private void uploadParts(MultipartFormDataInput input, Job job) throws IOException {
@@ -561,14 +531,7 @@ public class Service implements Constant {
 
 	}
 
-	private boolean checkCommand(String action, String type) {
-		try {
-			Class.forName(CommandNamingRules.getCommandName(action, type));
-		} catch (ClassNotFoundException e) {
-			return false;
-		}
-		return true;
-	}
+
 
 	private Collection<JobInfo> build(Collection<Job> list) {
 

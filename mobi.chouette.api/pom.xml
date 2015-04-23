@@ -1,95 +1,101 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>mobi.chouette</groupId>
-		<artifactId>mobi.chouette</artifactId>
-		<version>3.0.0</version>
-	</parent>
-	<artifactId>mobi.chouette.api</artifactId>
-	<packaging>war</packaging>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>mobi.chouette</groupId>
+        <artifactId>mobi.chouette</artifactId>
+        <version>3.0.0</version>
+    </parent>
+    <artifactId>mobi.chouette.api</artifactId>
+    <packaging>war</packaging>
 
-   <properties>
-      <project.rootDir>${project.basedir}/..</project.rootDir>
-      <skipInitDb>true</skipInitDb>
-   </properties>
-	<dependencies>
+    <properties>
+        <project.rootDir>${project.basedir}/..</project.rootDir>
+        <skipInitDb>true</skipInitDb>
+    </properties>
+    <dependencies>
 
-		<!-- Default Dependencies -->
-		<dependency>
-			<groupId>org.projectlombok</groupId>
-			<artifactId>lombok</artifactId>
-			<scope>provided</scope>
-		</dependency>
+        <!-- Default Dependencies -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>org.jboss.spec</groupId>
-			<artifactId>jboss-javaee-7.0</artifactId>
-			<type>pom</type>
-			<scope>provided</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.jboss.spec</groupId>
+            <artifactId>jboss-javaee-7.0</artifactId>
+            <type>pom</type>
+            <scope>provided</scope>
+        </dependency>
 
-		<!-- Others Dependencies -->
-      <dependency>
-         <groupId>org.codehaus.jettison</groupId>
-         <artifactId>jettison</artifactId>
-         <scope>provided</scope>
-      </dependency>
+        <!-- Others Dependencies -->
+        <dependency>
+            <groupId>org.codehaus.jettison</groupId>
+            <artifactId>jettison</artifactId>
+            <scope>provided</scope>
+        </dependency>
 
-		<!-- JBoss RESTEasy -->
-		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-jaxrs</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-jaxb-provider</artifactId>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.resteasy</groupId>
-			<artifactId>resteasy-multipart-provider</artifactId>
-			<scope>provided</scope>
-		</dependency>
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.jboss.resteasy</groupId> -->
-<!-- 			<artifactId>resteasy-cache-core</artifactId> -->
-<!-- 			<scope>provided</scope> -->
-<!-- 		</dependency> -->
-		<dependency>
-			<groupId>org.jboss.marshalling</groupId>
-			<artifactId>jboss-marshalling-river</artifactId>
-			<scope>provided</scope>
-		</dependency>
+        <!-- JBoss RESTEasy -->
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jaxrs</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jaxb-provider</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-multipart-provider</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <!-- 		<dependency> -->
+        <!-- 			<groupId>org.jboss.resteasy</groupId> -->
+        <!-- 			<artifactId>resteasy-cache-core</artifactId> -->
+        <!-- 			<scope>provided</scope> -->
+        <!-- 		</dependency> -->
+        <dependency>
+            <groupId>org.jboss.marshalling</groupId>
+            <artifactId>jboss-marshalling-river</artifactId>
+            <scope>provided</scope>
+        </dependency>
 
 
-		<!-- Modules -->
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>mobi.chouette.scheduler</artifactId>
-			<type>ejb</type>
-			<version>${project.version}</version>
-			<scope>provided</scope>
-		</dependency>
-	</dependencies>
+        <!-- Modules -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>mobi.chouette.scheduler</artifactId>
+            <type>ejb</type>
+            <version>${project.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>mobi.chouette.service</artifactId>
+            <type>ejb</type>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
 
-	<build>
-		<finalName>${project.artifactId}</finalName>
-		<plugins>
-			<plugin>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>${version.war.plugin}</version>
-				<configuration>
-					<failOnMissingWebXml>true</failOnMissingWebXml>
-					<archive>
-						<manifestEntries>
-							<Dependencies>org.jboss.resteasy.resteasy-jaxrs, org.jboss.resteasy.resteasy-jaxb-provider, org.jboss.resteasy.resteasy-multipart-provider, org.infinispan
-							</Dependencies>
-						</manifestEntries>
-					</archive>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+    <build>
+        <finalName>${project.artifactId}</finalName>
+        <plugins>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>${version.war.plugin}</version>
+                <configuration>
+                    <failOnMissingWebXml>true</failOnMissingWebXml>
+                    <archive>
+                        <manifestEntries>
+                            <Dependencies>org.jboss.resteasy.resteasy-jaxrs, org.jboss.resteasy.resteasy-jaxb-provider, org.jboss.resteasy.resteasy-multipart-provider, org.infinispan
+                            </Dependencies>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
