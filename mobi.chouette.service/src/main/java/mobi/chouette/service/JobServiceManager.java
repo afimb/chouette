@@ -5,14 +5,12 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.ejb.EJB;
+import javax.ejb.Singleton;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.ws.rs.core.MediaType;
 import javax.inject.Inject;
-import static mobi.chouette.common.Constant.ROOT_PATH;
 
 import mobi.chouette.dao.JobDAO;
 import mobi.chouette.dao.SchemaDAO;
@@ -20,8 +18,11 @@ import mobi.chouette.model.api.Job;
 
 import org.apache.commons.lang.StringUtils;
 
+@Singleton(name = JobServiceManager.BEAN_NAME)
 public class JobServiceManager implements ServiceConstants {
 
+	public static final String BEAN_NAME = "JobServiceManager";
+	
     @Inject
     SchemaDAO schemas;
 

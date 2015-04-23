@@ -96,18 +96,21 @@
          <artifactId>mobi.chouette.common</artifactId>
          <type>ejb</type>
          <version>${project.version}</version>
+            <scope>provided</scope>
       </dependency>
       <dependency>
          <groupId>${project.groupId}</groupId>
          <artifactId>mobi.chouette.dao</artifactId>
          <type>ejb</type>
          <version>${project.version}</version>
+            <scope>provided</scope>
       </dependency>
       <dependency>
          <groupId>${project.groupId}</groupId>
          <artifactId>mobi.chouette.persistence.hibernate</artifactId>
          <type>ejb</type>
          <version>${project.version}</version>
+            <scope>provided</scope>
       </dependency>
 
       <dependency>
@@ -115,36 +118,42 @@
          <artifactId>mobi.chouette.exchange.neptune</artifactId>
          <type>ejb</type>
          <version>${project.version}</version>
+            <scope>provided</scope>
       </dependency>
       <dependency>
          <groupId>${project.groupId}</groupId>
          <artifactId>mobi.chouette.exchange.gtfs</artifactId>
          <type>ejb</type>
          <version>${project.version}</version>
+            <scope>provided</scope>
       </dependency>
       <dependency>
          <groupId>${project.groupId}</groupId>
          <artifactId>mobi.chouette.exchange.netex</artifactId>
          <type>ejb</type>
          <version>${project.version}</version>
+            <scope>provided</scope>
       </dependency>
       <dependency>
          <groupId>${project.groupId}</groupId>
          <artifactId>mobi.chouette.exchange.kml</artifactId>
          <type>ejb</type>
          <version>${project.version}</version>
+            <scope>provided</scope>
       </dependency>
       <dependency>
          <groupId>${project.groupId}</groupId>
          <artifactId>mobi.chouette.exchange.hub</artifactId>
          <type>ejb</type>
          <version>${project.version}</version>
+            <scope>provided</scope>
       </dependency>
       <dependency>
          <groupId>${project.groupId}</groupId>
          <artifactId>mobi.chouette.exchange.validator</artifactId>
          <type>ejb</type>
          <version>${project.version}</version>
+            <scope>provided</scope>
       </dependency>
 
    </dependencies>
