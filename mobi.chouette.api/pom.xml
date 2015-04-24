@@ -67,13 +67,6 @@
         <!-- Modules -->
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>mobi.chouette.scheduler</artifactId>
-            <type>ejb</type>
-            <version>${project.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>mobi.chouette.service</artifactId>
             <type>ejb</type>
             <version>${project.version}</version>

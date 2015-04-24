@@ -17,13 +17,14 @@ import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.model.api.Job;
 import mobi.chouette.model.api.Job.STATUS;
 import mobi.chouette.persistence.hibernate.ContextHolder;
+import mobi.chouette.service.JobService;
 
 @Log4j
 @ToString(of = { "job" })
 public class Task implements Callable<Job.STATUS>, ManagedTask, Constant {
 
 	@Getter
-	private Job job;
+	private JobService job;
 
 	private Map<String, String> properties;
 
@@ -31,13 +32,13 @@ public class Task implements Callable<Job.STATUS>, ManagedTask, Constant {
 	
 	private Context context = new Context();
 
-	public Task(Job job, Map<String, String> properties, ManagedTaskListener listener) 
+	public Task(JobService job2, Map<String, String> properties, ManagedTaskListener listener) 
 	{
-		this.job = job;
+		this.job = job2;
 		this.properties = properties;
 		this.listener = listener;
-		context.put(JOB_ID, job.getId());
-		context.put(PATH, job.getPath());
+		context.put(JOB_ID, job2.getId());
+		context.put(PATH, job2.getPath());
 		
 	}
 
@@ -55,7 +56,7 @@ public class Task implements Callable<Job.STATUS>, ManagedTask, Constant {
 			Command command = CommandFactory.create(initialContext,
 					MainCommand.class.getName());
 			command.execute(context);
-			result = job.getStatus();
+			//result = job.getStatus();
 		} catch (Exception e) {
 			log.error(e);
 			result = STATUS.ABORTED;

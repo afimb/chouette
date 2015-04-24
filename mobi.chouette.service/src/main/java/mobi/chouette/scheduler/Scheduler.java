@@ -23,13 +23,14 @@ import javax.ws.rs.core.MediaType;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Constant;
-import mobi.chouette.dao.JobDAO;
 import mobi.chouette.dao.SchemaDAO;
 import mobi.chouette.model.api.Job;
 import mobi.chouette.model.api.Job.STATUS;
 import mobi.chouette.model.api.Link;
 import mobi.chouette.model.util.JobUtil;
 import mobi.chouette.persistence.hibernate.ContextHolder;
+import mobi.chouette.service.JobService;
+import mobi.chouette.service.JobServiceManager;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
@@ -43,7 +44,7 @@ public class Scheduler {
 	public static final String BEAN_NAME = "Scheduler";
 
 	@EJB
-	JobDAO jobDAO;
+	JobServiceManager jobManager;
 
 	@EJB
 	SchemaDAO schemaDAO;
@@ -55,20 +56,9 @@ public class Scheduler {
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void schedule(String referential) {
 
-		Job job = jobDAO.getNextJob(referential);
+		JobService job = jobManager.getNextJob(referential);
 		if (job != null) {
-			job.setStatus(STATUS.STARTED);
-
-			// remove cancel link
-//			Iterables.removeIf(job.getLinks(), new Predicate<Link>() {
-//				@Override
-//				public boolean apply(Link link) {
-//					return link.getRel().equals(Link.CANCEL_REL);
-//				}
-//			});
-
-			job.setUpdated(new Date());
-			jobDAO.update(job);
+			jobManager.start(job);
 
 			Map<String, String> properties = new HashMap<String, String>();
 			Task task = new Task(job, properties, new TaskListener());
@@ -79,106 +69,79 @@ public class Scheduler {
 	@PostConstruct
 	private void initialize() {
 
-		List<Job> list = jobDAO.findAll();
+		List<JobService> list = jobManager.findAll();
 
 		// abort started job
-		Collection<Job> scheduled = Collections2.filter(list, new Predicate<Job>() {
+		Collection<JobService> scheduled = Collections2.filter(list, new Predicate<JobService>() {
 			@Override
-			public boolean apply(Job job) {
+			public boolean apply(JobService job) {
 				return job.getStatus() == STATUS.STARTED ;
 			}
 		});
-		for (Job job : scheduled) {
-			job.setStatus(STATUS.ABORTED);
-
-			// remove location link
-			Iterables.removeIf(job.getLinks(), new Predicate<Link>() {
-				@Override
-				public boolean apply(Link link) {
-					return link.getRel().equals(Link.LOCATION_REL) || link.getRel().equals(Link.CANCEL_REL);
-				}
-			});
-
-			// set delete link
-			job.getLinks().clear();
-			Link link = new Link();
-			link.setType(MediaType.APPLICATION_JSON);
-			link.setRel(Link.DELETE_REL);
-			link.setMethod(Link.DELETE_METHOD);
-			String href = MessageFormat.format("/{0}/{1}/terminated_jobs/{2,number,#}", Constant.ROOT_PATH,
-					job.getReferential(), job.getId());
-			link.setHref(href);
-			JobUtil.updateLink(job, link); //job.getLinks().add(link);
-			link = new Link();
-			link.setType(MediaType.APPLICATION_JSON);
-			link.setRel(Link.LOCATION_REL);
-			link.setMethod(Link.GET_METHOD);
-			href = MessageFormat.format("/{0}/{1}/terminated_jobs/{2,number,#}",
-					Constant.ROOT_PATH, job.getReferential(), job.getId());
-			link.setHref(href);
-			JobUtil.updateLink(job, link); //job.getLinks().add(link);
-
-			job.setUpdated(new Date());
-			jobDAO.update(job);
+		for (JobService job : scheduled) {
+			jobManager.abort(job);
+			
 		}
 
 		// schedule created job
-		Collection<Job> created = Collections2.filter(list, new Predicate<Job>() {
+		Collection<JobService> created = Collections2.filter(list, new Predicate<JobService>() {
 			@Override
-			public boolean apply(Job job) {
+			public boolean apply(JobService job) {
 				return job.getStatus() == STATUS.SCHEDULED;
 			}
 		});
-		for (Job job : created) {
+		for (JobService job : created) {
 			schedule(job.getReferential());
 		}
 	}
 
 	public boolean cancel(Long id) {
-		Job job = jobDAO.find(id);
-		if (job.getStatus().ordinal() <= STATUS.STARTED.ordinal()) {
-			job.setStatus(STATUS.CANCELED);
-
-			// TODO remove location and cancel link only
-			job.getLinks().clear();
-			// set delete link
-			Link link = new Link();
-			link.setType(MediaType.APPLICATION_JSON);
-			link.setRel(Link.DELETE_REL);
-			link.setMethod(Link.DELETE_METHOD);
-			String href = MessageFormat.format("/{0}/{1}/terminated_jobs/{2,number,#}", Constant.ROOT_PATH,
-					job.getReferential(), job.getId());
-			link.setHref(href);
-			JobUtil.updateLink(job, link); //job.getLinks().add(link);
-			link = new Link();
-			link.setType(MediaType.APPLICATION_JSON);
-			link.setRel(Link.LOCATION_REL);
-			link.setMethod(Link.GET_METHOD);
-			href = MessageFormat.format("/{0}/{1}/terminated_jobs/{2,number,#}",
-					Constant.ROOT_PATH, job.getReferential(), job.getId());
-			link.setHref(href);
-			JobUtil.updateLink(job, link); //job.getLinks().add(link);
-
-			job.setUpdated(new Date());
-			jobDAO.update(job);
-			return true;
-
-		}
+		JobService job = jobManager.getJobService(id);
+		
+		
+//		if (job.getStatus().ordinal() <= STATUS.STARTED.ordinal()) {
+//			job.setStatus(STATUS.CANCELED);
+//
+//			// TODO remove location and cancel link only
+//			job.getLinks().clear();
+//			// set delete link
+//			Link link = new Link();
+//			link.setType(MediaType.APPLICATION_JSON);
+//			link.setRel(Link.DELETE_REL);
+//			link.setMethod(Link.DELETE_METHOD);
+//			String href = MessageFormat.format("/{0}/{1}/terminated_jobs/{2,number,#}", Constant.ROOT_PATH,
+//					job.getReferential(), job.getId());
+//			link.setHref(href);
+//			JobUtil.updateLink(job, link); //job.getLinks().add(link);
+//			link = new Link();
+//			link.setType(MediaType.APPLICATION_JSON);
+//			link.setRel(Link.LOCATION_REL);
+//			link.setMethod(Link.GET_METHOD);
+//			href = MessageFormat.format("/{0}/{1}/terminated_jobs/{2,number,#}",
+//					Constant.ROOT_PATH, job.getReferential(), job.getId());
+//			link.setHref(href);
+//			JobUtil.updateLink(job, link); //job.getLinks().add(link);
+//
+//			job.setUpdated(new Date());
+//			jobDAO.update(job);
+//			return true;
+//
+//		}
 		return false;
 	}
 
 	public boolean delete(Long id) {
 		// TODO refactor to maintain deleted jobs without data
-		Job job = jobDAO.find(id);
-		if (job.getStatus().ordinal() > STATUS.STARTED.ordinal()) {
-			jobDAO.delete(job);
-			return true;
-		}
+//		Job job = jobDAO.find(id);
+//		if (job.getStatus().ordinal() > STATUS.STARTED.ordinal()) {
+//			jobDAO.delete(job);
+//			return true;
+//		}
 		return false;
 	}
 
 	public boolean deleteAll(String referential) {
-		jobDAO.deleteAll(referential);
+//		jobDAO.deleteAll(referential);
 		return true;
 	}
 	

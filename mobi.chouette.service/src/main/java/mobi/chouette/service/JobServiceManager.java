@@ -1,25 +1,34 @@
 package mobi.chouette.service;
 
+import static mobi.chouette.common.Constant.PARAMETERS_FILE;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
-import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.inject.Inject;
-import static mobi.chouette.common.Constant.PARAMETERS_FILE;
+import javax.ws.rs.core.MediaType;
 
 import mobi.chouette.dao.JobDAO;
 import mobi.chouette.dao.SchemaDAO;
 import mobi.chouette.model.api.Job;
+import mobi.chouette.model.api.Job.STATUS;
+import mobi.chouette.model.api.Link;
+import mobi.chouette.model.util.JobUtil;
 
 import org.apache.commons.lang.StringUtils;
+
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 
 @Singleton(name = JobServiceManager.BEAN_NAME)
 @Startup
@@ -140,7 +149,9 @@ public class JobServiceManager {
     }
 
     public void start(JobService jobService) {
-
+    	jobService.setStatus(STATUS.STARTED);
+    	jobService.setUpdated(new Date());
+		jobDAO.update(jobService.getJob());
     }
 
     public void terminate(JobService jobService) {
@@ -148,8 +159,49 @@ public class JobServiceManager {
     }
 
     public void abort(JobService jobService) {
+    	Job job = jobService.getJob();
+		job.setStatus(STATUS.ABORTED);
+
+		// remove location link
+		Iterables.removeIf(job.getLinks(), new Predicate<Link>() {
+			@Override
+			public boolean apply(Link link) {
+				return link.getRel().equals(Link.LOCATION_REL) || link.getRel().equals(Link.CANCEL_REL);
+			}
+		});
+
+		// set delete link
+		job.getLinks().clear();
+		Link link = new Link();
+		link.setType(MediaType.APPLICATION_JSON);
+		link.setRel(Link.DELETE_REL);
+		
+		JobUtil.updateLink(job, link); //job.getLinks().add(link);
+		link = new Link();
+		link.setType(MediaType.APPLICATION_JSON);
+		link.setRel(Link.LOCATION_REL);
+		
+		JobUtil.updateLink(job, link); //job.getLinks().add(link);
+
+		job.setUpdated(new Date());
+		jobDAO.update(job);
 
     }
+
+	public List<JobService> findAll() {
+		List<Job> jobs = jobDAO.findAll();
+		List<JobService> jobServices = new ArrayList<>(jobs.size());
+		for (Job job : jobs) {
+			jobServices.add(new JobService(job));
+		}
+		return jobServices;
+	}
+	
+	public JobService getJobService(Long id) {
+		Job job = jobDAO.find(id);
+		if (job != null) return new JobService(job);
+		return null;
+	}
 
     public static String getCommandName(String action, String type) {
         type = type == null ? "" : type;
@@ -159,5 +211,8 @@ public class JobServiceManager {
                 + StringUtils.capitalize(type)
                 + StringUtils.capitalize(action) + "Command";
     }
+
+	
+
 
 }
