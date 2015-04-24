@@ -13,14 +13,14 @@ public class CoreRuntimeException extends ChouetteRuntimeException {
 	private static final String PREFIX = "COR";
 	private CoreExceptionCode code;
 
-	public CoreRuntimeException(CoreExceptionCode code, String... args) {
-		super(args);
+	public CoreRuntimeException(CoreExceptionCode code, String message) {
+		super(message);
 		this.code = code;
 	}
 
 	public CoreRuntimeException(CoreExceptionCode code, Throwable cause,
-			String... args) {
-		super(cause, args);
+			String message) {
+		super(message,cause);
 		this.code = code;
 	}
 

@@ -14,14 +14,20 @@ public class RequestServiceException extends ServiceException {
 	private RequestExceptionCode requestExceptionCode;
     
 
-	public RequestServiceException(RequestExceptionCode requestExceptionCode, String... args) {
-		super(ServiceExceptionCode.INVALID_REQUEST, args);
+	public RequestServiceException(RequestExceptionCode requestExceptionCode, String message) {
+		super(ServiceExceptionCode.INVALID_REQUEST, message);
 		this.requestExceptionCode = requestExceptionCode;
 	}
 
-	public RequestServiceException(RequestExceptionCode requestExceptionCode, Throwable cause,
-			String... args) {
-		super(ServiceExceptionCode.INVALID_REQUEST, cause, args);
+	public RequestServiceException(RequestExceptionCode requestExceptionCode, String message, Throwable cause
+			) {
+		super(ServiceExceptionCode.INVALID_REQUEST, message, cause);
+		this.requestExceptionCode = requestExceptionCode;
+	}
+	
+	public RequestServiceException(RequestExceptionCode requestExceptionCode, Throwable cause
+			) {
+		super(ServiceExceptionCode.INVALID_REQUEST, cause);
 		this.requestExceptionCode = requestExceptionCode;
 	}
 

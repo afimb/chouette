@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -30,14 +29,10 @@ import mobi.chouette.dao.SchemaDAO;
 import mobi.chouette.model.api.Job;
 import mobi.chouette.model.api.Job.STATUS;
 import mobi.chouette.model.api.Link;
-import mobi.chouette.model.util.JobUtil;
 import mobi.chouette.scheduler.Scheduler;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
-
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 
 @Singleton(name = JobServiceManager.BEAN_NAME)
 @Startup
@@ -123,7 +118,7 @@ public class JobServiceManager {
 
 		// TODO controler inputStreams par la Commande
 
-		if (!checkCommand(action, type)) {
+		if (!checkCommandInputs(action, type,inputStreamsByName)) {
 			throw new RequestServiceException(RequestExceptionCode.ACTION_TYPE_MISMATCH, "");
 		}
 	}
@@ -332,9 +327,17 @@ public class JobServiceManager {
 		+ StringUtils.capitalize(action) + "Command";
 	}
 
-	private boolean checkCommand(String action, String type) {
+	public static String getCommandInputValidatorName(String action, String type) {
+		type = type == null ? "" : type;
+		return "mobi.chouette.exchange."
+		+ (type.isEmpty() ? "" : type + ".") + action + "."
+		+ StringUtils.capitalize(type)
+		+ StringUtils.capitalize(action) + "InputValidator";
+	}
+
+	private boolean checkCommandInputs(String action, String type, Map<String, InputStream> inputStreamsByName) {
 		try {
-			Class.forName( JobServiceManager.getCommandName(action, type));
+			Class.forName( getCommandInputValidatorName(action, type));
 		} catch (ClassNotFoundException e) {
 			return false;
 		}

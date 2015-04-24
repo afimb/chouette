@@ -18,14 +18,19 @@ public class ServiceException extends ChouetteException {
 	private static final String PREFIX = "SVR";
 	private ServiceExceptionCode code;
 
-	public ServiceException(ServiceExceptionCode code, String... args) {
-		super(args);
+	public ServiceException(ServiceExceptionCode code, String message) {
+		super(message);
 		this.code = code;
 	}
 
-	public ServiceException(ServiceExceptionCode code, Throwable cause,
-			String... args) {
-		super(cause, args);
+	public ServiceException(ServiceExceptionCode code, Throwable cause) {
+		super(code.toString(), cause);
+		this.code = code;
+	}
+	
+	public ServiceException(ServiceExceptionCode code, String message, Throwable cause
+			) {
+		super(message, cause);
 		this.code = code;
 	}
 
