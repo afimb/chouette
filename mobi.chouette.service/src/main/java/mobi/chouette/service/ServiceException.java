@@ -12,6 +12,9 @@ import mobi.chouette.core.ChouetteException;
  * @author marc
  */
 public class ServiceException extends ChouetteException {
+	
+	private static final long serialVersionUID = 6057054896800493583L;
+	
 	private static final String PREFIX = "SVR";
 	private ServiceExceptionCode code;
 

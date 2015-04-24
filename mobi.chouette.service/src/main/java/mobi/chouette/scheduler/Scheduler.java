@@ -1,9 +1,8 @@
 package mobi.chouette.scheduler;
 
-import java.text.MessageFormat;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
@@ -18,24 +17,22 @@ import javax.ejb.TransactionAttributeType;
 import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.concurrent.ManagedTaskListener;
 import javax.naming.InitialContext;
-import javax.ws.rs.core.MediaType;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
-import mobi.chouette.common.Constant;
 import mobi.chouette.dao.SchemaDAO;
-import mobi.chouette.model.api.Job;
 import mobi.chouette.model.api.Job.STATUS;
-import mobi.chouette.model.api.Link;
-import mobi.chouette.model.util.JobUtil;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 import mobi.chouette.service.JobService;
 import mobi.chouette.service.JobServiceManager;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
-import com.google.common.collect.Iterables;
 
+/**
+ * @author michel
+ *
+ */
 @Singleton(name = Scheduler.BEAN_NAME)
 @Startup
 @Log4j
@@ -51,6 +48,8 @@ public class Scheduler {
 
 	@Resource(lookup = "java:comp/DefaultManagedExecutorService")
 	ManagedExecutorService executor;
+	
+	Map<Long,Future<STATUS>> startedTasks = new Hashtable<>();
 
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -62,7 +61,8 @@ public class Scheduler {
 
 			Map<String, String> properties = new HashMap<String, String>();
 			Task task = new Task(job, properties, new TaskListener());
-			executor.submit(task);
+			Future<STATUS> future = executor.submit(task);
+			startedTasks.put(job.getId(), future);
 		}
 	}
 
@@ -95,56 +95,25 @@ public class Scheduler {
 		}
 	}
 
-	public boolean cancel(Long id) {
-		JobService job = jobManager.getJobService(id);
+	
+	/**
+	 * cancel task 
+	 * 
+	 * @param job
+	 * @return
+	 */
+	public boolean cancel(JobService job) {
+	
+		// remove prevents for multiple calls
+		Future<STATUS> future = startedTasks.remove(job.getId());
+	    if (future != null) 
+	    {
+	    	future.cancel(true);
+	    }
 		
-		
-//		if (job.getStatus().ordinal() <= STATUS.STARTED.ordinal()) {
-//			job.setStatus(STATUS.CANCELED);
-//
-//			// TODO remove location and cancel link only
-//			job.getLinks().clear();
-//			// set delete link
-//			Link link = new Link();
-//			link.setType(MediaType.APPLICATION_JSON);
-//			link.setRel(Link.DELETE_REL);
-//			link.setMethod(Link.DELETE_METHOD);
-//			String href = MessageFormat.format("/{0}/{1}/terminated_jobs/{2,number,#}", Constant.ROOT_PATH,
-//					job.getReferential(), job.getId());
-//			link.setHref(href);
-//			JobUtil.updateLink(job, link); //job.getLinks().add(link);
-//			link = new Link();
-//			link.setType(MediaType.APPLICATION_JSON);
-//			link.setRel(Link.LOCATION_REL);
-//			link.setMethod(Link.GET_METHOD);
-//			href = MessageFormat.format("/{0}/{1}/terminated_jobs/{2,number,#}",
-//					Constant.ROOT_PATH, job.getReferential(), job.getId());
-//			link.setHref(href);
-//			JobUtil.updateLink(job, link); //job.getLinks().add(link);
-//
-//			job.setUpdated(new Date());
-//			jobDAO.update(job);
-//			return true;
-//
-//		}
-		return false;
-	}
-
-	public boolean delete(Long id) {
-		// TODO refactor to maintain deleted jobs without data
-//		Job job = jobDAO.find(id);
-//		if (job.getStatus().ordinal() > STATUS.STARTED.ordinal()) {
-//			jobDAO.delete(job);
-//			return true;
-//		}
-		return false;
-	}
-
-	public boolean deleteAll(String referential) {
-//		jobDAO.deleteAll(referential);
 		return true;
 	}
-	
+
 
 
 	class TaskListener implements ManagedTaskListener {
@@ -173,7 +142,15 @@ public class Scheduler {
 			log.info(Color.SUCCESS + "task submitted : " + task + Color.NORMAL);
 		}
 
+		/**
+		 * launch next task if exists
+		 * 
+		 * @param task
+		 */
 		private void schedule(final Task task) {
+			// remove task from stated map
+			startedTasks.remove(task.getJob().getId());
+			// launch next task
 			executor.execute(new Runnable() {
 
 				@Override

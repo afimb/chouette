@@ -47,6 +47,7 @@ import mobi.chouette.scheduler.Parameters;
 import mobi.chouette.scheduler.Scheduler;
 import mobi.chouette.service.JobService;
 import mobi.chouette.service.JobServiceManager;
+import mobi.chouette.service.ServiceException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
@@ -358,17 +359,24 @@ public class Service implements Constant {
 	@Path("/{ref}/scheduled_jobs/{id}")
 	public Response cancel(@PathParam("ref") String referential, @PathParam("id") Long id, String dummy) {
 		// dummy uses when sender call url with content (prevent a NullPointerException)
+		log.info(Color.CYAN + "Call cancel referential = " + referential + ", id = " + id + Color.NORMAL);
+
 		Response result = null;
 
-		Job job = getJob(id, referential);
-
-		// build response
-		ResponseBuilder builder = null;
-		if (scheduler.cancel(job.getId())) {
-			builder = Response.ok();
-		} else {
-			throw new WebApplicationException(Status.NOT_FOUND);
+		try
+		{
+			jobServiceManager.cancel(referential, id);
 		}
+		catch (ServiceException ex)
+		{
+			throw new WebApplicationException(ex.getCode(),Status.NOT_FOUND);
+		}
+		catch (Exception ex)
+		{
+			log.error("cancel failure",ex);
+			throw new WebApplicationException(ex.getMessage(),Status.INTERNAL_SERVER_ERROR);
+		}
+		ResponseBuilder builder = Response.ok();
 		result = builder.build();
 		builder.header(api_version_key, api_version);
 
@@ -428,25 +436,22 @@ public class Service implements Constant {
 		// dummy uses when sender call url with content (prevent a NullPointerException)
 		Response result = null;
 
-		Job job = getJob(id, referential);
+		try
+		{
+			jobServiceManager.remove(referential, id);
+		}
+		catch (ServiceException ex)
+		{
+			throw new WebApplicationException(ex.getCode(),Status.NOT_FOUND);
+		}
+		catch (Exception ex)
+		{
+			log.error("remove failure",ex);
+			throw new WebApplicationException(ex.getMessage(),Status.INTERNAL_SERVER_ERROR);
+		}
 
 		// build response
-		ResponseBuilder builder = null;
-		if (scheduler.delete(job.getId())) {
-			java.nio.file.Path path = Paths.get(System.getProperty("user.home"), ROOT_PATH, job.getReferential(),
-					"data", job.getId().toString());
-			try {
-				FileUtils.deleteDirectory(path.toFile());
-			} catch (IOException e) {
-				log.error("fail to delete directory",e);
-				throw new WebApplicationException(Status.NOT_FOUND);
-			}
-			log.info("[DSU] job deleted : " + job.getId());
-			builder = Response.ok("deleted");
-		} else {
-			log.error("fail to delete job");
-			throw new WebApplicationException(Status.NOT_FOUND);
-		}
+		ResponseBuilder builder = Response.ok("deleted");
 		builder.header(api_version_key, api_version);
 		result = builder.build();
 
@@ -460,26 +465,23 @@ public class Service implements Constant {
 		// dummy uses when sender call url with content (prevent a NullPointerException)
 		Response result = null;
 
-		// check params
-		if (!schemas.getSchemaListing().contains(referential)) {
-			throw new WebApplicationException("unknown referential", Status.NOT_FOUND);
+		try
+		{
+			jobServiceManager.drop(referential);
+		}
+		catch (ServiceException ex)
+		{
+			throw new WebApplicationException(ex.getCode(),Status.NOT_FOUND);
+		}
+		catch (Exception ex)
+		{
+			log.error("drop failure",ex);
+			throw new WebApplicationException(ex.getMessage(),Status.INTERNAL_SERVER_ERROR);
 		}
 
+		
 		// build response
-		ResponseBuilder builder = null;
-		if (scheduler.deleteAll(referential)) {
-			java.nio.file.Path path = Paths.get(System.getProperty("user.home"), ROOT_PATH, referential);
-
-			try {
-				FileUtils.deleteDirectory(path.toFile());
-			} catch (IOException e) {
-				throw new WebApplicationException(Status.NOT_FOUND);
-			}
-			log.info("[DSU] referential deleted : " + referential);
-			builder = Response.ok();
-		} else {
-			throw new WebApplicationException(Status.NOT_FOUND);
-		}
+		ResponseBuilder builder = Response.ok("");
 		builder.header(api_version_key, api_version);
 		result = builder.build();
 

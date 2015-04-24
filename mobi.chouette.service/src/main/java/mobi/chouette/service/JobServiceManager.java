@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +19,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.ws.rs.core.MediaType;
 
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.dao.JobDAO;
 import mobi.chouette.dao.SchemaDAO;
 import mobi.chouette.model.api.Job;
@@ -26,6 +28,7 @@ import mobi.chouette.model.api.Link;
 import mobi.chouette.model.util.JobUtil;
 import mobi.chouette.scheduler.Scheduler;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 
 import com.google.common.base.Predicate;
@@ -37,13 +40,10 @@ import mobi.chouette.common.JSONUtil;
 
 @Singleton(name = JobServiceManager.BEAN_NAME)
 @Startup
-
+@Log4j
 public class JobServiceManager {
 
     public static final String BEAN_NAME = "JobServiceManager";
-
-    @EJB
-    SchemaDAO schemas;
 
     @EJB
     JobDAO jobDAO;
@@ -139,21 +139,10 @@ public class JobServiceManager {
 
     }
 
-    public void cancel() {
-
-    }
-
     public void terminatedJob() {
 
     }
 
-    public void remove() {
-
-    }
-
-    public void drop() {
-
-    }
 
     public boolean commandExists(String action, String type) {
         try {
@@ -185,11 +174,86 @@ public class JobServiceManager {
         jobDAO.update(jobService.getJob());
     }
 
-    public void terminate(JobService jobService) {
 
-    }
+	public void cancel(String referential, Long id) throws ServiceException {
+		JobService jobService = getJobService(referential,id);
+		if (jobService.getStatus().ordinal() <= STATUS.STARTED.ordinal()) {
 
-    public void abort(JobService jobService) {
+			if (jobService.getStatus().equals(STATUS.STARTED)) 
+			{
+				scheduler.cancel(jobService);
+			}
+
+			jobService.setStatus(STATUS.CANCELED);
+
+			// remove location link only
+			jobService.removeLink(Link.CANCEL_REL);
+			// set delete link
+			jobService.addLink(MediaType.APPLICATION_JSON, Link.DELETE_REL);
+
+			jobService.setUpdated(new Date());
+			jobDAO.update(jobService.getJob());
+
+		}
+
+	}
+
+	public void remove(String referential, Long id) throws ServiceException {
+		JobService jobService = getJobService(referential,id);
+		if (jobService.getStatus().ordinal() <= STATUS.STARTED.ordinal()) {
+			throw new RequestServiceException(RequestExceptionCode.SCHEDULED_JOB, "referential = "+referential+" ,id = "+id);
+		}
+		java.nio.file.Path dir = getJobDataDirectory(jobService);
+		try {
+			FileUtils.deleteDirectory(dir.toFile());
+		} catch (IOException e) {
+			log.error("fail to delete directory",e);
+		}
+
+		jobDAO.delete(jobService.getJob());
+	}
+
+	@TransactionAttribute(TransactionAttributeType.NEVER)
+	public void drop(String referential) throws ServiceException
+	{
+        List<JobService> jobServices = findAll(referential);
+        // supprimer en premier les jobs en attente, puis les autres
+        for (Iterator<JobService> iterator = jobServices.iterator(); iterator.hasNext();) {
+			JobService jobService = iterator.next();
+			if (jobService.getStatus().equals(STATUS.SCHEDULED))
+			{
+				jobDAO.delete(jobService.getJob());
+				java.nio.file.Path dir = getJobDataDirectory(jobService);
+				try {
+					FileUtils.deleteDirectory(dir.toFile());
+				} catch (IOException e) {
+					log.error("fail to delete directory",e);
+				}
+				iterator.remove();
+			}
+		}
+        for (JobService jobService : jobServices) {
+        	if (jobService.getStatus().equals(STATUS.STARTED))
+			{
+        		scheduler.cancel(jobService);
+			}
+    		java.nio.file.Path dir = getJobDataDirectory(jobService);
+    		try {
+    			FileUtils.deleteDirectory(dir.toFile());
+    		} catch (IOException e) {
+    			log.error("fail to delete directory",e);
+    		}
+			jobDAO.delete(jobService.getJob());
+		}
+        
+	}
+
+
+	public void terminate(JobService jobService) {
+
+	}
+
+   public void abort(JobService jobService) {
         Job job = jobService.getJob();
         job.setStatus(STATUS.ABORTED);
 
@@ -219,14 +283,6 @@ public class JobServiceManager {
 
     }
 
-    public List<JobService> findAll() {
-        List<Job> jobs = jobDAO.findAll();
-        List<JobService> jobServices = new ArrayList<>(jobs.size());
-        for (Job job : jobs) {
-            jobServices.add(new JobService(job));
-        }
-        return jobServices;
-    }
 
     public JobService getJobService(Long id) {
         Job job = jobDAO.find(id);
@@ -236,8 +292,35 @@ public class JobServiceManager {
         return null;
     }
 
-    public static String getCommandName(String action, String type) {
-        type = type == null ? "" : type;
+	public List<JobService> findAll() {
+		List<Job> jobs = jobDAO.findAll();
+		List<JobService> jobServices = new ArrayList<>(jobs.size());
+		for (Job job : jobs) {
+			jobServices.add(new JobService(job));
+		}
+		return jobServices;
+	}
+	
+	public List<JobService> findAll(String referential) {
+		List<Job> jobs  = jobDAO.findByReferential(referential);
+		List<JobService> jobServices = new ArrayList<>(jobs.size());
+		for (Job job : jobs) {
+			jobServices.add(new JobService(job));
+		}
+		return jobServices;
+	}
+
+
+	public JobService getJobService(String referential, Long id) throws ServiceException
+	{
+		Job job = jobDAO.find(id);
+		if (job != null && job.getReferential().equals(referential)) return new JobService(job);
+		throw new RequestServiceException(RequestExceptionCode.UNKNOWN_JOB, "referential = "+referential+" ,id = "+id);
+	}
+
+	public static String getCommandName(String action, String type) {
+		type = type == null ? "" : type;
+
 
         return "mobi.chouette.exchange."
                 + (type.isEmpty() ? "" : type + ".") + action + "."
