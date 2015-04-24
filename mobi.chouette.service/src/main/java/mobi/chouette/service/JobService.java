@@ -28,6 +28,7 @@ import static mobi.chouette.service.ServiceConstants.DATA_REL;
 import static mobi.chouette.service.ServiceConstants.DUPPLICATE_DATA;
 import static mobi.chouette.service.ServiceConstants.DUPPLICATE_PARAMETERS;
 import static mobi.chouette.service.ServiceConstants.PARAMETERS_REL;
+import org.apache.commons.io.IOUtils;
 import org.codehaus.jettison.json.JSONException;
 
 @Data
@@ -54,18 +55,16 @@ public class JobService implements ServiceConstants {
 	 * @param referential : referential
 	 * @param action : action
 	 * @param type : type (may be null)
+	 * @param inputStreamsByName : inputStream hash for action including parameters and data
 	 */
-        public JobService(String referential, String action, String type, Map<String, InputStream> parts) throws ServiceException {
-            job = new Job();
-            setReferential(referential);
-            setAction(action);
-            setType(type);
+        public JobService(String referential, String action, String type, Map<String, InputStream> inputStreamsByName) throws ServiceException {
+            job = new Job(referential, action, type);
 
             if (!checkCommand(action, type)) {
                 throw new WebApplicationException("unknown action or type", Response.Status.BAD_REQUEST);
             }
             
-            for (Map.Entry<String, InputStream> entry : parts.entrySet()) {
+            for (Map.Entry<String, InputStream> entry : inputStreamsByName.entrySet()) {
                 String name = entry.getKey();
                 InputStream stream = entry.getValue();
                 addPart( name, stream);
@@ -73,30 +72,19 @@ public class JobService implements ServiceConstants {
 
             // valider et conserver sous forme de String le part "paraemeters.json"
             // à découper en paramètres action et validation
-            setParametersFromParts( parts);
-            
-            // Ajouter 2 variables membre
-            
-            // Revoir l'exception pour détailler une catégorie: argument, erreur interne, ...
-            
+            Parameters parameters = readParameters( inputStreamsByName.get( PARAMETERS_FILE));
+            actionParameters = parameters.getConfiguration();
+            validationParameters = parameters.getValidation();
         }
         
-        private void setParametersFromParts(Map<String, InputStream> parts) throws RequestServiceException {
-            InputStream parameterStream = parts.get( PARAMETERS_FILE);
-            
-            // if null throw Exception
-            
+        private Parameters readParameters( InputStream parameterInputStream) throws RequestServiceException {
             try {
                 StringWriter writer = new StringWriter();
-                // IO convert parameterStream in StringWriter
-                
-                Parameters parameters = JSONUtil.fromJSON( writer.toString(), Parameters.class);
-                actionParameters = parameters.getConfiguration();
-                validationParameters = parameters.getValidation();
-            } catch (Exception ex) {
+                IOUtils.copy(parameterInputStream, writer, "UTF-8");
+                return JSONUtil.fromJSON(writer.toString(), Parameters.class);
+            }  catch ( Exception ex) {
                 throw new RequestServiceException( RequestExceptionCode.INVALID_PARAMETERS, ex);
             }
-            
         }
         
     private void addPart( String name, InputStream stream) throws ServiceException {
