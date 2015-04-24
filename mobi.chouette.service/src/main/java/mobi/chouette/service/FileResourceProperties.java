@@ -24,9 +24,9 @@ public class FileResourceProperties {
         public FileResourceProperties(AbstractParameter actionParameters, ValidationParameters validationParameters,
                 InputStream actionDataInputStream) {
             
-            actionParameters = actionParameters;
-            validationParameters = validationParameters;
-            actionDataInputStream = actionDataInputStream;
+            this.actionParameters = actionParameters;
+            this.validationParameters = validationParameters;
+            this.actionDataInputStream = actionDataInputStream;
             
         }
 }

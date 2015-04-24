@@ -6,17 +6,16 @@ import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
 import javax.ws.rs.core.MediaType;
 
 import lombok.Data;
 import lombok.experimental.Delegate;
-import static mobi.chouette.common.Constant.PARAMETERS_FILE;
 import mobi.chouette.common.JSONUtil;
 import mobi.chouette.model.api.Job;
 import mobi.chouette.model.api.Link;
 import mobi.chouette.scheduler.Parameters;
-import static mobi.chouette.service.ServiceConstants.DATA_REL;
-import static mobi.chouette.service.ServiceConstants.PARAMETERS_REL;
+
 import org.apache.commons.io.IOUtils;
 
 @Data

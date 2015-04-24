@@ -52,7 +52,7 @@ public class Scheduler {
 	Map<Long,Future<STATUS>> startedTasks = new Hashtable<>();
 
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	//@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void schedule(String referential) {
 
 		JobService jobService = jobManager.getNextJob(referential);

@@ -26,9 +26,12 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.JSONUtil;
 import mobi.chouette.dao.JobDAO;
 import mobi.chouette.dao.SchemaDAO;
+import mobi.chouette.exchange.InputValidator;
+import mobi.chouette.exchange.InputValidatorFactory;
 import mobi.chouette.model.api.Job;
 import mobi.chouette.model.api.Job.STATUS;
 import mobi.chouette.model.api.Link;
+import mobi.chouette.scheduler.Parameters;
 import mobi.chouette.scheduler.Scheduler;
 
 import org.apache.commons.io.FileUtils;
@@ -50,14 +53,23 @@ public class JobServiceManager {
 	@EJB 
 	Scheduler scheduler;
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public JobService upload(String referential, String action, String type, Map<String, InputStream> inputStreamsByName) throws ServiceException {
+		JobService jobService = create(referential,action,type,inputStreamsByName);
+		// Lancer la tache
+		scheduler.schedule(jobService.getReferential());
+		return jobService;
+	}
+
+	// @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+	public JobService create(String referential, String action, String type, Map<String, InputStream> inputStreamsByName) throws ServiceException {
 
 		// Valider les parametres
 		validateParams(referential, action, type, inputStreamsByName);
 
 		// Instancier le modèle du service 'upload'
 		JobService jobService = new JobService(referential, action, type, inputStreamsByName);
+
+		validateInputs(jobService);
 
 		try {
 			// Enregistrer ce qui est persistent en base
@@ -66,9 +78,8 @@ public class JobServiceManager {
 
 			// Enregistrer des paramètres à conserver sur fichier
 			fileResourceSave(jobService);
-
-			// Lancer la tache
-			scheduler.schedule(jobService.getReferential());
+			
+			jobDAO.update(jobService.getJob());
 
 			return jobService;
 
@@ -90,6 +101,11 @@ public class JobServiceManager {
 				jobDAO.delete(jobService.getJob());
 			}
 			Files.createDirectories(dir);
+			
+			Parameters parameters = new Parameters();
+			parameters.setConfiguration(jobService.getActionParameters());
+			parameters.setValidation(jobService.getValidationParameters());
+			JSONUtil.toJSON( Paths.get(jobService.getPath(), PARAMETERS_FILE), parameters);
 
 			JSONUtil.toJSON( Paths.get(jobService.getPath(), ACTION_PARAMETERS_FILE), jobService.getActionParameters());
 
@@ -116,11 +132,11 @@ public class JobServiceManager {
 			throw new RequestServiceException(RequestExceptionCode.MISSING_PARAMETERS, "");
 		}
 
-		// TODO controler inputStreams par la Commande
+		// TODO controler inputStreams par la Commande impossible ici car il faut extraire Parameters.json
 
-		if (!checkCommandInputs(action, type,inputStreamsByName)) {
-			throw new RequestServiceException(RequestExceptionCode.ACTION_TYPE_MISMATCH, "");
-		}
+		//		if (!checkCommandInputs(action, type,inputStreamsByName)) {
+		//			throw new RequestServiceException(RequestExceptionCode.ACTION_TYPE_MISMATCH, "");
+		//		}
 	}
 
 	public void download() {
@@ -156,6 +172,7 @@ public class JobServiceManager {
 	 * @param referential
 	 * @return
 	 */
+	// @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public JobService getNextJob(String referential) {
 		Job job = jobDAO.getNextJob(referential);
 		if (job == null) {
@@ -172,7 +189,7 @@ public class JobServiceManager {
 		jobDAO.update(jobService.getJob());
 	}
 
-	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+	// @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public void cancel(String referential, Long id) throws ServiceException {
 		JobService jobService = getJobService(referential,id);
 		if (jobService.getStatus().ordinal() <= STATUS.STARTED.ordinal()) {
@@ -196,7 +213,7 @@ public class JobServiceManager {
 
 	}
 
-	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+	// @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public void remove(String referential, Long id) throws ServiceException {
 		JobService jobService = getJobService(referential,id);
 		if (jobService.getStatus().ordinal() <= STATUS.STARTED.ordinal()) {
@@ -212,7 +229,7 @@ public class JobServiceManager {
 		jobDAO.delete(jobService.getJob());
 	}
 
-	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+	// @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public void drop(String referential) throws ServiceException
 	{
 		List<JobService> jobServices = findAll(referential);
@@ -271,7 +288,7 @@ public class JobServiceManager {
 	}
 
 	public void abort(JobService jobService) {
-		
+
 		jobService.setStatus(STATUS.ABORTED);
 
 		// remove cancel link only
@@ -335,12 +352,20 @@ public class JobServiceManager {
 		+ StringUtils.capitalize(action) + "InputValidator";
 	}
 
-	private boolean checkCommandInputs(String action, String type, Map<String, InputStream> inputStreamsByName) {
-		try {
-			Class.forName( getCommandInputValidatorName(action, type));
-		} catch (ClassNotFoundException e) {
-			return false;
+	private void validateInputs(JobService jobService) throws ServiceException 
+	{
+		try
+		{
+			InputValidator validator = InputValidatorFactory.create(getCommandInputValidatorName(jobService.getAction(), jobService.getType()));
+			Class.forName( getCommandInputValidatorName(jobService.getAction(), jobService.getType()));
+			if (!validator.check(jobService.getActionParameters(), jobService.getValidationParameters(), jobService.getFilename()))
+			{
+				throw new RequestServiceException(RequestExceptionCode.ACTION_TYPE_MISMATCH, "");
+			}
+		} catch (Exception e) {
+			throw new ServiceException(ServiceExceptionCode.INTERNAL_ERROR, e.getMessage());
 		}
-		return true;
+
+		return;
 	} 
 }
