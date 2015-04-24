@@ -29,9 +29,9 @@ import mobi.chouette.exchange.neptune.exporter.producer.VehicleJourneyProducer;
 import mobi.chouette.exchange.neptune.exporter.util.NeptuneObjectUtil;
 import mobi.chouette.exchange.neptune.jaxb.JaxbNeptuneFileConverter;
 import mobi.chouette.exchange.neptune.model.PTLink;
+import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.FileInfo;
 import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
-import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.Company;
@@ -83,12 +83,15 @@ public class ChouettePTNetworkProducer implements Constant {
 	{
 		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
 		String rootDirectory = (String) context.get(PATH);
-		
+
 		NeptuneExportParameters parameters = (NeptuneExportParameters) context.get(CONFIGURATION);
 		boolean addExtension = parameters.isAddExtension();
 		String projectionType = parameters.getProjectionType();
-		if (!projectionType.toUpperCase().startsWith("EPSG:"))
-			projectionType = "EPSG:"+projectionType;
+		if (projectionType != null && !projectionType.isEmpty())
+		{
+			if (!projectionType.toUpperCase().startsWith("EPSG:"))
+				projectionType = "EPSG:"+projectionType;
+		}
 		Metadata metadata = (Metadata) context.get(METADATA); 
 
 		ChouettePTNetworkType rootObject = AbstractJaxbNeptuneProducer.tridentFactory.createChouettePTNetworkType();
@@ -173,7 +176,7 @@ public class ChouettePTNetworkProducer implements Constant {
 				}
 			}
 			if (metadata != null)
-			metadata.getTemporalCoverage().update(timetable.getStartOfPeriod(), timetable.getEndOfPeriod());
+				metadata.getTemporalCoverage().update(timetable.getStartOfPeriod(), timetable.getEndOfPeriod());
 		}
 
 
@@ -181,7 +184,7 @@ public class ChouettePTNetworkProducer implements Constant {
 		ChouetteLineDescription.Line jaxbLine = lineProducer.produce(collection.getLine(),addExtension);
 		chouetteLineDescription.setLine(jaxbLine);
 		rootObject.setChouetteLineDescription(chouetteLineDescription);
-		
+
 		if (collection.getLine().getRoutingConstraints() != null)
 		{
 			for (StopArea routingConstraint : collection.getLine().getRoutingConstraints())
@@ -255,12 +258,12 @@ public class ChouettePTNetworkProducer implements Constant {
 		fileItem.setName(fileName);
 		fileItem.setStatus(FILE_STATE.OK);
 		report.getFiles().add(fileItem);
-		
+
 		if (metadata != null)
 			metadata.getResources().add(metadata.new Resource(fileName + ".xml", 
-                NeptuneObjectPresenter.getName(collection.getNetwork()), 
-                NeptuneObjectPresenter.getName(collection.getLine())));
-		
+					NeptuneObjectPresenter.getName(collection.getNetwork()), 
+					NeptuneObjectPresenter.getName(collection.getLine())));
+
 
 	}
 

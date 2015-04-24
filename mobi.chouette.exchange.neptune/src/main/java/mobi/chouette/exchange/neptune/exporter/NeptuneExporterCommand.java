@@ -98,6 +98,7 @@ public class NeptuneExporterCommand implements Command, Constant, ReportConstant
 			ActionReport report = (ActionReport) context.get(REPORT);
 			log.error("invalid parameters for neptune export "
 					+ configuration.getClass().getName());
+			report.setResult(STATUS_ERROR);
 			report.setFailure("invalid parameters for neptune export "
 					+ configuration.getClass().getName());
 			return ERROR;
@@ -118,6 +119,14 @@ public class NeptuneExporterCommand implements Command, Constant, ReportConstant
 		
 
 		String type = parameters.getReferencesType().toLowerCase();
+		// set default type 
+		if (type == null || type.isEmpty() || type.equalsIgnoreCase("all"))
+		{
+			// all lines
+			type = "line";
+			parameters.setIds(null);
+		}
+
 		List<Object> ids = null;
 		if (parameters.getIds() != null) {
 			ids = new ArrayList<Object>(parameters.getIds());

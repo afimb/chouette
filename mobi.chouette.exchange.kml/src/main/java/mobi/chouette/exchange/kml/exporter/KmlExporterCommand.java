@@ -33,6 +33,7 @@ import mobi.chouette.exchange.exporter.CompressCommand;
 import mobi.chouette.exchange.exporter.SaveMetadataCommand;
 import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.Line;
@@ -44,7 +45,7 @@ import com.jamonapi.MonitorFactory;
 
 @Log4j
 @Stateless(name = KmlExporterCommand.COMMAND)
-public class KmlExporterCommand implements Command, Constant {
+public class KmlExporterCommand implements Command, Constant, ReportConstant {
 
 	public static final String COMMAND = "KmlExporterCommand";
 
@@ -96,14 +97,33 @@ public class KmlExporterCommand implements Command, Constant {
 			// fatal wrong parameters
 			ActionReport report = (ActionReport) context.get(REPORT);
 			log.error("invalid parameters for kml export " + configuration.getClass().getName());
+			report.setResult(STATUS_ERROR);
 			report.setFailure("invalid parameters for kml export " + configuration.getClass().getName());
 			progression.dispose(context);
 			return ERROR;
 		}
 
 		KmlExportParameters parameters = (KmlExportParameters) configuration;
+		if (parameters.getStartDate() != null && parameters.getEndDate() != null)
+		{
+			if (parameters.getStartDate().after(parameters.getEndDate()))
+			{
+				ActionReport report = (ActionReport) context.get(REPORT);
+				report.setResult(STATUS_ERROR);
+				report.setFailure("end date before start date");
+				return ERROR;
+				
+			}
+		}
 
 		String type = parameters.getReferencesType().toLowerCase();
+		// set default type 
+		if (type == null || type.isEmpty() || type.equalsIgnoreCase("all"))
+		{
+			// all lines
+			type = "line";
+			parameters.setIds(null);
+		}
 
 		try {
 			Path path = Paths.get(context.get(PATH).toString(), OUTPUT);
