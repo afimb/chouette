@@ -114,10 +114,10 @@ public class Service implements Constant {
 
             return builder.build();
         } catch (ServiceException e) {
-            log.error(e);
+            log.error( e.getCode() + ", "+e.getMessage()+", ",e);
             throw toWebApplicationException(e);
         } catch (Exception e) {
-            log.error(e);
+            log.error( e.getMessage()+", ", e);
             throw new WebApplicationException(e.getMessage(), Status.INTERNAL_SERVER_ERROR);
         }
     }
