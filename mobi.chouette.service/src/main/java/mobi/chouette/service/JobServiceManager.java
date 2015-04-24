@@ -65,11 +65,14 @@ public class JobServiceManager {
 
         try {
             // Enregistrer ce qui est persistent en base
-            // Les liens sont créés par anticipations sur l'enregistrements des paramètres reçus
+            // Les liens sont créés par anticipation sur l'enregistrements des paramètres reçus
             jobDAO.create(jobService.getJob());
 
             // Enregistrer des paramètres à conserver sur fichier
             fileResourceSave(jobService);
+
+            // Lancer la tache
+            scheduler.schedule(jobService.getReferential());
 
             return jobService;
 
