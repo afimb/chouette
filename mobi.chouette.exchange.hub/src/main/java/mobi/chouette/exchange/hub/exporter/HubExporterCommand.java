@@ -100,14 +100,33 @@ public class HubExporterCommand implements Command, Constant, ReportConstant {
 			// fatal wrong parameters
 			ActionReport report = (ActionReport) context.get(REPORT);
 			log.error("invalid parameters for hub export " + configuration.getClass().getName());
+			report.setResult(STATUS_ERROR);
 			report.setFailure("invalid parameters for hub export " + configuration.getClass().getName());
 			progression.dispose(context);
 			return ERROR;
 		}
 
 		HubExportParameters parameters = (HubExportParameters) configuration;
+		if (parameters.getStartDate() != null && parameters.getEndDate() != null)
+		{
+			if (parameters.getStartDate().after(parameters.getEndDate()))
+			{
+				ActionReport report = (ActionReport) context.get(REPORT);
+				report.setResult(STATUS_ERROR);
+				report.setFailure("end date before start date");
+				return ERROR;
+				
+			}
+		}
 
 		String type = parameters.getReferencesType().toLowerCase();
+		// set default type 
+		if (type == null || type.isEmpty() || type.equalsIgnoreCase("all"))
+		{
+			// all lines
+			type = "line";
+			parameters.setIds(null);
+		}
 
 		try {
 			Path path = Paths.get(context.get(PATH).toString(), OUTPUT);
