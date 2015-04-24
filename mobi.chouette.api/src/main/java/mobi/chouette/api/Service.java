@@ -1,15 +1,17 @@
 package mobi.chouette.api;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
+import java.nio.file.Paths;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -47,6 +49,7 @@ import mobi.chouette.scheduler.Scheduler;
 import mobi.chouette.service.JobService;
 import mobi.chouette.service.JobServiceManager;
 import mobi.chouette.service.ServiceException;
+import mobi.chouette.service.ServiceExceptionCode;
 
 import org.apache.commons.io.FilenameUtils;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
@@ -54,10 +57,6 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
-import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
-import mobi.chouette.service.ServiceExceptionCode;
 
 @Path("/referentials")
 @Log4j
@@ -114,10 +113,10 @@ public class Service implements Constant {
 
             return builder.build();
         } catch (ServiceException e) {
-            log.error(e.getMessage(),e);
+            log.error( e.getCode() + ", "+e.getMessage(),e);
             throw toWebApplicationException(e);
         } catch (Exception e) {
-            log.error(e.getMessage(),e);
+            log.error( e.getMessage(), e);
             throw new WebApplicationException(e.getMessage(), Status.INTERNAL_SERVER_ERROR);
         }
     }
