@@ -154,6 +154,9 @@ public class Service implements Constant {
 		List<InputPart> list = input.getParts();
 		boolean parameterFound = false;
 		boolean dataFound = false;
+                
+                // vérifier la présence d'un part avec filename PARAMETERS_FILE
+                
 		for (InputPart part : list) {
 			MultivaluedMap<String, String> headers = part.getHeaders();
 			String header = headers.getFirst(HttpHeaders.CONTENT_DISPOSITION);

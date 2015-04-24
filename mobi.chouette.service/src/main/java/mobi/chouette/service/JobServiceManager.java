@@ -13,6 +13,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
+import static mobi.chouette.common.Constant.PARAMETERS_FILE;
 
 import mobi.chouette.dao.JobDAO;
 import mobi.chouette.dao.SchemaDAO;
@@ -37,12 +38,12 @@ public class JobServiceManager {
     SchemaDAO schemaDAO;
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public JobService upload(String referential, String action, String type, Map<String, InputStream> parts) throws ServiceException {
+    public JobService upload(String referential, String action, String type, Map<String, InputStream> inputStreamsByName) throws ServiceException {
 
         // Valider les parametres
-        validateParams( referential, action, type, parts);
+        validateParams( referential, action, type, inputStreamsByName);
 
-        JobService jobService = new JobService(referential, action, type, parts);
+        JobService jobService = new JobService(referential, action, type, inputStreamsByName);
 
         try {
             jobDAO.create(jobService.getJob());
@@ -74,12 +75,15 @@ public class JobServiceManager {
         return Paths.get(jobService.getPath());
     }
     
-    private void validateParams( String referential, String action, String type, Map<String, InputStream> parts) throws ServiceException {
+    private void validateParams( String referential, String action, String type, Map<String, InputStream> inputStreamsByName) throws ServiceException {
         if (!schemaDAO.getSchemaListing().contains(referential)) {
             throw new RequestServiceException( RequestExceptionCode.UNKNOWN_REFERENTIAL, "");
         }
         if (!commandExists(action, type)) {
             throw new RequestServiceException( RequestExceptionCode.UNKNOWN_ACTION, "");
+        }
+        if ( !inputStreamsByName.containsKey( PARAMETERS_FILE)){
+            throw new RequestServiceException( RequestExceptionCode.MISSING_PARAMETERS, "");
         }
     }
 
