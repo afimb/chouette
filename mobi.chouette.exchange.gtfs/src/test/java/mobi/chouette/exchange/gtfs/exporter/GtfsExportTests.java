@@ -162,7 +162,7 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 		Context context = initExportContext();
 		GtfsExportParameters configuration = (GtfsExportParameters) context.get(CONFIGURATION);
 		configuration.setAddMetadata(true);
-		configuration.setReferencesType("Lines");
+		configuration.setReferencesType("line");
 		configuration.setObjectIdPrefix("CITURA");
 		configuration.setTimeZone("Europe/Paris");
 		Command command = (Command) CommandFactory.create(initialContext,
@@ -200,7 +200,7 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 		Context context = initExportContext();
 		GtfsExportParameters configuration = (GtfsExportParameters) context.get(CONFIGURATION);
 		configuration.setAddMetadata(true);
-		configuration.setReferencesType("stop_area");
+		configuration.setReferencesType("stoparea");
 		configuration.setObjectIdPrefix("CITURA");
 		configuration.setTimeZone("Europe/Paris");
 		Command command = (Command) CommandFactory.create(initialContext,
