@@ -55,14 +55,14 @@ public class Scheduler {
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void schedule(String referential) {
 
-		JobService job = jobManager.getNextJob(referential);
-		if (job != null) {
-			jobManager.start(job);
+		JobService jobService = jobManager.getNextJob(referential);
+		if (jobService != null) {
+			jobManager.start(jobService);
 
 			Map<String, String> properties = new HashMap<String, String>();
-			Task task = new Task(job, properties, new TaskListener());
+			Task task = new Task(jobService, properties, new TaskListener());
 			Future<STATUS> future = executor.submit(task);
-			startedTasks.put(job.getId(), future);
+			startedTasks.put(jobService.getId(), future);
 		}
 	}
 
@@ -74,12 +74,12 @@ public class Scheduler {
 		// abort started job
 		Collection<JobService> scheduled = Collections2.filter(list, new Predicate<JobService>() {
 			@Override
-			public boolean apply(JobService job) {
-				return job.getStatus() == STATUS.STARTED ;
+			public boolean apply(JobService jobService) {
+				return jobService.getStatus() == STATUS.STARTED ;
 			}
 		});
-		for (JobService job : scheduled) {
-			jobManager.abort(job);
+		for (JobService jobService : scheduled) {
+			jobManager.abort(jobService);
 			
 		}
 
@@ -90,8 +90,8 @@ public class Scheduler {
 				return job.getStatus() == STATUS.SCHEDULED;
 			}
 		});
-		for (JobService job : created) {
-			schedule(job.getReferential());
+		for (JobService jobService : created) {
+			schedule(jobService.getReferential());
 		}
 	}
 
@@ -102,10 +102,10 @@ public class Scheduler {
 	 * @param job
 	 * @return
 	 */
-	public boolean cancel(JobService job) {
+	public boolean cancel(JobService jobService) {
 	
 		// remove prevents for multiple calls
-		Future<STATUS> future = startedTasks.remove(job.getId());
+		Future<STATUS> future = startedTasks.remove(jobService.getId());
 	    if (future != null) 
 	    {
 	    	future.cancel(true);
@@ -159,7 +159,7 @@ public class Scheduler {
 					try {
 						String referential = task.getJob().getReferential();
 						InitialContext initialContext = new InitialContext();
-						Scheduler scheduler = (Scheduler) initialContext.lookup("java:app/mobi.chouette.scheduler/"
+						Scheduler scheduler = (Scheduler) initialContext.lookup("java:app/mobi.chouette.service/"
 								+ BEAN_NAME);
 
 						scheduler.schedule(referential);
