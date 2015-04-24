@@ -21,6 +21,11 @@ public class NetexLineProducer implements Constant {
 
 		NetexExportParameters parameters = (NetexExportParameters) context.get(CONFIGURATION);
 		String projectionType = parameters.getProjectionType();
+		if (projectionType != null && !projectionType.isEmpty())
+		{
+			if (!projectionType.toUpperCase().startsWith("EPSG:"))
+				projectionType = "EPSG:"+projectionType;
+		}
 		for (StopArea stopArea : collection.getStopAreas()) 
 		{
 			stopArea.toProjection(projectionType);
