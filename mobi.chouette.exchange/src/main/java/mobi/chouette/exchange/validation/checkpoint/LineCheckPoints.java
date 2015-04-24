@@ -59,6 +59,7 @@ public class LineCheckPoints extends AbstractValidation<Line> implements Validat
 
 		// en cas d'erreur, on reporte autant de detail que de lignes en
 		// erreur
+		    // 3-Line-1 : TODO lignes homonymes sur le même réseau
 		
 			// 3-Line-2 : check if line has routes
 			check3Line2(report, bean);

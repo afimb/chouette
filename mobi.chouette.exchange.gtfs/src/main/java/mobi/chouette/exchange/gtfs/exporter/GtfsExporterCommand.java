@@ -120,7 +120,7 @@ public class GtfsExporterCommand implements Command, Constant {
 			GtfsExporter gtfsExporter = new GtfsExporter(path.toString());
 			context.put(GTFS_EXPORTER, gtfsExporter);
 
-			if (type.equals("stop_area"))
+			if (type.equals("stoparea"))
 			{
 				progression.execute(context);
 				progression.start(context, 1);

@@ -71,6 +71,7 @@ public class ITLValidator extends AbstractValidator implements Validator<StopAre
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 		if (localContext == null || localContext.isEmpty()) return new ValidationConstraints();
 		Context stopAreaContext = (Context) validationContext.get(StopAreaValidator.LOCAL_CONTEXT);
+		Context lineContext = (Context) validationContext.get(LineValidator.LOCAL_CONTEXT);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		Line line = getLine(referential);
 		Map<String, StopArea> stopAreas = referential.getStopAreas();
@@ -107,7 +108,11 @@ public class ITLValidator extends AbstractValidator implements Validator<StopAre
 					Detail errorItem = new Detail(
 							ITL_4,
 							new Location(sourceLocation,(String) objectContext.get(ITL_NAME)), stopArea.getAreaType().toString());
-                    // TODO add target 
+					Context stopAreaData = (Context) stopAreaContext.get(stopAreaId);
+					lineNumber = ((Integer) stopAreaData.get(LINE_NUMBER)).intValue();
+					columnNumber = ((Integer) stopAreaData.get(COLUMN_NUMBER)).intValue();
+					FileLocation targetLocation = new FileLocation(fileName, lineNumber, columnNumber);
+					errorItem.getTargets().add(new Location(targetLocation, stopAreaId));
 					addValidationError(context, ITL_4, errorItem);
 
 				}
@@ -123,7 +128,11 @@ public class ITLValidator extends AbstractValidator implements Validator<StopAre
 					Detail errorItem = new Detail(
 							ITL_5,
 							new Location(sourceLocation,objectId), lineId);
-					// TODO add line as target
+					Context lineData = (Context) lineContext.get(line.getObjectId());
+					lineNumber = ((Integer) lineData.get(LINE_NUMBER)).intValue();
+					columnNumber = ((Integer) lineData.get(COLUMN_NUMBER)).intValue();
+					FileLocation targetLocation = new FileLocation(fileName, lineNumber, columnNumber);
+					errorItem.getTargets().add(new Location(targetLocation, line.getObjectId()));
 					addValidationError(context, ITL_5, errorItem);
 				}
 
