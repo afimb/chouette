@@ -1,22 +1,34 @@
 package mobi.chouette.service;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.xml.bind.JAXBException;
+import javax.xml.stream.XMLStreamException;
 
 import lombok.Data;
 import lombok.experimental.Delegate;
 import static mobi.chouette.common.Constant.PARAMETERS_FILE;
+import mobi.chouette.common.JSONUtil;
+import mobi.chouette.exchange.parameters.AbstractParameter;
+import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.model.api.Job;
 import mobi.chouette.model.api.Link;
+import mobi.chouette.scheduler.Parameters;
 import static mobi.chouette.service.ServiceConstants.DATA_REL;
 import static mobi.chouette.service.ServiceConstants.DUPPLICATE_DATA;
 import static mobi.chouette.service.ServiceConstants.DUPPLICATE_PARAMETERS;
 import static mobi.chouette.service.ServiceConstants.PARAMETERS_REL;
+import org.codehaus.jettison.json.JSONException;
 
 @Data
 public class JobService implements ServiceConstants {
@@ -24,6 +36,8 @@ public class JobService implements ServiceConstants {
 	@Delegate(types = { Job.class }, excludes = { ExcludedJobMethods.class })
 	private Job job;
 
+        private AbstractParameter actionParameters;
+        private ValidationParameters validationParameters;
 	
 	/**
 	 * create a jobService on existing job
@@ -41,7 +55,7 @@ public class JobService implements ServiceConstants {
 	 * @param action : action
 	 * @param type : type (may be null)
 	 */
-        public JobService(String referential, String action, String type, Map<String, InputStream> parts) throws Exception {
+        public JobService(String referential, String action, String type, Map<String, InputStream> parts) throws ServiceException {
             job = new Job();
             setReferential(referential);
             setAction(action);
@@ -59,13 +73,33 @@ public class JobService implements ServiceConstants {
 
             // valider et conserver sous forme de String le part "paraemeters.json"
             // à découper en paramètres action et validation
+            setParametersFromParts( parts);
             
             // Ajouter 2 variables membre
             
             // Revoir l'exception pour détailler une catégorie: argument, erreur interne, ...
             
         }
-    private void addPart( String name, InputStream stream) throws Exception {
+        
+        private void setParametersFromParts(Map<String, InputStream> parts) throws RequestServiceException {
+            InputStream parameterStream = parts.get( PARAMETERS_FILE);
+            
+            // if null throw Exception
+            
+            try {
+                StringWriter writer = new StringWriter();
+                // IO convert parameterStream in StringWriter
+                
+                Parameters parameters = JSONUtil.fromJSON( writer.toString(), Parameters.class);
+                actionParameters = parameters.getConfiguration();
+                validationParameters = parameters.getValidation();
+            } catch (Exception ex) {
+                throw new RequestServiceException( RequestExceptionCode.INVALID_PARAMETERS, ex);
+            }
+            
+        }
+        
+    private void addPart( String name, InputStream stream) throws ServiceException {
         if (name.equals(PARAMETERS_FILE)) {
             addParameterPart( stream);
         } else {
@@ -73,21 +107,30 @@ public class JobService implements ServiceConstants {
         }
     }
 
-    private void addDataPart( InputStream stream) throws Exception {
+    private void addDataPart( InputStream stream) throws ServiceException {
         if (linkExists(DATA_REL)) {
-            throw new Exception(DUPPLICATE_DATA);
+            throw new RequestServiceException( RequestExceptionCode.DUPPLICATE_DATA, "");
 
         }
         // add link
         addLink(MediaType.APPLICATION_OCTET_STREAM, DATA_REL);
     }
 
-    private void addParameterPart( InputStream stream) throws Exception {
+    private void addParameterPart( InputStream stream) throws ServiceException {
         if (linkExists(PARAMETERS_REL)) {
-            throw new Exception(DUPPLICATE_PARAMETERS);
+            throw new RequestServiceException( RequestExceptionCode.DUPPLICATE_PARAMETERS, "");
         }
         // add link
         addLink(MediaType.APPLICATION_JSON, PARAMETERS_REL);
+        
+        try {
+            StringWriter stringWriter = new StringWriter();
+            // IO copy stream
+            if (5<4) throw new IOException();
+            strParameters = stringWriter.toString();
+        } catch ( IOException exception) {
+            throw new RequestServiceException(RequestExceptionCode.UNREADABLE_PARAMETERS, "");
+        }
     }
 	/**
 	 * return job file path <br/>

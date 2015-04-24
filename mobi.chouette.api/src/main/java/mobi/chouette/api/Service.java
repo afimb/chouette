@@ -89,7 +89,10 @@ public class Service implements Constant {
             
 		log.info(Color.CYAN + "Call upload referential = " + referential + ", action = " + action
 				+ (type == null ? "" : ", type = " + type) + Color.NORMAL);
- 
+
+                // Convertir les parametres fournies 
+                type = parseType( type);
+
                 // convertir MultipartFormDataInput input en Map<String, InputStream> parts
                 JobService job = null;
 		try {
@@ -137,6 +140,13 @@ public class Service implements Constant {
 			throw new WebApplicationException(e.getMessage(), Status.INTERNAL_SERVER_ERROR);
 		}
 	}
+    
+    private String parseType( String type) {
+        if (type != null && type.startsWith("/")) {
+            return type.substring(1);
+        }
+        return type;
+    }
 
 	private void uploadParts(MultipartFormDataInput input, Job job) throws IOException {
 
