@@ -24,6 +24,7 @@ import mobi.chouette.model.api.Job;
 import mobi.chouette.model.api.Job.STATUS;
 import mobi.chouette.model.api.Link;
 import mobi.chouette.model.util.JobUtil;
+import mobi.chouette.scheduler.Scheduler;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -37,14 +38,14 @@ public class JobServiceManager {
 
 	public static final String BEAN_NAME = "JobServiceManager";
 	
-	@EJB
-    SchemaDAO schemas;
-
     @EJB
     JobDAO jobDAO;
 
     @EJB
     SchemaDAO schemaDAO;
+    
+    @EJB 
+    Scheduler scheduler;
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
     public JobService upload(String referential, String action, String type, Map<String, InputStream> inputStreamsByName) throws ServiceException {
