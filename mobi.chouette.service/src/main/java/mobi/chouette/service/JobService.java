@@ -122,15 +122,7 @@ public class JobService implements ServiceConstants {
         }
         // add link
         addLink(MediaType.APPLICATION_JSON, PARAMETERS_REL);
-        
-        try {
-            StringWriter stringWriter = new StringWriter();
-            // IO copy stream
-            if (5<4) throw new IOException();
-            strParameters = stringWriter.toString();
-        } catch ( IOException exception) {
-            throw new RequestServiceException(RequestExceptionCode.UNREADABLE_PARAMETERS, "");
-        }
+
     }
 	/**
 	 * return job file path <br/>
