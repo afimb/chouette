@@ -70,13 +70,9 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 				continue;
 			if (jp.getStopPoints().equals(jp2.getStopPoints())) {
 				Location location = new Location(jp);
-
-				Map<String, Object> map = new HashMap<String, Object>();
-				map.put("stopPointCount", pointCount);
-				map.put("journeyPatternId", jp2.getObjectId());
 				Location targetLocation = new Location(jp2);
 
-				Detail detail = new Detail(JOURNEY_PATTERN_1, location, targetLocation);
+				Detail detail = new Detail(JOURNEY_PATTERN_1, location, Integer.toString(pointCount), targetLocation);
 				addValidationError(report, JOURNEY_PATTERN_1, detail);
 			}
 		}

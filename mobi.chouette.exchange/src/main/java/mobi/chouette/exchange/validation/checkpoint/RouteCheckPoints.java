@@ -345,7 +345,7 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 				targets[i++] = new Location(stopPoint.getContainedInStopArea());
 			}
 			Location location = new Location(route);
-			Detail detail = new Detail(ROUTE_8, location, targets);
+			Detail detail = new Detail(ROUTE_8, location, Integer.toString(points.size()),targets);
 			addValidationError(report, ROUTE_8, detail);
 		}
 	}

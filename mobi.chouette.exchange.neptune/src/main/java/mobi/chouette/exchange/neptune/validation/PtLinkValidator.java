@@ -80,7 +80,7 @@ public class PtLinkValidator extends AbstractValidator implements Validator<PTLi
 			{
 				Detail errorItem = new Detail(
 						PT_LINK_1,
-						new Location(sourceLocation,objectId), start);
+						new Location(sourceLocation,objectId), start, "startOfLink");
 				addValidationError(context,PT_LINK_1, errorItem);
 			}
 			String end = (String) objectContext.get(END_OF_LINK_ID);
@@ -88,7 +88,7 @@ public class PtLinkValidator extends AbstractValidator implements Validator<PTLi
 			{
 				Detail errorItem = new Detail(
 						PT_LINK_1,
-						new Location(sourceLocation,objectId), end);
+						new Location(sourceLocation,objectId), end, "endOfLink");
 				addValidationError(context,PT_LINK_1, errorItem);
 			}
 

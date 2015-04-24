@@ -2,7 +2,6 @@ package mobi.chouette.exchange.neptune.validation;
 
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -343,9 +342,6 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 							if (!containedIn.equals(
 									stopArea.getObjectId()))
 							{
-								Map<String, Object> map = new HashMap<String, Object>();
-								map.put(CENTROID_OF_AREA, centroidId);
-								map.put("containedIn",containedIn);
 								Detail errorItem = new Detail(
 										STOP_AREA_6,
 										new Location(sourceLocation,stopArea.getObjectId()), containedIn);

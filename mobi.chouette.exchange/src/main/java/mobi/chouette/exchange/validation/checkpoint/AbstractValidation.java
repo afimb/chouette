@@ -430,7 +430,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 				if (val > maxSize) {
 					Location location = new Location(object);
 
-					Detail detail = new Detail(testName + "_" + MAX_SIZE, location, column, value);
+					Detail detail = new Detail(testName + "_" + MAX_SIZE, location, value, column);
 					addValidationError(report, testName, detail);
 				}
 			} else {
@@ -438,7 +438,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 				if (value.length() > maxSize) {
 					Location location = new Location(object);
 
-					Detail detail = new Detail(testName + "_" + MAX_SIZE, location, column, value);
+					Detail detail = new Detail(testName + "_" + MAX_SIZE, location, value, column);
 					addValidationError(report, testName, detail);
 				}
 			}
@@ -472,7 +472,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 			if (val < minSize) {
 				Location location = new Location(object);
 
-				Detail detail = new Detail(testName + "_" + MIN_SIZE, location, column, value);
+				Detail detail = new Detail(testName + "_" + MIN_SIZE, location, value, column);
 				addValidationError(report, testName, detail);
 			}
 		} else {
@@ -480,7 +480,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 			if (value.length() < minSize) {
 				Location location = new Location(object);
 
-				Detail detail = new Detail(testName + "_" + MIN_SIZE, location, column, value);
+				Detail detail = new Detail(testName + "_" + MIN_SIZE, location, value, column);
 				addValidationError(report, testName, detail);
 			}
 		}
@@ -517,7 +517,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 			if (regex != null) {
 				if (!Pattern.matches(regex, value)) {
 					Location location = new Location(object);
-					Detail detail = new Detail(testName + "_" + PATTERN, location, column, value);
+					Detail detail = new Detail(testName + "_" + PATTERN, location, value, column);
 					addValidationError(report, testName, detail);
 				}
 			}
