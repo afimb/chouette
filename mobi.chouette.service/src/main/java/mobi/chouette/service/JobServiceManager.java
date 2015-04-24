@@ -30,14 +30,21 @@ import org.apache.commons.lang.StringUtils;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+import javax.xml.bind.JAXBException;
+import static mobi.chouette.common.Constant.ACTION_PARAMETERS_FILE;
+import static mobi.chouette.common.Constant.VALIDATION_PARAMETERS_FILE;
+import mobi.chouette.common.JSONUtil;
 
 @Singleton(name = JobServiceManager.BEAN_NAME)
 @Startup
 
 public class JobServiceManager {
 
-	public static final String BEAN_NAME = "JobServiceManager";
-	
+    public static final String BEAN_NAME = "JobServiceManager";
+
+    @EJB
+    SchemaDAO schemas;
+
     @EJB
     JobDAO jobDAO;
 
@@ -51,49 +58,69 @@ public class JobServiceManager {
     public JobService upload(String referential, String action, String type, Map<String, InputStream> inputStreamsByName) throws ServiceException {
 
         // Valider les parametres
-        validateParams( referential, action, type, inputStreamsByName);
+        validateParams(referential, action, type, inputStreamsByName);
 
+        // Instancier le modèle du service 'upload'
         JobService jobService = new JobService(referential, action, type, inputStreamsByName);
 
         try {
+            // Enregistrer ce qui est persistent en base
+            // Les liens sont créés par anticipations sur l'enregistrements des paramètres reçus
             jobDAO.create(jobService.getJob());
-            
-            fileResourceSave( jobService);
+
+            // Enregistrer des paramètres à conserver sur fichier
+            fileResourceSave(jobService);
 
             return jobService;
-            
+
         } catch (Exception ex) {
-            if (jobService != null && jobService.getJob().getId()!= null) {
+            if (jobService != null && jobService.getJob().getId() != null) {
                 jobDAO.delete(jobService.getJob());
             }
             // remove path if exists
 
-            throw new ServiceException(ServiceExceptionCode.INTERNAL_ERROR, ex) ;
+            throw new ServiceException(ServiceExceptionCode.INTERNAL_ERROR, ex);
         }
     }
-    
-    private void fileResourceSave(JobService jobService) throws IOException {
-        // mkdir
-        java.nio.file.Path dir = getJobDataDirectory(jobService);
-        if (Files.exists(dir)) {
-            jobDAO.delete(jobService.getJob());
+
+    private void fileResourceSave(JobService jobService) throws IOException, JAXBException {
+        if ( jobService.hasFileResourceProperties()) {
+            // mkdir
+            java.nio.file.Path dir = getJobDataDirectory(jobService);
+            if (Files.exists(dir)) {
+                jobDAO.delete(jobService.getJob());
+            }
+            Files.createDirectories(dir);
+            
+            JSONUtil.toJSON( Paths.get(jobService.getPath(), ACTION_PARAMETERS_FILE), jobService.getActionParameters());
+            
+            if ( jobService.getActionDataInputStream()!=null)
+                Files.copy(jobService.getActionDataInputStream(), Paths.get( jobService.getPath(), jobService.getFilename()));
+
+            if ( jobService.getValidationParameters()!=null)
+                JSONUtil.toJSON( Paths.get(jobService.getPath(), VALIDATION_PARAMETERS_FILE), jobService.getValidationParameters());
         }
-        Files.createDirectories(dir);
     }
 
     private java.nio.file.Path getJobDataDirectory(JobService jobService) {
         return Paths.get(jobService.getPath());
     }
-    
-    private void validateParams( String referential, String action, String type, Map<String, InputStream> inputStreamsByName) throws ServiceException {
+
+    private void validateParams(String referential, String action, String type, Map<String, InputStream> inputStreamsByName) throws ServiceException {
         if (!schemaDAO.getSchemaListing().contains(referential)) {
-            throw new RequestServiceException( RequestExceptionCode.UNKNOWN_REFERENTIAL, "");
+            throw new RequestServiceException(RequestExceptionCode.UNKNOWN_REFERENTIAL, "");
         }
         if (!commandExists(action, type)) {
-            throw new RequestServiceException( RequestExceptionCode.UNKNOWN_ACTION, "");
+            throw new RequestServiceException(RequestExceptionCode.UNKNOWN_ACTION, "");
         }
-        if ( !inputStreamsByName.containsKey( PARAMETERS_FILE)){
-            throw new RequestServiceException( RequestExceptionCode.MISSING_PARAMETERS, "");
+        if (!inputStreamsByName.containsKey(PARAMETERS_FILE)) {
+            throw new RequestServiceException(RequestExceptionCode.MISSING_PARAMETERS, "");
+        }
+        
+        // TODO controler inputStreams par la Commande
+        
+        if (!checkCommand(action, type)) {
+            throw new RequestServiceException(RequestExceptionCode.ACTION_TYPE_MISMATCH, "");
         }
     }
 
@@ -150,9 +177,9 @@ public class JobServiceManager {
     }
 
     public void start(JobService jobService) {
-    	jobService.setStatus(STATUS.STARTED);
-    	jobService.setUpdated(new Date());
-		jobDAO.update(jobService.getJob());
+        jobService.setStatus(STATUS.STARTED);
+        jobService.setUpdated(new Date());
+        jobDAO.update(jobService.getJob());
     }
 
     public void terminate(JobService jobService) {
@@ -160,49 +187,51 @@ public class JobServiceManager {
     }
 
     public void abort(JobService jobService) {
-    	Job job = jobService.getJob();
-		job.setStatus(STATUS.ABORTED);
+        Job job = jobService.getJob();
+        job.setStatus(STATUS.ABORTED);
 
-		// remove location link
-		Iterables.removeIf(job.getLinks(), new Predicate<Link>() {
-			@Override
-			public boolean apply(Link link) {
-				return link.getRel().equals(Link.LOCATION_REL) || link.getRel().equals(Link.CANCEL_REL);
-			}
-		});
+        // remove location link
+        Iterables.removeIf(job.getLinks(), new Predicate<Link>() {
+            @Override
+            public boolean apply(Link link) {
+                return link.getRel().equals(Link.LOCATION_REL) || link.getRel().equals(Link.CANCEL_REL);
+            }
+        });
 
-		// set delete link
-		job.getLinks().clear();
-		Link link = new Link();
-		link.setType(MediaType.APPLICATION_JSON);
-		link.setRel(Link.DELETE_REL);
-		
-		JobUtil.updateLink(job, link); //job.getLinks().add(link);
-		link = new Link();
-		link.setType(MediaType.APPLICATION_JSON);
-		link.setRel(Link.LOCATION_REL);
-		
-		JobUtil.updateLink(job, link); //job.getLinks().add(link);
+        // set delete link
+        job.getLinks().clear();
+        Link link = new Link();
+        link.setType(MediaType.APPLICATION_JSON);
+        link.setRel(Link.DELETE_REL);
 
-		job.setUpdated(new Date());
-		jobDAO.update(job);
+        JobUtil.updateLink(job, link); //job.getLinks().add(link);
+        link = new Link();
+        link.setType(MediaType.APPLICATION_JSON);
+        link.setRel(Link.LOCATION_REL);
+
+        JobUtil.updateLink(job, link); //job.getLinks().add(link);
+
+        job.setUpdated(new Date());
+        jobDAO.update(job);
 
     }
 
-	public List<JobService> findAll() {
-		List<Job> jobs = jobDAO.findAll();
-		List<JobService> jobServices = new ArrayList<>(jobs.size());
-		for (Job job : jobs) {
-			jobServices.add(new JobService(job));
-		}
-		return jobServices;
-	}
-	
-	public JobService getJobService(Long id) {
-		Job job = jobDAO.find(id);
-		if (job != null) return new JobService(job);
-		return null;
-	}
+    public List<JobService> findAll() {
+        List<Job> jobs = jobDAO.findAll();
+        List<JobService> jobServices = new ArrayList<>(jobs.size());
+        for (Job job : jobs) {
+            jobServices.add(new JobService(job));
+        }
+        return jobServices;
+    }
+
+    public JobService getJobService(Long id) {
+        Job job = jobDAO.find(id);
+        if (job != null) {
+            return new JobService(job);
+        }
+        return null;
+    }
 
     public static String getCommandName(String action, String type) {
         type = type == null ? "" : type;
@@ -212,8 +241,13 @@ public class JobServiceManager {
                 + StringUtils.capitalize(type)
                 + StringUtils.capitalize(action) + "Command";
     }
-
-	
-
-
+        
+	private boolean checkCommand(String action, String type) {
+		try {
+			Class.forName( JobServiceManager.getCommandName(action, type));
+		} catch (ClassNotFoundException e) {
+			return false;
+		}
+		return true;
+	} 
 }
