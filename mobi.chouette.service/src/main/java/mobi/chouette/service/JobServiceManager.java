@@ -37,10 +37,7 @@ public class JobServiceManager {
     SchemaDAO schemaDAO;
 
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public JobService upload(String referential, String action, String type, Map<String, InputStream> parts) throws Exception {
-        
-        // Convertir les parametres fournies 
-        type = parseType( type);
+    public JobService upload(String referential, String action, String type, Map<String, InputStream> parts) throws ServiceException {
 
         // Valider les parametres
         validateParams( referential, action, type, parts);
@@ -60,7 +57,7 @@ public class JobServiceManager {
             }
             // remove path if exists
 
-            throw ex;
+            throw new ServiceException(ServiceExceptionCode.INTERNAL_ERROR, ex) ;
         }
     }
     
@@ -77,19 +74,12 @@ public class JobServiceManager {
         return Paths.get(jobService.getPath());
     }
     
-    private String parseType( String type) {
-        if (type != null && type.startsWith("/")) {
-            return type.substring(1);
-        }
-        return type;
-    }
-    
-    private void validateParams( String referential, String action, String type, Map<String, InputStream> parts) throws Exception {
+    private void validateParams( String referential, String action, String type, Map<String, InputStream> parts) throws ServiceException {
         if (!schemaDAO.getSchemaListing().contains(referential)) {
-            throw new Exception(ServiceConstants.UNKNOWN_REFERENTIAL);
+            throw new RequestServiceException( RequestExceptionCode.UNKNOWN_REFERENTIAL, "");
         }
         if (!commandExists(action, type)) {
-            throw new Exception(ServiceConstants.UNKNOWN_ACTION);
+            throw new RequestServiceException( RequestExceptionCode.UNKNOWN_ACTION, "");
         }
     }
 
