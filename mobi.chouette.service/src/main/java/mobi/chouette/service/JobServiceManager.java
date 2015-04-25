@@ -75,11 +75,10 @@ public class JobServiceManager {
 			// Enregistrer ce qui est persistent en base
 			// Les liens sont créés par anticipation sur l'enregistrements des paramètres reçus
 			jobDAO.create(jobService.getJob());
+			jobDAO.flush();
 
 			// Enregistrer des paramètres à conserver sur fichier
 			fileResourceSave(jobService);
-			
-			jobDAO.update(jobService.getJob());
 
 			return jobService;
 
