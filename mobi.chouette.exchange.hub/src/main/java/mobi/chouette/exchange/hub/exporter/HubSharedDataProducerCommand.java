@@ -121,7 +121,6 @@ public class HubSharedDataProducerCommand implements Command, Constant {
 
 		List<Network> neptuneObjects = new ArrayList<>(collection.getNetworks());
 		Collections.sort(neptuneObjects,new ObjectIdSorter());
-		log.info(Color.CYAN + "saving "+neptuneObjects.size()+ " networks" + Color.NORMAL);
 		
 		for (Network neptuneObject : neptuneObjects) {
 			producer.save(neptuneObject, report);
@@ -140,7 +139,6 @@ public class HubSharedDataProducerCommand implements Command, Constant {
 
 		List<Company> neptuneObjects = new ArrayList<>(collection.getCompanies());
 		Collections.sort(neptuneObjects,new ObjectIdSorter());
-		log.info(Color.CYAN + "saving "+neptuneObjects.size()+ " companies" + Color.NORMAL);
 		for (Company neptuneObject : neptuneObjects) {
 			producer.save(neptuneObject, report);
 		}
@@ -158,7 +156,6 @@ public class HubSharedDataProducerCommand implements Command, Constant {
 
 		List<GroupOfLine> neptuneObjects = new ArrayList<>(collection.getGroupOfLines());
 		Collections.sort(neptuneObjects,new ObjectIdSorter());
-		log.info(Color.CYAN + "saving "+neptuneObjects.size()+ " groups of lines" + Color.NORMAL);
 		for (GroupOfLine neptuneObject : neptuneObjects) {
 			producer.save(neptuneObject, report);
 		}
@@ -184,7 +181,6 @@ public class HubSharedDataProducerCommand implements Command, Constant {
 
 		List<Timetable> neptuneObjects = new ArrayList<>(collection.getTimetables());
 		Collections.sort(neptuneObjects,new ObjectIdSorter());
-		log.info(Color.CYAN + "saving "+neptuneObjects.size()+ " timetables" + Color.NORMAL);
 		for (Timetable neptuneObject : neptuneObjects) {
 			producer.save(neptuneObject, report);
 			metadata.getTemporalCoverage().update(neptuneObject.getStartOfPeriod(), neptuneObject.getEndOfPeriod());
@@ -211,7 +207,6 @@ public class HubSharedDataProducerCommand implements Command, Constant {
 
 		List<StopArea> stops = new ArrayList<>(collection.getPhysicalStopPoints());
 		Collections.sort(stops,new ObjectIdSorter());
-		log.info(Color.CYAN + "saving "+stops.size()+ " physicals stops" + Color.NORMAL);
 		for (StopArea stop : stops) {
 			producer.save(stop, report);
 //			communeProducer.addCity(stop);
@@ -238,7 +233,6 @@ public class HubSharedDataProducerCommand implements Command, Constant {
 
 		List<StopArea> stops = new ArrayList<>(collection.getCommercialStopPoints());
 		Collections.sort(stops,new ObjectIdSorter());
-		log.info(Color.CYAN + "saving "+stops.size()+ " commercial stops" + Color.NORMAL);
 		for (StopArea stop : stops) {
 			producer.save(stop, report);
 			communeProducer.addCity(stop);
@@ -257,7 +251,6 @@ public class HubSharedDataProducerCommand implements Command, Constant {
 		ActionReport report = (ActionReport) context.get(REPORT);
 
 		List<ConnectionLink> links = new ArrayList<>(collection.getConnectionLinks());
-		log.info(Color.CYAN + "saving "+links.size()+ " connection links" + Color.NORMAL);
 		Collections.sort(links,new ObjectIdSorter());
 		for (ConnectionLink link : links) {
 			producer.save(link, report);

@@ -140,10 +140,7 @@ public class NeptuneImporterCommand implements Command, Constant, ReportConstant
 					chain.add(copy);
 
 				}
-				else
-				{
-					log.warn(Color.CYAN + "save not asked" + Color.NORMAL);
-				}
+				
 				if (level3validation) {
 					// add validation
 					Command validate = CommandFactory.create(initialContext,

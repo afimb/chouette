@@ -362,7 +362,12 @@ public class JobServiceManager {
 			{
 				throw new RequestServiceException(RequestExceptionCode.ACTION_TYPE_MISMATCH, "");
 			}
-		} catch (Exception e) {
+		} catch (ServiceException e) 
+		{
+			throw e;
+		}
+		catch (Exception e) 
+		{
 			throw new ServiceException(ServiceExceptionCode.INTERNAL_ERROR, e.getMessage());
 		}
 

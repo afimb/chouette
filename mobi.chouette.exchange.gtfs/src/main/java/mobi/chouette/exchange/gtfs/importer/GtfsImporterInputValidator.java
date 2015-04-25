@@ -1,17 +1,51 @@
 package mobi.chouette.exchange.gtfs.importer;
 
 import java.io.IOException;
+import java.util.Arrays;
 
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.InputValidator;
 import mobi.chouette.exchange.InputValidatorFactory;
 import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 
+@Log4j
 public class GtfsImporterInputValidator implements InputValidator {
+
+	private static String[] allowedTypes = { "all", "line", "stoparea" };
 
 	@Override
 	public boolean check(AbstractParameter abstractParameter, ValidationParameters validationParameters, String fileName) {
-		// TODO Auto-generated method stub
+		if (!(abstractParameter instanceof GtfsImportParameters)) {
+			log.error("invalid parameters for gtfs import " + abstractParameter.getClass().getName());
+			return false;
+		}
+
+		GtfsImportParameters parameters = (GtfsImportParameters) abstractParameter;
+		String prefix = parameters.getObjectIdPrefix();
+		if (prefix == null || prefix.isEmpty()) {
+			log.error("missing object_id_prefix");
+			return false;
+		}
+		
+		String type = parameters.getReferencesType();
+		if (type != null && !type.isEmpty()) {
+			if (!Arrays.asList(allowedTypes).contains(type.toLowerCase())) {
+				log.error("invalid type " + type);
+				return false;
+			}
+		}
+
+		if (fileName  == null || fileName.isEmpty()) {
+			log.error("input data expected");
+			return false;
+		}
+		
+		if (!fileName.endsWith(".zip")) {
+			log.error("Zip archive input data expected");
+			return false;
+		}
+
 		return true;
 	}
 	

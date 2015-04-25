@@ -2,16 +2,31 @@ package mobi.chouette.exchange.netex.importer;
 
 import java.io.IOException;
 
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.InputValidator;
 import mobi.chouette.exchange.InputValidatorFactory;
 import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 
+@Log4j
 public class NetexImporterInputValidator implements InputValidator {
 
 	@Override
 	public boolean check(AbstractParameter abstractParameter, ValidationParameters validationParameters, String fileName) {
-		// TODO Auto-generated method stub
+		if (!(abstractParameter instanceof NetexImportParameters)) {
+			log.error("invalid parameters for Netex import " + abstractParameter.getClass().getName());
+			return false;
+		}
+		if (fileName  == null || fileName.isEmpty()) {
+			log.error("input data expected");
+			return false;
+		}
+		
+		if (!fileName.endsWith(".zip") && !fileName.endsWith(".xml")) {
+			log.error("xml or Zip archive input data expected");
+			return false;
+		}
+
 		return true;
 	}
 	

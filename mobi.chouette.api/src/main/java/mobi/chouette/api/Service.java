@@ -113,7 +113,7 @@ public class Service implements Constant {
 
             return builder.build();
         } catch (ServiceException e) {
-            log.error( e.getCode() + ", "+e.getMessage(),e);
+            log.error( e.getCode() + ", "+e.getMessage());
             throw toWebApplicationException(e);
         } catch (Exception e) {
             log.error( e.getMessage(), e);
