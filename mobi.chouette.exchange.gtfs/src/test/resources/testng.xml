@@ -13,13 +13,13 @@
       </package>
    </packages>
   </test>
-  <!--
   <test name="ImportGTFS" >
     <packages>
       <package name="mobi.chouette.exchange.gtfs.importer" >
       </package>
    </packages>
   </test> 
+  <!--
   <test name="ImportGTFSProducers" >
     <packages>
       <package name="mobi.chouette.exchange.gtfs.importer.producer" >
