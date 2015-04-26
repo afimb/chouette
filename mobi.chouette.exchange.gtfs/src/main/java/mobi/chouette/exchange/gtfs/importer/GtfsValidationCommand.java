@@ -31,71 +31,68 @@ import com.jamonapi.MonitorFactory;
 
 @Log4j
 public class GtfsValidationCommand implements Command, Constant {
-	
+
 	public static final String COMMAND = "GtfsValidationCommand";
-	
-	private static final List<String> processableFiles = Arrays.asList(
-		  "agency.txt", 
-		  "stops.txt", 
-		  "routes.txt", 
-		  "trips.txt",
-		  "stop_times.txt",
-		  "calendar.txt",
-		  "calendar_dates.txt",
-		  "frequencies.txt",
-		  "transfers.txt"
-		);
+
+	private static final List<String> processableAllFiles = Arrays.asList("agency.txt", "stops.txt", "routes.txt",
+			"trips.txt", "stop_times.txt", "calendar.txt", "calendar_dates.txt", "frequencies.txt", "transfers.txt");
+
+	private static final List<String> processableStopAreaFiles = Arrays.asList("stops.txt", "transfers.txt");
 
 	@Override
-	public boolean execute(Context context) throws Exception {		
+	public boolean execute(Context context) throws Exception {
 		boolean result = ERROR;
-		
+
 		Monitor monitor = MonitorFactory.start(COMMAND);
-		
+
 		// check ignored files
 		Path path = Paths.get(context.get(PATH).toString(), INPUT);
-		List<Path> list = FileUtil
-				.listFiles(path, "*");
+		List<Path> list = FileUtil.listFiles(path, "*");
 		ActionReport report = (ActionReport) context.get(REPORT);
+		GtfsImportParameters parameters = (GtfsImportParameters) context.get(CONFIGURATION);
+		boolean all = !(parameters.getReferencesType().equalsIgnoreCase("stoparea"));
+		List<String> processableFiles = processableAllFiles;
+		if (!all) {
+			processableFiles = processableStopAreaFiles;
+		}
 		for (Path fileName : list) {
-			if (!processableFiles.contains(fileName.getFileName().toString()))
-			{
+			if (!processableFiles.contains(fileName.getFileName().toString())) {
 				FileInfo file = new FileInfo();
 				file.setName(fileName.getFileName().toString());
 				file.setStatus(FILE_STATE.UNCHECKED);
 				report.getFiles().add(file);
 			}
 		}
-		try {
-			
-			// agency.txt
-			GtfsAgencyParser agencyParser = (GtfsAgencyParser) ParserFactory
-					.create(GtfsAgencyParser.class.getName());
-			agencyParser.validate(context);
 
+		try {
+			if (all) {
+				// agency.txt
+				GtfsAgencyParser agencyParser = (GtfsAgencyParser) ParserFactory.create(GtfsAgencyParser.class
+						.getName());
+				agencyParser.validate(context);
+			}
 			// stops.txt
-			GtfsStopParser stopParser = (GtfsStopParser) ParserFactory
-					.create(GtfsStopParser.class.getName());
+			GtfsStopParser stopParser = (GtfsStopParser) ParserFactory.create(GtfsStopParser.class.getName());
 			stopParser.validate(context);
 
-			// route.txt
-			GtfsRouteParser routeParser = (GtfsRouteParser) ParserFactory
-					.create(GtfsRouteParser.class.getName());
-			routeParser.validate(context);
+			if (all) {
+				// route.txt
+				GtfsRouteParser routeParser = (GtfsRouteParser) ParserFactory.create(GtfsRouteParser.class.getName());
+				routeParser.validate(context);
 
-			// trips.txt & stop_times.txt & frequency.txt
-			GtfsTripParser tripParser = (GtfsTripParser) ParserFactory
-					.create(GtfsTripParser.class.getName());
-			tripParser.validate(context);
+				// trips.txt & stop_times.txt & frequency.txt
+				GtfsTripParser tripParser = (GtfsTripParser) ParserFactory.create(GtfsTripParser.class.getName());
+				tripParser.validate(context);
 
-			// calendar.txt & calendar_dates.txt & frequencies.txt
-			GtfsCalendarParser calendarParser = (GtfsCalendarParser) ParserFactory
-					.create(GtfsCalendarParser.class.getName());
-			calendarParser.validate(context);
+				// calendar.txt & calendar_dates.txt & frequencies.txt
+				GtfsCalendarParser calendarParser = (GtfsCalendarParser) ParserFactory.create(GtfsCalendarParser.class
+						.getName());
+				calendarParser.validate(context);
+			}
 
 			// transfers.txt
-			GtfsTransferParser transferParser = (GtfsTransferParser) ParserFactory
-					.create(GtfsTransferParser.class.getName());
+			GtfsTransferParser transferParser = (GtfsTransferParser) ParserFactory.create(GtfsTransferParser.class
+					.getName());
 			transferParser.validate(context);
 
 			result = SUCCESS;
@@ -103,7 +100,7 @@ public class GtfsValidationCommand implements Command, Constant {
 			log.error(e);
 			throw e;
 		}
-		
+
 		log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 
 		return result;
@@ -119,8 +116,7 @@ public class GtfsValidationCommand implements Command, Constant {
 	}
 
 	static {
-		CommandFactory.factories.put(GtfsValidationCommand.class.getName(),
-				new DefaultCommandFactory());
+		CommandFactory.factories.put(GtfsValidationCommand.class.getName(), new DefaultCommandFactory());
 	}
 
 }

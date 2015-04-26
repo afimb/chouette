@@ -21,6 +21,7 @@ import mobi.chouette.exchange.gtfs.model.importer.Index;
 import mobi.chouette.exchange.importer.CleanRepositoryCommand;
 import mobi.chouette.exchange.importer.CopyCommand;
 import mobi.chouette.exchange.importer.LineRegisterCommand;
+import mobi.chouette.exchange.importer.StopAreaRegisterCommand;
 import mobi.chouette.exchange.importer.UncompressCommand;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.validation.DaoSharedDataValidatorCommand;
@@ -68,6 +69,11 @@ public class GtfsImporterCommand implements Command, Constant {
 			return ERROR;
 		}
 		GtfsImportParameters parameters = (GtfsImportParameters) configuration;
+		if (parameters.getReferencesType() == null || parameters.getReferencesType().isEmpty())
+		{
+			parameters.setReferencesType("all");
+		}
+		boolean all = !(parameters.getReferencesType().equalsIgnoreCase("stoparea"));
 		boolean level3validation = context.get(VALIDATION) != null;
 		int initCount = 2 + (parameters.isCleanRepository()?1:0);
 		progression.initialize(context,initCount);
@@ -102,6 +108,9 @@ public class GtfsImporterCommand implements Command, Constant {
 					GtfsValidationCommand.class.getName());
 			validation.execute(context);
 			progression.execute(context);
+			
+			if (all)
+			{
 
 			ChainCommand master = (ChainCommand) CommandFactory.create(
 					initialContext, ChainCommand.class.getName());
@@ -119,9 +128,9 @@ public class GtfsImporterCommand implements Command, Constant {
 				chain.add(progression);
 
 				// parser
-				GtfsParserCommand parser = (GtfsParserCommand) CommandFactory
+				GtfsRouteParserCommand parser = (GtfsRouteParserCommand) CommandFactory
 						.create(initialContext,
-								GtfsParserCommand.class.getName());
+								GtfsRouteParserCommand.class.getName());
 				parser.setGtfsRouteId(gtfsRoute.getRouteId());
 				
 				chain.add(parser);
@@ -154,6 +163,37 @@ public class GtfsImporterCommand implements Command, Constant {
 			}
 			progression.execute(context);
 			result = SUCCESS;
+			}
+			else
+			{
+				// process stoparea inport
+				progression.start(context, 1);
+				// parser
+				GtfsStopParserCommand parser = (GtfsStopParserCommand) CommandFactory
+						.create(initialContext,
+								GtfsStopParserCommand.class.getName());
+				parser.execute(context);
+				
+				if (!parameters.isNoSave()) {
+					Command register = CommandFactory.create(initialContext,
+							StopAreaRegisterCommand.class.getName());
+					register.execute(context);
+				}
+				progression.execute(context);
+				progression.terminate(context,1);
+//				if (level3validation) when possibility to validate areas only ?
+//				{
+//				    // add shared data validation
+//					Command validate = CommandFactory.create(initialContext,
+//							DaoSharedDataValidatorCommand.class.getName());
+//					validate.execute(context);
+//					progression.execute(context);
+//
+//				}				progression.execute(context);
+				result = SUCCESS;
+				
+				
+			}
 
 		} catch (Exception e) {
 			ActionReport report = (ActionReport) context.get(REPORT);

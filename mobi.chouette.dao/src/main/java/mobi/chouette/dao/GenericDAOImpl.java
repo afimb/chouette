@@ -99,6 +99,7 @@ public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 	public List<T> findByObjectId(final Collection<String> objectIds) {
 		// System.out.println("GenericDAOImpl.findByObjectId() : " + objectIds);
 		List<T> result = null;
+		if (objectIds.isEmpty()) return result;
 		CriteriaBuilder builder = em.getCriteriaBuilder();
 		CriteriaQuery<T> criteria = builder.createQuery(type);
 		Root<T> root = criteria.from(type);

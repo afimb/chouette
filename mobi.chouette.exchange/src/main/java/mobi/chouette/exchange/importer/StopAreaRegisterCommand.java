@@ -107,6 +107,7 @@ public class StopAreaRegisterCommand implements Command {
 
 	private void initializeAccessPoint(Referential cache,
 			Collection<AccessPoint> list) {
+		if (list.isEmpty()) return; 
 		Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
 		List<AccessPoint> objects = accessPointDAO.findByObjectId(objectIds);
 		for (AccessPoint object : objects) {
@@ -125,6 +126,7 @@ public class StopAreaRegisterCommand implements Command {
 
 	private void initializeAccessLink(Referential cache,
 			Collection<AccessLink> list) {
+		if (list.isEmpty()) return; 
 		Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
 		List<AccessLink> objects = accessLinkDAO.findByObjectId(objectIds);
 		for (AccessLink object : objects) {
@@ -141,6 +143,7 @@ public class StopAreaRegisterCommand implements Command {
 
 	private void initializeConnectionLink(Referential cache,
 			Collection<ConnectionLink> list) {
+		if (list.isEmpty()) return; 
 		Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
 		List<ConnectionLink> objects = connectionLinkDAO
 				.findByObjectId(objectIds);

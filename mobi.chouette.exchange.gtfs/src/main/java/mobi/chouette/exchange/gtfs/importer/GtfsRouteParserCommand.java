@@ -28,9 +28,9 @@ import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
 @Log4j
-public class GtfsParserCommand implements Command, Constant {
+public class GtfsRouteParserCommand implements Command, Constant {
 
-	public static final String COMMAND = "GtfsParserCommand";
+	public static final String COMMAND = "GtfsRouteParserCommand";
 
 	@Getter
 	@Setter
@@ -127,13 +127,13 @@ public class GtfsParserCommand implements Command, Constant {
 
 		@Override
 		protected Command create(InitialContext context) throws IOException {
-			Command result = new GtfsParserCommand();
+			Command result = new GtfsRouteParserCommand();
 			return result;
 		}
 	}
 
 	static {
-		CommandFactory.factories.put(GtfsParserCommand.class.getName(),
+		CommandFactory.factories.put(GtfsRouteParserCommand.class.getName(),
 				new DefaultCommandFactory());
 	}
 }

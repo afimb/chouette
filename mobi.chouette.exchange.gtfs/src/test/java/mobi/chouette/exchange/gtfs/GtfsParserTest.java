@@ -8,7 +8,7 @@ import javax.naming.NamingException;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
-import mobi.chouette.exchange.gtfs.importer.GtfsParserCommand;
+import mobi.chouette.exchange.gtfs.importer.GtfsRouteParserCommand;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsImporter;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.validation.report.ValidationReport;
@@ -78,7 +78,7 @@ public class GtfsParserTest  extends Arquillian implements Constant{
 		
 		ActionReport report = new ActionReport();
 		ValidationReport validationReport = new ValidationReport();
-		GtfsParserCommand command = (GtfsParserCommand) CommandFactory.create(initialContext, GtfsParserCommand.class.getName());
+		GtfsRouteParserCommand command = (GtfsRouteParserCommand) CommandFactory.create(initialContext, GtfsRouteParserCommand.class.getName());
 		GtfsImporter importer = new GtfsImporter("src/test/data/valid");
 		context.put(PARSER, importer);
 		context.put(REPORT, report);
