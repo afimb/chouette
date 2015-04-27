@@ -101,11 +101,6 @@ public class Service implements Constant {
             // Relayer le service au JobServiceManager
             job = jobServiceManager.upload(referential, action, type, inputStreamByName);
 
-            // TODO à reporter dans MainCommand
-            if (job.getAction().equals(EXPORTER)) {
-                job.setFilename("export_" + job.getType() + "_" + job.getId() + ".zip");
-            }
-
             // Produire la vue
             ResponseBuilder builder = Response.accepted();
             builder.location(URI.create(MessageFormat.format("{0}/{1}/scheduled_jobs/{2,number,#}", ROOT_PATH,

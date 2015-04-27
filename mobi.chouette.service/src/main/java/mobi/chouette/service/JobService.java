@@ -12,11 +12,14 @@ import javax.ws.rs.core.MediaType;
 import lombok.Data;
 import lombok.experimental.Delegate;
 import mobi.chouette.common.JSONUtil;
+import mobi.chouette.exchange.InputValidator;
+import mobi.chouette.exchange.InputValidatorFactory;
 import mobi.chouette.model.api.Job;
 import mobi.chouette.model.api.Link;
 import mobi.chouette.scheduler.Parameters;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 
 @Data
 public class JobService implements ServiceConstants {
@@ -26,7 +29,9 @@ public class JobService implements ServiceConstants {
 
     @Delegate(types = {FileResourceProperties.class})
     private FileResourceProperties fileResourceProperties;
-
+    
+    private Map<String, InputStream> inputStreamsByName;
+    
     /**
      * create a jobService on existing job
      *
@@ -44,42 +49,68 @@ public class JobService implements ServiceConstants {
      * @param type : type (may be null)
      * @param inputStreamsByName : inputStream hash for action including
      * parameters and data
+     * @throws mobi.chouette.service.ServiceException
      */
     public JobService(String referential, String action, String type, Map<String, InputStream> inputStreamsByName) throws ServiceException {
+        this.inputStreamsByName = inputStreamsByName;
         job = new Job(referential, action, type);
 
         addLink(MediaType.APPLICATION_JSON, PARAMETERS_REL);
         
-        if ( dataInputStream( inputStreamsByName)!=null) {
+        if ( readActionDataInputStream()!=null) {
             addLink(MediaType.APPLICATION_OCTET_STREAM, DATA_REL);
             job.setFilename( dataFileName( inputStreamsByName.keySet()));
         }
 
-        // valider et conserver sous forme de String le part "paraemeters.json"
-        // à découper en paramètres action et validation
-        Parameters parameters = readParameters(inputStreamsByName.get(PARAMETERS_FILE));
+        fileResourceProperties = new FileResourceProperties( readParameters(), readActionDataInputStream());
+    }
+    
+    private void validate_before_instanciation( String action, String type, Map<String, InputStream> inputStreamsByName) throws RequestServiceException {
+    }
 
-        fileResourceProperties = new FileResourceProperties(
-                parameters.getConfiguration(),
-                parameters.getValidation(),
-                dataInputStream(inputStreamsByName));
+    public void validate() throws ServiceException {
+        if (!commandExists()) {
+            throw new RequestServiceException(RequestExceptionCode.UNKNOWN_ACTION, "");
+        }
+        if (!inputStreamsByName.containsKey(PARAMETERS_FILE)) {
+            throw new RequestServiceException(RequestExceptionCode.MISSING_PARAMETERS, "");
+        }
+        
+        try {
+            InputValidator validator = InputValidatorFactory.create(getCommandInputValidatorName());
+            Class.forName(getCommandInputValidatorName());
+            if (!validator.check(fileResourceProperties.getActionParameters(), fileResourceProperties.getValidationParameters(), getFilename())) {
+                throw new RequestServiceException(RequestExceptionCode.ACTION_TYPE_MISMATCH, "");
+            }
+        } catch (ServiceException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ServiceException(ServiceExceptionCode.INTERNAL_ERROR, e.getMessage());
+        }
+
+
+	// TODO controler inputStreams par la Commande impossible ici car il faut extraire Parameters.json
+	//		if (!checkCommandInputs(action, type,inputStreamsByName)) {
+        //			throw new RequestServiceException(RequestExceptionCode.ACTION_TYPE_MISMATCH, "");
+        //		}
+        return;
     }
 
     public boolean hasFileResourceProperties() {
         return fileResourceProperties != null;
     }
 
-    private Parameters readParameters(InputStream parameterInputStream) throws RequestServiceException {
+    private Parameters readParameters() throws RequestServiceException {
         try {
             StringWriter writer = new StringWriter();
-            IOUtils.copy(parameterInputStream, writer, "UTF-8");
+            IOUtils.copy( inputStreamsByName.get(PARAMETERS_FILE), writer, "UTF-8");
             return JSONUtil.fromJSON(writer.toString(), Parameters.class);
         } catch (Exception ex) {
             throw new RequestServiceException(RequestExceptionCode.INVALID_PARAMETERS, ex);
         }
     }
 
-    private InputStream dataInputStream(Map<String, InputStream> inputStreamsByName) {
+    private InputStream readActionDataInputStream() {
         for (String name : inputStreamsByName.keySet()) {
             if (!name.equals(PARAMETERS_FILE)) {
                 return inputStreamsByName.get(name);
@@ -105,8 +136,8 @@ public class JobService implements ServiceConstants {
      */
     public String getPath() {
         if (job.getPath() == null && job.getId() != null) {
-            String path = Paths.get(System.getProperty("user.home"), ROOT_PATH, getReferential(), "data",
-                    getId().toString()).toString();
+            String path = Paths.get(System.getProperty("user.home"), ROOT_PATH, job.getReferential(), "data",
+                    job.getId().toString()).toString();
             job.setPath(path);
         }
         return job.getPath(); // TODO choisir si on retourne null ou une
@@ -159,4 +190,28 @@ public class JobService implements ServiceConstants {
         }
     }
 
+    private boolean commandExists() {
+            try {
+                    Class.forName(getCommandName());
+            } catch (ClassNotFoundException e) {
+                    return false;
+            }
+            return true;
+    }
+
+    public String getCommandName() {
+            String type = getType() == null ? "" : getType();
+            return "mobi.chouette.exchange."
+            + (type.isEmpty() ? "" : type + ".") + getAction() + "."
+            + StringUtils.capitalize(type)
+            + StringUtils.capitalize( getAction()) + "Command";
+    }
+
+    private String getCommandInputValidatorName() {
+        String type = getType() == null ? "" : getType();
+        return "mobi.chouette.exchange."
+                + (type.isEmpty() ? "" : type + ".") + getAction() + "."
+                + StringUtils.capitalize(type)
+                + StringUtils.capitalize(getAction()) + "InputValidator";
+    }
 }

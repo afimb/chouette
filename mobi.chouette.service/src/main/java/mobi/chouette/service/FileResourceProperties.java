@@ -9,6 +9,7 @@ import java.io.InputStream;
 import lombok.Data;
 import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
+import mobi.chouette.scheduler.Parameters;
 
 /**
  *
@@ -19,13 +20,17 @@ public class FileResourceProperties {
 
         private AbstractParameter actionParameters;
         private ValidationParameters validationParameters;
+        
+        // InputStream associe aux donnees d'entree de l'operation
         private InputStream actionDataInputStream;
+        
+        private Parameters parameters;
 
-        public FileResourceProperties(AbstractParameter actionParameters, ValidationParameters validationParameters,
+        public FileResourceProperties(Parameters parameters,
                 InputStream actionDataInputStream) {
-            
-            this.actionParameters = actionParameters;
-            this.validationParameters = validationParameters;
+            this.parameters = parameters;
+            this.actionParameters = parameters.getConfiguration();
+            this.validationParameters = parameters.getValidation();
             this.actionDataInputStream = actionDataInputStream;
             
         }

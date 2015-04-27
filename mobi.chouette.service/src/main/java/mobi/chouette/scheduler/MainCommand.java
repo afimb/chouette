@@ -56,7 +56,7 @@ public class MainCommand implements Command, Constant {
 			context.put(REPORT, new ActionReport());
 			context.put(MAIN_VALIDATION_REPORT, new ValidationReport());
 
-			String name = JobServiceManager.getCommandName(jobService.getAction(), jobService.getType());
+			String name = jobService.getCommandName();
 
 			InitialContext ctx = (InitialContext) context.get(INITIAL_CONTEXT);
 			Command command = CommandFactory.create(ctx, name);
