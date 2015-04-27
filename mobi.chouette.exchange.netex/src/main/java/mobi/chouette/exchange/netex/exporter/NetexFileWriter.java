@@ -27,18 +27,15 @@ import org.apache.velocity.tools.generic.EscapeTool;
 @Log4j
 public class NetexFileWriter implements Constant
 {
-	private static VelocityEngine velocityEngine;
+	private VelocityEngine velocityEngine;
 	// Prepare the model for velocity
 	private Map<String, Object> model = new HashMap<String, Object>();
 
 	public NetexFileWriter()
 	{
-		if (velocityEngine == null)
-		{
 			velocityEngine = new VelocityEngine();
 			velocityEngine.addProperty("resource.loader", "classpath");
 			velocityEngine.addProperty("classpath.resource.loader.class","org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
-		}
 	}
 
 	private void prepareModel(ExportableData collection) throws DatatypeConfigurationException
