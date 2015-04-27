@@ -66,107 +66,99 @@ public class NeptuneExporterCommand implements Command, Constant, ReportConstant
 		boolean result = ERROR;
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
-		InitialContext initialContext = (InitialContext) context
-				.get(INITIAL_CONTEXT);
+		InitialContext initialContext = (InitialContext) context.get(INITIAL_CONTEXT);
 
 		// initialize reporting and progression
-		ProgressionCommand progression = (ProgressionCommand) CommandFactory
-				.create(initialContext, ProgressionCommand.class.getName());
-		progression.initialize(context,1);
-        try
-        {
-		
-		context.put(REFERENTIAL, new Referential());
-		Metadata metadata = new Metadata(); // if not asked, will be used as dummy
-        metadata.setDate(Calendar.getInstance());
-        metadata.setFormat("application/xml");
-        metadata.setTitle("Export Neptune ");
-        try
-        {
-           metadata.setRelation(new URL("http://www.normes-donnees-tc.org/format-dechange/donnees-theoriques/neptune/"));
-        }
-        catch (MalformedURLException e1)
-        {
-           log.error("problem with http://www.normes-donnees-tc.org/format-dechange/donnees-theoriques/neptune/ url", e1);
-        }
+		ProgressionCommand progression = (ProgressionCommand) CommandFactory.create(initialContext,
+				ProgressionCommand.class.getName());
+		progression.initialize(context, 1);
+		try {
+			JobData jobData = (JobData) context.get(JOB_DATA);
+			jobData.setFilename("export_" + jobData.getType() + "_" + jobData.getId() + ".zip");
 
-		context.put(METADATA, metadata);
+			context.put(REFERENTIAL, new Referential());
+			Metadata metadata = new Metadata(); // if not asked, will be used as
+												// dummy
+			metadata.setDate(Calendar.getInstance());
+			metadata.setFormat("application/xml");
+			metadata.setTitle("Export Neptune ");
+			try {
+				metadata.setRelation(new URL(
+						"http://www.normes-donnees-tc.org/format-dechange/donnees-theoriques/neptune/"));
+			} catch (MalformedURLException e1) {
+				log.error(
+						"problem with http://www.normes-donnees-tc.org/format-dechange/donnees-theoriques/neptune/ url",
+						e1);
+			}
 
-		// read parameters
-		Object configuration = context.get(CONFIGURATION);
-		if (!(configuration instanceof NeptuneExportParameters)) {
-			// fatal wrong parameters
-			ActionReport report = (ActionReport) context.get(REPORT);
-			log.error("invalid parameters for neptune export "
-					+ configuration.getClass().getName());
-			report.setResult(STATUS_ERROR);
-			report.setFailure("invalid parameters for neptune export "
-					+ configuration.getClass().getName());
-			return ERROR;
-		}
+			context.put(METADATA, metadata);
 
-		NeptuneExportParameters parameters = (NeptuneExportParameters) configuration;
-		if (parameters.getStartDate() != null && parameters.getEndDate() != null)
-		{
-			if (parameters.getStartDate().after(parameters.getEndDate()))
-			{
+			// read parameters
+			Object configuration = context.get(CONFIGURATION);
+			if (!(configuration instanceof NeptuneExportParameters)) {
+				// fatal wrong parameters
+				ActionReport report = (ActionReport) context.get(REPORT);
+				log.error("invalid parameters for neptune export " + configuration.getClass().getName());
+				report.setResult(STATUS_ERROR);
+				report.setFailure("invalid parameters for neptune export " + configuration.getClass().getName());
+				return ERROR;
+			}
+
+			NeptuneExportParameters parameters = (NeptuneExportParameters) configuration;
+			if (parameters.getStartDate() != null && parameters.getEndDate() != null) {
+				if (parameters.getStartDate().after(parameters.getEndDate())) {
+					ActionReport report = (ActionReport) context.get(REPORT);
+					report.setResult(STATUS_ERROR);
+					report.setFailure("end date before start date");
+					return ERROR;
+
+				}
+			}
+
+			String type = parameters.getReferencesType().toLowerCase();
+			// set default type
+			if (type == null || type.isEmpty() || type.equalsIgnoreCase("all")) {
+				// all lines
+				type = "line";
+				parameters.setIds(null);
+			}
+
+			List<Object> ids = null;
+			if (parameters.getIds() != null) {
+				ids = new ArrayList<Object>(parameters.getIds());
+			}
+
+			Set<Line> lines = new HashSet<Line>();
+			if (ids == null || ids.isEmpty()) {
+				lines.addAll(lineDAO.findAll());
+			} else {
+				if (type.equals("line")) {
+					lines.addAll(lineDAO.findAll(ids));
+				} else if (type.equals("network")) {
+					List<Network> list = ptNetworkDAO.findAll(ids);
+					for (Network ptNetwork : list) {
+						lines.addAll(ptNetwork.getLines());
+					}
+				} else if (type.equals("company")) {
+					List<Company> list = companyDAO.findAll(ids);
+					for (Company company : list) {
+						lines.addAll(company.getLines());
+					}
+				} else if (type.equals("groupofline")) {
+					List<GroupOfLine> list = groupOfLineDAO.findAll(ids);
+					for (GroupOfLine groupOfLine : list) {
+						lines.addAll(groupOfLine.getLines());
+					}
+				}
+			}
+			if (lines.isEmpty()) {
 				ActionReport report = (ActionReport) context.get(REPORT);
 				report.setResult(STATUS_ERROR);
-				report.setFailure("end date before start date");
+				report.setFailure("no data to export");
 				return ERROR;
-				
+
 			}
-		}
-		
-
-		String type = parameters.getReferencesType().toLowerCase();
-		// set default type 
-		if (type == null || type.isEmpty() || type.equalsIgnoreCase("all"))
-		{
-			// all lines
-			type = "line";
-			parameters.setIds(null);
-		}
-
-		List<Object> ids = null;
-		if (parameters.getIds() != null) {
-			ids = new ArrayList<Object>(parameters.getIds());
-		}
-
-		Set<Line> lines = new HashSet<Line>();
-		if (ids == null || ids.isEmpty()) {
-			lines.addAll(lineDAO.findAll());
-		} else {
-			if (type.equals("line")) {
-				lines.addAll(lineDAO.findAll(ids));
-			} else if (type.equals("network")) {
-				List<Network> list = ptNetworkDAO.findAll(ids);
-				for (Network ptNetwork : list) {
-					lines.addAll(ptNetwork.getLines());
-				}
-			} else if (type.equals("company")) {
-				List<Company> list = companyDAO.findAll(ids);
-				for (Company company : list) {
-					lines.addAll(company.getLines());
-				}
-			} else if (type.equals("groupofline")) {
-				List<GroupOfLine> list = groupOfLineDAO.findAll(ids);
-				for (GroupOfLine groupOfLine : list) {
-					lines.addAll(groupOfLine.getLines());
-				}
-			}
-		}
-		if (lines.isEmpty())
-		{
-			ActionReport report = (ActionReport) context.get(REPORT);
-			report.setResult(STATUS_ERROR);
-			report.setFailure("no data to export");
-			return ERROR;
-			
-		}
-		progression.execute(context);
-
-		JobData jobData = (JobData) context.get(JOB_DATA);
+			progression.execute(context);
 
 			Path path = Paths.get(jobData.getPath(), OUTPUT);
 			if (!Files.exists(path)) {
@@ -174,8 +166,7 @@ public class NeptuneExporterCommand implements Command, Constant, ReportConstant
 			}
 
 			progression.start(context, lines.size());
-			Command export = CommandFactory.create(initialContext,
-					NeptuneProducerCommand.class.getName());
+			Command export = CommandFactory.create(initialContext, NeptuneProducerCommand.class.getName());
 
 			// export each line
 			for (Line line : lines) {
@@ -185,24 +176,19 @@ public class NeptuneExporterCommand implements Command, Constant, ReportConstant
 					continue;
 				}
 			}
-			
+
 			// save metadata
-			if (parameters.isAddMetadata())
-			{
-				progression.terminate(context,2);
-				Command saveMetadata = CommandFactory.create(initialContext,
-						SaveMetadataCommand.class.getName());
+			if (parameters.isAddMetadata()) {
+				progression.terminate(context, 2);
+				Command saveMetadata = CommandFactory.create(initialContext, SaveMetadataCommand.class.getName());
 				saveMetadata.execute(context);
 				progression.execute(context);
+			} else {
+				progression.terminate(context, 1);
 			}
-			else
-			{
-				progression.terminate(context,1);
-			}
-			
+
 			// compress
-			Command compress = CommandFactory.create(initialContext,
-					CompressCommand.class.getName());
+			Command compress = CommandFactory.create(initialContext, CompressCommand.class.getName());
 			compress.execute(context);
 			progression.execute(context);
 
@@ -226,8 +212,7 @@ public class NeptuneExporterCommand implements Command, Constant, ReportConstant
 		protected Command create(InitialContext context) throws IOException {
 			Command result = null;
 			try {
-				String name = "java:app/mobi.chouette.exchange.neptune/"
-						+ COMMAND;
+				String name = "java:app/mobi.chouette.exchange.neptune/" + COMMAND;
 				result = (Command) context.lookup(name);
 			} catch (NamingException e) {
 				// try another way on test context
@@ -243,7 +228,6 @@ public class NeptuneExporterCommand implements Command, Constant, ReportConstant
 	}
 
 	static {
-		CommandFactory.factories.put(NeptuneExporterCommand.class.getName(),
-				new DefaultCommandFactory());
+		CommandFactory.factories.put(NeptuneExporterCommand.class.getName(), new DefaultCommandFactory());
 	}
 }

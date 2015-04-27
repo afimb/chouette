@@ -81,6 +81,7 @@ public class HubExporterCommand implements Command, Constant, ReportConstant {
 
 		progression.initialize(context, 1);
 		JobData jobData = (JobData) context.get(JOB_DATA);
+		jobData.setFilename("export_" + jobData.getType() + "_" + jobData.getId() + ".zip");
 
 		context.put(REFERENTIAL, new Referential());
 		Metadata metadata = new Metadata(); // if not asked, will be used as
