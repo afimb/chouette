@@ -11,6 +11,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
+import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.report.ActionReport;
@@ -84,7 +85,8 @@ public class KmlSharedDataProducerCommand implements Command, Constant {
 		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
 		if (collection.getBoardingPositions().isEmpty() && collection.getQuays().isEmpty())
 			return;
-		String rootDirectory = (String) context.get(PATH);
+		JobData jobData = (JobData) context.get(JOB_DATA);
+		String rootDirectory = jobData.getPath();
 		Path dir = Paths.get(rootDirectory, OUTPUT);
 		KmlData data = new KmlData();
 		data.setName("Arrêts");
@@ -105,7 +107,8 @@ public class KmlSharedDataProducerCommand implements Command, Constant {
 		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
 		if (collection.getCommercialStopPoints().isEmpty())
 			return;
-		String rootDirectory = (String) context.get(PATH);
+		JobData jobData = (JobData) context.get(JOB_DATA);
+		String rootDirectory = jobData.getPath();
 		Path dir = Paths.get(rootDirectory, OUTPUT);
 		KmlData data = new KmlData();
 		data.setName("Arrêts commerciaux");
@@ -123,7 +126,8 @@ public class KmlSharedDataProducerCommand implements Command, Constant {
 		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
 		if (collection.getStopPlaces().isEmpty())
 			return;
-		String rootDirectory = (String) context.get(PATH);
+		JobData jobData = (JobData) context.get(JOB_DATA);
+		String rootDirectory = jobData.getPath();
 		Path dir = Paths.get(rootDirectory, OUTPUT);
 		KmlData data = new KmlData();
 		data.setName("Pôles d'échange");
@@ -141,7 +145,8 @@ public class KmlSharedDataProducerCommand implements Command, Constant {
 		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
 		if (collection.getConnectionLinks().isEmpty())
 			return;
-		String rootDirectory = (String) context.get(PATH);
+		JobData jobData = (JobData) context.get(JOB_DATA);
+		String rootDirectory = jobData.getPath();
 		Path dir = Paths.get(rootDirectory, OUTPUT);
 		KmlData data = new KmlData();
 		data.setName("Correspondance");
@@ -159,7 +164,8 @@ public class KmlSharedDataProducerCommand implements Command, Constant {
 		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
 		if (collection.getAccessPoints().isEmpty())
 			return;
-		String rootDirectory = (String) context.get(PATH);
+		JobData jobData = (JobData) context.get(JOB_DATA);
+		String rootDirectory = jobData.getPath();
 		Path dir = Paths.get(rootDirectory, OUTPUT);
 		KmlData data = new KmlData();
 		data.setName("Accès");

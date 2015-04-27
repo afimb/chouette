@@ -44,13 +44,14 @@ public class MainCommand implements Command, Constant {
 			// set job status to started
 			jobManager.start(jobService);
 
-			context.put(ARCHIVE, jobService.getFilename());
-			context.put(JOB_REFERENTIAL, jobService.getReferential());
-			context.put(ACTION, jobService.getAction());
-			context.put(TYPE, jobService.getType());
+			context.put(JOB_DATA, jobService);
+//			context.put(ARCHIVE, jobService.getFilename());
+//			context.put(JOB_REFERENTIAL, jobService.getReferential());
+//			context.put(ACTION, jobService.getAction());
+//			context.put(TYPE, jobService.getType());
 			
 			Parameters parameters = JSONUtil.fromJSON(Paths.get(jobService.getPath(), PARAMETERS_FILE), Parameters.class);
-			context.put(PARAMETERS, parameters);
+			// context.put(PARAMETERS, parameters);
 			context.put(CONFIGURATION, parameters.getConfiguration());
 			context.put(VALIDATION, parameters.getValidation());
 			context.put(REPORT, new ActionReport());

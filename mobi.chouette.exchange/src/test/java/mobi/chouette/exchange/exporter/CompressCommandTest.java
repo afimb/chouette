@@ -9,6 +9,7 @@ import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.FileUtil;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.JobDataTest;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -23,8 +24,10 @@ public class CompressCommandTest implements Constant
 		InitialContext initialContext = new InitialContext();
 		Context context = new Context();
 		context.put(INITIAL_CONTEXT, initialContext);
-		context.put(PATH, "target/referential/test");
-		context.put(ARCHIVE, "output.zip");
+		JobDataTest test = new JobDataTest();
+		context.put(JOB_DATA, test);
+		test.setPath("target/referential/test");
+		test.setFilename("output.zip");
 		if (d.exists())
 			try {
 				org.apache.commons.io.FileUtils.deleteDirectory(d);

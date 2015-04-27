@@ -10,6 +10,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.JSONUtil;
+import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.report.ActionReport;
@@ -66,7 +67,8 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 	private void saveReport(Context context) {
 		if (context.containsKey("testng")) return;
 		ActionReport report = (ActionReport) context.get(REPORT);
-		Path path = Paths.get(context.get(PATH).toString(), REPORT_FILE);
+		JobData jobData = (JobData) context.get(JOB_DATA);
+		Path path = Paths.get(jobData.getPath(), REPORT_FILE);
 		// pseudo pretty print
 		try {
 			String data = JSONUtil.toJSON(report).replaceAll("\\},\\{", "\n},\n{");
@@ -82,7 +84,8 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 		ValidationReport report = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
 		if (report == null)
 			return;
-		Path path = Paths.get(context.get(PATH).toString(), VALIDATION_FILE);
+		JobData jobData = (JobData) context.get(JOB_DATA);
+		Path path = Paths.get(jobData.getPath(), VALIDATION_FILE);
 
 		// pseudo pretty print
 

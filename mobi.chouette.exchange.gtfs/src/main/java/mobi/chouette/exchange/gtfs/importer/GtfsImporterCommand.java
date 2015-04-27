@@ -9,6 +9,7 @@ import javax.naming.InitialContext;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
+import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Chain;
 import mobi.chouette.common.chain.ChainCommand;
 import mobi.chouette.common.chain.Command;
@@ -50,6 +51,7 @@ public class GtfsImporterCommand implements Command, Constant {
 				.create(initialContext, ProgressionCommand.class.getName());
 		progression.initialize(context,3);
 
+		JobData jobData = (JobData) context.get(JOB_DATA);
 		context.put(REFERENTIAL, new Referential());
 		
 		// report service
@@ -82,7 +84,7 @@ public class GtfsImporterCommand implements Command, Constant {
 
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		if (importer == null) {
-			Path path = Paths.get(context.get(PATH).toString(), INPUT);
+			Path path = Paths.get(jobData.getPath(), INPUT);
 			importer = new GtfsImporter(path.toString());
 			context.put(PARSER, importer);
 		}

@@ -8,23 +8,18 @@ public interface Constant {
 	public static final String INITIAL_CONTEXT = "initial_context";
 	public static final String BASE_URI = "base_uri";
 	public static final String JOB_ID = "job_id";
+	public static final String JOB_DATA = "job_data";
 	public static final String ROOT_PATH = "referentials";
-	public static final String PARAMETERS = "parameters";
 	public static final String CONFIGURATION = "configuration";
 	public static final String VALIDATION = "validation";
 
 	public static final String OPTIMIZED = "optimized";
-	public static final String ARCHIVE = "archive";
-	public static final String JOB_REFERENTIAL = "job_referential";	
-	public static final String PATH = "path";
 	public static final String FILE_URL = "file_url";
 	public static final String FILE_NAME = "file_name";
 	public static final String SCHEMA = "schema";
-	public static final String ACTION = "action";
 	public static final String IMPORTER = "importer";
 	public static final String EXPORTER = "exporter";
 	public static final String VALIDATOR = "validator";	
-	public static final String TYPE = "type";
 	public static final String INPUT = "input";
 	public static final String OUTPUT = "output";
 	public static final String PARAMETERS_FILE = "parameters.json";

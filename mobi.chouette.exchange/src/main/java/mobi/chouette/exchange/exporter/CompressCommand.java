@@ -11,6 +11,7 @@ import mobi.chouette.common.Color;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.FileUtil;
+import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 
@@ -30,8 +31,9 @@ public class CompressCommand implements Command, Constant {
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
 		try {
-			String path = (String) context.get(PATH);
-			String file = (String) context.get(ARCHIVE);
+			JobData jobData = (JobData) context.get(JOB_DATA);
+			String path = jobData.getPath();
+			String file = jobData.getFilename();
 			Path target = Paths.get(path, OUTPUT);
 			Path filename = Paths.get(path, file);
 			FileUtil.compress(target.toString(), filename.toString());

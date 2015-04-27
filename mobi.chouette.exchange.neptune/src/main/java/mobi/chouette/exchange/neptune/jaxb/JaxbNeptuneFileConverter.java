@@ -18,8 +18,12 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.ValidationEvent;
+import javax.xml.bind.ValidationEventHandler;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
+
+import lombok.extern.log4j.Log4j;
 
 import org.trident.schema.trident.ChouettePTNetworkType;
 import org.xml.sax.SAXException;
@@ -32,6 +36,7 @@ import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
  * Reader tool to extract XML Neptune Schema Objects (jaxb) from a file or a
  * stream
  */
+@Log4j
 public class JaxbNeptuneFileConverter
 {
 
@@ -80,6 +85,7 @@ public class JaxbNeptuneFileConverter
       marshaller.setProperty(javax.xml.bind.Marshaller.JAXB_ENCODING, "UTF-8"); // NOI18N
       marshaller.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT,
             Boolean.TRUE);
+      marshaller.setEventHandler(new NeptuneValidationEventHandler());
       NamespacePrefixMapper mapper = new NeptuneNamespacePrefixMapper();
       marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", mapper);
       marshaller.marshal(network, stream);
@@ -120,5 +126,23 @@ public class JaxbNeptuneFileConverter
          return suggestion;
       }
    }
+   
+   private class NeptuneValidationEventHandler implements
+   ValidationEventHandler
+{
+
+	@Override
+	public boolean handleEvent(ValidationEvent event) {
+        switch (event.getSeverity())
+        {
+        case ValidationEvent.FATAL_ERROR: return false;
+        case ValidationEvent.ERROR:
+        case ValidationEvent.WARNING:
+        	log.warn(event.getMessage());
+           break;
+        }
+		return false;
+	}
+}
 
 }

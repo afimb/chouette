@@ -32,8 +32,6 @@ import mobi.chouette.dao.LineDAO;
 import mobi.chouette.dao.NetworkDAO;
 import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.dao.TimetableDAO;
-import mobi.chouette.exchange.report.LineStats;
-import mobi.chouette.exchange.report.ActionReport;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -102,23 +100,6 @@ public class DaoSharedDataValidatorCommand implements Command, Constant {
 			Command validateSharedData = CommandFactory.create(initialContext,
 					SharedDataValidatorCommand.class.getName());
 			result = validateSharedData.execute(context);
-
-			if (context.get(ACTION).equals(VALIDATOR))
-			{
-				ActionReport report = (ActionReport) context.get(REPORT);
-				LineStats globalStats = report.getStats();
-				if (globalStats == null) {
-					globalStats = new LineStats();
-					report.setStats(globalStats);
-				}
-				globalStats.setConnectionLinkCount(data.getConnectionLinks().size());
-				globalStats.setAccessPointCount(data.getAccessPoints().size());
-				globalStats.setStopAreaCount(data.getStopAreas().size());
-				globalStats.setTimeTableCount(data.getTimetables().size());
-			}
-			result = SUCCESS;
-		} catch (Exception e) {
-			log.error(e.getMessage(), e);
 		} finally {
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		}

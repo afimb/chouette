@@ -63,10 +63,50 @@ public class AccessPointUpdater implements Updater<AccessPoint> {
 				&& !newValue.getComment().equals(oldValue.getComment())) {
 			oldValue.setComment(newValue.getComment());
 		}
+		if (newValue.getLongitude() != null
+				&& !newValue.getLongitude().equals(oldValue.getLongitude())) {
+			oldValue.setLongitude(newValue.getLongitude());
+		}
+		if (newValue.getLatitude() != null
+				&& !newValue.getLatitude().equals(oldValue.getLatitude())) {
+			oldValue.setLatitude(newValue.getLatitude());
+		}
+		if (newValue.getLongLatType() != null
+				&& !newValue.getLongLatType().equals(oldValue.getLongLatType())) {
+			oldValue.setLongLatType(newValue.getLongLatType());
+		}
+//		if (newValue.getX() != null && !newValue.getX().equals(oldValue.getX())) {
+//			oldValue.setX(newValue.getX());
+//		}
+//		if (newValue.getY() != null && !newValue.getY().equals(oldValue.getY())) {
+//			oldValue.setY(newValue.getY());
+//		}
+//		if (newValue.getProjectionType() != null
+//				&& !newValue.getProjectionType().equals(
+//						oldValue.getProjectionType())) {
+//			oldValue.setProjectionType(newValue.getProjectionType());
+//		}
 
 		if (newValue.getOpeningTime() != null
 				&& !newValue.getOpeningTime().equals(oldValue.getOpeningTime())) {
 			oldValue.setOpeningTime(newValue.getOpeningTime());
+		}
+
+		if (newValue.getCountryCode() != null
+				&& !newValue.getCountryCode().equals(oldValue.getCountryCode())) {
+			oldValue.setCountryCode(newValue.getCountryCode());
+		}
+		if (newValue.getZipCode() != null
+				&& !newValue.getZipCode().equals(oldValue.getZipCode())) {
+			oldValue.setZipCode(newValue.getZipCode());
+		}
+		if (newValue.getCityName() != null
+				&& !newValue.getCityName().equals(oldValue.getCityName())) {
+			oldValue.setCityName(newValue.getCityName());
+		}
+		if (newValue.getStreetName() != null
+				&& !newValue.getStreetName().equals(oldValue.getStreetName())) {
+			oldValue.setStreetName(newValue.getStreetName());
 		}
 
 		if (newValue.getClosingTime() != null

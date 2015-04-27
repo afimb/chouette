@@ -9,6 +9,7 @@ import javax.naming.NamingException;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.neptune.JobDataTest;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.neptune.importer.NeptuneParserCommand;
@@ -17,9 +18,8 @@ import mobi.chouette.exchange.neptune.importer.NeptuneValidationCommand;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.exchange.validation.report.CheckPoint;
-import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.exchange.validation.report.CheckPoint.RESULT;
-import mobi.chouette.model.api.Job;
+import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.util.Referential;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
@@ -51,12 +51,6 @@ public class ValidationTests implements Constant, ReportConstant
 	protected Context initImportContext() {
 		init();
 		ContextHolder.setContext("chouette_gui"); // set tenant schema
-		Job job = new Job();
-		job.setAction("importer");
-		job.setType("neptune");
-		job.setPath("/tmp/test/1");
-		job.setReferential("chouette_gui");
-		job.setStatus(Job.STATUS.STARTED);
 
 		Context context = new Context();
 		context.put(INITIAL_CONTEXT, initialContext);
@@ -70,7 +64,10 @@ public class ValidationTests implements Constant, ReportConstant
 		configuration.setNoSave(true);
 		configuration.setOrganisationName("organisation");
 		configuration.setReferentialName("test");
-		context.put(PATH, "target/referential/test");
+		JobDataTest test = new JobDataTest();
+		context.put(JOB_DATA, test);
+		
+		test.setPath( "target/referential/test");
 		File f = new File("target/referential/test");
 		if (f.exists())
 			try {
@@ -79,9 +76,9 @@ public class ValidationTests implements Constant, ReportConstant
 				e.printStackTrace();
 			}
 		f.mkdirs();
-		context.put(JOB_REFERENTIAL, "chouette_gui");
-		context.put(ACTION, IMPORTER);
-		context.put(TYPE, "neptune");
+		test.setReferential( "chouette_gui");
+		test.setAction( IMPORTER);
+		test.setType("neptune");
 		context.put("testng", "true");
 		context.put(OPTIMIZED, Boolean.FALSE);
 		return context;

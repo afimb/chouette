@@ -19,7 +19,6 @@ import mobi.chouette.exchange.report.LineInfo.LINE_STATE;
 import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.exchange.validation.report.CheckPoint;
 import mobi.chouette.exchange.validation.report.ValidationReport;
-import mobi.chouette.model.api.Job;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
 import org.apache.commons.io.FileUtils;
@@ -47,6 +46,7 @@ public class ValidatorTest extends Arquillian implements Constant,ReportConstant
 
 		result = ShrinkWrap.create(WebArchive.class, "test.war").addAsWebInfResource("postgres-ds.xml")
 				.addAsLibraries(files)
+				.addClass(JobDataTest.class)
 				.addAsResource(EmptyAsset.INSTANCE, "beans.xml");
 		return result;
 
@@ -69,12 +69,6 @@ public class ValidatorTest extends Arquillian implements Constant,ReportConstant
 	protected Context initImportContext() {
 		init();
 		ContextHolder.setContext("chouette_gui"); // set tenant schema
-		Job job = new Job();
-		job.setAction("importer");
-		job.setType("neptune");
-		job.setPath("/tmp/test/1");
-		job.setReferential("chouette_gui");
-		job.setStatus(Job.STATUS.STARTED);
 
 		Context context = new Context();
 		context.put(INITIAL_CONTEXT, initialContext);
@@ -89,7 +83,10 @@ public class ValidatorTest extends Arquillian implements Constant,ReportConstant
 		configuration.setNoSave(true);
 		configuration.setOrganisationName("organisation");
 		configuration.setReferentialName("test");
-		context.put(PATH, "target/referential/test");
+		JobDataTest test = new JobDataTest();
+		context.put(JOB_DATA, test);
+
+		test.setPath("target/referential/test");
 		File f = new File("target/referential/test");
 		if (f.exists())
 			try {
@@ -98,9 +95,9 @@ public class ValidatorTest extends Arquillian implements Constant,ReportConstant
 				e.printStackTrace();
 			}
 		f.mkdirs();
-		context.put(JOB_REFERENTIAL, "chouette_gui");
-		context.put(ACTION, IMPORTER);
-		context.put(TYPE, "neptune");
+		test.setReferential( "chouette_gui");
+		test.setAction( IMPORTER);
+		test.setType( "neptune");
 		context.put("testng", "true");
 		context.put(OPTIMIZED, Boolean.FALSE);
 		return context;
@@ -127,7 +124,8 @@ public class ValidatorTest extends Arquillian implements Constant,ReportConstant
 		NeptuneImporterCommand command = (NeptuneImporterCommand) CommandFactory.create(initialContext,
 				NeptuneImporterCommand.class.getName());
 		TestsUtils.copyFile(file);
-		context.put(ARCHIVE, file);
+		JobDataTest test =  (JobDataTest) context.get(JOB_DATA);
+		test.setFilename( file);
 		NeptuneImportParameters configuration = (NeptuneImportParameters) context.get(CONFIGURATION);
 		configuration.setNoSave(false);
 		configuration.setCleanRepository(true);

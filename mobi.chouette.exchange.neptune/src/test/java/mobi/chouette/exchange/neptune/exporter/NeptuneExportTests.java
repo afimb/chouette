@@ -14,10 +14,9 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.LineDAO;
+import mobi.chouette.exchange.neptune.JobDataTest;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.neptune.NeptuneTestsUtils;
-import mobi.chouette.exchange.neptune.exporter.NeptuneExportParameters;
-import mobi.chouette.exchange.neptune.exporter.NeptuneExporterCommand;
 import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.neptune.importer.NeptuneImporterCommand;
 import mobi.chouette.exchange.report.ActionReport;
@@ -25,7 +24,6 @@ import mobi.chouette.exchange.report.LineInfo;
 import mobi.chouette.exchange.report.LineInfo.LINE_STATE;
 import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.exchange.validation.report.ValidationReport;
-import mobi.chouette.model.api.Job;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
 import org.apache.commons.io.FileUtils;
@@ -36,9 +34,7 @@ import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.testng.Assert;
-import org.testng.Reporter;
 import org.testng.annotations.Test;
-import org.trident.schema.trident.TridentObjectType;
 
 @Log4j
 public class NeptuneExportTests  extends Arquillian implements Constant, ReportConstant {
@@ -59,6 +55,7 @@ public class NeptuneExportTests  extends Arquillian implements Constant, ReportC
 		result = ShrinkWrap.create(WebArchive.class, "test.war").addAsWebInfResource("postgres-ds.xml")
 				.addAsLibraries(files)
 				.addClass(NeptuneTestsUtils.class)
+				.addClass(JobDataTest.class)
 				.addAsResource(EmptyAsset.INSTANCE, "beans.xml");
 		return result;
 
@@ -83,12 +80,6 @@ public class NeptuneExportTests  extends Arquillian implements Constant, ReportC
 	protected Context initImportContext() {
 		init();
 		ContextHolder.setContext("chouette_gui"); // set tenant schema
-		Job job = new Job();
-		job.setAction("importer");
-		job.setType("neptune");
-		job.setPath("/tmp/test/1");
-		job.setReferential("chouette_gui");
-		job.setStatus(Job.STATUS.STARTED);
 
 		Context context = new Context();
 		context.put(INITIAL_CONTEXT, initialContext);
@@ -101,7 +92,9 @@ public class NeptuneExportTests  extends Arquillian implements Constant, ReportC
 		configuration.setNoSave(true);
 		configuration.setOrganisationName("organisation");
 		configuration.setReferentialName("test");
-		context.put(PATH, "target/referential/test");
+		JobDataTest test = new JobDataTest();
+		context.put(JOB_DATA, test);
+		test.setPath( "target/referential/test");
 		File f = new File("target/referential/test");
 		if (f.exists())
 			try {
@@ -110,9 +103,9 @@ public class NeptuneExportTests  extends Arquillian implements Constant, ReportC
 				e.printStackTrace();
 			}
 		f.mkdirs();
-		context.put(JOB_REFERENTIAL, "chouette_gui");
-		context.put(ACTION, IMPORTER);
-		context.put(TYPE, "neptune");
+		test.setReferential( "chouette_gui");
+		test.setAction( IMPORTER);
+		test.setType("neptune");
 		context.put("testng", "true");
 		context.put(OPTIMIZED, Boolean.FALSE);
 		return context;
@@ -122,12 +115,6 @@ public class NeptuneExportTests  extends Arquillian implements Constant, ReportC
 	protected Context initExportContext() {
 		init();
 		ContextHolder.setContext("chouette_gui"); // set tenant schema
-		Job job = new Job();
-		job.setAction("exporter");
-		job.setType("neptune");
-		job.setPath("/tmp/test/1");
-		job.setReferential("chouette_gui");
-		job.setStatus(Job.STATUS.STARTED);
 
 		Context context = new Context();
 		context.put(INITIAL_CONTEXT, initialContext);
@@ -139,7 +126,10 @@ public class NeptuneExportTests  extends Arquillian implements Constant, ReportC
 		configuration.setUserName("userName");
 		configuration.setOrganisationName("organisation");
 		configuration.setReferentialName("test");
-		context.put(PATH, "target/referential/test");
+		JobDataTest test = new JobDataTest();
+		context.put(JOB_DATA, test);
+
+		test.setPath( "target/referential/test");
 		File f = new File("target/referential/test");
 		if (f.exists())
 			try {
@@ -148,9 +138,9 @@ public class NeptuneExportTests  extends Arquillian implements Constant, ReportC
 				e.printStackTrace();
 			}
 		f.mkdirs();
-		context.put(JOB_REFERENTIAL, "chouette_gui");
-		context.put(ACTION, EXPORTER);
-		context.put(TYPE, "neptune");
+		test.setReferential("chouette_gui");
+		test.setAction(EXPORTER);
+		test.setType("neptune");
 		context.put("testng", "true");
 		context.put(OPTIMIZED, Boolean.FALSE);
 		return context;
@@ -223,7 +213,8 @@ public class NeptuneExportTests  extends Arquillian implements Constant, ReportC
 		NeptuneImporterCommand command = (NeptuneImporterCommand) CommandFactory.create(initialContext,
 				NeptuneImporterCommand.class.getName());
 		NeptuneTestsUtils.copyFile(file);
-		context.put(ARCHIVE, file);
+		JobDataTest test = (JobDataTest) context.get(JOB_DATA);
+		test.setFilename( file);
 		NeptuneImportParameters configuration = (NeptuneImportParameters) context.get(CONFIGURATION);
 		configuration.setNoSave(false);
 		configuration.setCleanRepository(true);

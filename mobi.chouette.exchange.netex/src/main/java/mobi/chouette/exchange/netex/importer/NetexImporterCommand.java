@@ -11,6 +11,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.FileUtil;
+import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Chain;
 import mobi.chouette.common.chain.ChainCommand;
 import mobi.chouette.common.chain.Command;
@@ -46,6 +47,7 @@ public class NetexImporterCommand implements Command, Constant {
 		InitialContext initialContext = (InitialContext) context
 				.get(INITIAL_CONTEXT);
 
+		JobData jobData = (JobData) context.get(JOB_DATA);
 		context.put(REFERENTIAL, new Referential());
 
 		// initialize reporting and progression
@@ -89,7 +91,7 @@ public class NetexImporterCommand implements Command, Constant {
 			uncompress.execute(context);
 			progression.execute(context);
 
-			Path path = Paths.get(context.get(PATH).toString(), INPUT);
+			Path path = Paths.get(jobData.getPath(), INPUT);
 			List<Path> stream = FileUtil
 					.listFiles(path, "*.xml", "*metadata*");
 

@@ -20,6 +20,7 @@ import javax.naming.NamingException;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
+import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.CompanyDAO;
@@ -73,6 +74,7 @@ public class NetexExporterCommand implements Command, Constant, ReportConstant {
 				.create(initialContext, ProgressionCommand.class.getName());
 		progression.initialize(context,1);
 
+		JobData jobData = (JobData) context.get(JOB_DATA);
 		context.put(REFERENTIAL, new Referential());
 		Metadata metadata = new Metadata(); // if not asked, will be used as dummy
         metadata.setDate(Calendar.getInstance());
@@ -156,7 +158,7 @@ public class NetexExporterCommand implements Command, Constant, ReportConstant {
 
 		try {
 
-			Path path = Paths.get(context.get(PATH).toString(), OUTPUT);
+			Path path = Paths.get(jobData.getPath(), OUTPUT);
 			if (!Files.exists(path)) {
 				Files.createDirectories(path);
 			}
@@ -216,8 +218,14 @@ public class NetexExporterCommand implements Command, Constant, ReportConstant {
 				String name = "java:app/mobi.chouette.exchange.netex/"
 						+ COMMAND;
 				result = (Command) context.lookup(name);
-			} catch (NamingException e) {
-				log.error(e);
+			}catch (NamingException e) {
+				// try another way on test context
+				String name = "java:module/" + COMMAND;
+				try {
+					result = (Command) context.lookup(name);
+				} catch (NamingException e1) {
+					log.error(e);
+				}
 			}
 			return result;
 		}

@@ -21,6 +21,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
+import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.CompanyDAO;
@@ -77,6 +78,7 @@ public class KmlExporterCommand implements Command, Constant, ReportConstant {
 
 		progression.initialize(context, 1);
 
+		JobData jobData = (JobData) context.get(JOB_DATA);
 		context.put(REFERENTIAL, new Referential());
 		Metadata metadata = new Metadata(); // if not asked, will be used as
 											// dummy
@@ -126,7 +128,7 @@ public class KmlExporterCommand implements Command, Constant, ReportConstant {
 		}
 
 		try {
-			Path path = Paths.get(context.get(PATH).toString(), OUTPUT);
+			Path path = Paths.get(jobData.getPath(), OUTPUT);
 			if (!Files.exists(path)) {
 				Files.createDirectories(path);
 			}

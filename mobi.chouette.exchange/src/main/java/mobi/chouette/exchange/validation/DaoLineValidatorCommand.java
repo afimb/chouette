@@ -24,10 +24,6 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.LineDAO;
-import mobi.chouette.exchange.report.LineInfo;
-import mobi.chouette.exchange.report.LineInfo.LINE_STATE;
-import mobi.chouette.exchange.report.LineStats;
-import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.model.Line;
 
 import com.jamonapi.Monitor;
@@ -63,32 +59,7 @@ public class DaoLineValidatorCommand implements Command, Constant {
 			ValidationDataCollector collector = new ValidationDataCollector();
 			collector.collect(data, line);
 
-			lineValidatorCommand.execute(context);
-			if (context.get(ACTION).equals(VALIDATOR))
-			{
-				ActionReport report = (ActionReport) context.get(REPORT);
-				LineInfo lineInfo = new LineInfo();
-				lineInfo.setName(line.getName() + " (" + line.getNumber() + ")");
-				LineStats stats = new LineStats();
-				stats.setJourneyPatternCount(data.getJourneyPatterns().size());
-				stats.setRouteCount(data.getRoutes().size());
-				stats.setVehicleJourneyCount(data.getVehicleJourneys().size());
-
-				lineInfo.setStatus(LINE_STATE.OK);
-				// merge lineStats to global ones
-				LineStats globalStats = report.getStats();
-				if (globalStats == null) {
-					globalStats = new LineStats();
-					report.setStats(globalStats);
-				}
-				globalStats.setRouteCount(globalStats.getRouteCount() + stats.getRouteCount());
-				globalStats.setVehicleJourneyCount(globalStats.getVehicleJourneyCount() + stats.getVehicleJourneyCount());
-				globalStats.setJourneyPatternCount(globalStats.getJourneyPatternCount() + stats.getJourneyPatternCount());
-				report.getLines().add(lineInfo);
-			}
-			result = SUCCESS;
-		} catch (Exception e) {
-			log.error(e.getMessage(), e);
+			result = lineValidatorCommand.execute(context);
 		} finally {
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		}

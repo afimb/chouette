@@ -23,6 +23,9 @@ import mobi.chouette.dao.LineDAO;
 import mobi.chouette.dao.NetworkDAO;
 import mobi.chouette.exchange.ProgressionCommand;
 import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.LineInfo;
+import mobi.chouette.exchange.report.LineStats;
+import mobi.chouette.exchange.report.LineInfo.LINE_STATE;
 import mobi.chouette.exchange.validation.DaoLineValidatorCommand;
 import mobi.chouette.exchange.validation.DaoSharedDataValidatorCommand;
 import mobi.chouette.exchange.validation.ValidationData;
@@ -77,7 +80,7 @@ public class ValidatorCommand implements Command, Constant {
 			progression.dispose(context);
 			return ERROR;
 		}
-		
+
 		ValidationParameters validationParameters = (ValidationParameters) context.get(VALIDATION);
 		if (validationParameters == null)
 		{
@@ -86,7 +89,7 @@ public class ValidatorCommand implements Command, Constant {
 			report.setFailure("no validation parameters for validation ");
 			progression.dispose(context);
 			return ERROR;
-			
+
 		}
 
 		ValidateParameters parameters = (ValidateParameters) configuration;
@@ -131,9 +134,30 @@ public class ValidatorCommand implements Command, Constant {
 			for (Line line : lines) {
 				context.put(LINE_ID, line.getId());
 				progression.execute(context);
-				if (validateLine.execute(context) == ERROR) {
-					continue;
-				} else {
+				boolean resLine = validateLine.execute(context);
+				ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
+				ActionReport report = (ActionReport) context.get(REPORT);
+				LineInfo lineInfo = new LineInfo();
+				lineInfo.setName(line.getName() + " (" + line.getNumber() + ")");
+				LineStats stats = new LineStats();
+				stats.setJourneyPatternCount(data.getJourneyPatterns().size());
+				stats.setRouteCount(data.getRoutes().size());
+				stats.setVehicleJourneyCount(data.getVehicleJourneys().size());
+
+				lineInfo.setStatus(LINE_STATE.OK);
+				// merge lineStats to global ones
+				LineStats globalStats = report.getStats();
+				if (globalStats == null) {
+					globalStats = new LineStats();
+					report.setStats(globalStats);
+				}
+				globalStats.setRouteCount(globalStats.getRouteCount() + stats.getRouteCount());
+				globalStats.setVehicleJourneyCount(globalStats.getVehicleJourneyCount() + stats.getVehicleJourneyCount());
+				globalStats.setJourneyPatternCount(globalStats.getJourneyPatternCount() + stats.getJourneyPatternCount());
+				report.getLines().add(lineInfo);
+
+
+				if (resLine == SUCCESS) {
 					lineCount++;
 				}
 			}
@@ -143,6 +167,19 @@ public class ValidatorCommand implements Command, Constant {
 				Command validateSharedData = CommandFactory.create(initialContext,
 						DaoSharedDataValidatorCommand.class.getName());
 				result = validateSharedData.execute(context);
+				if (result)
+				{
+					ValidationData data = (ValidationData) context.get(VALIDATION_DATA);					ActionReport report = (ActionReport) context.get(REPORT);
+					LineStats globalStats = report.getStats();
+					if (globalStats == null) {
+						globalStats = new LineStats();
+						report.setStats(globalStats);
+					}
+					globalStats.setConnectionLinkCount(data.getConnectionLinks().size());
+					globalStats.setAccessPointCount(data.getAccessPoints().size());
+					globalStats.setStopAreaCount(data.getStopAreas().size());
+					globalStats.setTimeTableCount(data.getTimetables().size());
+				}
 			}
 
 			// terminate : nothing to do

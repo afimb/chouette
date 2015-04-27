@@ -13,9 +13,9 @@ import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.exchange.report.StepProgression.STEP;
 import mobi.chouette.exchange.validation.report.CheckPoint;
-import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.exchange.validation.report.CheckPoint.RESULT;
 import mobi.chouette.exchange.validation.report.CheckPoint.SEVERITY;
+import mobi.chouette.exchange.validation.report.ValidationReport;
 
 import org.apache.commons.io.FileUtils;
 import org.testng.Assert;
@@ -33,7 +33,9 @@ public void testProgressionInitialize() throws Exception
 {
 	InitialContext initialContext = new InitialContext();
 	context.put(INITIAL_CONTEXT, initialContext);
-	context.put(PATH, "target/referential/test");
+	JobDataTest jobData = new JobDataTest();
+	context.put(JOB_DATA,jobData);
+	jobData.setPath("target/referential/test");
 	context.put(REPORT, new ActionReport());
 	ActionReport report = (ActionReport)  context.get(REPORT);
 	context.put(MAIN_VALIDATION_REPORT, new ValidationReport());

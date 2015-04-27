@@ -12,6 +12,7 @@ import javax.ws.rs.core.MediaType;
 import lombok.Data;
 import lombok.experimental.Delegate;
 import mobi.chouette.common.JSONUtil;
+import mobi.chouette.common.JobData;
 import mobi.chouette.exchange.InputValidator;
 import mobi.chouette.exchange.InputValidatorFactory;
 import mobi.chouette.model.api.Job;
@@ -22,7 +23,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
 @Data
-public class JobService implements ServiceConstants {
+public class JobService implements JobData,ServiceConstants {
 
     @Delegate(types = {Job.class}, excludes = {ExcludedJobMethods.class})
     private Job job;

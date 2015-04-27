@@ -38,7 +38,7 @@ public class Task implements Callable<Job.STATUS>, ManagedTask, Constant {
 		this.properties = properties;
 		this.listener = listener;
 		context.put(JOB_ID, job2.getId());
-		context.put(PATH, job2.getPath());
+//		context.put(PATH, job2.getPath());
 		
 	}
 

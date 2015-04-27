@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import mobi.chouette.common.Context;
+import mobi.chouette.common.JobData;
 import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.metadata.NeptuneObjectPresenter;
 import mobi.chouette.exchange.netex.Constant;
@@ -17,7 +18,8 @@ public class NetexLineProducer implements Constant {
 
 	public void produce(Context context) throws Exception {
 		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
-		String rootDirectory = (String) context.get(PATH);
+		JobData jobData = (JobData) context.get(JOB_DATA);
+		String rootDirectory = jobData.getPath();
 
 		NetexExportParameters parameters = (NetexExportParameters) context.get(CONFIGURATION);
 		String projectionType = parameters.getProjectionType();

@@ -7,6 +7,7 @@ import java.util.List;
 
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
+import mobi.chouette.common.JobData;
 import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.metadata.NeptuneObjectPresenter;
 import mobi.chouette.exchange.neptune.exporter.producer.AbstractJaxbNeptuneProducer;
@@ -82,7 +83,8 @@ public class ChouettePTNetworkProducer implements Constant {
 	public void produce(Context context) throws Exception
 	{
 		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
-		String rootDirectory = (String) context.get(PATH);
+		JobData jobData = (JobData) context.get(JOB_DATA);
+		String rootDirectory = jobData.getPath();
 
 		NeptuneExportParameters parameters = (NeptuneExportParameters) context.get(CONFIGURATION);
 		boolean addExtension = parameters.isAddExtension();

@@ -27,107 +27,110 @@ import org.apache.velocity.tools.generic.EscapeTool;
 @Log4j
 public class NetexFileWriter implements Constant
 {
-   private VelocityEngine velocityEngine;
-   // Prepare the model for velocity
-   private Map<String, Object> model = new HashMap<String, Object>();
+	private static VelocityEngine velocityEngine;
+	// Prepare the model for velocity
+	private Map<String, Object> model = new HashMap<String, Object>();
 
-   public NetexFileWriter()
-   {
-      velocityEngine = new VelocityEngine();
-      velocityEngine.addProperty("resource.loader", "classpath");
-      velocityEngine.addProperty("classpath.resource.loader.class","org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
-   }
-   
-   private void prepareModel(ExportableData collection) throws DatatypeConfigurationException
-   {		
-      model.put("date", new DateTool());
-      model.put("esc", new EscapeTool());
-      model.put("dateFormat", "yyyy-MM-dd'T'HH:mm:ss'Z'");
-      model.put("shortDateFormat", "yyyy-MM-dd");
-      model.put("dateTimeFormat", "yyyy-MM-dd'T'HH:mm:ss");
-      model.put("durationFactory", DatatypeFactory.newInstance());
+	public NetexFileWriter()
+	{
+		if (velocityEngine == null)
+		{
+			velocityEngine = new VelocityEngine();
+			velocityEngine.addProperty("resource.loader", "classpath");
+			velocityEngine.addProperty("classpath.resource.loader.class","org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
+		}
+	}
 
-      model.put("modelTranslator", new ModelTranslator());
+	private void prepareModel(ExportableData collection) throws DatatypeConfigurationException
+	{		
+		model.put("date", new DateTool());
+		model.put("esc", new EscapeTool());
+		model.put("dateFormat", "yyyy-MM-dd'T'HH:mm:ss'Z'");
+		model.put("shortDateFormat", "yyyy-MM-dd");
+		model.put("dateTimeFormat", "yyyy-MM-dd'T'HH:mm:ss");
+		model.put("durationFactory", DatatypeFactory.newInstance());
 
-      Line line = collection.getLine();
-      model.put("line", collection.getLine());
-      model.put("network", collection.getNetwork());
-      if (collection.getNetwork().getVersionDate() == null)
-      {
-    	  collection.getNetwork().setVersionDate(Calendar.getInstance().getTime());
-      }
-      model.put("company", collection.getLine().getCompany());
-      model.put("connectionLinks", collection.getConnectionLinks());
-      model.put("accessLinks", collection.getAccessLinks());
+		model.put("modelTranslator", new ModelTranslator());
 
-      // For ServiceFrame need to have for each tariff stop points associated
-      model.put("tariffs", tariffs(collection));
+		Line line = collection.getLine();
+		model.put("line", collection.getLine());
+		model.put("network", collection.getNetwork());
+		if (collection.getNetwork().getVersionDate() == null)
+		{
+			collection.getNetwork().setVersionDate(Calendar.getInstance().getTime());
+		}
+		model.put("company", collection.getLine().getCompany());
+		model.put("connectionLinks", collection.getConnectionLinks());
+		model.put("accessLinks", collection.getAccessLinks());
 
-      // For TimetableFrame need to have for trainNumbers
-      model.put("vehicleNumbers", vehicleNumbers(collection));
+		// For ServiceFrame need to have for each tariff stop points associated
+		model.put("tariffs", tariffs(collection));
 
-      // Be careful line return attributes address
-      List<StopArea> stopAreaWithoutQuays = new ArrayList<StopArea>();
-      stopAreaWithoutQuays.addAll(collection.getStopPlaces());
-      stopAreaWithoutQuays.addAll(collection.getCommercialStopPoints());
-      model.put("stopPlaces", stopAreaWithoutQuays);
+		// For TimetableFrame need to have for trainNumbers
+		model.put("vehicleNumbers", vehicleNumbers(collection));
 
-      // For ITL
-      model.put("routingConstraints", line.getRoutingConstraints());
+		// Be careful line return attributes address
+		List<StopArea> stopAreaWithoutQuays = new ArrayList<StopArea>();
+		stopAreaWithoutQuays.addAll(collection.getStopPlaces());
+		stopAreaWithoutQuays.addAll(collection.getCommercialStopPoints());
+		model.put("stopPlaces", stopAreaWithoutQuays);
 
-      // For TimetableFrame need to have vehicle journeys
-      model.put("vehicleJourneys", collection.getVehicleJourneys());
+		// For ITL
+		model.put("routingConstraints", line.getRoutingConstraints());
 
-      // For ServiceCalendarFrame need to have time tables
-      model.put("timetables", collection.getTimetables());
-   }
+		// For TimetableFrame need to have vehicle journeys
+		model.put("vehicleJourneys", collection.getVehicleJourneys());
 
-   public File writeXmlFile(ExportableData collection, File file) throws IOException,
-         DatatypeConfigurationException
-   {
-      // Prepare the model for velocity
-      prepareModel(collection);
+		// For ServiceCalendarFrame need to have time tables
+		model.put("timetables", collection.getTimetables());
+	}
 
-      StringWriter output = new StringWriter();
-      VelocityContext velocityContext = new VelocityContext(model);
-      velocityContext.put("esc", new EscapeTool());
+	public File writeXmlFile(ExportableData collection, File file) throws IOException,
+	DatatypeConfigurationException
+	{
+		// Prepare the model for velocity
+		prepareModel(collection);
 
-      velocityEngine.mergeTemplate("templates/line.vm", "UTF-8",
-            velocityContext, output);
+		StringWriter output = new StringWriter();
+		VelocityContext velocityContext = new VelocityContext(model);
+		velocityContext.put("esc", new EscapeTool());
 
-      FileUtils.write(file, output.toString(), "UTF-8");
+		velocityEngine.mergeTemplate("templates/line.vm", "UTF-8",
+				velocityContext, output);
 
-      log.debug("File : " + file.getName() + "created");
+		FileUtils.write(file, output.toString(), "UTF-8");
 
-      return file;
-   }
+		log.debug("File : " + file.getName() + "created");
 
-   private List<Long> vehicleNumbers(ExportableData collection)
-   {
-      List<Long> result = new ArrayList<Long>();
+		return file;
+	}
 
-      List<VehicleJourney> vehicles = collection.getVehicleJourneys();
-      for (VehicleJourney vehicle : vehicles)
-      {
-         if (!result.contains(vehicle.getNumber()))
-         {
-            result.add(vehicle.getNumber());
-         }
-      }
-      return result;
-   }
+	private List<Long> vehicleNumbers(ExportableData collection)
+	{
+		List<Long> result = new ArrayList<Long>();
 
-   private List<Integer> tariffs(ExportableData collection)
-   {
-      List<Integer> tariffs = new ArrayList<Integer>();
+		List<VehicleJourney> vehicles = collection.getVehicleJourneys();
+		for (VehicleJourney vehicle : vehicles)
+		{
+			if (!result.contains(vehicle.getNumber()))
+			{
+				result.add(vehicle.getNumber());
+			}
+		}
+		return result;
+	}
 
-      for (StopArea stopArea : collection.getStopAreas())
-      {
-         if (stopArea.getFareCode() != null
-               && !tariffs.contains(stopArea.getFareCode()))
-            tariffs.add(stopArea.getFareCode());
-      }
-      return tariffs;
-   }
+	private List<Integer> tariffs(ExportableData collection)
+	{
+		List<Integer> tariffs = new ArrayList<Integer>();
+
+		for (StopArea stopArea : collection.getStopAreas())
+		{
+			if (stopArea.getFareCode() != null
+					&& !tariffs.contains(stopArea.getFareCode()))
+				tariffs.add(stopArea.getFareCode());
+		}
+		return tariffs;
+	}
 
 }

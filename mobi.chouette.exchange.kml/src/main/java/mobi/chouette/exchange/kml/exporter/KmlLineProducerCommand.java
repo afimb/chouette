@@ -20,6 +20,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
+import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.LineDAO;
@@ -123,7 +124,8 @@ public class KmlLineProducerCommand implements Command, Constant {
 
 	private void saveLine(Context context, Line line, ExportableData collection) throws IOException,
 			DatatypeConfigurationException {
-		String rootDirectory = (String) context.get(PATH);
+		JobData jobData = (JobData) context.get(JOB_DATA);
+		String rootDirectory = jobData.getPath();
 		Path dir = Paths.get(rootDirectory, OUTPUT);
 		KmlFileWriter writer = new KmlFileWriter();
 		// prepare data for line

@@ -146,17 +146,17 @@ public class StopAreaUpdater implements Updater<StopArea> {
 				&& !newValue.getLongLatType().equals(oldValue.getLongLatType())) {
 			oldValue.setLongLatType(newValue.getLongLatType());
 		}
-		if (newValue.getX() != null && !newValue.getX().equals(oldValue.getX())) {
-			oldValue.setX(newValue.getX());
-		}
-		if (newValue.getY() != null && !newValue.getY().equals(oldValue.getY())) {
-			oldValue.setY(newValue.getY());
-		}
-		if (newValue.getProjectionType() != null
-				&& !newValue.getProjectionType().equals(
-						oldValue.getProjectionType())) {
-			oldValue.setProjectionType(newValue.getProjectionType());
-		}
+//		if (newValue.getX() != null && !newValue.getX().equals(oldValue.getX())) {
+//			oldValue.setX(newValue.getX());
+//		}
+//		if (newValue.getY() != null && !newValue.getY().equals(oldValue.getY())) {
+//			oldValue.setY(newValue.getY());
+//		}
+//		if (newValue.getProjectionType() != null
+//				&& !newValue.getProjectionType().equals(
+//						oldValue.getProjectionType())) {
+//			oldValue.setProjectionType(newValue.getProjectionType());
+//		}
 		if (newValue.getCountryCode() != null
 				&& !newValue.getCountryCode().equals(oldValue.getCountryCode())) {
 			oldValue.setCountryCode(newValue.getCountryCode());

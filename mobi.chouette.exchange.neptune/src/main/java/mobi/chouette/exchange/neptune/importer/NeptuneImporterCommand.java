@@ -12,6 +12,7 @@ import mobi.chouette.common.Color;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.FileUtil;
+import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Chain;
 import mobi.chouette.common.chain.ChainCommand;
 import mobi.chouette.common.chain.Command;
@@ -21,8 +22,8 @@ import mobi.chouette.exchange.importer.CleanRepositoryCommand;
 import mobi.chouette.exchange.importer.CopyCommand;
 import mobi.chouette.exchange.importer.LineRegisterCommand;
 import mobi.chouette.exchange.importer.UncompressCommand;
-import mobi.chouette.exchange.report.FileInfo;
 import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.FileInfo;
 import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
 import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.exchange.validation.DaoSharedDataValidatorCommand;
@@ -46,6 +47,8 @@ public class NeptuneImporterCommand implements Command, Constant, ReportConstant
 		InitialContext initialContext = (InitialContext) context.get(INITIAL_CONTEXT);
 
 		ActionReport report = (ActionReport) context.get(REPORT);
+		
+		JobData jobData = (JobData) context.get(JOB_DATA);
 
 		// initialize reporting and progression
 		ProgressionCommand progression = (ProgressionCommand) CommandFactory.create(initialContext,
@@ -91,7 +94,7 @@ public class NeptuneImporterCommand implements Command, Constant, ReportConstant
 
 			progression.execute(context);
 
-			Path path = Paths.get(context.get(PATH).toString(), INPUT);
+			Path path = Paths.get(jobData.getPath(), INPUT);
 			List<Path> stream = FileUtil.listFiles(path, "*.xml", "*metadata*");
 
 			List<Path> excluded = FileUtil.listFiles(path, "*", "*.xml");

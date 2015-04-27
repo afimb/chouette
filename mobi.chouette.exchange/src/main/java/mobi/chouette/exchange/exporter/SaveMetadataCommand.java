@@ -10,6 +10,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
+import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.metadata.DublinCoreFileWriter;
@@ -31,18 +32,19 @@ public class SaveMetadataCommand implements Command, Constant {
 		boolean result = ERROR;
 
 		Monitor monitor = MonitorFactory.start(COMMAND);
+		JobData jobData = (JobData) context.get(JOB_DATA);
 
 		Metadata metadata = (Metadata) context.get(METADATA); 
 		AbstractParameter parameters = (AbstractParameter) context.get(CONFIGURATION);
         String creator = parameters.getReferentialName();
-        if (creator == null) creator = (String) context.get(JOB_REFERENTIAL);
+        if (creator == null) creator = jobData.getReferential();
         String publisher = parameters.getOrganisationName();
         if (publisher == null) publisher = parameters.getName();
 		try {
 			if (metadata == null) return SUCCESS;
 			metadata.setCreator(creator);
 			metadata.setPublisher(publisher);
-			String path = (String) context.get(PATH);
+			String path = jobData.getPath();
 			Path target = Paths.get(path, OUTPUT);
             DublinCoreFileWriter dcWriter = new DublinCoreFileWriter();
 			

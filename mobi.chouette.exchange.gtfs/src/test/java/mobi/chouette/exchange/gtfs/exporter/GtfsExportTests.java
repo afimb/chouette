@@ -13,6 +13,7 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.gtfs.Constant;
 import mobi.chouette.exchange.gtfs.GtfsTestsUtils;
+import mobi.chouette.exchange.gtfs.JobDataTest;
 import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.neptune.importer.NeptuneImporterCommand;
 import mobi.chouette.exchange.report.ActionReport;
@@ -51,6 +52,7 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 		result = ShrinkWrap.create(WebArchive.class, "test.war").addAsWebInfResource("postgres-ds.xml")
 				.addAsLibraries(files)
 				.addClass(GtfsTestsUtils.class)
+				.addClass(JobDataTest.class)
 				.addAsResource(EmptyAsset.INSTANCE, "beans.xml");
 		return result;
 
@@ -75,12 +77,6 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 	protected Context initImportContext() {
 		init();
 		ContextHolder.setContext("chouette_gui"); // set tenant schema
-		Job job = new Job();
-		job.setAction("importer");
-		job.setType("neptune");
-		job.setPath("/tmp/test/1");
-		job.setReferential("chouette_gui");
-		job.setStatus(Job.STATUS.STARTED);
 
 		Context context = new Context();
 		context.put(INITIAL_CONTEXT, initialContext);
@@ -95,7 +91,9 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 		configuration.setNoSave(true);
 		configuration.setOrganisationName("organisation");
 		configuration.setReferentialName("test");
-		context.put(PATH, "target/referential/test");
+		JobDataTest test = new JobDataTest();
+		context.put(JOB_DATA, test);
+		test.setPath( "target/referential/test");
 		File f = new File("target/referential/test");
 		if (f.exists())
 			try {
@@ -104,9 +102,9 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 				e.printStackTrace();
 			}
 		f.mkdirs();
-		context.put(JOB_REFERENTIAL, "chouette_gui");
-		context.put(ACTION, IMPORTER);
-		context.put(TYPE, "neptune");
+		test.setReferential( "chouette_gui");
+		test.setAction( IMPORTER);
+		test.setType( "neptune");
 		context.put("testng", "true");
 		context.put(OPTIMIZED, Boolean.FALSE);
 		return context;
@@ -133,8 +131,10 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 		configuration.setUserName("userName");
 		configuration.setOrganisationName("organisation");
 		configuration.setReferentialName("test");
-		context.put(PATH, "target/referential/test");
-		context.put(ARCHIVE, "gtfs.zip");
+		JobDataTest test = new JobDataTest();
+		context.put(JOB_DATA, test);
+		test.setPath("target/referential/test");
+		test.setFilename( "gtfs.zip");
 		File f = new File("target/referential/test");
 		if (f.exists())
 			try {
@@ -143,9 +143,9 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 				e.printStackTrace();
 			}
 		f.mkdirs();
-		context.put(JOB_REFERENTIAL, "chouette_gui");
-		context.put(ACTION, EXPORTER);
-		context.put(TYPE, "gtfs");
+		test.setReferential( "chouette_gui");
+		test.setAction( EXPORTER);
+		test.setType("gtfs");
 		context.put("testng", "true");
 		context.put(OPTIMIZED, Boolean.FALSE);
 		return context;
@@ -233,7 +233,8 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 		NeptuneImporterCommand command = (NeptuneImporterCommand) CommandFactory.create(initialContext,
 				NeptuneImporterCommand.class.getName());
 		GtfsTestsUtils.copyFile(file);
-		context.put(ARCHIVE, file);
+		JobDataTest test = (JobDataTest) context.get(JOB_DATA);
+		test.setFilename( file);
 		NeptuneImportParameters configuration = (NeptuneImportParameters) context.get(CONFIGURATION);
 		configuration.setNoSave(false);
 		configuration.setCleanRepository(true);

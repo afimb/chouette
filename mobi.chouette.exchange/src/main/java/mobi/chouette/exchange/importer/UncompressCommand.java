@@ -11,6 +11,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.FileUtil;
+import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.report.ActionReport;
@@ -34,9 +35,10 @@ public class UncompressCommand implements Command, ReportConstant {
 		boolean result = ERROR;
 		Monitor monitor = MonitorFactory.start(COMMAND);
 		ActionReport report = (ActionReport) context.get(REPORT);
+		JobData jobData = (JobData) context.get(JOB_DATA);
 
-		String path = (String) context.get(PATH);
-		String file = (String) context.get(ARCHIVE); 
+		String path = jobData.getPath();
+		String file = jobData.getFilename(); 
 		if (file == null)
 		{
 			report.setResult(STATUS_ERROR);
