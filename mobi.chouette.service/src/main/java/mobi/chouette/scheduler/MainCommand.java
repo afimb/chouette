@@ -37,7 +37,6 @@ public class MainCommand implements Command, Constant {
 		Long id = (Long) context.get(JOB_ID);
 		JobService jobService = jobManager.getJobService(id);
 		try {
-				jobService.setFilename("export_" + jobService.getType() + "_" + jobService.getId() + ".zip");
 			// set job status to started
 			jobManager.start(jobService);
 
