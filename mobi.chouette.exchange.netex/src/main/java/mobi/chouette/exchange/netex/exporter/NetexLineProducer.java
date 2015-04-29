@@ -19,7 +19,7 @@ public class NetexLineProducer implements Constant {
 	public void produce(Context context) throws Exception {
 		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
 		JobData jobData = (JobData) context.get(JOB_DATA);
-		String rootDirectory = jobData.getPath();
+		String rootDirectory = jobData.getPathName();
 
 		NetexExportParameters parameters = (NetexExportParameters) context.get(CONFIGURATION);
 		String projectionType = parameters.getProjectionType();

@@ -12,6 +12,7 @@ package mobi.chouette.service;
 public enum RequestExceptionCode {
     
     UNKNOWN_REFERENTIAL, 
+    UNKNOWN_FILE, 
     UNKNOWN_ACTION, 
     ACTION_TYPE_MISMATCH, 
     DUPPLICATE_OR_MISSING_DATA, 

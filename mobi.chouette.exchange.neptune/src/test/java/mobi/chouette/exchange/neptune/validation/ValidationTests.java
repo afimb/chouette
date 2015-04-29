@@ -67,7 +67,7 @@ public class ValidationTests implements Constant, ReportConstant
 		JobDataTest test = new JobDataTest();
 		context.put(JOB_DATA, test);
 		
-		test.setPath( "target/referential/test");
+		test.setPathName( "target/referential/test");
 		File f = new File("target/referential/test");
 		if (f.exists())
 			try {

@@ -49,9 +49,6 @@ public class Job implements Serializable {
 	@Column(name = "type")
 	private String type;
 
-	@Column(name = "path")
-	private String path;
-
 	@Column(name = "filename")
 	private String filename;
 

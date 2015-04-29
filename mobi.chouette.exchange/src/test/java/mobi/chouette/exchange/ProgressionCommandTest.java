@@ -35,7 +35,7 @@ public void testProgressionInitialize() throws Exception
 	context.put(INITIAL_CONTEXT, initialContext);
 	JobDataTest jobData = new JobDataTest();
 	context.put(JOB_DATA,jobData);
-	jobData.setPath("target/referential/test");
+	jobData.setPathName("target/referential/test");
 	context.put(REPORT, new ActionReport());
 	ActionReport report = (ActionReport)  context.get(REPORT);
 	context.put(MAIN_VALIDATION_REPORT, new ValidationReport());

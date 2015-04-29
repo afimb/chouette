@@ -31,7 +31,7 @@ public class LinkInfo {
 	public LinkInfo(Link link,UriInfo uriInfo)
 	{
 		rel = link.getRel();
-		href = uriInfo.getBaseUri()+link.getHref().substring(1);
+		href = uriInfo.getBaseUri()+link.getHref();
 		type = link.getType();
 		method = link.getMethod();
 	}

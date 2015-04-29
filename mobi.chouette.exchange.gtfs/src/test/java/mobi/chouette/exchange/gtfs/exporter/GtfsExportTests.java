@@ -93,7 +93,7 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 		configuration.setReferentialName("test");
 		JobDataTest test = new JobDataTest();
 		context.put(JOB_DATA, test);
-		test.setPath( "target/referential/test");
+		test.setPathName( "target/referential/test");
 		File f = new File("target/referential/test");
 		if (f.exists())
 			try {
@@ -114,12 +114,6 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 	protected Context initExportContext() {
 		init();
 		ContextHolder.setContext("chouette_gui"); // set tenant schema
-		Job job = new Job();
-		job.setAction("exporter");
-		job.setType("gtfs");
-		job.setPath("/tmp/test/1");
-		job.setReferential("chouette_gui");
-		job.setStatus(Job.STATUS.STARTED);
 
 		Context context = new Context();
 		context.put(INITIAL_CONTEXT, initialContext);
@@ -133,7 +127,7 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 		configuration.setReferentialName("test");
 		JobDataTest test = new JobDataTest();
 		context.put(JOB_DATA, test);
-		test.setPath("target/referential/test");
+		test.setPathName("target/referential/test");
 		test.setFilename( "gtfs.zip");
 		File f = new File("target/referential/test");
 		if (f.exists())

@@ -42,6 +42,21 @@ public class JobDAO extends GenericDAOImpl<Job> {
 		return result;
 	}
 
+	public List<Job> findByReferentialAndAction(String referential, String action) {
+		List<Job> result;
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<Job> criteria = builder.createQuery(type);
+		Root<Job> root = criteria.from(type);
+		Predicate referentialPredicate = builder.equal(root.get(Job_.referential),
+				referential);
+		Predicate actionPredicate = builder.equal(root.get(Job_.action),
+				action);
+		criteria.where( builder.and( referentialPredicate, actionPredicate));
+		TypedQuery<Job> query = em.createQuery(criteria);
+		result = query.getResultList();
+		return result;
+	}
+
 	// public Job getNextJob(String referential) {
 	// log.info("[DSU] getNextJob : " + referential);
 	// Job result = null;

@@ -128,7 +128,7 @@ public class KmlExporterCommand implements Command, Constant, ReportConstant {
 		}
 
 		try {
-			Path path = Paths.get(jobData.getPath(), OUTPUT);
+			Path path = Paths.get(jobData.getPathName(), OUTPUT);
 			if (!Files.exists(path)) {
 				Files.createDirectories(path);
 			}

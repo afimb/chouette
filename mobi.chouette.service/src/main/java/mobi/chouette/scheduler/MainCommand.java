@@ -50,7 +50,7 @@ public class MainCommand implements Command, Constant {
 //			context.put(ACTION, jobService.getAction());
 //			context.put(TYPE, jobService.getType());
 			
-			Parameters parameters = JSONUtil.fromJSON(Paths.get(jobService.getPath(), PARAMETERS_FILE), Parameters.class);
+			Parameters parameters = JSONUtil.fromJSON(Paths.get(jobService.getPathName(), PARAMETERS_FILE), Parameters.class);
 			// context.put(PARAMETERS, parameters);
 			context.put(CONFIGURATION, parameters.getConfiguration());
 			context.put(VALIDATION, parameters.getValidation());

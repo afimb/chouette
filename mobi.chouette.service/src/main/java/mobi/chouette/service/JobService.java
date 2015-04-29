@@ -2,19 +2,27 @@ package mobi.chouette.service;
 
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.ws.rs.core.MediaType;
 
 import lombok.Data;
 import lombok.experimental.Delegate;
+import static mobi.chouette.common.Constant.ACTION_PARAMETERS_FILE;
+import static mobi.chouette.common.Constant.PARAMETERS_FILE;
+import static mobi.chouette.common.Constant.ROOT_PATH;
+import static mobi.chouette.common.Constant.VALIDATION_PARAMETERS_FILE;
 import mobi.chouette.common.JSONUtil;
 import mobi.chouette.common.JobData;
 import mobi.chouette.exchange.InputValidator;
 import mobi.chouette.exchange.InputValidatorFactory;
+import mobi.chouette.exchange.parameters.AbstractParameter;
+import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.model.api.Job;
 import mobi.chouette.model.api.Link;
 import mobi.chouette.scheduler.Parameters;
@@ -27,11 +35,6 @@ public class JobService implements JobData,ServiceConstants {
 
     @Delegate(types = {Job.class}, excludes = {ExcludedJobMethods.class})
     private Job job;
-
-    @Delegate(types = {FileResourceProperties.class})
-    private FileResourceProperties fileResourceProperties;
-    
-    private Map<String, InputStream> inputStreamsByName;
     
     /**
      * create a jobService on existing job
@@ -40,6 +43,8 @@ public class JobService implements JobData,ServiceConstants {
      */
     public JobService(Job job) {
         this.job = job;
+        
+        // TODO Exception si le job n'est pas persistent
     }
 
     /**
@@ -48,83 +53,102 @@ public class JobService implements JobData,ServiceConstants {
      * @param referential : referential
      * @param action : action
      * @param type : type (may be null)
-     * @param inputStreamsByName : inputStream hash for action including
-     * parameters and data
      * @throws mobi.chouette.service.ServiceException
      */
-    public JobService(String referential, String action, String type, Map<String, InputStream> inputStreamsByName) throws ServiceException {
-        this.inputStreamsByName = inputStreamsByName;
+    public JobService(String referential, String action, String type) throws ServiceException {
         job = new Job(referential, action, type);
 
-        addLink(MediaType.APPLICATION_JSON, PARAMETERS_REL);
-        
-        if ( readActionDataInputStream()!=null) {
-            addLink(MediaType.APPLICATION_OCTET_STREAM, DATA_REL);
-            job.setFilename( dataFileName( inputStreamsByName.keySet()));
-        }
-
-        fileResourceProperties = new FileResourceProperties( readParameters(), readActionDataInputStream());
-    }
-    
-    private void validate_before_instanciation( String action, String type, Map<String, InputStream> inputStreamsByName) throws RequestServiceException {
-    }
-
-    public void validate() throws ServiceException {
         if (!commandExists()) {
             throw new RequestServiceException(RequestExceptionCode.UNKNOWN_ACTION, "");
         }
-        if (!inputStreamsByName.containsKey(PARAMETERS_FILE)) {
-            throw new RequestServiceException(RequestExceptionCode.MISSING_PARAMETERS, "");
-        }
-        
+    }
+
+    /**
+     * Read and save inputStreams as File
+     * 
+     * @param inputStreamsByName
+     * @throws ServiceException : if inputStream not valid with job
+     */
+    public void saveInputStreams( final Map<String, InputStream> inputStreamsByName) throws ServiceException {
         try {
-            InputValidator validator = InputValidatorFactory.create(getCommandInputValidatorName());
-            Class.forName(getCommandInputValidatorName());
-            if (!validator.check(fileResourceProperties.getActionParameters(), fileResourceProperties.getValidationParameters(), getFilename())) {
-                throw new RequestServiceException(RequestExceptionCode.ACTION_TYPE_MISMATCH, "");
+            if (!inputStreamsByName.containsKey(PARAMETERS_FILE)) {
+                throw new RequestServiceException(RequestExceptionCode.MISSING_PARAMETERS, "");
             }
-        } catch (ServiceException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new ServiceException(ServiceExceptionCode.INTERNAL_ERROR, e.getMessage());
-        }
-
-
-	// TODO controler inputStreams par la Commande impossible ici car il faut extraire Parameters.json
-	//		if (!checkCommandInputs(action, type,inputStreamsByName)) {
-        //			throw new RequestServiceException(RequestExceptionCode.ACTION_TYPE_MISMATCH, "");
-        //		}
-        return;
-    }
-
-    public boolean hasFileResourceProperties() {
-        return fileResourceProperties != null;
-    }
-
-    private Parameters readParameters() throws RequestServiceException {
-        try {
+            
             StringWriter writer = new StringWriter();
-            IOUtils.copy( inputStreamsByName.get(PARAMETERS_FILE), writer, "UTF-8");
-            return JSONUtil.fromJSON(writer.toString(), Parameters.class);
-        } catch (Exception ex) {
-            throw new RequestServiceException(RequestExceptionCode.INVALID_PARAMETERS, ex);
+            IOUtils.copy(inputStreamsByName.get(PARAMETERS_FILE), writer, "UTF-8");
+            Parameters parameters = JSONUtil.fromJSON( writer.toString(), Parameters.class);
+            
+            JSONUtil.toJSON( filePath(PARAMETERS_FILE), parameters);
+            addLink(MediaType.APPLICATION_JSON, PARAMETERS_REL);
+            
+            JSONUtil.toJSON( filePath(ACTION_PARAMETERS_FILE), parameters.getConfiguration());
+            addLink(MediaType.APPLICATION_JSON, ACTION_PARAMETERS_REL);
+            
+            if ( parameters.getValidation()!=null) {
+                JSONUtil.toJSON( filePath(VALIDATION_PARAMETERS_FILE), parameters.getValidation());
+                addLink(MediaType.APPLICATION_JSON, VALIDATION_PARAMETERS_REL);
+            }
+            
+            String inputStreamName = selectDataInputStreamName( inputStreamsByName);
+            if ( inputStreamName!=null) {
+                Files.copy( inputStreamsByName.get( inputStreamName), filePath( inputStreamName));
+                addLink(MediaType.APPLICATION_OCTET_STREAM, DATA_REL);
+                job.setFilename( inputStreamName);
+            }
+            
+            InputValidator validator = InputValidatorFactory.create( getCommandInputValidatorName());
+            Class.forName(getCommandInputValidatorName());
+            if (!validator.check( parameters.getConfiguration(), parameters.getValidation(), job.getFilename())) 
+                throw new RequestServiceException(RequestExceptionCode.ACTION_TYPE_MISMATCH, "");
+            
+        } catch ( ServiceException ex) {
+            throw ex;
+        } catch ( Exception ex) {
+            Logger.getLogger(JobService.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+            throw new RequestServiceException( RequestExceptionCode.INVALID_PARAMETERS, ex);
         }
-    }
 
-    private InputStream readActionDataInputStream() {
-        for (String name : inputStreamsByName.keySet()) {
-            if (!name.equals(PARAMETERS_FILE)) {
-                return inputStreamsByName.get(name);
+    }
+    
+    private String selectDataInputStreamName( final Map<String, InputStream> inputStreamsByName) {
+        for ( String name : inputStreamsByName.keySet()) {
+            if ( ! name.equals(PARAMETERS_FILE)) {
+                return name;
             }
         }
         return null;
     }
+    
+    private boolean jobPersisted() {
+        return job.getId()!=null;
+    }
+    
+    private java.nio.file.Path filePath( final String fileName) {
+        return Paths.get( getPathName(), fileName);
+    }
 
-    private String dataFileName(Set<String> inputNames) {
-        for (String name : inputNames) {
-            if (!name.equals(PARAMETERS_FILE)) {
-                return name;
+    private Parameters getParameters() throws ServiceException {
+        if ( jobPersisted()) {
+            try {
+                return JSONUtil.fromJSON( filePath(PARAMETERS_FILE), Parameters.class);
+            } catch (Exception ex) {
+                throw new RequestServiceException(RequestExceptionCode.INVALID_PARAMETERS, ex);
             }
+        }
+        return null;
+    }
+    
+    public AbstractParameter getActionParameter()  throws ServiceException {
+        if ( jobPersisted()) {
+            return getParameters().getConfiguration();
+        }
+        return null;
+    }
+    
+    public ValidationParameters getValidationParameter()  throws ServiceException {
+        if ( jobPersisted()) {
+            return getParameters().getValidation();
         }
         return null;
     }
@@ -135,14 +159,21 @@ public class JobService implements JobData,ServiceConstants {
      *
      * @return path or null if job not saved
      */
-    public String getPath() {
-        if (job.getPath() == null && job.getId() != null) {
-            String path = Paths.get(System.getProperty("user.home"), ROOT_PATH, job.getReferential(), "data",
+    public String getPathName() {
+        if ( jobPersisted()) {
+            return Paths.get(System.getProperty("user.home"), ROOT_PATH, job.getReferential(), "data",
                     job.getId().toString()).toString();
-            job.setPath(path);
         }
-        return job.getPath(); // TODO choisir si on retourne null ou une
-        // exception
+        // TODO Non, lever une exception
+        return null;
+    }
+    
+    public java.nio.file.Path getPath() {
+        if ( jobPersisted()) {
+            return java.nio.file.Paths.get( getPathName());
+        }
+        // TODO Non, lever une exception
+        return null;
     }
 
     /**

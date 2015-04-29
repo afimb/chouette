@@ -84,7 +84,7 @@ public class GtfsImporterCommand implements Command, Constant {
 
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		if (importer == null) {
-			Path path = Paths.get(jobData.getPath(), INPUT);
+			Path path = Paths.get(jobData.getPathName(), INPUT);
 			importer = new GtfsImporter(path.toString());
 			context.put(PARSER, importer);
 		}

@@ -125,7 +125,7 @@ public class KmlLineProducerCommand implements Command, Constant {
 	private void saveLine(Context context, Line line, ExportableData collection) throws IOException,
 			DatatypeConfigurationException {
 		JobData jobData = (JobData) context.get(JOB_DATA);
-		String rootDirectory = jobData.getPath();
+		String rootDirectory = jobData.getPathName();
 		Path dir = Paths.get(rootDirectory, OUTPUT);
 		KmlFileWriter writer = new KmlFileWriter();
 		// prepare data for line

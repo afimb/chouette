@@ -44,7 +44,7 @@ public class SaveMetadataCommand implements Command, Constant {
 			if (metadata == null) return SUCCESS;
 			metadata.setCreator(creator);
 			metadata.setPublisher(publisher);
-			String path = jobData.getPath();
+			String path = jobData.getPathName();
 			Path target = Paths.get(path, OUTPUT);
             DublinCoreFileWriter dcWriter = new DublinCoreFileWriter();
 			

@@ -48,7 +48,7 @@ public class GtfsValidationCommand implements Command, Constant {
 
 		JobData jobData = (JobData) context.get(JOB_DATA);
 		// check ignored files
-		Path path = Paths.get(jobData.getPath(), INPUT);
+		Path path = Paths.get(jobData.getPathName(), INPUT);
 		List<Path> list = FileUtil.listFiles(path, "*");
 		ActionReport report = (ActionReport) context.get(REPORT);
 		GtfsImportParameters parameters = (GtfsImportParameters) context.get(CONFIGURATION);

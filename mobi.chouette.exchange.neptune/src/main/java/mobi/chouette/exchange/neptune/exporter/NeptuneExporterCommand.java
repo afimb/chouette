@@ -168,7 +168,7 @@ public class NeptuneExporterCommand implements Command, Constant, ReportConstant
 
 		JobData jobData = (JobData) context.get(JOB_DATA);
 
-			Path path = Paths.get(jobData.getPath(), OUTPUT);
+			Path path = Paths.get(jobData.getPathName(), OUTPUT);
 			if (!Files.exists(path)) {
 				Files.createDirectories(path);
 			}

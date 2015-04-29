@@ -91,7 +91,7 @@ public class NetexImporterCommand implements Command, Constant {
 			uncompress.execute(context);
 			progression.execute(context);
 
-			Path path = Paths.get(jobData.getPath(), INPUT);
+			Path path = Paths.get(jobData.getPathName(), INPUT);
 			List<Path> stream = FileUtil
 					.listFiles(path, "*.xml", "*metadata*");
 

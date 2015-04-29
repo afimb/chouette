@@ -86,7 +86,7 @@ public class KmlSharedDataProducerCommand implements Command, Constant {
 		if (collection.getBoardingPositions().isEmpty() && collection.getQuays().isEmpty())
 			return;
 		JobData jobData = (JobData) context.get(JOB_DATA);
-		String rootDirectory = jobData.getPath();
+		String rootDirectory = jobData.getPathName();
 		Path dir = Paths.get(rootDirectory, OUTPUT);
 		KmlData data = new KmlData();
 		data.setName("Arrêts");
@@ -108,7 +108,7 @@ public class KmlSharedDataProducerCommand implements Command, Constant {
 		if (collection.getCommercialStopPoints().isEmpty())
 			return;
 		JobData jobData = (JobData) context.get(JOB_DATA);
-		String rootDirectory = jobData.getPath();
+		String rootDirectory = jobData.getPathName();
 		Path dir = Paths.get(rootDirectory, OUTPUT);
 		KmlData data = new KmlData();
 		data.setName("Arrêts commerciaux");
@@ -127,7 +127,7 @@ public class KmlSharedDataProducerCommand implements Command, Constant {
 		if (collection.getStopPlaces().isEmpty())
 			return;
 		JobData jobData = (JobData) context.get(JOB_DATA);
-		String rootDirectory = jobData.getPath();
+		String rootDirectory = jobData.getPathName();
 		Path dir = Paths.get(rootDirectory, OUTPUT);
 		KmlData data = new KmlData();
 		data.setName("Pôles d'échange");
@@ -146,7 +146,7 @@ public class KmlSharedDataProducerCommand implements Command, Constant {
 		if (collection.getConnectionLinks().isEmpty())
 			return;
 		JobData jobData = (JobData) context.get(JOB_DATA);
-		String rootDirectory = jobData.getPath();
+		String rootDirectory = jobData.getPathName();
 		Path dir = Paths.get(rootDirectory, OUTPUT);
 		KmlData data = new KmlData();
 		data.setName("Correspondance");
@@ -165,7 +165,7 @@ public class KmlSharedDataProducerCommand implements Command, Constant {
 		if (collection.getAccessPoints().isEmpty())
 			return;
 		JobData jobData = (JobData) context.get(JOB_DATA);
-		String rootDirectory = jobData.getPath();
+		String rootDirectory = jobData.getPathName();
 		Path dir = Paths.get(rootDirectory, OUTPUT);
 		KmlData data = new KmlData();
 		data.setName("Accès");

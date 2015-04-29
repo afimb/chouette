@@ -61,12 +61,12 @@ public class NetexParserTest  extends Arquillian implements mobi.chouette.common
 		context.put(INITIAL_CONTEXT, initialContext);
 		NetexParserCommand command = (NetexParserCommand) CommandFactory.create(initialContext, NetexParserCommand.class.getName());
 		File f = new File("src/test/data/valid/line_test.xml");
-		Job job = new Job();
-		job.setAction("importer");
-		job.setType("netex");
-		job.setPath("/tmp/test/1");
-		job.setReferential("chouette_gui");
-		job.setStatus(Job.STATUS.SCHEDULED);
+//		JobDa job = new Job();
+//		job.setAction("importer");
+//		job.setType("netex");
+//		job.setPathName("/tmp/test/1");
+//		job.setReferential("chouette_gui");
+//		job.setStatus(Job.STATUS.SCHEDULED);
 		
 		ActionReport report = new ActionReport();
 		ValidationReport validationReport = new ValidationReport();

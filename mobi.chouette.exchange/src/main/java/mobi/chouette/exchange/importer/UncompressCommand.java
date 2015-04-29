@@ -37,7 +37,7 @@ public class UncompressCommand implements Command, ReportConstant {
 		ActionReport report = (ActionReport) context.get(REPORT);
 		JobData jobData = (JobData) context.get(JOB_DATA);
 
-		String path = jobData.getPath();
+		String path = jobData.getPathName();
 		String file = jobData.getFilename(); 
 		if (file == null)
 		{

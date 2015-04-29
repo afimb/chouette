@@ -3,12 +3,9 @@ package mobi.chouette.api;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
 import java.nio.file.Paths;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,14 +35,9 @@ import javax.ws.rs.core.UriInfo;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Constant;
-import mobi.chouette.common.JSONUtil;
-import mobi.chouette.dao.JobDAO;
-import mobi.chouette.dao.SchemaDAO;
 import mobi.chouette.model.api.Job;
 import mobi.chouette.model.api.Job.STATUS;
 import mobi.chouette.model.api.Link;
-import mobi.chouette.scheduler.Parameters;
-import mobi.chouette.scheduler.Scheduler;
 import mobi.chouette.service.JobService;
 import mobi.chouette.service.JobServiceManager;
 import mobi.chouette.service.ServiceException;
@@ -55,8 +47,9 @@ import org.apache.commons.io.FilenameUtils;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import mobi.chouette.service.RequestServiceException;
 
 @Path("/referentials")
 @Log4j
@@ -67,16 +60,7 @@ public class Service implements Constant {
     private static String api_version = "iev.v1.0; format=json";
 
     @Inject
-    JobDAO jobDAO;
-
-    @Inject
     JobServiceManager jobServiceManager;
-
-    @Inject
-    SchemaDAO schemas;
-
-    @Inject
-    Scheduler scheduler;
 
     @Context
     UriInfo uriInfo;
@@ -88,31 +72,43 @@ public class Service implements Constant {
     @Produces({MediaType.APPLICATION_JSON})
     public Response upload(@PathParam("ref") String referential, @PathParam("action") String action,
             @PathParam("type") String type, MultipartFormDataInput input) {
+        Map<String, InputStream> inputStreamByName = null;
+        try 
+        {
+            log.info(Color.CYAN + "Call upload referential = " + referential + ", action = " + action
+                    + (type == null ? "" : ", type = " + type) + Color.NORMAL);
 
-        log.info(Color.CYAN + "Call upload referential = " + referential + ", action = " + action
-                + (type == null ? "" : ", type = " + type) + Color.NORMAL);
+            // Convertir les parametres fournis 
+            type = parseType(type);
+            inputStreamByName = readParts(input);
 
-        // Convertir les parametres fournis 
-        type = parseType(type);
-        Map<String, InputStream> inputStreamByName = readParts(input);
-
-        JobService job = null;
-        try {
             // Relayer le service au JobServiceManager
-            job = jobServiceManager.upload(referential, action, type, inputStreamByName);
+            JobService jobService = jobServiceManager.create(referential, action, type, inputStreamByName);
 
             // Produire la vue
             ResponseBuilder builder = Response.accepted();
             builder.location(URI.create(MessageFormat.format("{0}/{1}/scheduled_jobs/{2,number,#}", ROOT_PATH,
-                    job.getReferential(), job.getId())));
+                    jobService.getReferential(), jobService.getId())));
 
             return builder.build();
+        } catch (RequestServiceException ex) {
+            Logger.getLogger(Service.class.getName()).log(Level.INFO, "RequestCode = " + ex.getRequestCode() + ", Message = " + ex.getMessage());
+            throw new WebApplicationException(ex.getCode(), Status.NOT_FOUND);
         } catch (ServiceException e) {
-            log.error( e.getCode() + ", "+e.getMessage());
+            Logger.getLogger(Service.class.getName()).log(Level.SEVERE, "Code = " + e.getCode() + ", Message = " + e.getMessage());
             throw toWebApplicationException(e);
+        } catch (WebApplicationException e) {
+            Logger.getLogger(Service.class.getName()).log(Level.SEVERE, e.getMessage(), e);
+            throw e;
         } catch (Exception e) {
-            log.error( e.getMessage(), e);
-            throw new WebApplicationException(e.getMessage(), Status.INTERNAL_SERVER_ERROR);
+            Logger.getLogger(Service.class.getName()).log(Level.SEVERE, e.getMessage(), e);
+            throw new WebApplicationException(e.getMessage(), e, Status.INTERNAL_SERVER_ERROR);
+        } finally {
+            for( InputStream is : inputStreamByName.values()) {
+                try { is.close(); } catch ( Exception e) { 
+                    Logger.getLogger(Service.class.getName()).log(Level.SEVERE, e.getMessage(), e);
+                }
+            }
         }
     }
 
@@ -150,7 +146,7 @@ public class Service implements Constant {
             }
             return result;
         } catch (Exception e) {
-            throw new WebApplicationException(e.getMessage(), Status.BAD_REQUEST);
+            throw new WebApplicationException(e.getMessage(), e, Status.BAD_REQUEST);
         }
     }
 
@@ -161,37 +157,46 @@ public class Service implements Constant {
     @Produces({MediaType.APPLICATION_OCTET_STREAM, MediaType.APPLICATION_JSON})
     public Response download(@PathParam("ref") String referential, @PathParam("id") Long id,
             @PathParam("filepath") String filename) {
-        Response result = null;
-
-        Job job = getJob(id, referential);
-
-        java.nio.file.Path path = Paths.get(job.getPath(), filename);
-        if (!Files.exists(path, LinkOption.NOFOLLOW_LINKS)) {
-            throw new WebApplicationException("request conflict", Status.NOT_FOUND);
+        try {
+            log.info(Color.CYAN + "Call download referential = " + referential + ", id = " + id
+                    + ", filename = " + filename + Color.NORMAL);
+            
+            // Retreive JobService
+            JobService jobService = jobServiceManager.download(referential, id, filename);
+            
+            // Build response
+            File file = new File( Paths.get( jobService.getPathName(), filename).toString());
+            ResponseBuilder builder = Response.ok(file);
+            builder.header(HttpHeaders.CONTENT_DISPOSITION, MessageFormat.format("attachment; filename=\"{0}\"", filename));
+            
+            MediaType type = null;
+            if (FilenameUtils.getExtension(filename).toLowerCase().equals("json")) {
+                type = MediaType.APPLICATION_JSON_TYPE;
+                builder.header(api_version_key, api_version);
+            } else {
+                type = MediaType.APPLICATION_OCTET_STREAM_TYPE;
+            }
+            
+            // cache control
+            if (jobService.getStatus().ordinal() >= Job.STATUS.TERMINATED.ordinal()) {
+                CacheControl cc = new CacheControl();
+                cc.setMaxAge(Integer.MAX_VALUE);
+                builder.cacheControl(cc);
+            }
+            
+            Response result = builder.type(type).build();
+            return result;
+            
+        } catch (RequestServiceException ex) {
+            Logger.getLogger(Service.class.getName()).log(Level.INFO, "RequestCode = " + ex.getRequestCode() + ", Message = " + ex.getMessage());
+            throw new WebApplicationException(ex.getCode(), Status.NOT_FOUND);
+        } catch (ServiceException e) {
+            Logger.getLogger(Service.class.getName()).log(Level.INFO, "Code = " + e.getCode() + ", Message = " + e.getMessage());
+            throw toWebApplicationException(e);
+        } catch (Exception e) {
+            Logger.getLogger(Service.class.getName()).log(Level.SEVERE, e.getMessage(), e);
+            throw new WebApplicationException(e.getMessage(), Status.INTERNAL_SERVER_ERROR);
         }
-
-        // build response
-        File file = new File(path.toString());
-        ResponseBuilder builder = Response.ok(file);
-        builder.header(HttpHeaders.CONTENT_DISPOSITION, MessageFormat.format("attachment; filename=\"{0}\"", filename));
-
-        MediaType type = null;
-        if (FilenameUtils.getExtension(filename).toLowerCase().equals("json")) {
-            type = MediaType.APPLICATION_JSON_TYPE;
-            builder.header(api_version_key, api_version);
-        } else {
-            type = MediaType.APPLICATION_OCTET_STREAM_TYPE;
-        }
-
-        // cache control
-        if (job.getStatus().ordinal() >= Job.STATUS.TERMINATED.ordinal()) {
-            CacheControl cc = new CacheControl();
-            cc.setMaxAge(Integer.MAX_VALUE);
-            builder.cacheControl(cc);
-        }
-
-        result = builder.type(type).build();
-        return result;
     }
 
     // jobs listing
@@ -201,53 +206,38 @@ public class Service implements Constant {
     public Response jobs(@PathParam("ref") String referential,
             @DefaultValue("0") @QueryParam("version") final Long version, @QueryParam("action") final String action) {
 
-        // check params
-        if (!schemas.getSchemaListing().contains(referential)) {
-            throw new WebApplicationException("unknown referential", Status.NOT_FOUND);
-        }
+        try {
+            log.info(Color.CYAN + "Call jobs referential = " + referential + ", action = " + action
+                    + ", version = " + version + Color.NORMAL);
+            
+            // create jobs listing
+            List<JobService> jobServices = jobServiceManager.jobs( referential, action, version);
 
-        // create jobs listing
-        List<Job> list = jobDAO.findByReferential(referential);
-		// Collection<Job> jobs = list;
-
-        // TODO [DSU] create finder by criteria
-        Collection<Job> filtered = Collections2.filter(list, new Predicate<Job>() {
-            @Override
-            public boolean apply(Job job) {
-				// filter on update time if given, otherwise don't return
-                // deleted jobs
-                boolean result = ((version > 0) ? job.getUpdated().getTime() > version : true)
-                        && ((action != null) ? job.getAction().equals(action) : true)
-                        && (version == 0 ? job.getStatus().ordinal() < STATUS.DELETED.ordinal() : true);
-                return result;
+            // re factor Parameters dependencies
+            List<JobInfo> result = new ArrayList<>( jobServices.size());
+            for (JobService jobService : jobServices) {
+                JobInfo jobInfo = new JobInfo( jobService , true, uriInfo);
+                result.add( jobInfo);
             }
-        });
-
-        // re factor Parameters dependencies
-        List<JobInfo> result = new ArrayList<>(build(filtered));
-        for (JobInfo job : result) {
-
-            java.nio.file.Path path = Paths.get(getJobDataDirectory(job.getReferential(), job.getId()).toString(),
-                    PARAMETERS_FILE);
-
-            try {
-                Parameters payload = JSONUtil.fromJSON(path, Parameters.class);
-                if (payload != null) {
-                    job.setActionParameters(payload.getConfiguration());
-                }
-            } catch (Exception ex) {
-                // don't add invalid parameters
-            }
+            
+            // cache control
+            ResponseBuilder builder = Response.ok(result);
+            builder.header(api_version_key, api_version);
+            // CacheControl cc = new CacheControl();
+            // cc.setMaxAge(-1);
+            // builder.cacheControl(cc);
+            
+            return builder.build();
+        } catch (RequestServiceException ex) {
+            Logger.getLogger(Service.class.getName()).log(Level.INFO, "RequestCode = " + ex.getRequestCode() + ", Message = " + ex.getMessage());
+            throw new WebApplicationException(ex.getCode(), Status.NOT_FOUND);
+        } catch (ServiceException e) {
+            Logger.getLogger(Service.class.getName()).log(Level.INFO, "Code = " + e.getCode() + ", Message = " + e.getMessage());
+            throw toWebApplicationException(e);
+        } catch (Exception ex) {
+            Logger.getLogger(Service.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+            throw new WebApplicationException(ex.getMessage(), Status.INTERNAL_SERVER_ERROR);
         }
-
-        // cache control
-        ResponseBuilder builder = Response.ok(result);
-        builder.header(api_version_key, api_version);
-		// CacheControl cc = new CacheControl();
-        // cc.setMaxAge(-1);
-        // builder.cacheControl(cc);
-
-        return builder.build();
     }
 
     // view scheduled job
@@ -255,71 +245,66 @@ public class Service implements Constant {
     @Path("/{ref}/scheduled_jobs/{id}")
     @Produces({MediaType.APPLICATION_JSON})
     public Response scheduledJob(@PathParam("ref") String referential, @PathParam("id") Long id) {
-        Response result = null;
+        try {
+            log.info(Color.CYAN + "Call scheduledJob referential = " + referential + ", id = " + id + Color.NORMAL);
 
-        // check params
-        if (!schemas.getSchemaListing().contains(referential)) {
-            throw new WebApplicationException("unknown referential", Status.NOT_FOUND);
-        }
+            Response result = null;
 
-        Job job = getJob(id, referential);
+            JobService jobService = jobServiceManager.scheduledJob( referential, id);
 
-        // build response
-        ResponseBuilder builder = null;
-        if (job.getStatus().ordinal() <= STATUS.STARTED.ordinal()) {
-
-            JobInfo info = new JobInfo(job, true, uriInfo);
-            java.nio.file.Path path = Paths.get(System.getProperty("user.home"), ROOT_PATH, job.getReferential(),
-                    "data", job.getId().toString(), PARAMETERS_FILE);
-
-            try {
-                Parameters payload = JSONUtil.fromJSON(path, Parameters.class);
-                if (payload != null) {
-                    info.setActionParameters(payload.getConfiguration());
-                }
-            } catch (Exception ex) {
-                // don't add invalid parameters
-            }
-            builder = Response.ok(info);
-
-            // add links
-            for (Link link : job.getLinks()) {
-                URI uri = URI.create(uriInfo.getBaseUri() + link.getHref().substring(1));
-                builder.link(uri, link.getRel());
+            // build response
+            ResponseBuilder builder = null;
+            if ( jobService.getStatus().ordinal() <= STATUS.STARTED.ordinal()) {
+                JobInfo info = new JobInfo( jobService, true, uriInfo);
+                builder = Response.ok(info);
+            } else {
+                builder = Response.seeOther(URI.create(MessageFormat.format("/{0}/{1}/terminated_jobs/{2,number,#}",
+                        ROOT_PATH, jobService.getReferential(), jobService.getId())));
             }
 
-        } else {
-            builder = Response.seeOther(URI.create(MessageFormat.format("/{0}/{1}/terminated_jobs/{2,number,#}",
-                    ROOT_PATH, job.getReferential(), job.getId())));
+            builder.header(api_version_key, api_version);
+            result = builder.build();
+            return result;
+            
+        } catch (RequestServiceException ex) {
+            Logger.getLogger(Service.class.getName()).log(Level.INFO, "RequestCode = " + ex.getRequestCode() + ", Message = " + ex.getMessage());
+            throw new WebApplicationException(ex.getCode(), Status.NOT_FOUND);
+        } catch (ServiceException e) {
+            Logger.getLogger(Service.class.getName()).log(Level.INFO, "Code = " + e.getCode() + ", Message = " + e.getMessage());
+            throw toWebApplicationException(e);
+        } catch (Exception ex) {
+            Logger.getLogger(Service.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+            throw new WebApplicationException(ex.getMessage(), Status.INTERNAL_SERVER_ERROR);
         }
-
-        builder.header(api_version_key, api_version);
-        result = builder.build();
-        return result;
     }
 
     // cancel job
     @DELETE
     @Path("/{ref}/scheduled_jobs/{id}")
     public Response cancel(@PathParam("ref") String referential, @PathParam("id") Long id, String dummy) {
-        // dummy uses when sender call url with content (prevent a NullPointerException)
-        log.info(Color.CYAN + "Call cancel referential = " + referential + ", id = " + id + Color.NORMAL);
-
-        Response result = null;
-
         try {
+            // dummy uses when sender call url with content (prevent a NullPointerException)
+            log.info(Color.CYAN + "Call cancel referential = " + referential + ", id = " + id + Color.NORMAL);
+
+            Response result = null;
+
             jobServiceManager.cancel(referential, id);
+            
+            ResponseBuilder builder = Response.ok();
+            result = builder.build();
+            builder.header(api_version_key, api_version);
+
+            return result;
+        } catch (RequestServiceException ex) {
+            Logger.getLogger(Service.class.getName()).log(Level.INFO, "RequestCode = " + ex.getRequestCode() + ", Message = " + ex.getMessage());
+            throw new WebApplicationException(ex.getCode(), Status.NOT_FOUND);
         } catch (ServiceException ex) {
+            Logger.getLogger(Service.class.getName()).log(Level.INFO, "Code = " + ex.getCode() + ", Message = " + ex.getMessage());
             throw new WebApplicationException(ex.getCode(), Status.NOT_FOUND);
         } catch (Exception ex) {
-            log.error("cancel failure", ex);
+            Logger.getLogger(Service.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
             throw new WebApplicationException(ex.getMessage(), Status.INTERNAL_SERVER_ERROR);
         }
-        ResponseBuilder builder = Response.ok();
-        result = builder.build();
-        builder.header(api_version_key, api_version);
-
-        return result;
     }
 
     // download report
@@ -327,131 +312,100 @@ public class Service implements Constant {
     @Path("/{ref}/terminated_jobs/{id}")
     @Produces({MediaType.APPLICATION_JSON})
     public Response terminatedJob(@PathParam("ref") String referential, @PathParam("id") Long id) {
-        Response result = null;
-
-        Job job = getJob(id, referential);
-
-        if (job.getStatus().ordinal() < STATUS.TERMINATED.ordinal()
-                || job.getStatus().ordinal() == STATUS.DELETED.ordinal()) {
-            throw new WebApplicationException(Status.NOT_FOUND);
-        }
-
-        JobInfo info = new JobInfo(job, true, uriInfo);
-        java.nio.file.Path path = Paths.get(System.getProperty("user.home"), ROOT_PATH, job.getReferential(), "data",
-                job.getId().toString(), PARAMETERS_FILE);
-
         try {
-            Parameters payload = JSONUtil.fromJSON(path, Parameters.class);
-            if (payload != null) {
-                info.setActionParameters(payload.getConfiguration());
+            log.info(Color.CYAN + "Call terminatedJob referential = " + referential + ", id = " + id + Color.NORMAL);
+            
+            JobService jobService = jobServiceManager.terminatedJob( referential, id);
+
+            JobInfo info = new JobInfo(jobService, true, uriInfo);
+            ResponseBuilder builder = Response.ok(info);
+
+            // cache control
+            CacheControl cc = new CacheControl();
+            cc.setMaxAge(Integer.MAX_VALUE);
+            builder.cacheControl(cc);
+
+            // add links
+            for (Link link : jobService.getJob().getLinks()) {
+                URI uri = URI.create( uriInfo.getBaseUri() + link.getHref());
+                builder.link( URI.create(uri.toASCIIString()), link.getRel());
             }
+
+            builder.header(api_version_key, api_version);
+            return builder.build();
+            
+        } catch (RequestServiceException ex) {
+            Logger.getLogger(Service.class.getName()).log(Level.INFO, "RequestCode = " + ex.getRequestCode() + ", Message = " + ex.getMessage());
+            throw new WebApplicationException(ex.getCode(), Status.NOT_FOUND);
+        } catch (ServiceException ex) {
+            Logger.getLogger(Service.class.getName()).log(Level.INFO, "Code = " + ex.getCode() + ", Message = " + ex.getMessage());
+            throw new WebApplicationException(ex.getCode(), Status.NOT_FOUND);
         } catch (Exception ex) {
-            // don't add invalid parameters
+            Logger.getLogger(Service.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
+            throw new WebApplicationException(ex.getMessage(), Status.INTERNAL_SERVER_ERROR);
         }
-
-        ResponseBuilder builder = Response.ok(info);
-
-        // cache control
-        CacheControl cc = new CacheControl();
-        cc.setMaxAge(Integer.MAX_VALUE);
-        builder.cacheControl(cc);
-
-        // add links
-        for (Link link : job.getLinks()) {
-            URI uri = URI.create(uriInfo.getBaseUri() + link.getHref().substring(1));
-            builder.link(URI.create(uri.toASCIIString()), link.getRel());
-        }
-
-        builder.header(api_version_key, api_version);
-        result = builder.build();
-
-        return result;
     }
 
     // delete report
     @DELETE
     @Path("/{ref}/terminated_jobs/{id}")
     public Response remove(@PathParam("ref") String referential, @PathParam("id") Long id, String dummy) {
-        // dummy uses when sender call url with content (prevent a NullPointerException)
-        Response result = null;
-
         try {
+            log.info(Color.CYAN + "Call remove referential = " + referential + ", id = " + id
+                    + ", dummy = " + dummy + Color.NORMAL);
+            
+            // dummy uses when sender call url with content (prevent a NullPointerException)
+            Response result = null;
+
             jobServiceManager.remove(referential, id);
+
+            // build response
+            ResponseBuilder builder = Response.ok("deleted");
+            builder.header(api_version_key, api_version);
+            result = builder.build();
+
+            return result;
+            
+        } catch (RequestServiceException ex) {
+            Logger.getLogger(Service.class.getName()).log(Level.INFO, "RequestCode = " + ex.getRequestCode() + ", Message = " + ex.getMessage());
+            throw new WebApplicationException(ex.getCode(), Status.NOT_FOUND);
         } catch (ServiceException ex) {
+            Logger.getLogger(Service.class.getName()).log(Level.INFO, "Code = " + ex.getCode() + ", Message = " + ex.getMessage());
             throw new WebApplicationException(ex.getCode(), Status.NOT_FOUND);
         } catch (Exception ex) {
-            log.error("remove failure", ex);
+            Logger.getLogger(Service.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
             throw new WebApplicationException(ex.getMessage(), Status.INTERNAL_SERVER_ERROR);
         }
-
-        // build response
-        ResponseBuilder builder = Response.ok("deleted");
-        builder.header(api_version_key, api_version);
-        result = builder.build();
-
-        return result;
     }
 
     // delete referential
     @DELETE
     @Path("/{ref}/jobs")
     public Response drop(@PathParam("ref") String referential, String dummy) {
-        // dummy uses when sender call url with content (prevent a NullPointerException)
-        Response result = null;
-
         try {
+            log.info(Color.CYAN + "Call drop referential = " + referential + ", dummy = " + dummy + Color.NORMAL);
+            
+            // dummy uses when sender call url with content (prevent a NullPointerException)
+            Response result = null;
+
             jobServiceManager.drop(referential);
+
+            // build response
+            ResponseBuilder builder = Response.ok("");
+            builder.header(api_version_key, api_version);
+            result = builder.build();
+
+            return result;
+        } catch (RequestServiceException ex) {
+            Logger.getLogger(Service.class.getName()).log(Level.INFO, "RequestCode = " + ex.getRequestCode() + ", Message = " + ex.getMessage());
+            throw new WebApplicationException(ex.getCode(), Status.NOT_FOUND);
         } catch (ServiceException ex) {
+            Logger.getLogger(Service.class.getName()).log(Level.INFO, "Code = " + ex.getCode() + ", Message = " + ex.getMessage());
             throw new WebApplicationException(ex.getCode(), Status.NOT_FOUND);
         } catch (Exception ex) {
-            log.error("drop failure", ex);
+            Logger.getLogger(Service.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
             throw new WebApplicationException(ex.getMessage(), Status.INTERNAL_SERVER_ERROR);
         }
-
-        // build response
-        ResponseBuilder builder = Response.ok("");
-        builder.header(api_version_key, api_version);
-        result = builder.build();
-
-        return result;
-    }
-
-    /**
-     * find job by Id and check if referential is correct <br/>
-     * send HTTP NOT_FOUND if referential not found or id not found or job
-     * belongs to another referential
-     *
-     * @param id job id
-     * @param referential referential name
-     * @return valid job
-     *
-     */
-    private Job getJob(Long id, String referential) {
-        // check params
-        if (!schemas.getSchemaListing().contains(referential)) {
-            throw new WebApplicationException("unknown referential", Status.NOT_FOUND);
-        }
-        Job job = jobDAO.find(id);
-        if (job == null) {
-            throw new WebApplicationException("unknown job", Status.NOT_FOUND);
-        }
-        if (!job.getReferential().equals(referential)) {
-            throw new WebApplicationException("unknown job", Status.NOT_FOUND);
-        }
-        return job;
-    }
-
-    private Collection<JobInfo> build(Collection<Job> list) {
-
-        Collection<JobInfo> result = new ArrayList<>();
-        for (Job job : list) {
-            result.add(new JobInfo(job, true, uriInfo));
-        }
-        return result;
-    }
-
-    private java.nio.file.Path getJobDataDirectory(String referential, Long id) {
-        return Paths.get(System.getProperty("user.home"), ROOT_PATH, referential, "data", id.toString());
     }
 
     private String getFilename(String header) {

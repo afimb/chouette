@@ -16,5 +16,5 @@ public class JobDataTest implements JobData {
 	
 	private String referential;
 	
-	private String path;
+	private String pathName;
 }

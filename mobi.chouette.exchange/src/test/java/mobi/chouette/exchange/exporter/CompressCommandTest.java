@@ -26,7 +26,7 @@ public class CompressCommandTest implements Constant
 		context.put(INITIAL_CONTEXT, initialContext);
 		JobDataTest test = new JobDataTest();
 		context.put(JOB_DATA, test);
-		test.setPath("target/referential/test");
+		test.setPathName("target/referential/test");
 		test.setFilename("output.zip");
 		if (d.exists())
 			try {

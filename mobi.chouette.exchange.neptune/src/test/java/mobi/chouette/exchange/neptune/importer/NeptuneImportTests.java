@@ -99,7 +99,7 @@ public class NeptuneImportTests extends Arquillian implements Constant, ReportCo
 		configuration.setReferentialName("test");
 		JobDataTest jobData = new JobDataTest();
 		context.put(JOB_DATA,jobData);
-		jobData.setPath("target/referential/test");
+		jobData.setPathName("target/referential/test");
 		File f = new File("target/referential/test");
 		if (f.exists())
 			try {

@@ -94,7 +94,7 @@ public class NeptuneExportTests  extends Arquillian implements Constant, ReportC
 		configuration.setReferentialName("test");
 		JobDataTest test = new JobDataTest();
 		context.put(JOB_DATA, test);
-		test.setPath( "target/referential/test");
+		test.setPathName( "target/referential/test");
 		File f = new File("target/referential/test");
 		if (f.exists())
 			try {
@@ -129,7 +129,7 @@ public class NeptuneExportTests  extends Arquillian implements Constant, ReportC
 		JobDataTest test = new JobDataTest();
 		context.put(JOB_DATA, test);
 
-		test.setPath( "target/referential/test");
+		test.setPathName( "target/referential/test");
 		File f = new File("target/referential/test");
 		if (f.exists())
 			try {

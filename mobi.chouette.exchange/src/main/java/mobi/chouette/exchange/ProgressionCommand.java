@@ -68,7 +68,7 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 		if (context.containsKey("testng")) return;
 		ActionReport report = (ActionReport) context.get(REPORT);
 		JobData jobData = (JobData) context.get(JOB_DATA);
-		Path path = Paths.get(jobData.getPath(), REPORT_FILE);
+		Path path = Paths.get(jobData.getPathName(), REPORT_FILE);
 		// pseudo pretty print
 		try {
 			String data = JSONUtil.toJSON(report).replaceAll("\\},\\{", "\n},\n{");
@@ -85,7 +85,7 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 		if (report == null)
 			return;
 		JobData jobData = (JobData) context.get(JOB_DATA);
-		Path path = Paths.get(jobData.getPath(), VALIDATION_FILE);
+		Path path = Paths.get(jobData.getPathName(), VALIDATION_FILE);
 
 		// pseudo pretty print
 

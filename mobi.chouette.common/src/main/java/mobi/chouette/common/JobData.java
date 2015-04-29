@@ -8,6 +8,6 @@ public interface JobData {
 	String getReferential();
 	String getAction();
 	String getType();
-	String getPath();
+	String getPathName();
 
 }
