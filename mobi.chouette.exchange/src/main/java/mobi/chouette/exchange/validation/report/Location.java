@@ -99,7 +99,8 @@ public class Location {
 			AccessLink object = (AccessLink) chouetteObject;
 			this.name = NamingUtil.getName(object);
 			objectRefs.add(new ObjectReference(object));
-			objectRefs.add(new ObjectReference(object.getStopArea()));
+			objectRefs.add(new ObjectReference(object.getAccessPoint()));
+			objectRefs.add(new ObjectReference(object.getAccessPoint().getContainedIn()));
 		}
 		else if (chouetteObject instanceof AccessPoint)
 		{
