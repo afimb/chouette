@@ -144,7 +144,7 @@ public class NeptuneExporterCommand implements Command, Constant, ReportConstant
 					for (Company company : list) {
 						lines.addAll(company.getLines());
 					}
-				} else if (type.equals("groupofline")) {
+				} else if (type.equals("group_of_line")) {
 					List<GroupOfLine> list = groupOfLineDAO.findAll(ids);
 					for (GroupOfLine groupOfLine : list) {
 						lines.addAll(groupOfLine.getLines());

@@ -141,7 +141,7 @@ public class GtfsExporterCommand implements Command, Constant, ReportConstant {
 			GtfsExporter gtfsExporter = new GtfsExporter(path.toString());
 			context.put(GTFS_EXPORTER, gtfsExporter);
 
-			if (type.equals("stoparea"))
+			if (type.equals("stop_area"))
 			{
 				progression.execute(context);
 				progression.start(context, 1);
@@ -162,7 +162,7 @@ public class GtfsExporterCommand implements Command, Constant, ReportConstant {
 				if (ids == null || ids.isEmpty()) {
 					lines.addAll(lineDAO.findAll());
 				} else {
-					if (type.equals("line")) {
+					if (type.toLowerCase().equals( "line")) {
 						lines.addAll(lineDAO.findAll(ids));
 					} else if (type.equals("network")) {
 						List<Network> list = ptNetworkDAO.findAll(ids);
@@ -174,7 +174,7 @@ public class GtfsExporterCommand implements Command, Constant, ReportConstant {
 						for (Company company : list) {
 							lines.addAll(company.getLines());
 						}
-					} else if (type.equals("groupofline")) {
+					} else if (type.equals("group_of_line")) {
 						List<GroupOfLine> list = groupOfLineDAO.findAll(ids);
 						for (GroupOfLine groupOfLine : list) {
 							lines.addAll(groupOfLine.getLines());
