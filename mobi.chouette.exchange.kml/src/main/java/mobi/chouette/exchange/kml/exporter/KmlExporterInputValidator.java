@@ -3,17 +3,16 @@ package mobi.chouette.exchange.kml.exporter;
 import java.io.IOException;
 import java.util.Arrays;
 
-
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.exchange.AbstractInputValidator;
 import mobi.chouette.exchange.InputValidator;
 import mobi.chouette.exchange.InputValidatorFactory;
-import mobi.chouette.exchange.kml.exporter.KmlExportParameters;
 import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 @Log4j
-public class KmlExporterInputValidator implements InputValidator {
+public class KmlExporterInputValidator extends AbstractInputValidator {
 
-	private static String[] allowedTypes = { "all", "line", "network", "company", "groupofline" };
+	private static String[] allowedTypes = { "all", "line", "network", "company", "group_of_line" };
 	
 	@Override
 	public boolean check(AbstractParameter abstractParameter, ValidationParameters validationParameters, String fileName) {

@@ -13,10 +13,6 @@ import javax.ws.rs.core.MediaType;
 
 import lombok.Data;
 import lombok.experimental.Delegate;
-import static mobi.chouette.common.Constant.ACTION_PARAMETERS_FILE;
-import static mobi.chouette.common.Constant.PARAMETERS_FILE;
-import static mobi.chouette.common.Constant.ROOT_PATH;
-import static mobi.chouette.common.Constant.VALIDATION_PARAMETERS_FILE;
 import mobi.chouette.common.JSONUtil;
 import mobi.chouette.common.JobData;
 import mobi.chouette.exchange.InputValidator;
@@ -101,6 +97,7 @@ public class JobService implements JobData,ServiceConstants {
             Class.forName(getCommandInputValidatorName());
             if (!validator.check( parameters.getConfiguration(), parameters.getValidation(), job.getFilename())) 
                 throw new RequestServiceException(RequestExceptionCode.ACTION_TYPE_MISMATCH, "");
+            validator.initReport(this);
             
         } catch ( ServiceException ex) {
             throw ex;

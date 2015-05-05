@@ -169,7 +169,8 @@ public class ValidatorCommand implements Command, Constant {
 				result = validateSharedData.execute(context);
 				if (result)
 				{
-					ValidationData data = (ValidationData) context.get(VALIDATION_DATA);					ActionReport report = (ActionReport) context.get(REPORT);
+					ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
+					ActionReport report = (ActionReport) context.get(REPORT);
 					LineStats globalStats = report.getStats();
 					if (globalStats == null) {
 						globalStats = new LineStats();
@@ -207,7 +208,13 @@ public class ValidatorCommand implements Command, Constant {
 				String name = "java:app/mobi.chouette.exchange.validator/" + COMMAND;
 				result = (Command) context.lookup(name);
 			} catch (NamingException e) {
-				log.error(e);
+				// try another way on test context
+				String name = "java:module/" + COMMAND;
+				try {
+					result = (Command) context.lookup(name);
+				} catch (NamingException e1) {
+					log.error(e);
+				}
 			}
 			return result;
 		}

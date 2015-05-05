@@ -3,13 +3,14 @@ package mobi.chouette.exchange.neptune.importer;
 import java.io.IOException;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.exchange.AbstractInputValidator;
 import mobi.chouette.exchange.InputValidator;
 import mobi.chouette.exchange.InputValidatorFactory;
 import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 
 @Log4j
-public class NeptuneImporterInputValidator implements InputValidator {
+public class NeptuneImporterInputValidator extends AbstractInputValidator {
 
 	@Override
 	public boolean check(AbstractParameter abstractParameter, ValidationParameters validationParameters, String fileName) {

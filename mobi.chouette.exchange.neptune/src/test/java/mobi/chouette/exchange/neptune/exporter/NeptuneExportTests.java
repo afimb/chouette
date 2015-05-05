@@ -184,7 +184,7 @@ public class NeptuneExportTests  extends Arquillian implements Constant, ReportC
 //		Context context = initExportContext();
 //		NeptuneExportParameters configuration = (NeptuneExportParameters) context.get(CONFIGURATION);
 //		configuration.setAddMetadata(true);
-//		configuration.setReferencesType("Lines");
+//		configuration.setReferencesType("line");
 //		Command command = (Command) CommandFactory.create(initialContext,
 //				NeptuneExporterCommand.class.getName());
 //

@@ -4,15 +4,16 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.exchange.AbstractInputValidator;
 import mobi.chouette.exchange.InputValidator;
 import mobi.chouette.exchange.InputValidatorFactory;
 import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 
 @Log4j
-public class GtfsImporterInputValidator implements InputValidator {
+public class GtfsImporterInputValidator extends AbstractInputValidator {
 
-	private static String[] allowedTypes = { "all", "line", "stoparea" };
+	private static String[] allowedTypes = { "all", "line", "stop_area" };
 
 	@Override
 	public boolean check(AbstractParameter abstractParameter, ValidationParameters validationParameters, String fileName) {
