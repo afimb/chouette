@@ -25,7 +25,7 @@ public class AbstractExportParameter extends AbstractParameter{
 	private String referencesType;
 	
 	@Getter @Setter
-	@XmlElement(name = "id")
+	@XmlElement(name = "reference_ids")
 	private List<Long> ids;
 	
 	@Getter @Setter

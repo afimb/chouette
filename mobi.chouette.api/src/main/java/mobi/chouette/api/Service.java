@@ -229,7 +229,7 @@ public class Service implements Constant {
             
             return builder.build();
         } catch (RequestServiceException ex) {
-            Logger.getLogger(Service.class.getName()).log(Level.INFO, "RequestCode = " + ex.getRequestCode() + ", Message = " + ex.getMessage());
+            Logger.getLogger(Service.class.getName()).log(Level.INFO, "RequestCode = " + ex.getRequestCode() + ", Message = " + ex.getMessage(),ex);
             throw new WebApplicationException(ex.getCode(), Status.NOT_FOUND);
         } catch (ServiceException e) {
             Logger.getLogger(Service.class.getName()).log(Level.INFO, "Code = " + e.getCode() + ", Message = " + e.getMessage());

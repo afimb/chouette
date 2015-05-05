@@ -74,6 +74,7 @@ public class JobService implements JobData,ServiceConstants {
             StringWriter writer = new StringWriter();
             IOUtils.copy(inputStreamsByName.get(PARAMETERS_FILE), writer, "UTF-8");
             Parameters parameters = JSONUtil.fromJSON( writer.toString(), Parameters.class);
+            setParametersAsString(JSONUtil.toJSON(parameters));
             
             JSONUtil.toJSON( filePath(PARAMETERS_FILE), parameters);
             addLink(MediaType.APPLICATION_JSON, PARAMETERS_REL);
@@ -128,7 +129,7 @@ public class JobService implements JobData,ServiceConstants {
     private Parameters getParameters() throws ServiceException {
         if ( jobPersisted()) {
             try {
-                return JSONUtil.fromJSON( filePath(PARAMETERS_FILE), Parameters.class);
+                return JSONUtil.fromJSON( getParametersAsString(), Parameters.class);
             } catch (Exception ex) {
                 throw new RequestServiceException(RequestExceptionCode.INVALID_PARAMETERS, ex);
             }
@@ -181,9 +182,7 @@ public class JobService implements JobData,ServiceConstants {
      */
     public void addLink(String mediaType, String rel) {
         if (!linkExists(rel)) {
-            Link link = new Link(mediaType, rel, "", ""); // TODO réduire la
-            // signature à 2
-            // args
+            Link link = new Link(mediaType, rel); 
             job.getLinks().add(link);
         }
     }

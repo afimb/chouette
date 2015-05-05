@@ -2,8 +2,8 @@ package mobi.chouette.model.api;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.Transient;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,8 +11,7 @@ import lombok.ToString;
 
 @Embeddable
 @NoArgsConstructor
-@AllArgsConstructor
-@ToString
+@ToString(exclude={"method","href"})
 public class Link implements java.io.Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -44,16 +43,20 @@ public class Link implements java.io.Serializable {
 	@Setter
 	private String rel;
 
-	@Column(name = "method")
+	@Transient
 	@Getter
 	@Setter
 	private String method;
 
-	@Column(name = "href")
+	@Transient
 	@Getter
 	@Setter
 	private String href;
 
-
+    public Link(String type, String rel)
+    {
+    	this.type=type;
+    	this.rel=rel;
+    }
 
 }

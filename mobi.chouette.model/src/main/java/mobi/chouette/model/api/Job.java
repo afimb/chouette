@@ -26,7 +26,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @EqualsAndHashCode(of = { "id" })
-@ToString()
+@ToString(exclude={"parametersAsString"})
 @Entity
 @Table(name = "jobs")
 @Data
@@ -61,6 +61,9 @@ public class Job implements Serializable {
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status")
 	private STATUS status;
+	
+	@Column(name = "parameters",columnDefinition="TEXT")
+	private String parametersAsString;
 
 	@ElementCollection(targetClass = Link.class, fetch = FetchType.EAGER)
 	@CollectionTable(name = "links", joinColumns = @JoinColumn(name = "job_id"))
