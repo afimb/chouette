@@ -18,12 +18,12 @@ import mobi.chouette.exchange.parameters.AbstractParameter;
 
 public class ValidateParameters extends AbstractParameter {
 
-	@XmlElement(name = "references_type", required=true)
+	@XmlElement(name = "references_type")
 	@Getter @Setter
 	private String referencesType;
 	
 	@Getter @Setter
-	@XmlElement(name = "ids")
+	@XmlElement(name = "reference_ids")
 	private List<Integer> ids;
 	
 
