@@ -216,49 +216,9 @@ public abstract class AbstractTestValidation  extends Arquillian implements Cons
 
 	protected ValidationParameters loadFullParameters() throws Exception
 	{
-		//		String filename = "fullparameterset.json";
-		//		File f = new File(path,filename);
-		//		return (ValidationParameters) JSONUtil.fromJSON(f.toPath(), ValidationParameters.class);
-		ValidationParameters result = new ValidationParameters();
-		result.setStopAreasArea("[[-5.2,42.25],[-5.2,51.1],[8.23,51.1],[8.23,42.25],[-5.2,42.25]]");
-		result.setInterStopAreaDistanceMin(20);
-		result.setParentStopAreaDistanceMax(350);
-		result.setInterAccessPointDistanceMin(20);
-		result.setInterConnectionLinkDistanceMax(800);
-		result.setWalkDefaultSpeedMax(5);
-		result.setWalkFrequentTravellerSpeedMax(4);
-		result.setWalkOccasionalTravellerSpeedMax(4);
-		result.setWalkMobilityRestrictedTravellerSpeedMax(2);
-		result.setInterAccessLinkDistanceMax(300);
-		result.setInterStopDurationMax(180);
-		result.setFacilityStopAreaDistanceMax(300);
-		result.setCheckAllowedTransportModes(0);
-		result.setCheckLinesInGroups(0);
-		result.setCheckLineRoutes(0);
-		result.setCheckStopParent(0);
-		result.setCheckConnectionLinkOnPhysical(0);
-		result.setModeCoach(new TransportModeParameters(1, 500, 10000, 90, 40, 20));
-		result.setModeAir(new TransportModeParameters(1, 200, 10000, 800, 700, 60));
-		result.setModeWaterborne(new TransportModeParameters(1, 200, 10000, 40, 5, 60));
-		result.setModeBus(new TransportModeParameters(1, 100, 40000, 1000, 5, 2000));
-		result.setModeFerry(new TransportModeParameters(1, 200, 10000, 40, 5, 60));
-		result.setModeWalk(new TransportModeParameters(1, 1, 10000, 6, 1, 10));
-		result.setModeMetro(new TransportModeParameters(1, 300, 20000, 500, 25, 2000));
-		result.setModeShuttle(new TransportModeParameters(1, 500, 20000, 80, 20, 10));
-		result.setModeRapidTransit(new TransportModeParameters(1, 2000, 500000, 300, 20, 60));
-		result.setModeTaxi(new TransportModeParameters(1, 500, 300000, 130, 20, 60));
-		result.setModeLocalTrain(new TransportModeParameters(1, 2000, 500000, 300, 20, 60));
-		result.setModeTrain(new TransportModeParameters(1, 2000, 500000, 300, 20, 60));
-		result.setModeLongDistanceTrain(new TransportModeParameters(1, 2000, 500000, 300, 20, 60));
-		result.setModeTramway(new TransportModeParameters(1, 300, 2000, 50, 20, 30));
-		result.setModeTrolleybus(new TransportModeParameters(1, 300, 2000, 50, 20, 30));
-		result.setModePrivateVehicle(new TransportModeParameters(1, 500, 300000, 130, 20, 60));
-		result.setModeBicycle(new TransportModeParameters(1, 300, 30000, 40, 10, 10));
-		result.setModeBicycle(new TransportModeParameters(1, 300, 30000, 40, 10, 10));
-		result.setCheckNetwork(0);
-		result.setNetwork(new NetworkParameters());
-		
-		return result;
+				String filename = "fullparameterset.json";
+				File f = new File(path,filename);
+				return (ValidationParameters) JSONUtil.fromJSON(f.toPath(), ValidationParameters.class);
 	}
 
 	protected ValidationParameters loadParameters() throws Exception

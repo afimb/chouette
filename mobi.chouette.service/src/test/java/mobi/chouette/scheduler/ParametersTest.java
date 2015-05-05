@@ -21,11 +21,11 @@ public class ParametersTest {
 		File f = new File(filename);
 		byte[] bytes = Files.readAllBytes(f.toPath());
 		String text = new String(bytes, "UTF-8");
-		Parameters payload = (Parameters) JSONUtil.fromJSON(text, Parameters.class);
-		log.info("ParametersTest.test() : \n" + payload.toString());
+		Parameters parameters = (Parameters) JSONUtil.fromJSON(text, Parameters.class);
+		// log.info("ParametersTest.test() : \n" + payload.toString());
 
-		String result = JSONUtil.toJSON(payload);
-		log.info("ParametersTest.test() : \n" + result);
+		String result = JSONUtil.toJSON(parameters);
+		//log.info("ParametersTest.test() : \n" + result);
 	}
 
 }

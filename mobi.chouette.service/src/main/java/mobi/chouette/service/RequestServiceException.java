@@ -10,6 +10,8 @@ package mobi.chouette.service;
  * @author marc
  */
 public class RequestServiceException extends ServiceException {
+	private static final long serialVersionUID = 568796258783939693L;
+	
 	private static final String PREFIX = "SVR-REQ";
 	private RequestExceptionCode requestExceptionCode;
     

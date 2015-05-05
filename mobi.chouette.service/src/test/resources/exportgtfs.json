@@ -7,7 +7,7 @@
         "referential_name" : "données de test",
         "add_metadata" : true,
         "references_type" : "line",
-        "id" : 909,
+        "reference_ids" : 909,
         "object_id_prefix" : "Hastuscitura",
         "time_zone" : "Europe/Paris"
         }
