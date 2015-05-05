@@ -20,9 +20,9 @@ public class FileInfo {
 	@XmlEnum
 	public enum FILE_STATE 
 	{
-		UNCHECKED,
+		IGNORED,
 		OK,
-		NOK
+		ERROR
 	};
 	
 	@XmlElement(name="name",required=true)

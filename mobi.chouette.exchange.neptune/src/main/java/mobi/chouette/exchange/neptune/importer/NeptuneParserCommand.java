@@ -103,7 +103,7 @@ public class NeptuneParserCommand implements Command, Constant {
 		} catch (Exception e) {
 
 			// report service
-			fileItem.setStatus(FileInfo.FILE_STATE.NOK);
+			fileItem.setStatus(FileInfo.FILE_STATE.ERROR);
 			report.getFiles().add(fileItem);
 			fileItem.getErrors().add(e.toString());
 			log.error("parsing failed ",e);

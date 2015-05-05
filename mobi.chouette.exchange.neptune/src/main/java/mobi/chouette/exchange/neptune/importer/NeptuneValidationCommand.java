@@ -163,7 +163,7 @@ public class NeptuneValidationCommand implements Command, Constant {
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		}
 		if (result == ERROR) {
-			fileInfo.setStatus(FILE_STATE.NOK);
+			fileInfo.setStatus(FILE_STATE.ERROR);
 			fileInfo.getErrors().add("Neptune compliance failed");
 		}
 		return result;

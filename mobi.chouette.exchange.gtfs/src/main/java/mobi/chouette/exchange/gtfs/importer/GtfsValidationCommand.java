@@ -61,7 +61,7 @@ public class GtfsValidationCommand implements Command, Constant {
 			if (!processableFiles.contains(fileName.getFileName().toString())) {
 				FileInfo file = new FileInfo();
 				file.setName(fileName.getFileName().toString());
-				file.setStatus(FILE_STATE.UNCHECKED);
+				file.setStatus(FILE_STATE.IGNORED);
 				report.getFiles().add(file);
 			}
 		}

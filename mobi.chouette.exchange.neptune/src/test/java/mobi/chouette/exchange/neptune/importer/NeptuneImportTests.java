@@ -196,7 +196,7 @@ public class NeptuneImportTests extends Arquillian implements Constant, ReportCo
 		ActionReport report = (ActionReport) context.get(REPORT);
 		Assert.assertEquals(report.getResult(), STATUS_ERROR, "result");
 		Assert.assertEquals(report.getFiles().size(), 1, "file reported");
-		Assert.assertEquals(report.getFiles().get(0).getStatus(), FILE_STATE.NOK, "file status");
+		Assert.assertEquals(report.getFiles().get(0).getStatus(), FILE_STATE.ERROR, "file status");
 		Assert.assertEquals(report.getFiles().get(0).getErrors().size(), 1, "file errors");
 		Assert.assertTrue(report.getFiles().get(0).getErrors().get(0).startsWith("invalid encoding"),
 				"file error message " + report.getFiles().get(0).getErrors().get(0));

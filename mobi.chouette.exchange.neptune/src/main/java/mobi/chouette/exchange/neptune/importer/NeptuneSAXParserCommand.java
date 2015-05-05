@@ -82,7 +82,7 @@ public class NeptuneSAXParserCommand implements Command, Constant {
 			// validator.reset();
 			validator.validate(file);
 			if (errorHandler.isHasErrors()) {
-				fileItem.setStatus(FileInfo.FILE_STATE.NOK);
+				fileItem.setStatus(FileInfo.FILE_STATE.ERROR);
 				report.getFiles().add(fileItem);
 				fileItem.getErrors().add("Xml errors");
 				return result;
@@ -102,13 +102,13 @@ public class NeptuneSAXParserCommand implements Command, Constant {
 			}
 			log.error(e);
 			errorHandler.handleError(e);
-			fileItem.setStatus(FileInfo.FILE_STATE.NOK);
+			fileItem.setStatus(FileInfo.FILE_STATE.ERROR);
 			report.getFiles().add(fileItem);
 			fileItem.getErrors().add(e.getMessage());
 		} catch (Exception e) {
 
 			log.error(e);
-			fileItem.setStatus(FileInfo.FILE_STATE.NOK);
+			fileItem.setStatus(FileInfo.FILE_STATE.ERROR);
 			report.getFiles().add(fileItem);
 			fileItem.getErrors().add(e.getMessage());
 

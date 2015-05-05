@@ -103,7 +103,7 @@ public class NetexImporterCommand implements Command, Constant {
 				for (Path exclude : excluded) {
 					FileInfo file = new FileInfo();
 					file.setName(exclude.getFileName().toString());
-					file.setStatus(FILE_STATE.UNCHECKED);
+					file.setStatus(FILE_STATE.IGNORED);
 					report.getFiles().add(file);
 				}
 			}
