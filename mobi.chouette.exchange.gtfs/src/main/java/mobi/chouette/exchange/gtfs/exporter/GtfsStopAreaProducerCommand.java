@@ -65,9 +65,9 @@ public class GtfsStopAreaProducerCommand implements Command, Constant
 			GtfsExportParameters parameters = (GtfsExportParameters) context
 					.get(CONFIGURATION);
 
-			List<Object> ids = null;
+			List<Long> ids = null;
 			if (parameters.getIds() != null) {
-				ids  = new ArrayList<Object>(parameters.getIds());
+				ids  = new ArrayList<Long>(parameters.getIds());
 			}
 			Set<StopArea> stopAreas = new HashSet<>();
 			if (ids == null || ids.isEmpty()) {

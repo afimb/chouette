@@ -13,7 +13,7 @@ import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 @Log4j
 public class GtfsExporterInputValidator extends AbstractInputValidator {
 
-	private static String[] allowedTypes = { "all", "line", "network", "company", "group_of_line", "stop_area" };
+	private static String[] allowedTypes = { "line", "network", "company", "group_of_line", "stop_area" };
 
 	@Override
 	public boolean check(AbstractParameter abstractParameter, ValidationParameters validationParameters, String fileName) {
@@ -32,13 +32,11 @@ public class GtfsExporterInputValidator extends AbstractInputValidator {
 		}
 
 		String type = parameters.getReferencesType();
-		if (type == null || type.isEmpty()) {
-			log.error("missing type");
-			return false;
-		}
-		if (!Arrays.asList(allowedTypes).contains(type.toLowerCase())) {
-			log.error("invalid type " + type);
-			return false;
+		if (type != null && !type.isEmpty()) {
+			if (!Arrays.asList(allowedTypes).contains(type.toLowerCase())) {
+				log.error("invalid type " + type);
+				return false;
+			}
 		}
 
 		String timezone = parameters.getTimeZone();

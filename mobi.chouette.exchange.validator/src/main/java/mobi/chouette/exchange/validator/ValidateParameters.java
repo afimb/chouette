@@ -24,7 +24,7 @@ public class ValidateParameters extends AbstractParameter {
 	
 	@Getter @Setter
 	@XmlElement(name = "reference_ids")
-	private List<Integer> ids;
+	private List<Long> ids;
 	
 
 

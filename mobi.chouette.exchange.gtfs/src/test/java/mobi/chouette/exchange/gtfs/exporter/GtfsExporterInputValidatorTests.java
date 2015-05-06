@@ -20,7 +20,7 @@ public class GtfsExporterInputValidatorTests
 		Date endDate = new Date(2015,04,30);
 		parameters.setStartDate(startDate);
 		parameters.setEndDate(endDate);
-		parameters.setReferencesType("all");
+		parameters.setReferencesType("line");
 		parameters.setTimeZone("Europe/Paris");
 		parameters.setObjectIdPrefix("GTFS");
 		boolean result = validator.check(parameters,null,null);
@@ -42,7 +42,7 @@ public class GtfsExporterInputValidatorTests
 		Date endDate = new Date(2015,04,30);
 		parameters.setStartDate(endDate);
 		parameters.setEndDate(startDate);
-		parameters.setReferencesType("all");
+		parameters.setReferencesType("line");
 		parameters.setTimeZone("Europe/Paris");
 		parameters.setObjectIdPrefix("GTFS");
 		result = validator.check(parameters,null,null);
@@ -50,19 +50,12 @@ public class GtfsExporterInputValidatorTests
 
 		parameters.setStartDate(startDate);
 		parameters.setEndDate(endDate);
-		parameters.setReferencesType(null);
-		result = validator.check(parameters,null,null);
-		Assert.assertFalse(result, "check for no type");
-
-		parameters.setReferencesType("");
-		result = validator.check(parameters,null,null);
-		Assert.assertFalse(result, "check for empty type");
-
+		
 		parameters.setReferencesType("bidon");
 		result = validator.check(parameters,null,null);
 		Assert.assertFalse(result, "check for wrong type");
 
-		parameters.setReferencesType("all");
+		parameters.setReferencesType("line");
 		parameters.setTimeZone(null);
 		result = validator.check(parameters,null,null);
 		Assert.assertFalse(result, "check for no timezone");

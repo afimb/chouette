@@ -13,7 +13,7 @@ import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 @Log4j
 public class NeptuneExporterInputValidator extends AbstractInputValidator {
 
-	private static String[] allowedTypes = { "all", "line", "network", "company", "group_of_line" };
+	private static String[] allowedTypes = { "line", "network", "company", "group_of_line" };
 
 	@Override
 	public boolean check(AbstractParameter abstractParameter, ValidationParameters validationParameters, String fileName) {
@@ -31,13 +31,11 @@ public class NeptuneExporterInputValidator extends AbstractInputValidator {
 		}
 
 		String type = parameters.getReferencesType();
-		if (type == null || type.isEmpty()) {
-			log.error("missing type");
-			return false;
-		}
-		if (!Arrays.asList(allowedTypes).contains(type.toLowerCase())) {
-			log.error("invalid type " + type);
-			return false;
+		if (type != null && !type.isEmpty()) {
+			if (!Arrays.asList(allowedTypes).contains(type.toLowerCase())) {
+				log.error("invalid type " + type);
+				return false;
+			}
 		}
 
 		if (fileName != null) {

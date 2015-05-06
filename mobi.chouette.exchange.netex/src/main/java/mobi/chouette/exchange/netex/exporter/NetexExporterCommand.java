@@ -8,11 +8,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -23,21 +21,15 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.dao.CompanyDAO;
-import mobi.chouette.dao.GroupOfLineDAO;
-import mobi.chouette.dao.LineDAO;
-import mobi.chouette.dao.NetworkDAO;
 import mobi.chouette.exchange.ProgressionCommand;
+import mobi.chouette.exchange.exporter.AbstractExporterCommand;
 import mobi.chouette.exchange.exporter.CompressCommand;
 import mobi.chouette.exchange.exporter.SaveMetadataCommand;
 import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.netex.Constant;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.ReportConstant;
-import mobi.chouette.model.Company;
-import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.Line;
-import mobi.chouette.model.Network;
 import mobi.chouette.model.util.Referential;
 
 import com.jamonapi.Monitor;
@@ -45,21 +37,9 @@ import com.jamonapi.MonitorFactory;
 
 @Log4j
 @Stateless(name = NetexExporterCommand.COMMAND)
-public class NetexExporterCommand implements Command, Constant, ReportConstant {
+public class NetexExporterCommand extends AbstractExporterCommand implements Command, Constant, ReportConstant {
 
 	public static final String COMMAND = "NetexExporterCommand";
-
-	@EJB
-	private LineDAO lineDAO;
-
-	@EJB
-	private NetworkDAO ptNetworkDAO;
-
-	@EJB
-	private CompanyDAO companyDAO;
-
-	@EJB
-	private GroupOfLineDAO groupOfLineDAO;
 
 	@Override
 	public boolean execute(Context context) throws Exception {
@@ -119,42 +99,22 @@ public class NetexExporterCommand implements Command, Constant, ReportConstant {
 			}
 		}
 
-		String type = parameters.getReferencesType().toLowerCase();
+		String type = parameters.getReferencesType();
 		// set default type 
-		if (type == null || type.isEmpty() || type.equalsIgnoreCase("all"))
+		if (type == null || type.isEmpty() )
 		{
 			// all lines
 			type = "line";
 			parameters.setIds(null);
 		}
-		List<Object> ids = null;
+		type=type.toLowerCase();
+
+		List<Long> ids = null;
 		if (parameters.getIds() != null) {
-			ids = new ArrayList<Object>(parameters.getIds());
+			ids = new ArrayList<Long>(parameters.getIds());
 		}
 
-		Set<Line> lines = new HashSet<Line>();
-		if (ids == null || ids.isEmpty()) {
-			lines.addAll(lineDAO.findAll());
-		} else {
-			if (type.equals("line")) {
-				lines.addAll(lineDAO.findAll(ids));
-			} else if (type.equals("network")) {
-				List<Network> list = ptNetworkDAO.findAll(ids);
-				for (Network ptNetwork : list) {
-					lines.addAll(ptNetwork.getLines());
-				}
-			} else if (type.equals("company")) {
-				List<Company> list = companyDAO.findAll(ids);
-				for (Company company : list) {
-					lines.addAll(company.getLines());
-				}
-			} else if (type.equals("group_of_line")) {
-				List<GroupOfLine> list = groupOfLineDAO.findAll(ids);
-				for (GroupOfLine groupOfLine : list) {
-					lines.addAll(groupOfLine.getLines());
-				}
-			}
-		}
+		Set<Line> lines = loadLines(type, ids);
 		progression.execute(context);
 
 		try {

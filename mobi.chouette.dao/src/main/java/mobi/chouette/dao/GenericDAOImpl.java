@@ -49,7 +49,7 @@ public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 	}
 
 	@Override
-	public List<T> findAll(final Collection<Object> ids) {
+	public List<T> findAll(final Collection<Long> ids) {
 		List<T> result = null;
 		CriteriaBuilder builder = em.getCriteriaBuilder();
 		CriteriaQuery<T> criteria = builder.createQuery(type);
