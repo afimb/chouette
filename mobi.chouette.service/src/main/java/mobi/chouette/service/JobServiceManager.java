@@ -3,6 +3,7 @@ package mobi.chouette.service;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -65,7 +66,7 @@ public class JobServiceManager {
 			if (Files.exists( jobService.getPath())) {
 				// réutilisation anormale d'un id de job (réinitialisation de la séquence à l'extérieur de l'appli?) 
 				// jobDAO.delete( jobService.getJob());
-				Files.delete(jobService.getPath());
+				FileUtils.deleteDirectory(jobService.getPath().toFile());
 			}
 			Files.createDirectories( jobService.getPath());
 
