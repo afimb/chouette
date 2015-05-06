@@ -33,7 +33,7 @@ public class LineCheckPoints extends AbstractValidation<Line> implements Validat
 		// 4-Line-3 : check if line has one group and only one
 		// 4-Line-4 : check if line has one route or one pair (inbound/outbound)
 
-		boolean test4_1 = (parameters.getCheckLine() != 0);
+		boolean test4_1 = parameters.getCheckLine() != 0;
 		boolean test4_2 = parameters.getCheckAllowedTransportModes() == 1;
 		boolean test4_3 = parameters.getCheckLinesInGroups() == 1;
 		boolean test4_4 = parameters.getCheckLineRoutes() == 1;

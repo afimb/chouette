@@ -136,7 +136,7 @@ public abstract class AbstractTestValidation  extends Arquillian implements Cons
 		FileUtils.copyFile(srcFile, destFile);
 	}
 
-	protected void importLines(String file, int fileCount, int lineCount) throws Exception
+	protected void importLines(String file, int fileCount, int lineCount, boolean cleanRepo) throws Exception
 	{
 		Context context = initImportContext();
 
@@ -145,10 +145,10 @@ public abstract class AbstractTestValidation  extends Arquillian implements Cons
 				NeptuneImporterCommand.class.getName());
 		copyFile(file);
 		JobDataTest test = (JobDataTest) context.get(JOB_DATA);
-		test.setFilename( file);
+		test.setFilename(file);
 		NeptuneImportParameters configuration = (NeptuneImportParameters) context.get(CONFIGURATION);
 		configuration.setNoSave(false);
-		configuration.setCleanRepository(true);
+		configuration.setCleanRepository(cleanRepo);
 		try {
 			command.execute(context);
 		} catch (Exception ex) {

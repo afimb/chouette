@@ -570,5 +570,18 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 		}
 		return accessor;
 	}
+	
+	/**
+	 * check if 2 nullable values are equal
+	 * @param val1
+	 * @param val2
+	 * @return
+	 */
+	protected boolean checkEquals(Object val1,Object val2)
+	{
+		if (val1 == null) return val2 == null;
+		return val1.equals(val2);
+	}
+
 
 }

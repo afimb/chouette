@@ -5,5 +5,10 @@
       <classes>
          <class name="mobi.chouette.exchange.validation.checkpoint.ValidationNominal" />
       </classes>
+</test>
+   <test name="Test_B_lines" preserve-order="true">
+      <classes>
+         <class name="mobi.chouette.exchange.validation.checkpoint.ValidationLines" />
+      </classes>
    </test>
 </suite>

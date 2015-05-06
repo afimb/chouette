@@ -60,7 +60,7 @@ public class SharedLineCheckPoints extends AbstractValidation<Line> implements V
 				continue;
 
 			if (line2.getNetwork().equals(line1.getNetwork())) {
-				if (line1.getName().equals(line2.getName()) && line1.getNumber().equals(line2.getNumber())) {
+				if (checkEquals(line1.getName(),line2.getName()) && checkEquals(line1.getNumber(),line2.getNumber())) {
 					// failure ! add only line2 location
 					Location location = new Location(line2);
 					Location networkLocation = new Location(line2.getNetwork());
@@ -81,7 +81,6 @@ public class SharedLineCheckPoints extends AbstractValidation<Line> implements V
 			addValidationError(report, LINE_1, detail);
 		}
 	}
-
 
 
 }
