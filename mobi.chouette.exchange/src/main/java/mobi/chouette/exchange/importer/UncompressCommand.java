@@ -24,6 +24,16 @@ import org.apache.commons.io.FilenameUtils;
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
+/**
+ * execute use in context : 
+ * <ul>
+ * <li>REPORT</li>
+ * <li>JOB_DATA</li>
+ * </ul>
+ * 
+ * @author michel
+ *
+ */
 @Log4j
 public class UncompressCommand implements Command, ReportConstant {
 

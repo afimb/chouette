@@ -66,13 +66,6 @@ public class ChainCommand implements Chain, Constant {
 		@Override
 		protected Command create(InitialContext context) throws IOException {
 			Command result = new ChainCommand();
-			// try {
-			// String name = "java:app/mobi.chouette.exchange/" + COMMAND;
-			//
-			// result = (Command) context.lookup(name);
-			// } catch (NamingException e) {
-			// log.error(e);
-			// }
 			return result;
 		}
 	}

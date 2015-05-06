@@ -40,7 +40,7 @@ public class JobServiceManagerTest extends Arquillian {
 
 	}
 	
-	@Test (groups = { "JobServiceManager" }, description = "Check wrng referential")
+	@Test (groups = { "JobServiceManager" }, description = "Check wrong referential")
 	public void createWrongJobReferential()
 	{
 		String referential = "toto";

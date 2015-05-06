@@ -6,14 +6,15 @@
 		<artifactId>mobi.chouette</artifactId>
 		<version>3.0.0</version>
 	</parent>
-	<artifactId>chouette</artifactId>
+	<artifactId>chouette_iev</artifactId>
 	<packaging>ear</packaging>
    <properties>
       <project.rootDir>${project.basedir}/..</project.rootDir>
       <skipInitDb>true</skipInitDb>
+      <earName>chouette</earName>
    </properties>
 	<build>
-		<finalName>${project.artifactId}</finalName>
+		<finalName>${earName}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -39,7 +40,7 @@
 				<artifactId>wildfly-maven-plugin</artifactId>
 				<version>${version.wildfly.maven.plugin}</version>
 				<configuration>
-					<filename>${project.artifactId}.ear</filename>
+					<filename>${earName}.ear</filename>
 					<skip>${skipWildfly}</skip>
 				</configuration>
 				<executions>
@@ -105,6 +106,24 @@
 			<type>ejb</type>			
 			<version>${project.version}</version>
 		</dependency>
+      <dependency>
+         <groupId>${project.groupId}</groupId>
+         <artifactId>mobi.chouette.exchange.kml</artifactId>
+         <type>ejb</type>        
+         <version>${project.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>${project.groupId}</groupId>
+         <artifactId>mobi.chouette.exchange.hub</artifactId>
+         <type>ejb</type>        
+         <version>${project.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>${project.groupId}</groupId>
+         <artifactId>mobi.chouette.exchange.validator</artifactId>
+         <type>ejb</type>        
+         <version>${project.version}</version>
+      </dependency>
       <dependency>
          <groupId>${project.groupId}</groupId>
          <artifactId>mobi.chouette.service</artifactId>
