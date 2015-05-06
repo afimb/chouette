@@ -34,9 +34,12 @@ public class JobDAO extends GenericDAOImpl<Job> {
 		CriteriaBuilder builder = em.getCriteriaBuilder();
 		CriteriaQuery<Job> criteria = builder.createQuery(type);
 		Root<Job> root = criteria.from(type);
-		Predicate predicate = builder.equal(root.get(Job_.referential),
+		Predicate statusPredicate = builder.notEqual(root.get(Job_.status),
+				Job.STATUS.CREATED); // Created jobs are only in initialization phase, should not be sent
+		Predicate referentialPredicate = builder.equal(root.get(Job_.referential),
 				referential);
-		criteria.where(predicate);
+		criteria.where(builder.and( referentialPredicate, statusPredicate));
+		criteria.orderBy(builder.asc(root.get(Job_.created)));
 		TypedQuery<Job> query = em.createQuery(criteria);
 		result = query.getResultList();
 		return result;
@@ -47,11 +50,14 @@ public class JobDAO extends GenericDAOImpl<Job> {
 		CriteriaBuilder builder = em.getCriteriaBuilder();
 		CriteriaQuery<Job> criteria = builder.createQuery(type);
 		Root<Job> root = criteria.from(type);
+		Predicate statusPredicate = builder.notEqual(root.get(Job_.status),
+				Job.STATUS.CREATED); // Created jobs are only in initialization phase, should not be sent
 		Predicate referentialPredicate = builder.equal(root.get(Job_.referential),
 				referential);
 		Predicate actionPredicate = builder.equal(root.get(Job_.action),
 				action);
-		criteria.where( builder.and( referentialPredicate, actionPredicate));
+		criteria.where( builder.and(referentialPredicate, actionPredicate,statusPredicate ));
+		criteria.orderBy(builder.asc(root.get(Job_.created)));
 		TypedQuery<Job> query = em.createQuery(criteria);
 		result = query.getResultList();
 		return result;

@@ -81,23 +81,30 @@ public class JobServiceManager {
             return jobService;
 
         } catch (RequestServiceException ex) {
+        	deleteBadCreatedJob(jobService);
             throw ex;
         } catch (Exception ex) {
             Logger.getLogger(JobServiceManager.class.getName()).log(Level.INFO, "", ex);
             
-            if (jobService!=null && jobService.getJob().getId() != null) {
-                jobDAO.delete(jobService.getJob());
-            }
-            try {
-                // remove path if exists
-                if ( Files.exists( jobService.getPath()))
-                    FileUtils.deleteDirectory( jobService.getPath().toFile());
-            } catch (IOException ex1) {
-                Logger.getLogger(JobServiceManager.class.getName()).log(Level.SEVERE, null, ex1);
-            }
+            deleteBadCreatedJob(jobService);
 
             throw new ServiceException(ServiceExceptionCode.INTERNAL_ERROR, ex);
         }
+    }
+    
+    private void deleteBadCreatedJob(JobService jobService)
+    {
+        if (jobService!=null && jobService.getJob().getId() != null) {
+            jobDAO.delete(jobService.getJob());
+        }
+        try {
+            // remove path if exists
+            if ( Files.exists( jobService.getPath()))
+                FileUtils.deleteDirectory( jobService.getPath().toFile());
+        } catch (IOException ex1) {
+            Logger.getLogger(JobServiceManager.class.getName()).log(Level.SEVERE, null, ex1);
+        }
+    	
     }
     
     private void validateReferential(String referential) throws ServiceException {
@@ -135,6 +142,7 @@ public class JobServiceManager {
     public void start(JobService jobService) {
         jobService.setStatus(STATUS.STARTED);
         jobService.setUpdated(new Date());
+        jobService.setStarted(new Date());
         jobService.addLink(MediaType.APPLICATION_JSON, Link.REPORT_REL);
         jobService.addLink(MediaType.APPLICATION_JSON, Link.VALIDATION_REL);
         jobDAO.update(jobService.getJob());

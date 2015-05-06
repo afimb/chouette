@@ -55,6 +55,9 @@ public class Job implements Serializable {
 	@Column(name = "created")
 	private Date created;
 
+	@Column(name = "started")
+	private Date started;
+
 	@Column(name = "updated")
 	private Date updated;
 
@@ -71,7 +74,7 @@ public class Job implements Serializable {
 
 	public Job() {
 		super();
-		status = STATUS.SCHEDULED;
+		status = STATUS.CREATED; 
 		created = new Date();
 		updated = new Date();
 	}

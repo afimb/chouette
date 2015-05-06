@@ -53,7 +53,7 @@ import mobi.chouette.service.ServiceException;
 @NoArgsConstructor
 @XmlRootElement(name="job")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder={"id","referential","action","type","created","updated","status","linkInfos","actionParameters"})
+@XmlType(propOrder={"id","referential","action","type","created","started","updated","status","linkInfos","actionParameters"})
 @XmlSeeAlso({NeptuneExportParameters.class,
 	         NeptuneImportParameters.class,
 	         GtfsImportParameters.class,
@@ -80,6 +80,9 @@ public class JobInfo {
 	@XmlElement(name = "created", required = true)
 	private Date created;
 
+	@XmlElement(name = "started")
+	private Date started;
+
 	@XmlElement(name = "updated")
 	private Date updated;
 
@@ -99,6 +102,7 @@ public class JobInfo {
 		action = job.getAction();
 		type = job.getType();
 		created = job.getCreated();
+		started = job.getStarted();
 		updated = job.getUpdated();
 		status = STATUS.valueOf(job.getStatus().name());
                 actionParameters = job.getActionParameter();
