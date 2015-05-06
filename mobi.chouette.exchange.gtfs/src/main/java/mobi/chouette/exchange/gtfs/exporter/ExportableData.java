@@ -27,6 +27,7 @@ private Line line;
 private Set<Company> companies = new HashSet<>();
 private Set<StopArea> physicalStops = new HashSet<>();
 private Set<StopArea> commercialStops = new HashSet<>();
+private Set<StopArea> sharedStops = new HashSet<>();
 private Set<ConnectionLink> connectionLinks = new HashSet<>();
 private Set<Timetable> timetables = new HashSet<>();
 private Map<String, List<Timetable>> timetableMap = new HashMap<>();

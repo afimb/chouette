@@ -99,11 +99,13 @@ public class GtfsValidationCommand implements Command, Constant {
 
 			result = SUCCESS;
 		} catch (Exception e) {
-			log.error(e);
+			log.error(e,e);
 			throw e;
 		}
-
-		log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
+        finally
+        {
+			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
+		}
 
 		return result;
 	}

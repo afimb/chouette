@@ -8,6 +8,7 @@ import java.util.List;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.CalendarDay;
+import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Period;
@@ -113,6 +114,7 @@ public class GtfsDataCollector
 				collection.getCompanies().add(line.getCompany());
 			}
 		}
+		completeSharedData(collection);
 		return validLine;
 	}
 
@@ -121,8 +123,18 @@ public class GtfsDataCollector
 		for (StopArea stopArea : stopAreas) {
 			collectStopAreas(collection,stopArea);
 		}
+		completeSharedData(collection);
 		return !collection.getPhysicalStops().isEmpty();
 
+	}
+	
+	private void completeSharedData(ExportableData collection)
+	{
+		// force lazy dependencies to be loaded
+		for (ConnectionLink link : collection.getConnectionLinks()) {
+			collection.getSharedStops().add(link.getEndOfLink());
+			collection.getSharedStops().add(link.getStartOfLink());
+		}
 	}
 
 	private void collectStopAreas(ExportableData collection,StopArea stopArea)
