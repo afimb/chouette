@@ -27,16 +27,16 @@ import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
 @Log4j
-@Stateless(name = NeptuneProducerCommand.COMMAND)
+//@Stateless(name = NeptuneProducerCommand.COMMAND)
 public class NeptuneProducerCommand implements Command, Constant {
 
 	public static final String COMMAND = "NeptuneProducerCommand";
 
-	@EJB
-	private LineDAO lineDAO;
+//	@EJB
+//	private LineDAO lineDAO;
 
 	@Override
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	// @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public boolean execute(Context context) throws Exception {
 
 		boolean result = ERROR;
@@ -45,8 +45,9 @@ public class NeptuneProducerCommand implements Command, Constant {
 
 		try {
 
-			Long lineId = (Long) context.get(LINE_ID);
-			Line line = lineDAO.find(lineId);
+//			Long lineId = (Long) context.get(LINE_ID);
+//			Line line = lineDAO.find(lineId);
+			Line line = (Line) context.get(LINE);
 			NeptuneExportParameters configuration = (NeptuneExportParameters) context.get(CONFIGURATION);
 
 			ExportableData collection = new ExportableData();
@@ -66,6 +67,7 @@ public class NeptuneProducerCommand implements Command, Constant {
 			LineInfo lineInfo = new LineInfo();
 			lineInfo.setName(line.getName() + " (" + line.getNumber() + ")");
 			LineStats stats = new LineStats();
+			lineInfo.setStats(stats);
 			stats.setAccessPointCount(collection.getAccessPoints().size());
 			stats.setConnectionLinkCount(collection.getConnectionLinks().size());
 			stats.setJourneyPatternCount(collection.getJourneyPatterns().size());
@@ -118,20 +120,21 @@ public class NeptuneProducerCommand implements Command, Constant {
 
 		@Override
 		protected Command create(InitialContext context) throws IOException {
-			Command result = null;
-			try {
-				String name = "java:app/mobi.chouette.exchange.neptune/" + COMMAND;
-				result = (Command) context.lookup(name);
-			} catch (NamingException e) {
-				// try another way on test context
-				String name = "java:module/" + COMMAND;
-				try {
-					result = (Command) context.lookup(name);
-				} catch (NamingException e1) {
-					log.error(e);
-				}
-			}
-			return result;
+//			Command result = null;
+//			try {
+//				String name = "java:app/mobi.chouette.exchange.neptune/" + COMMAND;
+//				result = (Command) context.lookup(name);
+//			} catch (NamingException e) {
+//				// try another way on test context
+//				String name = "java:module/" + COMMAND;
+//				try {
+//					result = (Command) context.lookup(name);
+//				} catch (NamingException e1) {
+//					log.error(e);
+//				}
+//			}
+//			return result;
+			return new NeptuneProducerCommand();
 		}
 	}
 

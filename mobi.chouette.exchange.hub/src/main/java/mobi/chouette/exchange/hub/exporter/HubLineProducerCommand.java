@@ -96,6 +96,7 @@ public class HubLineProducerCommand implements Command, Constant {
 			LineInfo lineInfo = new LineInfo();
 			lineInfo.setName(line.getName() + " (" + line.getNumber() + ")");
 			LineStats stats = new LineStats();
+			lineInfo.setStats(stats);
 			// stats.setAccessPointCount(collection.getAccessPoints().size());
 			// stats.setConnectionLinkCount(collection.getConnectionLinks().size());
 			stats.setJourneyPatternCount(collection.getJourneyPatterns().size());
