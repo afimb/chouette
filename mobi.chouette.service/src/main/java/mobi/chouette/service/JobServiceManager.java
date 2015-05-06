@@ -37,299 +37,299 @@ import org.apache.commons.io.FileUtils;
 @Log4j
 public class JobServiceManager {
 
-    public static final String BEAN_NAME = "JobServiceManager";
+	public static final String BEAN_NAME = "JobServiceManager";
 
-    @EJB
-    JobDAO jobDAO;
+	@EJB
+	JobDAO jobDAO;
 
-    @EJB
-    SchemaDAO schemaDAO;
+	@EJB
+	SchemaDAO schemaDAO;
 
-    @EJB
-    Scheduler scheduler;
-    
-    public JobService create(String referential, String action, String type, Map<String, InputStream> inputStreamsByName) throws ServiceException {
-        JobService jobService = null;
-        try {
-            // Valider les parametres
-            validateReferential(referential);
+	@EJB
+	Scheduler scheduler;
 
-            // Instancier le modèle du service 'upload'
-            jobService = new JobService(referential, action, type);
+	public JobService create(String referential, String action, String type, Map<String, InputStream> inputStreamsByName) throws ServiceException {
+		JobService jobService = null;
+		try {
+			// Valider les parametres
+			validateReferential(referential);
 
-            // Enregistrer le jobService pour obtenir un id
-            jobDAO.create(jobService.getJob());
-            jobDAO.flush();
+			// Instancier le modèle du service 'upload'
+			jobService = new JobService(referential, action, type);
 
-            // mkdir
-            if (Files.exists( jobService.getPath())) {
-                // c'est vraiment parce qu'on ne pas pas confiance 
-                // dans l'update qui va suivre ! 
-                jobDAO.delete( jobService.getJob());
-            }
-            Files.createDirectories( jobService.getPath());
+			// Enregistrer le jobService pour obtenir un id
+			jobDAO.create(jobService.getJob());
+			jobDAO.flush();
 
-            // Enregistrer des paramètres à conserver sur fichier
-            jobService.saveInputStreams( inputStreamsByName);
+			// mkdir
+			if (Files.exists( jobService.getPath())) {
+				// c'est vraiment parce qu'on ne pas pas confiance 
+				// dans l'update qui va suivre ! 
+				jobDAO.delete( jobService.getJob());
+			}
+			Files.createDirectories( jobService.getPath());
 
-            jobDAO.update( jobService.getJob());
-            jobDAO.flush();
+			// Enregistrer des paramètres à conserver sur fichier
+			jobService.saveInputStreams( inputStreamsByName);
 
-            // Lancer la tache
-            scheduler.schedule(jobService.getReferential());
-            
-            return jobService;
+			jobDAO.update( jobService.getJob());
+			jobDAO.flush();
 
-        } catch (RequestServiceException ex) {
-        	deleteBadCreatedJob(jobService);
-            throw ex;
-        } catch (Exception ex) {
-            Logger.getLogger(JobServiceManager.class.getName()).log(Level.INFO, "", ex);
-            
-            deleteBadCreatedJob(jobService);
+			// Lancer la tache
+			scheduler.schedule(jobService.getReferential());
 
-            throw new ServiceException(ServiceExceptionCode.INTERNAL_ERROR, ex);
-        }
-    }
-    
-    private void deleteBadCreatedJob(JobService jobService)
-    {
-        if (jobService!=null && jobService.getJob().getId() != null) {
-            jobDAO.delete(jobService.getJob());
-        }
-        try {
-            // remove path if exists
-            if ( Files.exists( jobService.getPath()))
-                FileUtils.deleteDirectory( jobService.getPath().toFile());
-        } catch (IOException ex1) {
-            Logger.getLogger(JobServiceManager.class.getName()).log(Level.SEVERE, null, ex1);
-        }
-    	
-    }
-    
-    private void validateReferential(String referential) throws ServiceException {
-        if (!schemaDAO.getSchemaListing().contains(referential)) {
-            throw new RequestServiceException(RequestExceptionCode.UNKNOWN_REFERENTIAL, "");
-        }
-    }
+			return jobService;
 
-    public JobService download( String referential, Long id, String filename) throws ServiceException {
-        JobService jobService = getJobService( referential, id);
+		} catch (RequestServiceException ex) {
+			deleteBadCreatedJob(jobService);
+			throw ex;
+		} catch (Exception ex) {
+			Logger.getLogger(JobServiceManager.class.getName()).log(Level.INFO, "", ex);
 
-        java.nio.file.Path path = Paths.get( jobService.getPathName(), filename);
-        if (!Files.exists(path, LinkOption.NOFOLLOW_LINKS)) {
-            throw new RequestServiceException(RequestExceptionCode.UNKNOWN_FILE, "");
-        }
-        return jobService;
-    }
+			deleteBadCreatedJob(jobService);
 
-    /**
-     * find next waiting job on referential <br/>
-     * return null if a job is STARTED or if no job is SCHEDULED
-     *
-     * @param referential
-     * @return
-     */
-    // @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-    public JobService getNextJob(String referential) {
-        Job job = jobDAO.getNextJob(referential);
-        if (job == null) {
-            return null;
-        }
-        return new JobService(job);
-    }
+			throw new ServiceException(ServiceExceptionCode.INTERNAL_ERROR, ex);
+		}
+	}
 
-    public void start(JobService jobService) {
-        jobService.setStatus(STATUS.STARTED);
-        jobService.setUpdated(new Date());
-        jobService.setStarted(new Date());
-        jobService.addLink(MediaType.APPLICATION_JSON, Link.REPORT_REL);
-        jobService.addLink(MediaType.APPLICATION_JSON, Link.VALIDATION_REL);
-        jobDAO.update(jobService.getJob());
-    }
+	private void deleteBadCreatedJob(JobService jobService)
+	{
+		if (jobService==null || jobService.getJob().getId() == null) return; 
+		jobDAO.delete(jobService.getJob());
 
-    // @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-    public void cancel(String referential, Long id) throws ServiceException {
-        JobService jobService = getJobService(referential, id);
-        if (jobService.getStatus().ordinal() <= STATUS.STARTED.ordinal()) {
+		try {
+			// remove path if exists
+			if ( jobService.getPath() != null && Files.exists( jobService.getPath()))
+				FileUtils.deleteDirectory( jobService.getPath().toFile());
+		} catch (IOException ex1) {
+			Logger.getLogger(JobServiceManager.class.getName()).log(Level.SEVERE, null, ex1);
+		}
 
-            if (jobService.getStatus().equals(STATUS.STARTED)) {
-                scheduler.cancel(jobService);
-            }
+	}
 
-            jobService.setStatus(STATUS.CANCELED);
+	private void validateReferential(String referential) throws ServiceException {
+		if (!schemaDAO.getSchemaListing().contains(referential)) {
+			throw new RequestServiceException(RequestExceptionCode.UNKNOWN_REFERENTIAL, "");
+		}
+	}
 
-            // remove cancel link only
-            jobService.removeLink(Link.CANCEL_REL);
-            // set delete link
-            jobService.addLink(MediaType.APPLICATION_JSON, Link.DELETE_REL);
+	public JobService download( String referential, Long id, String filename) throws ServiceException {
+		JobService jobService = getJobService( referential, id);
 
-            jobService.setUpdated(new Date());
-            jobDAO.update(jobService.getJob());
+		java.nio.file.Path path = Paths.get( jobService.getPathName(), filename);
+		if (!Files.exists(path, LinkOption.NOFOLLOW_LINKS)) {
+			throw new RequestServiceException(RequestExceptionCode.UNKNOWN_FILE, "");
+		}
+		return jobService;
+	}
 
-        }
+	/**
+	 * find next waiting job on referential <br/>
+	 * return null if a job is STARTED or if no job is SCHEDULED
+	 *
+	 * @param referential
+	 * @return
+	 */
+	// @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+	public JobService getNextJob(String referential) {
+		Job job = jobDAO.getNextJob(referential);
+		if (job == null) {
+			return null;
+		}
+		return new JobService(job);
+	}
 
-    }
+	public void start(JobService jobService) {
+		jobService.setStatus(STATUS.STARTED);
+		jobService.setUpdated(new Date());
+		jobService.setStarted(new Date());
+		jobService.addLink(MediaType.APPLICATION_JSON, Link.REPORT_REL);
+		jobService.addLink(MediaType.APPLICATION_JSON, Link.VALIDATION_REL);
+		jobDAO.update(jobService.getJob());
+	}
 
-    // @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-    public void remove(String referential, Long id) throws ServiceException {
-        JobService jobService = getJobService(referential, id);
-        if (jobService.getStatus().ordinal() <= STATUS.STARTED.ordinal()) {
-            throw new RequestServiceException(RequestExceptionCode.SCHEDULED_JOB, "referential = " + referential + " ,id = " + id);
-        }
-        try {
-            FileUtils.deleteDirectory(jobService.getPath().toFile());
-        } catch (IOException e) {
-            Logger.getLogger(JobServiceManager.class.getName()).log(Level.SEVERE, "fail to delete directory", e);
-        }
+	// @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+	public void cancel(String referential, Long id) throws ServiceException {
+		JobService jobService = getJobService(referential, id);
+		if (jobService.getStatus().ordinal() <= STATUS.STARTED.ordinal()) {
 
-        jobDAO.delete(jobService.getJob());
-    }
+			if (jobService.getStatus().equals(STATUS.STARTED)) {
+				scheduler.cancel(jobService);
+			}
 
-    // @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-    public void drop(String referential) throws ServiceException {
-        List<JobService> jobServices = findAll(referential);
-        // supprimer en premier les jobs en attente, puis les autres
-        for (Iterator<JobService> iterator = jobServices.iterator(); iterator.hasNext();) {
-            JobService jobService = iterator.next();
-            if (jobService.getStatus().equals(STATUS.SCHEDULED)) {
-                jobDAO.delete(jobService.getJob());
-                try {
-                    FileUtils.deleteDirectory(jobService.getPath().toFile());
-                } catch (IOException e) {
-                    Logger.getLogger(JobServiceManager.class.getName()).log(Level.SEVERE, "fail to delete directory", e);
-                }
-                iterator.remove();
-            }
-        }
-        for (JobService jobService : jobServices) {
-            if (jobService.getStatus().equals(STATUS.STARTED)) {
-                scheduler.cancel(jobService);
-            }
-            try {
-                FileUtils.deleteDirectory(jobService.getPath().toFile());
-            } catch (IOException e) {
-                Logger.getLogger(JobServiceManager.class.getName()).log(Level.SEVERE, "fail to delete directory", e);
-            }
-            jobDAO.delete(jobService.getJob());
-        }
+			jobService.setStatus(STATUS.CANCELED);
 
-    }
+			// remove cancel link only
+			jobService.removeLink(Link.CANCEL_REL);
+			// set delete link
+			jobService.addLink(MediaType.APPLICATION_JSON, Link.DELETE_REL);
 
-    public void terminate(JobService jobService) {
-        jobService.setStatus(STATUS.TERMINATED);
+			jobService.setUpdated(new Date());
+			jobDAO.update(jobService.getJob());
 
-        // remove cancel link only
-        jobService.removeLink(Link.CANCEL_REL);
-        // set delete link
-        jobService.addLink(MediaType.APPLICATION_JSON, Link.DELETE_REL);
-        // add data link if necessary
-        if (!jobService.linkExists(Link.DATA_REL)) {
-            if (jobService.getFilename() != null && Files.exists(Paths.get(jobService.getPathName(), jobService.getFilename()))) {
-                jobService.addLink(MediaType.APPLICATION_OCTET_STREAM, Link.DATA_REL);
-            }
-        }
+		}
 
-        jobService.setUpdated(new Date());
-        jobDAO.update(jobService.getJob());
+	}
 
-    }
+	// @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+	public void remove(String referential, Long id) throws ServiceException {
+		JobService jobService = getJobService(referential, id);
+		if (jobService.getStatus().ordinal() <= STATUS.STARTED.ordinal()) {
+			throw new RequestServiceException(RequestExceptionCode.SCHEDULED_JOB, "referential = " + referential + " ,id = " + id);
+		}
+		try {
+			FileUtils.deleteDirectory(jobService.getPath().toFile());
+		} catch (IOException e) {
+			Logger.getLogger(JobServiceManager.class.getName()).log(Level.SEVERE, "fail to delete directory", e);
+		}
 
-    public void abort(JobService jobService) {
+		jobDAO.delete(jobService.getJob());
+	}
 
-        jobService.setStatus(STATUS.ABORTED);
+	// @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+	public void drop(String referential) throws ServiceException {
+		List<JobService> jobServices = findAll(referential);
+		// supprimer en premier les jobs en attente, puis les autres
+		for (Iterator<JobService> iterator = jobServices.iterator(); iterator.hasNext();) {
+			JobService jobService = iterator.next();
+			if (jobService.getStatus().equals(STATUS.SCHEDULED)) {
+				jobDAO.delete(jobService.getJob());
+				try {
+					FileUtils.deleteDirectory(jobService.getPath().toFile());
+				} catch (IOException e) {
+					Logger.getLogger(JobServiceManager.class.getName()).log(Level.SEVERE, "fail to delete directory", e);
+				}
+				iterator.remove();
+			}
+		}
+		for (JobService jobService : jobServices) {
+			if (jobService.getStatus().equals(STATUS.STARTED)) {
+				scheduler.cancel(jobService);
+			}
+			try {
+				FileUtils.deleteDirectory(jobService.getPath().toFile());
+			} catch (IOException e) {
+				Logger.getLogger(JobServiceManager.class.getName()).log(Level.SEVERE, "fail to delete directory", e);
+			}
+			jobDAO.delete(jobService.getJob());
+		}
 
-        // remove cancel link only
-        jobService.removeLink(Link.CANCEL_REL);
-        // set delete link
-        jobService.addLink(MediaType.APPLICATION_JSON, Link.DELETE_REL);
+	}
 
-        jobService.setUpdated(new Date());
-        jobDAO.update(jobService.getJob());
+	public void terminate(JobService jobService) {
+		jobService.setStatus(STATUS.TERMINATED);
 
-    }
+		// remove cancel link only
+		jobService.removeLink(Link.CANCEL_REL);
+		// set delete link
+		jobService.addLink(MediaType.APPLICATION_JSON, Link.DELETE_REL);
+		// add data link if necessary
+		if (!jobService.linkExists(Link.DATA_REL)) {
+			if (jobService.getFilename() != null && Files.exists(Paths.get(jobService.getPathName(), jobService.getFilename()))) {
+				jobService.addLink(MediaType.APPLICATION_OCTET_STREAM, Link.DATA_REL);
+			}
+		}
 
-    public List<JobService> findAll() {
-        List<Job> jobs = jobDAO.findAll();
-        List<JobService> jobServices = new ArrayList<>(jobs.size());
-        for (Job job : jobs) {
-            jobServices.add(new JobService(job));
-        }
-        return jobServices;
-    }
+		jobService.setUpdated(new Date());
+		jobDAO.update(jobService.getJob());
 
-    public List<JobService> findAll(String referential) {
-        List<Job> jobs = jobDAO.findByReferential(referential);
-        List<JobService> jobServices = new ArrayList<>(jobs.size());
-        for (Job job : jobs) {
-            jobServices.add(new JobService(job));
-        }
-        
-        return jobServices;
-    }
+	}
 
-    public JobService scheduledJob(String referential, Long id) throws ServiceException {
-        return getJobService( referential, id);
-    }
+	public void abort(JobService jobService) {
 
-    
-    public JobService terminatedJob(String referential, Long id) throws ServiceException {
-        JobService jobService = getJobService( referential, id);
+		jobService.setStatus(STATUS.ABORTED);
 
-        if (jobService.getStatus().ordinal() < STATUS.TERMINATED.ordinal()
-                || jobService.getStatus().ordinal() == STATUS.DELETED.ordinal()) {
-            throw new RequestServiceException(RequestExceptionCode.UNKNOWN_JOB, "referential = " + referential + " ,id = " + id);
-        }
-        
-        return jobService;
-    }
+		// remove cancel link only
+		jobService.removeLink(Link.CANCEL_REL);
+		// set delete link
+		jobService.addLink(MediaType.APPLICATION_JSON, Link.DELETE_REL);
 
-    private JobService getJobService(String referential, Long id) throws ServiceException {
-        validateReferential( referential);
-        
-        Job job = jobDAO.find(id);
-        if (job != null && job.getReferential().equals(referential)) {
-            return new JobService(job);
-        }
-        throw new RequestServiceException(RequestExceptionCode.UNKNOWN_JOB, "referential = " + referential + " ,id = " + id);
-    }
+		jobService.setUpdated(new Date());
+		jobDAO.update(jobService.getJob());
 
-    public JobService getJobService( Long id) throws ServiceException {
-        Job job = jobDAO.find(id);
-        if (job != null) {
-            return new JobService(job);
-        }
-        throw new RequestServiceException(RequestExceptionCode.UNKNOWN_JOB, " id = " + id);
-    }
-    
-    public List<JobService> jobs(String referential, String action, final Long version) throws ServiceException {
-        validateReferential( referential);
-        
-        List<Job> jobs = null;
-        if ( action==null) {
-            jobs = jobDAO.findByReferential(referential);
-        } else {
-            jobs = jobDAO.findByReferentialAndAction(referential, action);
-        }
-        
-        Collection<Job> filtered = Collections2.filter( jobs, new Predicate<Job>() {
-            @Override
-            public boolean apply(Job job) {
+	}
+
+	public List<JobService> findAll() {
+		List<Job> jobs = jobDAO.findAll();
+		List<JobService> jobServices = new ArrayList<>(jobs.size());
+		for (Job job : jobs) {
+			jobServices.add(new JobService(job));
+		}
+		return jobServices;
+	}
+
+	public List<JobService> findAll(String referential) {
+		List<Job> jobs = jobDAO.findByReferential(referential);
+		List<JobService> jobServices = new ArrayList<>(jobs.size());
+		for (Job job : jobs) {
+			jobServices.add(new JobService(job));
+		}
+
+		return jobServices;
+	}
+
+	public JobService scheduledJob(String referential, Long id) throws ServiceException {
+		return getJobService( referential, id);
+	}
+
+
+	public JobService terminatedJob(String referential, Long id) throws ServiceException {
+		JobService jobService = getJobService( referential, id);
+
+		if (jobService.getStatus().ordinal() < STATUS.TERMINATED.ordinal()
+				|| jobService.getStatus().ordinal() == STATUS.DELETED.ordinal()) {
+			throw new RequestServiceException(RequestExceptionCode.UNKNOWN_JOB, "referential = " + referential + " ,id = " + id);
+		}
+
+		return jobService;
+	}
+
+	private JobService getJobService(String referential, Long id) throws ServiceException {
+		validateReferential( referential);
+
+		Job job = jobDAO.find(id);
+		if (job != null && job.getReferential().equals(referential)) {
+			return new JobService(job);
+		}
+		throw new RequestServiceException(RequestExceptionCode.UNKNOWN_JOB, "referential = " + referential + " ,id = " + id);
+	}
+
+	public JobService getJobService( Long id) throws ServiceException {
+		Job job = jobDAO.find(id);
+		if (job != null) {
+			return new JobService(job);
+		}
+		throw new RequestServiceException(RequestExceptionCode.UNKNOWN_JOB, " id = " + id);
+	}
+
+	public List<JobService> jobs(String referential, String action, final Long version) throws ServiceException {
+		validateReferential( referential);
+
+		List<Job> jobs = null;
+		if ( action==null) {
+			jobs = jobDAO.findByReferential(referential);
+		} else {
+			jobs = jobDAO.findByReferentialAndAction(referential, action);
+		}
+
+		Collection<Job> filtered = Collections2.filter( jobs, new Predicate<Job>() {
+			@Override
+			public boolean apply(Job job) {
 				// filter on update time if given, otherwise don't return
-                // deleted jobs
-                boolean versionZeroCondition = ( version == 0) && job.getStatus().ordinal() < STATUS.DELETED.ordinal();
-                boolean versionNonZeroCondition = (version > 0) && version < job.getUpdated().getTime();
-                
-                return versionZeroCondition || versionNonZeroCondition;
-            }
-        });
-        
-        List<JobService> jobServices = new ArrayList<>(filtered.size());
-        for (Job job : filtered) {
-            jobServices.add(new JobService(job));
-        }
-        return jobServices;
-    }
+						// deleted jobs
+				boolean versionZeroCondition = ( version == 0) && job.getStatus().ordinal() < STATUS.DELETED.ordinal();
+				boolean versionNonZeroCondition = (version > 0) && version < job.getUpdated().getTime();
+
+				return versionZeroCondition || versionNonZeroCondition;
+			}
+		});
+
+		List<JobService> jobServices = new ArrayList<>(filtered.size());
+		for (Job job : filtered) {
+			jobServices.add(new JobService(job));
+		}
+		return jobServices;
+	}
 
 
 }
