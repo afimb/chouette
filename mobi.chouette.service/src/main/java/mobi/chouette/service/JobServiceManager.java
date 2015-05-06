@@ -63,9 +63,9 @@ public class JobServiceManager {
 
 			// mkdir
 			if (Files.exists( jobService.getPath())) {
-				// c'est vraiment parce qu'on ne pas pas confiance 
-				// dans l'update qui va suivre ! 
-				jobDAO.delete( jobService.getJob());
+				// réutilisation anormale d'un id de job (réinitialisation de la séquence à l'extérieur de l'appli?) 
+				// jobDAO.delete( jobService.getJob());
+				Files.delete(jobService.getPath());
 			}
 			Files.createDirectories( jobService.getPath());
 
