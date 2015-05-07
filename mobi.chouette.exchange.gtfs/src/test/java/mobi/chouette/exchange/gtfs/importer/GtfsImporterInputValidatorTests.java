@@ -13,7 +13,6 @@ public class GtfsImporterInputValidatorTests
 	{
 		GtfsImporterInputValidator validator = new GtfsImporterInputValidator();
 		GtfsImportParameters parameters = new GtfsImportParameters();
-		parameters.setReferencesType("all");
 		parameters.setObjectIdPrefix("GTFS");
 		boolean result = validator.check(parameters,null,"data.zip");
 
@@ -34,7 +33,7 @@ public class GtfsImporterInputValidatorTests
 		result = validator.check(parameters,null,"data.zip");
 		Assert.assertFalse(result, "check for wrong type");
 
-		parameters.setReferencesType("all");
+		parameters.setReferencesType("line");
 		parameters.setObjectIdPrefix(null);
 		result = validator.check(parameters,null,"data.zip");
 		Assert.assertFalse(result, "check for no object_id_prefix");

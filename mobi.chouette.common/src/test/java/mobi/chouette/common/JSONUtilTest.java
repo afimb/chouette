@@ -23,7 +23,16 @@ public class JSONUtilTest {
 		model.setChild(childModel);
 		
 		String json = JSONUtil.toJSON(model);
-		Assert.assertEquals(json, "{\"json_model\":{\"name\":\"theName\",\"user_name\":\"theUserName\",\"value\":12,\"list\":[\"test\"],\"child\":{\"data\":\"myData\",\"names\":[\"myName\"]}}}", "json string");
+		Assert.assertEquals(json, "{\"json_model\": {\n" +
+				"  \"name\": \"theName\",\n" +
+				"  \"user_name\": \"theUserName\",\n" +
+				"  \"value\": 12,\n" +
+				"  \"list\": [\"test\"],\n" +
+				"  \"child\": {\n" +
+				"    \"data\": \"myData\",\n" +
+				"    \"names\": [\"myName\"]\n" +
+				"  }\n" +
+				"}}", "json string");
 
 		JsonModel model2 = JSONUtil.fromJSON(json, JsonModel.class);
 		Assert.assertEquals(model2.getName(),model.getName(),"name");
@@ -45,7 +54,11 @@ public class JSONUtilTest {
 		
 		JSONUtil.toJSON(path, model);
 		String json = FileUtils.readFileToString(f);
-		Assert.assertEquals(json, "{\"json_model\":{\"name\":\"theName\",\"user_name\":\"theUserName\",\"value\":12}}", "json string");
+		Assert.assertEquals(json, "{\"json_model\": {\n" +
+				"  \"name\": \"theName\",\n" +
+				"  \"user_name\": \"theUserName\",\n" +
+				"  \"value\": 12\n" +
+				"}}", "json string");
 
 		JsonModel model2 = JSONUtil.fromJSON(path, JsonModel.class);
 		Assert.assertEquals(model2.getName(),model.getName(),"name");

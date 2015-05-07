@@ -79,9 +79,6 @@ public class PTNetworkParser implements Parser, Constant {
 				network.setComment(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("lineId")) {
 				String lineId = ParserUtils.getText(xpp.nextText());
-				// TODO : revoir l'assemblage Network Line
-//				Line line = ObjectFactory.getLine(referential, lineId);
-//				line.setPTNetwork(network);
 				validator.addLineId(context, objectId, lineId);
 			} else {
 				XPPUtil.skipSubTree(log, xpp);

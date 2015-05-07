@@ -141,7 +141,7 @@ AbstractProducer
 
    private Timetable reduce(Timetable timetable)
    {
-      Timetable reduced = CopyUtil.copy(timetable);
+	  Timetable reduced = CopyUtil.copy(timetable);
 
       // no periods => nothing to reduce
       if (isEmpty(reduced.getPeriods()))
@@ -150,7 +150,10 @@ AbstractProducer
       }
 
       // one valid period => nothing to reduce
-      if (reduced.getPeriods().size() == 1 && ! isEmpty(reduced.getDayTypes())) return reduced;
+      if (reduced.getPeriods().size() == 1 && ! isEmpty(reduced.getDayTypes())) 
+      {
+    	  return reduced;
+      }
 
       // replace all periods as dates
       removePeriods(reduced);
@@ -252,7 +255,7 @@ AbstractProducer
 
    private Timetable merge(List<Timetable> timetables,String prefix)
    {
-      Timetable merged = reduce(CopyUtil.copy(timetables.get(0)));
+      Timetable merged = reduce(timetables.get(0));
       if (timetables.size() > 1)
       {
          removePeriods(merged);

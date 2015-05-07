@@ -52,7 +52,7 @@ public class GtfsValidationCommand implements Command, Constant {
 		List<Path> list = FileUtil.listFiles(path, "*");
 		ActionReport report = (ActionReport) context.get(REPORT);
 		GtfsImportParameters parameters = (GtfsImportParameters) context.get(CONFIGURATION);
-		boolean all = !(parameters.getReferencesType().equalsIgnoreCase("stoparea"));
+		boolean all = !(parameters.getReferencesType().equalsIgnoreCase("stop_area"));
 		List<String> processableFiles = processableAllFiles;
 		if (!all) {
 			processableFiles = processableStopAreaFiles;

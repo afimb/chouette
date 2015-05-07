@@ -19,6 +19,7 @@ import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.DayTypeEnum;
+import mobi.chouette.model.util.CopyUtil;
 import mobi.chouette.model.util.NeptuneUtil;
 
 @Log4j
@@ -171,15 +172,10 @@ public class GtfsDataCollector
 	 */
 	private Timetable reduceTimetable(Timetable timetable, Date boundaryDate, boolean before)
 	{
-		Timetable reduced = new Timetable();
-		reduced.setDayTypes(new ArrayList<DayTypeEnum>(timetable.getDayTypes()));
-		reduced.setObjectId(timetable.getObjectId());
-		reduced.setObjectVersion(timetable.getObjectVersion());
-		reduced.setCreationTime(timetable.getCreationTime());
-		reduced.setComment(timetable.getComment());
-		reduced.setVehicleJourneys(timetable.getVehicleJourneys());
-
-		List<CalendarDay> dates = new ArrayList<CalendarDay>(timetable.getCalendarDays());
+		Timetable reduced = CopyUtil.copy(timetable);
+		reduced.getVehicleJourneys().addAll(timetable.getVehicleJourneys());
+		
+		List<CalendarDay> dates = reduced.getCalendarDays();
 		for (Iterator<CalendarDay> iterator = dates.iterator(); iterator.hasNext();)
 		{
 			CalendarDay date = iterator.next();
@@ -192,7 +188,7 @@ public class GtfsDataCollector
 				iterator.remove();
 			}
 		}
-		List<Period> periods = new ArrayList<Period>(timetable.getPeriods());
+		List<Period> periods = reduced.getPeriods();
 		for (Iterator<Period> iterator = periods.iterator(); iterator.hasNext();)
 		{
 			Period period = iterator.next();
@@ -209,8 +205,6 @@ public class GtfsDataCollector
 		{
 			return null;
 		}
-		reduced.setCalendarDays(dates);
-		reduced.setPeriods(periods);
 		NeptuneUtil.computeLimitOfPeriods(reduced);
 		return reduced;
 

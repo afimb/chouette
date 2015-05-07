@@ -1,0 +1,13 @@
+{
+    "gtfs-import": {
+        "user_name" : "Michel",
+        "name" : "job 1",
+        "organisation_name" : "Cityway",
+        "referential_name" : "données de test",
+        "object_id_prefix" : "GTFS",
+        "max_distance_for_connection_link" : 0,
+        "max_distance_for_commercial" : 0 ,
+        "ignore_end_chars" : 0,
+        "ignoreLastWord" : false      }
+
+}

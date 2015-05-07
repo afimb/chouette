@@ -42,7 +42,6 @@ public class TimetableParser implements Parser, Constant {
 
 		Timetable timetable = null;
 		String objectId = null;
-		List<DayTypeEnum> dayTypes = new ArrayList<DayTypeEnum>();
 
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 
@@ -50,7 +49,6 @@ public class TimetableParser implements Parser, Constant {
 				 objectId = ParserUtils.getText(xpp.nextText());
 				timetable = ObjectFactory.getTimetable(referential, objectId);
 				timetable.setFilled(true);
-				timetable.setDayTypes(dayTypes);
 				validator.addLocation(context, objectId, lineNumber, columnNumber);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
@@ -67,7 +65,7 @@ public class TimetableParser implements Parser, Constant {
 			} else if (xpp.getName().equals("dayType")) {
 				DayTypeEnum value = ParserUtils.getEnum(DayTypeEnum.class,
 						xpp.nextText());
-				dayTypes.add(value);
+				timetable.addDayType(value);
 			} else if (xpp.getName().equals("calendarDay")) {
 				Date date = ParserUtils.getSQLDate(xpp.nextText());
 				CalendarDay value = new CalendarDay(date, true);

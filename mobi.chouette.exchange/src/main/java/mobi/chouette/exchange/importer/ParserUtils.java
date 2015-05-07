@@ -120,7 +120,8 @@ public class ParserUtils {
 
 		if (value != null) {
 			DateFormat SHORT_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
-			result = new Date(getDate(SHORT_DATE_FORMAT, value).getTime());
+			long  time = getDate(SHORT_DATE_FORMAT, value).getTime();
+			result = new Date(time);
 		}
 		return result;
 	}

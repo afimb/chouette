@@ -71,7 +71,7 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 		Path path = Paths.get(jobData.getPathName(), REPORT_FILE);
 		// pseudo pretty print
 		try {
-			String data = JSONUtil.toJSON(report).replaceAll("\\},\\{", "\n},\n{");
+			String data = JSONUtil.toJSON(report);
 			FileUtils.writeStringToFile(path.toFile(), data, "UTF-8");
 		} catch (Exception e) {
 			log.error("failed to save report", e);
@@ -87,11 +87,9 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 		JobData jobData = (JobData) context.get(JOB_DATA);
 		Path path = Paths.get(jobData.getPathName(), VALIDATION_FILE);
 
-		// pseudo pretty print
-
 		try {
-			String data = JSONUtil.toJSON(report).replaceAll("\\},\\{", "\n},\n{");
-			FileUtils.writeStringToFile(path.toFile(), data);
+			String data = JSONUtil.toJSON(report);
+			FileUtils.writeStringToFile(path.toFile(), data, "UTF-8");
 		} catch (Exception e) {
 			log.error("failed to save validation report", e);
 		}

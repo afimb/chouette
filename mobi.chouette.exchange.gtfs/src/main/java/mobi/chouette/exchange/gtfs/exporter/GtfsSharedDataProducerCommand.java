@@ -103,14 +103,14 @@ public class GtfsSharedDataProducerCommand implements Command, Constant
 		Set<StopArea> physicalStops = collection.getPhysicalStops();
 		Set<ConnectionLink> connectionLinks = collection.getConnectionLinks();
 		Set<Company> companies = collection.getCompanies();
-        if (!companies.isEmpty())
-        {
-        	agencyProducer = new GtfsAgencyProducer(exporter);
-        }
-        if (!timetables.isEmpty())
-        {
-        	calendarProducer = new GtfsServiceProducer(exporter);
-        }
+		if (!companies.isEmpty())
+		{
+			agencyProducer = new GtfsAgencyProducer(exporter);
+		}
+		if (!timetables.isEmpty())
+		{
+			calendarProducer = new GtfsServiceProducer(exporter);
+		}
 
 		for (Iterator<StopArea> iterator = commercialStops.iterator(); iterator.hasNext();)
 		{
@@ -121,14 +121,14 @@ public class GtfsSharedDataProducerCommand implements Command, Constant
 			}
 			else
 			{
-				if (stop.hasCoordinates())
+				if (metadata != null && stop.hasCoordinates())
 					metadata.getSpatialCoverage().update(stop.getLongitude().doubleValue(), stop.getLatitude().doubleValue());
 			}
 		}
 		for (StopArea stop : physicalStops)
 		{
 			stopProducer.save(stop, report, sharedPrefix, commercialStops);
-			if (stop.hasCoordinates())
+			if (metadata != null && stop.hasCoordinates())
 				metadata.getSpatialCoverage().update(stop.getLongitude().doubleValue(), stop.getLatitude().doubleValue());
 		}
 		// remove incomplete connectionlinks
@@ -153,9 +153,12 @@ public class GtfsSharedDataProducerCommand implements Command, Constant
 		for (List<Timetable> tms : timetables.values())
 		{
 			calendarProducer.save(tms, report, sharedPrefix);
-			for (Timetable tm : tms)
+			if (metadata != null )
 			{
-				metadata.getTemporalCoverage().update(tm.getStartOfPeriod(), tm.getEndOfPeriod());
+				for (Timetable tm : tms)
+				{
+					metadata.getTemporalCoverage().update(tm.getStartOfPeriod(), tm.getEndOfPeriod());
+				}
 			}
 		}
 

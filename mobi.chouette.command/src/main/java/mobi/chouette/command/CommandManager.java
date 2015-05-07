@@ -1,17 +1,19 @@
 package mobi.chouette.command;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
+import mobi.chouette.common.JSONUtil;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.CommandLineProcessingCommands;
+import mobi.chouette.exchange.CommandLineProcessingCommandsFactory;
+import mobi.chouette.exchange.exporter.CompressCommand;
 import mobi.chouette.exchange.gtfs.exporter.GtfsExportParameters;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.hub.exporter.HubExportParameters;
@@ -24,6 +26,9 @@ import mobi.chouette.exchange.netex.importer.NetexImportParameters;
 import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
+import mobi.chouette.exchange.validation.report.ValidationReport;
+import mobi.chouette.model.Line;
+import mobi.chouette.model.util.Referential;
 
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
@@ -32,6 +37,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 
 public class CommandManager implements Constant {
 
@@ -55,9 +61,16 @@ public class CommandManager implements Constant {
 
 	private ValidationParameters validationParameters;
 
+	private Context importContext;
+
+	private Context exportContext;
+	
+	private String workingDirectory = "./work";
+
 	public CommandManager(String[] args) {
 		this.args = args;
 		options.addOption("h", "help", false, "show help");
+		options.addOption("d", "dir", true, "working directory (default = ./work)");
 		options.addOption("i", "input", true, "input parameters (json)");
 		options.addOption("o", "output", true, "output parameters  (json)");
 		options.addOption("v", "validate", true, "validation parameters (json)");
@@ -76,11 +89,14 @@ public class CommandManager implements Constant {
 			if (cmd.hasOption("i")) {
 				inputParametersFilename = cmd.getOptionValue("i");
 			} else {
-				System.out.println("missing -i inputParameters.json ");
+				System.err.println("missing -i inputParameters.json ");
 				help();
 			}
 			if (cmd.hasOption("v")) {
 				validationParametersFilename = cmd.getOptionValue("v");
+			}
+			if (cmd.hasOption("d")) {
+				workingDirectory = cmd.getOptionValue("d");
 			}
 			if (cmd.hasOption("o")) {
 				outputParametersFilename = cmd.getOptionValue("o");
@@ -91,73 +107,201 @@ public class CommandManager implements Constant {
 					help();
 				}
 			} else if (cmd.hasOption("f")) {
-				System.out.println("unexpected -f option without -o option");
+				System.err.println("unexpected -f option without -o option");
 				help();
 			}
 			if (cmd.getArgList().size() == 1) {
 				inputFileName = cmd.getArgList().get(0).toString();
 			} else {
-				System.out.println("missing inputFile ");
+				System.err.println("missing inputFile ");
 				help();
 			}
 
 		} catch (ParseException e) {
-			System.out.println("Invalid syntax " + e.getMessage());
+			System.err.println("Invalid syntax " + e.getMessage());
 			help();
 		}
 		return;
 	}
 
-	public void process() {
+	public void process() throws Exception {
 		inputData = loadInputParameters();
 		if (inputData == null)
 			return; // invalid data
 
-		if (outputParametersFilename != null) {
+		if (withExport()) {
 			outputData = loadOutputParameters();
 			if (outputData == null)
 				return; // invalid data
 		}
 
-		if (validationParametersFilename != null) {
+		if (withValidation()) {
 			validationParameters = loadValidationParameters();
 			if (validationParameters == null)
 				return; // invalid data
 		}
-		
+
 		// may be useless
 		InitialContext initContext = null;
-		try {
-			initContext = new InitialContext();
-		} catch (NamingException e2) {
-			e2.printStackTrace();
-			return ;
-		}
-		
-		
-		Context context = new Context();
-		context.put(Constant.REPORT, new ActionReport());
-		CommandJobData data = new CommandJobData();
-		context.put(Constant.JOB_DATA, data);
-		data.setPathName("work");
-		File input = new File(inputFileName);
-		data.setFilename(input.getName());
-		try {
-			Files.createDirectories(Paths.get(".", "work"));
-			FileUtils.copyFileToDirectory(new File(args[0]), new File(data.getPathName()));
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+		initContext = new InitialContext();
+
+		CommandLineProcessingCommands importProcessingCommands = null;
+		CommandLineProcessingCommands exportProcessingCommands = null;
+		importProcessingCommands = CommandLineProcessingCommandsFactory
+				.create(buildCommandProcessingClassName(inputData));
+
+		importContext = prepareImportContext();
+		if (withExport()) {
+			exportProcessingCommands = CommandLineProcessingCommandsFactory
+					.create(buildCommandProcessingClassName(outputData));
+			exportContext = prepareExportContext();
 		}
 
-		try {
-			Command command = CommandFactory.create(initContext, UncompressCommand.class.getName());
-			command.execute(context);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if (Files.exists(Paths.get(workingDirectory)))
+			FileUtils.deleteDirectory(new File(workingDirectory));
+		Files.createDirectories(Paths.get(workingDirectory));
+		FileUtils.copyFileToDirectory(new File(inputFileName), new File(inputData.getPathName()));
+
+		// initialize process
+		// uncompress
+		boolean result = SUCCESS;
+		Command command = CommandFactory.create(initContext, UncompressCommand.class.getName());
+		result = command.execute(importContext);
+		if (!result) {
+			System.err.println("fail to uncompress input file ; see import report for details ");
+			return;
 		}
+
+		// input pre processing
+
+		for (Command importCommand : importProcessingCommands.getPreProcessingCommands(importContext)) {
+			result = importCommand.execute(importContext);
+			if (!result) {
+				System.err.println("fail to execute import command " + importCommand.getClass().getSimpleName()
+						+ "; see import report for details ");
+				return;
+			}
+		}
+
+		// output pre processing
+		if (withExport()) {
+			for (Command exportCommand : exportProcessingCommands.getPreProcessingCommands(exportContext)) {
+				result = exportCommand.execute(exportContext);
+				if (!result) {
+					System.err.println("fail to execute " + exportCommand.getClass().getSimpleName()
+							+ "; see export report for details ");
+					return;
+				}
+			}
+
+		}
+
+		// input & validation& output processing
+		long id = 0;
+		boolean exportFailed = false;
+		for (Command importCommand : importProcessingCommands.getLineProcessingCommands(importContext)) {
+			result = importCommand.execute(importContext);
+			if (!result) {
+				System.err.println("fail to execute " + importCommand.getClass().getName()
+						+ "; see import report for details ");
+				continue;
+			}
+			// execute line validation
+			if (withValidation()) {
+				// TODO
+			}
+
+			// execute export validation commands
+			if (withExport()) {
+				// - get line in import context
+				Referential referential = (Referential) importContext.get(REFERENTIAL);
+				if (referential.getLines().isEmpty())
+					continue;
+				Line line = referential.getLines().values().iterator().next();
+				// some export uses Id as file name
+				line.setId(++id);
+				// - put line in export context
+				exportContext.put(LINE, line);
+				// execute commands
+				for (Command exportCommand : exportProcessingCommands.getLineProcessingCommands(exportContext)) {
+					result = exportCommand.execute(exportContext);
+					if (!result) {
+						exportFailed = true;
+						System.err.println("fail to execute " + exportCommand.getClass().getName()
+								+ "; see export report for details ");
+						break;
+					}
+				}
+			}
+		}
+
+		// input post processing
+		for (Command importCommand : importProcessingCommands.getPostProcessingCommands(importContext)) {
+			result = importCommand.execute(importContext);
+			if (!result) {
+				System.err.println("fail to execute " + importCommand.getClass().getName()
+						+ "; see import report for details ");
+				return;
+			}
+		}
+
+		// validation post processing
+		if (withValidation()) {
+			// TODO
+		}
+
+		// output post processing
+		if (withExport() && !exportFailed) {
+			for (Command exportCommand : exportProcessingCommands.getPostProcessingCommands(exportContext)) {
+				result = exportCommand.execute(exportContext);
+				if (!result) {
+					System.err.println("fail to execute " + exportCommand.getClass().getName()
+							+ "; see export report for details ");
+					return;
+				}
+			}
+			// compress result
+			command = CommandFactory.create(initContext, CompressCommand.class.getName());
+			result = command.execute(exportContext);
+			if (!result) {
+				System.err.println("fail to compress output file ; see export report for details ");
+				return;
+			}
+			// transfer result
+			FileUtils.copyFile(new File(outputData.getPathName(),outputData.getFilename()), new File(outputFileName));
+		}
+
 		return;
+	}
+
+	private Context prepareImportContext() {
+		Context context = new Context();
+		context.put(Constant.REPORT, new ActionReport());
+		context.put(Constant.JOB_DATA, inputData);
+		context.put(CONFIGURATION, inputData.getConfiguration());
+		context.put(VALIDATION, validationParameters);
+		context.put(REPORT, new ActionReport());
+		context.put(VALIDATION_REPORT, new ValidationReport());
+		return context;
+	}
+
+	private Context prepareExportContext() {
+		Context context = new Context();
+		context.put(Constant.REPORT, new ActionReport());
+		context.put(Constant.JOB_DATA, outputData);
+		context.put(CONFIGURATION, outputData.getConfiguration());
+		// context.put(VALIDATION, validationParameters);
+		context.put(REPORT, new ActionReport());
+		// context.put(MAIN_VALIDATION_REPORT, new ValidationReport());
+		return context;
+	}
+
+	private boolean withExport() {
+		return outputParametersFilename != null;
+	}
+
+	private boolean withValidation() {
+		return validationParametersFilename != null;
 	}
 
 	private ValidationParameters loadValidationParameters() {
@@ -170,11 +314,23 @@ public class CommandManager implements Constant {
 		}
 	}
 
+	public void saveReports() throws Exception {
+		ActionReport importReport = (ActionReport) importContext.get(REPORT);
+		JSONUtil.toJSON(Paths.get(inputData.getPathName(), "importReport.json"), importReport);
+
+		ValidationReport validationReport = (ValidationReport) importContext.get(VALIDATION_REPORT);
+		JSONUtil.toJSON(Paths.get(inputData.getPathName(), VALIDATION_FILE), validationReport);
+		if (withExport()) {
+			ActionReport exportReport = (ActionReport) exportContext.get(REPORT);
+			JSONUtil.toJSON(Paths.get(inputData.getPathName(), "exportReport.json"), exportReport);
+		}
+	}
+
 	private CommandJobData loadInputParameters() {
 		try {
 			CommandJobData data = new CommandJobData();
-			data.setFilename(inputFileName);
-			data.setPathName("work");
+			data.setFilename(new File(inputFileName).getName());
+			data.setPathName(workingDirectory);
 			data.setAction(IMPORTER);
 			AbstractParameter configuration = ParametersConverter.convertConfiguration(inputParametersFilename);
 			if (configuration instanceof NeptuneImportParameters) {
@@ -201,8 +357,7 @@ public class CommandManager implements Constant {
 	private CommandJobData loadOutputParameters() {
 		try {
 			CommandJobData data = new CommandJobData();
-			data.setFilename(outputFileName);
-			data.setPathName("work");
+			data.setPathName(workingDirectory);
 			data.setAction(EXPORTER);
 			AbstractParameter configuration = ParametersConverter.convertConfiguration(outputParametersFilename);
 			if (configuration instanceof NeptuneExportParameters) {
@@ -216,7 +371,7 @@ public class CommandManager implements Constant {
 			} else if (configuration instanceof KmlExportParameters) {
 				data.setType("kml");
 			} else {
-				System.err.println("invalid input parameters type" + inputParametersFilename);
+				System.err.println("invalid input parameters type" + outputParametersFilename);
 				return null;
 			}
 			data.setConfiguration(configuration);
@@ -228,6 +383,13 @@ public class CommandManager implements Constant {
 			return null;
 		}
 
+	}
+
+	private String buildCommandProcessingClassName(CommandJobData data) {
+
+		return "mobi.chouette.exchange." + data.getType() + "." + data.getAction() + "."
+				+ StringUtils.capitalize(data.getType()) + StringUtils.capitalize(data.getAction())
+				+ "ProcessingCommands";
 	}
 
 	private void help() {

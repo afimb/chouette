@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.gtfs.parser;
 
+import java.net.NetPermission;
 import java.sql.Time;
 import java.util.Collections;
 import java.util.Comparator;
@@ -33,6 +34,7 @@ import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
+import mobi.chouette.model.util.NeptuneUtil;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
@@ -382,6 +384,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			List<VehicleJourneyAtStop> list) {
 		Set<String> stopPointKeys = new HashSet<String>();
 
+		int position = 0;
 		for (VehicleJourneyAtStop vehicleJourneyAtStop : list) {
 			VehicleJourneyAtStopWrapper wrapper = (VehicleJourneyAtStopWrapper) vehicleJourneyAtStop;
 			String baseKey = route.getObjectId().replace(Route.ROUTE_KEY,
@@ -406,9 +409,11 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			stopPoint.setContainedInStopArea(stopArea);
 			// stopPoint.setName(stopArea.getName());
 			stopPoint.setRoute(route);
+			stopPoint.setPosition(position++);
 
 			journeyPattern.addStopPoint(stopPoint);
 		}
+		NeptuneUtil.refreshDepartureArrivals(journeyPattern);
 	}
 
 	static {

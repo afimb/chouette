@@ -1,13 +1,7 @@
 package mobi.chouette.exchange.gtfs.exporter;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 
@@ -18,7 +12,6 @@ import javax.naming.NamingException;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
-import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.ProgressionCommand;
@@ -26,12 +19,9 @@ import mobi.chouette.exchange.exporter.AbstractExporterCommand;
 import mobi.chouette.exchange.exporter.CompressCommand;
 import mobi.chouette.exchange.exporter.SaveMetadataCommand;
 import mobi.chouette.exchange.gtfs.Constant;
-import mobi.chouette.exchange.gtfs.model.exporter.GtfsExporter;
-import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.model.Line;
-import mobi.chouette.model.util.Referential;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -54,25 +44,8 @@ public class GtfsExporterCommand extends AbstractExporterCommand implements Comm
 		ProgressionCommand progression = (ProgressionCommand) CommandFactory
 				.create(initialContext, ProgressionCommand.class.getName());
 		
-		progression.initialize(context,1);
-		JobData jobData = (JobData) context.get(JOB_DATA);
-		jobData.setFilename("export_" + jobData.getType() + "_" + jobData.getId() + ".zip");
+		progression.initialize(context,2);
 
-		context.put(REFERENTIAL, new Referential());
-		Metadata metadata = new Metadata(); // if not asked, will be used as dummy
-		metadata.setDate(Calendar.getInstance());
-		metadata.setFormat("text/csv");
-		metadata.setTitle("Export GTFS ");
-		try
-		{
-			metadata.setRelation(new URL("https://developers.google.com/transit/gtfs/reference"));
-		}
-		catch (MalformedURLException e1)
-		{
-			log.error("problem with https://developers.google.com/transit/gtfs/reference url", e1);
-		}
-
-		context.put(METADATA, metadata);
 		ActionReport report = (ActionReport) context.get(REPORT);
 
 		// read parameters
@@ -111,12 +84,10 @@ public class GtfsExporterCommand extends AbstractExporterCommand implements Comm
 		type=type.toLowerCase();
 
 		try {
-			Path path = Paths.get(jobData.getPathName(), OUTPUT);
-			if (!Files.exists(path)) {
-				Files.createDirectories(path);
-			}
-			GtfsExporter gtfsExporter = new GtfsExporter(path.toString());
-			context.put(GTFS_EXPORTER, gtfsExporter);
+			// init
+			Command initExport = CommandFactory.create(initialContext, GtfsInitExportCommand.class.getName());
+			initExport.execute(context);
+			progression.execute(context);
 
 			if (type.equals("stop_area"))
 			{
@@ -139,7 +110,7 @@ public class GtfsExporterCommand extends AbstractExporterCommand implements Comm
 				progression.execute(context);
 				progression.start(context, lines.size()+1);
 				Command exportLine = CommandFactory.create(initialContext,
-						GtfsLineProducerCommand.class.getName());
+						DaoGtfsLineProducerCommand.class.getName());
 
 				int lineCount = 0;
 				for (Line line : lines) {
@@ -164,10 +135,9 @@ public class GtfsExporterCommand extends AbstractExporterCommand implements Comm
 				}
 
 				// save metadata
-				
 				if (parameters.isAddMetadata())
 				{
-					progression.terminate(context,2);
+					progression.terminate(context,3);
 					Command saveMetadata = CommandFactory.create(initialContext,
 							SaveMetadataCommand.class.getName());
 					saveMetadata.execute(context);
@@ -175,10 +145,12 @@ public class GtfsExporterCommand extends AbstractExporterCommand implements Comm
 				}
 				else
 				{
-					progression.terminate(context,1);
+					progression.terminate(context,2);
 				}
 			}
-			gtfsExporter.dispose(report);
+			Command terminateExport = CommandFactory.create(initialContext, GtfsTerminateExportCommand.class.getName());
+			terminateExport.execute(context);
+			progression.execute(context);
 			
 			// compress
 			Command compress = CommandFactory.create(initialContext,

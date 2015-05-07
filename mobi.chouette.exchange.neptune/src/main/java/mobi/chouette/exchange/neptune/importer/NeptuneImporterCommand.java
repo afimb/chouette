@@ -29,7 +29,6 @@ import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.exchange.validation.DaoSharedDataValidatorCommand;
 import mobi.chouette.exchange.validation.ImportedLineValidatorCommand;
 import mobi.chouette.exchange.validation.ValidationData;
-import mobi.chouette.model.util.Referential;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -55,7 +54,6 @@ public class NeptuneImporterCommand implements Command, Constant, ReportConstant
 				ProgressionCommand.class.getName());
 
 		progression.initialize(context, 2);
-		context.put(REFERENTIAL, new Referential());
 
 		// read parameters
 		Object configuration = context.get(CONFIGURATION);
@@ -69,7 +67,7 @@ public class NeptuneImporterCommand implements Command, Constant, ReportConstant
 		}
 
 		NeptuneImportParameters parameters = (NeptuneImportParameters) configuration;
-		int initCount = 2 + (parameters.isCleanRepository() ? 1 : 0);
+		int initCount = 3 + (parameters.isCleanRepository() ? 1 : 0);
 		progression.initialize(context, initCount);
 
 		boolean level3validation = context.get(VALIDATION) != null;
@@ -91,7 +89,11 @@ public class NeptuneImporterCommand implements Command, Constant, ReportConstant
 			if (!uncompress.execute(context)) {
 				return ERROR;
 			}
-
+			progression.execute(context);
+			
+			// init
+			Command initImport = CommandFactory.create(initialContext, NeptuneInitImportCommand.class.getName());
+			initImport.execute(context);
 			progression.execute(context);
 
 			Path path = Paths.get(jobData.getPathName(), INPUT);

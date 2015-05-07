@@ -13,7 +13,7 @@ import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 @Log4j
 public class GtfsImporterInputValidator extends AbstractInputValidator {
 
-	private static String[] allowedTypes = { "all", "line", "stop_area" };
+	private static String[] allowedTypes = { "line", "stop_area" };
 
 	@Override
 	public boolean check(AbstractParameter abstractParameter, ValidationParameters validationParameters, String fileName) {

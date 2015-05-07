@@ -1,0 +1,11 @@
+{
+    "gtfs-export": {
+        "user_name" : "Michel",
+        "name" : "job 1",
+        "organisation_name" : "Cityway",
+        "referential_name" : "données de test",
+        "add_metadata" : true,
+        "object_id_prefix" : "NINOXE",
+        "time_zone" : "Europe/Paris"
+        }
+}

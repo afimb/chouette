@@ -20,6 +20,7 @@ import javax.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import mobi.chouette.model.type.DayTypeEnum;
 
 import org.apache.commons.lang.StringUtils;
@@ -38,6 +39,7 @@ import org.hibernate.annotations.Parameter;
 @Table(name = "time_tables")
 @Cacheable
 @NoArgsConstructor
+@ToString(callSuper = true, exclude = {"vehicleJourneys" })
 public class Timetable extends NeptuneIdentifiedObject {
 	private static final long serialVersionUID = -1598554061982685113L;
 	public static final long ONE_DAY = 3600000 * 24;

@@ -52,7 +52,7 @@ public class JSONUtil {
 	}
 
 	@SuppressWarnings("deprecation")
-	public static <T> String toJSON(T payload) throws JAXBException {
+	public static <T> String toJSON(T payload) throws JAXBException, JSONException {
 		JAXBContext context = JAXBContext.newInstance(payload.getClass());
 		Configuration config = new Configuration();
 		config.setAttributeKey("");
@@ -66,12 +66,14 @@ public class JSONUtil {
 		}
 
 		Marshaller marshaller = context.createMarshaller();
+		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 		marshaller.marshal(payload, writer);
-		return out.toString();
+		JSONObject json = new JSONObject(out.toString());
+		return json.toString(2);
 
 	}
 
-	public static <T> void toJSON(Path path, T payload) throws JAXBException, IOException {
+	public static <T> void toJSON(Path path, T payload) throws JAXBException, IOException, JSONException {
 		String data = JSONUtil.toJSON(payload);
 		FileUtils.writeStringToFile(path.toFile(), data);
 		return;

@@ -11,6 +11,7 @@ import java.util.ListIterator;
 import java.util.Map;
 
 import mobi.chouette.model.CalendarDay;
+import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.NeptuneLocalizedObject;
 import mobi.chouette.model.NeptuneObject;
@@ -166,7 +167,6 @@ public abstract class NeptuneUtil {
 		return prefix + ":" + tokens[1] + ":" + tokens[2];
 	}
 
-	
 	/**
 	 * build a bitwise dayType mask for filtering
 	 * 
@@ -229,7 +229,7 @@ public abstract class NeptuneUtil {
 	 * @param aDay
 	 * @return true if timetable is active on given date
 	 */
-	public static boolean isActiveOn(Timetable t,Date aDay) {
+	public static boolean isActiveOn(Timetable t, Date aDay) {
 		if (t.getCalendarDays() != null) {
 			CalendarDay includedDay = new CalendarDay(aDay, true);
 			if (t.getCalendarDays().contains(includedDay))
@@ -259,26 +259,26 @@ public abstract class NeptuneUtil {
 	/**
 	 * calculate startOfPeriod and endOfPeriod form dates and periods
 	 */
-	public static  void computeLimitOfPeriods(Timetable t) {
+	public static void computeLimitOfPeriods(Timetable t) {
 		Date startOfPeriod = null;
 		Date endOfPeriod = null;
 		for (Period period : t.getPeriods()) {
 			if (startOfPeriod == null || startOfPeriod.after(period.getStartDate())) {
-				startOfPeriod = period.getStartDate();
+				startOfPeriod = (Date) period.getStartDate().clone();
 			}
 			if (endOfPeriod == null || endOfPeriod.before(period.getEndDate())) {
-				endOfPeriod = period.getEndDate();
+				endOfPeriod = (Date) period.getEndDate().clone();
 			}
 		}
 		// check DayType
 		Calendar c = Calendar.getInstance();
 		if (startOfPeriod != null && endOfPeriod != null) {
-			while (startOfPeriod.before(endOfPeriod) && !isActiveOn(t,startOfPeriod)) {
+			while (startOfPeriod.before(endOfPeriod) && !isActiveOn(t, startOfPeriod)) {
 				c.setTime(startOfPeriod);
 				c.add(Calendar.DATE, 1);
 				startOfPeriod.setTime(c.getTimeInMillis());
 			}
-			while (endOfPeriod.after(startOfPeriod) && !isActiveOn(t,endOfPeriod)) {
+			while (endOfPeriod.after(startOfPeriod) && !isActiveOn(t, endOfPeriod)) {
 				c.setTime(endOfPeriod);
 				c.add(Calendar.DATE, -1);
 				endOfPeriod.setTime(c.getTimeInMillis());
@@ -288,9 +288,9 @@ public abstract class NeptuneUtil {
 			Date date = calendarDay.getDate();
 			if (calendarDay.getIncluded()) {
 				if (startOfPeriod == null || date.before(startOfPeriod))
-					startOfPeriod = date;
+					startOfPeriod = (Date) date.clone();
 				if (endOfPeriod == null || date.after(endOfPeriod))
-					endOfPeriod = date;
+					endOfPeriod = (Date) date.clone();
 			}
 		}
 		t.setStartOfPeriod(startOfPeriod);
@@ -304,12 +304,13 @@ public abstract class NeptuneUtil {
 	 * 
 	 * @return periods
 	 */
-	public static  List<Period> getEffectivePeriods(Timetable t) {
+	public static List<Period> getEffectivePeriods(Timetable t) {
 		List<Date> dates = getExcludedDates(t);
 		List<Period> effectivePeriods = new ArrayList<Period>();
 		// copy periods
 		for (Period period : t.getPeriods()) {
-			effectivePeriods.add(new Period(period.getStartDate(), period.getEndDate()));
+			if (!effectivePeriods.contains(period))
+				effectivePeriods.add(new Period(period.getStartDate(), period.getEndDate()));
 		}
 		if (!effectivePeriods.isEmpty()) {
 			for (Date aDay : dates) {
@@ -328,14 +329,32 @@ public abstract class NeptuneUtil {
 						// split period
 						Period before = new Period(period.getStartDate(), new Date(aDay.getTime() - Timetable.ONE_DAY));
 						period.setStartDate(new Date(aDay.getTime() + Timetable.ONE_DAY));
-						iterator.add(before);
+						if (!effectivePeriods.contains(before))
+							iterator.add(before);
 					}
 
 				}
 			}
 		}
+
 		Collections.sort(effectivePeriods);
 		return effectivePeriods;
+	}
+
+	/**
+	 * update departure and arrival of JourneyPattern <br/>
+	 * to be used after stopPoints update
+	 */
+	public static void refreshDepartureArrivals(JourneyPattern jp) {
+		List<StopPoint> stopPoints = jp.getStopPoints();
+		if (stopPoints == null || stopPoints.isEmpty()) {
+			jp.setDepartureStopPoint(null);
+			jp.setArrivalStopPoint(null);
+		} else {
+			jp.setDepartureStopPoint(stopPoints.get(0));
+			jp.setArrivalStopPoint(stopPoints.get(stopPoints.size() - 1));
+		}
+
 	}
 
 }
