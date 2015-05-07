@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.gtfs.model.importer;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
@@ -392,7 +393,23 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 					break;
 				}
 			}
-		} catch (Exception ignored) {
+		} catch (FileNotFoundException e) {
+			log.error(e);
+			Context context = new Context();
+			context.put(Context.PATH, new File(_path).getName());
+			context.put(Context.ID, _total);
+			context.put(Context.VALUE, e.getMessage());
+			context.put(Context.ERROR, GtfsException.ERROR.MISSING_FILE);
+			throw new GtfsException(context);
+		} catch (Exception e) {
+			log.error(e,e);
+			Context context = new Context();
+			context.put(Context.PATH, _path);
+			context.put(Context.ID, _total);
+			context.put(Context.VALUE, e.getMessage());
+			context.put(Context.ERROR, GtfsException.ERROR.SYSTEM);
+			throw new GtfsException(context);
+			
 		} finally {
 			try {
 				if (channel != null) {
