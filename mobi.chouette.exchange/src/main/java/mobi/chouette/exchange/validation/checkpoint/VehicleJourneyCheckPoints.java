@@ -105,7 +105,8 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 			check3VehicleJourney4(report, vj);
 
 			// 4-VehicleJourney-1 : (optionnal) check columns constraints
-			check4Generic1(report, vj, L4_VEHICLE_JOURNEY_1, parameters, context, log);
+			if (test4_1)
+				check4Generic1(report, vj, L4_VEHICLE_JOURNEY_1, parameters, context, log);
 
 			// 4-VehicleJourney-2 : (optionnal) check transport modes
 			if (test4_2)

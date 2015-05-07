@@ -60,7 +60,7 @@ public class ValidationParametersUtil {
 			Integer res = (Integer) method.invoke(parameter);
 			return res != null && res.equals(Integer.valueOf(1));
 		} catch (Exception e) {
-			log.error("object "+object.getClass().getSimpleName()+" not found :"+e.toString());
+			log.warn("no validation check flag for object "+object.getClass().getSimpleName());
 			return false;
 		}
 	}
@@ -73,11 +73,16 @@ public class ValidationParametersUtil {
 		try {
 			Method method = parameter.getClass().getMethod(methodName);
 			objectParameters = method.invoke(parameter);
+			if (objectParameters == null)
+			{
+				log.warn("no validation parameters for object "+object.getClass().getSimpleName());
+				return null;
+			}
 			methodName = "get"+fieldName;
 			method = objectParameters.getClass().getMethod(methodName);
 			return (FieldParameters) method.invoke(objectParameters);
 		} catch (Exception e) {
-			log.error("object "+object.getClass().getSimpleName()+" or field "+fieldName+" not found :"+e.toString());
+			log.warn("no validation parameters for field "+fieldName+" of object "+object.getClass().getSimpleName());
 			return null;
 		}
 	}
