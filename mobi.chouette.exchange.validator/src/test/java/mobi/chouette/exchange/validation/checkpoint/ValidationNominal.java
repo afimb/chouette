@@ -3,10 +3,13 @@ package mobi.chouette.exchange.validation.checkpoint;
 import java.io.File;
 import java.util.List;
 
+import javax.ejb.EJB;
+
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.dao.LineDAO;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.exchange.validation.report.CheckPoint;
 import mobi.chouette.exchange.validation.report.ValidationReport;
@@ -25,6 +28,9 @@ import org.testng.annotations.Test;
 
 @Log4j
 public class ValidationNominal extends AbstractTestValidation {
+
+	@EJB
+	LineDAO lineDao;
 
 	@Deployment
 	public static WebArchive createDeployment() {
@@ -69,6 +75,7 @@ public class ValidationNominal extends AbstractTestValidation {
 		ValidationReport report = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
 		Assert.assertFalse(report.getCheckPoints().isEmpty(), "report must have items");
 		for (CheckPoint checkPoint : report.getCheckPoints()) {
+			log.warn(checkPoint);
 			if (checkPoint.getName().equals("3-Route-5")) {
 				Assert.assertEquals(checkPoint.getState(), CheckPoint.RESULT.UNCHECK,
 						"checkPoint " + checkPoint.getName() + " must not be on level " + checkPoint.getState());

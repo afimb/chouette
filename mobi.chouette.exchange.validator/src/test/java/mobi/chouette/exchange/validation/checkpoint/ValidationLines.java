@@ -2,23 +2,31 @@ package mobi.chouette.exchange.validation.checkpoint;
 
 import java.io.File;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.ejb.EJB;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.UserTransaction;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.core.ChouetteException;
-import mobi.chouette.dao.NetworkDAO;
+import mobi.chouette.dao.LineDAO;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.exchange.validation.report.CheckPoint;
 import mobi.chouette.exchange.validation.report.Detail;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.exchange.validator.JobDataTest;
+import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;
+import mobi.chouette.model.Route;
+import mobi.chouette.model.type.TransportModeNameEnum;
 
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -37,9 +45,15 @@ public class ValidationLines extends AbstractTestValidation
 	private Line bean1;
 	private Line bean2;
 	private Line bean3;
-	
+
 	@EJB
-	NetworkDAO networkDao;
+	LineDAO lineDao;
+
+    @PersistenceContext (unitName = "referential")
+    EntityManager em;
+    
+    @Inject
+    UserTransaction utx;
 
 	@Deployment
 	public static WebArchive createDeployment() {
@@ -94,7 +108,7 @@ public class ValidationLines extends AbstractTestValidation
 	public void verifyTest4_1_notest() throws ChouetteException
 	{
 		// 4-Line-1 : check columns
-        log.info(Color.BLUE +"4-Line-1 no test"+ Color.NORMAL);
+		log.info(Color.BLUE +"4-Line-1 no test"+ Color.NORMAL);
 		Context context = initValidatorContext();
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 		context.put(VALIDATION,fullparameters);
@@ -124,7 +138,7 @@ public class ValidationLines extends AbstractTestValidation
 	public void verifyTest4_1_unique() throws ChouetteException
 	{
 		// 4-Line-1 : check columns
-        log.info(Color.BLUE +"4-Line-1 unicity"+ Color.NORMAL);
+		log.info(Color.BLUE +"4-Line-1 unicity"+ Color.NORMAL);
 		Context context = initValidatorContext();
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
@@ -143,19 +157,20 @@ public class ValidationLines extends AbstractTestValidation
 		// unique
 		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 
-		Detail detail = checkReportForTest4_1(report,"4-Line-1",bean2.getObjectId());
+		List<Detail> details = checkReportForTest4_1(report,"4-Line-1",1);
+		Detail detail = details.get(0);
 		Assert.assertEquals(detail.getReferenceValue(),"ObjectId","detail must refer column");
 		Assert.assertEquals(detail.getValue(),bean2.getObjectId().split(":")[2],"detail must refer value");
 		Assert.assertEquals(detail.getSource().getObjectId(),bean2.getObjectId(),"detail must refer second bean as source");
 		Assert.assertEquals(detail.getTargets().get(0).getObjectId(),bean1.getObjectId(),"detail must refer fisrt bean as target");
 	}
-	
+
 
 	@Test(groups = { "line" }, description = "3-Line-1",priority=3)
 	public void verifyTest3_1() throws Exception
 	{
 		// 3-Line-1 : check if two lines have same name
-        log.info(Color.BLUE +"3-Line-1"+ Color.NORMAL);
+		log.info(Color.BLUE +"3-Line-1"+ Color.NORMAL);
 		Context context = initValidatorContext();
 
 		Assert.assertNotNull(fullparameters, "no parameters for test");
@@ -163,7 +178,7 @@ public class ValidationLines extends AbstractTestValidation
 		bean1.setObjectId("NINOXE:Line:modelLine");
 		bean2.setObjectId("NINOXE:Line:wrongLine");
 		bean3.setObjectId("NINOXE:Line:goodLine");
-		
+
 		Network network1 = new Network();
 		network1.setId(1L);
 		network1.setObjectId("NINOXE:GroupOfLine:testNetwork1");
@@ -175,7 +190,7 @@ public class ValidationLines extends AbstractTestValidation
 		network2.setObjectId("NINOXE:GroupOfLine:testNetwork2");
 		network2.setName("test network2");
 		bean3.setNetwork(network2);
-		
+
 		bean1.setName("line");
 		bean2.setName("line");
 		bean3.setName("line");
@@ -195,487 +210,364 @@ public class ValidationLines extends AbstractTestValidation
 
 		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
-		
-			CheckPoint checkPointReport = report.findCheckPointByName("3-Line-1");
-			Assert.assertNotNull(checkPointReport, "report must contain a 3-Line-1 checkPoint");
-			
-				Assert.assertEquals(checkPointReport.getState(),
-						CheckPoint.RESULT.NOK,
-						" checkPointReport must be nok");
-				Assert.assertEquals(checkPointReport.getSeverity(),
-						CheckPoint.SEVERITY.WARNING,
-						" checkPointReport must be on severity warning");
-				Assert.assertEquals(checkPointReport.getDetailCount(), 2,
-						" checkPointReport must have 2 item");
 
-				for (Detail detail : checkPointReport.getDetails()) {
-					log.warn(detail);
-				}
-				// check detail keys = line1 and line2 objectids
-				boolean line1objectIdFound = false;
-				boolean line2objectIdFound = false;
-				boolean line3objectIdFound = false;
-				for (Detail detailReport : checkPointReport.getDetails())
-				{
-					if (detailReport.getSource().getObjectId().equals(bean1.getObjectId()))
-						line1objectIdFound = true;
-					if (detailReport.getSource().getObjectId().equals(bean2.getObjectId()))
-						line2objectIdFound = true;
-					if (detailReport.getSource().getObjectId().equals(bean3.getObjectId()))
-						line3objectIdFound = true;
-				}
-				Assert.assertTrue(line1objectIdFound,
-						"detail report must refer line 1");
-				Assert.assertTrue(line2objectIdFound,
-						"detail report must refer line 2");
-				Assert.assertFalse(line3objectIdFound,
-						"detail report must not refer line 3");
+		CheckPoint checkPointReport = report.findCheckPointByName("3-Line-1");
+		Assert.assertNotNull(checkPointReport, "report must contain a 3-Line-1 checkPoint");
+
+		Assert.assertEquals(checkPointReport.getState(),
+				CheckPoint.RESULT.NOK,
+				" checkPointReport must be nok");
+		Assert.assertEquals(checkPointReport.getSeverity(),
+				CheckPoint.SEVERITY.WARNING,
+				" checkPointReport must be on severity warning");
+		Assert.assertEquals(checkPointReport.getDetailCount(), 2,
+				" checkPointReport must have 2 item");
+
+		for (Detail detail : checkPointReport.getDetails()) {
+			log.warn(detail);
+		}
+		// check detail keys = line1 and line2 objectids
+		boolean line1objectIdFound = false;
+		boolean line2objectIdFound = false;
+		boolean line3objectIdFound = false;
+		for (Detail detailReport : checkPointReport.getDetails())
+		{
+			if (detailReport.getSource().getObjectId().equals(bean1.getObjectId()))
+				line1objectIdFound = true;
+			if (detailReport.getSource().getObjectId().equals(bean2.getObjectId()))
+				line2objectIdFound = true;
+			if (detailReport.getSource().getObjectId().equals(bean3.getObjectId()))
+				line3objectIdFound = true;
+		}
+		Assert.assertTrue(line1objectIdFound,
+				"detail report must refer line 1");
+		Assert.assertTrue(line2objectIdFound,
+				"detail report must refer line 2");
+		Assert.assertFalse(line3objectIdFound,
+				"detail report must not refer line 3");
 	}
 
-	/*	
-	@SuppressWarnings("unchecked")
-	@Test(groups = { "line" }, description = "3-Line-2")
-	public void verifyTest3_2() throws ChouetteException
+	@Test(groups = { "line" }, description = "3-Line-2",priority=4)
+	public void verifyTest3_2() throws Exception
 	{
 		// 3-Line-2 : check if line has routes
-		IImportPlugin<Line> importLine = (IImportPlugin<Line>) applicationContext
-				.getBean("NeptuneLineImport");
+		log.info(Color.BLUE +"3-Line-2"+ Color.NORMAL);
+		Context context = initValidatorContext();
+		context.put(VALIDATION,fullparameters);
+		context.put(VALIDATION_REPORT, new ValidationReport());
 
-		long id = 1;
+		Assert.assertNotNull(fullparameters, "no parameters for test");
 
-		JSONObject parameters = null;
-		try
-		{
-			parameters = new RuleParameterSet();
-		} catch (JSONException | IOException e)
-		{
-			e.printStackTrace();
-		}
-		Assert.assertNotNull(parameters, "no parameters for test");
+		importLines("Ligne_OK.xml", 1, 1, true);
 
-		List<Line> beans = LineLoader.load(importLine,
-				"src/test/data/Ligne_OK.xml");
+		utx.begin();
+	    em.joinTransaction();
+	    
+		List<Line> beans = lineDao.findAll();
 		Assert.assertFalse(beans.isEmpty(), "No data for test");
 		Line line1 = beans.get(0);
 
 		// line1 is model;
-		line1.setId(id++);
 		line1.setObjectId("NINOXE:Line:modelLine");
 
 		line1.getRoutes().clear();
 
-		PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
+		ValidationData data = new ValidationData();
+		context.put(VALIDATION_DATA, data);
 
-		checkPoint.check(beans, parameters, report, new HashMap<String, Object>());
-		report.refreshStatus();
+		data.setCurrentLine(line1);
+		checkPoint.validate(context, null);
 
-		printReport(report);
+		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
+		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
-		Assert.assertEquals(report.getStatus(), Report.STATE.ERROR,
-				" report must be on level error");
-		Assert.assertEquals(report.hasItems(), true, " report must have items");
-		boolean found = false;
-		for (ReportItem item : report.getItems())
-		{
-			CheckPointReportItem checkPointReport = (CheckPointReportItem) item;
-			if (checkPointReport.getMessageKey().equals("3-Line-2"))
-			{
-				found = true;
-				Assert.assertEquals(checkPointReport.getStatus(),
-						Report.STATE.ERROR,
-						" checkPointReport must be on level error");
-				Assert.assertEquals(checkPointReport.hasItems(), true,
-						" checkPointReport must have items");
-				Assert.assertEquals(checkPointReport.getItems().size(), 1,
-						" checkPointReport must have 1 item");
+		CheckPoint checkPointReport = report.findCheckPointByName("3-Line-2");
+		Assert.assertNotNull(checkPointReport, "report must contain a 3-Line-2 checkPoint");
 
-				// check detail keys = line1 objectids
-				boolean line1objectIdFound = false;
-				for (ReportItem ditem : checkPointReport.getItems())
-				{
-					DetailReportItem detailReport = (DetailReportItem) ditem;
-					if (detailReport.getObjectId().equals(line1.getObjectId()))
-						line1objectIdFound = true;
-				}
-				Assert.assertTrue(line1objectIdFound,
-						"detail report must refer line 1");
-			}
+		Assert.assertEquals(checkPointReport.getState(),
+				CheckPoint.RESULT.NOK,
+				" checkPointReport must be nok");
+		Assert.assertEquals(checkPointReport.getSeverity(),
+				CheckPoint.SEVERITY.ERROR,
+				" checkPointReport must be on severity error");
+		Assert.assertEquals(checkPointReport.getDetailCount(), 1,
+				" checkPointReport must have 1 item");
+
+		for (Detail detail : checkPointReport.getDetails()) {
+			log.warn(detail);
+			Assert.assertEquals(detail.getSource().getObjectId(),line1.getObjectId(), "line must be source of error");
 		}
-		Assert.assertTrue(found, "report must contain a 3-Line-2 checkPoint");
+
+		utx.rollback();
 
 	}
 
-	@SuppressWarnings("unchecked")
-	@Test(groups = { "Line" }, description = "4-Line-2")
-	public void verifyTest4_2() throws ChouetteException
+	@Test(groups = { "Line" }, description = "4-Line-2",priority=5)
+	public void verifyTest4_2() throws Exception
 	{
 		// 4-Line-2 : check transport mode
-		IImportPlugin<Line> importLine = (IImportPlugin<Line>) applicationContext
-				.getBean("NeptuneLineImport");
+		log.info(Color.BLUE +"4-Line-2"+ Color.NORMAL);
+		Context context = initValidatorContext();
+		context.put(VALIDATION,fullparameters);
 
-		long id = 1;
+		Assert.assertNotNull(fullparameters, "no parameters for test");
 
-		JSONObject parameters = null;
-		try
-		{
-			parameters = new RuleParameterSet();
-		} catch (JSONException | IOException e)
-		{
-			e.printStackTrace();
-		}
-		Assert.assertNotNull(parameters, "no parameters for test");
+		importLines("Ligne_OK.xml", 1, 1, true);
 
-		List<Line> beans = LineLoader.load(importLine,
-				"src/test/data/Ligne_OK.xml");
+		utx.begin();
+	    em.joinTransaction();
+	    
+		List<Line> beans = lineDao.findAll();
 		Assert.assertFalse(beans.isEmpty(), "No data for test");
 		Line line1 = beans.get(0);
-
 		// line1 is model;
-		line1.setId(id++);
 		line1.setObjectId("NINOXE:Line:modelLine");
-
-		parameters.remove("check_allowed_transport_modes");
-
-		{ // check test not required when missing parameter
-			PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
-
-			checkPoint.check(beans, parameters, report, new HashMap<String, Object>());
-			report.refreshStatus();
-
-			Assert.assertEquals(report.getStatus(), Report.STATE.OK,
-					" report must be on level ok");
-			Assert.assertEquals(report.hasItems(), true, " report must have items");
-			boolean found = false;
-			for (ReportItem item : report.getItems())
-			{
-				CheckPointReportItem checkPointReport = (CheckPointReportItem) item;
-				if (checkPointReport.getMessageKey().equals("4-Line-2"))
-				{
-					found = true;
-				}
-			}
-			Assert.assertFalse(found, "report must not contain a 4-Line-2 checkPoint");
-		}
-
-		parameters.append("check_allowed_transport_modes", Integer.valueOf(0));
+		ValidationData data = new ValidationData();
+		context.put(VALIDATION_DATA, data);
+		data.setCurrentLine(line1);
 
 		{ // check test not required when check is false
-			PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
+			context.put(VALIDATION_REPORT, new ValidationReport());
+			fullparameters.setCheckAllowedTransportModes(0);
+			context.put(VALIDATION,fullparameters);
+			checkPoint.validate(context, null);
+			ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 
-			checkPoint.check(beans, parameters, report, new HashMap<String, Object>());
-			report.refreshStatus();
+			Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
-			Assert.assertEquals(report.getStatus(), Report.STATE.OK,
-					" report must be on level ok");
-			Assert.assertEquals(report.hasItems(), true, " report must have items");
-			boolean found = false;
-			for (ReportItem item : report.getItems())
-			{
-				CheckPointReportItem checkPointReport = (CheckPointReportItem) item;
-				if (checkPointReport.getMessageKey().equals("4-Line-2"))
-				{
-					found = true;
-				}
-			}
-			Assert.assertFalse(found, "report must not contain a 4-Line-2 checkPoint");
+			CheckPoint checkPointReport = report.findCheckPointByName("4-Line-2");
+			Assert.assertNull(checkPointReport, "report must not contain a 4-Line-2 checkPoint");
+
 		}
 
-		parameters.put("check_allowed_transport_modes",Integer.valueOf(1));
+		{ // check test required when check is true
+			context.put(VALIDATION_REPORT, new ValidationReport());
+			fullparameters.setCheckAllowedTransportModes(1);
+			context.put(VALIDATION,fullparameters);
+			checkPoint.validate(context, null);
+			ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
+			
+			Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
-		{ // check test not required when check is false
-			PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
-
-			checkPoint.check(beans, parameters, report, new HashMap<String, Object>());
-			report.refreshStatus();
-
-			Assert.assertEquals(report.getStatus(), Report.STATE.OK,
-					" report must be on level ok");
-			Assert.assertEquals(report.hasItems(), true, " report must have items");
-			boolean found = false;
-			for (ReportItem item : report.getItems())
-			{
-				CheckPointReportItem checkPointReport = (CheckPointReportItem) item;
-				if (checkPointReport.getMessageKey().equals("4-Line-2"))
-				{
-					found = true;
-				}
-			}
-			Assert.assertTrue(found, "report must contain a 4-Line-2 checkPoint");
+			CheckPoint checkPointReport = report.findCheckPointByName("4-Line-2");
+			Assert.assertNotNull(checkPointReport, "report must contain a 4-Line-2 checkPoint");
 		}
 
-		JSONObject busParam = parameters.getJSONObject("mode_bus");
-		busParam.put("allowed_transport", Integer.valueOf(0));
-		line1.setTransportModeName(TransportModeNameEnum.Bus);
-		{ // check test not required when check is false
-			PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
+		{ // check test detect invalid transport mode
+			line1.setTransportModeName(TransportModeNameEnum.Bus);
+			context.put(VALIDATION_REPORT, new ValidationReport());
+			fullparameters.getModeBus().setAllowedTransport(0);
+			context.put(VALIDATION,fullparameters);
+			checkPoint.validate(context, null);
+			
+			ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
+			
+			Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
-			checkPoint.check(beans, parameters, report, new HashMap<String, Object>());
-			report.refreshStatus();
+			CheckPoint checkPointReport = report.findCheckPointByName("4-Line-2");
+			Assert.assertNotNull(checkPointReport, "report must contain a 4-Line-2 checkPoint");
 
-			Assert.assertEquals(report.getStatus(), Report.STATE.ERROR,
-					" report must be on level error");
-			Assert.assertEquals(report.hasItems(), true, " report must have items");
-			boolean found = false;
-			for (ReportItem item : report.getItems())
-			{
-				CheckPointReportItem checkPointReport = (CheckPointReportItem) item;
-				if (checkPointReport.getMessageKey().equals("4-Line-2"))
-				{
-					found = true;
-					Assert.assertEquals(checkPointReport.getStatus(),
-							Report.STATE.ERROR,
-							" checkPointReport must be on level error");
-					Assert.assertEquals(checkPointReport.hasItems(), true,
-							" checkPointReport must have items");
-					Assert.assertEquals(checkPointReport.getItems().size(), 1,
-							" checkPointReport must have 1 item");
-
-					// check detail keys = line1 objectids
-					boolean line1objectIdFound = false;
-					for (ReportItem ditem : checkPointReport.getItems())
-					{
-						DetailReportItem detailReport = (DetailReportItem) ditem;
-						if (detailReport.getObjectId().equals(line1.getObjectId()))
-							line1objectIdFound = true;
-					}
-					Assert.assertTrue(line1objectIdFound,
-							"detail report must refer line 1");
-
-				}
-			}
-			Assert.assertTrue(found, "report must contain a 4-Line-2 checkPoint");
-		}
-
-
-	}
-	@SuppressWarnings("unchecked")
-	@Test(groups = { "Line" }, description = "4-Line-3")
-	public void verifyTest4_3() throws ChouetteException
-	{
-		// 4-Line-3 : check transport mode
-		IImportPlugin<Line> importLine = (IImportPlugin<Line>) applicationContext
-				.getBean("NeptuneLineImport");
-
-		long id = 1;
-
-		JSONObject parameters = null;
-		try
-		{
-			parameters = new RuleParameterSet();
-		} catch (JSONException | IOException e)
-		{
-			e.printStackTrace();
-		}
-		Assert.assertNotNull(parameters, "no parameters for test");
-
-		List<Line> beans = LineLoader.load(importLine,
-				"src/test/data/Ligne_OK.xml");
-		Assert.assertFalse(beans.isEmpty(), "No data for test");
-		Line line1 = beans.get(0);
-
-		// line1 is model;
-		line1.setId(id++);
-		line1.setObjectId("NINOXE:Line:modelLine");
-
-		parameters.remove("check_lines_in_groups");
-
-		{ // check test not required when missing parameter
-			PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
-
-			checkPoint.check(beans, parameters, report, new HashMap<String, Object>());
-			report.refreshStatus();
-
-			Assert.assertEquals(report.getStatus(), Report.STATE.OK,
-					" report must be on level ok");
-			Assert.assertEquals(report.hasItems(), true, " report must have items");
-			Assert.assertFalse(report.hasItem("4-Line-3"),"report must not contain a 4-Line-3 checkPoint");
-		}
-
-		parameters.append("check_lines_in_groups", Integer.valueOf(0));
-
-		{ // check test not required when check is false
-			PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
-
-			checkPoint.check(beans, parameters, report, new HashMap<String, Object>());
-			report.refreshStatus();
-
-			Assert.assertEquals(report.getStatus(), Report.STATE.OK,
-					" report must be on level ok");
-			Assert.assertEquals(report.hasItems(), true, " report must have items");
-			Assert.assertFalse(report.hasItem("4-Line-3"),"report must not contain a 4-Line-3 checkPoint");
-		}
-
-		parameters.put("check_lines_in_groups",Integer.valueOf(1));
-
-		line1.addGroupOfLine(new GroupOfLine());
-
-		{ // check test not required when check is false
-			PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
-
-			checkPoint.check(beans, parameters, report, new HashMap<String, Object>());
-			report.refreshStatus();
-			printReport(report);
-
-			Assert.assertEquals(report.getStatus(), Report.STATE.OK,
-					" report must be on level ok");
-			Assert.assertEquals(report.hasItems(), true, " report must have items");
-			Assert.assertTrue(report.hasItem("4-Line-3"),"report must contain a 4-Line-3 checkPoint");
-		}
-
-		line1.getGroupOfLines().clear();
-		{
-			PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
-
-			checkPoint.check(beans, parameters, report, new HashMap<String, Object>());
-			report.refreshStatus();
-
-			Assert.assertEquals(report.getStatus(), Report.STATE.ERROR,
-					" report must be on level error");
-			Assert.assertEquals(report.hasItems(), true, " report must have items");
-			Assert.assertTrue(report.hasItem("4-Line-3"),"report must contain a 4-Line-3 checkPoint");
-			CheckPointReportItem checkPointReport = report.getItem("4-Line-3");
-			Assert.assertEquals(checkPointReport.getStatus(),
-					Report.STATE.ERROR,
-					" checkPointReport must be on level error");
-			Assert.assertEquals(checkPointReport.hasItems(), true,
-					" checkPointReport must have items");
-			Assert.assertEquals(checkPointReport.getItems().size(), 1,
+			Assert.assertEquals(checkPointReport.getState(),
+					CheckPoint.RESULT.NOK,
+					" checkPointReport must be nok");
+			Assert.assertEquals(checkPointReport.getSeverity(),
+					CheckPoint.SEVERITY.ERROR,
+					" checkPointReport must be on severity error");
+			Assert.assertEquals(checkPointReport.getDetailCount(), 1,
 					" checkPointReport must have 1 item");
 
-			// check detail keys = line1 objectids
-			boolean line1objectIdFound = false;
-			for (ReportItem ditem : checkPointReport.getItems())
-			{
-				DetailReportItem detailReport = (DetailReportItem) ditem;
-				if (detailReport.getObjectId().equals(line1.getObjectId()))
-					line1objectIdFound = true;
+			for (Detail detail : checkPointReport.getDetails()) {
+				log.warn(detail);
+				Assert.assertEquals(detail.getSource().getObjectId(),line1.getObjectId(), "line must be source of error");
 			}
-			Assert.assertTrue(line1objectIdFound,
-					"detail report must refer line 1");
 		}
-
+		utx.rollback();
 
 	}
-
-	@SuppressWarnings("unchecked")
-	@Test(groups = { "Line" }, description = "4-Line-4")
-	public void verifyTest4_4() throws ChouetteException
+	
+	@Test(groups = { "Line" }, description = "4-Line-3",priority=6)
+	public void verifyTest4_3() throws Exception
 	{
-		// 4-Line-4 : check routes
-		IImportPlugin<Line> importLine = (IImportPlugin<Line>) applicationContext
-				.getBean("NeptuneLineImport");
+		// 4-Line-3 : check transport mode
+		log.info(Color.BLUE +"4-Line-3"+ Color.NORMAL);
+		Context context = initValidatorContext();
+		context.put(VALIDATION,fullparameters);
 
-		long id = 1;
+		Assert.assertNotNull(fullparameters, "no parameters for test");
 
-		JSONObject parameters = null;
-		try
-		{
-			parameters = new RuleParameterSet();
-		} catch (JSONException | IOException e)
-		{
-			e.printStackTrace();
-		}
-		Assert.assertNotNull(parameters, "no parameters for test");
+		importLines("Ligne_OK.xml", 1, 1, true);
 
-		List<Line> beans = LineLoader.load(importLine,
-				"src/test/data/Ligne_OK.xml");
+		utx.begin();
+	    em.joinTransaction();
+	    
+		List<Line> beans = lineDao.findAll();
 		Assert.assertFalse(beans.isEmpty(), "No data for test");
 		Line line1 = beans.get(0);
 
 		// line1 is model;
-		line1.setId(id++);
 		line1.setObjectId("NINOXE:Line:modelLine");
+		ValidationData data = new ValidationData();
+		context.put(VALIDATION_DATA, data);
+		data.setCurrentLine(line1);
+		
+		{ // check test not required when check is false
+			context.put(VALIDATION_REPORT, new ValidationReport());
+			fullparameters.setCheckLinesInGroups(0);
+			context.put(VALIDATION,fullparameters);
+			checkPoint.validate(context, null);
+			ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 
-		parameters.remove("check_line_routes");
+			Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
-		{ // check test not required when missing parameter
-			PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
-
-			checkPoint.check(beans, parameters, report, new HashMap<String, Object>());
-			report.refreshStatus();
-
-			Assert.assertEquals(report.getStatus(), Report.STATE.OK,
-					" report must be on level ok");
-			Assert.assertEquals(report.hasItems(), true, " report must have items");
-			Assert.assertFalse(report.hasItem("4-Line-4"),"report must not contain a 4-Line-4 checkPoint");
+			CheckPoint checkPointReport = report.findCheckPointByName("4-Line-3");
+			Assert.assertNull(checkPointReport, "report must not contain a 4-Line-3 checkPoint");
 		}
 
-		parameters.append("check_line_routes", Integer.valueOf(0));
+
+
+		GroupOfLine grp = new GroupOfLine();
+		{ // check test not required when check is false
+			context.put(VALIDATION_REPORT, new ValidationReport());
+			grp.addLine(line1);
+			fullparameters.setCheckLinesInGroups(1);
+			context.put(VALIDATION,fullparameters);
+			checkPoint.validate(context, null);
+			ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
+
+			Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
+
+			CheckPoint checkPointReport = report.findCheckPointByName("4-Line-3");
+			Assert.assertNotNull(checkPointReport, "report must  contain a 4-Line-3 checkPoint");
+		}
+
+		{
+			context.put(VALIDATION_REPORT, new ValidationReport());
+			grp.removeLine(line1);
+			line1.getGroupOfLines().clear();
+			fullparameters.setCheckLinesInGroups(1);
+			context.put(VALIDATION,fullparameters);
+			checkPoint.validate(context, null);
+			ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
+
+			Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
+
+			CheckPoint checkPointReport = report.findCheckPointByName("4-Line-3");
+			Assert.assertNotNull(checkPointReport, "report must  contain a 4-Line-3 checkPoint");
+			Assert.assertEquals(checkPointReport.getState(),
+					CheckPoint.RESULT.NOK,
+					" checkPointReport must be nok");
+			Assert.assertEquals(checkPointReport.getSeverity(),
+					CheckPoint.SEVERITY.ERROR,
+					" checkPointReport must be on severity error");
+			Assert.assertEquals(checkPointReport.getDetailCount(), 1,
+					" checkPointReport must have 1 item");
+
+			for (Detail detail : checkPointReport.getDetails()) {
+				log.warn(detail);
+				Assert.assertEquals(detail.getSource().getObjectId(),line1.getObjectId(), "line must be source of error");
+			}
+		}
+		utx.rollback();
+
+
+	}
+	
+	@Test(groups = { "Line" }, description = "4-Line-4",priority=7)
+	public void verifyTest4_4() throws Exception
+	{
+		// 4-Line-4 : check routes
+		log.info(Color.BLUE +"4-Line-4"+ Color.NORMAL);
+		Context context = initValidatorContext();
+		context.put(VALIDATION,fullparameters);
+
+		Assert.assertNotNull(fullparameters, "no parameters for test");
+
+		importLines("Ligne_OK.xml", 1, 1, true);
+
+		utx.begin();
+	    em.joinTransaction();
+	    
+		List<Line> beans = lineDao.findAll();
+		Assert.assertFalse(beans.isEmpty(), "No data for test");
+		Line line1 = beans.get(0);
+		// line1 is model;
+		line1.setObjectId("NINOXE:Line:modelLine");
+		ValidationData data = new ValidationData();
+		context.put(VALIDATION_DATA, data);
+		data.setCurrentLine(line1);
+
+
 
 		{ // check test not required when check is false
-			PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
+			context.put(VALIDATION_REPORT, new ValidationReport());
+			fullparameters.setCheckLineRoutes(0);
+			context.put(VALIDATION,fullparameters);
+			checkPoint.validate(context, null);
+			ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
 
-			checkPoint.check(beans, parameters, report, new HashMap<String, Object>());
-			report.refreshStatus();
+			Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
-			Assert.assertEquals(report.getStatus(), Report.STATE.OK,
-					" report must be on level ok");
-			Assert.assertEquals(report.hasItems(), true, " report must have items");
-			Assert.assertFalse(report.hasItem("4-Line-4"),"report must not contain a 4-Line-4 checkPoint");
+			CheckPoint checkPointReport = report.findCheckPointByName("4-Line-4");
+			Assert.assertNull(checkPointReport, "report must not contain a 4-Line-4 checkPoint");
 		}
 
-		parameters.put("check_line_routes",Integer.valueOf(1));
-
 		{ // check 2 routes in wayback
-			PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
+			context.put(VALIDATION_REPORT, new ValidationReport());
+			fullparameters.setCheckLineRoutes(1);
+			context.put(VALIDATION,fullparameters);
+			checkPoint.validate(context, null);
+			ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
+			
+			Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
-			checkPoint.check(beans, parameters, report, new HashMap<String, Object>());
-			report.refreshStatus();
-			printReport(report);
-
-			Assert.assertEquals(report.getStatus(), Report.STATE.OK,
-					" report must be on level ok");
-			Assert.assertEquals(report.hasItems(), true, " report must have items");
-			Assert.assertTrue(report.hasItem("4-Line-4"),"report must contain a 4-Line-4 checkPoint");
+			CheckPoint checkPointReport = report.findCheckPointByName("4-Line-4");
+			Assert.assertNotNull(checkPointReport, "report must contain a 4-Line-4 checkPoint");
 		}
 
 		line1.getRoutes().remove(1);
 		{ // check 1 route
-			PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
+			context.put(VALIDATION_REPORT, new ValidationReport());
+			fullparameters.setCheckLineRoutes(1);
+			context.put(VALIDATION,fullparameters);
+			checkPoint.validate(context, null);
+			ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
+			
+			Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
-			checkPoint.check(beans, parameters, report, new HashMap<String, Object>());
-			report.refreshStatus();
-
-			Assert.assertEquals(report.getStatus(), Report.STATE.OK,
-					" report must be on level ok");
-			Assert.assertEquals(report.hasItems(), true, " report must have items");
-			Assert.assertTrue(report.hasItem("4-Line-4"),"report must contain a 4-Line-4 checkPoint");
+			CheckPoint checkPointReport = report.findCheckPointByName("4-Line-4");
+			Assert.assertNotNull(checkPointReport, "report must contain a 4-Line-4 checkPoint");
 		}
 
 		line1.getRoutes().add(new Route());
 		{
-			PhaseReportItem report = new PhaseReportItem(PHASE.THREE);
+			context.put(VALIDATION_REPORT, new ValidationReport());
+			fullparameters.setCheckLineRoutes(1);
+			context.put(VALIDATION,fullparameters);
+			checkPoint.validate(context, null);
+			
+			ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
+			
+			Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
-			checkPoint.check(beans, parameters, report, new HashMap<String, Object>());
-			report.refreshStatus();
+			CheckPoint checkPointReport = report.findCheckPointByName("4-Line-4");
+			Assert.assertNotNull(checkPointReport, "report must contain a 4-Line-4 checkPoint");
 
-			Assert.assertEquals(report.getStatus(), Report.STATE.ERROR,
-					" report must be on level error");
-			Assert.assertEquals(report.hasItems(), true, " report must have items");
-			Assert.assertTrue(report.hasItem("4-Line-4"),"report must contain a 4-Line-4 checkPoint");
-			CheckPointReportItem checkPointReport = report.getItem("4-Line-4");
-			Assert.assertEquals(checkPointReport.getStatus(),
-					Report.STATE.ERROR,
-					" checkPointReport must be on level error");
-			Assert.assertEquals(checkPointReport.hasItems(), true,
-					" checkPointReport must have items");
-			Assert.assertEquals(checkPointReport.getItems().size(), 1,
+			Assert.assertEquals(checkPointReport.getState(),
+					CheckPoint.RESULT.NOK,
+					" checkPointReport must be nok");
+			Assert.assertEquals(checkPointReport.getSeverity(),
+					CheckPoint.SEVERITY.ERROR,
+					" checkPointReport must be on severity error");
+			Assert.assertEquals(checkPointReport.getDetailCount(), 1,
 					" checkPointReport must have 1 item");
 
-			// check detail keys = line1 objectids
-			boolean line1objectIdFound = false;
-			for (ReportItem ditem : checkPointReport.getItems())
-			{
-				DetailReportItem detailReport = (DetailReportItem) ditem;
-				if (detailReport.getObjectId().equals(line1.getObjectId()))
-					line1objectIdFound = true;
+			for (Detail detail : checkPointReport.getDetails()) {
+				log.warn(detail);
+				Assert.assertEquals(detail.getSource().getObjectId(),line1.getObjectId(), "line must be source of error");
 			}
-			Assert.assertTrue(line1objectIdFound,
-					"detail report must refer line 1");
 		}
 
-
+		utx.rollback();
 	}
 
-*/
 }

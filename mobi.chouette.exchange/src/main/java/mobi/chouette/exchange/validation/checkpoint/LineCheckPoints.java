@@ -37,6 +37,7 @@ public class LineCheckPoints extends AbstractValidation<Line> implements Validat
 		boolean test4_2 = parameters.getCheckAllowedTransportModes() == 1;
 		boolean test4_3 = parameters.getCheckLinesInGroups() == 1;
 		boolean test4_4 = parameters.getCheckLineRoutes() == 1;
+		
 
 		// checkPoint is applicable
 		prepareCheckPoint(report, LINE_2);

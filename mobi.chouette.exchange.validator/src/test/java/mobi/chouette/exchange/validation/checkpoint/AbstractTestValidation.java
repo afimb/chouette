@@ -4,9 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.sql.Time;
+import java.util.List;
 import java.util.Locale;
 
-import javax.ejb.EJB;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
@@ -15,15 +15,12 @@ import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.JSONUtil;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.dao.LineDAO;
 import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.neptune.importer.NeptuneImporterCommand;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.LineInfo;
 import mobi.chouette.exchange.report.LineInfo.LINE_STATE;
 import mobi.chouette.exchange.report.ReportConstant;
-import mobi.chouette.exchange.validation.parameters.NetworkParameters;
-import mobi.chouette.exchange.validation.parameters.TransportModeParameters;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.exchange.validation.report.CheckPoint;
 import mobi.chouette.exchange.validation.report.Detail;
@@ -39,9 +36,6 @@ import org.testng.Assert;
 
 @Log4j
 public abstract class AbstractTestValidation  extends Arquillian implements Constant, ReportConstant {
-
-	@EJB
-	LineDAO lineDao;
 
 
 	protected InitialContext initialContext;
@@ -204,14 +198,14 @@ public abstract class AbstractTestValidation  extends Arquillian implements Cons
 	/**
 	 * @param report
 	 */
-	protected Detail checkReportForTest4_1(ValidationReport report, String key, String objectId)
+	protected List<Detail> checkReportForTest4_1(ValidationReport report, String key, int detailSize)
 	{
 		Assert.assertFalse(report.getCheckPoints().isEmpty(), " report must have items");
 		Assert.assertNotNull(report.findCheckPointByName(key), " report must have 1 item on key "+key);
 		CheckPoint checkPointReport = report.findCheckPointByName(key);
-		Assert.assertEquals(checkPointReport.getDetails().size(), 1, " checkpoint must have 1 detail");
-		Detail detail =  checkPointReport.getDetails().get(0);
-		return detail;
+		Assert.assertEquals(checkPointReport.getDetails().size(), detailSize, " checkpoint must have "+detailSize+" detail");
+		
+		return checkPointReport.getDetails();
 	}
 
 	protected ValidationParameters loadFullParameters() throws Exception

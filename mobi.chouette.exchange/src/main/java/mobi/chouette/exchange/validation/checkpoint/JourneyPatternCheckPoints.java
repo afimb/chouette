@@ -15,6 +15,7 @@ import mobi.chouette.exchange.validation.report.Detail;
 import mobi.chouette.exchange.validation.report.Location;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.JourneyPattern;
+import mobi.chouette.model.StopPoint;
 
 @Log4j
 public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern> implements Validator<JourneyPattern> {
@@ -62,11 +63,13 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 			return;
 		prepareCheckPoint(report, JOURNEY_PATTERN_1);
 		int pointCount = jp.getStopPoints().size();
+		List<StopPoint> sp1 = new ArrayList<>(jp.getStopPoints());
+		List<StopPoint> sp2 = new ArrayList<>();
 		for (int j = jpRank + 1; j < beans.size(); j++) {
 			JourneyPattern jp2 = beans.get(j);
-			if (pointCount != jp2.getStopPoints().size())
-				continue;
-			if (jp.getStopPoints().equals(jp2.getStopPoints())) {
+			sp2 .clear();
+			sp2.addAll(jp2.getStopPoints());
+			if (sp1.equals(sp2)) {
 				Location location = buildLocation(context,jp);
 				Location targetLocation = buildLocation(context,jp2);
 

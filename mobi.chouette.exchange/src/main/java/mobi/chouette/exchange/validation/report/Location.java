@@ -70,8 +70,8 @@ public class Location {
 			this.name = NamingUtil.getName(object);
 			objectRefs.add(new ObjectReference(object));
 			objectRefs.add(new ObjectReference(object.getJourneyPattern()));
-			objectRefs.add(new ObjectReference(object.getRoute()));
-			objectRefs.add(new ObjectReference(object.getRoute().getLine()));
+			objectRefs.add(new ObjectReference(object.getJourneyPattern().getRoute()));
+			objectRefs.add(new ObjectReference(object.getJourneyPattern().getRoute().getLine()));
 		}
 		else if (chouetteObject instanceof JourneyPattern)
 		{

@@ -127,6 +127,10 @@ public class ValidationDataCollector {
 			updateId(object, cache.getConnectionLinks());
 			collection.getConnectionLinkIds().add(object.getObjectId());
 			collection.getConnectionLinks().add(object);
+			if (object.getEndOfLink() != null)
+			collection.getDummyStopAreas().add(object.getEndOfLink());
+			if (object.getStartOfLink() != null)
+			collection.getDummyStopAreas().add(object.getStartOfLink());
 		}
 
 	}

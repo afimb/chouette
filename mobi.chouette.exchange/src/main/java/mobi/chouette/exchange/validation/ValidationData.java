@@ -34,6 +34,7 @@ public class ValidationData {
 	private Set<GroupOfLine> groupOfLines = new HashSet<>();
 	private Set<String> groupOfLineIds = new HashSet<>();
 	private Set<StopArea> stopAreas = new HashSet<>();
+	private Set<StopArea> dummyStopAreas = new HashSet<>(); // for connectionLink tests
 	private Set<String> stopAreaIds = new HashSet<>();
 	private Set<ConnectionLink> connectionLinks = new HashSet<>();
 	private Set<String> connectionLinkIds = new HashSet<>();

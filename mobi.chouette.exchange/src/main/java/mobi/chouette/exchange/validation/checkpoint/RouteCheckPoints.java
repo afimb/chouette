@@ -187,6 +187,7 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 		prepareCheckPoint(report, ROUTE_3);
 		// find transportMode :
 		String modeKey = route.getLine().getTransportModeName().toString();
+		
 		TransportModeParameters mode = getModeParameters(parameters, modeKey, log);
 		if (mode == null) {
 			log.error("no parameters for mode " + modeKey);
@@ -198,7 +199,7 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 		}
 		double distanceMin = mode.getInterStopAreaDistanceMin();
 		double distanceMax = mode.getInterStopAreaDistanceMax();
-
+		
 		for (int i = 1; i < areas.size(); i++) {
 			StopArea firstArea = areas.get(i - 1);
 			StopArea nextArea = areas.get(i);
