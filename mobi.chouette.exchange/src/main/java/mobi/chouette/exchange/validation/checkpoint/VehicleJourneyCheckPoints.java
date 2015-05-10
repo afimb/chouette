@@ -92,25 +92,25 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 
 			// 3-VehicleJourney-1 : check if time progress correctly on each
 			// stop
-			check3VehicleJourney1(report, vj, parameters);
+			check3VehicleJourney1(context,report, vj, parameters);
 
 			// 3-VehicleJourney-2 : check speed progression
-			check3VehicleJourney2(report, vj, parameters);
+			check3VehicleJourney2(context,report, vj, parameters);
 
 			// 3-VehicleJourney-3 : check if two journeys progress similarly
-			check3VehicleJourney3(report, beans, i, vj, parameters);
+			check3VehicleJourney3(context,report, beans, i, vj, parameters);
 
 			// 3-VehicleJourney-4 : check if each journey has minimum one
 			// timetable
-			check3VehicleJourney4(report, vj);
+			check3VehicleJourney4(context,report, vj);
 
 			// 4-VehicleJourney-1 : (optionnal) check columns constraints
 			if (test4_1)
-				check4Generic1(report, vj, L4_VEHICLE_JOURNEY_1, parameters, context, log);
+				check4Generic1(context,report, vj, L4_VEHICLE_JOURNEY_1, parameters, log);
 
 			// 4-VehicleJourney-2 : (optionnal) check transport modes
 			if (test4_2)
-				check4VehicleJourney2(report, vj, parameters);
+				check4VehicleJourney2(context,report, vj, parameters);
 
 		}
 		return null;
@@ -125,7 +125,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 		return diff;
 	}
 
-	private void check3VehicleJourney1(ValidationReport report, VehicleJourney vj, ValidationParameters parameters) {
+	private void check3VehicleJourney1(Context context, ValidationReport report, VehicleJourney vj, ValidationParameters parameters) {
 		// 3-VehicleJourney-1 : check if time progress correctly on each stop
 		if (isEmpty(vj.getVehicleJourneyAtStops())) {
 			log.error("vehicleJourney " + vj.getObjectId() + " has no vehicleJourneyAtStop");
@@ -136,8 +136,8 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 		for (VehicleJourneyAtStop vjas : vjasList) {
 			long diffTime = Math.abs(diffTime(vjas.getArrivalTime(), vjas.getDepartureTime()));
 			if (diffTime > maxDiffTime) {
-				Location location = new Location(vj);
-				Location target = new Location(vjas.getStopPoint().getContainedInStopArea());
+				Location location = buildLocation(context,vj);
+				Location target = buildLocation(context,vjas.getStopPoint().getContainedInStopArea());
 				Detail detail = new Detail(VEHICLE_JOURNEY_1, location, Long.toString(diffTime),
 						Long.toString(maxDiffTime), target);
 				addValidationError(report, VEHICLE_JOURNEY_1, detail);
@@ -146,7 +146,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 
 	}
 
-	private void check3VehicleJourney2(ValidationReport report, VehicleJourney vj, ValidationParameters parameters) {
+	private void check3VehicleJourney2(Context context, ValidationReport report, VehicleJourney vj, ValidationParameters parameters) {
 		if (isEmpty(vj.getVehicleJourneyAtStops()))
 			return;
 		// 3-VehicleJourney-2 : check speed progression
@@ -161,9 +161,9 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 			long diffTime = diffTime(vjas0.getDepartureTime(), vjas1.getArrivalTime());
 			if (diffTime < 0) {
 				// chronologie inverse ou non définie
-				Location source = new Location(vj);
-				Location target1 = new Location(vjas0.getStopPoint().getContainedInStopArea());
-				Location target2 = new Location(vjas1.getStopPoint().getContainedInStopArea());
+				Location source = buildLocation(context,vj);
+				Location target1 = buildLocation(context,vjas0.getStopPoint().getContainedInStopArea());
+				Location target2 = buildLocation(context,vjas1.getStopPoint().getContainedInStopArea());
 
 				Detail detail = new Detail(VEHICLE_JOURNEY_2 + "_1", source, target1, target2);
 				addValidationError(report, VEHICLE_JOURNEY_2, detail);
@@ -177,18 +177,18 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 					double speed = distance / (double) diffTime * 36 / 10; // (km/h)
 					if (speed < minSpeed) {
 						// trop lent
-						Location source = new Location(vj);
-						Location target1 = new Location(vjas0.getStopPoint().getContainedInStopArea());
-						Location target2 = new Location(vjas1.getStopPoint().getContainedInStopArea());
+						Location source = buildLocation(context,vj);
+						Location target1 = buildLocation(context,vjas0.getStopPoint().getContainedInStopArea());
+						Location target2 = buildLocation(context,vjas1.getStopPoint().getContainedInStopArea());
 
 						Detail detail = new Detail(VEHICLE_JOURNEY_2 + "_2", source, Integer.toString((int) speed),
 								Integer.toString((int) minSpeed), target1, target2);
 						addValidationError(report, VEHICLE_JOURNEY_2, detail);
 					} else if (speed > maxSpeed) {
 						// trop rapide
-						Location source = new Location(vj);
-						Location target1 = new Location(vjas0.getStopPoint().getContainedInStopArea());
-						Location target2 = new Location(vjas1.getStopPoint().getContainedInStopArea());
+						Location source = buildLocation(context,vj);
+						Location target1 = buildLocation(context,vjas0.getStopPoint().getContainedInStopArea());
+						Location target2 = buildLocation(context,vjas1.getStopPoint().getContainedInStopArea());
 
 						Detail detail = new Detail(VEHICLE_JOURNEY_2 + "_3", source, Integer.toString((int) speed),
 								Integer.toString((int) minSpeed), target1, target2);
@@ -214,7 +214,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 		return transportMode;
 	}
 
-	private void check3VehicleJourney3(ValidationReport report, List<VehicleJourney> beans, int rank,
+	private void check3VehicleJourney3(Context context, ValidationReport report, List<VehicleJourney> beans, int rank,
 			VehicleJourney vj0, ValidationParameters parameters) {
 		if (isEmpty(vj0.getVehicleJourneyAtStops()))
 			return;
@@ -243,10 +243,10 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 						long duration0 = diffTime(vjas0.get(j - 1).getDepartureTime(), vjas0.get(j).getArrivalTime());
 						long duration1 = diffTime(vjas1.get(j - 1).getDepartureTime(), vjas1.get(j).getArrivalTime());
 						if (Math.abs(duration0 - duration1) > maxDuration) {
-							Location source = new Location(vj0);
-							Location target1 = new Location(vj1);
-							Location target2 = new Location(vjas0.get(j - 1).getStopPoint().getContainedInStopArea());
-							Location target3 = new Location(vjas0.get(j).getStopPoint().getContainedInStopArea());
+							Location source = buildLocation(context,vj0);
+							Location target1 = buildLocation(context,vj1);
+							Location target2 = buildLocation(context,vjas0.get(j - 1).getStopPoint().getContainedInStopArea());
+							Location target3 = buildLocation(context,vjas0.get(j).getStopPoint().getContainedInStopArea());
 
 							Detail detail = new Detail(VEHICLE_JOURNEY_3, source, Long.toString(Math.abs(duration0
 									- duration1)), Long.toString(maxDuration), target1, target2, target3);
@@ -259,10 +259,10 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 
 	}
 
-	private void check3VehicleJourney4(ValidationReport report, VehicleJourney vj) {
+	private void check3VehicleJourney4(Context context, ValidationReport report, VehicleJourney vj) {
 		// 3-VehicleJourney-4 : check if each journey has minimum one timetable
 		if (isEmpty(vj.getTimetables())) {
-			Location location = new Location(vj);
+			Location location = buildLocation(context,vj);
 			Detail detail = new Detail(VEHICLE_JOURNEY_4, location);
 			addValidationError(report, VEHICLE_JOURNEY_4, detail);
 
@@ -270,13 +270,13 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 
 	}
 
-	private void check4VehicleJourney2(ValidationReport report, VehicleJourney vj, ValidationParameters parameters) {
+	private void check4VehicleJourney2(Context context, ValidationReport report, VehicleJourney vj, ValidationParameters parameters) {
 		// 4-VehicleJourney-2 : (optional) check transport modes
 		if (vj.getTransportMode() == null)
 			return;
 		if (getModeParameters(parameters, vj.getTransportMode().name(), log).getAllowedTransport() != 1) {
 			// failure encountered, add line 1
-			Location location = new Location(vj);
+			Location location = buildLocation(context,vj);
 			Detail detail = new Detail(L4_VEHICLE_JOURNEY_2, location, vj.getTransportMode().name());
 			addValidationError(report, L4_VEHICLE_JOURNEY_2, detail);
 		}

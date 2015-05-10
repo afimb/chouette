@@ -50,7 +50,6 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 		prepareCheckPoint(report, STOP_AREA_1);
 		prepareCheckPoint(report, STOP_AREA_2);
 		prepareCheckPoint(report, STOP_AREA_3);
-		prepareCheckPoint(report, STOP_AREA_4);
 		prepareCheckPoint(report, STOP_AREA_5);
 
 		boolean test4_1 = (parameters.getCheckStopArea() != 0);
@@ -64,43 +63,50 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 			prepareCheckPoint(report, L4_STOP_AREA_2);
 		}
 
-		Polygon enveloppe = getEnveloppe(parameters);
+		Polygon enveloppe = null;
+		try {
+			enveloppe = getEnveloppe(parameters);
+			prepareCheckPoint(report, STOP_AREA_4);
+			
+		} catch (Exception e) {
+			log.error("cannot decode enveloppe "+parameters.getStopAreasArea());
+		}
 
 		for (int i = 0; i < beans.size(); i++) {
 			StopArea stopArea = beans.get(i);
 			// no test for ITL
 			if (stopArea.getAreaType().equals(ChouetteAreaEnum.ITL))
 				continue;
-			check3StopArea1(report, stopArea);
-			check3StopArea4(report, stopArea, enveloppe);
-			check3StopArea5(report, stopArea, parameters);
+			check3StopArea1(context,report, stopArea);
+			check3StopArea4(context,report, stopArea, enveloppe);
+			check3StopArea5(context,report, stopArea, parameters);
 			// 4-StopArea-1 : check columns constraints
 			if (test4_1)
-				check4Generic1(report, stopArea, L4_STOP_AREA_1, parameters, context, log);
+				check4Generic1(context, report, stopArea, L4_STOP_AREA_1, parameters, log);
 			// 4-StopArea-2 : check parent
 			if (test4_2)
-				check4StopArea2(report, stopArea);
+				check4StopArea2(context,report, stopArea);
 
 			for (int j = i + 1; j < beans.size(); j++) {
-				check3StopArea2(report, i, stopArea, j, beans.get(j), parameters);
-				check3StopArea3(report, i, stopArea, j, beans.get(j));
+				check3StopArea2(context,report, i, stopArea, j, beans.get(j), parameters);
+				check3StopArea3(context,report, i, stopArea, j, beans.get(j));
 			}
 
 		}
 		return null;
 	}
 
-	private void check3StopArea1(ValidationReport report, StopArea stopArea) {
+	private void check3StopArea1(Context context, ValidationReport report, StopArea stopArea) {
 		// 3-StopArea-1 : check if all non ITL stopArea has geolocalization
 		if (!stopArea.hasCoordinates()) {
-			Location location = new Location(stopArea);
+			Location location = buildLocation(context,stopArea);
 
 			Detail detail = new Detail(STOP_AREA_1, location);
 			addValidationError(report, STOP_AREA_1, detail);
 		}
 	}
 
-	private void check3StopArea2(ValidationReport report, int rank, StopArea stopArea, int rank2, StopArea stopArea2,
+	private void check3StopArea2(Context context, ValidationReport report, int rank, StopArea stopArea, int rank2, StopArea stopArea2,
 			ValidationParameters parameters) {
 		// 3-StopArea-2 : check distance of stop areas with different name
 		if (!stopArea.hasCoordinates())
@@ -116,8 +122,8 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 				return;
 			double distance = distance(stopArea, stopArea2);
 			if (distance < distanceMin) {
-				Location source = new Location(stopArea);
-				Location target = new Location(stopArea2);
+				Location source = buildLocation(context,stopArea);
+				Location target = buildLocation(context,stopArea2);
 
 				Detail detail = new Detail(STOP_AREA_2, source, Integer.toString((int) distance),
 						Integer.toString((int) distanceMin), target);
@@ -128,7 +134,7 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 
 	}
 
-	private void check3StopArea3(ValidationReport report, int rank, StopArea stopArea, int rank2, StopArea stopArea2) {
+	private void check3StopArea3(Context context, ValidationReport report, int rank, StopArea stopArea, int rank2, StopArea stopArea2) {
 		// 3-StopArea-3 : check multiple occurrence of a stopArea of same type
 		if (!stopArea2.getAreaType().equals(stopArea.getAreaType()))
 			return;
@@ -142,8 +148,8 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 		Collection<Line> lines = getLines(stopArea);
 		Collection<Line> lines2 = getLines(stopArea2);
 		if (lines.containsAll(lines2) && lines2.containsAll(lines)) {
-			Location source = new Location(stopArea);
-			Location target = new Location(stopArea2);
+			Location source = buildLocation(context,stopArea);
+			Location target = buildLocation(context,stopArea2);
 
 			Detail detail = new Detail(STOP_AREA_3, source, target);
 			addValidationError(report, STOP_AREA_3, detail);
@@ -151,13 +157,13 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 
 	}
 
-	private void check3StopArea4(ValidationReport report, StopArea stopArea, Polygon enveloppe) {
+	private void check3StopArea4(Context context, ValidationReport report, StopArea stopArea, Polygon enveloppe) {
 		// 3-StopArea-4 : check localization in a region
-		if (!stopArea.hasCoordinates())
+		if (enveloppe == null || !stopArea.hasCoordinates())
 			return;
 		Point p = buildPoint(stopArea);
 		if (!enveloppe.contains(p)) {
-			Location location = new Location(stopArea);
+			Location location = buildLocation(context,stopArea);
 
 			Detail detail = new Detail(STOP_AREA_4, location);
 			addValidationError(report, STOP_AREA_4, detail);
@@ -165,7 +171,7 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 
 	}
 
-	private void check3StopArea5(ValidationReport report, StopArea stopArea, ValidationParameters parameters) {
+	private void check3StopArea5(Context context, ValidationReport report, StopArea stopArea, ValidationParameters parameters) {
 		// 3-StopArea-5 : check distance with parents
 		if (!stopArea.hasCoordinates())
 			return;
@@ -177,8 +183,8 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 			return;
 		double distance = distance(stopArea, stopArea2);
 		if (distance > distanceMax) {
-			Location source = new Location(stopArea);
-			Location target = new Location(stopArea2);
+			Location source = buildLocation(context,stopArea);
+			Location target = buildLocation(context,stopArea2);
 
 			Detail detail = new Detail(STOP_AREA_5, source, Integer.toString((int) distance),
 					Integer.toString((int) distanceMax), target);
@@ -186,12 +192,12 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 		}
 	}
 
-	private void check4StopArea2(ValidationReport report, StopArea stopArea) {
+	private void check4StopArea2(Context context, ValidationReport report, StopArea stopArea) {
 		// 4-StopArea-2 : check if all physical stopArea has parent
 		if (stopArea.getAreaType().equals(ChouetteAreaEnum.BoardingPosition)
 				|| stopArea.getAreaType().equals(ChouetteAreaEnum.Quay)) {
 			if (stopArea.getParent() == null) {
-				Location location = new Location(stopArea);
+				Location location = buildLocation(context,stopArea);
 
 				Detail detail = new Detail(L4_STOP_AREA_2, location);
 				addValidationError(report, L4_STOP_AREA_2, detail);

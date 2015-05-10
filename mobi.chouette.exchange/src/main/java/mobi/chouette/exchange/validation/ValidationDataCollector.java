@@ -29,6 +29,7 @@ public class ValidationDataCollector {
 	public void collect(ValidationData collection, Line line, Referential cache)
 	{
 		collection.clear();
+		collection.getLines().add(cloneLine(line));
 		for (Route route : line.getRoutes()) {
 			for (JourneyPattern jp : route.getJourneyPatterns()) {
 				for (VehicleJourney vehicleJourney : jp.getVehicleJourneys()) {
@@ -56,9 +57,11 @@ public class ValidationDataCollector {
 		collection.getLineIds().add(line.getObjectId());
 		updateId(line.getNetwork(), cache.getPtNetworks());
 		collection.getNetworkIds().add(line.getNetwork().getObjectId());
+		collection.getNetworks().add(line.getNetwork());
 		if (line.getCompany() != null) {
 			updateId(line.getCompany(), cache.getCompanies());
 			collection.getCompanyIds().add(line.getCompany().getObjectId());
+			collection.getCompanies().add(line.getCompany());
 		}
 		if (line.getGroupOfLines() != null) {
 			addAllGroupOfLines(collection, line.getGroupOfLines(),cache);
@@ -76,6 +79,7 @@ public class ValidationDataCollector {
 			return;
 		updateId(stopArea, cache.getStopAreas());
 		collection.getStopAreaIds().add(stopArea.getObjectId());
+		collection.getStopAreas().add(stopArea);
 		addAllConnectionLinks(collection, stopArea.getConnectionStartLinks(),cache);
 		addAllConnectionLinks(collection, stopArea.getConnectionEndLinks(),cache);
 		addAllAccessPoints(collection, stopArea.getAccessPoints(),cache);
@@ -88,6 +92,7 @@ public class ValidationDataCollector {
 		for (Timetable object : data) {
 			updateId(object, cache.getTimetables());
 			collection.getTimetableIds().add(object.getObjectId());
+			collection.getTimetables().add(object);
 		}
 	}
 
@@ -95,6 +100,7 @@ public class ValidationDataCollector {
 		for (GroupOfLine object : data) {
 			updateId(object, cache.getGroupOfLines());
 			collection.getGroupOfLineIds().add(object.getObjectId());
+			collection.getGroupOfLines().add(object);
 		}
 
 	}
@@ -103,6 +109,7 @@ public class ValidationDataCollector {
 		for (StopArea object : data) {
 			updateId(object, cache.getStopAreas());
 			collection.getStopAreaIds().add(object.getObjectId());
+			collection.getStopAreas().add(object);
 		}
 
 	}
@@ -119,6 +126,7 @@ public class ValidationDataCollector {
 		for (ConnectionLink object : data) {
 			updateId(object, cache.getConnectionLinks());
 			collection.getConnectionLinkIds().add(object.getObjectId());
+			collection.getConnectionLinks().add(object);
 		}
 
 	}
@@ -127,6 +135,7 @@ public class ValidationDataCollector {
 		for (AccessPoint object : data) {
 			updateId(object, cache.getAccessPoints());
 			collection.getAccessPointIds().add(object.getObjectId());
+			collection.getAccessPoints().add(object);
 		}
 
 	}
@@ -135,6 +144,7 @@ public class ValidationDataCollector {
 		for (AccessLink object : data) {
 			updateId(object, cache.getAccessLinks());
 			collection.getAccessLinkIds().add(object.getObjectId());
+			collection.getAccessLinks().add(object);
 		}
 
 	}
@@ -146,6 +156,28 @@ public class ValidationDataCollector {
 			NeptuneIdentifiedObject cached = map.get(object.getObjectId());
 			if (cached != null) object.setId(cached.getId());
 		}
+	}
+	
+	private Line cloneLine(Line source)
+	{
+		Line target = new Line();
+		target.setObjectId(source.getObjectId());
+		target.setObjectVersion(source.getObjectVersion());
+		target.setName(source.getName());
+		target.setNumber(source.getNumber());
+		target.setNetwork(source.getNetwork());
+		target.setColor(source.getColor());
+		target.setCompany(source.getCompany());
+		target.setComment(source.getComment());
+		target.setFlexibleService(source.getFlexibleService());
+		target.setIntUserNeeds(source.getIntUserNeeds());
+		target.setMobilityRestrictedSuitable(source.getMobilityRestrictedSuitable());
+		target.setPublishedName(source.getPublishedName());
+		target.setRegistrationNumber(source.getRegistrationNumber());
+		target.setTextColor(source.getTextColor());
+		target.setTransportModeName(source.getTransportModeName());
+		target.setUrl(source.getUrl());		
+		return target;
 	}
 	
 }

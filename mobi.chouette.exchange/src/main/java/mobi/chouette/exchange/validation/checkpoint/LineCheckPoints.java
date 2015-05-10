@@ -62,20 +62,20 @@ public class LineCheckPoints extends AbstractValidation<Line> implements Validat
 		    // 3-Line-1 : TODO lignes homonymes sur le même réseau
 		
 			// 3-Line-2 : check if line has routes
-			check3Line2(report, bean);
+			check3Line2(context,report, bean);
 			// 4-Line-1 : check columns constraints
 			if (test4_1)
-				check4Generic1(report, bean, L4_LINE_1, parameters, context, log);
+				check4Generic1(context,report, bean, L4_LINE_1, parameters, log);
 			// 4-Line-2 : check if line has valid transportMode
 			if (test4_2)
-				check4Line2(report, bean, parameters);
+				check4Line2(context,report, bean, parameters);
 			// 4-Line-3 : check if line has one group and only one
 			if (test4_3)
-				check4Line3(report, bean, parameters);
+				check4Line3(context,report, bean, parameters);
 			// 4-Line-4 : check if line has one route or one pair
 			// (inbound/outbound)
 			if (test4_4)
-				check4Line4(report, bean, parameters);
+				check4Line4(context,report, bean, parameters);
 
 		return null;
 
@@ -83,23 +83,24 @@ public class LineCheckPoints extends AbstractValidation<Line> implements Validat
 
 
 	/**
+	 * @param context 
 	 * @param report
 	 * @param line1
 	 */
-	private void check3Line2(ValidationReport report, Line line1) {
+	private void check3Line2(Context context, ValidationReport report, Line line1) {
 		if (isEmpty(line1.getRoutes())) {
 			// failure encountered, add line 1
-			Location location = new Location(line1);
+			Location location = buildLocation(context,line1);
 
 			Detail detail = new Detail(LINE_2, location);
 			addValidationError(report, LINE_2, detail);
 		}
 	}
 
-	private void check4Line2(ValidationReport report, Line line1, ValidationParameters parameters) {
+	private void check4Line2(Context context, ValidationReport report, Line line1, ValidationParameters parameters) {
 		if (getModeParameters(parameters, line1.getTransportModeName().name(), log).getAllowedTransport() != 1) {
 			// failure encountered, add line 1
-			Location location = new Location(line1);
+			Location location = buildLocation(context,line1);
 
 			Detail detail = new Detail(L4_LINE_2, location, line1.getTransportModeName().name());
 			addValidationError(report, L4_LINE_2, detail);
@@ -107,16 +108,16 @@ public class LineCheckPoints extends AbstractValidation<Line> implements Validat
 
 	}
 
-	private void check4Line3(ValidationReport report, Line line1, ValidationParameters parameters) {
+	private void check4Line3(Context context, ValidationReport report, Line line1, ValidationParameters parameters) {
 		if (line1.getGroupOfLines().size() == 0) {
 			// failure encountered, add line 1
-			Location location = new Location(line1);
+			Location location = buildLocation(context,line1);
 
 			Detail detail = new Detail(L4_LINE_3 + "_1", location);
 			addValidationError(report, L4_LINE_3, detail);
 		} else if (line1.getGroupOfLines().size() > 1) {
 			// failure encountered, add line 1
-			Location location = new Location(line1);
+			Location location = buildLocation(context,line1);
 
 			Detail detail = new Detail(L4_LINE_3 + "_2", location);
 			addValidationError(report, L4_LINE_3, detail);
@@ -124,7 +125,7 @@ public class LineCheckPoints extends AbstractValidation<Line> implements Validat
 
 	}
 
-	private void check4Line4(ValidationReport report, Line line1, ValidationParameters parameters) {
+	private void check4Line4(Context context, ValidationReport report, Line line1, ValidationParameters parameters) {
 		if (line1.getRoutes().size() == 1)
 			return;
 		if (line1.getRoutes().size() == 2) {
@@ -134,7 +135,7 @@ public class LineCheckPoints extends AbstractValidation<Line> implements Validat
 				return;
 		}
 		// failure encountered, add line 1
-		Location location = new Location(line1);
+		Location location = buildLocation(context,line1);
 
 		if (line1.getRoutes().size() == 0) {
 			Detail detail = new Detail(L4_LINE_4 + "_1", location);

@@ -26,13 +26,25 @@ import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.FileInfo;
 import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
 import mobi.chouette.exchange.report.ReportConstant;
-import mobi.chouette.exchange.validation.DaoSharedDataValidatorCommand;
 import mobi.chouette.exchange.validation.ImportedLineValidatorCommand;
-import mobi.chouette.exchange.validation.ValidationData;
+import mobi.chouette.exchange.validation.SharedDataValidatorCommand;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
+/**
+ * execute use in context : 
+ * <ul>
+ * <li>INITIAL_CONTEXT</li>
+ * <li>REPORT</li>
+ * <li>JOB_DATA</li>
+ * <li>CONFIGURATION</li>
+ * <li>VALIDATION</li>
+ * </ul>
+ * 
+ * @author michel
+ *
+ */
 @Log4j
 public class NeptuneImporterCommand implements Command, Constant, ReportConstant {
 
@@ -71,9 +83,6 @@ public class NeptuneImporterCommand implements Command, Constant, ReportConstant
 		progression.initialize(context, initCount);
 
 		boolean level3validation = context.get(VALIDATION) != null;
-
-		if (level3validation)
-			context.put(VALIDATION_DATA, new ValidationData());
 
 		try {
 
@@ -161,7 +170,7 @@ public class NeptuneImporterCommand implements Command, Constant, ReportConstant
 			progression.terminate(context, level3validation ? 2 : 1);
 			if (level3validation) {
 				// add shared data validation
-				Command validate = CommandFactory.create(initialContext, DaoSharedDataValidatorCommand.class.getName());
+				Command validate = CommandFactory.create(initialContext, SharedDataValidatorCommand.class.getName());
 				validate.execute(context);
 				progression.execute(context);
 

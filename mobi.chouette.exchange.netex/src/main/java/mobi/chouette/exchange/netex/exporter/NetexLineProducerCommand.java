@@ -3,19 +3,13 @@ package mobi.chouette.exchange.netex.exporter;
 import java.io.IOException;
 import java.sql.Date;
 
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.naming.InitialContext;
-import javax.naming.NamingException;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.dao.LineDAO;
 import mobi.chouette.exchange.netex.Constant;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.LineInfo;
@@ -27,15 +21,10 @@ import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
 @Log4j
-@Stateless(name = NetexProducerCommand.COMMAND)
-public class NetexProducerCommand implements Command, Constant {
-	public static final String COMMAND = "NetexProducerCommand";
-
-	@EJB
-	private LineDAO lineDAO;
+public class NetexLineProducerCommand implements Command, Constant {
+	public static final String COMMAND = "NetexLineProducerCommand";
 
 	@Override
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public boolean execute(Context context) throws Exception {
 
 		boolean result = ERROR;
@@ -44,8 +33,7 @@ public class NetexProducerCommand implements Command, Constant {
 
 		try {
 
-			Long lineId = (Long) context.get(LINE_ID);
-			Line line = lineDAO.find(lineId);
+			Line line = (Line) context.get(LINE);
 			NetexExportParameters configuration = (NetexExportParameters) context.get(CONFIGURATION);
 
 			ExportableData collection = new ExportableData();
@@ -118,26 +106,13 @@ public class NetexProducerCommand implements Command, Constant {
 
 		@Override
 		protected Command create(InitialContext context) throws IOException {
-			Command result = null;
-			try {
-				String name = "java:app/mobi.chouette.exchange.netex/"
-						+ COMMAND;
-				result = (Command) context.lookup(name);
-			} catch (NamingException e) {
-				// try another way on test context
-				String name = "java:module/" + COMMAND;
-				try {
-					result = (Command) context.lookup(name);
-				} catch (NamingException e1) {
-					log.error(e);
-				}
-			}
+			Command result = new NetexLineProducerCommand();
 			return result;
 		}
 	}
 
 	static {
-		CommandFactory.factories.put(NetexProducerCommand.class.getName(), new DefaultCommandFactory());
+		CommandFactory.factories.put(NetexLineProducerCommand.class.getName(), new DefaultCommandFactory());
 	}
 
 	

@@ -122,6 +122,7 @@ AbstractTestValidation
 		String expectedObjectId = bean2.getObjectId();
 
 		// unique
+		fullparameters.setCheckAccessLink(1);
 		fullparameters.getAccessLink().getObjectId().setUnique(1);
 
 		

@@ -8,12 +8,7 @@ import java.sql.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.xml.datatype.DatatypeConfigurationException;
 
 import lombok.extern.log4j.Log4j;
@@ -23,7 +18,6 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.dao.LineDAO;
 import mobi.chouette.exchange.kml.exporter.KmlData.KmlItem;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.LineInfo;
@@ -39,15 +33,10 @@ import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
 @Log4j
-@Stateless(name = KmlLineProducerCommand.COMMAND)
 public class KmlLineProducerCommand implements Command, Constant {
 	public static final String COMMAND = "KmlLineProducerCommand";
 
-	@EJB
-	private LineDAO lineDAO;
-
 	@Override
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public boolean execute(Context context) throws Exception {
 		boolean result = ERROR;
 
@@ -55,8 +44,7 @@ public class KmlLineProducerCommand implements Command, Constant {
 		ActionReport report = (ActionReport) context.get(REPORT);
 
 		try {
-			Long lineId = (Long) context.get(LINE_ID);
-			Line line = lineDAO.find(lineId);
+			Line line = (Line) context.get(LINE);
 
 			KmlExportParameters configuration = (KmlExportParameters) context.get(CONFIGURATION);
 
@@ -236,14 +224,7 @@ public class KmlLineProducerCommand implements Command, Constant {
 
 		@Override
 		protected Command create(InitialContext context) throws IOException {
-			Command result = null;
-			try {
-				String name = "java:app/mobi.chouette.exchange.kml/"
-						+ COMMAND;
-				result = (Command) context.lookup(name);
-			} catch (NamingException e) {
-				log.error(e);
-			}
+			Command result = new KmlLineProducerCommand();
 			return result;
 		}
 	}

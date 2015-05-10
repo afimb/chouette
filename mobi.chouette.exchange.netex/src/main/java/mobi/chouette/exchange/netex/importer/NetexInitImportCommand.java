@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.neptune.importer;
+package mobi.chouette.exchange.netex.importer;
 
 import java.io.IOException;
 
@@ -9,7 +9,7 @@ import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.neptune.Constant;
+import mobi.chouette.exchange.netex.Constant;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.model.util.Referential;
 
@@ -17,9 +17,9 @@ import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
 @Log4j
-public class NeptuneInitImportCommand implements Command, Constant {
+public class NetexInitImportCommand implements Command, Constant {
 
-	public static final String COMMAND = "NeptuneInitImportCommand";
+	public static final String COMMAND = "NetexInitImportCommand";
 
 	@Override
 	public boolean execute(Context context) throws Exception {
@@ -47,13 +47,13 @@ public class NeptuneInitImportCommand implements Command, Constant {
 
 		@Override
 		protected Command create(InitialContext context) throws IOException {
-			Command result = new NeptuneInitImportCommand();
+			Command result = new NetexInitImportCommand();
 			return result;
 		}
 	}
 
 	static {
-		CommandFactory.factories.put(NeptuneInitImportCommand.class.getName(), new DefaultCommandFactory());
+		CommandFactory.factories.put(NetexInitImportCommand.class.getName(), new DefaultCommandFactory());
 	}
 
 }

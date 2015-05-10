@@ -43,16 +43,18 @@ public class ImportedLineValidatorCommand implements Command, Constant {
 			Command lineValidatorCommand = CommandFactory.create(initialContext,
 					LineValidatorCommand.class.getName());
 
-            Referential referential = (Referential) context.get(REFERENTIAL);
-            Referential cache = (Referential) context.get(CACHE);
-            
-            Line line = referential.getLines().values().iterator().next();
-			
+			Referential referential = (Referential) context.get(REFERENTIAL);
+			Referential cache = (Referential) context.get(CACHE);
+
+			if (cache == null) cache = new Referential();
+
+			Line line = referential.getLines().values().iterator().next();
+
 			ValidationDataCollector collector = new ValidationDataCollector();
 			collector.collect(data, line, cache);
 
 			lineValidatorCommand.execute(context);
-			
+
 			result = SUCCESS;
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);

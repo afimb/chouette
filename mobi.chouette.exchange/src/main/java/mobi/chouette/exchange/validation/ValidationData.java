@@ -1,11 +1,14 @@
 package mobi.chouette.exchange.validation;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import lombok.Data;
+import mobi.chouette.exchange.validation.report.Location;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.Company;
@@ -45,6 +48,7 @@ public class ValidationData {
 	private List<Route> routes = new ArrayList<>();
 	private List<StopPoint> stopPoints = new ArrayList<>();
 	private Line currentLine;
+	private Map<String,Location> fileLocations = new HashMap<>();
 
 	public void clear() {
 		vehicleJourneys.clear();

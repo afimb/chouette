@@ -1,9 +1,7 @@
 package mobi.chouette.exchange.validation.checkpoint;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
@@ -46,18 +44,18 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 			JourneyPattern jp = beans.get(i);
 
 			// 3-JourneyPattern-1 : check if two journey patterns use same stops
-			check3JourneyPattern1(report, beans, i, jp);
+			check3JourneyPattern1(context,report, beans, i, jp);
 
 			// 4-JourneyPattern-1 : check columns constraints
 			if (test4_1)
-				check4Generic1(report, jp, L4_JOURNEY_PATTERN_1, parameters, context, log);
+				check4Generic1(context,report, jp, L4_JOURNEY_PATTERN_1, parameters, log);
 
 		}
 		return null;
 
 	}
 
-	private void check3JourneyPattern1(ValidationReport report, List<JourneyPattern> beans, int jpRank,
+	private void check3JourneyPattern1(Context context, ValidationReport report, List<JourneyPattern> beans, int jpRank,
 			JourneyPattern jp) {
 		// 3-JourneyPattern-1 : check if two journey patterns use same stops
 		if (beans.size() <= 1)
@@ -69,8 +67,8 @@ public class JourneyPatternCheckPoints extends AbstractValidation<JourneyPattern
 			if (pointCount != jp2.getStopPoints().size())
 				continue;
 			if (jp.getStopPoints().equals(jp2.getStopPoints())) {
-				Location location = new Location(jp);
-				Location targetLocation = new Location(jp2);
+				Location location = buildLocation(context,jp);
+				Location targetLocation = buildLocation(context,jp2);
 
 				Detail detail = new Detail(JOURNEY_PATTERN_1, location, Integer.toString(pointCount), targetLocation);
 				addValidationError(report, JOURNEY_PATTERN_1, detail);

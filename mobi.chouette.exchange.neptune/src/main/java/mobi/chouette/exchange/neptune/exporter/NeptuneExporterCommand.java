@@ -96,7 +96,7 @@ public class NeptuneExporterCommand extends AbstractExporterCommand implements C
 			progression.execute(context);
 
 			progression.start(context, lines.size());
-			Command export = CommandFactory.create(initialContext, DaoNeptuneProducerCommand.class.getName());
+			Command export = CommandFactory.create(initialContext, DaoNeptuneLineProducerCommand.class.getName());
 
 			// export each line
 			for (Line line : lines) {

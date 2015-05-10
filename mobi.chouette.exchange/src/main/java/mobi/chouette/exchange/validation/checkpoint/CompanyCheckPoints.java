@@ -39,7 +39,7 @@ public class CompanyCheckPoints extends AbstractValidation<Company> implements V
 
 			// 4-Company-1 : check columns constraints
 			if (test4_1)
-				check4Generic1(report, bean, L4_COMPANY_1, parameters, context, log);
+				check4Generic1(context,report, bean, L4_COMPANY_1, parameters, log);
 
 		}
 		return null;

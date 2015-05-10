@@ -34,9 +34,7 @@ public class PtLinkValidator extends AbstractValidator implements Validator<PTLi
 
 	public void addLocation(Context context, String objectId, int lineNumber, int columnNumber)
 	{
-		Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
-		objectContext.put(LINE_NUMBER, Integer.valueOf(lineNumber));
-		objectContext.put(COLUMN_NUMBER, Integer.valueOf(columnNumber));
+		addLocation( context,LOCAL_CONTEXT,  objectId,  lineNumber,  columnNumber);
 
 	}
 	public void addStartOfLinkId(Context  context, String objectId, String linkId)

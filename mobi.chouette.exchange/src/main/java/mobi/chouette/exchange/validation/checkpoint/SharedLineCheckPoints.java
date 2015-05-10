@@ -35,7 +35,7 @@ public class SharedLineCheckPoints extends AbstractValidation<Line> implements V
 		for (int i = 0; i < beans.size(); i++) {
 			Line line1 = beans.get(i);
 			// 3-Line-1 : check if two lines have same name
-			check3Line1(beans, report, i, line1);
+			check3Line1(context,beans, report, i, line1);
 		}
 		return null;
 
@@ -47,7 +47,7 @@ public class SharedLineCheckPoints extends AbstractValidation<Line> implements V
 	 * @param lineRank
 	 * @param line1
 	 */
-	private void check3Line1(List<Line> beans, ValidationReport report, int lineRank, Line line1) {
+	private void check3Line1(Context context,List<Line> beans, ValidationReport report, int lineRank, Line line1) {
 		if (beans.size() <= 1)
 			return;
 		boolean error_1 = false; // if true, add detail for this line
@@ -62,8 +62,8 @@ public class SharedLineCheckPoints extends AbstractValidation<Line> implements V
 			if (line2.getNetwork().equals(line1.getNetwork())) {
 				if (checkEquals(line1.getName(),line2.getName()) && checkEquals(line1.getNumber(),line2.getNumber())) {
 					// failure ! add only line2 location
-					Location location = new Location(line2);
-					Location networkLocation = new Location(line2.getNetwork());
+					Location location = buildLocation(context,line2);
+					Location networkLocation = buildLocation(context,line2.getNetwork());
 					Detail detail = new Detail(LINE_1, location, networkLocation);
 					addValidationError(report, LINE_1, detail);
 
@@ -74,8 +74,8 @@ public class SharedLineCheckPoints extends AbstractValidation<Line> implements V
 		}
 		if (error_1) {
 			// failure encountered, add line 1
-			Location location = new Location(line1);
-			Location networkLocation = new Location(line1.getNetwork());
+			Location location = buildLocation(context,line1);
+			Location networkLocation = buildLocation(context,line1.getNetwork());
 
 			Detail detail = new Detail(LINE_1, location, networkLocation);
 			addValidationError(report, LINE_1, detail);

@@ -8,7 +8,6 @@
 
 package mobi.chouette.exchange.validation.checkpoint;
 
-import java.io.StringReader;
 import java.lang.reflect.Method;
 import java.sql.Time;
 import java.util.ArrayList;
@@ -19,11 +18,9 @@ import java.util.Map;
 import java.util.TimeZone;
 import java.util.regex.Pattern;
 
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonReader;
-
 import mobi.chouette.common.Constant;
+import mobi.chouette.common.Context;
+import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.parameters.FieldParameters;
 import mobi.chouette.exchange.validation.parameters.TransportModeParameters;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
@@ -37,6 +34,7 @@ import mobi.chouette.model.NeptuneLocalizedObject;
 import mobi.chouette.model.type.LongLatTypeEnum;
 
 import org.apache.log4j.Logger;
+import org.codehaus.jettison.json.JSONArray;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.GeometryFactory;
@@ -268,20 +266,19 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	 * @param parameters
 	 * @return
 	 */
-	protected Polygon getEnveloppe(ValidationParameters parameters) {
+	protected Polygon getEnveloppe(ValidationParameters parameters) throws Exception {
 		// validationPerimeter : default = France
 		String perimeter = parameters.getStopAreasArea();
 		if (perimeter == null || perimeter.isEmpty() || !perimeter.startsWith("[")) {
 			perimeter = DEFAULT_ENVELOPPE;
 		}
 
-		JsonReader jsonReader = Json.createReader(new StringReader(perimeter));
-		JsonArray array = jsonReader.readArray();
+		// JsonReader jsonReader = Json.createReader(new StringReader(perimeter));
+		JSONArray array = new JSONArray(perimeter);
 		List<Coordinate> listCoordinates = new ArrayList<Coordinate>();
-		for (int i = 0; i < array.size(); i++) {
-			JsonArray coords = array.getJsonArray(i);
-			Coordinate coord = new Coordinate(coords.getJsonNumber(0).doubleValue(), coords.getJsonNumber(1)
-					.doubleValue());
+		for (int i = 0; i < array.length(); i++) {
+			JSONArray coords = array.getJSONArray(i);
+			Coordinate coord = new Coordinate(coords.getDouble(0), coords.getDouble(1));
 			listCoordinates.add(coord);
 		}
 		if (!listCoordinates.get(0).equals(listCoordinates.get(listCoordinates.size() - 1))) {
@@ -319,7 +316,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	 * @param testCode
 	 * @param resultCode
 	 */
-	protected void checkLinkSpeed(ValidationReport report, NeptuneIdentifiedObject object, Time duration,
+	protected void checkLinkSpeed(Context context, ValidationReport report, NeptuneIdentifiedObject object, Time duration,
 			double distance, int maxDefaultSpeed, String testCode, String resultCode) {
 		if (duration != null) {
 			long time = getTimeInSeconds(duration); // in seconds
@@ -328,7 +325,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 				int speed = (int) (distance / (double) time * 36 / 10 + 0.5); // (km/h)
 
 				if (speed > maxDefaultSpeed) {
-					Location location = new Location(object);
+					Location location = buildLocation(context,object);
 					Detail detail = new Detail(testCode + resultCode, location, Integer.toString(speed),
 							Integer.toString(maxDefaultSpeed));
 					addValidationError(report, testCode, detail);
@@ -344,8 +341,8 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 		return millis / 1000;
 	}
 
-	protected void check4Generic1(ValidationReport report, T object, String testName, ValidationParameters parameters,
-			Map<String, Object> context, Logger log) {
+	protected void check4Generic1(Context context,ValidationReport report, T object, String testName, ValidationParameters parameters,
+			Logger log) {
 
 		List<String> columnNames = ValidationParametersUtil.getFields(object);
 		String objectKey = toUnderscore(object.getClass().getSimpleName());
@@ -390,22 +387,22 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 				}
 				// uniqueness ?
 				if (colParam.getUnique() == 1) {
-					check4Generic1Unique(report, object, testName, objectKey, context, column, value);
+					check4Generic1Unique(context,report, object, testName, objectKey, column, value);
 				}
 
 				// pattern ?
 				PATTERN_OPTION pattern_opt = PATTERN_OPTION.values()[colParam.getPattern()];
 
-				check4Generic1Pattern(report, object, testName, column, value, pattern_opt);
+				check4Generic1Pattern(context,report, object, testName, column, value, pattern_opt);
 
 				// min size ?
 				if (colParam.getMinSize() != null && !colParam.getMinSize().isEmpty()) {
-					check4Generic1MinSize(report, object, testName, column, colParam, objVal, value, pattern_opt);
+					check4Generic1MinSize(context,report, object, testName, column, colParam, objVal, value, pattern_opt);
 				}
 
 				// max_size ?
 				if (colParam.getMaxSize() != null  && !colParam.getMaxSize().isEmpty() && !value.isEmpty()) {
-					check4Generic1MaxSize(report, object, testName, column, colParam, objVal, value, pattern_opt);
+					check4Generic1MaxSize(context,report, object, testName, column, colParam, objVal, value, pattern_opt);
 				}
 
 			} catch (Exception e) {
@@ -425,7 +422,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	 * @param value
 	 * @param pattern_opt
 	 */
-	private void check4Generic1MaxSize(ValidationReport report, T object, String testName, String column,
+	private void check4Generic1MaxSize(Context context,ValidationReport report, T object, String testName, String column,
 			FieldParameters colParam, Object objVal, String value, PATTERN_OPTION pattern_opt) {
 		int maxSize = Integer.parseInt(colParam.getMaxSize());
 		if (maxSize != 0) {
@@ -433,7 +430,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 				// check numeric value
 				long val = Long.parseLong(value);
 				if (val > maxSize) {
-					Location location = new Location(object);
+					Location location = buildLocation(context,object);
 
 					Detail detail = new Detail(testName + "_" + MAX_SIZE, location, value, column);
 					addValidationError(report, testName, detail);
@@ -441,7 +438,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 			} else {
 				// test string size
 				if (value.length() > maxSize) {
-					Location location = new Location(object);
+					Location location = buildLocation(context,object);
 
 					Detail detail = new Detail(testName + "_" + MAX_SIZE, location, value, column);
 					addValidationError(report, testName, detail);
@@ -460,11 +457,11 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	 * @param value
 	 * @param pattern_opt
 	 */
-	private void check4Generic1MinSize(ValidationReport report, T object, String testName, String column,
+	private void check4Generic1MinSize(Context context,ValidationReport report, T object, String testName, String column,
 			FieldParameters colParam, Object objVal, String value, PATTERN_OPTION pattern_opt) {
 		int minSize = Integer.parseInt(colParam.getMinSize());
 		if (minSize > 0 && value.isEmpty()) {
-			Location location = new Location(object);
+			Location location = buildLocation(context,object);
 
 			Detail detail = new Detail(testName + "_" + MIN_SIZE, location, column, value);
 			addValidationError(report, testName, detail);
@@ -475,7 +472,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 			// check numeric value
 			long val = Long.parseLong(value);
 			if (val < minSize) {
-				Location location = new Location(object);
+				Location location = buildLocation(context,object);
 
 				Detail detail = new Detail(testName + "_" + MIN_SIZE, location, value, column);
 				addValidationError(report, testName, detail);
@@ -483,7 +480,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 		} else {
 			// test string size
 			if (value.length() < minSize) {
-				Location location = new Location(object);
+				Location location = buildLocation(context,object);
 
 				Detail detail = new Detail(testName + "_" + MIN_SIZE, location, value, column);
 				addValidationError(report, testName, detail);
@@ -499,7 +496,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	 * @param value
 	 * @param pattern_opt
 	 */
-	private void check4Generic1Pattern(ValidationReport report, T object, String testName, String column, String value,
+	private void check4Generic1Pattern(Context context,ValidationReport report, T object, String testName, String column, String value,
 			PATTERN_OPTION pattern_opt) {
 		if (!value.isEmpty()) {
 			String regex = null;
@@ -521,7 +518,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 			}
 			if (regex != null) {
 				if (!Pattern.matches(regex, value)) {
-					Location location = new Location(object);
+					Location location = buildLocation(context,object);
 					Detail detail = new Detail(testName + "_" + PATTERN, location, value, column);
 					addValidationError(report, testName, detail);
 				}
@@ -539,21 +536,22 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	 * @param value
 	 */
 	@SuppressWarnings("unchecked")
-	private void check4Generic1Unique(ValidationReport report, T object, String testName, String objectKey,
-			Map<String, Object> context, String column, String value) {
+	private void check4Generic1Unique(Context context,ValidationReport report, T object, String testName, String objectKey,
+			 String column, String value) {
 		String context_key = objectKey + "_" + column + "_" + UNIQUE;
+		
 		Map<String, Location> values = (Map<String, Location>) context.get(context_key);
 		if (values == null) {
 			values = new HashMap<>();
 			context.put(context_key, values);
 		}
 		if (values.containsKey(value)) {
-			Location location = new Location(object);
+			Location location = buildLocation(context,object);
 
 			Detail detail = new Detail(testName + "_" + UNIQUE, location, value, column, values.get(value));
 			addValidationError(report, testName, detail);
 		} else {
-			values.put(value, new Location(object));
+			values.put(value, buildLocation(context,object));
 		}
 	}
 
@@ -588,5 +586,17 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 		return val1.equals(val2);
 	}
 
+	protected Location buildLocation(Context context, NeptuneIdentifiedObject object)
+	{
+		if (object.getId() != null) return new Location(object);
+		ValidationData data =  (ValidationData) context.get(VALIDATION_DATA);
+		if (data == null)
+		{
+			return new Location(null, object.getObjectId());
+		}
+		Location loc = data.getFileLocations().get(object.getObjectId());
+		if (loc == null) return new Location(null, object.getObjectId());
+		return loc;
+	}
 
 }

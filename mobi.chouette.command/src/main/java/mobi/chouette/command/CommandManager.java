@@ -25,6 +25,8 @@ import mobi.chouette.exchange.netex.exporter.NetexExportParameters;
 import mobi.chouette.exchange.netex.importer.NetexImportParameters;
 import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.validation.ImportedLineValidatorCommand;
+import mobi.chouette.exchange.validation.SharedDataValidatorCommand;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.Line;
@@ -125,6 +127,11 @@ public class CommandManager implements Constant {
 	}
 
 	public void process() throws Exception {
+		
+		InitialContext initContext = new InitialContext();
+		
+		Command lineValidationCommand = CommandFactory.create(initContext, ImportedLineValidatorCommand.class.getName());
+		Command sharedValidationCommand = CommandFactory.create(initContext, SharedDataValidatorCommand.class.getName());
 		inputData = loadInputParameters();
 		if (inputData == null)
 			return; // invalid data
@@ -141,9 +148,6 @@ public class CommandManager implements Constant {
 				return; // invalid data
 		}
 
-		// may be useless
-		InitialContext initContext = null;
-		initContext = new InitialContext();
 
 		CommandLineProcessingCommands importProcessingCommands = null;
 		CommandLineProcessingCommands exportProcessingCommands = null;
@@ -208,7 +212,7 @@ public class CommandManager implements Constant {
 			}
 			// execute line validation
 			if (withValidation()) {
-				// TODO
+				lineValidationCommand.execute(importContext);
 			}
 
 			// execute export validation commands
@@ -247,7 +251,7 @@ public class CommandManager implements Constant {
 
 		// validation post processing
 		if (withValidation()) {
-			// TODO
+			sharedValidationCommand.execute(importContext);
 		}
 
 		// output post processing

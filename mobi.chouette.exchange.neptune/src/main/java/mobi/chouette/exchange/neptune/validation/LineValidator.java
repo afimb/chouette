@@ -45,9 +45,7 @@ public class LineValidator extends AbstractValidator implements Validator<Line> 
 
 	public void addLocation(Context context, String objectId, int lineNumber, int columnNumber)
 	{
-		Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
-		objectContext.put(LINE_NUMBER, Integer.valueOf(lineNumber));
-		objectContext.put(COLUMN_NUMBER, Integer.valueOf(columnNumber));
+		addLocation( context,LOCAL_CONTEXT,  objectId,  lineNumber,  columnNumber);
 
 	}
 

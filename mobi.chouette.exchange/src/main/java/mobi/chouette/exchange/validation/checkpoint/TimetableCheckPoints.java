@@ -37,7 +37,7 @@ public class TimetableCheckPoints extends AbstractValidation<Timetable> implemen
 
 			// 4-Timetable-1 : check columns constraints
 			if (test4_1)
-				check4Generic1(report, bean, L4_TIME_TABLE_1, parameters, context, log);
+				check4Generic1(context,report, bean, L4_TIME_TABLE_1, parameters, log);
 
 		}
 		return null;

@@ -23,7 +23,6 @@ import mobi.chouette.exchange.importer.StopAreaRegisterCommand;
 import mobi.chouette.exchange.importer.UncompressCommand;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.validation.DaoSharedDataValidatorCommand;
-import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 
 import com.jamonapi.Monitor;
@@ -90,8 +89,6 @@ public class GtfsImporterCommand implements Command, Constant {
 
 			boolean all = !(parameters.getReferencesType().equalsIgnoreCase("stop_area"));
 			boolean level3validation = context.get(VALIDATION) != null;
-			if (level3validation)
-				context.put(VALIDATION_DATA, new ValidationData());
 
 			if (all) {
 				GtfsImporter importer = (GtfsImporter) context.get(PARSER);

@@ -21,9 +21,9 @@ import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
 @Log4j
-public class NeptuneProducerCommand implements Command, Constant {
+public class NeptuneLineProducerCommand implements Command, Constant {
 
-	public static final String COMMAND = "NeptuneProducerCommand";
+	public static final String COMMAND = "NeptuneLineProducerCommand";
 
 	public boolean execute(Context context) throws Exception {
 
@@ -120,11 +120,11 @@ public class NeptuneProducerCommand implements Command, Constant {
 //				}
 //			}
 //			return result;
-			return new NeptuneProducerCommand();
+			return new NeptuneLineProducerCommand();
 		}
 	}
 
 	static {
-		CommandFactory.factories.put(NeptuneProducerCommand.class.getName(), new DefaultCommandFactory());
+		CommandFactory.factories.put(NeptuneLineProducerCommand.class.getName(), new DefaultCommandFactory());
 	}
 }

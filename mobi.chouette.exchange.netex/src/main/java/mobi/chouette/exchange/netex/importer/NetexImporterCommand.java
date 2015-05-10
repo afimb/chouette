@@ -88,7 +88,14 @@ public class NetexImporterCommand implements Command, Constant {
 			// uncompress data
 			Command uncompress = CommandFactory.create(initialContext,
 					UncompressCommand.class.getName());
-			uncompress.execute(context);
+			if (!uncompress.execute(context)) {
+				return ERROR;
+			}
+			progression.execute(context);
+
+			// init
+			Command initImport = CommandFactory.create(initialContext, NetexInitImportCommand.class.getName());
+			initImport.execute(context);
 			progression.execute(context);
 
 			Path path = Paths.get(jobData.getPathName(), INPUT);

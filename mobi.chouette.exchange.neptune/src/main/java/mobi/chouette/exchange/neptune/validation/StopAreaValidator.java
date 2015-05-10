@@ -60,9 +60,7 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 	public void addLocation(Context context, String objectId, int lineNumber, int columnNumber)
 	{
 		if (objectId == null) throw new NullPointerException("null objectId");
-		Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
-		objectContext.put(LINE_NUMBER, Integer.valueOf(lineNumber));
-		objectContext.put(COLUMN_NUMBER, Integer.valueOf(columnNumber));
+		addLocation( context,LOCAL_CONTEXT,  objectId,  lineNumber,  columnNumber);
 	}
 
 	public void addAreaCentroidId(Context  context, String objectId, String centroidId)

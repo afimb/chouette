@@ -46,31 +46,31 @@ public class AccessPointCheckPoints extends AbstractValidation<AccessPoint> impl
 
 		for (int i = 0; i < beans.size(); i++) {
 			AccessPoint accessPoint = beans.get(i);
-			check3AccessPoint1(report, accessPoint);
-			check3AccessPoint3(report, accessPoint, parameters);
+			check3AccessPoint1(context,report, accessPoint);
+			check3AccessPoint3(context,report, accessPoint, parameters);
 			// 4-AccessPoint-1 : check columns constraints
 			if (test4_1)
-				check4Generic1(report, accessPoint, L4_ACCESS_POINT_1, parameters, context, log);
+				check4Generic1(context,report, accessPoint, L4_ACCESS_POINT_1, parameters, log);
 			for (int j = i + 1; j < beans.size(); j++) {
-				check3AccessPoint2(report, i, accessPoint, j, beans.get(j), parameters);
+				check3AccessPoint2(context,report, i, accessPoint, j, beans.get(j), parameters);
 			}
 
 		}
 		return null;
 	}
 
-	private void check3AccessPoint1(ValidationReport report, AccessPoint accessPoint) {
+	private void check3AccessPoint1(Context context, ValidationReport report, AccessPoint accessPoint) {
 		// 3-AccessPoint-1 : check if all access points have geolocalization
 
 		if (!accessPoint.hasCoordinates()) {
-			Location location = new Location(accessPoint);
-			Location containedLocation = new Location(accessPoint.getContainedIn());
+			Location location = buildLocation(context,accessPoint);
+			Location containedLocation = buildLocation(context,accessPoint.getContainedIn());
 			Detail detail = new Detail(ACCESS_POINT_1, location, containedLocation);
 			addValidationError(report, ACCESS_POINT_1, detail);
 		}
 	}
 
-	private void check3AccessPoint2(ValidationReport report, int i, AccessPoint accessPoint, int j,
+	private void check3AccessPoint2(Context context, ValidationReport report, int i, AccessPoint accessPoint, int j,
 			AccessPoint accessPoint2, ValidationParameters parameters) {
 		// 3-AccessPoint-2 : check distance of access points with different name
 		if (!accessPoint.hasCoordinates())
@@ -82,8 +82,8 @@ public class AccessPointCheckPoints extends AbstractValidation<AccessPoint> impl
 			return;
 		double distance = distance(accessPoint, accessPoint2);
 		if (distance < distanceMin) {
-			Location location = new Location(accessPoint);
-			Location targetLocation = new Location(accessPoint2);
+			Location location = buildLocation(context,accessPoint);
+			Location targetLocation = buildLocation(context,accessPoint2);
 			Detail detail = new Detail(ACCESS_POINT_2, location, Integer.toString((int) distance),
 					Integer.toString((int) distanceMin), targetLocation);
 			addValidationError(report, ACCESS_POINT_2, detail);
@@ -91,7 +91,7 @@ public class AccessPointCheckPoints extends AbstractValidation<AccessPoint> impl
 
 	}
 
-	private void check3AccessPoint3(ValidationReport report, AccessPoint accessPoint, ValidationParameters parameters) {
+	private void check3AccessPoint3(Context context, ValidationReport report, AccessPoint accessPoint, ValidationParameters parameters) {
 		// 3-AccessPoint-3 : check distance with parents
 		if (!accessPoint.hasCoordinates())
 			return;
@@ -101,8 +101,8 @@ public class AccessPointCheckPoints extends AbstractValidation<AccessPoint> impl
 			return;
 		double distance = distance(accessPoint, stopArea);
 		if (distance > distanceMax) {
-			Location location = new Location(accessPoint);
-			Location targetLocation = new Location(stopArea);
+			Location location = buildLocation(context,accessPoint);
+			Location targetLocation = buildLocation(context,stopArea);
 
 			Detail detail = new Detail(ACCESS_POINT_3, location, Integer.toString((int) distance),
 					Integer.toString((int) distanceMax), targetLocation);

@@ -38,7 +38,7 @@ public class NetworkCheckPoints extends AbstractValidation<Network> implements V
 
 			// 4-Network-1 : check columns constraints
 			if (test4_1)
-				check4Generic1(report, bean, L4_NETWORK_1, parameters, context, log);
+				check4Generic1(context,report, bean, L4_NETWORK_1, parameters, log);
 
 		}
 		return null;

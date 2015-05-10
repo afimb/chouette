@@ -1,13 +1,7 @@
 package mobi.chouette.exchange.hub.exporter;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -20,7 +14,6 @@ import javax.naming.NamingException;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
-import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.ProgressionCommand;
@@ -28,12 +21,9 @@ import mobi.chouette.exchange.exporter.AbstractExporterCommand;
 import mobi.chouette.exchange.exporter.CompressCommand;
 import mobi.chouette.exchange.exporter.SaveMetadataCommand;
 import mobi.chouette.exchange.hub.Constant;
-import mobi.chouette.exchange.hub.model.exporter.HubExporter;
-import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.model.Line;
-import mobi.chouette.model.util.Referential;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -56,23 +46,7 @@ public class HubExporterCommand extends AbstractExporterCommand implements Comma
 		ProgressionCommand progression = (ProgressionCommand) CommandFactory.create(initialContext,
 				ProgressionCommand.class.getName());
 
-		progression.initialize(context, 1);
-		JobData jobData = (JobData) context.get(JOB_DATA);
-		jobData.setFilename("export_" + jobData.getType() + "_" + jobData.getId() + ".zip");
-
-		context.put(REFERENTIAL, new Referential());
-		Metadata metadata = new Metadata(); // if not asked, will be used as
-											// dummy
-		metadata.setDate(Calendar.getInstance());
-		metadata.setFormat("text");
-		metadata.setTitle("Export hub ");
-		try {
-			metadata.setRelation(new URL("http://www.cityway.fr"));
-		} catch (MalformedURLException e1) {
-			log.error("problem with http://www.cityway.fr url", e1);
-		}
-
-		context.put(METADATA, metadata);
+		progression.initialize(context, 2);
 
 		// read parameters
 		Object configuration = context.get(CONFIGURATION);
@@ -110,13 +84,10 @@ public class HubExporterCommand extends AbstractExporterCommand implements Comma
 		type=type.toLowerCase();
 
 		try {
-			Path path = Paths.get(jobData.getPathName(), OUTPUT);
-			if (!Files.exists(path)) {
-				Files.createDirectories(path);
-			}
-			HubExporter hubExporter = new HubExporter(path.toString());
-			initExporter(hubExporter);
-			context.put(HUB_EXPORTER, hubExporter);
+			// init
+			Command initExport = CommandFactory.create(initialContext, HubInitExportCommand.class.getName());
+			initExport.execute(context);
+			progression.execute(context);
 
 			List<Long> ids = null;
 			if (parameters.getIds() != null) {
@@ -127,7 +98,7 @@ public class HubExporterCommand extends AbstractExporterCommand implements Comma
 
 			progression.execute(context);
 			progression.start(context, lines.size() + 1);
-			Command exportLine = CommandFactory.create(initialContext, HubLineProducerCommand.class.getName());
+			Command exportLine = CommandFactory.create(initialContext, DaoHubLineProducerCommand.class.getName());
 
 			int lineCount = 0;
 			List<Line> lineList = new ArrayList<>(lines);
@@ -150,18 +121,21 @@ public class HubExporterCommand extends AbstractExporterCommand implements Comma
 				result = exportSharedData.execute(context);
 			}
 
-			hubExporter.dispose();
 			
 			// save metadata
 
 			if (parameters.isAddMetadata()) {
-				progression.terminate(context, 2);
+				progression.terminate(context, 3);
 				Command saveMetadata = CommandFactory.create(initialContext, SaveMetadataCommand.class.getName());
 				saveMetadata.execute(context);
 				progression.execute(context);
 			} else {
-				progression.terminate(context, 1);
+				progression.terminate(context, 2);
 			}
+
+			Command terminateExport = CommandFactory.create(initialContext, HubTerminateExportCommand.class.getName());
+			terminateExport.execute(context);
+			progression.execute(context);
 
 			// compress
 			Command compress = CommandFactory.create(initialContext, CompressCommand.class.getName());
@@ -181,27 +155,6 @@ public class HubExporterCommand extends AbstractExporterCommand implements Comma
 		return result;
 	}
 	
-	private void initExporter(HubExporter hubExporter)
-	{
-		// create all files event if empty
-		hubExporter.getArretExporter();
-		hubExporter.getCheminExporter();
-		hubExporter.getCommuneExporter();
-		hubExporter.getCorrespondanceExporter();
-		hubExporter.getCourseExporter();
-		hubExporter.getCourseOperationExporter();
-		hubExporter.getDirectionExporter();
-		hubExporter.getGroupeDeLigneExporter();
-		hubExporter.getHoraireExporter();
-		hubExporter.getItlExporter();
-		hubExporter.getLigneExporter();
-		hubExporter.getModeTransportExporter();
-		hubExporter.getPeriodeExporter();
-		hubExporter.getRenvoiExporter();
-		hubExporter.getReseauExporter();
-		hubExporter.getSchemaExporter();
-		hubExporter.getTransporteurExporter();
-	}
 
 	public class LineSorter implements Comparator<Line> {
 		@Override

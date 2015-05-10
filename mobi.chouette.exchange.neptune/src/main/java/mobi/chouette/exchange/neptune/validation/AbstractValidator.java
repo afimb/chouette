@@ -6,8 +6,10 @@ import java.util.Set;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
+import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.report.CheckPoint;
 import mobi.chouette.exchange.validation.report.Detail;
+import mobi.chouette.exchange.validation.report.Location;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.util.Referential;
@@ -139,7 +141,32 @@ public abstract class AbstractValidator implements Constant
 		return null;
 	}
 
+	public abstract void addLocation(Context context, String objectId, int lineNumber, int columnNumber);
 
+	
+	/**
+	 * add location for local validation (level 1 and 2) and for general validation (level 3 and more)
+	 * 
+	 * @param context
+	 * @param localContext
+	 * @param objectId
+	 * @param lineNumber
+	 * @param columnNumber
+	 */
+	protected void addLocation(Context context,String localContext, String objectId, int lineNumber, int columnNumber)
+	{
+		Context objectContext = getObjectContext(context, localContext, objectId);
+		objectContext.put(LINE_NUMBER, Integer.valueOf(lineNumber));
+		objectContext.put(COLUMN_NUMBER, Integer.valueOf(columnNumber));
+		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
+		String fileName = (String) context.get(FILE_NAME);
+		if (data != null && fileName != null)
+		{
+			Location loc = new Location(fileName,lineNumber,columnNumber,objectId);
+			data.getFileLocations().put(objectId, loc);
+		}
+		
+	}
 	/**
 	 * check if a list is null or empty
 	 * 

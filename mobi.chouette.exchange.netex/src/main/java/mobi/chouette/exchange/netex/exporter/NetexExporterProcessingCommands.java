@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.neptune.exporter;
+package mobi.chouette.exchange.netex.exporter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,20 +15,20 @@ import mobi.chouette.exchange.CommandLineProcessingCommands;
 import mobi.chouette.exchange.CommandLineProcessingCommandsFactory;
 
 @Data
-public class NeptuneExporterProcessingCommands implements CommandLineProcessingCommands, Constant {
+public class NetexExporterProcessingCommands implements CommandLineProcessingCommands, Constant {
 
 	
 	public static class DefaultFactory extends CommandLineProcessingCommandsFactory {
 
 		@Override
 		protected CommandLineProcessingCommands create() throws IOException {
-			CommandLineProcessingCommands result = new NeptuneExporterProcessingCommands();
+			CommandLineProcessingCommands result = new NetexExporterProcessingCommands();
 			return result;
 		}
 	}
 
 	static {
-		CommandLineProcessingCommandsFactory.factories.put(NeptuneExporterProcessingCommands.class.getName(),
+		CommandLineProcessingCommandsFactory.factories.put(NetexExporterProcessingCommands.class.getName(),
 				new DefaultFactory());
 	}
 
@@ -37,7 +37,7 @@ public class NeptuneExporterProcessingCommands implements CommandLineProcessingC
 		InitialContext initCtx = (InitialContext) context.get(INITIAL_CONTEXT);
 		List<Command> commands = new ArrayList<>();
 		try {
-			commands.add(CommandFactory.create(initCtx, NeptuneInitExportCommand.class.getName()));
+			commands.add(CommandFactory.create(initCtx, NetexInitExportCommand.class.getName()));
 		} catch (Exception e) {
 			// TODO
 		}
@@ -50,7 +50,7 @@ public class NeptuneExporterProcessingCommands implements CommandLineProcessingC
 		InitialContext initCtx = (InitialContext) context.get(INITIAL_CONTEXT);
 		List<Command> commands = new ArrayList<>();
 		try {
-			commands.add(CommandFactory.create(initCtx, NeptuneLineProducerCommand.class.getName()));
+			commands.add(CommandFactory.create(initCtx, NetexLineProducerCommand.class.getName()));
 		} catch (Exception e) {
 			// TODO
 		}

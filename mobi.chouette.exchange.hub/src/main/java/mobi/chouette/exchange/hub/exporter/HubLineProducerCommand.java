@@ -7,12 +7,7 @@ import java.sql.Date;
 import java.util.Collections;
 import java.util.Comparator;
 
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.xml.datatype.DatatypeConfigurationException;
 
 import lombok.extern.log4j.Log4j;
@@ -20,7 +15,6 @@ import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.dao.LineDAO;
 import mobi.chouette.exchange.hub.Constant;
 import mobi.chouette.exchange.hub.exporter.producer.HubCheminProducer;
 import mobi.chouette.exchange.hub.exporter.producer.HubCourseOperationProducer;
@@ -51,7 +45,6 @@ import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
 @Log4j
-@Stateless(name = HubLineProducerCommand.COMMAND)
 public class HubLineProducerCommand implements Command, Constant {
 	public static final String COMMAND = "HubLineProducerCommand";
 	
@@ -59,11 +52,7 @@ public class HubLineProducerCommand implements Command, Constant {
 	private static final String PMR_LABEL = "PMR";
 	
 
-	@EJB
-	private LineDAO lineDAO;
-
 	@Override
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public boolean execute(Context context) throws Exception {
 		boolean result = ERROR;
 
@@ -71,9 +60,8 @@ public class HubLineProducerCommand implements Command, Constant {
 		ActionReport report = (ActionReport) context.get(REPORT);
 
 		try {
-			Long lineId = (Long) context.get(LINE_ID);
-			Line line = lineDAO.find(lineId);
-
+			Line line = (Line) context.get(LINE);
+			
 			HubExportParameters configuration = (HubExportParameters) context.get(CONFIGURATION);
 
 			ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
@@ -370,13 +358,8 @@ public class HubLineProducerCommand implements Command, Constant {
 
 		@Override
 		protected Command create(InitialContext context) throws IOException {
-			Command result = null;
-			try {
-				String name = "java:app/mobi.chouette.exchange.hub/" + COMMAND;
-				result = (Command) context.lookup(name);
-			} catch (NamingException e) {
-				log.error(e);
-			}
+			Command result = new HubLineProducerCommand();
+			
 			return result;
 		}
 	}

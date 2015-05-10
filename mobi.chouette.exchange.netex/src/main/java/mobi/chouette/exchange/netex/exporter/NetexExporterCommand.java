@@ -1,13 +1,7 @@
 package mobi.chouette.exchange.netex.exporter;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 
@@ -18,19 +12,16 @@ import javax.naming.NamingException;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
-import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.ProgressionCommand;
 import mobi.chouette.exchange.exporter.AbstractExporterCommand;
 import mobi.chouette.exchange.exporter.CompressCommand;
 import mobi.chouette.exchange.exporter.SaveMetadataCommand;
-import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.netex.Constant;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.model.Line;
-import mobi.chouette.model.util.Referential;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -52,25 +43,8 @@ public class NetexExporterCommand extends AbstractExporterCommand implements Com
 		// initialize reporting and progression
 		ProgressionCommand progression = (ProgressionCommand) CommandFactory
 				.create(initialContext, ProgressionCommand.class.getName());
-		progression.initialize(context,1);
+		progression.initialize(context,2);
 
-		JobData jobData = (JobData) context.get(JOB_DATA);
-		jobData.setFilename("export_" + jobData.getType() + "_" + jobData.getId() + ".zip");
-		context.put(REFERENTIAL, new Referential());
-		Metadata metadata = new Metadata(); // if not asked, will be used as dummy
-        metadata.setDate(Calendar.getInstance());
-        metadata.setFormat("application/xml");
-        metadata.setTitle("Export NeTEx ");
-        try
-        {
-           metadata.setRelation(new URL("http://www.chouette.mobi/pourquoi-chouette/convertir-des-donnees/"));
-        }
-        catch (MalformedURLException e1)
-        {
-           log.error("problem with http://www.chouette.mobi/pourquoi-chouette/convertir-des-donnees/ url", e1);
-        }
-
-		context.put(METADATA, metadata);
 
 		// read parameters
 		Object configuration = context.get(CONFIGURATION);
@@ -98,6 +72,10 @@ public class NetexExporterCommand extends AbstractExporterCommand implements Com
 				
 			}
 		}
+		Command init = CommandFactory.create(initialContext, NetexInitExportCommand.class.getName());
+		init.execute(context);
+		progression.execute(context);
+
 
 		String type = parameters.getReferencesType();
 		// set default type 
@@ -119,14 +97,9 @@ public class NetexExporterCommand extends AbstractExporterCommand implements Com
 
 		try {
 
-			Path path = Paths.get(jobData.getPathName(), OUTPUT);
-			if (!Files.exists(path)) {
-				Files.createDirectories(path);
-			}
-
 			progression.start(context, lines.size());
 			Command export = CommandFactory.create(initialContext,
-					NetexProducerCommand.class.getName());
+					DaoNetexLineProducerCommand.class.getName());
 
 			// export each line
 			for (Line line : lines) {

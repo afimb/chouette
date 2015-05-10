@@ -54,20 +54,20 @@ public class ConnectionLinkCheckPoints extends AbstractValidation<ConnectionLink
 		}
 		for (int i = 0; i < beans.size(); i++) {
 			ConnectionLink connectionLink = beans.get(i);
-			check3ConnectionLink1_2(report, connectionLink, parameters);
-			check3ConnectionLink3(report, connectionLink, parameters);
+			check3ConnectionLink1_2(context,report, connectionLink, parameters);
+			check3ConnectionLink3(context,report, connectionLink, parameters);
 			// 4-ConnectionLink-1 : check columns constraints
 			if (test4_1)
-				check4Generic1(report, connectionLink, L4_CONNECTION_LINK_1, parameters, context, log);
+				check4Generic1(context,report, connectionLink, L4_CONNECTION_LINK_1, parameters, log);
 			// 4-ConnectionLink-2 : check linked stop areas
 			if (test4_2)
-				check4ConnectionLink2(report, connectionLink);
+				check4ConnectionLink2(context,report, connectionLink);
 
 		}
 		return null;
 	}
 
-	private void check3ConnectionLink1_2(ValidationReport report, ConnectionLink connectionLink,
+	private void check3ConnectionLink1_2(Context context, ValidationReport report, ConnectionLink connectionLink,
 			ValidationParameters parameters) {
 		// 3-ConnectionLink-1 : check distance between stops of connectionLink
 		StopArea start = connectionLink.getStartOfLink();
@@ -80,9 +80,9 @@ public class ConnectionLinkCheckPoints extends AbstractValidation<ConnectionLink
 
 		double distance = distance(start, end);
 		if (distance > distanceMax) {
-			Location location = new Location(connectionLink);
-			Location startLocation = new Location(start);
-			Location endLocation = new Location(end);
+			Location location = buildLocation(context,connectionLink);
+			Location startLocation = buildLocation(context,start);
+			Location endLocation = buildLocation(context,end);
 
 			Detail detail = new Detail(CONNECTION_LINK_1, location, Integer.toString((int) distance),
 					Integer.toString((int) distanceMax), startLocation, endLocation);
@@ -92,9 +92,9 @@ public class ConnectionLinkCheckPoints extends AbstractValidation<ConnectionLink
 			// between stops of connectionLink
 			if (connectionLink.getLinkDistance() != null && !connectionLink.getLinkDistance().equals(BigDecimal.ZERO)) {
 				if (distance > connectionLink.getLinkDistance().doubleValue()) {
-					Location location = new Location(connectionLink);
-					Location startLocation = new Location(start);
-					Location endLocation = new Location(end);
+					Location location = buildLocation(context,connectionLink);
+					Location startLocation = buildLocation(context,start);
+					Location endLocation = buildLocation(context,end);
 
 					Detail detail = new Detail(CONNECTION_LINK_2, location, Integer.toString((int) distance),
 							Integer.toString(connectionLink.getLinkDistance().intValue()), startLocation, endLocation);
@@ -105,7 +105,7 @@ public class ConnectionLinkCheckPoints extends AbstractValidation<ConnectionLink
 
 	}
 
-	private void check3ConnectionLink3(ValidationReport report, ConnectionLink connectionLink,
+	private void check3ConnectionLink3(Context context, ValidationReport report, ConnectionLink connectionLink,
 			ValidationParameters parameters) {
 		// 3-ConnectionLink-3 : check speeds in connectionLink
 		double distance = 1; // meters
@@ -117,27 +117,27 @@ public class ConnectionLinkCheckPoints extends AbstractValidation<ConnectionLink
 		int maxMobilitySpeed = parameters.getWalkMobilityRestrictedTravellerSpeedMax();
 		int maxOccasionalSpeed = parameters.getWalkOccasionalTravellerSpeedMax();
 
-		checkLinkSpeed(report, connectionLink, connectionLink.getDefaultDuration(), distance, maxDefaultSpeed,
+		checkLinkSpeed(context,report, connectionLink, connectionLink.getDefaultDuration(), distance, maxDefaultSpeed,
 				CONNECTION_LINK_3, "_1");
-		checkLinkSpeed(report, connectionLink, connectionLink.getOccasionalTravellerDuration(), distance,
+		checkLinkSpeed(context,report, connectionLink, connectionLink.getOccasionalTravellerDuration(), distance,
 				maxOccasionalSpeed, CONNECTION_LINK_3, "_2");
-		checkLinkSpeed(report, connectionLink, connectionLink.getFrequentTravellerDuration(), distance,
+		checkLinkSpeed(context,report, connectionLink, connectionLink.getFrequentTravellerDuration(), distance,
 				maxFrequentSpeed, CONNECTION_LINK_3, "_3");
-		checkLinkSpeed(report, connectionLink, connectionLink.getMobilityRestrictedTravellerDuration(), distance,
+		checkLinkSpeed(context,report, connectionLink, connectionLink.getMobilityRestrictedTravellerDuration(), distance,
 				maxMobilitySpeed, CONNECTION_LINK_3, "_4");
 
 	}
 
-	private void check4ConnectionLink2(ValidationReport report, ConnectionLink connectionLink) {
+	private void check4ConnectionLink2(Context context, ValidationReport report, ConnectionLink connectionLink) {
 		StopArea start = connectionLink.getStartOfLink();
 		StopArea end = connectionLink.getEndOfLink();
 		if (start == null | end == null)
 			return;
 		if (start.getAreaType().ordinal() > ChouetteAreaEnum.BoardingPosition.ordinal()
 				|| end.getAreaType().ordinal() > ChouetteAreaEnum.BoardingPosition.ordinal()) {
-			Location location = new Location(connectionLink);
-			Location startLocation = new Location(start);
-			Location endLocation = new Location(end);
+			Location location = buildLocation(context,connectionLink);
+			Location startLocation = buildLocation(context,start);
+			Location endLocation = buildLocation(context,end);
 
 			Detail detail = new Detail(L4_CONNECTION_LINK_2, location, startLocation, endLocation);
 			addValidationError(report, L4_CONNECTION_LINK_2, detail);

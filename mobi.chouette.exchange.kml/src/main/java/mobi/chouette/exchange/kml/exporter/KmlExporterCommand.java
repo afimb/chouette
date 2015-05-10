@@ -1,13 +1,7 @@
 package mobi.chouette.exchange.kml.exporter;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 
@@ -19,18 +13,15 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
-import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.ProgressionCommand;
 import mobi.chouette.exchange.exporter.AbstractExporterCommand;
 import mobi.chouette.exchange.exporter.CompressCommand;
 import mobi.chouette.exchange.exporter.SaveMetadataCommand;
-import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.model.Line;
-import mobi.chouette.model.util.Referential;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -52,23 +43,8 @@ public class KmlExporterCommand extends AbstractExporterCommand implements Comma
 		ProgressionCommand progression = (ProgressionCommand) CommandFactory.create(initialContext,
 				ProgressionCommand.class.getName());
 
-		progression.initialize(context, 1);
+		progression.initialize(context, 2);
 
-		JobData jobData = (JobData) context.get(JOB_DATA);
-		jobData.setFilename("export_" + jobData.getType() + "_" + jobData.getId() + ".zip");
-		context.put(REFERENTIAL, new Referential());
-		Metadata metadata = new Metadata(); // if not asked, will be used as
-											// dummy
-		metadata.setDate(Calendar.getInstance());
-		metadata.setFormat("application/vnd.google-earth.kml+xml");
-		metadata.setTitle("Export Kml ");
-		try {
-			metadata.setRelation(new URL("https://developers.google.com/kml/documentation/kml_tut"));
-		} catch (MalformedURLException e1) {
-			log.error("problem with https://developers.google.com/kml/documentation/kml_tut url", e1);
-		}
-
-		context.put(METADATA, metadata);
 
 		// read parameters
 		Object configuration = context.get(CONFIGURATION);
@@ -94,6 +70,10 @@ public class KmlExporterCommand extends AbstractExporterCommand implements Comma
 				
 			}
 		}
+		Command init = CommandFactory.create(initialContext, KmlInitExportCommand.class.getName());
+		init.execute(context);
+		progression.execute(context);
+
 
 		String type = parameters.getReferencesType();
 		// set default type 
@@ -106,10 +86,6 @@ public class KmlExporterCommand extends AbstractExporterCommand implements Comma
 		type=type.toLowerCase();
 
 		try {
-			Path path = Paths.get(jobData.getPathName(), OUTPUT);
-			if (!Files.exists(path)) {
-				Files.createDirectories(path);
-			}
 			List<Long> ids = null;
 			if (parameters.getIds() != null) {
 				ids = new ArrayList<Long>(parameters.getIds());
@@ -118,7 +94,7 @@ public class KmlExporterCommand extends AbstractExporterCommand implements Comma
 			Set<Line> lines = loadLines(type, ids);
 			progression.execute(context);
 			progression.start(context, lines.size() + 1);
-			Command exportLine = CommandFactory.create(initialContext, KmlLineProducerCommand.class.getName());
+			Command exportLine = CommandFactory.create(initialContext, DaoKmlLineProducerCommand.class.getName());
 
 			int lineCount = 0;
 			for (Line line : lines) {
