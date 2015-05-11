@@ -63,6 +63,7 @@ public class NetexDataCollector {
 							}
 							validJourneyPattern = true;
 							validRoute = true;
+							validLine = true;
 						}
 					}
 				} // end vehiclejourney loop

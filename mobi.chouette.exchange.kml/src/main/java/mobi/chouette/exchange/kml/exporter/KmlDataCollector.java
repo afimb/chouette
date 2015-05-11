@@ -71,6 +71,7 @@ public class KmlDataCollector {
 							}
 							validJourneyPattern = true;
 							validRoute = true;
+							validLine = true;
 						}
 					}
 				} // end vehiclejourney loop

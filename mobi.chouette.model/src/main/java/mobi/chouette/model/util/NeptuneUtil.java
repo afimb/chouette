@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.CalendarDay;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.NeptuneIdentifiedObject;
@@ -22,6 +23,7 @@ import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.type.DayTypeEnum;
 
+@Log4j
 public abstract class NeptuneUtil {
 
 	/**
@@ -351,6 +353,12 @@ public abstract class NeptuneUtil {
 			jp.setDepartureStopPoint(null);
 			jp.setArrivalStopPoint(null);
 		} else {
+			for (StopPoint stopPoint : stopPoints) {
+				if (stopPoint.getPosition() == null) {
+					log.warn("stopPoint without position " + stopPoint.getObjectId());
+					return;
+				}
+			}
 			Collections.sort(jp.getStopPoints(), new Comparator<StopPoint>() {
 
 				@Override

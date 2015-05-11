@@ -74,6 +74,7 @@ public class HubDataCollector {
 								collection.setPmrFootenoteId(0);
 							validJourneyPattern = true;
 							validRoute = true;
+							validLine = true;
 						}
 					}
 				} // end vehiclejourney loop

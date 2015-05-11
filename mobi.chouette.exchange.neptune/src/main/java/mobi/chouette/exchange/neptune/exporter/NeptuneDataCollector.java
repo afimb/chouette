@@ -82,6 +82,7 @@ public class NeptuneDataCollector
 							}
 							validJourneyPattern = true;
 							validRoute = true;
+							validLine = true;
 						}
 					}
 				} // end vehiclejourney loop
@@ -141,7 +142,7 @@ public class NeptuneDataCollector
 	 *           true to eliminate before boundary date , false otherwise
 	 * @return a copy reduced to date or null if reduced to nothing
 	 */
-	private Timetable reduceTimetable(Timetable timetable, Date boundaryDate, boolean before)
+	protected Timetable reduceTimetable(Timetable timetable, Date boundaryDate, boolean before)
 	{
 		Timetable reduced = new Timetable();
 		reduced.setDayTypes(new ArrayList<DayTypeEnum>(timetable.getDayTypes()));
