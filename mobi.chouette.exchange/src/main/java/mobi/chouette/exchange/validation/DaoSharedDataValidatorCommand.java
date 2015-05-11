@@ -108,6 +108,7 @@ public class DaoSharedDataValidatorCommand implements Command, Constant {
 			}
 			if (!data.getStopAreaIds().isEmpty())
 			{
+				data.getStopAreas().clear();
 				data.getStopAreas().addAll(stopAreaDAO.findByObjectId(data.getStopAreaIds()));
 			}
 			if (!data.getAccessPointIds().isEmpty())
