@@ -5,6 +5,10 @@ import java.sql.Time;
 import java.util.TimeZone;
 
 import mobi.chouette.exchange.gtfs.model.GtfsTime;
+import mobi.chouette.exchange.gtfs.model.importer.GtfsException;
+import mobi.chouette.exchange.report.FileError;
+import mobi.chouette.exchange.report.FileInfo;
+import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
 
 import org.apache.log4j.Logger;
 
@@ -39,8 +43,7 @@ public abstract class AbstractConverter {
 		return time;
 	}
 
-	public static String composeObjectId(String prefix, String type, String id,
-			Logger logger) {
+	public static String composeObjectId(String prefix, String type, String id, Logger logger) {
 
 		// if (id == null) {
 		// logger.error("id null for " + type);
@@ -50,12 +53,10 @@ public abstract class AbstractConverter {
 		String[] tokens = id.split("\\.");
 		if (tokens.length == 2) {
 			// id should be produced by Chouette
-			return tokens[0].trim().replaceAll("[^a-zA-Z_0-9]", "_") + ":"
-					+ type + ":"
+			return tokens[0].trim().replaceAll("[^a-zA-Z_0-9]", "_") + ":" + type + ":"
 					+ tokens[1].trim().replaceAll("[^a-zA-Z_0-9\\-]", "_");
 		}
-		return prefix + ":" + type + ":"
-				+ id.trim().replaceAll("[^a-zA-Z_0-9\\-]", "_");
+		return prefix + ":" + type + ":" + id.trim().replaceAll("[^a-zA-Z_0-9\\-]", "_");
 	}
 
 	// public static String composeIncrementalObjectId(String prefix, String
@@ -87,6 +88,37 @@ public abstract class AbstractConverter {
 		if (tz == null)
 			return null;
 		return tz.getID();
+	}
+
+	private static void populateFileError(FileInfo file, GtfsException ex) {
+		FileError.CODE code = FileError.CODE.INTERNAL_ERROR;
+		switch (ex.getError()) {
+		case DUPLICATE_FIELD:
+		case INVALID_FORMAT:
+		case INVALID_FILE_FORMAT:
+		case MISSING_FIELD:
+		case MISSING_FOREIGN_KEY:
+			code = FileError.CODE.INVALID_FORMAT;
+			break;
+		case SYSTEM:
+			code = FileError.CODE.INTERNAL_ERROR;
+			break;
+		case MISSING_FILE:
+			code = FileError.CODE.FILE_NOT_FOUND;
+			break;
+		}
+		file.addError(new FileError(code, ex.getMessage()));
+	}
+
+	public static void populateFileError(FileInfo file, Exception ex) {
+
+		file.setStatus(FILE_STATE.ERROR);
+		if (ex instanceof GtfsException) {
+			populateFileError(file, (GtfsException) ex);
+		} else {
+			file.addError(new FileError(FileError.CODE.INTERNAL_ERROR, ex.getMessage()));
+
+		}
 	}
 
 }

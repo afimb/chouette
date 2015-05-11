@@ -73,8 +73,10 @@ public abstract class TripIndex extends IndexImpl<GtfsTrip> implements
 
 		String serviceId = bean.getServiceId();
 		if (!serviceId.equals(_serviceId)) {
-			if (!dao.getCalendarByService().containsKey(serviceId)
-					&& !dao.getCalendarDateByService().containsKey(serviceId)) {
+			boolean okCalendar = (dao.hasCalendarImporter() && dao.getCalendarByService().containsKey(serviceId)) ;
+			boolean okCalendarDate = (dao.hasCalendarDateImporter() && dao.getCalendarDateByService().containsKey(serviceId)) ;
+			if (!okCalendar
+					&& !okCalendarDate) {
 				throw new GtfsException(getPath(), bean.getId(),
 						FIELDS.service_id.name(), ERROR.MISSING_FOREIGN_KEY,
 						"TODO", bean.getServiceId());

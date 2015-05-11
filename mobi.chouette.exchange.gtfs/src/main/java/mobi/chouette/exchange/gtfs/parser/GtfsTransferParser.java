@@ -14,6 +14,9 @@ import mobi.chouette.exchange.gtfs.model.importer.Index;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.Validator;
+import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.FileInfo;
+import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ConnectionLinkTypeEnum;
@@ -36,13 +39,10 @@ public class GtfsTransferParser implements Parser, Validator, Constant {
 
 		for (GtfsTransfer gtfsTransfer : importer.getTransferByFromStop()) {
 
-			String objectId = AbstractConverter.composeObjectId(
-					configuration.getObjectIdPrefix(),
-					ConnectionLink.CONNECTIONLINK_KEY,
-					gtfsTransfer.getFromStopId() + "_"
-							+ gtfsTransfer.getToStopId(), log);
-			ConnectionLink connectionLink = ObjectFactory.getConnectionLink(
-					referential, objectId);
+			String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
+					ConnectionLink.CONNECTIONLINK_KEY, gtfsTransfer.getFromStopId() + "_" + gtfsTransfer.getToStopId(),
+					log);
+			ConnectionLink connectionLink = ObjectFactory.getConnectionLink(referential, objectId);
 			convert(context, gtfsTransfer, connectionLink);
 		}
 	}
@@ -51,57 +51,58 @@ public class GtfsTransferParser implements Parser, Validator, Constant {
 	public void validate(Context context) throws Exception {
 
 		importer = (GtfsImporter) context.get(PARSER);
+		ActionReport report = (ActionReport) context.get(REPORT);
 
 		// transfers.txt
-		if (importer.hasFrequencyImporter()) {
-			Index<GtfsTransfer> parser = importer.getTransferByFromStop();
-			for (GtfsTransfer bean : parser) {
-				parser.validate(bean, importer);
+		FileInfo file = new FileInfo();
+		file.setName(GTFS_TRANSFERS_FILE);
+		report.getFiles().add(file);
+		try {
+			if (importer.hasFrequencyImporter()) {
+				Index<GtfsTransfer> parser = importer.getTransferByFromStop();
+				for (GtfsTransfer bean : parser) {
+					parser.validate(bean, importer);
+				}
 			}
+			file.setStatus(FILE_STATE.OK);
+		} catch (Exception ex) {
+			AbstractConverter.populateFileError(file, ex);
+			throw ex;
 		}
 	}
 
-	protected void convert(Context context, GtfsTransfer gtfsTransfer,
-			ConnectionLink connectionLink) {
+	protected void convert(Context context, GtfsTransfer gtfsTransfer, ConnectionLink connectionLink) {
 
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
-		StopArea startOfLink = ObjectFactory.getStopArea(referential,
-				AbstractConverter.composeObjectId(
-						configuration.getObjectIdPrefix(),
-						StopArea.STOPAREA_KEY, gtfsTransfer.getFromStopId(),
-						log));
+		StopArea startOfLink = ObjectFactory.getStopArea(referential, AbstractConverter.composeObjectId(
+				configuration.getObjectIdPrefix(), StopArea.STOPAREA_KEY, gtfsTransfer.getFromStopId(), log));
 		connectionLink.setStartOfLink(startOfLink);
-		StopArea endOfLink = ObjectFactory
-				.getStopArea(referential, AbstractConverter.composeObjectId(
-						configuration.getObjectIdPrefix(),
-						StopArea.STOPAREA_KEY, gtfsTransfer.getToStopId(), log));
+		StopArea endOfLink = ObjectFactory.getStopArea(referential, AbstractConverter.composeObjectId(
+				configuration.getObjectIdPrefix(), StopArea.STOPAREA_KEY, gtfsTransfer.getToStopId(), log));
 		connectionLink.setEndOfLink(endOfLink);
 		connectionLink.setCreationTime(Calendar.getInstance().getTime());
 		connectionLink.setLinkType(ConnectionLinkTypeEnum.Overground);
 		if (gtfsTransfer.getMinTransferTime() != null) {
-			connectionLink.setDefaultDuration(new Time(gtfsTransfer
-					.getMinTransferTime() * 1000));
+			connectionLink.setDefaultDuration(new Time(gtfsTransfer.getMinTransferTime() * 1000));
 		}
 		if (gtfsTransfer.getTransferType().equals(TransferType.NoAllowed)) {
 			connectionLink.setName("FORBIDDEN");
 		} else {
-			connectionLink.setName("from "
-					+ connectionLink.getStartOfLink().getName() + " to "
+			connectionLink.setName("from " + connectionLink.getStartOfLink().getName() + " to "
 					+ connectionLink.getEndOfLink().getName());
 		}
 	}
 
 	static {
-		ParserFactory.register(GtfsTransferParser.class.getName(),
-				new ParserFactory() {
-					private GtfsTransferParser instance = new GtfsTransferParser();
+		ParserFactory.register(GtfsTransferParser.class.getName(), new ParserFactory() {
+			private GtfsTransferParser instance = new GtfsTransferParser();
 
-					@Override
-					protected Parser create() {
-						return instance;
-					}
-				});
+			@Override
+			protected Parser create() {
+				return instance;
+			}
+		});
 	}
 
 }

@@ -16,6 +16,7 @@ import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.gtfs.Constant;
+import mobi.chouette.exchange.gtfs.model.importer.GtfsImporter;
 import mobi.chouette.exchange.gtfs.parser.GtfsAgencyParser;
 import mobi.chouette.exchange.gtfs.parser.GtfsCalendarParser;
 import mobi.chouette.exchange.gtfs.parser.GtfsRouteParser;
@@ -78,15 +79,15 @@ public class GtfsValidationCommand implements Command, Constant {
 			stopParser.validate(context);
 
 			if (all) {
-				// route.txt
+				// routes.txt
 				GtfsRouteParser routeParser = (GtfsRouteParser) ParserFactory.create(GtfsRouteParser.class.getName());
 				routeParser.validate(context);
 
-				// trips.txt & stop_times.txt & frequency.txt
+				// trips.txt & stop_times.txt & frequencies.txt
 				GtfsTripParser tripParser = (GtfsTripParser) ParserFactory.create(GtfsTripParser.class.getName());
 				tripParser.validate(context);
 
-				// calendar.txt & calendar_dates.txt & frequencies.txt
+				// calendar.txt & calendar_dates.txt
 				GtfsCalendarParser calendarParser = (GtfsCalendarParser) ParserFactory.create(GtfsCalendarParser.class
 						.getName());
 				calendarParser.validate(context);

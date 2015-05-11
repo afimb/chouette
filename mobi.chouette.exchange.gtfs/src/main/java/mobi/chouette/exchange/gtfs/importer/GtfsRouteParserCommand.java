@@ -20,6 +20,10 @@ import mobi.chouette.exchange.gtfs.parser.GtfsRouteParser;
 import mobi.chouette.exchange.gtfs.parser.GtfsStopParser;
 import mobi.chouette.exchange.gtfs.parser.GtfsTransferParser;
 import mobi.chouette.exchange.importer.ParserFactory;
+import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.LineInfo;
+import mobi.chouette.exchange.report.LineStats;
+import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
@@ -44,6 +48,7 @@ public class GtfsRouteParserCommand implements Command, Constant {
 
 		try {
 			Referential referential = (Referential) context.get(REFERENTIAL);
+			ActionReport report = (ActionReport) context.get(REPORT);
 			if (referential != null) {
 				referential.clear();
 			}
@@ -88,20 +93,17 @@ public class GtfsRouteParserCommand implements Command, Constant {
 				gtfsCalendarParser.parse(context);
 			}
 
-			// TODO lazy loading for PTNetwork, Company, StopArea,
-			// ConnectionLink
-
 			
 			// Line
-			log.info("[DSU] parse route : " + gtfsRouteId);
 			GtfsRouteParser gtfsRouteParser = (GtfsRouteParser) ParserFactory
 					.create(GtfsRouteParser.class.getName());
 			gtfsRouteParser.setGtfsRouteId(gtfsRouteId);
 			gtfsRouteParser.parse(context);
 		
+			addStats(report, referential);
 			result = SUCCESS;
 		} catch (Exception e) {
-			log.error("[DSU] error : ", e);
+			log.error("error : ", e);
 			throw e;
 		}
 		
@@ -122,6 +124,35 @@ public class GtfsRouteParserCommand implements Command, Constant {
 		ptNetwork.setSourceName("GTFS");
 		return ptNetwork;
 	}
+	
+	private void addStats(ActionReport report,  Referential referential) {
+		Line line = referential.getLines().values().iterator().next();
+		LineInfo lineInfo = new LineInfo();
+		lineInfo.setName(line.getName());
+		lineInfo.setStatus(LineInfo.LINE_STATE.OK);
+		LineStats stats = new LineStats();
+		stats.setLineCount(1);
+			
+			stats.setRouteCount(referential.getRoutes().size());
+			stats.setVehicleJourneyCount(referential.getVehicleJourneys().size());
+			stats.setJourneyPatternCount(referential.getJourneyPatterns().size());
+		lineInfo.setStats(stats);
+		report.getLines().add(lineInfo);
+		LineStats globalStats = report.getStats();
+		if (globalStats == null) {
+			globalStats = new LineStats();
+			report.setStats(globalStats);
+			globalStats.setConnectionLinkCount(referential.getSharedConnectionLinks().size());
+			globalStats.setStopAreaCount(referential.getSharedStopAreas().size());
+			globalStats.setTimeTableCount(referential.getSharedTimetables().size());
+		}
+		globalStats.setLineCount(globalStats.getLineCount() + stats.getLineCount());
+		globalStats.setRouteCount(globalStats.getRouteCount() + stats.getRouteCount());
+		globalStats.setVehicleJourneyCount(globalStats.getVehicleJourneyCount() + stats.getVehicleJourneyCount());
+		globalStats.setJourneyPatternCount(globalStats.getJourneyPatternCount() + stats.getJourneyPatternCount());
+
+	}
+
 
 	public static class DefaultCommandFactory extends CommandFactory {
 

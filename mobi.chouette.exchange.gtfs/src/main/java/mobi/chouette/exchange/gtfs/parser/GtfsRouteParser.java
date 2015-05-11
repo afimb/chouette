@@ -14,6 +14,9 @@ import mobi.chouette.exchange.gtfs.model.importer.Index;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.Validator;
+import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.FileInfo;
+import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;
@@ -75,12 +78,22 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 	public void validate(Context context) throws Exception {
 
 		importer = (GtfsImporter) context.get(PARSER);
+		ActionReport report = (ActionReport) context.get(REPORT);
 
 		// routes.txt
+		FileInfo file = new FileInfo();
+		file.setName(GTFS_ROUTES_FILE);
+		report.getFiles().add(file);
+		try {
 		Index<GtfsRoute> parser = importer.getRouteById();
 		for (GtfsRoute bean : parser) {
 			parser.validate(bean, importer);
 		}
+		file.setStatus(FILE_STATE.OK);
+	} catch (Exception ex) {
+		AbstractConverter.populateFileError(file, ex);
+		throw ex;
+	}
 	}
 
 	protected void convert(Context context, GtfsRoute gtfsRoute, Line line) {

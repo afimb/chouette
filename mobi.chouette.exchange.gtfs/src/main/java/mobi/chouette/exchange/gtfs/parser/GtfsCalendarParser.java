@@ -14,11 +14,16 @@ import mobi.chouette.exchange.gtfs.Constant;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.gtfs.model.GtfsCalendar;
 import mobi.chouette.exchange.gtfs.model.GtfsCalendarDate;
+import mobi.chouette.exchange.gtfs.model.importer.GtfsException;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsImporter;
 import mobi.chouette.exchange.gtfs.model.importer.Index;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.Validator;
+import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.FileError;
+import mobi.chouette.exchange.report.FileInfo;
+import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
 import mobi.chouette.model.CalendarDay;
 import mobi.chouette.model.Period;
 import mobi.chouette.model.Timetable;
@@ -57,12 +62,9 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 		if (importer.hasCalendarImporter()) {
 			for (GtfsCalendar gtfsCalendar : importer.getCalendarByService()) {
 
-				String objectId = AbstractConverter.composeObjectId(
-						configuration.getObjectIdPrefix(),
-						Timetable.TIMETABLE_KEY, gtfsCalendar.getServiceId(),
-						log);
-				Timetable timetable = ObjectFactory.getTimetable(referential,
-						objectId);
+				String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
+						Timetable.TIMETABLE_KEY, gtfsCalendar.getServiceId(), log);
+				Timetable timetable = ObjectFactory.getTimetable(referential, objectId);
 				convert(context, gtfsCalendar, timetable);
 			}
 		}
@@ -71,18 +73,15 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 
 			for (String serviceId : importer.getCalendarDateByService().keys()) {
 
-				String objectId = AbstractConverter.composeObjectId(
-						configuration.getObjectIdPrefix(),
+				String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
 						Timetable.TIMETABLE_KEY, serviceId, log);
 
 				Timetable timetable = referential.getTimetables().get(objectId);
 				if (timetable == null) {
-					timetable = ObjectFactory.getTimetable(referential,
-							objectId);
+					timetable = ObjectFactory.getTimetable(referential, objectId);
 					convert(context, createDummyCalandar(), timetable);
 				}
-				for (GtfsCalendarDate gtfsCalendarDate : importer
-						.getCalendarDateByService().values(serviceId)) {
+				for (GtfsCalendarDate gtfsCalendarDate : importer.getCalendarDateByService().values(serviceId)) {
 					addCalendarDay(timetable, gtfsCalendarDate);
 				}
 				setComment(timetable);
@@ -106,26 +105,64 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 		referential = (Referential) context.get(REFERENTIAL);
 		importer = (GtfsImporter) context.get(PARSER);
 		configuration = (GtfsImportParameters) context.get(CONFIGURATION);
+		ActionReport report = (ActionReport) context.get(REPORT);
 
+		boolean found = false;
 		// calendar.txt
-		Index<GtfsCalendar> calendarParser = importer.getCalendarByService();
-		for (GtfsCalendar gtfsCalendar : calendarParser) {
-			calendarParser.validate(gtfsCalendar, importer);
+		if (importer.hasCalendarImporter()) {
+			FileInfo file = new FileInfo();
+			file.setName(GTFS_CALENDAR_FILE);
+			report.getFiles().add(file);
+			try {
+				Index<GtfsCalendar> calendarParser = importer.getCalendarByService();
+				for (GtfsCalendar gtfsCalendar : calendarParser) {
+					calendarParser.validate(gtfsCalendar, importer);
+				}
+				file.setStatus(FILE_STATE.OK);
+				found = true;
+			} catch (Exception ex) {
+				AbstractConverter.populateFileError(file, ex);
+				throw ex;
+			}
 		}
 
 		// calendar_dates.txt
 		if (importer.hasCalendarDateImporter()) {
-			Index<GtfsCalendarDate> calendarDateParser = importer
-					.getCalendarDateByService();
-			for (GtfsCalendarDate gtfsCalendarDate : calendarDateParser) {
-				calendarDateParser.validate(gtfsCalendarDate, importer);
+			FileInfo file = new FileInfo();
+			file.setName(GTFS_CALENDAR_DATES_FILE);
+			report.getFiles().add(file);
+			try {
+				Index<GtfsCalendarDate> calendarDateParser = importer.getCalendarDateByService();
+				for (GtfsCalendarDate gtfsCalendarDate : calendarDateParser) {
+					calendarDateParser.validate(gtfsCalendarDate, importer);
+				}
+				file.setStatus(FILE_STATE.OK);
+				found = true;
+			} catch (Exception ex) {
+				AbstractConverter.populateFileError(file, ex);
+				throw ex;
 			}
 		}
 
+		if (!found)
+		{
+			FileInfo file = new FileInfo();
+			file.setName(GTFS_CALENDAR_FILE);
+			report.getFiles().add(file);
+			file.setStatus(FILE_STATE.ERROR);
+			file.addError(new FileError(FileError.CODE.FILE_NOT_FOUND, "missing calendar.txt and calendar_dates.txt"));
+			file = new FileInfo();
+			file.setName(GTFS_CALENDAR_DATES_FILE);
+			report.getFiles().add(file);
+			file.setStatus(FILE_STATE.ERROR);
+			file.addError(new FileError(FileError.CODE.FILE_NOT_FOUND, "missing calendar.txt and calendar_dates.txt"));
+
+			throw new GtfsException("calendar.txt or calendar_dates.txt", 0, null, GtfsException.ERROR.MISSING_FILE,
+					null, null);
+		}
 	}
 
-	protected void convert(Context context, GtfsCalendar gtfsCalendar,
-			Timetable timetable) {
+	protected void convert(Context context, GtfsCalendar gtfsCalendar, Timetable timetable) {
 
 		List<DayTypeEnum> dayTypes = new ArrayList<DayTypeEnum>();
 		if (gtfsCalendar.getMonday())
@@ -144,8 +181,7 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 			dayTypes.add(DayTypeEnum.Sunday);
 		timetable.setDayTypes(dayTypes);
 
-		if (gtfsCalendar.getStartDate() != null
-				&& gtfsCalendar.getEndDate() != null) {
+		if (gtfsCalendar.getStartDate() != null && gtfsCalendar.getEndDate() != null) {
 			Period period = new Period();
 			period.setStartDate(gtfsCalendar.getStartDate());
 			period.setEndDate(gtfsCalendar.getEndDate());
@@ -159,8 +195,8 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 	}
 
 	public void addCalendarDay(Timetable timetable, GtfsCalendarDate date) {
-		timetable.addCalendarDay(new CalendarDay(date.getDate(), date
-				.getExceptionType() != GtfsCalendarDate.ExceptionType.Removed));
+		timetable.addCalendarDay(new CalendarDay(date.getDate(),
+				date.getExceptionType() != GtfsCalendarDate.ExceptionType.Removed));
 	}
 
 	/**
@@ -170,34 +206,25 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 	 */
 	public void setComment(Timetable timetable) {
 		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
-		String monday = (timetable.getDayTypes().contains(DayTypeEnum.Monday)) ? "Mo"
-				: "..";
-		String tuesday = (timetable.getDayTypes().contains(DayTypeEnum.Tuesday)) ? "Tu"
-				: "..";
-		String wednesday = (timetable.getDayTypes()
-				.contains(DayTypeEnum.Wednesday)) ? "We" : "..";
-		String thursday = (timetable.getDayTypes()
-				.contains(DayTypeEnum.Thursday)) ? "Th" : "..";
-		String friday = (timetable.getDayTypes().contains(DayTypeEnum.Friday)) ? "Fr"
-				: "..";
-		String saturday = (timetable.getDayTypes()
-				.contains(DayTypeEnum.Saturday)) ? "Sa" : "..";
-		String sunday = (timetable.getDayTypes().contains(DayTypeEnum.Sunday)) ? "Su"
-				: "..";
+		String monday = (timetable.getDayTypes().contains(DayTypeEnum.Monday)) ? "Mo" : "..";
+		String tuesday = (timetable.getDayTypes().contains(DayTypeEnum.Tuesday)) ? "Tu" : "..";
+		String wednesday = (timetable.getDayTypes().contains(DayTypeEnum.Wednesday)) ? "We" : "..";
+		String thursday = (timetable.getDayTypes().contains(DayTypeEnum.Thursday)) ? "Th" : "..";
+		String friday = (timetable.getDayTypes().contains(DayTypeEnum.Friday)) ? "Fr" : "..";
+		String saturday = (timetable.getDayTypes().contains(DayTypeEnum.Saturday)) ? "Sa" : "..";
+		String sunday = (timetable.getDayTypes().contains(DayTypeEnum.Sunday)) ? "Su" : "..";
 
 		Date firstDate = null;
 		Date lastDate = null;
 		if (timetable.getPeriods() != null && !timetable.getPeriods().isEmpty()) {
 			for (Period period : timetable.getPeriods()) {
-				if (firstDate == null
-						|| period.getStartDate().before(firstDate))
+				if (firstDate == null || period.getStartDate().before(firstDate))
 					firstDate = period.getStartDate();
 				if (lastDate == null || period.getEndDate().after(lastDate))
 					lastDate = period.getEndDate();
 			}
 		}
-		if (timetable.getCalendarDays() != null
-				&& !timetable.getCalendarDays().isEmpty()) {
+		if (timetable.getCalendarDays() != null && !timetable.getCalendarDays().isEmpty()) {
 			Calendar cal = Calendar.getInstance();
 			for (Date date : NeptuneUtil.getPeculiarDates(timetable)) {
 				cal.setTime(date);
@@ -224,9 +251,8 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 
 		// security if timetable is empty
 		if (firstDate != null && lastDate != null) {
-			String comment = "From " + format.format(firstDate) + " to "
-					+ format.format(lastDate) + " : " + monday + tuesday
-					+ wednesday + thursday + friday + saturday + sunday;
+			String comment = "From " + format.format(firstDate) + " to " + format.format(lastDate) + " : " + monday
+					+ tuesday + wednesday + thursday + friday + saturday + sunday;
 			timetable.setComment(comment);
 		} else {
 			timetable.setComment("Empty timetable");
@@ -294,8 +320,7 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 	private Period clonePeriodAfterMidnight(Period source) {
 		Period result = new Period();
 
-		result.setStartDate(new Date(source.getStartDate().getTime()
-				+ dayOffest));
+		result.setStartDate(new Date(source.getStartDate().getTime() + dayOffest));
 		result.setEndDate(new Date(source.getEndDate().getTime() + dayOffest));
 
 		return result;
@@ -306,20 +331,18 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 	}
 
 	private CalendarDay cloneDateAfterMidnight(CalendarDay source) {
-		return new CalendarDay(cloneDateAfterMidnight(source.getDate()),
-				source.getIncluded());
+		return new CalendarDay(cloneDateAfterMidnight(source.getDate()), source.getIncluded());
 	}
 
 	static {
-		ParserFactory.register(GtfsCalendarParser.class.getName(),
-				new ParserFactory() {
-					private GtfsCalendarParser instance = new GtfsCalendarParser();
+		ParserFactory.register(GtfsCalendarParser.class.getName(), new ParserFactory() {
+			private GtfsCalendarParser instance = new GtfsCalendarParser();
 
-					@Override
-					protected Parser create() {
-						return instance;
-					}
-				});
+			@Override
+			protected Parser create() {
+				return instance;
+			}
+		});
 	}
 
 }
