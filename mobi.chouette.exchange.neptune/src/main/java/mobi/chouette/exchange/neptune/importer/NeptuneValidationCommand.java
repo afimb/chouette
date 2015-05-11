@@ -27,6 +27,7 @@ import mobi.chouette.exchange.neptune.validation.StopAreaValidator;
 import mobi.chouette.exchange.neptune.validation.StopPointValidator;
 import mobi.chouette.exchange.neptune.validation.TimetableValidator;
 import mobi.chouette.exchange.neptune.validation.VehicleJourneyValidator;
+import mobi.chouette.exchange.report.FileError;
 import mobi.chouette.exchange.report.FileInfo;
 import mobi.chouette.exchange.report.LineInfo;
 import mobi.chouette.exchange.report.LineStats;
@@ -164,7 +165,7 @@ public class NeptuneValidationCommand implements Command, Constant {
 		}
 		if (result == ERROR) {
 			fileInfo.setStatus(FILE_STATE.ERROR);
-			fileInfo.getErrors().add("Neptune compliance failed");
+			fileInfo.getErrors().add(new FileError(FileError.CODE.INVALID_FORMAT,"Neptune compliance failed"));
 		}
 		return result;
 	}

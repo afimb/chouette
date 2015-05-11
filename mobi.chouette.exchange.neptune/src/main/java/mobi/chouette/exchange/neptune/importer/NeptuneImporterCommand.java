@@ -22,6 +22,7 @@ import mobi.chouette.exchange.importer.CleanRepositoryCommand;
 import mobi.chouette.exchange.importer.CopyCommand;
 import mobi.chouette.exchange.importer.LineRegisterCommand;
 import mobi.chouette.exchange.importer.UncompressCommand;
+import mobi.chouette.exchange.report.ActionError;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.FileInfo;
 import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
@@ -73,7 +74,7 @@ public class NeptuneImporterCommand implements Command, Constant, ReportConstant
 			// fatal wrong parameters
 
 			log.error("invalid parameters for neptune import " + configuration.getClass().getName());
-			report.setFailure("invalid parameters for neptune import " + configuration.getClass().getName());
+			report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,"invalid parameters for neptune import " + configuration.getClass().getName()));
 			progression.dispose(context);
 			return ERROR;
 		}
@@ -179,14 +180,14 @@ public class NeptuneImporterCommand implements Command, Constant, ReportConstant
 			if (report.getLines().size() == 0) {
 				report.setResult(STATUS_ERROR);
 				if (report.getFailure() == null)
-					report.setFailure("no data");
+					report.setFailure(new ActionError(ActionError.CODE.NO_DATA_FOUND,"no data"));
 			}
 			result = SUCCESS;
 
 		} catch (Exception e) {
 			log.error("Fatal :", e);
 			report.setResult(STATUS_ERROR);
-			report.setFailure("Fatal :" + e);
+			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR,"Fatal :" + e));
 
 		} finally {
 			progression.dispose(context);

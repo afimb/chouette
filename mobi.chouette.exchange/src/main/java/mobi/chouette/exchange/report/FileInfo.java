@@ -32,9 +32,9 @@ public class FileInfo {
 	private FILE_STATE status;
 	
 	@XmlElement(name="errors")
-	private List<String> errors = new ArrayList<>();
+	private List<FileError> errors = new ArrayList<>();
 	
-	public void addError(String error)
+	public void addError( FileError error)
 	{
 		errors.add(error);
 	}

@@ -26,6 +26,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.FileError;
 import mobi.chouette.exchange.report.FileInfo;
 
 import org.apache.commons.io.FileUtils;
@@ -84,7 +85,7 @@ public class NeptuneSAXParserCommand implements Command, Constant {
 			if (errorHandler.isHasErrors()) {
 				fileItem.setStatus(FileInfo.FILE_STATE.ERROR);
 				report.getFiles().add(fileItem);
-				fileItem.getErrors().add("Xml errors");
+				fileItem.getErrors().add(new FileError(FileError.CODE.INVALID_FORMAT,"Xml errors"));
 				return result;
 			}
 			result = SUCCESS;
@@ -104,13 +105,13 @@ public class NeptuneSAXParserCommand implements Command, Constant {
 			errorHandler.handleError(e);
 			fileItem.setStatus(FileInfo.FILE_STATE.ERROR);
 			report.getFiles().add(fileItem);
-			fileItem.getErrors().add(e.getMessage());
+			fileItem.getErrors().add(new FileError(FileError.CODE.INVALID_FORMAT,e.getMessage()));
 		} catch (Exception e) {
 
 			log.error(e);
 			fileItem.setStatus(FileInfo.FILE_STATE.ERROR);
 			report.getFiles().add(fileItem);
-			fileItem.getErrors().add(e.getMessage());
+			fileItem.getErrors().add(new FileError(FileError.CODE.INTERNAL_ERROR,e.getMessage()));
 
 		} finally {
 			if (reader != null ) reader.close();

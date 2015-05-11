@@ -19,6 +19,7 @@ import mobi.chouette.exchange.exporter.AbstractExporterCommand;
 import mobi.chouette.exchange.exporter.CompressCommand;
 import mobi.chouette.exchange.exporter.SaveMetadataCommand;
 import mobi.chouette.exchange.neptune.Constant;
+import mobi.chouette.exchange.report.ActionError;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.model.Line;
@@ -52,7 +53,7 @@ public class NeptuneExporterCommand extends AbstractExporterCommand implements C
 				ActionReport report = (ActionReport) context.get(REPORT);
 				log.error("invalid parameters for neptune export " + configuration.getClass().getName());
 				report.setResult(STATUS_ERROR);
-				report.setFailure("invalid parameters for neptune export " + configuration.getClass().getName());
+				report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,"invalid parameters for neptune export " + configuration.getClass().getName()));
 				return ERROR;
 			}
 
@@ -61,7 +62,7 @@ public class NeptuneExporterCommand extends AbstractExporterCommand implements C
 				if (parameters.getStartDate().after(parameters.getEndDate())) {
 					ActionReport report = (ActionReport) context.get(REPORT);
 					report.setResult(STATUS_ERROR);
-					report.setFailure("end date before start date");
+					report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,"end date before start date"));
 					return ERROR;
 
 				}
@@ -89,21 +90,26 @@ public class NeptuneExporterCommand extends AbstractExporterCommand implements C
 			if (lines.isEmpty()) {
 				ActionReport report = (ActionReport) context.get(REPORT);
 				report.setResult(STATUS_ERROR);
-				report.setFailure("no data to export");
+				report.setFailure(new ActionError(ActionError.CODE.NO_DATA_FOUND,"no data to export"));
 				return ERROR;
 
 			}
 			progression.execute(context);
 
 			progression.start(context, lines.size());
-			Command export = CommandFactory.create(initialContext, DaoNeptuneLineProducerCommand.class.getName());
-
+			Command exportLine = CommandFactory.create(initialContext, DaoNeptuneLineProducerCommand.class.getName());
+			int lineCount = 0;
 			// export each line
 			for (Line line : lines) {
 				context.put(LINE_ID, line.getId());
 				progression.execute(context);
-				if (export.execute(context) == ERROR) {
+				if (exportLine.execute(context) == ERROR) 
+				{
 					continue;
+				}
+				else
+				{
+					lineCount ++;
 				}
 			}
 
@@ -126,7 +132,7 @@ public class NeptuneExporterCommand extends AbstractExporterCommand implements C
 		} catch (Exception e) {
 			ActionReport report = (ActionReport) context.get(REPORT);
 			report.setResult(STATUS_ERROR);
-			report.setFailure("Fatal :" + e);
+			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR,"Fatal :" + e));
 			log.error(e.getMessage(), e);
 		} finally {
 			progression.dispose(context);

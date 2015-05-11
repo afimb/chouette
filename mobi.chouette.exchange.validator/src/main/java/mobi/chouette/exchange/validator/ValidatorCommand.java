@@ -17,6 +17,7 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.ProgressionCommand;
 import mobi.chouette.exchange.exporter.AbstractExporterCommand;
+import mobi.chouette.exchange.report.ActionError;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.LineInfo;
 import mobi.chouette.exchange.report.LineInfo.LINE_STATE;
@@ -56,7 +57,7 @@ public class ValidatorCommand extends AbstractExporterCommand implements Command
 			// fatal wrong parameters
 			ActionReport report = (ActionReport) context.get(REPORT);
 			log.error("invalid parameters for validation " + configuration.getClass().getName());
-			report.setFailure("invalid parameters for validation " + configuration.getClass().getName());
+			report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,"invalid parameters for validation " + configuration.getClass().getName()));
 			progression.dispose(context);
 			return ERROR;
 		}
@@ -66,7 +67,7 @@ public class ValidatorCommand extends AbstractExporterCommand implements Command
 		{
 			ActionReport report = (ActionReport) context.get(REPORT);
 			log.error("no validation parameters for validation ");
-			report.setFailure("no validation parameters for validation ");
+			report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,"no validation parameters for validation "));
 			progression.dispose(context);
 			return ERROR;
 
@@ -155,7 +156,7 @@ public class ValidatorCommand extends AbstractExporterCommand implements Command
 
 		} catch (Exception e) {
 			ActionReport report = (ActionReport) context.get(REPORT);
-			report.setFailure("Fatal :" + e);
+			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR,"Fatal :" + e));
 			log.error(e.getMessage(), e);
 		} finally {
 			progression.dispose(context);

@@ -206,6 +206,8 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 	}
 
 	private Collection<Line> getLines(StopArea area) {
+		try
+		{
 		Set<Line> lines = new HashSet<Line>();
 		if (area.getAreaType().equals(ChouetteAreaEnum.BoardingPosition)
 				|| area.getAreaType().equals(ChouetteAreaEnum.Quay)) {
@@ -218,6 +220,11 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 			}
 		}
 		return lines;
+		}
+		catch (RuntimeException e) {
+			log.error("error "+e.getMessage()+" on "+area.getObjectId()+ " "+area.getName());
+			throw e;
+		}
 	}
 
 }

@@ -14,7 +14,9 @@ import mobi.chouette.common.FileUtil;
 import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.report.ActionError;
 import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.FileError;
 import mobi.chouette.exchange.report.FileInfo;
 import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
 import mobi.chouette.exchange.report.ReportConstant;
@@ -52,7 +54,7 @@ public class UncompressCommand implements Command, ReportConstant {
 		if (file == null)
 		{
 			report.setResult(STATUS_ERROR);
-			report.setFailure("Missing input file");
+			report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,"Missing input file"));
 			return result;
 		}
 		Path filename = Paths.get(path, file);
@@ -72,10 +74,10 @@ public class UncompressCommand implements Command, ReportConstant {
 				zip.setStatus(FILE_STATE.OK);
 			} catch (Exception e) {
 				log.error(e.getMessage(),e);
-				zip.addError(e.getMessage());
+				zip.addError(new FileError(FileError.CODE.READ_ERROR,e.getMessage()));
 				zip.setStatus(FILE_STATE.ERROR);
 				report.setResult(STATUS_ERROR);
-				report.setFailure("invalid_zip");
+				report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,"invalid_zip"));
 			}
 		}
 		else

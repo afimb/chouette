@@ -35,9 +35,9 @@ public class LineInfo {
 	private LineStats stats;
 
 	@XmlElement(name="errors")
-	private List<String> errors = new ArrayList<>();
+	private List<LineError> errors = new ArrayList<>();
 	
-	public void addError(String error)
+	public void addError(LineError error)
 	{
 		errors.add(error);
 	}

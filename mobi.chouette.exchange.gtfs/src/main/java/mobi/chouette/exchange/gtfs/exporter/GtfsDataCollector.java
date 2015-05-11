@@ -1,7 +1,6 @@
 package mobi.chouette.exchange.gtfs.exporter;
 
 import java.sql.Date;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -18,7 +17,6 @@ import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.type.ChouetteAreaEnum;
-import mobi.chouette.model.type.DayTypeEnum;
 import mobi.chouette.model.util.CopyUtil;
 import mobi.chouette.model.util.NeptuneUtil;
 

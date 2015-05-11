@@ -19,6 +19,7 @@ import mobi.chouette.exchange.ProgressionCommand;
 import mobi.chouette.exchange.exporter.AbstractExporterCommand;
 import mobi.chouette.exchange.exporter.CompressCommand;
 import mobi.chouette.exchange.exporter.SaveMetadataCommand;
+import mobi.chouette.exchange.report.ActionError;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.model.Line;
@@ -53,7 +54,7 @@ public class KmlExporterCommand extends AbstractExporterCommand implements Comma
 			ActionReport report = (ActionReport) context.get(REPORT);
 			log.error("invalid parameters for kml export " + configuration.getClass().getName());
 			report.setResult(STATUS_ERROR);
-			report.setFailure("invalid parameters for kml export " + configuration.getClass().getName());
+			report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,"invalid parameters for kml export " + configuration.getClass().getName()));
 			progression.dispose(context);
 			return ERROR;
 		}
@@ -65,7 +66,7 @@ public class KmlExporterCommand extends AbstractExporterCommand implements Comma
 			{
 				ActionReport report = (ActionReport) context.get(REPORT);
 				report.setResult(STATUS_ERROR);
-				report.setFailure("end date before start date");
+				report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,"end date before start date"));
 				return ERROR;
 				
 			}
@@ -132,7 +133,7 @@ public class KmlExporterCommand extends AbstractExporterCommand implements Comma
 
 		} catch (Exception e) {
 			ActionReport report = (ActionReport) context.get(REPORT);
-			report.setFailure("Fatal :" + e);
+			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR,"Fatal :" + e));
 			log.error(e.getMessage(), e);
 		} finally {
 			progression.dispose(context);

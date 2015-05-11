@@ -31,6 +31,7 @@ import mobi.chouette.exchange.hub.model.exporter.HubExporter;
 import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.metadata.NeptuneObjectPresenter;
 import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.LineError;
 import mobi.chouette.exchange.report.LineInfo;
 import mobi.chouette.exchange.report.LineInfo.LINE_STATE;
 import mobi.chouette.exchange.report.LineStats;
@@ -122,7 +123,7 @@ public class HubLineProducerCommand implements Command, Constant {
 					String msg = path.getFileName().toString()+" : "+ex.getError() + " "+ex.getField();
 					if (ex.getCode() != null) msg += " code : " +ex.getCode();
 					if (ex.getValue() != null) msg += " value : " +ex.getValue();
-					lineInfo.addError(msg);
+					lineInfo.addError(new LineError(LineError.CODE.INVALID_FORMAT, msg));
 					report.getLines().add(lineInfo);
 					throw new Exception("invalid data");
 				}
@@ -130,14 +131,14 @@ public class HubLineProducerCommand implements Command, Constant {
 				{
 					log.error("failure on line",e);
 					lineInfo.setStatus(LINE_STATE.ERROR);
-					lineInfo.addError(e.getMessage());
+					lineInfo.addError(new LineError(LineError.CODE.WRITE_ERROR,e.getMessage()));
 					report.getLines().add(lineInfo);
 					throw e;
 				}
 
 			} else {
 				lineInfo.setStatus(LINE_STATE.WARNING);
-				lineInfo.addError("no data to export on period");
+				lineInfo.addError(new LineError(LineError.CODE.NO_DATA_ON_PERIOD,"no data to export on period"));
 				result = ERROR;
 			}
 			report.getLines().add(lineInfo);

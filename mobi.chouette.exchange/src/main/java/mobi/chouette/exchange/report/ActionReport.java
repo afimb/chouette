@@ -41,7 +41,7 @@ public class ActionReport {
 	private LineStats stats;
 
 	@XmlElement(name = "failure")
-	private String failure;
+	private ActionError failure;
 		
 	public FileInfo findFileInfo(String name)
 	{

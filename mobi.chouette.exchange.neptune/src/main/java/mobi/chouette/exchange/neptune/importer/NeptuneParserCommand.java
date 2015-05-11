@@ -21,6 +21,7 @@ import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.neptune.model.NeptuneObjectFactory;
 import mobi.chouette.exchange.neptune.parser.ChouettePTNetworkParser;
 import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.FileError;
 import mobi.chouette.exchange.report.FileInfo;
 import mobi.chouette.model.util.Referential;
 
@@ -105,7 +106,7 @@ public class NeptuneParserCommand implements Command, Constant {
 			// report service
 			fileItem.setStatus(FileInfo.FILE_STATE.ERROR);
 			report.getFiles().add(fileItem);
-			fileItem.getErrors().add(e.toString());
+			fileItem.getErrors().add(new FileError(FileError.CODE.INTERNAL_ERROR, e.toString()));
 			log.error("parsing failed ",e);
 			throw e;
 		}

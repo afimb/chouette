@@ -117,11 +117,12 @@ public class FileUtil {
 	public static void compress(String path, String filename)
 			throws IOException {
 
-		ZipArchiveOutputStream zout = new ZipArchiveOutputStream(
-				Files.newOutputStream(Paths.get(filename)));
 
 		Path dir = Paths.get(path);
 		DirectoryStream<Path> stream = Files.newDirectoryStream(dir);
+
+		ZipArchiveOutputStream zout = new ZipArchiveOutputStream(
+				Files.newOutputStream(Paths.get(filename)));
 		for (Path file : stream) {
 
 			String name = file.getName(file.getNameCount() - 1).toString();

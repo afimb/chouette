@@ -29,6 +29,7 @@ import mobi.chouette.exchange.gtfs.model.exporter.GtfsExporter;
 import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.metadata.NeptuneObjectPresenter;
 import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.LineError;
 import mobi.chouette.exchange.report.LineInfo;
 import mobi.chouette.exchange.report.LineInfo.LINE_STATE;
 import mobi.chouette.exchange.report.LineStats;
@@ -74,7 +75,7 @@ public class GtfsLineProducerCommand implements Command, Constant {
 			}
 
 			GtfsDataCollector collector = new GtfsDataCollector();
-			boolean cont = (collector.collect(collection, line, startDate, endDate));
+			boolean cont = collector.collect(collection, line, startDate, endDate);
 			LineInfo lineInfo = new LineInfo();
 			lineInfo.setName(line.getName() + " (" + line.getNumber() + ")");
 			LineStats stats = new LineStats();
@@ -91,7 +92,7 @@ public class GtfsLineProducerCommand implements Command, Constant {
 				context.put(EXPORTABLE_DATA, collection);
 
 				saveLine(context, line);
-
+				stats.setLineCount(1);
 				lineInfo.setStatus(LINE_STATE.OK);
 				// merge lineStats to global ones
 				LineStats globalStats = report.getStats();
@@ -108,6 +109,7 @@ public class GtfsLineProducerCommand implements Command, Constant {
 				result = SUCCESS;
 			} else {
 				lineInfo.setStatus(LINE_STATE.ERROR);
+				lineInfo.addError(new LineError(LineError.CODE.NO_DATA_ON_PERIOD,"no data on period"));
 				result = ERROR;
 			}
 			report.getLines().add(lineInfo);

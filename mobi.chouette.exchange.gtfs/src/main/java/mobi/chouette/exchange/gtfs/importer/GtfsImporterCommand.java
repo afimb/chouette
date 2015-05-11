@@ -21,6 +21,7 @@ import mobi.chouette.exchange.importer.CopyCommand;
 import mobi.chouette.exchange.importer.LineRegisterCommand;
 import mobi.chouette.exchange.importer.StopAreaRegisterCommand;
 import mobi.chouette.exchange.importer.UncompressCommand;
+import mobi.chouette.exchange.report.ActionError;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.validation.DaoSharedDataValidatorCommand;
 import mobi.chouette.exchange.validation.report.ValidationReport;
@@ -55,7 +56,7 @@ public class GtfsImporterCommand implements Command, Constant {
 			// fatal wrong parameters
 			ActionReport report = (ActionReport) context.get(REPORT);
 			log.error("invalid parameters for gtfs import " + configuration.getClass().getName());
-			report.setFailure("invalid parameters for gtfs import " + configuration.getClass().getName());
+			report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,"invalid parameters for gtfs import " + configuration.getClass().getName()));
 			progression.dispose(context);
 			return ERROR;
 		}
@@ -170,7 +171,7 @@ public class GtfsImporterCommand implements Command, Constant {
 		} catch (Exception e) {
 			ActionReport report = (ActionReport) context.get(REPORT);
 			log.error(e);
-			report.setFailure("Fatal :" + e);
+			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR,"Fatal :" + e));
 		} finally {
 			progression.dispose(context);
 		}

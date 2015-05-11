@@ -41,7 +41,7 @@ public class GtfsExporterInputValidator extends AbstractInputValidator {
 
 		String timezone = parameters.getTimeZone();
 		if (timezone == null || timezone.isEmpty()) {
-			log.error("missing timezone");
+			log.error("missing time_zone");
 			return false;
 		}
 

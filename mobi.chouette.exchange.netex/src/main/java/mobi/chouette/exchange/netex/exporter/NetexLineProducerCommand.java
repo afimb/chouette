@@ -12,6 +12,7 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.netex.Constant;
 import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.LineError;
 import mobi.chouette.exchange.report.LineInfo;
 import mobi.chouette.exchange.report.LineInfo.LINE_STATE;
 import mobi.chouette.exchange.report.LineStats;
@@ -90,6 +91,7 @@ public class NetexLineProducerCommand implements Command, Constant {
 				result = SUCCESS;
 			} else {
 				lineInfo.setStatus(LINE_STATE.ERROR);
+				lineInfo.addError(new LineError(LineError.CODE.NO_DATA_ON_PERIOD,"no data on period"));
 				result = ERROR;
 			}
 			report.getLines().add(lineInfo);

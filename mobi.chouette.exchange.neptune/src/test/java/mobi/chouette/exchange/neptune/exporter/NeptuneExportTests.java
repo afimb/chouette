@@ -170,7 +170,7 @@ public class NeptuneExportTests  extends Arquillian implements Constant, ReportC
 		}
 		ActionReport report = (ActionReport) context.get(REPORT);
 		Assert.assertEquals(report.getResult(), STATUS_ERROR, "result");
-		Assert.assertTrue(report.getFailure().contains("before"), "failure");
+		Assert.assertTrue(report.getFailure().getDescription().contains("before"), "failure");
 	}
 
 

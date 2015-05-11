@@ -22,6 +22,7 @@ import mobi.chouette.exchange.importer.CopyCommand;
 import mobi.chouette.exchange.importer.LineRegisterCommand;
 import mobi.chouette.exchange.importer.UncompressCommand;
 import mobi.chouette.exchange.netex.Constant;
+import mobi.chouette.exchange.report.ActionError;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.FileInfo;
 import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
@@ -62,8 +63,8 @@ public class NetexImporterCommand implements Command, Constant {
 			ActionReport report = (ActionReport) context.get(REPORT);
 			log.error("invalid parameters for netex import "
 					+ configuration.getClass().getName());
-			report.setFailure("invalid parameters for netex import "
-					+ configuration.getClass().getName());
+			report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,"invalid parameters for netex import "
+					+ configuration.getClass().getName()));
 			progression.dispose(context);
 			return false;
 		}
@@ -180,7 +181,7 @@ public class NetexImporterCommand implements Command, Constant {
 		} catch (Exception e) {
 			ActionReport report = (ActionReport) context.get(REPORT);
 			log.error(e);
-			report.setFailure("Fatal :"+e);
+			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR,"Fatal :"+e));
 
 		} finally {
 			progression.dispose(context);

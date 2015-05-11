@@ -19,6 +19,7 @@ import mobi.chouette.exchange.exporter.AbstractExporterCommand;
 import mobi.chouette.exchange.exporter.CompressCommand;
 import mobi.chouette.exchange.exporter.SaveMetadataCommand;
 import mobi.chouette.exchange.gtfs.Constant;
+import mobi.chouette.exchange.report.ActionError;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.model.Line;
@@ -55,8 +56,8 @@ public class GtfsExporterCommand extends AbstractExporterCommand implements Comm
 			log.error("invalid parameters for gtfs export "
 					+ configuration.getClass().getName());
 			report.setResult(STATUS_ERROR);
-			report.setFailure("invalid parameters for gtfs export "
-					+ configuration.getClass().getName());
+			report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,"invalid parameters for gtfs export "
+					+ configuration.getClass().getName()));
 			progression.dispose(context);
 			return ERROR;
 		}
@@ -67,7 +68,7 @@ public class GtfsExporterCommand extends AbstractExporterCommand implements Comm
 			if (parameters.getStartDate().after(parameters.getEndDate()))
 			{
 				report.setResult(STATUS_ERROR);
-				report.setFailure("end date before start date");
+				report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,"end date before start date"));
 				return ERROR;
 				
 			}
@@ -159,7 +160,7 @@ public class GtfsExporterCommand extends AbstractExporterCommand implements Comm
 			progression.execute(context);
 
 		} catch (Exception e) {
-			report.setFailure("Fatal :" + e);
+			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR,"Fatal :" + e));
 			log.error(e.getMessage(), e);
 		} finally {
 			progression.dispose(context);
