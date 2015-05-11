@@ -1,10 +1,7 @@
 package mobi.chouette.exchange.validation.checkpoint;
 
 import java.io.File;
-import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -25,11 +22,8 @@ import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.exchange.validator.JobDataTest;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
-import mobi.chouette.model.type.LongLatTypeEnum;
 
 import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
@@ -514,7 +508,7 @@ public class ValidationStopAreas extends AbstractTestValidation {
 		report = (ValidationReport) context.get(VALIDATION_REPORT);
 		CheckPoint checkPointReport = report.findCheckPointByName("4-StopArea-2");
 		Assert.assertNotNull(checkPointReport, "report must contain a 4-StopArea-2 checkPoint");
-		Assert.assertEquals(checkPointReport.getState(), CheckPoint.RESULT.OK, " checkPointReport must be nok");
+		Assert.assertEquals(checkPointReport.getState(), CheckPoint.RESULT.OK, " checkPointReport must be ok");
 		Assert.assertEquals(checkPointReport.getDetailCount(), 0, " checkPointReport must have 0 item");
 
 		bean1.setParent(null);
