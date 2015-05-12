@@ -20,7 +20,6 @@ import mobi.chouette.exchange.exporter.AbstractExporterCommand;
 import mobi.chouette.exchange.report.ActionError;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.LineInfo;
-import mobi.chouette.exchange.report.LineInfo.LINE_STATE;
 import mobi.chouette.exchange.report.LineStats;
 import mobi.chouette.exchange.validation.DaoLineValidatorCommand;
 import mobi.chouette.exchange.validation.DaoSharedDataValidatorCommand;
@@ -104,20 +103,14 @@ public class ValidatorCommand extends AbstractExporterCommand implements Command
 				boolean resLine = validateLine.execute(context);
 				ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 				ActionReport report = (ActionReport) context.get(REPORT);
-				LineInfo lineInfo = new LineInfo();
-				lineInfo.setName(line.getName() + " (" + line.getNumber() + ")");
-				LineStats stats = new LineStats();
+				LineInfo lineInfo = new LineInfo(line.getName() + " (" + line.getNumber() + ")");
+				LineStats stats = lineInfo.getStats();
 				stats.setJourneyPatternCount(data.getJourneyPatterns().size());
 				stats.setRouteCount(data.getRoutes().size());
 				stats.setVehicleJourneyCount(data.getVehicleJourneys().size());
 
-				lineInfo.setStatus(LINE_STATE.OK);
 				// merge lineStats to global ones
 				LineStats globalStats = report.getStats();
-				if (globalStats == null) {
-					globalStats = new LineStats();
-					report.setStats(globalStats);
-				}
 				globalStats.setRouteCount(globalStats.getRouteCount() + stats.getRouteCount());
 				globalStats.setVehicleJourneyCount(globalStats.getVehicleJourneyCount() + stats.getVehicleJourneyCount());
 				globalStats.setJourneyPatternCount(globalStats.getJourneyPatternCount() + stats.getJourneyPatternCount());
@@ -139,10 +132,6 @@ public class ValidatorCommand extends AbstractExporterCommand implements Command
 					ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 					ActionReport report = (ActionReport) context.get(REPORT);
 					LineStats globalStats = report.getStats();
-					if (globalStats == null) {
-						globalStats = new LineStats();
-						report.setStats(globalStats);
-					}
 					globalStats.setConnectionLinkCount(data.getConnectionLinks().size());
 					globalStats.setAccessPointCount(data.getAccessPoints().size());
 					globalStats.setStopAreaCount(data.getStopAreas().size());

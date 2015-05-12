@@ -18,8 +18,6 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
-import lombok.extern.log4j.Log4j;
-
 import org.apache.commons.io.FileUtils;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -28,7 +26,6 @@ import org.codehaus.jettison.mapped.MappedNamespaceConvention;
 import org.codehaus.jettison.mapped.MappedXMLStreamReader;
 import org.codehaus.jettison.mapped.MappedXMLStreamWriter;
 
-@Log4j
 public class JSONUtil {
 
 	public static <T> T fromJSON(Path path, Class<T> type) throws IOException, JAXBException, JSONException,
@@ -83,6 +80,7 @@ public class JSONUtil {
 	 * Returns all the list elements in the class ... This is called
 	 * recursively.
 	 */
+	@SuppressWarnings("rawtypes")
 	public static List<String> getListElements(final Class<?> obj) {
 		List<String> ret = new ArrayList<String>();
 

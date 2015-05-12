@@ -14,7 +14,6 @@ import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.Progression;
 import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.exchange.report.StepProgression;
 import mobi.chouette.exchange.report.StepProgression.STEP;
@@ -31,7 +30,6 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 
 	public void initialize(Context context, int stepCount) {
 		ActionReport report = (ActionReport) context.get(REPORT);
-		report.setProgression(new Progression());
 		report.getProgression().getSteps().get(STEP.INITIALISATION.ordinal()).setTotal(stepCount);
 		saveReport(context);
 		saveMainValidationReport(context);
@@ -53,10 +51,6 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 	}
 
 	public void dispose(Context context) {
-		ActionReport report = (ActionReport) context.get(REPORT);
-		report.setProgression(null);
-		if (report.getResult() == null)
-			report.setResult(STATUS_OK);
 		saveReport(context);
 		if (context.containsKey(VALIDATION_REPORT)) {
 			mergeValidationReports(context);

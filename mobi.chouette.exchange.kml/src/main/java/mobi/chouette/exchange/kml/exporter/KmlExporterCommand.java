@@ -53,7 +53,6 @@ public class KmlExporterCommand extends AbstractExporterCommand implements Comma
 			// fatal wrong parameters
 			ActionReport report = (ActionReport) context.get(REPORT);
 			log.error("invalid parameters for kml export " + configuration.getClass().getName());
-			report.setResult(STATUS_ERROR);
 			report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,"invalid parameters for kml export " + configuration.getClass().getName()));
 			progression.dispose(context);
 			return ERROR;
@@ -65,7 +64,6 @@ public class KmlExporterCommand extends AbstractExporterCommand implements Comma
 			if (parameters.getStartDate().after(parameters.getEndDate()))
 			{
 				ActionReport report = (ActionReport) context.get(REPORT);
-				report.setResult(STATUS_ERROR);
 				report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,"end date before start date"));
 				return ERROR;
 				

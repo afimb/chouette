@@ -55,10 +55,6 @@ public class HubSharedDataProducerCommand implements Command, Constant {
 
 			saveData(context);
 			LineStats globalStats = report.getStats();
-			if (globalStats == null) {
-				globalStats = new LineStats();
-				report.setStats(globalStats);
-			}
 			globalStats.setConnectionLinkCount(collection.getConnectionLinks().size());
 			globalStats.setStopAreaCount(collection.getStopAreas().size());
 			globalStats.setTimeTableCount(collection.getTimetables().size());

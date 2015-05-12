@@ -54,8 +54,7 @@ public class GtfsTransferParser implements Parser, Validator, Constant {
 		ActionReport report = (ActionReport) context.get(REPORT);
 
 		// transfers.txt
-		FileInfo file = new FileInfo();
-		file.setName(GTFS_TRANSFERS_FILE);
+		FileInfo file = new FileInfo(GTFS_TRANSFERS_FILE,FILE_STATE.OK);
 		report.getFiles().add(file);
 		try {
 			if (importer.hasFrequencyImporter()) {
@@ -64,7 +63,6 @@ public class GtfsTransferParser implements Parser, Validator, Constant {
 					parser.validate(bean, importer);
 				}
 			}
-			file.setStatus(FILE_STATE.OK);
 		} catch (Exception ex) {
 			AbstractConverter.populateFileError(file, ex);
 			throw ex;

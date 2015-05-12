@@ -110,15 +110,13 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 		boolean found = false;
 		// calendar.txt
 		if (importer.hasCalendarImporter()) {
-			FileInfo file = new FileInfo();
-			file.setName(GTFS_CALENDAR_FILE);
+			FileInfo file = new FileInfo(GTFS_CALENDAR_FILE,FILE_STATE.OK);
 			report.getFiles().add(file);
 			try {
 				Index<GtfsCalendar> calendarParser = importer.getCalendarByService();
 				for (GtfsCalendar gtfsCalendar : calendarParser) {
 					calendarParser.validate(gtfsCalendar, importer);
 				}
-				file.setStatus(FILE_STATE.OK);
 				found = true;
 			} catch (Exception ex) {
 				AbstractConverter.populateFileError(file, ex);
@@ -128,15 +126,13 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 
 		// calendar_dates.txt
 		if (importer.hasCalendarDateImporter()) {
-			FileInfo file = new FileInfo();
-			file.setName(GTFS_CALENDAR_DATES_FILE);
+			FileInfo file = new FileInfo(GTFS_CALENDAR_DATES_FILE,FILE_STATE.OK);
 			report.getFiles().add(file);
 			try {
 				Index<GtfsCalendarDate> calendarDateParser = importer.getCalendarDateByService();
 				for (GtfsCalendarDate gtfsCalendarDate : calendarDateParser) {
 					calendarDateParser.validate(gtfsCalendarDate, importer);
 				}
-				file.setStatus(FILE_STATE.OK);
 				found = true;
 			} catch (Exception ex) {
 				AbstractConverter.populateFileError(file, ex);
@@ -146,15 +142,11 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 
 		if (!found)
 		{
-			FileInfo file = new FileInfo();
-			file.setName(GTFS_CALENDAR_FILE);
+			FileInfo file = new FileInfo(GTFS_CALENDAR_FILE,FILE_STATE.OK);
 			report.getFiles().add(file);
-			file.setStatus(FILE_STATE.ERROR);
 			file.addError(new FileError(FileError.CODE.FILE_NOT_FOUND, "missing calendar.txt and calendar_dates.txt"));
-			file = new FileInfo();
-			file.setName(GTFS_CALENDAR_DATES_FILE);
+			file = new FileInfo(GTFS_CALENDAR_DATES_FILE,FILE_STATE.OK);
 			report.getFiles().add(file);
-			file.setStatus(FILE_STATE.ERROR);
 			file.addError(new FileError(FileError.CODE.FILE_NOT_FOUND, "missing calendar.txt and calendar_dates.txt"));
 
 			throw new GtfsException("calendar.txt or calendar_dates.txt", 0, null, GtfsException.ERROR.MISSING_FILE,

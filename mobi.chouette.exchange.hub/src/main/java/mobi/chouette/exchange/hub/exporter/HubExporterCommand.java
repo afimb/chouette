@@ -55,7 +55,6 @@ public class HubExporterCommand extends AbstractExporterCommand implements Comma
 			// fatal wrong parameters
 			ActionReport report = (ActionReport) context.get(REPORT);
 			log.error("invalid parameters for hub export " + configuration.getClass().getName());
-			report.setResult(STATUS_ERROR);
 			report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,"invalid parameters for hub export " + configuration.getClass().getName()));
 			progression.dispose(context);
 			return ERROR;
@@ -67,7 +66,6 @@ public class HubExporterCommand extends AbstractExporterCommand implements Comma
 			if (parameters.getStartDate().after(parameters.getEndDate()))
 			{
 				ActionReport report = (ActionReport) context.get(REPORT);
-				report.setResult(STATUS_ERROR);
 				report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,"end date before start date"));
 				return ERROR;
 				
@@ -145,7 +143,6 @@ public class HubExporterCommand extends AbstractExporterCommand implements Comma
 
 		} catch (Exception e) {
 			ActionReport report = (ActionReport) context.get(REPORT);
-			report.setResult(STATUS_ERROR);
 			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR,"Fatal :" + e));
 			log.error(e.getMessage(), e);
 		} finally {

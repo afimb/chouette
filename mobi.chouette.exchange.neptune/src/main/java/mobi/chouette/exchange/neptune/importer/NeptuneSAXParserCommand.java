@@ -28,6 +28,7 @@ import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.FileError;
 import mobi.chouette.exchange.report.FileInfo;
+import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
 
 import org.apache.commons.io.FileUtils;
 import org.xml.sax.SAXException;
@@ -54,11 +55,9 @@ public class NeptuneSAXParserCommand implements Command, Constant {
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
 		ActionReport report = (ActionReport) context.get(REPORT);
-		FileInfo fileItem = new FileInfo();
 
 		String fileName = new File(new URL(fileURL).toURI()).getName();
-
-		fileItem.setName(fileName);
+		FileInfo fileItem = new FileInfo(fileName,FILE_STATE.OK);
 
 		Schema schema = (Schema) context.get(SCHEMA);
 		if (schema == null) {
@@ -82,9 +81,8 @@ public class NeptuneSAXParserCommand implements Command, Constant {
 			// validator.reset();
 			validator.validate(file);
 			if (errorHandler.isHasErrors()) {
-				fileItem.setStatus(FileInfo.FILE_STATE.ERROR);
 				report.getFiles().add(fileItem);
-				fileItem.getErrors().add(new FileError(FileError.CODE.INVALID_FORMAT,"Xml errors"));
+				fileItem.addError(new FileError(FileError.CODE.INVALID_FORMAT,"Xml errors"));
 				return result;
 			}
 			result = SUCCESS;
@@ -102,15 +100,13 @@ public class NeptuneSAXParserCommand implements Command, Constant {
 			}
 			log.error(e);
 			errorHandler.handleError(e);
-			fileItem.setStatus(FileInfo.FILE_STATE.ERROR);
 			report.getFiles().add(fileItem);
-			fileItem.getErrors().add(new FileError(FileError.CODE.INVALID_FORMAT,e.getMessage()));
+			fileItem.addError(new FileError(FileError.CODE.INVALID_FORMAT,e.getMessage()));
 		} catch (Exception e) {
 
 			log.error(e);
-			fileItem.setStatus(FileInfo.FILE_STATE.ERROR);
 			report.getFiles().add(fileItem);
-			fileItem.getErrors().add(new FileError(FileError.CODE.INTERNAL_ERROR,e.getMessage()));
+			fileItem.addError(new FileError(FileError.CODE.INTERNAL_ERROR,e.getMessage()));
 
 		} finally {
 			if (reader != null ) reader.close();

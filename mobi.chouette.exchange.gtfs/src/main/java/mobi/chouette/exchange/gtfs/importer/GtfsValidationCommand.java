@@ -16,7 +16,6 @@ import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.gtfs.Constant;
-import mobi.chouette.exchange.gtfs.model.importer.GtfsImporter;
 import mobi.chouette.exchange.gtfs.parser.GtfsAgencyParser;
 import mobi.chouette.exchange.gtfs.parser.GtfsCalendarParser;
 import mobi.chouette.exchange.gtfs.parser.GtfsRouteParser;
@@ -60,9 +59,7 @@ public class GtfsValidationCommand implements Command, Constant {
 		}
 		for (Path fileName : list) {
 			if (!processableFiles.contains(fileName.getFileName().toString())) {
-				FileInfo file = new FileInfo();
-				file.setName(fileName.getFileName().toString());
-				file.setStatus(FILE_STATE.IGNORED);
+				FileInfo file = new FileInfo(fileName.getFileName().toString(),FILE_STATE.IGNORED);
 				report.getFiles().add(file);
 			}
 		}

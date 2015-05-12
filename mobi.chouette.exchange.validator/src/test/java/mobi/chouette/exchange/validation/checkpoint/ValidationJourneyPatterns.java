@@ -165,7 +165,6 @@ public class ValidationJourneyPatterns extends AbstractTestValidation {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test(groups = { "journeyPattern" }, description = "3-JourneyPattern-1", priority = 3)
 	public void verifyTest3_1() throws Exception {
 		// 3-JourneyPattern-1 : check if two journey patterns use same stops

@@ -42,9 +42,7 @@ public class NetexLineProducer implements Constant {
 		writer.writeXmlFile(collection, file);
 
 		ActionReport report = (ActionReport) context.get(REPORT);
-		FileInfo fileItem = new FileInfo();
-		fileItem.setName(fileName);
-		fileItem.setStatus(FILE_STATE.OK);
+		FileInfo fileItem = new FileInfo(fileName,FILE_STATE.OK);
 		report.getFiles().add(fileItem);
 
 		if (metadata != null) {

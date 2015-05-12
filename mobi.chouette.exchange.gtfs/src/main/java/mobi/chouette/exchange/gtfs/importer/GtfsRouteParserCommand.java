@@ -43,7 +43,7 @@ public class GtfsRouteParserCommand implements Command, Constant {
 	@Override
 	public boolean execute(Context context) throws Exception {
 		boolean result = ERROR;
-		
+
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
 		try {
@@ -53,8 +53,7 @@ public class GtfsRouteParserCommand implements Command, Constant {
 				referential.clear();
 			}
 
-			GtfsImportParameters configuration = (GtfsImportParameters) context
-					.get(CONFIGURATION);
+			GtfsImportParameters configuration = (GtfsImportParameters) context.get(CONFIGURATION);
 
 			GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 
@@ -62,18 +61,17 @@ public class GtfsRouteParserCommand implements Command, Constant {
 			if (referential.getSharedPTNetworks().isEmpty()) {
 				createPTNetwork(referential, configuration);
 			}
-			
+
 			// Company
 			if (referential.getSharedCompanies().isEmpty()) {
-				GtfsAgencyParser gtfsAgencyParser = (GtfsAgencyParser) ParserFactory
-						.create(GtfsAgencyParser.class.getName());
+				GtfsAgencyParser gtfsAgencyParser = (GtfsAgencyParser) ParserFactory.create(GtfsAgencyParser.class
+						.getName());
 				gtfsAgencyParser.parse(context);
 			}
 
 			// StopArea
 			if (referential.getSharedStopAreas().isEmpty()) {
-				GtfsStopParser gtfsStopParser = (GtfsStopParser) ParserFactory
-						.create(GtfsStopParser.class.getName());
+				GtfsStopParser gtfsStopParser = (GtfsStopParser) ParserFactory.create(GtfsStopParser.class.getName());
 				gtfsStopParser.parse(context);
 			}
 
@@ -93,66 +91,54 @@ public class GtfsRouteParserCommand implements Command, Constant {
 				gtfsCalendarParser.parse(context);
 			}
 
-			
 			// Line
-			GtfsRouteParser gtfsRouteParser = (GtfsRouteParser) ParserFactory
-					.create(GtfsRouteParser.class.getName());
+			GtfsRouteParser gtfsRouteParser = (GtfsRouteParser) ParserFactory.create(GtfsRouteParser.class.getName());
 			gtfsRouteParser.setGtfsRouteId(gtfsRouteId);
 			gtfsRouteParser.parse(context);
-		
+
 			addStats(report, referential);
 			result = SUCCESS;
 		} catch (Exception e) {
 			log.error("error : ", e);
 			throw e;
 		}
-		
+
 		log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		return result;
 	}
 
-	private Network createPTNetwork(Referential referential,
-			GtfsImportParameters configuration) {
+	private Network createPTNetwork(Referential referential, GtfsImportParameters configuration) {
 		String prefix = configuration.getObjectIdPrefix();
-		String ptNetworkId = prefix + ":" + Network.PTNETWORK_KEY + ":"
-				+ prefix;
-		Network ptNetwork = ObjectFactory.getPTNetwork(referential,
-				ptNetworkId);
+		String ptNetworkId = prefix + ":" + Network.PTNETWORK_KEY + ":" + prefix;
+		Network ptNetwork = ObjectFactory.getPTNetwork(referential, ptNetworkId);
 		ptNetwork.setVersionDate(Calendar.getInstance().getTime());
 		ptNetwork.setName(prefix);
 		ptNetwork.setRegistrationNumber(prefix);
 		ptNetwork.setSourceName("GTFS");
 		return ptNetwork;
 	}
-	
-	private void addStats(ActionReport report,  Referential referential) {
+
+	private void addStats(ActionReport report, Referential referential) {
 		Line line = referential.getLines().values().iterator().next();
-		LineInfo lineInfo = new LineInfo();
-		lineInfo.setName(line.getName());
-		lineInfo.setStatus(LineInfo.LINE_STATE.OK);
-		LineStats stats = new LineStats();
+		LineInfo lineInfo = new LineInfo(line.getName());
+		LineStats stats = lineInfo.getStats();
 		stats.setLineCount(1);
-			
-			stats.setRouteCount(referential.getRoutes().size());
-			stats.setVehicleJourneyCount(referential.getVehicleJourneys().size());
-			stats.setJourneyPatternCount(referential.getJourneyPatterns().size());
-		lineInfo.setStats(stats);
+
+		stats.setRouteCount(referential.getRoutes().size());
+		stats.setVehicleJourneyCount(referential.getVehicleJourneys().size());
+		stats.setJourneyPatternCount(referential.getJourneyPatterns().size());
 		report.getLines().add(lineInfo);
 		LineStats globalStats = report.getStats();
-		if (globalStats == null) {
-			globalStats = new LineStats();
-			report.setStats(globalStats);
-			globalStats.setConnectionLinkCount(referential.getSharedConnectionLinks().size());
-			globalStats.setStopAreaCount(referential.getSharedStopAreas().size());
-			globalStats.setTimeTableCount(referential.getSharedTimetables().size());
-		}
+		globalStats.setConnectionLinkCount(referential.getSharedConnectionLinks().size());
+		globalStats.setStopAreaCount(referential.getSharedStopAreas().size());
+		globalStats.setTimeTableCount(referential.getSharedTimetables().size());
+		
 		globalStats.setLineCount(globalStats.getLineCount() + stats.getLineCount());
 		globalStats.setRouteCount(globalStats.getRouteCount() + stats.getRouteCount());
 		globalStats.setVehicleJourneyCount(globalStats.getVehicleJourneyCount() + stats.getVehicleJourneyCount());
 		globalStats.setJourneyPatternCount(globalStats.getJourneyPatternCount() + stats.getJourneyPatternCount());
 
 	}
-
 
 	public static class DefaultCommandFactory extends CommandFactory {
 
@@ -164,7 +150,6 @@ public class GtfsRouteParserCommand implements Command, Constant {
 	}
 
 	static {
-		CommandFactory.factories.put(GtfsRouteParserCommand.class.getName(),
-				new DefaultCommandFactory());
+		CommandFactory.factories.put(GtfsRouteParserCommand.class.getName(), new DefaultCommandFactory());
 	}
 }

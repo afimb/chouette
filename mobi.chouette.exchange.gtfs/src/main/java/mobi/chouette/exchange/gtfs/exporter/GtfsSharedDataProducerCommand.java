@@ -63,10 +63,6 @@ public class GtfsSharedDataProducerCommand implements Command, Constant
 
 			saveData(context);	
 			LineStats globalStats = report.getStats();
-			if (globalStats == null) {
-				globalStats = new LineStats();
-				report.setStats(globalStats);
-			}
 			globalStats.setConnectionLinkCount(collection.getConnectionLinks().size());
 			globalStats.setStopAreaCount(collection.getCommercialStops().size()+collection.getPhysicalStops().size());
 			globalStats.setTimeTableCount(collection.getTimetables().size());

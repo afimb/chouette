@@ -1,9 +1,5 @@
 package mobi.chouette.service;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -32,6 +28,9 @@ import mobi.chouette.model.api.Link;
 import mobi.chouette.scheduler.Scheduler;
 
 import org.apache.commons.io.FileUtils;
+
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 
 @Singleton(name = JobServiceManager.BEAN_NAME)
 @Startup

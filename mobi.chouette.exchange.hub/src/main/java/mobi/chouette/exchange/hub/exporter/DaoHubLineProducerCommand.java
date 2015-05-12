@@ -16,7 +16,6 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.LineDAO;
 import mobi.chouette.exchange.hub.Constant;
-import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.model.Line;
 
 import com.jamonapi.Monitor;

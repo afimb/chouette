@@ -21,12 +21,11 @@ import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.kml.exporter.KmlData.KmlItem;
 import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.metadata.NeptuneObjectPresenter;
-import mobi.chouette.exchange.metadata.Metadata.Resource;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.FileInfo;
-import mobi.chouette.exchange.report.LineInfo;
 import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
-import mobi.chouette.exchange.report.LineInfo.LINE_STATE;
+import mobi.chouette.exchange.report.LineError;
+import mobi.chouette.exchange.report.LineInfo;
 import mobi.chouette.exchange.report.LineStats;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
@@ -70,10 +69,8 @@ public class KmlLineProducerCommand implements Command, Constant {
 			KmlDataCollector collector = new KmlDataCollector();
 
 			boolean cont = (collector.collect(collection, line, startDate, endDate));
-			LineInfo lineInfo = new LineInfo();
-			lineInfo.setName(line.getName() + " (" + line.getNumber() + ")");
-			LineStats stats = new LineStats();
-			lineInfo.setStats(stats);
+			LineInfo lineInfo = new LineInfo(line.getName() + " (" + line.getNumber() + ")");
+			LineStats stats = lineInfo.getStats();
 			stats.setAccessPointCount(collection.getAccessPoints().size());
 			stats.setConnectionLinkCount(collection.getConnectionLinks().size());
 			stats.setJourneyPatternCount(collection.getJourneyPatterns().size());
@@ -87,13 +84,8 @@ public class KmlLineProducerCommand implements Command, Constant {
 
 				saveLine(context, line, collection);
 
-				lineInfo.setStatus(LINE_STATE.OK);
 				// merge lineStats to global ones
 				LineStats globalStats = report.getStats();
-				if (globalStats == null) {
-					globalStats = new LineStats();
-					report.setStats(globalStats);
-				}
 				globalStats.setLineCount(globalStats.getLineCount() + stats.getLineCount());
 				globalStats.setRouteCount(globalStats.getRouteCount() + stats.getRouteCount());
 				globalStats.setVehicleJourneyCount(globalStats.getVehicleJourneyCount()
@@ -102,7 +94,7 @@ public class KmlLineProducerCommand implements Command, Constant {
 						+ stats.getJourneyPatternCount());
 				result = SUCCESS;
 			} else {
-				lineInfo.setStatus(LINE_STATE.ERROR);
+				lineInfo.addError(new LineError(LineError.CODE.NO_DATA_ON_PERIOD,"no data to export on period"));
 				result = ERROR;
 			}
 			report.getLines().add(lineInfo);
@@ -209,9 +201,7 @@ public class KmlLineProducerCommand implements Command, Constant {
 				String fileName = "line_" + line.getId() + "_route_" + route.getId() + "_journey_pattern_"+ jp.getId() +".kml";
 				File file = new File(dir.toFile(), fileName);
 				writer.writeXmlFile(jpData, file);
-				FileInfo fileItem = new FileInfo();
-				fileItem.setName(fileName);
-				fileItem.setStatus(FILE_STATE.OK);
+				FileInfo fileItem = new FileInfo(fileName,FILE_STATE.OK);
 				report.getFiles().add(fileItem);
 				}
 
@@ -221,9 +211,7 @@ public class KmlLineProducerCommand implements Command, Constant {
 			String fileName = "line_" + line.getId() + "_route_" + route.getId() + ".kml";
 			File file = new File(dir.toFile(), fileName);
 			writer.writeXmlFile(routeData, file);
-			FileInfo fileItem = new FileInfo();
-			fileItem.setName(fileName);
-			fileItem.setStatus(FILE_STATE.OK);
+			FileInfo fileItem = new FileInfo(fileName,FILE_STATE.OK);
 			report.getFiles().add(fileItem);
 
 		}
@@ -231,6 +219,8 @@ public class KmlLineProducerCommand implements Command, Constant {
 		String fileName = "line_" + line.getId() + ".kml";
 		File file = new File(dir.toFile(), fileName);
 		writer.writeXmlFile(lineData, file);
+		FileInfo fileItem = new FileInfo(fileName,FILE_STATE.OK);
+		report.getFiles().add(fileItem);
 
 		Metadata metadata = (Metadata) context.get(METADATA); 
 		if (metadata != null)

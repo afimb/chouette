@@ -53,7 +53,6 @@ public class UncompressCommand implements Command, ReportConstant {
 		String file = jobData.getFilename(); 
 		if (file == null)
 		{
-			report.setResult(STATUS_ERROR);
 			report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,"Missing input file"));
 			return result;
 		}
@@ -64,19 +63,15 @@ public class UncompressCommand implements Command, ReportConstant {
 		}
 		if (FilenameUtils.getExtension(filename.toString()).equalsIgnoreCase("zip"))
 		{
-			FileInfo zip = new FileInfo();
-			zip.setName(file);
+			FileInfo zip = new FileInfo(file,FILE_STATE.OK);
 
 			try {
 				report.setZip(zip);
 				FileUtil.uncompress(filename.toString(), target.toString());
 				result = SUCCESS;
-				zip.setStatus(FILE_STATE.OK);
 			} catch (Exception e) {
 				log.error(e.getMessage(),e);
 				zip.addError(new FileError(FileError.CODE.READ_ERROR,e.getMessage()));
-				zip.setStatus(FILE_STATE.ERROR);
-				report.setResult(STATUS_ERROR);
 				report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,"invalid_zip"));
 			}
 		}

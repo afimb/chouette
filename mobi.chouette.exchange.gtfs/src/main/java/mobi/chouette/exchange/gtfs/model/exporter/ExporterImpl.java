@@ -40,10 +40,9 @@ public abstract class ExporterImpl<T> implements Exporter<T> {
 	@Override
 	public void dispose(ActionReport report) throws IOException {
 		_writer.close();
-		FileInfo info = new FileInfo();
-		
-		info.setName(Paths.get((String) _context.get(Context.PATH)).getFileName().toString());
-		info.setStatus(FileInfo.FILE_STATE.OK);
+		// add file info
+		FileInfo info = new FileInfo(Paths.get((String) _context.get(Context.PATH)).getFileName().toString(),
+				FileInfo.FILE_STATE.OK);
 		report.getFiles().add(info);
 	}
 

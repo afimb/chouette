@@ -112,9 +112,7 @@ public class NeptuneImporterCommand implements Command, Constant, ReportConstant
 			List<Path> excluded = FileUtil.listFiles(path, "*", "*.xml");
 			if (!excluded.isEmpty()) {
 				for (Path exclude : excluded) {
-					FileInfo file = new FileInfo();
-					file.setName(exclude.getFileName().toString());
-					file.setStatus(FILE_STATE.IGNORED);
+					FileInfo file = new FileInfo(exclude.getFileName().toString(),FILE_STATE.IGNORED);
 					report.getFiles().add(file);
 				}
 			}
@@ -178,7 +176,6 @@ public class NeptuneImporterCommand implements Command, Constant, ReportConstant
 			}
 			progression.execute(context);
 			if (report.getLines().size() == 0) {
-				report.setResult(STATUS_ERROR);
 				if (report.getFailure() == null)
 					report.setFailure(new ActionError(ActionError.CODE.NO_DATA_FOUND,"no data"));
 			}
@@ -186,7 +183,6 @@ public class NeptuneImporterCommand implements Command, Constant, ReportConstant
 
 		} catch (Exception e) {
 			log.error("Fatal :", e);
-			report.setResult(STATUS_ERROR);
 			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR,"Fatal :" + e));
 
 		} finally {

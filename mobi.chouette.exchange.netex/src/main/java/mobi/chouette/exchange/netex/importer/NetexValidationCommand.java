@@ -13,7 +13,6 @@ import mobi.chouette.exchange.netex.Constant;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.FileError;
 import mobi.chouette.exchange.report.FileInfo;
-import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
 import mobi.chouette.exchange.report.LineInfo;
 import mobi.chouette.exchange.report.LineStats;
 import mobi.chouette.model.Line;
@@ -52,18 +51,15 @@ public class NetexValidationCommand implements Command, Constant {
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		}
 		if (result == ERROR) {
-			fileInfo.setStatus(FILE_STATE.ERROR);
-			fileInfo.getErrors().add(new FileError(FileError.CODE.INVALID_FORMAT, "Neptune compliance failed"));
+			fileInfo.addError(new FileError(FileError.CODE.INVALID_FORMAT, "Neptune compliance failed"));
 		}
 		return result;
 	}
 
 	private void addStats(ActionReport report, Referential referential) {
 		Line line = referential.getLines().values().iterator().next();
-		LineInfo lineInfo = new LineInfo();
-		lineInfo.setName(line.getName());
-		lineInfo.setStatus(LineInfo.LINE_STATE.OK);
-		LineStats stats = new LineStats();
+		LineInfo lineInfo = new LineInfo(line.getName());
+		LineStats stats = lineInfo.getStats();
 		stats.setLineCount(1);
 		stats.setRouteCount(referential.getRoutes().size());
 		stats.setConnectionLinkCount(referential.getConnectionLinks().size());
@@ -73,13 +69,8 @@ public class NetexValidationCommand implements Command, Constant {
 		stats.setVehicleJourneyCount(referential.getVehicleJourneys().size());
 		stats.setJourneyPatternCount(referential.getJourneyPatterns().size());
 
-		lineInfo.setStats(stats);
 		report.getLines().add(lineInfo);
 		LineStats globalStats = report.getStats();
-		if (globalStats == null) {
-			globalStats = new LineStats();
-			report.setStats(globalStats);
-		}
 		globalStats.setLineCount(globalStats.getLineCount() + stats.getLineCount());
 		globalStats.setAccessPointCount(globalStats.getAccessPointCount() + stats.getAccessPointCount());
 		globalStats.setRouteCount(globalStats.getRouteCount() + stats.getRouteCount());

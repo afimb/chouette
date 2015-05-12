@@ -15,17 +15,14 @@ import mobi.chouette.dao.LineDAO;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.neptune.JobDataTest;
 import mobi.chouette.exchange.neptune.NeptuneTestsUtils;
-import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
-import mobi.chouette.exchange.neptune.importer.NeptuneImporterCommand;
 import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
 import mobi.chouette.exchange.report.LineInfo;
 import mobi.chouette.exchange.report.LineInfo.LINE_STATE;
+import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.StopArea;
-import mobi.chouette.model.api.Job;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.util.Referential;
 import mobi.chouette.persistence.hibernate.ContextHolder;
@@ -155,7 +152,7 @@ public class NeptuneImportTests extends Arquillian implements Constant, ReportCo
 		Assert.assertEquals(report.getResult(), STATUS_OK, "result");
 		Assert.assertEquals(report.getFiles().size(), 1, "file reported");
 		Assert.assertEquals(report.getLines().size(), 1, "line reported");
-		Assert.assertTrue(report.getLines().get(0).getName().endsWith("é"), "character conversion");
+		Assert.assertTrue(report.getLines().get(0).getName().contains("é"), "character conversion");
 	}
 
 	@Test(groups = { "ImportLineUtf8Bom" }, description = "Import Plugin should detect bom in file encoding")
@@ -176,7 +173,7 @@ public class NeptuneImportTests extends Arquillian implements Constant, ReportCo
 		Assert.assertEquals(report.getResult(), STATUS_OK, "result");
 		Assert.assertEquals(report.getFiles().size(), 1, "file reported");
 		Assert.assertEquals(report.getLines().size(), 1, "line reported");
-		Assert.assertTrue(report.getLines().get(0).getName().endsWith("é"), "character conversion");
+		Assert.assertTrue(report.getLines().get(0).getName().contains("é"), "character conversion");
 	}
 
 	@Test(groups = { "ImportLineBadEnc" }, description = "Import Plugin should detect file encoding")

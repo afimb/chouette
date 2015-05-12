@@ -23,6 +23,7 @@ import mobi.chouette.exchange.netex.parser.NetexParser;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.FileError;
 import mobi.chouette.exchange.report.FileInfo;
+import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
 import mobi.chouette.model.util.Referential;
 
 import org.apache.commons.io.input.BOMInputStream;
@@ -50,11 +51,10 @@ public class NetexParserCommand implements Command, Constant {
 
 		// report service
 		ActionReport report = (ActionReport) context.get(REPORT);
-		FileInfo fileItem = new FileInfo();
 		String fileName = new File(new URL(fileURL).toURI()).getName();
+		FileInfo fileItem = new FileInfo(fileName,FILE_STATE.OK);
 		context.put(FILE_NAME, fileName);
 
-		fileItem.setName(fileName);
 		try {
 
 			URL url = new URL(fileURL);
@@ -77,15 +77,13 @@ public class NetexParserCommand implements Command, Constant {
 			parser.parse(context);
 
 			// report service
-			fileItem.setStatus(FileInfo.FILE_STATE.OK);
 			report.getFiles().add(fileItem);
 
 			result = SUCCESS;
 		} catch (Exception e) {
 			// report service
-			fileItem.setStatus(FileInfo.FILE_STATE.ERROR);
 			report.getFiles().add(fileItem);
-			fileItem.getErrors().add(new FileError(FileError.CODE.INTERNAL_ERROR, e.toString()));
+			fileItem.addError(new FileError(FileError.CODE.INTERNAL_ERROR, e.toString()));
 			log.error("parsing failed ", e);
 		} finally {
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);

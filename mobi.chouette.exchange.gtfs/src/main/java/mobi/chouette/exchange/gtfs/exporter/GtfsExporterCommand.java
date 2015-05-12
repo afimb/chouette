@@ -55,7 +55,6 @@ public class GtfsExporterCommand extends AbstractExporterCommand implements Comm
 			// fatal wrong parameters
 			log.error("invalid parameters for gtfs export "
 					+ configuration.getClass().getName());
-			report.setResult(STATUS_ERROR);
 			report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,"invalid parameters for gtfs export "
 					+ configuration.getClass().getName()));
 			progression.dispose(context);
@@ -67,7 +66,6 @@ public class GtfsExporterCommand extends AbstractExporterCommand implements Comm
 		{
 			if (parameters.getStartDate().after(parameters.getEndDate()))
 			{
-				report.setResult(STATUS_ERROR);
 				report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,"end date before start date"));
 				return ERROR;
 				

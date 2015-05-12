@@ -33,7 +33,6 @@ import mobi.chouette.exchange.metadata.NeptuneObjectPresenter;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.LineError;
 import mobi.chouette.exchange.report.LineInfo;
-import mobi.chouette.exchange.report.LineInfo.LINE_STATE;
 import mobi.chouette.exchange.report.LineStats;
 import mobi.chouette.model.Footnote;
 import mobi.chouette.model.JourneyPattern;
@@ -82,10 +81,8 @@ public class HubLineProducerCommand implements Command, Constant {
 			HubDataCollector collector = new HubDataCollector();
 
 			boolean cont = collector.collect(collection, line, startDate, endDate);
-			LineInfo lineInfo = new LineInfo();
-			lineInfo.setName(line.getName() + " (" + line.getNumber() + ")");
-			LineStats stats = new LineStats();
-			lineInfo.setStats(stats);
+			LineInfo lineInfo = new LineInfo(line.getName() + " (" + line.getNumber() + ")");
+			LineStats stats = lineInfo.getStats();
 			// stats.setAccessPointCount(collection.getAccessPoints().size());
 			// stats.setConnectionLinkCount(collection.getConnectionLinks().size());
 			stats.setJourneyPatternCount(collection.getJourneyPatterns().size());
@@ -99,13 +96,8 @@ public class HubLineProducerCommand implements Command, Constant {
 				try
 				{
 				   saveData(context);
-					lineInfo.setStatus(LINE_STATE.OK);
 					// merge lineStats to global ones
 					LineStats globalStats = report.getStats();
-					if (globalStats == null) {
-						globalStats = new LineStats();
-						report.setStats(globalStats);
-					}
 					globalStats.setLineCount(globalStats.getLineCount() + stats.getLineCount());
 					globalStats.setRouteCount(globalStats.getRouteCount() + stats.getRouteCount());
 					globalStats.setVehicleJourneyCount(globalStats.getVehicleJourneyCount()
@@ -117,7 +109,6 @@ public class HubLineProducerCommand implements Command, Constant {
 				catch (HubException ex)
 				{
 					log.error("invalid data on line",ex);
-					lineInfo.setStatus(LINE_STATE.ERROR);
 					result = ERROR;
 					Path path = new File(ex.getPath()).toPath();
 					String msg = path.getFileName().toString()+" : "+ex.getError() + " "+ex.getField();
@@ -130,14 +121,12 @@ public class HubLineProducerCommand implements Command, Constant {
 				catch (Exception e) 
 				{
 					log.error("failure on line",e);
-					lineInfo.setStatus(LINE_STATE.ERROR);
 					lineInfo.addError(new LineError(LineError.CODE.WRITE_ERROR,e.getMessage()));
 					report.getLines().add(lineInfo);
 					throw e;
 				}
 
 			} else {
-				lineInfo.setStatus(LINE_STATE.WARNING);
 				lineInfo.addError(new LineError(LineError.CODE.NO_DATA_ON_PERIOD,"no data to export on period"));
 				result = ERROR;
 			}

@@ -64,7 +64,6 @@ public class ValidationAccessPoints extends AbstractTestValidation {
 
 	}
 
-	@SuppressWarnings("unchecked")
 	@BeforeGroups(groups = { "accessPoint" })
 	public void init() {
 		super.init();

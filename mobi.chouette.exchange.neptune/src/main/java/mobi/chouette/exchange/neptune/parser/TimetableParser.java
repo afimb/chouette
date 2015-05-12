@@ -1,8 +1,6 @@
 package mobi.chouette.exchange.neptune.parser;
 
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;

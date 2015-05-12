@@ -213,23 +213,20 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		ActionReport report = (ActionReport) context.get(REPORT);
 
 		// stop_times.txt
-		FileInfo file = new FileInfo();
-		file.setName(GTFS_STOP_TIMES_FILE);
+		FileInfo file = new FileInfo(GTFS_STOP_TIMES_FILE,FILE_STATE.OK);
 		report.getFiles().add(file);
 		try {
 			Index<GtfsStopTime> parser = importer.getStopTimeByTrip();
 			for (GtfsStopTime bean : parser) {
 				parser.validate(bean, importer);
 			}
-			file.setStatus(FILE_STATE.OK);
 		} catch (Exception ex) {
 			AbstractConverter.populateFileError(file, ex);
 			throw ex;
 		}
 
 		// trips.txt
-		file = new FileInfo();
-		file.setName(GTFS_TRIPS_FILE);
+		file = new FileInfo(GTFS_TRIPS_FILE,FILE_STATE.OK);
 		report.getFiles().add(file);
 		try {
 			Index<GtfsTrip> tripParser = importer.getTripById();
@@ -237,7 +234,6 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			for (GtfsTrip bean : tripParser) {
 				tripParser.validate(bean, importer);
 			}
-			file.setStatus(FILE_STATE.OK);
 		} catch (Exception ex) {
 			AbstractConverter.populateFileError(file, ex);
 			throw ex;
@@ -245,15 +241,13 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 
 		// frequencies.txt
 		if (importer.hasFrequencyImporter()) {
-			file = new FileInfo();
-			file.setName(GTFS_TRANSFERS_FILE);
+			file = new FileInfo(GTFS_TRANSFERS_FILE,FILE_STATE.OK);
 			report.getFiles().add(file);
 			try {
 				Index<GtfsFrequency> frequencyParser = importer.getFrequencyByTrip();
 				for (GtfsFrequency bean : frequencyParser) {
 					frequencyParser.validate(bean, importer);
 				}
-				file.setStatus(FILE_STATE.OK);
 			} catch (Exception ex) {
 				AbstractConverter.populateFileError(file, ex);
 				throw ex;

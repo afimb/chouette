@@ -46,10 +46,6 @@ public class KmlSharedDataProducerCommand implements Command, Constant {
 
 			saveData(context);
 			LineStats globalStats = report.getStats();
-			if (globalStats == null) {
-				globalStats = new LineStats();
-				report.setStats(globalStats);
-			}
 			globalStats.setConnectionLinkCount(collection.getConnectionLinks().size());
 			globalStats.setStopAreaCount(collection.getStopAreas().size());
 			globalStats.setAccessPointCount(collection.getAccessPoints().size());
@@ -105,9 +101,7 @@ public class KmlSharedDataProducerCommand implements Command, Constant {
 		File file = new File(dir.toFile(), fileName);
 		writer.writeXmlFile(data, file);
 		ActionReport report = (ActionReport) context.get(REPORT);
-		FileInfo fileItem = new FileInfo();
-		fileItem.setName(fileName);
-		fileItem.setStatus(FILE_STATE.OK);
+		FileInfo fileItem = new FileInfo(fileName,FILE_STATE.OK);
 		report.getFiles().add(fileItem);
 
 	}
@@ -130,9 +124,7 @@ public class KmlSharedDataProducerCommand implements Command, Constant {
 		File file = new File(dir.toFile(), fileName);
 		writer.writeXmlFile(data, file);
 		ActionReport report = (ActionReport) context.get(REPORT);
-		FileInfo fileItem = new FileInfo();
-		fileItem.setName(fileName);
-		fileItem.setStatus(FILE_STATE.OK);
+		FileInfo fileItem = new FileInfo(fileName,FILE_STATE.OK);
 		report.getFiles().add(fileItem);
 
 	}
@@ -155,9 +147,7 @@ public class KmlSharedDataProducerCommand implements Command, Constant {
 		File file = new File(dir.toFile(), fileName);
 		writer.writeXmlFile(data, file);
 		ActionReport report = (ActionReport) context.get(REPORT);
-		FileInfo fileItem = new FileInfo();
-		fileItem.setName(fileName);
-		fileItem.setStatus(FILE_STATE.OK);
+		FileInfo fileItem = new FileInfo(fileName,FILE_STATE.OK);
 		report.getFiles().add(fileItem);
 
 	}
@@ -178,9 +168,7 @@ public class KmlSharedDataProducerCommand implements Command, Constant {
 		File file = new File(dir.toFile(), fileName);
 		writer.writeXmlFile(data, file);
 		ActionReport report = (ActionReport) context.get(REPORT);
-		FileInfo fileItem = new FileInfo();
-		fileItem.setName(fileName);
-		fileItem.setStatus(FILE_STATE.OK);
+		FileInfo fileItem = new FileInfo(fileName,FILE_STATE.OK);
 		report.getFiles().add(fileItem);
 
 	}
@@ -202,9 +190,7 @@ public class KmlSharedDataProducerCommand implements Command, Constant {
 		File file = new File(dir.toFile(), fileName);
 		writer.writeXmlFile(data, file);
 		ActionReport report = (ActionReport) context.get(REPORT);
-		FileInfo fileItem = new FileInfo();
-		fileItem.setName(fileName);
-		fileItem.setStatus(FILE_STATE.OK);
+		FileInfo fileItem = new FileInfo(fileName,FILE_STATE.OK);
 		report.getFiles().add(fileItem);
 
 	}

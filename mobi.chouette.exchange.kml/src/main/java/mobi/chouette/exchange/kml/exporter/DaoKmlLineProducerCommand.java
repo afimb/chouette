@@ -36,7 +36,6 @@ public class DaoKmlLineProducerCommand implements Command, Constant {
 		boolean result = ERROR;
 
 		Monitor monitor = MonitorFactory.start(COMMAND);
-		ActionReport report = (ActionReport) context.get(REPORT);
 
 		try {
 			Long lineId = (Long) context.get(LINE_ID);

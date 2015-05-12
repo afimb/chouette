@@ -54,7 +54,6 @@ public class NetexExporterCommand extends AbstractExporterCommand implements Com
 			ActionReport report = (ActionReport) context.get(REPORT);
 			log.error("invalid parameters for netex export "
 					+ configuration.getClass().getName());
-			report.setResult(STATUS_ERROR);
 			report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,"invalid parameters for netex export "
 					+ configuration.getClass().getName()));
 			progression.dispose(context);
@@ -67,7 +66,6 @@ public class NetexExporterCommand extends AbstractExporterCommand implements Com
 			if (parameters.getStartDate().after(parameters.getEndDate()))
 			{
 				ActionReport report = (ActionReport) context.get(REPORT);
-				report.setResult(STATUS_ERROR);
 				report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,"end date before start date"));
 				return ERROR;
 				

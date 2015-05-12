@@ -14,7 +14,6 @@ import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.LineError;
 import mobi.chouette.exchange.report.LineInfo;
-import mobi.chouette.exchange.report.LineInfo.LINE_STATE;
 import mobi.chouette.exchange.report.LineStats;
 import mobi.chouette.model.Line;
 
@@ -51,10 +50,8 @@ public class NeptuneLineProducerCommand implements Command, Constant {
 
 			NeptuneDataCollector collector = new NeptuneDataCollector();
 			boolean cont = (collector.collect(collection, line, startDate, endDate));
-			LineInfo lineInfo = new LineInfo();
-			lineInfo.setName(line.getName() + " (" + line.getNumber() + ")");
-			LineStats stats = new LineStats();
-			lineInfo.setStats(stats);
+			LineInfo lineInfo = new LineInfo(line.getName() + " (" + line.getNumber() + ")");
+			LineStats stats = lineInfo.getStats();
 			stats.setAccessPointCount(collection.getAccessPoints().size());
 			stats.setConnectionLinkCount(collection.getConnectionLinks().size());
 			stats.setJourneyPatternCount(collection.getJourneyPatterns().size());
@@ -69,14 +66,9 @@ public class NeptuneLineProducerCommand implements Command, Constant {
 				ChouettePTNetworkProducer producer = new ChouettePTNetworkProducer();
 				producer.produce(context);
 
-				lineInfo.setStatus(LINE_STATE.OK);
 				stats.setLineCount(1);
 				// merge lineStats to global ones
 				LineStats globalStats = report.getStats();
-				if (globalStats == null) {
-					globalStats = new LineStats();
-					report.setStats(globalStats);
-				}
 				globalStats.setLineCount(globalStats.getLineCount() + stats.getLineCount());
 				globalStats.setAccessPointCount(globalStats.getAccessPointCount() + stats.getAccessPointCount());
 				globalStats.setRouteCount(globalStats.getRouteCount() + stats.getRouteCount());
@@ -90,7 +82,6 @@ public class NeptuneLineProducerCommand implements Command, Constant {
 				globalStats.setTimeTableCount(globalStats.getTimeTableCount() + stats.getTimeTableCount());
 				result = SUCCESS;
 			} else {
-				lineInfo.setStatus(LINE_STATE.ERROR);
 				lineInfo.addError(new LineError(LineError.CODE.NO_DATA_ON_PERIOD,"no data on period"));				
 				result = ERROR;
 			}

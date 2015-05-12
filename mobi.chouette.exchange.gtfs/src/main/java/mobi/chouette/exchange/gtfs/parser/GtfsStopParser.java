@@ -55,15 +55,13 @@ public class GtfsStopParser implements Parser, Validator, Constant {
 		ActionReport report = (ActionReport) context.get(REPORT);
 
 		// stops.txt
-		FileInfo file = new FileInfo();
-		file.setName(GTFS_STOPS_FILE);
+		FileInfo file = new FileInfo(GTFS_STOPS_FILE,FILE_STATE.OK);
 		report.getFiles().add(file);
 		try {
 			Index<GtfsStop> parser = importer.getStopById();
 			for (GtfsStop bean : parser) {
 				parser.validate(bean, importer);
 			}
-			file.setStatus(FILE_STATE.OK);
 		} catch (Exception ex) {
 			AbstractConverter.populateFileError(file, ex);
 			throw ex;

@@ -81,15 +81,13 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 		ActionReport report = (ActionReport) context.get(REPORT);
 
 		// routes.txt
-		FileInfo file = new FileInfo();
-		file.setName(GTFS_ROUTES_FILE);
+		FileInfo file = new FileInfo(GTFS_ROUTES_FILE,FILE_STATE.OK);
 		report.getFiles().add(file);
 		try {
 		Index<GtfsRoute> parser = importer.getRouteById();
 		for (GtfsRoute bean : parser) {
 			parser.validate(bean, importer);
 		}
-		file.setStatus(FILE_STATE.OK);
 	} catch (Exception ex) {
 		AbstractConverter.populateFileError(file, ex);
 		throw ex;

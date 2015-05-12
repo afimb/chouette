@@ -27,17 +27,16 @@ import mobi.chouette.exchange.neptune.validation.StopAreaValidator;
 import mobi.chouette.exchange.neptune.validation.StopPointValidator;
 import mobi.chouette.exchange.neptune.validation.TimetableValidator;
 import mobi.chouette.exchange.neptune.validation.VehicleJourneyValidator;
+import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.FileError;
 import mobi.chouette.exchange.report.FileInfo;
 import mobi.chouette.exchange.report.LineInfo;
 import mobi.chouette.exchange.report.LineStats;
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.exchange.validation.report.CheckPoint;
-import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.exchange.validation.report.CheckPoint.RESULT;
 import mobi.chouette.exchange.validation.report.CheckPoint.SEVERITY;
+import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.util.Referential;
 
@@ -164,18 +163,15 @@ public class NeptuneValidationCommand implements Command, Constant {
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		}
 		if (result == ERROR) {
-			fileInfo.setStatus(FILE_STATE.ERROR);
-			fileInfo.getErrors().add(new FileError(FileError.CODE.INVALID_FORMAT,"Neptune compliance failed"));
+			fileInfo.addError(new FileError(FileError.CODE.INVALID_FORMAT,"Neptune compliance failed"));
 		}
 		return result;
 	}
 
 	private void addStats(ActionReport report, Context validationContext, Referential referential) {
 		Line line = referential.getLines().values().iterator().next();
-		LineInfo lineInfo = new LineInfo();
-		lineInfo.setName(line.getName());
-		lineInfo.setStatus(LineInfo.LINE_STATE.OK);
-		LineStats stats = new LineStats();
+		LineInfo lineInfo = new LineInfo(line.getName()+" ("+line.getNumber()+")");
+		LineStats stats = lineInfo.getStats();
 		stats.setLineCount(1);
 		{
 			Context localContext = (Context) validationContext.get(ChouetteRouteValidator.LOCAL_CONTEXT);
@@ -205,13 +201,8 @@ public class NeptuneValidationCommand implements Command, Constant {
 			Context localContext = (Context) validationContext.get(JourneyPatternValidator.LOCAL_CONTEXT);
 			stats.setJourneyPatternCount((localContext != null) ? localContext.size() : 0);
 		}
-		lineInfo.setStats(stats);
 		report.getLines().add(lineInfo);
 		LineStats globalStats = report.getStats();
-		if (globalStats == null) {
-			globalStats = new LineStats();
-			report.setStats(globalStats);
-		}
 		globalStats.setLineCount(globalStats.getLineCount() + stats.getLineCount());
 		globalStats.setAccessPointCount(globalStats.getAccessPointCount() + stats.getAccessPointCount());
 		globalStats.setRouteCount(globalStats.getRouteCount() + stats.getRouteCount());

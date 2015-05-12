@@ -8,7 +8,6 @@ import mobi.chouette.exchange.gtfs.model.GtfsTime;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsException;
 import mobi.chouette.exchange.report.FileError;
 import mobi.chouette.exchange.report.FileInfo;
-import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
 
 import org.apache.log4j.Logger;
 
@@ -112,7 +111,6 @@ public abstract class AbstractConverter {
 
 	public static void populateFileError(FileInfo file, Exception ex) {
 
-		file.setStatus(FILE_STATE.ERROR);
 		if (ex instanceof GtfsException) {
 			populateFileError(file, (GtfsException) ex);
 		} else {

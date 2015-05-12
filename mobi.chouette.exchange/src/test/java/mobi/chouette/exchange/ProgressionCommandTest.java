@@ -108,7 +108,6 @@ public void testProgressionDispose() throws Exception
 {
 	progression.dispose(context);
 	ActionReport report = (ActionReport)  context.get(REPORT);
-	Assert.assertNull(report.getProgression(), "progression should be cleared");
 	Assert.assertEquals(report.getResult(), ReportConstant.STATUS_OK, " result should be ok");
 }
 

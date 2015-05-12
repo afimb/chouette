@@ -10,6 +10,7 @@ import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlType;
 
 import lombok.Data;
+import lombok.NonNull;
 
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -26,19 +27,26 @@ public class LineInfo {
 		ERROR
 	};
 	@XmlElement(name = "name",required=true)
+	@NonNull
 	private String name;
 
 	@XmlElement(name = "status",required=true)
-	private LINE_STATE status;
+	private LINE_STATE status = LINE_STATE.OK;
 	
-	@XmlElement(name = "stats")
-	private LineStats stats;
+	@XmlElement(name = "stats",required=true)
+	private LineStats stats = new LineStats();
 
 	@XmlElement(name="errors")
 	private List<LineError> errors = new ArrayList<>();
 	
+	/**
+	 * add an error; status will be set to ERROR
+	 * 
+	 * @param error
+	 */
 	public void addError(LineError error)
 	{
+		status = LINE_STATE.ERROR;
 		errors.add(error);
 	}
 
