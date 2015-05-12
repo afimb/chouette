@@ -14,7 +14,10 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.FileInfo;
+import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
 import mobi.chouette.exchange.report.LineStats;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.ConnectionLink;
@@ -85,6 +88,7 @@ public class KmlSharedDataProducerCommand implements Command, Constant {
 		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
 		if (collection.getBoardingPositions().isEmpty() && collection.getQuays().isEmpty())
 			return;
+		Metadata metadata = (Metadata) context.get(METADATA); 
 		JobData jobData = (JobData) context.get(JOB_DATA);
 		String rootDirectory = jobData.getPathName();
 		Path dir = Paths.get(rootDirectory, OUTPUT);
@@ -96,10 +100,15 @@ public class KmlSharedDataProducerCommand implements Command, Constant {
 		for (StopArea area : collection.getQuays()) {
 			data.addStopArea(area);
 		}
-		String fileName = "stop_areas.xml";
+		String fileName = "stop_areas.kml";
 		// TODO add metadata?
 		File file = new File(dir.toFile(), fileName);
 		writer.writeXmlFile(data, file);
+		ActionReport report = (ActionReport) context.get(REPORT);
+		FileInfo fileItem = new FileInfo();
+		fileItem.setName(fileName);
+		fileItem.setStatus(FILE_STATE.OK);
+		report.getFiles().add(fileItem);
 
 	}
 
@@ -107,6 +116,7 @@ public class KmlSharedDataProducerCommand implements Command, Constant {
 		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
 		if (collection.getCommercialStopPoints().isEmpty())
 			return;
+		Metadata metadata = (Metadata) context.get(METADATA); 
 		JobData jobData = (JobData) context.get(JOB_DATA);
 		String rootDirectory = jobData.getPathName();
 		Path dir = Paths.get(rootDirectory, OUTPUT);
@@ -115,10 +125,15 @@ public class KmlSharedDataProducerCommand implements Command, Constant {
 		for (StopArea area : collection.getCommercialStopPoints()) {
 			data.addStopArea(area);
 		}
-		String fileName = "commercial_stop_areas.xml";
+		String fileName = "commercial_stop_areas.kml";
 		// TODO add metadata?
 		File file = new File(dir.toFile(), fileName);
 		writer.writeXmlFile(data, file);
+		ActionReport report = (ActionReport) context.get(REPORT);
+		FileInfo fileItem = new FileInfo();
+		fileItem.setName(fileName);
+		fileItem.setStatus(FILE_STATE.OK);
+		report.getFiles().add(fileItem);
 
 	}
 
@@ -126,6 +141,7 @@ public class KmlSharedDataProducerCommand implements Command, Constant {
 		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
 		if (collection.getStopPlaces().isEmpty())
 			return;
+		Metadata metadata = (Metadata) context.get(METADATA); 
 		JobData jobData = (JobData) context.get(JOB_DATA);
 		String rootDirectory = jobData.getPathName();
 		Path dir = Paths.get(rootDirectory, OUTPUT);
@@ -134,10 +150,15 @@ public class KmlSharedDataProducerCommand implements Command, Constant {
 		for (StopArea area : collection.getStopPlaces()) {
 			data.addStopArea(area);
 		}
-		String fileName = "stop_places.xml";
+		String fileName = "stop_places.kml";
 		// TODO add metadata?
 		File file = new File(dir.toFile(), fileName);
 		writer.writeXmlFile(data, file);
+		ActionReport report = (ActionReport) context.get(REPORT);
+		FileInfo fileItem = new FileInfo();
+		fileItem.setName(fileName);
+		fileItem.setStatus(FILE_STATE.OK);
+		report.getFiles().add(fileItem);
 
 	}
 
@@ -153,10 +174,14 @@ public class KmlSharedDataProducerCommand implements Command, Constant {
 		for (ConnectionLink link : collection.getConnectionLinks()) {
 			data.addConnectionLink(link);
 		}
-		String fileName = "connection_links.xml";
-		// TODO add metadata?
+		String fileName = "connection_links.kml";
 		File file = new File(dir.toFile(), fileName);
 		writer.writeXmlFile(data, file);
+		ActionReport report = (ActionReport) context.get(REPORT);
+		FileInfo fileItem = new FileInfo();
+		fileItem.setName(fileName);
+		fileItem.setStatus(FILE_STATE.OK);
+		report.getFiles().add(fileItem);
 
 	}
 
@@ -172,10 +197,15 @@ public class KmlSharedDataProducerCommand implements Command, Constant {
 		for (AccessPoint point : collection.getAccessPoints()) {
 			data.addAccessPoint(point);
 		}
-		String fileName = "access_points.xml";
+		String fileName = "access_points.kml";
 		// TODO add metadata?
 		File file = new File(dir.toFile(), fileName);
 		writer.writeXmlFile(data, file);
+		ActionReport report = (ActionReport) context.get(REPORT);
+		FileInfo fileItem = new FileInfo();
+		fileItem.setName(fileName);
+		fileItem.setStatus(FILE_STATE.OK);
+		report.getFiles().add(fileItem);
 
 	}
 

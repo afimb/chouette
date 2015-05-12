@@ -73,10 +73,10 @@ public class CommandManager implements Constant {
 		this.args = args;
 		options.addOption("h", "help", false, "show help");
 		options.addOption("d", "dir", true, "working directory (default = ./work)");
-		options.addOption("i", "input", true, "input parameters (json)");
-		options.addOption("o", "output", true, "output parameters  (json)");
+		options.addOption("i", "import", true, "import parameters (json)");
+		options.addOption("e", "export", true, "export parameters  (json)");
 		options.addOption("v", "validate", true, "validation parameters (json)");
-		options.addOption("f", "file", true, "output file ");
+		options.addOption("f", "file", true, "export file ");
 	}
 
 	public void parseArgs() {
@@ -100,16 +100,16 @@ public class CommandManager implements Constant {
 			if (cmd.hasOption("d")) {
 				workingDirectory = cmd.getOptionValue("d");
 			}
-			if (cmd.hasOption("o")) {
-				outputParametersFilename = cmd.getOptionValue("o");
+			if (cmd.hasOption("e")) {
+				outputParametersFilename = cmd.getOptionValue("e");
 				if (cmd.hasOption("f")) {
 					outputFileName = cmd.getOptionValue("f");
 				} else {
-					System.out.println("missing -f outputFile");
+					System.out.println("missing -f exportFile");
 					help();
 				}
 			} else if (cmd.hasOption("f")) {
-				System.err.println("unexpected -f option without -o option");
+				System.err.println("unexpected -f option without -e option");
 				help();
 			}
 			if (cmd.getArgList().size() == 1) {
@@ -400,7 +400,7 @@ public class CommandManager implements Constant {
 		// This prints out some help
 		HelpFormatter formater = new HelpFormatter();
 
-		formater.printHelp("command_iev [options] inputFile", options);
+		formater.printHelp("command_iev [options] importFile", options);
 		System.exit(0);
 	}
 

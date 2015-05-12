@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.netex.importer;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -19,6 +20,9 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.netex.Constant;
 import mobi.chouette.exchange.netex.parser.NetexParser;
+import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.FileError;
+import mobi.chouette.exchange.report.FileInfo;
 import mobi.chouette.model.util.Referential;
 
 import org.apache.commons.io.input.BOMInputStream;
@@ -44,10 +48,17 @@ public class NetexParserCommand implements Command, Constant {
 		Monitor monitor = MonitorFactory.start(COMMAND);
 		context.put(FILE_URL, fileURL);
 
+		// report service
+		ActionReport report = (ActionReport) context.get(REPORT);
+		FileInfo fileItem = new FileInfo();
+		String fileName = new File(new URL(fileURL).toURI()).getName();
+		context.put(FILE_NAME, fileName);
+
+		fileItem.setName(fileName);
 		try {
 
 			URL url = new URL(fileURL);
-			log.info("[DSU] parsing file : " + url);
+			log.info("parsing file : " + url);
 
 			Referential referential = (Referential) context.get(REFERENTIAL);
 			if (referential != null) {
@@ -65,9 +76,17 @@ public class NetexParserCommand implements Command, Constant {
 			Parser parser = ParserFactory.create(NetexParser.class.getName());
 			parser.parse(context);
 
+			// report service
+			fileItem.setStatus(FileInfo.FILE_STATE.OK);
+			report.getFiles().add(fileItem);
+
 			result = SUCCESS;
 		} catch (Exception e) {
-			log.error(e.getMessage(), e);
+			// report service
+			fileItem.setStatus(FileInfo.FILE_STATE.ERROR);
+			report.getFiles().add(fileItem);
+			fileItem.getErrors().add(new FileError(FileError.CODE.INTERNAL_ERROR, e.toString()));
+			log.error("parsing failed ", e);
 		} finally {
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		}

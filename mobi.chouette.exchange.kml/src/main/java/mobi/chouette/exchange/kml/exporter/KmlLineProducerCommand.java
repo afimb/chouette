@@ -19,8 +19,13 @@ import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.kml.exporter.KmlData.KmlItem;
+import mobi.chouette.exchange.metadata.Metadata;
+import mobi.chouette.exchange.metadata.NeptuneObjectPresenter;
+import mobi.chouette.exchange.metadata.Metadata.Resource;
 import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.FileInfo;
 import mobi.chouette.exchange.report.LineInfo;
+import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
 import mobi.chouette.exchange.report.LineInfo.LINE_STATE;
 import mobi.chouette.exchange.report.LineStats;
 import mobi.chouette.model.JourneyPattern;
@@ -113,6 +118,7 @@ public class KmlLineProducerCommand implements Command, Constant {
 
 	private void saveLine(Context context, Line line, ExportableData collection) throws IOException,
 			DatatypeConfigurationException {
+		ActionReport report = (ActionReport) context.get(REPORT);
 		JobData jobData = (JobData) context.get(JOB_DATA);
 		String rootDirectory = jobData.getPathName();
 		Path dir = Paths.get(rootDirectory, OUTPUT);
@@ -200,24 +206,37 @@ public class KmlLineProducerCommand implements Command, Constant {
 					}
 				}
 				// save jp
-				String fileName = "line_" + line.getId() + "_route_" + route.getId() + "_journey_pattern_"+ jp.getId() +".xml";
+				String fileName = "line_" + line.getId() + "_route_" + route.getId() + "_journey_pattern_"+ jp.getId() +".kml";
 				File file = new File(dir.toFile(), fileName);
 				writer.writeXmlFile(jpData, file);
+				FileInfo fileItem = new FileInfo();
+				fileItem.setName(fileName);
+				fileItem.setStatus(FILE_STATE.OK);
+				report.getFiles().add(fileItem);
 				}
 
 			}
 
 			// save route
-			String fileName = "line_" + line.getId() + "_route_" + route.getId() + ".xml";
+			String fileName = "line_" + line.getId() + "_route_" + route.getId() + ".kml";
 			File file = new File(dir.toFile(), fileName);
 			writer.writeXmlFile(routeData, file);
+			FileInfo fileItem = new FileInfo();
+			fileItem.setName(fileName);
+			fileItem.setStatus(FILE_STATE.OK);
+			report.getFiles().add(fileItem);
 
 		}
 
-		String fileName = "line_" + line.getId() + ".xml";
-		// TODO add metadata?
+		String fileName = "line_" + line.getId() + ".kml";
 		File file = new File(dir.toFile(), fileName);
 		writer.writeXmlFile(lineData, file);
+
+		Metadata metadata = (Metadata) context.get(METADATA); 
+		if (metadata != null)
+			metadata.getResources().add(metadata.new Resource(fileName + ".kml", 
+					NeptuneObjectPresenter.getName(collection.getNetwork()), 
+					NeptuneObjectPresenter.getName(collection.getLine())));
 
 	}
 	public static class DefaultCommandFactory extends CommandFactory {

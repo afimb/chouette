@@ -61,22 +61,23 @@ public class NetexImporterProcessingCommands implements CommandLineProcessingCom
 			for (Path file : stream) {
 				Chain chain = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
 				commands.add(chain);
-				// validation schema
 				String url = file.toUri().toURL().toExternalForm();
-				NetexSAXParserCommand schema = (NetexSAXParserCommand) CommandFactory.create(initialContext,
-						NetexSAXParserCommand.class.getName());
-				schema.setFileURL(url);
-				chain.add(schema);
+				// validation schema
+				// NetexSAXParserCommand schema = (NetexSAXParserCommand)
+				// CommandFactory.create(initialContext,
+				// NetexSAXParserCommand.class.getName());
+				// schema.setFileURL(url);
+				// chain.add(schema);
 
 				// parser
 				NetexParserCommand parser = (NetexParserCommand) CommandFactory.create(initialContext,
 						NetexParserCommand.class.getName());
-				parser.setFileURL(file.toUri().toURL().toExternalForm());
+				parser.setFileURL(url);
 				chain.add(parser);
 
-//				// validation
-//				Command validation = CommandFactory.create(initialContext, NetexValidationCommand.class.getName());
-//				chain.add(validation);
+				// validation
+				Command validation = CommandFactory.create(initialContext, NetexValidationCommand.class.getName());
+				chain.add(validation);
 
 			}
 

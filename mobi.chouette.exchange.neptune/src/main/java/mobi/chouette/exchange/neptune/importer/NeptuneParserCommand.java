@@ -59,7 +59,7 @@ public class NeptuneParserCommand implements Command, Constant {
 		try {
 
 			URL url = new URL(fileURL);
-			log.info("[DSU] parsing file : " + url);
+			log.info("parsing file : " + url);
 
 			Referential referential = (Referential) context.get(REFERENTIAL);
 			if (referential != null) {
@@ -67,22 +67,17 @@ public class NeptuneParserCommand implements Command, Constant {
 			}
 
 			InputStreamReader input = CharSetChecker.getEncodedInputStreamReader(url.toString(), url.openStream());
-				
-			// TODO report invalid charset
-			
 
-			BufferedReader in = new BufferedReader(input
-					, 8192 * 10);
-			
-			
-			XmlPullParser xpp = XmlPullParserFactory.newInstance()
-					.newPullParser();
+			// TODO report invalid charset
+
+			BufferedReader in = new BufferedReader(input, 8192 * 10);
+
+			XmlPullParser xpp = XmlPullParserFactory.newInstance().newPullParser();
 			xpp.setInput(in);
 
 			context.put(PARSER, xpp);
 
-			NeptuneObjectFactory factory = (NeptuneObjectFactory) context
-					.get(NEPTUNE_OBJECT_FACTORY);
+			NeptuneObjectFactory factory = (NeptuneObjectFactory) context.get(NEPTUNE_OBJECT_FACTORY);
 			if (factory == null) {
 				factory = new NeptuneObjectFactory();
 				context.put(NEPTUNE_OBJECT_FACTORY, factory);
@@ -90,11 +85,8 @@ public class NeptuneParserCommand implements Command, Constant {
 				factory.clear();
 			}
 
-			Parser parser = ParserFactory.create(ChouettePTNetworkParser.class
-					.getName());
+			Parser parser = ParserFactory.create(ChouettePTNetworkParser.class.getName());
 			parser.parse(context);
-
-			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 
 			// report service
 			fileItem.setStatus(FileInfo.FILE_STATE.OK);
@@ -107,8 +99,10 @@ public class NeptuneParserCommand implements Command, Constant {
 			fileItem.setStatus(FileInfo.FILE_STATE.ERROR);
 			report.getFiles().add(fileItem);
 			fileItem.getErrors().add(new FileError(FileError.CODE.INTERNAL_ERROR, e.toString()));
-			log.error("parsing failed ",e);
+			log.error("parsing failed ", e);
 			throw e;
+		} finally {
+			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		}
 
 		return result;
@@ -124,7 +118,6 @@ public class NeptuneParserCommand implements Command, Constant {
 	}
 
 	static {
-		CommandFactory.factories.put(NeptuneParserCommand.class.getName(),
-				new DefaultCommandFactory());
+		CommandFactory.factories.put(NeptuneParserCommand.class.getName(), new DefaultCommandFactory());
 	}
 }

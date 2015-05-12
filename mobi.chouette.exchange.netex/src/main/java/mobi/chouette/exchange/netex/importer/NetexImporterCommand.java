@@ -45,50 +45,46 @@ public class NetexImporterCommand implements Command, Constant {
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
 		// TODO progression
-		InitialContext initialContext = (InitialContext) context
-				.get(INITIAL_CONTEXT);
+		InitialContext initialContext = (InitialContext) context.get(INITIAL_CONTEXT);
 
 		JobData jobData = (JobData) context.get(JOB_DATA);
 		context.put(REFERENTIAL, new Referential());
 
 		// initialize reporting and progression
-		ProgressionCommand progression = (ProgressionCommand) CommandFactory
-				.create(initialContext, ProgressionCommand.class.getName());
+		ProgressionCommand progression = (ProgressionCommand) CommandFactory.create(initialContext,
+				ProgressionCommand.class.getName());
 
-		progression.initialize(context,2);
+		progression.initialize(context, 2);
 
 		Object configuration = context.get(CONFIGURATION);
 		if (!(configuration instanceof NetexImportParameters)) {
 			// fatal wrong parameters
 			ActionReport report = (ActionReport) context.get(REPORT);
-			log.error("invalid parameters for netex import "
-					+ configuration.getClass().getName());
-			report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,"invalid parameters for netex import "
-					+ configuration.getClass().getName()));
+			log.error("invalid parameters for netex import " + configuration.getClass().getName());
+			report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,
+					"invalid parameters for netex import " + configuration.getClass().getName()));
 			progression.dispose(context);
 			return false;
 		}
 
 		NetexImportParameters parameters = (NetexImportParameters) configuration;
-		int initCount = 2 + (parameters.isCleanRepository()?1:0);
-		progression.initialize(context,initCount);
+		int initCount = 2 + (parameters.isCleanRepository() ? 1 : 0);
+		progression.initialize(context, initCount);
 		boolean level3validation = context.get(VALIDATION) != null;
-		
-		if (level3validation) context.put(VALIDATION_DATA, new ValidationData());
+
+		if (level3validation)
+			context.put(VALIDATION_DATA, new ValidationData());
 
 		try {
 			// clean repository if asked
-			if (parameters.isCleanRepository())
-			{
-				Command clean = CommandFactory.create(initialContext,
-						CleanRepositoryCommand.class.getName());
+			if (parameters.isCleanRepository()) {
+				Command clean = CommandFactory.create(initialContext, CleanRepositoryCommand.class.getName());
 				clean.execute(context);
 				progression.execute(context);
 			}
 
 			// uncompress data
-			Command uncompress = CommandFactory.create(initialContext,
-					UncompressCommand.class.getName());
+			Command uncompress = CommandFactory.create(initialContext, UncompressCommand.class.getName());
 			if (!uncompress.execute(context)) {
 				return ERROR;
 			}
@@ -100,13 +96,10 @@ public class NetexImporterCommand implements Command, Constant {
 			progression.execute(context);
 
 			Path path = Paths.get(jobData.getPathName(), INPUT);
-			List<Path> stream = FileUtil
-					.listFiles(path, "*.xml", "*metadata*");
+			List<Path> stream = FileUtil.listFiles(path, "*.xml", "*metadata*");
 
-			List<Path> excluded = FileUtil
-					.listFiles(path, "*", "*.xml");
-			if (!excluded.isEmpty())
-			{
+			List<Path> excluded = FileUtil.listFiles(path, "*", "*.xml");
+			if (!excluded.isEmpty()) {
 				ActionReport report = (ActionReport) context.get(REPORT);
 				for (Path exclude : excluded) {
 					FileInfo file = new FileInfo();
@@ -116,46 +109,45 @@ public class NetexImporterCommand implements Command, Constant {
 				}
 			}
 
-			ChainCommand master = (ChainCommand) CommandFactory.create(
-					initialContext, ChainCommand.class.getName());
+			ChainCommand master = (ChainCommand) CommandFactory.create(initialContext, ChainCommand.class.getName());
 			master.setIgnored(true);
 
 			for (Path file : stream) {
 
-				Chain chain = (Chain) CommandFactory.create(initialContext,
-						ChainCommand.class.getName());
+				Chain chain = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
 				master.add(chain);
 
 				chain.add(progression);
 
-				// validation schema
 				String url = file.toUri().toURL().toExternalForm();
-				NetexSAXParserCommand schema = (NetexSAXParserCommand) CommandFactory
-						.create(initialContext,
-								NetexSAXParserCommand.class.getName());
-				schema.setFileURL(url);
-				chain.add(schema);
+				// validation schema
+				// NetexSAXParserCommand schema = (NetexSAXParserCommand)
+				// CommandFactory
+				// .create(initialContext,
+				// NetexSAXParserCommand.class.getName());
+				// schema.setFileURL(url);
+				// chain.add(schema);
 
 				// parser
-				NetexParserCommand parser = (NetexParserCommand) CommandFactory
-						.create(initialContext,
-								NetexParserCommand.class.getName());
-				parser.setFileURL(file.toUri().toURL().toExternalForm());
+				NetexParserCommand parser = (NetexParserCommand) CommandFactory.create(initialContext,
+						NetexParserCommand.class.getName());
+				parser.setFileURL(url);
 				chain.add(parser);
+
+				// validation
+				Command validation = CommandFactory.create(initialContext, NetexValidationCommand.class.getName());
+				chain.add(validation);
 
 				if (!parameters.isNoSave()) {
 
 					// register
-					Command register = CommandFactory.create(initialContext,
-							LineRegisterCommand.class.getName());
+					Command register = CommandFactory.create(initialContext, LineRegisterCommand.class.getName());
 					chain.add(register);
 
-					Command copy = CommandFactory.create(initialContext,
-							CopyCommand.class.getName());
+					Command copy = CommandFactory.create(initialContext, CopyCommand.class.getName());
 					chain.add(copy);
 				}
-				if (level3validation)
-				{
+				if (level3validation) {
 					// add validation
 					Command validate = CommandFactory.create(initialContext,
 							ImportedLineValidatorCommand.class.getName());
@@ -167,12 +159,10 @@ public class NetexImporterCommand implements Command, Constant {
 			progression.start(context, stream.size());
 			master.execute(context);
 
-			progression.terminate(context,level3validation?2:1);
-			if (level3validation)
-			{
-			    // add shared data validation
-				Command validate = CommandFactory.create(initialContext,
-						DaoSharedDataValidatorCommand.class.getName());
+			progression.terminate(context, level3validation ? 2 : 1);
+			if (level3validation) {
+				// add shared data validation
+				Command validate = CommandFactory.create(initialContext, DaoSharedDataValidatorCommand.class.getName());
 				validate.execute(context);
 				progression.execute(context);
 
@@ -181,7 +171,7 @@ public class NetexImporterCommand implements Command, Constant {
 		} catch (Exception e) {
 			ActionReport report = (ActionReport) context.get(REPORT);
 			log.error(e);
-			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR,"Fatal :"+e));
+			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR, "Fatal :" + e));
 
 		} finally {
 			progression.dispose(context);
@@ -201,7 +191,6 @@ public class NetexImporterCommand implements Command, Constant {
 	}
 
 	static {
-		CommandFactory.factories.put(NetexImporterCommand.class.getName(),
-				new DefaultCommandFactory());
+		CommandFactory.factories.put(NetexImporterCommand.class.getName(), new DefaultCommandFactory());
 	}
 }

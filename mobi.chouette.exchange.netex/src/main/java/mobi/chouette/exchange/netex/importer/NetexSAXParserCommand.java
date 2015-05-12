@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.netex.importer;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -21,6 +22,9 @@ import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.FileError;
+import mobi.chouette.exchange.report.FileInfo;
 
 import org.apache.commons.io.input.BOMInputStream;
 import org.xml.sax.SAXException;
@@ -46,31 +50,39 @@ public class NetexSAXParserCommand implements Command, Constant {
 
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
+		ActionReport report = (ActionReport) context.get(REPORT);
+		FileInfo fileItem = new FileInfo();
+
+		String fileName = new File(new URL(fileURL).toURI()).getName();
+
+		fileItem.setName(fileName);
+
 		Schema schema = (Schema) context.get(SCHEMA);
 		if (schema == null) {
-			SchemaFactory factory = SchemaFactory
-					.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+			SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 			schema = factory.newSchema(getClass().getResource(SCHEMA_FILE));
 			context.put(SCHEMA, schema);
 		}
 
 		URL url = new URL(fileURL);
-		log.info("[DSU] validation schema : " + url);
 
-		Reader reader = new BufferedReader(new InputStreamReader(
-				new BOMInputStream(url.openStream())), 8192 * 10);
-		StreamSource file = new StreamSource(reader);
-
-		NetexSAXErrorHandler handler = new NetexSAXErrorHandler(context,
-				fileURL);
+		NetexSAXErrorHandler handler = new NetexSAXErrorHandler(context, fileURL);
+		Reader reader = null;
 		try {
+			reader = new BufferedReader(new InputStreamReader(new BOMInputStream(url.openStream())), 8192 * 10);
+			StreamSource file = new StreamSource(reader);
+
 			Validator validator = schema.newValidator();
 			validator.setErrorHandler(handler);
 			validator.validate(file);
 			result = SUCCESS;
 		} catch (IOException | SAXException e) {
 			log.error(e.getMessage(), e);
+			fileItem.setStatus(FileInfo.FILE_STATE.ERROR);
+			report.getFiles().add(fileItem);
+			fileItem.getErrors().add(new FileError(FileError.CODE.INVALID_FORMAT,e.getMessage()));
 		} finally {
+			if (reader != null ) reader.close();
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		}
 
@@ -87,7 +99,6 @@ public class NetexSAXParserCommand implements Command, Constant {
 	}
 
 	static {
-		CommandFactory.factories.put(NetexSAXParserCommand.class.getName(),
-				new DefaultCommandFactory());
+		CommandFactory.factories.put(NetexSAXParserCommand.class.getName(), new DefaultCommandFactory());
 	}
 }

@@ -69,7 +69,6 @@ public class NeptuneSAXParserCommand implements Command, Constant {
 		}
 
 		URL url = new URL(fileURL);
-		log.info("[DSU] validation schema (niv 1) : " + url);
 
 
 		NeptuneSAXErrorHandler errorHandler = new NeptuneSAXErrorHandler(
