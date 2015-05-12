@@ -7,20 +7,18 @@ import mobi.chouette.common.chain.Command;
 
 /**
  * 
- * give for command line processing elementary commands <br/>
+ * give processing elementary commands for line oriented actions <br/>
  * on import process, getLineProcessingCommands should return a command instance for each line to process <br>
  * on export process, getLineProcessingCommands should return a single command instance reusable for each line <br>
  * <ul><li>line should be provided in context on LINE key</li></ul>
  * 
- * <br/> compression, decompression and level 3 validation commands should not be provided
- * 
  * @author michel
  *
  */
-public interface CommandLineProcessingCommands {
+public interface LineProcessingCommands {
 
-	List<? extends Command> getPreProcessingCommands(Context context);
-	List<? extends Command> getLineProcessingCommands(Context context);
-	List<? extends Command> getPostProcessingCommands(Context context);
+	List<? extends Command> getPreProcessingCommands(Context context,boolean withDao);
+	List<? extends Command> getLineProcessingCommands(Context context,boolean withDao);
+	List<? extends Command> getPostProcessingCommands(Context context,boolean withDao);
 	
 }

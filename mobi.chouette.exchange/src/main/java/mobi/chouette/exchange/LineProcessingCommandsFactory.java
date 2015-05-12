@@ -5,13 +5,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public abstract class CommandLineProcessingCommandsFactory {
+public abstract class LineProcessingCommandsFactory {
 
-	   public static Map<String, CommandLineProcessingCommandsFactory> factories = new HashMap<String, CommandLineProcessingCommandsFactory>();
+	   public static Map<String, LineProcessingCommandsFactory> factories = new HashMap<String, LineProcessingCommandsFactory>();
 
-	   protected abstract CommandLineProcessingCommands create() throws IOException;
+	   protected abstract LineProcessingCommands create() throws IOException;
 
-	   public static final CommandLineProcessingCommands create(String name)
+	   public static final LineProcessingCommands create(String name)
 	         throws ClassNotFoundException, IOException
 
 	   {
@@ -22,6 +22,6 @@ public abstract class CommandLineProcessingCommandsFactory {
 	         if (!factories.containsKey(name))
 	            throw new ClassNotFoundException(name);
 	      }
-	      return ((CommandLineProcessingCommandsFactory) factories.get(name)).create();
+	      return ((LineProcessingCommandsFactory) factories.get(name)).create();
 	   }
 }

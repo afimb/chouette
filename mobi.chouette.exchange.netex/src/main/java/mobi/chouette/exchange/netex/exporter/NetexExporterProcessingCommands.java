@@ -11,29 +11,29 @@ import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.CommandLineProcessingCommands;
-import mobi.chouette.exchange.CommandLineProcessingCommandsFactory;
+import mobi.chouette.exchange.LineProcessingCommands;
+import mobi.chouette.exchange.LineProcessingCommandsFactory;
 
 @Data
-public class NetexExporterProcessingCommands implements CommandLineProcessingCommands, Constant {
+public class NetexExporterProcessingCommands implements LineProcessingCommands, Constant {
 
 	
-	public static class DefaultFactory extends CommandLineProcessingCommandsFactory {
+	public static class DefaultFactory extends LineProcessingCommandsFactory {
 
 		@Override
-		protected CommandLineProcessingCommands create() throws IOException {
-			CommandLineProcessingCommands result = new NetexExporterProcessingCommands();
+		protected LineProcessingCommands create() throws IOException {
+			LineProcessingCommands result = new NetexExporterProcessingCommands();
 			return result;
 		}
 	}
 
 	static {
-		CommandLineProcessingCommandsFactory.factories.put(NetexExporterProcessingCommands.class.getName(),
+		LineProcessingCommandsFactory.factories.put(NetexExporterProcessingCommands.class.getName(),
 				new DefaultFactory());
 	}
 
 	@Override
-	public List<? extends Command> getPreProcessingCommands(Context context) {
+	public List<? extends Command> getPreProcessingCommands(Context context,boolean withDao) {
 		InitialContext initCtx = (InitialContext) context.get(INITIAL_CONTEXT);
 		List<Command> commands = new ArrayList<>();
 		try {
@@ -46,7 +46,7 @@ public class NetexExporterProcessingCommands implements CommandLineProcessingCom
 	}
 
 	@Override
-	public List<? extends Command> getLineProcessingCommands(Context context) {
+	public List<? extends Command> getLineProcessingCommands(Context context,boolean withDao) {
 		InitialContext initCtx = (InitialContext) context.get(INITIAL_CONTEXT);
 		List<Command> commands = new ArrayList<>();
 		try {
@@ -60,7 +60,7 @@ public class NetexExporterProcessingCommands implements CommandLineProcessingCom
 	}
 
 	@Override
-	public List<? extends Command> getPostProcessingCommands(Context context) {
+	public List<? extends Command> getPostProcessingCommands(Context context,boolean withDao) {
 		return new ArrayList<>();
 	}
 

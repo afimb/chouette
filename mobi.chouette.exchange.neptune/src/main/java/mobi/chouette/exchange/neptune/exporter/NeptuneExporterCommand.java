@@ -39,6 +39,7 @@ public class NeptuneExporterCommand extends AbstractExporterCommand implements C
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
 		InitialContext initialContext = (InitialContext) context.get(INITIAL_CONTEXT);
+		ActionReport report = (ActionReport) context.get(REPORT);
 
 		// initialize reporting and progression
 		ProgressionCommand progression = (ProgressionCommand) CommandFactory.create(initialContext,
@@ -50,7 +51,6 @@ public class NeptuneExporterCommand extends AbstractExporterCommand implements C
 			Object configuration = context.get(CONFIGURATION);
 			if (!(configuration instanceof NeptuneExportParameters)) {
 				// fatal wrong parameters
-				ActionReport report = (ActionReport) context.get(REPORT);
 				log.error("invalid parameters for neptune export " + configuration.getClass().getName());
 				report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,"invalid parameters for neptune export " + configuration.getClass().getName()));
 				return ERROR;
@@ -59,7 +59,6 @@ public class NeptuneExporterCommand extends AbstractExporterCommand implements C
 			NeptuneExportParameters parameters = (NeptuneExportParameters) configuration;
 			if (parameters.getStartDate() != null && parameters.getEndDate() != null) {
 				if (parameters.getStartDate().after(parameters.getEndDate())) {
-					ActionReport report = (ActionReport) context.get(REPORT);
 					report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,"end date before start date"));
 					return ERROR;
 
@@ -86,7 +85,6 @@ public class NeptuneExporterCommand extends AbstractExporterCommand implements C
 
 			Set<Line> lines = loadLines(type, ids);
 			if (lines.isEmpty()) {
-				ActionReport report = (ActionReport) context.get(REPORT);
 				report.setFailure(new ActionError(ActionError.CODE.NO_DATA_FOUND,"no data to export"));
 				return ERROR;
 
@@ -110,6 +108,14 @@ public class NeptuneExporterCommand extends AbstractExporterCommand implements C
 				}
 			}
 
+			// check if data where exported
+			if (lineCount == 0) {
+				progression.terminate(context, 1);
+				report.setFailure(new ActionError(ActionError.CODE.NO_DATA_PROCEEDED,"no data exported"));
+				progression.execute(context);
+				return ERROR;
+			}
+			
 			// save metadata
 			if (parameters.isAddMetadata()) {
 				progression.terminate(context, 2);
@@ -127,7 +133,6 @@ public class NeptuneExporterCommand extends AbstractExporterCommand implements C
 
 			result = SUCCESS;
 		} catch (Exception e) {
-			ActionReport report = (ActionReport) context.get(REPORT);
 			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR,"Fatal :" + e));
 			log.error(e.getMessage(), e);
 		} finally {

@@ -25,6 +25,14 @@ public class ChainCommand implements Chain, Constant {
 	public void add(Command command) {
 		commands.add(command);
 	}
+	
+	@Getter
+	private int executedCommands = 0;
+	
+	public int getCommandCount()
+	{
+		return commands.size();
+	}
 
 	@Override
 	public boolean execute(Context context) throws Exception {
@@ -40,6 +48,7 @@ public class ChainCommand implements Chain, Constant {
 				if (result == ERROR && !ignored) {
 					break;
 				}
+				executedCommands ++;
 			} catch (Exception e) {
 				if (!ignored) {
 					result = ERROR;

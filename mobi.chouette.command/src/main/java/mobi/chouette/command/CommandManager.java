@@ -11,8 +11,8 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.JSONUtil;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.CommandLineProcessingCommands;
-import mobi.chouette.exchange.CommandLineProcessingCommandsFactory;
+import mobi.chouette.exchange.LineProcessingCommands;
+import mobi.chouette.exchange.LineProcessingCommandsFactory;
 import mobi.chouette.exchange.exporter.CompressCommand;
 import mobi.chouette.exchange.gtfs.exporter.GtfsExportParameters;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
@@ -149,14 +149,14 @@ public class CommandManager implements Constant {
 		}
 
 
-		CommandLineProcessingCommands importProcessingCommands = null;
-		CommandLineProcessingCommands exportProcessingCommands = null;
-		importProcessingCommands = CommandLineProcessingCommandsFactory
+		LineProcessingCommands importProcessingCommands = null;
+		LineProcessingCommands exportProcessingCommands = null;
+		importProcessingCommands = LineProcessingCommandsFactory
 				.create(buildCommandProcessingClassName(inputData));
 
 		importContext = prepareImportContext();
 		if (withExport()) {
-			exportProcessingCommands = CommandLineProcessingCommandsFactory
+			exportProcessingCommands = LineProcessingCommandsFactory
 					.create(buildCommandProcessingClassName(outputData));
 			exportContext = prepareExportContext();
 		}
@@ -178,7 +178,7 @@ public class CommandManager implements Constant {
 
 		// input pre processing
 
-		for (Command importCommand : importProcessingCommands.getPreProcessingCommands(importContext)) {
+		for (Command importCommand : importProcessingCommands.getPreProcessingCommands(importContext,false)) {
 			result = importCommand.execute(importContext);
 			if (!result) {
 				System.err.println("fail to execute import command " + importCommand.getClass().getSimpleName()
@@ -189,7 +189,7 @@ public class CommandManager implements Constant {
 
 		// output pre processing
 		if (withExport()) {
-			for (Command exportCommand : exportProcessingCommands.getPreProcessingCommands(exportContext)) {
+			for (Command exportCommand : exportProcessingCommands.getPreProcessingCommands(exportContext,false)) {
 				result = exportCommand.execute(exportContext);
 				if (!result) {
 					System.err.println("fail to execute " + exportCommand.getClass().getSimpleName()
@@ -203,7 +203,7 @@ public class CommandManager implements Constant {
 		// input & validation& output processing
 		long id = 0;
 		boolean exportFailed = false;
-		for (Command importCommand : importProcessingCommands.getLineProcessingCommands(importContext)) {
+		for (Command importCommand : importProcessingCommands.getLineProcessingCommands(importContext,false)) {
 			result = importCommand.execute(importContext);
 			if (!result) {
 				System.err.println("fail to execute " + importCommand.getClass().getName()
@@ -227,7 +227,7 @@ public class CommandManager implements Constant {
 				// - put line in export context
 				exportContext.put(LINE, line);
 				// execute commands
-				for (Command exportCommand : exportProcessingCommands.getLineProcessingCommands(exportContext)) {
+				for (Command exportCommand : exportProcessingCommands.getLineProcessingCommands(exportContext,false)) {
 					result = exportCommand.execute(exportContext);
 					if (!result) {
 						exportFailed = true;
@@ -240,7 +240,7 @@ public class CommandManager implements Constant {
 		}
 
 		// input post processing
-		for (Command importCommand : importProcessingCommands.getPostProcessingCommands(importContext)) {
+		for (Command importCommand : importProcessingCommands.getPostProcessingCommands(importContext,false)) {
 			result = importCommand.execute(importContext);
 			if (!result) {
 				System.err.println("fail to execute " + importCommand.getClass().getName()
@@ -256,7 +256,7 @@ public class CommandManager implements Constant {
 
 		// output post processing
 		if (withExport() && !exportFailed) {
-			for (Command exportCommand : exportProcessingCommands.getPostProcessingCommands(exportContext)) {
+			for (Command exportCommand : exportProcessingCommands.getPostProcessingCommands(exportContext,false)) {
 				result = exportCommand.execute(exportContext);
 				if (!result) {
 					System.err.println("fail to execute " + exportCommand.getClass().getName()
@@ -347,6 +347,7 @@ public class CommandManager implements Constant {
 				System.err.println("invalid input parameters type" + inputParametersFilename);
 				return null;
 			}
+			
 			data.setConfiguration(configuration);
 			return data;
 
