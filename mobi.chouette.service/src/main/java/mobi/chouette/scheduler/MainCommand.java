@@ -15,7 +15,9 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.JSONUtil;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.report.ActionError;
 import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.service.JobService;
 import mobi.chouette.service.JobServiceManager;
@@ -41,13 +43,9 @@ public class MainCommand implements Command, Constant {
 			jobManager.start(jobService);
 
 			context.put(JOB_DATA, jobService);
-//			context.put(ARCHIVE, jobService.getFilename());
-//			context.put(JOB_REFERENTIAL, jobService.getReferential());
-//			context.put(ACTION, jobService.getAction());
-//			context.put(TYPE, jobService.getType());
-			
-			Parameters parameters = JSONUtil.fromJSON(Paths.get(jobService.getPathName(), PARAMETERS_FILE), Parameters.class);
-			// context.put(PARAMETERS, parameters);
+
+			Parameters parameters = JSONUtil.fromJSON(Paths.get(jobService.getPathName(), PARAMETERS_FILE),
+					Parameters.class);
 			context.put(CONFIGURATION, parameters.getConfiguration());
 			context.put(VALIDATION, parameters.getValidation());
 			context.put(REPORT, new ActionReport());
@@ -59,7 +57,12 @@ public class MainCommand implements Command, Constant {
 			Command command = CommandFactory.create(ctx, name);
 			command.execute(context);
 
-			jobManager.terminate(jobService);
+			ActionReport report = (ActionReport) context.get(REPORT);
+			if (report.getResult().equals(ReportConstant.STATUS_ERROR)
+					&& report.getFailure().getCode().equals(ActionError.CODE.INTERNAL_ERROR))
+				jobManager.abort(jobService);
+			else
+				jobManager.terminate(jobService);
 
 		} catch (Exception ex) {
 			log.error(ex);
