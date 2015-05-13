@@ -35,10 +35,11 @@ public class GtfsValidationCommand implements Command, Constant {
 
 	public static final String COMMAND = "GtfsValidationCommand";
 
-	private static final List<String> processableAllFiles = Arrays.asList("agency.txt", "stops.txt", "routes.txt",
-			"trips.txt", "stop_times.txt", "calendar.txt", "calendar_dates.txt", "frequencies.txt", "transfers.txt");
+	private static final List<String> processableAllFiles = Arrays.asList(GTFS_AGENCY_FILE,GTFS_STOPS_FILE, GTFS_ROUTES_FILE,
+			GTFS_TRIPS_FILE, GTFS_STOP_TIMES_FILE, GTFS_CALENDAR_FILE, GTFS_CALENDAR_DATES_FILE,
+			GTFS_FREQUENCIES_FILE,GTFS_TRANSFERS_FILE);
 
-	private static final List<String> processableStopAreaFiles = Arrays.asList("stops.txt", "transfers.txt");
+	private static final List<String> processableStopAreaFiles = Arrays.asList(GTFS_STOPS_FILE, GTFS_TRANSFERS_FILE);
 
 	@Override
 	public boolean execute(Context context) throws Exception {

@@ -44,31 +44,33 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 
 		Index<GtfsRoute> routes = importer.getRouteById();
 		GtfsRoute gtfsRoute = routes.getValue(gtfsRouteId);
-		
-		String lineId = AbstractConverter.composeObjectId(
-				configuration.getObjectIdPrefix(), Line.LINE_KEY,
+
+		String lineId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Line.LINE_KEY,
 				gtfsRouteId, log);
 		Line line = ObjectFactory.getLine(referential, lineId);
 		convert(context, gtfsRoute, line);
 
 		// PTNetwork
-		String ptNetworkId = configuration.getObjectIdPrefix() + ":"
-				+ Network.PTNETWORK_KEY + ":"
+		String ptNetworkId = configuration.getObjectIdPrefix() + ":" + Network.PTNETWORK_KEY + ":"
 				+ configuration.getObjectIdPrefix();
-		Network ptNetwork = ObjectFactory.getPTNetwork(referential,
-				ptNetworkId);
+		Network ptNetwork = ObjectFactory.getPTNetwork(referential, ptNetworkId);
 		line.setNetwork(ptNetwork);
 
 		// Company
-		String companyId = AbstractConverter.composeObjectId(
-				configuration.getObjectIdPrefix(), Company.COMPANY_KEY,
-				gtfsRoute.getAgencyId(), log);
-		Company company = ObjectFactory.getCompany(referential, companyId);
-		line.setCompany(company);
+		if (gtfsRoute.getAgencyId() != null) {
+			String companyId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
+					Company.COMPANY_KEY, gtfsRoute.getAgencyId(), log);
+			Company company = ObjectFactory.getCompany(referential, companyId);
+			line.setCompany(company);
+		}
+		else if (!referential.getSharedCompanies().isEmpty())
+		{
+			Company company = referential.getSharedCompanies().values().iterator().next();
+			line.setCompany(company);
+		}
 
 		// Route VehicleJourney VehicleJourneyAtStop , JourneyPattern ,StopPoint
-		GtfsTripParser gtfsTripParser = (GtfsTripParser) ParserFactory
-				.create(GtfsTripParser.class.getName());
+		GtfsTripParser gtfsTripParser = (GtfsTripParser) ParserFactory.create(GtfsTripParser.class.getName());
 		gtfsTripParser.setGtfsRouteId(gtfsRouteId);
 		gtfsTripParser.parse(context);
 
@@ -81,32 +83,28 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 		ActionReport report = (ActionReport) context.get(REPORT);
 
 		// routes.txt
-		FileInfo file = new FileInfo(GTFS_ROUTES_FILE,FILE_STATE.OK);
+		FileInfo file = new FileInfo(GTFS_ROUTES_FILE, FILE_STATE.OK);
 		report.getFiles().add(file);
 		try {
-		Index<GtfsRoute> parser = importer.getRouteById();
-		for (GtfsRoute bean : parser) {
-			parser.validate(bean, importer);
+			Index<GtfsRoute> parser = importer.getRouteById();
+			for (GtfsRoute bean : parser) {
+				parser.validate(bean, importer);
+			}
+		} catch (Exception ex) {
+			AbstractConverter.populateFileError(file, ex);
+			throw ex;
 		}
-	} catch (Exception ex) {
-		AbstractConverter.populateFileError(file, ex);
-		throw ex;
-	}
 	}
 
 	protected void convert(Context context, GtfsRoute gtfsRoute, Line line) {
 
-		line.setName(AbstractConverter.getNonEmptyTrimedString(gtfsRoute
-				.getRouteLongName()));
+		line.setName(AbstractConverter.getNonEmptyTrimedString(gtfsRoute.getRouteLongName()));
 		if (line.getName() == null)
-			line.setName(AbstractConverter.getNonEmptyTrimedString(gtfsRoute
-					.getRouteShortName()));
+			line.setName(AbstractConverter.getNonEmptyTrimedString(gtfsRoute.getRouteShortName()));
 
-		line.setNumber(AbstractConverter.getNonEmptyTrimedString(gtfsRoute
-				.getRouteShortName()));
+		line.setNumber(AbstractConverter.getNonEmptyTrimedString(gtfsRoute.getRouteShortName()));
 
-		line.setPublishedName(AbstractConverter
-				.getNonEmptyTrimedString(gtfsRoute.getRouteLongName()));
+		line.setPublishedName(AbstractConverter.getNonEmptyTrimedString(gtfsRoute.getRouteLongName()));
 
 		if (line.getPublishedName() != null) {
 			line.setName(line.getPublishedName());
@@ -165,14 +163,13 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 	}
 
 	static {
-		ParserFactory.register(GtfsRouteParser.class.getName(),
-				new ParserFactory() {
+		ParserFactory.register(GtfsRouteParser.class.getName(), new ParserFactory() {
 
-					@Override
-					protected Parser create() {
-						return new GtfsRouteParser();
-					}
-				});
+			@Override
+			protected Parser create() {
+				return new GtfsRouteParser();
+			}
+		});
 	}
 
 }

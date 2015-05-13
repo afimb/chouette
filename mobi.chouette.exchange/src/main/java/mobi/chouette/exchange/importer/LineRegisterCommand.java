@@ -73,7 +73,7 @@ public class LineRegisterCommand implements Command {
 
 			Referential referential = (Referential) context.get(REFERENTIAL);
 			Line newValue = referential.getLines().values().iterator().next();
-			log.info("[DSU] register line : " + newValue.getObjectId()+" "+newValue.getName());
+			log.info("register line : " + newValue.getObjectId()+" "+newValue.getName()+ " vehicleJoueny count = "+referential.getVehicleJourneys().size());
 
 			optimiser.initialize(cache, referential);
 
@@ -82,10 +82,10 @@ public class LineRegisterCommand implements Command {
 			lineDAO.create(oldValue);
 
 			if (optimized) {
-				final StringWriter buffer = new StringWriter(1024);
-				final List<VehicleJourney> list = new ArrayList<VehicleJourney>(
-						referential.getVehicleJourneys().values());
-				for (VehicleJourney item : list) {
+				 StringWriter buffer = new StringWriter(1024);
+				 final List<String> list = new ArrayList<String>(
+						referential.getVehicleJourneys().keySet());
+				for (VehicleJourney item : referential.getVehicleJourneys().values()) {
 					VehicleJourney vehicleJourney = cache.getVehicleJourneys()
 							.get(item.getObjectId());
 
@@ -101,7 +101,7 @@ public class LineRegisterCommand implements Command {
 								vehicleJourneyAtStop);
 					}
 				}
-				vehicleJourneyDAO.delete(list);
+				vehicleJourneyDAO.deleteVehicleJourneyAtStops(list);
 				context.put(BUFFER, buffer.toString());
 			}
 

@@ -36,7 +36,7 @@ public class VehicleJourneyDAO extends GenericDAOImpl<VehicleJourney> {
 		this.em = em;
 	}
 
-	public void delete(final List<VehicleJourney> values) {
+	public void deleteVehicleJourneyAtStops(final List<String> vehicleJourneyObjectIds) {
 
 		Session session = em.unwrap(Session.class);
 
@@ -52,14 +52,13 @@ public class VehicleJourneyDAO extends GenericDAOImpl<VehicleJourney> {
 						+ ")";
 
 				// delete
-				int size = values.size();
+				int size = vehicleJourneyObjectIds.size();
 				if (size > 0) {
 					StringBuffer buffer = new StringBuffer();
 					for (int i = 0; i < size; i++) {
-						VehicleJourney vehicleJourney = values.get(i);
 
 						buffer.append('\'');
-						buffer.append(vehicleJourney.getObjectId());
+						buffer.append(vehicleJourneyObjectIds.get(i));
 						buffer.append('\'');
 						if (i != size - 1) {
 							buffer.append(',');

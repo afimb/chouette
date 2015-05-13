@@ -106,7 +106,8 @@ public abstract class AbstractConverter {
 			code = FileError.CODE.FILE_NOT_FOUND;
 			break;
 		}
-		file.addError(new FileError(code, ex.getMessage()));
+		String message = ex.getMessage() != null? ex.getMessage() : ex.getClass().getSimpleName();
+		file.addError(new FileError(code, message));
 	}
 
 	public static void populateFileError(FileInfo file, Exception ex) {
@@ -114,7 +115,8 @@ public abstract class AbstractConverter {
 		if (ex instanceof GtfsException) {
 			populateFileError(file, (GtfsException) ex);
 		} else {
-			file.addError(new FileError(FileError.CODE.INTERNAL_ERROR, ex.getMessage()));
+			String message = ex.getMessage() != null? ex.getMessage() : ex.getClass().getSimpleName();
+			file.addError(new FileError(FileError.CODE.INTERNAL_ERROR, message));
 
 		}
 	}

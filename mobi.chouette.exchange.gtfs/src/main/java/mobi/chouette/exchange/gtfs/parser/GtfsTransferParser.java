@@ -54,18 +54,18 @@ public class GtfsTransferParser implements Parser, Validator, Constant {
 		ActionReport report = (ActionReport) context.get(REPORT);
 
 		// transfers.txt
-		FileInfo file = new FileInfo(GTFS_TRANSFERS_FILE,FILE_STATE.OK);
-		report.getFiles().add(file);
-		try {
-			if (importer.hasFrequencyImporter()) {
+		if (importer.hasTransferImporter()) {
+			FileInfo file = new FileInfo(GTFS_TRANSFERS_FILE, FILE_STATE.OK);
+			report.getFiles().add(file);
+			try {
 				Index<GtfsTransfer> parser = importer.getTransferByFromStop();
 				for (GtfsTransfer bean : parser) {
 					parser.validate(bean, importer);
 				}
+			} catch (Exception ex) {
+				AbstractConverter.populateFileError(file, ex);
+				throw ex;
 			}
-		} catch (Exception ex) {
-			AbstractConverter.populateFileError(file, ex);
-			throw ex;
 		}
 	}
 
