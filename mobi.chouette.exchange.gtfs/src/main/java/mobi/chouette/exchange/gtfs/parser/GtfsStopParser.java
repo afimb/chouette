@@ -40,10 +40,9 @@ public class GtfsStopParser implements Parser, Validator, Constant {
 				String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
 						StopArea.STOPAREA_KEY, gtfsStop.getStopId(), log);
 
-				if (gtfsStop.getLocationType() != GtfsStop.LocationType.Access) {
-					StopArea stopArea = ObjectFactory.getStopArea(referential, objectId);
-					convert(context, gtfsStop, stopArea);
-				}
+				StopArea stopArea = ObjectFactory.getStopArea(referential, objectId);
+				convert(context, gtfsStop, stopArea);
+
 			}
 		}
 	}
@@ -55,7 +54,7 @@ public class GtfsStopParser implements Parser, Validator, Constant {
 		ActionReport report = (ActionReport) context.get(REPORT);
 
 		// stops.txt
-		FileInfo file = new FileInfo(GTFS_STOPS_FILE,FILE_STATE.OK);
+		FileInfo file = new FileInfo(GTFS_STOPS_FILE, FILE_STATE.OK);
 		report.getFiles().add(file);
 		try {
 			Index<GtfsStop> parser = importer.getStopById();
@@ -90,8 +89,8 @@ public class GtfsStopParser implements Parser, Validator, Constant {
 			if (!importer.getStopById().containsKey(gtfsStop.getParentStation())) {
 				// TODO report
 			}
+			stopArea.setAreaType(ChouetteAreaEnum.BoardingPosition);
 			if (gtfsStop.getParentStation() != null) {
-				stopArea.setAreaType(ChouetteAreaEnum.BoardingPosition);
 				String parenId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
 						StopArea.STOPAREA_KEY, gtfsStop.getParentStation(), log);
 				StopArea parent = ObjectFactory.getStopArea(referential, parenId);

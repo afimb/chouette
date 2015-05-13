@@ -130,7 +130,7 @@ public class StopArea extends NeptuneLocalizedObject {
 	@Getter
 	@Setter
 	@Enumerated(EnumType.STRING)
-	@Column(name = "area_type")
+	@Column(name = "area_type", nullable = false)
 	private ChouetteAreaEnum areaType;
 
 	/**
