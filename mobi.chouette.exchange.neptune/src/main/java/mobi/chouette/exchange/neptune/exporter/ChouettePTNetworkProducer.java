@@ -59,6 +59,7 @@ import org.trident.schema.trident.PTLinkType;
 import org.trident.schema.trident.TimetableType;
 import org.trident.schema.trident.VehicleJourneyType;
 
+
 public class ChouettePTNetworkProducer implements Constant {
 
 	private static LineProducer lineProducer = new LineProducer();
@@ -160,21 +161,17 @@ public class ChouettePTNetworkProducer implements Constant {
 			rootObject.getConnectionLink().add(connectionLinkProducer.produce(connectionLink,addExtension));
 		}
 
-
 		for (Timetable timetable : collection.getTimetables())
 		{
 			NeptuneUtil.computeLimitOfPeriods(timetable);
+
 			TimetableType jaxbObj = timetableProducer.produce(timetable,addExtension);
 			rootObject.getTimetable().add(jaxbObj);
 			// add vehiclejourney only for exported ones
-			if (timetable.getVehicleJourneys() != null)
-			{
-				for (VehicleJourney vehicleJourney : timetable.getVehicleJourneys())
+			for (VehicleJourney vehicleJourney : collection.getVehicleJourneys()) {
+				if (vehicleJourney.getTimetables().contains(timetable))
 				{
-					if (collection.getVehicleJourneys().contains(vehicleJourney))
-					{
-						jaxbObj.getVehicleJourneyId().add(vehicleJourney.getObjectId());
-					}
+					jaxbObj.getVehicleJourneyId().add(vehicleJourney.getObjectId());					
 				}
 			}
 			if (metadata != null)

@@ -54,15 +54,19 @@ public class HubDataCollector {
 					} else {
 						boolean isValid = false;
 						for (Timetable timetable : vehicleJourney.getTimetables()) {
-							if (collection.getTimetables().contains(timetable)) {
+							Timetable validTimetable = collection.findTimetable(timetable.getObjectId());
+							if (validTimetable != null)
+							{
+								validTimetable.getVehicleJourneys().add(vehicleJourney);
 								isValid = true;
 							} else {
-								Timetable validTimetable = timetable;
+							    validTimetable = timetable;
 								if (startDate != null)
 									validTimetable = reduceTimetable(timetable, startDate, true);
 								if (validTimetable != null && endDate != null)
 									validTimetable = reduceTimetable(validTimetable, endDate, false);
 								if (validTimetable != null) {
+									validTimetable.getVehicleJourneys().add(vehicleJourney);
 									collection.getTimetables().add(validTimetable);
 									isValid = true;
 								}
@@ -162,7 +166,7 @@ public class HubDataCollector {
 		reduced.setObjectVersion(timetable.getObjectVersion());
 		reduced.setCreationTime(timetable.getCreationTime());
 		reduced.setComment(timetable.getComment());
-		reduced.setVehicleJourneys(timetable.getVehicleJourneys());
+		// reduced.setVehicleJourneys(timetable.getVehicleJourneys());
 
 		List<CalendarDay> dates = new ArrayList<CalendarDay>(timetable.getCalendarDays());
 		for (Iterator<CalendarDay> iterator = dates.iterator(); iterator.hasNext();) {

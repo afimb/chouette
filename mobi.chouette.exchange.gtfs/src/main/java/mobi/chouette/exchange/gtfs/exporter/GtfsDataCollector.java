@@ -62,20 +62,23 @@ public class GtfsDataCollector
 						boolean isValid = false;
 						for (Timetable timetable : vehicleJourney.getTimetables())
 						{
-							if (collection.getTimetables().contains(timetable))
+							Timetable validTimetable = collection.findTimetable(timetable.getObjectId());
+							if (validTimetable != null)
 							{
+								validTimetable.getVehicleJourneys().add(vehicleJourney);
 								isValid = true;
 							}
 							else
 							{
-								Timetable validTimetable = timetable;
+								validTimetable = timetable;
 								if (startDate != null)
 									validTimetable = reduceTimetable(timetable, startDate, true);
 								if (validTimetable != null && endDate != null)
 									validTimetable = reduceTimetable(validTimetable, endDate, false);
 								if (validTimetable != null)
 								{
-									collection.getTimetables().add(timetable);
+									validTimetable.getVehicleJourneys().add(vehicleJourney);
+									collection.getTimetables().add(validTimetable);
 									isValid = true;
 								}
 							}
@@ -172,7 +175,7 @@ public class GtfsDataCollector
 	private Timetable reduceTimetable(Timetable timetable, Date boundaryDate, boolean before)
 	{
 		Timetable reduced = CopyUtil.copy(timetable);
-		reduced.getVehicleJourneys().addAll(timetable.getVehicleJourneys());
+		// reduced.getVehicleJourneys().addAll(timetable.getVehicleJourneys());
 		
 		List<CalendarDay> dates = reduced.getCalendarDays();
 		for (Iterator<CalendarDay> iterator = dates.iterator(); iterator.hasNext();)

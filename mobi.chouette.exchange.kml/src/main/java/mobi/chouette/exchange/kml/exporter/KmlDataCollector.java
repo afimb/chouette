@@ -50,15 +50,18 @@ public class KmlDataCollector {
 					} else {
 						boolean isValid = false;
 						for (Timetable timetable : vehicleJourney.getTimetables()) {
-							if (collection.getTimetables().contains(timetable)) {
+							Timetable validTimetable = collection.findTimetable(timetable.getObjectId());
+							if (validTimetable != null) {
+								validTimetable.getVehicleJourneys().add(vehicleJourney);
 								isValid = true;
 							} else {
-								Timetable validTimetable = timetable;
+								validTimetable = timetable;
 								if (startDate != null)
 									validTimetable = reduceTimetable(timetable, startDate, true);
 								if (validTimetable != null && endDate != null)
 									validTimetable = reduceTimetable(validTimetable, endDate, false);
 								if (validTimetable != null) {
+									validTimetable.getVehicleJourneys().add(vehicleJourney);
 									collection.getTimetables().add(timetable);
 									isValid = true;
 								}
@@ -100,68 +103,68 @@ public class KmlDataCollector {
 		if (collection.getStopAreas().contains(stopArea))
 			return;
 
-		if (stopArea.hasCoordinates())
-		{
-		switch (stopArea.getAreaType()) {
-		case BoardingPosition:
-			collection.getBoardingPositions().add(stopArea);
-			break;
-		case Quay:
-			collection.getQuays().add(stopArea);
-			break;
-		case CommercialStopPoint:
-			collection.getCommercialStopPoints().add(stopArea);
-			break;
-		case StopPlace:
-			collection.getStopPlaces().add(stopArea);
-			break;
-		default:
-		}
-		addConnectionLinks(collection,stopArea.getConnectionStartLinks());
-		addConnectionLinks(collection,stopArea.getConnectionEndLinks());
-		addAccessPoints(collection,stopArea.getAccessPoints());
-		addAccessLinks(collection,stopArea.getAccessLinks());
-		if (stopArea.getParent() != null)
-			collectStopAreas(collection, stopArea.getParent());
+		if (stopArea.hasCoordinates()) {
+			switch (stopArea.getAreaType()) {
+			case BoardingPosition:
+				collection.getBoardingPositions().add(stopArea);
+				break;
+			case Quay:
+				collection.getQuays().add(stopArea);
+				break;
+			case CommercialStopPoint:
+				collection.getCommercialStopPoints().add(stopArea);
+				break;
+			case StopPlace:
+				collection.getStopPlaces().add(stopArea);
+				break;
+			default:
+			}
+			addConnectionLinks(collection, stopArea.getConnectionStartLinks());
+			addConnectionLinks(collection, stopArea.getConnectionEndLinks());
+			addAccessPoints(collection, stopArea.getAccessPoints());
+			addAccessLinks(collection, stopArea.getAccessLinks());
+			if (stopArea.getParent() != null)
+				collectStopAreas(collection, stopArea.getParent());
 		}
 
 	}
-	
-	private void addAccessPoints(ExportableData collection, List<AccessPoint> accessPoints) 
-	{
-		for (AccessPoint point : accessPoints) 
-		{
-			if (collection.getAccessPoints().contains(point)) continue;
-			if (!point.hasCoordinates() ) continue;
+
+	private void addAccessPoints(ExportableData collection, List<AccessPoint> accessPoints) {
+		for (AccessPoint point : accessPoints) {
+			if (collection.getAccessPoints().contains(point))
+				continue;
+			if (!point.hasCoordinates())
+				continue;
 			collection.getAccessPoints().add(point);
 		}
-		
+
 	}
 
-	private void addConnectionLinks(ExportableData collection, List<ConnectionLink> links)
-	{
-		for (ConnectionLink link : links) 
-		{
-			if (collection.getConnectionLinks().contains(link)) continue;
-			if (link.getStartOfLink() == null || link.getEndOfLink() == null) continue;
-			if (!link.getStartOfLink().hasCoordinates() || !link.getEndOfLink().hasCoordinates() ) continue;
+	private void addConnectionLinks(ExportableData collection, List<ConnectionLink> links) {
+		for (ConnectionLink link : links) {
+			if (collection.getConnectionLinks().contains(link))
+				continue;
+			if (link.getStartOfLink() == null || link.getEndOfLink() == null)
+				continue;
+			if (!link.getStartOfLink().hasCoordinates() || !link.getEndOfLink().hasCoordinates())
+				continue;
 			collection.getConnectionLinks().add(link);
 			collectStopAreas(collection, link.getStartOfLink());
 			collectStopAreas(collection, link.getEndOfLink());
 		}
 	}
-	
-	private void addAccessLinks(ExportableData collection, List<AccessLink> links)
-	{
-		for (AccessLink link : links) 
-		{
-			if (collection.getAccessLinks().contains(link)) continue;
-			if (link.getAccessPoint() == null) continue;
-			if (!link.getAccessPoint().hasCoordinates() ) continue;
+
+	private void addAccessLinks(ExportableData collection, List<AccessLink> links) {
+		for (AccessLink link : links) {
+			if (collection.getAccessLinks().contains(link))
+				continue;
+			if (link.getAccessPoint() == null)
+				continue;
+			if (!link.getAccessPoint().hasCoordinates())
+				continue;
 			collection.getAccessLinks().add(link);
 		}
 	}
-
 
 	/**
 	 * produce a timetable reduced to a date
@@ -181,7 +184,6 @@ public class KmlDataCollector {
 		reduced.setObjectVersion(timetable.getObjectVersion());
 		reduced.setCreationTime(timetable.getCreationTime());
 		reduced.setComment(timetable.getComment());
-		reduced.setVehicleJourneys(timetable.getVehicleJourneys());
 
 		List<CalendarDay> dates = new ArrayList<CalendarDay>(timetable.getCalendarDays());
 		for (Iterator<CalendarDay> iterator = dates.iterator(); iterator.hasNext();) {

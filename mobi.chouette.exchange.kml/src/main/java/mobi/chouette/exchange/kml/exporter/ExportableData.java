@@ -40,4 +40,11 @@ private List<Route> routes = new ArrayList<>();
 //may be useless
 private List<VehicleJourney> vehicleJourneys = new ArrayList<>();
 private List<StopPoint> stopPoints = new ArrayList<>();
+public Timetable findTimetable(String objectId) {
+	for (Timetable tm : timetables) {
+		if (tm.getObjectId().equals(objectId))
+			return tm;
+	}
+	return null;
+}
 }

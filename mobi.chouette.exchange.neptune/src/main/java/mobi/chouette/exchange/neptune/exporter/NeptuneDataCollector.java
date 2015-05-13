@@ -19,29 +19,19 @@ import mobi.chouette.model.type.DayTypeEnum;
 import mobi.chouette.model.util.NeptuneUtil;
 
 @Log4j
-public class NeptuneDataCollector 
-{
-	public boolean collect(ExportableData collection, Line line, Date startDate, Date endDate)
-	{
+public class NeptuneDataCollector {
+	public boolean collect(ExportableData collection, Line line, Date startDate, Date endDate) {
 		boolean validLine = false;
-		for (Route route : line.getRoutes()) 
-		{
+		for (Route route : line.getRoutes()) {
 			boolean validRoute = false;
-			for (JourneyPattern jp : route.getJourneyPatterns())
-			{
+			for (JourneyPattern jp : route.getJourneyPatterns()) {
 				boolean validJourneyPattern = false;
-				for (VehicleJourney vehicleJourney : jp.getVehicleJourneys())
-				{
-					if (startDate == null && endDate == null)
-					{
-						if (vehicleJourney.getTimetables() != null)
-						{
-							if (vehicleJourney.getRoute().getStopPoints().isEmpty())
-							{
-								log.error("route "+vehicleJourney.getRoute().getObjectId()+" has no stopPoints ");
-							}
-							else
-							{
+				for (VehicleJourney vehicleJourney : jp.getVehicleJourneys()) {
+					if (startDate == null && endDate == null) {
+						if (vehicleJourney.getTimetables() != null) {
+							if (vehicleJourney.getRoute().getStopPoints().isEmpty()) {
+								log.error("route " + vehicleJourney.getRoute().getObjectId() + " has no stopPoints ");
+							} else {
 								collection.getTimetables().addAll(vehicleJourney.getTimetables());
 								collection.getVehicleJourneys().add(vehicleJourney);
 								validJourneyPattern = true;
@@ -49,35 +39,29 @@ public class NeptuneDataCollector
 								validLine = true;
 							}
 						}
-					}
-					else
-					{
+					} else {
 						boolean isValid = false;
-						for (Timetable timetable : vehicleJourney.getTimetables())
-						{
-							if (collection.getTimetables().contains(timetable))
-							{
+						for (Timetable timetable : vehicleJourney.getTimetables()) {
+							Timetable validTimetable = collection.findTimetable(timetable.getObjectId());
+							if (validTimetable != null) {
+								validTimetable.getVehicleJourneys().add(vehicleJourney);
 								isValid = true;
-							}
-							else
-							{
-								Timetable validTimetable = timetable;
+							} else {
+								validTimetable = timetable;
 								if (startDate != null)
 									validTimetable = reduceTimetable(timetable, startDate, true);
 								if (validTimetable != null && endDate != null)
 									validTimetable = reduceTimetable(validTimetable, endDate, false);
-								if (validTimetable != null)
-								{
+								if (validTimetable != null) {
+									validTimetable.getVehicleJourneys().add(vehicleJourney);
 									collection.getTimetables().add(timetable);
 									isValid = true;
 								}
 							}
 						}
-						if (isValid)
-						{
+						if (isValid) {
 							collection.getVehicleJourneys().add(vehicleJourney);
-							if (vehicleJourney.getCompany() != null)
-							{
+							if (vehicleJourney.getCompany() != null) {
 								collection.getCompanies().add(vehicleJourney.getCompany());
 							}
 							validJourneyPattern = true;
@@ -86,100 +70,84 @@ public class NeptuneDataCollector
 						}
 					}
 				} // end vehiclejourney loop
-				if (validJourneyPattern) collection.getJourneyPatterns().add(jp);
+				if (validJourneyPattern)
+					collection.getJourneyPatterns().add(jp);
 			}// end journeyPattern loop
-			if (validRoute) 
-			{
+			if (validRoute) {
 				collection.getRoutes().add(route);
 				route.getOppositeRoute(); // to avoid lazy loading afterward
 				collection.getStopPoints().addAll(route.getStopPoints());
-				for (StopPoint stopPoint : route.getStopPoints()) 
-				{
-					collectStopAreas(collection,stopPoint.getContainedInStopArea());
+				for (StopPoint stopPoint : route.getStopPoints()) {
+					collectStopAreas(collection, stopPoint.getContainedInStopArea());
 				}
 			}
 		}// end route loop
-		if (validLine)
-		{
+		if (validLine) {
 			collection.setLine(line);
 			collection.setNetwork(line.getNetwork());
-			if (line.getCompany() != null)
-			{
+			if (line.getCompany() != null) {
 				collection.getCompanies().add(line.getCompany());
 			}
-			if (line.getGroupOfLines() != null)
-			{
+			if (line.getGroupOfLines() != null) {
 				collection.getGroupOfLines().addAll(line.getGroupOfLines());
 			}
-			if (! line.getRoutingConstraints().isEmpty())
-			{
+			if (!line.getRoutingConstraints().isEmpty()) {
 				collection.getStopAreas().addAll(line.getRoutingConstraints());
 			}
 		}
 		return validLine;
 	}
 
-	private void collectStopAreas(ExportableData collection,StopArea stopArea)
-	{
-		if (collection.getStopAreas().contains(stopArea)) return;
+	private void collectStopAreas(ExportableData collection, StopArea stopArea) {
+		if (collection.getStopAreas().contains(stopArea))
+			return;
 		collection.getStopAreas().add(stopArea);
 		collection.getConnectionLinks().addAll(stopArea.getConnectionStartLinks());
 		collection.getConnectionLinks().addAll(stopArea.getConnectionEndLinks());
 		collection.getAccessPoints().addAll(stopArea.getAccessPoints());
 		collection.getAccessLinks().addAll(stopArea.getAccessLinks());
-		if (stopArea.getParent() != null) 
-			collectStopAreas(collection,stopArea.getParent());
+		if (stopArea.getParent() != null)
+			collectStopAreas(collection, stopArea.getParent());
 	}
-	
+
 	/**
 	 * produce a timetable reduced to a date
 	 * 
 	 * @param timetable
-	 *           original timetable
+	 *            original timetable
 	 * @param boundaryDate
-	 *           boundary date
+	 *            boundary date
 	 * @param before
-	 *           true to eliminate before boundary date , false otherwise
+	 *            true to eliminate before boundary date , false otherwise
 	 * @return a copy reduced to date or null if reduced to nothing
 	 */
-	protected Timetable reduceTimetable(Timetable timetable, Date boundaryDate, boolean before)
-	{
+	protected Timetable reduceTimetable(Timetable timetable, Date boundaryDate, boolean before) {
 		Timetable reduced = new Timetable();
 		reduced.setDayTypes(new ArrayList<DayTypeEnum>(timetable.getDayTypes()));
 		reduced.setObjectId(timetable.getObjectId());
 		reduced.setObjectVersion(timetable.getObjectVersion());
 		reduced.setCreationTime(timetable.getCreationTime());
 		reduced.setComment(timetable.getComment());
-		reduced.setVehicleJourneys(timetable.getVehicleJourneys());
 
 		List<CalendarDay> dates = new ArrayList<CalendarDay>(timetable.getCalendarDays());
-		for (Iterator<CalendarDay> iterator = dates.iterator(); iterator.hasNext();)
-		{
+		for (Iterator<CalendarDay> iterator = dates.iterator(); iterator.hasNext();) {
 			CalendarDay date = iterator.next();
-			if (date == null)
-			{
+			if (date == null) {
 				iterator.remove();
-			}
-			else if (checkDate(date, boundaryDate, before))
-			{
+			} else if (checkDate(date, boundaryDate, before)) {
 				iterator.remove();
 			}
 		}
 		List<Period> periods = new ArrayList<Period>(timetable.getPeriods());
-		for (Iterator<Period> iterator = periods.iterator(); iterator.hasNext();)
-		{
+		for (Iterator<Period> iterator = periods.iterator(); iterator.hasNext();) {
 			Period period = iterator.next();
-			if (checkPeriod(period, boundaryDate, before))
-			{
+			if (checkPeriod(period, boundaryDate, before)) {
 				iterator.remove();
-			}
-			else
-			{
+			} else {
 				shortenPeriod(period, boundaryDate, before);
 			}
 		}
-		if (dates.isEmpty() && periods.isEmpty())
-		{
+		if (dates.isEmpty() && periods.isEmpty()) {
 			return null;
 		}
 		reduced.setCalendarDays(dates);
@@ -197,16 +165,13 @@ public class NeptuneDataCollector
 	 * @param before
 	 * @return true if period has been modified
 	 */
-	private boolean shortenPeriod(Period period, Date boundaryDate, boolean before)
-	{
+	private boolean shortenPeriod(Period period, Date boundaryDate, boolean before) {
 		boolean ret = false;
-		if (before && period.getStartDate().before(boundaryDate))
-		{
+		if (before && period.getStartDate().before(boundaryDate)) {
 			ret = true;
 			period.setStartDate(boundaryDate);
 		}
-		if (!before && period.getEndDate().after(boundaryDate))
-		{
+		if (!before && period.getEndDate().after(boundaryDate)) {
 			ret = true;
 			period.setEndDate(boundaryDate);
 		}
@@ -221,10 +186,8 @@ public class NeptuneDataCollector
 	 * @param before
 	 * @return
 	 */
-	private boolean checkPeriod(Period period, Date boundaryDate, boolean before)
-	{
-		if (before)
-		{
+	private boolean checkPeriod(Period period, Date boundaryDate, boolean before) {
+		if (before) {
 			return period.getEndDate().before(boundaryDate);
 		}
 		return period.getStartDate().after(boundaryDate);
@@ -238,10 +201,8 @@ public class NeptuneDataCollector
 	 * @param before
 	 * @return
 	 */
-	private boolean checkDate(CalendarDay date, Date boundaryDate, boolean before)
-	{
-		if (before)
-		{
+	private boolean checkDate(CalendarDay date, Date boundaryDate, boolean before) {
+		if (before) {
 			return date.getDate().before(boundaryDate);
 		}
 		return date.getDate().after(boundaryDate);

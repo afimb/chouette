@@ -22,20 +22,27 @@ import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 
 @Data
-public class ExportableData 
-{
-private Network network;
-private Line line;
-private Set<Company> companies = new HashSet<>();
-private Set<GroupOfLine> groupOfLines = new HashSet<>();
-private Set<StopArea> stopAreas = new HashSet<>();
-private Set<ConnectionLink> connectionLinks = new HashSet<>();
-private Set<AccessLink> accessLinks = new HashSet<>();
-private Set<AccessPoint> accessPoints = new HashSet<>();
-private Set<Timetable> timetables = new HashSet<>();
-private Set<Facility> facilities = new HashSet<>();
-private List<VehicleJourney> vehicleJourneys = new ArrayList<>();
-private List<JourneyPattern> journeyPatterns = new ArrayList<>();
-private List<Route> routes = new ArrayList<>();
-private List<StopPoint> stopPoints = new ArrayList<>();
+public class ExportableData {
+	private Network network;
+	private Line line;
+	private Set<Company> companies = new HashSet<>();
+	private Set<GroupOfLine> groupOfLines = new HashSet<>();
+	private Set<StopArea> stopAreas = new HashSet<>();
+	private Set<ConnectionLink> connectionLinks = new HashSet<>();
+	private Set<AccessLink> accessLinks = new HashSet<>();
+	private Set<AccessPoint> accessPoints = new HashSet<>();
+	private Set<Timetable> timetables = new HashSet<>();
+	private Set<Facility> facilities = new HashSet<>();
+	private List<VehicleJourney> vehicleJourneys = new ArrayList<>();
+	private List<JourneyPattern> journeyPatterns = new ArrayList<>();
+	private List<Route> routes = new ArrayList<>();
+	private List<StopPoint> stopPoints = new ArrayList<>();
+
+	public Timetable findTimetable(String objectId) {
+		for (Timetable tm : timetables) {
+			if (tm.getObjectId().equals(objectId))
+				return tm;
+		}
+		return null;
+	}
 }
