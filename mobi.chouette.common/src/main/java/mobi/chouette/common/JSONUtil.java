@@ -48,7 +48,6 @@ public class JSONUtil {
 
 	}
 
-	@SuppressWarnings("deprecation")
 	public static <T> String toJSON(T payload) throws JAXBException, JSONException {
 		JAXBContext context = JAXBContext.newInstance(payload.getClass());
 		Configuration config = new Configuration();
@@ -59,7 +58,7 @@ public class JSONUtil {
 
 		List<String> lists = getListElements(payload.getClass());
 		for (int iCount = 0; iCount < lists.size(); iCount++) {
-			writer.seriliazeAsArray(lists.get(iCount));
+			writer.serializeAsArray(lists.get(iCount));
 		}
 
 		Marshaller marshaller = context.createMarshaller();

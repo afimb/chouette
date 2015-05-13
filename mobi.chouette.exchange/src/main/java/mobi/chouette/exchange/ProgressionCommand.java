@@ -82,6 +82,7 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 		Path path = Paths.get(jobData.getPathName(), VALIDATION_FILE);
 
 		try {
+			report.checkResult();
 			String data = JSONUtil.toJSON(report);
 			FileUtils.writeStringToFile(path.toFile(), data, "UTF-8");
 		} catch (Exception e) {

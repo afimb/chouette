@@ -16,8 +16,12 @@ import lombok.ToString;
 @ToString
 @XmlRootElement(name = "validation_report")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder={"checkPoints"})
+@XmlType(propOrder={"result", "checkPoints"})
 public class ValidationReport {
+	
+	@XmlElement(name = "result")
+	@Getter @Setter
+	private String result = "NO_VALIDATION";
 
 	@XmlElement(name = "tests")
 	@Getter @Setter
@@ -30,6 +34,11 @@ public class ValidationReport {
 				return checkPoint;
 		}
 		return null;
+	}
+	
+	public void checkResult()
+	{
+		result = checkPoints.isEmpty() ? "NO_VALIDATION": "VALIDATION_PROCEDEED";
 	}
 
 }
