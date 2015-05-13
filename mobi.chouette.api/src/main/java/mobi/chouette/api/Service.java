@@ -93,7 +93,7 @@ public class Service implements Constant {
             return builder.build();
         } catch (RequestServiceException ex) {
             Logger.getLogger(Service.class.getName()).log(Level.INFO, "RequestCode = " + ex.getRequestCode() + ", Message = " + ex.getMessage());
-            throw new WebApplicationException(ex.getCode(), Status.NOT_FOUND);
+            throw new WebApplicationException(ex.getRequestCode(), Status.NOT_FOUND);
         } catch (ServiceException e) {
             Logger.getLogger(Service.class.getName()).log(Level.SEVERE, "Code = " + e.getCode() + ", Message = " + e.getMessage());
             throw toWebApplicationException(e);

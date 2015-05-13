@@ -12,4 +12,8 @@
 	<listener>
 		<listener-class>mobi.chouette.api.Application</listener-class>
 	</listener>
+   <context-param>
+      <param-name>resteasy.providers</param-name>
+      <param-value>mobi.chouette.api.WebApplicationExceptionMapper</param-value>
+   </context-param>
 </web-app>
