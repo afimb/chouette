@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import javax.naming.InitialContext;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Color;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.JSONUtil;
@@ -59,7 +60,8 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 	}
 
 	private void saveReport(Context context) {
-		if (context.containsKey("testng")) return;
+		if (context.containsKey("testng"))
+			return;
 		ActionReport report = (ActionReport) context.get(REPORT);
 		JobData jobData = (JobData) context.get(JOB_DATA);
 		Path path = Paths.get(jobData.getPathName(), REPORT_FILE);
@@ -74,7 +76,8 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 	}
 
 	private void saveMainValidationReport(Context context) {
-		if (context.containsKey("testng")) return;
+		if (context.containsKey("testng"))
+			return;
 		ValidationReport report = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
 		if (report == null)
 			return;
@@ -105,8 +108,12 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 					mainCheckPoint.setSeverity(checkPoint.getSeverity());
 				if (checkPoint.getState().ordinal() > mainCheckPoint.getState().ordinal())
 					mainCheckPoint.setState(checkPoint.getState());
+				int detailCount = 0;
 				for (Detail detail : checkPoint.getDetails()) {
+					if (mainCheckPoint.getDetailCount() + detailCount > CheckPoint.maxDetails)
+						break;
 					mainCheckPoint.getDetails().add(detail);
+					detailCount++;
 				}
 				mainCheckPoint.setDetailCount(mainCheckPoint.getDetailCount() + checkPoint.getDetailCount());
 			}
@@ -128,6 +135,10 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 		saveReport(context);
 		// reset validationReport
 		context.put(VALIDATION_REPORT, new ValidationReport());
+		if (context.containsKey(CANCEL_ASKED) || Thread.currentThread().isInterrupted()) {
+			log.info(Color.YELLOW + "Command cancelled" + Color.NORMAL);
+			throw new RuntimeException(COMMAND_CANCELLED);
+		}
 		return result;
 	}
 

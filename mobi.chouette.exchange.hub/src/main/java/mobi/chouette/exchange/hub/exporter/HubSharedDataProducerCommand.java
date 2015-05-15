@@ -186,7 +186,7 @@ public class HubSharedDataProducerCommand implements Command, Constant {
 
 	private void savePhysicalStops(Context context) throws Exception {
 		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
-		if (collection.getPhysicalStopPoints().isEmpty())
+		if (collection.getPhysicalStops().isEmpty())
 			return;
 		HubExporter exporter = (HubExporter) context.get(HUB_EXPORTER);
 		HubArretProducer producer = (HubArretProducer) context.get(HUB_ARRET_PRODUCER);
@@ -201,7 +201,7 @@ public class HubSharedDataProducerCommand implements Command, Constant {
 //		}
 		ActionReport report = (ActionReport) context.get(REPORT);
 
-		List<StopArea> stops = new ArrayList<>(collection.getPhysicalStopPoints());
+		List<StopArea> stops = new ArrayList<>(collection.getPhysicalStops());
 		Collections.sort(stops,new ObjectIdSorter());
 		for (StopArea stop : stops) {
 			producer.save(stop, report);
@@ -212,7 +212,7 @@ public class HubSharedDataProducerCommand implements Command, Constant {
 
 	private void saveCommercialStops(Context context) throws Exception {
 		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
-		if (collection.getCommercialStopPoints().isEmpty())
+		if (collection.getCommercialStops().isEmpty())
 			return;
 		HubExporter exporter = (HubExporter) context.get(HUB_EXPORTER);
 		HubArretProducer producer = (HubArretProducer) context.get(HUB_ARRET_PRODUCER);
@@ -227,7 +227,7 @@ public class HubSharedDataProducerCommand implements Command, Constant {
 		}
 		ActionReport report = (ActionReport) context.get(REPORT);
 
-		List<StopArea> stops = new ArrayList<>(collection.getCommercialStopPoints());
+		List<StopArea> stops = new ArrayList<>(collection.getCommercialStops());
 		Collections.sort(stops,new ObjectIdSorter());
 		for (StopArea stop : stops) {
 			producer.save(stop, report);

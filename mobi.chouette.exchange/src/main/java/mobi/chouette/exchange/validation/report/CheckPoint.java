@@ -17,7 +17,7 @@ import lombok.ToString;
 @XmlType(propOrder={"name","phase","target","rank","severity","state","detailCount","details"})
 public class CheckPoint {
 
-	private static final int maxDetails = 50;
+	public static final int maxDetails = 50;
 
 	public enum SEVERITY {
 		WARNING, ERROR, IMPROVMENT

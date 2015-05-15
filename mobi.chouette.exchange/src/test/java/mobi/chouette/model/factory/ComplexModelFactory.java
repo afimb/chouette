@@ -456,8 +456,8 @@ public class ComplexModelFactory
          
          Timetable tm1 = timetables.get(i % timetablesCount);
          Timetable tm2 = timetables.get((i + 1) % timetablesCount);
-         tm1.addVehicleJourney(vehicle);
-         tm2.addVehicleJourney(vehicle);
+         vehicle.getTimetables().add(tm1);
+         vehicle.getTimetables().add(tm2);
          calendar.add(Calendar.MINUTE, 12);
 
          vehicles.add(vehicle);

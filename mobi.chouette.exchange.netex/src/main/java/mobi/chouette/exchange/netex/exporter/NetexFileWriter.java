@@ -2,7 +2,7 @@ package mobi.chouette.exchange.netex.exporter;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.StringWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -13,33 +13,42 @@ import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Color;
 import mobi.chouette.exchange.netex.Constant;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.VehicleJourney;
 
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.output.FileWriterWithEncoding;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
 import org.apache.velocity.tools.generic.DateTool;
 import org.apache.velocity.tools.generic.EscapeTool;
 
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
+
 @Log4j
-public class NetexFileWriter implements Constant
-{
-	private VelocityEngine velocityEngine;
+public class NetexFileWriter implements Constant {
+	private static VelocityEngine velocityEngine = null;
 	// Prepare the model for velocity
 	private Map<String, Object> model = new HashMap<String, Object>();
 
-	public NetexFileWriter()
-	{
+	public NetexFileWriter() {
+		if (velocityEngine == null) {
 			velocityEngine = new VelocityEngine();
-			velocityEngine.addProperty("resource.loader", "classpath");
-			velocityEngine.addProperty("classpath.resource.loader.class","org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
+			velocityEngine.setProperty("resource.loader", "classpath");
+			velocityEngine.setProperty("classpath.resource.loader.class",
+					"org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
+			velocityEngine.setProperty("classpath.resource.loader.cache",true);
+			velocityEngine.init();
+		}
 	}
 
-	private void prepareModel(ExportableData collection) throws DatatypeConfigurationException
-	{		
+	private void prepareModel(ExportableData collection) throws DatatypeConfigurationException {
+		Monitor monitor = MonitorFactory.start("NetexFileWriter.prepareModel");
+		try
+		{
 		model.put("date", new DateTool());
 		model.put("esc", new EscapeTool());
 		model.put("dateFormat", "yyyy-MM-dd'T'HH:mm:ss'Z'");
@@ -52,8 +61,7 @@ public class NetexFileWriter implements Constant
 		Line line = collection.getLine();
 		model.put("line", collection.getLine());
 		model.put("network", collection.getNetwork());
-		if (collection.getNetwork().getVersionDate() == null)
-		{
+		if (collection.getNetwork().getVersionDate() == null) {
 			collection.getNetwork().setVersionDate(Calendar.getInstance().getTime());
 		}
 		model.put("company", collection.getLine().getCompany());
@@ -80,51 +88,52 @@ public class NetexFileWriter implements Constant
 
 		// For ServiceCalendarFrame need to have time tables
 		model.put("timetables", collection.getTimetables());
+		} finally {
+			log.info(Color.CYAN + monitor.stop() + Color.NORMAL);
+		}
 	}
 
-	public File writeXmlFile(ExportableData collection, File file) throws IOException,
-	DatatypeConfigurationException
-	{
+	public File writeXmlFile(ExportableData collection, File file) throws IOException, DatatypeConfigurationException {
 		// Prepare the model for velocity
 		prepareModel(collection);
+		Monitor monitor = MonitorFactory.start("NetexFileWriter.writeXmlFile");
+		try{
 
-		StringWriter output = new StringWriter();
+		// StringWriter output = new StringWriter();
 		VelocityContext velocityContext = new VelocityContext(model);
 		velocityContext.put("esc", new EscapeTool());
+		
+		Writer output = new FileWriterWithEncoding(file, "UTF-8");
 
-		velocityEngine.mergeTemplate("templates/line.vm", "UTF-8",
-				velocityContext, output);
+		velocityEngine.mergeTemplate("templates/line.vm", "UTF-8", velocityContext, output);
 
-		FileUtils.write(file, output.toString(), "UTF-8");
+		// FileUtils.write(file, output.toString(), "UTF-8");
 
 		log.debug("File : " + file.getName() + "created");
 
+		} finally {
+			log.info(Color.CYAN + monitor.stop() + Color.NORMAL);
+		}
 		return file;
 	}
 
-	private List<Long> vehicleNumbers(ExportableData collection)
-	{
+	private List<Long> vehicleNumbers(ExportableData collection) {
 		List<Long> result = new ArrayList<Long>();
 
 		List<VehicleJourney> vehicles = collection.getVehicleJourneys();
-		for (VehicleJourney vehicle : vehicles)
-		{
-			if (!result.contains(vehicle.getNumber()))
-			{
+		for (VehicleJourney vehicle : vehicles) {
+			if (!result.contains(vehicle.getNumber())) {
 				result.add(vehicle.getNumber());
 			}
 		}
 		return result;
 	}
 
-	private List<Integer> tariffs(ExportableData collection)
-	{
+	private List<Integer> tariffs(ExportableData collection) {
 		List<Integer> tariffs = new ArrayList<Integer>();
 
-		for (StopArea stopArea : collection.getStopAreas())
-		{
-			if (stopArea.getFareCode() != null
-					&& !tariffs.contains(stopArea.getFareCode()))
+		for (StopArea stopArea : collection.getStopAreas()) {
+			if (stopArea.getFareCode() != null && !tariffs.contains(stopArea.getFareCode()))
 				tariffs.add(stopArea.getFareCode());
 		}
 		return tariffs;

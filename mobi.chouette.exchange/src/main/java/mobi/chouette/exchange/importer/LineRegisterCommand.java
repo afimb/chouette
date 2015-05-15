@@ -73,7 +73,7 @@ public class LineRegisterCommand implements Command {
 
 			Referential referential = (Referential) context.get(REFERENTIAL);
 			Line newValue = referential.getLines().values().iterator().next();
-			log.info("register line : " + newValue.getObjectId()+" "+newValue.getName()+ " vehicleJoueny count = "+referential.getVehicleJourneys().size());
+			log.info("register line : " + newValue.getObjectId()+" "+newValue.getName()+ " vehicleJourney count = "+referential.getVehicleJourneys().size());
 
 			optimiser.initialize(cache, referential);
 

@@ -47,7 +47,8 @@ public class Scheduler {
 	@Resource(lookup = "java:comp/DefaultManagedExecutorService")
 	ManagedExecutorService executor;
 	
-	Map<Long,Future<STATUS>> startedTasks = new Hashtable<>();
+	Map<Long,Future<STATUS>> startedFutures = new Hashtable<>();
+	Map<Long,Task> startedTasks = new Hashtable<>();
 
 
 	//@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -59,8 +60,9 @@ public class Scheduler {
 
 			Map<String, String> properties = new HashMap<String, String>();
 			Task task = new Task(jobService, properties, new TaskListener());
+			startedTasks.put(jobService.getId(),  task);
 			Future<STATUS> future = executor.submit(task);
-			startedTasks.put(jobService.getId(), future);
+			startedFutures.put(jobService.getId(), future);
 		}
 	}
 
@@ -103,11 +105,16 @@ public class Scheduler {
 	public boolean cancel(JobService jobService) {
 	
 		// remove prevents for multiple calls
-		Future<STATUS> future = startedTasks.remove(jobService.getId());
+		Future<STATUS> future = startedFutures.remove(jobService.getId());
 	    if (future != null) 
 	    {
-	    	future.cancel(true);
+	    	future.cancel(false);
 	    }
+		Task task = startedTasks.remove(jobService.getId());
+		if (task != null)
+		{
+			task.cancel();
+		}
 		
 		return true;
 	}
@@ -148,6 +155,7 @@ public class Scheduler {
 		private void schedule(final Task task) {
 			// remove task from stated map
 			startedTasks.remove(task.getJob().getId());
+			startedFutures.remove(task.getJob().getId());
 			// launch next task
 			executor.execute(new Runnable() {
 

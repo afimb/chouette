@@ -48,6 +48,7 @@ public class Task implements Callable<Job.STATUS>, ManagedTask, Constant {
 		STATUS result = STATUS.TERMINATED;
 		// TODO wait for tests 
 		// Thread.sleep(20000);
+		if (context.containsKey(CANCEL_ASKED)) return STATUS.CANCELED;
 		ContextHolder.setContext(job.getReferential());
 		try {
 			InitialContext initialContext = new InitialContext();
@@ -64,6 +65,11 @@ public class Task implements Callable<Job.STATUS>, ManagedTask, Constant {
 			ContextHolder.setContext(null);
 		}
 		return result;
+	}
+	
+	public void cancel()
+	{
+		context.put(CANCEL_ASKED, Boolean.TRUE);
 	}
 
 	@Override

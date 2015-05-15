@@ -130,6 +130,12 @@ public class ConnectionLinkParser implements Parser, Constant {
 				XPPUtil.skipSubTree(log, xpp);
 			}
 		}
+		
+		// post import operations 
+		if (connectionLink.getName() == null)
+		{
+			connectionLink.setName("anonymous");
+		}
 	}
 
 	static {

@@ -4,6 +4,11 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
+
+import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.JobData;
 import mobi.chouette.exchange.metadata.Metadata;
@@ -14,9 +19,13 @@ import mobi.chouette.exchange.report.FileInfo;
 import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
 import mobi.chouette.model.StopArea;
 
+@Log4j
 public class NetexLineProducer implements Constant {
 
 	public void produce(Context context) throws Exception {
+		Monitor monitor = MonitorFactory.start("NetexLineProducer");
+		try
+		{
 		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
 		JobData jobData = (JobData) context.get(JOB_DATA);
 		String rootDirectory = jobData.getPathName();
@@ -47,10 +56,13 @@ public class NetexLineProducer implements Constant {
 
 		if (metadata != null) {
 			metadata.getResources().add(
-					metadata.new Resource(fileName + ".xml", NeptuneObjectPresenter.getName(collection.getNetwork()),
+					metadata.new Resource(fileName, NeptuneObjectPresenter.getName(collection.getNetwork()),
 							NeptuneObjectPresenter.getName(collection.getLine())));
 		}
 
+		} finally {
+			log.info(Color.CYAN + monitor.stop() + Color.NORMAL);
+		}
 	}
 
 }

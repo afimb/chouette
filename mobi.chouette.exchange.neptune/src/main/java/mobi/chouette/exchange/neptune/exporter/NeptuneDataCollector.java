@@ -44,7 +44,7 @@ public class NeptuneDataCollector {
 						for (Timetable timetable : vehicleJourney.getTimetables()) {
 							Timetable validTimetable = collection.findTimetable(timetable.getObjectId());
 							if (validTimetable != null) {
-								validTimetable.getVehicleJourneys().add(vehicleJourney);
+								// validTimetable.getVehicleJourneys().add(vehicleJourney);
 								isValid = true;
 							} else {
 								validTimetable = timetable;
@@ -53,7 +53,7 @@ public class NeptuneDataCollector {
 								if (validTimetable != null && endDate != null)
 									validTimetable = reduceTimetable(validTimetable, endDate, false);
 								if (validTimetable != null) {
-									validTimetable.getVehicleJourneys().add(vehicleJourney);
+									// validTimetable.getVehicleJourneys().add(vehicleJourney);
 									collection.getTimetables().add(timetable);
 									isValid = true;
 								}

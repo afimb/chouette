@@ -121,7 +121,8 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 				timetableId += GtfsCalendarParser.AFTER_MIDNIGHT_SUFFIX;
 			}
 			Timetable timetable = ObjectFactory.getTimetable(referential, timetableId);
-			timetable.addVehicleJourney(vehicleJourney);
+			vehicleJourney.getTimetables().add(timetable);
+			// timetable.addVehicleJourney(vehicleJourney);
 
 			// JourneyPattern
 			String journeyKey = gtfsTrip.getRouteId() + "_" + gtfsTrip.getDirectionId().ordinal();
@@ -325,9 +326,9 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			VehicleJourney newVehicleJourney = ObjectFactory.getVehicleJourney(referential, vehiculeJourneyId);
 
 			iter++;
-			for (Timetable timetable : newVehicleJourney.getTimetables()) {
-				timetable.addVehicleJourney(newVehicleJourney);
-			}
+//			for (Timetable timetable : newVehicleJourney.getTimetables()) {
+//				timetable.addVehicleJourney(newVehicleJourney);
+//			}
 			List<VehicleJourneyAtStop> vjass = oldVehicleJourney.getVehicleJourneyAtStops();
 			for (VehicleJourneyAtStop vjas : vjass) {
 
@@ -340,10 +341,11 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			}
 			newVehicleJourney.setRoute(oldVehicleJourney.getRoute());
 			newVehicleJourney.setJourneyPattern(oldVehicleJourney.getJourneyPattern());
-			for (Timetable tm : oldVehicleJourney.getTimetables()) {
-
-				tm.addVehicleJourney(newVehicleJourney);
-			}
+			newVehicleJourney.getTimetables().addAll(oldVehicleJourney.getTimetables());
+//			for (Timetable tm : oldVehicleJourney.getTimetables()) {
+//
+//				tm.addVehicleJourney(newVehicleJourney);
+//			}
 			offset += headway;
 		}
 		return;

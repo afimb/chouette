@@ -5,7 +5,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
+
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Color;
 import mobi.chouette.model.CalendarDay;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
@@ -21,7 +25,11 @@ import mobi.chouette.model.util.NeptuneUtil;
 @Log4j
 public class NetexDataCollector {
 	public boolean collect(ExportableData collection, Line line, Date startDate, Date endDate) {
-		boolean validLine = false;
+
+		Monitor monitor = MonitorFactory.start("NetexDataCollector");
+		try
+		{
+			boolean validLine = false;
 		for (Route route : line.getRoutes()) {
 			boolean validRoute = false;
 			for (JourneyPattern jp : route.getJourneyPatterns()) {
@@ -44,7 +52,7 @@ public class NetexDataCollector {
 						for (Timetable timetable : vehicleJourney.getTimetables()) {
 							Timetable validTimetable = collection.findTimetable(timetable.getObjectId());
 							if (validTimetable != null) {
-								validTimetable.getVehicleJourneys().add(vehicleJourney);
+								// validTimetable.getVehicleJourneys().add(vehicleJourney);
 								isValid = true;
 							} else {
 								validTimetable = timetable;
@@ -53,7 +61,7 @@ public class NetexDataCollector {
 								if (validTimetable != null && endDate != null)
 									validTimetable = reduceTimetable(validTimetable, endDate, false);
 								if (validTimetable != null) {
-									validTimetable.getVehicleJourneys().add(vehicleJourney);
+									// validTimetable.getVehicleJourneys().add(vehicleJourney);
 									collection.getTimetables().add(timetable);
 									isValid = true;
 								}
@@ -95,6 +103,9 @@ public class NetexDataCollector {
 			}
 		}
 		return validLine;
+		} finally {
+			log.info(Color.CYAN + monitor.stop() + Color.NORMAL);
+		}
 	}
 
 	private void collectStopAreas(ExportableData collection, StopArea stopArea) {
@@ -142,7 +153,6 @@ public class NetexDataCollector {
 		reduced.setObjectVersion(timetable.getObjectVersion());
 		reduced.setCreationTime(timetable.getCreationTime());
 		reduced.setComment(timetable.getComment());
-		reduced.setVehicleJourneys(timetable.getVehicleJourneys());
 
 		List<CalendarDay> dates = new ArrayList<CalendarDay>(timetable.getCalendarDays());
 		for (Iterator<CalendarDay> iterator = dates.iterator(); iterator.hasNext();) {

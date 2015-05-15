@@ -36,7 +36,7 @@ public class NeptuneDataCollectorTests implements Constant, ReportConstant {
 		return t;
 	}
 
-	@Test(groups = { "NeptuneDataCollector" }, description = "Reduce Timetable")
+	@Test(groups = { "DataCollector" }, description = "Reduce Timetable")
 	public void verifyCheckDatesParameter() throws Exception {
 		NeptuneDataCollector collector = new NeptuneDataCollector();
 		Timetable t = getTimetable();

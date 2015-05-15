@@ -16,6 +16,7 @@ import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.util.Referential;
 
 import org.apache.commons.io.FileUtils;
@@ -53,9 +54,9 @@ public class NeptuneTestsUtils implements Constant, ReportConstant{
 		Set<StopArea> comms = new HashSet<StopArea>();
 
 		for (Route route : line.getRoutes()) {
-			Assert.assertNotNull(route.getJourneyPatterns(), "line routes must have journeyPattens");
+			Assert.assertNotEquals(route.getJourneyPatterns().size(), 0 , "line routes must have journeyPattens");
 			for (JourneyPattern jp : route.getJourneyPatterns()) {
-				Assert.assertNotNull(jp.getStopPoints(), "line journeyPattens must have stoppoints");
+				Assert.assertNotEquals(jp.getStopPoints().size(), 0, "line journeyPattens must have stoppoints");
 				for (StopPoint point : jp.getStopPoints()) {
 
 					Assert.assertNotNull(point.getContainedInStopArea(), "stoppoints must have StopAreas");
@@ -64,6 +65,11 @@ public class NeptuneTestsUtils implements Constant, ReportConstant{
 					Assert.assertNotNull(point.getContainedInStopArea().getParent(), "StopAreas must have parent : "
 							+ point.getContainedInStopArea().getObjectId());
 					comms.add(point.getContainedInStopArea().getParent());
+				}
+				Assert.assertNotEquals(jp.getVehicleJourneys().size(), 0," journeyPattern should have VehicleJourneys");
+                for (VehicleJourney vj : jp.getVehicleJourneys()) {
+                	Assert.assertNotEquals(vj.getTimetables().size(), 0," vehicleJourney should have timetables");
+                	Assert.assertEquals(vj.getVehicleJourneyAtStops().size(), jp.getStopPoints().size()," vehicleJourney should have correct vehicleJourneyAtStop count");
 				}
 			}
 		}
@@ -131,5 +137,36 @@ public class NeptuneTestsUtils implements Constant, ReportConstant{
 		}
 
 	}
+	
+	public static void checkMinimalLine(Line line)
+	{
+		
+		// readed line after save 
+		Assert.assertNotNull(line, "line");
 
+		// comptage des objets :
+		Assert.assertNotNull(line.getNetwork(), "line must have a network");
+		Assert.assertNotNull(line.getCompany(), "line must have a company");
+		Assert.assertNotEquals(line.getRoutes().size(), 0, "line must have routes");
+
+		for (Route route : line.getRoutes()) {
+			Assert.assertNotEquals(route.getJourneyPatterns().size(), 0 , "line routes must have journeyPattens");
+			for (JourneyPattern jp : route.getJourneyPatterns()) {
+				Assert.assertNotEquals(jp.getStopPoints().size(), 0, "line journeyPatterns must have stoppoints");
+				for (StopPoint point : jp.getStopPoints()) {
+
+					Assert.assertNotNull(point.getContainedInStopArea(), "stoppoints must have StopAreas");
+
+				}
+				Assert.assertNotEquals(jp.getVehicleJourneys().size(), 0," journeyPattern should have VehicleJourneys");
+                for (VehicleJourney vj : jp.getVehicleJourneys()) {
+                	Assert.assertNotEquals(vj.getTimetables().size(), 0," vehicleJourney should have timetables");
+                	Assert.assertEquals(vj.getVehicleJourneyAtStops().size(), jp.getStopPoints().size()," vehicleJourney should have correct vehicleJourneyAtStop count");
+				}
+			}
+		}
+
+	}
+
+	
 }

@@ -224,7 +224,7 @@ public class Timetable extends NeptuneIdentifiedObject {
 	 */
 	@Getter
 	@Setter
-	@ManyToMany(mappedBy = "timetables")
+	@ManyToMany(mappedBy = "timetables" ,fetch = FetchType.LAZY)
 	private List<VehicleJourney> vehicleJourneys = new ArrayList<VehicleJourney>(0);
 
 	/**

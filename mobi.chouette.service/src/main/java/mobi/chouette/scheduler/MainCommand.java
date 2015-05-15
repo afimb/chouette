@@ -65,8 +65,11 @@ public class MainCommand implements Command, Constant {
 				jobManager.terminate(jobService);
 
 		} catch (Exception ex) {
+			if (!COMMAND_CANCELLED.equals(ex.getMessage()))
+			{
 			log.error(ex);
 			jobManager.abort(jobService);
+			}
 
 		}
 		return result;

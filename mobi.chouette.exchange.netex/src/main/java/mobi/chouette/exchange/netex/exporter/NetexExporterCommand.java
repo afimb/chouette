@@ -131,9 +131,12 @@ public class NetexExporterCommand extends AbstractExporterCommand implements Com
 
 			result = SUCCESS;
 		} catch (Exception e) {
-			ActionReport report = (ActionReport) context.get(REPORT);
-			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR,"Fatal :" + e));
-			log.error(e.getMessage(), e);
+			if (!COMMAND_CANCELLED.equals(e.getMessage()))
+			{
+				ActionReport report = (ActionReport) context.get(REPORT);
+				report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR,"Fatal :" + e));
+				log.error(e.getMessage(), e);
+			}
 		} finally {
 			progression.dispose(context);
 			log.info(Color.YELLOW + monitor.stop() + Color.NORMAL);

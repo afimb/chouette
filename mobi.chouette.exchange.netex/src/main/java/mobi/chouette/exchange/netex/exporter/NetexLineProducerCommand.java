@@ -59,8 +59,13 @@ public class NetexLineProducerCommand implements Command, Constant {
 			stats.setStopAreaCount(collection.getStopAreas().size());
 			stats.setTimeTableCount(collection.getTimetables().size());
 			stats.setVehicleJourneyCount(collection.getVehicleJourneys().size());
-
-			if (cont) {
+            if (collection.getVehicleJourneys().size() > 300) 
+            {
+            	// too many vehicle journeys for this format
+				lineInfo.addError(new LineError(LineError.CODE.INVALID_FORMAT,"too many vehicle journeys > 300"));
+				result = ERROR;
+            }
+            else if (cont) {
 				context.put(EXPORTABLE_DATA, collection);
 
 				NetexLineProducer producer = new NetexLineProducer();

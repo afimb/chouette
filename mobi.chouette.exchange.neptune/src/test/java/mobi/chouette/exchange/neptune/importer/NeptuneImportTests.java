@@ -2,16 +2,22 @@ package mobi.chouette.exchange.neptune.importer;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Locale;
 
 import javax.ejb.EJB;
+import javax.inject.Inject;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.UserTransaction;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.LineDAO;
+import mobi.chouette.dao.VehicleJourneyDAO;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.neptune.JobDataTest;
 import mobi.chouette.exchange.neptune.NeptuneTestsUtils;
@@ -23,6 +29,8 @@ import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.StopArea;
+import mobi.chouette.model.Timetable;
+import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.util.Referential;
 import mobi.chouette.persistence.hibernate.ContextHolder;
@@ -44,6 +52,15 @@ public class NeptuneImportTests extends Arquillian implements Constant, ReportCo
 	@EJB
 	LineDAO lineDao;
 
+	@EJB
+	VehicleJourneyDAO vjDao;
+
+
+	@PersistenceContext(unitName = "referential")
+	EntityManager em;
+
+	@Inject
+	UserTransaction utx;
 
 	@Deployment
 	public static WebArchive createDeployment() {
@@ -92,6 +109,7 @@ public class NeptuneImportTests extends Arquillian implements Constant, ReportCo
 		configuration.setName("name");
 		configuration.setUserName("userName");
 		configuration.setNoSave(true);
+		configuration.setCleanRepository(true);
 		configuration.setOrganisationName("organisation");
 		configuration.setReferentialName("test");
 		JobDataTest jobData = new JobDataTest();
@@ -114,7 +132,7 @@ public class NeptuneImportTests extends Arquillian implements Constant, ReportCo
 
 	}
 
-	@Test(groups = { "CheckParameters" }, description = "Import Plugin should reject file not found")
+	// @Test(groups = { "CheckParameters" }, description = "Import Plugin should reject file not found")
 	public void verifyCheckInputFileExists() throws Exception {
 		// TODO test à passer aussi sur la commande uncompress du module
 		// mobi.chouette.exchange
@@ -134,7 +152,7 @@ public class NeptuneImportTests extends Arquillian implements Constant, ReportCo
 
 	}
 
-	@Test(groups = { "ImportLineUtf8" }, description = "Import Plugin should detect file encoding")
+	// @Test(groups = { "ImportLineUtf8" }, description = "Import Plugin should detect file encoding")
 	public void verifyCheckGoodEncoding() throws Exception {
 		Context context = initImportContext();
 		NeptuneImporterCommand command = (NeptuneImporterCommand) CommandFactory.create(initialContext,
@@ -155,7 +173,7 @@ public class NeptuneImportTests extends Arquillian implements Constant, ReportCo
 		Assert.assertTrue(report.getLines().get(0).getName().contains("é"), "character conversion");
 	}
 
-	@Test(groups = { "ImportLineUtf8Bom" }, description = "Import Plugin should detect bom in file encoding")
+	// @Test(groups = { "ImportLineUtf8Bom" }, description = "Import Plugin should detect bom in file encoding")
 	public void verifyCheckGoodEncodingWithBom() throws Exception {
 		Context context = initImportContext();
 		NeptuneImporterCommand command = (NeptuneImporterCommand) CommandFactory.create(initialContext,
@@ -176,7 +194,7 @@ public class NeptuneImportTests extends Arquillian implements Constant, ReportCo
 		Assert.assertTrue(report.getLines().get(0).getName().contains("é"), "character conversion");
 	}
 
-	@Test(groups = { "ImportLineBadEnc" }, description = "Import Plugin should detect file encoding")
+	// @Test(groups = { "ImportLineBadEnc" }, description = "Import Plugin should detect file encoding")
 	public void verifyCheckBadEncoding() throws Exception {
 		Context context = initImportContext();
 		NeptuneImporterCommand command = (NeptuneImporterCommand) CommandFactory.create(initialContext,
@@ -223,16 +241,25 @@ public class NeptuneImportTests extends Arquillian implements Constant, ReportCo
 		Assert.assertEquals(report.getLines().size(), 1, "line reported");
 		Reporter.log("report line :" + report.getLines().get(0).toString(), true);
 		Assert.assertEquals(report.getLines().get(0).getStatus(), LINE_STATE.OK, "line status");
+		NeptuneTestsUtils.checkLine(context);
+		
+		Referential referential = (Referential) context.get(REFERENTIAL);
+		Assert.assertNotEquals(referential.getTimetables(),0, "timetables" );
+		Assert.assertNotEquals(referential.getSharedTimetables(),0, "shared timetables" );
 
 		// line should be saved
+		utx.begin();
+		em.joinTransaction();
 		Line line = lineDao.findByObjectId("NINOXE:Line:15574334");
-		Assert.assertNotNull(line, "line");
+		
+		NeptuneTestsUtils.checkMinimalLine(line);
+		
+		utx.rollback();
 
-		NeptuneTestsUtils.checkLine(context);
 	}
 	
 
-	@Test(groups = { "ImportRCLine" }, description = "Import Plugin should import file with ITL")
+	// @Test(groups = { "ImportRCLine" }, description = "Import Plugin should import file with ITL")
 	public void verifyImportRCLine() throws Exception {
 		Context context = initImportContext();
 		NeptuneImporterCommand command = (NeptuneImporterCommand) CommandFactory.create(initialContext,
@@ -276,7 +303,7 @@ public class NeptuneImportTests extends Arquillian implements Constant, ReportCo
 				"routing constraint area must have stopArea children as routing constraints");
 	}
 
-	@Test(groups = { "ImportZipLines" }, description = "Import Plugin should import zip file")
+	// @Test(groups = { "ImportZipLines" }, description = "Import Plugin should import zip file")
 	public void verifyImportZipLines() throws Exception {
 		Context context = initImportContext();
 		NeptuneImporterCommand command = (NeptuneImporterCommand) CommandFactory.create(initialContext,
@@ -285,7 +312,7 @@ public class NeptuneImportTests extends Arquillian implements Constant, ReportCo
 		JobDataTest jobData = (JobDataTest) context.get(JOB_DATA);
 		jobData.setFilename("lignes_neptune.zip");
 		NeptuneImportParameters configuration = (NeptuneImportParameters) context.get(CONFIGURATION);
-		configuration.setNoSave(true);
+		configuration.setNoSave(false);
 		try {
 			command.execute(context);
 		} catch (Exception ex) {

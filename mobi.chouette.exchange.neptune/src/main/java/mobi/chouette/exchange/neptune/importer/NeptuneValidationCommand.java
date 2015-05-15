@@ -52,8 +52,6 @@ public class NeptuneValidationCommand implements Command, Constant {
 	public boolean execute(Context context) throws Exception {
 
 		boolean result = ERROR;
-		log.info("[DSU] validate file");
-		// boolean result = ERROR;
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
 		ActionReport report = (ActionReport) context.get(REPORT);

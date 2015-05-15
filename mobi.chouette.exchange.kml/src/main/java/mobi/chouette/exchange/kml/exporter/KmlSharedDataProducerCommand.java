@@ -108,7 +108,7 @@ public class KmlSharedDataProducerCommand implements Command, Constant {
 
 	private void saveCommercialStops(Context context) throws Exception {
 		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
-		if (collection.getCommercialStopPoints().isEmpty())
+		if (collection.getCommercialStops().isEmpty())
 			return;
 		Metadata metadata = (Metadata) context.get(METADATA); 
 		JobData jobData = (JobData) context.get(JOB_DATA);
@@ -116,7 +116,7 @@ public class KmlSharedDataProducerCommand implements Command, Constant {
 		Path dir = Paths.get(rootDirectory, OUTPUT);
 		KmlData data = new KmlData();
 		data.setName("Arrêts commerciaux");
-		for (StopArea area : collection.getCommercialStopPoints()) {
+		for (StopArea area : collection.getCommercialStops()) {
 			data.addStopArea(area);
 		}
 		String fileName = "commercial_stop_areas.kml";

@@ -224,8 +224,8 @@ public class KmlLineProducerCommand implements Command, Constant {
 
 		Metadata metadata = (Metadata) context.get(METADATA); 
 		if (metadata != null)
-			metadata.getResources().add(metadata.new Resource(fileName + ".kml", 
-					NeptuneObjectPresenter.getName(collection.getNetwork()), 
+			metadata.getResources().add(metadata.new Resource(fileName, 
+					NeptuneObjectPresenter.getName(collection.getLine().getNetwork()), 
 					NeptuneObjectPresenter.getName(collection.getLine())));
 
 	}
