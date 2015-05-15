@@ -49,7 +49,7 @@ import com.vividsolutions.jts.geom.PrecisionModel;
  */
 public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> implements Constant {
 
-	protected enum PATTERN_OPTION {
+	public enum PATTERN_OPTION {
 		free, num, alpha, upper, lower
 	}
 
@@ -363,7 +363,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 			FieldParameters colParam = ValidationParametersUtil.getFieldParameters(parameters, object, column);
 			if (colParam == null) 
 			{
-				// no parameters for test , skiped
+				// no parameters for test , skipped
 				return;
 			}
 
@@ -387,22 +387,22 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 				}
 				// uniqueness ?
 				if (colParam.getUnique() == 1) {
-					check4Generic1Unique(context,report, object, testName, objectKey, column, value);
+					check4Generic1Unique(context,report, object, testName, objectKey, column, value, log);
 				}
 
 				// pattern ?
 				PATTERN_OPTION pattern_opt = PATTERN_OPTION.values()[colParam.getPattern()];
 
-				check4Generic1Pattern(context,report, object, testName, column, value, pattern_opt);
+				check4Generic1Pattern(context,report, object, testName, column, value, pattern_opt, log);
 
 				// min size ?
 				if (colParam.getMinSize() != null && !colParam.getMinSize().isEmpty()) {
-					check4Generic1MinSize(context,report, object, testName, column, colParam, objVal, value, pattern_opt);
+					check4Generic1MinSize(context,report, object, testName, column, colParam, objVal, value, pattern_opt, log);
 				}
 
 				// max_size ?
 				if (colParam.getMaxSize() != null  && !colParam.getMaxSize().isEmpty() && !value.isEmpty()) {
-					check4Generic1MaxSize(context,report, object, testName, column, colParam, objVal, value, pattern_opt);
+					check4Generic1MaxSize(context,report, object, testName, column, colParam, objVal, value, pattern_opt, log);
 				}
 
 			} catch (Exception e) {
@@ -423,7 +423,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	 * @param pattern_opt
 	 */
 	private void check4Generic1MaxSize(Context context,ValidationReport report, T object, String testName, String column,
-			FieldParameters colParam, Object objVal, String value, PATTERN_OPTION pattern_opt) {
+			FieldParameters colParam, Object objVal, String value, PATTERN_OPTION pattern_opt, Logger log) {
 		int maxSize = Integer.parseInt(colParam.getMaxSize());
 		if (maxSize != 0) {
 			if (objVal instanceof Number || objVal instanceof Time || pattern_opt == PATTERN_OPTION.num) {
@@ -458,12 +458,13 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	 * @param pattern_opt
 	 */
 	private void check4Generic1MinSize(Context context,ValidationReport report, T object, String testName, String column,
-			FieldParameters colParam, Object objVal, String value, PATTERN_OPTION pattern_opt) {
+			FieldParameters colParam, Object objVal, String value, PATTERN_OPTION pattern_opt, Logger log) {
 		int minSize = Integer.parseInt(colParam.getMinSize());
+		
 		if (minSize > 0 && value.isEmpty()) {
 			Location location = buildLocation(context,object);
 
-			Detail detail = new Detail(testName + "_" + MIN_SIZE, location, column, value);
+			Detail detail = new Detail(testName + "_" + MIN_SIZE, location, value, column);
 			addValidationError(report, testName, detail);
 			return;
 		}
@@ -497,7 +498,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	 * @param pattern_opt
 	 */
 	private void check4Generic1Pattern(Context context,ValidationReport report, T object, String testName, String column, String value,
-			PATTERN_OPTION pattern_opt) {
+			PATTERN_OPTION pattern_opt, Logger log) {
 		if (!value.isEmpty()) {
 			String regex = null;
 			switch (pattern_opt) {
@@ -537,7 +538,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	 */
 	@SuppressWarnings("unchecked")
 	private void check4Generic1Unique(Context context,ValidationReport report, T object, String testName, String objectKey,
-			 String column, String value) {
+			 String column, String value, Logger log) {
 		String context_key = objectKey + "_" + column + "_" + UNIQUE;
 		
 		Map<String, Location> values = (Map<String, Location>) context.get(context_key);

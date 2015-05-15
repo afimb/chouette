@@ -47,32 +47,35 @@ public class AccessLinkCheckPoints extends AbstractValidation<AccessLink> implem
 		}
 
 		for (AccessLink accessLink : beans) {
-			check3AccessLink1_2(context,report, accessLink, parameters);
-			check3AccessLink3(context,report, accessLink, parameters);
+			check3AccessLink1_2(context, report, accessLink, parameters);
+			check3AccessLink3(context, report, accessLink, parameters);
 
 			// 4-AccessLink-1 : check columns constraints
 			if (test4_1)
-				check4Generic1(context,report, accessLink, L4_ACCESS_LINK_1, parameters, log);
+				check4Generic1(context, report, accessLink, L4_ACCESS_LINK_1, parameters, log);
 
 		}
 		return null;
 	}
 
-	private void check3AccessLink1_2(Context context, ValidationReport report, AccessLink accessLink, ValidationParameters parameters) {
+	private void check3AccessLink1_2(Context context, ValidationReport report, AccessLink accessLink,
+			ValidationParameters parameters) {
 		// 3-AccessLink-1 : check distance between stops of accessLink
 		StopArea start = accessLink.getStopArea();
 		AccessPoint end = accessLink.getAccessPoint();
-		if (start == null || end == null)
+		if (start == null || end == null) {
 			return;
-		if (!start.hasCoordinates() || !end.hasCoordinates())
+		}
+		if (!start.hasCoordinates() || !end.hasCoordinates()) {
 			return;
+		}
 		long distanceMax = parameters.getInterAccessLinkDistanceMax();
 
 		double distance = distance(start, end);
 		if (distance > distanceMax) {
-			Location location = buildLocation(context,accessLink);
-			Location startTarget = buildLocation(context,start);
-			Location endTarget = buildLocation(context,end);
+			Location location = buildLocation(context, accessLink);
+			Location startTarget = buildLocation(context, start);
+			Location endTarget = buildLocation(context, end);
 			Detail detail = new Detail(ACCESS_LINK_1, location, Integer.valueOf((int) distance).toString(), Integer
 					.valueOf((int) distanceMax).toString(), startTarget, endTarget);
 			addValidationError(report, ACCESS_LINK_1, detail);
@@ -81,9 +84,9 @@ public class AccessLinkCheckPoints extends AbstractValidation<AccessLink> implem
 			// stops of accessLink
 			if (accessLink.getLinkDistance() != null && !accessLink.getLinkDistance().equals(BigDecimal.ZERO)) {
 				if (distance > accessLink.getLinkDistance().doubleValue()) {
-					Location location = buildLocation(context,accessLink);
-					Location startTarget = buildLocation(context,start);
-					Location endTarget = buildLocation(context,end);
+					Location location = buildLocation(context, accessLink);
+					Location startTarget = buildLocation(context, start);
+					Location endTarget = buildLocation(context, end);
 					Detail detail = new Detail(ACCESS_LINK_2, location, Integer.valueOf((int) distance).toString(),
 							Integer.valueOf(accessLink.getLinkDistance().intValue()).toString(), startTarget, endTarget);
 					addValidationError(report, ACCESS_LINK_2, detail);
@@ -93,7 +96,8 @@ public class AccessLinkCheckPoints extends AbstractValidation<AccessLink> implem
 
 	}
 
-	private void check3AccessLink3(Context context, ValidationReport report, AccessLink accessLink, ValidationParameters parameters) {
+	private void check3AccessLink3(Context context, ValidationReport report, AccessLink accessLink,
+			ValidationParameters parameters) {
 		// 3-AccessLink-3 : check speeds in accessLink
 		double distance = 1; // meters
 		if (accessLink.getLinkDistance() != null && !accessLink.getLinkDistance().equals(BigDecimal.ZERO)) {
@@ -104,13 +108,13 @@ public class AccessLinkCheckPoints extends AbstractValidation<AccessLink> implem
 		int maxMobilitySpeed = parameters.getWalkMobilityRestrictedTravellerSpeedMax();
 		int maxOccasionalSpeed = parameters.getWalkOccasionalTravellerSpeedMax();
 
-		checkLinkSpeed(context,report, accessLink, accessLink.getDefaultDuration(), distance, maxDefaultSpeed, ACCESS_LINK_3,
-				"_1");
-		checkLinkSpeed(context,report, accessLink, accessLink.getOccasionalTravellerDuration(), distance, maxOccasionalSpeed,
-				ACCESS_LINK_3, "_2");
-		checkLinkSpeed(context,report, accessLink, accessLink.getFrequentTravellerDuration(), distance, maxFrequentSpeed,
-				ACCESS_LINK_3, "_3");
-		checkLinkSpeed(context,report, accessLink, accessLink.getMobilityRestrictedTravellerDuration(), distance,
+		checkLinkSpeed(context, report, accessLink, accessLink.getDefaultDuration(), distance, maxDefaultSpeed,
+				ACCESS_LINK_3, "_1");
+		checkLinkSpeed(context, report, accessLink, accessLink.getOccasionalTravellerDuration(), distance,
+				maxOccasionalSpeed, ACCESS_LINK_3, "_2");
+		checkLinkSpeed(context, report, accessLink, accessLink.getFrequentTravellerDuration(), distance,
+				maxFrequentSpeed, ACCESS_LINK_3, "_3");
+		checkLinkSpeed(context, report, accessLink, accessLink.getMobilityRestrictedTravellerDuration(), distance,
 				maxMobilitySpeed, ACCESS_LINK_3, "_4");
 
 	}

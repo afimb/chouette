@@ -246,10 +246,6 @@ public class ValidationStopAreas extends AbstractTestValidation {
 		Assert.assertEquals(checkPointReport.getSeverity(), CheckPoint.SEVERITY.WARNING,
 				" checkPointReport must be on severity error");
 		Assert.assertEquals(checkPointReport.getDetailCount(), 1, " checkPointReport must have 1 item");
-		for (Detail detail : checkPointReport.getDetails()) {
-			log.warn(detail);
-			Assert.assertEquals(detail.getSource().getObjectId(), area1.getObjectId(), "area1 must be source of error");
-		}
 		utx.rollback();
 	}
 
