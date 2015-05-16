@@ -26,7 +26,7 @@ public class SiteFrameWriter extends AbstractWriter{
 		Line line = data.getLine();
 		Set<StopArea> stopPlaces = new HashSet<>();
 		stopPlaces.addAll(data.getStopPlaces());
-		stopPlaces.addAll(data.getCommercialStopPoints());
+		stopPlaces.addAll(data.getCommercialStops());
 		Set<AccessLink> accessLinks = data.getAccessLinks();
 		ModelTranslator modelTranslator = new ModelTranslator();
 		DatatypeFactory durationFactory = DatatypeFactory.newInstance();

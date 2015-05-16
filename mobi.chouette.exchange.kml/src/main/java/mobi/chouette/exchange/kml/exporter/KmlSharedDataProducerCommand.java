@@ -92,9 +92,13 @@ public class KmlSharedDataProducerCommand implements Command, Constant {
 		data.setName("Arrêts");
 		for (StopArea area : collection.getBoardingPositions()) {
 			data.addStopArea(area);
+			if (metadata != null && area.hasCoordinates())
+				metadata.getSpatialCoverage().update(area.getLongitude().doubleValue(), area.getLatitude().doubleValue());
 		}
 		for (StopArea area : collection.getQuays()) {
 			data.addStopArea(area);
+			if (metadata != null && area.hasCoordinates())
+				metadata.getSpatialCoverage().update(area.getLongitude().doubleValue(), area.getLatitude().doubleValue());
 		}
 		String fileName = "stop_areas.kml";
 		// TODO add metadata?
@@ -118,6 +122,8 @@ public class KmlSharedDataProducerCommand implements Command, Constant {
 		data.setName("Arrêts commerciaux");
 		for (StopArea area : collection.getCommercialStops()) {
 			data.addStopArea(area);
+			if (metadata != null && area.hasCoordinates())
+				metadata.getSpatialCoverage().update(area.getLongitude().doubleValue(), area.getLatitude().doubleValue());
 		}
 		String fileName = "commercial_stop_areas.kml";
 		// TODO add metadata?
@@ -140,6 +146,8 @@ public class KmlSharedDataProducerCommand implements Command, Constant {
 		KmlData data = new KmlData();
 		data.setName("Pôles d'échange");
 		for (StopArea area : collection.getStopPlaces()) {
+			if (metadata != null && area.hasCoordinates())
+				metadata.getSpatialCoverage().update(area.getLongitude().doubleValue(), area.getLatitude().doubleValue());
 			data.addStopArea(area);
 		}
 		String fileName = "stop_places.kml";

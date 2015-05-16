@@ -3,13 +3,11 @@ package mobi.chouette.exchange.gtfs.exporter;
 import java.sql.Date;
 import java.util.Collection;
 
-import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.exporter.DataCollector;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 
-@Log4j
 public class GtfsDataCollector extends DataCollector{
 	public boolean collect(ExportableData collection, Line line, Date startDate, Date endDate) {
        return collect(collection,line,startDate,endDate,false,false);

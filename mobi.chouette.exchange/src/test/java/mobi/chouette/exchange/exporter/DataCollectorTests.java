@@ -1,10 +1,9 @@
-package mobi.chouette.exchange.neptune.exporter;
+package mobi.chouette.exchange.exporter;
 
 import java.sql.Date;
 import java.util.Calendar;
 
-import lombok.extern.log4j.Log4j;
-import mobi.chouette.exchange.neptune.Constant;
+import mobi.chouette.common.Constant;
 import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.model.CalendarDay;
 import mobi.chouette.model.Period;
@@ -13,8 +12,7 @@ import mobi.chouette.model.Timetable;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-@Log4j
-public class NeptuneDataCollectorTests implements Constant, ReportConstant {
+public class DataCollectorTests implements Constant, ReportConstant {
 
 	private Timetable getTimetable() {
 		Timetable t = new Timetable();
@@ -37,7 +35,7 @@ public class NeptuneDataCollectorTests implements Constant, ReportConstant {
 
 	@Test(groups = { "DataCollector" }, description = "Reduce Timetable")
 	public void verifyCheckDatesParameter() throws Exception {
-		NeptuneDataCollector collector = new NeptuneDataCollector();
+		DataCollector collector = new DataCollector();
 		Timetable t = getTimetable();
 		Calendar c = Calendar.getInstance();
 		Date boundaryDate = new Date(c.getTimeInMillis());

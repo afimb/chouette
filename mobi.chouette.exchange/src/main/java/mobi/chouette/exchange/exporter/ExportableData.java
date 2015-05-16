@@ -7,7 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.Company;
@@ -22,31 +23,73 @@ import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 
-@Data
 public class ExportableData {
 	// private Network network;
+	
+	@Getter
+	@Setter
 	private Set<Network> networks = new HashSet<>();
+	@Getter
+	@Setter
 	private Line line;
+	@Getter
+	@Setter
 	private Set<Company> companies = new HashSet<>();
+	@Getter
+	@Setter
 	private Set<GroupOfLine> groupOfLines = new HashSet<>();
+	@Getter
+	@Setter
 	private Set<StopArea> stopAreas = new HashSet<>();
+	@Getter
+	@Setter
 	private Set<StopArea> quays = new HashSet<>();
+	@Getter
+	@Setter
 	private Set<StopArea> boardingPositions = new HashSet<>();
+	@Getter
+	@Setter
 	private Set<StopArea> physicalStops = new HashSet<>();
+	@Getter
+	@Setter
 	private Set<StopArea> commercialStops = new HashSet<>();
+	@Getter
+	@Setter
 	private Set<StopArea> stopPlaces = new HashSet<>();
+	@Getter
+	@Setter
 	private Set<ConnectionLink> connectionLinks = new HashSet<>();
+	@Getter
+	@Setter
 	private Set<AccessLink> accessLinks = new HashSet<>();
+	@Getter
+	@Setter
 	private Set<AccessPoint> accessPoints = new HashSet<>();
+	@Getter
+	@Setter
 	private Set<Timetable> timetables = new HashSet<>();
+	@Getter
+	@Setter
 	private Set<StopArea> restrictionConstraints = new HashSet<>();
+	@Getter
+	@Setter
 	private Map<String, List<Timetable>> timetableMap = new HashMap<>();
+	@Getter
+	@Setter
 	private List<VehicleJourney> vehicleJourneys = new ArrayList<>();
+	@Getter
+	@Setter
 	private List<JourneyPattern> journeyPatterns = new ArrayList<>();
+	@Getter
+	@Setter
 	private List<Route> routes = new ArrayList<>();
+	@Getter
+	@Setter
 	private List<StopPoint> stopPoints = new ArrayList<>();
 
 	// prevent lazy loading for non complete connectionlinks
+	@Getter
+	@Setter
 	private Set<StopArea> sharedStops = new HashSet<>();
 
 	public Timetable findTimetable(String objectId) {

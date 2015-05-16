@@ -3,13 +3,11 @@ package mobi.chouette.exchange.hub.exporter;
 import java.sql.Date;
 import java.util.List;
 
-import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.exporter.DataCollector;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.StopArea;
 
-@Log4j
 public class HubDataCollector extends DataCollector {
 	public boolean collect(ExportableData collection, Line line, Date startDate, Date endDate) {
 	       return collect(collection,line,startDate,endDate,false,false);

@@ -19,7 +19,6 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.ws.rs.core.MediaType;
 
-import lombok.extern.log4j.Log4j;
 import mobi.chouette.dao.JobDAO;
 import mobi.chouette.dao.SchemaDAO;
 import mobi.chouette.model.api.Job;
@@ -34,7 +33,6 @@ import com.google.common.collect.Collections2;
 
 @Singleton(name = JobServiceManager.BEAN_NAME)
 @Startup
-@Log4j
 public class JobServiceManager {
 
 	public static final String BEAN_NAME = "JobServiceManager";

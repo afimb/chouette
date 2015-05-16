@@ -1,12 +1,14 @@
 package mobi.chouette.exchange.hub.exporter;
 
-import lombok.Data;
-import mobi.chouette.model.Line;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data 
 public class ExportableData extends mobi.chouette.exchange.exporter.ExportableData{
+	@Getter
+	@Setter
 	private int vehicleJourneyRank = 0;
 	// refilled line by line
-	private Line line;
+	@Getter
+	@Setter
 	private int pmrFootenoteId = -1;
 }
