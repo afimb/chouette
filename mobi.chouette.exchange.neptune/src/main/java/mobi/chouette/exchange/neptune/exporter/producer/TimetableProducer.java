@@ -5,7 +5,6 @@ import java.sql.Date;
 import mobi.chouette.model.Period;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.type.DayTypeEnum;
-import mobi.chouette.model.util.NeptuneUtil;
 
 import org.trident.schema.trident.DayTypeType;
 import org.trident.schema.trident.PeriodType;
@@ -26,7 +25,7 @@ public class TimetableProducer extends
       jaxbTimetable.setComment(getNotEmptyString(timetable.getComment()));
       jaxbTimetable.setVersion(timetable.getVersion());
 
-      for (Date peculiarDay : NeptuneUtil.getPeculiarDates(timetable))
+      for (Date peculiarDay : timetable.getPeculiarDates())
       {
          if (peculiarDay != null)
          {
@@ -35,7 +34,7 @@ public class TimetableProducer extends
          }
       }
 
-      for (Period period : NeptuneUtil.getEffectivePeriods(timetable))
+      for (Period period : timetable.getEffectivePeriods())
       {
          if (period != null)
          {

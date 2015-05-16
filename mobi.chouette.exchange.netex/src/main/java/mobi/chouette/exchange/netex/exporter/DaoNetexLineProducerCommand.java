@@ -2,7 +2,9 @@ package mobi.chouette.exchange.netex.exporter;
 
 import java.io.IOException;
 
+import javax.annotation.Resource;
 import javax.ejb.EJB;
+import javax.ejb.EJBContext;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -26,6 +28,9 @@ import com.jamonapi.MonitorFactory;
 public class DaoNetexLineProducerCommand implements Command, Constant {
 
 	public static final String COMMAND = "DaoNetexLineProducerCommand";
+	
+	@Resource 
+	private EJBContext ejbContext;
 
 	@EJB
 	private LineDAO lineDAO;
@@ -52,6 +57,7 @@ public class DaoNetexLineProducerCommand implements Command, Constant {
 		} catch (Exception e) {
 			log.error(e.getMessage(),e);
 		} finally {
+			ejbContext.setRollbackOnly();
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		}
 

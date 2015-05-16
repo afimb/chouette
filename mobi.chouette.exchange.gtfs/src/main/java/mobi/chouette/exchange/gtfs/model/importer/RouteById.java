@@ -3,7 +3,6 @@ package mobi.chouette.exchange.gtfs.model.importer;
 import java.awt.Color;
 import java.io.IOException;
 
-import mobi.chouette.exchange.gtfs.model.GtfsAgency;
 import mobi.chouette.exchange.gtfs.model.GtfsRoute;
 
 public class RouteById extends IndexImpl<GtfsRoute> implements GtfsConverter {

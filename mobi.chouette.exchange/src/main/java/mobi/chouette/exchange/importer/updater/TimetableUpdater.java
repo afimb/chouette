@@ -10,7 +10,6 @@ import mobi.chouette.common.Context;
 import mobi.chouette.model.CalendarDay;
 import mobi.chouette.model.Period;
 import mobi.chouette.model.Timetable;
-import mobi.chouette.model.util.NeptuneUtil;
 
 @Stateless(name = TimetableUpdater.BEAN_NAME)
 public class TimetableUpdater implements Updater<Timetable> {
@@ -40,7 +39,7 @@ public class TimetableUpdater implements Updater<Timetable> {
 		}
 		newValue.setSaved(true);
 		
-		NeptuneUtil.computeLimitOfPeriods(newValue);
+		newValue.computeLimitOfPeriods();
 
 		if (newValue.getObjectId() != null
 				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {

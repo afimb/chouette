@@ -5,11 +5,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
-
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.Color;
 import mobi.chouette.model.CalendarDay;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
@@ -20,15 +16,12 @@ import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.type.DayTypeEnum;
-import mobi.chouette.model.util.NeptuneUtil;
 
 @Log4j
 public class NetexDataCollector {
 	public boolean collect(ExportableData collection, Line line, Date startDate, Date endDate) {
 
-		Monitor monitor = MonitorFactory.start("NetexDataCollector");
-		try
-		{
+		
 			boolean validLine = false;
 		for (Route route : line.getRoutes()) {
 			boolean validRoute = false;
@@ -103,9 +96,7 @@ public class NetexDataCollector {
 			}
 		}
 		return validLine;
-		} finally {
-			log.info(Color.CYAN + monitor.stop() + Color.NORMAL);
-		}
+		
 	}
 
 	private void collectStopAreas(ExportableData collection, StopArea stopArea) {
@@ -177,7 +168,7 @@ public class NetexDataCollector {
 		}
 		reduced.setCalendarDays(dates);
 		reduced.setPeriods(periods);
-		NeptuneUtil.computeLimitOfPeriods(reduced);
+		reduced.computeLimitOfPeriods();
 		return reduced;
 
 	}

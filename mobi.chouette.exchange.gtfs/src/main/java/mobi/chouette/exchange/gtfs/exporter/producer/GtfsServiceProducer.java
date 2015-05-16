@@ -27,7 +27,6 @@ import mobi.chouette.model.Period;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.type.DayTypeEnum;
 import mobi.chouette.model.util.CopyUtil;
-import mobi.chouette.model.util.NeptuneUtil;
 
 /**
  * convert Timetable to Gtfs Calendar and CalendarDate
@@ -183,9 +182,9 @@ AbstractProducer
    public Timetable removePeriods(Timetable timetable)
    {
       Set<Date> excludedDates = new HashSet<Date>(
-            NeptuneUtil.getExcludedDates(timetable));
+    		  timetable.getExcludedDates());
       Set<Date> includedDates = new HashSet<Date>(
-    		  NeptuneUtil.getPeculiarDates(timetable));
+    		  timetable.getPeculiarDates());
 
       for (Period period : timetable.getPeriods())
       {
@@ -269,7 +268,7 @@ AbstractProducer
          }
          merged.setObjectId(prefix+":"+Timetable.TIMETABLE_KEY+":"+key(timetables,prefix));
       }
-      NeptuneUtil.computeLimitOfPeriods(merged);
+      merged.computeLimitOfPeriods();
       return merged;
    }
 

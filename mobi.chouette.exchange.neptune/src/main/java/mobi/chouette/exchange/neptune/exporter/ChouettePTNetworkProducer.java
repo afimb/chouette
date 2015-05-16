@@ -45,7 +45,6 @@ import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.type.ChouetteAreaEnum;
-import mobi.chouette.model.util.NeptuneUtil;
 
 import org.trident.schema.trident.ChouettePTNetworkType;
 import org.trident.schema.trident.ChouettePTNetworkType.ChouetteArea;
@@ -163,7 +162,7 @@ public class ChouettePTNetworkProducer implements Constant {
 
 		for (Timetable timetable : collection.getTimetables())
 		{
-			NeptuneUtil.computeLimitOfPeriods(timetable);
+			timetable.computeLimitOfPeriods();
 
 			TimetableType jaxbObj = timetableProducer.produce(timetable,addExtension);
 			rootObject.getTimetable().add(jaxbObj);

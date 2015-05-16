@@ -28,7 +28,6 @@ import mobi.chouette.model.CalendarDay;
 import mobi.chouette.model.Period;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.type.DayTypeEnum;
-import mobi.chouette.model.util.NeptuneUtil;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
@@ -94,6 +93,7 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 		}
 
 		for (Timetable timetable : list) {
+			referential.getSharedTimetables().put(timetable.getObjectId(), timetable);
 			referential.getTimetables().put(timetable.getObjectId(), timetable);
 		}
 
@@ -218,7 +218,7 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 		}
 		if (timetable.getCalendarDays() != null && !timetable.getCalendarDays().isEmpty()) {
 			Calendar cal = Calendar.getInstance();
-			for (Date date : NeptuneUtil.getPeculiarDates(timetable)) {
+			for (Date date : timetable.getPeculiarDates()) {
 				cal.setTime(date);
 				if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY)
 					monday = "Mo";

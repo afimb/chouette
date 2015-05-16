@@ -9,7 +9,6 @@ import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.model.CalendarDay;
 import mobi.chouette.model.Period;
 import mobi.chouette.model.Timetable;
-import mobi.chouette.model.util.NeptuneUtil;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -32,7 +31,7 @@ public class NeptuneDataCollectorTests implements Constant, ReportConstant {
 		c.add(Calendar.DATE, 2);
 		t.addCalendarDay(new CalendarDay(new Date(c.getTimeInMillis()), true));
 		t.setIntDayTypes(1023);
-		NeptuneUtil.computeLimitOfPeriods(t);
+		t.computeLimitOfPeriods();
 		return t;
 	}
 

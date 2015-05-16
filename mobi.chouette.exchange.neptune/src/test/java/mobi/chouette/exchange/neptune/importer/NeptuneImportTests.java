@@ -2,7 +2,6 @@ package mobi.chouette.exchange.neptune.importer;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import java.util.Locale;
 
 import javax.ejb.EJB;
@@ -29,8 +28,6 @@ import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.StopArea;
-import mobi.chouette.model.Timetable;
-import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.util.Referential;
 import mobi.chouette.persistence.hibernate.ContextHolder;

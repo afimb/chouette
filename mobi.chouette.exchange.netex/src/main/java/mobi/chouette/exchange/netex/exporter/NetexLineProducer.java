@@ -4,11 +4,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
-
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.JobData;
 import mobi.chouette.exchange.metadata.Metadata;
@@ -23,22 +19,18 @@ import mobi.chouette.model.StopArea;
 public class NetexLineProducer implements Constant {
 
 	public void produce(Context context) throws Exception {
-		Monitor monitor = MonitorFactory.start("NetexLineProducer");
-		try
-		{
+
 		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
 		JobData jobData = (JobData) context.get(JOB_DATA);
 		String rootDirectory = jobData.getPathName();
 
 		NetexExportParameters parameters = (NetexExportParameters) context.get(CONFIGURATION);
 		String projectionType = parameters.getProjectionType();
-		if (projectionType != null && !projectionType.isEmpty())
-		{
+		if (projectionType != null && !projectionType.isEmpty()) {
 			if (!projectionType.toUpperCase().startsWith("EPSG:"))
-				projectionType = "EPSG:"+projectionType;
+				projectionType = "EPSG:" + projectionType;
 		}
-		for (StopArea stopArea : collection.getStopAreas()) 
-		{
+		for (StopArea stopArea : collection.getStopAreas()) {
 			stopArea.toProjection(projectionType);
 		}
 		Metadata metadata = (Metadata) context.get(METADATA);
@@ -51,7 +43,7 @@ public class NetexLineProducer implements Constant {
 		writer.writeXmlFile(collection, file);
 
 		ActionReport report = (ActionReport) context.get(REPORT);
-		FileInfo fileItem = new FileInfo(fileName,FILE_STATE.OK);
+		FileInfo fileItem = new FileInfo(fileName, FILE_STATE.OK);
 		report.getFiles().add(fileItem);
 
 		if (metadata != null) {
@@ -60,9 +52,6 @@ public class NetexLineProducer implements Constant {
 							NeptuneObjectPresenter.getName(collection.getLine())));
 		}
 
-		} finally {
-			log.info(Color.CYAN + monitor.stop() + Color.NORMAL);
-		}
 	}
 
 }

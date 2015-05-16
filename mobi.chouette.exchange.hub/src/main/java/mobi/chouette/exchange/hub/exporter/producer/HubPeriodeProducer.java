@@ -16,7 +16,6 @@ import mobi.chouette.exchange.hub.model.HubPeriode;
 import mobi.chouette.exchange.hub.model.exporter.HubExporterInterface;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.model.Timetable;
-import mobi.chouette.model.util.NeptuneUtil;
 
 /**
  * convert Timetable to Hub Calendar and CalendarDate
@@ -47,7 +46,7 @@ public class HubPeriodeProducer extends AbstractProducer {
         Date f = neptuneObject.getEndOfPeriod();
         while (d.before(f) || d.equals(f))
         {
-        	hubObject.getCalendrier().add(Boolean.valueOf(NeptuneUtil.isActiveOn(neptuneObject,d)));
+        	hubObject.getCalendrier().add(Boolean.valueOf(neptuneObject.isActiveOn(d)));
             d.setTime(d.getTime()+ONE_DAY);
         }
 		

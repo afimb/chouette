@@ -16,7 +16,6 @@ import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.type.DayTypeEnum;
-import mobi.chouette.model.util.NeptuneUtil;
 
 @Log4j
 public class NeptuneDataCollector {
@@ -152,7 +151,7 @@ public class NeptuneDataCollector {
 		}
 		reduced.setCalendarDays(dates);
 		reduced.setPeriods(periods);
-		NeptuneUtil.computeLimitOfPeriods(reduced);
+		reduced.computeLimitOfPeriods();
 		return reduced;
 
 	}

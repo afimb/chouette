@@ -16,6 +16,7 @@ import mobi.chouette.exchange.report.LineError;
 import mobi.chouette.exchange.report.LineInfo;
 import mobi.chouette.exchange.report.LineStats;
 import mobi.chouette.model.Line;
+import mobi.chouette.model.util.NamingUtil;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -34,6 +35,7 @@ public class NetexLineProducerCommand implements Command, Constant {
 		try {
 
 			Line line = (Line) context.get(LINE);
+			log.info("procesing line "+NamingUtil.getName(line));
 			NetexExportParameters configuration = (NetexExportParameters) context.get(CONFIGURATION);
 
 			ExportableData collection = new ExportableData();
@@ -59,13 +61,14 @@ public class NetexLineProducerCommand implements Command, Constant {
 			stats.setStopAreaCount(collection.getStopAreas().size());
 			stats.setTimeTableCount(collection.getTimetables().size());
 			stats.setVehicleJourneyCount(collection.getVehicleJourneys().size());
-            if (collection.getVehicleJourneys().size() > 300) 
-            {
-            	// too many vehicle journeys for this format
-				lineInfo.addError(new LineError(LineError.CODE.INVALID_FORMAT,"too many vehicle journeys > 300"));
-				result = ERROR;
-            }
-            else if (cont) {
+//            if (collection.getVehicleJourneys().size() > 300) 
+//            {
+//            	// too many vehicle journeys for this format
+//				lineInfo.addError(new LineError(LineError.CODE.INVALID_FORMAT,"too many vehicle journeys > 300"));
+//				result = ERROR;
+//            }
+//            else 
+            	if (cont) {
 				context.put(EXPORTABLE_DATA, collection);
 
 				NetexLineProducer producer = new NetexLineProducer();
