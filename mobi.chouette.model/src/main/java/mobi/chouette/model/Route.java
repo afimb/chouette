@@ -58,7 +58,7 @@ public class Route extends NeptuneIdentifiedObject {
 	@GenericGenerator(name = "routes_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", 
 		parameters = {
 			@Parameter(name = "sequence_name", value = "routes_id_seq"),
-			@Parameter(name = "increment_size", value = "100") })
+			@Parameter(name = "increment_size", value = "10") })
 	@Id
 	@GeneratedValue(generator = "routes_id_seq")
 	@Column(name = "id", nullable = false)

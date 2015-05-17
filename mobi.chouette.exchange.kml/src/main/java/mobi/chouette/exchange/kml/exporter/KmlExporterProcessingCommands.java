@@ -7,63 +7,87 @@ import java.util.List;
 import javax.naming.InitialContext;
 
 import lombok.Data;
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.LineProcessingCommands;
-import mobi.chouette.exchange.LineProcessingCommandsFactory;
+import mobi.chouette.exchange.ProcessingCommands;
+import mobi.chouette.exchange.ProcessingCommandsFactory;
+import mobi.chouette.exchange.exporter.CompressCommand;
+import mobi.chouette.exchange.exporter.SaveMetadataCommand;
 
 @Data
-public class KmlExporterProcessingCommands implements LineProcessingCommands, Constant {
+@Log4j
+public class KmlExporterProcessingCommands implements ProcessingCommands, Constant {
 
-	
-	public static class DefaultFactory extends LineProcessingCommandsFactory {
+	public static class DefaultFactory extends ProcessingCommandsFactory {
 
 		@Override
-		protected LineProcessingCommands create() throws IOException {
-			LineProcessingCommands result = new KmlExporterProcessingCommands();
+		protected ProcessingCommands create() throws IOException {
+			ProcessingCommands result = new KmlExporterProcessingCommands();
 			return result;
 		}
 	}
 
 	static {
-		LineProcessingCommandsFactory.factories.put(KmlExporterProcessingCommands.class.getName(),
-				new DefaultFactory());
+		ProcessingCommandsFactory.factories
+				.put(KmlExporterProcessingCommands.class.getName(), new DefaultFactory());
 	}
 
 	@Override
-	public List<? extends Command> getPreProcessingCommands(Context context,boolean withDao) {
+	public List<? extends Command> getPreProcessingCommands(Context context, boolean withDao) {
 		InitialContext initCtx = (InitialContext) context.get(INITIAL_CONTEXT);
 		List<Command> commands = new ArrayList<>();
 		try {
 			commands.add(CommandFactory.create(initCtx, KmlInitExportCommand.class.getName()));
 		} catch (Exception e) {
-			// TODO
+			log.error(e, e);
+			throw new RuntimeException("unable to call factories");
 		}
-		
+
 		return commands;
 	}
 
 	@Override
-	public List<? extends Command> getLineProcessingCommands(Context context,boolean withDao) {
-		InitialContext initCtx = (InitialContext) context.get(INITIAL_CONTEXT);
+	public List<? extends Command> getLineProcessingCommands(Context context, boolean withDao) {
+		InitialContext initialContext = (InitialContext) context.get(INITIAL_CONTEXT);
 		List<Command> commands = new ArrayList<>();
 		try {
-			commands.add(CommandFactory.create(initCtx, KmlLineProducerCommand.class.getName()));
+			if (withDao)
+				commands.add(CommandFactory.create(initialContext, DaoKmlLineProducerCommand.class.getName()));
+			else
+				commands.add(CommandFactory.create(initialContext, KmlLineProducerCommand.class.getName()));
 		} catch (Exception e) {
-			// TODO
+			log.error(e, e);
+			throw new RuntimeException("unable to call factories");
 		}
-		
+
 		return commands;
-		
+
 	}
 
 	@Override
-	public List<? extends Command> getPostProcessingCommands(Context context,boolean withDao) {
-		return new ArrayList<>();
+	public List<? extends Command> getPostProcessingCommands(Context context, boolean withDao) {
+		InitialContext initialContext = (InitialContext) context.get(INITIAL_CONTEXT);
+		KmlExportParameters parameters = (KmlExportParameters) context.get(CONFIGURATION);
+		List<Command> commands = new ArrayList<>();
+		try {
+			commands.add(CommandFactory.create(initialContext, KmlSharedDataProducerCommand.class.getName()));
+			if (parameters.isAddMetadata())
+				commands.add(CommandFactory.create(initialContext, SaveMetadataCommand.class.getName()));
+			commands.add(CommandFactory.create(initialContext, CompressCommand.class.getName()));
+		} catch (Exception e) {
+			log.error(e, e);
+			throw new RuntimeException("unable to call factories");
+		}
+		return commands;
 	}
 
-	
+	@Override
+	public List<? extends Command> getStopAreaProcessingCommands(Context context, boolean withDao) {
+		// TODO Auto-generated method stub
+		return new ArrayList<>();
+	}
 
 }

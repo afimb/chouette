@@ -7,28 +7,32 @@ import java.util.List;
 import javax.naming.InitialContext;
 
 import lombok.Data;
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.LineProcessingCommands;
-import mobi.chouette.exchange.LineProcessingCommandsFactory;
+import mobi.chouette.exchange.ProcessingCommands;
+import mobi.chouette.exchange.ProcessingCommandsFactory;
+import mobi.chouette.exchange.exporter.CompressCommand;
+import mobi.chouette.exchange.exporter.SaveMetadataCommand;
 
 @Data
-public class NetexExporterProcessingCommands implements LineProcessingCommands, Constant {
+@Log4j
+public class NetexExporterProcessingCommands implements ProcessingCommands, Constant {
 
 	
-	public static class DefaultFactory extends LineProcessingCommandsFactory {
+	public static class DefaultFactory extends ProcessingCommandsFactory {
 
 		@Override
-		protected LineProcessingCommands create() throws IOException {
-			LineProcessingCommands result = new NetexExporterProcessingCommands();
+		protected ProcessingCommands create() throws IOException {
+			ProcessingCommands result = new NetexExporterProcessingCommands();
 			return result;
 		}
 	}
 
 	static {
-		LineProcessingCommandsFactory.factories.put(NetexExporterProcessingCommands.class.getName(),
+		ProcessingCommandsFactory.factories.put(NetexExporterProcessingCommands.class.getName(),
 				new DefaultFactory());
 	}
 
@@ -39,7 +43,8 @@ public class NetexExporterProcessingCommands implements LineProcessingCommands, 
 		try {
 			commands.add(CommandFactory.create(initCtx, NetexInitExportCommand.class.getName()));
 		} catch (Exception e) {
-			// TODO
+			log.error(e, e);
+			throw new RuntimeException("unable to call factories");
 		}
 		
 		return commands;
@@ -47,12 +52,16 @@ public class NetexExporterProcessingCommands implements LineProcessingCommands, 
 
 	@Override
 	public List<? extends Command> getLineProcessingCommands(Context context,boolean withDao) {
-		InitialContext initCtx = (InitialContext) context.get(INITIAL_CONTEXT);
+		InitialContext initialContext = (InitialContext) context.get(INITIAL_CONTEXT);
 		List<Command> commands = new ArrayList<>();
 		try {
-			commands.add(CommandFactory.create(initCtx, NetexLineProducerCommand.class.getName()));
+			if (withDao)
+				commands.add(CommandFactory.create(initialContext, DaoNetexLineProducerCommand.class.getName()));
+			else
+				commands.add(CommandFactory.create(initialContext, NetexLineProducerCommand.class.getName()));
 		} catch (Exception e) {
-			// TODO
+			log.error(e, e);
+			throw new RuntimeException("unable to call factories");
 		}
 		
 		return commands;
@@ -61,9 +70,25 @@ public class NetexExporterProcessingCommands implements LineProcessingCommands, 
 
 	@Override
 	public List<? extends Command> getPostProcessingCommands(Context context,boolean withDao) {
-		return new ArrayList<>();
+		InitialContext initialContext = (InitialContext) context.get(INITIAL_CONTEXT);
+		NetexExportParameters parameters = (NetexExportParameters) context.get(CONFIGURATION);
+		List<Command> commands = new ArrayList<>();
+		try {
+			if (parameters.isAddMetadata())
+				commands.add(CommandFactory.create(initialContext, SaveMetadataCommand.class.getName()));
+			commands.add(CommandFactory.create(initialContext, CompressCommand.class.getName()));
+		} catch (Exception e) {
+			log.error(e, e);
+			throw new RuntimeException("unable to call factories");
+		}
+		return commands;
 	}
 
+	@Override
+	public List<? extends Command> getStopAreaProcessingCommands(Context context, boolean withDao) {
+		// TODO Auto-generated method stub
+		return new ArrayList<>();
+	}
 	
 
 }

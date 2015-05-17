@@ -29,7 +29,7 @@ import mobi.chouette.exchange.gtfs.exporter.producer.GtfsStopProducer;
 import mobi.chouette.exchange.gtfs.exporter.producer.GtfsTransferProducer;
 import mobi.chouette.exchange.gtfs.model.exporter.GtfsExporter;
 import mobi.chouette.exchange.metadata.Metadata;
-import mobi.chouette.exchange.report.LineStats;
+import mobi.chouette.exchange.report.DataStats;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.ConnectionLink;
@@ -62,7 +62,7 @@ public class GtfsSharedDataProducerCommand implements Command, Constant
 			}
 
 			saveData(context);	
-			LineStats globalStats = report.getStats();
+			DataStats globalStats = report.getStats();
 			globalStats.setConnectionLinkCount(collection.getConnectionLinks().size());
 			globalStats.setStopAreaCount(collection.getCommercialStops().size()+collection.getPhysicalStops().size());
 			globalStats.setTimeTableCount(collection.getTimetables().size());

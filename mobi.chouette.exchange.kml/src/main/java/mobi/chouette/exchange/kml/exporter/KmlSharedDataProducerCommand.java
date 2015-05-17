@@ -18,7 +18,7 @@ import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.FileInfo;
 import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
-import mobi.chouette.exchange.report.LineStats;
+import mobi.chouette.exchange.report.DataStats;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
@@ -45,7 +45,7 @@ public class KmlSharedDataProducerCommand implements Command, Constant {
 			}
 
 			saveData(context);
-			LineStats globalStats = report.getStats();
+			DataStats globalStats = report.getStats();
 			globalStats.setConnectionLinkCount(collection.getConnectionLinks().size());
 			globalStats.setStopAreaCount(collection.getStopAreas().size());
 			globalStats.setAccessPointCount(collection.getAccessPoints().size());

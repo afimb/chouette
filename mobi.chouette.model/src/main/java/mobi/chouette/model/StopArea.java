@@ -74,7 +74,7 @@ public class StopArea extends NeptuneLocalizedObject {
 	@GenericGenerator(name = "stop_areas_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", 
 		parameters = {
 			@Parameter(name = "sequence_name", value = "stop_areas_id_seq"),
-			@Parameter(name = "increment_size", value = "100") })
+			@Parameter(name = "increment_size", value = "50") })
 	@Id
 	@GeneratedValue(generator = "stop_areas_id_seq")
 	@Column(name = "id", nullable = false)

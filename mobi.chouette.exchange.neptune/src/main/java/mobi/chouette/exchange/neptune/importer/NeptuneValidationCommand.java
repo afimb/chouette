@@ -31,7 +31,7 @@ import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.FileError;
 import mobi.chouette.exchange.report.FileInfo;
 import mobi.chouette.exchange.report.LineInfo;
-import mobi.chouette.exchange.report.LineStats;
+import mobi.chouette.exchange.report.DataStats;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.exchange.validation.report.CheckPoint;
 import mobi.chouette.exchange.validation.report.CheckPoint.RESULT;
@@ -169,7 +169,7 @@ public class NeptuneValidationCommand implements Command, Constant {
 	private void addStats(ActionReport report, Context validationContext, Referential referential) {
 		Line line = referential.getLines().values().iterator().next();
 		LineInfo lineInfo = new LineInfo(line.getName()+" ("+line.getNumber()+")");
-		LineStats stats = lineInfo.getStats();
+		DataStats stats = lineInfo.getStats();
 		stats.setLineCount(1);
 		{
 			Context localContext = (Context) validationContext.get(ChouetteRouteValidator.LOCAL_CONTEXT);
@@ -200,7 +200,7 @@ public class NeptuneValidationCommand implements Command, Constant {
 			stats.setJourneyPatternCount((localContext != null) ? localContext.size() : 0);
 		}
 		report.getLines().add(lineInfo);
-		LineStats globalStats = report.getStats();
+		DataStats globalStats = report.getStats();
 		globalStats.setLineCount(globalStats.getLineCount() + stats.getLineCount());
 		globalStats.setAccessPointCount(globalStats.getAccessPointCount() + stats.getAccessPointCount());
 		globalStats.setRouteCount(globalStats.getRouteCount() + stats.getRouteCount());

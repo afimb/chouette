@@ -16,6 +16,7 @@ import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.gtfs.Constant;
+import mobi.chouette.exchange.gtfs.model.importer.GtfsException;
 import mobi.chouette.exchange.gtfs.parser.GtfsAgencyParser;
 import mobi.chouette.exchange.gtfs.parser.GtfsCalendarParser;
 import mobi.chouette.exchange.gtfs.parser.GtfsRouteParser;
@@ -23,6 +24,7 @@ import mobi.chouette.exchange.gtfs.parser.GtfsStopParser;
 import mobi.chouette.exchange.gtfs.parser.GtfsTransferParser;
 import mobi.chouette.exchange.gtfs.parser.GtfsTripParser;
 import mobi.chouette.exchange.importer.ParserFactory;
+import mobi.chouette.exchange.report.ActionError;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.FileInfo;
 import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
@@ -97,8 +99,13 @@ public class GtfsValidationCommand implements Command, Constant {
 			transferParser.validate(context);
 
 			result = SUCCESS;
+		} catch (GtfsException e) {
+			log.error(e);
+			if (e.getError().equals(GtfsException.ERROR.SYSTEM))
+			   throw e;
+			report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS, e.getError().name()+" "+e.getPath()));
 		} catch (Exception e) {
-			log.error(e,e);
+			log.error(e);
 			throw e;
 		}
         finally

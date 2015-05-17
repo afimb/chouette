@@ -33,7 +33,7 @@ import mobi.chouette.exchange.metadata.NeptuneObjectPresenter;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.LineError;
 import mobi.chouette.exchange.report.LineInfo;
-import mobi.chouette.exchange.report.LineStats;
+import mobi.chouette.exchange.report.DataStats;
 import mobi.chouette.model.Footnote;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
@@ -47,10 +47,9 @@ import com.jamonapi.MonitorFactory;
 @Log4j
 public class HubLineProducerCommand implements Command, Constant {
 	public static final String COMMAND = "HubLineProducerCommand";
-	
+
 	private static final String PMR_CODE = "pmr";
 	private static final String PMR_LABEL = "PMR";
-	
 
 	@Override
 	public boolean execute(Context context) throws Exception {
@@ -61,7 +60,7 @@ public class HubLineProducerCommand implements Command, Constant {
 
 		try {
 			Line line = (Line) context.get(LINE);
-			
+
 			HubExportParameters configuration = (HubExportParameters) context.get(CONFIGURATION);
 
 			ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
@@ -82,7 +81,7 @@ public class HubLineProducerCommand implements Command, Constant {
 
 			boolean cont = collector.collect(collection, line, startDate, endDate);
 			LineInfo lineInfo = new LineInfo(line.getName() + " (" + line.getNumber() + ")");
-			LineStats stats = lineInfo.getStats();
+			DataStats stats = lineInfo.getStats();
 			// stats.setAccessPointCount(collection.getAccessPoints().size());
 			// stats.setConnectionLinkCount(collection.getConnectionLinks().size());
 			stats.setJourneyPatternCount(collection.getJourneyPatterns().size());
@@ -90,14 +89,14 @@ public class HubLineProducerCommand implements Command, Constant {
 			// stats.setStopAreaCount(collection.getStopAreas().size());
 			// stats.setTimeTableCount(collection.getTimetables().size());
 			stats.setVehicleJourneyCount(collection.getVehicleJourneys().size());
-
+			report.getLines().add(lineInfo);
+			
 			if (cont) {
 				context.put(EXPORTABLE_DATA, collection);
-				try
-				{
-				   saveData(context);
+				try {
+					saveData(context);
 					// merge lineStats to global ones
-					LineStats globalStats = report.getStats();
+					DataStats globalStats = report.getStats();
 					globalStats.setLineCount(globalStats.getLineCount() + stats.getLineCount());
 					globalStats.setRouteCount(globalStats.getRouteCount() + stats.getRouteCount());
 					globalStats.setVehicleJourneyCount(globalStats.getVehicleJourneyCount()
@@ -105,33 +104,25 @@ public class HubLineProducerCommand implements Command, Constant {
 					globalStats.setJourneyPatternCount(globalStats.getJourneyPatternCount()
 							+ stats.getJourneyPatternCount());
 					result = SUCCESS;
-				}
-				catch (HubException ex)
-				{
-					log.error("invalid data on line",ex);
-					result = ERROR;
+				} catch (HubException ex) {
+					log.error("invalid data on line : " + ex);
 					Path path = new File(ex.getPath()).toPath();
-					String msg = path.getFileName().toString()+" : "+ex.getError() + " "+ex.getField();
-					if (ex.getCode() != null) msg += " code : " +ex.getCode();
-					if (ex.getValue() != null) msg += " value : " +ex.getValue();
+					String msg = path.getFileName().toString() + " : " + ex.getError() + " " + ex.getField();
+					if (ex.getCode() != null)
+						msg += " code : " + ex.getCode();
+					if (ex.getValue() != null)
+						msg += " value : " + ex.getValue();
 					lineInfo.addError(new LineError(LineError.CODE.INVALID_FORMAT, msg));
-					report.getLines().add(lineInfo);
-					throw new Exception("invalid data");
-				}
-				catch (Exception e) 
-				{
-					log.error("failure on line",e);
-					lineInfo.addError(new LineError(LineError.CODE.WRITE_ERROR,e.getMessage()));
-					report.getLines().add(lineInfo);
-					throw e;
+					// throw new Exception("invalid data");
+				} catch (Exception e) {
+					log.error("failure on line", e);
+					lineInfo.addError(new LineError(LineError.CODE.WRITE_ERROR, e.getMessage()));
+					// throw e;
 				}
 
 			} else {
-				lineInfo.addError(new LineError(LineError.CODE.NO_DATA_ON_PERIOD,"no data to export on period"));
-				result = ERROR;
+				lineInfo.addError(new LineError(LineError.CODE.NO_DATA_ON_PERIOD, "no data to export on period"));
 			}
-			report.getLines().add(lineInfo);
-			
 
 		} finally {
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
@@ -147,24 +138,23 @@ public class HubLineProducerCommand implements Command, Constant {
 	 * @throws IOException
 	 * @throws DatatypeConfigurationException
 	 */
-	private void saveData(Context context) throws IOException,
-			DatatypeConfigurationException {
+	private void saveData(Context context) throws IOException, DatatypeConfigurationException {
 		Metadata metadata = (Metadata) context.get(METADATA);
-
 
 		saveLine(context);
 		saveModeTransport(context);
-		saveRenvois(context); // must be called before saveCoursesOperationsAndHoraires()
+		saveRenvois(context); // must be called before
+								// saveCoursesOperationsAndHoraires()
 		saveSchema(context);
 		saveItls(context);
 		saveCheminsAndDirections(context);
 		saveCoursesOperationsAndHoraires(context);
-		
-		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
-		
-		metadata.getResources().add(metadata.new Resource( 
-				NeptuneObjectPresenter.getName(collection.getLine().getNetwork()), NeptuneObjectPresenter.getName(collection.getLine())));
 
+		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
+
+		metadata.getResources().add(
+				metadata.new Resource(NeptuneObjectPresenter.getName(collection.getLine().getNetwork()),
+						NeptuneObjectPresenter.getName(collection.getLine())));
 
 	}
 
@@ -178,7 +168,7 @@ public class HubLineProducerCommand implements Command, Constant {
 		ActionReport report = (ActionReport) context.get(REPORT);
 		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
 		ligneProducer.save(collection.getLine(), report);
-		
+
 	}
 
 	private void saveModeTransport(Context context) {
@@ -191,7 +181,7 @@ public class HubLineProducerCommand implements Command, Constant {
 		}
 		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
 		modeTransportProducer.addLine(collection.getLine());
-		
+
 	}
 
 	private void saveRenvois(Context context) {
@@ -204,20 +194,22 @@ public class HubLineProducerCommand implements Command, Constant {
 		ActionReport report = (ActionReport) context.get(REPORT);
 		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
 		// add PMR footnote if required
-		if (collection.getPmrFootenoteId() == 0)
-		{
+		if (collection.getPmrFootenoteId() == 0) {
 			Footnote pmr = new Footnote();
 			pmr.setCode(PMR_CODE);
 			pmr.setLabel(PMR_LABEL);
 			renvoiProducer.save(pmr, report);
-			collection.setPmrFootenoteId(Integer.parseInt(pmr.getKey())); // preserve id for vehicle journeys
+			collection.setPmrFootenoteId(Integer.parseInt(pmr.getKey())); // preserve
+																			// id
+																			// for
+																			// vehicle
+																			// journeys
 		}
-		
-		for (Footnote footnote : collection.getLine().getFootnotes()) 
-		{
+
+		for (Footnote footnote : collection.getLine().getFootnotes()) {
 			renvoiProducer.save(footnote, report);
 		}
-		
+
 	}
 
 	private void saveSchema(Context context) {
@@ -229,12 +221,11 @@ public class HubLineProducerCommand implements Command, Constant {
 		}
 		ActionReport report = (ActionReport) context.get(REPORT);
 		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
-		Collections.sort(collection.getRoutes(),new RouteSorter());
-		for (Route route : collection.getRoutes()) 
-		{
+		Collections.sort(collection.getRoutes(), new RouteSorter());
+		for (Route route : collection.getRoutes()) {
 			schemaProducer.save(route, report);
 		}
-		
+
 	}
 
 	private void saveItls(Context context) {
@@ -246,11 +237,10 @@ public class HubLineProducerCommand implements Command, Constant {
 		}
 		ActionReport report = (ActionReport) context.get(REPORT);
 		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
-		for (StopPoint stopPoint : collection.getStopPoints()) 
-		{
+		for (StopPoint stopPoint : collection.getStopPoints()) {
 			itlProducer.save(stopPoint, report);
 		}
-		
+
 	}
 
 	private void saveCheminsAndDirections(Context context) {
@@ -267,13 +257,12 @@ public class HubLineProducerCommand implements Command, Constant {
 		}
 		ActionReport report = (ActionReport) context.get(REPORT);
 		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
-		Collections.sort(collection.getJourneyPatterns(),new JourneyPatternSorter());
-		for (JourneyPattern journeyPattern : collection.getJourneyPatterns()) 
-		{
+		Collections.sort(collection.getJourneyPatterns(), new JourneyPatternSorter());
+		for (JourneyPattern journeyPattern : collection.getJourneyPatterns()) {
 			cheminProducer.save(journeyPattern, report);
 			directionProducer.save(journeyPattern, report);
 		}
-		
+
 	}
 
 	private void saveCoursesOperationsAndHoraires(Context context) {
@@ -296,19 +285,19 @@ public class HubLineProducerCommand implements Command, Constant {
 		}
 		ActionReport report = (ActionReport) context.get(REPORT);
 		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
-		Collections.sort(collection.getVehicleJourneys(),new VehicleJourneySorter());
-		for (VehicleJourney vehicleJourney : collection.getVehicleJourneys()) 
-		{
-			courseProducer.save(vehicleJourney, collection.getPmrFootenoteId(), report, collection.getVehicleJourneyRank());
+		Collections.sort(collection.getVehicleJourneys(), new VehicleJourneySorter());
+		for (VehicleJourney vehicleJourney : collection.getVehicleJourneys()) {
+			courseProducer.save(vehicleJourney, collection.getPmrFootenoteId(), report,
+					collection.getVehicleJourneyRank());
 			courseOperationProducer.save(vehicleJourney, report, collection.getVehicleJourneyRank());
 			int lastItem = vehicleJourney.getVehicleJourneyAtStops().size() - 1;
-			for (int i = 0; i <= lastItem; i++)
-			{
-				horaireProducer.save(vehicleJourney.getVehicleJourneyAtStops().get(i), i == 0, i == lastItem, report, collection.getVehicleJourneyRank());
+			for (int i = 0; i <= lastItem; i++) {
+				horaireProducer.save(vehicleJourney.getVehicleJourneyAtStops().get(i), i == 0, i == lastItem, report,
+						collection.getVehicleJourneyRank());
 			}
-			collection.setVehicleJourneyRank(collection.getVehicleJourneyRank()+1);
+			collection.setVehicleJourneyRank(collection.getVehicleJourneyRank() + 1);
 		}
-		
+
 	}
 
 	public class RouteSorter implements Comparator<Route> {
@@ -322,7 +311,8 @@ public class HubLineProducerCommand implements Command, Constant {
 		@Override
 		public int compare(StopPoint arg0, StopPoint arg1) {
 			int ret = arg0.getRoute().getWayBack().compareTo(arg1.getRoute().getWayBack());
-			if (ret == 0) ret = arg0.getPosition().compareTo(arg1.getPosition());
+			if (ret == 0)
+				ret = arg0.getPosition().compareTo(arg1.getPosition());
 			return ret;
 		}
 	}
@@ -335,7 +325,6 @@ public class HubLineProducerCommand implements Command, Constant {
 		}
 	}
 
-	
 	public class VehicleJourneySorter implements Comparator<VehicleJourney> {
 		@Override
 		public int compare(VehicleJourney arg0, VehicleJourney arg1) {
@@ -349,7 +338,7 @@ public class HubLineProducerCommand implements Command, Constant {
 		@Override
 		protected Command create(InitialContext context) throws IOException {
 			Command result = new HubLineProducerCommand();
-			
+
 			return result;
 		}
 	}

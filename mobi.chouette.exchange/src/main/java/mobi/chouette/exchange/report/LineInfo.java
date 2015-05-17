@@ -34,7 +34,7 @@ public class LineInfo {
 	private LINE_STATE status = LINE_STATE.OK;
 	
 	@XmlElement(name = "stats",required=true)
-	private LineStats stats = new LineStats();
+	private DataStats stats = new DataStats();
 
 	@XmlElement(name="errors")
 	private List<LineError> errors = new ArrayList<>();

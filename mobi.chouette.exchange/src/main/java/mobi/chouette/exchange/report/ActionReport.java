@@ -35,7 +35,7 @@ public class ActionReport {
 	private List<LineInfo> lines = new ArrayList<>();
 
 	@XmlElement(name = "stats", required = true)
-	private LineStats stats = new LineStats();
+	private DataStats stats = new DataStats();
 
 	@XmlElement(name = "failure")
 	private ActionError failure;

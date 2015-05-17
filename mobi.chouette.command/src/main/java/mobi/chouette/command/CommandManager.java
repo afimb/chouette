@@ -11,9 +11,8 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.JSONUtil;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.LineProcessingCommands;
-import mobi.chouette.exchange.LineProcessingCommandsFactory;
-import mobi.chouette.exchange.exporter.CompressCommand;
+import mobi.chouette.exchange.ProcessingCommands;
+import mobi.chouette.exchange.ProcessingCommandsFactory;
 import mobi.chouette.exchange.gtfs.exporter.GtfsExportParameters;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.hub.exporter.HubExportParameters;
@@ -149,14 +148,14 @@ public class CommandManager implements Constant {
 		}
 
 
-		LineProcessingCommands importProcessingCommands = null;
-		LineProcessingCommands exportProcessingCommands = null;
-		importProcessingCommands = LineProcessingCommandsFactory
+		ProcessingCommands importProcessingCommands = null;
+		ProcessingCommands exportProcessingCommands = null;
+		importProcessingCommands = ProcessingCommandsFactory
 				.create(buildCommandProcessingClassName(inputData));
 
 		importContext = prepareImportContext();
 		if (withExport()) {
-			exportProcessingCommands = LineProcessingCommandsFactory
+			exportProcessingCommands = ProcessingCommandsFactory
 					.create(buildCommandProcessingClassName(outputData));
 			exportContext = prepareExportContext();
 		}
@@ -169,13 +168,6 @@ public class CommandManager implements Constant {
 		// initialize process
 		// uncompress
 		boolean result = SUCCESS;
-		Command command = CommandFactory.create(initContext, UncompressCommand.class.getName());
-		result = command.execute(importContext);
-		if (!result) {
-			System.err.println("fail to uncompress input file ; see import report for details ");
-			return;
-		}
-
 		// input pre processing
 
 		for (Command importCommand : importProcessingCommands.getPreProcessingCommands(importContext,false)) {
@@ -209,10 +201,6 @@ public class CommandManager implements Constant {
 				System.err.println("fail to execute " + importCommand.getClass().getName()
 						+ "; see import report for details ");
 				continue;
-			}
-			// execute line validation
-			if (withValidation()) {
-				lineValidationCommand.execute(importContext);
 			}
 
 			// execute export validation commands
@@ -249,11 +237,6 @@ public class CommandManager implements Constant {
 			}
 		}
 
-		// validation post processing
-		if (withValidation()) {
-			sharedValidationCommand.execute(importContext);
-		}
-
 		// output post processing
 		if (withExport() && !exportFailed) {
 			for (Command exportCommand : exportProcessingCommands.getPostProcessingCommands(exportContext,false)) {
@@ -263,13 +246,6 @@ public class CommandManager implements Constant {
 							+ "; see export report for details ");
 					return;
 				}
-			}
-			// compress result
-			command = CommandFactory.create(initContext, CompressCommand.class.getName());
-			result = command.execute(exportContext);
-			if (!result) {
-				System.err.println("fail to compress output file ; see export report for details ");
-				return;
 			}
 			// transfer result
 			FileUtils.copyFile(new File(outputData.getPathName(),outputData.getFilename()), new File(outputFileName));

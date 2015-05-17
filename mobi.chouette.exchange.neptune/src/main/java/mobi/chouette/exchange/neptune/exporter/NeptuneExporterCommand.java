@@ -1,9 +1,6 @@
 package mobi.chouette.exchange.neptune.exporter;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 import javax.ejb.Stateless;
 import javax.naming.InitialContext;
@@ -14,15 +11,14 @@ import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.ProcessingCommands;
+import mobi.chouette.exchange.ProcessingCommandsFactory;
 import mobi.chouette.exchange.ProgressionCommand;
 import mobi.chouette.exchange.exporter.AbstractExporterCommand;
-import mobi.chouette.exchange.exporter.CompressCommand;
-import mobi.chouette.exchange.exporter.SaveMetadataCommand;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.report.ActionError;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.ReportConstant;
-import mobi.chouette.model.Line;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -44,7 +40,6 @@ public class NeptuneExporterCommand extends AbstractExporterCommand implements C
 		// initialize reporting and progression
 		ProgressionCommand progression = (ProgressionCommand) CommandFactory.create(initialContext,
 				ProgressionCommand.class.getName());
-		progression.initialize(context, 2);
 		try {
 
 			// read parameters
@@ -64,74 +59,9 @@ public class NeptuneExporterCommand extends AbstractExporterCommand implements C
 
 				}
 			}
-			Command init = CommandFactory.create(initialContext, NeptuneInitExportCommand.class.getName());
-			init.execute(context);
-			progression.execute(context);
-
-			String type = parameters.getReferencesType();
-			// set default type 
-			if (type == null || type.isEmpty() )
-			{
-				// all lines
-				type = "line";
-				parameters.setIds(null);
-			}
-			type=type.toLowerCase();
-
-			List<Long> ids = null;
-			if (parameters.getIds() != null) {
-				ids = new ArrayList<Long>(parameters.getIds());
-			}
-
-			Set<Line> lines = loadLines(type, ids);
-			if (lines.isEmpty()) {
-				report.setFailure(new ActionError(ActionError.CODE.NO_DATA_FOUND,"no data to export"));
-				return ERROR;
-
-			}
-			progression.execute(context);
-
-			progression.start(context, lines.size());
-			Command exportLine = CommandFactory.create(initialContext, DaoNeptuneLineProducerCommand.class.getName());
-			int lineCount = 0;
-			// export each line
-			for (Line line : lines) {
-				context.put(LINE_ID, line.getId());
-				progression.execute(context);
-				if (exportLine.execute(context) == ERROR) 
-				{
-					continue;
-				}
-				else
-				{
-					lineCount ++;
-				}
-			}
-
-			// check if data where exported
-			if (lineCount == 0) {
-				progression.terminate(context, 1);
-				report.setFailure(new ActionError(ActionError.CODE.NO_DATA_PROCEEDED,"no data exported"));
-				progression.execute(context);
-				return ERROR;
-			}
+			ProcessingCommands commands = ProcessingCommandsFactory.create(NeptuneExporterProcessingCommands.class.getName());
 			
-			// save metadata
-			if (parameters.isAddMetadata()) {
-				progression.terminate(context, 2);
-				Command saveMetadata = CommandFactory.create(initialContext, SaveMetadataCommand.class.getName());
-				saveMetadata.execute(context);
-				progression.execute(context);
-			} else {
-				progression.terminate(context, 1);
-			}
-
-			// compress
-			Command compress = CommandFactory.create(initialContext, CompressCommand.class.getName());
-			compress.execute(context);
-			progression.execute(context);
-
-			result = SUCCESS;
+			result = process(context, commands, progression, true);
 		} catch (Exception e) {
 			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR,"Fatal :" + e));
 			log.error(e.getMessage(), e);

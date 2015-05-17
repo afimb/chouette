@@ -15,10 +15,11 @@ import mobi.chouette.common.chain.Command;
  * @author michel
  *
  */
-public interface LineProcessingCommands {
+public interface ProcessingCommands {
 
 	List<? extends Command> getPreProcessingCommands(Context context,boolean withDao);
 	List<? extends Command> getLineProcessingCommands(Context context,boolean withDao);
+	List<? extends Command> getStopAreaProcessingCommands(Context context,boolean withDao);
 	List<? extends Command> getPostProcessingCommands(Context context,boolean withDao);
 	
 }

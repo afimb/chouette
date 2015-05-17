@@ -1,11 +1,15 @@
 package mobi.chouette.exchange.hub.model.exporter;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
+import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.FileInfo;
 
 
 public abstract class ExporterImpl<T> implements Exporter<T> {
@@ -20,7 +24,7 @@ public abstract class ExporterImpl<T> implements Exporter<T> {
 
 	public ExporterImpl(String name) throws IOException {
 		_context = new Context();
-		_context.put(Context.PATH, name);
+		_context.put(Context.PATH, new File(name).getName());
 		Path path = Paths.get(name);
 		_writer = Files.newBufferedWriter(path, Charset.forName("Cp1252")); // ISO8859_15 ?
 		writeHeader();
@@ -35,8 +39,12 @@ public abstract class ExporterImpl<T> implements Exporter<T> {
 	}
 
 	@Override
-	public void dispose() throws IOException {
+	public void dispose(ActionReport report) throws IOException {
 		_writer.close();
+		// add file info
+		FileInfo info = new FileInfo(Paths.get((String) _context.get(Context.PATH)).getFileName().toString(),
+				FileInfo.FILE_STATE.OK);
+		report.getFiles().add(info);
 	}
 
 	@SuppressWarnings("rawtypes")

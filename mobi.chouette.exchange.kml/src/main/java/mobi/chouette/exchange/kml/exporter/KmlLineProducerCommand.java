@@ -26,7 +26,7 @@ import mobi.chouette.exchange.report.FileInfo;
 import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
 import mobi.chouette.exchange.report.LineError;
 import mobi.chouette.exchange.report.LineInfo;
-import mobi.chouette.exchange.report.LineStats;
+import mobi.chouette.exchange.report.DataStats;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
@@ -70,7 +70,7 @@ public class KmlLineProducerCommand implements Command, Constant {
 
 			boolean cont = (collector.collect(collection, line, startDate, endDate));
 			LineInfo lineInfo = new LineInfo(line.getName() + " (" + line.getNumber() + ")");
-			LineStats stats = lineInfo.getStats();
+			DataStats stats = lineInfo.getStats();
 			stats.setAccessPointCount(collection.getAccessPoints().size());
 			stats.setConnectionLinkCount(collection.getConnectionLinks().size());
 			stats.setJourneyPatternCount(collection.getJourneyPatterns().size());
@@ -85,7 +85,7 @@ public class KmlLineProducerCommand implements Command, Constant {
 				saveLine(context, line, collection);
 
 				// merge lineStats to global ones
-				LineStats globalStats = report.getStats();
+				DataStats globalStats = report.getStats();
 				globalStats.setLineCount(globalStats.getLineCount() + stats.getLineCount());
 				globalStats.setRouteCount(globalStats.getRouteCount() + stats.getRouteCount());
 				globalStats.setVehicleJourneyCount(globalStats.getVehicleJourneyCount()

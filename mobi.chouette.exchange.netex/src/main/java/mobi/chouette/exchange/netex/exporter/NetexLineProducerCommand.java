@@ -14,7 +14,7 @@ import mobi.chouette.exchange.netex.Constant;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.LineError;
 import mobi.chouette.exchange.report.LineInfo;
-import mobi.chouette.exchange.report.LineStats;
+import mobi.chouette.exchange.report.DataStats;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.util.NamingUtil;
 
@@ -53,7 +53,7 @@ public class NetexLineProducerCommand implements Command, Constant {
 			NetexDataCollector collector = new NetexDataCollector();
 			boolean cont = (collector.collect(collection, line, startDate, endDate));
 			LineInfo lineInfo = new LineInfo(line.getName() + " (" + line.getNumber() + ")");
-			LineStats stats = lineInfo.getStats();
+			DataStats stats = lineInfo.getStats();
 			stats.setAccessPointCount(collection.getAccessPoints().size());
 			stats.setConnectionLinkCount(collection.getConnectionLinks().size());
 			stats.setJourneyPatternCount(collection.getJourneyPatterns().size());
@@ -76,7 +76,7 @@ public class NetexLineProducerCommand implements Command, Constant {
 
 				stats.setLineCount(1);
 				// merge lineStats to global ones
-				LineStats globalStats = report.getStats();
+				DataStats globalStats = report.getStats();
 				globalStats.setLineCount(globalStats.getLineCount() + stats.getLineCount());
 				globalStats.setAccessPointCount(globalStats.getAccessPointCount() + stats.getAccessPointCount());
 				globalStats.setRouteCount(globalStats.getRouteCount() + stats.getRouteCount());

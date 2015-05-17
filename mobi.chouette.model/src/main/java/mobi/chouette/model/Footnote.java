@@ -44,7 +44,7 @@ public class Footnote extends NeptuneObject {
 	@Setter
 	@GenericGenerator(name = "footnotes_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", parameters = {
 			@Parameter(name = "sequence_name", value = "footnotes_id_seq"),
-			@Parameter(name = "increment_size", value = "100") })
+			@Parameter(name = "increment_size", value = "10") })
 	@Id
 	@GeneratedValue(generator = "footnotes_id_seq")
 	@Column(name = "id", nullable = false)

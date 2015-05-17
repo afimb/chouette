@@ -49,7 +49,7 @@ public class AccessLink extends NeptuneIdentifiedObject {
 	@GenericGenerator(name = "access_links_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", 
 		parameters = {
 			@Parameter(name = "sequence_name", value = "access_links_id_seq"),
-			@Parameter(name = "increment_size", value = "100") })
+			@Parameter(name = "increment_size", value = "10") })
 	@Id
 	@GeneratedValue(generator = "access_links_id_seq")
 	@Column(name = "id", nullable = false)

@@ -14,7 +14,7 @@ import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.FileError;
 import mobi.chouette.exchange.report.FileInfo;
 import mobi.chouette.exchange.report.LineInfo;
-import mobi.chouette.exchange.report.LineStats;
+import mobi.chouette.exchange.report.DataStats;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.util.Referential;
 
@@ -59,7 +59,7 @@ public class NetexValidationCommand implements Command, Constant {
 	private void addStats(ActionReport report, Referential referential) {
 		Line line = referential.getLines().values().iterator().next();
 		LineInfo lineInfo = new LineInfo(line.getName());
-		LineStats stats = lineInfo.getStats();
+		DataStats stats = lineInfo.getStats();
 		stats.setLineCount(1);
 		stats.setRouteCount(referential.getRoutes().size());
 		stats.setConnectionLinkCount(referential.getConnectionLinks().size());
@@ -70,7 +70,7 @@ public class NetexValidationCommand implements Command, Constant {
 		stats.setJourneyPatternCount(referential.getJourneyPatterns().size());
 
 		report.getLines().add(lineInfo);
-		LineStats globalStats = report.getStats();
+		DataStats globalStats = report.getStats();
 		globalStats.setLineCount(globalStats.getLineCount() + stats.getLineCount());
 		globalStats.setAccessPointCount(globalStats.getAccessPointCount() + stats.getAccessPointCount());
 		globalStats.setRouteCount(globalStats.getRouteCount() + stats.getRouteCount());

@@ -22,10 +22,12 @@ import mobi.chouette.exchange.hub.exporter.producer.HubModeTransportProducer;
 import mobi.chouette.exchange.hub.exporter.producer.HubPeriodeProducer;
 import mobi.chouette.exchange.hub.exporter.producer.HubReseauProducer;
 import mobi.chouette.exchange.hub.exporter.producer.HubTransporteurProducer;
+import mobi.chouette.exchange.hub.model.HubException;
 import mobi.chouette.exchange.hub.model.exporter.HubExporter;
 import mobi.chouette.exchange.metadata.Metadata;
+import mobi.chouette.exchange.report.ActionError;
 import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.LineStats;
+import mobi.chouette.exchange.report.DataStats;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.GroupOfLine;
@@ -54,11 +56,14 @@ public class HubSharedDataProducerCommand implements Command, Constant {
 			}
 
 			saveData(context);
-			LineStats globalStats = report.getStats();
+			DataStats globalStats = report.getStats();
 			globalStats.setConnectionLinkCount(collection.getConnectionLinks().size());
 			globalStats.setStopAreaCount(collection.getStopAreas().size());
 			globalStats.setTimeTableCount(collection.getTimetables().size());
 			result = SUCCESS;
+		} catch (HubException e) {
+			log.error(e);
+			report.setFailure(new ActionError(ActionError.CODE.INVALID_DATA,"unable to export data : "+e));
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		} finally {

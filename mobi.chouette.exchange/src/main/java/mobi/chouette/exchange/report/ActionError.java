@@ -23,6 +23,7 @@ public class ActionError {
 		INVALID_PARAMETERS,
 		NO_DATA_FOUND,
 		NO_DATA_PROCEEDED,
+		INVALID_DATA,
 		INTERNAL_ERROR
 	};
 	

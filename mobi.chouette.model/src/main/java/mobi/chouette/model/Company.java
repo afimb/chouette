@@ -48,7 +48,7 @@ public class Company extends NeptuneIdentifiedObject {
 	@GenericGenerator(name = "companies_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", 
 		parameters = {
 			@Parameter(name = "sequence_name", value = "companies_id_seq"),
-			@Parameter(name = "increment_size", value = "100") })
+			@Parameter(name = "increment_size", value = "5") })
 	@Id
 	@GeneratedValue(generator = "companies_id_seq")
 	@Column(name = "id", nullable = false)

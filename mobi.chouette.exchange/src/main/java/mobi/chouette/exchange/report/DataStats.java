@@ -19,7 +19,7 @@ import lombok.Data;
 		"vehicleJourneyCount",
 		"journeyPatternCount"})
 @Data
-public class LineStats {
+public class DataStats {
 
 	@XmlElement(name = "line_count")
 	private int lineCount = 0;

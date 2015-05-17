@@ -20,7 +20,7 @@ import mobi.chouette.exchange.exporter.AbstractExporterCommand;
 import mobi.chouette.exchange.report.ActionError;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.LineInfo;
-import mobi.chouette.exchange.report.LineStats;
+import mobi.chouette.exchange.report.DataStats;
 import mobi.chouette.exchange.validation.DaoLineValidatorCommand;
 import mobi.chouette.exchange.validation.DaoSharedDataValidatorCommand;
 import mobi.chouette.exchange.validation.ValidationData;
@@ -104,13 +104,13 @@ public class ValidatorCommand extends AbstractExporterCommand implements Command
 				ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 				ActionReport report = (ActionReport) context.get(REPORT);
 				LineInfo lineInfo = new LineInfo(line.getName() + " (" + line.getNumber() + ")");
-				LineStats stats = lineInfo.getStats();
+				DataStats stats = lineInfo.getStats();
 				stats.setJourneyPatternCount(data.getJourneyPatterns().size());
 				stats.setRouteCount(data.getRoutes().size());
 				stats.setVehicleJourneyCount(data.getVehicleJourneys().size());
 
 				// merge lineStats to global ones
-				LineStats globalStats = report.getStats();
+				DataStats globalStats = report.getStats();
 				globalStats.setRouteCount(globalStats.getRouteCount() + stats.getRouteCount());
 				globalStats.setVehicleJourneyCount(globalStats.getVehicleJourneyCount() + stats.getVehicleJourneyCount());
 				globalStats.setJourneyPatternCount(globalStats.getJourneyPatternCount() + stats.getJourneyPatternCount());
@@ -131,7 +131,7 @@ public class ValidatorCommand extends AbstractExporterCommand implements Command
 				{
 					ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 					ActionReport report = (ActionReport) context.get(REPORT);
-					LineStats globalStats = report.getStats();
+					DataStats globalStats = report.getStats();
 					globalStats.setConnectionLinkCount(data.getConnectionLinks().size());
 					globalStats.setAccessPointCount(data.getAccessPoints().size());
 					globalStats.setStopAreaCount(data.getStopAreas().size());

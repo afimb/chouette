@@ -12,68 +12,82 @@ import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.LineProcessingCommands;
-import mobi.chouette.exchange.LineProcessingCommandsFactory;
+import mobi.chouette.exchange.ProcessingCommands;
+import mobi.chouette.exchange.ProcessingCommandsFactory;
+import mobi.chouette.exchange.exporter.CompressCommand;
+import mobi.chouette.exchange.exporter.SaveMetadataCommand;
 
 @Log4j
 @Data
-public class GtfsExporterProcessingCommands implements LineProcessingCommands, Constant {
+public class GtfsExporterProcessingCommands implements ProcessingCommands, Constant {
 
-	
-	public static class DefaultFactory extends LineProcessingCommandsFactory {
+	public static class DefaultFactory extends ProcessingCommandsFactory {
 
 		@Override
-		protected LineProcessingCommands create() throws IOException {
-			LineProcessingCommands result = new GtfsExporterProcessingCommands();
+		protected ProcessingCommands create() throws IOException {
+			ProcessingCommands result = new GtfsExporterProcessingCommands();
 			return result;
 		}
 	}
 
 	static {
-		LineProcessingCommandsFactory.factories.put(GtfsExporterProcessingCommands.class.getName(),
+		ProcessingCommandsFactory.factories.put(GtfsExporterProcessingCommands.class.getName(),
 				new DefaultFactory());
 	}
 
 	@Override
-	public List<? extends Command> getPreProcessingCommands(Context context,boolean withDao) {
+	public List<? extends Command> getPreProcessingCommands(Context context, boolean withDao) {
 		InitialContext initialContext = (InitialContext) context.get(INITIAL_CONTEXT);
 		List<Command> commands = new ArrayList<>();
 		try {
 			commands.add(CommandFactory.create(initialContext, GtfsInitExportCommand.class.getName()));
 		} catch (Exception e) {
-			log.error(e,e);
+			log.error(e, e);
+			throw new RuntimeException("unable to call factories");
 		}
 		return commands;
 	}
 
 	@Override
-	public List<? extends Command> getLineProcessingCommands(Context context,boolean withDao) {
+	public List<? extends Command> getLineProcessingCommands(Context context, boolean withDao) {
 		InitialContext initialContext = (InitialContext) context.get(INITIAL_CONTEXT);
 		List<Command> commands = new ArrayList<>();
 		try {
-			commands.add(CommandFactory.create(initialContext, GtfsLineProducerCommand.class.getName()));
+			if (withDao)
+				commands.add(CommandFactory.create(initialContext, DaoGtfsLineProducerCommand.class.getName()));
+			else
+				commands.add(CommandFactory.create(initialContext, GtfsLineProducerCommand.class.getName()));
 		} catch (Exception e) {
-			log.error(e,e);
+			log.error(e, e);
+			throw new RuntimeException("unable to call factories");
 		}
-		
+
 		return commands;
-		
+
 	}
 
 	@Override
-	public List<? extends Command> getPostProcessingCommands(Context context,boolean withDao) {
+	public List<? extends Command> getPostProcessingCommands(Context context, boolean withDao) {
 		InitialContext initialContext = (InitialContext) context.get(INITIAL_CONTEXT);
+		GtfsExportParameters parameters = (GtfsExportParameters) context.get(CONFIGURATION);
 		List<Command> commands = new ArrayList<>();
 		try {
-			commands.add(CommandFactory.create(initialContext,
-				GtfsSharedDataProducerCommand.class.getName()));
+			commands.add(CommandFactory.create(initialContext, GtfsSharedDataProducerCommand.class.getName()));
+			if (parameters.isAddMetadata())
+				commands.add(CommandFactory.create(initialContext, SaveMetadataCommand.class.getName()));
 			commands.add(CommandFactory.create(initialContext, GtfsTerminateExportCommand.class.getName()));
+			commands.add(CommandFactory.create(initialContext, CompressCommand.class.getName()));
 		} catch (Exception e) {
-			log.error(e,e);
+			log.error(e, e);
+			throw new RuntimeException("unable to call factories");
 		}
 		return commands;
 	}
 
-	
+	@Override
+	public List<? extends Command> getStopAreaProcessingCommands(Context context, boolean withDao) {
+		// TODO Auto-generated method stub
+		return new ArrayList<>();
+	}
 
 }

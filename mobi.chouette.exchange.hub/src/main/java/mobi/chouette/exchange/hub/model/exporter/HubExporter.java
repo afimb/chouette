@@ -26,6 +26,7 @@ import mobi.chouette.exchange.hub.model.HubRenvoi;
 import mobi.chouette.exchange.hub.model.HubReseau;
 import mobi.chouette.exchange.hub.model.HubSchema;
 import mobi.chouette.exchange.hub.model.HubTransporteur;
+import mobi.chouette.exchange.report.ActionReport;
 
 @Log4j
 public class HubExporter implements HubExporterInterface {
@@ -43,10 +44,10 @@ public class HubExporter implements HubExporterInterface {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public void dispose() {
+	public void dispose(ActionReport report) {
 		for (Exporter exporter : _map.values()) {
 			try {
-				exporter.dispose();
+				exporter.dispose(report);
 			} catch (IOException e) {
 				log.error(e);
 			}

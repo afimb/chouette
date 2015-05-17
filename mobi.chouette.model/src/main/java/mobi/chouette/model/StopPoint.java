@@ -42,7 +42,7 @@ public class StopPoint extends NeptuneIdentifiedObject {
 	@GenericGenerator(name = "stop_points_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", 
 		parameters = {
 			@Parameter(name = "sequence_name", value = "stop_points_id_seq"),
-			@Parameter(name = "increment_size", value = "100") })
+			@Parameter(name = "increment_size", value = "50") })
 	@Id
 	@GeneratedValue(generator = "stop_points_id_seq")
 	@Column(name = "id", nullable = false)

@@ -35,7 +35,7 @@ public class Job implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name = "jobs_seq", sequenceName = "jobs_seq")
+	@SequenceGenerator(name = "jobs_seq", sequenceName = "jobs_seq", allocationSize=20)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "jobs_seq")
 	@Column(name = "id", nullable = false)
 	private Long id;

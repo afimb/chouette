@@ -22,7 +22,7 @@ import mobi.chouette.exchange.gtfs.parser.GtfsTransferParser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.LineInfo;
-import mobi.chouette.exchange.report.LineStats;
+import mobi.chouette.exchange.report.DataStats;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;
 import mobi.chouette.model.util.ObjectFactory;
@@ -121,14 +121,14 @@ public class GtfsRouteParserCommand implements Command, Constant {
 	private void addStats(ActionReport report, Referential referential) {
 		Line line = referential.getLines().values().iterator().next();
 		LineInfo lineInfo = new LineInfo(line.getName());
-		LineStats stats = lineInfo.getStats();
+		DataStats stats = lineInfo.getStats();
 		stats.setLineCount(1);
 
 		stats.setRouteCount(referential.getRoutes().size());
 		stats.setVehicleJourneyCount(referential.getVehicleJourneys().size());
 		stats.setJourneyPatternCount(referential.getJourneyPatterns().size());
 		report.getLines().add(lineInfo);
-		LineStats globalStats = report.getStats();
+		DataStats globalStats = report.getStats();
 		globalStats.setConnectionLinkCount(referential.getSharedConnectionLinks().size());
 		globalStats.setStopAreaCount(referential.getSharedStopAreas().size());
 		globalStats.setTimeTableCount(referential.getSharedTimetables().size());
