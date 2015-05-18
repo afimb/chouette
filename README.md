@@ -19,10 +19,10 @@ Chouette is a java open source project on transport offer. It's divided in diffe
 
 For more information see [Architecture Documentation](http://www.chouette.mobi/docs/) 
 
-Feel free to test and access to the demonstration web site at [http://www.chouette.mobi](http://appli.chouette.mobi/chouette2/users/sign_in). Two types of access are granted : 
+Feel free to test and access to the demonstration web site at [http://appli.chouette.mobi/chouette2](http://appli.chouette.mobi/chouette2). Two types of access are granted : 
 * A demo organisation with a set of data
-  * login : demo@chouette.mobi
-  * password : chouette
+  * login : 'demo@chouette.mobi'
+  * password : 'chouette'
 * Create your own organisation : Must follow the link "Sign up" ("S'inscrire")
 
 ## Release Notes
