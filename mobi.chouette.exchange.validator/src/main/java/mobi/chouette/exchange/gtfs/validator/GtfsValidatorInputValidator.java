@@ -1,0 +1,44 @@
+package mobi.chouette.exchange.gtfs.validator;
+
+import java.io.IOException;
+
+import lombok.extern.log4j.Log4j;
+import mobi.chouette.exchange.InputValidator;
+import mobi.chouette.exchange.InputValidatorFactory;
+import mobi.chouette.exchange.gtfs.importer.GtfsImporterInputValidator;
+import mobi.chouette.exchange.parameters.AbstractParameter;
+import mobi.chouette.exchange.validation.parameters.ValidationParameters;
+
+@Log4j
+public class GtfsValidatorInputValidator extends GtfsImporterInputValidator {
+
+	@Override
+	public boolean check(AbstractParameter abstractParameter, ValidationParameters validationParameters, String fileName) {
+		if (!(abstractParameter instanceof GtfsValidateParameters)) {
+			log.error("invalid parameters for validator " + abstractParameter.getClass().getName());
+			return false;
+		}
+		if (validationParameters == null) {
+			log.error("no validation parameters for validation ");
+			return false;
+		}
+
+		return super.check(abstractParameter, validationParameters, fileName);
+	}
+	
+	public static class DefaultFactory extends InputValidatorFactory {
+
+		@Override
+		protected InputValidator create() throws IOException {
+			InputValidator result = new GtfsValidatorInputValidator();
+			return result;
+		}
+	}
+
+	static {
+		InputValidatorFactory.factories.put(GtfsValidatorInputValidator.class.getName(),
+				new DefaultFactory());
+	}
+	
+
+}
