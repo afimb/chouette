@@ -1,9 +1,6 @@
 package mobi.chouette.exchange.netex.exporter;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 import javax.ejb.Stateless;
 import javax.naming.InitialContext;
@@ -18,13 +15,10 @@ import mobi.chouette.exchange.ProcessingCommands;
 import mobi.chouette.exchange.ProcessingCommandsFactory;
 import mobi.chouette.exchange.ProgressionCommand;
 import mobi.chouette.exchange.exporter.AbstractExporterCommand;
-import mobi.chouette.exchange.exporter.CompressCommand;
-import mobi.chouette.exchange.exporter.SaveMetadataCommand;
 import mobi.chouette.exchange.netex.Constant;
 import mobi.chouette.exchange.report.ActionError;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.ReportConstant;
-import mobi.chouette.model.Line;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;

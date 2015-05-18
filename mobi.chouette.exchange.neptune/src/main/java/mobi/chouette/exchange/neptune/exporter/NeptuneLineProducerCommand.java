@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.sql.Date;
 
 import javax.naming.InitialContext;
+import javax.xml.bind.MarshalException;
+
+import org.xml.sax.SAXParseException;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
@@ -12,9 +15,9 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.DataStats;
 import mobi.chouette.exchange.report.LineError;
 import mobi.chouette.exchange.report.LineInfo;
-import mobi.chouette.exchange.report.DataStats;
 import mobi.chouette.model.Line;
 
 import com.jamonapi.Monitor;
@@ -63,6 +66,8 @@ public class NeptuneLineProducerCommand implements Command, Constant {
 			if (cont) {
 				context.put(EXPORTABLE_DATA, collection);
 
+				try
+				{
 				ChouettePTNetworkProducer producer = new ChouettePTNetworkProducer();
 				producer.produce(context);
 
@@ -81,9 +86,20 @@ public class NeptuneLineProducerCommand implements Command, Constant {
 				globalStats.setStopAreaCount(globalStats.getStopAreaCount() + stats.getStopAreaCount());
 				globalStats.setTimeTableCount(globalStats.getTimeTableCount() + stats.getTimeTableCount());
 				result = SUCCESS;
+				} catch (MarshalException e) {
+					if (e.getCause() != null && e.getCause() instanceof SAXParseException)
+					{
+						log.error(e.getCause().getMessage());
+						lineInfo.addError(new LineError(LineError.CODE.INVALID_FORMAT,e.getCause().getMessage()));			
+					}
+					else
+					{
+					log.error(e.getMessage());
+					lineInfo.addError(new LineError(LineError.CODE.INVALID_FORMAT,e.getMessage()));
+					}
+				} 
 			} else {
 				lineInfo.addError(new LineError(LineError.CODE.NO_DATA_ON_PERIOD,"no data on period"));				
-				result = ERROR;
 			}
 			report.getLines().add(lineInfo);
 		} catch (Exception e) {

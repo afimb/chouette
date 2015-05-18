@@ -595,7 +595,7 @@
       <module>mobi.chouette.exchange.validator</module>
       <module>mobi.chouette.service</module>
 		<module>mobi.chouette.api</module>
-		<module>chouette_iev</module>
 		<module>mobi.chouette.command</module>
+      <module>chouette_iev</module>
 	</modules>
 </project>

@@ -1,5 +1,7 @@
 package mobi.chouette.service;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -11,6 +13,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,6 +22,7 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.ws.rs.core.MediaType;
 
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.dao.JobDAO;
 import mobi.chouette.dao.SchemaDAO;
 import mobi.chouette.model.api.Job;
@@ -33,6 +37,7 @@ import com.google.common.collect.Collections2;
 
 @Singleton(name = JobServiceManager.BEAN_NAME)
 @Startup
+@Log4j
 public class JobServiceManager {
 
 	public static final String BEAN_NAME = "JobServiceManager";
@@ -46,7 +51,37 @@ public class JobServiceManager {
 	@EJB
 	Scheduler scheduler;
 
-	public JobService create(String referential, String action, String type, Map<String, InputStream> inputStreamsByName) throws ServiceException {
+	static {
+		try {
+			// set default properties
+			System.setProperty(PropertyNames.ROOT_DIRECTORY, System.getProperty("user.home"));
+
+			// try to read properties
+			File propertyFile = new File("/etc/chouette/iev/iev.properties");
+			if (propertyFile.exists() && propertyFile.isFile()) {
+				try {
+					FileInputStream fileInput = new FileInputStream(propertyFile);
+					Properties properties = new Properties();
+					properties.load(fileInput);
+					fileInput.close();
+					for (String key : properties.stringPropertyNames()) {
+						System.setProperty(key, properties.getProperty(key));
+					}
+				} catch (IOException e) {
+					log.error("cannot read properties " + propertyFile.getAbsolutePath()
+							+ " , using default properties", e);
+				}
+			} else {
+				log.info("no property file found " + propertyFile.getAbsolutePath() + " , using default properties");
+			}
+		} catch (Exception e) {
+			log.error("cannot process properties", e);
+		}
+
+	}
+
+	public JobService create(String referential, String action, String type, Map<String, InputStream> inputStreamsByName)
+			throws ServiceException {
 		JobService jobService = null;
 		try {
 			// Valider les parametres
@@ -60,17 +95,18 @@ public class JobServiceManager {
 			jobDAO.flush();
 
 			// mkdir
-			if (Files.exists( jobService.getPath())) {
-				// réutilisation anormale d'un id de job (réinitialisation de la séquence à l'extérieur de l'appli?) 
+			if (Files.exists(jobService.getPath())) {
+				// réutilisation anormale d'un id de job (réinitialisation de la
+				// séquence à l'extérieur de l'appli?)
 				// jobDAO.delete( jobService.getJob());
 				FileUtils.deleteDirectory(jobService.getPath().toFile());
 			}
-			Files.createDirectories( jobService.getPath());
+			Files.createDirectories(jobService.getPath());
 
 			// Enregistrer des paramètres à conserver sur fichier
-			jobService.saveInputStreams( inputStreamsByName);
+			jobService.saveInputStreams(inputStreamsByName);
 
-			jobDAO.update( jobService.getJob());
+			jobDAO.update(jobService.getJob());
 			jobDAO.flush();
 
 			// Lancer la tache
@@ -90,15 +126,15 @@ public class JobServiceManager {
 		}
 	}
 
-	private void deleteBadCreatedJob(JobService jobService)
-	{
-		if (jobService==null || jobService.getJob().getId() == null) return; 
+	private void deleteBadCreatedJob(JobService jobService) {
+		if (jobService == null || jobService.getJob().getId() == null)
+			return;
 		jobDAO.delete(jobService.getJob());
 
 		try {
 			// remove path if exists
-			if ( jobService.getPath() != null && Files.exists( jobService.getPath()))
-				FileUtils.deleteDirectory( jobService.getPath().toFile());
+			if (jobService.getPath() != null && Files.exists(jobService.getPath()))
+				FileUtils.deleteDirectory(jobService.getPath().toFile());
 		} catch (IOException ex1) {
 			Logger.getLogger(JobServiceManager.class.getName()).log(Level.SEVERE, null, ex1);
 		}
@@ -111,10 +147,10 @@ public class JobServiceManager {
 		}
 	}
 
-	public JobService download( String referential, Long id, String filename) throws ServiceException {
-		JobService jobService = getJobService( referential, id);
+	public JobService download(String referential, Long id, String filename) throws ServiceException {
+		JobService jobService = getJobService(referential, id);
 
-		java.nio.file.Path path = Paths.get( jobService.getPathName(), filename);
+		java.nio.file.Path path = Paths.get(jobService.getPathName(), filename);
 		if (!Files.exists(path, LinkOption.NOFOLLOW_LINKS)) {
 			throw new RequestServiceException(RequestExceptionCode.UNKNOWN_FILE, "");
 		}
@@ -124,7 +160,7 @@ public class JobServiceManager {
 	/**
 	 * find next waiting job on referential <br/>
 	 * return null if a job is STARTED or if no job is SCHEDULED
-	 *
+	 * 
 	 * @param referential
 	 * @return
 	 */
@@ -173,7 +209,8 @@ public class JobServiceManager {
 	public void remove(String referential, Long id) throws ServiceException {
 		JobService jobService = getJobService(referential, id);
 		if (jobService.getStatus().ordinal() <= STATUS.STARTED.ordinal()) {
-			throw new RequestServiceException(RequestExceptionCode.SCHEDULED_JOB, "referential = " + referential + " ,id = " + id);
+			throw new RequestServiceException(RequestExceptionCode.SCHEDULED_JOB, "referential = " + referential
+					+ " ,id = " + id);
 		}
 		try {
 			FileUtils.deleteDirectory(jobService.getPath().toFile());
@@ -195,7 +232,8 @@ public class JobServiceManager {
 				try {
 					FileUtils.deleteDirectory(jobService.getPath().toFile());
 				} catch (IOException e) {
-					Logger.getLogger(JobServiceManager.class.getName()).log(Level.SEVERE, "fail to delete directory", e);
+					Logger.getLogger(JobServiceManager.class.getName())
+							.log(Level.SEVERE, "fail to delete directory", e);
 				}
 				iterator.remove();
 			}
@@ -223,7 +261,8 @@ public class JobServiceManager {
 		jobService.addLink(MediaType.APPLICATION_JSON, Link.DELETE_REL);
 		// add data link if necessary
 		if (!jobService.linkExists(Link.DATA_REL)) {
-			if (jobService.getFilename() != null && Files.exists(Paths.get(jobService.getPathName(), jobService.getFilename()))) {
+			if (jobService.getFilename() != null
+					&& Files.exists(Paths.get(jobService.getPathName(), jobService.getFilename()))) {
 				jobService.addLink(MediaType.APPLICATION_OCTET_STREAM, Link.DATA_REL);
 			}
 		}
@@ -267,32 +306,33 @@ public class JobServiceManager {
 	}
 
 	public JobService scheduledJob(String referential, Long id) throws ServiceException {
-		return getJobService( referential, id);
+		return getJobService(referential, id);
 	}
 
-
 	public JobService terminatedJob(String referential, Long id) throws ServiceException {
-		JobService jobService = getJobService( referential, id);
+		JobService jobService = getJobService(referential, id);
 
 		if (jobService.getStatus().ordinal() < STATUS.TERMINATED.ordinal()
 				|| jobService.getStatus().ordinal() == STATUS.DELETED.ordinal()) {
-			throw new RequestServiceException(RequestExceptionCode.UNKNOWN_JOB, "referential = " + referential + " ,id = " + id);
+			throw new RequestServiceException(RequestExceptionCode.UNKNOWN_JOB, "referential = " + referential
+					+ " ,id = " + id);
 		}
 
 		return jobService;
 	}
 
 	private JobService getJobService(String referential, Long id) throws ServiceException {
-		validateReferential( referential);
+		validateReferential(referential);
 
 		Job job = jobDAO.find(id);
 		if (job != null && job.getReferential().equals(referential)) {
 			return new JobService(job);
 		}
-		throw new RequestServiceException(RequestExceptionCode.UNKNOWN_JOB, "referential = " + referential + " ,id = " + id);
+		throw new RequestServiceException(RequestExceptionCode.UNKNOWN_JOB, "referential = " + referential + " ,id = "
+				+ id);
 	}
 
-	public JobService getJobService( Long id) throws ServiceException {
+	public JobService getJobService(Long id) throws ServiceException {
 		Job job = jobDAO.find(id);
 		if (job != null) {
 			return new JobService(job);
@@ -301,21 +341,21 @@ public class JobServiceManager {
 	}
 
 	public List<JobService> jobs(String referential, String action, final Long version) throws ServiceException {
-		validateReferential( referential);
+		validateReferential(referential);
 
 		List<Job> jobs = null;
-		if ( action==null) {
+		if (action == null) {
 			jobs = jobDAO.findByReferential(referential);
 		} else {
 			jobs = jobDAO.findByReferentialAndAction(referential, action);
 		}
 
-		Collection<Job> filtered = Collections2.filter( jobs, new Predicate<Job>() {
+		Collection<Job> filtered = Collections2.filter(jobs, new Predicate<Job>() {
 			@Override
 			public boolean apply(Job job) {
 				// filter on update time if given, otherwise don't return
-						// deleted jobs
-				boolean versionZeroCondition = ( version == 0) && job.getStatus().ordinal() < STATUS.DELETED.ordinal();
+				// deleted jobs
+				boolean versionZeroCondition = (version == 0) && job.getStatus().ordinal() < STATUS.DELETED.ordinal();
 				boolean versionNonZeroCondition = (version > 0) && version < job.getUpdated().getTime();
 
 				return versionZeroCondition || versionNonZeroCondition;
@@ -328,6 +368,5 @@ public class JobServiceManager {
 		}
 		return jobServices;
 	}
-
 
 }

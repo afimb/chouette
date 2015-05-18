@@ -160,7 +160,7 @@ public class JobService implements JobData,ServiceConstants {
      */
     public String getPathName() {
         if ( jobPersisted()) {
-            return Paths.get(System.getProperty("user.home"), ROOT_PATH, job.getReferential(), "data",
+            return Paths.get(System.getProperty(PropertyNames.ROOT_DIRECTORY), ROOT_PATH, job.getReferential(), "data",
                     job.getId().toString()).toString();
         }
         // TODO Non, lever une exception
