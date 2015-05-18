@@ -1,5 +1,21 @@
 package mobi.chouette.api;
 
+import static mobi.chouette.common.Constant.ACTION_PARAMETERS_FILE;
+import static mobi.chouette.common.Constant.PARAMETERS_FILE;
+import static mobi.chouette.common.Constant.REPORT_FILE;
+import static mobi.chouette.common.Constant.ROOT_PATH;
+import static mobi.chouette.common.Constant.VALIDATION_FILE;
+import static mobi.chouette.common.Constant.VALIDATION_PARAMETERS_FILE;
+import static mobi.chouette.model.api.Link.CANCEL_REL;
+import static mobi.chouette.model.api.Link.DELETE_REL;
+import static mobi.chouette.model.api.Link.LOCATION_REL;
+import static mobi.chouette.service.ServiceConstants.ACTION_PARAMETERS_REL;
+import static mobi.chouette.service.ServiceConstants.DATA_REL;
+import static mobi.chouette.service.ServiceConstants.PARAMETERS_REL;
+import static mobi.chouette.service.ServiceConstants.REPORT_REL;
+import static mobi.chouette.service.ServiceConstants.VALIDATION_PARAMETERS_REL;
+import static mobi.chouette.service.ServiceConstants.VALIDATION_REL;
+
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -19,34 +35,22 @@ import javax.xml.bind.annotation.XmlType;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import static mobi.chouette.common.Constant.ACTION_PARAMETERS_FILE;
-import static mobi.chouette.common.Constant.PARAMETERS_FILE;
-import static mobi.chouette.common.Constant.REPORT_FILE;
-import static mobi.chouette.common.Constant.ROOT_PATH;
-import static mobi.chouette.common.Constant.VALIDATION_FILE;
-import static mobi.chouette.common.Constant.VALIDATION_PARAMETERS_FILE;
 import mobi.chouette.exchange.gtfs.exporter.GtfsExportParameters;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
+import mobi.chouette.exchange.gtfs.validator.GtfsValidateParameters;
 import mobi.chouette.exchange.hub.exporter.HubExportParameters;
 import mobi.chouette.exchange.kml.exporter.KmlExportParameters;
 import mobi.chouette.exchange.neptune.exporter.NeptuneExportParameters;
 import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
+import mobi.chouette.exchange.neptune.validator.NeptuneValidateParameters;
 import mobi.chouette.exchange.netex.exporter.NetexExportParameters;
 import mobi.chouette.exchange.netex.importer.NetexImportParameters;
+import mobi.chouette.exchange.netex.validator.NetexValidateParameters;
 import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.validator.ValidateParameters;
 import mobi.chouette.model.api.Job;
 import mobi.chouette.model.api.Link;
-import static mobi.chouette.model.api.Link.CANCEL_REL;
-import static mobi.chouette.model.api.Link.DELETE_REL;
-import static mobi.chouette.model.api.Link.LOCATION_REL;
 import mobi.chouette.service.JobService;
-import static mobi.chouette.service.ServiceConstants.ACTION_PARAMETERS_REL;
-import static mobi.chouette.service.ServiceConstants.DATA_REL;
-import static mobi.chouette.service.ServiceConstants.PARAMETERS_REL;
-import static mobi.chouette.service.ServiceConstants.REPORT_REL;
-import static mobi.chouette.service.ServiceConstants.VALIDATION_PARAMETERS_REL;
-import static mobi.chouette.service.ServiceConstants.VALIDATION_REL;
 import mobi.chouette.service.ServiceException;
 
 @Data
@@ -62,7 +66,10 @@ import mobi.chouette.service.ServiceException;
 	         NetexExportParameters.class,
 	         HubExportParameters.class,
 	         KmlExportParameters.class,
-	         ValidateParameters.class})
+	         ValidateParameters.class,
+	         NeptuneValidateParameters.class,
+	         GtfsValidateParameters.class,
+	         NetexValidateParameters.class})
 public class JobInfo {
 
 	@XmlElement(name = "id", required = true)
