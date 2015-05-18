@@ -1,11 +1,11 @@
 # Chouette [![Build Status](https://travis-ci.org/afimb/chouette.png)](http://travis-ci.org/afimb/chouette?branch=master)
 
-Chouette is a java open source project on transport offer. It's divided in differents module : 
+Chouette is a java open source project on transport offer. It's divided into differents modules : 
 * chouette-iev : REST server (ear)
 * mobi.chouette.api : Rest api implementation
 * mobi.chouette.command : Command mode standalone program (Import, Export and Validation actions)
 * mobi.chouette.common : common classes and interfaces
-* mobi.chouette.dao : Dao inmplementation for model persistence (EJB)
+* mobi.chouette.dao : Dao implementation for model persistence (EJB)
 * mobi.chouette.exchange : Common classes, interfaces and commands for exchange purpose
 * mobi.chouette.exchange.gtfs : Specific commands for GTFS exchange and validation purpose
 * mobi.chouette.exchange.hub : Specific commands for HUB exchange purpose
@@ -19,7 +19,7 @@ Chouette is a java open source project on transport offer. It's divided in diffe
 
 For more information see [Architecture Documentation](http://www.chouette.mobi/docs/) 
 
-Feel free to test and access to the demonstration web site at [http://appli.chouette.mobi/chouette2](http://appli.chouette.mobi/chouette2). Two types of access are granted : 
+Feel free to test and access to the demonstration web site at [http://appli.chouette.mobi/chouette2](http://appli.chouette.mobi/chouette2). Two types of accesses are granted : 
 * A demo organisation with a set of data
   * login : 'demo@chouette.mobi'
   * password : 'chouette'
@@ -101,7 +101,6 @@ bin/jboss-cli.sh connect, deploy --force  (path to ...)/chouette.ear
 
 ## More Information
  
-More information can be found on the [project website on GitHub](.). 
 An exhaustive technical documentation in French is avalailable [here](http://www.chouette.mobi/docs/)
 
 
