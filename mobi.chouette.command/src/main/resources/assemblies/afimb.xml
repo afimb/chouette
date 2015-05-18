@@ -28,10 +28,10 @@
 			<source>${project.build.directory}/${project.build.finalName}.jar</source>
 			<outputDirectory>/</outputDirectory>
 		</file>
-      <file>
+      <!-- <file>
          <source>${project.build.directory}/git.properties</source>
          <outputDirectory>/</outputDirectory>
-      </file>
+		</file> -->
       <file>
          <source>${project.build.directory}/log4j.properties</source>
          <outputDirectory>/</outputDirectory>
