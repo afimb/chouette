@@ -79,7 +79,7 @@ mvn test
 Deployment :
 
 change data storage directory (USER_HOME by default)
-copy properties file [iev.properties](./doc/iev.prooperties) in /etc/chouette/iev/ directory
+copy properties file [iev.properties](./doc/iev.properties) in /etc/chouette/iev/ directory
 change property iev.directory
 
 deploy ear (wildfly must be running)
@@ -89,6 +89,10 @@ mvn -DskipTests install
 
 ## from binary
 download chouette.ear from [maven repository](http://maven.chouette.mobi/chouette_iev)
+
+change data storage directory (USER_HOME by default)
+copy properties file [iev.properties](./doc/iev.properties) in /etc/chouette/iev/ directory
+change property iev.directory
 
 in wildfly installation repository : 
 ```sh
