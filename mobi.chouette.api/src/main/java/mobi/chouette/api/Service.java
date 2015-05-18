@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -40,16 +42,14 @@ import mobi.chouette.model.api.Job.STATUS;
 import mobi.chouette.model.api.Link;
 import mobi.chouette.service.JobService;
 import mobi.chouette.service.JobServiceManager;
+import mobi.chouette.service.RequestExceptionCode;
+import mobi.chouette.service.RequestServiceException;
 import mobi.chouette.service.ServiceException;
 import mobi.chouette.service.ServiceExceptionCode;
 
 import org.apache.commons.io.FilenameUtils;
 import org.jboss.resteasy.plugins.providers.multipart.InputPart;
 import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import mobi.chouette.service.RequestServiceException;
 
 @Path("/referentials")
 @Log4j
@@ -91,18 +91,18 @@ public class Service implements Constant {
                     jobService.getReferential(), jobService.getId())));
 
             return builder.build();
-        } catch (RequestServiceException ex) {
-            Logger.getLogger(Service.class.getName()).log(Level.INFO, "RequestCode = " + ex.getRequestCode() + ", Message = " + ex.getMessage());
-            throw new WebApplicationException(ex.getRequestCode(), Status.NOT_FOUND);
+        } catch (RequestServiceException e) {
+            log.info("RequestCode = " + e.getRequestCode() + ", Message = " + e.getMessage());
+            throw toWebApplicationException(e);
         } catch (ServiceException e) {
-            Logger.getLogger(Service.class.getName()).log(Level.SEVERE, "Code = " + e.getCode() + ", Message = " + e.getMessage());
+        	log.error( "Code = " + e.getCode() + ", Message = " + e.getMessage());
             throw toWebApplicationException(e);
         } catch (WebApplicationException e) {
-            Logger.getLogger(Service.class.getName()).log(Level.SEVERE, e.getMessage(), e);
+        	log.error( e.getMessage());
             throw e;
         } catch (Exception e) {
-            Logger.getLogger(Service.class.getName()).log(Level.SEVERE, e.getMessage(), e);
-            throw new WebApplicationException(e.getMessage(), e, Status.INTERNAL_SERVER_ERROR);
+        	log.error( e.getMessage(), e);
+            throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
         } finally {
             for( InputStream is : inputStreamByName.values()) {
                 try { is.close(); } catch ( Exception e) { 
@@ -116,11 +116,36 @@ public class Service implements Constant {
         return new WebApplicationException(exception.getMessage(), toWebApplicationCode(exception.getExceptionCode()));
     }
 
-    private Status toWebApplicationCode(ServiceExceptionCode code) {
-        if (code.equals(ServiceExceptionCode.INTERNAL_ERROR)) {
-            return Status.INTERNAL_SERVER_ERROR;
-        }
-        return Status.BAD_REQUEST;
+    private Status toWebApplicationCode(ServiceExceptionCode errorCode) {
+    	switch (errorCode) {
+		case INVALID_REQUEST: return Status.BAD_REQUEST;
+		case INTERNAL_ERROR: return Status.INTERNAL_SERVER_ERROR;
+		}
+    	return Status.INTERNAL_SERVER_ERROR;
+     }
+    
+    private WebApplicationException toWebApplicationException(RequestServiceException exception) {
+        return new WebApplicationException(exception.getRequestCode(), toWebApplicationCode(exception.getRequestExceptionCode()));
+    }
+    private Status toWebApplicationCode(RequestExceptionCode errorCode)
+    {
+    	switch (errorCode) {
+		case UNKNOWN_ACTION: 
+		case DUPPLICATE_OR_MISSING_DATA: 
+		case DUPPLICATE_PARAMETERS: 
+		case MISSING_PARAMETERS: 
+		case UNREADABLE_PARAMETERS: 
+		case INVALID_PARAMETERS: 
+		case ACTION_TYPE_MISMATCH:
+			return Status.BAD_REQUEST;
+		case UNKNOWN_REFERENTIAL: 
+		case UNKNOWN_FILE: 
+		case UNKNOWN_JOB: 
+			return Status.NOT_FOUND;
+		case SCHEDULED_JOB: 
+			return Status.METHOD_NOT_ALLOWED;
+		}
+    	return Status.BAD_REQUEST;
     }
 
     private String parseType(String type) {
@@ -130,8 +155,8 @@ public class Service implements Constant {
         return type;
     }
 
-    private Map<String, InputStream> readParts(MultipartFormDataInput input) {
-        try {
+    private Map<String, InputStream> readParts(MultipartFormDataInput input) throws Exception {
+        
             Map<String, InputStream> result = new HashMap<String, InputStream>();
 
             for (InputPart part : input.getParts()) {
@@ -140,14 +165,11 @@ public class Service implements Constant {
                 String filename = getFilename(header);
 
                 if (filename == null) {
-                    throw new WebApplicationException("missing filename in part", Status.BAD_REQUEST);
+                    throw new ServiceException(ServiceExceptionCode.INVALID_REQUEST,"missing filename in part");
                 }
                 result.put(filename, part.getBody(InputStream.class, null));
             }
             return result;
-        } catch (Exception e) {
-            throw new WebApplicationException(e.getMessage(), e, Status.BAD_REQUEST);
-        }
     }
 
 
@@ -187,15 +209,15 @@ public class Service implements Constant {
             Response result = builder.type(type).build();
             return result;
             
-        } catch (RequestServiceException ex) {
-            Logger.getLogger(Service.class.getName()).log(Level.INFO, "RequestCode = " + ex.getRequestCode() + ", Message = " + ex.getMessage());
-            throw new WebApplicationException(ex.getCode(), Status.NOT_FOUND);
+        } catch (RequestServiceException e) {
+        	log.info( "RequestCode = " + e.getRequestCode() + ", Message = " + e.getMessage());
+            throw toWebApplicationException(e);
         } catch (ServiceException e) {
-            Logger.getLogger(Service.class.getName()).log(Level.INFO, "Code = " + e.getCode() + ", Message = " + e.getMessage());
+        	log.error( "Code = " + e.getCode() + ", Message = " + e.getMessage());
             throw toWebApplicationException(e);
         } catch (Exception e) {
-            Logger.getLogger(Service.class.getName()).log(Level.SEVERE, e.getMessage(), e);
-            throw new WebApplicationException(e.getMessage(), Status.INTERNAL_SERVER_ERROR);
+        	log.error(e.getMessage(), e);
+            throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -229,14 +251,14 @@ public class Service implements Constant {
             
             return builder.build();
         } catch (RequestServiceException ex) {
-            Logger.getLogger(Service.class.getName()).log(Level.INFO, "RequestCode = " + ex.getRequestCode() + ", Message = " + ex.getMessage(),ex);
-            throw new WebApplicationException(ex.getCode(), Status.NOT_FOUND);
+            log.info("RequestCode = " + ex.getRequestCode() + ", Message = " + ex.getMessage(),ex);
+            throw toWebApplicationException(ex);
         } catch (ServiceException e) {
-            Logger.getLogger(Service.class.getName()).log(Level.INFO, "Code = " + e.getCode() + ", Message = " + e.getMessage());
+        	log.error( "Code = " + e.getCode() + ", Message = " + e.getMessage());
             throw toWebApplicationException(e);
         } catch (Exception ex) {
-            Logger.getLogger(Service.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
-            throw new WebApplicationException(ex.getMessage(), Status.INTERNAL_SERVER_ERROR);
+        	log.error( ex.getMessage(), ex);
+            throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -267,14 +289,14 @@ public class Service implements Constant {
             return result;
             
         } catch (RequestServiceException ex) {
-            Logger.getLogger(Service.class.getName()).log(Level.INFO, "RequestCode = " + ex.getRequestCode() + ", Message = " + ex.getMessage());
-            throw new WebApplicationException(ex.getCode(), Status.NOT_FOUND);
+            log.info( "RequestCode = " + ex.getRequestCode() + ", Message = " + ex.getMessage());
+            throw toWebApplicationException(ex);
         } catch (ServiceException e) {
-            Logger.getLogger(Service.class.getName()).log(Level.INFO, "Code = " + e.getCode() + ", Message = " + e.getMessage());
+            log.error("Code = " + e.getCode() + ", Message = " + e.getMessage());
             throw toWebApplicationException(e);
         } catch (Exception ex) {
-            Logger.getLogger(Service.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
-            throw new WebApplicationException(ex.getMessage(), Status.INTERNAL_SERVER_ERROR);
+        	log.error( ex.getMessage(), ex);
+            throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -296,14 +318,14 @@ public class Service implements Constant {
 
             return result;
         } catch (RequestServiceException ex) {
-            Logger.getLogger(Service.class.getName()).log(Level.INFO, "RequestCode = " + ex.getRequestCode() + ", Message = " + ex.getMessage());
-            throw new WebApplicationException(ex.getCode(), Status.NOT_FOUND);
+        	log.info( "RequestCode = " + ex.getRequestCode() + ", Message = " + ex.getMessage());
+            throw toWebApplicationException(ex);
         } catch (ServiceException ex) {
-            Logger.getLogger(Service.class.getName()).log(Level.INFO, "Code = " + ex.getCode() + ", Message = " + ex.getMessage());
-            throw new WebApplicationException(ex.getCode(), Status.NOT_FOUND);
+        	log.error("Code = " + ex.getCode() + ", Message = " + ex.getMessage());
+            throw toWebApplicationException(ex);
         } catch (Exception ex) {
-            Logger.getLogger(Service.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
-            throw new WebApplicationException(ex.getMessage(), Status.INTERNAL_SERVER_ERROR);
+        	log.error( ex.getMessage(), ex);
+            throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -335,14 +357,14 @@ public class Service implements Constant {
             return builder.build();
             
         } catch (RequestServiceException ex) {
-            Logger.getLogger(Service.class.getName()).log(Level.INFO, "RequestCode = " + ex.getRequestCode() + ", Message = " + ex.getMessage());
-            throw new WebApplicationException(ex.getCode(), Status.NOT_FOUND);
+        	log.info( "RequestCode = " + ex.getRequestCode() + ", Message = " + ex.getMessage());
+            throw toWebApplicationException(ex);
         } catch (ServiceException ex) {
-            Logger.getLogger(Service.class.getName()).log(Level.INFO, "Code = " + ex.getCode() + ", Message = " + ex.getMessage());
-            throw new WebApplicationException(ex.getCode(), Status.NOT_FOUND);
+        	log.error( "Code = " + ex.getCode() + ", Message = " + ex.getMessage());
+            throw toWebApplicationException(ex);
         } catch (Exception ex) {
-            Logger.getLogger(Service.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
-            throw new WebApplicationException(ex.getMessage(), Status.INTERNAL_SERVER_ERROR);
+        	log.error( ex.getMessage(), ex);
+            throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -367,14 +389,14 @@ public class Service implements Constant {
             return result;
             
         } catch (RequestServiceException ex) {
-            Logger.getLogger(Service.class.getName()).log(Level.INFO, "RequestCode = " + ex.getRequestCode() + ", Message = " + ex.getMessage());
-            throw new WebApplicationException(ex.getCode(), Status.NOT_FOUND);
+        	log.info( "RequestCode = " + ex.getRequestCode() + ", Message = " + ex.getMessage());
+            throw toWebApplicationException(ex);
         } catch (ServiceException ex) {
-            Logger.getLogger(Service.class.getName()).log(Level.INFO, "Code = " + ex.getCode() + ", Message = " + ex.getMessage());
-            throw new WebApplicationException(ex.getCode(), Status.NOT_FOUND);
+        	log.error( "Code = " + ex.getCode() + ", Message = " + ex.getMessage());
+            throw toWebApplicationException(ex);
         } catch (Exception ex) {
-            Logger.getLogger(Service.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
-            throw new WebApplicationException(ex.getMessage(), Status.INTERNAL_SERVER_ERROR);
+        	log.error(ex.getMessage(), ex);
+            throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -397,14 +419,14 @@ public class Service implements Constant {
 
             return result;
         } catch (RequestServiceException ex) {
-            Logger.getLogger(Service.class.getName()).log(Level.INFO, "RequestCode = " + ex.getRequestCode() + ", Message = " + ex.getMessage());
-            throw new WebApplicationException(ex.getCode(), Status.NOT_FOUND);
+        	log.info( "RequestCode = " + ex.getRequestCode() + ", Message = " + ex.getMessage());
+            throw toWebApplicationException(ex);
         } catch (ServiceException ex) {
-            Logger.getLogger(Service.class.getName()).log(Level.INFO, "Code = " + ex.getCode() + ", Message = " + ex.getMessage());
-            throw new WebApplicationException(ex.getCode(), Status.NOT_FOUND);
+        	log.error( "Code = " + ex.getCode() + ", Message = " + ex.getMessage());
+            throw toWebApplicationException(ex);
         } catch (Exception ex) {
-            Logger.getLogger(Service.class.getName()).log(Level.SEVERE, ex.getMessage(), ex);
-            throw new WebApplicationException(ex.getMessage(), Status.INTERNAL_SERVER_ERROR);
+        	log.error( ex.getMessage(), ex);
+            throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -421,4 +443,5 @@ public class Service implements Constant {
         }
         return result;
     }
+    
 }
