@@ -10,12 +10,13 @@ import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlType;
 
 import lombok.Data;
-import lombok.NonNull;
+import lombok.NoArgsConstructor;
 
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder={"name","status","stats","errors"})
 @Data
+@NoArgsConstructor
 public class LineInfo {
 
 	@XmlType(name="lineState")
@@ -27,7 +28,6 @@ public class LineInfo {
 		ERROR
 	};
 	@XmlElement(name = "name",required=true)
-	@NonNull
 	private String name;
 
 	@XmlElement(name = "status",required=true)
@@ -38,6 +38,11 @@ public class LineInfo {
 
 	@XmlElement(name="errors")
 	private List<LineError> errors = new ArrayList<>();
+	
+	public LineInfo(String name)
+	{
+		this.name = name;
+	}
 	
 	/**
 	 * add an error; status will be set to ERROR

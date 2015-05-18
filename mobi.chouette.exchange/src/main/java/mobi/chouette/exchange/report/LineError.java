@@ -8,7 +8,6 @@ import javax.xml.bind.annotation.XmlType;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NonNull;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder={"code","description"})
@@ -29,11 +28,9 @@ public class LineError {
 	};
 	
 	@XmlElement(name="code",required=true)
-	@NonNull
 	private CODE code;
 	
 	@XmlElement(name="description",required=true)
-	@NonNull
 	private String description;
 	
 }

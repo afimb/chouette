@@ -10,11 +10,12 @@ import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlType;
 
 import lombok.Data;
-import lombok.NonNull;
+import lombok.NoArgsConstructor;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder = { "name", "status", "errors" })
 @Data
+@NoArgsConstructor
 public class FileInfo {
 
 	@XmlType(name = "fileState")
@@ -24,11 +25,9 @@ public class FileInfo {
 	};
 
 	@XmlElement(name = "name", required = true)
-	@NonNull
 	private String name;
 
 	@XmlElement(name = "status", required = true)
-	@NonNull
 	private FILE_STATE status;
 
 	@XmlElement(name = "errors")
@@ -37,6 +36,11 @@ public class FileInfo {
 	public void addError(FileError error) {
 		status = FILE_STATE.ERROR;
 		errors.add(error);
+	}
+	public FileInfo( String name, FILE_STATE state)
+	{
+		this.name = name;
+		this.status = state;
 	}
 
 }
