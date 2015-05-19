@@ -88,7 +88,7 @@ mvn -DskipTests install
 ```
 
 ## from binary
-download chouette.ear from [maven repository](http://maven.chouette.mobi/chouette_iev)
+download chouette.ear from [maven repository](http://maven.chouette.mobi/mobi/chouette/chouette_iev)
 
 change data storage directory (USER_HOME by default)
 copy properties file [iev.properties](./doc/iev.properties) in /etc/chouette/iev/ directory
