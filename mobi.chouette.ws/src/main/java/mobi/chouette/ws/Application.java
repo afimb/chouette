@@ -1,4 +1,4 @@
-package mobi.chouette.api;
+package mobi.chouette.ws;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,7 +22,7 @@ public class Application extends javax.ws.rs.core.Application implements
 	@Override
 	public Set<Class<?>> getClasses() {
 		Set<Class<?>> result = new HashSet<Class<?>>();
-		result.add(Service.class);
+		result.add(RestService.class);
 		return result;
 	}
 

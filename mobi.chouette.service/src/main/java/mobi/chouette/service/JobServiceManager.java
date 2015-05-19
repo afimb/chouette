@@ -23,6 +23,7 @@ import javax.ejb.Startup;
 import javax.ws.rs.core.MediaType;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Constant;
 import mobi.chouette.dao.JobDAO;
 import mobi.chouette.dao.SchemaDAO;
 import mobi.chouette.model.api.Job;
@@ -178,7 +179,6 @@ public class JobServiceManager {
 		jobService.setUpdated(new Date());
 		jobService.setStarted(new Date());
 		jobService.addLink(MediaType.APPLICATION_JSON, Link.REPORT_REL);
-		jobService.addLink(MediaType.APPLICATION_JSON, Link.VALIDATION_REL);
 		jobDAO.update(jobService.getJob());
 	}
 
@@ -266,6 +266,11 @@ public class JobServiceManager {
 				jobService.addLink(MediaType.APPLICATION_OCTET_STREAM, Link.DATA_REL);
 			}
 		}
+		// add validation report link
+		if (!jobService.linkExists(Link.VALIDATION_REL)) {
+			if (Files.exists(Paths.get(jobService.getPathName(), Constant.VALIDATION_FILE)))
+		        jobService.addLink(MediaType.APPLICATION_JSON, Link.VALIDATION_REL);
+		}
 
 		jobService.setUpdated(new Date());
 		jobDAO.update(jobService.getJob());
@@ -280,6 +285,12 @@ public class JobServiceManager {
 		jobService.removeLink(Link.CANCEL_REL);
 		// set delete link
 		jobService.addLink(MediaType.APPLICATION_JSON, Link.DELETE_REL);
+		
+		// add validation report link
+		if (!jobService.linkExists(Link.VALIDATION_REL)) {
+			if (Files.exists(Paths.get(jobService.getPathName(), Constant.VALIDATION_FILE)))
+		        jobService.addLink(MediaType.APPLICATION_JSON, Link.VALIDATION_REL);
+		}
 
 		jobService.setUpdated(new Date());
 		jobDAO.update(jobService.getJob());

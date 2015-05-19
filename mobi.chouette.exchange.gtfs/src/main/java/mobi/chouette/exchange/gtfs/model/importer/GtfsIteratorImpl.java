@@ -8,6 +8,7 @@ import java.util.List;
 
 import lombok.ToString;
 
+
 public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator {
 	public static final char LF = '\n';
 	public static final char CR = '\r';
@@ -74,6 +75,11 @@ public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator {
 					}
 					_index = 0;
 					_position = _mark;
+					if (_escape)
+					{
+						result=false;
+					}
+					else
 					result = true;
 					break loop;
 				}

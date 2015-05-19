@@ -53,7 +53,7 @@ public void testProgressionInitialize() throws Exception
 	File reportFile = new File(d,REPORT_FILE);
 	File validationFile = new File(d,VALIDATION_FILE);
 	Assert.assertTrue (reportFile.exists(), REPORT_FILE + "should exists");
-	Assert.assertTrue (validationFile.exists(), VALIDATION_FILE + "should exists");
+	Assert.assertFalse (validationFile.exists(), VALIDATION_FILE + "should not exists");
 
 	Assert.assertNotNull(report.getProgression(), "progression should be reported");
 	Assert.assertEquals(report.getProgression().getCurrentStep(), STEP.INITIALISATION.ordinal(), " progression should be on step init");
@@ -89,6 +89,8 @@ public void testProgressionExecute() throws Exception
 	validation.getCheckPoints().add(checkPoint);
 	progression.execute(context);
 	context.remove(VALIDATION_REPORT);
+	File validationFile = new File(d,VALIDATION_FILE);
+	Assert.assertTrue (validationFile.exists(), VALIDATION_FILE + "should exists");
 
 }
 

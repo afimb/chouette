@@ -55,14 +55,14 @@ public class NetexImporterCommand extends AbstractImporterCommand implements Com
 		result = process(context, commands, progression, true, Mode.line);
 
 		} catch (Exception e) {
-			log.error(e);
+			log.error(e.getMessage(), e);
 			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR, "Fatal :" + e));
 
 		} finally {
 			progression.dispose(context);
+			log.info(Color.YELLOW + monitor.stop() + Color.NORMAL);
 		}
 
-		log.info(Color.YELLOW + monitor.stop() + Color.NORMAL);
 		return result;
 	}
 

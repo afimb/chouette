@@ -105,7 +105,7 @@ public class GtfsValidationCommand implements Command, Constant {
 			   throw e;
 			report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS, e.getError().name()+" "+e.getPath()));
 		} catch (Exception e) {
-			log.error(e);
+			log.error(e,e);
 			throw e;
 		}
         finally

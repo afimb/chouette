@@ -24,7 +24,8 @@ public class StepProgression {
 	public enum STEP {
 		INITIALISATION,
 		PROCESSING,
-		FINALISATION
+		FINALISATION,
+		TERMINATED
 	};
     @XmlElement( name = "step",required=true)
     private STEP step;

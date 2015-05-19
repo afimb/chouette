@@ -66,7 +66,7 @@ public class NeptuneImporterCommand extends AbstractImporterCommand implements C
 		
 
 		} catch (Exception e) {
-			log.error("Fatal :", e);
+			log.error(e.getMessage(), e);
 			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR,"Fatal :" + e));
 
 		} finally {

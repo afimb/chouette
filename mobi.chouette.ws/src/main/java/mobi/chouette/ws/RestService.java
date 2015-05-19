@@ -1,4 +1,4 @@
-package mobi.chouette.api;
+package mobi.chouette.ws;
 
 import java.io.File;
 import java.io.InputStream;
@@ -54,7 +54,7 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 @Path("/referentials")
 @Log4j
 @RequestScoped
-public class Service implements Constant {
+public class RestService implements Constant {
 
     private static String api_version_key = "X-ChouetteIEV-Media-Type";
     private static String api_version = "iev.v1.0; format=json";
@@ -106,7 +106,7 @@ public class Service implements Constant {
         } finally {
             for( InputStream is : inputStreamByName.values()) {
                 try { is.close(); } catch ( Exception e) { 
-                    Logger.getLogger(Service.class.getName()).log(Level.SEVERE, e.getMessage(), e);
+                    Logger.getLogger(RestService.class.getName()).log(Level.SEVERE, e.getMessage(), e);
                 }
             }
         }

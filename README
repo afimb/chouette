@@ -43,6 +43,9 @@ bin/jboss-cli.sh --connect --command=:shutdown
 
 TODO :
 configurer le server HTTP : max post size:  1G ?
+ /subsystem=web/connector=http:write-attribute(name=max-post-size, value=2120000000)
+
+
 configurer transaction manager : default timeout: 0
 
 

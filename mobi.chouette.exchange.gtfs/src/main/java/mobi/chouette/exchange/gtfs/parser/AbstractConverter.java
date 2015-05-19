@@ -106,7 +106,7 @@ public abstract class AbstractConverter {
 			code = FileError.CODE.FILE_NOT_FOUND;
 			break;
 		}
-		String message = ex.getMessage() != null? ex.getMessage() : ex.getClass().getSimpleName();
+		String message = ex.getMessage() != null? ex.getMessage() : ex.toString();
 		file.addError(new FileError(code, message));
 	}
 

@@ -34,13 +34,12 @@ public class GtfsImporterCommand extends AbstractImporterCommand implements Comm
 
 		ProgressionCommand progression = (ProgressionCommand) CommandFactory.create(initialContext,
 				ProgressionCommand.class.getName());
-
+		ActionReport report = (ActionReport) context.get(REPORT);
 		try {
 			// check params
 			Object configuration = context.get(CONFIGURATION);
 			if (!(configuration instanceof GtfsImportParameters)) {
 				// fatal wrong parameters
-				ActionReport report = (ActionReport) context.get(REPORT);
 				log.error("invalid parameters for gtfs import " + configuration.getClass().getName());
 				report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,
 						"invalid parameters for gtfs import " + configuration.getClass().getName()));
@@ -55,14 +54,15 @@ public class GtfsImporterCommand extends AbstractImporterCommand implements Comm
 			
 
 		} catch (Exception e) {
-			ActionReport report = (ActionReport) context.get(REPORT);
-			log.error(e);
+			
+			log.error(e.getMessage(), e);
 			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR, "Fatal :" + e));
 		} finally {
 			progression.dispose(context);
+			log.info(Color.YELLOW + monitor.stop() + Color.NORMAL);
 		}
 
-		log.info(Color.YELLOW + monitor.stop() + Color.NORMAL);
+		
 		return result;
 	}
 

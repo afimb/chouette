@@ -52,6 +52,10 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 	}
 
 	public void dispose(Context context) {
+		ActionReport report = (ActionReport) context.get(REPORT);
+		StepProgression step = report.getProgression().getSteps().get(STEP.FINALISATION.ordinal());
+		boolean terminated = step.getRealized() == step.getTotal();
+		if (terminated) report.getProgression().setCurrentStep(STEP.TERMINATED.ordinal());
 		saveReport(context);
 		if (context.containsKey(VALIDATION_REPORT)) {
 			mergeValidationReports(context);
@@ -79,7 +83,8 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 		if (context.containsKey("testng"))
 			return;
 		ValidationReport report = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
-		if (report == null)
+		// ne pas sauver un rapport null ou vide
+		if (report == null || report.getCheckPoints().isEmpty())
 			return;
 		JobData jobData = (JobData) context.get(JOB_DATA);
 		Path path = Paths.get(jobData.getPathName(), VALIDATION_FILE);

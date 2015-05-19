@@ -3,17 +3,17 @@
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
 	<servlet>
 		<servlet-name>chouette_iev</servlet-name>
-		<servlet-class>mobi.chouette.api.Application</servlet-class>
+		<servlet-class>mobi.chouette.ws.Application</servlet-class>
 	</servlet>
 	<servlet-mapping>
 		<servlet-name>chouette_iev</servlet-name>
 		<url-pattern>/*</url-pattern>
 	</servlet-mapping>
 	<listener>
-		<listener-class>mobi.chouette.api.Application</listener-class>
+		<listener-class>mobi.chouette.ws.Application</listener-class>
 	</listener>
    <context-param>
       <param-name>resteasy.providers</param-name>
-      <param-value>mobi.chouette.api.WebApplicationExceptionMapper</param-value>
+      <param-value>mobi.chouette.ws.WebApplicationExceptionMapper</param-value>
    </context-param>
 </web-app>

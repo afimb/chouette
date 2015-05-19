@@ -70,9 +70,9 @@
 		        <modules>
 		            <webModule>
 		                <groupId>mobi.chouette</groupId>
-		                <artifactId>mobi.chouette.api</artifactId>
-		                <uri>mobi.chouette.api.war</uri>
-		                <bundleFileName>mobi.chouette.api.war</bundleFileName>
+		                <artifactId>mobi.chouette.ws</artifactId>
+		                <uri>mobi.chouette.ws.war</uri>
+		                <bundleFileName>mobi.chouette.ws.war</bundleFileName>
 		                <contextRoot>/chouette_iev</contextRoot>
 		            </webModule>
 		        </modules>
@@ -193,7 +193,7 @@
       </dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>mobi.chouette.api</artifactId>
+			<artifactId>mobi.chouette.ws</artifactId>
 			<type>war</type>			
 			<version>${project.version}</version>
 		</dependency>

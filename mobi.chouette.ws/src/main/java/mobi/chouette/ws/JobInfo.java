@@ -1,4 +1,4 @@
-package mobi.chouette.api;
+package mobi.chouette.ws;
 
 import static mobi.chouette.common.Constant.ACTION_PARAMETERS_FILE;
 import static mobi.chouette.common.Constant.PARAMETERS_FILE;

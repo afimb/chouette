@@ -1,4 +1,4 @@
-package mobi.chouette.api;
+package mobi.chouette.ws;
 
 import java.text.MessageFormat;
 

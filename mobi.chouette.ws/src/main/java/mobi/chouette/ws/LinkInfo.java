@@ -1,4 +1,4 @@
-package mobi.chouette.api;
+package mobi.chouette.ws;
 
 import javax.ws.rs.core.UriInfo;
 import javax.xml.bind.annotation.XmlAccessType;
