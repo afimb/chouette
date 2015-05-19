@@ -14,8 +14,51 @@
       <earName>chouette</earName>
    </properties>
 	<build>
+      <resources>
+         <resource>
+            <directory>${basedir}/src/main/resources</directory>
+            <filtering>false</filtering>
+            <includes>
+               <include>*.properties</include>
+            </includes>
+            <targetPath>${project.build.directory}</targetPath>
+         </resource>
+      </resources>
 		<finalName>${earName}</finalName>
 		<plugins>
+         <plugin>
+            <groupId>pl.project13.maven</groupId>
+            <artifactId>git-commit-id-plugin</artifactId>
+            <executions>
+               <execution>
+                  <goals>
+                     <goal>revision</goal>
+                  </goals>
+               </execution>
+            </executions>
+            <configuration>
+               <verbose>false</verbose>
+               <useNativeGit>true</useNativeGit>
+               <dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
+               <generateGitPropertiesFile>true</generateGitPropertiesFile>
+               <generateGitPropertiesFilename>target/git.properties</generateGitPropertiesFilename>
+               <failOnNoGitDirectory>false</failOnNoGitDirectory>
+               <skip>false</skip>
+               <excludeProperties>
+                  <excludeProperty>git.commit.user.name</excludeProperty>
+                  <excludeProperty>git.commit.user.email</excludeProperty>
+                  <excludeProperty>git.build.user.name</excludeProperty>
+                  <excludeProperty>git.build.user.email</excludeProperty>
+               </excludeProperties>
+               <gitDescribe>
+                  <skip>false</skip>
+                  <always>false</always>
+                  <abbrev>7</abbrev>
+                  <dirty>-dirty</dirty>
+                  <forceLongFormat>false</forceLongFormat>
+               </gitDescribe>
+            </configuration>
+         </plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-ear-plugin</artifactId>
@@ -52,7 +95,25 @@
 					</execution>
 				</executions>
 			</plugin>
-
+         <plugin>
+            <artifactId>maven-assembly-plugin</artifactId>
+            <configuration>
+               <finalName>chouette-iev_${project.version}</finalName>
+               <appendAssemblyId>false</appendAssemblyId>
+               <descriptors>
+                  <descriptor>src/main/resources/assemblies/afimb.xml</descriptor>
+               </descriptors>
+            </configuration>
+            <executions>
+               <execution>
+                  <id>make-assembly</id> <!-- this is used for inheritance merges -->
+                  <phase>package</phase> <!-- append to the packaging phase. -->
+                  <goals>
+                     <goal>single</goal> <!-- goals == mojos -->
+                  </goals>
+               </execution>
+            </executions>
+         </plugin>
 		</plugins>
 	</build>
 	<dependencies>

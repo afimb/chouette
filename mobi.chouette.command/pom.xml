@@ -159,7 +159,7 @@
                <generateGitPropertiesFile>true</generateGitPropertiesFile>
                <generateGitPropertiesFilename>target/git.properties</generateGitPropertiesFilename>
                <failOnNoGitDirectory>false</failOnNoGitDirectory>
-               <skip>true</skip>
+               <skip>false</skip>
                <excludeProperties>
                   <excludeProperty>git.commit.user.name</excludeProperty>
                   <excludeProperty>git.commit.user.email</excludeProperty>
