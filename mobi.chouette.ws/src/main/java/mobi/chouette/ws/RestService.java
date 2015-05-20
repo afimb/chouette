@@ -167,13 +167,19 @@ public class RestService implements Constant {
                 if (filename == null) {
                     throw new ServiceException(ServiceExceptionCode.INVALID_REQUEST,"missing filename in part");
                 }
+                // protect filename from invalid url chars
+                filename = removeSpecialChars(filename);
                 result.put(filename, part.getBody(InputStream.class, null));
             }
             return result;
     }
 
 
-    // download attached file
+    private String removeSpecialChars(String filename) {
+		return filename.replaceAll("[^\\w-_\\.]", "_");
+	}
+
+	// download attached file
     @GET
     @Path("/{ref}/data/{id}/{filepath: .*}")
     @Produces({MediaType.APPLICATION_OCTET_STREAM, MediaType.APPLICATION_JSON})

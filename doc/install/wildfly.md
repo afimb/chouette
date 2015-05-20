@@ -34,7 +34,7 @@ create database access :
 bin/jboss-cli.sh
 connect
 
-module add --name=org.postgres --resources=(path to driver)/postgresql-9.3-1101.jdbc41.jar --dependencies=javax.api,javax.transaction.api
+module add --name=org.postgres --resources=(path to driver)/postgresql-9.3-1102-jdbc41.jar --dependencies=javax.api,javax.transaction.api
 /subsystem=datasources/jdbc-driver=postgres:add(driver-name="postgres",driver-module-name="org.postgres",driver-class-name=org.postgresql.Driver)
 data-source add --jndi-name=java:jboss/datasources/chouette --name=chouette --connection-url=jdbc:postgresql://localhost:5432/chouette2 --driver-name=postgres --user-name=chouette --password=chouette
 

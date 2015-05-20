@@ -8,7 +8,6 @@ import java.util.List;
 
 import lombok.ToString;
 
-
 public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator {
 	public static final char LF = '\n';
 	public static final char CR = '\r';
@@ -66,8 +65,7 @@ public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator {
 				case CR:
 				case LF: {
 					_fields.get(_index).offset = _mark;
-					_fields.get(_index).length = _buffer.position() - 1
-							- _fields.get(_index).offset;
+					_fields.get(_index).length = _buffer.position() - 1 - _fields.get(_index).offset;
 					if (value == CR) {
 						_mark = _buffer.position() + 1;
 					} else {
@@ -76,18 +74,16 @@ public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator {
 					_index = 0;
 					_position = _mark;
 					if (_escape)
-					{
-						result=false;
-					}
+						result = false;
 					else
-					result = true;
+						result = true;
+					_escape = false;
 					break loop;
 				}
 				case DELIMITER: {
 					if (!_escape) {
 						_fields.get(_index).offset = _mark;
-						_fields.get(_index).length = (_buffer.position() - 1 - _fields
-								.get(_index).offset);
+						_fields.get(_index).length = (_buffer.position() - 1 - _fields.get(_index).offset);
 						_mark = _buffer.position();
 						_index++;
 
@@ -103,6 +99,8 @@ public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator {
 							_escape = false;
 						} else if (next == DQUOTE) {
 							_buffer.get();
+						} else {
+							_escape = false;
 						}
 					}
 					break;
@@ -195,11 +193,9 @@ public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator {
 			byte c = _buffer.get();
 			if (!escape) {
 				if (c == DQUOTE) {
-					if (i == 0) {
-						escape = true;
-					} else if (i + 1 < length) {
+					if (i + 1 < length) {
 						byte next = nextByte();
-						if (next == DQUOTE && i < length - 1) {
+						if (next == DQUOTE) {
 							_builder.put(c);
 						} else {
 							escape = true;
@@ -214,6 +210,7 @@ public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator {
 						byte next = nextByte();
 						if (next == DQUOTE) {
 							_builder.put(c);
+							i++;
 							_buffer.get();
 						} else {
 							escape = false;
@@ -226,8 +223,7 @@ public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator {
 				}
 			}
 		}
-		result = new String(_builder.array(), 0, _builder.position(),
-				StandardCharsets.UTF_8);
+		result = new String(_builder.array(), 0, _builder.position(), StandardCharsets.UTF_8);
 		return result;
 	}
 

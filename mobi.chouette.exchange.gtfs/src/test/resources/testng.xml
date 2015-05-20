@@ -18,7 +18,13 @@
       <package name="mobi.chouette.exchange.gtfs.importer" >
       </package>
    </packages>
-  </test> 
+  </test>>
+  <test name="ModelImport" >
+    <packages>
+      <package name="mobi.chouette.exchange.gtfs.model.importer" >
+      </package>
+   </packages>
+  </test>
   <!--
   <test name="ImportGTFSProducers" >
     <packages>
