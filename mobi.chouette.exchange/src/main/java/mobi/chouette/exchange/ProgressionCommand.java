@@ -136,7 +136,7 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 			saveMainValidationReport(context);
 		}
 		ActionReport report = (ActionReport) context.get(REPORT);
-		StepProgression step = report.getProgression().getSteps().get(report.getProgression().getCurrentStep());
+		StepProgression step = report.getProgression().getSteps().get(report.getProgression().getCurrentStep()-1);
 		step.setRealized(step.getRealized() + 1);
 		saveReport(context);
 		// reset validationReport
