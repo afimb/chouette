@@ -38,7 +38,7 @@ module add --name=org.postgres --resources=(path to driver)/postgresql-9.3-1102-
 /subsystem=datasources/jdbc-driver=postgres:add(driver-name="postgres",driver-module-name="org.postgres",driver-class-name=org.postgresql.Driver)
 data-source add --jndi-name=java:jboss/datasources/chouette --name=chouette --connection-url=jdbc:postgresql://localhost:5432/chouette2 --driver-name=postgres --user-name=chouette --password=chouette
 
-data-source add --jndi-name=java:jboss/datasources/iev --name=iev --connection-url=jdbc:h2:(path to iev data directory)/database/jobs --driver-name=h2 --user-name=chouette --password=chouette
+data-source add --jndi-name=java:jboss/datasources/iev --name=iev --connection-url=jdbc:postgresql://localhost:5432/iev --driver-name=postgres --user-name=chouette --password=chouette
 ```
 Note : (path to ...) must be replaced by absolute paths without parenthesis
 
