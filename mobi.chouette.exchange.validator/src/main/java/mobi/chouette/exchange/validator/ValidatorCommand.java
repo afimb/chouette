@@ -105,17 +105,18 @@ public class ValidatorCommand extends AbstractExporterCommand implements Command
 				ActionReport report = (ActionReport) context.get(REPORT);
 				LineInfo lineInfo = new LineInfo(line.getName() + " (" + line.getNumber() + ")");
 				DataStats stats = lineInfo.getStats();
+				stats.setLineCount(1);
 				stats.setJourneyPatternCount(data.getJourneyPatterns().size());
 				stats.setRouteCount(data.getRoutes().size());
 				stats.setVehicleJourneyCount(data.getVehicleJourneys().size());
 
 				// merge lineStats to global ones
 				DataStats globalStats = report.getStats();
+				globalStats.setLineCount(globalStats.getLineCount() + stats.getLineCount());
 				globalStats.setRouteCount(globalStats.getRouteCount() + stats.getRouteCount());
 				globalStats.setVehicleJourneyCount(globalStats.getVehicleJourneyCount() + stats.getVehicleJourneyCount());
 				globalStats.setJourneyPatternCount(globalStats.getJourneyPatternCount() + stats.getJourneyPatternCount());
 				report.getLines().add(lineInfo);
-
 
 				if (resLine == SUCCESS) {
 					lineCount++;
