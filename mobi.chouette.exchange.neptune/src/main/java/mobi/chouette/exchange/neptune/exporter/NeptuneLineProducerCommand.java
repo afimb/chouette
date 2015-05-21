@@ -102,8 +102,7 @@ public class NeptuneLineProducerCommand implements Command, Constant {
 				lineInfo.addError(new LineError(LineError.CODE.NO_DATA_ON_PERIOD,"no data on period"));				
 			}
 			report.getLines().add(lineInfo);
-		} catch (Exception e) {
-			log.error(e.getMessage(), e);
+
 		} finally {
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		}

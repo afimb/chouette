@@ -160,7 +160,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 
 				List<StopPoint> stopPoints = journeyPattern.getStopPoints();
 				journeyPattern.setDepartureStopPoint(stopPoints.get(0));
-				journeyPattern.setDepartureStopPoint(stopPoints.get(stopPoints.size() - 1));
+				journeyPattern.setArrivalStopPoint(stopPoints.get(stopPoints.size() - 1));
 
 				if (route.getName() == null) {
 					if (!route.getStopPoints().isEmpty()) {
