@@ -167,6 +167,11 @@ public class JobService implements JobData,ServiceConstants {
         return null;
     }
     
+    public static String getRootPathName(String referential)
+    {
+    	 return Paths.get(System.getProperty(PropertyNames.ROOT_DIRECTORY), ROOT_PATH, referential).toString();
+    }
+    
     public java.nio.file.Path getPath() {
         if ( jobPersisted()) {
             return java.nio.file.Paths.get( getPathName());

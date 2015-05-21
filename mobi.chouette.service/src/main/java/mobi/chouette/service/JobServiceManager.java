@@ -147,7 +147,7 @@ public class JobServiceManager {
 	}
 
 	private void validateReferential(final String referential) throws ServiceException {
-        // launch a thread to separate datasources transactions
+		// launch a thread to separate datasources transactions
 		SchemaValidatorThread s = new SchemaValidatorThread(referential);
 		Thread t = new Thread(s);
 		t.start();
@@ -241,12 +241,12 @@ public class JobServiceManager {
 			if (jobService.getStatus().equals(STATUS.SCHEDULED)) {
 				jobDAO.update(jobService.getJob());
 				jobDAO.delete(jobService.getJob());
-				try {
-					FileUtils.deleteDirectory(jobService.getPath().toFile());
-				} catch (IOException e) {
-					Logger.getLogger(JobServiceManager.class.getName())
-							.log(Level.SEVERE, "fail to delete directory", e);
-				}
+				// try {
+				// FileUtils.deleteDirectory(jobService.getPath().toFile());
+				// } catch (IOException e) {
+				// Logger.getLogger(JobServiceManager.class.getName())
+				// .log(Level.SEVERE, "fail to delete directory", e);
+				// }
 				iterator.remove();
 			}
 		}
@@ -254,12 +254,19 @@ public class JobServiceManager {
 			if (jobService.getStatus().equals(STATUS.STARTED)) {
 				scheduler.cancel(jobService);
 			}
-			try {
-				FileUtils.deleteDirectory(jobService.getPath().toFile());
-			} catch (IOException e) {
-				Logger.getLogger(JobServiceManager.class.getName()).log(Level.SEVERE, "fail to delete directory", e);
-			}
+			// try {
+			// FileUtils.deleteDirectory(jobService.getPath().toFile());
+			// } catch (IOException e) {
+			// Logger.getLogger(JobServiceManager.class.getName()).log(Level.SEVERE,
+			// "fail to delete directory", e);
+			// }
 			jobDAO.delete(jobService.getJob());
+		}
+		try {
+			FileUtils.deleteDirectory(new File(JobService.getRootPathName(referential)));
+		} catch (IOException e) {
+			Logger.getLogger(JobServiceManager.class.getName()).log(Level.SEVERE,
+					"fail to delete directory for" + referential, e);
 		}
 
 	}
@@ -332,12 +339,12 @@ public class JobServiceManager {
 
 	public JobService scheduledJob(String referential, Long id) throws ServiceException {
 		validateReferential(referential);
-		return getJobService(referential, id,true);
+		return getJobService(referential, id, true);
 	}
 
 	public JobService terminatedJob(String referential, Long id) throws ServiceException {
 		validateReferential(referential);
-		JobService jobService = getJobService(referential, id,true);
+		JobService jobService = getJobService(referential, id, true);
 
 		if (jobService.getStatus().ordinal() < STATUS.TERMINATED.ordinal()
 				|| jobService.getStatus().ordinal() == STATUS.DELETED.ordinal()) {
@@ -352,7 +359,8 @@ public class JobServiceManager {
 
 		Job job = jobDAO.find(id);
 		if (job != null && job.getReferential().equals(referential)) {
-			if (detach) jobDAO.detach(job);
+			if (detach)
+				jobDAO.detach(job);
 			return new JobService(job);
 		}
 		throw new RequestServiceException(RequestExceptionCode.UNKNOWN_JOB, "referential = " + referential + " ,id = "
@@ -428,6 +436,7 @@ public class JobServiceManager {
 
 		public void run() {
 			try {
+				Thread.sleep(2000);
 				scheduler.schedule(referential);
 			} catch (Exception e) {
 				log.error(e);
