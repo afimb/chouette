@@ -17,7 +17,7 @@ Chouette is a java open source project on transport offer. It's divided into dif
 * mobi.chouette.service : Job and tasks managment
 * mobi.chouette.ws : Rest api implementation
 
-For more information see [Architecture Documentation](http://www.chouette.mobi/docs/) 
+For more information see [Architecture Documentation](http://www.chouette.mobi/developpeurs/) 
 
 Feel free to test and access to the demonstration web site at [http://appli.chouette.mobi/chouette2](http://appli.chouette.mobi/chouette2). Two types of accesses are granted : 
 * A demo organisation with a set of data
@@ -101,7 +101,7 @@ bin/jboss-cli.sh connect, deploy --force  (path to ...)/chouette.ear
 
 ## More Information
  
-An exhaustive technical documentation in French is avalailable [here](http://www.chouette.mobi/docs/)
+An exhaustive technical documentation in French is avalailable [here](http://www.chouette.mobi/developpeurs/)
 
 
 ## License
