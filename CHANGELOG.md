@@ -1,8 +1,9 @@
 # Version 3.0.0 (en cours)
-* Architecture
-  * Refonte de l'architecture pour passer sur un serveur REST
+* Nouveaux composants
+  * Implémentation d'une interface webservice REST asynchrone des traitements d'import, export et validation chouette.ear exécutable sous Wildly en remplacement du jar programme chouette-gui-command.
+  * Ajout d'un composant jar autonome pour réaliser des opérations de conversion de format et de validation en ligne de commande
 
-# Version 2.5.3 ()
+# Version 2.5.3 (non déployée)
 * Nouvelles fonctionnalités
   * Contrôle de cohérence des communes des arrêts (Mantis 31896)
   * Ajout de champs dans les échanges Neptune en structurant le champ commentaire (Mantis 31897)

@@ -101,7 +101,6 @@ public class JobServiceManager {
 			if (Files.exists(jobService.getPath())) {
 				// réutilisation anormale d'un id de job (réinitialisation de la
 				// séquence à l'extérieur de l'appli?)
-				// jobDAO.delete( jobService.getJob());
 				FileUtils.deleteDirectory(jobService.getPath().toFile());
 			}
 			Files.createDirectories(jobService.getPath());
@@ -114,10 +113,9 @@ public class JobServiceManager {
 
 			jobDAO.detach(jobService.getJob());
 
-			// Lancer la tache
+			// Lancer la tache dans un thread pour séparer les transactions
 			Thread t = new Thread(new SchedulerThread(jobService.getReferential()));
 			t.start();
-			// scheduler.schedule(jobService.getReferential());
 
 			return jobService;
 
@@ -149,12 +147,7 @@ public class JobServiceManager {
 	}
 
 	private void validateReferential(final String referential) throws ServiceException {
-		// if (!schemaDAO.getSchemaListing().contains(referential)) {
-		// throw new
-		// RequestServiceException(RequestExceptionCode.UNKNOWN_REFERENTIAL,
-		// "");
-		// }
-
+        // launch a thread to separate datasources transactions
 		SchemaValidatorThread s = new SchemaValidatorThread(referential);
 		Thread t = new Thread(s);
 		t.start();
@@ -168,7 +161,7 @@ public class JobServiceManager {
 	}
 
 	public JobService download(String referential, Long id, String filename) throws ServiceException {
-		JobService jobService = getJobService(referential, id);
+		JobService jobService = getJobService(referential, id, true);
 
 		java.nio.file.Path path = Paths.get(jobService.getPathName(), filename);
 		if (!Files.exists(path, LinkOption.NOFOLLOW_LINKS)) {
@@ -184,7 +177,6 @@ public class JobServiceManager {
 	 * @param referential
 	 * @return
 	 */
-	// @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public JobService getNextJob(String referential) {
 		Job job = jobDAO.getNextJob(referential);
 		if (job == null) {
@@ -203,9 +195,9 @@ public class JobServiceManager {
 		jobDAO.update(jobService.getJob());
 	}
 
-	// @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public void cancel(String referential, Long id) throws ServiceException {
-		JobService jobService = getJobService(referential, id);
+		validateReferential(referential);
+		JobService jobService = getJobService(referential, id, true);
 		if (jobService.getStatus().ordinal() <= STATUS.STARTED.ordinal()) {
 
 			if (jobService.getStatus().equals(STATUS.STARTED)) {
@@ -226,9 +218,9 @@ public class JobServiceManager {
 
 	}
 
-	// @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public void remove(String referential, Long id) throws ServiceException {
-		JobService jobService = getJobService(referential, id);
+		validateReferential(referential);
+		JobService jobService = getJobService(referential, id, false);
 		if (jobService.getStatus().ordinal() <= STATUS.STARTED.ordinal()) {
 			throw new RequestServiceException(RequestExceptionCode.SCHEDULED_JOB, "referential = " + referential
 					+ " ,id = " + id);
@@ -238,17 +230,16 @@ public class JobServiceManager {
 		} catch (IOException e) {
 			Logger.getLogger(JobServiceManager.class.getName()).log(Level.SEVERE, "fail to delete directory", e);
 		}
-
 		jobDAO.delete(jobService.getJob());
 	}
 
-	// @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public void drop(String referential) throws ServiceException {
 		List<JobService> jobServices = findAll(referential);
 		// supprimer en premier les jobs en attente, puis les autres
 		for (Iterator<JobService> iterator = jobServices.iterator(); iterator.hasNext();) {
 			JobService jobService = iterator.next();
 			if (jobService.getStatus().equals(STATUS.SCHEDULED)) {
+				jobDAO.update(jobService.getJob());
 				jobDAO.delete(jobService.getJob());
 				try {
 					FileUtils.deleteDirectory(jobService.getPath().toFile());
@@ -341,12 +332,12 @@ public class JobServiceManager {
 
 	public JobService scheduledJob(String referential, Long id) throws ServiceException {
 		validateReferential(referential);
-		return getJobService(referential, id);
+		return getJobService(referential, id,true);
 	}
 
 	public JobService terminatedJob(String referential, Long id) throws ServiceException {
 		validateReferential(referential);
-		JobService jobService = getJobService(referential, id);
+		JobService jobService = getJobService(referential, id,true);
 
 		if (jobService.getStatus().ordinal() < STATUS.TERMINATED.ordinal()
 				|| jobService.getStatus().ordinal() == STATUS.DELETED.ordinal()) {
@@ -357,12 +348,11 @@ public class JobServiceManager {
 		return jobService;
 	}
 
-	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-	private JobService getJobService(String referential, Long id) throws ServiceException {
+	private JobService getJobService(String referential, Long id, boolean detach) throws ServiceException {
 
 		Job job = jobDAO.find(id);
 		if (job != null && job.getReferential().equals(referential)) {
-			jobDAO.detach(job);
+			if (detach) jobDAO.detach(job);
 			return new JobService(job);
 		}
 		throw new RequestServiceException(RequestExceptionCode.UNKNOWN_JOB, "referential = " + referential + " ,id = "
