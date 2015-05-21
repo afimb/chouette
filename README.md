@@ -2,7 +2,6 @@
 
 Chouette is a java open source project on transport offer. It's divided into differents modules : 
 * chouette-iev : REST server (ear)
-* mobi.chouette.api : Rest api implementation
 * mobi.chouette.command : Command mode standalone program (Import, Export and Validation actions)
 * mobi.chouette.common : common classes and interfaces
 * mobi.chouette.dao : Dao implementation for model persistence (EJB)
@@ -15,7 +14,8 @@ Chouette is a java open source project on transport offer. It's divided into dif
 * mobi.chouette.exchange.validator : Specific commands for common validation purpose
 * mobi.chouette.model : JPA entities modelisation
 * mobi.chouette.persistence.hibernate : Hibernate specific tools
-* mobi.chouette.persistence.service : Job and tasks managment
+* mobi.chouette.service : Job and tasks managment
+* mobi.chouette.ws : Rest api implementation
 
 For more information see [Architecture Documentation](http://www.chouette.mobi/docs/) 
 

@@ -20,5 +20,20 @@
                  class-name="org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter"></exception-sorter>  
         </validation>  
    </datasource>
-     
+  <datasource jndi-name="java:jboss/datasources/iev"
+      pool-name="chouette" enabled="true" use-java-context="true">
+      <connection-url>jdbc:postgresql://localhost:5432/chouette_test</connection-url>
+      <driver name="postgres" module="org.postgres">postgresql-9.3-1102-jdbc41.jar</driver>
+      <security>
+         <user-name>chouette</user-name>
+         <password>chouette</password>         
+      </security>
+        <validation>  
+            <valid-connection-checker  
+                 class-name="org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker"></valid-connection-checker>  
+            <exception-sorter  
+                 class-name="org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter"></exception-sorter>  
+        </validation>  
+   </datasource>
+       
 </datasources>

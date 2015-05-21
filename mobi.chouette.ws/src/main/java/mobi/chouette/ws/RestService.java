@@ -290,6 +290,12 @@ public class RestService implements Constant {
                         ROOT_PATH, jobService.getReferential(), jobService.getId())));
             }
 
+            // add links
+            for (Link link : jobService.getJob().getLinks()) {
+                URI uri = URI.create( uriInfo.getBaseUri() + link.getHref());
+                builder.link( URI.create(uri.toASCIIString()), link.getRel());
+            }
+
             builder.header(api_version_key, api_version);
             result = builder.build();
             return result;

@@ -17,7 +17,7 @@ on default ports (8080 and 9990 for administration)
 ```sh
 bin/standalone.sh -b 0.0.0.0 -c standalone-full.xml
 ```
-if port 8080 is used (8180 and 10090 for adminsitration)
+if port 8080 is used (8180 and 10090 for adminstration)
 ```sh
 bin/standalone.sh -b 0.0.0.0 -c standalone-full.xml -Djboss.socket.binding.port-offset=100
 ```

@@ -20,12 +20,14 @@ import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.ws.rs.core.MediaType;
 
+import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 import mobi.chouette.dao.JobDAO;
-import mobi.chouette.dao.SchemaDAO;
 import mobi.chouette.model.api.Job;
 import mobi.chouette.model.api.Job.STATUS;
 import mobi.chouette.model.api.Link;
@@ -47,7 +49,7 @@ public class JobServiceManager {
 	JobDAO jobDAO;
 
 	@EJB
-	SchemaDAO schemaDAO;
+	SchemaManager schemaManager;
 
 	@EJB
 	Scheduler scheduler;
@@ -110,8 +112,12 @@ public class JobServiceManager {
 			jobDAO.update(jobService.getJob());
 			jobDAO.flush();
 
+			jobDAO.detach(jobService.getJob());
+
 			// Lancer la tache
-			scheduler.schedule(jobService.getReferential());
+			Thread t = new Thread(new SchedulerThread(jobService.getReferential()));
+			t.start();
+			// scheduler.schedule(jobService.getReferential());
 
 			return jobService;
 
@@ -142,9 +148,22 @@ public class JobServiceManager {
 
 	}
 
-	private void validateReferential(String referential) throws ServiceException {
-		if (!schemaDAO.getSchemaListing().contains(referential)) {
-			throw new RequestServiceException(RequestExceptionCode.UNKNOWN_REFERENTIAL, "");
+	private void validateReferential(final String referential) throws ServiceException {
+		// if (!schemaDAO.getSchemaListing().contains(referential)) {
+		// throw new
+		// RequestServiceException(RequestExceptionCode.UNKNOWN_REFERENTIAL,
+		// "");
+		// }
+
+		SchemaValidatorThread s = new SchemaValidatorThread(referential);
+		Thread t = new Thread(s);
+		t.start();
+		try {
+			t.join();
+		} catch (InterruptedException e) {
+		}
+		if (!s.isResult()) {
+			throw new RequestServiceException(RequestExceptionCode.UNKNOWN_REFERENTIAL, "referential");
 		}
 	}
 
@@ -171,9 +190,11 @@ public class JobServiceManager {
 		if (job == null) {
 			return null;
 		}
+		jobDAO.detach(job);
 		return new JobService(job);
 	}
 
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public void start(JobService jobService) {
 		jobService.setStatus(STATUS.STARTED);
 		jobService.setUpdated(new Date());
@@ -252,6 +273,7 @@ public class JobServiceManager {
 
 	}
 
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public void terminate(JobService jobService) {
 		jobService.setStatus(STATUS.TERMINATED);
 
@@ -269,7 +291,7 @@ public class JobServiceManager {
 		// add validation report link
 		if (!jobService.linkExists(Link.VALIDATION_REL)) {
 			if (Files.exists(Paths.get(jobService.getPathName(), Constant.VALIDATION_FILE)))
-		        jobService.addLink(MediaType.APPLICATION_JSON, Link.VALIDATION_REL);
+				jobService.addLink(MediaType.APPLICATION_JSON, Link.VALIDATION_REL);
 		}
 
 		jobService.setUpdated(new Date());
@@ -277,6 +299,7 @@ public class JobServiceManager {
 
 	}
 
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public void abort(JobService jobService) {
 
 		jobService.setStatus(STATUS.ABORTED);
@@ -285,11 +308,11 @@ public class JobServiceManager {
 		jobService.removeLink(Link.CANCEL_REL);
 		// set delete link
 		jobService.addLink(MediaType.APPLICATION_JSON, Link.DELETE_REL);
-		
+
 		// add validation report link
 		if (!jobService.linkExists(Link.VALIDATION_REL)) {
 			if (Files.exists(Paths.get(jobService.getPathName(), Constant.VALIDATION_FILE)))
-		        jobService.addLink(MediaType.APPLICATION_JSON, Link.VALIDATION_REL);
+				jobService.addLink(MediaType.APPLICATION_JSON, Link.VALIDATION_REL);
 		}
 
 		jobService.setUpdated(new Date());
@@ -317,10 +340,12 @@ public class JobServiceManager {
 	}
 
 	public JobService scheduledJob(String referential, Long id) throws ServiceException {
+		validateReferential(referential);
 		return getJobService(referential, id);
 	}
 
 	public JobService terminatedJob(String referential, Long id) throws ServiceException {
+		validateReferential(referential);
 		JobService jobService = getJobService(referential, id);
 
 		if (jobService.getStatus().ordinal() < STATUS.TERMINATED.ordinal()
@@ -332,20 +357,23 @@ public class JobServiceManager {
 		return jobService;
 	}
 
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	private JobService getJobService(String referential, Long id) throws ServiceException {
-		validateReferential(referential);
 
 		Job job = jobDAO.find(id);
 		if (job != null && job.getReferential().equals(referential)) {
+			jobDAO.detach(job);
 			return new JobService(job);
 		}
 		throw new RequestServiceException(RequestExceptionCode.UNKNOWN_JOB, "referential = " + referential + " ,id = "
 				+ id);
 	}
 
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public JobService getJobService(Long id) throws ServiceException {
 		Job job = jobDAO.find(id);
 		if (job != null) {
+			jobDAO.detach(job);
 			return new JobService(job);
 		}
 		throw new RequestServiceException(RequestExceptionCode.UNKNOWN_JOB, " id = " + id);
@@ -378,6 +406,44 @@ public class JobServiceManager {
 			jobServices.add(new JobService(job));
 		}
 		return jobServices;
+	}
+
+	private class SchemaValidatorThread implements Runnable {
+		private String referential;
+		@Getter
+		private boolean result = false;
+
+		SchemaValidatorThread(String referential) {
+			this.referential = referential;
+		}
+
+		public void run() {
+			try {
+				result = schemaManager.validateReferential(referential);
+			} catch (Exception e) {
+				log.error(e);
+			}
+		}
+
+	}
+
+	private class SchedulerThread implements Runnable {
+		private String referential;
+		@Getter
+		private boolean result = false;
+
+		SchedulerThread(String referential) {
+			this.referential = referential;
+		}
+
+		public void run() {
+			try {
+				scheduler.schedule(referential);
+			} catch (Exception e) {
+				log.error(e);
+			}
+		}
+
 	}
 
 }

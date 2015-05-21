@@ -24,7 +24,7 @@ public class JobDAO extends GenericDAOImpl<Job> {
 		super(Job.class);
 	}
 
-	@PersistenceContext(unitName = "public")
+	@PersistenceContext(unitName = "iev")
 	public void setEntityManager(EntityManager em) {
 		this.em = em;
 	}

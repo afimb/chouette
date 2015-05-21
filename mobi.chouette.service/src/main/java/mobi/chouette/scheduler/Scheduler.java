@@ -54,8 +54,10 @@ public class Scheduler {
 	//@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void schedule(String referential) {
 
+		log.info("schedule referential "+referential);
 		JobService jobService = jobManager.getNextJob(referential);
 		if (jobService != null) {
+			log.info("start a new job "+jobService.getId());
 			jobManager.start(jobService);
 
 			Map<String, String> properties = new HashMap<String, String>();
@@ -63,6 +65,10 @@ public class Scheduler {
 			startedTasks.put(jobService.getId(),  task);
 			Future<STATUS> future = executor.submit(task);
 			startedFutures.put(jobService.getId(), future);
+		}
+		else
+		{
+			log.info("nothing to schedule ");
 		}
 	}
 
