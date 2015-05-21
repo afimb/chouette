@@ -31,6 +31,7 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 
 	public void initialize(Context context, int stepCount) {
 		ActionReport report = (ActionReport) context.get(REPORT);
+		report.getProgression().setCurrentStep(STEP.INITIALISATION.ordinal() + 1);
 		report.getProgression().getSteps().get(STEP.INITIALISATION.ordinal()).setTotal(stepCount);
 		saveReport(context);
 		saveMainValidationReport(context);
@@ -38,7 +39,7 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 
 	public void start(Context context, int stepCount) {
 		ActionReport report = (ActionReport) context.get(REPORT);
-		report.getProgression().setCurrentStep(STEP.PROCESSING.ordinal());
+		report.getProgression().setCurrentStep(STEP.PROCESSING.ordinal() + 1);
 		report.getProgression().getSteps().get(STEP.PROCESSING.ordinal()).setTotal(stepCount);
 		saveReport(context);
 		saveMainValidationReport(context);
@@ -46,16 +47,16 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 
 	public void terminate(Context context, int stepCount) {
 		ActionReport report = (ActionReport) context.get(REPORT);
-		report.getProgression().setCurrentStep(STEP.FINALISATION.ordinal());
+		report.getProgression().setCurrentStep(STEP.FINALISATION.ordinal()+1);
 		report.getProgression().getSteps().get(STEP.FINALISATION.ordinal()).setTotal(stepCount);
 		saveReport(context);
 	}
 
 	public void dispose(Context context) {
-		ActionReport report = (ActionReport) context.get(REPORT);
-		StepProgression step = report.getProgression().getSteps().get(STEP.FINALISATION.ordinal());
-		boolean terminated = step.getRealized() == step.getTotal();
-		if (terminated) report.getProgression().setCurrentStep(STEP.TERMINATED.ordinal());
+//		ActionReport report = (ActionReport) context.get(REPORT);
+//		StepProgression step = report.getProgression().getSteps().get(STEP.FINALISATION.ordinal());
+//		boolean terminated = step.getRealized() == step.getTotal();
+//		if (terminated) report.getProgression().setCurrentStep(STEP.TERMINATED.ordinal());
 		saveReport(context);
 		if (context.containsKey(VALIDATION_REPORT)) {
 			mergeValidationReports(context);
