@@ -56,7 +56,7 @@ public void testProgressionInitialize() throws Exception
 	Assert.assertFalse (validationFile.exists(), VALIDATION_FILE + "should not exists");
 
 	Assert.assertNotNull(report.getProgression(), "progression should be reported");
-	Assert.assertEquals(report.getProgression().getCurrentStep(), STEP.INITIALISATION.ordinal(), " progression should be on step init");
+	Assert.assertEquals(report.getProgression().getCurrentStep(), STEP.INITIALISATION.ordinal()+1, " progression should be on step init");
 	Assert.assertEquals(report.getProgression().getSteps().get(0).getTotal(), 2," total progression should be 2");
 	Assert.assertEquals(report.getProgression().getSteps().get(0).getRealized(), 0," current progression should be 0");
 
@@ -67,7 +67,7 @@ public void testProgressionStart() throws Exception
 	progression.start(context,2);
 	ActionReport report = (ActionReport)  context.get(REPORT);
 	Assert.assertNotNull(report.getProgression(), "progression should be reported");
-	Assert.assertEquals(report.getProgression().getCurrentStep(), STEP.PROCESSING.ordinal(), " progression should be on step processing");
+	Assert.assertEquals(report.getProgression().getCurrentStep(), STEP.PROCESSING.ordinal()+1, " progression should be on step processing");
 	Assert.assertEquals(report.getProgression().getSteps().get(1).getTotal(), 2," total progression should be 2");
 	Assert.assertEquals(report.getProgression().getSteps().get(1).getRealized(), 0," current progression should be 0");
 
@@ -79,7 +79,7 @@ public void testProgressionExecute() throws Exception
 	progression.execute(context);
 	ActionReport report = (ActionReport)  context.get(REPORT);
 	Assert.assertNotNull(report.getProgression(), "progression should be reported");
-	Assert.assertEquals(report.getProgression().getCurrentStep(), STEP.PROCESSING.ordinal(), " progression should be on step processing");
+	Assert.assertEquals(report.getProgression().getCurrentStep(), STEP.PROCESSING.ordinal()+1, " progression should be on step processing");
 	Assert.assertEquals(report.getProgression().getSteps().get(1).getTotal(), 2," total progression should be 2");
 	Assert.assertEquals(report.getProgression().getSteps().get(1).getRealized(), 1," current progression should be 1");
 
@@ -100,7 +100,7 @@ public void testProgressionTerminate() throws Exception
 	progression.terminate(context,2);
 	ActionReport report = (ActionReport)  context.get(REPORT);
 	Assert.assertNotNull(report.getProgression(), "progression should be reported");
-	Assert.assertEquals(report.getProgression().getCurrentStep(), STEP.FINALISATION.ordinal(), " progression should be on step finalisation");
+	Assert.assertEquals(report.getProgression().getCurrentStep(), STEP.FINALISATION.ordinal()+1, " progression should be on step finalisation");
 	Assert.assertEquals(report.getProgression().getSteps().get(2).getTotal(), 2," total progression should be 2");
 	Assert.assertEquals(report.getProgression().getSteps().get(2).getRealized(), 0," current progression should be 2");
 }
