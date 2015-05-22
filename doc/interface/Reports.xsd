@@ -1,0 +1,552 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+           xmlns="http://www.chouette.mobi/iev"
+           targetNamespace="http://www.chouette.mobi/iev">
+  <xs:annotation>
+    <xs:appinfo>Chouette_IEV : définition des rapports d'opération</xs:appinfo>
+    <xs:documentation>Chouette_IEV : définition des rapports d'opération.
+      Ce schéma présente les structures de données échangées en JSON dans les API du serveur IEV
+      en JSON, les énumérations sont valorisées uniquement par la valeur énumérée; le type n'est pas précisé</xs:documentation>
+  </xs:annotation>
+
+  <xs:element name="action_report" type="actionReport">
+    <xs:annotation>
+      <xs:documentation>Rapport d'action</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+
+  <xs:element name="validation_report" type="validationReport">
+    <xs:annotation>
+      <xs:documentation>Rapport de validation</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+
+  <xs:complexType name="actionReport">
+    <xs:annotation>
+      <xs:documentation>Rapport d'action</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="progression" type="progression">
+        <xs:annotation>
+          <xs:documentation>Avancement de l'opération en cours (absent si l'opération est en attente ou terminée</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="result" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Indicateur d'aboutissement du traitement (OK ou ERROR), si ERROR alors failure contient le type d'erreur rencontré</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="zip_file" type="fileInfo" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Résultat des traitement sur le fichier zip importé</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="files" type="fileInfo" minOccurs="0" maxOccurs="unbounded">
+        <xs:annotation>
+          <xs:documentation>Liste des résultats de traitement des fichiers traités (si l'action concerne des fichiers)</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="lines" type="lineInfo" minOccurs="0" maxOccurs="unbounded">
+        <xs:annotation>
+          <xs:documentation>Liste des résultat de traitement des lignes (si l'action concerne des lignes)</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="stats" type="dataStats">
+        <xs:annotation>
+          <xs:documentation>Volumétrie des données traitées (toutes lignes confondues, tous fichiers confondus) pour exécuter l’action demandée</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="failure" type="actionError" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Message d'erreur si result = ERROR</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="progression">
+    <xs:annotation>
+      <xs:documentation>Avancement de l'opération; celle-ci est décomposée en phases et en étapes de traitement</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="current_step" type="xs:int">
+        <xs:annotation>
+          <xs:documentation>Phase courante (de 0 à steps_count)</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="steps_count" type="xs:int">
+        <xs:annotation>
+          <xs:documentation>nombre total de phases</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="steps" type="stepProgression" minOccurs="1" maxOccurs="unbounded">
+        <xs:annotation>
+          <xs:documentation>Liste des phases</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="stepProgression">
+    <xs:annotation>
+      <xs:documentation>Phase de traitement</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="step" type="step">
+        <xs:annotation>
+          <xs:documentation>Type de phase : 
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="total" type="xs:int">
+        <xs:annotation>
+          <xs:documentation>Nombre total d'étapes de la phase</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="realized" type="xs:int">
+        <xs:annotation>
+          <xs:documentation>Nombre d'étapes déjà réalisées</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+
+  <xs:complexType name="fileInfo">
+    <xs:annotation>
+      <xs:documentation>Résultat de traitement d'un fichier</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="name" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Nom du fichier</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="status" type="fileState">
+        <xs:annotation>
+          <xs:documentation>état du fichier</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="errors" type="fileError" minOccurs="0" maxOccurs="unbounded">
+        <xs:annotation>
+          <xs:documentation>Erreurs rencontrées si status = ERROR</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="fileError">
+    <xs:annotation>
+      <xs:documentation>Description d'erreur sur fichier</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="code" type="FileCode">
+        <xs:annotation>
+          <xs:documentation>Code de l'erreur</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="description" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Description de l'erreur</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+ 
+
+  <xs:complexType name="lineInfo">
+    <xs:annotation>
+      <xs:documentation>Résultat de traitement d'une ligne</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="name" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Nom de la ligne</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="status" type="lineState">
+        <xs:annotation>
+          <xs:documentation>état de la ligne</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="stats" type="dataStats">
+        <xs:annotation>
+          <xs:documentation>Volumétrie des données relatives à la ligne qui ont pu être lues et prises en compte (en tenant compte des filtres fournis au niveau des paramètres de l’action)</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="errors" type="lineError" minOccurs="0" maxOccurs="unbounded">
+        <xs:annotation>
+          <xs:documentation>Erreurs rencontrées si status = ERROR</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="dataStats">
+    <xs:annotation>
+      <xs:documentation>Statistiques</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="line_count" type="xs:int">
+        <xs:annotation>
+          <xs:documentation>Nombre de lignes traitées</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="route_count" type="xs:int">
+        <xs:annotation>
+          <xs:documentation>Nombre de séquences d'arrêts traitées</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="connection_link_count" type="xs:int">
+        <xs:annotation>
+          <xs:documentation>Nombre de correspondances traitées</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="time_table_count" type="xs:int">
+        <xs:annotation>
+          <xs:documentation>Nombre de calendriers traités</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="stop_area_count" type="xs:int">
+        <xs:annotation>
+          <xs:documentation>Nombre d'arrêts traités</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="access_point_count" type="xs:int">
+        <xs:annotation>
+          <xs:documentation>Nombre d'accès traités</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="vehicle_journey_count" type="xs:int">
+        <xs:annotation>
+          <xs:documentation>Nombre de courses traitées</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="journey_pattern_count" type="xs:int">
+        <xs:annotation>
+          <xs:documentation>Nombre de missions traitées</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="lineError">
+    <xs:annotation>
+      <xs:documentation>Description d'erreur sur ligne de transport</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="code" type="LineCode">
+        <xs:annotation>
+          <xs:documentation>Code de l'erreur</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="description" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Description de l'erreur</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="actionError">
+    <xs:annotation>
+      <xs:documentation>Description d'erreur générale</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="code" type="ActionCode">
+        <xs:annotation>
+          <xs:documentation>Code de l'erreur</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="description" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Description de l'erreur</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  
+  <xs:complexType name="validationReport">
+    <xs:annotation>
+      <xs:documentation>Rapport de validation</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="result" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Résultat de validation : VALIDATION_PROCEDEED ou NO_VALIDATION</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="tests" type="checkPoint" minOccurs="0" maxOccurs="unbounded">
+        <xs:annotation>
+          <xs:documentation>Liste des points de contrôles</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="checkPoint">
+    <xs:annotation>
+      <xs:documentation>Point de controle</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="test_id" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Identifiant : cf document de définition des tests de validation</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="level" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Niveau</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="object_type" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Type d'objet</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="rank" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Rang du point de contrôle</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="severity" type="severity">
+        <xs:annotation>
+          <xs:documentation>Gravité</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="result" type="result">
+        <xs:annotation>
+          <xs:documentation>Résultat</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="error_count" type="xs:int">
+        <xs:annotation>
+          <xs:documentation>Nombre d'erreurs rencontrés</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="errors" type="detail" minOccurs="0" maxOccurs="unbounded">
+        <xs:annotation>
+          <xs:documentation>Détail des 50 premières erreurs</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="detail">
+    <xs:annotation>
+      <xs:documentation>Détail d'une erreur de validation</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="error_id" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Identifiant de l'erreur</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="source" type="location" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Localisation de l'erreur</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="target" type="location" minOccurs="0" maxOccurs="unbounded">
+        <xs:annotation>
+          <xs:documentation>Localisation d'objets en conflit</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="error_value" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Valeur erronnée</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="reference_value" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Valeur de référence</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="location">
+    <xs:annotation>
+      <xs:documentation>Localisation d'un objet</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="file" type="fileLocation" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Localisation dans un fichier</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="objectid" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Identifiant de l'objet</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="label" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Désignation de l'objet</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="object_path" type="objectReference" minOccurs="0" maxOccurs="unbounded">
+        <xs:annotation>
+          <xs:documentation>Localisation en base</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="fileLocation">
+    <xs:annotation>
+      <xs:documentation>Localisation dans un fichier</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="filename" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Nom du fichier</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="line_number" type="xs:int" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>numéro de ligne du fichier</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="column_number" type="xs:int" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>numéro de colonne du fichier</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="objectReference">
+    <xs:annotation>
+      <xs:documentation>Localisation en base</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="type" type="referenceType">
+        <xs:annotation>
+          <xs:documentation>Type d'objet</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="id" type="xs:long">
+        <xs:annotation>
+          <xs:documentation>Identifiant primaire</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:simpleType name="step">
+    <xs:annotation>
+      <xs:documentation>Phase de progression</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="INITIALISATION"><xs:annotation><xs:documentation>Initialisation de l'opération</xs:documentation></xs:annotation></xs:enumeration> 
+      <xs:enumeration value="PROCESSING"><xs:annotation><xs:documentation>Traitement principal</xs:documentation></xs:annotation></xs:enumeration> 
+      <xs:enumeration value="FINALISATION"><xs:annotation><xs:documentation>Finalisation de l'opération</xs:documentation></xs:annotation></xs:enumeration> 
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="fileState">
+    <xs:annotation>
+      <xs:documentation>Etat d'un fichier</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="IGNORED"><xs:annotation><xs:documentation>Non traité</xs:documentation></xs:annotation></xs:enumeration> 
+      <xs:enumeration value="OK"><xs:annotation><xs:documentation>Traité bon</xs:documentation></xs:annotation></xs:enumeration> 
+      <xs:enumeration value="ERROR"><xs:annotation><xs:documentation>Traité en erreur</xs:documentation></xs:annotation></xs:enumeration> 
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="FileCode">
+    <xs:annotation>
+      <xs:documentation>Liste des codes d'erreur sur fichier</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="FILE_NOT_FOUND"><xs:annotation><xs:documentation>Fichier non trouvé</xs:documentation></xs:annotation></xs:enumeration> 
+      <xs:enumeration value="READ_ERROR"><xs:annotation><xs:documentation>Erreur de lecture</xs:documentation></xs:annotation></xs:enumeration> 
+      <xs:enumeration value="WRITE_ERROR"><xs:annotation><xs:documentation>Erreur d'écriture</xs:documentation></xs:annotation></xs:enumeration> 
+      <xs:enumeration value="INVALID_FORMAT"><xs:annotation><xs:documentation>Format invalide</xs:documentation></xs:annotation></xs:enumeration> 
+      <xs:enumeration value="INTERNAL_ERROR"><xs:annotation><xs:documentation>Erreur interne</xs:documentation></xs:annotation></xs:enumeration> 
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="lineState">
+    <xs:annotation>
+      <xs:documentation>Etat d'une ligne</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="OK"><xs:annotation><xs:documentation>OK</xs:documentation></xs:annotation></xs:enumeration> 
+      <xs:enumeration value="WARNING"><xs:annotation><xs:documentation>Incidents non bloquants</xs:documentation></xs:annotation></xs:enumeration> 
+      <xs:enumeration value="ERROR"><xs:annotation><xs:documentation>Incidents bloquants</xs:documentation></xs:annotation></xs:enumeration> 
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="LineCode">
+    <xs:annotation>
+      <xs:documentation>Liste des codes d'erreur sur ligne de transport</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="DATA_NOT_FOUND"><xs:annotation><xs:documentation>Pas de données à traiter</xs:documentation></xs:annotation></xs:enumeration> 
+      <xs:enumeration value="NO_DATA_ON_PERIOD"><xs:annotation><xs:documentation>Pas de données valides sur la période</xs:documentation></xs:annotation></xs:enumeration> 
+      <xs:enumeration value="READ_ERROR"><xs:annotation><xs:documentation>Erreur de lecture</xs:documentation></xs:annotation></xs:enumeration> 
+      <xs:enumeration value="WRITE_ERROR"><xs:annotation><xs:documentation>Erreur d'écriture</xs:documentation></xs:annotation></xs:enumeration> 
+      <xs:enumeration value="INVALID_FORMAT"><xs:annotation><xs:documentation>Format invalide</xs:documentation></xs:annotation></xs:enumeration> 
+      <xs:enumeration value="INTERNAL_ERROR"><xs:annotation><xs:documentation>Erreur interne</xs:documentation></xs:annotation></xs:enumeration> 
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="ActionCode">
+    <xs:annotation>
+      <xs:documentation>Liste des codes d'erreur de traitement</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="INVALID_PARAMETERS"><xs:annotation><xs:documentation>Paramètres invalides</xs:documentation></xs:annotation></xs:enumeration> 
+      <xs:enumeration value="NO_DATA_FOUND"><xs:annotation><xs:documentation>Pas de données à traiter dans l'ensemble du traitement</xs:documentation></xs:annotation></xs:enumeration> 
+      <xs:enumeration value="NO_DATA_PROCEEDED"><xs:annotation><xs:documentation>Pas de données traitée dans l'ensemble du traitement</xs:documentation></xs:annotation></xs:enumeration> 
+      <xs:enumeration value="INVALID_DATA"><xs:annotation><xs:documentation>Données invalides</xs:documentation></xs:annotation></xs:enumeration> 
+      <xs:enumeration value="INTERNAL_ERROR"><xs:annotation><xs:documentation>Erreur interne</xs:documentation></xs:annotation></xs:enumeration> 
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:simpleType name="severity">
+    <xs:annotation>
+      <xs:documentation>Gravité d'un point de contrôle</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="WARNING"><xs:annotation><xs:documentation>Alerte</xs:documentation></xs:annotation></xs:enumeration> 
+      <xs:enumeration value="ERROR"><xs:annotation><xs:documentation>Erreur bloquante</xs:documentation></xs:annotation></xs:enumeration> 
+      <xs:enumeration value="IMPROVMENT"><xs:annotation><xs:documentation>Amélioration</xs:documentation></xs:annotation></xs:enumeration> 
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="result">
+    <xs:annotation>
+      <xs:documentation>Résultat d'un point de contrôle</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="UNCHECK"><xs:annotation><xs:documentation>Non effectué</xs:documentation></xs:annotation></xs:enumeration> 
+      <xs:enumeration value="OK"><xs:annotation><xs:documentation>Bon</xs:documentation></xs:annotation></xs:enumeration> 
+      <xs:enumeration value="NOK"><xs:annotation><xs:documentation>Mauvais</xs:documentation></xs:annotation></xs:enumeration> 
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="referenceType">
+    <xs:annotation>
+      <xs:documentation>Type d'objet</xs:documentation>
+    </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="network"><xs:annotation><xs:documentation>Réseau</xs:documentation></xs:annotation></xs:enumeration> 
+      <xs:enumeration value="company"><xs:annotation><xs:documentation>Transporteur</xs:documentation></xs:annotation></xs:enumeration> 
+      <xs:enumeration value="group_of_line"><xs:annotation><xs:documentation>Groupe de lignes</xs:documentation></xs:annotation></xs:enumeration> 
+      <xs:enumeration value="stop_area"><xs:annotation><xs:documentation>Arrêt</xs:documentation></xs:annotation></xs:enumeration> 
+      <xs:enumeration value="connection_link"><xs:annotation><xs:documentation>Correspondance</xs:documentation></xs:annotation></xs:enumeration> 
+      <xs:enumeration value="access_point"><xs:annotation><xs:documentation>Accès</xs:documentation></xs:annotation></xs:enumeration> 
+      <xs:enumeration value="access_link"><xs:annotation><xs:documentation>Lien d'accès</xs:documentation></xs:annotation></xs:enumeration> 
+      <xs:enumeration value="time_table"><xs:annotation><xs:documentation>Calendrier</xs:documentation></xs:annotation></xs:enumeration> 
+      <xs:enumeration value="line"><xs:annotation><xs:documentation>Ligne</xs:documentation></xs:annotation></xs:enumeration> 
+      <xs:enumeration value="route"><xs:annotation><xs:documentation>Séquence d'arrêts</xs:documentation></xs:annotation></xs:enumeration> 
+      <xs:enumeration value="journey_pattern"><xs:annotation><xs:documentation>Mission</xs:documentation></xs:annotation></xs:enumeration> 
+      <xs:enumeration value="vehicle_journey"><xs:annotation><xs:documentation>Course</xs:documentation></xs:annotation></xs:enumeration> 
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>
+

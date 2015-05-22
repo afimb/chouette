@@ -65,7 +65,6 @@ createdb -E UTF-8 -T template1 chouette_test
 
 Get git repository :
 ```sh
-cd workspace
 git clone -b V3_0 git://github.com/afimb/chouette
 cd chouette
 ```

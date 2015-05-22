@@ -1,0 +1,1333 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+           xmlns="http://www.chouette.mobi/iev"
+           targetNamespace="http://www.chouette.mobi/iev">
+  <xs:annotation>
+    <xs:appinfo>Chouette_IEV : définition des opérations et des paramètres des paramètres d'opération</xs:appinfo>
+    <xs:documentation>Chouette_IEV : définition des opérations et des paramètres des paramètres d'opération.
+      Ce schéma présente les structures de données échangées en JSON dans les API du serveur IEV
+      en JSON, les énumérations sont valorisées uniquement par la valeur énumérée; le type n'est pas précisé</xs:documentation>
+  </xs:annotation>
+
+
+ <xs:complexType name="jobInfo">
+      <xs:annotation>
+        <xs:documentation>Métadonnées d'une opération, cette structure est en cohérence avec les API Rest</xs:documentation>
+      </xs:annotation>
+    <xs:sequence>
+      <xs:element name="id" type="xs:long">
+        <xs:annotation>
+          <xs:documentation>Identifiant de l'opération : en cohérence avec les URL Rest</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="referential" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Référentiel (schéma de base de données) : en cohérence avec les URL Rest</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="action" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Opération : importer/exporter/validator : en cohérence avec les URL Rest</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="type" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Type de l'opération: dans le cas des imports/exports, il s'agit du format ; dans le cas de la validation, s'il n'est pas renseigné, les données sont lues en base
+          Les formats connus selon l'opération sont précisés dans le document d'API Rest</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="created" type="xs:dateTime">
+        <xs:annotation>
+          <xs:documentation>Date de création : convertie en millisecondes en JSON</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="started" type="xs:dateTime" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Date de lancement de la commande : convertie en millisecondes en JSON</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="updated" type="xs:dateTime" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Date de dernière mise à jour : convertie en millisecondes en JSON</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="status" type="jobStatus">
+        <xs:annotation>
+          <xs:documentation>Etat de l'opération</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="links" type="linkInfo" minOccurs="0" maxOccurs="unbounded">
+        <xs:annotation>
+          <xs:documentation>Liste des liens possible sur l'opération</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:choice>
+        <xs:annotation>
+          <xs:documentation>Paramètres de l'opération : nommé action_parameter et contenant les élément d'un actionParameter; mis dans un type abstrait car il est polymorphe</xs:documentation>
+        </xs:annotation>
+        <xs:element ref="neptune-import"><xs:annotation><xs:documentation>Import Neptune</xs:documentation></xs:annotation></xs:element> 
+        <xs:element ref="neptune-export"><xs:annotation><xs:documentation>Export Neptune</xs:documentation></xs:annotation></xs:element> 
+        <xs:element ref="neptune-validate"><xs:annotation><xs:documentation>Validation Neptune</xs:documentation></xs:annotation></xs:element> 
+        <xs:element ref="gtfs-import"><xs:annotation><xs:documentation>Import GTFS</xs:documentation></xs:annotation></xs:element> 
+        <xs:element ref="gtfs-export"><xs:annotation><xs:documentation>Export GTFS</xs:documentation></xs:annotation></xs:element> 
+        <xs:element ref="gtfs-validate"><xs:annotation><xs:documentation>Validation GTFS</xs:documentation></xs:annotation></xs:element> 
+        <xs:element ref="netex-import"><xs:annotation><xs:documentation>Import NeTEx</xs:documentation></xs:annotation></xs:element> 
+        <xs:element ref="netex-export"><xs:annotation><xs:documentation>Export NeTEx</xs:documentation></xs:annotation></xs:element> 
+        <xs:element ref="netex-validate"><xs:annotation><xs:documentation>Validation NeTEx</xs:documentation></xs:annotation></xs:element> 
+        <xs:element ref="hub-export"><xs:annotation><xs:documentation>Export Hub</xs:documentation></xs:annotation></xs:element> 
+        <xs:element ref="kml-export"><xs:annotation><xs:documentation>Export KML</xs:documentation></xs:annotation></xs:element> 
+        <xs:element ref="validate"><xs:annotation><xs:documentation>Validation en base</xs:documentation></xs:annotation></xs:element> 
+      </xs:choice>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="linkInfo">
+      <xs:annotation>
+        <xs:documentation>Lien sur une ressource de l'opération</xs:documentation>
+      </xs:annotation>
+    <xs:sequence>
+      <xs:element name="rel" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Nom du lien :
+            location (type get) : détail de l'opération 
+            cancel (type delete) : annulation d'une opération en attente ou en cours
+            delete (type delete) : suppression des résultats d'une opération terminée
+            action_params (type get) : paramètres de l'opération
+            validation_params (type get) : paramètres de validation associés à l'opération
+            data (type get) : données fournies à l'opération ou produites par celle-ci 
+            action_report (type get) : rapport d'opération
+            validation_report (type get) : raport de validation s'il y a lieu
+          </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="href" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>URL du lien</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="type" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Type de données retournées :  application/octet_stream ou application/json</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="method" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>Méthode HTTP pour suivre le lien : get, delete</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="parameters">
+    <xs:annotation>
+      <xs:documentation>Paramètres d'une opération
+      Exemple JSON : 
+      {
+      "parameters" :  {
+      "neptune-import": {
+      "user_name" : "Jean Dupont",
+      "name" : "Import Neptune",
+      "organisation_name" : "Cityway",
+      "referential_name" : "données de test",
+      "clean_repository" : true
+      },
+      "validation" : {
+      "stop_areas_area": "[[-5.2,42.25],[-5.2,51.1],[8.23,51.1],[8.23,42.25],[-5.2,42.25]]",
+      "inter_stop_area_distance_min": 20,
+      ...
+      }
+      }
+      </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:choice>
+	<xs:annotation>
+	  <xs:documentation>Paramètres d'action</xs:documentation>
+	</xs:annotation>
+        <xs:element ref="neptune-import"><xs:annotation><xs:documentation>Import Neptune</xs:documentation></xs:annotation></xs:element> 
+        <xs:element ref="neptune-export"><xs:annotation><xs:documentation>Export Neptune</xs:documentation></xs:annotation></xs:element> 
+        <xs:element ref="neptune-validate"><xs:annotation><xs:documentation>Validation Neptune</xs:documentation></xs:annotation></xs:element> 
+        <xs:element ref="gtfs-import"><xs:annotation><xs:documentation>Import GTFS</xs:documentation></xs:annotation></xs:element> 
+        <xs:element ref="gtfs-export"><xs:annotation><xs:documentation>Export GTFS</xs:documentation></xs:annotation></xs:element> 
+        <xs:element ref="gtfs-validate"><xs:annotation><xs:documentation>Validation GTFS</xs:documentation></xs:annotation></xs:element> 
+        <xs:element ref="netex-import"><xs:annotation><xs:documentation>Import NeTEx</xs:documentation></xs:annotation></xs:element> 
+        <xs:element ref="netex-export"><xs:annotation><xs:documentation>Export NeTEx</xs:documentation></xs:annotation></xs:element> 
+        <xs:element ref="netex-validate"><xs:annotation><xs:documentation>Validation NeTEx</xs:documentation></xs:annotation></xs:element> 
+        <xs:element ref="hub-export"><xs:annotation><xs:documentation>Export Hub</xs:documentation></xs:annotation></xs:element> 
+        <xs:element ref="kml-export"><xs:annotation><xs:documentation>Export KML</xs:documentation></xs:annotation></xs:element> 
+        <xs:element ref="validate"><xs:annotation><xs:documentation>Validation en base</xs:documentation></xs:annotation></xs:element> 
+      </xs:choice>
+      <xs:element ref="validation" minOccurs="0"><xs:annotation><xs:documentation>Paramètres de validation</xs:documentation></xs:annotation></xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="actionParameters">
+    <xs:annotation>
+      <xs:documentation>Paramètres communs à toutes les opérations</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="name" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>nom de l'opération</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="user_name" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>nom de l'utilisaeur : utilisé pour la génération des métadonnées</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="organisation_name" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>nom de l'organisation : utilisé pour la génération des métadonnées </xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="referential_name" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>nom du référentiel : utilisé pour la génération des métadonnées 
+            cette valeur est indépendante du schéma de base utilisé dans la structure JobInfo</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+
+  <xs:complexType name="actionExportParameter">
+    <xs:annotation>
+      <xs:documentation>Paramètres communs à l'export</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="actionParameters">
+        <xs:sequence>
+          <xs:element name="add_metadata" type="xs:boolean" default="false">
+	    <xs:annotation>
+	      <xs:documentation>génère les fichiers de métadonnées</xs:documentation>
+	    </xs:annotation>
+	  </xs:element>
+          <xs:element name="start_date" type="xs:dateTime" minOccurs="0">
+	    <xs:annotation>
+	      <xs:documentation>filtrage sur les courses circulant à partir de cette date</xs:documentation>
+	    </xs:annotation>
+	  </xs:element>
+          <xs:element name="end_date" type="xs:dateTime" minOccurs="0">
+	    <xs:annotation>
+	      <xs:documentation>filtrage sur les courses circulant jusqu'à cette date</xs:documentation>
+	    </xs:annotation>
+	  </xs:element>
+          <xs:element name="references_type" type="xs:string" minOccurs="0">
+	    <xs:annotation>
+	      <xs:documentation>type d'objet à exporter : line, network, group_of_line, company ou stop_area
+	      stop_area est actuellement réservé aux échanges GTFS</xs:documentation>
+	    </xs:annotation>
+	  </xs:element>
+          <xs:element name="reference_ids" type="xs:long" minOccurs="0" maxOccurs="unbounded">
+	    <xs:annotation>
+	      <xs:documentation>identifiants base de donnée des objets à exporter; par défaut tous ceux du type choisi</xs:documentation>
+	    </xs:annotation>
+	  </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="actionImportParameter">
+    <xs:annotation>
+      <xs:documentation>Paramètres communs à l'import</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="actionParameters">
+        <xs:sequence>
+          <xs:element name="clean_repository" type="xs:boolean" default="false">
+	    <xs:annotation>
+	      <xs:documentation>purger le référentiel avant import
+	      cette action ne sera pas annulée si l'import échoue</xs:documentation>
+	    </xs:annotation>
+	  </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="neptuneImportParameters">
+    <xs:annotation>
+      <xs:documentation>Paramètres d'import Neptune
+      Exemple json : 
+      {
+      "neptune-import": {
+      "user_name" : "Jean Dupont",
+      "name" : "Import Neptune",
+      "organisation_name" : "Cityway",
+      "referential_name" : "données de test",
+      "clean_repository" : true
+      }</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="actionImportParameter">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="neptuneExportParameters">
+    <xs:annotation>
+      <xs:documentation>Paramètres d'export Neptune
+      Exemple JSON : 
+      {
+      "neptune-export": {
+      "user_name" : "Jean Dupont",
+      "name" : "Export Neptune",
+      "organisation_name" : "Cityway",
+      "referential_name" : "données de test",
+      "add_metadata" : true,
+      "projection_type" : "27572",
+      "start_date" : "2015-01-01",
+      "end_date" : "2015-07-01",
+      "references_type" : "line"
+      }</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="actionExportParameter">
+        <xs:sequence>
+          <xs:element name="add_extension" type="xs:boolean">
+            <xs:annotation>
+              <xs:documentation>ajout d'attributs complémentaires en JSON dans le champs comment</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="projection_type" type="xs:string" minOccurs="0">
+            <xs:annotation>
+              <xs:documentation>projection à ajouter dans les coordonnées exportées (défaut = pas de coordonnées projetées)</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="gtfsImportParameters">
+    <xs:annotation>
+      <xs:documentation>Paramètres d'import GTFS
+      Exemple JSON :
+      {
+      "gtfs-import": {
+      "user_name" : "Jean Dupont",
+      "name" : "Import GTFS complet",
+      "organisation_name" : "Cityway",
+      "referential_name" : "données de test",
+      "clean_repository" : true,
+      "references_type" : "line",
+      "ignore_last_word" : false,
+      "ignore_end_chars" : false,
+      "max_distance_for_commercial" : 50,
+      "max_distance_for_connection_link" : 100,
+      "object_id_prefix" : "GTFS"
+      }</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="actionImportParameter">
+        <xs:sequence>
+          <xs:element name="references_type" type="xs:string" minOccurs="0">
+	    <xs:annotation>
+	      <xs:documentation>type d'objet à importer : tout si non renseigné; valeurs autorisée : stop_area, line, network, company, group_of_line
+	      l'utilisation du type stop_area permet de n'importer que les arrêts et les correspondances définies dans l'archive GTFS
+	      les autres choix importent l'ensemble des données disponibles</xs:documentation>
+	    </xs:annotation>
+	  </xs:element>
+          <xs:element name="ignore_last_word" type="xs:boolean" default="false">
+	    <xs:annotation>
+	      <xs:documentation>ignorer le dernier mot des noms d'arrêt pour le regroupement
+	      Permet par exemple de regrouper des arrêts "Jean Moulin Pair" et "Jean Moulin Impair" dans un même arrêt commercial "Jean Moulin"</xs:documentation>
+	    </xs:annotation>
+	  </xs:element>
+          <xs:element name="ignore_end_chars" type="xs:int" default="0">
+	    <xs:annotation>
+	      <xs:documentation>ignorer les n derniers caractères des noms d'arrêt pour le regroupement
+	        Permet par exemple de regrouper des arrêts "Jean Moulin P" et "Jean Moulin I" dans un même arrêt commercial "Jean Moulin"</xs:documentation>
+	    </xs:annotation>
+	  </xs:element>
+          <xs:element name="max_distance_for_commercial" type="xs:int" default="0">
+	    <xs:annotation>
+	      <xs:documentation>distance maximale en mètre pour créer des zones d'arrêt par regroupement d'arrêts homonymes (0 = pas de regroupement)
+	      Les arrêts déjà regroupés dans l'archive GTFS ne sont pas concernés par ce paramètre
+	      Si la distance est nulle, les paramètres ignore_end_chars et ignore_last_word sont sans effet</xs:documentation>
+	    </xs:annotation>
+	  </xs:element>
+          <xs:element name="max_distance_for_connection_link" type="xs:int" default="0">
+	    <xs:annotation>
+	      <xs:documentation>distance maximale entre 2 arrêts (non regroupés) ou stations pour créer des correspondances (0 = pas de création de correspondances)
+	      Les correspondances déjà définies dans l'archive GTFS ne sont pas impactées</xs:documentation>
+	    </xs:annotation>
+	  </xs:element>
+          <xs:element name="object_id_prefix" type="xs:string">
+	    <xs:annotation>
+	      <xs:documentation>préfixe à appliquer pour construire les identifiants chouette</xs:documentation>
+	    </xs:annotation>
+	  </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="gtfsExportParameters">
+    <xs:annotation>
+      <xs:documentation>Paramètres d'export GTFS
+      Exemple JSON :
+      {
+      "gtfs-export": {
+      "user_name" : "Jean Dupont",
+      "name" : "Export GTFS complet",
+      "organisation_name" : "Cityway",
+      "referential_name" : "données de test",
+      "add_metadata" : true,
+      "references_type" : "line",
+      "object_id_prefix" : "NINOXE",
+      "time_zone" : "Europe/Paris"
+      }
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="actionExportParameter">
+        <xs:sequence>
+          <xs:element name="object_id_prefix" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>préfixe à ignorer pour construire les identifiants GTFS</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+          <xs:element name="time_zone" type="xs:string">
+        <xs:annotation>
+          <xs:documentation>fuseau horaire</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="netexImportParameters">
+    <xs:annotation>
+      <xs:documentation>Paramètres d'import NeTEx</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="actionImportParameter">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="netexExportParameters">
+    <xs:annotation>
+      <xs:documentation>Paramètres d'export NeTEx</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="actionExportParameter">
+        <xs:sequence>
+          <xs:element name="projection_type" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>projection à ajouter dans les coordonnées exportées (défaut = pas de coordonnées projetées)</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="hubExportParameters">
+    <xs:annotation>
+      <xs:documentation>Paramètres d'export Hub</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="actionExportParameter">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="kmlExportParameters">
+    <xs:annotation>
+      <xs:documentation>Paramètres d'export Kml</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="actionExportParameter">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  
+  
+  <xs:complexType name="validateParameters">
+    <xs:annotation>
+      <xs:documentation>Paramètres d'opération de validation en base</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="actionParameters">
+        <xs:sequence>
+          <xs:element name="references_type" type="xs:string">
+            <xs:annotation>
+              <xs:documentation>type d'objet à valider</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+          <xs:element name="reference_ids" type="xs:long" minOccurs="0" maxOccurs="unbounded">
+            <xs:annotation>
+              <xs:documentation>identifiants des objets à valider; par défaut tous ceux du type choisi</xs:documentation>
+            </xs:annotation>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="neptuneValidateParameters">
+    <xs:annotation>
+      <xs:documentation>Paramètres d'opération de validation d'un fichier Neptune</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="neptuneImportParameters">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="gtfsValidateParameters">
+    <xs:annotation>
+      <xs:documentation>Paramètres d'opération de validation d'un fichier GTFS</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="gtfsImportParameters">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+  <xs:complexType name="netexValidateParameters">
+    <xs:annotation>
+      <xs:documentation>Paramètres d'opération de validation d'un fichier NeTEx</xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="netexImportParameters">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  
+
+  <xs:complexType name="validationParameters">
+    <xs:annotation>
+      <xs:documentation>Paramètres de validation de niveau 3 et plus</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="stop_areas_area" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>délimitation géographique des arrêts : 
+	    sous la forme d'un tableau de coordonnées [longitude,latitude] représentant un polygone fermé 
+	    (la dernière coordonnée est égale à la première)</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="inter_stop_area_distance_min" type="xs:int" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>distance minimum entre 2 arrêts n'ayant pas le même parent</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="parent_stop_area_distance_max" type="xs:int" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>distance maximum entre un arrêt et son parent</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="inter_access_point_distance_min" type="xs:int" default="20">
+        <xs:annotation>
+          <xs:documentation>distance minimum entre 2 accès de noms différents pour un même arrêt</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="inter_connection_link_distance_max" type="xs:int" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>distance maximum entre les arrêts en correspondance</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="walk_default_speed_max" type="xs:int" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>vitesse de marche maximum pour un voyageur ordinaire</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="walk_occasional_traveller_speed_max" type="xs:int" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>vitesse de marche maximum pour un voyageur occasionnel</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="walk_frequent_traveller_speed_max" type="xs:int" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>vitesse de marche maximum pour un voyageur habituel</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="walk_mobility_restricted_traveller_speed_max" type="xs:int" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>vitesse de marche maximum pour un voyageur à mobilité réduite</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="inter_access_link_distance_max" type="xs:int" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>distance maximum d'une liaison accès - arrêt</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="inter_stop_duration_max" type="xs:int" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>durée maximum entre les horaires d'arrivée et de départ à un arrêt</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="facility_stop_area_distance_max" type="xs:int" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>distance maximum entre un arrêt et un équipement</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="check_connection_link_on_physical" type="xs:int" default="0">
+        <xs:annotation>
+          <xs:documentation>contrôler que les correspondances ne relient que des arrêts physiques (0 ou non renseigné = non, 1 = oui)</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="check_stop_parent" type="xs:int" default="0">
+        <xs:annotation>
+          <xs:documentation>contrôler que chaque arrêt physique est rattaché à un arrêt commercial (0 ou non renseigné = non, 1 = oui)</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="check_line_routes" type="xs:int" default="0">
+        <xs:annotation>
+          <xs:documentation>contrôler que chaque ligne a une séquence d'arrêt ou un couple A/R de séquences d'arrêts(0 ou non renseigné = non, 1 = oui)</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="check_lines_in_groups" type="xs:int" default="0">
+        <xs:annotation>
+          <xs:documentation>contrôler que chaque ligne appartient à un et un seul groupe de lignes (0 ou non renseigné = non, 1 = oui)</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="check_allowed_transport_modes" type="xs:int" default="0">
+        <xs:annotation>
+          <xs:documentation>contrôler les modes de transport des lignes et des courses (0 ou non renseigné = non, 1 = oui)</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="mode_air" type="transportModeParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Paramètres spécifiques du mode de transport aérien</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="mode_bicycle" type="transportModeParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Paramètres spécifiques du mode de transport vélo</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="mode_bus" type="transportModeParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Paramètres spécifiques du mode de transport bus</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="mode_coach" type="transportModeParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Paramètres spécifiques du mode de transport car</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="mode_ferry" type="transportModeParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Paramètres spécifiques du mode de transport ferry</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="mode_local_train" type="transportModeParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Paramètres spécifiques du mode de transport train local</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="mode_long_distance_train" type="transportModeParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Paramètres spécifiques du mode de transport train grandes lignes</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="mode_metro" type="transportModeParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Paramètres spécifiques du mode de transport métro</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="mode_private_vehicle" type="transportModeParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Paramètres spécifiques du mode de transport véhicule privé</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="mode_rapid_transit" type="transportModeParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Paramètres spécifiques du mode de transport navette rapide</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="mode_shuttle" type="transportModeParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Paramètres spécifiques du mode de transport navette</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="mode_taxi" type="transportModeParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Paramètres spécifiques du mode de transport taxi</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="mode_train" type="transportModeParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Paramètres spécifiques du mode de transport train</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="mode_tramway" type="transportModeParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Paramètres spécifiques du mode de transport tramway</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="mode_trolleybus" type="transportModeParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Paramètres spécifiques du mode de transport trolleybus</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="mode_val" type="transportModeParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Paramètres spécifiques du mode de transport VAL</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="mode_walk" type="transportModeParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Paramètres spécifiques du mode de transport marche à pied</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="mode_waterborne" type="transportModeParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Paramètres spécifiques du mode de transport naval</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="mode_other" type="transportModeParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Paramètres spécifiques des autres modes de transport</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="check_access_link" type="xs:int" default="0">
+        <xs:annotation>
+          <xs:documentation>contrôler les attributs des liens d'accès</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="access_link" type="accessLinkParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>paramètres spécificques aux attributs des liens d'accès</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="check_access_point" type="xs:int" default="0">
+        <xs:annotation>
+          <xs:documentation>contrôler les attributs des accès</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="access_point" type="accessPointParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>paramètres spécificques aux attributs des accès</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="check_company" type="xs:int" default="0">
+        <xs:annotation>
+          <xs:documentation>contrôler les attributs des transporteurs</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="company" type="companyParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>paramètres spécificques aux attributs des transporteurs</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="check_connection_link" type="xs:int" default="0">
+        <xs:annotation>
+          <xs:documentation>contrôler les attributs des correspondances</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="connection_link" type="connectionLinkParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>paramètres spécificques aux attributs des correspondances</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="check_group_of_line" type="xs:int" default="0">
+        <xs:annotation>
+          <xs:documentation>contrôler les attributs des groupes de lignes</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="group_of_line" type="groupOfLineParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>paramètres spécificques aux attributs des groupes de lignes</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="check_journey_pattern" type="xs:int" default="0">
+        <xs:annotation>
+          <xs:documentation>contrôler les attributs des missions</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="journey_pattern" type="journeyPatternParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>paramètres spécificques aux attributs des missions</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="check_line" type="xs:int" default="0">
+        <xs:annotation>
+          <xs:documentation>contrôler les attributs des lignes</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="line" type="lineParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>paramètres spécificques aux attributs des lignes</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="check_network" type="xs:int" default="0">
+        <xs:annotation>
+          <xs:documentation>contrôler les attributs des réseaux</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="network" type="networkParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>paramètres spécificques aux attributs des réseaux</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="check_route" type="xs:int" default="0">
+        <xs:annotation>
+          <xs:documentation>contrôler les attributs des séquences d'arrêts</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="route" type="routeParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>paramètres spécificques aux attributs des séquences d'arrêts</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="check_stop_area" type="xs:int" default="0">
+        <xs:annotation>
+          <xs:documentation>contrôler les attributs des arrêts</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="stop_area" type="stopAreaParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>paramètres spécificques aux attributs des arrêts</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="check_time_table" type="xs:int" default="0">
+        <xs:annotation>
+          <xs:documentation>contrôler les attributs des calendriers</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="time_table" type="timetableParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>paramètres spécificques aux attributs des calendriers</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="check_vehicle_journey" type="xs:int" default="0">
+        <xs:annotation>
+          <xs:documentation>contrôler les attributs des courses</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="vehicle_journey" type="vehicleJourneyParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>paramètres spécificques aux attributs des courses</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="vehicleJourneyParameters">
+    <xs:annotation>
+      <xs:documentation>Paramètres des attributs des courses</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="published_journey_identifier" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Identifiant public</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="published_journey_name" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Nom public</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="number" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Numéro</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="objectid" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Identifiant Neptune (3ième composante)</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="fieldParameters">
+    <xs:annotation>
+      <xs:documentation>Paramètres de contrôle des attributs</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="max_size" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>taille ou valeur maximale</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="min_size" type="xs:string" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>taille ou valeur minimale</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="pattern" type="xs:int" default="0">
+        <xs:annotation>
+          <xs:documentation>contrainte sur les textes :
+	      0 = pas de contrainte, 
+	      1 = uniquement des chiffres, 
+	      2 = uniquement des lettres, 
+	      3 = majuscules seules, 
+	      4 = minuscules seules</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="unique" type="xs:int" default="0">
+        <xs:annotation>
+          <xs:documentation>unicité (0 ou non renseigné = non, 1 = oui)</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="journeyPatternParameters">
+    <xs:annotation>
+      <xs:documentation>Paramètres des attributs des missions</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="published_name" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Nom public</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="registration_number" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Numéro d'enregistrement</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="name" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Nom</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="objectid" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Identifiant Neptune (3ième composante)</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="routeParameters">
+    <xs:annotation>
+      <xs:documentation>Paramètres des attributs des séquences d'arrêts</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="published_name" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Nom public</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="number" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Numéro</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="name" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Nom</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="objectid" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Identifiant Neptune (3ième composante)</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="lineParameters">
+    <xs:annotation>
+      <xs:documentation>Paramètres des attributs des </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="registration_number" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Numéro d'enregistrement</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="published_name" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Nom public</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="number" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Indice</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="name" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Nom</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="objectid" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Identifiant Neptune (3ième composante)</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="timetableParameters">
+    <xs:annotation>
+      <xs:documentation>Paramètres des attributs des </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="version" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Abréviation</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="comment" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Nom</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="objectid" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Identifiant Neptune (3ième composante)</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="connectionLinkParameters">
+    <xs:annotation>
+      <xs:documentation>Paramètres des attributs des </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="default_duration" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Durée moyenne de parcour</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="link_distance" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Distance</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="name" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Nom</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="objectid" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Identifiant Neptune (3ième composante)</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="accessLinkParameters">
+    <xs:annotation>
+      <xs:documentation>Paramètres des attributs des </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="default_duration" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Durée moyenne de parcour</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="link_distance" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Distance</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="name" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Nom</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="objectid" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Identifiant Neptune (3ième composante)</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="accessPointParameters">
+    <xs:annotation>
+      <xs:documentation>Paramètres des attributs des </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="zip_code" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Code postal</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="country_code" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Code INSEE</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="city_name" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Commune</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="name" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Nom</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="objectid" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Identifiant Neptune (3ième composante)</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="stopAreaParameters">
+    <xs:annotation>
+      <xs:documentation>Paramètres des attributs des </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="zip_code" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Code postal</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="country_code" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Code INSEE</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="city_name" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Commune</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="registration_number" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Numéro d'enregistrement</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="name" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Nom</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="objectid" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Identifiant Neptune (3ième composante)</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="groupOfLineParameters">
+    <xs:annotation>
+      <xs:documentation>Paramètres des attributs des </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="registration_number" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Numéro d'enregistrement</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="name" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Nom</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="objectid" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Identifiant Neptune (3ième composante)</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="companyParameters">
+    <xs:annotation>
+      <xs:documentation>Paramètres des attributs des </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="registration_number" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Numéro d'enregistrement</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="name" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Nom</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="objectid" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Identifiant Neptune (3ième composante)</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="networkParameters">
+    <xs:annotation>
+      <xs:documentation>Paramètres des attributs des </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="registration_number" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Numéro d'enregistrement</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="name" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Nom</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="objectid" type="fieldParameters" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Identifiant Neptune (3ième composante)</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="transportModeParameters">
+    <xs:annotation>
+      <xs:documentation>Paramètres des modes de transport</xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="allowed_transport" type="xs:int" default="0">
+        <xs:annotation>
+          <xs:documentation>transport autorisé (si check_allowed_transport_modes est demandé)</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="inter_stop_duration_variation_max" type="xs:int" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>écart maximum de durée entre 2 arrêts successifs pour les différentes courses</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="speed_min" type="xs:int" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>vitesse minimum</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="speed_max" type="xs:int" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>vitesse maximum</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="inter_stop_area_distance_max" type="xs:int" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>distance maximum entre 2 arrêts</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="inter_stop_area_distance_min" type="xs:int" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>distance minimum entre 2 arrêts</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+    <xs:simpleType name="jobStatus">
+      <xs:annotation>
+        <xs:documentation>Etats possibles d'une opération</xs:documentation>
+      </xs:annotation>
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="SCHEDULED"><xs:annotation><xs:documentation>Planifiée</xs:documentation></xs:annotation></xs:enumeration> 
+      <xs:enumeration value="STARTED"><xs:annotation><xs:documentation>En cours</xs:documentation></xs:annotation></xs:enumeration>
+      <xs:enumeration value="TERMINATED"><xs:annotation><xs:documentation>Terminée</xs:documentation></xs:annotation></xs:enumeration>
+      <xs:enumeration value="CANCELED"><xs:annotation><xs:documentation>Annulée par opérateur</xs:documentation></xs:annotation></xs:enumeration>
+      <xs:enumeration value="ABORTED"><xs:annotation><xs:documentation>Interrompue par le serveur</xs:documentation></xs:annotation></xs:enumeration>
+    </xs:restriction>
+  </xs:simpleType>
+  
+  <xs:element name="gtfs-export" type="gtfsExportParameters">
+    <xs:annotation>
+      <xs:documentation>Paramètres d'export GTFS</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  <xs:element name="gtfs-import" type="gtfsImportParameters">
+    <xs:annotation>
+      <xs:documentation>Paramètres d'import GTFS</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  
+  <xs:element name="job" type="jobInfo">
+    <xs:annotation>
+      <xs:documentation>Métadonnées d'une opération; en consultation élémentaire, les métadonnées sont complétées de l'élément Parameters, lui-même complété d'un élément actionParameters</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  
+  <xs:element name="neptune-export" type="neptuneExportParameters">
+    <xs:annotation>
+      <xs:documentation>Paramètres d'export Neptune</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  
+  <xs:element name="neptune-import" type="neptuneImportParameters">
+    <xs:annotation>
+      <xs:documentation>Paramètres d'import Neptune</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  
+  <xs:element name="netex-export" type="netexExportParameters">
+    <xs:annotation>
+      <xs:documentation>Paramètres d'import NeTEx</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  
+  <xs:element name="netex-import" type="netexImportParameters">
+    <xs:annotation>
+      <xs:documentation>Paramètres d'import NeTEx</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  
+  <xs:element name="hub-export" type="hubExportParameters">
+    <xs:annotation>
+      <xs:documentation>Paramètres d'export Hub</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  
+  <xs:element name="kml-export" type="kmlExportParameters">
+    <xs:annotation>
+      <xs:documentation>Paramètres d'export KML</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  
+  
+  <xs:element name="parameters" type="parameters">
+    <xs:annotation>
+      <xs:documentation>Paramètres d'opération : à la création d'une opération, il doit contenir un élément actionParameters et optionnellement un élément validationParameters</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  
+  <xs:element name="validate" type="validateParameters">
+    <xs:annotation>
+      <xs:documentation>Paramètres d'une opération de validation en base</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  
+  <xs:element name="neptune-validate" type="neptuneValidateParameters">
+    <xs:annotation>
+      <xs:documentation>Paramètres d'une opération de validation d'un fichier Neptune</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  
+  <xs:element name="gtfs-validate" type="gtfsValidateParameters">
+    <xs:annotation>
+      <xs:documentation>Paramètres d'une opération de validation d'un fichier GTFS</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  
+  <xs:element name="netex-validate" type="netexValidateParameters">
+    <xs:annotation>
+      <xs:documentation>Paramètres d'une opération de validation d'un fichier NeTEx</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  
+  <xs:element name="validation" type="validationParameters">
+    <xs:annotation>
+      <xs:documentation>Paramètres de validation de niveau 3 et plus</xs:documentation>
+    </xs:annotation>
+  </xs:element>
+  
+</xs:schema>
+
