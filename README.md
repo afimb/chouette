@@ -13,6 +13,15 @@ The description of the Web Service API is decribed in :
 * [inputs XSD file](./doc/interface/Jobs.xsd)
 * [outputs XSD file](./doc/interface/Reports.xsd)
 
+Formats documentation are available for:
+* Neptune
+** [www.normes-donnees-tc.org](http://www.normes-donnees-tc.org/format-dechange/donnees-theoriques/neptune/)
+* NeTEx
+** [www.normes-donnees-tc.org](http://www.normes-donnees-tc.org/format-dechange/donnees-theoriques/netex/)
+* GTFS
+** [General Transit Feed Specification Reference](https://developers.google.com/transit/gtfs/reference)
+** [www.normes-donnees-tc.org](http://www.normes-donnees-tc.org/format-dechange/donnees-theoriques/gtfs-correspondance-avec-neptune-et-autres-normes/)
+
 This java project is splitted in differents modules :
 
 * chouette-iev : REST server (ear)
