@@ -1,29 +1,29 @@
 # Chouette [![Build Status](https://travis-ci.org/afimb/chouette.png)](http://travis-ci.org/afimb/chouette?branch=master)
 
-Chouette is a java open source project on transport offer. It's divided into differents modules : 
+Chouette is a Java program for validating, exchanging and managing Public Transport reference data. It is structured in the following modules : 
 * chouette-iev : REST server (ear)
 * mobi.chouette.command : Command mode standalone program (Import, Export and Validation actions)
 * mobi.chouette.common : common classes and interfaces
 * mobi.chouette.dao : Dao implementation for model persistence (EJB)
-* mobi.chouette.exchange : Common classes, interfaces and commands for exchange purpose
-* mobi.chouette.exchange.gtfs : Specific commands for GTFS exchange and validation purpose
-* mobi.chouette.exchange.hub : Specific commands for HUB exchange purpose
-* mobi.chouette.exchange.kml : Specific commands for KML exchange purpose
-* mobi.chouette.exchange.neptune : Specific commands for Neptune exchange and validation purpose
-* mobi.chouette.exchange.netex : Specific commands for NeTEx exchange purpose
-* mobi.chouette.exchange.validator : Specific commands for common validation purpose
+* mobi.chouette.exchange : Common classes, interfaces and commands for data exchange 
+* mobi.chouette.exchange.gtfs : Specific commands for GTFS data exchange and validation 
+* mobi.chouette.exchange.hub : Specific commands for HUB data exchange
+* mobi.chouette.exchange.kml : Specific commands for KML data exchange 
+* mobi.chouette.exchange.neptune : Specific commands for Neptune data exchange and validation 
+* mobi.chouette.exchange.netex : Specific commands for NeTEx data exchange 
+* mobi.chouette.exchange.validator : Specific commands for common data validation 
 * mobi.chouette.model : JPA entities modelisation
 * mobi.chouette.persistence.hibernate : Hibernate specific tools
 * mobi.chouette.service : Job and tasks managment
-* mobi.chouette.ws : Rest api implementation
+* mobi.chouette.ws : REST API implementation
 
-For more information see [Architecture Documentation](http://www.chouette.mobi/docs/) 
+For more information see [Architecture Documentation](http://www.chouette.mobi/developpeurs/) 
 
 Feel free to test and access to the demonstration web site at [http://appli.chouette.mobi/chouette2](http://appli.chouette.mobi/chouette2). Two types of accesses are granted : 
 * A demo organisation with a set of data
   * login : 'demo@chouette.mobi'
   * password : 'chouette'
-* Create your own organisation : Must follow the link "Sign up" ("S'inscrire")
+* Create your own organisation : follow the "Sign up" ("S'inscrire") link
 
 ## Release Notes
 
@@ -48,7 +48,7 @@ sudo apt-get install git
 
 ## Installation
  
-On debian, chouette can also be installed as package : see [debian packages](http://packages.chouette.cityway.fr/debian/chouette)
+On debian, chouette can also be installed as a package : see [debian packages](http://packages.chouette.cityway.fr/debian/chouette)
 
 Install [Postgres](./doc/install/postgresql.md) 
 
@@ -100,7 +100,7 @@ bin/jboss-cli.sh connect, deploy --force  (path to ...)/chouette.ear
 
 ## More Information
  
-An exhaustive technical documentation in French is avalailable [here](http://www.chouette.mobi/docs/)
+An exhaustive technical documentation in French is avalailable [here](http://www.chouette.mobi/developpeurs/)
 
 
 ## License
