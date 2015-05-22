@@ -295,6 +295,7 @@ public class CommandManager implements Constant {
 	}
 
 	public void saveReports() throws Exception {
+		if (importContext == null) return;
 		ActionReport importReport = (ActionReport) importContext.get(REPORT);
 		JSONUtil.toJSON(Paths.get(inputData.getPathName(), "importReport.json"), importReport);
 

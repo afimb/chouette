@@ -5,22 +5,21 @@ Chouette is a java project that provides following services on transport data in
 * Import transport data files
 * Export transport data in such file formats including also KML
 * Validate transport data
-* Import, Export and Validation service are provided as Web Service and performed asynchronously.
 
-The description of the Web Service API is decribed in :
+Import, Export and Validation service are provided as Web Service and performed asynchronously.
 
-* [Interface Documentation](./doc/interface/Chouette-API serveur IEV-1.0.pdf)
-* [inputs XSD file](./doc/interface/Jobs.xsd)
-* [outputs XSD file](./doc/interface/Reports.xsd)
+Chouette Web Service API is specified in :
+* [Interface Specification Document](./doc/interface/Chouette-API serveur IEV-1.0.pdf)
+* inputs and outputs data structures [Jobs](./doc/interface/Jobs.xsd), [Reports](./doc/interface/Reports.xsd)
 
 Formats documentation are available for:
 * Neptune
-** [www.normes-donnees-tc.org](http://www.normes-donnees-tc.org/format-dechange/donnees-theoriques/neptune/)
+ * [www.normes-donnees-tc.org](http://www.normes-donnees-tc.org/format-dechange/donnees-theoriques/neptune/)
 * NeTEx
-** [www.normes-donnees-tc.org](http://www.normes-donnees-tc.org/format-dechange/donnees-theoriques/netex/)
+ * [www.normes-donnees-tc.org](http://www.normes-donnees-tc.org/format-dechange/donnees-theoriques/netex/)
 * GTFS
-** [General Transit Feed Specification Reference](https://developers.google.com/transit/gtfs/reference)
-** [www.normes-donnees-tc.org](http://www.normes-donnees-tc.org/format-dechange/donnees-theoriques/gtfs-correspondance-avec-neptune-et-autres-normes/)
+ * [General Transit Feed Specification Reference](https://developers.google.com/transit/gtfs/reference)
+ * [www.normes-donnees-tc.org](http://www.normes-donnees-tc.org/format-dechange/donnees-theoriques/gtfs-correspondance-avec-neptune-et-autres-normes/)
 
 This java project is splitted in differents modules :
 
@@ -71,7 +70,8 @@ sudo apt-get install git
 
 ## Installation
 
-Rerequisite : [chouette2](https://github.com/afimb/chouette2) must be installed before chouette_iev
+Rerequisite : 
+* if chouette_iev is to be used by [chouette2](https://github.com/afimb/chouette2), this server must be installed before chouette_iev
  
 On debian, chouette can also be installed as a package : see [debian packages](http://packages.chouette.cityway.fr/debian/chouette)
 
