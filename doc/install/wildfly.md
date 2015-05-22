@@ -1,12 +1,16 @@
 # Install Wildfly
 
+Prerequisite
+------------
+it is better to create a wildfly user before installing Wildfly or use same user as for [chouette2](https://github.com/afimb/chouette2)
+
 Download
 --------
 download Wildfly 8.2.0.Final from [http://wildfly.org/downloads/](http://wildfly.org/downloads/)
 
 uncompress wildfly in installation directory (/opt for exemple)
 
-download Postgresql jdbc driver 9.3-1103 from [https://jdbc.postgresql.org/download.html](https://jdbc.postgresql.org/download.html)
+download Postgresql jdbc driver postgresql-9.3-1103.jdbc41.jar from [https://jdbc.postgresql.org/download.html](https://jdbc.postgresql.org/download.html)
 
 Setup
 -----
@@ -15,11 +19,11 @@ in installation directory (/opt/wildfly-8.2.0.Final)
 start server : 
 on default ports (8080 and 9990 for administration)
 ```sh
-bin/standalone.sh -b 0.0.0.0 -c standalone-full.xml
+bin/standalone.sh -c standalone-full.xml
 ```
 if port 8080 is used (8180 and 10090 for adminstration)
 ```sh
-bin/standalone.sh -b 0.0.0.0 -c standalone-full.xml -Djboss.socket.binding.port-offset=100
+bin/standalone.sh -c standalone-full.xml -Djboss.socket.binding.port-offset=100
 ```
 add a managment user for web administration console
 ```sh

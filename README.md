@@ -70,6 +70,8 @@ sudo apt-get install git
 ```
 
 ## Installation
+
+Rerequisite : [chouette2](https://github.com/afimb/chouette2) must be installed before chouette_iev
  
 On debian, chouette can also be installed as a package : see [debian packages](http://packages.chouette.cityway.fr/debian/chouette)
 
@@ -82,7 +84,6 @@ Install [Wildfly](./doc/install/wildfly.md)
 ### from sources
 Create test and development databases : 
 ```sh
-createdb -E UTF-8 -T template1 chouette_dev
 createdb -E UTF-8 -T template1 chouette_test
 ```
 
@@ -95,7 +96,7 @@ cd chouette
 Test :
 
 ```sh
-mvn test
+mvn test -DskipWildfly
 ```
 
 Deployment :

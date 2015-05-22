@@ -7,3 +7,7 @@ sudo apt-get update
 sudo apt-get install maven3
 sudo ln -s /usr/share/maven3/bin/mvn /usr/bin/mvn
 ```
+
+if ```apt-get update``` fails, modify file :
+/etc/apt/sources.list.d/natecarlson-maven3-trusty.list
+value ```trusty``` by ```precise``` 
