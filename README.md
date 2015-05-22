@@ -1,6 +1,20 @@
 # Chouette [![Build Status](https://travis-ci.org/afimb/chouette.png)](http://travis-ci.org/afimb/chouette?branch=master)
 
-Chouette is a Java program for validating, exchanging and managing Public Transport reference data. It is structured in the following modules : 
+Chouette is a java project that provides following services on transport data in different formats: Neptune, NeTEx, GTFS:
+
+* Import transport data files
+* Export transport data in such file formats including also KML
+* Validate transport data
+* Import, Export and Validation service are provided as Web Service and performed asynchronously.
+
+The description of the Web Service API is decribed in :
+
+* [Interface Documentation](./doc/interface/Chouette-API serveur IEV-1.0.pdf)
+* [inputs XSD file](./doc/interface/Jobs.xsd)
+* [outputs XSD file](./doc/interface/Reports.xsd)
+
+This java project is splitted in differents modules :
+
 * chouette-iev : REST server (ear)
 * mobi.chouette.command : Command mode standalone program (Import, Export and Validation actions)
 * mobi.chouette.common : common classes and interfaces
@@ -79,7 +93,7 @@ Deployment :
 
 change data storage directory (USER_HOME by default)
 copy properties file [iev.properties](./doc/iev.properties) in /etc/chouette/iev/ directory
-change property iev.directory
+change property ```iev.directory``` value to desired directory
 
 deploy ear (wildfly must be running)
 ```sh
@@ -91,7 +105,7 @@ download chouette.ear from [maven repository](http://maven.chouette.mobi/mobi/ch
 
 change data storage directory (USER_HOME by default)
 copy properties file [iev.properties](./doc/iev.properties) in /etc/chouette/iev/ directory
-change property iev.directory
+change property ```iev.directory``` value to desired directory
 
 in wildfly installation repository : 
 ```sh
