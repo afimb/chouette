@@ -57,7 +57,7 @@ public class RestAdmin implements Constant {
 			return builder.build();
 		}
 		String securityToken = System.getProperty(PropertyNames.ADMIN_KEY);
-		if (securityToken == null) {
+		if (securityToken == null || securityToken.isEmpty()) {
 			log.warn("admin call without property " + PropertyNames.ADMIN_KEY + " set");
 			ResponseBuilder builder = Response.status(Status.FORBIDDEN);
 			builder.header(api_version_key, api_version);
