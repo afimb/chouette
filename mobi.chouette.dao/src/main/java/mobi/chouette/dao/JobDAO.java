@@ -63,28 +63,20 @@ public class JobDAO extends GenericDAOImpl<Job> {
 		return result;
 	}
 
-	// public Job getNextJob(String referential) {
-	// log.info("[DSU] getNextJob : " + referential);
-	// Job result = null;
-	// CriteriaBuilder builder = em.getCriteriaBuilder();
-	// CriteriaQuery<Job> criteria = builder.createQuery(type);
-	// Root<Job> root = criteria.from(type);
-	// criteria.select(root);
-	// List<Predicate> predicates = new ArrayList<Predicate>();
-	// predicates.add(builder.equal(root.get(Job_.referential), referential));
-	// predicates.add(builder.lessThan(root.get(Job_.status),
-	// STATUS.TERMINATED));
-	// criteria.where(builder.and(predicates.toArray(new Predicate[0])));
-	// criteria.orderBy(builder.desc(root.get(Job_.status)));
-	// TypedQuery<Job> query = em.createQuery(criteria);
-	// List<Job> list = query.getResultList();
-	// if (list != null && !list.isEmpty()) {
-	// if (list.get(0).getStatus().equals(STATUS.CREATED)) {
-	// result = list.get(0);
-	// }
-	// }
-	// return result;
-	// }
+	public List<Job> findByStatus(STATUS status) {
+		List<Job> result;
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery<Job> criteria = builder.createQuery(type);
+		Root<Job> root = criteria.from(type);
+		Predicate statusPredicate = builder.equal(root.get(Job_.status),
+				status); // Created jobs are only in initialization phase, should not be sent
+		criteria.where( statusPredicate);
+		criteria.orderBy(builder.asc(root.get(Job_.created)));
+		TypedQuery<Job> query = em.createQuery(criteria);
+		result = query.getResultList();
+		return result;
+	}
+
 
 	@SuppressWarnings("unchecked")
 	public Job getNextJob(String referential) {

@@ -445,4 +445,18 @@ public class JobServiceManager {
 
 	}
 
+	// administration operation
+	public List<JobService> activeJobs() {
+
+		List<Job> jobs = jobDAO.findByStatus(Job.STATUS.STARTED);
+		jobs = jobDAO.findByStatus(Job.STATUS.STARTED);
+		jobs.addAll(jobDAO.findByStatus(Job.STATUS.SCHEDULED));
+		
+		List<JobService> jobServices = new ArrayList<>(jobs.size());
+		for (Job job : jobs) {
+			jobServices.add(new JobService(job));
+		}
+		return jobServices;
+	}
+
 }

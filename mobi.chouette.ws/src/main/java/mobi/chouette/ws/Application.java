@@ -23,6 +23,7 @@ public class Application extends javax.ws.rs.core.Application implements
 	public Set<Class<?>> getClasses() {
 		Set<Class<?>> result = new HashSet<Class<?>>();
 		result.add(RestService.class);
+		result.add(RestAdmin.class);
 		return result;
 	}
 
