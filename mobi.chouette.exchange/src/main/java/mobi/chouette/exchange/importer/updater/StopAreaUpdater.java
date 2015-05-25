@@ -21,6 +21,7 @@ import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 @Stateless(name = StopAreaUpdater.BEAN_NAME)
+
 public class StopAreaUpdater implements Updater<StopArea> {
 
 	public static final String BEAN_NAME = "StopAreaUpdater";
@@ -146,17 +147,6 @@ public class StopAreaUpdater implements Updater<StopArea> {
 				&& !newValue.getLongLatType().equals(oldValue.getLongLatType())) {
 			oldValue.setLongLatType(newValue.getLongLatType());
 		}
-//		if (newValue.getX() != null && !newValue.getX().equals(oldValue.getX())) {
-//			oldValue.setX(newValue.getX());
-//		}
-//		if (newValue.getY() != null && !newValue.getY().equals(oldValue.getY())) {
-//			oldValue.setY(newValue.getY());
-//		}
-//		if (newValue.getProjectionType() != null
-//				&& !newValue.getProjectionType().equals(
-//						oldValue.getProjectionType())) {
-//			oldValue.setProjectionType(newValue.getProjectionType());
-//		}
 		if (newValue.getCountryCode() != null
 				&& !newValue.getCountryCode().equals(oldValue.getCountryCode())) {
 			oldValue.setCountryCode(newValue.getCountryCode());
@@ -232,14 +222,6 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			accessPointUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
 
-		// Collection<AccessPoint> removedAccessPoint =
-		// CollectionUtils.substract(
-		// oldValue.getAccessPoints(), newValue.getAccessPoints(),
-		// NeptuneIdentifiedObjectComparator.INSTANCE);
-		// for (AccessPoint accessPoint : removedAccessPoint) {
-		// accessPoint.setContainedIn(null);
-		// accessPointDAO.delete(accessPoint);
-		// }
 
 		// AccessLink
 		Collection<AccessLink> addedAccessLink = CollectionUtil.substract(
@@ -278,14 +260,6 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			accessLinkUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
 
-		// Collection<AccessLink> removedAccessLink = CollectionUtils.substract(
-		// oldValue.getAccessLinks(), newValue.getAccessLinks(),
-		// NeptuneIdentifiedObjectComparator.INSTANCE);
-		// for (AccessLink accessLink : removedAccessLink) {
-		// accessLink.setStopArea(null);
-		// accessLinkDAO.delete(accessLink);
-		// }
-
 		// StartOfLink
 		Collection<ConnectionLink> addedStartOfLink = CollectionUtil
 				.substract(newValue.getConnectionStartLinks(),
@@ -294,7 +268,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 
 		// List<ConnectionLink> startOfLinks = null;
 		for (ConnectionLink item : addedStartOfLink) {
-
+			
 			ConnectionLink startOfLink = cache.getConnectionLinks().get(
 					item.getObjectId());
 			//			if (startOfLink == null) {
@@ -317,7 +291,6 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			//				// startOfLink.setObjectId(item.getObjectId());
 			//			}
 			if (!item.getEndOfLink().isDetached() || item.getEndOfLink().isFilled())
-
 				startOfLink.setStartOfLink(oldValue);
 		}
 
@@ -337,9 +310,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 				NeptuneIdentifiedObjectComparator.INSTANCE);
 
 		// List<ConnectionLink> endOfLinks = null;
-		for (ConnectionLink item : addedEndOfLink) {
-
-			ConnectionLink endOfLink = cache.getConnectionLinks().get(
+		for (ConnectionLink item : addedEndOfLink) {			ConnectionLink endOfLink = cache.getConnectionLinks().get(
 					item.getObjectId());
 			//			if (endOfLink == null) {
 			//				if (endOfLinks == null) {

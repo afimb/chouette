@@ -138,6 +138,7 @@ public class StopAreaParser implements Parser, Constant {
 				XPPUtil.skipSubTree(log, xpp);
 			}
 		}
+		stopArea.setFilled(true);
 	}
 
 	private void parseQuay(Context context, StopArea parent) throws Exception {
@@ -175,6 +176,7 @@ public class StopAreaParser implements Parser, Constant {
 				XPPUtil.skipSubTree(log, xpp);
 			}
 		}
+		stopArea.setFilled(true);
 	}
 
 	private void parsePostalAddress(Context context, StopArea stopArea)

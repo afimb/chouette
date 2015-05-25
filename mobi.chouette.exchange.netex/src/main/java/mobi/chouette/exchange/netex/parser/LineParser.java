@@ -94,6 +94,7 @@ public class LineParser implements Parser, Constant {
 		// {
 		// line.addGroupOfLine(groupOfLine);
 		// }
+		line.setFilled(true);
 
 	}
 

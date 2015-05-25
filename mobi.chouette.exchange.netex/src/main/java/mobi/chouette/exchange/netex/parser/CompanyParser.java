@@ -69,6 +69,7 @@ public class CompanyParser implements Parser, Constant {
 				XPPUtil.skipSubTree(log, xpp);
 			}
 		}
+		company.setFilled(true);
 
 	}
 

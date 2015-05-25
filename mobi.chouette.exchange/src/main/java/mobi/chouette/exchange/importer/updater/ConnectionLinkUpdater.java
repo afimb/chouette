@@ -25,7 +25,7 @@ public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
 			return;
 		}
 		newValue.setSaved(true);
-
+		
 		Referential cache = (Referential) context.get(CACHE);
 
 		if (newValue.getObjectId() != null

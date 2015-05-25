@@ -123,6 +123,7 @@ public class ConnectionLinkParser implements Parser, Constant {
 				XPPUtil.skipSubTree(log, xpp);
 			}
 		}
+		connectionLink.setFilled(true);
 	}
 
 	static {

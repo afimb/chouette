@@ -81,6 +81,7 @@ public class JourneyPatternParser implements Parser, Constant {
 
 		referential.getJourneyPatterns().put(journeyPattern.getObjectId(),
 				journeyPattern);
+		journeyPattern.setFilled(true);
 	}
 
 	private void parseStopPointInJourneyPatterns(Context context,

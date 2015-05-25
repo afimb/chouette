@@ -47,6 +47,7 @@ public class PTNetworkParser implements Parser, Constant {
 				XPPUtil.skipSubTree(log, xpp);
 			}
 		}
+		network.setFilled(true);
 	}
 
 	static {

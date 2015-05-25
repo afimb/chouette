@@ -58,6 +58,7 @@ public class GroupOfLineParser implements Parser, Constant {
 				XPPUtil.skipSubTree(log, xpp);
 			}
 		}
+		groupOfLine.setFilled(true);
 	}
 
 	static {

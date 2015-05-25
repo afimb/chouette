@@ -90,6 +90,7 @@ public class GtfsTransferParser implements Parser, Validator, Constant {
 			connectionLink.setName("from " + connectionLink.getStartOfLink().getName() + " to "
 					+ connectionLink.getEndOfLink().getName());
 		}
+		connectionLink.setFilled(true);
 	}
 
 	static {

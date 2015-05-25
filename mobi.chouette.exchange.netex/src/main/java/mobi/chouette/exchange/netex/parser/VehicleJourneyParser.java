@@ -54,8 +54,7 @@ public class VehicleJourneyParser implements Parser, Constant {
 		context.put(LINE_NUMBER, xpp.getLineNumber());
 
 		String id = xpp.getAttributeValue(null, ID);
-		VehicleJourney vehicleJourney = ObjectFactory.getVehicleJourney(
-				referential, id);
+		VehicleJourney vehicleJourney = ObjectFactory.getVehicleJourney(referential, id);
 
 		Integer version = Integer.valueOf(xpp.getAttributeValue(null, VERSION));
 		vehicleJourney.setObjectVersion(version != null ? version : 0);
@@ -74,8 +73,7 @@ public class VehicleJourneyParser implements Parser, Constant {
 				XPPUtil.skipSubTree(log, xpp);
 			} else if (xpp.getName().equals("ServicePatternRef")) {
 				String ref = xpp.getAttributeValue(null, REF);
-				JourneyPattern journeyPattern = ObjectFactory
-						.getJourneyPattern(referential, ref);
+				JourneyPattern journeyPattern = ObjectFactory.getJourneyPattern(referential, ref);
 				vehicleJourney.setJourneyPattern(journeyPattern);
 				XPPUtil.skipSubTree(log, xpp);
 			} else if (xpp.getName().equals("OperatorRef")) {
@@ -91,12 +89,10 @@ public class VehicleJourneyParser implements Parser, Constant {
 				XPPUtil.skipSubTree(log, xpp);
 			}
 		}
-
-		log.debug("[DSU] " + CHILD_TAG + "\t" + id);
+		vehicleJourney.setFilled(true);
 	}
 
-	private void parseTrainNumberRefs(Context context,
-			VehicleJourney vehicleJourney) throws Exception {
+	private void parseTrainNumberRefs(Context context, VehicleJourney vehicleJourney) throws Exception {
 		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		xpp.require(XmlPullParser.START_TAG, null, "trainNumbers");
 		context.put(COLUMN_NUMBER, xpp.getColumnNumber());
@@ -114,8 +110,7 @@ public class VehicleJourneyParser implements Parser, Constant {
 		}
 	}
 
-	private void parseDayTypeRefs(Context context, VehicleJourney vehicleJourney)
-			throws Exception {
+	private void parseDayTypeRefs(Context context, VehicleJourney vehicleJourney) throws Exception {
 		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
@@ -138,8 +133,7 @@ public class VehicleJourneyParser implements Parser, Constant {
 		}
 	}
 
-	public void parseCalls(Context context, VehicleJourney vehicleJourney)
-			throws Exception {
+	public void parseCalls(Context context, VehicleJourney vehicleJourney) throws Exception {
 		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 
 		xpp.require(XmlPullParser.START_TAG, null, "calls");
@@ -155,8 +149,8 @@ public class VehicleJourneyParser implements Parser, Constant {
 		}
 	}
 
-	private void parseCall(Context context, VehicleJourney vehicleJourney)
-			throws XmlPullParserException, IOException, ParseException {
+	private void parseCall(Context context, VehicleJourney vehicleJourney) throws XmlPullParserException, IOException,
+			ParseException {
 		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
@@ -170,16 +164,13 @@ public class VehicleJourneyParser implements Parser, Constant {
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 			if (xpp.getName().equals("ScheduledStopPointRef")) {
 				ref = xpp.getAttributeValue(null, REF);
-				StopPoint stopPoint = ObjectFactory.getStopPoint(referential,
-						ref);
+				StopPoint stopPoint = ObjectFactory.getStopPoint(referential, ref);
 				vehicleJourneyAtStop.setStopPoint(stopPoint);
 				XPPUtil.skipSubTree(log, xpp);
 			} else if (xpp.getName().equals("Arrival")) {
-				vehicleJourneyAtStop.setArrivalTime(NetexUtils
-						.getSQLTime(getTime(xpp)));
+				vehicleJourneyAtStop.setArrivalTime(NetexUtils.getSQLTime(getTime(xpp)));
 			} else if (xpp.getName().equals("Departure")) {
-				vehicleJourneyAtStop.setDepartureTime(NetexUtils
-						.getSQLTime(getTime(xpp)));
+				vehicleJourneyAtStop.setDepartureTime(NetexUtils.getSQLTime(getTime(xpp)));
 			} else {
 				XPPUtil.skipSubTree(log, xpp);
 			}
@@ -190,8 +181,7 @@ public class VehicleJourneyParser implements Parser, Constant {
 		log.debug("[DSU] " + "Call" + "\t" + ref);
 	}
 
-	private String getTime(XmlPullParser xpp) throws XmlPullParserException,
-			IOException {
+	private String getTime(XmlPullParser xpp) throws XmlPullParserException, IOException {
 		String result = null;
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 			if (xpp.getName().equals("Time")) {
@@ -204,15 +194,14 @@ public class VehicleJourneyParser implements Parser, Constant {
 	}
 
 	static {
-		ParserFactory.register(VehicleJourneyParser.class.getName(),
-				new ParserFactory() {
-					private VehicleJourneyParser instance = new VehicleJourneyParser();
+		ParserFactory.register(VehicleJourneyParser.class.getName(), new ParserFactory() {
+			private VehicleJourneyParser instance = new VehicleJourneyParser();
 
-					@Override
-					protected Parser create() {
-						return instance;
-					}
-				});
+			@Override
+			protected Parser create() {
+				return instance;
+			}
+		});
 	}
 
 }

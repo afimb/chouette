@@ -179,6 +179,7 @@ public class RouteParser implements Parser, Constant {
 				XPPUtil.skipSubTree(log, xpp);
 			}
 		}
+		route.setFilled(true);
 	}
 
 	private void parsePointOnRoutes(Context context, Route route)
@@ -196,6 +197,7 @@ public class RouteParser implements Parser, Constant {
 				StopPoint stopPoint = ObjectFactory.getStopPoint(referential,
 						getStopPointObjectId(route, id));
 				stopPoint.setRoute(route);
+				stopPoint.setFilled(true);
 				XPPUtil.skipSubTree(log, xpp);
 
 			} else {

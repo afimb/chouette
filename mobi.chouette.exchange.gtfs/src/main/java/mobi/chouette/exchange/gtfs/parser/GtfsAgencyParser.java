@@ -66,6 +66,7 @@ public class GtfsAgencyParser implements Parser, Validator, Constant {
 		String[] token = company.getObjectId().split(":");
 		company.setRegistrationNumber(token[2]);
 		company.setTimeZone(AbstractConverter.toString(gtfsAgency.getAgencyTimezone()));
+		company.setFilled(true);
 	}
 
 	static {

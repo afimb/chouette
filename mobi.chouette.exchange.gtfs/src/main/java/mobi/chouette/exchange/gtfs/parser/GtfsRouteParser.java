@@ -149,6 +149,7 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 		line.setColor(toHexa(gtfsRoute.getRouteColor()));
 		line.setTextColor(toHexa(gtfsRoute.getRouteTextColor()));
 		line.setUrl(AbstractConverter.toString(gtfsRoute.getRouteUrl()));
+		line.setFilled(true);
 	}
 
 	private String toHexa(Color color) {

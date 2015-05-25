@@ -161,6 +161,9 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 				List<StopPoint> stopPoints = journeyPattern.getStopPoints();
 				journeyPattern.setDepartureStopPoint(stopPoints.get(0));
 				journeyPattern.setArrivalStopPoint(stopPoints.get(stopPoints.size() - 1));
+				
+				journeyPattern.setFilled(true);
+				route.setFilled(true);
 
 				if (route.getName() == null) {
 					if (!route.getStopPoints().isEmpty()) {
@@ -294,6 +297,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 				break;
 			}
 		}
+		vehicleJourney.setFilled(true);
 
 	}
 
@@ -346,6 +350,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 //
 //				tm.addVehicleJourney(newVehicleJourney);
 //			}
+			newVehicleJourney.setFilled(true);
 			offset += headway;
 		}
 		return;
@@ -388,6 +393,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			stopPoint.setPosition(position++);
 
 			journeyPattern.addStopPoint(stopPoint);
+			stopPoint.setFilled(true);
 		}
 		NeptuneUtil.refreshDepartureArrivals(journeyPattern);
 	}

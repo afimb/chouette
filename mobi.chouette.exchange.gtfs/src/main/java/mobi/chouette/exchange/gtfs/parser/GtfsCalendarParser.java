@@ -184,6 +184,7 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 		if (periods != null)
 			Collections.sort(periods, PERIOD_COMPARATOR);
 		setComment(timetable);
+		timetable.setFilled(true);
 	}
 
 	public void addCalendarDay(Timetable timetable, GtfsCalendarDate date) {

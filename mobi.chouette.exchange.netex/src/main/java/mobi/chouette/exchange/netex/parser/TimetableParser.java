@@ -54,6 +54,7 @@ public class TimetableParser implements Parser, Constant {
 
 		log.debug("[DSU] " + "ServiceCalendarFrame" + "\t"
 				+ timetable.getObjectId());
+		timetable.setFilled(true);
 	}
 
 	private void parseDayTypes(Context context, Timetable timetable)
