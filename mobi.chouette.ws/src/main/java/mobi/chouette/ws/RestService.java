@@ -56,404 +56,413 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 @RequestScoped
 public class RestService implements Constant {
 
-    private static String api_version_key = "X-ChouetteIEV-Media-Type";
-    private static String api_version = "iev.v1.0; format=json";
+	private static String api_version_key = "X-ChouetteIEV-Media-Type";
+	private static String api_version = "iev.v1.0; format=json";
 
-    @Inject
-    JobServiceManager jobServiceManager;
+	@Inject
+	JobServiceManager jobServiceManager;
 
-    @Context
-    UriInfo uriInfo;
+	@Context
+	UriInfo uriInfo;
 
-    // post asynchronous job
-    @POST
-    @Path("/{ref}/{action}{type:(/[^/]+?)?}")
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response upload(@PathParam("ref") String referential, @PathParam("action") String action,
-            @PathParam("type") String type, MultipartFormDataInput input) {
-        Map<String, InputStream> inputStreamByName = null;
-        try 
-        {
-            log.info(Color.CYAN + "Call upload referential = " + referential + ", action = " + action
-                    + (type == null ? "" : ", type = " + type) + Color.NORMAL);
+	// post asynchronous job
+	@POST
+	@Path("/{ref}/{action}{type:(/[^/]+?)?}")
+	@Consumes(MediaType.MULTIPART_FORM_DATA)
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response upload(@PathParam("ref") String referential, @PathParam("action") String action,
+			@PathParam("type") String type, MultipartFormDataInput input) {
+		Map<String, InputStream> inputStreamByName = null;
+		try {
+			log.info(Color.CYAN + "Call upload referential = " + referential + ", action = " + action
+					+ (type == null ? "" : ", type = " + type) + Color.NORMAL);
 
-            // Convertir les parametres fournis 
-            type = parseType(type);
-            inputStreamByName = readParts(input);
+			// Convertir les parametres fournis
+			type = parseType(type);
+			inputStreamByName = readParts(input);
 
-            // Relayer le service au JobServiceManager
-            JobService jobService = jobServiceManager.create(referential, action, type, inputStreamByName);
+			// Relayer le service au JobServiceManager
+			JobService jobService = jobServiceManager.create(referential, action, type, inputStreamByName);
 
-            // Produire la vue
-            ResponseBuilder builder = Response.accepted();
-            builder.location(URI.create(MessageFormat.format("{0}/{1}/scheduled_jobs/{2,number,#}", ROOT_PATH,
-                    jobService.getReferential(), jobService.getId())));
+			// Produire la vue
+			ResponseBuilder builder = Response.accepted();
+			builder.location(URI.create(MessageFormat.format("{0}/{1}/scheduled_jobs/{2,number,#}", ROOT_PATH,
+					jobService.getReferential(), jobService.getId())));
 
-            return builder.build();
-        } catch (RequestServiceException e) {
-            log.info("RequestCode = " + e.getRequestCode() + ", Message = " + e.getMessage());
-            throw toWebApplicationException(e);
-        } catch (ServiceException e) {
-        	log.error( "Code = " + e.getCode() + ", Message = " + e.getMessage());
-            throw toWebApplicationException(e);
-        } catch (WebApplicationException e) {
-        	log.error( e.getMessage());
-            throw e;
-        } catch (Exception e) {
-        	log.error( e.getMessage(), e);
-            throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
-        } finally {
-            for( InputStream is : inputStreamByName.values()) {
-                try { is.close(); } catch ( Exception e) { 
-                    Logger.getLogger(RestService.class.getName()).log(Level.SEVERE, e.getMessage(), e);
-                }
-            }
-        }
-    }
-
-    private WebApplicationException toWebApplicationException(ServiceException exception) {
-        return new WebApplicationException(exception.getMessage(), toWebApplicationCode(exception.getExceptionCode()));
-    }
-
-    private Status toWebApplicationCode(ServiceExceptionCode errorCode) {
-    	switch (errorCode) {
-		case INVALID_REQUEST: return Status.BAD_REQUEST;
-		case INTERNAL_ERROR: return Status.INTERNAL_SERVER_ERROR;
+			return builder.build();
+		} catch (RequestServiceException e) {
+			log.info("RequestCode = " + e.getRequestCode() + ", Message = " + e.getMessage());
+			throw toWebApplicationException(e);
+		} catch (ServiceException e) {
+			log.error("Code = " + e.getCode() + ", Message = " + e.getMessage());
+			throw toWebApplicationException(e);
+		} catch (WebApplicationException e) {
+			log.error(e.getMessage());
+			throw e;
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
+		} finally {
+			if (inputStreamByName != null) {
+				for (InputStream is : inputStreamByName.values()) {
+					try {
+						is.close();
+					} catch (Exception e) {
+						Logger.getLogger(RestService.class.getName()).log(Level.SEVERE, e.getMessage(), e);
+					}
+				}
+			}
 		}
-    	return Status.INTERNAL_SERVER_ERROR;
-     }
-    
-    private WebApplicationException toWebApplicationException(RequestServiceException exception) {
-        return new WebApplicationException(exception.getRequestCode(), toWebApplicationCode(exception.getRequestExceptionCode()));
-    }
-    private Status toWebApplicationCode(RequestExceptionCode errorCode)
-    {
-    	switch (errorCode) {
-		case UNKNOWN_ACTION: 
-		case DUPPLICATE_OR_MISSING_DATA: 
-		case DUPPLICATE_PARAMETERS: 
-		case MISSING_PARAMETERS: 
-		case UNREADABLE_PARAMETERS: 
-		case INVALID_PARAMETERS: 
+	}
+
+	private WebApplicationException toWebApplicationException(ServiceException exception) {
+		return new WebApplicationException(exception.getMessage(), toWebApplicationCode(exception.getExceptionCode()));
+	}
+
+	private Status toWebApplicationCode(ServiceExceptionCode errorCode) {
+		switch (errorCode) {
+		case INVALID_REQUEST:
+			return Status.BAD_REQUEST;
+		case INTERNAL_ERROR:
+			return Status.INTERNAL_SERVER_ERROR;
+		}
+		return Status.INTERNAL_SERVER_ERROR;
+	}
+
+	private WebApplicationException toWebApplicationException(RequestServiceException exception) {
+		return new WebApplicationException(exception.getRequestCode(),
+				toWebApplicationCode(exception.getRequestExceptionCode()));
+	}
+
+	private Status toWebApplicationCode(RequestExceptionCode errorCode) {
+		switch (errorCode) {
+		case UNKNOWN_ACTION:
+		case DUPPLICATE_OR_MISSING_DATA:
+		case DUPPLICATE_PARAMETERS:
+		case MISSING_PARAMETERS:
+		case UNREADABLE_PARAMETERS:
+		case INVALID_PARAMETERS:
 		case ACTION_TYPE_MISMATCH:
 			return Status.BAD_REQUEST;
-		case UNKNOWN_REFERENTIAL: 
-		case UNKNOWN_FILE: 
-		case UNKNOWN_JOB: 
+		case UNKNOWN_REFERENTIAL:
+		case UNKNOWN_FILE:
+		case UNKNOWN_JOB:
 			return Status.NOT_FOUND;
-		case SCHEDULED_JOB: 
+		case SCHEDULED_JOB:
 			return Status.METHOD_NOT_ALLOWED;
 		}
-    	return Status.BAD_REQUEST;
-    }
+		return Status.BAD_REQUEST;
+	}
 
-    private String parseType(String type) {
-        if (type != null && type.startsWith("/")) {
-            return type.substring(1);
-        }
-        return type;
-    }
+	private String parseType(String type) {
+		if (type != null && type.startsWith("/")) {
+			return type.substring(1);
+		}
+		return type;
+	}
 
-    private Map<String, InputStream> readParts(MultipartFormDataInput input) throws Exception {
-        
-            Map<String, InputStream> result = new HashMap<String, InputStream>();
+	private Map<String, InputStream> readParts(MultipartFormDataInput input) throws Exception {
 
-            for (InputPart part : input.getParts()) {
-                MultivaluedMap<String, String> headers = part.getHeaders();
-                String header = headers.getFirst(HttpHeaders.CONTENT_DISPOSITION);
-                String filename = getFilename(header);
+		Map<String, InputStream> result = new HashMap<String, InputStream>();
 
-                if (filename == null) {
-                    throw new ServiceException(ServiceExceptionCode.INVALID_REQUEST,"missing filename in part");
-                }
-                // protect filename from invalid url chars
-                filename = removeSpecialChars(filename);
-                result.put(filename, part.getBody(InputStream.class, null));
-            }
-            return result;
-    }
+		for (InputPart part : input.getParts()) {
+			MultivaluedMap<String, String> headers = part.getHeaders();
+			String header = headers.getFirst(HttpHeaders.CONTENT_DISPOSITION);
+			String filename = getFilename(header);
 
+			if (filename == null) {
+				throw new ServiceException(ServiceExceptionCode.INVALID_REQUEST, "missing filename in part");
+			}
+			// protect filename from invalid url chars
+			filename = removeSpecialChars(filename);
+			result.put(filename, part.getBody(InputStream.class, null));
+		}
+		return result;
+	}
 
-    private String removeSpecialChars(String filename) {
+	private String removeSpecialChars(String filename) {
 		return filename.replaceAll("[^\\w-_\\.]", "_");
 	}
 
 	// download attached file
-    @GET
-    @Path("/{ref}/data/{id}/{filepath: .*}")
-    @Produces({MediaType.APPLICATION_OCTET_STREAM, MediaType.APPLICATION_JSON})
-    public Response download(@PathParam("ref") String referential, @PathParam("id") Long id,
-            @PathParam("filepath") String filename) {
-        try {
-            log.info(Color.CYAN + "Call download referential = " + referential + ", id = " + id
-                    + ", filename = " + filename + Color.NORMAL);
-            
-            // Retreive JobService
-            JobService jobService = jobServiceManager.download(referential, id, filename);
-            
-            // Build response
-            File file = new File( Paths.get( jobService.getPathName(), filename).toString());
-            ResponseBuilder builder = Response.ok(file);
-            builder.header(HttpHeaders.CONTENT_DISPOSITION, MessageFormat.format("attachment; filename=\"{0}\"", filename));
-            
-            MediaType type = null;
-            if (FilenameUtils.getExtension(filename).toLowerCase().equals("json")) {
-                type = MediaType.APPLICATION_JSON_TYPE;
-                builder.header(api_version_key, api_version);
-            } else {
-                type = MediaType.APPLICATION_OCTET_STREAM_TYPE;
-            }
-            
-            // cache control
-            if (jobService.getStatus().ordinal() >= Job.STATUS.TERMINATED.ordinal()) {
-                CacheControl cc = new CacheControl();
-                cc.setMaxAge(Integer.MAX_VALUE);
-                builder.cacheControl(cc);
-            }
-            
-            Response result = builder.type(type).build();
-            return result;
-            
-        } catch (RequestServiceException e) {
-        	log.info( "RequestCode = " + e.getRequestCode() + ", Message = " + e.getMessage());
-            throw toWebApplicationException(e);
-        } catch (ServiceException e) {
-        	log.error( "Code = " + e.getCode() + ", Message = " + e.getMessage());
-            throw toWebApplicationException(e);
-        } catch (Exception e) {
-        	log.error(e.getMessage(), e);
-            throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
-        }
-    }
+	@GET
+	@Path("/{ref}/data/{id}/{filepath: .*}")
+	@Produces({ MediaType.APPLICATION_OCTET_STREAM, MediaType.APPLICATION_JSON })
+	public Response download(@PathParam("ref") String referential, @PathParam("id") Long id,
+			@PathParam("filepath") String filename) {
+		try {
+			log.info(Color.CYAN + "Call download referential = " + referential + ", id = " + id + ", filename = "
+					+ filename + Color.NORMAL);
 
-    // jobs listing
-    @GET
-    @Path("/{ref}/jobs")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response jobs(@PathParam("ref") String referential,
-            @DefaultValue("0") @QueryParam("version") final Long version, @QueryParam("action") final String action) {
+			// Retreive JobService
+			JobService jobService = jobServiceManager.download(referential, id, filename);
 
-        try {
-            log.info(Color.CYAN + "Call jobs referential = " + referential + ", action = " + action
-                    + ", version = " + version + Color.NORMAL);
-            
-            // create jobs listing
-            List<JobService> jobServices = jobServiceManager.jobs( referential, action, version);
+			// Build response
+			File file = new File(Paths.get(jobService.getPathName(), filename).toString());
+			ResponseBuilder builder = Response.ok(file);
+			builder.header(HttpHeaders.CONTENT_DISPOSITION,
+					MessageFormat.format("attachment; filename=\"{0}\"", filename));
 
-            // re factor Parameters dependencies
-            List<JobInfo> result = new ArrayList<>( jobServices.size());
-            for (JobService jobService : jobServices) {
-                JobInfo jobInfo = new JobInfo( jobService , true, uriInfo);
-                result.add( jobInfo);
-            }
-            
-            // cache control
-            ResponseBuilder builder = Response.ok(result);
-            builder.header(api_version_key, api_version);
-            // CacheControl cc = new CacheControl();
-            // cc.setMaxAge(-1);
-            // builder.cacheControl(cc);
-            
-            return builder.build();
-        } catch (RequestServiceException ex) {
-            log.info("RequestCode = " + ex.getRequestCode() + ", Message = " + ex.getMessage(),ex);
-            throw toWebApplicationException(ex);
-        } catch (ServiceException e) {
-        	log.error( "Code = " + e.getCode() + ", Message = " + e.getMessage());
-            throw toWebApplicationException(e);
-        } catch (Exception ex) {
-        	log.error( ex.getMessage(), ex);
-            throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
-        }
-    }
+			MediaType type = null;
+			if (FilenameUtils.getExtension(filename).toLowerCase().equals("json")) {
+				type = MediaType.APPLICATION_JSON_TYPE;
+				builder.header(api_version_key, api_version);
+			} else {
+				type = MediaType.APPLICATION_OCTET_STREAM_TYPE;
+			}
 
-    // view scheduled job
-    @GET
-    @Path("/{ref}/scheduled_jobs/{id}")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response scheduledJob(@PathParam("ref") String referential, @PathParam("id") Long id) {
-        try {
-            log.info(Color.CYAN + "Call scheduledJob referential = " + referential + ", id = " + id + Color.NORMAL);
+			// cache control
+			if (jobService.getStatus().ordinal() >= Job.STATUS.TERMINATED.ordinal()) {
+				CacheControl cc = new CacheControl();
+				cc.setMaxAge(Integer.MAX_VALUE);
+				builder.cacheControl(cc);
+			}
 
-            Response result = null;
+			Response result = builder.type(type).build();
+			return result;
 
-            JobService jobService = jobServiceManager.scheduledJob( referential, id);
+		} catch (RequestServiceException e) {
+			log.info("RequestCode = " + e.getRequestCode() + ", Message = " + e.getMessage());
+			throw toWebApplicationException(e);
+		} catch (ServiceException e) {
+			log.error("Code = " + e.getCode() + ", Message = " + e.getMessage());
+			throw toWebApplicationException(e);
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
+		}
+	}
 
-            // build response
-            ResponseBuilder builder = null;
-            if ( jobService.getStatus().ordinal() <= STATUS.STARTED.ordinal()) {
-                JobInfo info = new JobInfo( jobService, true, uriInfo);
-                builder = Response.ok(info);
-            } else {
-                builder = Response.seeOther(URI.create(MessageFormat.format("/{0}/{1}/terminated_jobs/{2,number,#}",
-                        ROOT_PATH, jobService.getReferential(), jobService.getId())));
-            }
+	// jobs listing
+	@GET
+	@Path("/{ref}/jobs")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response jobs(@PathParam("ref") String referential,
+			@DefaultValue("0") @QueryParam("version") final Long version, @QueryParam("action") final String action) {
 
-            // add links
-            for (Link link : jobService.getJob().getLinks()) {
-                URI uri = URI.create( uriInfo.getBaseUri() + link.getHref());
-                builder.link( URI.create(uri.toASCIIString()), link.getRel());
-            }
+		try {
+			log.info(Color.CYAN + "Call jobs referential = " + referential + ", action = " + action + ", version = "
+					+ version + Color.NORMAL);
 
-            builder.header(api_version_key, api_version);
-            result = builder.build();
-            return result;
-            
-        } catch (RequestServiceException ex) {
-            log.info( "RequestCode = " + ex.getRequestCode() + ", Message = " + ex.getMessage());
-            throw toWebApplicationException(ex);
-        } catch (ServiceException e) {
-            log.error("Code = " + e.getCode() + ", Message = " + e.getMessage());
-            throw toWebApplicationException(e);
-        } catch (Exception ex) {
-        	log.error( ex.getMessage(), ex);
-            throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
-        }
-    }
+			// create jobs listing
+			List<JobService> jobServices = jobServiceManager.jobs(referential, action, version);
 
-    // cancel job
-    @DELETE
-    @Path("/{ref}/scheduled_jobs/{id}")
-    public Response cancel(@PathParam("ref") String referential, @PathParam("id") Long id, String dummy) {
-        try {
-            // dummy uses when sender call url with content (prevent a NullPointerException)
-            log.info(Color.CYAN + "Call cancel referential = " + referential + ", id = " + id + Color.NORMAL);
+			// re factor Parameters dependencies
+			List<JobInfo> result = new ArrayList<>(jobServices.size());
+			for (JobService jobService : jobServices) {
+				JobInfo jobInfo = new JobInfo(jobService, true, uriInfo);
+				result.add(jobInfo);
+			}
 
-            Response result = null;
+			// cache control
+			ResponseBuilder builder = Response.ok(result);
+			builder.header(api_version_key, api_version);
+			// CacheControl cc = new CacheControl();
+			// cc.setMaxAge(-1);
+			// builder.cacheControl(cc);
 
-            jobServiceManager.cancel(referential, id);
-            
-            ResponseBuilder builder = Response.ok();
-            result = builder.build();
-            builder.header(api_version_key, api_version);
+			return builder.build();
+		} catch (RequestServiceException ex) {
+			log.info("RequestCode = " + ex.getRequestCode() + ", Message = " + ex.getMessage(), ex);
+			throw toWebApplicationException(ex);
+		} catch (ServiceException e) {
+			log.error("Code = " + e.getCode() + ", Message = " + e.getMessage());
+			throw toWebApplicationException(e);
+		} catch (Exception ex) {
+			log.error(ex.getMessage(), ex);
+			throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
+		}
+	}
 
-            return result;
-        } catch (RequestServiceException ex) {
-        	log.info( "RequestCode = " + ex.getRequestCode() + ", Message = " + ex.getMessage());
-            throw toWebApplicationException(ex);
-        } catch (ServiceException ex) {
-        	log.error("Code = " + ex.getCode() + ", Message = " + ex.getMessage());
-            throw toWebApplicationException(ex);
-        } catch (Exception ex) {
-        	log.error( ex.getMessage(), ex);
-            throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
-        }
-    }
+	// view scheduled job
+	@GET
+	@Path("/{ref}/scheduled_jobs/{id}")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response scheduledJob(@PathParam("ref") String referential, @PathParam("id") Long id) {
+		try {
+			log.info(Color.CYAN + "Call scheduledJob referential = " + referential + ", id = " + id + Color.NORMAL);
 
-    // download report
-    @GET
-    @Path("/{ref}/terminated_jobs/{id}")
-    @Produces({MediaType.APPLICATION_JSON})
-    public Response terminatedJob(@PathParam("ref") String referential, @PathParam("id") Long id) {
-        try {
-            log.info(Color.CYAN + "Call terminatedJob referential = " + referential + ", id = " + id + Color.NORMAL);
-            
-            JobService jobService = jobServiceManager.terminatedJob( referential, id);
+			Response result = null;
 
-            JobInfo info = new JobInfo(jobService, true, uriInfo);
-            ResponseBuilder builder = Response.ok(info);
+			JobService jobService = jobServiceManager.scheduledJob(referential, id);
 
-            // cache control
-            CacheControl cc = new CacheControl();
-            cc.setMaxAge(Integer.MAX_VALUE);
-            builder.cacheControl(cc);
+			// build response
+			ResponseBuilder builder = null;
+			if (jobService.getStatus().ordinal() <= STATUS.STARTED.ordinal()) {
+				JobInfo info = new JobInfo(jobService, true, uriInfo);
+				builder = Response.ok(info);
+			} else {
+				builder = Response.seeOther(URI.create(MessageFormat.format("/{0}/{1}/terminated_jobs/{2,number,#}",
+						ROOT_PATH, jobService.getReferential(), jobService.getId())));
+			}
 
-            // add links
-            for (Link link : jobService.getJob().getLinks()) {
-                URI uri = URI.create( uriInfo.getBaseUri() + link.getHref());
-                builder.link( URI.create(uri.toASCIIString()), link.getRel());
-            }
+			// add links
+			for (Link link : jobService.getJob().getLinks()) {
+				URI uri = URI.create(uriInfo.getBaseUri() + link.getHref());
+				builder.link(URI.create(uri.toASCIIString()), link.getRel());
+			}
 
-            builder.header(api_version_key, api_version);
-            return builder.build();
-            
-        } catch (RequestServiceException ex) {
-        	log.info( "RequestCode = " + ex.getRequestCode() + ", Message = " + ex.getMessage());
-            throw toWebApplicationException(ex);
-        } catch (ServiceException ex) {
-        	log.error( "Code = " + ex.getCode() + ", Message = " + ex.getMessage());
-            throw toWebApplicationException(ex);
-        } catch (Exception ex) {
-        	log.error( ex.getMessage(), ex);
-            throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
-        }
-    }
+			builder.header(api_version_key, api_version);
+			result = builder.build();
+			return result;
 
-    // delete report
-    @DELETE
-    @Path("/{ref}/terminated_jobs/{id}")
-    public Response remove(@PathParam("ref") String referential, @PathParam("id") Long id, String dummy) {
-        try {
-            log.info(Color.CYAN + "Call remove referential = " + referential + ", id = " + id
-                    + ", dummy = " + dummy + Color.NORMAL);
-            
-            // dummy uses when sender call url with content (prevent a NullPointerException)
-            Response result = null;
+		} catch (RequestServiceException ex) {
+			log.info("RequestCode = " + ex.getRequestCode() + ", Message = " + ex.getMessage());
+			throw toWebApplicationException(ex);
+		} catch (ServiceException e) {
+			log.error("Code = " + e.getCode() + ", Message = " + e.getMessage());
+			throw toWebApplicationException(e);
+		} catch (Exception ex) {
+			log.error(ex.getMessage(), ex);
+			throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
+		}
+	}
 
-            jobServiceManager.remove(referential, id);
+	// cancel job
+	@DELETE
+	@Path("/{ref}/scheduled_jobs/{id}")
+	public Response cancel(@PathParam("ref") String referential, @PathParam("id") Long id, String dummy) {
+		try {
+			// dummy uses when sender call url with content (prevent a
+			// NullPointerException)
+			log.info(Color.CYAN + "Call cancel referential = " + referential + ", id = " + id + Color.NORMAL);
 
-            // build response
-            ResponseBuilder builder = Response.ok("deleted");
-            builder.header(api_version_key, api_version);
-            result = builder.build();
+			Response result = null;
 
-            return result;
-            
-        } catch (RequestServiceException ex) {
-        	log.info( "RequestCode = " + ex.getRequestCode() + ", Message = " + ex.getMessage());
-            throw toWebApplicationException(ex);
-        } catch (ServiceException ex) {
-        	log.error( "Code = " + ex.getCode() + ", Message = " + ex.getMessage());
-            throw toWebApplicationException(ex);
-        } catch (Exception ex) {
-        	log.error(ex.getMessage(), ex);
-            throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
-        }
-    }
+			jobServiceManager.cancel(referential, id);
 
-    // delete referential
-    @DELETE
-    @Path("/{ref}/jobs")
-    public Response drop(@PathParam("ref") String referential, String dummy) {
-        try {
-            log.info(Color.CYAN + "Call drop referential = " + referential + ", dummy = " + dummy + Color.NORMAL);
-            
-            // dummy uses when sender call url with content (prevent a NullPointerException)
-            Response result = null;
+			ResponseBuilder builder = Response.ok();
+			result = builder.build();
+			builder.header(api_version_key, api_version);
 
-            jobServiceManager.drop(referential);
+			return result;
+		} catch (RequestServiceException ex) {
+			log.info("RequestCode = " + ex.getRequestCode() + ", Message = " + ex.getMessage());
+			throw toWebApplicationException(ex);
+		} catch (ServiceException ex) {
+			log.error("Code = " + ex.getCode() + ", Message = " + ex.getMessage());
+			throw toWebApplicationException(ex);
+		} catch (Exception ex) {
+			log.error(ex.getMessage(), ex);
+			throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
+		}
+	}
 
-            // build response
-            ResponseBuilder builder = Response.ok("");
-            builder.header(api_version_key, api_version);
-            result = builder.build();
+	// download report
+	@GET
+	@Path("/{ref}/terminated_jobs/{id}")
+	@Produces({ MediaType.APPLICATION_JSON })
+	public Response terminatedJob(@PathParam("ref") String referential, @PathParam("id") Long id) {
+		try {
+			log.info(Color.CYAN + "Call terminatedJob referential = " + referential + ", id = " + id + Color.NORMAL);
 
-            return result;
-        } catch (RequestServiceException ex) {
-        	log.info( "RequestCode = " + ex.getRequestCode() + ", Message = " + ex.getMessage());
-            throw toWebApplicationException(ex);
-        } catch (ServiceException ex) {
-        	log.error( "Code = " + ex.getCode() + ", Message = " + ex.getMessage());
-            throw toWebApplicationException(ex);
-        } catch (Exception ex) {
-        	log.error( ex.getMessage(), ex);
-            throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
-        }
-    }
+			JobService jobService = jobServiceManager.terminatedJob(referential, id);
 
-    private String getFilename(String header) {
-        String result = null;
+			JobInfo info = new JobInfo(jobService, true, uriInfo);
+			ResponseBuilder builder = Response.ok(info);
 
-        if (header != null) {
-            for (String token : header.split(";")) {
-                if (token.trim().startsWith("filename")) {
-                    result = token.substring(token.indexOf('=') + 1).trim().replace("\"", "");
-                    break;
-                }
-            }
-        }
-        return result;
-    }
-    
+			// cache control
+			CacheControl cc = new CacheControl();
+			cc.setMaxAge(Integer.MAX_VALUE);
+			builder.cacheControl(cc);
+
+			// add links
+			for (Link link : jobService.getJob().getLinks()) {
+				URI uri = URI.create(uriInfo.getBaseUri() + link.getHref());
+				builder.link(URI.create(uri.toASCIIString()), link.getRel());
+			}
+
+			builder.header(api_version_key, api_version);
+			return builder.build();
+
+		} catch (RequestServiceException ex) {
+			log.info("RequestCode = " + ex.getRequestCode() + ", Message = " + ex.getMessage());
+			throw toWebApplicationException(ex);
+		} catch (ServiceException ex) {
+			log.error("Code = " + ex.getCode() + ", Message = " + ex.getMessage());
+			throw toWebApplicationException(ex);
+		} catch (Exception ex) {
+			log.error(ex.getMessage(), ex);
+			throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	// delete report
+	@DELETE
+	@Path("/{ref}/terminated_jobs/{id}")
+	public Response remove(@PathParam("ref") String referential, @PathParam("id") Long id, String dummy) {
+		try {
+			log.info(Color.CYAN + "Call remove referential = " + referential + ", id = " + id + ", dummy = " + dummy
+					+ Color.NORMAL);
+
+			// dummy uses when sender call url with content (prevent a
+			// NullPointerException)
+			Response result = null;
+
+			jobServiceManager.remove(referential, id);
+
+			// build response
+			ResponseBuilder builder = Response.ok("deleted");
+			builder.header(api_version_key, api_version);
+			result = builder.build();
+
+			return result;
+
+		} catch (RequestServiceException ex) {
+			log.info("RequestCode = " + ex.getRequestCode() + ", Message = " + ex.getMessage());
+			throw toWebApplicationException(ex);
+		} catch (ServiceException ex) {
+			log.error("Code = " + ex.getCode() + ", Message = " + ex.getMessage());
+			throw toWebApplicationException(ex);
+		} catch (Exception ex) {
+			log.error(ex.getMessage(), ex);
+			throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	// delete referential
+	@DELETE
+	@Path("/{ref}/jobs")
+	public Response drop(@PathParam("ref") String referential, String dummy) {
+		try {
+			log.info(Color.CYAN + "Call drop referential = " + referential + ", dummy = " + dummy + Color.NORMAL);
+
+			// dummy uses when sender call url with content (prevent a
+			// NullPointerException)
+			Response result = null;
+
+			jobServiceManager.drop(referential);
+
+			// build response
+			ResponseBuilder builder = Response.ok("");
+			builder.header(api_version_key, api_version);
+			result = builder.build();
+
+			return result;
+		} catch (RequestServiceException ex) {
+			log.info("RequestCode = " + ex.getRequestCode() + ", Message = " + ex.getMessage());
+			throw toWebApplicationException(ex);
+		} catch (ServiceException ex) {
+			log.error("Code = " + ex.getCode() + ", Message = " + ex.getMessage());
+			throw toWebApplicationException(ex);
+		} catch (Exception ex) {
+			log.error(ex.getMessage(), ex);
+			throw new WebApplicationException("INTERNAL_ERROR", Status.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	private String getFilename(String header) {
+		String result = null;
+
+		if (header != null) {
+			for (String token : header.split(";")) {
+				if (token.trim().startsWith("filename")) {
+					result = token.substring(token.indexOf('=') + 1).trim().replace("\"", "");
+					break;
+				}
+			}
+		}
+		return result;
+	}
+
 }
