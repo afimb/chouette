@@ -10,7 +10,9 @@ package mobi.chouette.exchange.validation;
 
 import java.io.IOException;
 
+import javax.annotation.Resource;
 import javax.ejb.EJB;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -37,9 +39,11 @@ import com.jamonapi.MonitorFactory;
 public class DaoLineValidatorCommand implements Command, Constant {
 	public static final String COMMAND = "DaoLineValidatorCommand";
 
+	@Resource
+	private SessionContext daoContext;
+	
 	@EJB
 	private LineDAO lineDAO;
-
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -50,6 +54,7 @@ public class DaoLineValidatorCommand implements Command, Constant {
 		InitialContext initialContext = (InitialContext) context.get(INITIAL_CONTEXT);
 
 		try {
+			
 			Command lineValidatorCommand = CommandFactory.create(initialContext,
 					LineValidatorCommand.class.getName());
 
@@ -60,6 +65,8 @@ public class DaoLineValidatorCommand implements Command, Constant {
 			collector.collect(data, line);
 
 			result = lineValidatorCommand.execute(context);
+			daoContext.setRollbackOnly();
+			
 		} finally {
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		}

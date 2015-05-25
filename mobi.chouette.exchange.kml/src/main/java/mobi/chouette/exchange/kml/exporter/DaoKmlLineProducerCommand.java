@@ -2,7 +2,9 @@ package mobi.chouette.exchange.kml.exporter;
 
 import java.io.IOException;
 
+import javax.annotation.Resource;
 import javax.ejb.EJB;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -26,6 +28,9 @@ import com.jamonapi.MonitorFactory;
 public class DaoKmlLineProducerCommand implements Command, Constant {
 	public static final String COMMAND = "DaoKmlLineProducerCommand";
 
+	@Resource
+	private SessionContext daoContext;
+
 	@EJB
 	private LineDAO lineDAO;
 
@@ -46,6 +51,7 @@ public class DaoKmlLineProducerCommand implements Command, Constant {
 			context.put(LINE, line);
 			result = export.execute(context);
 
+			daoContext.setRollbackOnly();
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		} finally {

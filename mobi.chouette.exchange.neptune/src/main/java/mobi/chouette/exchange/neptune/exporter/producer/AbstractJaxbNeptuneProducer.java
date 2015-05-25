@@ -13,7 +13,9 @@ import javax.xml.datatype.Duration;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import mobi.chouette.model.NeptuneIdentifiedObject;
+import mobi.chouette.model.Route;
 
+import org.apache.log4j.Logger;
 import org.trident.schema.trident.ObjectFactory;
 import org.trident.schema.trident.RegistrationType;
 import org.trident.schema.trident.TridentObjectType;
@@ -126,4 +128,21 @@ public abstract class AbstractJaxbNeptuneProducer<T extends TridentObjectType, U
       c.setMillisecond(DatatypeConstants.FIELD_UNDEFINED);
       return c;
    }
+   
+	@SuppressWarnings("unused")
+	protected boolean hasOppositeRoute(Route route, Logger log) {
+		// protect tests from opposite_id invalid foreign key
+		try {
+			Route wayBack = route.getOppositeRoute();
+			if (wayBack != null) {
+				String o = wayBack.getObjectId();
+				return true;
+			}
+		} catch (javax.persistence.EntityNotFoundException ex) {
+			log.error("problem with oppositeRoute foreign key ");
+			// route.unsetOppositeRoute();
+		}
+		return false;
+	}
+
 }

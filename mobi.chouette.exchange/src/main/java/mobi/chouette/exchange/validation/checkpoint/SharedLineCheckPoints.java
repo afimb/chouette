@@ -17,6 +17,8 @@ public class SharedLineCheckPoints extends AbstractValidation<Line> implements V
 
 	@Override
 	public ValidationConstraints validate(Context context, Line target) {
+		// CAUTION : here line is a shared clone with only used content
+		// if more data needed, change cloneLine in ValidationDataCollector class
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 		List<Line> beans = new ArrayList<>(data.getLines());
 		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);

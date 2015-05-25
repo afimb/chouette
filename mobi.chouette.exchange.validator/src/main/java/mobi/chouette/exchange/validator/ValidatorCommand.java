@@ -15,14 +15,14 @@ import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.AbstractDaoReaderCommand;
+import mobi.chouette.exchange.ProcessingCommands;
+import mobi.chouette.exchange.ProcessingCommandsFactory;
 import mobi.chouette.exchange.ProgressionCommand;
-import mobi.chouette.exchange.exporter.AbstractExporterCommand;
 import mobi.chouette.exchange.report.ActionError;
 import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.LineInfo;
 import mobi.chouette.exchange.report.DataStats;
-import mobi.chouette.exchange.validation.DaoLineValidatorCommand;
-import mobi.chouette.exchange.validation.DaoSharedDataValidatorCommand;
+import mobi.chouette.exchange.report.LineInfo;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.model.Line;
@@ -32,7 +32,7 @@ import com.jamonapi.MonitorFactory;
 
 @Log4j
 @Stateless(name = ValidatorCommand.COMMAND)
-public class ValidatorCommand extends AbstractExporterCommand implements Command, Constant {
+public class ValidatorCommand extends AbstractDaoReaderCommand implements Command, Constant {
 
 	public static final String COMMAND = "ValidatorCommand";
 
@@ -42,38 +42,137 @@ public class ValidatorCommand extends AbstractExporterCommand implements Command
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
 		InitialContext initialContext = (InitialContext) context.get(INITIAL_CONTEXT);
+		ActionReport report = (ActionReport) context.get(REPORT);
 
 		// initialize reporting and progression
 		ProgressionCommand progression = (ProgressionCommand) CommandFactory.create(initialContext,
 				ProgressionCommand.class.getName());
-		progression.initialize(context,1);
+		try {
 
-		context.put(VALIDATION_DATA, new ValidationData());
+			// read parameters
+			Object configuration = context.get(CONFIGURATION);
+			if (!(configuration instanceof ValidateParameters)) {
+				// fatal wrong parameters
+				log.error("invalid parameters for validation " + configuration.getClass().getName());
+				report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,
+						"invalid parameters for validation " + configuration.getClass().getName()));
+				return ERROR;
+			}
 
-		// read parameters
-		Object configuration = context.get(CONFIGURATION);
-		if (!(configuration instanceof ValidateParameters)) {
-			// fatal wrong parameters
-			ActionReport report = (ActionReport) context.get(REPORT);
-			log.error("invalid parameters for validation " + configuration.getClass().getName());
-			report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,"invalid parameters for validation " + configuration.getClass().getName()));
+			ValidationParameters validationParameters = (ValidationParameters) context.get(VALIDATION);
+			if (validationParameters == null) {
+				log.error("no validation parameters for validation ");
+				report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,
+						"no validation parameters for validation "));
+				return ERROR;
+
+			}
+
+			ValidateParameters parameters = (ValidateParameters) configuration;
+			progression.initialize(context, 1);
+			context.put(VALIDATION_DATA, new ValidationData());
+
+			String type = parameters.getReferencesType();
+			// set default type
+			if (type == null || type.isEmpty()) {
+				// all lines
+				type = "line";
+				parameters.setIds(null);
+			}
+			type = type.toLowerCase();
+
+			ProcessingCommands commands = ProcessingCommandsFactory.create(ValidatorProcessingCommands.class.getName());
+
+			result = process(context, commands, progression, false);
+
+//			List<Long> ids = null;
+//			if (parameters.getIds() != null) {
+//				ids = new ArrayList<Long>(parameters.getIds());
+//			}
+//
+//			Set<Line> lines = loadLines(type, ids);
+//			progression.execute(context);
+//			progression.start(context, lines.size());
+//			Command validateLine = CommandFactory.create(initialContext, DaoLineValidatorCommand.class.getName());
+//
+//			int lineCount = 0;
+//			for (Line line : lines) {
+//				context.put(LINE_ID, line.getId());
+//				progression.execute(context);
+//				boolean resLine = validateLine.execute(context);
+//				ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
+//				ActionReport report = (ActionReport) context.get(REPORT);
+//				LineInfo lineInfo = new LineInfo(line.getName() + " (" + line.getNumber() + ")");
+//				DataStats stats = lineInfo.getStats();
+//				stats.setLineCount(1);
+//				stats.setJourneyPatternCount(data.getJourneyPatterns().size());
+//				stats.setRouteCount(data.getRoutes().size());
+//				stats.setVehicleJourneyCount(data.getVehicleJourneys().size());
+//
+//				// merge lineStats to global ones
+//				DataStats globalStats = report.getStats();
+//				globalStats.setLineCount(globalStats.getLineCount() + stats.getLineCount());
+//				globalStats.setRouteCount(globalStats.getRouteCount() + stats.getRouteCount());
+//				globalStats.setVehicleJourneyCount(globalStats.getVehicleJourneyCount()
+//						+ stats.getVehicleJourneyCount());
+//				globalStats.setJourneyPatternCount(globalStats.getJourneyPatternCount()
+//						+ stats.getJourneyPatternCount());
+//				report.getLines().add(lineInfo);
+//
+//				if (resLine == SUCCESS) {
+//					lineCount++;
+//				}
+//			}
+//
+//			// terminate : nothing to do
+//			progression.terminate(context, 1);
+//			if (lineCount > 0) {
+//				Command validateSharedData = CommandFactory.create(initialContext,
+//						DaoSharedDataValidatorCommand.class.getName());
+//				result = validateSharedData.execute(context);
+//				if (result) {
+//					ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
+//					ActionReport report = (ActionReport) context.get(REPORT);
+//					DataStats globalStats = report.getStats();
+//					globalStats.setConnectionLinkCount(data.getConnectionLinks().size());
+//					globalStats.setAccessPointCount(data.getAccessPoints().size());
+//					globalStats.setStopAreaCount(data.getStopAreas().size());
+//					globalStats.setTimeTableCount(data.getTimetables().size());
+//				}
+//			}
+//			progression.execute(context);
+
+		} catch (Exception e) {
+			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR, "Fatal :" + e));
+			log.error(e.getMessage(), e);
+		} finally {
 			progression.dispose(context);
-			return ERROR;
+			log.info(Color.YELLOW + monitor.stop() + Color.NORMAL);
 		}
 
-		ValidationParameters validationParameters = (ValidationParameters) context.get(VALIDATION);
-		if (validationParameters == null)
-		{
-			ActionReport report = (ActionReport) context.get(REPORT);
-			log.error("no validation parameters for validation ");
-			report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,"no validation parameters for validation "));
-			progression.dispose(context);
-			return ERROR;
+		return result;
+	}
 
+	private boolean process(Context context, ProcessingCommands commands, ProgressionCommand progression,
+			boolean continueLineProcesingOnError) throws Exception {
+
+		boolean result = ERROR;
+		ValidateParameters parameters = (ValidateParameters) context.get(CONFIGURATION);
+		ActionReport report = (ActionReport) context.get(REPORT);
+
+		// initialisation
+		List<? extends Command> preProcessingCommands = commands.getPreProcessingCommands(context, true);
+		progression.initialize(context, preProcessingCommands.size()+1);
+		for (Command exportCommand : preProcessingCommands) {
+			result = exportCommand.execute(context);
+			if (!result) {
+				report.setFailure(new ActionError(ActionError.CODE.NO_DATA_FOUND,"no data selected"));
+				progression.execute(context);
+				return ERROR;		
+			}
+			progression.execute(context);
 		}
-
-		ValidateParameters parameters = (ValidateParameters) configuration;
-
+		// get lines 
 		String type = parameters.getReferencesType();
 		// set default type 
 		if (type == null || type.isEmpty() )
@@ -84,75 +183,90 @@ public class ValidatorCommand extends AbstractExporterCommand implements Command
 		}
 		type=type.toLowerCase();
 
-		try {
-
-			List<Long> ids = null;
-			if (parameters.getIds() != null) {
-				ids = new ArrayList<Long>(parameters.getIds());
-			}
-
-			Set<Line> lines = loadLines(type, ids);
-			progression.execute(context);
-			progression.start(context, lines.size() + 1);
-			Command validateLine = CommandFactory.create(initialContext, DaoLineValidatorCommand.class.getName());
-
-			int lineCount = 0;
-			for (Line line : lines) {
-				context.put(LINE_ID, line.getId());
-				progression.execute(context);
-				boolean resLine = validateLine.execute(context);
-				ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
-				ActionReport report = (ActionReport) context.get(REPORT);
-				LineInfo lineInfo = new LineInfo(line.getName() + " (" + line.getNumber() + ")");
-				DataStats stats = lineInfo.getStats();
-				stats.setLineCount(1);
-				stats.setJourneyPatternCount(data.getJourneyPatterns().size());
-				stats.setRouteCount(data.getRoutes().size());
-				stats.setVehicleJourneyCount(data.getVehicleJourneys().size());
-
-				// merge lineStats to global ones
-				DataStats globalStats = report.getStats();
-				globalStats.setLineCount(globalStats.getLineCount() + stats.getLineCount());
-				globalStats.setRouteCount(globalStats.getRouteCount() + stats.getRouteCount());
-				globalStats.setVehicleJourneyCount(globalStats.getVehicleJourneyCount() + stats.getVehicleJourneyCount());
-				globalStats.setJourneyPatternCount(globalStats.getJourneyPatternCount() + stats.getJourneyPatternCount());
-				report.getLines().add(lineInfo);
-
-				if (resLine == SUCCESS) {
-					lineCount++;
-				}
-			}
-
-			if (lineCount > 0) {
-				progression.execute(context);
-				Command validateSharedData = CommandFactory.create(initialContext,
-						DaoSharedDataValidatorCommand.class.getName());
-				result = validateSharedData.execute(context);
-				if (result)
-				{
-					ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
-					ActionReport report = (ActionReport) context.get(REPORT);
-					DataStats globalStats = report.getStats();
-					globalStats.setConnectionLinkCount(data.getConnectionLinks().size());
-					globalStats.setAccessPointCount(data.getAccessPoints().size());
-					globalStats.setStopAreaCount(data.getStopAreas().size());
-					globalStats.setTimeTableCount(data.getTimetables().size());
-				}
-			}
-
-			// terminate : nothing to do
-			progression.terminate(context,1);
-			progression.execute(context);
-
-		} catch (Exception e) {
-			ActionReport report = (ActionReport) context.get(REPORT);
-			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR,"Fatal :" + e));
-			log.error(e.getMessage(), e);
-		} finally {
-			progression.dispose(context);
-			log.info(Color.YELLOW + monitor.stop() + Color.NORMAL);
+		List<Long> ids = null;
+		if (parameters.getIds() != null) {
+			ids = new ArrayList<Long>(parameters.getIds());
 		}
 
+		Set<Line> lines = loadLines(type, ids);
+		if (lines.isEmpty()) {
+			report.setFailure(new ActionError(ActionError.CODE.NO_DATA_FOUND,"no data selected"));
+			return ERROR;
+
+		}
+		progression.execute(context);
+		// process lines
+		List<? extends Command> lineProcessingCommands = commands.getLineProcessingCommands(context, true);
+		progression.start(context, lines.size());
+		int lineCount = 0;
+		// export each line
+		for (Line line : lines) {
+			context.put(LINE_ID, line.getId());
+			boolean exportFailed = false;
+			for (Command exportCommand : lineProcessingCommands) {
+				result = exportCommand.execute(context);
+				if (!result) {
+					exportFailed = true;
+					break;
+				}
+			}
+			progression.execute(context);
+			// TODO a mettre dans une commande dédiée
+			ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
+			LineInfo lineInfo = new LineInfo(line.getName() + " (" + line.getNumber() + ")");
+			DataStats stats = lineInfo.getStats();
+			stats.setLineCount(1);
+			stats.setJourneyPatternCount(data.getJourneyPatterns().size());
+			stats.setRouteCount(data.getRoutes().size());
+			stats.setVehicleJourneyCount(data.getVehicleJourneys().size());
+
+			// merge lineStats to global ones
+			DataStats globalStats = report.getStats();
+			globalStats.setLineCount(globalStats.getLineCount() + stats.getLineCount());
+			globalStats.setRouteCount(globalStats.getRouteCount() + stats.getRouteCount());
+			globalStats.setVehicleJourneyCount(globalStats.getVehicleJourneyCount()
+					+ stats.getVehicleJourneyCount());
+			globalStats.setJourneyPatternCount(globalStats.getJourneyPatternCount()
+					+ stats.getJourneyPatternCount());
+			report.getLines().add(lineInfo);
+			if (!exportFailed) 
+			{
+				lineCount ++;
+			}
+			else if (!continueLineProcesingOnError)
+			{
+				report.setFailure(new ActionError(ActionError.CODE.INVALID_DATA,"unable to export data"));
+				return ERROR;
+			}
+		}
+		// post processing
+		
+		// check if data where exported
+		if (lineCount == 0) {
+			progression.terminate(context, 1);
+			report.setFailure(new ActionError(ActionError.CODE.NO_DATA_PROCEEDED,"no data exported"));
+			progression.execute(context);
+			return ERROR;		
+		}
+		
+		List<? extends Command> postProcessingCommands = commands.getPostProcessingCommands(context, true);
+		progression.terminate(context, postProcessingCommands.size());
+		for (Command exportCommand : postProcessingCommands) {
+			result = exportCommand.execute(context);
+			if (!result) {
+				if (report.getFailure() == null)
+				   report.setFailure(new ActionError(ActionError.CODE.NO_DATA_PROCEEDED,"no data exported"));
+				return ERROR;
+			}
+			progression.execute(context);
+		}	
+		// TODO a mettre dans une commande dédiée
+		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
+		DataStats globalStats = report.getStats();
+		globalStats.setConnectionLinkCount(data.getConnectionLinks().size());
+		globalStats.setAccessPointCount(data.getAccessPoints().size());
+		globalStats.setStopAreaCount(data.getStopAreas().size());
+		globalStats.setTimeTableCount(data.getTimetables().size());
 		return result;
 	}
 

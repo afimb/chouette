@@ -10,6 +10,7 @@ import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.NeptuneIdentifiedObject;
+import mobi.chouette.model.Network;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
@@ -18,61 +19,59 @@ import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.util.Referential;
 
 public class ValidationDataCollector {
-	
-	
-	
-	public void collect(ValidationData collection, Line line) 
-	{
-		collect(collection,line,new Referential());
+
+	public void collect(ValidationData collection, Line line) {
+		collect(collection, line, new Referential());
 	}
-	
-	public void collect(ValidationData collection, Line line, Referential cache)
-	{
+
+	public void collect(ValidationData collection, Line line, Referential cache) {
 		collection.clear();
-		collection.getLines().add(cloneLine(line));
 		for (Route route : line.getRoutes()) {
 			for (JourneyPattern jp : route.getJourneyPatterns()) {
 				for (VehicleJourney vehicleJourney : jp.getVehicleJourneys()) {
 					if (vehicleJourney.getTimetables() != null) {
-						addAllTimeTables(collection, vehicleJourney.getTimetables(),cache);
+						addAllTimeTables(collection, vehicleJourney.getTimetables(), cache);
 					}
 					updateId(vehicleJourney, cache.getVehicleJourneys());
-					collection.getVehicleJourneys().add( vehicleJourney);
+					collection.getVehicleJourneys().add(vehicleJourney);
 					if (vehicleJourney.getCompany() != null) {
 						updateId(vehicleJourney.getCompany(), cache.getCompanies());
 						collection.getCompanyIds().add(vehicleJourney.getCompany().getObjectId());
 					}
 				} // end vehiclejourney loop
 				updateId(jp, cache.getJourneyPatterns());
-				collection.getJourneyPatterns().add( jp);
+				collection.getJourneyPatterns().add(jp);
 			} // end journeyPattern loop
 			updateId(route, cache.getRoutes());
 			collection.getRoutes().add(route);
-			addAllStopPoints(collection, route.getStopPoints(),cache);
+			addAllStopPoints(collection, route.getStopPoints(), cache);
 			for (StopPoint stopPoint : route.getStopPoints()) {
-				collectStopAreas(collection, stopPoint.getContainedInStopArea(),cache);
+				collectStopAreas(collection, stopPoint.getContainedInStopArea(), cache);
 			}
 		}// end route loop
 		updateId(line, cache.getLines());
 		collection.getLineIds().add(line.getObjectId());
-		updateId(line.getNetwork(), cache.getPtNetworks());
-		collection.getNetworkIds().add(line.getNetwork().getObjectId());
-		collection.getNetworks().add(line.getNetwork());
+		if (line.getNetwork() != null) {
+			updateId(line.getNetwork(), cache.getPtNetworks());
+			collection.getNetworkIds().add(line.getNetwork().getObjectId());
+			collection.getNetworks().add(line.getNetwork());
+		}
 		if (line.getCompany() != null) {
 			updateId(line.getCompany(), cache.getCompanies());
 			collection.getCompanyIds().add(line.getCompany().getObjectId());
 			collection.getCompanies().add(line.getCompany());
 		}
 		if (line.getGroupOfLines() != null) {
-			addAllGroupOfLines(collection, line.getGroupOfLines(),cache);
+			addAllGroupOfLines(collection, line.getGroupOfLines(), cache);
 		}
 		if (!line.getRoutingConstraints().isEmpty()) {
-			addAllRoutingConstraints(collection, line.getRoutingConstraints(),cache);
+			addAllRoutingConstraints(collection, line.getRoutingConstraints(), cache);
 		}
 		collection.setCurrentLine(line);
-		collection.getLineIds().add(line.getObjectId());
+		collection.getLines().add(cloneLine(line));
 		return;
 	}
+
 
 	private void collectStopAreas(ValidationData collection, StopArea stopArea, Referential cache) {
 		if (collection.getStopAreaIds().contains(stopArea.getObjectId()))
@@ -80,12 +79,12 @@ public class ValidationDataCollector {
 		updateId(stopArea, cache.getStopAreas());
 		collection.getStopAreaIds().add(stopArea.getObjectId());
 		collection.getStopAreas().add(stopArea);
-		addAllConnectionLinks(collection, stopArea.getConnectionStartLinks(),cache);
-		addAllConnectionLinks(collection, stopArea.getConnectionEndLinks(),cache);
-		addAllAccessPoints(collection, stopArea.getAccessPoints(),cache);
-		addAllAccessLinks(collection, stopArea.getAccessLinks(),cache);
+		addAllConnectionLinks(collection, stopArea.getConnectionStartLinks(), cache);
+		addAllConnectionLinks(collection, stopArea.getConnectionEndLinks(), cache);
+		addAllAccessPoints(collection, stopArea.getAccessPoints(), cache);
+		addAllAccessLinks(collection, stopArea.getAccessLinks(), cache);
 		if (stopArea.getParent() != null)
-			collectStopAreas(collection, stopArea.getParent(),cache);
+			collectStopAreas(collection, stopArea.getParent(), cache);
 	}
 
 	private void addAllTimeTables(ValidationData collection, Collection<Timetable> data, Referential cache) {
@@ -117,7 +116,7 @@ public class ValidationDataCollector {
 	private void addAllStopPoints(ValidationData collection, Collection<StopPoint> data, Referential cache) {
 		for (StopPoint object : data) {
 			updateId(object, cache.getStopPoints());
-			collection.getStopPoints().add( object);
+			collection.getStopPoints().add(object);
 		}
 
 	}
@@ -128,9 +127,9 @@ public class ValidationDataCollector {
 			collection.getConnectionLinkIds().add(object.getObjectId());
 			collection.getConnectionLinks().add(object);
 			if (object.getEndOfLink() != null)
-			collection.getDummyStopAreas().add(object.getEndOfLink());
+				collection.getDummyStopAreas().add(object.getEndOfLink());
 			if (object.getStartOfLink() != null)
-			collection.getDummyStopAreas().add(object.getStartOfLink());
+				collection.getDummyStopAreas().add(object.getStartOfLink());
 		}
 
 	}
@@ -153,25 +152,23 @@ public class ValidationDataCollector {
 
 	}
 
-	private void updateId(NeptuneIdentifiedObject object,Map<String,? extends NeptuneIdentifiedObject> map)
-	{
-		if (object.getId() == null)
-		{
+	private void updateId(NeptuneIdentifiedObject object, Map<String, ? extends NeptuneIdentifiedObject> map) {
+		if (object.getId() == null) {
 			NeptuneIdentifiedObject cached = map.get(object.getObjectId());
-			if (cached != null) object.setId(cached.getId());
+			if (cached != null)
+				object.setId(cached.getId());
 		}
 	}
-	
-	private Line cloneLine(Line source)
-	{
+
+	private Line cloneLine(Line source) {
+		// clone line to prepare tests on shared lines
 		Line target = new Line();
+		target.setId(source.getId());
 		target.setObjectId(source.getObjectId());
 		target.setObjectVersion(source.getObjectVersion());
 		target.setName(source.getName());
 		target.setNumber(source.getNumber());
-		target.setNetwork(source.getNetwork());
 		target.setColor(source.getColor());
-		target.setCompany(source.getCompany());
 		target.setComment(source.getComment());
 		target.setFlexibleService(source.getFlexibleService());
 		target.setIntUserNeeds(source.getIntUserNeeds());
@@ -180,8 +177,22 @@ public class ValidationDataCollector {
 		target.setRegistrationNumber(source.getRegistrationNumber());
 		target.setTextColor(source.getTextColor());
 		target.setTransportModeName(source.getTransportModeName());
-		target.setUrl(source.getUrl());		
+		target.setUrl(source.getUrl());
+		
+        // clone used dependencies
+		target.setNetwork(cloneNetwork(source.getNetwork()));
+
 		return target;
 	}
-	
+
+	private Network cloneNetwork(Network source) {
+		if (source == null) return null;
+		Network target = new Network();
+		target.setId(source.getId());
+		target.setObjectId(source.getObjectId());
+		target.setObjectVersion(source.getObjectVersion());
+		target.setName(source.getName());
+		return target;
+	}
+
 }

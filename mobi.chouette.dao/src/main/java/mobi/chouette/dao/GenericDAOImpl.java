@@ -81,19 +81,6 @@ public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 		return result;
 	}
 
-	// public T findByObjectId(final String objectId) {
-	// List<T> result = null;
-	// CriteriaBuilder builder = em.getCriteriaBuilder();
-	// CriteriaQuery<T> criteria = builder.createQuery(type);
-	// Root<T> root = criteria.from(type);
-	// Predicate predicate = builder.equal(root.get("objectId"), objectId);
-	// criteria.where(predicate);
-	// TypedQuery<T> query = em.createQuery(criteria);
-	// result = query.getResultList();
-	// return (result.size() == 0) ? null : result.get(0);
-	// }
-
-	
 
 	@Override
 	public List<T> findByObjectId(final Collection<String> objectIds) {
@@ -159,4 +146,5 @@ public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 			em.detach(object);
 		}
 	}
+	
 }

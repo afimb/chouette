@@ -31,6 +31,7 @@ import mobi.chouette.exchange.validation.report.Location;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.NeptuneLocalizedObject;
+import mobi.chouette.model.Route;
 import mobi.chouette.model.type.LongLatTypeEnum;
 
 import org.apache.log4j.Logger;
@@ -79,6 +80,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	protected static final String ROUTE_7 = "3-Route-7";
 	protected static final String ROUTE_8 = "3-Route-8";
 	protected static final String ROUTE_9 = "3-Route-9";
+	protected static final String ROUTE_10 = "3-Route-10";
 	protected static final String JOURNEY_PATTERN_1 = "3-JourneyPattern-1";
 	protected static final String VEHICLE_JOURNEY_1 = "3-VehicleJourney-1";
 	protected static final String VEHICLE_JOURNEY_2 = "3-VehicleJourney-2";
@@ -273,7 +275,8 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 			perimeter = DEFAULT_ENVELOPPE;
 		}
 
-		// JsonReader jsonReader = Json.createReader(new StringReader(perimeter));
+		// JsonReader jsonReader = Json.createReader(new
+		// StringReader(perimeter));
 		JSONArray array = new JSONArray(perimeter);
 		List<Coordinate> listCoordinates = new ArrayList<Coordinate>();
 		for (int i = 0; i < array.length(); i++) {
@@ -316,8 +319,8 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	 * @param testCode
 	 * @param resultCode
 	 */
-	protected void checkLinkSpeed(Context context, ValidationReport report, NeptuneIdentifiedObject object, Time duration,
-			double distance, int maxDefaultSpeed, String testCode, String resultCode) {
+	protected void checkLinkSpeed(Context context, ValidationReport report, NeptuneIdentifiedObject object,
+			Time duration, double distance, int maxDefaultSpeed, String testCode, String resultCode) {
 		if (duration != null) {
 			long time = getTimeInSeconds(duration); // in seconds
 
@@ -325,7 +328,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 				int speed = (int) (distance / (double) time * 36 / 10 + 0.5); // (km/h)
 
 				if (speed > maxDefaultSpeed) {
-					Location location = buildLocation(context,object);
+					Location location = buildLocation(context, object);
 					Detail detail = new Detail(testCode + resultCode, location, Integer.toString(speed),
 							Integer.toString(maxDefaultSpeed));
 					addValidationError(report, testCode, detail);
@@ -341,8 +344,8 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 		return millis / 1000;
 	}
 
-	protected void check4Generic1(Context context,ValidationReport report, T object, String testName, ValidationParameters parameters,
-			Logger log) {
+	protected void check4Generic1(Context context, ValidationReport report, T object, String testName,
+			ValidationParameters parameters, Logger log) {
 
 		List<String> columnNames = ValidationParametersUtil.getFields(object);
 		String objectKey = toUnderscore(object.getClass().getSimpleName());
@@ -361,8 +364,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 			}
 
 			FieldParameters colParam = ValidationParametersUtil.getFieldParameters(parameters, object, column);
-			if (colParam == null) 
-			{
+			if (colParam == null) {
 				// no parameters for test , skipped
 				return;
 			}
@@ -375,9 +377,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 						// use value in seconds
 						Time t = (Time) objVal;
 						value = Long.toString(t.getTime() / 1000);
-					}
-					else
-					{
+					} else {
 						value = objVal.toString();
 					}
 				}
@@ -387,22 +387,24 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 				}
 				// uniqueness ?
 				if (colParam.getUnique() == 1) {
-					check4Generic1Unique(context,report, object, testName, objectKey, column, value, log);
+					check4Generic1Unique(context, report, object, testName, objectKey, column, value, log);
 				}
 
 				// pattern ?
 				PATTERN_OPTION pattern_opt = PATTERN_OPTION.values()[colParam.getPattern()];
 
-				check4Generic1Pattern(context,report, object, testName, column, value, pattern_opt, log);
+				check4Generic1Pattern(context, report, object, testName, column, value, pattern_opt, log);
 
 				// min size ?
 				if (colParam.getMinSize() != null && !colParam.getMinSize().isEmpty()) {
-					check4Generic1MinSize(context,report, object, testName, column, colParam, objVal, value, pattern_opt, log);
+					check4Generic1MinSize(context, report, object, testName, column, colParam, objVal, value,
+							pattern_opt, log);
 				}
 
 				// max_size ?
-				if (colParam.getMaxSize() != null  && !colParam.getMaxSize().isEmpty() && !value.isEmpty()) {
-					check4Generic1MaxSize(context,report, object, testName, column, colParam, objVal, value, pattern_opt, log);
+				if (colParam.getMaxSize() != null && !colParam.getMaxSize().isEmpty() && !value.isEmpty()) {
+					check4Generic1MaxSize(context, report, object, testName, column, colParam, objVal, value,
+							pattern_opt, log);
 				}
 
 			} catch (Exception e) {
@@ -422,15 +424,15 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	 * @param value
 	 * @param pattern_opt
 	 */
-	private void check4Generic1MaxSize(Context context,ValidationReport report, T object, String testName, String column,
-			FieldParameters colParam, Object objVal, String value, PATTERN_OPTION pattern_opt, Logger log) {
+	private void check4Generic1MaxSize(Context context, ValidationReport report, T object, String testName,
+			String column, FieldParameters colParam, Object objVal, String value, PATTERN_OPTION pattern_opt, Logger log) {
 		int maxSize = Integer.parseInt(colParam.getMaxSize());
 		if (maxSize != 0) {
 			if (objVal instanceof Number || objVal instanceof Time || pattern_opt == PATTERN_OPTION.num) {
 				// check numeric value
 				long val = Long.parseLong(value);
 				if (val > maxSize) {
-					Location location = buildLocation(context,object);
+					Location location = buildLocation(context, object);
 
 					Detail detail = new Detail(testName + "_" + MAX_SIZE, location, value, column);
 					addValidationError(report, testName, detail);
@@ -438,7 +440,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 			} else {
 				// test string size
 				if (value.length() > maxSize) {
-					Location location = buildLocation(context,object);
+					Location location = buildLocation(context, object);
 
 					Detail detail = new Detail(testName + "_" + MAX_SIZE, location, value, column);
 					addValidationError(report, testName, detail);
@@ -457,12 +459,12 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	 * @param value
 	 * @param pattern_opt
 	 */
-	private void check4Generic1MinSize(Context context,ValidationReport report, T object, String testName, String column,
-			FieldParameters colParam, Object objVal, String value, PATTERN_OPTION pattern_opt, Logger log) {
+	private void check4Generic1MinSize(Context context, ValidationReport report, T object, String testName,
+			String column, FieldParameters colParam, Object objVal, String value, PATTERN_OPTION pattern_opt, Logger log) {
 		int minSize = Integer.parseInt(colParam.getMinSize());
-		
+
 		if (minSize > 0 && value.isEmpty()) {
-			Location location = buildLocation(context,object);
+			Location location = buildLocation(context, object);
 
 			Detail detail = new Detail(testName + "_" + MIN_SIZE, location, value, column);
 			addValidationError(report, testName, detail);
@@ -473,7 +475,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 			// check numeric value
 			long val = Long.parseLong(value);
 			if (val < minSize) {
-				Location location = buildLocation(context,object);
+				Location location = buildLocation(context, object);
 
 				Detail detail = new Detail(testName + "_" + MIN_SIZE, location, value, column);
 				addValidationError(report, testName, detail);
@@ -481,7 +483,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 		} else {
 			// test string size
 			if (value.length() < minSize) {
-				Location location = buildLocation(context,object);
+				Location location = buildLocation(context, object);
 
 				Detail detail = new Detail(testName + "_" + MIN_SIZE, location, value, column);
 				addValidationError(report, testName, detail);
@@ -497,8 +499,8 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	 * @param value
 	 * @param pattern_opt
 	 */
-	private void check4Generic1Pattern(Context context,ValidationReport report, T object, String testName, String column, String value,
-			PATTERN_OPTION pattern_opt, Logger log) {
+	private void check4Generic1Pattern(Context context, ValidationReport report, T object, String testName,
+			String column, String value, PATTERN_OPTION pattern_opt, Logger log) {
 		if (!value.isEmpty()) {
 			String regex = null;
 			switch (pattern_opt) {
@@ -519,7 +521,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 			}
 			if (regex != null) {
 				if (!Pattern.matches(regex, value)) {
-					Location location = buildLocation(context,object);
+					Location location = buildLocation(context, object);
 					Detail detail = new Detail(testName + "_" + PATTERN, location, value, column);
 					addValidationError(report, testName, detail);
 				}
@@ -537,22 +539,22 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	 * @param value
 	 */
 	@SuppressWarnings("unchecked")
-	private void check4Generic1Unique(Context context,ValidationReport report, T object, String testName, String objectKey,
-			 String column, String value, Logger log) {
+	private void check4Generic1Unique(Context context, ValidationReport report, T object, String testName,
+			String objectKey, String column, String value, Logger log) {
 		String context_key = objectKey + "_" + column + "_" + UNIQUE;
-		
+
 		Map<String, Location> values = (Map<String, Location>) context.get(context_key);
 		if (values == null) {
 			values = new HashMap<>();
 			context.put(context_key, values);
 		}
 		if (values.containsKey(value)) {
-			Location location = buildLocation(context,object);
+			Location location = buildLocation(context, object);
 
 			Detail detail = new Detail(testName + "_" + UNIQUE, location, value, column, values.get(value));
 			addValidationError(report, testName, detail);
 		} else {
-			values.put(value, buildLocation(context,object));
+			values.put(value, buildLocation(context, object));
 		}
 	}
 
@@ -574,30 +576,47 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 		}
 		return accessor;
 	}
-	
+
 	/**
 	 * check if 2 nullable values are equal
+	 * 
 	 * @param val1
 	 * @param val2
 	 * @return
 	 */
-	protected boolean checkEquals(Object val1,Object val2)
-	{
-		if (val1 == null) return val2 == null;
+	protected boolean checkEquals(Object val1, Object val2) {
+		if (val1 == null)
+			return val2 == null;
 		return val1.equals(val2);
 	}
 
-	protected Location buildLocation(Context context, NeptuneIdentifiedObject object)
-	{
-		if (object.getId() != null) return new Location(object);
-		ValidationData data =  (ValidationData) context.get(VALIDATION_DATA);
-		if (data == null)
-		{
+	protected Location buildLocation(Context context, NeptuneIdentifiedObject object) {
+		if (object.getId() != null)
+			return new Location(object);
+		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
+		if (data == null) {
 			return new Location(null, object.getObjectId());
 		}
 		Location loc = data.getFileLocations().get(object.getObjectId());
-		if (loc == null) return new Location(null, object.getObjectId());
+		if (loc == null)
+			return new Location(null, object.getObjectId());
 		return loc;
+	}
+
+	@SuppressWarnings("unused")
+	protected boolean hasOppositeRoute(Route route, Logger log) {
+		// protect tests from opposite_id invalid foreign key
+		try {
+			Route wayBack = route.getOppositeRoute();
+			if (wayBack != null) {
+				String o = wayBack.getObjectId();
+				return true;
+			}
+		} catch (javax.persistence.EntityNotFoundException ex) {
+			log.error("problem with oppositeRoute foreign key ");
+			// route.unsetOppositeRoute();
+		}
+		return false;
 	}
 
 }

@@ -10,7 +10,9 @@ package mobi.chouette.exchange.validation;
 
 import java.io.IOException;
 
+import javax.annotation.Resource;
 import javax.ejb.EJB;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -43,6 +45,9 @@ import com.jamonapi.MonitorFactory;
 @Stateless(name = DaoSharedDataValidatorCommand.COMMAND)
 public class DaoSharedDataValidatorCommand implements Command, Constant {
 	public static final String COMMAND = "DaoSharedDataValidatorCommand";
+
+	@Resource
+	private SessionContext daoContext;
 
 	@EJB
 	private LineDAO lineDAO;
@@ -80,43 +85,35 @@ public class DaoSharedDataValidatorCommand implements Command, Constant {
 		InitialContext initialContext = (InitialContext) context.get(INITIAL_CONTEXT);
 
 		try {
-			if (!data.getLineIds().isEmpty())
-			{
+			if (!data.getLineIds().isEmpty()) {
 				data.getLines().clear();
 				data.getLines().addAll(lineDAO.findByObjectId(data.getLineIds()));
 			}
-			if (!data.getNetworkIds().isEmpty())
-			{
+			if (!data.getNetworkIds().isEmpty()) {
 				data.getNetworks().clear();
 				data.getNetworks().addAll(ptNetworkDAO.findByObjectId(data.getNetworkIds()));
 			}
-			if (!data.getCompanyIds().isEmpty())
-			{
+			if (!data.getCompanyIds().isEmpty()) {
 				data.getCompanies().clear();
 				data.getCompanies().addAll(companyDAO.findByObjectId(data.getCompanyIds()));
 			}
-			if (!data.getGroupOfLineIds().isEmpty())
-			{
+			if (!data.getGroupOfLineIds().isEmpty()) {
 				data.getGroupOfLines().clear();
 				data.getGroupOfLines().addAll(groupOfLineDAO.findByObjectId(data.getGroupOfLineIds()));
 			}
-			if (!data.getStopAreaIds().isEmpty())
-			{
+			if (!data.getStopAreaIds().isEmpty()) {
 				data.getStopAreas().clear();
 				data.getStopAreas().addAll(stopAreaDAO.findByObjectId(data.getStopAreaIds()));
 			}
-			if (!data.getAccessPointIds().isEmpty())
-			{
+			if (!data.getAccessPointIds().isEmpty()) {
 				data.getAccessPoints().clear();
 				data.getAccessPoints().addAll(accessPointDAO.findByObjectId(data.getAccessPointIds()));
 			}
-			if (!data.getAccessLinkIds().isEmpty())
-			{
+			if (!data.getAccessLinkIds().isEmpty()) {
 				data.getAccessLinks().clear();
 				data.getAccessLinks().addAll(accessLinkDAO.findByObjectId(data.getAccessLinkIds()));
 			}
-			if (!data.getTimetableIds().isEmpty())
-			{
+			if (!data.getTimetableIds().isEmpty()) {
 				data.getTimetables().clear();
 				data.getTimetables().addAll(timetableDAO.findByObjectId(data.getTimetableIds()));
 			}
@@ -124,6 +121,7 @@ public class DaoSharedDataValidatorCommand implements Command, Constant {
 			Command validateSharedData = CommandFactory.create(initialContext,
 					SharedDataValidatorCommand.class.getName());
 			result = validateSharedData.execute(context);
+			daoContext.setRollbackOnly();
 		} finally {
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		}

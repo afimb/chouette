@@ -48,22 +48,21 @@ import org.hibernate.annotations.Parameter;
 @Entity
 @Table(name = "routes")
 @NoArgsConstructor
-@ToString(callSuper=true, exclude = { "line" ,"oppositeRoute"})
+@ToString(callSuper = true, exclude = { "line", "oppositeRoute" })
 public class Route extends NeptuneIdentifiedObject {
 
 	private static final long serialVersionUID = -2249654966081042738L;
 
 	@Getter
 	@Setter
-	@GenericGenerator(name = "routes_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", 
-		parameters = {
+	@GenericGenerator(name = "routes_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", parameters = {
 			@Parameter(name = "sequence_name", value = "routes_id_seq"),
 			@Parameter(name = "increment_size", value = "10") })
 	@Id
 	@GeneratedValue(generator = "routes_id_seq")
 	@Column(name = "id", nullable = false)
 	protected Long id;
-	
+
 	/**
 	 * name
 	 * 
@@ -117,7 +116,7 @@ public class Route extends NeptuneIdentifiedObject {
 	 */
 
 	@Getter
-	@OneToOne(fetch = FetchType.LAZY , cascade = { CascadeType.PERSIST })
+	@OneToOne(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST })
 	@JoinColumn(name = "opposite_route_id")
 	private Route oppositeRoute;
 
@@ -134,6 +133,11 @@ public class Route extends NeptuneIdentifiedObject {
 				oppositeRoute.setOppositeRoute(this);
 			}
 		}
+	}
+
+	// to clean invalid foreign key
+	public void unsetOppositeRoute() {
+		this.oppositeRoute = null;
 	}
 
 	/**
@@ -250,9 +254,8 @@ public class Route extends NeptuneIdentifiedObject {
 	 */
 	@Getter
 	@Setter
-	@OneToMany(mappedBy = "route", cascade = { CascadeType.PERSIST})
-	private List<JourneyPattern> journeyPatterns = new ArrayList<JourneyPattern>(
-			0);
+	@OneToMany(mappedBy = "route", cascade = { CascadeType.PERSIST })
+	private List<JourneyPattern> journeyPatterns = new ArrayList<JourneyPattern>(0);
 
 	/**
 	 * stopPoints
@@ -263,7 +266,7 @@ public class Route extends NeptuneIdentifiedObject {
 	 */
 	@Getter
 	@Setter
-	@OneToMany(mappedBy = "route", cascade = { CascadeType.PERSIST})
+	@OneToMany(mappedBy = "route", cascade = { CascadeType.PERSIST })
 	@OrderColumn(name = "position", nullable = false)
 	private List<StopPoint> stopPoints = new ArrayList<StopPoint>(0);
 

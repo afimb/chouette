@@ -2,7 +2,9 @@ package mobi.chouette.exchange.neptune.exporter;
 
 import java.io.IOException;
 
+import javax.annotation.Resource;
 import javax.ejb.EJB;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -27,6 +29,9 @@ public class DaoNeptuneLineProducerCommand implements Command, Constant {
 
 	public static final String COMMAND = "DaoNeptuneLineProducerCommand";
 
+	@Resource
+	private SessionContext daoContext;
+	
 	@EJB
 	private LineDAO lineDAO;
 
@@ -48,6 +53,7 @@ public class DaoNeptuneLineProducerCommand implements Command, Constant {
 			
 			context.put(LINE, line);
 			result = export.execute(context);
+			daoContext.setRollbackOnly();
 			
 		} catch (Exception e) {
 			log.error(e.getMessage(),e);

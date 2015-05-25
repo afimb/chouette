@@ -9,6 +9,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
@@ -18,6 +19,10 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
+
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
@@ -34,6 +39,9 @@ public class RestAdmin implements Constant {
 
 	private static String api_version_key = "X-ChouetteIEV-Media-Type";
 	private static String api_version = "iev_admin.v1.0; format=txt";
+	
+	private static String GLOBAL_KEY = "Global";
+	private static String REFERENTIAL_KEY = "Referentials";
 
 	@Inject
 	JobServiceManager jobServiceManager;
@@ -43,13 +51,11 @@ public class RestAdmin implements Constant {
 
 	// jobs listing
 	@GET
-	@Path("/active_jobs")
-	@Produces({ MediaType.TEXT_PLAIN })
-	public Response activeJobs(@QueryParam("key") final String authorisationKey) {
+	@Path("/active_jobs{format:(\\.[^\\.]+?)?}")
+	@Produces({ MediaType.TEXT_PLAIN, MediaType.APPLICATION_JSON })
+	public Response activeJobs(@PathParam("format") String format, @QueryParam("key") final String authorisationKey) {
 
 		log.info(Color.BLUE + "Call Admin active_jobs" + Color.NORMAL);
-		System.getProperty(PropertyNames.ADMIN_KEY);
-
 		if (authorisationKey == null || authorisationKey.isEmpty()) {
 			log.warn("admin call without key");
 			ResponseBuilder builder = Response.status(Status.UNAUTHORIZED);
@@ -70,12 +76,22 @@ public class RestAdmin implements Constant {
 			return builder.build();
 		}
 
+		if (format == null)
+			format = ".json";
+		format = format.toLowerCase();
+		if (!format.equals(".txt") && !format.equals(".json")) {
+			log.warn("admin call with invalid output format = " + format);
+			ResponseBuilder builder = Response.status(Status.BAD_REQUEST);
+			builder.header(api_version_key, api_version);
+			return builder.build();
+		}
+
 		try {
 			// create jobs listing
 			List<JobService> jobServices = jobServiceManager.activeJobs();
 
 			// re factor Parameters dependencies
-			JobStat globalStat = new JobStat();
+			JobStat globalStat = new JobStat(GLOBAL_KEY);
 			Map<String, JobStat> byReferential = new HashMap<>();
 
 			globalStat.jobCount = jobServices.size();
@@ -83,7 +99,7 @@ public class RestAdmin implements Constant {
 				String referential = jobService.getReferential();
 				JobStat refStat = byReferential.get(referential);
 				if (refStat == null) {
-					refStat = new JobStat();
+					refStat = new JobStat(referential);
 					byReferential.put(referential, refStat);
 				}
 				refStat.jobCount++;
@@ -96,13 +112,24 @@ public class RestAdmin implements Constant {
 				}
 			}
 
-			StringBuilder result = new StringBuilder();
-			result.append(globalStat.toString("Global"));
-			for (Entry<String, JobStat> entry : byReferential.entrySet()) {
-				result.append(entry.getValue().toString(entry.getKey()));
+			ResponseBuilder builder = null;
+			if (format.equals(".json")) {
+				JSONObject resjson = new JSONObject();
+				resjson.put(GLOBAL_KEY,globalStat.toJson());
+				JSONArray resrefs = new JSONArray();
+				resjson.put(REFERENTIAL_KEY, resrefs);
+				for (Entry<String, JobStat> entry : byReferential.entrySet()) {
+					resrefs.put(entry.getValue().toJson());
+				}
+				builder = Response.ok(resjson.toString(2)).type(MediaType.APPLICATION_JSON_TYPE);
+			} else {
+				StringBuilder result = new StringBuilder();
+				result.append(globalStat.toString());
+				for (Entry<String, JobStat> entry : byReferential.entrySet()) {
+					result.append(entry.getValue().toString());
+				}
+				builder = Response.ok(result).type(MediaType.TEXT_PLAIN);
 			}
-
-			ResponseBuilder builder = Response.ok(result);
 			builder.header(api_version_key, api_version);
 
 			return builder.build();
@@ -113,16 +140,30 @@ public class RestAdmin implements Constant {
 	}
 
 	private class JobStat {
+		String key;
 		int jobCount = 0;
 		int scheduledJobCount = 0;
 		int startedJobCount = 0;
 
-		String toString(String key) {
+		JobStat(String key) {
+			this.key = key;
+		}
+
+		public String toString() {
 			StringBuilder builder = new StringBuilder();
 			builder.append(key + ".jobCount=" + jobCount + "\n");
 			builder.append(key + ".scheduledJobCount=" + scheduledJobCount + "\n");
 			builder.append(key + ".startedJobCount=" + startedJobCount + "\n");
 			return builder.toString();
+		}
+
+		public JSONObject toJson() throws JSONException {
+			JSONObject result = new JSONObject();
+			result.put("name", key);
+			result.put("job_count", jobCount);
+			result.put("scheduled_job_count", scheduledJobCount);
+			result.put("started_job_count", startedJobCount);
+			return result;
 		}
 	}
 

@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import javax.annotation.Resource;
 import javax.ejb.EJB;
-import javax.ejb.EJBContext;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -30,8 +30,8 @@ public class DaoNetexLineProducerCommand implements Command, Constant {
 	public static final String COMMAND = "DaoNetexLineProducerCommand";
 	
 	@Resource 
-	private EJBContext ejbContext;
-
+	private SessionContext daoContext;
+	
 	@EJB
 	private LineDAO lineDAO;
 
@@ -53,11 +53,11 @@ public class DaoNetexLineProducerCommand implements Command, Constant {
 			
 			context.put(LINE, line);
 			result = export.execute(context);
+			daoContext.setRollbackOnly();
 			
 		} catch (Exception e) {
 			log.error(e.getMessage(),e);
 		} finally {
-			ejbContext.setRollbackOnly();
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		}
 
