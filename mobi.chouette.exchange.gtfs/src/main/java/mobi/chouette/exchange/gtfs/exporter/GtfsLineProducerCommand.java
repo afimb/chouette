@@ -101,7 +101,7 @@ public class GtfsLineProducerCommand implements Command, Constant {
 				result = SUCCESS;
 			} else {
 				lineInfo.addError(new LineError(LineError.CODE.NO_DATA_ON_PERIOD,"no data on period"));
-				result = ERROR;
+				result = SUCCESS; // else export will stop here
 			}
 			report.getLines().add(lineInfo);
 		} catch (Exception e) {

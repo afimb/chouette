@@ -122,6 +122,7 @@ public class HubLineProducerCommand implements Command, Constant {
 
 			} else {
 				lineInfo.addError(new LineError(LineError.CODE.NO_DATA_ON_PERIOD, "no data to export on period"));
+				result = SUCCESS; // else export will stop here
 			}
 
 		} finally {

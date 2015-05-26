@@ -14,6 +14,8 @@ import mobi.chouette.exchange.gtfs.model.importer.GtfsImporter;
 import mobi.chouette.exchange.gtfs.parser.GtfsStopParser;
 import mobi.chouette.exchange.gtfs.parser.GtfsTransferParser;
 import mobi.chouette.exchange.importer.ParserFactory;
+import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.DataStats;
 import mobi.chouette.model.util.Referential;
 
 import com.jamonapi.Monitor;
@@ -32,6 +34,7 @@ public class GtfsStopParserCommand implements Command, Constant {
 
 		try {
 			Referential referential = (Referential) context.get(REFERENTIAL);
+			ActionReport report = (ActionReport) context.get(REPORT);
 			if (referential != null) {
 				referential.clear();
 			}
@@ -54,7 +57,8 @@ public class GtfsStopParserCommand implements Command, Constant {
 				}
 			}
 
-		
+			addStats(report, referential);
+		    
 			result = SUCCESS;
 		} catch (Exception e) {
 			log.error("[DSU] error : ", e);
@@ -63,6 +67,14 @@ public class GtfsStopParserCommand implements Command, Constant {
 		
 		log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		return result;
+	}
+
+	
+	private void addStats(ActionReport report, Referential referential) {
+		DataStats globalStats = report.getStats();
+		globalStats.setConnectionLinkCount(referential.getSharedConnectionLinks().size());
+		globalStats.setStopAreaCount(referential.getSharedStopAreas().size());
+
 	}
 
 
