@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Set;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
@@ -37,6 +39,7 @@ public class ValidatorCommand extends AbstractDaoReaderCommand implements Comman
 	public static final String COMMAND = "ValidatorCommand";
 
 	@Override
+	@TransactionAttribute(TransactionAttributeType.NEVER)
 	public boolean execute(Context context) throws Exception {
 		boolean result = ERROR;
 		Monitor monitor = MonitorFactory.start(COMMAND);
@@ -85,62 +88,6 @@ public class ValidatorCommand extends AbstractDaoReaderCommand implements Comman
 
 			result = process(context, commands, progression, false);
 
-//			List<Long> ids = null;
-//			if (parameters.getIds() != null) {
-//				ids = new ArrayList<Long>(parameters.getIds());
-//			}
-//
-//			Set<Line> lines = loadLines(type, ids);
-//			progression.execute(context);
-//			progression.start(context, lines.size());
-//			Command validateLine = CommandFactory.create(initialContext, DaoLineValidatorCommand.class.getName());
-//
-//			int lineCount = 0;
-//			for (Line line : lines) {
-//				context.put(LINE_ID, line.getId());
-//				progression.execute(context);
-//				boolean resLine = validateLine.execute(context);
-//				ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
-//				ActionReport report = (ActionReport) context.get(REPORT);
-//				LineInfo lineInfo = new LineInfo(line.getName() + " (" + line.getNumber() + ")");
-//				DataStats stats = lineInfo.getStats();
-//				stats.setLineCount(1);
-//				stats.setJourneyPatternCount(data.getJourneyPatterns().size());
-//				stats.setRouteCount(data.getRoutes().size());
-//				stats.setVehicleJourneyCount(data.getVehicleJourneys().size());
-//
-//				// merge lineStats to global ones
-//				DataStats globalStats = report.getStats();
-//				globalStats.setLineCount(globalStats.getLineCount() + stats.getLineCount());
-//				globalStats.setRouteCount(globalStats.getRouteCount() + stats.getRouteCount());
-//				globalStats.setVehicleJourneyCount(globalStats.getVehicleJourneyCount()
-//						+ stats.getVehicleJourneyCount());
-//				globalStats.setJourneyPatternCount(globalStats.getJourneyPatternCount()
-//						+ stats.getJourneyPatternCount());
-//				report.getLines().add(lineInfo);
-//
-//				if (resLine == SUCCESS) {
-//					lineCount++;
-//				}
-//			}
-//
-//			// terminate : nothing to do
-//			progression.terminate(context, 1);
-//			if (lineCount > 0) {
-//				Command validateSharedData = CommandFactory.create(initialContext,
-//						DaoSharedDataValidatorCommand.class.getName());
-//				result = validateSharedData.execute(context);
-//				if (result) {
-//					ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
-//					ActionReport report = (ActionReport) context.get(REPORT);
-//					DataStats globalStats = report.getStats();
-//					globalStats.setConnectionLinkCount(data.getConnectionLinks().size());
-//					globalStats.setAccessPointCount(data.getAccessPoints().size());
-//					globalStats.setStopAreaCount(data.getStopAreas().size());
-//					globalStats.setTimeTableCount(data.getTimetables().size());
-//				}
-//			}
-//			progression.execute(context);
 
 		} catch (Exception e) {
 			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR, "Fatal :" + e));

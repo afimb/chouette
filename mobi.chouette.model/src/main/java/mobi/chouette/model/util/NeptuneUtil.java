@@ -147,7 +147,6 @@ public abstract class NeptuneUtil {
 
 			@Override
 			public int compare(StopPoint arg0, StopPoint arg1) {
-				// TODO Auto-generated method stub
 				return arg0.getPosition().intValue() - arg1.getPosition().intValue();
 			}
 		});

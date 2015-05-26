@@ -1,7 +1,9 @@
 package mobi.chouette.exchange.validation;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
@@ -26,6 +28,7 @@ public class ValidationDataCollector {
 
 	public void collect(ValidationData collection, Line line, Referential cache) {
 		collection.clear();
+		collection.setCurrentLine(line);
 		for (Route route : line.getRoutes()) {
 			for (JourneyPattern jp : route.getJourneyPatterns()) {
 				for (VehicleJourney vehicleJourney : jp.getVehicleJourneys()) {
@@ -67,13 +70,20 @@ public class ValidationDataCollector {
 		if (!line.getRoutingConstraints().isEmpty()) {
 			addAllRoutingConstraints(collection, line.getRoutingConstraints(), cache);
 		}
-		collection.setCurrentLine(line);
 		collection.getLines().add(cloneLine(line));
 		return;
 	}
 
 
 	private void collectStopAreas(ValidationData collection, StopArea stopArea, Referential cache) {
+        // add stoparea line collection
+		Set<String> lineIds = collection.getLinesOfStopAreas().get(stopArea.getObjectId());
+		if (lineIds == null) 
+		{
+			lineIds = new HashSet<>();
+			collection.getLinesOfStopAreas().put(stopArea.getObjectId(),lineIds);
+		}
+		lineIds.add(collection.getCurrentLine().getObjectId());
 		if (collection.getStopAreaIds().contains(stopArea.getObjectId()))
 			return;
 		updateId(stopArea, cache.getStopAreas());

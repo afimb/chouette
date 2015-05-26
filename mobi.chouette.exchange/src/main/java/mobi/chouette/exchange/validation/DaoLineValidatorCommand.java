@@ -65,7 +65,7 @@ public class DaoLineValidatorCommand implements Command, Constant {
 			collector.collect(data, line);
 
 			result = lineValidatorCommand.execute(context);
-			daoContext.setRollbackOnly();
+			// daoContext.setRollbackOnly();
 			
 		} finally {
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);

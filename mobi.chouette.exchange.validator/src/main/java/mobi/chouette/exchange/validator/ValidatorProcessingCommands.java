@@ -15,7 +15,7 @@ import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.ProcessingCommands;
 import mobi.chouette.exchange.ProcessingCommandsFactory;
 import mobi.chouette.exchange.validation.DaoLineValidatorCommand;
-import mobi.chouette.exchange.validation.DaoSharedDataValidatorCommand;
+import mobi.chouette.exchange.validation.SharedDataValidatorCommand;
 
 @Log4j
 @Data
@@ -64,7 +64,7 @@ public class ValidatorProcessingCommands implements ProcessingCommands, Constant
 		InitialContext initialContext = (InitialContext) context.get(INITIAL_CONTEXT);
 		List<Command> commands = new ArrayList<>();
 		try {
-			commands.add(CommandFactory.create(initialContext, DaoSharedDataValidatorCommand.class.getName()));
+			commands.add(CommandFactory.create(initialContext, SharedDataValidatorCommand.class.getName()));
 		} catch (Exception e) {
 			log.error(e, e);
 			throw new RuntimeException("unable to call factories");

@@ -2,6 +2,7 @@ package mobi.chouette.exchange.validation.checkpoint;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -145,8 +146,8 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 			return;
 		if (stopArea.getCountryCode() != null && !stopArea.getCountryCode().equals(stopArea2.getCountryCode()))
 			return;
-		Collection<Line> lines = getLines(stopArea);
-		Collection<Line> lines2 = getLines(stopArea2);
+		Collection<String> lines = getLines(context,stopArea);
+		Collection<String> lines2 = getLines(context,stopArea2);
 		if (lines.containsAll(lines2) && lines2.containsAll(lines)) {
 			Location source = buildLocation(context,stopArea);
 			Location target = buildLocation(context,stopArea2);
@@ -205,18 +206,10 @@ public class StopAreaCheckPoints extends AbstractValidation<StopArea> implements
 		}
 	}
 
-	private Collection<Line> getLines(StopArea area) {
-		Set<Line> lines = new HashSet<Line>();
-		if (area.getAreaType().equals(ChouetteAreaEnum.BoardingPosition)
-				|| area.getAreaType().equals(ChouetteAreaEnum.Quay)) {
-			for (StopPoint point : area.getContainedStopPoints()) {
-				lines.add(point.getRoute().getLine());
-			}
-		} else {
-			for (StopArea child : area.getContainedStopAreas()) {
-				lines.addAll(getLines(child));
-			}
-		}
+	private Collection<String> getLines(Context context, StopArea area ) {
+		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
+		Set<String> lines = data.getLinesOfStopAreas().get(area.getObjectId());
+		if (lines == null) lines = new HashSet<>();
 		return lines;
 		
 	}

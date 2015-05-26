@@ -50,6 +50,7 @@ public class ValidationData {
 	private List<StopPoint> stopPoints = new ArrayList<>();
 	private Line currentLine;
 	private Map<String,Location> fileLocations = new HashMap<>();
+	private Map<String,Set<String>> linesOfStopAreas = new HashMap<>();
 
 	public void clear() {
 		vehicleJourneys.clear();
