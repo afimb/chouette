@@ -2,7 +2,6 @@ package mobi.chouette.exchange.validation.checkpoint;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -17,9 +16,7 @@ import mobi.chouette.exchange.validation.report.CheckPoint;
 import mobi.chouette.exchange.validation.report.Detail;
 import mobi.chouette.exchange.validation.report.Location;
 import mobi.chouette.exchange.validation.report.ValidationReport;
-import mobi.chouette.model.Line;
 import mobi.chouette.model.StopArea;
-import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 
 import com.vividsolutions.jts.geom.Point;

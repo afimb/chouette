@@ -4,19 +4,15 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import javax.naming.InitialContext;
-
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.JSONUtil;
 import mobi.chouette.common.chain.Command;
-import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.ProcessingCommands;
 import mobi.chouette.exchange.ProcessingCommandsFactory;
 import mobi.chouette.exchange.gtfs.exporter.GtfsExportParameters;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.hub.exporter.HubExportParameters;
-import mobi.chouette.exchange.importer.UncompressCommand;
 import mobi.chouette.exchange.kml.exporter.KmlExportParameters;
 import mobi.chouette.exchange.neptune.exporter.NeptuneExportParameters;
 import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
@@ -24,8 +20,6 @@ import mobi.chouette.exchange.netex.exporter.NetexExportParameters;
 import mobi.chouette.exchange.netex.importer.NetexImportParameters;
 import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.validation.ImportedLineValidatorCommand;
-import mobi.chouette.exchange.validation.SharedDataValidatorCommand;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.Line;
@@ -127,10 +121,6 @@ public class CommandManager implements Constant {
 
 	public void process() throws Exception {
 		
-		InitialContext initContext = new InitialContext();
-		
-		Command lineValidationCommand = CommandFactory.create(initContext, ImportedLineValidatorCommand.class.getName());
-		Command sharedValidationCommand = CommandFactory.create(initContext, SharedDataValidatorCommand.class.getName());
 		inputData = loadInputParameters();
 		if (inputData == null)
 			return; // invalid data

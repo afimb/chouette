@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
-import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.CalendarDay;
@@ -22,7 +21,6 @@ import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.type.DayTypeEnum;
 import mobi.chouette.model.util.NeptuneUtil;
 
-@Log4j
 public class DataCollector
 {
    protected boolean collect(ExportableData collection, Line line, Date startDate, Date endDate, boolean skipNoCoordinate, boolean followLinks)

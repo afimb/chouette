@@ -7,8 +7,6 @@ import mobi.chouette.exchange.InputValidator;
 import mobi.chouette.exchange.InputValidatorFactory;
 import mobi.chouette.exchange.neptune.importer.NeptuneImporterInputValidator;
 import mobi.chouette.exchange.parameters.AbstractParameter;
-import mobi.chouette.exchange.report.ActionError;
-import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 
 @Log4j
