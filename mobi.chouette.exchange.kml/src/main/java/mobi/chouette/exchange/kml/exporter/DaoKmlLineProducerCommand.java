@@ -51,7 +51,7 @@ public class DaoKmlLineProducerCommand implements Command, Constant {
 			context.put(LINE, line);
 			result = export.execute(context);
 
-			daoContext.setRollbackOnly();
+			//daoContext.setRollbackOnly();
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		} finally {

@@ -50,7 +50,7 @@ public class DaoHubLineProducerCommand implements Command, Constant {
 			
 			context.put(LINE, line);
 			result = export.execute(context);
-			daoContext.setRollbackOnly();
+			//daoContext.setRollbackOnly();
 
 		} finally {
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
