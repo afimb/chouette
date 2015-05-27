@@ -6,7 +6,7 @@
  *
  */
 
-package mobi.chouette.exchange.validation;
+package mobi.chouette.exchange.validator;
 
 import java.io.IOException;
 
@@ -34,6 +34,8 @@ import mobi.chouette.dao.LineDAO;
 import mobi.chouette.dao.NetworkDAO;
 import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.dao.TimetableDAO;
+import mobi.chouette.exchange.validation.SharedDataValidatorCommand;
+import mobi.chouette.exchange.validation.ValidationData;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -121,7 +123,7 @@ public class DaoSharedDataValidatorCommand implements Command, Constant {
 			Command validateSharedData = CommandFactory.create(initialContext,
 					SharedDataValidatorCommand.class.getName());
 			result = validateSharedData.execute(context);
-			daoContext.setRollbackOnly();
+			// daoContext.setRollbackOnly();
 		} finally {
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		}
@@ -135,7 +137,7 @@ public class DaoSharedDataValidatorCommand implements Command, Constant {
 		protected Command create(InitialContext context) throws IOException {
 			Command result = null;
 			try {
-				String name = "java:app/mobi.chouette.exchange/" + COMMAND;
+				String name = "java:app/mobi.chouette.exchange.validator/" + COMMAND;
 				result = (Command) context.lookup(name);
 			} catch (NamingException e) {
 				// try another way on test context

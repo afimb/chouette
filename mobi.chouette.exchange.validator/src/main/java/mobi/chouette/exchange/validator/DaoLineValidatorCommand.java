@@ -6,7 +6,7 @@
  *
  */
 
-package mobi.chouette.exchange.validation;
+package mobi.chouette.exchange.validator;
 
 import java.io.IOException;
 
@@ -26,6 +26,9 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.LineDAO;
+import mobi.chouette.exchange.validation.LineValidatorCommand;
+import mobi.chouette.exchange.validation.ValidationData;
+import mobi.chouette.exchange.validation.ValidationDataCollector;
 import mobi.chouette.model.Line;
 
 import com.jamonapi.Monitor;
@@ -80,7 +83,7 @@ public class DaoLineValidatorCommand implements Command, Constant {
 		protected Command create(InitialContext context) throws IOException {
 			Command result = null;
 			try {
-				String name = "java:app/mobi.chouette.exchange/" + COMMAND;
+				String name = "java:app/mobi.chouette.exchange.validator/" + COMMAND;
 				result = (Command) context.lookup(name);
 			} catch (NamingException e) {
 				// try another way on test context

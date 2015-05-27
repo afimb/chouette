@@ -12,11 +12,9 @@ import mobi.chouette.exchange.ProgressionCommand;
 import mobi.chouette.exchange.parameters.AbstractExportParameter;
 import mobi.chouette.exchange.report.ActionError;
 import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.model.Line;
 
 public class AbstractExporterCommand extends AbstractDaoReaderCommand {
 
-	
 	public boolean process(Context context, ProcessingCommands commands, ProgressionCommand progression, boolean continueLineProcesingOnError) throws Exception
 	{
 		boolean result = ERROR;
@@ -52,7 +50,7 @@ public class AbstractExporterCommand extends AbstractDaoReaderCommand {
 			ids = new ArrayList<Long>(parameters.getIds());
 		}
 
-		Set<Line> lines = loadLines(type, ids);
+		Set<Long> lines = loadLines(type, ids);
 		if (lines.isEmpty()) {
 			report.setFailure(new ActionError(ActionError.CODE.NO_DATA_FOUND,"no data selected"));
 			return ERROR;
@@ -65,8 +63,8 @@ public class AbstractExporterCommand extends AbstractDaoReaderCommand {
 		progression.start(context, lines.size());
 		int lineCount = 0;
 		// export each line
-		for (Line line : lines) {
-			context.put(LINE_ID, line.getId());
+		for (Long line : lines) {
+			context.put(LINE_ID, line);
 			boolean exportFailed = false;
 			for (Command exportCommand : lineProcessingCommands) {
 				result = exportCommand.execute(context);

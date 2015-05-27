@@ -14,7 +14,6 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.ProcessingCommands;
 import mobi.chouette.exchange.ProcessingCommandsFactory;
-import mobi.chouette.exchange.validation.DaoLineValidatorCommand;
 import mobi.chouette.exchange.validation.SharedDataValidatorCommand;
 
 @Log4j

@@ -4,7 +4,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Resource;
 import javax.ejb.EJB;
+import javax.ejb.SessionContext;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 import mobi.chouette.common.Constant;
 import mobi.chouette.dao.CompanyDAO;
@@ -18,6 +22,9 @@ import mobi.chouette.model.Network;
 
 public class AbstractDaoReaderCommand implements Constant {
 
+	@Resource
+	protected SessionContext daoContext;
+
 	@EJB
 	protected LineDAO lineDAO;
 
@@ -30,8 +37,10 @@ public class AbstractDaoReaderCommand implements Constant {
 	@EJB
 	protected GroupOfLineDAO groupOfLineDAO;
 
-	protected Set<Line> loadLines(String type, List<Long> ids) {
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	protected Set<Long> loadLines(String type, List<Long> ids) {
 		Set<Line> lines = new HashSet<Line>();
+		Set<Long> lineIds = new HashSet<Long>();
 		if (ids == null || ids.isEmpty()) {
 			lines.addAll(lineDAO.findAll());
 		} else {
@@ -54,7 +63,11 @@ public class AbstractDaoReaderCommand implements Constant {
 				}
 			}
 		}
-		return lines;
+		for (Line line : lines) {
+			lineIds.add(line.getId());
+		}
+		// daoContext.setRollbackOnly();
+		return lineIds;
 	}
 
 }

@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Set;
 
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
@@ -39,7 +37,6 @@ public class ValidatorCommand extends AbstractDaoReaderCommand implements Comman
 	public static final String COMMAND = "ValidatorCommand";
 
 	@Override
-	@TransactionAttribute(TransactionAttributeType.NEVER)
 	public boolean execute(Context context) throws Exception {
 		boolean result = ERROR;
 		Monitor monitor = MonitorFactory.start(COMMAND);
@@ -135,7 +132,7 @@ public class ValidatorCommand extends AbstractDaoReaderCommand implements Comman
 			ids = new ArrayList<Long>(parameters.getIds());
 		}
 
-		Set<Line> lines = loadLines(type, ids);
+		Set<Long> lines = loadLines(type, ids);
 		if (lines.isEmpty()) {
 			report.setFailure(new ActionError(ActionError.CODE.NO_DATA_FOUND,"no data selected"));
 			return ERROR;
@@ -143,15 +140,15 @@ public class ValidatorCommand extends AbstractDaoReaderCommand implements Comman
 		}
 		progression.execute(context);
 		// process lines
-		List<? extends Command> lineProcessingCommands = commands.getLineProcessingCommands(context, true);
 		progression.start(context, lines.size());
 		int lineCount = 0;
 		// export each line
-		for (Line line : lines) {
-			context.put(LINE_ID, line.getId());
+		for (Long lineId : lines) {
+			context.put(LINE_ID, lineId);
 			boolean exportFailed = false;
-			for (Command exportCommand : lineProcessingCommands) {
-				result = exportCommand.execute(context);
+			List<? extends Command> lineProcessingCommands = commands.getLineProcessingCommands(context, true);
+			for (Command validateCommand : lineProcessingCommands) {
+				result = validateCommand.execute(context);
 				if (!result) {
 					exportFailed = true;
 					break;
@@ -160,6 +157,7 @@ public class ValidatorCommand extends AbstractDaoReaderCommand implements Comman
 			progression.execute(context);
 			// TODO a mettre dans une commande dédiée
 			ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
+			Line line = data.getCurrentLine();
 			LineInfo lineInfo = new LineInfo(line.getName() + " (" + line.getNumber() + ")");
 			DataStats stats = lineInfo.getStats();
 			stats.setLineCount(1);

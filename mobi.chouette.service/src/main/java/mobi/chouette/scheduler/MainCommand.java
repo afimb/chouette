@@ -64,11 +64,20 @@ public class MainCommand implements Command, Constant {
 			else
 				jobManager.terminate(jobService);
 
+		} catch (javax.ejb.EJBTransactionRolledbackException ex) {
+			log.warn("execption bypassed " + ex);
+			// just ignore this exception
+			ActionReport report = (ActionReport) context.get(REPORT);
+			if (report.getResult().equals(ReportConstant.STATUS_ERROR)
+					&& report.getFailure().getCode().equals(ActionError.CODE.INTERNAL_ERROR))
+				jobManager.abort(jobService);
+			else
+				jobManager.terminate(jobService);
+
 		} catch (Exception ex) {
-			if (!COMMAND_CANCELLED.equals(ex.getMessage()))
-			{
-			log.error(ex);
-			jobManager.abort(jobService);
+			if (!COMMAND_CANCELLED.equals(ex.getMessage())) {
+				log.error(ex);
+				jobManager.abort(jobService);
 			}
 
 		}

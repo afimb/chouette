@@ -29,7 +29,7 @@ public class DaoNeptuneLineProducerCommand implements Command, Constant {
 
 	public static final String COMMAND = "DaoNeptuneLineProducerCommand";
 
-	@Resource
+	@Resource 
 	private SessionContext daoContext;
 	
 	@EJB
