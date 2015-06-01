@@ -247,7 +247,7 @@ public class ChouettePTNetworkProducer implements Constant {
 		// sauvegarde
 		JaxbNeptuneFileConverter writer = JaxbNeptuneFileConverter.getInstance();
 		Path dir = Paths.get(rootDirectory,OUTPUT);
-		String fileName = collection.getLine().getId()+".xml";
+		String fileName = collection.getLine().getObjectId().replaceAll(":", "-")+".xml";
 		File file = new File(dir.toFile(),fileName);
 		writer.write(AbstractJaxbNeptuneProducer.tridentFactory.createChouettePTNetwork(rootObject), file );
 
