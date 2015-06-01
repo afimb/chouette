@@ -28,6 +28,8 @@ public interface GenericDAO<T> {
 
 	int deleteAll();
 
+	int truncate();
+
 	void detach(T entity);
 
 	void evictAll();

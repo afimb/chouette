@@ -7,6 +7,7 @@ import javax.persistence.Cache;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
+import javax.persistence.Table;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaDelete;
@@ -127,6 +128,16 @@ public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 		result = query.executeUpdate();
 		return result;
 	}
+	
+	@Override
+	public int truncate() {
+		String query = new StringBuilder("TRUNCATE TABLE ")
+        .append(type.getAnnotation(Table.class).name())
+        .append(" CASCADE")
+        .toString();        
+        return em.createNativeQuery(query).executeUpdate();
+	}
+
 
 	@Override
 	public void evictAll() {

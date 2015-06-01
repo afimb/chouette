@@ -61,12 +61,12 @@ public class CleanRepositoryCommand implements Command {
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
 		try {
-			lineDAO.deleteAll();
-			companyDAO.deleteAll();
-			networkDAO.deleteAll();
-			stopAreaDAO.deleteAll();
-			timetableDAO.deleteAll();
-			groupOfLineDAO.deleteAll();
+			lineDAO.truncate();
+			companyDAO.truncate();
+			networkDAO.truncate();
+			stopAreaDAO.truncate();
+			timetableDAO.truncate();
+			groupOfLineDAO.truncate();
 
 			result = SUCCESS;
 		} catch (Exception e) {
