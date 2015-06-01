@@ -21,8 +21,8 @@ import mobi.chouette.exchange.gtfs.parser.GtfsStopParser;
 import mobi.chouette.exchange.gtfs.parser.GtfsTransferParser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.LineInfo;
 import mobi.chouette.exchange.report.DataStats;
+import mobi.chouette.exchange.report.LineInfo;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;
 import mobi.chouette.model.util.ObjectFactory;
@@ -84,6 +84,19 @@ public class GtfsRouteParserCommand implements Command, Constant {
 				}
 			}
 
+			if (configuration.getMaxDistanceForCommercial() > 0)
+			{
+				CommercialStopGenerator commercialStopGenerator = new CommercialStopGenerator();
+				commercialStopGenerator.createCommercialStopPoints(context);
+			}
+			
+			if (configuration.getMaxDistanceForConnectionLink() > 0)
+			{
+			    ConnectionLinkGenerator connectionLinkGenerator = new ConnectionLinkGenerator();
+				connectionLinkGenerator.createConnectionLinks(context);
+				
+			}
+			
 			// Timetable
 			if (referential.getSharedTimetables().isEmpty()) {
 				GtfsCalendarParser gtfsCalendarParser = (GtfsCalendarParser) ParserFactory

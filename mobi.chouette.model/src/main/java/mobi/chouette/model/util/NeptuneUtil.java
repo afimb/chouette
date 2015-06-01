@@ -1,6 +1,7 @@
 package mobi.chouette.model.util;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -49,7 +50,7 @@ public abstract class NeptuneUtil {
 	 *            the list to parse
 	 * @return the ids map
 	 */
-	public static <T extends NeptuneIdentifiedObject> Map<String, T> mapOnObjectIds(List<T> neptuneObjects) {
+	public static <T extends NeptuneIdentifiedObject> Map<String, T> mapOnObjectIds(Collection<T> neptuneObjects) {
 		Map<String, T> map = new HashMap<String, T>();
 		if (neptuneObjects != null) {
 			for (T neptuneObject : neptuneObjects) {

@@ -34,6 +34,7 @@ public class GtfsStopParserCommand implements Command, Constant {
 
 		try {
 			Referential referential = (Referential) context.get(REFERENTIAL);
+			GtfsImportParameters configuration = (GtfsImportParameters) context.get(CONFIGURATION);
 			ActionReport report = (ActionReport) context.get(REPORT);
 			if (referential != null) {
 				referential.clear();
@@ -56,6 +57,19 @@ public class GtfsStopParserCommand implements Command, Constant {
 					gtfsTransferParser.parse(context);
 				}
 			}
+			if (configuration.getMaxDistanceForCommercial() > 0)
+			{
+				CommercialStopGenerator commercialStopGenerator = new CommercialStopGenerator();
+				commercialStopGenerator.createCommercialStopPoints(context);
+			}
+			
+			if (configuration.getMaxDistanceForConnectionLink() > 0)
+			{
+			    ConnectionLinkGenerator connectionLinkGenerator = new ConnectionLinkGenerator();
+				connectionLinkGenerator.createConnectionLinks(context);
+				
+			}
+			
 
 			addStats(report, referential);
 		    
