@@ -612,7 +612,8 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 				String o = wayBack.getObjectId();
 				return true;
 			}
-		} catch (javax.persistence.EntityNotFoundException ex) {
+		} catch (Exception ex) {
+			
 			log.error("problem with oppositeRoute foreign key ");
 			// route.unsetOppositeRoute();
 		}
