@@ -65,7 +65,7 @@ public class HubExporterCommand extends AbstractExporterCommand implements Comma
 
 			ProcessingCommands commands = ProcessingCommandsFactory.create(HubExporterProcessingCommands.class.getName());
 			
-			result = process(context, commands, progression, false);
+			result = process(context, commands, progression, false,Mode.line);
 
 		} catch (Exception e) {
 			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR, "Fatal :" + e));

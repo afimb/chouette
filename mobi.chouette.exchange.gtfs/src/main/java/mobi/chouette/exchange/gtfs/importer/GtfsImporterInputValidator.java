@@ -16,7 +16,7 @@ public class GtfsImporterInputValidator extends AbstractInputValidator {
 	private static String[] allowedTypes = { "line", "stop_area" };
 
 	@Override
-	public boolean check(AbstractParameter abstractParameter, ValidationParameters validationParameters, String fileName) {
+	public boolean checkParameters(AbstractParameter abstractParameter, ValidationParameters validationParameters) {
 		if (!(abstractParameter instanceof GtfsImportParameters)) {
 			log.error("invalid parameters for gtfs import " + abstractParameter.getClass().getName());
 			return false;
@@ -28,7 +28,7 @@ public class GtfsImporterInputValidator extends AbstractInputValidator {
 			log.error("missing object_id_prefix");
 			return false;
 		}
-		
+
 		String type = parameters.getReferencesType();
 		if (type != null && !type.isEmpty()) {
 			if (!Arrays.asList(allowedTypes).contains(type.toLowerCase())) {
@@ -36,20 +36,25 @@ public class GtfsImporterInputValidator extends AbstractInputValidator {
 				return false;
 			}
 		}
+		return true;
+	}
 
-		if (fileName  == null || fileName.isEmpty()) {
+	@Override
+	public boolean checkFilename(String fileName) {
+
+		if (fileName == null || fileName.isEmpty()) {
 			log.error("input data expected");
 			return false;
 		}
-		
-		if (!fileName.endsWith(".zip")) {
-			log.error("Zip archive input data expected");
+
+		if (!fileName.endsWith(".zip") && !fileName.endsWith(".txt")) {
+			log.error("Zip archive or txt input data expected");
 			return false;
 		}
 
 		return true;
 	}
-	
+
 	public static class DefaultFactory extends InputValidatorFactory {
 
 		@Override
@@ -60,9 +65,7 @@ public class GtfsImporterInputValidator extends AbstractInputValidator {
 	}
 
 	static {
-		InputValidatorFactory.factories.put(GtfsImporterInputValidator.class.getName(),
-				new DefaultFactory());
+		InputValidatorFactory.factories.put(GtfsImporterInputValidator.class.getName(), new DefaultFactory());
 	}
-	
 
 }

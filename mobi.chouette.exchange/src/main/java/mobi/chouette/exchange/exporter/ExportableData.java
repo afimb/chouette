@@ -70,6 +70,9 @@ public class ExportableData {
 	private Set<Timetable> timetables = new HashSet<>();
 	@Getter
 	@Setter
+	private Set<Timetable> excludedTimetables = new HashSet<>();
+	@Getter
+	@Setter
 	private Set<StopArea> restrictionConstraints = new HashSet<>();
 	@Getter
 	@Setter

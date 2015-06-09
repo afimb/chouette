@@ -16,7 +16,7 @@ public class GtfsExporterInputValidator extends AbstractInputValidator {
 	private static String[] allowedTypes = { "line", "network", "company", "group_of_line", "stop_area" };
 
 	@Override
-	public boolean check(AbstractParameter abstractParameter, ValidationParameters validationParameters, String fileName) {
+	public boolean checkParameters(AbstractParameter abstractParameter, ValidationParameters validationParameters) {
 
 		if (!(abstractParameter instanceof GtfsExportParameters)) {
 			log.error("invalid parameters for gtfs export " + abstractParameter.getClass().getName());
@@ -51,6 +51,11 @@ public class GtfsExporterInputValidator extends AbstractInputValidator {
 			return false;
 		}
 
+		return true;
+	}
+
+	@Override
+	public boolean checkFilename(String fileName) {
 		if (fileName != null) {
 			log.error("input data not expected");
 			return false;

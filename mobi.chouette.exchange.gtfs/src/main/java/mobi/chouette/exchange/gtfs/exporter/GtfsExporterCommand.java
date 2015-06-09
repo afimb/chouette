@@ -15,7 +15,6 @@ import mobi.chouette.exchange.ProcessingCommands;
 import mobi.chouette.exchange.ProcessingCommandsFactory;
 import mobi.chouette.exchange.ProgressionCommand;
 import mobi.chouette.exchange.exporter.AbstractExporterCommand;
-import mobi.chouette.exchange.exporter.CompressCommand;
 import mobi.chouette.exchange.gtfs.Constant;
 import mobi.chouette.exchange.report.ActionError;
 import mobi.chouette.exchange.report.ActionReport;
@@ -72,34 +71,12 @@ public class GtfsExporterCommand extends AbstractExporterCommand implements Comm
 			type = type.toLowerCase();
 
 			// init
+			boolean all = !(parameters.getReferencesType().equalsIgnoreCase("stop_area"));
 
-			if (type.equals("stop_area")) {
-				progression.initialize(context, 1);
-				Command initExport = CommandFactory.create(initialContext, GtfsInitExportCommand.class.getName());
-				initExport.execute(context);
-				progression.execute(context);
-
-				progression.start(context, 1);
-				Command exportStopArea = CommandFactory.create(initialContext,
-						GtfsStopAreaProducerCommand.class.getName());
-				result = exportStopArea.execute(context);
-				progression.execute(context);
-
-				progression.terminate(context, 1);
-				Command terminateExport = CommandFactory.create(initialContext,
-						GtfsTerminateExportCommand.class.getName());
-				terminateExport.execute(context);
-				progression.execute(context);
-
-				// compress
-				Command compress = CommandFactory.create(initialContext, CompressCommand.class.getName());
-				compress.execute(context);
-				progression.execute(context);
-			} else {
 				ProcessingCommands commands = ProcessingCommandsFactory
 						.create(GtfsExporterProcessingCommands.class.getName());
-				result = process(context, commands, progression, false);
-			}
+				result = process(context, commands, progression, false,(all?Mode.line:Mode.stopareas));
+			
 
 		} catch (Exception e) {
 			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR, "Fatal :" + e));

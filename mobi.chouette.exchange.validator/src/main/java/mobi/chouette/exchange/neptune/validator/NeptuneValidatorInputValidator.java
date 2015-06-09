@@ -13,7 +13,7 @@ import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 public class NeptuneValidatorInputValidator extends NeptuneImporterInputValidator {
 
 	@Override
-	public boolean check(AbstractParameter abstractParameter, ValidationParameters validationParameters, String fileName) {
+	public boolean checkParameters(AbstractParameter abstractParameter, ValidationParameters validationParameters) {
 		if (!(abstractParameter instanceof NeptuneValidateParameters)) {
 			log.error("invalid parameters for validator " + abstractParameter.getClass().getName());
 			return false;
@@ -23,7 +23,7 @@ public class NeptuneValidatorInputValidator extends NeptuneImporterInputValidato
 			return false;
 		}
 
-		return super.check(abstractParameter, validationParameters, fileName);
+		return super.checkParameters(abstractParameter, validationParameters);
 	}
 
 	public static class DefaultFactory extends InputValidatorFactory {

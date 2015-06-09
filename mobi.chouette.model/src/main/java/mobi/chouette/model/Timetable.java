@@ -397,6 +397,27 @@ public class Timetable extends NeptuneIdentifiedObject {
 		return false;
 	}
 
+	public boolean isActiveBefore(Date aDay)
+	{
+		return isActiveOnPeriod(getStartOfPeriod(),aDay);
+	}
+
+	public boolean isActiveAfter(Date aDay)
+	{
+		return isActiveOnPeriod(aDay,getEndOfPeriod());
+	}
+
+	public boolean isActiveOnPeriod(Date start, Date end) {
+		Date day = new Date(start.getTime());
+		while (day.before(end))
+		{
+			if (isActiveOn(day)) return true;
+			day.setTime(day.getTime()+ONE_DAY);
+			
+		}
+		return isActiveOn(end);
+	}
+
 	/**
 	 * calculate startOfPeriod and endOfPeriod form dates and periods
 	 */

@@ -96,8 +96,10 @@ public class JobService implements JobData,ServiceConstants {
             
             InputValidator validator = InputValidatorFactory.create( getCommandInputValidatorName());
             Class.forName(getCommandInputValidatorName());
-            if (!validator.check( parameters.getConfiguration(), parameters.getValidation(), job.getFilename())) 
+            if (!validator.checkParameters( parameters.getConfiguration(), parameters.getValidation())) 
                 throw new RequestServiceException(RequestExceptionCode.INVALID_PARAMETERS, "");
+            if (!validator.checkFilename( job.getFilename())) 
+                throw new RequestServiceException(RequestExceptionCode.INVALID_FILE_FORMAT, "");
             validator.initReport(this);
             setStatus(Job.STATUS.SCHEDULED); // job is ready
             

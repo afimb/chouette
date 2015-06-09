@@ -16,7 +16,7 @@ public class NeptuneExporterInputValidator extends AbstractInputValidator {
 	private static String[] allowedTypes = { "line", "network", "company", "group_of_line" };
 
 	@Override
-	public boolean check(AbstractParameter abstractParameter, ValidationParameters validationParameters, String fileName) {
+	public boolean checkParameters(AbstractParameter abstractParameter, ValidationParameters validationParameters) {
 		if (!(abstractParameter instanceof NeptuneExportParameters)) {
 			log.error("invalid parameters for neptune export " + abstractParameter.getClass().getName());
 			return false;
@@ -38,6 +38,11 @@ public class NeptuneExporterInputValidator extends AbstractInputValidator {
 			}
 		}
 
+		return true;
+	}
+
+	@Override
+	public boolean checkFilename(String fileName) {
 		if (fileName != null) {
 			log.error("input data not expected");
 			return false;

@@ -14,7 +14,7 @@ public class StopPointProducer extends
 		AbstractJaxbNeptuneProducer<ChouettePTNetworkType.ChouetteLineDescription.StopPoint, StopPoint> implements
 		JsonExtension {
 
-	//@Override
+	// @Override
 	public ChouettePTNetworkType.ChouetteLineDescription.StopPoint produce(StopPoint stopPoint, boolean addExtension) {
 		ChouettePTNetworkType.ChouetteLineDescription.StopPoint jaxbStopPoint = tridentFactory
 				.createChouettePTNetworkTypeChouetteLineDescriptionStopPoint();
@@ -23,30 +23,32 @@ public class StopPointProducer extends
 		populateFromModel(jaxbStopPoint, stopPoint);
 
 		jaxbStopPoint.setComment(buildComment(stopPoint, addExtension));
-		jaxbStopPoint.setName(stopPoint.getContainedInStopArea().getName());
-		// jaxbStopPoint.setLineIdShortcut(stopPoint.getLineIdShortcut());
+		if (stopPoint.getContainedInStopArea() != null) {
+			StopArea area = stopPoint.getContainedInStopArea();
+			jaxbStopPoint.setName(area.getName());
+			// jaxbStopPoint.setLineIdShortcut(stopPoint.getLineIdShortcut());
 
-		StopArea area = stopPoint.getContainedInStopArea();
 
-		jaxbStopPoint.setContainedIn(getNonEmptyObjectId(stopPoint.getContainedInStopArea()));
-		jaxbStopPoint.setLatitude(area.getLatitude());
-		jaxbStopPoint.setLongitude(area.getLongitude());
+			jaxbStopPoint.setContainedIn(getNonEmptyObjectId(stopPoint.getContainedInStopArea()));
+			jaxbStopPoint.setLatitude(area.getLatitude());
+			jaxbStopPoint.setLongitude(area.getLongitude());
 
-		if (area.getLongLatType() != null) {
-			LongLatTypeEnum longLatType = area.getLongLatType();
-			try {
-				jaxbStopPoint.setLongLatType(LongLatTypeType.fromValue(longLatType.name()));
-			} catch (IllegalArgumentException e) {
-				// TODO generate report
+			if (area.getLongLatType() != null) {
+				LongLatTypeEnum longLatType = area.getLongLatType();
+				try {
+					jaxbStopPoint.setLongLatType(LongLatTypeType.fromValue(longLatType.name()));
+				} catch (IllegalArgumentException e) {
+					// TODO generate report
+				}
 			}
-		}
 
-		if (area.hasProjection()) {
-			ProjectedPointType jaxbProjectedPoint = tridentFactory.createProjectedPointType();
-			jaxbProjectedPoint.setProjectionType(area.getProjectionType());
-			jaxbProjectedPoint.setX(area.getX());
-			jaxbProjectedPoint.setY(area.getY());
-			jaxbStopPoint.setProjectedPoint(jaxbProjectedPoint);
+			if (area.hasProjection()) {
+				ProjectedPointType jaxbProjectedPoint = tridentFactory.createProjectedPointType();
+				jaxbProjectedPoint.setProjectionType(area.getProjectionType());
+				jaxbProjectedPoint.setX(area.getX());
+				jaxbProjectedPoint.setY(area.getY());
+				jaxbStopPoint.setProjectedPoint(jaxbProjectedPoint);
+			}
 		}
 		// jaxbStopPoint.setPtNetworkIdShortcut(stopPoint.getPtNetworkIdShortcut());
 

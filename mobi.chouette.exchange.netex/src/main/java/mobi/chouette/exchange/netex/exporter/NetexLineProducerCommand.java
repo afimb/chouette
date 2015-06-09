@@ -35,10 +35,15 @@ public class NetexLineProducerCommand implements Command, Constant {
 		try {
 
 			Line line = (Line) context.get(LINE);
-			log.info("procesing line "+NamingUtil.getName(line));
+			log.info("procesing line " + NamingUtil.getName(line));
 			NetexExportParameters configuration = (NetexExportParameters) context.get(CONFIGURATION);
 
 			ExportableData collection = new ExportableData();
+			ExportableData sharedData = (ExportableData) context.get(SHARED_DATA);
+			if (sharedData == null) {
+				sharedData = new ExportableData();
+				context.put(SHARED_DATA, sharedData);
+			}
 
 			Date startDate = null;
 			if (configuration.getStartDate() != null) {
@@ -61,14 +66,11 @@ public class NetexLineProducerCommand implements Command, Constant {
 			stats.setStopAreaCount(collection.getStopAreas().size());
 			stats.setTimeTableCount(collection.getTimetables().size());
 			stats.setVehicleJourneyCount(collection.getVehicleJourneys().size());
-//            if (collection.getVehicleJourneys().size() > 300) 
-//            {
-//            	// too many vehicle journeys for this format
-//				lineInfo.addError(new LineError(LineError.CODE.INVALID_FORMAT,"too many vehicle journeys > 300"));
-//				result = ERROR;
-//            }
-//            else 
-            	if (cont) {
+			sharedData.getAccessPoints().addAll(collection.getAccessPoints());
+			sharedData.getConnectionLinks().addAll(collection.getConnectionLinks());
+			sharedData.getStopAreas().addAll(collection.getStopAreas());
+			sharedData.getTimetables().addAll(collection.getTimetables());
+			if (cont) {
 				context.put(EXPORTABLE_DATA, collection);
 
 				NetexLineProducer producer = new NetexLineProducer();
@@ -78,19 +80,19 @@ public class NetexLineProducerCommand implements Command, Constant {
 				// merge lineStats to global ones
 				DataStats globalStats = report.getStats();
 				globalStats.setLineCount(globalStats.getLineCount() + stats.getLineCount());
-				globalStats.setAccessPointCount(globalStats.getAccessPointCount() + stats.getAccessPointCount());
 				globalStats.setRouteCount(globalStats.getRouteCount() + stats.getRouteCount());
-				globalStats.setConnectionLinkCount(globalStats.getConnectionLinkCount()
-						+ stats.getConnectionLinkCount());
 				globalStats.setVehicleJourneyCount(globalStats.getVehicleJourneyCount()
 						+ stats.getVehicleJourneyCount());
 				globalStats.setJourneyPatternCount(globalStats.getJourneyPatternCount()
 						+ stats.getJourneyPatternCount());
-				globalStats.setStopAreaCount(globalStats.getStopAreaCount() + stats.getStopAreaCount());
-				globalStats.setTimeTableCount(globalStats.getTimeTableCount() + stats.getTimeTableCount());
+				// compute shared objects
+				globalStats.setAccessPointCount(sharedData.getAccessPoints().size());
+				globalStats.setStopAreaCount(sharedData.getStopAreas().size());
+				globalStats.setTimeTableCount(sharedData.getTimetables().size());
+				globalStats.setConnectionLinkCount(sharedData.getConnectionLinks().size());
 				result = SUCCESS;
 			} else {
-				lineInfo.addError(new LineError(LineError.CODE.NO_DATA_ON_PERIOD,"no data on period"));
+				lineInfo.addError(new LineError(LineError.CODE.NO_DATA_ON_PERIOD, "no data on period"));
 				result = ERROR;
 			}
 			report.getLines().add(lineInfo);
@@ -116,6 +118,4 @@ public class NetexLineProducerCommand implements Command, Constant {
 		CommandFactory.factories.put(NetexLineProducerCommand.class.getName(), new DefaultCommandFactory());
 	}
 
-	
-	
 }

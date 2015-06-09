@@ -33,22 +33,22 @@ public class DataCollectorTests implements Constant, ReportConstant {
 		return t;
 	}
 
-	@Test(groups = { "DataCollector" }, description = "Reduce Timetable")
-	public void verifyCheckDatesParameter() throws Exception {
-		DataCollector collector = new DataCollector();
-		Timetable t = getTimetable();
-		Calendar c = Calendar.getInstance();
-		Date boundaryDate = new Date(c.getTimeInMillis());
-		Timetable r = collector.reduceTimetable(t, boundaryDate, true);
-		Assert.assertEquals(r.getPeriods().get(0).getStartDate(),boundaryDate,"calendar period should be reduced on left");
-		Assert.assertEquals(r.getStartOfPeriod(),boundaryDate,"calendar should be reduced on left");
-		Assert.assertEquals(r.getCalendarDays().size(),1, "calendar should have calendarDays");
-		 t = getTimetable();
-		 r = collector.reduceTimetable(t, boundaryDate, false);
-		Assert.assertEquals(r.getPeriods().get(0).getEndDate(),boundaryDate,"calendar period should be reduced on left");
-		Assert.assertEquals(r.getEndOfPeriod(),boundaryDate,"calendar should be reduced on left");
-		Assert.assertEquals(r.getCalendarDays().size(), 0, "calendar should not have calendarDays");
-	}
+//	@Test(groups = { "DataCollector" }, description = "Reduce Timetable")
+//	public void verifyCheckDatesParameter() throws Exception {
+//		DataCollector collector = new DataCollector();
+//		Timetable t = getTimetable();
+//		Calendar c = Calendar.getInstance();
+//		Date boundaryDate = new Date(c.getTimeInMillis());
+//		Timetable r = collector.reduceTimetable(t, boundaryDate, true);
+//		Assert.assertEquals(r.getPeriods().get(0).getStartDate(),boundaryDate,"calendar period should be reduced on left");
+//		Assert.assertEquals(r.getStartOfPeriod(),boundaryDate,"calendar should be reduced on left");
+//		Assert.assertEquals(r.getCalendarDays().size(),1, "calendar should have calendarDays");
+//		 t = getTimetable();
+//		 r = collector.reduceTimetable(t, boundaryDate, false);
+//		Assert.assertEquals(r.getPeriods().get(0).getEndDate(),boundaryDate,"calendar period should be reduced on left");
+//		Assert.assertEquals(r.getEndOfPeriod(),boundaryDate,"calendar should be reduced on left");
+//		Assert.assertEquals(r.getCalendarDays().size(), 0, "calendar should not have calendarDays");
+//	}
 
 
 }

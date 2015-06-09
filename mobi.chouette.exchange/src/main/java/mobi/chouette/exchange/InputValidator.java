@@ -6,6 +6,7 @@ import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 
 
 public interface InputValidator {
-boolean check(AbstractParameter abstractParameter,ValidationParameters validationParameters, String fileName);
+boolean checkParameters(AbstractParameter abstractParameter,ValidationParameters validationParameters);
+boolean checkFilename(String fileName);
 boolean initReport(JobData data);
 }

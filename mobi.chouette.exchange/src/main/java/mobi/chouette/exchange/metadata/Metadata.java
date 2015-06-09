@@ -17,8 +17,7 @@ import lombok.Setter;
  * @author michel
  * 
  */
-public class Metadata
-{
+public class Metadata {
 	/**
 	 * spatial coverage, bounding box including all exported stop areas
 	 */
@@ -90,7 +89,6 @@ public class Metadata
 	@Setter
 	private String title;
 
-
 	/**
 	 * data Dublin-Core type; forced to Dataset
 	 */
@@ -100,10 +98,9 @@ public class Metadata
 
 	/**
 	 * spatial coverage
-	 *
+	 * 
 	 */
-	public class Box
-	{
+	public class Box {
 		/**
 		 * north limit of data
 		 */
@@ -128,11 +125,12 @@ public class Metadata
 		/**
 		 * initialize box with first point
 		 * 
-		 * @param longitude point longitude
-		 * @param latitude point latitude
+		 * @param longitude
+		 *            point longitude
+		 * @param latitude
+		 *            point latitude
 		 */
-		private Box()
-		{
+		private Box() {
 			northLimit = -90;
 			southLimit = 90;
 			eastLimit = -180;
@@ -142,11 +140,12 @@ public class Metadata
 		/**
 		 * update box when point out of limits
 		 * 
-		 * @param longitude point longitude
-		 * @param latitude point latitude
+		 * @param longitude
+		 *            point longitude
+		 * @param latitude
+		 *            point latitude
 		 */
-		public void update(double longitude, double latitude)
-		{
+		public void update(double longitude, double latitude) {
 			if (longitude < westLimit)
 				westLimit = longitude;
 			if (longitude > eastLimit)
@@ -157,8 +156,7 @@ public class Metadata
 				northLimit = latitude;
 		}
 
-		public boolean isSet()
-		{
+		public boolean isSet() {
 			return northLimit >= southLimit && eastLimit >= westLimit;
 		}
 
@@ -166,10 +164,9 @@ public class Metadata
 
 	/**
 	 * tempral coverage
-	 *
+	 * 
 	 */
-	public class Period
-	{
+	public class Period {
 		/**
 		 * minimum date covered by data
 		 */
@@ -181,18 +178,18 @@ public class Metadata
 		@Getter
 		private Calendar end;
 
-
-		private Period()
-		{
+		private Period() {
 		}
+
 		/**
 		 * update period if timetable overlaps it
 		 * 
-		 * @param startDate timetable minimal date
-		 * @param endDate timetable maximal date
+		 * @param startDate
+		 *            timetable minimal date
+		 * @param endDate
+		 *            timetable maximal date
 		 */
-		public void update(Calendar startDate, Calendar endDate)
-		{
+		public void update(Calendar startDate, Calendar endDate) {
 			if (start == null || startDate.before(start))
 				start = (Calendar) startDate.clone();
 			if (end == null || endDate.after(end))
@@ -202,23 +199,33 @@ public class Metadata
 		/**
 		 * update period if timetable overlaps it
 		 * 
-		 * @param startDate timetable minimal date
-		 * @param endDate timetable maximal date
+		 * @param startDate
+		 *            timetable minimal date
+		 * @param endDate
+		 *            timetable maximal date
 		 */
-		public void update(Date startDate, Date endDate)
-		{
-			if (startDate != null && endDate != null)
-			{
+		public void update(Date startDate, Date endDate) {
+			if (startDate != null && endDate != null) {
 				Calendar startCal = Calendar.getInstance();
 				startCal.setTime(startDate);
 				Calendar endCal = Calendar.getInstance();
 				endCal.setTime(endDate);
-				update(startCal,endCal);
+				update(startCal, endCal);
 			}
 		}
 
-		public boolean isSet()
-		{
+		public void force(Date startDate, Date endDate) {
+			if (startDate != null) {
+				start = Calendar.getInstance();
+				start.setTime(startDate);
+			}
+			if (endDate != null) {
+				end = Calendar.getInstance();
+				end.setTime(endDate);
+			}
+		}
+
+		public boolean isSet() {
 			return start != null && end != null;
 		}
 
@@ -226,11 +233,10 @@ public class Metadata
 
 	/**
 	 * exported resource exported
-	 *
+	 * 
 	 */
 	@AllArgsConstructor
-	public class Resource
-	{
+	public class Resource {
 		/**
 		 * exported resource localization, if resources are in separate files
 		 */
@@ -250,11 +256,12 @@ public class Metadata
 		/**
 		 * build resource without fileName
 		 * 
-		 * @param networkName public transport network name
-		 * @param lineName line name
+		 * @param networkName
+		 *            public transport network name
+		 * @param lineName
+		 *            line name
 		 */
-		public Resource(String networkName, String lineName)
-		{
+		public Resource(String networkName, String lineName) {
 			this.networkName = networkName;
 			this.lineName = lineName;
 		}

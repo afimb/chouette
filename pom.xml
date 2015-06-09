@@ -247,6 +247,47 @@
 					</execution>
 				</executions>
 			</plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>2.1.2</version>
+            <executions>
+               <execution>
+                  <id>attach-sources</id>
+                  <goals>
+                     <goal>jar-no-fork</goal>
+                  </goals>
+               </execution>
+            </executions>
+         </plugin>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>2.8</version>
+            <configuration>
+            <doctitle>${project.name} 3.0 API.</doctitle>
+               <quiet>false</quiet>
+               <sourcepath>target/generated-sources/delombok</sourcepath>
+               <javaApiLinks>
+                  <property>
+                     <name>api_1.7</name>
+                     <value>http://docs.oracle.com/javase/7/docs/api/</value>
+                  </property>
+               </javaApiLinks>
+               <source>1.7</source>
+               <skip>${skipDelombok}</skip>
+            </configuration>
+            <executions>
+               <execution>
+                  <id>attach-javadocs</id>
+                  <phase>package</phase>
+                  <goals>
+                     <goal>jar</goal>
+                  </goals>
+               </execution>
+            </executions>
+         </plugin>
+			
 		</plugins>
 		<pluginManagement>
 			<plugins>

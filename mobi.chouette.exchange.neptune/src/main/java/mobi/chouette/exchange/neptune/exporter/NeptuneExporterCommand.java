@@ -61,7 +61,7 @@ public class NeptuneExporterCommand extends AbstractExporterCommand implements C
 			}
 			ProcessingCommands commands = ProcessingCommandsFactory.create(NeptuneExporterProcessingCommands.class.getName());
 			
-			result = process(context, commands, progression, true);
+			result = process(context, commands, progression, true,Mode.line);
 		} catch (Exception e) {
 			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR,"Fatal :" + e));
 			log.error(e.getMessage(), e);

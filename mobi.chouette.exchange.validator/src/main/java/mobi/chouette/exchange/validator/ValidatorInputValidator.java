@@ -15,7 +15,7 @@ public class ValidatorInputValidator extends AbstractInputValidator {
 
 	private static String[] allowedTypes = {"line", "network", "company", "group_of_line" };
 	@Override
-	public boolean check(AbstractParameter abstractParameter, ValidationParameters validationParameters, String fileName) {
+	public boolean checkParameters(AbstractParameter abstractParameter, ValidationParameters validationParameters) {
 		if (!(abstractParameter instanceof ValidateParameters)) {
 			log.error("invalid parameters for validator " + abstractParameter.getClass().getName());
 			return false;
@@ -35,6 +35,11 @@ public class ValidatorInputValidator extends AbstractInputValidator {
 			log.error("validation parameters expected");
 			return false;
 		}
+		return true;
+	}
+
+	@Override
+	public boolean checkFilename(String fileName) {
 		if (fileName != null) {
 			log.error("input data not expected");
 			return false;

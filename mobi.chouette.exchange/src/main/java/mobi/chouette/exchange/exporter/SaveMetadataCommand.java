@@ -16,7 +16,7 @@ import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.metadata.DublinCoreFileWriter;
 import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.metadata.TextFileWriter;
-import mobi.chouette.exchange.parameters.AbstractParameter;
+import mobi.chouette.exchange.parameters.AbstractExportParameter;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -34,23 +34,28 @@ public class SaveMetadataCommand implements Command, Constant {
 		Monitor monitor = MonitorFactory.start(COMMAND);
 		JobData jobData = (JobData) context.get(JOB_DATA);
 
-		Metadata metadata = (Metadata) context.get(METADATA); 
-		AbstractParameter parameters = (AbstractParameter) context.get(CONFIGURATION);
-        String creator = parameters.getReferentialName();
-        if (creator == null) creator = jobData.getReferential();
-        String publisher = parameters.getOrganisationName();
-        if (publisher == null) publisher = parameters.getName();
+		Metadata metadata = (Metadata) context.get(METADATA);
+		AbstractExportParameter parameters = (AbstractExportParameter) context.get(CONFIGURATION);
+		String creator = parameters.getReferentialName();
+		if (creator == null)
+			creator = jobData.getReferential();
+		String publisher = parameters.getOrganisationName();
+		if (publisher == null)
+			publisher = parameters.getName();
 		try {
-			if (metadata == null) return SUCCESS;
+			if (metadata == null)
+				return SUCCESS;
+			// force time window if asked
+			metadata.getTemporalCoverage().force(parameters.getStartDate(), parameters.getEndDate());
 			metadata.setCreator(creator);
 			metadata.setPublisher(publisher);
 			String path = jobData.getPathName();
 			Path target = Paths.get(path, OUTPUT);
-            DublinCoreFileWriter dcWriter = new DublinCoreFileWriter();
-			
+			DublinCoreFileWriter dcWriter = new DublinCoreFileWriter();
+
 			dcWriter.writePlainFile(metadata, target);
-            TextFileWriter tWriter = new TextFileWriter();
-            tWriter.writePlainFile(metadata, target);
+			TextFileWriter tWriter = new TextFileWriter();
+			tWriter.writePlainFile(metadata, target);
 			result = SUCCESS;
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
@@ -71,7 +76,6 @@ public class SaveMetadataCommand implements Command, Constant {
 	}
 
 	static {
-		CommandFactory.factories.put(SaveMetadataCommand.class.getName(),
-				new DefaultCommandFactory());
+		CommandFactory.factories.put(SaveMetadataCommand.class.getName(), new DefaultCommandFactory());
 	}
 }

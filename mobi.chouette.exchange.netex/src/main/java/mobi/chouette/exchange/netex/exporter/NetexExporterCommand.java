@@ -64,7 +64,7 @@ public class NetexExporterCommand extends AbstractExporterCommand implements Com
 			ProcessingCommands commands = ProcessingCommandsFactory.create(NetexExporterProcessingCommands.class
 					.getName());
 
-			result = process(context, commands, progression, true);
+			result = process(context, commands, progression, true,Mode.line);
 
 		} catch (Exception e) {
 			if (!COMMAND_CANCELLED.equals(e.getMessage())) {

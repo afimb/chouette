@@ -16,7 +16,7 @@ public class NetexExporterInputValidator extends AbstractInputValidator {
 	private static String[] allowedTypes = { "line", "network", "company", "group_of_line" };
 
 	@Override
-	public boolean check(AbstractParameter abstractParameter, ValidationParameters validationParameters, String fileName) {
+	public boolean checkParameters(AbstractParameter abstractParameter, ValidationParameters validationParameters) {
 		if (!(abstractParameter instanceof NetexExportParameters)) {
 			log.error("invalid parameters for netex export " + abstractParameter.getClass().getName());
 			return false;
@@ -38,6 +38,11 @@ public class NetexExporterInputValidator extends AbstractInputValidator {
 			}
 		}
 
+		return true;
+	}
+
+	@Override
+	public boolean checkFilename(String fileName) {
 		if (fileName != null) {
 			log.error("input data not expected");
 			return false;

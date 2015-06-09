@@ -34,6 +34,7 @@ import mobi.chouette.exchange.gtfs.exporter.producer.GtfsExtendedStopProducer;
 import mobi.chouette.exchange.gtfs.exporter.producer.GtfsTransferProducer;
 import mobi.chouette.exchange.gtfs.model.exporter.GtfsExporter;
 import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.DataStats;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
@@ -89,9 +90,6 @@ public class GtfsStopAreaProducerCommand implements Command, Constant
 		return result;
 	}
 
-
-
-
 	public void saveStopAreas(Context context,Collection<StopArea> beans)
 	{
 		// Metadata metadata = (Metadata) context.get(METADATA);
@@ -107,6 +105,7 @@ public class GtfsStopAreaProducerCommand implements Command, Constant
 		String prefix = configuration.getObjectIdPrefix();
 		String sharedPrefix = prefix;
 		// metadata.setDescription("limited to stops and transfers");
+		int stopCount = 0;
 		for (StopArea area : beans)
 		{
 			if (area.getAreaType().equals(ChouetteAreaEnum.BoardingPosition) || area.getAreaType().equals(ChouetteAreaEnum.Quay))
@@ -140,6 +139,7 @@ public class GtfsStopAreaProducerCommand implements Command, Constant
 			}
 			else
 			{
+				stopCount++;
 				//				if (stop.hasCoordinates())
 				//					metadata.getSpatialCoverage().update(stop.getLongitude().doubleValue(), stop.getLatitude().doubleValue());
 			}
@@ -147,10 +147,12 @@ public class GtfsStopAreaProducerCommand implements Command, Constant
 		for (StopArea stop : physicalStops)
 		{
 			stopProducer.save(stop, report, sharedPrefix, commercialStops);
+			stopCount++;
 			//			if (stop.hasCoordinates())
 			//				metadata.getSpatialCoverage().update(stop.getLongitude().doubleValue(), stop.getLatitude().doubleValue());
 		}
 		// remove incomplete connectionlinks
+		int connectionLinkCount = 0;
 		for (ConnectionLink link : connectionLinks)
 		{
 			if (!physicalStops.contains(link.getStartOfLink()) && !commercialStops.contains(link.getStartOfLink()))
@@ -162,7 +164,11 @@ public class GtfsStopAreaProducerCommand implements Command, Constant
 				continue;
 			}
 			transferProducer.save(link, report, sharedPrefix);
+			connectionLinkCount++;
 		}
+		DataStats globalStats = report.getStats();
+		globalStats.setConnectionLinkCount(connectionLinkCount);
+		globalStats.setStopAreaCount(stopCount);
 
 	}
 

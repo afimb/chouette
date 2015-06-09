@@ -13,16 +13,21 @@ import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 public class NeptuneImporterInputValidator extends AbstractInputValidator {
 
 	@Override
-	public boolean check(AbstractParameter abstractParameter, ValidationParameters validationParameters, String fileName) {
+	public boolean checkParameters(AbstractParameter abstractParameter, ValidationParameters validationParameters) {
 		if (!(abstractParameter instanceof NeptuneImportParameters)) {
 			log.error("invalid parameters for Neptune import " + abstractParameter.getClass().getName());
 			return false;
 		}
-		if (fileName  == null || fileName.isEmpty()) {
+		return true;
+	}
+
+	@Override
+	public boolean checkFilename(String fileName) {
+		if (fileName == null || fileName.isEmpty()) {
 			log.error("input data expected");
 			return false;
 		}
-		
+
 		if (!fileName.endsWith(".zip") && !fileName.endsWith(".xml")) {
 			log.error("xml or Zip archive input data expected");
 			return false;
@@ -31,7 +36,7 @@ public class NeptuneImporterInputValidator extends AbstractInputValidator {
 		return true;
 
 	}
-	
+
 	public static class DefaultFactory extends InputValidatorFactory {
 
 		@Override
@@ -42,9 +47,7 @@ public class NeptuneImporterInputValidator extends AbstractInputValidator {
 	}
 
 	static {
-		InputValidatorFactory.factories.put(NeptuneImporterInputValidator.class.getName(),
-				new DefaultFactory());
+		InputValidatorFactory.factories.put(NeptuneImporterInputValidator.class.getName(), new DefaultFactory());
 	}
-	
 
 }

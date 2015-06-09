@@ -23,7 +23,7 @@ public class GtfsExporterInputValidatorTests
 		parameters.setReferencesType("line");
 		parameters.setTimeZone("Europe/Paris");
 		parameters.setObjectIdPrefix("GTFS");
-		boolean result = validator.check(parameters,null,null);
+		boolean result = validator.checkParameters(parameters,null);
 
 		Assert.assertTrue(result, "check for good parameters");
 	}
@@ -34,7 +34,7 @@ public class GtfsExporterInputValidatorTests
 	{
 		GtfsExporterInputValidator validator = new GtfsExporterInputValidator();
 
-		boolean result = validator.check(new BadParameters(),null,null);
+		boolean result = validator.checkParameters(new BadParameters(),null);
 		Assert.assertFalse(result, "check for parameter class");
 		
 		GtfsExportParameters parameters = new GtfsExportParameters();
@@ -45,36 +45,36 @@ public class GtfsExporterInputValidatorTests
 		parameters.setReferencesType("line");
 		parameters.setTimeZone("Europe/Paris");
 		parameters.setObjectIdPrefix("GTFS");
-		result = validator.check(parameters,null,null);
+		result = validator.checkParameters(parameters,null);
 		Assert.assertFalse(result, "check for bad dates");
 
 		parameters.setStartDate(startDate);
 		parameters.setEndDate(endDate);
 		
 		parameters.setReferencesType("bidon");
-		result = validator.check(parameters,null,null);
+		result = validator.checkParameters(parameters,null);
 		Assert.assertFalse(result, "check for wrong type");
 
 		parameters.setReferencesType("line");
 		parameters.setTimeZone(null);
-		result = validator.check(parameters,null,null);
+		result = validator.checkParameters(parameters,null);
 		Assert.assertFalse(result, "check for no timezone");
 
 		parameters.setTimeZone("");
-		result = validator.check(parameters,null,null);
+		result = validator.checkParameters(parameters,null);
 		Assert.assertFalse(result, "check for empty timezone");
 
 		parameters.setTimeZone("Europe/Paris");
 		parameters.setObjectIdPrefix(null);
-		result = validator.check(parameters,null,null);
+		result = validator.checkParameters(parameters,null);
 		Assert.assertFalse(result, "check for no object_id_prefix");
 
 		parameters.setObjectIdPrefix("");
-		result = validator.check(parameters,null,null);
+		result = validator.checkParameters(parameters,null);
 		Assert.assertFalse(result, "check for empty object_id_prefix");
 
 		parameters.setObjectIdPrefix("GTFS");
-		result = validator.check(parameters,null,"data.zip");
+		result = validator.checkFilename("data.zip");
 		Assert.assertFalse(result, "check for no filename");
 	}
 

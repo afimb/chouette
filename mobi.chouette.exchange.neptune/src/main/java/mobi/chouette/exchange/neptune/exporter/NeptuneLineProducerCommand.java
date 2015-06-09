@@ -40,7 +40,13 @@ public class NeptuneLineProducerCommand implements Command, Constant {
 			NeptuneExportParameters configuration = (NeptuneExportParameters) context.get(CONFIGURATION);
 
 			ExportableData collection = new ExportableData();
-
+			
+			ExportableData sharedData = (ExportableData) context.get(SHARED_DATA);
+			if (sharedData == null)
+			{
+				sharedData = new ExportableData();
+				context.put(SHARED_DATA, sharedData);
+			}
 			Date startDate = null;
 			if (configuration.getStartDate() != null) {
 				startDate = new Date(configuration.getStartDate().getTime());
@@ -62,6 +68,10 @@ public class NeptuneLineProducerCommand implements Command, Constant {
 			stats.setStopAreaCount(collection.getStopAreas().size());
 			stats.setTimeTableCount(collection.getTimetables().size());
 			stats.setVehicleJourneyCount(collection.getVehicleJourneys().size());
+			sharedData.getAccessPoints().addAll(collection.getAccessPoints());
+			sharedData.getConnectionLinks().addAll(collection.getConnectionLinks());
+			sharedData.getStopAreas().addAll(collection.getStopAreas());
+			sharedData.getTimetables().addAll(collection.getTimetables());
 
 			if (cont) {
 				context.put(EXPORTABLE_DATA, collection);
@@ -75,16 +85,16 @@ public class NeptuneLineProducerCommand implements Command, Constant {
 				// merge lineStats to global ones
 				DataStats globalStats = report.getStats();
 				globalStats.setLineCount(globalStats.getLineCount() + stats.getLineCount());
-				globalStats.setAccessPointCount(globalStats.getAccessPointCount() + stats.getAccessPointCount());
 				globalStats.setRouteCount(globalStats.getRouteCount() + stats.getRouteCount());
-				globalStats.setConnectionLinkCount(globalStats.getConnectionLinkCount()
-						+ stats.getConnectionLinkCount());
 				globalStats.setVehicleJourneyCount(globalStats.getVehicleJourneyCount()
 						+ stats.getVehicleJourneyCount());
 				globalStats.setJourneyPatternCount(globalStats.getJourneyPatternCount()
 						+ stats.getJourneyPatternCount());
-				globalStats.setStopAreaCount(globalStats.getStopAreaCount() + stats.getStopAreaCount());
-				globalStats.setTimeTableCount(globalStats.getTimeTableCount() + stats.getTimeTableCount());
+				// compute shared objects
+				globalStats.setAccessPointCount(sharedData.getAccessPoints().size());
+				globalStats.setStopAreaCount(sharedData.getStopAreas().size());
+				globalStats.setTimeTableCount(sharedData.getTimetables().size());
+				globalStats.setConnectionLinkCount(sharedData.getConnectionLinks().size());
 				result = SUCCESS;
 				} catch (MarshalException e) {
 					if (e.getCause() != null && e.getCause() instanceof SAXParseException)

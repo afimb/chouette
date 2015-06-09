@@ -13,7 +13,7 @@ import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 public class NetexValidatorInputValidator extends NetexImporterInputValidator {
 
 	@Override
-	public boolean check(AbstractParameter abstractParameter, ValidationParameters validationParameters, String fileName) {
+	public boolean checkParameters(AbstractParameter abstractParameter, ValidationParameters validationParameters) {
 		if (!(abstractParameter instanceof NetexValidateParameters)) {
 			log.error("invalid parameters for validator " + abstractParameter.getClass().getName());
 			return false;
@@ -23,7 +23,7 @@ public class NetexValidatorInputValidator extends NetexImporterInputValidator {
 			return false;
 		}
 
-		return super.check(abstractParameter, validationParameters, fileName);
+		return super.checkParameters(abstractParameter, validationParameters);
 	}
 	
 	public static class DefaultFactory extends InputValidatorFactory {

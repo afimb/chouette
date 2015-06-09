@@ -13,11 +13,16 @@ import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 public class NetexImporterInputValidator extends AbstractInputValidator {
 
 	@Override
-	public boolean check(AbstractParameter abstractParameter, ValidationParameters validationParameters, String fileName) {
+	public boolean checkParameters(AbstractParameter abstractParameter, ValidationParameters validationParameters) {
 		if (!(abstractParameter instanceof NetexImportParameters)) {
 			log.error("invalid parameters for Netex import " + abstractParameter.getClass().getName());
 			return false;
 		}
+		return true;
+	}
+
+	@Override
+	public boolean checkFilename(String fileName) {
 		if (fileName  == null || fileName.isEmpty()) {
 			log.error("input data expected");
 			return false;
