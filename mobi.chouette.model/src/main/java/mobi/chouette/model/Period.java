@@ -6,7 +6,6 @@ import java.sql.Date;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +17,6 @@ import lombok.ToString;
  */
 @Embeddable
 @NoArgsConstructor
-@AllArgsConstructor
 @EqualsAndHashCode
 @ToString
 public class Period implements Serializable, Comparable<Period> {
@@ -79,6 +77,11 @@ public class Period implements Serializable, Comparable<Period> {
 		if (period.startDate == null)
 			return 1;
 		return startDate.compareTo(period.startDate);
+	}
+
+	public Period(Date startDate, Date endDate) {
+		this.startDate = new Date(startDate.getTime());
+		this.endDate = new Date(endDate.getTime());
 	}
 
 }

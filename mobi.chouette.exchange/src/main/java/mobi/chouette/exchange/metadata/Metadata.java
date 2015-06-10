@@ -189,7 +189,7 @@ public class Metadata {
 		 * @param endDate
 		 *            timetable maximal date
 		 */
-		public void update(Calendar startDate, Calendar endDate) {
+		public void update(final Calendar startDate, final Calendar endDate) {
 			if (start == null || startDate.before(start))
 				start = (Calendar) startDate.clone();
 			if (end == null || endDate.after(end))
@@ -204,7 +204,7 @@ public class Metadata {
 		 * @param endDate
 		 *            timetable maximal date
 		 */
-		public void update(Date startDate, Date endDate) {
+		public void update(final Date startDate, final Date endDate) {
 			if (startDate != null && endDate != null) {
 				Calendar startCal = Calendar.getInstance();
 				startCal.setTime(startDate);

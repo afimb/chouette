@@ -1,12 +1,15 @@
 package mobi.chouette.exchange.neptune.exporter.producer;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import mobi.chouette.exchange.neptune.JsonExtension;
+import mobi.chouette.exchange.neptune.exporter.ExportableData;
 import mobi.chouette.exchange.neptune.exporter.util.NeptuneObjectUtil;
 import mobi.chouette.model.Footnote;
 import mobi.chouette.model.Line;
+import mobi.chouette.model.Route;
 import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.type.UserNeedEnum;
 
@@ -27,7 +30,7 @@ public class LineProducer extends AbstractJaxbNeptuneProducer<ChouettePTNetworkT
 		implements JsonExtension {
 
 	//@Override
-	public ChouettePTNetworkType.ChouetteLineDescription.Line produce(Line line, boolean addExtension) {
+	public ChouettePTNetworkType.ChouetteLineDescription.Line produce(Line line, Collection<Route> exportableRoutes, boolean addExtension) {
 		ChouettePTNetworkType.ChouetteLineDescription.Line jaxbLine = tridentFactory
 				.createChouettePTNetworkTypeChouetteLineDescriptionLine();
 
@@ -51,7 +54,12 @@ public class LineProducer extends AbstractJaxbNeptuneProducer<ChouettePTNetworkT
 
 		jaxbLine.setRegistration(getRegistration(line.getRegistrationNumber()));
 
-		jaxbLine.getRouteId().addAll(NeptuneObjectUtil.extractObjectIds(line.getRoutes()));
+		for (Route route : line.getRoutes()) {
+			if (exportableRoutes.contains(route))
+			{
+				jaxbLine.getRouteId().add(route.getObjectId());
+			}
+		}
 
 		boolean hasExtensions = false;
 		LineExtensionType jaxbLineExtension = tridentFactory.createLineExtensionType();

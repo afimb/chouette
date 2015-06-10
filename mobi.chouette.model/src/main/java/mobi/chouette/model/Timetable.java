@@ -345,7 +345,7 @@ public class Timetable extends NeptuneIdentifiedObject {
 		List<Date> ret = new ArrayList<>();
 		for (CalendarDay day : getCalendarDays()) {
 			if (day.getIncluded())
-				ret.add(day.getDate());
+				ret.add(new Date(day.getDate().getTime()));
 		}
 		return ret;
 	}
@@ -359,7 +359,7 @@ public class Timetable extends NeptuneIdentifiedObject {
 		List<Date> ret = new ArrayList<>();
 		for (CalendarDay day : getCalendarDays()) {
 			if (!day.getIncluded())
-				ret.add(day.getDate());
+				ret.add(new Date(day.getDate().getTime()));
 		}
 		return ret;
 	}
@@ -370,7 +370,7 @@ public class Timetable extends NeptuneIdentifiedObject {
 	 * @param aDay
 	 * @return true if timetable is active on given date
 	 */
-	public  boolean isActiveOn(Date aDay) {
+	public  boolean isActiveOn(final Date aDay) {
 		if (getCalendarDays() != null) {
 			CalendarDay includedDay = new CalendarDay(aDay, true);
 			if (getCalendarDays().contains(includedDay))
@@ -397,17 +397,17 @@ public class Timetable extends NeptuneIdentifiedObject {
 		return false;
 	}
 
-	public boolean isActiveBefore(Date aDay)
+	public boolean isActiveBefore(final Date aDay)
 	{
 		return isActiveOnPeriod(getStartOfPeriod(),aDay);
 	}
 
-	public boolean isActiveAfter(Date aDay)
+	public boolean isActiveAfter(final Date aDay)
 	{
 		return isActiveOnPeriod(aDay,getEndOfPeriod());
 	}
 
-	public boolean isActiveOnPeriod(Date start, Date end) {
+	public boolean isActiveOnPeriod(final Date start, final Date end) {
 		Date day = new Date(start.getTime());
 		while (day.before(end))
 		{

@@ -179,7 +179,7 @@ public class ChouettePTNetworkProducer implements Constant {
 
 
 		ChouetteLineDescription chouetteLineDescription = new ChouetteLineDescription();
-		ChouetteLineDescription.Line jaxbLine = lineProducer.produce(collection.getLine(),addExtension);
+		ChouetteLineDescription.Line jaxbLine = lineProducer.produce(collection.getLine(),collection.getRoutes(),addExtension);
 		chouetteLineDescription.setLine(jaxbLine);
 		rootObject.setChouetteLineDescription(chouetteLineDescription);
 
@@ -259,8 +259,6 @@ public class ChouettePTNetworkProducer implements Constant {
 			metadata.getResources().add(metadata.new Resource(fileName, 
 					NeptuneObjectPresenter.getName(collection.getLine().getNetwork()), 
 					NeptuneObjectPresenter.getName(collection.getLine())));
-
-
 	}
 
 
