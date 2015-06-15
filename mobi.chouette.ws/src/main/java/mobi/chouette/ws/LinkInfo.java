@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import mobi.chouette.model.api.Link;
+import mobi.chouette.model.iev.Link;
 
 @Data
 @NoArgsConstructor

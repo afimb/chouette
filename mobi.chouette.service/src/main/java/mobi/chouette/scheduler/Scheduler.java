@@ -19,7 +19,7 @@ import javax.naming.InitialContext;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.dao.SchemaDAO;
-import mobi.chouette.model.api.Job.STATUS;
+import mobi.chouette.model.iev.Job.STATUS;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 import mobi.chouette.service.JobService;
 import mobi.chouette.service.JobServiceManager;

@@ -1,9 +1,10 @@
-package mobi.chouette.model.util;
+package mobi.chouette.model.iev.util;
 
 import com.google.common.collect.Iterables;
 
-import mobi.chouette.model.api.Job;
-import mobi.chouette.model.api.Link;
+import mobi.chouette.model.iev.Job;
+import mobi.chouette.model.iev.Link;
+
 import com.google.common.base.Predicate;
 
 public class JobUtil {

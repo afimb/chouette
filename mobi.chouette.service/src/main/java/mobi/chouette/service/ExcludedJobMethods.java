@@ -2,7 +2,7 @@ package mobi.chouette.service;
 
 import java.util.List;
 
-import mobi.chouette.model.api.Link;
+import mobi.chouette.model.iev.Link;
 
 
 public interface ExcludedJobMethods {

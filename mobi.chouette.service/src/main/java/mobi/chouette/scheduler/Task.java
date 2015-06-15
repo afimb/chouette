@@ -14,8 +14,8 @@ import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.model.api.Job;
-import mobi.chouette.model.api.Job.STATUS;
+import mobi.chouette.model.iev.Job;
+import mobi.chouette.model.iev.Job.STATUS;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 import mobi.chouette.service.JobService;
 

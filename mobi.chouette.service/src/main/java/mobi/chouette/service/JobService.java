@@ -19,8 +19,8 @@ import mobi.chouette.exchange.InputValidator;
 import mobi.chouette.exchange.InputValidatorFactory;
 import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
-import mobi.chouette.model.api.Job;
-import mobi.chouette.model.api.Link;
+import mobi.chouette.model.iev.Job;
+import mobi.chouette.model.iev.Link;
 import mobi.chouette.scheduler.Parameters;
 
 import org.apache.commons.io.IOUtils;

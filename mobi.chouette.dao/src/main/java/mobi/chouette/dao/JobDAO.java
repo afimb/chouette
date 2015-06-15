@@ -13,9 +13,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import mobi.chouette.model.api.Job;
-import mobi.chouette.model.api.Job.STATUS;
-import mobi.chouette.model.api.Job_;
+import mobi.chouette.model.iev.Job_;
+import mobi.chouette.model.iev.Job;
+import mobi.chouette.model.iev.Job.STATUS;
 
 @Stateless
 public class JobDAO extends GenericDAOImpl<Job> {

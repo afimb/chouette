@@ -28,9 +28,9 @@ import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 import mobi.chouette.dao.JobDAO;
-import mobi.chouette.model.api.Job;
-import mobi.chouette.model.api.Job.STATUS;
-import mobi.chouette.model.api.Link;
+import mobi.chouette.model.iev.Job;
+import mobi.chouette.model.iev.Link;
+import mobi.chouette.model.iev.Job.STATUS;
 import mobi.chouette.scheduler.Scheduler;
 
 import org.apache.commons.io.FileUtils;

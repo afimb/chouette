@@ -1,4 +1,4 @@
-package mobi.chouette.model.api;
+package mobi.chouette.model.iev;
 
 import java.io.Serializable;
 import java.util.ArrayList;
