@@ -188,8 +188,6 @@ public class AccessPoint extends NeptuneLocalizedObject {
 	 * access links from or to this access should reach only this stop area or
 	 * it's children
 	 * 
-	 * @param containedIn
-	 *            New value
 	 * @return The actual value
 	 */
 	@Getter
@@ -200,7 +198,7 @@ public class AccessPoint extends NeptuneLocalizedObject {
 	/**
 	 * set access point owner
 	 * 
-	 * @param stopArea
+	 * @param containedIn New value
 	 */
 	public void setContainedIn(StopArea containedIn) {
 		if (this.containedIn != null) {

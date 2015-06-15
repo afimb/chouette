@@ -66,10 +66,10 @@ public class CommandManager implements Constant {
 		this.args = args;
 		options.addOption("h", "help", false, "show help");
 		options.addOption("d", "dir", true, "working directory (default = ./work)");
-		options.addOption("i", "import", true, "import parameters (json)");
-		options.addOption("e", "export", true, "export parameters  (json)");
-		options.addOption("v", "validate", true, "validation parameters (json)");
-		options.addOption("f", "file", true, "export file ");
+		options.addOption("i", "input", true, "input options (json)");
+		options.addOption("o", "output", true, "output options  (json)");
+		options.addOption("v", "validate", true, "validation options (json)");
+		options.addOption("f", "file", true, "output file ");
 	}
 
 	public void parseArgs() {
@@ -84,7 +84,7 @@ public class CommandManager implements Constant {
 			if (cmd.hasOption("i")) {
 				inputParametersFilename = cmd.getOptionValue("i");
 			} else {
-				System.err.println("missing -i inputParameters.json ");
+				System.err.println("missing -i inputOptions.json ");
 				help();
 			}
 			if (cmd.hasOption("v")) {
@@ -93,16 +93,16 @@ public class CommandManager implements Constant {
 			if (cmd.hasOption("d")) {
 				workingDirectory = cmd.getOptionValue("d");
 			}
-			if (cmd.hasOption("e")) {
-				outputParametersFilename = cmd.getOptionValue("e");
+			if (cmd.hasOption("o")) {
+				outputParametersFilename = cmd.getOptionValue("o");
 				if (cmd.hasOption("f")) {
 					outputFileName = cmd.getOptionValue("f");
 				} else {
-					System.out.println("missing -f exportFile");
+					System.out.println("missing -f outputFile");
 					help();
 				}
 			} else if (cmd.hasOption("f")) {
-				System.err.println("unexpected -f option without -e option");
+				System.err.println("unexpected -f option without -o option");
 				help();
 			}
 			if (cmd.getArgList().size() == 1) {
@@ -278,7 +278,7 @@ public class CommandManager implements Constant {
 		try {
 			return ParametersConverter.convertValidation(validationParametersFilename);
 		} catch (Exception e) {
-			System.err.println("error trying to read validation parameters file " + validationParametersFilename
+			System.err.println("error trying to read validation options file " + validationParametersFilename
 					+ " : " + e.getMessage());
 			return null;
 		}
@@ -287,13 +287,13 @@ public class CommandManager implements Constant {
 	public void saveReports() throws Exception {
 		if (importContext == null) return;
 		ActionReport importReport = (ActionReport) importContext.get(REPORT);
-		JSONUtil.toJSON(Paths.get(inputData.getPathName(), "importReport.json"), importReport);
+		JSONUtil.toJSON(Paths.get(inputData.getPathName(), "inputReport.json"), importReport);
 
 		ValidationReport validationReport = (ValidationReport) importContext.get(VALIDATION_REPORT);
 		JSONUtil.toJSON(Paths.get(inputData.getPathName(), VALIDATION_FILE), validationReport);
 		if (withExport()) {
 			ActionReport exportReport = (ActionReport) exportContext.get(REPORT);
-			JSONUtil.toJSON(Paths.get(inputData.getPathName(), "exportReport.json"), exportReport);
+			JSONUtil.toJSON(Paths.get(inputData.getPathName(), "outputReport.json"), exportReport);
 		}
 	}
 
@@ -311,7 +311,7 @@ public class CommandManager implements Constant {
 			} else if (configuration instanceof GtfsImportParameters) {
 				data.setType("gtfs");
 			} else {
-				System.err.println("invalid input parameters type" + inputParametersFilename);
+				System.err.println("invalid input options type" + inputParametersFilename);
 				return null;
 			}
 			
@@ -319,7 +319,7 @@ public class CommandManager implements Constant {
 			return data;
 
 		} catch (Exception e) {
-			System.err.println("error trying to read input parameters file " + inputParametersFilename + " : "
+			System.err.println("error trying to read input options file " + inputParametersFilename + " : "
 					+ e.getMessage());
 			return null;
 		}
@@ -343,14 +343,14 @@ public class CommandManager implements Constant {
 			} else if (configuration instanceof KmlExportParameters) {
 				data.setType("kml");
 			} else {
-				System.err.println("invalid input parameters type" + outputParametersFilename);
+				System.err.println("invalid input options type" + outputParametersFilename);
 				return null;
 			}
 			data.setConfiguration(configuration);
 			return data;
 
 		} catch (Exception e) {
-			System.err.println("error trying to read output parameters file " + outputParametersFilename + " : "
+			System.err.println("error trying to read output options file " + outputParametersFilename + " : "
 					+ e.getMessage());
 			return null;
 		}
@@ -368,7 +368,7 @@ public class CommandManager implements Constant {
 		// This prints out some help
 		HelpFormatter formater = new HelpFormatter();
 
-		formater.printHelp("command_iev [options] importFile", options);
+		formater.printHelp("command_iev [options] inputFile", options);
 		System.exit(0);
 	}
 

@@ -98,8 +98,7 @@ public class AccessLink extends NeptuneIdentifiedObject {
 	/**
 	 * link length in meters
 	 * 
-	 * @param linkDistance
-	 *            New value
+	 * @param linkDistance New value
 	 * @return The actual value
 	 */
 	@Getter
@@ -115,8 +114,7 @@ public class AccessLink extends NeptuneIdentifiedObject {
 	 * <li>false if no lift is available on this link</li>
 	 * </ul>
 	 * 
-	 * @param liftAvailable
-	 *            New state for lift indicator
+	 * @param liftAvailable New state for lift indicator
 	 * @return The actual lift indicator
 	 */
 	@Getter
@@ -132,8 +130,7 @@ public class AccessLink extends NeptuneIdentifiedObject {
 	 * <li>false if wheel chairs can't follow this link</li>
 	 * </ul>
 	 * 
-	 * @param mobilityRestrictedSuitable
-	 *            New state for mobility restriction indicator
+	 * @param mobilityRestrictedSuitable New state for mobility restriction indicator
 	 * @return The actual mobility restriction indicator
 	 */
 	@Getter
@@ -149,8 +146,7 @@ public class AccessLink extends NeptuneIdentifiedObject {
 	 * <li>false if no stairs are presents on this link</li>
 	 * </ul>
 	 * 
-	 * @param stairsAvailable
-	 *            New state for stairs indicator
+	 * @param stairsAvailable New state for stairs indicator
 	 * @return The actual stairs indicator
 	 */
 	@Getter
@@ -162,8 +158,7 @@ public class AccessLink extends NeptuneIdentifiedObject {
 	 * medium time to follow the link <br/>
 	 * null if unknown
 	 * 
-	 * @param defaultDuration
-	 *            New value
+	 * @param defaultDuration New value
 	 * @return The actual value
 	 */
 	@Getter
@@ -175,8 +170,7 @@ public class AccessLink extends NeptuneIdentifiedObject {
 	 * time to follow the link for a frequent traveller <br/>
 	 * null if unknown
 	 * 
-	 * @param frequentTravellerDuration
-	 *            New value
+	 * @param frequentTravellerDuration New value
 	 * @return The actual value
 	 */
 	@Getter
@@ -201,8 +195,7 @@ public class AccessLink extends NeptuneIdentifiedObject {
 	 * time to follow the link for a traveller with mobility restriction <br/>
 	 * null if unknown
 	 * 
-	 * @param mobilityRestrictedTravellerDuration
-	 *            New value
+	 * @param mobilityRestrictedTravellerDuration New value
 	 * @return The actual value
 	 */
 	@Getter
@@ -213,8 +206,7 @@ public class AccessLink extends NeptuneIdentifiedObject {
 	/**
 	 * link type
 	 * 
-	 * @param linkType
-	 *            New value
+	 * @param linkType New value
 	 * @return The actual value
 	 */
 	@Getter
@@ -235,8 +227,7 @@ public class AccessLink extends NeptuneIdentifiedObject {
 	 * <li>removeUserNeed</li>
 	 * </ul>
 	 * 
-	 * @param intUserNeeds
-	 *            New value
+	 * @param intUserNeeds New value
 	 * @return The actual value
 	 */
 
@@ -245,6 +236,11 @@ public class AccessLink extends NeptuneIdentifiedObject {
 	@Column(name = "int_user_needs")
 	private Integer intUserNeeds = 0;
 
+	/**
+	 * return UserNeeds as Enum list
+	 * 
+	 * @return UserNeeds
+	 */
 	public List<UserNeedEnum> getUserNeeds() {
 		List<UserNeedEnum> result = new ArrayList<UserNeedEnum>();
 		if (intUserNeeds == null) return result;
@@ -257,6 +253,11 @@ public class AccessLink extends NeptuneIdentifiedObject {
 		return result;
 	}
 
+	/**
+	 * update UserNeeds as Enum list
+	 * 
+	 * @param userNeeds
+	 */
 	public void setUserNeeds(List<UserNeedEnum> userNeeds) {
 		int value = 0;
 		for (UserNeedEnum userNeed : userNeeds) {
@@ -282,8 +283,6 @@ public class AccessLink extends NeptuneIdentifiedObject {
 	/**
 	 * access point connected to link
 	 * 
-	 * @param accessPoint
-	 *            New value
 	 * @return The actual value
 	 */
 	@Getter
@@ -294,7 +293,7 @@ public class AccessLink extends NeptuneIdentifiedObject {
 	/**
 	 * set access point connected to link
 	 * 
-	 * @param accessPoint
+	 * @param accessPoint New value
 	 */
 	public void setAccessPoint(AccessPoint accessPoint) {
 		if (this.accessPoint != null) {
@@ -309,8 +308,6 @@ public class AccessLink extends NeptuneIdentifiedObject {
 	/**
 	 * stop area connected to link
 	 * 
-	 * @param stopArea
-	 *            New value
 	 * @return The actual value
 	 */
 	@Getter
@@ -321,7 +318,7 @@ public class AccessLink extends NeptuneIdentifiedObject {
 	/**
 	 * set stop area connected to link
 	 * 
-	 * @param stopArea
+	 * @param stopArea New value
 	 */
 	public void setStopArea(StopArea stopArea) {
 		if (this.stopArea != null) {

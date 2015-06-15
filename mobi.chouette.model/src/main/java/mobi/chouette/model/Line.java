@@ -315,8 +315,6 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	/**
 	 * network reference
 	 * 
-	 * @param ptNetwork
-	 *            New value
 	 * @return The actual value
 	 */
 	@Getter
@@ -327,7 +325,7 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	/**
 	 * set network
 	 * 
-	 * @param ptNetwork
+	 * @param network New value
 	 */
 	public void setNetwork(Network network) {
 		if (this.network != null) {
@@ -342,8 +340,6 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	/**
 	 * company reference
 	 * 
-	 * @param company
-	 *            New value
 	 * @return The actual value
 	 */
 	@Getter

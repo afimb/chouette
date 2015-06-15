@@ -134,8 +134,6 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 	/**
 	 * route reverse reference
 	 * 
-	 * @param route
-	 *            New value
 	 * @return The actual value
 	 */
 	@Getter

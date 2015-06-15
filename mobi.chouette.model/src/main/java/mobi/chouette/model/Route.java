@@ -110,8 +110,6 @@ public class Route extends NeptuneIdentifiedObject {
 	 * the model doesn't map this relationship as object as facility on saving
 	 * in database
 	 * 
-	 * @param oppositeRouteId
-	 *            New value
 	 * @return The actual value
 	 */
 
@@ -120,6 +118,11 @@ public class Route extends NeptuneIdentifiedObject {
 	@JoinColumn(name = "opposite_route_id")
 	private Route oppositeRoute;
 
+	/**
+	 * opposite route identifier <br/>
+
+	 * @param oppositeRoute new value
+	 */
 	public void setOppositeRoute(Route oppositeRoute) {
 
 		if (this.oppositeRoute != oppositeRoute) {
@@ -133,11 +136,6 @@ public class Route extends NeptuneIdentifiedObject {
 				oppositeRoute.setOppositeRoute(this);
 			}
 		}
-	}
-
-	// to clean invalid foreign key
-	public void unsetOppositeRoute() {
-		this.oppositeRoute = null;
 	}
 
 	/**
@@ -221,8 +219,6 @@ public class Route extends NeptuneIdentifiedObject {
 	/**
 	 * line reverse reference
 	 * 
-	 * @param line
-	 *            New value
 	 * @return The actual value
 	 */
 	@Getter

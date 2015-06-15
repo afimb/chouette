@@ -300,6 +300,11 @@ public class StopArea extends NeptuneLocalizedObject {
 	@Column(name = "int_user_needs")
 	private Integer intUserNeeds = 0;
 
+	/**
+	 * return UserNeeds as Enum list
+	 * 
+	 * @return UserNeeds
+	 */
 	public List<UserNeedEnum> getUserNeeds() {
 		List<UserNeedEnum> result = new ArrayList<UserNeedEnum>();
 		if (intUserNeeds == null) return result;
@@ -312,6 +317,11 @@ public class StopArea extends NeptuneLocalizedObject {
 		return result;
 	}
 
+	/**
+	 * update UserNeeds as Enum list
+	 * 
+	 * @param userNeeds
+	 */
 	public void setUserNeeds(List<UserNeedEnum> userNeeds) {
 		int value = 0;
 		for (UserNeedEnum userNeed : userNeeds) {
@@ -325,8 +335,6 @@ public class StopArea extends NeptuneLocalizedObject {
 	 * stop area parent<br/>
 	 * unavailable for areaType = ITL
 	 * 
-	 * @param parent
-	 *            New value
 	 * @return The actual value
 	 */
 	@Getter

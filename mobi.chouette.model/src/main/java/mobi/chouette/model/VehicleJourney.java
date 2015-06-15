@@ -238,8 +238,6 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 	/**
 	 * journey pattern reference
 	 * 
-	 * @param journeyPattern
-	 *            New value
 	 * @return The actual value
 	 */
 	@Getter

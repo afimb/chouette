@@ -93,8 +93,6 @@ public class StopPoint extends NeptuneIdentifiedObject {
 	   /**
 	 * stop area container
 	 * 
-	 * @param containedInStopArea
-	 *            New value
 	 * @return The actual value
 	 */
 	@Getter
@@ -120,8 +118,6 @@ public class StopPoint extends NeptuneIdentifiedObject {
 	/**
 	 * route
 	 * 
-	 * @param route
-	 *            New value
 	 * @return The actual value
 	 */
 	@Getter

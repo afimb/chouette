@@ -37,12 +37,17 @@ public abstract class NeptuneObject implements Serializable {
 	 * database id <br/>
 	 * null if not saved
 	 * 
-	 * @param id
-	 *            New value
 	 * @return The actual value
 	 */
 	public abstract Long getId();
 	
+	/**
+	 * database id <br/>
+	 * null if not saved
+	 * 
+	 * @param id
+	 *            New value
+	 */
 	public abstract void setId(Long id);
 
 

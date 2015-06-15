@@ -144,8 +144,6 @@ public class VehicleJourneyAtStop extends NeptuneObject {
 	/**
 	 * vehicle journey reference <br/>
 	 * 
-	 * @param vehicleJourney
-	 *            New value
 	 * @return The actual value
 	 */
 	@Getter

@@ -242,6 +242,11 @@ public class ConnectionLink extends NeptuneIdentifiedObject {
 	@Setter
 	private Integer intUserNeeds = 0;
 
+	/**
+	 * return UserNeeds as Enum list
+	 * 
+	 * @return UserNeeds
+	 */
 	public List<UserNeedEnum> getUserNeeds() {
 		List<UserNeedEnum> result = new ArrayList<UserNeedEnum>();
 		if (intUserNeeds == null) return result;
@@ -254,6 +259,11 @@ public class ConnectionLink extends NeptuneIdentifiedObject {
 		return result;
 	}
 
+	/**
+	 * update UserNeeds as Enum list
+	 * 
+	 * @param userNeeds
+	 */
 	public void setUserNeeds(List<UserNeedEnum> userNeeds) {
 		int value = 0;
 		for (UserNeedEnum userNeed : userNeeds) {
@@ -266,8 +276,6 @@ public class ConnectionLink extends NeptuneIdentifiedObject {
 	/**
 	 * first stop area connected to link
 	 * 
-	 * @param startOfLink
-	 *            New value
 	 * @return The actual value
 	 */
 	@Getter
@@ -293,8 +301,6 @@ public class ConnectionLink extends NeptuneIdentifiedObject {
 	/**
 	 * last stop area connected to link
 	 * 
-	 * @param endOfLink
-	 *            New value
 	 * @return The actual value
 	 */
 	@Getter
