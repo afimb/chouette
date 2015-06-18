@@ -535,8 +535,11 @@ public class Timetable extends NeptuneIdentifiedObject
       List<Date> ret = new ArrayList<>();
       for (CalendarDay day : calendarDays)
       {
-         if (day.getIncluded())
-            ret.add(day.getDate());
+         if (day != null)
+         {
+            if (day.getIncluded())
+               ret.add(day.getDate());
+         }
       }
       return ret;
    }
@@ -551,8 +554,11 @@ public class Timetable extends NeptuneIdentifiedObject
       List<Date> ret = new ArrayList<>();
       for (CalendarDay day : calendarDays)
       {
-         if (!day.getIncluded())
-            ret.add(day.getDate());
+         if (day != null)
+         {
+            if (!day.getIncluded())
+               ret.add(day.getDate());
+         }
       }
       return ret;
    }
