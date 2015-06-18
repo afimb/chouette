@@ -592,8 +592,9 @@ public class Timetable extends NeptuneIdentifiedObject
             // check if day is in a period
             for (Period period : periods)
             {
-               if (period.contains(aDay))
-                  return true;
+				  if (period != null)
+					 if (period.contains(aDay))
+						  return true;
             }
          }
 
@@ -622,14 +623,17 @@ public class Timetable extends NeptuneIdentifiedObject
       endOfPeriod = null;
       for (Period period : periods)
       {
-         if (startOfPeriod == null
-               || startOfPeriod.after(period.getStartDate()))
-         {
-            startOfPeriod = period.getStartDate();
-         }
-         if (endOfPeriod == null || endOfPeriod.before(period.getEndDate()))
-         {
-            endOfPeriod = period.getEndDate();
+			 if (period != null)
+			 {
+				if (startOfPeriod == null
+						|| startOfPeriod.after(period.getStartDate()))
+				{
+					 startOfPeriod = period.getStartDate();
+				}
+				if (endOfPeriod == null || endOfPeriod.before(period.getEndDate()))
+				{
+					 endOfPeriod = period.getEndDate();
+				}
          }
       }
       // check DayType
@@ -678,8 +682,9 @@ public class Timetable extends NeptuneIdentifiedObject
       // copy periods
       for (Period period : periods)
       {
-         effectivePeriods.add(new Period(period.getStartDate(), period
-               .getEndDate()));
+		  if (period != null)
+			 effectivePeriods.add(new Period(period.getStartDate(), period
+					 .getEndDate()));
       }
       if (!effectivePeriods.isEmpty())
       {
@@ -795,12 +800,14 @@ public class Timetable extends NeptuneIdentifiedObject
       tm.setPeriods(new ArrayList<Period>());
       for (Period period : getPeriods())
       {
-         tm.addPeriod(new Period(period.getStartDate(),period.getEndDate()));
+		  if (period != null)
+			 tm.addPeriod(new Period(period.getStartDate(),period.getEndDate()));
       }
       tm.setCalendarDays(new ArrayList<CalendarDay>());
       for (CalendarDay day : getCalendarDays())
       {
-         tm.addCalendarDay(new CalendarDay(day.getDate(), day.getIncluded()));
+		  if (day != null)
+			 tm.addCalendarDay(new CalendarDay(day.getDate(), day.getIncluded()));
       }
       return tm;
    }
