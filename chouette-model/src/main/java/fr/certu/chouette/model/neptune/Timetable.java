@@ -52,7 +52,7 @@ public class Timetable extends NeptuneIdentifiedObject
    /**
     * comment <br/>
     * Note : should be rename as name in next release
-    * 
+    *
     * @return The actual value
     */
    @Getter
@@ -62,7 +62,7 @@ public class Timetable extends NeptuneIdentifiedObject
    /**
     * set comment <br/>
     * truncated to 255 characters if too long
-    * 
+    *
     * @param value
     *           New value
     */
@@ -74,7 +74,7 @@ public class Timetable extends NeptuneIdentifiedObject
    /**
     * version <br/>
     * Note : should be rename as short name  in next release
-    * 
+    *
     * @return The actual value
     */
    @Getter
@@ -83,7 +83,7 @@ public class Timetable extends NeptuneIdentifiedObject
    /**
     * set version <br/>
     * truncated to 255 characters if too long
-    * 
+    *
     * @param value
     *           New value
     */
@@ -94,7 +94,7 @@ public class Timetable extends NeptuneIdentifiedObject
 
    /**
     * day of week as bit mask
-    * 
+    *
     * @param intDayTypes
     *           New value
     * @return The actual value
@@ -106,7 +106,7 @@ public class Timetable extends NeptuneIdentifiedObject
 
    /**
     * first valid day in timetable
-    * 
+    *
     * @param startOfPeriod
     *           New value
     * @return The actual value
@@ -118,7 +118,7 @@ public class Timetable extends NeptuneIdentifiedObject
 
    /**
     * last valid day in timetable
-    * 
+    *
     * @param endOfPeriod
     *           New value
     * @return The actual value
@@ -130,7 +130,7 @@ public class Timetable extends NeptuneIdentifiedObject
 
    /**
     * list of peculiar days
-    * 
+    *
     * @param calendarDays
     *           New value
     * @return The actual value
@@ -144,7 +144,7 @@ public class Timetable extends NeptuneIdentifiedObject
 
    /**
     * list of periods
-    * 
+    *
     * @param periods
     *           New value
     * @return The actual value
@@ -158,7 +158,7 @@ public class Timetable extends NeptuneIdentifiedObject
 
    /**
     * list of vehicleJourneys
-    * 
+    *
     * @param vehicleJourneys
     *           New value
     * @return The actual value
@@ -179,7 +179,7 @@ public class Timetable extends NeptuneIdentifiedObject
    /**
     * Neptune ObjectId of vehicleJourneys attached to this timetable <br/>
     * (import/export purpose)
-    * 
+    *
     * @param vehicleJourneyIds
     *           New value
     * @return The actual value
@@ -191,7 +191,7 @@ public class Timetable extends NeptuneIdentifiedObject
 
    /**
     * add a dayType if not already present
-    * 
+    *
     * @param dayType
     */
    public void addDayType(DayTypeEnum dayType)
@@ -207,7 +207,7 @@ public class Timetable extends NeptuneIdentifiedObject
 
    /**
     * remove a daytype
-    * 
+    *
     * @param dayType
     */
    public void removeDayType(DayTypeEnum dayType)
@@ -223,7 +223,7 @@ public class Timetable extends NeptuneIdentifiedObject
 
    /**
     * add a day if not already present
-    * 
+    *
     * @param calendarDay
     */
    public void addCalendarDay(CalendarDay calendarDay)
@@ -239,7 +239,7 @@ public class Timetable extends NeptuneIdentifiedObject
    /**
     * add a list of Calendar days <br/>
     * will skip dates already presents
-    * 
+    *
     * @param list
     */
    public void addCalendarDays(Collection<CalendarDay> list)
@@ -255,7 +255,7 @@ public class Timetable extends NeptuneIdentifiedObject
 
    /**
     * remove a day
-    * 
+    *
     * @param calendarDay
     */
    public void removeCalendarDay(CalendarDay calendarDay)
@@ -270,7 +270,7 @@ public class Timetable extends NeptuneIdentifiedObject
 
    /**
     * add a period if not already present
-    * 
+    *
     * @param period
     */
    public void addPeriod(Period period)
@@ -284,7 +284,7 @@ public class Timetable extends NeptuneIdentifiedObject
 
    /**
     * remove a period
-    * 
+    *
     * @param period
     */
    public void removePeriod(Period period)
@@ -299,7 +299,7 @@ public class Timetable extends NeptuneIdentifiedObject
 
    /**
     * remove a period at a specific rank
-    * 
+    *
     * @param rank
     */
    public void removePeriod(int rank)
@@ -314,7 +314,7 @@ public class Timetable extends NeptuneIdentifiedObject
 
    /**
     * add a vehiclejourney Id
-    * 
+    *
     * @param vehicleJourneyId
     */
    public void addVehicleJourneyId(String vehicleJourneyId)
@@ -326,7 +326,7 @@ public class Timetable extends NeptuneIdentifiedObject
 
    /**
     * add a vehicle journey if not already present
-    * 
+    *
     * @param vehicleJourney
     */
    public void addVehicleJourney(VehicleJourney vehicleJourney)
@@ -341,7 +341,7 @@ public class Timetable extends NeptuneIdentifiedObject
 
    /**
     * remove a vehicle journey
-    * 
+    *
     * @param vehicleJourney
     */
    public void removeVehicleJourney(VehicleJourney vehicleJourney)
@@ -426,7 +426,7 @@ public class Timetable extends NeptuneIdentifiedObject
 
    /**
     * format a date for toString usage
-    * 
+    *
     * @param date
     * @return string formatted date
     */
@@ -444,7 +444,7 @@ public class Timetable extends NeptuneIdentifiedObject
 
    /**
     * get the affected dayTypes
-    * 
+    *
     * @return list of DayTypeEnum for intDayTypes value
     */
    public List<DayTypeEnum> getDayTypes()
@@ -475,7 +475,7 @@ public class Timetable extends NeptuneIdentifiedObject
 
    /**
     * set the dayTypes
-    * 
+    *
     * @param dayTypes
     */
    public void setDayTypes(List<DayTypeEnum> dayTypes)
@@ -496,7 +496,7 @@ public class Timetable extends NeptuneIdentifiedObject
 
    /**
     * build a bitwise dayType mask for filtering
-    * 
+    *
     * @param dayTypes
     *           a list of included day types
     * @return binary mask for selected day types
@@ -515,7 +515,7 @@ public class Timetable extends NeptuneIdentifiedObject
 
    /**
     * build a bitwise dayType mask for filtering
-    * 
+    *
     * @param dayType
     *           the dayType to filter
     * @return binary mask for a day type
@@ -527,7 +527,7 @@ public class Timetable extends NeptuneIdentifiedObject
 
    /**
     * get peculiar dates
-    * 
+    *
     * @return a list of active dates
     */
    public List<Date> getPeculiarDates()
@@ -546,7 +546,7 @@ public class Timetable extends NeptuneIdentifiedObject
 
    /**
     * get excluded dates
-    * 
+    *
     * @return a list of excluded dates
     */
    public List<Date> getExcludedDates()
@@ -565,7 +565,7 @@ public class Timetable extends NeptuneIdentifiedObject
 
    /**
     * check if a Timetable is active on a given date
-    * 
+    *
     * @param aDay
     * @return true if timetable is active on given date
     */
@@ -651,13 +651,15 @@ public class Timetable extends NeptuneIdentifiedObject
       }
       for (CalendarDay calendarDay : calendarDays)
       {
-         Date date = calendarDay.getDate();
-         if (calendarDay.getIncluded())
-         {
-            if (startOfPeriod == null || date.before(startOfPeriod))
-               startOfPeriod = date;
-            if (endOfPeriod == null || date.after(endOfPeriod))
-               endOfPeriod = date;
+         if ( calendarDay != null ) {
+             Date date = calendarDay.getDate();
+             if (calendarDay.getIncluded())
+             {
+                if (startOfPeriod == null || date.before(startOfPeriod))
+                   startOfPeriod = date;
+                if (endOfPeriod == null || date.after(endOfPeriod))
+                   endOfPeriod = date;
+             }
          }
       }
 
@@ -666,7 +668,7 @@ public class Timetable extends NeptuneIdentifiedObject
    /**
     * return periods broken on excluded dates, for exports without date
     * exclusion
-    * 
+    *
     * @return periods
     */
    public List<Period> getEffectivePeriods()
@@ -757,7 +759,7 @@ public class Timetable extends NeptuneIdentifiedObject
    {
       return getComment();
    }
-   
+
    /* (non-Javadoc)
     * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#setName(java.lang.String)
     */
@@ -766,7 +768,7 @@ public class Timetable extends NeptuneIdentifiedObject
    {
       setComment(name);
    }
-   
+
    /* (non-Javadoc)
     * @see fr.certu.chouette.model.neptune.NeptuneIdentifiedObject#toURL()
     */
@@ -779,7 +781,7 @@ public class Timetable extends NeptuneIdentifiedObject
 
    /**
     * copy a timetable and its periods and calendar days<br/>
-    * 
+    *
     * @return a copy
     */
    public Timetable copy()
