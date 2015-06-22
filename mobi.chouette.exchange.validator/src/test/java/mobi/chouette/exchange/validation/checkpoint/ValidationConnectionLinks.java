@@ -128,6 +128,12 @@ public class ValidationConnectionLinks extends AbstractTestValidation {
 		Assert.assertEquals(checkPointReport.getSeverity(), CheckPoint.SEVERITY.WARNING,
 				" checkPointReport must be on severity error");
 		Assert.assertEquals(checkPointReport.getDetailCount(), 1, " checkPointReport must have 1 item");
+		String detailKey = "3-ConnectionLink-1".replaceAll("-", "_").toLowerCase();
+		List<Detail> details = checkPointReport.getDetails();
+		for (Detail detail : details) {
+			Assert.assertTrue(detail.getKey().startsWith(detailKey),
+					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
+		}
 		utx.rollback();
 
 	}
@@ -168,6 +174,12 @@ public class ValidationConnectionLinks extends AbstractTestValidation {
 		Assert.assertEquals(checkPointReport.getSeverity(), CheckPoint.SEVERITY.WARNING,
 				" checkPointReport must be on severity error");
 		Assert.assertEquals(checkPointReport.getDetailCount(), 1, " checkPointReport must have 1 item");
+		String detailKey = "3-ConnectionLink-2".replaceAll("-", "_").toLowerCase();
+		List<Detail> details = checkPointReport.getDetails();
+		for (Detail detail : details) {
+			Assert.assertTrue(detail.getKey().startsWith(detailKey),
+					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
+		}
 		utx.rollback();
 
 	}
@@ -216,6 +228,12 @@ public class ValidationConnectionLinks extends AbstractTestValidation {
 		Assert.assertEquals(checkPointReport.getSeverity(), CheckPoint.SEVERITY.WARNING,
 				" checkPointReport must be on severity error");
 		Assert.assertEquals(checkPointReport.getDetailCount(), 4, " checkPointReport must have 4 item");
+		String detailKey = "3-ConnectionLink-3".replaceAll("-", "_").toLowerCase();
+		List<Detail> details = checkPointReport.getDetails();
+		for (Detail detail : details) {
+			Assert.assertTrue(detail.getKey().startsWith(detailKey),
+					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
+		}
 		utx.rollback();
 
 	}

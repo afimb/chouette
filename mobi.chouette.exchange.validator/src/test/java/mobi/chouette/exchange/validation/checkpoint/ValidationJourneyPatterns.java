@@ -218,7 +218,10 @@ public class ValidationJourneyPatterns extends AbstractTestValidation {
 		Assert.assertEquals(checkPointReport.getDetailCount(), 1, " checkPointReport must have 1 item");
 
 		// check detail keys
+		String detailKey = "3-JourneyPattern-1".replaceAll("-", "_").toLowerCase();
 		for (Detail detail : checkPointReport.getDetails()) {
+			Assert.assertTrue(detail.getKey().startsWith(detailKey),
+					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
 			Assert.assertEquals(detail.getSource().getObjectId(), jp1.getObjectId(),
 					"jp 1 must be source of error");
 		}

@@ -200,6 +200,12 @@ public class ValidationRoutes extends AbstractTestValidation {
 				" checkPointReport must be on level warning");
 		Assert.assertEquals(checkPointReport.getDetailCount(), 1, " checkPointReport must have 1 item");
 
+		String detailKey = "3-Route-1".replaceAll("-", "_").toLowerCase();
+		List<Detail> details = checkPointReport.getDetails();
+		for (Detail detail : details) {
+			Assert.assertTrue(detail.getKey().startsWith(detailKey),
+					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
+		}
 		// check detail keys
 		for (Detail detail : checkPointReport.getDetails()) {
 			Assert.assertEquals(detail.getSource().getObjectId(), route1.getObjectId(),
@@ -256,6 +262,12 @@ public class ValidationRoutes extends AbstractTestValidation {
 		Assert.assertEquals(checkPointReport.getSeverity(), CheckPoint.SEVERITY.WARNING,
 				" checkPointReport must be on level warning");
 		Assert.assertEquals(checkPointReport.getDetailCount(), 2, " checkPointReport must have 2 item");
+		String detailKey = "3-Route-2".replaceAll("-", "_").toLowerCase();
+		List<Detail> details = checkPointReport.getDetails();
+		for (Detail detail : details) {
+			Assert.assertTrue(detail.getKey().startsWith(detailKey),
+					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
+		}
 
 		// check detail keys = route1 and route2 objectids
 		boolean route1objectIdFound = false;
@@ -341,6 +353,12 @@ public class ValidationRoutes extends AbstractTestValidation {
 				" checkPointReport must be on level warning");
 		Assert.assertEquals(checkPointReport.getDetailCount(), 2, " checkPointReport must have 2 item");
 
+		String detailKey = "3-Route-3".replaceAll("-", "_").toLowerCase();
+		List<Detail> details = checkPointReport.getDetails();
+		for (Detail detail : details) {
+			Assert.assertTrue(detail.getKey().startsWith(detailKey),
+					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
+		}
 		// check detail keys
 		boolean route1objectIdFound = false;
 		boolean route2objectIdFound = false;
@@ -408,6 +426,12 @@ public class ValidationRoutes extends AbstractTestValidation {
 				" checkPointReport must be on level warning");
 		Assert.assertEquals(checkPointReport.getDetailCount(), 1, " checkPointReport must have 1 item");
 
+		String detailKey = "3-Route-4".replaceAll("-", "_").toLowerCase();
+		List<Detail> details = checkPointReport.getDetails();
+		for (Detail detail : details) {
+			Assert.assertTrue(detail.getKey().startsWith(detailKey),
+					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
+		}
 		boolean route1objectIdFound = false;
 		boolean route2objectIdFound = false;
 		for (Detail detailReport : checkPointReport.getDetails()) {
@@ -466,6 +490,12 @@ public class ValidationRoutes extends AbstractTestValidation {
 				" checkPointReport must be on level warning");
 		Assert.assertEquals(checkPointReport.getDetailCount(), 1, " checkPointReport must have 1 item");
 
+		String detailKey = "3-Route-5".replaceAll("-", "_").toLowerCase();
+		List<Detail> details = checkPointReport.getDetails();
+		for (Detail detail : details) {
+			Assert.assertTrue(detail.getKey().startsWith(detailKey),
+					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
+		}
 		boolean route1objectIdFound = false;
 		boolean route2objectIdFound = false;
 		for (Detail detailReport : checkPointReport.getDetails()) {
@@ -522,6 +552,12 @@ public class ValidationRoutes extends AbstractTestValidation {
 				" checkPointReport must be on level warning");
 		Assert.assertEquals(checkPointReport.getDetailCount(), 1, " checkPointReport must have 1 item");
 
+		String detailKey = "3-Route-6".replaceAll("-", "_").toLowerCase();
+		List<Detail> details = checkPointReport.getDetails();
+		for (Detail detail : details) {
+			Assert.assertTrue(detail.getKey().startsWith(detailKey),
+					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
+		}
 		boolean route1objectIdFound = false;
 		for (Detail detailReport : checkPointReport.getDetails()) {
 
@@ -574,6 +610,12 @@ public class ValidationRoutes extends AbstractTestValidation {
 				" checkPointReport must be on level warning");
 		Assert.assertEquals(checkPointReport.getDetailCount(), 1, " checkPointReport must have 1 item");
 
+		String detailKey = "3-Route-7".replaceAll("-", "_").toLowerCase();
+		List<Detail> details = checkPointReport.getDetails();
+		for (Detail detail : details) {
+			Assert.assertTrue(detail.getKey().startsWith(detailKey),
+					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
+		}
 		boolean route1objectIdFound = false;
 		for (Detail detailReport : checkPointReport.getDetails()) {
 
@@ -626,6 +668,12 @@ public class ValidationRoutes extends AbstractTestValidation {
 				" checkPointReport must be on level warning");
 		Assert.assertEquals(checkPointReport.getDetailCount(), 1, " checkPointReport must have 1 item");
 
+		String detailKey = "3-Route-8".replaceAll("-", "_").toLowerCase();
+		List<Detail> details = checkPointReport.getDetails();
+		for (Detail detail : details) {
+			Assert.assertTrue(detail.getKey().startsWith(detailKey),
+					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
+		}
 		boolean route1objectIdFound = false;
 		for (Detail detailReport : checkPointReport.getDetails()) {
 
@@ -685,6 +733,12 @@ public class ValidationRoutes extends AbstractTestValidation {
 				" checkPointReport must be on level warning");
 		Assert.assertEquals(checkPointReport.getDetailCount(), 1, " checkPointReport must have 1 item");
 
+		String detailKey = "3-Route-9".replaceAll("-", "_").toLowerCase();
+		List<Detail> details = checkPointReport.getDetails();
+		for (Detail detail : details) {
+			Assert.assertTrue(detail.getKey().startsWith(detailKey),
+					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
+		}
 		boolean route1objectIdFound = false;
 		for (Detail detailReport : checkPointReport.getDetails()) {
 			log.warn(detailReport);
