@@ -60,8 +60,6 @@ public class StopAreaUpdater implements Updater<StopArea> {
 		}
 		newValue.setSaved(true);
 		
-		log.info("StopArea "+newValue.getObjectId()+" to be saved");
-
 		Referential cache = (Referential) context.get(CACHE);
 
 		if (newValue.getObjectId() != null
@@ -295,12 +293,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 						}
 			if (!item.getEndOfLink().isDetached()  || item.getEndOfLink().isSaved())
 			{
-				log.info("connectionLink ending on "+newValue.getObjectId()+ " connected");
 				startOfLink.setStartOfLink(oldValue);
-			}
-			else
-			{
-				log.info("connectionLink ending on "+newValue.getObjectId()+ " not connected , "+item.getEndOfLink().getObjectId()+" not saved");
 			}
 		}
 
@@ -340,12 +333,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 						}
 			if (!item.getStartOfLink().isDetached()  || item.getStartOfLink().isSaved())
 			{
-				log.info("connectionLink starting on "+newValue.getObjectId()+ " connected");
 				endOfLink.setEndOfLink(oldValue);
-			}
-			else
-			{
-				log.info("connectionLink starting on "+newValue.getObjectId()+ " not connected , "+item.getStartOfLink().getObjectId()+" not saved");
 			}
 		}
 
