@@ -6,6 +6,7 @@ import java.util.List;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.CollectionUtil;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
@@ -21,7 +22,7 @@ import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 @Stateless(name = StopAreaUpdater.BEAN_NAME)
-
+@Log4j
 public class StopAreaUpdater implements Updater<StopArea> {
 
 	public static final String BEAN_NAME = "StopAreaUpdater";
@@ -58,6 +59,8 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			return;
 		}
 		newValue.setSaved(true);
+		
+		log.info("StopArea "+newValue.getObjectId()+" to be saved");
 
 		Referential cache = (Referential) context.get(CACHE);
 
@@ -266,32 +269,39 @@ public class StopAreaUpdater implements Updater<StopArea> {
 						oldValue.getConnectionStartLinks(),
 						NeptuneIdentifiedObjectComparator.INSTANCE);
 
-		// List<ConnectionLink> startOfLinks = null;
+		List<ConnectionLink> startOfLinks = null;
 		for (ConnectionLink item : addedStartOfLink) {
 			
 			ConnectionLink startOfLink = cache.getConnectionLinks().get(
 					item.getObjectId());
-			//			if (startOfLink == null) {
-			//				if (startOfLinks == null) {
-			//					startOfLinks = connectionLinkDAO
-			//							.findByObjectId(UpdaterUtils
-			//									.getObjectIds(addedStartOfLink));
-			//					for (ConnectionLink object : startOfLinks) {
-			//						cache.getConnectionLinks().put(object.getObjectId(),
-			//								object);
-			//					}
-			//				}
-			//				startOfLink = cache.getConnectionLinks()
-			//						.get(item.getObjectId());
-			//			}
-			//
-			//			if (startOfLink == null) {
-			//				startOfLink = ObjectFactory.getConnectionLink(cache,
-			//						item.getObjectId());
-			//				// startOfLink.setObjectId(item.getObjectId());
-			//			}
-			if (!item.getEndOfLink().isDetached() || item.getEndOfLink().isFilled())
+						if (startOfLink == null) {
+							if (startOfLinks == null) {
+								startOfLinks = connectionLinkDAO
+										.findByObjectId(UpdaterUtils
+												.getObjectIds(addedStartOfLink));
+								for (ConnectionLink object : startOfLinks) {
+									cache.getConnectionLinks().put(object.getObjectId(),
+											object);
+								}
+							}
+							startOfLink = cache.getConnectionLinks()
+									.get(item.getObjectId());
+						}
+			
+						if (startOfLink == null) {
+							startOfLink = ObjectFactory.getConnectionLink(cache,
+									item.getObjectId());
+							// startOfLink.setObjectId(item.getObjectId());
+						}
+			if (!item.getEndOfLink().isDetached()  || item.getEndOfLink().isSaved())
+			{
+				log.info("connectionLink ending on "+newValue.getObjectId()+ " connected");
 				startOfLink.setStartOfLink(oldValue);
+			}
+			else
+			{
+				log.info("connectionLink ending on "+newValue.getObjectId()+ " not connected , "+item.getEndOfLink().getObjectId()+" not saved");
+			}
 		}
 
 		Collection<Pair<ConnectionLink, ConnectionLink>> modifiedStartOfLink = CollectionUtil
@@ -309,27 +319,34 @@ public class StopAreaUpdater implements Updater<StopArea> {
 				oldValue.getConnectionEndLinks(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
 
-		// List<ConnectionLink> endOfLinks = null;
-		for (ConnectionLink item : addedEndOfLink) {			ConnectionLink endOfLink = cache.getConnectionLinks().get(
-					item.getObjectId());
-			//			if (endOfLink == null) {
-			//				if (endOfLinks == null) {
-			//					endOfLinks = connectionLinkDAO.findByObjectId(UpdaterUtils
-			//							.getObjectIds(addedEndOfLink));
-			//					for (ConnectionLink object : endOfLinks) {
-			//						cache.getConnectionLinks().put(object.getObjectId(),
-			//								object);
-			//					}
-			//				}
-			//				endOfLink = cache.getConnectionLinks().get(item.getObjectId());
-			//			}
-			//
-			//			if (endOfLink == null) {
-			//				endOfLink = ObjectFactory.getConnectionLink(cache,
-			//						item.getObjectId());
-			//			}
-			if (!item.getStartOfLink().isDetached() || item.getStartOfLink().isFilled())
+		 List<ConnectionLink> endOfLinks = null;
+		for (ConnectionLink item : addedEndOfLink) {
+			ConnectionLink endOfLink = cache.getConnectionLinks().get(item.getObjectId());
+						if (endOfLink == null) {
+							if (endOfLinks == null) {
+								endOfLinks = connectionLinkDAO.findByObjectId(UpdaterUtils
+										.getObjectIds(addedEndOfLink));
+								for (ConnectionLink object : endOfLinks) {
+									cache.getConnectionLinks().put(object.getObjectId(),
+											object);
+								}
+							}
+							endOfLink = cache.getConnectionLinks().get(item.getObjectId());
+						}
+			
+						if (endOfLink == null) {
+							endOfLink = ObjectFactory.getConnectionLink(cache,
+									item.getObjectId());
+						}
+			if (!item.getStartOfLink().isDetached()  || item.getStartOfLink().isSaved())
+			{
+				log.info("connectionLink starting on "+newValue.getObjectId()+ " connected");
 				endOfLink.setEndOfLink(oldValue);
+			}
+			else
+			{
+				log.info("connectionLink starting on "+newValue.getObjectId()+ " not connected , "+item.getStartOfLink().getObjectId()+" not saved");
+			}
 		}
 
 		Collection<Pair<ConnectionLink, ConnectionLink>> modifiedEndOfLink = CollectionUtil
