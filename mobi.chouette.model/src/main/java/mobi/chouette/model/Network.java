@@ -17,8 +17,10 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -50,12 +52,14 @@ public class Network extends NeptuneIdentifiedObject {
 
 	@Getter
 	@Setter
-	@GenericGenerator(name = "networks_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", 
-		parameters = {
-			@Parameter(name = "sequence_name", value = "networks_id_seq"),
-			@Parameter(name = "increment_size", value = "10") })
+	@SequenceGenerator(name="networks_id_seq", sequenceName="networks_id_seq", allocationSize=1)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="networks_id_seq")
+//	@GenericGenerator(name = "networks_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", 
+//		parameters = {
+//			@Parameter(name = "sequence_name", value = "networks_id_seq"),
+//			@Parameter(name = "increment_size", value = "10") })
 	@Id
-	@GeneratedValue(generator = "networks_id_seq")
+//	@GeneratedValue(generator = "networks_id_seq")
 	@Column(name = "id", nullable = false)
 	protected Long id;
 	

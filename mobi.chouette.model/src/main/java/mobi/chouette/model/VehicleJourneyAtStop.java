@@ -8,9 +8,11 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -41,12 +43,14 @@ public class VehicleJourneyAtStop extends NeptuneObject {
 
 	@Getter
 	@Setter
-	@GenericGenerator(name = "vehicle_journey_at_stops_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", 
-		parameters = {
-			@Parameter(name = "sequence_name", value = "vehicle_journey_at_stops_id_seq"),
-			@Parameter(name = "increment_size", value = "100") })
+	@SequenceGenerator(name="vehicle_journey_at_stops_id_seq", sequenceName="vehicle_journey_at_stops_id_seq", allocationSize=1)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="vehicle_journey_at_stops_id_seq")
+//	@GenericGenerator(name = "vehicle_journey_at_stops_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", 
+//		parameters = {
+//			@Parameter(name = "sequence_name", value = "vehicle_journey_at_stops_id_seq"),
+//			@Parameter(name = "increment_size", value = "100") })
 	@Id
-	@GeneratedValue(generator = "vehicle_journey_at_stops_id_seq")
+//	@GeneratedValue(generator = "vehicle_journey_at_stops_id_seq")
 	@Column(name = "id", nullable = false)
 	protected Long id;
 	

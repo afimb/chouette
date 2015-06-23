@@ -11,9 +11,11 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -46,12 +48,14 @@ public class AccessLink extends NeptuneIdentifiedObject {
 	
 	@Getter
 	@Setter
-	@GenericGenerator(name = "access_links_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", 
-		parameters = {
-			@Parameter(name = "sequence_name", value = "access_links_id_seq"),
-			@Parameter(name = "increment_size", value = "10") })
+	@SequenceGenerator(name="access_links_id_seq", sequenceName="access_links_id_seq", allocationSize=1)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="access_links_id_seq")
+//	@GenericGenerator(name = "access_links_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", 
+//		parameters = {
+//			@Parameter(name = "sequence_name", value = "access_links_id_seq"),
+//			@Parameter(name = "increment_size", value = "10") })
 	@Id
-	@GeneratedValue(generator = "access_links_id_seq")
+//	@GeneratedValue(generator = "access_links_id_seq")
 	@Column(name = "id", nullable = false)
 	protected Long id;
 	

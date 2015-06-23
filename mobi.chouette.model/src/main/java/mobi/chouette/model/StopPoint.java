@@ -7,9 +7,11 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -39,12 +41,14 @@ public class StopPoint extends NeptuneIdentifiedObject {
 
 	@Getter
 	@Setter
-	@GenericGenerator(name = "stop_points_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", 
-		parameters = {
-			@Parameter(name = "sequence_name", value = "stop_points_id_seq"),
-			@Parameter(name = "increment_size", value = "50") })
+	@SequenceGenerator(name="stop_points_id_seq", sequenceName="stop_points_id_seq", allocationSize=1)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="stop_points_id_seq")
+//	@GenericGenerator(name = "stop_points_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", 
+//		parameters = {
+//			@Parameter(name = "sequence_name", value = "stop_points_id_seq"),
+//			@Parameter(name = "increment_size", value = "50") })
 	@Id
-	@GeneratedValue(generator = "stop_points_id_seq")
+//	@GeneratedValue(generator = "stop_points_id_seq")
 	@Column(name = "id", nullable = false)
 	protected Long id;
 	

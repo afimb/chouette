@@ -14,10 +14,12 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.OrderColumn;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -49,11 +51,13 @@ public class Timetable extends NeptuneIdentifiedObject {
 
 	@Getter
 	@Setter
-	@GenericGenerator(name = "time_tables_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", parameters = {
-			@Parameter(name = "sequence_name", value = "time_tables_id_seq"),
-			@Parameter(name = "increment_size", value = "20") })
+	@SequenceGenerator(name="time_tables_id_seq", sequenceName="time_tables_id_seq", allocationSize=1)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="time_tables_id_seq")
+//	@GenericGenerator(name = "time_tables_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", parameters = {
+//			@Parameter(name = "sequence_name", value = "time_tables_id_seq"),
+//			@Parameter(name = "increment_size", value = "20") })
 	@Id
-	@GeneratedValue(generator = "time_tables_id_seq")
+///	@GeneratedValue(generator = "time_tables_id_seq")
 	@Column(name = "id", nullable = false)
 	protected Long id;
 
