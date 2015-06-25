@@ -13,6 +13,7 @@ import mobi.chouette.exchange.ProcessingCommands;
 import mobi.chouette.exchange.ProgressionCommand;
 import mobi.chouette.exchange.report.ActionError;
 import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.model.util.Referential;
 
 public class AbstractImporterCommand implements Constant {
 
@@ -52,6 +53,12 @@ public class AbstractImporterCommand implements Constant {
 			}
 			progression.execute(context);
 
+			Referential referential = (Referential) context.get(REFERENTIAL);
+			if (referential != null)
+			{
+				referential.clear();
+				System.gc();
+			}
 			if (lineProcessingCommands.size() > 0) {
 				progression.start(context, lineProcessingCommands.size());
 				if (master.execute(context) == ERROR && !continueProcesingOnError) {
