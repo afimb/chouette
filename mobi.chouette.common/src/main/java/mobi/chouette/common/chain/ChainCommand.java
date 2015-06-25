@@ -50,10 +50,10 @@ public class ChainCommand implements Chain, Constant {
 				}
 				executedCommands ++;
 			} catch (Exception e) {
-				if (!ignored) {
+				// if (!ignored) {
 					result = ERROR;
 					throw e;
-				}
+				// }
 			}
 		}
 		return result;

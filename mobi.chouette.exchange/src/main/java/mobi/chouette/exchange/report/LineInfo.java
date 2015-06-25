@@ -7,6 +7,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlEnum;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import lombok.Data;
@@ -39,8 +40,12 @@ public class LineInfo {
 	@XmlElement(name="errors")
 	private List<LineError> errors = new ArrayList<>();
 	
-	public LineInfo(String name)
+	@XmlTransient
+	private String objectId;
+	
+	public LineInfo(String objectId,String name)
 	{
+		this.objectId = objectId;
 		this.name = name;
 	}
 	

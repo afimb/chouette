@@ -59,7 +59,7 @@ public class NeptuneLineProducerCommand implements Command, Constant {
 
 			NeptuneDataCollector collector = new NeptuneDataCollector();
 			boolean cont = (collector.collect(collection, line, startDate, endDate));
-			LineInfo lineInfo = new LineInfo(line.getName() + " (" + line.getNumber() + ")");
+			LineInfo lineInfo = new LineInfo(line.getObjectId(),line.getName() + " (" + line.getNumber() + ")");
 			DataStats stats = lineInfo.getStats();
 			stats.setAccessPointCount(collection.getAccessPoints().size());
 			stats.setConnectionLinkCount(collection.getConnectionLinks().size());
