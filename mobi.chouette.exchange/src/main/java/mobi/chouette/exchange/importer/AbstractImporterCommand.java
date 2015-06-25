@@ -57,7 +57,7 @@ public class AbstractImporterCommand implements Constant {
 			if (referential != null)
 			{
 				referential.clear();
-				System.gc();
+				// System.gc();
 			}
 			if (lineProcessingCommands.size() > 0) {
 				progression.start(context, lineProcessingCommands.size());
