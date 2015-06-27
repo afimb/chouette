@@ -14,8 +14,11 @@ import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.swing.plaf.ListUI;
 
 import org.hibernate.Session;
+
+import com.google.common.collect.Iterables;
 
 public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 
@@ -88,13 +91,20 @@ public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 		// System.out.println("GenericDAOImpl.findByObjectId() : " + objectIds);
 		List<T> result = null;
 		if (objectIds.isEmpty()) return result;
-		CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery<T> criteria = builder.createQuery(type);
-		Root<T> root = criteria.from(type);
-		Predicate predicate = builder.in(root.get("objectId")).value(objectIds);
-		criteria.where(predicate);
-		TypedQuery<T> query = em.createQuery(criteria);
-		result = query.getResultList();
+		
+		Iterable<List<String>> iterator = Iterables.partition(objectIds, 32000);
+		for (List<String> ids : iterator) {
+			CriteriaBuilder builder = em.getCriteriaBuilder();
+			CriteriaQuery<T> criteria = builder.createQuery(type);
+			Root<T> root = criteria.from(type);
+			Predicate predicate = builder.in(root.get("objectId")).value(ids);
+			criteria.where(predicate);
+			TypedQuery<T> query = em.createQuery(criteria);
+			if (result == null)
+			   result = query.getResultList();
+			else
+			   result.addAll(query.getResultList());
+		}
 		return result;
 	}
 

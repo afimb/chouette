@@ -26,16 +26,12 @@ import mobi.chouette.model.util.Referential;
 @Log4j
 public class GtfsTransferParser implements Parser, Validator, Constant {
 
-	private Referential referential;
-	private GtfsImporter importer;
-	private GtfsImportParameters configuration;
-
 	@Override
 	public void parse(Context context) throws Exception {
 
-		referential = (Referential) context.get(REFERENTIAL);
-		importer = (GtfsImporter) context.get(PARSER);
-		configuration = (GtfsImportParameters) context.get(CONFIGURATION);
+		Referential referential = (Referential) context.get(REFERENTIAL);
+		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
+		GtfsImportParameters configuration = (GtfsImportParameters) context.get(CONFIGURATION);
 
 		for (GtfsTransfer gtfsTransfer : importer.getTransferByFromStop()) {
 
@@ -50,7 +46,7 @@ public class GtfsTransferParser implements Parser, Validator, Constant {
 	@Override
 	public void validate(Context context) throws Exception {
 
-		importer = (GtfsImporter) context.get(PARSER);
+		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		ActionReport report = (ActionReport) context.get(REPORT);
 
 		// transfers.txt
@@ -72,6 +68,7 @@ public class GtfsTransferParser implements Parser, Validator, Constant {
 	protected void convert(Context context, GtfsTransfer gtfsTransfer, ConnectionLink connectionLink) {
 
 		Referential referential = (Referential) context.get(REFERENTIAL);
+		GtfsImportParameters configuration = (GtfsImportParameters) context.get(CONFIGURATION);
 
 		StopArea startOfLink = ObjectFactory.getStopArea(referential, AbstractConverter.composeObjectId(
 				configuration.getObjectIdPrefix(), StopArea.STOPAREA_KEY, gtfsTransfer.getFromStopId(), log));
@@ -95,11 +92,10 @@ public class GtfsTransferParser implements Parser, Validator, Constant {
 
 	static {
 		ParserFactory.register(GtfsTransferParser.class.getName(), new ParserFactory() {
-			private GtfsTransferParser instance = new GtfsTransferParser();
 
 			@Override
 			protected Parser create() {
-				return instance;
+				return new GtfsTransferParser();
 			}
 		});
 	}

@@ -3,6 +3,7 @@ package mobi.chouette.exchange.importer.updater;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.model.ConnectionLink;
@@ -10,6 +11,7 @@ import mobi.chouette.model.StopArea;
 import mobi.chouette.model.util.Referential;
 
 @Stateless(name = ConnectionLinkUpdater.BEAN_NAME)
+@Log4j
 public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
 
 	public static final String BEAN_NAME = "ConnectionLinkUpdater";
@@ -25,6 +27,7 @@ public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
 			return;
 		}
 		newValue.setSaved(true);
+//		log.info("update connectionLink "+newValue.getName());
 		
 		Referential cache = (Referential) context.get(CACHE);
 
@@ -120,6 +123,7 @@ public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
 			}
 
 			if (startOfLink != null) {
+// 				log.info("update connectionLink starts"+startOfLink.getName());
 				oldValue.setStartOfLink(startOfLink);
 			}
 		}
@@ -135,6 +139,7 @@ public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
 			}
 
 			if (endOfLink != null) {
+// 				log.info("update connectionLink ends"+endOfLink.getName());
 				oldValue.setEndOfLink(endOfLink);
 			}
 		}

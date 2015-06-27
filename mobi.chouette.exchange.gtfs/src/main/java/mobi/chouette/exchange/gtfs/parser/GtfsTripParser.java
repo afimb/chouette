@@ -66,10 +66,6 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 
 	};
 
-	private Referential referential;
-	private GtfsImporter importer;
-
-	private GtfsImportParameters configuration;
 
 	@Getter
 	@Setter
@@ -78,9 +74,9 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 	@Override
 	public void parse(Context context) throws Exception {
 
-		referential = (Referential) context.get(REFERENTIAL);
-		importer = (GtfsImporter) context.get(PARSER);
-		configuration = (GtfsImportParameters) context.get(CONFIGURATION);
+		Referential referential = (Referential) context.get(REFERENTIAL);
+		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
+		GtfsImportParameters configuration = (GtfsImportParameters) context.get(CONFIGURATION);
 
 		Map<String, JourneyPattern> journeyPatternByStopSequence = new HashMap<String, JourneyPattern>();
 
@@ -156,7 +152,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 				journeyPatternByStopSequence.put(journeyKey, journeyPattern);
 
 				// StopPoints
-				createStopPoint(route, journeyPattern, vehicleJourney.getVehicleJourneyAtStops());
+				createStopPoint(route, journeyPattern, vehicleJourney.getVehicleJourneyAtStops(), referential, configuration);
 
 				List<StopPoint> stopPoints = journeyPattern.getStopPoints();
 				journeyPattern.setDepartureStopPoint(stopPoints.get(0));
@@ -195,10 +191,10 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 
 							copyVehicleJourney(vehicleJourney,
 									frequency.getEndTime().getTime().getTime() + 24 * 3600 * 1000,
-									frequency.getHeadwaySecs() * 1000);
+									frequency.getHeadwaySecs() * 1000, referential);
 						} else {
 							copyVehicleJourney(vehicleJourney, frequency.getEndTime().getTime().getTime(),
-									frequency.getHeadwaySecs() * 1000);
+									frequency.getHeadwaySecs() * 1000, referential);
 						}
 					} catch (Exception e) {
 						// TODO add report
@@ -213,7 +209,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 	@Override
 	public void validate(Context context) throws Exception {
 
-		importer = (GtfsImporter) context.get(PARSER);
+		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		ActionReport report = (ActionReport) context.get(REPORT);
 
 		// stop_times.txt
@@ -316,7 +312,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		return new Time((t.getTime() + offset) % (24 * 3600 * 1000));
 	}
 
-	private void copyVehicleJourney(VehicleJourney oldVehicleJourney, long end, long headway) throws Exception {
+	private void copyVehicleJourney(VehicleJourney oldVehicleJourney, long end, long headway, Referential referential) throws Exception {
 		VehicleJourneyAtStop first = oldVehicleJourney.getVehicleJourneyAtStops().get(0);
 		long start = first.getDepartureTime().getTime();
 		long stop = end - start;
@@ -358,6 +354,8 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 
 	/**
 	 * create stopPoints for Route
+	 * @param referential 
+	 * @param configuration 
 	 * 
 	 * @param routeId
 	 *            route objectId
@@ -367,7 +365,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 	 *            stopAreas to attach created StopPoints (parent relationship)
 	 * @return
 	 */
-	private void createStopPoint(Route route, JourneyPattern journeyPattern, List<VehicleJourneyAtStop> list) {
+	private void createStopPoint(Route route, JourneyPattern journeyPattern, List<VehicleJourneyAtStop> list, Referential referential, GtfsImportParameters configuration) {
 		Set<String> stopPointKeys = new HashSet<String>();
 
 		int position = 0;
@@ -400,11 +398,10 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 
 	static {
 		ParserFactory.register(GtfsTripParser.class.getName(), new ParserFactory() {
-			private GtfsTripParser instance = new GtfsTripParser();
 
 			@Override
 			protected Parser create() {
-				return instance;
+				return new GtfsTripParser();
 			}
 		});
 	}

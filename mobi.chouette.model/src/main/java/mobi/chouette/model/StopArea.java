@@ -441,7 +441,7 @@ public class StopArea extends NeptuneLocalizedObject {
 	@Getter
 	@Setter
 	@OneToMany(cascade = { CascadeType.PERSIST })
-	@JoinColumn(name = "departure_id", updatable = false)
+	@JoinColumn(name = "departure_id") //, updatable = false)
 	private List<ConnectionLink> connectionStartLinks = new ArrayList<ConnectionLink>(
 			0);
 
@@ -456,7 +456,7 @@ public class StopArea extends NeptuneLocalizedObject {
 	@Getter
 	@Setter
 	@OneToMany(cascade = { CascadeType.PERSIST })
-	@JoinColumn(name = "arrival_id", updatable = false)
+	@JoinColumn(name = "arrival_id") //, updatable = false)
 	private List<ConnectionLink> connectionEndLinks = new ArrayList<ConnectionLink>(
 			0);
 

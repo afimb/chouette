@@ -58,35 +58,9 @@ public class LineRegisterCommand implements Command {
 	@EJB
 	private VehicleJourneyDAO vehicleJourneyDAO;
 
-	
 	@Override
-	public boolean execute(Context context) throws Exception {
-		
-//		try
-//		{
-			return register(context);
-//		}
-//		catch (Exception e)
-//		{
-//			Referential referential = (Referential) context.get(REFERENTIAL);
-//			Line newValue = referential.getLines().values().iterator().next();
-//			log.error(e.getMessage());
-//			ActionReport report = (ActionReport) context.get(REPORT);
-//			LineInfo info = report.findLineInfo(newValue.getObjectId());
-//			if (info == null)
-//			{
-//				info = new LineInfo(newValue.getObjectId(),newValue.getName());
-//			    report.getLines().add(info);
-//			}
-//			LineError error = new LineError(LineError.CODE.INTERNAL_ERROR, e.getMessage());
-//			info.addError(error);
-//			throw e;			
-//			// return ERROR;
-//		}
-	}
-	
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	private boolean register(Context context) throws Exception {
+	public boolean execute(Context context) throws Exception {
 
 		boolean result = ERROR;
 		Monitor monitor = MonitorFactory.start(COMMAND);
@@ -109,7 +83,7 @@ public class LineRegisterCommand implements Command {
 			Line oldValue = cache.getLines().get(newValue.getObjectId());
 			lineUpdater.update(context, oldValue, newValue);
 			lineDAO.create(oldValue);
-			lineDAO.flush(); // to prevent SQL error outside method 
+			lineDAO.flush(); // to prevent SQL error outside method
 
 			if (optimized) {
 				StringWriter buffer = new StringWriter(1024);
@@ -135,19 +109,16 @@ public class LineRegisterCommand implements Command {
 			log.error(e.getMessage());
 			ActionReport report = (ActionReport) context.get(REPORT);
 			LineInfo info = report.findLineInfo(newValue.getObjectId());
-			if (info == null)
-			{
-				info = new LineInfo(newValue.getObjectId(),newValue.getName());
-			    report.getLines().add(info);
+			if (info == null) {
+				info = new LineInfo(newValue.getObjectId(), newValue.getName());
+				report.getLines().add(info);
 			}
 			LineError error = new LineError(LineError.CODE.INTERNAL_ERROR, e.getMessage());
 			info.addError(error);
 			// return ERROR;
 			throw e;
-		}
-		finally
-		{
-		log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
+		} finally {
+			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		}
 		return result;
 	}

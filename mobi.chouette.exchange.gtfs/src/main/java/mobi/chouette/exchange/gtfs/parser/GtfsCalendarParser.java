@@ -47,16 +47,12 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 
 	};
 
-	private Referential referential;
-	private GtfsImporter importer;
-	private GtfsImportParameters configuration;
-
 	@Override
 	public void parse(Context context) throws Exception {
 
-		referential = (Referential) context.get(REFERENTIAL);
-		importer = (GtfsImporter) context.get(PARSER);
-		configuration = (GtfsImportParameters) context.get(CONFIGURATION);
+		Referential referential = (Referential) context.get(REFERENTIAL);
+		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
+		GtfsImportParameters configuration = (GtfsImportParameters) context.get(CONFIGURATION);
 
 		if (importer.hasCalendarImporter()) {
 			for (GtfsCalendar gtfsCalendar : importer.getCalendarByService()) {
@@ -102,9 +98,7 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 	@Override
 	public void validate(Context context) throws Exception {
 
-		referential = (Referential) context.get(REFERENTIAL);
-		importer = (GtfsImporter) context.get(PARSER);
-		configuration = (GtfsImportParameters) context.get(CONFIGURATION);
+		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		ActionReport report = (ActionReport) context.get(REPORT);
 
 		boolean found = false;
@@ -329,11 +323,10 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 
 	static {
 		ParserFactory.register(GtfsCalendarParser.class.getName(), new ParserFactory() {
-			private GtfsCalendarParser instance = new GtfsCalendarParser();
 
 			@Override
 			protected Parser create() {
-				return instance;
+				return new GtfsCalendarParser();
 			}
 		});
 	}

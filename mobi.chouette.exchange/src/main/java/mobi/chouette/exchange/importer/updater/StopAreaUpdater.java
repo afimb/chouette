@@ -52,116 +52,87 @@ public class StopAreaUpdater implements Updater<StopArea> {
 	private Updater<ConnectionLink> connectionLinkUpdater;
 
 	@Override
-	public void update(Context context, StopArea oldValue, StopArea newValue)
-			throws Exception {
+	public void update(Context context, StopArea oldValue, StopArea newValue) throws Exception {
 
 		if (newValue.isSaved()) {
 			return;
 		}
 		newValue.setSaved(true);
-		
+
 		Referential cache = (Referential) context.get(CACHE);
 
-		if (newValue.getObjectId() != null
-				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {
+		if (newValue.getObjectId() != null && !newValue.getObjectId().equals(oldValue.getObjectId())) {
 			oldValue.setObjectId(newValue.getObjectId());
 		}
-		if (newValue.getObjectVersion() != null
-				&& !newValue.getObjectVersion().equals(
-						oldValue.getObjectVersion())) {
+		if (newValue.getObjectVersion() != null && !newValue.getObjectVersion().equals(oldValue.getObjectVersion())) {
 			oldValue.setObjectVersion(newValue.getObjectVersion());
 		}
-		if (newValue.getCreationTime() != null
-				&& !newValue.getCreationTime().equals(
-						oldValue.getCreationTime())) {
+		if (newValue.getCreationTime() != null && !newValue.getCreationTime().equals(oldValue.getCreationTime())) {
 			oldValue.setCreationTime(newValue.getCreationTime());
 		}
-		if (newValue.getCreatorId() != null
-				&& !newValue.getCreatorId().equals(oldValue.getCreatorId())) {
+		if (newValue.getCreatorId() != null && !newValue.getCreatorId().equals(oldValue.getCreatorId())) {
 			oldValue.setCreatorId(newValue.getCreatorId());
 		}
-		if (newValue.getName() != null
-				&& !newValue.getName().equals(oldValue.getName())) {
+		if (newValue.getName() != null && !newValue.getName().equals(oldValue.getName())) {
 			oldValue.setName(newValue.getName());
 		}
-		if (newValue.getComment() != null
-				&& !newValue.getComment().equals(oldValue.getComment())) {
+		if (newValue.getComment() != null && !newValue.getComment().equals(oldValue.getComment())) {
 			oldValue.setComment(newValue.getComment());
 		}
-		if (newValue.getAreaType() != null
-				&& !newValue.getAreaType().equals(oldValue.getAreaType())) {
+		if (newValue.getAreaType() != null && !newValue.getAreaType().equals(oldValue.getAreaType())) {
 			oldValue.setAreaType(newValue.getAreaType());
 		}
 		if (newValue.getRegistrationNumber() != null
-				&& !newValue.getRegistrationNumber().equals(
-						oldValue.getRegistrationNumber())) {
+				&& !newValue.getRegistrationNumber().equals(oldValue.getRegistrationNumber())) {
 			oldValue.setRegistrationNumber(newValue.getRegistrationNumber());
 		}
 		if (newValue.getNearestTopicName() != null
-				&& !newValue.getNearestTopicName().equals(
-						oldValue.getNearestTopicName())) {
+				&& !newValue.getNearestTopicName().equals(oldValue.getNearestTopicName())) {
 			oldValue.setNearestTopicName(newValue.getNearestTopicName());
 		}
-		if (newValue.getUrl() != null
-				&& !newValue.getUrl().equals(oldValue.getUrl())) {
+		if (newValue.getUrl() != null && !newValue.getUrl().equals(oldValue.getUrl())) {
 			oldValue.setUrl(newValue.getUrl());
 		}
-		if (newValue.getTimeZone() != null
-				&& !newValue.getTimeZone().equals(oldValue.getTimeZone())) {
+		if (newValue.getTimeZone() != null && !newValue.getTimeZone().equals(oldValue.getTimeZone())) {
 			oldValue.setTimeZone(newValue.getTimeZone());
 		}
-		if (newValue.getFareCode() != null
-				&& !newValue.getFareCode().equals(oldValue.getFareCode())) {
+		if (newValue.getFareCode() != null && !newValue.getFareCode().equals(oldValue.getFareCode())) {
 			oldValue.setFareCode(newValue.getFareCode());
 		}
-		if (newValue.getLiftAvailable() != null
-				&& !newValue.getLiftAvailable().equals(
-						oldValue.getLiftAvailable())) {
+		if (newValue.getLiftAvailable() != null && !newValue.getLiftAvailable().equals(oldValue.getLiftAvailable())) {
 			oldValue.setLiftAvailable(newValue.getLiftAvailable());
 		}
 		if (newValue.getMobilityRestrictedSuitable() != null
-				&& !newValue.getMobilityRestrictedSuitable().equals(
-						oldValue.getMobilityRestrictedSuitable())) {
-			oldValue.setMobilityRestrictedSuitable(newValue
-					.getMobilityRestrictedSuitable());
+				&& !newValue.getMobilityRestrictedSuitable().equals(oldValue.getMobilityRestrictedSuitable())) {
+			oldValue.setMobilityRestrictedSuitable(newValue.getMobilityRestrictedSuitable());
 		}
 		if (newValue.getStairsAvailable() != null
-				&& !newValue.getStairsAvailable().equals(
-						oldValue.getStairsAvailable())) {
+				&& !newValue.getStairsAvailable().equals(oldValue.getStairsAvailable())) {
 			oldValue.setStairsAvailable(newValue.getStairsAvailable());
 		}
-		if (newValue.getIntUserNeeds() != null
-				&& !newValue.getIntUserNeeds().equals(
-						oldValue.getIntUserNeeds())) {
+		if (newValue.getIntUserNeeds() != null && !newValue.getIntUserNeeds().equals(oldValue.getIntUserNeeds())) {
 			oldValue.setIntUserNeeds(newValue.getIntUserNeeds());
 		}
 
-		if (newValue.getLongitude() != null
-				&& !newValue.getLongitude().equals(oldValue.getLongitude())) {
+		if (newValue.getLongitude() != null && !newValue.getLongitude().equals(oldValue.getLongitude())) {
 			oldValue.setLongitude(newValue.getLongitude());
 		}
-		if (newValue.getLatitude() != null
-				&& !newValue.getLatitude().equals(oldValue.getLatitude())) {
+		if (newValue.getLatitude() != null && !newValue.getLatitude().equals(oldValue.getLatitude())) {
 			oldValue.setLatitude(newValue.getLatitude());
 		}
-		if (newValue.getLongLatType() != null
-				&& !newValue.getLongLatType().equals(oldValue.getLongLatType())) {
+		if (newValue.getLongLatType() != null && !newValue.getLongLatType().equals(oldValue.getLongLatType())) {
 			oldValue.setLongLatType(newValue.getLongLatType());
 		}
-		if (newValue.getCountryCode() != null
-				&& !newValue.getCountryCode().equals(oldValue.getCountryCode())) {
+		if (newValue.getCountryCode() != null && !newValue.getCountryCode().equals(oldValue.getCountryCode())) {
 			oldValue.setCountryCode(newValue.getCountryCode());
 		}
-		if (newValue.getZipCode() != null
-				&& !newValue.getZipCode().equals(oldValue.getZipCode())) {
+		if (newValue.getZipCode() != null && !newValue.getZipCode().equals(oldValue.getZipCode())) {
 			oldValue.setZipCode(newValue.getZipCode());
 		}
-		if (newValue.getCityName() != null
-				&& !newValue.getCityName().equals(oldValue.getCityName())) {
+		if (newValue.getCityName() != null && !newValue.getCityName().equals(oldValue.getCityName())) {
 			oldValue.setCityName(newValue.getCityName());
 		}
-		if (newValue.getStreetName() != null
-				&& !newValue.getStreetName().equals(oldValue.getStreetName())) {
+		if (newValue.getStreetName() != null && !newValue.getStreetName().equals(oldValue.getStreetName())) {
 			oldValue.setStreetName(newValue.getStreetName());
 		}
 
@@ -182,211 +153,159 @@ public class StopAreaUpdater implements Updater<StopArea> {
 				stopArea = ObjectFactory.getStopArea(cache, objectId);
 			}
 			oldValue.setParent(stopArea);
-			stopAreaUpdater.update(context, oldValue.getParent(),
-					newValue.getParent());
+			stopAreaUpdater.update(context, oldValue.getParent(), newValue.getParent());
 		}
 
 		// AccessPoint
-		Collection<AccessPoint> addedAccessPoint = CollectionUtil.substract(
-				newValue.getAccessPoints(), oldValue.getAccessPoints(),
-				NeptuneIdentifiedObjectComparator.INSTANCE);
+		Collection<AccessPoint> addedAccessPoint = CollectionUtil.substract(newValue.getAccessPoints(),
+				oldValue.getAccessPoints(), NeptuneIdentifiedObjectComparator.INSTANCE);
 
 		List<AccessPoint> accessPoints = null;
 		for (AccessPoint item : addedAccessPoint) {
 
-			AccessPoint accessPoint = cache.getAccessPoints().get(
-					item.getObjectId());
+			AccessPoint accessPoint = cache.getAccessPoints().get(item.getObjectId());
 			if (accessPoint == null) {
 				if (accessPoints == null) {
-					accessPoints = accessPointDAO.findByObjectId(UpdaterUtils
-							.getObjectIds(addedAccessPoint));
+					accessPoints = accessPointDAO.findByObjectId(UpdaterUtils.getObjectIds(addedAccessPoint));
 					for (AccessPoint object : accessPoints) {
-						cache.getAccessPoints().put(object.getObjectId(),
-								object);
+						cache.getAccessPoints().put(object.getObjectId(), object);
 					}
 				}
 				accessPoint = cache.getAccessPoints().get(item.getObjectId());
 			}
 
 			if (accessPoint == null) {
-				accessPoint = ObjectFactory.getAccessPoint(cache,
-						item.getObjectId());
+				accessPoint = ObjectFactory.getAccessPoint(cache, item.getObjectId());
 			}
 			accessPoint.setContainedIn(oldValue);
 		}
 
-		Collection<Pair<AccessPoint, AccessPoint>> modifiedAccessPoint = CollectionUtil
-				.intersection(oldValue.getAccessPoints(),
-						newValue.getAccessPoints(),
-						NeptuneIdentifiedObjectComparator.INSTANCE);
+		Collection<Pair<AccessPoint, AccessPoint>> modifiedAccessPoint = CollectionUtil.intersection(
+				oldValue.getAccessPoints(), newValue.getAccessPoints(), NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<AccessPoint, AccessPoint> pair : modifiedAccessPoint) {
 			accessPointUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
 
-
 		// AccessLink
-		Collection<AccessLink> addedAccessLink = CollectionUtil.substract(
-				newValue.getAccessLinks(), oldValue.getAccessLinks(),
-				NeptuneIdentifiedObjectComparator.INSTANCE);
+		Collection<AccessLink> addedAccessLink = CollectionUtil.substract(newValue.getAccessLinks(),
+				oldValue.getAccessLinks(), NeptuneIdentifiedObjectComparator.INSTANCE);
 
 		List<AccessLink> accessLinks = null;
 		for (AccessLink item : addedAccessLink) {
 
-			AccessLink accessLink = cache.getAccessLinks().get(
-					item.getObjectId());
+			AccessLink accessLink = cache.getAccessLinks().get(item.getObjectId());
 			if (accessLink == null) {
 				if (accessLinks == null) {
-					accessLinks = accessLinkDAO.findByObjectId(UpdaterUtils
-							.getObjectIds(addedAccessLink));
+					accessLinks = accessLinkDAO.findByObjectId(UpdaterUtils.getObjectIds(addedAccessLink));
 					for (AccessLink object : accessLinks) {
-						cache.getAccessLinks()
-						.put(object.getObjectId(), object);
+						cache.getAccessLinks().put(object.getObjectId(), object);
 					}
 				}
 				accessLink = cache.getAccessLinks().get(item.getObjectId());
 			}
 
 			if (accessLink == null) {
-				accessLink = ObjectFactory.getAccessLink(cache,
-						item.getObjectId());
+				accessLink = ObjectFactory.getAccessLink(cache, item.getObjectId());
 			}
 			accessLink.setStopArea(oldValue);
 		}
 
-		Collection<Pair<AccessLink, AccessLink>> modifiedAccessLink = CollectionUtil
-				.intersection(oldValue.getAccessLinks(),
-						newValue.getAccessLinks(),
-						NeptuneIdentifiedObjectComparator.INSTANCE);
+		Collection<Pair<AccessLink, AccessLink>> modifiedAccessLink = CollectionUtil.intersection(
+				oldValue.getAccessLinks(), newValue.getAccessLinks(), NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<AccessLink, AccessLink> pair : modifiedAccessLink) {
 			accessLinkUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
 
 		// StartOfLink
-		Collection<ConnectionLink> addedStartOfLink = CollectionUtil
-				.substract(newValue.getConnectionStartLinks(),
-						oldValue.getConnectionStartLinks(),
-						NeptuneIdentifiedObjectComparator.INSTANCE);
+		Collection<ConnectionLink> addedStartOfLink = CollectionUtil.substract(newValue.getConnectionStartLinks(),
+				oldValue.getConnectionStartLinks(), NeptuneIdentifiedObjectComparator.INSTANCE);
 
 		List<ConnectionLink> startOfLinks = null;
 		for (ConnectionLink item : addedStartOfLink) {
-			
-			ConnectionLink startOfLink = cache.getConnectionLinks().get(
-					item.getObjectId());
-						if (startOfLink == null) {
-							if (startOfLinks == null) {
-								startOfLinks = connectionLinkDAO
-										.findByObjectId(UpdaterUtils
-												.getObjectIds(addedStartOfLink));
-								for (ConnectionLink object : startOfLinks) {
-									cache.getConnectionLinks().put(object.getObjectId(),
-											object);
-								}
-							}
-							startOfLink = cache.getConnectionLinks()
-									.get(item.getObjectId());
-						}
-			
-						if (startOfLink == null) {
-							startOfLink = ObjectFactory.getConnectionLink(cache,
-									item.getObjectId());
-							// startOfLink.setObjectId(item.getObjectId());
-						}
-			if (!item.getEndOfLink().isDetached()  || item.getEndOfLink().isSaved())
-			{
-				startOfLink.setStartOfLink(oldValue);
+
+			ConnectionLink startOfLink = cache.getConnectionLinks().get(item.getObjectId());
+			if (startOfLink == null) {
+				startOfLink = ObjectFactory.getConnectionLink(cache, item.getObjectId());
 			}
+			StopArea endOfLinkArea = stopAreaDAO.findByObjectId(item.getEndOfLink().getObjectId());
+		    if (endOfLinkArea != null)
+		    {
+//				log.info("connect connectionLink (start) "+item.getName());
+//				log.info("    start = "+oldValue.getName());
+//				log.info("    end = "+endOfLinkArea.getName());
+				startOfLink.setStartOfLink(oldValue);
+				startOfLink.setEndOfLink(endOfLinkArea);
+		    }
+			
 		}
 
-		Collection<Pair<ConnectionLink, ConnectionLink>> modifiedStartOfLink = CollectionUtil
-				.intersection(oldValue.getConnectionStartLinks(),
-						newValue.getConnectionStartLinks(),
-						NeptuneIdentifiedObjectComparator.INSTANCE);
+		Collection<Pair<ConnectionLink, ConnectionLink>> modifiedStartOfLink = CollectionUtil.intersection(
+				oldValue.getConnectionStartLinks(), newValue.getConnectionStartLinks(),
+				NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<ConnectionLink, ConnectionLink> pair : modifiedStartOfLink) {
-			connectionLinkUpdater.update(context, pair.getLeft(),
-					pair.getRight());
+			connectionLinkUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
 
 		// EndOfLink
-		Collection<ConnectionLink> addedEndOfLink = CollectionUtil.substract(
-				newValue.getConnectionEndLinks(),
-				oldValue.getConnectionEndLinks(),
-				NeptuneIdentifiedObjectComparator.INSTANCE);
+		Collection<ConnectionLink> addedEndOfLink = CollectionUtil.substract(newValue.getConnectionEndLinks(),
+				oldValue.getConnectionEndLinks(), NeptuneIdentifiedObjectComparator.INSTANCE);
 
-		 List<ConnectionLink> endOfLinks = null;
+		List<ConnectionLink> endOfLinks = null;
 		for (ConnectionLink item : addedEndOfLink) {
 			ConnectionLink endOfLink = cache.getConnectionLinks().get(item.getObjectId());
-						if (endOfLink == null) {
-							if (endOfLinks == null) {
-								endOfLinks = connectionLinkDAO.findByObjectId(UpdaterUtils
-										.getObjectIds(addedEndOfLink));
-								for (ConnectionLink object : endOfLinks) {
-									cache.getConnectionLinks().put(object.getObjectId(),
-											object);
-								}
-							}
-							endOfLink = cache.getConnectionLinks().get(item.getObjectId());
-						}
-			
-						if (endOfLink == null) {
-							endOfLink = ObjectFactory.getConnectionLink(cache,
-									item.getObjectId());
-						}
-			if (!item.getStartOfLink().isDetached()  || item.getStartOfLink().isSaved())
-			{
-				endOfLink.setEndOfLink(oldValue);
+			if (endOfLink == null) {
+				endOfLink = ObjectFactory.getConnectionLink(cache, item.getObjectId());
 			}
+			StopArea startOfLinkArea = stopAreaDAO.findByObjectId(item.getStartOfLink().getObjectId());
+		    if (startOfLinkArea != null)
+		    {
+//				log.info("connect connectionLink (end) "+item.getName());
+//				log.info("    start = "+startOfLinkArea.getName());
+//				log.info("    end = "+oldValue.getName());
+		    	endOfLink.setStartOfLink(startOfLinkArea);
+		    	endOfLink.setEndOfLink(oldValue);
+		    }
 		}
 
-		Collection<Pair<ConnectionLink, ConnectionLink>> modifiedEndOfLink = CollectionUtil
-				.intersection(oldValue.getConnectionEndLinks(),
-						newValue.getConnectionEndLinks(),
-						NeptuneIdentifiedObjectComparator.INSTANCE);
-		for (Pair<ConnectionLink, ConnectionLink> pair : modifiedEndOfLink) {
-			connectionLinkUpdater.update(context, pair.getLeft(),
-					pair.getRight());
-		}
-
-		// TODO list routing_constraints_lines (routingConstraintLines) 
-		// TODO list stop_areas_stop_areas (routingConstraintAreas)
-		Collection<StopArea> addedStopAreas = CollectionUtil.substract(
-				newValue.getRoutingConstraintAreas(),
-				oldValue.getRoutingConstraintAreas(),
+		Collection<Pair<ConnectionLink, ConnectionLink>> modifiedEndOfLink = CollectionUtil.intersection(
+				oldValue.getConnectionEndLinks(), newValue.getConnectionEndLinks(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
+		for (Pair<ConnectionLink, ConnectionLink> pair : modifiedEndOfLink) {
+			connectionLinkUpdater.update(context, pair.getLeft(), pair.getRight());
+		}
+
+		// TODO list routing_constraints_lines (routingConstraintLines)
+		// TODO list stop_areas_stop_areas (routingConstraintAreas)
+		Collection<StopArea> addedStopAreas = CollectionUtil.substract(newValue.getRoutingConstraintAreas(),
+				oldValue.getRoutingConstraintAreas(), NeptuneIdentifiedObjectComparator.INSTANCE);
 
 		List<StopArea> stopAreas = null;
 		for (StopArea item : addedStopAreas) {
 
-			StopArea area = cache.getStopAreas().get(
-					item.getObjectId());
+			StopArea area = cache.getStopAreas().get(item.getObjectId());
 			if (area == null) {
 				if (stopAreas == null) {
-					stopAreas = stopAreaDAO.findByObjectId(UpdaterUtils
-							.getObjectIds(addedEndOfLink));
+					stopAreas = stopAreaDAO.findByObjectId(UpdaterUtils.getObjectIds(addedEndOfLink));
 					for (StopArea object : addedStopAreas) {
-						cache.getStopAreas().put(object.getObjectId(),
-								object);
+						cache.getStopAreas().put(object.getObjectId(), object);
 					}
 				}
 				area = cache.getStopAreas().get(item.getObjectId());
 			}
 
 			if (area == null) {
-				area = ObjectFactory.getStopArea(cache,
-						item.getObjectId());
+				area = ObjectFactory.getStopArea(cache, item.getObjectId());
 			}
 			if (!area.isDetached() || area.isFilled())
-			   oldValue.getRoutingConstraintAreas().add(area);
+				oldValue.getRoutingConstraintAreas().add(area);
 		}
 
-		Collection<Pair<StopArea, StopArea>> modifiedStopArea = CollectionUtil
-				.intersection(oldValue.getRoutingConstraintAreas(),
-						newValue.getRoutingConstraintAreas(),
-						NeptuneIdentifiedObjectComparator.INSTANCE);
+		Collection<Pair<StopArea, StopArea>> modifiedStopArea = CollectionUtil.intersection(
+				oldValue.getRoutingConstraintAreas(), newValue.getRoutingConstraintAreas(),
+				NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<StopArea, StopArea> pair : modifiedStopArea) {
-			stopAreaUpdater.update(context, pair.getLeft(),
-					pair.getRight());
+			stopAreaUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
-
 
 	}
 }

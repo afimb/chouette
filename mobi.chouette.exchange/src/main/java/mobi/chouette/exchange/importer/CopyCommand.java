@@ -46,7 +46,7 @@ public class CopyCommand implements Command {
 
 			if (optimized) {
 
-				final String buffer = new String((String) context.get(BUFFER));
+				final String buffer = (String) context.remove(BUFFER);
 				final String schema = ContextHolder.getContext();
 				executor.submit(new Callable<Void>() {
 

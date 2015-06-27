@@ -147,6 +147,7 @@ public class GtfsImporterProcessingCommands implements ProcessingCommands, Const
 				// add shared data validation
 				commands.add(CommandFactory.create(initialContext, SharedDataValidatorCommand.class.getName()));
 			}
+			commands.add(CommandFactory.create(initialContext, GtfsDisposeImportCommand.class.getName()));
 
 		} catch (Exception e) {
 			log.error(e, e);
