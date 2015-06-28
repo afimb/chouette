@@ -102,6 +102,21 @@ public class AbstractImporterCommand implements Constant {
 					report.setFailure(new ActionError(ActionError.CODE.NO_DATA_FOUND, "no data"));
 			}
 		} finally {
+			// call dispose commmands
+			try
+			{
+				List<? extends Command> disposeCommands = commands.getDisposeCommands(context, true);
+				for (Command command : disposeCommands) {
+					result = command.execute(context);
+					if (!result) {
+						break;
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				log.warn("problem on dispose commands "+e.getMessage());
+			}
 			for (String key : context.keySet()) {
 				if (context.get(key) == null)
 				log.info("cache key = "+key+", entry null");

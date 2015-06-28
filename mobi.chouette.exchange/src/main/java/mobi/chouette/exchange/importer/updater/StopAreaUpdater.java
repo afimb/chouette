@@ -220,7 +220,6 @@ public class StopAreaUpdater implements Updater<StopArea> {
 		Collection<ConnectionLink> addedStartOfLink = CollectionUtil.substract(newValue.getConnectionStartLinks(),
 				oldValue.getConnectionStartLinks(), NeptuneIdentifiedObjectComparator.INSTANCE);
 
-		List<ConnectionLink> startOfLinks = null;
 		for (ConnectionLink item : addedStartOfLink) {
 
 			ConnectionLink startOfLink = cache.getConnectionLinks().get(item.getObjectId());
@@ -250,7 +249,6 @@ public class StopAreaUpdater implements Updater<StopArea> {
 		Collection<ConnectionLink> addedEndOfLink = CollectionUtil.substract(newValue.getConnectionEndLinks(),
 				oldValue.getConnectionEndLinks(), NeptuneIdentifiedObjectComparator.INSTANCE);
 
-		List<ConnectionLink> endOfLinks = null;
 		for (ConnectionLink item : addedEndOfLink) {
 			ConnectionLink endOfLink = cache.getConnectionLinks().get(item.getObjectId());
 			if (endOfLink == null) {

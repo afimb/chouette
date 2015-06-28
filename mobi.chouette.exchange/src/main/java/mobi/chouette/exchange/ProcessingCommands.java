@@ -21,5 +21,5 @@ public interface ProcessingCommands {
 	List<? extends Command> getLineProcessingCommands(Context context,boolean withDao);
 	List<? extends Command> getStopAreaProcessingCommands(Context context,boolean withDao);
 	List<? extends Command> getPostProcessingCommands(Context context,boolean withDao);
-	
+	List<? extends Command> getDisposeCommands(Context context,boolean withDao);
 }

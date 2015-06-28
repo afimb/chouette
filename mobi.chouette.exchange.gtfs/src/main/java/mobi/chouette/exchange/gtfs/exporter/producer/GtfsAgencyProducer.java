@@ -12,28 +12,24 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.TimeZone;
 
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.gtfs.model.GtfsAgency;
 import mobi.chouette.exchange.gtfs.model.exporter.GtfsExporterInterface;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.model.Company;
-
-import org.apache.log4j.Logger;
 
 /**
  * convert Timetable to Gtfs Calendar and CalendarDate
  * <p>
  * optimise multiple period timetable with calendarDate inclusion or exclusion
  */
+@Log4j
 public class GtfsAgencyProducer extends AbstractProducer
 {
    public GtfsAgencyProducer(GtfsExporterInterface exporter)
    {
       super(exporter);
    }
-
-
-   private static final Logger logger = Logger
-         .getLogger(GtfsAgencyProducer.class);
 
    private GtfsAgency agency = new GtfsAgency();
 
@@ -45,7 +41,7 @@ public class GtfsAgencyProducer extends AbstractProducer
       String name = neptuneObject.getName();
       if (name.trim().isEmpty())
       {
-         logger.error("no name for " + neptuneObject.getObjectId());
+         log.error("no name for " + neptuneObject.getObjectId());
 //         GtfsReportItem item = new GtfsReportItem(
 //               GtfsReportItem.KEY.MISSING_DATA, STATE.ERROR, "Company",
 //               neptuneObject.getObjectId(), "Name");
@@ -87,7 +83,7 @@ public class GtfsAgencyProducer extends AbstractProducer
          agency.setAgencyUrl(new URL(url));
       } catch (MalformedURLException e)
       {
-         logger.error("malformed URL " + url);
+         log.error("malformed URL " + url);
 //         GtfsReportItem item = new GtfsReportItem(
 //               GtfsReportItem.KEY.INVALID_DATA, STATE.ERROR, "Company",
 //               neptuneObject.getName(), urlData, url);

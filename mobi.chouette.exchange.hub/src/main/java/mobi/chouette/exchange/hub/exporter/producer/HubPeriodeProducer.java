@@ -24,7 +24,7 @@ import mobi.chouette.model.Timetable;
  */
 @Log4j
 public class HubPeriodeProducer extends AbstractProducer {
-	private static final int ONE_DAY = 86400000;
+	// private static final int ONE_DAY = 86400000;
 	
 	private int compteur = 1;
 	
@@ -47,7 +47,7 @@ public class HubPeriodeProducer extends AbstractProducer {
         while (d.before(f) || d.equals(f))
         {
         	hubObject.getCalendrier().add(Boolean.valueOf(neptuneObject.isActiveOn(d)));
-            d.setTime(d.getTime()+ONE_DAY);
+            d.setTime(d.getTime()+Timetable.ONE_DAY);
         }
 		
 		hubObject.setIdentifiant(compteur++);

@@ -64,10 +64,10 @@ public class Location {
 	public Location(NeptuneIdentifiedObject chouetteObject)
 	{
 		this.objectId = chouetteObject.getObjectId();
+		this.name = buildName(chouetteObject);
 		if (chouetteObject instanceof VehicleJourney)
 		{
 			VehicleJourney object = (VehicleJourney) chouetteObject;
-			this.name = NamingUtil.getName(object);
 			objectRefs.add(new ObjectReference(object));
 			objectRefs.add(new ObjectReference(object.getJourneyPattern()));
 			objectRefs.add(new ObjectReference(object.getJourneyPattern().getRoute()));
@@ -76,7 +76,6 @@ public class Location {
 		else if (chouetteObject instanceof JourneyPattern)
 		{
 			JourneyPattern object = (JourneyPattern) chouetteObject;
-			this.name = NamingUtil.getName(object);
 			objectRefs.add(new ObjectReference(object));
 			objectRefs.add(new ObjectReference(object.getRoute()));
 			objectRefs.add(new ObjectReference(object.getRoute().getLine()));
@@ -84,20 +83,17 @@ public class Location {
 		else if (chouetteObject instanceof Route)
 		{
 			Route object = (Route) chouetteObject;
-			this.name = NamingUtil.getName(object);
 			objectRefs.add(new ObjectReference(object));
 			objectRefs.add(new ObjectReference(object.getLine()));
 		}
 		else if (chouetteObject instanceof Line)
 		{
 			Line object = (Line) chouetteObject;
-			this.name = NamingUtil.getName(object);
 			objectRefs.add(new ObjectReference(object));
 		}
 		else if (chouetteObject instanceof AccessLink)
 		{
 			AccessLink object = (AccessLink) chouetteObject;
-			this.name = NamingUtil.getName(object);
 			objectRefs.add(new ObjectReference(object));
 			objectRefs.add(new ObjectReference(object.getAccessPoint()));
 			objectRefs.add(new ObjectReference(object.getAccessPoint().getContainedIn()));
@@ -105,44 +101,37 @@ public class Location {
 		else if (chouetteObject instanceof AccessPoint)
 		{
 			AccessPoint object = (AccessPoint) chouetteObject;
-			this.name = NamingUtil.getName(object);
 			objectRefs.add(new ObjectReference(object));
 			objectRefs.add(new ObjectReference(object.getContainedIn()));
 		}
 		else if (chouetteObject instanceof StopArea)
 		{
 			StopArea object = (StopArea) chouetteObject;
-			this.name = NamingUtil.getName(object);
 			objectRefs.add(new ObjectReference(object));
 		}
 		else if (chouetteObject instanceof ConnectionLink)
 		{
 			ConnectionLink object = (ConnectionLink) chouetteObject;
-			this.name = NamingUtil.getName(object);
 			objectRefs.add(new ObjectReference(object));
 		}
 		else if (chouetteObject instanceof Network)
 		{
 			Network object = (Network) chouetteObject;
-			this.name = NamingUtil.getName(object);
 			objectRefs.add(new ObjectReference(object));
 		}
 		else if (chouetteObject instanceof Company)
 		{
 			Company object = (Company) chouetteObject;
-			this.name = NamingUtil.getName(object);
 			objectRefs.add(new ObjectReference(object));
 		}
 		else if (chouetteObject instanceof GroupOfLine)
 		{
 			GroupOfLine object = (GroupOfLine) chouetteObject;
-			this.name = NamingUtil.getName(object);
 			objectRefs.add(new ObjectReference(object));
 		}
 		else if (chouetteObject instanceof Timetable)
 		{
 			Timetable object = (Timetable) chouetteObject;
-			this.name = NamingUtil.getName(object);
 			objectRefs.add(new ObjectReference(object));
 		}
 
@@ -154,5 +143,76 @@ public class Location {
 		this.objectId = objectId;
 	}
 	
+	public Location(FileLocation sourceLocation, NeptuneIdentifiedObject chouetteObject) 
+	{
+		this.file = sourceLocation;
+		this.objectId = chouetteObject.getObjectId();
+		this.name = buildName(chouetteObject);
+	}
+	
+	public static String buildName(NeptuneIdentifiedObject chouetteObject)
+	{
+		if (chouetteObject instanceof VehicleJourney)
+		{
+			VehicleJourney object = (VehicleJourney) chouetteObject;
+			return NamingUtil.getName(object);
+		}
+		else if (chouetteObject instanceof JourneyPattern)
+		{
+			JourneyPattern object = (JourneyPattern) chouetteObject;
+			return NamingUtil.getName(object);
+		}
+		else if (chouetteObject instanceof Route)
+		{
+			Route object = (Route) chouetteObject;
+			return NamingUtil.getName(object);
+		}
+		else if (chouetteObject instanceof Line)
+		{
+			Line object = (Line) chouetteObject;
+			return NamingUtil.getName(object);
+		}
+		else if (chouetteObject instanceof AccessLink)
+		{
+			AccessLink object = (AccessLink) chouetteObject;
+			return NamingUtil.getName(object);
+		}
+		else if (chouetteObject instanceof AccessPoint)
+		{
+			AccessPoint object = (AccessPoint) chouetteObject;
+			return NamingUtil.getName(object);
+		}
+		else if (chouetteObject instanceof StopArea)
+		{
+			StopArea object = (StopArea) chouetteObject;
+			return NamingUtil.getName(object);
+		}
+		else if (chouetteObject instanceof ConnectionLink)
+		{
+			ConnectionLink object = (ConnectionLink) chouetteObject;
+			return NamingUtil.getName(object);
+		}
+		else if (chouetteObject instanceof Network)
+		{
+			Network object = (Network) chouetteObject;
+			return NamingUtil.getName(object);
+		}
+		else if (chouetteObject instanceof Company)
+		{
+			Company object = (Company) chouetteObject;
+			return NamingUtil.getName(object);
+		}
+		else if (chouetteObject instanceof GroupOfLine)
+		{
+			GroupOfLine object = (GroupOfLine) chouetteObject;
+			return NamingUtil.getName(object);
+		}
+		else if (chouetteObject instanceof Timetable)
+		{
+			Timetable object = (Timetable) chouetteObject;
+			return NamingUtil.getName(object);
+		}
+		return "unnammed";
+	}
 
 }

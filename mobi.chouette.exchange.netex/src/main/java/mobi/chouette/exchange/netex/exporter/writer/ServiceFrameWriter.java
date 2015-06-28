@@ -2,6 +2,7 @@ package mobi.chouette.exchange.netex.exporter.writer;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -26,6 +27,7 @@ public class ServiceFrameWriter extends AbstractWriter{
 	
 	public static void write(Writer writer, ExportableData data ) throws IOException, DatatypeConfigurationException 
 	{
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 		DatatypeFactory durationFactory = DatatypeFactory.newInstance();
 		Line line = data.getLine();
 		Network network = line.getNetwork();

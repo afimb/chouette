@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
@@ -16,10 +17,8 @@ import mobi.chouette.model.type.LongLatTypeEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
-import org.apache.log4j.Logger;
-
+@Log4j
 public class CommercialStopGenerator extends AbstractGenerator {
-	private static final Logger logger = Logger.getLogger(CommercialStopGenerator.class);
 
 	/**
 	 * create and associate commercial stop points for boarding positions
@@ -86,9 +85,9 @@ public class CommercialStopGenerator extends AbstractGenerator {
 				}
 			} else if (stop.getParent() != null) {
 				if (!area.equals(stop.getParent())) {
-					logger.error("conflict between generated and setted parent");
-					logger.error("stop   = " + stop.getObjectId() + " " + stop.getName());
-					logger.error("parent = " + area.getObjectId() + " " + area.getName());
+					log.error("conflict between generated and setted parent");
+					log.error("stop   = " + stop.getObjectId() + " " + stop.getName());
+					log.error("parent = " + area.getObjectId() + " " + area.getName());
 					continue;
 				}
 			}
@@ -121,7 +120,7 @@ public class CommercialStopGenerator extends AbstractGenerator {
 				stopArea.setName(basename.trim());
 		}
 
-		logger.debug("" + areas.size() + " commercial stops created");
+		log.debug("" + areas.size() + " commercial stops created");
 
 	}
 
@@ -166,7 +165,7 @@ public class CommercialStopGenerator extends AbstractGenerator {
 			String baseId, double distanceMax) {
 		if (!checkDistance(area, distanceMax)) {
 			if (rank == 1) {
-				logger.warn(area.getName() + " has long distance boarding positions , divided");
+				log.warn(area.getName() + " has long distance boarding positions , divided");
 			}
 			List<StopArea> excludedList = excludeLongDistanceStops(area, distanceMax);
 

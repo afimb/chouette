@@ -416,7 +416,7 @@ public interface GtfsConverter {
 			FieldConverter<String, T> {
 		@SuppressWarnings("rawtypes")
 		@Override
-		public T from(Context context, Enum field, String input, T value,
+		public synchronized T from(Context context, Enum field, String input, T value,
 				boolean required) {
 			T result = value;
 			if (input != null && !input.isEmpty()) {
@@ -442,7 +442,7 @@ public interface GtfsConverter {
 
 		@SuppressWarnings("rawtypes")
 		@Override
-		public String to(Context context, Enum field, T input, boolean required) {
+		public synchronized String to(Context context, Enum field, T input, boolean required) {
 			String result = "";
 			if (input != null) {
 				try {

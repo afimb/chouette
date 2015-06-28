@@ -42,8 +42,6 @@ AbstractProducer
       super(exporter);
    }
 
-   private static final long ONE_DAY = 3600000 * 24;
-
    GtfsCalendar calendar = new GtfsCalendar();
    GtfsCalendarDate calendarDate = new GtfsCalendarDate();
 
@@ -189,7 +187,7 @@ AbstractProducer
       for (Period period : timetable.getPeriods())
       {
          Date checkedDate = period.getStartDate();
-         Date endDate = new Date(period.getEndDate().getTime() + ONE_DAY);
+         Date endDate = new Date(period.getEndDate().getTime() + Timetable.ONE_DAY);
          while (checkedDate.before(endDate))
          {
             if (!excludedDates.contains(checkedDate)
@@ -200,7 +198,7 @@ AbstractProducer
                   includedDates.add(new Date(checkedDate.getTime()));
                }
             }
-            checkedDate = new Date(checkedDate.getTime() + ONE_DAY);
+            checkedDate = new Date(checkedDate.getTime() + Timetable.ONE_DAY);
          }
       }
       timetable.getPeriods().clear();

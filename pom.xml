@@ -661,10 +661,10 @@
 		<module>mobi.chouette.dao</module>
 		<module>mobi.chouette.exchange</module>
 		<module>mobi.chouette.exchange.neptune</module>
-		<module>mobi.chouette.exchange.gtfs</module>
 		<module>mobi.chouette.exchange.netex</module>
       <module>mobi.chouette.exchange.kml</module>
       <module>mobi.chouette.exchange.hub</module>
+      <module>mobi.chouette.exchange.gtfs</module>
       <module>mobi.chouette.exchange.validator</module>
       <module>mobi.chouette.service</module>
 		<module>mobi.chouette.ws</module>

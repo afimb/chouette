@@ -2,6 +2,8 @@ package mobi.chouette.exchange.importer;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +19,6 @@ import javax.naming.NamingException;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
-import mobi.chouette.common.DateTimeUtil;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.LineDAO;
@@ -125,6 +126,7 @@ public class LineRegisterCommand implements Command {
 
 	private void write(StringWriter buffer, VehicleJourney vehicleJourney, StopPoint stopPoint,
 			VehicleJourneyAtStop vehicleJourneyAtStop) throws IOException {
+		DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
 		buffer.write(vehicleJourney.getId().toString());
 		buffer.append(SEP);
 		buffer.write(stopPoint.getId().toString());
@@ -135,23 +137,23 @@ public class LineRegisterCommand implements Command {
 			buffer.write(NULL);
 		buffer.append(SEP);
 		if (vehicleJourneyAtStop.getArrivalTime() != null)
-			buffer.write(DateTimeUtil.getTimeText(vehicleJourneyAtStop.getArrivalTime()));
+			buffer.write(timeFormat.format(vehicleJourneyAtStop.getArrivalTime()));
 		else
 			buffer.write(NULL);
 		buffer.append(SEP);
 		if (vehicleJourneyAtStop.getDepartureTime() != null)
-			buffer.write(DateTimeUtil.getTimeText(vehicleJourneyAtStop.getDepartureTime()));
+			buffer.write(timeFormat.format(vehicleJourneyAtStop.getDepartureTime()));
 		else
 			buffer.write(NULL);
 		buffer.append(SEP);
 
 		if (vehicleJourneyAtStop.getElapseDuration() != null)
-			buffer.write(DateTimeUtil.getTimeText(vehicleJourneyAtStop.getElapseDuration()));
+			buffer.write(timeFormat.format(vehicleJourneyAtStop.getElapseDuration()));
 		else
 			buffer.write(NULL);
 		buffer.append(SEP);
 		if (vehicleJourneyAtStop.getHeadwayFrequency() != null)
-			buffer.write(DateTimeUtil.getTimeText(vehicleJourneyAtStop.getHeadwayFrequency()));
+			buffer.write(timeFormat.format(vehicleJourneyAtStop.getHeadwayFrequency()));
 		else
 			buffer.write(NULL);
 		buffer.append('\n');
