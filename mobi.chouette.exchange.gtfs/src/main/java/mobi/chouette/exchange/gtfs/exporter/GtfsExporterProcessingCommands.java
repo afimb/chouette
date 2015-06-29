@@ -99,4 +99,10 @@ public class GtfsExporterProcessingCommands implements ProcessingCommands, Const
 		return commands;
 	}
 
+	@Override
+	public List<? extends Command> getDisposeCommands(Context context, boolean withDao) {
+		List<Command> commands = new ArrayList<>();
+		return commands;
+	}
+
 }

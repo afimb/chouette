@@ -3,6 +3,7 @@ package mobi.chouette.exchange.netex.exporter.writer;
 import java.io.IOException;
 import java.io.Writer;
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Set;
 
@@ -18,6 +19,7 @@ public class ServiceCalendarFrameWriter extends AbstractWriter{
 	
 	public static void write(Writer writer, ExportableData data ) throws IOException 
 	{
+		SimpleDateFormat shortDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		ModelTranslator modelTranslator = new ModelTranslator();
 		Set<Timetable> timetables = data.getTimetables();
 

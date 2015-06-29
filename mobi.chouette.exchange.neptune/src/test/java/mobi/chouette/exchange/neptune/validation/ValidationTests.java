@@ -2,6 +2,7 @@ package mobi.chouette.exchange.neptune.validation;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Locale;
 
 import javax.naming.InitialContext;
@@ -19,6 +20,7 @@ import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.exchange.validation.report.CheckPoint;
 import mobi.chouette.exchange.validation.report.CheckPoint.RESULT;
+import mobi.chouette.exchange.validation.report.Detail;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.util.Referential;
 import mobi.chouette.persistence.hibernate.ContextHolder;
@@ -164,6 +166,15 @@ public class ValidationTests implements Constant, ReportConstant
                  mandatoryTest + " must have severity " + severity);
          Assert.assertEquals(foundItem.getState(), state,
                mandatoryTest + " must have status " + state);
+         if (foundItem.getState().equals(RESULT.NOK))
+         {
+        	 String detailKey = mandatoryTest.replaceAll("-", "_").toLowerCase();
+        	 Assert.assertNotEquals(foundItem.getDetails(), 0, "details should be present");
+        	 List<Detail> details = foundItem.getDetails();
+        	 for (Detail detail : details) {
+				Assert.assertTrue(detail.getKey().startsWith(detailKey),"details key should start with test key : expected "+detailKey+", found : "+detail.getKey());
+			}
+         }
       }
    }
 

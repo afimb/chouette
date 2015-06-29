@@ -168,7 +168,7 @@ public class NeptuneValidationCommand implements Command, Constant {
 
 	private void addStats(ActionReport report, Context validationContext, Referential referential) {
 		Line line = referential.getLines().values().iterator().next();
-		LineInfo lineInfo = new LineInfo(line.getName()+" ("+line.getNumber()+")");
+		LineInfo lineInfo = new LineInfo(line.getObjectId(),line.getName()+" ("+line.getNumber()+")");
 		DataStats stats = lineInfo.getStats();
 		stats.setLineCount(1);
 		{

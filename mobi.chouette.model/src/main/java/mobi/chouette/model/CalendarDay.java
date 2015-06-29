@@ -2,7 +2,6 @@ package mobi.chouette.model;
 
 import java.io.Serializable;
 import java.sql.Date;
-import java.text.SimpleDateFormat;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -86,19 +85,16 @@ public class CalendarDay implements Serializable, Comparable<CalendarDay> {
 		return getDate().compareTo(o.getDate());
 	}
 	
-	private static final SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
-	@Override
-	public String toString()
-	{
-		return (included? "I":"E")+format.format(date);
-	}
-
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
 	public int hashCode() {
-		return toString().hashCode();
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((date == null) ? 0 : date.hashCode());
+		result = prime * result + ((included == null) ? 0 : included.hashCode());
+		return result;
 	}
 
 	/* (non-Javadoc)
@@ -110,8 +106,22 @@ public class CalendarDay implements Serializable, Comparable<CalendarDay> {
 			return true;
 		if (obj == null)
 			return false;
-		return toString().equals(obj.toString());
+		if (getClass() != obj.getClass())
+			return false;
+		CalendarDay other = (CalendarDay) obj;
+		if (date == null) {
+			if (other.date != null)
+				return false;
+		} else if (!date.equals(other.date))
+			return false;
+		if (included == null) {
+			if (other.included != null)
+				return false;
+		} else if (!included.equals(other.included))
+			return false;
+		return true;
 	}
+
 	
 	
 

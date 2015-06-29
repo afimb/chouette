@@ -23,16 +23,12 @@ import mobi.chouette.model.util.Referential;
 @Log4j
 public class GtfsStopParser implements Parser, Validator, Constant {
 
-	private Referential referential;
-	private GtfsImporter importer;
-	private GtfsImportParameters configuration;
-
 	@Override
 	public void parse(Context context) throws Exception {
 
-		referential = (Referential) context.get(REFERENTIAL);
-		importer = (GtfsImporter) context.get(PARSER);
-		configuration = (GtfsImportParameters) context.get(CONFIGURATION);
+		Referential referential = (Referential) context.get(REFERENTIAL);
+		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
+		GtfsImportParameters configuration = (GtfsImportParameters) context.get(CONFIGURATION);
 
 		for (GtfsStop gtfsStop : importer.getStopById()) {
 			if (gtfsStop.getLocationType() != GtfsStop.LocationType.Access) {
@@ -50,7 +46,7 @@ public class GtfsStopParser implements Parser, Validator, Constant {
 	@Override
 	public void validate(Context context) throws Exception {
 
-		importer = (GtfsImporter) context.get(PARSER);
+		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		ActionReport report = (ActionReport) context.get(REPORT);
 
 		// stops.txt
@@ -69,6 +65,8 @@ public class GtfsStopParser implements Parser, Validator, Constant {
 
 	protected void convert(Context context, GtfsStop gtfsStop, StopArea stopArea) {
 		Referential referential = (Referential) context.get(REFERENTIAL);
+		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
+		GtfsImportParameters configuration = (GtfsImportParameters) context.get(CONFIGURATION);
 
 		stopArea.setLatitude(gtfsStop.getStopLat());
 		stopArea.setLongitude(gtfsStop.getStopLon());
@@ -109,11 +107,11 @@ public class GtfsStopParser implements Parser, Validator, Constant {
 
 	static {
 		ParserFactory.register(GtfsStopParser.class.getName(), new ParserFactory() {
-			private GtfsStopParser instance = new GtfsStopParser();
 
 			@Override
 			protected Parser create() {
-				return instance;
+				return  new GtfsStopParser();
+
 			}
 		});
 	}

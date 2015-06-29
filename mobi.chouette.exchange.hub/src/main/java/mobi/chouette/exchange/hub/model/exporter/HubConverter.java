@@ -62,7 +62,7 @@ public interface HubConverter {
 
 		@SuppressWarnings("rawtypes")
 		@Override
-		public String to(Context context, Enum field, T input, boolean required) {
+		public synchronized String to(Context context, Enum field, T input, boolean required) {
 			String result = "";
 			if (input != null) {
 				try {

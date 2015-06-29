@@ -2,6 +2,7 @@ package mobi.chouette.exchange.netex.exporter.writer;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -13,6 +14,7 @@ public class DeliveryWriter extends AbstractWriter{
 	
 	public static void write(Writer writer, ExportableData data ) throws IOException, DatatypeConfigurationException 
 	{
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 		Line line = data.getLine();
 		Calendar now = Calendar.getInstance();
 		writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");

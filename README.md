@@ -34,8 +34,9 @@ This java project is splitted in differents modules :
 * mobi.chouette.exchange.neptune : Specific commands for Neptune data exchange and validation 
 * mobi.chouette.exchange.netex : Specific commands for NeTEx data exchange 
 * mobi.chouette.exchange.validator : Specific commands for common data validation 
-* mobi.chouette.model : JPA entities modelisation
-* mobi.chouette.persistence.hibernate : Hibernate specific tools
+* mobi.chouette.model : JPA entities modelisation for public transport model
+* mobi.chouette.model : JPA entities modelisation for iev jobs
+* mobi.chouette.persi.ievstence.hibernate : Hibernate specific tools
 * mobi.chouette.service : Job and tasks managment
 * mobi.chouette.ws : REST API implementation
 
@@ -46,6 +47,8 @@ Feel free to test and access to the demonstration web site at [http://appli.chou
   * login : 'demo@chouette.mobi'
   * password : 'chouette'
 * Create your own organisation : follow the "Sign up" ("S'inscrire") link
+
+Command mode installation instructions are available [here](./mobi.chouette.comman/README.md) 
 
 ## Release Notes
 

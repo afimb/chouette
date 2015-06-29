@@ -226,6 +226,12 @@ public class ValidationLines extends AbstractTestValidation
 		for (Detail detail : checkPointReport.getDetails()) {
 			log.warn(detail);
 		}
+		String detailKey = "3-Line-1".replaceAll("-", "_").toLowerCase();
+		List<Detail> details = checkPointReport.getDetails();
+		for (Detail detail : details) {
+			Assert.assertTrue(detail.getKey().startsWith(detailKey),
+					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
+		}
 		// check detail keys = line1 and line2 objectids
 		boolean line1objectIdFound = false;
 		boolean line2objectIdFound = false;
@@ -293,6 +299,12 @@ public class ValidationLines extends AbstractTestValidation
 		Assert.assertEquals(checkPointReport.getDetailCount(), 1,
 				" checkPointReport must have 1 item");
 
+		String detailKey = "3-Line-2".replaceAll("-", "_").toLowerCase();
+		List<Detail> details = checkPointReport.getDetails();
+		for (Detail detail : details) {
+			Assert.assertTrue(detail.getKey().startsWith(detailKey),
+					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
+		}
 		for (Detail detail : checkPointReport.getDetails()) {
 			log.warn(detail);
 			Assert.assertEquals(detail.getSource().getObjectId(),line1.getObjectId(), "line must be source of error");

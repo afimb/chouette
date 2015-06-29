@@ -36,7 +36,6 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 
 	public static final String AFTER_MIDNIGHT_SUFFIX = "_after_midnight";
 
-	private static long dayOffest = 24 * 3600000; // one day in milliseconds
 	private static final Comparator<Period> PERIOD_COMPARATOR = new Comparator<Period>() {
 
 		@Override
@@ -47,16 +46,12 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 
 	};
 
-	private Referential referential;
-	private GtfsImporter importer;
-	private GtfsImportParameters configuration;
-
 	@Override
 	public void parse(Context context) throws Exception {
 
-		referential = (Referential) context.get(REFERENTIAL);
-		importer = (GtfsImporter) context.get(PARSER);
-		configuration = (GtfsImportParameters) context.get(CONFIGURATION);
+		Referential referential = (Referential) context.get(REFERENTIAL);
+		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
+		GtfsImportParameters configuration = (GtfsImportParameters) context.get(CONFIGURATION);
 
 		if (importer.hasCalendarImporter()) {
 			for (GtfsCalendar gtfsCalendar : importer.getCalendarByService()) {
@@ -102,9 +97,7 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 	@Override
 	public void validate(Context context) throws Exception {
 
-		referential = (Referential) context.get(REFERENTIAL);
-		importer = (GtfsImporter) context.get(PARSER);
-		configuration = (GtfsImportParameters) context.get(CONFIGURATION);
+		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		ActionReport report = (ActionReport) context.get(REPORT);
 
 		boolean found = false;
@@ -189,7 +182,7 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 
 	public void addCalendarDay(Timetable timetable, GtfsCalendarDate date) {
 		timetable.addCalendarDay(new CalendarDay(date.getDate(),
-				date.getExceptionType() != GtfsCalendarDate.ExceptionType.Removed));
+				!GtfsCalendarDate.ExceptionType.Removed.equals(date.getExceptionType())));
 	}
 
 	/**
@@ -301,11 +294,11 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 		timetable.setDayTypes(dayTypes);
 
 		for (Period period : source.getPeriods()) {
-			timetable.addPeriod(clonePeriodAfterMidnight(period));
+			timetable.getPeriods().add(clonePeriodAfterMidnight(period));
 		}
 
 		for (CalendarDay calendarDay : source.getCalendarDays()) {
-			timetable.addCalendarDay(cloneDateAfterMidnight(calendarDay));
+			timetable.getCalendarDays().add(cloneDateAfterMidnight(calendarDay));
 		}
 		return timetable;
 	}
@@ -313,27 +306,26 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 	private Period clonePeriodAfterMidnight(Period source) {
 		Period result = new Period();
 
-		result.setStartDate(new Date(source.getStartDate().getTime() + dayOffest));
-		result.setEndDate(new Date(source.getEndDate().getTime() + dayOffest));
+		result.setStartDate(new Date(source.getStartDate().getTime() + Timetable.ONE_DAY));
+		result.setEndDate(new Date(source.getEndDate().getTime() + Timetable.ONE_DAY));
 
 		return result;
 	}
 
 	private Date cloneDateAfterMidnight(Date source) {
-		return new Date(source.getTime() + dayOffest);
+		return new Date(source.getTime() + Timetable.ONE_DAY);
 	}
 
 	private CalendarDay cloneDateAfterMidnight(CalendarDay source) {
-		return new CalendarDay(cloneDateAfterMidnight(source.getDate()), source.getIncluded());
+		return new CalendarDay(cloneDateAfterMidnight(source.getDate()), source.getIncluded().booleanValue());
 	}
 
 	static {
 		ParserFactory.register(GtfsCalendarParser.class.getName(), new ParserFactory() {
-			private GtfsCalendarParser instance = new GtfsCalendarParser();
 
 			@Override
 			protected Parser create() {
-				return instance;
+				return new GtfsCalendarParser();
 			}
 		});
 	}

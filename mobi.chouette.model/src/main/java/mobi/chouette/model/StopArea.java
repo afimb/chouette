@@ -11,12 +11,14 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -71,12 +73,14 @@ public class StopArea extends NeptuneLocalizedObject {
 
 	@Getter
 	@Setter
-	@GenericGenerator(name = "stop_areas_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", 
-		parameters = {
-			@Parameter(name = "sequence_name", value = "stop_areas_id_seq"),
-			@Parameter(name = "increment_size", value = "50") })
+	@SequenceGenerator(name="stop_areas_id_seq", sequenceName="stop_areas_id_seq", allocationSize=1)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="stop_areas_id_seq")
+//	@GenericGenerator(name = "stop_areas_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", 
+//		parameters = {
+//			@Parameter(name = "sequence_name", value = "stop_areas_id_seq"),
+//			@Parameter(name = "increment_size", value = "50") })
 	@Id
-	@GeneratedValue(generator = "stop_areas_id_seq")
+//	@GeneratedValue(generator = "stop_areas_id_seq")
 	@Column(name = "id", nullable = false)
 	protected Long id;
 	
@@ -437,7 +441,7 @@ public class StopArea extends NeptuneLocalizedObject {
 	@Getter
 	@Setter
 	@OneToMany(cascade = { CascadeType.PERSIST })
-	@JoinColumn(name = "departure_id", updatable = false)
+	@JoinColumn(name = "departure_id") //, updatable = false)
 	private List<ConnectionLink> connectionStartLinks = new ArrayList<ConnectionLink>(
 			0);
 
@@ -452,7 +456,7 @@ public class StopArea extends NeptuneLocalizedObject {
 	@Getter
 	@Setter
 	@OneToMany(cascade = { CascadeType.PERSIST })
-	@JoinColumn(name = "arrival_id", updatable = false)
+	@JoinColumn(name = "arrival_id") //, updatable = false)
 	private List<ConnectionLink> connectionEndLinks = new ArrayList<ConnectionLink>(
 			0);
 

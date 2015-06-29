@@ -90,5 +90,10 @@ public class NetexExporterProcessingCommands implements ProcessingCommands, Cons
 		return new ArrayList<>();
 	}
 	
+	@Override
+	public List<? extends Command> getDisposeCommands(Context context, boolean withDao) {
+		List<Command> commands = new ArrayList<>();
+		return commands;
+	}
 
 }

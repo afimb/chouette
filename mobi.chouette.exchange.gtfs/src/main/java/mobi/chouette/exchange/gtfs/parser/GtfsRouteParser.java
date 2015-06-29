@@ -27,10 +27,6 @@ import mobi.chouette.model.util.Referential;
 @Log4j
 public class GtfsRouteParser implements Parser, Validator, Constant {
 
-	private Referential referential;
-	private GtfsImporter importer;
-	private GtfsImportParameters configuration;
-
 	@Getter
 	@Setter
 	private String gtfsRouteId;
@@ -38,9 +34,9 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 	@Override
 	public void parse(Context context) throws Exception {
 
-		referential = (Referential) context.get(REFERENTIAL);
-		configuration = (GtfsImportParameters) context.get(CONFIGURATION);
-		importer = (GtfsImporter) context.get(PARSER);
+		Referential referential = (Referential) context.get(REFERENTIAL);
+		GtfsImportParameters configuration = (GtfsImportParameters) context.get(CONFIGURATION);
+		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 
 		Index<GtfsRoute> routes = importer.getRouteById();
 		GtfsRoute gtfsRoute = routes.getValue(gtfsRouteId);
@@ -79,7 +75,7 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 	@Override
 	public void validate(Context context) throws Exception {
 
-		importer = (GtfsImporter) context.get(PARSER);
+		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		ActionReport report = (ActionReport) context.get(REPORT);
 
 		// routes.txt

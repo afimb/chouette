@@ -89,5 +89,10 @@ public class KmlExporterProcessingCommands implements ProcessingCommands, Consta
 		// TODO Auto-generated method stub
 		return new ArrayList<>();
 	}
+	@Override
+	public List<? extends Command> getDisposeCommands(Context context, boolean withDao) {
+		List<Command> commands = new ArrayList<>();
+		return commands;
+	}
 
 }

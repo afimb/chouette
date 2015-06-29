@@ -142,6 +142,7 @@ public class RestService implements Constant {
 		case MISSING_PARAMETERS:
 		case UNREADABLE_PARAMETERS:
 		case INVALID_PARAMETERS:
+		case INVALID_FILE_FORMAT:
 		case ACTION_TYPE_MISMATCH:
 			return Status.BAD_REQUEST;
 		case UNKNOWN_REFERENTIAL:

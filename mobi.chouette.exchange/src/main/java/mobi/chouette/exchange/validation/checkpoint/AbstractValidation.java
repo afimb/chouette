@@ -595,11 +595,14 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 			return new Location(object);
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 		if (data == null) {
-			return new Location(null, object.getObjectId());
+			return new Location(null, object);
 		}
 		Location loc = data.getFileLocations().get(object.getObjectId());
-		if (loc == null)
-			return new Location(null, object.getObjectId());
+		if (loc == null) {
+			return new Location(null, object);
+		} else if (loc.getName() == null) {
+			loc.setName(Location.buildName(object));
+		}
 		return loc;
 	}
 
@@ -613,7 +616,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 				return true;
 			}
 		} catch (Exception ex) {
-			
+
 			log.error("problem with oppositeRoute foreign key ");
 			// route.unsetOppositeRoute();
 		}

@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
@@ -17,10 +18,8 @@ import mobi.chouette.model.util.NeptuneUtil;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
-import org.apache.log4j.Logger;
-
+@Log4j
 public class ConnectionLinkGenerator extends AbstractGenerator {
-	private static final Logger logger = Logger.getLogger(ConnectionLinkGenerator.class);
 
 	public void createConnectionLinks(Context context) {
 		Referential referential = (Referential) context.get(REFERENTIAL);
@@ -100,7 +99,7 @@ public class ConnectionLinkGenerator extends AbstractGenerator {
 								link.setLinkDistance(BigDecimal.valueOf(distance));
 								link.setStartOfLink(source);
 								link.setEndOfLink(target);
-								logger.info("ConnectionLink " + link.getName() + " updated");
+								log.info("ConnectionLink " + link.getName() + " updated");
 							}
 							link = fixedLinkMap.get(reverseId);
 							if (link != null) {
@@ -109,7 +108,7 @@ public class ConnectionLinkGenerator extends AbstractGenerator {
 								link.setLinkDistance(BigDecimal.valueOf(distance));
 								link.setStartOfLink(source);
 								link.setEndOfLink(target);
-								logger.info("ConnectionLink " + link.getName() + " updated");
+								log.info("ConnectionLink " + link.getName() + " updated");
 
 							}
 						} else {
@@ -148,31 +147,11 @@ public class ConnectionLinkGenerator extends AbstractGenerator {
 		}
 
 		if (links.isEmpty()) {
-			logger.info("ConnectionLink : no links builded , minimal distance found = " + minDistanceRejected + " > "
+			log.info("ConnectionLink : no links builded , minimal distance found = " + minDistanceRejected + " > "
 					+ distanceMax);
 		}
 		return;
 	}
-
-//	private List<String> computeRoutes(StopArea stop) {
-//		List<String> routes = new ArrayList<String>();
-//		if (stop.getContainedStopAreas() != null) {
-//			for (StopArea bp : stop.getContainedStopAreas()) {
-//				if (bp.getContainedStopPoints() != null) {
-//					for (StopPoint point : bp.getContainedStopPoints()) {
-//						String route = point.getRoute().getObjectId();
-//						if (!routes.contains(route))
-//							routes.add(route);
-//					}
-//				} else {
-//					logger.warn("Stop without trip : " + bp.getObjectId());
-//				}
-//			}
-//		} else {
-//			logger.warn("Stop without child : " + stop.getObjectId());
-//		}
-//		return routes;
-//	}
 
 	protected Time getTime(long timeInMillis) {
 		long timeInSec = timeInMillis / 1000;

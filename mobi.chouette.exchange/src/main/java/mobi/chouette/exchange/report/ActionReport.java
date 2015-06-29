@@ -66,5 +66,15 @@ public class ActionReport {
 		}
 		return null;
 	}
+	
+	public LineInfo findLineInfo(String objectId)
+	{
+		for (LineInfo lineInfo : lines) 
+		{
+			if (lineInfo.getObjectId().equals(objectId)) return lineInfo;
+		}
+		return null;
+	}
+
 
 }

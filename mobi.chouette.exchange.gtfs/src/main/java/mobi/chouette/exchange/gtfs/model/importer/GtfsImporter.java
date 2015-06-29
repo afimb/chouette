@@ -36,6 +36,7 @@ public class GtfsImporter {
 			importer.dispose();
 		}
 		_map.clear();
+		_map = null;
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })

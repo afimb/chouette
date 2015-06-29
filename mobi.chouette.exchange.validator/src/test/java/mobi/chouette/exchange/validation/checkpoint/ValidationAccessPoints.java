@@ -197,6 +197,12 @@ public class ValidationAccessPoints extends AbstractTestValidation {
 		Assert.assertEquals(checkPointReport.getSeverity(), CheckPoint.SEVERITY.ERROR,
 				" checkPointReport must be on severity error");
 		Assert.assertEquals(checkPointReport.getDetailCount(), 1, " checkPointReport must have 1 item");
+		String detailKey = "3-AccessPoint-1".replaceAll("-", "_").toLowerCase();
+		List<Detail> details = checkPointReport.getDetails();
+		for (Detail detail : details) {
+			Assert.assertTrue(detail.getKey().startsWith(detailKey),
+					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
+		}
 		utx.rollback();
 
 	}
@@ -245,6 +251,12 @@ public class ValidationAccessPoints extends AbstractTestValidation {
 		Assert.assertEquals(checkPointReport.getSeverity(), CheckPoint.SEVERITY.WARNING,
 				" checkPointReport must be on severity error");
 		Assert.assertEquals(checkPointReport.getDetailCount(), 1, " checkPointReport must have 1 item");
+		String detailKey = "3-AccessPoint-2".replaceAll("-", "_").toLowerCase();
+		List<Detail> details = checkPointReport.getDetails();
+		for (Detail detail : details) {
+			Assert.assertTrue(detail.getKey().startsWith(detailKey),
+					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
+		}
 		utx.rollback();
 
 	}
@@ -281,6 +293,12 @@ public class ValidationAccessPoints extends AbstractTestValidation {
 		Assert.assertEquals(checkPointReport.getSeverity(), CheckPoint.SEVERITY.WARNING,
 				" checkPointReport must be on severity error");
 		Assert.assertEquals(checkPointReport.getDetailCount(), 2, " checkPointReport must have 2 items");
+		String detailKey = "3-AccessPoint-3".replaceAll("-", "_").toLowerCase();
+		List<Detail> details = checkPointReport.getDetails();
+		for (Detail detail : details) {
+			Assert.assertTrue(detail.getKey().startsWith(detailKey),
+					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
+		}
 		utx.rollback();
 	}
 

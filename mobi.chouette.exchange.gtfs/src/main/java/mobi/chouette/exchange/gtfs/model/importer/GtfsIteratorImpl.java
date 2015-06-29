@@ -42,6 +42,11 @@ public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator {
 	@Override
 	public void dispose() {
 		_buffer.clear();
+		_builder.clear();
+		_fields.clear();
+		_builder = null;
+		_buffer = null;
+		_fields = null;
 	}
 
 	@Override

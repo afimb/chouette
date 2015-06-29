@@ -26,7 +26,7 @@ public class TextFormater implements Formater
     * @see fr.certu.chouette.export.metadata.writer.Formater#format(fr.certu.chouette.export.metadata.model.Metadata.Period)
     */
    @Override
-   public String format(Period period)
+   public synchronized String format(Period period)
    {
       return "du "+dateFormat.format(period.getStart().getTime())+
             " au "+dateFormat.format(period.getEnd().getTime());
@@ -36,7 +36,7 @@ public class TextFormater implements Formater
     * @see fr.certu.chouette.export.metadata.writer.Formater#format(fr.certu.chouette.export.metadata.model.Metadata.Box)
     */
    @Override
-   public String format(Box box)
+   public synchronized String format(Box box)
    {
       return " nord "+doubleFormat.format(box.getNorthLimit())+
             ", sud "+doubleFormat.format(box.getSouthLimit())+
@@ -68,7 +68,7 @@ public class TextFormater implements Formater
     * @see fr.certu.chouette.export.metadata.writer.Formater#formatDate(java.util.Calendar)
     */
    @Override
-   public String formatDate(Calendar date)
+   public synchronized String formatDate(Calendar date)
    {
       return dateFormat.format(date.getTime());
    }

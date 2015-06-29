@@ -5,8 +5,6 @@ import java.util.Collection;
 import java.util.List;
 
 import mobi.chouette.exchange.neptune.JsonExtension;
-import mobi.chouette.exchange.neptune.exporter.ExportableData;
-import mobi.chouette.exchange.neptune.exporter.util.NeptuneObjectUtil;
 import mobi.chouette.model.Footnote;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;

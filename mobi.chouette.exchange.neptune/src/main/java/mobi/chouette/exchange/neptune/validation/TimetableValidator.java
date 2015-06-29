@@ -108,7 +108,7 @@ public class TimetableValidator extends AbstractValidator implements Validator<T
 			    int columnNumber = ((Integer) vjctx.get(COLUMN_NUMBER)).intValue();
 				FileLocation sourceLocation = new FileLocation(fileName, lineNumber, columnNumber);
 				Detail errorItem = new Detail(
-						TIMETABLE_1,
+						TIMETABLE_2,
 						new Location(sourceLocation,vjId));
 				addValidationError(context,TIMETABLE_2, errorItem);
 	         }

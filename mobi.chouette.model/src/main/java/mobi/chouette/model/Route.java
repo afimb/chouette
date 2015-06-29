@@ -17,12 +17,14 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderColumn;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -55,11 +57,13 @@ public class Route extends NeptuneIdentifiedObject {
 
 	@Getter
 	@Setter
-	@GenericGenerator(name = "routes_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", parameters = {
-			@Parameter(name = "sequence_name", value = "routes_id_seq"),
-			@Parameter(name = "increment_size", value = "10") })
+	@SequenceGenerator(name="routes_id_seq", sequenceName="routes_id_seq", allocationSize=1)
+    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="routes_id_seq")
+//	@GenericGenerator(name = "routes_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", parameters = {
+//			@Parameter(name = "sequence_name", value = "routes_id_seq"),
+//			@Parameter(name = "increment_size", value = "10") })
 	@Id
-	@GeneratedValue(generator = "routes_id_seq")
+//	@GeneratedValue(generator = "routes_id_seq")
 	@Column(name = "id", nullable = false)
 	protected Long id;
 

@@ -20,16 +20,12 @@ import mobi.chouette.model.util.Referential;
 @Log4j
 public class GtfsAgencyParser implements Parser, Validator, Constant {
 
-	private Referential referential;
-	private GtfsImporter importer;
-	private GtfsImportParameters configuration;
-
 	@Override
 	public void parse(Context context) throws Exception {
 
-		referential = (Referential) context.get(REFERENTIAL);
-		importer = (GtfsImporter) context.get(PARSER);
-		configuration = (GtfsImportParameters) context.get(CONFIGURATION);
+		Referential referential = (Referential) context.get(REFERENTIAL);
+		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
+		GtfsImportParameters configuration = (GtfsImportParameters) context.get(CONFIGURATION);
 
 		for (GtfsAgency gtfsAgency : importer.getAgencyById()) {
 			String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Company.COMPANY_KEY,
@@ -41,7 +37,7 @@ public class GtfsAgencyParser implements Parser, Validator, Constant {
 
 	@Override
 	public void validate(Context context) throws Exception {
-		importer = (GtfsImporter) context.get(PARSER);
+		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		ActionReport report = (ActionReport) context.get(REPORT);
 
 		// agency.txt
@@ -76,11 +72,9 @@ public class GtfsAgencyParser implements Parser, Validator, Constant {
 
 	static {
 		ParserFactory.register(GtfsAgencyParser.class.getName(), new ParserFactory() {
-			private GtfsAgencyParser instance = new GtfsAgencyParser();
-
 			@Override
 			protected Parser create() {
-				return instance;
+				return new GtfsAgencyParser();
 			}
 		});
 	}

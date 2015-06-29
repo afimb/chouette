@@ -2,6 +2,8 @@ package mobi.chouette.exchange.importer;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +19,6 @@ import javax.naming.NamingException;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
-import mobi.chouette.common.DateTimeUtil;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.LineDAO;
@@ -25,6 +26,9 @@ import mobi.chouette.dao.VehicleJourneyDAO;
 import mobi.chouette.exchange.importer.updater.LineOptimiser;
 import mobi.chouette.exchange.importer.updater.LineUpdater;
 import mobi.chouette.exchange.importer.updater.Updater;
+import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.LineError;
+import mobi.chouette.exchange.report.LineInfo;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
@@ -62,43 +66,39 @@ public class LineRegisterCommand implements Command {
 		boolean result = ERROR;
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
-		try {
-			if (!context.containsKey(OPTIMIZED))
-			{
-				context.put(OPTIMIZED, Boolean.TRUE);
-			}
-			Boolean optimized = (Boolean) context.get(OPTIMIZED);
-			Referential cache = new Referential();
-			context.put(CACHE, cache);
+		if (!context.containsKey(OPTIMIZED)) {
+			context.put(OPTIMIZED, Boolean.TRUE);
+		}
+		Boolean optimized = (Boolean) context.get(OPTIMIZED);
+		Referential cache = new Referential();
+		context.put(CACHE, cache);
 
-			Referential referential = (Referential) context.get(REFERENTIAL);
-			Line newValue = referential.getLines().values().iterator().next();
-			log.info("register line : " + newValue.getObjectId()+" "+newValue.getName()+ " vehicleJourney count = "+referential.getVehicleJourneys().size());
+		Referential referential = (Referential) context.get(REFERENTIAL);
+		Line newValue = referential.getLines().values().iterator().next();
+		log.info("register line : " + newValue.getObjectId() + " " + newValue.getName() + " vehicleJourney count = "
+				+ referential.getVehicleJourneys().size());
+		try {
 
 			optimiser.initialize(cache, referential);
 
 			Line oldValue = cache.getLines().get(newValue.getObjectId());
 			lineUpdater.update(context, oldValue, newValue);
 			lineDAO.create(oldValue);
+			lineDAO.flush(); // to prevent SQL error outside method
 
 			if (optimized) {
-				 StringWriter buffer = new StringWriter(1024);
-				 final List<String> list = new ArrayList<String>(
-						referential.getVehicleJourneys().keySet());
+				StringWriter buffer = new StringWriter(1024);
+				final List<String> list = new ArrayList<String>(referential.getVehicleJourneys().keySet());
 				for (VehicleJourney item : referential.getVehicleJourneys().values()) {
-					VehicleJourney vehicleJourney = cache.getVehicleJourneys()
-							.get(item.getObjectId());
+					VehicleJourney vehicleJourney = cache.getVehicleJourneys().get(item.getObjectId());
 
-					List<VehicleJourneyAtStop> vehicleJourneyAtStops = item
-							.getVehicleJourneyAtStops();
+					List<VehicleJourneyAtStop> vehicleJourneyAtStops = item.getVehicleJourneyAtStops();
 					for (VehicleJourneyAtStop vehicleJourneyAtStop : vehicleJourneyAtStops) {
 
 						StopPoint stopPoint = cache.getStopPoints().get(
-								vehicleJourneyAtStop.getStopPoint()
-								.getObjectId());
+								vehicleJourneyAtStop.getStopPoint().getObjectId());
 
-						write(buffer, vehicleJourney, stopPoint,
-								vehicleJourneyAtStop);
+						write(buffer, vehicleJourney, stopPoint, vehicleJourneyAtStop);
 					}
 				}
 				vehicleJourneyDAO.deleteVehicleJourneyAtStops(list);
@@ -107,48 +107,53 @@ public class LineRegisterCommand implements Command {
 
 			result = SUCCESS;
 		} catch (Exception e) {
-			log.error(e);
+			log.error(e.getMessage());
+			ActionReport report = (ActionReport) context.get(REPORT);
+			LineInfo info = report.findLineInfo(newValue.getObjectId());
+			if (info == null) {
+				info = new LineInfo(newValue.getObjectId(), newValue.getName());
+				report.getLines().add(info);
+			}
+			LineError error = new LineError(LineError.CODE.INTERNAL_ERROR, e.getMessage());
+			info.addError(error);
+			// return ERROR;
 			throw e;
+		} finally {
+			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		}
-		log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		return result;
 	}
 
-	private void write(StringWriter buffer, VehicleJourney vehicleJourney,
-			StopPoint stopPoint, VehicleJourneyAtStop vehicleJourneyAtStop)
-					throws IOException {
+	private void write(StringWriter buffer, VehicleJourney vehicleJourney, StopPoint stopPoint,
+			VehicleJourneyAtStop vehicleJourneyAtStop) throws IOException {
+		DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
 		buffer.write(vehicleJourney.getId().toString());
 		buffer.append(SEP);
 		buffer.write(stopPoint.getId().toString());
 		buffer.append(SEP);
 		if (vehicleJourneyAtStop.getBoardingAlightingPossibility() != null)
-			buffer.write(vehicleJourneyAtStop.getBoardingAlightingPossibility()
-					.toString());
+			buffer.write(vehicleJourneyAtStop.getBoardingAlightingPossibility().toString());
 		else
 			buffer.write(NULL);
 		buffer.append(SEP);
 		if (vehicleJourneyAtStop.getArrivalTime() != null)
-			buffer.write(DateTimeUtil.getTimeText(vehicleJourneyAtStop
-					.getArrivalTime()));
+			buffer.write(timeFormat.format(vehicleJourneyAtStop.getArrivalTime()));
 		else
 			buffer.write(NULL);
 		buffer.append(SEP);
 		if (vehicleJourneyAtStop.getDepartureTime() != null)
-			buffer.write(DateTimeUtil.getTimeText(vehicleJourneyAtStop
-					.getDepartureTime()));
+			buffer.write(timeFormat.format(vehicleJourneyAtStop.getDepartureTime()));
 		else
 			buffer.write(NULL);
 		buffer.append(SEP);
 
 		if (vehicleJourneyAtStop.getElapseDuration() != null)
-			buffer.write(DateTimeUtil.getTimeText(vehicleJourneyAtStop
-					.getElapseDuration()));
+			buffer.write(timeFormat.format(vehicleJourneyAtStop.getElapseDuration()));
 		else
 			buffer.write(NULL);
 		buffer.append(SEP);
 		if (vehicleJourneyAtStop.getHeadwayFrequency() != null)
-			buffer.write(DateTimeUtil.getTimeText(vehicleJourneyAtStop
-					.getHeadwayFrequency()));
+			buffer.write(timeFormat.format(vehicleJourneyAtStop.getHeadwayFrequency()));
 		else
 			buffer.write(NULL);
 		buffer.append('\n');
@@ -176,7 +181,6 @@ public class LineRegisterCommand implements Command {
 	}
 
 	static {
-		CommandFactory.factories.put(LineRegisterCommand.class.getName(),
-				new DefaultCommandFactory());
+		CommandFactory.factories.put(LineRegisterCommand.class.getName(), new DefaultCommandFactory());
 	}
 }

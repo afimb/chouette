@@ -225,6 +225,12 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 				" checkPointReport must be on level warning");
 		Assert.assertEquals(checkPointReport.getDetailCount(), 4, " checkPointReport must have 4 item");
 
+		String detailKey = "3-VehicleJourney-1".replaceAll("-", "_").toLowerCase();
+		List<Detail> details = checkPointReport.getDetails();
+		for (Detail detail : details) {
+			Assert.assertTrue(detail.getKey().startsWith(detailKey),
+					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
+		}
 		// check detail keys
 		for (Detail detail : checkPointReport.getDetails()) {
 			Assert.assertEquals(detail.getSource().getObjectId(), vj1.getObjectId(),
@@ -285,6 +291,12 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 				" checkPointReport must be on level warning");
 		
 		Assert.assertEquals(checkPointReport.getDetailCount(), 81, " checkPointReport must have 81 item");
+		String detailKey = "3-VehicleJourney-2".replaceAll("-", "_").toLowerCase();
+		List<Detail> details = checkPointReport.getDetails();
+		for (Detail detail : details) {
+			Assert.assertTrue(detail.getKey().startsWith(detailKey),
+					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
+		}
 		utx.rollback();
 
 	}
@@ -348,6 +360,12 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 				" checkPointReport must be on level warning");
 		
 		Assert.assertEquals(checkPointReport.getDetailCount(), 26, " checkPointReport must have 26 item");
+		String detailKey = "3-VehicleJourney-3".replaceAll("-", "_").toLowerCase();
+		List<Detail> details = checkPointReport.getDetails();
+		for (Detail detail : details) {
+			Assert.assertTrue(detail.getKey().startsWith(detailKey),
+					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
+		}
 		utx.rollback();
 
 	}
@@ -400,6 +418,12 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 				" checkPointReport must be on level warning");
 		
 		Assert.assertEquals(checkPointReport.getDetailCount(), 1, " checkPointReport must have 1 item");
+		String detailKey = "3-VehicleJourney-4".replaceAll("-", "_").toLowerCase();
+		List<Detail> details = checkPointReport.getDetails();
+		for (Detail detail : details) {
+			Assert.assertTrue(detail.getKey().startsWith(detailKey),
+					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
+		}
 		utx.rollback();
 
 	}

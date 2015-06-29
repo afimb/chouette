@@ -107,6 +107,19 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 
 		} catch (IOException ignored) {
 		}
+		_buffer.clear();
+		_fields.clear();
+		_tokens.clear();
+		_index.clear();
+		_reader = null;
+		_channel1 = null;
+		_channel2 = null;
+		_temp = null;
+		_buffer = null;
+		_fields = null;
+		_tokens = null;
+		_index = null;
+		
 	}
 
 	@Override
