@@ -5,14 +5,17 @@ import mobi.chouette.common.Context;
 import mobi.chouette.exchange.gtfs.Constant;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.gtfs.model.GtfsAgency;
+import mobi.chouette.exchange.gtfs.model.importer.GtfsException;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsImporter;
 import mobi.chouette.exchange.gtfs.model.importer.Index;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.Validator;
 import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.FileError;
 import mobi.chouette.exchange.report.FileInfo;
 import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
+import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
@@ -39,15 +42,44 @@ public class GtfsAgencyParser implements Parser, Validator, Constant {
 	public void validate(Context context) throws Exception {
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		ActionReport report = (ActionReport) context.get(REPORT);
-
+		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
+		
 		// agency.txt
-		FileInfo file = new FileInfo(GTFS_AGENCY_FILE,FILE_STATE.OK);
-		report.getFiles().add(file);
+		if (importer.hasAgencyImporter()) {
+			FileInfo file = new FileInfo(GTFS_AGENCY_FILE, FILE_STATE.OK);
+			report.getFiles().add(file);
+		} else {
+			// 1-GTFS-Agency-1 The file agency.txt must be provided - fatal
+			FileInfo file = new FileInfo(GTFS_AGENCY_FILE, FILE_STATE.ERROR);
+			file.addError(new FileError(FileError.CODE.FILE_NOT_FOUND, "The file agency.txt must be provided (rule 1-GTFS-Agency-1)"));
+			report.getFiles().add(file);
+			////validationReport.getCheckPoints();
+		}
+		
 		Index<GtfsAgency> parser = null;
 		try {
 			parser = importer.getAgencyById();
 		} catch (Exception ex ) {
 			// 1-GTFS-Agency-1 The file agency.txt must be provided - fatal
+			//file.setStatus(FILE_STATE.ERROR);
+			//file.addError(new FileError(FileError.CODE.FILE_NOT_FOUND, "1-GTFS-Agency-1: The file agency.txt must be provided"));
+			mobi.chouette.exchange.gtfs.model.importer.Context exceptionContext = new mobi.chouette.exchange.gtfs.model.importer.Context();
+			exceptionContext.put(mobi.chouette.exchange.gtfs.model.importer.Context.CODE, "1-GTFS-Agency-1");
+			exceptionContext.put(mobi.chouette.exchange.gtfs.model.importer.Context.ERROR, GtfsException.ERROR.MISSING_FILE);
+			GtfsException exception = new GtfsException(exceptionContext, ex);
+			AbstractConverter.populateFileError(file, exception);
+			throw exception;
+		}
+		if (parser == null || parser.getLength() == 0) {
+			// 1-GTFS-Agency-2 There must exists at least one agency - fatal
+			//file.setStatus(FILE_STATE.ERROR);
+			//file.addError(new FileError(FileError.CODE.INVALID_FORMAT, "1-GTFS-Agency-2: There must exists at least one agency"));
+			mobi.chouette.exchange.gtfs.model.importer.Context exceptionContext = new mobi.chouette.exchange.gtfs.model.importer.Context();
+			exceptionContext.put(mobi.chouette.exchange.gtfs.model.importer.Context.CODE, "1-GTFS-Agency-2");
+			exceptionContext.put(mobi.chouette.exchange.gtfs.model.importer.Context.ERROR, GtfsException.ERROR.INVALID_FILE_FORMAT);
+			GtfsException exception = new GtfsException(exceptionContext);
+			AbstractConverter.populateFileError(file, exception);
+			throw exception;
 		}
 		try {
 			for (GtfsAgency bean : parser) {
