@@ -36,6 +36,7 @@ public class GtfsException extends RuntimeException {
 		this.id = (Integer) context.get(Context.ID);
 		this.field = (String) context.get(Context.FIELD);
 		this.error = (ERROR) context.get(Context.ERROR);
+		this.code = (String) context.get(Context.CODE);
 		this.value = (String) context.get(Context.VALUE);
 	}
 

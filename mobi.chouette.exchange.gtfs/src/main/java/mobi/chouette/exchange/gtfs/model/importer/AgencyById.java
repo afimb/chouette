@@ -1,6 +1,8 @@
 package mobi.chouette.exchange.gtfs.model.importer;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Locale;
 
 import mobi.chouette.exchange.gtfs.model.GtfsAgency;
 
@@ -30,27 +32,40 @@ public class AgencyById extends IndexImpl<GtfsAgency> implements GtfsConverter {
 		i = 0;
 		int id = (int) context.get(Context.ID);
 		bean.setId(id);
-		bean.setAgencyId(STRING_CONVERTER.from(context, FIELDS.agency_id,
-				array[i++], GtfsAgency.DEFAULT_ID, false));
-		bean.setAgencyName(STRING_CONVERTER.from(context, FIELDS.agency_name,
-				array[i++], true));
-		bean.setAgencyUrl(URL_CONVERTER.from(context, FIELDS.agency_url,
-				array[i++], true));
-		bean.setAgencyTimezone(TIMEZONE_CONVERTER.from(context,
-				FIELDS.agency_timezone, array[i++], true));
-		bean.setAgencyPhone(STRING_CONVERTER.from(context, FIELDS.agency_phone,
-				array[i++], false));
-		bean.setAgencyLang(STRING_CONVERTER.from(context, FIELDS.agency_lang,
-				array[i++], false));
-		bean.setAgencyFareUrl(URL_CONVERTER.from(context,
-				FIELDS.agency_fare_url, array[i++], false));
-
+		bean.setAgencyId(STRING_CONVERTER.from(context, FIELDS.agency_id, array[i++], GtfsAgency.DEFAULT_ID, false));
+		bean.setAgencyName(STRING_CONVERTER.from(context, FIELDS.agency_name, array[i++], true));
+		try {
+			bean.setAgencyUrl(URL_CONVERTER.from(context, FIELDS.agency_url, array[i++], true));
+		} catch (GtfsException e) {
+			// 1-GTFS-Agency-7  warning
+		}
+		try {
+			bean.setAgencyTimezone(TIMEZONE_CONVERTER.from(context,FIELDS.agency_timezone, array[i++], true));
+		} catch (GtfsException e) {
+			// 1-GTFS-Agency-6  warning
+		}
+		bean.setAgencyPhone(STRING_CONVERTER.from(context, FIELDS.agency_phone, array[i++], false));
+		bean.setAgencyLang(STRING_CONVERTER.from(context, FIELDS.agency_lang, array[i++], false));
+		try {
+			bean.setAgencyFareUrl(URL_CONVERTER.from(context, FIELDS.agency_fare_url, array[i++], false));
+		} catch (GtfsException e) {
+			//1-GTFS-Agency-9   warning
+		}
+		
 		return bean;
 	}
 
 	@Override
 	public boolean validate(GtfsAgency bean, GtfsImporter dao) {
-		return true;
+		boolean result = true;
+		
+		String lang = bean.getAgencyLang();
+		if (lang == null || !Arrays.asList(Locale.getISOLanguages()).contains(lang)) {
+			// 1-GTFS-Agency-8  warning
+			result = false;
+		}
+		
+		return result;
 	}
 
 	public static class DefaultImporterFactory extends IndexFactory {

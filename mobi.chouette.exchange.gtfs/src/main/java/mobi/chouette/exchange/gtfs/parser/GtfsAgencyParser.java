@@ -47,8 +47,13 @@ public class GtfsAgencyParser implements Parser, Validator, Constant {
 		// agency.txt
 		FileInfo file = new FileInfo(GTFS_AGENCY_FILE,FILE_STATE.OK);
 		report.getFiles().add(file);
+		Index<GtfsAgency> parser = null;
 		try {
-			Index<GtfsAgency> parser = importer.getAgencyById();
+			parser = importer.getAgencyById();
+		} catch (Exception ex ) {
+			// 1-GTFS-Agency-1 The file agency.txt must be provided - fatal
+		}
+		try {
 			for (GtfsAgency bean : parser) {
 				parser.validate(bean, importer);
 			}

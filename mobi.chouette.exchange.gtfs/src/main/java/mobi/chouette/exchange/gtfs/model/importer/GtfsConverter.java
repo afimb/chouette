@@ -172,7 +172,11 @@ public interface GtfsConverter {
 
 		@Override
 		protected TimeZone convertFrom(String input) throws Exception {
-			return TimeZone.getTimeZone(input);
+			TimeZone tz = TimeZone.getTimeZone(input);
+			if (!tz.getID().equals(input)) {
+				throw new Exception("Unknown TimeZone.");
+			}
+			return tz;
 		}
 
 		@Override
