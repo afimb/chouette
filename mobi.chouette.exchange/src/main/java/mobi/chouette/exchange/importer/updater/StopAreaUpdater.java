@@ -60,6 +60,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 		newValue.setSaved(true);
 
 		Referential cache = (Referential) context.get(CACHE);
+		Referential referential = (Referential) context.get(REFERENTIAL);
 
 		if (newValue.getObjectId() != null && !newValue.getObjectId().equals(oldValue.getObjectId())) {
 			oldValue.setObjectId(newValue.getObjectId());
@@ -226,7 +227,15 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			if (startOfLink == null) {
 				startOfLink = ObjectFactory.getConnectionLink(cache, item.getObjectId());
 			}
-			StopArea endOfLinkArea = stopAreaDAO.findByObjectId(item.getEndOfLink().getObjectId());
+			StopArea endOfLinkArea = cache.getStopAreas().get(item.getEndOfLink().getObjectId()) ;
+			if (endOfLinkArea == null)
+				endOfLinkArea = stopAreaDAO.findByObjectId(item.getEndOfLink().getObjectId());
+			else 
+			{
+				StopArea localArea = referential.getSharedStopAreas().get(endOfLinkArea.getObjectId());
+				if (!localArea.isSaved()) 
+					endOfLinkArea = null; // ignored if not already saved
+			}
 		    if (endOfLinkArea != null)
 		    {
 //				log.info("connect connectionLink (start) "+item.getName());
@@ -254,7 +263,16 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			if (endOfLink == null) {
 				endOfLink = ObjectFactory.getConnectionLink(cache, item.getObjectId());
 			}
-			StopArea startOfLinkArea = stopAreaDAO.findByObjectId(item.getStartOfLink().getObjectId());
+			StopArea startOfLinkArea = cache.getStopAreas().get(item.getStartOfLink().getObjectId()) ;
+			if (startOfLinkArea == null)
+				startOfLinkArea = stopAreaDAO.findByObjectId(item.getStartOfLink().getObjectId());
+			else 
+			{
+				StopArea localArea = referential.getSharedStopAreas().get(startOfLinkArea.getObjectId());
+				if (!localArea.isSaved()) 
+					startOfLinkArea = null; // ignored if not already saved
+			}
+				
 		    if (startOfLinkArea != null)
 		    {
 //				log.info("connect connectionLink (end) "+item.getName());
