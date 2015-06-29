@@ -217,6 +217,8 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			accessLinkUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
 
+		if (!context.containsKey(AREA_BLOC))
+		{
 		// StartOfLink
 		Collection<ConnectionLink> addedStartOfLink = CollectionUtil.substract(newValue.getConnectionStartLinks(),
 				oldValue.getConnectionStartLinks(), NeptuneIdentifiedObjectComparator.INSTANCE);
@@ -289,6 +291,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 		for (Pair<ConnectionLink, ConnectionLink> pair : modifiedEndOfLink) {
 			connectionLinkUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
+		}
 
 		// TODO list routing_constraints_lines (routingConstraintLines)
 		// TODO list stop_areas_stop_areas (routingConstraintAreas)
@@ -301,7 +304,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			StopArea area = cache.getStopAreas().get(item.getObjectId());
 			if (area == null) {
 				if (stopAreas == null) {
-					stopAreas = stopAreaDAO.findByObjectId(UpdaterUtils.getObjectIds(addedEndOfLink));
+					stopAreas = stopAreaDAO.findByObjectId(UpdaterUtils.getObjectIds(addedStopAreas));
 					for (StopArea object : addedStopAreas) {
 						cache.getStopAreas().put(object.getObjectId(), object);
 					}

@@ -31,6 +31,10 @@
          <groupId>org.codehaus.jettison</groupId>
          <artifactId>jettison</artifactId>
       </dependency>
+      <dependency>
+         <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+      </dependency>
 
 		<!-- Others Dependencies -->
 		<dependency>
