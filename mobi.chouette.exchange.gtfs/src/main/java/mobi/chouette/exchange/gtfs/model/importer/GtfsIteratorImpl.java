@@ -194,8 +194,18 @@ public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator {
 		_buffer.position(offset);
 		boolean escape = false;
 		_builder.clear();
+		boolean quotedString = false;
 		for (int i = 0; i < length; i++) {
 			byte c = _buffer.get();
+			if (i == 0 && c == DQUOTE) 
+			{
+				quotedString = true;
+				continue;
+			}
+			if (i== length-1 && quotedString &&  c == DQUOTE)
+			{
+				break;
+			}
 			if (!escape) {
 				if (c == DQUOTE) {
 					if (i + 1 < length) {

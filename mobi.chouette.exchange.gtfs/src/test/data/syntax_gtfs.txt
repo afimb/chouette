@@ -1,4 +1,4 @@
-"toto",""titi"",tutu,"tata,toto","toto""tata"
+"toto","""titi""",tutu,"tata,toto","toto""tata",,""
 "truc
 troc",
 gaga"
