@@ -46,7 +46,7 @@ public class StopAreaRegisterCommand implements Command {
 		Monitor monitor = MonitorFactory.start(COMMAND);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		Collection<StopArea> orderedAreas =  Collections2.filter(referential.getStopAreas().values(), predicate);
-		Iterable<List<StopArea>> iterator = Iterables.partition(orderedAreas, 10000);
+		Iterable<List<StopArea>> iterator = Iterables.partition(orderedAreas, 5000);
 		int count = 0;
 		for (List<StopArea> areas : iterator) {
 			count += areas.size();
@@ -56,7 +56,7 @@ public class StopAreaRegisterCommand implements Command {
 			log.info("Areas proceded :"+count+"/"+orderedAreas.size());
 		}
 		Collection<ConnectionLink> orderedlinks =  referential.getConnectionLinks().values();
-		Iterable<List<ConnectionLink>> iterator2 = Iterables.partition(orderedlinks, 20000);
+		Iterable<List<ConnectionLink>> iterator2 = Iterables.partition(orderedlinks, 5000);
 		count = 0;
 		for (List<ConnectionLink> links : iterator2) {
 			count += links.size();
