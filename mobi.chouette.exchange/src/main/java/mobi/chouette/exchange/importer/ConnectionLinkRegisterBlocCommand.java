@@ -56,23 +56,25 @@ public class ConnectionLinkRegisterBlocCommand implements Command {
 		try {
 			Boolean optimized = Boolean.TRUE;
 			
-			// Monitor monitorInit = MonitorFactory.start(COMMAND+".init");
+			Monitor monitorInit = MonitorFactory.start(COMMAND+".init");
 			context.put(OPTIMIZED, optimized);
 			Collection<ConnectionLink> connectionLinks = (Collection<ConnectionLink>) context.get(CONNECTION_LINK_BLOC);
 			Referential cache = new Referential();
 			context.put(CACHE, cache);
 			initializeStopArea(cache, connectionLinks);
 			initializeConnectionLink(cache, connectionLinks);
-			// log.info(Color.CYAN + monitorInit.stop() + Color.NORMAL);
-			// Monitor monitorUpdate = MonitorFactory.start(COMMAND+".update");
+			log.info(Color.CYAN + monitorInit.stop() + Color.NORMAL);
+			Monitor monitorUpdate = MonitorFactory.start(COMMAND+".update");
 
 			for (ConnectionLink newValue : connectionLinks) {
 				ConnectionLink oldValue = cache.getConnectionLinks().get(newValue.getObjectId());
 				connectionLinkUpdater.update(context, oldValue , newValue);
 				connectionLinkDAO.create(oldValue);
 			}
+			log.info(Color.CYAN + monitorUpdate.stop() + Color.NORMAL);
+			Monitor monitorFlush = MonitorFactory.start(COMMAND + ".flush");
 			connectionLinkDAO.flush();
-			// log.info(Color.CYAN + monitorUpdate.stop() + Color.NORMAL);
+			log.info(Color.CYAN + monitorFlush.stop() + Color.NORMAL);
 			result = SUCCESS;
 		} catch (Exception e) {
 			log.error(e);

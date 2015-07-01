@@ -62,6 +62,34 @@ public class StopAreaUpdater implements Updater<StopArea> {
 		Referential cache = (Referential) context.get(CACHE);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
+		if (oldValue.isDetached())
+		{
+				oldValue.setObjectId(newValue.getObjectId());
+				oldValue.setObjectVersion(newValue.getObjectVersion());
+				oldValue.setCreationTime(newValue.getCreationTime());
+				oldValue.setCreatorId(newValue.getCreatorId());
+				oldValue.setName(newValue.getName());
+				oldValue.setComment(newValue.getComment());
+				oldValue.setAreaType(newValue.getAreaType());
+				oldValue.setRegistrationNumber(newValue.getRegistrationNumber());
+				oldValue.setNearestTopicName(newValue.getNearestTopicName());
+				oldValue.setUrl(newValue.getUrl());
+				oldValue.setTimeZone(newValue.getTimeZone());
+				oldValue.setFareCode(newValue.getFareCode());
+				oldValue.setLiftAvailable(newValue.getLiftAvailable());
+				oldValue.setMobilityRestrictedSuitable(newValue.getMobilityRestrictedSuitable());
+				oldValue.setStairsAvailable(newValue.getStairsAvailable());
+				oldValue.setIntUserNeeds(newValue.getIntUserNeeds());
+				oldValue.setLongitude(newValue.getLongitude());
+				oldValue.setLatitude(newValue.getLatitude());
+				oldValue.setLongLatType(newValue.getLongLatType());
+				oldValue.setCountryCode(newValue.getCountryCode());
+				oldValue.setZipCode(newValue.getZipCode());
+				oldValue.setCityName(newValue.getCityName());
+				oldValue.setStreetName(newValue.getStreetName());			
+		}
+		else
+		{
 		if (newValue.getObjectId() != null && !newValue.getObjectId().equals(oldValue.getObjectId())) {
 			oldValue.setObjectId(newValue.getObjectId());
 		}
@@ -136,14 +164,14 @@ public class StopAreaUpdater implements Updater<StopArea> {
 		if (newValue.getStreetName() != null && !newValue.getStreetName().equals(oldValue.getStreetName())) {
 			oldValue.setStreetName(newValue.getStreetName());
 		}
-
+		}
 		// StopArea Parent
 		if (newValue.getParent() == null) {
 			oldValue.setParent(null);
 		} else {
 			String objectId = newValue.getParent().getObjectId();
 			StopArea stopArea = cache.getStopAreas().get(objectId);
-			if (stopArea == null) {
+			if (stopArea == null ) {
 				stopArea = stopAreaDAO.findByObjectId(objectId);
 				if (stopArea != null) {
 					cache.getStopAreas().put(objectId, stopArea);
