@@ -84,7 +84,7 @@ public class VehicleJourneyDAO extends GenericDAOImpl<VehicleJourney> {
 
 			@Override
 			public void execute(Connection connection) throws SQLException {
-				Monitor monitor = MonitorFactory.start("COPY");
+				// Monitor monitor = MonitorFactory.start("COPY");
 				try {
 
 					StringReader from = new StringReader(data);
@@ -103,7 +103,7 @@ public class VehicleJourneyDAO extends GenericDAOImpl<VehicleJourney> {
 				} catch (IOException e) {
 					log.error(e);
 				}
-				log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
+				// log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 			}
 		});
 	}

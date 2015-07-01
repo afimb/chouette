@@ -51,9 +51,9 @@ public class ConnectionLink extends NeptuneIdentifiedObject {
 //	@GenericGenerator(name = "connection_links_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", 
 //		parameters = {
 //			@Parameter(name = "sequence_name", value = "connection_links_id_seq"),
-//			@Parameter(name = "increment_size", value = "50") })
-	@Id
+//			@Parameter(name = "increment_size", value = "100") })
 //	@GeneratedValue(generator = "connection_links_id_seq")
+	@Id
 	@Column(name = "id", nullable = false)
 	protected Long id;
 	

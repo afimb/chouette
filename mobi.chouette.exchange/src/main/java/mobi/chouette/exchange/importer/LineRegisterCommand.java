@@ -2,6 +2,7 @@ package mobi.chouette.exchange.importer;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -106,18 +107,35 @@ public class LineRegisterCommand implements Command {
 			}
 
 			result = SUCCESS;
-		} catch (Exception e) {
-			log.error(e.getMessage());
+		} catch (Exception ex) {
+			log.error(ex.getMessage());
 			ActionReport report = (ActionReport) context.get(REPORT);
 			LineInfo info = report.findLineInfo(newValue.getObjectId());
 			if (info == null) {
 				info = new LineInfo(newValue.getObjectId(), newValue.getName());
 				report.getLines().add(info);
 			}
-			LineError error = new LineError(LineError.CODE.INTERNAL_ERROR, e.getMessage());
-			info.addError(error);
-			// return ERROR;
-			throw e;
+			if (ex.getCause() != null) {
+				Throwable e = ex.getCause();
+				while (e.getCause() != null) {
+					log.error(e.getMessage());
+					e = e.getCause();
+				}
+				if (e instanceof SQLException) {
+					e = ((SQLException) e).getNextException();
+					LineError error = new LineError(LineError.CODE.WRITE_ERROR, e.getMessage());
+					info.addError(error);
+				} else {
+					LineError error = new LineError(LineError.CODE.INTERNAL_ERROR, e.getMessage());
+					info.addError(error);
+				}
+			}
+			else
+			{
+				LineError error = new LineError(LineError.CODE.INTERNAL_ERROR, ex.getMessage());
+				info.addError(error);				
+			}
+			throw ex;
 		} finally {
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		}

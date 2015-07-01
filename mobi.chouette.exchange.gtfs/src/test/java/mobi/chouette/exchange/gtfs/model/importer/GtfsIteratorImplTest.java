@@ -26,12 +26,14 @@ public class GtfsIteratorImplTest {
 			{
 				System.out.println(reader.getValue(i));
 			}
-			Assert.assertEquals(reader.getFieldCount(), 5, "check token count");
+			Assert.assertEquals(reader.getFieldCount(), 7, "check token count");
 			Assert.assertEquals(reader.getValue(0), "toto", "check item 0");
 			Assert.assertEquals(reader.getValue(1), "\"titi\"", "check item 1");
 			Assert.assertEquals(reader.getValue(2), "tutu", "check item 2");
 			Assert.assertEquals(reader.getValue(3), "tata,toto", "check item 3");
 			Assert.assertEquals(reader.getValue(4), "toto\"tata", "check item 4");
+			Assert.assertEquals(reader.getValue(5), "");
+			Assert.assertEquals(reader.getValue(6), "");
 			Assert.assertFalse(reader.next(), "check line 2");
 			Assert.assertFalse(reader.next(), "check line 3");
 			Assert.assertFalse(reader.next(), "check line 4");

@@ -4,7 +4,11 @@ import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
+
+import lombok.extern.log4j.Log4j;
 
 import org.hibernate.HibernateException;
 import org.hibernate.MappingException;
@@ -19,6 +23,7 @@ import org.hibernate.internal.util.config.ConfigurationHelper;
 import org.hibernate.mapping.Table;
 import org.hibernate.type.Type;
 
+@Log4j
 public class ChouetteIdentifierGenerator implements IdentifierGenerator,
 		Configurable {
 
@@ -33,10 +38,11 @@ public class ChouetteIdentifierGenerator implements IdentifierGenerator,
 	private String sql;
 	private String sequenceName;
 	private Type identifierType;
-	private IntegralDataTypeHolder hiValue;
-	private IntegralDataTypeHolder value;
 	private int incrementSize;
-
+	
+	private Map<String,IntegralDataTypeHolder> hiValues = new ConcurrentHashMap<>();
+	private Map<String,IntegralDataTypeHolder> values = new ConcurrentHashMap<>();
+	
 	@Override
 	public void configure(Type type, Properties params, Dialect dialect)
 			throws MappingException {
@@ -44,18 +50,24 @@ public class ChouetteIdentifierGenerator implements IdentifierGenerator,
 		this.sequenceName = determineSequenceName(params, dialect);
 		this.incrementSize = determineIncrementSize(params);
 		this.sql = getSequenceNextValString(sequenceName, incrementSize);	
+		log.info("----------------configure sequence "+sequenceName+" on schema "+params.getProperty(SCHEMA) +" ------------") ;
 	}
 
 	@Override
 	public Serializable generate(SessionImplementor session, Object object)
 			throws HibernateException {
 
-		if (hiValue == null || hiValue.lt(value) ) {
+		 IntegralDataTypeHolder hiValue = hiValues.get(session.getTenantIdentifier());
+		 IntegralDataTypeHolder value = values.get(session.getTenantIdentifier());
+		
+		if (hiValue == null || value == null || hiValue.lt(value) ) {
 			hiValue = getNextValue(session);
 			value = hiValue.copy().subtract(incrementSize);
+			hiValues.put(session.getTenantIdentifier(), hiValue);
 			// System.out.println("[DSU] ? nextval --------------> : " + value);
 		}
 		Number result = value.makeValueThenIncrement();
+		values.put(session.getTenantIdentifier(), value);
 		// System.out.println("[DSU] nextval --------------> : " + value);
 		return result;
 	}
@@ -120,5 +132,11 @@ public class ChouetteIdentifierGenerator implements IdentifierGenerator,
 	protected int determineIncrementSize(Properties params) {
 		return ConfigurationHelper.getInt(INCREMENT_PARAM, params,
 				DEFAULT_INCREMENT_SIZE);
+	}
+	
+	private class State
+	{
+		IntegralDataTypeHolder hiValue ;
+		 IntegralDataTypeHolder value ;
 	}
 }

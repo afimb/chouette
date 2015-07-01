@@ -8,10 +8,10 @@
 	</parent>
 	<artifactId>mobi.chouette.persistence.hibernate</artifactId>
 	<packaging>ejb</packaging>
-   <properties>
-      <project.rootDir>${project.basedir}/..</project.rootDir>
-      <skipInitDb>true</skipInitDb>
-   </properties>
+	<properties>
+		<project.rootDir>${project.basedir}/..</project.rootDir>
+		<skipInitDb>true</skipInitDb>
+	</properties>
 	<dependencies>
 
 		<!-- Default Dependencies -->
@@ -20,12 +20,17 @@
 			<artifactId>lombok</artifactId>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+		</dependency>
+
 
 		<!-- Others Dependencies -->
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
-			<scope>provided</scope>			
+			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate</groupId>

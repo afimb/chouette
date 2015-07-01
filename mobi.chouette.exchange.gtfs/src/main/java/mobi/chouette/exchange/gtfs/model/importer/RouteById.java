@@ -36,7 +36,7 @@ public class RouteById extends IndexImpl<GtfsRoute> implements GtfsConverter {
 		bean.setAgencyId(STRING_CONVERTER.from(context, FIELDS.agency_id,
 				array[i++], false));
 		bean.setRouteShortName(STRING_CONVERTER.from(context,
-				FIELDS.route_short_name, array[i++], true));
+				FIELDS.route_short_name, array[i++], false));
 		bean.setRouteLongName(STRING_CONVERTER.from(context,
 				FIELDS.route_long_name, array[i++], bean.getRouteShortName() != null));
 		bean.setRouteDesc(STRING_CONVERTER.from(context, FIELDS.route_desc,

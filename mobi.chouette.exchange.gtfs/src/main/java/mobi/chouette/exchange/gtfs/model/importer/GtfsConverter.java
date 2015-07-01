@@ -154,6 +154,7 @@ public interface GtfsConverter {
 
 		@Override
 		protected URL convertFrom(String input) throws Exception {
+			if (input == null || input.isEmpty()) return null;
 			URL result = new URL(input);
 			String protocol = result.getProtocol();
 			if (!(protocol.equals("http") || protocol.equals("https"))) {

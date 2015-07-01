@@ -47,7 +47,8 @@ public class MainCommand implements Command, Constant {
 			Parameters parameters = JSONUtil.fromJSON(Paths.get(jobService.getPathName(), PARAMETERS_FILE),
 					Parameters.class);
 			context.put(CONFIGURATION, parameters.getConfiguration());
-			context.put(VALIDATION, parameters.getValidation());
+			if (parameters.getValidation() != null)
+			   context.put(VALIDATION, parameters.getValidation());
 			context.put(REPORT, new ActionReport());
 			context.put(MAIN_VALIDATION_REPORT, new ValidationReport());
 
@@ -76,7 +77,7 @@ public class MainCommand implements Command, Constant {
 
 		} catch (Exception ex) {
 			if (!COMMAND_CANCELLED.equals(ex.getMessage())) {
-				log.error(ex);
+				log.error(ex,ex);
 				jobManager.abort(jobService);
 			}
 

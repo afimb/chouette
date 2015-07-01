@@ -60,7 +60,36 @@ public class StopAreaUpdater implements Updater<StopArea> {
 		newValue.setSaved(true);
 
 		Referential cache = (Referential) context.get(CACHE);
+		Referential referential = (Referential) context.get(REFERENTIAL);
 
+		if (oldValue.isDetached())
+		{
+				oldValue.setObjectId(newValue.getObjectId());
+				oldValue.setObjectVersion(newValue.getObjectVersion());
+				oldValue.setCreationTime(newValue.getCreationTime());
+				oldValue.setCreatorId(newValue.getCreatorId());
+				oldValue.setName(newValue.getName());
+				oldValue.setComment(newValue.getComment());
+				oldValue.setAreaType(newValue.getAreaType());
+				oldValue.setRegistrationNumber(newValue.getRegistrationNumber());
+				oldValue.setNearestTopicName(newValue.getNearestTopicName());
+				oldValue.setUrl(newValue.getUrl());
+				oldValue.setTimeZone(newValue.getTimeZone());
+				oldValue.setFareCode(newValue.getFareCode());
+				oldValue.setLiftAvailable(newValue.getLiftAvailable());
+				oldValue.setMobilityRestrictedSuitable(newValue.getMobilityRestrictedSuitable());
+				oldValue.setStairsAvailable(newValue.getStairsAvailable());
+				oldValue.setIntUserNeeds(newValue.getIntUserNeeds());
+				oldValue.setLongitude(newValue.getLongitude());
+				oldValue.setLatitude(newValue.getLatitude());
+				oldValue.setLongLatType(newValue.getLongLatType());
+				oldValue.setCountryCode(newValue.getCountryCode());
+				oldValue.setZipCode(newValue.getZipCode());
+				oldValue.setCityName(newValue.getCityName());
+				oldValue.setStreetName(newValue.getStreetName());			
+		}
+		else
+		{
 		if (newValue.getObjectId() != null && !newValue.getObjectId().equals(oldValue.getObjectId())) {
 			oldValue.setObjectId(newValue.getObjectId());
 		}
@@ -135,14 +164,14 @@ public class StopAreaUpdater implements Updater<StopArea> {
 		if (newValue.getStreetName() != null && !newValue.getStreetName().equals(oldValue.getStreetName())) {
 			oldValue.setStreetName(newValue.getStreetName());
 		}
-
+		}
 		// StopArea Parent
 		if (newValue.getParent() == null) {
 			oldValue.setParent(null);
 		} else {
 			String objectId = newValue.getParent().getObjectId();
 			StopArea stopArea = cache.getStopAreas().get(objectId);
-			if (stopArea == null) {
+			if (stopArea == null ) {
 				stopArea = stopAreaDAO.findByObjectId(objectId);
 				if (stopArea != null) {
 					cache.getStopAreas().put(objectId, stopArea);
@@ -216,6 +245,8 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			accessLinkUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
 
+		if (!context.containsKey(AREA_BLOC))
+		{
 		// StartOfLink
 		Collection<ConnectionLink> addedStartOfLink = CollectionUtil.substract(newValue.getConnectionStartLinks(),
 				oldValue.getConnectionStartLinks(), NeptuneIdentifiedObjectComparator.INSTANCE);
@@ -226,7 +257,15 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			if (startOfLink == null) {
 				startOfLink = ObjectFactory.getConnectionLink(cache, item.getObjectId());
 			}
-			StopArea endOfLinkArea = stopAreaDAO.findByObjectId(item.getEndOfLink().getObjectId());
+			StopArea endOfLinkArea = cache.getStopAreas().get(item.getEndOfLink().getObjectId()) ;
+			if (endOfLinkArea == null)
+				endOfLinkArea = stopAreaDAO.findByObjectId(item.getEndOfLink().getObjectId());
+			else 
+			{
+				StopArea localArea = referential.getSharedStopAreas().get(endOfLinkArea.getObjectId());
+				if (!localArea.isSaved()) 
+					endOfLinkArea = null; // ignored if not already saved
+			}
 		    if (endOfLinkArea != null)
 		    {
 //				log.info("connect connectionLink (start) "+item.getName());
@@ -254,7 +293,16 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			if (endOfLink == null) {
 				endOfLink = ObjectFactory.getConnectionLink(cache, item.getObjectId());
 			}
-			StopArea startOfLinkArea = stopAreaDAO.findByObjectId(item.getStartOfLink().getObjectId());
+			StopArea startOfLinkArea = cache.getStopAreas().get(item.getStartOfLink().getObjectId()) ;
+			if (startOfLinkArea == null)
+				startOfLinkArea = stopAreaDAO.findByObjectId(item.getStartOfLink().getObjectId());
+			else 
+			{
+				StopArea localArea = referential.getSharedStopAreas().get(startOfLinkArea.getObjectId());
+				if (!localArea.isSaved()) 
+					startOfLinkArea = null; // ignored if not already saved
+			}
+				
 		    if (startOfLinkArea != null)
 		    {
 //				log.info("connect connectionLink (end) "+item.getName());
@@ -271,6 +319,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 		for (Pair<ConnectionLink, ConnectionLink> pair : modifiedEndOfLink) {
 			connectionLinkUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
+		}
 
 		// TODO list routing_constraints_lines (routingConstraintLines)
 		// TODO list stop_areas_stop_areas (routingConstraintAreas)
@@ -283,7 +332,7 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			StopArea area = cache.getStopAreas().get(item.getObjectId());
 			if (area == null) {
 				if (stopAreas == null) {
-					stopAreas = stopAreaDAO.findByObjectId(UpdaterUtils.getObjectIds(addedEndOfLink));
+					stopAreas = stopAreaDAO.findByObjectId(UpdaterUtils.getObjectIds(addedStopAreas));
 					for (StopArea object : addedStopAreas) {
 						cache.getStopAreas().put(object.getObjectId(), object);
 					}
