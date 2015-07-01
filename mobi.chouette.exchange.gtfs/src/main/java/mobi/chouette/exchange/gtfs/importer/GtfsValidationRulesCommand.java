@@ -27,6 +27,7 @@ public class GtfsValidationRulesCommand implements Command, Constant {
 	private List<CheckPoint> checkPoints() {
 		List<CheckPoint> checkPoints = new ArrayList<CheckPoint>();
 		checkPoints.addAll(csvCheckPoints());
+		checkPoints.addAll(commonCheckPoints());
 		checkPoints.addAll(agencyCheckPoints());
 		checkPoints.addAll(stopCheckPoints());
 		checkPoints.addAll(routeCheckPoints());
@@ -52,8 +53,23 @@ public class GtfsValidationRulesCommand implements Command, Constant {
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_CSV_9, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 		return checkPoints;
 	}
+
+	private Collection<? extends CheckPoint> commonCheckPoints() {
+		List<CheckPoint> checkPoints = new ArrayList<CheckPoint>();
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Common_1, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Common_2, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Common_3, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		return checkPoints;
+	}
 	
 	private Collection<? extends CheckPoint> agencyCheckPoints() {
+		List<CheckPoint> checkPoints = new ArrayList<CheckPoint>();
+		checkPoints.addAll(agencyCheckPoints1());
+		checkPoints.addAll(agencyCheckPoints2());
+		return checkPoints;
+	}
+	
+	private Collection<? extends CheckPoint> agencyCheckPoints1() {
 		List<CheckPoint> checkPoints = new ArrayList<CheckPoint>();
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Agency_1, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Agency_2, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
@@ -68,7 +84,21 @@ public class GtfsValidationRulesCommand implements Command, Constant {
 		return checkPoints;
 	}
 	
+	private Collection<? extends CheckPoint> agencyCheckPoints2() {
+		List<CheckPoint> checkPoints = new ArrayList<CheckPoint>();
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Agency_1, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Agency_2, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		return checkPoints;
+	}
+	
 	private Collection<? extends CheckPoint> stopCheckPoints() {
+		List<CheckPoint> checkPoints = new ArrayList<CheckPoint>();
+		checkPoints.addAll(stopCheckPoints1());
+		checkPoints.addAll(stopCheckPoints2());
+		return checkPoints;
+	}
+	
+	private Collection<? extends CheckPoint> stopCheckPoints1() {
 		List<CheckPoint> checkPoints = new ArrayList<CheckPoint>();
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Stop_1, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Stop_2, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
@@ -84,7 +114,25 @@ public class GtfsValidationRulesCommand implements Command, Constant {
 		return checkPoints;
 	}
 	
+	private Collection<? extends CheckPoint> stopCheckPoints2() {
+		List<CheckPoint> checkPoints = new ArrayList<CheckPoint>();
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Stop_1, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Stop_2, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Stop_3, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Stop_4, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Stop_5, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Stop_6, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		return checkPoints;
+	}
+	
 	private Collection<? extends CheckPoint> routeCheckPoints() {
+		List<CheckPoint> checkPoints = new ArrayList<CheckPoint>();
+		checkPoints.addAll(routeCheckPoints1());
+		checkPoints.addAll(routeCheckPoints2());
+		return checkPoints;
+	}
+	
+	private Collection<? extends CheckPoint> routeCheckPoints1() {
 		List<CheckPoint> checkPoints = new ArrayList<CheckPoint>();
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Route_1, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Route_2, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
@@ -99,7 +147,30 @@ public class GtfsValidationRulesCommand implements Command, Constant {
 		return checkPoints;
 	}
 	
+	private Collection<? extends CheckPoint> routeCheckPoints2() {
+		List<CheckPoint> checkPoints = new ArrayList<CheckPoint>();
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Route_1, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Route_2, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Route_3, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Route_4, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Route_5, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Route_6, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Route_8, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Route_9, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Route_10, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Route_11, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Route_12, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		return checkPoints;
+	}
+	
 	private Collection<? extends CheckPoint> tripCheckPoints() {
+		List<CheckPoint> checkPoints = new ArrayList<CheckPoint>();
+		checkPoints.addAll(tripCheckPoints1());
+		checkPoints.addAll(tripCheckPoints2());
+		return checkPoints;
+	}
+	
+	private Collection<? extends CheckPoint> tripCheckPoints1() {
 		List<CheckPoint> checkPoints = new ArrayList<CheckPoint>();
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Trip_1, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Trip_2, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
@@ -112,7 +183,26 @@ public class GtfsValidationRulesCommand implements Command, Constant {
 		return checkPoints;
 	}
 	
+	private Collection<? extends CheckPoint> tripCheckPoints2() {
+		List<CheckPoint> checkPoints = new ArrayList<CheckPoint>();
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Trip_1, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Trip_2, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Trip_3, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Trip_4, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Trip_5, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Trip_6, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Trip_7, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		return checkPoints;
+	}
+	
 	private Collection<? extends CheckPoint> stopTimeCheckPoints() {
+		List<CheckPoint> checkPoints = new ArrayList<CheckPoint>();
+		checkPoints.addAll(stopTimeCheckPoints1());
+		checkPoints.addAll(stopTimeCheckPoints2());
+		return checkPoints;
+	}
+	
+	private Collection<? extends CheckPoint> stopTimeCheckPoints1() {
 		List<CheckPoint> checkPoints = new ArrayList<CheckPoint>();
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_StopTime_1, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_StopTime_2, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
@@ -129,7 +219,28 @@ public class GtfsValidationRulesCommand implements Command, Constant {
 		return checkPoints;
 	}
 	
+	private Collection<? extends CheckPoint> stopTimeCheckPoints2() {
+		List<CheckPoint> checkPoints = new ArrayList<CheckPoint>();
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_StopTime_1, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_StopTime_2, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_StopTime_3, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_StopTime_4, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_StopTime_5, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_StopTime_6, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_StopTime_7, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_StopTime_8, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_StopTime_9, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		return checkPoints;
+	}
+	
 	private Collection<? extends CheckPoint> calendarCheckPoints() {
+		List<CheckPoint> checkPoints = new ArrayList<CheckPoint>();
+		checkPoints.addAll(calendarCheckPoints1());
+		checkPoints.addAll(calendarCheckPoints2());
+		return checkPoints;
+	}
+	
+	private Collection<? extends CheckPoint> calendarCheckPoints1() {
 		List<CheckPoint> checkPoints = new ArrayList<CheckPoint>();
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Calendar_1, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Calendar_2, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
@@ -148,6 +259,17 @@ public class GtfsValidationRulesCommand implements Command, Constant {
 		return checkPoints;
 	}
 	
+	private Collection<? extends CheckPoint> calendarCheckPoints2() {
+		List<CheckPoint> checkPoints = new ArrayList<CheckPoint>();
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Calendar_1, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Calendar_2, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Calendar_3, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Calendar_4, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Calendar_5, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Calendar_6, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		return checkPoints;
+	}
+	
 	private Collection<? extends CheckPoint> calendarDateCheckPoints() {
 		List<CheckPoint> checkPoints = new ArrayList<CheckPoint>();
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_CalendarDate_1, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
@@ -162,6 +284,25 @@ public class GtfsValidationRulesCommand implements Command, Constant {
 	
 	private Collection<? extends CheckPoint> frequencyCheckPoints() {
 		List<CheckPoint> checkPoints = new ArrayList<CheckPoint>();
+		checkPoints.addAll(frequencyCheckPoints1());
+		checkPoints.addAll(frequencyCheckPoints2());
+		return checkPoints;
+	}
+	
+	private Collection<? extends CheckPoint> frequencyCheckPoints1() {
+		List<CheckPoint> checkPoints = new ArrayList<CheckPoint>();
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Frequency_1, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Frequency_2, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Frequency_3, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Frequency_4, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Frequency_5, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Frequency_6, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Frequency_7, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		return checkPoints;
+	}
+	
+	private Collection<? extends CheckPoint> frequencyCheckPoints2() {
+		List<CheckPoint> checkPoints = new ArrayList<CheckPoint>();
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Frequency_1, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Frequency_2, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Frequency_3, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
@@ -174,12 +315,26 @@ public class GtfsValidationRulesCommand implements Command, Constant {
 	
 	private Collection<? extends CheckPoint> transferCheckPoints() {
 		List<CheckPoint> checkPoints = new ArrayList<CheckPoint>();
+		checkPoints.addAll(transferCheckPoints1());
+		checkPoints.addAll(transferCheckPoints2());
+		return checkPoints;
+	}
+	
+	private Collection<? extends CheckPoint> transferCheckPoints1() {
+		List<CheckPoint> checkPoints = new ArrayList<CheckPoint>();
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Transfer_1, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Transfer_2, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Transfer_3, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Transfer_4, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Transfer_5, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Transfer_6, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		return checkPoints;
+	}
+	
+	private Collection<? extends CheckPoint> transferCheckPoints2() {
+		List<CheckPoint> checkPoints = new ArrayList<CheckPoint>();
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Transfer_1, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Transfer_2, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 		return checkPoints;
 	}
 

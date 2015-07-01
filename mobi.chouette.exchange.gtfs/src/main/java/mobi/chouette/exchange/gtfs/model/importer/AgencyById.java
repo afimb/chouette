@@ -60,12 +60,16 @@ public class AgencyById extends IndexImpl<GtfsAgency> implements GtfsConverter {
 		boolean result = true;
 		
 		String lang = bean.getAgencyLang();
-		if (lang == null || !Arrays.asList(Locale.getISOLanguages()).contains(lang)) {
+		if (isUnknownAsIsoLanguage(lang)) {
 			// 1-GTFS-Agency-8  warning
 			result = false;
 		}
 		
 		return result;
+	}
+	
+	private boolean isUnknownAsIsoLanguage(String lang) {
+		return lang == null || !Arrays.asList(Locale.getISOLanguages()).contains(lang);
 	}
 
 	public static class DefaultImporterFactory extends IndexFactory {
