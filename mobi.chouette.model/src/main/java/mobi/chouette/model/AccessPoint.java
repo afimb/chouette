@@ -26,6 +26,8 @@ import lombok.ToString;
 import mobi.chouette.model.type.AccessPointTypeEnum;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 /**
  * Chouette AccessPoint : relation between an AccessPoint and a StopArea
@@ -45,13 +47,13 @@ public class AccessPoint extends NeptuneLocalizedObject {
 
 	@Getter
 	@Setter
-	@SequenceGenerator(name="access_points_id_seq", sequenceName="access_points_id_seq", allocationSize=1)
-    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="access_points_id_seq")
-//	@GenericGenerator(name = "access_points_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", 
-//		parameters = {
-//			@Parameter(name = "sequence_name", value = "access_points_id_seq"),
-//			@Parameter(name = "increment_size", value = "10") })
-//	@GeneratedValue(generator = "access_points_id_seq")
+//	@SequenceGenerator(name="access_points_id_seq", sequenceName="access_points_id_seq", allocationSize=1)
+//    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="access_points_id_seq")
+	@GenericGenerator(name = "access_points_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", 
+		parameters = {
+			@Parameter(name = "sequence_name", value = "access_points_id_seq"),
+			@Parameter(name = "increment_size", value = "100") })
+	@GeneratedValue(generator = "access_points_id_seq")
 	@Id
 	@Column(name = "id", nullable = false)
 	protected Long id;

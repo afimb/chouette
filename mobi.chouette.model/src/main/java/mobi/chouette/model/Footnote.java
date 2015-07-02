@@ -44,13 +44,13 @@ public class Footnote extends NeptuneObject {
 
 	@Getter
 	@Setter
-	@SequenceGenerator(name="footnotes_id_seq", sequenceName="footnotes_id_seq", allocationSize=1)
-    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="footnotes_id_seq")
-//	@GenericGenerator(name = "footnotes_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", parameters = {
-//			@Parameter(name = "sequence_name", value = "footnotes_id_seq"),
-//			@Parameter(name = "increment_size", value = "10") })
+//	@SequenceGenerator(name="footnotes_id_seq", sequenceName="footnotes_id_seq", allocationSize=1)
+//    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="footnotes_id_seq")
+	@GenericGenerator(name = "footnotes_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", parameters = {
+			@Parameter(name = "sequence_name", value = "footnotes_id_seq"),
+			@Parameter(name = "increment_size", value = "10") })
+	@GeneratedValue(generator = "footnotes_id_seq")
 	@Id
-//	@GeneratedValue(generator = "footnotes_id_seq")
 	@Column(name = "id", nullable = false)
 	protected Long id;
 

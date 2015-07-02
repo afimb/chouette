@@ -57,4 +57,11 @@ public class NeptuneObjectFactory {
 		ptLink.clear();
 		ptLinksOnRoute.clear();
 	}
+	
+	public void dispose()
+	{
+	     clear();
+	     areaCentroid.clear();
+	}
+	
 }

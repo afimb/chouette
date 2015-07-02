@@ -41,14 +41,14 @@ public class StopPoint extends NeptuneIdentifiedObject {
 
 	@Getter
 	@Setter
-	@SequenceGenerator(name="stop_points_id_seq", sequenceName="stop_points_id_seq", allocationSize=1)
-    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="stop_points_id_seq")
-//	@GenericGenerator(name = "stop_points_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", 
-//		parameters = {
-//			@Parameter(name = "sequence_name", value = "stop_points_id_seq"),
-//			@Parameter(name = "increment_size", value = "50") })
+//	@SequenceGenerator(name="stop_points_id_seq", sequenceName="stop_points_id_seq", allocationSize=1)
+//    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="stop_points_id_seq")
+	@GenericGenerator(name = "stop_points_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", 
+		parameters = {
+			@Parameter(name = "sequence_name", value = "stop_points_id_seq"),
+			@Parameter(name = "increment_size", value = "100") })
+	@GeneratedValue(generator = "stop_points_id_seq")
 	@Id
-//	@GeneratedValue(generator = "stop_points_id_seq")
 	@Column(name = "id", nullable = false)
 	protected Long id;
 	

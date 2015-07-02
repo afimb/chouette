@@ -51,13 +51,13 @@ public class Timetable extends NeptuneIdentifiedObject {
 
 	@Getter
 	@Setter
-	@SequenceGenerator(name="time_tables_id_seq", sequenceName="time_tables_id_seq", allocationSize=1)
-    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="time_tables_id_seq")
-//	@GenericGenerator(name = "time_tables_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", parameters = {
-//			@Parameter(name = "sequence_name", value = "time_tables_id_seq"),
-//			@Parameter(name = "increment_size", value = "20") })
+//	@SequenceGenerator(name="time_tables_id_seq", sequenceName="time_tables_id_seq", allocationSize=1)
+//  @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="time_tables_id_seq")
+	@GenericGenerator(name = "time_tables_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", parameters = {
+			@Parameter(name = "sequence_name", value = "time_tables_id_seq"),
+			@Parameter(name = "increment_size", value = "100") })
+	@GeneratedValue(generator = "time_tables_id_seq")
 	@Id
-///	@GeneratedValue(generator = "time_tables_id_seq")
 	@Column(name = "id", nullable = false)
 	protected Long id;
 

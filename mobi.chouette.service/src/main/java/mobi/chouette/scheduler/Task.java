@@ -38,7 +38,6 @@ public class Task implements Callable<Job.STATUS>, ManagedTask, Constant {
 		this.properties = properties;
 		this.listener = listener;
 		context.put(JOB_ID, job2.getId());
-//		context.put(PATH, job2.getPath());
 		
 	}
 
@@ -46,14 +45,12 @@ public class Task implements Callable<Job.STATUS>, ManagedTask, Constant {
 	public STATUS call() throws Exception {
 
 		STATUS result = STATUS.TERMINATED;
-		// TODO wait for tests 
-		// Thread.sleep(20000);
 		if (context.containsKey(CANCEL_ASKED)) return STATUS.CANCELED;
 		ContextHolder.setContext(job.getReferential());
 		try {
 			InitialContext initialContext = new InitialContext();
 			context.put(INITIAL_CONTEXT, initialContext);
-			Thread.sleep(1000);
+			Thread.sleep(100);
 			Command command = CommandFactory.create(initialContext,
 					MainCommand.class.getName());
 			command.execute(context);

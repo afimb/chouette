@@ -22,5 +22,6 @@ public enum RequestExceptionCode {
     INVALID_FILE_FORMAT,
     UNREADABLE_PARAMETERS,
     UNKNOWN_JOB, 
-    SCHEDULED_JOB
+    SCHEDULED_JOB,
+    REFERENTIAL_BUSY
 }

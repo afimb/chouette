@@ -52,13 +52,13 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 
 	@Getter
 	@Setter
-	@SequenceGenerator(name="vehicle_journeys_id_seq", sequenceName="vehicle_journeys_id_seq", allocationSize=1)
-    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="vehicle_journeys_id_seq")
-//	@GenericGenerator(name = "vehicle_journeys_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", parameters = {
-//			@Parameter(name = "sequence_name", value = "vehicle_journeys_id_seq"),
-//			@Parameter(name = "increment_size", value = "100") })
+//	@SequenceGenerator(name="vehicle_journeys_id_seq", sequenceName="vehicle_journeys_id_seq", allocationSize=1)
+//  @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="vehicle_journeys_id_seq")
+	@GenericGenerator(name = "vehicle_journeys_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", parameters = {
+			@Parameter(name = "sequence_name", value = "vehicle_journeys_id_seq"),
+			@Parameter(name = "increment_size", value = "100") })
+	@GeneratedValue(generator = "vehicle_journeys_id_seq")
 	@Id
-//	@GeneratedValue(generator = "vehicle_journeys_id_seq")
 	@Column(name = "id", nullable = false)
 	protected Long id;
 
