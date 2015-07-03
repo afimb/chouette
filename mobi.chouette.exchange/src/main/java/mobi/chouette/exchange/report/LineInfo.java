@@ -13,6 +13,10 @@ import javax.xml.bind.annotation.XmlType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder={"name","status","stats","errors"})
@@ -58,6 +62,22 @@ public class LineInfo {
 	{
 		status = LINE_STATE.ERROR;
 		errors.add(error);
+	}
+
+	public JSONObject toJson() throws JSONException {
+		JSONObject object = new JSONObject();
+		object.put("name", name);
+		object.put("status", status);
+		if (stats != null)
+		   object.put("stats", stats.toJson());
+		if (!errors.isEmpty()) {
+			JSONArray array = new JSONArray();
+			object.put("errors", array);
+			for (LineError error : errors) {
+				array.put(error.toJson());
+			}
+		}
+		return object;
 	}
 
 

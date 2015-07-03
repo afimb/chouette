@@ -9,6 +9,9 @@ import javax.xml.bind.annotation.XmlType;
 
 import lombok.Data;
 
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder={"lineCount",
 		"routeCount",
@@ -44,5 +47,18 @@ public class DataStats {
 
 	@XmlElement(name = "journey_pattern_count")
 	private int journeyPatternCount = 0;
+
+	public JSONObject toJson() throws JSONException {
+		JSONObject object = new JSONObject();
+		object.put("line_count", lineCount);
+		object.put("route_count", routeCount);
+		object.put("connection_link_count", connectionLinkCount);
+		object.put("time_table_count", timeTableCount);
+		object.put("stop_area_count", stopAreaCount);
+		object.put("access_point_count", accessPointCount);
+		object.put("vehicle_journey_count", vehicleJourneyCount);
+		object.put("journey_pattern_count", journeyPatternCount);
+		return object;
+	}
 
 }

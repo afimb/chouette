@@ -10,7 +10,6 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
-import mobi.chouette.common.JSONUtil;
 import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
@@ -72,7 +71,7 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 		Path path = Paths.get(jobData.getPathName(), REPORT_FILE);
 		// pseudo pretty print
 		try {
-			String data = JSONUtil.toJSON(report);
+			String data = report.toJson().toString(2);//JSONUtil.toJSON(report);
 			FileUtils.writeStringToFile(path.toFile(), data, "UTF-8");
 		} catch (Exception e) {
 			log.error("failed to save report", e);
@@ -92,7 +91,7 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 
 		try {
 			report.checkResult();
-			String data = JSONUtil.toJSON(report);
+			String data = report.toJson().toString(2);//JSONUtil.toJSON(report);
 			FileUtils.writeStringToFile(path.toFile(), data, "UTF-8");
 		} catch (Exception e) {
 			log.error("failed to save validation report", e);

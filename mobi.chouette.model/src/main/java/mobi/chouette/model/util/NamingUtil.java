@@ -14,94 +14,101 @@ import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 
-
 public abstract class NamingUtil {
 
-	public static String getName(Network object)
-	{
-		if (isFilled(object.getName())) return object.getName();
+	public static String getName(Network object) {
+		if (isFilled(object.getName()))
+			return object.getName();
 		return object.getObjectId();
 	}
-	
-	public static String getName(Company object)
-	{
-		if (isFilled(object.getName())) return object.getName();
+
+	public static String getName(Company object) {
+		if (isFilled(object.getName()))
+			return object.getName();
 		return object.getObjectId();
 	}
-	
-	public static String getName(GroupOfLine object)
-	{
-		if (isFilled(object.getName())) return object.getName();
+
+	public static String getName(GroupOfLine object) {
+		if (isFilled(object.getName()))
+			return object.getName();
 		return object.getObjectId();
 	}
-	
-	public static String getName(StopArea object)
-	{
-		if (isFilled(object.getName())) return object.getName();
+
+	public static String getName(StopArea object) {
+		if (isFilled(object.getName()))
+			return object.getName();
 		return object.getObjectId();
 	}
-	
-	public static String getName(AccessPoint object)
-	{
-		if (isFilled(object.getName())) return object.getName();
+
+	public static String getName(AccessPoint object) {
+		if (isFilled(object.getName()))
+			return object.getName();
 		return object.getObjectId();
 	}
-	
-	public static String getName(AccessLink object)
-	{
-		if (isFilled(object.getName())) return object.getName();
+
+	public static String getName(AccessLink object) {
+		if (isFilled(object.getName()))
+			return object.getName();
 		return object.getObjectId();
 	}
-	
-	public static String getName(ConnectionLink object)
-	{
-		if (isFilled(object.getName())) return object.getName();
+
+	public static String getName(ConnectionLink object) {
+		if (isFilled(object.getName()))
+			return object.getName();
 		return object.getObjectId();
 	}
-	
-	public static String getName(Timetable object)
-	{
-		if (isFilled(object.getComment())) return object.getComment();
+
+	public static String getName(Timetable object) {
+		if (isFilled(object.getComment()))
+			return object.getComment();
 		return object.getObjectId();
 	}
-	public static String getName(StopPoint object)
-	{
+
+	public static String getName(StopPoint object) {
+//		if (object.getContainedInStopArea() != null) {
+//			if (isFilled(object.getContainedInStopArea().getName()))
+//				return object.getContainedInStopArea().getName();
+//		}
 		return object.getObjectId();
 	}
-	
-	public static String getName(Line object)
-	{
-		if (isFilled(object.getName())) return object.getName();
-		if (isFilled(object.getPublishedName())) return object.getPublishedName();
-		if (isFilled(object.getNumber())) return object.getNumber();
+
+	public static String getName(Line object) {
+		if (isFilled(object.getName()))
+			return object.getName();
+		if (isFilled(object.getPublishedName()))
+			return object.getPublishedName();
+		if (isFilled(object.getNumber()))
+			return object.getNumber();
 		return object.getObjectId();
 	}
-	
-	public static String getName(Route object)
-	{
-		if (isFilled(object.getName())) return object.getName();
-		if (isFilled(object.getPublishedName())) return object.getPublishedName();
-		if (isFilled(object.getNumber())) return object.getNumber();
+
+	public static String getName(Route object) {
+		if (isFilled(object.getName()))
+			return object.getName();
+		if (isFilled(object.getPublishedName()))
+			return object.getPublishedName();
+		if (isFilled(object.getNumber()))
+			return object.getNumber();
 		return object.getObjectId();
 	}
-	
-	public static String getName(JourneyPattern object)
-	{
-		if (isFilled(object.getName())) return object.getName();
-		if (isFilled(object.getPublishedName())) return object.getPublishedName();
+
+	public static String getName(JourneyPattern object) {
+		if (isFilled(object.getName()))
+			return object.getName();
+		if (isFilled(object.getPublishedName()))
+			return object.getPublishedName();
 		return object.getObjectId();
 	}
-	
-	public static String getName(VehicleJourney object)
-	{
-		if (isFilled(object.getPublishedJourneyName())) return object.getPublishedJourneyName();
-		if (object.getNumber() != null) return object.getNumber().toString();
+
+	public static String getName(VehicleJourney object) {
+		if (isFilled(object.getPublishedJourneyName()))
+			return object.getPublishedJourneyName();
+		if (object.getNumber() != null)
+			return object.getNumber().toString();
 		return object.getObjectId();
 	}
-	
-	
-	private static boolean isFilled(String data)
-	{
+
+	private static boolean isFilled(String data) {
 		return (data != null && !data.isEmpty());
 	}
 }

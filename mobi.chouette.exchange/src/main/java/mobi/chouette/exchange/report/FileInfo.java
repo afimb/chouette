@@ -12,6 +12,10 @@ import javax.xml.bind.annotation.XmlType;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder = { "name", "status", "errors" })
 @Data
@@ -37,10 +41,24 @@ public class FileInfo {
 		status = FILE_STATE.ERROR;
 		errors.add(error);
 	}
-	public FileInfo( String name, FILE_STATE state)
-	{
+
+	public FileInfo(String name, FILE_STATE state) {
 		this.name = name;
 		this.status = state;
+	}
+
+	public JSONObject toJson() throws JSONException {
+		JSONObject object = new JSONObject();
+		object.put("name", name);
+		object.put("status", status);
+		if (!errors.isEmpty()) {
+			JSONArray array = new JSONArray();
+			object.put("errors", array);
+			for (FileError error : errors) {
+				array.put(error.toJson());
+			}
+		}
+		return object;
 	}
 
 }
