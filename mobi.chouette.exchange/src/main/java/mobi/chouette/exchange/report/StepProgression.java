@@ -12,6 +12,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder={"step","total","realized"})
 @Data
@@ -35,6 +38,13 @@ public class StepProgression {
 
     @XmlElement(name = "realized",required=true)
 	private int realized = 0;
+
+	public JSONObject toJson() throws JSONException {
+		JSONObject object = new JSONObject();
+		object.put("step", step);
+		object.put("total", total);
+		object.put("realized", realized);
+		return object;	}
 
 
 }

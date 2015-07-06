@@ -39,14 +39,14 @@ public class GroupOfLine extends NeptuneIdentifiedObject {
 
 	@Getter
 	@Setter
-	@SequenceGenerator(name="group_of_lines_id_seq", sequenceName="group_of_lines_id_seq", allocationSize=1)
-    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="group_of_lines_id_seq")
-//	@GenericGenerator(name = "group_of_lines_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", 
-//		parameters = {
-//			@Parameter(name = "sequence_name", value = "group_of_lines_id_seq"),
-//			@Parameter(name = "increment_size", value = "5") })
+//	@SequenceGenerator(name="group_of_lines_id_seq", sequenceName="group_of_lines_id_seq", allocationSize=1)
+//    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="group_of_lines_id_seq")
+	@GenericGenerator(name = "group_of_lines_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", 
+		parameters = {
+			@Parameter(name = "sequence_name", value = "group_of_lines_id_seq"),
+			@Parameter(name = "increment_size", value = "10") })
+	@GeneratedValue(generator = "group_of_lines_id_seq")
 	@Id
-//	@GeneratedValue(generator = "group_of_lines_id_seq")
 	@Column(name = "id", nullable = false)
 	protected Long id;
 	

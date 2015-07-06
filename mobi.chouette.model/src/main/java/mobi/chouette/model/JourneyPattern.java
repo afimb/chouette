@@ -44,14 +44,14 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 
 	@Getter
 	@Setter
-	@SequenceGenerator(name="journey_patterns_id_seq", sequenceName="journey_patterns_id_seq", allocationSize=1)
-    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="journey_patterns_id_seq")
-//	@GenericGenerator(name = "journey_patterns_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", 
-//		parameters = {
-//			@Parameter(name = "sequence_name", value = "journey_patterns_id_seq"),
-//			@Parameter(name = "increment_size", value = "20") })
+//	@SequenceGenerator(name="journey_patterns_id_seq", sequenceName="journey_patterns_id_seq", allocationSize=1)
+//    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="journey_patterns_id_seq")
+	@GenericGenerator(name = "journey_patterns_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", 
+		parameters = {
+			@Parameter(name = "sequence_name", value = "journey_patterns_id_seq"),
+			@Parameter(name = "increment_size", value = "20") })
+	@GeneratedValue(generator = "journey_patterns_id_seq")
 	@Id
-//	@GeneratedValue(generator = "journey_patterns_id_seq")
 	@Column(name = "id", nullable = false)
 	protected Long id;
 	

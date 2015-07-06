@@ -14,6 +14,7 @@ public interface Constant {
 	public static final String VALIDATION = "validation";
 
 	public static final String OPTIMIZED = "optimized";
+	public static final String COPY_IN_PROGRESS = "copy_in_progress";
 	public static final String FILE_URL = "file_url";
 	public static final String FILE_NAME = "file_name";
 	public static final String SCHEMA = "schema";

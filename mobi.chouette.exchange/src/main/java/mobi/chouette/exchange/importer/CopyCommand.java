@@ -43,24 +43,22 @@ public class CopyCommand implements Command {
 		try {
 
 			Boolean optimized = (Boolean) context.get(OPTIMIZED);
-
 			if (optimized) {
+				Boolean busy = (Boolean) context.get(COPY_IN_PROGRESS);
+				if (busy != null) 
+					log.info("waiting for previous copy");
+				while (busy != null) {
+					Thread.sleep(300);
+					busy = (Boolean) context.get(COPY_IN_PROGRESS);
+				}
+				log.info("starting new copy");
 
-				final String buffer = (String) context.remove(BUFFER);
-				final String schema = ContextHolder.getContext();
-				executor.submit(new Callable<Void>() {
-
-					@Override
-					@TransactionAttribute(TransactionAttributeType.REQUIRED)
-					public Void call() throws Exception {
-						Monitor monitor = MonitorFactory.start(COMMAND);
-						ContextHolder.setContext(schema);
-						vehicleJourneyDAO.copy(buffer);
-						log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
-						ContextHolder.setContext(null);
-						return null;
-					}
-				});
+				context.put(COPY_IN_PROGRESS, Boolean.TRUE);
+				CommandCallable callable = new CommandCallable();
+				callable.buffer = (String) context.remove(BUFFER);
+				callable.schema = ContextHolder.getContext();
+				callable.context = context;
+				executor.submit(callable);
 			}
 
 			result = SUCCESS;
@@ -70,6 +68,28 @@ public class CopyCommand implements Command {
 		}
 
 		return result;
+	}
+
+	private class CommandCallable implements Callable<Void> {
+		private String buffer;
+		private String schema;
+		private Context context;
+
+		@Override
+		@TransactionAttribute(TransactionAttributeType.REQUIRED)
+		public Void call() throws Exception {
+			try {
+				Monitor monitor = MonitorFactory.start(COMMAND);
+				ContextHolder.setContext(schema);
+				vehicleJourneyDAO.copy(buffer);
+				log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
+				ContextHolder.setContext(null);
+				return null;
+			} finally {
+				context.remove(COPY_IN_PROGRESS);
+			}
+		}
+
 	}
 
 	public static class DefaultCommandFactory extends CommandFactory {
@@ -95,7 +115,6 @@ public class CopyCommand implements Command {
 	}
 
 	static {
-		CommandFactory.factories.put(CopyCommand.class.getName(),
-				new DefaultCommandFactory());
+		CommandFactory.factories.put(CopyCommand.class.getName(), new DefaultCommandFactory());
 	}
 }

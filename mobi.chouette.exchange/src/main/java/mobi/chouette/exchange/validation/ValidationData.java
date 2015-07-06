@@ -59,4 +59,30 @@ public class ValidationData {
 		stopPoints.clear();
 		currentLine = null;
 	}
+	
+	public void dispose()
+	{
+		clear();
+		networks.clear();
+		networkIds.clear();
+		lines.clear();
+		lineIds.clear();
+		companies.clear();
+		companyIds.clear();
+		groupOfLines.clear();
+		groupOfLineIds.clear();
+		stopAreas.clear();
+		dummyStopAreas.clear();
+		stopAreaIds.clear();
+		connectionLinks.clear();
+		connectionLinkIds.clear();
+		accessLinks.clear();
+		accessLinkIds.clear();
+		accessPoints.clear();
+		accessPointIds.clear();
+		timetables.clear();
+		timetableIds.clear();
+		fileLocations.clear();
+		linesOfStopAreas.clear();
+	}
 }

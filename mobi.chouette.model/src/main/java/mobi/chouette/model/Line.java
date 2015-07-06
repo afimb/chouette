@@ -54,13 +54,13 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 
 	@Getter
 	@Setter
-	@SequenceGenerator(name="lines_id_seq", sequenceName="lines_id_seq", allocationSize=1)
-    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="lines_id_seq")
-//	@GenericGenerator(name = "lines_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", parameters = {
-//			@Parameter(name = "sequence_name", value = "lines_id_seq"),
-//			@Parameter(name = "increment_size", value = "10") })
+//	@SequenceGenerator(name="lines_id_seq", sequenceName="lines_id_seq", allocationSize=1)
+//    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="lines_id_seq")
+	@GenericGenerator(name = "lines_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", parameters = {
+			@Parameter(name = "sequence_name", value = "lines_id_seq"),
+			@Parameter(name = "increment_size", value = "10") })
+	@GeneratedValue(generator = "lines_id_seq")
 	@Id
-//	@GeneratedValue(generator = "lines_id_seq")
 	@Column(name = "id", nullable = false)
 	protected Long id;
 

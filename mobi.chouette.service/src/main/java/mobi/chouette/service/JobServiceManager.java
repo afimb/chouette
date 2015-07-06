@@ -31,6 +31,7 @@ import mobi.chouette.dao.JobDAO;
 import mobi.chouette.model.iev.Job;
 import mobi.chouette.model.iev.Link;
 import mobi.chouette.model.iev.Job.STATUS;
+import mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator;
 import mobi.chouette.scheduler.Scheduler;
 
 import org.apache.commons.io.FileUtils;
@@ -234,40 +235,29 @@ public class JobServiceManager {
 	}
 
 	public void drop(String referential) throws ServiceException {
+		
 		List<JobService> jobServices = findAll(referential);
-		// supprimer en premier les jobs en attente, puis les autres
-		for (Iterator<JobService> iterator = jobServices.iterator(); iterator.hasNext();) {
-			JobService jobService = iterator.next();
-			if (jobService.getStatus().equals(STATUS.SCHEDULED)) {
-				jobDAO.update(jobService.getJob());
-				jobDAO.delete(jobService.getJob());
-				// try {
-				// FileUtils.deleteDirectory(jobService.getPath().toFile());
-				// } catch (IOException e) {
-				// Logger.getLogger(JobServiceManager.class.getName())
-				// .log(Level.SEVERE, "fail to delete directory", e);
-				// }
-				iterator.remove();
-			}
-		}
+		// reject demand if non terminated jobs are present
 		for (JobService jobService : jobServices) {
-			if (jobService.getStatus().equals(STATUS.STARTED)) {
-				scheduler.cancel(jobService);
+			if (jobService.getStatus().equals(STATUS.STARTED) || 
+					jobService.getStatus().equals(STATUS.SCHEDULED)	) {
+				throw new RequestServiceException(RequestExceptionCode.REFERENTIAL_BUSY, "referential");
 			}
-			// try {
-			// FileUtils.deleteDirectory(jobService.getPath().toFile());
-			// } catch (IOException e) {
-			// Logger.getLogger(JobServiceManager.class.getName()).log(Level.SEVERE,
-			// "fail to delete directory", e);
-			// }
-			jobDAO.delete(jobService.getJob());
 		}
+		
+		// remove all jobs
+		jobDAO.deleteAll(referential);
+		
+		// clean directories
 		try {
 			FileUtils.deleteDirectory(new File(JobService.getRootPathName(referential)));
 		} catch (IOException e) {
 			Logger.getLogger(JobServiceManager.class.getName()).log(Level.SEVERE,
 					"fail to delete directory for" + referential, e);
 		}
+		
+		// remove sequences data for this tenant
+		ChouetteIdentifierGenerator.deleteTenant(referential);
 
 	}
 
@@ -436,7 +426,7 @@ public class JobServiceManager {
 
 		public void run() {
 			try {
-				Thread.sleep(2000);
+				Thread.sleep(500);
 				scheduler.schedule(referential);
 			} catch (Exception e) {
 				log.error(e);

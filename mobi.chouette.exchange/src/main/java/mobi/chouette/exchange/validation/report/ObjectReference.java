@@ -21,6 +21,9 @@ import mobi.chouette.model.StopArea;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
 @Data
 @ToString
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -110,6 +113,13 @@ public class ObjectReference {
 	{
 		this.type = TYPE.vehicle_journey;
 		this.id = object.getId();
+	}
+
+	public JSONObject toJson() throws JSONException {
+		JSONObject object = new JSONObject();
+		object.put("type", type);
+		object.put("id", id);
+		return object;
 	}
 
 }

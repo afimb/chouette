@@ -45,10 +45,8 @@ public class VehicleJourneyDAO extends GenericDAOImpl<VehicleJourney> {
 			@Override
 			public void execute(Connection connection) throws SQLException {
 
-				Monitor monitor = MonitorFactory.start("DELETE");
-
-				final String SQL = "DELETE FROM vehicle_journey_at_stops WHERE id IN ("
-						+ "SELECT h.id FROM vehicle_journey_at_stops h JOIN vehicle_journeys c ON h.vehicle_journey_id = c.id WHERE c.objectid IN ( %s )"
+				final String SQL = "DELETE FROM vehicle_journey_at_stops WHERE vehicle_journey_id IN ("
+						+ "SELECT id FROM vehicle_journeys WHERE objectid IN ( %s )"
 						+ ")";
 
 				// delete
@@ -71,7 +69,6 @@ public class VehicleJourneyDAO extends GenericDAOImpl<VehicleJourney> {
 					int count = statement.executeUpdate(sql);
 					log.info("[DSU] delete " + count + " objects.");
 				}
-				log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 			}
 		});
 	}

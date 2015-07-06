@@ -57,13 +57,13 @@ public class Route extends NeptuneIdentifiedObject {
 
 	@Getter
 	@Setter
-	@SequenceGenerator(name="routes_id_seq", sequenceName="routes_id_seq", allocationSize=1)
-    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="routes_id_seq")
-//	@GenericGenerator(name = "routes_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", parameters = {
-//			@Parameter(name = "sequence_name", value = "routes_id_seq"),
-//			@Parameter(name = "increment_size", value = "10") })
+//	@SequenceGenerator(name="routes_id_seq", sequenceName="routes_id_seq", allocationSize=1)
+//    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="routes_id_seq")
+	@GenericGenerator(name = "routes_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", parameters = {
+			@Parameter(name = "sequence_name", value = "routes_id_seq"),
+			@Parameter(name = "increment_size", value = "50") })
+	@GeneratedValue(generator = "routes_id_seq")
 	@Id
-//	@GeneratedValue(generator = "routes_id_seq")
 	@Column(name = "id", nullable = false)
 	protected Long id;
 

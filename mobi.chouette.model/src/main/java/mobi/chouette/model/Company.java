@@ -47,14 +47,14 @@ public class Company extends NeptuneIdentifiedObject {
 
 	@Getter
 	@Setter
-	@SequenceGenerator(name="companies_id_seq", sequenceName="companies_id_seq", allocationSize=1)
-    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="companies_id_seq")
-//	@GenericGenerator(name = "companies_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", 
-//		parameters = {
-//			@Parameter(name = "sequence_name", value = "companies_id_seq"),
-//			@Parameter(name = "increment_size", value = "5") })
+//	@SequenceGenerator(name="companies_id_seq", sequenceName="companies_id_seq", allocationSize=1)
+//    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="companies_id_seq")
+	@GenericGenerator(name = "companies_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", 
+		parameters = {
+			@Parameter(name = "sequence_name", value = "companies_id_seq"),
+			@Parameter(name = "increment_size", value = "10") })
+	@GeneratedValue(generator = "companies_id_seq")
 	@Id
-//	@GeneratedValue(generator = "companies_id_seq")
 	@Column(name = "id", nullable = false)
 	protected Long id;
 	

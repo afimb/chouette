@@ -6,7 +6,6 @@ import java.nio.file.Paths;
 
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
-import mobi.chouette.common.JSONUtil;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.exchange.ProcessingCommands;
 import mobi.chouette.exchange.ProcessingCommandsFactory;
@@ -59,7 +58,7 @@ public class CommandManager implements Constant {
 	private Context importContext;
 
 	private Context exportContext;
-	
+
 	private String workingDirectory = "./work";
 
 	public CommandManager(String[] args) {
@@ -120,7 +119,7 @@ public class CommandManager implements Constant {
 	}
 
 	public void process() throws Exception {
-		
+
 		inputData = loadInputParameters();
 		if (inputData == null)
 			return; // invalid data
@@ -137,16 +136,13 @@ public class CommandManager implements Constant {
 				return; // invalid data
 		}
 
-
 		ProcessingCommands importProcessingCommands = null;
 		ProcessingCommands exportProcessingCommands = null;
-		importProcessingCommands = ProcessingCommandsFactory
-				.create(buildCommandProcessingClassName(inputData));
+		importProcessingCommands = ProcessingCommandsFactory.create(buildCommandProcessingClassName(inputData));
 
 		importContext = prepareImportContext();
 		if (withExport()) {
-			exportProcessingCommands = ProcessingCommandsFactory
-					.create(buildCommandProcessingClassName(outputData));
+			exportProcessingCommands = ProcessingCommandsFactory.create(buildCommandProcessingClassName(outputData));
 			exportContext = prepareExportContext();
 		}
 
@@ -160,7 +156,7 @@ public class CommandManager implements Constant {
 		boolean result = SUCCESS;
 		// input pre processing
 
-		for (Command importCommand : importProcessingCommands.getPreProcessingCommands(importContext,false)) {
+		for (Command importCommand : importProcessingCommands.getPreProcessingCommands(importContext, false)) {
 			result = importCommand.execute(importContext);
 			if (!result) {
 				System.err.println("fail to execute import command " + importCommand.getClass().getSimpleName()
@@ -171,7 +167,7 @@ public class CommandManager implements Constant {
 
 		// output pre processing
 		if (withExport()) {
-			for (Command exportCommand : exportProcessingCommands.getPreProcessingCommands(exportContext,false)) {
+			for (Command exportCommand : exportProcessingCommands.getPreProcessingCommands(exportContext, false)) {
 				result = exportCommand.execute(exportContext);
 				if (!result) {
 					System.err.println("fail to execute " + exportCommand.getClass().getSimpleName()
@@ -185,7 +181,7 @@ public class CommandManager implements Constant {
 		// input & validation& output processing
 		long id = 0;
 		boolean exportFailed = false;
-		for (Command importCommand : importProcessingCommands.getLineProcessingCommands(importContext,false)) {
+		for (Command importCommand : importProcessingCommands.getLineProcessingCommands(importContext, false)) {
 			result = importCommand.execute(importContext);
 			if (!result) {
 				System.err.println("fail to execute " + importCommand.getClass().getName()
@@ -205,7 +201,7 @@ public class CommandManager implements Constant {
 				// - put line in export context
 				exportContext.put(LINE, line);
 				// execute commands
-				for (Command exportCommand : exportProcessingCommands.getLineProcessingCommands(exportContext,false)) {
+				for (Command exportCommand : exportProcessingCommands.getLineProcessingCommands(exportContext, false)) {
 					result = exportCommand.execute(exportContext);
 					if (!result) {
 						exportFailed = true;
@@ -218,18 +214,17 @@ public class CommandManager implements Constant {
 		}
 
 		// input post processing
-		for (Command importCommand : importProcessingCommands.getPostProcessingCommands(importContext,false)) {
+		for (Command importCommand : importProcessingCommands.getPostProcessingCommands(importContext, false)) {
 			result = importCommand.execute(importContext);
 			if (!result) {
 				System.err.println("fail to execute " + importCommand.getClass().getName()
 						+ "; see import report for details ");
-				return;
 			}
 		}
 
 		// output post processing
 		if (withExport() && !exportFailed) {
-			for (Command exportCommand : exportProcessingCommands.getPostProcessingCommands(exportContext,false)) {
+			for (Command exportCommand : exportProcessingCommands.getPostProcessingCommands(exportContext, false)) {
 				result = exportCommand.execute(exportContext);
 				if (!result) {
 					System.err.println("fail to execute " + exportCommand.getClass().getName()
@@ -238,7 +233,27 @@ public class CommandManager implements Constant {
 				}
 			}
 			// transfer result
-			FileUtils.copyFile(new File(outputData.getPathName(),outputData.getFilename()), new File(outputFileName));
+			FileUtils.copyFile(new File(outputData.getPathName(), outputData.getFilename()), new File(outputFileName));
+		}
+
+		// dispose commands
+		for (Command importCommand : importProcessingCommands.getDisposeCommands(importContext, false)) {
+			result = importCommand.execute(importContext);
+			if (!result) {
+				System.err.println("fail to execute " + importCommand.getClass().getName()
+						+ "; see import report for details ");
+				return;
+			}
+		}
+		if (withExport() && !exportFailed) {
+			for (Command exportCommand : exportProcessingCommands.getDisposeCommands(exportContext, false)) {
+				result = exportCommand.execute(exportContext);
+				if (!result) {
+					System.err.println("fail to execute " + exportCommand.getClass().getName()
+							+ "; see export report for details ");
+					return;
+				}
+			}
 		}
 
 		return;
@@ -278,22 +293,27 @@ public class CommandManager implements Constant {
 		try {
 			return ParametersConverter.convertValidation(validationParametersFilename);
 		} catch (Exception e) {
-			System.err.println("error trying to read validation options file " + validationParametersFilename
-					+ " : " + e.getMessage());
+			System.err.println("error trying to read validation options file " + validationParametersFilename + " : "
+					+ e.getMessage());
 			return null;
 		}
 	}
 
 	public void saveReports() throws Exception {
-		if (importContext == null) return;
+		if (importContext == null)
+			return;
 		ActionReport importReport = (ActionReport) importContext.get(REPORT);
-		JSONUtil.toJSON(Paths.get(inputData.getPathName(), "inputReport.json"), importReport);
+		String data = importReport.toJson().toString(2);
+		FileUtils.writeStringToFile(Paths.get(inputData.getPathName(), "inputReport.json").toFile(), data, "UTF-8");
 
 		ValidationReport validationReport = (ValidationReport) importContext.get(VALIDATION_REPORT);
-		JSONUtil.toJSON(Paths.get(inputData.getPathName(), VALIDATION_FILE), validationReport);
+		data = validationReport.toJson().toString(2);
+		FileUtils.writeStringToFile(Paths.get(inputData.getPathName(), VALIDATION_FILE).toFile(), data, "UTF-8");
 		if (withExport()) {
 			ActionReport exportReport = (ActionReport) exportContext.get(REPORT);
-			JSONUtil.toJSON(Paths.get(inputData.getPathName(), "outputReport.json"), exportReport);
+			data = exportReport.toJson().toString(2);
+			FileUtils
+					.writeStringToFile(Paths.get(inputData.getPathName(), "outputReport.json").toFile(), data, "UTF-8");
 		}
 	}
 
@@ -314,7 +334,7 @@ public class CommandManager implements Constant {
 				System.err.println("invalid input options type" + inputParametersFilename);
 				return null;
 			}
-			
+
 			data.setConfiguration(configuration);
 			return data;
 

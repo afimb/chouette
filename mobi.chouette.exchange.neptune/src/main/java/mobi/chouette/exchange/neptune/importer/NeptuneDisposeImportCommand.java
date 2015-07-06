@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.gtfs.importer;
+package mobi.chouette.exchange.neptune.importer;
 
 import java.io.IOException;
 
@@ -9,17 +9,18 @@ import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.gtfs.Constant;
-import mobi.chouette.exchange.gtfs.model.importer.GtfsImporter;
 import mobi.chouette.exchange.importer.AbstractDisposeImportCommand;
+import mobi.chouette.exchange.neptune.Constant;
+import mobi.chouette.exchange.neptune.model.NeptuneObjectFactory;
+import mobi.chouette.exchange.neptune.validation.AbstractValidator;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
 @Log4j
-public class GtfsDisposeImportCommand extends AbstractDisposeImportCommand  implements Constant {
+public class NeptuneDisposeImportCommand extends AbstractDisposeImportCommand implements  Constant {
 
-	public static final String COMMAND = "GtfsDisposeImportCommand";
+	public static final String COMMAND = "NeptuneDisposeImportCommand";
 
 	@Override
 	public boolean execute(Context context) throws Exception {
@@ -29,10 +30,10 @@ public class GtfsDisposeImportCommand extends AbstractDisposeImportCommand  impl
 
 		try {
 			super.execute(context);
-			GtfsImporter importer = (GtfsImporter) context.get(PARSER);
-			if (importer != null) {
-				importer.dispose();
-			}
+			AbstractValidator.resetContext(context);
+			NeptuneObjectFactory factory = (NeptuneObjectFactory) context.get(NEPTUNE_OBJECT_FACTORY);
+            if (factory != null)
+			   factory.dispose();			
 			result = SUCCESS;
 
 		} catch (Exception e) {
@@ -49,13 +50,13 @@ public class GtfsDisposeImportCommand extends AbstractDisposeImportCommand  impl
 
 		@Override
 		protected Command create(InitialContext context) throws IOException {
-			Command result = new GtfsDisposeImportCommand();
+			Command result = new NeptuneDisposeImportCommand();
 			return result;
 		}
 	}
 
 	static {
-		CommandFactory.factories.put(GtfsDisposeImportCommand.class.getName(), new DefaultCommandFactory());
+		CommandFactory.factories.put(NeptuneDisposeImportCommand.class.getName(), new DefaultCommandFactory());
 	}
 
 }

@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
@@ -40,8 +42,22 @@ public class ChouetteIdentifierGenerator implements IdentifierGenerator,
 	private Type identifierType;
 	private int incrementSize;
 	
-	private Map<String,IntegralDataTypeHolder> hiValues = new ConcurrentHashMap<>();
-	private Map<String,IntegralDataTypeHolder> values = new ConcurrentHashMap<>();
+	private static List<ChouetteIdentifierGenerator> instances = new ArrayList<>();
+	
+	private Map<String,State> states = new ConcurrentHashMap<>();
+
+	
+	public static void deleteTenant(String tenantIdentifier)
+	{
+		for (ChouetteIdentifierGenerator instance : instances) {
+			instance.states.remove(tenantIdentifier);
+		}
+	}
+	
+	public ChouetteIdentifierGenerator()
+	{
+		instances.add(this);
+	}
 	
 	@Override
 	public void configure(Type type, Properties params, Dialect dialect)
@@ -50,24 +66,27 @@ public class ChouetteIdentifierGenerator implements IdentifierGenerator,
 		this.sequenceName = determineSequenceName(params, dialect);
 		this.incrementSize = determineIncrementSize(params);
 		this.sql = getSequenceNextValString(sequenceName, incrementSize);	
-		log.info("----------------configure sequence "+sequenceName+" on schema "+params.getProperty(SCHEMA) +" ------------") ;
+		log.info("----------------configure sequence "+sequenceName+" ------------") ;
 	}
 
 	@Override
 	public Serializable generate(SessionImplementor session, Object object)
 			throws HibernateException {
 
-		 IntegralDataTypeHolder hiValue = hiValues.get(session.getTenantIdentifier());
-		 IntegralDataTypeHolder value = values.get(session.getTenantIdentifier());
+		State state = states.get(session.getTenantIdentifier());
 		
-		if (hiValue == null || value == null || hiValue.lt(value) ) {
-			hiValue = getNextValue(session);
-			value = hiValue.copy().subtract(incrementSize);
-			hiValues.put(session.getTenantIdentifier(), hiValue);
+		if (state == null)
+		{
+			state = new State();
+			states.put(session.getTenantIdentifier(), state);
+		}
+		
+		if (state.hiValue == null || state.value == null || state.hiValue.lt(state.value) ) {
+			state.hiValue = getNextValue(session);
+			state.value = state.hiValue.copy().subtract(incrementSize);
 			// System.out.println("[DSU] ? nextval --------------> : " + value);
 		}
-		Number result = value.makeValueThenIncrement();
-		values.put(session.getTenantIdentifier(), value);
+		Number result = state.value.makeValueThenIncrement();
 		// System.out.println("[DSU] nextval --------------> : " + value);
 		return result;
 	}

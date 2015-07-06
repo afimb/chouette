@@ -35,20 +35,14 @@ This java project is splitted in differents modules :
 * mobi.chouette.exchange.netex : Specific commands for NeTEx data exchange 
 * mobi.chouette.exchange.validator : Specific commands for common data validation 
 * mobi.chouette.model : JPA entities modelisation for public transport model
-* mobi.chouette.model : JPA entities modelisation for iev jobs
+* mobi.chouette.model.iev : JPA entities modelisation for iev jobs
 * mobi.chouette.persi.ievstence.hibernate : Hibernate specific tools
 * mobi.chouette.service : Job and tasks managment
 * mobi.chouette.ws : REST API implementation
 
 For more information see [Architecture Documentation](http://www.chouette.mobi/developpeurs/) 
 
-Feel free to test and access to the demonstration web site at [http://appli.chouette.mobi/chouette2](http://appli.chouette.mobi/chouette2). Two types of accesses are granted : 
-* A demo organisation with a set of data
-  * login : 'demo@chouette.mobi'
-  * password : 'chouette'
-* Create your own organisation : follow the "Sign up" ("S'inscrire") link
-
-Command mode installation instructions are available [here](./mobi.chouette.comman/README.md) 
+Command mode installation instructions are available [here](./mobi.chouette.command/README.md) 
 
 ## Release Notes
 
@@ -60,35 +54,42 @@ This code has been run and tested on [Travis](http://travis-ci.org/afimb/chouett
 * oraclejdk7
 * oraclejdk8
 * openjdk7
-
+* openjdk8
+* postgres 9.3
+* wildfly 8.2.0
 
 ## External Deps
+
+Chouette V3.x requires Postgres V9.3 or above
+
 On Debian/Ubuntu/Kubuntu OS : 
 ```sh
-sudo apt-get install postgresql 
-sudo apt-get install pgadmin3 
+sudo apt-get install postgresql-9.3
 sudo apt-get install openjdk-7-jdk 
-sudo apt-get install git
 ```
+
+For installation from sources : 
+```sh
+sudo apt-get install git
+sudo add-apt-repository ppa:natecarlson/maven3
+sudo apt-get update 
+sudo apt-get install maven3
+sudo ln -s /usr/share/maven3/bin/mvn /usr/bin/mvn
+```
+if ```apt-get update``` fails, modify file :
+/etc/apt/sources.list.d/natecarlson-maven3-trusty.list
+value ```trusty``` by ```precise``` 
 
 ## Installation
 
-Rerequisite : 
-* if chouette_iev is to be used by [chouette2](https://github.com/afimb/chouette2), this server must be installed before chouette_iev
- 
 On debian, chouette can also be installed as a package : see [debian packages](http://packages.chouette.cityway.fr/debian/chouette)
 
-Install [Postgres](./doc/install/postgresql.md) 
+### Prerequisite
+ 
+[Create Postgres user and databases ](./doc/install/postgresql.md) 
 
-Install [Maven](./doc/install/maven.md)
 
-Install [Wildfly](./doc/install/wildfly.md) 
-
-### from sources
-Create test and development databases : 
-```sh
-createdb -E UTF-8 -T template1 chouette_test
-```
+### Installation from sources
 
 Get git repository :
 ```sh
@@ -103,8 +104,9 @@ mvn test -DskipWildfly
 ```
 
 Deployment :
+[Install and configure Wildfly](./doc/install/wildfly.md) 
 
-change data storage directory (USER_HOME by default)
+change data storage directory (USER_HOME by default) :
 copy properties file [iev.properties](./doc/iev.properties) in /etc/chouette/iev/ directory
 change property ```iev.directory``` value to desired directory
 
@@ -113,12 +115,14 @@ deploy ear (wildfly must be running)
 mvn -DskipTests install
 ```
 
-## from binary
-download chouette.ear from [maven repository](http://maven.chouette.mobi/mobi/chouette/chouette_iev)
+## Installation from binary
+download chouette_iev.x.y.z.zip from [maven repository](http://maven.chouette.mobi/mobi/chouette/chouette_iev)
 
 change data storage directory (USER_HOME by default)
 copy properties file [iev.properties](./doc/iev.properties) in /etc/chouette/iev/ directory
 change property ```iev.directory``` value to desired directory
+
+[Install and configure Wildfly](./doc/install/wildfly.md) 
 
 in wildfly installation repository : 
 ```sh

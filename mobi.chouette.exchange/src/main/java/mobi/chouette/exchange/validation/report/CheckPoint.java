@@ -11,6 +11,10 @@ import javax.xml.bind.annotation.XmlType;
 import lombok.Data;
 import lombok.ToString;
 
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
 @Data
 @ToString
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -87,5 +91,27 @@ public class CheckPoint {
 		state = RESULT.NOK;
 
 
+	}
+
+	public JSONObject toJson() throws JSONException {
+		JSONObject object = new JSONObject();
+		object.put("test_id", name);
+		object.put("level", phase);
+		object.put("object_type", target);
+		object.put("rank", rank);
+		object.put("severity", severity);
+		object.put("result", state);
+		object.put("error_count", detailCount);
+		if (detailCount > 0)
+		{
+			JSONArray errors = new JSONArray();
+			
+			for (Detail detail : details) {
+				errors.put(detail.toJson());
+			}
+			object.put("errors",errors);
+		}
+		
+		return object;
 	}
 }
