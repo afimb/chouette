@@ -51,12 +51,12 @@ public class GtfsImporterProcessingCommands implements ProcessingCommands, Const
 		GtfsImportParameters parameters = (GtfsImportParameters) context.get(CONFIGURATION);
 		List<Command> commands = new ArrayList<>();
 		try {
+			commands.add(CommandFactory.create(initialContext, GtfsValidationRulesCommand.class.getName()));
 			if (withDao && parameters.isCleanRepository()) {
 				commands.add(CommandFactory.create(initialContext, CleanRepositoryCommand.class.getName()));
 			}
 			commands.add(CommandFactory.create(initialContext, UncompressCommand.class.getName()));
 			commands.add(CommandFactory.create(initialContext, GtfsInitImportCommand.class.getName()));
-			commands.add(CommandFactory.create(initialContext, GtfsValidationRulesCommand.class.getName()));
 			commands.add(CommandFactory.create(initialContext, GtfsValidationCommand.class.getName()));
 		} catch (Exception e) {
 			log.error(e, e);
