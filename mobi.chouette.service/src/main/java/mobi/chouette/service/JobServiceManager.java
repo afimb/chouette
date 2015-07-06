@@ -9,11 +9,13 @@ import java.nio.file.LinkOption;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,8 +31,8 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 import mobi.chouette.dao.JobDAO;
 import mobi.chouette.model.iev.Job;
-import mobi.chouette.model.iev.Link;
 import mobi.chouette.model.iev.Job.STATUS;
+import mobi.chouette.model.iev.Link;
 import mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator;
 import mobi.chouette.scheduler.Scheduler;
 
@@ -54,8 +56,13 @@ public class JobServiceManager {
 
 	@EJB
 	Scheduler scheduler;
+	
+	private Set<Object> referentials = Collections.synchronizedSet(new HashSet<>());
+	
+	private static int maxJobs = 5;
 
 	static {
+		System.setProperty(PropertyNames.MAX_STARTED_JOBS, "5");
 		try {
 			// set default properties
 			System.setProperty(PropertyNames.ROOT_DIRECTORY, System.getProperty("user.home"));
@@ -81,6 +88,7 @@ public class JobServiceManager {
 		} catch (Exception e) {
 			log.error("cannot process properties", e);
 		}
+		maxJobs = Integer.parseInt(System.getProperty(PropertyNames.MAX_STARTED_JOBS));
 
 	}
 
@@ -88,6 +96,11 @@ public class JobServiceManager {
 			throws ServiceException {
 		JobService jobService = null;
 		try {
+			if (scheduler.getActivejobsCount() >= maxJobs)
+			{
+				throw new RequestServiceException(RequestExceptionCode.TOO_MANY_ACTIVE_JOBS, ""+maxJobs+" active jobs");
+			}
+			
 			// Valider les parametres
 			validateReferential(referential);
 
@@ -148,6 +161,9 @@ public class JobServiceManager {
 	}
 
 	private void validateReferential(final String referential) throws ServiceException {
+		
+		if (referentials.contains(referential)) return;
+
 		// launch a thread to separate datasources transactions
 		SchemaValidatorThread s = new SchemaValidatorThread(referential);
 		Thread t = new Thread(s);
@@ -159,6 +175,7 @@ public class JobServiceManager {
 		if (!s.isResult()) {
 			throw new RequestServiceException(RequestExceptionCode.UNKNOWN_REFERENTIAL, "referential");
 		}
+		referentials.add(referential);
 	}
 
 	public JobService download(String referential, Long id, String filename) throws ServiceException {
@@ -178,6 +195,7 @@ public class JobServiceManager {
 	 * @param referential
 	 * @return
 	 */
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public JobService getNextJob(String referential) {
 		Job job = jobDAO.getNextJob(referential);
 		if (job == null) {
@@ -255,6 +273,9 @@ public class JobServiceManager {
 			Logger.getLogger(JobServiceManager.class.getName()).log(Level.SEVERE,
 					"fail to delete directory for" + referential, e);
 		}
+		
+		// remove referential from known ones
+		referentials.remove(referential);
 		
 		// remove sequences data for this tenant
 		ChouetteIdentifierGenerator.deleteTenant(referential);

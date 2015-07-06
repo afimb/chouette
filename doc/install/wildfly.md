@@ -47,7 +47,7 @@ data-source add --jndi-name=java:jboss/datasources/iev --name=iev --connection-u
 
 exit
 ```
-Note : (path to ...) must be replaced by absolute paths without parenthesis
+Note : (path to driver) must be replaced by absolute paths without parenthesis
 
 change uploaded file size: 
 

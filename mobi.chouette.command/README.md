@@ -14,8 +14,9 @@ Formats documentation are available for:
  * [General Transit Feed Specification Reference](https://developers.google.com/transit/gtfs/reference)
  * [www.normes-donnees-tc.org](http://www.normes-donnees-tc.org/format-dechange/donnees-theoriques/gtfs-correspondance-avec-neptune-et-autres-normes/)
 
-This java project uses these other modules :
+This java project is splited in different modules :
 
+* mobi.chouette.command : Command mode standalone program (Import, Export and Validation actions)
 * mobi.chouette.common : common classes and interfaces
 * mobi.chouette.exchange : Common classes, interfaces and commands for data exchange 
 * mobi.chouette.exchange.gtfs : Specific commands for GTFS data exchange and validation 

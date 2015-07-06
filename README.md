@@ -36,7 +36,7 @@ This java project is splitted in differents modules :
 * mobi.chouette.exchange.validator : Specific commands for common data validation 
 * mobi.chouette.model : JPA entities modelisation for public transport model
 * mobi.chouette.model.iev : JPA entities modelisation for iev jobs
-* mobi.chouette.persi.ievstence.hibernate : Hibernate specific tools
+* mobi.chouette.persistence.hibernate : Hibernate specific tools
 * mobi.chouette.service : Job and tasks managment
 * mobi.chouette.ws : REST API implementation
 
@@ -115,7 +115,7 @@ deploy ear (wildfly must be running)
 mvn -DskipTests install
 ```
 
-## Installation from binary
+### Installation from binary
 download chouette_iev.x.y.z.zip from [maven repository](http://maven.chouette.mobi/mobi/chouette/chouette_iev)
 
 change data storage directory (USER_HOME by default)

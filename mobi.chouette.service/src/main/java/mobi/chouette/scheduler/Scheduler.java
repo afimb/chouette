@@ -13,6 +13,7 @@ import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.enterprise.concurrent.ManagedExecutorService;
+import javax.enterprise.concurrent.ManagedScheduledExecutorService;
 import javax.enterprise.concurrent.ManagedTaskListener;
 import javax.naming.InitialContext;
 
@@ -44,16 +45,20 @@ public class Scheduler {
 	@EJB
 	SchemaDAO schemaDAO;
 
-	@Resource(lookup = "java:comp/DefaultManagedExecutorService")
+ 	@Resource(lookup = "java:comp/DefaultManagedExecutorService")
 	ManagedExecutorService executor;
 	
 	Map<Long,Future<STATUS>> startedFutures = new Hashtable<>();
 	Map<Long,Task> startedTasks = new Hashtable<>();
 
+	public int getActivejobsCount()
+	{
+		return startedTasks.size();
+	}
 
 	//@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void schedule(String referential) {
-
+		
 		log.info("schedule referential "+referential);
 		JobService jobService = jobManager.getNextJob(referential);
 		if (jobService != null) {
