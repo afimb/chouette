@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
@@ -93,6 +94,14 @@ public class MainCommand implements Command, Constant {
 			try {
 				String name = "java:app/mobi.chouette.service/" + COMMAND;
 				result = (Command) context.lookup(name);
+			} catch (NamingException e) {
+				// try another way on test context
+				String name = "java:module/" + COMMAND;
+				try {
+					result = (Command) context.lookup(name);
+				} catch (NamingException e1) {
+					log.error(e);
+				}
 			} catch (Exception e) {
 				log.error(e);
 			}

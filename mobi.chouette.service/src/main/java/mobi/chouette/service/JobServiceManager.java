@@ -95,11 +95,11 @@ public class JobServiceManager {
 	public JobService create(String referential, String action, String type, Map<String, InputStream> inputStreamsByName)
 			throws ServiceException {
 		JobService jobService = null;
+		if (scheduler.getActivejobsCount() >= maxJobs)
+		{
+			throw new RequestServiceException(RequestExceptionCode.TOO_MANY_ACTIVE_JOBS, ""+maxJobs+" active jobs");
+		}
 		try {
-			if (scheduler.getActivejobsCount() >= maxJobs)
-			{
-				throw new RequestServiceException(RequestExceptionCode.TOO_MANY_ACTIVE_JOBS, ""+maxJobs+" active jobs");
-			}
 			
 			// Valider les parametres
 			validateReferential(referential);

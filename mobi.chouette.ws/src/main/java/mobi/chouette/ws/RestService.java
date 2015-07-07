@@ -78,6 +78,7 @@ public class RestService implements Constant {
 					+ (type == null ? "" : ", type = " + type) + Color.NORMAL);
 
 			// Convertir les parametres fournis
+			Thread.sleep(500);
 			type = parseType(type);
 			inputStreamByName = readParts(input);
 
@@ -125,6 +126,7 @@ public class RestService implements Constant {
 			return Status.BAD_REQUEST;
 		case INTERNAL_ERROR:
 			return Status.INTERNAL_SERVER_ERROR;
+
 		}
 		return Status.INTERNAL_SERVER_ERROR;
 	}
@@ -151,6 +153,10 @@ public class RestService implements Constant {
 			return Status.NOT_FOUND;
 		case SCHEDULED_JOB:
 			return Status.METHOD_NOT_ALLOWED;
+		case REFERENTIAL_BUSY :
+			return Status.CONFLICT;
+		case TOO_MANY_ACTIVE_JOBS :
+			return Status.SERVICE_UNAVAILABLE;
 		}
 		return Status.BAD_REQUEST;
 	}
