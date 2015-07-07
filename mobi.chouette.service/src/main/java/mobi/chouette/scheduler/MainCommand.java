@@ -41,7 +41,7 @@ public class MainCommand implements Command, Constant {
 		JobService jobService = jobManager.getJobService(id);
 		try {
 			// set job status to started
-			jobManager.start(jobService);
+			// jobManager.start(jobService);
 
 			context.put(JOB_DATA, jobService);
 

@@ -44,12 +44,15 @@ public class CopyCommand implements Command {
 
 			Boolean optimized = (Boolean) context.get(OPTIMIZED);
 			if (optimized) {
-				Boolean busy = (Boolean) context.get(COPY_IN_PROGRESS);
-				if (busy != null) 
+				int retryCount = 0;
+				if (context.containsKey(COPY_IN_PROGRESS)) 
 					log.info("waiting for previous copy");
-				while (busy != null) {
+				while (context.containsKey(COPY_IN_PROGRESS) && retryCount < 1000) {
 					Thread.sleep(300);
-					busy = (Boolean) context.get(COPY_IN_PROGRESS);
+				}
+				if (retryCount == 1000)
+				{
+					throw new Exception("time-out in waiting for end of previous copy");
 				}
 				log.info("starting new copy");
 

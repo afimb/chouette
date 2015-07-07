@@ -78,6 +78,7 @@ public class RestService implements Constant {
 					+ (type == null ? "" : ", type = " + type) + Color.NORMAL);
 
 			// Convertir les parametres fournis
+			Thread.sleep(300);
 			type = parseType(type);
 			inputStreamByName = readParts(input);
 
@@ -112,6 +113,7 @@ public class RestService implements Constant {
 					}
 				}
 			}
+			log.info(Color.CYAN + "upload returns" + Color.NORMAL);
 		}
 	}
 

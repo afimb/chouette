@@ -98,7 +98,21 @@ public class JobServiceManager {
 
 	}
 
-	public JobService create(String referential, String action, String type, Map<String, InputStream> inputStreamsByName)
+	
+	public synchronized JobService create(String referential, String action, String type, Map<String, InputStream> inputStreamsByName)
+			throws ServiceException {
+		if (scheduler.getActivejobsCount() >= maxJobs)
+		{
+			throw new RequestServiceException(RequestExceptionCode.TOO_MANY_ACTIVE_JOBS, ""+maxJobs+" active jobs");
+		}
+		JobService jobService = createJob(referential, action, type, inputStreamsByName);
+		// scheduler.schedule(referential);
+		return jobService;
+	}
+	
+	
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+	private JobService createJob(String referential, String action, String type, Map<String, InputStream> inputStreamsByName)
 			throws ServiceException {
 		JobService jobService = null;
 		if (scheduler.getActivejobsCount() >= maxJobs)
@@ -135,7 +149,9 @@ public class JobServiceManager {
 
 			// Lancer la tache dans un thread pour séparer les transactions
 			SchedulerThread sht = new SchedulerThread(jobService.getReferential());
-			executor.submit(sht);
+			executor.execute(sht);
+			
+			
 //			Thread t = new Thread(new SchedulerThread(jobService.getReferential()));
 //			t.start();
 
@@ -203,15 +219,15 @@ public class JobServiceManager {
 	 * @param referential
 	 * @return
 	 */
-	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-	public JobService getNextJob(String referential) {
-		Job job = jobDAO.getNextJob(referential);
-		if (job == null) {
-			return null;
-		}
-		jobDAO.detach(job);
-		return new JobService(job);
-	}
+//	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+//	public JobService getNextJob(String referential) {
+//		Job job = jobDAO.getNextJob(referential);
+//		if (job == null) {
+//			return null;
+//		}
+//		jobDAO.detach(job);
+//		return new JobService(job);
+//	}
 
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public void start(JobService jobService) {
@@ -386,7 +402,6 @@ public class JobServiceManager {
 				+ id);
 	}
 
-	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public JobService getJobService(Long id) throws ServiceException {
 		Job job = jobDAO.find(id);
 		if (job != null) {

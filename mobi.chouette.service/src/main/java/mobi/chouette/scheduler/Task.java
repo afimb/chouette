@@ -50,7 +50,7 @@ public class Task implements Callable<Job.STATUS>, ManagedTask, Constant {
 		try {
 			InitialContext initialContext = new InitialContext();
 			context.put(INITIAL_CONTEXT, initialContext);
-			Thread.sleep(100);
+			// Thread.sleep(100);
 			Command command = CommandFactory.create(initialContext,
 					MainCommand.class.getName());
 			command.execute(context);
