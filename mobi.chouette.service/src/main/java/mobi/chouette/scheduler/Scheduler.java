@@ -46,7 +46,7 @@ public class Scheduler {
 	SchemaDAO schemaDAO;
 
   	@Resource(lookup = "java:comp/DefaultManagedExecutorService")
-// 	@Resource(lookup = "java:jboss/ee/executor/ievjobs")
+// 	@Resource(lookup = "java:jboss/ee/concurrency/executor/ievjobs")
 	ManagedExecutorService executor;
 	
 	Map<Long,Future<STATUS>> startedFutures = new Hashtable<>();

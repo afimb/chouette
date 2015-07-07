@@ -19,11 +19,13 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.ws.rs.core.MediaType;
 
 import lombok.Getter;
@@ -56,7 +58,11 @@ public class JobServiceManager {
 
 	@EJB
 	Scheduler scheduler;
-	
+
+  	@Resource(lookup = "java:comp/DefaultManagedExecutorService")
+// 	@Resource(lookup = "java:jboss/ee/concurrency/executor/ievjobs")
+	ManagedExecutorService executor;
+
 	private Set<Object> referentials = Collections.synchronizedSet(new HashSet<>());
 	
 	private static int maxJobs = 5;
@@ -128,8 +134,10 @@ public class JobServiceManager {
 			jobDAO.detach(jobService.getJob());
 
 			// Lancer la tache dans un thread pour séparer les transactions
-			Thread t = new Thread(new SchedulerThread(jobService.getReferential()));
-			t.start();
+			SchedulerThread sht = new SchedulerThread(jobService.getReferential());
+			executor.submit(sht);
+//			Thread t = new Thread(new SchedulerThread(jobService.getReferential()));
+//			t.start();
 
 			return jobService;
 

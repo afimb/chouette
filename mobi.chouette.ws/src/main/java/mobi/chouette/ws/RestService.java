@@ -78,7 +78,6 @@ public class RestService implements Constant {
 					+ (type == null ? "" : ", type = " + type) + Color.NORMAL);
 
 			// Convertir les parametres fournis
-			Thread.sleep(500);
 			type = parseType(type);
 			inputStreamByName = readParts(input);
 
