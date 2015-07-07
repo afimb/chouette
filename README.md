@@ -104,11 +104,13 @@ mvn test -DskipWildfly
 ```
 
 Deployment :
-[Install and configure Wildfly](./doc/install/wildfly.md) 
 
 change data storage directory (USER_HOME by default) :
 copy properties file [iev.properties](./doc/iev.properties) in /etc/chouette/iev/ directory
 change property ```iev.directory``` value to desired directory
+change property ```iev.started.jobs.max``` value to limit parallel jobs processing (default = 5)
+
+[Install and configure Wildfly](./doc/install/wildfly.md) 
 
 deploy ear (wildfly must be running)
 ```sh
@@ -121,10 +123,11 @@ download chouette_iev.x.y.z.zip from [maven repository](http://maven.chouette.mo
 change data storage directory (USER_HOME by default)
 copy properties file [iev.properties](./doc/iev.properties) in /etc/chouette/iev/ directory
 change property ```iev.directory``` value to desired directory
+change property ```iev.started.jobs.max``` value to limit parallel jobs processing (default = 5)
 
 [Install and configure Wildfly](./doc/install/wildfly.md) 
 
-in wildfly installation repository : 
+in wildfly installation repository :
 ```sh
 bin/jboss-cli.sh connect, deploy --force  (path to ...)/chouette.ear
 ```
