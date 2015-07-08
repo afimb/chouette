@@ -31,6 +31,7 @@ import javax.ws.rs.core.MediaType;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
+import mobi.chouette.common.PropertyNames;
 import mobi.chouette.dao.JobDAO;
 import mobi.chouette.model.iev.Job;
 import mobi.chouette.model.iev.Job.STATUS;
@@ -69,6 +70,7 @@ public class JobServiceManager {
 
 	static {
 		System.setProperty(PropertyNames.MAX_STARTED_JOBS, "5");
+		System.setProperty(PropertyNames.MAX_COPY_BY_JOB, "5");
 		try {
 			// set default properties
 			System.setProperty(PropertyNames.ROOT_DIRECTORY, System.getProperty("user.home"));

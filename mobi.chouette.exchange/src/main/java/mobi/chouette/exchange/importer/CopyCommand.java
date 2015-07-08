@@ -2,6 +2,7 @@ package mobi.chouette.exchange.importer;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
@@ -18,6 +19,7 @@ import javax.naming.NamingException;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
+import mobi.chouette.common.PropertyNames;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.VehicleJourneyDAO;
@@ -41,6 +43,7 @@ public class CopyCommand implements Command {
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean execute(Context context) throws Exception {
+		int maxCopy = Integer.parseInt(System.getProperty(PropertyNames.MAX_COPY_BY_JOB));
 
 		boolean result = ERROR;
 
@@ -52,6 +55,26 @@ public class CopyCommand implements Command {
 				if (futures == null) {
 					futures = new ArrayList<>();
 					context.put(COPY_IN_PROGRESS, futures);
+				}
+				while (futures.size() >= maxCopy)
+				{
+					for (Iterator<Future<Void>> iterator = futures.iterator(); iterator.hasNext();) {
+						Future<Void> future = iterator.next();
+						if (future.isDone()) iterator.remove();
+					}
+					if (futures.size() >= maxCopy)
+					{
+						for (Iterator<Future<Void>> iterator = futures.iterator(); iterator.hasNext();) {
+							Future<Void> future = iterator.next();
+							if (future.isDone()) iterator.remove();
+							else
+							{
+								log.info("too many copy in progress, waiting ...");
+								future.get();
+								break;
+							}
+						}						
+					}
 				}
 				CommandCallable callable = new CommandCallable();
 				callable.buffer = (String) context.remove(BUFFER);

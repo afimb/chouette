@@ -27,10 +27,10 @@ import org.codehaus.jettison.json.JSONObject;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Constant;
+import mobi.chouette.common.PropertyNames;
 import mobi.chouette.model.iev.Job;
 import mobi.chouette.service.JobService;
 import mobi.chouette.service.JobServiceManager;
-import mobi.chouette.service.PropertyNames;
 
 @Path("/admin")
 @Log4j

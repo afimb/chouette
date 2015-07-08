@@ -15,6 +15,7 @@ import lombok.Data;
 import lombok.experimental.Delegate;
 import mobi.chouette.common.JSONUtil;
 import mobi.chouette.common.JobData;
+import mobi.chouette.common.PropertyNames;
 import mobi.chouette.exchange.InputValidator;
 import mobi.chouette.exchange.InputValidatorFactory;
 import mobi.chouette.exchange.parameters.AbstractParameter;
