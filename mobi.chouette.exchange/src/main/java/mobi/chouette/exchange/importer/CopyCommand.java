@@ -43,7 +43,9 @@ public class CopyCommand implements Command {
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean execute(Context context) throws Exception {
-		int maxCopy = Integer.parseInt(System.getProperty(PropertyNames.MAX_COPY_BY_JOB));
+		String sMaxCopy = System.getProperty(PropertyNames.MAX_COPY_BY_JOB);
+		if (sMaxCopy == null) sMaxCopy = "5";
+		int maxCopy = Integer.parseInt(sMaxCopy);
 
 		boolean result = ERROR;
 
