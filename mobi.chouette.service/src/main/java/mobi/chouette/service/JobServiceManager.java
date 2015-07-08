@@ -98,7 +98,7 @@ public class JobServiceManager {
 
 	}
 
-	
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public synchronized JobService create(String referential, String action, String type, Map<String, InputStream> inputStreamsByName)
 			throws ServiceException {
 		if (scheduler.getActivejobsCount() >= maxJobs)
@@ -106,19 +106,21 @@ public class JobServiceManager {
 			throw new RequestServiceException(RequestExceptionCode.TOO_MANY_ACTIVE_JOBS, ""+maxJobs+" active jobs");
 		}
 		JobService jobService = createJob(referential, action, type, inputStreamsByName);
-		// scheduler.schedule(referential);
+		scheduler.schedule(referential);
+		// Lancer la tache dans un thread pour séparer les transactions
+//		SchedulerThread sht = new SchedulerThread(jobService.getReferential());
+//		executor.execute(sht);
+			
+//		Thread t = new Thread(new SchedulerThread(jobService.getReferential()));
+//		t.start();
 		return jobService;
 	}
 	
 	
-	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	private JobService createJob(String referential, String action, String type, Map<String, InputStream> inputStreamsByName)
 			throws ServiceException {
 		JobService jobService = null;
-		if (scheduler.getActivejobsCount() >= maxJobs)
-		{
-			throw new RequestServiceException(RequestExceptionCode.TOO_MANY_ACTIVE_JOBS, ""+maxJobs+" active jobs");
-		}
 		try {
 			
 			// Valider les parametres
@@ -129,8 +131,7 @@ public class JobServiceManager {
 
 			// Enregistrer le jobService pour obtenir un id
 			jobDAO.create(jobService.getJob());
-			jobDAO.flush();
-
+			// jobDAO.flush();
 			// mkdir
 			if (Files.exists(jobService.getPath())) {
 				// réutilisation anormale d'un id de job (réinitialisation de la
@@ -143,17 +144,8 @@ public class JobServiceManager {
 			jobService.saveInputStreams(inputStreamsByName);
 
 			jobDAO.update(jobService.getJob());
-			jobDAO.flush();
-
+			// jobDAO.flush();
 			jobDAO.detach(jobService.getJob());
-
-			// Lancer la tache dans un thread pour séparer les transactions
-			SchedulerThread sht = new SchedulerThread(jobService.getReferential());
-			executor.execute(sht);
-			
-			
-//			Thread t = new Thread(new SchedulerThread(jobService.getReferential()));
-//			t.start();
 
 			return jobService;
 
@@ -229,14 +221,14 @@ public class JobServiceManager {
 //		return new JobService(job);
 //	}
 
-	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-	public void start(JobService jobService) {
-		jobService.setStatus(STATUS.STARTED);
-		jobService.setUpdated(new Date());
-		jobService.setStarted(new Date());
-		jobService.addLink(MediaType.APPLICATION_JSON, Link.REPORT_REL);
-		jobDAO.update(jobService.getJob());
-	}
+//	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+//	public void start(JobService jobService) {
+//		jobService.setStatus(STATUS.STARTED);
+//		jobService.setUpdated(new Date());
+//		jobService.setStarted(new Date());
+//		jobService.addLink(MediaType.APPLICATION_JSON, Link.REPORT_REL);
+//		jobDAO.update(jobService.getJob());
+//	}
 
 	public void cancel(String referential, Long id) throws ServiceException {
 		validateReferential(referential);
@@ -459,25 +451,25 @@ public class JobServiceManager {
 
 	}
 
-	private class SchedulerThread implements Runnable {
-		private String referential;
-		@Getter
-		private boolean result = false;
-
-		SchedulerThread(String referential) {
-			this.referential = referential;
-		}
-
-		public void run() {
-			try {
-				Thread.sleep(500);
-				scheduler.schedule(referential);
-			} catch (Exception e) {
-				log.error(e);
-			}
-		}
-
-	}
+//	private class SchedulerThread implements Runnable {
+//		private String referential;
+//		@Getter
+//		private boolean result = false;
+//
+//		SchedulerThread(String referential) {
+//			this.referential = referential;
+//		}
+//
+//		public void run() {
+//			try {
+//				//Thread.sleep(500);
+//				scheduler.schedule(referential);
+//			} catch (Exception e) {
+//				log.error(e);
+//			}
+//		}
+//
+//	}
 
 	// administration operation
 	public List<JobService> activeJobs() {
