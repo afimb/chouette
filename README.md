@@ -109,6 +109,7 @@ change data storage directory (USER_HOME by default) :
 copy properties file [iev.properties](./doc/iev.properties) in /etc/chouette/iev/ directory
 change property ```iev.directory``` value to desired directory
 change property ```iev.started.jobs.max``` value to limit parallel jobs processing (default = 5)
+change property ```iev.copy.by.import.max``` value to limit parallel single line import by import job (default = 5)
 
 [Install and configure Wildfly](./doc/install/wildfly.md) 
 
