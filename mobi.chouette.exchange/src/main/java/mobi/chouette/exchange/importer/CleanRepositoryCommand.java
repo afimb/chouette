@@ -2,12 +2,10 @@ package mobi.chouette.exchange.importer;
 
 import java.io.IOException;
 
-import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
@@ -31,9 +29,6 @@ import com.jamonapi.MonitorFactory;
 public class CleanRepositoryCommand implements Command {
 
 	public static final String COMMAND = "CleanRepositoryCommand";
-
-	@Resource(lookup = "java:comp/DefaultManagedExecutorService")
-	ManagedExecutorService executor;
 
 	@EJB
 	private LineDAO lineDAO;
