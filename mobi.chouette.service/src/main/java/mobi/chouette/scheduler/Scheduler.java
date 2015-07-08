@@ -1,7 +1,6 @@
 package mobi.chouette.scheduler;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,19 +12,14 @@ import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.concurrent.ManagedTaskListener;
 import javax.naming.InitialContext;
-import javax.ws.rs.core.MediaType;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.dao.JobDAO;
 import mobi.chouette.dao.SchemaDAO;
-import mobi.chouette.model.iev.Job;
-import mobi.chouette.model.iev.Link;
 import mobi.chouette.model.iev.Job.STATUS;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 import mobi.chouette.service.JobService;
@@ -66,14 +60,13 @@ public class Scheduler {
 		return startedTasks.size();
 	}
 
-	//@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void schedule(String referential) {
 		
 		log.info("schedule referential "+referential);
-		JobService jobService = /* jobManager.*/getNextJob(referential);
+		JobService jobService =  jobManager.getNextJob(referential);
 		if (jobService != null) {
 			log.info("start a new job "+jobService.getId());
-			/* jobManager. */ start(jobService);
+			jobManager.start(jobService);
 
 			Map<String, String> properties = new HashMap<String, String>();
 			Task task = new Task(jobService, properties, new TaskListener());
@@ -87,31 +80,6 @@ public class Scheduler {
 		}
 	}
 	
-	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-	public void start(JobService jobService) {
-		jobService.setStatus(STATUS.STARTED);
-		jobService.setUpdated(new Date());
-		jobService.setStarted(new Date());
-		jobService.addLink(MediaType.APPLICATION_JSON, Link.REPORT_REL);
-		jobDAO.update(jobService.getJob());
-	}
-
-	/**
-	 * find next waiting job on referential <br/>
-	 * return null if a job is STARTED or if no job is SCHEDULED
-	 * 
-	 * @param referential
-	 * @return
-	 */
-	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-	public JobService getNextJob(String referential) {
-		Job job = jobDAO.getNextJob(referential);
-		if (job == null) {
-			return null;
-		}
-		jobDAO.detach(job);
-		return new JobService(job);
-	}
 
 	@PostConstruct
 	private void initialize() {

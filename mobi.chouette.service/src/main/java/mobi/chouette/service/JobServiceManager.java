@@ -107,12 +107,6 @@ public class JobServiceManager {
 		}
 		JobService jobService = createJob(referential, action, type, inputStreamsByName);
 		scheduler.schedule(referential);
-		// Lancer la tache dans un thread pour séparer les transactions
-//		SchedulerThread sht = new SchedulerThread(jobService.getReferential());
-//		executor.execute(sht);
-			
-//		Thread t = new Thread(new SchedulerThread(jobService.getReferential()));
-//		t.start();
 		return jobService;
 	}
 	
@@ -211,24 +205,24 @@ public class JobServiceManager {
 	 * @param referential
 	 * @return
 	 */
-//	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-//	public JobService getNextJob(String referential) {
-//		Job job = jobDAO.getNextJob(referential);
-//		if (job == null) {
-//			return null;
-//		}
-//		jobDAO.detach(job);
-//		return new JobService(job);
-//	}
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+	public JobService getNextJob(String referential) {
+		Job job = jobDAO.getNextJob(referential);
+		if (job == null) {
+			return null;
+		}
+		jobDAO.detach(job);
+		return new JobService(job);
+	}
 
-//	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-//	public void start(JobService jobService) {
-//		jobService.setStatus(STATUS.STARTED);
-//		jobService.setUpdated(new Date());
-//		jobService.setStarted(new Date());
-//		jobService.addLink(MediaType.APPLICATION_JSON, Link.REPORT_REL);
-//		jobDAO.update(jobService.getJob());
-//	}
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+	public void start(JobService jobService) {
+		jobService.setStatus(STATUS.STARTED);
+		jobService.setUpdated(new Date());
+		jobService.setStarted(new Date());
+		jobService.addLink(MediaType.APPLICATION_JSON, Link.REPORT_REL);
+		jobDAO.update(jobService.getJob());
+	}
 
 	public void cancel(String referential, Long id) throws ServiceException {
 		validateReferential(referential);
@@ -450,26 +444,6 @@ public class JobServiceManager {
 		}
 
 	}
-
-//	private class SchedulerThread implements Runnable {
-//		private String referential;
-//		@Getter
-//		private boolean result = false;
-//
-//		SchedulerThread(String referential) {
-//			this.referential = referential;
-//		}
-//
-//		public void run() {
-//			try {
-//				//Thread.sleep(500);
-//				scheduler.schedule(referential);
-//			} catch (Exception e) {
-//				log.error(e);
-//			}
-//		}
-//
-//	}
 
 	// administration operation
 	public List<JobService> activeJobs() {
