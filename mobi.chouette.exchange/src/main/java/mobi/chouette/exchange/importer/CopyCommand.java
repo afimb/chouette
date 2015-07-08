@@ -1,7 +1,10 @@
 package mobi.chouette.exchange.importer;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 
 import javax.annotation.Resource;
 import javax.ejb.EJB;
@@ -35,6 +38,7 @@ public class CopyCommand implements Command {
 	@Resource(lookup = "java:comp/DefaultManagedExecutorService")
 	ManagedExecutorService executor;
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public boolean execute(Context context) throws Exception {
 
@@ -44,24 +48,16 @@ public class CopyCommand implements Command {
 
 			Boolean optimized = (Boolean) context.get(OPTIMIZED);
 			if (optimized) {
-				int retryCount = 0;
-				if (context.containsKey(COPY_IN_PROGRESS)) 
-					log.info("waiting for previous copy");
-				while (context.containsKey(COPY_IN_PROGRESS) && retryCount < 1000) {
-					Thread.sleep(300);
+				List<Future<Void>> futures = (List<Future<Void>>) context.get(COPY_IN_PROGRESS);
+				if (futures == null) {
+					futures = new ArrayList<>();
+					context.put(COPY_IN_PROGRESS, futures);
 				}
-				if (retryCount == 1000)
-				{
-					throw new Exception("time-out in waiting for end of previous copy");
-				}
-				log.info("starting new copy");
-
-				context.put(COPY_IN_PROGRESS, Boolean.TRUE);
 				CommandCallable callable = new CommandCallable();
 				callable.buffer = (String) context.remove(BUFFER);
 				callable.schema = ContextHolder.getContext();
-				callable.context = context;
-				executor.submit(callable);
+				Future<Void> future = executor.submit(callable);
+				futures.add(future);
 			}
 
 			result = SUCCESS;
@@ -76,21 +72,16 @@ public class CopyCommand implements Command {
 	private class CommandCallable implements Callable<Void> {
 		private String buffer;
 		private String schema;
-		private Context context;
 
 		@Override
 		@TransactionAttribute(TransactionAttributeType.REQUIRED)
 		public Void call() throws Exception {
-			try {
-				Monitor monitor = MonitorFactory.start(COMMAND);
-				ContextHolder.setContext(schema);
-				vehicleJourneyDAO.copy(buffer);
-				log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
-				ContextHolder.setContext(null);
-				return null;
-			} finally {
-				context.remove(COPY_IN_PROGRESS);
-			}
+			Monitor monitor = MonitorFactory.start(COMMAND);
+			ContextHolder.setContext(schema);
+			vehicleJourneyDAO.copy(buffer);
+			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
+			ContextHolder.setContext(null);
+			return null;
 		}
 
 	}
