@@ -45,8 +45,7 @@ public class GtfsAgencyParser implements Parser, Validator, Constant {
 	public void validate(Context context) throws Exception {
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		ActionReport report = (ActionReport) context.get(REPORT);
-		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
-		
+		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
 		// agency.txt
 		if (importer.hasAgencyImporter()) {
 			// Add to report
