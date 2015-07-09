@@ -36,7 +36,7 @@ This java project is splitted in differents modules :
 * mobi.chouette.exchange.validator : Specific commands for common data validation 
 * mobi.chouette.model : JPA entities modelisation for public transport model
 * mobi.chouette.model.iev : JPA entities modelisation for iev jobs
-* mobi.chouette.persi.ievstence.hibernate : Hibernate specific tools
+* mobi.chouette.persistence.hibernate : Hibernate specific tools
 * mobi.chouette.service : Job and tasks managment
 * mobi.chouette.ws : REST API implementation
 
@@ -104,27 +104,31 @@ mvn test -DskipWildfly
 ```
 
 Deployment :
-[Install and configure Wildfly](./doc/install/wildfly.md) 
 
 change data storage directory (USER_HOME by default) :
 copy properties file [iev.properties](./doc/iev.properties) in /etc/chouette/iev/ directory
 change property ```iev.directory``` value to desired directory
+change property ```iev.started.jobs.max``` value to limit parallel jobs processing (default = 5)
+change property ```iev.copy.by.import.max``` value to limit parallel single line import by import job (default = 5)
+
+[Install and configure Wildfly](./doc/install/wildfly.md) 
 
 deploy ear (wildfly must be running)
 ```sh
 mvn -DskipTests install
 ```
 
-## Installation from binary
+### Installation from binary
 download chouette_iev.x.y.z.zip from [maven repository](http://maven.chouette.mobi/mobi/chouette/chouette_iev)
 
 change data storage directory (USER_HOME by default)
 copy properties file [iev.properties](./doc/iev.properties) in /etc/chouette/iev/ directory
 change property ```iev.directory``` value to desired directory
+change property ```iev.started.jobs.max``` value to limit parallel jobs processing (default = 5)
 
 [Install and configure Wildfly](./doc/install/wildfly.md) 
 
-in wildfly installation repository : 
+in wildfly installation repository :
 ```sh
 bin/jboss-cli.sh connect, deploy --force  (path to ...)/chouette.ear
 ```

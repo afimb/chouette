@@ -43,11 +43,18 @@ data-source add --jndi-name=java:jboss/datasources/chouette --name=chouette --co
 
 data-source add --jndi-name=java:jboss/datasources/iev --name=iev --connection-url=jdbc:postgresql://localhost:5432/iev --driver-name=postgres --user-name=chouette --password=chouette
 
-/subsystem=ee/managed-executor-service=default/ :write-attribute(name=queue-length,value=30)
+/subsystem=ee/managed-executor-service=default/ :write-attribute(name=max-threads,value=15)
+/subsystem=ee/managed-executor-service=default/ :write-attribute(name=queue-length,value=15)
 
 exit
 ```
-Note : (path to ...) must be replaced by absolute paths without parenthesis
+Notes : 
+(path to driver) must be replaced by absolute paths without parenthesis
+max-threads and queue-length should be sized according to iev.started.jobs.max and iev.copy.by.import.max defined in iev.properties (default are 5)
+```sh
+max-threads >= 2 * iev.started.jobs.max
+max-threads + queue-length >= iev.started.jobs.max * (iev.copy.by.import.max + 1)
+```
 
 change uploaded file size: 
 

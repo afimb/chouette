@@ -8,12 +8,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
-import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
@@ -53,9 +51,6 @@ public class LineRegisterCommand implements Command {
 
 	@EJB(beanName = LineUpdater.BEAN_NAME)
 	private Updater<Line> lineUpdater;
-
-	@Resource(lookup = "java:comp/DefaultManagedExecutorService")
-	ManagedExecutorService executor;
 
 	@EJB
 	private VehicleJourneyDAO vehicleJourneyDAO;

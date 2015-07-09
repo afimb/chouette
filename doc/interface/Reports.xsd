@@ -271,7 +271,7 @@
       <xs:documentation>Rapport de validation</xs:documentation>
     </xs:annotation>
     <xs:sequence>
-      <xs:element name="result" type="xs:string" minOccurs="0">
+      <xs:element name="result" type="xs:string">
         <xs:annotation>
           <xs:documentation>Résultat de validation : VALIDATION_PROCEDEED ou NO_VALIDATION</xs:documentation>
         </xs:annotation>
@@ -442,6 +442,7 @@
       <xs:enumeration value="INITIALISATION"><xs:annotation><xs:documentation>Initialisation de l'opération</xs:documentation></xs:annotation></xs:enumeration> 
       <xs:enumeration value="PROCESSING"><xs:annotation><xs:documentation>Traitement principal</xs:documentation></xs:annotation></xs:enumeration> 
       <xs:enumeration value="FINALISATION"><xs:annotation><xs:documentation>Finalisation de l'opération</xs:documentation></xs:annotation></xs:enumeration> 
+      <xs:enumeration value="TERMINATED"><xs:annotation><xs:documentation>Opération terminée</xs:documentation></xs:annotation></xs:enumeration> 
     </xs:restriction>
   </xs:simpleType>
 

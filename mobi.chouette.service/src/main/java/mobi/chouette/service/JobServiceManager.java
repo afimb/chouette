@@ -9,28 +9,33 @@ import java.nio.file.LinkOption;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.ws.rs.core.MediaType;
 
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
+import mobi.chouette.common.PropertyNames;
 import mobi.chouette.dao.JobDAO;
 import mobi.chouette.model.iev.Job;
-import mobi.chouette.model.iev.Link;
 import mobi.chouette.model.iev.Job.STATUS;
+import mobi.chouette.model.iev.Link;
 import mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator;
 import mobi.chouette.scheduler.Scheduler;
 
@@ -55,7 +60,17 @@ public class JobServiceManager {
 	@EJB
 	Scheduler scheduler;
 
+  	@Resource(lookup = "java:comp/DefaultManagedExecutorService")
+// 	@Resource(lookup = "java:jboss/ee/concurrency/executor/ievjobs")
+	ManagedExecutorService executor;
+
+	private Set<Object> referentials = Collections.synchronizedSet(new HashSet<>());
+	
+	private static int maxJobs = 5;
+
 	static {
+		System.setProperty(PropertyNames.MAX_STARTED_JOBS, "5");
+		System.setProperty(PropertyNames.MAX_COPY_BY_JOB, "5");
 		try {
 			// set default properties
 			System.setProperty(PropertyNames.ROOT_DIRECTORY, System.getProperty("user.home"));
@@ -81,13 +96,29 @@ public class JobServiceManager {
 		} catch (Exception e) {
 			log.error("cannot process properties", e);
 		}
+		maxJobs = Integer.parseInt(System.getProperty(PropertyNames.MAX_STARTED_JOBS));
 
 	}
 
-	public JobService create(String referential, String action, String type, Map<String, InputStream> inputStreamsByName)
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+	public synchronized JobService create(String referential, String action, String type, Map<String, InputStream> inputStreamsByName)
+			throws ServiceException {
+		if (scheduler.getActivejobsCount() >= maxJobs)
+		{
+			throw new RequestServiceException(RequestExceptionCode.TOO_MANY_ACTIVE_JOBS, ""+maxJobs+" active jobs");
+		}
+		JobService jobService = createJob(referential, action, type, inputStreamsByName);
+		scheduler.schedule(referential);
+		return jobService;
+	}
+	
+	
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	private JobService createJob(String referential, String action, String type, Map<String, InputStream> inputStreamsByName)
 			throws ServiceException {
 		JobService jobService = null;
 		try {
+			
 			// Valider les parametres
 			validateReferential(referential);
 
@@ -96,8 +127,7 @@ public class JobServiceManager {
 
 			// Enregistrer le jobService pour obtenir un id
 			jobDAO.create(jobService.getJob());
-			jobDAO.flush();
-
+			// jobDAO.flush();
 			// mkdir
 			if (Files.exists(jobService.getPath())) {
 				// réutilisation anormale d'un id de job (réinitialisation de la
@@ -110,13 +140,8 @@ public class JobServiceManager {
 			jobService.saveInputStreams(inputStreamsByName);
 
 			jobDAO.update(jobService.getJob());
-			jobDAO.flush();
-
+			// jobDAO.flush();
 			jobDAO.detach(jobService.getJob());
-
-			// Lancer la tache dans un thread pour séparer les transactions
-			Thread t = new Thread(new SchedulerThread(jobService.getReferential()));
-			t.start();
 
 			return jobService;
 
@@ -148,6 +173,9 @@ public class JobServiceManager {
 	}
 
 	private void validateReferential(final String referential) throws ServiceException {
+		
+		if (referentials.contains(referential)) return;
+
 		// launch a thread to separate datasources transactions
 		SchemaValidatorThread s = new SchemaValidatorThread(referential);
 		Thread t = new Thread(s);
@@ -159,6 +187,7 @@ public class JobServiceManager {
 		if (!s.isResult()) {
 			throw new RequestServiceException(RequestExceptionCode.UNKNOWN_REFERENTIAL, "referential");
 		}
+		referentials.add(referential);
 	}
 
 	public JobService download(String referential, Long id, String filename) throws ServiceException {
@@ -178,6 +207,7 @@ public class JobServiceManager {
 	 * @param referential
 	 * @return
 	 */
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public JobService getNextJob(String referential) {
 		Job job = jobDAO.getNextJob(referential);
 		if (job == null) {
@@ -255,6 +285,9 @@ public class JobServiceManager {
 			Logger.getLogger(JobServiceManager.class.getName()).log(Level.SEVERE,
 					"fail to delete directory for" + referential, e);
 		}
+		
+		// remove referential from known ones
+		referentials.remove(referential);
 		
 		// remove sequences data for this tenant
 		ChouetteIdentifierGenerator.deleteTenant(referential);
@@ -357,7 +390,6 @@ public class JobServiceManager {
 				+ id);
 	}
 
-	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public JobService getJobService(Long id) throws ServiceException {
 		Job job = jobDAO.find(id);
 		if (job != null) {
@@ -408,26 +440,6 @@ public class JobServiceManager {
 		public void run() {
 			try {
 				result = schemaManager.validateReferential(referential);
-			} catch (Exception e) {
-				log.error(e);
-			}
-		}
-
-	}
-
-	private class SchedulerThread implements Runnable {
-		private String referential;
-		@Getter
-		private boolean result = false;
-
-		SchedulerThread(String referential) {
-			this.referential = referential;
-		}
-
-		public void run() {
-			try {
-				Thread.sleep(500);
-				scheduler.schedule(referential);
 			} catch (Exception e) {
 				log.error(e);
 			}

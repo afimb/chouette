@@ -11,5 +11,7 @@ package mobi.chouette.service;
  */
 public enum ServiceExceptionCode {
 
-    INVALID_REQUEST, INTERNAL_ERROR
+    INVALID_REQUEST, 
+    INTERNAL_ERROR
+
 }

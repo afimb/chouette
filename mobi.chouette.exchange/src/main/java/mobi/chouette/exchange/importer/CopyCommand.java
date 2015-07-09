@@ -1,7 +1,11 @@
 package mobi.chouette.exchange.importer;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 
 import javax.annotation.Resource;
 import javax.ejb.EJB;
@@ -15,6 +19,7 @@ import javax.naming.NamingException;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
+import mobi.chouette.common.PropertyNames;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.VehicleJourneyDAO;
@@ -35,8 +40,12 @@ public class CopyCommand implements Command {
 	@Resource(lookup = "java:comp/DefaultManagedExecutorService")
 	ManagedExecutorService executor;
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public boolean execute(Context context) throws Exception {
+		String sMaxCopy = System.getProperty(PropertyNames.MAX_COPY_BY_JOB);
+		if (sMaxCopy == null) sMaxCopy = "5";
+		int maxCopy = Integer.parseInt(sMaxCopy);
 
 		boolean result = ERROR;
 
@@ -44,21 +53,36 @@ public class CopyCommand implements Command {
 
 			Boolean optimized = (Boolean) context.get(OPTIMIZED);
 			if (optimized) {
-				Boolean busy = (Boolean) context.get(COPY_IN_PROGRESS);
-				if (busy != null) 
-					log.info("waiting for previous copy");
-				while (busy != null) {
-					Thread.sleep(300);
-					busy = (Boolean) context.get(COPY_IN_PROGRESS);
+				List<Future<Void>> futures = (List<Future<Void>>) context.get(COPY_IN_PROGRESS);
+				if (futures == null) {
+					futures = new ArrayList<>();
+					context.put(COPY_IN_PROGRESS, futures);
 				}
-				log.info("starting new copy");
-
-				context.put(COPY_IN_PROGRESS, Boolean.TRUE);
+				while (futures.size() >= maxCopy)
+				{
+					for (Iterator<Future<Void>> iterator = futures.iterator(); iterator.hasNext();) {
+						Future<Void> future = iterator.next();
+						if (future.isDone()) iterator.remove();
+					}
+					if (futures.size() >= maxCopy)
+					{
+						for (Iterator<Future<Void>> iterator = futures.iterator(); iterator.hasNext();) {
+							Future<Void> future = iterator.next();
+							if (future.isDone()) iterator.remove();
+							else
+							{
+								log.info("too many copy in progress, waiting ...");
+								future.get();
+								break;
+							}
+						}						
+					}
+				}
 				CommandCallable callable = new CommandCallable();
 				callable.buffer = (String) context.remove(BUFFER);
 				callable.schema = ContextHolder.getContext();
-				callable.context = context;
-				executor.submit(callable);
+				Future<Void> future = executor.submit(callable);
+				futures.add(future);
 			}
 
 			result = SUCCESS;
@@ -73,21 +97,16 @@ public class CopyCommand implements Command {
 	private class CommandCallable implements Callable<Void> {
 		private String buffer;
 		private String schema;
-		private Context context;
 
 		@Override
 		@TransactionAttribute(TransactionAttributeType.REQUIRED)
 		public Void call() throws Exception {
-			try {
-				Monitor monitor = MonitorFactory.start(COMMAND);
-				ContextHolder.setContext(schema);
-				vehicleJourneyDAO.copy(buffer);
-				log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
-				ContextHolder.setContext(null);
-				return null;
-			} finally {
-				context.remove(COPY_IN_PROGRESS);
-			}
+			Monitor monitor = MonitorFactory.start(COMMAND);
+			ContextHolder.setContext(schema);
+			vehicleJourneyDAO.copy(buffer);
+			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
+			ContextHolder.setContext(null);
+			return null;
 		}
 
 	}

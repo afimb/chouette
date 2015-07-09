@@ -1,6 +1,8 @@
 package mobi.chouette.exchange.importer;
 
 import java.util.List;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import javax.naming.InitialContext;
 
@@ -23,6 +25,7 @@ public class AbstractImporterCommand implements Constant {
 		line, stopareas
 	};
 
+	@SuppressWarnings("unchecked")
 	public boolean process(Context context, ProcessingCommands commands, ProgressionCommand progression,
 			boolean continueProcesingOnError, Mode mode) throws Exception {
 		boolean result = ERROR;
@@ -68,6 +71,21 @@ public class AbstractImporterCommand implements Constant {
 						return ERROR;
 					}
 				}
+
+				// check if CopyCommands ended (with timeout to 5 minutes >
+				// transaction timeout)
+				if (context.containsKey(COPY_IN_PROGRESS)) {
+					long timeout = 5;
+					TimeUnit unit = TimeUnit.MINUTES;
+					List<Future<Void>> futures = (List<Future<Void>>) context.get(COPY_IN_PROGRESS);
+					for (Future<Void> future : futures) {
+						if (!future.isDone()) {
+							log.info("waiting for CopyCommand");
+							future.get(timeout, unit);
+						}
+					}
+				}
+
 			} else {
 				// get stop info
 				List<? extends Command> stopProcessingCommands = commands.getStopAreaProcessingCommands(context, true);
@@ -103,8 +121,7 @@ public class AbstractImporterCommand implements Constant {
 			}
 		} finally {
 			// call dispose commmands
-			try
-			{
+			try {
 				List<? extends Command> disposeCommands = commands.getDisposeCommands(context, true);
 				for (Command command : disposeCommands) {
 					result = command.execute(context);
@@ -112,16 +129,8 @@ public class AbstractImporterCommand implements Constant {
 						break;
 					}
 				}
-			}
-			catch (Exception e)
-			{
-				log.warn("problem on dispose commands "+e.getMessage());
-			}
-			for (String key : context.keySet()) {
-				if (context.get(key) == null)
-				log.info("cache key = "+key+", entry null");
-				else
-				log.info("cache key = "+key+", entry type = "+context.get(key).getClass().getName());
+			} catch (Exception e) {
+				log.warn("problem on dispose commands " + e.getMessage());
 			}
 			context.remove(CACHE);
 		}
