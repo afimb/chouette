@@ -2,6 +2,7 @@ package mobi.chouette.exchange.gtfs.model.importer;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Map;
 
 import mobi.chouette.exchange.gtfs.model.GtfsStop;
 import mobi.chouette.exchange.gtfs.model.GtfsStop.LocationType;
@@ -23,6 +24,11 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter {
 
 	public StopById(String name) throws IOException {
 		super(name, KEY);
+	}
+	
+	@Override
+	protected void checkRequiredFields(Map<String, Integer> fields) {
+		// TODO Code to add ...
 	}
 
 	@Override

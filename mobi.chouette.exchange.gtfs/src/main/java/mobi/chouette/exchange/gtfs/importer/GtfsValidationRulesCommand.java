@@ -57,12 +57,16 @@ public class GtfsValidationRulesCommand implements Command, Constant {
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_CSV_1, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_CSV_2, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_CSV_3, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
-		checkPoints.add(new CheckPoint(GTFS_1_GTFS_CSV_4, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
-		checkPoints.add(new CheckPoint(GTFS_1_GTFS_CSV_5, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+//		checkPoints.add(new CheckPoint(GTFS_1_GTFS_CSV_4, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+//		checkPoints.add(new CheckPoint(GTFS_1_GTFS_CSV_5, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_CSV_6, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_CSV_7, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
-		checkPoints.add(new CheckPoint(GTFS_1_GTFS_CSV_8, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
-		checkPoints.add(new CheckPoint(GTFS_1_GTFS_CSV_9, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+//		checkPoints.add(new CheckPoint(GTFS_1_GTFS_CSV_8, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+//		checkPoints.add(new CheckPoint(GTFS_1_GTFS_CSV_9, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_CSV_10, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_CSV_11, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_CSV_12, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_CSV_13, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 		return checkPoints;
 	}
 
@@ -93,6 +97,7 @@ public class GtfsValidationRulesCommand implements Command, Constant {
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Agency_8, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Agency_9, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Agency_10, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Agency_11, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 		return checkPoints;
 	}
 	

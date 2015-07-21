@@ -5,12 +5,16 @@ public interface Constant extends mobi.chouette.exchange.gtfs.Constant {
 	public static final String GTFS_1_GTFS_CSV_1 = "1-GTFS-CSV-1";
 	public static final String GTFS_1_GTFS_CSV_2 = "1-GTFS-CSV-2";
 	public static final String GTFS_1_GTFS_CSV_3 = "1-GTFS-CSV-3";
-	public static final String GTFS_1_GTFS_CSV_4 = "1-GTFS-CSV-4";
-	public static final String GTFS_1_GTFS_CSV_5 = "1-GTFS-CSV-5";
+	//public static final String GTFS_1_GTFS_CSV_4 = "1-GTFS-CSV-4";
+	//public static final String GTFS_1_GTFS_CSV_5 = "1-GTFS-CSV-5";
 	public static final String GTFS_1_GTFS_CSV_6 = "1-GTFS-CSV-6";
 	public static final String GTFS_1_GTFS_CSV_7 = "1-GTFS-CSV-7";
-	public static final String GTFS_1_GTFS_CSV_8 = "1-GTFS-CSV-8";
-	public static final String GTFS_1_GTFS_CSV_9 = "1-GTFS-CSV-9";
+	//public static final String GTFS_1_GTFS_CSV_8 = "1-GTFS-CSV-8";
+	//public static final String GTFS_1_GTFS_CSV_9 = "1-GTFS-CSV-9";
+	public static final String GTFS_1_GTFS_CSV_10 = "1-GTFS-CSV-10";
+	public static final String GTFS_1_GTFS_CSV_11 = "1-GTFS-CSV-11";
+	public static final String GTFS_1_GTFS_CSV_12 = "1-GTFS-CSV-12";
+	public static final String GTFS_1_GTFS_CSV_13 = "1-GTFS-CSV-13";
 	
 	public static final String GTFS_1_GTFS_Agency_1 = "1-GTFS-Agency-1";
 	public static final String GTFS_1_GTFS_Agency_2 = "1-GTFS-Agency-2";
@@ -22,6 +26,7 @@ public interface Constant extends mobi.chouette.exchange.gtfs.Constant {
 	public static final String GTFS_1_GTFS_Agency_8 = "1-GTFS-Agency-8";
 	public static final String GTFS_1_GTFS_Agency_9 = "1-GTFS-Agency-9";
 	public static final String GTFS_1_GTFS_Agency_10 = "1-GTFS-Agency-10";
+	public static final String GTFS_1_GTFS_Agency_11 = "1-GTFS-Agency-11";
 
 	public static final String GTFS_1_GTFS_Stop_1 = "1-GTFS-Stop-1";
 	public static final String GTFS_1_GTFS_Stop_2 = "1-GTFS-Stop-2";

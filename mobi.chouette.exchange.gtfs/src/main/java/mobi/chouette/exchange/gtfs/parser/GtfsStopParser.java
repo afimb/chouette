@@ -2,18 +2,24 @@ package mobi.chouette.exchange.gtfs.parser;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
-import mobi.chouette.exchange.gtfs.Constant;
+import mobi.chouette.exchange.gtfs.importer.Constant;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.gtfs.model.GtfsStop;
 import mobi.chouette.exchange.gtfs.model.GtfsStop.WheelchairBoardingType;
+import mobi.chouette.exchange.gtfs.model.importer.GtfsException;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsImporter;
 import mobi.chouette.exchange.gtfs.model.importer.Index;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.Validator;
 import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.FileError;
 import mobi.chouette.exchange.report.FileInfo;
 import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
+import mobi.chouette.exchange.validation.report.CheckPoint;
+import mobi.chouette.exchange.validation.report.Detail;
+import mobi.chouette.exchange.validation.report.Location;
+import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.LongLatTypeEnum;
@@ -45,22 +51,66 @@ public class GtfsStopParser implements Parser, Validator, Constant {
 
 	@Override
 	public void validate(Context context) throws Exception {
-
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		ActionReport report = (ActionReport) context.get(REPORT);
-
+		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
 		// stops.txt
-		FileInfo file = new FileInfo(GTFS_STOPS_FILE, FILE_STATE.OK);
-		report.getFiles().add(file);
+		if (importer.hasStopImporter()) {
+			// Add to report
+			report.addFileInfo(GTFS_STOPS_FILE, FILE_STATE.OK);
+		} else {
+			// Add to report
+			report.addFileInfo(GTFS_STOPS_FILE, FILE_STATE.ERROR, new FileError(FileError.CODE.FILE_NOT_FOUND, "The file stops.txt must be provided (rule 1-GTFS-Stop-1)"));
+			// Add to validation report checkpoint 1-GTFS-Stop-1
+			validationReport.addDetail(GTFS_1_GTFS_Stop_1, new Location(GTFS_STOPS_FILE, "stops-failure"), "The file stops.txt must be provided", CheckPoint.RESULT.NOK);
+			// Stop parsing and render reports (1-GTFS-Stop-1 is fatal)
+			throw new Exception("The file stops.txt must be provided");
+		}
+
+		Index<GtfsStop> parser = null;
 		try {
-			Index<GtfsStop> parser = importer.getStopById();
+			parser = importer.getStopById();
+		} catch (Exception ex) {
+			if (ex instanceof GtfsException) {
+				if ( ((GtfsException) ex).getError() == GtfsException.ERROR.DUPLICATE_FIELD)
+					;
+				else if ( ((GtfsException) ex).getError() == GtfsException.ERROR.INVALID_FILE_FORMAT)
+					;
+				else if ( ((GtfsException) ex).getError() == GtfsException.ERROR.INVALID_FORMAT)
+					;
+				else if ( ((GtfsException) ex).getError() == GtfsException.ERROR.MISSING_FIELD)
+					;
+				else if ( ((GtfsException) ex).getError() == GtfsException.ERROR.MISSING_FILE)
+					;
+				else if ( ((GtfsException) ex).getError() == GtfsException.ERROR.MISSING_FOREIGN_KEY)
+					;
+				else if ( ((GtfsException) ex).getError() == GtfsException.ERROR.SYSTEM)
+					;
+			}
+			mobi.chouette.exchange.gtfs.model.importer.Context exceptionContext = new mobi.chouette.exchange.gtfs.model.importer.Context();
+			exceptionContext.put(mobi.chouette.exchange.gtfs.model.importer.Context.CODE, "1-GTFS-Stop-1");
+			exceptionContext.put(mobi.chouette.exchange.gtfs.model.importer.Context.ERROR, GtfsException.ERROR.MISSING_FILE);
+			GtfsException exception = new GtfsException(exceptionContext, ex);
+			AbstractConverter.populateFileError(new FileInfo(GTFS_STOPS_FILE, FILE_STATE.ERROR), exception);
+			throw exception;
+		}
+		if (parser == null || parser.getLength() == 0) {
+			mobi.chouette.exchange.gtfs.model.importer.Context exceptionContext = new mobi.chouette.exchange.gtfs.model.importer.Context();
+			exceptionContext.put(mobi.chouette.exchange.gtfs.model.importer.Context.CODE, "1-GTFS-Stop-2");
+			exceptionContext.put(mobi.chouette.exchange.gtfs.model.importer.Context.ERROR, GtfsException.ERROR.INVALID_FILE_FORMAT);
+			GtfsException exception = new GtfsException(exceptionContext);
+			AbstractConverter.populateFileError(new FileInfo(GTFS_STOPS_FILE, FILE_STATE.ERROR), exception);
+			throw exception;
+		}
+		try {
 			for (GtfsStop bean : parser) {
 				parser.validate(bean, importer);
 			}
 		} catch (Exception ex) {
-			AbstractConverter.populateFileError(file, ex);
+			AbstractConverter.populateFileError(new FileInfo(GTFS_STOPS_FILE, FILE_STATE.ERROR), ex);
 			throw ex;
 		}
+
 	}
 
 	protected void convert(Context context, GtfsStop gtfsStop, StopArea stopArea) {

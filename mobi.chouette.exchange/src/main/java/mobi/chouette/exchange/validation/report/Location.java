@@ -50,6 +50,22 @@ public class Location {
 	public Location(String fileName) {
 		this.file = new FileLocation(fileName);
 	}
+	
+	public Location(String fileName, String locationName) {
+		this.file = new FileLocation(fileName);
+		this.name = locationName;
+	}
+	
+	public Location(String fileName, String locationName, int lineNumber, String objectId) {
+		this.file = new FileLocation(fileName, lineNumber, 0, objectId);
+		this.objectId = objectId;
+		this.name = locationName;
+	}
+
+	public Location(String fileName, String locationName, int lineNumber) {
+		this.file = new FileLocation(fileName, lineNumber, 0);
+		this.name = locationName;
+	}
 
 	public Location(String fileName, int lineNumber, int columnNumber) {
 		this.file = new FileLocation(fileName, lineNumber, columnNumber);

@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.gtfs.model.importer;
 
 import java.io.IOException;
+import java.util.Map;
 
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime.DropOffType;
@@ -25,6 +26,11 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements
 
 	public StopTimeByTrip(String name) throws IOException {
 		super(name, KEY, false);
+	}
+	
+	@Override
+	protected void checkRequiredFields(Map<String, Integer> fields) {
+		// TODO Code to add ...
 	}
 
 	@Override

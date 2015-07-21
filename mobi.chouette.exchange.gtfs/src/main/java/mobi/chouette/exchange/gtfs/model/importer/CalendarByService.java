@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.gtfs.model.importer;
 
 import java.io.IOException;
+import java.util.Map;
 
 import mobi.chouette.exchange.gtfs.model.GtfsCalendar;
 
@@ -19,6 +20,11 @@ public class CalendarByService extends IndexImpl<GtfsCalendar> implements
 
 	public CalendarByService(String name) throws IOException {
 		super(name, KEY);
+	}
+	
+	@Override
+	protected void checkRequiredFields(Map<String, Integer> fields) {
+		// TODO Code to add ...
 	}
 
 	@Override

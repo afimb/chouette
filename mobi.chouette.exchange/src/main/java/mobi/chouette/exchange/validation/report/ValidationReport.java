@@ -16,6 +16,7 @@ import org.codehaus.jettison.json.JSONObject;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import mobi.chouette.exchange.validation.report.CheckPoint.RESULT;
 
 @ToString
 @XmlRootElement(name = "validation_report")
@@ -58,6 +59,12 @@ public class ValidationReport {
 		JSONObject object = new JSONObject();
 		object.put("validation_report", validationReport);
 		return object;
+	}
+
+	public void addDetail(String checkPointName, Location location, String message, RESULT result) {
+		CheckPoint checkPoint = findCheckPointByName(checkPointName);
+		checkPoint.setState(result);
+		checkPoint.addDetail(new Detail(checkPointName, location, message));
 	}
 
 }

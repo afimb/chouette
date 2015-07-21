@@ -11,6 +11,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -104,4 +105,15 @@ public class ActionReport {
 		return object;
 	}
 
+	public void addFileInfo(String fileInfoName, FILE_STATE state) {
+		if (findFileInfo(fileInfoName) == null)
+			files.add(new FileInfo(fileInfoName, state));
+		else
+			findFileInfo(fileInfoName).setStatus(state);
+	}
+
+	public void addFileInfo(String fileInfoName, FILE_STATE state, FileError fileError) {
+		files.add(new FileInfo(fileInfoName, state));
+		findFileInfo(fileInfoName).addError(fileError);
+	}
 }

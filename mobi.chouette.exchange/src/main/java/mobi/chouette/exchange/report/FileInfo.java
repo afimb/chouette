@@ -11,6 +11,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -47,6 +48,18 @@ public class FileInfo {
 		this.status = state;
 	}
 
+	public FileInfo(String name, FILE_STATE state, FileError fileError) {
+		this.name = name;
+		this.status = state;
+		errors.add(fileError);
+	}
+
+	public FileInfo(String name, FILE_STATE state, List<FileError> fileErrors) {
+		this.name = name;
+		this.status = state;
+		errors.addAll(fileErrors);
+	}
+
 	public JSONObject toJson() throws JSONException {
 		JSONObject object = new JSONObject();
 		object.put("name", name);
@@ -60,5 +73,4 @@ public class FileInfo {
 		}
 		return object;
 	}
-
 }

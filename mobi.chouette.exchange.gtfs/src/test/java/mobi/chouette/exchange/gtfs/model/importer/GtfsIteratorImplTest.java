@@ -37,7 +37,8 @@ public class GtfsIteratorImplTest {
 			Assert.assertFalse(reader.next(), "check line 2");
 			Assert.assertFalse(reader.next(), "check line 3");
 			Assert.assertFalse(reader.next(), "check line 4");
-			Assert.assertTrue(reader.next(), "check line 5");
+			Assert.assertFalse(reader.next(), "check line 5");
+			Assert.assertTrue(reader.next(), "check line 6");
 		} finally {
 			file.close();
 		}

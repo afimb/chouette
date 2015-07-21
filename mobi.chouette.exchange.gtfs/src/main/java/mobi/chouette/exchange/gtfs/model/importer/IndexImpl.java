@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Set;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.HTMLTagValidator;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -75,18 +76,39 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 			_buffer = _channel1.map(FileChannel.MapMode.READ_ONLY, offset, length);
 			_buffer.load();
 			_reader = new GtfsIteratorImpl(_buffer, 0);
-			if (_reader.next()) {
+			_total++;
+			if (_reader.next()) { // The first line of this file is compatible GTFS-CSV 
 				_fields = new HashMap<String, Integer>();
 				for (int i = 0; i < _reader.getFieldCount(); i++) {
-					String key = _reader.getValue(i);
+					String key = _reader.getValue(i); // Get the ith token 
+					Context context = new Context();
+					context.put(Context.PATH, _path);
+					context.put(Context.ID, _total);
+					context.put(Context.FIELD, _key);
+					if (key == null || key.trim().isEmpty()) { // key is empty
+						context.put(Context.ERROR, GtfsException.ERROR.EMPTY_HEADER_FIELD);
+						throw new GtfsException(context);
+					}
+					if (!key.equals(key.trim())) { // No extra space
+						context.put(Context.ERROR, GtfsException.ERROR.EXTRA_SPACE_IN_HEADER_FIELD);
+						throw new GtfsException(context);
+					}
+					if (HTMLTagValidator.validate(key)) {
+						context.put(Context.ERROR, GtfsException.ERROR.HTML_TAG_IN_HEADER_FIELD);
+						throw new GtfsException(context);
+					}
+					if (_fields.get(key) != null) { // key already exists
+						context.put(Context.ERROR, GtfsException.ERROR.DUPLICATE_HEADER_FIELD);
+						throw new GtfsException(context);
+					}
 					_fields.put(key, i);
 				}
 				index();
-			} else {
+			} else { // The header line doesn't comply with GTFS-CSV 
 				Context context = new Context();
 				context.put(Context.PATH, _path);
 				context.put(Context.ID, _total);
-				context.put(Context.ERROR, GtfsException.ERROR.INVALID_FILE_FORMAT);
+				context.put(Context.ERROR, GtfsException.ERROR.INVALID_HEADER_FILE_FORMAT);
 				throw new GtfsException(context);
 			}
 		}
@@ -94,8 +116,10 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 		finally {
 			file.close();
 		}
-
+		checkRequiredFields(_fields);
 	}
+	
+	protected abstract void checkRequiredFields(Map<String, Integer> fields);
 
 	@Override
 	public void dispose() {
@@ -213,21 +237,22 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 	protected void index() throws IOException {
 		Monitor monitor = MonitorFactory.start();
 		_reader.setPosition(0);
-		if (!_reader.next()) {
+		_total++;
+		if (!_reader.next()) { // The file has no other line than the header one
 			Context context = new Context();
 			context.put(Context.PATH, _path);
 			context.put(Context.ID, _total);
-			context.put(Context.ERROR, GtfsException.ERROR.INVALID_FILE_FORMAT);
+			context.put(Context.ERROR, GtfsException.ERROR.FILE_WITH_NO_ENTRY);
 			throw new GtfsException(context);
 		}
-		_total = 1;
 
+		_total--;
 		while (_reader.hasNext()) {
 			if (_reader.next()) {
 				_total++;
 
 				String key = getField(_key);
-				if (key == null || key.isEmpty()) {
+				if (key == null || key.trim().isEmpty()) { // key cannot be null! "" or "default"
 					Context context = new Context();
 					context.put(Context.PATH, _path);
 					context.put(Context.ID, _total);

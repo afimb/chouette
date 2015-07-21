@@ -57,6 +57,7 @@ public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator {
 	@Override
 	public Boolean next() {
 		boolean result = false;
+		boolean error = false;
 		try {
 			_buffer.position(_mark);
 			loop: while (_buffer.hasRemaining()) {
@@ -106,6 +107,7 @@ public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator {
 							_buffer.get();
 						} else {
 							_escape = false;
+							error = true;
 						}
 					}
 					break;
@@ -117,7 +119,8 @@ public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator {
 		} catch (Exception ignored) {
 
 		}
-
+		if (error)
+			return false;
 		return result;
 	}
 

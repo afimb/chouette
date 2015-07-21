@@ -2,6 +2,7 @@ package mobi.chouette.exchange.gtfs.model.importer;
 
 import java.awt.Color;
 import java.io.IOException;
+import java.util.Map;
 
 import mobi.chouette.exchange.gtfs.model.GtfsRoute;
 
@@ -19,6 +20,11 @@ public class RouteById extends IndexImpl<GtfsRoute> implements GtfsConverter {
 
 	public RouteById(String name) throws IOException {
 		super(name, KEY);
+	}
+	
+	@Override
+	protected void checkRequiredFields(Map<String, Integer> fields) {
+		// TODO Code to add ...
 	}
 
 	@Override
