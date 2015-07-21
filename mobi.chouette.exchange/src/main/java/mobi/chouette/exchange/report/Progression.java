@@ -40,7 +40,7 @@ public class Progression {
 
 	public JSONObject toJson() throws JSONException {
 		JSONObject object = new JSONObject();
-		object.put("currentStep", currentStep);
+		object.put("current_step", currentStep);
 		object.put("steps_count", stepsCount);
 		JSONArray array = new JSONArray();
 		object.put("steps", array);
