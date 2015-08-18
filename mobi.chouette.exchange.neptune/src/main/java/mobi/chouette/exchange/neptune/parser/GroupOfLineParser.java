@@ -71,22 +71,22 @@ public class GroupOfLineParser implements Parser, Constant, JsonExtension {
 	}
 	
 	protected void parseComment(String comment, GroupOfLine groupOfLine) {
-		if (comment != null && comment.trim().startsWith("{") && comment.trim().endsWith("}")) {
-			try {
-				// parse json comment
-				JSONObject json = new JSONObject(comment);
-				groupOfLine.setComment(json.optString(COMMENT, null));
-				if (json.has(REGISTRATION_NUMBER)) {
-					groupOfLine.setRegistrationNumber(json.getString(REGISTRATION_NUMBER));
-				}
-			} catch (Exception e1) {
-				log.warn("unparsable json : "+comment);
-				groupOfLine.setComment(comment);
-			}
-		} else {
+//		if (comment != null && comment.trim().startsWith("{") && comment.trim().endsWith("}")) {
+//			try {
+//				// parse json comment
+//				JSONObject json = new JSONObject(comment);
+//				groupOfLine.setComment(json.optString(COMMENT, null));
+//				if (json.has(REGISTRATION_NUMBER)) {
+//					groupOfLine.setRegistrationNumber(json.getString(REGISTRATION_NUMBER));
+//				}
+//			} catch (Exception e1) {
+//				log.warn("unparsable json : "+comment);
+//				groupOfLine.setComment(comment);
+//			}
+//		} else {
 			// normal comment
 			groupOfLine.setComment(comment);
-		}
+//		}
 	}
 
 

@@ -24,9 +24,9 @@
        </packages>
     </test>
    
-	 <test name="ImportParsers">
+	 <test name="NeptuneExtensions">
 	    <packages>
-	      <package name="mobi.chouette.exchange.neptune.parser" >
+	      <package name="mobi.chouette.exchange.neptune.extension" >
 	      </package>
 	    </packages>
 	</test>

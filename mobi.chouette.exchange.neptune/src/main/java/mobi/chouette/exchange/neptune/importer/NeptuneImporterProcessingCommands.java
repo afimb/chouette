@@ -100,6 +100,11 @@ public class NeptuneImporterProcessingCommands implements ProcessingCommands, Co
 				parser.setFileURL(file.toUri().toURL().toExternalForm());
 				chain.add(parser);
 
+				// extensions
+				NeptuneImportExtensionsCommand extension = (NeptuneImportExtensionsCommand) CommandFactory.create(initialContext,
+						NeptuneImportExtensionsCommand.class.getName());
+				chain.add(extension);
+				
 				// validation
 				Command validation = CommandFactory.create(initialContext, NeptuneValidationCommand.class.getName());
 				chain.add(validation);

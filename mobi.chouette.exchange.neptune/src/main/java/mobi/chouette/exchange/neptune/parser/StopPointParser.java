@@ -80,35 +80,36 @@ public class StopPointParser implements Parser, Constant, JsonExtension {
 	}
 
 	protected void parseComment(String comment, StopPoint point) {
-		if (comment != null && comment.trim().startsWith("{") && comment.trim().endsWith("}")) {
-			try {
-				// parse json comment
-				JSONObject json = new JSONObject(comment);
-				if (json.has(ROUTING_CONSTRAINTS)) {
-					JSONObject rc = json.getJSONObject(ROUTING_CONSTRAINTS);
-					if (rc.has(BOARDING)) {
-						try {
-							BoardingPossibilityEnum forBoarding = BoardingPossibilityEnum.valueOf(rc
-									.getString(BOARDING));
-							point.setForBoarding(forBoarding);
-						} catch (IllegalArgumentException e) {
-							log.error("unknown value " + rc.getString(BOARDING) + " for boarding");
-						}
-					}
-					if (rc.has(ALIGHTING)) {
-						try {
-							AlightingPossibilityEnum forAlighting = AlightingPossibilityEnum.valueOf(rc
-									.getString(ALIGHTING));
-							point.setForAlighting(forAlighting);
-						} catch (IllegalArgumentException e) {
-							log.error("unknown value " + rc.getString(ALIGHTING) + " for alighting");
-						}
-					}
-				}
-			} catch (Exception e1) {
-				log.warn("unparsable json : " + comment);
-			}
-		}
+//		if (comment != null && comment.trim().startsWith("{") && comment.trim().endsWith("}")) {
+//			try {
+//				// parse json comment
+//				JSONObject json = new JSONObject(comment);
+//				if (json.has(ROUTING_CONSTRAINTS)) {
+//					JSONObject rc = json.getJSONObject(ROUTING_CONSTRAINTS);
+//					if (rc.has(BOARDING)) {
+//						try {
+//							BoardingPossibilityEnum forBoarding = BoardingPossibilityEnum.valueOf(rc
+//									.getString(BOARDING));
+//							point.setForBoarding(forBoarding);
+//						} catch (IllegalArgumentException e) {
+//							log.error("unknown value " + rc.getString(BOARDING) + " for boarding");
+//						}
+//					}
+//					if (rc.has(ALIGHTING)) {
+//						try {
+//							AlightingPossibilityEnum forAlighting = AlightingPossibilityEnum.valueOf(rc
+//									.getString(ALIGHTING));
+//							point.setForAlighting(forAlighting);
+//						} catch (IllegalArgumentException e) {
+//							log.error("unknown value " + rc.getString(ALIGHTING) + " for alighting");
+//						}
+//					}
+//				}
+//			} catch (Exception e1) {
+//				log.warn("unparsable json : " + comment);
+//			}
+//		}
+		point.setComment(comment);
 	}
 
 	static {
