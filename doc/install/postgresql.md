@@ -23,11 +23,11 @@ createdb -E UTF-8 -T template1 chouette_test
 Note
 ----
 
-Using chouette alone needs to create referentials schema before calling IEV API :
+If you're using chouette alone (without the [chouette2](https://github.com/afimb/chouette2) application), you will need to create a DB schema in the chouette2 DB for your referential (dataspace) before you can call the IEV API :
 
 use [chouette.sql](./src/main/sql/chouette.sql) script : 
 
 ```sh
 psql -h 127.0.0.1 -U chouette -v SCH=<schema_name>  -d chouette2 -f chouette.sql
 ```
-where <schema_name> is the referential name (lowercase without space)
+where <schema_name> is your referential (dataspace) name (lowercase without space)
