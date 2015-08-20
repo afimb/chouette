@@ -264,7 +264,8 @@ public class CommandManager implements Constant {
 		context.put(Constant.REPORT, new ActionReport());
 		context.put(Constant.JOB_DATA, inputData);
 		context.put(CONFIGURATION, inputData.getConfiguration());
-		context.put(VALIDATION, validationParameters);
+		if (validationParameters != null)
+			context.put(VALIDATION, validationParameters);
 		context.put(REPORT, new ActionReport());
 		context.put(VALIDATION_REPORT, new ValidationReport());
 		return context;
