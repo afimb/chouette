@@ -24,6 +24,11 @@
 		<project.rootDir>${project.basedir}</project.rootDir>
 	</properties>
    <distributionManagement>
+      <snapshotRepository>
+         <id>chouette-snapshot-repository</id>
+         <name>Chouette Snapshot Repository</name>
+         <url>scp://chouette.marseille.cityway.fr/var/lib/tomcat6/webapps/maven-snapshot</url>
+      </snapshotRepository>
       <repository>
          <id>chouette-repository</id>
          <name>Chouette Repository</name>

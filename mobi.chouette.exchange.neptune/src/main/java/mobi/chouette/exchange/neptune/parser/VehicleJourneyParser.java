@@ -191,39 +191,39 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 	}
 
 	protected void parseComment(String comment, VehicleJourney vj, Line line) {
-		if (comment != null && comment.trim().startsWith("{") && comment.trim().endsWith("}")) {
-			// parse json comment
-			try{
-			JSONObject json = new JSONObject(comment);
-			vj.setComment(json.optString(COMMENT, null));
-
-			if (json.has(FOOTNOTE_REFS)) {
-				JSONArray keys = json.getJSONArray(FOOTNOTE_REFS);
-				for (int i = 0; i < keys.length(); i++) {
-					String key = keys.getString(i);
-					for (Footnote footnote : line.getFootnotes()) {
-						if (footnote.getKey().equals(key)) {
-							vj.getFootnotes().add(footnote);
-						}
-					}
-				}
-			}
-			if (json.has(FLEXIBLE_SERVICE)) {
-				vj.setFlexibleService(json.getBoolean(FLEXIBLE_SERVICE));
-			}
-			if (json.has(MOBILITY_RESTRICTION)) {
-				vj.setMobilityRestrictedSuitability(json.getBoolean(MOBILITY_RESTRICTION));
-			}
-			}
-			catch (Exception e)
-			{
-				log.warn("unparsable json : " + comment);
-				vj.setComment(comment);				
-			}
-		} else {
+//		if (comment != null && comment.trim().startsWith("{") && comment.trim().endsWith("}")) {
+//			// parse json comment
+//			try{
+//			JSONObject json = new JSONObject(comment);
+//			vj.setComment(json.optString(COMMENT, null));
+//
+//			if (json.has(FOOTNOTE_REFS)) {
+//				JSONArray keys = json.getJSONArray(FOOTNOTE_REFS);
+//				for (int i = 0; i < keys.length(); i++) {
+//					String key = keys.getString(i);
+//					for (Footnote footnote : line.getFootnotes()) {
+//						if (footnote.getKey().equals(key)) {
+//							vj.getFootnotes().add(footnote);
+//						}
+//					}
+//				}
+//			}
+//			if (json.has(FLEXIBLE_SERVICE)) {
+//				vj.setFlexibleService(json.getBoolean(FLEXIBLE_SERVICE));
+//			}
+//			if (json.has(MOBILITY_RESTRICTION)) {
+//				vj.setMobilityRestrictedSuitability(json.getBoolean(MOBILITY_RESTRICTION));
+//			}
+//			}
+//			catch (Exception e)
+//			{
+//				log.warn("unparsable json : " + comment);
+//				vj.setComment(comment);				
+//			}
+//		} else {
 			// normal comment
 			vj.setComment(comment);
-		}
+//		}
 
 	}
 
