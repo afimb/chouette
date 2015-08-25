@@ -41,7 +41,7 @@ public class GtfsParserTest  extends Arquillian implements Constant{
                 ScopeType.TEST));
 
 		File[] files = Maven.resolver().loadPomFromFile("pom.xml")
-				.resolve("mobi.chouette:mobi.chouette.exchange.gtfs:3.0.0").using(strategy)
+				.resolve("mobi.chouette:mobi.chouette.exchange.gtfs").using(strategy)
 				.asFile();
 
 		result = ShrinkWrap.create(WebArchive.class, "test.war")

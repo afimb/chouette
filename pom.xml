@@ -23,19 +23,19 @@
 		<arquillian-version>1.1.7.Final</arquillian-version>
 		<project.rootDir>${project.basedir}</project.rootDir>
 	</properties>
-   <distributionManagement>
-      <snapshotRepository>
-         <id>chouette-snapshot-repository</id>
-         <name>Chouette Snapshot Repository</name>
-         <url>scp://chouette.marseille.cityway.fr/var/lib/tomcat6/webapps/maven-snapshot</url>
-      </snapshotRepository>
-      <repository>
-         <id>chouette-repository</id>
-         <name>Chouette Repository</name>
-         <url>scp://chouette.marseille.cityway.fr/var/lib/tomcat6/webapps/maven</url>
-      </repository>
-      <downloadUrl>http://maven.chouette.mobi</downloadUrl>
-   </distributionManagement>
+	<distributionManagement>
+		<snapshotRepository>
+			<id>chouette-snapshot-repository</id>
+			<name>Chouette Snapshot Repository</name>
+			<url>scp://chouette.marseille.cityway.fr/var/lib/tomcat6/webapps/maven-snapshot</url>
+		</snapshotRepository>
+		<repository>
+			<id>chouette-repository</id>
+			<name>Chouette Repository</name>
+			<url>scp://chouette.marseille.cityway.fr/var/lib/tomcat6/webapps/maven</url>
+		</repository>
+		<downloadUrl>http://maven.chouette.mobi</downloadUrl>
+	</distributionManagement>
 	<repositories>
 		<repository>
 			<id>jboss</id>
@@ -48,68 +48,68 @@
 		</repository>
 	</repositories>
 	<build>
-      <extensions>
-         <extension>
-            <groupId>org.apache.maven.wagon</groupId>
-            <artifactId>wagon-ssh</artifactId>
-            <version>1.0</version>
-         </extension>
-      </extensions>
+		<extensions>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-ssh</artifactId>
+				<version>1.0</version>
+			</extension>
+		</extensions>
 		<plugins>
-         <plugin>
-            <groupId>pl.project13.maven</groupId>
-            <artifactId>git-commit-id-plugin</artifactId>
-            <version>2.1.10</version>
-         </plugin>
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-site-plugin</artifactId>
-            <version>3.3</version>
-            <dependencies>
-               <dependency><!-- add support for ssh/scp -->
-                  <groupId>org.apache.maven.wagon</groupId>
-                  <artifactId>wagon-ssh</artifactId>
-                  <version>1.0</version>
-               </dependency>
-            </dependencies>
-         </plugin>
-         <plugin>
-            <groupId>org.codehaus.mojo</groupId>
-            <artifactId>sql-maven-plugin</artifactId>
-            <version>1.5</version>
-            <dependencies>
-               <!-- specify the dependent jdbc driver here -->
-               <dependency>
-                  <groupId>org.postgresql</groupId>
-                  <artifactId>postgresql</artifactId>
-                  <version>${postgresql.version}</version>
-               </dependency>
-            </dependencies>
-            <!-- common configuration shared by all executions -->
-            <configuration>
-               <driver>org.postgresql.Driver</driver>
-               <url>jdbc:postgresql://localhost:5432/chouette_test</url>
-               <username>chouette</username>
-               <password>chouette</password>
-               <!--all executions are ignored if -Dmaven.test.skip=true or -DskipTests=true -->
-               <skip>${skipInitDb}</skip>
-            </configuration>
-            <executions>
-               <execution>
-                  <id>create-schema</id>
-                  <phase>process-test-resources</phase>
-                  <goals>
-                     <goal>execute</goal>
-                  </goals>
-                  <configuration>
-                     <autocommit>true</autocommit>
-                     <srcFiles>
-                        <srcFile>${project.rootDir}/src/test/sql/chouette_test.sql</srcFile>
-                     </srcFiles>
-                  </configuration>
-               </execution>
-            </executions>
-         </plugin>
+			<plugin>
+				<groupId>pl.project13.maven</groupId>
+				<artifactId>git-commit-id-plugin</artifactId>
+				<version>2.1.10</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>3.3</version>
+				<dependencies>
+					<dependency><!-- add support for ssh/scp -->
+						<groupId>org.apache.maven.wagon</groupId>
+						<artifactId>wagon-ssh</artifactId>
+						<version>1.0</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>sql-maven-plugin</artifactId>
+				<version>1.5</version>
+				<dependencies>
+					<!-- specify the dependent jdbc driver here -->
+					<dependency>
+						<groupId>org.postgresql</groupId>
+						<artifactId>postgresql</artifactId>
+						<version>${postgresql.version}</version>
+					</dependency>
+				</dependencies>
+				<!-- common configuration shared by all executions -->
+				<configuration>
+					<driver>org.postgresql.Driver</driver>
+					<url>jdbc:postgresql://localhost:5432/chouette_test</url>
+					<username>chouette</username>
+					<password>chouette</password>
+					<!--all executions are ignored if -Dmaven.test.skip=true or -DskipTests=true -->
+					<skip>${skipInitDb}</skip>
+				</configuration>
+				<executions>
+					<execution>
+						<id>create-schema</id>
+						<phase>process-test-resources</phase>
+						<goals>
+							<goal>execute</goal>
+						</goals>
+						<configuration>
+							<autocommit>true</autocommit>
+							<srcFiles>
+								<srcFile>${project.rootDir}/src/test/sql/chouette_test.sql</srcFile>
+							</srcFiles>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
@@ -122,7 +122,7 @@
 							<goal>unpack</goal>
 						</goals>
 						<configuration>
-						   <skip>${skipTests}</skip>
+							<skip>${skipTests}</skip>
 							<verbose>true</verbose>
 							<artifactItems>
 								<artifactItem>
@@ -143,7 +143,7 @@
 							<goal>copy</goal>
 						</goals>
 						<configuration>
-                     <skip>${skipTests}</skip>
+							<skip>${skipTests}</skip>
 							<verbose>true</verbose>
 							<artifactItems>
 								<artifactItem>
@@ -153,13 +153,13 @@
 									<overWrite>false</overWrite>
 									<outputDirectory>${project.rootDir}/target/wildfly-${version.wildfly}/modules/org/postgres/main</outputDirectory>
 								</artifactItem>
-                        <artifactItem>
-                           <groupId>org.postgresql</groupId>
-                           <artifactId>postgresql</artifactId>
-                           <version>${postgresql.version}</version>
-                           <overWrite>false</overWrite>
-                           <outputDirectory>${project.rootDir}/target/wildfly-${version.wildfly}/standalone/deployments</outputDirectory>
-                        </artifactItem>
+								<artifactItem>
+									<groupId>org.postgresql</groupId>
+									<artifactId>postgresql</artifactId>
+									<version>${postgresql.version}</version>
+									<overWrite>false</overWrite>
+									<outputDirectory>${project.rootDir}/target/wildfly-${version.wildfly}/standalone/deployments</outputDirectory>
+								</artifactItem>
 							</artifactItems>
 						</configuration>
 					</execution>
@@ -177,7 +177,7 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-                     <skip>${skipTests}</skip>
+							<skip>${skipTests}</skip>
 							<outputDirectory>${project.rootDir}/target/wildfly-${version.wildfly}</outputDirectory>
 							<resources>
 								<resource>
@@ -252,46 +252,46 @@
 					</execution>
 				</executions>
 			</plugin>
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-source-plugin</artifactId>
-            <version>2.1.2</version>
-            <executions>
-               <execution>
-                  <id>attach-sources</id>
-                  <goals>
-                     <goal>jar-no-fork</goal>
-                  </goals>
-               </execution>
-            </executions>
-         </plugin>
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <version>2.8</version>
-            <configuration>
-               <quiet>false</quiet>
-               <sourcepath>target/generated-sources/delombok</sourcepath>
-               <javaApiLinks>
-                  <property>
-                     <name>api_1.7</name>
-                     <value>http://docs.oracle.com/javase/7/docs/api/</value>
-                  </property>
-               </javaApiLinks>
-               <source>1.7</source>
-               <skip>${skipDelombok}</skip>
-            </configuration>
-            <executions>
-               <execution>
-                  <id>attach-javadocs</id>
-                  <phase>package</phase>
-                  <goals>
-                     <goal>jar</goal>
-                  </goals>
-               </execution>
-            </executions>
-         </plugin>
-			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.1.2</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.8</version>
+				<configuration>
+					<quiet>false</quiet>
+					<sourcepath>target/generated-sources/delombok</sourcepath>
+					<javaApiLinks>
+						<property>
+							<name>api_1.7</name>
+							<value>http://docs.oracle.com/javase/7/docs/api/</value>
+						</property>
+					</javaApiLinks>
+					<source>1.7</source>
+					<skip>${skipDelombok}</skip>
+				</configuration>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
 		</plugins>
 		<pluginManagement>
 			<plugins>
@@ -413,15 +413,15 @@
 			</plugins>
 		</pluginManagement>
 	</build>
-   <reporting>
-      <plugins>
-         <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-report-plugin</artifactId>
-            <version>2.8</version>
-         </plugin>
-      </plugins>
-   </reporting>
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+				<version>2.8</version>
+			</plugin>
+		</plugins>
+	</reporting>
 	<dependencyManagement>
 		<dependencies>
 
@@ -454,18 +454,18 @@
 			</dependency>
 
 			<!-- Test Dependencies -->
-         <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>6.8.21</version>
-            <scope>test</scope>
-         </dependency>
-         <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymock</artifactId>
-            <version>3.3.1</version>
-            <scope>test</scope>
-         </dependency>
+			<dependency>
+				<groupId>org.testng</groupId>
+				<artifactId>testng</artifactId>
+				<version>6.8.21</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.easymock</groupId>
+				<artifactId>easymock</artifactId>
+				<version>3.3.1</version>
+				<scope>test</scope>
+			</dependency>
 			<dependency>
 				<groupId>org.wildfly</groupId>
 				<artifactId>wildfly-arquillian-container-embedded</artifactId>
@@ -481,12 +481,12 @@
 				<artifactId>postgresql</artifactId>
 				<version>${postgresql.version}</version>
 			</dependency>
-         <dependency>
-            <groupId>com.tobedevoured</groupId>
-            <artifactId>modelcitizen</artifactId>
-            <version>0.6.0</version>
-            <scope>test</scope>
-         </dependency>
+			<dependency>
+				<groupId>com.tobedevoured</groupId>
+				<artifactId>modelcitizen</artifactId>
+				<version>0.6.0</version>
+				<scope>test</scope>
+			</dependency>
 			<!-- postgres intergration in arquillian -->
 			<!-- shrinkwrap BOM -->
 			<dependency>
@@ -495,6 +495,12 @@
 				<version>${shrinkwrap.bom-version}</version>
 				<type>pom</type>
 				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.jboss.shrinkwrap.resolver</groupId>
+				<artifactId>shrinkwrap-resolver-impl-maven</artifactId>
+				<version>${shrinkwrap.bom-version}</version>
+				<scope>test</scope>
 			</dependency>
 			<!-- shrinkwrap dependency chain -->
 			<dependency>
@@ -533,33 +539,6 @@
 			</dependency>
 
 
-
-			<!-- JAXB -->
-			<!-- <dependency> -->
-			<!-- <groupId>javax.xml.bind</groupId> -->
-			<!-- <artifactId>jaxb-api</artifactId> -->
-			<!-- <version>2.2.4</version> -->
-			<!-- </dependency> -->
-			<!-- <dependency> -->
-			<!-- <groupId>com.sun.xml.bind</groupId> -->
-			<!-- <artifactId>jaxb-xjc</artifactId> -->
-			<!-- <version>2.2.4</version> -->
-			<!-- </dependency> -->
-			<!-- <dependency> -->
-			<!-- <groupId>javax.xml.ws</groupId> -->
-			<!-- <artifactId>jaxws-api</artifactId> -->
-			<!-- <version>2.2.8</version> -->
-			<!-- </dependency> -->
-			<!-- <dependency> -->
-			<!-- <groupId>com.sun.xml.parsers</groupId> -->
-			<!-- <artifactId>jaxp-ri</artifactId> -->
-			<!-- <version>1.4.5</version> -->
-			<!-- </dependency> -->
-			<!-- <dependency> -->
-			<!-- <groupId>com.sun.xml.ws</groupId> -->
-			<!-- <artifactId>jaxws-rt</artifactId> -->
-			<!-- <version>2.2.6</version> -->
-			<!-- </dependency> -->
 
 			<!-- Utilities Dependencies -->
 			<dependency>
@@ -613,12 +592,84 @@
 				<artifactId>gt-epsg-wkt</artifactId>
 				<version>10.5</version>
 			</dependency>
-         <dependency>
-            <groupId>org.geotools</groupId>
-            <artifactId>gt-epsg-hsql</artifactId>
-            <version>10.5</version>
-         </dependency>
-		</dependencies>
+			<dependency>
+				<groupId>org.geotools</groupId>
+				<artifactId>gt-epsg-hsql</artifactId>
+				<version>10.5</version>
+			</dependency>
+		<dependency>
+		    <groupId>mobi.chouette</groupId>
+		    <artifactId>mobi.chouette.common</artifactId>
+		    <version>${project.version}</version>
+		</dependency>
+      <dependency>
+          <groupId>mobi.chouette</groupId>
+          <artifactId>mobi.chouette.persistence.hibernate</artifactId>
+          <version>${project.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>mobi.chouette</groupId>
+          <artifactId>mobi.chouette.model</artifactId>
+          <version>${project.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>mobi.chouette</groupId>
+          <artifactId>mobi.chouette.model.iev</artifactId>
+          <version>${project.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>mobi.chouette</groupId>
+          <artifactId>mobi.chouette.dao</artifactId>
+          <version>${project.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>mobi.chouette</groupId>
+          <artifactId>mobi.chouette.exchange</artifactId>
+          <version>${project.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>mobi.chouette</groupId>
+          <artifactId>mobi.chouette.exchange.neptune</artifactId>
+          <version>${project.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>mobi.chouette</groupId>
+          <artifactId>mobi.chouette.exchange.netex</artifactId>
+          <version>${project.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>mobi.chouette</groupId>
+          <artifactId>mobi.chouette.exchange.kml</artifactId>
+          <version>${project.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>mobi.chouette</groupId>
+          <artifactId>mobi.chouette.exchange.hub</artifactId>
+          <version>${project.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>mobi.chouette</groupId>
+          <artifactId>mobi.chouette.exchange.gtfs</artifactId>
+          <version>${project.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>mobi.chouette</groupId>
+          <artifactId>mobi.chouette.exchange.validator</artifactId>
+          <version>${project.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>mobi.chouette</groupId>
+          <artifactId>mobi.chouette.service</artifactId>
+          <version>${project.version}</version>
+      </dependency>
+      <dependency>
+          <groupId>mobi.chouette</groupId>
+          <artifactId>mobi.chouette.ws</artifactId>
+          <version>${project.version}</version>
+      </dependency>
+      
+      </dependencies>
+		
 	</dependencyManagement>
 	<profiles>
 		<profile>
@@ -628,32 +679,32 @@
 			</activation>
 			<properties>
 				<skipWildfly>false</skipWildfly>
-            <skipInitDb>false</skipInitDb>
+				<skipInitDb>false</skipInitDb>
 			</properties>
 		</profile>
-      <profile>
-         <id>skipTestCompileAndRun</id>
-         <activation>
-            <property>
-               <name>maven.test.skip</name>
-               <value>true</value>
-            </property>
-         </activation>
-         <properties>
-            <skipInitDb>true</skipInitDb>
-         </properties>
-      </profile>
-      <profile>
-         <id>skipTestRun</id>
-         <activation>
-            <property>
-               <name>skipTests</name>
-            </property>
-         </activation>
-         <properties>
-            <skipInitDb>true</skipInitDb>
-         </properties>
-      </profile>
+		<profile>
+			<id>skipTestCompileAndRun</id>
+			<activation>
+				<property>
+					<name>maven.test.skip</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<properties>
+				<skipInitDb>true</skipInitDb>
+			</properties>
+		</profile>
+		<profile>
+			<id>skipTestRun</id>
+			<activation>
+				<property>
+					<name>skipTests</name>
+				</property>
+			</activation>
+			<properties>
+				<skipInitDb>true</skipInitDb>
+			</properties>
+		</profile>
 		<profile>
 			<id>lombok-needs-tools-jar</id>
 			<activation>
@@ -665,34 +716,34 @@
 				<skipDelombok>true</skipDelombok>
 			</properties>
 		</profile>
-      <profile>
-         <id>skipInitDb</id>
-         <activation>
-            <property>
-               <name>skipInitDb</name>
-            </property>
-         </activation>
-         <properties>
-            <skipInitDb>true</skipInitDb>
-         </properties>
-      </profile>
+		<profile>
+			<id>skipInitDb</id>
+			<activation>
+				<property>
+					<name>skipInitDb</name>
+				</property>
+			</activation>
+			<properties>
+				<skipInitDb>true</skipInitDb>
+			</properties>
+		</profile>
 	</profiles>
 	<modules>
 		<module>mobi.chouette.common</module>
 		<module>mobi.chouette.persistence.hibernate</module>
 		<module>mobi.chouette.model</module>
-      <module>mobi.chouette.model.iev</module>
+		<module>mobi.chouette.model.iev</module>
 		<module>mobi.chouette.dao</module>
 		<module>mobi.chouette.exchange</module>
 		<module>mobi.chouette.exchange.neptune</module>
 		<module>mobi.chouette.exchange.netex</module>
-      <module>mobi.chouette.exchange.kml</module>
-      <module>mobi.chouette.exchange.hub</module>
-      <module>mobi.chouette.exchange.gtfs</module>
-      <module>mobi.chouette.exchange.validator</module>
-      <module>mobi.chouette.service</module>
+		<module>mobi.chouette.exchange.kml</module>
+		<module>mobi.chouette.exchange.hub</module>
+		<module>mobi.chouette.exchange.gtfs</module>
+		<module>mobi.chouette.exchange.validator</module>
+		<module>mobi.chouette.service</module>
 		<module>mobi.chouette.ws</module>
 		<module>mobi.chouette.command</module>
-      <module>chouette_iev</module>
+		<module>chouette_iev</module>
 	</modules>
 </project>

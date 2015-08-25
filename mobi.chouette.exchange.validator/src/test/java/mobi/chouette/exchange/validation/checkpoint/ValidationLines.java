@@ -61,7 +61,7 @@ public class ValidationLines extends AbstractTestValidation
 		WebArchive result;
 
 		File[] files = Maven.resolver().loadPomFromFile("pom.xml").importRuntimeAndTestDependencies()
-				.resolve("mobi.chouette:mobi.chouette.exchange.validator:3.0.0").withTransitivity().asFile();
+				.resolve("mobi.chouette:mobi.chouette.exchange.validator").withTransitivity().asFile();
 
 		result = ShrinkWrap.create(WebArchive.class, "test.war").addAsWebInfResource("postgres-ds.xml")
 				.addAsLibraries(files).addClass(JobDataTest.class).addClass(AbstractTestValidation.class)
