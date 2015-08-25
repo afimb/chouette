@@ -289,7 +289,7 @@ public class GtfsValidationRulesCommand implements Command, Constant {
 	
 	private Collection<? extends CheckPoint> calendarDateCheckPoints() {
 		List<CheckPoint> checkPoints = new ArrayList<CheckPoint>();
-		checkPoints.add(new CheckPoint(GTFS_1_GTFS_CalendarDate_1, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		// checkPoints.add(new CheckPoint(GTFS_1_GTFS_CalendarDate_1, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_CalendarDate_2, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_CalendarDate_3, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_CalendarDate_4, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
