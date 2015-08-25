@@ -138,6 +138,9 @@ public class JobServiceManager {
 
 			// Enregistrer des paramètres à conserver sur fichier
 			jobService.saveInputStreams(inputStreamsByName);
+			
+			// set cancel link
+			jobService.addLink(MediaType.APPLICATION_JSON, Link.CANCEL_REL);
 
 			jobDAO.update(jobService.getJob());
 			// jobDAO.flush();

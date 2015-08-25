@@ -269,37 +269,37 @@ public class ChouetteAreaParser implements Parser, Constant, JsonExtension {
 	}
 
 	protected void parseComment(String comment, StopArea area) {
-		if (comment != null && comment.trim().startsWith("{") && comment.trim().endsWith("}")) {
-			try {
-				// parse json comment
-				JSONObject json = new JSONObject(comment);
-				area.setComment(json.optString(COMMENT, null));
-				if (json.has(URL_REF))
-				{
-					try {
-						new URL(json.getString(URL_REF));
-						area.setUrl(json.getString(URL_REF));
-					} catch (Exception e) {
-						log.error("cannot parse url " + json.getString(URL_REF), e);
-					}
-				}
-				if (json.has(TIME_ZONE))
-				{
-					try {
-						TimeZone.getTimeZone(json.getString(TIME_ZONE));
-						area.setTimeZone(json.getString(TIME_ZONE));
-					} catch (Exception e) {
-						log.error("cannot parse time_zone " + json.getString(TIME_ZONE), e);
-					}
-				}
-			} catch (Exception e1) {
-				log.warn("unparsable json : "+comment);
-				area.setComment(comment);
-			}
-		} else {
-			// normal comment
+//		if (comment != null && comment.trim().startsWith("{") && comment.trim().endsWith("}")) {
+//			try {
+//				// parse json comment
+//				JSONObject json = new JSONObject(comment);
+//				area.setComment(json.optString(COMMENT, null));
+//				if (json.has(URL_REF))
+//				{
+//					try {
+//						new URL(json.getString(URL_REF));
+//						area.setUrl(json.getString(URL_REF));
+//					} catch (Exception e) {
+//						log.error("cannot parse url " + json.getString(URL_REF), e);
+//					}
+//				}
+//				if (json.has(TIME_ZONE))
+//				{
+//					try {
+//						TimeZone.getTimeZone(json.getString(TIME_ZONE));
+//						area.setTimeZone(json.getString(TIME_ZONE));
+//					} catch (Exception e) {
+//						log.error("cannot parse time_zone " + json.getString(TIME_ZONE), e);
+//					}
+//				}
+//			} catch (Exception e1) {
+//				log.warn("unparsable json : "+comment);
+//				area.setComment(comment);
+//			}
+//		} else {
+//			// normal comment
 			area.setComment(comment);
-		}
+//		}
 	}
 
 	static {

@@ -126,66 +126,66 @@ public class LineParser implements Parser, Constant, JsonExtension {
 	}
 
 	protected void parseComment(String comment, Line line) {
-		if (comment != null && comment.trim().startsWith("{") && comment.trim().endsWith("}")) {
-			try {
-				// parse json comment
-				JSONObject json = new JSONObject(comment);
-				line.setComment(json.optString(COMMENT, null));
-				if (json.has(FOOTNOTES)) {
-					// scan footnotes
-					JSONArray footNotes = json.getJSONArray(FOOTNOTES);
-					for (int i = 0; i < footNotes.length(); i++) {
-						JSONObject footNote = footNotes.getJSONObject(i);
-						String key = footNote.optString(KEY, null);
-						String code = footNote.optString(CODE, null);
-						String label = footNote.optString(LABEL, null);
-						if (key != null && code != null && label != null) {
-							Footnote note = new Footnote();
-							note.setLine(line);
-							note.setLabel(label);
-							note.setCode(code);
-							note.setKey(key);
-							line.getFootnotes().add(note);
-						}
-
-					}
-				}
-				if (json.has(FLEXIBLE_SERVICE)) {
-					line.setFlexibleService(Boolean.valueOf(json.getBoolean(FLEXIBLE_SERVICE)));
-				}
-				if (json.has(TEXT_COLOR)) {
-					try {
-						Color.decode("0x" + json.getString(TEXT_COLOR));
-						line.setTextColor(json.getString(TEXT_COLOR));
-					} catch (Exception e) {
-						log.error("cannot parse text color " + json.getString(TEXT_COLOR), e);
-					}
-				}
-				if (json.has(LINE_COLOR)) {
-					try {
-						Color.decode("0x" + json.getString(LINE_COLOR));
-						line.setColor(json.getString(LINE_COLOR));
-					} catch (Exception e) {
-						log.error("cannot parse color " + json.getString(LINE_COLOR), e);
-					}
-				}
-				if (json.has(URL_REF))
-				{
-					try {
-						new URL(json.getString(URL_REF));
-						line.setUrl(json.getString(URL_REF));
-					} catch (Exception e) {
-						log.error("cannot parse url " + json.getString(URL_REF), e);
-					}
-				}
-			} catch (Exception e1) {
-				log.warn("unparsable json : "+comment);
-				line.setComment(comment);
-			}
-		} else {
+//		if (comment != null && comment.trim().startsWith("{") && comment.trim().endsWith("}")) {
+//			try {
+//				// parse json comment
+//				JSONObject json = new JSONObject(comment);
+//				line.setComment(json.optString(COMMENT, null));
+//				if (json.has(FOOTNOTES)) {
+//					// scan footnotes
+//					JSONArray footNotes = json.getJSONArray(FOOTNOTES);
+//					for (int i = 0; i < footNotes.length(); i++) {
+//						JSONObject footNote = footNotes.getJSONObject(i);
+//						String key = footNote.optString(KEY, null);
+//						String code = footNote.optString(CODE, null);
+//						String label = footNote.optString(LABEL, null);
+//						if (key != null && code != null && label != null) {
+//							Footnote note = new Footnote();
+//							note.setLine(line);
+//							note.setLabel(label);
+//							note.setCode(code);
+//							note.setKey(key);
+//							line.getFootnotes().add(note);
+//						}
+//
+//					}
+//				}
+//				if (json.has(FLEXIBLE_SERVICE)) {
+//					line.setFlexibleService(Boolean.valueOf(json.getBoolean(FLEXIBLE_SERVICE)));
+//				}
+//				if (json.has(TEXT_COLOR)) {
+//					try {
+//						Color.decode("0x" + json.getString(TEXT_COLOR));
+//						line.setTextColor(json.getString(TEXT_COLOR));
+//					} catch (Exception e) {
+//						log.error("cannot parse text color " + json.getString(TEXT_COLOR), e);
+//					}
+//				}
+//				if (json.has(LINE_COLOR)) {
+//					try {
+//						Color.decode("0x" + json.getString(LINE_COLOR));
+//						line.setColor(json.getString(LINE_COLOR));
+//					} catch (Exception e) {
+//						log.error("cannot parse color " + json.getString(LINE_COLOR), e);
+//					}
+//				}
+//				if (json.has(URL_REF))
+//				{
+//					try {
+//						new URL(json.getString(URL_REF));
+//						line.setUrl(json.getString(URL_REF));
+//					} catch (Exception e) {
+//						log.error("cannot parse url " + json.getString(URL_REF), e);
+//					}
+//				}
+//			} catch (Exception e1) {
+//				log.warn("unparsable json : "+comment);
+//				line.setComment(comment);
+//			}
+//		} else {
 			// normal comment
 			line.setComment(comment);
-		}
+//		}
 	}
 
 	private Company getFirstCompany(Referential referential) {
