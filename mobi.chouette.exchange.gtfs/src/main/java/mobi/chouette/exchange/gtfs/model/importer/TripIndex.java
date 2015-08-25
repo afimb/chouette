@@ -1,9 +1,11 @@
 package mobi.chouette.exchange.gtfs.model.importer;
 
 import java.io.IOException;
+import java.util.Map;
 
 import mobi.chouette.exchange.gtfs.model.GtfsTrip;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsException.ERROR;
+import mobi.chouette.exchange.gtfs.model.importer.StopTimeByTrip.FIELDS;
 
 public abstract class TripIndex extends IndexImpl<GtfsTrip> implements
 		GtfsConverter {
@@ -22,6 +24,40 @@ public abstract class TripIndex extends IndexImpl<GtfsTrip> implements
 	public TripIndex(String name, String id, boolean unique) throws IOException {
 		super(name, id, unique);
 	}
+	
+	@Override
+	protected void checkRequiredFields(Map<String, Integer> fields) {
+		// extra fields are tolerated : 1-GTFS-Trip-8 warning
+		for (String fieldName : fields.keySet()) {
+			if (fieldName != null) {
+				boolean fieldNameIsExtra = true;
+				for (FIELDS field : FIELDS.values()) {
+					if (fieldName.trim().equals(field.name())) {
+						fieldNameIsExtra = false;
+						break;
+					}
+				}
+				if (fieldNameIsExtra) {
+					// add the warning to warnings
+					Context context = new Context();
+					context.put(Context.PATH, _path);
+					context.put(Context.FIELD, fieldName);
+					context.put(Context.ERROR, GtfsException.ERROR.EXTRA_HEADER_FIELD);
+					getErrors().add(new GtfsException(context));
+				}
+			}
+		}
+		
+		// checks for ubiquitous header fields : 1-GTFS-Trip-2 error
+		if ( fields.get(FIELDS.trip_id.name()) == null ||
+				fields.get(FIELDS.route_id.name()) == null ||
+				fields.get(FIELDS.service_id.name()) == null) {
+			Context context = new Context();
+			context.put(Context.PATH, _path);
+			context.put(Context.ERROR, GtfsException.ERROR.MISSING_REQUIRED_FIELDS);
+			getErrors().add(new GtfsException(context));
+		}
+	}
 
 	@Override
 	protected GtfsTrip build(GtfsIterator reader, Context context) {
@@ -32,28 +68,30 @@ public abstract class TripIndex extends IndexImpl<GtfsTrip> implements
 		}
 
 		i = 0;
+		String value = null;
 		int id = (int) context.get(Context.ID);
 		bean.setId(id);
-		bean.setRouteId(STRING_CONVERTER.from(context, FIELDS.route_id,
-				array[i++], true));
-		bean.setServiceId(STRING_CONVERTER.from(context, FIELDS.service_id,
-				array[i++], true));
-		bean.setTripId(STRING_CONVERTER.from(context, FIELDS.trip_id,
-				array[i++], true));
-		bean.setTripHeadSign(STRING_CONVERTER.from(context,
-				FIELDS.trip_headsign, array[i++], false));
-		bean.setTripShortName(STRING_CONVERTER.from(context,
-				FIELDS.trip_short_name, array[i++], false));
-		bean.setDirectionId(DIRECTIONTYPE_CONVERTER.from(context,
-				FIELDS.direction_id, array[i++], GtfsTrip.DirectionType.Outbound, false));
-		bean.setBlockId(STRING_CONVERTER.from(context, FIELDS.block_id,
-				array[i++], false));
-		bean.setShapeId(STRING_CONVERTER.from(context, FIELDS.shape_id,
-				array[i++], false));
-		bean.setWheelchairAccessible(WHEELCHAIRACCESSIBLETYPE_CONVERTER.from(
-				context, FIELDS.wheelchair_accessible, array[i++], false));
-		bean.setBikesAllowed(BIKESALLOWEDTYPE_CONVERTER.from(context,
-				FIELDS.bikes_allowed, array[i++], false));
+		bean.getErrors().clear();
+		value = array[i++];
+		bean.setRouteId(STRING_CONVERTER.from(context, FIELDS.route_id, value, true));
+		value = array[i++];
+		bean.setServiceId(STRING_CONVERTER.from(context, FIELDS.service_id, value, true));
+		value = array[i++];
+		bean.setTripId(STRING_CONVERTER.from(context, FIELDS.trip_id, value, true));
+		value = array[i++];
+		bean.setTripHeadSign(STRING_CONVERTER.from(context, FIELDS.trip_headsign, value, false));
+		value = array[i++];
+		bean.setTripShortName(STRING_CONVERTER.from(context, FIELDS.trip_short_name, value, false));
+		value = array[i++];
+		bean.setDirectionId(DIRECTIONTYPE_CONVERTER.from(context, FIELDS.direction_id, value, GtfsTrip.DirectionType.Outbound, false));
+		value = array[i++];
+		bean.setBlockId(STRING_CONVERTER.from(context, FIELDS.block_id, value, false));
+		value = array[i++];
+		bean.setShapeId(STRING_CONVERTER.from(context, FIELDS.shape_id, value, false));
+		value = array[i++];
+		bean.setWheelchairAccessible(WHEELCHAIRACCESSIBLETYPE_CONVERTER.from(context, FIELDS.wheelchair_accessible, value, false));
+		value = array[i++];
+		bean.setBikesAllowed(BIKESALLOWEDTYPE_CONVERTER.from(context, FIELDS.bikes_allowed, value, false));
 
 		return bean;
 	}

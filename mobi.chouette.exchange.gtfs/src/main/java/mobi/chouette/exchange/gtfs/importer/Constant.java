@@ -15,6 +15,7 @@ public interface Constant extends mobi.chouette.exchange.gtfs.Constant {
 	public static final String GTFS_1_GTFS_CSV_11 = "1-GTFS-CSV-11";
 	public static final String GTFS_1_GTFS_CSV_12 = "1-GTFS-CSV-12";
 	public static final String GTFS_1_GTFS_CSV_13 = "1-GTFS-CSV-13";
+	public static final String GTFS_1_GTFS_CSV_14 = "1-GTFS-CSV-14";
 	
 	public static final String GTFS_1_GTFS_Agency_1 = "1-GTFS-Agency-1";
 	public static final String GTFS_1_GTFS_Agency_2 = "1-GTFS-Agency-2";
@@ -88,7 +89,7 @@ public interface Constant extends mobi.chouette.exchange.gtfs.Constant {
 	public static final String GTFS_1_GTFS_Calendar_13 = "1-GTFS-Calendar-13";
 	public static final String GTFS_1_GTFS_Calendar_14 = "1-GTFS-Calendar-14";
 
-	public static final String GTFS_1_GTFS_CalendarDate_1 = "1-GTFS-CalendarDate-1";
+	//public static final String GTFS_1_GTFS_CalendarDate_1 = "1-GTFS-CalendarDate-1";
 	public static final String GTFS_1_GTFS_CalendarDate_2 = "1-GTFS-CalendarDate-2";
 	public static final String GTFS_1_GTFS_CalendarDate_3 = "1-GTFS-CalendarDate-3";
 	public static final String GTFS_1_GTFS_CalendarDate_4 = "1-GTFS-CalendarDate-4";

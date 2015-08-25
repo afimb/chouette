@@ -70,8 +70,7 @@ public class GtfsValidationCommand implements Command, Constant {
 		try {
 			if (all) {
 				// agency.txt
-				GtfsAgencyParser agencyParser = (GtfsAgencyParser) ParserFactory.create(GtfsAgencyParser.class
-						.getName());
+				GtfsAgencyParser agencyParser = (GtfsAgencyParser) ParserFactory.create(GtfsAgencyParser.class.getName());
 				agencyParser.validate(context);
 			}
 			// stops.txt
@@ -88,31 +87,27 @@ public class GtfsValidationCommand implements Command, Constant {
 				tripParser.validate(context);
 
 				// calendar.txt & calendar_dates.txt
-				GtfsCalendarParser calendarParser = (GtfsCalendarParser) ParserFactory.create(GtfsCalendarParser.class
-						.getName());
+				GtfsCalendarParser calendarParser = (GtfsCalendarParser) ParserFactory.create(GtfsCalendarParser.class.getName());
 				calendarParser.validate(context);
 			}
 
 			// transfers.txt
-			GtfsTransferParser transferParser = (GtfsTransferParser) ParserFactory.create(GtfsTransferParser.class
-					.getName());
+			GtfsTransferParser transferParser = (GtfsTransferParser) ParserFactory.create(GtfsTransferParser.class.getName());
 			transferParser.validate(context);
 
 			result = SUCCESS;
 		} catch (GtfsException e) {
 			log.error(e);
 			if (e.getError().equals(GtfsException.ERROR.SYSTEM))
-			   throw e;
+				throw e;
 			report.setFailure(new ActionError(ActionError.CODE.INVALID_DATA, e.getError().name()+" "+e.getPath()));
 		} catch (Exception e) {
 			log.error(e,e);
 			throw e;
-		}
-        finally
-        {
+		} finally {
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		}
-
+		
 		return result;
 	}
 

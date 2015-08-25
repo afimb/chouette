@@ -7,6 +7,7 @@ import mobi.chouette.exchange.gtfs.model.GtfsStopTime;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime.DropOffType;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime.PickupType;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsException.ERROR;
+import mobi.chouette.exchange.gtfs.model.importer.RouteById.FIELDS;
 
 public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements
 		GtfsConverter {
@@ -30,7 +31,38 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements
 	
 	@Override
 	protected void checkRequiredFields(Map<String, Integer> fields) {
-		// TODO Code to add ...
+		// extra fields are tolerated : 1-GTFS-StopTime-12 warning
+		for (String fieldName : fields.keySet()) {
+			if (fieldName != null) {
+				boolean fieldNameIsExtra = true;
+				for (FIELDS field : FIELDS.values()) {
+					if (fieldName.trim().equals(field.name())) {
+						fieldNameIsExtra = false;
+						break;
+					}
+				}
+				if (fieldNameIsExtra) {
+					// add the warning to warnings
+					Context context = new Context();
+					context.put(Context.PATH, _path);
+					context.put(Context.FIELD, fieldName);
+					context.put(Context.ERROR, GtfsException.ERROR.EXTRA_HEADER_FIELD);
+					getErrors().add(new GtfsException(context));
+				}
+			}
+		}
+		
+		// checks for ubiquitous header fields : 1-GTFS-StopTime-2 error
+		if ( fields.get(FIELDS.trip_id.name()) == null ||
+				fields.get(FIELDS.stop_id.name()) == null ||
+				fields.get(FIELDS.stop_sequence.name()) == null ||
+				fields.get(FIELDS.arrival_time.name()) == null ||
+				fields.get(FIELDS.departure_time.name()) == null) {
+			Context context = new Context();
+			context.put(Context.PATH, _path);
+			context.put(Context.ERROR, GtfsException.ERROR.MISSING_REQUIRED_FIELDS);
+			getErrors().add(new GtfsException(context));
+		}
 	}
 
 	@Override
@@ -42,27 +74,28 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements
 		}
 
 		i = 0;
+		String value = null;
 		int id = (int) context.get(Context.ID);
+		_bean.getErrors().clear();
 		_bean.setId(id);
-		_bean.setTripId(STRING_CONVERTER.from(context, FIELDS.trip_id,
-				_array[i++], true));
-		_bean.setStopId(STRING_CONVERTER.from(context, FIELDS.stop_id,
-				_array[i++], true));
-		_bean.setStopSequence(INTEGER_CONVERTER.from(context,
-				FIELDS.stop_sequence, _array[i++], true));
-		_bean.setArrivalTime(GTFSTIME_CONVERTER.from(context,
-				FIELDS.arrival_time, _array[i++], true));
-		_bean.setDepartureTime(GTFSTIME_CONVERTER.from(context,
-				FIELDS.departure_time, _array[i++], true));
-		_bean.setStopHeadsign(STRING_CONVERTER.from(context,
-				FIELDS.stop_headsign, _array[i++], false));
-		_bean.setPickupType(PICKUP_CONVERTER.from(context, FIELDS.pickup_type,
-				_array[i++], PickupType.Scheduled, false));
-		_bean.setDropOffType(DROPOFFTYPE_CONVERTER
-				.from(context, FIELDS.drop_off_type, _array[i++],
-						DropOffType.Scheduled, false));
-		_bean.setShapeDistTraveled(FLOAT_CONVERTER.from(context,
-				FIELDS.shape_dist_traveled, _array[i++], false));
+		value = _array[i++];
+		_bean.setTripId(STRING_CONVERTER.from(context, FIELDS.trip_id, value, true));
+		value = _array[i++];
+		_bean.setStopId(STRING_CONVERTER.from(context, FIELDS.stop_id, value, true));
+		value = _array[i++];
+		_bean.setStopSequence(INTEGER_CONVERTER.from(context, FIELDS.stop_sequence, value, true));
+		value = _array[i++];
+		_bean.setArrivalTime(GTFSTIME_CONVERTER.from(context, FIELDS.arrival_time, value, true));
+		value = _array[i++];
+		_bean.setDepartureTime(GTFSTIME_CONVERTER.from(context, FIELDS.departure_time, value, true));
+		value = _array[i++];
+		_bean.setStopHeadsign(STRING_CONVERTER.from(context, FIELDS.stop_headsign, value, false));
+		value = _array[i++];
+		_bean.setPickupType(PICKUP_CONVERTER.from(context, FIELDS.pickup_type, value, PickupType.Scheduled, false));
+		value = _array[i++];
+		_bean.setDropOffType(DROPOFFTYPE_CONVERTER.from(context, FIELDS.drop_off_type, value, DropOffType.Scheduled, false));
+		value = _array[i++];
+		_bean.setShapeDistTraveled(FLOAT_CONVERTER.from(context, FIELDS.shape_dist_traveled, value, false));
 
 		return _bean;
 	}

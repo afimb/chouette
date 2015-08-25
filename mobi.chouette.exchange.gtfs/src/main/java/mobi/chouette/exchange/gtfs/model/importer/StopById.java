@@ -28,7 +28,37 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter {
 	
 	@Override
 	protected void checkRequiredFields(Map<String, Integer> fields) {
-		// TODO Code to add ...
+		// extra fields are tolerated : 1-GTFS-Stop-11 warning
+		for (String fieldName : fields.keySet()) {
+			if (fieldName != null) {
+				boolean fieldNameIsExtra = true;
+				for (FIELDS field : FIELDS.values()) {
+					if (fieldName.trim().equals(field.name())) {
+						fieldNameIsExtra = false;
+						break;
+					}
+				}
+				if (fieldNameIsExtra) {
+					// add the warning to warnings
+					Context context = new Context();
+					context.put(Context.PATH, _path);
+					context.put(Context.FIELD, fieldName);
+					context.put(Context.ERROR, GtfsException.ERROR.EXTRA_HEADER_FIELD);
+					getErrors().add(new GtfsException(context));
+				}
+			}
+		}
+		
+		// checks for ubiquitous header fields : 1-GTFS-Stop-2 error
+		if ( fields.get(FIELDS.stop_id.name()) == null ||
+				fields.get(FIELDS.stop_name.name()) == null ||
+				fields.get(FIELDS.stop_lat.name()) == null ||
+				fields.get(FIELDS.stop_lon.name()) == null) {
+			Context context = new Context();
+			context.put(Context.PATH, _path);
+			context.put(Context.ERROR, GtfsException.ERROR.MISSING_REQUIRED_FIELDS);
+			getErrors().add(new GtfsException(context));
+		}
 	}
 
 	@Override
@@ -39,41 +69,41 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter {
 		}
 
 		i = 0;
+		String value = null;
 		int id = (int) context.get(Context.ID);
+		bean.getErrors().clear();
 		bean.setId(id);
-		bean.setStopId(STRING_CONVERTER.from(context, FIELDS.stop_id,
-				array[i++], true));
-		bean.setStopCode(STRING_CONVERTER.from(context, FIELDS.stop_code,
-				array[i++], false));
-		bean.setStopName(STRING_CONVERTER.from(context, FIELDS.stop_name,
-				array[i++], true));
-		bean.setStopDesc(STRING_CONVERTER.from(context, FIELDS.stop_desc,
-				array[i++], false));
-		bean.setStopLat(BigDecimal.valueOf(FLOAT_CONVERTER.from(context,
-				FIELDS.stop_lat, array[i++], true)));
-		bean.setStopLon(BigDecimal.valueOf(FLOAT_CONVERTER.from(context,
-				FIELDS.stop_lon, array[i++], true)));
-		bean.setZoneId(STRING_CONVERTER.from(context, FIELDS.zone_id,
-				array[i++], false));
-		bean.setStopUrl(URL_CONVERTER.from(context, FIELDS.stop_url,
-				array[i++], false));
-		bean.setLocationType(LOCATIONTYPE_CONVERTER.from(context,
-				FIELDS.location_type, array[i++], LocationType.Stop, false));
-		bean.setParentStation(STRING_CONVERTER.from(context,
-				FIELDS.parent_station, array[i++], false));
-		bean.setStopTimezone(TIMEZONE_CONVERTER.from(context,
-				FIELDS.stop_timezone, array[i++], false));
-		bean.setWheelchairBoarding(WHEELCHAIRBOARDINGTYPE_CONVERTER.from(
-				context, FIELDS.wheelchair_boarding, array[i++],
-				WheelchairBoardingType.NoInformation, false));
-
-		bean.setAddressLine(STRING_CONVERTER.from(context, FIELDS.address_line,
-				array[i++], false));
-		bean.setLocality(STRING_CONVERTER.from(context, FIELDS.locality,
-				array[i++], false));
-		bean.setPostalCode(STRING_CONVERTER.from(context, FIELDS.postal_code,
-				array[i++], false));
-
+		value = array[i++];
+		bean.setStopId(STRING_CONVERTER.from(context, FIELDS.stop_id, value, true));
+		value = array[i++];
+		bean.setStopCode(STRING_CONVERTER.from(context, FIELDS.stop_code, value, false));
+		value = array[i++];
+		bean.setStopName(STRING_CONVERTER.from(context, FIELDS.stop_name, value, true));
+		value = array[i++];
+		bean.setStopDesc(STRING_CONVERTER.from(context, FIELDS.stop_desc, value, false));
+		value = array[i++];
+		bean.setStopLat(BigDecimal.valueOf(FLOAT_CONVERTER.from(context, FIELDS.stop_lat, value, true)));
+		value = array[i++];
+		bean.setStopLon(BigDecimal.valueOf(FLOAT_CONVERTER.from(context, FIELDS.stop_lon, value, true)));
+		value = array[i++];
+		bean.setZoneId(STRING_CONVERTER.from(context, FIELDS.zone_id, value, false));
+		value = array[i++];
+		bean.setStopUrl(URL_CONVERTER.from(context, FIELDS.stop_url, value, false));
+		value = array[i++];
+		bean.setLocationType(LOCATIONTYPE_CONVERTER.from(context, FIELDS.location_type, value, LocationType.Stop, false));
+		value = array[i++];
+		bean.setParentStation(STRING_CONVERTER.from(context, FIELDS.parent_station, value, false));
+		value = array[i++];
+		bean.setStopTimezone(TIMEZONE_CONVERTER.from(context, FIELDS.stop_timezone, value, false));
+		value = array[i++];
+		bean.setWheelchairBoarding(WHEELCHAIRBOARDINGTYPE_CONVERTER.from( context, FIELDS.wheelchair_boarding, value, WheelchairBoardingType.NoInformation, false));
+		value = array[i++];
+		bean.setAddressLine(STRING_CONVERTER.from(context, FIELDS.address_line, value, false));
+		value = array[i++];
+		bean.setLocality(STRING_CONVERTER.from(context, FIELDS.locality, value, false));
+		value = array[i++];
+		bean.setPostalCode(STRING_CONVERTER.from(context, FIELDS.postal_code, value, false));
+		
 		return bean;
 	}
 

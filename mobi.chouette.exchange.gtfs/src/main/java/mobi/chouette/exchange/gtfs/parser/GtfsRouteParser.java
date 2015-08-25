@@ -6,17 +6,22 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
-import mobi.chouette.exchange.gtfs.Constant;
+import mobi.chouette.exchange.gtfs.importer.Constant;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.gtfs.model.GtfsRoute;
+import mobi.chouette.exchange.gtfs.model.importer.GtfsException;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsImporter;
 import mobi.chouette.exchange.gtfs.model.importer.Index;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.Validator;
 import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.FileError;
 import mobi.chouette.exchange.report.FileInfo;
 import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
+import mobi.chouette.exchange.validation.report.CheckPoint;
+import mobi.chouette.exchange.validation.report.Location;
+import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;
@@ -25,7 +30,7 @@ import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 @Log4j
-public class GtfsRouteParser implements Parser, Validator, Constant {
+public class GtfsRouteParser extends GtfsParser implements Parser, Validator, Constant {
 
 	@Getter
 	@Setter
@@ -74,20 +79,46 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 
 	@Override
 	public void validate(Context context) throws Exception {
-
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		ActionReport report = (ActionReport) context.get(REPORT);
-
+		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
+		
 		// routes.txt
-		FileInfo file = new FileInfo(GTFS_ROUTES_FILE, FILE_STATE.OK);
-		report.getFiles().add(file);
+		if (importer.hasRouteImporter()) {
+			// Add to report
+			report.addFileInfo(GTFS_ROUTES_FILE, FILE_STATE.OK);
+		} else {
+			// Add to report
+			report.addFileInfo(GTFS_ROUTES_FILE, FILE_STATE.ERROR, new FileError(FileError.CODE.FILE_NOT_FOUND, "The file \"routes.txt\" must be provided (rule 1-GTFS-Route-1)"));
+			// Add to validation report checkpoint 1-GTFS-Route-1
+			validationReport.addDetail(GTFS_1_GTFS_Route_1, new Location(GTFS_ROUTES_FILE, "routes-failure"), "The file \"routes.txt\" must be provided", CheckPoint.RESULT.NOK);
+			// Stop parsing and render reports (1-GTFS-Route-1 is fatal)
+			throw new Exception("The file \"routes.txt\" must be provided");
+		}
+
+		Index<GtfsRoute> parser = null;
+		try { // Read and check the header line of the file "routes.txt"
+			parser = importer.getRouteById();
+		} catch (Exception ex ) {
+			if (ex instanceof GtfsException) {
+				reportError(report, validationReport, (GtfsException)ex, GTFS_ROUTES_FILE);
+			} else {
+				throwUnknownError(report, validationReport, GTFS_ROUTES_FILE);
+			}
+		}
+		
+		if (parser == null || parser.getLength() == 0) { // importer.getRouteById() fails for any other reason
+			throwUnknownError(report, validationReport, GTFS_ROUTES_FILE);
+		}
+
+		parser.getErrors().clear();
 		try {
-			Index<GtfsRoute> parser = importer.getRouteById();
 			for (GtfsRoute bean : parser) {
+				reportErrors(report, validationReport, bean.getErrors(), GTFS_ROUTES_FILE);
 				parser.validate(bean, importer);
 			}
 		} catch (Exception ex) {
-			AbstractConverter.populateFileError(file, ex);
+			AbstractConverter.populateFileError(new FileInfo(GTFS_ROUTES_FILE, FILE_STATE.ERROR), ex);
 			throw ex;
 		}
 	}

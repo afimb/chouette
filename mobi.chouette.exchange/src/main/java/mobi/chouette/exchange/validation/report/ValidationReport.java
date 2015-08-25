@@ -67,4 +67,11 @@ public class ValidationReport {
 		checkPoint.addDetail(new Detail(checkPointName, location, message));
 	}
 
+
+	public void addDetail(String checkPointName, Location[] locations, String message, RESULT result) {
+		CheckPoint checkPoint = findCheckPointByName(checkPointName);
+		checkPoint.setState(result);
+		for (Location location : locations)
+			checkPoint.addDetail(new Detail(checkPointName, location, message));
+	}
 }

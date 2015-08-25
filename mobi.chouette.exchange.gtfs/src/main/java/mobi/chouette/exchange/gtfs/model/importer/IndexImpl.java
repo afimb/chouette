@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.HTMLTagValidator;
 

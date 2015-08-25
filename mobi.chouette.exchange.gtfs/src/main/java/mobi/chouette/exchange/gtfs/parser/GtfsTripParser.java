@@ -14,20 +14,25 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
-import mobi.chouette.exchange.gtfs.Constant;
+import mobi.chouette.exchange.gtfs.importer.Constant;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.gtfs.model.GtfsFrequency;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime;
 import mobi.chouette.exchange.gtfs.model.GtfsTrip;
 import mobi.chouette.exchange.gtfs.model.GtfsTrip.DirectionType;
+import mobi.chouette.exchange.gtfs.model.importer.GtfsException;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsImporter;
 import mobi.chouette.exchange.gtfs.model.importer.Index;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.Validator;
 import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.FileError;
 import mobi.chouette.exchange.report.FileInfo;
 import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
+import mobi.chouette.exchange.validation.report.CheckPoint;
+import mobi.chouette.exchange.validation.report.Location;
+import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
@@ -43,7 +48,7 @@ import mobi.chouette.model.util.Referential;
 import org.apache.commons.beanutils.BeanUtils;
 
 @Log4j
-public class GtfsTripParser implements Parser, Validator, Constant {
+public class GtfsTripParser extends GtfsParser implements Parser, Validator, Constant {
 
 	@AllArgsConstructor
 	class VehicleJourneyAtStopWrapper extends VehicleJourneyAtStop {
@@ -208,52 +213,122 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 
 	@Override
 	public void validate(Context context) throws Exception {
-
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		ActionReport report = (ActionReport) context.get(REPORT);
-
+		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
+		
 		// stop_times.txt
-		FileInfo file = new FileInfo(GTFS_STOP_TIMES_FILE,FILE_STATE.OK);
-		report.getFiles().add(file);
+		if (importer.hasStopTimeImporter()) {
+			// Add to report
+			report.addFileInfo(GTFS_STOP_TIMES_FILE, FILE_STATE.OK);
+		} else {
+			// Add to report
+			report.addFileInfo(GTFS_STOP_TIMES_FILE, FILE_STATE.ERROR, new FileError(FileError.CODE.FILE_NOT_FOUND, "The file \"stop_times.txt\" must be provided (rule 1-GTFS-StopTime-1)"));
+			// Add to validation report checkpoint 1-GTFS-StopTime-1
+			validationReport.addDetail(GTFS_1_GTFS_StopTime_1, new Location(GTFS_STOP_TIMES_FILE, "stop_times-failure"), "The file \"stop_times.txt\" must be provided", CheckPoint.RESULT.NOK);
+			// Stop parsing and render reports (1-GTFS-StopTime-1 is fatal)
+			throw new Exception("The file \"stop_times.txt\" must be provided");
+		}
+		
+		Index<GtfsStopTime> stop_time_parser = null;
+		try { // Read and check the header line of the file "stop_times.txt"
+			stop_time_parser = importer.getStopTimeByTrip();
+		} catch (Exception ex ) {
+			if (ex instanceof GtfsException) {
+				reportError(report, validationReport, (GtfsException)ex, GTFS_STOP_TIMES_FILE);
+			} else {
+				throwUnknownError(report, validationReport, GTFS_STOP_TIMES_FILE);
+			}
+		}
+		
+		if (stop_time_parser == null || stop_time_parser.getLength() == 0) { // importer.getStopTimeByTrip() fails for any other reason
+			throwUnknownError(report, validationReport, GTFS_STOP_TIMES_FILE);
+		}
+
+		stop_time_parser.getErrors().clear();
+		
 		try {
-			Index<GtfsStopTime> parser = importer.getStopTimeByTrip();
-			for (GtfsStopTime bean : parser) {
-				parser.validate(bean, importer);
+			for (GtfsStopTime bean : stop_time_parser) {
+				reportErrors(report, validationReport, bean.getErrors(), GTFS_STOP_TIMES_FILE);
+				stop_time_parser.validate(bean, importer);
 			}
 		} catch (Exception ex) {
-			AbstractConverter.populateFileError(file, ex);
+			AbstractConverter.populateFileError(new FileInfo(GTFS_STOP_TIMES_FILE, FILE_STATE.ERROR), ex);
 			throw ex;
 		}
 
 		// trips.txt
-		file = new FileInfo(GTFS_TRIPS_FILE,FILE_STATE.OK);
-		report.getFiles().add(file);
-		try {
-			Index<GtfsTrip> tripParser = importer.getTripById();
+		if (importer.hasTripImporter()) {
+			// Add to report
+			report.addFileInfo(GTFS_TRIPS_FILE, FILE_STATE.OK);
+		} else {
+			// Add to report
+			report.addFileInfo(GTFS_TRIPS_FILE, FILE_STATE.ERROR, new FileError(FileError.CODE.FILE_NOT_FOUND, "The file \"trips.txt\" must be provided (rule 1-GTFS-Trip-1)"));
+			// Add to validation report checkpoint 1-GTFS-Trip-1
+			validationReport.addDetail(GTFS_1_GTFS_Trip_1, new Location(GTFS_TRIPS_FILE, "trips-failure"), "The file \"trips.txt\" must be provided", CheckPoint.RESULT.NOK);
+			// Stop parsing and render reports (1-GTFS-StopTime-1 is fatal)
+			throw new Exception("The file \"trips.txt\" must be provided");
+		}
+		
+		Index<GtfsTrip> trip_parser = null;
+		try { // Read and check the header line of the file "trips.txt"
+			trip_parser = importer.getTripById();
+		} catch (Exception ex ) {
+			if (ex instanceof GtfsException) {
+				reportError(report, validationReport, (GtfsException)ex, GTFS_TRIPS_FILE);
+			} else {
+				throwUnknownError(report, validationReport, GTFS_TRIPS_FILE);
+			}
+		}
+		
+		if (trip_parser == null || trip_parser.getLength() == 0) { // importer.getTripById() fails for any other reason
+			throwUnknownError(report, validationReport, GTFS_TRIPS_FILE);
+		}
 
-			for (GtfsTrip bean : tripParser) {
-				tripParser.validate(bean, importer);
+		trip_parser.getErrors().clear();
+		
+		try {
+			for (GtfsTrip bean : trip_parser) {
+				reportErrors(report, validationReport, bean.getErrors(), GTFS_TRIPS_FILE);
+				trip_parser.validate(bean, importer);
 			}
 		} catch (Exception ex) {
-			AbstractConverter.populateFileError(file, ex);
+			AbstractConverter.populateFileError(new FileInfo(GTFS_TRIPS_FILE, FILE_STATE.ERROR), ex);
 			throw ex;
 		}
 
 		// frequencies.txt
 		if (importer.hasFrequencyImporter()) {
-			file = new FileInfo(GTFS_TRANSFERS_FILE,FILE_STATE.OK);
-			report.getFiles().add(file);
+			// Add to report
+			report.addFileInfo(GTFS_FREQUENCIES_FILE, FILE_STATE.OK);
+			
+			Index<GtfsFrequency> frequency_parser = null;
+			try { // Read and check the header line of the file "frequencies.txt"
+				frequency_parser = importer.getFrequencyByTrip();
+			} catch (Exception ex ) {
+				if (ex instanceof GtfsException) {
+					reportError(report, validationReport, (GtfsException)ex, GTFS_FREQUENCIES_FILE);
+				} else {
+					throwUnknownError(report, validationReport, GTFS_FREQUENCIES_FILE);
+				}
+			}
+			
+			if (frequency_parser == null || frequency_parser.getLength() == 0) { // importer.getFrequencyByTrip() fails for any other reason
+				throwUnknownError(report, validationReport, GTFS_FREQUENCIES_FILE);
+			}
+	
+			frequency_parser.getErrors().clear();
+			
 			try {
-				Index<GtfsFrequency> frequencyParser = importer.getFrequencyByTrip();
-				for (GtfsFrequency bean : frequencyParser) {
-					frequencyParser.validate(bean, importer);
+				for (GtfsFrequency bean : frequency_parser) {
+					reportErrors(report, validationReport, bean.getErrors(), GTFS_FREQUENCIES_FILE);
+					frequency_parser.validate(bean, importer);
 				}
 			} catch (Exception ex) {
-				AbstractConverter.populateFileError(file, ex);
+				AbstractConverter.populateFileError(new FileInfo(GTFS_FREQUENCIES_FILE, FILE_STATE.ERROR), ex);
 				throw ex;
 			}
 		}
-
 	}
 
 	protected void convert(Context context, GtfsStopTime gtfsStopTime, VehicleJourneyAtStop vehicleJourneyAtStop) {

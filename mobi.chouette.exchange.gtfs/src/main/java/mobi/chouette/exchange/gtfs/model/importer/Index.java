@@ -1,6 +1,9 @@
 package mobi.chouette.exchange.gtfs.model.importer;
 
+import java.util.List;
+
 public interface Index<T> extends Iterable<T> {
+
 	void dispose();
 
 	Iterable<String> keys();
@@ -14,5 +17,7 @@ public interface Index<T> extends Iterable<T> {
 	boolean validate(T bean, GtfsImporter dao);
 
 	int getLength();
+	
+	List<GtfsException> getErrors();
 
 }

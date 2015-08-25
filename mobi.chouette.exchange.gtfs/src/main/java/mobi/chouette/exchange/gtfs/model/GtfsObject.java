@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import mobi.chouette.exchange.gtfs.model.importer.GtfsException;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsWarning;
 
 @ToString
@@ -18,7 +19,6 @@ public abstract class GtfsObject
    @Setter
    protected Integer id;
    
-   
    @Getter
-   protected List<GtfsWarning> warnings = new ArrayList<>();
+   protected List<GtfsException> errors = new ArrayList<>();
 }

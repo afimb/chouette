@@ -24,7 +24,35 @@ public class RouteById extends IndexImpl<GtfsRoute> implements GtfsConverter {
 	
 	@Override
 	protected void checkRequiredFields(Map<String, Integer> fields) {
-		// TODO Code to add ...
+		// extra fields are tolerated : 1-GTFS-Route-10 warning
+		for (String fieldName : fields.keySet()) {
+			if (fieldName != null) {
+				boolean fieldNameIsExtra = true;
+				for (FIELDS field : FIELDS.values()) {
+					if (fieldName.trim().equals(field.name())) {
+						fieldNameIsExtra = false;
+						break;
+					}
+				}
+				if (fieldNameIsExtra) {
+					// add the warning to warnings
+					Context context = new Context();
+					context.put(Context.PATH, _path);
+					context.put(Context.FIELD, fieldName);
+					context.put(Context.ERROR, GtfsException.ERROR.EXTRA_HEADER_FIELD);
+					getErrors().add(new GtfsException(context));
+				}
+			}
+		}
+		
+		// checks for ubiquitous header fields : 1-GTFS-Stop-2 error
+		if ( fields.get(FIELDS.route_id.name()) == null ||
+				fields.get(FIELDS.route_type.name()) == null) {
+			Context context = new Context();
+			context.put(Context.PATH, _path);
+			context.put(Context.ERROR, GtfsException.ERROR.MISSING_REQUIRED_FIELDS);
+			getErrors().add(new GtfsException(context));
+		}
 	}
 
 	@Override
@@ -35,26 +63,28 @@ public class RouteById extends IndexImpl<GtfsRoute> implements GtfsConverter {
 		}
 
 		i = 0;
+		String value = null;
 		int id = (int) context.get(Context.ID);
+		bean.getErrors().clear();
 		bean.setId(id);
-		bean.setRouteId(STRING_CONVERTER.from(context, FIELDS.route_id,
-				array[i++], true));
-		bean.setAgencyId(STRING_CONVERTER.from(context, FIELDS.agency_id,
-				array[i++], false));
-		bean.setRouteShortName(STRING_CONVERTER.from(context,
-				FIELDS.route_short_name, array[i++], false));
-		bean.setRouteLongName(STRING_CONVERTER.from(context,
-				FIELDS.route_long_name, array[i++], bean.getRouteShortName() != null));
-		bean.setRouteDesc(STRING_CONVERTER.from(context, FIELDS.route_desc,
-				array[i++], false));
-		bean.setRouteType(ROUTETYPE_CONVERTER.from(context, FIELDS.route_type,
-				array[i++], true));
-		bean.setRouteUrl(URL_CONVERTER.from(context, FIELDS.route_url,
-				array[i++], false));
-		bean.setRouteColor(COLOR_CONVERTER.from(context, FIELDS.route_color,
-				array[i++], Color.WHITE, false));
-		bean.setRouteTextColor(COLOR_CONVERTER.from(context,
-				FIELDS.route_text_color, array[i++], Color.BLACK, false));
+		value = array[i++];
+		bean.setRouteId(STRING_CONVERTER.from(context, FIELDS.route_id, value, true));
+		value = array[i++];
+		bean.setAgencyId(STRING_CONVERTER.from(context, FIELDS.agency_id, value, false));
+		value = array[i++];
+		bean.setRouteShortName(STRING_CONVERTER.from(context, FIELDS.route_short_name, value, false));
+		value = array[i++];
+		bean.setRouteLongName(STRING_CONVERTER.from(context, FIELDS.route_long_name, value, bean.getRouteShortName() != null));
+		value = array[i++];
+		bean.setRouteDesc(STRING_CONVERTER.from(context, FIELDS.route_desc, value, false));
+		value = array[i++];
+		bean.setRouteType(ROUTETYPE_CONVERTER.from(context, FIELDS.route_type, value, true));
+		value = array[i++];
+		bean.setRouteUrl(URL_CONVERTER.from(context, FIELDS.route_url, value, false));
+		value = array[i++];
+		bean.setRouteColor(COLOR_CONVERTER.from(context, FIELDS.route_color, value, Color.WHITE, false));
+		value = array[i++];
+		bean.setRouteTextColor(COLOR_CONVERTER.from(context, FIELDS.route_text_color, value, Color.BLACK, false));
 
 		return bean;
 	}

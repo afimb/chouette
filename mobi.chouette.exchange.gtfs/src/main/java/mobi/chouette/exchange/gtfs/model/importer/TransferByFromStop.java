@@ -25,7 +25,36 @@ public class TransferByFromStop extends IndexImpl<GtfsTransfer> implements
 	
 	@Override
 	protected void checkRequiredFields(Map<String, Integer> fields) {
-		// TODO Code to add ...
+		// extra fields are tolerated : 1-GTFS-Transfer-6 warning
+		for (String fieldName : fields.keySet()) {
+			if (fieldName != null) {
+				boolean fieldNameIsExtra = true;
+				for (FIELDS field : FIELDS.values()) {
+					if (fieldName.trim().equals(field.name())) {
+						fieldNameIsExtra = false;
+						break;
+					}
+				}
+				if (fieldNameIsExtra) {
+					// add the warning to warnings
+					Context context = new Context();
+					context.put(Context.PATH, _path);
+					context.put(Context.FIELD, fieldName);
+					context.put(Context.ERROR, GtfsException.ERROR.EXTRA_HEADER_FIELD);
+					getErrors().add(new GtfsException(context));
+				}
+			}
+		}
+		
+		// checks for ubiquitous header fields : 1-GTFS-Transfer-1 error
+		if ( fields.get(FIELDS.from_stop_id.name()) == null ||
+				fields.get(FIELDS.to_stop_id.name()) == null ||
+				fields.get(FIELDS.transfer_type.name()) == null) {
+			Context context = new Context();
+			context.put(Context.PATH, _path);
+			context.put(Context.ERROR, GtfsException.ERROR.MISSING_REQUIRED_FIELDS);
+			getErrors().add(new GtfsException(context));
+		}
 	}
 
 	@Override
@@ -36,16 +65,18 @@ public class TransferByFromStop extends IndexImpl<GtfsTransfer> implements
 		}
 
 		i = 0;
+		String value = null;
 		int id = (int) context.get(Context.ID);
 		bean.setId(id);
-		bean.setFromStopId(STRING_CONVERTER.from(context, FIELDS.from_stop_id,
-				array[i++], true));
-		bean.setToStopId(STRING_CONVERTER.from(context, FIELDS.to_stop_id,
-				array[i++], true));
-		bean.setTransferType(TRANSFERTYPE_CONVERTER.from(context,
-				FIELDS.transfer_type, array[i++], true));
-		bean.setMinTransferTime(POSITIVE_INTEGER_CONVERTER.from(context,
-				FIELDS.min_transfer_time, array[i++], false));
+		bean.getErrors().clear();
+		value = array[i++];
+		bean.setFromStopId(STRING_CONVERTER.from(context, FIELDS.from_stop_id, value, true));
+		value = array[i++];
+		bean.setToStopId(STRING_CONVERTER.from(context, FIELDS.to_stop_id, value, true));
+		value = array[i++];
+		bean.setTransferType(TRANSFERTYPE_CONVERTER.from(context, FIELDS.transfer_type, value, true));
+		value = array[i++];
+		bean.setMinTransferTime(POSITIVE_INTEGER_CONVERTER.from(context, FIELDS.min_transfer_time, value, false));
 
 		return bean;
 	}

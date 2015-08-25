@@ -26,7 +26,37 @@ public class FrequencyByTrip extends IndexImpl<GtfsFrequency> implements
 	
 	@Override
 	protected void checkRequiredFields(Map<String, Integer> fields) {
-		// TODO Code to add ...
+		// extra fields are tolerated : 1-GTFS-Frequency-7 warning
+		for (String fieldName : fields.keySet()) {
+			if (fieldName != null) {
+				boolean fieldNameIsExtra = true;
+				for (FIELDS field : FIELDS.values()) {
+					if (fieldName.trim().equals(field.name())) {
+						fieldNameIsExtra = false;
+						break;
+					}
+				}
+				if (fieldNameIsExtra) {
+					// add the warning to warnings
+					Context context = new Context();
+					context.put(Context.PATH, _path);
+					context.put(Context.FIELD, fieldName);
+					context.put(Context.ERROR, GtfsException.ERROR.EXTRA_HEADER_FIELD);
+					getErrors().add(new GtfsException(context));
+				}
+			}
+		}
+		
+		// checks for ubiquitous header fields : 1-GTFS-Frequency-1 error
+		if ( fields.get(FIELDS.trip_id.name()) == null ||
+				fields.get(FIELDS.start_time.name()) == null ||
+				fields.get(FIELDS.end_time.name()) == null ||
+				fields.get(FIELDS.headway_secs.name()) == null) {
+			Context context = new Context();
+			context.put(Context.PATH, _path);
+			context.put(Context.ERROR, GtfsException.ERROR.MISSING_REQUIRED_FIELDS);
+			getErrors().add(new GtfsException(context));
+		}
 	}
 
 	@Override
@@ -38,16 +68,18 @@ public class FrequencyByTrip extends IndexImpl<GtfsFrequency> implements
 
 		i = 0;
 		// int id = (int) context.get(Context.ID);
-		bean.setTripId(STRING_CONVERTER.from(context, FIELDS.trip_id,
-				array[i++], true));
-		bean.setStartTime(GTFSTIME_CONVERTER.from(context, FIELDS.start_time,
-				array[i++], true));
-		bean.setEndTime(GTFSTIME_CONVERTER.from(context, FIELDS.end_time,
-				array[i++], true));
-		bean.setHeadwaySecs(POSITIVE_INTEGER_CONVERTER.from(context,
-				FIELDS.headway_secs, array[i++], true));
-		bean.setExactTimes(BOOLEAN_CONVERTER.from(context, FIELDS.exact_times,
-				array[i++], false, false));
+		String value = null;
+		bean.getErrors().clear();
+		value = array[i++];
+		bean.setTripId(STRING_CONVERTER.from(context, FIELDS.trip_id, value, true));
+		value = array[i++];
+		bean.setStartTime(GTFSTIME_CONVERTER.from(context, FIELDS.start_time, value, true));
+		value = array[i++];
+		bean.setEndTime(GTFSTIME_CONVERTER.from(context, FIELDS.end_time, value, true));
+		value = array[i++];
+		bean.setHeadwaySecs(POSITIVE_INTEGER_CONVERTER.from(context, FIELDS.headway_secs, value, true));
+		value = array[i++];
+		bean.setExactTimes(BOOLEAN_CONVERTER.from(context, FIELDS.exact_times, value, false, false));
 
 		return bean;
 	}
