@@ -26,7 +26,8 @@ public class GtfsException extends RuntimeException {
 		EXTRA_HEADER_FIELD,
 		INVALID_URL,
 		INVALID_TIMEZONE,
-		INVALID_FARE_URL
+		INVALID_FARE_URL,
+		INVALID_LANG
 	}
 
 	@Getter

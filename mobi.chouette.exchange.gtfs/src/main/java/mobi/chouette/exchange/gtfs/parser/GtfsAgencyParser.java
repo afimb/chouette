@@ -8,6 +8,8 @@ import mobi.chouette.exchange.gtfs.model.GtfsAgency;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsException;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsImporter;
 import mobi.chouette.exchange.gtfs.model.importer.Index;
+import mobi.chouette.exchange.gtfs.model.importer.IndexFactory;
+import mobi.chouette.exchange.gtfs.model.importer.IndexImpl;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.Validator;
@@ -46,7 +48,7 @@ public class GtfsAgencyParser extends GtfsParser implements Parser, Validator, C
 		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
 		
 		// agency.txt
-		if (importer.hasAgencyImporter()) {
+		if (importer.hasAgencyImporter()) { // the file "agency.txt" exists ?
 			// Add to report
 			report.addFileInfo(GTFS_AGENCY_FILE, FILE_STATE.OK);
 		} else {
@@ -64,7 +66,11 @@ public class GtfsAgencyParser extends GtfsParser implements Parser, Validator, C
 		
 		Index<GtfsAgency> parser = null;
 		try { // Read and check the header line of the file "agency.txt"
-			parser = importer.getAgencyById();
+			parser = importer.getAgencyById(); // return new AgencyById("/.../agency.txt") { /** super(...) */
+			//   IndexImpl<GtfsAgency>(_path = "/.../agency.txt", _key = "agency_id", _value = "default", _unique = true) {
+			//     initialize() /** read the first line of file _path */
+			//   }
+			// }
 		} catch (Exception ex ) {
 			if (ex instanceof GtfsException) {
 				reportError(report, validationReport, (GtfsException)ex, GTFS_AGENCY_FILE);

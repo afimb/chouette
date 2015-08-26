@@ -83,15 +83,24 @@ public class GtfsParser implements Constant {
 					"Line number "+((GtfsException) ex).getId()+" in file \""+filename+"\" must comply with CSV",
 					CheckPoint.RESULT.NOK);
 			throw new Exception("Line number "+((GtfsException) ex).getId()+" in file \""+filename+"\" must comply with CSV");
-		case MISSING_REQUIRED_FIELDS:
+		case MISSING_REQUIRED_FIELDS: // 1_GTFS_Agency_2, 1_GTFS_Agency_4, 1-GTFS-Stop-2, 1-GTFS-Route-2, 1-GTFS-StopTime-2, 1-GTFS-Trip-2, 1-GTFS-Frequency-1, 1-GTFS-Calendar-2, 1-GTFS-CalendarDate-2, 1-GTFS-Transfer-1 error
 			report.addFileInfo(filename, FILE_STATE.ERROR,
 					new FileError(FileError.CODE.INVALID_FORMAT,
-							"The fields \"agency_name\", \"agency_url\" and \"agency_timezone\" must be provided (rule 1-GTFS-Agency-4"));
+							"The fields \"agency_id\", \"agency_name\", \"agency_url\" and \"agency_timezone\" must be provided (rule 1-GTFS-Agency-4"));
 			validationReport.addDetail(GTFS_1_GTFS_Agency_4,
 					new Location(filename, name(filename)+"-failure", ((GtfsException) ex).getId()),
-					"The fields \"agency_name\", \"agency_url\" and \"agency_timezone\" must be provided",
+					"The fields \"agency_id\", \"agency_name\", \"agency_url\" and \"agency_timezone\" must be provided",
 					CheckPoint.RESULT.NOK);
-			throw new Exception("The fields \"agency_name\", \"agency_url\" and \"agency_timezone\" must be provided");
+			throw new Exception("The fields \"agency_id\", \"agency_name\", \"agency_url\" and \"agency_timezone\" must be provided");
+		case MISSING_REQUIRED_VALUES: // 1-GTFS-Agency-5 
+			report.addFileInfo(filename, FILE_STATE.ERROR,
+					new FileError(FileError.CODE.INVALID_FORMAT,
+							"The values \"agency_id\", \"agency_name\", \"agency_url\" and \"agency_timezone\" must be provided (rule 1-GTFS-Agency-4"));
+			validationReport.addDetail(GTFS_1_GTFS_Agency_5,
+					new Location(filename, name(filename)+"-failure", ((GtfsException) ex).getId()),
+					"The values \"agency_id\", \"agency_name\", \"agency_url\" and \"agency_timezone\" must be provided",
+					CheckPoint.RESULT.NOK);
+			throw new Exception("The values \"agency_id\", \"agency_name\", \"agency_url\" and \"agency_timezone\" must be provided");
 		case EXTRA_SPACE_IN_HEADER_FIELD: // Don't throw an exception at this level
 			report.addFileInfo(filename, FILE_STATE.IGNORED,
 					new FileError(FileError.CODE.INVALID_FORMAT,
@@ -119,14 +128,13 @@ public class GtfsParser implements Constant {
 					"Extra fields are provided",
 					CheckPoint.RESULT.NOK);
 			break;
-		case MISSING_REQUIRED_VALUES: // 1-GTFS-Agency-4, 1-GTFS-Stop-2, 1-GTFS-Route-2, 1-GTFS-StopTime-2, 1-GTFS-Trip-2, 1-GTFS-Frequency-1, 1-GTFS-Calendar-2, 1-GTFS-CalendarDate-2, 1-GTFS-Transfer-1 error
-			
-			break;
 		case INVALID_URL:// 1-GTFS-Agency-7  warning
 			break;
 		case INVALID_TIMEZONE:// 1-GTFS-Agency-6  warning
 			break;
-		case INVALID_FARE_URL://1-GTFS-Agency-9   warning
+		case INVALID_FARE_URL:// 1-GTFS-Agency-9   warning
+			break;
+		case INVALID_LANG: // 1-GTFS-Agency-8   warning
 			break;
 			
 		case INVALID_FORMAT:
