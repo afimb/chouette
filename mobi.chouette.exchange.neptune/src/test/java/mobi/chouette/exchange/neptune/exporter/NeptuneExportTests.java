@@ -49,7 +49,7 @@ public class NeptuneExportTests  extends Arquillian implements Constant, ReportC
 		WebArchive result;
 
 		File[] files = Maven.resolver().loadPomFromFile("pom.xml")
-				.resolve("mobi.chouette:mobi.chouette.exchange.neptune:3.0.0").withTransitivity().asFile();
+				.resolve("mobi.chouette:mobi.chouette.exchange.neptune").withTransitivity().asFile();
 		
 
 		result = ShrinkWrap.create(WebArchive.class, "test.war").addAsWebInfResource("postgres-ds.xml")

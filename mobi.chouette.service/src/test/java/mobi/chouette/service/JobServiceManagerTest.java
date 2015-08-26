@@ -30,7 +30,7 @@ public class JobServiceManagerTest extends Arquillian {
 		WebArchive result;
 
 		File[] files = Maven.resolver().loadPomFromFile("pom.xml").importRuntimeAndTestDependencies()
-				.resolve("mobi.chouette:mobi.chouette.service:3.0.0").withTransitivity().asFile();
+				.resolve("mobi.chouette:mobi.chouette.service").withTransitivity().asFile();
 
 		result = ShrinkWrap.create(WebArchive.class, "test.war")
 				.addAsWebInfResource("postgres-ds.xml")

@@ -13,8 +13,12 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import org.jboss.shrinkwrap.resolver.api.maven.MavenVersionRangeResult;
+import org.jboss.shrinkwrap.resolver.api.maven.ScopeType;
+import org.jboss.shrinkwrap.resolver.api.maven.coordinate.MavenCoordinate;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+
 
 public class LineDaoTest extends Arquillian
 {
@@ -25,14 +29,21 @@ public class LineDaoTest extends Arquillian
 	@Deployment
 	public static WebArchive createDeployment() {
 
+		try
+		{
 		WebArchive result;
-
 		File[] files = Maven.resolver().loadPomFromFile("pom.xml")
-				.resolve("mobi.chouette:mobi.chouette.dao:3.0.0").withTransitivity().asFile();
+				.resolve("mobi.chouette:mobi.chouette.dao").withTransitivity().asFile();
 
 		result = ShrinkWrap.create(WebArchive.class, "test.war").addAsWebInfResource("postgres-ds.xml")
 				.addAsLibraries(files).addAsResource(EmptyAsset.INSTANCE, "beans.xml");
 		return result;
+		}
+		catch (RuntimeException e)
+		{
+			System.out.println(e.getClass().getName());
+			throw e;
+		}
 
 	}
 	

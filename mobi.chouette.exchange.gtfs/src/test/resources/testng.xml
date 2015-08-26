@@ -1,6 +1,7 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
 <suite name="Factory" verbose="5" >
+   <!--
    <test name="ExportGTFS" >
      <packages>
       <package name="mobi.chouette.exchange.gtfs.exporter" >
@@ -19,12 +20,21 @@
       </package>
    </packages>
   </test>>
+  -->
+  <test name="ValidationGTFS" >
+    <packages>
+      <package name="mobi.chouette.exchange.gtfs.validation" >
+      </package>
+   </packages>
+  </test>>
+  <!--
   <test name="ModelImport" >
     <packages>
       <package name="mobi.chouette.exchange.gtfs.model.importer" >
       </package>
    </packages>
   </test>
+  -->
   <!--
   <test name="ImportGTFSProducers" >
     <packages>
