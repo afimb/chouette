@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.gtfs.importer;
+package mobi.chouette.exchange.gtfs.validation;
 
 public interface Constant extends mobi.chouette.exchange.gtfs.Constant {
 	

@@ -18,6 +18,8 @@ public interface GtfsIterator {
 
 	public abstract int getFieldCount();
 
+	public abstract String getCode();
+
 	public abstract int getPosition();
 
 	public abstract void setPosition(int position);

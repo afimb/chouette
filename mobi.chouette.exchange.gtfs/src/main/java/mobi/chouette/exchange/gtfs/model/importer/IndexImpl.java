@@ -19,6 +19,7 @@ import java.util.Set;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.HTMLTagValidator;
+import mobi.chouette.exchange.gtfs.model.importer.GtfsException.ERROR;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -56,6 +57,7 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 		_key = id;
 		_value = value;
 		_unique = unique;
+		_total = 0;
 
 		initialize();
 	}
@@ -72,7 +74,7 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 		try {
 			_channel1 = file.getChannel();
 			long length = (bom) ? _channel1.size() - 3 : _channel1.size();
-
+			
 			_buffer = _channel1.map(FileChannel.MapMode.READ_ONLY, offset, length);
 			_buffer.load();
 			_reader = new GtfsIteratorImpl(_buffer, 0);
@@ -81,42 +83,44 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 				_fields = new HashMap<String, Integer>();
 				for (int i = 0; i < _reader.getFieldCount(); i++) {
 					String key = _reader.getValue(i); // Get the ith token 
-					Context context = new Context();
-					context.put(Context.PATH, _path);
-					context.put(Context.ID, _total);
-					context.put(Context.FIELD, _key);
-					if (key == null || key.trim().isEmpty()) { // key is empty
-						context.put(Context.ERROR, GtfsException.ERROR.EMPTY_HEADER_FIELD);
-						throw new GtfsException(context);
-					}
-					if (!key.equals(key.trim())) { // No extra space
-						context.put(Context.ERROR, GtfsException.ERROR.EXTRA_SPACE_IN_HEADER_FIELD);
-						throw new GtfsException(context);
-					}
-					if (HTMLTagValidator.validate(key)) {
-						context.put(Context.ERROR, GtfsException.ERROR.HTML_TAG_IN_HEADER_FIELD);
-						throw new GtfsException(context);
-					}
-					if (_fields.get(key) != null) { // key already exists
-						context.put(Context.ERROR, GtfsException.ERROR.DUPLICATE_HEADER_FIELD);
-						throw new GtfsException(context);
-					}
+					
+					verify(key); // IS IT THE RIGTH PLACE FOR THIS ?
+					
 					_fields.put(key, i);
 				}
-				index();
+				//// ???? checkRequiredFields(_fields); // IS IT THE RIGTH PLACE FOR THIS ?
+				index(); // read the rest of this file
 			} else { // The header line doesn't comply with GTFS-CSV 
-				Context context = new Context();
-				context.put(Context.PATH, _path);
-				context.put(Context.ID, _total);
-				context.put(Context.ERROR, GtfsException.ERROR.INVALID_HEADER_FILE_FORMAT);
-				throw new GtfsException(context);
+				throw new GtfsException(_path, _total, _reader.getPosition(), null,
+						GtfsException.ERROR.INVALID_HEADER_FILE_FORMAT, _reader.getCode(), null);
 			}
-		}
-
-		finally {
+		} finally {
 			file.close();
 		}
-		checkRequiredFields(_fields);
+		checkRequiredFields(_fields); // IS IT THE RIGTH PLACE FOR THIS ?
+	}
+	
+	private void verify(String key) throws GtfsException {
+		Context context = new Context();
+		context.put(Context.PATH, _path);
+		context.put(Context.ID, _total);
+		context.put(Context.FIELD, _key);
+		if (key == null || key.trim().isEmpty()) { // key is empty
+			context.put(Context.ERROR, GtfsException.ERROR.EMPTY_HEADER_FIELD);
+			throw new GtfsException(context);
+		}
+		if (!key.equals(key.trim())) { // No extra space
+			context.put(Context.ERROR, GtfsException.ERROR.EXTRA_SPACE_IN_HEADER_FIELD);
+			throw new GtfsException(context);
+		}
+		if (HTMLTagValidator.validate(key)) {
+			context.put(Context.ERROR, GtfsException.ERROR.HTML_TAG_IN_HEADER_FIELD);
+			throw new GtfsException(context);
+		}
+		if (_fields.get(key) != null) { // key already exists
+			context.put(Context.ERROR, GtfsException.ERROR.DUPLICATE_HEADER_FIELD);
+			throw new GtfsException(context);
+		}
 	}
 	
 	protected abstract void checkRequiredFields(Map<String, Integer> fields);
@@ -236,21 +240,20 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 	@Override
 	protected void index() throws IOException {
 		Monitor monitor = MonitorFactory.start();
-		_reader.setPosition(0);
-		_total++;
-		if (!_reader.next()) { // The file has no other line than the header one
-			Context context = new Context();
-			context.put(Context.PATH, _path);
-			context.put(Context.ID, _total);
-			context.put(Context.ERROR, GtfsException.ERROR.FILE_WITH_NO_ENTRY);
-			throw new GtfsException(context);
-		}
-
-		_total--;
+//		_reader.setPosition(0);
+//		_total++;
+//		if (!_reader.next()) { // The file has no other line than the header one
+//			Context context = new Context();
+//			context.put(Context.PATH, _path);
+//			context.put(Context.ID, _total);
+//			context.put(Context.ERROR, GtfsException.ERROR.FILE_WITH_NO_ENTRY);
+//			throw new GtfsException(context);
+//		}
+//
+//		_total--;
 		while (_reader.hasNext()) {
+			_total++;
 			if (_reader.next()) {
-				_total++;
-
 				String key = getField(_key);
 				if (key == null || key.trim().isEmpty()) { // key cannot be null! "" or "default"
 					Context context = new Context();

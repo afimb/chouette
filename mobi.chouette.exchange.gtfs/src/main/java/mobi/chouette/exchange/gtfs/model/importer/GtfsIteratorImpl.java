@@ -9,6 +9,7 @@ import java.util.List;
 import lombok.ToString;
 
 public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator {
+	
 	public static final char LF = '\n';
 	public static final char CR = '\r';
 	public static final char DELIMITER = ',';
@@ -19,6 +20,7 @@ public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator {
 	private boolean _escape;
 	private int _position;
 	private int _mark;
+	private String _code = "";
 	private List<Field> _fields = new ArrayList<Field>();
 	private ByteBuffer _builder = ByteBuffer.allocate(1024);
 
@@ -56,11 +58,10 @@ public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator {
 
 	@Override
 	public Boolean next() {
-		boolean result = false;
-		boolean error = false;
 		try {
+			_code = "";
 			_buffer.position(_mark);
-			loop: while (_buffer.hasRemaining()) {
+			while (_buffer.hasRemaining()) {
 
 				if (_index >= _fields.size()) {
 					_fields.add(new Field());
@@ -79,12 +80,13 @@ public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator {
 					}
 					_index = 0;
 					_position = _mark;
-					if (_escape)
-						result = false;
-					else
-						result = true;
 					_escape = false;
-					break loop;
+					if (_escape) {
+						_code = "NL_IN_TOKEN";
+						return false; // new line inside a token
+					}
+					else
+						return true;
 				}
 				case DELIMITER: {
 					if (!_escape) {
@@ -97,17 +99,25 @@ public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator {
 					break;
 				}
 				case DQUOTE: {
-					if (!_escape) {
-						_escape = true;
+					if (!_escape) { // start DQUOTE token
+						int previous = previousByte();
+						if (previous == DELIMITER || previous == CR || previous == LF) { 
+							_escape = true;
+						} else { // a problem : only part of this token is encolosed between DQUOTE
+							_escape = false;
+							_code = "DQUOTE_WITH_NO_ESCAPE";
+							return false; // a DQUOTE that dosen't start a token
+						}
 					} else {
 						int next = nextByte();
-						if (next == DELIMITER || next == CR || next == LF) {
+						if (next == DELIMITER || next == CR || next == LF) { // end DQOUTE token
 							_escape = false;
-						} else if (next == DQUOTE) {
+						} else if (next == DQUOTE) { // double, triple, ... DQUOTE in a token
 							_buffer.get();
-						} else {
+						} else { // a problem : only part of this token is encolosed between DQUOTE
 							_escape = false;
-							error = true;
+							_code = "TEXT_AFTER_ESCAPE_DQUOTE";
+							return false; // a DQUOTE that dosen't end a token
 						}
 					}
 					break;
@@ -119,9 +129,8 @@ public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator {
 		} catch (Exception ignored) {
 
 		}
-		if (error)
-			return false;
-		return result;
+		_code = "NL_NEEDED";
+		return false; // End of buffer no '\r' or '\n' at the end of this file. 
 	}
 
 	@Override
@@ -149,8 +158,12 @@ public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator {
 		return _fields.size();
 	}
 
+	public String getCode() {
+		return _code;
+	}
+	
 	@Override
-	public int getPosition() {
+ 	public int getPosition() {
 		return _position;
 	}
 
@@ -191,6 +204,16 @@ public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator {
 		_buffer.position(position);
 		return result;
 	}
+	
+	private byte previousByte(){
+		int position = _buffer.position();
+		if (position <= 1)
+			return DELIMITER;
+		_buffer.position(position-2);
+		byte result = _buffer.get();
+		_buffer.position(position);
+		return result;
+	}
 
 	private String getText(int offset, int length) {
 		String result;
@@ -200,16 +223,14 @@ public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator {
 		boolean quotedString = false;
 		for (int i = 0; i < length; i++) {
 			byte c = _buffer.get();
-			if (i == 0 && c == DQUOTE) 
-			{
+			if (i == 0 && c == DQUOTE) {
 				quotedString = true;
 				continue;
 			}
-			if (i== length-1 && quotedString &&  c == DQUOTE)
-			{
+			if (i== length-1 && quotedString &&  c == DQUOTE) {
 				break;
 			}
-			if (!escape) {
+			if (!escape) { // LE CAS DE PLUSIEUR DQUOTE SUCCESSIVES ?????
 				if (c == DQUOTE) {
 					if (i + 1 < length) {
 						byte next = nextByte();

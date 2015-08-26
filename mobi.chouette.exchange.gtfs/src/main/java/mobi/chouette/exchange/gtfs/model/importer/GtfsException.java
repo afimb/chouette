@@ -35,6 +35,8 @@ public class GtfsException extends RuntimeException {
 	@Getter
 	private Integer id;
 	@Getter
+	private Integer column;
+	@Getter
 	private String field;
 	@Getter
 	private ERROR error;
@@ -53,6 +55,7 @@ public class GtfsException extends RuntimeException {
 		super(cause);
 		this.path = (String) context.get(Context.PATH);
 		this.id = (Integer) context.get(Context.ID);
+		this.column = (Integer) context.get(Context.COLUMN);
 		this.field = (String) context.get(Context.FIELD);
 		this.error = (ERROR) context.get(Context.ERROR);
 		this.code = (String) context.get(Context.CODE);
@@ -69,6 +72,23 @@ public class GtfsException extends RuntimeException {
 		super(cause);
 		this.path = path;
 		this.id = id;
+		this.field = field;
+		this.error = error;
+		this.code = code;
+		this.value = value;
+	}
+
+	public GtfsException(String path, Integer id, Integer column, String field, ERROR error,
+			String code, String value) {
+		this(path, id, column, field, error, code, value, null);
+	}
+
+	public GtfsException(String path, Integer id, Integer column, String field, ERROR error,
+			String code, String value, Throwable cause) {
+		super(cause);
+		this.path = path;
+		this.id = id;
+		this.column = column;
 		this.field = field;
 		this.error = error;
 		this.code = code;

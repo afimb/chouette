@@ -10,13 +10,14 @@ import java.util.List;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
-import mobi.chouette.exchange.gtfs.importer.Constant;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.gtfs.model.GtfsCalendar;
 import mobi.chouette.exchange.gtfs.model.GtfsCalendarDate;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsException;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsImporter;
 import mobi.chouette.exchange.gtfs.model.importer.Index;
+import mobi.chouette.exchange.gtfs.validation.Constant;
+import mobi.chouette.exchange.gtfs.validation.ValidationReporter;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.Validator;
@@ -35,7 +36,7 @@ import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 @Log4j
-public class GtfsCalendarParser extends GtfsParser implements Parser, Validator, Constant {
+public class GtfsCalendarParser implements Parser, Validator, Constant {
 
 	public static final String AFTER_MIDNIGHT_SUFFIX = "_after_midnight";
 
@@ -102,6 +103,7 @@ public class GtfsCalendarParser extends GtfsParser implements Parser, Validator,
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		ActionReport report = (ActionReport) context.get(REPORT);
 		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
+		ValidationReporter validationReporter = (ValidationReporter) context.get(GTFS_REPORTER);
 		
 		if (!importer.hasCalendarImporter() && !importer.hasCalendarDateImporter()) {
 			// Add to report
@@ -125,20 +127,20 @@ public class GtfsCalendarParser extends GtfsParser implements Parser, Validator,
 				parser = importer.getCalendarByService();
 			} catch (Exception ex ) {
 				if (ex instanceof GtfsException) {
-					reportError(report, validationReport, (GtfsException)ex, GTFS_CALENDAR_FILE);
+					validationReporter.reportError(report, validationReport, (GtfsException)ex, GTFS_CALENDAR_FILE);
 				} else {
-					throwUnknownError(report, validationReport, GTFS_CALENDAR_FILE);
+					validationReporter.throwUnknownError(report, validationReport, ex, GTFS_CALENDAR_FILE);
 				}
 			}
 			
 			if (parser == null || parser.getLength() == 0) { // importer.getCalendarByService() fails for any other reason
-				throwUnknownError(report, validationReport, GTFS_CALENDAR_FILE);
+				validationReporter.throwUnknownError(report, validationReport, new Exception("Cannot instantiate CalendarByService class"),  GTFS_CALENDAR_FILE);
 			}
 
 			parser.getErrors().clear();
 			try {
 				for (GtfsCalendar bean : parser) {
-					reportErrors(report, validationReport, bean.getErrors(), GTFS_CALENDAR_FILE);
+					validationReporter.reportErrors(report, validationReport, bean.getErrors(), GTFS_CALENDAR_FILE);
 					parser.validate(bean, importer);
 				}
 			} catch (Exception ex) {
@@ -157,20 +159,20 @@ public class GtfsCalendarParser extends GtfsParser implements Parser, Validator,
 				parser = importer.getCalendarDateByService();
 			} catch (Exception ex ) {
 				if (ex instanceof GtfsException) {
-					reportError(report, validationReport, (GtfsException)ex, GTFS_CALENDAR_DATES_FILE);
+					validationReporter.reportError(report, validationReport, (GtfsException)ex, GTFS_CALENDAR_DATES_FILE);
 				} else {
-					throwUnknownError(report, validationReport, GTFS_CALENDAR_DATES_FILE);
+					validationReporter.throwUnknownError(report, validationReport, ex, GTFS_CALENDAR_DATES_FILE);
 				}
 			}
 			
 			if (parser == null || parser.getLength() == 0) { // importer.getCalendarDateByService() fails for any other reason
-				throwUnknownError(report, validationReport, GTFS_CALENDAR_DATES_FILE);
+				validationReporter.throwUnknownError(report, validationReport, new Exception("Cannot instantiate CalendarDateByservice class"), GTFS_CALENDAR_DATES_FILE);
 			}
 
 			parser.getErrors().clear();
 			try {
 				for (GtfsCalendarDate bean : parser) {
-					reportErrors(report, validationReport, bean.getErrors(), GTFS_CALENDAR_DATES_FILE);
+					validationReporter.reportErrors(report, validationReport, bean.getErrors(), GTFS_CALENDAR_DATES_FILE);
 					parser.validate(bean, importer);
 				}
 			} catch (Exception ex) {

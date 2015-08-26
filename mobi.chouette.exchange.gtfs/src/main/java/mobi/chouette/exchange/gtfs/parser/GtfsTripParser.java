@@ -14,7 +14,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
-import mobi.chouette.exchange.gtfs.importer.Constant;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.gtfs.model.GtfsFrequency;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime;
@@ -23,6 +22,8 @@ import mobi.chouette.exchange.gtfs.model.GtfsTrip.DirectionType;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsException;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsImporter;
 import mobi.chouette.exchange.gtfs.model.importer.Index;
+import mobi.chouette.exchange.gtfs.validation.Constant;
+import mobi.chouette.exchange.gtfs.validation.ValidationReporter;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.Validator;
@@ -48,7 +49,7 @@ import mobi.chouette.model.util.Referential;
 import org.apache.commons.beanutils.BeanUtils;
 
 @Log4j
-public class GtfsTripParser extends GtfsParser implements Parser, Validator, Constant {
+public class GtfsTripParser implements Parser, Validator, Constant {
 
 	@AllArgsConstructor
 	class VehicleJourneyAtStopWrapper extends VehicleJourneyAtStop {
@@ -216,6 +217,7 @@ public class GtfsTripParser extends GtfsParser implements Parser, Validator, Con
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		ActionReport report = (ActionReport) context.get(REPORT);
 		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
+		ValidationReporter validationReporter = (ValidationReporter) context.get(GTFS_REPORTER);
 		
 		// stop_times.txt
 		if (importer.hasStopTimeImporter()) {
@@ -235,21 +237,21 @@ public class GtfsTripParser extends GtfsParser implements Parser, Validator, Con
 			stop_time_parser = importer.getStopTimeByTrip();
 		} catch (Exception ex ) {
 			if (ex instanceof GtfsException) {
-				reportError(report, validationReport, (GtfsException)ex, GTFS_STOP_TIMES_FILE);
+				validationReporter.reportError(report, validationReport, (GtfsException)ex, GTFS_STOP_TIMES_FILE);
 			} else {
-				throwUnknownError(report, validationReport, GTFS_STOP_TIMES_FILE);
+				validationReporter.throwUnknownError(report, validationReport, ex, GTFS_STOP_TIMES_FILE);
 			}
 		}
 		
 		if (stop_time_parser == null || stop_time_parser.getLength() == 0) { // importer.getStopTimeByTrip() fails for any other reason
-			throwUnknownError(report, validationReport, GTFS_STOP_TIMES_FILE);
+			validationReporter.throwUnknownError(report, validationReport, new Exception("Cannot instantiate StopTimeByTrip class"), GTFS_STOP_TIMES_FILE);
 		}
 
 		stop_time_parser.getErrors().clear();
 		
 		try {
 			for (GtfsStopTime bean : stop_time_parser) {
-				reportErrors(report, validationReport, bean.getErrors(), GTFS_STOP_TIMES_FILE);
+				validationReporter.reportErrors(report, validationReport, bean.getErrors(), GTFS_STOP_TIMES_FILE);
 				stop_time_parser.validate(bean, importer);
 			}
 		} catch (Exception ex) {
@@ -275,21 +277,21 @@ public class GtfsTripParser extends GtfsParser implements Parser, Validator, Con
 			trip_parser = importer.getTripById();
 		} catch (Exception ex ) {
 			if (ex instanceof GtfsException) {
-				reportError(report, validationReport, (GtfsException)ex, GTFS_TRIPS_FILE);
+				validationReporter.reportError(report, validationReport, (GtfsException)ex, GTFS_TRIPS_FILE);
 			} else {
-				throwUnknownError(report, validationReport, GTFS_TRIPS_FILE);
+				validationReporter.throwUnknownError(report, validationReport, ex, GTFS_TRIPS_FILE);
 			}
 		}
 		
 		if (trip_parser == null || trip_parser.getLength() == 0) { // importer.getTripById() fails for any other reason
-			throwUnknownError(report, validationReport, GTFS_TRIPS_FILE);
+			validationReporter.throwUnknownError(report, validationReport, new Exception("Cannot instantiate TripById class"), GTFS_TRIPS_FILE);
 		}
 
 		trip_parser.getErrors().clear();
 		
 		try {
 			for (GtfsTrip bean : trip_parser) {
-				reportErrors(report, validationReport, bean.getErrors(), GTFS_TRIPS_FILE);
+				validationReporter.reportErrors(report, validationReport, bean.getErrors(), GTFS_TRIPS_FILE);
 				trip_parser.validate(bean, importer);
 			}
 		} catch (Exception ex) {
@@ -307,21 +309,21 @@ public class GtfsTripParser extends GtfsParser implements Parser, Validator, Con
 				frequency_parser = importer.getFrequencyByTrip();
 			} catch (Exception ex ) {
 				if (ex instanceof GtfsException) {
-					reportError(report, validationReport, (GtfsException)ex, GTFS_FREQUENCIES_FILE);
+					validationReporter.reportError(report, validationReport, (GtfsException)ex, GTFS_FREQUENCIES_FILE);
 				} else {
-					throwUnknownError(report, validationReport, GTFS_FREQUENCIES_FILE);
+					validationReporter.throwUnknownError(report, validationReport, ex, GTFS_FREQUENCIES_FILE);
 				}
 			}
 			
 			if (frequency_parser == null || frequency_parser.getLength() == 0) { // importer.getFrequencyByTrip() fails for any other reason
-				throwUnknownError(report, validationReport, GTFS_FREQUENCIES_FILE);
+				validationReporter.throwUnknownError(report, validationReport, new Exception("Cannot instantiate FrequencyByTrip class"), GTFS_FREQUENCIES_FILE);
 			}
 	
 			frequency_parser.getErrors().clear();
 			
 			try {
 				for (GtfsFrequency bean : frequency_parser) {
-					reportErrors(report, validationReport, bean.getErrors(), GTFS_FREQUENCIES_FILE);
+					validationReporter.reportErrors(report, validationReport, bean.getErrors(), GTFS_FREQUENCIES_FILE);
 					frequency_parser.validate(bean, importer);
 				}
 			} catch (Exception ex) {
