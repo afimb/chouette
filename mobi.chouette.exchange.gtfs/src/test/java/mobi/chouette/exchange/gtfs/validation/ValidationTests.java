@@ -59,7 +59,7 @@ public class ValidationTests implements Constant, ReportConstant {
 		}
 	}
 
-	protected Context initImportContext() {
+	protected Context initImportContext(boolean all) {
 		// init();
 		ContextHolder.setContext("chouette_gui"); // set tenant schema
 
@@ -75,7 +75,10 @@ public class ValidationTests implements Constant, ReportConstant {
 		configuration.setOrganisationName("organisation");
 		configuration.setReferentialName("test");
 		configuration.setObjectIdPrefix("test");
-		configuration.setReferencesType("line");
+		if (all)
+			configuration.setReferencesType("line");
+		else
+			configuration.setReferencesType("stop_area");
 		JobDataTest test = new JobDataTest();
 		context.put(JOB_DATA, test);
 
@@ -98,8 +101,8 @@ public class ValidationTests implements Constant, ReportConstant {
 	}
 
 	protected CheckPoint verifyValidation(Logger log, String testFile, String mandatoryErrorTest,
-			CheckPoint.SEVERITY severity, RESULT status) throws Exception {
-		Context context = initImportContext();
+			CheckPoint.SEVERITY severity, RESULT status, boolean all) throws Exception {
+		Context context = initImportContext(all);
 		copyFile(context, testFile + ".zip");
 
 		Command uncompress = CommandFactory.create(initialContext, UncompressCommand.class.getName());
