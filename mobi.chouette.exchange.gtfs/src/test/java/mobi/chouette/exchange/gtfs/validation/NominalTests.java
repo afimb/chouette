@@ -17,28 +17,28 @@ public class NominalTests extends ValidationTests {
 		super.init();
 	}
 	
-	@Test(groups = { "Nominal" }, description = "valid files")
+	@Test(groups = { "Nominal" }, description = "valid files",priority=1)
 	public void verifyTest_1() throws Exception {
 		log.info(Color.GREEN + "Nominal : valid files" + Color.NORMAL);
 		verifyValidation( log, "nominal", "NONE",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
 
 	}
 	
-	@Test(groups = { "Minimal" }, description = "minimum valid files")
+	@Test(groups = { "Minimal" }, description = "minimum valid files",priority=2)
 	public void verifyTest_2() throws Exception {
 		log.info(Color.GREEN + "Minimal : minimum valid files" + Color.NORMAL);
 		verifyValidation( log, "minimal", "NONE",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
 
 	}
 
-	@Test(groups = { "Nominal stop" }, description = "valid stops files")
+	@Test(groups = { "Nominal stop" }, description = "valid stops files",priority=3)
 	public void verifyTest_3() throws Exception {
 		log.info(Color.GREEN + "Nominal : valid stops files" + Color.NORMAL);
 		verifyValidation( log, "stops", "NONE",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,false);
 
 	}
 	
-	@Test(groups = { "Minimal stop" }, description = "minimum valid stops files")
+	@Test(groups = { "Minimal stop" }, description = "minimum valid stops files",priority=4)
 	public void verifyTest_4() throws Exception {
 		log.info(Color.GREEN + "Minimal : minimum valid stops files" + Color.NORMAL);
 		verifyValidation( log, "stops_mini", "NONE",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,false);

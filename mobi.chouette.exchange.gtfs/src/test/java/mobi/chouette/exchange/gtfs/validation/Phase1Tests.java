@@ -19,7 +19,7 @@ public class Phase1Tests extends ValidationTests {
 		super.init();
 	}
 	
-	@Test(groups = { "Phase 1" }, description = "invalid csv syntax" ,priority=1 )
+	@Test(groups = { "Phase 1" }, description = "invalid csv syntax" ,priority=11 )
 	public void verifyTest_1_1() throws Exception {
 		log.info(Color.GREEN + "CSV_1 : invalid csv syntax" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "csv_1_1", "1-GTFS-CSV-10",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
@@ -34,7 +34,7 @@ public class Phase1Tests extends ValidationTests {
 		}
 	}
 	
-	@Test(groups = { "Phase 1" }, description = "newline in field", priority=2)
+	@Test(groups = { "Phase 1" }, description = "newline in field", priority=12)
 	public void verifyTest_1_2() throws Exception {
 		log.info(Color.GREEN + "CSV_1 : newline in field" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "csv_1_2", "1-GTFS-CSV-13",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
@@ -45,10 +45,10 @@ public class Phase1Tests extends ValidationTests {
 			Assert.assertNotNull(detail.getSource(), "detail must refer a source");
 			Assert.assertNotNull(detail.getSource().getFile(), "detail must refer a file source");
 			Assert.assertEquals(detail.getSource().getFile().getFilename(), "agency.txt", "detail must refer bad file");
-			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(2), "detail must refer bad line");
+			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(3), "detail must refer bad line");
 		}
 	}
-	@Test(groups = { "Phase 1" }, description = "double quote in field", priority=3)
+	@Test(groups = { "Phase 1" }, description = "double quote in field", priority=13)
 	public void verifyTest_1_3() throws Exception {
 		log.info(Color.GREEN + "CSV_1 : double quote in field" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "csv_1_3", "1-GTFS-CSV-13",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
@@ -63,7 +63,7 @@ public class Phase1Tests extends ValidationTests {
 		}
 	}
 	
-	@Test(groups = { "Phase 1" }, description = "space in field ends", priority=4)
+	@Test(groups = { "Phase 1" }, description = "space in field ends", priority=14)
 	public void verifyTest_1_4() throws Exception {
 		log.info(Color.GREEN + "CSV_1 : space in field ends" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "csv_1_4", "1-GTFS-CSV-7",CheckPoint.SEVERITY.WARNING, CheckPoint.RESULT.NOK,true);
@@ -78,7 +78,7 @@ public class Phase1Tests extends ValidationTests {
 		}
 	}
 
-	@Test(groups = { "Phase 1" }, description = "missing LF at end of file", priority=5)
+	@Test(groups = { "Phase 1" }, description = "missing LF at end of file", priority=15)
 	public void verifyTest_1_5() throws Exception {
 		log.info(Color.GREEN + "CSV_1 : missing LF at end of file" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "csv_1_5", "1-GTFS-CSV-13",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
@@ -93,7 +93,7 @@ public class Phase1Tests extends ValidationTests {
 		}
 	}
 
-	@Test(groups = { "Phase 1" }, description = "invalid enconding", priority=6)
+	@Test(groups = { "Phase 1" }, description = "invalid enconding", priority=16)
 	public void verifyTest_1_6() throws Exception {
 		log.info(Color.GREEN + "CSV_1 : invalid enconding" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "csv_1_6", "1-GTFS-CSV-13",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
@@ -108,7 +108,7 @@ public class Phase1Tests extends ValidationTests {
 		}
 	}
 
-	@Test(groups = { "Phase 1" }, description = "empty header name", priority=7)
+	@Test(groups = { "Phase 1" }, description = "empty header name", priority=17)
 	public void verifyTest_1_7() throws Exception {
 		log.info(Color.GREEN + "CSV_1 : empty header name" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "csv_1_7", "1-GTFS-CSV-11",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
@@ -123,7 +123,7 @@ public class Phase1Tests extends ValidationTests {
 		}
 	}
 	
-	@Test(groups = { "Phase 1" }, description = "duplicate header name", priority=8)
+	@Test(groups = { "Phase 1" }, description = "duplicate header name", priority=18)
 	public void verifyTest_1_8() throws Exception {
 		log.info(Color.GREEN + "CSV_1 : duplicate header name" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "csv_1_8", "1-GTFS-CSV-12",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
