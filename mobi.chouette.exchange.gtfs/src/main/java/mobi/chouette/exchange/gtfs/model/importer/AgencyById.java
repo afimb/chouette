@@ -46,14 +46,15 @@ public class AgencyById extends IndexImpl<GtfsAgency> implements GtfsConverter {
 			}
 		}
 		
-		// checks for ubiquitous header fields : 1-GTFS-Agency-4 error
-		if ( fields.get(FIELDS.agency_name.name()) == null ||
+		// checks for ubiquitous header fields : 1-GTFS-Agency-2, 1-GTFS-Agency-4 error
+		if ( fields.get(FIELDS.agency_id.name()) == null ||
+				fields.get(FIELDS.agency_name.name()) == null ||
 				fields.get(FIELDS.agency_url.name()) == null ||
 				fields.get(FIELDS.agency_timezone.name()) == null) {
 			Context context = new Context();
 			context.put(Context.PATH, _path);
 			context.put(Context.ERROR, GtfsException.ERROR.MISSING_REQUIRED_FIELDS);
-			getErrors().add(new GtfsException(context)); // TODO. specify the case in the parser...
+			getErrors().add(new GtfsException(context));
 		}
 	}
 
@@ -71,6 +72,7 @@ public class AgencyById extends IndexImpl<GtfsAgency> implements GtfsConverter {
 		bean.setId(id);
 		value = array[i++];
 		
+		// 1-GTFS-Agency-5
 		if (value == null || value.isEmpty()) {
 			Context contxt = new Context();
 			contxt.put(Context.PATH, _path);
@@ -78,10 +80,14 @@ public class AgencyById extends IndexImpl<GtfsAgency> implements GtfsConverter {
 			contxt.put(Context.ERROR, GtfsException.ERROR.MISSING_REQUIRED_VALUES);
 			throw new GtfsException(contxt);
 		}
+		// 1-GTFS-Agency-3 test value is uniq ?
+		//if (value) {
+		//}
 		bean.setAgencyId(STRING_CONVERTER.from(context, FIELDS.agency_id, value, GtfsAgency.DEFAULT_ID, false));
 		
 		// check the existance of agency_name, agency_url and agency_timezone values for this bean : 1-GTFS-Agency-5
 		value = array[i++];
+		// 1-GTFS-Agency-5
 		if (value == null || value.isEmpty()) {
 			Context contxt = new Context();
 			contxt.put(Context.PATH, _path);
@@ -91,6 +97,7 @@ public class AgencyById extends IndexImpl<GtfsAgency> implements GtfsConverter {
 		}
 		bean.setAgencyName(STRING_CONVERTER.from(context, FIELDS.agency_name, value, true));
 		value = array[i++];
+		// 1-GTFS-Agency-5
 		if (value == null || value.isEmpty()) {
 			Context contxt = new Context();
 			contxt.put(Context.PATH, _path);
@@ -109,6 +116,7 @@ public class AgencyById extends IndexImpl<GtfsAgency> implements GtfsConverter {
 			getErrors().add(new GtfsException(contxt));			
 		}
 		value = array[i++];
+		// 1-GTFS-Agency-5
 		if (value == null || value.isEmpty()) {
 			Context contxt = new Context();
 			contxt.put(Context.PATH, _path);
@@ -130,8 +138,17 @@ public class AgencyById extends IndexImpl<GtfsAgency> implements GtfsConverter {
 		if (value != null)
 			bean.setAgencyPhone(STRING_CONVERTER.from(context, FIELDS.agency_phone, value, false));
 		value = array[i++];
-		if (value != null)
-			bean.setAgencyLang(STRING_CONVERTER.from(context, FIELDS.agency_lang, value, false));
+		if (value != null && !value.trim().isEmpty())
+			if (isUnknownAsIsoLanguage(value)) {
+				//1-GTFS-Agency-8   warning
+				Context contxt = new Context();
+				contxt.put(Context.PATH, _path);
+				contxt.put(Context.FIELD, FIELDS.agency_url);
+				contxt.put(Context.ERROR, GtfsException.ERROR.INVALID_LANG);
+				getErrors().add(new GtfsException(contxt));
+			} else {
+				bean.setAgencyLang(STRING_CONVERTER.from(context, FIELDS.agency_lang, value, false));
+			}
 		value = array[i++];
 		try {
 			bean.setAgencyFareUrl(URL_CONVERTER.from(context, FIELDS.agency_fare_url, value, false));
@@ -150,13 +167,7 @@ public class AgencyById extends IndexImpl<GtfsAgency> implements GtfsConverter {
 	@Override
 	public boolean validate(GtfsAgency bean, GtfsImporter dao) {
 		boolean result = true;
-		
-		String lang = bean.getAgencyLang();
-		if (isUnknownAsIsoLanguage(lang)) {
-			// 1-GTFS-Agency-8  warning // may be done during the "build(reader, context)"
-			result = false;
-		}
-		
+
 		return result;
 	}
 	

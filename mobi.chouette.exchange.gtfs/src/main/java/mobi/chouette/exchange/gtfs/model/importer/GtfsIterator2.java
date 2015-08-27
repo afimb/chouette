@@ -7,7 +7,10 @@ import java.util.List;
 
 import mobi.chouette.exchange.gtfs.model.exporter.Tokenizer;
 
-public class GtfsIterator2 implements Iterator<Boolean>, GtfsIterator {
+public class GtfsIterator2 implements Iterator<Boolean>, GtfsIterator, Constant {
+	
+	private String _code = "";
+
 	public static final char LF = '\n';
 	public static final char CR = '\r';
 	public static final char DELIMITER = ',';
@@ -87,6 +90,10 @@ public class GtfsIterator2 implements Iterator<Boolean>, GtfsIterator {
 			result = _tokens.get(index);
 		}
 		return result;
+	}
+
+	public String getCode() {
+		return _code;
 	}
 
 	@Override

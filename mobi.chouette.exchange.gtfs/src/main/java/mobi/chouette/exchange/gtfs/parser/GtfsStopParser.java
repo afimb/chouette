@@ -2,13 +2,14 @@ package mobi.chouette.exchange.gtfs.parser;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
-import mobi.chouette.exchange.gtfs.importer.Constant;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.gtfs.model.GtfsStop;
 import mobi.chouette.exchange.gtfs.model.GtfsStop.WheelchairBoardingType;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsException;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsImporter;
 import mobi.chouette.exchange.gtfs.model.importer.Index;
+import mobi.chouette.exchange.gtfs.validation.Constant;
+import mobi.chouette.exchange.gtfs.validation.ValidationReporter;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.Validator;
@@ -26,7 +27,7 @@ import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 @Log4j
-public class GtfsStopParser extends GtfsParser implements Parser, Validator, Constant {
+public class GtfsStopParser implements Parser, Validator, Constant {
 
 	@Override
 	public void parse(Context context) throws Exception {
@@ -53,6 +54,7 @@ public class GtfsStopParser extends GtfsParser implements Parser, Validator, Con
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		ActionReport report = (ActionReport) context.get(REPORT);
 		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
+		ValidationReporter validationReporter = (ValidationReporter) context.get(GTFS_REPORTER);
 		
 		// stops.txt
 		if (importer.hasStopImporter()) {
@@ -72,21 +74,21 @@ public class GtfsStopParser extends GtfsParser implements Parser, Validator, Con
 			parser = importer.getStopById();
 		} catch (Exception ex) {
 			if (ex instanceof GtfsException) {
-				reportError(report, validationReport, (GtfsException)ex, GTFS_STOPS_FILE);
+				validationReporter.reportError(context, (GtfsException)ex, GTFS_STOPS_FILE);
 			} else {
-				throwUnknownError(report, validationReport, GTFS_STOPS_FILE);
+				validationReporter.throwUnknownError(context, ex, GTFS_STOPS_FILE);
 			}
 		}
 			
 		if (parser == null || parser.getLength() == 0) { // importer.getStopById() fails for any other reason
-			throwUnknownError(report, validationReport, GTFS_STOPS_FILE);
+			validationReporter.throwUnknownError(context, new Exception("Cannot instantiate StopById class"), GTFS_STOPS_FILE);
 		}
 		
 		parser.getErrors().clear();
 		
 		try {
 			for (GtfsStop bean : parser) {
-				reportErrors(report, validationReport, bean.getErrors(), GTFS_STOPS_FILE);
+				validationReporter.reportErrors(context, bean.getErrors(), GTFS_STOPS_FILE);
 				parser.validate(bean, importer);
 			}
 		} catch (Exception ex) {
