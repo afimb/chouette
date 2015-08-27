@@ -74,21 +74,21 @@ public class GtfsStopParser implements Parser, Validator, Constant {
 			parser = importer.getStopById();
 		} catch (Exception ex) {
 			if (ex instanceof GtfsException) {
-				validationReporter.reportError(report, validationReport, (GtfsException)ex, GTFS_STOPS_FILE);
+				validationReporter.reportError(context, (GtfsException)ex, GTFS_STOPS_FILE);
 			} else {
-				validationReporter.throwUnknownError(report, validationReport, ex, GTFS_STOPS_FILE);
+				validationReporter.throwUnknownError(context, ex, GTFS_STOPS_FILE);
 			}
 		}
 			
 		if (parser == null || parser.getLength() == 0) { // importer.getStopById() fails for any other reason
-			validationReporter.throwUnknownError(report, validationReport, new Exception("Cannot instantiate StopById class"), GTFS_STOPS_FILE);
+			validationReporter.throwUnknownError(context, new Exception("Cannot instantiate StopById class"), GTFS_STOPS_FILE);
 		}
 		
 		parser.getErrors().clear();
 		
 		try {
 			for (GtfsStop bean : parser) {
-				validationReporter.reportErrors(report, validationReport, bean.getErrors(), GTFS_STOPS_FILE);
+				validationReporter.reportErrors(context, bean.getErrors(), GTFS_STOPS_FILE);
 				parser.validate(bean, importer);
 			}
 		} catch (Exception ex) {

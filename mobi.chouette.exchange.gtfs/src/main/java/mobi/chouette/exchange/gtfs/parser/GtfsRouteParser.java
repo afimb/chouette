@@ -103,20 +103,20 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 			parser = importer.getRouteById();
 		} catch (Exception ex ) {
 			if (ex instanceof GtfsException) {
-				validationReporter.reportError(report, validationReport, (GtfsException)ex, GTFS_ROUTES_FILE);
+				validationReporter.reportError(context, (GtfsException)ex, GTFS_ROUTES_FILE);
 			} else {
-				validationReporter.throwUnknownError(report, validationReport, ex, GTFS_ROUTES_FILE);
+				validationReporter.throwUnknownError(context, ex, GTFS_ROUTES_FILE);
 			}
 		}
 		
 		if (parser == null || parser.getLength() == 0) { // importer.getRouteById() fails for any other reason
-			validationReporter.throwUnknownError(report, validationReport, new Exception("Cannot instantiate RouteById class"), GTFS_ROUTES_FILE);
+			validationReporter.throwUnknownError(context, new Exception("Cannot instantiate RouteById class"), GTFS_ROUTES_FILE);
 		}
 
 		parser.getErrors().clear();
 		try {
 			for (GtfsRoute bean : parser) {
-				validationReporter.reportErrors(report, validationReport, bean.getErrors(), GTFS_ROUTES_FILE);
+				validationReporter.reportErrors(context, bean.getErrors(), GTFS_ROUTES_FILE);
 				parser.validate(bean, importer);
 			}
 		} catch (Exception ex) {

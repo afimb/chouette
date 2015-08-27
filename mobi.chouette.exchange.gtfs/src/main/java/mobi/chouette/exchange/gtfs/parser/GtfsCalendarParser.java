@@ -127,20 +127,20 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 				parser = importer.getCalendarByService();
 			} catch (Exception ex ) {
 				if (ex instanceof GtfsException) {
-					validationReporter.reportError(report, validationReport, (GtfsException)ex, GTFS_CALENDAR_FILE);
+					validationReporter.reportError(context, (GtfsException)ex, GTFS_CALENDAR_FILE);
 				} else {
-					validationReporter.throwUnknownError(report, validationReport, ex, GTFS_CALENDAR_FILE);
+					validationReporter.throwUnknownError(context, ex, GTFS_CALENDAR_FILE);
 				}
 			}
 			
 			if (parser == null || parser.getLength() == 0) { // importer.getCalendarByService() fails for any other reason
-				validationReporter.throwUnknownError(report, validationReport, new Exception("Cannot instantiate CalendarByService class"),  GTFS_CALENDAR_FILE);
+				validationReporter.throwUnknownError(context, new Exception("Cannot instantiate CalendarByService class"),  GTFS_CALENDAR_FILE);
 			}
 
 			parser.getErrors().clear();
 			try {
 				for (GtfsCalendar bean : parser) {
-					validationReporter.reportErrors(report, validationReport, bean.getErrors(), GTFS_CALENDAR_FILE);
+					validationReporter.reportErrors(context, bean.getErrors(), GTFS_CALENDAR_FILE);
 					parser.validate(bean, importer);
 				}
 			} catch (Exception ex) {
@@ -159,20 +159,20 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 				parser = importer.getCalendarDateByService();
 			} catch (Exception ex ) {
 				if (ex instanceof GtfsException) {
-					validationReporter.reportError(report, validationReport, (GtfsException)ex, GTFS_CALENDAR_DATES_FILE);
+					validationReporter.reportError(context, (GtfsException)ex, GTFS_CALENDAR_DATES_FILE);
 				} else {
-					validationReporter.throwUnknownError(report, validationReport, ex, GTFS_CALENDAR_DATES_FILE);
+					validationReporter.throwUnknownError(context, ex, GTFS_CALENDAR_DATES_FILE);
 				}
 			}
 			
 			if (parser == null || parser.getLength() == 0) { // importer.getCalendarDateByService() fails for any other reason
-				validationReporter.throwUnknownError(report, validationReport, new Exception("Cannot instantiate CalendarDateByservice class"), GTFS_CALENDAR_DATES_FILE);
+				validationReporter.throwUnknownError(context, new Exception("Cannot instantiate CalendarDateByservice class"), GTFS_CALENDAR_DATES_FILE);
 			}
 
 			parser.getErrors().clear();
 			try {
 				for (GtfsCalendarDate bean : parser) {
-					validationReporter.reportErrors(report, validationReport, bean.getErrors(), GTFS_CALENDAR_DATES_FILE);
+					validationReporter.reportErrors(context, bean.getErrors(), GTFS_CALENDAR_DATES_FILE);
 					parser.validate(bean, importer);
 				}
 			} catch (Exception ex) {

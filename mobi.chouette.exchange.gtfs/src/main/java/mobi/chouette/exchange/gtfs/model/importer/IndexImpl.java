@@ -19,7 +19,6 @@ import java.util.Set;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.HTMLTagValidator;
-import mobi.chouette.exchange.gtfs.model.importer.GtfsException.ERROR;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;

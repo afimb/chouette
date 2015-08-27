@@ -63,20 +63,20 @@ public class GtfsTransferParser implements Parser, Validator, Constant {
 				parser = importer.getTransferByFromStop();
 			} catch (Exception ex ) {
 				if (ex instanceof GtfsException) {
-					validationReporter.reportError(report, validationReport, (GtfsException)ex, GTFS_TRANSFERS_FILE);
+					validationReporter.reportError(context, (GtfsException)ex, GTFS_TRANSFERS_FILE);
 				} else {
-					validationReporter.throwUnknownError(report, validationReport, ex, GTFS_TRANSFERS_FILE);
+					validationReporter.throwUnknownError(context, ex, GTFS_TRANSFERS_FILE);
 				}
 			}
 		
 			if (parser == null || parser.getLength() == 0) { // importer.getTransferByFromStop() fails for any other reason
-				validationReporter.throwUnknownError(report, validationReport, new Exception("Cannot instantiate TransferByFromStop class"), GTFS_TRANSFERS_FILE);
+				validationReporter.throwUnknownError(context, new Exception("Cannot instantiate TransferByFromStop class"), GTFS_TRANSFERS_FILE);
 			}
 			
 			parser.getErrors().clear();
 			try {
 				for (GtfsTransfer bean : parser) {
-					validationReporter.reportErrors(report, validationReport, bean.getErrors(), GTFS_TRANSFERS_FILE);
+					validationReporter.reportErrors(context, bean.getErrors(), GTFS_TRANSFERS_FILE);
 					parser.validate(bean, importer);
 				}
 			} catch (Exception ex) {

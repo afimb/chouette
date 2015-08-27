@@ -237,21 +237,21 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			stop_time_parser = importer.getStopTimeByTrip();
 		} catch (Exception ex ) {
 			if (ex instanceof GtfsException) {
-				validationReporter.reportError(report, validationReport, (GtfsException)ex, GTFS_STOP_TIMES_FILE);
+				validationReporter.reportError(context, (GtfsException)ex, GTFS_STOP_TIMES_FILE);
 			} else {
-				validationReporter.throwUnknownError(report, validationReport, ex, GTFS_STOP_TIMES_FILE);
+				validationReporter.throwUnknownError(context, ex, GTFS_STOP_TIMES_FILE);
 			}
 		}
 		
 		if (stop_time_parser == null || stop_time_parser.getLength() == 0) { // importer.getStopTimeByTrip() fails for any other reason
-			validationReporter.throwUnknownError(report, validationReport, new Exception("Cannot instantiate StopTimeByTrip class"), GTFS_STOP_TIMES_FILE);
+			validationReporter.throwUnknownError(context, new Exception("Cannot instantiate StopTimeByTrip class"), GTFS_STOP_TIMES_FILE);
 		}
 
 		stop_time_parser.getErrors().clear();
 		
 		try {
 			for (GtfsStopTime bean : stop_time_parser) {
-				validationReporter.reportErrors(report, validationReport, bean.getErrors(), GTFS_STOP_TIMES_FILE);
+				validationReporter.reportErrors(context, bean.getErrors(), GTFS_STOP_TIMES_FILE);
 				stop_time_parser.validate(bean, importer);
 			}
 		} catch (Exception ex) {
@@ -277,21 +277,21 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			trip_parser = importer.getTripById();
 		} catch (Exception ex ) {
 			if (ex instanceof GtfsException) {
-				validationReporter.reportError(report, validationReport, (GtfsException)ex, GTFS_TRIPS_FILE);
+				validationReporter.reportError(context, (GtfsException)ex, GTFS_TRIPS_FILE);
 			} else {
-				validationReporter.throwUnknownError(report, validationReport, ex, GTFS_TRIPS_FILE);
+				validationReporter.throwUnknownError(context, ex, GTFS_TRIPS_FILE);
 			}
 		}
 		
 		if (trip_parser == null || trip_parser.getLength() == 0) { // importer.getTripById() fails for any other reason
-			validationReporter.throwUnknownError(report, validationReport, new Exception("Cannot instantiate TripById class"), GTFS_TRIPS_FILE);
+			validationReporter.throwUnknownError(context, new Exception("Cannot instantiate TripById class"), GTFS_TRIPS_FILE);
 		}
 
 		trip_parser.getErrors().clear();
 		
 		try {
 			for (GtfsTrip bean : trip_parser) {
-				validationReporter.reportErrors(report, validationReport, bean.getErrors(), GTFS_TRIPS_FILE);
+				validationReporter.reportErrors(context, bean.getErrors(), GTFS_TRIPS_FILE);
 				trip_parser.validate(bean, importer);
 			}
 		} catch (Exception ex) {
@@ -309,21 +309,21 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 				frequency_parser = importer.getFrequencyByTrip();
 			} catch (Exception ex ) {
 				if (ex instanceof GtfsException) {
-					validationReporter.reportError(report, validationReport, (GtfsException)ex, GTFS_FREQUENCIES_FILE);
+					validationReporter.reportError(context, (GtfsException)ex, GTFS_FREQUENCIES_FILE);
 				} else {
-					validationReporter.throwUnknownError(report, validationReport, ex, GTFS_FREQUENCIES_FILE);
+					validationReporter.throwUnknownError(context, ex, GTFS_FREQUENCIES_FILE);
 				}
 			}
 			
 			if (frequency_parser == null || frequency_parser.getLength() == 0) { // importer.getFrequencyByTrip() fails for any other reason
-				validationReporter.throwUnknownError(report, validationReport, new Exception("Cannot instantiate FrequencyByTrip class"), GTFS_FREQUENCIES_FILE);
+				validationReporter.throwUnknownError(context, new Exception("Cannot instantiate FrequencyByTrip class"), GTFS_FREQUENCIES_FILE);
 			}
 	
 			frequency_parser.getErrors().clear();
 			
 			try {
 				for (GtfsFrequency bean : frequency_parser) {
-					validationReporter.reportErrors(report, validationReport, bean.getErrors(), GTFS_FREQUENCIES_FILE);
+					validationReporter.reportErrors(context, bean.getErrors(), GTFS_FREQUENCIES_FILE);
 					frequency_parser.validate(bean, importer);
 				}
 			} catch (Exception ex) {

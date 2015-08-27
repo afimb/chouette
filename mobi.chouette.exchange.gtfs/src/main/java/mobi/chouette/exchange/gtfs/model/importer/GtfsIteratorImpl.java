@@ -8,7 +8,7 @@ import java.util.List;
 
 import lombok.ToString;
 
-public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator {
+public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator, Constant {
 	
 	public static final char LF = '\n';
 	public static final char CR = '\r';
@@ -82,7 +82,7 @@ public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator {
 					_position = _mark;
 					_escape = false;
 					if (_escape) {
-						_code = "NL_IN_TOKEN";
+						_code = NL_IN_TOKEN;
 						return false; // new line inside a token
 					}
 					else
@@ -105,7 +105,7 @@ public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator {
 							_escape = true;
 						} else { // a problem : only part of this token is encolosed between DQUOTE
 							_escape = false;
-							_code = "DQUOTE_WITH_NO_ESCAPE";
+							_code = DQUOTE_WITH_NO_ESCAPE;
 							return false; // a DQUOTE that dosen't start a token
 						}
 					} else {
@@ -116,7 +116,7 @@ public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator {
 							_buffer.get();
 						} else { // a problem : only part of this token is encolosed between DQUOTE
 							_escape = false;
-							_code = "TEXT_AFTER_ESCAPE_DQUOTE";
+							_code = TEXT_AFTER_ESCAPE_DQUOTE;
 							return false; // a DQUOTE that dosen't end a token
 						}
 					}
@@ -129,7 +129,7 @@ public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator {
 		} catch (Exception ignored) {
 
 		}
-		_code = "NL_NEEDED";
+		_code = NL_NEEDED;
 		return false; // End of buffer no '\r' or '\n' at the end of this file. 
 	}
 
@@ -230,7 +230,7 @@ public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator {
 			if (i== length-1 && quotedString &&  c == DQUOTE) {
 				break;
 			}
-			if (!escape) { // LE CAS DE PLUSIEUR DQUOTE SUCCESSIVES ?????
+			if (!escape) {
 				if (c == DQUOTE) {
 					if (i + 1 < length) {
 						byte next = nextByte();
