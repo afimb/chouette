@@ -138,7 +138,7 @@ public class AgencyById extends IndexImpl<GtfsAgency> implements GtfsConverter {
 		if (value != null)
 			bean.setAgencyPhone(STRING_CONVERTER.from(context, FIELDS.agency_phone, value, false));
 		value = array[i++];
-		if (value != null)
+		if (value != null && !value.trim().isEmpty())
 			if (isUnknownAsIsoLanguage(value)) {
 				//1-GTFS-Agency-8   warning
 				Context contxt = new Context();
