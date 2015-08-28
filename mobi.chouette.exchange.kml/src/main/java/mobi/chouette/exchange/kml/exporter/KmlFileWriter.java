@@ -12,21 +12,31 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.tools.generic.EscapeTool;
 
 @Log4j
 public class KmlFileWriter implements Constant {
+	
+	public static String LOGGER_NAME = "velocityiev";
+	
 	private VelocityEngine velocityEngine;
 	// Prepare the model for velocity
 	private Map<String, Object> model = new HashMap<String, Object>();
 
 	public KmlFileWriter() {
+		Logger.getLogger( LOGGER_NAME );
 		velocityEngine = new VelocityEngine();
 		velocityEngine.addProperty("resource.loader", "classpath");
 		velocityEngine.addProperty("classpath.resource.loader.class",
 				"org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
+		velocityEngine.setProperty( RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS,
+			      "org.apache.velocity.runtime.log.Log4JLogChute" );
+		velocityEngine.setProperty("runtime.log.logsystem.log4j.logger",
+                LOGGER_NAME);
 	}
 
 	private void prepareModel(KmlData data) throws DatatypeConfigurationException {

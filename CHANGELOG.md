@@ -1,4 +1,9 @@
-# Version 3.0.0 (en cours)
+# Version 3.0.1 (en cours) 
+* Correction 
+  * Mantis 38577 : fusion des logs Velocity aux logs IEV
+
+
+# Version 3.0.0 (20/08/15)
 * Nouveaux composants
   * Implémentation d'une interface webservice REST asynchrone des traitements d'import, export et validation chouette.ear exécutable sous Wildly en remplacement du jar programme chouette-gui-command.
   * Ajout d'un composant jar autonome pour réaliser des opérations de conversion de format et de validation en ligne de commande
