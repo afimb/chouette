@@ -101,8 +101,9 @@ public class DataCollector {
 			if (validRoute) {
 				collection.getRoutes().add(route);
 				route.getOppositeRoute(); // to avoid lazy loading afterward
-				collection.getStopPoints().addAll(route.getStopPoints());
 				for (StopPoint stopPoint : route.getStopPoints()) {
+					if (stopPoint == null) continue; // protection from missing stopPoint ranks
+					collection.getStopPoints().add(stopPoint);
 					collectStopAreas(collection, stopPoint.getContainedInStopArea(), skipNoCoordinate, followLinks);
 				}
 			}

@@ -158,6 +158,7 @@ public class KmlLineProducerCommand implements Command, Constant {
 
 			StopArea previous = null;
 			for (StopPoint point : route.getStopPoints()) {
+				if (point == null) continue;
 				// skip non localized stops
 				if (!point.getContainedInStopArea().hasCoordinates())
 					continue;
@@ -192,6 +193,7 @@ public class KmlLineProducerCommand implements Command, Constant {
 				jpData.addExtraData("published_name", jp.getPublishedName());
 				jpData.addExtraData("route_objectid", route.getObjectId());
 				for (StopPoint point : route.getStopPoints()) {
+					if (point == null) continue;
 					if (point.getContainedInStopArea().hasCoordinates()) {
 						KmlItem pointItem = jpData.addStopArea(point.getContainedInStopArea());
 						pointItem.addExtraData("stop", Boolean.valueOf(jp.getStopPoints().contains(point)));

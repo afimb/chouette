@@ -45,6 +45,7 @@ public class HubSchemaProducer extends AbstractProducer {
 		
         for (StopPoint point : neptuneObject.getStopPoints()) 
         {
+        	if (point == null) continue;
         	HubSchema.ArretSchema arret = hubObject.new ArretSchema();
         	hubObject.getArrets().add(arret);
         	arret.setCode(toHubId(point.getContainedInStopArea()));

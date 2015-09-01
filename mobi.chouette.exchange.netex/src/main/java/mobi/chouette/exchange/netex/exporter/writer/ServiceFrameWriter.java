@@ -89,6 +89,7 @@ public class ServiceFrameWriter extends AbstractWriter{
 		for (Route route : line.getRoutes()) {
 		//      #foreach( $stopPoint in $route.stopPoints )
 		for (StopPoint stopPoint : route.getStopPoints()) {
+			if (stopPoint == null) continue;
 		//      #set($routePointId = ${route.objectIdSuffix()} + 'A' + $stopPoint.position + 'A' + ${stopPoint.objectIdSuffix()} )
 			String routePointId = route.objectIdSuffix() + "A" + stopPoint.getPosition()+"A"+stopPoint.objectIdSuffix();
 		writer.write("    <RoutePoint version=\""+stopPoint.getObjectVersion()+"\" id=\""+stopPoint.objectIdPrefix()+":RoutePoint:"+routePointId+"\">\n");
@@ -143,6 +144,7 @@ public class ServiceFrameWriter extends AbstractWriter{
 		writer.write("      <pointsInSequence>\n");                             
 		//        #foreach( $stopPoint in $route.stopPoints )
 		for (StopPoint stopPoint : route.getStopPoints()) {
+			if (stopPoint == null) continue;
 		//        #set($routePointId = ${route.objectIdSuffix()} + 'A' + $stopPoint.position + 'A' + ${stopPoint.objectIdSuffix()} )
 			String routePointId = route.objectIdSuffix() + "A" + stopPoint.getPosition()+"A"+stopPoint.objectIdSuffix();
 		//        #set($pointOnRouteId = ${stopPoint.objectIdSuffix()} + '-' + $stopPoint.position )
@@ -227,6 +229,7 @@ public class ServiceFrameWriter extends AbstractWriter{
 		for (Route route : line.getRoutes()) {
 		//      #foreach( $stopPoint in $route.stopPoints )
 		for (StopPoint stopPoint : route.getStopPoints()) {
+			if (stopPoint == null) continue;
 		writer.write("    <ScheduledStopPoint version=\""+stopPoint.getObjectVersion()+"\" id=\""+modelTranslator.netexId(stopPoint)+"\">\n");
 		//      #if ( $stopPoint.name )
 		if (isSet(stopPoint.getContainedInStopArea().getName()))
@@ -388,6 +391,7 @@ public class ServiceFrameWriter extends AbstractWriter{
 		for (Route route : line.getRoutes()) {
 		//    #foreach( $stopPoint in $route.stopPoints )
 		for (StopPoint stopPoint : route.getStopPoints()) {
+			if (stopPoint == null) continue;
 		writer.write("    <PassengerStopAssignment version=\"any\" id=\""+modelTranslator.netexMockId(stopPoint,"PassengerStopAssignment")+"\">\n");
 		writer.write("      <ScheduledStopPointRef version=\"1\" ref=\""+modelTranslator.netexId(stopPoint)+"\"/>\n");
 		//      #if ($stopPoint.containedInStopArea && $stopPoint.containedInStopArea.parent) 

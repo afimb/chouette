@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -144,6 +145,11 @@ public abstract class NeptuneUtil {
 	public static List<StopArea> getStopAreaOfRoute(Route route) {
 		ArrayList<StopArea> areas = new ArrayList<>();
 		ArrayList<StopPoint> points = new ArrayList<>(route.getStopPoints());
+		for (Iterator<StopPoint> iterator = points.iterator(); iterator.hasNext();) {
+			StopPoint stopPoint =  iterator.next();
+			if (stopPoint == null) iterator.remove();
+			
+		}
 		Collections.sort(points, new Comparator<StopPoint>() {
 
 			@Override
