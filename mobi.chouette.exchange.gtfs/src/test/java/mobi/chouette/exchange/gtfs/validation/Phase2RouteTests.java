@@ -64,7 +64,7 @@ public class Phase2RouteTests extends ValidationTests {
 	}
 	@Test(groups = { "Phase 2 Route" }, description = "empty column route_id" ,priority=64 )
 	public void verifyTest_2_3_1() throws Exception {
-		log.info(Color.GREEN + "Route_2 : empty column route_id" + Color.NORMAL);
+		log.info(Color.GREEN + "Route_3_1 : empty column route_id" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "route_3_1", "1-GTFS-Route-3",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
 
 		Assert.assertEquals(result.getDetailCount(), 1, "detail count");
