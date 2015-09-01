@@ -18,7 +18,7 @@ public class Phase2StopTests extends ValidationTests {
 	{
 		super.init();
 	}
-	
+
 	@Test(groups = { "Phase 2 Stop" }, description = "missing file" ,priority=41 )
 	public void verifyTest_2_1() throws Exception {
 		log.info(Color.GREEN + "Stop_1 : missing file" + Color.NORMAL);
@@ -34,6 +34,7 @@ public class Phase2StopTests extends ValidationTests {
 			Assert.assertNull(detail.getSource().getFile().getColumnNumber(), "detail must refer no column");
 		}
 	}
+
 	@Test(groups = { "Phase 2 Stop" }, description = "missing column stop_id" ,priority=42 )
 	public void verifyTest_2_2_1() throws Exception {
 		log.info(Color.GREEN + "Stop_2_1 : missing column stop_id" + Color.NORMAL);
@@ -48,6 +49,7 @@ public class Phase2StopTests extends ValidationTests {
 			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(1), "detail must refer bad line");
 		}
 	}
+
 	@Test(groups = { "Phase 2 Stop" }, description = "missing column stop_name" ,priority=43)
 	public void verifyTest_2_2_2() throws Exception {
 		log.info(Color.GREEN + "Stop_2_2 : missing column stop_name" + Color.NORMAL);
@@ -62,6 +64,7 @@ public class Phase2StopTests extends ValidationTests {
 			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(1), "detail must refer bad line");
 		}
 	}
+
 	@Test(groups = { "Phase 2 Stop" }, description = "missing column stop_lat" ,priority=44 )
 	public void verifyTest_2_2_3() throws Exception {
 		log.info(Color.GREEN + "Stop_2_3 : missing column stop_lat" + Color.NORMAL);
@@ -76,6 +79,7 @@ public class Phase2StopTests extends ValidationTests {
 			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(1), "detail must refer bad line");
 		}
 	}
+
 	@Test(groups = { "Phase 2 Stop" }, description = "missing column stop_long" ,priority=45)
 	public void verifyTest_2_2_4() throws Exception {
 		log.info(Color.GREEN + "Stop_2_4 : missing column stop_long" + Color.NORMAL);
@@ -90,6 +94,7 @@ public class Phase2StopTests extends ValidationTests {
 			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(1), "detail must refer bad line");
 		}
 	}
+
 	@Test(groups = { "Phase 2 Stop" }, description = "empty column stop_id" ,priority=46 )
 	public void verifyTest_2_3_1() throws Exception {
 		log.info(Color.GREEN + "Stop_2 : empty column stop_id" + Color.NORMAL);
@@ -104,12 +109,17 @@ public class Phase2StopTests extends ValidationTests {
 			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(5), "detail must refer bad line");
 		}
 	}
-	
+
 	@Test(groups = { "Phase 2 Stop" }, description = "empty column stop_name" ,priority=47 )
 	public void verifyTest_2_3_2() throws Exception {
 		log.info(Color.GREEN + "Stop_3_2 : empty column stop_name" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "stop_3_2", "1-GTFS-Stop-3",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
 
+		System.out.println("###########################################################################");
+		for (Detail det : result.getDetails()) {
+			System.out.println("DETAIL = "+det.toString());
+		}
+		System.out.println("###########################################################################");
 		Assert.assertEquals(result.getDetailCount(), 1, "detail count");
 		for (Detail detail : result.getDetails()) 
 		{
@@ -119,6 +129,7 @@ public class Phase2StopTests extends ValidationTests {
 			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(3), "detail must refer bad line");
 		}
 	}
+
 	@Test(groups = { "Phase 2 Stop" }, description = "empty column stop_lat" ,priority=48)
 	public void verifyTest_2_3_3() throws Exception {
 		log.info(Color.GREEN + "Stop_3_3 : empty column stop_lat" + Color.NORMAL);
@@ -133,6 +144,7 @@ public class Phase2StopTests extends ValidationTests {
 			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(2), "detail must refer bad line");
 		}
 	}
+
 	@Test(groups = { "Phase 2 Stop" }, description = "empty column stop_lon" ,priority=49 )
 	public void verifyTest_2_3_4() throws Exception {
 		log.info(Color.GREEN + "Stop_3_4 : empty column stop_lon" + Color.NORMAL);
@@ -147,6 +159,7 @@ public class Phase2StopTests extends ValidationTests {
 			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(3), "detail must refer bad line");
 		}
 	}
+
 	@Test(groups = { "Phase 2 Stop" }, description = "duplicate stop_id" ,priority=50 )
 	public void verifyTest_2_4() throws Exception {
 		log.info(Color.GREEN + "Stop_4 : duplicate stop_id" + Color.NORMAL);
@@ -161,6 +174,7 @@ public class Phase2StopTests extends ValidationTests {
 			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(4), "detail must refer bad line");
 		}
 	}
+
 	@Test(groups = { "Phase 2 Stop" }, description = "invalid column stop_lat" ,priority=51 )
 	public void verifyTest_2_5() throws Exception {
 		log.info(Color.GREEN + "Stop_5 : invalid column stop_lat" + Color.NORMAL);
@@ -175,6 +189,7 @@ public class Phase2StopTests extends ValidationTests {
 			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(4), "detail must refer bad line");
 		}
 	}
+
 	@Test(groups = { "Phase 2 Stop" }, description = "invalid column stop_lon" ,priority=52 )
 	public void verifyTest_2_6() throws Exception {
 		log.info(Color.GREEN + "Stop_6 : invalid column stop_lon" + Color.NORMAL);
@@ -189,6 +204,7 @@ public class Phase2StopTests extends ValidationTests {
 			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(3), "detail must refer bad line");
 		}
 	}
+
 	@Test(groups = { "Phase 2 Stop" }, description = "invalid column stop_url" ,priority=53 )
 	public void verifyTest_2_7() throws Exception {
 		log.info(Color.GREEN + "Stop_7 : invalid column stop_url" + Color.NORMAL);
@@ -203,6 +219,7 @@ public class Phase2StopTests extends ValidationTests {
 			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(2), "detail must refer bad line");
 		}
 	}
+
 	@Test(groups = { "Phase 2 Stop" }, description = "invalid column location_type" ,priority=54 )
 	public void verifyTest_2_8() throws Exception {
 		log.info(Color.GREEN + "Stop_8 : invalid column location_type" + Color.NORMAL);
@@ -217,6 +234,7 @@ public class Phase2StopTests extends ValidationTests {
 			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(2), "detail must refer bad line");
 		}
 	}
+
 	@Test(groups = { "Phase 2 Stop" }, description = "invalid column stop_timezone" ,priority=55 )
 	public void verifyTest_2_9() throws Exception {
 		log.info(Color.GREEN + "Stop_9 : invalid column stop_timezone" + Color.NORMAL);
@@ -231,6 +249,7 @@ public class Phase2StopTests extends ValidationTests {
 			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(3), "detail must refer bad line");
 		}
 	}
+
 	@Test(groups = { "Phase 2 Stop" }, description = "invalid column wheelchair_boarding" ,priority=56 )
 	public void verifyTest_2_10() throws Exception {
 		log.info(Color.GREEN + "Stop_10 : invalid column wheelchair_boarding" + Color.NORMAL);
@@ -245,6 +264,7 @@ public class Phase2StopTests extends ValidationTests {
 			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(3), "detail must refer bad line");
 		}
 	}
+
 	@Test(groups = { "Phase 2 Stop" }, description = "extra columns" ,priority=57 )
 	public void verifyTest_2_11() throws Exception {
 		log.info(Color.GREEN + "Stop_11 : extra column detected" + Color.NORMAL);

@@ -13,13 +13,6 @@ import mobi.chouette.exchange.gtfs.validation.ValidationReporter;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.Validator;
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.FileError;
-import mobi.chouette.exchange.report.FileInfo;
-import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
-import mobi.chouette.exchange.validation.report.CheckPoint;
-import mobi.chouette.exchange.validation.report.Location;
-import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.LongLatTypeEnum;
@@ -52,48 +45,54 @@ public class GtfsStopParser implements Parser, Validator, Constant {
 	@Override
 	public void validate(Context context) throws Exception {
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
-		ActionReport report = (ActionReport) context.get(REPORT);
-		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
 		ValidationReporter validationReporter = (ValidationReporter) context.get(GTFS_REPORTER);
 		
 		// stops.txt
-		if (importer.hasStopImporter()) {
-			// Add to report
-			report.addFileInfo(GTFS_STOPS_FILE, FILE_STATE.OK);
+		if (importer.hasStopImporter()) { // the file "stops.txt" exists ?
+			validationReporter.reportSuccess(context, GTFS_1_GTFS_Stop_1, GTFS_STOPS_FILE);
 		} else {
-			// Add to report
-			report.addFileInfo(GTFS_STOPS_FILE, FILE_STATE.ERROR, new FileError(FileError.CODE.FILE_NOT_FOUND, "The file \"stops.txt\" must be provided (rule 1-GTFS-Stop-1)"));
-			// Add to validation report checkpoint 1-GTFS-Stop-1
-			validationReport.addDetail(GTFS_1_GTFS_Stop_1, new Location(GTFS_STOPS_FILE, "stops-failure"), "The file \"stops.txt\" must be provided", CheckPoint.RESULT.NOK);
-			// Stop parsing and render reports (1-GTFS-Stop-1 is fatal)
-			throw new Exception("The file \"stops.txt\" must be provided");
+			validationReporter.reportFailure(context, GTFS_1_GTFS_Stop_1, GTFS_STOPS_FILE);
 		}
 
 		Index<GtfsStop> parser = null;
-		try {
-			parser = importer.getStopById();
-		} catch (Exception ex) {
+		try { // Read and check the header line of the file "stops.txt"
+			parser = importer.getStopById(); // return new StopById("/.../stops.txt") { /** super(...) */
+			//   IndexImpl<GtfsStop>(_path = "/.../stop.txt", _key = "stop_id", _value = "", _unique = true) {
+			//     initialize() /** read the lines of file _path */
+			//   }
+			// }
+		} catch (Exception ex ) {
 			if (ex instanceof GtfsException) {
 				validationReporter.reportError(context, (GtfsException)ex, GTFS_STOPS_FILE);
 			} else {
 				validationReporter.throwUnknownError(context, ex, GTFS_STOPS_FILE);
 			}
 		}
-			
-		if (parser == null || parser.getLength() == 0) { // importer.getStopById() fails for any other reason
+		
+		if (parser == null) { // importer.getStopById() fails for any other reason
 			validationReporter.throwUnknownError(context, new Exception("Cannot instantiate StopById class"), GTFS_STOPS_FILE);
 		}
 		
-		parser.getErrors().clear();
+		if (parser.getLength() == 0) {
+			parser.getErrors().add(new GtfsException(GTFS_STOPS_FILE, 1, null, GtfsException.ERROR.FILE_WITH_NO_ENTRY, null, null));
+		}
 		
-		try {
-			for (GtfsStop bean : parser) {
-				validationReporter.reportErrors(context, bean.getErrors(), GTFS_STOPS_FILE);
+		if (!parser.getErrors().isEmpty()) {
+			validationReporter.reportErrors(context, parser.getErrors(), GTFS_STOPS_FILE);
+			parser.getErrors().clear();
+		}
+		
+		for (GtfsStop bean : parser) {
+			try {
 				parser.validate(bean, importer);
+			} catch (Exception ex) {
+				if (ex instanceof GtfsException) {
+					validationReporter.reportError(context, (GtfsException)ex, GTFS_STOPS_FILE);
+				} else {
+					validationReporter.throwUnknownError(context, ex, GTFS_STOPS_FILE);
+				}
 			}
-		} catch (Exception ex) {
-			AbstractConverter.populateFileError(new FileInfo(GTFS_STOPS_FILE, FILE_STATE.ERROR), ex);
-			throw ex;
+			validationReporter.reportErrors(context, bean.getErrors(), GTFS_STOPS_FILE);
 		}
 	}	
 	

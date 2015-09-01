@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Set;
 
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.HTMLTagValidator;
+import mobi.chouette.exchange.gtfs.model.GtfsObject;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -82,11 +82,10 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 				_fields = new HashMap<String, Integer>();
 				for (int i = 0; i < _reader.getFieldCount(); i++) {
 					String key = _reader.getValue(i); // Get the ith token 
-					
-					verify(key); // IS IT THE RIGTH PLACE FOR THIS ?
-					
-					_fields.put(key, i);
+					verify(key);
+					_fields.put(key.trim(), i);
 				}
+				checkRequiredFields(_fields); // IS IT THE RIGTH PLACE FOR THIS ?
 				//// ???? checkRequiredFields(_fields); // IS IT THE RIGTH PLACE FOR THIS ?
 				index(); // read the rest of this file
 			} else { // The header line doesn't comply with GTFS-CSV 
@@ -96,29 +95,21 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 		} finally {
 			file.close();
 		}
-		checkRequiredFields(_fields); // IS IT THE RIGTH PLACE FOR THIS ?
 	}
 	
 	private void verify(String key) throws GtfsException {
-		Context context = new Context();
-		context.put(Context.PATH, _path);
-		context.put(Context.ID, _total);
-		context.put(Context.FIELD, _key);
 		if (key == null || key.trim().isEmpty()) { // key is empty
-			context.put(Context.ERROR, GtfsException.ERROR.EMPTY_HEADER_FIELD);
-			throw new GtfsException(context);
+			throw new GtfsException(_path, _total, _key, GtfsException.ERROR.EMPTY_HEADER_FIELD, null, null);
 		}
-		if (!key.equals(key.trim())) { // No extra space
-			context.put(Context.ERROR, GtfsException.ERROR.EXTRA_SPACE_IN_HEADER_FIELD);
-			throw new GtfsException(context);
+		
+		if (_fields.get(key.trim()) != null) { // key already exists
+			throw new GtfsException(_path, _total, _key, GtfsException.ERROR.DUPLICATE_HEADER_FIELD, null, null);
 		}
-		if (HTMLTagValidator.validate(key)) {
-			context.put(Context.ERROR, GtfsException.ERROR.HTML_TAG_IN_HEADER_FIELD);
-			throw new GtfsException(context);
-		}
-		if (_fields.get(key) != null) { // key already exists
-			context.put(Context.ERROR, GtfsException.ERROR.DUPLICATE_HEADER_FIELD);
-			throw new GtfsException(context);
+	}
+	
+	protected void testExtraSpace(String fieldName, String value, GtfsObject bean) {
+		if (value != null && !value.equals(value.trim())) {
+			bean.getErrors().add(new GtfsException(_path, bean.getId(), fieldName, GtfsException.ERROR.EXTRA_SPACE_IN_FIELD, null, value));
 		}
 	}
 	
@@ -239,30 +230,30 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 	@Override
 	protected void index() throws IOException {
 		Monitor monitor = MonitorFactory.start();
-//		_reader.setPosition(0);
-//		_total++;
-//		if (!_reader.next()) { // The file has no other line than the header one
-//			Context context = new Context();
-//			context.put(Context.PATH, _path);
-//			context.put(Context.ID, _total);
-//			context.put(Context.ERROR, GtfsException.ERROR.FILE_WITH_NO_ENTRY);
-//			throw new GtfsException(context);
-//		}
-//
-//		_total--;
+		boolean hasDefaultAgencyId = false;
+		
 		while (_reader.hasNext()) {
 			_total++;
+			
+			if (hasDefaultAgencyId)
+				throw new GtfsException(_path, _total, _key, GtfsException.ERROR.DUPLICATE_DEFAULT_KEY_FIELD, null, null);
+			
 			if (_reader.next()) {
-				String key = getField(_key);
+				String key = getField(_key); // return value(agency_id) or "default" if not given or column not given.
+								
 				if (key == null || key.trim().isEmpty()) { // key cannot be null! "" or "default"
-					Context context = new Context();
-					context.put(Context.PATH, _path);
-					context.put(Context.ID, _total);
-					context.put(Context.FIELD, _key);
-					context.put(Context.ERROR, GtfsException.ERROR.MISSING_FIELD);
-					throw new GtfsException(context);
+					throw new GtfsException(_path, _total, _key, GtfsException.ERROR.MISSING_FIELD, null, null);
 				}
-
+				
+				if ("default".equals(key)) {
+					if (_tokens.isEmpty()) {
+						hasDefaultAgencyId = true;
+					}
+					else {
+						throw new GtfsException(_path, _total, _key, GtfsException.ERROR.DUPLICATE_DEFAULT_KEY_FIELD, null, null);
+					}
+				}
+				
 				Token token = _tokens.get(key);
 				if (token == null) {
 					token = new Token();
@@ -271,21 +262,21 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 					_tokens.put(key, token);
 				} else {
 					if (_unique) {
-						Context context = new Context();
-						context.put(Context.PATH, _path);
-						context.put(Context.ID, _total);
-						context.put(Context.FIELD, _key);
-						context.put(Context.ERROR, GtfsException.ERROR.DUPLICATE_FIELD);
-						throw new GtfsException(context);
+						if ("default".equals(key)) {
+							if (_tokens.isEmpty()) {
+								hasDefaultAgencyId = true;
+							}
+							else {
+								throw new GtfsException(_path, _total, _key, GtfsException.ERROR.DUPLICATE_DEFAULT_KEY_FIELD, null, null);
+							}
+						} else {
+							throw new GtfsException(_path, _total, _key, GtfsException.ERROR.DUPLICATE_FIELD, null, null);
+						}
 					}
 					token.lenght++;
 				}
 			} else {
-				Context context = new Context();
-				context.put(Context.PATH, _path);
-				context.put(Context.ID, _total);
-				context.put(Context.ERROR, GtfsException.ERROR.INVALID_FILE_FORMAT);
-				throw new GtfsException(context);
+				throw new GtfsException(_path, _total, _key, GtfsException.ERROR.INVALID_FILE_FORMAT, null, null);
 			}
 		}
 
@@ -316,6 +307,27 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 		while (_reader.hasNext()) {
 			if (_reader.next()) {
 				String key = getField(_key, _value);
+				
+				
+				Context context = new Context();
+				context.put(Context.PATH, _path);
+				context.put(Context.ID, _total);
+				context.put(Context.FIELD, _key);
+				if (key == null || key.trim().isEmpty()) { // key cannot be null! "" or "default"
+					context.put(Context.ERROR, GtfsException.ERROR.MISSING_FIELD);
+					throw new GtfsException(context);
+				}
+//				if (!key.equals(key.trim())) { // No extra space
+//					context.put(Context.ERROR, GtfsException.ERROR.EXTRA_SPACE_IN_HEADER_FIELD);
+//					throw new GtfsException(context);
+//				}
+//				if (HTMLTagValidator.validate(key)) {
+//					context.put(Context.ERROR, GtfsException.ERROR.HTML_TAG_IN_HEADER_FIELD);
+//					throw new GtfsException(context);
+//				}
+				
+				
+				
 				Token token = _tokens.get(key);
 				for (int i = 0; i < token.lenght; i++) {
 					int n = token.offset + i * 2;
@@ -328,7 +340,7 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 				position = _reader.getPosition();
 			}
 		}
-
+		
 		log.debug("[DSU] index " + _path + " " + _tokens.size() + " objects " + monitor.stop());
 		file.close();
 	}

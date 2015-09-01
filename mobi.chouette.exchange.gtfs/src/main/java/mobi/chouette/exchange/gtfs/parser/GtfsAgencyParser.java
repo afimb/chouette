@@ -7,6 +7,7 @@ import mobi.chouette.exchange.gtfs.model.GtfsAgency;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsException;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsImporter;
 import mobi.chouette.exchange.gtfs.model.importer.Index;
+import mobi.chouette.exchange.gtfs.model.importer.GtfsException.ERROR;
 import mobi.chouette.exchange.gtfs.validation.Constant;
 import mobi.chouette.exchange.gtfs.validation.ValidationReporter;
 import mobi.chouette.exchange.importer.Parser;
@@ -56,7 +57,7 @@ public class GtfsAgencyParser implements Parser, Validator, Constant {
 		try { // Read and check the header line of the file "agency.txt"
 			parser = importer.getAgencyById(); // return new AgencyById("/.../agency.txt") { /** super(...) */
 			//   IndexImpl<GtfsAgency>(_path = "/.../agency.txt", _key = "agency_id", _value = "default", _unique = true) {
-			//     initialize() /** read the first line of file _path */
+			//     initialize() /** read the lines of file _path */
 			//   }
 			// }
 		} catch (Exception ex ) {
@@ -67,22 +68,29 @@ public class GtfsAgencyParser implements Parser, Validator, Constant {
 			}
 		}
 		
-		if (parser == null || parser.getLength() == 0) { // importer.getAgencyById() fails for any other reason
+		if (parser == null) { // importer.getAgencyById() fails for any other reason
 			validationReporter.throwUnknownError(context, new Exception("Cannot instantiate AgencyById class"), GTFS_AGENCY_FILE);
 		}
-
-		parser.getErrors().clear();
-		try {
-			for (GtfsAgency bean : parser) {
+		
+		if (parser.getLength() == 0) {
+			parser.getErrors().add(new GtfsException(GTFS_AGENCY_FILE, 1, null, GtfsException.ERROR.FILE_WITH_NO_ENTRY, null, null));
+		}
+		
+		if (!parser.getErrors().isEmpty()) {
+			validationReporter.reportErrors(context, parser.getErrors(), GTFS_AGENCY_FILE);
+			parser.getErrors().clear();
+		}
+		for (GtfsAgency bean : parser) {
+			try {
 				parser.validate(bean, importer);
-				validationReporter.reportErrors(context, bean.getErrors(), GTFS_AGENCY_FILE);
+			} catch (Exception ex) {
+				if (ex instanceof GtfsException) {
+					validationReporter.reportError(context, (GtfsException)ex, GTFS_AGENCY_FILE);
+				} else {
+					validationReporter.throwUnknownError(context, ex, GTFS_AGENCY_FILE);
+				}
 			}
-		} catch (Exception ex) {
-			if (ex instanceof GtfsException) {
-				validationReporter.reportError(context, (GtfsException)ex, GTFS_AGENCY_FILE);
-			} else {
-				validationReporter.throwUnknownError(context, ex, GTFS_AGENCY_FILE);
-			}
+			validationReporter.reportErrors(context, bean.getErrors(), GTFS_AGENCY_FILE);
 		}
 	}
 	
