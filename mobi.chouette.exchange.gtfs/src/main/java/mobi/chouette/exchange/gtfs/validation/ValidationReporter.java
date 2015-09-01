@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.gtfs.validation;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsException;
@@ -13,13 +14,17 @@ import mobi.chouette.exchange.validation.report.ValidationReport;
 
 public class ValidationReporter implements Constant {
 
-	public void reportErrors(Context context, List<GtfsException> errors, String filename) throws Exception {
+	private Set<GtfsException> exs = new HashSet<GtfsException>();
+	
+	public void reportErrors(Context context, Set<GtfsException> errors, String filename) throws Exception {
 		for (GtfsException error : errors) {
 			reportError(context, error, filename);
 		}
 	}
 	
 	public void reportError(Context context, GtfsException ex, String filenameInfo) throws Exception {
+		if (!exs.add(ex))
+			return;
 		ActionReport report = (ActionReport) context.get(REPORT);
 		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
 		String name = name(filenameInfo);

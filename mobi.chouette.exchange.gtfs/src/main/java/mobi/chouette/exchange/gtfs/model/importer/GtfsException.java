@@ -2,8 +2,10 @@ package mobi.chouette.exchange.gtfs.model.importer;
 
 import lombok.Getter;
 import lombok.ToString;
+import lombok.EqualsAndHashCode;
 
 @ToString
+@EqualsAndHashCode(callSuper=false)
 public class GtfsException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 
@@ -96,5 +98,4 @@ public class GtfsException extends RuntimeException {
 		this.code = code;
 		this.value = value;
 	}
-
 }
