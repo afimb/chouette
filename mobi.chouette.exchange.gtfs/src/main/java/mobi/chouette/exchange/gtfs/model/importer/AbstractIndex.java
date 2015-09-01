@@ -1,8 +1,7 @@
 package mobi.chouette.exchange.gtfs.model.importer;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
 import lombok.Getter;
@@ -25,7 +24,7 @@ public abstract class AbstractIndex<T> implements Index<T> {
 	protected abstract T build(GtfsIterator reader, Context context);
 	
 	@Getter
-	protected List<GtfsException> errors = new ArrayList<>();
+	protected Set<GtfsException> errors = new HashSet<>();
 
 	@ToString
 	class Token {

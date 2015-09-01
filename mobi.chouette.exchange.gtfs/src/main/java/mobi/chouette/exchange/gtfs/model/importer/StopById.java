@@ -99,7 +99,6 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter {
 		
 		value = array[i++]; testExtraSpace(FIELDS.stop_name.name(), value, bean);
 		if (value == null || value.trim().isEmpty()) {
-			System.out.println("+++++++++++++++++++++++++++++++++"+id);
 			bean.getErrors().add(new GtfsException(_path, id, FIELDS.stop_name.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
 		} else {
 			bean.setStopName(STRING_CONVERTER.from(context, FIELDS.stop_name, value, true));

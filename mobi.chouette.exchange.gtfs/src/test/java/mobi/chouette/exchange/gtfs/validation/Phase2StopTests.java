@@ -115,11 +115,6 @@ public class Phase2StopTests extends ValidationTests {
 		log.info(Color.GREEN + "Stop_3_2 : empty column stop_name" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "stop_3_2", "1-GTFS-Stop-3",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
 
-		System.out.println("###########################################################################");
-		for (Detail det : result.getDetails()) {
-			System.out.println("DETAIL = "+det.toString());
-		}
-		System.out.println("###########################################################################");
 		Assert.assertEquals(result.getDetailCount(), 1, "detail count");
 		for (Detail detail : result.getDetails()) 
 		{
