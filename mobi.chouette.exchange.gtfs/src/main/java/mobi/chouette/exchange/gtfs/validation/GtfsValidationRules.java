@@ -4,22 +4,30 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.validation.report.CheckPoint;
 
 public class GtfsValidationRules implements Constant {
 	
-	public List<CheckPoint> checkPoints() {
+	public List<CheckPoint> checkPoints(GtfsImportParameters parameters) {
 		List<CheckPoint> checkPoints = new ArrayList<CheckPoint>();
+		
+		boolean all = !(parameters.getReferencesType().equalsIgnoreCase("stop_area"));
+		
 		checkPoints.addAll(csvCheckPoints());
 		checkPoints.addAll(commonCheckPoints());
-		checkPoints.addAll(agencyCheckPoints());
+		if (all) {
+			checkPoints.addAll(agencyCheckPoints());
+		}
 		checkPoints.addAll(stopCheckPoints());
-		checkPoints.addAll(routeCheckPoints());
-		checkPoints.addAll(tripCheckPoints());
-		checkPoints.addAll(stopTimeCheckPoints());
-		checkPoints.addAll(calendarCheckPoints());
-		checkPoints.addAll(calendarDateCheckPoints());
-		checkPoints.addAll(frequencyCheckPoints());
+		if (all) {
+			checkPoints.addAll(routeCheckPoints());
+			checkPoints.addAll(tripCheckPoints());
+			checkPoints.addAll(stopTimeCheckPoints());
+			checkPoints.addAll(calendarCheckPoints());
+			checkPoints.addAll(calendarDateCheckPoints());
+			checkPoints.addAll(frequencyCheckPoints());
+		}
 		checkPoints.addAll(transferCheckPoints());
 		return checkPoints;
 	}
