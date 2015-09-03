@@ -3,11 +3,10 @@ package mobi.chouette.exchange.gtfs.model.importer;
 import java.io.IOException;
 import java.util.Map;
 
+import mobi.chouette.common.HTMLTagValidator;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime.DropOffType;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime.PickupType;
-import mobi.chouette.exchange.gtfs.model.importer.GtfsException.ERROR;
-import mobi.chouette.exchange.gtfs.model.importer.RouteById.FIELDS;
 
 public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements
 		GtfsConverter {
@@ -31,9 +30,17 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements
 	
 	@Override
 	protected void checkRequiredFields(Map<String, Integer> fields) {
-		// extra fields are tolerated : 1-GTFS-StopTime-12 warning
 		for (String fieldName : fields.keySet()) {
 			if (fieldName != null) {
+				if (!fieldName.equals(fieldName.trim())) {
+					// extra spaces in end fields are tolerated : 1-GTFS-CSV-7 warning
+					getErrors().add(new GtfsException(_path, 1, fieldName, GtfsException.ERROR.EXTRA_SPACE_IN_HEADER_FIELD, null, null));
+				}
+				
+				if (HTMLTagValidator.validate(fieldName.trim())) {
+					getErrors().add(new GtfsException(_path, 1, fieldName.trim(), GtfsException.ERROR.HTML_TAG_IN_HEADER_FIELD, null, null));
+				}
+				
 				boolean fieldNameIsExtra = true;
 				for (FIELDS field : FIELDS.values()) {
 					if (fieldName.trim().equals(field.name())) {
@@ -42,27 +49,31 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements
 					}
 				}
 				if (fieldNameIsExtra) {
-					// add the warning to warnings
-					Context context = new Context();
-					context.put(Context.PATH, _path);
-					context.put(Context.FIELD, fieldName);
-					context.put(Context.ERROR, GtfsException.ERROR.EXTRA_HEADER_FIELD);
-					getErrors().add(new GtfsException(context));
+					// extra fields are tolerated : 1-GTFS-StopTime-12 warning
+					getErrors().add(new GtfsException(_path, 1, fieldName, GtfsException.ERROR.EXTRA_HEADER_FIELD, null, null));
 				}
 			}
 		}
-		
+
 		// checks for ubiquitous header fields : 1-GTFS-StopTime-2 error
-		if ( fields.get(FIELDS.trip_id.name()) == null ||
-				fields.get(FIELDS.stop_id.name()) == null ||
-				fields.get(FIELDS.stop_sequence.name()) == null ||
+		if ( fields.get(FIELDS.stop_id.name()) == null ||
+				fields.get(FIELDS.trip_id.name()) == null ||
+				fields.get(FIELDS.departure_time.name()) == null ||
 				fields.get(FIELDS.arrival_time.name()) == null ||
-				fields.get(FIELDS.departure_time.name()) == null) {
-			Context context = new Context();
-			context.put(Context.PATH, _path);
-			context.put(Context.ERROR, GtfsException.ERROR.MISSING_REQUIRED_FIELDS);
-			getErrors().add(new GtfsException(context));
+				fields.get(FIELDS.stop_sequence.name()) == null) {
+			
+			if (fields.get(FIELDS.stop_id.name()) == null)
+				throw new GtfsException(_path, 1, FIELDS.stop_id.name(), GtfsException.ERROR.MISSING_REQUIRED_FIELDS, null, null);
+			if (fields.get(FIELDS.trip_id.name()) == null)
+				throw new GtfsException(_path, 1, FIELDS.trip_id.name(), GtfsException.ERROR.MISSING_REQUIRED_FIELDS, null, null);
+			if (fields.get(FIELDS.departure_time.name()) == null)
+				throw new GtfsException(_path, 1, FIELDS.departure_time.name(), GtfsException.ERROR.MISSING_REQUIRED_FIELDS, null, null);
+			if (fields.get(FIELDS.arrival_time.name()) == null)
+				throw new GtfsException(_path, 1, FIELDS.arrival_time.name(), GtfsException.ERROR.MISSING_REQUIRED_FIELDS, null, null);
+			if (fields.get(FIELDS.stop_sequence.name()) == null)
+				throw new GtfsException(_path, 1, FIELDS.stop_sequence.name(), GtfsException.ERROR.MISSING_REQUIRED_FIELDS, null, null);
 		}
+
 	}
 
 	@Override
@@ -78,24 +89,97 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements
 		int id = (int) context.get(Context.ID);
 		_bean.getErrors().clear();
 		_bean.setId(id);
-		value = _array[i++];
-		_bean.setTripId(STRING_CONVERTER.from(context, FIELDS.trip_id, value, true));
-		value = _array[i++];
-		_bean.setStopId(STRING_CONVERTER.from(context, FIELDS.stop_id, value, true));
-		value = _array[i++];
-		_bean.setStopSequence(INTEGER_CONVERTER.from(context, FIELDS.stop_sequence, value, true));
-		value = _array[i++];
+		
+		value = _array[i++]; testExtraSpace(FIELDS.trip_id.name(), value, _bean);
+		if (value == null || value.trim().isEmpty()) {
+			_bean.getErrors().add(new GtfsException(_path, id, FIELDS.trip_id.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+		} else {
+			_bean.setTripId(STRING_CONVERTER.from(context, FIELDS.trip_id, value, true));
+		}
+		
+		value = _array[i++]; testExtraSpace(FIELDS.stop_id.name(), value, _bean);
+		if (value == null || value.trim().isEmpty()) {
+			_bean.getErrors().add(new GtfsException(_path, id, FIELDS.stop_id.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+		} else {
+			_bean.setStopId(STRING_CONVERTER.from(context, FIELDS.stop_id, value, true));
+		}
+		
+		value = _array[i++]; testExtraSpace(FIELDS.stop_sequence.name(), value, _bean);
+		if (value == null || value.trim().isEmpty()) {
+			_bean.getErrors().add(new GtfsException(_path, id, FIELDS.stop_sequence.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+		} else {
+			try {
+				_bean.setStopSequence(INTEGER_CONVERTER.from(context, FIELDS.stop_sequence, value, true));
+			} catch(GtfsException e) {
+				System.out.println("1 #################################################################");
+				e.printStackTrace();
+				System.out.println("1 #################################################################");
+			}
+		}
+						
+		value = _array[i++]; testExtraSpace(FIELDS.arrival_time.name(), value, _bean);
+		if (value == null || value.trim().isEmpty()) {
+			_bean.getErrors().add(new GtfsException(_path, id, FIELDS.arrival_time.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+		} else {
+			try {
 		_bean.setArrivalTime(GTFSTIME_CONVERTER.from(context, FIELDS.arrival_time, value, true));
-		value = _array[i++];
-		_bean.setDepartureTime(GTFSTIME_CONVERTER.from(context, FIELDS.departure_time, value, true));
-		value = _array[i++];
-		_bean.setStopHeadsign(STRING_CONVERTER.from(context, FIELDS.stop_headsign, value, false));
-		value = _array[i++];
-		_bean.setPickupType(PICKUP_CONVERTER.from(context, FIELDS.pickup_type, value, PickupType.Scheduled, false));
-		value = _array[i++];
-		_bean.setDropOffType(DROPOFFTYPE_CONVERTER.from(context, FIELDS.drop_off_type, value, DropOffType.Scheduled, false));
-		value = _array[i++];
-		_bean.setShapeDistTraveled(FLOAT_CONVERTER.from(context, FIELDS.shape_dist_traveled, value, false));
+			} catch(GtfsException e) {
+				System.out.println("2 #################################################################");
+				e.printStackTrace();
+				System.out.println("2 #################################################################");
+			}
+		}
+		
+		value = _array[i++]; testExtraSpace(FIELDS.departure_time.name(), value, _bean);
+		if (value == null || value.trim().isEmpty()) {
+			_bean.getErrors().add(new GtfsException(_path, id, FIELDS.departure_time.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+		} else {
+			try {
+				_bean.setDepartureTime(GTFSTIME_CONVERTER.from(context, FIELDS.departure_time, value, true));
+			} catch(GtfsException e) {
+				System.out.println("3 #################################################################");
+				e.printStackTrace();
+				System.out.println("3 #################################################################");
+			}
+		}
+		
+		value = _array[i++]; testExtraSpace(FIELDS.stop_headsign.name(), value, _bean);
+		if (value != null && !value.trim().isEmpty()) {
+			_bean.setStopHeadsign(STRING_CONVERTER.from(context, FIELDS.stop_headsign, value, false));
+		}
+		
+		value = _array[i++]; testExtraSpace(FIELDS.pickup_type.name(), value, _bean);
+		if (value != null && !value.trim().isEmpty()) {
+			try {
+				_bean.setPickupType(PICKUP_CONVERTER.from(context, FIELDS.pickup_type, value, PickupType.Scheduled, false));
+			} catch(GtfsException e) {
+				System.out.println("4 #################################################################");
+				e.printStackTrace();
+				System.out.println("4 #################################################################");
+			}
+		}
+		
+		value = _array[i++]; testExtraSpace(FIELDS.drop_off_type.name(), value, _bean);
+		if (value != null && !value.trim().isEmpty()) {
+			try {
+				_bean.setDropOffType(DROPOFFTYPE_CONVERTER.from(context, FIELDS.drop_off_type, value, DropOffType.Scheduled, false));
+			} catch(GtfsException e) {
+				System.out.println("5 #################################################################");
+				e.printStackTrace();
+				System.out.println("5 #################################################################");
+			}
+		}
+		
+		value = _array[i++]; testExtraSpace(FIELDS.shape_dist_traveled.name(), value, _bean);
+		if (value != null && !value.trim().isEmpty()) {
+			try {
+				_bean.setShapeDistTraveled(FLOAT_CONVERTER.from(context, FIELDS.shape_dist_traveled, value, false));
+			} catch(GtfsException e) {
+				System.out.println("6 #################################################################");
+				e.printStackTrace();
+				System.out.println("6 #################################################################");
+			}
+		}
 
 		return _bean;
 	}
@@ -103,25 +187,25 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements
 	@Override
 	public boolean validate(GtfsStopTime bean, GtfsImporter dao) {
 		boolean result = true;
-		String tripId = bean.getTripId();
-		if (!tripId.equals(_tripId)) {
-			if (!dao.getTripById().containsKey(tripId)) {
-				throw new GtfsException(getPath(), bean.getId(),
-						FIELDS.trip_id.name(), ERROR.MISSING_FOREIGN_KEY,
-						"TODO", bean.getTripId());
-			}
-			_tripId = tripId;
-		}
-
-		String stopId = bean.getStopId();
-		if (!stopId.equals(_stopId)) {
-			if (!dao.getStopById().containsKey(stopId)) {
-				throw new GtfsException(getPath(), bean.getId(),
-						FIELDS.stop_id.name(), ERROR.MISSING_FOREIGN_KEY,
-						"TODO", bean.getStopId());
-			}
-			_stopId = stopId;
-		}
+//		String tripId = bean.getTripId();
+//		if (!tripId.equals(_tripId)) {
+//			if (!dao.getTripById().containsKey(tripId)) {
+//				throw new GtfsException(getPath(), bean.getId(),
+//						FIELDS.trip_id.name(), ERROR.MISSING_FOREIGN_KEY,
+//						"TODO", bean.getTripId());
+//			}
+//			_tripId = tripId;
+//		}
+//
+//		String stopId = bean.getStopId();
+//		if (!stopId.equals(_stopId)) {
+//			if (!dao.getStopById().containsKey(stopId)) {
+//				throw new GtfsException(getPath(), bean.getId(),
+//						FIELDS.stop_id.name(), ERROR.MISSING_FOREIGN_KEY,
+//						"TODO", bean.getStopId());
+//			}
+//			_stopId = stopId;
+//		}
 
 		return result;
 	}

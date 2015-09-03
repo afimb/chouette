@@ -265,7 +265,7 @@ public class Phase2StopTests extends ValidationTests {
 		log.info(Color.GREEN + "Stop_11 : extra column detected" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "stop_11", "1-GTFS-Stop-11",CheckPoint.SEVERITY.WARNING, CheckPoint.RESULT.NOK,true);
 
-		Assert.assertEquals(result.getDetailCount(), 1, "detail count");
+		Assert.assertEquals(result.getDetailCount(), 2, "detail count");
 		for (Detail detail : result.getDetails()) 
 		{
 			Assert.assertNotNull(detail.getSource(), "detail must refer a source");

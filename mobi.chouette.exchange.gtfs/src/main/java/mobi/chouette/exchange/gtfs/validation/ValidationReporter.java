@@ -3,6 +3,7 @@ package mobi.chouette.exchange.gtfs.validation;
 import java.util.HashSet;
 import java.util.Set;
 
+import lombok.Getter;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsException;
 import mobi.chouette.exchange.report.ActionReport;
@@ -14,7 +15,8 @@ import mobi.chouette.exchange.validation.report.ValidationReport;
 
 public class ValidationReporter implements Constant {
 
-	private Set<GtfsException> exs = new HashSet<GtfsException>();
+	@Getter
+	private Set<GtfsException> exceptions = new HashSet<GtfsException>();
 	
 	public void reportErrors(Context context, Set<GtfsException> errors, String filename) throws Exception {
 		for (GtfsException error : errors) {
@@ -23,14 +25,15 @@ public class ValidationReporter implements Constant {
 	}
 	
 	public void reportError(Context context, GtfsException ex, String filenameInfo) throws Exception {
-		if (!exs.add(ex))
+		if (!exceptions.add(ex))
 			return;
 		ActionReport report = (ActionReport) context.get(REPORT);
 		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
 		String name = name(filenameInfo);
 		String checkPointName = "";
 		String fieldName = "";
-
+		String fieldName2 = "";
+		
 		switch ( ex.getError() ) {
 		case INVALID_HEADER_FILE_FORMAT:
 			report.addFileInfo(filenameInfo, FILE_STATE.ERROR,
@@ -92,21 +95,36 @@ public class ValidationReporter implements Constant {
 					"The header fields in file \""+filenameInfo+"\" could not be duplicated",
 					CheckPoint.RESULT.NOK);
 			throw new Exception("The header fields in file \""+filenameInfo+"\" could not be duplicated");
-		
+			
 		case MISSING_REQUIRED_FIELDS: // 1_GTFS_Agency_2, 1_GTFS_Agency_4, 1-GTFS-Stop-2, 1-GTFS-Route-2, 1-GTFS-StopTime-2, 1-GTFS-Trip-2, 1-GTFS-Frequency-1, 1-GTFS-Calendar-2, 1-GTFS-CalendarDate-2, 1-GTFS-Transfer-1 error
 			checkPointName = checkPointName(name, GtfsException.ERROR.MISSING_REQUIRED_FIELDS);
 			fieldName = ex.getField();
 			report.addFileInfo(filenameInfo, FILE_STATE.ERROR,
 					new FileError(FileError.CODE.INVALID_FORMAT,
-							"The field \""+fieldName+"\" must be provided (rule "+checkPointName+")"));
+							"The column \""+fieldName+"\" of file \""+filenameInfo+"\" must be provided (rule "+checkPointName+")"));
 			validationReport.addDetail(checkPointName,
 					new Location(filenameInfo, name+"-failure", ((GtfsException) ex).getId()),
-					"The fields \""+fieldName+"\" must be provided",
+					"The column \""+fieldName+"\" of file \""+filenameInfo+"\" must be provided",
 					CheckPoint.RESULT.NOK);
-			if (fieldName != null && fieldName.endsWith("_id"))
-				throw new Exception("The fields \""+fieldName+"\" must be provided");
+//			if ( fieldName != null && 
+//					(fieldName.endsWith("_id") ||
+//							fieldName.endsWith("_time") ||
+//							fieldName.equals("stop_sequence")))
+				throw new Exception("The column \""+fieldName+"\" of file \""+filenameInfo+"\" must be provided");
+			
+		case MISSING_REQUIRED_FIELDS2: // 1-GTFS-Route-3 error
+			checkPointName = checkPointName(name, GtfsException.ERROR.MISSING_REQUIRED_FIELDS2);
+			fieldName = ex.getField();
+			fieldName2 = fieldName.replaceFirst("long", "short");
+			report.addFileInfo(filenameInfo, FILE_STATE.ERROR,
+					new FileError(FileError.CODE.INVALID_FORMAT,
+							"One of the fields \""+fieldName+"\" or \""+fieldName2+"\" must be provided (rule "+checkPointName+")"));
+			validationReport.addDetail(checkPointName,
+					new Location(filenameInfo, name+"-failure", ((GtfsException) ex).getId()),
+					"One of the fields \""+fieldName+"\" or \""+fieldName2+"\" must be provided",
+					CheckPoint.RESULT.NOK);
 			break;				
-
+			
 		case MISSING_FIELD: // 1-GTFS-Agency-2, 1-GTFS-Stop-2, 
 			checkPointName = checkPointName(name, GtfsException.ERROR.MISSING_FIELD);
 			fieldName = ex.getField();
@@ -119,9 +137,43 @@ public class ValidationReporter implements Constant {
 					CheckPoint.RESULT.NOK);
 			throw new Exception("The file \""+filenameInfo+"\" must provide a non empty \""+fieldName+"\" for each "+name);
 
-/////////////////////////			
+		case FILE_WITH_NO_ENTRY: // 1-GTFS-Agency-11, 1-GTFS-Stop-12, 1-GTFS-Route-11 error
+			checkPointName = checkPointName(name, GtfsException.ERROR.FILE_WITH_NO_ENTRY);
+			fieldName = ex.getField();
+			report.addFileInfo(filenameInfo, FILE_STATE.ERROR,
+					new FileError(FileError.CODE.INVALID_FORMAT,
+							"The file \""+filenameInfo+"\" must contain at least one "+fieldName+" definition (rule "+checkPointName+")"));
+			validationReport.addDetail(checkPointName,
+					new Location(filenameInfo, name(filenameInfo)+"-failure", ((GtfsException) ex).getId()),
+					"The file \""+filenameInfo+"\" must contain at least one "+fieldName+" definition",
+					CheckPoint.RESULT.NOK);
+			throw new Exception("The file \""+filenameInfo+"\" must contain at least one "+fieldName+" definition");
+
+/////////////////////////
+		case INVALID_COLOR: // 1-GTFS-Route-8
+			checkPointName = checkPointName(name, GtfsException.ERROR.INVALID_COLOR);
+			fieldName = ex.getField();
+			report.addFileInfo(filenameInfo, FILE_STATE.ERROR,
+					new FileError(FileError.CODE.INVALID_FORMAT,
+							"The value \""+fieldName+"\" is invalid (rule "+checkPointName+")"));
+			validationReport.addDetail(checkPointName,
+					new Location(filenameInfo, name(filenameInfo)+"-failure", ((GtfsException) ex).getId()),
+					"The value \""+fieldName+"\" is invalid",
+					CheckPoint.RESULT.NOK);
+			break;
+		case INVALID_COLOR_TEXT: // 1-GTFS-Route-9
+			checkPointName = checkPointName(name, GtfsException.ERROR.INVALID_COLOR_TEXT);
+			fieldName = ex.getField();
+			report.addFileInfo(filenameInfo, FILE_STATE.ERROR,
+					new FileError(FileError.CODE.INVALID_FORMAT,
+							"The value \""+fieldName+"\" is invalid (rule "+checkPointName+")"));
+			validationReport.addDetail(checkPointName,
+					new Location(filenameInfo, name(filenameInfo)+"-failure", ((GtfsException) ex).getId()),
+					"The value \""+fieldName+"\" is invalid",
+					CheckPoint.RESULT.NOK);
+			break;
 		case MISSING_REQUIRED_VALUES: // 1-GTFS-Agency-5 
-			checkPointName = checkPointName(name, GtfsException.ERROR.MISSING_FIELD);
+			checkPointName = checkPointName(name, GtfsException.ERROR.MISSING_REQUIRED_VALUES);
 			fieldName = ex.getField();
 			report.addFileInfo(filenameInfo, FILE_STATE.ERROR,
 					new FileError(FileError.CODE.INVALID_FORMAT,
@@ -130,20 +182,147 @@ public class ValidationReporter implements Constant {
 					new Location(filenameInfo, name(filenameInfo)+"-failure", ((GtfsException) ex).getId()),
 					"The value \""+fieldName+"\" must be provided",
 					CheckPoint.RESULT.NOK);
-			//throw new Exception("The value \""+fieldName+"\" must be provided");
 			break;
-
-			
-////////////////////////////			
-		case FILE_WITH_NO_ENTRY:
+		case MISSING_REQUIRED_VALUES2: // 1-GTFS-Route-4 
+			checkPointName = checkPointName(name, GtfsException.ERROR.MISSING_REQUIRED_VALUES2);
+			fieldName = ex.getField();
+			fieldName2 = fieldName.replaceFirst("long", "short");
 			report.addFileInfo(filenameInfo, FILE_STATE.ERROR,
 					new FileError(FileError.CODE.INVALID_FORMAT,
-							"The file \""+filenameInfo+"\" must contain at least one agency definition (rule 1-GTFS-Agency-11)"));
-			validationReport.addDetail(GTFS_1_GTFS_Agency_11,
+							"One of the valuess \""+fieldName+"\" or \""+fieldName2+"\" must be provided (rule "+checkPointName+")"));
+			validationReport.addDetail(checkPointName,
 					new Location(filenameInfo, name(filenameInfo)+"-failure", ((GtfsException) ex).getId()),
-					"The file \""+filenameInfo+"\" must contain at least one agency definition",
+					"One of the valuess \""+fieldName+"\" or \""+fieldName2+"\" must be provided",
 					CheckPoint.RESULT.NOK);
-			throw new Exception("The file \""+filenameInfo+"\" must contain at least one agency definition");
+			break;
+		case DUPLICATE_FIELD: // 1-GTFS-Agency-3, 1-GTFS-Stop-4
+			checkPointName = checkPointName(name, GtfsException.ERROR.DUPLICATE_FIELD);
+			fieldName = ex.getField();
+			report.addFileInfo(filenameInfo, FILE_STATE.ERROR,
+					new FileError(FileError.CODE.INVALID_FORMAT, "The field \""+fieldName+"\" must be unique (rule "+checkPointName+")"));
+			validationReport.addDetail(checkPointName,
+					new Location(filenameInfo, name(filenameInfo)+"-failure", ((GtfsException) ex).getId(), ((GtfsException) ex).getField()),
+					"The field \""+fieldName+"\" must be unique",
+					CheckPoint.RESULT.NOK);
+			throw new Exception("The field \""+fieldName+"\" must be unique");
+		case INVALID_LAT:
+			checkPointName = checkPointName(name, GtfsException.ERROR.INVALID_LAT);
+			fieldName = ex.getField();
+			report.addFileInfo(filenameInfo, FILE_STATE.ERROR,
+					new FileError(FileError.CODE.INVALID_FORMAT, "The field \""+fieldName+"\" must have a valid value (rule "+checkPointName+")"));
+			validationReport.addDetail(checkPointName,
+					new Location(filenameInfo, name(filenameInfo)+"-failure", ((GtfsException) ex).getId(), ((GtfsException) ex).getField()),
+					"The field \""+fieldName+"\" must have a valid value",
+					CheckPoint.RESULT.NOK);
+			break;
+		case INVALID_LON:
+			checkPointName = checkPointName(name, GtfsException.ERROR.INVALID_LON);
+			fieldName = ex.getField();
+			report.addFileInfo(filenameInfo, FILE_STATE.ERROR,
+					new FileError(FileError.CODE.INVALID_FORMAT, "The field \""+fieldName+"\" must have a valid value (rule "+checkPointName+")"));
+			validationReport.addDetail(checkPointName,
+					new Location(filenameInfo, name(filenameInfo)+"-failure", ((GtfsException) ex).getId(), ((GtfsException) ex).getField()),
+					"The field \""+fieldName+"\" must have a valid value",
+					CheckPoint.RESULT.NOK);
+			break;
+			
+		case INVALID_URL:// 1-GTFS-Agency-7, 1-GTFS-Stop-7  warning
+			checkPointName = checkPointName(name, GtfsException.ERROR.INVALID_URL);
+			fieldName = ex.getField();
+			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+					new FileError(FileError.CODE.INVALID_FORMAT,
+							"Invalid URL (rule "+checkPointName+")"));
+			validationReport.addDetail(checkPointName,
+					new Location(filenameInfo, "Invalid URL", ((GtfsException) ex).getId(), ((GtfsException) ex).getField()),
+					"Invalid URL",
+					CheckPoint.RESULT.NOK);
+			break;
+			
+		case INVALID_LOCATION_TYPE: // 1-GTFS-Stop-8 error
+			checkPointName = checkPointName(name, GtfsException.ERROR.INVALID_LOCATION_TYPE);
+			fieldName = ex.getField();
+			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+					new FileError(FileError.CODE.INVALID_FORMAT,
+							"Invalid location type (rule "+checkPointName+")"));
+			validationReport.addDetail(checkPointName,
+					new Location(filenameInfo, "Invalid location type", ((GtfsException) ex).getId(), ((GtfsException) ex).getField()),
+					"Invalid location type",
+					CheckPoint.RESULT.NOK);
+			break;
+			
+		case INVALID_TIMEZONE:// 1-GTFS-Agency-6, 1-GTFS-Stop-9  warning
+			checkPointName = checkPointName(name, GtfsException.ERROR.INVALID_TIMEZONE);
+			fieldName = ex.getField();
+			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+					new FileError(FileError.CODE.INVALID_FORMAT,
+							"Invalid time zone (rule "+checkPointName+")"));
+			validationReport.addDetail(checkPointName,
+					new Location(filenameInfo, "Invalid time zone", ((GtfsException) ex).getId(), ((GtfsException) ex).getField()),
+					"Invalid time zone",
+					CheckPoint.RESULT.NOK);
+			break;
+			
+		case INVALID_WHEELCHAIR_BOARDING_TYPE: // 1-GTFS-Stop-10  warning
+			checkPointName = checkPointName(name, GtfsException.ERROR.INVALID_WHEELCHAIR_BOARDING_TYPE);
+			fieldName = ex.getField();
+			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+					new FileError(FileError.CODE.INVALID_FORMAT,
+							"Invalid weelchair boarding value (rule "+checkPointName+")"));
+			validationReport.addDetail(checkPointName,
+					new Location(filenameInfo, "Invalid weelchair boarding value", ((GtfsException) ex).getId(), ((GtfsException) ex).getField()),
+					"Invalid weelchair boarding value",
+					CheckPoint.RESULT.NOK);
+			break;
+		
+		case INVALID_ROUTE_TYPE: // 1-GTFS-Route-6
+			checkPointName = checkPointName(name, GtfsException.ERROR.INVALID_ROUTE_TYPE);
+			fieldName = ex.getField();
+			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+					new FileError(FileError.CODE.INVALID_FORMAT,
+							"Invalid route type (rule "+checkPointName+")"));
+			validationReport.addDetail(checkPointName,
+					new Location(filenameInfo, "Invalid route type", ((GtfsException) ex).getId(), ((GtfsException) ex).getField()),
+					"Invalid route type",
+					CheckPoint.RESULT.NOK);
+			break;
+			
+		case INVALID_EXCEPTION_TYPE: // 1-GTFS-CalendarDate-6
+			checkPointName = checkPointName(name, GtfsException.ERROR.INVALID_EXCEPTION_TYPE);
+			fieldName = ex.getField();
+			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+					new FileError(FileError.CODE.INVALID_FORMAT,
+							"Invalid exception type (rule "+checkPointName+")"));
+			validationReport.addDetail(checkPointName,
+					new Location(filenameInfo, "Invalid exception type", ((GtfsException) ex).getId(), ((GtfsException) ex).getField()),
+					"Invalid exception type",
+					CheckPoint.RESULT.NOK);
+			break;
+
+		case INVALID_DATE: // 1-GTFS-CalendarDate-5
+			checkPointName = checkPointName(name, GtfsException.ERROR.INVALID_DATE);
+			fieldName = ex.getField();
+			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+					new FileError(FileError.CODE.INVALID_FORMAT,
+							"Invalid date (rule "+checkPointName+")"));
+			validationReport.addDetail(checkPointName,
+					new Location(filenameInfo, "Invalid date", ((GtfsException) ex).getId(), ((GtfsException) ex).getField()),
+					"Invalid date",
+					CheckPoint.RESULT.NOK);
+			break;
+			
+		case DUPLICATE_DOUBLE_KEY: // 1-GTFS-CalendarDate-4
+			checkPointName = checkPointName(name, GtfsException.ERROR.DUPLICATE_DOUBLE_KEY);
+			fieldName = ex.getField();
+			fieldName2 = "date";
+			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+					new FileError(FileError.CODE.INVALID_FORMAT,
+							"Double service_id date (rule "+checkPointName+")"));
+			validationReport.addDetail(checkPointName,
+					new Location(filenameInfo, "Double service_id date", ((GtfsException) ex).getId(), ((GtfsException) ex).getField()),
+					"Double service_id date",
+					CheckPoint.RESULT.NOK);
+			break;
+////////////////////////////			
 		case DUPLICATE_DEFAULT_KEY_FIELD:
 			// TODO. Give the rigth code : At most only one Agency can have default value agency_id
 			report.addFileInfo(filenameInfo, FILE_STATE.ERROR,
@@ -153,14 +332,6 @@ public class ValidationReporter implements Constant {
 					"At most only one Agency can have default value \"agency_id\"",
 					CheckPoint.RESULT.NOK);
 			throw new Exception("At most only one Agency can have default value \"agency_id\"");
-		case DUPLICATE_FIELD:
-			report.addFileInfo(filenameInfo, FILE_STATE.ERROR,
-					new FileError(FileError.CODE.INVALID_FORMAT, "The field \"agency_id\" must be unique (rule 1-GTFS-Agency-3)"));
-			validationReport.addDetail(GTFS_1_GTFS_Agency_3,
-					new Location(filenameInfo, name(filenameInfo)+"-failure", ((GtfsException) ex).getId(), ((GtfsException) ex).getField()),
-					"The field \"agency_id\" must be unique",
-					CheckPoint.RESULT.NOK);
-			throw new Exception("The field \"agency_id\" must be unique");
 		case INVALID_FILE_FORMAT:
 			report.addFileInfo(filenameInfo, FILE_STATE.ERROR,
 					new FileError(FileError.CODE.INVALID_FORMAT,
@@ -177,25 +348,6 @@ public class ValidationReporter implements Constant {
 			validationReport.addDetail(GTFS_1_GTFS_CSV_7,
 					new Location(filenameInfo, "Extra spaces in field names are not allowed", ((GtfsException) ex).getId()),
 					"Extra spaces in field names are not allowed",
-					CheckPoint.RESULT.NOK);
-			break;
-			
-		case INVALID_URL:// 1-GTFS-Agency-7  warning
-			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-					new FileError(FileError.CODE.INVALID_FORMAT,
-							"Invalid URL (rule 1-GTFS-Agency-7"));
-			validationReport.addDetail(GTFS_1_GTFS_Agency_7,
-					new Location(filenameInfo, "Invalid URL", ((GtfsException) ex).getId(), ((GtfsException) ex).getField()),
-					"Invalid URL",
-					CheckPoint.RESULT.NOK);
-			break;
-		case INVALID_TIMEZONE:// 1-GTFS-Agency-6  warning
-			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-					new FileError(FileError.CODE.INVALID_FORMAT,
-							"Invalid time zone (rule 1-GTFS-Agency-6"));
-			validationReport.addDetail(GTFS_1_GTFS_Agency_6,
-					new Location(filenameInfo, "Invalid time zone", ((GtfsException) ex).getId(), ((GtfsException) ex).getField()),
-					"Invalid time zone",
 					CheckPoint.RESULT.NOK);
 			break;
 		case INVALID_FARE_URL:// 1-GTFS-Agency-9   warning
@@ -252,25 +404,71 @@ public class ValidationReporter implements Constant {
 	private String checkPointName(String name, mobi.chouette.exchange.gtfs.model.importer.GtfsException.ERROR errorName) {
 		// 1_GTFS_Agency_10, 1_GTFS_Stop_11, 1-GTFS-Route-10, 1-GTFS-StopTime-12, 1-GTFS-Trip-8, 1-GTFS-Frequency-7, 1-GTFS-Calendar-14, 1-GTFS-CalendarDate-7, 1-GTFS-Transfer-6 info
 		//checkPointName = checkPointName(name, GtfsException.ERROR.EXTRA_HEADER_FIELD);
+		
 		name = capitalize(name);
 		switch(errorName) {
+		case DUPLICATE_DOUBLE_KEY: // 1-GTFS-CalendarDate-4
+			return "1-GTFS-CalendarDate-4";
+		case INVALID_DATE: // 1-GTFS-CalendarDate-5
+			return "1-GTFS-CalendarDate-5";
+		case INVALID_EXCEPTION_TYPE: // 1-GTFS-CalendarDate-6
+			return "1-GTFS-CalendarDate-6";
+		case INVALID_COLOR: // 1-GTFS-Route-8
+			return "1-GTFS-"+name+"-8";
+		case INVALID_COLOR_TEXT: // 1-GTFS-Route-9
+			return "1-GTFS-"+name+"-9";
+		case INVALID_ROUTE_TYPE: // 1-GTFS-Route-6
+			return "1-GTFS-"+name+"-6";
 		case EXTRA_HEADER_FIELD:
-			if ("Agency".equals(name))
+			if ("Agency".equals(name) || "Route".equals(name))
 				return "1-GTFS-"+name+"-10";
-			else
-				return "1-GTFS-"+name+"-11";
+			if ("Trip".equals(name))
+				return "1-GTFS-"+name+"-8";
+			if ("Calendar".equals(name))
+				return "1-GTFS-"+name+"-14";
+			if ("CalendarDate".equals(name))
+				return "1-GTFS-"+name+"-7";
+			return "1-GTFS-"+name+"-11";
 		case MISSING_REQUIRED_FIELDS:
 			if ("Agency".equals(name))
 				return "1-GTFS-"+name+"-4";
 			return "1-GTFS-"+name+"-2";
-		case MISSING_FIELD: // 1-GTFS-Agency-2, 1-GTFS-Stop-2,
-			if ("Agency".equals(name))
-				return "1-GTFS-"+name+"-2";
+		case MISSING_REQUIRED_FIELDS2: // 1-GTFS-Route-3 error
 			return "1-GTFS-"+name+"-3";
 		case MISSING_REQUIRED_VALUES:
 			if ("Agency".equals(name))
 				return "1-GTFS-"+name+"-5";
 			return "1-GTFS-"+name+"-3";
+		case MISSING_REQUIRED_VALUES2:
+			return "1-GTFS-"+name+"-4";
+		case MISSING_FIELD: // 1-GTFS-Agency-2, 1-GTFS-Stop-2,
+			if ("Agency".equals(name))
+				return "1-GTFS-"+name+"-2";
+			return "1-GTFS-"+name+"-3";
+		case DUPLICATE_FIELD: // 1-GTFS-Agency-3, 1-GTFS-Stop-4
+			if ("Agency".equals(name))
+				return "1-GTFS-"+name+"-3";
+			if ("Route".equals(name))
+				return "1-GTFS-"+name+"-5";
+			return "1-GTFS-"+name+"-4";
+		case INVALID_LAT:
+			return "1-GTFS-Stop-5";
+		case INVALID_LON:
+			return "1-GTFS-Stop-6";
+		case INVALID_URL:
+			return "1-GTFS-"+name+"-7";
+		case INVALID_LOCATION_TYPE:
+			return "1-GTFS-"+name+"-8";
+		case INVALID_TIMEZONE:// 1-GTFS-Agency-6, 1-GTFS-Stop-9  warning
+			if ("Agency".equals(name))
+				return "1-GTFS-"+name+"-6";			
+			return "1-GTFS-"+name+"-9";
+		case INVALID_WHEELCHAIR_BOARDING_TYPE: // 1-GTFS-Stop-10  warning
+			return "1-GTFS-"+name+"-10";
+		case FILE_WITH_NO_ENTRY:
+			if ("Stop".equals(name))
+				return "1-GTFS-"+name+"-12";			
+			return "1-GTFS-"+name+"-11";
 		default:
 			return null;
 		}
@@ -280,9 +478,9 @@ public class ValidationReporter implements Constant {
 		// CSV, CalendarDate, StopTime
 		if ("csv".equalsIgnoreCase(name))
 			return "CSV";
-		if ("calendardate".equalsIgnoreCase(name))
+		if ("calendar_date".equalsIgnoreCase(name))
 			return "CalendarDate";
-		if ("stoptime".equalsIgnoreCase(name))
+		if ("stop_time".equalsIgnoreCase(name))
 			return "StopTime";
 		if (name != null && !name.trim().isEmpty()) {
 			name = name.trim();
@@ -309,7 +507,6 @@ public class ValidationReporter implements Constant {
 	public void throwUnknownError(Context context, Exception ex, String filenameInfo) throws Exception {
 		ActionReport report = (ActionReport) context.get(REPORT);
 		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
-
 		if (filenameInfo != null && filenameInfo.indexOf('.') > 0) {
 			report.addFileInfo(filenameInfo, FILE_STATE.ERROR,
 					new FileError(FileError.CODE.FILE_NOT_FOUND, "A problem occured while reading the file \""+filenameInfo+"\" (rule 1-GTFS-CSV-14) : "+ex.getMessage()));
@@ -328,6 +525,15 @@ public class ValidationReporter implements Constant {
 		report.addFileInfo(filenameInfo, FILE_STATE.OK);
 		validationReport.findCheckPointByName(checkpointName).setState(CheckPoint.RESULT.OK);
 	}
+	
+	public void reportUnsuccess(Context context, String checkpointName, String filenameInfo) {
+		ActionReport report = (ActionReport) context.get(REPORT);
+		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
+		
+		report.addFileInfo(filenameInfo, FILE_STATE.IGNORED);
+		validationReport.findCheckPointByName(checkpointName).setState(CheckPoint.RESULT.OK);
+	}
+	
 
 	public void reportFailure(Context context, String checkpointName, String filenameInfo) throws Exception {
 		ActionReport report = (ActionReport) context.get(REPORT);
@@ -339,7 +545,23 @@ public class ValidationReporter implements Constant {
 				new Location(filenameInfo, name(filenameInfo)+"-failure"),
 				"The file \""+filenameInfo+"\" must be provided",
 				CheckPoint.RESULT.NOK);
-		// Stop parsing and render reports (1-GTFS-Agency-1 is fatal)
-		throw new Exception("The file \"+GTFS_AGENCY_FILE+\" must be provided");
+		// Stop parsing and render reports (1-GTFS-<X>-1 is fatal)
+		throw new Exception("The file \""+filenameInfo+"\" must be provided");
+	}
+
+	public void reportFailure(Context context, String checkpointName, String filenameInfo1, String filenameInfo2) throws Exception {
+		ActionReport report = (ActionReport) context.get(REPORT);
+		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
+		
+		report.addFileInfo(filenameInfo1, FILE_STATE.ERROR,
+				new FileError(FileError.CODE.FILE_NOT_FOUND, "At least one of the files \""+filenameInfo1+"\" and \""+filenameInfo2+"\" must be provided (rule "+checkpointName+")"));
+		Location[] locations = new Location[2];
+		locations[0] = new Location(filenameInfo1, name(filenameInfo1)+"-failure");
+		locations[1] = new Location(filenameInfo2, name(filenameInfo2)+"-failure");
+		validationReport.addDetail(checkpointName, locations,
+				"At least one of the files \""+filenameInfo1+"\" and \""+filenameInfo2+"\" must be provided",
+				CheckPoint.RESULT.NOK);
+		// Stop parsing and render reports (1-GTFS-<X>-1 is fatal)
+		throw new Exception("At least one of the files \""+filenameInfo1+"\" and \""+filenameInfo2+"\" must be provided");
 	}
 }

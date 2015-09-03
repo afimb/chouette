@@ -46,6 +46,7 @@ public class GtfsStopParser implements Parser, Validator, Constant {
 	public void validate(Context context) throws Exception {
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		ValidationReporter validationReporter = (ValidationReporter) context.get(GTFS_REPORTER);
+		validationReporter.getExceptions().clear();
 		
 		// stops.txt
 		if (importer.hasStopImporter()) { // the file "stops.txt" exists ?
@@ -56,8 +57,8 @@ public class GtfsStopParser implements Parser, Validator, Constant {
 
 		Index<GtfsStop> parser = null;
 		try { // Read and check the header line of the file "stops.txt"
-			parser = importer.getStopById(); // return new StopById("/.../stops.txt") { /** super(...) */
-			//   IndexImpl<GtfsStop>(_path = "/.../stop.txt", _key = "stop_id", _value = "", _unique = true) {
+			parser = importer.getStopById(); // return new StopById("/.../stops.txt", "stop_id") { /** super(...) */
+			//   IndexImpl<GtfsStop>(_path = "/.../stops.txt", _key = "stop_id", _value = "", _unique = true) {
 			//     initialize() /** read the lines of file _path */
 			//   }
 			// }

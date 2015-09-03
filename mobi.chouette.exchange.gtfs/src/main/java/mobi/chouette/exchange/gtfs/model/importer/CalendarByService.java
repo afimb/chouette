@@ -3,6 +3,7 @@ package mobi.chouette.exchange.gtfs.model.importer;
 import java.io.IOException;
 import java.util.Map;
 
+import mobi.chouette.common.HTMLTagValidator;
 import mobi.chouette.exchange.gtfs.model.GtfsCalendar;
 
 public class CalendarByService extends IndexImpl<GtfsCalendar> implements
@@ -24,9 +25,17 @@ public class CalendarByService extends IndexImpl<GtfsCalendar> implements
 	
 	@Override
 	protected void checkRequiredFields(Map<String, Integer> fields) {
-		// extra fields are tolerated : 1-GTFS-Calendar-14 warning
 		for (String fieldName : fields.keySet()) {
 			if (fieldName != null) {
+				if (!fieldName.equals(fieldName.trim())) {
+					// extra spaces in end fields are tolerated : 1-GTFS-CSV-7 warning
+					getErrors().add(new GtfsException(_path, 1, fieldName, GtfsException.ERROR.EXTRA_SPACE_IN_HEADER_FIELD, null, null));
+				}
+				
+				if (HTMLTagValidator.validate(fieldName.trim())) {
+					getErrors().add(new GtfsException(_path, 1, fieldName.trim(), GtfsException.ERROR.HTML_TAG_IN_HEADER_FIELD, null, null));
+				}
+				
 				boolean fieldNameIsExtra = true;
 				for (FIELDS field : FIELDS.values()) {
 					if (fieldName.trim().equals(field.name())) {
@@ -35,17 +44,13 @@ public class CalendarByService extends IndexImpl<GtfsCalendar> implements
 					}
 				}
 				if (fieldNameIsExtra) {
-					// add the warning to warnings
-					Context context = new Context();
-					context.put(Context.PATH, _path);
-					context.put(Context.FIELD, fieldName);
-					context.put(Context.ERROR, GtfsException.ERROR.EXTRA_HEADER_FIELD);
-					getErrors().add(new GtfsException(context));
+					// extra fields are tolerated : 1-GTFS-Calendar-14 warning
+					getErrors().add(new GtfsException(_path, 1, fieldName, GtfsException.ERROR.EXTRA_HEADER_FIELD, null, null));
 				}
 			}
 		}
-		
-		// checks for ubiquitous header fields : 1-GTFS-Calendar-2 error
+
+		// checks for ubiquitous header fields : 1-GTFS-Trip-2 error
 		if ( fields.get(FIELDS.service_id.name()) == null ||
 				fields.get(FIELDS.monday.name()) == null ||
 				fields.get(FIELDS.tuesday.name()) == null ||
@@ -56,10 +61,30 @@ public class CalendarByService extends IndexImpl<GtfsCalendar> implements
 				fields.get(FIELDS.sunday.name()) == null ||
 				fields.get(FIELDS.start_date.name()) == null ||
 				fields.get(FIELDS.end_date.name()) == null) {
-			Context context = new Context();
-			context.put(Context.PATH, _path);
-			context.put(Context.ERROR, GtfsException.ERROR.MISSING_REQUIRED_FIELDS);
-			getErrors().add(new GtfsException(context));
+			
+			String name = "";
+			if ( fields.get(FIELDS.service_id.name()) == null)
+				name = FIELDS.service_id.name();
+			if ( fields.get(FIELDS.monday.name()) == null)
+				name = FIELDS.monday.name();
+			if ( fields.get(FIELDS.tuesday.name()) == null)
+					name = FIELDS.tuesday.name();
+			if ( fields.get(FIELDS.wednesday.name()) == null)
+				name = FIELDS.wednesday.name();
+			if ( fields.get(FIELDS.thursday.name()) == null)
+				name = FIELDS.thursday.name();
+			if ( fields.get(FIELDS.friday.name()) == null)
+				name = FIELDS.friday.name();
+			if ( fields.get(FIELDS.saturday.name()) == null)
+				name = FIELDS.saturday.name();
+			if ( fields.get(FIELDS.sunday.name()) == null)
+				name = FIELDS.sunday.name();
+			if ( fields.get(FIELDS.start_date.name()) == null)
+				name = FIELDS.start_date.name();
+			if ( fields.get(FIELDS.end_date.name()) == null)
+				name = FIELDS.end_date.name();
+			
+			throw new GtfsException(_path, 1, name, GtfsException.ERROR.MISSING_REQUIRED_FIELDS, null, null);
 		}
 	}
 
@@ -69,32 +94,82 @@ public class CalendarByService extends IndexImpl<GtfsCalendar> implements
 		for (FIELDS field : FIELDS.values()) {
 			array[i++] = getField(reader, field.name());
 		}
-
+		
 		i = 0;
 		String value = null;
 		int id = (int) context.get(Context.ID);
 		bean.setId(id);
 		bean.getErrors().clear();
-		value = array[i++];
-		bean.setServiceId(STRING_CONVERTER.from(context, FIELDS.service_id, value, true));
-		value = array[i++];
-		bean.setMonday(BOOLEAN_CONVERTER.from(context, FIELDS.monday, value, true));
-		value = array[i++];
-		bean.setTuesday(BOOLEAN_CONVERTER.from(context, FIELDS.tuesday, value, true));
-		value = array[i++];
-		bean.setWednesday(BOOLEAN_CONVERTER.from(context, FIELDS.wednesday, value, true));
-		value = array[i++];
-		bean.setThursday(BOOLEAN_CONVERTER.from(context, FIELDS.thursday, value, true));
-		value = array[i++];
-		bean.setFriday(BOOLEAN_CONVERTER.from(context, FIELDS.friday, value, true));
-		value = array[i++];
-		bean.setSaturday(BOOLEAN_CONVERTER.from(context, FIELDS.saturday, value, true));
-		value = array[i++];
-		bean.setSunday(BOOLEAN_CONVERTER.from(context, FIELDS.sunday, value, true));
-		value = array[i++];
-		bean.setStartDate(DATE_CONVERTER.from(context, FIELDS.start_date, value, true));
-		value = array[i++];
-		bean.setEndDate(DATE_CONVERTER.from(context, FIELDS.end_date, value, true));
+		
+		value = array[i++]; testExtraSpace(FIELDS.service_id.name(), value, bean);
+		if (value == null || value.trim().isEmpty()) {
+			throw new GtfsException(_path, id, FIELDS.service_id.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null);
+		} else {
+			bean.setServiceId(STRING_CONVERTER.from(context, FIELDS.service_id, value, true));
+		}
+		
+		value = array[i++]; testExtraSpace(FIELDS.monday.name(), value, bean);
+		if (value == null || value.trim().isEmpty()) {
+			bean.getErrors().add(new GtfsException(_path, id, FIELDS.monday.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+		} else {
+			bean.setMonday(BOOLEAN_CONVERTER.from(context, FIELDS.monday, value, true));
+		}
+		
+		value = array[i++]; testExtraSpace(FIELDS.tuesday.name(), value, bean);
+		if (value == null || value.trim().isEmpty()) {
+			bean.getErrors().add(new GtfsException(_path, id, FIELDS.tuesday.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+		} else {
+			bean.setTuesday(BOOLEAN_CONVERTER.from(context, FIELDS.tuesday, value, true));
+		}
+		
+		value = array[i++]; testExtraSpace(FIELDS.wednesday.name(), value, bean);
+		if (value == null || value.trim().isEmpty()) {
+			bean.getErrors().add(new GtfsException(_path, id, FIELDS.wednesday.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+		} else {
+			bean.setWednesday(BOOLEAN_CONVERTER.from(context, FIELDS.wednesday, value, true));
+		}
+		
+		value = array[i++]; testExtraSpace(FIELDS.thursday.name(), value, bean);
+		if (value == null || value.trim().isEmpty()) {
+			bean.getErrors().add(new GtfsException(_path, id, FIELDS.thursday.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+		} else {
+			bean.setThursday(BOOLEAN_CONVERTER.from(context, FIELDS.thursday, value, true));
+		}
+		
+		value = array[i++]; testExtraSpace(FIELDS.friday.name(), value, bean);
+		if (value == null || value.trim().isEmpty()) {
+			bean.getErrors().add(new GtfsException(_path, id, FIELDS.friday.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+		} else {
+			bean.setFriday(BOOLEAN_CONVERTER.from(context, FIELDS.friday, value, true));
+		}
+		
+		value = array[i++]; testExtraSpace(FIELDS.saturday.name(), value, bean);
+		if (value == null || value.trim().isEmpty()) {
+			bean.getErrors().add(new GtfsException(_path, id, FIELDS.saturday.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+		} else {
+			bean.setSaturday(BOOLEAN_CONVERTER.from(context, FIELDS.saturday, value, true));
+		}
+		
+		value = array[i++]; testExtraSpace(FIELDS.sunday.name(), value, bean);
+		if (value == null || value.trim().isEmpty()) {
+			bean.getErrors().add(new GtfsException(_path, id, FIELDS.sunday.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+		} else {
+			bean.setSunday(BOOLEAN_CONVERTER.from(context, FIELDS.sunday, value, true));
+		}
+		
+		value = array[i++]; testExtraSpace(FIELDS.start_date.name(), value, bean);
+		if (value == null || value.trim().isEmpty()) {
+			bean.getErrors().add(new GtfsException(_path, id, FIELDS.start_date.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+		} else {
+			bean.setStartDate(DATE_CONVERTER.from(context, FIELDS.start_date, value, true));
+		}
+		
+		value = array[i++]; testExtraSpace(FIELDS.end_date.name(), value, bean);
+		if (value == null || value.trim().isEmpty()) {
+			bean.getErrors().add(new GtfsException(_path, id, FIELDS.end_date.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+		} else {
+			bean.setEndDate(DATE_CONVERTER.from(context, FIELDS.end_date, value, true));
+		}
 
 		return bean;
 	}

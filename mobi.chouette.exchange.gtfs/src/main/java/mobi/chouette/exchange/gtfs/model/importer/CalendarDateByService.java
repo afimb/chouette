@@ -1,8 +1,11 @@
 package mobi.chouette.exchange.gtfs.model.importer;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
+import mobi.chouette.common.HTMLTagValidator;
 import mobi.chouette.exchange.gtfs.model.GtfsCalendarDate;
 
 public class CalendarDateByService extends IndexImpl<GtfsCalendarDate>
@@ -14,6 +17,7 @@ public class CalendarDateByService extends IndexImpl<GtfsCalendarDate>
 
 	public static final String FILENAME = "calendar_dates.txt";
 	public static final String KEY = FIELDS.service_id.name();
+	public static final Set<String> hashCodes = new HashSet<String>();
 
 	private GtfsCalendarDate bean = new GtfsCalendarDate();
 	private String[] array = new String[FIELDS.values().length];
@@ -24,9 +28,17 @@ public class CalendarDateByService extends IndexImpl<GtfsCalendarDate>
 	
 	@Override
 	protected void checkRequiredFields(Map<String, Integer> fields) {
-		// extra fields are tolerated : 1-GTFS-CalendarDate-7 warning
 		for (String fieldName : fields.keySet()) {
 			if (fieldName != null) {
+				if (!fieldName.equals(fieldName.trim())) {
+					// extra spaces in end fields are tolerated : 1-GTFS-CSV-7 warning
+					getErrors().add(new GtfsException(_path, 1, fieldName, GtfsException.ERROR.EXTRA_SPACE_IN_HEADER_FIELD, null, null));
+				}
+				
+				if (HTMLTagValidator.validate(fieldName.trim())) {
+					getErrors().add(new GtfsException(_path, 1, fieldName.trim(), GtfsException.ERROR.HTML_TAG_IN_HEADER_FIELD, null, null));
+				}
+				
 				boolean fieldNameIsExtra = true;
 				for (FIELDS field : FIELDS.values()) {
 					if (fieldName.trim().equals(field.name())) {
@@ -35,24 +47,26 @@ public class CalendarDateByService extends IndexImpl<GtfsCalendarDate>
 					}
 				}
 				if (fieldNameIsExtra) {
-					// add the warning to warnings
-					Context context = new Context();
-					context.put(Context.PATH, _path);
-					context.put(Context.FIELD, fieldName);
-					context.put(Context.ERROR, GtfsException.ERROR.EXTRA_HEADER_FIELD);
-					getErrors().add(new GtfsException(context));
+					// extra fields are tolerated : 1-GTFS-CalendarDate-7 warning
+					getErrors().add(new GtfsException(_path, 1, fieldName, GtfsException.ERROR.EXTRA_HEADER_FIELD, null, null));
 				}
 			}
 		}
-		
-		// checks for ubiquitous header fields : 1-GTFS-CalendarDate-2 error
+
+		// checks for ubiquitous header fields : 1-GTFS-Trip-2 error
 		if ( fields.get(FIELDS.service_id.name()) == null ||
 				fields.get(FIELDS.date.name()) == null ||
 				fields.get(FIELDS.exception_type.name()) == null) {
-			Context context = new Context();
-			context.put(Context.PATH, _path);
-			context.put(Context.ERROR, GtfsException.ERROR.MISSING_REQUIRED_FIELDS);
-			getErrors().add(new GtfsException(context));
+			
+			String name = "";
+			if ( fields.get(FIELDS.service_id.name()) == null)
+				name = FIELDS.service_id.name();
+			else if ( fields.get(FIELDS.date.name()) == null)
+				name = FIELDS.date.name();
+			else if ( fields.get(FIELDS.exception_type.name()) == null)
+				name = FIELDS.exception_type.name();
+			
+			throw new GtfsException(_path, 1, name, GtfsException.ERROR.MISSING_REQUIRED_FIELDS, null, null);
 		}
 	}
 
@@ -68,19 +82,47 @@ public class CalendarDateByService extends IndexImpl<GtfsCalendarDate>
 		int id = (int) context.get(Context.ID);
 		bean.setId(id);
 		bean.getErrors().clear();
-		value = array[i++];
-		bean.setServiceId(STRING_CONVERTER.from(context, FIELDS.service_id, value, true));
-		value = array[i++];
-		bean.setDate(DATE_CONVERTER.from(context, FIELDS.date, value, true));
-		value = array[i++];
-		bean.setExceptionType(EXCEPTIONTYPE_CONVERTER.from(context, FIELDS.exception_type, value, true));
-
+		
+		value = array[i++]; testExtraSpace(FIELDS.service_id.name(), value, bean);
+		if (value == null || value.trim().isEmpty()) {
+			throw new GtfsException(_path, id, FIELDS.service_id.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null);
+		} else {
+			bean.setServiceId(STRING_CONVERTER.from(context, FIELDS.service_id, value, true));
+		}
+		
+		value = array[i++]; testExtraSpace(FIELDS.date.name(), value, bean);
+		if (value == null || value.trim().isEmpty()) {
+			bean.getErrors().add(new GtfsException(_path, id, FIELDS.date.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+		} else {
+			try {
+				bean.setDate(DATE_CONVERTER.from(context, FIELDS.date, value, true));
+			} catch(GtfsException ex) {
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.date.name(), GtfsException.ERROR.INVALID_DATE, null, null));
+			}
+		}
+		
+		value = array[i++]; testExtraSpace(FIELDS.exception_type.name(), value, bean);
+		if (value == null || value.trim().isEmpty()) {
+			bean.getErrors().add(new GtfsException(_path, id, FIELDS.exception_type.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+		} else {
+			try {
+				bean.setExceptionType(EXCEPTIONTYPE_CONVERTER.from(context, FIELDS.exception_type, value, true));
+			} catch(GtfsException ex) {
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.date.name(), GtfsException.ERROR.INVALID_EXCEPTION_TYPE, null, null));
+			}
+		}
+		
 		return bean;
 	}
 
 	@Override
 	public boolean validate(GtfsCalendarDate bean, GtfsImporter dao) {
-		return true;
+		boolean result = true;
+		if (bean.getDate() != null && bean.getServiceId() != null)
+			result = hashCodes.add(bean.getServiceId()+"#"+bean.getDate().getTime());
+		if (!result)
+			bean.getErrors().add(new GtfsException(_path, bean.getId(), FIELDS.service_id.name(), GtfsException.ERROR.DUPLICATE_DOUBLE_KEY, null, null));
+		return result;
 	}
 
 	public static class DefaultImporterFactory extends IndexFactory {

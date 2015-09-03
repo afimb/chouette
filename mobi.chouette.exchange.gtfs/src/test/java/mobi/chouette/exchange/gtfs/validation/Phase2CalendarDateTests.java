@@ -87,7 +87,7 @@ public class Phase2CalendarDateTests extends ValidationTests {
 			Assert.assertNotNull(detail.getSource(), "detail must refer a source");
 			Assert.assertNotNull(detail.getSource().getFile(), "detail must refer a file source");
 			Assert.assertEquals(detail.getSource().getFile().getFilename(), "calendar_dates.txt", "detail must refer bad file");
-			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(2), "detail must refer bad line");
+			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(3), "detail must refer bad line");
 		}
 	}
 	
@@ -105,7 +105,7 @@ public class Phase2CalendarDateTests extends ValidationTests {
 			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(2), "detail must refer bad line");
 		}
 	}
-	@Test(groups = { "Phase 2 CalendarDate" }, description = "duplicate service_id,date" ,priority=176 )
+	@Test(groups = { "Phase 2 CalendarDate" }, description = "duplicate service_id, date" ,priority=176 )
 	public void verifyTest_2_4() throws Exception {
 		log.info(Color.GREEN + "CalendarDate_4 : duplicate service_id,date" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "calendar_date_4", "1-GTFS-CalendarDate-4",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
@@ -144,7 +144,7 @@ public class Phase2CalendarDateTests extends ValidationTests {
 			Assert.assertNotNull(detail.getSource(), "detail must refer a source");
 			Assert.assertNotNull(detail.getSource().getFile(), "detail must refer a file source");
 			Assert.assertEquals(detail.getSource().getFile().getFilename(), "calendar_dates.txt", "detail must refer bad file");
-			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(2), "detail must refer bad line");
+			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(4), "detail must refer bad line");
 		}
 	}
 
@@ -153,7 +153,7 @@ public class Phase2CalendarDateTests extends ValidationTests {
 		log.info(Color.GREEN + "CalendarDate_7 : extra column detected" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "calendar_date_7", "1-GTFS-CalendarDate-7",CheckPoint.SEVERITY.WARNING, CheckPoint.RESULT.NOK,true);
 
-		Assert.assertEquals(result.getDetailCount(), 1, "detail count");
+		Assert.assertEquals(result.getDetailCount(), 2, "detail count");
 		for (Detail detail : result.getDetails()) 
 		{
 			Assert.assertNotNull(detail.getSource(), "detail must refer a source");

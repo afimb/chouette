@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.gtfs.parser;
 
+
 import java.awt.Color;
 
 import lombok.Getter;
@@ -16,13 +17,6 @@ import mobi.chouette.exchange.gtfs.validation.ValidationReporter;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.Validator;
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.FileError;
-import mobi.chouette.exchange.report.FileInfo;
-import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
-import mobi.chouette.exchange.validation.report.CheckPoint;
-import mobi.chouette.exchange.validation.report.Location;
-import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;
@@ -81,26 +75,23 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 	@Override
 	public void validate(Context context) throws Exception {
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
-		ActionReport report = (ActionReport) context.get(REPORT);
-		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
 		ValidationReporter validationReporter = (ValidationReporter) context.get(GTFS_REPORTER);
+		validationReporter.getExceptions().clear();
 		
-		// routes.txt
-		if (importer.hasRouteImporter()) {
-			// Add to report
-			report.addFileInfo(GTFS_ROUTES_FILE, FILE_STATE.OK);
+		// stops.txt
+		if (importer.hasRouteImporter()) { // the file "stops.txt" exists ?
+			validationReporter.reportSuccess(context, GTFS_1_GTFS_Route_1, GTFS_ROUTES_FILE);
 		} else {
-			// Add to report
-			report.addFileInfo(GTFS_ROUTES_FILE, FILE_STATE.ERROR, new FileError(FileError.CODE.FILE_NOT_FOUND, "The file \"routes.txt\" must be provided (rule 1-GTFS-Route-1)"));
-			// Add to validation report checkpoint 1-GTFS-Route-1
-			validationReport.addDetail(GTFS_1_GTFS_Route_1, new Location(GTFS_ROUTES_FILE, "routes-failure"), "The file \"routes.txt\" must be provided", CheckPoint.RESULT.NOK);
-			// Stop parsing and render reports (1-GTFS-Route-1 is fatal)
-			throw new Exception("The file \"routes.txt\" must be provided");
+			validationReporter.reportFailure(context, GTFS_1_GTFS_Route_1, GTFS_ROUTES_FILE);
 		}
 
 		Index<GtfsRoute> parser = null;
 		try { // Read and check the header line of the file "routes.txt"
-			parser = importer.getRouteById();
+			parser = importer.getRouteById(); // return new RouteById("/.../routes.txt", "route_id") { /** super(...) */
+			//   IndexImpl<GtfsStop>(_path = "/.../routes.txt", _key = "route_id", _value = "", _unique = true) {
+			//     initialize() /** read the lines of file _path */
+			//   }
+			// }
 		} catch (Exception ex ) {
 			if (ex instanceof GtfsException) {
 				validationReporter.reportError(context, (GtfsException)ex, GTFS_ROUTES_FILE);
@@ -109,19 +100,30 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 			}
 		}
 		
-		if (parser == null || parser.getLength() == 0) { // importer.getRouteById() fails for any other reason
+		if (parser == null) { // importer.getRouteById() fails for any other reason
 			validationReporter.throwUnknownError(context, new Exception("Cannot instantiate RouteById class"), GTFS_ROUTES_FILE);
 		}
-
-		parser.getErrors().clear();
-		try {
-			for (GtfsRoute bean : parser) {
-				validationReporter.reportErrors(context, bean.getErrors(), GTFS_ROUTES_FILE);
+		
+		if (parser.getLength() == 0) {
+			parser.getErrors().add(new GtfsException(GTFS_ROUTES_FILE, 1, null, GtfsException.ERROR.FILE_WITH_NO_ENTRY, null, null));
+		}
+		
+		if (!parser.getErrors().isEmpty()) {
+			validationReporter.reportErrors(context, parser.getErrors(), GTFS_ROUTES_FILE);
+			parser.getErrors().clear();
+		}
+		
+		for (GtfsRoute bean : parser) {
+			try {
 				parser.validate(bean, importer);
+			} catch (Exception ex) {
+				if (ex instanceof GtfsException) {
+					validationReporter.reportError(context, (GtfsException)ex, GTFS_ROUTES_FILE);
+				} else {
+					validationReporter.throwUnknownError(context, ex, GTFS_ROUTES_FILE);
+				}
 			}
-		} catch (Exception ex) {
-			AbstractConverter.populateFileError(new FileInfo(GTFS_ROUTES_FILE, FILE_STATE.ERROR), ex);
-			throw ex;
+			validationReporter.reportErrors(context, bean.getErrors(), GTFS_ROUTES_FILE);
 		}
 	}
 

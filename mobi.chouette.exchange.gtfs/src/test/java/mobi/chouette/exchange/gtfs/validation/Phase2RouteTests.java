@@ -181,7 +181,7 @@ public class Phase2RouteTests extends ValidationTests {
 		log.info(Color.GREEN + "Route_10 : extra column detected" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "route_10", "1-GTFS-Route-10",CheckPoint.SEVERITY.WARNING, CheckPoint.RESULT.NOK,true);
 
-		Assert.assertEquals(result.getDetailCount(), 1, "detail count");
+		Assert.assertEquals(result.getDetailCount(), 2, "detail count");
 		for (Detail detail : result.getDetails()) 
 		{
 			Assert.assertNotNull(detail.getSource(), "detail must refer a source");

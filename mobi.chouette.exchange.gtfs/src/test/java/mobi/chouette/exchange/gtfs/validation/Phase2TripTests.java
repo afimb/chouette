@@ -34,6 +34,7 @@ public class Phase2TripTests extends ValidationTests {
 			Assert.assertNull(detail.getSource().getFile().getColumnNumber(), "detail must refer no column");
 		}
 	}
+	
 	@Test(groups = { "Phase 2 Trip" }, description = "missing column trip_id" ,priority=82 )
 	public void verifyTest_2_2_1() throws Exception {
 		log.info(Color.GREEN + "Trip_2_1 : missing column trip_id" + Color.NORMAL);
@@ -48,6 +49,7 @@ public class Phase2TripTests extends ValidationTests {
 			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(1), "detail must refer bad line");
 		}
 	}
+	
 	@Test(groups = { "Phase 2 Trip" }, description = "missing column route_id" ,priority=83)
 	public void verifyTest_2_2_2() throws Exception {
 		log.info(Color.GREEN + "Trip_2_2 : missing column route_id" + Color.NORMAL);
@@ -62,6 +64,7 @@ public class Phase2TripTests extends ValidationTests {
 			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(1), "detail must refer bad line");
 		}
 	}
+	
 	@Test(groups = { "Phase 2 Trip" }, description = "missing column service_id" ,priority=84)
 	public void verifyTest_2_2_3() throws Exception {
 		log.info(Color.GREEN + "Trip_2_3 : missing column service_id" + Color.NORMAL);
@@ -76,6 +79,7 @@ public class Phase2TripTests extends ValidationTests {
 			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(1), "detail must refer bad line");
 		}
 	}
+	
 	@Test(groups = { "Phase 2 Trip" }, description = "empty column trip_id" ,priority=85 )
 	public void verifyTest_2_3_1() throws Exception {
 		log.info(Color.GREEN + "Trip_3_1 : empty column trip_id" + Color.NORMAL);
@@ -120,6 +124,7 @@ public class Phase2TripTests extends ValidationTests {
 			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(2), "detail must refer bad line");
 		}
 	}
+	
 	@Test(groups = { "Phase 2 Trip" }, description = "duplicate trip_id" ,priority=88 )
 	public void verifyTest_2_4() throws Exception {
 		log.info(Color.GREEN + "Trip_4 : duplicate trip_id" + Color.NORMAL);
@@ -134,7 +139,8 @@ public class Phase2TripTests extends ValidationTests {
 			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(3), "detail must refer bad line");
 		}
 	}
-	@Test(groups = { "Phase 2 Trip" }, description = "invalid column direction_id" ,priority=89 )
+	
+	//@Test(groups = { "Phase 2 Trip" }, description = "invalid column direction_id" ,priority=89 )
 	public void verifyTest_2_5() throws Exception {
 		log.info(Color.GREEN + "Trip_5 : invalid column direction_id" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "trip_5", "1-GTFS-Trip-5",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
@@ -148,7 +154,8 @@ public class Phase2TripTests extends ValidationTests {
 			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(2), "detail must refer bad line");
 		}
 	}
-	@Test(groups = { "Phase 2 Trip" }, description = "invalid column wheelchair_accessible" ,priority=90 )
+	
+	//@Test(groups = { "Phase 2 Trip" }, description = "invalid column wheelchair_accessible" ,priority=90 )
 	public void verifyTest_2_6() throws Exception {
 		log.info(Color.GREEN + "Trip_6 : invalid column wheelchair_accessible" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "trip_6", "1-GTFS-Trip-6",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
@@ -162,7 +169,8 @@ public class Phase2TripTests extends ValidationTests {
 			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(2), "detail must refer bad line");
 		}
 	}
-	@Test(groups = { "Phase 2 Trip" }, description = "invalid column bike_allowed" ,priority=91 )
+	
+	//@Test(groups = { "Phase 2 Trip" }, description = "invalid column bike_allowed" ,priority=91 )
 	public void verifyTest_2_7() throws Exception {
 		log.info(Color.GREEN + "Trip_7 : invalid column bike_allowed" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "trip_7", "1-GTFS-Trip-7",CheckPoint.SEVERITY.WARNING, CheckPoint.RESULT.NOK,true);
@@ -177,7 +185,7 @@ public class Phase2TripTests extends ValidationTests {
 		}
 	}
 
-	@Test(groups = { "Phase 2 Trip" }, description = "extra columns" ,priority=92 )
+	//@Test(groups = { "Phase 2 Trip" }, description = "extra columns" ,priority=92 )
 	public void verifyTest_2_8() throws Exception {
 		log.info(Color.GREEN + "Trip_8 : extra column detected" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "trip_8", "1-GTFS-Trip-8",CheckPoint.SEVERITY.WARNING, CheckPoint.RESULT.NOK,true);
@@ -192,7 +200,7 @@ public class Phase2TripTests extends ValidationTests {
 		}
 	}
 
-	@Test(groups = { "Phase 2 Trip" }, description = "empty file" ,priority=93 )
+	//@Test(groups = { "Phase 2 Trip" }, description = "empty file" ,priority=93 )
 	public void verifyTest_2_9() throws Exception {
 		log.info(Color.GREEN + "Trip_9 : empty file" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "trip_9", "1-GTFS-Trip-9",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);

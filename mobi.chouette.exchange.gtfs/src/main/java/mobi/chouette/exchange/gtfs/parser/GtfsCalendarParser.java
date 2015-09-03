@@ -13,6 +13,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.gtfs.model.GtfsCalendar;
 import mobi.chouette.exchange.gtfs.model.GtfsCalendarDate;
+import mobi.chouette.exchange.gtfs.model.importer.CalendarDateByService;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsException;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsImporter;
 import mobi.chouette.exchange.gtfs.model.importer.Index;
@@ -21,13 +22,6 @@ import mobi.chouette.exchange.gtfs.validation.ValidationReporter;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.Validator;
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.FileError;
-import mobi.chouette.exchange.report.FileInfo;
-import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
-import mobi.chouette.exchange.validation.report.CheckPoint;
-import mobi.chouette.exchange.validation.report.Location;
-import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.CalendarDay;
 import mobi.chouette.model.Period;
 import mobi.chouette.model.Timetable;
@@ -101,30 +95,24 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 	@Override
 	public void validate(Context context) throws Exception {
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
-		ActionReport report = (ActionReport) context.get(REPORT);
-		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
 		ValidationReporter validationReporter = (ValidationReporter) context.get(GTFS_REPORTER);
+		validationReporter.getExceptions().clear();
 		
 		if (!importer.hasCalendarImporter() && !importer.hasCalendarDateImporter()) {
-			// Add to report
-			report.addFileInfo(GTFS_CALENDAR_DATES_FILE, FILE_STATE.ERROR, new FileError(FileError.CODE.FILE_NOT_FOUND, "One of the files \"calendar.txt\" or \"calendar_dates.txt\" must be provided (rules 1-GTFS-Calendar-1)"));
-			// Add to validation report checkpoint 1-GTFS-Calendar-1
-			Location[] locations = new Location[2];
-			locations[0] = new Location(GTFS_CALENDAR_FILE, "calendar-failure");
-			locations[1] = new Location(GTFS_CALENDAR_DATES_FILE, "calendar-dates-failure");
-			validationReport.addDetail(GTFS_1_GTFS_Calendar_1, locations, "One of the files \"calendar.txt\" or \"calendar_dates.txt\" must be provided", CheckPoint.RESULT.NOK);
-			// Stop parsing and render reports (1-GTFS-StopTime-1 is fatal)
-			throw new Exception("One of the files \"calendar.txt\" or \"calendar_dates.txt\" must be provided");
+			validationReporter.reportFailure(context, GTFS_1_GTFS_Calendar_1, GTFS_CALENDAR_FILE, GTFS_CALENDAR_DATES_FILE);
 		}
 		
 		// calendar.txt
-		if (importer.hasCalendarImporter()) {
-			// Add to report
-			report.addFileInfo(GTFS_CALENDAR_FILE, FILE_STATE.OK);
-
+		if (importer.hasCalendarImporter()) { // the file "calendar.txt" exists ?
+			validationReporter.reportSuccess(context, GTFS_1_GTFS_Calendar_1, GTFS_CALENDAR_FILE);
+		
 			Index<GtfsCalendar> parser = null;
 			try { // Read and check the header line of the file "calendar.txt"
-				parser = importer.getCalendarByService();
+				parser = importer.getCalendarByService(); // return new CalendarByService("/.../calendar.txt", "service_id") { /** super(...) */
+				//   IndexImpl<GtfsCalendar>(_path = "/.../calendar.txt", _key = "service_id", _value = "", _unique = true) {
+				//     initialize() /** read the lines of file _path */
+				//   }
+				// }
 			} catch (Exception ex ) {
 				if (ex instanceof GtfsException) {
 					validationReporter.reportError(context, (GtfsException)ex, GTFS_CALENDAR_FILE);
@@ -132,31 +120,47 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 					validationReporter.throwUnknownError(context, ex, GTFS_CALENDAR_FILE);
 				}
 			}
+		
+			if (parser == null) { // importer.getCalendarByService() fails for any other reason
+				validationReporter.throwUnknownError(context, new Exception("Cannot instantiate CalendarByService class"), GTFS_CALENDAR_FILE);
+			}
+		
+			if (parser.getLength() == 0) {
+				parser.getErrors().add(new GtfsException(GTFS_CALENDAR_FILE, 1, null, GtfsException.ERROR.FILE_WITH_NO_ENTRY, null, null));
+			}
+		
+			if (!parser.getErrors().isEmpty()) {
+				validationReporter.reportErrors(context, parser.getErrors(), GTFS_CALENDAR_FILE);
+				parser.getErrors().clear();
+			}
 			
-			if (parser == null || parser.getLength() == 0) { // importer.getCalendarByService() fails for any other reason
-				validationReporter.throwUnknownError(context, new Exception("Cannot instantiate CalendarByService class"),  GTFS_CALENDAR_FILE);
-			}
-
-			parser.getErrors().clear();
-			try {
-				for (GtfsCalendar bean : parser) {
-					validationReporter.reportErrors(context, bean.getErrors(), GTFS_CALENDAR_FILE);
+			for (GtfsCalendar bean : parser) {
+				try {
 					parser.validate(bean, importer);
+				} catch (Exception ex) {
+					if (ex instanceof GtfsException) {
+						validationReporter.reportError(context, (GtfsException)ex, GTFS_CALENDAR_FILE);
+					} else {
+						validationReporter.throwUnknownError(context, ex, GTFS_CALENDAR_FILE);
+					}
 				}
-			} catch (Exception ex) {
-				AbstractConverter.populateFileError(new FileInfo(GTFS_CALENDAR_FILE, FILE_STATE.ERROR), ex);
-				throw ex;
+				validationReporter.reportErrors(context, bean.getErrors(), GTFS_CALENDAR_FILE);
 			}
+		} else {
+			validationReporter.reportUnsuccess(context, GTFS_1_GTFS_Calendar_1, GTFS_CALENDAR_FILE);
 		}
 		
 		// calendar_dates.txt
-		if (importer.hasCalendarDateImporter()) {
-			// Add to report
-			report.addFileInfo(GTFS_CALENDAR_DATES_FILE, FILE_STATE.OK);
-
+		if (importer.hasCalendarDateImporter()) { // the file "calendar_dates.txt" exists ?
+			validationReporter.reportSuccess(context, GTFS_1_GTFS_Calendar_1, GTFS_CALENDAR_DATES_FILE);
+		
 			Index<GtfsCalendarDate> parser = null;
 			try { // Read and check the header line of the file "calendar_dates.txt"
-				parser = importer.getCalendarDateByService();
+				parser = importer.getCalendarDateByService(); // return new CalendarDateByService("/.../calendar_dates.txt", "service_id") { /** super(...) */
+				//   IndexImpl<GtfsCalendarDate>(_path = "/.../calendar_dates.txt", _key = "service_id", _value = "", _unique = true) {
+				//     initialize() /** read the lines of file _path */
+				//   }
+				// }
 			} catch (Exception ex ) {
 				if (ex instanceof GtfsException) {
 					validationReporter.reportError(context, (GtfsException)ex, GTFS_CALENDAR_DATES_FILE);
@@ -164,21 +168,35 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 					validationReporter.throwUnknownError(context, ex, GTFS_CALENDAR_DATES_FILE);
 				}
 			}
+		
+			if (parser == null) { // importer.getCalendarDateByService() fails for any other reason
+				validationReporter.throwUnknownError(context, new Exception("Cannot instantiate CalendarDateByService class"), GTFS_CALENDAR_DATES_FILE);
+			}
+		
+			if (parser.getLength() == 0) {
+				parser.getErrors().add(new GtfsException(GTFS_CALENDAR_DATES_FILE, 1, null, GtfsException.ERROR.FILE_WITH_NO_ENTRY, null, null));
+			}
+		
+			if (!parser.getErrors().isEmpty()) {
+				validationReporter.reportErrors(context, parser.getErrors(), GTFS_CALENDAR_DATES_FILE);
+				parser.getErrors().clear();
+			}
 			
-			if (parser == null || parser.getLength() == 0) { // importer.getCalendarDateByService() fails for any other reason
-				validationReporter.throwUnknownError(context, new Exception("Cannot instantiate CalendarDateByservice class"), GTFS_CALENDAR_DATES_FILE);
-			}
-
-			parser.getErrors().clear();
-			try {
-				for (GtfsCalendarDate bean : parser) {
-					validationReporter.reportErrors(context, bean.getErrors(), GTFS_CALENDAR_DATES_FILE);
+			CalendarDateByService.hashCodes.clear();
+			for (GtfsCalendarDate bean : parser) {
+				try {
 					parser.validate(bean, importer);
+				} catch (Exception ex) {
+					if (ex instanceof GtfsException) {
+						validationReporter.reportError(context, (GtfsException)ex, GTFS_CALENDAR_DATES_FILE);
+					} else {
+						validationReporter.throwUnknownError(context, ex, GTFS_CALENDAR_DATES_FILE);
+					}
 				}
-			} catch (Exception ex) {
-				AbstractConverter.populateFileError(new FileInfo(GTFS_CALENDAR_DATES_FILE, FILE_STATE.ERROR), ex);
-				throw ex;
+				validationReporter.reportErrors(context, bean.getErrors(), GTFS_CALENDAR_DATES_FILE);
 			}
+		} else {
+			validationReporter.reportUnsuccess(context, GTFS_1_GTFS_Calendar_1, GTFS_CALENDAR_DATES_FILE);
 		}
 	}
 

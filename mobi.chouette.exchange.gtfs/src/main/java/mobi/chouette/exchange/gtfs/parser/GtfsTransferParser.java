@@ -6,6 +6,7 @@ import java.util.Calendar;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
+import mobi.chouette.exchange.gtfs.model.GtfsStop;
 import mobi.chouette.exchange.gtfs.model.GtfsTransfer;
 import mobi.chouette.exchange.gtfs.model.GtfsTransfer.TransferType;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsException;
@@ -49,18 +50,20 @@ public class GtfsTransferParser implements Parser, Validator, Constant {
 	@Override
 	public void validate(Context context) throws Exception {
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
-		ActionReport report = (ActionReport) context.get(REPORT);
-		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
 		ValidationReporter validationReporter = (ValidationReporter) context.get(GTFS_REPORTER);
+		validationReporter.getExceptions().clear();
 		
 		// transfers.txt
-		if (importer.hasTransferImporter()) {
-			// Add to report
-			report.addFileInfo(GTFS_TRANSFERS_FILE, FILE_STATE.OK);
-			
+		if (importer.hasTransferImporter()) { // the file "transfers.txt" exists ?
+			validationReporter.reportSuccess(context, GTFS_1_GTFS_Transfer_1, GTFS_TRANSFERS_FILE);
+
 			Index<GtfsTransfer> parser = null;
-			try { // Read and check the header line of the file "routes.txt"
-				parser = importer.getTransferByFromStop();
+			try { // Read and check the header line of the file "transfers.txt"
+				parser = importer.getTransferByFromStop(); // return new TransferByFromStop("/.../transfers.txt", "from_stop_id", false) { /** super(...) */
+				//   IndexImpl<GtfsTransfer>(_path = "/.../transfers.txt", _key = "from_stop_id", _value = "", _unique = false) {
+				//     initialize() /** read the lines of file _path */
+				//   }
+				// }
 			} catch (Exception ex ) {
 				if (ex instanceof GtfsException) {
 					validationReporter.reportError(context, (GtfsException)ex, GTFS_TRANSFERS_FILE);
@@ -68,21 +71,34 @@ public class GtfsTransferParser implements Parser, Validator, Constant {
 					validationReporter.throwUnknownError(context, ex, GTFS_TRANSFERS_FILE);
 				}
 			}
-		
-			if (parser == null || parser.getLength() == 0) { // importer.getTransferByFromStop() fails for any other reason
+			
+			if (parser == null) { // importer.getTransferByFromStop() fails for any other reason
 				validationReporter.throwUnknownError(context, new Exception("Cannot instantiate TransferByFromStop class"), GTFS_TRANSFERS_FILE);
 			}
 			
-			parser.getErrors().clear();
-			try {
-				for (GtfsTransfer bean : parser) {
-					validationReporter.reportErrors(context, bean.getErrors(), GTFS_TRANSFERS_FILE);
-					parser.validate(bean, importer);
-				}
-			} catch (Exception ex) {
-				AbstractConverter.populateFileError(new FileInfo(GTFS_TRANSFERS_FILE, FILE_STATE.ERROR), ex);
-				throw ex;
+			if (parser.getLength() == 0) {
+				parser.getErrors().add(new GtfsException(GTFS_TRANSFERS_FILE, 1, null, GtfsException.ERROR.FILE_WITH_NO_ENTRY, null, null));
 			}
+			
+			if (!parser.getErrors().isEmpty()) {
+				validationReporter.reportErrors(context, parser.getErrors(), GTFS_TRANSFERS_FILE);
+				parser.getErrors().clear();
+			}
+			
+			for (GtfsTransfer bean : parser) {
+				try {
+					parser.validate(bean, importer);
+				} catch (Exception ex) {
+					if (ex instanceof GtfsException) {
+						validationReporter.reportError(context, (GtfsException)ex, GTFS_TRANSFERS_FILE);
+					} else {
+						validationReporter.throwUnknownError(context, ex, GTFS_TRANSFERS_FILE);
+					}
+				}
+				validationReporter.reportErrors(context, bean.getErrors(), GTFS_TRANSFERS_FILE);
+			}
+		} else {
+			validationReporter.reportUnsuccess(context, GTFS_1_GTFS_Transfer_1, GTFS_TRANSFERS_FILE);
 		}
 	}
 
