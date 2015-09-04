@@ -609,11 +609,6 @@
 				<version>2.76</version>
 			</dependency>
 
-
-<<<<<<< HEAD
-
-=======
->>>>>>> master
 			<!-- Utilities Dependencies -->
 			<dependency>
 				<groupId>com.google.guava</groupId>
@@ -671,7 +666,6 @@
 				<artifactId>gt-epsg-hsql</artifactId>
 				<version>10.5</version>
 			</dependency>
-<<<<<<< HEAD
 		<dependency>
 		    <groupId>mobi.chouette</groupId>
 		    <artifactId>mobi.chouette.common</artifactId>
@@ -745,9 +739,6 @@
       
       </dependencies>
 		
-=======
-		</dependencies>
->>>>>>> master
 	</dependencyManagement>
 	<profiles>
 		<profile>
