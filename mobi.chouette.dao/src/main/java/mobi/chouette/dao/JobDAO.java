@@ -15,7 +15,6 @@ import javax.persistence.criteria.Root;
 
 import mobi.chouette.model.iev.Job_;
 import mobi.chouette.model.iev.Job;
-import mobi.chouette.model.iev.Job.STATUS;
 
 @Stateless
 public class JobDAO extends GenericDAOImpl<Job> {
@@ -63,7 +62,7 @@ public class JobDAO extends GenericDAOImpl<Job> {
 		return result;
 	}
 
-	public List<Job> findByStatus(STATUS status) {
+	public List<Job> findByStatus(Job.STATUS status) {
 		List<Job> result;
 		CriteriaBuilder builder = em.getCriteriaBuilder();
 		CriteriaQuery<Job> criteria = builder.createQuery(type);
@@ -85,10 +84,10 @@ public class JobDAO extends GenericDAOImpl<Job> {
 		Query query = em
 				.createQuery("from Job j where j.referential = ?1 and j.status in ( ?2 ) order by id");
 		query.setParameter(1, referential);
-		query.setParameter(2, Arrays.asList(STATUS.STARTED, STATUS.SCHEDULED));
+		query.setParameter(2, Arrays.asList(Job.STATUS.STARTED, Job.STATUS.SCHEDULED));
 		List<Job> list = query.getResultList();
 		if (list != null && !list.isEmpty()) {
-			if (list.get(0).getStatus().equals(STATUS.SCHEDULED)) {
+			if (list.get(0).getStatus().equals(Job.STATUS.SCHEDULED)) {
 				result = list.get(0);
 			}
 		}

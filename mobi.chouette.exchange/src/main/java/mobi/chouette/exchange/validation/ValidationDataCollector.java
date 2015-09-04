@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.ConnectionLink;
@@ -20,6 +21,7 @@ import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.util.Referential;
 
+@Log4j
 public class ValidationDataCollector {
 
 	public void collect(ValidationData collection, Line line) {
@@ -41,15 +43,16 @@ public class ValidationDataCollector {
 						updateId(vehicleJourney.getCompany(), cache.getCompanies());
 						collection.getCompanyIds().add(vehicleJourney.getCompany().getObjectId());
 					}
-				} // end vehiclejourney loop
+				} // end vehicleJourney loop
 				updateId(jp, cache.getJourneyPatterns());
 				collection.getJourneyPatterns().add(jp);
 			} // end journeyPattern loop
 			updateId(route, cache.getRoutes());
 			collection.getRoutes().add(route);
-			addAllStopPoints(collection, route.getStopPoints(), cache);
+			addAllStopPoints(collection, route, cache);
 			for (StopPoint stopPoint : route.getStopPoints()) {
-				collectStopAreas(collection, stopPoint.getContainedInStopArea(), cache);
+				if (stopPoint != null) // protection from missing stopPoint ranks
+					collectStopAreas(collection, stopPoint.getContainedInStopArea(), cache);
 			}
 		}// end route loop
 		updateId(line, cache.getLines());
@@ -74,14 +77,12 @@ public class ValidationDataCollector {
 		return;
 	}
 
-
 	private void collectStopAreas(ValidationData collection, StopArea stopArea, Referential cache) {
-        // add stoparea line collection
+		// add stoparea line collection
 		Set<String> lineIds = collection.getLinesOfStopAreas().get(stopArea.getObjectId());
-		if (lineIds == null) 
-		{
+		if (lineIds == null) {
 			lineIds = new HashSet<>();
-			collection.getLinesOfStopAreas().put(stopArea.getObjectId(),lineIds);
+			collection.getLinesOfStopAreas().put(stopArea.getObjectId(), lineIds);
 		}
 		lineIds.add(collection.getCurrentLine().getObjectId());
 		if (collection.getStopAreaIds().contains(stopArea.getObjectId()))
@@ -123,10 +124,15 @@ public class ValidationDataCollector {
 
 	}
 
-	private void addAllStopPoints(ValidationData collection, Collection<StopPoint> data, Referential cache) {
+	private void addAllStopPoints(ValidationData collection, Route route, Referential cache) {
+		Collection<StopPoint> data = route.getStopPoints();
 		for (StopPoint object : data) {
-			updateId(object, cache.getStopPoints());
-			collection.getStopPoints().add(object);
+			if (object == null) {
+				log.error("non continous sequence order in route " + route.getObjectId() + " stopPoints");
+			} else {
+				updateId(object, cache.getStopPoints());
+				collection.getStopPoints().add(object);
+			}
 		}
 
 	}
@@ -188,15 +194,16 @@ public class ValidationDataCollector {
 		target.setTextColor(source.getTextColor());
 		target.setTransportModeName(source.getTransportModeName());
 		target.setUrl(source.getUrl());
-		
-        // clone used dependencies
+
+		// clone used dependencies
 		target.setNetwork(cloneNetwork(source.getNetwork()));
 
 		return target;
 	}
 
 	private Network cloneNetwork(Network source) {
-		if (source == null) return null;
+		if (source == null)
+			return null;
 		Network target = new Network();
 		target.setId(source.getId());
 		target.setObjectId(source.getObjectId());

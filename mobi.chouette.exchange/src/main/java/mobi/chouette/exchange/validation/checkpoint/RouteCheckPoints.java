@@ -2,6 +2,7 @@ package mobi.chouette.exchange.validation.checkpoint;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -332,6 +333,10 @@ public class RouteCheckPoints extends AbstractValidation<Route> implements Valid
 			return;
 		prepareCheckPoint(report, ROUTE_8);
 		List<StopPoint> points = new ArrayList<StopPoint>(route.getStopPoints());
+		for (Iterator<StopPoint> iterator = points.iterator(); iterator.hasNext();) {
+			StopPoint stopPoint =  iterator.next();
+			if (stopPoint == null) iterator.remove();
+		}
 		for (JourneyPattern jp : route.getJourneyPatterns()) {
 			points.removeAll(jp.getStopPoints());
 			if (points.isEmpty())

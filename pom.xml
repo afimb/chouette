@@ -424,6 +424,77 @@
 	</reporting>
 	<dependencyManagement>
 		<dependencies>
+			<!-- module dependencies -->
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>mobi.chouette.common</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>mobi.chouette.persistence.hibernate</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>mobi.chouette.model</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>mobi.chouette.model.iev</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>mobi.chouette.dao</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>mobi.chouette.exchange</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>mobi.chouette.exchange.neptune</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>mobi.chouette.exchange.gtfs</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>mobi.chouette.exchange.netex</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>mobi.chouette.exchange.kml</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>mobi.chouette.exchange.hub</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>mobi.chouette.exchange.validator</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>mobi.chouette.service</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>mobi.chouette.ws</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 
 			<!-- Default Dependencies -->
 			<dependency>
@@ -539,7 +610,10 @@
 			</dependency>
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
 			<!-- Utilities Dependencies -->
 			<dependency>
 				<groupId>com.google.guava</groupId>
@@ -597,6 +671,7 @@
 				<artifactId>gt-epsg-hsql</artifactId>
 				<version>10.5</version>
 			</dependency>
+<<<<<<< HEAD
 		<dependency>
 		    <groupId>mobi.chouette</groupId>
 		    <artifactId>mobi.chouette.common</artifactId>
@@ -670,6 +745,9 @@
       
       </dependencies>
 		
+=======
+		</dependencies>
+>>>>>>> master
 	</dependencyManagement>
 	<profiles>
 		<profile>
