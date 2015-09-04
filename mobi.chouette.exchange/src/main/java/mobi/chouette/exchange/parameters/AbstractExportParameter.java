@@ -37,8 +37,8 @@ public class AbstractExportParameter extends AbstractParameter{
 	private Date endDate;
 
 	@Getter @Setter
-	@XmlElement(name = "add_metadata", defaultValue="false")
-	private boolean addMetadata = false;
+	@XmlElement(name = "add_metadata", defaultValue="true")
+	private boolean addMetadata = true;
 
 	
 }
