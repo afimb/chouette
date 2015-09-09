@@ -446,37 +446,27 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 				}
 			}
 		} catch (FileNotFoundException e) {
-			log.error(e);
-			Context context = new Context();
-			context.put(Context.PATH, new File(_path).getName());
-			context.put(Context.ID, _total);
-			context.put(Context.VALUE, e.getMessage());
-			context.put(Context.ERROR, GtfsException.ERROR.MISSING_FILE);
-			throw new GtfsException(context);
+			log.error("File "+_path+" not found", e);
+			throw new GtfsException(_path, 0, null, GtfsException.ERROR.MISSING_FILE, null, null, e);
 		} catch (Exception e) {
-			log.error(e,e);
-			Context context = new Context();
-			context.put(Context.PATH, _path);
-			context.put(Context.ID, _total);
-			context.put(Context.VALUE, e.getMessage());
-			context.put(Context.ERROR, GtfsException.ERROR.SYSTEM);
-			throw new GtfsException(context);
-			
+			log.error("A system problem occurs while reading file "+_path, e);
+			throw new GtfsException(_path, 0, null, GtfsException.ERROR.SYSTEM, null, null, e);
 		} finally {
 			try {
 				if (channel != null) {
 					channel.close();
 				}
 			} catch (IOException ignored) {
+				channel = null;
 			}
 			try {
 				if (file != null) {
 					file.close();
 				}
 			} catch (IOException ignored) {
+				file = null;
 			}
 		}
-
 		return result;
 	}
 

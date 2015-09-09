@@ -33,7 +33,7 @@ import org.testng.Assert;
 
 public class AbstractPhase1Tests implements Constant, ReportConstant {
 
-	private static final String path = "src/test/data/validation/";
+	private static final String path = "src/test/data/validation/phase1/";
 
 	protected static InitialContext initialContext;
 
