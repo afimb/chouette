@@ -31,7 +31,7 @@ import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 import org.testng.Assert;
 
-public class ValidationTests implements Constant, ReportConstant {
+public class AbstractPhase1Tests implements Constant, ReportConstant {
 
 	private static final String path = "src/test/data/validation/";
 

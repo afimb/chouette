@@ -10,7 +10,7 @@ import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
 @Log4j
-public class Phase1Tests extends ValidationTests {
+public class Phase1CommonTests extends AbstractPhase1Tests {
 	
 	
 	@BeforeSuite 

@@ -8,7 +8,7 @@ import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
 @Log4j
-public class NominalTests extends ValidationTests {
+public class NominalTests extends AbstractPhase1Tests {
 	
 	
 	@BeforeSuite 

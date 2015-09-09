@@ -10,7 +10,7 @@ import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
 @Log4j
-public class Phase2TransferTests extends ValidationTests {
+public class Phase1TransferTests extends AbstractPhase1Tests {
 	
 	
 	@BeforeSuite 
