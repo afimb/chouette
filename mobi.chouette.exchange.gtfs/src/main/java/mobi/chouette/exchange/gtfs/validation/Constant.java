@@ -73,6 +73,8 @@ public interface Constant extends mobi.chouette.exchange.gtfs.Constant {
 	public static final String GTFS_1_GTFS_StopTime_10 = "1-GTFS-StopTime-10";
 	public static final String GTFS_1_GTFS_StopTime_11 = "1-GTFS-StopTime-11";
 	public static final String GTFS_1_GTFS_StopTime_12 = "1-GTFS-StopTime-12";
+	public static final String GTFS_1_GTFS_StopTime_13 = "1-GTFS-StopTime-13";
+	public static final String GTFS_1_GTFS_StopTime_14 = "1-GTFS-StopTime-14";
 
 	public static final String GTFS_1_GTFS_Calendar_1 = "1-GTFS-Calendar-1";
 	public static final String GTFS_1_GTFS_Calendar_2 = "1-GTFS-Calendar-2";

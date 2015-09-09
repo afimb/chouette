@@ -266,7 +266,6 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			}
 			validationReporter.reportErrors(context, bean.getErrors(), GTFS_STOP_TIMES_FILE);
 		}
-		
 		validationReporter.getExceptions().clear();
 		
 		// trips.txt

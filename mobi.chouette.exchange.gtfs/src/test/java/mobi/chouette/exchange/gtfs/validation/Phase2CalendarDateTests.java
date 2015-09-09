@@ -33,6 +33,7 @@ public class Phase2CalendarDateTests extends ValidationTests {
 			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(1), "detail must refer bad line");
 		}
 	}
+	
 	@Test(groups = { "Phase 2 CalendarDate" }, description = "missing column date" ,priority=171)
 	public void verifyTest_2_2_2() throws Exception {
 		log.info(Color.GREEN + "CalendarDate_2_2 : missing column date" + Color.NORMAL);
@@ -47,6 +48,7 @@ public class Phase2CalendarDateTests extends ValidationTests {
 			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(1), "detail must refer bad line");
 		}
 	}
+	
 	@Test(groups = { "Phase 2 CalendarDate" }, description = "missing column exception_type" ,priority=172)
 	public void verifyTest_2_2_3() throws Exception {
 		log.info(Color.GREEN + "CalendarDate_2_3 : missing column exception_type" + Color.NORMAL);
@@ -61,6 +63,7 @@ public class Phase2CalendarDateTests extends ValidationTests {
 			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(1), "detail must refer bad line");
 		}
 	}
+	
 	@Test(groups = { "Phase 2 CalendarDate" }, description = "empty column service_id" ,priority=173 )
 	public void verifyTest_2_3_1() throws Exception {
 		log.info(Color.GREEN + "CalendarDate_3_1 : empty column service_id" + Color.NORMAL);
@@ -105,6 +108,7 @@ public class Phase2CalendarDateTests extends ValidationTests {
 			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(2), "detail must refer bad line");
 		}
 	}
+	
 	@Test(groups = { "Phase 2 CalendarDate" }, description = "duplicate service_id, date" ,priority=176 )
 	public void verifyTest_2_4() throws Exception {
 		log.info(Color.GREEN + "CalendarDate_4 : duplicate service_id,date" + Color.NORMAL);
@@ -119,6 +123,7 @@ public class Phase2CalendarDateTests extends ValidationTests {
 			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(3), "detail must refer bad line");
 		}
 	}
+	
 	@Test(groups = { "Phase 2 CalendarDate" }, description = "invalid column date" ,priority=177 )
 	public void verifyTest_2_5() throws Exception {
 		log.info(Color.GREEN + "CalendarDate_5 : invalid column date" + Color.NORMAL);
@@ -133,6 +138,7 @@ public class Phase2CalendarDateTests extends ValidationTests {
 			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(2), "detail must refer bad line");
 		}
 	}
+	
 	@Test(groups = { "Phase 2 CalendarDate" }, description = "invalid column exception_type" ,priority=178 )
 	public void verifyTest_2_6() throws Exception {
 		log.info(Color.GREEN + "CalendarDate_6 : invalid column exception_type" + Color.NORMAL);

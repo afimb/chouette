@@ -322,7 +322,129 @@ public class ValidationReporter implements Constant {
 					"Double service_id date",
 					CheckPoint.RESULT.NOK);
 			break;
+			
+		case MISSING_ARRIVAL_TIME:// 1-GTFS-StopTime-4
+			checkPointName = checkPointName(name, GtfsException.ERROR.MISSING_ARRIVAL_TIME);
+			fieldName = ex.getField();
+			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+					new FileError(FileError.CODE.INVALID_FORMAT,
+							"Missing \""+fieldName+"\" (rule "+checkPointName+")"));
+			validationReport.addDetail(checkPointName,
+					new Location(filenameInfo, "Missing \""+fieldName+"\"", ((GtfsException) ex).getId(), ((GtfsException) ex).getField()),
+					"Missing \""+fieldName+"\"",
+					CheckPoint.RESULT.NOK);
+			break;
+			
+		case MISSING_DEPARTURE_TIME:// 1-GTFS-StopTime-4
+			checkPointName = checkPointName(name, GtfsException.ERROR.MISSING_DEPARTURE_TIME);
+			fieldName = ex.getField();
+			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+					new FileError(FileError.CODE.INVALID_FORMAT,
+							"Missing \""+fieldName+"\" (rule "+checkPointName+")"));
+			validationReport.addDetail(checkPointName,
+					new Location(filenameInfo, "Missing \""+fieldName+"\"", ((GtfsException) ex).getId(), ((GtfsException) ex).getField()),
+					"Missing \""+fieldName+"\"",
+					CheckPoint.RESULT.NOK);
+			break;
+			
+		case DUPLICATE_STOP_SEQUENCE:// 1-GTFS-StopTime-5
+			checkPointName = checkPointName(name, GtfsException.ERROR.DUPLICATE_STOP_SEQUENCE);
+			fieldName = ex.getField();
+			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+					new FileError(FileError.CODE.INVALID_FORMAT,
+							"Duplicate \""+fieldName+"\" for the same \"tripid\" (rule "+checkPointName+")"));
+			validationReport.addDetail(checkPointName,
+					new Location(filenameInfo, "Duplicate \""+fieldName+"\" for the same \"tripid\"", ((GtfsException) ex).getId(), ((GtfsException) ex).getField()),
+					"Duplicate \""+fieldName+"\" for the same \"tripid\"",
+					CheckPoint.RESULT.NOK);
+			throw new Exception("Duplicate \""+fieldName+"\" for the same \"tripid\"");
+			
+		case INVALID_STOP_SEQUENCE:// 1-GTFS-StopTime-6
+			checkPointName = checkPointName(name, GtfsException.ERROR.INVALID_STOP_SEQUENCE);
+			fieldName = ex.getField();
+			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+					new FileError(FileError.CODE.INVALID_FORMAT,
+							"Invalid \""+fieldName+"\" (rule "+checkPointName+")"));
+			validationReport.addDetail(checkPointName,
+					new Location(filenameInfo, "Invalid \""+fieldName+"\"", ((GtfsException) ex).getId(), ((GtfsException) ex).getField()),
+					"Invalid \""+fieldName+"\"",
+					CheckPoint.RESULT.NOK);
+			break;
+	
+		case INVALID_ARRIVAL_TIME:// 1-GTFS-StopTime-7
+			checkPointName = checkPointName(name, GtfsException.ERROR.INVALID_ARRIVAL_TIME);
+			fieldName = ex.getField();
+			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+					new FileError(FileError.CODE.INVALID_FORMAT,
+							"Invalid \""+fieldName+"\" (rule "+checkPointName+")"));
+			validationReport.addDetail(checkPointName,
+					new Location(filenameInfo, "Invalid \""+fieldName+"\"", ((GtfsException) ex).getId(), ((GtfsException) ex).getField()),
+					"Invalid \""+fieldName+"\"",
+					CheckPoint.RESULT.NOK);
+			break;
+
+		case INVALID_DEPARTURE_TIME:// 1-GTFS-StopTime-8
+			checkPointName = checkPointName(name, GtfsException.ERROR.INVALID_DEPARTURE_TIME);
+			fieldName = ex.getField();
+			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+					new FileError(FileError.CODE.INVALID_FORMAT,
+							"Invalid \""+fieldName+"\" (rule "+checkPointName+")"));
+			validationReport.addDetail(checkPointName,
+					new Location(filenameInfo, "Invalid \""+fieldName+"\"", ((GtfsException) ex).getId(), ((GtfsException) ex).getField()),
+					"Invalid \""+fieldName+"\"",
+					CheckPoint.RESULT.NOK);
+			break;
+			
+		case INVALID_PICKUP_TYPE: // 1-GTFS-StopTime-9
+			checkPointName = checkPointName(name, GtfsException.ERROR.INVALID_PICKUP_TYPE);
+			fieldName = ex.getField();
+			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+					new FileError(FileError.CODE.INVALID_FORMAT,
+							"Invalid \""+fieldName+"\" (rule "+checkPointName+")"));
+			validationReport.addDetail(checkPointName,
+					new Location(filenameInfo, "Invalid \""+fieldName+"\"", ((GtfsException) ex).getId(), ((GtfsException) ex).getField()),
+					"Invalid \""+fieldName+"\"",
+					CheckPoint.RESULT.NOK);
+			break;
+			
+		case INVALID_DROP_OFF_TYPE: // 1-GTFS-StopTime-10
+			checkPointName = checkPointName(name, GtfsException.ERROR.INVALID_DROP_OFF_TYPE);
+			fieldName = ex.getField();
+			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+					new FileError(FileError.CODE.INVALID_FORMAT,
+							"Invalid \""+fieldName+"\" (rule "+checkPointName+")"));
+			validationReport.addDetail(checkPointName,
+					new Location(filenameInfo, "Invalid \""+fieldName+"\"", ((GtfsException) ex).getId(), ((GtfsException) ex).getField()),
+					"Invalid \""+fieldName+"\"",
+					CheckPoint.RESULT.NOK);
+			break;
+			
+		case INVALID_SHAPE_DIST_TRAVELED: // 1-GTFS-StopTime-11
+			checkPointName = checkPointName(name, GtfsException.ERROR.INVALID_SHAPE_DIST_TRAVELED);
+			fieldName = ex.getField();
+			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+					new FileError(FileError.CODE.INVALID_FORMAT,
+							"Invalid \""+fieldName+"\" (rule "+checkPointName+")"));
+			validationReport.addDetail(checkPointName,
+					new Location(filenameInfo, "Invalid \""+fieldName+"\"", ((GtfsException) ex).getId(), ((GtfsException) ex).getField()),
+					"Invalid \""+fieldName+"\"",
+					CheckPoint.RESULT.NOK);
+			break;
+		
+		case INVALID_TIMEPOINT: // 1-GTFS-StopTime-12
+			checkPointName = checkPointName(name, GtfsException.ERROR.INVALID_TIMEPOINT);
+			fieldName = ex.getField();
+			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+					new FileError(FileError.CODE.INVALID_FORMAT,
+							"Invalid \""+fieldName+"\" (rule "+checkPointName+")"));
+			validationReport.addDetail(checkPointName,
+					new Location(filenameInfo, "Invalid \""+fieldName+"\"", ((GtfsException) ex).getId(), ((GtfsException) ex).getField()),
+					"Invalid \""+fieldName+"\"",
+					CheckPoint.RESULT.NOK);
+			break;
+
 ////////////////////////////			
+
 		case DUPLICATE_DEFAULT_KEY_FIELD:
 			// TODO. Give the rigth code : At most only one Agency can have default value agency_id
 			report.addFileInfo(filenameInfo, FILE_STATE.ERROR,
@@ -407,6 +529,25 @@ public class ValidationReporter implements Constant {
 		
 		name = capitalize(name);
 		switch(errorName) {
+		case INVALID_TIMEPOINT: // 1-GTFS-StopTime-12
+			return "1-GTFS-StopTime-12";
+		case INVALID_SHAPE_DIST_TRAVELED: // 1-GTFS-StopTime-11
+			return "1-GTFS-StopTime-11";
+		case INVALID_DROP_OFF_TYPE: // 1-GTFS-StopTime-10
+			return "1-GTFS-StopTime-10";
+		case INVALID_PICKUP_TYPE: // 1-GTFS-StopTime-9
+			return "1-GTFS-StopTime-9";
+		case INVALID_ARRIVAL_TIME:// 1-GTFS-StopTime-7
+			return "1-GTFS-StopTime-7";
+		case INVALID_DEPARTURE_TIME:// 1-GTFS-StopTime-8
+			return "1-GTFS-StopTime-8";
+		case INVALID_STOP_SEQUENCE:// 1-GTFS-StopTime-6
+			return "1-GTFS-StopTime-6";
+		case DUPLICATE_STOP_SEQUENCE:// 1-GTFS-StopTime-5
+			return "1-GTFS-StopTime-5";
+		case MISSING_ARRIVAL_TIME:// 1-GTFS-StopTime-4
+		case MISSING_DEPARTURE_TIME:// 1-GTFS-StopTime-4
+			return "1-GTFS-StopTime-4";
 		case DUPLICATE_DOUBLE_KEY: // 1-GTFS-CalendarDate-4
 			return "1-GTFS-CalendarDate-4";
 		case INVALID_DATE: // 1-GTFS-CalendarDate-5
@@ -428,6 +569,8 @@ public class ValidationReporter implements Constant {
 				return "1-GTFS-"+name+"-14";
 			if ("CalendarDate".equals(name))
 				return "1-GTFS-"+name+"-7";
+			if ("StopTime".equals(name))
+				return "1-GTFS-"+name+"-13";
 			return "1-GTFS-"+name+"-11";
 		case MISSING_REQUIRED_FIELDS:
 			if ("Agency".equals(name))
@@ -467,7 +610,9 @@ public class ValidationReporter implements Constant {
 			return "1-GTFS-"+name+"-10";
 		case FILE_WITH_NO_ENTRY:
 			if ("Stop".equals(name))
-				return "1-GTFS-"+name+"-12";			
+				return "1-GTFS-"+name+"-12";
+			if ("StopTime".equals(name))
+				return "1-GTFS-"+name+"-14";
 			return "1-GTFS-"+name+"-11";
 		default:
 			return null;

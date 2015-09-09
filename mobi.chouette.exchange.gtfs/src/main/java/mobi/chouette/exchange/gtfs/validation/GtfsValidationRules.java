@@ -214,6 +214,8 @@ public class GtfsValidationRules implements Constant {
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_StopTime_10, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_StopTime_11, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_StopTime_12, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_StopTime_13, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_StopTime_14, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 		return checkPoints;
 	}
 	

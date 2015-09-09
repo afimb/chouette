@@ -352,7 +352,7 @@ public class Phase2CalendarTests extends ValidationTests {
 		}
 	}
 	
-	//@Test(groups = { "Phase 2 Calendar" }, description = "invalid column monday" ,priority=153 )
+	@Test(groups = { "Phase 2 Calendar" }, description = "invalid column monday" ,priority=153 )
 	public void verifyTest_2_5() throws Exception {
 		log.info(Color.GREEN + "Calendar_5 : invalid column monday" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "calendar_5", "1-GTFS-Calendar-5",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
@@ -367,7 +367,7 @@ public class Phase2CalendarTests extends ValidationTests {
 		}
 	}
 	
-	//@Test(groups = { "Phase 2 Calendar" }, description = "invalid column tuesday" ,priority=154 )
+	@Test(groups = { "Phase 2 Calendar" }, description = "invalid column tuesday" ,priority=154 )
 	public void verifyTest_2_6() throws Exception {
 		log.info(Color.GREEN + "Calendar_6 : invalid column tuesday" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "calendar_6", "1-GTFS-Calendar-6",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
@@ -382,7 +382,7 @@ public class Phase2CalendarTests extends ValidationTests {
 		}
 	}
 	
-	//@Test(groups = { "Phase 2 Calendar" }, description = "invalid column wednesday" ,priority=155 )
+	@Test(groups = { "Phase 2 Calendar" }, description = "invalid column wednesday" ,priority=155 )
 	public void verifyTest_2_7() throws Exception {
 		log.info(Color.GREEN + "Calendar_7 : invalid column wednesday" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "calendar_7", "1-GTFS-Calendar-7",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
@@ -397,7 +397,7 @@ public class Phase2CalendarTests extends ValidationTests {
 		}
 	}
 
-	//@Test(groups = { "Phase 2 Calendar" }, description = "invalid column thursday" ,priority=156 )
+	@Test(groups = { "Phase 2 Calendar" }, description = "invalid column thursday" ,priority=156 )
 	public void verifyTest_2_8() throws Exception {
 		log.info(Color.GREEN + "Calendar_8 : invalid column thursday" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "calendar_8", "1-GTFS-Calendar-8",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
@@ -412,7 +412,7 @@ public class Phase2CalendarTests extends ValidationTests {
 		}
 	}
 
-	//@Test(groups = { "Phase 2 Calendar" }, description = "invalid column friday" ,priority=157 )
+	@Test(groups = { "Phase 2 Calendar" }, description = "invalid column friday" ,priority=157 )
 	public void verifyTest_2_9() throws Exception {
 		log.info(Color.GREEN + "Calendar_9 : invalid column friday" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "calendar_9", "1-GTFS-Calendar-9",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
@@ -427,7 +427,7 @@ public class Phase2CalendarTests extends ValidationTests {
 		}
 	}
 
-	//@Test(groups = { "Phase 2 Calendar" }, description = "invalid column saturday" ,priority=158 )
+	@Test(groups = { "Phase 2 Calendar" }, description = "invalid column saturday" ,priority=158 )
 	public void verifyTest_2_10() throws Exception {
 		log.info(Color.GREEN + "Calendar_10 : invalid column saturday" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "calendar_10", "1-GTFS-Calendar-10",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
@@ -442,7 +442,7 @@ public class Phase2CalendarTests extends ValidationTests {
 		}
 	}
 
-	//@Test(groups = { "Phase 2 Calendar" }, description = "invalid column sunday" ,priority=159 )
+	@Test(groups = { "Phase 2 Calendar" }, description = "invalid column sunday" ,priority=159 )
 	public void verifyTest_2_11() throws Exception {
 		log.info(Color.GREEN + "Calendar_11 : invalid column sunday" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "calendar_11", "1-GTFS-Calendar-11",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
@@ -457,7 +457,7 @@ public class Phase2CalendarTests extends ValidationTests {
 		}
 	}
 
-	//@Test(groups = { "Phase 2 Calendar" }, description = "invalid column start_date" ,priority=160 )
+	@Test(groups = { "Phase 2 Calendar" }, description = "invalid column start_date" ,priority=160 )
 	public void verifyTest_2_12() throws Exception {
 		log.info(Color.GREEN + "Calendar_12 : invalid column start_date" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "calendar_12", "1-GTFS-Calendar-12",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
@@ -472,7 +472,7 @@ public class Phase2CalendarTests extends ValidationTests {
 		}
 	}
 
-	//@Test(groups = { "Phase 2 Calendar" }, description = "invalid column end_date" ,priority=161 )
+	@Test(groups = { "Phase 2 Calendar" }, description = "invalid column end_date" ,priority=161 )
 	public void verifyTest_2_13() throws Exception {
 		log.info(Color.GREEN + "Calendar_13 : invalid column end_date" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "calendar_13", "1-GTFS-Calendar-13",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
@@ -487,7 +487,7 @@ public class Phase2CalendarTests extends ValidationTests {
 		}
 	}
 
-	//@Test(groups = { "Phase 2 Calendar" }, description = "extra columns" ,priority=162 )
+	@Test(groups = { "Phase 2 Calendar" }, description = "extra columns" ,priority=162 )
 	public void verifyTest_2_14() throws Exception {
 		log.info(Color.GREEN + "Calendar_14 : extra column detected" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "calendar_14", "1-GTFS-Calendar-14",CheckPoint.SEVERITY.WARNING, CheckPoint.RESULT.NOK,true);
@@ -502,7 +502,7 @@ public class Phase2CalendarTests extends ValidationTests {
 		}
 	}
 
-	//@Test(groups = { "Phase 2 Calendar" }, description = "empty file with calendar_dates missing" ,priority=163 )
+	@Test(groups = { "Phase 2 Calendar" }, description = "empty file with calendar_dates missing" ,priority=163 )
 	public void verifyTest_2_15_1() throws Exception {
 		log.info(Color.GREEN + "Calendar_15_1 : empty file with calendar_dates missing" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "calendar_15_1", "1-GTFS-Calendar-15",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
@@ -517,7 +517,7 @@ public class Phase2CalendarTests extends ValidationTests {
 		}
 	}
 	
-	//@Test(groups = { "Phase 2 Calendar" }, description = "empty file with calendar_dates empty" ,priority=164 )
+	@Test(groups = { "Phase 2 Calendar" }, description = "empty file with calendar_dates empty" ,priority=164 )
 	public void verifyTest_2_15_2() throws Exception {
 		log.info(Color.GREEN + "Calendar_15_2 : empty file with calendar_dates empty" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "calendar_15_2", "1-GTFS-Calendar-15",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
