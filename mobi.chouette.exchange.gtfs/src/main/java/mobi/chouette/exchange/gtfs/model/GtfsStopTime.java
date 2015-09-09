@@ -54,6 +54,10 @@ public class GtfsStopTime extends GtfsObject implements Serializable
    @Setter
    private Float shapeDistTraveled;
 
+   @Getter
+   @Setter
+   private Integer timepoint;
+
    // @Override
    // public String toString()
    // {
