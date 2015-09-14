@@ -196,7 +196,7 @@ public class Phase1StopTimeTests extends AbstractPhase1Tests {
 			Assert.assertNotNull(detail.getSource(), "detail must refer a source");
 			Assert.assertNotNull(detail.getSource().getFile(), "detail must refer a file source");
 			Assert.assertEquals(detail.getSource().getFile().getFilename(), "stop_times.txt", "detail must refer bad file");
-			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(4), "detail must refer bad line");
+			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(3), "detail must refer bad line");
 		}
 	}
 	

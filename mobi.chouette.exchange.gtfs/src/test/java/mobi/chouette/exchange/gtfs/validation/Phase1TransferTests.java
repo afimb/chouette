@@ -76,7 +76,7 @@ public class Phase1TransferTests extends AbstractPhase1Tests {
 			Assert.assertNotNull(detail.getSource(), "detail must refer a source");
 			Assert.assertNotNull(detail.getSource().getFile(), "detail must refer a file source");
 			Assert.assertEquals(detail.getSource().getFile().getFilename(), "transfers.txt", "detail must refer bad file");
-			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(2), "detail must refer bad line");
+			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(3), "detail must refer bad line");
 		}
 	}
 	
@@ -91,7 +91,7 @@ public class Phase1TransferTests extends AbstractPhase1Tests {
 			Assert.assertNotNull(detail.getSource(), "detail must refer a source");
 			Assert.assertNotNull(detail.getSource().getFile(), "detail must refer a file source");
 			Assert.assertEquals(detail.getSource().getFile().getFilename(), "transfers.txt", "detail must refer bad file");
-			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(2), "detail must refer bad line");
+			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(3), "detail must refer bad line");
 		}
 	}
 	
@@ -106,7 +106,7 @@ public class Phase1TransferTests extends AbstractPhase1Tests {
 			Assert.assertNotNull(detail.getSource(), "detail must refer a source");
 			Assert.assertNotNull(detail.getSource().getFile(), "detail must refer a file source");
 			Assert.assertEquals(detail.getSource().getFile().getFilename(), "transfers.txt", "detail must refer bad file");
-			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(2), "detail must refer bad line");
+			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(3), "detail must refer bad line");
 		}
 	}
 		
@@ -121,7 +121,7 @@ public class Phase1TransferTests extends AbstractPhase1Tests {
 			Assert.assertNotNull(detail.getSource(), "detail must refer a source");
 			Assert.assertNotNull(detail.getSource().getFile(), "detail must refer a file source");
 			Assert.assertEquals(detail.getSource().getFile().getFilename(), "transfers.txt", "detail must refer bad file");
-			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(2), "detail must refer bad line");
+			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(3), "detail must refer bad line");
 		}
 	}
 	
@@ -130,13 +130,14 @@ public class Phase1TransferTests extends AbstractPhase1Tests {
 		log.info(Color.GREEN + "Transfer_4_1 : missing column min_transfer_time" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "transfer_4_1", "1-GTFS-Transfer-4",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
 
-		Assert.assertEquals(result.getDetailCount(), 1, "detail count");
+		Assert.assertEquals(result.getDetailCount(), 5, "detail count");
+		int i = 2;
 		for (Detail detail : result.getDetails()) 
 		{
 			Assert.assertNotNull(detail.getSource(), "detail must refer a source");
 			Assert.assertNotNull(detail.getSource().getFile(), "detail must refer a file source");
 			Assert.assertEquals(detail.getSource().getFile().getFilename(), "transfers.txt", "detail must refer bad file");
-			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(2), "detail must refer bad line");
+			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(i++), "detail must refer bad line");
 		}
 	}
 	
@@ -151,7 +152,7 @@ public class Phase1TransferTests extends AbstractPhase1Tests {
 			Assert.assertNotNull(detail.getSource(), "detail must refer a source");
 			Assert.assertNotNull(detail.getSource().getFile(), "detail must refer a file source");
 			Assert.assertEquals(detail.getSource().getFile().getFilename(), "transfers.txt", "detail must refer bad file");
-			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(2), "detail must refer bad line");
+			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(3), "detail must refer bad line");
 		}
 	}
 	
@@ -168,7 +169,7 @@ public class Phase1TransferTests extends AbstractPhase1Tests {
 			Assert.assertNotNull(detail.getSource(), "detail must refer a source");
 			Assert.assertNotNull(detail.getSource().getFile(), "detail must refer a file source");
 			Assert.assertEquals(detail.getSource().getFile().getFilename(), "transfers.txt", "detail must refer bad file");
-			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(2), "detail must refer bad line");
+			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(3), "detail must refer bad line");
 		}
 	}
 	
@@ -177,7 +178,7 @@ public class Phase1TransferTests extends AbstractPhase1Tests {
 		log.info(Color.GREEN + "Transfer_6 : extra column detected" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "transfer_6", "1-GTFS-Transfer-6",CheckPoint.SEVERITY.WARNING, CheckPoint.RESULT.NOK,true);
 
-		Assert.assertEquals(result.getDetailCount(), 1, "detail count");
+		Assert.assertEquals(result.getDetailCount(), 2, "detail count");
 		for (Detail detail : result.getDetails()) 
 		{
 			Assert.assertNotNull(detail.getSource(), "detail must refer a source");

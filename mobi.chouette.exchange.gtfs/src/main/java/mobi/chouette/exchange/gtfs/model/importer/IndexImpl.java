@@ -43,17 +43,17 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 	private int _total;
 	private boolean _unique;
 
-	public IndexImpl(String name, String id) throws IOException {
-		this(name, id, "", true);
+	public IndexImpl(String path, String key) throws IOException {
+		this(path, key, "", true);
 	}
 
-	public IndexImpl(String name, String id, boolean unique) throws IOException {
-		this(name, id, "", unique);
+	public IndexImpl(String path, String key, boolean unique) throws IOException {
+		this(path, key, "", unique);
 	}
 
-	public IndexImpl(String name, String id, String value, boolean unique) throws IOException {
-		_path = name;
-		_key = id;
+	public IndexImpl(String path, String key, String value, boolean unique) throws IOException {
+		_path = path;
+		_key = key;
 		_value = value;
 		_unique = unique;
 		_total = 0;
@@ -81,12 +81,11 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 			if (_reader.next()) { // The first line of this file is compatible GTFS-CSV 
 				_fields = new HashMap<String, Integer>();
 				for (int i = 0; i < _reader.getFieldCount(); i++) {
-					String key = _reader.getValue(i); // Get the ith token 
-					verify(key);
-					_fields.put(key.trim(), i);
+					String field = _reader.getValue(i); // Get the ith token 
+					verify(field);
+					_fields.put(field.trim(), i);
 				}
-				checkRequiredFields(_fields); // IS IT THE RIGTH PLACE FOR THIS ?
-				//// ???? checkRequiredFields(_fields); // IS IT THE RIGTH PLACE FOR THIS ?
+				checkRequiredFields(_fields);
 				index(); // read the rest of this file
 			} else { // The header line doesn't comply with GTFS-CSV 
 				throw new GtfsException(_path, _total, _reader.getPosition(), null,
@@ -97,24 +96,24 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 		}
 	}
 	
-	private void verify(String key) throws GtfsException {
-		if (key == null || key.trim().isEmpty()) { // key is empty
+	private void verify(String field) throws GtfsException {
+		if (field == null || field.trim().isEmpty()) { // key is empty
 			throw new GtfsException(_path, _total, _key, GtfsException.ERROR.EMPTY_HEADER_FIELD, null, null);
 		}
 		
-		if (_fields.get(key.trim()) != null) { // key already exists
+		if (_fields.get(field.trim()) != null) { // key already exists
 			throw new GtfsException(_path, _total, _key, GtfsException.ERROR.DUPLICATE_HEADER_FIELD, null, null);
 		}
 	}
 	
+	protected abstract void checkRequiredFields(Map<String, Integer> fields);
+
 	protected void testExtraSpace(String fieldName, String value, GtfsObject bean) {
 		if (value != null && !value.equals(value.trim())) {
 			bean.getErrors().add(new GtfsException(_path, bean.getId(), fieldName, GtfsException.ERROR.EXTRA_SPACE_IN_FIELD, null, value));
 		}
 	}
 	
-	protected abstract void checkRequiredFields(Map<String, Integer> fields);
-
 	@Override
 	public void dispose() {
 		try {
@@ -230,16 +229,16 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 	@Override
 	protected void index() throws IOException {
 		Monitor monitor = MonitorFactory.start();
-		boolean hasDefaultAgencyId = false;
+		boolean hasDefaultId = false;
 		
 		while (_reader.hasNext()) {
 			_total++;
 			
-			if (hasDefaultAgencyId)
+			if (hasDefaultId)
 				throw new GtfsException(_path, _total, _key, GtfsException.ERROR.DUPLICATE_DEFAULT_KEY_FIELD, null, null);
 			
 			if (_reader.next()) {
-				String key = getField(_key); // return value(agency_id) or "default" if not given or column not given.
+				String key = getField(_key);
 								
 				if (key == null || key.trim().isEmpty()) { // key cannot be null! "" or "default"
 					throw new GtfsException(_path, _total, _key, GtfsException.ERROR.MISSING_FIELD, null, null);
@@ -247,7 +246,7 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 				
 				if ("default".equals(key)) {
 					if (_tokens.isEmpty()) {
-						hasDefaultAgencyId = true;
+						hasDefaultId = true;
 					}
 					else {
 						throw new GtfsException(_path, _total, _key, GtfsException.ERROR.DUPLICATE_DEFAULT_KEY_FIELD, null, null);
@@ -263,12 +262,7 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 				} else {
 					if (_unique) {
 						if ("default".equals(key)) {
-							if (_tokens.isEmpty()) {
-								hasDefaultAgencyId = true;
-							}
-							else {
-								throw new GtfsException(_path, _total, _key, GtfsException.ERROR.DUPLICATE_DEFAULT_KEY_FIELD, null, null);
-							}
+							throw new GtfsException(_path, _total, _key, GtfsException.ERROR.DUPLICATE_DEFAULT_KEY_FIELD, null, null);
 						} else {
 							throw new GtfsException(_path, _total, _key, GtfsException.ERROR.DUPLICATE_FIELD, null, null);
 						}
@@ -306,28 +300,7 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 		int line = 1;
 		while (_reader.hasNext()) {
 			if (_reader.next()) {
-				String key = getField(_key, _value);
-				
-				
-				Context context = new Context();
-				context.put(Context.PATH, _path);
-				context.put(Context.ID, _total);
-				context.put(Context.FIELD, _key);
-				if (key == null || key.trim().isEmpty()) { // key cannot be null! "" or "default"
-					context.put(Context.ERROR, GtfsException.ERROR.MISSING_FIELD);
-					throw new GtfsException(context);
-				}
-//				if (!key.equals(key.trim())) { // No extra space
-//					context.put(Context.ERROR, GtfsException.ERROR.EXTRA_SPACE_IN_HEADER_FIELD);
-//					throw new GtfsException(context);
-//				}
-//				if (HTMLTagValidator.validate(key)) {
-//					context.put(Context.ERROR, GtfsException.ERROR.HTML_TAG_IN_HEADER_FIELD);
-//					throw new GtfsException(context);
-//				}
-				
-				
-				
+				String key = getField(_key);				
 				Token token = _tokens.get(key);
 				for (int i = 0; i < token.lenght; i++) {
 					int n = token.offset + i * 2;

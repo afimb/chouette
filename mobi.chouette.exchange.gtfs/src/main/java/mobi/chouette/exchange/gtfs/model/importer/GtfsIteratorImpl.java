@@ -14,15 +14,16 @@ public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator, Consta
 	public static final char CR = '\r';
 	public static final char DELIMITER = ',';
 	public static final char DQUOTE = '"';
+	public static final char NULL = 0;
 
 	private ByteBuffer _buffer;
 	private int _index;
 	private boolean _escape;
-	private int _position;
 	private int _mark;
+	private int _position;
 	private String _code = "";
-	private List<Field> _fields = new ArrayList<Field>();
 	private ByteBuffer _builder = ByteBuffer.allocate(1024);
+	private List<Field> _fields = new ArrayList<Field>();
 
 	public GtfsIteratorImpl(ByteBuffer buffer, int count) {
 		super();
@@ -44,10 +45,10 @@ public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator, Consta
 	@Override
 	public void dispose() {
 		_buffer.clear();
-		_builder.clear();
-		_fields.clear();
-		_builder = null;
 		_buffer = null;
+		_builder.clear();
+		_builder = null;
+		_fields.clear();
 		_fields = null;
 	}
 
@@ -60,7 +61,9 @@ public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator, Consta
 	public Boolean next() {
 		try {
 			_code = "";
+			_escape = false;
 			_buffer.position(_mark);
+			boolean escaped = false;
 			while (_buffer.hasRemaining()) {
 
 				if (_index >= _fields.size()) {
@@ -70,9 +73,14 @@ public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator, Consta
 				char value = (char) _buffer.get();
 				switch (value) {
 				case CR:
-				case LF: {
+				case LF:
+					escaped = false;
+					if (_escape) {
+						_code = NL_IN_TOKEN;
+						return false; // new line inside a token
+					}
 					_fields.get(_index).offset = _mark;
-					_fields.get(_index).length = _buffer.position() - 1 - _fields.get(_index).offset;
+					_fields.get(_index).length = _buffer.position() - 1 - _mark;
 					if (value == CR) {
 						_mark = _buffer.position() + 1;
 					} else {
@@ -80,31 +88,22 @@ public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator, Consta
 					}
 					_index = 0;
 					_position = _mark;
-					_escape = false;
-					if (_escape) {
-						_code = NL_IN_TOKEN;
-						return false; // new line inside a token
-					}
-					else
-						return true;
-				}
-				case DELIMITER: {
+					return true;
+				case DELIMITER:
+					escaped = false;
 					if (!_escape) {
 						_fields.get(_index).offset = _mark;
-						_fields.get(_index).length = (_buffer.position() - 1 - _fields.get(_index).offset);
+						_fields.get(_index).length = (_buffer.position() - 1 - _mark);
 						_mark = _buffer.position();
 						_index++;
-
 					}
 					break;
-				}
-				case DQUOTE: {
+				case DQUOTE:
 					if (!_escape) { // start DQUOTE token
 						int previous = previousByte();
 						if (previous == DELIMITER || previous == CR || previous == LF) { 
 							_escape = true;
 						} else { // a problem : only part of this token is encolosed between DQUOTE
-							_escape = false;
 							_code = DQUOTE_WITH_NO_ESCAPE;
 							return false; // a DQUOTE that dosen't start a token
 						}
@@ -112,25 +111,51 @@ public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator, Consta
 						int next = nextByte();
 						if (next == DELIMITER || next == CR || next == LF) { // end DQOUTE token
 							_escape = false;
-						} else if (next == DQUOTE) { // double, triple, ... DQUOTE in a token
+						} else if (next == NULL) { // EOF 
+							_code = EOF_WITHOUT_NL;
+							return false;
+						} else if (next == DQUOTE) { // double quote in a token
+							if (!escaped)
+								escaped = true;
+							else {
+								_code = MORE_THAN_TWO_DQUOTE; // more than 3 "
+								return false;
+							}
 							_buffer.get();
 						} else { // a problem : only part of this token is encolosed between DQUOTE
-							_escape = false;
 							_code = TEXT_AFTER_ESCAPE_DQUOTE;
 							return false; // a DQUOTE that dosen't end a token
 						}
 					}
 					break;
-				}
 				default:
+					escaped = false;
 					break;
 				}
 			}
 		} catch (Exception ignored) {
 
 		}
-		_code = NL_NEEDED;
-		return false; // End of buffer no '\r' or '\n' at the end of this file. 
+		return false;
+	}
+
+	private byte nextByte() {
+		int position = _buffer.position();
+		if (!_buffer.hasRemaining())
+			return NULL;
+		byte result = _buffer.get();
+		_buffer.position(position);
+		return result;
+	}
+	
+	private byte previousByte(){
+		int position = _buffer.position();
+		if (position <= 1)
+			return DELIMITER;
+		_buffer.position(position-2);
+		byte result = _buffer.get();
+		_buffer.position(position);
+		return result;
 	}
 
 	@Override
@@ -195,23 +220,6 @@ public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator, Consta
 		_buffer.position(offset);
 		ByteBuffer result = _buffer.slice();
 		result.limit(length);
-		return result;
-	}
-
-	private byte nextByte() {
-		int position = _buffer.position();
-		byte result = _buffer.get();
-		_buffer.position(position);
-		return result;
-	}
-	
-	private byte previousByte(){
-		int position = _buffer.position();
-		if (position <= 1)
-			return DELIMITER;
-		_buffer.position(position-2);
-		byte result = _buffer.get();
-		_buffer.position(position);
 		return result;
 	}
 

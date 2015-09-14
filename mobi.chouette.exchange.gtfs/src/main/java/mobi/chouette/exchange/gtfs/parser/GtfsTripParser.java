@@ -16,6 +16,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.gtfs.model.GtfsFrequency;
+import mobi.chouette.exchange.gtfs.model.GtfsShape;
 import mobi.chouette.exchange.gtfs.model.GtfsStop;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime;
 import mobi.chouette.exchange.gtfs.model.GtfsTrip;
@@ -267,6 +268,50 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			validationReporter.reportErrors(context, bean.getErrors(), GTFS_STOP_TIMES_FILE);
 		}
 		validationReporter.getExceptions().clear();
+		
+		// shapes.txt
+		if (importer.hasShapeImporter()) {
+			validationReporter.reportSuccess(context, GTFS_1_GTFS_Shape_1, GTFS_TRIPS_FILE);
+			
+			Index<GtfsShape> shapeParser = null;
+			try { // Read and check the header line of the file "shapes.txt"
+				shapeParser = importer.getShapeById(); // return new ShapeById("/.../shapes.txt", "shape_id", false) { /** super(...) */
+				//   IndexImpl<GtfsTrip>(_path = "/.../shapes.txt", _key = "shape_id", _value = "", _unique = false) {
+				//     initialize() /** read the lines of file _path */
+				//   }
+				// }
+			} catch (Exception ex ) {
+				if (ex instanceof GtfsException) {
+					validationReporter.reportError(context, (GtfsException)ex, GTFS_SHAPES_FILE);
+				} else {
+					validationReporter.throwUnknownError(context, ex, GTFS_SHAPES_FILE);
+				}
+			}
+			
+			if (shapeParser == null) { // importer.getShapeById() fails for any other reason
+				validationReporter.throwUnknownError(context, new Exception("Cannot instantiate ShapeById class"), GTFS_SHAPES_FILE);
+			}
+			
+			if (!shapeParser.getErrors().isEmpty()) {
+				validationReporter.reportErrors(context, shapeParser.getErrors(), GTFS_SHAPES_FILE);
+				shapeParser.getErrors().clear();
+			}
+			
+			for (GtfsShape bean : shapeParser) {
+				try {
+					shapeParser.validate(bean, importer);
+				} catch (Exception ex) {
+					if (ex instanceof GtfsException) {
+						validationReporter.reportError(context, (GtfsException)ex, GTFS_SHAPES_FILE);
+					} else {
+						validationReporter.throwUnknownError(context, ex, GTFS_SHAPES_FILE);
+					}
+				}
+				validationReporter.reportErrors(context, bean.getErrors(), GTFS_SHAPES_FILE);
+			}
+		} else {
+			validationReporter.reportUnsuccess(context, GTFS_1_GTFS_Shape_1, GTFS_TRIPS_FILE);
+		}
 		
 		// trips.txt
 		if (importer.hasTripImporter()) { // the file "trips.txt" exists ?
