@@ -22,6 +22,7 @@ public class GtfsValidationRules implements Constant {
 		checkPoints.addAll(stopCheckPoints());
 		if (all) {
 			checkPoints.addAll(routeCheckPoints());
+			checkPoints.addAll(shapeCheckPoints());
 			checkPoints.addAll(tripCheckPoints());
 			checkPoints.addAll(stopTimeCheckPoints());
 			checkPoints.addAll(calendarCheckPoints());
@@ -161,6 +162,31 @@ public class GtfsValidationRules implements Constant {
 		return checkPoints;
 	}
 	
+	private Collection<? extends CheckPoint> shapeCheckPoints() {
+		List<CheckPoint> checkPoints = new ArrayList<CheckPoint>();
+		checkPoints.addAll(shapeCheckPoints1());
+		checkPoints.addAll(shapeCheckPoints2());
+		return checkPoints;
+	}
+	
+	private Collection<? extends CheckPoint> shapeCheckPoints1() {
+		List<CheckPoint> checkPoints = new ArrayList<CheckPoint>();
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Shape_1, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Shape_2, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Shape_3, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Shape_4, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Shape_5, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Shape_6, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Shape_7, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Shape_8, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		return checkPoints;
+	}
+	
+	private Collection<? extends CheckPoint> shapeCheckPoints2() {
+		List<CheckPoint> checkPoints = new ArrayList<CheckPoint>();
+		return checkPoints;
+	}
+	
 	private Collection<? extends CheckPoint> tripCheckPoints() {
 		List<CheckPoint> checkPoints = new ArrayList<CheckPoint>();
 		checkPoints.addAll(tripCheckPoints1());
@@ -178,6 +204,7 @@ public class GtfsValidationRules implements Constant {
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Trip_6, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Trip_7, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Trip_8, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Trip_9, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 		return checkPoints;
 	}
 	
@@ -256,6 +283,7 @@ public class GtfsValidationRules implements Constant {
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Calendar_12, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Calendar_13, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Calendar_14, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Calendar_15, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 		return checkPoints;
 	}
 	

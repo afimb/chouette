@@ -90,7 +90,7 @@ public class Phase1FrequencyTests extends AbstractPhase1Tests {
 			Assert.assertNotNull(detail.getSource(), "detail must refer a source");
 			Assert.assertNotNull(detail.getSource().getFile(), "detail must refer a file source");
 			Assert.assertEquals(detail.getSource().getFile().getFilename(), "frequencies.txt", "detail must refer bad file");
-			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(2), "detail must refer bad line");
+			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(3), "detail must refer bad line");
 		}
 	}
 	
@@ -150,7 +150,7 @@ public class Phase1FrequencyTests extends AbstractPhase1Tests {
 			Assert.assertNotNull(detail.getSource(), "detail must refer a source");
 			Assert.assertNotNull(detail.getSource().getFile(), "detail must refer a file source");
 			Assert.assertEquals(detail.getSource().getFile().getFilename(), "frequencies.txt", "detail must refer bad file");
-			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(2), "detail must refer bad line");
+			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(3), "detail must refer bad line");
 		}
 	}
 	
@@ -165,7 +165,7 @@ public class Phase1FrequencyTests extends AbstractPhase1Tests {
 			Assert.assertNotNull(detail.getSource(), "detail must refer a source");
 			Assert.assertNotNull(detail.getSource().getFile(), "detail must refer a file source");
 			Assert.assertEquals(detail.getSource().getFile().getFilename(), "frequencies.txt", "detail must refer bad file");
-			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(2), "detail must refer bad line");
+			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(3), "detail must refer bad line");
 		}
 	}
 	
@@ -196,7 +196,7 @@ public class Phase1FrequencyTests extends AbstractPhase1Tests {
 			Assert.assertNotNull(detail.getSource(), "detail must refer a source");
 			Assert.assertNotNull(detail.getSource().getFile(), "detail must refer a file source");
 			Assert.assertEquals(detail.getSource().getFile().getFilename(), "frequencies.txt", "detail must refer bad file");
-			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(2), "detail must refer bad line");
+			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(5), "detail must refer bad line");
 		}
 	}
 	
@@ -205,7 +205,7 @@ public class Phase1FrequencyTests extends AbstractPhase1Tests {
 		log.info(Color.GREEN + "Frequency_7 : extra column detected" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "frequency_7", "1-GTFS-Frequency-7",CheckPoint.SEVERITY.WARNING, CheckPoint.RESULT.NOK,true);
 
-		Assert.assertEquals(result.getDetailCount(), 1, "detail count");
+		Assert.assertEquals(result.getDetailCount(), 2, "detail count");
 		for (Detail detail : result.getDetails()) 
 		{
 			Assert.assertNotNull(detail.getSource(), "detail must refer a source");

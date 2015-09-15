@@ -12,6 +12,7 @@ import mobi.chouette.exchange.gtfs.model.GtfsCalendarDate;
 import mobi.chouette.exchange.gtfs.model.GtfsFrequency;
 import mobi.chouette.exchange.gtfs.model.GtfsObject;
 import mobi.chouette.exchange.gtfs.model.GtfsRoute;
+import mobi.chouette.exchange.gtfs.model.GtfsShape;
 import mobi.chouette.exchange.gtfs.model.GtfsStop;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime;
 import mobi.chouette.exchange.gtfs.model.GtfsTransfer;
@@ -20,7 +21,7 @@ import mobi.chouette.exchange.gtfs.model.importer.GtfsException.ERROR;
 
 public class GtfsImporter {
 	public static enum INDEX {
-		AGENCY_BY_ID, CALENDAR_BY_SERVICE, CALENDAR_DATE_BY_SERVICE, FREQUENCY_BY_TRIP, ROUTE_BY_ID, STOP_BY_ID, STOP_TIME_BY_TRIP, TRANSFER_BY_FROM_STOP, TRIP_BY_ID, TRIP_BY_ROUTE, TRIP_BY_SERVICE;
+		AGENCY_BY_ID, CALENDAR_BY_SERVICE, CALENDAR_DATE_BY_SERVICE, FREQUENCY_BY_TRIP, ROUTE_BY_ID, STOP_BY_ID, STOP_TIME_BY_TRIP, TRANSFER_BY_FROM_STOP, SHAPE_BY_ID, TRIP_BY_ID, TRIP_BY_ROUTE, TRIP_BY_SERVICE;
 	}
 
 	private String _path;
@@ -94,6 +95,10 @@ public class GtfsImporter {
 	public boolean hasTripImporter() {
 		return hasImporter(TripById.FILENAME);
 	}
+	
+	public boolean hasShapeImporter() {
+		return hasImporter(ShapeById.FILENAME);
+	}
 
 	private boolean hasImporter(String filename) {
 		File f = new File(_path, filename);
@@ -146,6 +151,12 @@ public class GtfsImporter {
 	public Index<GtfsTransfer> getTransferByFromStop() {
 		return getImporter(INDEX.TRANSFER_BY_FROM_STOP.name(),
 				TransferByFromStop.FILENAME, TransferByFromStop.class);
+	}
+
+	@SuppressWarnings("unchecked")
+	public Index<GtfsShape> getShapeById() {
+		return getImporter(INDEX.SHAPE_BY_ID.name(), ShapeById.FILENAME,
+				ShapeById.class);
 	}
 
 	@SuppressWarnings("unchecked")

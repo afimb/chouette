@@ -3,8 +3,11 @@ package mobi.chouette.exchange.gtfs.model.importer;
 import java.io.IOException;
 import java.util.Map;
 
+import mobi.chouette.common.HTMLTagValidator;
 import mobi.chouette.exchange.gtfs.model.GtfsTransfer;
+import mobi.chouette.exchange.gtfs.model.GtfsTransfer.TransferType;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsException.ERROR;
+import mobi.chouette.exchange.gtfs.model.importer.RouteById.FIELDS;
 
 public class TransferByFromStop extends IndexImpl<GtfsTransfer> implements
 		GtfsConverter {
@@ -16,7 +19,7 @@ public class TransferByFromStop extends IndexImpl<GtfsTransfer> implements
 	public static final String FILENAME = "transfers.txt";
 	public static final String KEY = FIELDS.from_stop_id.name();
 
-	private GtfsTransfer bean = new GtfsTransfer();
+	//private GtfsTransfer bean = new GtfsTransfer();
 	private String[] array = new String[FIELDS.values().length];
 
 	public TransferByFromStop(String name) throws IOException {
@@ -25,9 +28,17 @@ public class TransferByFromStop extends IndexImpl<GtfsTransfer> implements
 	
 	@Override
 	protected void checkRequiredFields(Map<String, Integer> fields) {
-		// extra fields are tolerated : 1-GTFS-Transfer-6 warning
 		for (String fieldName : fields.keySet()) {
 			if (fieldName != null) {
+				if (!fieldName.equals(fieldName.trim())) {
+					// extra spaces in end fields are tolerated : 1-GTFS-CSV-7 warning
+					getErrors().add(new GtfsException(_path, 1, fieldName, GtfsException.ERROR.EXTRA_SPACE_IN_HEADER_FIELD, null, null));
+				}
+				
+				if (HTMLTagValidator.validate(fieldName.trim())) {
+					getErrors().add(new GtfsException(_path, 1, fieldName.trim(), GtfsException.ERROR.HTML_TAG_IN_HEADER_FIELD, null, null));
+				}
+				
 				boolean fieldNameIsExtra = true;
 				for (FIELDS field : FIELDS.values()) {
 					if (fieldName.trim().equals(field.name())) {
@@ -36,24 +47,26 @@ public class TransferByFromStop extends IndexImpl<GtfsTransfer> implements
 					}
 				}
 				if (fieldNameIsExtra) {
-					// add the warning to warnings
-					Context context = new Context();
-					context.put(Context.PATH, _path);
-					context.put(Context.FIELD, fieldName);
-					context.put(Context.ERROR, GtfsException.ERROR.EXTRA_HEADER_FIELD);
-					getErrors().add(new GtfsException(context));
+					// extra fields are tolerated : 1-GTFS-Transfer-6 warning
+					getErrors().add(new GtfsException(_path, 1, fieldName, GtfsException.ERROR.EXTRA_HEADER_FIELD, null, null));
 				}
 			}
 		}
-		
+
 		// checks for ubiquitous header fields : 1-GTFS-Transfer-1 error
 		if ( fields.get(FIELDS.from_stop_id.name()) == null ||
 				fields.get(FIELDS.to_stop_id.name()) == null ||
 				fields.get(FIELDS.transfer_type.name()) == null) {
-			Context context = new Context();
-			context.put(Context.PATH, _path);
-			context.put(Context.ERROR, GtfsException.ERROR.MISSING_REQUIRED_FIELDS);
-			getErrors().add(new GtfsException(context));
+			
+			String name = "";
+			if (fields.get(FIELDS.from_stop_id.name()) == null)
+				name = FIELDS.from_stop_id.name();
+			else if (fields.get(FIELDS.to_stop_id.name()) == null)
+				name = FIELDS.to_stop_id.name();
+			else if (fields.get(FIELDS.transfer_type.name()) == null)
+				name = FIELDS.transfer_type.name();
+
+			throw new GtfsException(_path, 1, name, GtfsException.ERROR.MISSING_REQUIRED_FIELDS, null, null);
 		}
 	}
 
@@ -64,20 +77,52 @@ public class TransferByFromStop extends IndexImpl<GtfsTransfer> implements
 			array[i++] = getField(reader, field.name());
 		}
 
+		GtfsTransfer bean = new GtfsTransfer();
 		i = 0;
 		String value = null;
 		int id = (int) context.get(Context.ID);
 		bean.setId(id);
 		bean.getErrors().clear();
-		value = array[i++];
-		bean.setFromStopId(STRING_CONVERTER.from(context, FIELDS.from_stop_id, value, true));
-		value = array[i++];
-		bean.setToStopId(STRING_CONVERTER.from(context, FIELDS.to_stop_id, value, true));
-		value = array[i++];
-		bean.setTransferType(TRANSFERTYPE_CONVERTER.from(context, FIELDS.transfer_type, value, true));
-		value = array[i++];
-		bean.setMinTransferTime(POSITIVE_INTEGER_CONVERTER.from(context, FIELDS.min_transfer_time, value, false));
-
+		
+		value = array[i++]; testExtraSpace(FIELDS.from_stop_id.name(), value, bean);
+		if (value == null || value.trim().isEmpty()) {
+			bean.getErrors().add(new GtfsException(_path, id, FIELDS.from_stop_id.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+		} else {
+			bean.setFromStopId(STRING_CONVERTER.from(context, FIELDS.from_stop_id, value, true));
+		}
+			
+		value = array[i++]; testExtraSpace(FIELDS.to_stop_id.name(), value, bean);
+		if (value == null || value.trim().isEmpty()) {
+			bean.getErrors().add(new GtfsException(_path, id, FIELDS.to_stop_id.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+		} else {
+			bean.setToStopId(STRING_CONVERTER.from(context, FIELDS.to_stop_id, value, true));
+		}
+		
+		value = array[i++]; testExtraSpace(FIELDS.transfer_type.name(), value, bean);
+		if (value == null || value.trim().isEmpty()) {
+			bean.getErrors().add(new GtfsException(_path, id, FIELDS.transfer_type.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+		} else {
+			try {
+				bean.setTransferType(TRANSFERTYPE_CONVERTER.from(context, FIELDS.transfer_type, value, true));
+			} catch(GtfsException ex) {
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.transfer_type.name(), GtfsException.ERROR.INVALID_TRANSFER_TYPE, null, null));
+			}
+		}
+		
+		value = array[i++]; testExtraSpace(FIELDS.min_transfer_time.name(), value, bean);
+		if (value != null && !value.trim().isEmpty()) {
+			try {
+				bean.setMinTransferTime(POSITIVE_INTEGER_CONVERTER.from(context, FIELDS.min_transfer_time, value, false));
+			} catch (GtfsException ex) {
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.min_transfer_time.name(), GtfsException.ERROR.INVALID_TRANSFER_TIME, null, null));
+			}
+		} else {
+			bean.setMinTransferTime(null);
+		}
+		
+		if (bean.getTransferType() == TransferType.Minimal && bean.getMinTransferTime() == null) {
+			bean.getErrors().add(new GtfsException(_path, id, FIELDS.min_transfer_time.name(), GtfsException.ERROR.MISSING_TRANSFER_TIME, null, null));
+		}
 		return bean;
 	}
 
@@ -85,19 +130,19 @@ public class TransferByFromStop extends IndexImpl<GtfsTransfer> implements
 	public boolean validate(GtfsTransfer bean, GtfsImporter dao) {
 		boolean result = true;
 
-		String fromStopId = bean.getFromStopId();
-		if (!dao.getStopById().containsKey(fromStopId)) {
-			throw new GtfsException(getPath(), bean.getId(),
-					FIELDS.from_stop_id.name(), ERROR.MISSING_FOREIGN_KEY,
-					"TODO", bean.getFromStopId());
-		}
-
-		String toStopId = bean.getToStopId();
-		if (!dao.getStopById().containsKey(toStopId)) {
-			throw new GtfsException(getPath(), bean.getId(),
-					FIELDS.to_stop_id.name(), ERROR.MISSING_FOREIGN_KEY,
-					"TODO", bean.getToStopId());
-		}
+//		String fromStopId = bean.getFromStopId();
+//		if (!dao.getStopById().containsKey(fromStopId)) {
+//			throw new GtfsException(getPath(), bean.getId(),
+//					FIELDS.from_stop_id.name(), ERROR.MISSING_FOREIGN_KEY,
+//					"TODO", bean.getFromStopId());
+//		}
+//
+//		String toStopId = bean.getToStopId();
+//		if (!dao.getStopById().containsKey(toStopId)) {
+//			throw new GtfsException(getPath(), bean.getId(),
+//					FIELDS.to_stop_id.name(), ERROR.MISSING_FOREIGN_KEY,
+//					"TODO", bean.getToStopId());
+//		}
 
 		return result;
 	}

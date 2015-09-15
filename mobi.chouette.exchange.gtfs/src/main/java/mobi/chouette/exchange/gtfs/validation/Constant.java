@@ -52,6 +52,15 @@ public interface Constant extends mobi.chouette.exchange.gtfs.Constant {
 	public static final String GTFS_1_GTFS_Route_9 = "1-GTFS-Route-9";
 	public static final String GTFS_1_GTFS_Route_10 = "1-GTFS-Route-10";
 
+	public static final String GTFS_1_GTFS_Shape_1 = "1-GTFS-Shape-1";
+	public static final String GTFS_1_GTFS_Shape_2 = "1-GTFS-Shape-2";
+	public static final String GTFS_1_GTFS_Shape_3 = "1-GTFS-Shape-3";
+	public static final String GTFS_1_GTFS_Shape_4 = "1-GTFS-Shape-4";
+	public static final String GTFS_1_GTFS_Shape_5 = "1-GTFS-Shape-5";
+	public static final String GTFS_1_GTFS_Shape_6 = "1-GTFS-Shape-6";
+	public static final String GTFS_1_GTFS_Shape_7 = "1-GTFS-Shape-7";
+	public static final String GTFS_1_GTFS_Shape_8 = "1-GTFS-Shape-8";
+
 	public static final String GTFS_1_GTFS_Trip_1 = "1-GTFS-Trip-1";
 	public static final String GTFS_1_GTFS_Trip_2 = "1-GTFS-Trip-2";
 	public static final String GTFS_1_GTFS_Trip_3 = "1-GTFS-Trip-3";
@@ -60,6 +69,7 @@ public interface Constant extends mobi.chouette.exchange.gtfs.Constant {
 	public static final String GTFS_1_GTFS_Trip_6 = "1-GTFS-Trip-6";
 	public static final String GTFS_1_GTFS_Trip_7 = "1-GTFS-Trip-7";
 	public static final String GTFS_1_GTFS_Trip_8 = "1-GTFS-Trip-8";
+	public static final String GTFS_1_GTFS_Trip_9 = "1-GTFS-Trip-9";
 
 	public static final String GTFS_1_GTFS_StopTime_1 = "1-GTFS-StopTime-1";
 	public static final String GTFS_1_GTFS_StopTime_2 = "1-GTFS-StopTime-2";
@@ -90,6 +100,7 @@ public interface Constant extends mobi.chouette.exchange.gtfs.Constant {
 	public static final String GTFS_1_GTFS_Calendar_12 = "1-GTFS-Calendar-12";
 	public static final String GTFS_1_GTFS_Calendar_13 = "1-GTFS-Calendar-13";
 	public static final String GTFS_1_GTFS_Calendar_14 = "1-GTFS-Calendar-14";
+	public static final String GTFS_1_GTFS_Calendar_15 = "1-GTFS-Calendar-15";
 
 	//public static final String GTFS_1_GTFS_CalendarDate_1 = "1-GTFS-CalendarDate-1";
 	public static final String GTFS_1_GTFS_CalendarDate_2 = "1-GTFS-CalendarDate-2";

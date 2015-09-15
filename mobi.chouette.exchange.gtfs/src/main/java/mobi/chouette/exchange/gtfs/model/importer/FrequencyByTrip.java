@@ -3,8 +3,10 @@ package mobi.chouette.exchange.gtfs.model.importer;
 import java.io.IOException;
 import java.util.Map;
 
+import mobi.chouette.common.HTMLTagValidator;
 import mobi.chouette.exchange.gtfs.model.GtfsFrequency;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsException.ERROR;
+import mobi.chouette.exchange.gtfs.model.importer.TripIndex.FIELDS;
 
 public class FrequencyByTrip extends IndexImpl<GtfsFrequency> implements
 		GtfsConverter {
@@ -26,9 +28,17 @@ public class FrequencyByTrip extends IndexImpl<GtfsFrequency> implements
 	
 	@Override
 	protected void checkRequiredFields(Map<String, Integer> fields) {
-		// extra fields are tolerated : 1-GTFS-Frequency-7 warning
 		for (String fieldName : fields.keySet()) {
 			if (fieldName != null) {
+				if (!fieldName.equals(fieldName.trim())) {
+					// extra spaces in end fields are tolerated : 1-GTFS-CSV-7 warning
+					getErrors().add(new GtfsException(_path, 1, fieldName, GtfsException.ERROR.EXTRA_SPACE_IN_HEADER_FIELD, null, null));
+				}
+				
+				if (HTMLTagValidator.validate(fieldName.trim())) {
+					getErrors().add(new GtfsException(_path, 1, fieldName.trim(), GtfsException.ERROR.HTML_TAG_IN_HEADER_FIELD, null, null));
+				}
+				
 				boolean fieldNameIsExtra = true;
 				for (FIELDS field : FIELDS.values()) {
 					if (fieldName.trim().equals(field.name())) {
@@ -37,25 +47,29 @@ public class FrequencyByTrip extends IndexImpl<GtfsFrequency> implements
 					}
 				}
 				if (fieldNameIsExtra) {
-					// add the warning to warnings
-					Context context = new Context();
-					context.put(Context.PATH, _path);
-					context.put(Context.FIELD, fieldName);
-					context.put(Context.ERROR, GtfsException.ERROR.EXTRA_HEADER_FIELD);
-					getErrors().add(new GtfsException(context));
+					// extra fields are tolerated : 1-GTFS-Frequency-7 warning
+					getErrors().add(new GtfsException(_path, 1, fieldName, GtfsException.ERROR.EXTRA_HEADER_FIELD, null, null));
 				}
 			}
 		}
-		
+
 		// checks for ubiquitous header fields : 1-GTFS-Frequency-1 error
 		if ( fields.get(FIELDS.trip_id.name()) == null ||
 				fields.get(FIELDS.start_time.name()) == null ||
 				fields.get(FIELDS.end_time.name()) == null ||
 				fields.get(FIELDS.headway_secs.name()) == null) {
-			Context context = new Context();
-			context.put(Context.PATH, _path);
-			context.put(Context.ERROR, GtfsException.ERROR.MISSING_REQUIRED_FIELDS);
-			getErrors().add(new GtfsException(context));
+			
+			String name = "";
+			if (fields.get(FIELDS.trip_id.name()) == null)
+				name = FIELDS.trip_id.name();
+			else if (fields.get(FIELDS.start_time.name()) == null)
+				name = FIELDS.start_time.name();
+			else if (fields.get(FIELDS.end_time.name()) == null)
+				name = FIELDS.end_time.name();
+			else if (fields.get(FIELDS.headway_secs.name()) == null)
+				name = FIELDS.headway_secs.name();
+			
+			throw new GtfsException(_path, 1, name, GtfsException.ERROR.MISSING_REQUIRED_FIELDS, null, null);
 		}
 	}
 
@@ -67,35 +81,75 @@ public class FrequencyByTrip extends IndexImpl<GtfsFrequency> implements
 		}
 
 		i = 0;
-		// int id = (int) context.get(Context.ID);
+		int id = (int) context.get(Context.ID);
 		String value = null;
+		bean.setId(id);
 		bean.getErrors().clear();
-		value = array[i++];
-		bean.setTripId(STRING_CONVERTER.from(context, FIELDS.trip_id, value, true));
-		value = array[i++];
-		bean.setStartTime(GTFSTIME_CONVERTER.from(context, FIELDS.start_time, value, true));
-		value = array[i++];
-		bean.setEndTime(GTFSTIME_CONVERTER.from(context, FIELDS.end_time, value, true));
-		value = array[i++];
-		bean.setHeadwaySecs(POSITIVE_INTEGER_CONVERTER.from(context, FIELDS.headway_secs, value, true));
-		value = array[i++];
-		bean.setExactTimes(BOOLEAN_CONVERTER.from(context, FIELDS.exact_times, value, false, false));
-
+		
+		value = array[i++]; testExtraSpace(FIELDS.trip_id.name(), value, bean);
+		if (value == null || value.trim().isEmpty()) {
+			bean.getErrors().add(new GtfsException(_path, id, FIELDS.trip_id.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+		} else {
+			bean.setTripId(STRING_CONVERTER.from(context, FIELDS.trip_id, value, true));
+		}
+		
+		value = array[i++]; testExtraSpace(FIELDS.start_time.name(), value, bean);
+		if (value == null || value.trim().isEmpty()) {
+			bean.getErrors().add(new GtfsException(_path, id, FIELDS.start_time.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+		} else {
+			try {
+				bean.setStartTime(GTFSTIME_CONVERTER.from(context, FIELDS.start_time, value, true));
+			} catch(GtfsException ex) {
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.start_time.name(), GtfsException.ERROR.INVALID_START_TIME, null, null));
+			}
+		}
+		
+		value = array[i++]; testExtraSpace(FIELDS.end_time.name(), value, bean);
+		if (value == null || value.trim().isEmpty()) {
+			bean.getErrors().add(new GtfsException(_path, id, FIELDS.end_time.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+		} else {
+			try {
+				bean.setEndTime(GTFSTIME_CONVERTER.from(context, FIELDS.end_time, value, true));
+			} catch(GtfsException ex) {
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.end_time.name(), GtfsException.ERROR.INVALID_END_TIME, null, null));
+			}
+		}
+		
+		value = array[i++]; testExtraSpace(FIELDS.headway_secs.name(), value, bean);
+		if (value == null || value.trim().isEmpty()) {
+			bean.getErrors().add(new GtfsException(_path, id, FIELDS.headway_secs.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+		} else {
+			try {
+				bean.setHeadwaySecs(POSITIVE_INTEGER_CONVERTER.from(context, FIELDS.headway_secs, value, true));
+			} catch(GtfsException ex) {
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.end_time.name(), GtfsException.ERROR.INVALID_HEADWAY_SECS, null, null));
+			}
+		}
+		
+		value = array[i++]; testExtraSpace(FIELDS.exact_times.name(), value, bean);
+		if (value != null && !value.trim().isEmpty()) {
+			try {
+				bean.setExactTimes(BOOLEAN_CONVERTER.from(context, FIELDS.exact_times, value, false, false));
+			} catch(GtfsException ex) {
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.exact_times.name(), GtfsException.ERROR.INVALID_EXACT_TIMES_VALUE, null, null));
+			}
+		}
+			
 		return bean;
 	}
 
 	@Override
 	public boolean validate(GtfsFrequency bean, GtfsImporter dao) {
 		boolean result = true;
-		String tripId = bean.getTripId();
-		if (!tripId.equals(_tripId)) {
-			if (!dao.getTripById().containsKey(tripId)) {
-				throw new GtfsException(getPath(), bean.getId(),
-						FIELDS.trip_id.name(), ERROR.MISSING_FOREIGN_KEY,
-						"TODO", bean.getTripId());
-			}
-			_tripId = tripId;
-		}
+//		String tripId = bean.getTripId();
+//		if (!tripId.equals(_tripId)) {
+//			if (!dao.getTripById().containsKey(tripId)) {
+//				throw new GtfsException(getPath(), bean.getId(),
+//						FIELDS.trip_id.name(), ERROR.MISSING_FOREIGN_KEY,
+//						"TODO", bean.getTripId());
+//			}
+//			_tripId = tripId;
+//		}
 
 		return result;
 	}

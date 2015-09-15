@@ -16,6 +16,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.gtfs.model.GtfsFrequency;
+import mobi.chouette.exchange.gtfs.model.GtfsShape;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime;
 import mobi.chouette.exchange.gtfs.model.GtfsTrip;
 import mobi.chouette.exchange.gtfs.model.GtfsTrip.DirectionType;
@@ -228,11 +229,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 
 		Index<GtfsStopTime> stopTimeParser = null;
 		try { // Read and check the header line of the file "stop_times.txt"
-			stopTimeParser = importer.getStopTimeByTrip(); // return new StopTimeByTrip("/.../stop_times.txt", "trip_id", false) { /** super(...) */
-			//   IndexImpl<GtfsStop>(_path = "/.../stop_times.txt", _key = "trip_id", _value = "", _unique = false) {
-			//     initialize() /** read the lines of file _path */
-			//   }
-			// }
+			stopTimeParser = importer.getStopTimeByTrip();
 		} catch (Exception ex ) {
 			if (ex instanceof GtfsException) {
 				validationReporter.reportError(context, (GtfsException)ex, GTFS_STOP_TIMES_FILE);
@@ -267,6 +264,46 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			validationReporter.reportErrors(context, bean.getErrors(), GTFS_STOP_TIMES_FILE);
 		}
 		validationReporter.getExceptions().clear();
+		
+		// shapes.txt
+		if (importer.hasShapeImporter()) {
+			validationReporter.reportSuccess(context, GTFS_1_GTFS_Shape_1, GTFS_SHAPES_FILE);
+			
+			Index<GtfsShape> shapeParser = null;
+			try { // Read and check the header line of the file "shapes.txt"
+				shapeParser = importer.getShapeById(); 
+			} catch (Exception ex ) {
+				if (ex instanceof GtfsException) {
+					validationReporter.reportError(context, (GtfsException)ex, GTFS_SHAPES_FILE);
+				} else {
+					validationReporter.throwUnknownError(context, ex, GTFS_SHAPES_FILE);
+				}
+			}
+			
+			if (shapeParser == null) { // importer.getShapeById() fails for any other reason
+				validationReporter.throwUnknownError(context, new Exception("Cannot instantiate ShapeById class"), GTFS_SHAPES_FILE);
+			}
+			
+			if (!shapeParser.getErrors().isEmpty()) {
+				validationReporter.reportErrors(context, shapeParser.getErrors(), GTFS_SHAPES_FILE);
+				shapeParser.getErrors().clear();
+			}
+			
+			for (GtfsShape bean : shapeParser) {
+				try {
+					shapeParser.validate(bean, importer);
+				} catch (Exception ex) {
+					if (ex instanceof GtfsException) {
+						validationReporter.reportError(context, (GtfsException)ex, GTFS_SHAPES_FILE);
+					} else {
+						validationReporter.throwUnknownError(context, ex, GTFS_SHAPES_FILE);
+					}
+				}
+				validationReporter.reportErrors(context, bean.getErrors(), GTFS_SHAPES_FILE);
+			}
+		} else {
+			validationReporter.reportUnsuccess(context, GTFS_1_GTFS_Shape_1, GTFS_SHAPES_FILE);
+		}
 		
 		// trips.txt
 		if (importer.hasTripImporter()) { // the file "trips.txt" exists ?

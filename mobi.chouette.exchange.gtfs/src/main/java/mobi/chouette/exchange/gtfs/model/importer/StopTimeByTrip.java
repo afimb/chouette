@@ -18,7 +18,7 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements GtfsConve
 	public static final String FILENAME = "stop_times.txt";
 	public static final String KEY = FIELDS.trip_id.name();
 
-//	private GtfsStopTime _bean = new GtfsStopTime();
+	private GtfsStopTime _bean = new GtfsStopTime();
 	private String[] _array = new String[FIELDS.values().length];
 
 //	private String _tripId = null;
@@ -87,8 +87,7 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements GtfsConve
 		i = 0;
 		String value = null;
 		int id = (int) context.get(Context.ID);
-		GtfsStopTime _bean = new GtfsStopTime();
-		//_bean.getErrors().clear();
+		clearBean();
 		_bean.setId(id);
 		
 		value = _array[i++]; testExtraSpace(FIELDS.trip_id.name(), value, _bean);
@@ -203,6 +202,21 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements GtfsConve
 		return _bean;
 	}
 
+	//@Override
+	private void clearBean() {
+		_bean.setArrivalTime(null);
+		_bean.setDepartureTime(null);
+		_bean.setDropOffType(null);
+		_bean.setId(null);
+		_bean.setPickupType(null);
+		_bean.setShapeDistTraveled(null);
+		_bean.setStopHeadsign(null);
+		_bean.setStopId(null);
+		_bean.setStopSequence(null);
+		_bean.setTimepoint(null);
+		_bean.setTripId(null);
+	}
+
 	@Override
 	public boolean validate(GtfsStopTime bean, GtfsImporter dao) {
 		boolean result = true;
@@ -217,34 +231,17 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements GtfsConve
 		Iterator<GtfsStopTime> iti = dao.getStopTimeByTrip().values(tripId).iterator();
 		while ( iti.hasNext() ) {
 			GtfsStopTime nextStopTime = iti.next();
+			//nextStopTime.getErrors().clear();
 			if (nextStopTime.getStopSequence() == null)
 				continue;
 			if (id != nextStopTime.getId() && stopSequence == nextStopTime.getStopSequence()) {
 				result = false;
 				bean.getErrors().add(new GtfsException(_path, nextStopTime.getId(), FIELDS.stop_sequence.name(), GtfsException.ERROR.DUPLICATE_STOP_SEQUENCE, null, null));
 			}
+			if (nextStopTime.getId() == id-1)
+				break;
 		}
 		
-//		String tripId = bean.getTripId();
-//		if (!tripId.equals(_tripId)) {
-//			if (!dao.getTripById().containsKey(tripId)) {
-//				throw new GtfsException(getPath(), bean.getId(),
-//						FIELDS.trip_id.name(), ERROR.MISSING_FOREIGN_KEY,
-//						"TODO", bean.getTripId());
-//			}
-//			_tripId = tripId;
-//		}
-//
-//		String stopId = bean.getStopId();
-//		if (!stopId.equals(_stopId)) {
-//			if (!dao.getStopById().containsKey(stopId)) {
-//				throw new GtfsException(getPath(), bean.getId(),
-//						FIELDS.stop_id.name(), ERROR.MISSING_FOREIGN_KEY,
-//						"TODO", bean.getStopId());
-//			}
-//			_stopId = stopId;
-//		}
-
 		return result;
 	}
 

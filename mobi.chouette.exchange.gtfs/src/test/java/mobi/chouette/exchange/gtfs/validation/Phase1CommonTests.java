@@ -45,7 +45,7 @@ public class Phase1CommonTests extends AbstractPhase1Tests {
 			Assert.assertNotNull(detail.getSource(), "detail must refer a source");
 			Assert.assertNotNull(detail.getSource().getFile(), "detail must refer a file source");
 			Assert.assertEquals(detail.getSource().getFile().getFilename(), "agency.txt", "detail must refer bad file");
-			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(3), "detail must refer bad line");
+			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(2), "detail must refer bad line");
 		}
 	}
 	
@@ -68,7 +68,7 @@ public class Phase1CommonTests extends AbstractPhase1Tests {
 	public void verifyTest_1_4() throws Exception {
 		log.info(Color.GREEN + "CSV_1 : space in field ends" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "csv_1_4", "1-GTFS-CSV-7",CheckPoint.SEVERITY.WARNING, CheckPoint.RESULT.NOK,true);
-
+		
 		Assert.assertEquals(result.getDetailCount(), 1, "detail count");
 		for (Detail detail : result.getDetails()) 
 		{

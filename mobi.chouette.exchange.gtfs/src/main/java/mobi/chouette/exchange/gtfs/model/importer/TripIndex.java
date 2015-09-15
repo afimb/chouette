@@ -112,7 +112,13 @@ public abstract class TripIndex extends IndexImpl<GtfsTrip> implements
 		bean.setTripShortName(STRING_CONVERTER.from(context, FIELDS.trip_short_name, value, false));
 		
 		value = array[i++]; testExtraSpace(FIELDS.direction_id.name(), value, bean);
-		bean.setDirectionId(DIRECTIONTYPE_CONVERTER.from(context, FIELDS.direction_id, value, GtfsTrip.DirectionType.Outbound, false));
+		if (value != null && !value.trim().isEmpty()) {
+			try {
+				bean.setDirectionId(DIRECTIONTYPE_CONVERTER.from(context, FIELDS.direction_id, value, GtfsTrip.DirectionType.Outbound, false));
+			} catch (GtfsException ex) {
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.direction_id.name(), GtfsException.ERROR.INVALID_DIRECTION, null, null));
+			}
+		}
 		
 		value = array[i++]; testExtraSpace(FIELDS.block_id.name(), value, bean);
 		bean.setBlockId(STRING_CONVERTER.from(context, FIELDS.block_id, value, false));
@@ -121,10 +127,22 @@ public abstract class TripIndex extends IndexImpl<GtfsTrip> implements
 		bean.setShapeId(STRING_CONVERTER.from(context, FIELDS.shape_id, value, false));
 		
 		value = array[i++]; testExtraSpace(FIELDS.wheelchair_accessible.name(), value, bean);
-		bean.setWheelchairAccessible(WHEELCHAIRACCESSIBLETYPE_CONVERTER.from(context, FIELDS.wheelchair_accessible, value, false));
+		if (value != null && !value.trim().isEmpty()) {
+			try {
+				bean.setWheelchairAccessible(WHEELCHAIRACCESSIBLETYPE_CONVERTER.from(context, FIELDS.wheelchair_accessible, value, false));
+			} catch (GtfsException ex) {
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.wheelchair_accessible.name(), GtfsException.ERROR.INVALID_WHEELCHAIR_TYPE, null, null));
+			}
+		}
 		
 		value = array[i++]; testExtraSpace(FIELDS.bikes_allowed.name(), value, bean);
-		bean.setBikesAllowed(BIKESALLOWEDTYPE_CONVERTER.from(context, FIELDS.bikes_allowed, value, false));
+		if (value != null && !value.trim().isEmpty()) {
+			try {
+				bean.setBikesAllowed(BIKESALLOWEDTYPE_CONVERTER.from(context, FIELDS.bikes_allowed, value, false));
+			} catch (GtfsException ex) {
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.bikes_allowed.name(), GtfsException.ERROR.INVALID_BYKE_TYPE, null, null));
+			}
+		}
 
 		return bean;
 	}

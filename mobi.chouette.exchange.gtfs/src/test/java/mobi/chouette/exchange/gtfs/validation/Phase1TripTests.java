@@ -190,7 +190,7 @@ public class Phase1TripTests extends AbstractPhase1Tests {
 		log.info(Color.GREEN + "Trip_8 : extra column detected" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "trip_8", "1-GTFS-Trip-8",CheckPoint.SEVERITY.WARNING, CheckPoint.RESULT.NOK,true);
 
-		Assert.assertEquals(result.getDetailCount(), 1, "detail count");
+		Assert.assertEquals(result.getDetailCount(), 2, "detail count");
 		for (Detail detail : result.getDetails()) 
 		{
 			Assert.assertNotNull(detail.getSource(), "detail must refer a source");
