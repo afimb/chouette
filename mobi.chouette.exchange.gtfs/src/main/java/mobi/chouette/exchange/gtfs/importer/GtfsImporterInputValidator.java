@@ -1,7 +1,6 @@
 package mobi.chouette.exchange.gtfs.importer;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.AbstractInputValidator;
@@ -23,20 +22,7 @@ public class GtfsImporterInputValidator extends AbstractInputValidator {
 		}
 
 		GtfsImportParameters parameters = (GtfsImportParameters) abstractParameter;
-		String prefix = parameters.getObjectIdPrefix();
-		if (prefix == null || prefix.isEmpty()) {
-			log.error("missing object_id_prefix");
-			return false;
-		}
-
-		String type = parameters.getReferencesType();
-		if (type != null && !type.isEmpty()) {
-			if (!Arrays.asList(allowedTypes).contains(type.toLowerCase())) {
-				log.error("invalid type " + type);
-				return false;
-			}
-		}
-		return true;
+		return parameters.isValid(log, allowedTypes);
 	}
 
 	@Override

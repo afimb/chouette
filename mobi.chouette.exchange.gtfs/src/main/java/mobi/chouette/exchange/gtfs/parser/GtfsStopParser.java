@@ -57,11 +57,7 @@ public class GtfsStopParser implements Parser, Validator, Constant {
 
 		Index<GtfsStop> parser = null;
 		try { // Read and check the header line of the file "stops.txt"
-			parser = importer.getStopById(); // return new StopById("/.../stops.txt", "stop_id") { /** super(...) */
-			//   IndexImpl<GtfsStop>(_path = "/.../stops.txt", _key = "stop_id", _value = "", _unique = true) {
-			//     initialize() /** read the lines of file _path */
-			//   }
-			// }
+			parser = importer.getStopById(); 
 		} catch (Exception ex ) {
 			if (ex instanceof GtfsException) {
 				validationReporter.reportError(context, (GtfsException)ex, GTFS_STOPS_FILE);

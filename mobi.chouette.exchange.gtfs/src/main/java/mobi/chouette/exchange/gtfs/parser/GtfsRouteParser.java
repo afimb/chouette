@@ -87,11 +87,7 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 
 		Index<GtfsRoute> parser = null;
 		try { // Read and check the header line of the file "routes.txt"
-			parser = importer.getRouteById(); // return new RouteById("/.../routes.txt", "route_id") { /** super(...) */
-			//   IndexImpl<GtfsStop>(_path = "/.../routes.txt", _key = "route_id", _value = "", _unique = true) {
-			//     initialize() /** read the lines of file _path */
-			//   }
-			// }
+			parser = importer.getRouteById(); 
 		} catch (Exception ex ) {
 			if (ex instanceof GtfsException) {
 				validationReporter.reportError(context, (GtfsException)ex, GTFS_ROUTES_FILE);
@@ -143,36 +139,7 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 			line.setName(line.getNumber());
 		}
 
-		switch (gtfsRoute.getRouteType()) {
-		case Tram:
-			line.setTransportModeName(TransportModeNameEnum.Tramway);
-			break;
-		case Subway:
-			line.setTransportModeName(TransportModeNameEnum.Metro);
-			break;
-		case Rail:
-			line.setTransportModeName(TransportModeNameEnum.Train);
-			break;
-		case Bus:
-			line.setTransportModeName(TransportModeNameEnum.Bus);
-			break;
-		case Ferry:
-			line.setTransportModeName(TransportModeNameEnum.Ferry);
-			break;
-		case Cable:
-			line.setTransportModeName(TransportModeNameEnum.Other);
-			break;
-		case Gondola:
-			line.setTransportModeName(TransportModeNameEnum.Other);
-			break;
-		case Funicular:
-			line.setTransportModeName(TransportModeNameEnum.Other);
-			break;
-		default:
-			line.setTransportModeName(TransportModeNameEnum.Other);
-			break;
-
-		}
+		line.setTransportModeName(toTransportModeNameEnum(gtfsRoute.getRouteType()));
 
 		String[] token = line.getObjectId().split(":");
 		line.setRegistrationNumber(token[2]);
@@ -183,6 +150,31 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 		line.setFilled(true);
 	}
 
+	private TransportModeNameEnum toTransportModeNameEnum(GtfsRoute.RouteType type)
+	{
+		switch (type) {
+		case Tram:
+			return TransportModeNameEnum.Tramway;
+		case Subway:
+			return TransportModeNameEnum.Metro;
+		case Rail:
+			return TransportModeNameEnum.Train;
+		case Bus:
+			return TransportModeNameEnum.Bus;
+		case Ferry:
+			return TransportModeNameEnum.Ferry;
+		case Cable:
+			return TransportModeNameEnum.Other;
+		case Gondola:
+			return TransportModeNameEnum.Other;
+		case Funicular:
+			return TransportModeNameEnum.Other;
+		default:
+			return TransportModeNameEnum.Other;
+		}
+		
+	}
+	
 	private String toHexa(Color color) {
 		if (color == null)
 			return null;

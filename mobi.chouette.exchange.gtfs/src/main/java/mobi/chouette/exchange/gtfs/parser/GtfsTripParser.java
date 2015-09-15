@@ -16,7 +16,6 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.gtfs.model.GtfsFrequency;
-import mobi.chouette.exchange.gtfs.model.GtfsStop;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime;
 import mobi.chouette.exchange.gtfs.model.GtfsTrip;
 import mobi.chouette.exchange.gtfs.model.GtfsTrip.DirectionType;
@@ -28,13 +27,6 @@ import mobi.chouette.exchange.gtfs.validation.ValidationReporter;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.Validator;
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.FileError;
-import mobi.chouette.exchange.report.FileInfo;
-import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
-import mobi.chouette.exchange.validation.report.CheckPoint;
-import mobi.chouette.exchange.validation.report.Location;
-import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
@@ -125,7 +117,6 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			}
 			Timetable timetable = ObjectFactory.getTimetable(referential, timetableId);
 			vehicleJourney.getTimetables().add(timetable);
-			// timetable.addVehicleJourney(vehicleJourney);
 
 			// JourneyPattern
 			String journeyKey = gtfsTrip.getRouteId() + "_" + gtfsTrip.getDirectionId().ordinal();
@@ -136,46 +127,8 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			JourneyPattern journeyPattern = journeyPatternByStopSequence.get(journeyKey);
 			if (journeyPattern == null) {
 
-				String lineId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Line.LINE_KEY,
-						gtfsTrip.getRouteId(), log);
-				Line line = ObjectFactory.getLine(referential, lineId);
-
-				// Route
-				String routeId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Route.ROUTE_KEY,
-						gtfsTrip.getRouteId() + "_" + gtfsTrip.getDirectionId().ordinal() + line.getRoutes().size(),
-						log);
-
-				Route route = ObjectFactory.getRoute(referential, routeId);
-				route.setLine(line);
-				String wayBack = gtfsTrip.getDirectionId().equals(DirectionType.Outbound) ? "A" : "R";
-				route.setWayBack(wayBack);
-
-				// JourneyPattern
-				String journeyPatternId = route.getObjectId().replace(Route.ROUTE_KEY,
-						JourneyPattern.JOURNEYPATTERN_KEY);
-				journeyPattern = ObjectFactory.getJourneyPattern(referential, journeyPatternId);
-				journeyPattern.setName(gtfsTrip.getTripHeadSign());
-				journeyPattern.setRoute(route);
-				journeyPatternByStopSequence.put(journeyKey, journeyPattern);
-
-				// StopPoints
-				createStopPoint(route, journeyPattern, vehicleJourney.getVehicleJourneyAtStops(), referential, configuration);
-
-				List<StopPoint> stopPoints = journeyPattern.getStopPoints();
-				journeyPattern.setDepartureStopPoint(stopPoints.get(0));
-				journeyPattern.setArrivalStopPoint(stopPoints.get(stopPoints.size() - 1));
-				
-				journeyPattern.setFilled(true);
-				route.setFilled(true);
-
-				if (route.getName() == null) {
-					if (!route.getStopPoints().isEmpty()) {
-						String first = route.getStopPoints().get(0).getContainedInStopArea().getName();
-						String last = route.getStopPoints().get(route.getStopPoints().size() - 1)
-								.getContainedInStopArea().getName();
-						route.setName(first + " -> " + last);
-					}
-				}
+				journeyPattern = createJourneyPattern(referential, configuration, gtfsTrip, vehicleJourney, journeyKey,
+						journeyPatternByStopSequence);
 
 			}
 
@@ -211,6 +164,53 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			}
 
 		}
+	}
+
+	private JourneyPattern createJourneyPattern(Referential referential, GtfsImportParameters configuration,
+			GtfsTrip gtfsTrip, VehicleJourney vehicleJourney, String journeyKey,
+			Map<String, JourneyPattern> journeyPatternByStopSequence) {
+		JourneyPattern journeyPattern;
+		String lineId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Line.LINE_KEY,
+				gtfsTrip.getRouteId(), log);
+		Line line = ObjectFactory.getLine(referential, lineId);
+
+		// Route
+		String routeId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Route.ROUTE_KEY,
+				gtfsTrip.getRouteId() + "_" + gtfsTrip.getDirectionId().ordinal() + line.getRoutes().size(),
+				log);
+
+		Route route = ObjectFactory.getRoute(referential, routeId);
+		route.setLine(line);
+		String wayBack = gtfsTrip.getDirectionId().equals(DirectionType.Outbound) ? "A" : "R";
+		route.setWayBack(wayBack);
+
+		// JourneyPattern
+		String journeyPatternId = route.getObjectId().replace(Route.ROUTE_KEY,
+				JourneyPattern.JOURNEYPATTERN_KEY);
+		journeyPattern = ObjectFactory.getJourneyPattern(referential, journeyPatternId);
+		journeyPattern.setName(gtfsTrip.getTripHeadSign());
+		journeyPattern.setRoute(route);
+		journeyPatternByStopSequence.put(journeyKey, journeyPattern);
+
+		// StopPoints
+		createStopPoint(route, journeyPattern, vehicleJourney.getVehicleJourneyAtStops(), referential, configuration);
+
+		List<StopPoint> stopPoints = journeyPattern.getStopPoints();
+		journeyPattern.setDepartureStopPoint(stopPoints.get(0));
+		journeyPattern.setArrivalStopPoint(stopPoints.get(stopPoints.size() - 1));
+		
+		journeyPattern.setFilled(true);
+		route.setFilled(true);
+
+		if (route.getName() == null) {
+			if (!route.getStopPoints().isEmpty()) {
+				String first = route.getStopPoints().get(0).getContainedInStopArea().getName();
+				String last = route.getStopPoints().get(route.getStopPoints().size() - 1)
+						.getContainedInStopArea().getName();
+				route.setName(first + " -> " + last);
+			}
+		}
+		return journeyPattern;
 	}
 
 	@Override
@@ -277,11 +277,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 
 		Index<GtfsTrip> tripParser = null;
 		try { // Read and check the header line of the file "trips.txt"
-			tripParser = importer.getTripById(); // return new TripById("/.../trips.txt", "trip_id", true) { /** super(...) */
-			//   IndexImpl<GtfsTrip>(_path = "/.../trips.txt", _key = "trip_id", _value = "", _unique = true) {
-			//     initialize() /** read the lines of file _path */
-			//   }
-			// }
+			tripParser = importer.getTripById(); 
 		} catch (Exception ex ) {
 			if (ex instanceof GtfsException) {
 				validationReporter.reportError(context, (GtfsException)ex, GTFS_TRIPS_FILE);
@@ -322,11 +318,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			
 			Index<GtfsFrequency> frequencyParser = null;
 			try { // Read and check the header line of the file "frequenciess.txt"
-				frequencyParser = importer.getFrequencyByTrip(); // return new FrequencyByTrip("/.../frequenciess.txt", "trip_id", false) { /** super(...) */
-				//   IndexImpl<GtfsTrip>(_path = "/.../frequenciess.txt", _key = "trip_id", _value = "", _unique = true) {
-				//     initialize() /** read the lines of file _path */
-				//   }
-				// }
+				frequencyParser = importer.getFrequencyByTrip(); 
 			} catch (Exception ex ) {
 				if (ex instanceof GtfsException) {
 					validationReporter.reportError(context, (GtfsException)ex, GTFS_FREQUENCIES_FILE);
@@ -433,9 +425,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			VehicleJourney newVehicleJourney = ObjectFactory.getVehicleJourney(referential, vehiculeJourneyId);
 
 			iter++;
-//			for (Timetable timetable : newVehicleJourney.getTimetables()) {
-//				timetable.addVehicleJourney(newVehicleJourney);
-//			}
+
 			List<VehicleJourneyAtStop> vjass = oldVehicleJourney.getVehicleJourneyAtStops();
 			for (VehicleJourneyAtStop vjas : vjass) {
 
@@ -449,10 +439,6 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			newVehicleJourney.setRoute(oldVehicleJourney.getRoute());
 			newVehicleJourney.setJourneyPattern(oldVehicleJourney.getJourneyPattern());
 			newVehicleJourney.getTimetables().addAll(oldVehicleJourney.getTimetables());
-//			for (Timetable tm : oldVehicleJourney.getTimetables()) {
-//
-//				tm.addVehicleJourney(newVehicleJourney);
-//			}
 			newVehicleJourney.setFilled(true);
 			offset += headway;
 		}
@@ -483,7 +469,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			String stopKey = baseKey;
 			int dup = 1;
 			while (stopPointKeys.contains(stopKey)) {
-				stopKey = stopKey + "_" + (dup++);
+				stopKey = baseKey + "_" + (dup++);
 			}
 			stopPointKeys.add(stopKey);
 
@@ -493,7 +479,6 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 					StopArea.STOPAREA_KEY, wrapper.stopId, log);
 			StopArea stopArea = ObjectFactory.getStopArea(referential, stopAreaId);
 			stopPoint.setContainedInStopArea(stopArea);
-			// stopPoint.setName(stopArea.getName());
 			stopPoint.setRoute(route);
 			stopPoint.setPosition(position++);
 

@@ -53,13 +53,6 @@ public class GtfsExporterCommand extends AbstractExporterCommand implements Comm
 			}
 
 			GtfsExportParameters parameters = (GtfsExportParameters) configuration;
-			if (parameters.getStartDate() != null && parameters.getEndDate() != null) {
-				if (parameters.getStartDate().after(parameters.getEndDate())) {
-					report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS, "end date before start date"));
-					return ERROR;
-
-				}
-			}
 
 			String type = parameters.getReferencesType();
 			// set default type

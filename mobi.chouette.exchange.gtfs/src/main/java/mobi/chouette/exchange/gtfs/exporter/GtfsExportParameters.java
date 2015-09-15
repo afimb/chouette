@@ -12,6 +12,8 @@ import lombok.Setter;
 import lombok.ToString;
 import mobi.chouette.exchange.parameters.AbstractExportParameter;
 
+import org.apache.log4j.Logger;
+
 @XmlRootElement(name = "gtfs-export")
 @NoArgsConstructor
 @ToString(callSuper=true)
@@ -27,4 +29,22 @@ public class GtfsExportParameters  extends AbstractExportParameter {
 	@Getter @Setter
 	@XmlElement(name = "object_id_prefix",required = true)
 	private String objectIdPrefix;
+	
+	public boolean isValid(Logger log, String[] allowedTypes)
+	{
+		if (!super.isValid(log,allowedTypes)) return false;
+
+		if (timeZone == null || timeZone.isEmpty()) {
+			log.error("missing time_zone");
+			return false;
+		}
+
+		if (objectIdPrefix == null || objectIdPrefix.isEmpty()) {
+			log.error("missing object_id_prefix");
+			return false;
+		}
+
+		return true;
+		
+	}
 }

@@ -6,7 +6,6 @@ import java.util.Calendar;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
-import mobi.chouette.exchange.gtfs.model.GtfsStop;
 import mobi.chouette.exchange.gtfs.model.GtfsTransfer;
 import mobi.chouette.exchange.gtfs.model.GtfsTransfer.TransferType;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsException;
@@ -17,10 +16,6 @@ import mobi.chouette.exchange.gtfs.validation.ValidationReporter;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.Validator;
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.FileInfo;
-import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
-import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ConnectionLinkTypeEnum;
@@ -59,11 +54,7 @@ public class GtfsTransferParser implements Parser, Validator, Constant {
 
 			Index<GtfsTransfer> parser = null;
 			try { // Read and check the header line of the file "transfers.txt"
-				parser = importer.getTransferByFromStop(); // return new TransferByFromStop("/.../transfers.txt", "from_stop_id", false) { /** super(...) */
-				//   IndexImpl<GtfsTransfer>(_path = "/.../transfers.txt", _key = "from_stop_id", _value = "", _unique = false) {
-				//     initialize() /** read the lines of file _path */
-				//   }
-				// }
+				parser = importer.getTransferByFromStop(); 
 			} catch (Exception ex ) {
 				if (ex instanceof GtfsException) {
 					validationReporter.reportError(context, (GtfsException)ex, GTFS_TRANSFERS_FILE);

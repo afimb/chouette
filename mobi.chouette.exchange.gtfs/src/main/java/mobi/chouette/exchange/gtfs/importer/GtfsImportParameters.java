@@ -1,5 +1,7 @@
 package mobi.chouette.exchange.gtfs.importer;
 
+import java.util.Arrays;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -11,6 +13,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import mobi.chouette.exchange.parameters.AbstractImportParameter;
+
+import org.apache.log4j.Logger;
 
 @XmlRootElement(name = "gtfs-import")
 @NoArgsConstructor
@@ -49,4 +53,22 @@ public class GtfsImportParameters extends AbstractImportParameter {
 	private String referencesType;
 
 
+	public boolean isValid(Logger log, String[] allowedTypes)
+	{
+		if (!super.isValid(log)) return false;
+		
+		if (objectIdPrefix == null || objectIdPrefix.isEmpty()) {
+			log.error("missing object_id_prefix");
+			return false;
+		}
+
+		if (referencesType != null && !referencesType.isEmpty()) {
+			if (!Arrays.asList(allowedTypes).contains(referencesType.toLowerCase())) {
+				log.error("invalid type " + referencesType);
+				return false;
+			}
+		}
+		return true;
+
+	}
 }

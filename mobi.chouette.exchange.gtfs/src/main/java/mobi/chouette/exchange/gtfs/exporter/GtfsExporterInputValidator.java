@@ -1,7 +1,6 @@
 package mobi.chouette.exchange.gtfs.exporter;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.AbstractInputValidator;
@@ -24,34 +23,7 @@ public class GtfsExporterInputValidator extends AbstractInputValidator {
 		}
 
 		GtfsExportParameters parameters = (GtfsExportParameters) abstractParameter;
-		if (parameters.getStartDate() != null && parameters.getEndDate() != null) {
-			if (parameters.getStartDate().after(parameters.getEndDate())) {
-				log.error("end date before start date ");
-				return false;
-			}
-		}
-
-		String type = parameters.getReferencesType();
-		if (type != null && !type.isEmpty()) {
-			if (!Arrays.asList(allowedTypes).contains(type.toLowerCase())) {
-				log.error("invalid type " + type);
-				return false;
-			}
-		}
-
-		String timezone = parameters.getTimeZone();
-		if (timezone == null || timezone.isEmpty()) {
-			log.error("missing time_zone");
-			return false;
-		}
-
-		String prefix = parameters.getObjectIdPrefix();
-		if (prefix == null || prefix.isEmpty()) {
-			log.error("missing object_id_prefix");
-			return false;
-		}
-
-		return true;
+		return parameters.isValid(log, allowedTypes);
 	}
 
 	@Override

@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import org.apache.log4j.Logger;
+
 
 @NoArgsConstructor
 @ToString
@@ -32,5 +34,10 @@ public class AbstractParameter {
 	@Getter@Setter
 	@XmlElement(name = "referential_name")
 	private String referentialName;
+	
+	public boolean isValid(Logger log)
+	{
+		return true;
+	}
 
 }
