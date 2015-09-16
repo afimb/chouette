@@ -26,23 +26,6 @@ import mobi.chouette.model.util.Referential;
 public class GtfsTransferParser implements Parser, Validator, Constant {
 
 	@Override
-	public void parse(Context context) throws Exception {
-
-		Referential referential = (Referential) context.get(REFERENTIAL);
-		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
-		GtfsImportParameters configuration = (GtfsImportParameters) context.get(CONFIGURATION);
-
-		for (GtfsTransfer gtfsTransfer : importer.getTransferByFromStop()) {
-
-			String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
-					ConnectionLink.CONNECTIONLINK_KEY, gtfsTransfer.getFromStopId() + "_" + gtfsTransfer.getToStopId(),
-					log);
-			ConnectionLink connectionLink = ObjectFactory.getConnectionLink(referential, objectId);
-			convert(context, gtfsTransfer, connectionLink);
-		}
-	}
-
-	@Override
 	public void validate(Context context) throws Exception {
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		ValidationReporter validationReporter = (ValidationReporter) context.get(GTFS_REPORTER);
@@ -62,18 +45,37 @@ public class GtfsTransferParser implements Parser, Validator, Constant {
 					validationReporter.throwUnknownError(context, ex, GTFS_TRANSFERS_FILE);
 				}
 			}
+
+			validationReporter.validate(context, GTFS_TRANSFERS_FILE, GtfsException.ERROR.INVALID_HEADER_FILE_FORMAT);
+			validationReporter.validate(context, GTFS_TRANSFERS_FILE, GtfsException.ERROR.EMPTY_HEADER_FIELD);
+			validationReporter.validate(context, GTFS_TRANSFERS_FILE, GtfsException.ERROR.DUPLICATE_HEADER_FIELD);
+			validationReporter.validate(context, GTFS_TRANSFERS_FILE, GtfsException.ERROR.MISSING_FIELD);
+			validationReporter.validate(context, GTFS_TRANSFERS_FILE, GtfsException.ERROR.DUPLICATE_FIELD);
+			validationReporter.validate(context, GTFS_TRANSFERS_FILE, GtfsException.ERROR.INVALID_FILE_FORMAT);
+			validationReporter.validate(context, GTFS_TRANSFERS_FILE, GtfsException.ERROR.MISSING_FILE);
+			validationReporter.validate(context, GTFS_TRANSFERS_FILE, GtfsException.ERROR.SYSTEM);
 			
 			if (parser == null) { // importer.getTransferByFromStop() fails for any other reason
 				validationReporter.throwUnknownError(context, new Exception("Cannot instantiate TransferByFromStop class"), GTFS_TRANSFERS_FILE);
-			}
-			
-			if (parser.getLength() == 0) {
-				parser.getErrors().add(new GtfsException(GTFS_TRANSFERS_FILE, 1, null, GtfsException.ERROR.FILE_WITH_NO_ENTRY, null, null));
+			} else {
+				validationReporter.validateUnknownError(context);
 			}
 			
 			if (!parser.getErrors().isEmpty()) {
 				validationReporter.reportErrors(context, parser.getErrors(), GTFS_TRANSFERS_FILE);
 				parser.getErrors().clear();
+			}
+			
+			validationReporter.validate(context, GTFS_TRANSFERS_FILE, GtfsException.ERROR.EXTRA_SPACE_IN_HEADER_FIELD);
+			validationReporter.validate(context, GTFS_TRANSFERS_FILE, GtfsException.ERROR.HTML_TAG_IN_HEADER_FIELD);
+			validationReporter.validate(context, GTFS_TRANSFERS_FILE, GtfsException.ERROR.EXTRA_HEADER_FIELD);
+			validationReporter.validate(context, GTFS_TRANSFERS_FILE, GtfsException.ERROR.MISSING_REQUIRED_FIELDS);
+			
+			if (parser.getLength() == 0) {
+				validationReporter.reportUnsuccess(context, GTFS_1_GTFS_Transfer_1, GTFS_TRANSFERS_FILE);
+				//validationReporter.reportError(context, new GtfsException(GTFS_TRANSFERS_FILE, 1, null, GtfsException.ERROR.FILE_WITH_NO_ENTRY, null, null), GTFS_TRANSFERS_FILE);
+			} else {
+				validationReporter.validate(context, GTFS_TRANSFERS_FILE, GtfsException.ERROR.FILE_WITH_NO_ENTRY);
 			}
 			
 			for (GtfsTransfer bean : parser) {
@@ -90,6 +92,23 @@ public class GtfsTransferParser implements Parser, Validator, Constant {
 			}
 		} else {
 			validationReporter.reportUnsuccess(context, GTFS_1_GTFS_Transfer_1, GTFS_TRANSFERS_FILE);
+		}
+	}
+
+	@Override
+	public void parse(Context context) throws Exception {
+
+		Referential referential = (Referential) context.get(REFERENTIAL);
+		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
+		GtfsImportParameters configuration = (GtfsImportParameters) context.get(CONFIGURATION);
+
+		for (GtfsTransfer gtfsTransfer : importer.getTransferByFromStop()) {
+
+			String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
+					ConnectionLink.CONNECTIONLINK_KEY, gtfsTransfer.getFromStopId() + "_" + gtfsTransfer.getToStopId(),
+					log);
+			ConnectionLink connectionLink = ObjectFactory.getConnectionLink(referential, objectId);
+			convert(context, gtfsTransfer, connectionLink);
 		}
 	}
 
@@ -120,12 +139,10 @@ public class GtfsTransferParser implements Parser, Validator, Constant {
 
 	static {
 		ParserFactory.register(GtfsTransferParser.class.getName(), new ParserFactory() {
-
 			@Override
 			protected Parser create() {
 				return new GtfsTransferParser();
 			}
 		});
 	}
-
 }

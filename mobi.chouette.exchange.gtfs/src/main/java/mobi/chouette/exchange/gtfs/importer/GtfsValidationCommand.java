@@ -36,10 +36,17 @@ import com.jamonapi.MonitorFactory;
 public class GtfsValidationCommand implements Command, Constant {
 
 	public static final String COMMAND = "GtfsValidationCommand";
-
-	private static final List<String> processableAllFiles = Arrays.asList(GTFS_AGENCY_FILE,GTFS_STOPS_FILE, GTFS_ROUTES_FILE,
-			GTFS_TRIPS_FILE, GTFS_STOP_TIMES_FILE, GTFS_CALENDAR_FILE, GTFS_CALENDAR_DATES_FILE,
-			GTFS_FREQUENCIES_FILE,GTFS_TRANSFERS_FILE);
+	
+	private static final List<String> processableAllFiles = Arrays.asList(GTFS_AGENCY_FILE,
+			GTFS_STOPS_FILE,
+			GTFS_ROUTES_FILE,
+			GTFS_SHAPES_FILE,
+			GTFS_TRIPS_FILE,
+			GTFS_STOP_TIMES_FILE,
+			GTFS_CALENDAR_FILE,
+			GTFS_CALENDAR_DATES_FILE,
+			GTFS_FREQUENCIES_FILE,
+			GTFS_TRANSFERS_FILE);
 
 	private static final List<String> processableStopAreaFiles = Arrays.asList(GTFS_STOPS_FILE, GTFS_TRANSFERS_FILE);
 
@@ -48,29 +55,33 @@ public class GtfsValidationCommand implements Command, Constant {
 		boolean result = ERROR;
 
 		Monitor monitor = MonitorFactory.start(COMMAND);
-
+		
+		ActionReport report = (ActionReport) context.get(REPORT);
+		
 		JobData jobData = (JobData) context.get(JOB_DATA);
 		// check ignored files
 		Path path = Paths.get(jobData.getPathName(), INPUT);
 		List<Path> list = FileUtil.listFiles(path, "*");
-		ActionReport report = (ActionReport) context.get(REPORT);
+		
 		GtfsImportParameters parameters = (GtfsImportParameters) context.get(CONFIGURATION);
 		boolean all = !(parameters.getReferencesType().equalsIgnoreCase("stop_area"));
 		List<String> processableFiles = processableAllFiles;
 		if (!all) {
 			processableFiles = processableStopAreaFiles;
 		}
+		
 		for (Path fileName : list) {
 			if (!processableFiles.contains(fileName.getFileName().toString())) {
-				FileInfo file = new FileInfo(fileName.getFileName().toString(),FILE_STATE.IGNORED);
+				FileInfo file = new FileInfo(fileName.getFileName().toString(), FILE_STATE.IGNORED);
 				report.getFiles().add(file);
 			}
 		}
-
+		
 		try {
+			
 			if (all) {
 				// agency.txt
-				GtfsAgencyParser agencyParser = (GtfsAgencyParser) ParserFactory.create(GtfsAgencyParser.class.getName()); // return new GtfsAgencyParser()
+				GtfsAgencyParser agencyParser = (GtfsAgencyParser) ParserFactory.create(GtfsAgencyParser.class.getName());
 				agencyParser.validate(context);
 			}
 			
@@ -82,20 +93,20 @@ public class GtfsValidationCommand implements Command, Constant {
 				// routes.txt
 				GtfsRouteParser routeParser = (GtfsRouteParser) ParserFactory.create(GtfsRouteParser.class.getName());
 				routeParser.validate(context);
-
-				// trips.txt & stop_times.txt & frequencies.txt
+				
+				// shapes.txt, trips.txt, stop_times.txt & frequencies.txt
 				GtfsTripParser tripParser = (GtfsTripParser) ParserFactory.create(GtfsTripParser.class.getName());
 				tripParser.validate(context);
-
+				
 				// calendar.txt & calendar_dates.txt
 				GtfsCalendarParser calendarParser = (GtfsCalendarParser) ParserFactory.create(GtfsCalendarParser.class.getName());
 				calendarParser.validate(context);
 			}
-
+			
 			// transfers.txt
 			GtfsTransferParser transferParser = (GtfsTransferParser) ParserFactory.create(GtfsTransferParser.class.getName());
 			transferParser.validate(context);
-
+			
 			result = SUCCESS;
 		} catch (GtfsException e) {
 			log.error(e);
@@ -104,7 +115,8 @@ public class GtfsValidationCommand implements Command, Constant {
 			else
 				report.setFailure(new ActionError(ActionError.CODE.INVALID_DATA, e.getError().name()+" "+e.getPath()));
 		} catch (Exception e) {
-			log.error(e,e);
+			//log.error(e, e);
+			log.error(e);
 			throw e;
 		} finally {
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
@@ -114,16 +126,15 @@ public class GtfsValidationCommand implements Command, Constant {
 	}
 
 	public static class DefaultCommandFactory extends CommandFactory {
-
+		
 		@Override
 		protected Command create(InitialContext context) throws IOException {
 			Command result = new GtfsValidationCommand();
 			return result;
 		}
 	}
-
+	
 	static {
 		CommandFactory.factories.put(GtfsValidationCommand.class.getName(), new DefaultCommandFactory());
 	}
-
 }

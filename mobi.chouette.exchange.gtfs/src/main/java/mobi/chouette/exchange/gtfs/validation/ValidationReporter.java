@@ -769,6 +769,36 @@ public class ValidationReporter implements Constant {
 		
 		name = capitalize(name);
 		switch(errorName) {
+		case SYSTEM: // A PROBLEM WHILE READING THIS FILE
+		case MISSING_FILE: // THIS CAN NEVER OCCUR
+			if ("Frequency".equals(name) || "Transfer".equals(name) || "Shape".equals(name))
+				return "MISSING FILE: "+name;
+			return "MISSING FILE: 1-GTFS-"+name+"-1";
+		case INVALID_HEADER_FILE_FORMAT:
+			return GTFS_1_GTFS_CSV_10;
+		case EMPTY_HEADER_FIELD:
+			return GTFS_1_GTFS_CSV_11;
+		case DUPLICATE_HEADER_FIELD:
+			return GTFS_1_GTFS_CSV_12;
+		case INVALID_FILE_FORMAT:
+			return GTFS_1_GTFS_CSV_13;
+		case DUPLICATE_DEFAULT_KEY_FIELD: // THE ONLY DEFAULT KEY IS FOR AGENCY
+			return GTFS_1_GTFS_Agency_5;
+		case MISSING_FIELD: // 1-GTFS-Agency-2, 1-GTFS-Stop-2,
+			if ("Agency".equals(name) || "Frequency".equals(name) || "Transfer".equals(name) || "Shape".equals(name))
+				return "1-GTFS-"+name+"-2";
+			return "1-GTFS-"+name+"-3";
+		case DUPLICATE_FIELD: // 1-GTFS-Agency-3, 1-GTFS-Stop-4
+			if ("Agency".equals(name))
+				return "1-GTFS-"+name+"-3";
+			if ("Route".equals(name))
+				return "1-GTFS-"+name+"-5";
+			return "1-GTFS-"+name+"-4";
+		case EXTRA_SPACE_IN_HEADER_FIELD:
+			return GTFS_1_GTFS_CSV_7;
+		case HTML_TAG_IN_HEADER_FIELD:
+			return GTFS_1_GTFS_CSV_6;
+		
 		case INVALID_SHAPE_POINT_SEQUENCE: // 1-GTFS-Shape-6
 			return "1-GTFS-Shape-6";
 		case MISSING_TRANSFER_TIME: // 1-GTFS-Transfer-4
@@ -874,16 +904,6 @@ public class ValidationReporter implements Constant {
 			return "1-GTFS-"+name+"-3";
 		case MISSING_REQUIRED_VALUES2:
 			return "1-GTFS-"+name+"-4";
-		case MISSING_FIELD: // 1-GTFS-Agency-2, 1-GTFS-Stop-2,
-			if ("Agency".equals(name) || "Frequency".equals(name) || "Transfer".equals(name) || "Shape".equals(name))
-				return "1-GTFS-"+name+"-2";
-			return "1-GTFS-"+name+"-3";
-		case DUPLICATE_FIELD: // 1-GTFS-Agency-3, 1-GTFS-Stop-4
-			if ("Agency".equals(name))
-				return "1-GTFS-"+name+"-3";
-			if ("Route".equals(name))
-				return "1-GTFS-"+name+"-5";
-			return "1-GTFS-"+name+"-4";
 		case INVALID_LAT:
 			if ("Shape".equals(name))
 				return "1-GTFS-"+name+"-4";
@@ -965,6 +985,13 @@ public class ValidationReporter implements Constant {
 		}
 	}
 	
+	public void validateUnknownError(Context context) {
+		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
+		CheckPoint cp = validationReport.findCheckPointByName(GTFS_1_GTFS_CSV_14);
+		if (cp.getState() == CheckPoint.RESULT.UNCHECK)
+			cp.setState(CheckPoint.RESULT.OK);
+	}
+	
 	public void reportSuccess(Context context, String checkpointName, String filenameInfo) {
 		ActionReport report = (ActionReport) context.get(REPORT);
 		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
@@ -1010,5 +1037,19 @@ public class ValidationReporter implements Constant {
 				CheckPoint.RESULT.NOK);
 		// Stop parsing and render reports (1-GTFS-<X>-1 is fatal)
 		throw new Exception("At least one of the files \""+filenameInfo1+"\" and \""+filenameInfo2+"\" must be provided");
+	}
+
+	public void validate(Context context, String filenameInfo, mobi.chouette.exchange.gtfs.model.importer.GtfsException.ERROR errorCode) {
+		
+		String checkPointName = checkPointName(name(filenameInfo), errorCode);
+		
+		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
+		CheckPoint checkPoint = validationReport.findCheckPointByName(checkPointName);
+		
+		if (checkPoint == null)
+			System.out.println("########### filenameInfo: "+filenameInfo+". ###### checkPointName: "+checkPointName);
+		else
+			if (checkPoint.getState() == CheckPoint.RESULT.UNCHECK)
+				checkPoint.setState(CheckPoint.RESULT.OK);
 	}
 }
