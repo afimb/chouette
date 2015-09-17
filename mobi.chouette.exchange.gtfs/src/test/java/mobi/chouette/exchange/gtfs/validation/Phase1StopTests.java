@@ -19,7 +19,7 @@ public class Phase1StopTests extends AbstractPhase1Tests {
 		super.init();
 	}
 
-	@Test(groups = { "Phase 2 Stop" }, description = "missing file" ,priority=41 )
+	@Test(groups = { "Phase 1 Stop" }, description = "missing file" ,priority=41 )
 	public void verifyTest_2_1() throws Exception {
 		log.info(Color.GREEN + "Stop_1 : missing file" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "stop_1", "1-GTFS-Stop-1",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
@@ -35,7 +35,7 @@ public class Phase1StopTests extends AbstractPhase1Tests {
 		}
 	}
 
-	@Test(groups = { "Phase 2 Stop" }, description = "missing column stop_id" ,priority=42 )
+	@Test(groups = { "Phase 1 Stop" }, description = "missing column stop_id" ,priority=42 )
 	public void verifyTest_2_2_1() throws Exception {
 		log.info(Color.GREEN + "Stop_2_1 : missing column stop_id" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "stop_2_1", "1-GTFS-Stop-2",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
@@ -50,7 +50,7 @@ public class Phase1StopTests extends AbstractPhase1Tests {
 		}
 	}
 
-	@Test(groups = { "Phase 2 Stop" }, description = "missing column stop_name" ,priority=43)
+	@Test(groups = { "Phase 1 Stop" }, description = "missing column stop_name" ,priority=43)
 	public void verifyTest_2_2_2() throws Exception {
 		log.info(Color.GREEN + "Stop_2_2 : missing column stop_name" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "stop_2_2", "1-GTFS-Stop-2",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
@@ -65,7 +65,7 @@ public class Phase1StopTests extends AbstractPhase1Tests {
 		}
 	}
 
-	@Test(groups = { "Phase 2 Stop" }, description = "missing column stop_lat" ,priority=44 )
+	@Test(groups = { "Phase 1 Stop" }, description = "missing column stop_lat" ,priority=44 )
 	public void verifyTest_2_2_3() throws Exception {
 		log.info(Color.GREEN + "Stop_2_3 : missing column stop_lat" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "stop_2_3", "1-GTFS-Stop-2",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
@@ -80,7 +80,7 @@ public class Phase1StopTests extends AbstractPhase1Tests {
 		}
 	}
 
-	@Test(groups = { "Phase 2 Stop" }, description = "missing column stop_long" ,priority=45)
+	@Test(groups = { "Phase 1 Stop" }, description = "missing column stop_long" ,priority=45)
 	public void verifyTest_2_2_4() throws Exception {
 		log.info(Color.GREEN + "Stop_2_4 : missing column stop_long" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "stop_2_4", "1-GTFS-Stop-2",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
@@ -95,7 +95,7 @@ public class Phase1StopTests extends AbstractPhase1Tests {
 		}
 	}
 
-	@Test(groups = { "Phase 2 Stop" }, description = "empty column stop_id" ,priority=46 )
+	@Test(groups = { "Phase 1 Stop" }, description = "empty column stop_id" ,priority=46 )
 	public void verifyTest_2_3_1() throws Exception {
 		log.info(Color.GREEN + "Stop_2 : empty column stop_id" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "stop_3_1", "1-GTFS-Stop-3",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
@@ -110,7 +110,7 @@ public class Phase1StopTests extends AbstractPhase1Tests {
 		}
 	}
 
-	@Test(groups = { "Phase 2 Stop" }, description = "empty column stop_name" ,priority=47 )
+	@Test(groups = { "Phase 1 Stop" }, description = "empty column stop_name" ,priority=47 )
 	public void verifyTest_2_3_2() throws Exception {
 		log.info(Color.GREEN + "Stop_3_2 : empty column stop_name" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "stop_3_2", "1-GTFS-Stop-3",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
@@ -125,7 +125,7 @@ public class Phase1StopTests extends AbstractPhase1Tests {
 		}
 	}
 
-	@Test(groups = { "Phase 2 Stop" }, description = "empty column stop_lat" ,priority=48)
+	@Test(groups = { "Phase 1 Stop" }, description = "empty column stop_lat" ,priority=48)
 	public void verifyTest_2_3_3() throws Exception {
 		log.info(Color.GREEN + "Stop_3_3 : empty column stop_lat" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "stop_3_3", "1-GTFS-Stop-3",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
@@ -140,7 +140,7 @@ public class Phase1StopTests extends AbstractPhase1Tests {
 		}
 	}
 
-	@Test(groups = { "Phase 2 Stop" }, description = "empty column stop_lon" ,priority=49 )
+	@Test(groups = { "Phase 1 Stop" }, description = "empty column stop_lon" ,priority=49 )
 	public void verifyTest_2_3_4() throws Exception {
 		log.info(Color.GREEN + "Stop_3_4 : empty column stop_lon" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "stop_3_4", "1-GTFS-Stop-3",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
@@ -155,7 +155,7 @@ public class Phase1StopTests extends AbstractPhase1Tests {
 		}
 	}
 
-	@Test(groups = { "Phase 2 Stop" }, description = "duplicate stop_id" ,priority=50 )
+	@Test(groups = { "Phase 1 Stop" }, description = "duplicate stop_id" ,priority=50 )
 	public void verifyTest_2_4() throws Exception {
 		log.info(Color.GREEN + "Stop_4 : duplicate stop_id" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "stop_4", "1-GTFS-Stop-4",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
@@ -170,7 +170,7 @@ public class Phase1StopTests extends AbstractPhase1Tests {
 		}
 	}
 
-	@Test(groups = { "Phase 2 Stop" }, description = "invalid column stop_lat" ,priority=51 )
+	@Test(groups = { "Phase 1 Stop" }, description = "invalid column stop_lat" ,priority=51 )
 	public void verifyTest_2_5() throws Exception {
 		log.info(Color.GREEN + "Stop_5 : invalid column stop_lat" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "stop_5", "1-GTFS-Stop-5",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
@@ -185,7 +185,7 @@ public class Phase1StopTests extends AbstractPhase1Tests {
 		}
 	}
 
-	@Test(groups = { "Phase 2 Stop" }, description = "invalid column stop_lon" ,priority=52 )
+	@Test(groups = { "Phase 1 Stop" }, description = "invalid column stop_lon" ,priority=52 )
 	public void verifyTest_2_6() throws Exception {
 		log.info(Color.GREEN + "Stop_6 : invalid column stop_lon" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "stop_6", "1-GTFS-Stop-6",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
@@ -200,7 +200,7 @@ public class Phase1StopTests extends AbstractPhase1Tests {
 		}
 	}
 
-	@Test(groups = { "Phase 2 Stop" }, description = "invalid column stop_url" ,priority=53 )
+	@Test(groups = { "Phase 1 Stop" }, description = "invalid column stop_url" ,priority=53 )
 	public void verifyTest_2_7() throws Exception {
 		log.info(Color.GREEN + "Stop_7 : invalid column stop_url" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "stop_7", "1-GTFS-Stop-7",CheckPoint.SEVERITY.WARNING, CheckPoint.RESULT.NOK,true);
@@ -215,7 +215,7 @@ public class Phase1StopTests extends AbstractPhase1Tests {
 		}
 	}
 
-	@Test(groups = { "Phase 2 Stop" }, description = "invalid column location_type" ,priority=54 )
+	@Test(groups = { "Phase 1 Stop" }, description = "invalid column location_type" ,priority=54 )
 	public void verifyTest_2_8() throws Exception {
 		log.info(Color.GREEN + "Stop_8 : invalid column location_type" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "stop_8", "1-GTFS-Stop-8",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
@@ -230,7 +230,7 @@ public class Phase1StopTests extends AbstractPhase1Tests {
 		}
 	}
 
-	@Test(groups = { "Phase 2 Stop" }, description = "invalid column stop_timezone" ,priority=55 )
+	@Test(groups = { "Phase 1 Stop" }, description = "invalid column stop_timezone" ,priority=55 )
 	public void verifyTest_2_9() throws Exception {
 		log.info(Color.GREEN + "Stop_9 : invalid column stop_timezone" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "stop_9", "1-GTFS-Stop-9",CheckPoint.SEVERITY.WARNING, CheckPoint.RESULT.NOK,true);
@@ -245,7 +245,7 @@ public class Phase1StopTests extends AbstractPhase1Tests {
 		}
 	}
 
-	@Test(groups = { "Phase 2 Stop" }, description = "invalid column wheelchair_boarding" ,priority=56 )
+	@Test(groups = { "Phase 1 Stop" }, description = "invalid column wheelchair_boarding" ,priority=56 )
 	public void verifyTest_2_10() throws Exception {
 		log.info(Color.GREEN + "Stop_10 : invalid column wheelchair_boarding" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "stop_10", "1-GTFS-Stop-10",CheckPoint.SEVERITY.WARNING, CheckPoint.RESULT.NOK,true);
@@ -260,7 +260,7 @@ public class Phase1StopTests extends AbstractPhase1Tests {
 		}
 	}
 
-	@Test(groups = { "Phase 2 Stop" }, description = "extra columns" ,priority=57 )
+	@Test(groups = { "Phase 1 Stop" }, description = "extra columns" ,priority=57 )
 	public void verifyTest_2_11() throws Exception {
 		log.info(Color.GREEN + "Stop_11 : extra column detected" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "stop_11", "1-GTFS-Stop-11",CheckPoint.SEVERITY.WARNING, CheckPoint.RESULT.NOK,true);
@@ -275,7 +275,7 @@ public class Phase1StopTests extends AbstractPhase1Tests {
 		}
 	}
 
-//	@Test(groups = { "Phase 2 Stop" }, description = "empty file" ,priority=58 )
+//	@Test(groups = { "Phase 1 Stop" }, description = "empty file" ,priority=58 )
 //	public void verifyTest_2_12() throws Exception {
 //		log.info(Color.GREEN + "Stop_12 : empty file" + Color.NORMAL);
 //		CheckPoint result = verifyValidation( log, "stop_12", "1-GTFS-Stop-12",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
