@@ -48,7 +48,7 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 		// calendar.txt
 		Index<GtfsCalendar> calendarParser = null;
 		if (importer.hasCalendarImporter()) { // the file "calendar.txt" exists ?
-			validationReporter.reportSuccess(context, GTFS_1_GTFS_Calendar_1, GTFS_CALENDAR_FILE);
+			validationReporter.reportSuccess(context, GTFS_1_GTFS_Common_1_1, GTFS_CALENDAR_FILE);
 		
 			try { // Read and check the header line of the file "calendar.txt"
 				calendarParser = importer.getCalendarByService(); // return new CalendarByService("/.../calendar.txt", "service_id") { /** super(...) */
@@ -64,14 +64,7 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 				}
 			}
 			
-			validationReporter.validate(context, GTFS_CALENDAR_FILE, GtfsException.ERROR.INVALID_HEADER_FILE_FORMAT);
-			validationReporter.validate(context, GTFS_CALENDAR_FILE, GtfsException.ERROR.EMPTY_HEADER_FIELD);
-			validationReporter.validate(context, GTFS_CALENDAR_FILE, GtfsException.ERROR.DUPLICATE_HEADER_FIELD);
-			validationReporter.validate(context, GTFS_CALENDAR_FILE, GtfsException.ERROR.MISSING_FIELD);
-			validationReporter.validate(context, GTFS_CALENDAR_FILE, GtfsException.ERROR.DUPLICATE_FIELD);
-			validationReporter.validate(context, GTFS_CALENDAR_FILE, GtfsException.ERROR.INVALID_FILE_FORMAT);
-			validationReporter.validate(context, GTFS_CALENDAR_FILE, GtfsException.ERROR.MISSING_FILE);
-			validationReporter.validate(context, GTFS_CALENDAR_FILE, GtfsException.ERROR.SYSTEM);
+			validationReporter.validateOkCSV(context, GTFS_CALENDAR_FILE);
 		
 			if (calendarParser == null) { // importer.getCalendarByService() fails for any other reason
 				validationReporter.throwUnknownError(context, new Exception("Cannot instantiate CalendarByService class"), GTFS_CALENDAR_FILE);
@@ -84,17 +77,14 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 				calendarParser.getErrors().clear();
 			}
 			
-			validationReporter.validate(context, GTFS_CALENDAR_FILE, GtfsException.ERROR.EXTRA_SPACE_IN_HEADER_FIELD);
-			validationReporter.validate(context, GTFS_CALENDAR_FILE, GtfsException.ERROR.HTML_TAG_IN_HEADER_FIELD);
-			validationReporter.validate(context, GTFS_CALENDAR_FILE, GtfsException.ERROR.EXTRA_HEADER_FIELD);
-			validationReporter.validate(context, GTFS_CALENDAR_FILE, GtfsException.ERROR.MISSING_REQUIRED_FIELDS);
+			validationReporter.validateOKGeneralSyntax(context, GTFS_CALENDAR_FILE);
 		
-			if (calendarParser.getLength() == 0) {
-				validationReporter.reportUnsuccess(context, GTFS_1_GTFS_Calendar_1, GTFS_CALENDAR_FILE);
-				//validationReporter.reportError(context, new GtfsException(GTFS_CALENDAR_FILE, 1, null, GtfsException.ERROR.FILE_WITH_NO_ENTRY, null, null), GTFS_CALENDAR_FILE);
-			} else {
-				validationReporter.validate(context, GTFS_CALENDAR_FILE, GtfsException.ERROR.FILE_WITH_NO_ENTRY);
-			}
+//			if (calendarParser.getLength() == 0) {
+//				validationReporter.reportUnsuccess(context, GTFS_1_GTFS_Calendar_1, GTFS_CALENDAR_FILE);
+//				//validationReporter.reportError(context, new GtfsException(GTFS_CALENDAR_FILE, 1, null, GtfsException.ERROR.FILE_WITH_NO_ENTRY, null, null), GTFS_CALENDAR_FILE);
+//			} else {
+//				validationReporter.validate(context, GTFS_CALENDAR_FILE, GtfsException.ERROR.FILE_WITH_NO_ENTRY);
+//			}
 			
 			for (GtfsCalendar bean : calendarParser) {
 				try {
@@ -108,8 +98,6 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 				}
 				validationReporter.reportErrors(context, bean.getErrors(), GTFS_CALENDAR_FILE);
 			}
-		} else {
-			validationReporter.reportUnsuccess(context, GTFS_1_GTFS_Calendar_1, GTFS_CALENDAR_FILE);
 		}
 		return calendarParser;
 	}
@@ -121,7 +109,7 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 		// calendar_dates.txt
 		Index<GtfsCalendarDate> calendarDateParser = null;
 		if (importer.hasCalendarDateImporter()) { // the file "calendar_dates.txt" exists ?
-			validationReporter.reportSuccess(context, GTFS_1_GTFS_Calendar_1, GTFS_CALENDAR_DATES_FILE);
+			validationReporter.reportSuccess(context, GTFS_1_GTFS_Common_1_1, GTFS_CALENDAR_DATES_FILE);
 		
 			try { // Read and check the header line of the file "calendar_dates.txt"
 				calendarDateParser = importer.getCalendarDateByService(); // return new CalendarDateByService("/.../calendar_dates.txt", "service_id") { /** super(...) */
@@ -137,14 +125,7 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 				}
 			}			
 			
-			validationReporter.validate(context, GTFS_CALENDAR_DATES_FILE, GtfsException.ERROR.INVALID_HEADER_FILE_FORMAT);
-			validationReporter.validate(context, GTFS_CALENDAR_DATES_FILE, GtfsException.ERROR.EMPTY_HEADER_FIELD);
-			validationReporter.validate(context, GTFS_CALENDAR_DATES_FILE, GtfsException.ERROR.DUPLICATE_HEADER_FIELD);
-			validationReporter.validate(context, GTFS_CALENDAR_DATES_FILE, GtfsException.ERROR.MISSING_FIELD);
-			validationReporter.validate(context, GTFS_CALENDAR_DATES_FILE, GtfsException.ERROR.DUPLICATE_FIELD);
-			validationReporter.validate(context, GTFS_CALENDAR_DATES_FILE, GtfsException.ERROR.INVALID_FILE_FORMAT);
-			validationReporter.validate(context, GTFS_CALENDAR_DATES_FILE, GtfsException.ERROR.MISSING_FILE);
-			validationReporter.validate(context, GTFS_CALENDAR_DATES_FILE, GtfsException.ERROR.SYSTEM);
+			validationReporter.validateOkCSV(context, GTFS_CALENDAR_DATES_FILE);
 
 		
 			if (calendarDateParser == null) { // importer.getCalendarDateByService() fails for any other reason
@@ -158,17 +139,14 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 				calendarDateParser.getErrors().clear();
 			}
 			
-			validationReporter.validate(context, GTFS_CALENDAR_DATES_FILE, GtfsException.ERROR.EXTRA_SPACE_IN_HEADER_FIELD);
-			validationReporter.validate(context, GTFS_CALENDAR_DATES_FILE, GtfsException.ERROR.HTML_TAG_IN_HEADER_FIELD);
-			validationReporter.validate(context, GTFS_CALENDAR_DATES_FILE, GtfsException.ERROR.EXTRA_HEADER_FIELD);
-			validationReporter.validate(context, GTFS_CALENDAR_DATES_FILE, GtfsException.ERROR.MISSING_REQUIRED_FIELDS);
+			validationReporter.validateOKGeneralSyntax(context, GTFS_CALENDAR_DATES_FILE);
 		
-			if (calendarDateParser.getLength() == 0) {
-				validationReporter.reportUnsuccess(context, GTFS_1_GTFS_Calendar_1, GTFS_CALENDAR_DATES_FILE);
-//				validationReporter.reportError(context, new GtfsException(GTFS_CALENDAR_DATES_FILE, 1, null, GtfsException.ERROR.FILE_WITH_NO_ENTRY, null, null), GTFS_CALENDAR_DATES_FILE);
-			} else {
-				validationReporter.validate(context, GTFS_CALENDAR_DATES_FILE, GtfsException.ERROR.FILE_WITH_NO_ENTRY);
-			}
+//			if (calendarDateParser.getLength() == 0) {
+//				validationReporter.reportUnsuccess(context, GTFS_1_GTFS_Calendar_1, GTFS_CALENDAR_DATES_FILE);
+////				validationReporter.reportError(context, new GtfsException(GTFS_CALENDAR_DATES_FILE, 1, null, GtfsException.ERROR.FILE_WITH_NO_ENTRY, null, null), GTFS_CALENDAR_DATES_FILE);
+//			} else {
+//				validationReporter.validate(context, GTFS_CALENDAR_DATES_FILE, GtfsException.ERROR.FILE_WITH_NO_ENTRY);
+//			}
 			
 			CalendarDateByService.hashCodes.clear();
 			for (GtfsCalendarDate bean : calendarDateParser) {
@@ -183,19 +161,18 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 				}
 				validationReporter.reportErrors(context, bean.getErrors(), GTFS_CALENDAR_DATES_FILE);
 			}
-		} else {
-			validationReporter.reportUnsuccess(context, GTFS_1_GTFS_Calendar_1, GTFS_CALENDAR_DATES_FILE);
 		}
 		
 		if (!importer.hasCalendarImporter() && !importer.hasCalendarDateImporter()) {
-			validationReporter.reportFailure(context, GTFS_1_GTFS_Calendar_1, GTFS_CALENDAR_FILE, GTFS_CALENDAR_DATES_FILE);
+			validationReporter.reportError(context, new GtfsException(GTFS_CALENDAR_FILE, 1, null, GtfsException.ERROR.MISSING_FILES, null, null), GTFS_CALENDAR_FILE);
+			//validationReporter.reportFailure(context, GTFS_1_GTFS_Calendar_1, GTFS_CALENDAR_FILE, GTFS_CALENDAR_DATES_FILE);
 		} else if ( (calendarDateParser == null && calendarParser.getLength() == 0) ||
 				(calendarParser == null && calendarDateParser.getLength() == 0) ||
 				(calendarParser != null && calendarDateParser != null && calendarParser.getLength() == 0 && calendarDateParser.getLength() == 0) ) {
-			validationReporter.reportError(context, new GtfsException(GTFS_CALENDAR_FILE, 1, null, GtfsException.ERROR.FILE_WITH_NO_ENTRY, null, null), GTFS_CALENDAR_FILE);
+			validationReporter.reportError(context, new GtfsException(GTFS_CALENDAR_FILE, 1, null, GtfsException.ERROR.FILES_WITH_NO_ENTRY, null, null), GTFS_CALENDAR_FILE);
 		} else {
-			validationReporter.validate(context, GTFS_CALENDAR_FILE, GtfsException.ERROR.FILE_WITH_NO_ENTRY);
-			validationReporter.validate(context, GTFS_CALENDAR_DATES_FILE, GtfsException.ERROR.FILE_WITH_NO_ENTRY);
+			validationReporter.validate(context, GTFS_CALENDAR_FILE, GtfsException.ERROR.FILES_WITH_NO_ENTRY);
+			validationReporter.validate(context, GTFS_CALENDAR_DATES_FILE, GtfsException.ERROR.FILES_WITH_NO_ENTRY);
 		}
 	}
 

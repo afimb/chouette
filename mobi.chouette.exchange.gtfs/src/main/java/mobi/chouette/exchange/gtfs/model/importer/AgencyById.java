@@ -2,8 +2,10 @@ package mobi.chouette.exchange.gtfs.model.importer;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import mobi.chouette.common.HTMLTagValidator;
 import mobi.chouette.exchange.gtfs.model.GtfsAgency;
@@ -19,9 +21,10 @@ public class AgencyById extends IndexImpl<GtfsAgency> implements GtfsConverter {
 
 	private GtfsAgency bean = new GtfsAgency();
 	private String[] array = new String[FIELDS.values().length];
+	private Set<String> agencyIds = new HashSet<String>(); // Used to check relation with routes
 
 	public AgencyById(String name) throws IOException {
-		super(name, KEY, "default", true);
+		super(name, KEY, GtfsAgency.DEFAULT_ID, true);
 	}
 	
 	@Override
@@ -75,16 +78,24 @@ public class AgencyById extends IndexImpl<GtfsAgency> implements GtfsConverter {
 		for (FIELDS field : FIELDS.values()) {
 			array[i++] = getField(reader, field.name()); // array[i++] may be ""
 		}
-
+		
 		i = 0;
 		String value = null;
 		int id = (int) context.get(Context.ID);
-		bean.getErrors().clear();
+		//bean.getErrors().clear();
 		bean.setId(id);
 		
 		value = array[i++]; testExtraSpace(FIELDS.agency_id.name(), value, bean);
+		bean.getOkTests().add(GtfsException.ERROR.EXTRA_SPACE_IN_FIELD.name());
 		if (value != null && !value.trim().isEmpty()) {
+			agencyIds.add(value.trim());
 			bean.setAgencyId(STRING_CONVERTER.from(context, FIELDS.agency_id, value, GtfsAgency.DEFAULT_ID, false));
+		}
+		
+		if (GtfsAgency.DEFAULT_ID.equals(bean.getAgencyId())) {
+			bean.getErrors().add(new GtfsException(_path, id, FIELDS.agency_name.name(), GtfsException.ERROR.DEFAULT_VALUE, null, null));
+		} else {
+			bean.getOkTests().add(GtfsException.ERROR.DEFAULT_VALUE.name());
 		}
 		
 		// check the existance of agency_name, agency_url and agency_timezone values for this bean : 1-GTFS-Agency-5
@@ -93,6 +104,7 @@ public class AgencyById extends IndexImpl<GtfsAgency> implements GtfsConverter {
 		if (value == null || value.trim().isEmpty()) {
 			bean.getErrors().add(new GtfsException(_path, id, FIELDS.agency_name.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
 		} else {
+			bean.getOkTests().add(GtfsException.ERROR.MISSING_REQUIRED_VALUES.name());
 			bean.setAgencyName(STRING_CONVERTER.from(context, FIELDS.agency_name, value, true));
 		}
 		
@@ -106,6 +118,8 @@ public class AgencyById extends IndexImpl<GtfsAgency> implements GtfsConverter {
 			} catch (GtfsException e) {
 				// 1-GTFS-Agency-7  warning
 				bean.getErrors().add(new GtfsException(_path, id, FIELDS.agency_url.name(), GtfsException.ERROR.INVALID_URL, null, null));			
+			} finally {
+				bean.getOkTests().add(GtfsException.ERROR.INVALID_URL.name());
 			}
 		}
 		
@@ -119,6 +133,8 @@ public class AgencyById extends IndexImpl<GtfsAgency> implements GtfsConverter {
 			} catch (GtfsException e) {
 				// 1-GTFS-Agency-6  warning
 				bean.getErrors().add(new GtfsException(_path, id, FIELDS.agency_timezone.name(), GtfsException.ERROR.INVALID_TIMEZONE, null, null));			
+			} finally {
+				bean.getOkTests().add(GtfsException.ERROR.INVALID_TIMEZONE.name());
 			}
 		}
 		
@@ -132,6 +148,7 @@ public class AgencyById extends IndexImpl<GtfsAgency> implements GtfsConverter {
 				//1-GTFS-Agency-8   warning
 				bean.getErrors().add(new GtfsException(_path, id, FIELDS.agency_lang.name(), GtfsException.ERROR.INVALID_LANG, null, null));
 			} else {
+				bean.getOkTests().add(GtfsException.ERROR.INVALID_LANG.name());
 				bean.setAgencyLang(STRING_CONVERTER.from(context, FIELDS.agency_lang, value, false));
 			}
 		
@@ -142,6 +159,8 @@ public class AgencyById extends IndexImpl<GtfsAgency> implements GtfsConverter {
 			} catch (GtfsException e) {
 				//1-GTFS-Agency-9   warning
 				bean.getErrors().add(new GtfsException(_path, id, FIELDS.agency_fare_url.name(), GtfsException.ERROR.INVALID_FARE_URL, null, null));
+			} finally {
+				bean.getOkTests().add(GtfsException.ERROR.INVALID_FARE_URL.name());
 			}
 		}
 		
@@ -151,6 +170,20 @@ public class AgencyById extends IndexImpl<GtfsAgency> implements GtfsConverter {
 	@Override
 	public boolean validate(GtfsAgency bean, GtfsImporter dao) {
 		boolean result = true;
+		
+//		String agencyId = bean.getAgencyId();
+//		if (GtfsAgency.DEFAULT_ID.equals(agencyId))
+//			return result;
+//		Iterator<GtfsRoute> iti = dao.getRouteById().iterator();
+//		while ( iti.hasNext() ) {
+//			GtfsRoute nextRoute = iti.next();
+//			if (nextRoute.getAgencyId() == null)
+//				continue;
+//			if (agencyId.equals(nextRoute.getAgencyId())) {
+//				//bean.getErrors().add(new GtfsException(_path, nextStopTime.getId(), FIELDS.stop_sequence.name(), GtfsException.ERROR.DUPLICATE_STOP_SEQUENCE, null, null));
+//				return true;
+//			}
+//		}
 
 		return result;
 	}

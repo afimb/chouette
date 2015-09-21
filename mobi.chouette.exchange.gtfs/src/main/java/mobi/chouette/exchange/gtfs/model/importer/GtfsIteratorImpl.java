@@ -136,6 +136,7 @@ public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator, Consta
 		} catch (Exception ignored) {
 
 		}
+		// MISSING LN/LF AT THE END OF THE END OF THE FILE
 		return false;
 	}
 

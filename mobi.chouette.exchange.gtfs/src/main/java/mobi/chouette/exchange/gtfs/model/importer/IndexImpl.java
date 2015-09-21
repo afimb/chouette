@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Set;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.exchange.gtfs.model.GtfsAgency;
 import mobi.chouette.exchange.gtfs.model.GtfsObject;
 
 import com.jamonapi.Monitor;
@@ -240,11 +241,11 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 			if (_reader.next()) {
 				String key = getField(_key);
 								
-				if (key == null || key.trim().isEmpty()) { // key cannot be null! "" or "default"
+				if (key == null || key.trim().isEmpty()) { // key cannot be null! "" or GtfsAgency.DEFAULT_ID
 					throw new GtfsException(_path, _total, _key, GtfsException.ERROR.MISSING_FIELD, null, null);
 				}
 				
-				if ("default".equals(key)) {
+				if (GtfsAgency.DEFAULT_ID.equals(key)) {
 					if (_tokens.isEmpty()) {
 						hasDefaultId = true;
 					}
@@ -261,7 +262,7 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 					_tokens.put(key, token);
 				} else {
 					if (_unique) {
-						if ("default".equals(key)) {
+						if (GtfsAgency.DEFAULT_ID.equals(key)) {
 							throw new GtfsException(_path, _total, _key, GtfsException.ERROR.DUPLICATE_DEFAULT_KEY_FIELD, null, null);
 						} else {
 							throw new GtfsException(_path, _total, _key, GtfsException.ERROR.DUPLICATE_FIELD, null, null);

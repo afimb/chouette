@@ -22,7 +22,7 @@ public class Phase1CommonTests extends AbstractPhase1Tests {
 	@Test(groups = { "Phase 1" }, description = "invalid csv syntax" ,priority=11 )
 	public void verifyTest_1_1() throws Exception {
 		log.info(Color.GREEN + "CSV_1 : invalid csv syntax" + Color.NORMAL);
-		CheckPoint result = verifyValidation( log, "csv_1_1", "1-GTFS-CSV-10",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
+		CheckPoint result = verifyValidation( log, "csv_1_1", "1-GTFS-CSV-2",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
 
 		Assert.assertEquals(result.getDetailCount(), 1, "detail count");
 		for (Detail detail : result.getDetails()) 
@@ -37,7 +37,7 @@ public class Phase1CommonTests extends AbstractPhase1Tests {
 	@Test(groups = { "Phase 1" }, description = "newline in field", priority=12)
 	public void verifyTest_1_2() throws Exception {
 		log.info(Color.GREEN + "CSV_1 : newline in field" + Color.NORMAL);
-		CheckPoint result = verifyValidation( log, "csv_1_2", "1-GTFS-CSV-13",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
+		CheckPoint result = verifyValidation( log, "csv_1_2", "1-GTFS-CSV-5",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
 
 		Assert.assertEquals(result.getDetailCount(), 1, "detail count");
 		for (Detail detail : result.getDetails()) 
@@ -52,7 +52,7 @@ public class Phase1CommonTests extends AbstractPhase1Tests {
 	@Test(groups = { "Phase 1" }, description = "double quote in field", priority=13)
 	public void verifyTest_1_3() throws Exception {
 		log.info(Color.GREEN + "CSV_1 : double quote in field" + Color.NORMAL);
-		CheckPoint result = verifyValidation( log, "csv_1_3", "1-GTFS-CSV-13",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
+		CheckPoint result = verifyValidation( log, "csv_1_3", "1-GTFS-CSV-5",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
 
 		Assert.assertEquals(result.getDetailCount(), 1, "detail count");
 		for (Detail detail : result.getDetails()) 
@@ -82,7 +82,7 @@ public class Phase1CommonTests extends AbstractPhase1Tests {
 	@Test(groups = { "Phase 1" }, description = "missing LF at end of file", priority=15)
 	public void verifyTest_1_5() throws Exception {
 		log.info(Color.GREEN + "CSV_1 : missing LF at end of file" + Color.NORMAL);
-		CheckPoint result = verifyValidation( log, "csv_1_5", "1-GTFS-CSV-13",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
+		CheckPoint result = verifyValidation( log, "csv_1_5", "1-GTFS-CSV-5",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
 
 		Assert.assertEquals(result.getDetailCount(), 1, "detail count");
 		for (Detail detail : result.getDetails()) 
@@ -98,7 +98,7 @@ public class Phase1CommonTests extends AbstractPhase1Tests {
 	//@Test(groups = { "Phase 1" }, description = "invalid enconding", priority=16)
 	public void verifyTest_1_6() throws Exception {
 		log.info(Color.GREEN + "CSV_1 : invalid enconding" + Color.NORMAL);
-		CheckPoint result = verifyValidation( log, "csv_1_6", "1-GTFS-CSV-13",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
+		CheckPoint result = verifyValidation( log, "csv_1_6", "1-GTFS-CSV-5",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
 
 		Assert.assertEquals(result.getDetailCount(), 1, "detail count");
 		for (Detail detail : result.getDetails()) 
@@ -113,7 +113,7 @@ public class Phase1CommonTests extends AbstractPhase1Tests {
 	@Test(groups = { "Phase 1" }, description = "empty header name", priority=17)
 	public void verifyTest_1_7() throws Exception {
 		log.info(Color.GREEN + "CSV_1 : empty header name" + Color.NORMAL);
-		CheckPoint result = verifyValidation( log, "csv_1_7", "1-GTFS-CSV-11",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
+		CheckPoint result = verifyValidation( log, "csv_1_7", "1-GTFS-CSV-3",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
 
 		Assert.assertEquals(result.getDetailCount(), 1, "detail count");
 		for (Detail detail : result.getDetails()) 
@@ -128,7 +128,7 @@ public class Phase1CommonTests extends AbstractPhase1Tests {
 	@Test(groups = { "Phase 1" }, description = "duplicate header name", priority=18)
 	public void verifyTest_1_8() throws Exception {
 		log.info(Color.GREEN + "CSV_1 : duplicate header name" + Color.NORMAL);
-		CheckPoint result = verifyValidation( log, "csv_1_8", "1-GTFS-CSV-12",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
+		CheckPoint result = verifyValidation( log, "csv_1_8", "1-GTFS-CSV-4",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
 
 		Assert.assertEquals(result.getDetailCount(), 1, "detail count");
 		for (Detail detail : result.getDetails()) 

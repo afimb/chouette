@@ -39,7 +39,7 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 		
 		// routes.txt
 		if (importer.hasRouteImporter()) { // the file "routes.txt" exists ?
-			validationReporter.reportSuccess(context, GTFS_1_GTFS_Route_1, GTFS_ROUTES_FILE);
+			validationReporter.reportSuccess(context, GTFS_1_GTFS_Common_1, GTFS_ROUTES_FILE);
 
 			Index<GtfsRoute> parser = null;
 			try { // Read and check the header line of the file "routes.txt"
@@ -52,14 +52,7 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 				}
 			}
 
-			validationReporter.validate(context, GTFS_ROUTES_FILE, GtfsException.ERROR.INVALID_HEADER_FILE_FORMAT);
-			validationReporter.validate(context, GTFS_ROUTES_FILE, GtfsException.ERROR.EMPTY_HEADER_FIELD);
-			validationReporter.validate(context, GTFS_ROUTES_FILE, GtfsException.ERROR.DUPLICATE_HEADER_FIELD);
-			validationReporter.validate(context, GTFS_ROUTES_FILE, GtfsException.ERROR.MISSING_FIELD);
-			validationReporter.validate(context, GTFS_ROUTES_FILE, GtfsException.ERROR.DUPLICATE_FIELD);
-			validationReporter.validate(context, GTFS_ROUTES_FILE, GtfsException.ERROR.INVALID_FILE_FORMAT);
-			validationReporter.validate(context, GTFS_ROUTES_FILE, GtfsException.ERROR.MISSING_FILE);
-			validationReporter.validate(context, GTFS_ROUTES_FILE, GtfsException.ERROR.SYSTEM);
+			validationReporter.validateOkCSV(context, GTFS_ROUTES_FILE);
 		
 			if (parser == null) { // importer.getRouteById() fails for any other reason
 				validationReporter.throwUnknownError(context, new Exception("Cannot instantiate RouteById class"), GTFS_ROUTES_FILE);
@@ -72,10 +65,7 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 				parser.getErrors().clear();
 			}
 			
-			validationReporter.validate(context, GTFS_ROUTES_FILE, GtfsException.ERROR.EXTRA_SPACE_IN_HEADER_FIELD);
-			validationReporter.validate(context, GTFS_ROUTES_FILE, GtfsException.ERROR.HTML_TAG_IN_HEADER_FIELD);
-			validationReporter.validate(context, GTFS_ROUTES_FILE, GtfsException.ERROR.EXTRA_HEADER_FIELD);
-			validationReporter.validate(context, GTFS_ROUTES_FILE, GtfsException.ERROR.MISSING_REQUIRED_FIELDS);
+			validationReporter.validateOKGeneralSyntax(context, GTFS_ROUTES_FILE);
 		
 			if (parser.getLength() == 0) {
 				validationReporter.reportError(context, new GtfsException(GTFS_ROUTES_FILE, 1, null, GtfsException.ERROR.FILE_WITH_NO_ENTRY, null, null), GTFS_ROUTES_FILE);
@@ -96,7 +86,8 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 			validationReporter.reportErrors(context, bean.getErrors(), GTFS_ROUTES_FILE);
 		}
 		} else {
-			validationReporter.reportFailure(context, GTFS_1_GTFS_Route_1, GTFS_ROUTES_FILE);
+			validationReporter.reportError(context, new GtfsException(GTFS_ROUTES_FILE, 1, null, GtfsException.ERROR.MISSING_FILE, null, null), GTFS_ROUTES_FILE);
+			//validationReporter.reportFailure(context, GTFS_1_GTFS_Route_1, GTFS_ROUTES_FILE);
 		}
 	}
 

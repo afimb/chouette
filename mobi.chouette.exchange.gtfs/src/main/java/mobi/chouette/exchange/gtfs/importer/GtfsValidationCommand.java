@@ -23,6 +23,7 @@ import mobi.chouette.exchange.gtfs.parser.GtfsRouteParser;
 import mobi.chouette.exchange.gtfs.parser.GtfsStopParser;
 import mobi.chouette.exchange.gtfs.parser.GtfsTransferParser;
 import mobi.chouette.exchange.gtfs.parser.GtfsTripParser;
+import mobi.chouette.exchange.gtfs.validation.ValidationReporter;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.report.ActionError;
 import mobi.chouette.exchange.report.ActionReport;
@@ -74,6 +75,8 @@ public class GtfsValidationCommand implements Command, Constant {
 			if (!processableFiles.contains(fileName.getFileName().toString())) {
 				FileInfo file = new FileInfo(fileName.getFileName().toString(), FILE_STATE.IGNORED);
 				report.getFiles().add(file);
+				ValidationReporter validationReporter = (ValidationReporter) context.get(GTFS_REPORTER);
+				validationReporter.reportError(context, new GtfsException(fileName.getFileName().toString(), 1, null, GtfsException.ERROR.UNUSED_FILE, null, null), fileName.getFileName().toString());
 			}
 		}
 		

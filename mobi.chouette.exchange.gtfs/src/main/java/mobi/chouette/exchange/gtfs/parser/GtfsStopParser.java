@@ -30,7 +30,7 @@ public class GtfsStopParser implements Parser, Validator, Constant {
 		
 		// stops.txt
 		if (importer.hasStopImporter()) { // the file "stops.txt" exists ?
-			validationReporter.reportSuccess(context, GTFS_1_GTFS_Stop_1, GTFS_STOPS_FILE);
+			validationReporter.reportSuccess(context, GTFS_1_GTFS_Common_1, GTFS_STOPS_FILE);
 
 			Index<GtfsStop> parser = null;
 			try { // Read and check the header line of the file "stops.txt"
@@ -43,14 +43,7 @@ public class GtfsStopParser implements Parser, Validator, Constant {
 				}
 			}
 
-			validationReporter.validate(context, GTFS_STOPS_FILE, GtfsException.ERROR.INVALID_HEADER_FILE_FORMAT);
-			validationReporter.validate(context, GTFS_STOPS_FILE, GtfsException.ERROR.EMPTY_HEADER_FIELD);
-			validationReporter.validate(context, GTFS_STOPS_FILE, GtfsException.ERROR.DUPLICATE_HEADER_FIELD);
-			validationReporter.validate(context, GTFS_STOPS_FILE, GtfsException.ERROR.MISSING_FIELD);
-			validationReporter.validate(context, GTFS_STOPS_FILE, GtfsException.ERROR.DUPLICATE_FIELD);
-			validationReporter.validate(context, GTFS_STOPS_FILE, GtfsException.ERROR.INVALID_FILE_FORMAT);
-			validationReporter.validate(context, GTFS_STOPS_FILE, GtfsException.ERROR.MISSING_FILE);
-			validationReporter.validate(context, GTFS_STOPS_FILE, GtfsException.ERROR.SYSTEM);
+			validationReporter.validateOkCSV(context, GTFS_STOPS_FILE);
 		
 			if (parser == null) { // importer.getStopById() fails for any other reason
 				validationReporter.throwUnknownError(context, new Exception("Cannot instantiate StopById class"), GTFS_STOPS_FILE);
@@ -63,10 +56,7 @@ public class GtfsStopParser implements Parser, Validator, Constant {
 				parser.getErrors().clear();
 			}
 			
-			validationReporter.validate(context, GTFS_STOPS_FILE, GtfsException.ERROR.EXTRA_SPACE_IN_HEADER_FIELD);
-			validationReporter.validate(context, GTFS_STOPS_FILE, GtfsException.ERROR.HTML_TAG_IN_HEADER_FIELD);
-			validationReporter.validate(context, GTFS_STOPS_FILE, GtfsException.ERROR.EXTRA_HEADER_FIELD);
-			validationReporter.validate(context, GTFS_STOPS_FILE, GtfsException.ERROR.MISSING_REQUIRED_FIELDS);
+			validationReporter.validateOKGeneralSyntax(context, GTFS_STOPS_FILE);
 		
 			if (parser.getLength() == 0) {
 				validationReporter.reportError(context, new GtfsException(GTFS_STOPS_FILE, 1, null, GtfsException.ERROR.FILE_WITH_NO_ENTRY, null, null), GTFS_STOPS_FILE);
@@ -74,20 +64,22 @@ public class GtfsStopParser implements Parser, Validator, Constant {
 				validationReporter.validate(context, GTFS_STOPS_FILE, GtfsException.ERROR.FILE_WITH_NO_ENTRY);
 			}
 		
-		for (GtfsStop bean : parser) {
-			try {
-				parser.validate(bean, importer);
-			} catch (Exception ex) {
-				if (ex instanceof GtfsException) {
-					validationReporter.reportError(context, (GtfsException)ex, GTFS_STOPS_FILE);
-				} else {
-					validationReporter.throwUnknownError(context, ex, GTFS_STOPS_FILE);
+			for (GtfsStop bean : parser) {
+				try {
+					parser.validate(bean, importer);
+				} catch (Exception ex) {
+					if (ex instanceof GtfsException) {
+						validationReporter.reportError(context, (GtfsException)ex, GTFS_STOPS_FILE);
+					} else {
+						validationReporter.throwUnknownError(context, ex, GTFS_STOPS_FILE);
+					}
 				}
+				validationReporter.reportErrors(context, bean.getErrors(), GTFS_STOPS_FILE);
+				validationReporter.validate(context, GTFS_STOPS_FILE, bean.getOkTests());
 			}
-			validationReporter.reportErrors(context, bean.getErrors(), GTFS_STOPS_FILE);
-		}
 		} else {
-			validationReporter.reportFailure(context, GTFS_1_GTFS_Stop_1, GTFS_STOPS_FILE);
+			validationReporter.reportError(context, new GtfsException(GTFS_STOPS_FILE, 1, null, GtfsException.ERROR.MISSING_FILE, null, null), GTFS_STOPS_FILE);
+			//validationReporter.reportFailure(context, GTFS_1_GTFS_Stop_1, GTFS_STOPS_FILE);
 		}
 	}	
 	

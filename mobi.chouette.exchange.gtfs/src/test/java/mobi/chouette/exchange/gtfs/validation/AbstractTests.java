@@ -139,8 +139,8 @@ public abstract class AbstractTests implements Constant, ReportConstant {
 			if (!phase.getState().equals(RESULT.UNCHECK))
 			{
 				log.info(phase.getName() + ":" + phase.getState());
-				if (phase.getName().equals(mobi.chouette.exchange.gtfs.validation.Constant.GTFS_1_GTFS_CSV_14))
-					Assert.assertFalse(phase.getState().equals(RESULT.NOK), "fatal error GTFS_1_GTFS_CSV_14 encontered");
+				if (phase.getName().equals(mobi.chouette.exchange.gtfs.validation.Constant.GTFS_1_GTFS_CSV_1))
+					Assert.assertFalse(phase.getState().equals(RESULT.NOK), "fatal error GTFS_1_GTFS_CSV_1 encontered");
 			}
 		}
 		if (mandatoryTest.equals("NONE")) {

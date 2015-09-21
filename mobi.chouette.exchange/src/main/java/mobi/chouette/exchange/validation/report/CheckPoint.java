@@ -62,7 +62,7 @@ public class CheckPoint {
 		this.state = state;
 
 		String[] token = name.split("\\-");
-		if (token.length == 4)
+		if (token.length >= 4)
 		{
 			this.phase = token[0];
 			this.target = token[2];

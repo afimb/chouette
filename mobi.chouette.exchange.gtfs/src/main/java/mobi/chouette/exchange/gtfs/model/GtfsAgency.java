@@ -20,7 +20,7 @@ public class GtfsAgency extends GtfsObject implements Serializable
 
    private static final long serialVersionUID = 1L;
 
-public static final String DEFAULT_ID = "default";
+   public static final String DEFAULT_ID = "default";
 
    @Getter
    @Setter
