@@ -145,8 +145,8 @@ public class ValidationReporter implements Constant {
 		case MISSING_FILE:
 			// 1-GTFS-Common-1
 			checkPointName = checkPointName(name, GtfsException.ERROR.MISSING_FILE);
-			report.addFileInfo(filenameInfo, FILE_STATE.ERROR,
-					new FileError(FileError.CODE.FILE_NOT_FOUND, "The file \""+filenameInfo+"\" must be provided (rule "+checkPointName+")"));
+//			report.addFileInfo(filenameInfo, FILE_STATE.ERROR,
+//					new FileError(FileError.CODE.FILE_NOT_FOUND, "The file \""+filenameInfo+"\" must be provided (rule "+checkPointName+")"));
 			validationReport.addDetail(checkPointName,
 					new Location(filenameInfo, name(filenameInfo)+"-failure"),
 					"The file \""+filenameInfo+"\" must be provided",
@@ -158,8 +158,8 @@ public class ValidationReporter implements Constant {
 			checkPointName = checkPointName(name, GtfsException.ERROR.MISSING_FILES);
 			filenameInfo = "calendar.txt";
 			filenameInfo2 = "calendar_dates.txt";
-			report.addFileInfo(filenameInfo, FILE_STATE.ERROR,
-					new FileError(FileError.CODE.FILE_NOT_FOUND, "One of the files \""+filenameInfo+"\" or \""+filenameInfo2+"\"must be provided (rule "+checkPointName+")"));
+//			report.addFileInfo(filenameInfo, FILE_STATE.ERROR,
+//					new FileError(FileError.CODE.FILE_NOT_FOUND, "One of the files \""+filenameInfo+"\" or \""+filenameInfo2+"\"must be provided (rule "+checkPointName+")"));
 			validationReport.addDetail(checkPointName,
 					new Location(filenameInfo, name(filenameInfo)+"-failure"),
 					"The file \""+filenameInfo+"\" must be provided",
@@ -169,8 +169,8 @@ public class ValidationReporter implements Constant {
 		case MISSING_OPTIONAL_FILE:
 			// 1-GTFS-Common-1-2
 			checkPointName = checkPointName(name, GtfsException.ERROR.MISSING_OPTIONAL_FILE);
-			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-					new FileError(FileError.CODE.FILE_NOT_FOUND, "The file \""+filenameInfo+"\" is not provided (rule "+checkPointName+")"));
+//			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+//					new FileError(FileError.CODE.FILE_NOT_FOUND, "The file \""+filenameInfo+"\" is not provided (rule "+checkPointName+")"));
 			validationReport.addDetail(checkPointName,
 					new Location(filenameInfo, name(filenameInfo)+"-ignored"),
 					"The file \""+filenameInfo+"\" is not provided",
