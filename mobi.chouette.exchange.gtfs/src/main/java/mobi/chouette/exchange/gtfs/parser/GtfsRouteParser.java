@@ -2,13 +2,17 @@ package mobi.chouette.exchange.gtfs.parser;
 
 
 import java.awt.Color;
+import java.util.HashSet;
+import java.util.Set;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
+import mobi.chouette.exchange.gtfs.model.GtfsAgency;
 import mobi.chouette.exchange.gtfs.model.GtfsRoute;
+import mobi.chouette.exchange.gtfs.model.importer.AgencyById;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsException;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsImporter;
 import mobi.chouette.exchange.gtfs.model.importer.Index;
@@ -30,6 +34,8 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 	@Getter
 	@Setter
 	private String gtfsRouteId;
+	
+	private Set<String> agencyIds = new HashSet<String>();
 
 	@Override
 	public void validate(Context context) throws Exception {
@@ -73,18 +79,29 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 				validationReporter.validate(context, GTFS_ROUTES_FILE, GtfsException.ERROR.FILE_WITH_NO_ENTRY);
 			}
 		
-		for (GtfsRoute bean : parser) {
-			try {
-				parser.validate(bean, importer);
-			} catch (Exception ex) {
-				if (ex instanceof GtfsException) {
-					validationReporter.reportError(context, (GtfsException)ex, GTFS_ROUTES_FILE);
-				} else {
-					validationReporter.throwUnknownError(context, ex, GTFS_ROUTES_FILE);
+			for (GtfsRoute bean : parser) {
+				if (bean.getAgencyId() != null)
+					agencyIds.add(bean.getAgencyId());
+				else
+					agencyIds.add(GtfsAgency.DEFAULT_ID);
+				try {
+					parser.validate(bean, importer);
+				} catch (Exception ex) {
+					if (ex instanceof GtfsException) {
+						validationReporter.reportError(context, (GtfsException)ex, GTFS_ROUTES_FILE);
+					} else {
+						validationReporter.throwUnknownError(context, ex, GTFS_ROUTES_FILE);
+					}
 				}
+				validationReporter.reportErrors(context, bean.getErrors(), GTFS_ROUTES_FILE);
 			}
-			validationReporter.reportErrors(context, bean.getErrors(), GTFS_ROUTES_FILE);
-		}
+			int i = 1;
+			for (GtfsAgency bean : importer.getAgencyById()) {
+				if (agencyIds.add(bean.getAgencyId())) {
+					validationReporter.reportError(context, new GtfsException(GTFS_AGENCY_FILE, i, AgencyById.FIELDS.agency_id.name(), GtfsException.ERROR.UNUSED_ID, null, null), GTFS_AGENCY_FILE);
+				}
+				i++;
+			}
 		} else {
 			validationReporter.reportError(context, new GtfsException(GTFS_ROUTES_FILE, 1, null, GtfsException.ERROR.MISSING_FILE, null, null), GTFS_ROUTES_FILE);
 			//validationReporter.reportFailure(context, GTFS_1_GTFS_Route_1, GTFS_ROUTES_FILE);

@@ -51,6 +51,7 @@ public class GtfsAgencyParser implements Parser, Validator, Constant {
 			if (parser == null) { // importer.getAgencyById() fails for any other reason
 				validationReporter.throwUnknownError(context, new Exception("Cannot instantiate AgencyById class"), GTFS_AGENCY_FILE);
 			} else {
+				validationReporter.validate(context, GTFS_AGENCY_FILE, parser.getOkTests());
 				validationReporter.validateUnknownError(context);
 			}
 			
@@ -80,7 +81,6 @@ public class GtfsAgencyParser implements Parser, Validator, Constant {
 					}
 				}
 				validationReporter.reportErrors(context, bean.getErrors(), GTFS_AGENCY_FILE);
-				System.out.println("##################### VALIDATE ");
 				validationReporter.validate(context, GTFS_AGENCY_FILE, bean.getOkTests());
 			}
 			

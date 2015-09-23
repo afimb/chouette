@@ -20,4 +20,5 @@ public interface Index<T> extends Iterable<T> {
 	
 	Set<GtfsException> getErrors();
 
+	Set<GtfsException.ERROR> getOkTests();
 }

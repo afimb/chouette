@@ -25,6 +25,9 @@ public abstract class AbstractIndex<T> implements Index<T> {
 	
 	@Getter
 	protected Set<GtfsException> errors = new HashSet<>();
+	
+	@Getter
+	protected Set<GtfsException.ERROR> okTests = new HashSet<>();
 
 	@ToString
 	class Token {

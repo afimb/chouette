@@ -22,5 +22,5 @@ public abstract class GtfsObject
    protected Set<GtfsException> errors = new HashSet<>();
    
    @Getter
-   protected Set<String> okTests = new HashSet<>();
+   protected Set<GtfsException.ERROR> okTests = new HashSet<>();
 }

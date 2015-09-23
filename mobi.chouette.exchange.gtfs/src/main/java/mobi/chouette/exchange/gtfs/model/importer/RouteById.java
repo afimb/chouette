@@ -87,7 +87,9 @@ public class RouteById extends IndexImpl<GtfsRoute> implements GtfsConverter {
 		}
 		
 		value = array[i++]; testExtraSpace(FIELDS.agency_id.name(), value, bean);
-		bean.setAgencyId(STRING_CONVERTER.from(context, FIELDS.agency_id, value, false));
+		if (value != null && !value.trim().isEmpty()) {
+			bean.setAgencyId(STRING_CONVERTER.from(context, FIELDS.agency_id, value, false));
+		}
 		
 		boolean noShotName = false;
 		value = array[i++]; testExtraSpace(FIELDS.route_short_name.name(), value, bean);
@@ -103,6 +105,8 @@ public class RouteById extends IndexImpl<GtfsRoute> implements GtfsConverter {
 				bean.getErrors().add(new GtfsException(_path, id, FIELDS.route_long_name.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES2, null, null));
 		} else {
 			bean.setRouteLongName(STRING_CONVERTER.from(context, FIELDS.route_long_name, value, bean.getRouteShortName() != null));
+			if (bean.getRouteShortName().equals(bean.getRouteLongName()))
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.route_short_name.name(), GtfsException.ERROR.SHARED_VALUE, null, null));
 		}
 		
 		value = array[i++]; testExtraSpace(FIELDS.route_desc.name(), value, bean);
@@ -154,6 +158,14 @@ public class RouteById extends IndexImpl<GtfsRoute> implements GtfsConverter {
 
 	@Override
 	public boolean validate(GtfsRoute bean, GtfsImporter dao) {
+		// Verify the agency_id
+		String agencyId = bean.getAgencyId();
+		if (agencyId == null)
+			agencyId = GtfsAgency.DEFAULT_ID;
+		if (dao.getAgencyById().getValue(agencyId) == null) {
+			// this bean has no agency
+			return false;
+		}
 		return true;
 	}
 
