@@ -61,19 +61,26 @@ public class ValidationReport {
 		return object;
 	}
 
-	public void addDetail(String checkPointName, Location location, String message, RESULT result) {
+	public void addDetail(String checkPointName, Location location, String value, RESULT result) {
 		CheckPoint checkPoint = findCheckPointByName(checkPointName);
 		if (checkPoint == null) throw new NullPointerException("unknown checkPointName "+checkPointName);
 		checkPoint.setState(result);
-		checkPoint.addDetail(new Detail(checkPointName, location, message));
+		checkPoint.addDetail(new Detail(checkPointName, location, value));
+	}
+
+	public void addDetail(String checkPointName, Location location, String value, String refValue, RESULT result) {
+		CheckPoint checkPoint = findCheckPointByName(checkPointName);
+		if (checkPoint == null) throw new NullPointerException("unknown checkPointName "+checkPointName);
+		checkPoint.setState(result);
+		checkPoint.addDetail(new Detail(checkPointName, location, value,refValue));
 	}
 
 
-	public void addDetail(String checkPointName, Location[] locations, String message, RESULT result) {
+	public void addDetail(String checkPointName, Location[] locations, String value, RESULT result) {
 		CheckPoint checkPoint = findCheckPointByName(checkPointName);
 		if (checkPoint == null) throw new NullPointerException("unknown checkPointName "+checkPointName);
 		checkPoint.setState(result);
 		for (Location location : locations)
-			checkPoint.addDetail(new Detail(checkPointName, location, message));
+			checkPoint.addDetail(new Detail(checkPointName, location, value));
 	}
 }

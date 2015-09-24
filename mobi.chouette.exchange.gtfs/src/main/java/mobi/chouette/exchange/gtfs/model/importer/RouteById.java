@@ -7,7 +7,6 @@ import java.util.Map;
 import mobi.chouette.common.HTMLTagValidator;
 import mobi.chouette.exchange.gtfs.model.GtfsAgency;
 import mobi.chouette.exchange.gtfs.model.GtfsRoute;
-import mobi.chouette.exchange.gtfs.model.importer.StopById.FIELDS;
 
 public class RouteById extends IndexImpl<GtfsRoute> implements GtfsConverter {
 
@@ -119,7 +118,7 @@ public class RouteById extends IndexImpl<GtfsRoute> implements GtfsConverter {
 			try {
 				bean.setRouteType(ROUTETYPE_CONVERTER.from(context, FIELDS.route_type, value, true));
 			} catch(GtfsException e) {
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.route_type.name(), GtfsException.ERROR.INVALID_ROUTE_TYPE, null, null));
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.route_type.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
@@ -129,7 +128,7 @@ public class RouteById extends IndexImpl<GtfsRoute> implements GtfsConverter {
 				bean.setRouteUrl(URL_CONVERTER.from(context, FIELDS.route_url, value, false));
 			} catch (GtfsException e) {
 				// 1-GTFS-Route-7 warning
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.route_url.name(), GtfsException.ERROR.INVALID_URL, null, null));			
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.route_url.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
@@ -139,7 +138,7 @@ public class RouteById extends IndexImpl<GtfsRoute> implements GtfsConverter {
 				bean.setRouteColor(COLOR_CONVERTER.from(context, FIELDS.route_color, value, Color.WHITE, false));
 			} catch (GtfsException e) {
 				// 1-GTFS-Route-7 warning
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.route_color.name(), GtfsException.ERROR.INVALID_COLOR, null, null));			
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.route_color.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));	
 			}
 		}
 		
@@ -149,7 +148,7 @@ public class RouteById extends IndexImpl<GtfsRoute> implements GtfsConverter {
 				bean.setRouteTextColor(COLOR_CONVERTER.from(context, FIELDS.route_text_color, value, Color.BLACK, false));
 			} catch (GtfsException e) {
 				// 1-GTFS-Route-7 warning
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.route_color.name(), GtfsException.ERROR.INVALID_COLOR_TEXT, null, null));			
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.route_color.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));	
 			}
 		}
 

@@ -29,6 +29,7 @@ import mobi.chouette.persistence.hibernate.ContextHolder;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
+import org.codehaus.jettison.json.JSONException;
 import org.testng.Assert;
 
 public abstract class AbstractTests implements Constant, ReportConstant {
@@ -138,7 +139,7 @@ public abstract class AbstractTests implements Constant, ReportConstant {
 		for (CheckPoint phase : valReport.getCheckPoints()) {
 			if (!phase.getState().equals(RESULT.UNCHECK))
 			{
-				log.info(phase.getName() + ":" + phase.getState());
+				// log.info(phase.getName() + ":" + phase.getState());
 				if (phase.getName().equals(mobi.chouette.exchange.gtfs.validation.Constant.GTFS_1_GTFS_CSV_1))
 					Assert.assertFalse(phase.getState().equals(RESULT.NOK), "fatal error GTFS_1_GTFS_CSV_1 encontered");
 			}
@@ -172,6 +173,11 @@ public abstract class AbstractTests implements Constant, ReportConstant {
 							"details key should start with test key : expected " + detailKey + ", found : "
 									+ detail.getKey());
 				}
+			}
+			try {
+				log.info("detail :"+foundItem.toJson().toString(2));
+			} catch (JSONException e) {
+				log.error("unable to convert to json");
 			}
 			return foundItem; // for extra check
 		}

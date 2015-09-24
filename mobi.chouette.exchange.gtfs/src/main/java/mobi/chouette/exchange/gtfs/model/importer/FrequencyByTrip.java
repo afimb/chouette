@@ -5,8 +5,6 @@ import java.util.Map;
 
 import mobi.chouette.common.HTMLTagValidator;
 import mobi.chouette.exchange.gtfs.model.GtfsFrequency;
-import mobi.chouette.exchange.gtfs.model.importer.GtfsException.ERROR;
-import mobi.chouette.exchange.gtfs.model.importer.TripIndex.FIELDS;
 
 public class FrequencyByTrip extends IndexImpl<GtfsFrequency> implements
 		GtfsConverter {
@@ -100,7 +98,7 @@ public class FrequencyByTrip extends IndexImpl<GtfsFrequency> implements
 			try {
 				bean.setStartTime(GTFSTIME_CONVERTER.from(context, FIELDS.start_time, value, true));
 			} catch(GtfsException ex) {
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.start_time.name(), GtfsException.ERROR.INVALID_START_TIME, null, null));
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.start_time.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
@@ -111,7 +109,7 @@ public class FrequencyByTrip extends IndexImpl<GtfsFrequency> implements
 			try {
 				bean.setEndTime(GTFSTIME_CONVERTER.from(context, FIELDS.end_time, value, true));
 			} catch(GtfsException ex) {
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.end_time.name(), GtfsException.ERROR.INVALID_END_TIME, null, null));
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.end_time.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
@@ -122,7 +120,7 @@ public class FrequencyByTrip extends IndexImpl<GtfsFrequency> implements
 			try {
 				bean.setHeadwaySecs(POSITIVE_INTEGER_CONVERTER.from(context, FIELDS.headway_secs, value, true));
 			} catch(GtfsException ex) {
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.end_time.name(), GtfsException.ERROR.INVALID_HEADWAY_SECS, null, null));
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.end_time.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
@@ -131,7 +129,7 @@ public class FrequencyByTrip extends IndexImpl<GtfsFrequency> implements
 			try {
 				bean.setExactTimes(BOOLEAN_CONVERTER.from(context, FIELDS.exact_times, value, false, false));
 			} catch(GtfsException ex) {
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.exact_times.name(), GtfsException.ERROR.INVALID_EXACT_TIMES_VALUE, null, null));
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.exact_times.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 			

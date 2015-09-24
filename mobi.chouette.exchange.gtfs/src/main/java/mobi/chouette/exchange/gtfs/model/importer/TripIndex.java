@@ -5,8 +5,6 @@ import java.util.Map;
 
 import mobi.chouette.common.HTMLTagValidator;
 import mobi.chouette.exchange.gtfs.model.GtfsTrip;
-import mobi.chouette.exchange.gtfs.model.importer.GtfsException.ERROR;
-import mobi.chouette.exchange.gtfs.model.importer.StopTimeByTrip.FIELDS;
 
 public abstract class TripIndex extends IndexImpl<GtfsTrip> implements
 		GtfsConverter {
@@ -116,7 +114,7 @@ public abstract class TripIndex extends IndexImpl<GtfsTrip> implements
 			try {
 				bean.setDirectionId(DIRECTIONTYPE_CONVERTER.from(context, FIELDS.direction_id, value, GtfsTrip.DirectionType.Outbound, false));
 			} catch (GtfsException ex) {
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.direction_id.name(), GtfsException.ERROR.INVALID_DIRECTION, null, null));
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.direction_id.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
@@ -131,7 +129,7 @@ public abstract class TripIndex extends IndexImpl<GtfsTrip> implements
 			try {
 				bean.setWheelchairAccessible(WHEELCHAIRACCESSIBLETYPE_CONVERTER.from(context, FIELDS.wheelchair_accessible, value, false));
 			} catch (GtfsException ex) {
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.wheelchair_accessible.name(), GtfsException.ERROR.INVALID_WHEELCHAIR_TYPE, null, null));
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.wheelchair_accessible.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
@@ -140,7 +138,7 @@ public abstract class TripIndex extends IndexImpl<GtfsTrip> implements
 			try {
 				bean.setBikesAllowed(BIKESALLOWEDTYPE_CONVERTER.from(context, FIELDS.bikes_allowed, value, false));
 			} catch (GtfsException ex) {
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.bikes_allowed.name(), GtfsException.ERROR.INVALID_BYKE_TYPE, null, null));
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.bikes_allowed.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 

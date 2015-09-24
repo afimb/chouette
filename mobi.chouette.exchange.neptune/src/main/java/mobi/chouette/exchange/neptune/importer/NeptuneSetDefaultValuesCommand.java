@@ -72,13 +72,6 @@ public class NeptuneSetDefaultValuesCommand implements Command, Constant{
 		}
 	}
 
-	private void processTimetables(Collection<Timetable> values) {
-
-		for (Timetable timetable : values) {
-			// timetable add 
-		}
-	}
-
 
 	public static class DefaultCommandFactory extends CommandFactory {
 

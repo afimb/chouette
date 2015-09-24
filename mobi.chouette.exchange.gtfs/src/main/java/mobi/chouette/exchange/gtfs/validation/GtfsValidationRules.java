@@ -49,12 +49,12 @@ public class GtfsValidationRules implements Constant {
 		
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_4   , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_4_1 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
-		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_4_2 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		// checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_4_2 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_4_3 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_4_4 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
-		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_4_5 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		// checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_4_5 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_4_6 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
-		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_4_7 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		// checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_4_7 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_5   , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 

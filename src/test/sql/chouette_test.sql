@@ -504,7 +504,8 @@ CREATE TABLE lines (
     int_user_needs integer,
     url character varying(255),
     color character varying(6),
-    text_color character varying(6)
+    text_color character varying(6),
+    stable_id character varying(255)
 );
 
 

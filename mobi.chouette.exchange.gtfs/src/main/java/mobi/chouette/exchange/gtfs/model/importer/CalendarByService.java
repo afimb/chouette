@@ -115,7 +115,7 @@ public class CalendarByService extends IndexImpl<GtfsCalendar> implements
 			try {
 				bean.setMonday(BOOLEAN_CONVERTER.from(context, FIELDS.monday, value, true));
 			} catch(GtfsException ex) {
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.monday.name(), GtfsException.ERROR.INVALID_MONDAY_TYPE, null, null));
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.monday.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
@@ -126,7 +126,7 @@ public class CalendarByService extends IndexImpl<GtfsCalendar> implements
 			try {
 				bean.setTuesday(BOOLEAN_CONVERTER.from(context, FIELDS.tuesday, value, true));
 			} catch(GtfsException ex) {
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.tuesday.name(), GtfsException.ERROR.INVALID_TUESDAY_TYPE, null, null));
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.tuesday.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
@@ -137,7 +137,7 @@ public class CalendarByService extends IndexImpl<GtfsCalendar> implements
 			try {
 				bean.setWednesday(BOOLEAN_CONVERTER.from(context, FIELDS.wednesday, value, true));
 			} catch(GtfsException ex) {
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.wednesday.name(), GtfsException.ERROR.INVALID_WEDNESDAY_TYPE, null, null));
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.wednesday.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
@@ -148,7 +148,7 @@ public class CalendarByService extends IndexImpl<GtfsCalendar> implements
 			try {
 				bean.setThursday(BOOLEAN_CONVERTER.from(context, FIELDS.thursday, value, true));
 			} catch(GtfsException ex) {
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.thursday.name(), GtfsException.ERROR.INVALID_THURSDAY_TYPE, null, null));
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.thursday.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
@@ -159,7 +159,7 @@ public class CalendarByService extends IndexImpl<GtfsCalendar> implements
 			try {
 				bean.setFriday(BOOLEAN_CONVERTER.from(context, FIELDS.friday, value, true));
 			} catch(GtfsException ex) {
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.friday.name(), GtfsException.ERROR.INVALID_FRIDAY_TYPE, null, null));
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.friday.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
@@ -170,7 +170,7 @@ public class CalendarByService extends IndexImpl<GtfsCalendar> implements
 			try {
 				bean.setSaturday(BOOLEAN_CONVERTER.from(context, FIELDS.saturday, value, true));
 			} catch(GtfsException ex) {
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.saturday.name(), GtfsException.ERROR.INVALID_SATURDAY_TYPE, null, null));
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.saturday.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
@@ -181,7 +181,7 @@ public class CalendarByService extends IndexImpl<GtfsCalendar> implements
 			try {
 				bean.setSunday(BOOLEAN_CONVERTER.from(context, FIELDS.sunday, value, true));
 			} catch(GtfsException ex) {
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.sunday.name(), GtfsException.ERROR.INVALID_SUNDAY_TYPE, null, null));
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.sunday.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
@@ -192,7 +192,7 @@ public class CalendarByService extends IndexImpl<GtfsCalendar> implements
 			try {
 				bean.setStartDate(DATE_CONVERTER.from(context, FIELDS.start_date, value, true));
 			} catch(GtfsException ex) {
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.start_date.name(), GtfsException.ERROR.INVALID_START_DATE, null, null));
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.start_date.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
@@ -203,7 +203,7 @@ public class CalendarByService extends IndexImpl<GtfsCalendar> implements
 			try {
 				bean.setEndDate(DATE_CONVERTER.from(context, FIELDS.end_date, value, true));
 			} catch(GtfsException ex) {
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.end_date.name(), GtfsException.ERROR.INVALID_END_DATE, null, null));
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.end_date.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 

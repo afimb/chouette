@@ -108,7 +108,7 @@ public class ShapeById extends IndexImpl<GtfsShape> implements GtfsConverter {
 			if (validLat)
 				bean.setShapePtLat(BigDecimal.valueOf(FLOAT_CONVERTER.from(context, FIELDS.shape_pt_lat, value, true)));
 			else {
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.shape_pt_lat.name(), GtfsException.ERROR.INVALID_LAT, null, null));
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.shape_pt_lat.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
@@ -127,7 +127,7 @@ public class ShapeById extends IndexImpl<GtfsShape> implements GtfsConverter {
 			if (validLon)
 				bean.setShapePtLat(BigDecimal.valueOf(FLOAT_CONVERTER.from(context, FIELDS.shape_pt_lat, value, true)));
 			else {
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.shape_pt_lat.name(), GtfsException.ERROR.INVALID_LON, null, null));
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.shape_pt_lat.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
@@ -140,9 +140,9 @@ public class ShapeById extends IndexImpl<GtfsShape> implements GtfsConverter {
 				if (shapePtSequence >= 0)
 					bean.setShapePtSequence(shapePtSequence);
 				else
-					bean.getErrors().add(new GtfsException(_path, id, FIELDS.shape_pt_sequence.name(), GtfsException.ERROR.INVALID_SHAPE_POINT_SEQUENCE, null, null));
+					bean.getErrors().add(new GtfsException(_path, id, FIELDS.shape_pt_sequence.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			} catch(GtfsException e) {
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.shape_pt_sequence.name(), GtfsException.ERROR.INVALID_SHAPE_POINT_SEQUENCE, null, null));
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.shape_pt_sequence.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
@@ -153,9 +153,9 @@ public class ShapeById extends IndexImpl<GtfsShape> implements GtfsConverter {
 				if (shapeDistTraveled >= 0)
 					bean.setShapeDistTraveled(shapeDistTraveled);
 				else
-					bean.getErrors().add(new GtfsException(_path, id, FIELDS.shape_pt_sequence.name(), GtfsException.ERROR.INVALID_SHAPE_DIST_TRAVELED, null, null));
+					bean.getErrors().add(new GtfsException(_path, id, FIELDS.shape_pt_sequence.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			} catch(GtfsException ex) {
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.shape_pt_sequence.name(), GtfsException.ERROR.INVALID_SHAPE_DIST_TRAVELED, null, null));
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.shape_pt_sequence.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}			
 		}
 				

@@ -97,7 +97,7 @@ public class CalendarDateByService extends IndexImpl<GtfsCalendarDate>
 			try {
 				bean.setDate(DATE_CONVERTER.from(context, FIELDS.date, value, true));
 			} catch(GtfsException ex) {
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.date.name(), GtfsException.ERROR.INVALID_DATE, null, null));
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.date.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
@@ -108,7 +108,7 @@ public class CalendarDateByService extends IndexImpl<GtfsCalendarDate>
 			try {
 				bean.setExceptionType(EXCEPTIONTYPE_CONVERTER.from(context, FIELDS.exception_type, value, true));
 			} catch(GtfsException ex) {
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.date.name(), GtfsException.ERROR.INVALID_EXCEPTION_TYPE, null, null));
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.date.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		

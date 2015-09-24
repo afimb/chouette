@@ -113,9 +113,9 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements GtfsConve
 				if (stopSequence >= 0)
 					_bean.setStopSequence(stopSequence);
 				else
-					_bean.getErrors().add(new GtfsException(_path, id, FIELDS.stop_sequence.name(), GtfsException.ERROR.INVALID_STOP_SEQUENCE, null, null));
+					_bean.getErrors().add(new GtfsException(_path, id, FIELDS.stop_sequence.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			} catch(GtfsException e) {
-				_bean.getErrors().add(new GtfsException(_path, id, FIELDS.stop_sequence.name(), GtfsException.ERROR.INVALID_STOP_SEQUENCE, null, null));
+				_bean.getErrors().add(new GtfsException(_path, id, FIELDS.stop_sequence.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
@@ -129,7 +129,7 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements GtfsConve
 			try {
 				_bean.setArrivalTime(GTFSTIME_CONVERTER.from(context, FIELDS.arrival_time, value, true));
 			} catch(GtfsException e) {
-				_bean.getErrors().add(new GtfsException(_path, id, FIELDS.arrival_time.name(), GtfsException.ERROR.INVALID_ARRIVAL_TIME, null, null));
+				_bean.getErrors().add(new GtfsException(_path, id, FIELDS.arrival_time.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
@@ -140,7 +140,7 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements GtfsConve
 			try {
 				_bean.setDepartureTime(GTFSTIME_CONVERTER.from(context, FIELDS.departure_time, value, true));
 			} catch(GtfsException e) {
-				_bean.getErrors().add(new GtfsException(_path, id, FIELDS.departure_time.name(), GtfsException.ERROR.INVALID_DEPARTURE_TIME, null, null));
+				_bean.getErrors().add(new GtfsException(_path, id, FIELDS.departure_time.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
@@ -160,7 +160,7 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements GtfsConve
 			try {
 				_bean.setPickupType(PICKUP_CONVERTER.from(context, FIELDS.pickup_type, value, PickupType.Scheduled, false));
 			} catch(GtfsException e) {
-				_bean.getErrors().add(new GtfsException(_path, id, FIELDS.pickup_type.name(), GtfsException.ERROR.INVALID_PICKUP_TYPE, null, null));
+				_bean.getErrors().add(new GtfsException(_path, id, FIELDS.pickup_type.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
@@ -169,7 +169,7 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements GtfsConve
 			try {
 				_bean.setDropOffType(DROPOFFTYPE_CONVERTER.from(context, FIELDS.drop_off_type, value, DropOffType.Scheduled, false));
 			} catch(GtfsException e) {
-				_bean.getErrors().add(new GtfsException(_path, id, FIELDS.drop_off_type.name(), GtfsException.ERROR.INVALID_DROP_OFF_TYPE, null, null));
+				_bean.getErrors().add(new GtfsException(_path, id, FIELDS.drop_off_type.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
@@ -178,11 +178,11 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements GtfsConve
 			try {
 				float shapeDistTraveled = FLOAT_CONVERTER.from(context, FIELDS.shape_dist_traveled, value, false);
 				if (shapeDistTraveled < 0) {
-					_bean.getErrors().add(new GtfsException(_path, id, FIELDS.shape_dist_traveled.name(), GtfsException.ERROR.INVALID_SHAPE_DIST_TRAVELED, null, null));
+					_bean.getErrors().add(new GtfsException(_path, id, FIELDS.shape_dist_traveled.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 				}
 				_bean.setShapeDistTraveled(shapeDistTraveled);
 			} catch(GtfsException e) {
-				_bean.getErrors().add(new GtfsException(_path, id, FIELDS.shape_dist_traveled.name(), GtfsException.ERROR.INVALID_SHAPE_DIST_TRAVELED, null, null));
+				_bean.getErrors().add(new GtfsException(_path, id, FIELDS.shape_dist_traveled.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
@@ -191,11 +191,11 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements GtfsConve
 			try {
 				int timepoint = INTEGER_CONVERTER.from(context, FIELDS.timepoint, value, false);
 				if (timepoint < 0 || timepoint > 1) {
-					_bean.getErrors().add(new GtfsException(_path, id, FIELDS.timepoint.name(), GtfsException.ERROR.INVALID_TIMEPOINT, null, null));
+					_bean.getErrors().add(new GtfsException(_path, id, FIELDS.timepoint.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 				}
 				_bean.setTimepoint(timepoint);
 			} catch(GtfsException e) {
-				_bean.getErrors().add(new GtfsException(_path, id, FIELDS.timepoint.name(), GtfsException.ERROR.INVALID_TIMEPOINT, null, null));
+				_bean.getErrors().add(new GtfsException(_path, id, FIELDS.timepoint.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 

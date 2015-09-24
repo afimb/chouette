@@ -6,8 +6,6 @@ import java.util.Map;
 import mobi.chouette.common.HTMLTagValidator;
 import mobi.chouette.exchange.gtfs.model.GtfsTransfer;
 import mobi.chouette.exchange.gtfs.model.GtfsTransfer.TransferType;
-import mobi.chouette.exchange.gtfs.model.importer.GtfsException.ERROR;
-import mobi.chouette.exchange.gtfs.model.importer.RouteById.FIELDS;
 
 public class TransferByFromStop extends IndexImpl<GtfsTransfer> implements
 		GtfsConverter {
@@ -105,7 +103,7 @@ public class TransferByFromStop extends IndexImpl<GtfsTransfer> implements
 			try {
 				bean.setTransferType(TRANSFERTYPE_CONVERTER.from(context, FIELDS.transfer_type, value, true));
 			} catch(GtfsException ex) {
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.transfer_type.name(), GtfsException.ERROR.INVALID_TRANSFER_TYPE, null, null));
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.transfer_type.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
@@ -114,7 +112,7 @@ public class TransferByFromStop extends IndexImpl<GtfsTransfer> implements
 			try {
 				bean.setMinTransferTime(POSITIVE_INTEGER_CONVERTER.from(context, FIELDS.min_transfer_time, value, false));
 			} catch (GtfsException ex) {
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.min_transfer_time.name(), GtfsException.ERROR.INVALID_TRANSFER_TIME, null, null));
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.min_transfer_time.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		} else {
 			bean.setMinTransferTime(null);

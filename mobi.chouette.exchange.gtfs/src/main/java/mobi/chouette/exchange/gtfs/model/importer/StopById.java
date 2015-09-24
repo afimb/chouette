@@ -125,10 +125,10 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter {
 				validLat = false;
 			}
 			if (validLat) {
-				bean.getOkTests().add(GtfsException.ERROR.INVALID_LAT);
+				bean.getOkTests().add(GtfsException.ERROR.INVALID_FORMAT);
 				bean.setStopLat(BigDecimal.valueOf(FLOAT_CONVERTER.from(context, FIELDS.stop_lat, value, true)));
 			} else {
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.stop_lat.name(), GtfsException.ERROR.INVALID_LAT, null, null));
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.stop_lat.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
@@ -146,10 +146,10 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter {
 				validLon = false;
 			}
 			if (validLon) {
-				bean.getOkTests().add(GtfsException.ERROR.INVALID_LON);
+				bean.getOkTests().add(GtfsException.ERROR.INVALID_FORMAT);
 				bean.setStopLon(BigDecimal.valueOf(FLOAT_CONVERTER.from(context, FIELDS.stop_lon, value, true)));
 			} else
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.stop_lat.name(), GtfsException.ERROR.INVALID_LON, null, null));
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.stop_lat.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 		}
 		
 		value = array[i++]; testExtraSpace(FIELDS.zone_id.name(), value, bean);
@@ -163,9 +163,9 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter {
 				bean.setStopUrl(URL_CONVERTER.from(context, FIELDS.stop_url, value, false));
 			} catch (GtfsException e) {
 				// 1-GTFS-Stop-7 warning
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.stop_url.name(), GtfsException.ERROR.INVALID_URL, null, null));			
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.stop_url.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));	
 			} finally {
-				bean.getOkTests().add(GtfsException.ERROR.INVALID_URL);
+				bean.getOkTests().add(GtfsException.ERROR.INVALID_FORMAT);
 			}
 		}
 		
@@ -180,10 +180,10 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter {
 				validLocType = false;
 			}
 			if (validLocType) {
-				bean.getOkTests().add(GtfsException.ERROR.INVALID_LOCATION_TYPE);
+				bean.getOkTests().add(GtfsException.ERROR.INVALID_FORMAT);
 				bean.setLocationType(LOCATIONTYPE_CONVERTER.from(context, FIELDS.location_type, value, LocationType.Stop, false));
 			} else {
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.stop_url.name(), GtfsException.ERROR.INVALID_LOCATION_TYPE, null, null));							
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.stop_url.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));				
 			}
 		}
 		
@@ -198,9 +198,9 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter {
 				bean.setStopTimezone(TIMEZONE_CONVERTER.from(context,FIELDS.stop_timezone, value, false));
 			} catch (GtfsException e) {
 				// 1-GTFS-Stop-9  warning
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.stop_timezone.name(), GtfsException.ERROR.INVALID_TIMEZONE, null, null));			
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.stop_timezone.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));	
 			} finally {
-				bean.getOkTests().add(GtfsException.ERROR.INVALID_TIMEZONE);
+				bean.getOkTests().add(GtfsException.ERROR.INVALID_FORMAT);
 			}
 		}
 		
@@ -217,8 +217,8 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter {
 			if (validWeelchairBoarding) {
 				bean.setWheelchairBoarding(WHEELCHAIRBOARDINGTYPE_CONVERTER.from( context, FIELDS.wheelchair_boarding, value, WheelchairBoardingType.NoInformation, false));
 			} else {
-				bean.getOkTests().add(GtfsException.ERROR.INVALID_WHEELCHAIR_BOARDING_TYPE);
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.stop_url.name(), GtfsException.ERROR.INVALID_WHEELCHAIR_BOARDING_TYPE, null, null));							
+				bean.getOkTests().add(GtfsException.ERROR.INVALID_FORMAT);
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.stop_url.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));				
 			}
 		}
 		

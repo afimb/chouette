@@ -109,6 +109,10 @@ public class NeptuneImporterProcessingCommands implements ProcessingCommands, Co
 				Command validation = CommandFactory.create(initialContext, NeptuneValidationCommand.class.getName());
 				chain.add(validation);
 
+				// default values
+				Command defaults = CommandFactory.create(initialContext, NeptuneSetDefaultValuesCommand.class.getName());
+				chain.add(defaults);
+				
 				if (withDao && !parameters.isNoSave()) {
 
 					// register
