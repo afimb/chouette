@@ -79,7 +79,10 @@ public class GtfsException extends RuntimeException {
 		INVALID_SHAPE_POINT_SEQUENCE,
 		DEFAULT_VALUE,
 		MISSING_OPTIONAL_FILE,
-		UNUSED_FILE
+		UNUSED_FILE,
+		MISSING_OPTIONAL_FIELD,
+		UNUSED_ID,
+		SHARED_VALUE
 	}
 
 	@Getter

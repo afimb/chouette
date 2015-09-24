@@ -22,7 +22,7 @@ public class Phase2AgencyTests extends AbstractPhase2Tests {
 	@Test(groups = { "Phase 2 Agency" }, description = "unused agency" ,priority=300 )
 	public void verifyTest_2_1() throws Exception {
 		log.info(Color.GREEN + "Agency_1 : unused agency" + Color.NORMAL);
-		CheckPoint result = verifyValidation( log, "agency_1", "2-GTFS-Agency-1",CheckPoint.SEVERITY.WARNING, CheckPoint.RESULT.NOK,true);
+		CheckPoint result = verifyValidation( log, "agency_1", GTFS_2_GTFS_Common_2,CheckPoint.SEVERITY.WARNING, CheckPoint.RESULT.NOK,true);
 
 		Assert.assertEquals(result.getDetailCount(), 1, "detail count");
 		for (Detail detail : result.getDetails()) 
@@ -37,7 +37,7 @@ public class Phase2AgencyTests extends AbstractPhase2Tests {
 	@Test(groups = { "Phase 2 Agency" }, description = "missing agency_id value" ,priority=301 )
 	public void verifyTest_2_2_1() throws Exception {
 		log.info(Color.GREEN + "Agency_2_1 : missing agency_id value with one agency" + Color.NORMAL);
-		CheckPoint result = verifyValidation( log, "agency_2_1", "2-GTFS-Agency-2",CheckPoint.SEVERITY.WARNING, CheckPoint.RESULT.NOK,true);
+		CheckPoint result = verifyValidation( log, "agency_2_1", GTFS_1_GTFS_Common_4_4,CheckPoint.SEVERITY.WARNING, CheckPoint.RESULT.NOK,true);
 
 		Assert.assertEquals(result.getDetailCount(), 1, "detail count");
 		for (Detail detail : result.getDetails()) 
@@ -52,7 +52,7 @@ public class Phase2AgencyTests extends AbstractPhase2Tests {
 	@Test(groups = { "Phase 2 Agency" }, description = "missing agency_id column" ,priority=301 )
 	public void verifyTest_2_2_2() throws Exception {
 		log.info(Color.GREEN + "Agency_2_2 : missing agency_id column with one agency" + Color.NORMAL);
-		CheckPoint result = verifyValidation( log, "agency_2_2", "2-GTFS-Agency-2",CheckPoint.SEVERITY.WARNING, CheckPoint.RESULT.NOK,true);
+		CheckPoint result = verifyValidation( log, "agency_2_2", GTFS_1_GTFS_Common_3_3,CheckPoint.SEVERITY.WARNING, CheckPoint.RESULT.NOK,true);
 
 		Assert.assertEquals(result.getDetailCount(), 1, "detail count");
 		for (Detail detail : result.getDetails()) 
@@ -60,7 +60,7 @@ public class Phase2AgencyTests extends AbstractPhase2Tests {
 			Assert.assertNotNull(detail.getSource(), "detail must refer a source");
 			Assert.assertNotNull(detail.getSource().getFile(), "detail must refer a file source");
 			Assert.assertEquals(detail.getSource().getFile().getFilename(), "agency.txt", "detail must refer bad file");
-			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(2), "detail must refer bad line");
+			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(1), "detail must refer bad line");
 		}
 	}
 	

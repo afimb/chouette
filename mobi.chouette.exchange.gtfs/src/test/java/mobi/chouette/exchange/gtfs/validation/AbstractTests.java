@@ -11,7 +11,7 @@ import javax.naming.NamingException;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.gtfs.Constant;
+import mobi.chouette.exchange.gtfs.validation.Constant;
 import mobi.chouette.exchange.gtfs.JobDataTest;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.gtfs.importer.GtfsInitImportCommand;
@@ -145,7 +145,9 @@ public abstract class AbstractTests implements Constant, ReportConstant {
 		}
 		if (mandatoryTest.equals("NONE")) {
 			for (CheckPoint phase : valReport.getCheckPoints()) {
-				Assert.assertFalse(phase.getState().equals(RESULT.NOK), phase.getName() + " must have status " + state);
+				// TODO. Add CheckPoint.SEVERITY.INFO 
+				if (phase.getSeverity().equals(CheckPoint.SEVERITY.ERROR))
+					Assert.assertFalse(phase.getState().equals(RESULT.NOK), phase.getName() + " must have status " + state);
 			}
 			return null;
 		} else {
