@@ -195,7 +195,7 @@ Cette strucuture contient la totalité des données qui décrivent la ligne.</xsd:d
 					<xsd:field xpath="."/>
 				</xsd:unique>
 			</xsd:element>
-			<xsd:element name="Company" type="trd:CompanyType" minOccurs="0" maxOccurs="unbounded">
+			<xsd:element name="Company" type="trd:CompanyType" maxOccurs="unbounded">
 				<xsd:annotation>
 					<xsd:documentation>La compagnie de transport qui assure l'exploitation de la ligne.</xsd:documentation>
 				</xsd:annotation>
@@ -211,7 +211,7 @@ Cette strucuture contient la totalité des données qui décrivent la ligne.</xsd:d
 								<xsd:complexContent>
 									<xsd:extension base="StopAreaType">
 										<xsd:sequence>
-											<xsd:element name="StopAreaExtension" type="StopAreaExtensionType" minOccurs="0"/>
+											<xsd:element name="StopAreaExtension" type="StopAreaExtensionType"/>
 										</xsd:sequence>
 									</xsd:extension>
 								</xsd:complexContent>

@@ -17,7 +17,6 @@ import mobi.chouette.model.Line;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
-import org.codehaus.jettison.json.JSONObject;
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
@@ -57,10 +56,9 @@ public class GroupOfLineParser implements Parser, Constant, JsonExtension {
 			} else if (xpp.getName().equals("name")) {
 				groupOfLine.setName(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("comment")) {
-				parseComment(ParserUtils.getText(xpp.nextText()), groupOfLine);
+				groupOfLine.setComment(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("lineId")) {
 				String lineId = ParserUtils.getText(xpp.nextText());
-				// TODO : revoir l'assemblage groupOfLine Line
 				Line line = ObjectFactory.getLine(referential, lineId);
 				groupOfLine.addLine(line);
 				validator.addLineId(context, objectId, lineId);
@@ -70,25 +68,6 @@ public class GroupOfLineParser implements Parser, Constant, JsonExtension {
 		}
 	}
 	
-	protected void parseComment(String comment, GroupOfLine groupOfLine) {
-//		if (comment != null && comment.trim().startsWith("{") && comment.trim().endsWith("}")) {
-//			try {
-//				// parse json comment
-//				JSONObject json = new JSONObject(comment);
-//				groupOfLine.setComment(json.optString(COMMENT, null));
-//				if (json.has(REGISTRATION_NUMBER)) {
-//					groupOfLine.setRegistrationNumber(json.getString(REGISTRATION_NUMBER));
-//				}
-//			} catch (Exception e1) {
-//				log.warn("unparsable json : "+comment);
-//				groupOfLine.setComment(comment);
-//			}
-//		} else {
-			// normal comment
-			groupOfLine.setComment(comment);
-//		}
-	}
-
 
 	static {
 		ParserFactory.register(GroupOfLineParser.class.getName(),

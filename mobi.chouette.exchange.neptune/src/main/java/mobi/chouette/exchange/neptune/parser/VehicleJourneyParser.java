@@ -16,9 +16,7 @@ import mobi.chouette.exchange.neptune.JsonExtension;
 import mobi.chouette.exchange.neptune.validation.VehicleJourneyValidator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.Company;
-import mobi.chouette.model.Footnote;
 import mobi.chouette.model.JourneyPattern;
-import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
@@ -28,8 +26,6 @@ import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONObject;
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
@@ -56,7 +52,6 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 
 		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
-		Line line = referential.getLines().values().iterator().next();
 
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
 		int columnNumber = xpp.getColumnNumber();
@@ -83,7 +78,7 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 			} else if (xpp.getName().equals("creatorId")) {
 				vehicleJourney.setCreatorId(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("comment")) {
-				parseComment(ParserUtils.getText(xpp.nextText()), vehicleJourney, line);
+				vehicleJourney.setComment(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("facility")) {
 				vehicleJourney.setFacility(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("journeyPatternId")) {
@@ -190,42 +185,6 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 		}
 	}
 
-	protected void parseComment(String comment, VehicleJourney vj, Line line) {
-//		if (comment != null && comment.trim().startsWith("{") && comment.trim().endsWith("}")) {
-//			// parse json comment
-//			try{
-//			JSONObject json = new JSONObject(comment);
-//			vj.setComment(json.optString(COMMENT, null));
-//
-//			if (json.has(FOOTNOTE_REFS)) {
-//				JSONArray keys = json.getJSONArray(FOOTNOTE_REFS);
-//				for (int i = 0; i < keys.length(); i++) {
-//					String key = keys.getString(i);
-//					for (Footnote footnote : line.getFootnotes()) {
-//						if (footnote.getKey().equals(key)) {
-//							vj.getFootnotes().add(footnote);
-//						}
-//					}
-//				}
-//			}
-//			if (json.has(FLEXIBLE_SERVICE)) {
-//				vj.setFlexibleService(json.getBoolean(FLEXIBLE_SERVICE));
-//			}
-//			if (json.has(MOBILITY_RESTRICTION)) {
-//				vj.setMobilityRestrictedSuitability(json.getBoolean(MOBILITY_RESTRICTION));
-//			}
-//			}
-//			catch (Exception e)
-//			{
-//				log.warn("unparsable json : " + comment);
-//				vj.setComment(comment);				
-//			}
-//		} else {
-			// normal comment
-			vj.setComment(comment);
-//		}
-
-	}
 
 	static {
 		ParserFactory.register(VehicleJourneyParser.class.getName(), new ParserFactory() {

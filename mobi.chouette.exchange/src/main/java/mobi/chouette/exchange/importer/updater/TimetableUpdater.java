@@ -10,6 +10,8 @@ import mobi.chouette.common.Context;
 import mobi.chouette.model.CalendarDay;
 import mobi.chouette.model.Period;
 import mobi.chouette.model.Timetable;
+import mobi.chouette.model.type.DayTypeEnum;
+import mobi.chouette.model.util.NamingUtil;
 
 @Stateless(name = TimetableUpdater.BEAN_NAME)
 public class TimetableUpdater implements Updater<Timetable> {
@@ -40,6 +42,26 @@ public class TimetableUpdater implements Updater<Timetable> {
 		newValue.setSaved(true);
 		
 		newValue.computeLimitOfPeriods();
+		// default processings
+		if (newValue.getComment() == null) {
+			NamingUtil.setDefaultName(newValue);
+		}
+		
+		if (newValue.getDayTypes().contains(DayTypeEnum.WeekDay))
+		{
+			newValue.addDayType(DayTypeEnum.Monday);
+			newValue.addDayType(DayTypeEnum.Tuesday);
+			newValue.addDayType(DayTypeEnum.Wednesday);
+			newValue.addDayType(DayTypeEnum.Thursday);
+			newValue.addDayType(DayTypeEnum.Friday);
+			newValue.removeDayType(DayTypeEnum.WeekDay);
+		}
+		if (newValue.getDayTypes().contains(DayTypeEnum.WeekEnd))
+		{
+			newValue.addDayType(DayTypeEnum.Saturday);
+			newValue.addDayType(DayTypeEnum.Sunday);
+			newValue.removeDayType(DayTypeEnum.WeekEnd);
+		}
 
 		if (newValue.getObjectId() != null
 				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {

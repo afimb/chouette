@@ -50,5 +50,11 @@ public class Phase2VehicleJourneyTests extends ValidationTests {
 
 	}
 
+	@Test(groups = { "Phase 2 vehicle journey" }, description = "VehicleJourney refers no journeyPattern")
+	public void verifyTest_2_VehicleJourney_8() throws Exception {
+		
+		verifyValidation( "2-NEPTUNE-VehicleJourney-8.xml", "2-NEPTUNE-VehicleJourney-8", CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK);
+
+	}
 
 }

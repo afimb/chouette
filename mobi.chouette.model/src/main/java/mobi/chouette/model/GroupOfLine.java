@@ -7,10 +7,8 @@ import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -39,8 +37,6 @@ public class GroupOfLine extends NeptuneIdentifiedObject {
 
 	@Getter
 	@Setter
-//	@SequenceGenerator(name="group_of_lines_id_seq", sequenceName="group_of_lines_id_seq", allocationSize=1)
-//    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="group_of_lines_id_seq")
 	@GenericGenerator(name = "group_of_lines_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", 
 		parameters = {
 			@Parameter(name = "sequence_name", value = "group_of_lines_id_seq"),

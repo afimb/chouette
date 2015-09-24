@@ -11,14 +11,12 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -73,8 +71,6 @@ public class StopArea extends NeptuneLocalizedObject {
 
 	@Getter
 	@Setter
-//	@SequenceGenerator(name="stop_areas_id_seq", sequenceName="stop_areas_id_seq", allocationSize=1)
-//    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="stop_areas_id_seq")
 	@GenericGenerator(name = "stop_areas_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", 
 		parameters = {
 			@Parameter(name = "sequence_name", value = "stop_areas_id_seq"),

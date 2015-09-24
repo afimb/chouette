@@ -14,5 +14,12 @@ public class Phase2NetworkTests extends ValidationTests {
 
 	}
 
+	@Test(groups = { "Phase 2 network" }, description = "invalid sourceType")
+	public void verifyTest_2_Network_2() throws Exception {
+		
+		verifyValidation( "2-NEPTUNE-Network-2.xml", "2-NEPTUNE-Network-2",CheckPoint.SEVERITY.WARNING, CheckPoint.RESULT.NOK);
+
+	}
+
 
 }

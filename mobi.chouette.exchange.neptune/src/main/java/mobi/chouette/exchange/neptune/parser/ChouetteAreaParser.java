@@ -1,11 +1,9 @@
 package mobi.chouette.exchange.neptune.parser;
 
 import java.math.BigDecimal;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
@@ -28,7 +26,6 @@ import mobi.chouette.model.type.UserNeedEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
-import org.codehaus.jettison.json.JSONObject;
 import org.xmlpull.v1.XmlPullParser;
 
 import com.google.common.collect.BiMap;
@@ -268,39 +265,6 @@ public class ChouetteAreaParser implements Parser, Constant, JsonExtension {
 		}
 	}
 
-	protected void parseComment(String comment, StopArea area) {
-//		if (comment != null && comment.trim().startsWith("{") && comment.trim().endsWith("}")) {
-//			try {
-//				// parse json comment
-//				JSONObject json = new JSONObject(comment);
-//				area.setComment(json.optString(COMMENT, null));
-//				if (json.has(URL_REF))
-//				{
-//					try {
-//						new URL(json.getString(URL_REF));
-//						area.setUrl(json.getString(URL_REF));
-//					} catch (Exception e) {
-//						log.error("cannot parse url " + json.getString(URL_REF), e);
-//					}
-//				}
-//				if (json.has(TIME_ZONE))
-//				{
-//					try {
-//						TimeZone.getTimeZone(json.getString(TIME_ZONE));
-//						area.setTimeZone(json.getString(TIME_ZONE));
-//					} catch (Exception e) {
-//						log.error("cannot parse time_zone " + json.getString(TIME_ZONE), e);
-//					}
-//				}
-//			} catch (Exception e1) {
-//				log.warn("unparsable json : "+comment);
-//				area.setComment(comment);
-//			}
-//		} else {
-//			// normal comment
-			area.setComment(comment);
-//		}
-	}
 
 	static {
 		ParserFactory.register(ChouetteAreaParser.class.getName(),

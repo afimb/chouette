@@ -47,6 +47,7 @@ public class ITLParser implements Parser, Constant {
 			} else if (xpp.getName().equals("name")) {
 				String name = ParserUtils.getText(xpp.nextText());
 				validator.addName(context, objectId, name);
+				if (stopArea.getName() == null) stopArea.setName(name);
 			} else {
 				XPPUtil.skipSubTree(log, xpp);
 			}

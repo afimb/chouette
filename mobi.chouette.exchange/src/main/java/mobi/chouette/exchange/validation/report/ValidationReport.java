@@ -9,14 +9,14 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import mobi.chouette.exchange.validation.report.CheckPoint.RESULT;
+
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
 
 @ToString
 @XmlRootElement(name = "validation_report")
@@ -63,6 +63,7 @@ public class ValidationReport {
 
 	public void addDetail(String checkPointName, Location location, String message, RESULT result) {
 		CheckPoint checkPoint = findCheckPointByName(checkPointName);
+		if (checkPoint == null) throw new NullPointerException("unknown checkPointName "+checkPointName);
 		checkPoint.setState(result);
 		checkPoint.addDetail(new Detail(checkPointName, location, message));
 	}
@@ -70,6 +71,7 @@ public class ValidationReport {
 
 	public void addDetail(String checkPointName, Location[] locations, String message, RESULT result) {
 		CheckPoint checkPoint = findCheckPointByName(checkPointName);
+		if (checkPoint == null) throw new NullPointerException("unknown checkPointName "+checkPointName);
 		checkPoint.setState(result);
 		for (Location location : locations)
 			checkPoint.addDetail(new Detail(checkPointName, location, message));

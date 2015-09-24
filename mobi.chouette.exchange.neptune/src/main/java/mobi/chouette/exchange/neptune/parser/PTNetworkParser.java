@@ -72,8 +72,7 @@ public class PTNetworkParser implements Parser, Constant {
 			} else if (xpp.getName().equals("sourceIdentifier")) {
 				network.setSourceIdentifier(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("sourceType")) {
-				PTNetworkSourceTypeEnum type = PTNetworkSourceTypeEnum
-						.valueOf(ParserUtils.getText(xpp.nextText()));
+				PTNetworkSourceTypeEnum type = buildSourceType(ParserUtils.getText(xpp.nextText()),validator,context,objectId);
 				network.setSourceType(type);
 			} else if (xpp.getName().equals("comment")) {
 				network.setComment(ParserUtils.getText(xpp.nextText()));
@@ -83,6 +82,20 @@ public class PTNetworkParser implements Parser, Constant {
 			} else {
 				XPPUtil.skipSubTree(log, xpp);
 			}
+		}
+	}
+	
+	private PTNetworkSourceTypeEnum buildSourceType(String type, PTNetworkValidator validator, Context context, String objectId)
+	{
+		try
+		{
+			return PTNetworkSourceTypeEnum
+					.valueOf(type);
+		}
+		catch (Exception ex)
+		{
+			validator.addSourceType(context, objectId, type);
+			return PTNetworkSourceTypeEnum.OtherInformation;
 		}
 	}
 

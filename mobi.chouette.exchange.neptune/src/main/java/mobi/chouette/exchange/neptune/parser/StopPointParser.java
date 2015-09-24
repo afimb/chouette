@@ -14,13 +14,10 @@ import mobi.chouette.exchange.neptune.validation.StopPointValidator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
-import mobi.chouette.model.type.AlightingPossibilityEnum;
-import mobi.chouette.model.type.BoardingPossibilityEnum;
 import mobi.chouette.model.type.LongLatTypeEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
-import org.codehaus.jettison.json.JSONObject;
 import org.xmlpull.v1.XmlPullParser;
 
 @Log4j
@@ -58,7 +55,7 @@ public class StopPointParser implements Parser, Constant, JsonExtension {
 			} else if (xpp.getName().equals("creatorId")) {
 				stopPoint.setCreatorId(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("comment")) {
-				parseComment(ParserUtils.getText(xpp.nextText()),stopPoint);
+				stopPoint.setComment(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("containedIn")) {
 				String containedIn = ParserUtils.getText(xpp.nextText());
 				validator.addContainedIn(context, objectId, containedIn);
@@ -79,38 +76,6 @@ public class StopPointParser implements Parser, Constant, JsonExtension {
 		}
 	}
 
-	protected void parseComment(String comment, StopPoint point) {
-//		if (comment != null && comment.trim().startsWith("{") && comment.trim().endsWith("}")) {
-//			try {
-//				// parse json comment
-//				JSONObject json = new JSONObject(comment);
-//				if (json.has(ROUTING_CONSTRAINTS)) {
-//					JSONObject rc = json.getJSONObject(ROUTING_CONSTRAINTS);
-//					if (rc.has(BOARDING)) {
-//						try {
-//							BoardingPossibilityEnum forBoarding = BoardingPossibilityEnum.valueOf(rc
-//									.getString(BOARDING));
-//							point.setForBoarding(forBoarding);
-//						} catch (IllegalArgumentException e) {
-//							log.error("unknown value " + rc.getString(BOARDING) + " for boarding");
-//						}
-//					}
-//					if (rc.has(ALIGHTING)) {
-//						try {
-//							AlightingPossibilityEnum forAlighting = AlightingPossibilityEnum.valueOf(rc
-//									.getString(ALIGHTING));
-//							point.setForAlighting(forAlighting);
-//						} catch (IllegalArgumentException e) {
-//							log.error("unknown value " + rc.getString(ALIGHTING) + " for alighting");
-//						}
-//					}
-//				}
-//			} catch (Exception e1) {
-//				log.warn("unparsable json : " + comment);
-//			}
-//		}
-		point.setComment(comment);
-	}
 
 	static {
 		ParserFactory.register(StopPointParser.class.getName(), new ParserFactory() {

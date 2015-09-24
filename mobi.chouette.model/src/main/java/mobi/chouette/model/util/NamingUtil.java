@@ -1,5 +1,9 @@
 package mobi.chouette.model.util;
 
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.Company;
@@ -8,11 +12,13 @@ import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;
+import mobi.chouette.model.Period;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
+import mobi.chouette.model.type.DayTypeEnum;
 
 public abstract class NamingUtil {
 
@@ -110,5 +116,76 @@ public abstract class NamingUtil {
 
 	private static boolean isFilled(String data) {
 		return (data != null && !data.isEmpty());
+	}
+	
+	private static boolean isEmpty(String data) {
+		return (data == null || data.isEmpty());
+	}
+	
+	public static void setDefaultName(ConnectionLink link)
+	{
+		if (isFilled(link.getName())) return;
+		if (link.getStartOfLink() == null || isEmpty(link.getStartOfLink().getName())) return;
+		if (link.getEndOfLink() == null || isEmpty(link.getEndOfLink().getName())) return;
+		
+		link.setName(link.getStartOfLink().getName() + " -> "
+				+ link.getEndOfLink().getName());
+	}
+	
+	public static void setDefaultName(Timetable timetable)
+	{
+		if (isFilled(timetable.getComment())) return;
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		String monday = (timetable.getDayTypes().contains(DayTypeEnum.Monday)) ? "Mo" : "..";
+		String tuesday = (timetable.getDayTypes().contains(DayTypeEnum.Tuesday)) ? "Tu" : "..";
+		String wednesday = (timetable.getDayTypes().contains(DayTypeEnum.Wednesday)) ? "We" : "..";
+		String thursday = (timetable.getDayTypes().contains(DayTypeEnum.Thursday)) ? "Th" : "..";
+		String friday = (timetable.getDayTypes().contains(DayTypeEnum.Friday)) ? "Fr" : "..";
+		String saturday = (timetable.getDayTypes().contains(DayTypeEnum.Saturday)) ? "Sa" : "..";
+		String sunday = (timetable.getDayTypes().contains(DayTypeEnum.Sunday)) ? "Su" : "..";
+
+		Date firstDate = null;
+		Date lastDate = null;
+		if (timetable.getPeriods() != null && !timetable.getPeriods().isEmpty()) {
+			for (Period period : timetable.getPeriods()) {
+				if (firstDate == null || period.getStartDate().before(firstDate))
+					firstDate = period.getStartDate();
+				if (lastDate == null || period.getEndDate().after(lastDate))
+					lastDate = period.getEndDate();
+			}
+		}
+		if (timetable.getCalendarDays() != null && !timetable.getCalendarDays().isEmpty()) {
+			Calendar cal = Calendar.getInstance();
+			for (Date date : timetable.getPeculiarDates()) {
+				cal.setTime(date);
+				if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY)
+					monday = "Mo";
+				if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY)
+					tuesday = "Tu";
+				if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY)
+					wednesday = "We";
+				if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.THURSDAY)
+					thursday = "Th";
+				if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY)
+					friday = "Fr";
+				if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY)
+					saturday = "Sa";
+				if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
+					sunday = "Su";
+				if (firstDate == null || date.before(firstDate))
+					firstDate = date;
+				if (lastDate == null || date.after(lastDate))
+					lastDate = date;
+			}
+		}
+
+		// security if timetable is empty
+		if (firstDate != null && lastDate != null) {
+			String comment = timetable.objectIdSuffix()+" : "+format.format(firstDate) + " -> " + format.format(lastDate) + " : " + monday
+					+ tuesday + wednesday + thursday + friday + saturday + sunday;
+			timetable.setComment(comment);
+		} else {
+			timetable.setComment(timetable.objectIdSuffix()+" : Empty timetable");
+		}
 	}
 }

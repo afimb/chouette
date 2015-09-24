@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
@@ -15,7 +16,9 @@ import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.exchange.validation.report.Detail;
 import mobi.chouette.exchange.validation.report.FileLocation;
 import mobi.chouette.exchange.validation.report.Location;
+import mobi.chouette.model.Line;
 import mobi.chouette.model.VehicleJourney;
+import mobi.chouette.model.util.Referential;
 
 public class VehicleJourneyValidator extends AbstractValidator implements Validator<VehicleJourney> , Constant{
 
@@ -47,6 +50,7 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 	private static final String VEHICLE_JOURNEY_5 = "2-NEPTUNE-VehicleJourney-5";
 	private static final String VEHICLE_JOURNEY_6 = "2-NEPTUNE-VehicleJourney-6";
 	private static final String VEHICLE_JOURNEY_7 = "2-NEPTUNE-VehicleJourney-7";
+	private static final String VEHICLE_JOURNEY_8 = "2-NEPTUNE-VehicleJourney-8";
 	private static final String VEHICLE_JOURNEY_AT_STOP_1 = "2-NEPTUNE-VehicleJourneyAtStop-1";
 	private static final String VEHICLE_JOURNEY_AT_STOP_2 = "2-NEPTUNE-VehicleJourneyAtStop-2";
 	private static final String VEHICLE_JOURNEY_AT_STOP_3 = "2-NEPTUNE-VehicleJourneyAtStop-3";
@@ -58,8 +62,8 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
     @Override
 	protected void initializeCheckPoints(Context context)
 	{
-		addItemToValidation(context, prefix, "VehicleJourney", 7, "E", "E", "E",
-				"E", "E", "E", "W");
+		addItemToValidation(context, prefix, "VehicleJourney", 8, "E", "E", "E",
+				"E", "E", "E", "W", "E");
 		addItemToValidation(context, prefix, "VehicleJourneyAtStop", 4, "E",
 				"E", "E", "E");
 
@@ -155,7 +159,9 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 		Context timeSlotsContext = (Context) validationContext.get(TimeSlotValidator.LOCAL_CONTEXT);
 		if (timeSlotsContext == null) timeSlotsContext = new Context();
 		String fileName = (String) context.get(FILE_NAME);
-
+		Referential referential = (Referential) context.get(REFERENTIAL);
+		Map<String, VehicleJourney> vehicleJourneys = referential.getVehicleJourneys();
+		
 		// 2-NEPTUNE-VehicleJourney-1 : check existence of route
 		prepareCheckPoint(context, VEHICLE_JOURNEY_1);
 		// 2-NEPTUNE-VehicleJourneyAtStop-1 : check existence of stopPoint
@@ -163,10 +169,10 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 
 		if (!journeyPatternsContext.isEmpty())
 		{
-			// 2-NEPTUNE-VehicleJourney-1 : check if route and JourneyPattern
+			// 2-NEPTUNE-VehicleJourney-6 : check if route and JourneyPattern
 			// are coherent (e)
 			prepareCheckPoint(context,VEHICLE_JOURNEY_6);
-			// 2-NEPTUNE-VehicleJourney-2 : check if journeypatterns have at
+			// 2-NEPTUNE-VehicleJourney-7 : check if journeypatterns have at
 			// least one vehiclejourney (w)
 			prepareCheckPoint(context,VEHICLE_JOURNEY_7);
 			// 2-NEPTUNE-VehicleJourneyAtStop-4 : check if stoppoints are
@@ -211,6 +217,27 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 							new Location(sourceLocation,objectId), objectContext.get(JOURNEY_PATTERN_ID).toString());
 					addValidationError(context,VEHICLE_JOURNEY_2, errorItem);
 					fkOK = false;
+				}
+			}
+			else
+			{
+				// 2-NEPTUNE-VehicleJourney-8 : check if only one journey pattern exists in route
+				// journeyPattern
+				prepareCheckPoint(context,VEHICLE_JOURNEY_8);
+				VehicleJourney vj = vehicleJourneys.get(objectId);
+				if (vj.getRoute().getJourneyPatterns().size() != 1)
+				{
+					Detail errorItem = new Detail(
+							VEHICLE_JOURNEY_8,
+							new Location(sourceLocation,objectId));
+					addValidationError(context,VEHICLE_JOURNEY_8, errorItem);
+					fkOK = false;					
+				}
+				else
+				{
+					// affect journeyPattern for following tests
+					vj.setJourneyPattern(vj.getRoute().getJourneyPatterns().get(0));
+					journeyPatternId = vj.getJourneyPattern().getObjectId();
 				}
 			}
 			if (objectContext.containsKey(LINE_ID_SHORTCUT))

@@ -45,7 +45,7 @@ public interface ObjectIdTypes {
 	   /**
 	    * default objectId type for Networks
 	    */
-	   public static final String PTNETWORK_KEY = "GroupOfLine";
+	   public static final String PTNETWORK_KEY = "PTNetwork";
 	   /**
 	    * default objectId type for route 
 	    */

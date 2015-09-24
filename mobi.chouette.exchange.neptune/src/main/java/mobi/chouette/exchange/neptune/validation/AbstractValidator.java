@@ -181,4 +181,8 @@ public abstract class AbstractValidator implements Constant
 	protected abstract void initializeCheckPoints(Context context);
 
 
+	protected boolean isEmpty(String text)
+	{
+		return text == null || text.isEmpty();
+	}
 }

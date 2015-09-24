@@ -10,14 +10,12 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -52,8 +50,6 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 
 	@Getter
 	@Setter
-//	@SequenceGenerator(name="vehicle_journeys_id_seq", sequenceName="vehicle_journeys_id_seq", allocationSize=1)
-//  @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="vehicle_journeys_id_seq")
 	@GenericGenerator(name = "vehicle_journeys_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", parameters = {
 			@Parameter(name = "sequence_name", value = "vehicle_journeys_id_seq"),
 			@Parameter(name = "increment_size", value = "100") })

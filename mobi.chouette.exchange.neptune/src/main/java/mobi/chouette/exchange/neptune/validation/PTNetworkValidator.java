@@ -3,6 +3,7 @@ package mobi.chouette.exchange.neptune.validation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
@@ -14,22 +15,25 @@ import mobi.chouette.exchange.validation.report.Detail;
 import mobi.chouette.exchange.validation.report.FileLocation;
 import mobi.chouette.exchange.validation.report.Location;
 import mobi.chouette.model.Network;
+import mobi.chouette.model.util.Referential;
 
 public class PTNetworkValidator extends AbstractValidator implements Validator<Network> , Constant{
 
 	public static final String LINE_ID = "lineId";
+	
+	public static final String SOURCE_TYPE = "sourceType";
 
 	public static String NAME = "PTNetworkValidator";
 	
 	private static final String NETWORK_1 = "2-NEPTUNE-Network-1";
+	private static final String NETWORK_2 = "2-NEPTUNE-Network-2";
 
 	public static final String LOCAL_CONTEXT = "PTNetwork";
 
     @Override
 	protected void initializeCheckPoints(Context context)
 	{
-		addItemToValidation(context, prefix, "Network", 1, "W");
-
+		addItemToValidation(context, prefix, "Network", 2, "W", "W");
 	}
 
 	public void addLocation(Context context, String objectId, int lineNumber, int columnNumber)
@@ -51,6 +55,12 @@ public class PTNetworkValidator extends AbstractValidator implements Validator<N
 		lineIds.add(lineId);
 	}
 	
+	public void addSourceType(Context  context, String objectId, String type)
+	{
+		Context objectContext = getObjectContext(context, LOCAL_CONTEXT, objectId);
+		objectContext.put(SOURCE_TYPE, type);
+	}
+	
 	
 
 	@SuppressWarnings("unchecked")
@@ -61,6 +71,8 @@ public class PTNetworkValidator extends AbstractValidator implements Validator<N
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 		if (localContext == null || localContext.isEmpty()) return new ValidationConstraints();
 		Context lineContext = (Context) validationContext.get(LineValidator.LOCAL_CONTEXT);
+		Referential referential = (Referential) context.get(REFERENTIAL);
+		Map<String, Network> networks = referential.getPtNetworks();
 
 		String fileName = (String) context.get(FILE_NAME);
 		String lineId = lineContext.keySet().iterator().next(); 
@@ -82,6 +94,24 @@ public class PTNetworkValidator extends AbstractValidator implements Validator<N
 							NETWORK_1,
 							new Location(sourceLocation ,objectId), lineId);
 					addValidationError(context, NETWORK_1, errorItem);
+				}
+			}
+			
+			// 2-NEPTUNE-PTNetwork-2 : check if source_type is valid for neptune
+			String sourceType = (String) objectContext.get(SOURCE_TYPE);
+			if (sourceType != null)
+			{
+				prepareCheckPoint(context, NETWORK_2);
+				Network network = networks.get(objectId);
+				if (!sourceType.equals(network.getSourceType().name()))
+				{
+					int lineNumber = ((Integer) objectContext.get(LINE_NUMBER)).intValue();
+					int columnNumber = ((Integer) objectContext.get(COLUMN_NUMBER)).intValue();
+					FileLocation sourceLocation = new FileLocation(fileName, lineNumber, columnNumber);
+					Detail errorItem = new Detail(
+							NETWORK_2,
+							new Location(sourceLocation ,objectId), sourceType,network.getSourceType().name());
+					addValidationError(context, NETWORK_2, errorItem);
 				}
 			}
 

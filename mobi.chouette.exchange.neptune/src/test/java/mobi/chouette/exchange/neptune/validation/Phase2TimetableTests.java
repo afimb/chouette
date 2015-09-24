@@ -19,6 +19,12 @@ public class Phase2TimetableTests extends ValidationTests {
 		verifyValidation( "2-NEPTUNE-Timetable-2.xml", "2-NEPTUNE-Timetable-2", CheckPoint.SEVERITY.WARNING, CheckPoint.RESULT.NOK);
 
 	}
+	@Test(groups = { "Phase 2 timetable" }, description = "invalid period")
+	public void verifyTest_2_Timetable_3() throws Exception {
+		
+		verifyValidation( "2-NEPTUNE-Timetable-3.xml", "2-NEPTUNE-Timetable-3", CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK);
+
+	}
 
 
 }

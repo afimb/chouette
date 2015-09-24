@@ -17,14 +17,12 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderColumn;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -57,8 +55,6 @@ public class Route extends NeptuneIdentifiedObject {
 
 	@Getter
 	@Setter
-//	@SequenceGenerator(name="routes_id_seq", sequenceName="routes_id_seq", allocationSize=1)
-//    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="routes_id_seq")
 	@GenericGenerator(name = "routes_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", parameters = {
 			@Parameter(name = "sequence_name", value = "routes_id_seq"),
 			@Parameter(name = "increment_size", value = "50") })
