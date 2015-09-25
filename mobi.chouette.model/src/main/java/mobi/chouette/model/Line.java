@@ -133,6 +133,8 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	 * stable id
 	 * 
 	 * @return The actual value
+	 * 
+	 * @since 3.1.0
 	 */
 	@Getter
 	@Column(name = "stable_id")

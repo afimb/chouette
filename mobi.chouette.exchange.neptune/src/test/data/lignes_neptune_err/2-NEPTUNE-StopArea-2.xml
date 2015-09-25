@@ -507,10 +507,6 @@
 			<number>7</number>
 			<publishedName>Ligne 7 orange</publishedName>
 			<transportModeName>Bus</transportModeName>
-			<lineEnd>NINOXE:StopPoint:15627097</lineEnd>
-			<lineEnd>NINOXE:StopPoint:15627100</lineEnd>
-			<lineEnd>NINOXE:StopPoint:15627092</lineEnd>
-			<lineEnd>NINOXE:StopPoint:15627095</lineEnd>
 			<routeId>NINOXE:Route:15627096</routeId>
 			<routeId>NINOXE:Route:15627091</routeId>
 			<registration>

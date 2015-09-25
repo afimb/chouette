@@ -50,7 +50,7 @@ public class GtfsRouteParserCommand implements Command, Constant {
 			Referential referential = (Referential) context.get(REFERENTIAL);
 			ActionReport report = (ActionReport) context.get(REPORT);
 			if (referential != null) {
-				referential.clear();
+				referential.clear(true);
 			}
 
 			GtfsImportParameters configuration = (GtfsImportParameters) context.get(CONFIGURATION);

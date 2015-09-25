@@ -1,10 +1,12 @@
 package mobi.chouette.exchange.neptune.validation;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.validation.ValidationConstraints;
@@ -15,9 +17,11 @@ import mobi.chouette.exchange.validation.report.Detail;
 import mobi.chouette.exchange.validation.report.FileLocation;
 import mobi.chouette.exchange.validation.report.Location;
 import mobi.chouette.model.Line;
-import mobi.chouette.model.Network;
+import mobi.chouette.model.Route;
+import mobi.chouette.model.StopArea;
 import mobi.chouette.model.util.Referential;
 
+@Log4j
 public class LineValidator extends AbstractValidator implements Validator<Line>, Constant {
 
 	public static final String ROUTE_ID = "routeId";
@@ -86,7 +90,7 @@ public class LineValidator extends AbstractValidator implements Validator<Line>,
 		if (localContext == null || localContext.isEmpty())
 			return new ValidationConstraints();
 		Context networkContext = (Context) validationContext.get(PTNetworkValidator.LOCAL_CONTEXT);
-		Context stopPointContext = (Context) validationContext.get(StopPointValidator.LOCAL_CONTEXT);
+		Context stopAreaContext = (Context) validationContext.get(StopAreaValidator.LOCAL_CONTEXT);
 		Context routeContext = (Context) validationContext.get(ChouetteRouteValidator.LOCAL_CONTEXT);
 		String fileName = (String) context.get(FILE_NAME);
 		Referential referential = (Referential) context.get(REFERENTIAL);
@@ -114,56 +118,41 @@ public class LineValidator extends AbstractValidator implements Validator<Line>,
 			List<String> lineEnds = (List<String>) objectContext.get(LINE_END);
 			if (lineEnds != null) {
 				prepareCheckPoint(context, LINE_2);
-				Map<String, List<String>> mapPTLinksByStartId = new HashMap<>();
-				Map<String, List<String>> mapPTLinksByEndId = new HashMap<>();
-				Context ptLinkContext = (Context) validationContext.get(PtLinkValidator.LOCAL_CONTEXT);
-				for (String ptLinkId : ptLinkContext.keySet()) {
-					Context ptlinkCtx = (Context) ptLinkContext.get(ptLinkId);
-					String start = (String) ptlinkCtx.get(PtLinkValidator.START_OF_LINK_ID);
-					String end = (String) ptlinkCtx.get(PtLinkValidator.END_OF_LINK_ID);
-					List<String> startIds = mapPTLinksByStartId.get(start);
-					if (startIds == null) {
-						startIds = new ArrayList<>();
-						mapPTLinksByStartId.put(start, startIds);
+				Set<String> endAreas = new HashSet<>();
+				for (Route route : line.getRoutes()) {
+					if (route.getStopPoints().size() > 0) {
+						StopArea area = route.getStopPoints().get(0).getContainedInStopArea();
+						if (area == null) {
+							log.error("missing stoparea for "
+									+ route.getStopPoints().get(0).getObjectId());
+						} else {
+							endAreas.add(area.getObjectId());
+							if (area.getParent() != null)
+								endAreas.add(area.getParent().getObjectId());
+						}
+						area = route.getStopPoints().get(route.getStopPoints().size() - 1).getContainedInStopArea();
+						if (area == null) {
+							log.error("missing stoparea for "
+									+ route.getStopPoints().get(route.getStopPoints().size() - 1).getObjectId());
+						} else {
+							endAreas.add(area.getObjectId());
+							if (area.getParent() != null)
+								endAreas.add(area.getParent().getObjectId());
+						}
 					}
-					startIds.add(ptLinkId);
-					List<String> endIds = mapPTLinksByEndId.get(end);
-					if (endIds == null) {
-						endIds = new ArrayList<>();
-						mapPTLinksByEndId.put(end, endIds);
-					}
-					endIds.add(ptLinkId);
 				}
 
 				for (String endId : lineEnds) {
-					// endId must exists as stopPoint ?
-					if (!stopPointContext.containsKey(endId)) {
+					// endId must exists as stopArea ?
+					if (!stopAreaContext.containsKey(endId)) {
 						Detail errorItem = new Detail(LINE_2, new Location(sourceLocation, objectId), endId);
 						addValidationError(context, LINE_2, errorItem);
-
 					} else {
 						// 2-NEPTUNE-Line-3 : check ends of line
 						prepareCheckPoint(context, LINE_3);
-
-						// endId must be referenced by one and only one ptLink
-						List<String> startLinks = mapPTLinksByStartId.get(endId);
-						List<String> endLinks = mapPTLinksByEndId.get(endId);
-						boolean oneRef = true;
-						// protect from null pointers
-						if (startLinks == null)
-							startLinks = new ArrayList<String>();
-						if (endLinks == null)
-							endLinks = new ArrayList<String>();
-
-						if (startLinks.size() != 0 && endLinks.size() != 0) {
-							oneRef = false;
-						} else if (startLinks.size() > 1 || endLinks.size() > 1) {
-							oneRef = false;
-						}
-						if (!oneRef) {
+						if (!endAreas.contains(endId)) {
 							Detail errorItem = new Detail(LINE_3, new Location(sourceLocation, objectId), endId);
 							addValidationError(context, LINE_3, errorItem);
-
 						}
 					}
 				}

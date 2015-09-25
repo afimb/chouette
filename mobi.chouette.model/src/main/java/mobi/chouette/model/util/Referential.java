@@ -77,36 +77,49 @@ public class Referential implements java.io.Serializable {
 	@Getter
 	@Setter
 	private Map<String, Line> sharedLines = new HashMap<String, Line>();
-	
+
 	@Getter
 	@Setter
 	private Map<String, Timetable> sharedTimetables = new HashMap<String, Timetable>();
 
-	public void clear() {
-		for (Line line : lines.values()) {
-			line.getRoutes().clear();
-			line.getFootnotes().clear();
-			line.getRoutingConstraints().clear();
-			line.getGroupOfLines().clear();
+	public void clear(boolean cascade) {
+		if (cascade) {
+			for (Line line : lines.values()) {
+				line.getRoutes().clear();
+				line.getFootnotes().clear();
+				line.getRoutingConstraints().clear();
+				line.getGroupOfLines().clear();
+			}
+			for (Route route : routes.values()) {
+				route.getStopPoints().clear();
+				route.getJourneyPatterns().clear();
+			}
+			for (JourneyPattern jp : journeyPatterns.values()) {
+				jp.getStopPoints().clear();
+				jp.getVehicleJourneys().clear();
+			}
+			for (VehicleJourney vj : vehicleJourneys.values()) {
+				vj.getVehicleJourneyAtStops().clear();
+				vj.getTimetables().clear();
+			}
+			for (Timetable timetable : timetables.values()) {
+				timetable.getVehicleJourneys().clear();
+			}
+			for (Timetable timetable : sharedTimetables.values()) {
+				timetable.getVehicleJourneys().clear();
+			}
+			for (GroupOfLine group : sharedGroupOfLines.values()) {
+				group.getLines().clear();
+			}
+			for (StopArea area : sharedStopAreas.values()) {
+				area.getContainedStopPoints().clear();
+			}
 		}
 		lines.clear();
-		for (Route route : routes.values()) {
-			route.getStopPoints().clear();
-			route.getJourneyPatterns().clear();
-		}
 		routes.clear();
 		stopPoints.clear();
-		for (JourneyPattern jp : journeyPatterns.values()) {
-			jp.getStopPoints().clear();
-			jp.getVehicleJourneys().clear();
-		}
 		journeyPatterns.clear();
-		for (VehicleJourney vj : vehicleJourneys.values()) {
-			vj.getVehicleJourneyAtStops().clear();
-			vj.getTimetables().clear();
-		}
 		vehicleJourneys.clear();
-		
 		accessLinks.clear();
 		accessPoints.clear();
 		ptNetworks.clear();
@@ -114,19 +127,8 @@ public class Referential implements java.io.Serializable {
 		connectionLinks.clear();
 		stopAreas.clear();
 		groupOfLines.clear();
-		for (Timetable timetable : timetables.values()) {
-			timetable.getVehicleJourneys().clear();
-		}
 		timetables.clear();
-		for (Timetable timetable : sharedTimetables.values()) {
-			timetable.getVehicleJourneys().clear();
-		}
-		for (GroupOfLine group : sharedGroupOfLines.values()) {
-			group.getLines().clear();
-		}
-		for (StopArea area : sharedStopAreas.values()) {
-			area.getContainedStopPoints().clear();
-		}
+
 	}
 
 	@Getter

@@ -144,11 +144,6 @@ public class LineRegisterCommand implements Command {
 		buffer.append(SEP);
 		buffer.write(stopPoint.getId().toString());
 		buffer.append(SEP);
-		if (vehicleJourneyAtStop.getBoardingAlightingPossibility() != null)
-			buffer.write(vehicleJourneyAtStop.getBoardingAlightingPossibility().toString());
-		else
-			buffer.write(NULL);
-		buffer.append(SEP);
 		if (vehicleJourneyAtStop.getArrivalTime() != null)
 			buffer.write(timeFormat.format(vehicleJourneyAtStop.getArrivalTime()));
 		else

@@ -37,7 +37,7 @@ public class GtfsStopParserCommand implements Command, Constant {
 			GtfsImportParameters configuration = (GtfsImportParameters) context.get(CONFIGURATION);
 			ActionReport report = (ActionReport) context.get(REPORT);
 			if (referential != null) {
-				referential.clear();
+				referential.clear(true);
 			}
 
 			GtfsImporter importer = (GtfsImporter) context.get(PARSER);

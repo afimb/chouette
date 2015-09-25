@@ -20,7 +20,7 @@ public abstract class AbstractDisposeImportCommand implements Command, Constant 
 			ValidationData validationData = (ValidationData) context.get(VALIDATION_DATA);
 			if (validationData != null) validationData.dispose();
 			Referential cache = (Referential) context.get(CACHE);
-			if (cache != null) cache.clear();
+			if (cache != null) cache.clear(false);
 			result = SUCCESS;
 
 		} catch (Exception e) {

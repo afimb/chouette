@@ -7,9 +7,11 @@ import java.util.List;
 
 import mobi.chouette.exchange.neptune.JsonExtension;
 import mobi.chouette.model.Footnote;
+import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
-import mobi.chouette.model.type.BoardingAlightingPossibilityEnum;
+import mobi.chouette.model.type.AlightingPossibilityEnum;
+import mobi.chouette.model.type.BoardingPossibilityEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
 
 import org.codehaus.jettison.json.JSONArray;
@@ -31,7 +33,7 @@ public class VehicleJourneyProducer extends AbstractJaxbNeptuneProducer<VehicleJ
 
 	};
 
-	//@Override
+	// @Override
 	public VehicleJourneyType produce(VehicleJourney vehicleJourney, boolean addExtension) {
 		VehicleJourneyType jaxbVehicleJourney = tridentFactory.createVehicleJourneyType();
 
@@ -70,16 +72,10 @@ public class VehicleJourneyProducer extends AbstractJaxbNeptuneProducer<VehicleJ
 			for (VehicleJourneyAtStop vehicleJourneyAtStop : vehicleJourney.getVehicleJourneyAtStops()) {
 				if (vehicleJourneyAtStop != null) {
 					VehicleJourneyAtStopType jaxbVehicleJourneyAtStop = tridentFactory.createVehicleJourneyAtStopType();
-					if (vehicleJourneyAtStop.getBoardingAlightingPossibility() != null) {
-						BoardingAlightingPossibilityEnum boardingAlightingPossibility = vehicleJourneyAtStop
-								.getBoardingAlightingPossibility();
-						try {
-							jaxbVehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibilityType
-									.fromValue(boardingAlightingPossibility.name()));
-						} catch (IllegalArgumentException e) {
-							// TODO generate report
-						}
-					}
+					jaxbVehicleJourneyAtStop
+							.setBoardingAlightingPossibility(buildBoardingAndAlightingPossibility(vehicleJourneyAtStop
+									.getStopPoint()));
+
 					if (vehicleJourneyAtStop.getHeadwayFrequency() != null) {
 						jaxbVehicleJourneyAtStop.setHeadwayFrequency(toDuration(vehicleJourneyAtStop
 								.getHeadwayFrequency()));
@@ -138,6 +134,64 @@ public class VehicleJourneyProducer extends AbstractJaxbNeptuneProducer<VehicleJ
 		} catch (Exception e) {
 			return getNotEmptyString(vj.getComment());
 		}
+	}
+
+	protected BoardingAlightingPossibilityType buildBoardingAndAlightingPossibility(StopPoint point) {
+		if (point.getForAlighting() == null && point.getForBoarding() == null)
+			return null;
+		AlightingPossibilityEnum forAlighting = point.getForAlighting() == null ? AlightingPossibilityEnum.normal
+				: point.getForAlighting();
+		BoardingPossibilityEnum forBoarding = point.getForBoarding() == null ? BoardingPossibilityEnum.normal : point
+				.getForBoarding();
+
+		switch (forAlighting) {
+		case normal:
+			switch (forBoarding) {
+			case normal:
+				return null;
+			case forbidden:
+				return BoardingAlightingPossibilityType.ALIGHT_ONLY;
+			case request_stop:
+				return BoardingAlightingPossibilityType.BOARD_ON_REQUEST;
+			case is_flexible:
+				return null;
+			}
+		case forbidden:
+			switch (forBoarding) {
+			case normal:
+				return BoardingAlightingPossibilityType.BOARD_ONLY;
+			case forbidden:
+				return BoardingAlightingPossibilityType.NEITHER_BOARD_OR_ALIGHT;
+			case request_stop:
+				return BoardingAlightingPossibilityType.BOARD_ONLY;
+			case is_flexible:
+				return BoardingAlightingPossibilityType.BOARD_ONLY;
+			}
+		case request_stop:
+			switch (forBoarding) {
+			case normal:
+				return BoardingAlightingPossibilityType.ALIGHT_ON_REQUEST;
+			case forbidden:
+				return BoardingAlightingPossibilityType.ALIGHT_ONLY;
+			case request_stop:
+				return BoardingAlightingPossibilityType.BOARD_AND_ALIGHT_ON_REQUEST;
+			case is_flexible:
+				return BoardingAlightingPossibilityType.ALIGHT_ON_REQUEST;
+			}
+		case is_flexible:
+			switch (forBoarding) {
+			case normal:
+				return null;
+			case forbidden:
+				return BoardingAlightingPossibilityType.ALIGHT_ONLY;
+			case request_stop:
+				return BoardingAlightingPossibilityType.BOARD_ON_REQUEST;
+			case is_flexible:
+				return null;
+			}
+		}
+		return null;
+
 	}
 
 }

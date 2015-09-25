@@ -12,16 +12,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.Color;
 import mobi.chouette.model.VehicleJourney;
 
 import org.hibernate.Session;
 import org.hibernate.jdbc.Work;
 import org.jboss.jca.adapters.jdbc.WrappedConnection;
 import org.postgresql.PGConnection;
-
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
 
 @Stateless
 @Log4j
@@ -92,7 +88,6 @@ public class VehicleJourneyDAO extends GenericDAOImpl<VehicleJourney> {
 					manager.copyIn(
 							"COPY vehicle_journey_at_stops("
 									+ "vehicle_journey_id, stop_point_id, "
-									+ "boarding_alighting_possibility,"
 									+ "arrival_time, departure_time, "
 									+ "elapse_duration, headway_frequency)"
 									+ " FROM STDIN WITH DELIMITER '|'", from);

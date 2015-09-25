@@ -153,8 +153,6 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 				BoardingAlightingPossibilityEnum value = ParserUtils.getEnum(BoardingAlightingPossibilityEnum.class,
 						xpp.nextText());
 				vehicleJourneyAtStop.setBoardingAlightingPossibility(value);
-				// } else if (xpp.getName().equals("connectingServiceId")) {
-				// vehicleJourneyAtStop.setConnectingServiceId(xpp.nextText());
 			} else if (xpp.getName().equals("stopPointId")) {
 				String objectId = ParserUtils.getText(xpp.nextText());
 				validator.addStopPointId(vehicleJourneyAtStopContext, objectId);

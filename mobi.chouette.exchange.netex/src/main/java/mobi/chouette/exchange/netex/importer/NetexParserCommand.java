@@ -62,7 +62,7 @@ public class NetexParserCommand implements Command, Constant {
 
 			Referential referential = (Referential) context.get(REFERENTIAL);
 			if (referential != null) {
-				referential.clear();
+				referential.clear(true);
 			}
 
 			InputStream input = new BOMInputStream(url.openStream());

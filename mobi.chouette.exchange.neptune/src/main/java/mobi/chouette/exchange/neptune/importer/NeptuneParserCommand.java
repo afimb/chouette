@@ -61,7 +61,7 @@ public class NeptuneParserCommand implements Command, Constant {
 
 			Referential referential = (Referential) context.get(REFERENTIAL);
 			if (referential != null) {
-				referential.clear();
+				referential.clear(true);
 			}
 
 			InputStreamReader input = CharSetChecker.getEncodedInputStreamReader(url.toString(), url.openStream());

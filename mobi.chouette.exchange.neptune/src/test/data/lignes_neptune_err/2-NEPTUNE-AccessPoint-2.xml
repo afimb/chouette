@@ -949,10 +949,6 @@
 			<number>5</number>
 			<publishedName>Ligne 5 Magenta</publishedName>
 			<transportModeName>Bus</transportModeName>
-			<lineEnd>NINOXE:StopPoint:15626085</lineEnd>
-			<lineEnd>NINOXE:StopPoint:15626092</lineEnd>
-			<lineEnd>NINOXE:StopPoint:15626077</lineEnd>
-			<lineEnd>NINOXE:StopPoint:15626084</lineEnd>
 			<routeId>NINOXE:Route:15626076</routeId>
 			<routeId>NINOXE:Route:15626075</routeId>
 			<registration>

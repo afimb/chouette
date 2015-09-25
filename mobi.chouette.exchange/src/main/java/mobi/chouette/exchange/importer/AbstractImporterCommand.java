@@ -62,7 +62,7 @@ public class AbstractImporterCommand implements Constant {
 
 				Referential referential = (Referential) context.get(REFERENTIAL);
 				if (referential != null) {
-					referential.clear();
+					referential.clear(true);
 					// System.gc();
 				}
 				if (lineProcessingCommands.size() > 0) {

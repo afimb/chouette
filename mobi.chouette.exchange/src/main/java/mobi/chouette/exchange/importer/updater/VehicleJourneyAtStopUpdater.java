@@ -21,12 +21,6 @@ public class VehicleJourneyAtStopUpdater implements
 	public void update(Context context, VehicleJourneyAtStop oldValue,
 			VehicleJourneyAtStop newValue) {
 
-		if (newValue.getBoardingAlightingPossibility() != null
-				&& !newValue.getBoardingAlightingPossibility().equals(
-						oldValue.getBoardingAlightingPossibility())) {
-			oldValue.setBoardingAlightingPossibility(newValue
-					.getBoardingAlightingPossibility());
-		}
 		if (newValue.getArrivalTime() != null
 				&& !newValue.getArrivalTime().equals(oldValue.getArrivalTime())) {
 			oldValue.setArrivalTime(newValue.getArrivalTime());

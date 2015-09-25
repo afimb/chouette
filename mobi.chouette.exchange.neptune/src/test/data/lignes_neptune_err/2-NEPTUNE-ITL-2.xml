@@ -1001,10 +1001,6 @@
 			<number>3</number>
 			<publishedName>Ligne 3 Metro</publishedName>
 			<transportModeName>Metro</transportModeName>
-			<lineEnd>NINOXE:StopPoint:15577819</lineEnd>
-			<lineEnd>NINOXE:StopPoint:15577826</lineEnd>
-			<lineEnd>NINOXE:StopPoint:15577811</lineEnd>
-			<lineEnd>NINOXE:StopPoint:15577818</lineEnd>
 			<routeId>NINOXE:Route:15577794</routeId>
 			<routeId>NINOXE:Route:15577793</routeId>
 			<registration>

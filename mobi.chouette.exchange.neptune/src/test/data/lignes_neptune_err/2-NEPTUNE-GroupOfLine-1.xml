@@ -1036,14 +1036,6 @@
 			<number>1</number>
 			<publishedName>Ligne 1 Bleue</publishedName>
 			<transportModeName>Bus</transportModeName>
-			<lineEnd>NINOXE:StopPoint:15574357</lineEnd>
-			<lineEnd>NINOXE:StopPoint:15574364</lineEnd>
-			<lineEnd>NINOXE:StopPoint:15574365</lineEnd>
-			<lineEnd>NINOXE:StopPoint:15574371</lineEnd>
-			<lineEnd>NINOXE:StopPoint:15574380</lineEnd>
-			<lineEnd>NINOXE:StopPoint:15574386</lineEnd>
-			<lineEnd>NINOXE:StopPoint:15574372</lineEnd>
-			<lineEnd>NINOXE:StopPoint:15574379</lineEnd>
 			<routeId>NINOXE:Route:15574335</routeId>
 			<routeId>NINOXE:Route:15574336</routeId>
 			<routeId>NINOXE:Route:15574338</routeId>

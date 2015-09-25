@@ -31,20 +31,20 @@ public class ChouetteRouteParser implements Parser, Constant {
 
 		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
 		Referential referential = (Referential) context.get(REFERENTIAL);
-		NeptuneObjectFactory factory = (NeptuneObjectFactory) context
-				.get(NEPTUNE_OBJECT_FACTORY);
+		NeptuneObjectFactory factory = (NeptuneObjectFactory) context.get(NEPTUNE_OBJECT_FACTORY);
 
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
-		int columnNumber =  xpp.getColumnNumber();
-		int lineNumber =  xpp.getLineNumber();
-		
-		ChouetteRouteValidator validator = (ChouetteRouteValidator) ValidatorFactory.create(ChouetteRouteValidator.class.getName(), context);
+		int columnNumber = xpp.getColumnNumber();
+		int lineNumber = xpp.getLineNumber();
+
+		ChouetteRouteValidator validator = (ChouetteRouteValidator) ValidatorFactory.create(
+				ChouetteRouteValidator.class.getName(), context);
 
 		Route route = null;
 		String objectId = null;
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
 			if (xpp.getName().equals("objectId")) {
-				 objectId = ParserUtils.getText(xpp.nextText());
+				objectId = ParserUtils.getText(xpp.nextText());
 				route = ObjectFactory.getRoute(referential, objectId);
 				route.setFilled(true);
 				validator.addLocation(context, objectId, lineNumber, columnNumber);
@@ -59,14 +59,12 @@ public class ChouetteRouteParser implements Parser, Constant {
 			} else if (xpp.getName().equals("name")) {
 				route.setName(ParserUtils.getText(xpp.nextText()));
 			} else if (xpp.getName().equals("direction")) {
-				PTDirectionEnum value = ParserUtils.getEnum(
-						PTDirectionEnum.class, xpp.nextText());
+				PTDirectionEnum value = ParserUtils.getEnum(PTDirectionEnum.class, xpp.nextText());
 				route.setDirection(value);
 			} else if (xpp.getName().equals("journeyPatternId")) {
 				String journeyPatternId = ParserUtils.getText(xpp.nextText());
 				validator.addJourneyPatternId(context, objectId, journeyPatternId);
-				JourneyPattern journeyPattern = ObjectFactory
-						.getJourneyPattern(referential, journeyPatternId);
+				JourneyPattern journeyPattern = ObjectFactory.getJourneyPattern(referential, journeyPatternId);
 				journeyPattern.setRoute(route);
 			} else if (xpp.getName().equals("number")) {
 				route.setNumber(ParserUtils.getText(xpp.nextText()));
@@ -79,8 +77,7 @@ public class ChouetteRouteParser implements Parser, Constant {
 			} else if (xpp.getName().equals("RouteExtension")) {
 				while (xpp.nextTag() == XmlPullParser.START_TAG) {
 					if (xpp.getName().equals("wayBack")) {
-						String value = ParserUtils.getText(xpp.nextText())
-								.toLowerCase().startsWith("a") ? "A" : "R";
+						String value = ParserUtils.getText(xpp.nextText()).toLowerCase().startsWith("a") ? "A" : "R";
 						route.setWayBack(value);
 					} else {
 						XPPUtil.skipSubTree(log, xpp);
@@ -90,8 +87,7 @@ public class ChouetteRouteParser implements Parser, Constant {
 				String wayBackRouteId = ParserUtils.getText(xpp.nextText());
 				validator.addWayBackRouteId(context, objectId, wayBackRouteId);
 				Route wayBackRoute = referential.getRoutes().get(wayBackRouteId);
-				if (wayBackRoute != null)
-				{
+				if (wayBackRoute != null) {
 					wayBackRoute.setOppositeRoute(route);
 				}
 
@@ -101,19 +97,17 @@ public class ChouetteRouteParser implements Parser, Constant {
 				XPPUtil.skipSubTree(log, xpp);
 			}
 		}
-		
-		// List<PTLink> list = factory.getPTLinksOnRoute(route);
+
 	}
 
 	static {
-		ParserFactory.register(ChouetteRouteParser.class.getName(),
-				new ParserFactory() {
-					private ChouetteRouteParser instance = new ChouetteRouteParser();
+		ParserFactory.register(ChouetteRouteParser.class.getName(), new ParserFactory() {
+			private ChouetteRouteParser instance = new ChouetteRouteParser();
 
-					@Override
-					protected Parser create() {
-						return instance;
-					}
-				});
+			@Override
+			protected Parser create() {
+				return instance;
+			}
+		});
 	}
 }

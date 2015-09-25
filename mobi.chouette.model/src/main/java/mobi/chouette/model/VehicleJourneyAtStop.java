@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import lombok.Getter;
@@ -60,11 +61,12 @@ public class VehicleJourneyAtStop extends NeptuneObject {
 	@Deprecated
 	@Getter
 	@Setter
-	@Column(name = "connecting_service_id")
+	@Transient
+	// @Column(name = "connecting_service_id")
 	private String connectingServiceId;
 
 	/**
-	 * boarding alighting possibility
+	 * not saved, boarding alighting possibility
 	 * 
 	 * @param boardingAlightingPossibility
 	 *            New value
@@ -73,7 +75,8 @@ public class VehicleJourneyAtStop extends NeptuneObject {
 	@Getter
 	@Setter
 	@Enumerated(EnumType.STRING)
-	@Column(name = "boarding_alighting_possibility")
+	@Transient
+//	@Column(name = "boarding_alighting_possibility")
 	private BoardingAlightingPossibilityEnum boardingAlightingPossibility;
 
 	/**
@@ -110,7 +113,8 @@ public class VehicleJourneyAtStop extends NeptuneObject {
 	@Deprecated
 	@Getter
 	@Setter
-	@Column(name = "waiting_time")
+	@Transient
+	// @Column(name = "waiting_time")
 	private Time waitingTime;
 
 	/**
