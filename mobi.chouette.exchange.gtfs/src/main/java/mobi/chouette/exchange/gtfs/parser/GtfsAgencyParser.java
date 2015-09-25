@@ -86,7 +86,6 @@ public class GtfsAgencyParser implements Parser, Validator, Constant {
 			
 		} else { // the file "agency.txt" doesn't exist
 			validationReporter.reportError(context, new GtfsException(GTFS_AGENCY_FILE, 1, null, GtfsException.ERROR.MISSING_FILE, null, null), GTFS_AGENCY_FILE);
-			//validationReporter.reportFailure(context, GTFS_1_GTFS_Agency_1, GTFS_AGENCY_FILE);
 		}
 	}
 	

@@ -9,6 +9,7 @@ import mobi.chouette.exchange.gtfs.model.GtfsAgency;
 import mobi.chouette.exchange.gtfs.model.GtfsStop;
 import mobi.chouette.exchange.gtfs.model.GtfsStop.LocationType;
 import mobi.chouette.exchange.gtfs.model.GtfsStop.WheelchairBoardingType;
+import mobi.chouette.exchange.gtfs.model.importer.RouteById.FIELDS;
 
 public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter {
 
@@ -90,7 +91,7 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter {
 		value = array[i++]; testExtraSpace(FIELDS.stop_id.name(), value, bean);
 		bean.getOkTests().add(GtfsException.ERROR.EXTRA_SPACE_IN_FIELD);
 		if (value != null && !value.trim().isEmpty()) {
-			bean.setStopId(STRING_CONVERTER.from(context, FIELDS.stop_id, value, GtfsAgency.DEFAULT_ID, true));
+			bean.setStopId(STRING_CONVERTER.from(context, FIELDS.stop_id, value, true));
 		}
 		
 		value = array[i++]; testExtraSpace(FIELDS.stop_code.name(), value, bean);
@@ -243,43 +244,50 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter {
 	@Override
 	public boolean validate(GtfsStop bean, GtfsImporter dao) {
 		boolean result = true;
-		String parentStation = bean.getParentStation();
-		if (parentStation != null && !parentStation.trim().isEmpty()) {
-			// parentStation must reference a stop   2-GTFS-Stop-1
-			// the stop parentStation is astation () 2-GTFS-Stop-2
-		}
-		// stopId is used by a stop_time             2-GTFS-Stop-3
-		// stopDesc != stopName                      2-GTFS-Stop-4
-		// stopUrl != agencyUrl, routeUrl            2-GTFS-Stop-5
-		// locationType is set for at least one stop 2-GTFS-Stop-6 :MUST BE DONE DURING HEADER CHECK
 		
-//		if (bean.getLocationType() == LocationType.Station
-//				&& bean.getParentStation() != null) {
-//			throw new GtfsException(getPath(), bean.getId(),
-//					FIELDS.parent_station.name(), ERROR.INVALID_FORMAT, "TODO",
-//					bean.getParentStation());
-//		}
-//
-//		String stopId = bean.getParentStation();
-//		if (stopId != null && !stopId.equals(_stopId)) {
-//			if (stopId != null) {
-//				if (!containsKey(stopId)) {
-//					throw new GtfsException(getPath(), bean.getId(),
-//							FIELDS.stop_id.name(), ERROR.MISSING_FOREIGN_KEY,
-//							"TODO", bean.getStopId());
-//
-//				}
-//				GtfsStop parent = getValue(stopId);
-//				if (parent == null
-//						|| parent.getLocationType() != LocationType.Station) {
-//					throw new GtfsException(getPath(), bean.getId(),
-//							FIELDS.parent_station.name(),
-//							ERROR.MISSING_FOREIGN_KEY, "TODO",
-//							bean.getParentStation());
-//				}
-//				_stopId = stopId;
-//			}
-//		}
+		String parentStationId = bean.getParentStation();
+		if (parentStationId != null && !parentStationId.trim().isEmpty()) {
+			
+			// parentStation must reference a stop
+			GtfsStop parent = dao.getStopById().getValue(parentStationId);
+			if (parent == null) {
+				result = false;
+				bean.getErrors().add(new GtfsException(_path, bean.getId(), FIELDS.parent_station.name(), GtfsException.ERROR.UNREFERENCED_ID, null, null));
+			} else {
+				bean.getOkTests().add(GtfsException.ERROR.UNREFERENCED_ID);
+			}
+			
+			// the stop parentStation is a station
+			if (result) { // Stop, Station, Access
+				if (LocationType.Station != parent.getLocationType()) {
+					result = false;
+					bean.getErrors().add(new GtfsException(_path, bean.getId(), FIELDS.parent_station.name(), GtfsException.ERROR.BAD_REFERENCED_ID, null, null));
+				} else {
+					bean.getOkTests().add(GtfsException.ERROR.BAD_REFERENCED_ID);
+				}
+			}
+		}
+		
+		// stopId is used by a stop_time OK See GtfsTripParser.validateStopTimes(Context)
+		
+		// stopDesc != stopName
+		boolean result2 = true;
+		String stopName = bean.getStopName();
+		String stopDesc = bean.getStopDesc();
+		if (stopName != null && stopDesc != null) {
+			if (stopName.equals(stopDesc)) {
+				result2 = false;
+				bean.getErrors().add(new GtfsException(_path, bean.getId(), FIELDS.stop_name.name(), GtfsException.ERROR.BAD_VALUE, null, null));
+			} else {
+				bean.getOkTests().add(GtfsException.ERROR.BAD_VALUE);
+			}
+		}
+		result = result && result2;
+		
+		// TODO.
+		// stopUrl != agencyUrl, routeUrl            2-GTFS-Stop-5
+		
+		// locationType is set for at least one stop OK see GtfsStopParser
 
 		return result;
 	}

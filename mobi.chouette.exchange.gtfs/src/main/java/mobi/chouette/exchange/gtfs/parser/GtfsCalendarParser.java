@@ -69,6 +69,7 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 			if (calendarParser == null) { // importer.getCalendarByService() fails for any other reason
 				validationReporter.throwUnknownError(context, new Exception("Cannot instantiate CalendarByService class"), GTFS_CALENDAR_FILE);
 			} else {
+				validationReporter.validate(context, GTFS_CALENDAR_FILE, calendarParser.getOkTests());
 				validationReporter.validateUnknownError(context);
 			}
 			
@@ -79,13 +80,6 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 			
 			validationReporter.validateOKGeneralSyntax(context, GTFS_CALENDAR_FILE);
 		
-//			if (calendarParser.getLength() == 0) {
-//				validationReporter.reportUnsuccess(context, GTFS_1_GTFS_Calendar_1, GTFS_CALENDAR_FILE);
-//				//validationReporter.reportError(context, new GtfsException(GTFS_CALENDAR_FILE, 1, null, GtfsException.ERROR.FILE_WITH_NO_ENTRY, null, null), GTFS_CALENDAR_FILE);
-//			} else {
-//				validationReporter.validate(context, GTFS_CALENDAR_FILE, GtfsException.ERROR.FILE_WITH_NO_ENTRY);
-//			}
-			
 			for (GtfsCalendar bean : calendarParser) {
 				try {
 					calendarParser.validate(bean, importer);
@@ -97,6 +91,7 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 					}
 				}
 				validationReporter.reportErrors(context, bean.getErrors(), GTFS_CALENDAR_FILE);
+				validationReporter.validate(context, GTFS_CALENDAR_FILE, bean.getOkTests());
 			}
 		}
 		return calendarParser;
@@ -131,6 +126,7 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 			if (calendarDateParser == null) { // importer.getCalendarDateByService() fails for any other reason
 				validationReporter.throwUnknownError(context, new Exception("Cannot instantiate CalendarDateByService class"), GTFS_CALENDAR_DATES_FILE);
 			} else {
+				validationReporter.validate(context, GTFS_CALENDAR_DATES_FILE, calendarDateParser.getOkTests());
 				validationReporter.validateUnknownError(context);
 			}
 			
@@ -140,13 +136,6 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 			}
 			
 			validationReporter.validateOKGeneralSyntax(context, GTFS_CALENDAR_DATES_FILE);
-		
-//			if (calendarDateParser.getLength() == 0) {
-//				validationReporter.reportUnsuccess(context, GTFS_1_GTFS_Calendar_1, GTFS_CALENDAR_DATES_FILE);
-////				validationReporter.reportError(context, new GtfsException(GTFS_CALENDAR_DATES_FILE, 1, null, GtfsException.ERROR.FILE_WITH_NO_ENTRY, null, null), GTFS_CALENDAR_DATES_FILE);
-//			} else {
-//				validationReporter.validate(context, GTFS_CALENDAR_DATES_FILE, GtfsException.ERROR.FILE_WITH_NO_ENTRY);
-//			}
 			
 			CalendarDateByService.hashCodes.clear();
 			for (GtfsCalendarDate bean : calendarDateParser) {
@@ -160,12 +149,12 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 					}
 				}
 				validationReporter.reportErrors(context, bean.getErrors(), GTFS_CALENDAR_DATES_FILE);
+				validationReporter.validate(context, GTFS_CALENDAR_DATES_FILE, bean.getOkTests());
 			}
 		}
 		
 		if (!importer.hasCalendarImporter() && !importer.hasCalendarDateImporter()) {
 			validationReporter.reportError(context, new GtfsException(GTFS_CALENDAR_FILE, 1, null, GtfsException.ERROR.MISSING_FILES, null, null), GTFS_CALENDAR_FILE);
-			//validationReporter.reportFailure(context, GTFS_1_GTFS_Calendar_1, GTFS_CALENDAR_FILE, GTFS_CALENDAR_DATES_FILE);
 		} else if ( (calendarDateParser == null && calendarParser.getLength() == 0) ||
 				(calendarParser == null && calendarDateParser.getLength() == 0) ||
 				(calendarParser != null && calendarDateParser != null && calendarParser.getLength() == 0 && calendarDateParser.getLength() == 0) ) {

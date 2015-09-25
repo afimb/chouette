@@ -15,14 +15,18 @@ import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
+import mobi.chouette.exchange.gtfs.model.GtfsAgency;
 import mobi.chouette.exchange.gtfs.model.GtfsFrequency;
 import mobi.chouette.exchange.gtfs.model.GtfsShape;
+import mobi.chouette.exchange.gtfs.model.GtfsStop;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime;
 import mobi.chouette.exchange.gtfs.model.GtfsTrip;
 import mobi.chouette.exchange.gtfs.model.GtfsTrip.DirectionType;
+import mobi.chouette.exchange.gtfs.model.importer.AgencyById;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsException;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsImporter;
 import mobi.chouette.exchange.gtfs.model.importer.Index;
+import mobi.chouette.exchange.gtfs.model.importer.StopById;
 import mobi.chouette.exchange.gtfs.validation.Constant;
 import mobi.chouette.exchange.gtfs.validation.ValidationReporter;
 import mobi.chouette.exchange.importer.Parser;
@@ -63,6 +67,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 	private void validateStopTimes(Context context) throws Exception {
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		ValidationReporter validationReporter = (ValidationReporter) context.get(GTFS_REPORTER);
+		Set<String> stopIds = new HashSet<String>();
 		
 		// stop_times.txt
 		if (importer.hasStopTimeImporter()) { // the file "stop_times.txt" exists ?
@@ -84,6 +89,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			if (stopTimeParser == null) { // importer.getStopTimeByTrip() fails for any other reason
 				validationReporter.throwUnknownError(context, new Exception("Cannot instantiate StopTimeByTrip class"), GTFS_STOP_TIMES_FILE);
 			} else {
+				validationReporter.validate(context, GTFS_STOP_TIMES_FILE, stopTimeParser.getOkTests());
 				validationReporter.validateUnknownError(context);
 			}
 			
@@ -100,22 +106,35 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 				validationReporter.validate(context, GTFS_STOP_TIMES_FILE, GtfsException.ERROR.FILE_WITH_NO_ENTRY);
 			}
 		
-		for (GtfsStopTime bean : stopTimeParser) {
-			try {
-				stopTimeParser.validate(bean, importer);
-			} catch (Exception ex) {
-				if (ex instanceof GtfsException) {
-					validationReporter.reportError(context, (GtfsException)ex, GTFS_STOP_TIMES_FILE);
-				} else {
-					validationReporter.throwUnknownError(context, ex, GTFS_STOP_TIMES_FILE);
+			for (GtfsStopTime bean : stopTimeParser) {
+				if (bean.getStopId() != null)
+					stopIds.add(bean.getStopId());
+				try {
+					stopTimeParser.validate(bean, importer);
+				} catch (Exception ex) {
+					if (ex instanceof GtfsException) {
+						validationReporter.reportError(context, (GtfsException)ex, GTFS_STOP_TIMES_FILE);
+					} else {
+						validationReporter.throwUnknownError(context, ex, GTFS_STOP_TIMES_FILE);
+					}
 				}
+				validationReporter.reportErrors(context, bean.getErrors(), GTFS_STOP_TIMES_FILE);
+				validationReporter.validate(context, GTFS_STOP_TIMES_FILE, bean.getOkTests());
 			}
-			validationReporter.reportErrors(context, bean.getErrors(), GTFS_STOP_TIMES_FILE);
-		}
-		validationReporter.getExceptions().clear();
+			int i = 1;
+			boolean unsuedId = true;
+			for (GtfsStop bean : importer.getStopById()) {
+				if (stopIds.add(bean.getStopId())) {
+					unsuedId = false;
+					validationReporter.reportError(context, new GtfsException(GTFS_STOPS_FILE, i, StopById.FIELDS.stop_id.name(), GtfsException.ERROR.UNUSED_ID, null, null), GTFS_STOP_TIMES_FILE);
+				}
+				i++;
+			}
+			if (unsuedId)
+				validationReporter.validate(context, GTFS_STOP_TIMES_FILE, GtfsException.ERROR.UNUSED_ID);
+			validationReporter.getExceptions().clear();
 		} else {
 			validationReporter.reportError(context, new GtfsException(GTFS_STOP_TIMES_FILE, 1, null, GtfsException.ERROR.MISSING_FILE, null, null), GTFS_STOP_TIMES_FILE);
-			//validationReporter.reportFailure(context, GTFS_1_GTFS_StopTime_1, GTFS_STOP_TIMES_FILE);
 		}
 	}
 	
@@ -143,6 +162,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			if (shapeParser == null) { // importer.getShapeById() fails for any other reason
 				validationReporter.throwUnknownError(context, new Exception("Cannot instantiate ShapeById class"), GTFS_SHAPES_FILE);
 			} else {
+				validationReporter.validate(context, GTFS_SHAPES_FILE, shapeParser.getOkTests());
 				validationReporter.validateUnknownError(context);
 			}
 			
@@ -154,7 +174,6 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			validationReporter.validateOKGeneralSyntax(context, GTFS_SHAPES_FILE);
 			
 			if (shapeParser.getLength() == 0) {
-				//validationReporter.reportUnsuccess(context, GTFS_1_GTFS_Shape_1, GTFS_SHAPES_FILE);
 				validationReporter.reportError(context, new GtfsException(GTFS_SHAPES_FILE, 1, null, GtfsException.ERROR.OPTIONAL_FILE_WITH_NO_ENTRY, null, null), GTFS_SHAPES_FILE);
 			} else {
 				validationReporter.validate(context, GTFS_SHAPES_FILE, GtfsException.ERROR.FILE_WITH_NO_ENTRY);
@@ -171,10 +190,10 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 					}
 				}
 				validationReporter.reportErrors(context, bean.getErrors(), GTFS_SHAPES_FILE);
+				validationReporter.validate(context, GTFS_SHAPES_FILE, bean.getOkTests());
 			}
 		} else {
 			validationReporter.reportError(context, new GtfsException(GTFS_SHAPES_FILE, 1, null, GtfsException.ERROR.MISSING_OPTIONAL_FILE, null, null), GTFS_SHAPES_FILE);
-			//validationReporter.reportUnsuccess(context, GTFS_1_GTFS_Shape_1, GTFS_SHAPES_FILE);
 		}
 	}
 	
@@ -202,6 +221,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			if (tripParser == null) { // importer.getTripById() fails for any other reason
 				validationReporter.throwUnknownError(context, new Exception("Cannot instantiate TripById class"), GTFS_TRIPS_FILE);
 			} else {
+				validationReporter.validate(context, GTFS_TRIPS_FILE, tripParser.getOkTests());
 				validationReporter.validateUnknownError(context);
 			}
 			
@@ -218,21 +238,21 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 				validationReporter.validate(context, GTFS_TRIPS_FILE, GtfsException.ERROR.FILE_WITH_NO_ENTRY);
 			}
 		
-		for (GtfsTrip bean : tripParser) {
-			try {
-				tripParser.validate(bean, importer);
-			} catch (Exception ex) {
-				if (ex instanceof GtfsException) {
-					validationReporter.reportError(context, (GtfsException)ex, GTFS_TRIPS_FILE);
-				} else {
-					validationReporter.throwUnknownError(context, ex, GTFS_TRIPS_FILE);
+			for (GtfsTrip bean : tripParser) {
+				try {
+					tripParser.validate(bean, importer);
+				} catch (Exception ex) {
+					if (ex instanceof GtfsException) {
+						validationReporter.reportError(context, (GtfsException)ex, GTFS_TRIPS_FILE);
+					} else {
+						validationReporter.throwUnknownError(context, ex, GTFS_TRIPS_FILE);
+					}
 				}
+				validationReporter.reportErrors(context, bean.getErrors(), GTFS_TRIPS_FILE);
+				validationReporter.validate(context, GTFS_TRIPS_FILE, bean.getOkTests());
 			}
-			validationReporter.reportErrors(context, bean.getErrors(), GTFS_TRIPS_FILE);
-		}
 		} else {
 			validationReporter.reportError(context, new GtfsException(GTFS_TRIPS_FILE, 1, null, GtfsException.ERROR.MISSING_FILE, null, null), GTFS_TRIPS_FILE);
-			//validationReporter.reportFailure(context, GTFS_1_GTFS_Trip_1, GTFS_TRIPS_FILE);
 		}
 	}
 	
@@ -260,6 +280,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			if (frequencyParser == null) { // importer.getFrequencyByTrip() fails for any other reason
 				validationReporter.throwUnknownError(context, new Exception("Cannot instantiate FrequencyByTrip class"), GTFS_FREQUENCIES_FILE);
 			} else {
+				validationReporter.validate(context, GTFS_FREQUENCIES_FILE, frequencyParser.getOkTests());
 				validationReporter.validateUnknownError(context);
 			}
 			
@@ -288,10 +309,10 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 					}
 				}
 				validationReporter.reportErrors(context, bean.getErrors(), GTFS_FREQUENCIES_FILE);
+				validationReporter.validate(context, GTFS_FREQUENCIES_FILE, bean.getOkTests());
 			}
 		} else {
 			validationReporter.reportError(context, new GtfsException(GTFS_FREQUENCIES_FILE, 1, null, GtfsException.ERROR.MISSING_OPTIONAL_FILE, null, null), GTFS_FREQUENCIES_FILE);
-			//validationReporter.reportUnsuccess(context, GTFS_1_GTFS_Frequency_1, GTFS_FREQUENCIES_FILE);
 		}
 	}
 
