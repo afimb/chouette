@@ -5,9 +5,11 @@ import java.util.Iterator;
 import java.util.Map;
 
 import mobi.chouette.common.HTMLTagValidator;
+import mobi.chouette.exchange.gtfs.model.GtfsAgency;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime.DropOffType;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime.PickupType;
+import mobi.chouette.exchange.gtfs.model.importer.RouteById.FIELDS;
 
 public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements GtfsConverter {
 
@@ -221,26 +223,42 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements GtfsConve
 	public boolean validate(GtfsStopTime bean, GtfsImporter dao) {
 		boolean result = true;
 		
-		if (bean.getTripId() == null || bean.getStopSequence() == null)
-			return result;
-		
 		int id = bean.getId();
 		String tripId = bean.getTripId();
-		int stopSequence = bean.getStopSequence();
-		
-		Iterator<GtfsStopTime> iti = dao.getStopTimeByTrip().values(tripId).iterator();
-		while ( iti.hasNext() ) {
-			GtfsStopTime nextStopTime = iti.next();
-			//nextStopTime.getErrors().clear();
-			if (nextStopTime.getStopSequence() == null)
-				continue;
-			if (id != nextStopTime.getId() && stopSequence == nextStopTime.getStopSequence()) {
-				result = false;
-				bean.getErrors().add(new GtfsException(_path, nextStopTime.getId(), FIELDS.stop_sequence.name(), GtfsException.ERROR.DUPLICATE_STOP_SEQUENCE, null, null));
+		Integer stopSequence = bean.getStopSequence();
+		if (tripId == null || stopSequence == null) {
+			result = false;
+		} else {
+			Iterator<GtfsStopTime> iti = dao.getStopTimeByTrip().values(tripId).iterator();
+			while ( iti.hasNext() ) {
+				GtfsStopTime nextStopTime = iti.next();
+				if (nextStopTime.getStopSequence() == null)
+					continue;
+				if (id != nextStopTime.getId() && stopSequence == nextStopTime.getStopSequence()) {
+					result = false;
+					bean.getErrors().add(new GtfsException(_path, nextStopTime.getId(), FIELDS.stop_sequence.name(), GtfsException.ERROR.DUPLICATE_STOP_SEQUENCE, null, null));
+				}
+				if (nextStopTime.getId() == id-1)
+					break;
 			}
-			if (nextStopTime.getId() == id-1)
-				break;
 		}
+		if (result)
+			bean.getOkTests().add(GtfsException.ERROR.DUPLICATE_STOP_SEQUENCE);
+		
+		boolean result2 = true;
+		String stopId = bean.getStopId();
+		if (stopId == null) {
+			result2 = false;
+		} else {
+			if (dao.getStopById().getValue(stopId) == null) {
+				// this bean has no stop
+				bean.getErrors().add(new GtfsException(_path, bean.getId(), FIELDS.stop_id.name(), GtfsException.ERROR.UNREFERENCED_ID, null, null));
+				result2 = false;
+			}
+			if (result2)
+				bean.getOkTests().add(GtfsException.ERROR.UNREFERENCED_ID);
+		}
+		result = result && result2;
 		
 		return result;
 	}

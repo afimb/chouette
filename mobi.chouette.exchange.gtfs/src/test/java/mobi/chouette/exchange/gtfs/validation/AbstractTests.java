@@ -146,7 +146,6 @@ public abstract class AbstractTests implements Constant, ReportConstant {
 		}
 		if (mandatoryTest.equals("NONE")) {
 			for (CheckPoint phase : valReport.getCheckPoints()) {
-				// TODO. Add CheckPoint.SEVERITY.INFO 
 				if (phase.getSeverity().equals(CheckPoint.SEVERITY.ERROR))
 					Assert.assertFalse(phase.getState().equals(RESULT.NOK), phase.getName() + " must have status " + state);
 			}

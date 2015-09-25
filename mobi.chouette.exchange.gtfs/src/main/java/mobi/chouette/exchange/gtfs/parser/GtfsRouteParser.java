@@ -34,13 +34,12 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 	@Getter
 	@Setter
 	private String gtfsRouteId;
-	
-	private Set<String> agencyIds = new HashSet<String>();
 
 	@Override
 	public void validate(Context context) throws Exception {
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		ValidationReporter validationReporter = (ValidationReporter) context.get(GTFS_REPORTER);
+		Set<String> agencyIds = new HashSet<String>();
 		validationReporter.getExceptions().clear();
 		
 		// routes.txt
@@ -63,6 +62,7 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 			if (parser == null) { // importer.getRouteById() fails for any other reason
 				validationReporter.throwUnknownError(context, new Exception("Cannot instantiate RouteById class"), GTFS_ROUTES_FILE);
 			} else {
+				validationReporter.validate(context, GTFS_ROUTES_FILE, parser.getOkTests());
 				validationReporter.validateUnknownError(context);
 			}
 			
@@ -94,17 +94,21 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 					}
 				}
 				validationReporter.reportErrors(context, bean.getErrors(), GTFS_ROUTES_FILE);
+				validationReporter.validate(context, GTFS_ROUTES_FILE, bean.getOkTests());
 			}
 			int i = 1;
+			boolean unsuedId = true;
 			for (GtfsAgency bean : importer.getAgencyById()) {
 				if (agencyIds.add(bean.getAgencyId())) {
+					unsuedId = false;
 					validationReporter.reportError(context, new GtfsException(GTFS_AGENCY_FILE, i, AgencyById.FIELDS.agency_id.name(), GtfsException.ERROR.UNUSED_ID, null, null), GTFS_AGENCY_FILE);
 				}
 				i++;
 			}
+			if (unsuedId)
+				validationReporter.validate(context, GTFS_ROUTES_FILE, GtfsException.ERROR.UNUSED_ID);
 		} else {
 			validationReporter.reportError(context, new GtfsException(GTFS_ROUTES_FILE, 1, null, GtfsException.ERROR.MISSING_FILE, null, null), GTFS_ROUTES_FILE);
-			//validationReporter.reportFailure(context, GTFS_1_GTFS_Route_1, GTFS_ROUTES_FILE);
 		}
 	}
 

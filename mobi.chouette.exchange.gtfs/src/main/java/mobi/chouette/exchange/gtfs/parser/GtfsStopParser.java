@@ -48,6 +48,7 @@ public class GtfsStopParser implements Parser, Validator, Constant {
 			if (parser == null) { // importer.getStopById() fails for any other reason
 				validationReporter.throwUnknownError(context, new Exception("Cannot instantiate StopById class"), GTFS_STOPS_FILE);
 			} else {
+				validationReporter.validate(context, GTFS_STOPS_FILE, parser.getOkTests());
 				validationReporter.validateUnknownError(context);
 			}
 			
@@ -64,8 +65,10 @@ public class GtfsStopParser implements Parser, Validator, Constant {
 				validationReporter.validate(context, GTFS_STOPS_FILE, GtfsException.ERROR.FILE_WITH_NO_ENTRY);
 			}
 		
+			boolean hasLocationType = false;
 			for (GtfsStop bean : parser) {
 				try {
+					hasLocationType = hasLocationType || (bean.getLocationType() != null);
 					parser.validate(bean, importer);
 				} catch (Exception ex) {
 					if (ex instanceof GtfsException) {
@@ -77,9 +80,12 @@ public class GtfsStopParser implements Parser, Validator, Constant {
 				validationReporter.reportErrors(context, bean.getErrors(), GTFS_STOPS_FILE);
 				validationReporter.validate(context, GTFS_STOPS_FILE, bean.getOkTests());
 			}
+			if (hasLocationType)
+				validationReporter.reportError(context, new GtfsException(GTFS_STOPS_FILE, 1, null, GtfsException.ERROR.NO_LOCATION_TYPE, null, null), GTFS_STOPS_FILE);
+			else
+				validationReporter.validate(context, GTFS_STOPS_FILE, GtfsException.ERROR.NO_LOCATION_TYPE);
 		} else {
 			validationReporter.reportError(context, new GtfsException(GTFS_STOPS_FILE, 1, null, GtfsException.ERROR.MISSING_FILE, null, null), GTFS_STOPS_FILE);
-			//validationReporter.reportFailure(context, GTFS_1_GTFS_Stop_1, GTFS_STOPS_FILE);
 		}
 	}	
 	

@@ -157,15 +157,21 @@ public class RouteById extends IndexImpl<GtfsRoute> implements GtfsConverter {
 
 	@Override
 	public boolean validate(GtfsRoute bean, GtfsImporter dao) {
+		boolean result = true;
+		
 		// Verify the agency_id
 		String agencyId = bean.getAgencyId();
 		if (agencyId == null)
 			agencyId = GtfsAgency.DEFAULT_ID;
 		if (dao.getAgencyById().getValue(agencyId) == null) {
 			// this bean has no agency
-			return false;
+			bean.getErrors().add(new GtfsException(_path, bean.getId(), FIELDS.agency_id.name(), GtfsException.ERROR.UNREFERENCED_ID, null, null));
+			result = false;
 		}
-		return true;
+		if (result)
+			bean.getOkTests().add(GtfsException.ERROR.UNREFERENCED_ID);
+		
+		return result;
 	}
 
 	public static class DefaultImporterFactory extends IndexFactory {

@@ -43,7 +43,11 @@ public class GtfsException extends RuntimeException {
 		UNUSED_FILE,
 		MISSING_OPTIONAL_FIELD,
 		UNUSED_ID,
-		SHARED_VALUE
+		SHARED_VALUE,
+		UNREFERENCED_ID,
+		BAD_REFERENCED_ID,
+		NO_LOCATION_TYPE,
+		BAD_VALUE
 	}
 
 	@Getter

@@ -351,626 +351,118 @@ public class ValidationReporter implements Constant {
 			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), 0), value, fieldName,
 					CheckPoint.RESULT.NOK);
 			break;
+			
+	case DUPLICATE_STOP_SEQUENCE:
+		// 2-GTFS-Common-4
+		checkPointName = checkPointName(name, GtfsException.ERROR.DUPLICATE_STOP_SEQUENCE);
+		fieldName = ex.getField();
+		report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+				new FileError(FileError.CODE.INVALID_FORMAT,
+						"Duplicate \""+fieldName+"\" for the same \"tripid\" (rule "+checkPointName+")"));
+		validationReport.addDetail(checkPointName,
+				new Location(filenameInfo, "Duplicate \""+fieldName+"\" for the same \"tripid\"", ex.getId(), ex.getField()),
+				"Duplicate \""+fieldName+"\" for the same \"tripid\"",
+				CheckPoint.RESULT.NOK);
+		throw new Exception("Duplicate \""+fieldName+"\" for the same \"tripid\"");	
+		
+	case UNREFERENCED_ID:
+		// 2-GTFS-Common-1
+		checkPointName = checkPointName(name, GtfsException.ERROR.UNREFERENCED_ID);
+		fieldName = ex.getField();
+		report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+				new FileError(FileError.CODE.INVALID_FORMAT,
+						"Unreferenced "+fieldName+" (rule "+checkPointName+")"));
+		validationReport.addDetail(checkPointName,
+				new Location(filenameInfo, "Unreferenced "+fieldName, ex.getId(), ex.getField()),
+				"Unreferenced "+fieldName,
+				CheckPoint.RESULT.NOK);
+		break;
 
-		// case INVALID_COLOR_TEXT: // 1-GTFS-Route-9
-		// // 1-GTFS-Common-5
-		// checkPointName = checkPointName(name,
-		// GtfsException.ERROR.INVALID_COLOR_TEXT);
-		// fieldName = ex.getField();
-		// value = ex.getValue();
-		// report.addFileInfo(filenameInfo, FILE_STATE.ERROR,
-		// new FileError(FileError.CODE.INVALID_FORMAT,
-		// "The value \""+fieldName+"\" is invalid (rule "+checkPointName+")"));
-		// validationReport.addDetail(checkPointName,
-		// new Location(filenameInfo, ex.getId(), 0),
-		// fieldName,
-		// CheckPoint.RESULT.NOK);
-		// break;
-		//
-		// case INVALID_LAT:
-		// // 1-GTFS-Common-5
-		// checkPointName = checkPointName(name,
-		// GtfsException.ERROR.INVALID_LAT);
-		// fieldName = ex.getField();
-		// value = ex.getValue();
-		// report.addFileInfo(filenameInfo, FILE_STATE.ERROR,
-		// new FileError(FileError.CODE.INVALID_FORMAT,
-		// "The field \""+fieldName+"\" must have a valid value (rule "+checkPointName+")"));
-		// validationReport.addDetail(checkPointName,
-		// new Location(filenameInfo, ex.getId(), 0),
-		// fieldName,
-		// CheckPoint.RESULT.NOK);
-		// break;
-		//
-		// case INVALID_LON:
-		// // 1-GTFS-Common-5
-		// checkPointName = checkPointName(name,
-		// GtfsException.ERROR.INVALID_LON);
-		// fieldName = ex.getField();
-		// value = ex.getValue();
-		// report.addFileInfo(filenameInfo, FILE_STATE.ERROR,
-		// new FileError(FileError.CODE.INVALID_FORMAT,
-		// "The field \""+fieldName+"\" must have a valid value (rule "+checkPointName+")"));
-		// validationReport.addDetail(checkPointName,
-		// new Location(filenameInfo, ex.getId(), 0),
-		// fieldName,
-		// CheckPoint.RESULT.NOK);
-		// break;
-		//
-		// case INVALID_URL:// 1-GTFS-Agency-7, 1-GTFS-Stop-7 warning
-		// // 1-GTFS-Common-5
-		// checkPointName = checkPointName(name,
-		// GtfsException.ERROR.INVALID_URL);
-		// fieldName = ex.getField();
-		// value = ex.getValue();
-		// report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-		// new FileError(FileError.CODE.INVALID_FORMAT,
-		// "Invalid URL (rule "+checkPointName+")"));
-		// validationReport.addDetail(checkPointName,
-		// new Location(filenameInfo, ex.getId(), 0),
-		// fieldName,
-		// CheckPoint.RESULT.NOK);
-		// break;
-		//
-		// case INVALID_LOCATION_TYPE: // 1-GTFS-Stop-8 error
-		// // 1-GTFS-Common-5
-		// checkPointName = checkPointName(name,
-		// GtfsException.ERROR.INVALID_LOCATION_TYPE);
-		// fieldName = ex.getField();
-		// value = ex.getValue();
-		// report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-		// new FileError(FileError.CODE.INVALID_FORMAT,
-		// "Invalid location type (rule "+checkPointName+")"));
-		// validationReport.addDetail(checkPointName,
-		// new Location(filenameInfo, ex.getId(), 0),
-		// fieldName,
-		// CheckPoint.RESULT.NOK);
-		// break;
-		//
-		// case INVALID_TIMEZONE:// 1-GTFS-Agency-6, 1-GTFS-Stop-9 warning
-		// // 1-GTFS-Common-5
-		// checkPointName = checkPointName(name,
-		// GtfsException.ERROR.INVALID_TIMEZONE);
-		// fieldName = ex.getField();
-		// value = ex.getValue();
-		// report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-		// new FileError(FileError.CODE.INVALID_FORMAT,
-		// "Invalid time zone (rule "+checkPointName+")"));
-		// validationReport.addDetail(checkPointName,
-		// new Location(filenameInfo, ex.getId(), 0),
-		// fieldName,
-		// CheckPoint.RESULT.NOK);
-		// break;
-		//
-		// case INVALID_WHEELCHAIR_BOARDING_TYPE: // 1-GTFS-Stop-10 warning
-		// // 1-GTFS-Common-5
-		// checkPointName = checkPointName(name,
-		// GtfsException.ERROR.INVALID_WHEELCHAIR_BOARDING_TYPE);
-		// fieldName = ex.getField();
-		// value = ex.getValue();
-		// report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-		// new FileError(FileError.CODE.INVALID_FORMAT,
-		// "Invalid weelchair boarding value (rule "+checkPointName+")"));
-		// validationReport.addDetail(checkPointName,
-		// new Location(filenameInfo, ex.getId(), 0),
-		// fieldName,
-		// CheckPoint.RESULT.NOK);
-		// break;
-		//
-		// case INVALID_ROUTE_TYPE: // 1-GTFS-Route-6
-		// // 1-GTFS-Common-5
-		// checkPointName = checkPointName(name,
-		// GtfsException.ERROR.INVALID_ROUTE_TYPE);
-		// fieldName = ex.getField();
-		// value = ex.getValue();
-		// report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-		// new FileError(FileError.CODE.INVALID_FORMAT,
-		// "Invalid route type (rule "+checkPointName+")"));
-		// validationReport.addDetail(checkPointName,
-		// new Location(filenameInfo, ex.getId(), 0),
-		// fieldName,
-		// CheckPoint.RESULT.NOK);
-		// break;
-		//
-		// case INVALID_EXCEPTION_TYPE: // 1-GTFS-CalendarDate-6
-		// // 1-GTFS-Common-5
-		// checkPointName = checkPointName(name,
-		// GtfsException.ERROR.INVALID_EXCEPTION_TYPE);
-		// fieldName = ex.getField();
-		// value = ex.getValue();
-		// report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-		// new FileError(FileError.CODE.INVALID_FORMAT,
-		// "Invalid exception type (rule "+checkPointName+")"));
-		// validationReport.addDetail(checkPointName,
-		// new Location(filenameInfo, ex.getId(), 0),
-		// fieldName,
-		// CheckPoint.RESULT.NOK);
-		// break;
-		//
-		// case INVALID_DATE: // 1-GTFS-CalendarDate-5
-		// // 1-GTFS-Common-5
-		// checkPointName = checkPointName(name,
-		// GtfsException.ERROR.INVALID_DATE);
-		// fieldName = ex.getField();
-		// value = ex.getValue();
-		// report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-		// new FileError(FileError.CODE.INVALID_FORMAT,
-		// "Invalid date (rule "+checkPointName+")"));
-		// validationReport.addDetail(checkPointName,
-		// new Location(filenameInfo, ex.getId(), 0),
-		// fieldName,
-		// CheckPoint.RESULT.NOK);
-		// break;
-		//
-		// case INVALID_STOP_SEQUENCE:// 1-GTFS-StopTime-6
-		// // 1-GTFS-Common-5
-		// checkPointName = checkPointName(name,
-		// GtfsException.ERROR.INVALID_STOP_SEQUENCE);
-		// fieldName = ex.getField();
-		// value = ex.getValue();
-		// report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-		// new FileError(FileError.CODE.INVALID_FORMAT,
-		// "Invalid \""+fieldName+"\" (rule "+checkPointName+")"));
-		// validationReport.addDetail(checkPointName,
-		// new Location(filenameInfo, ex.getId(), 0),
-		// fieldName,
-		// CheckPoint.RESULT.NOK);
-		// break;
-		//
-		// case INVALID_ARRIVAL_TIME:// 1-GTFS-StopTime-7
-		// // 1-GTFS-Common-5
-		// checkPointName = checkPointName(name,
-		// GtfsException.ERROR.INVALID_ARRIVAL_TIME);
-		// fieldName = ex.getField();
-		// value = ex.getValue();
-		// report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-		// new FileError(FileError.CODE.INVALID_FORMAT,
-		// "Invalid \""+fieldName+"\" (rule "+checkPointName+")"));
-		// validationReport.addDetail(checkPointName,
-		// new Location(filenameInfo, ex.getId(), 0),
-		// fieldName,
-		// CheckPoint.RESULT.NOK);
-		// break;
-		//
-		// case INVALID_DEPARTURE_TIME:// 1-GTFS-StopTime-8
-		// // 1-GTFS-Common-5
-		// checkPointName = checkPointName(name,
-		// GtfsException.ERROR.INVALID_DEPARTURE_TIME);
-		// fieldName = ex.getField();
-		// value = ex.getValue();
-		// report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-		// new FileError(FileError.CODE.INVALID_FORMAT,
-		// "Invalid \""+fieldName+"\" (rule "+checkPointName+")"));
-		// validationReport.addDetail(checkPointName,
-		// new Location(filenameInfo, ex.getId(), 0),
-		// fieldName,
-		// CheckPoint.RESULT.NOK);
-		// break;
-		//
-		// case INVALID_PICKUP_TYPE: // 1-GTFS-StopTime-9
-		// // 1-GTFS-Common-5
-		// checkPointName = checkPointName(name,
-		// GtfsException.ERROR.INVALID_PICKUP_TYPE);
-		// fieldName = ex.getField();
-		// value = ex.getValue();
-		// report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-		// new FileError(FileError.CODE.INVALID_FORMAT,
-		// "Invalid \""+fieldName+"\" (rule "+checkPointName+")"));
-		// validationReport.addDetail(checkPointName,
-		// new Location(filenameInfo, ex.getId(), 0),
-		// fieldName,
-		// CheckPoint.RESULT.NOK);
-		// break;
-		//
-		// case INVALID_DROP_OFF_TYPE: // 1-GTFS-StopTime-10
-		// // 1-GTFS-Common-5
-		// checkPointName = checkPointName(name,
-		// GtfsException.ERROR.INVALID_DROP_OFF_TYPE);
-		// fieldName = ex.getField();
-		// value = ex.getValue();
-		// report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-		// new FileError(FileError.CODE.INVALID_FORMAT,
-		// "Invalid \""+fieldName+"\" (rule "+checkPointName+")"));
-		// validationReport.addDetail(checkPointName,
-		// new Location(filenameInfo, ex.getId(), 0),
-		// fieldName,
-		// CheckPoint.RESULT.NOK);
-		// break;
-		//
-		// case INVALID_SHAPE_DIST_TRAVELED: // 1-GTFS-StopTime-11
-		// // 1-GTFS-Common-5
-		// checkPointName = checkPointName(name,
-		// GtfsException.ERROR.INVALID_SHAPE_DIST_TRAVELED);
-		// fieldName = ex.getField();
-		// value = ex.getValue();
-		// report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-		// new FileError(FileError.CODE.INVALID_FORMAT,
-		// "Invalid \""+fieldName+"\" (rule "+checkPointName+")"));
-		// validationReport.addDetail(checkPointName,
-		// new Location(filenameInfo, ex.getId(), 0),
-		// fieldName,
-		// CheckPoint.RESULT.NOK);
-		// break;
-		//
-		// case INVALID_TIMEPOINT: // 1-GTFS-StopTime-12
-		// // 1-GTFS-Common-5
-		// checkPointName = checkPointName(name,
-		// GtfsException.ERROR.INVALID_TIMEPOINT);
-		// fieldName = ex.getField();
-		// value = ex.getValue();
-		// report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-		// new FileError(FileError.CODE.INVALID_FORMAT,
-		// "Invalid \""+fieldName+"\" (rule "+checkPointName+")"));
-		// validationReport.addDetail(checkPointName,
-		// new Location(filenameInfo, ex.getId(), 0),
-		// fieldName,
-		// CheckPoint.RESULT.NOK);
-		// break;
-		//
-		// case INVALID_DIRECTION: // 1-GTFS-Trip-5
-		// // 1-GTFS-Common-5
-		// checkPointName = checkPointName(name,
-		// GtfsException.ERROR.INVALID_DIRECTION);
-		// fieldName = ex.getField();
-		// value = ex.getValue();
-		// report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-		// new FileError(FileError.CODE.INVALID_FORMAT,
-		// "Invalid \""+fieldName+"\" (rule "+checkPointName+")"));
-		// validationReport.addDetail(checkPointName,
-		// new Location(filenameInfo, ex.getId(), 0),
-		// fieldName,
-		// CheckPoint.RESULT.NOK);
-		// break;
-		//
-		// case INVALID_WHEELCHAIR_TYPE: // 1-GTFS-Trip-6
-		// // 1-GTFS-Common-5
-		// checkPointName = checkPointName(name,
-		// GtfsException.ERROR.INVALID_WHEELCHAIR_TYPE);
-		// fieldName = ex.getField();
-		// value = ex.getValue();
-		// report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-		// new FileError(FileError.CODE.INVALID_FORMAT,
-		// "Invalid \""+fieldName+"\" (rule "+checkPointName+")"));
-		// validationReport.addDetail(checkPointName,
-		// new Location(filenameInfo, ex.getId(), 0),
-		// fieldName,
-		// CheckPoint.RESULT.NOK);
-		// break;
-		//
-		// case INVALID_BYKE_TYPE: // 1-GTFS-Trip-7
-		// // 1-GTFS-Common-5
-		// checkPointName = checkPointName(name,
-		// GtfsException.ERROR.INVALID_BYKE_TYPE);
-		// fieldName = ex.getField();
-		// value = ex.getValue();
-		// report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-		// new FileError(FileError.CODE.INVALID_FORMAT,
-		// "Invalid \""+fieldName+"\" (rule "+checkPointName+")"));
-		// validationReport.addDetail(checkPointName,
-		// new Location(filenameInfo, ex.getId(), 0),
-		// fieldName,
-		// CheckPoint.RESULT.NOK);
-		// break;
-		//
-		// case INVALID_EXACT_TIMES_VALUE: // 1-GTFS-Frequency-6
-		// // 1-GTFS-Common-5
-		// checkPointName = checkPointName(name,
-		// GtfsException.ERROR.INVALID_EXACT_TIMES_VALUE);
-		// fieldName = ex.getField();
-		// value = ex.getValue();
-		// report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-		// new FileError(FileError.CODE.INVALID_FORMAT,
-		// "Invalid \""+fieldName+"\" (rule "+checkPointName+")"));
-		// validationReport.addDetail(checkPointName,
-		// new Location(filenameInfo, ex.getId(), 0),
-		// fieldName,
-		// CheckPoint.RESULT.NOK);
-		// break;
-		//
-		// case INVALID_START_TIME: // 1-GTFS-Frequency-3
-		// // 1-GTFS-Common-5
-		// checkPointName = checkPointName(name,
-		// GtfsException.ERROR.INVALID_START_TIME);
-		// fieldName = ex.getField();
-		// value = ex.getValue();
-		// report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-		// new FileError(FileError.CODE.INVALID_FORMAT,
-		// "Invalid \""+fieldName+"\" (rule "+checkPointName+")"));
-		// validationReport.addDetail(checkPointName,
-		// new Location(filenameInfo, ex.getId(), 0),
-		// fieldName,
-		// CheckPoint.RESULT.NOK);
-		// break;
-		//
-		// case INVALID_END_TIME: // 1-GTFS-Frequency-4
-		// // 1-GTFS-Common-5
-		// checkPointName = checkPointName(name,
-		// GtfsException.ERROR.INVALID_END_TIME);
-		// fieldName = ex.getField();
-		// value = ex.getValue();
-		// report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-		// new FileError(FileError.CODE.INVALID_FORMAT,
-		// "Invalid \""+fieldName+"\" (rule "+checkPointName+")"));
-		// validationReport.addDetail(checkPointName,
-		// new Location(filenameInfo, ex.getId(), 0),
-		// fieldName,
-		// CheckPoint.RESULT.NOK);
-		// break;
-		//
-		// case INVALID_HEADWAY_SECS: // 1-GTFS-Frequency-5
-		// // 1-GTFS-Common-5
-		// checkPointName = checkPointName(name,
-		// GtfsException.ERROR.INVALID_HEADWAY_SECS);
-		// fieldName = ex.getField();
-		// value = ex.getValue();
-		// report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-		// new FileError(FileError.CODE.INVALID_FORMAT,
-		// "Invalid \""+fieldName+"\" (rule "+checkPointName+")"));
-		// validationReport.addDetail(checkPointName,
-		// new Location(filenameInfo, ex.getId(), 0),
-		// fieldName,
-		// CheckPoint.RESULT.NOK);
-		// break;
-		//
-		// case INVALID_MONDAY_TYPE: // 1-GTFS-Calendar-5
-		// // 1-GTFS-Common-5
-		// checkPointName = checkPointName(name,
-		// GtfsException.ERROR.INVALID_MONDAY_TYPE);
-		// fieldName = ex.getField();
-		// value = ex.getValue();
-		// report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-		// new FileError(FileError.CODE.INVALID_FORMAT,
-		// "Invalid \""+fieldName+"\" (rule "+checkPointName+")"));
-		// validationReport.addDetail(checkPointName,
-		// new Location(filenameInfo, ex.getId(), 0),
-		// fieldName,
-		// CheckPoint.RESULT.NOK);
-		// break;
-		//
-		// case INVALID_TUESDAY_TYPE: // 1-GTFS-Calendar-6
-		// // 1-GTFS-Common-5
-		// checkPointName = checkPointName(name,
-		// GtfsException.ERROR.INVALID_TUESDAY_TYPE);
-		// fieldName = ex.getField();
-		// value = ex.getValue();
-		// report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-		// new FileError(FileError.CODE.INVALID_FORMAT,
-		// "Invalid \""+fieldName+"\" (rule "+checkPointName+")"));
-		// validationReport.addDetail(checkPointName,
-		// new Location(filenameInfo, ex.getId(), 0),
-		// fieldName,
-		// CheckPoint.RESULT.NOK);
-		// break;
-		//
-		// case INVALID_WEDNESDAY_TYPE: // 1-GTFS-Calendar-7
-		// // 1-GTFS-Common-5
-		// checkPointName = checkPointName(name,
-		// GtfsException.ERROR.INVALID_WEDNESDAY_TYPE);
-		// fieldName = ex.getField();
-		// value = ex.getValue();
-		// report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-		// new FileError(FileError.CODE.INVALID_FORMAT,
-		// "Invalid \""+fieldName+"\" (rule "+checkPointName+")"));
-		// validationReport.addDetail(checkPointName,
-		// new Location(filenameInfo, ex.getId(), 0),
-		// fieldName,
-		// CheckPoint.RESULT.NOK);
-		// break;
-		//
-		// case INVALID_THURSDAY_TYPE: // 1-GTFS-Calendar-8
-		// // 1-GTFS-Common-5
-		// checkPointName = checkPointName(name,
-		// GtfsException.ERROR.INVALID_THURSDAY_TYPE);
-		// fieldName = ex.getField();
-		// value = ex.getValue();
-		// report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-		// new FileError(FileError.CODE.INVALID_FORMAT,
-		// "Invalid \""+fieldName+"\" (rule "+checkPointName+")"));
-		// validationReport.addDetail(checkPointName,
-		// new Location(filenameInfo, ex.getId(), 0),
-		// fieldName,
-		// CheckPoint.RESULT.NOK);
-		// break;
-		//
-		// case INVALID_FRIDAY_TYPE: // 1-GTFS-Calendar-9
-		// // 1-GTFS-Common-5
-		// checkPointName = checkPointName(name,
-		// GtfsException.ERROR.INVALID_FRIDAY_TYPE);
-		// fieldName = ex.getField();
-		// value = ex.getValue();
-		// report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-		// new FileError(FileError.CODE.INVALID_FORMAT,
-		// "Invalid \""+fieldName+"\" (rule "+checkPointName+")"));
-		// validationReport.addDetail(checkPointName,
-		// new Location(filenameInfo, ex.getId(), 0),
-		// fieldName,
-		// CheckPoint.RESULT.NOK);
-		// break;
-		//
-		// case INVALID_SATURDAY_TYPE: // 1-GTFS-Calendar-10
-		// // 1-GTFS-Common-5
-		// checkPointName = checkPointName(name,
-		// GtfsException.ERROR.INVALID_SATURDAY_TYPE);
-		// fieldName = ex.getField();
-		// value = ex.getValue();
-		// report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-		// new FileError(FileError.CODE.INVALID_FORMAT,
-		// "Invalid \""+fieldName+"\" (rule "+checkPointName+")"));
-		// validationReport.addDetail(checkPointName,
-		// new Location(filenameInfo, ex.getId(), 0),
-		// fieldName,
-		// CheckPoint.RESULT.NOK);
-		// break;
-		//
-		// case INVALID_SUNDAY_TYPE: // 1-GTFS-Calendar-11
-		// // 1-GTFS-Common-5
-		// checkPointName = checkPointName(name,
-		// GtfsException.ERROR.INVALID_SUNDAY_TYPE);
-		// fieldName = ex.getField();
-		// value = ex.getValue();
-		// report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-		// new FileError(FileError.CODE.INVALID_FORMAT,
-		// "Invalid \""+fieldName+"\" (rule "+checkPointName+")"));
-		// validationReport.addDetail(checkPointName,
-		// new Location(filenameInfo, ex.getId(), 0),
-		// fieldName,
-		// CheckPoint.RESULT.NOK);
-		// break;
-		//
-		// case INVALID_START_DATE: // 1-GTFS-Calendar-12
-		// // 1-GTFS-Common-5
-		// checkPointName = checkPointName(name,
-		// GtfsException.ERROR.INVALID_START_DATE);
-		// fieldName = ex.getField();
-		// value = ex.getValue();
-		// report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-		// new FileError(FileError.CODE.INVALID_FORMAT,
-		// "Invalid \""+fieldName+"\" (rule "+checkPointName+")"));
-		// validationReport.addDetail(checkPointName,
-		// new Location(filenameInfo, ex.getId(), 0),
-		// fieldName,
-		// CheckPoint.RESULT.NOK);
-		// break;
-		//
-		// case INVALID_END_DATE: // 1-GTFS-Calendar-13
-		// // 1-GTFS-Common-5
-		// checkPointName = checkPointName(name,
-		// GtfsException.ERROR.INVALID_END_DATE);
-		// fieldName = ex.getField();
-		// value = ex.getValue();
-		// report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-		// new FileError(FileError.CODE.INVALID_FORMAT,
-		// "Invalid \""+fieldName+"\" (rule "+checkPointName+")"));
-		// validationReport.addDetail(checkPointName,
-		// new Location(filenameInfo, ex.getId(), 0),
-		// fieldName,
-		// CheckPoint.RESULT.NOK);
-		// break;
-		//
-		// case INVALID_TRANSFER_TYPE: // 1-GTFS-Transfer-3
-		// // 1-GTFS-Common-5
-		// checkPointName = checkPointName(name,
-		// GtfsException.ERROR.INVALID_TRANSFER_TYPE);
-		// fieldName = ex.getField();
-		// value = ex.getValue();
-		// report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-		// new FileError(FileError.CODE.INVALID_FORMAT,
-		// "Invalid \""+fieldName+"\" (rule "+checkPointName+")"));
-		// validationReport.addDetail(checkPointName,
-		// new Location(filenameInfo, ex.getId(), 0),
-		// fieldName,
-		// CheckPoint.RESULT.NOK);
-		// break;
-		//
-		// case INVALID_TRANSFER_TIME: // 1-GTFS-Transfer-5
-		// // 1-GTFS-Common-5
-		// checkPointName = checkPointName(name,
-		// GtfsException.ERROR.INVALID_TRANSFER_TIME);
-		// fieldName = ex.getField();
-		// value = ex.getValue();
-		// report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-		// new FileError(FileError.CODE.INVALID_FORMAT,
-		// "Invalid \""+fieldName+"\" (rule "+checkPointName+")"));
-		// validationReport.addDetail(checkPointName,
-		// new Location(filenameInfo, ex.getId(), 0),
-		// fieldName,
-		// CheckPoint.RESULT.NOK);
-		// break;
-		//
-		// case INVALID_SHAPE_POINT_SEQUENCE: // 1-GTFS-Shape-6
-		// // 1-GTFS-Common-5
-		// checkPointName = checkPointName(name,
-		// GtfsException.ERROR.INVALID_SHAPE_POINT_SEQUENCE);
-		// fieldName = ex.getField();
-		// report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-		// new FileError(FileError.CODE.INVALID_FORMAT,
-		// "Invalid \""+fieldName+"\" (rule "+checkPointName+")"));
-		// validationReport.addDetail(checkPointName,
-		// new Location(filenameInfo, ex.getId(), 0),
-		// fieldName,
-		// CheckPoint.RESULT.NOK);
-		// break;
-		//
-		// case INVALID_FARE_URL:
-		// // 1-GTFS-Common-5
-		// checkPointName = checkPointName(name,
-		// GtfsException.ERROR.INVALID_FARE_URL);
-		// fieldName = ex.getField();
-		// report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-		// new FileError(FileError.CODE.INVALID_FORMAT,
-		// "Invalid "+fieldName+" (rule "+checkPointName+")"));
-		// validationReport.addDetail(checkPointName,
-		// new Location(filenameInfo, ex.getId(), 0),
-		// fieldName,
-		// CheckPoint.RESULT.NOK);
-		// break;
-		//
-		// case INVALID_LANG:
-		// // 1-GTFS-Common-5
-		// checkPointName = checkPointName(name,
-		// GtfsException.ERROR.INVALID_LANG);
-		// fieldName = ex.getField();
-		// report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-		// new FileError(FileError.CODE.INVALID_FORMAT,
-		// "Invalid "+fieldName+" (rule "+checkPointName+")"));
-		// validationReport.addDetail(checkPointName,
-		// new Location(filenameInfo, ex.getId(), 0),
-		// fieldName,
-		// CheckPoint.RESULT.NOK);
-		// break;
+	case UNUSED_ID:
+		// 2-GTFS-Common-2
+		checkPointName = checkPointName(name, GtfsException.ERROR.UNUSED_ID);
+		fieldName = ex.getField();
+		report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+				new FileError(FileError.CODE.INVALID_FORMAT,
+						"Unused "+fieldName+" (rule "+checkPointName+")"));
+		validationReport.addDetail(checkPointName,
+				new Location(filenameInfo, "Unused "+fieldName, ex.getId(), ex.getField()),
+				"Unused "+fieldName,
+				CheckPoint.RESULT.NOK);
+		break;
 
-		case DUPLICATE_STOP_SEQUENCE:
-			// 2-GTFS-Common-4
-			checkPointName = checkPointName(name, GtfsException.ERROR.DUPLICATE_STOP_SEQUENCE);
-			fieldName = ex.getField();
-			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED, new FileError(FileError.CODE.INVALID_FORMAT,
-					"Duplicate \"" + fieldName + "\" for the same \"tripid\" (rule " + checkPointName + ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo, "Duplicate \"" + fieldName
-					+ "\" for the same \"tripid\"", ex.getId(), ex.getField()), "Duplicate \"" + fieldName
-					+ "\" for the same \"tripid\"", CheckPoint.RESULT.NOK);
-			throw new Exception("Duplicate \"" + fieldName + "\" for the same \"tripid\"");
-
-		case UNUSED_ID:
-			// 2-GTFS-Common-2
-			checkPointName = checkPointName(name, GtfsException.ERROR.UNUSED_ID);
-			fieldName = ex.getField();
-			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED, new FileError(FileError.CODE.INVALID_FORMAT, "Unused "
-					+ fieldName + " (rule " + checkPointName + ")"));
-			validationReport.addDetail(checkPointName,
-					new Location(filenameInfo, "Unused " + fieldName, ex.getId(), ex.getField()),
-					"Unused " + fieldName, CheckPoint.RESULT.NOK);
-			break;
-
-		case DUPLICATE_DOUBLE_KEY:
-			// 2-GTFS-Common-4
-			checkPointName = checkPointName(name, GtfsException.ERROR.DUPLICATE_DOUBLE_KEY);
-			fieldName = ex.getField();
-			fieldName2 = "date";
-			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED, new FileError(FileError.CODE.INVALID_FORMAT,
-					"Double service_id date (rule " + checkPointName + ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo, "Double service_id date", ex.getId(),
-					ex.getField()), "Double service_id date", CheckPoint.RESULT.NOK);
-			break;
-
-		case SHARED_VALUE:
-			// 2-GTFS-Common-5
-			checkPointName = checkPointName(name, GtfsException.ERROR.SHARED_VALUE);
-			fieldName = ex.getField();
-			fieldName2 = "route_long_name";
-			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED, new FileError(FileError.CODE.INVALID_FORMAT,
-					"The two values " + fieldName + " and " + fieldName2 + " cannot be the same (rule "
-							+ checkPointName + ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo, "The two values " + fieldName
-					+ " and " + fieldName2 + " cannot be the same", ex.getId(), ex.getField()), "The two values "
-					+ fieldName + " and " + fieldName2 + " cannot be the same", CheckPoint.RESULT.NOK);
-			break;
-
-		// /////////////////////////////
-
-		case MISSING_FOREIGN_KEY: // THIS CAN NEVER OCCUR !
-		case SYSTEM: // THIS CAN NEVER OCCUR !
-		default:
-			break;
+	case DUPLICATE_DOUBLE_KEY:
+		// 2-GTFS-Common-4
+		checkPointName = checkPointName(name, GtfsException.ERROR.DUPLICATE_DOUBLE_KEY);
+		fieldName = ex.getField();
+		fieldName2 = "date";
+		report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+				new FileError(FileError.CODE.INVALID_FORMAT,
+						"Double service_id date (rule "+checkPointName+")"));
+		validationReport.addDetail(checkPointName,
+				new Location(filenameInfo, "Double service_id date", ex.getId(), ex.getField()),
+				"Double service_id date",
+				CheckPoint.RESULT.NOK);
+		break;
+	
+	case SHARED_VALUE:
+		// 2-GTFS-Common-5
+		checkPointName = checkPointName(name, GtfsException.ERROR.SHARED_VALUE);
+		fieldName = ex.getField();
+		fieldName2 = "route_long_name";
+		report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+				new FileError(FileError.CODE.INVALID_FORMAT,
+						"The two values "+fieldName+" and "+fieldName2+" cannot be the same (rule "+checkPointName+")"));
+		validationReport.addDetail(checkPointName,
+				new Location(filenameInfo, "The two values "+fieldName+" and "+fieldName2+" cannot be the same", ex.getId(), ex.getField()),
+				"The two values "+fieldName+" and "+fieldName2+" cannot be the same",
+				CheckPoint.RESULT.NOK);
+		break;
+	
+	case BAD_REFERENCED_ID:
+		// 2-GTFS-Stop-1
+		checkPointName = checkPointName(name, GtfsException.ERROR.BAD_REFERENCED_ID);
+		fieldName = ex.getField();
+		report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+				new FileError(FileError.CODE.INVALID_FORMAT,
+						"The parent stop must be a station (rule "+checkPointName+")"));
+		validationReport.addDetail(checkPointName,
+				new Location(filenameInfo, "The parent stop must be a station", ex.getId(), ex.getField()),
+				"The parent stop must be a station",
+				CheckPoint.RESULT.NOK);
+		break;
+		
+	case NO_LOCATION_TYPE:
+		// 2-GTFS-Stop-2
+		checkPointName = checkPointName(name, GtfsException.ERROR.NO_LOCATION_TYPE);
+		fieldName = ex.getField();
+		report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+				new FileError(FileError.CODE.INVALID_FORMAT,
+						"Column location_type cannot be empty for all stops (rule "+checkPointName+")"));
+		validationReport.addDetail(checkPointName,
+				new Location(filenameInfo, "Column location_type cannot be empty for all stops", ex.getId(), ex.getField()),
+				"Column location_type cannot be empty for all stops",
+				CheckPoint.RESULT.NOK);
+		break;
+	
+	case BAD_VALUE:
+		// 2-GTFS-Stop-3
+		checkPointName = checkPointName(name, GtfsException.ERROR.BAD_VALUE);
+		fieldName = ex.getField();
+		report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+				new FileError(FileError.CODE.INVALID_FORMAT,
+						"stop_name and stop_desc must be different (rule "+checkPointName+")"));
+		validationReport.addDetail(checkPointName,
+				new Location(filenameInfo, "stop_name and stop_desc must be different", ex.getId(), ex.getField()),
+				"stop_name and stop_desc must be different",
+				CheckPoint.RESULT.NOK);
+		break;
+	
+		
+	case MISSING_FOREIGN_KEY: // THIS CAN NEVER OCCUR !
+	case SYSTEM: // THIS CAN NEVER OCCUR !
+	default:
+		break;
 		}
 	}
 
@@ -1029,6 +521,8 @@ public class ValidationReporter implements Constant {
 			return GTFS_1_GTFS_Common_4_6;
 		case INVALID_FORMAT:
 			return GTFS_1_GTFS_Common_5;
+		case UNREFERENCED_ID:
+			return GTFS_2_GTFS_Common_1;
 		case UNUSED_ID:
 			return GTFS_2_GTFS_Common_2;
 		case DUPLICATE_STOP_SEQUENCE:
@@ -1036,7 +530,14 @@ public class ValidationReporter implements Constant {
 			return GTFS_2_GTFS_Common_4;
 		case SHARED_VALUE:
 			return GTFS_2_GTFS_Common_5;
-
+			
+		case BAD_REFERENCED_ID:
+			return GTFS_2_GTFS_Common_6;
+		case NO_LOCATION_TYPE:
+			return GTFS_2_GTFS_Common_7;
+		case BAD_VALUE:
+			return GTFS_2_GTFS_Common_8;
+			
 		default:
 			return null;
 		}
@@ -1119,10 +620,11 @@ public class ValidationReporter implements Constant {
 		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
 
 		CheckPoint checkPoint = validationReport.findCheckPointByName(checkPointName);
-
-		if (checkPoint != null && checkPoint.getState().equals(CheckPoint.RESULT.UNCHECK))
-			checkPoint.setState(CheckPoint.RESULT.OK);
-
+		
+		if (checkPoint != null)
+			if (checkPoint.getState() == CheckPoint.RESULT.UNCHECK)
+				checkPoint.setState(CheckPoint.RESULT.OK);
+		
 	}
 
 	public void validateOkCSV(Context context, String filenameInfo) {
