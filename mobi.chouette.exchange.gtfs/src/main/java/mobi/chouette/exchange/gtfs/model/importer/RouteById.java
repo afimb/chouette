@@ -161,8 +161,14 @@ public class RouteById extends IndexImpl<GtfsRoute> implements GtfsConverter {
 		
 		// Verify the agency_id
 		String agencyId = bean.getAgencyId();
-		if (agencyId == null)
-			agencyId = GtfsAgency.DEFAULT_ID;
+		if (agencyId == null || GtfsAgency.DEFAULT_ID.equals(agencyId)) {
+			if (dao.getAgencyById().getLength() == 1) {
+				agencyId = dao.getAgencyById().iterator().next().getAgencyId();
+			} else {
+				agencyId = GtfsAgency.DEFAULT_ID;
+			}
+			bean.setAgencyId(agencyId);
+		}
 		if (dao.getAgencyById().getValue(agencyId) == null) {
 			// this bean has no agency
 			bean.getErrors().add(new GtfsException(_path, bean.getId(), FIELDS.agency_id.name(), GtfsException.ERROR.UNREFERENCED_ID, null, null));

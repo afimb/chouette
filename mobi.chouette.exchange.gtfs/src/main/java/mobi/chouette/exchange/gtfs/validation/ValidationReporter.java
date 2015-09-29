@@ -136,7 +136,7 @@ public class ValidationReporter implements Constant {
 			checkPointName = checkPointName(name, GtfsException.ERROR.EXTRA_SPACE_IN_HEADER_FIELD);
 			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
 					new FileError(FileError.CODE.INVALID_FORMAT,
-							"Extra spaces in field names are not allowed (rule "+checkPointName+")"));
+							"Extra spaces in field names are not allowed, at file "+filenameInfo+" for value "+ex.getValue()+" at line "+ex.getId()+" (rule "+checkPointName+")"));
 			validationReport.addDetail(checkPointName,
 					new Location(filenameInfo, ex.getId(), 0),
 					ex.getValue(),
@@ -427,13 +427,14 @@ public class ValidationReporter implements Constant {
 		// 2-GTFS-Common-2
 		checkPointName = checkPointName(name, GtfsException.ERROR.UNUSED_ID);
 		fieldName = ex.getField();
-		report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+		report.addFileInfo(ex.getPath(), FILE_STATE.IGNORED,
 				new FileError(FileError.CODE.INVALID_FORMAT,
-						"Unused "+fieldName+" (rule "+checkPointName+")"));
+						"Unused \""+fieldName+"\" ("+ex.getValue()+") in file \""+ex.getPath()+"\" at line \""+ex.getId()+"\" (rule "+checkPointName+")"));
 		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo, "Unused "+fieldName, ex.getId(), ex.getField()),
-				"Unused "+fieldName,
-				CheckPoint.RESULT.NOK);
+				new Location(ex.getPath(), "Unused \""+fieldName+"\" ("+ex.getValue()+") in file \""+ex.getPath()+"\" at line \""+ex.getId()+"\"",
+						ex.getId(), ex.getField()),
+						"Unused \""+fieldName+"\" ("+ex.getValue()+") in file \""+ex.getPath()+"\" at line \""+ex.getId()+"\"",
+						CheckPoint.RESULT.NOK);
 		break;
 
 	case DUPLICATE_DOUBLE_KEY:
