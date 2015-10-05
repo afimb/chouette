@@ -4,6 +4,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.gtfs.model.GtfsStop;
+import mobi.chouette.exchange.gtfs.model.GtfsStop.LocationType;
 import mobi.chouette.exchange.gtfs.model.GtfsStop.WheelchairBoardingType;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsException;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsImporter;
@@ -68,7 +69,10 @@ public class GtfsStopParser implements Parser, Validator, Constant {
 			boolean hasLocationType = false;
 			for (GtfsStop bean : parser) {
 				try {
-					hasLocationType = hasLocationType || (bean.getLocationType() != null);
+					if (bean.getLocationType() == null)
+						bean.setLocationType(LocationType.Stop);
+					else
+						hasLocationType = true;
 					parser.validate(bean, importer);
 				} catch (Exception ex) {
 					if (ex instanceof GtfsException) {
@@ -81,9 +85,9 @@ public class GtfsStopParser implements Parser, Validator, Constant {
 				validationReporter.validate(context, GTFS_STOPS_FILE, bean.getOkTests());
 			}
 			if (hasLocationType)
-				validationReporter.reportError(context, new GtfsException(GTFS_STOPS_FILE, 1, null, GtfsException.ERROR.NO_LOCATION_TYPE, null, null), GTFS_STOPS_FILE);
-			else
 				validationReporter.validate(context, GTFS_STOPS_FILE, GtfsException.ERROR.NO_LOCATION_TYPE);
+			else
+				validationReporter.reportError(context, new GtfsException(GTFS_STOPS_FILE, 1, null, GtfsException.ERROR.NO_LOCATION_TYPE, null, null), GTFS_STOPS_FILE);
 		} else {
 			validationReporter.reportError(context, new GtfsException(GTFS_STOPS_FILE, 1, null, GtfsException.ERROR.MISSING_FILE, null, null), GTFS_STOPS_FILE);
 		}
