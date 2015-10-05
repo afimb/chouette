@@ -18,6 +18,12 @@ public class ValidationReporter implements Constant {
 	@Getter
 	private Set<GtfsException> exceptions = new HashSet<GtfsException>();
 
+	public void dispose()
+	{
+		exceptions.clear();
+		exceptions = null;
+	}
+
 	public void throwUnknownError(Context context, Exception ex, String filenameInfo) throws Exception {
 		ActionReport report = (ActionReport) context.get(REPORT);
 		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
@@ -34,7 +40,7 @@ public class ValidationReporter implements Constant {
 					+ ex.getMessage());
 		}
 	}
-
+	
 	public void validateUnknownError(Context context) {
 		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
 		CheckPoint cp = validationReport.findCheckPointByName(GTFS_1_GTFS_CSV_1);
