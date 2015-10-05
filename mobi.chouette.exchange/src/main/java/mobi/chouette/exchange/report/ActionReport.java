@@ -122,12 +122,24 @@ public class ActionReport {
 	}
 
 	public void addFileInfo(String fileInfoName, FILE_STATE state) {
-		if (findFileInfo(fileInfoName, state) == null)
+		if (findFileInfo(fileInfoName) == null)
 			files.add(new FileInfo(fileInfoName, state));
 	}
-
+	
 	public void addFileInfo(String fileInfoName, FILE_STATE state, FileError fileError) {
 		addFileInfo(fileInfoName, state);
-		findFileInfo(fileInfoName, state).addError(fileError);
+		FileInfo fileInfo = findFileInfo(fileInfoName);
+		switch (fileInfo.getStatus()) {
+		case IGNORED:
+		case OK:
+			fileInfo.setStatus(state);
+			break;
+		case ERROR:
+		default:
+			break;
+		}
+		if (fileInfo.getErrors().size() <= 0)
+			fileInfo.addError(new FileError(FileError.CODE.READ_ERROR, "Il y a des erreurs dans ce fichier."));
+		//findFileInfo(fileInfoName, state).addError(fileError);
 	}
 }
