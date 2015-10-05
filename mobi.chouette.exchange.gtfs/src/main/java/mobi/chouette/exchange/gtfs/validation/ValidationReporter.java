@@ -313,7 +313,7 @@ public class ValidationReporter implements Constant {
 			fieldName2 = fieldName.replaceFirst("long", "short");
 			report.addFileInfo(filenameInfo, FILE_STATE.ERROR,
 					new FileError(FileError.CODE.INVALID_FORMAT,
-							"One of the valuess \""+fieldName+"\" or \""+fieldName2+"\" must be provided (rule "+checkPointName+")"));
+							"One of the values \""+fieldName+"\" or \""+fieldName2+"\" must be provided (rule "+checkPointName+")"));
 			validationReport.addDetail(checkPointName,
 					new Location(filenameInfo,  ex.getId(),0),
 					fieldName+","+fieldName2,

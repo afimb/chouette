@@ -5,11 +5,9 @@ import java.math.BigDecimal;
 import java.util.Map;
 
 import mobi.chouette.common.HTMLTagValidator;
-import mobi.chouette.exchange.gtfs.model.GtfsAgency;
 import mobi.chouette.exchange.gtfs.model.GtfsStop;
 import mobi.chouette.exchange.gtfs.model.GtfsStop.LocationType;
 import mobi.chouette.exchange.gtfs.model.GtfsStop.WheelchairBoardingType;
-import mobi.chouette.exchange.gtfs.model.importer.RouteById.FIELDS;
 
 public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter {
 
@@ -186,6 +184,8 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter {
 			} else {
 				bean.getErrors().add(new GtfsException(_path, id, FIELDS.stop_url.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));				
 			}
+//		} else {
+//			bean.setLocationType(LocationType.Stop);
 		}
 		
 		value = array[i++]; testExtraSpace(FIELDS.parent_station.name(), value, bean);

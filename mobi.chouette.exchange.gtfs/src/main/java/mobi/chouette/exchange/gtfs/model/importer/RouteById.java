@@ -82,7 +82,7 @@ public class RouteById extends IndexImpl<GtfsRoute> implements GtfsConverter {
 		
 		value = array[i++]; testExtraSpace(FIELDS.route_id.name(), value, bean);
 		if (value != null && !value.trim().isEmpty()) {
-			bean.setRouteId(STRING_CONVERTER.from(context, FIELDS.route_id, value, GtfsAgency.DEFAULT_ID, true));
+			bean.setRouteId(STRING_CONVERTER.from(context, FIELDS.route_id, value, "", true));
 		}
 		
 		value = array[i++]; testExtraSpace(FIELDS.agency_id.name(), value, bean);
@@ -104,7 +104,7 @@ public class RouteById extends IndexImpl<GtfsRoute> implements GtfsConverter {
 				bean.getErrors().add(new GtfsException(_path, id, FIELDS.route_long_name.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES2, null, null));
 		} else {
 			bean.setRouteLongName(STRING_CONVERTER.from(context, FIELDS.route_long_name, value, bean.getRouteShortName() != null));
-			if (bean.getRouteShortName().equals(bean.getRouteLongName()))
+			if (bean.getRouteLongName().equals(bean.getRouteShortName()))
 				bean.getErrors().add(new GtfsException(_path, id, FIELDS.route_short_name.name(), GtfsException.ERROR.SHARED_VALUE, null, null));
 		}
 		
@@ -151,7 +151,7 @@ public class RouteById extends IndexImpl<GtfsRoute> implements GtfsConverter {
 				bean.getErrors().add(new GtfsException(_path, id, FIELDS.route_color.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));	
 			}
 		}
-
+		
 		return bean;
 	}
 
