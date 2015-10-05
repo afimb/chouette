@@ -469,7 +469,19 @@ public class ValidationReporter implements Constant {
 				"stop_name and stop_desc must be different",
 				CheckPoint.RESULT.NOK);
 		break;
-	
+		
+	case NO_PARENT_FOR_STATION:
+		// 2-GTFS-Stop-4
+		checkPointName = checkPointName(name, GtfsException.ERROR.NO_PARENT_FOR_STATION);
+		fieldName = ex.getField();
+		report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+				new FileError(FileError.CODE.INVALID_FORMAT,
+						"Stations can't contain other stations (rule "+checkPointName+")"));
+		validationReport.addDetail(checkPointName,
+				new Location(filenameInfo, "Stations can't contain other stations", ex.getId(), ex.getField()),
+				"Stations can't contain other stations",
+				CheckPoint.RESULT.NOK);
+		break;
 		
 	case MISSING_FOREIGN_KEY: // THIS CAN NEVER OCCUR !
 	case SYSTEM: // THIS CAN NEVER OCCUR !
@@ -549,6 +561,8 @@ public class ValidationReporter implements Constant {
 			return GTFS_2_GTFS_Common_7;
 		case BAD_VALUE:
 			return GTFS_2_GTFS_Common_8;
+		case NO_PARENT_FOR_STATION:
+			return GTFS_2_GTFS_Stop_4;
 			
 		default:
 			return null;

@@ -87,7 +87,14 @@ public class GtfsStop extends GtfsObject implements Serializable
    // return id + ":" + StopExporter.CONVERTER.to(new Context(),this);
    // }
 
-   public enum LocationType implements Serializable
+   public GtfsStop(GtfsStop bean) {
+	   this(bean.getStopId(), bean.getStopCode(), bean.getStopName(), bean.getStopDesc(),
+			   bean.getStopLat(), bean.getStopLon(), bean.getZoneId(), bean.getStopUrl(), bean.getLocationType(),
+			   bean.getParentStation(), bean.getStopTimezone(), bean.getWheelchairBoarding(),
+			   bean.getAddressLine(), bean.getLocality(), bean.getPostalCode());
+   }
+
+   public enum LocationType implements Serializable 
    {
       Stop, Station, Access;
 

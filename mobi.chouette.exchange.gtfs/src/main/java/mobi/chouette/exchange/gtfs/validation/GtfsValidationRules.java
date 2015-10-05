@@ -33,7 +33,7 @@ public class GtfsValidationRules implements Constant {
 		List<CheckPoint> checkPoints = new ArrayList<CheckPoint>();
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_1   , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_1_1 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
-		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_1_2 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.IMPROVMENT));
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_1_2 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
 		// TODO. A faire apparaitre seulement si des fichiers parasites
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_1_3 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
 
@@ -66,6 +66,7 @@ public class GtfsValidationRules implements Constant {
 		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Common_6   , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Common_7   , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
 		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Common_8   , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Stop_4   , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 		return checkPoints;
 	}
 }

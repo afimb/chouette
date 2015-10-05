@@ -83,7 +83,7 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter {
 		i = 0;
 		String value = null;
 		int id = (int) context.get(Context.ID);
-		//bean.getErrors().clear();
+		clearBean();
 		bean.setId(id);
 		
 		value = array[i++]; testExtraSpace(FIELDS.stop_id.name(), value, bean);
@@ -184,8 +184,6 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter {
 			} else {
 				bean.getErrors().add(new GtfsException(_path, id, FIELDS.stop_url.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));				
 			}
-//		} else {
-//			bean.setLocationType(LocationType.Stop);
 		}
 		
 		value = array[i++]; testExtraSpace(FIELDS.parent_station.name(), value, bean);
@@ -245,23 +243,28 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter {
 	public boolean validate(GtfsStop bean, GtfsImporter dao) {
 		boolean result = true;
 		
-		String parentStationId = bean.getParentStation();
+		GtfsStop copy_bean = new GtfsStop(bean);
+		String parentStationId = copy_bean.getParentStation();
 		if (parentStationId != null && !parentStationId.trim().isEmpty()) {
-			
+
 			// parentStation must reference a stop
 			GtfsStop parent = dao.getStopById().getValue(parentStationId);
 			if (parent == null) {
 				result = false;
-				bean.getErrors().add(new GtfsException(_path, bean.getId(), FIELDS.parent_station.name(), GtfsException.ERROR.UNREFERENCED_ID, null, null));
+				bean.getErrors().add(new GtfsException(_path, copy_bean.getId(), FIELDS.parent_station.name(), GtfsException.ERROR.UNREFERENCED_ID, null, parentStationId));
+			} else if (copy_bean.getLocationType() == LocationType.Station) {
+				result = false;
+				bean.getErrors().add(new GtfsException(_path, copy_bean.getId(), FIELDS.parent_station.name(), GtfsException.ERROR.NO_PARENT_FOR_STATION, null, parentStationId));
 			} else {
 				bean.getOkTests().add(GtfsException.ERROR.UNREFERENCED_ID);
+				bean.getOkTests().add(GtfsException.ERROR.NO_PARENT_FOR_STATION);
 			}
 			
 			// the stop parentStation is a station
 			if (result) { // Stop, Station, Access
 				if (LocationType.Station != parent.getLocationType()) {
 					result = false;
-					bean.getErrors().add(new GtfsException(_path, bean.getId(), FIELDS.parent_station.name(), GtfsException.ERROR.BAD_REFERENCED_ID, null, null));
+					bean.getErrors().add(new GtfsException(_path, copy_bean.getId(), FIELDS.parent_station.name(), GtfsException.ERROR.BAD_REFERENCED_ID, null, null));
 				} else {
 					bean.getOkTests().add(GtfsException.ERROR.BAD_REFERENCED_ID);
 				}
@@ -272,12 +275,12 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter {
 		
 		// stopDesc != stopName
 		boolean result2 = true;
-		String stopName = bean.getStopName();
-		String stopDesc = bean.getStopDesc();
+		String stopName = copy_bean.getStopName();
+		String stopDesc = copy_bean.getStopDesc();
 		if (stopName != null && stopDesc != null) {
 			if (stopName.equals(stopDesc)) {
 				result2 = false;
-				bean.getErrors().add(new GtfsException(_path, bean.getId(), FIELDS.stop_name.name(), GtfsException.ERROR.BAD_VALUE, null, null));
+				bean.getErrors().add(new GtfsException(_path, copy_bean.getId(), FIELDS.stop_name.name(), GtfsException.ERROR.BAD_VALUE, null, null));
 			} else {
 				bean.getOkTests().add(GtfsException.ERROR.BAD_VALUE);
 			}
@@ -290,6 +293,26 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter {
 		// locationType is set for at least one stop OK see GtfsStopParser
 
 		return result;
+	}
+	
+	private void clearBean() {
+		//bean.getErrors().clear();
+		bean.setId(null);
+		bean.setAddressLine(null);
+		bean.setLocality(null);
+		bean.setLocationType(null);
+		bean.setParentStation(null);
+		bean.setPostalCode(null);
+		bean.setStopCode(null);
+		bean.setStopDesc(null);
+		bean.setStopId(null);
+		bean.setStopLat(null);
+		bean.setStopLon(null);
+		bean.setStopName(null);
+		bean.setStopTimezone(null);
+		bean.setStopUrl(null);
+		bean.setWheelchairBoarding(null);
+		bean.setZoneId(null);
 	}
 
 	public static class DefaultImporterFactory extends IndexFactory {

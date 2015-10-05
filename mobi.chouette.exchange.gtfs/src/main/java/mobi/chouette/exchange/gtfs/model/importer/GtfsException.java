@@ -48,7 +48,8 @@ public class GtfsException extends RuntimeException {
 		UNREFERENCED_ID,
 		BAD_REFERENCED_ID,
 		NO_LOCATION_TYPE,
-		BAD_VALUE
+		BAD_VALUE,
+		NO_PARENT_FOR_STATION
 	}
 
 	@Getter
