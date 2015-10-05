@@ -1,7 +1,9 @@
 package mobi.chouette.exchange.report;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -67,6 +69,20 @@ public class ActionReport {
 		}
 		return null;
 	}
+	
+	public FileInfo findFileInfo(String name, FILE_STATE state) {
+		for (FileInfo fileInfo : files) {
+			if (fileInfo.getName().equals(name) &&
+					(fileInfo.getStatus().name().equals(state.name()) ||
+							FILE_STATE.OK.equals(fileInfo.getStatus().name()) ||
+							FILE_STATE.OK.equals(state.name()))) {
+				if (FILE_STATE.OK.equals(fileInfo.getStatus().name()))
+					fileInfo.setStatus(state);
+				return fileInfo;
+			}
+		}
+		return null;
+	}
 
 	public LineInfo findLineInfo(String objectId) {
 		for (LineInfo lineInfo : lines) {
@@ -106,14 +122,12 @@ public class ActionReport {
 	}
 
 	public void addFileInfo(String fileInfoName, FILE_STATE state) {
-		if (findFileInfo(fileInfoName) == null)
+		if (findFileInfo(fileInfoName, state) == null)
 			files.add(new FileInfo(fileInfoName, state));
-		else
-			findFileInfo(fileInfoName).setStatus(state);
 	}
 
 	public void addFileInfo(String fileInfoName, FILE_STATE state, FileError fileError) {
-		files.add(new FileInfo(fileInfoName, state));
-		findFileInfo(fileInfoName).addError(fileError);
+		addFileInfo(fileInfoName, state);
+		findFileInfo(fileInfoName, state).addError(fileError);
 	}
 }

@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Set;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Color;
 import mobi.chouette.exchange.gtfs.model.GtfsAgency;
 import mobi.chouette.exchange.gtfs.model.GtfsObject;
 
@@ -70,6 +71,7 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 	protected void initialize() throws IOException {
 		boolean bom = hasBOM(_path);
 		int offset = (bom) ? 3 : 0;
+		Monitor monitor = MonitorFactory.start("INITIALIZE INDEX IMPL : "+_path);
 		RandomAccessFile file = new RandomAccessFile(_path, "r");
 		try {
 			_channel1 = file.getChannel();
@@ -94,6 +96,7 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 			}
 		} finally {
 			file.close();
+			log.info(Color.BLUE + monitor.stop() + Color.NORMAL);
 		}
 	}
 	

@@ -35,6 +35,14 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 	@Setter
 	private String gtfsRouteId;
 
+	/**
+	 * Parse the GTFS file routes.txt into a virtual list of GtfsRoute.
+	 * This list is virtual: (Re-)Parse the list to access a GtfsRoute.
+	 * 
+	 * Validation rules of type I and II are checked during this step, 
+	 * and results are stored in reports.
+	 */
+	// TODO. Rename this function "parse(Context context)".
 	@Override
 	public void validate(Context context) throws Exception {
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
@@ -80,10 +88,6 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 			}
 		
 			for (GtfsRoute bean : parser) {
-				if (bean.getAgencyId() != null)
-					agencyIds.add(bean.getAgencyId());
-				else
-					agencyIds.add(GtfsAgency.DEFAULT_ID);
 				try {
 					parser.validate(bean, importer);
 				} catch (Exception ex) {
@@ -93,6 +97,10 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 						validationReporter.throwUnknownError(context, ex, GTFS_ROUTES_FILE);
 					}
 				}
+				if (bean.getAgencyId() != null)
+					agencyIds.add(bean.getAgencyId());
+				else
+					agencyIds.add(GtfsAgency.DEFAULT_ID);
 				validationReporter.reportErrors(context, bean.getErrors(), GTFS_ROUTES_FILE);
 				validationReporter.validate(context, GTFS_ROUTES_FILE, bean.getOkTests());
 			}
@@ -101,7 +109,7 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 			for (GtfsAgency bean : importer.getAgencyById()) {
 				if (agencyIds.add(bean.getAgencyId())) {
 					unsuedId = false;
-					validationReporter.reportError(context, new GtfsException(GTFS_AGENCY_FILE, i, AgencyById.FIELDS.agency_id.name(), GtfsException.ERROR.UNUSED_ID, null, null), GTFS_AGENCY_FILE);
+					validationReporter.reportError(context, new GtfsException(GTFS_AGENCY_FILE, i, AgencyById.FIELDS.agency_id.name(), GtfsException.ERROR.UNUSED_ID, null, bean.getAgencyId()), GTFS_AGENCY_FILE);
 				}
 				i++;
 			}
@@ -112,6 +120,13 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 		}
 	}
 
+	/**
+	 * Translate every (mobi.chouette.exchange.gtfs.model.)GtfsRoute 
+	 * to a (mobi.chouette.model.)Line.
+	 * 
+	 * Validation rules of type III are checked at this step.
+	 */
+	// TODO. Rename this function "translate(Context context)" or "produce(Context context)", ...
 	@Override
 	public void parse(Context context) throws Exception {
 

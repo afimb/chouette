@@ -15,14 +15,13 @@ import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
-import mobi.chouette.exchange.gtfs.model.GtfsAgency;
 import mobi.chouette.exchange.gtfs.model.GtfsFrequency;
 import mobi.chouette.exchange.gtfs.model.GtfsShape;
 import mobi.chouette.exchange.gtfs.model.GtfsStop;
+import mobi.chouette.exchange.gtfs.model.GtfsStop.LocationType;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime;
 import mobi.chouette.exchange.gtfs.model.GtfsTrip;
 import mobi.chouette.exchange.gtfs.model.GtfsTrip.DirectionType;
-import mobi.chouette.exchange.gtfs.model.importer.AgencyById;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsException;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsImporter;
 import mobi.chouette.exchange.gtfs.model.importer.Index;
@@ -124,9 +123,11 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			int i = 1;
 			boolean unsuedId = true;
 			for (GtfsStop bean : importer.getStopById()) {
-				if (stopIds.add(bean.getStopId())) {
-					unsuedId = false;
-					validationReporter.reportError(context, new GtfsException(GTFS_STOPS_FILE, i, StopById.FIELDS.stop_id.name(), GtfsException.ERROR.UNUSED_ID, null, null), GTFS_STOP_TIMES_FILE);
+				if (LocationType.Stop.equals(bean.getLocationType())) {
+					if (stopIds.add(bean.getStopId())) {
+						unsuedId = false;
+						validationReporter.reportError(context, new GtfsException(GTFS_STOPS_FILE, i, StopById.FIELDS.stop_id.name(), GtfsException.ERROR.UNUSED_ID, null, bean.getStopId()), GTFS_STOP_TIMES_FILE);
+					}
 				}
 				i++;
 			}

@@ -40,7 +40,7 @@ public class GtfsImporterCommand extends AbstractImporterCommand implements Comm
 			Object configuration = context.get(CONFIGURATION);
 			if (!(configuration instanceof GtfsImportParameters)) {
 				// fatal wrong parameters
-				log.error("invalid parameters for gtfs import " + configuration.getClass().getName());
+				//log.error("invalid parameters for gtfs import " + configuration.getClass().getName());
 				report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,
 						"invalid parameters for gtfs import " + configuration.getClass().getName()));
 				return ERROR;
@@ -55,7 +55,7 @@ public class GtfsImporterCommand extends AbstractImporterCommand implements Comm
 
 		} catch (Exception e) {
 			
-			log.error(e.getMessage(), e);
+			//log.error(e.getMessage(), e);
 			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR, "Fatal :" + e));
 		} finally {
 			progression.dispose(context);
