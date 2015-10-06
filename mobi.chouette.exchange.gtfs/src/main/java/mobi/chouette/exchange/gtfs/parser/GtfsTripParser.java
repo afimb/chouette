@@ -16,6 +16,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.gtfs.model.GtfsFrequency;
+import mobi.chouette.exchange.gtfs.model.GtfsRoute;
 import mobi.chouette.exchange.gtfs.model.GtfsShape;
 import mobi.chouette.exchange.gtfs.model.GtfsStop;
 import mobi.chouette.exchange.gtfs.model.GtfsStop.LocationType;
@@ -25,6 +26,7 @@ import mobi.chouette.exchange.gtfs.model.GtfsTrip.DirectionType;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsException;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsImporter;
 import mobi.chouette.exchange.gtfs.model.importer.Index;
+import mobi.chouette.exchange.gtfs.model.importer.RouteById;
 import mobi.chouette.exchange.gtfs.model.importer.StopById;
 import mobi.chouette.exchange.gtfs.validation.Constant;
 import mobi.chouette.exchange.gtfs.validation.ValidationReporter;
@@ -201,6 +203,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 	private void validateTrips(Context context) throws Exception {
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		ValidationReporter validationReporter = (ValidationReporter) context.get(GTFS_REPORTER);
+		Set<String> routeIds = new HashSet<String>();
 		
 		// trips.txt
 		if (importer.hasTripImporter()) { // the file "trips.txt" exists ?
@@ -240,6 +243,8 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			}
 		
 			for (GtfsTrip bean : tripParser) {
+				if (bean.getRouteId() != null)
+					routeIds.add(bean.getRouteId());
 				try {
 					tripParser.validate(bean, importer);
 				} catch (Exception ex) {
@@ -252,6 +257,17 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 				validationReporter.reportErrors(context, bean.getErrors(), GTFS_TRIPS_FILE);
 				validationReporter.validate(context, GTFS_TRIPS_FILE, bean.getOkTests());
 			}
+			int i = 1;
+			boolean unsuedId = true;
+			for (GtfsRoute bean : importer.getRouteById()) {
+				if (routeIds.add(bean.getRouteId())) {
+					unsuedId = false;
+					validationReporter.reportError(context, new GtfsException(GTFS_ROUTES_FILE, i, RouteById.FIELDS.route_id.name(), GtfsException.ERROR.UNUSED_ID, null, bean.getRouteId()), GTFS_TRIPS_FILE);
+				}
+				i++;
+			}
+			if (unsuedId)
+				validationReporter.validate(context, GTFS_ROUTES_FILE, GtfsException.ERROR.UNUSED_ID);
 		} else {
 			validationReporter.reportError(context, new GtfsException(GTFS_TRIPS_FILE, 1, null, GtfsException.ERROR.MISSING_FILE, null, null), GTFS_TRIPS_FILE);
 		}

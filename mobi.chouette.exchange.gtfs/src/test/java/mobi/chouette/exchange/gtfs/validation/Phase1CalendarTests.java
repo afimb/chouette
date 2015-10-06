@@ -491,8 +491,6 @@ public class Phase1CalendarTests extends AbstractPhase1Tests {
 		log.info(Color.GREEN + "Calendar_14 : extra column detected" + Color.NORMAL);
 		CheckPoint result = verifyValidation( log, "calendar_14", GTFS_1_GTFS_Common_3_4,CheckPoint.SEVERITY.WARNING, CheckPoint.RESULT.NOK,true);
 
-//		for (Detail detail : result.getDetails())
-//			System.out.println("####### DETAIL "+detail);
 		Assert.assertEquals(result.getDetailCount(), 2, "detail count");
 		for (Detail detail : result.getDetails()) 
 		{

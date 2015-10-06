@@ -34,10 +34,10 @@ public class Phase2RouteTests extends AbstractPhase2Tests {
 		}
 	}
 	
-	//@Test(groups = { "Phase 2 Route" }, description = "missing value agency_id" ,priority=321 )
+	@Test(groups = { "Phase 2 Route" }, description = "missing value agency_id" ,priority=321 )
 	public void verifyTest_2_2_1() throws Exception {
 		log.info(Color.GREEN + "Route_2_1 : missing value agency_id" + Color.NORMAL);
-		CheckPoint result = verifyValidation( log, "route_2_1", "2-GTFS-Route-2",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
+		CheckPoint result = verifyValidation( log, "route_2_1", GTFS_2_GTFS_Common_1,CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
 
 		Assert.assertEquals(result.getDetailCount(), 1, "detail count");
 		for (Detail detail : result.getDetails()) 
@@ -49,25 +49,26 @@ public class Phase2RouteTests extends AbstractPhase2Tests {
 		}
 	}
 	
-	//@Test(groups = { "Phase 2 Route" }, description = "missing column agency_id" ,priority=322 )
+	@Test(groups = { "Phase 2 Route" }, description = "missing column agency_id" ,priority=322 )
 	public void verifyTest_2_2_2() throws Exception {
 		log.info(Color.GREEN + "Route_2_2 : missing column agency_id" + Color.NORMAL);
-		CheckPoint result = verifyValidation( log, "route_2_2", "2-GTFS-Route-2",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
+		CheckPoint result = verifyValidation( log, "route_2_2", GTFS_2_GTFS_Common_1,CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
 
-		Assert.assertEquals(result.getDetailCount(), 1, "detail count");
+		Assert.assertEquals(result.getDetailCount(), 7, "detail count");
+		int count = 2;
 		for (Detail detail : result.getDetails()) 
 		{
 			Assert.assertNotNull(detail.getSource(), "detail must refer a source");
 			Assert.assertNotNull(detail.getSource().getFile(), "detail must refer a file source");
 			Assert.assertEquals(detail.getSource().getFile().getFilename(), "routes.txt", "detail must refer bad file");
-			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(1), "detail must refer bad line");
+			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(count++), "detail must refer bad line");
 		}
 	}
 
-	//@Test(groups = { "Phase 2 Route" }, description = "unknown agency_id" ,priority=323 )
+	@Test(groups = { "Phase 2 Route" }, description = "unknown agency_id" ,priority=323 )
 	public void verifyTest_2_3() throws Exception {
 		log.info(Color.GREEN + "Route_3 : unknown agency_id" + Color.NORMAL);
-		CheckPoint result = verifyValidation( log, "route_3", "2-GTFS-Route-3",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
+		CheckPoint result = verifyValidation( log, "route_3", GTFS_2_GTFS_Common_1,CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
 
 		Assert.assertEquals(result.getDetailCount(), 1, "detail count");
 		for (Detail detail : result.getDetails()) 
@@ -79,25 +80,33 @@ public class Phase2RouteTests extends AbstractPhase2Tests {
 		}
 	}
 	
-	//@Test(groups = { "Phase 2 Route" }, description = "unused route" ,priority=324 )
+	@Test(groups = { "Phase 2 Route" }, description = "unused route" ,priority=324 )
 	public void verifyTest_2_4() throws Exception {
 		log.info(Color.GREEN + "Route_4 : unused route" + Color.NORMAL);
-		CheckPoint result = verifyValidation( log, "route_4", "2-GTFS-Route-4",CheckPoint.SEVERITY.WARNING, CheckPoint.RESULT.NOK,true);
+		CheckPoint result = verifyValidation( log, "route_4", GTFS_2_GTFS_Common_2,CheckPoint.SEVERITY.WARNING, CheckPoint.RESULT.NOK,true);
 
-		Assert.assertEquals(result.getDetailCount(), 1, "detail count");
+		Assert.assertEquals(result.getDetailCount(), 2, "detail count");
+		int count = 0;
 		for (Detail detail : result.getDetails()) 
 		{
 			Assert.assertNotNull(detail.getSource(), "detail must refer a source");
 			Assert.assertNotNull(detail.getSource().getFile(), "detail must refer a file source");
-			Assert.assertEquals(detail.getSource().getFile().getFilename(), "routes.txt", "detail must refer bad file");
-			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(2), "detail must refer bad line");
+			if (count == 0) {
+				count++;
+				Assert.assertEquals(detail.getSource().getFile().getFilename(), "stops.txt", "detail must refer bad file");
+				Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(100), "detail must refer bad line");
+			} else if (count == 1) {
+				count++;
+				Assert.assertEquals(detail.getSource().getFile().getFilename(), "routes.txt", "detail must refer bad file");
+				Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(1), "detail must refer bad line");
+			}
 		}
 	}
 	
-	//@Test(groups = { "Phase 2 Route" }, description = "duplicate route names" ,priority=325 )
+	@Test(groups = { "Phase 2 Route" }, description = "duplicate route names" ,priority=325 )
 	public void verifyTest_2_5() throws Exception {
 		log.info(Color.GREEN + "Route_5 : duplicate route names" + Color.NORMAL);
-		CheckPoint result = verifyValidation( log, "route_5", "2-GTFS-Route-5",CheckPoint.SEVERITY.WARNING, CheckPoint.RESULT.NOK,true);
+		CheckPoint result = verifyValidation( log, "route_5", GTFS_2_GTFS_Route_5,CheckPoint.SEVERITY.WARNING, CheckPoint.RESULT.NOK,true);
 
 		Assert.assertEquals(result.getDetailCount(), 1, "detail count");
 		for (Detail detail : result.getDetails()) 
@@ -109,10 +118,10 @@ public class Phase2RouteTests extends AbstractPhase2Tests {
 		}
 	}
 	
-	//@Test(groups = { "Phase 2 Route" }, description = "route_long_name includes route_short_name" ,priority=326 )
+	@Test(groups = { "Phase 2 Route" }, description = "route_long_name includes route_short_name" ,priority=326 )
 	public void verifyTest_2_8() throws Exception {
 		log.info(Color.GREEN + "Route_8 : route_long_name includes route_short_name" + Color.NORMAL);
-		CheckPoint result = verifyValidation( log, "route_8", "2-GTFS-Route-8",CheckPoint.SEVERITY.WARNING, CheckPoint.RESULT.NOK,true);
+		CheckPoint result = verifyValidation( log, "route_8", GTFS_2_GTFS_Route_8,CheckPoint.SEVERITY.WARNING, CheckPoint.RESULT.NOK,true);
 
 		Assert.assertEquals(result.getDetailCount(), 1, "detail count");
 		for (Detail detail : result.getDetails()) 
@@ -124,27 +133,43 @@ public class Phase2RouteTests extends AbstractPhase2Tests {
 		}
 	}
 	
-	//@Test(groups = { "Phase 2 Route" }, description = "color contrast" ,priority=327 )
+	@Test(groups = { "Phase 2 Route" }, description = "color contrast" ,priority=327 )
 	public void verifyTest_2_9() throws Exception {
 		log.info(Color.GREEN + "Route_9 : color contrast" + Color.NORMAL);
-		CheckPoint result = verifyValidation( log, "route_9", "2-GTFS-Route-9",CheckPoint.SEVERITY.WARNING, CheckPoint.RESULT.NOK,true);
+		CheckPoint result = verifyValidation( log, "route_9", GTFS_2_GTFS_Route_9,CheckPoint.SEVERITY.WARNING, CheckPoint.RESULT.NOK,true);
 
-		Assert.assertEquals(result.getDetailCount(), 1, "detail count");
+		Assert.assertEquals(result.getDetailCount(), 5, "detail count");
+		int count = 0;
 		for (Detail detail : result.getDetails()) 
 		{
 			Assert.assertNotNull(detail.getSource(), "detail must refer a source");
 			Assert.assertNotNull(detail.getSource().getFile(), "detail must refer a file source");
 			Assert.assertEquals(detail.getSource().getFile().getFilename(), "routes.txt", "detail must refer bad file");
-			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(2), "detail must refer bad line");
+			if (count == 0) {
+				count++;
+				Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(2), "detail must refer bad line");
+			} else if (count == 1) {
+				count++;
+				Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(3), "detail must refer bad line");
+			} else if (count == 2) {
+				count++;
+				Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(6), "detail must refer bad line");
+			} else if (count == 3) {
+				count++;
+				Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(7), "detail must refer bad line");
+			} else if (count == 4) {
+				count++;
+				Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(8), "detail must refer bad line");
+			} 
 		}
 	}
 
-	//@Test(groups = { "Phase 2 Route" }, description = "disctinct route_desc from route_short_name" ,priority=328 )
+	@Test(groups = { "Phase 2 Route" }, description = "disctinct route_desc from route_short_name" ,priority=328 )
 	public void verifyTest_2_10_1() throws Exception {
 		log.info(Color.GREEN + "Route_10_1 : disctinct route_desc from route_short_name" + Color.NORMAL);
-		CheckPoint result = verifyValidation( log, "route_10_1", "2-GTFS-Route-10",CheckPoint.SEVERITY.WARNING, CheckPoint.RESULT.NOK,true);
+		CheckPoint result = verifyValidation( log, "route_10_1", GTFS_2_GTFS_Common_5,CheckPoint.SEVERITY.WARNING, CheckPoint.RESULT.NOK,true);
 
-		Assert.assertEquals(result.getDetailCount(), 2, "detail count");
+		Assert.assertEquals(result.getDetailCount(), 1, "detail count");
 		for (Detail detail : result.getDetails()) 
 		{
 			Assert.assertNotNull(detail.getSource(), "detail must refer a source");
@@ -154,25 +179,10 @@ public class Phase2RouteTests extends AbstractPhase2Tests {
 		}
 	}
 	
-	//@Test(groups = { "Phase 2 Route" }, description = "disctinct route_desc from route_long_name" ,priority=329 )
+	@Test(groups = { "Phase 2 Route" }, description = "disctinct route_desc from route_long_name" ,priority=329 )
 	public void verifyTest_2_10_2() throws Exception {
 		log.info(Color.GREEN + "Route_10_2 : disctinct route_desc from route_long_name" + Color.NORMAL);
-		CheckPoint result = verifyValidation( log, "route_10_2", "2-GTFS-Route-10",CheckPoint.SEVERITY.WARNING, CheckPoint.RESULT.NOK,true);
-
-		Assert.assertEquals(result.getDetailCount(), 2, "detail count");
-		for (Detail detail : result.getDetails()) 
-		{
-			Assert.assertNotNull(detail.getSource(), "detail must refer a source");
-			Assert.assertNotNull(detail.getSource().getFile(), "detail must refer a file source");
-			Assert.assertEquals(detail.getSource().getFile().getFilename(), "routes.txt", "detail must refer bad file");
-			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(2), "detail must refer bad line");
-		}
-	}
-
-	//@Test(groups = { "Phase 2 Route" }, description = "reverse combination short and long name" ,priority=330 )
-	public void verifyTest_2_11() throws Exception {
-		log.info(Color.GREEN + "Route_11 : reverse combination short and long name" + Color.NORMAL);
-		CheckPoint result = verifyValidation( log, "route_11", "2-GTFS-Route-11",CheckPoint.SEVERITY.WARNING, CheckPoint.RESULT.NOK,true);
+		CheckPoint result = verifyValidation( log, "route_10_2", GTFS_2_GTFS_Common_5,CheckPoint.SEVERITY.WARNING, CheckPoint.RESULT.NOK,true);
 
 		Assert.assertEquals(result.getDetailCount(), 1, "detail count");
 		for (Detail detail : result.getDetails()) 
@@ -184,10 +194,25 @@ public class Phase2RouteTests extends AbstractPhase2Tests {
 		}
 	}
 
-	//@Test(groups = { "Phase 2 Route" }, description = "url shared with agency" ,priority=331 )
+	@Test(groups = { "Phase 2 Route" }, description = "reverse combination short and long name" ,priority=330 )
+	public void verifyTest_2_11() throws Exception {
+		log.info(Color.GREEN + "Route_11 : reverse combination short and long name" + Color.NORMAL);
+		CheckPoint result = verifyValidation( log, "route_11", GTFS_2_GTFS_Route_11,CheckPoint.SEVERITY.WARNING, CheckPoint.RESULT.NOK,true);
+
+		Assert.assertEquals(result.getDetailCount(), 1, "detail count");
+		for (Detail detail : result.getDetails()) 
+		{
+			Assert.assertNotNull(detail.getSource(), "detail must refer a source");
+			Assert.assertNotNull(detail.getSource().getFile(), "detail must refer a file source");
+			Assert.assertEquals(detail.getSource().getFile().getFilename(), "routes.txt", "detail must refer bad file");
+			Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(3), "detail must refer bad line");
+		}
+	}
+
+	@Test(groups = { "Phase 2 Route" }, description = "url shared with agency" ,priority=331 )
 	public void verifyTest_2_12() throws Exception {
 		log.info(Color.GREEN + "Route_12 : url shared with agency" + Color.NORMAL);
-		CheckPoint result = verifyValidation( log, "route_12", "2-GTFS-Route-12",CheckPoint.SEVERITY.WARNING, CheckPoint.RESULT.NOK,true);
+		CheckPoint result = verifyValidation( log, "route_12", GTFS_2_GTFS_Common_5,CheckPoint.SEVERITY.WARNING, CheckPoint.RESULT.NOK,true);
 
 		Assert.assertEquals(result.getDetailCount(), 1, "detail count");
 		for (Detail detail : result.getDetails()) 

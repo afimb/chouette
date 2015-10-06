@@ -56,6 +56,11 @@ public class GtfsRoute extends GtfsObject implements Serializable
    @Setter
    private Color routeTextColor;
 
+   public GtfsRoute(GtfsRoute bean) {
+	   this(bean.getRouteId(), bean.getAgencyId(), bean.getRouteShortName(), bean.getRouteLongName(), bean.getRouteDesc(), bean.getRouteType(), bean.getRouteUrl(), bean.getRouteColor(), bean.getRouteTextColor());
+	   this.setId(bean.getId());
+   }
+   
    public enum RouteType implements Serializable
    {
       Tram, Subway, Rail, Bus, Ferry, Cable, Gondola, Funicular;

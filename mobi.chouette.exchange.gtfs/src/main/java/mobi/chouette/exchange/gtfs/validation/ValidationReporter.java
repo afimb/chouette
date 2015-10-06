@@ -482,7 +482,59 @@ public class ValidationReporter implements Constant {
 				"Stations can't contain other stations",
 				CheckPoint.RESULT.NOK);
 		break;
+
+	case DUPLICATE_ROUTE_NAMES:
+		// 2-GTFS-Route-5
+		checkPointName = checkPointName(name, GtfsException.ERROR.DUPLICATE_ROUTE_NAMES);
+		fieldName = ex.getField();
+		report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+				new FileError(FileError.CODE.INVALID_FORMAT,
+						"The couple short_name, long_name must be unique (rule "+checkPointName+")"));
+		validationReport.addDetail(checkPointName,
+				new Location(filenameInfo, "The couple short_name, long_name must be unique", ex.getId(), ex.getField()),
+				"The couple short_name, long_name must be unique",
+				CheckPoint.RESULT.NOK);
+		break;
+
+	case CONTAINS_ROUTE_NAMES:
+		// 2-GTFS-Route-8
+		checkPointName = checkPointName(name, GtfsException.ERROR.CONTAINS_ROUTE_NAMES);
+		fieldName = ex.getField();
+		report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+				new FileError(FileError.CODE.INVALID_FORMAT,
+						"The long_name cannot contains the short_name (rule "+checkPointName+")"));
+		validationReport.addDetail(checkPointName,
+				new Location(filenameInfo, "The long_name cannot contains the short_name", ex.getId(), ex.getField()),
+				"The long_name cannot contains the short_name",
+				CheckPoint.RESULT.NOK);
+		break;
+	
+	case BAD_COLOR:
+		// 2-GTFS-Route-9
+		checkPointName = checkPointName(name, GtfsException.ERROR.BAD_COLOR);
+		fieldName = ex.getField();
+		report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+				new FileError(FileError.CODE.INVALID_FORMAT,
+						"Poor visibility between text and background colors (rule "+checkPointName+")"));
+		validationReport.addDetail(checkPointName,
+				new Location(filenameInfo, "Poor visibility between text and background colors", ex.getId(), ex.getField()),
+				"Poor visibility between text and background colors",
+				CheckPoint.RESULT.NOK);
+		break;
 		
+	case INVERSE_DUPLICATE_ROUTE_NAMES:
+		// 2-GTFS-Route-11
+		checkPointName = checkPointName(name, GtfsException.ERROR.INVERSE_DUPLICATE_ROUTE_NAMES);
+		fieldName = ex.getField();
+		report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+				new FileError(FileError.CODE.INVALID_FORMAT,
+						"The set short_name, long_name must be unique (rule "+checkPointName+")"));
+		validationReport.addDetail(checkPointName,
+				new Location(filenameInfo, "The set short_name, long_name must be unique", ex.getId(), ex.getField()),
+				"The set short_name, long_name must be unique",
+				CheckPoint.RESULT.NOK);
+		break;
+
 	case MISSING_FOREIGN_KEY: // THIS CAN NEVER OCCUR !
 	case SYSTEM: // THIS CAN NEVER OCCUR !
 	default:
@@ -563,6 +615,14 @@ public class ValidationReporter implements Constant {
 			return GTFS_2_GTFS_Common_8;
 		case NO_PARENT_FOR_STATION:
 			return GTFS_2_GTFS_Stop_4;
+		case DUPLICATE_ROUTE_NAMES:
+			return GTFS_2_GTFS_Route_5;
+		case CONTAINS_ROUTE_NAMES:
+			return GTFS_2_GTFS_Route_8;
+		case BAD_COLOR:
+			return GTFS_2_GTFS_Route_9;
+		case INVERSE_DUPLICATE_ROUTE_NAMES:
+			return GTFS_2_GTFS_Route_11;
 			
 		default:
 			return null;
