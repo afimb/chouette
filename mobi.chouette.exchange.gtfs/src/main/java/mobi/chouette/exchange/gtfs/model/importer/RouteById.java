@@ -7,6 +7,7 @@ import java.util.Map;
 import mobi.chouette.common.HTMLTagValidator;
 import mobi.chouette.exchange.gtfs.model.GtfsAgency;
 import mobi.chouette.exchange.gtfs.model.GtfsRoute;
+import mobi.chouette.exchange.gtfs.model.GtfsStop;
 
 public class RouteById extends IndexImpl<GtfsRoute> implements GtfsConverter {
 
@@ -176,6 +177,23 @@ public class RouteById extends IndexImpl<GtfsRoute> implements GtfsConverter {
 		}
 		if (result)
 			bean.getOkTests().add(GtfsException.ERROR.UNREFERENCED_ID);
+		
+		// routeUrl != GtfsAgency.agencyUrl
+		boolean result2 = true;
+		if (bean.getRouteUrl() != null) {
+			for (GtfsAgency agency : (AgencyById)dao.getAgencyById()) {
+				if (agency.getAgencyUrl() != null) {
+					if (bean.getRouteUrl().equals(agency.getAgencyUrl())) {
+						result2 = false;
+						bean.getErrors().add(new GtfsException(_path, bean.getId(), FIELDS.route_url.name(), GtfsException.ERROR.SHARED_VALUE, null, null));
+						break;
+					}
+				}
+			}
+		}
+		if (result2)
+			bean.getOkTests().add(GtfsException.ERROR.SHARED_VALUE);
+		result = result && result2;
 		
 		return result;
 	}

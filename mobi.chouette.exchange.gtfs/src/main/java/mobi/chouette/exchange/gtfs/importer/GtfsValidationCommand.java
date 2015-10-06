@@ -86,6 +86,10 @@ public class GtfsValidationCommand implements Command, Constant {
 				// agency.txt
 				GtfsAgencyParser agencyParser = (GtfsAgencyParser) ParserFactory.create(GtfsAgencyParser.class.getName());
 				agencyParser.validate(context);
+				
+				// routes.txt
+				GtfsRouteParser routeParser = (GtfsRouteParser) ParserFactory.create(GtfsRouteParser.class.getName());
+				routeParser.validate(context);
 			}
 			
 			// stops.txt
@@ -93,10 +97,6 @@ public class GtfsValidationCommand implements Command, Constant {
 			stopParser.validate(context);
 			
 			if (all) {
-				// routes.txt
-				GtfsRouteParser routeParser = (GtfsRouteParser) ParserFactory.create(GtfsRouteParser.class.getName());
-				routeParser.validate(context);
-				
 				// shapes.txt, trips.txt, stop_times.txt & frequencies.txt
 				GtfsTripParser tripParser = (GtfsTripParser) ParserFactory.create(GtfsTripParser.class.getName());
 				tripParser.validate(context);

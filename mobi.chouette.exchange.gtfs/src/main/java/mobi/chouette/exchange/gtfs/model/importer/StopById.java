@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import java.util.Map;
 
 import mobi.chouette.common.HTMLTagValidator;
+import mobi.chouette.exchange.gtfs.model.GtfsAgency;
+import mobi.chouette.exchange.gtfs.model.GtfsRoute;
 import mobi.chouette.exchange.gtfs.model.GtfsStop;
 import mobi.chouette.exchange.gtfs.model.GtfsStop.LocationType;
 import mobi.chouette.exchange.gtfs.model.GtfsStop.WheelchairBoardingType;
@@ -73,7 +75,6 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter {
 		}
 	}
 
-	@Override
 	protected GtfsStop build(GtfsIterator reader, Context context) {
 		int i = 0;
 		for (FIELDS field : FIELDS.values()) {
@@ -271,7 +272,7 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter {
 			}
 		}
 		
-		// stopId is used by a stop_time OK See GtfsTripParser.validateStopTimes(Context)
+		// stopId is used by a stop_time. OK: See GtfsTripParser.validateStopTimes(Context)
 		
 		// stopDesc != stopName
 		boolean result2 = true;
@@ -287,10 +288,35 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter {
 		}
 		result = result && result2;
 		
-		// TODO.
-		// stopUrl != agencyUrl, routeUrl            2-GTFS-Stop-5
+		// stopUrl != GtfsAgency.agencyUrl
+		boolean result3 = true;
+		if (copy_bean.getStopUrl() != null) {
+			for (GtfsAgency agency : (AgencyById)dao.getAgencyById()) {
+				if (agency.getAgencyUrl() != null) {
+					if (copy_bean.getStopUrl().equals(agency.getAgencyUrl())) {
+						result3 = false;
+						bean.getErrors().add(new GtfsException(_path, copy_bean.getId(), FIELDS.stop_url.name(), GtfsException.ERROR.SHARED_VALUE, null, null));
+						break;
+					}
+				}
+			}
+			for (GtfsRoute route : (RouteById)dao.getRouteById()) {
+				if (route.getRouteUrl() != null) {
+					if (copy_bean.getStopUrl().equals(route.getRouteUrl())) {
+						result3 = false;
+						bean.getErrors().add(new GtfsException(_path, copy_bean.getId(), FIELDS.stop_url.name(), GtfsException.ERROR.SHARED_VALUE, null, null));
+						break;
+					}
+				}
+			}
+		}
+		if (result3)
+			bean.getOkTests().add(GtfsException.ERROR.SHARED_VALUE);
+		result = result && result3;
 		
-		// locationType is set for at least one stop OK see GtfsStopParser
+		// stopUrl != routeUrl. OK: See RouteById.validate(GtfsRoute bean, GtfsImporter dao)
+		
+		// locationType is set for at least one stop. OK: See GtfsStopParser.validate(Context context)
 
 		return result;
 	}
