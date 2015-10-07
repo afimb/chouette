@@ -204,21 +204,6 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements GtfsConve
 		return _bean;
 	}
 
-	//@Override
-	private void clearBean() {
-		_bean.setArrivalTime(null);
-		_bean.setDepartureTime(null);
-		_bean.setDropOffType(null);
-		_bean.setId(null);
-		_bean.setPickupType(null);
-		_bean.setShapeDistTraveled(null);
-		_bean.setStopHeadsign(null);
-		_bean.setStopId(null);
-		_bean.setStopSequence(null);
-		_bean.setTimepoint(null);
-		_bean.setTripId(null);
-	}
-
 	@Override
 	public boolean validate(GtfsStopTime bean, GtfsImporter dao) {
 		boolean result = true;
@@ -261,6 +246,21 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements GtfsConve
 		result = result && result2;
 		
 		return result;
+	}
+
+	private void clearBean() {
+		//_bean.getErrors().clear();
+		_bean.setArrivalTime(null);
+		_bean.setDepartureTime(null);
+		_bean.setDropOffType(null);
+		_bean.setId(null);
+		_bean.setPickupType(null);
+		_bean.setShapeDistTraveled(null);
+		_bean.setStopHeadsign(null);
+		_bean.setStopId(null);
+		_bean.setStopSequence(null);
+		_bean.setTimepoint(null);
+		_bean.setTripId(null);
 	}
 
 	public static class DefaultImporterFactory extends IndexFactory {

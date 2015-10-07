@@ -7,6 +7,7 @@ import java.util.Set;
 
 import mobi.chouette.common.HTMLTagValidator;
 import mobi.chouette.exchange.gtfs.model.GtfsCalendarDate;
+import mobi.chouette.exchange.gtfs.model.GtfsCalendarDate.ExceptionType;
 
 public class CalendarDateByService extends IndexImpl<GtfsCalendarDate>
 		implements GtfsConverter {
@@ -80,6 +81,7 @@ public class CalendarDateByService extends IndexImpl<GtfsCalendarDate>
 		i = 0;
 		String value = null;
 		int id = (int) context.get(Context.ID);
+		clearBean();
 		bean.setId(id);
 		bean.getErrors().clear();
 		
@@ -118,13 +120,31 @@ public class CalendarDateByService extends IndexImpl<GtfsCalendarDate>
 	@Override
 	public boolean validate(GtfsCalendarDate bean, GtfsImporter dao) {
 		boolean result = true;
+		
 		if (bean.getDate() != null && bean.getServiceId() != null)
 			result = hashCodes.add(bean.getServiceId()+"#"+bean.getDate().getTime());
 		if (!result)
 			bean.getErrors().add(new GtfsException(_path, bean.getId(), FIELDS.service_id.name(), GtfsException.ERROR.DUPLICATE_DOUBLE_KEY, null, null));
+		
+		// Exception day in CalendarDate for a Service not defined in Calendar
+		if (bean.getExceptionType() != null)
+			if (bean.getExceptionType() == ExceptionType.Removed && dao.getCalendarByService().getValue(bean.getServiceId()) == null) {
+				bean.getErrors().add(new GtfsException(_path, bean.getId(), FIELDS.service_id.name(), GtfsException.ERROR.EXCEPT_DATE_WITHOUT_SERVICE, null, null));
+			} else {
+				bean.getOkTests().add(GtfsException.ERROR.EXCEPT_DATE_WITHOUT_SERVICE);
+			}
+		
 		return result;
 	}
 
+	private void clearBean() {
+		//bean.getErrors().clear();
+		bean.setId(null);
+		bean.setDate(null);
+		bean.setExceptionType(null);
+		bean.setServiceId(null);
+	}
+	
 	public static class DefaultImporterFactory extends IndexFactory {
 		@SuppressWarnings("rawtypes")
 		@Override

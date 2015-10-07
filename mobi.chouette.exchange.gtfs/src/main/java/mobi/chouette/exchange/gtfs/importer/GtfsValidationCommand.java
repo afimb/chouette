@@ -97,13 +97,13 @@ public class GtfsValidationCommand implements Command, Constant {
 			stopParser.validate(context);
 			
 			if (all) {
-				// shapes.txt, trips.txt, stop_times.txt & frequencies.txt
-				GtfsTripParser tripParser = (GtfsTripParser) ParserFactory.create(GtfsTripParser.class.getName());
-				tripParser.validate(context);
-				
 				// calendar.txt & calendar_dates.txt
 				GtfsCalendarParser calendarParser = (GtfsCalendarParser) ParserFactory.create(GtfsCalendarParser.class.getName());
 				calendarParser.validate(context);
+				
+				// shapes.txt, trips.txt, stop_times.txt & frequencies.txt
+				GtfsTripParser tripParser = (GtfsTripParser) ParserFactory.create(GtfsTripParser.class.getName());
+				tripParser.validate(context);
 			}
 			
 			// transfers.txt

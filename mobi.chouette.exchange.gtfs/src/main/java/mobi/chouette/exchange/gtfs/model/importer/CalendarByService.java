@@ -6,8 +6,7 @@ import java.util.Map;
 import mobi.chouette.common.HTMLTagValidator;
 import mobi.chouette.exchange.gtfs.model.GtfsCalendar;
 
-public class CalendarByService extends IndexImpl<GtfsCalendar> implements
-		GtfsConverter {
+public class CalendarByService extends IndexImpl<GtfsCalendar> implements GtfsConverter {
 
 	public static enum FIELDS {
 		service_id, monday, tuesday, wednesday, thursday, friday, saturday, sunday, start_date, end_date;
@@ -98,6 +97,7 @@ public class CalendarByService extends IndexImpl<GtfsCalendar> implements
 		i = 0;
 		String value = null;
 		int id = (int) context.get(Context.ID);
+		clearBean();
 		bean.setId(id);
 		bean.getErrors().clear();
 		
@@ -108,12 +108,14 @@ public class CalendarByService extends IndexImpl<GtfsCalendar> implements
 			bean.setServiceId(STRING_CONVERTER.from(context, FIELDS.service_id, value, true));
 		}
 		
+		boolean hasAvalidDay = false;
 		value = array[i++]; testExtraSpace(FIELDS.monday.name(), value, bean);
 		if (value == null || value.trim().isEmpty()) {
 			bean.getErrors().add(new GtfsException(_path, id, FIELDS.monday.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
 		} else {
 			try {
 				bean.setMonday(BOOLEAN_CONVERTER.from(context, FIELDS.monday, value, true));
+				hasAvalidDay = hasAvalidDay || bean.getMonday();
 			} catch(GtfsException ex) {
 				bean.getErrors().add(new GtfsException(_path, id, FIELDS.monday.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
@@ -125,6 +127,7 @@ public class CalendarByService extends IndexImpl<GtfsCalendar> implements
 		} else {
 			try {
 				bean.setTuesday(BOOLEAN_CONVERTER.from(context, FIELDS.tuesday, value, true));
+				hasAvalidDay = hasAvalidDay || bean.getTuesday();
 			} catch(GtfsException ex) {
 				bean.getErrors().add(new GtfsException(_path, id, FIELDS.tuesday.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
@@ -136,6 +139,7 @@ public class CalendarByService extends IndexImpl<GtfsCalendar> implements
 		} else {
 			try {
 				bean.setWednesday(BOOLEAN_CONVERTER.from(context, FIELDS.wednesday, value, true));
+				hasAvalidDay = hasAvalidDay || bean.getWednesday();
 			} catch(GtfsException ex) {
 				bean.getErrors().add(new GtfsException(_path, id, FIELDS.wednesday.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
@@ -147,6 +151,7 @@ public class CalendarByService extends IndexImpl<GtfsCalendar> implements
 		} else {
 			try {
 				bean.setThursday(BOOLEAN_CONVERTER.from(context, FIELDS.thursday, value, true));
+				hasAvalidDay = hasAvalidDay || bean.getThursday();
 			} catch(GtfsException ex) {
 				bean.getErrors().add(new GtfsException(_path, id, FIELDS.thursday.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
@@ -158,6 +163,7 @@ public class CalendarByService extends IndexImpl<GtfsCalendar> implements
 		} else {
 			try {
 				bean.setFriday(BOOLEAN_CONVERTER.from(context, FIELDS.friday, value, true));
+				hasAvalidDay = hasAvalidDay || bean.getFriday();
 			} catch(GtfsException ex) {
 				bean.getErrors().add(new GtfsException(_path, id, FIELDS.friday.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
@@ -169,6 +175,7 @@ public class CalendarByService extends IndexImpl<GtfsCalendar> implements
 		} else {
 			try {
 				bean.setSaturday(BOOLEAN_CONVERTER.from(context, FIELDS.saturday, value, true));
+				hasAvalidDay = hasAvalidDay || bean.getSaturday();
 			} catch(GtfsException ex) {
 				bean.getErrors().add(new GtfsException(_path, id, FIELDS.saturday.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
@@ -180,6 +187,7 @@ public class CalendarByService extends IndexImpl<GtfsCalendar> implements
 		} else {
 			try {
 				bean.setSunday(BOOLEAN_CONVERTER.from(context, FIELDS.sunday, value, true));
+				hasAvalidDay = hasAvalidDay || bean.getSunday();
 			} catch(GtfsException ex) {
 				bean.getErrors().add(new GtfsException(_path, id, FIELDS.sunday.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
@@ -206,6 +214,22 @@ public class CalendarByService extends IndexImpl<GtfsCalendar> implements
 				bean.getErrors().add(new GtfsException(_path, id, FIELDS.end_date.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
+		
+		// monday || .. || sunday = true
+		if (hasAvalidDay) {
+			bean.getOkTests().add(GtfsException.ERROR.ALL_DAYS_ARE_INVALID);
+		} else {
+			bean.getErrors().add(new GtfsException(_path, id, FIELDS.service_id.name(), GtfsException.ERROR.ALL_DAYS_ARE_INVALID, null, bean.getServiceId()));
+		}
+		
+		// startDate <= Enddate
+		if (bean.getStartDate() != null && bean.getEndDate() != null) {
+			if (bean.getStartDate().after(bean.getEndDate())) {
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.service_id.name(), GtfsException.ERROR.START_DATE_AFTER_END_DATE, null, bean.getServiceId()));
+			} else {
+				bean.getOkTests().add(GtfsException.ERROR.START_DATE_AFTER_END_DATE);
+			}
+		}
 
 		return bean;
 	}
@@ -213,6 +237,21 @@ public class CalendarByService extends IndexImpl<GtfsCalendar> implements
 	@Override
 	public boolean validate(GtfsCalendar bean, GtfsImporter dao) {
 		return true;
+	}
+
+	private void clearBean() {
+		//bean.getErrors().clear();
+		bean.setId(null);
+		bean.setEndDate(null);
+		bean.setFriday(null);
+		bean.setMonday(null);
+		bean.setSaturday(null);
+		bean.setServiceId(null);
+		bean.setStartDate(null);
+		bean.setSunday(null);
+		bean.setThursday(null);
+		bean.setTuesday(null);
+		bean.setWednesday(null);
 	}
 
 	public static class DefaultImporterFactory extends IndexFactory {

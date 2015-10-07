@@ -6,6 +6,7 @@ import java.util.Map;
 import mobi.chouette.common.HTMLTagValidator;
 import mobi.chouette.exchange.gtfs.model.GtfsTransfer;
 import mobi.chouette.exchange.gtfs.model.GtfsTransfer.TransferType;
+import mobi.chouette.exchange.gtfs.model.importer.RouteById.FIELDS;
 
 public class TransferByFromStop extends IndexImpl<GtfsTransfer> implements
 		GtfsConverter {
@@ -17,7 +18,7 @@ public class TransferByFromStop extends IndexImpl<GtfsTransfer> implements
 	public static final String FILENAME = "transfers.txt";
 	public static final String KEY = FIELDS.from_stop_id.name();
 
-	//private GtfsTransfer bean = new GtfsTransfer();
+	private GtfsTransfer bean = new GtfsTransfer();
 	private String[] array = new String[FIELDS.values().length];
 
 	public TransferByFromStop(String name) throws IOException {
@@ -75,10 +76,10 @@ public class TransferByFromStop extends IndexImpl<GtfsTransfer> implements
 			array[i++] = getField(reader, field.name());
 		}
 
-		GtfsTransfer bean = new GtfsTransfer();
 		i = 0;
 		String value = null;
 		int id = (int) context.get(Context.ID);
+		clearBean();
 		bean.setId(id);
 		bean.getErrors().clear();
 		
@@ -128,21 +129,32 @@ public class TransferByFromStop extends IndexImpl<GtfsTransfer> implements
 	public boolean validate(GtfsTransfer bean, GtfsImporter dao) {
 		boolean result = true;
 
-//		String fromStopId = bean.getFromStopId();
-//		if (!dao.getStopById().containsKey(fromStopId)) {
-//			throw new GtfsException(getPath(), bean.getId(),
-//					FIELDS.from_stop_id.name(), ERROR.MISSING_FOREIGN_KEY,
-//					"TODO", bean.getFromStopId());
-//		}
-//
-//		String toStopId = bean.getToStopId();
-//		if (!dao.getStopById().containsKey(toStopId)) {
-//			throw new GtfsException(getPath(), bean.getId(),
-//					FIELDS.to_stop_id.name(), ERROR.MISSING_FOREIGN_KEY,
-//					"TODO", bean.getToStopId());
-//		}
+		String fromStopId = bean.getFromStopId();
+		if (dao.getStopById().getValue(fromStopId) == null) {
+			bean.getErrors().add(new GtfsException(_path, bean.getId(), FIELDS.from_stop_id.name(), GtfsException.ERROR.UNREFERENCED_ID, null, null));
+			result = false;
+		} else {
+			bean.getOkTests().add(GtfsException.ERROR.UNREFERENCED_ID);
+		}
+
+		String toStopId = bean.getToStopId();
+		if (dao.getStopById().getValue(toStopId) == null) {
+			bean.getErrors().add(new GtfsException(_path, bean.getId(), FIELDS.to_stop_id.name(), GtfsException.ERROR.UNREFERENCED_ID, null, null));
+			result = false;
+		} else {
+			bean.getOkTests().add(GtfsException.ERROR.UNREFERENCED_ID);
+		}
 
 		return result;
+	}
+
+	private void clearBean() {
+		//bean.getErrors().clear();
+		bean.setId(null);
+		bean.setFromStopId(null);
+		bean.setMinTransferTime(null);
+		bean.setToStopId(null);
+		bean.setTransferType(null);
 	}
 
 	public static class DefaultImporterFactory extends IndexFactory {

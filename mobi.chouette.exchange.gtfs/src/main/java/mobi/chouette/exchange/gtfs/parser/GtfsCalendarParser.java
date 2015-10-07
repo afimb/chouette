@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
@@ -163,6 +165,35 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 			validationReporter.validate(context, GTFS_CALENDAR_FILE, GtfsException.ERROR.FILES_WITH_NO_ENTRY);
 			validationReporter.validate(context, GTFS_CALENDAR_DATES_FILE, GtfsException.ERROR.FILES_WITH_NO_ENTRY);
 		}
+		
+		// TODO. EMPTY_SERVICE
+//		Set<String> serviceIds = new HashSet<>();
+//		if (calendarParser != null) {
+//			for (GtfsCalendar bean : calendarParser) {
+//				serviceIds.add(bean.getServiceId());
+//				List<Date> dates = new ArrayList<>();
+//				Date startDate = bean.getStartDate();
+//				Calendar startCal = Calendar.getInstance();
+//				startCal.setTimeInMillis(startDate.getTime());
+//				Date endDate = bean.getEndDate();
+//				Calendar endCal = Calendar.getInstance();
+//				endCal.setTimeInMillis(endDate.getTime());
+//				while (startCal.compareTo(endCal) <= 0) {
+//					switch (startCal.get(Calendar.DAY_OF_WEEK)) {
+//					case Calendar.MONDAY:
+//						if (bean.getMonday()) {
+//							if (calendarDateParser != null) {
+//								for (GtfsCalendarDate calendarDate : calendarDateParser) {
+//									if (bean.getServiceId().equals(calendarDate.getServiceId()))
+//										;
+//								}
+//							}
+//						}
+//					}
+//					startCal.add(Calendar.DAY_OF_MONTH, 1);
+//				}
+//			}
+//		}
 	}
 
 	@Override

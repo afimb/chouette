@@ -27,12 +27,12 @@ public interface Constant extends mobi.chouette.exchange.gtfs.Constant {
 	
 	public static final String GTFS_1_GTFS_Common_4   = "1-GTFS-Common-12";
 	public static final String GTFS_1_GTFS_Common_4_1 = "1-GTFS-Route-2";
-	//public static final String GTFS_1_GTFS_Common_4_2 = "1-GTFS-Common-4-2";
+	public static final String GTFS_1_GTFS_Common_4_2 = "1-GTFS-Calendar-1";
 	public static final String GTFS_1_GTFS_Common_4_3 = "1-GTFS-Common-13";
 	public static final String GTFS_1_GTFS_Common_4_4 = "1-GTFS-Common-14";
 	// public static final String GTFS_1_GTFS_Common_4_5 = "1-GTFS-Common-4-5";
 	public static final String GTFS_1_GTFS_Common_4_6 = "1-GTFS-Common-15";
-	// public static final String GTFS_1_GTFS_Common_4_7 = "1-GTFS-Common-4-7";
+	public static final String GTFS_1_GTFS_Common_4_7 = "1-GTFS-Calendar-2";
 
 	public static final String GTFS_1_GTFS_Common_5   = "1-GTFS-Common-16";
 
@@ -49,4 +49,7 @@ public interface Constant extends mobi.chouette.exchange.gtfs.Constant {
 	public static final String GTFS_2_GTFS_Route_8    = "2-GTFS-Route-8";
 	public static final String GTFS_2_GTFS_Route_9    = "2-GTFS-Route-9";
 	public static final String GTFS_2_GTFS_Route_11   = "2-GTFS-Route-11";
+	
+	public static final String GTFS_2_GTFS_Calendar_3 = "2-GTFS-Calendar-3";
+	public static final String GTFS_2_GTFS_Calendar_4 = "2-GTFS-Calendar-4";
 }

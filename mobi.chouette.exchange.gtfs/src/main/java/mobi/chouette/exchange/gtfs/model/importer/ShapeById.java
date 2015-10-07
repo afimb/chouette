@@ -163,6 +163,7 @@ public class ShapeById extends IndexImpl<GtfsShape> implements GtfsConverter {
 	}
 
 	private void clearBean() {
+		//bean.getErrors().clear();
 		bean.setId(null);
 		bean.setShapeDistTraveled(null);
 		bean.setShapeId(null);

@@ -90,7 +90,7 @@ public class AgencyById extends IndexImpl<GtfsAgency> implements GtfsConverter {
 		i = 0;
 		String value = null;
 		int id = (int) context.get(Context.ID);
-		// bean.getErrors().clear();
+		clearBean();
 		bean.setId(id);
 
 		value = array[i++];
@@ -197,24 +197,20 @@ public class AgencyById extends IndexImpl<GtfsAgency> implements GtfsConverter {
 	@Override
 	public boolean validate(GtfsAgency bean, GtfsImporter dao) {
 		boolean result = true;
-
-		// String agencyId = bean.getAgencyId();
-		// if (GtfsAgency.DEFAULT_ID.equals(agencyId))
-		// return result;
-		// Iterator<GtfsRoute> iti = dao.getRouteById().iterator();
-		// while ( iti.hasNext() ) {
-		// GtfsRoute nextRoute = iti.next();
-		// if (nextRoute.getAgencyId() == null)
-		// continue;
-		// if (agencyId.equals(nextRoute.getAgencyId())) {
-		// //bean.getErrors().add(new GtfsException(_path, nextStopTime.getId(),
-		// FIELDS.stop_sequence.name(),
-		// GtfsException.ERROR.DUPLICATE_STOP_SEQUENCE, null, null));
-		// return true;
-		// }
-		// }
-
+		
 		return result;
+	}
+
+	private void clearBean() {
+		// bean.getErrors().clear();
+		bean.setId(null);
+		bean.setAgencyFareUrl(null);
+		bean.setAgencyId(null);
+		bean.setAgencyLang(null);
+		bean.setAgencyName(null);
+		bean.setAgencyPhone(null);
+		bean.setAgencyTimezone(null);
+		bean.setAgencyUrl(null);
 	}
 
 	private boolean isUnknownAsIsoLanguage(String lang) {

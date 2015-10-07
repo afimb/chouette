@@ -303,6 +303,19 @@ public class ValidationReporter implements Constant {
 					fieldName+","+fieldName2,
 					CheckPoint.RESULT.NOK);
 			break;
+		
+		case ALL_DAYS_ARE_INVALID:
+			// 1-GTFS-Calendar-1
+			checkPointName = checkPointName(name, GtfsException.ERROR.ALL_DAYS_ARE_INVALID);
+			fieldName = ex.getField();
+			report.addFileInfo(filenameInfo, FILE_STATE.ERROR,
+					new FileError(FileError.CODE.INVALID_FORMAT,
+							"At least one day must be valid (rule "+checkPointName+")"));
+			validationReport.addDetail(checkPointName,
+					new Location(filenameInfo,  ex.getId(),0),
+					"At least one day must be valid",
+					CheckPoint.RESULT.NOK);
+			break;
 
 		case DUPLICATE_DEFAULT_KEY_FIELD:
 			// 1-GTFS-Common-4-3
@@ -348,6 +361,16 @@ public class ValidationReporter implements Constant {
 			fieldName = ex.getField();
 			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED, new FileError(FileError.CODE.INVALID_FORMAT,
 					"Missing \"" + fieldName + "\" (rule " + checkPointName + ")"));
+			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), 0), fieldName,
+					CheckPoint.RESULT.NOK);
+			break;
+			
+		case START_DATE_AFTER_END_DATE:
+			// 1-GTFS-Calendar-2
+			checkPointName = checkPointName(name, GtfsException.ERROR.START_DATE_AFTER_END_DATE);
+			fieldName = ex.getField();
+			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED, new FileError(FileError.CODE.INVALID_FORMAT,
+					"StartDate cannot be after EndDate (rule " + checkPointName + ")"));
 			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), 0), fieldName,
 					CheckPoint.RESULT.NOK);
 			break;
@@ -534,6 +557,21 @@ public class ValidationReporter implements Constant {
 				"The set short_name, long_name must be unique",
 				CheckPoint.RESULT.NOK);
 		break;
+		
+	case EXCEPT_DATE_WITHOUT_SERVICE:
+		// 2-GTFS-Calendar-4
+		checkPointName = checkPointName(name, GtfsException.ERROR.EXCEPT_DATE_WITHOUT_SERVICE);
+		fieldName = ex.getField();
+		report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+				new FileError(FileError.CODE.INVALID_FORMAT,
+						"Exception date without a service (rule "+checkPointName+")"));
+		validationReport.addDetail(checkPointName,
+				new Location(filenameInfo, "Exception date without a service", ex.getId(), ex.getField()),
+				"Exception date without a service",
+				CheckPoint.RESULT.NOK);
+		break;
+		
+
 
 	case MISSING_FOREIGN_KEY: // THIS CAN NEVER OCCUR !
 	case SYSTEM: // THIS CAN NEVER OCCUR !
@@ -587,6 +625,8 @@ public class ValidationReporter implements Constant {
 			return GTFS_1_GTFS_Common_4;
 		case MISSING_REQUIRED_VALUES2:
 			return GTFS_1_GTFS_Common_4_1;
+		case ALL_DAYS_ARE_INVALID:
+			return GTFS_1_GTFS_Common_4_2;
 		case DUPLICATE_DEFAULT_KEY_FIELD:
 			return GTFS_1_GTFS_Common_4_3;
 		case DEFAULT_VALUE:
@@ -595,6 +635,8 @@ public class ValidationReporter implements Constant {
 		case MISSING_DEPARTURE_TIME:
 		case MISSING_TRANSFER_TIME:
 			return GTFS_1_GTFS_Common_4_6;
+		case START_DATE_AFTER_END_DATE:
+			return GTFS_1_GTFS_Common_4_7;
 		case INVALID_FORMAT:
 			return GTFS_1_GTFS_Common_5;
 		case UNREFERENCED_ID:
@@ -623,6 +665,9 @@ public class ValidationReporter implements Constant {
 			return GTFS_2_GTFS_Route_9;
 		case INVERSE_DUPLICATE_ROUTE_NAMES:
 			return GTFS_2_GTFS_Route_11;
+			
+		case EXCEPT_DATE_WITHOUT_SERVICE:
+			return GTFS_2_GTFS_Calendar_4;
 			
 		default:
 			return null;
