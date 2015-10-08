@@ -71,10 +71,10 @@ public abstract class NamingUtil {
 	}
 
 	public static String getName(StopPoint object) {
-//		if (object.getContainedInStopArea() != null) {
-//			if (isFilled(object.getContainedInStopArea().getName()))
-//				return object.getContainedInStopArea().getName();
-//		}
+		// if (object.getContainedInStopArea() != null) {
+		// if (isFilled(object.getContainedInStopArea().getName()))
+		// return object.getContainedInStopArea().getName();
+		// }
 		return object.getObjectId();
 	}
 
@@ -117,24 +117,42 @@ public abstract class NamingUtil {
 	private static boolean isFilled(String data) {
 		return (data != null && !data.isEmpty());
 	}
-	
+
 	private static boolean isEmpty(String data) {
 		return (data == null || data.isEmpty());
 	}
-	
-	public static void setDefaultName(ConnectionLink link)
-	{
-		if (isFilled(link.getName())) return;
-		if (link.getStartOfLink() == null || isEmpty(link.getStartOfLink().getName())) return;
-		if (link.getEndOfLink() == null || isEmpty(link.getEndOfLink().getName())) return;
-		
-		link.setName(link.getStartOfLink().getName() + " -> "
-				+ link.getEndOfLink().getName());
+
+	public static void setDefaultName(ConnectionLink link) {
+		if (isFilled(link.getName()))
+			return;
+		if (link.getStartOfLink() == null || isEmpty(link.getStartOfLink().getName()))
+			return;
+		if (link.getEndOfLink() == null || isEmpty(link.getEndOfLink().getName()))
+			return;
+
+		link.setName(link.getStartOfLink().getName() + " -> " + link.getEndOfLink().getName());
 	}
-	
-	public static void setDefaultName(Timetable timetable)
-	{
-		if (isFilled(timetable.getComment())) return;
+
+	public static void setDefaultName(AccessLink link) {
+		if (isFilled(link.getName()))
+			return;
+		if (link.getStopArea() == null || isEmpty(link.getStopArea().getName()))
+			return;
+		if (link.getAccessPoint() == null || isEmpty(link.getAccessPoint().getName()))
+			return;
+		switch (link.getLinkOrientation()) {
+		case AccessPointToStopArea:
+			link.setName(link.getAccessPoint().getName() + " -> " + link.getStopArea().getName());
+			break;
+		case StopAreaToAccessPoint:
+			link.setName(link.getStopArea().getName() + " -> " + link.getAccessPoint().getName());
+			break;
+		}
+	}
+
+	public static void setDefaultName(Timetable timetable) {
+		if (isFilled(timetable.getComment()))
+			return;
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		String monday = (timetable.getDayTypes().contains(DayTypeEnum.Monday)) ? "Mo" : "..";
 		String tuesday = (timetable.getDayTypes().contains(DayTypeEnum.Tuesday)) ? "Tu" : "..";
@@ -181,11 +199,12 @@ public abstract class NamingUtil {
 
 		// security if timetable is empty
 		if (firstDate != null && lastDate != null) {
-			String comment = timetable.objectIdSuffix()+" : "+format.format(firstDate) + " -> " + format.format(lastDate) + " : " + monday
-					+ tuesday + wednesday + thursday + friday + saturday + sunday;
+			String comment = timetable.objectIdSuffix() + " : " + format.format(firstDate) + " -> "
+					+ format.format(lastDate) + " : " + monday + tuesday + wednesday + thursday + friday + saturday
+					+ sunday;
 			timetable.setComment(comment);
 		} else {
-			timetable.setComment(timetable.objectIdSuffix()+" : Empty timetable");
+			timetable.setComment(timetable.objectIdSuffix() + " : Empty timetable");
 		}
 	}
 }
