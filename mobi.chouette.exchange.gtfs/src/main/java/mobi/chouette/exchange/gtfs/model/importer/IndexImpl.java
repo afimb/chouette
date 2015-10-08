@@ -85,13 +85,13 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 				_fields = new HashMap<String, Integer>();
 				for (int i = 0; i < _reader.getFieldCount(); i++) {
 					String field = _reader.getValue(i); // Get the ith token 
-					verify(field);
+					verify(field, i);
 					_fields.put(field.trim(), i);
 				}
 				checkRequiredFields(_fields);
 				index(); // read the rest of this file
 			} else { // The header line doesn't comply with GTFS-CSV 
-				throw new GtfsException(_path, _total, _reader.getPosition(), null,
+				throw new GtfsException(_path, _total, null,
 						GtfsException.ERROR.INVALID_HEADER_FILE_FORMAT, _reader.getCode(), null);
 			}
 		} finally {
@@ -100,13 +100,13 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 		}
 	}
 	
-	private void verify(String field) throws GtfsException {
+	private void verify(String field, int i) throws GtfsException {
 		if (field == null || field.trim().isEmpty()) { // key is empty
-			throw new GtfsException(_path, _total, _key, GtfsException.ERROR.EMPTY_HEADER_FIELD, null, null);
+			throw new GtfsException(_path, _total, i, _key, GtfsException.ERROR.EMPTY_HEADER_FIELD, null, null);
 		}
 		
 		if (_fields.get(field.trim()) != null) { // key already exists
-			throw new GtfsException(_path, _total, _key, GtfsException.ERROR.DUPLICATE_HEADER_FIELD, null, null);
+			throw new GtfsException(_path, _total, i, _key, GtfsException.ERROR.DUPLICATE_HEADER_FIELD, null, null);
 		}
 	}
 	
@@ -114,7 +114,7 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 
 	protected void testExtraSpace(String fieldName, String value, GtfsObject bean) {
 		if (value != null && !value.equals(value.trim())) {
-			bean.getErrors().add(new GtfsException(_path, bean.getId(), fieldName, GtfsException.ERROR.EXTRA_SPACE_IN_FIELD, null, value));
+			bean.getErrors().add(new GtfsException(_path, bean.getId(), getIndex(fieldName), fieldName, GtfsException.ERROR.EXTRA_SPACE_IN_FIELD, null, value));
 		}
 	}
 	
@@ -239,13 +239,13 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 			_total++;
 			
 			if (hasDefaultId)
-				throw new GtfsException(_path, _total, _key, GtfsException.ERROR.DUPLICATE_DEFAULT_KEY_FIELD, null, null);
+				throw new GtfsException(_path, _total, getIndex(_key), _key, GtfsException.ERROR.DUPLICATE_DEFAULT_KEY_FIELD, null, null);
 			
 			if (_reader.next()) {
 				String key = getField(_key);
 								
 				if (key == null || key.trim().isEmpty()) { // key cannot be null! "" or GtfsAgency.DEFAULT_ID
-					throw new GtfsException(_path, _total, _key, GtfsException.ERROR.MISSING_FIELD, null, null);
+					throw new GtfsException(_path, _total, getIndex(_key), _key, GtfsException.ERROR.MISSING_FIELD, null, null);
 				}
 				
 				if (GtfsAgency.DEFAULT_ID.equals(key)) {
@@ -253,7 +253,7 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 						hasDefaultId = true;
 					}
 					else {
-						throw new GtfsException(_path, _total, _key, GtfsException.ERROR.DUPLICATE_DEFAULT_KEY_FIELD, null, null);
+						throw new GtfsException(_path, _total, getIndex(_key), _key, GtfsException.ERROR.DUPLICATE_DEFAULT_KEY_FIELD, null, null);
 					}
 				}
 				
@@ -266,9 +266,9 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 				} else {
 					if (_unique) {
 						if (GtfsAgency.DEFAULT_ID.equals(key)) {
-							throw new GtfsException(_path, _total, _key, GtfsException.ERROR.DUPLICATE_DEFAULT_KEY_FIELD, null, null);
+							throw new GtfsException(_path, _total, getIndex(_key), _key, GtfsException.ERROR.DUPLICATE_DEFAULT_KEY_FIELD, null, null);
 						} else {
-							throw new GtfsException(_path, _total, _key, GtfsException.ERROR.DUPLICATE_FIELD, null, null);
+							throw new GtfsException(_path, _total, getIndex(_key), _key, GtfsException.ERROR.DUPLICATE_FIELD, null, null);
 						}
 					}
 					token.lenght++;
