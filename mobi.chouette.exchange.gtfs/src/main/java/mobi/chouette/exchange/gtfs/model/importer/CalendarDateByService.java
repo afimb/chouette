@@ -33,11 +33,11 @@ public class CalendarDateByService extends IndexImpl<GtfsCalendarDate>
 			if (fieldName != null) {
 				if (!fieldName.equals(fieldName.trim())) {
 					// extra spaces in end fields are tolerated : 1-GTFS-CSV-7 warning
-					getErrors().add(new GtfsException(_path, 1, fieldName, GtfsException.ERROR.EXTRA_SPACE_IN_HEADER_FIELD, null, null));
+					getErrors().add(new GtfsException(_path, 1, getIndex(fieldName), fieldName, GtfsException.ERROR.EXTRA_SPACE_IN_HEADER_FIELD, null, null));
 				}
 				
 				if (HTMLTagValidator.validate(fieldName.trim())) {
-					getErrors().add(new GtfsException(_path, 1, fieldName.trim(), GtfsException.ERROR.HTML_TAG_IN_HEADER_FIELD, null, null));
+					getErrors().add(new GtfsException(_path, 1, getIndex(fieldName), fieldName.trim(), GtfsException.ERROR.HTML_TAG_IN_HEADER_FIELD, null, null));
 				}
 				
 				boolean fieldNameIsExtra = true;
@@ -49,7 +49,7 @@ public class CalendarDateByService extends IndexImpl<GtfsCalendarDate>
 				}
 				if (fieldNameIsExtra) {
 					// extra fields are tolerated : 1-GTFS-CalendarDate-7 warning
-					getErrors().add(new GtfsException(_path, 1, fieldName, GtfsException.ERROR.EXTRA_HEADER_FIELD, null, null));
+					getErrors().add(new GtfsException(_path, 1, getIndex(fieldName), fieldName, GtfsException.ERROR.EXTRA_HEADER_FIELD, null, null));
 				}
 			}
 		}
@@ -87,19 +87,19 @@ public class CalendarDateByService extends IndexImpl<GtfsCalendarDate>
 		
 		value = array[i++]; testExtraSpace(FIELDS.service_id.name(), value, bean);
 		if (value == null || value.trim().isEmpty()) {
-			throw new GtfsException(_path, id, FIELDS.service_id.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null);
+			throw new GtfsException(_path, id, getIndex(FIELDS.service_id.name()), FIELDS.service_id.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null);
 		} else {
 			bean.setServiceId(STRING_CONVERTER.from(context, FIELDS.service_id, value, true));
 		}
 		
 		value = array[i++]; testExtraSpace(FIELDS.date.name(), value, bean);
 		if (value == null || value.trim().isEmpty()) {
-			bean.getErrors().add(new GtfsException(_path, id, FIELDS.date.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+			bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.date.name()), FIELDS.date.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
 		} else {
 			try {
 				bean.setDate(DATE_CONVERTER.from(context, FIELDS.date, value, true));
 			} catch(GtfsException ex) {
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.date.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
+				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.date.name()), FIELDS.date.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
@@ -110,7 +110,7 @@ public class CalendarDateByService extends IndexImpl<GtfsCalendarDate>
 			try {
 				bean.setExceptionType(EXCEPTIONTYPE_CONVERTER.from(context, FIELDS.exception_type, value, true));
 			} catch(GtfsException ex) {
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.date.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
+				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.exception_type.name()), FIELDS.exception_type.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		

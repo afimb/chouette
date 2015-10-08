@@ -36,11 +36,11 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements GtfsConve
 			if (fieldName != null) {
 				if (!fieldName.equals(fieldName.trim())) {
 					// extra spaces in end fields are tolerated : 1-GTFS-CSV-7 warning
-					getErrors().add(new GtfsException(_path, 1, fieldName, GtfsException.ERROR.EXTRA_SPACE_IN_HEADER_FIELD, null, null));
+					getErrors().add(new GtfsException(_path, 1, getIndex(fieldName), fieldName, GtfsException.ERROR.EXTRA_SPACE_IN_HEADER_FIELD, null, null));
 				}
 				
 				if (HTMLTagValidator.validate(fieldName.trim())) {
-					getErrors().add(new GtfsException(_path, 1, fieldName.trim(), GtfsException.ERROR.HTML_TAG_IN_HEADER_FIELD, null, null));
+					getErrors().add(new GtfsException(_path, 1, getIndex(fieldName), fieldName.trim(), GtfsException.ERROR.HTML_TAG_IN_HEADER_FIELD, null, null));
 				}
 				
 				boolean fieldNameIsExtra = true;
@@ -52,7 +52,7 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements GtfsConve
 				}
 				if (fieldNameIsExtra) {
 					// extra fields are tolerated : 1-GTFS-StopTime-12 warning
-					getErrors().add(new GtfsException(_path, 1, fieldName, GtfsException.ERROR.EXTRA_HEADER_FIELD, null, null));
+					getErrors().add(new GtfsException(_path, 1, getIndex(fieldName), fieldName, GtfsException.ERROR.EXTRA_HEADER_FIELD, null, null));
 				}
 			}
 		}
@@ -94,30 +94,30 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements GtfsConve
 		
 		value = _array[i++]; testExtraSpace(FIELDS.trip_id.name(), value, _bean);
 		if (value == null || value.trim().isEmpty()) {
-			_bean.getErrors().add(new GtfsException(_path, id, FIELDS.trip_id.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+			_bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.trip_id.name()), FIELDS.trip_id.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
 		} else {
 			_bean.setTripId(STRING_CONVERTER.from(context, FIELDS.trip_id, value, true));
 		}
 		
 		value = _array[i++]; testExtraSpace(FIELDS.stop_id.name(), value, _bean);
 		if (value == null || value.trim().isEmpty()) {
-			_bean.getErrors().add(new GtfsException(_path, id, FIELDS.stop_id.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+			_bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.stop_id.name()), FIELDS.stop_id.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
 		} else {
 			_bean.setStopId(STRING_CONVERTER.from(context, FIELDS.stop_id, value, true));
 		}
 		
 		value = _array[i++]; testExtraSpace(FIELDS.stop_sequence.name(), value, _bean);
 		if (value == null || value.trim().isEmpty()) {
-			_bean.getErrors().add(new GtfsException(_path, id, FIELDS.stop_sequence.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+			_bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.stop_sequence.name()), FIELDS.stop_sequence.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
 		} else {
 			try {
 				int stopSequence = INTEGER_CONVERTER.from(context, FIELDS.stop_sequence, value, true);
 				if (stopSequence >= 0)
 					_bean.setStopSequence(stopSequence);
 				else
-					_bean.getErrors().add(new GtfsException(_path, id, FIELDS.stop_sequence.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
+					_bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.stop_sequence.name()), FIELDS.stop_sequence.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			} catch(GtfsException e) {
-				_bean.getErrors().add(new GtfsException(_path, id, FIELDS.stop_sequence.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
+				_bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.stop_sequence.name()), FIELDS.stop_sequence.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
@@ -131,7 +131,7 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements GtfsConve
 			try {
 				_bean.setArrivalTime(GTFSTIME_CONVERTER.from(context, FIELDS.arrival_time, value, true));
 			} catch(GtfsException e) {
-				_bean.getErrors().add(new GtfsException(_path, id, FIELDS.arrival_time.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
+				_bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.arrival_time.name()), FIELDS.arrival_time.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
@@ -142,14 +142,14 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements GtfsConve
 			try {
 				_bean.setDepartureTime(GTFSTIME_CONVERTER.from(context, FIELDS.departure_time, value, true));
 			} catch(GtfsException e) {
-				_bean.getErrors().add(new GtfsException(_path, id, FIELDS.departure_time.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
+				_bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.departure_time.name()), FIELDS.departure_time.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
 		if (noArrivalTime && !noDepartureTime) {
-			_bean.getErrors().add(new GtfsException(_path, id, FIELDS.arrival_time.name(), GtfsException.ERROR.MISSING_ARRIVAL_TIME, null, null));
+			_bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.arrival_time.name()), FIELDS.arrival_time.name(), GtfsException.ERROR.MISSING_ARRIVAL_TIME, null, null));
 		} else if (!noArrivalTime && noDepartureTime) {
-			_bean.getErrors().add(new GtfsException(_path, id, FIELDS.departure_time.name(), GtfsException.ERROR.MISSING_DEPARTURE_TIME, null, null));
+			_bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.departure_time.name()), FIELDS.departure_time.name(), GtfsException.ERROR.MISSING_DEPARTURE_TIME, null, null));
 		} 
 		
 		value = _array[i++]; testExtraSpace(FIELDS.stop_headsign.name(), value, _bean);
@@ -162,7 +162,7 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements GtfsConve
 			try {
 				_bean.setPickupType(PICKUP_CONVERTER.from(context, FIELDS.pickup_type, value, PickupType.Scheduled, false));
 			} catch(GtfsException e) {
-				_bean.getErrors().add(new GtfsException(_path, id, FIELDS.pickup_type.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
+				_bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.pickup_type.name()), FIELDS.pickup_type.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
@@ -171,7 +171,7 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements GtfsConve
 			try {
 				_bean.setDropOffType(DROPOFFTYPE_CONVERTER.from(context, FIELDS.drop_off_type, value, DropOffType.Scheduled, false));
 			} catch(GtfsException e) {
-				_bean.getErrors().add(new GtfsException(_path, id, FIELDS.drop_off_type.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
+				_bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.drop_off_type.name()), FIELDS.drop_off_type.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
@@ -180,11 +180,11 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements GtfsConve
 			try {
 				float shapeDistTraveled = FLOAT_CONVERTER.from(context, FIELDS.shape_dist_traveled, value, false);
 				if (shapeDistTraveled < 0) {
-					_bean.getErrors().add(new GtfsException(_path, id, FIELDS.shape_dist_traveled.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
+					_bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.shape_dist_traveled.name()), FIELDS.shape_dist_traveled.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 				}
 				_bean.setShapeDistTraveled(shapeDistTraveled);
 			} catch(GtfsException e) {
-				_bean.getErrors().add(new GtfsException(_path, id, FIELDS.shape_dist_traveled.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
+				_bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.shape_dist_traveled.name()), FIELDS.shape_dist_traveled.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
@@ -193,11 +193,11 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements GtfsConve
 			try {
 				int timepoint = INTEGER_CONVERTER.from(context, FIELDS.timepoint, value, false);
 				if (timepoint < 0 || timepoint > 1) {
-					_bean.getErrors().add(new GtfsException(_path, id, FIELDS.timepoint.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
+					_bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.timepoint.name()), FIELDS.timepoint.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 				}
 				_bean.setTimepoint(timepoint);
 			} catch(GtfsException e) {
-				_bean.getErrors().add(new GtfsException(_path, id, FIELDS.timepoint.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
+				_bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.timepoint.name()), FIELDS.timepoint.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 
@@ -221,7 +221,7 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements GtfsConve
 					continue;
 				if (id != nextStopTime.getId() && stopSequence == nextStopTime.getStopSequence()) {
 					result = false;
-					bean.getErrors().add(new GtfsException(_path, nextStopTime.getId(), FIELDS.stop_sequence.name(), GtfsException.ERROR.DUPLICATE_STOP_SEQUENCE, null, null));
+					bean.getErrors().add(new GtfsException(_path, nextStopTime.getId(), getIndex(FIELDS.stop_sequence.name()), FIELDS.stop_sequence.name(), GtfsException.ERROR.DUPLICATE_STOP_SEQUENCE, null, null));
 				}
 				if (nextStopTime.getId() == id-1)
 					break;
@@ -237,7 +237,7 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements GtfsConve
 		} else {
 			if (dao.getStopById().getValue(stopId) == null) {
 				// this bean has no stop
-				bean.getErrors().add(new GtfsException(_path, bean.getId(), FIELDS.stop_id.name(), GtfsException.ERROR.UNREFERENCED_ID, null, null));
+				bean.getErrors().add(new GtfsException(_path, bean.getId(), getIndex(FIELDS.stop_id.name()), FIELDS.stop_id.name(), GtfsException.ERROR.UNREFERENCED_ID, null, null));
 				result2 = false;
 			}
 			if (result2)

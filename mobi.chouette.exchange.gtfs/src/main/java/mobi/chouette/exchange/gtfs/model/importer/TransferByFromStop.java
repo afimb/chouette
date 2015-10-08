@@ -31,11 +31,11 @@ public class TransferByFromStop extends IndexImpl<GtfsTransfer> implements
 			if (fieldName != null) {
 				if (!fieldName.equals(fieldName.trim())) {
 					// extra spaces in end fields are tolerated : 1-GTFS-CSV-7 warning
-					getErrors().add(new GtfsException(_path, 1, fieldName, GtfsException.ERROR.EXTRA_SPACE_IN_HEADER_FIELD, null, null));
+					getErrors().add(new GtfsException(_path, 1, getIndex(fieldName), fieldName, GtfsException.ERROR.EXTRA_SPACE_IN_HEADER_FIELD, null, null));
 				}
 				
 				if (HTMLTagValidator.validate(fieldName.trim())) {
-					getErrors().add(new GtfsException(_path, 1, fieldName.trim(), GtfsException.ERROR.HTML_TAG_IN_HEADER_FIELD, null, null));
+					getErrors().add(new GtfsException(_path, 1, getIndex(fieldName), fieldName.trim(), GtfsException.ERROR.HTML_TAG_IN_HEADER_FIELD, null, null));
 				}
 				
 				boolean fieldNameIsExtra = true;
@@ -47,7 +47,7 @@ public class TransferByFromStop extends IndexImpl<GtfsTransfer> implements
 				}
 				if (fieldNameIsExtra) {
 					// extra fields are tolerated : 1-GTFS-Transfer-6 warning
-					getErrors().add(new GtfsException(_path, 1, fieldName, GtfsException.ERROR.EXTRA_HEADER_FIELD, null, null));
+					getErrors().add(new GtfsException(_path, 1, getIndex(fieldName), fieldName, GtfsException.ERROR.EXTRA_HEADER_FIELD, null, null));
 				}
 			}
 		}
@@ -85,21 +85,21 @@ public class TransferByFromStop extends IndexImpl<GtfsTransfer> implements
 		
 		value = array[i++]; testExtraSpace(FIELDS.from_stop_id.name(), value, bean);
 		if (value == null || value.trim().isEmpty()) {
-			bean.getErrors().add(new GtfsException(_path, id, FIELDS.from_stop_id.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+			bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.from_stop_id.name()), FIELDS.from_stop_id.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
 		} else {
 			bean.setFromStopId(STRING_CONVERTER.from(context, FIELDS.from_stop_id, value, true));
 		}
 			
 		value = array[i++]; testExtraSpace(FIELDS.to_stop_id.name(), value, bean);
 		if (value == null || value.trim().isEmpty()) {
-			bean.getErrors().add(new GtfsException(_path, id, FIELDS.to_stop_id.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+			bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.to_stop_id.name()), FIELDS.to_stop_id.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
 		} else {
 			bean.setToStopId(STRING_CONVERTER.from(context, FIELDS.to_stop_id, value, true));
 		}
 		
 		value = array[i++]; testExtraSpace(FIELDS.transfer_type.name(), value, bean);
 		if (value == null || value.trim().isEmpty()) {
-			bean.getErrors().add(new GtfsException(_path, id, FIELDS.transfer_type.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+			bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.transfer_type.name()), FIELDS.transfer_type.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
 		} else {
 			try {
 				bean.setTransferType(TRANSFERTYPE_CONVERTER.from(context, FIELDS.transfer_type, value, true));
@@ -113,14 +113,14 @@ public class TransferByFromStop extends IndexImpl<GtfsTransfer> implements
 			try {
 				bean.setMinTransferTime(POSITIVE_INTEGER_CONVERTER.from(context, FIELDS.min_transfer_time, value, false));
 			} catch (GtfsException ex) {
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.min_transfer_time.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
+				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.min_transfer_time.name()), FIELDS.min_transfer_time.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		} else {
 			bean.setMinTransferTime(null);
 		}
 		
 		if (bean.getTransferType() == TransferType.Minimal && bean.getMinTransferTime() == null) {
-			bean.getErrors().add(new GtfsException(_path, id, FIELDS.min_transfer_time.name(), GtfsException.ERROR.MISSING_TRANSFER_TIME, null, null));
+			bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.transfer_type.name()), FIELDS.transfer_type.name(), GtfsException.ERROR.MISSING_TRANSFER_TIME, null, null));
 		}
 		return bean;
 	}
@@ -131,7 +131,7 @@ public class TransferByFromStop extends IndexImpl<GtfsTransfer> implements
 
 		String fromStopId = bean.getFromStopId();
 		if (dao.getStopById().getValue(fromStopId) == null) {
-			bean.getErrors().add(new GtfsException(_path, bean.getId(), FIELDS.from_stop_id.name(), GtfsException.ERROR.UNREFERENCED_ID, null, null));
+			bean.getErrors().add(new GtfsException(_path, bean.getId(), getIndex(FIELDS.from_stop_id.name()), FIELDS.from_stop_id.name(), GtfsException.ERROR.UNREFERENCED_ID, null, null));
 			result = false;
 		} else {
 			bean.getOkTests().add(GtfsException.ERROR.UNREFERENCED_ID);
@@ -139,7 +139,7 @@ public class TransferByFromStop extends IndexImpl<GtfsTransfer> implements
 
 		String toStopId = bean.getToStopId();
 		if (dao.getStopById().getValue(toStopId) == null) {
-			bean.getErrors().add(new GtfsException(_path, bean.getId(), FIELDS.to_stop_id.name(), GtfsException.ERROR.UNREFERENCED_ID, null, null));
+			bean.getErrors().add(new GtfsException(_path, bean.getId(), getIndex(FIELDS.to_stop_id.name()), FIELDS.to_stop_id.name(), GtfsException.ERROR.UNREFERENCED_ID, null, null));
 			result = false;
 		} else {
 			bean.getOkTests().add(GtfsException.ERROR.UNREFERENCED_ID);
