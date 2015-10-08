@@ -14,7 +14,7 @@
         </ExtendedData>
 #end
 #foreach( $item in $data.items )
-      <Placemark id="$item.getId" >
+      <Placemark id="$item.id" >
 #foreach ( $key in $item.attributes.keyList() )
         <$key>$item.attributes.get($key)</$key>
 #end
