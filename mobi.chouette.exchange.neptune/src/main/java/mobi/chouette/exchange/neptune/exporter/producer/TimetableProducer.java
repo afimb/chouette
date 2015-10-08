@@ -23,7 +23,7 @@ public class TimetableProducer extends
       populateFromModel(jaxbTimetable, timetable);
 
       jaxbTimetable.setComment(getNotEmptyString(timetable.getComment()));
-      jaxbTimetable.setVersion(timetable.getVersion());
+      jaxbTimetable.setVersion(getNotEmptyString(timetable.getVersion()));
 
       for (Date peculiarDay : timetable.getPeculiarDates())
       {

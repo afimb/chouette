@@ -21,8 +21,7 @@ public class AreaCentroidProducer extends
       //
       populateFromModel(jaxbAreaCentroid, area);
 
-      jaxbAreaCentroid.setObjectId(jaxbAreaCentroid.getObjectId().replace(
-            ":StopArea:", ":AreaCentroid:"));
+      jaxbAreaCentroid.setObjectId(area.objectIdPrefix()+":AreaCentroid:"+area.objectIdSuffix());
       jaxbAreaCentroid.setComment(getNotEmptyString(area.getComment()));
       jaxbAreaCentroid.setName(area.getName());
 

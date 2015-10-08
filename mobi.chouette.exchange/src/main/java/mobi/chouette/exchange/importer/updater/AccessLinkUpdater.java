@@ -7,6 +7,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.dao.AccessPointDAO;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
+import mobi.chouette.model.util.NamingUtil;
 import mobi.chouette.model.util.Referential;
 
 @Stateless(name = AccessLinkUpdater.BEAN_NAME)
@@ -26,6 +27,10 @@ public class AccessLinkUpdater implements Updater<AccessLink> {
 		newValue.setSaved(true);
 
 		Referential cache = (Referential) context.get(CACHE);
+
+		if (newValue.getName() == null) {
+			NamingUtil.setDefaultName(newValue);
+		}
 
 		if (newValue.getObjectId() != null
 				&& !newValue.getObjectId().equals(oldValue.getObjectId())) {
