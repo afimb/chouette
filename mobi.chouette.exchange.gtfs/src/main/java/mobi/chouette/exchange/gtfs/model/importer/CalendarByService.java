@@ -5,6 +5,7 @@ import java.util.Map;
 
 import mobi.chouette.common.HTMLTagValidator;
 import mobi.chouette.exchange.gtfs.model.GtfsCalendar;
+import mobi.chouette.exchange.gtfs.model.importer.AgencyById.FIELDS;
 
 public class CalendarByService extends IndexImpl<GtfsCalendar> implements GtfsConverter {
 
@@ -28,11 +29,11 @@ public class CalendarByService extends IndexImpl<GtfsCalendar> implements GtfsCo
 			if (fieldName != null) {
 				if (!fieldName.equals(fieldName.trim())) {
 					// extra spaces in end fields are tolerated : 1-GTFS-CSV-7 warning
-					getErrors().add(new GtfsException(_path, 1, fieldName, GtfsException.ERROR.EXTRA_SPACE_IN_HEADER_FIELD, null, null));
+					getErrors().add(new GtfsException(_path, 1, getIndex(fieldName), fieldName, GtfsException.ERROR.EXTRA_SPACE_IN_HEADER_FIELD, null, null));
 				}
 				
 				if (HTMLTagValidator.validate(fieldName.trim())) {
-					getErrors().add(new GtfsException(_path, 1, fieldName.trim(), GtfsException.ERROR.HTML_TAG_IN_HEADER_FIELD, null, null));
+					getErrors().add(new GtfsException(_path, 1, getIndex(fieldName), fieldName.trim(), GtfsException.ERROR.HTML_TAG_IN_HEADER_FIELD, null, null));
 				}
 				
 				boolean fieldNameIsExtra = true;
@@ -44,7 +45,7 @@ public class CalendarByService extends IndexImpl<GtfsCalendar> implements GtfsCo
 				}
 				if (fieldNameIsExtra) {
 					// extra fields are tolerated : 1-GTFS-Calendar-14 warning
-					getErrors().add(new GtfsException(_path, 1, fieldName, GtfsException.ERROR.EXTRA_HEADER_FIELD, null, null));
+					getErrors().add(new GtfsException(_path, 1, getIndex(fieldName), fieldName, GtfsException.ERROR.EXTRA_HEADER_FIELD, null, null));
 				}
 			}
 		}
@@ -103,7 +104,7 @@ public class CalendarByService extends IndexImpl<GtfsCalendar> implements GtfsCo
 		
 		value = array[i++]; testExtraSpace(FIELDS.service_id.name(), value, bean);
 		if (value == null || value.trim().isEmpty()) {
-			throw new GtfsException(_path, id, FIELDS.service_id.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null);
+			throw new GtfsException(_path, id, getIndex(FIELDS.service_id.name()), FIELDS.service_id.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null);
 		} else {
 			bean.setServiceId(STRING_CONVERTER.from(context, FIELDS.service_id, value, true));
 		}
@@ -111,107 +112,107 @@ public class CalendarByService extends IndexImpl<GtfsCalendar> implements GtfsCo
 		boolean hasAvalidDay = false;
 		value = array[i++]; testExtraSpace(FIELDS.monday.name(), value, bean);
 		if (value == null || value.trim().isEmpty()) {
-			bean.getErrors().add(new GtfsException(_path, id, FIELDS.monday.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+			bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.monday.name()), FIELDS.monday.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
 		} else {
 			try {
 				bean.setMonday(BOOLEAN_CONVERTER.from(context, FIELDS.monday, value, true));
 				hasAvalidDay = hasAvalidDay || bean.getMonday();
 			} catch(GtfsException ex) {
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.monday.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
+				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.monday.name()), FIELDS.monday.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
 		value = array[i++]; testExtraSpace(FIELDS.tuesday.name(), value, bean);
 		if (value == null || value.trim().isEmpty()) {
-			bean.getErrors().add(new GtfsException(_path, id, FIELDS.tuesday.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+			bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.tuesday.name()), FIELDS.tuesday.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
 		} else {
 			try {
 				bean.setTuesday(BOOLEAN_CONVERTER.from(context, FIELDS.tuesday, value, true));
 				hasAvalidDay = hasAvalidDay || bean.getTuesday();
 			} catch(GtfsException ex) {
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.tuesday.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
+				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.tuesday.name()), FIELDS.tuesday.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
 		value = array[i++]; testExtraSpace(FIELDS.wednesday.name(), value, bean);
 		if (value == null || value.trim().isEmpty()) {
-			bean.getErrors().add(new GtfsException(_path, id, FIELDS.wednesday.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+			bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.wednesday.name()), FIELDS.wednesday.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
 		} else {
 			try {
 				bean.setWednesday(BOOLEAN_CONVERTER.from(context, FIELDS.wednesday, value, true));
 				hasAvalidDay = hasAvalidDay || bean.getWednesday();
 			} catch(GtfsException ex) {
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.wednesday.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
+				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.wednesday.name()), FIELDS.wednesday.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
 		value = array[i++]; testExtraSpace(FIELDS.thursday.name(), value, bean);
 		if (value == null || value.trim().isEmpty()) {
-			bean.getErrors().add(new GtfsException(_path, id, FIELDS.thursday.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+			bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.thursday.name()), FIELDS.thursday.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
 		} else {
 			try {
 				bean.setThursday(BOOLEAN_CONVERTER.from(context, FIELDS.thursday, value, true));
 				hasAvalidDay = hasAvalidDay || bean.getThursday();
 			} catch(GtfsException ex) {
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.thursday.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
+				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.thursday.name()), FIELDS.thursday.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
 		value = array[i++]; testExtraSpace(FIELDS.friday.name(), value, bean);
 		if (value == null || value.trim().isEmpty()) {
-			bean.getErrors().add(new GtfsException(_path, id, FIELDS.friday.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+			bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.friday.name()), FIELDS.friday.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
 		} else {
 			try {
 				bean.setFriday(BOOLEAN_CONVERTER.from(context, FIELDS.friday, value, true));
 				hasAvalidDay = hasAvalidDay || bean.getFriday();
 			} catch(GtfsException ex) {
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.friday.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
+				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.friday.name()), FIELDS.friday.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
 		value = array[i++]; testExtraSpace(FIELDS.saturday.name(), value, bean);
 		if (value == null || value.trim().isEmpty()) {
-			bean.getErrors().add(new GtfsException(_path, id, FIELDS.saturday.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+			bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.saturday.name()), FIELDS.saturday.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
 		} else {
 			try {
 				bean.setSaturday(BOOLEAN_CONVERTER.from(context, FIELDS.saturday, value, true));
 				hasAvalidDay = hasAvalidDay || bean.getSaturday();
 			} catch(GtfsException ex) {
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.saturday.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
+				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.saturday.name()), FIELDS.saturday.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
 		value = array[i++]; testExtraSpace(FIELDS.sunday.name(), value, bean);
 		if (value == null || value.trim().isEmpty()) {
-			bean.getErrors().add(new GtfsException(_path, id, FIELDS.sunday.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+			bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.sunday.name()), FIELDS.sunday.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
 		} else {
 			try {
 				bean.setSunday(BOOLEAN_CONVERTER.from(context, FIELDS.sunday, value, true));
 				hasAvalidDay = hasAvalidDay || bean.getSunday();
 			} catch(GtfsException ex) {
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.sunday.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
+				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.sunday.name()), FIELDS.sunday.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
 		value = array[i++]; testExtraSpace(FIELDS.start_date.name(), value, bean);
 		if (value == null || value.trim().isEmpty()) {
-			bean.getErrors().add(new GtfsException(_path, id, FIELDS.start_date.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+			bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.start_date.name()), FIELDS.start_date.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
 		} else {
 			try {
 				bean.setStartDate(DATE_CONVERTER.from(context, FIELDS.start_date, value, true));
 			} catch(GtfsException ex) {
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.start_date.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
+				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.start_date.name()), FIELDS.start_date.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
 		value = array[i++]; testExtraSpace(FIELDS.end_date.name(), value, bean);
 		if (value == null || value.trim().isEmpty()) {
-			bean.getErrors().add(new GtfsException(_path, id, FIELDS.end_date.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+			bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.end_date.name()), FIELDS.end_date.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
 		} else {
 			try {
 				bean.setEndDate(DATE_CONVERTER.from(context, FIELDS.end_date, value, true));
 			} catch(GtfsException ex) {
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.end_date.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
+				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.end_date.name()), FIELDS.end_date.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
@@ -225,7 +226,7 @@ public class CalendarByService extends IndexImpl<GtfsCalendar> implements GtfsCo
 		// startDate <= Enddate
 		if (bean.getStartDate() != null && bean.getEndDate() != null) {
 			if (bean.getStartDate().after(bean.getEndDate())) {
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.service_id.name(), GtfsException.ERROR.START_DATE_AFTER_END_DATE, null, bean.getServiceId()));
+				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.start_date.name()), FIELDS.start_date.name(), GtfsException.ERROR.START_DATE_AFTER_END_DATE, null, bean.getServiceId()));
 			} else {
 				bean.getOkTests().add(GtfsException.ERROR.START_DATE_AFTER_END_DATE);
 			}

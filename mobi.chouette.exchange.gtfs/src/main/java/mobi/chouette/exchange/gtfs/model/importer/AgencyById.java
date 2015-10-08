@@ -32,13 +32,13 @@ public class AgencyById extends IndexImpl<GtfsAgency> implements GtfsConverter {
 					// extra spaces in end fields are tolerated : 1-GTFS-CSV-7
 					// warning
 					getErrors().add(
-							new GtfsException(_path, 1, fieldName, GtfsException.ERROR.EXTRA_SPACE_IN_HEADER_FIELD,
+							new GtfsException(_path, 1, getIndex(fieldName), fieldName, GtfsException.ERROR.EXTRA_SPACE_IN_HEADER_FIELD,
 									null, null));
 				}
 
 				if (HTMLTagValidator.validate(fieldName.trim())) {
 					getErrors().add(
-							new GtfsException(_path, 1, fieldName.trim(), GtfsException.ERROR.HTML_TAG_IN_HEADER_FIELD,
+							new GtfsException(_path, 1, getIndex(fieldName), fieldName.trim(), GtfsException.ERROR.HTML_TAG_IN_HEADER_FIELD,
 									null, null));
 				}
 
@@ -52,7 +52,7 @@ public class AgencyById extends IndexImpl<GtfsAgency> implements GtfsConverter {
 				if (fieldNameIsExtra) {
 					// extra fields are tolerated : 1-GTFS-Agency-10 warning
 					getErrors().add(
-							new GtfsException(_path, 1, fieldName, GtfsException.ERROR.EXTRA_HEADER_FIELD, null, null));
+							new GtfsException(_path, 1, getIndex(fieldName), fieldName, GtfsException.ERROR.EXTRA_HEADER_FIELD, null, null));
 				}
 			}
 		}
@@ -99,9 +99,15 @@ public class AgencyById extends IndexImpl<GtfsAgency> implements GtfsConverter {
 		bean.setAgencyId(STRING_CONVERTER.from(context, FIELDS.agency_id, value, GtfsAgency.DEFAULT_ID, false));
 
 		if (GtfsAgency.DEFAULT_ID.equals(bean.getAgencyId())) {
+			if (getIndex(FIELDS.agency_id.name()) == null) {
 			bean.getErrors().add(
-					new GtfsException(_path, id, FIELDS.agency_name.name(), GtfsException.ERROR.DEFAULT_VALUE, null,
+					new GtfsException(_path, id, FIELDS.agency_id.name(), GtfsException.ERROR.DEFAULT_VALUE, null,
 							null));
+			} else {
+				bean.getErrors().add(
+						new GtfsException(_path, id, getIndex(FIELDS.agency_id.name()), FIELDS.agency_id.name(), GtfsException.ERROR.DEFAULT_VALUE, null,
+								null));
+			}
 		} else {
 			bean.getOkTests().add(GtfsException.ERROR.DEFAULT_VALUE);
 		}
@@ -113,7 +119,7 @@ public class AgencyById extends IndexImpl<GtfsAgency> implements GtfsConverter {
 		testExtraSpace(FIELDS.agency_name.name(), value, bean);
 		if (value == null || value.trim().isEmpty()) {
 			bean.getErrors().add(
-					new GtfsException(_path, id, FIELDS.agency_name.name(),
+					new GtfsException(_path, id, getIndex(FIELDS.agency_name.name()), FIELDS.agency_name.name(),
 							GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
 		} else {
 			bean.getOkTests().add(GtfsException.ERROR.MISSING_REQUIRED_VALUES);
@@ -125,7 +131,7 @@ public class AgencyById extends IndexImpl<GtfsAgency> implements GtfsConverter {
 		testExtraSpace(FIELDS.agency_url.name(), value, bean);
 		if (value == null || value.trim().isEmpty()) {
 			bean.getErrors().add(
-					new GtfsException(_path, id, FIELDS.agency_url.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES,
+					new GtfsException(_path, id, getIndex(FIELDS.agency_url.name()), FIELDS.agency_url.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES,
 							null, null));
 		} else {
 			try {
@@ -133,7 +139,7 @@ public class AgencyById extends IndexImpl<GtfsAgency> implements GtfsConverter {
 			} catch (GtfsException e) {
 				// 1-GTFS-Agency-7 warning
 				bean.getErrors().add(
-						new GtfsException(_path, id, FIELDS.agency_url.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
+						new GtfsException(_path, id, getIndex(FIELDS.agency_url.name()), FIELDS.agency_url.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			} finally {
 				bean.getOkTests().add(GtfsException.ERROR.INVALID_FORMAT);
 			}
@@ -152,7 +158,7 @@ public class AgencyById extends IndexImpl<GtfsAgency> implements GtfsConverter {
 			} catch (GtfsException e) {
 				// 1-GTFS-Agency-6 warning
 				bean.getErrors().add(
-						new GtfsException(_path, id, FIELDS.agency_timezone.name(),
+						new GtfsException(_path, id, getIndex(FIELDS.agency_timezone.name()), FIELDS.agency_timezone.name(),
 								GtfsException.ERROR.INVALID_FORMAT, null, value));
 			} finally {
 				bean.getOkTests().add(GtfsException.ERROR.INVALID_FORMAT);
@@ -170,7 +176,7 @@ public class AgencyById extends IndexImpl<GtfsAgency> implements GtfsConverter {
 			if (isUnknownAsIsoLanguage(value)) {
 				// 1-GTFS-Agency-8 warning
 				bean.getErrors().add(
-						new GtfsException(_path, id, FIELDS.agency_lang.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
+						new GtfsException(_path, id, getIndex(FIELDS.agency_lang.name()), FIELDS.agency_lang.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			} else {
 				bean.getOkTests().add(GtfsException.ERROR.INVALID_FORMAT);
 				bean.setAgencyLang(STRING_CONVERTER.from(context, FIELDS.agency_lang, value, false));
@@ -184,7 +190,7 @@ public class AgencyById extends IndexImpl<GtfsAgency> implements GtfsConverter {
 			} catch (GtfsException e) {
 				// 1-GTFS-Agency-9 warning
 				bean.getErrors().add(
-						new GtfsException(_path, id, FIELDS.agency_fare_url.name(),
+						new GtfsException(_path, id, getIndex(FIELDS.agency_fare_url.name()), FIELDS.agency_fare_url.name(),
 								GtfsException.ERROR.INVALID_FORMAT, null, value));
 			} finally {
 				bean.getOkTests().add(GtfsException.ERROR.INVALID_FORMAT);
