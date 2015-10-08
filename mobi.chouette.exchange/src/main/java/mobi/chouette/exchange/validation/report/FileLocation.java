@@ -33,13 +33,15 @@ public class FileLocation {
 	public FileLocation(String fileName, int lineNumber, int columnNumber) {
 		this.filename = fileName;
 		this.lineNumber = Integer.valueOf(lineNumber);
-		this.columnNumber = Integer.valueOf(columnNumber);
+		if (Integer.valueOf(columnNumber) >= 0)
+			this.columnNumber = Integer.valueOf(columnNumber);
 	}
 
 	public FileLocation(String fileName, int lineNumber, int columnNumber, String objectId) {
 		this.filename = fileName;
 		this.lineNumber = Integer.valueOf(lineNumber);
-		this.columnNumber = Integer.valueOf(columnNumber);
+		if (Integer.valueOf(columnNumber) >= 0)
+			this.columnNumber = Integer.valueOf(columnNumber);
 	}
 
 	public JSONObject toJson() throws JSONException {

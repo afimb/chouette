@@ -73,7 +73,7 @@ public class ValidationReporter implements Constant {
 			report.addFileInfo(filenameInfo, FILE_STATE.ERROR, new FileError(FileError.CODE.INVALID_FORMAT,
 					"The first line in file \"" + filenameInfo + "\" must comply with CSV (rule " + checkPointName
 							+ ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo, 1, 0), filenameInfo,
+			validationReport.addDetail(checkPointName, new Location(filenameInfo, 1, ex.getColumn()), filenameInfo,
 					CheckPoint.RESULT.NOK);
 			throw new Exception("The first line in file \"" + filenameInfo + "\" must comply with CSV");
 
@@ -82,7 +82,7 @@ public class ValidationReporter implements Constant {
 			checkPointName = checkPointName(name, GtfsException.ERROR.EMPTY_HEADER_FIELD);
 			report.addFileInfo(filenameInfo, FILE_STATE.ERROR, new FileError(FileError.CODE.INVALID_FORMAT,
 					"Header fields in file \"" + filenameInfo + "\" could not be empty (rule " + checkPointName + ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo, 1, 0), filenameInfo,
+			validationReport.addDetail(checkPointName, new Location(filenameInfo, 1, ex.getColumn()), filenameInfo,
 					CheckPoint.RESULT.NOK);
 			throw new Exception("Header fields in file \"" + filenameInfo + "\" could not be empty");
 
@@ -92,7 +92,7 @@ public class ValidationReporter implements Constant {
 			report.addFileInfo(filenameInfo, FILE_STATE.ERROR, new FileError(FileError.CODE.INVALID_FORMAT,
 					"The header fields in file \"" + filenameInfo + "\" could not be duplicated (rule "
 							+ checkPointName + ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo, 1, 0), filenameInfo,
+			validationReport.addDetail(checkPointName, new Location(filenameInfo, 1, ex.getColumn()), filenameInfo,
 					CheckPoint.RESULT.NOK);
 			throw new Exception("The header fields in file \"" + filenameInfo + "\" could not be duplicated");
 
@@ -102,7 +102,7 @@ public class ValidationReporter implements Constant {
 			report.addFileInfo(filenameInfo, FILE_STATE.ERROR, new FileError(FileError.CODE.INVALID_FORMAT,
 					"Line number " + ex.getId() + " in file \"" + filenameInfo + "\" must comply with CSV (rule "
 							+ checkPointName + ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), 0), filenameInfo,
+			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), ex.getColumn()), filenameInfo,
 					CheckPoint.RESULT.NOK);
 			throw new Exception("Line number " + ex.getId() + " in file \"" + filenameInfo + "\" must comply with CSV");
 
@@ -111,7 +111,7 @@ public class ValidationReporter implements Constant {
 			checkPointName = checkPointName(name, GtfsException.ERROR.HTML_TAG_IN_HEADER_FIELD);
 			report.addFileInfo(filenameInfo, FILE_STATE.ERROR, new FileError(FileError.CODE.INVALID_FORMAT,
 					"HTML tags in field names are not allowed (rule " + checkPointName + ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), 0), filenameInfo,
+			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), ex.getColumn()), filenameInfo,
 					CheckPoint.RESULT.NOK);
 			break;
 
@@ -135,7 +135,7 @@ public class ValidationReporter implements Constant {
 					new FileError(FileError.CODE.INVALID_FORMAT,
 							"Extra spaces in field names are not allowed, at file "+filenameInfo+" for value "+ex.getValue()+" at line "+ex.getId()+" (rule "+checkPointName+")"));
 			validationReport.addDetail(checkPointName,
-					new Location(filenameInfo, ex.getId(), 0),
+					new Location(filenameInfo, ex.getId(), ex.getColumn()),
 					ex.getValue(),
 					CheckPoint.RESULT.NOK);
 			break;
@@ -212,7 +212,7 @@ public class ValidationReporter implements Constant {
 			fieldName = ex.getField();
 			report.addFileInfo(filenameInfo, FILE_STATE.ERROR, new FileError(FileError.CODE.INVALID_FORMAT,
 					"The field \"" + fieldName + "\" must be unique (rule " + checkPointName + ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), 0), fieldName,
+			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), ex.getColumn()), fieldName,
 					CheckPoint.RESULT.NOK);
 			throw new Exception("The field \"" + fieldName + "\" must be unique");
 
@@ -229,7 +229,7 @@ public class ValidationReporter implements Constant {
 			report.addFileInfo(filenameInfo, FILE_STATE.ERROR, new FileError(FileError.CODE.INVALID_FORMAT,
 					"The column \"" + fieldName + "\" of file \"" + filenameInfo + "\" must be provided (rule "
 							+ checkPointName + ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), 0), fieldName,
+			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), ex.getColumn()), fieldName,
 					CheckPoint.RESULT.NOK);
 			throw new Exception("The column \"" + fieldName + "\" of file \"" + filenameInfo + "\" must be provided");
 
@@ -241,7 +241,7 @@ public class ValidationReporter implements Constant {
 			report.addFileInfo(filenameInfo, FILE_STATE.ERROR, new FileError(FileError.CODE.INVALID_FORMAT,
 					"One of the fields \"" + fieldName + "\" or \"" + fieldName2 + "\" must be provided (rule "
 							+ checkPointName + ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), 0), fieldName + ","
+			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), ex.getColumn()), fieldName + ","
 					+ fieldName2, CheckPoint.RESULT.NOK);
 			break;
 
@@ -250,7 +250,7 @@ public class ValidationReporter implements Constant {
 			checkPointName = checkPointName(name, GtfsException.ERROR.MISSING_OPTIONAL_FIELD);
 			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED, new FileError(FileError.CODE.INVALID_FORMAT,
 					"Optional field is not present (rule " + checkPointName + ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), 0), ex.getField(),
+			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), ex.getColumn()), ex.getField(),
 					CheckPoint.RESULT.NOK);
 			break;
 
@@ -264,7 +264,7 @@ public class ValidationReporter implements Constant {
 			checkPointName = checkPointName(name, GtfsException.ERROR.EXTRA_HEADER_FIELD);
 			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED, new FileError(FileError.CODE.INVALID_FORMAT,
 					"Extra fields are provided (rule " + checkPointName + ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), 0), ex.getField(),
+			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), ex.getColumn()), ex.getField(),
 					CheckPoint.RESULT.NOK);
 			break;
 
@@ -274,7 +274,7 @@ public class ValidationReporter implements Constant {
 			fieldName = ex.getField();
 			report.addFileInfo(filenameInfo, FILE_STATE.ERROR, new FileError(FileError.CODE.INVALID_FORMAT,
 					"The value \"" + fieldName + "\" must be provided (rule " + checkPointName + ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), 0), fieldName,
+			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), ex.getColumn()), fieldName,
 					CheckPoint.RESULT.NOK);
 			break;
 
@@ -285,7 +285,7 @@ public class ValidationReporter implements Constant {
 			report.addFileInfo(filenameInfo, FILE_STATE.ERROR, new FileError(FileError.CODE.INVALID_FORMAT,
 					"The file \"" + filenameInfo + "\" must provide a non empty \"" + name + "_id\" for each " + name
 							+ " (rule " + checkPointName + ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), 0), fieldName,
+			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), ex.getColumn()), fieldName,
 					CheckPoint.RESULT.NOK);
 			throw new Exception("The file \"" + filenameInfo + "\" must provide a non empty \"" + fieldName
 					+ "\" for each " + name);
@@ -299,7 +299,7 @@ public class ValidationReporter implements Constant {
 					new FileError(FileError.CODE.INVALID_FORMAT,
 							"One of the values \""+fieldName+"\" or \""+fieldName2+"\" must be provided (rule "+checkPointName+")"));
 			validationReport.addDetail(checkPointName,
-					new Location(filenameInfo,  ex.getId(),0),
+					new Location(filenameInfo,  ex.getId(),ex.getColumn()),
 					fieldName+","+fieldName2,
 					CheckPoint.RESULT.NOK);
 			break;
@@ -312,7 +312,7 @@ public class ValidationReporter implements Constant {
 					new FileError(FileError.CODE.INVALID_FORMAT,
 							"At least one day must be valid (rule "+checkPointName+")"));
 			validationReport.addDetail(checkPointName,
-					new Location(filenameInfo,  ex.getId(),0),
+					new Location(filenameInfo,  ex.getId(),ex.getColumn()),
 					"At least one day must be valid",
 					CheckPoint.RESULT.NOK);
 			break;
@@ -322,7 +322,7 @@ public class ValidationReporter implements Constant {
 			checkPointName = checkPointName(name, GtfsException.ERROR.DUPLICATE_DEFAULT_KEY_FIELD);
 			report.addFileInfo(filenameInfo, FILE_STATE.ERROR, new FileError(FileError.CODE.INVALID_FORMAT,
 					"At most only one Agency can have default value \"agency_id\" (rule " + checkPointName + ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), 0), ex.getField(),
+			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), ex.getColumn()), ex.getField(),
 					CheckPoint.RESULT.NOK);
 			throw new Exception("At most only one Agency can have default value \"agency_id\"");
 
@@ -332,7 +332,7 @@ public class ValidationReporter implements Constant {
 			fieldName = ex.getField();
 			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED, new FileError(FileError.CODE.INVALID_FORMAT,
 					"No default ids for agencies (rule " + checkPointName + ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), 0), fieldName,
+			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), ex.getColumn()), fieldName,
 					CheckPoint.RESULT.NOK);
 			break;
 
@@ -342,7 +342,7 @@ public class ValidationReporter implements Constant {
 			fieldName = ex.getField();
 			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED, new FileError(FileError.CODE.INVALID_FORMAT,
 					"Missing \"" + fieldName + "\" (rule " + checkPointName + ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), 0), fieldName,
+			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), ex.getColumn()), fieldName,
 					CheckPoint.RESULT.NOK);
 			break;
 
@@ -352,7 +352,7 @@ public class ValidationReporter implements Constant {
 			fieldName = ex.getField();
 			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED, new FileError(FileError.CODE.INVALID_FORMAT,
 					"Missing \"" + fieldName + "\" (rule " + checkPointName + ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), 0), fieldName,
+			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), ex.getColumn()), fieldName,
 					CheckPoint.RESULT.NOK);
 			break;
 		case MISSING_TRANSFER_TIME:
@@ -361,7 +361,7 @@ public class ValidationReporter implements Constant {
 			fieldName = ex.getField();
 			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED, new FileError(FileError.CODE.INVALID_FORMAT,
 					"Missing \"" + fieldName + "\" (rule " + checkPointName + ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), 0), fieldName,
+			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), ex.getColumn()), fieldName,
 					CheckPoint.RESULT.NOK);
 			break;
 			
@@ -371,7 +371,7 @@ public class ValidationReporter implements Constant {
 			fieldName = ex.getField();
 			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED, new FileError(FileError.CODE.INVALID_FORMAT,
 					"StartDate cannot be after EndDate (rule " + checkPointName + ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), 0), fieldName,
+			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), ex.getColumn()), fieldName,
 					CheckPoint.RESULT.NOK);
 			break;
 
@@ -382,7 +382,7 @@ public class ValidationReporter implements Constant {
 			value = ex.getValue();
 			report.addFileInfo(filenameInfo, FILE_STATE.ERROR, new FileError(FileError.CODE.INVALID_FORMAT,
 					"The value \"" + value + "\" is invalid for field " + fieldName + " (rule " + checkPointName + ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), 0), value, fieldName,
+			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), ex.getColumn()), value, fieldName,
 					CheckPoint.RESULT.NOK);
 			break;
 			
@@ -394,7 +394,7 @@ public class ValidationReporter implements Constant {
 				new FileError(FileError.CODE.INVALID_FORMAT,
 						"Duplicate \""+fieldName+"\" for the same \"tripid\" (rule "+checkPointName+")"));
 		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo, "Duplicate \""+fieldName+"\" for the same \"tripid\"", ex.getId(), ex.getField()),
+				new Location(filenameInfo, "Duplicate \""+fieldName+"\" for the same \"tripid\"", ex.getColumn(), ex.getId(), ex.getField()),
 				"Duplicate \""+fieldName+"\" for the same \"tripid\"",
 				CheckPoint.RESULT.NOK);
 		throw new Exception("Duplicate \""+fieldName+"\" for the same \"tripid\"");	
@@ -407,7 +407,7 @@ public class ValidationReporter implements Constant {
 				new FileError(FileError.CODE.INVALID_FORMAT,
 						"Unreferenced "+fieldName+" (rule "+checkPointName+")"));
 		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo, "Unreferenced "+fieldName, ex.getId(), ex.getField()),
+				new Location(filenameInfo, "Unreferenced "+fieldName, ex.getId(), ex.getColumn(), ex.getField()),
 				"Unreferenced "+fieldName,
 				CheckPoint.RESULT.NOK);
 		break;
@@ -421,7 +421,7 @@ public class ValidationReporter implements Constant {
 						"Unused \""+fieldName+"\" ("+ex.getValue()+") in file \""+ex.getPath()+"\" at line \""+ex.getId()+"\" (rule "+checkPointName+")"));
 		validationReport.addDetail(checkPointName,
 				new Location(ex.getPath(), "Unused \""+fieldName+"\" ("+ex.getValue()+") in file \""+ex.getPath()+"\" at line \""+ex.getId()+"\"",
-						ex.getId(), ex.getField()),
+						ex.getId(), ex.getColumn(), ex.getField()),
 						"Unused \""+fieldName+"\" ("+ex.getValue()+") in file \""+ex.getPath()+"\" at line \""+ex.getId()+"\"",
 						CheckPoint.RESULT.NOK);
 		break;
@@ -435,7 +435,7 @@ public class ValidationReporter implements Constant {
 				new FileError(FileError.CODE.INVALID_FORMAT,
 						"Double service_id date (rule "+checkPointName+")"));
 		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo, "Double service_id date", ex.getId(), ex.getField()),
+				new Location(filenameInfo, "Double service_id date", ex.getId(), ex.getColumn(), ex.getField()),
 				"Double service_id date",
 				CheckPoint.RESULT.NOK);
 		break;
@@ -449,7 +449,7 @@ public class ValidationReporter implements Constant {
 				new FileError(FileError.CODE.INVALID_FORMAT,
 						"The two values "+fieldName+" and "+fieldName2+" cannot be the same (rule "+checkPointName+")"));
 		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo, "The two values "+fieldName+" and "+fieldName2+" cannot be the same", ex.getId(), ex.getField()),
+				new Location(filenameInfo, "The two values "+fieldName+" and "+fieldName2+" cannot be the same", ex.getId(), ex.getColumn(), ex.getField()),
 				"The two values "+fieldName+" and "+fieldName2+" cannot be the same",
 				CheckPoint.RESULT.NOK);
 		break;
@@ -462,7 +462,7 @@ public class ValidationReporter implements Constant {
 				new FileError(FileError.CODE.INVALID_FORMAT,
 						"The parent stop must be a station (rule "+checkPointName+")"));
 		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo, "The parent stop must be a station", ex.getId(), ex.getField()),
+				new Location(filenameInfo, "The parent stop must be a station", ex.getId(), ex.getColumn(), ex.getField()),
 				"The parent stop must be a station",
 				CheckPoint.RESULT.NOK);
 		break;
@@ -475,7 +475,7 @@ public class ValidationReporter implements Constant {
 				new FileError(FileError.CODE.INVALID_FORMAT,
 						"Column location_type cannot be empty for all stops (rule "+checkPointName+")"));
 		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo, "Column location_type cannot be empty for all stops", ex.getId(), ex.getField()),
+				new Location(filenameInfo, "Column location_type cannot be empty for all stops", ex.getId(), ex.getColumn(), ex.getField()),
 				"Column location_type cannot be empty for all stops",
 				CheckPoint.RESULT.NOK);
 		break;
@@ -488,7 +488,7 @@ public class ValidationReporter implements Constant {
 				new FileError(FileError.CODE.INVALID_FORMAT,
 						"stop_name and stop_desc must be different (rule "+checkPointName+")"));
 		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo, "stop_name and stop_desc must be different", ex.getId(), ex.getField()),
+				new Location(filenameInfo, "stop_name and stop_desc must be different", ex.getId(), ex.getColumn(), ex.getField()),
 				"stop_name and stop_desc must be different",
 				CheckPoint.RESULT.NOK);
 		break;
@@ -501,7 +501,7 @@ public class ValidationReporter implements Constant {
 				new FileError(FileError.CODE.INVALID_FORMAT,
 						"Stations can't contain other stations (rule "+checkPointName+")"));
 		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo, "Stations can't contain other stations", ex.getId(), ex.getField()),
+				new Location(filenameInfo, "Stations can't contain other stations", ex.getId(), ex.getColumn(), ex.getField()),
 				"Stations can't contain other stations",
 				CheckPoint.RESULT.NOK);
 		break;
@@ -514,7 +514,7 @@ public class ValidationReporter implements Constant {
 				new FileError(FileError.CODE.INVALID_FORMAT,
 						"The couple short_name, long_name must be unique (rule "+checkPointName+")"));
 		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo, "The couple short_name, long_name must be unique", ex.getId(), ex.getField()),
+				new Location(filenameInfo, "The couple short_name, long_name must be unique", ex.getId(), ex.getColumn(), ex.getField()),
 				"The couple short_name, long_name must be unique",
 				CheckPoint.RESULT.NOK);
 		break;
@@ -527,7 +527,7 @@ public class ValidationReporter implements Constant {
 				new FileError(FileError.CODE.INVALID_FORMAT,
 						"The long_name cannot contains the short_name (rule "+checkPointName+")"));
 		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo, "The long_name cannot contains the short_name", ex.getId(), ex.getField()),
+				new Location(filenameInfo, "The long_name cannot contains the short_name", ex.getId(), ex.getColumn(), ex.getField()),
 				"The long_name cannot contains the short_name",
 				CheckPoint.RESULT.NOK);
 		break;
@@ -540,7 +540,7 @@ public class ValidationReporter implements Constant {
 				new FileError(FileError.CODE.INVALID_FORMAT,
 						"Poor visibility between text and background colors (rule "+checkPointName+")"));
 		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo, "Poor visibility between text and background colors", ex.getId(), ex.getField()),
+				new Location(filenameInfo, "Poor visibility between text and background colors", ex.getId(), ex.getColumn(), ex.getField()),
 				"Poor visibility between text and background colors",
 				CheckPoint.RESULT.NOK);
 		break;
@@ -553,7 +553,7 @@ public class ValidationReporter implements Constant {
 				new FileError(FileError.CODE.INVALID_FORMAT,
 						"The set short_name, long_name must be unique (rule "+checkPointName+")"));
 		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo, "The set short_name, long_name must be unique", ex.getId(), ex.getField()),
+				new Location(filenameInfo, "The set short_name, long_name must be unique", ex.getId(), ex.getColumn(), ex.getField()),
 				"The set short_name, long_name must be unique",
 				CheckPoint.RESULT.NOK);
 		break;
@@ -566,7 +566,7 @@ public class ValidationReporter implements Constant {
 				new FileError(FileError.CODE.INVALID_FORMAT,
 						"Exception date without a service (rule "+checkPointName+")"));
 		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo, "Exception date without a service", ex.getId(), ex.getField()),
+				new Location(filenameInfo, "Exception date without a service", ex.getId(), ex.getColumn(), ex.getField()),
 				"Exception date without a service",
 				CheckPoint.RESULT.NOK);
 		break;
