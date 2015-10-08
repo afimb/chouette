@@ -45,11 +45,12 @@ public interface Constant extends mobi.chouette.exchange.gtfs.Constant {
 	public static final String GTFS_2_GTFS_Common_7   = "2-GTFS-Stop-2";
 	public static final String GTFS_2_GTFS_Common_8   = "2-GTFS-Stop-3";
 	public static final String GTFS_2_GTFS_Stop_4     = "2-GTFS-Stop-4";
-	public static final String GTFS_2_GTFS_Route_5    = "2-GTFS-Route-5";
-	public static final String GTFS_2_GTFS_Route_8    = "2-GTFS-Route-8";
-	public static final String GTFS_2_GTFS_Route_9    = "2-GTFS-Route-9";
-	public static final String GTFS_2_GTFS_Route_11   = "2-GTFS-Route-11";
+	public static final String GTFS_2_GTFS_Route_5    = "2-GTFS-Route-1";
+	public static final String GTFS_2_GTFS_Route_8    = "2-GTFS-Route-2";
+	public static final String GTFS_2_GTFS_Route_9    = "2-GTFS-Route-3";
+	public static final String GTFS_2_GTFS_Route_11   = "2-GTFS-Route-4";
 	
+	public static final String GTFS_2_GTFS_Calendar_1 = "2-GTFS-Calendar-1";
 	public static final String GTFS_2_GTFS_Calendar_3 = "2-GTFS-Calendar-3";
 	public static final String GTFS_2_GTFS_Calendar_4 = "2-GTFS-Calendar-4";
 }

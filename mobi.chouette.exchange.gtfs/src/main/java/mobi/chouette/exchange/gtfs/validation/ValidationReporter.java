@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import lombok.Getter;
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsException;
 import mobi.chouette.exchange.report.ActionReport;
@@ -13,6 +14,7 @@ import mobi.chouette.exchange.validation.report.CheckPoint;
 import mobi.chouette.exchange.validation.report.Location;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 
+@Log4j
 public class ValidationReporter implements Constant {
 
 	@Getter
@@ -36,8 +38,10 @@ public class ValidationReporter implements Constant {
 							+ ex.getMessage()));
 			validationReport.addDetail(checkPointName, new Location(filenameInfo), ex.getMessage(),
 					CheckPoint.RESULT.NOK);
+			String message = ex.getMessage() != null? ex.getMessage() : ex.getClass().getName();
+			log.error(ex,ex);
 			throw new Exception("A problem occured while reading the file \"" + filenameInfo + "\" : "
-					+ ex.getMessage());
+					+ message);
 		}
 	}
 	
@@ -182,14 +186,12 @@ public class ValidationReporter implements Constant {
 									// 1-GTFS-Route-11 error
 			// 1-GTFS-Common-2
 			checkPointName = checkPointName(name, GtfsException.ERROR.FILE_WITH_NO_ENTRY);
-			fieldName = ex.getField();
 			report.addFileInfo(filenameInfo, FILE_STATE.ERROR, new FileError(FileError.CODE.INVALID_FORMAT,
-					"The file \"" + filenameInfo + "\" must contain at least one " + fieldName + " definition (rule "
+					"The file \"" + filenameInfo + "\" must contain at least one entry (rule "
 							+ checkPointName + ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), 0), fieldName,
+			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), 0), "",
 					CheckPoint.RESULT.NOK);
-			throw new Exception("The file \"" + filenameInfo + "\" must contain at least one " + fieldName
-					+ " definition");
+			throw new Exception("The file \"" + filenameInfo + "\" must contain at least one entry");
 
 		case FILES_WITH_NO_ENTRY: // 1-GTFS-Agency-11, 1-GTFS-Stop-12,
 									// 1-GTFS-Route-11 error
@@ -199,12 +201,11 @@ public class ValidationReporter implements Constant {
 			filenameInfo = "calendar.txt";
 			filenameInfo2 = "calendar_dates.txt";
 			report.addFileInfo(filenameInfo, FILE_STATE.ERROR, new FileError(FileError.CODE.INVALID_FORMAT,
-					"One of the files \"" + filenameInfo + "\" or \"" + filenameInfo2 + "\" must contain at least one "
-							+ fieldName + " definition (rule " + checkPointName + ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), 0), fieldName,
+					"One of the files \"" + filenameInfo + "\" or \"" + filenameInfo2 + "\" must contain at least one entry (rule " + checkPointName + ")"));
+			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), 0), "",
 					CheckPoint.RESULT.NOK);
 			throw new Exception("One of the files \"" + filenameInfo + "\" or \"" + filenameInfo2
-					+ "\" must contain at least one " + fieldName + " definition");
+					+ "\" must contain at least one entry");
 
 		case DUPLICATE_FIELD:
 			// 1-GTFS-Common-3
@@ -407,8 +408,8 @@ public class ValidationReporter implements Constant {
 				new FileError(FileError.CODE.INVALID_FORMAT,
 						"Unreferenced "+fieldName+" (rule "+checkPointName+")"));
 		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo, "Unreferenced "+fieldName, ex.getId(), ex.getColumn(), ex.getField()),
-				"Unreferenced "+fieldName,
+				new Location(filenameInfo, fieldName, ex.getId(), ex.getColumn(), ex.getField()),
+				ex.getValue(),
 				CheckPoint.RESULT.NOK);
 		break;
 
@@ -435,7 +436,7 @@ public class ValidationReporter implements Constant {
 				new FileError(FileError.CODE.INVALID_FORMAT,
 						"Double service_id date (rule "+checkPointName+")"));
 		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo, "Double service_id date", ex.getId(), ex.getColumn(), ex.getField()),
+				new Location(filenameInfo, "service_id,date", ex.getId(), ex.getColumn(), ex.getField()),
 				"Double service_id date",
 				CheckPoint.RESULT.NOK);
 		break;
@@ -449,8 +450,8 @@ public class ValidationReporter implements Constant {
 				new FileError(FileError.CODE.INVALID_FORMAT,
 						"The two values "+fieldName+" and "+fieldName2+" cannot be the same (rule "+checkPointName+")"));
 		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo, "The two values "+fieldName+" and "+fieldName2+" cannot be the same", ex.getId(), ex.getColumn(), ex.getField()),
-				"The two values "+fieldName+" and "+fieldName2+" cannot be the same",
+				new Location(filenameInfo, fieldName+","+fieldName2, ex.getId(), ex.getColumn(), ex.getField()),
+				ex.getValue(),
 				CheckPoint.RESULT.NOK);
 		break;
 	

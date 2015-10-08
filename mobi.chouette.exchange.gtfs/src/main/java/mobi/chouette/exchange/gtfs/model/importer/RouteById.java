@@ -207,9 +207,9 @@ public class RouteById extends IndexImpl<GtfsRoute> implements GtfsConverter {
 		if (dao.getAgencyById().getValue(agencyId) == null) {
 			// this bean has no agency
 			if (getIndex(FIELDS.agency_id.name()) == null)
-				bean.getErrors().add(new GtfsException(_path, copy_bean.getId(), FIELDS.agency_id.name(), GtfsException.ERROR.UNREFERENCED_ID, null, null));
+				bean.getErrors().add(new GtfsException(_path, copy_bean.getId(), FIELDS.agency_id.name(), GtfsException.ERROR.UNREFERENCED_ID, null, agencyId));
 			else
-				bean.getErrors().add(new GtfsException(_path, copy_bean.getId(), getIndex(FIELDS.agency_id.name()), FIELDS.agency_id.name(), GtfsException.ERROR.UNREFERENCED_ID, null, null));
+				bean.getErrors().add(new GtfsException(_path, copy_bean.getId(), getIndex(FIELDS.agency_id.name()), FIELDS.agency_id.name(), GtfsException.ERROR.UNREFERENCED_ID, null, agencyId));
 			result = false;
 		}
 		if (result)

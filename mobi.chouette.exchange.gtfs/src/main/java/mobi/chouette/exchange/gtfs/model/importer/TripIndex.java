@@ -5,7 +5,6 @@ import java.util.Map;
 
 import mobi.chouette.common.HTMLTagValidator;
 import mobi.chouette.exchange.gtfs.model.GtfsTrip;
-import mobi.chouette.exchange.gtfs.model.importer.TransferByFromStop.FIELDS;
 
 public abstract class TripIndex extends IndexImpl<GtfsTrip> implements
 		GtfsConverter {
@@ -151,25 +150,25 @@ public abstract class TripIndex extends IndexImpl<GtfsTrip> implements
 	public boolean validate(GtfsTrip bean, GtfsImporter dao) {
 		boolean result = true;
 
-		if (bean.getRouteId() != null)
+		if (isPresent(bean.getRouteId()))
 			if (dao.getRouteById().getValue(bean.getRouteId()) == null) {
-				bean.getErrors().add(new GtfsException(_path, bean.getId(), getIndex(FIELDS.route_id.name()), FIELDS.route_id.name(), GtfsException.ERROR.UNREFERENCED_ID, null, null));
+				bean.getErrors().add(new GtfsException(_path, bean.getId(), getIndex(FIELDS.route_id.name()), FIELDS.route_id.name(), GtfsException.ERROR.UNREFERENCED_ID, null, bean.getRouteId()));
 				result = false;
 			} else {
 				bean.getOkTests().add(GtfsException.ERROR.UNREFERENCED_ID);
 			}
 		
-		if (bean.getServiceId() != null)
+		if (isPresent(bean.getServiceId()))
 			if (dao.getCalendarByService().getValue(bean.getServiceId()) == null && dao.getCalendarDateByService().getValue(bean.getServiceId()) == null) {
-				bean.getErrors().add(new GtfsException(_path, bean.getId(), getIndex(FIELDS.service_id.name()), FIELDS.service_id.name(), GtfsException.ERROR.UNREFERENCED_ID, null, null));
+				bean.getErrors().add(new GtfsException(_path, bean.getId(), getIndex(FIELDS.service_id.name()), FIELDS.service_id.name(), GtfsException.ERROR.UNREFERENCED_ID, null, bean.getServiceId()));
 				result = false;
 			} else {
 				bean.getOkTests().add(GtfsException.ERROR.UNREFERENCED_ID);
 			}
 		
-		if (bean.getShapeId() != null) {
-			if (!dao.hasShapeImporter() || dao.getShapeById().getValue(bean.getServiceId()) == null) {
-				bean.getErrors().add(new GtfsException(_path, bean.getId(), getIndex(FIELDS.shape_id.name()), FIELDS.shape_id.name(), GtfsException.ERROR.UNREFERENCED_ID, null, null));
+		if (isPresent(bean.getShapeId())) {
+			if (!dao.hasShapeImporter() || dao.getShapeById().getValue(bean.getShapeId()) == null) {
+				bean.getErrors().add(new GtfsException(_path, bean.getId(), getIndex(FIELDS.shape_id.name()), FIELDS.shape_id.name(), GtfsException.ERROR.UNREFERENCED_ID, null, bean.getShapeId()));
 				result = false;
 			} else {
 				bean.getOkTests().add(GtfsException.ERROR.UNREFERENCED_ID);

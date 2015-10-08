@@ -5,11 +5,9 @@ import java.util.Iterator;
 import java.util.Map;
 
 import mobi.chouette.common.HTMLTagValidator;
-import mobi.chouette.exchange.gtfs.model.GtfsAgency;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime.DropOffType;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime.PickupType;
-import mobi.chouette.exchange.gtfs.model.importer.RouteById.FIELDS;
 
 public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements GtfsConverter {
 
@@ -232,12 +230,12 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements GtfsConve
 		
 		boolean result2 = true;
 		String stopId = bean.getStopId();
-		if (stopId == null) {
+		if (isEmpty(stopId)) {
 			result2 = false;
 		} else {
 			if (dao.getStopById().getValue(stopId) == null) {
 				// this bean has no stop
-				bean.getErrors().add(new GtfsException(_path, bean.getId(), getIndex(FIELDS.stop_id.name()), FIELDS.stop_id.name(), GtfsException.ERROR.UNREFERENCED_ID, null, null));
+				bean.getErrors().add(new GtfsException(_path, bean.getId(), getIndex(FIELDS.stop_id.name()), FIELDS.stop_id.name(), GtfsException.ERROR.UNREFERENCED_ID, null, stopId));
 				result2 = false;
 			}
 			if (result2)
