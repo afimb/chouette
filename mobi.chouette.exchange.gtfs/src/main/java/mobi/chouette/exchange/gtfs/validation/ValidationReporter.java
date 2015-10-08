@@ -394,7 +394,7 @@ public class ValidationReporter implements Constant {
 				new FileError(FileError.CODE.INVALID_FORMAT,
 						"Duplicate \""+fieldName+"\" for the same \"tripid\" (rule "+checkPointName+")"));
 		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo, "Duplicate \""+fieldName+"\" for the same \"tripid\"", ex.getColumn(), ex.getId(), ex.getField()),
+				new Location(filenameInfo, "Duplicate \""+fieldName+"\" for the same \"tripid\"", ex.getId(), ex.getColumn(), ex.getField()),
 				"Duplicate \""+fieldName+"\" for the same \"tripid\"",
 				CheckPoint.RESULT.NOK);
 		throw new Exception("Duplicate \""+fieldName+"\" for the same \"tripid\"");	

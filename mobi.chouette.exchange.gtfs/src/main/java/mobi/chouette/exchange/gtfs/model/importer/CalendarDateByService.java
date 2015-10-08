@@ -124,12 +124,12 @@ public class CalendarDateByService extends IndexImpl<GtfsCalendarDate>
 		if (bean.getDate() != null && bean.getServiceId() != null)
 			result = hashCodes.add(bean.getServiceId()+"#"+bean.getDate().getTime());
 		if (!result)
-			bean.getErrors().add(new GtfsException(_path, bean.getId(), FIELDS.service_id.name(), GtfsException.ERROR.DUPLICATE_DOUBLE_KEY, null, null));
+			bean.getErrors().add(new GtfsException(_path, bean.getId(), getIndex(FIELDS.service_id.name()), FIELDS.service_id.name(), GtfsException.ERROR.DUPLICATE_DOUBLE_KEY, null, null));
 		
 		// Exception day in CalendarDate for a Service not defined in Calendar
 		if (bean.getExceptionType() != null)
 			if (bean.getExceptionType() == ExceptionType.Removed && dao.getCalendarByService().getValue(bean.getServiceId()) == null) {
-				bean.getErrors().add(new GtfsException(_path, bean.getId(), FIELDS.service_id.name(), GtfsException.ERROR.EXCEPT_DATE_WITHOUT_SERVICE, null, null));
+				bean.getErrors().add(new GtfsException(_path, bean.getId(), getIndex(FIELDS.service_id.name()), FIELDS.service_id.name(), GtfsException.ERROR.EXCEPT_DATE_WITHOUT_SERVICE, null, null));
 			} else {
 				bean.getOkTests().add(GtfsException.ERROR.EXCEPT_DATE_WITHOUT_SERVICE);
 			}
