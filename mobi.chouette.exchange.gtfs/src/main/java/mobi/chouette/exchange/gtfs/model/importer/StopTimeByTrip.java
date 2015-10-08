@@ -232,12 +232,12 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements GtfsConve
 		
 		boolean result2 = true;
 		String stopId = bean.getStopId();
-		if (stopId == null) {
+		if (isEmpty(stopId)) {
 			result2 = false;
 		} else {
 			if (dao.getStopById().getValue(stopId) == null) {
 				// this bean has no stop
-				bean.getErrors().add(new GtfsException(_path, bean.getId(), FIELDS.stop_id.name(), GtfsException.ERROR.UNREFERENCED_ID, null, null));
+				bean.getErrors().add(new GtfsException(_path, bean.getId(), FIELDS.stop_id.name(), GtfsException.ERROR.UNREFERENCED_ID, null, stopId));
 				result2 = false;
 			}
 			if (result2)

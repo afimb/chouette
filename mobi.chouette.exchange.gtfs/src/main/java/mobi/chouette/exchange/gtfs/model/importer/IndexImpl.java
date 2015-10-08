@@ -446,6 +446,18 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 		}
 		return result;
 	}
+	
+	protected boolean isEmpty(String value)
+	{
+		return value == null || value.trim().length() == 0;
+	}
+	
+	protected boolean isPresent(String value)
+	{
+		return !isEmpty(value);
+	}
+	
+	
 
 	private class IndexIterator implements Iterator<T> {
 

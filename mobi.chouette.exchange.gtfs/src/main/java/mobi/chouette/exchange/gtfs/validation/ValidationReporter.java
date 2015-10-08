@@ -407,8 +407,8 @@ public class ValidationReporter implements Constant {
 				new FileError(FileError.CODE.INVALID_FORMAT,
 						"Unreferenced "+fieldName+" (rule "+checkPointName+")"));
 		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo, "Unreferenced "+fieldName, ex.getId(), ex.getField()),
-				"Unreferenced "+fieldName,
+				new Location(filenameInfo, fieldName, ex.getId(), ex.getField()),
+				ex.getValue(),
 				CheckPoint.RESULT.NOK);
 		break;
 
@@ -435,7 +435,7 @@ public class ValidationReporter implements Constant {
 				new FileError(FileError.CODE.INVALID_FORMAT,
 						"Double service_id date (rule "+checkPointName+")"));
 		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo, "Double service_id date", ex.getId(), ex.getField()),
+				new Location(filenameInfo, "service_id,date", ex.getId(), ex.getField()),
 				"Double service_id date",
 				CheckPoint.RESULT.NOK);
 		break;
@@ -449,8 +449,8 @@ public class ValidationReporter implements Constant {
 				new FileError(FileError.CODE.INVALID_FORMAT,
 						"The two values "+fieldName+" and "+fieldName2+" cannot be the same (rule "+checkPointName+")"));
 		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo, "The two values "+fieldName+" and "+fieldName2+" cannot be the same", ex.getId(), ex.getField()),
-				"The two values "+fieldName+" and "+fieldName2+" cannot be the same",
+				new Location(filenameInfo, fieldName+","+fieldName2, ex.getId(), ex.getField()),
+				ex.getValue(),
 				CheckPoint.RESULT.NOK);
 		break;
 	

@@ -22,7 +22,7 @@ public class Phase2CalendarTests extends AbstractPhase2Tests {
 	//@Test(groups = { "Phase 2 Calendar" }, description = "date progression" ,priority=370 )
 	public void verifyTest_2_1() throws Exception {
 		log.info(Color.GREEN + "Calendar_1 : date progression" + Color.NORMAL);
-		CheckPoint result = verifyValidation( log, "calendar_1", "2-GTFS-Calendar-1",CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
+		CheckPoint result = verifyValidation( log, "calendar_1", GTFS_2_GTFS_Calendar_1,CheckPoint.SEVERITY.ERROR, CheckPoint.RESULT.NOK,true);
 
 		 // 2 files are needed: "calendar.txt" and "calendar_dates.txt"
 		Assert.assertEquals(result.getDetailCount(), 2, "detail count");
@@ -54,7 +54,7 @@ public class Phase2CalendarTests extends AbstractPhase2Tests {
 	//@Test(groups = { "Phase 2 Calendar" }, description = "no valid day in service : calendar only" ,priority=372 )
 	public void verifyTest_2_3_1() throws Exception {
 		log.info(Color.GREEN + "Calendar_3_1 : no valid day in service : calendar only" + Color.NORMAL);
-		CheckPoint result = verifyValidation( log, "calendar_3_1", "2-GTFS-Calendar-3",CheckPoint.SEVERITY.WARNING, CheckPoint.RESULT.NOK,true);
+		CheckPoint result = verifyValidation( log, "calendar_3_1", GTFS_2_GTFS_Calendar_3,CheckPoint.SEVERITY.WARNING, CheckPoint.RESULT.NOK,true);
 
 		Assert.assertEquals(result.getDetailCount(), 1, "detail count");
 		for (Detail detail : result.getDetails()) 
