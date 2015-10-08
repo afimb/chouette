@@ -265,7 +265,11 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter {
 			if (result) { // Stop, Station, Access
 				if (LocationType.Station != parent.getLocationType()) {
 					result = false;
-					bean.getErrors().add(new GtfsException(_path, copy_bean.getId(), getIndex(FIELDS.parent_station.name()), FIELDS.parent_station.name(), GtfsException.ERROR.BAD_REFERENCED_ID, null, Integer.toString(parent.getLocationType().ordinal())));
+					if (parent.getLocationType() != null)
+					   bean.getErrors().add(new GtfsException(_path, copy_bean.getId(), getIndex(FIELDS.parent_station.name()), FIELDS.parent_station.name(), GtfsException.ERROR.BAD_REFERENCED_ID, null, Integer.toString(parent.getLocationType().ordinal())));
+					else
+					   bean.getErrors().add(new GtfsException(_path, copy_bean.getId(), getIndex(FIELDS.parent_station.name()), FIELDS.parent_station.name(), GtfsException.ERROR.BAD_REFERENCED_ID, null, ""));
+					   
 				} else {
 					bean.getOkTests().add(GtfsException.ERROR.BAD_REFERENCED_ID);
 				}
