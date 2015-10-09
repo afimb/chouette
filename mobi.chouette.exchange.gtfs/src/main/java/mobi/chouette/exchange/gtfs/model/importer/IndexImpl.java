@@ -374,7 +374,9 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 	}
 	
 	public Integer getIndex(String key) {
-		return _fields.get(key);
+		if (_fields.get(key) == null)
+			return new Integer(-1);
+		return new Integer(_fields.get(key).intValue()+1);
 	}
 
 	protected String getField(GtfsIterator reader, String key, String value) {
