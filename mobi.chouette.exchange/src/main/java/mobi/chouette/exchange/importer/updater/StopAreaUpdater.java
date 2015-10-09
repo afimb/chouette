@@ -62,6 +62,12 @@ public class StopAreaUpdater implements Updater<StopArea> {
 		Referential cache = (Referential) context.get(CACHE);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
+		if (newValue.getAreaType() == null)
+		{
+			log.error("stoparea without mandatory areatype "+newValue.getObjectId());
+			throw new IllegalArgumentException("area type null");
+		}
+
 		if (oldValue.isDetached())
 		{
 				oldValue.setObjectId(newValue.getObjectId());
