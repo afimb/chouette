@@ -68,7 +68,7 @@ public class GtfsTransferParser implements Parser, Validator, Constant {
 				validationReporter.validate(context, GTFS_TRANSFERS_FILE, GtfsException.ERROR.FILE_WITH_NO_ENTRY);
 			}
 			
-			GtfsException unreferencedIdException = null;
+			GtfsException fatalException = null;
 			for (GtfsTransfer bean : parser) {
 				try {
 					parser.validate(bean, importer);
@@ -80,14 +80,16 @@ public class GtfsTransferParser implements Parser, Validator, Constant {
 					}
 				}
 				for(GtfsException ex : bean.getErrors()) {
-					if (ex.getError() == GtfsException.ERROR.UNREFERENCED_ID)
-						unreferencedIdException = ex;
+					if (ex.getError() == GtfsException.ERROR.UNREFERENCED_ID ||
+							ex.getError() == GtfsException.ERROR.MISSING_REQUIRED_VALUES ||
+							ex.getError() == GtfsException.ERROR.INVALID_FORMAT)
+						fatalException = ex;
 				}
 				validationReporter.reportErrors(context, bean.getErrors(), GTFS_TRANSFERS_FILE);
 				validationReporter.validate(context, GTFS_TRANSFERS_FILE, bean.getOkTests());
 			}
-			if (unreferencedIdException != null)
-				throw unreferencedIdException;
+			if (fatalException != null)
+				throw fatalException;
 		} else {
 			validationReporter.reportError(context, new GtfsException(GTFS_TRANSFERS_FILE, 1, null, GtfsException.ERROR.MISSING_OPTIONAL_FILE, null, null), GTFS_TRANSFERS_FILE);
 		}

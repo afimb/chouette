@@ -66,7 +66,7 @@ public class GtfsStopParser implements Parser, Validator, Constant {
 				validationReporter.validate(context, GTFS_STOPS_FILE, GtfsException.ERROR.FILE_WITH_NO_ENTRY);
 			}
 		
-			GtfsException unreferencedIdException = null;
+			GtfsException fatalException = null;
 			boolean hasLocationType = false;
 			for (GtfsStop bean : parser) {
 				try {
@@ -83,8 +83,10 @@ public class GtfsStopParser implements Parser, Validator, Constant {
 					}
 				}
 				for(GtfsException ex : bean.getErrors()) {
-					if (ex.getError() == GtfsException.ERROR.UNREFERENCED_ID)
-						unreferencedIdException = ex;
+					if (ex.getError() == GtfsException.ERROR.UNREFERENCED_ID ||
+							ex.getError() == GtfsException.ERROR.MISSING_REQUIRED_VALUES ||
+							ex.getError() == GtfsException.ERROR.INVALID_FORMAT)
+						fatalException = ex;
 				}
 				validationReporter.reportErrors(context, bean.getErrors(), GTFS_STOPS_FILE);
 				validationReporter.validate(context, GTFS_STOPS_FILE, bean.getOkTests());
@@ -93,8 +95,8 @@ public class GtfsStopParser implements Parser, Validator, Constant {
 				validationReporter.validate(context, GTFS_STOPS_FILE, GtfsException.ERROR.NO_LOCATION_TYPE);
 			else
 				validationReporter.reportError(context, new GtfsException(GTFS_STOPS_FILE, 1, null, GtfsException.ERROR.NO_LOCATION_TYPE, null, null), GTFS_STOPS_FILE);
-			if (unreferencedIdException != null)
-				throw unreferencedIdException;
+			if (fatalException != null)
+				throw fatalException;
 		} else {
 			validationReporter.reportError(context, new GtfsException(GTFS_STOPS_FILE, 1, null, GtfsException.ERROR.MISSING_FILE, null, null), GTFS_STOPS_FILE);
 		}
