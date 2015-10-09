@@ -213,7 +213,7 @@ public class ValidationReporter implements Constant {
 			fieldName = ex.getField();
 			report.addFileInfo(filenameInfo, FILE_STATE.ERROR, new FileError(FileError.CODE.INVALID_FORMAT,
 					"The field \"" + fieldName + "\" must be unique (rule " + checkPointName + ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), ex.getColumn()), fieldName,
+			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), ex.getColumn()), ex.getValue(), fieldName,
 					CheckPoint.RESULT.NOK);
 			throw new Exception("The field \"" + fieldName + "\" must be unique");
 
