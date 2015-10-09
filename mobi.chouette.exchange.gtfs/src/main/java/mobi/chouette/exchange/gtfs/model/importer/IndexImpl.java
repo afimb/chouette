@@ -266,9 +266,9 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 				} else {
 					if (_unique) {
 						if (GtfsAgency.DEFAULT_ID.equals(key)) {
-							throw new GtfsException(_path, _total, getIndex(_key), _key, GtfsException.ERROR.DUPLICATE_DEFAULT_KEY_FIELD, null, null);
+							throw new GtfsException(_path, _total, getIndex(_key), _key, GtfsException.ERROR.DUPLICATE_DEFAULT_KEY_FIELD, null, "");
 						} else {
-							throw new GtfsException(_path, _total, getIndex(_key), _key, GtfsException.ERROR.DUPLICATE_FIELD, null, null);
+							throw new GtfsException(_path, _total, getIndex(_key), _key, GtfsException.ERROR.DUPLICATE_FIELD, null, key);
 						}
 					}
 					token.lenght++;
