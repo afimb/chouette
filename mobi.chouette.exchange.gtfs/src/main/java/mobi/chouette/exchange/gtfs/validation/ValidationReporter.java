@@ -353,7 +353,7 @@ public class ValidationReporter implements Constant {
 			fieldName = ex.getField();
 			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED, new FileError(FileError.CODE.INVALID_FORMAT,
 					"Missing \"" + fieldName + "\" (rule " + checkPointName + ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), ex.getColumn()), fieldName,
+			validationReport.addDetail(checkPointName,"1", new Location(filenameInfo, ex.getId(), ex.getColumn()), fieldName,
 					CheckPoint.RESULT.NOK);
 			break;
 
@@ -363,7 +363,7 @@ public class ValidationReporter implements Constant {
 			fieldName = ex.getField();
 			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED, new FileError(FileError.CODE.INVALID_FORMAT,
 					"Missing \"" + fieldName + "\" (rule " + checkPointName + ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), ex.getColumn()), fieldName,
+			validationReport.addDetail(checkPointName,"2", new Location(filenameInfo, ex.getId(), ex.getColumn()), fieldName,
 					CheckPoint.RESULT.NOK);
 			break;
 		case MISSING_TRANSFER_TIME:
@@ -372,7 +372,7 @@ public class ValidationReporter implements Constant {
 			fieldName = ex.getField();
 			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED, new FileError(FileError.CODE.INVALID_FORMAT,
 					"Missing \"" + fieldName + "\" (rule " + checkPointName + ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), ex.getColumn()), fieldName,
+			validationReport.addDetail(checkPointName,"3", new Location(filenameInfo, ex.getId(), ex.getColumn()), fieldName,
 					CheckPoint.RESULT.NOK);
 			break;
 			
