@@ -285,7 +285,7 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter {
 		if (stopName != null && stopDesc != null) {
 			if (stopName.equals(stopDesc)) {
 				result2 = false;
-				bean.getErrors().add(new GtfsException(_path, copy_bean.getId(), getIndex(FIELDS.stop_name.name()), FIELDS.stop_name.name(), GtfsException.ERROR.BAD_VALUE, null, null));
+				bean.getErrors().add(new GtfsException(_path, copy_bean.getId(), getIndex(FIELDS.stop_name.name()), FIELDS.stop_name.name(), GtfsException.ERROR.BAD_VALUE, null, stopName));
 			} else {
 				bean.getOkTests().add(GtfsException.ERROR.BAD_VALUE);
 			}

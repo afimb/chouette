@@ -490,8 +490,8 @@ public class ValidationReporter implements Constant {
 				new FileError(FileError.CODE.INVALID_FORMAT,
 						"stop_name and stop_desc must be different (rule "+checkPointName+")"));
 		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo, "stop_name and stop_desc must be different", ex.getId(), ex.getColumn(), ex.getField()),
-				"stop_name and stop_desc must be different",
+				new Location(filenameInfo, ex.getId(), ex.getColumn()),
+				ex.getValue(),
 				CheckPoint.RESULT.NOK);
 		break;
 		
