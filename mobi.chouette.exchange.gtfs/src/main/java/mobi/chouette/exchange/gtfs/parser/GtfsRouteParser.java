@@ -87,6 +87,7 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 				validationReporter.validate(context, GTFS_ROUTES_FILE, GtfsException.ERROR.FILE_WITH_NO_ENTRY);
 			}
 		
+			GtfsException unreferencedIdException = null;
 			for (GtfsRoute bean : parser) {
 				try {
 					parser.validate(bean, importer);
@@ -101,6 +102,10 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 					agencyIds.add(bean.getAgencyId());
 				else
 					agencyIds.add(GtfsAgency.DEFAULT_ID);
+				for(GtfsException ex : bean.getErrors()) {
+					if (ex.getError() == GtfsException.ERROR.UNREFERENCED_ID)
+						unreferencedIdException = ex;
+				}
 				validationReporter.reportErrors(context, bean.getErrors(), GTFS_ROUTES_FILE);
 				validationReporter.validate(context, GTFS_ROUTES_FILE, bean.getOkTests());
 			}
@@ -115,6 +120,8 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 			}
 			if (unsuedId)
 				validationReporter.validate(context, GTFS_ROUTES_FILE, GtfsException.ERROR.UNUSED_ID);
+			if (unreferencedIdException != null)
+				throw unreferencedIdException;
 		} else {
 			validationReporter.reportError(context, new GtfsException(GTFS_ROUTES_FILE, 1, null, GtfsException.ERROR.MISSING_FILE, null, null), GTFS_ROUTES_FILE);
 		}
