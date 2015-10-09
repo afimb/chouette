@@ -239,7 +239,7 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 			_total++;
 			
 			if (hasDefaultId)
-				throw new GtfsException(_path, _total, getIndex(_key), _key, GtfsException.ERROR.DUPLICATE_DEFAULT_KEY_FIELD, null, null);
+				throw new GtfsException(_path, _total, getIndex(_key), _key, GtfsException.ERROR.DUPLICATE_DEFAULT_KEY_FIELD, null, "");
 			
 			if (_reader.next()) {
 				String key = getField(_key);
@@ -253,7 +253,7 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 						hasDefaultId = true;
 					}
 					else {
-						throw new GtfsException(_path, _total, getIndex(_key), _key, GtfsException.ERROR.DUPLICATE_DEFAULT_KEY_FIELD, null, null);
+						throw new GtfsException(_path, _total, getIndex(_key), _key, GtfsException.ERROR.DUPLICATE_DEFAULT_KEY_FIELD, null, "");
 					}
 				}
 				
