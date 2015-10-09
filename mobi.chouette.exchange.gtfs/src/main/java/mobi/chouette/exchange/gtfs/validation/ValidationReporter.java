@@ -398,7 +398,8 @@ public class ValidationReporter implements Constant {
 				new Location(filenameInfo, "Duplicate \""+fieldName+"\" for the same \"tripid\"", ex.getId(), ex.getColumn(), ex.getField()),
 				"Duplicate \""+fieldName+"\" for the same \"tripid\"",
 				CheckPoint.RESULT.NOK);
-		throw new Exception("Duplicate \""+fieldName+"\" for the same \"tripid\"");	
+		throw ex;
+		//throw new Exception("Duplicate \""+fieldName+"\" for the same \"tripid\"");	
 		
 	case UNREFERENCED_ID:
 		// 2-GTFS-Common-1
