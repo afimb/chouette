@@ -183,7 +183,10 @@ public class RouteById extends IndexImpl<GtfsRoute> implements GtfsConverter {
 				+ Math.max(bean.getRouteColor().getGreen(), bean.getRouteTextColor().getGreen()) - Math.min(bean.getRouteColor().getGreen(), bean.getRouteTextColor().getGreen())
 				+ Math.max(bean.getRouteColor().getBlue(), bean.getRouteTextColor().getBlue()) - Math.min(bean.getRouteColor().getBlue(), bean.getRouteTextColor().getBlue());
 		if ( brightnessDifference < 125 || colorDifference < 500) { // Poor visibility between text and background colors
-			bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.route_text_color.name()), FIELDS.route_text_color.name(), GtfsException.ERROR.BAD_COLOR, null, value));
+			if (getIndex(FIELDS.route_text_color.name()) != null)
+				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.route_text_color.name()), FIELDS.route_text_color.name(), GtfsException.ERROR.BAD_COLOR, null, value));
+			else
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.route_text_color.name(), GtfsException.ERROR.BAD_COLOR, null, value));
 		}
 		
 		return bean;
