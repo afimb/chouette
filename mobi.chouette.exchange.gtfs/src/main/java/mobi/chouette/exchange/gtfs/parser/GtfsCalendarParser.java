@@ -82,6 +82,7 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 			
 			validationReporter.validateOKGeneralSyntax(context, GTFS_CALENDAR_FILE);
 		
+			GtfsException fatalException = null;
 			for (GtfsCalendar bean : calendarParser) {
 				try {
 					calendarParser.validate(bean, importer);
@@ -92,9 +93,17 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 						validationReporter.throwUnknownError(context, ex, GTFS_CALENDAR_FILE);
 					}
 				}
+				for(GtfsException ex : bean.getErrors()) {
+					if (ex.getError() == GtfsException.ERROR.UNREFERENCED_ID ||
+							ex.getError() == GtfsException.ERROR.MISSING_REQUIRED_VALUES ||
+							ex.getError() == GtfsException.ERROR.INVALID_FORMAT)
+						fatalException = ex;
+				}
 				validationReporter.reportErrors(context, bean.getErrors(), GTFS_CALENDAR_FILE);
 				validationReporter.validate(context, GTFS_CALENDAR_FILE, bean.getOkTests());
 			}
+			if (fatalException != null)
+				throw fatalException;
 		}
 		return calendarParser;
 	}
@@ -140,6 +149,7 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 			validationReporter.validateOKGeneralSyntax(context, GTFS_CALENDAR_DATES_FILE);
 			
 			CalendarDateByService.hashCodes.clear();
+			GtfsException fatalException = null;
 			for (GtfsCalendarDate bean : calendarDateParser) {
 				try {
 					calendarDateParser.validate(bean, importer);
@@ -150,9 +160,17 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 						validationReporter.throwUnknownError(context, ex, GTFS_CALENDAR_DATES_FILE);
 					}
 				}
+				for(GtfsException ex : bean.getErrors()) {
+					if (ex.getError() == GtfsException.ERROR.UNREFERENCED_ID ||
+							ex.getError() == GtfsException.ERROR.MISSING_REQUIRED_VALUES ||
+							ex.getError() == GtfsException.ERROR.INVALID_FORMAT)
+						fatalException = ex;
+				}
 				validationReporter.reportErrors(context, bean.getErrors(), GTFS_CALENDAR_DATES_FILE);
 				validationReporter.validate(context, GTFS_CALENDAR_DATES_FILE, bean.getOkTests());
 			}
+			if (fatalException != null)
+				throw fatalException;
 		}
 		
 		if (!importer.hasCalendarImporter() && !importer.hasCalendarDateImporter()) {

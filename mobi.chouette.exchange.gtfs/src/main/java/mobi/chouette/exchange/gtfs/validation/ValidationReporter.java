@@ -79,7 +79,8 @@ public class ValidationReporter implements Constant {
 							+ ")"));
 			validationReport.addDetail(checkPointName, new Location(filenameInfo, 1, ex.getColumn()), filenameInfo,
 					CheckPoint.RESULT.NOK);
-			throw new Exception("The first line in file \"" + filenameInfo + "\" must comply with CSV");
+			throw ex;
+			//throw new Exception("The first line in file \"" + filenameInfo + "\" must comply with CSV");
 
 		case EMPTY_HEADER_FIELD:
 			// 1-GTFS-CSV-3
@@ -88,7 +89,8 @@ public class ValidationReporter implements Constant {
 					"Header fields in file \"" + filenameInfo + "\" could not be empty (rule " + checkPointName + ")"));
 			validationReport.addDetail(checkPointName, new Location(filenameInfo, 1, ex.getColumn()), filenameInfo,
 					CheckPoint.RESULT.NOK);
-			throw new Exception("Header fields in file \"" + filenameInfo + "\" could not be empty");
+			throw ex;
+			//throw new Exception("Header fields in file \"" + filenameInfo + "\" could not be empty");
 
 		case DUPLICATE_HEADER_FIELD:
 			// 1-GTFS-CSV-4
@@ -98,7 +100,8 @@ public class ValidationReporter implements Constant {
 							+ checkPointName + ")"));
 			validationReport.addDetail(checkPointName, new Location(filenameInfo, 1, ex.getColumn()), filenameInfo,
 					CheckPoint.RESULT.NOK);
-			throw new Exception("The header fields in file \"" + filenameInfo + "\" could not be duplicated");
+			throw ex;
+			//throw new Exception("The header fields in file \"" + filenameInfo + "\" could not be duplicated");
 
 		case INVALID_FILE_FORMAT:
 			// 1-GTFS-CSV-5
@@ -108,7 +111,8 @@ public class ValidationReporter implements Constant {
 							+ checkPointName + ")"));
 			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), ex.getColumn()), filenameInfo,
 					CheckPoint.RESULT.NOK);
-			throw new Exception("Line number " + ex.getId() + " in file \"" + filenameInfo + "\" must comply with CSV");
+			throw ex;
+			//throw new Exception("Line number " + ex.getId() + " in file \"" + filenameInfo + "\" must comply with CSV");
 
 		case HTML_TAG_IN_HEADER_FIELD:
 			// 1-GTFS-CSV-6
@@ -151,7 +155,8 @@ public class ValidationReporter implements Constant {
 			// new FileError(FileError.CODE.FILE_NOT_FOUND,
 			// "The file \""+filenameInfo+"\" must be provided (rule "+checkPointName+")"));
 			validationReport.addDetail(checkPointName, new Location(filenameInfo), filenameInfo, CheckPoint.RESULT.NOK);
-			throw new Exception("The file \"" + filenameInfo + "\" must be provided");
+			throw ex;
+			//throw new Exception("The file \"" + filenameInfo + "\" must be provided");
 
 		case MISSING_FILES:
 			// 1-GTFS-Common-1-1
@@ -163,7 +168,8 @@ public class ValidationReporter implements Constant {
 			// "One of the files \""+filenameInfo+"\" or \""+filenameInfo2+"\"must be provided (rule "+checkPointName+")"));
 			validationReport.addDetail(checkPointName, new Location(filenameInfo), filenameInfo + "," + filenameInfo2,
 					CheckPoint.RESULT.NOK);
-			throw new Exception("The file \"" + filenameInfo + "\" must be provided");
+			throw ex;
+			//throw new Exception("The file \"" + filenameInfo + "\" must be provided");
 
 		case MISSING_OPTIONAL_FILE:
 			// 1-GTFS-Common-1-2
@@ -191,7 +197,8 @@ public class ValidationReporter implements Constant {
 							+ checkPointName + ")"));
 			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), 0), "",
 					CheckPoint.RESULT.NOK);
-			throw new Exception("The file \"" + filenameInfo + "\" must contain at least one entry");
+			throw ex;
+			//throw new Exception("The file \"" + filenameInfo + "\" must contain at least one entry");
 
 		case FILES_WITH_NO_ENTRY: // 1-GTFS-Agency-11, 1-GTFS-Stop-12,
 									// 1-GTFS-Route-11 error
@@ -204,8 +211,8 @@ public class ValidationReporter implements Constant {
 					"One of the files \"" + filenameInfo + "\" or \"" + filenameInfo2 + "\" must contain at least one entry (rule " + checkPointName + ")"));
 			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), 0), "",
 					CheckPoint.RESULT.NOK);
-			throw new Exception("One of the files \"" + filenameInfo + "\" or \"" + filenameInfo2
-					+ "\" must contain at least one entry");
+			throw ex;
+			//throw new Exception("One of the files \"" + filenameInfo + "\" or \"" + filenameInfo2 + "\" must contain at least one entry");
 
 		case DUPLICATE_FIELD:
 			// 1-GTFS-Common-3
@@ -215,7 +222,8 @@ public class ValidationReporter implements Constant {
 					"The field \"" + fieldName + "\" must be unique (rule " + checkPointName + ")"));
 			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), ex.getColumn()), ex.getValue(), fieldName,
 					CheckPoint.RESULT.NOK);
-			throw new Exception("The field \"" + fieldName + "\" must be unique");
+			throw ex;
+			//throw new Exception("The field \"" + fieldName + "\" must be unique");
 
 		case MISSING_REQUIRED_FIELDS: // 1_GTFS_Agency_2, 1_GTFS_Agency_4,
 										// 1-GTFS-Stop-2, 1-GTFS-Route-2,
@@ -232,7 +240,8 @@ public class ValidationReporter implements Constant {
 							+ checkPointName + ")"));
 			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), ex.getColumn()), fieldName,
 					CheckPoint.RESULT.NOK);
-			throw new Exception("The column \"" + fieldName + "\" of file \"" + filenameInfo + "\" must be provided");
+			throw ex;
+			//throw new Exception("The column \"" + fieldName + "\" of file \"" + filenameInfo + "\" must be provided");
 
 		case MISSING_REQUIRED_FIELDS2:
 			// 1-GTFS-Common-3-2
@@ -288,8 +297,8 @@ public class ValidationReporter implements Constant {
 							+ " (rule " + checkPointName + ")"));
 			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), ex.getColumn()), fieldName,
 					CheckPoint.RESULT.NOK);
-			throw new Exception("The file \"" + filenameInfo + "\" must provide a non empty \"" + fieldName
-					+ "\" for each " + name);
+			throw ex;
+			//throw new Exception("The file \"" + filenameInfo + "\" must provide a non empty \"" + fieldName + "\" for each " + name);
 
 		case MISSING_REQUIRED_VALUES2:
 			// 1-GTFS-Common-4-1
@@ -325,7 +334,8 @@ public class ValidationReporter implements Constant {
 					"At most only one Agency can have default value \"agency_id\" (rule " + checkPointName + ")"));
 			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), ex.getColumn()), ex.getField(),
 					CheckPoint.RESULT.NOK);
-			throw new Exception("At most only one Agency can have default value \"agency_id\"");
+			throw ex;
+			//throw new Exception("At most only one Agency can have default value \"agency_id\"");
 
 		case DEFAULT_VALUE:
 			// 1-GTFS-Common-4-4

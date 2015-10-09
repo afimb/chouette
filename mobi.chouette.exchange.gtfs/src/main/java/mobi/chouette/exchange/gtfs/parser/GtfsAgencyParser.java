@@ -70,6 +70,7 @@ public class GtfsAgencyParser implements Parser, Validator, Constant {
 			}
 		
 			// EXTRA_SPACE_IN_FIELD
+			GtfsException fatalException = null;
 			for (GtfsAgency bean : parser) { // Build the beans
 				try {
 					parser.validate(bean, importer);
@@ -80,10 +81,17 @@ public class GtfsAgencyParser implements Parser, Validator, Constant {
 						validationReporter.throwUnknownError(context, ex, GTFS_AGENCY_FILE);
 					}
 				}
+				for(GtfsException ex : bean.getErrors()) {
+					if (ex.getError() == GtfsException.ERROR.UNREFERENCED_ID ||
+							ex.getError() == GtfsException.ERROR.MISSING_REQUIRED_VALUES ||
+							ex.getError() == GtfsException.ERROR.INVALID_FORMAT)
+						fatalException = ex;
+				}
 				validationReporter.reportErrors(context, bean.getErrors(), GTFS_AGENCY_FILE);
 				validationReporter.validate(context, GTFS_AGENCY_FILE, bean.getOkTests());
 			}
-			
+			if (fatalException != null)
+				throw fatalException;
 		} else { // the file "agency.txt" doesn't exist
 			validationReporter.reportError(context, new GtfsException(GTFS_AGENCY_FILE, 1, null, GtfsException.ERROR.MISSING_FILE, null, null), GTFS_AGENCY_FILE);
 		}
