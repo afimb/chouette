@@ -32,7 +32,7 @@ public class ShapeById extends IndexImpl<GtfsShape> implements GtfsConverter {
 			if (fieldName != null) {
 				if (!fieldName.equals(fieldName.trim())) {
 					// extra spaces in end fields are tolerated : 1-GTFS-CSV-7 warning
-					getErrors().add(new GtfsException(_path, 1, getIndex(fieldName), fieldName, GtfsException.ERROR.EXTRA_SPACE_IN_HEADER_FIELD, null, null));
+					getErrors().add(new GtfsException(_path, 1, getIndex(fieldName), fieldName.trim(), GtfsException.ERROR.EXTRA_SPACE_IN_HEADER_FIELD, null, fieldName));
 				}
 				
 				if (HTMLTagValidator.validate(fieldName.trim())) {
@@ -191,7 +191,7 @@ public class ShapeById extends IndexImpl<GtfsShape> implements GtfsConverter {
 				continue;
 			if (id != nextShape.getId() && shapePtSequence == nextShape.getShapePtSequence()) {
 				result = false;
-				bean.getErrors().add(new GtfsException(_path, nextShape.getId(), getIndex(FIELDS.shape_pt_sequence.name()), FIELDS.shape_pt_sequence.name(), GtfsException.ERROR.DUPLICATE_STOP_SEQUENCE, null, null));
+				bean.getErrors().add(new GtfsException(_path, nextShape.getId(), getIndex(FIELDS.shape_pt_sequence.name()), FIELDS.shape_id.name()+","+FIELDS.shape_pt_sequence.name(), GtfsException.ERROR.DUPLICATE_STOP_SEQUENCE, null, shapeId+","+shapePtSequence));
 			}
 			if (nextShape.getId() == id-1)
 				break;

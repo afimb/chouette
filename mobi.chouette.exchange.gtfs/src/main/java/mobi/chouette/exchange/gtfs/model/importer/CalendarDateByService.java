@@ -1,13 +1,13 @@
 package mobi.chouette.exchange.gtfs.model.importer;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import mobi.chouette.common.HTMLTagValidator;
 import mobi.chouette.exchange.gtfs.model.GtfsCalendarDate;
-import mobi.chouette.exchange.gtfs.model.GtfsCalendarDate.ExceptionType;
 
 public class CalendarDateByService extends IndexImpl<GtfsCalendarDate>
 		implements GtfsConverter {
@@ -33,7 +33,7 @@ public class CalendarDateByService extends IndexImpl<GtfsCalendarDate>
 			if (fieldName != null) {
 				if (!fieldName.equals(fieldName.trim())) {
 					// extra spaces in end fields are tolerated : 1-GTFS-CSV-7 warning
-					getErrors().add(new GtfsException(_path, 1, getIndex(fieldName), fieldName, GtfsException.ERROR.EXTRA_SPACE_IN_HEADER_FIELD, null, null));
+					getErrors().add(new GtfsException(_path, 1, getIndex(fieldName), fieldName.trim(), GtfsException.ERROR.EXTRA_SPACE_IN_HEADER_FIELD, null, fieldName));
 				}
 				
 				if (HTMLTagValidator.validate(fieldName.trim())) {
@@ -124,15 +124,10 @@ public class CalendarDateByService extends IndexImpl<GtfsCalendarDate>
 		if (bean.getDate() != null && bean.getServiceId() != null)
 			result = hashCodes.add(bean.getServiceId()+"#"+bean.getDate().getTime());
 		if (!result)
-			bean.getErrors().add(new GtfsException(_path, bean.getId(), getIndex(FIELDS.service_id.name()), FIELDS.service_id.name(), GtfsException.ERROR.DUPLICATE_DOUBLE_KEY, null, null));
-		
-		// Exception day in CalendarDate for a Service not defined in Calendar
-		if (bean.getExceptionType() != null)
-			if (bean.getExceptionType() == ExceptionType.Removed && dao.getCalendarByService().getValue(bean.getServiceId()) == null) {
-				bean.getErrors().add(new GtfsException(_path, bean.getId(), getIndex(FIELDS.service_id.name()), FIELDS.service_id.name(), GtfsException.ERROR.EXCEPT_DATE_WITHOUT_SERVICE, null, null));
-			} else {
-				bean.getOkTests().add(GtfsException.ERROR.EXCEPT_DATE_WITHOUT_SERVICE);
-			}
+		{
+			SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+			bean.getErrors().add(new GtfsException(_path, bean.getId(), getIndex(FIELDS.service_id.name()), FIELDS.service_id.name()+","+FIELDS.date.name(), GtfsException.ERROR.DUPLICATE_DOUBLE_KEY, null, bean.getServiceId()+","+format.format(bean.getDate())));
+		}
 		
 		return result;
 	}

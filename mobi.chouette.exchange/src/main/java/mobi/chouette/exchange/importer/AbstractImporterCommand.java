@@ -29,17 +29,19 @@ public class AbstractImporterCommand implements Constant {
 	public boolean process(Context context, ProcessingCommands commands, ProgressionCommand progression,
 			boolean continueProcesingOnError, Mode mode) throws Exception {
 		boolean result = ERROR;
+		boolean disposeResult = SUCCESS;
 		InitialContext initialContext = (InitialContext) context.get(INITIAL_CONTEXT);
 		ActionReport report = (ActionReport) context.get(REPORT);
 
 		try {
-			// initialisation
+			// Initialization
 			List<? extends Command> preProcessingCommands = commands.getPreProcessingCommands(context, true);
 			progression.initialize(context, preProcessingCommands.size() + 1);
 			for (Command importCommand : preProcessingCommands) {
 				result = importCommand.execute(context);
 				if (!result) {
-					report.setFailure(new ActionError(ActionError.CODE.NO_DATA_FOUND, "no data to import"));
+					if (report.getFailure() == null)
+					   report.setFailure(new ActionError(ActionError.CODE.NO_DATA_FOUND, "no data to import"));
 					progression.execute(context);
 					return ERROR;
 				}
@@ -124,8 +126,8 @@ public class AbstractImporterCommand implements Constant {
 			try {
 				List<? extends Command> disposeCommands = commands.getDisposeCommands(context, true);
 				for (Command command : disposeCommands) {
-					result = command.execute(context);
-					if (!result) {
+					disposeResult = command.execute(context);
+					if (!disposeResult) {
 						break;
 					}
 				}
@@ -134,7 +136,7 @@ public class AbstractImporterCommand implements Constant {
 			}
 			context.remove(CACHE);
 		}
-		return result;
+		return result ; // && disposeResult;
 	}
 
 }

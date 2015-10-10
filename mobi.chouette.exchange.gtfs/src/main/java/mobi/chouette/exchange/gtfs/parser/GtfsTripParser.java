@@ -121,9 +121,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 					}
 				}
 				for(GtfsException ex : bean.getErrors()) {
-					if (ex.getError() == GtfsException.ERROR.UNREFERENCED_ID ||
-							ex.getError() == GtfsException.ERROR.MISSING_REQUIRED_VALUES ||
-							ex.getError() == GtfsException.ERROR.INVALID_FORMAT)
+					if (ex.isFatal())
 						fatalException = ex;
 				}
 				validationReporter.reportErrors(context, bean.getErrors(), GTFS_STOP_TIMES_FILE);
@@ -203,9 +201,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 					}
 				}
 				for(GtfsException ex : bean.getErrors()) {
-					if (ex.getError() == GtfsException.ERROR.UNREFERENCED_ID ||
-							ex.getError() == GtfsException.ERROR.MISSING_REQUIRED_VALUES ||
-							ex.getError() == GtfsException.ERROR.INVALID_FORMAT)
+					if (ex.isFatal())
 						fatalException = ex;
 				}
 				validationReporter.reportErrors(context, bean.getErrors(), GTFS_SHAPES_FILE);
@@ -274,9 +270,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 					}
 				}
 				for(GtfsException ex : bean.getErrors()) {
-					if (ex.getError() == GtfsException.ERROR.UNREFERENCED_ID ||
-							ex.getError() == GtfsException.ERROR.MISSING_REQUIRED_VALUES ||
-							ex.getError() == GtfsException.ERROR.INVALID_FORMAT)
+					if (ex.isFatal())
 						fatalException = ex;
 				}
 				validationReporter.reportErrors(context, bean.getErrors(), GTFS_TRIPS_FILE);
@@ -354,9 +348,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 					}
 				}
 				for(GtfsException ex : bean.getErrors()) {
-					if (ex.getError() == GtfsException.ERROR.UNREFERENCED_ID ||
-							ex.getError() == GtfsException.ERROR.MISSING_REQUIRED_VALUES ||
-							ex.getError() == GtfsException.ERROR.INVALID_FORMAT)
+					if (ex.isFatal())
 						fatalException = ex;
 				}
 				validationReporter.reportErrors(context, bean.getErrors(), GTFS_FREQUENCIES_FILE);
@@ -383,6 +375,25 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 
 		for (GtfsTrip gtfsTrip : gtfsTrips.values(gtfsRouteId)) {
 
+			if (!importer.getStopTimeByTrip().values(gtfsTrip.getTripId()).iterator().hasNext())
+			{
+				continue;
+			}
+			boolean hasTimes = true;
+			for (GtfsStopTime gtfsStopTime : importer.getStopTimeByTrip().values(gtfsTrip.getTripId())) {
+				if (gtfsStopTime.getArrivalTime() == null) 
+				{
+					hasTimes = false;
+					break;
+				}
+				if (gtfsStopTime.getDepartureTime() == null) 
+				{
+					hasTimes = false;
+					break;
+				}
+			}
+			if (!hasTimes) continue;
+			
 			String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
 					VehicleJourney.VEHICLEJOURNEY_KEY, gtfsTrip.getTripId(), log);
 			VehicleJourney vehicleJourney = ObjectFactory.getVehicleJourney(referential, objectId);

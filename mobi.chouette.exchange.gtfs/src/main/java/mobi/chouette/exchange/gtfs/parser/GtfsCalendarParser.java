@@ -6,9 +6,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
@@ -50,7 +48,7 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 		// calendar.txt
 		Index<GtfsCalendar> calendarParser = null;
 		if (importer.hasCalendarImporter()) { // the file "calendar.txt" exists ?
-			validationReporter.reportSuccess(context, GTFS_1_GTFS_Common_1_1, GTFS_CALENDAR_FILE);
+			validationReporter.reportSuccess(context, GTFS_1_GTFS_Common_2, GTFS_CALENDAR_FILE);
 		
 			try { // Read and check the header line of the file "calendar.txt"
 				calendarParser = importer.getCalendarByService(); // return new CalendarByService("/.../calendar.txt", "service_id") { /** super(...) */
@@ -94,9 +92,7 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 					}
 				}
 				for(GtfsException ex : bean.getErrors()) {
-					if (ex.getError() == GtfsException.ERROR.UNREFERENCED_ID ||
-							ex.getError() == GtfsException.ERROR.MISSING_REQUIRED_VALUES ||
-							ex.getError() == GtfsException.ERROR.INVALID_FORMAT)
+					if (ex.isFatal())
 						fatalException = ex;
 				}
 				validationReporter.reportErrors(context, bean.getErrors(), GTFS_CALENDAR_FILE);
@@ -115,7 +111,7 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 		// calendar_dates.txt
 		Index<GtfsCalendarDate> calendarDateParser = null;
 		if (importer.hasCalendarDateImporter()) { // the file "calendar_dates.txt" exists ?
-			validationReporter.reportSuccess(context, GTFS_1_GTFS_Common_1_1, GTFS_CALENDAR_DATES_FILE);
+			validationReporter.reportSuccess(context, GTFS_1_GTFS_Common_2, GTFS_CALENDAR_DATES_FILE);
 		
 			try { // Read and check the header line of the file "calendar_dates.txt"
 				calendarDateParser = importer.getCalendarDateByService(); // return new CalendarDateByService("/.../calendar_dates.txt", "service_id") { /** super(...) */
@@ -161,9 +157,7 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 					}
 				}
 				for(GtfsException ex : bean.getErrors()) {
-					if (ex.getError() == GtfsException.ERROR.UNREFERENCED_ID ||
-							ex.getError() == GtfsException.ERROR.MISSING_REQUIRED_VALUES ||
-							ex.getError() == GtfsException.ERROR.INVALID_FORMAT)
+					if (ex.isFatal())
 						fatalException = ex;
 				}
 				validationReporter.reportErrors(context, bean.getErrors(), GTFS_CALENDAR_DATES_FILE);

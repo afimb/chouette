@@ -80,9 +80,7 @@ public class GtfsTransferParser implements Parser, Validator, Constant {
 					}
 				}
 				for(GtfsException ex : bean.getErrors()) {
-					if (ex.getError() == GtfsException.ERROR.UNREFERENCED_ID ||
-							ex.getError() == GtfsException.ERROR.MISSING_REQUIRED_VALUES ||
-							ex.getError() == GtfsException.ERROR.INVALID_FORMAT)
+					if (ex.isFatal())
 						fatalException = ex;
 				}
 				validationReporter.reportErrors(context, bean.getErrors(), GTFS_TRANSFERS_FILE);

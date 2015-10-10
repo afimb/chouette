@@ -34,7 +34,7 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements GtfsConve
 			if (fieldName != null) {
 				if (!fieldName.equals(fieldName.trim())) {
 					// extra spaces in end fields are tolerated : 1-GTFS-CSV-7 warning
-					getErrors().add(new GtfsException(_path, 1, getIndex(fieldName), fieldName, GtfsException.ERROR.EXTRA_SPACE_IN_HEADER_FIELD, null, null));
+					getErrors().add(new GtfsException(_path, 1, getIndex(fieldName), fieldName.trim(), GtfsException.ERROR.EXTRA_SPACE_IN_HEADER_FIELD, null, fieldName));
 				}
 				
 				if (HTMLTagValidator.validate(fieldName.trim())) {
@@ -219,7 +219,7 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements GtfsConve
 					continue;
 				if (id != nextStopTime.getId() && stopSequence == nextStopTime.getStopSequence()) {
 					result = false;
-					bean.getErrors().add(new GtfsException(_path, nextStopTime.getId(), getIndex(FIELDS.stop_sequence.name()), FIELDS.stop_sequence.name(), GtfsException.ERROR.DUPLICATE_STOP_SEQUENCE, null, null));
+					bean.getErrors().add(new GtfsException(_path, nextStopTime.getId(), getIndex(FIELDS.stop_sequence.name()), FIELDS.trip_id.name()+","+FIELDS.stop_sequence.name(), GtfsException.ERROR.DUPLICATE_STOP_SEQUENCE, null, tripId+","+stopSequence));
 				}
 				if (nextStopTime.getId() == id-1)
 					break;
@@ -235,7 +235,7 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements GtfsConve
 		} else {
 			if (dao.getStopById().getValue(stopId) == null) {
 				// this bean has no stop
-				bean.getErrors().add(new GtfsException(_path, bean.getId(), getIndex(FIELDS.stop_id.name()), FIELDS.stop_id.name(), GtfsException.ERROR.UNREFERENCED_ID, null, stopId));
+				bean.getErrors().add(new GtfsException(_path, bean.getId(), getIndex(FIELDS.stop_id.name()), FIELDS.stop_id.name(), GtfsException.ERROR.UNREFERENCED_ID, tripId, stopId));
 				result2 = false;
 			}
 			if (result2)

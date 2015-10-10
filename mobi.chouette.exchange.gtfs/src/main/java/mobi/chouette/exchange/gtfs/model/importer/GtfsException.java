@@ -5,58 +5,57 @@ import lombok.ToString;
 import lombok.EqualsAndHashCode;
 
 @ToString
-//@EqualsAndHashCode(callSuper=false, exclude={"id", "value"})
-@EqualsAndHashCode(callSuper=false)
+// @EqualsAndHashCode(callSuper=false, exclude={"id", "value"})
+@EqualsAndHashCode(callSuper = false)
 public class GtfsException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 
 	public enum ERROR {
-		MISSING_FIELD,
-		INVALID_FORMAT,
-		MISSING_FOREIGN_KEY,
-		DUPLICATE_FIELD,
-		DUPLICATE_DEFAULT_KEY_FIELD,
-		INVALID_FILE_FORMAT,
-		SYSTEM,
-		MISSING_FILE,
-		MISSING_FILES,
-		INVALID_HEADER_FILE_FORMAT,
-		FILE_WITH_NO_ENTRY,
-		OPTIONAL_FILE_WITH_NO_ENTRY,
-		FILES_WITH_NO_ENTRY,
-		EMPTY_HEADER_FIELD,
-		DUPLICATE_HEADER_FIELD,
-		MISSING_REQUIRED_FIELDS,
-		MISSING_REQUIRED_FIELDS2,
-		MISSING_REQUIRED_VALUES,
-		MISSING_REQUIRED_VALUES2,
-		EXTRA_SPACE_IN_HEADER_FIELD,
-		EXTRA_SPACE_IN_FIELD,
-		HTML_TAG_IN_HEADER_FIELD,
-		EXTRA_HEADER_FIELD,
-		DUPLICATE_DOUBLE_KEY,
-		MISSING_ARRIVAL_TIME,
-		MISSING_DEPARTURE_TIME,
-		DUPLICATE_STOP_SEQUENCE,
-		MISSING_TRANSFER_TIME,
-		DEFAULT_VALUE,
-		MISSING_OPTIONAL_FILE,
-		UNUSED_FILE,
-		MISSING_OPTIONAL_FIELD,
-		UNUSED_ID,
-		SHARED_VALUE,
-		UNREFERENCED_ID,
-		BAD_REFERENCED_ID,
-		NO_LOCATION_TYPE,
-		BAD_VALUE,
-		NO_PARENT_FOR_STATION,
-		DUPLICATE_ROUTE_NAMES,
-		CONTAINS_ROUTE_NAMES,
-		BAD_COLOR,
-		INVERSE_DUPLICATE_ROUTE_NAMES,
-		ALL_DAYS_ARE_INVALID,
-		START_DATE_AFTER_END_DATE,
-		EXCEPT_DATE_WITHOUT_SERVICE,
+		MISSING_FIELD, 
+		INVALID_FORMAT, 
+		MISSING_FOREIGN_KEY, 
+		DUPLICATE_FIELD, 
+		DUPLICATE_DEFAULT_KEY_FIELD, 
+		INVALID_FILE_FORMAT, 
+		SYSTEM, 
+		MISSING_FILE, 
+		MISSING_FILES, 
+		INVALID_HEADER_FILE_FORMAT, 
+		FILE_WITH_NO_ENTRY, 
+		OPTIONAL_FILE_WITH_NO_ENTRY, 
+		FILES_WITH_NO_ENTRY, 
+		EMPTY_HEADER_FIELD, 
+		DUPLICATE_HEADER_FIELD, 
+		MISSING_REQUIRED_FIELDS, 
+		MISSING_REQUIRED_FIELDS2, 
+		MISSING_REQUIRED_VALUES, 
+		MISSING_REQUIRED_VALUES2, 
+		EXTRA_SPACE_IN_HEADER_FIELD, 
+		EXTRA_SPACE_IN_FIELD, 
+		HTML_TAG_IN_HEADER_FIELD, 
+		EXTRA_HEADER_FIELD, 
+		DUPLICATE_DOUBLE_KEY, 
+		MISSING_ARRIVAL_TIME, 
+		MISSING_DEPARTURE_TIME, 
+		DUPLICATE_STOP_SEQUENCE, 
+		MISSING_TRANSFER_TIME, 
+		DEFAULT_VALUE, 
+		MISSING_OPTIONAL_FILE, 
+		UNUSED_FILE, 
+		MISSING_OPTIONAL_FIELD, 
+		UNUSED_ID, 
+		SHARED_VALUE, 
+		UNREFERENCED_ID, 
+		BAD_REFERENCED_ID, 
+		NO_LOCATION_TYPE, 
+		BAD_VALUE, 
+		NO_PARENT_FOR_STATION, 
+		DUPLICATE_ROUTE_NAMES, 
+		CONTAINS_ROUTE_NAMES, 
+		BAD_COLOR, 
+		INVERSE_DUPLICATE_ROUTE_NAMES, 
+		ALL_DAYS_ARE_INVALID, 
+		START_DATE_AFTER_END_DATE, 
 		EMPTY_SERVICE
 	}
 
@@ -77,6 +76,9 @@ public class GtfsException extends RuntimeException {
 	@Getter
 	private String value;
 
+	@Getter
+	private String refValue;
+
 	public GtfsException(Context context) {
 		this(context, null);
 	}
@@ -92,13 +94,12 @@ public class GtfsException extends RuntimeException {
 		this.value = (String) context.get(Context.VALUE);
 	}
 
-	public GtfsException(String path, Integer id, String field, ERROR error,
-			String code, String value) {
-		this(path, id, field, error, code, value, null);
+	public GtfsException(String path, Integer id, String field, ERROR error, String code, String value) {
+		this(path, id, field, error, code, value, null, null);
 	}
 
-	public GtfsException(String path, Integer id, String field, ERROR error,
-			String code, String value, Throwable cause) {
+	public GtfsException(String path, Integer id, String field, ERROR error, String code, String value,
+			String refValue, Throwable cause) {
 		super(cause);
 		this.path = path;
 		this.id = id;
@@ -106,15 +107,20 @@ public class GtfsException extends RuntimeException {
 		this.error = error;
 		this.code = code;
 		this.value = value;
+		this.refValue = refValue;
 	}
 
-	public GtfsException(String path, Integer id, Integer column, String field, ERROR error,
-			String code, String value) {
-		this(path, id, column, field, error, code, value, null);
+	public GtfsException(String path, Integer id, Integer column, String field, ERROR error, String code, String value) {
+		this(path, id, column, field, error, code, value, null, null);
 	}
 
-	public GtfsException(String path, Integer id, Integer column, String field, ERROR error,
-			String code, String value, Throwable cause) {
+	public GtfsException(String path, Integer id, Integer column, String field, ERROR error, String code, String value,
+			String refValue) {
+		this(path, id, column, field, error, code, value, refValue, null);
+	}
+
+	public GtfsException(String path, Integer id, Integer column, String field, ERROR error, String code, String value,
+			String refValue, Throwable cause) {
 		super(cause);
 		this.path = path;
 		this.id = id;
@@ -123,5 +129,26 @@ public class GtfsException extends RuntimeException {
 		this.error = error;
 		this.code = code;
 		this.value = value;
+		this.refValue = refValue;
 	}
+
+	public boolean isFatal() {
+		switch (error) {
+		case UNREFERENCED_ID:
+		case MISSING_REQUIRED_VALUES:
+		case MISSING_REQUIRED_VALUES2 :
+		case HTML_TAG_IN_HEADER_FIELD :
+		case INVALID_FORMAT:
+		case MISSING_ARRIVAL_TIME:
+		case MISSING_DEPARTURE_TIME:
+		case MISSING_TRANSFER_TIME:
+		case DUPLICATE_STOP_SEQUENCE :
+		case DUPLICATE_DOUBLE_KEY :
+		case BAD_REFERENCED_ID:
+			return true;
+		default:
+			return false;
+		}
+	}
+
 }

@@ -36,8 +36,8 @@ public class Phase2AgencyTests extends AbstractPhase2Tests {
 				Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(3), "detail must refer bad line");
 			} else if (count == 1) {
 				count++;
-				Assert.assertEquals(detail.getSource().getFile().getFilename(), "stops.txt", "detail must refer bad file");
-				Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(100), "detail must refer bad line");
+				Assert.assertEquals(detail.getSource().getFile().getFilename(), "stop_times.txt", "detail must refer bad file");
+				//Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(100), "detail must refer bad line");
 			}
 		}
 	}
@@ -45,7 +45,7 @@ public class Phase2AgencyTests extends AbstractPhase2Tests {
 	@Test(groups = { "Phase 2 Agency" }, description = "missing agency_id value" ,priority=301 )
 	public void verifyTest_2_2_1() throws Exception {
 		log.info(Color.GREEN + "Agency_2_1 : missing agency_id value with one agency" + Color.NORMAL);
-		CheckPoint result = verifyValidation( log, "agency_2_1", GTFS_1_GTFS_Common_4_4,CheckPoint.SEVERITY.WARNING, CheckPoint.RESULT.NOK,true);
+		CheckPoint result = verifyValidation( log, "agency_2_1", GTFS_1_GTFS_Common_14,CheckPoint.SEVERITY.WARNING, CheckPoint.RESULT.NOK,true);
 
 		Assert.assertEquals(result.getDetailCount(), 1, "detail count");
 		for (Detail detail : result.getDetails()) 
@@ -60,7 +60,7 @@ public class Phase2AgencyTests extends AbstractPhase2Tests {
 	@Test(groups = { "Phase 2 Agency" }, description = "missing agency_id column" ,priority=301 )
 	public void verifyTest_2_2_2() throws Exception {
 		log.info(Color.GREEN + "Agency_2_2 : missing agency_id column with one agency" + Color.NORMAL);
-		CheckPoint result = verifyValidation( log, "agency_2_2", GTFS_1_GTFS_Common_3_3,CheckPoint.SEVERITY.WARNING, CheckPoint.RESULT.NOK,true);
+		CheckPoint result = verifyValidation( log, "agency_2_2", GTFS_1_GTFS_Common_10,CheckPoint.SEVERITY.WARNING, CheckPoint.RESULT.NOK,true);
 
 		Assert.assertEquals(result.getDetailCount(), 1, "detail count");
 		for (Detail detail : result.getDetails()) 

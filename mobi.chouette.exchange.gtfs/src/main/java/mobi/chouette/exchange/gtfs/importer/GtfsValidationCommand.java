@@ -112,11 +112,12 @@ public class GtfsValidationCommand implements Command, Constant {
 			
 			result = SUCCESS;
 		} catch (GtfsException e) {
-			//log.error(e);
+			// log.error(e,e);
 			if (e.getError().equals(GtfsException.ERROR.SYSTEM))
 				throw e;
 			else
 				report.setFailure(new ActionError(ActionError.CODE.INVALID_DATA, e.getError().name()+" "+e.getPath()));
+			
 		} catch (Exception e) {
 			if (e instanceof RuntimeException)
 				log.error(e, e);

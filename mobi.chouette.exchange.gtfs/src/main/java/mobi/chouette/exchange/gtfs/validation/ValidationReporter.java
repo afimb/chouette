@@ -69,7 +69,9 @@ public class ValidationReporter implements Constant {
 		String fieldName = "";
 		String fieldName2 = "";
 		String value = "";
-
+		
+		// log.error(ex);
+ 
 		switch (ex.getError()) {
 		case INVALID_HEADER_FILE_FORMAT:
 			// 1-GTFS-CSV-2
@@ -121,7 +123,8 @@ public class ValidationReporter implements Constant {
 					"HTML tags in field names are not allowed (rule " + checkPointName + ")"));
 			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), ex.getColumn()), filenameInfo,
 					CheckPoint.RESULT.NOK);
-			break;
+			throw ex;
+			// break;
 
 		case EXTRA_SPACE_IN_FIELD: // Don't throw an exception at this level
 			// report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
@@ -144,7 +147,7 @@ public class ValidationReporter implements Constant {
 							"Extra spaces in field names are not allowed, at file "+filenameInfo+" for value "+ex.getValue()+" at line "+ex.getId()+" (rule "+checkPointName+")"));
 			validationReport.addDetail(checkPointName,
 					new Location(filenameInfo, ex.getId(), ex.getColumn()),
-					ex.getValue(),
+					ex.getValue(),ex.getField(),
 					CheckPoint.RESULT.NOK);
 			break;
 
@@ -403,10 +406,10 @@ public class ValidationReporter implements Constant {
 		fieldName = ex.getField();
 		report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
 				new FileError(FileError.CODE.INVALID_FORMAT,
-						"Duplicate \""+fieldName+"\" for the same \"tripid\" (rule "+checkPointName+")"));
+						"Duplicate ("+fieldName+") values (rule "+checkPointName+")"));
 		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo, "Duplicate \""+fieldName+"\" for the same \"tripid\"", ex.getId(), ex.getColumn(), ex.getField()),
-				"Duplicate \""+fieldName+"\" for the same \"tripid\"",
+				new Location(filenameInfo, ex.getId(), ex.getColumn(), ex.getField()),
+				ex.getValue(),ex.getField(),
 				CheckPoint.RESULT.NOK);
 		throw ex;
 		//throw new Exception("Duplicate \""+fieldName+"\" for the same \"tripid\"");	
@@ -419,8 +422,8 @@ public class ValidationReporter implements Constant {
 				new FileError(FileError.CODE.INVALID_FORMAT,
 						"Unreferenced "+fieldName+" (rule "+checkPointName+")"));
 		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo, fieldName, ex.getId(), ex.getColumn(), ex.getField()),
-				ex.getValue(),
+				new Location(filenameInfo, fieldName, ex.getId(), ex.getColumn(), ex.getCode()),
+				ex.getValue(), ex.getField(),
 				CheckPoint.RESULT.NOK);
 		break;
 
@@ -432,9 +435,8 @@ public class ValidationReporter implements Constant {
 				new FileError(FileError.CODE.INVALID_FORMAT,
 						"Unused \""+fieldName+"\" ("+ex.getValue()+") in file \""+ex.getPath()+"\" at line \""+ex.getId()+"\" (rule "+checkPointName+")"));
 		validationReport.addDetail(checkPointName,
-				new Location(ex.getPath(), "Unused \""+fieldName+"\" ("+ex.getValue()+") in file \""+ex.getPath()+"\" at line \""+ex.getId()+"\"",
-						ex.getId(), ex.getColumn(), ex.getField()),
-						"Unused \""+fieldName+"\" ("+ex.getValue()+") in file \""+ex.getPath()+"\" at line \""+ex.getId()+"\"",
+				new Location(filenameInfo,ex.getId(), ex.getColumn()),
+						ex.getValue(),fieldName,
 						CheckPoint.RESULT.NOK);
 		break;
 
@@ -445,24 +447,23 @@ public class ValidationReporter implements Constant {
 		fieldName2 = "date";
 		report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
 				new FileError(FileError.CODE.INVALID_FORMAT,
-						"Double service_id date (rule "+checkPointName+")"));
+						"Duplicate ("+fieldName+") values (rule "+checkPointName+")"));
 		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo, "service_id,date", ex.getId(), ex.getColumn(), ex.getField()),
-				"Double service_id date",
+				new Location(filenameInfo, ex.getId(), ex.getColumn(), ex.getField()),
+				ex.getValue(),ex.getField(),
 				CheckPoint.RESULT.NOK);
-		break;
+		throw ex;
+// 		break;
 	
 	case SHARED_VALUE:
 		// 2-GTFS-Common-5
 		checkPointName = checkPointName(name, GtfsException.ERROR.SHARED_VALUE);
-		fieldName = ex.getField();
-		fieldName2 = "route_long_name";
 		report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
 				new FileError(FileError.CODE.INVALID_FORMAT,
-						"The two values "+fieldName+" and "+fieldName2+" cannot be the same (rule "+checkPointName+")"));
+						"The two values "+ex.getField()+" cannot be the same (rule "+checkPointName+")"));
 		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo, fieldName+","+fieldName2, ex.getId(), ex.getColumn(), ex.getField()),
-				ex.getValue(),
+				new Location(filenameInfo, ex.getId(), ex.getColumn(), ex.getCode()),
+				ex.getValue(), ex.getField(),
 				CheckPoint.RESULT.NOK);
 		break;
 	
@@ -474,8 +475,8 @@ public class ValidationReporter implements Constant {
 				new FileError(FileError.CODE.INVALID_FORMAT,
 						"The parent stop must be a station (rule "+checkPointName+")"));
 		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo, "The parent stop must be a station", ex.getId(), ex.getColumn(), ex.getField()),
-				"The parent stop must be a station",
+				new Location(filenameInfo, ex.getId(), ex.getColumn(),ex.getCode()),
+				ex.getValue(),
 				CheckPoint.RESULT.NOK);
 		break;
 		
@@ -500,10 +501,11 @@ public class ValidationReporter implements Constant {
 				new FileError(FileError.CODE.INVALID_FORMAT,
 						"stop_name and stop_desc must be different (rule "+checkPointName+")"));
 		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo, ex.getId(), ex.getColumn()),
+				new Location(filenameInfo, ex.getId(), ex.getColumn(),ex.getCode()),
 				ex.getValue(),
 				CheckPoint.RESULT.NOK);
-		break;
+		throw ex;
+//		break;
 		
 	case NO_PARENT_FOR_STATION:
 		// 2-GTFS-Stop-4
@@ -513,8 +515,8 @@ public class ValidationReporter implements Constant {
 				new FileError(FileError.CODE.INVALID_FORMAT,
 						"Stations can't contain other stations (rule "+checkPointName+")"));
 		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo, "Stations can't contain other stations", ex.getId(), ex.getColumn(), ex.getField()),
-				"Stations can't contain other stations",
+				new Location(filenameInfo, ex.getId(), ex.getColumn(), ex.getCode()),
+				ex.getValue(),
 				CheckPoint.RESULT.NOK);
 		break;
 
@@ -526,8 +528,8 @@ public class ValidationReporter implements Constant {
 				new FileError(FileError.CODE.INVALID_FORMAT,
 						"The couple short_name, long_name must be unique (rule "+checkPointName+")"));
 		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo, "The couple short_name, long_name must be unique", ex.getId(), ex.getColumn(), ex.getField()),
-				"The couple short_name, long_name must be unique",
+				new Location(filenameInfo, ex.getId(), ex.getColumn(), ex.getCode()),
+				ex.getValue(),
 				CheckPoint.RESULT.NOK);
 		break;
 
@@ -539,8 +541,8 @@ public class ValidationReporter implements Constant {
 				new FileError(FileError.CODE.INVALID_FORMAT,
 						"The long_name cannot contains the short_name (rule "+checkPointName+")"));
 		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo, "The long_name cannot contains the short_name", ex.getId(), ex.getColumn(), ex.getField()),
-				"The long_name cannot contains the short_name",
+				new Location(filenameInfo, ex.getId(), ex.getColumn(),ex.getCode()),
+				ex.getValue(),ex.getRefValue(),
 				CheckPoint.RESULT.NOK);
 		break;
 	
@@ -552,8 +554,8 @@ public class ValidationReporter implements Constant {
 				new FileError(FileError.CODE.INVALID_FORMAT,
 						"Poor visibility between text and background colors (rule "+checkPointName+")"));
 		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo, "Poor visibility between text and background colors", ex.getId(), ex.getColumn(), ex.getField()),
-				"Poor visibility between text and background colors",
+				new Location(filenameInfo, ex.getId(), ex.getColumn(), ex.getCode()),
+				"",
 				CheckPoint.RESULT.NOK);
 		break;
 		
@@ -565,24 +567,11 @@ public class ValidationReporter implements Constant {
 				new FileError(FileError.CODE.INVALID_FORMAT,
 						"The set short_name, long_name must be unique (rule "+checkPointName+")"));
 		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo, "The set short_name, long_name must be unique", ex.getId(), ex.getColumn(), ex.getField()),
-				"The set short_name, long_name must be unique",
+				new Location(filenameInfo, ex.getId(), ex.getColumn(), ex.getCode()),
+				ex.getValue(),
 				CheckPoint.RESULT.NOK);
 		break;
-		
-	case EXCEPT_DATE_WITHOUT_SERVICE:
-		// 2-GTFS-Calendar-4
-		checkPointName = checkPointName(name, GtfsException.ERROR.EXCEPT_DATE_WITHOUT_SERVICE);
-		fieldName = ex.getField();
-		report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-				new FileError(FileError.CODE.INVALID_FORMAT,
-						"Exception date without a service (rule "+checkPointName+")"));
-		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo, "Exception date without a service", ex.getId(), ex.getColumn(), ex.getField()),
-				"Exception date without a service",
-				CheckPoint.RESULT.NOK);
-		break;
-		
+				
 
 
 	case MISSING_FOREIGN_KEY: // THIS CAN NEVER OCCUR !
@@ -613,74 +602,71 @@ public class ValidationReporter implements Constant {
 		case MISSING_FILE:
 			return GTFS_1_GTFS_Common_1;
 		case MISSING_FILES:
-			return GTFS_1_GTFS_Common_1_1;
-		case MISSING_OPTIONAL_FILE:
-			return GTFS_1_GTFS_Common_1_2;
-		case UNUSED_FILE:
-			return GTFS_1_GTFS_Common_1_3;
-		case FILE_WITH_NO_ENTRY:
 			return GTFS_1_GTFS_Common_2;
-		case FILES_WITH_NO_ENTRY:
-			return GTFS_1_GTFS_Common_2_1;
-		case DUPLICATE_FIELD:
+		case MISSING_OPTIONAL_FILE:
 			return GTFS_1_GTFS_Common_3;
+		case UNUSED_FILE:
+			return GTFS_1_GTFS_Common_4;
+		case FILE_WITH_NO_ENTRY:
+			return GTFS_1_GTFS_Common_5;
+		case FILES_WITH_NO_ENTRY:
+			return GTFS_1_GTFS_Common_6;
+		case DUPLICATE_FIELD:
+			return GTFS_1_GTFS_Common_8;
 		case MISSING_REQUIRED_FIELDS:
-			return GTFS_1_GTFS_Common_3_1;
+			return GTFS_1_GTFS_Common_9;
 		case MISSING_REQUIRED_FIELDS2:
-			return GTFS_1_GTFS_Common_3_2;
+			return GTFS_1_GTFS_Route_1;
 		case MISSING_OPTIONAL_FIELD:
-			return GTFS_1_GTFS_Common_3_3;
+			return GTFS_1_GTFS_Common_10;
 		case EXTRA_HEADER_FIELD:
-			return GTFS_1_GTFS_Common_3_4;
+			return GTFS_1_GTFS_Common_11;
 		case MISSING_REQUIRED_VALUES:
 		case MISSING_FIELD:
-			return GTFS_1_GTFS_Common_4;
+			return GTFS_1_GTFS_Common_12;
 		case MISSING_REQUIRED_VALUES2:
-			return GTFS_1_GTFS_Common_4_1;
+			return GTFS_1_GTFS_Route_2;
 		case ALL_DAYS_ARE_INVALID:
-			return GTFS_1_GTFS_Common_4_2;
+			return GTFS_1_GTFS_Calendar_1;
 		case DUPLICATE_DEFAULT_KEY_FIELD:
-			return GTFS_1_GTFS_Common_4_3;
+			return GTFS_1_GTFS_Common_13;
 		case DEFAULT_VALUE:
-			return GTFS_1_GTFS_Common_4_4;
+			return GTFS_1_GTFS_Common_14;
 		case MISSING_ARRIVAL_TIME:
 		case MISSING_DEPARTURE_TIME:
 		case MISSING_TRANSFER_TIME:
-			return GTFS_1_GTFS_Common_4_6;
+			return GTFS_1_GTFS_Common_15;
 		case START_DATE_AFTER_END_DATE:
-			return GTFS_1_GTFS_Common_4_7;
+			return GTFS_1_GTFS_Calendar_2;
 		case INVALID_FORMAT:
-			return GTFS_1_GTFS_Common_5;
+			return GTFS_1_GTFS_Common_16;
 		case UNREFERENCED_ID:
 			return GTFS_2_GTFS_Common_1;
 		case UNUSED_ID:
 			return GTFS_2_GTFS_Common_2;
 		case DUPLICATE_STOP_SEQUENCE:
 		case DUPLICATE_DOUBLE_KEY:
-			return GTFS_2_GTFS_Common_4;
+			return GTFS_2_GTFS_Common_3;
 		case SHARED_VALUE:
-			return GTFS_2_GTFS_Common_5;
+			return GTFS_2_GTFS_Common_4;
 			
 		case BAD_REFERENCED_ID:
-			return GTFS_2_GTFS_Common_6;
+			return GTFS_2_GTFS_Stop_1;
 		case NO_LOCATION_TYPE:
-			return GTFS_2_GTFS_Common_7;
+			return GTFS_2_GTFS_Stop_2;
 		case BAD_VALUE:
-			return GTFS_2_GTFS_Common_8;
+			return GTFS_2_GTFS_Stop_3;
 		case NO_PARENT_FOR_STATION:
 			return GTFS_2_GTFS_Stop_4;
 		case DUPLICATE_ROUTE_NAMES:
-			return GTFS_2_GTFS_Route_5;
+			return GTFS_2_GTFS_Route_1;
 		case CONTAINS_ROUTE_NAMES:
-			return GTFS_2_GTFS_Route_8;
+			return GTFS_2_GTFS_Route_2;
 		case BAD_COLOR:
-			return GTFS_2_GTFS_Route_9;
+			return GTFS_2_GTFS_Route_3;
 		case INVERSE_DUPLICATE_ROUTE_NAMES:
-			return GTFS_2_GTFS_Route_11;
-			
-		case EXCEPT_DATE_WITHOUT_SERVICE:
-			return GTFS_2_GTFS_Calendar_4;
-			
+			return GTFS_2_GTFS_Route_4;
+						
 		default:
 			return null;
 		}
@@ -726,24 +712,6 @@ public class ValidationReporter implements Constant {
 		if (validationReport.findCheckPointByName(checkpointName).getState() == CheckPoint.RESULT.UNCHECK)
 			validationReport.findCheckPointByName(checkpointName).setState(CheckPoint.RESULT.OK);
 	}
-
-//	public void reportFailure(Context context, String checkpointName, String filenameInfo1, String filenameInfo2)
-//			throws Exception {
-//		ActionReport report = (ActionReport) context.get(REPORT);
-//		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
-//
-//		report.addFileInfo(filenameInfo1, FILE_STATE.ERROR, new FileError(FileError.CODE.FILE_NOT_FOUND,
-//				"At least one of the files \"" + filenameInfo1 + "\" and \"" + filenameInfo2
-//						+ "\" must be provided (rule " + checkpointName + ")"));
-//		Location[] locations = new Location[2];
-//		locations[0] = new Location(filenameInfo1, name(filenameInfo1) + "-failure");
-//		locations[1] = new Location(filenameInfo2, name(filenameInfo2) + "-failure");
-//		validationReport.addDetail(checkpointName, locations, filenameInfo1 + "+" + filenameInfo2,
-//				CheckPoint.RESULT.NOK);
-//		// Stop parsing and render reports (1-GTFS-<X>-1 is fatal)
-//		throw new Exception("At least one of the files \"" + filenameInfo1 + "\" and \"" + filenameInfo2
-//				+ "\" must be provided");
-//	}
 
 	public void validate(Context context, String filenameInfo,
 			Set<mobi.chouette.exchange.gtfs.model.importer.GtfsException.ERROR> errorCodes) {

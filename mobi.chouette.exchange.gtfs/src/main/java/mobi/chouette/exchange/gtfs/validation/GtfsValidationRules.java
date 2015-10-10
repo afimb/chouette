@@ -32,50 +32,45 @@ public class GtfsValidationRules implements Constant {
 	private Collection<? extends CheckPoint> commonCheckPoints() {
 		List<CheckPoint> checkPoints = new ArrayList<CheckPoint>();
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_1   , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
-		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_1_1 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
-		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_1_2 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_2 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_3 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
 		// TODO. A faire apparaitre seulement si des fichiers parasites
-		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_1_3 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
-
-		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_2   , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
-		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_2_1 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
-		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_2_2 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
-		
-		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_3   , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
-		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_3_1 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
-		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_3_2 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
-		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_3_3 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
-		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_3_4 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
-		
-		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_4   , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
-		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_4_1 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
-		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_4_2 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
-		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_4_3 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
-		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_4_4 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
-		// checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_4_5 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
-		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_4_6 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
-		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_4_7 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_4 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
 
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_5   , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_6 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_7 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_8   , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_9 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Route_1 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_10 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_11 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_12   , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Route_2 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Calendar_1 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_13 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_14 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		// checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_4_5 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_15 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Calendar_2 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_16   , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 
 		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Common_1   , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Common_2   , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
-		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Common_3   , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
-		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Common_4   , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
-		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Common_5   , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
-		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Common_6   , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
-		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Common_7   , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
-		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Common_8   , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Common_3   , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Common_4   , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Stop_1   , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Stop_2   , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Stop_3   , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Stop_4     , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
-		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Route_5    , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
-		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Route_8    , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
-		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Route_9    , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
-		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Route_11   , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
-		
-		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Calendar_1 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
-		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Calendar_3 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
-		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Calendar_4 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
-		
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Route_1    , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Route_2    , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Route_3    , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Route_4   , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+				
 		return checkPoints;
 	}
 }

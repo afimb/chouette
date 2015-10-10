@@ -29,7 +29,7 @@ public class CalendarByService extends IndexImpl<GtfsCalendar> implements GtfsCo
 			if (fieldName != null) {
 				if (!fieldName.equals(fieldName.trim())) {
 					// extra spaces in end fields are tolerated : 1-GTFS-CSV-7 warning
-					getErrors().add(new GtfsException(_path, 1, getIndex(fieldName), fieldName, GtfsException.ERROR.EXTRA_SPACE_IN_HEADER_FIELD, null, null));
+					getErrors().add(new GtfsException(_path, 1, getIndex(fieldName), fieldName.trim(), GtfsException.ERROR.EXTRA_SPACE_IN_HEADER_FIELD, null, fieldName));
 				}
 				
 				if (HTMLTagValidator.validate(fieldName.trim())) {

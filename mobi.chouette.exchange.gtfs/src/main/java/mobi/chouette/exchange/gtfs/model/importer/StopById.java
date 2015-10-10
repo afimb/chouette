@@ -34,7 +34,7 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter {
 			if (fieldName != null) {
 				if (!fieldName.equals(fieldName.trim())) {
 					// extra spaces in end fields are tolerated : 1-GTFS-CSV-7 warning
-					getErrors().add(new GtfsException(_path, 1, getIndex(fieldName), fieldName, GtfsException.ERROR.EXTRA_SPACE_IN_HEADER_FIELD, null, null));
+					getErrors().add(new GtfsException(_path, 1, getIndex(fieldName), fieldName.trim(), GtfsException.ERROR.EXTRA_SPACE_IN_HEADER_FIELD, null, fieldName));
 				}
 				
 				if (HTMLTagValidator.validate(fieldName.trim())) {
@@ -252,10 +252,10 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter {
 			GtfsStop parent = dao.getStopById().getValue(parentStationId);
 			if (parent == null) {
 				result = false;
-				bean.getErrors().add(new GtfsException(_path, copy_bean.getId(), getIndex(FIELDS.parent_station.name()), FIELDS.parent_station.name(), GtfsException.ERROR.UNREFERENCED_ID, null, parentStationId));
+				bean.getErrors().add(new GtfsException(_path, copy_bean.getId(), getIndex(FIELDS.parent_station.name()), FIELDS.parent_station.name(), GtfsException.ERROR.UNREFERENCED_ID, copy_bean.getStopId(), parentStationId));
 			} else if (copy_bean.getLocationType() == LocationType.Station) {
 				result = false;
-				bean.getErrors().add(new GtfsException(_path, copy_bean.getId(), getIndex(FIELDS.parent_station.name()), FIELDS.parent_station.name(), GtfsException.ERROR.NO_PARENT_FOR_STATION, null, parentStationId));
+				bean.getErrors().add(new GtfsException(_path, copy_bean.getId(), getIndex(FIELDS.parent_station.name()), FIELDS.parent_station.name(), GtfsException.ERROR.NO_PARENT_FOR_STATION, copy_bean.getStopId(), parentStationId));
 			} else {
 				bean.getOkTests().add(GtfsException.ERROR.UNREFERENCED_ID);
 				bean.getOkTests().add(GtfsException.ERROR.NO_PARENT_FOR_STATION);
@@ -266,9 +266,9 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter {
 				if (LocationType.Station != parent.getLocationType()) {
 					result = false;
 					if (parent.getLocationType() != null)
-					   bean.getErrors().add(new GtfsException(_path, copy_bean.getId(), getIndex(FIELDS.parent_station.name()), FIELDS.parent_station.name(), GtfsException.ERROR.BAD_REFERENCED_ID, null, Integer.toString(parent.getLocationType().ordinal())));
+					   bean.getErrors().add(new GtfsException(_path, copy_bean.getId(), getIndex(FIELDS.parent_station.name()), FIELDS.parent_station.name(), GtfsException.ERROR.BAD_REFERENCED_ID, copy_bean.getStopId(), Integer.toString(parent.getLocationType().ordinal())));
 					else
-					   bean.getErrors().add(new GtfsException(_path, copy_bean.getId(), getIndex(FIELDS.parent_station.name()), FIELDS.parent_station.name(), GtfsException.ERROR.BAD_REFERENCED_ID, null, ""));
+					   bean.getErrors().add(new GtfsException(_path, copy_bean.getId(), getIndex(FIELDS.parent_station.name()), FIELDS.parent_station.name(), GtfsException.ERROR.BAD_REFERENCED_ID, copy_bean.getStopId(), "0"));
 					   
 				} else {
 					bean.getOkTests().add(GtfsException.ERROR.BAD_REFERENCED_ID);
@@ -285,7 +285,7 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter {
 		if (stopName != null && stopDesc != null) {
 			if (stopName.equals(stopDesc)) {
 				result2 = false;
-				bean.getErrors().add(new GtfsException(_path, copy_bean.getId(), getIndex(FIELDS.stop_name.name()), FIELDS.stop_name.name(), GtfsException.ERROR.BAD_VALUE, null, stopName));
+				bean.getErrors().add(new GtfsException(_path, copy_bean.getId(), getIndex(FIELDS.stop_name.name()), FIELDS.stop_name.name(), GtfsException.ERROR.BAD_VALUE, copy_bean.getStopId(), stopName));
 			} else {
 				bean.getOkTests().add(GtfsException.ERROR.BAD_VALUE);
 			}
@@ -299,7 +299,7 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter {
 				if (agency.getAgencyUrl() != null) {
 					if (copy_bean.getStopUrl().equals(agency.getAgencyUrl())) {
 						result3 = false;
-						bean.getErrors().add(new GtfsException(_path, copy_bean.getId(), getIndex(FIELDS.stop_url.name()), FIELDS.stop_url.name(), GtfsException.ERROR.SHARED_VALUE, null, null));
+						bean.getErrors().add(new GtfsException(_path, copy_bean.getId(), getIndex(FIELDS.stop_url.name()), FIELDS.stop_url.name()+","+AgencyById.FIELDS.agency_url.name(), GtfsException.ERROR.SHARED_VALUE,  copy_bean.getStopId(), copy_bean.getStopUrl().toString()));
 						break;
 					}
 				}
@@ -308,7 +308,7 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter {
 				if (route.getRouteUrl() != null) {
 					if (copy_bean.getStopUrl().equals(route.getRouteUrl())) {
 						result3 = false;
-						bean.getErrors().add(new GtfsException(_path, copy_bean.getId(), getIndex(FIELDS.stop_url.name()), FIELDS.stop_url.name(), GtfsException.ERROR.SHARED_VALUE, null, null));
+						bean.getErrors().add(new GtfsException(_path, copy_bean.getId(), getIndex(FIELDS.stop_url.name()), FIELDS.stop_url.name()+","+RouteById.FIELDS.route_url.name(), GtfsException.ERROR.SHARED_VALUE, copy_bean.getStopId(), copy_bean.getStopUrl().toString()));
 						break;
 					}
 				}
