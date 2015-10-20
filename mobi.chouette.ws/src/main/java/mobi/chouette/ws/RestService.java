@@ -56,6 +56,8 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 @RequestScoped
 public class RestService implements Constant {
 
+   // voir swagger
+
 	private static String api_version_key = "X-ChouetteIEV-Media-Type";
 	private static String api_version = "iev.v1.0; format=json";
 

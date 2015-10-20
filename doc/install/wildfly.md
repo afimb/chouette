@@ -35,7 +35,7 @@ create database access :
 bin/jboss-cli.sh
 connect
 
-module add --name=org.postgres --resources=(path to driver)/postgresql-9.3-1103-jdbc41.jar --dependencies=javax.api,javax.transaction.api
+module add --name=org.postgres --resources=(path to driver)/postgresql-9.3-1103.jdbc41.jar --dependencies=javax.api,javax.transaction.api
 
 /subsystem=datasources/jdbc-driver=postgres:add(driver-name="postgres",driver-module-name="org.postgres",driver-class-name=org.postgresql.Driver)
 
