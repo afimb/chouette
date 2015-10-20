@@ -19,7 +19,7 @@
 		<version.ejb.plugin>2.4</version.ejb.plugin>
 		<version.ear.plugin>2.9.1</version.ear.plugin>
 		<shrinkwrap.bom-version>2.1.1</shrinkwrap.bom-version>
-		<postgresql.version>9.3-1102-jdbc41</postgresql.version>
+		<postgresql.version>9.3-1103-jdbc41</postgresql.version>
 		<arquillian-version>1.1.7.Final</arquillian-version>
 		<project.rootDir>${project.basedir}</project.rootDir>
 	</properties>
@@ -223,7 +223,7 @@
 					<ejbVersion>3.2</ejbVersion>
 				</configuration>
 			</plugin>
-			<plugin>
+<!--			<plugin>
 				<groupId>org.projectlombok</groupId>
 				<artifactId>lombok-maven-plugin</artifactId>
 				<version>1.12.4.0</version>
@@ -291,7 +291,7 @@
 					</execution>
 				</executions>
 			</plugin>
-
+-->
 		</plugins>
 		<pluginManagement>
 			<plugins>
