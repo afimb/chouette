@@ -76,7 +76,16 @@ public class GtfsStopProducer extends AbstractProducer
 		}
 		stop.setStopLon(neptuneObject.getLongitude());
 		stop.setStopCode(neptuneObject.getRegistrationNumber());
-		stop.setStopDesc(neptuneObject.getComment());
+		
+		// name and description must be different
+		if (neptuneObject.getName().equals(neptuneObject.getComment()))
+		{
+			stop.setStopDesc(null);
+		}
+		else
+		{
+		    stop.setStopDesc(neptuneObject.getComment());
+		}
 		stop.setStopUrl(getUrl(neptuneObject.getUrl()));
 		// manage stop_timezone
 		stop.setStopTimezone(null);
@@ -112,7 +121,6 @@ public class GtfsStopProducer extends AbstractProducer
 		}
 		else
 		{
-			// neptune stop does not distinct unknown and false !
 			stop.setWheelchairBoarding(null);
 		}
 

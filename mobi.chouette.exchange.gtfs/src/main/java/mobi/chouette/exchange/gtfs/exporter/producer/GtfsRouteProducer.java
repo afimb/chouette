@@ -59,8 +59,17 @@ public class GtfsRouteProducer extends AbstractProducer
       }
       if (!isEmpty(route.getRouteShortName()) && route.getRouteShortName().equals(route.getRouteLongName()))
       {
+    	  // long and short name must be different
          route.setRouteLongName(null);
       }
+//      if (!isEmpty(route.getRouteShortName()) && !isEmpty(route.getRouteLongName()))
+//      {
+//    	  // long name should not contains short name
+//    	 if (route.getRouteLongName().contains(route.getRouteShortName()))
+//    	 {
+//    		 route.setRouteLongName(route.getRouteLongName().replace(route.getRouteShortName(), ""));
+//    	 }
+//      }
 
       route.setRouteDesc(null);
       if (!isEmpty(neptuneObject.getComment()))
