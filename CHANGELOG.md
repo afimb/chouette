@@ -1,4 +1,10 @@
-# Version 3.0.1 (en cours) 
+# Version 3.1.0 (en cours)
+* Nouvelles fonctionnalités
+  * Validation GTFS lors de l'import
+* Améliorations
+  * mise en adéquation de Chouette sur Neptune (hors courses à fréquences)
+
+# Version 3.0.1
 * Correction 
   * Mantis 38577 : fusion des logs Velocity aux logs IEV
 

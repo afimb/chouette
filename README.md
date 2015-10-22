@@ -93,7 +93,7 @@ On Debian, **Chouette can also be installed as a package** : see [debian package
 
 Get git repository :
 ```sh
-git clone -b V3_0 git://github.com/afimb/chouette
+git clone -b V3_1 git://github.com/afimb/chouette
 cd chouette
 ```
 
