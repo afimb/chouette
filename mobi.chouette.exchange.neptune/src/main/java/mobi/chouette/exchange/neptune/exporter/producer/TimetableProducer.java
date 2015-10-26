@@ -25,7 +25,7 @@ public class TimetableProducer extends
       jaxbTimetable.setComment(getNotEmptyString(timetable.getComment()));
       jaxbTimetable.setVersion(getNotEmptyString(timetable.getVersion()));
 
-      for (Date peculiarDay : timetable.getPeculiarDates())
+      for (Date peculiarDay : timetable.getEffectiveDates())
       {
          if (peculiarDay != null)
          {

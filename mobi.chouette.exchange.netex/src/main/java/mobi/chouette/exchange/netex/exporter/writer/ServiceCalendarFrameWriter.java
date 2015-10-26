@@ -66,7 +66,7 @@ public class ServiceCalendarFrameWriter extends AbstractWriter{
 		writer.write("  </dayTypes>\n");
 		writer.write("  <!--- === Day assignments ==== -->\n");
 		//  #if ( $timetable.peculiarDates.size() > 0 )
-		List<Date> peculiarDates = timetable.getPeculiarDates(); 
+		List<Date> peculiarDates = timetable.getEffectiveDates(); 
 		if (nonEmpty(peculiarDates)) {
 		writer.write("  <operatingDays>\n");
 		//    #foreach( $day in $timetable.peculiarDates )
