@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.hub.exporter.producer;
 
 import java.sql.Time;
+import java.util.Calendar;
 import java.util.Collection;
 
 import lombok.Getter;
@@ -59,7 +60,11 @@ public abstract class AbstractProducer {
 	static protected Integer toHubTime(Time time)
 	{
 		if (time == null) return null;
-		long seconds = time.getTime()/1000;
+		// java.sql.Time to number of seconds
+		//long seconds = time.getTime()/1000;
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(time);
+		long seconds = ((calendar.get(Calendar.HOUR) * 60) + calendar.get(Calendar.MINUTE)) * 60 + calendar.get(Calendar.SECOND);
 		return Integer.valueOf((int) seconds);
 	}
 	
