@@ -64,7 +64,7 @@ public abstract class AbstractProducer {
 		//long seconds = time.getTime()/1000;
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(time);
-		long seconds = ((calendar.get(Calendar.HOUR) * 60) + calendar.get(Calendar.MINUTE)) * 60 + calendar.get(Calendar.SECOND);
+		long seconds = ((calendar.get(Calendar.HOUR_OF_DAY) * 60) + calendar.get(Calendar.MINUTE)) * 60 + calendar.get(Calendar.SECOND);
 		return Integer.valueOf((int) seconds);
 	}
 	
