@@ -77,6 +77,12 @@ public class StopAreaProducer extends AbstractJaxbNeptuneProducer<ChouetteArea.S
 			if (!isEmpty(area.getTimeZone())) {
 				jsonComment.put(TIME_ZONE, area.getTimeZone());
 			}
+			if (!isEmpty(area.getZipCode())) {
+				jsonComment.put(ZIP_CODE, area.getZipCode());
+			}
+			if (!isEmpty(area.getCityName())) {
+				jsonComment.put(CITY_NAME, area.getCityName());
+			}
 			if (jsonComment.length() == 0) {
 				return getNotEmptyString(area.getComment());
 			} else {

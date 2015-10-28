@@ -1,8 +1,9 @@
-# Version 3.1.0 (en cours)
+# Version 3.1.0 (28/10/15)
 * Nouvelles fonctionnalités
   * Validation GTFS lors de l'import
 * Améliorations
   * mise en adéquation de Chouette sur Neptune (hors courses à fréquences)
+  * export GTFS des informations pickup_type et drop_off_type
 
 # Version 3.0.1
 * Correction 

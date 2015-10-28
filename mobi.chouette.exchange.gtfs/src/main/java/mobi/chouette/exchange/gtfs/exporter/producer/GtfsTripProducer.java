@@ -25,8 +25,11 @@ import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
+import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
+import mobi.chouette.model.type.AlightingPossibilityEnum;
+import mobi.chouette.model.type.BoardingPossibilityEnum;
 
 /**
  * produce Trips and stop_times for vehicleJourney
@@ -90,7 +93,7 @@ public class GtfsTripProducer extends AbstractProducer {
 			time.setStopSequence((int) vjas.getStopPoint().getPosition());
 
 			// time.setStopHeadsign();
-			addDropOffAndPickUpType(time,l,vj,vjas);
+			addDropOffAndPickUpType(time, l, vj, vjas);
 			// time.setShapeDistTravelled()
 
 			try {
@@ -105,33 +108,62 @@ public class GtfsTripProducer extends AbstractProducer {
 		return true;
 	}
 
-	
 	private void addDropOffAndPickUpType(GtfsStopTime time, Line l, VehicleJourney vj, VehicleJourneyAtStop vjas) {
-		
+
 		boolean routeOnDemand = isTrue(l.getFlexibleService());
 		boolean tripOnDemand = false;
-		if (routeOnDemand) 
-		{
+		if (routeOnDemand) {
 			// line is on demand, check if trip is not explicitly regular
 			tripOnDemand = vj.getFlexibleService() == null || vj.getFlexibleService();
-		}
-		else
-		{
-			// line is regular or undefined , check if trip is explicitly on demand
+		} else {
+			// line is regular or undefined , check if trip is explicitly on
+			// demand
 			tripOnDemand = isTrue(vj.getFlexibleService());
 		}
-		if (tripOnDemand)
-		{
+		if (tripOnDemand) {
 			time.setPickupType(PickupType.AgencyCall);
 			time.setDropOffType(DropOffType.AgencyCall);
-		}
-		else if (routeOnDemand)
-		{
+		} else if (routeOnDemand) {
 			time.setPickupType(PickupType.Scheduled);
-			time.setDropOffType(DropOffType.Scheduled);			
+			time.setDropOffType(DropOffType.Scheduled);
 		}
-		// TODO check stoppoint specifications
-		
+		// check stoppoint specifications
+		StopPoint point = vjas.getStopPoint();
+		if (point.getForBoarding() != null) {
+			time.setPickupType(toPickUpType(point.getForBoarding(), time.getPickupType()));
+		}
+		if (point.getForAlighting() != null) {
+			time.setDropOffType(toDropOffType(point.getForAlighting(), time.getDropOffType()));
+		}
+
+	}
+
+	private DropOffType toDropOffType(AlightingPossibilityEnum forAlighting, DropOffType defaultValue) {
+		switch (forAlighting) {
+		case normal:
+			return defaultValue == null ? DropOffType.Scheduled : defaultValue;
+		case forbidden:
+			return DropOffType.NoAvailable;
+		case is_flexible:
+			return DropOffType.AgencyCall;
+		case request_stop:
+			return DropOffType.DriverCall;
+		}
+		return defaultValue;
+	}
+
+	private PickupType toPickUpType(BoardingPossibilityEnum forBoarding, PickupType defaultValue) {
+		switch (forBoarding) {
+		case normal:
+			return defaultValue == null ? PickupType.Scheduled : defaultValue;
+		case forbidden:
+			return PickupType.NoAvailable;
+		case is_flexible:
+			return PickupType.AgencyCall;
+		case request_stop:
+			return PickupType.DriverCall;
+		}
+		return defaultValue;
 	}
 
 	/**

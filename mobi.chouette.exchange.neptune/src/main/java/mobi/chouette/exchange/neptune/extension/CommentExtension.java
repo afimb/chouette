@@ -105,6 +105,12 @@ public class CommentExtension implements JsonExtension {
 						log.error("StopArea extension : cannot parse time_zone " + json.getString(TIME_ZONE), e);
 					}
 				}
+				if (json.has(ZIP_CODE)) {
+					area.setZipCode(json.getString(ZIP_CODE));
+				}
+				if (json.has(CITY_NAME)) {
+					area.setCityName(json.getString(CITY_NAME));
+				}
 			} catch (Exception e1) {
 				log.warn("StopArea extension : unparsable json : " + comment);
 				area.setComment(comment);
