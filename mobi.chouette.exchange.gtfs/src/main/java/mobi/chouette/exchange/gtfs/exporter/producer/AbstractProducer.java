@@ -76,5 +76,10 @@ public abstract class AbstractProducer
             return null;
          }
    }
+   
+   static boolean isTrue(Boolean value)
+   {
+	   return value != null && value;
+   }
 
 }

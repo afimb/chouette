@@ -16,6 +16,8 @@ import java.util.List;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime;
+import mobi.chouette.exchange.gtfs.model.GtfsStopTime.DropOffType;
+import mobi.chouette.exchange.gtfs.model.GtfsStopTime.PickupType;
 import mobi.chouette.exchange.gtfs.model.GtfsTime;
 import mobi.chouette.exchange.gtfs.model.GtfsTrip;
 import mobi.chouette.exchange.gtfs.model.exporter.GtfsExporterInterface;
@@ -34,161 +36,169 @@ import mobi.chouette.model.VehicleJourneyAtStop;
  * @ TODO : refactor to produce one calendar for each timetable groups
  */
 @Log4j
-public class GtfsTripProducer extends
-AbstractProducer
-{
+public class GtfsTripProducer extends AbstractProducer {
 
+	GtfsTrip trip = new GtfsTrip();
+	GtfsStopTime time = new GtfsStopTime();
 
-   GtfsTrip trip = new GtfsTrip();
-   GtfsStopTime time = new GtfsStopTime();
+	public GtfsTripProducer(GtfsExporterInterface exporter) {
+		super(exporter);
+	}
 
+	/**
+	 * produce stoptimes for vehiclejourneyatstops @ TODO see how to manage ITL
+	 * 
+	 * @param vj
+	 * @param sharedPrefix
+	 * @return list of stoptimes
+	 */
+	private boolean saveTimes(VehicleJourney vj, ActionReport report, String prefix, String sharedPrefix) {
+		if (vj.getVehicleJourneyAtStops().isEmpty())
+			return false;
+		Line l = vj.getRoute().getLine();
+		Integer zero = Integer.valueOf(0);
+		Integer one = Integer.valueOf(1);
+		Integer tomorrowArrival = zero;
+		Time previousArrival = null;
+		Integer tomorrowDeparture = zero;
+		Time previousDeparture = null;
+		String tripId = toGtfsId(vj.getObjectId(), prefix);
+		time.setTripId(tripId);
+		List<VehicleJourneyAtStop> lvjas = new ArrayList<>(vj.getVehicleJourneyAtStops());
+		Collections.sort(lvjas, new Comparator<VehicleJourneyAtStop>() {
+			@Override
+			public int compare(VehicleJourneyAtStop o1, VehicleJourneyAtStop o2) {
+				return o1.getStopPoint().getPosition().compareTo(o2.getStopPoint().getPosition());
+			}
+		});
+		for (VehicleJourneyAtStop vjas : lvjas) {
+			time.setStopId(toGtfsId(vjas.getStopPoint().getContainedInStopArea().getObjectId(), sharedPrefix));
+			Time arrival = vjas.getArrivalTime();
+			if (arrival == null)
+				arrival = vjas.getDepartureTime();
+			if (tomorrowArrival != one && previousArrival != null && previousArrival.after(arrival)) {
+				tomorrowArrival = one; // after midnight
+			}
+			previousArrival = arrival;
+			time.setArrivalTime(new GtfsTime(arrival, tomorrowArrival));
+			Time departure = vjas.getDepartureTime();
+			if (tomorrowDeparture != one && previousDeparture != null && previousDeparture.after(departure)) {
+				tomorrowDeparture = one; // after midnight
+			}
+			time.setDepartureTime(new GtfsTime(departure, tomorrowDeparture));
+			previousDeparture = departure;
+			time.setStopSequence((int) vjas.getStopPoint().getPosition());
 
-   public GtfsTripProducer(GtfsExporterInterface exporter)
-   {
-      super(exporter);
-   }
+			// time.setStopHeadsign();
+			addDropOffAndPickUpType(time,l,vj,vjas);
+			// time.setShapeDistTravelled()
 
-   /**
-    * produce stoptimes for vehiclejourneyatstops @ TODO see how to manage ITL
-    * 
-    * @param vj
-    * @param sharedPrefix 
-    * @return list of stoptimes
-    */
-   private boolean saveTimes(VehicleJourney vj, ActionReport report, String prefix, String sharedPrefix)
-   {
-      if (vj.getVehicleJourneyAtStops().isEmpty()) return false;
-      Integer zero = Integer.valueOf(0);
-      Integer one = Integer.valueOf(1);
-      Integer tomorrowArrival = zero;
-      Time previousArrival = null;
-      Integer tomorrowDeparture = zero;
-      Time previousDeparture = null;
-      String tripId = toGtfsId(vj.getObjectId(),prefix);
-      time.setTripId(tripId);
-      List<VehicleJourneyAtStop> lvjas = new ArrayList<>(vj.getVehicleJourneyAtStops());
-      Collections.sort(lvjas, new Comparator<VehicleJourneyAtStop>() {
+			try {
+				getExporter().getStopTimeExporter().export(time);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				log.error(e.getMessage(), e);
+				return false;
+			}
 
-		@Override
-		public int compare(VehicleJourneyAtStop o1, VehicleJourneyAtStop o2) {
-			return o1.getStopPoint().getPosition().compareTo(o2.getStopPoint().getPosition());
 		}
-	});
-      for (VehicleJourneyAtStop vjas : lvjas)
-      {
-         time.setStopId(toGtfsId(vjas.getStopPoint().getContainedInStopArea()
-               .getObjectId(),sharedPrefix));
-         Time arrival = vjas.getArrivalTime();
-         if (arrival == null)
-            arrival = vjas.getDepartureTime();
-         if (tomorrowArrival != one && previousArrival != null
-               && previousArrival.after(arrival))
-         {
-            tomorrowArrival = one; // after midnight
-         }
-         previousArrival = arrival;
-         time.setArrivalTime(new GtfsTime(arrival, tomorrowArrival));
-         Time departure = vjas.getDepartureTime();
-         if (tomorrowDeparture != one && previousDeparture != null
-               && previousDeparture.after(departure))
-         {
-            tomorrowDeparture = one; // after midnight
-         }
-         time.setDepartureTime(new GtfsTime(departure, tomorrowDeparture));
-         previousDeparture = departure;
-         time.setStopSequence((int) vjas.getStopPoint().getPosition());
+		return true;
+	}
 
-         // time.setStopHeadsign();
-         // time.setPickUpType();
-         // time.setDropOffType();
-         try
-         {
-            getExporter().getStopTimeExporter().export(time);
-         }
-         catch (Exception e)
-         {
-            // TODO Auto-generated catch block
-            log.error(e.getMessage(),e);
-            return false;
-         }
+	
+	private void addDropOffAndPickUpType(GtfsStopTime time, Line l, VehicleJourney vj, VehicleJourneyAtStop vjas) {
+		
+		boolean routeOnDemand = isTrue(l.getFlexibleService());
+		boolean tripOnDemand = false;
+		if (routeOnDemand) 
+		{
+			// line is on demand, check if trip is not explicitly regular
+			tripOnDemand = vj.getFlexibleService() == null || vj.getFlexibleService();
+		}
+		else
+		{
+			// line is regular or undefined , check if trip is explicitly on demand
+			tripOnDemand = isTrue(vj.getFlexibleService());
+		}
+		if (tripOnDemand)
+		{
+			time.setPickupType(PickupType.AgencyCall);
+			time.setDropOffType(DropOffType.AgencyCall);
+		}
+		else if (routeOnDemand)
+		{
+			time.setPickupType(PickupType.Scheduled);
+			time.setDropOffType(DropOffType.Scheduled);			
+		}
+		// TODO check stoppoint specifications
+		
+	}
 
-      }
-      return true;
-   }
+	/**
+	 * convert vehicle journey to trip for a specific timetable
+	 * 
+	 * @param vj
+	 *            vehicle journey
+	 * @param sharedPrefix
+	 * @param timetableId
+	 *            timetable id
+	 * @param times
+	 *            stoptimes model
+	 * @param multipleTimetable
+	 *            vehicle journey with multiple timetables
+	 * @return gtfs trip
+	 */
+	public boolean save(VehicleJourney vj, String serviceId, ActionReport report, String prefix, String sharedPrefix) {
 
-   /**
-    * convert vehicle journey to trip for a specific timetable
-    * 
-    * @param vj
-    *           vehicle journey
-    * @param sharedPrefix 
-    * @param timetableId
-    *           timetable id
-    * @param times
-    *           stoptimes model
-    * @param multipleTimetable
-    *           vehicle journey with multiple timetables
-    * @return gtfs trip
-    */
-   public boolean save(VehicleJourney vj, String serviceId, ActionReport report, String prefix, String sharedPrefix)
-   {
+		String tripId = toGtfsId(vj.getObjectId(), prefix);
 
-      String tripId = toGtfsId(vj.getObjectId(), prefix);
+		trip.setTripId(tripId);
 
-      trip.setTripId(tripId);
+		JourneyPattern jp = vj.getJourneyPattern();
+		Route route = vj.getRoute();
+		Line line = route.getLine();
+		trip.setRouteId(toGtfsId(line.getObjectId(), prefix));
+		if ("R".equals(route.getWayBack())) {
+			trip.setDirectionId(GtfsTrip.DirectionType.Inbound);
+		} else {
+			trip.setDirectionId(GtfsTrip.DirectionType.Outbound);
+		}
 
-      JourneyPattern jp = vj.getJourneyPattern();
-      Route route = vj.getRoute();
-      Line line = route.getLine();
-      trip.setRouteId(toGtfsId(line.getObjectId(),prefix));
-      if ("R".equals(route.getWayBack()))
-      {
-         trip.setDirectionId(GtfsTrip.DirectionType.Inbound);
-      } else
-      {
-         trip.setDirectionId(GtfsTrip.DirectionType.Outbound);
-      }
+		trip.setServiceId(serviceId);
 
-      trip.setServiceId(serviceId);
+		String name = vj.getPublishedJourneyName();
+		if (isEmpty(name) && vj.getNumber() != null && !vj.getNumber().equals(Long.valueOf(0)))
+			name = "" + vj.getNumber();
 
-      String name = vj.getPublishedJourneyName();
-      if (isEmpty(name) && vj.getNumber() != null && !vj.getNumber().equals(Long.valueOf(0)))
-         name = "" + vj.getNumber();
+		if (!isEmpty(name))
+			trip.setTripShortName(name);
+		else
+			trip.setTripShortName(null);
 
-      if (!isEmpty(name))
-         trip.setTripShortName(name);
-      else
-         trip.setTripShortName(null);
+		if (!isEmpty(jp.getPublishedName()))
+			trip.setTripHeadSign(jp.getPublishedName());
+		else
+			trip.setTripHeadSign(null);
 
-      if (!isEmpty(jp.getPublishedName()))
-         trip.setTripHeadSign(jp.getPublishedName());
-      else
-         trip.setTripHeadSign(null);
+		if (vj.getMobilityRestrictedSuitability() != null)
+			trip.setWheelchairAccessible(vj.getMobilityRestrictedSuitability() ? GtfsTrip.WheelchairAccessibleType.Allowed
+					: GtfsTrip.WheelchairAccessibleType.NoAllowed);
+		else
+			trip.setWheelchairAccessible(GtfsTrip.WheelchairAccessibleType.NoInformation);
+		// trip.setBlockId(...);
+		// trip.setShapeId(...);
+		// trip.setBikeAllowed();
 
-      if (vj.getMobilityRestrictedSuitability() != null)
-         trip.setWheelchairAccessible(vj.getMobilityRestrictedSuitability() ? GtfsTrip.WheelchairAccessibleType.Allowed
-               : GtfsTrip.WheelchairAccessibleType.NoAllowed);
-      else
-         trip.setWheelchairAccessible(GtfsTrip.WheelchairAccessibleType.NoInformation);
-      // trip.setBlockId(...);
-      // trip.setShapeId(...);
-      // trip.setBikeAllowed();
-
-      // add StopTimes
-      if (saveTimes(vj,report,prefix,sharedPrefix))
-      {
-         try
-         {
-            getExporter().getTripExporter().export(trip);
-         }
-         catch (Exception e)
-         {
-            log.error(e.getMessage(),e);
-            return false;
-         }
-      }
-      return true;
-   }
-
+		// add StopTimes
+		if (saveTimes(vj, report, prefix, sharedPrefix)) {
+			try {
+				getExporter().getTripExporter().export(trip);
+			} catch (Exception e) {
+				log.error(e.getMessage(), e);
+				return false;
+			}
+		}
+		return true;
+	}
 
 }
