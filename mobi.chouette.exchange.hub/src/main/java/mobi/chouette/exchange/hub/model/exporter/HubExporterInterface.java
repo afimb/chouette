@@ -5,6 +5,7 @@ import mobi.chouette.exchange.hub.model.HubChemin;
 import mobi.chouette.exchange.hub.model.HubCommune;
 import mobi.chouette.exchange.hub.model.HubCorrespondance;
 import mobi.chouette.exchange.hub.model.HubCourse;
+import mobi.chouette.exchange.hub.model.HubMission;
 import mobi.chouette.exchange.hub.model.HubCourseOperation;
 import mobi.chouette.exchange.hub.model.HubDirection;
 import mobi.chouette.exchange.hub.model.HubGroupeDeLigne;
@@ -29,6 +30,8 @@ public interface HubExporterInterface {
 	Exporter<HubCorrespondance> getCorrespondanceExporter();
 
 	Exporter<HubCourse> getCourseExporter();
+
+	Exporter<HubMission> getMissionExporter();
 
 	Exporter<HubCourseOperation> getCourseOperationExporter();
 

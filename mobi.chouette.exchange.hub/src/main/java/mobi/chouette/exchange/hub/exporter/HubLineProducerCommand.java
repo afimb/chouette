@@ -23,6 +23,7 @@ import mobi.chouette.exchange.hub.exporter.producer.HubDirectionProducer;
 import mobi.chouette.exchange.hub.exporter.producer.HubHoraireProducer;
 import mobi.chouette.exchange.hub.exporter.producer.HubItlProducer;
 import mobi.chouette.exchange.hub.exporter.producer.HubLigneProducer;
+import mobi.chouette.exchange.hub.exporter.producer.HubMissionProducer;
 import mobi.chouette.exchange.hub.exporter.producer.HubModeTransportProducer;
 import mobi.chouette.exchange.hub.exporter.producer.HubRenvoiProducer;
 import mobi.chouette.exchange.hub.exporter.producer.HubSchemaProducer;
@@ -273,6 +274,11 @@ public class HubLineProducerCommand implements Command, Constant {
 			courseProducer = new HubCourseProducer(exporter);
 			context.put(HUB_COURSE_PRODUCER, courseProducer);
 		}
+		HubMissionProducer missionProducer = (HubMissionProducer) context.get(HUB_MISSION_PRODUCER);
+		if (missionProducer == null) {
+			missionProducer = new HubMissionProducer(exporter);
+			context.put(HUB_MISSION_PRODUCER, missionProducer);
+		}
 		HubCourseOperationProducer courseOperationProducer = (HubCourseOperationProducer) context
 				.get(HUB_COURSEOPERATION_PRODUCER);
 		if (courseOperationProducer == null) {
@@ -289,6 +295,8 @@ public class HubLineProducerCommand implements Command, Constant {
 		Collections.sort(collection.getVehicleJourneys(), new VehicleJourneySorter());
 		for (VehicleJourney vehicleJourney : collection.getVehicleJourneys()) {
 			courseProducer.save(vehicleJourney, collection.getPmrFootenoteId(), report,
+					collection.getVehicleJourneyRank());
+			missionProducer.save(vehicleJourney, collection.getPmrFootenoteId(), report,
 					collection.getVehicleJourneyRank());
 			courseOperationProducer.save(vehicleJourney, report, collection.getVehicleJourneyRank());
 			int lastItem = vehicleJourney.getVehicleJourneyAtStops().size() - 1;

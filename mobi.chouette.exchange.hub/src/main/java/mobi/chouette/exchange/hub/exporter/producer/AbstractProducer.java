@@ -67,6 +67,22 @@ public abstract class AbstractProducer {
 		long seconds = ((calendar.get(Calendar.HOUR_OF_DAY) * 60) + calendar.get(Calendar.MINUTE)) * 60 + calendar.get(Calendar.SECOND);
 		return Integer.valueOf((int) seconds);
 	}
+
+	static protected Integer toHubDelay(Time startTime, Time endTime)
+	{
+		if (startTime == null || endTime == null) return null;
+		
+		Calendar startCalendar = Calendar.getInstance();
+		startCalendar.setTime(startTime);
+		long startSeconds = ((startCalendar.get(Calendar.HOUR_OF_DAY) * 60) + startCalendar.get(Calendar.MINUTE)) * 60 + startCalendar.get(Calendar.SECOND);
+		
+		Calendar endCalendar = Calendar.getInstance();
+		endCalendar.setTime(endTime);
+		long endSeconds = ((endCalendar.get(Calendar.HOUR_OF_DAY) * 60) + endCalendar.get(Calendar.MINUTE)) * 60 + endCalendar.get(Calendar.SECOND);
+		
+		long seconds = endSeconds - startSeconds;
+		return Integer.valueOf((int) seconds);
+	}
 	
 	static protected Integer toInt(String value)
 	{
