@@ -7,6 +7,7 @@ import mobi.chouette.exchange.hub.model.HubCorrespondance;
 import mobi.chouette.exchange.hub.model.HubCourse;
 import mobi.chouette.exchange.hub.model.HubMission;
 import mobi.chouette.exchange.hub.model.HubCourseOperation;
+import mobi.chouette.exchange.hub.model.HubMissionOperation;
 import mobi.chouette.exchange.hub.model.HubDirection;
 import mobi.chouette.exchange.hub.model.HubGroupeDeLigne;
 import mobi.chouette.exchange.hub.model.HubHoraire;
@@ -34,6 +35,8 @@ public interface HubExporterInterface {
 	Exporter<HubMission> getMissionExporter();
 
 	Exporter<HubCourseOperation> getCourseOperationExporter();
+
+	Exporter<HubMissionOperation> getMissionOperationExporter();
 
 	Exporter<HubDirection> getDirectionExporter();
 

@@ -9,6 +9,7 @@ public interface Constant extends mobi.chouette.common.Constant {
 	public static final String HUB_COURSEOPERATION_PRODUCER = "hub_courseoperation_producer";
 	public static final String HUB_COURSE_PRODUCER = "hub_course_producer";
 	public static final String HUB_MISSION_PRODUCER = "hub_mission_producer";
+	public static final String HUB_MISSIONOPERATION_PRODUCER = "hub_missionoperation_producer";
 	public static final String HUB_DIRECTION_PRODUCER = "hub_direction_producer";
 	public static final String HUB_GROUPEDELIGNE_PRODUCER = "hub_grupedeligne_producer";
 	public static final String HUB_HORAIRE_PRODUCER = "hub_horaire_producer";

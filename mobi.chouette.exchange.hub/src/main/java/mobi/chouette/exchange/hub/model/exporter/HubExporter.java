@@ -20,6 +20,7 @@ import mobi.chouette.exchange.hub.model.HubHoraire;
 import mobi.chouette.exchange.hub.model.HubItl;
 import mobi.chouette.exchange.hub.model.HubLigne;
 import mobi.chouette.exchange.hub.model.HubMission;
+import mobi.chouette.exchange.hub.model.HubMissionOperation;
 import mobi.chouette.exchange.hub.model.HubModeTransport;
 import mobi.chouette.exchange.hub.model.HubObject;
 import mobi.chouette.exchange.hub.model.HubPeriode;
@@ -34,7 +35,7 @@ public class HubExporter implements HubExporterInterface {
 	public static enum EXPORTER {
 		ARRET, CHEMIN, COMMUNE, CORRESPONDANCE, COURSE, COURSE_OPERATION, DIRECTION, 
 		GROUPE_DE_LIGNE, HORAIRE, ITL, LIGNE, MODE_TRANSPORT, PERIODE, RENVOI, RESEAU, 
-		SCHEMA, TRANSPORTEUR, MISSION;
+		SCHEMA, TRANSPORTEUR, MISSION, MISSION_OPERATION;
 	}
 
 	private String _path;
@@ -124,6 +125,13 @@ public class HubExporter implements HubExporterInterface {
 	public Exporter<HubCourseOperation> getCourseOperationExporter() {
 		return getExporter(EXPORTER.COURSE_OPERATION.name(), CourseOperationExporter.FILENAME,
 				CourseOperationExporter.class);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Exporter<HubMissionOperation> getMissionOperationExporter() {
+		return getExporter(EXPORTER.MISSION_OPERATION.name(), MissionOperationExporter.FILENAME,
+				MissionOperationExporter.class);
 	}
 
 	@SuppressWarnings("unchecked")
