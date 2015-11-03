@@ -13,7 +13,7 @@ public class CommuneExporter extends ExporterImpl<HubCommune> implements
 		code_insee, nom;
 	};
 
-	public static final String FILENAME = "COMMUNE.TXT";
+	public static final String FILENAME = "COMMUNES.TXT";
 
 	public CommuneExporter(String path) throws IOException {
 		super(path);
@@ -21,7 +21,7 @@ public class CommuneExporter extends ExporterImpl<HubCommune> implements
 
 	@Override
 	public void writeHeader() throws IOException {
-		write("COMMUNE");
+		write("COMMUNES");
 	}
 
 	@Override
