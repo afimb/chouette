@@ -37,7 +37,8 @@ public class HubHoraireProducer extends AbstractProducer {
 		hubObject.clear();
 		hubObject.setCodeArret(toHubId(neptuneObject.getStopPoint().getContainedInStopArea()));
 		hubObject.setNumeroCourse(Integer.valueOf(rank));
-		hubObject.setNumeroMission(toInt(neptuneObject.getVehicleJourney().getJourneyPattern().getRegistrationNumber()));
+		//hubObject.setNumeroMission(toInt(neptuneObject.getVehicleJourney().getJourneyPattern().getRegistrationNumber()));
+		hubObject.setNumeroMission(Integer.valueOf(rank));
 		hubObject.setIdentifiantArret(toInt(neptuneObject.getStopPoint().getContainedInStopArea().getRegistrationNumber()));
 		if (!first)
 		{

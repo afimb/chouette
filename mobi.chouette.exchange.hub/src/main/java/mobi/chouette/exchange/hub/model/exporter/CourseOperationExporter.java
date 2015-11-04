@@ -11,7 +11,7 @@ public class CourseOperationExporter extends ExporterImpl<HubCourseOperation> im
 
 	public static enum FIELDS {
 		numero_course, code_operation, code_lot,
-		code_activite, mode_transport, libre1, libre2 ;
+		code_activite, mode_transport, libre1, libre2, libre3 ;
 	};
 
 	public static final String FILENAME = "COURSE_OPERATION.TXT";
@@ -51,6 +51,8 @@ public class CourseOperationExporter extends ExporterImpl<HubCourseOperation> im
 					input.getLibre1(), false));
 			values.add(STRING_CONVERTER.to(context, FIELDS.libre2,
 					input.getLibre2(), false));
+			values.add(STRING_CONVERTER.to(context, FIELDS.libre3,
+					input.getLibre3(), false));
 			result = Tokenizer.untokenize(values);
 			return result;
 		}

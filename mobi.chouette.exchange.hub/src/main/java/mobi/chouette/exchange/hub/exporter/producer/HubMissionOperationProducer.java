@@ -21,12 +21,8 @@ public class HubMissionOperationProducer extends AbstractProducer {
 
 		hubObject.clear();
 		hubObject.setNumeroMission(Integer.valueOf(rank));
-		hubObject.setCodeOperation(neptuneObject.getId().toString());
-		// hubObject.setCodeLot(null);
-		// hubObject.setCodeActivite(null);
-		// hubObject.setChampsLibre1(null);
-		// hubObject.setChampsLibre2(null);
-		// hubObject.setChampsLibre3(null);
+		hubObject.setCodeOperation(neptuneObject.getPublishedJourneyIdentifier());
+		
 		try {
 			getExporter().getMissionOperationExporter().export(hubObject);
 		} catch (IOException e) {

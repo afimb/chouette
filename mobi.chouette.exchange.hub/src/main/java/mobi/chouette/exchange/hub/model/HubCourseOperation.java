@@ -73,6 +73,16 @@ public class HubCourseOperation extends HubObject implements Comparable<HubCours
 	 */
 	@Getter @Setter
 	private String libre2;
+	
+	/**
+	 * rang = 8
+	 * champ libre 3
+	 * type = texte
+	 * TailleMax = nd
+	 * optionnel vide
+	 */
+	@Getter @Setter
+	private String libre3;
 
 	@Override
 	public int compareTo(HubCourseOperation arg0) {
@@ -88,7 +98,7 @@ public class HubCourseOperation extends HubObject implements Comparable<HubCours
 		modeTransport=null;
 		libre1=null;
 		libre2=null;
-		
+		libre3= null;
 	}
 	
 	
