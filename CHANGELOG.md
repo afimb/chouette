@@ -1,3 +1,7 @@
+# Version 3.1.1 (en cours) 
+* Corrections
+  * Validation GTFS n'accepte pas les lang en majuscule (Mantis 40461) 
+
 # Version 3.1.0 (28/10/15)
 * Nouvelles fonctionnalités
   * Validation GTFS lors de l'import

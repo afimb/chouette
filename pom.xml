@@ -223,7 +223,7 @@
 					<ejbVersion>3.2</ejbVersion>
 				</configuration>
 			</plugin>
-<!--			<plugin>
+			<plugin>
 				<groupId>org.projectlombok</groupId>
 				<artifactId>lombok-maven-plugin</artifactId>
 				<version>1.12.4.0</version>
@@ -274,7 +274,7 @@
 					<sourcepath>target/generated-sources/delombok</sourcepath>
 					<javaApiLinks>
 						<property>
-							<name>api_1.7</name>
+							<name>api_3.1</name>
 							<value>http://docs.oracle.com/javase/7/docs/api/</value>
 						</property>
 					</javaApiLinks>
@@ -291,7 +291,7 @@
 					</execution>
 				</executions>
 			</plugin>
--->
+
 		</plugins>
 		<pluginManagement>
 			<plugins>
@@ -796,6 +796,24 @@
 				<skipInitDb>true</skipInitDb>
 			</properties>
 		</profile>
+      <profile>
+         <id>doclint-java8-disable</id>
+         <activation>
+            <jdk>[1.8,)</jdk>
+         </activation>
+
+         <build>
+            <plugins>
+               <plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-javadoc-plugin</artifactId>
+                  <configuration>
+                     <additionalparam>-Xdoclint:none</additionalparam>
+                  </configuration>
+               </plugin>
+            </plugins>
+         </build>
+      </profile>
 	</profiles>
 	<modules>
 		<module>mobi.chouette.common</module>
