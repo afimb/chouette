@@ -223,7 +223,11 @@ public class AgencyById extends IndexImpl<GtfsAgency> implements GtfsConverter {
 	}
 
 	private boolean isUnknownAsIsoLanguage(String lang) {
-		return lang == null || !Arrays.asList(Locale.getISOLanguages()).contains(lang);
+		if (lang == null)
+			return true;
+		if (!lang.toUpperCase().equals(lang) && !lang.toLowerCase().equals(lang))
+			return true;
+		return !Arrays.asList(Locale.getISOLanguages()).contains(lang.toLowerCase());
 	}
 
 	public static class DefaultImporterFactory extends IndexFactory {
