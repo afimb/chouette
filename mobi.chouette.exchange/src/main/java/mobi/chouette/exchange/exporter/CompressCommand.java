@@ -15,6 +15,8 @@ import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 
+import org.apache.commons.io.FileUtils;
+
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
 
@@ -38,6 +40,12 @@ public class CompressCommand implements Command, Constant {
 			Path filename = Paths.get(path, file);
 			FileUtil.compress(target.toString(), filename.toString());
 			result = SUCCESS;
+			try {
+				FileUtils.deleteDirectory(target.toFile());
+			} catch (Exception e) {
+				log.warn("cannot purge output directory " + e.getMessage());
+			}
+
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		} finally {
@@ -57,7 +65,6 @@ public class CompressCommand implements Command, Constant {
 	}
 
 	static {
-		CommandFactory.factories.put(CompressCommand.class.getName(),
-				new DefaultCommandFactory());
+		CommandFactory.factories.put(CompressCommand.class.getName(), new DefaultCommandFactory());
 	}
 }
