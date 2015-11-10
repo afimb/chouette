@@ -16,6 +16,7 @@ public class NeptuneObjectUtil extends NeptuneUtil {
 
 	/**
 	 * build PTLink list of route
+	 * @throws NeptuneException 
 	 */
 	public static List<PTLink> getPtLinks(Route route)
 	{
@@ -31,8 +32,8 @@ public class NeptuneObjectUtil extends NeptuneUtil {
 		}
 		for (int rank = 1; rank < points.size(); rank++)
 		{
-			StopPoint start = route.getStopPoints().get(rank - 1);
-			StopPoint end = route.getStopPoints().get(rank);
+			StopPoint start = points.get(rank - 1);
+			StopPoint end = points.get(rank);
 			PTLink link = new PTLink();
 
 			link = new PTLink();

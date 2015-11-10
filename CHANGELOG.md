@@ -1,6 +1,8 @@
 # Version 3.1.1 (en cours) 
 * Corrections
   * Validation GTFS n'accepte pas les lang en majuscule (Mantis 40461) 
+  * Export Neptune : erreur si la séquence des arrêts n'est pas continue (position) 
+  * API Rest : blocage temporaire des api sur upload de gros volumes
 
 # Version 3.1.0 (28/10/15)
 * Nouvelles fonctionnalités
