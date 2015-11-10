@@ -6,19 +6,20 @@ import java.sql.Date;
 import javax.naming.InitialContext;
 import javax.xml.bind.MarshalException;
 
-import org.xml.sax.SAXParseException;
-
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.core.ChouetteException;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.DataStats;
 import mobi.chouette.exchange.report.LineError;
 import mobi.chouette.exchange.report.LineInfo;
 import mobi.chouette.model.Line;
+
+import org.xml.sax.SAXParseException;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -107,7 +108,8 @@ public class NeptuneLineProducerCommand implements Command, Constant {
 					log.error(e.getMessage());
 					lineInfo.addError(new LineError(LineError.CODE.INVALID_FORMAT,e.getMessage()));
 					}
-				} 
+				}
+			
 			} else {
 				lineInfo.addError(new LineError(LineError.CODE.NO_DATA_ON_PERIOD,"no data on period"));				
 			}
@@ -124,20 +126,6 @@ public class NeptuneLineProducerCommand implements Command, Constant {
 
 		@Override
 		protected Command create(InitialContext context) throws IOException {
-//			Command result = null;
-//			try {
-//				String name = "java:app/mobi.chouette.exchange.neptune/" + COMMAND;
-//				result = (Command) context.lookup(name);
-//			} catch (NamingException e) {
-//				// try another way on test context
-//				String name = "java:module/" + COMMAND;
-//				try {
-//					result = (Command) context.lookup(name);
-//				} catch (NamingException e1) {
-//					log.error(e);
-//				}
-//			}
-//			return result;
 			return new NeptuneLineProducerCommand();
 		}
 	}
