@@ -203,7 +203,7 @@ public class RestService implements Constant {
 			log.info(Color.CYAN + "Call download referential = " + referential + ", id = " + id + ", filename = "
 					+ filename + Color.NORMAL);
 
-			// Retreive JobService
+			// Retrieve JobService
 			JobService jobService = jobServiceManager.download(referential, id, filename);
 
 			// Build response
@@ -272,7 +272,7 @@ public class RestService implements Constant {
 
 			return builder.build();
 		} catch (RequestServiceException ex) {
-			log.info("RequestCode = " + ex.getRequestCode() + ", Message = " + ex.getMessage(), ex);
+			log.info("RequestCode = " + ex.getRequestCode() + ", Message = " + ex.getMessage());
 			throw toWebApplicationException(ex);
 		} catch (ServiceException e) {
 			log.error("Code = " + e.getCode() + ", Message = " + e.getMessage());

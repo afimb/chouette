@@ -21,8 +21,8 @@ import java.util.logging.Logger;
 
 import javax.annotation.Resource;
 import javax.ejb.EJB;
-import javax.ejb.Singleton;
 import javax.ejb.Startup;
+import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.enterprise.concurrent.ManagedExecutorService;
@@ -44,7 +44,7 @@ import org.apache.commons.io.FileUtils;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 
-@Singleton(name = JobServiceManager.BEAN_NAME)
+@Stateless(name = JobServiceManager.BEAN_NAME)
 @Startup
 @Log4j
 public class JobServiceManager {
@@ -60,13 +60,15 @@ public class JobServiceManager {
 	@EJB
 	Scheduler scheduler;
 
-  	@Resource(lookup = "java:comp/DefaultManagedExecutorService")
-// 	@Resource(lookup = "java:jboss/ee/concurrency/executor/ievjobs")
+	@Resource(lookup = "java:comp/DefaultManagedExecutorService")
+	// @Resource(lookup = "java:jboss/ee/concurrency/executor/ievjobs")
 	ManagedExecutorService executor;
 
-	private Set<Object> referentials = Collections.synchronizedSet(new HashSet<>());
-	
+	private static Set<Object> referentials = Collections.synchronizedSet(new HashSet<>());
+
 	private static int maxJobs = 5;
+
+	private static String lock = "lock";
 
 	static {
 		System.setProperty(PropertyNames.MAX_STARTED_JOBS, "5");
@@ -101,33 +103,31 @@ public class JobServiceManager {
 	}
 
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-	public synchronized JobService create(String referential, String action, String type, Map<String, InputStream> inputStreamsByName)
+	public JobService create(String referential, String action, String type, Map<String, InputStream> inputStreamsByName)
 			throws ServiceException {
-		if (scheduler.getActivejobsCount() >= maxJobs)
-		{
-			throw new RequestServiceException(RequestExceptionCode.TOO_MANY_ACTIVE_JOBS, ""+maxJobs+" active jobs");
+		// Valider les parametres
+		validateReferential(referential);
+		synchronized (lock) {
+			if (scheduler.getActivejobsCount() >= maxJobs) {
+				throw new RequestServiceException(RequestExceptionCode.TOO_MANY_ACTIVE_JOBS, "" + maxJobs
+						+ " active jobs");
+			}
+			JobService jobService = createJob(referential, action, type, inputStreamsByName);
+			scheduler.schedule(referential);
+			return jobService;
 		}
-		JobService jobService = createJob(referential, action, type, inputStreamsByName);
-		scheduler.schedule(referential);
-		return jobService;
 	}
-	
-	
+
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	private JobService createJob(String referential, String action, String type, Map<String, InputStream> inputStreamsByName)
-			throws ServiceException {
+	private JobService createJob(String referential, String action, String type,
+			Map<String, InputStream> inputStreamsByName) throws ServiceException {
 		JobService jobService = null;
 		try {
-			
-			// Valider les parametres
-			validateReferential(referential);
-
 			// Instancier le modèle du service 'upload'
 			jobService = new JobService(referential, action, type);
 
 			// Enregistrer le jobService pour obtenir un id
 			jobDAO.create(jobService.getJob());
-			// jobDAO.flush();
 			// mkdir
 			if (Files.exists(jobService.getPath())) {
 				// réutilisation anormale d'un id de job (réinitialisation de la
@@ -138,12 +138,11 @@ public class JobServiceManager {
 
 			// Enregistrer des paramètres à conserver sur fichier
 			jobService.saveInputStreams(inputStreamsByName);
-			
+
 			// set cancel link
 			jobService.addLink(MediaType.APPLICATION_JSON, Link.CANCEL_REL);
 
 			jobDAO.update(jobService.getJob());
-			// jobDAO.flush();
 			jobDAO.detach(jobService.getJob());
 
 			return jobService;
@@ -176,8 +175,9 @@ public class JobServiceManager {
 	}
 
 	private void validateReferential(final String referential) throws ServiceException {
-		
-		if (referentials.contains(referential)) return;
+
+		if (referentials.contains(referential))
+			return;
 
 		// launch a thread to separate datasources transactions
 		SchemaValidatorThread s = new SchemaValidatorThread(referential);
@@ -268,19 +268,18 @@ public class JobServiceManager {
 	}
 
 	public void drop(String referential) throws ServiceException {
-		
+
 		List<JobService> jobServices = findAll(referential);
 		// reject demand if non terminated jobs are present
 		for (JobService jobService : jobServices) {
-			if (jobService.getStatus().equals(STATUS.STARTED) || 
-					jobService.getStatus().equals(STATUS.SCHEDULED)	) {
+			if (jobService.getStatus().equals(STATUS.STARTED) || jobService.getStatus().equals(STATUS.SCHEDULED)) {
 				throw new RequestServiceException(RequestExceptionCode.REFERENTIAL_BUSY, "referential");
 			}
 		}
-		
+
 		// remove all jobs
 		jobDAO.deleteAll(referential);
-		
+
 		// clean directories
 		try {
 			FileUtils.deleteDirectory(new File(JobService.getRootPathName(referential)));
@@ -288,10 +287,10 @@ public class JobServiceManager {
 			Logger.getLogger(JobServiceManager.class.getName()).log(Level.SEVERE,
 					"fail to delete directory for" + referential, e);
 		}
-		
+
 		// remove referential from known ones
 		referentials.remove(referential);
-		
+
 		// remove sequences data for this tenant
 		ChouetteIdentifierGenerator.deleteTenant(referential);
 
@@ -456,7 +455,7 @@ public class JobServiceManager {
 		List<Job> jobs = jobDAO.findByStatus(Job.STATUS.STARTED);
 		jobs = jobDAO.findByStatus(Job.STATUS.STARTED);
 		jobs.addAll(jobDAO.findByStatus(Job.STATUS.SCHEDULED));
-		
+
 		List<JobService> jobServices = new ArrayList<>(jobs.size());
 		for (Job job : jobs) {
 			jobServices.add(new JobService(job));
