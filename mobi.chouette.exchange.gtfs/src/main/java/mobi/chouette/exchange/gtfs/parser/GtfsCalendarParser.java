@@ -1,9 +1,7 @@
 package mobi.chouette.exchange.gtfs.parser;
 
 import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -26,6 +24,7 @@ import mobi.chouette.model.CalendarDay;
 import mobi.chouette.model.Period;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.type.DayTypeEnum;
+import mobi.chouette.model.util.NamingUtil;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
@@ -240,7 +239,7 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 				for (GtfsCalendarDate gtfsCalendarDate : importer.getCalendarDateByService().values(serviceId)) {
 					addCalendarDay(timetable, gtfsCalendarDate);
 				}
-				setComment(timetable);
+				NamingUtil.setDefaultName(timetable);
 			}
 		}
 
@@ -285,7 +284,7 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 		List<Period> periods = timetable.getPeriods();
 		if (periods != null)
 			Collections.sort(periods, PERIOD_COMPARATOR);
-		setComment(timetable);
+		NamingUtil.setDefaultName(timetable);
 		timetable.setFilled(true);
 	}
 
@@ -294,65 +293,6 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 				!GtfsCalendarDate.ExceptionType.Removed.equals(date.getExceptionType())));
 	}
 
-	/**
-	 * produce a comment with first date, end date and maybe applicable days
-	 * 
-	 * @param timetable
-	 */
-	public void setComment(Timetable timetable) {
-		SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy");
-		String monday = (timetable.getDayTypes().contains(DayTypeEnum.Monday)) ? "Mo" : "..";
-		String tuesday = (timetable.getDayTypes().contains(DayTypeEnum.Tuesday)) ? "Tu" : "..";
-		String wednesday = (timetable.getDayTypes().contains(DayTypeEnum.Wednesday)) ? "We" : "..";
-		String thursday = (timetable.getDayTypes().contains(DayTypeEnum.Thursday)) ? "Th" : "..";
-		String friday = (timetable.getDayTypes().contains(DayTypeEnum.Friday)) ? "Fr" : "..";
-		String saturday = (timetable.getDayTypes().contains(DayTypeEnum.Saturday)) ? "Sa" : "..";
-		String sunday = (timetable.getDayTypes().contains(DayTypeEnum.Sunday)) ? "Su" : "..";
-
-		Date firstDate = null;
-		Date lastDate = null;
-		if (timetable.getPeriods() != null && !timetable.getPeriods().isEmpty()) {
-			for (Period period : timetable.getPeriods()) {
-				if (firstDate == null || period.getStartDate().before(firstDate))
-					firstDate = period.getStartDate();
-				if (lastDate == null || period.getEndDate().after(lastDate))
-					lastDate = period.getEndDate();
-			}
-		}
-		if (timetable.getCalendarDays() != null && !timetable.getCalendarDays().isEmpty()) {
-			Calendar cal = Calendar.getInstance();
-			for (Date date : timetable.getPeculiarDates()) {
-				cal.setTime(date);
-				if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY)
-					monday = "Mo";
-				if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.TUESDAY)
-					tuesday = "Tu";
-				if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.WEDNESDAY)
-					wednesday = "We";
-				if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.THURSDAY)
-					thursday = "Th";
-				if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.FRIDAY)
-					friday = "Fr";
-				if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY)
-					saturday = "Sa";
-				if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
-					sunday = "Su";
-				if (firstDate == null || date.before(firstDate))
-					firstDate = date;
-				if (lastDate == null || date.after(lastDate))
-					lastDate = date;
-			}
-		}
-
-		// security if timetable is empty
-		if (firstDate != null && lastDate != null) {
-			String comment = "From " + format.format(firstDate) + " to " + format.format(lastDate) + " : " + monday
-					+ tuesday + wednesday + thursday + friday + saturday + sunday;
-			timetable.setComment(comment);
-		} else {
-			timetable.setComment("Empty timetable");
-		}
-	}
 
 	private GtfsCalendar createDummyCalandar() {
 		GtfsCalendar calendar = new GtfsCalendar();
