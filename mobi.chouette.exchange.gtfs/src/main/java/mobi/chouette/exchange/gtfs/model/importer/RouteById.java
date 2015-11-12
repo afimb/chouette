@@ -109,18 +109,21 @@ public class RouteById extends IndexImpl<GtfsRoute> implements GtfsConverter {
 		value = array[i++]; testExtraSpace(FIELDS.route_long_name.name(), value, bean);
 		if (value == null || value.trim().isEmpty()) {
 			if (noShotName)
-				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.route_long_name.name()), FIELDS.route_long_name.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES2, null, null));
+				if (withValidation)
+					bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.route_long_name.name()), FIELDS.route_long_name.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES2, null, null));
 		} else {
 			bean.setRouteLongName(STRING_CONVERTER.from(context, FIELDS.route_long_name, value, bean.getRouteShortName() != null));
 			if (bean.getRouteLongName().equals(bean.getRouteShortName())) {
 				// routeshortName != routeLongName
-				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.route_short_name.name()), 
-						FIELDS.route_short_name.name()+","+FIELDS.route_long_name.name(), GtfsException.ERROR.SHARED_VALUE,  bean.getRouteId(), bean.getRouteLongName()));
+				if (withValidation)
+					bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.route_short_name.name()), 
+							FIELDS.route_short_name.name()+","+FIELDS.route_long_name.name(), GtfsException.ERROR.SHARED_VALUE,  bean.getRouteId(), bean.getRouteLongName()));
 			} else if (!noShotName && bean.getRouteLongName().indexOf(bean.getRouteShortName()) > 0) {
 				// routeshortName is not a substring of routeLongName
 				bean.getOkTests().add(GtfsException.ERROR.SHARED_VALUE);
-				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.route_short_name.name()), 
-						FIELDS.route_short_name.name(), GtfsException.ERROR.CONTAINS_ROUTE_NAMES, bean.getRouteId(), bean.getRouteShortName(), bean.getRouteLongName()));
+				if (withValidation)
+					bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.route_short_name.name()), 
+							FIELDS.route_short_name.name(), GtfsException.ERROR.CONTAINS_ROUTE_NAMES, bean.getRouteId(), bean.getRouteShortName(), bean.getRouteLongName()));
 			} else {
 				bean.getOkTests().add(GtfsException.ERROR.SHARED_VALUE);
 				bean.getOkTests().add(GtfsException.ERROR.CONTAINS_ROUTE_NAMES);
@@ -131,22 +134,26 @@ public class RouteById extends IndexImpl<GtfsRoute> implements GtfsConverter {
 		if (value != null && !value.trim().isEmpty()) {
 			bean.setRouteDesc(STRING_CONVERTER.from(context, FIELDS.route_desc, value, false));
 			if (bean.getRouteDesc().equals(bean.getRouteLongName())) {
-				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.route_long_name.name()), 
-						FIELDS.route_long_name.name()+","+FIELDS.route_desc.name(), GtfsException.ERROR.SHARED_VALUE,  bean.getRouteId(), bean.getRouteLongName()));
+				if (withValidation)
+					bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.route_long_name.name()), 
+							FIELDS.route_long_name.name()+","+FIELDS.route_desc.name(), GtfsException.ERROR.SHARED_VALUE,  bean.getRouteId(), bean.getRouteLongName()));
 			} else if (bean.getRouteDesc().equals(bean.getRouteShortName())) {
-				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.route_desc.name()), 
-						FIELDS.route_short_name.name()+","+FIELDS.route_desc.name(), GtfsException.ERROR.SHARED_VALUE,  bean.getRouteId(), bean.getRouteShortName()));
+				if (withValidation)
+					bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.route_desc.name()), 
+							FIELDS.route_short_name.name()+","+FIELDS.route_desc.name(), GtfsException.ERROR.SHARED_VALUE,  bean.getRouteId(), bean.getRouteShortName()));
 			}
 		}
 		
 		value = array[i++]; testExtraSpace(FIELDS.route_type.name(), value, bean);
 		if (value == null || value.trim().isEmpty()) {
-			bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.route_type.name()), FIELDS.route_type.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+			if (withValidation)
+				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.route_type.name()), FIELDS.route_type.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
 		} else {
 			try {
 				bean.setRouteType(ROUTETYPE_CONVERTER.from(context, FIELDS.route_type, value, true));
 			} catch(GtfsException e) {
-				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.route_type.name()), FIELDS.route_type.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
+				if (withValidation)
+					bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.route_type.name()), FIELDS.route_type.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
@@ -156,7 +163,8 @@ public class RouteById extends IndexImpl<GtfsRoute> implements GtfsConverter {
 				bean.setRouteUrl(URL_CONVERTER.from(context, FIELDS.route_url, value, false));
 			} catch (GtfsException e) {
 				// 1-GTFS-Route-7 warning
-				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.route_url.name()), FIELDS.route_url.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
+				if (withValidation)
+					bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.route_url.name()), FIELDS.route_url.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
@@ -165,7 +173,8 @@ public class RouteById extends IndexImpl<GtfsRoute> implements GtfsConverter {
 			bean.setRouteColor(COLOR_CONVERTER.from(context, FIELDS.route_color, value, Color.WHITE, false));
 		} catch (GtfsException e) {
 			// 1-GTFS-Route-7 warning
-			bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.route_color.name()), FIELDS.route_color.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));	
+			if (withValidation)
+				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.route_color.name()), FIELDS.route_color.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));	
 		}
 		if (bean.getRouteColor() == null)
 			bean.setRouteColor(Color.WHITE);
@@ -175,7 +184,8 @@ public class RouteById extends IndexImpl<GtfsRoute> implements GtfsConverter {
 			bean.setRouteTextColor(COLOR_CONVERTER.from(context, FIELDS.route_text_color, value, Color.BLACK, false));
 		} catch (GtfsException e) {
 			// 1-GTFS-Route-7 warning
-			bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.route_color.name()), FIELDS.route_color.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));	
+			if (withValidation)
+				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.route_color.name()), FIELDS.route_color.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));	
 		}
 		if (bean.getRouteTextColor() == null)
 			bean.setRouteTextColor(Color.BLACK);
@@ -187,10 +197,13 @@ public class RouteById extends IndexImpl<GtfsRoute> implements GtfsConverter {
 				+ Math.max(bean.getRouteColor().getGreen(), bean.getRouteTextColor().getGreen()) - Math.min(bean.getRouteColor().getGreen(), bean.getRouteTextColor().getGreen())
 				+ Math.max(bean.getRouteColor().getBlue(), bean.getRouteTextColor().getBlue()) - Math.min(bean.getRouteColor().getBlue(), bean.getRouteTextColor().getBlue());
 		if ( brightnessDifference < 125 || colorDifference < 500) { // Poor visibility between text and background colors
-			if (getIndex(FIELDS.route_text_color.name()) != null)
-				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.route_text_color.name()), FIELDS.route_text_color.name(), GtfsException.ERROR.BAD_COLOR, bean.getRouteId(), value));
-			else
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.route_text_color.name(), GtfsException.ERROR.BAD_COLOR, bean.getRouteId(), value));
+			if (getIndex(FIELDS.route_text_color.name()) != null) {
+				if (withValidation)
+					bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.route_text_color.name()), FIELDS.route_text_color.name(), GtfsException.ERROR.BAD_COLOR, bean.getRouteId(), value));
+			} else {
+				if (withValidation)
+					bean.getErrors().add(new GtfsException(_path, id, FIELDS.route_text_color.name(), GtfsException.ERROR.BAD_COLOR, bean.getRouteId(), value));
+			}
 		}
 		
 		return bean;

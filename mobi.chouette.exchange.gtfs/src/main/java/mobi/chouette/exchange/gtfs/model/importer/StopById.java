@@ -100,7 +100,8 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter {
 		
 		value = array[i++]; testExtraSpace(FIELDS.stop_name.name(), value, bean);
 		if (value == null || value.trim().isEmpty()) {
-			bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.stop_name.name()), FIELDS.stop_name.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+			if (withValidation)
+				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.stop_name.name()), FIELDS.stop_name.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
 		} else {
 			bean.getOkTests().add(GtfsException.ERROR.MISSING_REQUIRED_VALUES);
 			bean.setStopName(STRING_CONVERTER.from(context, FIELDS.stop_name, value, true));
@@ -113,7 +114,8 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter {
 		
 		value = array[i++]; testExtraSpace(FIELDS.stop_lat.name(), value, bean);
 		if (value == null || value.trim().isEmpty()) {
-			bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.stop_lat.name()), FIELDS.stop_lat.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+			if (withValidation)
+				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.stop_lat.name()), FIELDS.stop_lat.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
 		} else {
 			bean.getOkTests().add(GtfsException.ERROR.MISSING_REQUIRED_VALUES);
 			boolean validLat = true;
@@ -128,13 +130,15 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter {
 				bean.getOkTests().add(GtfsException.ERROR.INVALID_FORMAT);
 				bean.setStopLat(BigDecimal.valueOf(FLOAT_CONVERTER.from(context, FIELDS.stop_lat, value, true)));
 			} else {
-				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.stop_lat.name()), FIELDS.stop_lat.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
+				if (withValidation)
+					bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.stop_lat.name()), FIELDS.stop_lat.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
 		value = array[i++]; testExtraSpace(FIELDS.stop_lon.name(), value, bean);
 		if (value == null || value.trim().isEmpty()) {
-			bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.stop_lon.name()), FIELDS.stop_lon.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+			if (withValidation)
+				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.stop_lon.name()), FIELDS.stop_lon.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
 		} else {
 			bean.getOkTests().add(GtfsException.ERROR.MISSING_REQUIRED_VALUES);
 			boolean validLon = true;
@@ -149,7 +153,8 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter {
 				bean.getOkTests().add(GtfsException.ERROR.INVALID_FORMAT);
 				bean.setStopLon(BigDecimal.valueOf(FLOAT_CONVERTER.from(context, FIELDS.stop_lon, value, true)));
 			} else
-				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.stop_lon.name()), FIELDS.stop_lon.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
+				if (withValidation)
+					bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.stop_lon.name()), FIELDS.stop_lon.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 		}
 		
 		value = array[i++]; testExtraSpace(FIELDS.zone_id.name(), value, bean);
@@ -163,7 +168,8 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter {
 				bean.setStopUrl(URL_CONVERTER.from(context, FIELDS.stop_url, value, false));
 			} catch (GtfsException e) {
 				// 1-GTFS-Stop-7 warning
-				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.stop_url.name()), FIELDS.stop_url.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));	
+				if (withValidation)
+					bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.stop_url.name()), FIELDS.stop_url.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));	
 			} finally {
 				bean.getOkTests().add(GtfsException.ERROR.INVALID_FORMAT);
 			}
@@ -183,7 +189,8 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter {
 				bean.getOkTests().add(GtfsException.ERROR.INVALID_FORMAT);
 				bean.setLocationType(LOCATIONTYPE_CONVERTER.from(context, FIELDS.location_type, value, LocationType.Stop, false));
 			} else {
-				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.location_type.name()), FIELDS.location_type.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));				
+				if (withValidation)
+					bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.location_type.name()), FIELDS.location_type.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));				
 			}
 		}
 		
@@ -198,7 +205,8 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter {
 				bean.setStopTimezone(TIMEZONE_CONVERTER.from(context,FIELDS.stop_timezone, value, false));
 			} catch (GtfsException e) {
 				// 1-GTFS-Stop-9  warning
-				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.stop_timezone.name()), FIELDS.stop_timezone.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));	
+				if (withValidation)
+					bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.stop_timezone.name()), FIELDS.stop_timezone.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));	
 			} finally {
 				bean.getOkTests().add(GtfsException.ERROR.INVALID_FORMAT);
 			}
@@ -218,7 +226,8 @@ public class StopById extends IndexImpl<GtfsStop> implements GtfsConverter {
 				bean.setWheelchairBoarding(WHEELCHAIRBOARDINGTYPE_CONVERTER.from( context, FIELDS.wheelchair_boarding, value, WheelchairBoardingType.NoInformation, false));
 			} else {
 				bean.getOkTests().add(GtfsException.ERROR.INVALID_FORMAT);
-				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.wheelchair_boarding.name()), FIELDS.wheelchair_boarding.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));				
+				if (withValidation)
+					bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.wheelchair_boarding.name()), FIELDS.wheelchair_boarding.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));				
 			}
 		}
 		

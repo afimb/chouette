@@ -68,6 +68,7 @@ public class GtfsStopParser implements Parser, Validator, Constant {
 		
 			GtfsException fatalException = null;
 			boolean hasLocationType = false;
+			parser.setWithValidation(true);
 			for (GtfsStop bean : parser) {
 				try {
 					if (bean.getLocationType() == null)
@@ -89,6 +90,7 @@ public class GtfsStopParser implements Parser, Validator, Constant {
 				validationReporter.reportErrors(context, bean.getErrors(), GTFS_STOPS_FILE);
 				validationReporter.validate(context, GTFS_STOPS_FILE, bean.getOkTests());
 			}
+			parser.setWithValidation(false);
 			if (hasLocationType)
 				validationReporter.validate(context, GTFS_STOPS_FILE, GtfsException.ERROR.NO_LOCATION_TYPE);
 			else

@@ -2,6 +2,8 @@ package mobi.chouette.exchange.gtfs.model.importer;
 
 import java.util.Set;
 
+import lombok.Setter;
+
 public interface Index<T> extends Iterable<T> {
 
 	void dispose();
@@ -21,4 +23,6 @@ public interface Index<T> extends Iterable<T> {
 	Set<GtfsException> getErrors();
 
 	Set<GtfsException.ERROR> getOkTests();
+	
+	void setWithValidation(boolean withValidation);
 }

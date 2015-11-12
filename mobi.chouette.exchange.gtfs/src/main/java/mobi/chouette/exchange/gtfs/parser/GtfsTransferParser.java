@@ -69,6 +69,7 @@ public class GtfsTransferParser implements Parser, Validator, Constant {
 			}
 			
 			GtfsException fatalException = null;
+			parser.setWithValidation(true);
 			for (GtfsTransfer bean : parser) {
 				try {
 					parser.validate(bean, importer);
@@ -86,6 +87,7 @@ public class GtfsTransferParser implements Parser, Validator, Constant {
 				validationReporter.reportErrors(context, bean.getErrors(), GTFS_TRANSFERS_FILE);
 				validationReporter.validate(context, GTFS_TRANSFERS_FILE, bean.getOkTests());
 			}
+			parser.setWithValidation(false);
 			if (fatalException != null)
 				throw fatalException;
 		} else {

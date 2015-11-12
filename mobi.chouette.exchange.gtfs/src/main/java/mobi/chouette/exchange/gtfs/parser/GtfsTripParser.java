@@ -108,6 +108,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			}
 		
 			GtfsException fatalException = null;
+			stopTimeParser.setWithValidation(true);
 			for (GtfsStopTime bean : stopTimeParser) {
 				if (bean.getStopId() != null)
 					stopIds.add(bean.getStopId());
@@ -127,6 +128,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 				validationReporter.reportErrors(context, bean.getErrors(), GTFS_STOP_TIMES_FILE);
 				validationReporter.validate(context, GTFS_STOP_TIMES_FILE, bean.getOkTests());
 			}
+			stopTimeParser.setWithValidation(false);
 			int i = 1;
 			boolean unsuedId = true;
 			for (GtfsStop bean : importer.getStopById()) {
@@ -190,6 +192,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			}
 			
 			GtfsException fatalException = null;
+			shapeParser.setWithValidation(true);
 			for (GtfsShape bean : shapeParser) {
 				try {
 					shapeParser.validate(bean, importer);
@@ -207,6 +210,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 				validationReporter.reportErrors(context, bean.getErrors(), GTFS_SHAPES_FILE);
 				validationReporter.validate(context, GTFS_SHAPES_FILE, bean.getOkTests());
 			}
+			shapeParser.setWithValidation(false);
 			if (fatalException != null)
 				throw fatalException;
 		} else {
@@ -257,6 +261,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			}
 		
 			GtfsException fatalException = null;
+			tripParser.setWithValidation(true);
 			for (GtfsTrip bean : tripParser) {
 				if (bean.getRouteId() != null)
 					routeIds.add(bean.getRouteId());
@@ -276,6 +281,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 				validationReporter.reportErrors(context, bean.getErrors(), GTFS_TRIPS_FILE);
 				validationReporter.validate(context, GTFS_TRIPS_FILE, bean.getOkTests());
 			}
+			tripParser.setWithValidation(false);
 			int i = 1;
 			boolean unsuedId = true;
 			for (GtfsRoute bean : importer.getRouteById()) {
@@ -337,6 +343,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			}
 			
 			GtfsException fatalException = null;
+			frequencyParser.setWithValidation(true);
 			for (GtfsFrequency bean : frequencyParser) {
 				try {
 					frequencyParser.validate(bean, importer);
@@ -354,6 +361,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 				validationReporter.reportErrors(context, bean.getErrors(), GTFS_FREQUENCIES_FILE);
 				validationReporter.validate(context, GTFS_FREQUENCIES_FILE, bean.getOkTests());
 			}
+			frequencyParser.setWithValidation(false);
 			if (fatalException != null)
 				throw fatalException;
 		} else {
