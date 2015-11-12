@@ -179,38 +179,45 @@ public abstract class TripIndex extends IndexImpl<GtfsTrip> implements GtfsConve
 		boolean result = true;
 
 		if (isPresent(bean.getRouteId()))
-			if (dao.getRouteById().getValue(bean.getRouteId()) == null) {
+			if (dao.getRouteById().containsKey(bean.getRouteId())) {
+				bean.getOkTests().add(GtfsException.ERROR.UNREFERENCED_ID);				
+			} else {
 				bean.getErrors().add(
 						new GtfsException(_path, bean.getId(), getIndex(FIELDS.route_id.name()),
 								FIELDS.route_id.name(), GtfsException.ERROR.UNREFERENCED_ID, bean.getTripId(), bean.getRouteId()));
 				result = false;
-			} else {
-				bean.getOkTests().add(GtfsException.ERROR.UNREFERENCED_ID);
 			}
 
 		if (isPresent(bean.getServiceId()))
-			if (dao.getCalendarByService().getValue(bean.getServiceId()) == null
-					&& dao.getCalendarDateByService().getValue(bean.getServiceId()) == null) {
+			if (isCalendar(dao, bean.getServiceId())) {
+				bean.getOkTests().add(GtfsException.ERROR.UNREFERENCED_ID);
+			} else {
 				bean.getErrors().add(
 						new GtfsException(_path, bean.getId(), getIndex(FIELDS.service_id.name()), FIELDS.service_id
 								.name(), GtfsException.ERROR.UNREFERENCED_ID, bean.getTripId(), bean.getServiceId()));
 				result = false;
-			} else {
-				bean.getOkTests().add(GtfsException.ERROR.UNREFERENCED_ID);
 			}
 
 		if (isPresent(bean.getShapeId())) {
-			if (!dao.hasShapeImporter() || dao.getShapeById().getValue(bean.getShapeId()) == null) {
+			if (dao.hasShapeImporter() && dao.getShapeById().containsKey(bean.getShapeId())) {
+				bean.getOkTests().add(GtfsException.ERROR.UNREFERENCED_ID);
+			} else {
 				bean.getErrors().add(
 						new GtfsException(_path, bean.getId(), getIndex(FIELDS.shape_id.name()),
 								FIELDS.shape_id.name(), GtfsException.ERROR.UNREFERENCED_ID, bean.getTripId(), bean.getShapeId()));
 				result = false;
-			} else {
-				bean.getOkTests().add(GtfsException.ERROR.UNREFERENCED_ID);
 			}
 		}
 
 		return result;
+	}
+
+	private boolean isCalendar(GtfsImporter dao, String serviceId) {
+		if (dao.hasCalendarImporter() && dao.getCalendarByService().containsKey(serviceId))
+			return true;
+		if (dao.hasCalendarDateImporter() && dao.getCalendarDateByService().containsKey(serviceId))
+			return true;
+		return false;
 	}
 
 	private void clearBean() {
