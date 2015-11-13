@@ -136,18 +136,18 @@ public class TransferByFromStop extends IndexImpl<GtfsTransfer> implements
 
 		String fromStopId = bean.getFromStopId();
 		if (dao.getStopById().containsKey(fromStopId)) {
+			bean.getOkTests().add(GtfsException.ERROR.UNREFERENCED_ID);
+		} else {
 			bean.getErrors().add(new GtfsException(_path, bean.getId(), getIndex(FIELDS.from_stop_id.name()), FIELDS.from_stop_id.name(), GtfsException.ERROR.UNREFERENCED_ID, null, fromStopId));
 			result = false;
-		} else {
-			bean.getOkTests().add(GtfsException.ERROR.UNREFERENCED_ID);
 		}
 
 		String toStopId = bean.getToStopId();
 		if (dao.getStopById().containsKey(toStopId)) {
+			bean.getOkTests().add(GtfsException.ERROR.UNREFERENCED_ID);
+		} else {
 			bean.getErrors().add(new GtfsException(_path, bean.getId(), getIndex(FIELDS.to_stop_id.name()), FIELDS.to_stop_id.name(), GtfsException.ERROR.UNREFERENCED_ID, null, toStopId));
 			result = false;
-		} else {
-			bean.getOkTests().add(GtfsException.ERROR.UNREFERENCED_ID);
 		}
 
 		return result;
