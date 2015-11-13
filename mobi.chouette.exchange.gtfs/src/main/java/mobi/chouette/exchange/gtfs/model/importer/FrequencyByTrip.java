@@ -83,7 +83,8 @@ public class FrequencyByTrip extends IndexImpl<GtfsFrequency> implements
 		int id = (int) context.get(Context.ID);
 		String value = null;
 		bean.setId(id);
-		bean.getErrors().clear();
+		clearBean();
+		//bean.getErrors().clear();
 		
 		value = array[i++]; testExtraSpace(FIELDS.trip_id.name(), value, bean);
 		if (value == null || value.trim().isEmpty()) {
@@ -135,6 +136,16 @@ public class FrequencyByTrip extends IndexImpl<GtfsFrequency> implements
 		}
 			
 		return bean;
+	}
+
+	private void clearBean() {
+		//bean.getErrors().clear();
+		bean.setId(null);
+		bean.setEndTime(null);
+		bean.setExactTimes(null);
+		bean.setHeadwaySecs(null);
+		bean.setStartTime(null);
+		bean.setTripId(null);
 	}
 
 	@Override
