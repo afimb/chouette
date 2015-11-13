@@ -94,23 +94,27 @@ public class CalendarDateByService extends IndexImpl<GtfsCalendarDate>
 		
 		value = array[i++]; testExtraSpace(FIELDS.date.name(), value, bean);
 		if (value == null || value.trim().isEmpty()) {
-			bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.date.name()), FIELDS.date.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+			if (withValidation)
+				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.date.name()), FIELDS.date.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
 		} else {
 			try {
 				bean.setDate(DATE_CONVERTER.from(context, FIELDS.date, value, true));
 			} catch(GtfsException ex) {
-				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.date.name()), FIELDS.date.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
+				if (withValidation)
+					bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.date.name()), FIELDS.date.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
 		value = array[i++]; testExtraSpace(FIELDS.exception_type.name(), value, bean);
 		if (value == null || value.trim().isEmpty()) {
-			bean.getErrors().add(new GtfsException(_path, id, FIELDS.exception_type.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+			if (withValidation)
+				bean.getErrors().add(new GtfsException(_path, id, FIELDS.exception_type.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
 		} else {
 			try {
 				bean.setExceptionType(EXCEPTIONTYPE_CONVERTER.from(context, FIELDS.exception_type, value, true));
 			} catch(GtfsException ex) {
-				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.exception_type.name()), FIELDS.exception_type.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
+				if (withValidation)
+					bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.exception_type.name()), FIELDS.exception_type.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		

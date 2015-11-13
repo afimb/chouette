@@ -5,7 +5,7 @@ import lombok.ToString;
 import lombok.EqualsAndHashCode;
 
 @ToString
-// @EqualsAndHashCode(callSuper=false, exclude={"id", "value"})
+//@EqualsAndHashCode(callSuper=false, exclude={"id", "value"})
 @EqualsAndHashCode(callSuper = false)
 public class GtfsException extends RuntimeException {
 	private static final long serialVersionUID = 1L;

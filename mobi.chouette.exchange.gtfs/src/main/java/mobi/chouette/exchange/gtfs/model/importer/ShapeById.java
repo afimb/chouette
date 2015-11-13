@@ -88,14 +88,16 @@ public class ShapeById extends IndexImpl<GtfsShape> implements GtfsConverter {
 		
 		value = array[i++]; testExtraSpace(FIELDS.shape_id.name(), value, bean);
 		if (value == null || value.trim().isEmpty()) {
-			bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.shape_id.name()), FIELDS.shape_id.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+			if (withValidation)
+				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.shape_id.name()), FIELDS.shape_id.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
 		} else {
 			bean.setShapeId(STRING_CONVERTER.from(context, FIELDS.shape_id, value, true));
 		}
 			
 		value = array[i++]; testExtraSpace(FIELDS.shape_pt_lat.name(), value, bean);
 		if (value == null || value.trim().isEmpty()) {
-			bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.shape_pt_lat.name()), FIELDS.shape_pt_lat.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+			if (withValidation)
+				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.shape_pt_lat.name()), FIELDS.shape_pt_lat.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
 		} else {
 			boolean validLat = true;
 			try {
@@ -108,13 +110,15 @@ public class ShapeById extends IndexImpl<GtfsShape> implements GtfsConverter {
 			if (validLat)
 				bean.setShapePtLat(BigDecimal.valueOf(FLOAT_CONVERTER.from(context, FIELDS.shape_pt_lat, value, true)));
 			else {
-				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.shape_pt_lat.name()), FIELDS.shape_pt_lat.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
+				if (withValidation)
+					bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.shape_pt_lat.name()), FIELDS.shape_pt_lat.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
 		value = array[i++]; testExtraSpace(FIELDS.shape_pt_lon.name(), value, bean);
 		if (value == null || value.trim().isEmpty()) {
-			bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.shape_pt_lon.name()), FIELDS.shape_pt_lon.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+			if (withValidation)
+				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.shape_pt_lon.name()), FIELDS.shape_pt_lon.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
 		} else {
 			boolean validLon = true;
 			try {
@@ -127,22 +131,26 @@ public class ShapeById extends IndexImpl<GtfsShape> implements GtfsConverter {
 			if (validLon)
 				bean.setShapePtLat(BigDecimal.valueOf(FLOAT_CONVERTER.from(context, FIELDS.shape_pt_lon, value, true)));
 			else {
-				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.shape_pt_lon.name()), FIELDS.shape_pt_lon.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
+				if (withValidation)
+					bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.shape_pt_lon.name()), FIELDS.shape_pt_lon.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
 		value = array[i++]; testExtraSpace(FIELDS.shape_pt_sequence.name(), value, bean);
 		if (value == null || value.trim().isEmpty()) {
-			bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.shape_pt_sequence.name()), FIELDS.shape_pt_sequence.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+			if (withValidation)
+				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.shape_pt_sequence.name()), FIELDS.shape_pt_sequence.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
 		} else {
 			try {
 				int shapePtSequence = INTEGER_CONVERTER.from(context, FIELDS.shape_pt_sequence, value, true);
 				if (shapePtSequence >= 0)
 					bean.setShapePtSequence(shapePtSequence);
 				else
-					bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.shape_pt_sequence.name()), FIELDS.shape_pt_sequence.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
+					if (withValidation)
+						bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.shape_pt_sequence.name()), FIELDS.shape_pt_sequence.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			} catch(GtfsException e) {
-				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.shape_pt_sequence.name()), FIELDS.shape_pt_sequence.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
+				if (withValidation)
+					bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.shape_pt_sequence.name()), FIELDS.shape_pt_sequence.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
@@ -153,9 +161,11 @@ public class ShapeById extends IndexImpl<GtfsShape> implements GtfsConverter {
 				if (shapeDistTraveled >= 0)
 					bean.setShapeDistTraveled(shapeDistTraveled);
 				else
-					bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.shape_dist_traveled.name()), FIELDS.shape_dist_traveled.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
+					if (withValidation)
+						bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.shape_dist_traveled.name()), FIELDS.shape_dist_traveled.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			} catch(GtfsException ex) {
-				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.shape_dist_traveled.name()), FIELDS.shape_dist_traveled.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
+				if (withValidation)
+					bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.shape_dist_traveled.name()), FIELDS.shape_dist_traveled.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}			
 		}
 				
