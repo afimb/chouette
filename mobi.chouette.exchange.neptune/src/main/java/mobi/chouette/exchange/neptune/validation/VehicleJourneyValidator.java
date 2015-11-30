@@ -16,7 +16,6 @@ import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.exchange.validation.report.Detail;
 import mobi.chouette.exchange.validation.report.FileLocation;
 import mobi.chouette.exchange.validation.report.Location;
-import mobi.chouette.model.Line;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.util.Referential;
 

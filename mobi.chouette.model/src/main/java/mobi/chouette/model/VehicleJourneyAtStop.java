@@ -103,21 +103,21 @@ public class VehicleJourneyAtStop extends NeptuneObject {
 	@Column(name = "departure_time")
 	private Time departureTime;
 
-	/**
+	/*
 	 * waiting time
 	 * 
 	 * @param waitingTime
 	 *            New value
 	 * @return The actual value
 	 */
-	@Deprecated
-	@Getter
-	@Setter
-	@Transient
+	//@Deprecated
+	//@Getter
+	//@Setter
+	//@Transient
 	// @Column(name = "waiting_time")
-	private Time waitingTime;
+	//private Time waitingTime;
 
-	/**
+	/*
 	 * elapse duration <br/>
 	 * for vehicle journey with time slots<br/>
 	 * definition should change in next release
@@ -126,12 +126,14 @@ public class VehicleJourneyAtStop extends NeptuneObject {
 	 *            New value
 	 * @return The actual value
 	 */
-	@Getter
-	@Setter
-	@Column(name = "elapse_duration")
-	private Time elapseDuration;
+	//@Deprecated
+	//@Getter
+	//@Setter
+	// @Column(name = "elapse_duration")
+	//@Transient
+	//private Time elapseDuration;
 
-	/**
+	/*
 	 * headway frequnecy <br/>
 	 * for vehicle journey with time slots<br/>
 	 * field should move to vehicleJourney in next release
@@ -140,10 +142,12 @@ public class VehicleJourneyAtStop extends NeptuneObject {
 	 *            New value
 	 * @return The actual value
 	 */
-	@Getter
-	@Setter
-	@Column(name = "headway_frequency")
-	private Time headwayFrequency;
+	//@Deprecated
+	//@Getter
+	//@Setter
+	//@Column(name = "headway_frequency")
+	//@Transient
+	//private Time headwayFrequency;
 
 	/**
 	 * vehicle journey reference <br/>

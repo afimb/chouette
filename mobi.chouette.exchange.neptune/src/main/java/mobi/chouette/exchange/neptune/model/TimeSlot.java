@@ -39,14 +39,14 @@ public class TimeSlot extends NeptuneIdentifiedObject
 	@Column(name = "id", nullable = false)
 	protected Long id;
    
-   /**
-    * name
-    * 
-    * @return The actual value
-    */
-   @Getter
-   @Setter
-   private String name;
+//   /**
+//    * name
+//    * 
+//    * @return The actual value
+//    */
+//   @Getter
+//   @Setter
+//   private String name;
 
 
    /**

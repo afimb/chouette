@@ -1,11 +1,17 @@
 package mobi.chouette.model;
 
 import java.sql.Time;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.apache.commons.lang.StringUtils;
@@ -84,4 +90,10 @@ public class Timeband extends NeptuneIdentifiedObject {
 	@Setter
 	@Column(name = "end_time", nullable = false)
 	private Time endTime;
+
+	@Getter
+	@Setter
+	@OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST })
+	@JoinColumn(name = "timeband_id", updatable = false)
+	private List<JourneyFrequency> journeyFrequencies = new ArrayList<JourneyFrequency>(0);
 }

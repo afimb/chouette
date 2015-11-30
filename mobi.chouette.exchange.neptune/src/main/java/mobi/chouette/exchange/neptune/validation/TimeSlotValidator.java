@@ -10,9 +10,7 @@ import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 
 public class TimeSlotValidator extends AbstractValidator implements Validator<TimeSlot> , Constant{
-
-	public static final String VEHICLE_JOURNEY_ID = "vehicleJourneyId";
-
+	
 	public static String NAME = "TimeSlotValidator";
 
 	public static final String LOCAL_CONTEXT = "TimeSlot";

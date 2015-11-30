@@ -8,7 +8,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -43,23 +43,34 @@ public class JourneyFrequency extends NeptuneObject {
 	@Column(name = "id", nullable = false)
 	protected Long id;
 	
+	
+	/**
+	 * vehicle journey reference <br/>
+	 * 
+	 * @return The actual value
+	 */
 	@Getter
-	@OneToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "vehicle_journey_id")
 	private VehicleJourney vehicleJourney;
-	
+
 	/**
 	 * set vehicle journey reference
 	 * 
 	 * @param vehicleJourney
-	 *     The new vehicle journey of this journey frequency
 	 */
 	public void setVehicleJourney(VehicleJourney vehicleJourney) {
+		if (this.vehicleJourney != null) {
+			this.vehicleJourney.getJourneyFrequencies().remove(this);
+		}
 		this.vehicleJourney = vehicleJourney;
+		if (vehicleJourney != null) {
+			vehicleJourney.getJourneyFrequencies().add(this);
+		}
 	}
 	
 	@Getter
-	@OneToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "timeband_id")
 	private Timeband timeband;
 	

@@ -163,20 +163,23 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 				Integer value = ParserUtils.getInt(xpp.nextText());
 				validator.addOrder(vehicleJourneyAtStopContext, value);
 			} else if (xpp.getName().equals("elapseDuration")) {
+			        // TODO. Use it to compute departureTime
 				Time value = ParserUtils.getSQLDuration(xpp.nextText());
-				vehicleJourneyAtStop.setElapseDuration(value);
+				//vehicleJourneyAtStop.setElapseDuration(value);
 			} else if (xpp.getName().equals("arrivalTime")) {
 				Time value = ParserUtils.getSQLTime(xpp.nextText());
 				vehicleJourneyAtStop.setArrivalTime(value);
 			} else if (xpp.getName().equals("departureTime")) {
 				Time value = ParserUtils.getSQLTime(xpp.nextText());
 				vehicleJourneyAtStop.setDepartureTime(value);
-				// } else if (xpp.getName().equals("waitingTime")) {
-				// Time value = ParserUtils.getSQLTime(xpp.nextText());
-				// vehicleJourneyAtStop.setWaitingTime(value);
+			} else if (xpp.getName().equals("waitingTime")) {
+			        // TODO. Is this conform with departueTime and arrivalTime ?
+				Time value = ParserUtils.getSQLTime(xpp.nextText());
+				//vehicleJourneyAtStop.setWaitingTime(value);
 			} else if (xpp.getName().equals("headwayFrequency")) {
+			        // TODO. Is this the same for all vjat of this vj ? 
 				Time value = ParserUtils.getSQLDuration(xpp.nextText());
-				vehicleJourneyAtStop.setHeadwayFrequency(value);
+				//vehicleJourneyAtStop.setHeadwayFrequency(value);
 			} else {
 				XPPUtil.skipSubTree(log, xpp);
 			}

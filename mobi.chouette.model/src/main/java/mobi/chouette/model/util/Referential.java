@@ -2,6 +2,7 @@ package mobi.chouette.model.util;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,12 +13,14 @@ import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.GroupOfLine;
+import mobi.chouette.model.JourneyFrequency;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.Timeband;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 
@@ -82,6 +85,10 @@ public class Referential implements java.io.Serializable {
 	@Setter
 	private Map<String, Timetable> sharedTimetables = new HashMap<String, Timetable>();
 
+	@Getter
+	@Setter
+	private Map<String, Timeband> sharedTimebands = new HashMap<String, Timeband>();
+
 	public void clear(boolean cascade) {
 		if (cascade) {
 			for (Line line : lines.values()) {
@@ -101,6 +108,7 @@ public class Referential implements java.io.Serializable {
 			for (VehicleJourney vj : vehicleJourneys.values()) {
 				vj.getVehicleJourneyAtStops().clear();
 				vj.getTimetables().clear();
+				vj.getJourneyFrequencies().clear();
 			}
 			for (Timetable timetable : timetables.values()) {
 				timetable.getVehicleJourneys().clear();
@@ -113,6 +121,9 @@ public class Referential implements java.io.Serializable {
 			}
 			for (StopArea area : sharedStopAreas.values()) {
 				area.getContainedStopPoints().clear();
+			}
+			for (Timetable timetable : sharedTimetables.values()) {
+				timetable.getVehicleJourneys().clear();
 			}
 		}
 		lines.clear();
@@ -128,7 +139,7 @@ public class Referential implements java.io.Serializable {
 		stopAreas.clear();
 		groupOfLines.clear();
 		timetables.clear();
-
+		timebands.clear();
 	}
 
 	@Getter
@@ -162,5 +173,9 @@ public class Referential implements java.io.Serializable {
 	@Getter
 	@Setter
 	private Map<String, Timetable> timetables = new HashMap<String, Timetable>();
+
+	@Getter
+	@Setter
+	private Map<String, Timeband> timebands = new HashMap<String, Timeband>();
 
 }

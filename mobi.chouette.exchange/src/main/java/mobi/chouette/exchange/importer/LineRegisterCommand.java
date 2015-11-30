@@ -139,6 +139,9 @@ public class LineRegisterCommand implements Command {
 
 	private void write(StringWriter buffer, VehicleJourney vehicleJourney, StopPoint stopPoint,
 			VehicleJourneyAtStop vehicleJourneyAtStop) throws IOException {
+		// The list of fields to sunchronize with VehicleJourneyAtStopUpdater.update(Context context, VehicleJourneyAtStop oldValue,
+		// VehicleJourneyAtStop newValue)
+
 		DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
 		buffer.write(vehicleJourney.getId().toString());
 		buffer.append(SEP);
@@ -153,17 +156,17 @@ public class LineRegisterCommand implements Command {
 			buffer.write(timeFormat.format(vehicleJourneyAtStop.getDepartureTime()));
 		else
 			buffer.write(NULL);
-		buffer.append(SEP);
+		// buffer.append(SEP);
 
-		if (vehicleJourneyAtStop.getElapseDuration() != null)
-			buffer.write(timeFormat.format(vehicleJourneyAtStop.getElapseDuration()));
-		else
-			buffer.write(NULL);
-		buffer.append(SEP);
-		if (vehicleJourneyAtStop.getHeadwayFrequency() != null)
-			buffer.write(timeFormat.format(vehicleJourneyAtStop.getHeadwayFrequency()));
-		else
-			buffer.write(NULL);
+		// if (vehicleJourneyAtStop.getElapseDuration() != null)
+		// 	buffer.write(timeFormat.format(vehicleJourneyAtStop.getElapseDuration()));
+		// else
+		// 	buffer.write(NULL);
+		// buffer.append(SEP);
+		// if (vehicleJourneyAtStop.getHeadwayFrequency() != null)
+		// 	buffer.write(timeFormat.format(vehicleJourneyAtStop.getHeadwayFrequency()));
+		// else
+		// 	buffer.write(NULL);
 		buffer.append('\n');
 	}
 

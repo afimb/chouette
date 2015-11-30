@@ -830,21 +830,21 @@ ALTER SEQUENCE stop_points_id_seq OWNED BY stop_points.id;
 -- Name: time_slots; Type: TABLE; Schema: chouette_gui; Owner: chouette; Tablespace: 
 --
 
-CREATE TABLE time_slots (
-    id bigint NOT NULL,
-    objectid character varying(255) NOT NULL,
-    object_version integer,
-    creation_time timestamp without time zone,
-    creator_id character varying(255),
-    name character varying(255),
-    beginning_slot_time time without time zone,
-    end_slot_time time without time zone,
-    first_departure_time_in_slot time without time zone,
-    last_departure_time_in_slot time without time zone
-);
+-- CREATE TABLE time_slots (
+    -- id bigint NOT NULL,
+    -- objectid character varying(255) NOT NULL,
+    -- object_version integer,
+    -- creation_time timestamp without time zone,
+    -- creator_id character varying(255),
+    -- name character varying(255),
+    -- beginning_slot_time time without time zone,
+    -- end_slot_time time without time zone,
+    -- first_departure_time_in_slot time without time zone,
+    -- last_departure_time_in_slot time without time zone
+-- );
 
 
-ALTER TABLE chouette_gui.time_slots OWNER TO chouette;
+-- ALTER TABLE chouette_gui.time_slots OWNER TO chouette;
 
 --
 -- TOC entry 191 (class 1259 OID 480120)
@@ -852,15 +852,15 @@ ALTER TABLE chouette_gui.time_slots OWNER TO chouette;
 -- Name: time_slots_id_seq; Type: SEQUENCE; Schema: chouette_gui; Owner: chouette
 --
 
-CREATE SEQUENCE time_slots_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
+-- CREATE SEQUENCE time_slots_id_seq
+    -- START WITH 1
+    -- INCREMENT BY 1
+    -- NO MINVALUE
+    -- NO MAXVALUE
+    -- CACHE 1;
 
 
-ALTER TABLE chouette_gui.time_slots_id_seq OWNER TO chouette;
+-- ALTER TABLE chouette_gui.time_slots_id_seq OWNER TO chouette;
 
 --
 -- TOC entry 2718 (class 0 OID 0)
@@ -868,7 +868,7 @@ ALTER TABLE chouette_gui.time_slots_id_seq OWNER TO chouette;
 -- Name: time_slots_id_seq; Type: SEQUENCE OWNED BY; Schema: chouette_gui; Owner: chouette
 --
 
-ALTER SEQUENCE time_slots_id_seq OWNED BY time_slots.id;
+-- ALTER SEQUENCE time_slots_id_seq OWNED BY time_slots.id;
 
 
 --
@@ -1031,9 +1031,9 @@ CREATE TABLE vehicle_journey_at_stops (
     boarding_alighting_possibility character varying(255),
     arrival_time time without time zone,
     departure_time time without time zone,
-    waiting_time time without time zone,
-    elapse_duration time without time zone,
-    headway_frequency time without time zone,
+    -- waiting_time time without time zone,
+    -- elapse_duration time without time zone,
+    -- headway_frequency time without time zone,
     for_boarding character varying(255),
     for_alighting character varying(255)
 );
@@ -1076,7 +1076,7 @@ CREATE TABLE vehicle_journeys (
     id bigint NOT NULL,
     route_id bigint,
     journey_pattern_id bigint,
-    time_slot_id bigint,
+    -- time_slot_id bigint,
     company_id bigint,
     objectid character varying(255) NOT NULL,
     object_version integer,
@@ -1249,7 +1249,7 @@ ALTER TABLE ONLY stop_points ALTER COLUMN id SET DEFAULT nextval('stop_points_id
 -- Name: id; Type: DEFAULT; Schema: chouette_gui; Owner: chouette
 --
 
-ALTER TABLE ONLY time_slots ALTER COLUMN id SET DEFAULT nextval('time_slots_id_seq'::regclass);
+-- ALTER TABLE ONLY time_slots ALTER COLUMN id SET DEFAULT nextval('time_slots_id_seq'::regclass);
 
 
 --
@@ -1435,8 +1435,8 @@ ALTER TABLE ONLY stop_points
 -- Name: time_slots_pkey; Type: CONSTRAINT; Schema: chouette_gui; Owner: chouette; Tablespace: 
 --
 
-ALTER TABLE ONLY time_slots
-    ADD CONSTRAINT time_slots_pkey PRIMARY KEY (id);
+-- ALTER TABLE ONLY time_slots
+    -- ADD CONSTRAINT time_slots_pkey PRIMARY KEY (id);
 
 
 --
@@ -1695,7 +1695,7 @@ CREATE UNIQUE INDEX stop_points_objectid_key ON stop_points USING btree (objecti
 -- Name: time_slots_objectid_key; Type: INDEX; Schema: chouette_gui; Owner: chouette; Tablespace: 
 --
 
-CREATE UNIQUE INDEX time_slots_objectid_key ON time_slots USING btree (objectid);
+-- CREATE UNIQUE INDEX time_slots_objectid_key ON time_slots USING btree (objectid);
 
 
 --

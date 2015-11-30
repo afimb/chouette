@@ -7,6 +7,7 @@ import java.util.List;
 
 import mobi.chouette.exchange.neptune.JsonExtension;
 import mobi.chouette.model.Footnote;
+import mobi.chouette.model.JourneyFrequency;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
@@ -69,6 +70,9 @@ public class VehicleJourneyProducer extends AbstractJaxbNeptuneProducer<VehicleJ
 			Collections.sort(lvjas, VEHICLE_JOURNEY_AT_STOP_SORTER);
 
 			int order = 1;
+			List<JourneyFrequency> journeyFrequencies = vehicleJourney.getJourneyFrequencies();
+			// TODO. if journeyFrequencies not empty compute the TimeSlots using the Timebands
+			
 			for (VehicleJourneyAtStop vehicleJourneyAtStop : vehicleJourney.getVehicleJourneyAtStops()) {
 				if (vehicleJourneyAtStop != null) {
 					VehicleJourneyAtStopType jaxbVehicleJourneyAtStop = tridentFactory.createVehicleJourneyAtStopType();
@@ -76,10 +80,11 @@ public class VehicleJourneyProducer extends AbstractJaxbNeptuneProducer<VehicleJ
 							.setBoardingAlightingPossibility(buildBoardingAndAlightingPossibility(vehicleJourneyAtStop
 									.getStopPoint()));
 
-					if (vehicleJourneyAtStop.getHeadwayFrequency() != null) {
-						jaxbVehicleJourneyAtStop.setHeadwayFrequency(toDuration(vehicleJourneyAtStop
-								.getHeadwayFrequency()));
-					}
+					// TODO : get the headwayFrequency from the journeyFrequencies
+					// if (vehicleJourneyAtStop.getHeadwayFrequency() != null) {
+					// 	jaxbVehicleJourneyAtStop.setHeadwayFrequency(toDuration(vehicleJourneyAtStop
+					// 			.getHeadwayFrequency()));
+					// }
 					jaxbVehicleJourneyAtStop.setOrder(BigInteger.valueOf(order++));
 					jaxbVehicleJourneyAtStop.setStopPointId(getNonEmptyObjectId(vehicleJourneyAtStop.getStopPoint()));
 					jaxbVehicleJourneyAtStop.setVehicleJourneyId(getNonEmptyObjectId(vehicleJourneyAtStop
@@ -92,10 +97,10 @@ public class VehicleJourneyProducer extends AbstractJaxbNeptuneProducer<VehicleJ
 						jaxbVehicleJourneyAtStop.setDepartureTime(toCalendar(vehicleJourneyAtStop.getDepartureTime()));
 					}
 
-					if (vehicleJourneyAtStop.getElapseDuration() != null) {
-						jaxbVehicleJourneyAtStop
-								.setElapseDuration(toDuration(vehicleJourneyAtStop.getElapseDuration()));
-					}
+					// if (vehicleJourneyAtStop.getElapseDuration() != null) {
+					// 	jaxbVehicleJourneyAtStop
+					// 			.setElapseDuration(toDuration(vehicleJourneyAtStop.getElapseDuration()));
+					// }
 
 					jaxbVehicleJourney.getVehicleJourneyAtStop().add(jaxbVehicleJourneyAtStop);
 				}

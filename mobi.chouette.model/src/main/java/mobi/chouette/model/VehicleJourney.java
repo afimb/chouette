@@ -324,4 +324,10 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 	@Enumerated(EnumType.ORDINAL)
 	@Column(name = "journey_category")
 	private JourneyCategoryEnum journeyCategory = JourneyCategoryEnum.Timesheet;
+	
+	@Getter
+	@Setter
+	@OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST })
+	@JoinColumn(name = "vehicle_journey_id", updatable = false)
+	private List<JourneyFrequency> journeyFrequencies = new ArrayList<JourneyFrequency>(0);
 }

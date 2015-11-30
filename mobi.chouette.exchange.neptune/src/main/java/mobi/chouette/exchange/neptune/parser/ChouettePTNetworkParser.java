@@ -50,9 +50,9 @@ public class ChouettePTNetworkParser implements Parser, Constant {
 						.getName());
 				parser.parse(context);
 			} else if (xpp.getName().equals("TimeSlot")) {
-				// TODO [DSU] TimeSlot
-				XPPUtil.skipSubTree(log, xpp);
-				
+				Parser parser = ParserFactory.create(TimeSlotParser.class
+						.getName());
+				parser.parse(context);
 			} else if (xpp.getName().equals("ChouetteLineDescription")) {
 				Parser parser = ParserFactory
 						.create(ChouetteLineDescriptionParser.class.getName());
