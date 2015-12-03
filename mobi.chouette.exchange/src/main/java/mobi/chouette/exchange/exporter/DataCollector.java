@@ -29,14 +29,6 @@ public class DataCollector {
 		collection.getJourneyPatterns().clear();
 		collection.getStopPoints().clear();
 		collection.getVehicleJourneys().clear();
-		if (line.getNetwork() == null) {
-			log.error("line " + line.getObjectId() + " : missing network");
-			return false;
-		}
-		if (line.getCompany() == null) {
-			log.error("line " + line.getObjectId() + " : missing company");
-			return false;
-		}
 		List<Footnote> notes = line.getFootnotes();
 		
 		for (Route route : line.getRoutes()) {
