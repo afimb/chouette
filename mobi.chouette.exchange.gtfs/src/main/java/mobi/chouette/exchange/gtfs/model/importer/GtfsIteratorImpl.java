@@ -63,7 +63,6 @@ public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator, Consta
 			_code = "";
 			_escape = false;
 			_buffer.position(_mark);
-			boolean escaped = false;
 			while (_buffer.hasRemaining()) {
 
 				if (_index >= _fields.size()) {
@@ -74,7 +73,6 @@ public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator, Consta
 				switch (value) {
 				case CR:
 				case LF:
-					escaped = false;
 					if (_escape) {
 						_code = NL_IN_TOKEN;
 						return false; // new line inside a token
@@ -90,7 +88,6 @@ public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator, Consta
 					_position = _mark;
 					return true;
 				case DELIMITER:
-					escaped = false;
 					if (!_escape) {
 						_fields.get(_index).offset = _mark;
 						_fields.get(_index).length = (_buffer.position() - 1 - _mark);
@@ -110,17 +107,11 @@ public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator, Consta
 					} else {
 						int next = nextByte();
 						if (next == DELIMITER || next == CR || next == LF) { // end DQOUTE token
-							_escape = false;
+							 _escape = false;
 						} else if (next == NULL) { // EOF 
 							_code = EOF_WITHOUT_NL;
 							return false;
 						} else if (next == DQUOTE) { // double quote in a token
-							if (!escaped)
-								escaped = true;
-							else {
-								_code = MORE_THAN_TWO_DQUOTE; // more than 3 "
-								return false;
-							}
 							_buffer.get();
 						} else { // a problem : only part of this token is encolosed between DQUOTE
 							_code = TEXT_AFTER_ESCAPE_DQUOTE;
@@ -129,7 +120,6 @@ public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator, Consta
 					}
 					break;
 				default:
-					escaped = false;
 					break;
 				}
 			}
@@ -227,7 +217,7 @@ public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator, Consta
 	private String getText(int offset, int length) {
 		String result;
 		_buffer.position(offset);
-		boolean escape = false;
+		//boolean escape = false;
 		_builder.clear();
 		boolean quotedString = false;
 		for (int i = 0; i < length; i++) {
@@ -239,37 +229,11 @@ public class GtfsIteratorImpl implements Iterator<Boolean>, GtfsIterator, Consta
 			if (i== length-1 && quotedString &&  c == DQUOTE) {
 				break;
 			}
-			if (!escape) {
-				if (c == DQUOTE) {
-					if (i + 1 < length) {
-						byte next = nextByte();
-						if (next == DQUOTE) {
-							_builder.put(c);
-						} else {
-							escape = true;
-						}
-					}
-				} else {
-					_builder.put(c);
-				}
-			} else {
-				if (c == DQUOTE) {
-					if (i + 1 < length) {
-						byte next = nextByte();
-						if (next == DQUOTE) {
-							_builder.put(c);
-							i++;
-							_buffer.get();
-						} else {
-							escape = false;
-						}
-					} else {
-						escape = false;
-					}
-				} else {
-					_builder.put(c);
-				}
+			if ( c == DQUOTE ) { // As it was validated with next() method the next character must be a DQUOTE
+			    _buffer.get();
+			    i++;
 			}
+			_builder.put(c);
 		}
 		result = new String(_builder.array(), 0, _builder.position(), StandardCharsets.UTF_8);
 		return result;
