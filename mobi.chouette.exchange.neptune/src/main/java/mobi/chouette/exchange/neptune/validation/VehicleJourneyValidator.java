@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.neptune.validation;
 
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -38,7 +39,12 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 	public static final String JOURNEY_PATTERN_ID = "journeyPatternId";
 
 	public static final String LINE_ID_SHORTCUT = "lineIdShortcut";
-
+	
+	public static final String WAITING_TIME = "waitingTime";
+	
+	public static final String ELAPSE_DURATION = "elapseDuration";
+	
+	public static final String HEADWAY_FREQUENCY = "headwayFrequency";
 
 	public static String NAME = "VehicleJourneyValidator";
 
@@ -143,6 +149,18 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 
 	}
 
+	public void addWaitingTime(Context vjasCtx, Time value) {
+		vjasCtx.put(WAITING_TIME, value);
+	}
+
+	public void addElapseDuration(Context vjasCtx, Time value) {
+		vjasCtx.put(ELAPSE_DURATION, value);
+	}
+
+	public void addHeadwayFrequency(Context vjasCtx, Time value) {
+		vjasCtx.put(HEADWAY_FREQUENCY, value);
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public ValidationConstraints validate(Context context, VehicleJourney target) throws ValidationException
@@ -201,6 +219,11 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 						new Location(sourceLocation,objectId), routeId.toString());
 				addValidationError(context,VEHICLE_JOURNEY_1, errorItem);
 				fkOK = false;
+			}
+			
+			String timeSlotId = (String) objectContext.get(TIME_SLOT_ID);
+			if (timeSlotId != null && !timeSlotsContext.containsKey(timeSlotId)) {
+				;// TODO. Report error
 			}
 
 			String journeyPatternId = (String) objectContext.get(JOURNEY_PATTERN_ID);
@@ -427,6 +450,5 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 		}
 
 	}
-
 
 }

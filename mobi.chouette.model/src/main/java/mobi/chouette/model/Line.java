@@ -358,6 +358,11 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	@JoinColumn(name = "company_id")
 	private Company company;
 
+	/**
+	 * set company
+	 * 
+	 * @param company New value
+	 */
 	public void setCompany(Company company) {
 		if (this.company != null) {
 			this.company.getLines().remove(this);

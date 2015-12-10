@@ -1,13 +1,10 @@
 package mobi.chouette.model.util;
 
-import java.util.List;
-
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.GroupOfLine;
-import mobi.chouette.model.JourneyFrequency;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;
@@ -166,9 +163,9 @@ public class ObjectFactory {
 			result.setDetached(true);
 			referential.getSharedStopAreas().put(objectId, result);
 		} 
-			if (!referential.getStopAreas().containsKey(objectId)) {
-				referential.getStopAreas().put(objectId, result);
-			}
+		if (!referential.getStopAreas().containsKey(objectId)) {
+			referential.getStopAreas().put(objectId, result);
+		}
 		
 		return result;
 	}
@@ -213,8 +210,7 @@ public class ObjectFactory {
 		return result;
 	}
 	
-	public static Timeband getTimeband(Referential referential,
-			String objectId) {
+	public static Timeband getTimeband(Referential referential, String objectId) {
 		Timeband timeband = referential.getTimebands().get(objectId);
 		if (timeband == null) {
 			timeband = new Timeband();

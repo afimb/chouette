@@ -32,7 +32,7 @@ import lombok.ToString;
 @Entity
 @Table(name = "timebands")
 @NoArgsConstructor
-@ToString(callSuper = true)
+@ToString(callSuper = true, exclude = { "journeyFrequencies" })
 public class Timeband extends NeptuneIdentifiedObject {
 
 	private static final long serialVersionUID = 3366941607519552650L;
@@ -93,7 +93,11 @@ public class Timeband extends NeptuneIdentifiedObject {
 
 	@Getter
 	@Setter
-	@OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST })
-	@JoinColumn(name = "timeband_id", updatable = false)
+	@OneToMany(mappedBy = "timeband", cascade = { CascadeType.PERSIST})
+	//@JoinColumn(name = "timeband_id", updatable = false)
 	private List<JourneyFrequency> journeyFrequencies = new ArrayList<JourneyFrequency>(0);
+//	@Getter
+//	@Setter
+//	@OneToMany(mappedBy = "route", cascade = { CascadeType.PERSIST })
+//	private List<JourneyPattern> journeyPatterns = new ArrayList<JourneyPattern>(0);
 }

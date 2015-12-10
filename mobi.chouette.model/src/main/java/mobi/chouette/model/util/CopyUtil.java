@@ -104,6 +104,4 @@ public abstract class CopyUtil {
 	{
 		throw new RuntimeException("not implemented");
 	}
-	
-	
 }

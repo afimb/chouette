@@ -197,7 +197,6 @@ public class StopAreaUpdater implements Updater<StopArea> {
 
 		List<AccessPoint> accessPoints = null;
 		for (AccessPoint item : addedAccessPoint) {
-
 			AccessPoint accessPoint = cache.getAccessPoints().get(item.getObjectId());
 			if (accessPoint == null) {
 				if (accessPoints == null) {
@@ -274,9 +273,6 @@ public class StopAreaUpdater implements Updater<StopArea> {
 			}
 		    if (endOfLinkArea != null)
 		    {
-//				log.info("connect connectionLink (start) "+item.getName());
-//				log.info("    start = "+oldValue.getName());
-//				log.info("    end = "+endOfLinkArea.getName());
 				startOfLink.setStartOfLink(oldValue);
 				startOfLink.setEndOfLink(endOfLinkArea);
 		    }
@@ -311,9 +307,6 @@ public class StopAreaUpdater implements Updater<StopArea> {
 				
 		    if (startOfLinkArea != null)
 		    {
-//				log.info("connect connectionLink (end) "+item.getName());
-//				log.info("    start = "+startOfLinkArea.getName());
-//				log.info("    end = "+oldValue.getName());
 		    	endOfLink.setStartOfLink(startOfLinkArea);
 		    	endOfLink.setEndOfLink(oldValue);
 		    }
