@@ -177,7 +177,7 @@ public class Referential implements java.io.Serializable {
 	private Map<String, Timeband> timebands = new HashMap<String, Timeband>();
 
 	public void dispose() {
-		clear(false);
+		// clear(false);
 		sharedAccessLinks.clear();
 		sharedAccessPoints.clear();
 		sharedCompanies.clear();
