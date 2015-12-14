@@ -70,6 +70,7 @@ public class NeptuneObjectFactory {
 	public void clear(){
 		ptLink.clear();
 		ptLinksOnRoute.clear();
+		timeSlots.clear();
 	}
 	
 	public void dispose()

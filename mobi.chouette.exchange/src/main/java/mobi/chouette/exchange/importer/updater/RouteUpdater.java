@@ -192,16 +192,5 @@ public class RouteUpdater implements Updater<Route> {
 			journeyPatternUpdater.update(context, pair.getLeft(),
 					pair.getRight());
 		}
-
-		// Collection<JourneyPattern> removedJourneyPattern = CollectionUtils
-		// .substract(oldValue.getJourneyPatterns(),
-		// newValue.getJourneyPatterns(),
-		// NeptuneIdentifiedObjectComparator.INSTANCE);
-		// for (JourneyPattern journeyPattern : removedJourneyPattern) {
-		// journeyPattern.setRoute(null);
-		// journeyPatternDAO.delete(journeyPattern);
-		// }
-
 	}
-
 }

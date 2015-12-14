@@ -21,15 +21,18 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.LineDAO;
+import mobi.chouette.dao.TimebandDAO;
 import mobi.chouette.dao.VehicleJourneyDAO;
 import mobi.chouette.exchange.importer.updater.LineOptimiser;
 import mobi.chouette.exchange.importer.updater.LineUpdater;
+import mobi.chouette.exchange.importer.updater.TimebandUpdater;
 import mobi.chouette.exchange.importer.updater.Updater;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.LineError;
 import mobi.chouette.exchange.report.LineInfo;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.Timeband;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
 import mobi.chouette.model.util.Referential;
@@ -70,13 +73,14 @@ public class LineRegisterCommand implements Command {
 		context.put(CACHE, cache);
 
 		Referential referential = (Referential) context.get(REFERENTIAL);
+		
 		Line newValue = referential.getLines().values().iterator().next();
 		log.info("register line : " + newValue.getObjectId() + " " + newValue.getName() + " vehicleJourney count = "
 				+ referential.getVehicleJourneys().size());
 		try {
-
+			
 			optimiser.initialize(cache, referential);
-
+			
 			Line oldValue = cache.getLines().get(newValue.getObjectId());
 			lineUpdater.update(context, oldValue, newValue);
 			lineDAO.create(oldValue);

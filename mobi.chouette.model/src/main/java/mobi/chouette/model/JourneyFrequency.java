@@ -28,7 +28,7 @@ import lombok.ToString;
 @Entity
 @Table(name = "journey_frequencies")
 @NoArgsConstructor
-@ToString(callSuper = true, exclude={"timeband"})
+@ToString(callSuper = true, exclude={"vehicleJourney","timeband"})
 public class JourneyFrequency extends NeptuneObject {
 
 	private static final long serialVersionUID = 8361606377991750952L;
@@ -60,17 +60,19 @@ public class JourneyFrequency extends NeptuneObject {
 	 * @param vehicleJourney
 	 */
 	public void setVehicleJourney(VehicleJourney vehicleJourney) {
-		if (this.vehicleJourney != null) {
-			this.vehicleJourney.getJourneyFrequencies().remove(this);
-		}
-		this.vehicleJourney = vehicleJourney;
-		if (vehicleJourney != null) {
-			vehicleJourney.getJourneyFrequencies().add(this);
+		if (this.vehicleJourney != vehicleJourney) {
+			if (this.vehicleJourney != null) {
+				this.vehicleJourney.getJourneyFrequencies().remove(this);
+			}
+			this.vehicleJourney = vehicleJourney;
+			if (vehicleJourney != null) {
+				vehicleJourney.getJourneyFrequencies().add(this);
+			}
 		}
 	}
 	
 	@Getter
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "timeband_id")
 	private Timeband timeband;
 	
@@ -81,7 +83,15 @@ public class JourneyFrequency extends NeptuneObject {
 	 *     The new time band of this journey frequency
 	 */
 	public void setTimeband(Timeband timeband) {
-		this.timeband = timeband;
+		if (this.timeband != timeband) {
+			if (this.timeband != null) {
+				this.timeband.getJourneyFrequencies().remove(this);
+			}
+			this.timeband = timeband;
+			if (timeband != null) {
+				timeband.getJourneyFrequencies().add(this);
+			}
+		}
 	}
 	
 	/**

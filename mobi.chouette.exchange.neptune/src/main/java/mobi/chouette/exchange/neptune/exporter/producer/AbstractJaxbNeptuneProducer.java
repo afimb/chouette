@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeConstants;
@@ -94,7 +95,7 @@ public abstract class AbstractJaxbNeptuneProducer<T extends TridentObjectType, U
 	protected Duration toDuration(java.sql.Time time) {
 		if (time == null)
 			return null;
-		Calendar c = Calendar.getInstance();
+		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
 		c.setTimeInMillis(time.getTime());
 		long h = c.get(Calendar.HOUR_OF_DAY);
 		long m = c.get(Calendar.MINUTE);

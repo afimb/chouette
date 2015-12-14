@@ -1,6 +1,8 @@
 package mobi.chouette.exchange.neptune.parser;
 
 import java.sql.Date;
+import java.sql.Time;
+import java.text.SimpleDateFormat;
 
 import org.xmlpull.v1.XmlPullParser;
 
@@ -15,6 +17,9 @@ import mobi.chouette.exchange.neptune.model.NeptuneObjectFactory;
 import mobi.chouette.exchange.neptune.model.TimeSlot;
 import mobi.chouette.exchange.neptune.validation.TimeSlotValidator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
+import mobi.chouette.model.Timeband;
+import mobi.chouette.model.util.ObjectFactory;
+import mobi.chouette.model.util.Referential;
 
 @Log4j
 public class TimeSlotParser implements Parser, Constant {
@@ -24,6 +29,7 @@ public class TimeSlotParser implements Parser, Constant {
 	@Override
 	public void parse(Context context) throws Exception {
 		XmlPullParser xpp = (XmlPullParser) context.get(PARSER);
+		Referential referential = (Referential) context.get(REFERENTIAL);
 		NeptuneObjectFactory factory =  (NeptuneObjectFactory) context.get(NEPTUNE_OBJECT_FACTORY);
 
 		xpp.require(XmlPullParser.START_TAG, null, CHILD_TAG);
@@ -35,25 +41,40 @@ public class TimeSlotParser implements Parser, Constant {
 
 		TimeSlot timeSlot = null;
 		String objectId = null;
+		
+		// Create the timabands and journeyFrequencies
+		Timeband timeband = null;
 
 		while (xpp.nextTag() == XmlPullParser.START_TAG) {
-			if (xpp.getName().equals("objectId")) {
+			if (xpp.getName().equals("objectId")) {				
 				objectId = ParserUtils.getText(xpp.nextText());
 				timeSlot = factory.getTimeSlot(objectId);
 				timeSlot.setFilled(true);
 				validator.addLocation(context, objectId, lineNumber, columnNumber);
+				
+				timeband = ObjectFactory.getTimeband(referential, objectId);
+				timeband.setFilled(true);
+
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
 				timeSlot.setObjectVersion(version);
+				timeband.setObjectVersion(version);
 			} else if (xpp.getName().equals("creationTime")) {
 				Date creationTime = ParserUtils.getSQLDateTime(xpp.nextText());
 				timeSlot.setCreationTime(creationTime);
+				timeband.setCreationTime(creationTime);
 			} else if (xpp.getName().equals("creatorId")) {
-				timeSlot.setCreatorId(ParserUtils.getText(xpp.nextText()));
+				String creatorId = ParserUtils.getText(xpp.nextText());
+				timeSlot.setCreatorId(creatorId);
+				timeband.setCreatorId(creatorId);
 			} else if (xpp.getName().equals("beginningSlotTime")) {
-				timeSlot.setBeginningSlotTime(ParserUtils.getSQLTime(xpp.nextText()));
+				Time beginningSlotTime = ParserUtils.getSQLTime(xpp.nextText());
+				timeSlot.setBeginningSlotTime(beginningSlotTime);
+				timeband.setStartTime(beginningSlotTime);
 			} else if (xpp.getName().equals("endSlotTime")) {
-				timeSlot.setEndSlotTime(ParserUtils.getSQLTime(xpp.nextText()));
+				Time endSlotTime = ParserUtils.getSQLTime(xpp.nextText());
+				timeSlot.setEndSlotTime(endSlotTime);
+				timeband.setEndTime(endSlotTime);
 			} else if (xpp.getName().equals("firstDepartureTimeInSlot")) {
 				timeSlot.setFirstDepartureTimeInSlot(ParserUtils.getSQLTime(xpp.nextText()));
 			} else if (xpp.getName().equals("lastDepartureTimeInSlot")) {
@@ -62,6 +83,8 @@ public class TimeSlotParser implements Parser, Constant {
 				XPPUtil.skipSubTree(log, xpp);
 			}
 		}
+		SimpleDateFormat sdf = new SimpleDateFormat("HH:MM");
+		timeband.setName(sdf.format(timeband.getStartTime())+"->"+sdf.format(timeband.getEndTime()));
 	}
 
 	static {

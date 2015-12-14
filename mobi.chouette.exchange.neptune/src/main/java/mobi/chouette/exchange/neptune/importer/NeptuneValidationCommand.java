@@ -25,6 +25,7 @@ import mobi.chouette.exchange.neptune.validation.PTNetworkValidator;
 import mobi.chouette.exchange.neptune.validation.PtLinkValidator;
 import mobi.chouette.exchange.neptune.validation.StopAreaValidator;
 import mobi.chouette.exchange.neptune.validation.StopPointValidator;
+import mobi.chouette.exchange.neptune.validation.TimeSlotValidator;
 import mobi.chouette.exchange.neptune.validation.TimetableValidator;
 import mobi.chouette.exchange.neptune.validation.VehicleJourneyValidator;
 import mobi.chouette.exchange.report.ActionReport;
@@ -143,6 +144,11 @@ public class NeptuneValidationCommand implements Command, Constant {
 				}
 				{
 					ITLValidator validator = (ITLValidator) ValidatorFactory.create(ITLValidator.class.getName(),
+							context);
+					validator.validate(context, null);
+				}
+				{
+					TimeSlotValidator validator = (TimeSlotValidator) ValidatorFactory.create(TimeSlotValidator.class.getName(),
 							context);
 					validator.validate(context, null);
 				}

@@ -28,9 +28,6 @@ public class LineUpdater implements Updater<Line> {
 
 	public static final String BEAN_NAME = "LineUpdater";
 
-	// @PersistenceContext(unitName = "referential")
-	// protected EntityManager em;
-
 	@EJB
 	private NetworkDAO ptNetworkDAO;
 
@@ -62,8 +59,7 @@ public class LineUpdater implements Updater<Line> {
 	private Updater<StopArea> stopAreaUpdater;
 
 	@Override
-	public void update(Context context, Line oldValue, Line newValue)
-			throws Exception {
+	public void update(Context context, Line oldValue, Line newValue) throws Exception {
 
 		if (newValue.isSaved()) {
 			return;
@@ -145,7 +141,6 @@ public class LineUpdater implements Updater<Line> {
 		if (newValue.getNetwork() == null) {
 			oldValue.setNetwork(null);
 		} else {
-
 			String objectId = newValue.getNetwork().getObjectId();
 			Network ptNetwork = cache.getPtNetworks().get(objectId);
 			if (ptNetwork == null) {
@@ -154,13 +149,11 @@ public class LineUpdater implements Updater<Line> {
 					cache.getPtNetworks().put(objectId, ptNetwork);
 				}
 			}
-
 			if (ptNetwork == null) {
 				ptNetwork = ObjectFactory.getPTNetwork(cache, objectId);
 			}
 			oldValue.setNetwork(ptNetwork);
-			ptNetworkUpdater.update(context, oldValue.getNetwork(),
-					newValue.getNetwork());
+			ptNetworkUpdater.update(context, oldValue.getNetwork(), newValue.getNetwork());
 		}
 
 		// Company
@@ -179,44 +172,34 @@ public class LineUpdater implements Updater<Line> {
 				company = ObjectFactory.getCompany(cache, objectId);
 			}
 			oldValue.setCompany(company);
-
-			companyUpdater.update(context, oldValue.getCompany(),
-					newValue.getCompany());
+			companyUpdater.update(context, oldValue.getCompany(), newValue.getCompany());
 		}
 
 		// GroupOfLine
 		Collection<GroupOfLine> addedGroupOfLine = CollectionUtil.substract(
 				newValue.getGroupOfLines(), oldValue.getGroupOfLines(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
-
 		List<GroupOfLine> groupOfLines = null;
 		for (GroupOfLine item : addedGroupOfLine) {
-
-			GroupOfLine groupOfLine = cache.getGroupOfLines().get(
-					item.getObjectId());
+			GroupOfLine groupOfLine = cache.getGroupOfLines().get(item.getObjectId());
 			if (groupOfLine == null) {
 				if (groupOfLines == null) {
-					groupOfLines = groupOfLineDAO.findByObjectId(UpdaterUtils
-							.getObjectIds(addedGroupOfLine));
+					groupOfLines = groupOfLineDAO.findByObjectId(UpdaterUtils.getObjectIds(addedGroupOfLine));
 					for (GroupOfLine object : groupOfLines) {
-						cache.getGroupOfLines().put(object.getObjectId(),
-								object);
+						cache.getGroupOfLines().put(object.getObjectId(), object);
 					}
 				}
 				groupOfLine = cache.getGroupOfLines().get(item.getObjectId());
 			}
-
 			if (groupOfLine == null) {
-				groupOfLine = ObjectFactory.getGroupOfLine(cache,
-						item.getObjectId());
+				groupOfLine = ObjectFactory.getGroupOfLine(cache, item.getObjectId());
 			}
 			groupOfLine.addLine(oldValue);
 		}
 
-		Collection<Pair<GroupOfLine, GroupOfLine>> modifiedGroupOfLine = CollectionUtil
-				.intersection(oldValue.getGroupOfLines(),
-						newValue.getGroupOfLines(),
-						NeptuneIdentifiedObjectComparator.INSTANCE);
+		Collection<Pair<GroupOfLine, GroupOfLine>> modifiedGroupOfLine = CollectionUtil.intersection(
+				oldValue.getGroupOfLines(), newValue.getGroupOfLines(),
+				NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<GroupOfLine, GroupOfLine> pair : modifiedGroupOfLine) {
 			groupOfLineUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
@@ -232,77 +215,56 @@ public class LineUpdater implements Updater<Line> {
 		Collection<Route> addedRoute = CollectionUtil.substract(
 				newValue.getRoutes(), oldValue.getRoutes(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
-
 		List<Route> routes = null;
 		for (Route item : addedRoute) {
-
 			Route route = cache.getRoutes().get(item.getObjectId());
 			if (route == null) {
 				if (routes == null) {
-					Collection<String> objectIds = UpdaterUtils
-							.getObjectIds(addedRoute);
-					routes = routeDAO.findByObjectId(objectIds);
+					routes = routeDAO.findByObjectId(UpdaterUtils.getObjectIds(addedRoute));
 					for (Route object : routes) {
 						cache.getRoutes().put(object.getObjectId(), object);
 					}
 				}
 				route = cache.getRoutes().get(item.getObjectId());
 			}
-
 			if (route == null) {
 				route = ObjectFactory.getRoute(cache, item.getObjectId());
 			}
 			route.setLine(oldValue);
 		}
 
-		Collection<Pair<Route, Route>> modifiedRoute = CollectionUtil
-				.intersection(oldValue.getRoutes(), newValue.getRoutes(),
-						NeptuneIdentifiedObjectComparator.INSTANCE);
+		Collection<Pair<Route, Route>> modifiedRoute = CollectionUtil.intersection(
+				oldValue.getRoutes(), newValue.getRoutes(),
+				NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<Route, Route> pair : modifiedRoute) {
 			routeUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
-
-		// Collection<Route> removedRoute = CollectionUtils.substract(
-		// oldValue.getRoutes(), newValue.getRoutes(),
-		// NeptuneIdentifiedObjectComparator.INSTANCE);
-		// for (Route route : removedRoute) {
-		// route.setLine(null);
-		// routeDAO.delete(route);
-		// }
 
 		// TODO stop area list (routingConstraintLines)
 		Collection<StopArea> addedRoutingConstraint = CollectionUtil.substract(
 				newValue.getRoutingConstraints(), oldValue.getRoutingConstraints(),
 				NeptuneIdentifiedObjectComparator.INSTANCE);
-
 		List<StopArea> routingConstraints = null;
 		for (StopArea item : addedRoutingConstraint) {
-
-			StopArea routingConstraint = cache.getStopAreas().get(
-					item.getObjectId());
+			StopArea routingConstraint = cache.getStopAreas().get(item.getObjectId());
 			if (routingConstraint == null) {
 				if (routingConstraints == null) {
-					routingConstraints = stopAreaDAO.findByObjectId(UpdaterUtils
-							.getObjectIds(addedRoutingConstraint));
+					routingConstraints = stopAreaDAO.findByObjectId(UpdaterUtils.getObjectIds(addedRoutingConstraint));
 					for (StopArea object : routingConstraints) {
-						cache.getStopAreas().put(object.getObjectId(),
-								object);
+						cache.getStopAreas().put(object.getObjectId(), object);
 					}
 				}
 				routingConstraint = cache.getStopAreas().get(item.getObjectId());
 			}
-
 			if (routingConstraint == null) {
-				routingConstraint = ObjectFactory.getStopArea(cache,
-						item.getObjectId());
+				routingConstraint = ObjectFactory.getStopArea(cache, item.getObjectId());
 			}
 			oldValue.addRoutingConstraint(routingConstraint);
 		}
 
-		Collection<Pair<StopArea, StopArea>> modifiedRoutingConstraint = CollectionUtil
-				.intersection(oldValue.getRoutingConstraints(),
-						newValue.getRoutingConstraints(),
-						NeptuneIdentifiedObjectComparator.INSTANCE);
+		Collection<Pair<StopArea, StopArea>> modifiedRoutingConstraint = CollectionUtil.intersection(
+				oldValue.getRoutingConstraints(), newValue.getRoutingConstraints(),
+				NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Pair<StopArea, StopArea> pair : modifiedRoutingConstraint) {
 			stopAreaUpdater.update(context, pair.getLeft(), pair.getRight());
 		}
@@ -313,8 +275,5 @@ public class LineUpdater implements Updater<Line> {
 		for (StopArea stopArea : removedRoutingConstraint) {
 			oldValue.removeRoutingConstraint(stopArea);
 		}
-		
-		
 	}
-
 }
