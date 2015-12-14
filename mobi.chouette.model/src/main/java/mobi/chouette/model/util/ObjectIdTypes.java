@@ -67,6 +67,10 @@ public interface ObjectIdTypes {
 	    */
 	   public static final String TIMETABLE_KEY = "Timetable";
 	   /**
+	    * default objectId type for timebands 
+	    */
+	   public static final String TIMEBAND_KEY = "Timeband";
+	   /**
 	    * default objectId type for vehicle journeys 
 	    */
 	   public static final String VEHICLEJOURNEY_KEY = "VehicleJourney";

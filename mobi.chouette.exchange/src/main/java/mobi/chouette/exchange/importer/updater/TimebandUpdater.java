@@ -54,13 +54,13 @@ public class TimebandUpdater implements Updater<Timeband> {
 				&& !newValue.getEndTime().equals(oldValue.getEndTime())) {
 			oldValue.setEndTime(newValue.getEndTime());
 		}
-//		if (oldValue.getName() == null || oldValue.getName().isEmpty()) {
-//			SimpleDateFormat sdf = new SimpleDateFormat("HH:MM");
-//			oldValue.setName(sdf.format(oldValue.getStartTime())+"->"+sdf.format(oldValue.getEndTime()));
-//		}
+		if (oldValue.getName() == null || oldValue.getName().isEmpty()) {
+			SimpleDateFormat sdf = new SimpleDateFormat("HH:MM");
+			oldValue.setName(sdf.format(oldValue.getStartTime())+" - "+sdf.format(oldValue.getEndTime()));
+		}
 		if (timebandDAO.findByObjectId(oldValue.getObjectId()) == null)
-			timebandDAO.create(oldValue);				
+			timebandDAO.create(oldValue);
 		else
-			timebandDAO.update(oldValue);				
+			timebandDAO.update(oldValue);
 	}
 }

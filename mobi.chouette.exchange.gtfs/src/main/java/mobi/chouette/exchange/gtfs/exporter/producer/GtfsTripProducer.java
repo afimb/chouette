@@ -10,11 +10,14 @@ package mobi.chouette.exchange.gtfs.exporter.producer;
 
 import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.TimeZone;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.exchange.gtfs.model.GtfsFrequency;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime.DropOffType;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime.PickupType;
@@ -22,6 +25,7 @@ import mobi.chouette.exchange.gtfs.model.GtfsTime;
 import mobi.chouette.exchange.gtfs.model.GtfsTrip;
 import mobi.chouette.exchange.gtfs.model.exporter.GtfsExporterInterface;
 import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.model.JourneyFrequency;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
@@ -30,6 +34,7 @@ import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
 import mobi.chouette.model.type.AlightingPossibilityEnum;
 import mobi.chouette.model.type.BoardingPossibilityEnum;
+import mobi.chouette.model.type.JourneyCategoryEnum;
 
 /**
  * produce Trips and stop_times for vehicleJourney
@@ -43,6 +48,7 @@ public class GtfsTripProducer extends AbstractProducer {
 
 	GtfsTrip trip = new GtfsTrip();
 	GtfsStopTime time = new GtfsStopTime();
+	GtfsFrequency frequency = new GtfsFrequency();
 
 	public GtfsTripProducer(GtfsExporterInterface exporter) {
 		super(exporter);
@@ -230,7 +236,34 @@ public class GtfsTripProducer extends AbstractProducer {
 				return false;
 			}
 		}
+		
+		// add frequencies
+		if (JourneyCategoryEnum.Frequency == vj.getJourneyCategory()) {
+			for (JourneyFrequency journeyFrequency : vj.getJourneyFrequencies()) { // Don't care about Timebands !
+				frequency.setTripId(tripId);
+				frequency.setExactTimes(journeyFrequency.getExactTime());
+				frequency.setStartTime(new GtfsTime(journeyFrequency.getFirstDepartureTime(), 0));
+				if (journeyFrequency.getFirstDepartureTime().getTime() <= journeyFrequency.getLastDepartureTime().getTime())
+					frequency.setEndTime(new GtfsTime(journeyFrequency.getLastDepartureTime(), 0));
+				else
+					frequency.setEndTime(new GtfsTime(journeyFrequency.getLastDepartureTime(), 1));
+				int headwaySecs = numberOfsecondsInTheDay(journeyFrequency.getScheduledHeadwayInterval());
+				frequency.setHeadwaySecs(headwaySecs);
+				try {
+					getExporter().getFrequencyExporter().export(frequency);
+				} catch (Exception e) {
+					log.error(e.getMessage(), e);
+					return false;
+				}
+			}
+		}
+		
 		return true;
 	}
 
+	private int numberOfsecondsInTheDay(Time time) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(time);
+		return ( ( cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE) ) * 60 + cal.get(Calendar.SECOND) );
+	}
 }
