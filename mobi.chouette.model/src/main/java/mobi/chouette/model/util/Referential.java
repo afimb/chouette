@@ -2,7 +2,6 @@ package mobi.chouette.model.util;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +12,6 @@ import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.GroupOfLine;
-import mobi.chouette.model.JourneyFrequency;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;
@@ -126,20 +124,20 @@ public class Referential implements java.io.Serializable {
 				timetable.getVehicleJourneys().clear();
 			}
 		}
-		lines.clear();
-		routes.clear();
-		stopPoints.clear();
-		journeyPatterns.clear();
-		vehicleJourneys.clear();
 		accessLinks.clear();
 		accessPoints.clear();
-		ptNetworks.clear();
 		companies.clear();
 		connectionLinks.clear();
-		stopAreas.clear();
 		groupOfLines.clear();
-		timetables.clear();
+		journeyPatterns.clear();
+		lines.clear();
+		ptNetworks.clear();
+		routes.clear();
+		stopAreas.clear();
+		stopPoints.clear();
 		timebands.clear();
+		timetables.clear();
+		vehicleJourneys.clear();
 	}
 
 	@Getter
@@ -177,5 +175,19 @@ public class Referential implements java.io.Serializable {
 	@Getter
 	@Setter
 	private Map<String, Timeband> timebands = new HashMap<String, Timeband>();
+
+	public void dispose() {
+		clear(false);
+		sharedAccessLinks.clear();
+		sharedAccessPoints.clear();
+		sharedCompanies.clear();
+		sharedConnectionLinks.clear();
+		sharedGroupOfLines.clear();
+		sharedLines.clear();
+		sharedPTNetworks.clear();
+		sharedStopAreas.clear();
+		sharedTimebands.clear();
+		sharedTimetables.clear();
+	}
 
 }

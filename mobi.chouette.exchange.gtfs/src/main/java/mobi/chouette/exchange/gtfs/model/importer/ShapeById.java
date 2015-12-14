@@ -7,8 +7,6 @@ import java.util.Map;
 
 import mobi.chouette.common.HTMLTagValidator;
 import mobi.chouette.exchange.gtfs.model.GtfsShape;
-import mobi.chouette.exchange.gtfs.model.GtfsStopTime;
-import mobi.chouette.exchange.gtfs.model.importer.StopById.FIELDS;
 
 public class ShapeById extends IndexImpl<GtfsShape> implements GtfsConverter {
 	

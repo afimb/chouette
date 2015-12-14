@@ -18,7 +18,7 @@ public class SchemaManager
 	SchemaDAO schemaDAO;
 
 	
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public boolean validateReferential(String referential) {
 		return schemaDAO.getSchemaListing().contains(referential);
 		}

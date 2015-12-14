@@ -256,7 +256,7 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 			referential.getSharedTimetables().put(timetable.getObjectId(), timetable);
 			referential.getTimetables().put(timetable.getObjectId(), timetable);
 		}
-
+       list.clear();
 	}
 
 	protected void convert(Context context, GtfsCalendar gtfsCalendar, Timetable timetable) {

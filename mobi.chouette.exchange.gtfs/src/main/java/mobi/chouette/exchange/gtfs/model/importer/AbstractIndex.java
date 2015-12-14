@@ -40,5 +40,15 @@ public abstract class AbstractIndex<T> implements Index<T> {
 		int offset = -1;
 		int lenght = 0;
 	}
+	
+	@Override
+	public void dispose() {
+		_errors.clear();
+		errors.clear();
+		okTests.clear();
+		_errors = null;
+		errors = null;
+		okTests = null;
+	}
 
 }

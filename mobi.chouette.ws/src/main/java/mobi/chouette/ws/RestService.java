@@ -38,8 +38,8 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Constant;
 import mobi.chouette.model.iev.Job;
-import mobi.chouette.model.iev.Link;
 import mobi.chouette.model.iev.Job.STATUS;
+import mobi.chouette.model.iev.Link;
 import mobi.chouette.service.JobService;
 import mobi.chouette.service.JobServiceManager;
 import mobi.chouette.service.RequestExceptionCode;
@@ -56,7 +56,7 @@ import org.jboss.resteasy.plugins.providers.multipart.MultipartFormDataInput;
 @RequestScoped
 public class RestService implements Constant {
 
-   // voir swagger
+	// voir swagger
 
 	private static String api_version_key = "X-ChouetteIEV-Media-Type";
 	private static String api_version = "iev.v1.0; format=json";
@@ -84,13 +84,14 @@ public class RestService implements Constant {
 			inputStreamByName = readParts(input);
 
 			// Relayer le service au JobServiceManager
-			JobService jobService = jobServiceManager.create(referential, action, type, inputStreamByName);
-
-			// Produire la vue
 			ResponseBuilder builder = Response.accepted();
-			builder.location(URI.create(MessageFormat.format("{0}/{1}/scheduled_jobs/{2,number,#}", ROOT_PATH,
-					jobService.getReferential(), jobService.getId())));
+			{
+				JobService jobService = jobServiceManager.create(referential, action, type, inputStreamByName);
 
+				// Produire la vue
+				builder.location(URI.create(MessageFormat.format("{0}/{1}/scheduled_jobs/{2,number,#}", ROOT_PATH,
+						jobService.getReferential(), jobService.getId())));
+			}
 			return builder.build();
 		} catch (RequestServiceException e) {
 			log.info("RequestCode = " + e.getRequestCode() + ", Message = " + e.getMessage());
@@ -155,9 +156,9 @@ public class RestService implements Constant {
 			return Status.NOT_FOUND;
 		case SCHEDULED_JOB:
 			return Status.METHOD_NOT_ALLOWED;
-		case REFERENTIAL_BUSY :
+		case REFERENTIAL_BUSY:
 			return Status.CONFLICT;
-		case TOO_MANY_ACTIVE_JOBS :
+		case TOO_MANY_ACTIVE_JOBS:
 			return Status.SERVICE_UNAVAILABLE;
 		}
 		return Status.BAD_REQUEST;
@@ -204,27 +205,30 @@ public class RestService implements Constant {
 					+ filename + Color.NORMAL);
 
 			// Retrieve JobService
-			JobService jobService = jobServiceManager.download(referential, id, filename);
-
-			// Build response
-			File file = new File(Paths.get(jobService.getPathName(), filename).toString());
-			ResponseBuilder builder = Response.ok(file);
-			builder.header(HttpHeaders.CONTENT_DISPOSITION,
-					MessageFormat.format("attachment; filename=\"{0}\"", filename));
-
+			ResponseBuilder builder = null;
 			MediaType type = null;
-			if (FilenameUtils.getExtension(filename).toLowerCase().equals("json")) {
-				type = MediaType.APPLICATION_JSON_TYPE;
-				builder.header(api_version_key, api_version);
-			} else {
-				type = MediaType.APPLICATION_OCTET_STREAM_TYPE;
-			}
+			{
+				JobService jobService = jobServiceManager.download(referential, id, filename);
 
-			// cache control
-			if (jobService.getStatus().ordinal() >= Job.STATUS.TERMINATED.ordinal()) {
-				CacheControl cc = new CacheControl();
-				cc.setMaxAge(Integer.MAX_VALUE);
-				builder.cacheControl(cc);
+				// Build response
+				File file = new File(Paths.get(jobService.getPathName(), filename).toString());
+				builder = Response.ok(file);
+				builder.header(HttpHeaders.CONTENT_DISPOSITION,
+						MessageFormat.format("attachment; filename=\"{0}\"", filename));
+
+				if (FilenameUtils.getExtension(filename).toLowerCase().equals("json")) {
+					type = MediaType.APPLICATION_JSON_TYPE;
+					builder.header(api_version_key, api_version);
+				} else {
+					type = MediaType.APPLICATION_OCTET_STREAM_TYPE;
+				}
+
+				// cache control
+				if (jobService.getStatus().ordinal() >= Job.STATUS.TERMINATED.ordinal()) {
+					CacheControl cc = new CacheControl();
+					cc.setMaxAge(Integer.MAX_VALUE);
+					builder.cacheControl(cc);
+				}
 			}
 
 			Response result = builder.type(type).build();
@@ -254,15 +258,17 @@ public class RestService implements Constant {
 					+ version + Color.NORMAL);
 
 			// create jobs listing
-			List<JobService> jobServices = jobServiceManager.jobs(referential, action, version);
+			List<JobInfo> result = new ArrayList<>();
 
 			// re factor Parameters dependencies
-			List<JobInfo> result = new ArrayList<>(jobServices.size());
-			for (JobService jobService : jobServices) {
-				JobInfo jobInfo = new JobInfo(jobService, true, uriInfo);
-				result.add(jobInfo);
+			{
+				List<JobService> jobServices = jobServiceManager.jobs(referential, action, version);
+				for (JobService jobService : jobServices) {
+					JobInfo jobInfo = new JobInfo(jobService, true, uriInfo);
+					result.add(jobInfo);
+				}
+				jobServices.clear();
 			}
-
 			// cache control
 			ResponseBuilder builder = Response.ok(result);
 			builder.header(api_version_key, api_version);
@@ -292,23 +298,26 @@ public class RestService implements Constant {
 			log.info(Color.CYAN + "Call scheduledJob referential = " + referential + ", id = " + id + Color.NORMAL);
 
 			Response result = null;
-
-			JobService jobService = jobServiceManager.scheduledJob(referential, id);
-
-			// build response
 			ResponseBuilder builder = null;
-			if (jobService.getStatus().ordinal() <= STATUS.STARTED.ordinal()) {
-				JobInfo info = new JobInfo(jobService, true, uriInfo);
-				builder = Response.ok(info);
-			} else {
-				builder = Response.seeOther(URI.create(MessageFormat.format("/{0}/{1}/terminated_jobs/{2,number,#}",
-						ROOT_PATH, jobService.getReferential(), jobService.getId())));
-			}
 
-			// add links
-			for (Link link : jobService.getJob().getLinks()) {
-				URI uri = URI.create(uriInfo.getBaseUri() + link.getHref());
-				builder.link(URI.create(uri.toASCIIString()), link.getRel());
+			{
+				JobService jobService = jobServiceManager.scheduledJob(referential, id);
+
+				// build response
+				if (jobService.getStatus().ordinal() <= STATUS.STARTED.ordinal()) {
+					JobInfo info = new JobInfo(jobService, true, uriInfo);
+					builder = Response.ok(info);
+				} else {
+					builder = Response.seeOther(URI.create(MessageFormat.format(
+							"/{0}/{1}/terminated_jobs/{2,number,#}", ROOT_PATH, jobService.getReferential(),
+							jobService.getId())));
+				}
+
+				// add links
+				for (Link link : jobService.getJob().getLinks()) {
+					URI uri = URI.create(uriInfo.getBaseUri() + link.getHref());
+					builder.link(URI.create(uri.toASCIIString()), link.getRel());
+				}
 			}
 
 			builder.header(api_version_key, api_version);
@@ -365,20 +374,23 @@ public class RestService implements Constant {
 		try {
 			log.info(Color.CYAN + "Call terminatedJob referential = " + referential + ", id = " + id + Color.NORMAL);
 
-			JobService jobService = jobServiceManager.terminatedJob(referential, id);
+			ResponseBuilder builder = null;
+			{
+				JobService jobService = jobServiceManager.terminatedJob(referential, id);
 
-			JobInfo info = new JobInfo(jobService, true, uriInfo);
-			ResponseBuilder builder = Response.ok(info);
+				JobInfo info = new JobInfo(jobService, true, uriInfo);
+				builder = Response.ok(info);
 
-			// cache control
-			CacheControl cc = new CacheControl();
-			cc.setMaxAge(Integer.MAX_VALUE);
-			builder.cacheControl(cc);
+				// cache control
+				CacheControl cc = new CacheControl();
+				cc.setMaxAge(Integer.MAX_VALUE);
+				builder.cacheControl(cc);
 
-			// add links
-			for (Link link : jobService.getJob().getLinks()) {
-				URI uri = URI.create(uriInfo.getBaseUri() + link.getHref());
-				builder.link(URI.create(uri.toASCIIString()), link.getRel());
+				// add links
+				for (Link link : jobService.getJob().getLinks()) {
+					URI uri = URI.create(uriInfo.getBaseUri() + link.getHref());
+					builder.link(URI.create(uri.toASCIIString()), link.getRel());
+				}
 			}
 
 			builder.header(api_version_key, api_version);
@@ -408,12 +420,14 @@ public class RestService implements Constant {
 			// NullPointerException)
 			Response result = null;
 
-			jobServiceManager.remove(referential, id);
+			{
+				jobServiceManager.remove(referential, id);
 
-			// build response
-			ResponseBuilder builder = Response.ok("deleted");
-			builder.header(api_version_key, api_version);
-			result = builder.build();
+				// build response
+				ResponseBuilder builder = Response.ok("deleted");
+				builder.header(api_version_key, api_version);
+				result = builder.build();
+			}
 
 			return result;
 
