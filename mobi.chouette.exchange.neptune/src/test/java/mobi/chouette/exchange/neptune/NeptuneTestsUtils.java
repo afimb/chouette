@@ -17,6 +17,7 @@ import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
+import mobi.chouette.model.type.JourneyCategoryEnum;
 import mobi.chouette.model.util.Referential;
 
 import org.apache.commons.io.FileUtils;
@@ -138,6 +139,49 @@ public class NeptuneTestsUtils implements Constant, ReportConstant{
 
 	}
 	
+	public static void checkLineWithFrequencies(Context context)
+	{
+		
+		// checl line content before save (cause connection links could not be saved
+		Referential referential = (Referential) context.get(REFERENTIAL);
+		Assert.assertNotNull(referential, "referential");
+		Assert.assertEquals(referential.getLines().size(), 1, "lines size");
+		Line line = referential.getLines().get("NINOXE:Line:15574334");
+		Assert.assertNotNull(line, "line");
+
+		// comptage des objets :
+		Assert.assertNotNull(line.getNetwork(), "line must have a network");
+		Assert.assertNotNull(line.getGroupOfLines(), "line must have groupOfLines");
+		Assert.assertEquals(line.getGroupOfLines().size(), 1, "line must have 1 groupOfLine");
+		Assert.assertNotNull(line.getCompany(), "line must have a company");
+		Assert.assertNotNull(line.getRoutes(), "line must have routes");
+		Assert.assertEquals(line.getRoutes().size(), 1, "line must have 1 route");
+		Set<StopArea> bps = new HashSet<StopArea>();
+		Set<StopArea> comms = new HashSet<StopArea>();
+
+		for (Route route : line.getRoutes()) {
+			Assert.assertNotEquals(route.getJourneyPatterns().size(), 0 , "line routes must have journeyPattens");
+			for (JourneyPattern jp : route.getJourneyPatterns()) {
+				Assert.assertNotEquals(jp.getStopPoints().size(), 0, "line journeyPattens must have stoppoints");
+				for (StopPoint point : jp.getStopPoints()) {
+
+					Assert.assertNotNull(point.getContainedInStopArea(), "stoppoints must have StopAreas");
+					bps.add(point.getContainedInStopArea());
+
+					comms.add(point.getContainedInStopArea().getParent());
+				}
+				Assert.assertNotEquals(jp.getVehicleJourneys().size(), 0," journeyPattern should have VehicleJourneys");
+                for (VehicleJourney vj : jp.getVehicleJourneys()) {
+                	Assert.assertNotEquals(vj.getTimetables().size(), 0," vehicleJourney should have timetables");
+                	Assert.assertEquals(vj.getVehicleJourneyAtStops().size(), jp.getStopPoints().size()," vehicleJourney should have correct vehicleJourneyAtStop count");
+				}
+			}
+		}
+		Assert.assertEquals(bps.size(), 36, "line must have 36 boarding positions");
+		Assert.assertEquals(comms.size(), 1, "line must have 1 commercial stop point");
+
+	}
+	
 	public static void checkMinimalLine(Line line)
 	{
 		
@@ -162,11 +206,14 @@ public class NeptuneTestsUtils implements Constant, ReportConstant{
                 for (VehicleJourney vj : jp.getVehicleJourneys()) {
                 	Assert.assertNotEquals(vj.getTimetables().size(), 0," vehicleJourney should have timetables");
                 	Assert.assertEquals(vj.getVehicleJourneyAtStops().size(), jp.getStopPoints().size()," vehicleJourney should have correct vehicleJourneyAtStop count");
+                	if ("ratp:VehicleJourney:514572940997334".equals(vj.getObjectId())) {
+                		Assert.assertEquals(vj.getJourneyCategory(), JourneyCategoryEnum.Frequency, " vehicleJourney category should be frequency");
+                		Assert.assertEquals(vj.getJourneyFrequencies().size(), 1, " only one journeyFrequency");
+                	}
 				}
 			}
 		}
 
 	}
-
 	
 }
