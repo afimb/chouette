@@ -74,7 +74,7 @@ public class VehicleJourneyAtStop extends NeptuneObject {
 	 */
 	@Getter
 	@Setter
-	@Enumerated(EnumType.STRING)
+//	@Enumerated(EnumType.STRING)
 	@Transient
 //	@Column(name = "boarding_alighting_possibility")
 	private BoardingAlightingPossibilityEnum boardingAlightingPossibility;
