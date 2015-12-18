@@ -33,6 +33,7 @@ import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.NeptuneLocalizedObject;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.type.LongLatTypeEnum;
+import mobi.chouette.model.util.NamingUtil;
 
 import org.apache.log4j.Logger;
 import org.codehaus.jettison.json.JSONArray;
@@ -600,7 +601,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 		Location loc = data.getFileLocations().get(object.getObjectId());
 		if (loc == null) {
 			return new Location(null, object);
-		} else if (loc.getName() == null) {
+		} else if (NamingUtil.isEmpty(loc.getName())) {
 			loc.setName(Location.buildName(object));
 		}
 		return loc;

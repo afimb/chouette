@@ -8,7 +8,7 @@
    <datasource jndi-name="java:jboss/datasources/chouette"
       pool-name="chouette" enabled="true" use-java-context="true">
       <connection-url>jdbc:postgresql://localhost:5432/chouette_test</connection-url>
-      <driver name="postgres" module="org.postgres">postgresql-9.3-1103-jdbc41.jar</driver>
+      <driver>postgresql-9.3-1103-jdbc41.jar</driver>
       <security>
          <user-name>chouette</user-name>
          <password>chouette</password>         
@@ -23,7 +23,7 @@
    <datasource jndi-name="java:jboss/datasources/iev"
       pool-name="chouette" enabled="true" use-java-context="true">
       <connection-url>jdbc:postgresql://localhost:5432/chouette_test</connection-url>
-      <driver name="postgres" module="org.postgres">postgresql-9.3-1103-jdbc41.jar</driver>
+      <driver>postgresql-9.3-1103-jdbc41.jar</driver>
       <security>
          <user-name>chouette</user-name>
          <password>chouette</password>         
