@@ -77,8 +77,6 @@ public class ChouettePTNetworkProducer implements Constant {
 	private static GroupOfLineProducer groupOfLineProducer = new GroupOfLineProducer();
 	private static AccessPointProducer accessPointProducer = new AccessPointProducer();
 	private static AccessLinkProducer accessLinkProducer = new AccessLinkProducer();
-	//	private static FacilityProducer facilityProducer = new FacilityProducer();
-	//	private static TimeSlotProducer timeSlotProducer = new TimeSlotProducer();
 
 	public void produce(Context context) throws Exception
 	{
@@ -97,7 +95,8 @@ public class ChouettePTNetworkProducer implements Constant {
 		Metadata metadata = (Metadata) context.get(METADATA); 
 
 		ChouettePTNetworkType rootObject = AbstractJaxbNeptuneProducer.tridentFactory.createChouettePTNetworkType();
-		rootObject.setPTNetwork(networkProducer.produce(collection.getLine().getNetwork(),addExtension));
+        if (collection.getLine().getNetwork() != null)
+		   rootObject.setPTNetwork(networkProducer.produce(collection.getLine().getNetwork(),addExtension));
 		for (GroupOfLine group : collection.getGroupOfLines())
 		{
 			GroupOfLineType jaxbObj = groupOfLineProducer.produce(group,addExtension);
