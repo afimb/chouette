@@ -20,10 +20,6 @@ import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 
-import org.codehaus.jettison.json.JSONArray;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
-
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Constant;
@@ -32,6 +28,10 @@ import mobi.chouette.model.iev.Job;
 import mobi.chouette.service.JobService;
 import mobi.chouette.service.JobServiceManager;
 
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
 @Path("/admin")
 @Log4j
 @RequestScoped
@@ -39,7 +39,7 @@ public class RestAdmin implements Constant {
 
 	private static String api_version_key = "X-ChouetteIEV-Media-Type";
 	private static String api_version = "iev_admin.v1.0; format=txt";
-	
+
 	private static String GLOBAL_KEY = "Global";
 	private static String REFERENTIAL_KEY = "Referentials";
 
@@ -88,34 +88,37 @@ public class RestAdmin implements Constant {
 
 		try {
 			// create jobs listing
-			List<JobService> jobServices = jobServiceManager.activeJobs();
-
-			// re factor Parameters dependencies
 			JobStat globalStat = new JobStat(GLOBAL_KEY);
 			Map<String, JobStat> byReferential = new HashMap<>();
+			{
+				List<JobService> jobServices = jobServiceManager.activeJobs();
 
-			globalStat.jobCount = jobServices.size();
-			for (JobService jobService : jobServices) {
-				String referential = jobService.getReferential();
-				JobStat refStat = byReferential.get(referential);
-				if (refStat == null) {
-					refStat = new JobStat(referential);
-					byReferential.put(referential, refStat);
+				// re factor Parameters dependencies
+
+				globalStat.jobCount = jobServices.size();
+				for (JobService jobService : jobServices) {
+					String referential = jobService.getReferential();
+					JobStat refStat = byReferential.get(referential);
+					if (refStat == null) {
+						refStat = new JobStat(referential);
+						byReferential.put(referential, refStat);
+					}
+					refStat.jobCount++;
+					if (jobService.getStatus().equals(Job.STATUS.STARTED)) {
+						refStat.startedJobCount++;
+						globalStat.startedJobCount++;
+					} else {
+						refStat.scheduledJobCount++;
+						globalStat.scheduledJobCount++;
+					}
 				}
-				refStat.jobCount++;
-				if (jobService.getStatus().equals(Job.STATUS.STARTED)) {
-					refStat.startedJobCount++;
-					globalStat.startedJobCount++;
-				} else {
-					refStat.scheduledJobCount++;
-					globalStat.scheduledJobCount++;
-				}
+				jobServices.clear();
 			}
 
 			ResponseBuilder builder = null;
 			if (format.equals(".json")) {
 				JSONObject resjson = new JSONObject();
-				resjson.put(GLOBAL_KEY,globalStat.toJson());
+				resjson.put(GLOBAL_KEY, globalStat.toJson());
 				JSONArray resrefs = new JSONArray();
 				resjson.put(REFERENTIAL_KEY, resrefs);
 				for (Entry<String, JobStat> entry : byReferential.entrySet()) {

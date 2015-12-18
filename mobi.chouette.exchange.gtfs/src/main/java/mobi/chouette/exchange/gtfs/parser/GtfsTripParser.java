@@ -482,6 +482,8 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			}
 
 		}
+		// dispose collections
+		journeyPatternByStopSequence.clear();
 	}
 
 	private JourneyPattern createJourneyPattern(Referential referential, GtfsImportParameters configuration,

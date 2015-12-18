@@ -120,6 +120,7 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 	
 	@Override
 	public void dispose() {
+		super.dispose();
 		try {
 			_reader.dispose();
 			_channel1.close();

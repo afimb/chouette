@@ -115,20 +115,19 @@ public class Referential implements java.io.Serializable {
 				area.getContainedStopPoints().clear();
 			}
 		}
-		lines.clear();
-		routes.clear();
-		stopPoints.clear();
-		journeyPatterns.clear();
-		vehicleJourneys.clear();
 		accessLinks.clear();
 		accessPoints.clear();
-		ptNetworks.clear();
 		companies.clear();
 		connectionLinks.clear();
-		stopAreas.clear();
 		groupOfLines.clear();
+		journeyPatterns.clear();
+		lines.clear();
+		ptNetworks.clear();
+		routes.clear();
+		stopAreas.clear();
+		stopPoints.clear();
 		timetables.clear();
-
+		vehicleJourneys.clear();
 	}
 
 	@Getter
@@ -162,5 +161,18 @@ public class Referential implements java.io.Serializable {
 	@Getter
 	@Setter
 	private Map<String, Timetable> timetables = new HashMap<String, Timetable>();
+
+
+	public void dispose() {
+		sharedAccessLinks.clear();
+		sharedAccessPoints.clear();
+		sharedCompanies.clear();
+		sharedConnectionLinks.clear();
+		sharedGroupOfLines.clear();
+		sharedLines.clear();
+		sharedPTNetworks.clear();
+		sharedStopAreas.clear();
+		sharedTimetables.clear();
+	}
 
 }

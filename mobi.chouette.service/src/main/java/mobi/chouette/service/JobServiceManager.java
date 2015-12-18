@@ -28,7 +28,6 @@ import javax.ejb.TransactionAttributeType;
 import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.ws.rs.core.MediaType;
 
-import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.PropertyNames;
@@ -179,20 +178,26 @@ public class JobServiceManager {
 		if (referentials.contains(referential))
 			return;
 
+		boolean result = schemaManager.validateReferential(referential);
+		if (!result) {
+		throw new RequestServiceException(RequestExceptionCode.UNKNOWN_REFERENTIAL, "referential");
+	}
 		// launch a thread to separate datasources transactions
-		SchemaValidatorThread s = new SchemaValidatorThread(referential);
-		Thread t = new Thread(s);
-		t.start();
-		try {
-			t.join();
-		} catch (InterruptedException e) {
-		}
-		if (!s.isResult()) {
-			throw new RequestServiceException(RequestExceptionCode.UNKNOWN_REFERENTIAL, "referential");
-		}
+//		SchemaValidatorThread s = new SchemaValidatorThread(referential);
+//		Thread t = new Thread(s);
+//		t.start();
+//		try {
+//			t.join();
+//		} catch (InterruptedException e) {
+//		}
+//		if (!s.isResult()) {
+//			throw new RequestServiceException(RequestExceptionCode.UNKNOWN_REFERENTIAL, "referential");
+//		}
+		
 		referentials.add(referential);
 	}
 
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public JobService download(String referential, Long id, String filename) throws ServiceException {
 		JobService jobService = getJobService(referential, id, true);
 
@@ -362,11 +367,13 @@ public class JobServiceManager {
 		return jobServices;
 	}
 
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public JobService scheduledJob(String referential, Long id) throws ServiceException {
 		validateReferential(referential);
 		return getJobService(referential, id, true);
 	}
 
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public JobService terminatedJob(String referential, Long id) throws ServiceException {
 		validateReferential(referential);
 		JobService jobService = getJobService(referential, id, true);
@@ -401,6 +408,8 @@ public class JobServiceManager {
 		throw new RequestServiceException(RequestExceptionCode.UNKNOWN_JOB, " id = " + id);
 	}
 
+	
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public List<JobService> jobs(String referential, String action, final Long version) throws ServiceException {
 		validateReferential(referential);
 
@@ -430,30 +439,30 @@ public class JobServiceManager {
 		return jobServices;
 	}
 
-	private class SchemaValidatorThread implements Runnable {
-		private String referential;
-		@Getter
-		private boolean result = false;
-
-		SchemaValidatorThread(String referential) {
-			this.referential = referential;
-		}
-
-		public void run() {
-			try {
-				result = schemaManager.validateReferential(referential);
-			} catch (Exception e) {
-				log.error(e);
-			}
-		}
-
-	}
+//	private class SchemaValidatorThread implements Runnable {
+//		private String referential;
+//		@Getter
+//		private boolean result = false;
+//
+//		SchemaValidatorThread(String referential) {
+//			this.referential = referential;
+//		}
+//
+//		public void run() {
+//			try {
+//				result = schemaManager.validateReferential(referential);
+//			} catch (Exception e) {
+//				log.error(e);
+//			}
+//		}
+//
+//	}
 
 	// administration operation
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public List<JobService> activeJobs() {
 
 		List<Job> jobs = jobDAO.findByStatus(Job.STATUS.STARTED);
-		jobs = jobDAO.findByStatus(Job.STATUS.STARTED);
 		jobs.addAll(jobDAO.findByStatus(Job.STATUS.SCHEDULED));
 
 		List<JobService> jobServices = new ArrayList<>(jobs.size());

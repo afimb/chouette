@@ -28,6 +28,10 @@ public abstract class AbstractDisposeImportCommand implements Command, Constant 
 			Referential cache = (Referential) context.get(CACHE);
 			if (cache != null)
 				cache.clear(false);
+			Referential referential = (Referential) context.get(REFERENTIAL);
+			if (referential != null)
+				referential.dispose();
+			
 			result = SUCCESS;
 			JobData jobData = (JobData) context.get(JOB_DATA);
 			String path = jobData.getPathName();
