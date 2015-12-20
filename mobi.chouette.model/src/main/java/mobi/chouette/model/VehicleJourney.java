@@ -22,7 +22,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import mobi.chouette.model.type.JourneyCategoryEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
 
 import org.apache.commons.lang.StringUtils;
@@ -312,16 +311,4 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 	@JoinColumn(name = "vehicle_journey_id", updatable = false)
 	private List<VehicleJourneyAtStop> vehicleJourneyAtStops = new ArrayList<VehicleJourneyAtStop>(0);
 	
-	/**
-	 * To distinguish the timesheets journies and the frequencies ones. Defaults to Timesheet.
-	 * 
-	 * @param journeyCategory
-	 *         The new vehicle journey category
-	 * @return The actual vehicle journey category
-	 */
-	@Getter
-	@Setter
-	@Enumerated(EnumType.ORDINAL)
-	@Column(name = "journey_category")
-	private JourneyCategoryEnum journeyCategory = JourneyCategoryEnum.Timesheet;
 }
