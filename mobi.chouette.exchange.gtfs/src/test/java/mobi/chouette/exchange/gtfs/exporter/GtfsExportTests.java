@@ -2,15 +2,22 @@ package mobi.chouette.exchange.gtfs.exporter;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Locale;
 
+import javax.ejb.EJB;
+import javax.inject.Inject;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.UserTransaction;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.dao.LineDAO;
 import mobi.chouette.exchange.gtfs.Constant;
 import mobi.chouette.exchange.gtfs.GtfsTestsUtils;
 import mobi.chouette.exchange.gtfs.JobDataTest;
@@ -23,6 +30,7 @@ import mobi.chouette.exchange.report.LineInfo.LINE_STATE;
 import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.exchange.validation.report.CheckPoint;
 import mobi.chouette.exchange.validation.report.ValidationReport;
+import mobi.chouette.model.Line;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
 import org.apache.commons.io.FileUtils;
@@ -215,6 +223,67 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 		
 		Assert.assertEquals(report.getLines().size(), 0, "line reported");
 
+
+   }
+
+   @EJB
+   protected LineDAO lineDAO;
+   
+   @PersistenceContext(unitName = "referential")
+   EntityManager em;
+
+   @Inject
+   UserTransaction utx;
+   
+   @Test(groups = { "export" }, description = "test not export GTFS Line than has no Company")
+   public void verifyNotExportLineWithNoCompany() throws Exception
+   {
+		// save data
+		importLines("test_neptune.zip",6,6);
+		// export data
+		Context context = initExportContext();
+
+		
+		utx.begin();
+		em.joinTransaction();
+		Line myLine = lineDAO.findByObjectId("CITURA:Line:01");
+		myLine.setCompany(null);
+		String myLineName = myLine.getName() + " (01)";
+		utx.commit();
+		
+		GtfsExportParameters configuration = (GtfsExportParameters) context.get(CONFIGURATION);
+		configuration.setAddMetadata(true);
+		configuration.setReferencesType("line");
+		configuration.setObjectIdPrefix("CITURA");
+		configuration.setTimeZone("Europe/Paris");
+		Command command = (Command) CommandFactory.create(initialContext,
+				GtfsExporterCommand.class.getName());
+
+		try {
+			command.execute(context);
+		} catch (Exception ex) {
+			log.error("test failed", ex);
+			throw ex;
+		}
+		
+		ActionReport report = (ActionReport) context.get(REPORT);
+		
+		Assert.assertEquals(report.getResult(), STATUS_OK, "result");
+		for (FileInfo info : report.getFiles()) {
+			Reporter.log(info.toString(),true);
+		}
+		Assert.assertEquals(report.getFiles().size(), 6, "file reported");
+		for (LineInfo info : report.getLines()) {
+			Reporter.log(info.toString(),true);
+		}
+		Assert.assertEquals(report.getLines().size(), 6, "line reported");
+		for (int i = 0; i < 6; i++) {
+			Reporter.log("report line :" + report.getLines().get(i).toString(), true);
+			if (myLineName.equals(report.getLines().get(i).getName()))
+				Assert.assertEquals(report.getLines().get(i).getStatus(), LINE_STATE.ERROR, "no company for this line");
+			else
+				Assert.assertEquals(report.getLines().get(i).getStatus(), LINE_STATE.OK, "line status");
+		}
 
    }
 
