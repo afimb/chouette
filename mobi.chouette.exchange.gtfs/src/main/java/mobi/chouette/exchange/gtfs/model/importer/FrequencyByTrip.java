@@ -5,7 +5,6 @@ import java.util.Map;
 
 import mobi.chouette.common.HTMLTagValidator;
 import mobi.chouette.exchange.gtfs.model.GtfsFrequency;
-import mobi.chouette.exchange.gtfs.model.importer.CalendarDateByService.FIELDS;
 
 public class FrequencyByTrip extends IndexImpl<GtfsFrequency> implements
 		GtfsConverter {

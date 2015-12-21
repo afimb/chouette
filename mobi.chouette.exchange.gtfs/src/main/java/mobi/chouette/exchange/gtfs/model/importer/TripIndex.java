@@ -5,7 +5,6 @@ import java.util.Map;
 
 import mobi.chouette.common.HTMLTagValidator;
 import mobi.chouette.exchange.gtfs.model.GtfsTrip;
-import mobi.chouette.exchange.gtfs.model.GtfsTrip.DirectionType;
 
 public abstract class TripIndex extends IndexImpl<GtfsTrip> implements GtfsConverter {
 

@@ -2,8 +2,6 @@ package mobi.chouette.exchange.gtfs.model.importer;
 
 import java.util.Set;
 
-import lombok.Setter;
-
 public interface Index<T> extends Iterable<T> {
 
 	void dispose();

@@ -5,9 +5,7 @@ import javax.ejb.Stateless;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.dao.TimebandDAO;
-import mobi.chouette.model.Company;
 import mobi.chouette.model.JourneyFrequency;
-import mobi.chouette.model.Route;
 import mobi.chouette.model.Timeband;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;

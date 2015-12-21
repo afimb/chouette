@@ -5,7 +5,6 @@ import java.util.Map;
 
 import mobi.chouette.common.HTMLTagValidator;
 import mobi.chouette.exchange.gtfs.model.GtfsCalendar;
-import mobi.chouette.exchange.gtfs.model.importer.AgencyById.FIELDS;
 
 public class CalendarByService extends IndexImpl<GtfsCalendar> implements GtfsConverter {
 

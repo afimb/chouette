@@ -2,7 +2,6 @@ package mobi.chouette.exchange.neptune.exporter.producer;
 
 import java.math.BigInteger;
 import java.sql.Time;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -10,7 +9,6 @@ import java.util.List;
 import mobi.chouette.common.TimeUtil;
 import mobi.chouette.exchange.neptune.JsonExtension;
 import mobi.chouette.model.Footnote;
-import mobi.chouette.model.JourneyFrequency;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
