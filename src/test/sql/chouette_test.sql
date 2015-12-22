@@ -20,6 +20,7 @@ SET default_tablespace = '';
 
 SET default_with_oids = false;
 
+CREATE SCHEMA IF NOT EXISTS shared_extensions;
 CREATE EXTENSION IF NOT EXISTS postgis SCHEMA shared_extensions;
 
 DROP SCHEMA IF EXISTS chouette_gui CASCADE;
