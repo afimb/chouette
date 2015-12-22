@@ -62,7 +62,7 @@
 		<class>mobi.chouette.model.CalendarDay</class>
 		<class>mobi.chouette.model.Company</class>
 		<class>mobi.chouette.model.ConnectionLink</class>
-      	<class>mobi.chouette.model.Footnote</class>
+      <class>mobi.chouette.model.Footnote</class>
 		<class>mobi.chouette.model.GroupOfLine</class>
 		<class>mobi.chouette.model.JourneyFrequency</class>
 		<class>mobi.chouette.model.JourneyPattern</class>
@@ -70,6 +70,7 @@
 		<class>mobi.chouette.model.Period</class>
 		<class>mobi.chouette.model.Network</class>
 		<class>mobi.chouette.model.Route</class>
+      <class>mobi.chouette.model.RouteSection</class>
 		<class>mobi.chouette.model.StopArea</class>
 		<class>mobi.chouette.model.StopPoint</class>
 		<class>mobi.chouette.model.Timeband</class>
@@ -94,7 +95,7 @@
 			<property name="hibernate.cache.use_second_level_cache"
 				value="true" />
 			<property name="hibernate.cache.use_query_cache" value="true" />
-         <property name="hibernate.dialect" value="org.hibernate.dialect.PostgreSQLDialect" />
+         <property name="hibernate.dialect" value="org.hibernate.spatial.dialect.postgis.PostgisDialect" />
 			<property name="javax.persistence.validation.mode" value="none" />
 		</properties>
 	</persistence-unit>

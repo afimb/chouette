@@ -20,6 +20,8 @@ SET default_tablespace = '';
 
 SET default_with_oids = false;
 
+CREATE EXTENSION IF NOT EXISTS postgis SCHEMA shared_extensions;
+
 DROP SCHEMA IF EXISTS chouette_gui CASCADE;
 
 CREATE SCHEMA chouette_gui ;
@@ -635,6 +637,26 @@ ALTER TABLE chouette_gui.pt_links_id_seq OWNER TO chouette;
 ALTER SEQUENCE pt_links_id_seq OWNED BY pt_links.id;
 
 
+CREATE TABLE route_sections
+(
+  id bigserial NOT NULL,
+  departure_id integer,
+  arrival_id integer,
+  objectid character varying(255) NOT NULL,
+  object_version integer,
+  creation_time timestamp without time zone,
+  creator_id character varying(255),
+  input_geometry shared_extensions.geometry(LineString,4326),
+  processed_geometry shared_extensions.geometry(LineString,4326),
+  distance double precision,
+  no_processing boolean,
+  CONSTRAINT route_sections_pkey PRIMARY KEY (id)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE chouette_gui.route_sections
+  OWNER TO chouette;
 
 --
 -- TOC entry 181 (class 1259 OID 480047)

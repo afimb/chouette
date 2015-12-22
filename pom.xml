@@ -10,7 +10,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.target>1.7</maven.compiler.target>
 		<maven.compiler.source>1.7</maven.compiler.source>
-		<version.wildfly>8.2.0.Final</version.wildfly>
+		<wildfly.version>8.2.0.Final</wildfly.version>
 		<version.wildfly.maven.plugin>1.0.2.Final</version.wildfly.maven.plugin>
 		<version.compiler.plugin>3.2</version.compiler.plugin>
 		<version.jaxb2.plugin>1.5</version.jaxb2.plugin>
@@ -20,6 +20,9 @@
 		<version.ear.plugin>2.9.1</version.ear.plugin>
 		<shrinkwrap.bom-version>2.1.1</shrinkwrap.bom-version>
 		<postgresql.version>9.3-1103-jdbc41</postgresql.version>
+		<postgis.version>2.1.7.2</postgis.version>
+		<hibernate-spatial.version>4.3</hibernate-spatial.version>
+		<jts.version>1.13</jts.version>
 		<arquillian-version>1.1.7.Final</arquillian-version>
 		<project.rootDir>${project.basedir}</project.rootDir>
 	</properties>
@@ -45,6 +48,11 @@
 			<id>osgeo</id>
 			<name>Open Source Geospatial Foundation Repository</name>
 			<url>http://download.osgeo.org/webdav/geotools/</url>
+		</repository>
+		<repository>
+			<id>hibernate-spatial</id>
+			<name>Hibernate Spatial Repository</name>
+			<url>http://www.hibernatespatial.org/repository/</url>
 		</repository>
 	</repositories>
 	<build>
@@ -117,7 +125,7 @@
 				<executions>
 					<execution>
 						<id>unpack</id>
-						<phase>process-test-classes</phase>
+						<phase>process-test-resources</phase>
 						<goals>
 							<goal>unpack</goal>
 						</goals>
@@ -128,7 +136,7 @@
 								<artifactItem>
 									<groupId>org.wildfly</groupId>
 									<artifactId>wildfly-dist</artifactId>
-									<version>${version.wildfly}</version>
+									<version>${wildfly.version}</version>
 									<type>zip</type>
 									<overWrite>false</overWrite>
 									<outputDirectory>${project.rootDir}/target</outputDirectory>
@@ -151,15 +159,46 @@
 									<artifactId>postgresql</artifactId>
 									<version>${postgresql.version}</version>
 									<overWrite>false</overWrite>
-									<outputDirectory>${project.rootDir}/target/wildfly-${version.wildfly}/modules/org/postgres/main</outputDirectory>
+									<outputDirectory>${project.rootDir}/target/wildfly-${wildfly.version}/modules/org/postgres/main</outputDirectory>
 								</artifactItem>
 								<artifactItem>
+									<groupId>net.postgis</groupId>
+									<artifactId>postgis-jdbc</artifactId>
+									<version>${postgis.version}</version>
+									<outputDirectory>
+										${project.rootDir}/target/wildfly-${wildfly.version}/modules/org/postgres/main
+									</outputDirectory>
+								</artifactItem>
+								<artifactItem>
+									<groupId>org.hibernate</groupId>
+									<artifactId>hibernate-spatial</artifactId>
+									<version>${hibernate-spatial.version}</version>
+									<outputDirectory>
+										${project.rootDir}/target/wildfly-${wildfly.version}/modules/system/layers/base/org/hibernate/main
+									</outputDirectory>
+								</artifactItem>
+								<artifactItem>
+									<groupId>com.vividsolutions</groupId>
+									<artifactId>jts</artifactId>
+									<version>${jts.version}</version>
+									<outputDirectory>
+										${project.rootDir}/target/wildfly-${wildfly.version}/modules/system/layers/base/org/hibernate/main
+									</outputDirectory>
+								</artifactItem>
+<!-- 								<artifactItem>
 									<groupId>org.postgresql</groupId>
 									<artifactId>postgresql</artifactId>
 									<version>${postgresql.version}</version>
 									<overWrite>false</overWrite>
-									<outputDirectory>${project.rootDir}/target/wildfly-${version.wildfly}/standalone/deployments</outputDirectory>
+									<outputDirectory>${project.rootDir}/target/wildfly-${wildfly.version}/standalone/deployments</outputDirectory>
 								</artifactItem>
+								<artifactItem>
+									<groupId>net.postgis</groupId>
+									<artifactId>postgis-jdbc</artifactId>
+									<version>${postgis.version}</version>
+									<overWrite>false</overWrite>
+									<outputDirectory>${project.rootDir}/target/wildfly-${wildfly.version}/standalone/deployments</outputDirectory>
+								</artifactItem> -->
 							</artifactItems>
 						</configuration>
 					</execution>
@@ -178,10 +217,11 @@
 						</goals>
 						<configuration>
 							<skip>${skipTests}</skip>
-							<outputDirectory>${project.rootDir}/target/wildfly-${version.wildfly}</outputDirectory>
+							<outputDirectory>${project.rootDir}/target/wildfly-${wildfly.version}</outputDirectory>
+							<overwrite>true</overwrite>
 							<resources>
 								<resource>
-									<directory>src/test/resources-wildfly-configuration</directory>
+									<directory>${project.rootDir}/src/test/resources-wildfly-configuration</directory>
 									<filtering>true</filtering>
 								</resource>
 							</resources>
@@ -200,8 +240,8 @@
 					<systemPropertyVariables>
 						<java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
 						<!-- the maven dependency plugin will have already downloaded the server on /target -->
-						<jboss.home>${project.rootDir}/target/wildfly-${version.wildfly}</jboss.home>
-						<module.path>${project.rootDir}/target/wildfly-${version.wildfly}/modules</module.path>
+						<jboss.home>${project.rootDir}/target/wildfly-${wildfly.version}</jboss.home>
+						<module.path>${project.rootDir}/target/wildfly-${wildfly.version}/modules</module.path>
 					</systemPropertyVariables>
 					<redirectTestOutputToFile>false</redirectTestOutputToFile>
 				</configuration>
@@ -500,7 +540,7 @@
 			<dependency>
 				<groupId>org.wildfly</groupId>
 				<artifactId>wildfly-spec-api</artifactId>
-				<version>${version.wildfly}</version>
+				<version>${wildfly.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -540,17 +580,28 @@
 			<dependency>
 				<groupId>org.wildfly</groupId>
 				<artifactId>wildfly-arquillian-container-embedded</artifactId>
-				<version>${version.wildfly}</version>
+				<version>${wildfly.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.wildfly</groupId>
 				<artifactId>wildfly-embedded</artifactId>
-				<version>${version.wildfly}</version>
+				<version>${wildfly.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.postgresql</groupId>
 				<artifactId>postgresql</artifactId>
 				<version>${postgresql.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>net.postgis</groupId>
+				<artifactId>postgis-jdbc</artifactId>
+				<version>${postgis.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-spatial</artifactId>
+				<version>${hibernate-spatial.version}</version>
+				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>com.tobedevoured</groupId>
@@ -666,79 +717,9 @@
 				<artifactId>gt-epsg-hsql</artifactId>
 				<version>10.5</version>
 			</dependency>
-		<dependency>
-		    <groupId>mobi.chouette</groupId>
-		    <artifactId>mobi.chouette.common</artifactId>
-		    <version>${project.version}</version>
-		</dependency>
-      <dependency>
-          <groupId>mobi.chouette</groupId>
-          <artifactId>mobi.chouette.persistence.hibernate</artifactId>
-          <version>${project.version}</version>
-      </dependency>
-      <dependency>
-          <groupId>mobi.chouette</groupId>
-          <artifactId>mobi.chouette.model</artifactId>
-          <version>${project.version}</version>
-      </dependency>
-      <dependency>
-          <groupId>mobi.chouette</groupId>
-          <artifactId>mobi.chouette.model.iev</artifactId>
-          <version>${project.version}</version>
-      </dependency>
-      <dependency>
-          <groupId>mobi.chouette</groupId>
-          <artifactId>mobi.chouette.dao</artifactId>
-          <version>${project.version}</version>
-      </dependency>
-      <dependency>
-          <groupId>mobi.chouette</groupId>
-          <artifactId>mobi.chouette.exchange</artifactId>
-          <version>${project.version}</version>
-      </dependency>
-      <dependency>
-          <groupId>mobi.chouette</groupId>
-          <artifactId>mobi.chouette.exchange.neptune</artifactId>
-          <version>${project.version}</version>
-      </dependency>
-      <dependency>
-          <groupId>mobi.chouette</groupId>
-          <artifactId>mobi.chouette.exchange.netex</artifactId>
-          <version>${project.version}</version>
-      </dependency>
-      <dependency>
-          <groupId>mobi.chouette</groupId>
-          <artifactId>mobi.chouette.exchange.kml</artifactId>
-          <version>${project.version}</version>
-      </dependency>
-      <dependency>
-          <groupId>mobi.chouette</groupId>
-          <artifactId>mobi.chouette.exchange.hub</artifactId>
-          <version>${project.version}</version>
-      </dependency>
-      <dependency>
-          <groupId>mobi.chouette</groupId>
-          <artifactId>mobi.chouette.exchange.gtfs</artifactId>
-          <version>${project.version}</version>
-      </dependency>
-      <dependency>
-          <groupId>mobi.chouette</groupId>
-          <artifactId>mobi.chouette.exchange.validator</artifactId>
-          <version>${project.version}</version>
-      </dependency>
-      <dependency>
-          <groupId>mobi.chouette</groupId>
-          <artifactId>mobi.chouette.service</artifactId>
-          <version>${project.version}</version>
-      </dependency>
-      <dependency>
-          <groupId>mobi.chouette</groupId>
-          <artifactId>mobi.chouette.ws</artifactId>
-          <version>${project.version}</version>
-      </dependency>
-      
-      </dependencies>
-		
+
+		</dependencies>
+
 	</dependencyManagement>
 	<profiles>
 		<profile>
@@ -796,24 +777,24 @@
 				<skipInitDb>true</skipInitDb>
 			</properties>
 		</profile>
-      <profile>
-         <id>doclint-java8-disable</id>
-         <activation>
-            <jdk>[1.8,)</jdk>
-         </activation>
+		<profile>
+			<id>doclint-java8-disable</id>
+			<activation>
+				<jdk>[1.8,)</jdk>
+			</activation>
 
-         <build>
-            <plugins>
-               <plugin>
-                  <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-javadoc-plugin</artifactId>
-                  <configuration>
-                     <additionalparam>-Xdoclint:none</additionalparam>
-                  </configuration>
-               </plugin>
-            </plugins>
-         </build>
-      </profile>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<configuration>
+							<additionalparam>-Xdoclint:none</additionalparam>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 	</profiles>
 	<modules>
 		<module>mobi.chouette.common</module>

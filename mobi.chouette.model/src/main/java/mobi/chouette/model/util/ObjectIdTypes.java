@@ -49,6 +49,10 @@ public interface ObjectIdTypes {
 	   /**
 	    * default objectId type for route 
 	    */
+	   public static final String ROUTE_SECTION_KEY = "RouteSection";
+	   /**
+	    * default objectId type for route 
+	    */
 	   public static final String ROUTE_KEY = "Route";
 	   /**
 	    * default objectId type for stop areas 
