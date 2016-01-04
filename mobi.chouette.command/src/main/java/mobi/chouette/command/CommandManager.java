@@ -17,6 +17,7 @@ import mobi.chouette.exchange.neptune.exporter.NeptuneExportParameters;
 import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.netex.exporter.NetexExportParameters;
 import mobi.chouette.exchange.netex.importer.NetexImportParameters;
+import mobi.chouette.exchange.parameters.AbstractExportParameter;
 import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
@@ -65,10 +66,10 @@ public class CommandManager implements Constant {
 		this.args = args;
 		options.addOption("h", "help", false, "show help");
 		options.addOption("d", "dir", true, "working directory (default = ./work)");
-		options.addOption("i", "input", true, "input options (json)");
-		options.addOption("o", "output", true, "output options  (json)");
-		options.addOption("v", "validate", true, "validation options (json)");
-		options.addOption("f", "file", true, "output file ");
+		options.addOption("i", "input", true, "input options json file");
+		options.addOption("o", "output", true, "output options json file");
+		options.addOption("v", "validate", true, "validation options json file");
+		options.addOption("f", "file", true, "output file");
 	}
 
 	public void parseArgs() {
@@ -331,6 +332,9 @@ public class CommandManager implements Constant {
 				data.setType("netex");
 			} else if (configuration instanceof GtfsImportParameters) {
 				data.setType("gtfs");
+				// force import mode to lines
+				GtfsImportParameters importConfiguration = (GtfsImportParameters) configuration;
+				importConfiguration.setReferencesType("line");
 			} else {
 				System.err.println("invalid input options type" + inputParametersFilename);
 				return null;
@@ -367,6 +371,10 @@ public class CommandManager implements Constant {
 				System.err.println("invalid input options type" + outputParametersFilename);
 				return null;
 			}
+			// force export mode to lines
+			AbstractExportParameter exportConfiguration = (AbstractExportParameter) configuration;
+			exportConfiguration.setReferencesType("line");
+			
 			data.setConfiguration(configuration);
 			return data;
 
