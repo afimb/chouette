@@ -11,8 +11,10 @@ package mobi.chouette.exchange.gtfs.exporter;
 import java.io.IOException;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.naming.InitialContext;
 
@@ -23,6 +25,7 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.gtfs.Constant;
 import mobi.chouette.exchange.gtfs.exporter.producer.GtfsRouteProducer;
+import mobi.chouette.exchange.gtfs.exporter.producer.GtfsShapeProducer;
 import mobi.chouette.exchange.gtfs.exporter.producer.GtfsServiceProducer;
 import mobi.chouette.exchange.gtfs.exporter.producer.GtfsTripProducer;
 import mobi.chouette.exchange.gtfs.model.exporter.GtfsExporter;
@@ -32,6 +35,7 @@ import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.LineError;
 import mobi.chouette.exchange.report.LineInfo;
 import mobi.chouette.exchange.report.DataStats;
+import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
@@ -126,6 +130,7 @@ public class GtfsLineProducerCommand implements Command, Constant {
 		GtfsServiceProducer calendarProducer = new GtfsServiceProducer(exporter);
 		GtfsTripProducer tripProducer = new GtfsTripProducer(exporter);
 		GtfsRouteProducer routeProducer = new GtfsRouteProducer(exporter);
+		GtfsShapeProducer shapeProducer = new GtfsShapeProducer(exporter);
 
 		ActionReport report = (ActionReport) context.get(REPORT);
 		GtfsExportParameters configuration = (GtfsExportParameters) context.get(CONFIGURATION);
@@ -133,6 +138,7 @@ public class GtfsLineProducerCommand implements Command, Constant {
 		String sharedPrefix = prefix;
 		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
 		Map<String, List<Timetable>> timetables = collection.getTimetableMap();
+		Set<JourneyPattern> jps = new HashSet<JourneyPattern>();
 
 		boolean hasLine = false;
 		boolean hasVj = false;
@@ -143,12 +149,16 @@ public class GtfsLineProducerCommand implements Command, Constant {
 				if (tmKey != null) {
 					if (tripProducer.save(vj, tmKey, report, prefix, sharedPrefix)) {
 						hasVj = true;
+						jps.add(vj.getJourneyPattern());
 						if (!timetables.containsKey(tmKey)) {
 							timetables.put(tmKey, new ArrayList<Timetable>(vj.getTimetables()));
 						}
 					}
 				}
 			} // vj loop
+			for (JourneyPattern jp : jps) {
+				shapeProducer.save(jp, report, prefix);
+			}
 			if (hasVj) {
 				routeProducer.save(line, report, prefix);
 				hasLine = true;
