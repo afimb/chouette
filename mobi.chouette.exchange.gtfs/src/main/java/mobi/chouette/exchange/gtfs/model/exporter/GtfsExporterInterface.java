@@ -5,6 +5,7 @@ import mobi.chouette.exchange.gtfs.model.GtfsCalendar;
 import mobi.chouette.exchange.gtfs.model.GtfsCalendarDate;
 import mobi.chouette.exchange.gtfs.model.GtfsFrequency;
 import mobi.chouette.exchange.gtfs.model.GtfsRoute;
+import mobi.chouette.exchange.gtfs.model.GtfsShape;
 import mobi.chouette.exchange.gtfs.model.GtfsStop;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime;
 import mobi.chouette.exchange.gtfs.model.GtfsTransfer;
@@ -20,6 +21,8 @@ public interface GtfsExporterInterface {
 	Exporter<GtfsFrequency> getFrequencyExporter() throws Exception;
 
 	Exporter<GtfsRoute> getRouteExporter() throws Exception;
+
+	Exporter<GtfsShape> getShapeExporter() throws Exception;
 
 	Exporter<GtfsStop> getStopExporter() throws Exception;
 

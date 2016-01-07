@@ -12,6 +12,7 @@ import mobi.chouette.exchange.gtfs.model.GtfsCalendarDate;
 import mobi.chouette.exchange.gtfs.model.GtfsFrequency;
 import mobi.chouette.exchange.gtfs.model.GtfsObject;
 import mobi.chouette.exchange.gtfs.model.GtfsRoute;
+import mobi.chouette.exchange.gtfs.model.GtfsShape;
 import mobi.chouette.exchange.gtfs.model.GtfsStop;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime;
 import mobi.chouette.exchange.gtfs.model.GtfsTransfer;
@@ -24,7 +25,7 @@ import mobi.chouette.exchange.report.ActionReport;
 @Log4j
 public class GtfsExporter implements GtfsExporterInterface {
 	public static enum EXPORTER {
-		AGENCY, CALENDAR, CALENDAR_DATE, FREQUENCY, ROUTE, STOP, STOP_TIME, TRANSFER, TRIP;
+		AGENCY, CALENDAR, CALENDAR_DATE, FREQUENCY, ROUTE, STOP, STOP_TIME, TRANSFER, TRIP, SHAPE;
 	}
 
 	private String _path;
@@ -126,6 +127,12 @@ public class GtfsExporter implements GtfsExporterInterface {
 	public Exporter<GtfsTrip> getTripExporter() throws Exception {
 		return getExporter(EXPORTER.TRIP.name(), TripExporter.FILENAME,
 				TripExporter.class);
+	}
+
+	@SuppressWarnings("unchecked")
+	public Exporter<GtfsShape> getShapeExporter() throws Exception {
+		return getExporter(EXPORTER.SHAPE.name(), ShapeExporter.FILENAME,
+				ShapeExporter.class);
 	}
 
 }

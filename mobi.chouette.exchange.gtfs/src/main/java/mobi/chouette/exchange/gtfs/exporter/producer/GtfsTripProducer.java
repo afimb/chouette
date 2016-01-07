@@ -17,6 +17,7 @@ import java.util.List;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.gtfs.model.GtfsFrequency;
+import mobi.chouette.exchange.gtfs.model.GtfsShape;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime.DropOffType;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime.PickupType;
@@ -28,12 +29,14 @@ import mobi.chouette.model.JourneyFrequency;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
+import mobi.chouette.model.RouteSection;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
 import mobi.chouette.model.type.AlightingPossibilityEnum;
 import mobi.chouette.model.type.BoardingPossibilityEnum;
 import mobi.chouette.model.type.JourneyCategoryEnum;
+import mobi.chouette.model.type.SectionStatusEnum;
 
 /**
  * produce Trips and stop_times for vehicleJourney
@@ -48,6 +51,7 @@ public class GtfsTripProducer extends AbstractProducer {
 	GtfsTrip trip = new GtfsTrip();
 	GtfsStopTime time = new GtfsStopTime();
 	GtfsFrequency frequency = new GtfsFrequency();
+	GtfsShape shape = new GtfsShape();
 
 	public GtfsTripProducer(GtfsExporterInterface exporter) {
 		super(exporter);
@@ -79,6 +83,9 @@ public class GtfsTripProducer extends AbstractProducer {
 				return o1.getStopPoint().getPosition().compareTo(o2.getStopPoint().getPosition());
 			}
 		});
+		float distance = (float) 0.0;
+		List<RouteSection> routeSections = vj.getJourneyPattern().getRouteSections();
+		int index = 0;
 		for (VehicleJourneyAtStop vjas : lvjas) {
 			time.setStopId(toGtfsId(vjas.getStopPoint().getContainedInStopArea().getObjectId(), sharedPrefix));
 			Time arrival = vjas.getArrivalTime();
@@ -99,7 +106,18 @@ public class GtfsTripProducer extends AbstractProducer {
 
 			// time.setStopHeadsign();
 			addDropOffAndPickUpType(time, l, vj, vjas);
-			// time.setShapeDistTravelled()
+			
+			if (vj.getJourneyPattern().getSectionStatus() == SectionStatusEnum.Completed) {
+				Float shapeDistTraveled = new Float(distance);
+				time.setShapeDistTraveled(shapeDistTraveled);
+				while (index < routeSections.size() && routeSections.get(index) == null) {
+					index++;
+				}
+				if (index < routeSections.size()) {
+					distance += routeSections.get(index).getDistance().floatValue();
+				}
+				index++;
+			}
 
 			try {
 				getExporter().getStopTimeExporter().export(time);
@@ -192,6 +210,10 @@ public class GtfsTripProducer extends AbstractProducer {
 		trip.setTripId(tripId);
 
 		JourneyPattern jp = vj.getJourneyPattern();
+		if (jp.getSectionStatus() == SectionStatusEnum.Completed) {
+			String shapeId = toGtfsId(jp.getObjectId(), prefix);
+			trip.setShapeId(shapeId);
+		}
 		Route route = vj.getRoute();
 		Line line = route.getLine();
 		trip.setRouteId(toGtfsId(line.getObjectId(), prefix));
@@ -223,7 +245,6 @@ public class GtfsTripProducer extends AbstractProducer {
 		else
 			trip.setWheelchairAccessible(GtfsTrip.WheelchairAccessibleType.NoInformation);
 		// trip.setBlockId(...);
-		// trip.setShapeId(...);
 		// trip.setBikeAllowed();
 
 		// add StopTimes
