@@ -427,6 +427,38 @@ public class StopArea extends NeptuneLocalizedObject {
 	private List<AccessLink> accessLinks = new ArrayList<AccessLink>(0);
 
 	/**
+	 * routeSections where this stop is at start position<br/>
+	 * only for areaType == BoardingPosition or Quay
+	 * 
+	 * @param routeSectionDepartures
+	 *            New value
+	 * @return The actual value
+	 * @since 3.2.0
+	 */
+	@Getter
+	@Setter
+	@OneToMany(cascade = { CascadeType.PERSIST })
+	@JoinColumn(name = "departure_id") //, updatable = false)
+	private List<RouteSection> routeSectionDepartures = new ArrayList<RouteSection>(
+			0);
+
+	/**
+	 * routeSections where this stop is at end position<br/>
+	 * only for areaType == BoardingPosition or Quay
+	 * 
+	 * @param routeSectionArrivals
+	 *            New value
+	 * @return The actual value
+	 * @since 3.2.0
+	 */
+	@Getter
+	@Setter
+	@OneToMany(cascade = { CascadeType.PERSIST })
+	@JoinColumn(name = "arrival_id") //, updatable = false)
+	private List<RouteSection> routeSectionArrivals = new ArrayList<RouteSection>(
+			0);
+
+	/**
 	 * connection links where this stop is at start position<br/>
 	 * only for areaType != ITL
 	 * 

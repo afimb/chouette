@@ -28,7 +28,7 @@ import com.vividsolutions.jts.geom.LineString;
  * Neptune mapping : no <br/>
  * Gtfs mapping : used for shapes
  * 
- * @since 3.2
+ * @since 3.2.0
  * 
  */
 

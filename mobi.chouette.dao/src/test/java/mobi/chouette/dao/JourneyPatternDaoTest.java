@@ -26,9 +26,6 @@ import com.vividsolutions.jts.geom.PrecisionModel;
 @Log4j
 public class JourneyPatternDaoTest extends Arquillian {
 	@EJB
-	RouteSectionDAO routeSectionDao;
-
-	@EJB
 	JourneyPatternDAO journeyPatternDao;
 
 	@Deployment
@@ -57,11 +54,11 @@ public class JourneyPatternDaoTest extends Arquillian {
 			section.setObjectId("Test:" + RouteSection.ROUTE_SECTION_KEY + ":1");
 			GeometryFactory factory = new GeometryFactory(new PrecisionModel(10), 4326);
 			Coordinate[] coordinates = new Coordinate[2];
-			coordinates[0] = new Coordinate(48.8612525, 2.338767);
-			coordinates[1] = new Coordinate(48.866239, 2.343579);
+			coordinates[0] = new Coordinate(2.338767,48.8612525);
+			coordinates[1] = new Coordinate(2.343579,48.866239);
 			LineString inputGeometry = factory.createLineString(coordinates);
 			section.setInputGeometry(inputGeometry);
-			routeSectionDao.create(section);
+			// routeSectionDao.create(section);
 
 			JourneyPattern jp = new JourneyPattern();
 			jp.setObjectId("Test:" + JourneyPattern.JOURNEYPATTERN_KEY + ":1");

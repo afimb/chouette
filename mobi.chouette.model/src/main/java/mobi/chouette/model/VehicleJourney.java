@@ -313,11 +313,12 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 	private List<VehicleJourneyAtStop> vehicleJourneyAtStops = new ArrayList<VehicleJourneyAtStop>(0);
 	
 	/**
-	 * To distinguish the timesheets journies and the frequencies ones. Defaults to Timesheet.
+	 * To distinguish the timesheets journeys and the frequencies ones. Defaults to Timesheet.
 	 * 
 	 * @param journeyCategory
 	 *         The new vehicle journey category
 	 * @return The actual vehicle journey category
+	 * @since 3.2.0
 	 */
 	@Getter
 	@Setter
@@ -325,6 +326,14 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 	@Column(name = "journey_category")
 	private JourneyCategoryEnum journeyCategory = JourneyCategoryEnum.Timesheet;
 	
+	/**
+	 * For frequencies journeys, applicable periods
+	 * 
+	 * @param journeyFrequencies
+	 *         The new vehicle journey frequencies
+	 * @return The actual vehicle journey category
+	 * @since 3.2.0
+	 */
 	@Getter
 	@Setter
 	@OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST })

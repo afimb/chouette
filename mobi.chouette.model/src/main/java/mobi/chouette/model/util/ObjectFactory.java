@@ -9,6 +9,7 @@ import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;
 import mobi.chouette.model.Route;
+import mobi.chouette.model.RouteSection;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timeband;
@@ -219,5 +220,17 @@ public class ObjectFactory {
 			referential.getTimebands().put(objectId, timeband);
 		}
 		return timeband;
+	}
+
+
+	public static RouteSection getRouteSection(Referential referential, String objectId) {
+		RouteSection section = referential.getRouteSections().get(objectId);
+		if (section == null) {
+			section = new RouteSection();
+			section.setObjectId(objectId);
+			section.setDetached(true);
+			referential.getRouteSections().put(objectId, section);
+		}
+		return section;
 	}
 }

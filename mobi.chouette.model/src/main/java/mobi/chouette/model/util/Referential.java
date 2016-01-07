@@ -16,6 +16,7 @@ import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;
 import mobi.chouette.model.Route;
+import mobi.chouette.model.RouteSection;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timeband;
@@ -138,6 +139,7 @@ public class Referential implements java.io.Serializable {
 		timebands.clear();
 		timetables.clear();
 		vehicleJourneys.clear();
+		routeSections.clear();
 	}
 
 	@Getter
@@ -175,6 +177,10 @@ public class Referential implements java.io.Serializable {
 	@Getter
 	@Setter
 	private Map<String, Timeband> timebands = new HashMap<String, Timeband>();
+
+	@Getter
+	@Setter
+	private Map<String, RouteSection> routeSections = new HashMap<String, RouteSection>();
 
 	public void dispose() {
 		// clear(false);

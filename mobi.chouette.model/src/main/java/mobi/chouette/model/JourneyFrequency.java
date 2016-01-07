@@ -20,19 +20,20 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * Models the frequencies for journies in timesheet category.
+ * Models the frequencies for journeys in timesheet category.
  * 
  * @author zbouziane
- *
+ * @since 3.2.0
+ * 
  */
 @Entity
 @Table(name = "journey_frequencies")
 @NoArgsConstructor
-@ToString(callSuper = true, exclude={"vehicleJourney","timeband"})
+@ToString(callSuper = true, exclude = { "vehicleJourney", "timeband" })
 public class JourneyFrequency extends NeptuneObject {
 
 	private static final long serialVersionUID = 8361606377991750952L;
-	
+
 	@Getter
 	@Setter
 	@GenericGenerator(name = "journey_frequencies_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", parameters = {
@@ -42,8 +43,7 @@ public class JourneyFrequency extends NeptuneObject {
 	@Id
 	@Column(name = "id", nullable = false)
 	protected Long id;
-	
-	
+
 	/**
 	 * vehicle journey reference <br/>
 	 * 
@@ -70,17 +70,17 @@ public class JourneyFrequency extends NeptuneObject {
 			}
 		}
 	}
-	
+
 	@Getter
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "timeband_id")
 	private Timeband timeband;
-	
+
 	/**
 	 * set time band reference
 	 * 
 	 * @param timeband
-	 *     The new time band of this journey frequency
+	 *            The new time band of this journey frequency
 	 */
 	public void setTimeband(Timeband timeband) {
 		if (this.timeband != timeband) {
@@ -93,7 +93,7 @@ public class JourneyFrequency extends NeptuneObject {
 			}
 		}
 	}
-	
+
 	/**
 	 * The scheduled headway interval
 	 * 

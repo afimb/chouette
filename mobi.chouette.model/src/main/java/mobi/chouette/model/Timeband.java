@@ -25,7 +25,8 @@ import org.hibernate.annotations.Parameter;
  * Models the time band for journies in timesheet category.
  * 
  * @author zbouziane
- *
+ * @since 3.2.0
+ * 
  */
 @Entity
 @Table(name = "timebands")
@@ -44,7 +45,7 @@ public class Timeband extends NeptuneIdentifiedObject {
 	@Id
 	@Column(name = "id", nullable = false)
 	protected Long id;
-	
+
 	/**
 	 * Timeband name
 	 * 
@@ -64,7 +65,7 @@ public class Timeband extends NeptuneIdentifiedObject {
 	public void setName(String name) {
 		name = StringUtils.abbreviate(name, 255);
 	}
-	
+
 	/**
 	 * start time
 	 * 
@@ -76,7 +77,7 @@ public class Timeband extends NeptuneIdentifiedObject {
 	@Setter
 	@Column(name = "start_time", nullable = false)
 	private Time startTime;
-	
+
 	/**
 	 * end time
 	 * 
@@ -91,11 +92,12 @@ public class Timeband extends NeptuneIdentifiedObject {
 
 	@Getter
 	@Setter
-	@OneToMany(mappedBy = "timeband", cascade = { CascadeType.PERSIST})
-	//@JoinColumn(name = "timeband_id", updatable = false)
+	@OneToMany(mappedBy = "timeband", cascade = { CascadeType.PERSIST })
+	// @JoinColumn(name = "timeband_id", updatable = false)
 	private List<JourneyFrequency> journeyFrequencies = new ArrayList<JourneyFrequency>(0);
-//	@Getter
-//	@Setter
-//	@OneToMany(mappedBy = "route", cascade = { CascadeType.PERSIST })
-//	private List<JourneyPattern> journeyPatterns = new ArrayList<JourneyPattern>(0);
+	// @Getter
+	// @Setter
+	// @OneToMany(mappedBy = "route", cascade = { CascadeType.PERSIST })
+	// private List<JourneyPattern> journeyPatterns = new
+	// ArrayList<JourneyPattern>(0);
 }

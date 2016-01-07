@@ -25,7 +25,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import mobi.chouette.model.type.SectionStatusEnum;
-import mobi.chouette.model.type.TransportModeNameEnum;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
@@ -143,12 +142,13 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 	 * @param sectionStatus
 	 *            New value
 	 * @return The actual value
+	 * @since 3.2.0
 	 */
 	@Getter
 	@Setter
 	@Enumerated(EnumType.ORDINAL)
 	@Column(name = "section_status")
-	public SectionStatusEnum sectionStatus = SectionStatusEnum.Todo;
+	private SectionStatusEnum sectionStatus = SectionStatusEnum.Todo;
 	
 	/**
 	 * route reverse reference
@@ -234,10 +234,12 @@ public class JourneyPattern extends NeptuneIdentifiedObject {
 	 * @param routeSections
 	 *            New value
 	 * @return The actual value
+	 * @since 3.2.0
+	 * 
 	 */
 	@Getter
 	@Setter
-	@ManyToMany
+	@ManyToMany(cascade = { CascadeType.PERSIST }, fetch = FetchType.LAZY)
 	@OrderColumn(name="rank")
 	@JoinTable(name = "journey_pattern_sections", joinColumns = { @JoinColumn(name = "journey_pattern_id", nullable = false, updatable = false) }, inverseJoinColumns = { @JoinColumn(name = "route_section_id", nullable = false, updatable = false) })
 	private List<RouteSection> routeSections = new ArrayList<RouteSection>(0);
