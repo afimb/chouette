@@ -63,8 +63,8 @@ import com.vividsolutions.jts.geom.PrecisionModel;
 @Log4j
 public class GtfsTripParser implements Parser, Validator, Constant {
 
-	private static final Comparator<OrderedCoordinate> COORDINATE_SORTER = new OrderedCoordinateComparator(); 
-	
+	private static final Comparator<OrderedCoordinate> COORDINATE_SORTER = new OrderedCoordinateComparator();
+
 	@Getter
 	@Setter
 	private String gtfsRouteId;
@@ -477,7 +477,8 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			// JourneyPattern
 			String journeyKey = gtfsTrip.getRouteId() + "_" + gtfsTrip.getDirectionId().ordinal();
 			Iterable<GtfsShape> gtfsShapes = null;
-			if (!gtfsTrip.getShapeId().isEmpty() && importer.getShapeById().containsKey(gtfsTrip.getShapeId())) {
+			if (gtfsTrip.getShapeId() != null && !gtfsTrip.getShapeId().isEmpty()
+					&& importer.getShapeById().containsKey(gtfsTrip.getShapeId())) {
 				journeyKey += "_" + gtfsTrip.getShapeId();
 				gtfsShapes = importer.getShapeById().values(gtfsTrip.getShapeId());
 			}
@@ -487,10 +488,8 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			}
 			JourneyPattern journeyPattern = journeyPatternByStopSequence.get(journeyKey);
 			if (journeyPattern == null) {
-
 				journeyPattern = createJourneyPattern(referential, configuration, gtfsTrip, gtfsShapes, vehicleJourney,
 						journeyKey, journeyPatternByStopSequence);
-
 			}
 
 			vehicleJourney.setRoute(journeyPattern.getRoute());
@@ -611,18 +610,19 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			}
 			if (shapeId == null)
 				shapeId = gtfsShape.getShapeId();
-			OrderedCoordinate current = new OrderedCoordinate(gtfsShape.getShapePtLon().doubleValue(), gtfsShape.getShapePtLat()
-					.doubleValue(),gtfsShape.getShapePtSequence());
+			OrderedCoordinate current = new OrderedCoordinate(gtfsShape.getShapePtLon().doubleValue(), gtfsShape
+					.getShapePtLat().doubleValue(), gtfsShape.getShapePtSequence());
 			if (previous != null) {
 				// remove duplicate coords
 				if (Math.abs(current.x - previous.x) < narrow && Math.abs(current.y - previous.y) < narrow) {
-//					log.warn("line " + gtfsShape.getId() + " duplicate coordinates for shape "
-//							+ gtfsShape.getShapeId() + " at pt_sequence " + gtfsShape.getShapePtSequence());
+					// log.warn("line " + gtfsShape.getId() +
+					// " duplicate coordinates for shape "
+					// + gtfsShape.getShapeId() + " at pt_sequence " +
+					// gtfsShape.getShapePtSequence());
 					continue;
 				}
 				coordinates.add(current);
-			}
-			else {
+			} else {
 				coordinates.add(current);
 			}
 			previous = current;
@@ -631,9 +631,9 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			log.warn("no segments found");
 			return sections;
 		}
-		
+
 		previous = null;
-		Collections.sort(coordinates,COORDINATE_SORTER );
+		Collections.sort(coordinates, COORDINATE_SORTER);
 		for (OrderedCoordinate current : coordinates) {
 			if (previous != null) {
 				LineSegment segment = new LineSegment(previous, current);
@@ -858,10 +858,11 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 	class OrderedCoordinate extends Coordinate {
 		private static final long serialVersionUID = 1L;
 		public int order;
+
 		public OrderedCoordinate(double x, double y, Integer order) {
-			this.x=x;
-			this.y=y;
-			this.order=order.intValue();
+			this.x = x;
+			this.y = y;
+			this.order = order.intValue();
 		}
 	};
 

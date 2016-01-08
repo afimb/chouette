@@ -2,7 +2,7 @@
 
 Chouette is a java project that provides the following services on public transport (PT) data in different formats: Neptune, NeTEx, GTFS:
 
-* Import PT data files
+* Import PT data files from Neptune, NeTEx and GTFS formats
 * Export PT data to Neptune, NeTEx, GTFS and KML formats
 * Validate PT data
 
@@ -55,7 +55,7 @@ This code has been run and tested on [Travis](http://travis-ci.org/afimb/chouett
 * oraclejdk8
 * openjdk7
 * openjdk8
-* postgres 9.3
+* postgres 9.3 + postgis 2.1
 * wildfly 8.2.0
 
 ## External Deps
@@ -65,6 +65,7 @@ Chouette V3.x requires Postgresql V9.3 or above
 On Debian/Ubuntu/Kubuntu OS : 
 ```sh
 sudo apt-get install postgresql-9.3
+sudo apt-get install postgresql-9.3-postgis-2.1
 sudo apt-get install openjdk-7-jdk 
 ```
 
@@ -112,6 +113,7 @@ change property ```iev.started.jobs.max``` value to limit parallel jobs processi
 change property ```iev.copy.by.import.max``` value to limit parallel single line import by import job (default = 5)
 
 [Install and configure Wildfly](./doc/install/wildfly.md) 
+[from older chouette_iev version : update postgres / wildfly configuration](./doc/install/update.md) 
 
 deploy ear (wildfly must be running)
 ```sh
@@ -127,6 +129,7 @@ change property ```iev.directory``` value to desired directory
 change property ```iev.started.jobs.max``` value to limit parallel jobs processing (default = 5)
 
 [Install and configure Wildfly](./doc/install/wildfly.md) 
+[from older chouette_iev version : update postgres / wildfly configuration](./doc/install/update.md) 
 
 in wildfly installation repository :
 ```sh
