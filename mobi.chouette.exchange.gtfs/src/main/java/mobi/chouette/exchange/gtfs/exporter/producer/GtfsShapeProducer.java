@@ -11,6 +11,7 @@ package mobi.chouette.exchange.gtfs.exporter.producer;
 import java.math.BigDecimal;
 
 import com.vividsolutions.jts.geom.CoordinateSequence;
+import com.vividsolutions.jts.geom.LineString;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.gtfs.model.GtfsShape;
@@ -35,15 +36,24 @@ public class GtfsShapeProducer extends AbstractProducer
 
    public boolean save(JourneyPattern neptuneObject, ActionReport report, String prefix)
    {
+	   boolean result = true;
 	   if (neptuneObject.getSectionStatus() != SectionStatusEnum.Completed)
 		   return false;
 	   int startIndex = 0;
 	   for (RouteSection rs : neptuneObject.getRouteSections() ) {
 		   shape.setShapeId(toGtfsId(neptuneObject.getObjectId(), prefix));
 		   int shapePtSequence = 0;
-		   CoordinateSequence cs = rs.getInputGeometry().getCoordinateSequence();
+		   LineString ls = rs.getInputGeometry();
+		   if (ls == null)
+			   ls = rs.getProcessedGeometry();
+		   if (ls == null) {
+			   result = false;
+			   continue;
+		   }
+		   CoordinateSequence cs = ls.getCoordinateSequence();
 		   for (int i = startIndex; i < cs.size(); i++) {
-			   // ne pas reproduire l'intermédiaire
+			   // The end Point of a Section is the start Point of the next Section
+			   // Save the first Points of the first Section and then the other Points (not the first) for all Sections
 			   shape.setShapePtLat(new BigDecimal(cs.getX(i)));
 			   shape.setShapePtLon(new BigDecimal(cs.getY(i)));
 			   shape.setShapePtSequence(shapePtSequence++);
@@ -57,6 +67,6 @@ public class GtfsShapeProducer extends AbstractProducer
 		   }
 		   startIndex = 1;
 	   }
-	   return true;
+	   return result;
    }
 }
