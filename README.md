@@ -113,7 +113,9 @@ change property ```iev.started.jobs.max``` value to limit parallel jobs processi
 change property ```iev.copy.by.import.max``` value to limit parallel single line import by import job (default = 5)
 
 [Install and configure Wildfly](./doc/install/wildfly.md) 
-[from older chouette_iev version : update postgres / wildfly configuration](./doc/install/update.md) 
+
+.
+[For existing chouette_iev deployment : update postgres / wildfly configuration](./doc/install/update.md) 
 
 deploy ear (wildfly must be running)
 ```sh
@@ -129,7 +131,9 @@ change property ```iev.directory``` value to desired directory
 change property ```iev.started.jobs.max``` value to limit parallel jobs processing (default = 5)
 
 [Install and configure Wildfly](./doc/install/wildfly.md) 
-[from older chouette_iev version : update postgres / wildfly configuration](./doc/install/update.md) 
+
+.
+[For existing chouette_iev deployment : update postgres / wildfly configuration](./doc/install/update.md) 
 
 in wildfly installation repository :
 ```sh
