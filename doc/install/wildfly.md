@@ -81,7 +81,7 @@ change JVM heap size :
 for huge data, JVM heap size should be increased to 1024kb (defaults is 512kb)
 
 * stop wildfly
-* edit bin/standalone.configure
+* edit bin/standalone.conf
 * in JAVA_OPTS : change Xmx value
 * save and restart wildfly
 
