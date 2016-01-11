@@ -661,13 +661,15 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			}
 			// compose routeSection
 			Coordinate projection = null;
+			boolean lastSegmentIncluded = false;
 			double factor = segments.get(rank).projectionFactor(point);
-			if (factor <= 0.0) {
-				// projection before first point
+			if (factor <= 0.05) {
+				// projection near or before first point
 				projection = segments.get(rank).getCoordinate(0);
-			} else if (factor >= 1.0) {
-				// projection after last point
+			} else if (factor >= 0.95) {
+				// projection near or after last point
 				projection = segments.get(rank).getCoordinate(1);
+				lastSegmentIncluded = true;
 			} else {
 				// projection inside segment
 				projection = segments.get(rank).project(point);
@@ -679,6 +681,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 					coords.add(segments.get(i).getCoordinate(1));
 				}
 				coords.add(projection);
+				if (lastSegmentIncluded) rank ++;
 				String routeSectionId = journeyPattern.getObjectId().replace(JourneyPattern.JOURNEYPATTERN_KEY,
 						RouteSection.ROUTE_SECTION_KEY);
 				routeSectionId += "_" + stop.getPosition();
@@ -726,8 +729,11 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		String lineId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Line.LINE_KEY,
 				gtfsTrip.getRouteId(), log);
 		Line line = ObjectFactory.getLine(referential, lineId);
-		String routeId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Route.ROUTE_KEY,
-				gtfsTrip.getRouteId() + "_" + gtfsTrip.getDirectionId().ordinal() + line.getRoutes().size(), log);
+		String routeKey = gtfsTrip.getRouteId() + "_" + gtfsTrip.getDirectionId().ordinal() ;
+		if (gtfsTrip.getShapeId() != null && !gtfsTrip.getShapeId().isEmpty())
+			routeKey += "_" + gtfsTrip.getShapeId();
+		routeKey += "_" + line.getRoutes().size();
+		String routeId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Route.ROUTE_KEY,routeKey, log);
 
 		Route route = ObjectFactory.getRoute(referential, routeId);
 		route.setLine(line);
