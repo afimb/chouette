@@ -1,3 +1,8 @@
+# Version 3.2.0 (en cours de recette) 
+* Nouvelles fonctionnalités
+  * Gestion des courses en fréquences
+  * Gestion des tracés de missions
+
 # Version 3.1.1 (13/11/2015) 
 * Corrections
   * Validation GTFS n'accepte pas les lang en majuscule (Mantis 40461) 
