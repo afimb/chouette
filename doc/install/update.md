@@ -3,7 +3,14 @@
 ## from chouette 3.0.x or 3.1.x
 
 Postgres : 
-install postgis 2.1+ 
+install postgis 2.1+ with: `sudo apt-get install postgresql-9.3-postgis-2.1`
+
+Rails (chouette2) launch the command below:
+
+````
+bundle exec rake db:gis:setup
+bundle exec rake db:migrate
+```
 
 Wildfly :
 install and activate postgis and hibernate spatial modules : (commands are launched from wildfly deployment folder)
