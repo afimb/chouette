@@ -56,7 +56,7 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 
 			Index<GtfsRoute> parser = null;
 			try { // Read and check the header line of the file "routes.txt"
-				parser = importer.getRouteById(); 
+				parser = importer.getRouteById();
 			} catch (Exception ex ) {
 				if (ex instanceof GtfsException) {
 					validationReporter.reportError(context, (GtfsException)ex, GTFS_ROUTES_FILE);
@@ -205,26 +205,45 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 	private TransportModeNameEnum toTransportModeNameEnum(GtfsRoute.RouteType type)
 	{
 		switch (type) {
-		case Tram:
-			return TransportModeNameEnum.Tramway;
-		case Subway:
-			return TransportModeNameEnum.Metro;
-		case Rail:
-			return TransportModeNameEnum.Train;
-		case Bus:
-			return TransportModeNameEnum.Bus;
-		case Ferry:
-			return TransportModeNameEnum.Ferry;
-		case Cable:
-			return TransportModeNameEnum.Other;
-		case Gondola:
-			return TransportModeNameEnum.Other;
-		case Funicular:
-			return TransportModeNameEnum.Other;
-		default:
-			return TransportModeNameEnum.Other;
+			case Tram:
+				return TransportModeNameEnum.Tramway;
+			case Metro:
+				return TransportModeNameEnum.Metro;
+			case UrbanRailway:
+				return TransportModeNameEnum.Metro;
+			case Underground:
+				return TransportModeNameEnum.Metro;
+			case Railway:
+				return TransportModeNameEnum.Train;
+			case SuburbanRailway:
+				return TransportModeNameEnum.LocalTrain;
+			case Bus:
+				return TransportModeNameEnum.Bus;
+			case TrolleyBus:
+				return TransportModeNameEnum.Trolleybus;
+			case Coach:
+				return TransportModeNameEnum.Coach;
+			case Ferry:
+				return TransportModeNameEnum.Ferry;
+			case WaterTransport:
+				return TransportModeNameEnum.Waterborne;
+			case Air:
+				return TransportModeNameEnum.Air;
+			case Taxi:
+				return TransportModeNameEnum.Taxi;
+			case SelfDrive:
+				return TransportModeNameEnum.PrivateVehicle;
+			case Cable:
+				return TransportModeNameEnum.Other;
+			case Telecabin:
+				return TransportModeNameEnum.Other;
+			case Funicular:
+				return TransportModeNameEnum.Other;
+			case Miscellaneous:
+				return TransportModeNameEnum.Other;
+			default:
+				return TransportModeNameEnum.Other;
 		}
-		
 	}
 	
 	private String toHexa(Color color) {

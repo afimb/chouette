@@ -86,29 +86,52 @@ public class GtfsRouteProducer extends AbstractProducer
       {
          switch (neptuneObject.getTransportModeName())
          {
-         case Tramway:
-            route.setRouteType(GtfsRoute.RouteType.Tram);
-            break;
-         case Trolleybus:
-         case Coach:
-         case Bus:
-            route.setRouteType(GtfsRoute.RouteType.Bus);
-            break;
-         case Val:
-         case Metro:
-            route.setRouteType(GtfsRoute.RouteType.Subway);
-            break;
-         case RapidTransit:
-         case LocalTrain:
-         case LongDistanceTrain:
-         case Train:
-            route.setRouteType(GtfsRoute.RouteType.Rail);
-            break;
-         case Ferry:
-            route.setRouteType(GtfsRoute.RouteType.Ferry);
-            break;
-         default:
-            route.setRouteType(GtfsRoute.RouteType.Bus);
+            case PrivateVehicle:
+               route.setRouteType(GtfsRoute.RouteType.SelfDrive);
+               break;
+            case Waterborne:
+               route.setRouteType(GtfsRoute.RouteType.WaterTransport);
+               break;
+            case Taxi:
+               route.setRouteType(GtfsRoute.RouteType.Taxi);
+               break;
+            case Air:
+               route.setRouteType(GtfsRoute.RouteType.Air);
+               break;
+            case Tramway:
+               route.setRouteType(GtfsRoute.RouteType.Tram);
+               break;
+            case Trolleybus:
+               route.setRouteType(GtfsRoute.RouteType.TrolleyBus);
+               break;
+            case Coach:
+               route.setRouteType(GtfsRoute.RouteType.Coach);
+               break;
+            case Bus:
+               route.setRouteType(GtfsRoute.RouteType.Bus);
+               break;
+            case Val:
+            case Metro:
+               route.setRouteType(GtfsRoute.RouteType.Metro);
+               break;
+            case RapidTransit:
+               route.setRouteType(GtfsRoute.RouteType.Metro);
+               break;
+            case LocalTrain:
+               route.setRouteType(GtfsRoute.RouteType.SuburbanRailway);
+               break;
+            case LongDistanceTrain:
+            case Train:
+               route.setRouteType(GtfsRoute.RouteType.Railway);
+               break;
+            case Ferry:
+               route.setRouteType(GtfsRoute.RouteType.Ferry);
+               break;
+            case Other:
+               route.setRouteType(GtfsRoute.RouteType.Miscellaneous);
+               break;
+            default:
+               route.setRouteType(GtfsRoute.RouteType.Bus);
          }
       }
       else

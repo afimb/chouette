@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 
 import mobi.chouette.exchange.gtfs.model.GtfsCalendarDate.ExceptionType;
+import mobi.chouette.exchange.gtfs.model.GtfsRoute;
 import mobi.chouette.exchange.gtfs.model.GtfsRoute.RouteType;
 import mobi.chouette.exchange.gtfs.model.GtfsStop.LocationType;
 import mobi.chouette.exchange.gtfs.model.GtfsStop.WheelchairBoardingType;
@@ -321,13 +322,12 @@ public interface GtfsConverter {
 
 		@Override
 		protected RouteType convertFrom(String input) throws Exception {
-			int ordinal = Integer.parseInt(input, 10);
-			return RouteType.values()[ordinal];
+			return RouteType.fromAnyId(Integer.parseInt(input));
 		}
 
 		@Override
 		protected String convertTo(RouteType input) throws Exception {
-			return String.valueOf(input.ordinal());
+			return String.valueOf(input.getExtendedId());
 		}
 	};
 

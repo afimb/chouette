@@ -4,10 +4,12 @@ import java.awt.Color;
 import java.io.IOException;
 import java.util.Map;
 
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.HTMLTagValidator;
 import mobi.chouette.exchange.gtfs.model.GtfsAgency;
 import mobi.chouette.exchange.gtfs.model.GtfsRoute;
 
+@Log4j
 public class RouteById extends IndexImpl<GtfsRoute> implements GtfsConverter {
 
 	public static enum FIELDS {
@@ -146,7 +148,8 @@ public class RouteById extends IndexImpl<GtfsRoute> implements GtfsConverter {
 			try {
 				bean.setRouteType(ROUTETYPE_CONVERTER.from(context, FIELDS.route_type, value, true));
 			} catch(GtfsException e) {
-				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.route_type.name()), FIELDS.route_type.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
+				log.warn("Conversion failed", e);
+				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.route_type.name()), FIELDS.route_type.name(), GtfsException.ERROR.	INVALID_FORMAT, null, value));
 			}
 		}
 		
