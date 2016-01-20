@@ -95,18 +95,12 @@ public abstract class AbstractJaxbNeptuneProducer<T extends TridentObjectType, U
 	protected Duration toDuration(java.sql.Time time) {
 		if (time == null)
 			return null;
-		Calendar c = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+		Calendar c = Calendar.getInstance(TimeZone.getDefault());
 		c.setTimeInMillis(time.getTime());
 		long h = c.get(Calendar.HOUR_OF_DAY);
 		long m = c.get(Calendar.MINUTE);
 		long s = c.get(Calendar.SECOND);
 		long millis = (h * 3600 + m * 60 + s) * 1000;
-
-		// if (h == 0)
-		// h = DatatypeConstants.FIELD_UNDEFINED;
-		// Duration duration = typeFactory.newDurationDayTime(true,
-		// 0, h, c.get(Calendar.MINUTE),
-		// c.get(Calendar.SECOND));
 		Duration duration = typeFactory.newDuration(millis);
 		return duration;
 	}
