@@ -27,7 +27,9 @@ Step 2 : stop wildfly server
 Step 3 : download jars for postgres and hibernate modules in temporary folder (/tmp for following commands)
 
 [postgis version 2.1.7.2](http://mvnrepository.com/artifact/net.postgis/postgis-jdbc/2.1.7.2)
+
 [hibernate-spatial version 4.3](http://www.hibernatespatial.org/repository/org/hibernate/hibernate-spatial/4.3/)
+
 [JTS model version 1.13](http://mvnrepository.com/artifact/com.vividsolutions/jts/1.13)
 
 Step 4 : add hibernate spatial extension to hibernate module
