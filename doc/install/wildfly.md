@@ -8,9 +8,13 @@ download Wildfly 8.2.0.Final from [http://wildfly.org/downloads/](http://wildfly
 uncompress wildfly in installation directory (/opt for exemple)
 
 download in temporary folder (/tmp for following commands) : 
+
 [Postgresql jdbc driver version 9.3-1103](http://mvnrepository.com/artifact/org.postgresql/postgresql/9.3-1103-jdbc41)
+
 [postgis version 2.1.7.2](http://mvnrepository.com/artifact/net.postgis/postgis-jdbc/2.1.7.2)
+
 [hibernate-spatial version 4.3](http://www.hibernatespatial.org/repository/org/hibernate/hibernate-spatial/4.3/)
+
 [JTS model version 1.13](http://mvnrepository.com/artifact/com.vividsolutions/jts/1.13)
 
 
