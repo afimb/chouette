@@ -114,7 +114,6 @@ change property ```iev.copy.by.import.max``` value to limit parallel single line
 
 [Install and configure Wildfly](./doc/install/wildfly.md) 
 
-.
 [For existing chouette_iev deployment : update postgres / wildfly configuration](./doc/install/update.md) 
 
 deploy ear (wildfly must be running)
