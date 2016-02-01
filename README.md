@@ -12,6 +12,8 @@ The Chouette Web Service API is specified here :
 * [Interface Specification Document](./doc/interface/Chouette-API serveur IEV-1.0.pdf)
 * inputs and outputs data structures [Jobs](./doc/interface/Jobs.xsd), [Reports](./doc/interface/Reports.xsd)
 
+Chouette is used by [Chouette2 ](https://github.com/afimb/chouette2), a standard-based PT planned data management web application.
+
 Format documentations are available for:
 * Neptune
  * [www.normes-donnees-tc.org](http://www.normes-donnees-tc.org/format-dechange/donnees-theoriques/neptune/)
@@ -46,7 +48,7 @@ Installation instructions for the **command line standalone program** are availa
 
 ## Release Notes
 
-The release notes (in French) can be found in [CHANGELOG](./CHANGELOG.md) file 
+The Chouette release notes (in French) can be found in [CHANGELOG](./CHANGELOG.md) file 
 
 ## Requirements
  
@@ -58,7 +60,7 @@ This code has been run and tested on [Travis](http://travis-ci.org/afimb/chouett
 * postgres 9.3 + postgis 2.1
 * wildfly 8.2.0
 
-## External Deps
+## Chouette External Dependencies
 
 Chouette V3.x requires Postgresql V9.3 or above
 
@@ -81,7 +83,7 @@ if ```apt-get update``` fails, modify file :
 /etc/apt/sources.list.d/natecarlson-maven3-trusty.list
 and replace ```trusty``` by ```precise``` 
 
-## Installation
+## Chouette Installation
 
 On Debian, **Chouette can also be installed as a package** : see [debian packages](http://packages.chouette.cityway.fr/debian/chouette)
 
@@ -147,7 +149,7 @@ An exhaustive technical documentation in French is avalailable [here](http://www
 
 ## License
  
-This project is licensed under the CeCILL-B license, a copy of which can be found in the [LICENSE](./LICENSE.md) file.
+Chouette is licensed under the CeCILL-B license, a copy of which can be found in the [LICENSE](./LICENSE.md) file.
 
  
 ## Support

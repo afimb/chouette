@@ -19,6 +19,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
+import mobi.chouette.common.TimeUtil;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.gtfs.model.GtfsFrequency;
 import mobi.chouette.exchange.gtfs.model.GtfsRoute;
@@ -506,7 +507,6 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 
 				int count = 0;
 				for (GtfsFrequency frequency : importer.getFrequencyByTrip().values(gtfsTrip.getTripId())) {
-					baseVehicleJourneyToTime(vehicleJourney, 0);
 					vehicleJourney.setJourneyCategory(JourneyCategoryEnum.Frequency);
 
 					String timeBandObjectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
@@ -515,20 +515,22 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 					timeband.setName(getTimebandName(frequency));
 					timeband.setStartTime(frequency.getStartTime().getTime());
 					timeband.setEndTime(frequency.getEndTime().getTime());
-
+					
 					JourneyFrequency journeyFrequency = new JourneyFrequency();
 					journeyFrequency.setExactTime(frequency.getExactTimes());
 					journeyFrequency.setFirstDepartureTime(frequency.getStartTime().getTime());
 					journeyFrequency.setLastDepartureTime(frequency.getEndTime().getTime());
-					journeyFrequency.setScheduledHeadwayInterval(new Time(frequency.getHeadwaySecs() * 1000));
+					journeyFrequency.setScheduledHeadwayInterval(TimeUtil.valueOf(frequency.getHeadwaySecs()));
 					journeyFrequency.setTimeband(timeband);
 					journeyFrequency.setVehicleJourney(vehicleJourney);
 
 					List<VehicleJourneyAtStop> vjass = vehicleJourney.getVehicleJourneyAtStops();
-					long offset = 0 - vjass.get(0).getArrivalTime().getTime();
+					VehicleJourneyAtStop firstVjas = vjass.get(0);
+					Time firstArrivalTime = firstVjas.getArrivalTime();
+					Time firstDepartureTime = firstVjas.getDepartureTime();
 					for (VehicleJourneyAtStop vjas : vjass) {
-						vjas.setArrivalTime(shiftTime(vjas.getArrivalTime(), offset));
-						vjas.setDepartureTime(shiftTime(vjas.getDepartureTime(), offset));
+					        vjas.setArrivalTime(TimeUtil.substract(vjas.getArrivalTime(), firstArrivalTime));
+						vjas.setDepartureTime(TimeUtil.substract(vjas.getDepartureTime(), firstDepartureTime));
 					}
 				}
 			}
@@ -539,9 +541,9 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 	}
 
 	private String getTimebandName(GtfsFrequency frequency) {
-		Calendar startCal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+	        Calendar startCal = Calendar.getInstance(TimeZone.getDefault());
 		startCal.setTime(frequency.getStartTime().getTime());
-		Calendar endCal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
+		Calendar endCal = Calendar.getInstance(TimeZone.getDefault());
 		endCal.setTime(frequency.getEndTime().getTime());
 		return (startCal.get(Calendar.HOUR_OF_DAY) + ":" + startCal.get(Calendar.MINUTE) + " - "
 				+ endCal.get(Calendar.HOUR_OF_DAY) + ":" + endCal.get(Calendar.MINUTE));
@@ -793,22 +795,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		vehicleJourney.setFilled(true);
 
 	}
-
-	private void baseVehicleJourneyToTime(VehicleJourney vehicleJourney, long t) {
-		VehicleJourneyAtStop first = vehicleJourney.getVehicleJourneyAtStops().get(0);
-		long depOffset = t - first.getDepartureTime().getTime();
-		long arrOffset = t - first.getArrivalTime().getTime();
-
-		for (VehicleJourneyAtStop vjas : vehicleJourney.getVehicleJourneyAtStops()) {
-			vjas.setArrivalTime(shiftTime(vjas.getArrivalTime(), arrOffset));
-			vjas.setDepartureTime(shiftTime(vjas.getDepartureTime(), depOffset));
-		}
-	}
-
-	private Time shiftTime(Time t, long offset) {
-		return new Time((t.getTime() + offset) % (24 * 3600 * 1000));
-	}
-
+    
 	/**
 	 * create stopPoints for Route
 	 * 
