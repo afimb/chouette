@@ -646,6 +646,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 
 		int segmentRank = 0;
 		previous = null;
+		String prefix = journeyPattern.objectIdPrefix();
 		StopArea previousLocation = null;
 		for (StopPoint stop : journeyPattern.getStopPoints()) {
 			// find nearest segment and project point on it
@@ -665,13 +666,16 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			Coordinate projection = null;
 			boolean lastSegmentIncluded = false;
 			double factor = segments.get(rank).projectionFactor(point);
+			int intFactor = (int) (factor * 100.);
 			if (factor <= 0.05) {
 				// projection near or before first point
 				projection = segments.get(rank).getCoordinate(0);
+				intFactor = 0;
 			} else if (factor >= 0.95) {
 				// projection near or after last point
 				projection = segments.get(rank).getCoordinate(1);
 				lastSegmentIncluded = true;
+				intFactor = 100;
 			} else {
 				// projection inside segment
 				projection = segments.get(rank).project(point);
@@ -683,29 +687,35 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 					coords.add(segments.get(i).getCoordinate(1));
 				}
 				coords.add(projection);
-				if (lastSegmentIncluded) rank ++;
-				String routeSectionId = journeyPattern.getObjectId().replace(JourneyPattern.JOURNEYPATTERN_KEY,
-						RouteSection.ROUTE_SECTION_KEY);
-				routeSectionId += "_" + stop.getPosition();
+				if (lastSegmentIncluded)
+					rank++;
+				// String routeSectionId =
+				// journeyPattern.getObjectId().replace(JourneyPattern.JOURNEYPATTERN_KEY,
+				// RouteSection.ROUTE_SECTION_KEY);
+				// routeSectionId += "_" + stop.getPosition();
+				String routeSectionId = prefix + ":" + RouteSection.ROUTE_SECTION_KEY + ":" + shapeId + "_"
+						+ previousLocation.objectIdSuffix() + "_" + location.objectIdSuffix() + "_" + intFactor;
 				RouteSection section = ObjectFactory.getRouteSection(referential, routeSectionId);
-				section.setDeparture(previousLocation);
-				section.setArrival(location);
-				section.setProcessedGeometry(factory.createLineString(coords.toArray(new Coordinate[coords.size()])));
-				section.setInputGeometry(factory.createLineString(coords.toArray(new Coordinate[coords.size()])));
-				try {
-					double distance = section.getProcessedGeometry().getLength();
-					distance *= (Math.PI / 180) * 6378137;
-					section.setDistance(BigDecimal.valueOf(distance));
-				} catch (NumberFormatException e) {
-					log.error(shapeId + " : problem with section between " + previousLocation.getName() + "("
-							+ previousLocation.getObjectId() + " and " + location.getName() + "("
-							+ location.getObjectId());
-					log.error("coords (" + coords.size() + ") :");
-					for (Coordinate coordinate : coords) {
-						log.error("lat = " + coordinate.y + " , lon = " + coordinate.x);
+				if (!section.isFilled()) {
+					section.setDeparture(previousLocation);
+					section.setArrival(location);
+					section.setProcessedGeometry(factory.createLineString(coords.toArray(new Coordinate[coords.size()])));
+					section.setInputGeometry(factory.createLineString(coords.toArray(new Coordinate[coords.size()])));
+					try {
+						double distance = section.getProcessedGeometry().getLength();
+						distance *= (Math.PI / 180) * 6378137;
+						section.setDistance(BigDecimal.valueOf(distance));
+					} catch (NumberFormatException e) {
+						log.error(shapeId + " : problem with section between " + previousLocation.getName() + "("
+								+ previousLocation.getObjectId() + " and " + location.getName() + "("
+								+ location.getObjectId());
+						log.error("coords (" + coords.size() + ") :");
+						for (Coordinate coordinate : coords) {
+							log.error("lat = " + coordinate.y + " , lon = " + coordinate.x);
+						}
+						sections.clear();
+						return sections;
 					}
-					sections.clear();
-					return sections;
 				}
 				section.setFilled(true);
 				sections.add(section);
@@ -731,11 +741,12 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		String lineId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Line.LINE_KEY,
 				gtfsTrip.getRouteId(), log);
 		Line line = ObjectFactory.getLine(referential, lineId);
-		String routeKey = gtfsTrip.getRouteId() + "_" + gtfsTrip.getDirectionId().ordinal() ;
+		String routeKey = gtfsTrip.getRouteId() + "_" + gtfsTrip.getDirectionId().ordinal();
 		if (gtfsTrip.getShapeId() != null && !gtfsTrip.getShapeId().isEmpty())
 			routeKey += "_" + gtfsTrip.getShapeId();
 		routeKey += "_" + line.getRoutes().size();
-		String routeId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Route.ROUTE_KEY,routeKey, log);
+		String routeId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Route.ROUTE_KEY,
+				routeKey, log);
 
 		Route route = ObjectFactory.getRoute(referential, routeId);
 		route.setLine(line);
