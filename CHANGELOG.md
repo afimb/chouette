@@ -1,4 +1,4 @@
-# Version 3.2.0 (en cours de recette) 
+# Version 3.2.0 (05/02/2016) 
 * Nouvelles fonctionnalités
   * Gestion des courses en fréquences
   * Gestion des tracés de missions
