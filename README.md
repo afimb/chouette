@@ -138,7 +138,7 @@ change the ```iev.started.jobs.max``` value in order to limit the max number of 
 
 in the wildfly installation repository :
 ```sh
-bin/jboss-cli.sh connect, deploy --force  (path to ...)/chouette.ear
+bin/jboss-cli.sh --connect --command="deploy (path to ...)/chouette.ear"
 ```
 
 ## More Information
