@@ -5,13 +5,12 @@
     <artifactId>mobi.chouette</artifactId>
     <version>3.3.0-SNAPSHOT</version>
   </parent>
-  <artifactId>mobi.chouette.exchange.validator</artifactId>
+  <artifactId>mobi.chouette.exchange.converter</artifactId>
   <packaging>ejb</packaging>
    <properties>
       <project.rootDir>${project.basedir}/..</project.rootDir>
       <skipInitDb>true</skipInitDb>
    </properties>
-
    <dependencies>
 
       <!-- Default Dependencies -->
@@ -177,4 +176,5 @@
          </plugin>
       </plugins>
    </build>
+
 </project>

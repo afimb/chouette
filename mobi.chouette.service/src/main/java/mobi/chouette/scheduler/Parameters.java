@@ -13,11 +13,10 @@ import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder={"configuration","validation"})
+@XmlType(propOrder = { "configuration", "validation" })
 @Data
 public class Parameters {
 
-	
 	@XmlElements(value = {
 			@XmlElement(name = "neptune-import", type = mobi.chouette.exchange.neptune.importer.NeptuneImportParameters.class),
 			@XmlElement(name = "neptune-export", type = mobi.chouette.exchange.neptune.exporter.NeptuneExportParameters.class),
@@ -27,10 +26,11 @@ public class Parameters {
 			@XmlElement(name = "netex-export", type = mobi.chouette.exchange.netex.exporter.NetexExportParameters.class),
 			@XmlElement(name = "kml-export", type = mobi.chouette.exchange.kml.exporter.KmlExportParameters.class),
 			@XmlElement(name = "hub-export", type = mobi.chouette.exchange.hub.exporter.HubExportParameters.class),
-        	@XmlElement(name = "validate", type = mobi.chouette.exchange.validator.ValidateParameters.class),
-        	@XmlElement(name = "neptune-validate", type = mobi.chouette.exchange.neptune.validator.NeptuneValidateParameters.class),
-        	@XmlElement(name = "netex-validate", type = mobi.chouette.exchange.netex.validator.NetexValidateParameters.class),
-        	@XmlElement(name = "gtfs-validate", type = mobi.chouette.exchange.gtfs.validator.GtfsValidateParameters.class) })
+			@XmlElement(name = "validate", type = mobi.chouette.exchange.validator.ValidateParameters.class),
+			@XmlElement(name = "neptune-validate", type = mobi.chouette.exchange.neptune.validator.NeptuneValidateParameters.class),
+			@XmlElement(name = "netex-validate", type = mobi.chouette.exchange.netex.validator.NetexValidateParameters.class),
+			@XmlElement(name = "gtfs-validate", type = mobi.chouette.exchange.gtfs.validator.GtfsValidateParameters.class),
+			@XmlElement(name = "convert", type = mobi.chouette.exchange.converter.ConvertParameters.class) })
 	private AbstractParameter configuration;
 
 	@XmlElement(name = "validation")
