@@ -47,6 +47,8 @@ public class GtfsImporterCommand extends AbstractImporterCommand implements Comm
 			}
 
 			GtfsImportParameters parameters = (GtfsImportParameters) configuration;
+			// import total par défaut
+			if (parameters.getReferencesType() == null) parameters.setReferencesType("line");
 			boolean all = !(parameters.getReferencesType().equalsIgnoreCase("stop_area"));
 			
 			ProcessingCommands commands = ProcessingCommandsFactory.create(GtfsImporterProcessingCommands.class.getName());

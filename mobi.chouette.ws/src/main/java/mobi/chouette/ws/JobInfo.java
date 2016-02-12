@@ -35,6 +35,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import mobi.chouette.exchange.converter.ConvertParameters;
 import mobi.chouette.exchange.gtfs.exporter.GtfsExportParameters;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.gtfs.validator.GtfsValidateParameters;
@@ -66,6 +67,7 @@ import mobi.chouette.service.ServiceException;
 	         NetexExportParameters.class,
 	         HubExportParameters.class,
 	         KmlExportParameters.class,
+	         ConvertParameters.class,
 	         ValidateParameters.class,
 	         NeptuneValidateParameters.class,
 	         GtfsValidateParameters.class,

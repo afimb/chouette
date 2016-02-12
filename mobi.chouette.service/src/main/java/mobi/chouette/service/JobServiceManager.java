@@ -183,16 +183,6 @@ public class JobServiceManager {
 		throw new RequestServiceException(RequestExceptionCode.UNKNOWN_REFERENTIAL, "referential");
 	}
 		// launch a thread to separate datasources transactions
-//		SchemaValidatorThread s = new SchemaValidatorThread(referential);
-//		Thread t = new Thread(s);
-//		t.start();
-//		try {
-//			t.join();
-//		} catch (InterruptedException e) {
-//		}
-//		if (!s.isResult()) {
-//			throw new RequestServiceException(RequestExceptionCode.UNKNOWN_REFERENTIAL, "referential");
-//		}
 		
 		referentials.add(referential);
 	}
