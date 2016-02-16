@@ -13,6 +13,7 @@ import javax.ws.rs.core.MediaType;
 
 import lombok.Data;
 import lombok.experimental.Delegate;
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.JSONUtil;
 import mobi.chouette.common.JobData;
 import mobi.chouette.common.PropertyNames;
@@ -28,6 +29,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
 @Data
+@Log4j
 public class JobService implements JobData,ServiceConstants {
 
     @Delegate(types = {Job.class}, excludes = {ExcludedJobMethods.class})
@@ -74,9 +76,10 @@ public class JobService implements JobData,ServiceConstants {
             
             StringWriter writer = new StringWriter();
             IOUtils.copy(inputStreamsByName.get(PARAMETERS_FILE), writer, "UTF-8");
+            log.info("parameters = "+writer.toString());
             Parameters parameters = JSONUtil.fromJSON( writer.toString(), Parameters.class);
             setParametersAsString(JSONUtil.toJSON(parameters));
-            
+            log.info("saved parameters = "+getParametersAsString());
             JSONUtil.toJSON( filePath(PARAMETERS_FILE), parameters);
             addLink(MediaType.APPLICATION_JSON, PARAMETERS_REL);
             

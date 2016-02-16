@@ -60,7 +60,6 @@ public class JobServiceManager {
 	Scheduler scheduler;
 
 	@Resource(lookup = "java:comp/DefaultManagedExecutorService")
-	// @Resource(lookup = "java:jboss/ee/concurrency/executor/ievjobs")
 	ManagedExecutorService executor;
 
 	private static Set<Object> referentials = Collections.synchronizedSet(new HashSet<>());
@@ -158,10 +157,15 @@ public class JobServiceManager {
 		}
 	}
 
-	private void deleteBadCreatedJob(JobService jobService) {
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	public void deleteBadCreatedJob(JobService jobService) {
 		if (jobService == null || jobService.getJob().getId() == null)
 			return;
-		jobDAO.delete(jobService.getJob());
+		Job job = jobDAO.find(jobService.getJob().getId());
+		if (job != null) {
+			log.info("deleting bad job " + job.getId());
+			jobDAO.delete(job);
+		}
 
 		try {
 			// remove path if exists
@@ -180,10 +184,9 @@ public class JobServiceManager {
 
 		boolean result = schemaManager.validateReferential(referential);
 		if (!result) {
-		throw new RequestServiceException(RequestExceptionCode.UNKNOWN_REFERENTIAL, "referential");
-	}
-		// launch a thread to separate datasources transactions
-		
+			throw new RequestServiceException(RequestExceptionCode.UNKNOWN_REFERENTIAL, "referential");
+		}
+
 		referentials.add(referential);
 	}
 
@@ -398,7 +401,6 @@ public class JobServiceManager {
 		throw new RequestServiceException(RequestExceptionCode.UNKNOWN_JOB, " id = " + id);
 	}
 
-	
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public List<JobService> jobs(String referential, String action, final Long version) throws ServiceException {
 		validateReferential(referential);
@@ -429,24 +431,6 @@ public class JobServiceManager {
 		return jobServices;
 	}
 
-//	private class SchemaValidatorThread implements Runnable {
-//		private String referential;
-//		@Getter
-//		private boolean result = false;
-//
-//		SchemaValidatorThread(String referential) {
-//			this.referential = referential;
-//		}
-//
-//		public void run() {
-//			try {
-//				result = schemaManager.validateReferential(referential);
-//			} catch (Exception e) {
-//				log.error(e);
-//			}
-//		}
-//
-//	}
 
 	// administration operation
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)

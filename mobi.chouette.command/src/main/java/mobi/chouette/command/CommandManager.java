@@ -368,7 +368,7 @@ public class CommandManager implements Constant {
 			} else if (configuration instanceof KmlExportParameters) {
 				data.setType("kml");
 			} else {
-				System.err.println("invalid input options type" + outputParametersFilename);
+				System.err.println("invalid output options type" + outputParametersFilename);
 				return null;
 			}
 			// force export mode to lines

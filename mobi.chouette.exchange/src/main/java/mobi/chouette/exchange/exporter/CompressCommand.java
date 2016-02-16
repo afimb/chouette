@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.exporter;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -38,6 +39,8 @@ public class CompressCommand implements Command, Constant {
 			String file = jobData.getFilename();
 			Path target = Paths.get(path, OUTPUT);
 			Path filename = Paths.get(path, file);
+			File outputFile = filename.toFile();
+			if (outputFile.exists()) outputFile.delete();
 			FileUtil.compress(target.toString(), filename.toString());
 			result = SUCCESS;
 			try {

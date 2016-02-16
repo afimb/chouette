@@ -18,6 +18,7 @@ import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 public class Parameters {
 
 	@XmlElements(value = {
+			@XmlElement(name = "convert", type = mobi.chouette.exchange.converter.ConvertParameters.class), 
 			@XmlElement(name = "neptune-import", type = mobi.chouette.exchange.neptune.importer.NeptuneImportParameters.class),
 			@XmlElement(name = "neptune-export", type = mobi.chouette.exchange.neptune.exporter.NeptuneExportParameters.class),
 			@XmlElement(name = "gtfs-import", type = mobi.chouette.exchange.gtfs.importer.GtfsImportParameters.class),
@@ -29,8 +30,7 @@ public class Parameters {
 			@XmlElement(name = "validate", type = mobi.chouette.exchange.validator.ValidateParameters.class),
 			@XmlElement(name = "neptune-validate", type = mobi.chouette.exchange.neptune.validator.NeptuneValidateParameters.class),
 			@XmlElement(name = "netex-validate", type = mobi.chouette.exchange.netex.validator.NetexValidateParameters.class),
-			@XmlElement(name = "gtfs-validate", type = mobi.chouette.exchange.gtfs.validator.GtfsValidateParameters.class),
-			@XmlElement(name = "convert", type = mobi.chouette.exchange.converter.ConvertParameters.class) })
+			@XmlElement(name = "gtfs-validate", type = mobi.chouette.exchange.gtfs.validator.GtfsValidateParameters.class)})
 	private AbstractParameter configuration;
 
 	@XmlElement(name = "validation")
