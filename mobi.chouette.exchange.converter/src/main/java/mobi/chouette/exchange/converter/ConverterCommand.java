@@ -1,8 +1,6 @@
 package mobi.chouette.exchange.converter;
 
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -67,20 +65,11 @@ public class ConverterCommand implements Command, Constant, ReportConstant {
 			Object configuration = context.get(CONFIGURATION);
 			if (!(configuration instanceof ConvertParameters)) {
 				// fatal wrong parameters
-				log.error("invalid parameters for validation " + configuration.getClass().getName());
+				log.error("invalid parameters for conversion " + configuration.getClass().getName());
 				report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,
-						"invalid parameters for validation " + configuration.getClass().getName()));
+						"invalid parameters for conversion " + configuration.getClass().getName()));
 				return ERROR;
 			}
-
-//			ValidationParameters validationParameters = (ValidationParameters) context.get(VALIDATION);
-//			if (validationParameters == null) {
-//				log.error("no validation parameters for validation ");
-//				report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,
-//						"no validation parameters for validation "));
-//				return ERROR;
-//
-//			}
 
 			progression.initialize(context, 1);
 			context.put(VALIDATION_DATA, new ValidationData());
@@ -103,6 +92,7 @@ public class ConverterCommand implements Command, Constant, ReportConstant {
 
 		boolean result = ERROR;
 		ConvertParameters parameters = (ConvertParameters) context.get(CONFIGURATION);
+		JobData jobData = (JobData) context.get(JOB_DATA);
 		ActionReport report = (ActionReport) context.get(REPORT);
 
 		// initialisation
@@ -163,6 +153,8 @@ public class ConverterCommand implements Command, Constant, ReportConstant {
 				mergeReports(report, importContext, IO_TYPE.INPUT);
 				if (!result) {
 					log.error("fail to execute " + importCommand.getClass().getName());
+					progression.execute(context);
+					importContext.put(VALIDATION_REPORT, context.get(VALIDATION_REPORT));
 					continue;
 				}
 				// execute export commands
@@ -170,7 +162,11 @@ public class ConverterCommand implements Command, Constant, ReportConstant {
 				// - get line in import context
 				Referential referential = (Referential) importContext.get(REFERENTIAL);
 				if (referential.getLines().isEmpty())
+				{
+					progression.execute(context);
+					importContext.put(VALIDATION_REPORT, context.get(VALIDATION_REPORT));
 					continue;
+				}
 				Line line = referential.getLines().values().iterator().next();
 				// some export uses Id as file name
 				line.setId(++id);
@@ -188,6 +184,9 @@ public class ConverterCommand implements Command, Constant, ReportConstant {
 				}
 				if (!exportFailed)
 					lineCount++;
+				progression.execute(context);
+				importContext.put(VALIDATION_REPORT, context.get(VALIDATION_REPORT));
+
 			}
 
 			// post-processing
@@ -200,6 +199,8 @@ public class ConverterCommand implements Command, Constant, ReportConstant {
 
 			if (lineCount == 0) {
 				progression.terminate(context, postImportProcessingCommands.size());
+				// restore input filename for link 
+				jobData.setFilename(importData.getFilename());
 			} else {
 				progression.terminate(context,
 						postImportProcessingCommands.size() + postExportProcessingCommands.size());
@@ -211,10 +212,12 @@ public class ConverterCommand implements Command, Constant, ReportConstant {
 				if (!result) {
 					log.error("fail to execute " + importCommand.getClass().getName());
 				}
+				progression.execute(context);
 			}
 			if (lineCount == 0) {
 				report.setFailure(new ActionError(ActionError.CODE.NO_DATA_PROCEEDED, "no data exported"));
 				progression.execute(context);
+				
 				return ERROR;
 			} else {
 				for (Command exportCommand : postExportProcessingCommands) {
@@ -224,6 +227,7 @@ public class ConverterCommand implements Command, Constant, ReportConstant {
 						log.error("fail to execute " + exportCommand.getClass().getName());
 						break;
 					}
+					progression.execute(context);
 				}
 
 			}
@@ -297,6 +301,7 @@ public class ConverterCommand implements Command, Constant, ReportConstant {
 
 		ConverterJobData data = new ConverterJobData();
 		JobData jobData = (JobData) context.get(JOB_DATA);
+		data.setId(jobData.getId());
 		data.setFilename(jobData.getFilename());
 		data.setPathName(jobData.getPathName());
 		data.setAction(IMPORTER);
@@ -323,6 +328,7 @@ public class ConverterCommand implements Command, Constant, ReportConstant {
 
 		ConverterJobData data = new ConverterJobData();
 		JobData jobData = (JobData) context.get(JOB_DATA);
+		data.setId(jobData.getId());
 		data.setPathName(jobData.getPathName());
 		data.setAction(EXPORTER);
 		if (configuration instanceof NeptuneExportParameters) {
@@ -335,6 +341,7 @@ public class ConverterCommand implements Command, Constant, ReportConstant {
 			System.err.println("invalid output options type" + configuration.getClass().getName());
 			return null;
 		}
+		jobData.setFilename("export_" + data.getType() + "_" + jobData.getId() + ".zip");
 		// force export mode to lines
 		AbstractExportParameter exportConfiguration = (AbstractExportParameter) configuration;
 		exportConfiguration.setReferencesType("line");
