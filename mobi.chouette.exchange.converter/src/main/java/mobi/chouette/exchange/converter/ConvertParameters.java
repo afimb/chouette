@@ -21,17 +21,17 @@ import mobi.chouette.exchange.parameters.AbstractParameter;
 public class ConvertParameters extends AbstractParameter {
 
 	@XmlElements(value = {
-			@XmlElement(name = "neptune-import", type = mobi.chouette.exchange.neptune.importer.NeptuneImportParameters.class),
-			@XmlElement(name = "gtfs-import", type = mobi.chouette.exchange.gtfs.importer.GtfsImportParameters.class),
-			@XmlElement(name = "netex-import", type = mobi.chouette.exchange.netex.importer.NetexImportParameters.class) })
+			@XmlElement(name = "neptune-input", type = mobi.chouette.exchange.neptune.importer.NeptuneImportParameters.class),
+			@XmlElement(name = "gtfs-input", type = mobi.chouette.exchange.gtfs.importer.GtfsImportParameters.class),
+			@XmlElement(name = "netex-input", type = mobi.chouette.exchange.netex.importer.NetexImportParameters.class) })
 	@Getter
 	@Setter
 	private AbstractImportParameter importConfiguration;
 
 	@XmlElements(value = {
-			@XmlElement(name = "neptune-export", type = mobi.chouette.exchange.neptune.exporter.NeptuneExportParameters.class),
-			@XmlElement(name = "gtfs-export", type = mobi.chouette.exchange.gtfs.exporter.GtfsExportParameters.class),
-			@XmlElement(name = "netex-export", type = mobi.chouette.exchange.netex.exporter.NetexExportParameters.class) })
+			@XmlElement(name = "neptune-output", type = mobi.chouette.exchange.neptune.exporter.NeptuneExportParameters.class),
+			@XmlElement(name = "gtfs-output", type = mobi.chouette.exchange.gtfs.exporter.GtfsExportParameters.class),
+			@XmlElement(name = "netex-output", type = mobi.chouette.exchange.netex.exporter.NetexExportParameters.class) })
 	@Getter
 	@Setter
 	private AbstractExportParameter exportConfiguration;

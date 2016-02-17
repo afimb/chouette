@@ -97,6 +97,7 @@ public class ConverterCommand implements Command, Constant, ReportConstant {
 
 		// initialisation
 		AbstractImportParameter importConfiguration = parameters.getImportConfiguration();
+		importConfiguration.setNoSave(true);
 		AbstractExportParameter exportConfiguration = parameters.getExportConfiguration();
 		ConverterJobData importData = loadInputParameters(context, importConfiguration);
 		ConverterJobData exportData = loadOutputParameters(context, exportConfiguration);

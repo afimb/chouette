@@ -54,6 +54,8 @@ public class ConverterInputValidator extends AbstractInputValidator {
 			log.error("unknown import format for converter " + parameters.getImportConfiguration().getClass().getName());
 			return false;
 		}
+		parameters.getImportConfiguration().setNoSave(true);
+
 		String exportFormat = "unknown";
 		if (parameters.getExportConfiguration() instanceof NeptuneExportParameters) {
 			exportFormat = "neptune";
