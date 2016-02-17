@@ -236,11 +236,11 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 						Timetable.TIMETABLE_KEY, serviceId, log);
 
 				Timetable timetable = referential.getTimetables().get(objectId);
-				if (timetable == null) {
-					timetable = ObjectFactory.getTimetable(referential, objectId);
-					convert(context, createDummyCalandar(), timetable);
-				}
 				for (GtfsCalendarDate gtfsCalendarDate : importer.getCalendarDateByService().values(serviceId)) {
+					if (timetable == null) {
+						timetable = ObjectFactory.getTimetable(referential, objectId);
+						convert(context, createDummyCalandar(gtfsCalendarDate.getId()), timetable);
+					}
 					addCalendarDay(timetable, gtfsCalendarDate);
 				}
 				NamingUtil.setDefaultName(timetable);
@@ -278,11 +278,17 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 			dayTypes.add(DayTypeEnum.Sunday);
 		timetable.setDayTypes(dayTypes);
 
+		String fileName = "calendar.txt";
 		if (gtfsCalendar.getStartDate() != null && gtfsCalendar.getEndDate() != null) {
 			Period period = new Period();
 			period.setStartDate(gtfsCalendar.getStartDate());
 			period.setEndDate(gtfsCalendar.getEndDate());
 			timetable.addPeriod(period);
+		}
+		else
+		{
+			// dummy calendar, created by dates
+			fileName = "calendar_dates.txt";
 		}
 
 		List<Period> periods = timetable.getPeriods();
@@ -290,6 +296,9 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 			Collections.sort(periods, PERIOD_COMPARATOR);
 		NamingUtil.setDefaultName(timetable);
 		timetable.setFilled(true);
+		AbstractConverter.addLocation(context, fileName, timetable.getObjectId(), gtfsCalendar.getId());
+		AbstractConverter.addLocation(context, fileName, timetable.getObjectId()+ AFTER_MIDNIGHT_SUFFIX, gtfsCalendar.getId());
+
 	}
 
 	public void addCalendarDay(Timetable timetable, GtfsCalendarDate date) {
@@ -298,8 +307,9 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 	}
 
 
-	private GtfsCalendar createDummyCalandar() {
+	private GtfsCalendar createDummyCalandar(Integer id ) {
 		GtfsCalendar calendar = new GtfsCalendar();
+		calendar.setId(id);
 		calendar.setMonday(false);
 		calendar.setTuesday(false);
 		calendar.setWednesday(false);

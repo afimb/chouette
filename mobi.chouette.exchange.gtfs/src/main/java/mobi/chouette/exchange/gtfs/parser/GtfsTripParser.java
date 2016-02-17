@@ -489,7 +489,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			}
 			JourneyPattern journeyPattern = journeyPatternByStopSequence.get(journeyKey);
 			if (journeyPattern == null) {
-				journeyPattern = createJourneyPattern(referential, configuration, gtfsTrip, gtfsShapes, vehicleJourney,
+				journeyPattern = createJourneyPattern(context, referential, configuration, gtfsTrip, gtfsShapes, vehicleJourney,
 						journeyKey, journeyPatternByStopSequence);
 			}
 
@@ -504,40 +504,45 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 
 			// apply frequencies if any
 			if (importer.hasFrequencyImporter()) {
-
-				int count = 0;
-				for (GtfsFrequency frequency : importer.getFrequencyByTrip().values(gtfsTrip.getTripId())) {
-					vehicleJourney.setJourneyCategory(JourneyCategoryEnum.Frequency);
-
-					String timeBandObjectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
-							Timeband.TIMETABLE_KEY, gtfsTrip.getTripId() + "-" + count++, log);
-					Timeband timeband = ObjectFactory.getTimeband(referential, timeBandObjectId);
-					timeband.setName(getTimebandName(frequency));
-					timeband.setStartTime(frequency.getStartTime().getTime());
-					timeband.setEndTime(frequency.getEndTime().getTime());
-					
-					JourneyFrequency journeyFrequency = new JourneyFrequency();
-					journeyFrequency.setExactTime(frequency.getExactTimes());
-					journeyFrequency.setFirstDepartureTime(frequency.getStartTime().getTime());
-					journeyFrequency.setLastDepartureTime(frequency.getEndTime().getTime());
-					journeyFrequency.setScheduledHeadwayInterval(TimeUtil.valueOf(frequency.getHeadwaySecs()));
-					journeyFrequency.setTimeband(timeband);
-					journeyFrequency.setVehicleJourney(vehicleJourney);
-
-					List<VehicleJourneyAtStop> vjass = vehicleJourney.getVehicleJourneyAtStops();
-					VehicleJourneyAtStop firstVjas = vjass.get(0);
-					Time firstArrivalTime = firstVjas.getArrivalTime();
-					Time firstDepartureTime = firstVjas.getDepartureTime();
-					for (VehicleJourneyAtStop vjas : vjass) {
-					        vjas.setArrivalTime(TimeUtil.substract(vjas.getArrivalTime(), firstArrivalTime));
-						vjas.setDepartureTime(TimeUtil.substract(vjas.getDepartureTime(), firstDepartureTime));
-					}
-				}
+				createJourneyFrequencies(context, referential, importer, configuration, gtfsTrip, vehicleJourney);
 			}
 
 		}
 		// dispose collections
 		journeyPatternByStopSequence.clear();
+	}
+
+	private void createJourneyFrequencies(Context context, Referential referential, GtfsImporter importer,
+			GtfsImportParameters configuration, GtfsTrip gtfsTrip, VehicleJourney vehicleJourney) {
+		int count = 0;
+		for (GtfsFrequency frequency : importer.getFrequencyByTrip().values(gtfsTrip.getTripId())) {
+			vehicleJourney.setJourneyCategory(JourneyCategoryEnum.Frequency);
+
+			String timeBandObjectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
+					Timeband.TIMETABLE_KEY, gtfsTrip.getTripId() + "-" + count++, log);
+			Timeband timeband = ObjectFactory.getTimeband(referential, timeBandObjectId);
+			timeband.setName(getTimebandName(frequency));
+			timeband.setStartTime(frequency.getStartTime().getTime());
+			timeband.setEndTime(frequency.getEndTime().getTime());
+			AbstractConverter.addLocation(context, "frequencies.txt", timeBandObjectId, frequency.getId());
+			
+			JourneyFrequency journeyFrequency = new JourneyFrequency();
+			journeyFrequency.setExactTime(frequency.getExactTimes());
+			journeyFrequency.setFirstDepartureTime(frequency.getStartTime().getTime());
+			journeyFrequency.setLastDepartureTime(frequency.getEndTime().getTime());
+			journeyFrequency.setScheduledHeadwayInterval(TimeUtil.valueOf(frequency.getHeadwaySecs()));
+			journeyFrequency.setTimeband(timeband);
+			journeyFrequency.setVehicleJourney(vehicleJourney);
+
+			List<VehicleJourneyAtStop> vjass = vehicleJourney.getVehicleJourneyAtStops();
+			VehicleJourneyAtStop firstVjas = vjass.get(0);
+			Time firstArrivalTime = firstVjas.getArrivalTime();
+			Time firstDepartureTime = firstVjas.getDepartureTime();
+			for (VehicleJourneyAtStop vjas : vjass) {
+			        vjas.setArrivalTime(TimeUtil.substract(vjas.getArrivalTime(), firstArrivalTime));
+				vjas.setDepartureTime(TimeUtil.substract(vjas.getDepartureTime(), firstDepartureTime));
+			}
+		}
 	}
 
 	private String getTimebandName(GtfsFrequency frequency) {
@@ -549,7 +554,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 				+ endCal.get(Calendar.HOUR_OF_DAY) + ":" + endCal.get(Calendar.MINUTE));
 	}
 
-	private JourneyPattern createJourneyPattern(Referential referential, GtfsImportParameters configuration,
+	private JourneyPattern createJourneyPattern(Context context, Referential referential, GtfsImportParameters configuration,
 			GtfsTrip gtfsTrip, Iterable<GtfsShape> gtfsShapes, VehicleJourney vehicleJourney, String journeyKey,
 			Map<String, JourneyPattern> journeyPatternByStopSequence) {
 		JourneyPattern journeyPattern;
@@ -585,7 +590,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 
 		// Shape -> routeSections
 		if (gtfsShapes != null) {
-			List<RouteSection> sections = createRouteSections(referential, configuration, journeyPattern,
+			List<RouteSection> sections = createRouteSections(context,referential, configuration, journeyPattern,
 					vehicleJourney, gtfsShapes);
 			if (!sections.isEmpty()) {
 				journeyPattern.setRouteSections(sections);
@@ -597,7 +602,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 
 	private static final double narrow = 0.0000001;
 
-	private List<RouteSection> createRouteSections(Referential referential, GtfsImportParameters configuration,
+	private List<RouteSection> createRouteSections(Context context, Referential referential, GtfsImportParameters configuration,
 			JourneyPattern journeyPattern, VehicleJourney vehicleJourney, Iterable<GtfsShape> gtfsShapes) {
 		List<RouteSection> sections = new ArrayList<>();
 		GeometryFactory factory = new GeometryFactory(new PrecisionModel(10), 4326);
@@ -605,13 +610,17 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		List<LineSegment> segments = new ArrayList<>();
 		Coordinate previous = null;
 		String shapeId = null;
+		Integer lineNumber = null;
 		for (GtfsShape gtfsShape : gtfsShapes) {
 			if (gtfsShape.getShapePtLon() == null || gtfsShape.getShapePtLat() == null) {
 				log.error("line " + gtfsShape.getId() + " missing coordinates for shape " + gtfsShape.getShapeId());
 				return sections;
 			}
 			if (shapeId == null)
+			{
 				shapeId = gtfsShape.getShapeId();
+				lineNumber = gtfsShape.getId();
+			}
 			OrderedCoordinate current = new OrderedCoordinate(gtfsShape.getShapePtLon().doubleValue(), gtfsShape
 					.getShapePtLat().doubleValue(), gtfsShape.getShapePtSequence());
 			if (previous != null) {
@@ -716,6 +725,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 						sections.clear();
 						return sections;
 					}
+					AbstractConverter.addLocation(context, "shapes.txt", routeSectionId, lineNumber);
 				}
 				section.setFilled(true);
 				sections.add(section);
@@ -793,6 +803,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			}
 		}
 		vehicleJourney.setFilled(true);
+		AbstractConverter.addLocation(context, "trips.txt", vehicleJourney.getObjectId(), gtfsTrip.getId());
 
 	}
     

@@ -120,6 +120,7 @@ public class GtfsAgencyParser implements Parser, Validator, Constant {
 		company.setRegistrationNumber(token[2]);
 		company.setTimeZone(AbstractConverter.toString(gtfsAgency.getAgencyTimezone()));
 		company.setFilled(true);
+		AbstractConverter.addLocation(context, "agency.txt", company.getObjectId(), gtfsAgency.getId());
 	}
 
 	static {
