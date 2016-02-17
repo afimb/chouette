@@ -118,6 +118,7 @@ public class ConverterCommand implements Command, Constant, ReportConstant {
 
 		ValidationParameters validationParameters = (ValidationParameters) context.get(VALIDATION);
 		Context importContext = prepareImportContext(importData, validationParameters);
+		context.put(VALIDATION_REPORT, importContext.get(VALIDATION_REPORT));
 		Context exportContext = prepareExportContext(exportData);
 
 		try {
@@ -288,7 +289,6 @@ public class ConverterCommand implements Command, Constant, ReportConstant {
 		context.put(Constant.REPORT, new ActionReport());
 		context.put(Constant.JOB_DATA, exportJobData);
 		context.put(CONFIGURATION, exportJobData.getConfiguration());
-		// context.put(VALIDATION, validationParameters);
 		context.put(REPORT, new ActionReport());
 		return context;
 	}

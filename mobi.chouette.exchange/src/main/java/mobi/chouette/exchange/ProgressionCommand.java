@@ -52,10 +52,6 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 	}
 
 	public void dispose(Context context) {
-//		ActionReport report = (ActionReport) context.get(REPORT);
-//		StepProgression step = report.getProgression().getSteps().get(STEP.FINALISATION.ordinal());
-//		boolean terminated = step.getRealized() == step.getTotal();
-//		if (terminated) report.getProgression().setCurrentStep(STEP.TERMINATED.ordinal());
 		saveReport(context);
 		if (context.containsKey(VALIDATION_REPORT)) {
 			mergeValidationReports(context);
@@ -71,7 +67,7 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 		Path path = Paths.get(jobData.getPathName(), REPORT_FILE);
 		// pseudo pretty print
 		try {
-			String data = report.toJson().toString(2);//JSONUtil.toJSON(report);
+			String data = report.toJson().toString(2);
 			FileUtils.writeStringToFile(path.toFile(), data, "UTF-8");
 		} catch (Exception e) {
 			log.error("failed to save report", e);
@@ -91,7 +87,7 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 
 		try {
 			report.checkResult();
-			String data = report.toJson().toString(2);//JSONUtil.toJSON(report);
+			String data = report.toJson().toString(2);
 			FileUtils.writeStringToFile(path.toFile(), data, "UTF-8");
 		} catch (Exception e) {
 			log.error("failed to save validation report", e);
