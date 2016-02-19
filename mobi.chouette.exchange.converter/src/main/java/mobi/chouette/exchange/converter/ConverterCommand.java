@@ -14,6 +14,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.CommandCancelledException;
 import mobi.chouette.exchange.ProcessingCommands;
 import mobi.chouette.exchange.ProcessingCommandsFactory;
 import mobi.chouette.exchange.ProgressionCommand;
@@ -76,6 +77,9 @@ public class ConverterCommand implements Command, Constant, ReportConstant {
 
 			result = process(context, progression, false);
 
+		} catch (CommandCancelledException e) {
+			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR, "Command cancelled"));
+			log.error(e.getMessage());
 		} catch (Exception e) {
 			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR, "Fatal :" + e));
 			log.error(e.getMessage(), e);

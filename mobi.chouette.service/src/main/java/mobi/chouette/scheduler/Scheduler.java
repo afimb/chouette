@@ -12,6 +12,8 @@ import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.concurrent.ManagedTaskListener;
 import javax.naming.InitialContext;
@@ -49,17 +51,17 @@ public class Scheduler {
 	SchemaDAO schemaDAO;
 
   	@Resource(lookup = "java:comp/DefaultManagedExecutorService")
-// 	@Resource(lookup = "java:jboss/ee/concurrency/executor/ievjobs")
 	ManagedExecutorService executor;
 	
 	Map<Long,Future<STATUS>> startedFutures = new ConcurrentHashMap<>();
-	Map<Long,Task> startedTasks = new ConcurrentHashMap<>();
+	// Map<Long,Task> startedTasks = new ConcurrentHashMap<>();
 
 	public int getActivejobsCount()
 	{
-		return startedTasks.size();
+		return startedFutures.size();
 	}
 
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public void schedule(String referential) {
 		
 		log.info("schedule referential "+referential);
@@ -70,7 +72,7 @@ public class Scheduler {
 
 			Map<String, String> properties = new HashMap<String, String>();
 			Task task = new Task(jobService, properties, new TaskListener());
-			startedTasks.put(jobService.getId(),  task);
+			// startedTasks.put(jobService.getId(),  task);
 			Future<STATUS> future = executor.submit(task);
 			startedFutures.put(jobService.getId(), future);
 		}
@@ -120,16 +122,13 @@ public class Scheduler {
 	public boolean cancel(JobService jobService) {
 	
 		// remove prevents for multiple calls
+		log.info("try to cancel "+jobService.getId());
 		Future<STATUS> future = startedFutures.remove(jobService.getId());
 	    if (future != null) 
 	    {
+	    	log.info("cancel future");
 	    	future.cancel(false);
 	    }
-		Task task = startedTasks.remove(jobService.getId());
-		if (task != null)
-		{
-			task.cancel();
-		}
 		
 		return true;
 	}
@@ -142,6 +141,11 @@ public class Scheduler {
 		public void taskAborted(Future<?> future, ManagedExecutorService executor, Object task, Throwable exception) {
 			log.info(Color.FAILURE + "task aborted : " + ContextHolder.getContext() + " -> " + task
 					+ Color.NORMAL);
+			if (task != null && task instanceof Task)
+			{
+		    	log.info("cancel task");
+				((Task)task).cancel();
+			}
 			schedule((Task) task);
 		}
 
@@ -169,7 +173,7 @@ public class Scheduler {
 		 */
 		private void schedule(final Task task) {
 			// remove task from stated map
-			startedTasks.remove(task.getJob().getId());
+			// startedTasks.remove(task.getJob().getId());
 			startedFutures.remove(task.getJob().getId());
 			// launch next task
 			executor.execute(new Runnable() {
@@ -185,7 +189,7 @@ public class Scheduler {
 
 						scheduler.schedule(referential);
 					} catch (Exception e) {
-						log.error(e);
+						log.error(e.getMessage(),e);
 					}
 				}
 			});

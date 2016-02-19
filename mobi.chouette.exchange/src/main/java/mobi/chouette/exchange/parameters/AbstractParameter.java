@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 @NoArgsConstructor
 @ToString
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder={"name","userName","organisationName","referentialName"},name="actionParameters")
+@XmlType(propOrder={"name","userName","organisationName","referentialName","test"},name="actionParameters")
 public class AbstractParameter {
 
 	@Getter@Setter
@@ -35,6 +35,9 @@ public class AbstractParameter {
 	@XmlElement(name = "referential_name")
 	private String referentialName;
 	
+	@Getter@Setter
+	@XmlElement(name = "test")
+	private boolean test = false;
 	public boolean isValid(Logger log)
 	{
 		return true;

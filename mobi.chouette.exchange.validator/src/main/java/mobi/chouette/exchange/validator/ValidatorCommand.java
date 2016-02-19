@@ -16,6 +16,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.AbstractDaoReaderCommand;
+import mobi.chouette.exchange.CommandCancelledException;
 import mobi.chouette.exchange.ProcessingCommands;
 import mobi.chouette.exchange.ProcessingCommandsFactory;
 import mobi.chouette.exchange.ProgressionCommand;
@@ -86,6 +87,9 @@ public class ValidatorCommand extends AbstractDaoReaderCommand implements Comman
 			result = process(context, commands, progression, false);
 
 
+		} catch (CommandCancelledException e) {
+			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR, "Command cancelled"));
+			log.error(e.getMessage());
 		} catch (Exception e) {
 			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR, "Fatal :" + e));
 			log.error(e.getMessage(), e);

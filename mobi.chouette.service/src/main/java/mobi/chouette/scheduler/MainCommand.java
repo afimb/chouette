@@ -37,13 +37,13 @@ public class MainCommand implements Command, Constant {
 	public boolean execute(Context context) throws Exception {
 		boolean result = false;
 
-		Long id = (Long) context.get(JOB_ID);
-		JobService jobService = jobManager.getJobService(id);
+		// Long id = (Long) context.get(JOB_ID);
+		// JobService jobService = jobManager.getJobService(id);
+		JobService jobService = (JobService) context.get(JOB_DATA);
 		try {
 			// set job status to started
 			// jobManager.start(jobService);
 
-			context.put(JOB_DATA, jobService);
 
 			Parameters parameters = JSONUtil.fromJSON(Paths.get(jobService.getPathName(), PARAMETERS_FILE),
 					Parameters.class);

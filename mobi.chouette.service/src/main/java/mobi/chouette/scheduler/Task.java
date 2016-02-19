@@ -32,12 +32,13 @@ public class Task implements Callable<Job.STATUS>, ManagedTask, Constant {
 	
 	private Context context = new Context();
 
-	public Task(JobService job2, Map<String, String> properties, ManagedTaskListener listener) 
+	public Task(JobService job, Map<String, String> properties, ManagedTaskListener listener) 
 	{
-		this.job = job2;
+		this.job = job;
 		this.properties = properties;
 		this.listener = listener;
-		context.put(JOB_ID, job2.getId());
+		context.put(JOB_ID, job.getId());
+		context.put(JOB_DATA, job);
 		
 	}
 
@@ -56,7 +57,7 @@ public class Task implements Callable<Job.STATUS>, ManagedTask, Constant {
 			command.execute(context);
 			//result = job.getStatus();
 		} catch (Exception e) {
-			log.error(e);
+			log.error(e.getMessage(),e);
 			result = STATUS.ABORTED;
 		} finally {
 			context.clear();

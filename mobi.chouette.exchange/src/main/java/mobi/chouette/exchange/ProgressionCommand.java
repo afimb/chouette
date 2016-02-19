@@ -13,6 +13,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.exchange.report.StepProgression;
@@ -137,8 +138,14 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 		// reset validationReport
 		context.put(VALIDATION_REPORT, new ValidationReport());
 		if (context.containsKey(CANCEL_ASKED) || Thread.currentThread().isInterrupted()) {
-			log.info(Color.YELLOW + "Command cancelled" + Color.NORMAL);
-			throw new RuntimeException(COMMAND_CANCELLED);
+			log.info("Command cancelled");
+			throw new CommandCancelledException(COMMAND_CANCELLED);
+		}
+		AbstractParameter params = (AbstractParameter) context.get(CONFIGURATION);
+		if (params.isTest())
+		{
+			log.info(Color.YELLOW + "Mode test on: waiting 10 s" + Color.NORMAL);
+			Thread.sleep(10000);
 		}
 		return result;
 	}
