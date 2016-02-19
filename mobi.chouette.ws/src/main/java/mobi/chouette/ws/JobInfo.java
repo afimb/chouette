@@ -30,48 +30,38 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import mobi.chouette.exchange.converter.ConvertParameters;
-import mobi.chouette.exchange.gtfs.exporter.GtfsExportParameters;
-import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
-import mobi.chouette.exchange.gtfs.validator.GtfsValidateParameters;
-import mobi.chouette.exchange.hub.exporter.HubExportParameters;
-import mobi.chouette.exchange.kml.exporter.KmlExportParameters;
-import mobi.chouette.exchange.neptune.exporter.NeptuneExportParameters;
-import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
-import mobi.chouette.exchange.neptune.validator.NeptuneValidateParameters;
-import mobi.chouette.exchange.netex.exporter.NetexExportParameters;
-import mobi.chouette.exchange.netex.importer.NetexImportParameters;
-import mobi.chouette.exchange.netex.validator.NetexValidateParameters;
 import mobi.chouette.exchange.parameters.AbstractParameter;
-import mobi.chouette.exchange.validator.ValidateParameters;
 import mobi.chouette.model.iev.Job;
 import mobi.chouette.model.iev.Link;
 import mobi.chouette.service.JobService;
 import mobi.chouette.service.ServiceException;
 
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+
 @Data
 @NoArgsConstructor
-@XmlRootElement(name="job")
+@XmlRootElement(name = "job")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder={"id","referential","action","type","created","started","updated","status","linkInfos","actionParameters"})
-@XmlSeeAlso({NeptuneExportParameters.class,
-	         NeptuneImportParameters.class,
-	         GtfsImportParameters.class,
-	         GtfsExportParameters.class,
-	         NetexImportParameters.class,
-	         NetexExportParameters.class,
-	         HubExportParameters.class,
-	         KmlExportParameters.class,
-	         ConvertParameters.class,
-	         ValidateParameters.class,
-	         NeptuneValidateParameters.class,
-	         GtfsValidateParameters.class,
-	         NetexValidateParameters.class})
+@XmlType(propOrder = { "id", "referential", "action", "type", "created", "started", "updated", "status", "linkInfos",
+		"actionParameters" })
+// @XmlSeeAlso({NeptuneExportParameters.class,
+// NeptuneImportParameters.class,
+// GtfsImportParameters.class,
+// GtfsExportParameters.class,
+// NetexImportParameters.class,
+// NetexExportParameters.class,
+// HubExportParameters.class,
+// KmlExportParameters.class,
+// ConvertParameters.class,
+// ValidateParameters.class,
+// NeptuneValidateParameters.class,
+// GtfsValidateParameters.class,
+// NetexValidateParameters.class})
 public class JobInfo {
 
 	@XmlElement(name = "id", required = true)
@@ -97,15 +87,14 @@ public class JobInfo {
 
 	@XmlElement(name = "status", required = true)
 	private STATUS status;
-	
+
 	@XmlElement(name = "links")
 	private List<LinkInfo> linkInfos;
-	
-	@XmlElementRef(name="action_parameters")
+
+	@XmlElementRef(name = "action_parameters")
 	private AbstractParameter actionParameters;
-	
-	public JobInfo( JobService job, boolean addLink, UriInfo uriInfo) throws ServiceException
-	{
+
+	public JobInfo(JobService job, boolean addLink, UriInfo uriInfo) throws ServiceException {
 		id = job.getId();
 		referential = job.getReferential();
 		action = job.getAction();
@@ -114,89 +103,91 @@ public class JobInfo {
 		started = job.getStarted();
 		updated = job.getUpdated();
 		status = STATUS.valueOf(job.getStatus().name());
-                actionParameters = job.getActionParameter();
-		if (addLink)
-		{
+
+		actionParameters = job.getActionParameter();
+
+		if (addLink) {
 			linkInfos = new ArrayList<>();
-			for (Link link : job.getJob().getLinks()) 
-			{
-                            link.setHref( getRelHref( link.getRel(), job));
-                            link.setMethod( getMethod( link.getRel(), job));
-                            linkInfos.add( new LinkInfo( link, uriInfo));
+			for (Link link : job.getJob().getLinks()) {
+				link.setHref(getRelHref(link.getRel(), job));
+				link.setMethod(getMethod(link.getRel(), job));
+				linkInfos.add(new LinkInfo(link, uriInfo));
 			}
 		}
 	}
-        
-        private String getFileBaseHref() {
-            return MessageFormat.format("{0}/{1}/data/{2,number,#}", ROOT_PATH, referential, id);
-        }
-        private String getScheduledJobHref() {
-            return MessageFormat.format("{0}/{1}/scheduled_jobs/{2,number,#}", ROOT_PATH, referential, id);
-        }
-        private String getTerminatedJobHref() {
-            return MessageFormat.format("{0}/{1}/terminated_jobs/{2,number,#}", ROOT_PATH, referential, id);
-        }
 
-        private String getRelHref( String rel, JobService jobService) {
-            if ( rel.equals( PARAMETERS_REL)) {
-                return getFileBaseHref()+ "/"+ PARAMETERS_FILE;
-            } else if ( rel.equals( ACTION_PARAMETERS_REL)) {
-                return getFileBaseHref()+ "/" + ACTION_PARAMETERS_FILE;
-            } else if ( rel.equals( VALIDATION_PARAMETERS_REL)) {
-                return getFileBaseHref()+ "/" + VALIDATION_PARAMETERS_FILE;
-            } else if ( rel.equals( DATA_REL)) {
-                return getFileBaseHref()+ "/" + jobService.getFilename();
-            } else if ( rel.equals( VALIDATION_REL)) {
-                return getFileBaseHref()+ "/" + VALIDATION_FILE;
-            } else if ( rel.equals( REPORT_REL)) {
-                return getFileBaseHref()+ "/" + REPORT_FILE;
-            } else if ( rel.equals( CANCEL_REL)) {
-                return getScheduledJobHref();
-            } else if ( rel.equals( DELETE_REL)) {
-                return getTerminatedJobHref();
-            } else if ( rel.equals( LOCATION_REL) && hasTerminatedState( jobService)) {
-                return getTerminatedJobHref();
-            } else if ( rel.equals( LOCATION_REL) && !hasTerminatedState( jobService)) {
-                return getScheduledJobHref();
-            }
-            return null;
-        }
-        
-        private boolean hasTerminatedState( JobService jobService) {
-            return terminatedStates().contains( jobService.getStatus());
-        }
-        
-        private Set<Job.STATUS> terminatedStates() {
-            Set<Job.STATUS> set = new HashSet<Job.STATUS>();
-            set.add(Job.STATUS.TERMINATED);
-            set.add(Job.STATUS.DELETED);
-            return set;
-        } 
-        private String getMethod( String rel, JobService jobService) {
-            if ( rel.equals( PARAMETERS_REL)) {
-                return Link.GET_METHOD;
-            } else if ( rel.equals( ACTION_PARAMETERS_REL)) {
-                return Link.GET_METHOD;
-            } else if ( rel.equals( VALIDATION_PARAMETERS_REL)) {
-                return Link.GET_METHOD;
-            } else if ( rel.equals( DATA_REL)) {
-                return Link.GET_METHOD;
-            } else if ( rel.equals( VALIDATION_REL)) {
-                return Link.GET_METHOD;
-            } else if ( rel.equals( REPORT_REL)) {
-                return Link.GET_METHOD;
-            } else if ( rel.equals( CANCEL_REL)) {
-                return Link.DELETE_METHOD;
-            } else if ( rel.equals( DELETE_REL)) {
-                return Link.DELETE_METHOD;
-            } else if ( rel.equals( LOCATION_REL)) {
-                return Link.GET_METHOD;
-            } 
-            return null;
-        }
+	private String getFileBaseHref() {
+		return MessageFormat.format("{0}/{1}/data/{2,number,#}", ROOT_PATH, referential, id);
+	}
 
+	private String getScheduledJobHref() {
+		return MessageFormat.format("{0}/{1}/scheduled_jobs/{2,number,#}", ROOT_PATH, referential, id);
+	}
 
-	@XmlType(name="jobStatus")
+	private String getTerminatedJobHref() {
+		return MessageFormat.format("{0}/{1}/terminated_jobs/{2,number,#}", ROOT_PATH, referential, id);
+	}
+
+	private String getRelHref(String rel, JobService jobService) {
+		if (rel.equals(PARAMETERS_REL)) {
+			return getFileBaseHref() + "/" + PARAMETERS_FILE;
+		} else if (rel.equals(ACTION_PARAMETERS_REL)) {
+			return getFileBaseHref() + "/" + ACTION_PARAMETERS_FILE;
+		} else if (rel.equals(VALIDATION_PARAMETERS_REL)) {
+			return getFileBaseHref() + "/" + VALIDATION_PARAMETERS_FILE;
+		} else if (rel.equals(DATA_REL)) {
+			return getFileBaseHref() + "/" + jobService.getFilename();
+		} else if (rel.equals(VALIDATION_REL)) {
+			return getFileBaseHref() + "/" + VALIDATION_FILE;
+		} else if (rel.equals(REPORT_REL)) {
+			return getFileBaseHref() + "/" + REPORT_FILE;
+		} else if (rel.equals(CANCEL_REL)) {
+			return getScheduledJobHref();
+		} else if (rel.equals(DELETE_REL)) {
+			return getTerminatedJobHref();
+		} else if (rel.equals(LOCATION_REL) && hasTerminatedState(jobService)) {
+			return getTerminatedJobHref();
+		} else if (rel.equals(LOCATION_REL) && !hasTerminatedState(jobService)) {
+			return getScheduledJobHref();
+		}
+		return null;
+	}
+
+	private boolean hasTerminatedState(JobService jobService) {
+		return terminatedStates().contains(jobService.getStatus());
+	}
+
+	private Set<Job.STATUS> terminatedStates() {
+		Set<Job.STATUS> set = new HashSet<Job.STATUS>();
+		set.add(Job.STATUS.TERMINATED);
+		set.add(Job.STATUS.DELETED);
+		return set;
+	}
+
+	private String getMethod(String rel, JobService jobService) {
+		if (rel.equals(PARAMETERS_REL)) {
+			return Link.GET_METHOD;
+		} else if (rel.equals(ACTION_PARAMETERS_REL)) {
+			return Link.GET_METHOD;
+		} else if (rel.equals(VALIDATION_PARAMETERS_REL)) {
+			return Link.GET_METHOD;
+		} else if (rel.equals(DATA_REL)) {
+			return Link.GET_METHOD;
+		} else if (rel.equals(VALIDATION_REL)) {
+			return Link.GET_METHOD;
+		} else if (rel.equals(REPORT_REL)) {
+			return Link.GET_METHOD;
+		} else if (rel.equals(CANCEL_REL)) {
+			return Link.DELETE_METHOD;
+		} else if (rel.equals(DELETE_REL)) {
+			return Link.DELETE_METHOD;
+		} else if (rel.equals(LOCATION_REL)) {
+			return Link.GET_METHOD;
+		}
+		return null;
+	}
+
+	@XmlType(name = "jobStatus")
 	@XmlEnum(String.class)
 	public enum STATUS implements java.io.Serializable {
 		SCHEDULED, STARTED, TERMINATED, CANCELED, ABORTED

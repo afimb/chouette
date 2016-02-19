@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.JSONUtil;
 import mobi.chouette.exchange.AbstractInputValidator;
 import mobi.chouette.exchange.InputValidator;
 import mobi.chouette.exchange.InputValidatorFactory;
@@ -14,6 +15,30 @@ public class KmlExporterInputValidator extends AbstractInputValidator {
 
 	private static String[] allowedTypes = { "line", "network", "company", "group_of_line" };
 	
+	@Override
+	public AbstractParameter toActionParameter(String abstractParameter) {
+		try {
+			return JSONUtil.fromJSON(abstractParameter, KmlExportParameters.class);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	@Override
+	public boolean checkParameters(String abstractParameterString, String validationParametersString) {
+
+		try {
+			KmlExportParameters parameters = JSONUtil.fromJSON(abstractParameterString, KmlExportParameters.class);
+
+			ValidationParameters validationParameters = JSONUtil.fromJSON(validationParametersString,
+					ValidationParameters.class);
+
+			return checkParameters(parameters, validationParameters);
+		} catch (Exception ex) {
+			log.error(ex.getMessage());
+			return false;
+		}
+	}
+
 	@Override
 	public boolean checkParameters(AbstractParameter abstractParameter, ValidationParameters validationParameters) {
 		if (!(abstractParameter instanceof KmlExportParameters)) {

@@ -75,7 +75,7 @@ public class JobServiceManagerTest extends Arquillian {
 			return;
 			
 		} catch (Exception e) {
-			Assert.assertTrue(false,"RequestServiceException required");
+			Assert.assertTrue(false,"RequestServiceException required,"+ e.getClass().getName()+" received");
 		}
 		Assert.assertTrue(false,"exception required");
 		

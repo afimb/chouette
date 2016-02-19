@@ -105,57 +105,15 @@
       </dependency>
       <dependency>
          <groupId>${project.groupId}</groupId>
-         <artifactId>mobi.chouette.exchange.neptune</artifactId>
+         <artifactId>mobi.chouette.exchange</artifactId>
          <type>ejb</type>
          <version>${project.version}</version>
       </dependency>
-      <dependency>
-         <groupId>${project.groupId}</groupId>
-         <artifactId>mobi.chouette.exchange.gtfs</artifactId>
-         <type>ejb</type>
-         <version>${project.version}</version>
-      </dependency>
-      <dependency>
-         <groupId>${project.groupId}</groupId>
-         <artifactId>mobi.chouette.exchange.netex</artifactId>
-         <type>ejb</type>
-         <version>${project.version}</version>
-      </dependency>
-      <dependency>
-         <groupId>${project.groupId}</groupId>
-         <artifactId>mobi.chouette.exchange.kml</artifactId>
-         <type>ejb</type>
-         <version>${project.version}</version>
-      </dependency>
-      <dependency>
-         <groupId>${project.groupId}</groupId>
-         <artifactId>mobi.chouette.exchange.hub</artifactId>
-         <type>ejb</type>
-         <version>${project.version}</version>
-      </dependency>
-      <dependency>
-         <groupId>${project.groupId}</groupId>
-         <artifactId>mobi.chouette.exchange.validator</artifactId>
-         <type>ejb</type>
-         <version>${project.version}</version>
-      </dependency>
-      <dependency>
-         <groupId>${project.groupId}</groupId>
-         <artifactId>mobi.chouette.exchange.converter</artifactId>
-         <type>ejb</type>
-         <version>${project.version}</version>
-      </dependency>
-
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
 			<scope>provided</scope>
 		</dependency>
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.hibernate</groupId> -->
-<!-- 			<artifactId>hibernate-entitymanager</artifactId> -->
-<!-- 			<scope>provided</scope> -->
-<!-- 		</dependency> -->
 
    </dependencies>
    </project>

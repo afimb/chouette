@@ -1,6 +1,6 @@
 {
    "parameters": {
-      "neptune-import": {
+      "dummy-import": {
          "name": "todo",
          "user_name": "todo",
          "no_save": true

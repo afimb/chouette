@@ -148,8 +148,7 @@ public class JobServiceManager {
 			return jobService;
 
 		} catch (RequestServiceException ex) {
-			log.info("fail to create job " + jobService.getJob().getId());
-
+			log.info("fail to create job ");
 			deleteBadCreatedJob(jobService);
 			throw ex;
 		} catch (Exception ex) {

@@ -38,6 +38,7 @@ public class JSONUtil {
 	@SuppressWarnings("unchecked")
 	public static <T> T fromJSON(String text, Class<T> type) throws JAXBException, JSONException, XMLStreamException {
 
+		if (text == null || text.isEmpty() ) return null;
 		JAXBContext context = JAXBContext.newInstance(type);
 		JSONObject object = new JSONObject(text);
 		Configuration config = new Configuration();

@@ -1,7 +1,6 @@
 package mobi.chouette.scheduler;
 
 import java.io.IOException;
-import java.nio.file.Paths;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -13,12 +12,12 @@ import javax.naming.NamingException;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
-import mobi.chouette.common.JSONUtil;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.report.ActionError;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.ReportConstant;
+import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.service.JobService;
 import mobi.chouette.service.JobServiceManager;
@@ -43,13 +42,10 @@ public class MainCommand implements Command, Constant {
 		try {
 			// set job status to started
 			// jobManager.start(jobService);
-
-
-			Parameters parameters = JSONUtil.fromJSON(Paths.get(jobService.getPathName(), PARAMETERS_FILE),
-					Parameters.class);
-			context.put(CONFIGURATION, parameters.getConfiguration());
-			if (parameters.getValidation() != null)
-			   context.put(VALIDATION, parameters.getValidation());
+			context.put(CONFIGURATION, jobService.getActionParameter());
+			ValidationParameters validationParameters = jobService.getValidationParameter();
+			if (validationParameters != null)
+			   context.put(VALIDATION, validationParameters);
 			context.put(REPORT, new ActionReport());
 			context.put(MAIN_VALIDATION_REPORT, new ValidationReport());
 

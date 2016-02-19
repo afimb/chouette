@@ -3,6 +3,7 @@ package mobi.chouette.exchange.converter;
 import java.io.IOException;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.JSONUtil;
 import mobi.chouette.exchange.AbstractInputValidator;
 import mobi.chouette.exchange.InputValidator;
 import mobi.chouette.exchange.InputValidatorFactory;
@@ -21,6 +22,32 @@ import org.apache.commons.lang.StringUtils;
 public class ConverterInputValidator extends AbstractInputValidator {
 
 	@Override
+	public AbstractParameter toActionParameter(String abstractParameter) {
+		try {
+			return JSONUtil.fromJSON(abstractParameter, ConvertParameters.class);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	@Override
+	public boolean checkParameters(String abstractParameterString, String validationParametersString) {
+
+		try {
+			ConvertParameters parameters = JSONUtil.fromJSON(abstractParameterString, ConvertParameters.class);
+
+			ValidationParameters validationParameters = JSONUtil.fromJSON(validationParametersString,
+					ValidationParameters.class);
+
+			return checkParameters(parameters, validationParameters);
+		} catch (Exception ex) {
+			log.error(ex.getMessage());
+			return false;
+		}
+	}
+
+
+	@Override
 	public boolean checkParameters(AbstractParameter abstractParameter, ValidationParameters validationParameters) {
 		if (!(abstractParameter instanceof ConvertParameters)) {
 			log.error("invalid parameters for converter " + abstractParameter.getClass().getName());
@@ -28,16 +55,13 @@ public class ConverterInputValidator extends AbstractInputValidator {
 		}
 
 		ConvertParameters parameters = (ConvertParameters) abstractParameter;
-
-		if (parameters.getImportConfiguration() == null)
-		{
+		if (parameters.getImportConfiguration() == null) {
 			log.error("missing import parameters for converter ");
-			return false;			
+			return false;
 		}
-		if (parameters.getExportConfiguration() == null)
-		{
+		if (parameters.getExportConfiguration() == null) {
 			log.error("missing export parameters for converter ");
-			return false;			
+			return false;
 		}
 
 		InputValidator importValidator = null;
@@ -99,7 +123,7 @@ public class ConverterInputValidator extends AbstractInputValidator {
 			log.error("input data expected");
 			return false;
 		}
-		if (!fileName.endsWith(".zip") ) {
+		if (!fileName.endsWith(".zip")) {
 			log.error("Zip archive input data expected");
 			return false;
 		}
@@ -124,5 +148,6 @@ public class ConverterInputValidator extends AbstractInputValidator {
 	static {
 		InputValidatorFactory.factories.put(ConverterInputValidator.class.getName(), new DefaultFactory());
 	}
+
 
 }
