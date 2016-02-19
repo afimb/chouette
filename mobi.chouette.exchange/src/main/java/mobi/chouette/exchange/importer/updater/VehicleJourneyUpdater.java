@@ -12,13 +12,17 @@ import mobi.chouette.common.CollectionUtil;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
 import mobi.chouette.dao.CompanyDAO;
+import mobi.chouette.dao.JourneyFrequencyDAO;
 import mobi.chouette.dao.RouteDAO;
 import mobi.chouette.dao.StopPointDAO;
+import mobi.chouette.dao.TimebandDAO;
 import mobi.chouette.dao.TimetableDAO;
 import mobi.chouette.dao.VehicleJourneyAtStopDAO;
 import mobi.chouette.model.Company;
+import mobi.chouette.model.JourneyFrequency;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.Timeband;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
@@ -36,6 +40,23 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 			int result = -1;
 			if (o1.getStopPoint() != null && o2.getStopPoint() != null) {
 				result = (o1.getStopPoint().equals(o2.getStopPoint())) ? 0 : -1;
+			}
+			return result;
+		}
+	};
+
+	private static final Comparator<JourneyFrequency> JOURNEY_FREQUENCY_COMPARATOR = new Comparator<JourneyFrequency>() {
+		@Override
+		public int compare(JourneyFrequency o1, JourneyFrequency o2) {
+			int result = 1;
+			if (o1.getTimeband() != null && o2.getTimeband() != null) {
+				if (o1.getTimeband().equals(o2.getTimeband()))
+					result =  0;
+				else if (o1.getTimeband().getStartTime() == null || o1.getTimeband().getEndTime() == null)
+					result = -1;
+				else if (o1.getTimeband().getEndTime().before(o2.getTimeband().getStartTime()) ||
+						o1.getTimeband().getEndTime().equals(o2.getTimeband().getStartTime()))
+					result = -1;
 			}
 			return result;
 		}
@@ -64,6 +85,15 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 
 	@EJB(beanName = VehicleJourneyAtStopUpdater.BEAN_NAME)
 	private Updater<VehicleJourneyAtStop> vehicleJourneyAtStopUpdater;
+
+	@EJB
+	private TimebandDAO timebandDAO;
+
+	@EJB
+	private JourneyFrequencyDAO journeyFrequencyDAO;
+
+	@EJB(beanName = JourneyFrequencyUpdater.BEAN_NAME)
+	private Updater<JourneyFrequency> journeyFrequencyUpdater;
 
 	@Override
 	public void update(Context context, VehicleJourney oldValue,
@@ -143,6 +173,12 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 						oldValue.getFlexibleService())) {
 			oldValue.setFlexibleService(newValue.getFlexibleService());
 		}
+		if (newValue.getJourneyCategory() != null
+				&& !newValue.getJourneyCategory().equals(
+						oldValue.getJourneyCategory())) {
+			oldValue.setJourneyCategory(newValue.getJourneyCategory());
+		}
+			
 
 		// Company
 		if (newValue.getCompany() == null) {
@@ -239,6 +275,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 				vehicleJourneyAtStopDAO.delete(vehicleJourneyAtStop);
 			}
 		}
+		
 
 		// Timetable
 		Collection<Timetable> addedTimetable = CollectionUtil.substract(
@@ -280,7 +317,50 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 				NeptuneIdentifiedObjectComparator.INSTANCE);
 		for (Timetable timetable : removedTimetable) {
 			timetable.removeVehicleJourney(oldValue);
-		}
+		}		
+	
+		// journey frequency
+		/*if (!optimized)*/ {
+			Collection<JourneyFrequency> addedJourneyFrequency = CollectionUtil.substract(
+					newValue.getJourneyFrequencies(), oldValue.getJourneyFrequencies(),
+					JOURNEY_FREQUENCY_COMPARATOR);
+			final Collection<String> objectIds = new ArrayList<String>();
+			for (JourneyFrequency journeyFrequency : addedJourneyFrequency) {
+				objectIds.add(journeyFrequency.getTimeband().getObjectId());
+			}
+			List<Timeband> timebands = null;
+			for (JourneyFrequency item : addedJourneyFrequency) {
+				JourneyFrequency journeyFrequency = new JourneyFrequency();
+				Timeband timeband = cache.getTimebands().get(item.getTimeband().getObjectId());
+				if (timeband == null) {
+					if (timebands == null) {
+						timebands = timebandDAO.findByObjectId(objectIds);
+						for (Timeband object : timebands) {
+							cache.getTimebands().put(object.getObjectId(), object);
+						}
+					}
+					timeband = cache.getTimebands().get(item.getTimeband().getObjectId());
+				}
+				if (timeband != null) {
+					journeyFrequency.setTimeband(timeband);
+				}
+				journeyFrequency.setVehicleJourney(oldValue);
+			}
+			
+			Collection<Pair<JourneyFrequency, JourneyFrequency>> modifiedJourneyFrequency = CollectionUtil.intersection(
+					oldValue.getJourneyFrequencies(), newValue.getJourneyFrequencies(),
+					JOURNEY_FREQUENCY_COMPARATOR);
+			for (Pair<JourneyFrequency, JourneyFrequency> pair : modifiedJourneyFrequency) {
+				journeyFrequencyUpdater.update(context, pair.getLeft(), pair.getRight());
+			}
 
+			Collection<JourneyFrequency> removedJourneyFrequency = CollectionUtil.substract(
+					oldValue.getJourneyFrequencies(), newValue.getJourneyFrequencies(),
+					JOURNEY_FREQUENCY_COMPARATOR);
+			for (JourneyFrequency journeyFrequency : removedJourneyFrequency) {
+				journeyFrequency.setVehicleJourney(null);
+				journeyFrequencyDAO.delete(journeyFrequency);
+			}
+		}
 	}
 }

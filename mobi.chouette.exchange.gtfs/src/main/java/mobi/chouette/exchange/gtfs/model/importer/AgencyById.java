@@ -80,7 +80,7 @@ public class AgencyById extends IndexImpl<GtfsAgency> implements GtfsConverter {
 			getErrors().add(new GtfsException(_path, 1, name, GtfsException.ERROR.MISSING_REQUIRED_FIELDS, null, null));
 		}
 	}
-
+	
 	@Override
 	protected GtfsAgency build(GtfsIterator reader, Context context) {
 		int i = 0;
@@ -95,108 +95,130 @@ public class AgencyById extends IndexImpl<GtfsAgency> implements GtfsConverter {
 		bean.setId(id);
 
 		value = array[i++];
-		testExtraSpace(FIELDS.agency_id.name(), value, bean);
-		bean.getOkTests().add(GtfsException.ERROR.EXTRA_SPACE_IN_FIELD);
+		if (withValidation) {
+			testExtraSpace(FIELDS.agency_id.name(), value, bean);
+			bean.getOkTests().add(GtfsException.ERROR.EXTRA_SPACE_IN_FIELD);
+		}
 		bean.setAgencyId(STRING_CONVERTER.from(context, FIELDS.agency_id, value, GtfsAgency.DEFAULT_ID, false));
 
-		if (GtfsAgency.DEFAULT_ID.equals(bean.getAgencyId())) {
-			if (getIndex(FIELDS.agency_id.name()) == null) {
-				bean.getErrors().add(
-						new GtfsException(_path, id, FIELDS.agency_id.name(), GtfsException.ERROR.DEFAULT_VALUE, null,
-								null));
+		if (withValidation) {
+			if (GtfsAgency.DEFAULT_ID.equals(bean.getAgencyId())) {
+				if (getIndex(FIELDS.agency_id.name()) == null) {
+					bean.getErrors().add(
+							new GtfsException(_path, id, FIELDS.agency_id.name(), GtfsException.ERROR.DEFAULT_VALUE, null,
+									null));
+				} else {
+					bean.getErrors().add(
+							new GtfsException(_path, id, getIndex(FIELDS.agency_id.name()), FIELDS.agency_id.name(),
+									GtfsException.ERROR.DEFAULT_VALUE, null, null));
+				}
 			} else {
-				bean.getErrors().add(
-						new GtfsException(_path, id, getIndex(FIELDS.agency_id.name()), FIELDS.agency_id.name(),
-								GtfsException.ERROR.DEFAULT_VALUE, null, null));
+				bean.getOkTests().add(GtfsException.ERROR.DEFAULT_VALUE);
 			}
-		} else {
-			bean.getOkTests().add(GtfsException.ERROR.DEFAULT_VALUE);
 		}
 
 		// check the existance of agency_name, agency_url and agency_timezone
 		// values for this bean : 1-GTFS-Agency-5
 		// 1-GTFS-Agency-5
 		value = array[i++];
-		testExtraSpace(FIELDS.agency_name.name(), value, bean);
+		if (withValidation)
+			testExtraSpace(FIELDS.agency_name.name(), value, bean);
 		if (value == null || value.trim().isEmpty()) {
-			bean.getErrors().add(
-					new GtfsException(_path, id, getIndex(FIELDS.agency_name.name()), FIELDS.agency_name.name(),
-							GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+			if (withValidation)
+				bean.getErrors().add(
+						new GtfsException(_path, id, getIndex(FIELDS.agency_name.name()), FIELDS.agency_name.name(),
+								GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
 		} else {
-			bean.getOkTests().add(GtfsException.ERROR.MISSING_REQUIRED_VALUES);
+			if (withValidation)
+				bean.getOkTests().add(GtfsException.ERROR.MISSING_REQUIRED_VALUES);
 			bean.setAgencyName(STRING_CONVERTER.from(context, FIELDS.agency_name, value, true));
 		}
 
 		// 1-GTFS-Agency-5
 		value = array[i++];
-		testExtraSpace(FIELDS.agency_url.name(), value, bean);
+		if (withValidation)
+			testExtraSpace(FIELDS.agency_url.name(), value, bean);
 		if (value == null || value.trim().isEmpty()) {
-			bean.getErrors().add(
-					new GtfsException(_path, id, getIndex(FIELDS.agency_url.name()), FIELDS.agency_url.name(),
-							GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+			if (withValidation)
+				bean.getErrors().add(
+						new GtfsException(_path, id, getIndex(FIELDS.agency_url.name()), FIELDS.agency_url.name(),
+								GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
 		} else {
 			try {
 				bean.setAgencyUrl(URL_CONVERTER.from(context, FIELDS.agency_url, value, true));
 			} catch (GtfsException e) {
 				// 1-GTFS-Agency-7 warning
-				bean.getErrors().add(
-						new GtfsException(_path, id, getIndex(FIELDS.agency_url.name()), FIELDS.agency_url.name(),
-								GtfsException.ERROR.INVALID_FORMAT, null, value));
+				if (withValidation)
+					bean.getErrors().add(
+							new GtfsException(_path, id, getIndex(FIELDS.agency_url.name()), FIELDS.agency_url.name(),
+									GtfsException.ERROR.INVALID_FORMAT, null, value));
 			} finally {
-				bean.getOkTests().add(GtfsException.ERROR.INVALID_FORMAT);
+				if (withValidation)
+					bean.getOkTests().add(GtfsException.ERROR.INVALID_FORMAT);
 			}
 		}
 
 		// 1-GTFS-Agency-5
 		value = array[i++];
-		testExtraSpace(FIELDS.agency_timezone.name(), value, bean);
+		if (withValidation)
+			testExtraSpace(FIELDS.agency_timezone.name(), value, bean);
 		if (value == null || value.trim().isEmpty()) {
-			bean.getErrors().add(
-					new GtfsException(_path, id, FIELDS.agency_timezone.name(),
-							GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+			if (withValidation)
+				bean.getErrors().add(
+						new GtfsException(_path, id, FIELDS.agency_timezone.name(),
+								GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
 		} else {
 			try {
 				bean.setAgencyTimezone(TIMEZONE_CONVERTER.from(context, FIELDS.agency_timezone, value, true));
 			} catch (GtfsException e) {
 				// 1-GTFS-Agency-6 warning
-				bean.getErrors().add(
-						new GtfsException(_path, id, getIndex(FIELDS.agency_timezone.name()), FIELDS.agency_timezone
-								.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
+				if (withValidation)
+					bean.getErrors().add(
+							new GtfsException(_path, id, getIndex(FIELDS.agency_timezone.name()), FIELDS.agency_timezone
+									.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			} finally {
-				bean.getOkTests().add(GtfsException.ERROR.INVALID_FORMAT);
+				if (withValidation)
+					bean.getOkTests().add(GtfsException.ERROR.INVALID_FORMAT);
 			}
 		}
 
 		value = array[i++];
-		testExtraSpace(FIELDS.agency_phone.name(), value, bean);
+		if (withValidation)
+			testExtraSpace(FIELDS.agency_phone.name(), value, bean);
 		if (value != null && !value.trim().isEmpty())
 			bean.setAgencyPhone(STRING_CONVERTER.from(context, FIELDS.agency_phone, value, false));
 
 		value = array[i++];
-		testExtraSpace(FIELDS.agency_lang.name(), value, bean);
+		if (withValidation)
+			testExtraSpace(FIELDS.agency_lang.name(), value, bean);
 		if (value != null && !value.trim().isEmpty())
 			if (isUnknownAsIsoLanguage(value)) {
 				// 1-GTFS-Agency-8 warning
-				bean.getErrors().add(
-						new GtfsException(_path, id, getIndex(FIELDS.agency_lang.name()), FIELDS.agency_lang.name(),
-								GtfsException.ERROR.INVALID_FORMAT, null, value));
+				if (withValidation)
+					bean.getErrors().add(
+							new GtfsException(_path, id, getIndex(FIELDS.agency_lang.name()), FIELDS.agency_lang.name(),
+									GtfsException.ERROR.INVALID_FORMAT, null, value));
 			} else {
-				bean.getOkTests().add(GtfsException.ERROR.INVALID_FORMAT);
+				if (withValidation)
+					bean.getOkTests().add(GtfsException.ERROR.INVALID_FORMAT);
 				bean.setAgencyLang(STRING_CONVERTER.from(context, FIELDS.agency_lang, value, false));
 			}
 
 		value = array[i++];
-		testExtraSpace(FIELDS.agency_fare_url.name(), value, bean);
+		if (withValidation)
+			testExtraSpace(FIELDS.agency_fare_url.name(), value, bean);
 		if (value != null && !value.trim().isEmpty()) {
 			try {
 				bean.setAgencyFareUrl(URL_CONVERTER.from(context, FIELDS.agency_fare_url, value, false));
 			} catch (GtfsException e) {
 				// 1-GTFS-Agency-9 warning
-				bean.getErrors().add(
+				if (withValidation)
+					bean.getErrors().add(
 						new GtfsException(_path, id, getIndex(FIELDS.agency_fare_url.name()), FIELDS.agency_fare_url
 								.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			} finally {
-				bean.getOkTests().add(GtfsException.ERROR.INVALID_FORMAT);
+				if (withValidation)
+					bean.getOkTests().add(GtfsException.ERROR.INVALID_FORMAT);
 			}
 		}
 

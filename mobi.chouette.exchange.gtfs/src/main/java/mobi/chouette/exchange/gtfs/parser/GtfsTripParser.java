@@ -1,19 +1,25 @@
 package mobi.chouette.exchange.gtfs.parser;
 
+import java.math.BigDecimal;
 import java.sql.Time;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
+import mobi.chouette.common.TimeUtil;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.gtfs.model.GtfsFrequency;
 import mobi.chouette.exchange.gtfs.model.GtfsRoute;
@@ -33,22 +39,32 @@ import mobi.chouette.exchange.gtfs.validation.ValidationReporter;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.Validator;
+import mobi.chouette.model.JourneyFrequency;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
+import mobi.chouette.model.RouteSection;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.Timeband;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
+import mobi.chouette.model.type.JourneyCategoryEnum;
+import mobi.chouette.model.type.SectionStatusEnum;
 import mobi.chouette.model.util.NeptuneUtil;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
-import org.apache.commons.beanutils.BeanUtils;
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.LineSegment;
+import com.vividsolutions.jts.geom.PrecisionModel;
 
 @Log4j
 public class GtfsTripParser implements Parser, Validator, Constant {
+
+	private static final Comparator<OrderedCoordinate> COORDINATE_SORTER = new OrderedCoordinateComparator();
 
 	@Getter
 	@Setter
@@ -58,56 +74,61 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 	public void validate(Context context) throws Exception {
 		ValidationReporter validationReporter = (ValidationReporter) context.get(GTFS_REPORTER);
 		validationReporter.getExceptions().clear();
-		
+
 		validateStopTimes(context);
 		validateShapes(context);
 		validateTrips(context);
 		validateFrequencies(context);
 	}
-	
+
 	private void validateStopTimes(Context context) throws Exception {
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		ValidationReporter validationReporter = (ValidationReporter) context.get(GTFS_REPORTER);
 		Set<String> stopIds = new HashSet<String>();
-		
+
 		// stop_times.txt
-		if (importer.hasStopTimeImporter()) { // the file "stop_times.txt" exists ?
+		if (importer.hasStopTimeImporter()) { // the file "stop_times.txt"
+												// exists ?
 			validationReporter.reportSuccess(context, GTFS_1_GTFS_Common_1, GTFS_STOP_TIMES_FILE);
 
 			Index<GtfsStopTime> stopTimeParser = null;
 			try { // Read and check the header line of the file "stop_times.txt"
 				stopTimeParser = importer.getStopTimeByTrip();
-			} catch (Exception ex ) {
+			} catch (Exception ex) {
 				if (ex instanceof GtfsException) {
-					validationReporter.reportError(context, (GtfsException)ex, GTFS_STOP_TIMES_FILE);
+					validationReporter.reportError(context, (GtfsException) ex, GTFS_STOP_TIMES_FILE);
 				} else {
 					validationReporter.throwUnknownError(context, ex, GTFS_STOP_TIMES_FILE);
 				}
 			}
 
 			validationReporter.validateOkCSV(context, GTFS_STOP_TIMES_FILE);
-			
-			if (stopTimeParser == null) { // importer.getStopTimeByTrip() fails for any other reason
-				validationReporter.throwUnknownError(context, new Exception("Cannot instantiate StopTimeByTrip class"), GTFS_STOP_TIMES_FILE);
+
+			if (stopTimeParser == null) { // importer.getStopTimeByTrip() fails
+											// for any other reason
+				validationReporter.throwUnknownError(context, new Exception("Cannot instantiate StopTimeByTrip class"),
+						GTFS_STOP_TIMES_FILE);
 			} else {
 				validationReporter.validate(context, GTFS_STOP_TIMES_FILE, stopTimeParser.getOkTests());
 				validationReporter.validateUnknownError(context);
 			}
-			
+
 			if (!stopTimeParser.getErrors().isEmpty()) {
 				validationReporter.reportErrors(context, stopTimeParser.getErrors(), GTFS_STOP_TIMES_FILE);
 				stopTimeParser.getErrors().clear();
 			}
-			
+
 			validationReporter.validateOKGeneralSyntax(context, GTFS_STOP_TIMES_FILE);
-		
+
 			if (stopTimeParser.getLength() == 0) {
-				validationReporter.reportError(context, new GtfsException(GTFS_STOP_TIMES_FILE, 1, null, GtfsException.ERROR.FILE_WITH_NO_ENTRY, null, null), GTFS_STOP_TIMES_FILE);
+				validationReporter.reportError(context, new GtfsException(GTFS_STOP_TIMES_FILE, 1, null,
+						GtfsException.ERROR.FILE_WITH_NO_ENTRY, null, null), GTFS_STOP_TIMES_FILE);
 			} else {
 				validationReporter.validate(context, GTFS_STOP_TIMES_FILE, GtfsException.ERROR.FILE_WITH_NO_ENTRY);
 			}
-		
+
 			GtfsException fatalException = null;
+			stopTimeParser.setWithValidation(true);
 			for (GtfsStopTime bean : stopTimeParser) {
 				if (bean.getStopId() != null)
 					stopIds.add(bean.getStopId());
@@ -115,25 +136,28 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 					stopTimeParser.validate(bean, importer);
 				} catch (Exception ex) {
 					if (ex instanceof GtfsException) {
-						validationReporter.reportError(context, (GtfsException)ex, GTFS_STOP_TIMES_FILE);
+						validationReporter.reportError(context, (GtfsException) ex, GTFS_STOP_TIMES_FILE);
 					} else {
 						validationReporter.throwUnknownError(context, ex, GTFS_STOP_TIMES_FILE);
 					}
 				}
-				for(GtfsException ex : bean.getErrors()) {
+				for (GtfsException ex : bean.getErrors()) {
 					if (ex.isFatal())
 						fatalException = ex;
 				}
 				validationReporter.reportErrors(context, bean.getErrors(), GTFS_STOP_TIMES_FILE);
 				validationReporter.validate(context, GTFS_STOP_TIMES_FILE, bean.getOkTests());
 			}
+			stopTimeParser.setWithValidation(false);
 			int i = 1;
 			boolean unsuedId = true;
 			for (GtfsStop bean : importer.getStopById()) {
 				if (LocationType.Stop.equals(bean.getLocationType())) {
 					if (stopIds.add(bean.getStopId())) {
 						unsuedId = false;
-						validationReporter.reportError(context, new GtfsException(GTFS_STOPS_FILE, i, StopById.FIELDS.stop_id.name(), GtfsException.ERROR.UNUSED_ID, null, bean.getStopId()), GTFS_STOP_TIMES_FILE);
+						validationReporter.reportError(context, new GtfsException(GTFS_STOPS_FILE, i,
+								StopById.FIELDS.stop_id.name(), GtfsException.ERROR.UNUSED_ID, null, bean.getStopId()),
+								GTFS_STOP_TIMES_FILE);
 					}
 				}
 				i++;
@@ -144,119 +168,132 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			if (fatalException != null)
 				throw fatalException;
 		} else {
-			validationReporter.reportError(context, new GtfsException(GTFS_STOP_TIMES_FILE, 1, null, GtfsException.ERROR.MISSING_FILE, null, null), GTFS_STOP_TIMES_FILE);
+			validationReporter.reportError(context, new GtfsException(GTFS_STOP_TIMES_FILE, 1, null,
+					GtfsException.ERROR.MISSING_FILE, null, null), GTFS_STOP_TIMES_FILE);
 		}
 	}
-	
+
 	private void validateShapes(Context context) throws Exception {
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		ValidationReporter validationReporter = (ValidationReporter) context.get(GTFS_REPORTER);
-				
+
 		// shapes.txt
 		if (importer.hasShapeImporter()) {
 			validationReporter.reportSuccess(context, GTFS_1_GTFS_Common_1, GTFS_SHAPES_FILE);
-			
+
 			Index<GtfsShape> shapeParser = null;
 			try { // Read and check the header line of the file "shapes.txt"
-				shapeParser = importer.getShapeById(); 
-			} catch (Exception ex ) {
+				shapeParser = importer.getShapeById();
+			} catch (Exception ex) {
 				if (ex instanceof GtfsException) {
-					validationReporter.reportError(context, (GtfsException)ex, GTFS_SHAPES_FILE);
+					validationReporter.reportError(context, (GtfsException) ex, GTFS_SHAPES_FILE);
 				} else {
 					validationReporter.throwUnknownError(context, ex, GTFS_SHAPES_FILE);
 				}
 			}
 
 			validationReporter.validateOkCSV(context, GTFS_SHAPES_FILE);
-			
-			if (shapeParser == null) { // importer.getShapeById() fails for any other reason
-				validationReporter.throwUnknownError(context, new Exception("Cannot instantiate ShapeById class"), GTFS_SHAPES_FILE);
+
+			if (shapeParser == null) { // importer.getShapeById() fails for any
+										// other reason
+				validationReporter.throwUnknownError(context, new Exception("Cannot instantiate ShapeById class"),
+						GTFS_SHAPES_FILE);
 			} else {
 				validationReporter.validate(context, GTFS_SHAPES_FILE, shapeParser.getOkTests());
 				validationReporter.validateUnknownError(context);
 			}
-			
+
 			if (!shapeParser.getErrors().isEmpty()) {
 				validationReporter.reportErrors(context, shapeParser.getErrors(), GTFS_SHAPES_FILE);
 				shapeParser.getErrors().clear();
 			}
-			
+
 			validationReporter.validateOKGeneralSyntax(context, GTFS_SHAPES_FILE);
-			
+
 			if (shapeParser.getLength() == 0) {
-				validationReporter.reportError(context, new GtfsException(GTFS_SHAPES_FILE, 1, null, GtfsException.ERROR.OPTIONAL_FILE_WITH_NO_ENTRY, null, null), GTFS_SHAPES_FILE);
+				validationReporter.reportError(context, new GtfsException(GTFS_SHAPES_FILE, 1, null,
+						GtfsException.ERROR.OPTIONAL_FILE_WITH_NO_ENTRY, null, null), GTFS_SHAPES_FILE);
 			} else {
 				validationReporter.validate(context, GTFS_SHAPES_FILE, GtfsException.ERROR.FILE_WITH_NO_ENTRY);
 			}
-			
+
 			GtfsException fatalException = null;
-			for (GtfsShape bean : shapeParser) {
+			shapeParser.setWithValidation(true);
+			Iterator<GtfsShape> iti = shapeParser.iterator();
+			while (iti.hasNext()) {
+				GtfsShape bean = iti.next();
 				try {
 					shapeParser.validate(bean, importer);
 				} catch (Exception ex) {
 					if (ex instanceof GtfsException) {
-						validationReporter.reportError(context, (GtfsException)ex, GTFS_SHAPES_FILE);
+						validationReporter.reportError(context, (GtfsException) ex, GTFS_SHAPES_FILE);
 					} else {
 						validationReporter.throwUnknownError(context, ex, GTFS_SHAPES_FILE);
 					}
 				}
-				for(GtfsException ex : bean.getErrors()) {
+				for (GtfsException ex : bean.getErrors()) {
 					if (ex.isFatal())
 						fatalException = ex;
 				}
 				validationReporter.reportErrors(context, bean.getErrors(), GTFS_SHAPES_FILE);
 				validationReporter.validate(context, GTFS_SHAPES_FILE, bean.getOkTests());
 			}
+			shapeParser.setWithValidation(false);
 			if (fatalException != null)
 				throw fatalException;
 		} else {
-			validationReporter.reportError(context, new GtfsException(GTFS_SHAPES_FILE, 1, null, GtfsException.ERROR.MISSING_OPTIONAL_FILE, null, null), GTFS_SHAPES_FILE);
+			validationReporter.reportError(context, new GtfsException(GTFS_SHAPES_FILE, 1, null,
+					GtfsException.ERROR.MISSING_OPTIONAL_FILE, null, null), GTFS_SHAPES_FILE);
 		}
 	}
-	
+
 	private void validateTrips(Context context) throws Exception {
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		ValidationReporter validationReporter = (ValidationReporter) context.get(GTFS_REPORTER);
 		Set<String> routeIds = new HashSet<String>();
-		
+
 		// trips.txt
 		if (importer.hasTripImporter()) { // the file "trips.txt" exists ?
 			validationReporter.reportSuccess(context, GTFS_1_GTFS_Common_1, GTFS_TRIPS_FILE);
-			
+
 			Index<GtfsTrip> tripParser = null;
 			try { // Read and check the header line of the file "trips.txt"
-				tripParser = importer.getTripById(); 
-			} catch (Exception ex ) {
+				tripParser = importer.getTripById();
+			} catch (Exception ex) {
 				if (ex instanceof GtfsException) {
-					validationReporter.reportError(context, (GtfsException)ex, GTFS_TRIPS_FILE);
+					validationReporter.reportError(context, (GtfsException) ex, GTFS_TRIPS_FILE);
 				} else {
 					validationReporter.throwUnknownError(context, ex, GTFS_TRIPS_FILE);
 				}
 			}
 
 			validationReporter.validateOkCSV(context, GTFS_TRIPS_FILE);
-		
-			if (tripParser == null) { // importer.getTripById() fails for any other reason
-				validationReporter.throwUnknownError(context, new Exception("Cannot instantiate TripById class"), GTFS_TRIPS_FILE);
+
+			if (tripParser == null) { // importer.getTripById() fails for any
+										// other reason
+				validationReporter.throwUnknownError(context, new Exception("Cannot instantiate TripById class"),
+						GTFS_TRIPS_FILE);
 			} else {
 				validationReporter.validate(context, GTFS_TRIPS_FILE, tripParser.getOkTests());
 				validationReporter.validateUnknownError(context);
 			}
-			
+
 			if (!tripParser.getErrors().isEmpty()) {
 				validationReporter.reportErrors(context, tripParser.getErrors(), GTFS_TRIPS_FILE);
 				tripParser.getErrors().clear();
 			}
-			
+
 			validationReporter.validateOKGeneralSyntax(context, GTFS_TRIPS_FILE);
-		
+
 			if (tripParser.getLength() == 0) {
-				validationReporter.reportError(context, new GtfsException(GTFS_TRIPS_FILE, 1, null, GtfsException.ERROR.FILE_WITH_NO_ENTRY, null, null), GTFS_TRIPS_FILE);
+				validationReporter.reportError(context, new GtfsException(GTFS_TRIPS_FILE, 1, null,
+						GtfsException.ERROR.FILE_WITH_NO_ENTRY, null, null), GTFS_TRIPS_FILE);
 			} else {
 				validationReporter.validate(context, GTFS_TRIPS_FILE, GtfsException.ERROR.FILE_WITH_NO_ENTRY);
 			}
-		
+
 			GtfsException fatalException = null;
+			tripParser.setWithValidation(true);
 			for (GtfsTrip bean : tripParser) {
 				if (bean.getRouteId() != null)
 					routeIds.add(bean.getRouteId());
@@ -264,24 +301,27 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 					tripParser.validate(bean, importer);
 				} catch (Exception ex) {
 					if (ex instanceof GtfsException) {
-						validationReporter.reportError(context, (GtfsException)ex, GTFS_TRIPS_FILE);
+						validationReporter.reportError(context, (GtfsException) ex, GTFS_TRIPS_FILE);
 					} else {
 						validationReporter.throwUnknownError(context, ex, GTFS_TRIPS_FILE);
 					}
 				}
-				for(GtfsException ex : bean.getErrors()) {
+				for (GtfsException ex : bean.getErrors()) {
 					if (ex.isFatal())
 						fatalException = ex;
 				}
 				validationReporter.reportErrors(context, bean.getErrors(), GTFS_TRIPS_FILE);
 				validationReporter.validate(context, GTFS_TRIPS_FILE, bean.getOkTests());
 			}
+			tripParser.setWithValidation(false);
 			int i = 1;
 			boolean unsuedId = true;
 			for (GtfsRoute bean : importer.getRouteById()) {
 				if (routeIds.add(bean.getRouteId())) {
 					unsuedId = false;
-					validationReporter.reportError(context, new GtfsException(GTFS_ROUTES_FILE, i, RouteById.FIELDS.route_id.name(), GtfsException.ERROR.UNUSED_ID, null, bean.getRouteId()), GTFS_TRIPS_FILE);
+					validationReporter.reportError(context, new GtfsException(GTFS_ROUTES_FILE, i,
+							RouteById.FIELDS.route_id.name(), GtfsException.ERROR.UNUSED_ID, null, bean.getRouteId()),
+							GTFS_TRIPS_FILE);
 				}
 				i++;
 			}
@@ -290,10 +330,11 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			if (fatalException != null)
 				throw fatalException;
 		} else {
-			validationReporter.reportError(context, new GtfsException(GTFS_TRIPS_FILE, 1, null, GtfsException.ERROR.MISSING_FILE, null, null), GTFS_TRIPS_FILE);
+			validationReporter.reportError(context, new GtfsException(GTFS_TRIPS_FILE, 1, null,
+					GtfsException.ERROR.MISSING_FILE, null, null), GTFS_TRIPS_FILE);
 		}
 	}
-	
+
 	private void validateFrequencies(Context context) throws Exception {
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		ValidationReporter validationReporter = (ValidationReporter) context.get(GTFS_REPORTER);
@@ -301,63 +342,71 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		// frequencies.txt
 		if (importer.hasFrequencyImporter()) {
 			validationReporter.reportSuccess(context, GTFS_1_GTFS_Common_1, GTFS_FREQUENCIES_FILE);
-			
+
 			Index<GtfsFrequency> frequencyParser = null;
-			try { // Read and check the header line of the file "frequenciess.txt"
-				frequencyParser = importer.getFrequencyByTrip(); 
-			} catch (Exception ex ) {
+			try { // Read and check the header line of the file
+					// "frequenciess.txt"
+				frequencyParser = importer.getFrequencyByTrip();
+			} catch (Exception ex) {
 				if (ex instanceof GtfsException) {
-					validationReporter.reportError(context, (GtfsException)ex, GTFS_FREQUENCIES_FILE);
+					validationReporter.reportError(context, (GtfsException) ex, GTFS_FREQUENCIES_FILE);
 				} else {
 					validationReporter.throwUnknownError(context, ex, GTFS_FREQUENCIES_FILE);
 				}
 			}
 
 			validationReporter.validateOkCSV(context, GTFS_FREQUENCIES_FILE);
-			
-			if (frequencyParser == null) { // importer.getFrequencyByTrip() fails for any other reason
-				validationReporter.throwUnknownError(context, new Exception("Cannot instantiate FrequencyByTrip class"), GTFS_FREQUENCIES_FILE);
+
+			if (frequencyParser == null) { // importer.getFrequencyByTrip()
+											// fails for any other reason
+				validationReporter.throwUnknownError(context,
+						new Exception("Cannot instantiate FrequencyByTrip class"), GTFS_FREQUENCIES_FILE);
 			} else {
 				validationReporter.validate(context, GTFS_FREQUENCIES_FILE, frequencyParser.getOkTests());
 				validationReporter.validateUnknownError(context);
 			}
-			
+
 			if (!frequencyParser.getErrors().isEmpty()) {
 				validationReporter.reportErrors(context, frequencyParser.getErrors(), GTFS_FREQUENCIES_FILE);
 				frequencyParser.getErrors().clear();
 			}
-			
+
 			validationReporter.validateOKGeneralSyntax(context, GTFS_FREQUENCIES_FILE);
-			
+
 			if (frequencyParser.getLength() == 0) {
-				//validationReporter.reportUnsuccess(context, GTFS_1_GTFS_Frequency_1, GTFS_FREQUENCIES_FILE);
-				validationReporter.reportError(context, new GtfsException(GTFS_FREQUENCIES_FILE, 1, null, GtfsException.ERROR.OPTIONAL_FILE_WITH_NO_ENTRY, null, null), GTFS_FREQUENCIES_FILE);
+				// validationReporter.reportUnsuccess(context,
+				// GTFS_1_GTFS_Frequency_1, GTFS_FREQUENCIES_FILE);
+				validationReporter.reportError(context, new GtfsException(GTFS_FREQUENCIES_FILE, 1, null,
+						GtfsException.ERROR.OPTIONAL_FILE_WITH_NO_ENTRY, null, null), GTFS_FREQUENCIES_FILE);
 			} else {
 				validationReporter.validate(context, GTFS_FREQUENCIES_FILE, GtfsException.ERROR.FILE_WITH_NO_ENTRY);
 			}
-			
+
 			GtfsException fatalException = null;
+			frequencyParser.setWithValidation(true);
 			for (GtfsFrequency bean : frequencyParser) {
 				try {
 					frequencyParser.validate(bean, importer);
 				} catch (Exception ex) {
 					if (ex instanceof GtfsException) {
-						validationReporter.reportError(context, (GtfsException)ex, GTFS_FREQUENCIES_FILE);
+						validationReporter.reportError(context, (GtfsException) ex, GTFS_FREQUENCIES_FILE);
 					} else {
 						validationReporter.throwUnknownError(context, ex, GTFS_FREQUENCIES_FILE);
 					}
 				}
-				for(GtfsException ex : bean.getErrors()) {
+				for (GtfsException ex : bean.getErrors()) {
 					if (ex.isFatal())
 						fatalException = ex;
 				}
 				validationReporter.reportErrors(context, bean.getErrors(), GTFS_FREQUENCIES_FILE);
 				validationReporter.validate(context, GTFS_FREQUENCIES_FILE, bean.getOkTests());
 			}
+			frequencyParser.setWithValidation(false);
 			if (fatalException != null)
 				throw fatalException;
 		} else {
-			validationReporter.reportError(context, new GtfsException(GTFS_FREQUENCIES_FILE, 1, null, GtfsException.ERROR.MISSING_OPTIONAL_FILE, null, null), GTFS_FREQUENCIES_FILE);
+			validationReporter.reportError(context, new GtfsException(GTFS_FREQUENCIES_FILE, 1, null,
+					GtfsException.ERROR.MISSING_OPTIONAL_FILE, null, null), GTFS_FREQUENCIES_FILE);
 		}
 	}
 
@@ -375,25 +424,23 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 
 		for (GtfsTrip gtfsTrip : gtfsTrips.values(gtfsRouteId)) {
 
-			if (!importer.getStopTimeByTrip().values(gtfsTrip.getTripId()).iterator().hasNext())
-			{
+			if (!importer.getStopTimeByTrip().values(gtfsTrip.getTripId()).iterator().hasNext()) {
 				continue;
 			}
 			boolean hasTimes = true;
 			for (GtfsStopTime gtfsStopTime : importer.getStopTimeByTrip().values(gtfsTrip.getTripId())) {
-				if (gtfsStopTime.getArrivalTime() == null) 
-				{
+				if (gtfsStopTime.getArrivalTime() == null) {
 					hasTimes = false;
 					break;
 				}
-				if (gtfsStopTime.getDepartureTime() == null) 
-				{
+				if (gtfsStopTime.getDepartureTime() == null) {
 					hasTimes = false;
 					break;
 				}
 			}
-			if (!hasTimes) continue;
-			
+			if (!hasTimes)
+				continue;
+
 			String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
 					VehicleJourney.VEHICLEJOURNEY_KEY, gtfsTrip.getTripId(), log);
 			VehicleJourney vehicleJourney = ObjectFactory.getVehicleJourney(referential, objectId);
@@ -404,7 +451,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 
 			for (GtfsStopTime gtfsStopTime : importer.getStopTimeByTrip().values(gtfsTrip.getTripId())) {
 				VehicleJourneyAtStopWrapper vehicleJourneyAtStop = new VehicleJourneyAtStopWrapper(
-						gtfsStopTime.getStopId(), gtfsStopTime.getStopSequence());
+						gtfsStopTime.getStopId(), gtfsStopTime.getStopSequence(), gtfsStopTime.getShapeDistTraveled());
 				convert(context, gtfsStopTime, vehicleJourneyAtStop);
 
 				if (afterMidnight) {
@@ -430,16 +477,20 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 
 			// JourneyPattern
 			String journeyKey = gtfsTrip.getRouteId() + "_" + gtfsTrip.getDirectionId().ordinal();
+			Iterable<GtfsShape> gtfsShapes = null;
+			if (gtfsTrip.getShapeId() != null && !gtfsTrip.getShapeId().isEmpty()
+					&& importer.getShapeById().containsKey(gtfsTrip.getShapeId())) {
+				journeyKey += "_" + gtfsTrip.getShapeId();
+				gtfsShapes = importer.getShapeById().values(gtfsTrip.getShapeId());
+			}
 			for (VehicleJourneyAtStop vehicleJourneyAtStop : vehicleJourney.getVehicleJourneyAtStops()) {
 				String stopId = ((VehicleJourneyAtStopWrapper) vehicleJourneyAtStop).stopId;
 				journeyKey += "," + stopId;
 			}
 			JourneyPattern journeyPattern = journeyPatternByStopSequence.get(journeyKey);
 			if (journeyPattern == null) {
-
-				journeyPattern = createJourneyPattern(referential, configuration, gtfsTrip, vehicleJourney, journeyKey,
-						journeyPatternByStopSequence);
-
+				journeyPattern = createJourneyPattern(referential, configuration, gtfsTrip, gtfsShapes, vehicleJourney,
+						journeyKey, journeyPatternByStopSequence);
 			}
 
 			vehicleJourney.setRoute(journeyPattern.getRoute());
@@ -454,49 +505,60 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			// apply frequencies if any
 			if (importer.hasFrequencyImporter()) {
 
+				int count = 0;
 				for (GtfsFrequency frequency : importer.getFrequencyByTrip().values(gtfsTrip.getTripId())) {
-					baseVehicleJourneyToTime(vehicleJourney, frequency.getStartTime().getTime().getTime());
-					try {
-						if (!frequency.getStartTime().moreOneDay() && frequency.getEndTime().moreOneDay()) {
+					vehicleJourney.setJourneyCategory(JourneyCategoryEnum.Frequency);
 
-							copyVehicleJourney(vehicleJourney,
-									frequency.getEndTime().getTime().getTime() + 24 * 3600 * 1000,
-									frequency.getHeadwaySecs() * 1000, referential);
-						} else {
-							copyVehicleJourney(vehicleJourney, frequency.getEndTime().getTime().getTime(),
-									frequency.getHeadwaySecs() * 1000, referential);
-						}
-					} catch (Exception e) {
-						// TODO add report
-						log.error("cannot apply frequency ", e);
+					String timeBandObjectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
+							Timeband.TIMETABLE_KEY, gtfsTrip.getTripId() + "-" + count++, log);
+					Timeband timeband = ObjectFactory.getTimeband(referential, timeBandObjectId);
+					timeband.setName(getTimebandName(frequency));
+					timeband.setStartTime(frequency.getStartTime().getTime());
+					timeband.setEndTime(frequency.getEndTime().getTime());
+					
+					JourneyFrequency journeyFrequency = new JourneyFrequency();
+					journeyFrequency.setExactTime(frequency.getExactTimes());
+					journeyFrequency.setFirstDepartureTime(frequency.getStartTime().getTime());
+					journeyFrequency.setLastDepartureTime(frequency.getEndTime().getTime());
+					journeyFrequency.setScheduledHeadwayInterval(TimeUtil.valueOf(frequency.getHeadwaySecs()));
+					journeyFrequency.setTimeband(timeband);
+					journeyFrequency.setVehicleJourney(vehicleJourney);
+
+					List<VehicleJourneyAtStop> vjass = vehicleJourney.getVehicleJourneyAtStops();
+					VehicleJourneyAtStop firstVjas = vjass.get(0);
+					Time firstArrivalTime = firstVjas.getArrivalTime();
+					Time firstDepartureTime = firstVjas.getDepartureTime();
+					for (VehicleJourneyAtStop vjas : vjass) {
+					        vjas.setArrivalTime(TimeUtil.substract(vjas.getArrivalTime(), firstArrivalTime));
+						vjas.setDepartureTime(TimeUtil.substract(vjas.getDepartureTime(), firstDepartureTime));
 					}
 				}
 			}
 
 		}
+		// dispose collections
+		journeyPatternByStopSequence.clear();
+	}
+
+	private String getTimebandName(GtfsFrequency frequency) {
+	        Calendar startCal = Calendar.getInstance(TimeZone.getDefault());
+		startCal.setTime(frequency.getStartTime().getTime());
+		Calendar endCal = Calendar.getInstance(TimeZone.getDefault());
+		endCal.setTime(frequency.getEndTime().getTime());
+		return (startCal.get(Calendar.HOUR_OF_DAY) + ":" + startCal.get(Calendar.MINUTE) + " - "
+				+ endCal.get(Calendar.HOUR_OF_DAY) + ":" + endCal.get(Calendar.MINUTE));
 	}
 
 	private JourneyPattern createJourneyPattern(Referential referential, GtfsImportParameters configuration,
-			GtfsTrip gtfsTrip, VehicleJourney vehicleJourney, String journeyKey,
+			GtfsTrip gtfsTrip, Iterable<GtfsShape> gtfsShapes, VehicleJourney vehicleJourney, String journeyKey,
 			Map<String, JourneyPattern> journeyPatternByStopSequence) {
 		JourneyPattern journeyPattern;
-		String lineId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Line.LINE_KEY,
-				gtfsTrip.getRouteId(), log);
-		Line line = ObjectFactory.getLine(referential, lineId);
 
 		// Route
-		String routeId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Route.ROUTE_KEY,
-				gtfsTrip.getRouteId() + "_" + gtfsTrip.getDirectionId().ordinal() + line.getRoutes().size(),
-				log);
-
-		Route route = ObjectFactory.getRoute(referential, routeId);
-		route.setLine(line);
-		String wayBack = gtfsTrip.getDirectionId().equals(DirectionType.Outbound) ? "A" : "R";
-		route.setWayBack(wayBack);
+		Route route = createRoute(referential, configuration, gtfsTrip);
 
 		// JourneyPattern
-		String journeyPatternId = route.getObjectId().replace(Route.ROUTE_KEY,
-				JourneyPattern.JOURNEYPATTERN_KEY);
+		String journeyPatternId = route.getObjectId().replace(Route.ROUTE_KEY, JourneyPattern.JOURNEYPATTERN_KEY);
 		journeyPattern = ObjectFactory.getJourneyPattern(referential, journeyPatternId);
 		journeyPattern.setName(gtfsTrip.getTripHeadSign());
 		journeyPattern.setRoute(route);
@@ -508,19 +570,189 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		List<StopPoint> stopPoints = journeyPattern.getStopPoints();
 		journeyPattern.setDepartureStopPoint(stopPoints.get(0));
 		journeyPattern.setArrivalStopPoint(stopPoints.get(stopPoints.size() - 1));
-		
+
 		journeyPattern.setFilled(true);
 		route.setFilled(true);
 
 		if (route.getName() == null) {
 			if (!route.getStopPoints().isEmpty()) {
 				String first = route.getStopPoints().get(0).getContainedInStopArea().getName();
-				String last = route.getStopPoints().get(route.getStopPoints().size() - 1)
-						.getContainedInStopArea().getName();
+				String last = route.getStopPoints().get(route.getStopPoints().size() - 1).getContainedInStopArea()
+						.getName();
 				route.setName(first + " -> " + last);
 			}
 		}
+
+		// Shape -> routeSections
+		if (gtfsShapes != null) {
+			List<RouteSection> sections = createRouteSections(referential, configuration, journeyPattern,
+					vehicleJourney, gtfsShapes);
+			if (!sections.isEmpty()) {
+				journeyPattern.setRouteSections(sections);
+				journeyPattern.setSectionStatus(SectionStatusEnum.Completed);
+			}
+		}
 		return journeyPattern;
+	}
+
+	private static final double narrow = 0.0000001;
+
+	private List<RouteSection> createRouteSections(Referential referential, GtfsImportParameters configuration,
+			JourneyPattern journeyPattern, VehicleJourney vehicleJourney, Iterable<GtfsShape> gtfsShapes) {
+		List<RouteSection> sections = new ArrayList<>();
+		GeometryFactory factory = new GeometryFactory(new PrecisionModel(10), 4326);
+		List<OrderedCoordinate> coordinates = new ArrayList<>();
+		List<LineSegment> segments = new ArrayList<>();
+		Coordinate previous = null;
+		String shapeId = null;
+		for (GtfsShape gtfsShape : gtfsShapes) {
+			if (gtfsShape.getShapePtLon() == null || gtfsShape.getShapePtLat() == null) {
+				log.error("line " + gtfsShape.getId() + " missing coordinates for shape " + gtfsShape.getShapeId());
+				return sections;
+			}
+			if (shapeId == null)
+				shapeId = gtfsShape.getShapeId();
+			OrderedCoordinate current = new OrderedCoordinate(gtfsShape.getShapePtLon().doubleValue(), gtfsShape
+					.getShapePtLat().doubleValue(), gtfsShape.getShapePtSequence());
+			if (previous != null) {
+				// remove duplicate coords
+				if (Math.abs(current.x - previous.x) < narrow && Math.abs(current.y - previous.y) < narrow) {
+					// log.warn("line " + gtfsShape.getId() +
+					// " duplicate coordinates for shape "
+					// + gtfsShape.getShapeId() + " at pt_sequence " +
+					// gtfsShape.getShapePtSequence());
+					continue;
+				}
+				coordinates.add(current);
+			} else {
+				coordinates.add(current);
+			}
+			previous = current;
+		}
+		if (coordinates.size() < 2) {
+			log.warn("no segments found");
+			return sections;
+		}
+
+		previous = null;
+		Collections.sort(coordinates, COORDINATE_SORTER);
+		for (OrderedCoordinate current : coordinates) {
+			if (previous != null) {
+				LineSegment segment = new LineSegment(previous, current);
+				segments.add(segment);
+			}
+			previous = current;
+		}
+
+		int segmentRank = 0;
+		previous = null;
+		String prefix = journeyPattern.objectIdPrefix();
+		StopArea previousLocation = null;
+		for (StopPoint stop : journeyPattern.getStopPoints()) {
+			// find nearest segment and project point on it
+			StopArea location = stop.getContainedInStopArea();
+			Coordinate point = new Coordinate(location.getLongitude().doubleValue(), location.getLatitude()
+					.doubleValue());
+			double distance_min = Double.MAX_VALUE;
+			int rank = 0;
+			for (int i = segmentRank; i < segments.size(); i++) {
+				double distance = segments.get(i).distance(point);
+				if (distance < distance_min) {
+					distance_min = distance;
+					rank = i;
+				}
+			}
+			// compose routeSection
+			Coordinate projection = null;
+			boolean lastSegmentIncluded = false;
+			double factor = segments.get(rank).projectionFactor(point);
+			int intFactor = (int) (factor * 100.);
+			if (factor <= 0.05) {
+				// projection near or before first point
+				projection = segments.get(rank).getCoordinate(0);
+				intFactor = 0;
+			} else if (factor >= 0.95) {
+				// projection near or after last point
+				projection = segments.get(rank).getCoordinate(1);
+				lastSegmentIncluded = true;
+				intFactor = 100;
+			} else {
+				// projection inside segment
+				projection = segments.get(rank).project(point);
+			}
+			if (previous != null) {
+				List<Coordinate> coords = new ArrayList<>();
+				coords.add(previous);
+				for (int i = segmentRank; i < rank; i++) {
+					coords.add(segments.get(i).getCoordinate(1));
+				}
+				coords.add(projection);
+				if (lastSegmentIncluded)
+					rank++;
+				// String routeSectionId =
+				// journeyPattern.getObjectId().replace(JourneyPattern.JOURNEYPATTERN_KEY,
+				// RouteSection.ROUTE_SECTION_KEY);
+				// routeSectionId += "_" + stop.getPosition();
+				String routeSectionId = prefix + ":" + RouteSection.ROUTE_SECTION_KEY + ":" + shapeId + "_"
+						+ previousLocation.objectIdSuffix() + "_" + location.objectIdSuffix() + "_" + intFactor;
+				RouteSection section = ObjectFactory.getRouteSection(referential, routeSectionId);
+				if (!section.isFilled()) {
+					section.setDeparture(previousLocation);
+					section.setArrival(location);
+					section.setProcessedGeometry(factory.createLineString(coords.toArray(new Coordinate[coords.size()])));
+					section.setInputGeometry(factory.createLineString(coords.toArray(new Coordinate[coords.size()])));
+					try {
+						double distance = section.getProcessedGeometry().getLength();
+						distance *= (Math.PI / 180) * 6378137;
+						section.setDistance(BigDecimal.valueOf(distance));
+					} catch (NumberFormatException e) {
+						log.error(shapeId + " : problem with section between " + previousLocation.getName() + "("
+								+ previousLocation.getObjectId() + " and " + location.getName() + "("
+								+ location.getObjectId());
+						log.error("coords (" + coords.size() + ") :");
+						for (Coordinate coordinate : coords) {
+							log.error("lat = " + coordinate.y + " , lon = " + coordinate.x);
+						}
+						sections.clear();
+						return sections;
+					}
+				}
+				section.setFilled(true);
+				sections.add(section);
+			}
+			previous = projection;
+			previousLocation = location;
+			segmentRank = rank;
+
+		}
+
+		return sections;
+	}
+
+	/**
+	 * create route for trip
+	 * 
+	 * @param referential
+	 * @param configuration
+	 * @param gtfsTrip
+	 * @return
+	 */
+	private Route createRoute(Referential referential, GtfsImportParameters configuration, GtfsTrip gtfsTrip) {
+		String lineId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Line.LINE_KEY,
+				gtfsTrip.getRouteId(), log);
+		Line line = ObjectFactory.getLine(referential, lineId);
+		String routeKey = gtfsTrip.getRouteId() + "_" + gtfsTrip.getDirectionId().ordinal();
+		if (gtfsTrip.getShapeId() != null && !gtfsTrip.getShapeId().isEmpty())
+			routeKey += "_" + gtfsTrip.getShapeId();
+		routeKey += "_" + line.getRoutes().size();
+		String routeId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Route.ROUTE_KEY,
+				routeKey, log);
+
+		Route route = ObjectFactory.getRoute(referential, routeId);
+		route.setLine(line);
+		String wayBack = gtfsTrip.getDirectionId().equals(DirectionType.Outbound) ? "A" : "R";
+		route.setWayBack(wayBack);
+		return route;
 	}
 
 	protected void convert(Context context, GtfsStopTime gtfsStopTime, VehicleJourneyAtStop vehicleJourneyAtStop) {
@@ -563,60 +795,12 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		vehicleJourney.setFilled(true);
 
 	}
-
-	private void baseVehicleJourneyToTime(VehicleJourney vehicleJourney, long t) {
-		VehicleJourneyAtStop first = vehicleJourney.getVehicleJourneyAtStops().get(0);
-		long depOffset = t - first.getDepartureTime().getTime();
-		long arrOffset = t - first.getArrivalTime().getTime();
-
-		for (VehicleJourneyAtStop vjas : vehicleJourney.getVehicleJourneyAtStops()) {
-			vjas.setArrivalTime(shiftTime(vjas.getArrivalTime(), arrOffset));
-			vjas.setDepartureTime(shiftTime(vjas.getDepartureTime(), depOffset));
-		}
-	}
-
-	private Time shiftTime(Time t, long offset) {
-		return new Time((t.getTime() + offset) % (24 * 3600 * 1000));
-	}
-
-	private void copyVehicleJourney(VehicleJourney oldVehicleJourney, long end, long headway, Referential referential) throws Exception {
-		VehicleJourneyAtStop first = oldVehicleJourney.getVehicleJourneyAtStops().get(0);
-		long start = first.getDepartureTime().getTime();
-		long stop = end - start;
-		int iter = 1;
-
-		long offset = headway;
-		while (offset <= stop) {
-
-			String vehiculeJourneyId = oldVehicleJourney.getObjectId() + "a" + iter;
-
-			VehicleJourney newVehicleJourney = ObjectFactory.getVehicleJourney(referential, vehiculeJourneyId);
-
-			iter++;
-
-			List<VehicleJourneyAtStop> vjass = oldVehicleJourney.getVehicleJourneyAtStops();
-			for (VehicleJourneyAtStop vjas : vjass) {
-
-				VehicleJourneyAtStop nvjas = new VehicleJourneyAtStop();
-				BeanUtils.copyProperties(nvjas, vjas);
-				nvjas.setVehicleJourney(newVehicleJourney);
-				nvjas.setArrivalTime(shiftTime(nvjas.getArrivalTime(), offset));
-				nvjas.setDepartureTime(shiftTime(nvjas.getDepartureTime(), offset));
-				nvjas.setVehicleJourney(newVehicleJourney);
-			}
-			newVehicleJourney.setRoute(oldVehicleJourney.getRoute());
-			newVehicleJourney.setJourneyPattern(oldVehicleJourney.getJourneyPattern());
-			newVehicleJourney.getTimetables().addAll(oldVehicleJourney.getTimetables());
-			newVehicleJourney.setFilled(true);
-			offset += headway;
-		}
-		return;
-	}
-
+    
 	/**
 	 * create stopPoints for Route
-	 * @param referential 
-	 * @param configuration 
+	 * 
+	 * @param referential
+	 * @param configuration
 	 * 
 	 * @param routeId
 	 *            route objectId
@@ -626,7 +810,8 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 	 *            stopAreas to attach created StopPoints (parent relationship)
 	 * @return
 	 */
-	private void createStopPoint(Route route, JourneyPattern journeyPattern, List<VehicleJourneyAtStop> list, Referential referential, GtfsImportParameters configuration) {
+	private void createStopPoint(Route route, JourneyPattern journeyPattern, List<VehicleJourneyAtStop> list,
+			Referential referential, GtfsImportParameters configuration) {
 		Set<String> stopPointKeys = new HashSet<String>();
 
 		int position = 0;
@@ -658,10 +843,11 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 
 	@AllArgsConstructor
 	class VehicleJourneyAtStopWrapper extends VehicleJourneyAtStop {
-		
+
 		private static final long serialVersionUID = 5052093726657799027L;
 		String stopId;
 		int stopSequence;
+		Float shapeDistTraveled;
 	}
 
 	public static final Comparator<VehicleJourneyAtStop> VEHICLE_JOURNEY_AT_STOP_COMPARATOR = new Comparator<VehicleJourneyAtStop>() {
@@ -672,6 +858,25 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			return rightIndex - leftIndex;
 		}
 	};
+
+	class OrderedCoordinate extends Coordinate {
+		private static final long serialVersionUID = 1L;
+		public int order;
+
+		public OrderedCoordinate(double x, double y, Integer order) {
+			this.x = x;
+			this.y = y;
+			this.order = order.intValue();
+		}
+	};
+
+	static class OrderedCoordinateComparator implements Comparator<OrderedCoordinate> {
+		@Override
+		public int compare(OrderedCoordinate o1, OrderedCoordinate o2) {
+
+			return o1.order - o2.order;
+		}
+	}
 
 	static {
 		ParserFactory.register(GtfsTripParser.class.getName(), new ParserFactory() {

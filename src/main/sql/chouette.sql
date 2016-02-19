@@ -2,9 +2,9 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.1.11
--- Dumped by pg_dump version 9.1.11
--- Started on 2014-02-27 11:15:39 CET
+-- Dumped from database version 9.3.10
+-- Dumped by pg_dump version 9.3.10
+-- Started on 2016-01-04 11:09:56 CET
 
 -- authentification 127.0.0.1 trust
 -- USAGE : psql -h 127.0.0.1 -U chouette -v SCH=<schema_name>  -d chouette2 -f chouette.sql'
@@ -20,6 +20,9 @@ SET default_tablespace = '';
 
 SET default_with_oids = false;
 
+CREATE SCHEMA IF NOT EXISTS shared_extensions;
+CREATE EXTENSION IF NOT EXISTS postgis SCHEMA shared_extensions;
+
 DROP SCHEMA IF EXISTS :SCH CASCADE;
 
 CREATE SCHEMA :SCH ;
@@ -27,8 +30,7 @@ CREATE SCHEMA :SCH ;
 SET search_path = :SCH, pg_catalog;
 
 --
--- TOC entry 201 (class 1259 OID 480177)
--- Dependencies: 5
+-- TOC entry 174 (class 1259 OID 938851)
 -- Name: access_links; Type: TABLE; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -59,8 +61,7 @@ CREATE TABLE access_links (
 ALTER TABLE :SCH.access_links OWNER TO chouette;
 
 --
--- TOC entry 200 (class 1259 OID 480175)
--- Dependencies: 5 201
+-- TOC entry 175 (class 1259 OID 938857)
 -- Name: access_links_id_seq; Type: SEQUENCE; Schema: :SCH; Owner: chouette
 --
 
@@ -75,8 +76,8 @@ CREATE SEQUENCE access_links_id_seq
 ALTER TABLE :SCH.access_links_id_seq OWNER TO chouette;
 
 --
--- TOC entry 2695 (class 0 OID 0)
--- Dependencies: 200
+-- TOC entry 4252 (class 0 OID 0)
+-- Dependencies: 175
 -- Name: access_links_id_seq; Type: SEQUENCE OWNED BY; Schema: :SCH; Owner: chouette
 --
 
@@ -84,8 +85,7 @@ ALTER SEQUENCE access_links_id_seq OWNED BY access_links.id;
 
 
 --
--- TOC entry 199 (class 1259 OID 480165)
--- Dependencies: 5
+-- TOC entry 176 (class 1259 OID 938859)
 -- Name: access_points; Type: TABLE; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -118,8 +118,7 @@ CREATE TABLE access_points (
 ALTER TABLE :SCH.access_points OWNER TO chouette;
 
 --
--- TOC entry 198 (class 1259 OID 480163)
--- Dependencies: 5 199
+-- TOC entry 177 (class 1259 OID 938865)
 -- Name: access_points_id_seq; Type: SEQUENCE; Schema: :SCH; Owner: chouette
 --
 
@@ -134,17 +133,17 @@ CREATE SEQUENCE access_points_id_seq
 ALTER TABLE :SCH.access_points_id_seq OWNER TO chouette;
 
 --
--- TOC entry 2696 (class 0 OID 0)
--- Dependencies: 198
+-- TOC entry 4253 (class 0 OID 0)
+-- Dependencies: 177
 -- Name: access_points_id_seq; Type: SEQUENCE OWNED BY; Schema: :SCH; Owner: chouette
 --
 
 ALTER SEQUENCE access_points_id_seq OWNED BY access_points.id;
 
 
+
 --
--- TOC entry 169 (class 1259 OID 479970)
--- Dependencies: 5
+-- TOC entry 180 (class 1259 OID 938875)
 -- Name: companies; Type: TABLE; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -171,8 +170,7 @@ CREATE TABLE companies (
 ALTER TABLE :SCH.companies OWNER TO chouette;
 
 --
--- TOC entry 168 (class 1259 OID 479968)
--- Dependencies: 169 5
+-- TOC entry 181 (class 1259 OID 938881)
 -- Name: companies_id_seq; Type: SEQUENCE; Schema: :SCH; Owner: chouette
 --
 
@@ -187,18 +185,16 @@ CREATE SEQUENCE companies_id_seq
 ALTER TABLE :SCH.companies_id_seq OWNER TO chouette;
 
 --
--- TOC entry 2698 (class 0 OID 0)
--- Dependencies: 168
+-- TOC entry 4255 (class 0 OID 0)
+-- Dependencies: 181
 -- Name: companies_id_seq; Type: SEQUENCE OWNED BY; Schema: :SCH; Owner: chouette
 --
 
 ALTER SEQUENCE companies_id_seq OWNED BY companies.id;
 
 
-
 --
--- TOC entry 185 (class 1259 OID 480071)
--- Dependencies: 5
+-- TOC entry 182 (class 1259 OID 938883)
 -- Name: connection_links; Type: TABLE; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -228,8 +224,7 @@ CREATE TABLE connection_links (
 ALTER TABLE :SCH.connection_links OWNER TO chouette;
 
 --
--- TOC entry 184 (class 1259 OID 480069)
--- Dependencies: 5 185
+-- TOC entry 183 (class 1259 OID 938889)
 -- Name: connection_links_id_seq; Type: SEQUENCE; Schema: :SCH; Owner: chouette
 --
 
@@ -244,8 +239,8 @@ CREATE SEQUENCE connection_links_id_seq
 ALTER TABLE :SCH.connection_links_id_seq OWNER TO chouette;
 
 --
--- TOC entry 2701 (class 0 OID 0)
--- Dependencies: 184
+-- TOC entry 4256 (class 0 OID 0)
+-- Dependencies: 183
 -- Name: connection_links_id_seq; Type: SEQUENCE OWNED BY; Schema: :SCH; Owner: chouette
 --
 
@@ -253,11 +248,8 @@ ALTER SEQUENCE connection_links_id_seq OWNED BY connection_links.id;
 
 
 
-
-
 --
--- TOC entry 203 (class 1259 OID 480189)
--- Dependencies: 5
+-- TOC entry 188 (class 1259 OID 938909)
 -- Name: facilities; Type: TABLE; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -290,8 +282,7 @@ CREATE TABLE facilities (
 ALTER TABLE :SCH.facilities OWNER TO chouette;
 
 --
--- TOC entry 204 (class 1259 OID 480199)
--- Dependencies: 5
+-- TOC entry 189 (class 1259 OID 938915)
 -- Name: facilities_features; Type: TABLE; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -304,8 +295,7 @@ CREATE TABLE facilities_features (
 ALTER TABLE :SCH.facilities_features OWNER TO chouette;
 
 --
--- TOC entry 202 (class 1259 OID 480187)
--- Dependencies: 203 5
+-- TOC entry 190 (class 1259 OID 938918)
 -- Name: facilities_id_seq; Type: SEQUENCE; Schema: :SCH; Owner: chouette
 --
 
@@ -320,45 +310,70 @@ CREATE SEQUENCE facilities_id_seq
 ALTER TABLE :SCH.facilities_id_seq OWNER TO chouette;
 
 --
--- TOC entry 2705 (class 0 OID 0)
--- Dependencies: 202
+-- TOC entry 4259 (class 0 OID 0)
+-- Dependencies: 190
 -- Name: facilities_id_seq; Type: SEQUENCE OWNED BY; Schema: :SCH; Owner: chouette
 --
 
 ALTER SEQUENCE facilities_id_seq OWNED BY facilities.id;
 
 
-CREATE TABLE footnotes
-(
-  id bigserial NOT NULL,
-  line_id bigint,
-  code character varying(255),
-  label character varying(255),
-  created_at timestamp without time zone NOT NULL,
-  updated_at timestamp without time zone NOT NULL,
-  CONSTRAINT footnotes_pkey PRIMARY KEY (id)
-)
-WITH (
-  OIDS=FALSE
+--
+-- TOC entry 191 (class 1259 OID 938920)
+-- Name: footnotes; Type: TABLE; Schema: :SCH; Owner: chouette; Tablespace: 
+--
+
+CREATE TABLE footnotes (
+    id bigint NOT NULL,
+    line_id bigint,
+    code character varying(255),
+    label character varying(255),
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
 );
 
-ALTER TABLE footnotes
-  OWNER TO chouette;
 
-CREATE TABLE footnotes_vehicle_journeys
-(
-  vehicle_journey_id bigint,
-  footnote_id bigint
-)
-WITH (
-  OIDS=FALSE
-);
-ALTER TABLE footnotes_vehicle_journeys
-  OWNER TO chouette;
+ALTER TABLE :SCH.footnotes OWNER TO chouette;
 
 --
--- TOC entry 206 (class 1259 OID 480204)
--- Dependencies: 5
+-- TOC entry 192 (class 1259 OID 938926)
+-- Name: footnotes_id_seq; Type: SEQUENCE; Schema: :SCH; Owner: chouette
+--
+
+CREATE SEQUENCE footnotes_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE :SCH.footnotes_id_seq OWNER TO chouette;
+
+--
+-- TOC entry 4260 (class 0 OID 0)
+-- Dependencies: 192
+-- Name: footnotes_id_seq; Type: SEQUENCE OWNED BY; Schema: :SCH; Owner: chouette
+--
+
+ALTER SEQUENCE footnotes_id_seq OWNED BY footnotes.id;
+
+
+--
+-- TOC entry 193 (class 1259 OID 938928)
+-- Name: footnotes_vehicle_journeys; Type: TABLE; Schema: :SCH; Owner: chouette; Tablespace: 
+--
+
+CREATE TABLE footnotes_vehicle_journeys (
+    vehicle_journey_id bigint,
+    footnote_id bigint
+);
+
+
+ALTER TABLE :SCH.footnotes_vehicle_journeys OWNER TO chouette;
+
+--
+-- TOC entry 194 (class 1259 OID 938931)
 -- Name: group_of_lines; Type: TABLE; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -369,16 +384,15 @@ CREATE TABLE group_of_lines (
     creation_time timestamp without time zone,
     creator_id character varying(255),
     name character varying(255),
-    registration_number character varying(255),
-    comment character varying(255)
+    comment character varying(255),
+    registration_number character varying(255)
 );
 
 
 ALTER TABLE :SCH.group_of_lines OWNER TO chouette;
 
 --
--- TOC entry 205 (class 1259 OID 480202)
--- Dependencies: 5 206
+-- TOC entry 195 (class 1259 OID 938938)
 -- Name: group_of_lines_id_seq; Type: SEQUENCE; Schema: :SCH; Owner: chouette
 --
 
@@ -393,8 +407,8 @@ CREATE SEQUENCE group_of_lines_id_seq
 ALTER TABLE :SCH.group_of_lines_id_seq OWNER TO chouette;
 
 --
--- TOC entry 2706 (class 0 OID 0)
--- Dependencies: 205
+-- TOC entry 4261 (class 0 OID 0)
+-- Dependencies: 195
 -- Name: group_of_lines_id_seq; Type: SEQUENCE OWNED BY; Schema: :SCH; Owner: chouette
 --
 
@@ -402,8 +416,7 @@ ALTER SEQUENCE group_of_lines_id_seq OWNED BY group_of_lines.id;
 
 
 --
--- TOC entry 207 (class 1259 OID 480214)
--- Dependencies: 5
+-- TOC entry 196 (class 1259 OID 938940)
 -- Name: group_of_lines_lines; Type: TABLE; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -415,10 +428,93 @@ CREATE TABLE group_of_lines_lines (
 
 ALTER TABLE :SCH.group_of_lines_lines OWNER TO chouette;
 
+--
+-- TOC entry 378 (class 1259 OID 942346)
+-- Name: journey_frequencies; Type: TABLE; Schema: :SCH; Owner: chouette; Tablespace: 
+--
+
+CREATE TABLE journey_frequencies (
+    id bigint NOT NULL,
+    vehicle_journey_id integer,
+    scheduled_headway_interval time without time zone NOT NULL,
+    first_departure_time time without time zone NOT NULL,
+    last_departure_time time without time zone,
+    exact_time boolean DEFAULT false,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    timeband_id integer
+);
+
+
+ALTER TABLE :SCH.journey_frequencies OWNER TO chouette;
 
 --
--- TOC entry 189 (class 1259 OID 480106)
--- Dependencies: 5
+-- TOC entry 377 (class 1259 OID 942344)
+-- Name: journey_frequencies_id_seq; Type: SEQUENCE; Schema: :SCH; Owner: chouette
+--
+
+CREATE SEQUENCE journey_frequencies_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE :SCH.journey_frequencies_id_seq OWNER TO chouette;
+
+--
+-- TOC entry 4262 (class 0 OID 0)
+-- Dependencies: 377
+-- Name: journey_frequencies_id_seq; Type: SEQUENCE OWNED BY; Schema: :SCH; Owner: chouette
+--
+
+ALTER SEQUENCE journey_frequencies_id_seq OWNED BY journey_frequencies.id;
+
+
+--
+-- TOC entry 382 (class 1259 OID 942378)
+-- Name: journey_pattern_sections; Type: TABLE; Schema: :SCH; Owner: chouette; Tablespace: 
+--
+
+CREATE TABLE journey_pattern_sections (
+    id bigint NOT NULL,
+    journey_pattern_id integer NOT NULL,
+    route_section_id integer NOT NULL,
+    rank integer NOT NULL,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+ALTER TABLE :SCH.journey_pattern_sections OWNER TO chouette;
+
+--
+-- TOC entry 381 (class 1259 OID 942376)
+-- Name: journey_pattern_sections_id_seq; Type: SEQUENCE; Schema: :SCH; Owner: chouette
+--
+
+CREATE SEQUENCE journey_pattern_sections_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE :SCH.journey_pattern_sections_id_seq OWNER TO chouette;
+
+--
+-- TOC entry 4263 (class 0 OID 0)
+-- Dependencies: 381
+-- Name: journey_pattern_sections_id_seq; Type: SEQUENCE OWNED BY; Schema: :SCH; Owner: chouette
+--
+
+ALTER SEQUENCE journey_pattern_sections_id_seq OWNED BY journey_pattern_sections.id;
+
+
+--
+-- TOC entry 197 (class 1259 OID 938943)
 -- Name: journey_patterns; Type: TABLE; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -434,15 +530,15 @@ CREATE TABLE journey_patterns (
     registration_number character varying(255),
     published_name character varying(255),
     departure_stop_point_id bigint,
-    arrival_stop_point_id bigint
+    arrival_stop_point_id bigint,
+    section_status integer DEFAULT 0 NOT NULL
 );
 
 
 ALTER TABLE :SCH.journey_patterns OWNER TO chouette;
 
 --
--- TOC entry 188 (class 1259 OID 480104)
--- Dependencies: 189 5
+-- TOC entry 198 (class 1259 OID 938949)
 -- Name: journey_patterns_id_seq; Type: SEQUENCE; Schema: :SCH; Owner: chouette
 --
 
@@ -457,8 +553,8 @@ CREATE SEQUENCE journey_patterns_id_seq
 ALTER TABLE :SCH.journey_patterns_id_seq OWNER TO chouette;
 
 --
--- TOC entry 2708 (class 0 OID 0)
--- Dependencies: 188
+-- TOC entry 4264 (class 0 OID 0)
+-- Dependencies: 198
 -- Name: journey_patterns_id_seq; Type: SEQUENCE OWNED BY; Schema: :SCH; Owner: chouette
 --
 
@@ -466,8 +562,7 @@ ALTER SEQUENCE journey_patterns_id_seq OWNED BY journey_patterns.id;
 
 
 --
--- TOC entry 190 (class 1259 OID 480116)
--- Dependencies: 5
+-- TOC entry 199 (class 1259 OID 938951)
 -- Name: journey_patterns_stop_points; Type: TABLE; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -480,8 +575,7 @@ CREATE TABLE journey_patterns_stop_points (
 ALTER TABLE :SCH.journey_patterns_stop_points OWNER TO chouette;
 
 --
--- TOC entry 167 (class 1259 OID 479957)
--- Dependencies: 5
+-- TOC entry 200 (class 1259 OID 938954)
 -- Name: lines; Type: TABLE; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -500,19 +594,19 @@ CREATE TABLE lines (
     registration_number character varying(255),
     comment character varying(255),
     mobility_restricted_suitability boolean,
-    flexible_service boolean,
     int_user_needs integer,
+    flexible_service boolean,
     url character varying(255),
     color character varying(6),
-    text_color character varying(6)
+    text_color character varying(6),
+    stable_id character varying(255)
 );
 
 
 ALTER TABLE :SCH.lines OWNER TO chouette;
 
 --
--- TOC entry 166 (class 1259 OID 479955)
--- Dependencies: 5 167
+-- TOC entry 201 (class 1259 OID 938960)
 -- Name: lines_id_seq; Type: SEQUENCE; Schema: :SCH; Owner: chouette
 --
 
@@ -527,8 +621,8 @@ CREATE SEQUENCE lines_id_seq
 ALTER TABLE :SCH.lines_id_seq OWNER TO chouette;
 
 --
--- TOC entry 2709 (class 0 OID 0)
--- Dependencies: 166
+-- TOC entry 4265 (class 0 OID 0)
+-- Dependencies: 201
 -- Name: lines_id_seq; Type: SEQUENCE OWNED BY; Schema: :SCH; Owner: chouette
 --
 
@@ -536,8 +630,7 @@ ALTER SEQUENCE lines_id_seq OWNED BY lines.id;
 
 
 --
--- TOC entry 171 (class 1259 OID 479983)
--- Dependencies: 5
+-- TOC entry 202 (class 1259 OID 938962)
 -- Name: networks; Type: TABLE; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -561,8 +654,7 @@ CREATE TABLE networks (
 ALTER TABLE :SCH.networks OWNER TO chouette;
 
 --
--- TOC entry 170 (class 1259 OID 479981)
--- Dependencies: 5 171
+-- TOC entry 203 (class 1259 OID 938968)
 -- Name: networks_id_seq; Type: SEQUENCE; Schema: :SCH; Owner: chouette
 --
 
@@ -577,8 +669,8 @@ CREATE SEQUENCE networks_id_seq
 ALTER TABLE :SCH.networks_id_seq OWNER TO chouette;
 
 --
--- TOC entry 2710 (class 0 OID 0)
--- Dependencies: 170
+-- TOC entry 4266 (class 0 OID 0)
+-- Dependencies: 203
 -- Name: networks_id_seq; Type: SEQUENCE OWNED BY; Schema: :SCH; Owner: chouette
 --
 
@@ -587,8 +679,7 @@ ALTER SEQUENCE networks_id_seq OWNED BY networks.id;
 
 
 --
--- TOC entry 211 (class 1259 OID 480244)
--- Dependencies: 5
+-- TOC entry 206 (class 1259 OID 938979)
 -- Name: pt_links; Type: TABLE; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -610,8 +701,7 @@ CREATE TABLE pt_links (
 ALTER TABLE :SCH.pt_links OWNER TO chouette;
 
 --
--- TOC entry 210 (class 1259 OID 480242)
--- Dependencies: 5 211
+-- TOC entry 207 (class 1259 OID 938985)
 -- Name: pt_links_id_seq; Type: SEQUENCE; Schema: :SCH; Owner: chouette
 --
 
@@ -626,18 +716,85 @@ CREATE SEQUENCE pt_links_id_seq
 ALTER TABLE :SCH.pt_links_id_seq OWNER TO chouette;
 
 --
--- TOC entry 2712 (class 0 OID 0)
--- Dependencies: 210
+-- TOC entry 4268 (class 0 OID 0)
+-- Dependencies: 207
 -- Name: pt_links_id_seq; Type: SEQUENCE OWNED BY; Schema: :SCH; Owner: chouette
 --
 
 ALTER SEQUENCE pt_links_id_seq OWNED BY pt_links.id;
 
 
+--
+-- TOC entry 208 (class 1259 OID 938987)
+-- Name: referentials; Type: TABLE; Schema: :SCH; Owner: chouette; Tablespace: 
+--
+
+CREATE TABLE referentials (
+    id bigint NOT NULL,
+    name character varying(255),
+    slug character varying(255),
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    prefix character varying(255),
+    projection_type character varying(255),
+    time_zone character varying(255),
+    bounds character varying(255),
+    organisation_id bigint,
+    geographical_bounds text,
+    user_id bigint,
+    user_name character varying(255),
+    data_format character varying(255)
+);
+
 
 --
--- TOC entry 181 (class 1259 OID 480047)
--- Dependencies: 5
+-- TOC entry 376 (class 1259 OID 942335)
+-- Name: route_sections; Type: TABLE; Schema: :SCH; Owner: chouette; Tablespace: 
+--
+
+CREATE TABLE route_sections (
+    id bigint NOT NULL,
+    departure_id integer,
+    arrival_id integer,
+    objectid character varying(255) NOT NULL,
+    object_version integer,
+    creation_time timestamp without time zone,
+    creator_id character varying(255),
+    input_geometry shared_extensions.geometry(LineString,4326),
+    processed_geometry shared_extensions.geometry(LineString,4326),
+    distance double precision,
+    no_processing boolean
+);
+
+
+ALTER TABLE :SCH.route_sections OWNER TO chouette;
+
+--
+-- TOC entry 375 (class 1259 OID 942333)
+-- Name: route_sections_id_seq; Type: SEQUENCE; Schema: :SCH; Owner: chouette
+--
+
+CREATE SEQUENCE route_sections_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE :SCH.route_sections_id_seq OWNER TO chouette;
+
+--
+-- TOC entry 4270 (class 0 OID 0)
+-- Dependencies: 375
+-- Name: route_sections_id_seq; Type: SEQUENCE OWNED BY; Schema: :SCH; Owner: chouette
+--
+
+ALTER SEQUENCE route_sections_id_seq OWNED BY route_sections.id;
+
+
+--
+-- TOC entry 210 (class 1259 OID 938995)
 -- Name: routes; Type: TABLE; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -661,8 +818,7 @@ CREATE TABLE routes (
 ALTER TABLE :SCH.routes OWNER TO chouette;
 
 --
--- TOC entry 180 (class 1259 OID 480045)
--- Dependencies: 5 181
+-- TOC entry 211 (class 1259 OID 939001)
 -- Name: routes_id_seq; Type: SEQUENCE; Schema: :SCH; Owner: chouette
 --
 
@@ -677,8 +833,8 @@ CREATE SEQUENCE routes_id_seq
 ALTER TABLE :SCH.routes_id_seq OWNER TO chouette;
 
 --
--- TOC entry 2714 (class 0 OID 0)
--- Dependencies: 180
+-- TOC entry 4271 (class 0 OID 0)
+-- Dependencies: 211
 -- Name: routes_id_seq; Type: SEQUENCE OWNED BY; Schema: :SCH; Owner: chouette
 --
 
@@ -686,8 +842,7 @@ ALTER SEQUENCE routes_id_seq OWNED BY routes.id;
 
 
 --
--- TOC entry 208 (class 1259 OID 480217)
--- Dependencies: 5
+-- TOC entry 212 (class 1259 OID 939003)
 -- Name: routing_constraints_lines; Type: TABLE; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -701,8 +856,7 @@ ALTER TABLE :SCH.routing_constraints_lines OWNER TO chouette;
 
 
 --
--- TOC entry 175 (class 1259 OID 480012)
--- Dependencies: 5
+-- TOC entry 216 (class 1259 OID 939017)
 -- Name: stop_areas; Type: TABLE; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -738,8 +892,7 @@ CREATE TABLE stop_areas (
 ALTER TABLE :SCH.stop_areas OWNER TO chouette;
 
 --
--- TOC entry 174 (class 1259 OID 480010)
--- Dependencies: 175 5
+-- TOC entry 217 (class 1259 OID 939023)
 -- Name: stop_areas_id_seq; Type: SEQUENCE; Schema: :SCH; Owner: chouette
 --
 
@@ -754,8 +907,8 @@ CREATE SEQUENCE stop_areas_id_seq
 ALTER TABLE :SCH.stop_areas_id_seq OWNER TO chouette;
 
 --
--- TOC entry 2716 (class 0 OID 0)
--- Dependencies: 174
+-- TOC entry 4273 (class 0 OID 0)
+-- Dependencies: 217
 -- Name: stop_areas_id_seq; Type: SEQUENCE OWNED BY; Schema: :SCH; Owner: chouette
 --
 
@@ -763,8 +916,7 @@ ALTER SEQUENCE stop_areas_id_seq OWNED BY stop_areas.id;
 
 
 --
--- TOC entry 209 (class 1259 OID 480220)
--- Dependencies: 5
+-- TOC entry 218 (class 1259 OID 939025)
 -- Name: stop_areas_stop_areas; Type: TABLE; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -777,8 +929,7 @@ CREATE TABLE stop_areas_stop_areas (
 ALTER TABLE :SCH.stop_areas_stop_areas OWNER TO chouette;
 
 --
--- TOC entry 183 (class 1259 OID 480059)
--- Dependencies: 5
+-- TOC entry 219 (class 1259 OID 939028)
 -- Name: stop_points; Type: TABLE; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -799,8 +950,7 @@ CREATE TABLE stop_points (
 ALTER TABLE :SCH.stop_points OWNER TO chouette;
 
 --
--- TOC entry 182 (class 1259 OID 480057)
--- Dependencies: 5 183
+-- TOC entry 220 (class 1259 OID 939034)
 -- Name: stop_points_id_seq; Type: SEQUENCE; Schema: :SCH; Owner: chouette
 --
 
@@ -815,8 +965,8 @@ CREATE SEQUENCE stop_points_id_seq
 ALTER TABLE :SCH.stop_points_id_seq OWNER TO chouette;
 
 --
--- TOC entry 2717 (class 0 OID 0)
--- Dependencies: 182
+-- TOC entry 4274 (class 0 OID 0)
+-- Dependencies: 220
 -- Name: stop_points_id_seq; Type: SEQUENCE OWNED BY; Schema: :SCH; Owner: chouette
 --
 
@@ -824,55 +974,7 @@ ALTER SEQUENCE stop_points_id_seq OWNED BY stop_points.id;
 
 
 --
--- TOC entry 192 (class 1259 OID 480122)
--- Dependencies: 5
--- Name: time_slots; Type: TABLE; Schema: :SCH; Owner: chouette; Tablespace: 
---
-
-CREATE TABLE time_slots (
-    id bigint NOT NULL,
-    objectid character varying(255) NOT NULL,
-    object_version integer,
-    creation_time timestamp without time zone,
-    creator_id character varying(255),
-    name character varying(255),
-    beginning_slot_time time without time zone,
-    end_slot_time time without time zone,
-    first_departure_time_in_slot time without time zone,
-    last_departure_time_in_slot time without time zone
-);
-
-
-ALTER TABLE :SCH.time_slots OWNER TO chouette;
-
---
--- TOC entry 191 (class 1259 OID 480120)
--- Dependencies: 192 5
--- Name: time_slots_id_seq; Type: SEQUENCE; Schema: :SCH; Owner: chouette
---
-
-CREATE SEQUENCE time_slots_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE :SCH.time_slots_id_seq OWNER TO chouette;
-
---
--- TOC entry 2718 (class 0 OID 0)
--- Dependencies: 191
--- Name: time_slots_id_seq; Type: SEQUENCE OWNED BY; Schema: :SCH; Owner: chouette
---
-
-ALTER SEQUENCE time_slots_id_seq OWNED BY time_slots.id;
-
-
---
--- TOC entry 178 (class 1259 OID 480037)
--- Dependencies: 5
+-- TOC entry 225 (class 1259 OID 939058)
 -- Name: time_table_dates; Type: TABLE; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -888,8 +990,7 @@ CREATE TABLE time_table_dates (
 ALTER TABLE :SCH.time_table_dates OWNER TO chouette;
 
 --
--- TOC entry 218 (class 1259 OID 480337)
--- Dependencies: 178 5
+-- TOC entry 226 (class 1259 OID 939061)
 -- Name: time_table_dates_id_seq; Type: SEQUENCE; Schema: :SCH; Owner: chouette
 --
 
@@ -904,8 +1005,8 @@ CREATE SEQUENCE time_table_dates_id_seq
 ALTER TABLE :SCH.time_table_dates_id_seq OWNER TO chouette;
 
 --
--- TOC entry 2719 (class 0 OID 0)
--- Dependencies: 218
+-- TOC entry 4277 (class 0 OID 0)
+-- Dependencies: 226
 -- Name: time_table_dates_id_seq; Type: SEQUENCE OWNED BY; Schema: :SCH; Owner: chouette
 --
 
@@ -913,8 +1014,7 @@ ALTER SEQUENCE time_table_dates_id_seq OWNED BY time_table_dates.id;
 
 
 --
--- TOC entry 179 (class 1259 OID 480041)
--- Dependencies: 5
+-- TOC entry 227 (class 1259 OID 939063)
 -- Name: time_table_periods; Type: TABLE; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -930,8 +1030,7 @@ CREATE TABLE time_table_periods (
 ALTER TABLE :SCH.time_table_periods OWNER TO chouette;
 
 --
--- TOC entry 219 (class 1259 OID 480346)
--- Dependencies: 5 179
+-- TOC entry 228 (class 1259 OID 939066)
 -- Name: time_table_periods_id_seq; Type: SEQUENCE; Schema: :SCH; Owner: chouette
 --
 
@@ -946,8 +1045,8 @@ CREATE SEQUENCE time_table_periods_id_seq
 ALTER TABLE :SCH.time_table_periods_id_seq OWNER TO chouette;
 
 --
--- TOC entry 2720 (class 0 OID 0)
--- Dependencies: 219
+-- TOC entry 4278 (class 0 OID 0)
+-- Dependencies: 228
 -- Name: time_table_periods_id_seq; Type: SEQUENCE OWNED BY; Schema: :SCH; Owner: chouette
 --
 
@@ -955,8 +1054,7 @@ ALTER SEQUENCE time_table_periods_id_seq OWNED BY time_table_periods.id;
 
 
 --
--- TOC entry 177 (class 1259 OID 480025)
--- Dependencies: 2432 2433 5
+-- TOC entry 229 (class 1259 OID 939068)
 -- Name: time_tables; Type: TABLE; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -977,8 +1075,7 @@ CREATE TABLE time_tables (
 ALTER TABLE :SCH.time_tables OWNER TO chouette;
 
 --
--- TOC entry 176 (class 1259 OID 480023)
--- Dependencies: 177 5
+-- TOC entry 230 (class 1259 OID 939076)
 -- Name: time_tables_id_seq; Type: SEQUENCE; Schema: :SCH; Owner: chouette
 --
 
@@ -993,8 +1090,8 @@ CREATE SEQUENCE time_tables_id_seq
 ALTER TABLE :SCH.time_tables_id_seq OWNER TO chouette;
 
 --
--- TOC entry 2721 (class 0 OID 0)
--- Dependencies: 176
+-- TOC entry 4279 (class 0 OID 0)
+-- Dependencies: 230
 -- Name: time_tables_id_seq; Type: SEQUENCE OWNED BY; Schema: :SCH; Owner: chouette
 --
 
@@ -1002,8 +1099,7 @@ ALTER SEQUENCE time_tables_id_seq OWNED BY time_tables.id;
 
 
 --
--- TOC entry 197 (class 1259 OID 480158)
--- Dependencies: 5
+-- TOC entry 231 (class 1259 OID 939078)
 -- Name: time_tables_vehicle_journeys; Type: TABLE; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -1015,10 +1111,53 @@ CREATE TABLE time_tables_vehicle_journeys (
 
 ALTER TABLE :SCH.time_tables_vehicle_journeys OWNER TO chouette;
 
+--
+-- TOC entry 380 (class 1259 OID 942366)
+-- Name: timebands; Type: TABLE; Schema: :SCH; Owner: chouette; Tablespace: 
+--
+
+CREATE TABLE timebands (
+    id bigint NOT NULL,
+    objectid character varying(255) NOT NULL,
+    object_version integer,
+    creation_time timestamp without time zone,
+    creator_id character varying(255),
+    name character varying(255),
+    start_time time without time zone NOT NULL,
+    end_time time without time zone NOT NULL,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+ALTER TABLE :SCH.timebands OWNER TO chouette;
 
 --
--- TOC entry 196 (class 1259 OID 480147)
--- Dependencies: 5
+-- TOC entry 379 (class 1259 OID 942364)
+-- Name: timebands_id_seq; Type: SEQUENCE; Schema: :SCH; Owner: chouette
+--
+
+CREATE SEQUENCE timebands_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE :SCH.timebands_id_seq OWNER TO chouette;
+
+--
+-- TOC entry 4280 (class 0 OID 0)
+-- Dependencies: 379
+-- Name: timebands_id_seq; Type: SEQUENCE OWNED BY; Schema: :SCH; Owner: chouette
+--
+
+ALTER SEQUENCE timebands_id_seq OWNED BY timebands.id;
+
+
+--
+-- TOC entry 234 (class 1259 OID 939093)
 -- Name: vehicle_journey_at_stops; Type: TABLE; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -1030,9 +1169,6 @@ CREATE TABLE vehicle_journey_at_stops (
     boarding_alighting_possibility character varying(255),
     arrival_time time without time zone,
     departure_time time without time zone,
-    waiting_time time without time zone,
-    elapse_duration time without time zone,
-    headway_frequency time without time zone,
     for_boarding character varying(255),
     for_alighting character varying(255)
 );
@@ -1041,8 +1177,7 @@ CREATE TABLE vehicle_journey_at_stops (
 ALTER TABLE :SCH.vehicle_journey_at_stops OWNER TO chouette;
 
 --
--- TOC entry 195 (class 1259 OID 480145)
--- Dependencies: 196 5
+-- TOC entry 235 (class 1259 OID 939099)
 -- Name: vehicle_journey_at_stops_id_seq; Type: SEQUENCE; Schema: :SCH; Owner: chouette
 --
 
@@ -1057,8 +1192,8 @@ CREATE SEQUENCE vehicle_journey_at_stops_id_seq
 ALTER TABLE :SCH.vehicle_journey_at_stops_id_seq OWNER TO chouette;
 
 --
--- TOC entry 2723 (class 0 OID 0)
--- Dependencies: 195
+-- TOC entry 4282 (class 0 OID 0)
+-- Dependencies: 235
 -- Name: vehicle_journey_at_stops_id_seq; Type: SEQUENCE OWNED BY; Schema: :SCH; Owner: chouette
 --
 
@@ -1066,8 +1201,7 @@ ALTER SEQUENCE vehicle_journey_at_stops_id_seq OWNED BY vehicle_journey_at_stops
 
 
 --
--- TOC entry 194 (class 1259 OID 480134)
--- Dependencies: 5
+-- TOC entry 236 (class 1259 OID 939101)
 -- Name: vehicle_journeys; Type: TABLE; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -1075,7 +1209,6 @@ CREATE TABLE vehicle_journeys (
     id bigint NOT NULL,
     route_id bigint,
     journey_pattern_id bigint,
-    time_slot_id bigint,
     company_id bigint,
     objectid character varying(255) NOT NULL,
     object_version integer,
@@ -1090,15 +1223,15 @@ CREATE TABLE vehicle_journeys (
     vehicle_type_identifier character varying(255),
     number bigint,
     mobility_restricted_suitability boolean,
-    flexible_service boolean
+    flexible_service boolean,
+    journey_category integer DEFAULT 0 NOT NULL
 );
 
 
 ALTER TABLE :SCH.vehicle_journeys OWNER TO chouette;
 
 --
--- TOC entry 193 (class 1259 OID 480132)
--- Dependencies: 5 194
+-- TOC entry 237 (class 1259 OID 939107)
 -- Name: vehicle_journeys_id_seq; Type: SEQUENCE; Schema: :SCH; Owner: chouette
 --
 
@@ -1113,8 +1246,8 @@ CREATE SEQUENCE vehicle_journeys_id_seq
 ALTER TABLE :SCH.vehicle_journeys_id_seq OWNER TO chouette;
 
 --
--- TOC entry 2724 (class 0 OID 0)
--- Dependencies: 193
+-- TOC entry 4283 (class 0 OID 0)
+-- Dependencies: 237
 -- Name: vehicle_journeys_id_seq; Type: SEQUENCE OWNED BY; Schema: :SCH; Owner: chouette
 --
 
@@ -1122,8 +1255,7 @@ ALTER SEQUENCE vehicle_journeys_id_seq OWNED BY vehicle_journeys.id;
 
 
 --
--- TOC entry 2447 (class 2604 OID 480180)
--- Dependencies: 200 201 201
+-- TOC entry 3948 (class 2604 OID 939607)
 -- Name: id; Type: DEFAULT; Schema: :SCH; Owner: chouette
 --
 
@@ -1131,37 +1263,32 @@ ALTER TABLE ONLY access_links ALTER COLUMN id SET DEFAULT nextval('access_links_
 
 
 --
--- TOC entry 2446 (class 2604 OID 480168)
--- Dependencies: 198 199 199
+-- TOC entry 3949 (class 2604 OID 939608)
 -- Name: id; Type: DEFAULT; Schema: :SCH; Owner: chouette
 --
 
 ALTER TABLE ONLY access_points ALTER COLUMN id SET DEFAULT nextval('access_points_id_seq'::regclass);
 
 
+
 --
--- TOC entry 2423 (class 2604 OID 479973)
--- Dependencies: 169 168 169
+-- TOC entry 3951 (class 2604 OID 939610)
 -- Name: id; Type: DEFAULT; Schema: :SCH; Owner: chouette
 --
 
 ALTER TABLE ONLY companies ALTER COLUMN id SET DEFAULT nextval('companies_id_seq'::regclass);
 
 
-
 --
--- TOC entry 2438 (class 2604 OID 480074)
--- Dependencies: 184 185 185
+-- TOC entry 3952 (class 2604 OID 939611)
 -- Name: id; Type: DEFAULT; Schema: :SCH; Owner: chouette
 --
 
 ALTER TABLE ONLY connection_links ALTER COLUMN id SET DEFAULT nextval('connection_links_id_seq'::regclass);
 
 
-
 --
--- TOC entry 2448 (class 2604 OID 480192)
--- Dependencies: 202 203 203
+-- TOC entry 3957 (class 2604 OID 939614)
 -- Name: id; Type: DEFAULT; Schema: :SCH; Owner: chouette
 --
 
@@ -1169,18 +1296,39 @@ ALTER TABLE ONLY facilities ALTER COLUMN id SET DEFAULT nextval('facilities_id_s
 
 
 --
--- TOC entry 2449 (class 2604 OID 480207)
--- Dependencies: 206 205 206
+-- TOC entry 3958 (class 2604 OID 939615)
+-- Name: id; Type: DEFAULT; Schema: :SCH; Owner: chouette
+--
+
+ALTER TABLE ONLY footnotes ALTER COLUMN id SET DEFAULT nextval('footnotes_id_seq'::regclass);
+
+
+--
+-- TOC entry 3959 (class 2604 OID 939616)
 -- Name: id; Type: DEFAULT; Schema: :SCH; Owner: chouette
 --
 
 ALTER TABLE ONLY group_of_lines ALTER COLUMN id SET DEFAULT nextval('group_of_lines_id_seq'::regclass);
 
 
+--
+-- TOC entry 3989 (class 2604 OID 942349)
+-- Name: id; Type: DEFAULT; Schema: :SCH; Owner: chouette
+--
+
+ALTER TABLE ONLY journey_frequencies ALTER COLUMN id SET DEFAULT nextval('journey_frequencies_id_seq'::regclass);
+
 
 --
--- TOC entry 2442 (class 2604 OID 480109)
--- Dependencies: 189 188 189
+-- TOC entry 3992 (class 2604 OID 942381)
+-- Name: id; Type: DEFAULT; Schema: :SCH; Owner: chouette
+--
+
+ALTER TABLE ONLY journey_pattern_sections ALTER COLUMN id SET DEFAULT nextval('journey_pattern_sections_id_seq'::regclass);
+
+
+--
+-- TOC entry 3960 (class 2604 OID 939617)
 -- Name: id; Type: DEFAULT; Schema: :SCH; Owner: chouette
 --
 
@@ -1188,8 +1336,7 @@ ALTER TABLE ONLY journey_patterns ALTER COLUMN id SET DEFAULT nextval('journey_p
 
 
 --
--- TOC entry 2422 (class 2604 OID 479960)
--- Dependencies: 167 166 167
+-- TOC entry 3962 (class 2604 OID 939618)
 -- Name: id; Type: DEFAULT; Schema: :SCH; Owner: chouette
 --
 
@@ -1197,8 +1344,7 @@ ALTER TABLE ONLY lines ALTER COLUMN id SET DEFAULT nextval('lines_id_seq'::regcl
 
 
 --
--- TOC entry 2424 (class 2604 OID 479986)
--- Dependencies: 171 170 171
+-- TOC entry 3963 (class 2604 OID 939619)
 -- Name: id; Type: DEFAULT; Schema: :SCH; Owner: chouette
 --
 
@@ -1206,26 +1352,33 @@ ALTER TABLE ONLY networks ALTER COLUMN id SET DEFAULT nextval('networks_id_seq':
 
 
 --
--- TOC entry 2450 (class 2604 OID 480247)
--- Dependencies: 210 211 211
+-- TOC entry 3966 (class 2604 OID 939621)
 -- Name: id; Type: DEFAULT; Schema: :SCH; Owner: chouette
 --
 
 ALTER TABLE ONLY pt_links ALTER COLUMN id SET DEFAULT nextval('pt_links_id_seq'::regclass);
 
 
+
 --
--- TOC entry 2436 (class 2604 OID 480050)
--- Dependencies: 180 181 181
+-- TOC entry 3988 (class 2604 OID 942338)
+-- Name: id; Type: DEFAULT; Schema: :SCH; Owner: chouette
+--
+
+ALTER TABLE ONLY route_sections ALTER COLUMN id SET DEFAULT nextval('route_sections_id_seq'::regclass);
+
+
+--
+-- TOC entry 3968 (class 2604 OID 939623)
 -- Name: id; Type: DEFAULT; Schema: :SCH; Owner: chouette
 --
 
 ALTER TABLE ONLY routes ALTER COLUMN id SET DEFAULT nextval('routes_id_seq'::regclass);
 
 
+
 --
--- TOC entry 2430 (class 2604 OID 480015)
--- Dependencies: 174 175 175
+-- TOC entry 3970 (class 2604 OID 939625)
 -- Name: id; Type: DEFAULT; Schema: :SCH; Owner: chouette
 --
 
@@ -1233,26 +1386,16 @@ ALTER TABLE ONLY stop_areas ALTER COLUMN id SET DEFAULT nextval('stop_areas_id_s
 
 
 --
--- TOC entry 2437 (class 2604 OID 480062)
--- Dependencies: 182 183 183
+-- TOC entry 3971 (class 2604 OID 939626)
 -- Name: id; Type: DEFAULT; Schema: :SCH; Owner: chouette
 --
 
 ALTER TABLE ONLY stop_points ALTER COLUMN id SET DEFAULT nextval('stop_points_id_seq'::regclass);
 
 
---
--- TOC entry 2443 (class 2604 OID 480125)
--- Dependencies: 191 192 192
--- Name: id; Type: DEFAULT; Schema: :SCH; Owner: chouette
---
-
-ALTER TABLE ONLY time_slots ALTER COLUMN id SET DEFAULT nextval('time_slots_id_seq'::regclass);
-
 
 --
--- TOC entry 2434 (class 2604 OID 480339)
--- Dependencies: 218 178
+-- TOC entry 3975 (class 2604 OID 939630)
 -- Name: id; Type: DEFAULT; Schema: :SCH; Owner: chouette
 --
 
@@ -1260,8 +1403,7 @@ ALTER TABLE ONLY time_table_dates ALTER COLUMN id SET DEFAULT nextval('time_tabl
 
 
 --
--- TOC entry 2435 (class 2604 OID 480348)
--- Dependencies: 219 179
+-- TOC entry 3976 (class 2604 OID 939631)
 -- Name: id; Type: DEFAULT; Schema: :SCH; Owner: chouette
 --
 
@@ -1269,8 +1411,7 @@ ALTER TABLE ONLY time_table_periods ALTER COLUMN id SET DEFAULT nextval('time_ta
 
 
 --
--- TOC entry 2431 (class 2604 OID 480028)
--- Dependencies: 177 176 177
+-- TOC entry 3979 (class 2604 OID 939632)
 -- Name: id; Type: DEFAULT; Schema: :SCH; Owner: chouette
 --
 
@@ -1278,8 +1419,15 @@ ALTER TABLE ONLY time_tables ALTER COLUMN id SET DEFAULT nextval('time_tables_id
 
 
 --
--- TOC entry 2445 (class 2604 OID 480150)
--- Dependencies: 195 196 196
+-- TOC entry 3991 (class 2604 OID 942369)
+-- Name: id; Type: DEFAULT; Schema: :SCH; Owner: chouette
+--
+
+ALTER TABLE ONLY timebands ALTER COLUMN id SET DEFAULT nextval('timebands_id_seq'::regclass);
+
+
+--
+-- TOC entry 3985 (class 2604 OID 939634)
 -- Name: id; Type: DEFAULT; Schema: :SCH; Owner: chouette
 --
 
@@ -1287,8 +1435,7 @@ ALTER TABLE ONLY vehicle_journey_at_stops ALTER COLUMN id SET DEFAULT nextval('v
 
 
 --
--- TOC entry 2444 (class 2604 OID 480137)
--- Dependencies: 193 194 194
+-- TOC entry 3986 (class 2604 OID 939635)
 -- Name: id; Type: DEFAULT; Schema: :SCH; Owner: chouette
 --
 
@@ -1296,8 +1443,7 @@ ALTER TABLE ONLY vehicle_journeys ALTER COLUMN id SET DEFAULT nextval('vehicle_j
 
 
 --
--- TOC entry 2525 (class 2606 OID 480185)
--- Dependencies: 201 201 2690
+-- TOC entry 3995 (class 2606 OID 939693)
 -- Name: access_links_pkey; Type: CONSTRAINT; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -1306,8 +1452,7 @@ ALTER TABLE ONLY access_links
 
 
 --
--- TOC entry 2522 (class 2606 OID 480173)
--- Dependencies: 199 199 2690
+-- TOC entry 3998 (class 2606 OID 939695)
 -- Name: access_points_pkey; Type: CONSTRAINT; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -1315,9 +1460,9 @@ ALTER TABLE ONLY access_points
     ADD CONSTRAINT access_points_pkey PRIMARY KEY (id);
 
 
+
 --
--- TOC entry 2468 (class 2606 OID 479978)
--- Dependencies: 169 169 2690
+-- TOC entry 4003 (class 2606 OID 939699)
 -- Name: companies_pkey; Type: CONSTRAINT; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -1326,8 +1471,7 @@ ALTER TABLE ONLY companies
 
 
 --
--- TOC entry 2499 (class 2606 OID 480079)
--- Dependencies: 185 185 2690
+-- TOC entry 4007 (class 2606 OID 939701)
 -- Name: connection_links_pkey; Type: CONSTRAINT; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -1335,10 +1479,8 @@ ALTER TABLE ONLY connection_links
     ADD CONSTRAINT connection_links_pkey PRIMARY KEY (id);
 
 
-
 --
--- TOC entry 2528 (class 2606 OID 480197)
--- Dependencies: 203 203 2690
+-- TOC entry 4016 (class 2606 OID 939707)
 -- Name: facilities_pkey; Type: CONSTRAINT; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -1347,8 +1489,16 @@ ALTER TABLE ONLY facilities
 
 
 --
--- TOC entry 2531 (class 2606 OID 480212)
--- Dependencies: 206 206 2690
+-- TOC entry 4018 (class 2606 OID 939709)
+-- Name: footnotes_pkey; Type: CONSTRAINT; Schema: :SCH; Owner: chouette; Tablespace: 
+--
+
+ALTER TABLE ONLY footnotes
+    ADD CONSTRAINT footnotes_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 4021 (class 2606 OID 939711)
 -- Name: group_of_lines_pkey; Type: CONSTRAINT; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -1356,10 +1506,26 @@ ALTER TABLE ONLY group_of_lines
     ADD CONSTRAINT group_of_lines_pkey PRIMARY KEY (id);
 
 
+--
+-- TOC entry 4090 (class 2606 OID 942352)
+-- Name: journey_frequencies_pkey; Type: CONSTRAINT; Schema: :SCH; Owner: chouette; Tablespace: 
+--
+
+ALTER TABLE ONLY journey_frequencies
+    ADD CONSTRAINT journey_frequencies_pkey PRIMARY KEY (id);
+
 
 --
--- TOC entry 2505 (class 2606 OID 480114)
--- Dependencies: 189 189 2690
+-- TOC entry 4097 (class 2606 OID 942383)
+-- Name: journey_pattern_sections_pkey; Type: CONSTRAINT; Schema: :SCH; Owner: chouette; Tablespace: 
+--
+
+ALTER TABLE ONLY journey_pattern_sections
+    ADD CONSTRAINT journey_pattern_sections_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 4024 (class 2606 OID 939713)
 -- Name: journey_patterns_pkey; Type: CONSTRAINT; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -1368,8 +1534,7 @@ ALTER TABLE ONLY journey_patterns
 
 
 --
--- TOC entry 2464 (class 2606 OID 479965)
--- Dependencies: 167 167 2690
+-- TOC entry 4028 (class 2606 OID 939715)
 -- Name: lines_pkey; Type: CONSTRAINT; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -1378,8 +1543,7 @@ ALTER TABLE ONLY lines
 
 
 --
--- TOC entry 2472 (class 2606 OID 479991)
--- Dependencies: 171 171 2690
+-- TOC entry 4032 (class 2606 OID 939717)
 -- Name: networks_pkey; Type: CONSTRAINT; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -1387,9 +1551,9 @@ ALTER TABLE ONLY networks
     ADD CONSTRAINT networks_pkey PRIMARY KEY (id);
 
 
+
 --
--- TOC entry 2534 (class 2606 OID 480252)
--- Dependencies: 211 211 2690
+-- TOC entry 4038 (class 2606 OID 939721)
 -- Name: pt_links_pkey; Type: CONSTRAINT; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -1397,9 +1561,18 @@ ALTER TABLE ONLY pt_links
     ADD CONSTRAINT pt_links_pkey PRIMARY KEY (id);
 
 
+
 --
--- TOC entry 2493 (class 2606 OID 480055)
--- Dependencies: 181 181 2690
+-- TOC entry 4086 (class 2606 OID 942343)
+-- Name: route_sections_pkey; Type: CONSTRAINT; Schema: :SCH; Owner: chouette; Tablespace: 
+--
+
+ALTER TABLE ONLY route_sections
+    ADD CONSTRAINT route_sections_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 4043 (class 2606 OID 939725)
 -- Name: routes_pkey; Type: CONSTRAINT; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -1408,8 +1581,7 @@ ALTER TABLE ONLY routes
 
 
 --
--- TOC entry 2481 (class 2606 OID 480020)
--- Dependencies: 175 175 2690
+-- TOC entry 4050 (class 2606 OID 939729)
 -- Name: stop_areas_pkey; Type: CONSTRAINT; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -1418,8 +1590,7 @@ ALTER TABLE ONLY stop_areas
 
 
 --
--- TOC entry 2496 (class 2606 OID 480067)
--- Dependencies: 183 183 2690
+-- TOC entry 4053 (class 2606 OID 939731)
 -- Name: stop_points_pkey; Type: CONSTRAINT; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -1427,19 +1598,9 @@ ALTER TABLE ONLY stop_points
     ADD CONSTRAINT stop_points_pkey PRIMARY KEY (id);
 
 
---
--- TOC entry 2509 (class 2606 OID 480130)
--- Dependencies: 192 192 2690
--- Name: time_slots_pkey; Type: CONSTRAINT; Schema: :SCH; Owner: chouette; Tablespace: 
---
-
-ALTER TABLE ONLY time_slots
-    ADD CONSTRAINT time_slots_pkey PRIMARY KEY (id);
-
 
 --
--- TOC entry 2487 (class 2606 OID 480345)
--- Dependencies: 178 178 2690
+-- TOC entry 4063 (class 2606 OID 939739)
 -- Name: time_table_dates_pkey; Type: CONSTRAINT; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -1448,8 +1609,7 @@ ALTER TABLE ONLY time_table_dates
 
 
 --
--- TOC entry 2490 (class 2606 OID 480354)
--- Dependencies: 179 179 2690
+-- TOC entry 4066 (class 2606 OID 939741)
 -- Name: time_table_periods_pkey; Type: CONSTRAINT; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -1458,8 +1618,7 @@ ALTER TABLE ONLY time_table_periods
 
 
 --
--- TOC entry 2484 (class 2606 OID 480035)
--- Dependencies: 177 177 2690
+-- TOC entry 4069 (class 2606 OID 939743)
 -- Name: time_tables_pkey; Type: CONSTRAINT; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -1467,10 +1626,17 @@ ALTER TABLE ONLY time_tables
     ADD CONSTRAINT time_tables_pkey PRIMARY KEY (id);
 
 
+--
+-- TOC entry 4092 (class 2606 OID 942374)
+-- Name: timebands_pkey; Type: CONSTRAINT; Schema: :SCH; Owner: chouette; Tablespace: 
+--
+
+ALTER TABLE ONLY timebands
+    ADD CONSTRAINT timebands_pkey PRIMARY KEY (id);
+
 
 --
--- TOC entry 2517 (class 2606 OID 480155)
--- Dependencies: 196 196 2690
+-- TOC entry 4080 (class 2606 OID 939747)
 -- Name: vehicle_journey_at_stops_pkey; Type: CONSTRAINT; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -1479,8 +1645,7 @@ ALTER TABLE ONLY vehicle_journey_at_stops
 
 
 --
--- TOC entry 2513 (class 2606 OID 480142)
--- Dependencies: 194 194 2690
+-- TOC entry 4084 (class 2606 OID 939749)
 -- Name: vehicle_journeys_pkey; Type: CONSTRAINT; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -1489,8 +1654,7 @@ ALTER TABLE ONLY vehicle_journeys
 
 
 --
--- TOC entry 2523 (class 1259 OID 480186)
--- Dependencies: 201 2690
+-- TOC entry 3993 (class 1259 OID 939862)
 -- Name: access_links_objectid_key; Type: INDEX; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -1498,8 +1662,7 @@ CREATE UNIQUE INDEX access_links_objectid_key ON access_links USING btree (objec
 
 
 --
--- TOC entry 2520 (class 1259 OID 480174)
--- Dependencies: 199 2690
+-- TOC entry 3996 (class 1259 OID 939863)
 -- Name: access_points_objectid_key; Type: INDEX; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -1507,27 +1670,32 @@ CREATE UNIQUE INDEX access_points_objectid_key ON access_points USING btree (obj
 
 
 --
--- TOC entry 2466 (class 1259 OID 479979)
--- Dependencies: 169 2690
+-- TOC entry 4001 (class 1259 OID 939864)
 -- Name: companies_objectid_key; Type: INDEX; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
 CREATE UNIQUE INDEX companies_objectid_key ON companies USING btree (objectid);
 
 
+--
+-- TOC entry 4004 (class 1259 OID 939865)
+-- Name: companies_registration_number_key; Type: INDEX; Schema: :SCH; Owner: chouette; Tablespace: 
+--
+
+CREATE INDEX companies_registration_number_key ON companies USING btree (registration_number);
+
 
 --
--- TOC entry 2497 (class 1259 OID 480080)
--- Dependencies: 185 2690
+-- TOC entry 4005 (class 1259 OID 939866)
 -- Name: connection_links_objectid_key; Type: INDEX; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
 CREATE UNIQUE INDEX connection_links_objectid_key ON connection_links USING btree (objectid);
 
 
+
 --
--- TOC entry 2526 (class 1259 OID 480198)
--- Dependencies: 203 2690
+-- TOC entry 4014 (class 1259 OID 939868)
 -- Name: facilities_objectid_key; Type: INDEX; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -1535,17 +1703,32 @@ CREATE UNIQUE INDEX facilities_objectid_key ON facilities USING btree (objectid)
 
 
 --
--- TOC entry 2529 (class 1259 OID 480213)
--- Dependencies: 206 2690
+-- TOC entry 4019 (class 1259 OID 939869)
 -- Name: group_of_lines_objectid_key; Type: INDEX; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
 CREATE UNIQUE INDEX group_of_lines_objectid_key ON group_of_lines USING btree (objectid);
 
 
+
 --
--- TOC entry 2506 (class 1259 OID 480119)
--- Dependencies: 190 2690
+-- TOC entry 4087 (class 1259 OID 942375)
+-- Name: index_journey_frequencies_on_timeband_id; Type: INDEX; Schema: :SCH; Owner: chouette; Tablespace: 
+--
+
+CREATE INDEX index_journey_frequencies_on_timeband_id ON journey_frequencies USING btree (timeband_id);
+
+
+--
+-- TOC entry 4088 (class 1259 OID 942353)
+-- Name: index_journey_frequencies_on_vehicle_journey_id; Type: INDEX; Schema: :SCH; Owner: chouette; Tablespace: 
+--
+
+CREATE INDEX index_journey_frequencies_on_vehicle_journey_id ON journey_frequencies USING btree (vehicle_journey_id);
+
+
+--
+-- TOC entry 4025 (class 1259 OID 939871)
 -- Name: index_journey_pattern_id_on_journey_patterns_stop_points; Type: INDEX; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -1553,17 +1736,40 @@ CREATE INDEX index_journey_pattern_id_on_journey_patterns_stop_points ON journey
 
 
 --
--- TOC entry 2478 (class 1259 OID 480022)
--- Dependencies: 175 2690
+-- TOC entry 4093 (class 1259 OID 942384)
+-- Name: index_journey_pattern_sections_on_journey_pattern_id; Type: INDEX; Schema: :SCH; Owner: chouette; Tablespace: 
+--
+
+CREATE INDEX index_journey_pattern_sections_on_journey_pattern_id ON journey_pattern_sections USING btree (journey_pattern_id);
+
+
+--
+-- TOC entry 4094 (class 1259 OID 942385)
+-- Name: index_journey_pattern_sections_on_route_section_id; Type: INDEX; Schema: :SCH; Owner: chouette; Tablespace: 
+--
+
+CREATE INDEX index_journey_pattern_sections_on_route_section_id ON journey_pattern_sections USING btree (route_section_id);
+
+
+--
+-- TOC entry 4095 (class 1259 OID 942396)
+-- Name: index_jps_on_journey_pattern_id_and_route_section_id_and_rank; Type: INDEX; Schema: :SCH; Owner: chouette; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_jps_on_journey_pattern_id_and_route_section_id_and_rank ON journey_pattern_sections USING btree (journey_pattern_id, route_section_id, rank);
+
+
+--
+-- TOC entry 4047 (class 1259 OID 939872)
 -- Name: index_stop_areas_on_parent_id; Type: INDEX; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
 CREATE INDEX index_stop_areas_on_parent_id ON stop_areas USING btree (parent_id);
 
 
+
 --
--- TOC entry 2485 (class 1259 OID 480040)
--- Dependencies: 178 2690
+-- TOC entry 4061 (class 1259 OID 939875)
 -- Name: index_time_table_dates_on_time_table_id; Type: INDEX; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -1571,8 +1777,7 @@ CREATE INDEX index_time_table_dates_on_time_table_id ON time_table_dates USING b
 
 
 --
--- TOC entry 2488 (class 1259 OID 480044)
--- Dependencies: 179 2690
+-- TOC entry 4064 (class 1259 OID 939876)
 -- Name: index_time_table_periods_on_time_table_id; Type: INDEX; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -1580,8 +1785,7 @@ CREATE INDEX index_time_table_periods_on_time_table_id ON time_table_periods USI
 
 
 --
--- TOC entry 2518 (class 1259 OID 480161)
--- Dependencies: 197 2690
+-- TOC entry 4070 (class 1259 OID 939877)
 -- Name: index_time_tables_vehicle_journeys_on_time_table_id; Type: INDEX; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -1589,8 +1793,7 @@ CREATE INDEX index_time_tables_vehicle_journeys_on_time_table_id ON time_tables_
 
 
 --
--- TOC entry 2519 (class 1259 OID 480162)
--- Dependencies: 197 2690
+-- TOC entry 4071 (class 1259 OID 939878)
 -- Name: index_time_tables_vehicle_journeys_on_vehicle_journey_id; Type: INDEX; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -1598,8 +1801,7 @@ CREATE INDEX index_time_tables_vehicle_journeys_on_vehicle_journey_id ON time_ta
 
 
 --
--- TOC entry 2514 (class 1259 OID 480157)
--- Dependencies: 196 2690
+-- TOC entry 4077 (class 1259 OID 939882)
 -- Name: index_vehicle_journey_at_stops_on_stop_pointid; Type: INDEX; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -1607,8 +1809,7 @@ CREATE INDEX index_vehicle_journey_at_stops_on_stop_pointid ON vehicle_journey_a
 
 
 --
--- TOC entry 2515 (class 1259 OID 480156)
--- Dependencies: 196 2690
+-- TOC entry 4078 (class 1259 OID 939883)
 -- Name: index_vehicle_journey_at_stops_on_vehicle_journey_id; Type: INDEX; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -1616,8 +1817,7 @@ CREATE INDEX index_vehicle_journey_at_stops_on_vehicle_journey_id ON vehicle_jou
 
 
 --
--- TOC entry 2510 (class 1259 OID 480144)
--- Dependencies: 194 2690
+-- TOC entry 4081 (class 1259 OID 939884)
 -- Name: index_vehicle_journeys_on_route_id; Type: INDEX; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -1625,8 +1825,7 @@ CREATE INDEX index_vehicle_journeys_on_route_id ON vehicle_journeys USING btree 
 
 
 --
--- TOC entry 2503 (class 1259 OID 480115)
--- Dependencies: 189 2690
+-- TOC entry 4022 (class 1259 OID 939885)
 -- Name: journey_patterns_objectid_key; Type: INDEX; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -1634,8 +1833,7 @@ CREATE UNIQUE INDEX journey_patterns_objectid_key ON journey_patterns USING btre
 
 
 --
--- TOC entry 2462 (class 1259 OID 479966)
--- Dependencies: 167 2690
+-- TOC entry 4026 (class 1259 OID 939886)
 -- Name: lines_objectid_key; Type: INDEX; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -1643,8 +1841,15 @@ CREATE UNIQUE INDEX lines_objectid_key ON lines USING btree (objectid);
 
 
 --
--- TOC entry 2470 (class 1259 OID 479992)
--- Dependencies: 171 2690
+-- TOC entry 4029 (class 1259 OID 939887)
+-- Name: lines_registration_number_key; Type: INDEX; Schema: :SCH; Owner: chouette; Tablespace: 
+--
+
+CREATE INDEX lines_registration_number_key ON lines USING btree (registration_number);
+
+
+--
+-- TOC entry 4030 (class 1259 OID 939888)
 -- Name: networks_objectid_key; Type: INDEX; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -1652,8 +1857,15 @@ CREATE UNIQUE INDEX networks_objectid_key ON networks USING btree (objectid);
 
 
 --
--- TOC entry 2532 (class 1259 OID 480253)
--- Dependencies: 211 2690
+-- TOC entry 4033 (class 1259 OID 939889)
+-- Name: networks_registration_number_key; Type: INDEX; Schema: :SCH; Owner: chouette; Tablespace: 
+--
+
+CREATE INDEX networks_registration_number_key ON networks USING btree (registration_number);
+
+
+--
+-- TOC entry 4036 (class 1259 OID 939890)
 -- Name: pt_links_objectid_key; Type: INDEX; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -1661,8 +1873,7 @@ CREATE UNIQUE INDEX pt_links_objectid_key ON pt_links USING btree (objectid);
 
 
 --
--- TOC entry 2491 (class 1259 OID 480056)
--- Dependencies: 181 2690
+-- TOC entry 4041 (class 1259 OID 939891)
 -- Name: routes_objectid_key; Type: INDEX; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -1670,8 +1881,7 @@ CREATE UNIQUE INDEX routes_objectid_key ON routes USING btree (objectid);
 
 
 --
--- TOC entry 2479 (class 1259 OID 480021)
--- Dependencies: 175 2690
+-- TOC entry 4048 (class 1259 OID 939892)
 -- Name: stop_areas_objectid_key; Type: INDEX; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -1679,8 +1889,7 @@ CREATE UNIQUE INDEX stop_areas_objectid_key ON stop_areas USING btree (objectid)
 
 
 --
--- TOC entry 2494 (class 1259 OID 480068)
--- Dependencies: 183 2690
+-- TOC entry 4051 (class 1259 OID 939893)
 -- Name: stop_points_objectid_key; Type: INDEX; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -1688,26 +1897,16 @@ CREATE UNIQUE INDEX stop_points_objectid_key ON stop_points USING btree (objecti
 
 
 --
--- TOC entry 2507 (class 1259 OID 480131)
--- Dependencies: 192 2690
--- Name: time_slots_objectid_key; Type: INDEX; Schema: :SCH; Owner: chouette; Tablespace: 
---
-
-CREATE UNIQUE INDEX time_slots_objectid_key ON time_slots USING btree (objectid);
-
-
---
--- TOC entry 2482 (class 1259 OID 480036)
--- Dependencies: 177 2690
+-- TOC entry 4067 (class 1259 OID 939896)
 -- Name: time_tables_objectid_key; Type: INDEX; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
 CREATE UNIQUE INDEX time_tables_objectid_key ON time_tables USING btree (objectid);
 
 
+
 --
--- TOC entry 2511 (class 1259 OID 480143)
--- Dependencies: 194 2690
+-- TOC entry 4082 (class 1259 OID 939898)
 -- Name: vehicle_journeys_objectid_key; Type: INDEX; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
@@ -1715,8 +1914,7 @@ CREATE UNIQUE INDEX vehicle_journeys_objectid_key ON vehicle_journeys USING btre
 
 
 --
--- TOC entry 2575 (class 2606 OID 480392)
--- Dependencies: 175 2480 199 2690
+-- TOC entry 4100 (class 2606 OID 939971)
 -- Name: access_area_fkey; Type: FK CONSTRAINT; Schema: :SCH; Owner: chouette
 --
 
@@ -1725,8 +1923,7 @@ ALTER TABLE ONLY access_points
 
 
 --
--- TOC entry 2577 (class 2606 OID 480382)
--- Dependencies: 199 201 2521 2690
+-- TOC entry 4099 (class 2606 OID 939976)
 -- Name: aclk_acpt_fkey; Type: FK CONSTRAINT; Schema: :SCH; Owner: chouette
 --
 
@@ -1735,8 +1932,7 @@ ALTER TABLE ONLY access_links
 
 
 --
--- TOC entry 2576 (class 2606 OID 480387)
--- Dependencies: 175 201 2480 2690
+-- TOC entry 4098 (class 2606 OID 939981)
 -- Name: aclk_area_fkey; Type: FK CONSTRAINT; Schema: :SCH; Owner: chouette
 --
 
@@ -1745,8 +1941,7 @@ ALTER TABLE ONLY access_links
 
 
 --
--- TOC entry 2555 (class 2606 OID 480467)
--- Dependencies: 175 175 2480 2690
+-- TOC entry 4116 (class 2606 OID 939986)
 -- Name: area_parent_fkey; Type: FK CONSTRAINT; Schema: :SCH; Owner: chouette
 --
 
@@ -1755,8 +1950,7 @@ ALTER TABLE ONLY stop_areas
 
 
 --
--- TOC entry 2565 (class 2606 OID 480417)
--- Dependencies: 183 189 2495 2690
+-- TOC entry 4107 (class 2606 OID 939991)
 -- Name: arrival_point_fkey; Type: FK CONSTRAINT; Schema: :SCH; Owner: chouette
 --
 
@@ -1765,8 +1959,7 @@ ALTER TABLE ONLY journey_patterns
 
 
 --
--- TOC entry 2562 (class 2606 OID 480397)
--- Dependencies: 175 2480 185 2690
+-- TOC entry 4102 (class 2606 OID 939996)
 -- Name: colk_endarea_fkey; Type: FK CONSTRAINT; Schema: :SCH; Owner: chouette
 --
 
@@ -1775,8 +1968,7 @@ ALTER TABLE ONLY connection_links
 
 
 --
--- TOC entry 2561 (class 2606 OID 480402)
--- Dependencies: 2480 185 175 2690
+-- TOC entry 4101 (class 2606 OID 940001)
 -- Name: colk_startarea_fkey; Type: FK CONSTRAINT; Schema: :SCH; Owner: chouette
 --
 
@@ -1784,10 +1976,8 @@ ALTER TABLE ONLY connection_links
     ADD CONSTRAINT colk_startarea_fkey FOREIGN KEY (departure_id) REFERENCES stop_areas(id) ON DELETE CASCADE;
 
 
-
 --
--- TOC entry 2564 (class 2606 OID 480422)
--- Dependencies: 183 2495 189 2690
+-- TOC entry 4106 (class 2606 OID 940006)
 -- Name: departure_point_fkey; Type: FK CONSTRAINT; Schema: :SCH; Owner: chouette
 --
 
@@ -1796,8 +1986,7 @@ ALTER TABLE ONLY journey_patterns
 
 
 --
--- TOC entry 2579 (class 2606 OID 480407)
--- Dependencies: 2530 206 207 2690
+-- TOC entry 4104 (class 2606 OID 940011)
 -- Name: groupofline_group_fkey; Type: FK CONSTRAINT; Schema: :SCH; Owner: chouette
 --
 
@@ -1806,8 +1995,7 @@ ALTER TABLE ONLY group_of_lines_lines
 
 
 --
--- TOC entry 2578 (class 2606 OID 480412)
--- Dependencies: 207 2463 167 2690
+-- TOC entry 4103 (class 2606 OID 940016)
 -- Name: groupofline_line_fkey; Type: FK CONSTRAINT; Schema: :SCH; Owner: chouette
 --
 
@@ -1816,8 +2004,25 @@ ALTER TABLE ONLY group_of_lines_lines
 
 
 --
--- TOC entry 2563 (class 2606 OID 480427)
--- Dependencies: 189 2492 181 2690
+-- TOC entry 4131 (class 2606 OID 942386)
+-- Name: journey_pattern_sections_journey_pattern_id_fk; Type: FK CONSTRAINT; Schema: :SCH; Owner: chouette
+--
+
+ALTER TABLE ONLY journey_pattern_sections
+    ADD CONSTRAINT journey_pattern_sections_journey_pattern_id_fk FOREIGN KEY (journey_pattern_id) REFERENCES journey_patterns(id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 4130 (class 2606 OID 942391)
+-- Name: journey_pattern_sections_route_section_id_fk; Type: FK CONSTRAINT; Schema: :SCH; Owner: chouette
+--
+
+ALTER TABLE ONLY journey_pattern_sections
+    ADD CONSTRAINT journey_pattern_sections_route_section_id_fk FOREIGN KEY (route_section_id) REFERENCES route_sections(id) ON DELETE CASCADE;
+
+
+--
+-- TOC entry 4105 (class 2606 OID 940021)
 -- Name: jp_route_fkey; Type: FK CONSTRAINT; Schema: :SCH; Owner: chouette
 --
 
@@ -1826,8 +2031,7 @@ ALTER TABLE ONLY journey_patterns
 
 
 --
--- TOC entry 2567 (class 2606 OID 480432)
--- Dependencies: 189 190 2504 2690
+-- TOC entry 4109 (class 2606 OID 940026)
 -- Name: jpsp_jp_fkey; Type: FK CONSTRAINT; Schema: :SCH; Owner: chouette
 --
 
@@ -1836,8 +2040,7 @@ ALTER TABLE ONLY journey_patterns_stop_points
 
 
 --
--- TOC entry 2566 (class 2606 OID 480437)
--- Dependencies: 2495 190 183 2690
+-- TOC entry 4108 (class 2606 OID 940031)
 -- Name: jpsp_stoppoint_fkey; Type: FK CONSTRAINT; Schema: :SCH; Owner: chouette
 --
 
@@ -1846,8 +2049,7 @@ ALTER TABLE ONLY journey_patterns_stop_points
 
 
 --
--- TOC entry 2554 (class 2606 OID 480442)
--- Dependencies: 169 167 2467 2690
+-- TOC entry 4111 (class 2606 OID 940036)
 -- Name: line_company_fkey; Type: FK CONSTRAINT; Schema: :SCH; Owner: chouette
 --
 
@@ -1856,8 +2058,7 @@ ALTER TABLE ONLY lines
 
 
 --
--- TOC entry 2553 (class 2606 OID 480447)
--- Dependencies: 167 171 2471 2690
+-- TOC entry 4110 (class 2606 OID 940041)
 -- Name: line_ptnetwork_fkey; Type: FK CONSTRAINT; Schema: :SCH; Owner: chouette
 --
 
@@ -1866,8 +2067,7 @@ ALTER TABLE ONLY lines
 
 
 --
--- TOC entry 2558 (class 2606 OID 480452)
--- Dependencies: 2463 181 167 2690
+-- TOC entry 4113 (class 2606 OID 940046)
 -- Name: route_line_fkey; Type: FK CONSTRAINT; Schema: :SCH; Owner: chouette
 --
 
@@ -1876,8 +2076,16 @@ ALTER TABLE ONLY routes
 
 
 --
--- TOC entry 2581 (class 2606 OID 480457)
--- Dependencies: 167 208 2463 2690
+-- TOC entry 4112 (class 2606 OID 940051)
+-- Name: route_opposite_route_fkey; Type: FK CONSTRAINT; Schema: :SCH; Owner: chouette
+--
+
+ALTER TABLE ONLY routes
+    ADD CONSTRAINT route_opposite_route_fkey FOREIGN KEY (opposite_route_id) REFERENCES routes(id) ON DELETE SET NULL;
+
+
+--
+-- TOC entry 4115 (class 2606 OID 940056)
 -- Name: routingconstraint_line_fkey; Type: FK CONSTRAINT; Schema: :SCH; Owner: chouette
 --
 
@@ -1886,8 +2094,7 @@ ALTER TABLE ONLY routing_constraints_lines
 
 
 --
--- TOC entry 2580 (class 2606 OID 480462)
--- Dependencies: 175 208 2480 2690
+-- TOC entry 4114 (class 2606 OID 940061)
 -- Name: routingconstraint_stoparea_fkey; Type: FK CONSTRAINT; Schema: :SCH; Owner: chouette
 --
 
@@ -1896,8 +2103,7 @@ ALTER TABLE ONLY routing_constraints_lines
 
 
 --
--- TOC entry 2583 (class 2606 OID 480472)
--- Dependencies: 2480 209 175 2690
+-- TOC entry 4118 (class 2606 OID 940066)
 -- Name: stoparea_child_fkey; Type: FK CONSTRAINT; Schema: :SCH; Owner: chouette
 --
 
@@ -1906,8 +2112,7 @@ ALTER TABLE ONLY stop_areas_stop_areas
 
 
 --
--- TOC entry 2582 (class 2606 OID 480477)
--- Dependencies: 209 2480 175 2690
+-- TOC entry 4117 (class 2606 OID 940071)
 -- Name: stoparea_parent_fkey; Type: FK CONSTRAINT; Schema: :SCH; Owner: chouette
 --
 
@@ -1916,8 +2121,7 @@ ALTER TABLE ONLY stop_areas_stop_areas
 
 
 --
--- TOC entry 2560 (class 2606 OID 480482)
--- Dependencies: 183 2480 175 2690
+-- TOC entry 4120 (class 2606 OID 940076)
 -- Name: stoppoint_area_fkey; Type: FK CONSTRAINT; Schema: :SCH; Owner: chouette
 --
 
@@ -1926,8 +2130,7 @@ ALTER TABLE ONLY stop_points
 
 
 --
--- TOC entry 2559 (class 2606 OID 480487)
--- Dependencies: 181 183 2492 2690
+-- TOC entry 4119 (class 2606 OID 940081)
 -- Name: stoppoint_route_fkey; Type: FK CONSTRAINT; Schema: :SCH; Owner: chouette
 --
 
@@ -1936,8 +2139,7 @@ ALTER TABLE ONLY stop_points
 
 
 --
--- TOC entry 2556 (class 2606 OID 480492)
--- Dependencies: 178 177 2483 2690
+-- TOC entry 4121 (class 2606 OID 940086)
 -- Name: tm_date_fkey; Type: FK CONSTRAINT; Schema: :SCH; Owner: chouette
 --
 
@@ -1946,8 +2148,7 @@ ALTER TABLE ONLY time_table_dates
 
 
 --
--- TOC entry 2557 (class 2606 OID 480497)
--- Dependencies: 179 2483 177 2690
+-- TOC entry 4122 (class 2606 OID 940091)
 -- Name: tm_period_fkey; Type: FK CONSTRAINT; Schema: :SCH; Owner: chouette
 --
 
@@ -1956,8 +2157,7 @@ ALTER TABLE ONLY time_table_periods
 
 
 --
--- TOC entry 2570 (class 2606 OID 480522)
--- Dependencies: 194 2467 169 2690
+-- TOC entry 4129 (class 2606 OID 940096)
 -- Name: vj_company_fkey; Type: FK CONSTRAINT; Schema: :SCH; Owner: chouette
 --
 
@@ -1966,8 +2166,7 @@ ALTER TABLE ONLY vehicle_journeys
 
 
 --
--- TOC entry 2569 (class 2606 OID 480527)
--- Dependencies: 2504 189 194 2690
+-- TOC entry 4128 (class 2606 OID 940101)
 -- Name: vj_jp_fkey; Type: FK CONSTRAINT; Schema: :SCH; Owner: chouette
 --
 
@@ -1976,8 +2175,7 @@ ALTER TABLE ONLY vehicle_journeys
 
 
 --
--- TOC entry 2568 (class 2606 OID 480532)
--- Dependencies: 2492 194 181 2690
+-- TOC entry 4127 (class 2606 OID 940106)
 -- Name: vj_route_fkey; Type: FK CONSTRAINT; Schema: :SCH; Owner: chouette
 --
 
@@ -1986,8 +2184,7 @@ ALTER TABLE ONLY vehicle_journeys
 
 
 --
--- TOC entry 2572 (class 2606 OID 480512)
--- Dependencies: 196 2495 183 2690
+-- TOC entry 4126 (class 2606 OID 940111)
 -- Name: vjas_sp_fkey; Type: FK CONSTRAINT; Schema: :SCH; Owner: chouette
 --
 
@@ -1996,8 +2193,7 @@ ALTER TABLE ONLY vehicle_journey_at_stops
 
 
 --
--- TOC entry 2571 (class 2606 OID 480517)
--- Dependencies: 2512 196 194 2690
+-- TOC entry 4125 (class 2606 OID 940116)
 -- Name: vjas_vj_fkey; Type: FK CONSTRAINT; Schema: :SCH; Owner: chouette
 --
 
@@ -2006,8 +2202,7 @@ ALTER TABLE ONLY vehicle_journey_at_stops
 
 
 --
--- TOC entry 2574 (class 2606 OID 480502)
--- Dependencies: 197 2483 177 2690
+-- TOC entry 4124 (class 2606 OID 940121)
 -- Name: vjtm_tm_fkey; Type: FK CONSTRAINT; Schema: :SCH; Owner: chouette
 --
 
@@ -2016,8 +2211,7 @@ ALTER TABLE ONLY time_tables_vehicle_journeys
 
 
 --
--- TOC entry 2573 (class 2606 OID 480507)
--- Dependencies: 2512 194 197 2690
+-- TOC entry 4123 (class 2606 OID 940126)
 -- Name: vjtm_vj_fkey; Type: FK CONSTRAINT; Schema: :SCH; Owner: chouette
 --
 
@@ -2026,8 +2220,8 @@ ALTER TABLE ONLY time_tables_vehicle_journeys
 
 
 --
--- TOC entry 2694 (class 0 OID 0)
--- Dependencies: 5
+-- TOC entry 4251 (class 0 OID 0)
+-- Dependencies: 8
 -- Name: :SCH; Type: ACL; Schema: -; Owner: postgres
 --
 
@@ -2035,8 +2229,7 @@ GRANT ALL ON SCHEMA :SCH TO chouette;
 GRANT ALL ON SCHEMA :SCH TO PUBLIC;
 
 
-
--- Completed on 2014-02-27 11:15:40 CET
+-- Completed on 2016-01-04 11:09:57 CET
 
 --
 -- PostgreSQL database dump complete

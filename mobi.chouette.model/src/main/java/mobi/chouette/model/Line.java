@@ -189,6 +189,7 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	 * mobility restriction indicator (such as wheel chairs) <br/>
 	 * 
 	 * <ul>
+	 * <li>null if information n is unknown for this line</li>
 	 * <li>true if wheel chairs can use this line</li>
 	 * <li>false if wheel chairs can't use this line</li>
 	 * </ul>
@@ -200,7 +201,7 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	@Getter
 	@Setter
 	@Column(name = "mobility_restricted_suitability")
-	private Boolean mobilityRestrictedSuitable = false;
+	private Boolean mobilityRestrictedSuitable;
 
 	/**
 	 * coded user needs as binary map<br/>
@@ -248,7 +249,7 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	 * flexible service <br/>
 	 * 
 	 * <ul>
-	 * <li>null if unknown or inherited from line
+	 * <li>null if unknown</li>
 	 * <li>true for flexible service</li>
 	 * <li>false for regular service</li>
 	 * </ul>
@@ -358,6 +359,11 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	@JoinColumn(name = "company_id")
 	private Company company;
 
+	/**
+	 * set company
+	 * 
+	 * @param company New value
+	 */
 	public void setCompany(Company company) {
 		if (this.company != null) {
 			this.company.getLines().remove(this);

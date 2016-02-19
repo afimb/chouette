@@ -16,8 +16,10 @@ import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;
 import mobi.chouette.model.Route;
+import mobi.chouette.model.RouteSection;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.Timeband;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 
@@ -82,6 +84,10 @@ public class Referential implements java.io.Serializable {
 	@Setter
 	private Map<String, Timetable> sharedTimetables = new HashMap<String, Timetable>();
 
+	@Getter
+	@Setter
+	private Map<String, Timeband> sharedTimebands = new HashMap<String, Timeband>();
+
 	public void clear(boolean cascade) {
 		if (cascade) {
 			for (Line line : lines.values()) {
@@ -101,6 +107,7 @@ public class Referential implements java.io.Serializable {
 			for (VehicleJourney vj : vehicleJourneys.values()) {
 				vj.getVehicleJourneyAtStops().clear();
 				vj.getTimetables().clear();
+				vj.getJourneyFrequencies().clear();
 			}
 			for (Timetable timetable : timetables.values()) {
 				timetable.getVehicleJourneys().clear();
@@ -114,21 +121,25 @@ public class Referential implements java.io.Serializable {
 			for (StopArea area : sharedStopAreas.values()) {
 				area.getContainedStopPoints().clear();
 			}
+			for (Timetable timetable : sharedTimetables.values()) {
+				timetable.getVehicleJourneys().clear();
+			}
 		}
-		lines.clear();
-		routes.clear();
-		stopPoints.clear();
-		journeyPatterns.clear();
-		vehicleJourneys.clear();
 		accessLinks.clear();
 		accessPoints.clear();
-		ptNetworks.clear();
 		companies.clear();
 		connectionLinks.clear();
-		stopAreas.clear();
 		groupOfLines.clear();
+		journeyPatterns.clear();
+		lines.clear();
+		ptNetworks.clear();
+		routes.clear();
+		stopAreas.clear();
+		stopPoints.clear();
+		timebands.clear();
 		timetables.clear();
-
+		vehicleJourneys.clear();
+		routeSections.clear();
 	}
 
 	@Getter
@@ -162,5 +173,27 @@ public class Referential implements java.io.Serializable {
 	@Getter
 	@Setter
 	private Map<String, Timetable> timetables = new HashMap<String, Timetable>();
+
+	@Getter
+	@Setter
+	private Map<String, Timeband> timebands = new HashMap<String, Timeband>();
+
+	@Getter
+	@Setter
+	private Map<String, RouteSection> routeSections = new HashMap<String, RouteSection>();
+
+	public void dispose() {
+		// clear(false);
+		sharedAccessLinks.clear();
+		sharedAccessPoints.clear();
+		sharedCompanies.clear();
+		sharedConnectionLinks.clear();
+		sharedGroupOfLines.clear();
+		sharedLines.clear();
+		sharedPTNetworks.clear();
+		sharedStopAreas.clear();
+		sharedTimebands.clear();
+		sharedTimetables.clear();
+	}
 
 }

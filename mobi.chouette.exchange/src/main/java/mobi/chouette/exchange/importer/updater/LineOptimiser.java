@@ -17,6 +17,7 @@ import mobi.chouette.dao.NetworkDAO;
 import mobi.chouette.dao.RouteDAO;
 import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.dao.StopPointDAO;
+import mobi.chouette.dao.TimebandDAO;
 import mobi.chouette.dao.TimetableDAO;
 import mobi.chouette.dao.VehicleJourneyDAO;
 import mobi.chouette.model.AccessLink;
@@ -30,6 +31,7 @@ import mobi.chouette.model.Network;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.Timeband;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.util.ObjectFactory;
@@ -77,13 +79,15 @@ public class LineOptimiser {
 	@EJB
 	private StopPointDAO stopPointDAO;
 
+	@EJB
+	private TimebandDAO timebandDAO;
+
 
 	public void initialize(Referential cache, Referential referential) {
 
 		initializeStopArea(cache, referential.getStopAreas().values());
 
-		initializeConnectionLink(cache, referential.getConnectionLinks()
-				.values());
+		initializeConnectionLink(cache, referential.getConnectionLinks().values());
 		initializeAccessLink(cache, referential.getAccessLinks().values());
 		initializeAccessPoint(cache, referential.getAccessPoints().values());
 
@@ -91,77 +95,14 @@ public class LineOptimiser {
 		initializePTNetwork(cache, referential.getPtNetworks().values());
 		initializeCompany(cache, referential.getCompanies().values());
 		initializeGroupOfLine(cache, referential.getGroupOfLines().values());
-		initializeConnectionLink(cache, referential.getConnectionLinks().values());
 
 		initializeLine(cache, referential.getLines().values());
 		initializeRoute(cache, referential.getRoutes().values());
 		initializeStopPoint(cache, referential.getStopPoints().values());
-		initializeJourneyPattern(cache, referential.getJourneyPatterns()
-				.values());
-		initializeVehicleJourney(cache, referential.getVehicleJourneys()
-				.values());
-	}
+		initializeJourneyPattern(cache, referential.getJourneyPatterns().values());
+		initializeVehicleJourney(cache, referential.getVehicleJourneys().values());
 
-	private void initializeConnectionLink(Referential cache,
-			Collection<ConnectionLink> list) {
-		if (list != null && !list.isEmpty()) {
-			Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
-			List<ConnectionLink> objects = connectionLinkDAO
-					.findByObjectId(objectIds);
-			for (ConnectionLink object : objects) {
-				cache.getConnectionLinks().put(object.getObjectId(), object);
-			}
-
-			for (ConnectionLink item : list) {
-				ConnectionLink object = cache.getConnectionLinks().get(
-						item.getObjectId());
-				if (object == null) {
-					object = ObjectFactory.getConnectionLink(cache,
-							item.getObjectId());
-				}
-			}
-		}
-	}
-
-	private void initializeAccessLink(Referential cache,
-			Collection<AccessLink> list) {
-		if (list != null && !list.isEmpty()) {
-			Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
-			List<AccessLink> objects = accessLinkDAO.findByObjectId(objectIds);
-			for (AccessLink object : objects) {
-				cache.getAccessLinks().put(object.getObjectId(), object);
-			}
-
-			for (AccessLink item : list) {
-				AccessLink object = cache.getAccessLinks().get(
-						item.getObjectId());
-				if (object == null) {
-					object = ObjectFactory.getAccessLink(cache,
-							item.getObjectId());
-				}
-			}
-		}
-	}
-
-	private void initializeAccessPoint(Referential cache,
-			Collection<AccessPoint> list) {
-		if (list != null && !list.isEmpty()) {
-			Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
-			List<AccessPoint> objects = accessPointDAO
-					.findByObjectId(objectIds);
-			for (AccessPoint object : objects) {
-				cache.getAccessPoints().put(object.getObjectId(), object);
-			}
-
-			for (AccessPoint item : list) {
-				AccessPoint object = cache.getAccessPoints().get(
-						item.getObjectId());
-				if (object == null) {
-					object = ObjectFactory.getAccessPoint(cache,
-							item.getObjectId());
-				}
-			}
-		}
+		initializeTimeband(cache, referential.getTimebands().values());
 	}
 
 	private void initializeStopArea(Referential cache, Collection<StopArea> list) {
@@ -176,15 +117,64 @@ public class LineOptimiser {
 			for (StopArea item : list) {
 				StopArea object = cache.getStopAreas().get(item.getObjectId());
 				if (object == null) {
-					object = ObjectFactory.getStopArea(cache,
-							item.getObjectId());
+					object = ObjectFactory.getStopArea(cache, item.getObjectId());
 				}
 			}
 		}
 	}
 
-	private void initializeTimetable(Referential cache,
-			Collection<Timetable> list) {
+	private void initializeConnectionLink(Referential cache, Collection<ConnectionLink> list) {
+		if (list != null && !list.isEmpty()) {
+			Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
+			List<ConnectionLink> objects = connectionLinkDAO.findByObjectId(objectIds);
+			for (ConnectionLink object : objects) {
+				cache.getConnectionLinks().put(object.getObjectId(), object);
+			}
+
+			for (ConnectionLink item : list) {
+				ConnectionLink object = cache.getConnectionLinks().get(item.getObjectId());
+				if (object == null) {
+					object = ObjectFactory.getConnectionLink(cache, item.getObjectId());
+				}
+			}
+		}
+	}
+
+	private void initializeAccessLink(Referential cache, Collection<AccessLink> list) {
+		if (list != null && !list.isEmpty()) {
+			Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
+			List<AccessLink> objects = accessLinkDAO.findByObjectId(objectIds);
+			for (AccessLink object : objects) {
+				cache.getAccessLinks().put(object.getObjectId(), object);
+			}
+
+			for (AccessLink item : list) {
+				AccessLink object = cache.getAccessLinks().get(item.getObjectId());
+				if (object == null) {
+					object = ObjectFactory.getAccessLink(cache, item.getObjectId());
+				}
+			}
+		}
+	}
+
+	private void initializeAccessPoint(Referential cache, Collection<AccessPoint> list) {
+		if (list != null && !list.isEmpty()) {
+			Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
+			List<AccessPoint> objects = accessPointDAO.findByObjectId(objectIds);
+			for (AccessPoint object : objects) {
+				cache.getAccessPoints().put(object.getObjectId(), object);
+			}
+
+			for (AccessPoint item : list) {
+				AccessPoint object = cache.getAccessPoints().get(item.getObjectId());
+				if (object == null) {
+					object = ObjectFactory.getAccessPoint(cache, item.getObjectId());
+				}
+			}
+		}
+	}
+
+	private void initializeTimetable(Referential cache, Collection<Timetable> list) {
 		if (list != null && !list.isEmpty()) {
 			Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
 			List<Timetable> objects = timetableDAO.findByObjectId(objectIds);
@@ -193,18 +183,15 @@ public class LineOptimiser {
 			}
 
 			for (Timetable item : list) {
-				Timetable object = cache.getTimetables()
-						.get(item.getObjectId());
+				Timetable object = cache.getTimetables().get(item.getObjectId());
 				if (object == null) {
-					object = ObjectFactory.getTimetable(cache,
-							item.getObjectId());
+					object = ObjectFactory.getTimetable(cache, item.getObjectId());
 				}
 			}
 		}
 	}
 
-	private void initializePTNetwork(Referential cache,
-			Collection<Network> list) {
+	private void initializePTNetwork(Referential cache, Collection<Network> list) {
 		if (list != null && !list.isEmpty()) {
 			Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
 			List<Network> objects = ptNetworkDAO.findByObjectId(objectIds);
@@ -213,11 +200,9 @@ public class LineOptimiser {
 			}
 
 			for (Network item : list) {
-				Network object = cache.getPtNetworks()
-						.get(item.getObjectId());
+				Network object = cache.getPtNetworks().get(item.getObjectId());
 				if (object == null) {
-					object = ObjectFactory.getPTNetwork(cache,
-							item.getObjectId());
+					object = ObjectFactory.getPTNetwork(cache, item.getObjectId());
 				}
 			}
 		}
@@ -234,30 +219,24 @@ public class LineOptimiser {
 			for (Company item : list) {
 				Company object = cache.getCompanies().get(item.getObjectId());
 				if (object == null) {
-					object = ObjectFactory
-							.getCompany(cache, item.getObjectId());
+					object = ObjectFactory.getCompany(cache, item.getObjectId());
 				}
 			}
 		}
 	}
 
-	private void initializeGroupOfLine(Referential cache,
-			Collection<GroupOfLine> list) {
+	private void initializeGroupOfLine(Referential cache, Collection<GroupOfLine> list) {
 		if (list != null && !list.isEmpty()) {
 			Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
-
-			List<GroupOfLine> objects = groupOfLineDAO
-					.findByObjectId(objectIds);
+			List<GroupOfLine> objects = groupOfLineDAO.findByObjectId(objectIds);
 			for (GroupOfLine object : objects) {
 				cache.getGroupOfLines().put(object.getObjectId(), object);
 			}
 
 			for (GroupOfLine item : list) {
-				GroupOfLine object = cache.getGroupOfLines().get(
-						item.getObjectId());
+				GroupOfLine object = cache.getGroupOfLines().get(item.getObjectId());
 				if (object == null) {
-					object = ObjectFactory.getGroupOfLine(cache,
-							item.getObjectId());
+					object = ObjectFactory.getGroupOfLine(cache, item.getObjectId());
 				}
 			}
 		}
@@ -282,7 +261,6 @@ public class LineOptimiser {
 
 	private void initializeRoute(Referential cache, Collection<Route> list) {
 		if (list != null && !list.isEmpty()) {
-
 			Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
 			List<Route> objects = routeDAO.findByObjectId(objectIds);
 			for (Route object : objects) {
@@ -298,8 +276,7 @@ public class LineOptimiser {
 		}
 	}
 
-	private void initializeStopPoint(Referential cache,
-			Collection<StopPoint> list) {
+	private void initializeStopPoint(Referential cache, Collection<StopPoint> list) {
 		if (list != null && !list.isEmpty()) {
 			Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
 			List<StopPoint> objects = stopPointDAO.findByObjectId(objectIds);
@@ -308,56 +285,62 @@ public class LineOptimiser {
 			}
 
 			for (StopPoint item : list) {
-				StopPoint object = cache.getStopPoints()
-						.get(item.getObjectId());
+				StopPoint object = cache.getStopPoints().get(item.getObjectId());
 				if (object == null) {
-					object = ObjectFactory.getStopPoint(cache,
-							item.getObjectId());
+					object = ObjectFactory.getStopPoint(cache, item.getObjectId());
 				}
 			}
 		}
 	}
 
-	private void initializeJourneyPattern(Referential cache,
-			Collection<JourneyPattern> list) {
+	private void initializeJourneyPattern(Referential cache, Collection<JourneyPattern> list) {
 		if (list != null && !list.isEmpty()) {
 			Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
-			List<JourneyPattern> objects = journeyPatternDAO
-					.findByObjectId(objectIds);
+			List<JourneyPattern> objects = journeyPatternDAO.findByObjectId(objectIds);
 			for (JourneyPattern object : objects) {
 				cache.getJourneyPatterns().put(object.getObjectId(), object);
 			}
 
 			for (JourneyPattern item : list) {
-				JourneyPattern object = cache.getJourneyPatterns().get(
-						item.getObjectId());
+				JourneyPattern object = cache.getJourneyPatterns().get(item.getObjectId());
 				if (object == null) {
-					object = ObjectFactory.getJourneyPattern(cache,
-							item.getObjectId());
+					object = ObjectFactory.getJourneyPattern(cache, item.getObjectId());
 				}
 			}
 		}
 	}
 
-	private void initializeVehicleJourney(Referential cache,
-			Collection<VehicleJourney> list) {
+	private void initializeVehicleJourney(Referential cache, Collection<VehicleJourney> list) {
 		if (list != null && !list.isEmpty()) {
 			Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
-			List<VehicleJourney> objects = vehicleJourneyDAO
-					.findByObjectId(objectIds);
+			List<VehicleJourney> objects = vehicleJourneyDAO.findByObjectId(objectIds);
 			for (VehicleJourney object : objects) {
 				cache.getVehicleJourneys().put(object.getObjectId(), object);
 			}
 
 			for (VehicleJourney item : list) {
-				VehicleJourney object = cache.getVehicleJourneys().get(
-						item.getObjectId());
+				VehicleJourney object = cache.getVehicleJourneys().get(item.getObjectId());
 				if (object == null) {
-					object = ObjectFactory.getVehicleJourney(cache,
-							item.getObjectId());
+					object = ObjectFactory.getVehicleJourney(cache, item.getObjectId());
 				}
 			}
 		}
 	}
 
+	private void initializeTimeband(Referential cache, Collection<Timeband> list) {
+		if (list != null && !list.isEmpty()) {
+			Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
+			List<Timeband> objects = timebandDAO.findByObjectId(objectIds);
+			for (Timeband object : objects) {
+				cache.getTimebands().put(object.getObjectId(), object);
+			}
+
+			for (Timeband item : list) {
+				Timeband object = cache.getTimebands().get(item.getObjectId());
+				if (object == null) {
+					object = ObjectFactory.getTimeband(cache, item.getObjectId());
+				}
+			}
+		}
+	}
 }

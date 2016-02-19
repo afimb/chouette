@@ -7,8 +7,9 @@
 
    <datasource jndi-name="java:jboss/datasources/chouette"
       pool-name="chouette" enabled="true" use-java-context="true">
-      <connection-url>jdbc:postgresql://localhost:5432/chouette_test</connection-url>
-      <driver name="postgres" module="org.postgres">postgresql-9.3-1103-jdbc41.jar</driver>
+      <connection-url>jdbc:postgresql_postGIS://localhost:5432/chouette_test</connection-url>
+         <driver-class>org.postgis.DriverWrapper</driver-class>
+        <driver>postgresql</driver>
       <security>
          <user-name>chouette</user-name>
          <password>chouette</password>         
@@ -20,10 +21,10 @@
                  class-name="org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter"></exception-sorter>  
         </validation>  
    </datasource>
-  <datasource jndi-name="java:jboss/datasources/iev"
+   <datasource jndi-name="java:jboss/datasources/iev"
       pool-name="chouette" enabled="true" use-java-context="true">
-      <connection-url>jdbc:postgresql://localhost:5432/chouette_test</connection-url>
-      <driver name="postgres" module="org.postgres">postgresql-9.3-1103-jdbc41.jar</driver>
+     <connection-url>jdbc:postgresql://localhost:5432/chouette_test</connection-url>
+      <driver>postgresql</driver>
       <security>
          <user-name>chouette</user-name>
          <password>chouette</password>         
@@ -35,5 +36,5 @@
                  class-name="org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter"></exception-sorter>  
         </validation>  
    </datasource>
-        
+     
 </datasources>

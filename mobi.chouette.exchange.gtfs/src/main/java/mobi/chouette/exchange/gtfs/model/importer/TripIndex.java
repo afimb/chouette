@@ -5,7 +5,6 @@ import java.util.Map;
 
 import mobi.chouette.common.HTMLTagValidator;
 import mobi.chouette.exchange.gtfs.model.GtfsTrip;
-import mobi.chouette.exchange.gtfs.model.GtfsTrip.DirectionType;
 
 public abstract class TripIndex extends IndexImpl<GtfsTrip> implements GtfsConverter {
 
@@ -92,7 +91,8 @@ public abstract class TripIndex extends IndexImpl<GtfsTrip> implements GtfsConve
 		value = array[i++];
 		testExtraSpace(FIELDS.route_id.name(), value, bean);
 		if (value == null || value.trim().isEmpty()) {
-			bean.getErrors().add(
+			if (withValidation)
+				bean.getErrors().add(
 					new GtfsException(_path, id, getIndex(FIELDS.route_id.name()), FIELDS.route_id.name(),
 							GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
 		} else {
@@ -102,7 +102,8 @@ public abstract class TripIndex extends IndexImpl<GtfsTrip> implements GtfsConve
 		value = array[i++];
 		testExtraSpace(FIELDS.service_id.name(), value, bean);
 		if (value == null || value.trim().isEmpty()) {
-			bean.getErrors().add(
+			if (withValidation)
+				bean.getErrors().add(
 					new GtfsException(_path, id, getIndex(FIELDS.service_id.name()), FIELDS.service_id.name(),
 							GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
 		} else {
@@ -112,7 +113,8 @@ public abstract class TripIndex extends IndexImpl<GtfsTrip> implements GtfsConve
 		value = array[i++];
 		testExtraSpace(FIELDS.trip_id.name(), value, bean);
 		if (value == null || value.trim().isEmpty()) {
-			bean.getErrors().add(
+			if (withValidation)
+				bean.getErrors().add(
 					new GtfsException(_path, id, getIndex(FIELDS.trip_id.name()), FIELDS.trip_id.name(),
 							GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
 		} else {
@@ -133,7 +135,8 @@ public abstract class TripIndex extends IndexImpl<GtfsTrip> implements GtfsConve
 			bean.setDirectionId(DIRECTIONTYPE_CONVERTER.from(context, FIELDS.direction_id, value,
 					GtfsTrip.DirectionType.Outbound, false));
 		} catch (GtfsException ex) {
-			bean.getErrors().add(
+			if (withValidation)
+				bean.getErrors().add(
 					new GtfsException(_path, id, getIndex(FIELDS.direction_id.name()), FIELDS.direction_id.name(),
 							GtfsException.ERROR.INVALID_FORMAT, null, value));
 		}
@@ -153,7 +156,8 @@ public abstract class TripIndex extends IndexImpl<GtfsTrip> implements GtfsConve
 				bean.setWheelchairAccessible(WHEELCHAIRACCESSIBLETYPE_CONVERTER.from(context,
 						FIELDS.wheelchair_accessible, value, false));
 			} catch (GtfsException ex) {
-				bean.getErrors().add(
+				if (withValidation)
+					bean.getErrors().add(
 						new GtfsException(_path, id, getIndex(FIELDS.wheelchair_accessible.name()),
 								FIELDS.wheelchair_accessible.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
@@ -165,7 +169,8 @@ public abstract class TripIndex extends IndexImpl<GtfsTrip> implements GtfsConve
 			try {
 				bean.setBikesAllowed(BIKESALLOWEDTYPE_CONVERTER.from(context, FIELDS.bikes_allowed, value, false));
 			} catch (GtfsException ex) {
-				bean.getErrors().add(
+				if (withValidation)
+					bean.getErrors().add(
 						new GtfsException(_path, id, getIndex(FIELDS.bikes_allowed.name()),
 								FIELDS.bikes_allowed.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}

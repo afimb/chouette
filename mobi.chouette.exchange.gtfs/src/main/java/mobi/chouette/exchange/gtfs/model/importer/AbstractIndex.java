@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 public abstract class AbstractIndex<T> implements Index<T> {
@@ -23,16 +24,31 @@ public abstract class AbstractIndex<T> implements Index<T> {
 
 	protected abstract T build(GtfsIterator reader, Context context);
 	
-	@Getter
-	protected Set<GtfsException> errors = new HashSet<>();
+	protected Set<GtfsException> _errors = new HashSet<>();
 	
 	@Getter
-	protected Set<GtfsException.ERROR> okTests = new HashSet<>();
+	protected Set<GtfsException> errors = new GtfsExceptionsHashSet<>();
+	
+	@Getter
+	protected Set<GtfsException.ERROR> okTests = new GtfsErrorsHashSet<>();
+	
+	@Setter
+	protected boolean withValidation = false;
 
 	@ToString
 	class Token {
 		int offset = -1;
 		int lenght = 0;
+	}
+	
+	@Override
+	public void dispose() {
+		_errors.clear();
+		errors.clear();
+		okTests.clear();
+		_errors = null;
+		errors = null;
+		okTests = null;
 	}
 
 }

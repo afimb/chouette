@@ -44,8 +44,6 @@ public class ConnectionLink extends NeptuneIdentifiedObject {
 
 	@Getter
 	@Setter
-//	@SequenceGenerator(name="connection_links_id_seq", sequenceName="connection_links_id_seq", allocationSize=1)
-//    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="connection_links_id_seq")
 	@GenericGenerator(name = "connection_links_id_seq", strategy = "mobi.chouette.persistence.hibernate.ChouetteIdentifierGenerator", 
 		parameters = {
 			@Parameter(name = "sequence_name", value = "connection_links_id_seq"),

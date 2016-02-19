@@ -23,6 +23,10 @@ public class NeptuneObjectFactory {
 	@Setter
 	private Map<Route, List<PTLink>> ptLinksOnRoute = new HashMap<>();
 
+	@Getter
+	@Setter
+	private Map<String, TimeSlot> timeSlots = new HashMap<>();
+
 	public PTLink getPTLink(String objectId) {
 		PTLink result = ptLink.get(objectId);
 		if (result == null) {
@@ -53,9 +57,20 @@ public class NeptuneObjectFactory {
 		return result;
 	}
 	
+	public TimeSlot getTimeSlot(String objectId) {
+		TimeSlot timeSlot = timeSlots.get(objectId);
+		if (timeSlot == null) {
+			timeSlot = new TimeSlot();
+			timeSlot.setObjectId(objectId);
+			timeSlots.put(objectId,  timeSlot);
+		}
+		return timeSlot;
+	}
+	
 	public void clear(){
 		ptLink.clear();
 		ptLinksOnRoute.clear();
+		timeSlots.clear();
 	}
 	
 	public void dispose()

@@ -71,6 +71,7 @@ public class GtfsAgencyParser implements Parser, Validator, Constant {
 		
 			// EXTRA_SPACE_IN_FIELD
 			GtfsException fatalException = null;
+			parser.setWithValidation(true);
 			for (GtfsAgency bean : parser) { // Build the beans
 				try {
 					parser.validate(bean, importer);
@@ -88,6 +89,7 @@ public class GtfsAgencyParser implements Parser, Validator, Constant {
 				validationReporter.reportErrors(context, bean.getErrors(), GTFS_AGENCY_FILE);
 				validationReporter.validate(context, GTFS_AGENCY_FILE, bean.getOkTests());
 			}
+			parser.setWithValidation(false);
 			if (fatalException != null)
 				throw fatalException;
 		} else { // the file "agency.txt" doesn't exist

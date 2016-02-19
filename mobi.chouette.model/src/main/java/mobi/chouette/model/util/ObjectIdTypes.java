@@ -49,6 +49,10 @@ public interface ObjectIdTypes {
 	   /**
 	    * default objectId type for route 
 	    */
+	   public static final String ROUTE_SECTION_KEY = "RouteSection";
+	   /**
+	    * default objectId type for route 
+	    */
 	   public static final String ROUTE_KEY = "Route";
 	   /**
 	    * default objectId type for stop areas 
@@ -66,6 +70,10 @@ public interface ObjectIdTypes {
 	    * default objectId type for timetables 
 	    */
 	   public static final String TIMETABLE_KEY = "Timetable";
+	   /**
+	    * default objectId type for timebands 
+	    */
+	   public static final String TIMEBAND_KEY = "Timeband";
 	   /**
 	    * default objectId type for vehicle journeys 
 	    */

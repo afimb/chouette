@@ -4,9 +4,11 @@ import java.sql.Date;
 import java.util.Collection;
 import java.util.List;
 
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.ConnectionLink;
+import mobi.chouette.model.Footnote;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
@@ -16,8 +18,8 @@ import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.util.NeptuneUtil;
 
+@Log4j
 public class DataCollector {
-
 
 	protected boolean collect(ExportableData collection, Line line, Date startDate, Date endDate,
 			boolean skipNoCoordinate, boolean followLinks) {
@@ -27,6 +29,8 @@ public class DataCollector {
 		collection.getJourneyPatterns().clear();
 		collection.getStopPoints().clear();
 		collection.getVehicleJourneys().clear();
+		List<Footnote> notes = line.getFootnotes();
+		
 		for (Route route : line.getRoutes()) {
 			boolean validRoute = false;
 			if (route.getStopPoints().size() < 2)
@@ -67,16 +71,15 @@ public class DataCollector {
 						for (Timetable timetable : vehicleJourney.getTimetables()) {
 							if (collection.getTimetables().contains(timetable)) {
 								isValid = true;
-							} else if (collection.getExcludedTimetables().contains(timetable)){
+							} else if (collection.getExcludedTimetables().contains(timetable)) {
 								isValid = false;
-							}
-							else {
-								
+							} else {
+
 								if (startDate == null)
 									isValid = timetable.isActiveBefore(endDate);
 								else if (endDate == null)
 									isValid = timetable.isActiveAfter(startDate);
-								else 
+								else
 									isValid = timetable.isActiveOnPeriod(startDate, endDate);
 								if (isValid)
 									collection.getTimetables().add(timetable);
@@ -92,6 +95,12 @@ public class DataCollector {
 							validJourneyPattern = true;
 							validRoute = true;
 							validLine = true;
+							boolean validNotes = true;
+							for (Footnote note : vehicleJourney.getFootnotes()) {
+								if (!notes.contains(note)) validNotes = false;
+							}
+							if (!validNotes)
+							   log.warn("vehicle journey  has invalid foot notes");
 						}
 					}
 				} // end vehiclejourney loop
@@ -102,7 +111,8 @@ public class DataCollector {
 				collection.getRoutes().add(route);
 				route.getOppositeRoute(); // to avoid lazy loading afterward
 				for (StopPoint stopPoint : route.getStopPoints()) {
-					if (stopPoint == null) continue; // protection from missing stopPoint ranks
+					if (stopPoint == null)
+						continue; // protection from missing stopPoint ranks
 					collection.getStopPoints().add(stopPoint);
 					collectStopAreas(collection, stopPoint.getContainedInStopArea(), skipNoCoordinate, followLinks);
 				}
@@ -212,6 +222,5 @@ public class DataCollector {
 		}
 
 	}
-
 
 }

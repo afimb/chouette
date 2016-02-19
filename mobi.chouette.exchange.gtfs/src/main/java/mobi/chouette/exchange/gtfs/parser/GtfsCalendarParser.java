@@ -80,6 +80,7 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 			validationReporter.validateOKGeneralSyntax(context, GTFS_CALENDAR_FILE);
 		
 			GtfsException fatalException = null;
+			calendarParser.setWithValidation(true);
 			for (GtfsCalendar bean : calendarParser) {
 				try {
 					calendarParser.validate(bean, importer);
@@ -97,6 +98,7 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 				validationReporter.reportErrors(context, bean.getErrors(), GTFS_CALENDAR_FILE);
 				validationReporter.validate(context, GTFS_CALENDAR_FILE, bean.getOkTests());
 			}
+			calendarParser.setWithValidation(false);
 			if (fatalException != null)
 				throw fatalException;
 		}
@@ -145,6 +147,7 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 			
 			CalendarDateByService.hashCodes.clear();
 			GtfsException fatalException = null;
+			calendarDateParser.setWithValidation(true);
 			for (GtfsCalendarDate bean : calendarDateParser) {
 				try {
 					calendarDateParser.validate(bean, importer);
@@ -162,6 +165,7 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 				validationReporter.reportErrors(context, bean.getErrors(), GTFS_CALENDAR_DATES_FILE);
 				validationReporter.validate(context, GTFS_CALENDAR_DATES_FILE, bean.getOkTests());
 			}
+			calendarDateParser.setWithValidation(false);
 			if (fatalException != null)
 				throw fatalException;
 		}
@@ -252,7 +256,7 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 			referential.getSharedTimetables().put(timetable.getObjectId(), timetable);
 			referential.getTimetables().put(timetable.getObjectId(), timetable);
 		}
-
+       list.clear();
 	}
 
 	protected void convert(Context context, GtfsCalendar gtfsCalendar, Timetable timetable) {

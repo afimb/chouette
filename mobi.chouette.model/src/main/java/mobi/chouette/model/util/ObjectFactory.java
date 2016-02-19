@@ -9,8 +9,10 @@ import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;
 import mobi.chouette.model.Route;
+import mobi.chouette.model.RouteSection;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.Timeband;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
@@ -162,9 +164,9 @@ public class ObjectFactory {
 			result.setDetached(true);
 			referential.getSharedStopAreas().put(objectId, result);
 		} 
-			if (!referential.getStopAreas().containsKey(objectId)) {
-				referential.getStopAreas().put(objectId, result);
-			}
+		if (!referential.getStopAreas().containsKey(objectId)) {
+			referential.getStopAreas().put(objectId, result);
+		}
 		
 		return result;
 	}
@@ -208,5 +210,27 @@ public class ObjectFactory {
 		}
 		return result;
 	}
+	
+	public static Timeband getTimeband(Referential referential, String objectId) {
+		Timeband timeband = referential.getTimebands().get(objectId);
+		if (timeband == null) {
+			timeband = new Timeband();
+			timeband.setObjectId(objectId);
+			timeband.setDetached(true);
+			referential.getTimebands().put(objectId, timeband);
+		}
+		return timeband;
+	}
 
+
+	public static RouteSection getRouteSection(Referential referential, String objectId) {
+		RouteSection section = referential.getRouteSections().get(objectId);
+		if (section == null) {
+			section = new RouteSection();
+			section.setObjectId(objectId);
+			section.setDetached(true);
+			referential.getRouteSections().put(objectId, section);
+		}
+		return section;
+	}
 }

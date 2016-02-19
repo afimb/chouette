@@ -22,6 +22,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import mobi.chouette.model.type.JourneyCategoryEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
 
 import org.apache.commons.lang.StringUtils;
@@ -310,5 +311,32 @@ public class VehicleJourney extends NeptuneIdentifiedObject {
 	@OneToMany(cascade = { CascadeType.PERSIST }, fetch = FetchType.LAZY)
 	@JoinColumn(name = "vehicle_journey_id", updatable = false)
 	private List<VehicleJourneyAtStop> vehicleJourneyAtStops = new ArrayList<VehicleJourneyAtStop>(0);
-
+	
+	/**
+	 * To distinguish the timesheets journeys and the frequencies ones. Defaults to Timesheet.
+	 * 
+	 * @param journeyCategory
+	 *         The new vehicle journey category
+	 * @return The actual vehicle journey category
+	 * @since 3.2.0
+	 */
+	@Getter
+	@Setter
+	@Enumerated(EnumType.ORDINAL)
+	@Column(name = "journey_category")
+	private JourneyCategoryEnum journeyCategory = JourneyCategoryEnum.Timesheet;
+	
+	/**
+	 * For frequencies journeys, applicable periods
+	 * 
+	 * @param journeyFrequencies
+	 *         The new vehicle journey frequencies
+	 * @return The actual vehicle journey category
+	 * @since 3.2.0
+	 */
+	@Getter
+	@Setter
+	@OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST })
+	@JoinColumn(name = "vehicle_journey_id", updatable = false)
+	private List<JourneyFrequency> journeyFrequencies = new ArrayList<JourneyFrequency>(0);
 }

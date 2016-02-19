@@ -18,12 +18,12 @@ import java.util.Map;
 import java.util.Set;
 
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.Color;
+//import mobi.chouette.common.Color;
 import mobi.chouette.exchange.gtfs.model.GtfsAgency;
 import mobi.chouette.exchange.gtfs.model.GtfsObject;
 
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
+//import com.jamonapi.Monitor;
+//import com.jamonapi.MonitorFactory;
 
 @Log4j
 public abstract class IndexImpl<T> extends AbstractIndex<T> {
@@ -71,7 +71,7 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 	protected void initialize() throws IOException {
 		boolean bom = hasBOM(_path);
 		int offset = (bom) ? 3 : 0;
-		Monitor monitor = MonitorFactory.start("INITIALIZE INDEX IMPL : "+_path);
+		//Monitor monitor = MonitorFactory.start("INITIALIZE INDEX IMPL : "+_path);
 		RandomAccessFile file = new RandomAccessFile(_path, "r");
 		try {
 			_channel1 = file.getChannel();
@@ -96,7 +96,7 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 			}
 		} finally {
 			file.close();
-			log.info(Color.BLUE + monitor.stop() + Color.NORMAL);
+			//log.info(Color.BLUE + monitor.stop() + Color.NORMAL);
 		}
 	}
 	
@@ -113,13 +113,14 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 	protected abstract void checkRequiredFields(Map<String, Integer> fields);
 
 	protected void testExtraSpace(String fieldName, String value, GtfsObject bean) {
-		if (value != null && !value.equals(value.trim())) {
+		if (value != null && !value.equals(value.trim()) && withValidation) {
 			bean.getErrors().add(new GtfsException(_path, bean.getId(), getIndex(fieldName), fieldName, GtfsException.ERROR.EXTRA_SPACE_IN_FIELD, null, value));
 		}
 	}
 	
 	@Override
 	public void dispose() {
+		super.dispose();
 		try {
 			_reader.dispose();
 			_channel1.close();
@@ -164,6 +165,10 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 
 			@Override
 			public T next() {
+				return next(true);
+			}
+			
+			public T next(boolean withValidation) {
 				T result = null;
 				if (iterator != null && iterator.hasNext()) {
 					result = iterator.next();
@@ -232,7 +237,7 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 
 	@Override
 	protected void index() throws IOException {
-		Monitor monitor = MonitorFactory.start();
+		//Monitor monitor = MonitorFactory.start("INDEX IMPL");
 		boolean hasDefaultId = false;
 		
 		while (_reader.hasNext()) {
@@ -318,7 +323,8 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 			}
 		}
 		
-		log.debug("[DSU] index " + _path + " " + _tokens.size() + " objects " + monitor.stop());
+		//log.info(Color.YELLOW + "[DSU] index " + _path + " " + _tokens.size() + " objects " + monitor.stop() + Color.NORMAL);
+		//log.debug("[DSU] index " + _path + " " + _tokens.size() + " objects " + monitor.stop());
 		file.close();
 	}
 

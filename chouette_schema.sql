@@ -829,21 +829,21 @@ ALTER SEQUENCE stop_points_id_seq OWNED BY stop_points.id;
 -- Name: time_slots; Type: TABLE; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
-CREATE TABLE time_slots (
-    id bigint NOT NULL,
-    objectid character varying(255) NOT NULL,
-    object_version integer,
-    creation_time timestamp without time zone,
-    creator_id character varying(255),
-    name character varying(255),
-    beginning_slot_time time without time zone,
-    end_slot_time time without time zone,
-    first_departure_time_in_slot time without time zone,
-    last_departure_time_in_slot time without time zone
-);
+-- CREATE TABLE time_slots (
+    -- id bigint NOT NULL,
+    -- objectid character varying(255) NOT NULL,
+    -- object_version integer,
+    -- creation_time timestamp without time zone,
+    -- creator_id character varying(255),
+    -- name character varying(255),
+    -- beginning_slot_time time without time zone,
+    -- end_slot_time time without time zone,
+    -- first_departure_time_in_slot time without time zone,
+    -- last_departure_time_in_slot time without time zone
+--);
 
 
-ALTER TABLE :SCH.time_slots OWNER TO chouette;
+-- ALTER TABLE :SCH.time_slots OWNER TO chouette;
 
 --
 -- TOC entry 191 (class 1259 OID 480120)
@@ -851,15 +851,15 @@ ALTER TABLE :SCH.time_slots OWNER TO chouette;
 -- Name: time_slots_id_seq; Type: SEQUENCE; Schema: :SCH; Owner: chouette
 --
 
-CREATE SEQUENCE time_slots_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
+-- CREATE SEQUENCE time_slots_id_seq
+    -- START WITH 1
+    -- INCREMENT BY 1
+    -- NO MINVALUE
+    -- NO MAXVALUE
+    -- CACHE 1;
 
 
-ALTER TABLE :SCH.time_slots_id_seq OWNER TO chouette;
+-- ALTER TABLE :SCH.time_slots_id_seq OWNER TO chouette;
 
 --
 -- TOC entry 2718 (class 0 OID 0)
@@ -867,7 +867,7 @@ ALTER TABLE :SCH.time_slots_id_seq OWNER TO chouette;
 -- Name: time_slots_id_seq; Type: SEQUENCE OWNED BY; Schema: :SCH; Owner: chouette
 --
 
-ALTER SEQUENCE time_slots_id_seq OWNED BY time_slots.id;
+-- ALTER SEQUENCE time_slots_id_seq OWNED BY time_slots.id;
 
 
 --
@@ -1030,9 +1030,9 @@ CREATE TABLE vehicle_journey_at_stops (
     boarding_alighting_possibility character varying(255),
     arrival_time time without time zone,
     departure_time time without time zone,
-    waiting_time time without time zone,
-    elapse_duration time without time zone,
-    headway_frequency time without time zone,
+    -- waiting_time time without time zone,
+    -- elapse_duration time without time zone,
+    -- headway_frequency time without time zone,
     for_boarding character varying(255),
     for_alighting character varying(255)
 );
@@ -1075,7 +1075,7 @@ CREATE TABLE vehicle_journeys (
     id bigint NOT NULL,
     route_id bigint,
     journey_pattern_id bigint,
-    time_slot_id bigint,
+    -- time_slot_id bigint,
     company_id bigint,
     objectid character varying(255) NOT NULL,
     object_version integer,
@@ -1090,7 +1090,8 @@ CREATE TABLE vehicle_journeys (
     vehicle_type_identifier character varying(255),
     number bigint,
     mobility_restricted_suitability boolean,
-    flexible_service boolean
+    flexible_service boolean,
+    journey_category integer NOT NULL DEFAULT 0
 );
 
 
@@ -1247,7 +1248,7 @@ ALTER TABLE ONLY stop_points ALTER COLUMN id SET DEFAULT nextval('stop_points_id
 -- Name: id; Type: DEFAULT; Schema: :SCH; Owner: chouette
 --
 
-ALTER TABLE ONLY time_slots ALTER COLUMN id SET DEFAULT nextval('time_slots_id_seq'::regclass);
+-- ALTER TABLE ONLY time_slots ALTER COLUMN id SET DEFAULT nextval('time_slots_id_seq'::regclass);
 
 
 --
@@ -1433,8 +1434,8 @@ ALTER TABLE ONLY stop_points
 -- Name: time_slots_pkey; Type: CONSTRAINT; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
-ALTER TABLE ONLY time_slots
-    ADD CONSTRAINT time_slots_pkey PRIMARY KEY (id);
+-- ALTER TABLE ONLY time_slots
+    -- ADD CONSTRAINT time_slots_pkey PRIMARY KEY (id);
 
 
 --
@@ -1719,7 +1720,7 @@ CREATE UNIQUE INDEX stop_points_objectid_key ON stop_points USING btree (objecti
 -- Name: time_slots_objectid_key; Type: INDEX; Schema: :SCH; Owner: chouette; Tablespace: 
 --
 
-CREATE UNIQUE INDEX time_slots_objectid_key ON time_slots USING btree (objectid);
+-- CREATE UNIQUE INDEX time_slots_objectid_key ON time_slots USING btree (objectid);
 
 
 --
@@ -2770,3 +2771,141 @@ GRANT ALL ON SCHEMA public TO PUBLIC;
 -- PostgreSQL database dump complete
 --
 
+
+--
+-- TOC entry 572 (class 1259 OID 520886)
+-- Name: timebands; Type: TABLE; Schema: :SCH; Owner: chouette; Tablespace: 
+--
+
+CREATE TABLE timebands (
+    id bigint NOT NULL,
+    objectid character varying(255) NOT NULL,
+    object_version integer,
+    creation_time timestamp without time zone,
+    creator_id character varying(255),
+    name character varying(255),
+    start_time time without time zone NOT NULL,
+    end_time time without time zone NOT NULL,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+ALTER TABLE :SCH.timebands OWNER TO chouette;
+
+--
+-- TOC entry 571 (class 1259 OID 520884)
+-- Name: timebands_id_seq; Type: SEQUENCE; Schema: :SCH; Owner: chouette
+--
+
+CREATE SEQUENCE timebands_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE :SCH.timebands_id_seq OWNER TO chouette;
+
+--
+-- TOC entry 4339 (class 0 OID 0)
+-- Dependencies: 571
+-- Name: timebands_id_seq; Type: SEQUENCE OWNED BY; Schema: :SCH; Owner: chouette
+--
+
+ALTER SEQUENCE timebands_id_seq OWNED BY timebands.id;
+
+
+--
+-- TOC entry 4067 (class 2604 OID 520889)
+-- Name: id; Type: DEFAULT; Schema: :SCH; Owner: chouette
+--
+
+ALTER TABLE ONLY timebands ALTER COLUMN id SET DEFAULT nextval('timebands_id_seq'::regclass);
+
+
+--
+-- TOC entry 4167 (class 2606 OID 520894)
+-- Name: timebands_pkey; Type: CONSTRAINT; Schema: :SCH; Owner: chouette; Tablespace: 
+--
+
+ALTER TABLE ONLY timebands
+    ADD CONSTRAINT timebands_pkey PRIMARY KEY (id);
+
+
+
+--
+-- TOC entry 570 (class 1259 OID 520866)
+-- Name: journey_frequencies; Type: TABLE; Schema: :SCH; Owner: chouette; Tablespace: 
+--
+
+CREATE TABLE journey_frequencies (
+    id bigint NOT NULL,
+    vehicle_journey_id integer,
+    scheduled_headway_interval time without time zone NOT NULL,
+    first_departure_time time without time zone NOT NULL,
+    last_departure_time time without time zone,
+    exact_time boolean DEFAULT false,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone,
+    timeband_id integer
+);
+
+
+ALTER TABLE :SCH.journey_frequencies OWNER TO chouette;
+
+--
+-- TOC entry 569 (class 1259 OID 520864)
+-- Name: journey_frequencies_id_seq; Type: SEQUENCE; Schema: :SCH; Owner: chouette
+--
+
+CREATE SEQUENCE journey_frequencies_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE :SCH.journey_frequencies_id_seq OWNER TO chouette;
+
+--
+-- TOC entry 4322 (class 0 OID 0)
+-- Dependencies: 569
+-- Name: journey_frequencies_id_seq; Type: SEQUENCE OWNED BY; Schema: :SCH; Owner: chouette
+--
+
+ALTER SEQUENCE journey_frequencies_id_seq OWNED BY journey_frequencies.id;
+
+--
+-- TOC entry 4065 (class 2604 OID 520869)
+-- Name: id; Type: DEFAULT; Schema: :SCH; Owner: chouette
+--
+
+ALTER TABLE ONLY journey_frequencies ALTER COLUMN id SET DEFAULT nextval('journey_frequencies_id_seq'::regclass);
+
+
+--
+-- TOC entry 4165 (class 2606 OID 520872)
+-- Name: journey_frequencies_pkey; Type: CONSTRAINT; Schema: :SCH; Owner: chouette; Tablespace: 
+--
+
+ALTER TABLE ONLY journey_frequencies
+    ADD CONSTRAINT journey_frequencies_pkey PRIMARY KEY (id);
+
+
+--
+-- TOC entry 4162 (class 1259 OID 520895)
+-- Name: index_journey_frequencies_on_timeband_id; Type: INDEX; Schema: :SCH; Owner: chouette; Tablespace: 
+--
+
+CREATE INDEX index_journey_frequencies_on_timeband_id ON journey_frequencies USING btree (timeband_id);
+
+
+--
+-- TOC entry 4163 (class 1259 OID 520873)
+-- Name: index_journey_frequencies_on_vehicle_journey_id; Type: INDEX; Schema: :SCH; Owner: chouette; Tablespace: 
+--
+
+CREATE INDEX index_journey_frequencies_on_vehicle_journey_id ON journey_frequencies USING btree (vehicle_journey_id);

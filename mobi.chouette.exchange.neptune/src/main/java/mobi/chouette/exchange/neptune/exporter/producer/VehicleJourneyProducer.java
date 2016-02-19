@@ -1,10 +1,12 @@
 package mobi.chouette.exchange.neptune.exporter.producer;
 
 import java.math.BigInteger;
+import java.sql.Time;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import mobi.chouette.common.TimeUtil;
 import mobi.chouette.exchange.neptune.JsonExtension;
 import mobi.chouette.model.Footnote;
 import mobi.chouette.model.StopPoint;
@@ -32,13 +34,19 @@ public class VehicleJourneyProducer extends AbstractJaxbNeptuneProducer<VehicleJ
 		}
 
 	};
-
+	
 	// @Override
 	public VehicleJourneyType produce(VehicleJourney vehicleJourney, boolean addExtension) {
+		return produce(vehicleJourney, addExtension, 0);
+	}
+
+	public VehicleJourneyType produce(VehicleJourney vehicleJourney, boolean addExtension, int count) {
 		VehicleJourneyType jaxbVehicleJourney = tridentFactory.createVehicleJourneyType();
 
 		//
 		populateFromModel(jaxbVehicleJourney, vehicleJourney);
+		if (count > 0)
+			jaxbVehicleJourney.setObjectId(jaxbVehicleJourney.getObjectId()+"-"+count);
 
 		jaxbVehicleJourney.setComment(buildComment(vehicleJourney, addExtension));
 
@@ -67,36 +75,31 @@ public class VehicleJourneyProducer extends AbstractJaxbNeptuneProducer<VehicleJ
 		if (vehicleJourney.getVehicleJourneyAtStops() != null) {
 			List<VehicleJourneyAtStop> lvjas = vehicleJourney.getVehicleJourneyAtStops();
 			Collections.sort(lvjas, VEHICLE_JOURNEY_AT_STOP_SORTER);
-
 			int order = 1;
+			Time firstDeparture = null;
 			for (VehicleJourneyAtStop vehicleJourneyAtStop : vehicleJourney.getVehicleJourneyAtStops()) {
 				if (vehicleJourneyAtStop != null) {
 					VehicleJourneyAtStopType jaxbVehicleJourneyAtStop = tridentFactory.createVehicleJourneyAtStopType();
-					jaxbVehicleJourneyAtStop
-							.setBoardingAlightingPossibility(buildBoardingAndAlightingPossibility(vehicleJourneyAtStop
-									.getStopPoint()));
-
-					if (vehicleJourneyAtStop.getHeadwayFrequency() != null) {
-						jaxbVehicleJourneyAtStop.setHeadwayFrequency(toDuration(vehicleJourneyAtStop
-								.getHeadwayFrequency()));
-					}
+					jaxbVehicleJourneyAtStop.setBoardingAlightingPossibility(buildBoardingAndAlightingPossibility(vehicleJourneyAtStop.getStopPoint()));
 					jaxbVehicleJourneyAtStop.setOrder(BigInteger.valueOf(order++));
 					jaxbVehicleJourneyAtStop.setStopPointId(getNonEmptyObjectId(vehicleJourneyAtStop.getStopPoint()));
-					jaxbVehicleJourneyAtStop.setVehicleJourneyId(getNonEmptyObjectId(vehicleJourneyAtStop
-							.getVehicleJourney()));
-
-					if (vehicleJourneyAtStop.getArrivalTime() != null) {
-						jaxbVehicleJourneyAtStop.setArrivalTime(toCalendar(vehicleJourneyAtStop.getArrivalTime()));
+					jaxbVehicleJourneyAtStop.setVehicleJourneyId(jaxbVehicleJourney.getObjectId());
+					switch(vehicleJourney.getJourneyCategory()) {
+					case Timesheet:
+						if (vehicleJourneyAtStop.getArrivalTime() != null) {
+							jaxbVehicleJourneyAtStop.setArrivalTime(toCalendar(vehicleJourneyAtStop.getArrivalTime()));
+						}
+						if (vehicleJourneyAtStop.getDepartureTime() != null) {
+							jaxbVehicleJourneyAtStop.setDepartureTime(toCalendar(vehicleJourneyAtStop.getDepartureTime()));
+						}
+						break;
+					case Frequency:
+						if (firstDeparture == null)
+							firstDeparture = vehicleJourneyAtStop.getDepartureTime();
+						
+						jaxbVehicleJourneyAtStop.setElapseDuration(toDuration(TimeUtil.substract(vehicleJourneyAtStop.getDepartureTime(), firstDeparture)));
+						jaxbVehicleJourneyAtStop.setHeadwayFrequency(toDuration(vehicleJourney.getJourneyFrequencies().get(count).getScheduledHeadwayInterval()));
 					}
-					if (vehicleJourneyAtStop.getDepartureTime() != null) {
-						jaxbVehicleJourneyAtStop.setDepartureTime(toCalendar(vehicleJourneyAtStop.getDepartureTime()));
-					}
-
-					if (vehicleJourneyAtStop.getElapseDuration() != null) {
-						jaxbVehicleJourneyAtStop
-								.setElapseDuration(toDuration(vehicleJourneyAtStop.getElapseDuration()));
-					}
-
 					jaxbVehicleJourney.getVehicleJourneyAtStop().add(jaxbVehicleJourneyAtStop);
 				}
 			}

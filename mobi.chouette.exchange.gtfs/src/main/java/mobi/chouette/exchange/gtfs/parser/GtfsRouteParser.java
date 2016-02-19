@@ -88,6 +88,7 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 			}
 		
 			GtfsException fatalException = null;
+			parser.setWithValidation(true);
 			for (GtfsRoute bean : parser) {
 				try {
 					parser.validate(bean, importer);
@@ -109,6 +110,7 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 				validationReporter.reportErrors(context, bean.getErrors(), GTFS_ROUTES_FILE);
 				validationReporter.validate(context, GTFS_ROUTES_FILE, bean.getOkTests());
 			}
+			parser.setWithValidation(false);
 			int i = 1;
 			boolean unsuedId = true;
 			for (GtfsAgency bean : importer.getAgencyById()) {

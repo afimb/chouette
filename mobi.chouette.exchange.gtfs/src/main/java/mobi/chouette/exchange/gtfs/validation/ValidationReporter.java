@@ -1,12 +1,13 @@
 package mobi.chouette.exchange.gtfs.validation;
 
-import java.util.HashSet;
+//import java.util.HashSet;
 import java.util.Set;
 
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsException;
+import mobi.chouette.exchange.gtfs.model.importer.GtfsExceptionsHashSet;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.FileError;
 import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
@@ -18,7 +19,7 @@ import mobi.chouette.exchange.validation.report.ValidationReport;
 public class ValidationReporter implements Constant {
 
 	@Getter
-	private Set<GtfsException> exceptions = new HashSet<GtfsException>();
+	private Set<GtfsException> exceptions = new GtfsExceptionsHashSet<GtfsException>();
 
 	public void dispose()
 	{

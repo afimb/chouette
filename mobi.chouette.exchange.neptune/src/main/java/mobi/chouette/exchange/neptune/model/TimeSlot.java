@@ -38,16 +38,6 @@ public class TimeSlot extends NeptuneIdentifiedObject
 	@GeneratedValue(generator = "time_slots_id_seq")
 	@Column(name = "id", nullable = false)
 	protected Long id;
-   
-   /**
-    * name
-    * 
-    * @return The actual value
-    */
-   @Getter
-   @Setter
-   private String name;
-
 
    /**
     * start of slot
@@ -92,6 +82,4 @@ public class TimeSlot extends NeptuneIdentifiedObject
    @Getter
    @Setter
    private Time lastDepartureTimeInSlot;
-
-
 }

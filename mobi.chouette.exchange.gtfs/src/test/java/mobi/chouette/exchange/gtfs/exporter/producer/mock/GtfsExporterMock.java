@@ -10,6 +10,7 @@ import mobi.chouette.exchange.gtfs.model.GtfsCalendar;
 import mobi.chouette.exchange.gtfs.model.GtfsCalendarDate;
 import mobi.chouette.exchange.gtfs.model.GtfsFrequency;
 import mobi.chouette.exchange.gtfs.model.GtfsRoute;
+import mobi.chouette.exchange.gtfs.model.GtfsShape;
 import mobi.chouette.exchange.gtfs.model.GtfsStop;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime;
 import mobi.chouette.exchange.gtfs.model.GtfsTransfer;
@@ -34,6 +35,8 @@ public class GtfsExporterMock implements GtfsExporterInterface
    @Getter 
    List<GtfsRoute> exportedRoutes = new ArrayList<>();
    @Getter 
+   List<GtfsShape> exportedShapes = new ArrayList<>();
+   @Getter 
    List<GtfsStop> exportedStops = new ArrayList<>();
    @Getter 
    List<GtfsStopTime> exportedStopTimes = new ArrayList<>();
@@ -47,6 +50,7 @@ public class GtfsExporterMock implements GtfsExporterInterface
    CalendarExporterMock calendarMock = new CalendarExporterMock();
    FrequencyExporterMock frequencyMock = new FrequencyExporterMock();
    RouteExporterMock routeMock = new RouteExporterMock();
+   ShapeExporterMock shapeMock = new ShapeExporterMock();
    StopExporterMock stopMock = new StopExporterMock();
    StopTimeExporterMock stopTimeMock = new StopTimeExporterMock();
    TransferExporterMock transferMock = new TransferExporterMock();
@@ -59,6 +63,7 @@ public class GtfsExporterMock implements GtfsExporterInterface
       exportedCalendars.clear();
       exportedFrequencies.clear();
       exportedRoutes.clear();
+      exportedShapes.clear();
       exportedStops.clear();
       exportedStopTimes.clear();
       exportedTransfers.clear();
@@ -93,6 +98,12 @@ public class GtfsExporterMock implements GtfsExporterInterface
    public Exporter<GtfsRoute> getRouteExporter() throws Exception
    {
       return routeMock;
+   }
+
+   @Override
+   public Exporter<GtfsShape> getShapeExporter() throws Exception
+   {
+      return shapeMock;
    }
 
    @Override
@@ -221,6 +232,24 @@ public class GtfsExporterMock implements GtfsExporterInterface
          try
          {
             exportedRoutes.add((GtfsRoute) BeanUtils.cloneBean(bean));
+         }
+         catch (Exception e)
+         {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+         }
+      }
+   }
+
+   private class ShapeExporterMock extends ExporterMock<GtfsShape>
+   {
+      @Override
+      public void export(GtfsShape bean) throws IOException
+      {
+         
+         try
+         {
+            exportedShapes.add((GtfsShape) BeanUtils.cloneBean(bean));
          }
          catch (Exception e)
          {

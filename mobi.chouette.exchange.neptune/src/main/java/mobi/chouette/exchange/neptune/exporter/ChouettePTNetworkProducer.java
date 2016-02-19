@@ -25,11 +25,13 @@ import mobi.chouette.exchange.neptune.exporter.producer.RouteProducer;
 import mobi.chouette.exchange.neptune.exporter.producer.RoutingConstraintProducer;
 import mobi.chouette.exchange.neptune.exporter.producer.StopAreaProducer;
 import mobi.chouette.exchange.neptune.exporter.producer.StopPointProducer;
+import mobi.chouette.exchange.neptune.exporter.producer.TimeSlotProducer;
 import mobi.chouette.exchange.neptune.exporter.producer.TimetableProducer;
 import mobi.chouette.exchange.neptune.exporter.producer.VehicleJourneyProducer;
 import mobi.chouette.exchange.neptune.exporter.util.NeptuneObjectUtil;
 import mobi.chouette.exchange.neptune.jaxb.JaxbNeptuneFileConverter;
 import mobi.chouette.exchange.neptune.model.PTLink;
+import mobi.chouette.exchange.neptune.model.TimeSlot;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.FileInfo;
 import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
@@ -38,10 +40,12 @@ import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.GroupOfLine;
+import mobi.chouette.model.JourneyFrequency;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.Timeband;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.type.ChouetteAreaEnum;
@@ -55,6 +59,7 @@ import org.trident.schema.trident.GroupOfLineType;
 import org.trident.schema.trident.ITLType;
 import org.trident.schema.trident.JourneyPatternType;
 import org.trident.schema.trident.PTLinkType;
+import org.trident.schema.trident.TimeSlotType;
 import org.trident.schema.trident.TimetableType;
 import org.trident.schema.trident.VehicleJourneyType;
 
@@ -78,7 +83,7 @@ public class ChouettePTNetworkProducer implements Constant {
 	private static AccessPointProducer accessPointProducer = new AccessPointProducer();
 	private static AccessLinkProducer accessLinkProducer = new AccessLinkProducer();
 	//	private static FacilityProducer facilityProducer = new FacilityProducer();
-	//	private static TimeSlotProducer timeSlotProducer = new TimeSlotProducer();
+	private static TimeSlotProducer timeSlotProducer = new TimeSlotProducer();
 
 	public void produce(Context context) throws Exception
 	{
@@ -97,7 +102,8 @@ public class ChouettePTNetworkProducer implements Constant {
 		Metadata metadata = (Metadata) context.get(METADATA); 
 
 		ChouettePTNetworkType rootObject = AbstractJaxbNeptuneProducer.tridentFactory.createChouettePTNetworkType();
-		rootObject.setPTNetwork(networkProducer.produce(collection.getLine().getNetwork(),addExtension));
+        if (collection.getLine().getNetwork() != null)
+		    rootObject.setPTNetwork(networkProducer.produce(collection.getLine().getNetwork(),addExtension));
 		for (GroupOfLine group : collection.getGroupOfLines())
 		{
 			GroupOfLineType jaxbObj = groupOfLineProducer.produce(group,addExtension);
@@ -177,7 +183,6 @@ public class ChouettePTNetworkProducer implements Constant {
 				metadata.getTemporalCoverage().update(timetable.getStartOfPeriod(), timetable.getEndOfPeriod());
 		}
 
-
 		ChouetteLineDescription chouetteLineDescription = new ChouetteLineDescription();
 		ChouetteLineDescription.Line jaxbLine = lineProducer.produce(collection.getLine(),collection.getRoutes(),addExtension);
 		chouetteLineDescription.setLine(jaxbLine);
@@ -226,8 +231,40 @@ public class ChouettePTNetworkProducer implements Constant {
 		}
 		for (VehicleJourney vehicleJourney : collection.getVehicleJourneys())
 		{
-			VehicleJourneyType jaxbObj = vehicleJourneyProducer.produce(vehicleJourney,addExtension);
-			chouetteLineDescription.getVehicleJourney().add(jaxbObj);
+			
+			List<JourneyFrequency> journeyFrequencies = vehicleJourney.getJourneyFrequencies();
+			if (journeyFrequencies != null && !journeyFrequencies.isEmpty()) {
+				int count = 0;
+				for (JourneyFrequency journeyFrequency : journeyFrequencies) {
+					Timeband timeband = journeyFrequency.getTimeband();
+					TimeSlot timeSlot = new TimeSlot();
+					if (timeband != null) {
+						timeSlot.setBeginningSlotTime(timeband.getStartTime());
+						timeSlot.setEndSlotTime(timeband.getEndTime());
+						timeSlot.setObjectVersion(timeband.getObjectVersion());
+						timeSlot.setCreationTime(timeband.getCreationTime());
+						timeSlot.setCreatorId(timeband.getCreatorId());
+					}
+					else {
+						timeSlot.setBeginningSlotTime(journeyFrequency.getFirstDepartureTime());
+						timeSlot.setEndSlotTime(journeyFrequency.getLastDepartureTime());
+					}
+					timeSlot.setFirstDepartureTimeInSlot(journeyFrequency.getFirstDepartureTime());
+					timeSlot.setLastDepartureTimeInSlot(journeyFrequency.getLastDepartureTime());
+					
+						VehicleJourneyType jaxbObj = vehicleJourneyProducer.produce(vehicleJourney, addExtension, count);
+						timeSlot.setObjectId(jaxbObj.getObjectId().replaceAll("VehicleJourney", "TimeSlot"));
+						jaxbObj.setTimeSlotId(timeSlot.getObjectId());
+						chouetteLineDescription.getVehicleJourney().add(jaxbObj);
+					
+					TimeSlotType jaxbTSObj = timeSlotProducer.produce(timeSlot, addExtension);
+					rootObject.getTimeSlot().add(jaxbTSObj);
+					count++;
+				}
+			} else {
+				VehicleJourneyType jaxbObj = vehicleJourneyProducer.produce(vehicleJourney, addExtension);
+				chouetteLineDescription.getVehicleJourney().add(jaxbObj);
+			}
 		}
 
 		for (AccessLink accessLink : collection.getAccessLinks())

@@ -114,12 +114,12 @@ public abstract class NamingUtil {
 		return object.getObjectId();
 	}
 
-	private static boolean isFilled(String data) {
-		return (data != null && !data.isEmpty());
+	public static boolean isFilled(String data) {
+		return (data != null && !data.trim().isEmpty());
 	}
 
-	private static boolean isEmpty(String data) {
-		return (data == null || data.isEmpty());
+	public static boolean isEmpty(String data) {
+		return (data == null || data.trim().isEmpty());
 	}
 
 	public static void setDefaultName(ConnectionLink link) {

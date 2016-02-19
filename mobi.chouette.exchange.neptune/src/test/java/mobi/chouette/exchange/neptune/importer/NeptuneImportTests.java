@@ -254,7 +254,46 @@ public class NeptuneImportTests extends Arquillian implements Constant, ReportCo
 		utx.rollback();
 
 	}
-	
+
+	@Test(groups = { "ImportLine" }, description = "Import Plugin should import file with frequencies")
+	public void verifyImportLineWithFrequency() throws Exception {
+		Context context = initImportContext();
+		NeptuneImporterCommand command = (NeptuneImporterCommand) CommandFactory.create(initialContext,
+				NeptuneImporterCommand.class.getName());
+		NeptuneTestsUtils.copyFile("Neptune_With_Frequencies.xml");
+		JobDataTest jobData = (JobDataTest) context.get(JOB_DATA);
+		jobData.setFilename("Neptune_With_Frequencies.xml");
+		NeptuneImportParameters configuration = (NeptuneImportParameters) context.get(CONFIGURATION);
+		configuration.setNoSave(false);
+		configuration.setCleanRepository(true);
+		try {
+			command.execute(context);
+		} catch (Exception ex) {
+			log.error("test failed", ex);
+			throw ex;
+		}
+		ActionReport report = (ActionReport) context.get(REPORT);
+		Assert.assertEquals(report.getResult(), STATUS_OK, "result");
+		Assert.assertEquals(report.getFiles().size(), 1, "file reported");
+		Assert.assertEquals(report.getLines().size(), 1, "line reported");
+		Reporter.log("report line :" + report.getLines().get(0).toString(), true);
+		Assert.assertEquals(report.getLines().get(0).getStatus(), LINE_STATE.OK, "line status");
+		NeptuneTestsUtils.checkLineWithFrequencies(context);
+		
+		Referential referential = (Referential) context.get(REFERENTIAL);
+		Assert.assertNotEquals(referential.getTimetables(),0, "timetables" );
+		Assert.assertNotEquals(referential.getSharedTimetables(),0, "shared timetables" );
+
+		// line should be saved
+		utx.begin();
+		em.joinTransaction();
+		Line line = lineDao.findByObjectId("NINOXE:Line:15574334");
+		
+		NeptuneTestsUtils.checkMinimalLine(line);
+		
+		utx.rollback();
+
+	}
 
 	// @Test(groups = { "ImportRCLine" }, description = "Import Plugin should import file with ITL")
 	public void verifyImportRCLine() throws Exception {

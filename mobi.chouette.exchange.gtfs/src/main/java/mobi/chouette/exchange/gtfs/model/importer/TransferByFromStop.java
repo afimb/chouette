@@ -84,26 +84,30 @@ public class TransferByFromStop extends IndexImpl<GtfsTransfer> implements
 		
 		value = array[i++]; testExtraSpace(FIELDS.from_stop_id.name(), value, bean);
 		if (value == null || value.trim().isEmpty()) {
-			bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.from_stop_id.name()), FIELDS.from_stop_id.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+			if (withValidation)
+				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.from_stop_id.name()), FIELDS.from_stop_id.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
 		} else {
 			bean.setFromStopId(STRING_CONVERTER.from(context, FIELDS.from_stop_id, value, true));
 		}
 			
 		value = array[i++]; testExtraSpace(FIELDS.to_stop_id.name(), value, bean);
 		if (value == null || value.trim().isEmpty()) {
-			bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.to_stop_id.name()), FIELDS.to_stop_id.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+			if (withValidation)
+				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.to_stop_id.name()), FIELDS.to_stop_id.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
 		} else {
 			bean.setToStopId(STRING_CONVERTER.from(context, FIELDS.to_stop_id, value, true));
 		}
 		
 		value = array[i++]; testExtraSpace(FIELDS.transfer_type.name(), value, bean);
 		if (value == null || value.trim().isEmpty()) {
-			bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.transfer_type.name()), FIELDS.transfer_type.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
+			if (withValidation)
+				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.transfer_type.name()), FIELDS.transfer_type.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
 		} else {
 			try {
 				bean.setTransferType(TRANSFERTYPE_CONVERTER.from(context, FIELDS.transfer_type, value, true));
 			} catch(GtfsException ex) {
-				bean.getErrors().add(new GtfsException(_path, id, FIELDS.transfer_type.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
+				if (withValidation)
+					bean.getErrors().add(new GtfsException(_path, id, FIELDS.transfer_type.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		}
 		
@@ -112,14 +116,16 @@ public class TransferByFromStop extends IndexImpl<GtfsTransfer> implements
 			try {
 				bean.setMinTransferTime(POSITIVE_INTEGER_CONVERTER.from(context, FIELDS.min_transfer_time, value, false));
 			} catch (GtfsException ex) {
-				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.min_transfer_time.name()), FIELDS.min_transfer_time.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
+				if (withValidation)
+					bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.min_transfer_time.name()), FIELDS.min_transfer_time.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
 			}
 		} else {
 			bean.setMinTransferTime(null);
 		}
 		
 		if (bean.getTransferType() == TransferType.Minimal && bean.getMinTransferTime() == null) {
-			bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.transfer_type.name()), FIELDS.transfer_type.name(), GtfsException.ERROR.MISSING_TRANSFER_TIME, null, null));
+			if (withValidation)
+				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.transfer_type.name()), FIELDS.transfer_type.name(), GtfsException.ERROR.MISSING_TRANSFER_TIME, null, null));
 		}
 		return bean;
 	}
@@ -129,19 +135,19 @@ public class TransferByFromStop extends IndexImpl<GtfsTransfer> implements
 		boolean result = true;
 
 		String fromStopId = bean.getFromStopId();
-		if (dao.getStopById().getValue(fromStopId) == null) {
+		if (dao.getStopById().containsKey(fromStopId)) {
+			bean.getOkTests().add(GtfsException.ERROR.UNREFERENCED_ID);
+		} else {
 			bean.getErrors().add(new GtfsException(_path, bean.getId(), getIndex(FIELDS.from_stop_id.name()), FIELDS.from_stop_id.name(), GtfsException.ERROR.UNREFERENCED_ID, null, fromStopId));
 			result = false;
-		} else {
-			bean.getOkTests().add(GtfsException.ERROR.UNREFERENCED_ID);
 		}
 
 		String toStopId = bean.getToStopId();
-		if (dao.getStopById().getValue(toStopId) == null) {
+		if (dao.getStopById().containsKey(toStopId)) {
+			bean.getOkTests().add(GtfsException.ERROR.UNREFERENCED_ID);
+		} else {
 			bean.getErrors().add(new GtfsException(_path, bean.getId(), getIndex(FIELDS.to_stop_id.name()), FIELDS.to_stop_id.name(), GtfsException.ERROR.UNREFERENCED_ID, null, toStopId));
 			result = false;
-		} else {
-			bean.getOkTests().add(GtfsException.ERROR.UNREFERENCED_ID);
 		}
 
 		return result;
