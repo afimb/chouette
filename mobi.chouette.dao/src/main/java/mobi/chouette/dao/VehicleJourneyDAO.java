@@ -32,7 +32,7 @@ public class VehicleJourneyDAO extends GenericDAOImpl<VehicleJourney> {
 		this.em = em;
 	}
 
-	public void deleteVehicleJourneyAtStops(final List<String> vehicleJourneyObjectIds) {
+	public void deleteChildren(final List<String> vehicleJourneyObjectIds) {
 
 		Session session = em.unwrap(Session.class);
 

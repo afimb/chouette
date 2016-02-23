@@ -25,17 +25,18 @@ import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.dao.AccessLinkDAO;
-import mobi.chouette.dao.AccessPointDAO;
-import mobi.chouette.dao.CompanyDAO;
-import mobi.chouette.dao.ConnectionLinkDAO;
-import mobi.chouette.dao.GroupOfLineDAO;
-import mobi.chouette.dao.LineDAO;
-import mobi.chouette.dao.NetworkDAO;
-import mobi.chouette.dao.StopAreaDAO;
-import mobi.chouette.dao.TimetableDAO;
+import mobi.chouette.dao.GenericDAO;
 import mobi.chouette.exchange.validation.SharedDataValidatorCommand;
 import mobi.chouette.exchange.validation.ValidationData;
+import mobi.chouette.model.AccessLink;
+import mobi.chouette.model.AccessPoint;
+import mobi.chouette.model.Company;
+import mobi.chouette.model.ConnectionLink;
+import mobi.chouette.model.GroupOfLine;
+import mobi.chouette.model.Line;
+import mobi.chouette.model.Network;
+import mobi.chouette.model.StopArea;
+import mobi.chouette.model.Timetable;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -51,32 +52,32 @@ public class DaoSharedDataValidatorCommand implements Command, Constant {
 	@Resource
 	private SessionContext daoContext;
 
-	@EJB
-	private LineDAO lineDAO;
+	@EJB (mappedName="java:app/mobi.chouette.dao/LineDAO")
+	private GenericDAO<Line> lineDAO;
 
-	@EJB
-	private NetworkDAO ptNetworkDAO;
+	@EJB (mappedName="java:app/mobi.chouette.dao/NetworkDAO")
+	private GenericDAO<Network> ptNetworkDAO;
 
-	@EJB
-	private CompanyDAO companyDAO;
+	@EJB (mappedName="java:app/mobi.chouette.dao/CompanyDAO")
+	private GenericDAO<Company> companyDAO;
 
-	@EJB
-	private GroupOfLineDAO groupOfLineDAO;
+	@EJB (mappedName="java:app/mobi.chouette.dao/GroupOfLineDAO")
+	private GenericDAO<GroupOfLine> groupOfLineDAO;
 
-	@EJB
-	private StopAreaDAO stopAreaDAO;
+	@EJB (mappedName="java:app/mobi.chouette.dao/StopAreaDAO")
+	private GenericDAO<StopArea> stopAreaDAO;
 
-	@EJB
-	private TimetableDAO timetableDAO;
+	@EJB (mappedName="java:app/mobi.chouette.dao/TimetableDAO")
+	private GenericDAO<Timetable> timetableDAO;
 
-	@EJB
-	private ConnectionLinkDAO connectionLinkDAO;
+	@EJB (mappedName="java:app/mobi.chouette.dao/ConnectionLinkDAO")
+	private GenericDAO<ConnectionLink> connectionLinkDAO;
 
-	@EJB
-	private AccessLinkDAO accessLinkDAO;
+	@EJB (mappedName="java:app/mobi.chouette.dao/AccessLinkDAO")
+	private GenericDAO<AccessLink> accessLinkDAO;
 
-	@EJB
-	private AccessPointDAO accessPointDAO;
+	@EJB (mappedName="java:app/mobi.chouette.dao/AccessPointDAO")
+	private GenericDAO<AccessPoint> accessPointDAO;
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)

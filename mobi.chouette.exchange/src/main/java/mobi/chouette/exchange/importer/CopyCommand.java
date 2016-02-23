@@ -22,7 +22,8 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.PropertyNames;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.dao.VehicleJourneyDAO;
+import mobi.chouette.dao.GenericDAO;
+import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
 import com.jamonapi.Monitor;
@@ -34,8 +35,8 @@ public class CopyCommand implements Command {
 
 	public static final String COMMAND = "CopyCommand";
 
-	@EJB
-	private VehicleJourneyDAO vehicleJourneyDAO;
+	@EJB (mappedName="java:app/mobi.chouette.dao/VehicleJourneyDAO")
+	private GenericDAO<VehicleJourney> vehicleJourneyDAO;
 
 	@Resource(lookup = "java:comp/DefaultManagedExecutorService")
 	ManagedExecutorService executor;

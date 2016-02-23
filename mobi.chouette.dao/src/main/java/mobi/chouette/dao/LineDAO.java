@@ -6,8 +6,8 @@ import javax.persistence.PersistenceContext;
 
 import mobi.chouette.model.Line;
 
-@Stateless
-public class LineDAO extends GenericDAOImpl<Line> {
+@Stateless (name="LineDAO")
+public class LineDAO extends GenericDAOImpl<Line>{
 
 	public LineDAO() {
 		super(Line.class);

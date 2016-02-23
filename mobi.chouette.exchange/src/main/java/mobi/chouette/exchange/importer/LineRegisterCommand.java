@@ -20,8 +20,7 @@ import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.dao.LineDAO;
-import mobi.chouette.dao.VehicleJourneyDAO;
+import mobi.chouette.dao.GenericDAO;
 import mobi.chouette.exchange.importer.updater.LineOptimiser;
 import mobi.chouette.exchange.importer.updater.LineUpdater;
 import mobi.chouette.exchange.importer.updater.Updater;
@@ -46,14 +45,14 @@ public class LineRegisterCommand implements Command {
 	@EJB
 	private LineOptimiser optimiser;
 
-	@EJB
-	private LineDAO lineDAO;
+	@EJB (mappedName="java:app/mobi.chouette.dao/LineDAO")
+	private GenericDAO<Line> lineDAO;
 
 	@EJB(beanName = LineUpdater.BEAN_NAME)
 	private Updater<Line> lineUpdater;
 
-	@EJB
-	private VehicleJourneyDAO vehicleJourneyDAO;
+	@EJB (mappedName="java:app/mobi.chouette.dao/VehicleJourneyDAO")
+	private GenericDAO<VehicleJourney> vehicleJourneyDAO;
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -98,7 +97,7 @@ public class LineRegisterCommand implements Command {
 						write(buffer, vehicleJourney, stopPoint, vehicleJourneyAtStop);
 					}
 				}
-				vehicleJourneyDAO.deleteVehicleJourneyAtStops(list);
+				vehicleJourneyDAO.deleteChildren(list);
 				context.put(BUFFER, buffer.toString());
 			}
 

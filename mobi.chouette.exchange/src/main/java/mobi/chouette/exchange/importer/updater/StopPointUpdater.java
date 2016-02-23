@@ -4,7 +4,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import mobi.chouette.common.Context;
-import mobi.chouette.dao.StopAreaDAO;
+import mobi.chouette.dao.GenericDAO;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.util.ObjectFactory;
@@ -15,8 +15,8 @@ public class StopPointUpdater implements Updater<StopPoint> {
 
 	public static final String BEAN_NAME = "StopPointUpdater";
 
-	@EJB
-	private StopAreaDAO stopAreaDAO;
+	@EJB (mappedName="java:app/mobi.chouette.dao/StopAreaDAO")
+	private GenericDAO<StopArea> stopAreaDAO;
 
 	@EJB(beanName = StopAreaUpdater.BEAN_NAME)
 	private Updater<StopArea> stopAreaUpdater;

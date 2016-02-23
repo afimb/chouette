@@ -93,7 +93,7 @@
       <!-- Modules -->
       <dependency>
          <groupId>${project.groupId}</groupId>
-         <artifactId>mobi.chouette.dao</artifactId>
+         <artifactId>mobi.chouette.dao.iev</artifactId>
          <type>ejb</type>
          <version>${project.version}</version>
       </dependency>
@@ -103,7 +103,7 @@
          <type>ejb</type>
          <version>${project.version}</version>
       </dependency>
-      <dependency>
+       <dependency>
          <groupId>${project.groupId}</groupId>
          <artifactId>mobi.chouette.exchange</artifactId>
          <type>ejb</type>
@@ -114,6 +114,13 @@
 			<artifactId>hibernate-core</artifactId>
 			<scope>provided</scope>
 		</dependency>
+       <dependency>
+         <groupId>${project.groupId}</groupId>
+         <artifactId>mobi.chouette.dao</artifactId>
+         <type>ejb</type>
+         <version>${project.version}</version>
+         <scope>test</scope>
+      </dependency>
 
    </dependencies>
    </project>

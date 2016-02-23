@@ -25,8 +25,8 @@ import com.vividsolutions.jts.geom.PrecisionModel;
 @Log4j
 public class RouteSectionDaoTest extends Arquillian
 {
-	@EJB
-	RouteSectionDAO routeSectionDao;
+	@EJB (mappedName="java:module/RouteSectionDAO")
+	GenericDAO<RouteSection> routeSectionDao;
 
 
 	@Deployment

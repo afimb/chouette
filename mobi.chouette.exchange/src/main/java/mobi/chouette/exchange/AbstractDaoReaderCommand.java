@@ -11,10 +11,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
 import mobi.chouette.common.Constant;
-import mobi.chouette.dao.CompanyDAO;
-import mobi.chouette.dao.GroupOfLineDAO;
-import mobi.chouette.dao.LineDAO;
-import mobi.chouette.dao.NetworkDAO;
+import mobi.chouette.dao.GenericDAO;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.Line;
@@ -25,17 +22,17 @@ public class AbstractDaoReaderCommand implements Constant {
 	@Resource
 	protected SessionContext daoContext;
 
-	@EJB
-	protected LineDAO lineDAO;
+	@EJB (mappedName="java:app/mobi.chouette.dao/LineDAO")
+	protected GenericDAO<Line> lineDAO;
 
-	@EJB
-	protected NetworkDAO ptNetworkDAO;
+	@EJB (mappedName="java:app/mobi.chouette.dao/NetworkDAO")
+	protected GenericDAO<Network> ptNetworkDAO;
 
-	@EJB
-	protected CompanyDAO companyDAO;
+	@EJB (mappedName="java:app/mobi.chouette.dao/CompanyDAO")
+	protected GenericDAO<Company> companyDAO;
 
-	@EJB
-	protected GroupOfLineDAO groupOfLineDAO;
+	@EJB (mappedName="java:app/mobi.chouette.dao/GroupOfLineDAO")
+	protected GenericDAO<GroupOfLine> groupOfLineDAO;
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	protected Set<Long> loadLines(String type, List<Long> ids) {

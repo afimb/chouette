@@ -22,6 +22,7 @@ public class Parameters {
 	
 	public Parameters(String jsonSource,InputValidator inputValidator) throws Exception
 	{
+		if (inputValidator == null) return;
 		JSONObject object = new JSONObject(jsonSource);
 		if (object.length() != 1)
 		{

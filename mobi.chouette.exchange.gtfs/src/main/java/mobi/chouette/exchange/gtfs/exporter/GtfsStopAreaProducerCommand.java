@@ -28,7 +28,7 @@ import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.dao.StopAreaDAO;
+import mobi.chouette.dao.GenericDAO;
 import mobi.chouette.exchange.gtfs.Constant;
 import mobi.chouette.exchange.gtfs.exporter.producer.GtfsExtendedStopProducer;
 import mobi.chouette.exchange.gtfs.exporter.producer.GtfsTransferProducer;
@@ -53,8 +53,8 @@ public class GtfsStopAreaProducerCommand implements Command, Constant
 {
 	public static final String COMMAND = "GtfsStopAreaProducerCommand";
 
-	@EJB
-	private StopAreaDAO stopAreaDAO;
+	@EJB (mappedName="java:app/mobi.chouette.dao/StopAreaDAO")
+	private GenericDAO<StopArea> stopAreaDAO;
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)

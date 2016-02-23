@@ -2,6 +2,8 @@ package mobi.chouette.exchange.neptune.importer;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import javax.ejb.EJB;
@@ -15,8 +17,7 @@ import javax.transaction.UserTransaction;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.dao.LineDAO;
-import mobi.chouette.dao.VehicleJourneyDAO;
+import mobi.chouette.dao.GenericDAO;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.neptune.JobDataTest;
 import mobi.chouette.exchange.neptune.NeptuneTestsUtils;
@@ -28,6 +29,7 @@ import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.StopArea;
+import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.util.Referential;
 import mobi.chouette.persistence.hibernate.ContextHolder;
@@ -37,6 +39,9 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.testng.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.importer.ZipImporter;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.testng.Assert;
@@ -46,11 +51,11 @@ import org.testng.annotations.Test;
 @Log4j
 public class NeptuneImportTests extends Arquillian implements Constant, ReportConstant {
 
-	@EJB
-	LineDAO lineDao;
+	@EJB (mappedName="java:app/mobi.chouette.dao/LineDAO")
+	GenericDAO<Line> lineDao;
 
-	@EJB
-	VehicleJourneyDAO vjDao;
+	@EJB (mappedName="java:app/mobi.chouette.dao/VehicleJourneyDAO")
+	GenericDAO<VehicleJourney> vjDao;
 
 
 	@PersistenceContext(unitName = "referential")
@@ -60,21 +65,64 @@ public class NeptuneImportTests extends Arquillian implements Constant, ReportCo
 	UserTransaction utx;
 
 	@Deployment
-	public static WebArchive createDeployment() {
+	public static EnterpriseArchive createDeployment() {
 
-		WebArchive result;
-
+		EnterpriseArchive result;
 		File[] files = Maven.resolver().loadPomFromFile("pom.xml")
 				.resolve("mobi.chouette:mobi.chouette.exchange.neptune").withTransitivity().asFile();
-
-		result = ShrinkWrap.create(WebArchive.class, "test.war")
-				.addAsWebInfResource("postgres-ds.xml")
-				.addAsLibraries(files)
+		List<File> jars = new ArrayList<>();
+		List<JavaArchive> modules = new ArrayList<>();
+		for (File file : files) {
+			if (file.getName().startsWith("mobi.chouette.exchange"))
+			{
+				String name = file.getName().split("\\-")[0]+".jar";
+				JavaArchive archive = ShrinkWrap
+						  .create(ZipImporter.class, name)
+						  .importFrom(file)
+						  .as(JavaArchive.class);
+				modules.add(archive);
+			}
+			else
+			{
+				jars.add(file);
+			}
+		}
+		File[] filesDao = Maven.resolver().loadPomFromFile("pom.xml")
+				.resolve("mobi.chouette:mobi.chouette.dao").withTransitivity().asFile();
+		if (filesDao.length == 0) 
+		{
+			throw new NullPointerException("no dao");
+		}
+		for (File file : filesDao) {
+			if (file.getName().startsWith("mobi.chouette.dao"))
+			{
+				String name = file.getName().split("\\-")[0]+".jar";
+				
+				JavaArchive archive = ShrinkWrap
+						  .create(ZipImporter.class, name)
+						  .importFrom(file)
+						  .as(JavaArchive.class);
+				modules.add(archive);
+				if (!modules.contains(archive))
+				   modules.add(archive);
+			}
+			else
+			{
+				if (!jars.contains(file))
+				   jars.add(file);
+			}
+		}
+		final WebArchive testWar = ShrinkWrap.create(WebArchive.class, "test.war").addAsWebInfResource("postgres-ds.xml")
+				.addClass(NeptuneImportTests.class)
 				.addClass(NeptuneTestsUtils.class)
-				.addClass(JobDataTest.class)
+				.addClass(JobDataTest.class);
+		
+		result = ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
+				.addAsLibraries(jars.toArray(new File[0]))
+				.addAsModules(modules.toArray(new JavaArchive[0]))
+				.addAsModule(testWar)
 				.addAsResource(EmptyAsset.INSTANCE, "beans.xml");
 		return result;
-
 	}
 
 	protected static InitialContext initialContext;

@@ -19,8 +19,8 @@ import org.testng.annotations.Test;
 
 public class LineDaoTest extends Arquillian
 {
-	@EJB
-	LineDAO lineDao;
+	@EJB (mappedName="java:module/LineDAO")
+	GenericDAO<Line> lineDao;
 
 
 	@Deployment

@@ -119,7 +119,7 @@
 	<dependencies>
 
 		<!-- Modules -->
-		<dependency>
+<!-- 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>mobi.chouette.common</artifactId>
 			<type>ejb</type>
@@ -149,12 +149,24 @@
 			<type>ejb</type>
 			<version>${project.version}</version>
 		</dependency>
+      <dependency>
+         <groupId>${project.groupId}</groupId>
+         <artifactId>mobi.chouette.dao.iev</artifactId>
+         <type>ejb</type>
+         <version>${project.version}</version>
+      </dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>mobi.chouette.exchange</artifactId>
 			<type>ejb</type>
 			<version>${project.version}</version>
-		</dependency>
+		</dependency> -->
+      <dependency>
+         <groupId>${project.groupId}</groupId>
+         <artifactId>mobi.chouette.dao</artifactId>
+         <type>ejb</type>
+         <version>${project.version}</version>
+      </dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>mobi.chouette.exchange.neptune</artifactId>
@@ -191,10 +203,16 @@
          <type>ejb</type>        
          <version>${project.version}</version>
       </dependency>
-      <dependency>
+        <dependency>
          <groupId>${project.groupId}</groupId>
          <artifactId>mobi.chouette.exchange.converter</artifactId>
          <type>ejb</type>
+         <version>${project.version}</version>
+      </dependency> 
+      <dependency>
+         <groupId>${project.groupId}</groupId>
+         <artifactId>mobi.chouette.schema.checker</artifactId>
+         <type>ejb</type>        
          <version>${project.version}</version>
       </dependency>
 

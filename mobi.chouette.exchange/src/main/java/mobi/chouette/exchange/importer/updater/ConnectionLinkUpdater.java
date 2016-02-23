@@ -5,7 +5,7 @@ import javax.ejb.Stateless;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
-import mobi.chouette.dao.StopAreaDAO;
+import mobi.chouette.dao.GenericDAO;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.util.NamingUtil;
@@ -17,8 +17,8 @@ public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
 
 	public static final String BEAN_NAME = "ConnectionLinkUpdater";
 
-	@EJB
-	private StopAreaDAO stopAreaDAO;
+	@EJB (mappedName="java:app/mobi.chouette.dao/StopAreaDAO")
+	private GenericDAO<StopArea> stopAreaDAO;
 
 	@Override
 	public void update(Context context, ConnectionLink oldValue, ConnectionLink newValue) {

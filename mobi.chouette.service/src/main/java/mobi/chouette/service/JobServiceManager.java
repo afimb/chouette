@@ -24,12 +24,14 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.enterprise.concurrent.ManagedExecutorService;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.ws.rs.core.MediaType;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.PropertyNames;
-import mobi.chouette.dao.JobDAO;
+import mobi.chouette.dao.iev.JobDAO;
 import mobi.chouette.model.iev.Job;
 import mobi.chouette.model.iev.Job.STATUS;
 import mobi.chouette.model.iev.Link;
@@ -51,8 +53,8 @@ public class JobServiceManager {
 	@EJB
 	JobDAO jobDAO;
 
-	@EJB
-	SchemaManager schemaManager;
+	@EJB (beanName=ContenerCheckerInterface.NAME)
+	ContenerCheckerInterface schemaManager;
 
 	@EJB
 	JobServiceManager jobServiceManager;
@@ -70,6 +72,12 @@ public class JobServiceManager {
 	private static String lock = "lock";
 
 	static {
+	    try {
+			String earName = (String) new InitialContext().lookup("java:app/AppName")  ;
+			log.info("ear name is "+earName); 
+		} catch (NamingException e1) {
+			log.error("cannot get ear name");
+		}
 		System.setProperty(PropertyNames.MAX_STARTED_JOBS, "5");
 		System.setProperty(PropertyNames.MAX_COPY_BY_JOB, "5");
 		try {
@@ -181,7 +189,7 @@ public class JobServiceManager {
 		if (referentials.contains(referential))
 			return;
 
-		boolean result = schemaManager.validateReferential(referential);
+		boolean result = schemaManager.validateContener(referential);
 		if (!result) {
 			throw new RequestServiceException(RequestExceptionCode.UNKNOWN_REFERENTIAL, "referential");
 		}

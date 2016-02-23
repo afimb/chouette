@@ -20,8 +20,7 @@ import javax.naming.InitialContext;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
-import mobi.chouette.dao.JobDAO;
-import mobi.chouette.dao.SchemaDAO;
+import mobi.chouette.dao.iev.JobDAO;
 import mobi.chouette.model.iev.Job.STATUS;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 import mobi.chouette.service.JobService;
@@ -46,9 +45,6 @@ public class Scheduler {
 
 	@EJB
 	JobServiceManager jobManager;
-
-	@EJB
-	SchemaDAO schemaDAO;
 
   	@Resource(lookup = "java:comp/DefaultManagedExecutorService")
 	ManagedExecutorService executor;

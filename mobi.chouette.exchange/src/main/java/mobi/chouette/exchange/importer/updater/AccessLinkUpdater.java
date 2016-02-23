@@ -4,7 +4,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import mobi.chouette.common.Context;
-import mobi.chouette.dao.AccessPointDAO;
+import mobi.chouette.dao.GenericDAO;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.util.NamingUtil;
@@ -15,8 +15,8 @@ public class AccessLinkUpdater implements Updater<AccessLink> {
 
 	public static final String BEAN_NAME = "AccessLinkUpdater";
 
-	@EJB
-	private AccessPointDAO accessPointDAO;
+	@EJB (mappedName="java:app/mobi.chouette.dao/AccessPointDAO")
+	private GenericDAO<AccessPoint> accessPointDAO;
 
 	@Override
 	public void update(Context context, AccessLink oldValue, AccessLink newValue) {

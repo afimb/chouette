@@ -4,7 +4,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import mobi.chouette.common.Context;
-import mobi.chouette.dao.StopPointDAO;
+import mobi.chouette.dao.GenericDAO;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourneyAtStop;
 
@@ -14,8 +14,8 @@ public class VehicleJourneyAtStopUpdater implements
 
 	public static final String BEAN_NAME = "VehicleJourneyAtStopUpdater";
 
-	@EJB
-	private StopPointDAO stopPointDAO;
+	@EJB (mappedName="java:app/mobi.chouette.dao/StopPointDAO")
+	private GenericDAO<StopPoint> stopPointDAO;
 
 	
 	@Override

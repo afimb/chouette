@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.validation.checkpoint;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -15,13 +16,12 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.core.ChouetteException;
-import mobi.chouette.dao.LineDAO;
+import mobi.chouette.dao.GenericDAO;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.exchange.validation.report.CheckPoint;
 import mobi.chouette.exchange.validation.report.Detail;
 import mobi.chouette.exchange.validation.report.ValidationReport;
-import mobi.chouette.exchange.validator.JobDataTest;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;
@@ -31,6 +31,9 @@ import mobi.chouette.model.type.TransportModeNameEnum;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.importer.ZipImporter;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.testng.Assert;
@@ -46,8 +49,8 @@ public class ValidationLines extends AbstractTestValidation
 	private Line bean2;
 	private Line bean3;
 
-	@EJB
-	LineDAO lineDao;
+	@EJB (mappedName="java:app/mobi.chouette.dao/LineDAO")
+	GenericDAO<Line> lineDao;
 
     @PersistenceContext (unitName = "referential")
     EntityManager em;
@@ -56,18 +59,62 @@ public class ValidationLines extends AbstractTestValidation
     UserTransaction utx;
 
 	@Deployment
-	public static WebArchive createDeployment() {
+	public static EnterpriseArchive createDeployment() {
 
-		WebArchive result;
-
-		File[] files = Maven.resolver().loadPomFromFile("pom.xml").importRuntimeAndTestDependencies()
-				.resolve("mobi.chouette:mobi.chouette.exchange.validator").withTransitivity().asFile();
-
-		result = ShrinkWrap.create(WebArchive.class, "test.war").addAsWebInfResource("postgres-ds.xml")
-				.addAsLibraries(files).addClass(JobDataTest.class).addClass(AbstractTestValidation.class)
+		EnterpriseArchive result;
+		File[] files = Maven.resolver().loadPomFromFile("pom.xml")
+				.resolve("mobi.chouette:mobi.chouette.exchange.validation").withTransitivity().asFile();
+		List<File> jars = new ArrayList<>();
+		List<JavaArchive> modules = new ArrayList<>();
+		for (File file : files) {
+			if (file.getName().startsWith("mobi.chouette.exchange"))
+			{
+				String name = file.getName().split("\\-")[0]+".jar";
+				JavaArchive archive = ShrinkWrap
+						  .create(ZipImporter.class, name)
+						  .importFrom(file)
+						  .as(JavaArchive.class);
+				modules.add(archive);
+			}
+			else
+			{
+				jars.add(file);
+			}
+		}
+		File[] filesDao = Maven.resolver().loadPomFromFile("pom.xml")
+				.resolve("mobi.chouette:mobi.chouette.dao").withTransitivity().asFile();
+		if (filesDao.length == 0) 
+		{
+			throw new NullPointerException("no dao");
+		}
+		for (File file : filesDao) {
+			if (file.getName().startsWith("mobi.chouette.dao"))
+			{
+				String name = file.getName().split("\\-")[0]+".jar";
+				
+				JavaArchive archive = ShrinkWrap
+						  .create(ZipImporter.class, name)
+						  .importFrom(file)
+						  .as(JavaArchive.class);
+				modules.add(archive);
+				if (!modules.contains(archive))
+				   modules.add(archive);
+			}
+			else
+			{
+				if (!jars.contains(file))
+				   jars.add(file);
+			}
+		}
+		final WebArchive testWar = ShrinkWrap.create(WebArchive.class, "test.war").addAsWebInfResource("postgres-ds.xml")
+				.addClass(ValidationLines.class);
+		
+		result = ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
+				.addAsLibraries(jars.toArray(new File[0]))
+				.addAsModules(modules.toArray(new JavaArchive[0]))
+				.addAsModule(testWar)
 				.addAsResource(EmptyAsset.INSTANCE, "beans.xml");
 		return result;
-
 	}
 
 	@Override

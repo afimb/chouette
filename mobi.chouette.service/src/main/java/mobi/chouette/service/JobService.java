@@ -149,7 +149,12 @@ public class JobService implements JobData, ServiceConstants {
 				// return JSONUtil.fromJSON( getParametersAsString(),
 				// Parameters.class);
 			} catch (Exception ex) {
-				throw new RequestServiceException(RequestExceptionCode.INVALID_PARAMETERS, ex);
+				try {
+					return new Parameters(getParametersAsString(),inputValidator);
+				} catch (Exception e) {
+					return null;
+				}
+				// throw new RequestServiceException(RequestExceptionCode.INVALID_PARAMETERS, ex);
 			}
 		}
 		return null;

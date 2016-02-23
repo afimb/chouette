@@ -4,7 +4,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import mobi.chouette.common.Context;
-import mobi.chouette.dao.TimebandDAO;
+import mobi.chouette.dao.GenericDAO;
 import mobi.chouette.model.JourneyFrequency;
 import mobi.chouette.model.Timeband;
 import mobi.chouette.model.util.ObjectFactory;
@@ -15,8 +15,8 @@ public class JourneyFrequencyUpdater implements Updater<JourneyFrequency> {
 
 	public static final String BEAN_NAME = "JourneyFrequencyUpdater";
 
-	@EJB
-	private TimebandDAO timebandDAO;
+	@EJB (mappedName="java:app/mobi.chouette.dao/TimebandDAO")
+	private GenericDAO<Timeband> timebandDAO;
 
 	@EJB(beanName = TimebandUpdater.BEAN_NAME)
 	private Updater<Timeband> timebandUpdater;

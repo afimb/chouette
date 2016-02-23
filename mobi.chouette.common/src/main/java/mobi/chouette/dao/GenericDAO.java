@@ -37,5 +37,9 @@ public interface GenericDAO<T> {
 	void flush();
 
 	void detach(Collection<?> list);
+	
+	void copy(String data);
+
+	void deleteChildren(List<String> list);
 
 }

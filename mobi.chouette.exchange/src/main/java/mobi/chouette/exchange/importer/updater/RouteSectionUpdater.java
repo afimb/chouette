@@ -4,7 +4,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import mobi.chouette.common.Context;
-import mobi.chouette.dao.StopAreaDAO;
+import mobi.chouette.dao.GenericDAO;
 import mobi.chouette.model.RouteSection;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.util.Referential;
@@ -14,11 +14,11 @@ public class RouteSectionUpdater implements Updater<RouteSection> {
 
 	public static final String BEAN_NAME = "RouteSectionUpdater";
 
-	@EJB
-	private StopAreaDAO stopAreaDAO;
+	@EJB (mappedName="java:app/mobi.chouette.dao/StopAreaDAO")
+	private GenericDAO<StopArea> stopAreaDAO;
 
-//	@EJB
-//	private RouteSectionDAO routeSectionDAO;
+//	@EJB (mappedName="java:app/mobi.chouette.dao/RouteSectionDAO")
+//	private GenericDAO<RouteSection> routeSectionDAO;
 
 	@Override
 	public void update(Context context, RouteSection oldValue, RouteSection newValue) throws Exception {

@@ -807,6 +807,7 @@
 		<module>mobi.chouette.model</module>
 		<module>mobi.chouette.model.iev</module>
 		<module>mobi.chouette.dao</module>
+      <module>mobi.chouette.dao.iev</module>
 		<module>mobi.chouette.exchange</module>
 		<module>mobi.chouette.exchange.neptune</module>
 		<module>mobi.chouette.exchange.netex</module>
@@ -816,6 +817,7 @@
 		<module>mobi.chouette.exchange.validator</module>
       <module>mobi.chouette.exchange.converter</module>
 		<module>mobi.chouette.service</module>
+      <module>mobi.chouette.schema.checker</module>
 		<module>mobi.chouette.ws</module>
 		<module>mobi.chouette.command</module>
 		<module>chouette_iev</module>
