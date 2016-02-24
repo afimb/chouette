@@ -4,17 +4,18 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import mobi.chouette.model.Timeband;
+import mobi.chouette.model.Company;
 
 @Stateless
-public class TimebandDAO extends GenericDAOImpl<Timeband> {
+public class CompanyDAOImpl extends GenericDAOImpl<Company> implements CompanyDAO{
 
-	public TimebandDAO() {
-		super(Timeband.class);
+	public CompanyDAOImpl() {
+		super(Company.class);
 	}
 
 	@PersistenceContext(unitName = "referential")
 	public void setEntityManager(EntityManager em) {
 		this.em = em;
 	}
+
 }

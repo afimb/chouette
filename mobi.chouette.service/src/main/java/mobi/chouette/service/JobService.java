@@ -17,7 +17,6 @@ import lombok.ToString;
 import lombok.experimental.Delegate;
 import mobi.chouette.common.JSONUtil;
 import mobi.chouette.common.JobData;
-import mobi.chouette.common.PropertyNames;
 import mobi.chouette.exchange.InputValidator;
 import mobi.chouette.exchange.InputValidatorFactory;
 import mobi.chouette.exchange.parameters.AbstractParameter;
@@ -34,6 +33,8 @@ public class JobService implements JobData, ServiceConstants {
 
 	@Delegate(types = { Job.class }, excludes = { ExcludedJobMethods.class })
 	private Job job;
+	
+	private String rootDirectory;
 
 	private InputValidator inputValidator;
 
@@ -42,8 +43,9 @@ public class JobService implements JobData, ServiceConstants {
 	 * 
 	 * @param job
 	 */
-	public JobService(Job job) {
+	public JobService(String rootDirectory,Job job) {
 		this.job = job;
+		this.rootDirectory = rootDirectory;
 		// TODO Exception si le job n'est pas persistent
 	}
 
@@ -58,8 +60,9 @@ public class JobService implements JobData, ServiceConstants {
 	 *            : type (may be null)
 	 * @throws mobi.chouette.service.ServiceException
 	 */
-	public JobService(String referential, String action, String type) throws ServiceException {
+	public JobService(String rootDirectory,String referential, String action, String type) throws ServiceException {
 		job = new Job(referential, action, type);
+		this.rootDirectory = rootDirectory;
 
 		if (!commandExists()) {
 			throw new RequestServiceException(RequestExceptionCode.UNKNOWN_ACTION, "");
@@ -105,6 +108,7 @@ public class JobService implements JobData, ServiceConstants {
 			if (inputStreamName != null) {
 				Files.copy(inputStreamsByName.get(inputStreamName), filePath(inputStreamName));
 				addLink(MediaType.APPLICATION_OCTET_STREAM, DATA_REL);
+				addLink(MediaType.APPLICATION_OCTET_STREAM, INPUT_REL);
 				job.setFilename(inputStreamName);
 			}
 
@@ -138,7 +142,7 @@ public class JobService implements JobData, ServiceConstants {
 		return job.getId() != null;
 	}
 
-	private java.nio.file.Path filePath(final String fileName) {
+	private java.nio.file.Path filePath( String fileName) {
 		return Paths.get(getPathName(), fileName);
 	}
 
@@ -182,15 +186,15 @@ public class JobService implements JobData, ServiceConstants {
 	 */
 	public String getPathName() {
 		if (jobPersisted()) {
-			return Paths.get(System.getProperty(PropertyNames.ROOT_DIRECTORY), ROOT_PATH, job.getReferential(), "data",
+			return Paths.get(rootDirectory, ROOT_PATH, job.getReferential(), "data",
 					job.getId().toString()).toString();
 		}
 		// TODO Non, lever une exception
 		return null;
 	}
 
-	public static String getRootPathName(String referential) {
-		return Paths.get(System.getProperty(PropertyNames.ROOT_DIRECTORY), ROOT_PATH, referential).toString();
+	public static String getRootPathName(String rootDirectory,String referential) {
+		return Paths.get(rootDirectory, ROOT_PATH, referential).toString();
 	}
 
 	public java.nio.file.Path getPath() {

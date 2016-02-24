@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.ejb.Startup;
@@ -24,12 +25,11 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.enterprise.concurrent.ManagedExecutorService;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.ws.rs.core.MediaType;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
+import mobi.chouette.common.ContenerChecker;
 import mobi.chouette.common.PropertyNames;
 import mobi.chouette.dao.iev.JobDAO;
 import mobi.chouette.model.iev.Job;
@@ -53,8 +53,8 @@ public class JobServiceManager {
 	@EJB
 	JobDAO jobDAO;
 
-	@EJB (beanName=ContenerCheckerInterface.NAME)
-	ContenerCheckerInterface schemaManager;
+	@EJB(beanName = ContenerChecker.NAME)
+	ContenerChecker checker;
 
 	@EJB
 	JobServiceManager jobServiceManager;
@@ -70,30 +70,32 @@ public class JobServiceManager {
 	private static int maxJobs = 5;
 
 	private static String lock = "lock";
+	
+	private String rootDirectory; 
 
-	static {
-	    try {
-			String earName = (String) new InitialContext().lookup("java:app/AppName")  ;
-			log.info("ear name is "+earName); 
-		} catch (NamingException e1) {
-			log.error("cannot get ear name");
-		}
-		System.setProperty(PropertyNames.MAX_STARTED_JOBS, "5");
-		System.setProperty(PropertyNames.MAX_COPY_BY_JOB, "5");
+	@PostConstruct
+	public void init() {
+		String context = checker.getContext();
+		System.setProperty(context + PropertyNames.MAX_STARTED_JOBS, "5");
+		System.setProperty(context + PropertyNames.MAX_COPY_BY_JOB, "5");
 		try {
 			// set default properties
-			System.setProperty(PropertyNames.ROOT_DIRECTORY, System.getProperty("user.home"));
+			System.setProperty(checker.getContext() + PropertyNames.ROOT_DIRECTORY, System.getProperty("user.home"));
 
 			// try to read properties
-			File propertyFile = new File("/etc/chouette/iev/iev.properties");
+			File propertyFile = new File("/etc/chouette/" + context + "/" + context + ".properties");
 			if (propertyFile.exists() && propertyFile.isFile()) {
 				try {
 					FileInputStream fileInput = new FileInputStream(propertyFile);
 					Properties properties = new Properties();
 					properties.load(fileInput);
 					fileInput.close();
+					log.info("reading properties from " + propertyFile.getAbsolutePath());
 					for (String key : properties.stringPropertyNames()) {
-						System.setProperty(key, properties.getProperty(key));
+						if (key.startsWith(context))
+							System.setProperty(key, properties.getProperty(key));
+						else
+							System.setProperty(context + "." + key, properties.getProperty(key));
 					}
 				} catch (IOException e) {
 					log.error("cannot read properties " + propertyFile.getAbsolutePath()
@@ -105,8 +107,8 @@ public class JobServiceManager {
 		} catch (Exception e) {
 			log.error("cannot process properties", e);
 		}
-		maxJobs = Integer.parseInt(System.getProperty(PropertyNames.MAX_STARTED_JOBS));
-
+		maxJobs = Integer.parseInt(System.getProperty(checker.getContext() + PropertyNames.MAX_STARTED_JOBS));
+		rootDirectory = System.getProperty(checker.getContext() + PropertyNames.ROOT_DIRECTORY);
 	}
 
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
@@ -125,13 +127,12 @@ public class JobServiceManager {
 		}
 	}
 
-	
 	public JobService createJob(String referential, String action, String type,
 			Map<String, InputStream> inputStreamsByName) throws ServiceException {
 		JobService jobService = null;
 		try {
 			// Instancier le modèle du service 'upload'
-			jobService = new JobService(referential, action, type);
+			jobService = new JobService(rootDirectory,referential, action, type);
 
 			// Enregistrer le jobService pour obtenir un id
 			jobDAO.create(jobService.getJob());
@@ -189,7 +190,7 @@ public class JobServiceManager {
 		if (referentials.contains(referential))
 			return;
 
-		boolean result = schemaManager.validateContener(referential);
+		boolean result = checker.validateContener(referential);
 		if (!result) {
 			throw new RequestServiceException(RequestExceptionCode.UNKNOWN_REFERENTIAL, "referential");
 		}
@@ -222,7 +223,7 @@ public class JobServiceManager {
 			return null;
 		}
 		// jobDAO.detach(job);
-		return new JobService(job);
+		return new JobService(rootDirectory,job);
 	}
 
 	// @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
@@ -287,7 +288,8 @@ public class JobServiceManager {
 
 		// clean directories
 		try {
-			FileUtils.deleteDirectory(new File(JobService.getRootPathName(referential)));
+			
+			FileUtils.deleteDirectory(new File(JobService.getRootPathName(rootDirectory,referential)));
 		} catch (IOException e) {
 			log.error("fail to delete directory for" + referential, e);
 		}
@@ -351,7 +353,7 @@ public class JobServiceManager {
 		List<Job> jobs = jobDAO.findAll();
 		List<JobService> jobServices = new ArrayList<>(jobs.size());
 		for (Job job : jobs) {
-			jobServices.add(new JobService(job));
+			jobServices.add(new JobService(rootDirectory,job));
 		}
 		return jobServices;
 	}
@@ -360,7 +362,7 @@ public class JobServiceManager {
 		List<Job> jobs = jobDAO.findByReferential(referential);
 		List<JobService> jobServices = new ArrayList<>(jobs.size());
 		for (Job job : jobs) {
-			jobServices.add(new JobService(job));
+			jobServices.add(new JobService(rootDirectory,job));
 		}
 
 		return jobServices;
@@ -392,7 +394,7 @@ public class JobServiceManager {
 		if (job != null && job.getReferential().equals(referential)) {
 			// if (detach)
 			// jobDAO.detach(job);
-			return new JobService(job);
+			return new JobService(rootDirectory,job);
 		}
 		throw new RequestServiceException(RequestExceptionCode.UNKNOWN_JOB, "referential = " + referential + " ,id = "
 				+ id);
@@ -402,7 +404,7 @@ public class JobServiceManager {
 		Job job = jobDAO.find(id);
 		if (job != null) {
 			// jobDAO.detach(job);
-			return new JobService(job);
+			return new JobService(rootDirectory,job);
 		}
 		throw new RequestServiceException(RequestExceptionCode.UNKNOWN_JOB, " id = " + id);
 	}
@@ -432,7 +434,7 @@ public class JobServiceManager {
 
 		List<JobService> jobServices = new ArrayList<>(filtered.size());
 		for (Job job : filtered) {
-			jobServices.add(new JobService(job));
+			jobServices.add(new JobService(rootDirectory,job));
 		}
 		return jobServices;
 	}
@@ -446,7 +448,7 @@ public class JobServiceManager {
 
 		List<JobService> jobServices = new ArrayList<>(jobs.size());
 		for (Job job : jobs) {
-			jobServices.add(new JobService(job));
+			jobServices.add(new JobService(rootDirectory,job));
 		}
 		return jobServices;
 	}

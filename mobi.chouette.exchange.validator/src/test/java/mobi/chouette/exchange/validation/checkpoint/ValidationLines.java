@@ -16,7 +16,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.core.ChouetteException;
-import mobi.chouette.dao.GenericDAO;
+import mobi.chouette.dao.LineDAO;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.exchange.validation.report.CheckPoint;
@@ -49,8 +49,8 @@ public class ValidationLines extends AbstractTestValidation
 	private Line bean2;
 	private Line bean3;
 
-	@EJB (mappedName="java:app/mobi.chouette.dao/LineDAO")
-	GenericDAO<Line> lineDao;
+	@EJB 
+	LineDAO lineDao;
 
     @PersistenceContext (unitName = "referential")
     EntityManager em;

@@ -18,8 +18,9 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.dao.GenericDAO;
+import mobi.chouette.dao.LineDAO;
 import mobi.chouette.exchange.gtfs.Constant;
+import mobi.chouette.exchange.gtfs.DummyChecker;
 import mobi.chouette.exchange.gtfs.GtfsTestsUtils;
 import mobi.chouette.exchange.gtfs.JobDataTest;
 import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
@@ -109,6 +110,7 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 		final WebArchive testWar = ShrinkWrap.create(WebArchive.class, "test.war").addAsWebInfResource("postgres-ds.xml")
 				.addClass(GtfsExportTests.class)
 				.addClass(GtfsTestsUtils.class)
+				.addClass(DummyChecker.class)
 				.addClass(JobDataTest.class);
 		
 		result = ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
@@ -282,8 +284,8 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 
    }
 
-    @EJB (mappedName="java:app/mobi.chouette.dao/LineDAO")
-    protected GenericDAO<Line> lineDAO;
+    @EJB 
+    protected LineDAO lineDAO;
    
     @PersistenceContext(unitName = "referential")
     EntityManager em;

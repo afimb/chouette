@@ -4,18 +4,18 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import mobi.chouette.model.JourneyPattern;
+import mobi.chouette.model.Line;
 
-@Stateless
-public class JourneyPatternDAO extends GenericDAOImpl<JourneyPattern> {
+@Stateless (name="LineDAO")
+public class LineDAOImpl extends GenericDAOImpl<Line> implements LineDAO {
 
-	public JourneyPatternDAO() {
-		super(JourneyPattern.class);
+	public LineDAOImpl() {
+		super(Line.class);
 	}
 
 	@PersistenceContext(unitName = "referential")
 	public void setEntityManager(EntityManager em) {
 		this.em = em;
 	}
-
+	
 }

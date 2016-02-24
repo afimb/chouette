@@ -9,7 +9,7 @@ import javax.ejb.Stateless;
 import mobi.chouette.common.CollectionUtil;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
-import mobi.chouette.dao.GenericDAO;
+import mobi.chouette.dao.AccessLinkDAO;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.util.ObjectFactory;
@@ -20,8 +20,8 @@ public class AccessPointUpdater implements Updater<AccessPoint> {
 
 	public static final String BEAN_NAME = "AccessPointUpdater";
 
-	@EJB (mappedName="java:app/mobi.chouette.dao/AccessLinkDAO")
-	private GenericDAO<AccessLink> accessLinkDAO;
+	@EJB
+	private AccessLinkDAO accessLinkDAO;
 
 	@EJB(beanName = AccessLinkUpdater.BEAN_NAME)
 	private Updater<AccessLink> accessLinkUpdater;

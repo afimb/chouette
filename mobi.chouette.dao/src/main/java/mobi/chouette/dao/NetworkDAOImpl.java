@@ -7,9 +7,9 @@ import javax.persistence.PersistenceContext;
 import mobi.chouette.model.Network;
 
 @Stateless
-public class NetworkDAO extends GenericDAOImpl<Network> {
+public class NetworkDAOImpl extends GenericDAOImpl<Network> implements NetworkDAO{
 
-	public NetworkDAO() {
+	public NetworkDAOImpl() {
 		super(Network.class);
 	}
 

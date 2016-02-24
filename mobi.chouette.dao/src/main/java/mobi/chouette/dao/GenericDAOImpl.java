@@ -164,12 +164,4 @@ public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 	}
 
 	
-	public void copy(String value) {
-		throw new UnsupportedOperationException("unimplemented method");
-	}
-	
-	
-	public void deleteChildren(List<String> list) {
-		throw new UnsupportedOperationException("unimplemented method");
-	}
 }

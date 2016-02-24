@@ -168,14 +168,5 @@ public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 			em.detach(object);
 		}
 	}
-	@Override
-	public void copy(String value) {
-		throw new UnsupportedOperationException("unimplemented method");
-	}
-	
-	@Override
-	public void deleteChildren(List<String> list) {
-		throw new UnsupportedOperationException("unimplemented method");
-	}
 	
 }

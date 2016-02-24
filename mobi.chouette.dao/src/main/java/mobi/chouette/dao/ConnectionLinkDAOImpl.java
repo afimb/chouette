@@ -16,9 +16,9 @@ import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.ConnectionLink_;
 
 @Stateless
-public class ConnectionLinkDAO extends GenericDAOImpl<ConnectionLink> {
+public class ConnectionLinkDAOImpl extends GenericDAOImpl<ConnectionLink> implements ConnectionLinkDAO{
 
-	public ConnectionLinkDAO() {
+	public ConnectionLinkDAOImpl() {
 		super(ConnectionLink.class);
 	}
 

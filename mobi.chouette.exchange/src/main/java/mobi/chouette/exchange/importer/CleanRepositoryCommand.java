@@ -14,14 +14,13 @@ import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.dao.GenericDAO;
-import mobi.chouette.model.Company;
-import mobi.chouette.model.GroupOfLine;
-import mobi.chouette.model.Line;
-import mobi.chouette.model.Network;
-import mobi.chouette.model.RouteSection;
-import mobi.chouette.model.StopArea;
-import mobi.chouette.model.Timetable;
+import mobi.chouette.dao.CompanyDAO;
+import mobi.chouette.dao.GroupOfLineDAO;
+import mobi.chouette.dao.LineDAO;
+import mobi.chouette.dao.NetworkDAO;
+import mobi.chouette.dao.RouteSectionDAO;
+import mobi.chouette.dao.StopAreaDAO;
+import mobi.chouette.dao.TimetableDAO;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -32,26 +31,26 @@ public class CleanRepositoryCommand implements Command {
 
 	public static final String COMMAND = "CleanRepositoryCommand";
 
-	@EJB (mappedName="java:app/mobi.chouette.dao/LineDAO")
-	private GenericDAO<Line> lineDAO;
+	@EJB 
+	private LineDAO lineDAO;
 
-	@EJB (mappedName="java:app/mobi.chouette.dao/NetworkDAO")
-	private GenericDAO<Network> networkDAO;
+	@EJB 
+	private NetworkDAO networkDAO;
 	
-	@EJB (mappedName="java:app/mobi.chouette.dao/StopAreaDAO")
-	private GenericDAO<StopArea> stopAreaDAO;
+	@EJB 
+	private StopAreaDAO stopAreaDAO;
 
-	@EJB (mappedName="java:app/mobi.chouette.dao/RouteSectionDAO")
-	private GenericDAO<RouteSection> routeSectionDAO;
+	@EJB 
+	private RouteSectionDAO routeSectionDAO;
 
-	@EJB (mappedName="java:app/mobi.chouette.dao/CompanyDAO")
-	private GenericDAO<Company> companyDAO;
+	@EJB 
+	private CompanyDAO companyDAO;
 	
-	@EJB (mappedName="java:app/mobi.chouette.dao/TimetableDAO")
-	private GenericDAO<Timetable> timetableDAO;
+	@EJB 
+	private TimetableDAO timetableDAO;
 	
-	@EJB (mappedName="java:app/mobi.chouette.dao/GroupOfLineDAO")
-	private GenericDAO<GroupOfLine> groupOfLineDAO;
+	@EJB 
+	private GroupOfLineDAO groupOfLineDAO;
 	
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)

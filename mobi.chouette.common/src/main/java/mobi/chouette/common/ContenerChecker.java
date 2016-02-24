@@ -1,7 +1,9 @@
-package mobi.chouette.service;
+package mobi.chouette.common;
 
-public interface ContenerCheckerInterface {
+public interface ContenerChecker {
 	public static final String NAME = "ContenerChecker";
 	
 	 boolean validateContener(String contenerName);
+	 
+	 String getContext();
 }

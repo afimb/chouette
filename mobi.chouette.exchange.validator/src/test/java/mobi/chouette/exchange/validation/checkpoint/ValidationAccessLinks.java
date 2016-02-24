@@ -14,7 +14,7 @@ import javax.transaction.UserTransaction;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
-import mobi.chouette.dao.GenericDAO;
+import mobi.chouette.dao.AccessLinkDAO;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.exchange.validation.report.CheckPoint;
@@ -44,8 +44,8 @@ public class ValidationAccessLinks extends AbstractTestValidation {
 	private AccessLink bean2;
 	private List<AccessLink> beansFor4 = new ArrayList<>();
 
-	@EJB (mappedName="java:app/mobi.chouette.dao/AccessLinkDAO")
-	GenericDAO<AccessLink> accessLinkDao;
+	@EJB 
+	AccessLinkDAO accessLinkDao;
 
 	@PersistenceContext(unitName = "referential")
 	EntityManager em;

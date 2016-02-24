@@ -21,9 +21,9 @@ import org.postgresql.PGConnection;
 
 @Stateless
 @Log4j
-public class VehicleJourneyDAO extends GenericDAOImpl<VehicleJourney> {
+public class VehicleJourneyDAOImpl extends GenericDAOImpl<VehicleJourney> implements VehicleJourneyDAO{
 
-	public VehicleJourneyDAO() {
+	public VehicleJourneyDAOImpl() {
 		super(VehicleJourney.class);
 	}
 
@@ -32,6 +32,7 @@ public class VehicleJourneyDAO extends GenericDAOImpl<VehicleJourney> {
 		this.em = em;
 	}
 
+	@Override
 	public void deleteChildren(final List<String> vehicleJourneyObjectIds) {
 
 		Session session = em.unwrap(Session.class);
@@ -69,6 +70,7 @@ public class VehicleJourneyDAO extends GenericDAOImpl<VehicleJourney> {
 		});
 	}
 
+	@Override
 	public void copy(final String data) {
 
 		Session session = em.unwrap(Session.class);

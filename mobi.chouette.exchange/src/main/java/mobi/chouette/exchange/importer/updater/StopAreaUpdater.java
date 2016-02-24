@@ -10,7 +10,10 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.CollectionUtil;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
-import mobi.chouette.dao.GenericDAO;
+import mobi.chouette.dao.AccessLinkDAO;
+import mobi.chouette.dao.AccessPointDAO;
+import mobi.chouette.dao.ConnectionLinkDAO;
+import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.ConnectionLink;
@@ -24,26 +27,26 @@ public class StopAreaUpdater implements Updater<StopArea> {
 
 	public static final String BEAN_NAME = "StopAreaUpdater";
 
-	@EJB (mappedName="java:app/mobi.chouette.dao/StopAreaDAO")
-	private GenericDAO<StopArea> stopAreaDAO;
+	@EJB 
+	private StopAreaDAO stopAreaDAO;
 
 	@EJB(beanName = StopAreaUpdater.BEAN_NAME)
 	private Updater<StopArea> stopAreaUpdater;
 
-	@EJB (mappedName="java:app/mobi.chouette.dao/AccessPointDAO")
-	private GenericDAO<AccessPoint> accessPointDAO;
+	@EJB 
+	private AccessPointDAO accessPointDAO;
 
 	@EJB(beanName = AccessPointUpdater.BEAN_NAME)
 	private Updater<AccessPoint> accessPointUpdater;
 
-	@EJB (mappedName="java:app/mobi.chouette.dao/AccessLinkDAO")
-	private GenericDAO<AccessLink> accessLinkDAO;
+	@EJB 
+	private AccessLinkDAO accessLinkDAO;
 
 	@EJB(beanName = AccessLinkUpdater.BEAN_NAME)
 	private Updater<AccessLink> accessLinkUpdater;
 
-	@EJB (mappedName="java:app/mobi.chouette.dao/ConnectionLinkDAO")
-	private GenericDAO<ConnectionLink> connectionLinkDAO;
+	@EJB 
+	private ConnectionLinkDAO connectionLinkDAO;
 
 	@EJB(beanName = ConnectionLinkUpdater.BEAN_NAME)
 	private Updater<ConnectionLink> connectionLinkUpdater;

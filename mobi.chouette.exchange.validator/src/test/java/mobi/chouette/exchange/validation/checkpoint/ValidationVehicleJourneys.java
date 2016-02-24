@@ -13,7 +13,7 @@ import javax.transaction.UserTransaction;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
-import mobi.chouette.dao.GenericDAO;
+import mobi.chouette.dao.LineDAO;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.exchange.validation.report.CheckPoint;
@@ -46,8 +46,8 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 	private VehicleJourney bean2;
 	private List<VehicleJourney> beansFor4 = new ArrayList<>();
 
-	@EJB (mappedName="java:app/mobi.chouette.dao/LineDAO")
-	GenericDAO<Line> lineDao;
+	@EJB 
+	LineDAO lineDao;
 
 	@PersistenceContext(unitName = "referential")
 	EntityManager em;

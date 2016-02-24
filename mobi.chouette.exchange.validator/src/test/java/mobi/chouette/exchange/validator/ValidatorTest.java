@@ -46,6 +46,7 @@ public class ValidatorTest extends Arquillian implements Constant,ReportConstant
 
 		result = ShrinkWrap.create(WebArchive.class, "test.war").addAsWebInfResource("postgres-ds.xml")
 				.addAsLibraries(files)
+				.addClass(DummyChecker.class)
 				.addClass(JobDataTest.class)
 				.addAsResource(EmptyAsset.INSTANCE, "beans.xml");
 		return result;

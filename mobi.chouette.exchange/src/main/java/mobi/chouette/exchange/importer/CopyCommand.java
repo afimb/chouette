@@ -18,12 +18,12 @@ import javax.naming.NamingException;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
+import mobi.chouette.common.ContenerChecker;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.PropertyNames;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.dao.GenericDAO;
-import mobi.chouette.model.VehicleJourney;
+import mobi.chouette.dao.VehicleJourneyDAO;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
 import com.jamonapi.Monitor;
@@ -35,8 +35,11 @@ public class CopyCommand implements Command {
 
 	public static final String COMMAND = "CopyCommand";
 
-	@EJB (mappedName="java:app/mobi.chouette.dao/VehicleJourneyDAO")
-	private GenericDAO<VehicleJourney> vehicleJourneyDAO;
+	@EJB 
+	private VehicleJourneyDAO vehicleJourneyDAO;
+	
+	@EJB 
+	private ContenerChecker checker;
 
 	@Resource(lookup = "java:comp/DefaultManagedExecutorService")
 	ManagedExecutorService executor;
@@ -44,7 +47,7 @@ public class CopyCommand implements Command {
 	@SuppressWarnings("unchecked")
 	@Override
 	public boolean execute(Context context) throws Exception {
-		String sMaxCopy = System.getProperty(PropertyNames.MAX_COPY_BY_JOB);
+		String sMaxCopy = System.getProperty(checker.getContext()+ PropertyNames.MAX_COPY_BY_JOB);
 		if (sMaxCopy == null) sMaxCopy = "5";
 		int maxCopy = Integer.parseInt(sMaxCopy);
 

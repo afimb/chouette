@@ -25,7 +25,7 @@ import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.dao.GenericDAO;
+import mobi.chouette.dao.LineDAO;
 import mobi.chouette.exchange.validation.LineValidatorCommand;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.ValidationDataCollector;
@@ -37,7 +37,7 @@ import com.jamonapi.MonitorFactory;
 /**
  *
  */
-@Log4j
+@Log4j 
 @Stateless(name = DaoLineValidatorCommand.COMMAND)
 public class DaoLineValidatorCommand implements Command, Constant {
 	public static final String COMMAND = "DaoLineValidatorCommand";
@@ -45,8 +45,8 @@ public class DaoLineValidatorCommand implements Command, Constant {
 	@Resource
 	private SessionContext daoContext;
 	
-	@EJB (mappedName="java:app/mobi.chouette.dao/LineDAO")
-	private GenericDAO<Line> lineDAO;
+	@EJB 
+	private LineDAO lineDAO;
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)

@@ -52,6 +52,12 @@ public class Job implements Serializable {
 	@Column(name = "filename")
 	private String filename;
 
+//	@Column(name = "input_filename")
+//	private String inputFilename;
+//
+//	@Column(name = "output_filename")
+//	private String outputFilename;
+
 	@Column(name = "created")
 	private Date created;
 

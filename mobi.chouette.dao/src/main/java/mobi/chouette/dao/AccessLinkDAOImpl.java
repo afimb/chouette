@@ -4,18 +4,18 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import mobi.chouette.model.Line;
+import mobi.chouette.model.AccessLink;
 
-@Stateless (name="LineDAO")
-public class LineDAO extends GenericDAOImpl<Line>{
+@Stateless
+public class AccessLinkDAOImpl extends GenericDAOImpl<AccessLink> implements AccessLinkDAO{
 
-	public LineDAO() {
-		super(Line.class);
+	public AccessLinkDAOImpl() {
+		super(AccessLink.class);
 	}
 
 	@PersistenceContext(unitName = "referential")
 	public void setEntityManager(EntityManager em) {
 		this.em = em;
 	}
-	
+
 }

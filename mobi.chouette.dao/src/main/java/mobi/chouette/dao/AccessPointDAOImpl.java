@@ -4,13 +4,13 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import mobi.chouette.model.AccessLink;
+import mobi.chouette.model.AccessPoint;
 
 @Stateless
-public class AccessLinkDAO extends GenericDAOImpl<AccessLink> {
+public class AccessPointDAOImpl extends GenericDAOImpl<AccessPoint> implements AccessPointDAO{
 
-	public AccessLinkDAO() {
-		super(AccessLink.class);
+	public AccessPointDAOImpl() {
+		super(AccessPoint.class);
 	}
 
 	@PersistenceContext(unitName = "referential")

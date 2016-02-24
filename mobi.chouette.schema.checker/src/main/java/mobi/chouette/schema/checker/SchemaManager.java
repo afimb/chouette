@@ -5,13 +5,11 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
+import mobi.chouette.common.ContenerChecker;
 import mobi.chouette.dao.SchemaDAO;
-import mobi.chouette.service.ContenerCheckerInterface;
 
-@Stateless(name = ContenerCheckerInterface.NAME)
-
-public class SchemaManager implements ContenerCheckerInterface
-{
+@Stateless(name = ContenerChecker.NAME)
+public class SchemaManager implements ContenerChecker {
 
 	@EJB
 	SchemaDAO schemaDAO;
@@ -20,7 +18,11 @@ public class SchemaManager implements ContenerCheckerInterface
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public boolean validateContener(String contenerName) {
 		return schemaDAO.getSchemaListing().contains(contenerName);
-		}
-	
+	}
+
+	@Override
+	public String getContext() {
+		return "iev";
+	}
 
 }

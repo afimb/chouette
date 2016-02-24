@@ -4,18 +4,17 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import mobi.chouette.model.GroupOfLine;
+import mobi.chouette.model.Timeband;
 
 @Stateless
-public class GroupOfLineDAO extends GenericDAOImpl<GroupOfLine> {
+public class TimebandDAOImpl extends GenericDAOImpl<Timeband> implements TimebandDAO{
 
-	public GroupOfLineDAO() {
-		super(GroupOfLine.class);
+	public TimebandDAOImpl() {
+		super(Timeband.class);
 	}
 
 	@PersistenceContext(unitName = "referential")
 	public void setEntityManager(EntityManager em) {
 		this.em = em;
 	}
-
 }

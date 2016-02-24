@@ -11,7 +11,13 @@ import javax.ejb.Stateless;
 import mobi.chouette.common.CollectionUtil;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
-import mobi.chouette.dao.GenericDAO;
+import mobi.chouette.dao.CompanyDAO;
+import mobi.chouette.dao.JourneyFrequencyDAO;
+import mobi.chouette.dao.RouteDAO;
+import mobi.chouette.dao.StopPointDAO;
+import mobi.chouette.dao.TimebandDAO;
+import mobi.chouette.dao.TimetableDAO;
+import mobi.chouette.dao.VehicleJourneyAtStopDAO;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.JourneyFrequency;
 import mobi.chouette.model.Route;
@@ -56,29 +62,29 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 		}
 	};
 
-	@EJB (mappedName="java:app/mobi.chouette.dao/CompanyDAO")
-	private GenericDAO<Company> companyDAO;
-
 	@EJB(beanName = CompanyUpdater.BEAN_NAME)
 	private Updater<Company> companyUpdater;
 
-	@EJB (mappedName="java:app/mobi.chouette.dao/RouteDAO")
-	private GenericDAO<Route> routeDAO;
+	@EJB 
+	private CompanyDAO companyDAO;
 
-	@EJB (mappedName="java:app/mobi.chouette.dao/StopPointDAO")
-	private GenericDAO<StopPoint> stopPointDAO;
+	@EJB 
+	private RouteDAO  routeDAO;
 
-	@EJB (mappedName="java:app/mobi.chouette.dao/VehicleJourneyAtStopDAO")
-	private GenericDAO<VehicleJourneyAtStop> vehicleJourneyAtStopDAO;
+	@EJB 
+	private StopPointDAO stopPointDAO;
 
-	@EJB (mappedName="java:app/mobi.chouette.dao/TimetableDAO")
-	private GenericDAO<Timetable> timetableDAO;
+	@EJB 
+	private VehicleJourneyAtStopDAO vehicleJourneyAtStopDAO;
 
-	@EJB (mappedName="java:app/mobi.chouette.dao/TimebandDAO")
-	private GenericDAO<Timeband> timebandDAO;
+	@EJB 
+	private TimetableDAO timetableDAO;
 
-	@EJB (mappedName="java:app/mobi.chouette.dao/JourneyFrequencyDAO")
-	private GenericDAO<JourneyFrequency> journeyFrequencyDAO;
+	@EJB 
+	private TimebandDAO timebandDAO;
+
+	@EJB 
+	private JourneyFrequencyDAO journeyFrequencyDAO;
 
 	@EJB(beanName = TimetableUpdater.BEAN_NAME)
 	private Updater<Timetable> timetableUpdater;

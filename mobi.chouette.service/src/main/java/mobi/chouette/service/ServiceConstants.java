@@ -19,6 +19,8 @@ public interface ServiceConstants extends Constant{
 	public static final String ACTION_PARAMETERS_REL = "action_params";
 	public static final String VALIDATION_PARAMETERS_REL = "validation_params";
 	public static final String DATA_REL = "data";
+	public static final String INPUT_REL = "input";
+	public static final String OUTPUT_REL = "output";
 	public static final String VALIDATION_REL = "validation_report";
 	public static final String REPORT_REL = "action_report";
 

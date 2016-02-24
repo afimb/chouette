@@ -4,9 +4,11 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 
-@Stateless(name = ContenerCheckerInterface.NAME)
+import mobi.chouette.common.ContenerChecker;
 
-public class DummyChecker implements ContenerCheckerInterface
+@Stateless(name = ContenerChecker.NAME)
+
+public class DummyChecker implements ContenerChecker
 {
 
 	@Override
@@ -14,6 +16,11 @@ public class DummyChecker implements ContenerCheckerInterface
 	public boolean validateContener(String contenerName) {
 		return !contenerName.equals("toto");
 		}
+
+	@Override
+	public String getContext() {
+		return "Dummy";
+	}
 	
 
 }

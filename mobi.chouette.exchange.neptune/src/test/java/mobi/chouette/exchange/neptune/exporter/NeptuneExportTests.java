@@ -15,8 +15,9 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.dao.GenericDAO;
+import mobi.chouette.dao.LineDAO;
 import mobi.chouette.exchange.neptune.Constant;
+import mobi.chouette.exchange.neptune.DummyChecker;
 import mobi.chouette.exchange.neptune.JobDataTest;
 import mobi.chouette.exchange.neptune.NeptuneTestsUtils;
 import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
@@ -26,7 +27,6 @@ import mobi.chouette.exchange.report.LineInfo;
 import mobi.chouette.exchange.report.LineInfo.LINE_STATE;
 import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.exchange.validation.report.ValidationReport;
-import mobi.chouette.model.Line;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
 import org.apache.commons.io.FileUtils;
@@ -45,8 +45,8 @@ import org.testng.annotations.Test;
 @Log4j
 public class NeptuneExportTests  extends Arquillian implements Constant, ReportConstant {
 
-	@EJB (mappedName="java:app/mobi.chouette.dao/LineDAO")
-	GenericDAO<Line> lineDao;
+	@EJB 
+	LineDAO lineDao;
 
 
 	@Deployment
@@ -111,6 +111,7 @@ public class NeptuneExportTests  extends Arquillian implements Constant, ReportC
 		final WebArchive testWar = ShrinkWrap.create(WebArchive.class, "test.war").addAsWebInfResource("postgres-ds.xml")
 				.addClass(NeptuneExportTests.class)
 				.addClass(NeptuneTestsUtils.class)
+				.addClass(DummyChecker.class)
 				.addClass(JobDataTest.class);
 		
 		result = ShrinkWrap.create(EnterpriseArchive.class, "test.ear")

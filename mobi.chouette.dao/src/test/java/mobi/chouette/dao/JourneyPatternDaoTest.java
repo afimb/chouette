@@ -25,8 +25,8 @@ import com.vividsolutions.jts.geom.PrecisionModel;
 
 @Log4j
 public class JourneyPatternDaoTest extends Arquillian {
-	@EJB (mappedName="java:module/JourneyPatternDAO")
-	GenericDAO<JourneyPattern> journeyPatternDao;
+	@EJB 
+	JourneyPatternDAO journeyPatternDao;
 
 	@Deployment
 	public static WebArchive createDeployment() {

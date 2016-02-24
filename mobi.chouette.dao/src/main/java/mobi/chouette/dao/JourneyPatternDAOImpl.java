@@ -4,13 +4,13 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import mobi.chouette.model.AccessPoint;
+import mobi.chouette.model.JourneyPattern;
 
 @Stateless
-public class AccessPointDAO extends GenericDAOImpl<AccessPoint> {
+public class JourneyPatternDAOImpl extends GenericDAOImpl<JourneyPattern> implements JourneyPatternDAO{
 
-	public AccessPointDAO() {
-		super(AccessPoint.class);
+	public JourneyPatternDAOImpl() {
+		super(JourneyPattern.class);
 	}
 
 	@PersistenceContext(unitName = "referential")

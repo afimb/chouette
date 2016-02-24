@@ -4,13 +4,13 @@ import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import mobi.chouette.model.Route;
+import mobi.chouette.model.RouteSection;
 
 @Stateless
-public class RouteDAO extends GenericDAOImpl<Route> {
+public class RouteSectionDAOImpl extends GenericDAOImpl<RouteSection> implements RouteSectionDAO{
 
-	public RouteDAO() {
-		super(Route.class);
+	public RouteSectionDAOImpl() {
+		super(RouteSection.class);
 	}
 
 	@PersistenceContext(unitName = "referential")

@@ -10,7 +10,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.dao.GenericDAO;
+import mobi.chouette.dao.LineDAO;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.exchange.validation.report.CheckPoint;
 import mobi.chouette.exchange.validation.report.ValidationReport;
@@ -32,8 +32,8 @@ import org.testng.annotations.Test;
 @Log4j
 public class ValidationNominal extends AbstractTestValidation {
 
-	@EJB (mappedName="java:app/mobi.chouette.dao/LineDAO")
-	GenericDAO<Line> lineDao;
+	@EJB 
+	LineDAO lineDao;
 
 	@Deployment
 	public static EnterpriseArchive createDeployment() {

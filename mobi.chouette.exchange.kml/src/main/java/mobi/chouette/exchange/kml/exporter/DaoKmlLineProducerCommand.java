@@ -17,7 +17,7 @@ import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.dao.GenericDAO;
+import mobi.chouette.dao.LineDAO;
 import mobi.chouette.model.Line;
 
 import com.jamonapi.Monitor;
@@ -31,8 +31,8 @@ public class DaoKmlLineProducerCommand implements Command, Constant {
 	@Resource
 	private SessionContext daoContext;
 
-	@EJB (mappedName="java:app/mobi.chouette.dao/LineDAO")
-	private GenericDAO<Line> lineDAO;
+	@EJB
+	private LineDAO lineDAO;
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)

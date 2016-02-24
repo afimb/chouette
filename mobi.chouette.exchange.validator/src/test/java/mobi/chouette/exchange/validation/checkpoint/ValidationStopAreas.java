@@ -13,7 +13,7 @@ import javax.transaction.UserTransaction;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
-import mobi.chouette.dao.GenericDAO;
+import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.exchange.validation.report.CheckPoint;
@@ -48,8 +48,8 @@ public class ValidationStopAreas extends AbstractTestValidation {
 	private StopArea bean5;
 	private List<StopArea> beansFor4 = new ArrayList<>();
 
-	@EJB (mappedName="java:app/mobi.chouette.dao/StopAreaDAO")
-	GenericDAO<StopArea> stopAreaDao;
+	@EJB 
+	StopAreaDAO stopAreaDao;
 
 	@PersistenceContext(unitName = "referential")
 	EntityManager em;

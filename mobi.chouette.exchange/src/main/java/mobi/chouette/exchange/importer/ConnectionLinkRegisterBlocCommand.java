@@ -17,7 +17,8 @@ import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.dao.GenericDAO;
+import mobi.chouette.dao.ConnectionLinkDAO;
+import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.exchange.importer.updater.ConnectionLinkUpdater;
 import mobi.chouette.exchange.importer.updater.Updater;
 import mobi.chouette.exchange.importer.updater.UpdaterUtils;
@@ -35,11 +36,11 @@ public class ConnectionLinkRegisterBlocCommand implements Command {
 
 	public static final String COMMAND = "ConnectionLinkRegisterBlocCommand";
 
-	@EJB (mappedName="java:app/mobi.chouette.dao/StopAreaDAO")
-	private GenericDAO<StopArea> stopAreaDAO;
+	@EJB 
+	private StopAreaDAO stopAreaDAO;
 
-	@EJB (mappedName="java:app/mobi.chouette.dao/ConnectionLinkDAO")
-	private GenericDAO<ConnectionLink> connectionLinkDAO;
+	@EJB 
+	private ConnectionLinkDAO connectionLinkDAO;
 
 	@EJB(beanName = ConnectionLinkUpdater.BEAN_NAME)
 	private Updater<ConnectionLink> connectionLinkUpdater;

@@ -7,9 +7,9 @@ import javax.persistence.PersistenceContext;
 import mobi.chouette.model.JourneyFrequency;
 
 @Stateless
-public class JourneyFrequencyDAO extends GenericDAOImpl<JourneyFrequency> {
+public class JourneyFrequencyDAOImpl extends GenericDAOImpl<JourneyFrequency> implements JourneyFrequencyDAO{
 
-	public JourneyFrequencyDAO() {
+	public JourneyFrequencyDAOImpl() {
 		super(JourneyFrequency.class);
 	}
 

@@ -9,7 +9,9 @@ import javax.ejb.Stateless;
 import mobi.chouette.common.CollectionUtil;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
-import mobi.chouette.dao.GenericDAO;
+import mobi.chouette.dao.RouteSectionDAO;
+import mobi.chouette.dao.StopPointDAO;
+import mobi.chouette.dao.VehicleJourneyDAO;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.RouteSection;
 import mobi.chouette.model.StopPoint;
@@ -22,14 +24,14 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 
 	public static final String BEAN_NAME = "JourneyPatternUpdater";
 
-	@EJB (mappedName="java:app/mobi.chouette.dao/StopPointDAO")
-	private GenericDAO<StopPoint> stopPointDAO;
+	@EJB 
+	private StopPointDAO stopPointDAO;
 
-	@EJB (mappedName="java:app/mobi.chouette.dao/VehicleJourneyDAO")
-	private GenericDAO<VehicleJourney> vehicleJourneyDAO;
+	@EJB 
+	private VehicleJourneyDAO vehicleJourneyDAO;
 	
-	@EJB (mappedName="java:app/mobi.chouette.dao/RouteSectionDAO")
-	private GenericDAO<RouteSection> routeSectionDAO;
+	@EJB 
+	private RouteSectionDAO routeSectionDAO;
 
 	@EJB(beanName = VehicleJourneyUpdater.BEAN_NAME)
 	private Updater<VehicleJourney> vehicleJourneyUpdater;

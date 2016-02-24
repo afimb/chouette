@@ -9,7 +9,11 @@ import javax.ejb.Stateless;
 import mobi.chouette.common.CollectionUtil;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
-import mobi.chouette.dao.GenericDAO;
+import mobi.chouette.dao.CompanyDAO;
+import mobi.chouette.dao.GroupOfLineDAO;
+import mobi.chouette.dao.NetworkDAO;
+import mobi.chouette.dao.RouteDAO;
+import mobi.chouette.dao.StopAreaDAO;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.Line;
@@ -24,32 +28,32 @@ public class LineUpdater implements Updater<Line> {
 
 	public static final String BEAN_NAME = "LineUpdater";
 
-	@EJB (mappedName="java:app/mobi.chouette.dao/NetworkDAO")
-	private GenericDAO<Network> ptNetworkDAO;
+	@EJB
+	private NetworkDAO ptNetworkDAO;
 
 	@EJB(beanName = PTNetworkUpdater.BEAN_NAME)
 	private Updater<Network> ptNetworkUpdater;
 
-	@EJB (mappedName="java:app/mobi.chouette.dao/CompanyDAO")
-	private GenericDAO<Company> companyDAO;
+	@EJB
+	private CompanyDAO companyDAO;
 
 	@EJB(beanName = CompanyUpdater.BEAN_NAME)
 	private Updater<Company> companyUpdater;
 
-	@EJB (mappedName="java:app/mobi.chouette.dao/GroupOfLineDAO")
-	private GenericDAO<GroupOfLine> groupOfLineDAO;
+	@EJB
+	private GroupOfLineDAO groupOfLineDAO;
 
 	@EJB(beanName = GroupOfLineUpdater.BEAN_NAME)
 	private Updater<GroupOfLine> groupOfLineUpdater;
 
-	@EJB (mappedName="java:app/mobi.chouette.dao/RouteDAO")
-	private GenericDAO<Route> routeDAO;
+	@EJB 
+	private RouteDAO routeDAO;
 
 	@EJB(beanName = RouteUpdater.BEAN_NAME)
 	private Updater<Route> routeUpdater;
 
-	@EJB (mappedName="java:app/mobi.chouette.dao/StopAreaDAO")
-	private GenericDAO<StopArea> stopAreaDAO;
+	@EJB 
+	private StopAreaDAO stopAreaDAO;
 
 	@EJB(beanName = StopAreaUpdater.BEAN_NAME)
 	private Updater<StopArea> stopAreaUpdater;

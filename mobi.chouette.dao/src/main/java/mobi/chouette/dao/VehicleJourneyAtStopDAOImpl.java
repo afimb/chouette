@@ -7,10 +7,10 @@ import javax.persistence.PersistenceContext;
 import mobi.chouette.model.VehicleJourneyAtStop;
 
 @Stateless
-public class VehicleJourneyAtStopDAO extends
-		GenericDAOImpl<VehicleJourneyAtStop> {
+public class VehicleJourneyAtStopDAOImpl extends
+		GenericDAOImpl<VehicleJourneyAtStop> implements VehicleJourneyAtStopDAO{
 
-	public VehicleJourneyAtStopDAO() {
+	public VehicleJourneyAtStopDAOImpl() {
 		super(VehicleJourneyAtStop.class);
 	}
 

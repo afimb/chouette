@@ -6,7 +6,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import mobi.chouette.common.Context;
-import mobi.chouette.dao.GenericDAO;
+import mobi.chouette.dao.TimebandDAO;
 import mobi.chouette.model.Timeband;
 
 @Stateless(name = TimebandUpdater.BEAN_NAME)
@@ -14,8 +14,8 @@ public class TimebandUpdater implements Updater<Timeband> {
 
 	public static final String BEAN_NAME = "TimebandUpdater";
 
-	@EJB (mappedName="java:app/mobi.chouette.dao/TimebandDAO")
-	private GenericDAO<Timeband> timebandDAO;
+	@EJB 
+	private TimebandDAO timebandDAO;
 
 	@Override
 	public void update(Context context, Timeband oldValue, Timeband newValue) throws Exception {
