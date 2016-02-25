@@ -39,10 +39,10 @@ public class GtfsShapeProducer extends AbstractProducer
 	   boolean result = true;
 	   if (neptuneObject.getSectionStatus() != SectionStatusEnum.Completed)
 		   return false;
+	   int shapePtSequence = 0;
 	   int startIndex = 0;
 	   for (RouteSection rs : neptuneObject.getRouteSections() ) {
 		   shape.setShapeId(toGtfsId(neptuneObject.getObjectId(), prefix));
-		   int shapePtSequence = 0;
 		   LineString ls = rs.getInputGeometry();
 		   if (ls == null)
 			   ls = rs.getProcessedGeometry();
