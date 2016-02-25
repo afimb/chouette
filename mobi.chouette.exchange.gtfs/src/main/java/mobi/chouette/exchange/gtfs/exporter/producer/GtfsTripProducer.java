@@ -122,8 +122,7 @@ public class GtfsTripProducer extends AbstractProducer {
 			try {
 				getExporter().getStopTimeExporter().export(time);
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				log.error(e.getMessage(), e);
+		          log.error("fail to produce stoptime "+e.getClass().getName()+" "+e.getMessage());
 				return false;
 			}
 

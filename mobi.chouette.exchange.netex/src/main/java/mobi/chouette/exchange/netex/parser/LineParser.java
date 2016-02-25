@@ -89,7 +89,7 @@ public class LineParser implements Parser, Constant {
 		line.setNetwork(getPTNetwork(referential));
 		line.setCompany(getCompany(referential));
 
-		// TODO for (GroupOfLine groupOfLine :
+		// for (GroupOfLine groupOfLine :
 		// referential.getGroupOfLines().values())
 		// {
 		// line.addGroupOfLine(groupOfLine);

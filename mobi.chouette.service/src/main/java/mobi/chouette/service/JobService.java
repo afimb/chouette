@@ -96,13 +96,6 @@ public class JobService implements JobData, ServiceConstants {
 			fwriter.close();
 			addLink(MediaType.APPLICATION_JSON, Link.PARAMETERS_REL);
 
-			JSONUtil.toJSON(filePath(ACTION_PARAMETERS_FILE), parameters.getConfiguration());
-			addLink(MediaType.APPLICATION_JSON, Link.ACTION_PARAMETERS_REL);
-
-			if (parameters.getValidation() != null) {
-				JSONUtil.toJSON(filePath(VALIDATION_PARAMETERS_FILE), parameters.getValidation());
-				addLink(MediaType.APPLICATION_JSON, Link.VALIDATION_PARAMETERS_REL);
-			}
 
 			String inputStreamName = selectDataInputStreamName(inputStreamsByName);
 			if (inputStreamName != null) {
@@ -117,6 +110,15 @@ public class JobService implements JobData, ServiceConstants {
 				throw new RequestServiceException(RequestExceptionCode.INVALID_PARAMETERS, "");
 			if (!validator.checkFilename(job.getInputFilename()))
 				throw new RequestServiceException(RequestExceptionCode.INVALID_FILE_FORMAT, "");
+
+			JSONUtil.toJSON(filePath(ACTION_PARAMETERS_FILE), parameters.getConfiguration());
+			addLink(MediaType.APPLICATION_JSON, Link.ACTION_PARAMETERS_REL);
+
+			if (parameters.getValidation() != null) {
+				JSONUtil.toJSON(filePath(VALIDATION_PARAMETERS_FILE), parameters.getValidation());
+				addLink(MediaType.APPLICATION_JSON, Link.VALIDATION_PARAMETERS_REL);
+			}
+			
 			validator.initReport(this);
 			setStatus(Job.STATUS.SCHEDULED); // job is ready
 

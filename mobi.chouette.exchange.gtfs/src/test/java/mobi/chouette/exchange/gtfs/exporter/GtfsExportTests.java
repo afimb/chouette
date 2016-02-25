@@ -132,7 +132,6 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 			try {
 				initialContext = new InitialContext();
 			} catch (NamingException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			

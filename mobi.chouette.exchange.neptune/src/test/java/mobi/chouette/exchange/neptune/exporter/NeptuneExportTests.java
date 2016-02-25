@@ -132,7 +132,6 @@ public class NeptuneExportTests  extends Arquillian implements Constant, ReportC
 			try {
 				initialContext = new InitialContext();
 			} catch (NamingException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			

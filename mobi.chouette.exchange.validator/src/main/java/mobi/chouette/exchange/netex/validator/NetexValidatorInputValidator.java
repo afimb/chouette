@@ -3,6 +3,7 @@ package mobi.chouette.exchange.netex.validator;
 import java.io.IOException;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.JSONUtil;
 import mobi.chouette.exchange.InputValidator;
 import mobi.chouette.exchange.InputValidatorFactory;
 import mobi.chouette.exchange.netex.importer.NetexImporterInputValidator;
@@ -12,6 +13,14 @@ import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 @Log4j
 public class NetexValidatorInputValidator extends NetexImporterInputValidator {
 
+	@Override
+	public AbstractParameter toActionParameter(String abstractParameter) {
+		try {
+			return JSONUtil.fromJSON(abstractParameter, NetexValidateParameters.class);
+		} catch (Exception e) {
+			return null;
+		}
+	}
 	@Override
 	public boolean checkParameters(AbstractParameter abstractParameter, ValidationParameters validationParameters) {
 		if (!(abstractParameter instanceof NetexValidateParameters)) {

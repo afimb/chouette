@@ -119,48 +119,6 @@
 	<dependencies>
 
 		<!-- Modules -->
-<!-- 		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>mobi.chouette.common</artifactId>
-			<type>ejb</type>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>mobi.chouette.persistence.hibernate</artifactId>
-			<type>ejb</type>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>mobi.chouette.model</artifactId>
-			<type>ejb</type>
-			<version>${project.version}</version>
-		</dependency>
-      <dependency>
-         <groupId>${project.groupId}</groupId>
-         <artifactId>mobi.chouette.model.iev</artifactId>
-         <type>ejb</type>
-         <version>${project.version}</version>
-      </dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>mobi.chouette.dao</artifactId>
-			<type>ejb</type>
-			<version>${project.version}</version>
-		</dependency>
-      <dependency>
-         <groupId>${project.groupId}</groupId>
-         <artifactId>mobi.chouette.dao.iev</artifactId>
-         <type>ejb</type>
-         <version>${project.version}</version>
-      </dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>mobi.chouette.exchange</artifactId>
-			<type>ejb</type>
-			<version>${project.version}</version>
-		</dependency> -->
       <dependency>
          <groupId>${project.groupId}</groupId>
          <artifactId>mobi.chouette.dao</artifactId>
@@ -203,12 +161,6 @@
          <type>ejb</type>        
          <version>${project.version}</version>
       </dependency>
-        <dependency>
-         <groupId>${project.groupId}</groupId>
-         <artifactId>mobi.chouette.exchange.converter</artifactId>
-         <type>ejb</type>
-         <version>${project.version}</version>
-      </dependency> 
       <dependency>
          <groupId>${project.groupId}</groupId>
          <artifactId>mobi.chouette.schema.checker</artifactId>

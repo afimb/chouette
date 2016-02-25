@@ -43,7 +43,6 @@ public class ValidationTests implements Constant, ReportConstant
 			try {
 				initialContext = new InitialContext();
 			} catch (NamingException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			

@@ -204,7 +204,6 @@ public class KmlSharedDataProducerCommand implements Command, Constant {
 	}
 
 	private void saveAccessLinks(Context context) throws Exception {
-		// TODO Auto-generated method stub
 
 	}
 
