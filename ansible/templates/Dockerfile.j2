@@ -1,0 +1,38 @@
+FROM jboss/wildfly:8.2.1.Final
+
+RUN mkdir /opt/jboss/wildfly/customization/
+
+COPY postgresql-9.4-1205-jdbc41.jar /opt/jboss/wildfly/customization/postgresql-9.4.jar
+COPY postgis-jdbc-2.1.7.2.jar /opt/jboss/wildfly/customization/postgis-jdbc-2.1.7.2.jar
+COPY hibernate-spatial-4.3.jar /opt/jboss/wildfly/modules/system/layers/base/org/hibernate/main/hibernate-spatial-4.3.jar
+COPY jts-1.13.jar /opt/jboss/wildfly/modules/system/layers/base/org/hibernate/main/jts-1.13.jar
+
+# File where sed expression has been performed:
+COPY wildfly/module.xml /opt/jboss/wildfly/modules/system/layers/base/org/hibernate/main/module.xml
+
+RUN touch /opt/jboss/wildfly/build.log
+RUN chmod a+w /opt/jboss/wildfly/build.log
+COPY wildfly/wildfly_db.cli /opt/jboss/wildfly/customization/
+# Not used anymore: COPY wildfly_deploy.cli /opt/jboss/wildfly/customization/
+COPY wildfly/wildfly_fsize.cli /opt/jboss/wildfly/customization/
+COPY wildfly/execute.sh /opt/jboss/wildfly/customization/
+RUN /opt/jboss/wildfly/customization/execute.sh
+# TODO Consider to make password for chouette iev console configurable
+RUN /opt/jboss/wildfly/bin/add-user.sh admin pingu123 --silent
+
+# Deploying by copying to deployment directory
+COPY chouette.ear /opt/jboss/wildfly/standalone/deployments/
+
+# Copy standalone customizations
+COPY wildfly/standalone.conf /opt/jboss/wildfly/bin
+# From http://stackoverflow.com/questions/20965737/docker-jboss7-war-commit-server-boot-failed-in-an-unrecoverable-manner
+RUN rm -rf /opt/jboss/wildfly/standalone/configuration/standalone_xml_history
+
+#
+# The argument comes from chouette doc: https://github.com/afimb/chouette/blob/master/doc/install/wildfly.md
+#CMD ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0", "-c", "standalone-full.xml"]
+
+# This argument comes from https://github.com/jboss-dockerfiles/wildfly
+# It enables the admin interface.
+# TODO Remove the choette iev interface when it is not needed
+CMD ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0", "-bmanagement", "0.0.0.0"]

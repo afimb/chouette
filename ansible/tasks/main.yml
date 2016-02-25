@@ -1,0 +1,47 @@
+---
+- set_fact: build_home="/usr/src/jenkinsbuild/workspace/chouette"
+# - set_fact: build_home="/home/en/git/rutebanken/chouette"
+- set_fact: build_log_directory="/usr/src/log"
+- set_fact: logfile="{{build_log_directory}}/chouette.log"
+
+- name: Make log directory structure
+  file: path={{build_log_directory}} state=directory mode=0755 group=users
+
+- name: Make chouette target directory structure
+  file: path={{chouette_root}}/ state=directory mode=0755 group=users
+
+- name: Upload the wildfly setup directory to the docker host
+  synchronize: src=files/wildfly dest=/usr/src/chouette/.
+
+- name: Copy the chouette sources to staging directory
+  command: rsync -ar {{ build_home }}/chouette_iev/target/chouette.ear {{chouette_root}}/chouette.ear
+
+- name: Move Dockerfile
+  template: src=Dockerfile.j2 dest={{chouette_root}}/Dockerfile mode=0755
+
+- name: Download postgresql jar file (renamed due to legacy reasons)
+  get_url: url=http://search.maven.org/remotecontent?filepath=org/postgresql/postgresql/9.4-1205-jdbc41/postgresql-9.4-1205-jdbc41.jar
+           dest={{ chouette_root }}/postgresql-9.4.jar
+
+- name: Download hibernate spatial
+  get_url:
+    url=http://www.hibernatespatial.org/repository/org/hibernate/hibernate-spatial/4.3/hibernate-spatial-4.3.jar
+    dest={{ chouette_root }}/hibernate-spatial-4.3.jar
+  tags: chouette
+
+- name: Download URLs
+  get_url:
+    url=http://search.maven.org/remotecontent?filepath={{ item.path }}/{{ item.filename }}
+    dest={{ chouette_root }}/{{ item.filename }}
+  with_items:
+    - { path: "net/postgis/postgis-jdbc/2.1.7.2", filename: "postgis-jdbc-2.1.7.2.jar" }
+    - { path: "com/vividsolutions/jts/1.13", filename: "jts-1.13.jar" }
+    - { path: "org/postgresql/postgresql/9.4-1205-jdbc41", filename: "postgresql-9.4-1205-jdbc41.jar" }
+
+- name: Build the chouette docker image
+  shell: docker build --tag={{ chouette_docker_image|quote }} --force-rm=true {{chouette_root}} > {{logfile}} 2>&1
+  register: image
+
+- name: Push chouette docker image if built
+  when: image.changed
+  shell: docker push {{ chouette_docker_image|quote }}
