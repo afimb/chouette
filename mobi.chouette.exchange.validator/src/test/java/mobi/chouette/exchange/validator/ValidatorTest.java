@@ -126,7 +126,7 @@ public class ValidatorTest extends Arquillian implements Constant,ReportConstant
 				NeptuneImporterCommand.class.getName());
 		TestsUtils.copyFile(file);
 		JobDataTest test =  (JobDataTest) context.get(JOB_DATA);
-		test.setFilename( file);
+		test.setInputFilename( file);
 		NeptuneImportParameters configuration = (NeptuneImportParameters) context.get(CONFIGURATION);
 		configuration.setNoSave(false);
 		configuration.setCleanRepository(true);

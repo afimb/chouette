@@ -72,10 +72,13 @@ public class JobServiceManager {
 	private static String lock = "lock";
 	
 	private String rootDirectory; 
+	
+	private static Set<String> intializedContexts = new HashSet<>();
 
 	@PostConstruct
-	public void init() {
+	public synchronized void init() {
 		String context = checker.getContext();
+		if (intializedContexts.contains(context)) return;
 		System.setProperty(context + PropertyNames.MAX_STARTED_JOBS, "5");
 		System.setProperty(context + PropertyNames.MAX_COPY_BY_JOB, "5");
 		try {
@@ -109,6 +112,9 @@ public class JobServiceManager {
 		}
 		maxJobs = Integer.parseInt(System.getProperty(checker.getContext() + PropertyNames.MAX_STARTED_JOBS));
 		rootDirectory = System.getProperty(checker.getContext() + PropertyNames.ROOT_DIRECTORY);
+		
+		// migrate jobs
+		jobDAO.migrate();
 	}
 
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
@@ -311,10 +317,11 @@ public class JobServiceManager {
 		// set delete link
 		jobService.addLink(MediaType.APPLICATION_JSON, Link.DELETE_REL);
 		// add data link if necessary
-		if (!jobService.linkExists(Link.DATA_REL)) {
-			if (jobService.getFilename() != null
-					&& Files.exists(Paths.get(jobService.getPathName(), jobService.getFilename()))) {
+		if (!jobService.linkExists(Link.OUTPUT_REL)) {
+			if (jobService.getOutputFilename() != null
+					&& Files.exists(Paths.get(jobService.getPathName(), jobService.getOutputFilename()))) {
 				jobService.addLink(MediaType.APPLICATION_OCTET_STREAM, Link.DATA_REL);
+				jobService.addLink(MediaType.APPLICATION_OCTET_STREAM, Link.OUTPUT_REL);
 			}
 		}
 		// add validation report link

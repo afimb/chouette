@@ -234,7 +234,7 @@ public class CommandManager implements Constant {
 				}
 			}
 			// transfer result
-			FileUtils.copyFile(new File(outputData.getPathName(), outputData.getFilename()), new File(outputFileName));
+			FileUtils.copyFile(new File(outputData.getPathName(), outputData.getOutputFilename()), new File(outputFileName));
 		}
 
 		// dispose commands
@@ -322,7 +322,7 @@ public class CommandManager implements Constant {
 	private CommandJobData loadInputParameters() {
 		try {
 			CommandJobData data = new CommandJobData();
-			data.setFilename(new File(inputFileName).getName());
+			data.setInputFilename(new File(inputFileName).getName());
 			data.setPathName(workingDirectory);
 			data.setAction(IMPORTER);
 			AbstractParameter configuration = ParametersConverter.convertConfiguration(inputParametersFilename);

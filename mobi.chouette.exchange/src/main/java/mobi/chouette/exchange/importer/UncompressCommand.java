@@ -50,7 +50,7 @@ public class UncompressCommand implements Command, ReportConstant {
 		JobData jobData = (JobData) context.get(JOB_DATA);
 
 		String path = jobData.getPathName();
-		String file = jobData.getFilename(); 
+		String file = jobData.getInputFilename(); 
 		if (file == null)
 		{
 			report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,"Missing input file"));

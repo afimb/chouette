@@ -13,10 +13,13 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import mobi.chouette.model.iev.Job_;
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.model.iev.Job;
+import mobi.chouette.model.iev.Job_;
+import mobi.chouette.model.iev.Link;
 
 @Stateless
+@Log4j
 public class JobDAO extends GenericDAOImpl<Job> {
 
 	public JobDAO() {
@@ -100,5 +103,39 @@ public class JobDAO extends GenericDAOImpl<Job> {
 			delete(entity);
 		}
 		return list.size();
+	}
+
+	@SuppressWarnings("deprecation")
+	public void migrate() {
+		// migrate data from previous versions
+		log.info("migrating data");
+		List<Job> jobs = findAll();
+		for (Job job : jobs) {
+			if (job.getDataFilename() != null)
+			{
+				log.info("migrating job "+job.getId()+" "+job.getAction());
+				if (job.getAction().equals("exporter"))
+				{
+					job.setOutputFilename(job.getDataFilename());
+					job.getLinks().add(new Link("application/octet-stream",Link.OUTPUT_REL));
+				}
+				else if (job.getAction().equals("converter"))
+				{
+					// TODO : a supprimer avant livraison
+					job.setInputFilename(job.getDataFilename());
+					job.setOutputFilename(job.getDataFilename());
+					job.getLinks().add(new Link("application/octet-stream",Link.OUTPUT_REL));
+					job.getLinks().add(new Link("application/octet-stream",Link.INPUT_REL));
+				}
+				else
+				{
+					job.setInputFilename(job.getDataFilename());
+					job.getLinks().add(new Link("application/octet-stream",Link.INPUT_REL));
+				}
+				job.setDataFilename(null);
+			}
+		}
+
+		
 	}
 }

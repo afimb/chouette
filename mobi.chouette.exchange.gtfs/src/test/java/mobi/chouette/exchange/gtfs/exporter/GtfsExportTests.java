@@ -193,7 +193,7 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 		JobDataTest test = new JobDataTest();
 		context.put(JOB_DATA, test);
 		test.setPathName("target/referential/test");
-		test.setFilename( "gtfs.zip");
+		test.setOutputFilename( "gtfs.zip");
 		File f = new File("target/referential/test");
 		if (f.exists())
 			try {
@@ -356,7 +356,7 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 				NeptuneImporterCommand.class.getName());
 		GtfsTestsUtils.copyFile(file);
 		JobDataTest test = (JobDataTest) context.get(JOB_DATA);
-		test.setFilename( file);
+		test.setInputFilename( file);
 		NeptuneImportParameters configuration = (NeptuneImportParameters) context.get(CONFIGURATION);
 		configuration.setNoSave(false);
 		configuration.setCleanRepository(true);

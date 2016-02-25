@@ -139,7 +139,7 @@ public abstract class AbstractTestValidation  extends Arquillian implements Cons
 				NeptuneImporterCommand.class.getName());
 		copyFile(file);
 		JobDataTest test = (JobDataTest) context.get(JOB_DATA);
-		test.setFilename(file);
+		test.setInputFilename(file);
 		NeptuneImportParameters configuration = (NeptuneImportParameters) context.get(CONFIGURATION);
 		configuration.setNoSave(false);
 		configuration.setCleanRepository(cleanRepo);

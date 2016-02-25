@@ -276,7 +276,7 @@ public class NeptuneExportTests  extends Arquillian implements Constant, ReportC
 				NeptuneImporterCommand.class.getName());
 		NeptuneTestsUtils.copyFile(file);
 		JobDataTest test = (JobDataTest) context.get(JOB_DATA);
-		test.setFilename( file);
+		test.setInputFilename( file);
 		NeptuneImportParameters configuration = (NeptuneImportParameters) context.get(CONFIGURATION);
 		configuration.setNoSave(false);
 		configuration.setCleanRepository(true);

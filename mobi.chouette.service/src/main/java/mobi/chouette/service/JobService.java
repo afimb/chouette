@@ -28,12 +28,12 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 
 @Data
-@ToString(exclude={"inputValidator"})
+@ToString(exclude = { "inputValidator" })
 public class JobService implements JobData, ServiceConstants {
 
 	@Delegate(types = { Job.class }, excludes = { ExcludedJobMethods.class })
 	private Job job;
-	
+
 	private String rootDirectory;
 
 	private InputValidator inputValidator;
@@ -43,7 +43,7 @@ public class JobService implements JobData, ServiceConstants {
 	 * 
 	 * @param job
 	 */
-	public JobService(String rootDirectory,Job job) {
+	public JobService(String rootDirectory, Job job) {
 		this.job = job;
 		this.rootDirectory = rootDirectory;
 		// TODO Exception si le job n'est pas persistent
@@ -60,7 +60,7 @@ public class JobService implements JobData, ServiceConstants {
 	 *            : type (may be null)
 	 * @throws mobi.chouette.service.ServiceException
 	 */
-	public JobService(String rootDirectory,String referential, String action, String type) throws ServiceException {
+	public JobService(String rootDirectory, String referential, String action, String type) throws ServiceException {
 		job = new Job(referential, action, type);
 		this.rootDirectory = rootDirectory;
 
@@ -84,38 +84,38 @@ public class JobService implements JobData, ServiceConstants {
 
 			StringWriter writer = new StringWriter();
 			IOUtils.copy(inputStreamsByName.get(PARAMETERS_FILE), writer, "UTF-8");
-			
+
 			InputValidator validator = getCommandInputValidator();
 			setParametersAsString(writer.toString());
 			writer.close();
 			Parameters parameters = new Parameters(getParametersAsString(), validator);
-			
+
 			FileWriter fwriter = new FileWriter(filePath(PARAMETERS_FILE).toFile());
 			fwriter.write(getParametersAsString());
 			fwriter.write("\n");
 			fwriter.close();
-			addLink(MediaType.APPLICATION_JSON, PARAMETERS_REL);
+			addLink(MediaType.APPLICATION_JSON, Link.PARAMETERS_REL);
 
 			JSONUtil.toJSON(filePath(ACTION_PARAMETERS_FILE), parameters.getConfiguration());
-			addLink(MediaType.APPLICATION_JSON, ACTION_PARAMETERS_REL);
+			addLink(MediaType.APPLICATION_JSON, Link.ACTION_PARAMETERS_REL);
 
 			if (parameters.getValidation() != null) {
 				JSONUtil.toJSON(filePath(VALIDATION_PARAMETERS_FILE), parameters.getValidation());
-				addLink(MediaType.APPLICATION_JSON, VALIDATION_PARAMETERS_REL);
+				addLink(MediaType.APPLICATION_JSON, Link.VALIDATION_PARAMETERS_REL);
 			}
 
 			String inputStreamName = selectDataInputStreamName(inputStreamsByName);
 			if (inputStreamName != null) {
 				Files.copy(inputStreamsByName.get(inputStreamName), filePath(inputStreamName));
-				addLink(MediaType.APPLICATION_OCTET_STREAM, DATA_REL);
-				addLink(MediaType.APPLICATION_OCTET_STREAM, INPUT_REL);
-				job.setFilename(inputStreamName);
+				addLink(MediaType.APPLICATION_OCTET_STREAM, Link.DATA_REL);
+				addLink(MediaType.APPLICATION_OCTET_STREAM, Link.INPUT_REL);
+				job.setInputFilename(inputStreamName);
 			}
 
 			// Class.forName(getCommandInputValidatorName());
 			if (!validator.checkParameters(parameters.getConfiguration(), parameters.getValidation()))
 				throw new RequestServiceException(RequestExceptionCode.INVALID_PARAMETERS, "");
-			if (!validator.checkFilename(job.getFilename()))
+			if (!validator.checkFilename(job.getInputFilename()))
 				throw new RequestServiceException(RequestExceptionCode.INVALID_FILE_FORMAT, "");
 			validator.initReport(this);
 			setStatus(Job.STATUS.SCHEDULED); // job is ready
@@ -142,23 +142,25 @@ public class JobService implements JobData, ServiceConstants {
 		return job.getId() != null;
 	}
 
-	private java.nio.file.Path filePath( String fileName) {
+	private java.nio.file.Path filePath(String fileName) {
 		return Paths.get(getPathName(), fileName);
 	}
 
 	private Parameters getParameters() throws ServiceException {
 		if (jobPersisted()) {
 			try {
-				return new Parameters(getParametersAsString(),getCommandInputValidator());
+				return new Parameters(getParametersAsString(), getCommandInputValidator());
 				// return JSONUtil.fromJSON( getParametersAsString(),
 				// Parameters.class);
 			} catch (Exception ex) {
 				try {
-					return new Parameters(getParametersAsString(),inputValidator);
+					return new Parameters(getParametersAsString(), inputValidator);
 				} catch (Exception e) {
 					return null;
 				}
-				// throw new RequestServiceException(RequestExceptionCode.INVALID_PARAMETERS, ex);
+				// throw new
+				// RequestServiceException(RequestExceptionCode.INVALID_PARAMETERS,
+				// ex);
 			}
 		}
 		return null;
@@ -186,14 +188,13 @@ public class JobService implements JobData, ServiceConstants {
 	 */
 	public String getPathName() {
 		if (jobPersisted()) {
-			return Paths.get(rootDirectory, ROOT_PATH, job.getReferential(), "data",
-					job.getId().toString()).toString();
+			return Paths.get(rootDirectory, ROOT_PATH, job.getReferential(), "data", job.getId().toString()).toString();
 		}
 		// TODO Non, lever une exception
 		return null;
 	}
 
-	public static String getRootPathName(String rootDirectory,String referential) {
+	public static String getRootPathName(String rootDirectory, String referential) {
 		return Paths.get(rootDirectory, ROOT_PATH, referential).toString();
 	}
 
@@ -206,7 +207,7 @@ public class JobService implements JobData, ServiceConstants {
 	}
 
 	/**
-	 * add a link if not already present
+	 * add a link or replace
 	 * 
 	 * @param mediaType
 	 *            : mime type
@@ -214,10 +215,10 @@ public class JobService implements JobData, ServiceConstants {
 	 *            : link key
 	 */
 	public void addLink(String mediaType, String rel) {
-		if (!linkExists(rel)) {
-			Link link = new Link(mediaType, rel);
-			job.getLinks().add(link);
-		}
+		linkRemove(rel);
+		Link link = new Link(mediaType, rel);
+		job.getLinks().add(link);
+
 	}
 
 	/**
@@ -234,6 +235,24 @@ public class JobService implements JobData, ServiceConstants {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * check link existence
+	 * 
+	 * @param rel
+	 *            link key
+	 * @return
+	 */
+	public Link linkRemove(String rel) {
+		for (Iterator<Link> iterator = job.getLinks().iterator(); iterator.hasNext();) {
+			Link link = iterator.next();
+			if (link.getRel().equals(rel)) {
+				iterator.remove();
+				return link;
+			}
+		}
+		return null;
 	}
 
 	/**

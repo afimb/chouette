@@ -206,7 +206,7 @@ public class NeptuneImportTests extends Arquillian implements Constant, ReportCo
 				NeptuneImporterCommand.class.getName());
 		NeptuneTestsUtils.copyFile("C_NEPTUNE_1_utf8.xml");
 		JobDataTest jobData = (JobDataTest) context.get(JOB_DATA);
-		jobData.setFilename("C_NEPTUNE_1_utf8.xml");
+		jobData.setInputFilename("C_NEPTUNE_1_utf8.xml");
 		try {
 			command.execute(context);
 		} catch (Exception ex) {
@@ -227,7 +227,7 @@ public class NeptuneImportTests extends Arquillian implements Constant, ReportCo
 				NeptuneImporterCommand.class.getName());
 		NeptuneTestsUtils.copyFile("C_NEPTUNE_1_utf8_bom.xml");
 		JobDataTest jobData = (JobDataTest) context.get(JOB_DATA);
-		jobData.setFilename("C_NEPTUNE_1_utf8_bom.xml");
+		jobData.setInputFilename("C_NEPTUNE_1_utf8_bom.xml");
 		try {
 			command.execute(context);
 		} catch (Exception ex) {
@@ -248,7 +248,7 @@ public class NeptuneImportTests extends Arquillian implements Constant, ReportCo
 				NeptuneImporterCommand.class.getName());
 		NeptuneTestsUtils.copyFile("C_NEPTUNE_1_bad_enc.xml");
 		JobDataTest jobData = (JobDataTest) context.get(JOB_DATA);
-		jobData.setFilename("C_NEPTUNE_1_bad_enc.xml");
+		jobData.setInputFilename("C_NEPTUNE_1_bad_enc.xml");
 		try {
 			command.execute(context);
 		} catch (Exception ex) {
@@ -272,7 +272,7 @@ public class NeptuneImportTests extends Arquillian implements Constant, ReportCo
 				NeptuneImporterCommand.class.getName());
 		NeptuneTestsUtils.copyFile("C_NEPTUNE_1.xml");
 		JobDataTest jobData = (JobDataTest) context.get(JOB_DATA);
-		jobData.setFilename("C_NEPTUNE_1.xml");
+		jobData.setInputFilename("C_NEPTUNE_1.xml");
 		NeptuneImportParameters configuration = (NeptuneImportParameters) context.get(CONFIGURATION);
 		configuration.setNoSave(false);
 		configuration.setCleanRepository(true);
@@ -312,7 +312,7 @@ public class NeptuneImportTests extends Arquillian implements Constant, ReportCo
 				NeptuneImporterCommand.class.getName());
 		NeptuneTestsUtils.copyFile("Neptune_With_Frequencies.xml");
 		JobDataTest jobData = (JobDataTest) context.get(JOB_DATA);
-		jobData.setFilename("Neptune_With_Frequencies.xml");
+		jobData.setInputFilename("Neptune_With_Frequencies.xml");
 		NeptuneImportParameters configuration = (NeptuneImportParameters) context.get(CONFIGURATION);
 		configuration.setNoSave(false);
 		configuration.setCleanRepository(true);
@@ -352,7 +352,7 @@ public class NeptuneImportTests extends Arquillian implements Constant, ReportCo
 				NeptuneImporterCommand.class.getName());
 		NeptuneTestsUtils.copyFile("C_CHOUETTE_52.xml");
 		JobDataTest jobData = (JobDataTest) context.get(JOB_DATA);
-		jobData.setFilename("C_CHOUETTE_52.xml");
+		jobData.setInputFilename("C_CHOUETTE_52.xml");
 		NeptuneImportParameters configuration = (NeptuneImportParameters) context.get(CONFIGURATION);
 		configuration.setNoSave(true);
 		try {
@@ -396,7 +396,7 @@ public class NeptuneImportTests extends Arquillian implements Constant, ReportCo
 				NeptuneImporterCommand.class.getName());
 		NeptuneTestsUtils.copyFile("lignes_neptune.zip");
 		JobDataTest jobData = (JobDataTest) context.get(JOB_DATA);
-		jobData.setFilename("lignes_neptune.zip");
+		jobData.setInputFilename("lignes_neptune.zip");
 		NeptuneImportParameters configuration = (NeptuneImportParameters) context.get(CONFIGURATION);
 		configuration.setNoSave(false);
 		try {

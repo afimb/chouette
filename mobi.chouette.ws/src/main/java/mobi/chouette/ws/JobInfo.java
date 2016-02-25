@@ -1,20 +1,5 @@
 package mobi.chouette.ws;
 
-import static mobi.chouette.common.Constant.ACTION_PARAMETERS_FILE;
-import static mobi.chouette.common.Constant.PARAMETERS_FILE;
-import static mobi.chouette.common.Constant.REPORT_FILE;
-import static mobi.chouette.common.Constant.ROOT_PATH;
-import static mobi.chouette.common.Constant.VALIDATION_FILE;
-import static mobi.chouette.common.Constant.VALIDATION_PARAMETERS_FILE;
-import static mobi.chouette.model.iev.Link.CANCEL_REL;
-import static mobi.chouette.model.iev.Link.DELETE_REL;
-import static mobi.chouette.model.iev.Link.LOCATION_REL;
-import static mobi.chouette.service.ServiceConstants.ACTION_PARAMETERS_REL;
-import static mobi.chouette.service.ServiceConstants.DATA_REL;
-import static mobi.chouette.service.ServiceConstants.PARAMETERS_REL;
-import static mobi.chouette.service.ServiceConstants.REPORT_REL;
-import static mobi.chouette.service.ServiceConstants.VALIDATION_PARAMETERS_REL;
-import static mobi.chouette.service.ServiceConstants.VALIDATION_REL;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -38,10 +23,8 @@ import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.model.iev.Job;
 import mobi.chouette.model.iev.Link;
 import mobi.chouette.service.JobService;
+import mobi.chouette.service.ServiceConstants;
 import mobi.chouette.service.ServiceException;
-
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
 
 @Data
 @NoArgsConstructor
@@ -62,7 +45,7 @@ import org.codehaus.jettison.json.JSONObject;
 // NeptuneValidateParameters.class,
 // GtfsValidateParameters.class,
 // NetexValidateParameters.class})
-public class JobInfo {
+public class JobInfo implements ServiceConstants {
 
 	@XmlElement(name = "id", required = true)
 	private Long id;
@@ -129,25 +112,31 @@ public class JobInfo {
 	}
 
 	private String getRelHref(String rel, JobService jobService) {
-		if (rel.equals(PARAMETERS_REL)) {
+		if (rel.equals(Link.PARAMETERS_REL)) {
 			return getFileBaseHref() + "/" + PARAMETERS_FILE;
-		} else if (rel.equals(ACTION_PARAMETERS_REL)) {
+		} else if (rel.equals(Link.ACTION_PARAMETERS_REL)) {
 			return getFileBaseHref() + "/" + ACTION_PARAMETERS_FILE;
-		} else if (rel.equals(VALIDATION_PARAMETERS_REL)) {
+		} else if (rel.equals(Link.VALIDATION_PARAMETERS_REL)) {
 			return getFileBaseHref() + "/" + VALIDATION_PARAMETERS_FILE;
-		} else if (rel.equals(DATA_REL)) {
-			return getFileBaseHref() + "/" + jobService.getFilename();
-		} else if (rel.equals(VALIDATION_REL)) {
+		} else if (rel.equals(Link.DATA_REL) && action.equals("exporter")) {
+			return getFileBaseHref() + "/" + jobService.getOutputFilename();
+		} else if (rel.equals(Link.DATA_REL) && !action.equals("exporter")) {
+			return getFileBaseHref() + "/" + jobService.getInputFilename();
+		} else if (rel.equals(Link.INPUT_REL)) {
+			return getFileBaseHref() + "/" + jobService.getInputFilename();
+		} else if (rel.equals(Link.OUTPUT_REL)) {
+			return getFileBaseHref() + "/" + jobService.getOutputFilename();
+		} else if (rel.equals(Link.VALIDATION_REL)) {
 			return getFileBaseHref() + "/" + VALIDATION_FILE;
-		} else if (rel.equals(REPORT_REL)) {
+		} else if (rel.equals(Link.REPORT_REL)) {
 			return getFileBaseHref() + "/" + REPORT_FILE;
-		} else if (rel.equals(CANCEL_REL)) {
+		} else if (rel.equals(Link.CANCEL_REL)) {
 			return getScheduledJobHref();
-		} else if (rel.equals(DELETE_REL)) {
+		} else if (rel.equals(Link.DELETE_REL)) {
 			return getTerminatedJobHref();
-		} else if (rel.equals(LOCATION_REL) && hasTerminatedState(jobService)) {
+		} else if (rel.equals(Link.LOCATION_REL) && hasTerminatedState(jobService)) {
 			return getTerminatedJobHref();
-		} else if (rel.equals(LOCATION_REL) && !hasTerminatedState(jobService)) {
+		} else if (rel.equals(Link.LOCATION_REL) && !hasTerminatedState(jobService)) {
 			return getScheduledJobHref();
 		}
 		return null;
@@ -165,23 +154,27 @@ public class JobInfo {
 	}
 
 	private String getMethod(String rel, JobService jobService) {
-		if (rel.equals(PARAMETERS_REL)) {
+		if (rel.equals(Link.PARAMETERS_REL)) {
 			return Link.GET_METHOD;
-		} else if (rel.equals(ACTION_PARAMETERS_REL)) {
+		} else if (rel.equals(Link.ACTION_PARAMETERS_REL)) {
 			return Link.GET_METHOD;
-		} else if (rel.equals(VALIDATION_PARAMETERS_REL)) {
+		} else if (rel.equals(Link.VALIDATION_PARAMETERS_REL)) {
 			return Link.GET_METHOD;
-		} else if (rel.equals(DATA_REL)) {
+		} else if (rel.equals(Link.DATA_REL)) {
 			return Link.GET_METHOD;
-		} else if (rel.equals(VALIDATION_REL)) {
+		} else if (rel.equals(Link.INPUT_REL)) {
 			return Link.GET_METHOD;
-		} else if (rel.equals(REPORT_REL)) {
+		} else if (rel.equals(Link.OUTPUT_REL)) {
 			return Link.GET_METHOD;
-		} else if (rel.equals(CANCEL_REL)) {
+		} else if (rel.equals(Link.VALIDATION_REL)) {
+			return Link.GET_METHOD;
+		} else if (rel.equals(Link.REPORT_REL)) {
+			return Link.GET_METHOD;
+		} else if (rel.equals(Link.CANCEL_REL)) {
 			return Link.DELETE_METHOD;
-		} else if (rel.equals(DELETE_REL)) {
+		} else if (rel.equals(Link.DELETE_REL)) {
 			return Link.DELETE_METHOD;
-		} else if (rel.equals(LOCATION_REL)) {
+		} else if (rel.equals(Link.LOCATION_REL)) {
 			return Link.GET_METHOD;
 		}
 		return null;

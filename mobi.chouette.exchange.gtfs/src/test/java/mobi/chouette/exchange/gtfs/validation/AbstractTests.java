@@ -41,7 +41,7 @@ public abstract class AbstractTests implements Constant, ReportConstant {
 		File destFile = new File("target/referential/test", fileName);
 		FileUtils.copyFile(srcFile, destFile);
 		JobDataTest test = (JobDataTest) context.get(JOB_DATA);
-		test.setFilename(fileName);
+		test.setInputFilename(fileName);
 
 	}
 

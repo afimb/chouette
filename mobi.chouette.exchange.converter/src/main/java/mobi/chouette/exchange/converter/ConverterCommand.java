@@ -205,7 +205,7 @@ public class ConverterCommand implements Command, Constant, ReportConstant {
 			if (lineCount == 0) {
 				progression.terminate(context, postImportProcessingCommands.size());
 				// restore input filename for link 
-				jobData.setFilename(importData.getFilename());
+				// jobData.setFilename(importData.getFilename());
 			} else {
 				progression.terminate(context,
 						postImportProcessingCommands.size() + postExportProcessingCommands.size());
@@ -307,7 +307,7 @@ public class ConverterCommand implements Command, Constant, ReportConstant {
 		ConverterJobData data = new ConverterJobData();
 		JobData jobData = (JobData) context.get(JOB_DATA);
 		data.setId(jobData.getId());
-		data.setFilename(jobData.getFilename());
+		data.setInputFilename(jobData.getInputFilename());
 		data.setPathName(jobData.getPathName());
 		data.setAction(IMPORTER);
 		if (configuration instanceof NeptuneImportParameters) {
@@ -346,7 +346,7 @@ public class ConverterCommand implements Command, Constant, ReportConstant {
 			System.err.println("invalid output options type" + configuration.getClass().getName());
 			return null;
 		}
-		jobData.setFilename("export_" + data.getType() + "_" + jobData.getId() + ".zip");
+		jobData.setOutputFilename("export_" + data.getType() + "_" + jobData.getId() + ".zip");
 		// force export mode to lines
 		AbstractExportParameter exportConfiguration = (AbstractExportParameter) configuration;
 		exportConfiguration.setReferencesType("line");

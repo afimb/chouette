@@ -36,7 +36,7 @@ public class CompressCommand implements Command, Constant {
 		try {
 			JobData jobData = (JobData) context.get(JOB_DATA);
 			String path = jobData.getPathName();
-			String file = jobData.getFilename();
+			String file = jobData.getOutputFilename();
 			Path target = Paths.get(path, OUTPUT);
 			Path filename = Paths.get(path, file);
 			File outputFile = filename.toFile();
