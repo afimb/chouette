@@ -96,7 +96,7 @@
 				<!-- common configuration shared by all executions -->
 				<configuration>
 					<driver>org.postgresql.Driver</driver>
-					<url>jdbc:postgresql://localhost:5432/chouette_test</url>
+					<url>jdbc:postgresql://localhost:5432/chouette-test</url>
 					<username>chouette</username>
 					<password>chouette</password>
 					<!--all executions are ignored if -Dmaven.test.skip=true or -DskipTests=true -->
