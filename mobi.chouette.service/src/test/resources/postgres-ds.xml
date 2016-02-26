@@ -7,34 +7,34 @@
 
    <datasource jndi-name="java:jboss/datasources/chouette"
       pool-name="chouette" enabled="true" use-java-context="true">
-      <connection-url>jdbc:postgresql_postGIS://localhost:5432/chouette_test</connection-url>
+      <connection-url>jdbc:postgresql_postGIS://localhost:5432/chouette-test</connection-url>
          <driver-class>org.postgis.DriverWrapper</driver-class>
         <driver>postgresql</driver>
       <security>
          <user-name>chouette</user-name>
-         <password>chouette</password>         
+         <password>chouette</password>
       </security>
-        <validation>  
-            <valid-connection-checker  
-                 class-name="org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker"></valid-connection-checker>  
-            <exception-sorter  
-                 class-name="org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter"></exception-sorter>  
-        </validation>  
+        <validation>
+            <valid-connection-checker
+                 class-name="org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker"></valid-connection-checker>
+            <exception-sorter
+                 class-name="org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter"></exception-sorter>
+        </validation>
    </datasource>
    <datasource jndi-name="java:jboss/datasources/iev"
       pool-name="chouette" enabled="true" use-java-context="true">
-     <connection-url>jdbc:postgresql://localhost:5432/chouette_test</connection-url>
+     <connection-url>jdbc:postgresql://localhost:5432/chouette-test</connection-url>
       <driver>postgresql</driver>
       <security>
          <user-name>chouette</user-name>
-         <password>chouette</password>         
+         <password>chouette</password>
       </security>
-        <validation>  
-            <valid-connection-checker  
-                 class-name="org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker"></valid-connection-checker>  
-            <exception-sorter  
-                 class-name="org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter"></exception-sorter>  
-        </validation>  
+        <validation>
+            <valid-connection-checker
+                 class-name="org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker"></valid-connection-checker>
+            <exception-sorter
+                 class-name="org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter"></exception-sorter>
+        </validation>
    </datasource>
-     
+
 </datasources>
