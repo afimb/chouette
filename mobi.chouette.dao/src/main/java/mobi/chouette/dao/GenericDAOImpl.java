@@ -161,6 +161,11 @@ public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 	}
 
 	@Override
+	public void clear() {
+		em.clear();
+	}
+
+	@Override
 	public void detach(Collection<?> list) {
 		for (Object object : list) {
 			em.detach(object);

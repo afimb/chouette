@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -15,7 +16,7 @@ import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.AbstractDaoReaderCommand;
+import mobi.chouette.exchange.DaoReader;
 import mobi.chouette.exchange.ProcessingCommands;
 import mobi.chouette.exchange.ProcessingCommandsFactory;
 import mobi.chouette.exchange.ProgressionCommand;
@@ -32,9 +33,11 @@ import com.jamonapi.MonitorFactory;
 
 @Log4j
 @Stateless(name = ValidatorCommand.COMMAND)
-public class ValidatorCommand extends AbstractDaoReaderCommand implements Command, Constant {
+public class ValidatorCommand implements Command, Constant {
 
 	public static final String COMMAND = "ValidatorCommand";
+
+	@EJB DaoReader reader;
 
 	@Override
 	public boolean execute(Context context) throws Exception {
@@ -132,7 +135,7 @@ public class ValidatorCommand extends AbstractDaoReaderCommand implements Comman
 			ids = new ArrayList<Long>(parameters.getIds());
 		}
 
-		Set<Long> lines = loadLines(type, ids);
+		Set<Long> lines = reader.loadLines(type, ids);
 		if (lines.isEmpty()) {
 			report.setFailure(new ActionError(ActionError.CODE.NO_DATA_FOUND,"no data selected"));
 			return ERROR;
