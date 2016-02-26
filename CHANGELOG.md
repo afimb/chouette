@@ -1,3 +1,8 @@
+# Version 3.2.1 (26/02/2016) 
+* Corrections :
+  * issue #23 : wrong shape_pt_sequence on GTFS export
+  * issue #24 : memory leak and timeout on transaction on exports
+
 # Version 3.2.0 (05/02/2016) 
 * Nouvelles fonctionnalités
   * Gestion des courses en fréquences

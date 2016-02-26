@@ -3,6 +3,8 @@ package mobi.chouette.exchange.gtfs.exporter;
 import java.io.IOException;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
@@ -31,6 +33,7 @@ public class GtfsExporterCommand extends AbstractExporterCommand implements Comm
 	public static final String COMMAND = "GtfsExporterCommand";
 
 	@Override
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public boolean execute(Context context) throws Exception {
 		boolean result = ERROR;
 		Monitor monitor = MonitorFactory.start(COMMAND);

@@ -10,6 +10,7 @@ import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.exporter.SharedDataKeys;
 import mobi.chouette.exchange.netex.Constant;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.LineError;
@@ -17,6 +18,7 @@ import mobi.chouette.exchange.report.LineInfo;
 import mobi.chouette.exchange.report.DataStats;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.util.NamingUtil;
+import mobi.chouette.model.util.NeptuneUtil;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -38,11 +40,21 @@ public class NetexLineProducerCommand implements Command, Constant {
 			log.info("procesing line " + NamingUtil.getName(line));
 			NetexExportParameters configuration = (NetexExportParameters) context.get(CONFIGURATION);
 
-			ExportableData collection = new ExportableData();
-			ExportableData sharedData = (ExportableData) context.get(SHARED_DATA);
+			ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
+			if (collection == null)
+			{
+				collection = new  ExportableData();
+				context.put(EXPORTABLE_DATA, collection);
+			}
+			else
+			{
+				collection.clear();
+			}
+
+			SharedDataKeys sharedData = (SharedDataKeys) context.get(SHARED_DATA_KEYS);
 			if (sharedData == null) {
-				sharedData = new ExportableData();
-				context.put(SHARED_DATA, sharedData);
+				sharedData = new SharedDataKeys();
+				context.put(SHARED_DATA_KEYS, sharedData);
 			}
 
 			Date startDate = null;
@@ -66,12 +78,7 @@ public class NetexLineProducerCommand implements Command, Constant {
 			stats.setStopAreaCount(collection.getStopAreas().size());
 			stats.setTimeTableCount(collection.getTimetables().size());
 			stats.setVehicleJourneyCount(collection.getVehicleJourneys().size());
-			sharedData.getAccessPoints().addAll(collection.getAccessPoints());
-			sharedData.getConnectionLinks().addAll(collection.getConnectionLinks());
-			sharedData.getStopAreas().addAll(collection.getStopAreas());
-			sharedData.getTimetables().addAll(collection.getTimetables());
 			if (cont) {
-				context.put(EXPORTABLE_DATA, collection);
 
 				NetexLineProducer producer = new NetexLineProducer();
 				producer.produce(context);
@@ -86,10 +93,14 @@ public class NetexLineProducerCommand implements Command, Constant {
 				globalStats.setJourneyPatternCount(globalStats.getJourneyPatternCount()
 						+ stats.getJourneyPatternCount());
 				// compute shared objects
-				globalStats.setAccessPointCount(sharedData.getAccessPoints().size());
-				globalStats.setStopAreaCount(sharedData.getStopAreas().size());
-				globalStats.setTimeTableCount(sharedData.getTimetables().size());
-				globalStats.setConnectionLinkCount(sharedData.getConnectionLinks().size());
+				sharedData.getAccessPointIds().addAll(NeptuneUtil.extractObjectIds(collection.getAccessPoints()));
+				sharedData.getConnectionLinkIds().addAll(NeptuneUtil.extractObjectIds(collection.getConnectionLinks()));
+				sharedData.getStopAreaIds().addAll(NeptuneUtil.extractObjectIds(collection.getStopAreas()));
+				sharedData.getTimetableIds().addAll(NeptuneUtil.extractObjectIds(collection.getTimetables()));
+				globalStats.setAccessPointCount(sharedData.getAccessPointIds().size());
+				globalStats.setStopAreaCount(sharedData.getStopAreaIds().size());
+				globalStats.setTimeTableCount(sharedData.getTimetableIds().size());
+				globalStats.setConnectionLinkCount(sharedData.getConnectionLinkIds().size());
 				result = SUCCESS;
 			} else {
 				lineInfo.addError(new LineError(LineError.CODE.NO_DATA_ON_PERIOD, "no data on period"));
