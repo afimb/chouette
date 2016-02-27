@@ -11,12 +11,14 @@ import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.exporter.SharedDataKeys;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.DataStats;
 import mobi.chouette.exchange.report.LineError;
 import mobi.chouette.exchange.report.LineInfo;
 import mobi.chouette.model.Line;
+import mobi.chouette.model.util.NeptuneUtil;
 
 import org.xml.sax.SAXParseException;
 
@@ -39,13 +41,22 @@ public class NeptuneLineProducerCommand implements Command, Constant {
 			Line line = (Line) context.get(LINE);
 			NeptuneExportParameters configuration = (NeptuneExportParameters) context.get(CONFIGURATION);
 
-			ExportableData collection = new ExportableData();
+			ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
+			if (collection == null)
+			{
+				collection = new  ExportableData();
+				context.put(EXPORTABLE_DATA, collection);
+			}
+			else
+			{
+				collection.clear();
+			}
 			
-			ExportableData sharedData = (ExportableData) context.get(SHARED_DATA);
+			SharedDataKeys sharedData = (SharedDataKeys) context.get(SHARED_DATA_KEYS);
 			if (sharedData == null)
 			{
-				sharedData = new ExportableData();
-				context.put(SHARED_DATA, sharedData);
+				sharedData = new SharedDataKeys();
+				context.put(SHARED_DATA_KEYS, sharedData);
 			}
 			Date startDate = null;
 			if (configuration.getStartDate() != null) {
@@ -68,14 +79,9 @@ public class NeptuneLineProducerCommand implements Command, Constant {
 			stats.setStopAreaCount(collection.getStopAreas().size());
 			stats.setTimeTableCount(collection.getTimetables().size());
 			stats.setVehicleJourneyCount(collection.getVehicleJourneys().size());
-			sharedData.getAccessPoints().addAll(collection.getAccessPoints());
-			sharedData.getConnectionLinks().addAll(collection.getConnectionLinks());
-			sharedData.getStopAreas().addAll(collection.getStopAreas());
-			sharedData.getTimetables().addAll(collection.getTimetables());
+
 
 			if (cont) {
-				context.put(EXPORTABLE_DATA, collection);
-
 				try
 				{
 				ChouettePTNetworkProducer producer = new ChouettePTNetworkProducer();
@@ -91,10 +97,14 @@ public class NeptuneLineProducerCommand implements Command, Constant {
 				globalStats.setJourneyPatternCount(globalStats.getJourneyPatternCount()
 						+ stats.getJourneyPatternCount());
 				// compute shared objects
-				globalStats.setAccessPointCount(sharedData.getAccessPoints().size());
-				globalStats.setStopAreaCount(sharedData.getStopAreas().size());
-				globalStats.setTimeTableCount(sharedData.getTimetables().size());
-				globalStats.setConnectionLinkCount(sharedData.getConnectionLinks().size());
+				sharedData.getAccessPointIds().addAll(NeptuneUtil.extractObjectIds(collection.getAccessPoints()));
+				sharedData.getConnectionLinkIds().addAll(NeptuneUtil.extractObjectIds(collection.getConnectionLinks()));
+				sharedData.getStopAreaIds().addAll(NeptuneUtil.extractObjectIds(collection.getStopAreas()));
+				sharedData.getTimetableIds().addAll(NeptuneUtil.extractObjectIds(collection.getTimetables()));
+				globalStats.setAccessPointCount(sharedData.getAccessPointIds().size());
+				globalStats.setStopAreaCount(sharedData.getStopAreaIds().size());
+				globalStats.setTimeTableCount(sharedData.getTimetableIds().size());
+				globalStats.setConnectionLinkCount(sharedData.getConnectionLinkIds().size());
 				result = SUCCESS;
 				} catch (MarshalException e) {
 					if (e.getCause() != null && e.getCause() instanceof SAXParseException)

@@ -28,7 +28,7 @@ public abstract class NeptuneUtil {
 	 *            the list to parse
 	 * @return the object ids list
 	 */
-	public static List<String> extractObjectIds(List<? extends NeptuneIdentifiedObject> neptuneObjects) {
+	public static List<String> extractObjectIds(Collection<? extends NeptuneIdentifiedObject> neptuneObjects) {
 		List<String> objectIds = new ArrayList<String>();
 		if (neptuneObjects != null) {
 			for (NeptuneIdentifiedObject neptuneObject : neptuneObjects) {
@@ -73,7 +73,7 @@ public abstract class NeptuneUtil {
 	 *            the list to parse
 	 * @return the ids list
 	 */
-	public static List<Long> extractIds(List<? extends NeptuneObject> neptuneObjects) {
+	public static List<Long> extractIds(Collection<? extends NeptuneObject> neptuneObjects) {
 		List<Long> ids = new ArrayList<Long>();
 		if (neptuneObjects != null) {
 			for (NeptuneObject neptuneObject : neptuneObjects) {
@@ -96,7 +96,7 @@ public abstract class NeptuneUtil {
 	 *            the list to parse
 	 * @return the ids map
 	 */
-	public static <T extends NeptuneObject> Map<Long, T> mapOnIds(List<T> neptuneObjects) {
+	public static <T extends NeptuneObject> Map<Long, T> mapOnIds(Collection<T> neptuneObjects) {
 		Map<Long, T> map = new HashMap<Long, T>();
 		if (neptuneObjects != null) {
 			for (T neptuneObject : neptuneObjects) {
