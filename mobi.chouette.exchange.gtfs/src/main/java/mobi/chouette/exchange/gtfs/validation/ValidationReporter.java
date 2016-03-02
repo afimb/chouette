@@ -187,8 +187,8 @@ public class ValidationReporter implements Constant {
 		case UNUSED_FILE:
 			// 1-GTFS-Common-1-3
 			checkPointName = checkPointName(name, GtfsException.ERROR.UNUSED_FILE);
-			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED, new FileError(FileError.CODE.FILE_NOT_FOUND,
-					"The file \"" + filenameInfo + "\" will not be parsed (rule " + checkPointName + ")"));
+//			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED, new FileError(FileError.CODE.FILE_NOT_FOUND,
+//					"The file \"" + filenameInfo + "\" will not be parsed (rule " + checkPointName + ")"));
 			validationReport.addDetail(checkPointName, new Location(filenameInfo), filenameInfo, CheckPoint.RESULT.NOK);
 			break;
 
