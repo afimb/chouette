@@ -23,9 +23,6 @@ public class RegtoppImporterInputValidatorTests
 		result = validator.checkFilename("data.zip");
 		Assert.assertTrue(result, "check for good file name");
 
-		result = validator.checkFilename("data.HPL");
-		Assert.assertTrue(result, "HPL file should be found");
-
 		result = validator.checkFilename("data.txt");
 		Assert.assertFalse(result, "txt files not allowed");
 }

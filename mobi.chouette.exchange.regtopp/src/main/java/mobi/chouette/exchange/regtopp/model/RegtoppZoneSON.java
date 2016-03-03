@@ -17,35 +17,35 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Record(minOccurs = 1)
-public class RegtoppZoneSON extends RegtoppObject implements Serializable
-{
+public class RegtoppZoneSON extends RegtoppObject implements Serializable {
 
-   private static final long serialVersionUID = 1L;
-   
-   @Getter
-   @Setter
-   @Field(length = 3)
-   private Integer adminCode;
+	public static final String FILE_EXTENSION = "SON";
 
-   @Getter
-   @Setter
-   @Field(length = 1)
-   private Integer counter;
+	private static final long serialVersionUID = 1L;
 
-   @Getter
-   @Setter
-   @Field(length = 5)
-   private Integer zoneId;
-   
-   @Getter
-   @Setter
-   @Field(length = 30)
-   private String name;
- 
-   @Getter
-   @Setter
-   @Field(length = 5)
-   private String zoneRef;
- 
-   
+	@Getter
+	@Setter
+	@Field(length = 3)
+	private Integer adminCode;
+
+	@Getter
+	@Setter
+	@Field(length = 1)
+	private Integer counter;
+
+	@Getter
+	@Setter
+	@Field(length = 5)
+	private Integer zoneId;
+
+	@Getter
+	@Setter
+	@Field(length = 30)
+	private String name;
+
+	@Getter
+	@Setter
+	@Field(length = 5)
+	private String zoneRef;
+
 }

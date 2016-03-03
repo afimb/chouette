@@ -17,30 +17,30 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Record(minOccurs = 1)
-public class RegtoppDestinationDST extends RegtoppObject implements Serializable
-{
+public class RegtoppDestinationDST extends RegtoppObject implements Serializable {
 
-   private static final long serialVersionUID = 1L;
-   
-   @Getter
-   @Setter
-   @Field(length = 3)
-   private Integer adminCode;
+	public static final String FILE_EXTENSION = "DST";
 
-   @Getter
-   @Setter
-   @Field(length = 1)
-   private Integer counter;
+	private static final long serialVersionUID = 1L;
 
-   @Getter
-   @Setter
-   @Field(length = 3)
-   private Integer destinationId;
-   
-   @Getter
-   @Setter
-   @Field(length = 32)
-   private String destinationText;
- 
-   
+	@Getter
+	@Setter
+	@Field(length = 3)
+	private Integer adminCode;
+
+	@Getter
+	@Setter
+	@Field(length = 1)
+	private Integer counter;
+
+	@Getter
+	@Setter
+	@Field(length = 3)
+	private Integer destinationId;
+
+	@Getter
+	@Setter
+	@Field(length = 32)
+	private String destinationText;
+
 }

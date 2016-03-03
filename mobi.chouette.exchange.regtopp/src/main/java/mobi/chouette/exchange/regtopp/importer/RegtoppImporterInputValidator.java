@@ -33,8 +33,8 @@ public class RegtoppImporterInputValidator extends AbstractInputValidator {
 			return false;
 		}
 
-		if (!fileName.endsWith(".zip") && !fileName.endsWith(".HPL")) {
-			log.error("Zip archive or HPL input data expected");
+		if (!fileName.endsWith(".zip")) {
+			log.error("Zip archive expected");
 			return false;
 		}
 

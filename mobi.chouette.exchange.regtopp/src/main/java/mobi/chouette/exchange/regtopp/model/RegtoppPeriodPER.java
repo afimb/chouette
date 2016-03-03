@@ -17,45 +17,45 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Record(minOccurs = 1)
-public class RegtoppPeriodPER extends RegtoppObject implements Serializable
-{
+public class RegtoppPeriodPER extends RegtoppObject implements Serializable {
 
-   private static final long serialVersionUID = 1L;
-   
-   @Getter
-   @Setter
-   @Field(length = 3)
-   private Integer adminCode;
+	public static final String FILE_EXTENSION = "PER";
 
-   @Getter
-   @Setter
-   @Field(length = 1)
-   private Integer counter;
+	private static final long serialVersionUID = 1L;
 
-   @Getter
-   @Setter
-   @Field(length = 10)
-   private String periodId;
-   
-   @Getter
-   @Setter
-   @Field(length = 1)
-   private Integer sequenceNumberDateInterval;
- 
-   @Getter
-   @Setter
-   @Field(length = 6)
-   private String startDate;
- 
-   @Getter
-   @Setter
-   @Field(length = 6)
-   private String endDate;
- 
-   @Getter
-   @Setter
-   @Field(length = 73)
-   private String periodText;
- 
+	@Getter
+	@Setter
+	@Field(length = 3)
+	private Integer adminCode;
+
+	@Getter
+	@Setter
+	@Field(length = 1)
+	private Integer counter;
+
+	@Getter
+	@Setter
+	@Field(length = 10)
+	private String periodId;
+
+	@Getter
+	@Setter
+	@Field(length = 1)
+	private Integer sequenceNumberDateInterval;
+
+	@Getter
+	@Setter
+	@Field(length = 6)
+	private String startDate;
+
+	@Getter
+	@Setter
+	@Field(length = 6)
+	private String endDate;
+
+	@Getter
+	@Setter
+	@Field(length = 73)
+	private String periodText;
 
 }

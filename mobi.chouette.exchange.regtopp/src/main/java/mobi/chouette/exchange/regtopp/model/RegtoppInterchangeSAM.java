@@ -17,88 +17,85 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Record(minOccurs = 1)
-public class RegtoppInterchangeSAM extends RegtoppObject implements Serializable
-{
+public class RegtoppInterchangeSAM extends RegtoppObject implements Serializable {
 
-   private static final long serialVersionUID = 1L;
-   
-   @Getter
-   @Setter
-   @Field(length = 3)
-   private Integer administrationCode1;
+	public static final String FILE_EXTENSION = "SAM";
 
-   @Getter
-   @Setter
-   @Field(length = 1)
-   private Integer counter1;
+	private static final long serialVersionUID = 1L;
 
-   @Getter
-   @Setter
-   @Field(length = 4)
-   private Integer lineNumber1;
+	@Getter
+	@Setter
+	@Field(length = 3)
+	private Integer administrationCode1;
 
-   @Getter
-   @Setter
-   @Field(length = 4)
-   private Integer tripNumber1;
+	@Getter
+	@Setter
+	@Field(length = 1)
+	private Integer counter1;
 
-   @Getter
-   @Setter
-   @Field(length = 3)
-   private Integer typeOfTraffic1;
+	@Getter
+	@Setter
+	@Field(length = 4)
+	private Integer lineNumber1;
 
-   @Getter
-   @Setter
-   @Field(length = 3)
-   private Integer administrationCode2;
+	@Getter
+	@Setter
+	@Field(length = 4)
+	private Integer tripNumber1;
 
-   @Getter
-   @Setter
-   @Field(length = 1)
-   private Integer counter2;
+	@Getter
+	@Setter
+	@Field(length = 3)
+	private Integer typeOfTraffic1;
 
-   @Getter
-   @Setter
-   @Field(length = 4)
-   private Integer lineNumber2;
+	@Getter
+	@Setter
+	@Field(length = 3)
+	private Integer administrationCode2;
 
-   @Getter
-   @Setter
-   @Field(length = 4)
-   private Integer tripNumber2;
+	@Getter
+	@Setter
+	@Field(length = 1)
+	private Integer counter2;
 
-   @Getter
-   @Setter
-   @Field(length = 3)
-   private Integer typeOfTraffic2;
+	@Getter
+	@Setter
+	@Field(length = 4)
+	private Integer lineNumber2;
 
-   @Getter
-   @Setter
-   @Field(length = 4)
-   private Integer arrivalTime1;
+	@Getter
+	@Setter
+	@Field(length = 4)
+	private Integer tripNumber2;
 
-   @Getter
-   @Setter
-   @Field(length = 4)
-   private Integer departureTime2;
+	@Getter
+	@Setter
+	@Field(length = 3)
+	private Integer typeOfTraffic2;
 
-   @Getter
-   @Setter
-   @Field(length = 3)
-   private String notInUse;
+	@Getter
+	@Setter
+	@Field(length = 4)
+	private Integer arrivalTime1;
 
-   @Getter
-   @Setter
-   @Field(length = 8)
-   private Integer stopId;
-   
-   @Getter
-   @Setter
-   @Field(length = 1)
-   private Integer interchangeCode;
+	@Getter
+	@Setter
+	@Field(length = 4)
+	private Integer departureTime2;
 
-  
+	@Getter
+	@Setter
+	@Field(length = 3)
+	private String notInUse;
 
+	@Getter
+	@Setter
+	@Field(length = 8)
+	private Integer stopId;
 
-   
+	@Getter
+	@Setter
+	@Field(length = 1)
+	private Integer interchangeCode;
+
 }

@@ -17,71 +17,67 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Record(minOccurs = 1)
-public class RegtoppVehicleJourneyVLP extends RegtoppObject implements Serializable
-{
+public class RegtoppVehicleJourneyVLP extends RegtoppObject implements Serializable {
 
-   private static final long serialVersionUID = 1L;
+	public static final String FILE_EXTENSION = "VLP";
 
-   @Getter
-   @Setter
-   @Field(length = 3)
-   private Integer administrationCode;
+	private static final long serialVersionUID = 1L;
 
-   @Getter
-   @Setter
-   @Field(length = 1)
-   private Integer counter;
+	@Getter
+	@Setter
+	@Field(length = 3)
+	private Integer administrationCode;
 
-   @Getter
-   @Setter
-   @Field(length = 6)
-   private Integer vehicleJourneyId;
+	@Getter
+	@Setter
+	@Field(length = 1)
+	private Integer counter;
 
-   @Getter
-   @Setter
-   @Field(length = 4)
-   private Integer dayCodeId;
+	@Getter
+	@Setter
+	@Field(length = 6)
+	private Integer vehicleJourneyId;
 
-   @Getter
-   @Setter
-   @Field(length = 2)
-   private Integer sequenceNumberTrip;
+	@Getter
+	@Setter
+	@Field(length = 4)
+	private Integer dayCodeId;
 
-   @Getter
-   @Setter
-   @Field(length = 4)
-   private Integer lineId;
+	@Getter
+	@Setter
+	@Field(length = 2)
+	private Integer sequenceNumberTrip;
 
-   @Getter
-   @Setter
-   @Field(length = 4)
-   private Integer tripId;
+	@Getter
+	@Setter
+	@Field(length = 4)
+	private Integer lineId;
 
-   @Getter
-   @Setter
-   @Field(length = 5)
-   private Integer id;
+	@Getter
+	@Setter
+	@Field(length = 4)
+	private Integer tripId;
 
+	@Getter
+	@Setter
+	@Field(length = 5)
+	private Integer id;
 
-  
-   @AllArgsConstructor
-   public enum DirectionType implements Serializable
-   {
-      Outbound, Inbound;
+	@AllArgsConstructor
+	public enum DirectionType implements Serializable {
+		Outbound, Inbound;
 
-   }
+	}
 
-   @AllArgsConstructor
-   public enum BikesAllowedType implements Serializable
-   {
-      NoInformation, Allowed, NoAllowed;
+	@AllArgsConstructor
+	public enum BikesAllowedType implements Serializable {
+		NoInformation, Allowed, NoAllowed;
 
-   }
+	}
 
-   @AllArgsConstructor
-   public enum WheelchairAccessibleType implements Serializable
-   {
-      NoInformation, Allowed, NoAllowed;
+	@AllArgsConstructor
+	public enum WheelchairAccessibleType implements Serializable {
+		NoInformation, Allowed, NoAllowed;
 
-   }
+	}
 }

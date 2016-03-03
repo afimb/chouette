@@ -12,16 +12,15 @@ import mobi.chouette.exchange.regtopp.model.importer.RegtoppExceptionsHashSet;
 
 @ToString
 @NoArgsConstructor
-public abstract class RegtoppObject
-{
+public abstract class RegtoppObject {
 
-   @Getter
-   @Setter
-   protected Integer id;
-   
-   @Getter
-   protected Set<RegtoppException> errors = new RegtoppExceptionsHashSet<>();
-   
-   @Getter
-   protected Set<RegtoppException.ERROR> okTests = new RegtoppErrorsHashSet<>();
+	@Getter
+	@Setter
+	protected Integer id;
+
+	@Getter
+	protected Set<RegtoppException> errors = new RegtoppExceptionsHashSet<>();
+
+	@Getter
+	protected Set<RegtoppException.ERROR> okTests = new RegtoppErrorsHashSet<>();
 }

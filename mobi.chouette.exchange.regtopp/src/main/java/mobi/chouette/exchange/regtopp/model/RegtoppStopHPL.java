@@ -20,94 +20,89 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Record(minOccurs = 1)
-public class RegtoppStopHPL extends RegtoppObject implements Serializable
-{
+public class RegtoppStopHPL extends RegtoppObject implements Serializable {
 
-	
-   private static final long serialVersionUID = 1L;
+	public static final String FILE_EXTENSION = "HPL";
 
-   @Getter
-   @Setter
-   @Field(length = 3)
-   private Integer adminCode;
+	private static final long serialVersionUID = 1L;
 
-   @Getter
-   @Setter
-   @Field(length = 1)
-   private Integer counter;
+	@Getter
+	@Setter
+	@Field(length = 3)
+	private Integer adminCode;
 
-   @Getter
-   @Setter
-   @Field(length = 8)
-   private String stopId;
+	@Getter
+	@Setter
+	@Field(length = 1)
+	private Integer counter;
 
-   @Getter
-   @Setter
-   @Field(length = 30)
-   private String fullName;
+	@Getter
+	@Setter
+	@Field(length = 8)
+	private String stopId;
 
-   @Getter
-   @Setter
-   @Field(length = 5)
-   private String shortName;
+	@Getter
+	@Setter
+	@Field(length = 30)
+	private String fullName;
 
-   @Getter
-   @Setter
-   @Field(length = 6)
-   private String zoneShortName;
+	@Getter
+	@Setter
+	@Field(length = 5)
+	private String shortName;
 
+	@Getter
+	@Setter
+	@Field(length = 6)
+	private String zoneShortName;
 
-   @Getter
-   @Setter
-   @Field(length = 10)
-   private BigDecimal stopLat;
+	@Getter
+	@Setter
+	@Field(length = 10)
+	private BigDecimal stopLat;
 
-   @Getter
-   @Setter
-   @Field(length = 10)
-   private BigDecimal stopLon;
+	@Getter
+	@Setter
+	@Field(length = 10)
+	private BigDecimal stopLon;
 
-   @Getter
-   @Setter
-   @Field(length = 5)
-   private Integer zoneId1;
+	@Getter
+	@Setter
+	@Field(length = 5)
+	private Integer zoneId1;
 
-   @Getter
-   @Setter
-   @Field(length = 5)
-   private Integer zoneId2;
+	@Getter
+	@Setter
+	@Field(length = 5)
+	private Integer zoneId2;
 
-   @Getter
-   @Setter
-   @Field(length = 1)
-   private Integer interchangeType;
+	@Getter
+	@Setter
+	@Field(length = 1)
+	private Integer interchangeType;
 
-   @Getter
-   @Setter
-   @Field(length = 2)
-   private Integer interchangeMinutes;
+	@Getter
+	@Setter
+	@Field(length = 2)
+	private Integer interchangeMinutes;
 
-   @Getter
-   @Setter
-   @Field(length = 1)
-   private Integer coachClass;
+	@Getter
+	@Setter
+	@Field(length = 1)
+	private Integer coachClass;
 
+	public RegtoppStopHPL(RegtoppStopHPL bean) {
+		throw new RuntimeException("Copy constructor not implemented");
+	}
 
+	public enum LocationType implements Serializable {
+		Stop, Station, Access;
 
-   public RegtoppStopHPL(RegtoppStopHPL bean) {
-	   throw new RuntimeException("Copy constructor not implemented");
-   }
+	}
 
-   public enum LocationType implements Serializable 
-   {
-      Stop, Station, Access;
+	public enum WheelchairBoardingType implements Serializable {
+		NoInformation, Allowed, NoAllowed;
 
-   }
-
-   public enum WheelchairBoardingType implements Serializable
-   {
-      NoInformation, Allowed, NoAllowed;
-
-   }
+	}
 
 }
