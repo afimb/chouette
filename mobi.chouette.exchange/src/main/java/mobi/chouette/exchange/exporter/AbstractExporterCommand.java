@@ -4,17 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import javax.ejb.EJB;
+
+import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
-import mobi.chouette.exchange.AbstractDaoReaderCommand;
+import mobi.chouette.exchange.DaoReader;
 import mobi.chouette.exchange.ProcessingCommands;
 import mobi.chouette.exchange.ProgressionCommand;
 import mobi.chouette.exchange.parameters.AbstractExportParameter;
 import mobi.chouette.exchange.report.ActionError;
 import mobi.chouette.exchange.report.ActionReport;
 
-public class AbstractExporterCommand extends AbstractDaoReaderCommand {
+public class AbstractExporterCommand implements Constant {
 
+	@EJB DaoReader reader;
+	
 	protected enum Mode {
 		line, stopareas
 	};
@@ -54,7 +59,7 @@ public class AbstractExporterCommand extends AbstractDaoReaderCommand {
 				ids = new ArrayList<Long>(parameters.getIds());
 			}
 
-			Set<Long> lines = loadLines(type, ids);
+			Set<Long> lines = reader.loadLines(type, ids);
 			if (lines.isEmpty()) {
 				report.setFailure(new ActionError(ActionError.CODE.NO_DATA_FOUND, "no data selected"));
 				return ERROR;

@@ -95,11 +95,37 @@ public class ExportableData {
 	@Setter
 	private Set<StopArea> sharedStops = new HashSet<>();
 
-	public Timetable findTimetable(String objectId) {
-		for (Timetable tm : timetables) {
-			if (tm.getObjectId().equals(objectId))
-				return tm;
-		}
-		return null;
+//	public Timetable findTimetable(String objectId) {
+//		for (Timetable tm : timetables) {
+//			if (tm.getObjectId().equals(objectId))
+//				return tm;
+//		}
+//		return null;
+//	}
+	
+	public void clear()
+	{
+		networks.clear();
+		line = null;
+		companies.clear();
+		groupOfLines.clear();
+		stopAreas.clear();
+		quays.clear();
+		boardingPositions.clear();
+		physicalStops.clear();
+		commercialStops.clear();
+		stopPlaces.clear();
+		connectionLinks.clear();
+		accessLinks.clear();
+		accessPoints.clear();
+		timetables.clear();
+		excludedTimetables.clear();
+		restrictionConstraints.clear();
+		timetableMap.clear();
+		vehicleJourneys.clear();
+		journeyPatterns.clear();
+		routes.clear();
+		stopPoints.clear();
+		sharedStops.clear();
 	}
 }

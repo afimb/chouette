@@ -138,4 +138,10 @@ public class JobDAO extends GenericDAOImpl<Job> {
 
 		
 	}
+
+	@Override
+	public void clear() {
+		em.clear();
+		
+	}
 }
