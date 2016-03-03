@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<datasources xmlns="http://www.jboss.org/ironjacamar/schema"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="
+        http://www.jboss.org/ironjacamar/schema
+        http://docs.jboss.org/ironjacamar/schema/datasources_1_0.xsd">
+
+   <datasource jndi-name="java:jboss/datasources/chouette"
+      pool-name="chouette" enabled="true" use-java-context="true">
+      <connection-url>jdbc:postgresql_postGIS://localhost:5432/chouette_test</connection-url>
+         <driver-class>org.postgis.DriverWrapper</driver-class>
+        <driver>postgresql</driver>
+      <security>
+         <user-name>chouette</user-name>
+         <password>chouette</password>         
+      </security>
+        <validation>  
+            <valid-connection-checker  
+                 class-name="org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker"></valid-connection-checker>  
+            <exception-sorter  
+                 class-name="org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter"></exception-sorter>  
+        </validation>  
+   </datasource>
+   <datasource jndi-name="java:jboss/datasources/iev"
+      pool-name="chouette" enabled="true" use-java-context="true">
+     <connection-url>jdbc:postgresql://localhost:5432/chouette_test</connection-url>
+      <driver>postgresql</driver>
+      <security>
+         <user-name>chouette</user-name>
+         <password>chouette</password>         
+      </security>
+        <validation>  
+            <valid-connection-checker  
+                 class-name="org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker"></valid-connection-checker>  
+            <exception-sorter  
+                 class-name="org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter"></exception-sorter>  
+        </validation>  
+   </datasource>
+     
+</datasources>
