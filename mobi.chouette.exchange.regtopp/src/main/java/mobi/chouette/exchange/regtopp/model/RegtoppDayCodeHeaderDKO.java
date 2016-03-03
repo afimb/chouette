@@ -17,42 +17,36 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
-@Record(minOccurs = 1, maxOccurs = 1, order=1)
-public class RegtoppDayCodeHeaderDKO extends RegtoppObject implements Serializable
-{
+@Record(minOccurs = 1, maxOccurs = 1, order = 1)
+public class RegtoppDayCodeHeaderDKO extends RegtoppObject implements Serializable {
 
-   private static final long serialVersionUID = 1L;
-   
-   // TODO first line different
-   
-   @Getter
-   @Setter
-   @Field(length = 6, type = java.util.Date.class, format="yyMMdd")
-   private Date date;
+	public static final String FILE_EXTENSION = "DKO";
 
-   @Getter
-   @Setter
-   @Field(length = 1)
-   private Integer weekDay;
+	private static final long serialVersionUID = 1L;
 
-  
- 
-   
-  
+	// TODO first line different
 
-   // @Override
-   // public String toString()
-   // {
-   // return id + ":" + StopTimeExporter.CONVERTER.to(new Context(),this);
-   // }
+	@Getter
+	@Setter
+	@Field(length = 6, type = java.util.Date.class, format = "yyMMdd")
+	private Date date;
 
-   public enum DropOffType implements Serializable
-   {
-      Scheduled, NoAvailable, AgencyCall, DriverCall;
-   }
+	@Getter
+	@Setter
+	@Field(length = 1)
+	private Integer weekDay;
 
-   public enum PickupType implements Serializable
-   {
-      Scheduled, NoAvailable, AgencyCall, DriverCall;
-   }
+	// @Override
+	// public String toString()
+	// {
+	// return id + ":" + StopTimeExporter.CONVERTER.to(new Context(),this);
+	// }
+
+	public enum DropOffType implements Serializable {
+		Scheduled, NoAvailable, AgencyCall, DriverCall;
+	}
+
+	public enum PickupType implements Serializable {
+		Scheduled, NoAvailable, AgencyCall, DriverCall;
+	}
 }

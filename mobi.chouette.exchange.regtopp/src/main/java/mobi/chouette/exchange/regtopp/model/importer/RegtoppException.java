@@ -12,7 +12,7 @@ public class RegtoppException extends RuntimeException {
 
 	public enum ERROR {
 		MULTIPLE_ADMIN_CODES,
-		
+		MISSING_MANDATORY_FILES,
 		
 		
 		MISSING_FIELD, 

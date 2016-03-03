@@ -20,63 +20,59 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Record(minOccurs = 1)
-public class RegtoppRoutePointRUT extends RegtoppObject implements Serializable
-{
+public class RegtoppRoutePointRUT extends RegtoppObject implements Serializable {
 
-	
-   private static final long serialVersionUID = 1L;
+	public static final String FILE_EXTENSION = "RUT";
 
-   @Getter
-   @Setter
-   @Field(length = 3)
-   private Integer adminCode;
+	private static final long serialVersionUID = 1L;
 
-   @Getter
-   @Setter
-   @Field(length = 1)
-   private Integer counter;
+	@Getter
+	@Setter
+	@Field(length = 3)
+	private Integer adminCode;
 
-   @Getter
-   @Setter
-   @Field(length = 4)
-   private String lineId;
+	@Getter
+	@Setter
+	@Field(length = 1)
+	private Integer counter;
 
-   @Getter
-   @Setter
-   @Field(length = 10)
-   private String periodId;
+	@Getter
+	@Setter
+	@Field(length = 4)
+	private String lineId;
 
-   @Getter
-   @Setter
-   @Field(length = 3)
-   private Integer sequenceNumberRoutePoint;
+	@Getter
+	@Setter
+	@Field(length = 10)
+	private String periodId;
 
-   @Getter
-   @Setter
-   @Field(length = 1)
-   private String direction;
+	@Getter
+	@Setter
+	@Field(length = 3)
+	private Integer sequenceNumberRoutePoint;
 
+	@Getter
+	@Setter
+	@Field(length = 1)
+	private String direction;
 
-   @Getter
-   @Setter
-   @Field(length = 8)
-   private String stopId;
+	@Getter
+	@Setter
+	@Field(length = 8)
+	private String stopId;
 
+	public RegtoppRoutePointRUT(RegtoppRoutePointRUT bean) {
+		throw new RuntimeException("Copy constructor not implemented");
+	}
 
-   public RegtoppRoutePointRUT(RegtoppRoutePointRUT bean) {
-	   throw new RuntimeException("Copy constructor not implemented");
-   }
+	public enum LocationType implements Serializable {
+		Stop, Station, Access;
 
-   public enum LocationType implements Serializable 
-   {
-      Stop, Station, Access;
+	}
 
-   }
+	public enum WheelchairBoardingType implements Serializable {
+		NoInformation, Allowed, NoAllowed;
 
-   public enum WheelchairBoardingType implements Serializable
-   {
-      NoInformation, Allowed, NoAllowed;
-
-   }
+	}
 
 }

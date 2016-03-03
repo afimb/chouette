@@ -16,52 +16,46 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
-@Record(minOccurs = 1, order=2)
-public class RegtoppDayCodeDKO extends RegtoppObject implements Serializable
-{
+@Record(minOccurs = 1, order = 2)
+public class RegtoppDayCodeDKO extends RegtoppObject implements Serializable {
 
-   private static final long serialVersionUID = 1L;
-   
-   public static final String FILE_EXTENSION = "DKO";
-   
-   // TODO first line different
-   
-   @Getter
-   @Setter
-   @Field(length = 3)
-   private Integer adminCode;
+	public static final String FILE_EXTENSION = "DKO";
 
-   @Getter
-   @Setter
-   @Field(length = 1)
-   private Integer counter;
+	private static final long serialVersionUID = 1L;
 
-   @Getter
-   @Setter
-   @Field(length = 4)
-   private String dayCodeId;
-   
-   @Getter
-   @Setter
-   @Field(length = 392)
-   private String dayCode;
- 
-   
-  
+	// TODO first line different
 
-   // @Override
-   // public String toString()
-   // {
-   // return id + ":" + StopTimeExporter.CONVERTER.to(new Context(),this);
-   // }
+	@Getter
+	@Setter
+	@Field(length = 3)
+	private Integer adminCode;
 
-   public enum DropOffType implements Serializable
-   {
-      Scheduled, NoAvailable, AgencyCall, DriverCall;
-   }
+	@Getter
+	@Setter
+	@Field(length = 1)
+	private Integer counter;
 
-   public enum PickupType implements Serializable
-   {
-      Scheduled, NoAvailable, AgencyCall, DriverCall;
-   }
+	@Getter
+	@Setter
+	@Field(length = 4)
+	private String dayCodeId;
+
+	@Getter
+	@Setter
+	@Field(length = 392)
+	private String dayCode;
+
+	// @Override
+	// public String toString()
+	// {
+	// return id + ":" + StopTimeExporter.CONVERTER.to(new Context(),this);
+	// }
+
+	public enum DropOffType implements Serializable {
+		Scheduled, NoAvailable, AgencyCall, DriverCall;
+	}
+
+	public enum PickupType implements Serializable {
+		Scheduled, NoAvailable, AgencyCall, DriverCall;
+	}
 }

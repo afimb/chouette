@@ -17,40 +17,40 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Record(minOccurs = 1)
-public class RegtoppTableVersionTAB extends RegtoppObject implements Serializable
-{
+public class RegtoppTableVersionTAB extends RegtoppObject implements Serializable {
 
-   private static final long serialVersionUID = 1L;
-   
-   @Getter
-   @Setter
-   @Field(length = 3)
-   private Integer adminCode;
+	public static final String FILE_EXTENSION = "TAB";
 
-   @Getter
-   @Setter
-   @Field(length = 1)
-   private Integer counter;
+	private static final long serialVersionUID = 1L;
 
-   @Getter
-   @Setter
-   @Field(length = 4)
-   private String lineId;
-   
-   @Getter
-   @Setter
-   @Field(length = 10)
-   private Integer periodId;
- 
-   @Getter
-   @Setter
-   @Field(length = 8)
-   private String name;
- 
-   @Getter
-   @Setter
-   @Field(length = 80)
-   private String text;
- 
+	@Getter
+	@Setter
+	@Field(length = 3)
+	private Integer adminCode;
+
+	@Getter
+	@Setter
+	@Field(length = 1)
+	private Integer counter;
+
+	@Getter
+	@Setter
+	@Field(length = 4)
+	private String lineId;
+
+	@Getter
+	@Setter
+	@Field(length = 10)
+	private Integer periodId;
+
+	@Getter
+	@Setter
+	@Field(length = 8)
+	private String name;
+
+	@Getter
+	@Setter
+	@Field(length = 80)
+	private String text;
 
 }
