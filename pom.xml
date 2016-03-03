@@ -522,6 +522,11 @@
 			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
+				<artifactId>mobi.chouette.exchange.regtopp</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
 				<artifactId>mobi.chouette.exchange.validator</artifactId>
 				<version>${project.version}</version>
 			</dependency>
@@ -814,6 +819,7 @@
 		<module>mobi.chouette.exchange.kml</module>
 		<module>mobi.chouette.exchange.hub</module>
 		<module>mobi.chouette.exchange.gtfs</module>
+		<module>mobi.chouette.exchange.regtopp</module>
 		<module>mobi.chouette.exchange.validator</module>
       <module>mobi.chouette.exchange.converter</module>
 		<module>mobi.chouette.service</module>
