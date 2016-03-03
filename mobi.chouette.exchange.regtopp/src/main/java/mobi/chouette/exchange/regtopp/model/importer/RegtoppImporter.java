@@ -9,10 +9,12 @@ import java.util.Map;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.regtopp.model.RegtoppObject;
 import mobi.chouette.exchange.regtopp.model.RegtoppStopHPL;
+import mobi.chouette.exchange.regtopp.model.RegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.model.importer.RegtoppException.ERROR;
 import mobi.chouette.exchange.regtopp.model.importer.index.Index;
 import mobi.chouette.exchange.regtopp.model.importer.index.IndexFactory;
 import mobi.chouette.exchange.regtopp.model.importer.index.StopById;
+import mobi.chouette.exchange.regtopp.model.importer.index.TripIndex;
 import mobi.chouette.exchange.regtopp.validation.ValidationReporter;
 
 public class RegtoppImporter {
@@ -156,5 +158,9 @@ public class RegtoppImporter {
 	@SuppressWarnings("unchecked")
 	public Index<RegtoppStopHPL> getStopById() throws Exception {
 		return getIndex(INDEX.STOP_BY_ID.name(), StopById.class);
+	}
+
+	public Index<RegtoppTripIndexTIX> getTripIndex() throws Exception {
+		return getIndex(INDEX.TRIP_INDEX.name(), TripIndex.class);
 	}
 }

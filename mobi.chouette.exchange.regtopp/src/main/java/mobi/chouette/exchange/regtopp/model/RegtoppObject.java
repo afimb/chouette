@@ -23,4 +23,6 @@ public abstract class RegtoppObject {
 
 	@Getter
 	protected Set<RegtoppException.ERROR> okTests = new RegtoppErrorsHashSet<>();
+	
+	public abstract String getIndexingKey();
 }

@@ -47,9 +47,7 @@ public class RegtoppImporterCommand extends AbstractImporterCommand implements C
 			}
 
 			RegtoppImportParameters parameters = (RegtoppImportParameters) configuration;
-			// TODO remove
 			boolean all = !(parameters.getReferencesType().equalsIgnoreCase("stop_area"));
-			 all = false;
 			
 			ProcessingCommands commands = ProcessingCommandsFactory.create(RegtoppImporterProcessingCommands.class.getName());
 			result = process(context, commands, progression, true, (all?Mode.line:Mode.stopareas));

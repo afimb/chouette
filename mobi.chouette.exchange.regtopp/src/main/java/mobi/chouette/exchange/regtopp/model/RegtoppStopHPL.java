@@ -90,6 +90,12 @@ public class RegtoppStopHPL extends RegtoppObject implements Serializable {
 	@Setter
 	@Field(length = 1)
 	private Integer coachClass;
+	
+	@Override
+	public String getIndexingKey() {
+		return adminCode+counter+stopId;
+	}
+
 
 	public RegtoppStopHPL(RegtoppStopHPL bean) {
 		throw new RuntimeException("Copy constructor not implemented");

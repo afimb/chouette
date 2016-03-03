@@ -28,12 +28,12 @@ public class RegtoppDayCodeDKO extends RegtoppObject implements Serializable {
 	@Getter
 	@Setter
 	@Field(length = 3)
-	private Integer adminCode;
+	private String adminCode;
 
 	@Getter
 	@Setter
 	@Field(length = 1)
-	private Integer counter;
+	private String counter;
 
 	@Getter
 	@Setter
@@ -57,5 +57,10 @@ public class RegtoppDayCodeDKO extends RegtoppObject implements Serializable {
 
 	public enum PickupType implements Serializable {
 		Scheduled, NoAvailable, AgencyCall, DriverCall;
+	}
+
+	@Override
+	public String getIndexingKey() {
+		return adminCode+counter+dayCodeId;
 	}
 }

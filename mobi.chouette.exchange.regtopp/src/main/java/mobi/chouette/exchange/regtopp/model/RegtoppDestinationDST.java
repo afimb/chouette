@@ -26,21 +26,26 @@ public class RegtoppDestinationDST extends RegtoppObject implements Serializable
 	@Getter
 	@Setter
 	@Field(length = 3)
-	private Integer adminCode;
+	private String adminCode;
 
 	@Getter
 	@Setter
 	@Field(length = 1)
-	private Integer counter;
+	private String counter;
 
 	@Getter
 	@Setter
-	@Field(length = 3)
-	private Integer destinationId;
+	@Field(length = 4)
+	private String destinationId;
 
 	@Getter
 	@Setter
 	@Field(length = 32)
 	private String destinationText;
+
+	@Override
+	public String getIndexingKey() {
+		return adminCode+counter+destinationId;
+	}
 
 }

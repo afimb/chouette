@@ -49,4 +49,9 @@ public class RegtoppDayCodeHeaderDKO extends RegtoppObject implements Serializab
 	public enum PickupType implements Serializable {
 		Scheduled, NoAvailable, AgencyCall, DriverCall;
 	}
+
+	@Override
+	public String getIndexingKey() {
+		throw new RuntimeException("No key registerted");
+	}
 }

@@ -26,12 +26,12 @@ public class RegtoppTableVersionTAB extends RegtoppObject implements Serializabl
 	@Getter
 	@Setter
 	@Field(length = 3)
-	private Integer adminCode;
+	private String adminCode;
 
 	@Getter
 	@Setter
 	@Field(length = 1)
-	private Integer counter;
+	private String counter;
 
 	@Getter
 	@Setter
@@ -41,7 +41,7 @@ public class RegtoppTableVersionTAB extends RegtoppObject implements Serializabl
 	@Getter
 	@Setter
 	@Field(length = 10)
-	private Integer periodId;
+	private String periodId;
 
 	@Getter
 	@Setter
@@ -52,5 +52,10 @@ public class RegtoppTableVersionTAB extends RegtoppObject implements Serializabl
 	@Setter
 	@Field(length = 80)
 	private String text;
+
+	@Override
+	public String getIndexingKey() {
+		return adminCode+counter+lineId+periodId;
+	}
 
 }
