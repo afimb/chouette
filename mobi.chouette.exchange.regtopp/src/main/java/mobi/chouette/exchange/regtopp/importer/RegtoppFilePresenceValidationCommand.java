@@ -168,16 +168,16 @@ public class RegtoppFilePresenceValidationCommand implements Command, Constant {
 
 			if (prefixesFound.size() > 1) {
 				// Multiple prefixes found, should all be the same
-				validationReporter.reportError(context,
-						new RegtoppException(StringUtils.join(prefixesFound, ","), 1, null, RegtoppException.ERROR.MULTIPLE_ADMIN_CODES, null, null),
-						StringUtils.join(prefixesFound, ",") + ".*");
+//				validationReporter.reportError(context,
+//						new RegtoppException(StringUtils.join(prefixesFound, ","), 1, null, RegtoppException.ERROR.MULTIPLE_ADMIN_CODES, null, null),
+//						StringUtils.join(prefixesFound, ",") + ".*");
 			}
 
 			// Check that all 4 mandatory files found
 			// Convert to set
 			if (!mandatoryFileExtensions.containsAll(foundExtensions)) {
-				validationReporter.reportError(context, new RegtoppException(null, 1, null, RegtoppException.ERROR.MISSING_MANDATORY_FILES, null, null),
-						"TODO list of files expected but missing");
+//				validationReporter.reportError(context, new RegtoppException(context),
+//						"TODO list of files expected but missing");
 
 			}
 
@@ -187,7 +187,7 @@ public class RegtoppFilePresenceValidationCommand implements Command, Constant {
 			if (e.getError().equals(RegtoppException.ERROR.SYSTEM))
 				throw e;
 			else
-				report.setFailure(new ActionError(ActionError.CODE.INVALID_DATA, e.getError().name() + " " + e.getPath()));
+				report.setFailure(new ActionError(ActionError.CODE.INVALID_DATA, e.getError().name() ));
 
 		} catch (Exception e) {
 			if (e instanceof RuntimeException)

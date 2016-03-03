@@ -14,6 +14,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import mobi.chouette.exchange.regtopp.model.enums.DirectionType;
 
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
@@ -53,8 +54,8 @@ public class RegtoppRoutePointRUT extends RegtoppObject implements Serializable 
 
 	@Getter
 	@Setter
-	@Field(length = 1)
-	private String direction;
+	@Field(length = 1, regex = "[123]{1}", format="toString")
+	private DirectionType direction;
 
 	@Getter
 	@Setter

@@ -45,7 +45,7 @@ public class RegtoppZoneSON extends RegtoppObject implements Serializable {
 
 	@Getter
 	@Setter
-	@Field(length = 5)
+	@Field(length = 6)
 	private String zoneRef;
 	
 	@Override

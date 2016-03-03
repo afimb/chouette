@@ -29,7 +29,7 @@ public class RegtoppStopParser implements Parser, Validator, Constant {
 		
 		// stops.txt
 		if (importer.hasStopImporter()) { // the file "*.hpl" exists ?
-			validationReporter.reportSuccess(context, GTFS_1_GTFS_Common_1, GTFS_STOPS_FILE);
+			validationReporter.reportSuccess(context, REGTOPP_FILE_HPL, RegtoppStopHPL.FILE_EXTENSION);
 
 			
 			// Parse HPL file
@@ -44,32 +44,32 @@ public class RegtoppStopParser implements Parser, Validator, Constant {
 				parser = importer.getStopById(); 
 			} catch (Exception ex ) {
 				if (ex instanceof RegtoppException) {
-					validationReporter.reportError(context, (RegtoppException)ex, GTFS_STOPS_FILE);
+					validationReporter.reportError(context, (RegtoppException)ex, RegtoppStopHPL.FILE_EXTENSION);
 				} else {
-					validationReporter.throwUnknownError(context, ex, GTFS_STOPS_FILE);
+					validationReporter.throwUnknownError(context, ex, RegtoppStopHPL.FILE_EXTENSION);
 				}
 			}
 
-			validationReporter.validateOkCSV(context, GTFS_STOPS_FILE);
+		//	validationReporter.validateOkCSV(context, RegtoppStopHPL.FILE_EXTENSION);
 		
 			if (parser == null) { // importer.getStopById() fails for any other reason
-				validationReporter.throwUnknownError(context, new Exception("Cannot instantiate StopById class"), GTFS_STOPS_FILE);
+				validationReporter.throwUnknownError(context, new Exception("Cannot instantiate StopById class"), RegtoppStopHPL.FILE_EXTENSION);
 			} else {
-				validationReporter.validate(context, GTFS_STOPS_FILE, parser.getOkTests());
+				validationReporter.validate(context, RegtoppStopHPL.FILE_EXTENSION, parser.getOkTests());
 				validationReporter.validateUnknownError(context);
 			}
 			
 			if (!parser.getErrors().isEmpty()) {
-				validationReporter.reportErrors(context, parser.getErrors(), GTFS_STOPS_FILE);
+				validationReporter.reportErrors(context, parser.getErrors(), RegtoppStopHPL.FILE_EXTENSION);
 				parser.getErrors().clear();
 			}
 			
-			validationReporter.validateOKGeneralSyntax(context, GTFS_STOPS_FILE);
+		//	validationReporter.validateOKGeneralSyntax(context, RegtoppStopHPL.FILE_EXTENSION);
 		
 			if (parser.getLength() == 0) {
-				validationReporter.reportError(context, new RegtoppException(GTFS_STOPS_FILE, 1, null, RegtoppException.ERROR.FILE_WITH_NO_ENTRY, null, null), GTFS_STOPS_FILE);
+//				validationReporter.reportError(context, new RegtoppException(RegtoppStopHPL.FILE_EXTENSION, 1, null, RegtoppException.ERROR.FILE_WITH_NO_ENTRY, null, null), RegtoppStopHPL.FILE_EXTENSION);
 			} else {
-				validationReporter.validate(context, GTFS_STOPS_FILE, RegtoppException.ERROR.FILE_WITH_NO_ENTRY);
+		//		validationReporter.validate(context, RegtoppStopHPL.FILE_EXTENSION, RegtoppException.ERROR.FILE_WITH_NO_ENTRY);
 			}
 		
 			RegtoppException fatalException = null;
@@ -84,27 +84,27 @@ public class RegtoppStopParser implements Parser, Validator, Constant {
 					parser.validate(bean, importer);
 				} catch (Exception ex) {
 					if (ex instanceof RegtoppException) {
-						validationReporter.reportError(context, (RegtoppException)ex, GTFS_STOPS_FILE);
+						validationReporter.reportError(context, (RegtoppException)ex, RegtoppStopHPL.FILE_EXTENSION);
 					} else {
-						validationReporter.throwUnknownError(context, ex, GTFS_STOPS_FILE);
+						validationReporter.throwUnknownError(context, ex, RegtoppStopHPL.FILE_EXTENSION);
 					}
 				}
 				for(RegtoppException ex : bean.getErrors()) {
 					if (ex.isFatal())
 						fatalException = ex;
 				}
-				validationReporter.reportErrors(context, bean.getErrors(), GTFS_STOPS_FILE);
-				validationReporter.validate(context, GTFS_STOPS_FILE, bean.getOkTests());
+				validationReporter.reportErrors(context, bean.getErrors(), RegtoppStopHPL.FILE_EXTENSION);
+				validationReporter.validate(context, RegtoppStopHPL.FILE_EXTENSION, bean.getOkTests());
 			}
 			parser.setWithValidation(false);
-			if (hasLocationType)
-				validationReporter.validate(context, GTFS_STOPS_FILE, RegtoppException.ERROR.NO_LOCATION_TYPE);
-			else
-				validationReporter.reportError(context, new RegtoppException(GTFS_STOPS_FILE, 1, null, RegtoppException.ERROR.NO_LOCATION_TYPE, null, null), GTFS_STOPS_FILE);
+//			if (hasLocationType)
+//				validationReporter.validate(context, RegtoppStopHPL.FILE_EXTENSION, RegtoppException.ERROR.NO_LOCATION_TYPE);
+//			else
+//				validationReporter.reportError(context, new RegtoppException(RegtoppStopHPL.FILE_EXTENSION, 1, null, RegtoppException.ERROR.NO_LOCATION_TYPE, null, null), RegtoppStopHPL.FILE_EXTENSION);
 			if (fatalException != null)
 				throw fatalException;
 		} else {
-			validationReporter.reportError(context, new RegtoppException(GTFS_STOPS_FILE, 1, null, RegtoppException.ERROR.MISSING_FILE, null, null), GTFS_STOPS_FILE);
+//			validationReporter.reportError(context, new RegtoppException(RegtoppStopHPL.FILE_EXTENSION, 1, null, RegtoppException.ERROR.MISSING_MANDATORY_FILES, null, null), RegtoppStopHPL.FILE_EXTENSION);
 		}
 	}	
 	

@@ -21,8 +21,7 @@ public class ValidationReporter implements Constant {
 	@Getter
 	private Set<RegtoppException> exceptions = new RegtoppExceptionsHashSet<RegtoppException>();
 
-	public void dispose()
-	{
+	public void dispose() {
 		exceptions.clear();
 		exceptions = null;
 	}
@@ -35,20 +34,17 @@ public class ValidationReporter implements Constant {
 
 		if (filenameInfo != null && filenameInfo.indexOf('.') > 0) {
 			report.addFileInfo(filenameInfo, FILE_STATE.ERROR, new FileError(FileError.CODE.FILE_NOT_FOUND,
-					"A problem occured while reading the file \"" + filenameInfo + "\" (" + checkPointName + ") : "
-							+ ex.getMessage()));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo), ex.getMessage(),
-					CheckPoint.RESULT.NOK);
-			String message = ex.getMessage() != null? ex.getMessage() : ex.getClass().getName();
-			log.error(ex,ex);
-			throw new Exception("A problem occured while reading the file \"" + filenameInfo + "\" : "
-					+ message);
+					"A problem occured while reading the file \"" + filenameInfo + "\" (" + checkPointName + ") : " + ex.getMessage()));
+			validationReport.addDetail(checkPointName, new Location(filenameInfo), ex.getMessage(), CheckPoint.RESULT.NOK);
+			String message = ex.getMessage() != null ? ex.getMessage() : ex.getClass().getName();
+			log.error(ex, ex);
+			throw new Exception("A problem occured while reading the file \"" + filenameInfo + "\" : " + message);
 		}
 	}
-	
+
 	public void validateUnknownError(Context context) {
 		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
-		CheckPoint cp = validationReport.findCheckPointByName(GTFS_1_GTFS_CSV_1);
+		CheckPoint cp = validationReport.findCheckPointByName(REGTOPP_SYSTEM);
 		if (cp.getState() == CheckPoint.RESULT.UNCHECK)
 			cp.setState(CheckPoint.RESULT.OK);
 	}
@@ -70,515 +66,20 @@ public class ValidationReporter implements Constant {
 		String fieldName = "";
 		String fieldName2 = "";
 		String value = "";
-		
+
 		// log.error(ex);
- 
+
 		switch (ex.getError()) {
-		case INVALID_HEADER_FILE_FORMAT:
+		case SYSTEM:
 			// 1-GTFS-CSV-2
-			checkPointName = checkPointName(name, RegtoppException.ERROR.INVALID_HEADER_FILE_FORMAT);
+			checkPointName = checkPointName(name, RegtoppException.ERROR.SYSTEM);
 			report.addFileInfo(filenameInfo, FILE_STATE.ERROR, new FileError(FileError.CODE.INVALID_FORMAT,
-					"The first line in file \"" + filenameInfo + "\" must comply with CSV (rule " + checkPointName
-							+ ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo, 1, ex.getColumn()), filenameInfo,
-					CheckPoint.RESULT.NOK);
+					"The first line in file \"" + filenameInfo + "\" must comply with CSV (rule " + checkPointName + ")"));
+			validationReport.addDetail(checkPointName, new Location(filenameInfo, 1, -1), filenameInfo, CheckPoint.RESULT.NOK);
 			throw ex;
-			//throw new Exception("The first line in file \"" + filenameInfo + "\" must comply with CSV");
-
-		case EMPTY_HEADER_FIELD:
-			// 1-GTFS-CSV-3
-			checkPointName = checkPointName(name, RegtoppException.ERROR.EMPTY_HEADER_FIELD);
-			report.addFileInfo(filenameInfo, FILE_STATE.ERROR, new FileError(FileError.CODE.INVALID_FORMAT,
-					"Header fields in file \"" + filenameInfo + "\" could not be empty (rule " + checkPointName + ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo, 1, ex.getColumn()), filenameInfo,
-					CheckPoint.RESULT.NOK);
-			throw ex;
-			//throw new Exception("Header fields in file \"" + filenameInfo + "\" could not be empty");
-
-		case DUPLICATE_HEADER_FIELD:
-			// 1-GTFS-CSV-4
-			checkPointName = checkPointName(name, RegtoppException.ERROR.DUPLICATE_HEADER_FIELD);
-			report.addFileInfo(filenameInfo, FILE_STATE.ERROR, new FileError(FileError.CODE.INVALID_FORMAT,
-					"The header fields in file \"" + filenameInfo + "\" could not be duplicated (rule "
-							+ checkPointName + ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo, 1, ex.getColumn()), filenameInfo,
-					CheckPoint.RESULT.NOK);
-			throw ex;
-			//throw new Exception("The header fields in file \"" + filenameInfo + "\" could not be duplicated");
-
-		case INVALID_FILE_FORMAT:
-			// 1-GTFS-CSV-5
-			checkPointName = checkPointName(name, RegtoppException.ERROR.INVALID_FILE_FORMAT);
-			report.addFileInfo(filenameInfo, FILE_STATE.ERROR, new FileError(FileError.CODE.INVALID_FORMAT,
-					"Line number " + ex.getId() + " in file \"" + filenameInfo + "\" must comply with CSV (rule "
-							+ checkPointName + ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), ex.getColumn()), filenameInfo,
-					CheckPoint.RESULT.NOK);
-			throw ex;
-			//throw new Exception("Line number " + ex.getId() + " in file \"" + filenameInfo + "\" must comply with CSV");
-
-		case HTML_TAG_IN_HEADER_FIELD:
-			// 1-GTFS-CSV-6
-			checkPointName = checkPointName(name, RegtoppException.ERROR.HTML_TAG_IN_HEADER_FIELD);
-			report.addFileInfo(filenameInfo, FILE_STATE.ERROR, new FileError(FileError.CODE.INVALID_FORMAT,
-					"HTML tags in field names are not allowed (rule " + checkPointName + ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), ex.getColumn()), filenameInfo,
-					CheckPoint.RESULT.NOK);
-			throw ex;
-			// break;
-
-		case EXTRA_SPACE_IN_FIELD: // Don't throw an exception at this level
-			// report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-			// new FileError(FileError.CODE.INVALID_FORMAT,
-			// "Extra spaces in field names are not allowed (rule 1-GTFS-CSV-7"));
-			// validationReport.addDetail(GTFS_1_GTFS_CSV_7,
-			// new Location(filenameInfo,
-			// "Extra spaces in field names are not allowed \""+ex.getValue()+"\"",
-			// ex.getId()),
-			// "Extra spaces in field names are not allowed \""+ex.getValue()+"\"",
-			// CheckPoint.RESULT.NOK);
-			// break;
-			//
-		case EXTRA_SPACE_IN_HEADER_FIELD: // Don't throw an exception at this
-											// level
-			// 1-GTFS-CSV-7
-			checkPointName = checkPointName(name, RegtoppException.ERROR.EXTRA_SPACE_IN_HEADER_FIELD);
-			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-					new FileError(FileError.CODE.INVALID_FORMAT,
-							"Extra spaces in field names are not allowed, at file "+filenameInfo+" for value "+ex.getValue()+" at line "+ex.getId()+" (rule "+checkPointName+")"));
-			validationReport.addDetail(checkPointName,
-					new Location(filenameInfo, ex.getId(), ex.getColumn()),
-					ex.getValue(),ex.getField(),
-					CheckPoint.RESULT.NOK);
+			// throw new Exception("The first line in file \"" + filenameInfo + "\" must comply with CSV");
+		default:
 			break;
-
-		case MISSING_FILE:
-			// 1-GTFS-Common-1
-			checkPointName = checkPointName(name, RegtoppException.ERROR.MISSING_FILE);
-			// report.addFileInfo(filenameInfo, FILE_STATE.ERROR,
-			// new FileError(FileError.CODE.FILE_NOT_FOUND,
-			// "The file \""+filenameInfo+"\" must be provided (rule "+checkPointName+")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo), filenameInfo, CheckPoint.RESULT.NOK);
-			throw ex;
-			//throw new Exception("The file \"" + filenameInfo + "\" must be provided");
-
-		case MISSING_FILES:
-			// 1-GTFS-Common-1-1
-			checkPointName = checkPointName(name, RegtoppException.ERROR.MISSING_FILES);
-			filenameInfo = "calendar.txt";
-			filenameInfo2 = "calendar_dates.txt";
-			// report.addFileInfo(filenameInfo, FILE_STATE.ERROR,
-			// new FileError(FileError.CODE.FILE_NOT_FOUND,
-			// "One of the files \""+filenameInfo+"\" or \""+filenameInfo2+"\"must be provided (rule "+checkPointName+")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo), filenameInfo + "," + filenameInfo2,
-					CheckPoint.RESULT.NOK);
-			throw ex;
-			//throw new Exception("The file \"" + filenameInfo + "\" must be provided");
-
-		case MISSING_OPTIONAL_FILE:
-			// 1-GTFS-Common-1-2
-			checkPointName = checkPointName(name, RegtoppException.ERROR.MISSING_OPTIONAL_FILE);
-			// report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-			// new FileError(FileError.CODE.FILE_NOT_FOUND,
-			// "The file \""+filenameInfo+"\" is not provided (rule "+checkPointName+")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo), filenameInfo, CheckPoint.RESULT.NOK);
-			break;
-
-		case UNUSED_FILE:
-			// 1-GTFS-Common-1-3
-			checkPointName = checkPointName(name, RegtoppException.ERROR.UNUSED_FILE);
-			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED, new FileError(FileError.CODE.FILE_NOT_FOUND,
-					"The file \"" + filenameInfo + "\" will not be parsed (rule " + checkPointName + ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo), filenameInfo, CheckPoint.RESULT.NOK);
-			break;
-
-		case FILE_WITH_NO_ENTRY: // 1-GTFS-Agency-11, 1-GTFS-Stop-12,
-									// 1-GTFS-Route-11 error
-			// 1-GTFS-Common-2
-			checkPointName = checkPointName(name, RegtoppException.ERROR.FILE_WITH_NO_ENTRY);
-			report.addFileInfo(filenameInfo, FILE_STATE.ERROR, new FileError(FileError.CODE.INVALID_FORMAT,
-					"The file \"" + filenameInfo + "\" must contain at least one entry (rule "
-							+ checkPointName + ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), 0), "",
-					CheckPoint.RESULT.NOK);
-			throw ex;
-			//throw new Exception("The file \"" + filenameInfo + "\" must contain at least one entry");
-
-		case FILES_WITH_NO_ENTRY: // 1-GTFS-Agency-11, 1-GTFS-Stop-12,
-									// 1-GTFS-Route-11 error
-			// 1-GTFS-Common-2-1
-			checkPointName = checkPointName(name, RegtoppException.ERROR.FILES_WITH_NO_ENTRY);
-			fieldName = ex.getField();
-			filenameInfo = "calendar.txt";
-			filenameInfo2 = "calendar_dates.txt";
-			report.addFileInfo(filenameInfo, FILE_STATE.ERROR, new FileError(FileError.CODE.INVALID_FORMAT,
-					"One of the files \"" + filenameInfo + "\" or \"" + filenameInfo2 + "\" must contain at least one entry (rule " + checkPointName + ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), 0), "",
-					CheckPoint.RESULT.NOK);
-			throw ex;
-			//throw new Exception("One of the files \"" + filenameInfo + "\" or \"" + filenameInfo2 + "\" must contain at least one entry");
-
-		case DUPLICATE_FIELD:
-			// 1-GTFS-Common-3
-			checkPointName = checkPointName(name, RegtoppException.ERROR.DUPLICATE_FIELD);
-			fieldName = ex.getField();
-			report.addFileInfo(filenameInfo, FILE_STATE.ERROR, new FileError(FileError.CODE.INVALID_FORMAT,
-					"The field \"" + fieldName + "\" must be unique (rule " + checkPointName + ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), ex.getColumn()), ex.getValue(), fieldName,
-					CheckPoint.RESULT.NOK);
-			throw ex;
-			//throw new Exception("The field \"" + fieldName + "\" must be unique");
-
-		case MISSING_REQUIRED_FIELDS: // 1_GTFS_Agency_2, 1_GTFS_Agency_4,
-										// 1-GTFS-Stop-2, 1-GTFS-Route-2,
-										// 1-GTFS-StopTime-2, 1-GTFS-Trip-2,
-										// 1-GTFS-Frequency-1,
-										// 1-GTFS-Calendar-2,
-										// 1-GTFS-CalendarDate-2,
-										// 1-GTFS-Transfer-1 error
-			// 1-GTFS-Common-3-1
-			checkPointName = checkPointName(name, RegtoppException.ERROR.MISSING_REQUIRED_FIELDS);
-			fieldName = ex.getField();
-			report.addFileInfo(filenameInfo, FILE_STATE.ERROR, new FileError(FileError.CODE.INVALID_FORMAT,
-					"The column \"" + fieldName + "\" of file \"" + filenameInfo + "\" must be provided (rule "
-							+ checkPointName + ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), ex.getColumn()), fieldName,
-					CheckPoint.RESULT.NOK);
-			throw ex;
-			//throw new Exception("The column \"" + fieldName + "\" of file \"" + filenameInfo + "\" must be provided");
-
-		case MISSING_REQUIRED_FIELDS2:
-			// 1-GTFS-Common-3-2
-			checkPointName = checkPointName(name, RegtoppException.ERROR.MISSING_REQUIRED_FIELDS2);
-			fieldName = ex.getField();
-			fieldName2 = fieldName.replaceFirst("long", "short");
-			report.addFileInfo(filenameInfo, FILE_STATE.ERROR, new FileError(FileError.CODE.INVALID_FORMAT,
-					"One of the fields \"" + fieldName + "\" or \"" + fieldName2 + "\" must be provided (rule "
-							+ checkPointName + ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), ex.getColumn()), fieldName + ","
-					+ fieldName2, CheckPoint.RESULT.NOK);
-			break;
-
-		case MISSING_OPTIONAL_FIELD:
-			// 1-GTFS-Common-3-3
-			checkPointName = checkPointName(name, RegtoppException.ERROR.MISSING_OPTIONAL_FIELD);
-			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED, new FileError(FileError.CODE.INVALID_FORMAT,
-					"Optional field is not present (rule " + checkPointName + ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), ex.getColumn()), ex.getField(),
-					CheckPoint.RESULT.NOK);
-			break;
-
-		case EXTRA_HEADER_FIELD: // 1_GTFS_Agency_10, 1_GTFS_Stop_11,
-									// 1-GTFS-Route-10, 1-GTFS-StopTime-12,
-									// 1-GTFS-Trip-8, 1-GTFS-Frequency-7,
-									// 1-GTFS-Calendar-14,
-									// 1-GTFS-CalendarDate-7, 1-GTFS-Transfer-6
-									// info
-			// 1-GTFS-Common-3-4
-			checkPointName = checkPointName(name, RegtoppException.ERROR.EXTRA_HEADER_FIELD);
-			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED, new FileError(FileError.CODE.INVALID_FORMAT,
-					"Extra fields are provided (rule " + checkPointName + ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), ex.getColumn()), ex.getField(),
-					CheckPoint.RESULT.NOK);
-			break;
-
-		case MISSING_REQUIRED_VALUES:
-			// 1-GTFS-Common-4
-			checkPointName = checkPointName(name, RegtoppException.ERROR.MISSING_REQUIRED_VALUES);
-			fieldName = ex.getField();
-			report.addFileInfo(filenameInfo, FILE_STATE.ERROR, new FileError(FileError.CODE.INVALID_FORMAT,
-					"The value \"" + fieldName + "\" must be provided (rule " + checkPointName + ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), ex.getColumn()), fieldName,
-					CheckPoint.RESULT.NOK);
-			break;
-
-		case MISSING_FIELD:
-			// 1-GTFS-Common-4
-			checkPointName = checkPointName(name, RegtoppException.ERROR.MISSING_FIELD);
-			fieldName = ex.getField();
-			report.addFileInfo(filenameInfo, FILE_STATE.ERROR, new FileError(FileError.CODE.INVALID_FORMAT,
-					"The file \"" + filenameInfo + "\" must provide a non empty \"" + name + "_id\" for each " + name
-							+ " (rule " + checkPointName + ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), ex.getColumn()), fieldName,
-					CheckPoint.RESULT.NOK);
-			throw ex;
-			//throw new Exception("The file \"" + filenameInfo + "\" must provide a non empty \"" + fieldName + "\" for each " + name);
-
-		case MISSING_REQUIRED_VALUES2:
-			// 1-GTFS-Common-4-1
-			checkPointName = checkPointName(name, RegtoppException.ERROR.MISSING_REQUIRED_VALUES2);
-			fieldName = ex.getField();
-			fieldName2 = fieldName.replaceFirst("long", "short");
-			report.addFileInfo(filenameInfo, FILE_STATE.ERROR,
-					new FileError(FileError.CODE.INVALID_FORMAT,
-							"One of the values \""+fieldName+"\" or \""+fieldName2+"\" must be provided (rule "+checkPointName+")"));
-			validationReport.addDetail(checkPointName,
-					new Location(filenameInfo,  ex.getId(),ex.getColumn()),
-					fieldName+","+fieldName2,
-					CheckPoint.RESULT.NOK);
-			break;
-		
-		case ALL_DAYS_ARE_INVALID:
-			// 1-GTFS-Calendar-1
-			checkPointName = checkPointName(name, RegtoppException.ERROR.ALL_DAYS_ARE_INVALID);
-			fieldName = ex.getField();
-			report.addFileInfo(filenameInfo, FILE_STATE.ERROR,
-					new FileError(FileError.CODE.INVALID_FORMAT,
-							"At least one day must be valid (rule "+checkPointName+")"));
-			validationReport.addDetail(checkPointName,
-					new Location(filenameInfo,  ex.getId(),ex.getColumn()),
-					"At least one day must be valid",
-					CheckPoint.RESULT.NOK);
-			break;
-
-		case DUPLICATE_DEFAULT_KEY_FIELD:
-			// 1-GTFS-Common-4-3
-			checkPointName = checkPointName(name, RegtoppException.ERROR.DUPLICATE_DEFAULT_KEY_FIELD);
-			report.addFileInfo(filenameInfo, FILE_STATE.ERROR, new FileError(FileError.CODE.INVALID_FORMAT,
-					"At most only one Agency can have default value \"agency_id\" (rule " + checkPointName + ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), ex.getColumn()), ex.getField(),
-					CheckPoint.RESULT.NOK);
-			throw ex;
-			//throw new Exception("At most only one Agency can have default value \"agency_id\"");
-
-		case DEFAULT_VALUE:
-			// 1-GTFS-Common-4-4
-			checkPointName = checkPointName(name, RegtoppException.ERROR.DEFAULT_VALUE);
-			fieldName = ex.getField();
-			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED, new FileError(FileError.CODE.INVALID_FORMAT,
-					"No default ids for agencies (rule " + checkPointName + ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), ex.getColumn()), fieldName,
-					CheckPoint.RESULT.NOK);
-			break;
-
-		case MISSING_ARRIVAL_TIME:
-			// 1-GTFS-Common-4-6
-			checkPointName = checkPointName(name, RegtoppException.ERROR.MISSING_ARRIVAL_TIME);
-			fieldName = ex.getField();
-			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED, new FileError(FileError.CODE.INVALID_FORMAT,
-					"Missing \"" + fieldName + "\" (rule " + checkPointName + ")"));
-			validationReport.addDetail(checkPointName,"1", new Location(filenameInfo, ex.getId(), ex.getColumn()), fieldName,
-					CheckPoint.RESULT.NOK);
-			break;
-
-		case MISSING_DEPARTURE_TIME:
-			// 1-GTFS-Common-4-6
-			checkPointName = checkPointName(name, RegtoppException.ERROR.MISSING_DEPARTURE_TIME);
-			fieldName = ex.getField();
-			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED, new FileError(FileError.CODE.INVALID_FORMAT,
-					"Missing \"" + fieldName + "\" (rule " + checkPointName + ")"));
-			validationReport.addDetail(checkPointName,"2", new Location(filenameInfo, ex.getId(), ex.getColumn()), fieldName,
-					CheckPoint.RESULT.NOK);
-			break;
-		case MISSING_TRANSFER_TIME:
-			// 1-GTFS-Common-4-6
-			checkPointName = checkPointName(name, RegtoppException.ERROR.MISSING_TRANSFER_TIME);
-			fieldName = ex.getField();
-			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED, new FileError(FileError.CODE.INVALID_FORMAT,
-					"Missing \"" + fieldName + "\" (rule " + checkPointName + ")"));
-			validationReport.addDetail(checkPointName,"3", new Location(filenameInfo, ex.getId(), ex.getColumn()), fieldName,
-					CheckPoint.RESULT.NOK);
-			break;
-			
-		case START_DATE_AFTER_END_DATE:
-			// 1-GTFS-Calendar-2
-			checkPointName = checkPointName(name, RegtoppException.ERROR.START_DATE_AFTER_END_DATE);
-			fieldName = ex.getField();
-			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED, new FileError(FileError.CODE.INVALID_FORMAT,
-					"StartDate cannot be after EndDate (rule " + checkPointName + ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), ex.getColumn()), fieldName,
-					CheckPoint.RESULT.NOK);
-			break;
-
-		case INVALID_FORMAT:
-			// 1-GTFS-Common-5
-			checkPointName = checkPointName(name, RegtoppException.ERROR.INVALID_FORMAT);
-			fieldName = ex.getField();
-			value = ex.getValue();
-			report.addFileInfo(filenameInfo, FILE_STATE.ERROR, new FileError(FileError.CODE.INVALID_FORMAT,
-					"The value \"" + value + "\" is invalid for field " + fieldName + " (rule " + checkPointName + ")"));
-			validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getId(), ex.getColumn()), value, fieldName,
-					CheckPoint.RESULT.NOK);
-			break;
-			
-	case DUPLICATE_STOP_SEQUENCE:
-		// 2-GTFS-Common-4
-		checkPointName = checkPointName(name, RegtoppException.ERROR.DUPLICATE_STOP_SEQUENCE);
-		fieldName = ex.getField();
-		report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-				new FileError(FileError.CODE.INVALID_FORMAT,
-						"Duplicate ("+fieldName+") values (rule "+checkPointName+")"));
-		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo, ex.getId(), ex.getColumn(), ex.getField()),
-				ex.getValue(),ex.getField(),
-				CheckPoint.RESULT.NOK);
-		throw ex;
-		//throw new Exception("Duplicate \""+fieldName+"\" for the same \"tripid\"");	
-		
-	case UNREFERENCED_ID:
-		// 2-GTFS-Common-1
-		checkPointName = checkPointName(name, RegtoppException.ERROR.UNREFERENCED_ID);
-		fieldName = ex.getField();
-		report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-				new FileError(FileError.CODE.INVALID_FORMAT,
-						"Unreferenced "+fieldName+" (rule "+checkPointName+")"));
-		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo, fieldName, ex.getId(), ex.getColumn(), ex.getCode()),
-				ex.getValue(), ex.getField(),
-				CheckPoint.RESULT.NOK);
-		break;
-
-	case UNUSED_ID:
-		// 2-GTFS-Common-2
-		checkPointName = checkPointName(name, RegtoppException.ERROR.UNUSED_ID);
-		fieldName = ex.getField();
-		report.addFileInfo(ex.getPath(), FILE_STATE.IGNORED,
-				new FileError(FileError.CODE.INVALID_FORMAT,
-						"Unused \""+fieldName+"\" ("+ex.getValue()+") in file \""+ex.getPath()+"\" at line \""+ex.getId()+"\" (rule "+checkPointName+")"));
-		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo,ex.getId(), ex.getColumn()),
-						ex.getValue(),fieldName,
-						CheckPoint.RESULT.NOK);
-		break;
-
-	case DUPLICATE_DOUBLE_KEY:
-		// 2-GTFS-Common-4
-		checkPointName = checkPointName(name, RegtoppException.ERROR.DUPLICATE_DOUBLE_KEY);
-		fieldName = ex.getField();
-		fieldName2 = "date";
-		report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-				new FileError(FileError.CODE.INVALID_FORMAT,
-						"Duplicate ("+fieldName+") values (rule "+checkPointName+")"));
-		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo, ex.getId(), ex.getColumn(), ex.getField()),
-				ex.getValue(),ex.getField(),
-				CheckPoint.RESULT.NOK);
-		throw ex;
-// 		break;
-	
-	case SHARED_VALUE:
-		// 2-GTFS-Common-5
-		checkPointName = checkPointName(name, RegtoppException.ERROR.SHARED_VALUE);
-		report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-				new FileError(FileError.CODE.INVALID_FORMAT,
-						"The two values "+ex.getField()+" cannot be the same (rule "+checkPointName+")"));
-		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo, ex.getId(), ex.getColumn(), ex.getCode()),
-				ex.getValue(), ex.getField(),
-				CheckPoint.RESULT.NOK);
-		break;
-	
-	case BAD_REFERENCED_ID:
-		// 2-GTFS-Stop-1
-		checkPointName = checkPointName(name, RegtoppException.ERROR.BAD_REFERENCED_ID);
-		fieldName = ex.getField();
-		report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-				new FileError(FileError.CODE.INVALID_FORMAT,
-						"The parent stop must be a station (rule "+checkPointName+")"));
-		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo, ex.getId(), ex.getColumn(),ex.getCode()),
-				ex.getValue(),
-				CheckPoint.RESULT.NOK);
-		break;
-		
-	case NO_LOCATION_TYPE:
-		// 2-GTFS-Stop-2
-		checkPointName = checkPointName(name, RegtoppException.ERROR.NO_LOCATION_TYPE);
-		fieldName = ex.getField();
-		report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-				new FileError(FileError.CODE.INVALID_FORMAT,
-						"Column location_type cannot be empty for all stops (rule "+checkPointName+")"));
-		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo, "Column location_type cannot be empty for all stops", ex.getId(), ex.getColumn(), ex.getField()),
-				"Column location_type cannot be empty for all stops",
-				CheckPoint.RESULT.NOK);
-		break;
-	
-	case BAD_VALUE:
-		// 2-GTFS-Stop-3
-		checkPointName = checkPointName(name, RegtoppException.ERROR.BAD_VALUE);
-		fieldName = ex.getField();
-		report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-				new FileError(FileError.CODE.INVALID_FORMAT,
-						"stop_name and stop_desc must be different (rule "+checkPointName+")"));
-		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo, ex.getId(), ex.getColumn(),ex.getCode()),
-				ex.getValue(),
-				CheckPoint.RESULT.NOK);
-		throw ex;
-//		break;
-		
-	case NO_PARENT_FOR_STATION:
-		// 2-GTFS-Stop-4
-		checkPointName = checkPointName(name, RegtoppException.ERROR.NO_PARENT_FOR_STATION);
-		fieldName = ex.getField();
-		report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-				new FileError(FileError.CODE.INVALID_FORMAT,
-						"Stations can't contain other stations (rule "+checkPointName+")"));
-		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo, ex.getId(), ex.getColumn(), ex.getCode()),
-				ex.getValue(),
-				CheckPoint.RESULT.NOK);
-		break;
-
-	case DUPLICATE_ROUTE_NAMES:
-		// 2-GTFS-Route-5
-		checkPointName = checkPointName(name, RegtoppException.ERROR.DUPLICATE_ROUTE_NAMES);
-		fieldName = ex.getField();
-		report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-				new FileError(FileError.CODE.INVALID_FORMAT,
-						"The couple short_name, long_name must be unique (rule "+checkPointName+")"));
-		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo, ex.getId(), ex.getColumn(), ex.getCode()),
-				ex.getValue(),
-				CheckPoint.RESULT.NOK);
-		break;
-
-	case CONTAINS_ROUTE_NAMES:
-		// 2-GTFS-Route-8
-		checkPointName = checkPointName(name, RegtoppException.ERROR.CONTAINS_ROUTE_NAMES);
-		fieldName = ex.getField();
-		report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-				new FileError(FileError.CODE.INVALID_FORMAT,
-						"The long_name cannot contains the short_name (rule "+checkPointName+")"));
-		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo, ex.getId(), ex.getColumn(),ex.getCode()),
-				ex.getValue(),ex.getRefValue(),
-				CheckPoint.RESULT.NOK);
-		break;
-	
-	case BAD_COLOR:
-		// 2-GTFS-Route-9
-		checkPointName = checkPointName(name, RegtoppException.ERROR.BAD_COLOR);
-		fieldName = ex.getField();
-		report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-				new FileError(FileError.CODE.INVALID_FORMAT,
-						"Poor visibility between text and background colors (rule "+checkPointName+")"));
-		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo, ex.getId(), ex.getColumn(), ex.getCode()),
-				"",
-				CheckPoint.RESULT.NOK);
-		break;
-		
-	case INVERSE_DUPLICATE_ROUTE_NAMES:
-		// 2-GTFS-Route-11
-		checkPointName = checkPointName(name, RegtoppException.ERROR.INVERSE_DUPLICATE_ROUTE_NAMES);
-		fieldName = ex.getField();
-		report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-				new FileError(FileError.CODE.INVALID_FORMAT,
-						"The set short_name, long_name must be unique (rule "+checkPointName+")"));
-		validationReport.addDetail(checkPointName,
-				new Location(filenameInfo, ex.getId(), ex.getColumn(), ex.getCode()),
-				ex.getValue(),
-				CheckPoint.RESULT.NOK);
-		break;
-				
-
-
-	case MISSING_FOREIGN_KEY: // THIS CAN NEVER OCCUR !
-	case SYSTEM: // THIS CAN NEVER OCCUR !
-	default:
-		break;
 		}
 	}
 
@@ -586,88 +87,8 @@ public class ValidationReporter implements Constant {
 		name = capitalize(name);
 		switch (errorName) {
 		case SYSTEM:
-			return GTFS_1_GTFS_CSV_1;
-		case INVALID_HEADER_FILE_FORMAT:
-			return GTFS_1_GTFS_CSV_2;
-		case EMPTY_HEADER_FIELD:
-			return GTFS_1_GTFS_CSV_3;
-		case DUPLICATE_HEADER_FIELD:
-			return GTFS_1_GTFS_CSV_4;
-		case INVALID_FILE_FORMAT:
-			return GTFS_1_GTFS_CSV_5;
-		case HTML_TAG_IN_HEADER_FIELD:
-			return GTFS_1_GTFS_CSV_6;
-		case EXTRA_SPACE_IN_FIELD:
-		case EXTRA_SPACE_IN_HEADER_FIELD:
-			return GTFS_1_GTFS_CSV_7;
-		case MISSING_FILE:
-			return GTFS_1_GTFS_Common_1;
-		case MISSING_FILES:
-			return GTFS_1_GTFS_Common_2;
-		case MISSING_OPTIONAL_FILE:
-			return GTFS_1_GTFS_Common_3;
-		case UNUSED_FILE:
-			return GTFS_1_GTFS_Common_4;
-		case FILE_WITH_NO_ENTRY:
-			return GTFS_1_GTFS_Common_5;
-		case FILES_WITH_NO_ENTRY:
-			return GTFS_1_GTFS_Common_6;
-		case DUPLICATE_FIELD:
-			return GTFS_1_GTFS_Common_8;
-		case MISSING_REQUIRED_FIELDS:
-			return GTFS_1_GTFS_Common_9;
-		case MISSING_REQUIRED_FIELDS2:
-			return GTFS_1_GTFS_Route_1;
-		case MISSING_OPTIONAL_FIELD:
-			return GTFS_1_GTFS_Common_10;
-		case EXTRA_HEADER_FIELD:
-			return GTFS_1_GTFS_Common_11;
-		case MISSING_REQUIRED_VALUES:
-		case MISSING_FIELD:
-			return GTFS_1_GTFS_Common_12;
-		case MISSING_REQUIRED_VALUES2:
-			return GTFS_1_GTFS_Route_2;
-		case ALL_DAYS_ARE_INVALID:
-			return GTFS_1_GTFS_Calendar_1;
-		case DUPLICATE_DEFAULT_KEY_FIELD:
-			return GTFS_1_GTFS_Common_13;
-		case DEFAULT_VALUE:
-			return GTFS_1_GTFS_Common_14;
-		case MISSING_ARRIVAL_TIME:
-		case MISSING_DEPARTURE_TIME:
-		case MISSING_TRANSFER_TIME:
-			return GTFS_1_GTFS_Common_15;
-		case START_DATE_AFTER_END_DATE:
-			return GTFS_1_GTFS_Calendar_2;
-		case INVALID_FORMAT:
-			return GTFS_1_GTFS_Common_16;
-		case UNREFERENCED_ID:
-			return GTFS_2_GTFS_Common_1;
-		case UNUSED_ID:
-			return GTFS_2_GTFS_Common_2;
-		case DUPLICATE_STOP_SEQUENCE:
-		case DUPLICATE_DOUBLE_KEY:
-			return GTFS_2_GTFS_Common_3;
-		case SHARED_VALUE:
-			return GTFS_2_GTFS_Common_4;
-			
-		case BAD_REFERENCED_ID:
-			return GTFS_2_GTFS_Stop_1;
-		case NO_LOCATION_TYPE:
-			return GTFS_2_GTFS_Stop_2;
-		case BAD_VALUE:
-			return GTFS_2_GTFS_Stop_3;
-		case NO_PARENT_FOR_STATION:
-			return GTFS_2_GTFS_Stop_4;
-		case DUPLICATE_ROUTE_NAMES:
-			return GTFS_2_GTFS_Route_1;
-		case CONTAINS_ROUTE_NAMES:
-			return GTFS_2_GTFS_Route_2;
-		case BAD_COLOR:
-			return GTFS_2_GTFS_Route_3;
-		case INVERSE_DUPLICATE_ROUTE_NAMES:
-			return GTFS_2_GTFS_Route_4;
-						
+			return REGTOPP_SYSTEM;
+
 		default:
 			return null;
 		}
@@ -714,16 +135,14 @@ public class ValidationReporter implements Constant {
 			validationReport.findCheckPointByName(checkpointName).setState(CheckPoint.RESULT.OK);
 	}
 
-	public void validate(Context context, String filenameInfo,
-			Set<mobi.chouette.exchange.regtopp.model.importer.RegtoppException.ERROR> errorCodes) {
+	public void validate(Context context, String filenameInfo, Set<mobi.chouette.exchange.regtopp.model.importer.RegtoppException.ERROR> errorCodes) {
 		if (errorCodes != null)
 			for (mobi.chouette.exchange.regtopp.model.importer.RegtoppException.ERROR errorCode : errorCodes) {
 				validate(context, filenameInfo, errorCode);
 			}
 	}
 
-	public void validate(Context context, String filenameInfo,
-			mobi.chouette.exchange.regtopp.model.importer.RegtoppException.ERROR errorCode) {
+	public void validate(Context context, String filenameInfo, mobi.chouette.exchange.regtopp.model.importer.RegtoppException.ERROR errorCode) {
 		String checkPointName = checkPointName(name(filenameInfo), errorCode);
 		validate(context, filenameInfo, checkPointName);
 	}
@@ -732,29 +151,11 @@ public class ValidationReporter implements Constant {
 		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
 
 		CheckPoint checkPoint = validationReport.findCheckPointByName(checkPointName);
-		
+
 		if (checkPoint != null)
 			if (checkPoint.getState() == CheckPoint.RESULT.UNCHECK)
 				checkPoint.setState(CheckPoint.RESULT.OK);
-		
+
 	}
 
-	public void validateOkCSV(Context context, String filenameInfo) {
-		validate(context, filenameInfo, RegtoppException.ERROR.INVALID_HEADER_FILE_FORMAT);
-		validate(context, filenameInfo, RegtoppException.ERROR.EMPTY_HEADER_FIELD);
-		validate(context, filenameInfo, RegtoppException.ERROR.DUPLICATE_HEADER_FIELD);
-		validate(context, filenameInfo, RegtoppException.ERROR.DUPLICATE_DEFAULT_KEY_FIELD);
-		validate(context, filenameInfo, RegtoppException.ERROR.MISSING_FIELD);
-		validate(context, filenameInfo, RegtoppException.ERROR.DUPLICATE_FIELD);
-		validate(context, filenameInfo, RegtoppException.ERROR.INVALID_FILE_FORMAT);
-		validate(context, filenameInfo, RegtoppException.ERROR.MISSING_FILE);
-		validate(context, filenameInfo, RegtoppException.ERROR.SYSTEM);
-	}
-
-	public void validateOKGeneralSyntax(Context context, String filenameInfo) {
-		validate(context, filenameInfo, RegtoppException.ERROR.EXTRA_SPACE_IN_HEADER_FIELD);
-		validate(context, filenameInfo, RegtoppException.ERROR.HTML_TAG_IN_HEADER_FIELD);
-		validate(context, filenameInfo, RegtoppException.ERROR.EXTRA_HEADER_FIELD);
-		validate(context, filenameInfo, RegtoppException.ERROR.MISSING_REQUIRED_FIELDS);
-	}
 }

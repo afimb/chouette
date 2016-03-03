@@ -11,6 +11,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import mobi.chouette.exchange.regtopp.model.enums.AnnouncementType;
+import mobi.chouette.exchange.regtopp.model.enums.DirectionType;
+import mobi.chouette.exchange.regtopp.model.enums.ParcelServiceType;
+import mobi.chouette.exchange.regtopp.model.enums.TrafficType;
+import mobi.chouette.exchange.regtopp.model.enums.TransportType;
+
 
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
@@ -45,8 +51,8 @@ public class RegtoppTripIndexTIX extends RegtoppObject implements Serializable {
 
 	@Getter
 	@Setter
-	@Field(length = 3)
-	private String typeOfService;
+	@Field(length = 3, regex = "[0-9]{3}", format="toString")
+	private TransportType typeOfService;
 
 	@Getter
 	@Setter
@@ -56,7 +62,7 @@ public class RegtoppTripIndexTIX extends RegtoppObject implements Serializable {
 	@Getter
 	@Setter
 	@Field(length = 3)
-	private Integer companyCode;
+	private Integer operatorCode;
 
 	@Getter
 	@Setter
@@ -75,13 +81,13 @@ public class RegtoppTripIndexTIX extends RegtoppObject implements Serializable {
 
 	@Getter
 	@Setter
-	@Field(length = 8)
+	@Field(length = 8,keepPadding = false)
 	private String lineNumberVisible;
 
 	@Getter
 	@Setter
-	@Field(length = 1)
-	private Integer direction;
+	@Field(length = 1, regex = "[12]{1}", format="toString")
+	private DirectionType direction;
 
 	@Getter
 	@Setter
@@ -95,8 +101,8 @@ public class RegtoppTripIndexTIX extends RegtoppObject implements Serializable {
 
 	@Getter
 	@Setter
-	@Field(length = 1)
-	private Integer parcelService;
+	@Field(length = 1, regex = "[01]{1}", format="toString")
+	private ParcelServiceType parcelService;
 
 	@Getter
 	@Setter
@@ -105,13 +111,13 @@ public class RegtoppTripIndexTIX extends RegtoppObject implements Serializable {
 
 	@Getter
 	@Setter
-	@Field(length = 1)
-	private Integer notificationType;
+	@Field(length = 1, regex = "[01]{1}", format="toString")
+	private AnnouncementType notificationType;
 
 	@Getter
 	@Setter
-	@Field(length = 1)
-	private Integer trafficType;
+	@Field(length = 1, regex = "[01]{1}", format="toString")
+	private TrafficType trafficType;
 
 	@Getter
 	@Setter
@@ -122,34 +128,9 @@ public class RegtoppTripIndexTIX extends RegtoppObject implements Serializable {
 	@Setter
 	@Field(length = 7)
 	private String weekdaysOfService;
-
 	
 	@Override
 	public String getIndexingKey() {
 		return adminCode+counter+lineId+tripId;
-	}
-	
-	// @Override
-	// public String toString()
-	// {
-	// return id + ":" + TripExporter.CONVERTER.to(new Context(),this);
-	// }
-
-	@AllArgsConstructor
-	public enum DirectionType implements Serializable {
-		Outbound, Inbound;
-
-	}
-
-	@AllArgsConstructor
-	public enum BikesAllowedType implements Serializable {
-		NoInformation, Allowed, NoAllowed;
-
-	}
-
-	@AllArgsConstructor
-	public enum WheelchairAccessibleType implements Serializable {
-		NoInformation, Allowed, NoAllowed;
-
 	}
 }

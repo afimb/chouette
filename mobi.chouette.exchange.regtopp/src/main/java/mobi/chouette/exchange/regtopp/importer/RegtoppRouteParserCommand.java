@@ -32,7 +32,7 @@ public class RegtoppRouteParserCommand implements Command, Constant {
 
 	@Getter
 	@Setter
-	private String gtfsRouteId;
+	private String lineId;
 
 	@Override
 	public boolean execute(Context context) throws Exception {
@@ -100,7 +100,7 @@ public class RegtoppRouteParserCommand implements Command, Constant {
 //
 //			// Line
 //			GtfsRouteParser gtfsRouteParser = (GtfsRouteParser) ParserFactory.create(GtfsRouteParser.class.getName());
-//			gtfsRouteParser.setGtfsRouteId(gtfsRouteId);
+//			gtfsRouteParser.setGtfsRouteId(lineId);
 //			gtfsRouteParser.parse(context);
 
 			addStats(report, referential);

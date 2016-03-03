@@ -50,7 +50,7 @@ public class RegtoppTableVersionTAB extends RegtoppObject implements Serializabl
 
 	@Getter
 	@Setter
-	@Field(length = 80)
+	@Field(length = 82)
 	private String text;
 
 	@Override

@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import mobi.chouette.exchange.regtopp.model.enums.TransportType;
 
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
@@ -45,8 +46,8 @@ public class RegtoppInterchangeSAM extends RegtoppObject implements Serializable
 
 	@Getter
 	@Setter
-	@Field(length = 3)
-	private String typeOfTraffic1;
+	@Field(length = 3, regex = "[0-9]{3}", format="toString")
+	private TransportType typeOfService1;
 
 	@Getter
 	@Setter
@@ -70,8 +71,8 @@ public class RegtoppInterchangeSAM extends RegtoppObject implements Serializable
 
 	@Getter
 	@Setter
-	@Field(length = 3)
-	private String typeOfTraffic2;
+	@Field(length = 3, regex = "[0-9]{3}", format="toString")
+	private TransportType typeOfService2;
 
 	@Getter
 	@Setter
@@ -85,7 +86,7 @@ public class RegtoppInterchangeSAM extends RegtoppObject implements Serializable
 
 	@Getter
 	@Setter
-	@Field(length = 3)
+	@Field(length = 4)
 	private String notInUse;
 
 	@Getter
