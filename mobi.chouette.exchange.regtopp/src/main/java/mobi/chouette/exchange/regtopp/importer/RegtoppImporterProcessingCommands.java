@@ -75,15 +75,14 @@ public class RegtoppImporterProcessingCommands implements ProcessingCommands, Co
 
 		try {
 			Index<RegtoppTripIndexTIX> index = importer.getTripIndex();
-			for (RegtoppTripIndexTIX gtfsRoute : index) {
+			for( RegtoppTripIndexTIX line : index) {
 
 				Chain chain = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
 
 				RegtoppRouteParserCommand parser = (RegtoppRouteParserCommand) CommandFactory.create(initialContext,
 						RegtoppRouteParserCommand.class.getName());
 				
-				// TODO Add routeId to parser
-				//parser.setGtfsRouteId(gtfsRoute.getRouteId());
+				parser.setLineId(line.getLineId());
 				chain.add(parser);
 				if (withDao && !parameters.isNoSave()) {
 

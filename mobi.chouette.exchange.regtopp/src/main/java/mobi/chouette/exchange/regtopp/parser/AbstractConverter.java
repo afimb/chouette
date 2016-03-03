@@ -47,36 +47,5 @@ public abstract class AbstractConverter {
 		return tz.getID();
 	}
 
-	private static void populateFileError(FileInfo file, RegtoppException ex) {
-		FileError.CODE code = FileError.CODE.INTERNAL_ERROR;
-		switch (ex.getError()) {
-		case DUPLICATE_FIELD:
-		case INVALID_FORMAT:
-		case INVALID_FILE_FORMAT:
-		case MISSING_FIELD:
-		case MISSING_FOREIGN_KEY:
-			code = FileError.CODE.INVALID_FORMAT;
-			break;
-		case SYSTEM:
-			code = FileError.CODE.INTERNAL_ERROR;
-			break;
-		case MISSING_FILE:
-			code = FileError.CODE.FILE_NOT_FOUND;
-			break;
-		}
-		String message = ex.getMessage() != null? ex.getMessage() : ex.toString();
-		file.addError(new FileError(code, message));
-	}
-
-	public static void populateFileError(FileInfo file, Exception ex) {
-
-		if (ex instanceof RegtoppException) {
-			populateFileError(file, (RegtoppException) ex);
-		} else {
-			String message = ex.getMessage() != null? ex.getMessage() : ex.getClass().getSimpleName();
-			file.addError(new FileError(FileError.CODE.INTERNAL_ERROR, message));
-
-		}
-	}
-
+	
 }

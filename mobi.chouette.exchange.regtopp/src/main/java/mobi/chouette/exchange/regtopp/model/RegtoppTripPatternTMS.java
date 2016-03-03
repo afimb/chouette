@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import mobi.chouette.exchange.regtopp.model.enums.DirectionType;
 
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
@@ -40,8 +41,8 @@ public class RegtoppTripPatternTMS extends RegtoppObject implements Serializable
 
 	@Getter
 	@Setter
-	@Field(length = 1)
-	private String direction;
+	@Field(length = 1, regex = "[12]{1}", format="toString")
+	private DirectionType direction;
 
 	@Getter
 	@Setter
@@ -104,21 +105,4 @@ public class RegtoppTripPatternTMS extends RegtoppObject implements Serializable
 	}
 
 
-	@AllArgsConstructor
-	public enum DirectionType implements Serializable {
-		Outbound, Inbound;
-
-	}
-
-	@AllArgsConstructor
-	public enum BikesAllowedType implements Serializable {
-		NoInformation, Allowed, NoAllowed;
-
-	}
-
-	@AllArgsConstructor
-	public enum WheelchairAccessibleType implements Serializable {
-		NoInformation, Allowed, NoAllowed;
-
-	}
 }

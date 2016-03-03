@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.regtopp.importer;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +41,7 @@ import mobi.chouette.exchange.validation.report.ValidationReport;
 
 @Log4j
 public class FileContentParserTest {
+	
 	@Test
 	public void testAtBMappings() throws Exception {
 		File regtoppArchive = new File("src/test/data/atb-20160118-20160619.zip");
@@ -141,5 +143,37 @@ public class FileContentParserTest {
 			Assert.assertEquals(FILE_STATE.OK,fileInfo.getStatus(),"Error parsing file");
 		}
 		
+	}
+	
+	@Test public void verifyMappingCorrectness() {
+		calculateTotalFieldLenght(RegtoppTripIndexTIX.class, 62);
+		calculateTotalFieldLenght(RegtoppTripPatternTMS.class,47 );
+		calculateTotalFieldLenght(RegtoppStopHPL.class, 87);
+		calculateTotalFieldLenght(RegtoppDayCodeHeaderDKO.class, 7);
+		calculateTotalFieldLenght(RegtoppDayCodeDKO.class, 400);
+		calculateTotalFieldLenght(RegtoppDestinationDST.class,40 );
+		calculateTotalFieldLenght(RegtoppRemarkMRK.class, 87);
+		calculateTotalFieldLenght(RegtoppPathwayGAV.class, 42);
+		calculateTotalFieldLenght(RegtoppInterchangeSAM.class, 51);
+		calculateTotalFieldLenght(RegtoppZoneSON.class,45 );
+		calculateTotalFieldLenght(RegtoppLineLIN.class,39 );
+		calculateTotalFieldLenght(RegtoppVehicleJourneyVLP.class, 29);
+		calculateTotalFieldLenght(RegtoppTableVersionTAB.class,108 );
+		calculateTotalFieldLenght(RegtoppPeriodPER.class,100 );
+		calculateTotalFieldLenght(RegtoppRoutePointRUT.class,30 );
+		
+		
+	}
+	
+	private void calculateTotalFieldLenght(Class<?> clazz, int expectedLength) {
+		int length = 0;
+		for (Field f: clazz.getDeclaredFields()) {
+			org.beanio.annotation.Field column = f.getAnnotation( org.beanio.annotation.Field.class);
+			if(column != null) {
+				System.out.println("Found field "+f.getName()+" with length "+column.length());
+				length += column.length();
+			}
+		}	
+		Assert.assertEquals(length,expectedLength,"Record mapping incorrect, length mismatch for class "+clazz.getSimpleName());
 	}
 }
