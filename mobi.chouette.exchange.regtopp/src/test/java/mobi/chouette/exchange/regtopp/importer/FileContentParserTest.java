@@ -1,10 +1,12 @@
 package mobi.chouette.exchange.regtopp.importer;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -45,6 +47,18 @@ public class FileContentParserTest {
 	@Test
 	public void testAtBMappings() throws Exception {
 		File regtoppArchive = new File("src/test/data/atb-20160118-20160619.zip");
+		parseFile(regtoppArchive);
+		
+	}
+
+	@Test
+	public void testKolumbusMappings() throws Exception {
+		File regtoppArchive = new File("src/test/data/kolumbus_regtopp_20160329-20160624.zip");
+		parseFile(regtoppArchive);
+		
+	}
+
+	private void parseFile(File regtoppArchive) throws IOException, ArchiveException, Exception {
 		File dest = new File("target/"+System.currentTimeMillis());
 		dest.mkdirs();
 		dest.deleteOnExit();
@@ -142,7 +156,6 @@ public class FileContentParserTest {
 		for(FileInfo fileInfo : report.getFiles()) {
 			Assert.assertEquals(FILE_STATE.OK,fileInfo.getStatus(),"Error parsing file");
 		}
-		
 	}
 	
 	@Test public void verifyMappingCorrectness() {
