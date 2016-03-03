@@ -8,7 +8,7 @@ import java.util.Map;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.regtopp.model.RegtoppObject;
-import mobi.chouette.exchange.regtopp.model.RegtoppStop;
+import mobi.chouette.exchange.regtopp.model.RegtoppStopHPL;
 import mobi.chouette.exchange.regtopp.model.importer.RegtoppException.ERROR;
 import mobi.chouette.exchange.regtopp.model.importer.index.Index;
 import mobi.chouette.exchange.regtopp.model.importer.index.IndexFactory;
@@ -146,7 +146,7 @@ public class RegtoppImporter {
 
 	
 	@SuppressWarnings("unchecked")
-	public Index<RegtoppStop> getStopById() throws Exception {
+	public Index<RegtoppStopHPL> getStopById() throws Exception {
 		return getIndex(INDEX.STOP_BY_ID.name(),
 				StopById.class);
 	}

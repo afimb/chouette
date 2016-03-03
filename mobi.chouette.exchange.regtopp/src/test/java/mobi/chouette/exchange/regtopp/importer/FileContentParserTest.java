@@ -12,17 +12,21 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.FileUtil;
-import mobi.chouette.exchange.regtopp.model.RegtoppDayCode;
-import mobi.chouette.exchange.regtopp.model.RegtoppDayCodeHeader;
-import mobi.chouette.exchange.regtopp.model.RegtoppDestination;
-import mobi.chouette.exchange.regtopp.model.RegtoppInterchange;
-import mobi.chouette.exchange.regtopp.model.RegtoppLine;
-import mobi.chouette.exchange.regtopp.model.RegtoppPathway;
-import mobi.chouette.exchange.regtopp.model.RegtoppRemark;
-import mobi.chouette.exchange.regtopp.model.RegtoppStop;
-import mobi.chouette.exchange.regtopp.model.RegtoppStopTime;
-import mobi.chouette.exchange.regtopp.model.RegtoppTrip;
-import mobi.chouette.exchange.regtopp.model.RegtoppZone;
+import mobi.chouette.exchange.regtopp.model.RegtoppDayCodeDKO;
+import mobi.chouette.exchange.regtopp.model.RegtoppDayCodeHeaderDKO;
+import mobi.chouette.exchange.regtopp.model.RegtoppDestinationDST;
+import mobi.chouette.exchange.regtopp.model.RegtoppInterchangeSAM;
+import mobi.chouette.exchange.regtopp.model.RegtoppLineLIN;
+import mobi.chouette.exchange.regtopp.model.RegtoppPathwayGAV;
+import mobi.chouette.exchange.regtopp.model.RegtoppPeriodPER;
+import mobi.chouette.exchange.regtopp.model.RegtoppRemarkMRK;
+import mobi.chouette.exchange.regtopp.model.RegtoppRoutePointRUT;
+import mobi.chouette.exchange.regtopp.model.RegtoppStopHPL;
+import mobi.chouette.exchange.regtopp.model.RegtoppTableVersionTAB;
+import mobi.chouette.exchange.regtopp.model.RegtoppTripIndexTIX;
+import mobi.chouette.exchange.regtopp.model.RegtoppTripPatternTMS;
+import mobi.chouette.exchange.regtopp.model.RegtoppVehicleJourneyVLP;
+import mobi.chouette.exchange.regtopp.model.RegtoppZoneSON;
 import mobi.chouette.exchange.regtopp.model.importer.FileContentParser;
 import mobi.chouette.exchange.regtopp.model.importer.ParseableFile;
 import mobi.chouette.exchange.regtopp.validation.ValidationReporter;
@@ -59,60 +63,64 @@ public class FileContentParserTest {
 			
 			
 			ValidationReporter reporter = new ValidationReporter();
-			FileContentParser parser = null;
+			FileContentParser parser = new FileContentParser();
 			String name = f.getName().toUpperCase();
 			String extension = name.substring(name.lastIndexOf(".")+1);
 			List<Class> regtoppClasses = new ArrayList<Class>();
 			switch(extension) {
-			case "FRM":
-			case "PER":
-			case "RUT":
-			case "TAB":
-			case "TMS":
-				log.warn("Ignoring unknown file "+extension);
-				continue;
-			case "HPL":
-				parser = new FileContentParser();
-				regtoppClasses.add(RegtoppStop.class);
-				break;
+			
 			case "TIX":
-				parser = new FileContentParser();
-				regtoppClasses.add(RegtoppTrip.class);
+				regtoppClasses.add(RegtoppTripIndexTIX.class);
 				break;
-			case "TDA":
-				parser = new FileContentParser();
-				regtoppClasses.add(RegtoppStopTime.class);
+			case "TMS":
+				regtoppClasses.add(RegtoppTripPatternTMS.class);
+				break;
+			case "HPL":
+				regtoppClasses.add(RegtoppStopHPL.class);
 				break;
 			case "DKO":
-				parser = new FileContentParser();
-				regtoppClasses.add(RegtoppDayCodeHeader.class);
-				regtoppClasses.add(RegtoppDayCode.class);
+				regtoppClasses.add(RegtoppDayCodeHeaderDKO.class);
+				regtoppClasses.add(RegtoppDayCodeDKO.class);
 				break;
 			case "DST":
-				parser = new FileContentParser();
-				regtoppClasses.add(RegtoppDestination.class);
+				regtoppClasses.add(RegtoppDestinationDST.class);
 				break;
 			case "MRK":
-				parser = new FileContentParser();
-				regtoppClasses.add(RegtoppRemark.class);
+				regtoppClasses.add(RegtoppRemarkMRK.class);
 				break;
 			case "GAV":
-				parser = new FileContentParser();
-				regtoppClasses.add(RegtoppPathway.class);
+				regtoppClasses.add(RegtoppPathwayGAV.class);
 				break;
 			case "SAM":
-				parser = new FileContentParser();
-				regtoppClasses.add(RegtoppInterchange.class);
+				regtoppClasses.add(RegtoppInterchangeSAM.class);
 				break;
 			case "SON":
-				parser = new FileContentParser();
-				regtoppClasses.add(RegtoppZone.class);
+				regtoppClasses.add(RegtoppZoneSON.class);
 				break;
 			case "LIN":
-				parser = new FileContentParser();
-				regtoppClasses.add(RegtoppLine.class);
+				regtoppClasses.add(RegtoppLineLIN.class);
 				break;
+			case "VLP":
+				regtoppClasses.add(RegtoppVehicleJourneyVLP.class);
+				break;
+			case "TAB":
+				regtoppClasses.add(RegtoppTableVersionTAB.class);
+				break;
+			case "PER":
+				regtoppClasses.add(RegtoppPeriodPER.class);
+				break;
+			case "RUT":
+				regtoppClasses.add(RegtoppRoutePointRUT.class);
+				break;
+			case "FRM":
+				log.info("Ignoring version file "+extension);
+				continue;
+			default:
+				log.warn("Ignoring unknown file "+extension);
+				continue;
+
 			}
+			
 			
 			
 			Assert.assertNotNull(parser,"No parser registered for "+name);

@@ -17,7 +17,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Record(minOccurs = 1)
-public class RegtoppTrip extends RegtoppObject implements Serializable
+public class RegtoppVehicleJourneyVLP extends RegtoppObject implements Serializable
 {
 
    private static final long serialVersionUID = 1L;
@@ -34,91 +34,36 @@ public class RegtoppTrip extends RegtoppObject implements Serializable
 
    @Getter
    @Setter
-   @Field(length = 4)
-   private Integer lineNumber;
+   @Field(length = 6)
+   private Integer vehicleJourneyId;
 
    @Getter
    @Setter
    @Field(length = 4)
-   private Integer tripNumber;
-
-   @Getter
-   @Setter
-   @Field(length = 3)
-   private Integer typeOfTraffic;
-
-   @Getter
-   @Setter
-   @Field(length = 4)
-   private Integer dayCodeRef;
-
-   @Getter
-   @Setter
-   @Field(length = 3)
-   private Integer companyCode;
-
-   @Getter
-   @Setter
-   @Field(length = 3)
-   private Integer remark1Ref;
-
-   @Getter
-   @Setter
-   @Field(length = 3)
-   private Integer remark2Ref;
-
-   @Getter
-   @Setter
-   @Field(length = 3)
-   private Integer destinationCode;
-
-   @Getter
-   @Setter
-   @Field(length = 8)
-   private String lineNumberVisible;
-
-   @Getter
-   @Setter
-   @Field(length = 1)
-   private Integer direction;
+   private Integer dayCodeId;
 
    @Getter
    @Setter
    @Field(length = 2)
-   private Integer tripType;
+   private Integer sequenceNumberTrip;
 
    @Getter
    @Setter
    @Field(length = 4)
-   private Integer departureTime;
+   private Integer lineId;
 
    @Getter
    @Setter
-   @Field(length = 3)
-   private Integer numStops;
+   @Field(length = 4)
+   private Integer tripId;
 
    @Getter
    @Setter
-   @Field(length = 7)
-   private Integer firstStopRef;
-
-   @Getter
-   @Setter
-   @Field(length = 1)
-   private Integer parcelService;
-
-   @Getter
-   @Setter
-   @Field(length = 1)
-   private Integer priceCode;
+   @Field(length = 5)
+   private Integer id;
 
 
-   // @Override
-   // public String toString()
-   // {
-   // return id + ":" + TripExporter.CONVERTER.to(new Context(),this);
-   // }
-
+  
    @AllArgsConstructor
    public enum DirectionType implements Serializable
    {

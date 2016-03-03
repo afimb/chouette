@@ -5,7 +5,7 @@ public interface Constant extends mobi.chouette.common.Constant {
 	
 	// Mandatory files Regtopp 1.1D
 	public static final String REGTOPP_TRIPINDEX_FILE = ".*\\.TIX";
-	public static final String REGTOPP_TRIPDATA_FILE = ".*\\.TDA";
+	public static final String REGTOPP_TRIPDATA_FILE = ".*\\.TMS";
 	public static final String REGTOPP_STOPPLACE_FILE = ".*\\.HPL";
 	public static final String REGTOPP_DAYCODE_FILE = ".*\\.DKO";
 	

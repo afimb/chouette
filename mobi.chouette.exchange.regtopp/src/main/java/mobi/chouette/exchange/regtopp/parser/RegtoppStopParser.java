@@ -9,7 +9,7 @@ import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
 import mobi.chouette.exchange.regtopp.model.GtfsStop;
 import mobi.chouette.exchange.regtopp.model.GtfsStop.LocationType;
 import mobi.chouette.exchange.regtopp.model.GtfsStop.WheelchairBoardingType;
-import mobi.chouette.exchange.regtopp.model.RegtoppStop;
+import mobi.chouette.exchange.regtopp.model.RegtoppStopHPL;
 import mobi.chouette.exchange.regtopp.model.importer.RegtoppException;
 import mobi.chouette.exchange.regtopp.model.importer.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.model.importer.index.Index;
@@ -42,7 +42,7 @@ public class RegtoppStopParser implements Parser, Validator, Constant {
 			// Iterate over and validate pure content
 			
 			
-			Index<RegtoppStop> parser = null;
+			Index<RegtoppStopHPL> parser = null;
 			try { // Read and check the header line of the file "stops.txt"
 				parser = importer.getStopById(); 
 			} catch (Exception ex ) {
@@ -78,7 +78,7 @@ public class RegtoppStopParser implements Parser, Validator, Constant {
 			RegtoppException fatalException = null;
 			boolean hasLocationType = false;
 			parser.setWithValidation(true);
-			for (RegtoppStop bean : parser) {
+			for (RegtoppStopHPL bean : parser) {
 				try {
 //					if (bean.getLocationType() == null)
 //						bean.setLocationType(LocationType.Stop);
@@ -118,7 +118,7 @@ public class RegtoppStopParser implements Parser, Validator, Constant {
 		RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
 		RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
 
-		for (RegtoppStop gtfsStop : importer.getStopById()) {
+		for (RegtoppStopHPL gtfsStop : importer.getStopById()) {
 			String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
 					StopArea.STOPAREA_KEY, gtfsStop.getStopId(), log);
 
@@ -127,7 +127,7 @@ public class RegtoppStopParser implements Parser, Validator, Constant {
 		}
 	}
 	
-	protected void convert(Context context, RegtoppStop gtfsStop, StopArea stopArea) {
+	protected void convert(Context context, RegtoppStopHPL gtfsStop, StopArea stopArea) {
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
 		RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);

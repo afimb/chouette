@@ -17,7 +17,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Record(minOccurs = 1)
-public class RegtoppRemark extends RegtoppObject implements Serializable
+public class RegtoppRemarkMRK extends RegtoppObject implements Serializable
 {
 
    private static final long serialVersionUID = 1L;

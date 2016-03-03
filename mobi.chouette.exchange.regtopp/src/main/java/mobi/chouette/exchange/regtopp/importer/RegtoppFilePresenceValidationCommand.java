@@ -23,9 +23,9 @@ import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.regtopp.Constant;
-import mobi.chouette.exchange.regtopp.model.RegtoppDayCode;
-import mobi.chouette.exchange.regtopp.model.RegtoppDayCodeHeader;
-import mobi.chouette.exchange.regtopp.model.RegtoppStop;
+import mobi.chouette.exchange.regtopp.model.RegtoppDayCodeDKO;
+import mobi.chouette.exchange.regtopp.model.RegtoppDayCodeHeaderDKO;
+import mobi.chouette.exchange.regtopp.model.RegtoppStopHPL;
 import mobi.chouette.exchange.regtopp.model.importer.ParseableFile;
 import mobi.chouette.exchange.regtopp.model.importer.RegtoppException;
 import mobi.chouette.exchange.regtopp.model.importer.RegtoppImporter;
@@ -103,10 +103,10 @@ public class RegtoppFilePresenceValidationCommand implements Command, Constant {
 				FileInfo file = new FileInfo(name, FILE_STATE.ERROR);
 				report.getFiles().add(file);
 				if(name.toUpperCase().endsWith(".HPL")) {
-					ParseableFile parseableFile = new ParseableFile(fileName.toFile(),Arrays.asList(new Class[] {RegtoppStop.class}),file);
+					ParseableFile parseableFile = new ParseableFile(fileName.toFile(),Arrays.asList(new Class[] {RegtoppStopHPL.class}),file);
 					importer.registerFileForIndex(RegtoppImporter.INDEX.STOP_BY_ID.name(),parseableFile);
 				} else if(name.toUpperCase().endsWith(".DKO")) {
-					ParseableFile parseableFile = new ParseableFile(fileName.toFile(),Arrays.asList(new Class[]{RegtoppDayCodeHeader.class,RegtoppDayCode.class}),file);
+					ParseableFile parseableFile = new ParseableFile(fileName.toFile(),Arrays.asList(new Class[]{RegtoppDayCodeHeaderDKO.class,RegtoppDayCodeDKO.class}),file);
 					importer.registerFileForIndex(RegtoppImporter.INDEX.DAYCODE_BY_ID.name(),parseableFile);
 				}
 				

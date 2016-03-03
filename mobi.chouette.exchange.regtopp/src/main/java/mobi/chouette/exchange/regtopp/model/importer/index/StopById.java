@@ -4,12 +4,12 @@ import java.io.IOException;
 import java.util.Set;
 
 import mobi.chouette.exchange.regtopp.model.RegtoppObject;
-import mobi.chouette.exchange.regtopp.model.RegtoppStop;
+import mobi.chouette.exchange.regtopp.model.RegtoppStopHPL;
 import mobi.chouette.exchange.regtopp.model.importer.FileContentParser;
 import mobi.chouette.exchange.regtopp.model.importer.RegtoppConverter;
 import mobi.chouette.exchange.regtopp.model.importer.RegtoppImporter;
 
-public class StopById extends IndexImpl<RegtoppStop> implements RegtoppConverter {
+public class StopById extends IndexImpl<RegtoppStopHPL> implements RegtoppConverter {
 
 	public StopById(FileContentParser fileParser) throws IOException {
 		super(fileParser);
@@ -18,16 +18,16 @@ public class StopById extends IndexImpl<RegtoppStop> implements RegtoppConverter
 
 	public static final String FILETYPE = ".HPL";
 
-	private RegtoppStop bean = new RegtoppStop();
+	private RegtoppStopHPL bean = new RegtoppStopHPL();
 	private String _stopId = null;
 	
 
 	@Override
-	public boolean validate(RegtoppStop bean, RegtoppImporter dao) {
+	public boolean validate(RegtoppStopHPL bean, RegtoppImporter dao) {
 		boolean result = true;
 		System.err.println("Validation code for RegtoppStopp commented out");
 	/*	
-		RegtoppStop copy_bean = new RegtoppStop(bean);
+		RegtoppStopHPL copy_bean = new RegtoppStopHPL(bean);
 		String parentStationId = copy_bean.getParentStation();
 		if (isPresent(parentStationId)) {
 
@@ -145,7 +145,7 @@ public class StopById extends IndexImpl<RegtoppStop> implements RegtoppConverter
 	@Override
 	protected void index() throws IOException {
 		for(Object obj : _parser.getRawContent()) {
-			RegtoppStop stop = (RegtoppStop) obj;
+			RegtoppStopHPL stop = (RegtoppStopHPL) obj;
 			_index.put(stop.getStopId(), stop);
 		}
 	}

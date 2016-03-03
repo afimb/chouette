@@ -8,17 +8,12 @@ import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 
-import mobi.chouette.exchange.regtopp.model.GtfsTime;
 import mobi.chouette.exchange.regtopp.model.GtfsCalendarDate.ExceptionType;
 import mobi.chouette.exchange.regtopp.model.GtfsRoute.RouteType;
 import mobi.chouette.exchange.regtopp.model.GtfsStop.LocationType;
 import mobi.chouette.exchange.regtopp.model.GtfsStop.WheelchairBoardingType;
-import mobi.chouette.exchange.regtopp.model.RegtoppStopTime.DropOffType;
-import mobi.chouette.exchange.regtopp.model.RegtoppStopTime.PickupType;
+import mobi.chouette.exchange.regtopp.model.GtfsTime;
 import mobi.chouette.exchange.regtopp.model.GtfsTransfer.TransferType;
-import mobi.chouette.exchange.regtopp.model.RegtoppTrip.BikesAllowedType;
-import mobi.chouette.exchange.regtopp.model.RegtoppTrip.DirectionType;
-import mobi.chouette.exchange.regtopp.model.RegtoppTrip.WheelchairAccessibleType;
 
 public interface RegtoppConverter {
 
@@ -275,33 +270,6 @@ public interface RegtoppConverter {
 		}
 	};
 
-	public static DefaultFieldConverter<PickupType> PICKUP_CONVERTER = new DefaultFieldConverter<PickupType>() {
-
-		@Override
-		protected PickupType convertFrom(String input) throws Exception {
-			int ordinal = Integer.parseInt(input, 10);
-			return PickupType.values()[ordinal];
-		}
-
-		@Override
-		protected String convertTo(PickupType input) throws Exception {
-			return String.valueOf(input.ordinal());
-		}
-	};
-
-	public static DefaultFieldConverter<DropOffType> DROPOFFTYPE_CONVERTER = new DefaultFieldConverter<DropOffType>() {
-
-		@Override
-		protected DropOffType convertFrom(String input) throws Exception {
-			int ordinal = Integer.parseInt(input, 10);
-			return DropOffType.values()[ordinal];
-		}
-
-		@Override
-		protected String convertTo(DropOffType input) throws Exception {
-			return String.valueOf(input.ordinal());
-		}
-	};
 
 	public static DefaultFieldConverter<ExceptionType> EXCEPTIONTYPE_CONVERTER = new DefaultFieldConverter<ExceptionType>() {
 
@@ -361,48 +329,7 @@ public interface RegtoppConverter {
 		}
 	};
 
-	public static DefaultFieldConverter<DirectionType> DIRECTIONTYPE_CONVERTER = new DefaultFieldConverter<DirectionType>() {
-
-		@Override
-		protected DirectionType convertFrom(String input) throws Exception {
-			int ordinal = Integer.parseInt(input, 10);
-			return DirectionType.values()[ordinal];
-		}
-
-		@Override
-		protected String convertTo(DirectionType input) throws Exception {
-			return String.valueOf(input.ordinal());
-		}
-	};
-
-	public static DefaultFieldConverter<WheelchairAccessibleType> WHEELCHAIRACCESSIBLETYPE_CONVERTER = new DefaultFieldConverter<WheelchairAccessibleType>() {
-
-		@Override
-		protected WheelchairAccessibleType convertFrom(String input)
-				throws Exception {
-			int ordinal = Integer.parseInt(input, 10);
-			return WheelchairAccessibleType.values()[ordinal];
-		}
-
-		@Override
-		protected String convertTo(WheelchairAccessibleType input)
-				throws Exception {
-			return String.valueOf(input.ordinal());
-		}
-	};
-
-	public static DefaultFieldConverter<BikesAllowedType> BIKESALLOWEDTYPE_CONVERTER = new DefaultFieldConverter<BikesAllowedType>() {
-		@Override
-		protected BikesAllowedType convertFrom(String input) throws Exception {
-			int ordinal = Integer.parseInt(input, 10);
-			return BikesAllowedType.values()[ordinal];
-		}
-
-		@Override
-		protected String convertTo(BikesAllowedType input) throws Exception {
-			return String.valueOf(input.ordinal());
-		}
-	};
+	
 
 	public static DefaultFieldConverter<TransferType> TRANSFERTYPE_CONVERTER = new DefaultFieldConverter<TransferType>() {
 		@Override
