@@ -16,7 +16,7 @@ import org.beanio.builder.StreamBuilder;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.regtopp.model.RegtoppObject;
-import mobi.chouette.exchange.regtopp.model.RegtoppStop;
+import mobi.chouette.exchange.regtopp.model.RegtoppStopHPL;
 import mobi.chouette.exchange.regtopp.model.importer.FileContentParser;
 import mobi.chouette.exchange.regtopp.model.importer.RegtoppException;
 import mobi.chouette.exchange.regtopp.model.importer.RegtoppImporter;
@@ -39,7 +39,7 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 		index();
 	}
 
-	public boolean validate(RegtoppStop bean, RegtoppImporter dao) {
+	public boolean validate(RegtoppStopHPL bean, RegtoppImporter dao) {
 		// TODO Auto-generated method stub
 		return false;
 	}

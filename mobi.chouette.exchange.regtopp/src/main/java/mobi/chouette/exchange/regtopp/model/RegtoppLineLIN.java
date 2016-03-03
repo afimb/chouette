@@ -17,7 +17,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Record(minOccurs = 1)
-public class RegtoppZone extends RegtoppObject implements Serializable
+public class RegtoppLineLIN extends RegtoppObject implements Serializable
 {
 
    private static final long serialVersionUID = 1L;
@@ -34,8 +34,8 @@ public class RegtoppZone extends RegtoppObject implements Serializable
 
    @Getter
    @Setter
-   @Field(length = 5)
-   private Integer zoneId;
+   @Field(length = 4)
+   private Integer lineId;
    
    @Getter
    @Setter
@@ -44,8 +44,8 @@ public class RegtoppZone extends RegtoppObject implements Serializable
  
    @Getter
    @Setter
-   @Field(length = 5)
-   private String zoneRef;
- 
+   @Field(length = 1)
+   private Integer fareCode;
+   
    
 }

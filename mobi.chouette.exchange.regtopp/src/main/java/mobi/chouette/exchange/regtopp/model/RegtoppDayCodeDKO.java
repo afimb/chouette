@@ -16,31 +16,36 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
-@Record(minOccurs = 1)
-public class RegtoppStopTime extends RegtoppObject implements Serializable
+@Record(minOccurs = 1, order=2)
+public class RegtoppDayCodeDKO extends RegtoppObject implements Serializable
 {
 
    private static final long serialVersionUID = 1L;
+   
+   public static final String FILE_EXTENSION = "DKO";
+   
+   // TODO first line different
+   
+   @Getter
+   @Setter
+   @Field(length = 3)
+   private Integer adminCode;
 
    @Getter
    @Setter
-   @Field(length = 8)
-   private Integer stopId;
+   @Field(length = 1)
+   private Integer counter;
+
+   @Getter
+   @Setter
+   @Field(length = 4)
+   private String dayCodeId;
    
    @Getter
    @Setter
-   @Field(length = 3)
-   private Integer arrivalOffset;
-   
-   @Getter
-   @Setter
-   @Field(length = 3)
-   private Integer departureOffset;
-   
-   @Getter
-   @Setter
-   @Field(length = 6)
-   private Integer distance10Meter;
+   @Field(length = 392)
+   private String dayCode;
+ 
    
   
 

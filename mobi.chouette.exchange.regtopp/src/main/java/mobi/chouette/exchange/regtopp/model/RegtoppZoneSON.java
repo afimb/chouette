@@ -16,13 +16,11 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
-@Record(minOccurs = 1, order=2)
-public class RegtoppDayCode extends RegtoppObject implements Serializable
+@Record(minOccurs = 1)
+public class RegtoppZoneSON extends RegtoppObject implements Serializable
 {
 
    private static final long serialVersionUID = 1L;
-   
-   // TODO first line different
    
    @Getter
    @Setter
@@ -36,30 +34,18 @@ public class RegtoppDayCode extends RegtoppObject implements Serializable
 
    @Getter
    @Setter
-   @Field(length = 4)
-   private String dayCodeId;
+   @Field(length = 5)
+   private Integer zoneId;
    
    @Getter
    @Setter
-   @Field(length = 392)
-   private String dayCode;
+   @Field(length = 30)
+   private String name;
+ 
+   @Getter
+   @Setter
+   @Field(length = 5)
+   private String zoneRef;
  
    
-  
-
-   // @Override
-   // public String toString()
-   // {
-   // return id + ":" + StopTimeExporter.CONVERTER.to(new Context(),this);
-   // }
-
-   public enum DropOffType implements Serializable
-   {
-      Scheduled, NoAvailable, AgencyCall, DriverCall;
-   }
-
-   public enum PickupType implements Serializable
-   {
-      Scheduled, NoAvailable, AgencyCall, DriverCall;
-   }
 }

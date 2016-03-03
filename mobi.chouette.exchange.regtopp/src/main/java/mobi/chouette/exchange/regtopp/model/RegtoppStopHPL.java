@@ -20,7 +20,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Record(minOccurs = 1)
-public class RegtoppStop extends RegtoppObject implements Serializable
+public class RegtoppStopHPL extends RegtoppObject implements Serializable
 {
 
 	
@@ -70,12 +70,12 @@ public class RegtoppStop extends RegtoppObject implements Serializable
    @Getter
    @Setter
    @Field(length = 5)
-   private Integer zoneRef1;
+   private Integer zoneId1;
 
    @Getter
    @Setter
    @Field(length = 5)
-   private Integer zoneRef2;
+   private Integer zoneId2;
 
    @Getter
    @Setter
@@ -94,7 +94,7 @@ public class RegtoppStop extends RegtoppObject implements Serializable
 
 
 
-   public RegtoppStop(RegtoppStop bean) {
+   public RegtoppStopHPL(RegtoppStopHPL bean) {
 	   throw new RuntimeException("Copy constructor not implemented");
    }
 

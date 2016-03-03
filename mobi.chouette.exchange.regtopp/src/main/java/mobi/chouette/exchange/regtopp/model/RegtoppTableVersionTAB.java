@@ -17,7 +17,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Record(minOccurs = 1)
-public class RegtoppPathway extends RegtoppObject implements Serializable
+public class RegtoppTableVersionTAB extends RegtoppObject implements Serializable
 {
 
    private static final long serialVersionUID = 1L;
@@ -34,23 +34,23 @@ public class RegtoppPathway extends RegtoppObject implements Serializable
 
    @Getter
    @Setter
-   @Field(length = 8)
-   private Integer stopIdFrom;
+   @Field(length = 4)
+   private String lineId;
    
    @Getter
    @Setter
-   @Field(length = 8)
-   private Integer stopIdTo;
-   
-   @Getter
-   @Setter
-   @Field(length = 2)
-   private Integer duration;
-   
-   @Getter
-   @Setter
-   @Field(length = 20)
-   private String description;
+   @Field(length = 10)
+   private Integer periodId;
  
-   
+   @Getter
+   @Setter
+   @Field(length = 8)
+   private String name;
+ 
+   @Getter
+   @Setter
+   @Field(length = 80)
+   private String text;
+ 
+
 }

@@ -18,7 +18,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Record(minOccurs = 1, maxOccurs = 1, order=1)
-public class RegtoppDayCodeHeader extends RegtoppObject implements Serializable
+public class RegtoppDayCodeHeaderDKO extends RegtoppObject implements Serializable
 {
 
    private static final long serialVersionUID = 1L;
