@@ -1,3 +1,8 @@
+# Version 3.3.0 (03/03) 
+* Nouvelles fonctionnalités :
+  * actions de conversion
+  * modularisation pour créer le backoffice de conversion/validation : cvdtc_cv
+
 # Version 3.2.1 (26/02/2016) 
 * Corrections :
   * issue #23 : wrong shape_pt_sequence on GTFS export
