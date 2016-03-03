@@ -26,27 +26,27 @@ public class RegtoppVehicleJourneyVLP extends RegtoppObject implements Serializa
 	@Getter
 	@Setter
 	@Field(length = 3)
-	private Integer administrationCode;
+	private String adminCode;
 
 	@Getter
 	@Setter
 	@Field(length = 1)
-	private Integer counter;
+	private String counter;
 
 	@Getter
 	@Setter
 	@Field(length = 6)
-	private Integer vehicleJourneyId;
+	private String vehicleJourneyId;
 
 	@Getter
 	@Setter
 	@Field(length = 4)
-	private Integer dayCodeId;
+	private String dayCodeId;
 
 	@Getter
 	@Setter
 	@Field(length = 2)
-	private Integer sequenceNumberTrip;
+	private String sequenceNumberTrip;
 
 	@Getter
 	@Setter
@@ -62,6 +62,12 @@ public class RegtoppVehicleJourneyVLP extends RegtoppObject implements Serializa
 	@Setter
 	@Field(length = 5)
 	private Integer id;
+	
+	@Override
+	public String getIndexingKey() {
+		return adminCode+counter+vehicleJourneyId+dayCodeId+sequenceNumberTrip;
+	}
+
 
 	@AllArgsConstructor
 	public enum DirectionType implements Serializable {

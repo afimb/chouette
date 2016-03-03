@@ -1,15 +1,13 @@
 package mobi.chouette.exchange.regtopp.parser;
 
 import java.net.URL;
-import java.sql.Time;
 import java.util.TimeZone;
 
-import mobi.chouette.exchange.regtopp.model.GtfsTime;
+import org.apache.log4j.Logger;
+
 import mobi.chouette.exchange.regtopp.model.importer.RegtoppException;
 import mobi.chouette.exchange.report.FileError;
 import mobi.chouette.exchange.report.FileInfo;
-
-import org.apache.log4j.Logger;
 
 public abstract class AbstractConverter {
 
@@ -24,17 +22,7 @@ public abstract class AbstractConverter {
 		return (target.length() == 0 ? null : target);
 	}
 
-	/**
-	 * @param gtfsTime
-	 * @return
-	 */
-	public static Time getTime(GtfsTime gtfsTime) {
-		if (gtfsTime == null)
-			return null;
-
-		Time time = gtfsTime.getTime();
-		return time;
-	}
+	
 
 	public static String composeObjectId(String prefix, String type, String id, Logger logger) {
 

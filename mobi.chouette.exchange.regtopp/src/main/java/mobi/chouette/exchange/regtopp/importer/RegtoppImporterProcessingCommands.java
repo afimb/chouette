@@ -21,7 +21,7 @@ import mobi.chouette.exchange.importer.CopyCommand;
 import mobi.chouette.exchange.importer.LineRegisterCommand;
 import mobi.chouette.exchange.importer.StopAreaRegisterCommand;
 import mobi.chouette.exchange.importer.UncompressCommand;
-import mobi.chouette.exchange.regtopp.model.GtfsRoute;
+import mobi.chouette.exchange.regtopp.model.RegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.model.importer.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.model.importer.index.Index;
 import mobi.chouette.exchange.validation.ImportedLineValidatorCommand;
@@ -73,38 +73,40 @@ public class RegtoppImporterProcessingCommands implements ProcessingCommands, Co
 		List<Command> commands = new ArrayList<>();
 		RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
 
-//		Index<GtfsRoute> index = importer.getRouteById();
-//		try {
-//			for (GtfsRoute gtfsRoute : index) {
-//
-//				Chain chain = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
-//
-//				RegtoppRouteParserCommand parser = (RegtoppRouteParserCommand) CommandFactory.create(initialContext,
-//						RegtoppRouteParserCommand.class.getName());
-//				parser.setGtfsRouteId(gtfsRoute.getRouteId());
-//				chain.add(parser);
-//				if (withDao && !parameters.isNoSave()) {
-//
-//					// register
-//					Command register = CommandFactory.create(initialContext, LineRegisterCommand.class.getName());
-//					chain.add(register);
-//
-//					Command copy = CommandFactory.create(initialContext, CopyCommand.class.getName());
-//					chain.add(copy);
-//				}
-//				if (level3validation) {
-//					// add validation
-//					Command validate = CommandFactory.create(initialContext,
-//							ImportedLineValidatorCommand.class.getName());
-//					chain.add(validate);
-//				}
-//				commands.add(chain);
-//			}
-//
-//		} catch (Exception e) {
-//			log.error(e, e);
-//			throw new RuntimeException("unable to call factories");
-//		}
+		try {
+			Index<RegtoppTripIndexTIX> index = importer.getTripIndex();
+			for (RegtoppTripIndexTIX gtfsRoute : index) {
+
+				Chain chain = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
+
+				RegtoppRouteParserCommand parser = (RegtoppRouteParserCommand) CommandFactory.create(initialContext,
+						RegtoppRouteParserCommand.class.getName());
+				
+				// TODO Add routeId to parser
+				//parser.setGtfsRouteId(gtfsRoute.getRouteId());
+				chain.add(parser);
+				if (withDao && !parameters.isNoSave()) {
+
+					// register
+					Command register = CommandFactory.create(initialContext, LineRegisterCommand.class.getName());
+					chain.add(register);
+
+					Command copy = CommandFactory.create(initialContext, CopyCommand.class.getName());
+					chain.add(copy);
+				}
+				if (level3validation) {
+					// add validation
+					Command validate = CommandFactory.create(initialContext,
+							ImportedLineValidatorCommand.class.getName());
+					chain.add(validate);
+				}
+				commands.add(chain);
+			}
+
+		} catch (Exception e) {
+			log.error(e, e);
+			throw new RuntimeException("unable to call factories");
+		}
 
 		return commands;
 	}

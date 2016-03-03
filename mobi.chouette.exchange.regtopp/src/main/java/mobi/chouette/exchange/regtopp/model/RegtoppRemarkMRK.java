@@ -26,21 +26,27 @@ public class RegtoppRemarkMRK extends RegtoppObject implements Serializable {
 	@Getter
 	@Setter
 	@Field(length = 3)
-	private Integer adminCode;
+	private String adminCode;
 
 	@Getter
 	@Setter
 	@Field(length = 1)
-	private Integer counter;
+	private String counter;
 
 	@Getter
 	@Setter
 	@Field(length = 3)
-	private Integer remarkId;
+	private String remarkId;
 
 	@Getter
 	@Setter
 	@Field(length = 80)
 	private String remarkText;
+	
+	@Override
+	public String getIndexingKey() {
+		return adminCode+counter+remarkId;
+	}
+
 
 }

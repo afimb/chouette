@@ -3,17 +3,15 @@ package mobi.chouette.exchange.regtopp.model.importer.index;
 import java.io.IOException;
 
 import mobi.chouette.exchange.regtopp.model.RegtoppStopHPL;
+import mobi.chouette.exchange.regtopp.model.RegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.model.importer.FileContentParser;
 import mobi.chouette.exchange.regtopp.model.importer.RegtoppImporter;
 
-public class StopById extends IndexImpl<RegtoppStopHPL>   {
+public class TripIndex extends IndexImpl<RegtoppTripIndexTIX>   {
 
-	public StopById(FileContentParser fileParser) throws IOException {
+	public TripIndex(FileContentParser fileParser) throws IOException {
 		super(fileParser);
 	}
-
-
-	public static final String FILETYPE = ".HPL";
 
 	private RegtoppStopHPL bean = new RegtoppStopHPL();
 	private String _stopId = null;
@@ -107,7 +105,7 @@ public class StopById extends IndexImpl<RegtoppStopHPL>   {
 	
 	private void clearBean() {
 		//bean.getErrors().clear();
-		bean.setId(null);
+//		bean.setId(null);
 //		bean.setAddressLine(null);
 //		bean.setLocality(null);
 //		bean.setLocationType(null);
@@ -115,9 +113,9 @@ public class StopById extends IndexImpl<RegtoppStopHPL>   {
 //		bean.setPostalCode(null);
 //		bean.setStopCode(null);
 //		bean.setStopDesc(null);
-		bean.setStopId(null);
-		bean.setStopLat(null);
-		bean.setStopLon(null);
+//		bean.setStopId(null);
+//		bean.setStopLat(null);
+//		bean.setStopLon(null);
 //		bean.setStopName(null);
 //		bean.setStopTimezone(null);
 //		bean.setStopUrl(null);
@@ -129,21 +127,21 @@ public class StopById extends IndexImpl<RegtoppStopHPL>   {
 		@SuppressWarnings("rawtypes")
 		@Override
 		protected Index create(FileContentParser parser) throws IOException {
-			return new StopById(parser);
+			return new TripIndex(parser);
 		}
 	}
 
 	static {
 		IndexFactory factory = new DefaultImporterFactory();
-		IndexFactory.factories.put(StopById.class.getName(), factory);
+		IndexFactory.factories.put(TripIndex.class.getName(), factory);
 	}
 
 
 	@Override
 	protected void index() throws IOException {
 		for(Object obj : _parser.getRawContent()) {
-			RegtoppStopHPL stop = (RegtoppStopHPL) obj;
-			_index.put(stop.getStopId(), stop);
+			RegtoppTripIndexTIX trip = (RegtoppTripIndexTIX) obj;
+			_index.put(trip.getIndexingKey(),trip);
 		}
 	}
 }

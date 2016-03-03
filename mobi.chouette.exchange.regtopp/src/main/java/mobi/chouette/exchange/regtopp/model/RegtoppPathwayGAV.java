@@ -26,22 +26,22 @@ public class RegtoppPathwayGAV extends RegtoppObject implements Serializable {
 	@Getter
 	@Setter
 	@Field(length = 3)
-	private Integer adminCode;
+	private String adminCode;
 
 	@Getter
 	@Setter
 	@Field(length = 1)
-	private Integer counter;
+	private String counter;
 
 	@Getter
 	@Setter
 	@Field(length = 8)
-	private Integer stopIdFrom;
+	private String stopIdFrom;
 
 	@Getter
 	@Setter
 	@Field(length = 8)
-	private Integer stopIdTo;
+	private String stopIdTo;
 
 	@Getter
 	@Setter
@@ -52,5 +52,10 @@ public class RegtoppPathwayGAV extends RegtoppObject implements Serializable {
 	@Setter
 	@Field(length = 20)
 	private String description;
+
+	@Override
+	public String getIndexingKey() {
+		return adminCode+counter+stopIdFrom+stopIdTo;
+	}
 
 }

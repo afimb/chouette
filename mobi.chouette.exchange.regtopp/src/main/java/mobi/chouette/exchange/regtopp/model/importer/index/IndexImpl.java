@@ -30,7 +30,7 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 	private boolean _unique;
 	private String _path;
 
-	Map<String,RegtoppObject> _index = new HashMap<String,RegtoppObject>();
+	Map<String,T> _index = new HashMap<String,T>();
 	FileContentParser _parser = null;
 
 	public IndexImpl(FileContentParser fileParser) throws IOException {

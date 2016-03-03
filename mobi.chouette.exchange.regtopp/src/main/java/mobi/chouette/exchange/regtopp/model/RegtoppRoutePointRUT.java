@@ -29,12 +29,12 @@ public class RegtoppRoutePointRUT extends RegtoppObject implements Serializable 
 	@Getter
 	@Setter
 	@Field(length = 3)
-	private Integer adminCode;
+	private String adminCode;
 
 	@Getter
 	@Setter
 	@Field(length = 1)
-	private Integer counter;
+	private String counter;
 
 	@Getter
 	@Setter
@@ -49,7 +49,7 @@ public class RegtoppRoutePointRUT extends RegtoppObject implements Serializable 
 	@Getter
 	@Setter
 	@Field(length = 3)
-	private Integer sequenceNumberRoutePoint;
+	private String sequenceNumberRoutePoint;
 
 	@Getter
 	@Setter
@@ -60,6 +60,12 @@ public class RegtoppRoutePointRUT extends RegtoppObject implements Serializable 
 	@Setter
 	@Field(length = 8)
 	private String stopId;
+	
+	@Override
+	public String getIndexingKey() {
+		return adminCode+counter+lineId+periodId+sequenceNumberRoutePoint;
+	}
+
 
 	public RegtoppRoutePointRUT(RegtoppRoutePointRUT bean) {
 		throw new RuntimeException("Copy constructor not implemented");

@@ -26,27 +26,27 @@ public class RegtoppTripIndexTIX extends RegtoppObject implements Serializable {
 	@Getter
 	@Setter
 	@Field(length = 3)
-	private Integer administrationCode;
+	private String adminCode;
 
 	@Getter
 	@Setter
 	@Field(length = 1)
-	private Integer counter;
+	private String counter;
 
 	@Getter
 	@Setter
 	@Field(length = 4)
-	private Integer lineNumber;
+	private String lineId;
 
 	@Getter
 	@Setter
 	@Field(length = 4)
-	private Integer tripNumber;
+	private String tripId;
 
 	@Getter
 	@Setter
 	@Field(length = 3)
-	private Integer typeOfService;
+	private String typeOfService;
 
 	@Getter
 	@Setter
@@ -123,6 +123,12 @@ public class RegtoppTripIndexTIX extends RegtoppObject implements Serializable {
 	@Field(length = 7)
 	private String weekdaysOfService;
 
+	
+	@Override
+	public String getIndexingKey() {
+		return adminCode+counter+lineId+tripId;
+	}
+	
 	// @Override
 	// public String toString()
 	// {

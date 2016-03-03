@@ -26,52 +26,52 @@ public class RegtoppInterchangeSAM extends RegtoppObject implements Serializable
 	@Getter
 	@Setter
 	@Field(length = 3)
-	private Integer administrationCode1;
+	private String adminCode1;
 
 	@Getter
 	@Setter
 	@Field(length = 1)
-	private Integer counter1;
+	private String counter1;
 
 	@Getter
 	@Setter
 	@Field(length = 4)
-	private Integer lineNumber1;
+	private String lineId1;
 
 	@Getter
 	@Setter
 	@Field(length = 4)
-	private Integer tripNumber1;
+	private String tripId1;
 
 	@Getter
 	@Setter
 	@Field(length = 3)
-	private Integer typeOfTraffic1;
+	private String typeOfTraffic1;
 
 	@Getter
 	@Setter
 	@Field(length = 3)
-	private Integer administrationCode2;
+	private String adminCode2;
 
 	@Getter
 	@Setter
 	@Field(length = 1)
-	private Integer counter2;
+	private String counter2;
 
 	@Getter
 	@Setter
 	@Field(length = 4)
-	private Integer lineNumber2;
+	private String lineId2;
 
 	@Getter
 	@Setter
 	@Field(length = 4)
-	private Integer tripNumber2;
+	private String tripId2;
 
 	@Getter
 	@Setter
 	@Field(length = 3)
-	private Integer typeOfTraffic2;
+	private String typeOfTraffic2;
 
 	@Getter
 	@Setter
@@ -97,5 +97,11 @@ public class RegtoppInterchangeSAM extends RegtoppObject implements Serializable
 	@Setter
 	@Field(length = 1)
 	private Integer interchangeCode;
+
+	
+	@Override
+	public String getIndexingKey() {
+		return (adminCode1+counter1+lineId1+tripId1)+(adminCode2+counter2+lineId2+tripId2);
+	}
 
 }
