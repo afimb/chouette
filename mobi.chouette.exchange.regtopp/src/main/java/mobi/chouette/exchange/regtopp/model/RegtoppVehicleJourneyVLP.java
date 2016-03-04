@@ -67,23 +67,4 @@ public class RegtoppVehicleJourneyVLP extends RegtoppObject implements Serializa
 	public String getIndexingKey() {
 		return adminCode+counter+vehicleJourneyId+dayCodeId+sequenceNumberTrip;
 	}
-
-
-	@AllArgsConstructor
-	public enum DirectionType implements Serializable {
-		Outbound, Inbound;
-
-	}
-
-	@AllArgsConstructor
-	public enum BikesAllowedType implements Serializable {
-		NoInformation, Allowed, NoAllowed;
-
-	}
-
-	@AllArgsConstructor
-	public enum WheelchairAccessibleType implements Serializable {
-		NoInformation, Allowed, NoAllowed;
-
-	}
 }

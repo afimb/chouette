@@ -6,6 +6,9 @@ import java.nio.file.Paths;
 
 import javax.naming.InitialContext;
 
+import com.jamonapi.Monitor;
+import com.jamonapi.MonitorFactory;
+
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
@@ -14,11 +17,9 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.regtopp.Constant;
 import mobi.chouette.exchange.regtopp.model.importer.RegtoppImporter;
+import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.model.util.Referential;
-
-import com.jamonapi.Monitor;
-import com.jamonapi.MonitorFactory;
 
 @Log4j
 public class RegtoppInitImportCommand implements Command, Constant {
@@ -39,7 +40,8 @@ public class RegtoppInitImportCommand implements Command, Constant {
 			if (importer == null) {
 				Path path = Paths.get(jobData.getPathName(), INPUT);
 				// TODO add validationreporter
-				importer = new RegtoppImporter(context,path.toString(),null);
+				RegtoppValidationReporter reporter = new RegtoppValidationReporter();
+				importer = new RegtoppImporter(context,path.toString(),reporter);
 				context.put(PARSER, importer);
 			}
 			RegtoppImportParameters parameters = (RegtoppImportParameters) context.get(CONFIGURATION);

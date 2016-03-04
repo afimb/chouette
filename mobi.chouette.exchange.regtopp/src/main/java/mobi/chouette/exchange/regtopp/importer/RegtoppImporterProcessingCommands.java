@@ -54,13 +54,21 @@ public class RegtoppImporterProcessingCommands implements ProcessingCommands, Co
 			if (withDao && parameters.isCleanRepository()) {
 				commands.add(CommandFactory.create(initialContext, CleanRepositoryCommand.class.getName()));
 			}
+			// Uncompress zip file
 			commands.add(CommandFactory.create(initialContext, UncompressCommand.class.getName()));
+			// Does nothing but some setup, TODO remove 
 			commands.add(CommandFactory.create(initialContext, RegtoppValidationRulesCommand.class.getName()));
+			// Does little, instantiates importer, sets up validation
 			commands.add(CommandFactory.create(initialContext, RegtoppInitImportCommand.class.getName()));
+			
+			// Validate that files are present, if missing some report this
 			commands.add(CommandFactory.create(initialContext, RegtoppFilePresenceValidationCommand.class.getName()));
+			
+			// Parse and validate file consistency
+			commands.add(CommandFactory.create(initialContext, RegtoppFileConsistencyValidationCommand.class.getName()));
 		} catch (Exception e) {
 			log.error(e, e);
-			throw new RuntimeException("unable to call factories");
+			throw new RuntimeException("unable to call factories",e);
 		}
 		return commands;
 	}
@@ -74,11 +82,12 @@ public class RegtoppImporterProcessingCommands implements ProcessingCommands, Co
 		RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
 
 		try {
-			Index<RegtoppTripIndexTIX> index = importer.getTripIndex();
+			Index<RegtoppTripIndexTIX> index = importer.getUniqueLinesByTripIndex();
 			for( RegtoppTripIndexTIX line : index) {
 
 				Chain chain = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
 
+				// Pull out line by line and convert to Chouette model
 				RegtoppLineParserCommand parser = (RegtoppLineParserCommand) CommandFactory.create(initialContext,
 						RegtoppLineParserCommand.class.getName());
 				

@@ -3,33 +3,23 @@ package mobi.chouette.exchange.regtopp.model.importer.index;
 import java.io.IOException;
 
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.exchange.regtopp.model.RegtoppStopHPL;
+import mobi.chouette.exchange.regtopp.model.RegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.model.importer.FileContentParser;
 import mobi.chouette.exchange.regtopp.model.importer.RegtoppImporter;
 
 @Log4j
-public class StopById extends IndexImpl<RegtoppStopHPL>   {
+public class UniqueLinesByTripIndex extends IndexImpl<RegtoppTripIndexTIX>   {
 
-	public StopById(FileContentParser fileParser) throws IOException {
+	public UniqueLinesByTripIndex(FileContentParser fileParser) throws IOException {
 		super(fileParser);
 	}
 
 	@Override
-	public boolean validate(RegtoppStopHPL bean, RegtoppImporter dao) {
+	public boolean validate(RegtoppTripIndexTIX bean, RegtoppImporter dao) {
 		boolean result = true;
-		
 
-		// Mulige valideringssteg
+		log.warn("TripByIndexingKey validation not implemented");
 		
-		// Koordinater ulike
-		// Sone 1 og 2 forskjellige
-		// Fullstendig navn !§= kortnavn
-		
-		// Holdeplassnummer X antall siffer
-		
-		
-		log.error("Validation code for RegtoppStopp not implemented");
-	
 		return result;
 	}
 	
@@ -38,21 +28,21 @@ public class StopById extends IndexImpl<RegtoppStopHPL>   {
 		@SuppressWarnings("rawtypes")
 		@Override
 		protected Index create(FileContentParser parser) throws IOException {
-			return new StopById(parser);
+			return new UniqueLinesByTripIndex(parser);
 		}
 	}
 
 	static {
 		IndexFactory factory = new DefaultImporterFactory();
-		IndexFactory.factories.put(StopById.class.getName(), factory);
+		IndexFactory.factories.put(UniqueLinesByTripIndex.class.getName(), factory);
 	}
 
 
 	@Override
 	public void index() throws IOException {
 		for(Object obj : _parser.getRawContent()) {
-			RegtoppStopHPL stop = (RegtoppStopHPL) obj;
-			_index.put(stop.getStopId(), stop);
+			RegtoppTripIndexTIX trip = (RegtoppTripIndexTIX) obj;
+			_index.put(trip.getTripId(),trip);
 		}
 	}
 }
