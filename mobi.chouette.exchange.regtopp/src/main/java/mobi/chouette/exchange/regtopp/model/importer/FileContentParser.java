@@ -18,7 +18,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.regtopp.model.RegtoppObject;
 import mobi.chouette.exchange.regtopp.model.importer.RegtoppException.ERROR;
-import mobi.chouette.exchange.regtopp.validation.ValidationReporter;
+import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 import mobi.chouette.exchange.report.FileError;
 import mobi.chouette.exchange.report.FileError.CODE;
 import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
@@ -27,8 +27,8 @@ import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
 public class FileContentParser {
 	@Getter
 	private List<Object> rawContent = new ArrayList<>();
-
-	public void parse(final Context context, final ParseableFile parseableFile, final ValidationReporter validationReporter) throws Exception {
+	
+	public void parse(final Context context, final ParseableFile parseableFile, final RegtoppValidationReporter validationReporter) throws Exception {
 		StreamFactory factory = StreamFactory.newInstance();
 
 		StreamBuilder builder = new StreamBuilder("regtopp").format("fixedlength").parser(new FixedLengthParserBuilder());
@@ -54,7 +54,9 @@ public class FileContentParser {
 					RecordContext rContext = ex.getRecordContext(i);
 					if (rContext.hasRecordErrors()) {
 						for (String error : rContext.getRecordErrors()) {
-							FileParserValidationContext ctx = new FileParserValidationContext(fileName, rContext.getLineNumber(), rContext.getRecordName(),
+							
+							// TODO report this in a better fashion
+							FileParserValidationError ctx = new FileParserValidationError(fileName, rContext.getLineNumber(), rContext.getRecordName(),
 									rContext.getRecordText(), ERROR.INVALID_FIELD_VALUE, error);
 							RegtoppException e = new RegtoppException(ctx, ex);
 							errors.add(e);
@@ -64,7 +66,8 @@ public class FileContentParser {
 						for (String field : rContext.getFieldErrors().keySet()) {
 							for (String error : rContext.getFieldErrors(field)) {
 
-								FileParserValidationContext ctx = new FileParserValidationContext(fileName, rContext.getLineNumber(), field,
+								// TODO report this in a better fashion
+								FileParserValidationError ctx = new FileParserValidationError(fileName, rContext.getLineNumber(), field,
 										rContext.getFieldText(field), ERROR.INVALID_FIELD_VALUE, error);
 								RegtoppException e = new RegtoppException(ctx, ex);
 								errors.add(e);

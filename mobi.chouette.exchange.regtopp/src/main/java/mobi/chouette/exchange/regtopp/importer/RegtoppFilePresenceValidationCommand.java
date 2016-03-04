@@ -41,7 +41,9 @@ import mobi.chouette.exchange.regtopp.model.RegtoppZoneSON;
 import mobi.chouette.exchange.regtopp.model.importer.ParseableFile;
 import mobi.chouette.exchange.regtopp.model.importer.RegtoppException;
 import mobi.chouette.exchange.regtopp.model.importer.RegtoppImporter;
-import mobi.chouette.exchange.regtopp.validation.ValidationReporter;
+import mobi.chouette.exchange.regtopp.model.importer.filevalidator.DefaultEmptyFileContentValidator;
+import mobi.chouette.exchange.regtopp.model.importer.filevalidator.TripIndexValidator;
+import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 import mobi.chouette.exchange.report.ActionError;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.FileError;
@@ -76,7 +78,7 @@ public class RegtoppFilePresenceValidationCommand implements Command, Constant {
 		RegtoppImportParameters parameters = (RegtoppImportParameters) context.get(CONFIGURATION);
 		// TODO read ie version from here
 
-		ValidationReporter validationReporter = (ValidationReporter) context.get(REGTOPP_REPORTER);
+		RegtoppValidationReporter validationReporter = (RegtoppValidationReporter) context.get(REGTOPP_REPORTER);
 
 		RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
 
@@ -121,48 +123,49 @@ public class RegtoppFilePresenceValidationCommand implements Command, Constant {
 						// Register file for parsing and necessary indexes
 						if ("TIX".equals(extension)) {
 							ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppTripIndexTIX.class }), file);
-							importer.registerFileForIndex(RegtoppImporter.INDEX.TRIP_INDEX.name(), parseableFile);
+							importer.registerFileForIndex(RegtoppImporter.INDEX.TRIP_INDEX.name(), parseableFile, new TripIndexValidator());
+							importer.registerFileForIndex(RegtoppImporter.INDEX.LINE_BY_TRIPS.name(), parseableFile, new TripIndexValidator());
 						} else if ("TMS".equals(extension)) {
 							ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppTripPatternTMS.class }),
 									file);
-							importer.registerFileForIndex(RegtoppImporter.INDEX.TRIP_PATTERN.name(), parseableFile);
+							importer.registerFileForIndex(RegtoppImporter.INDEX.TRIP_PATTERN.name(), parseableFile, new DefaultEmptyFileContentValidator());
 						} else if ("HPL".equals(extension)) {
 							ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppStopHPL.class }), file);
-							importer.registerFileForIndex(RegtoppImporter.INDEX.STOP_BY_ID.name(), parseableFile);
+							importer.registerFileForIndex(RegtoppImporter.INDEX.STOP_BY_ID.name(), parseableFile, new DefaultEmptyFileContentValidator());
 						} else if ("DKO".equals(extension)) {
 							ParseableFile parseableFile = new ParseableFile(fileName.toFile(),
 									Arrays.asList(new Class[] { RegtoppDayCodeHeaderDKO.class, RegtoppDayCodeDKO.class }), file);
-							importer.registerFileForIndex(RegtoppImporter.INDEX.DAYCODE_BY_ID.name(), parseableFile);
+							importer.registerFileForIndex(RegtoppImporter.INDEX.DAYCODE_BY_ID.name(), parseableFile, new DefaultEmptyFileContentValidator());
 						} else if ("DST".equals(extension)) {
 							ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppDestinationDST.class }),
 									file);
-							importer.registerFileForIndex(RegtoppImporter.INDEX.DESTINATION_BY_ID.name(), parseableFile);
+							importer.registerFileForIndex(RegtoppImporter.INDEX.DESTINATION_BY_ID.name(), parseableFile, new DefaultEmptyFileContentValidator());
 						} else if ("MRK".equals(extension)) {
 							ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppRemarkMRK.class }), file);
-							importer.registerFileForIndex(RegtoppImporter.INDEX.REMARK_BY_ID.name(), parseableFile);
+							importer.registerFileForIndex(RegtoppImporter.INDEX.REMARK_BY_ID.name(), parseableFile, new DefaultEmptyFileContentValidator());
 						} else if ("GAV".equals(extension)) {
 							ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppPathwayGAV.class }), file);
-							importer.registerFileForIndex(RegtoppImporter.INDEX.PATHWAY_FROM_STOP_ID.name(), parseableFile);
+							importer.registerFileForIndex(RegtoppImporter.INDEX.PATHWAY_FROM_STOP_ID.name(), parseableFile, new DefaultEmptyFileContentValidator());
 						} else if ("SAM".equals(extension)) {
 							ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppPathwayGAV.class }), file);
-							importer.registerFileForIndex(RegtoppImporter.INDEX.INTERCHANGE.name(), parseableFile);
+							importer.registerFileForIndex(RegtoppImporter.INDEX.INTERCHANGE.name(), parseableFile, new DefaultEmptyFileContentValidator());
 						} else if ("SON".equals(extension)) {
 							ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppZoneSON.class }), file);
-							importer.registerFileForIndex(RegtoppImporter.INDEX.ZONE_BY_ID.name(), parseableFile);
+							importer.registerFileForIndex(RegtoppImporter.INDEX.ZONE_BY_ID.name(), parseableFile, new DefaultEmptyFileContentValidator());
 						} else if ("LIN".equals(extension)) {
 							ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppLineLIN.class }), file);
-							importer.registerFileForIndex(RegtoppImporter.INDEX.LINE_BY_ID.name(), parseableFile);
+							importer.registerFileForIndex(RegtoppImporter.INDEX.LINE_BY_ID.name(), parseableFile, new DefaultEmptyFileContentValidator());
 						} else if ("VLP".equals(extension)) {
 							ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppVehicleJourneyVLP.class }),
 									file);
-							importer.registerFileForIndex(RegtoppImporter.INDEX.VEHICLE_JOURNEY.name(), parseableFile);
+							importer.registerFileForIndex(RegtoppImporter.INDEX.VEHICLE_JOURNEY.name(), parseableFile, new DefaultEmptyFileContentValidator());
 						} else if ("TAB".equals(extension)) {
 							ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppTableVersionTAB.class }),
 									file);
-							importer.registerFileForIndex(RegtoppImporter.INDEX.TABLE_VERSION.name(), parseableFile);
+							importer.registerFileForIndex(RegtoppImporter.INDEX.TABLE_VERSION.name(), parseableFile, new DefaultEmptyFileContentValidator());
 						} else if ("RUT".equals(extension)) {
 							ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppRoutePointRUT.class }), file);
-							importer.registerFileForIndex(RegtoppImporter.INDEX.ROUTE_POINT.name(), parseableFile);
+							importer.registerFileForIndex(RegtoppImporter.INDEX.ROUTE_POINT.name(), parseableFile, new DefaultEmptyFileContentValidator());
 						}
 					}
 				}

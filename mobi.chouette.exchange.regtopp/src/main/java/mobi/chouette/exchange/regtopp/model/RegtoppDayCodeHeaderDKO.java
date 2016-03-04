@@ -24,8 +24,6 @@ public class RegtoppDayCodeHeaderDKO extends RegtoppObject implements Serializab
 
 	private static final long serialVersionUID = 1L;
 
-	// TODO first line different
-
 	@Getter
 	@Setter
 	@Field(length = 6, type = java.util.Date.class, format = "yyMMdd")
@@ -35,20 +33,6 @@ public class RegtoppDayCodeHeaderDKO extends RegtoppObject implements Serializab
 	@Setter
 	@Field(length = 1)
 	private Integer weekDay;
-
-	// @Override
-	// public String toString()
-	// {
-	// return id + ":" + StopTimeExporter.CONVERTER.to(new FileParserValidationContext(),this);
-	// }
-
-	public enum DropOffType implements Serializable {
-		Scheduled, NoAvailable, AgencyCall, DriverCall;
-	}
-
-	public enum PickupType implements Serializable {
-		Scheduled, NoAvailable, AgencyCall, DriverCall;
-	}
 
 	@Override
 	public String getIndexingKey() {

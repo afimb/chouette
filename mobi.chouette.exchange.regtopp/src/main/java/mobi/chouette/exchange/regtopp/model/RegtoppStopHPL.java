@@ -96,19 +96,4 @@ public class RegtoppStopHPL extends RegtoppObject implements Serializable {
 		return adminCode+counter+stopId;
 	}
 
-
-	public RegtoppStopHPL(RegtoppStopHPL bean) {
-		throw new RuntimeException("Copy constructor not implemented");
-	}
-
-	public enum LocationType implements Serializable {
-		Stop, Station, Access;
-
-	}
-
-	public enum WheelchairBoardingType implements Serializable {
-		NoInformation, Allowed, NoAllowed;
-
-	}
-
 }

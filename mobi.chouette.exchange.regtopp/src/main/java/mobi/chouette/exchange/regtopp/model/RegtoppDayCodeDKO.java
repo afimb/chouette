@@ -23,8 +23,6 @@ public class RegtoppDayCodeDKO extends RegtoppObject implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	// TODO first line different
-
 	@Getter
 	@Setter
 	@Field(length = 3)
@@ -44,20 +42,6 @@ public class RegtoppDayCodeDKO extends RegtoppObject implements Serializable {
 	@Setter
 	@Field(length = 392)
 	private String dayCode;
-
-	// @Override
-	// public String toString()
-	// {
-	// return id + ":" + StopTimeExporter.CONVERTER.to(new FileParserValidationContext(),this);
-	// }
-
-	public enum DropOffType implements Serializable {
-		Scheduled, NoAvailable, AgencyCall, DriverCall;
-	}
-
-	public enum PickupType implements Serializable {
-		Scheduled, NoAvailable, AgencyCall, DriverCall;
-	}
 
 	@Override
 	public String getIndexingKey() {

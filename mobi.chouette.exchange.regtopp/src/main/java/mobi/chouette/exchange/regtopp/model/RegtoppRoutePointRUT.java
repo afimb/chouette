@@ -67,19 +67,4 @@ public class RegtoppRoutePointRUT extends RegtoppObject implements Serializable 
 		return adminCode+counter+lineId+periodId+sequenceNumberRoutePoint;
 	}
 
-
-	public RegtoppRoutePointRUT(RegtoppRoutePointRUT bean) {
-		throw new RuntimeException("Copy constructor not implemented");
-	}
-
-	public enum LocationType implements Serializable {
-		Stop, Station, Access;
-
-	}
-
-	public enum WheelchairBoardingType implements Serializable {
-		NoInformation, Allowed, NoAllowed;
-
-	}
-
 }

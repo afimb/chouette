@@ -32,7 +32,7 @@ import mobi.chouette.exchange.regtopp.model.RegtoppVehicleJourneyVLP;
 import mobi.chouette.exchange.regtopp.model.RegtoppZoneSON;
 import mobi.chouette.exchange.regtopp.model.importer.FileContentParser;
 import mobi.chouette.exchange.regtopp.model.importer.ParseableFile;
-import mobi.chouette.exchange.regtopp.validation.ValidationReporter;
+import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.FileInfo;
 import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
@@ -78,7 +78,7 @@ public class FileContentParserTest {
 			context.put(Constant.REPORT, report);
 			
 			
-			ValidationReporter reporter = new ValidationReporter();
+			RegtoppValidationReporter reporter = new RegtoppValidationReporter();
 			FileContentParser parser = new FileContentParser();
 			String name = f.getName().toUpperCase();
 			String extension = name.substring(name.lastIndexOf(".")+1);

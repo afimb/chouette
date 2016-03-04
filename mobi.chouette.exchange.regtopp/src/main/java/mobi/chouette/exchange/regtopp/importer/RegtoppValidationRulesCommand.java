@@ -14,7 +14,7 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.regtopp.validation.Constant;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationRules;
-import mobi.chouette.exchange.regtopp.validation.ValidationReporter;
+import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 
 @Log4j
@@ -34,9 +34,9 @@ public class RegtoppValidationRulesCommand implements Command, Constant {
 		RegtoppImportParameters parameters = (RegtoppImportParameters)context.get(CONFIGURATION);
 		//validationReport.setCheckPoints((new RegtoppValidationRules()).checkPoints(parameters));
 
-		ValidationReporter validationReporter = (ValidationReporter)context.get(REGTOPP_REPORTER);
+		RegtoppValidationReporter validationReporter = (RegtoppValidationReporter)context.get(REGTOPP_REPORTER);
 		if (validationReporter == null) {
-			validationReporter = new ValidationReporter();
+			validationReporter = new RegtoppValidationReporter();
 			context.put(REGTOPP_REPORTER, validationReporter);
 		}
 		

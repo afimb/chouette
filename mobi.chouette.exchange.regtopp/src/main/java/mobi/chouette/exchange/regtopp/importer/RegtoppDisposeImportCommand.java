@@ -15,7 +15,7 @@ import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.importer.AbstractDisposeImportCommand;
 import mobi.chouette.exchange.regtopp.Constant;
 import mobi.chouette.exchange.regtopp.model.importer.RegtoppImporter;
-import mobi.chouette.exchange.regtopp.validation.ValidationReporter;
+import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 
 @Log4j
 public class RegtoppDisposeImportCommand extends AbstractDisposeImportCommand  implements Constant {
@@ -34,7 +34,7 @@ public class RegtoppDisposeImportCommand extends AbstractDisposeImportCommand  i
 			if (importer != null) {
 				importer.dispose();
 			}
-			ValidationReporter validationReporter = (ValidationReporter) context.get(REGTOPP_REPORTER);
+			RegtoppValidationReporter validationReporter = (RegtoppValidationReporter) context.get(REGTOPP_REPORTER);
 			if (validationReporter != null) {
 				validationReporter.dispose();
 			}

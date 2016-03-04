@@ -16,7 +16,7 @@ import mobi.chouette.exchange.validation.report.Location;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 
 @Log4j
-public class ValidationReporter implements Constant {
+public class RegtoppValidationReporter implements Constant {
 
 	@Getter
 	private Set<RegtoppException> exceptions = new RegtoppExceptionsHashSet<RegtoppException>();

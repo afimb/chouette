@@ -15,8 +15,10 @@ import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.regtopp.Constant;
 import mobi.chouette.exchange.regtopp.model.importer.RegtoppImporter;
+import mobi.chouette.exchange.regtopp.parser.RegtoppStopParser;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.DataStats;
 import mobi.chouette.exchange.report.LineInfo;
@@ -56,6 +58,15 @@ public class RegtoppLineParserCommand implements Command, Constant {
 				createPTNetwork(referential, configuration);
 			}
 
+			// Stops
+			// Kalle parse-metode på RegtoppStopParser
+//			// StopArea
+			if (referential.getSharedStopAreas().isEmpty()) {
+				RegtoppStopParser stopParser = (RegtoppStopParser) ParserFactory.create(RegtoppStopParser.class.getName());
+				stopParser.parse(context);
+			}
+			
+			
 			// Company
 //			if (referential.getSharedCompanies().isEmpty()) {
 //				GtfsAgencyParser gtfsAgencyParser = (GtfsAgencyParser) ParserFactory.create(GtfsAgencyParser.class
