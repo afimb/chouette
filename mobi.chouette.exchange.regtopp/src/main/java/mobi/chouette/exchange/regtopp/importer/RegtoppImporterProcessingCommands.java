@@ -79,8 +79,8 @@ public class RegtoppImporterProcessingCommands implements ProcessingCommands, Co
 
 				Chain chain = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
 
-				RegtoppRouteParserCommand parser = (RegtoppRouteParserCommand) CommandFactory.create(initialContext,
-						RegtoppRouteParserCommand.class.getName());
+				RegtoppLineParserCommand parser = (RegtoppLineParserCommand) CommandFactory.create(initialContext,
+						RegtoppLineParserCommand.class.getName());
 				
 				parser.setLineId(line.getLineId());
 				chain.add(parser);

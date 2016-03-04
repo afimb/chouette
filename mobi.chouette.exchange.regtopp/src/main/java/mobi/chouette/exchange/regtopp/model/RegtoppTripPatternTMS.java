@@ -27,32 +27,32 @@ public class RegtoppTripPatternTMS extends RegtoppObject implements Serializable
 	@Getter
 	@Setter
 	@Field(length = 3)
-	private String adminCode;
+	private Integer adminCode;
 
 	@Getter
 	@Setter
 	@Field(length = 1)
-	private String counter;
+	private Integer counter;
 
 	@Getter
 	@Setter
 	@Field(length = 4)
-	private String lineId;
+	private Integer lineId;
 
 	@Getter
 	@Setter
-	@Field(length = 1, regex = "[12]{1}", format="toString")
+	@Field(length = 1, regex = "[12]{1}", format = "toString")
 	private DirectionType direction;
 
 	@Getter
 	@Setter
 	@Field(length = 2)
-	private String routeId;
+	private Integer routeId;
 
 	@Getter
 	@Setter
 	@Field(length = 3)
-	private String sequenceNumberStop;
+	private Integer sequenceNumberStop;
 
 	@Getter
 	@Setter
@@ -87,7 +87,7 @@ public class RegtoppTripPatternTMS extends RegtoppObject implements Serializable
 	@Getter
 	@Setter
 	@Field(length = 3)
-	private String remarkId;
+	private Integer remarkId;
 
 	@Getter
 	@Setter
@@ -98,11 +98,10 @@ public class RegtoppTripPatternTMS extends RegtoppObject implements Serializable
 	@Setter
 	@Field(length = 6)
 	private Integer distance;
-	
+
 	@Override
 	public String getIndexingKey() {
-		return adminCode+counter+lineId+direction+routeId+sequenceNumberStop;
+		return pad(adminCode, 3) + counter + pad(lineId, 4) + direction + pad(routeId, 2) + pad(sequenceNumberStop, 3);
 	}
-
 
 }

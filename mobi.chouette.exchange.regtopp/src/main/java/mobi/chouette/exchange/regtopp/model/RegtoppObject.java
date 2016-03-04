@@ -2,6 +2,8 @@ package mobi.chouette.exchange.regtopp.model;
 
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,4 +27,12 @@ public abstract class RegtoppObject {
 	protected Set<RegtoppException.ERROR> okTests = new RegtoppErrorsHashSet<>();
 	
 	public abstract String getIndexingKey();
+	
+	protected String pad(String val, int size) {
+		return StringUtils.leftPad(val, size,'0');
+	}
+	
+	protected String pad(int val, int size) {
+		return pad(String.valueOf(val),size);
+	}
 }
