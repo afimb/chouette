@@ -185,20 +185,11 @@
 										${project.rootDir}/target/wildfly-${wildfly.version}/modules/system/layers/base/org/hibernate/main
 									</outputDirectory>
 								</artifactItem>
-<!-- 								<artifactItem>
-									<groupId>org.postgresql</groupId>
-									<artifactId>postgresql</artifactId>
-									<version>${postgresql.version}</version>
-									<overWrite>false</overWrite>
-									<outputDirectory>${project.rootDir}/target/wildfly-${wildfly.version}/standalone/deployments</outputDirectory>
-								</artifactItem>
-								<artifactItem>
-									<groupId>net.postgis</groupId>
-									<artifactId>postgis-jdbc</artifactId>
-									<version>${postgis.version}</version>
-									<overWrite>false</overWrite>
-									<outputDirectory>${project.rootDir}/target/wildfly-${wildfly.version}/standalone/deployments</outputDirectory>
-								</artifactItem> -->
+								<!-- <artifactItem> <groupId>org.postgresql</groupId> <artifactId>postgresql</artifactId> 
+									<version>${postgresql.version}</version> <overWrite>false</overWrite> <outputDirectory>${project.rootDir}/target/wildfly-${wildfly.version}/standalone/deployments</outputDirectory> 
+									</artifactItem> <artifactItem> <groupId>net.postgis</groupId> <artifactId>postgis-jdbc</artifactId> 
+									<version>${postgis.version}</version> <overWrite>false</overWrite> <outputDirectory>${project.rootDir}/target/wildfly-${wildfly.version}/standalone/deployments</outputDirectory> 
+									</artifactItem> -->
 							</artifactItems>
 						</configuration>
 					</execution>
@@ -234,12 +225,14 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.17</version>
 				<configuration>
-					<argLine>-Djboss.socket.binding.port-offset=300 -XX:MaxPermSize=256m</argLine>
+					<argLine>-Djboss.socket.binding.port-offset=300
+						-XX:MaxPermSize=256m</argLine>
 					<!-- Fork every test because it will launch a separate AS instance -->
 					<forkCount>1</forkCount>
 					<systemPropertyVariables>
 						<java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-						<!-- the maven dependency plugin will have already downloaded the server on /target -->
+						<!-- the maven dependency plugin will have already downloaded the server 
+							on /target -->
 						<jboss.home>${project.rootDir}/target/wildfly-${wildfly.version}</jboss.home>
 						<module.path>${project.rootDir}/target/wildfly-${wildfly.version}/modules</module.path>
 					</systemPropertyVariables>
@@ -335,7 +328,8 @@
 		</plugins>
 		<pluginManagement>
 			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself. -->
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>
 					<artifactId>lifecycle-mapping</artifactId>
@@ -525,11 +519,11 @@
 				<artifactId>mobi.chouette.exchange.validator</artifactId>
 				<version>${project.version}</version>
 			</dependency>
-         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>mobi.chouette.exchange.converter</artifactId>
-            <version>${project.version}</version>
-         </dependency>
+			<dependency>
+				<groupId>${project.groupId}</groupId>
+				<artifactId>mobi.chouette.exchange.converter</artifactId>
+				<version>${project.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>${project.groupId}</groupId>
 				<artifactId>mobi.chouette.service</artifactId>
@@ -807,7 +801,7 @@
 		<module>mobi.chouette.model</module>
 		<module>mobi.chouette.model.iev</module>
 		<module>mobi.chouette.dao</module>
-      <module>mobi.chouette.dao.iev</module>
+		<module>mobi.chouette.dao.iev</module>
 		<module>mobi.chouette.exchange</module>
 		<module>mobi.chouette.exchange.neptune</module>
 		<module>mobi.chouette.exchange.netex</module>
@@ -816,9 +810,9 @@
 		<module>mobi.chouette.exchange.gtfs</module>
 		<module>mobi.chouette.exchange.geojson</module>
 		<module>mobi.chouette.exchange.validator</module>
-      <module>mobi.chouette.exchange.converter</module>
+		<module>mobi.chouette.exchange.converter</module>
 		<module>mobi.chouette.service</module>
-      <module>mobi.chouette.schema.checker</module>
+		<module>mobi.chouette.schema.checker</module>
 		<module>mobi.chouette.ws</module>
 		<module>mobi.chouette.command</module>
 		<module>chouette_iev</module>
