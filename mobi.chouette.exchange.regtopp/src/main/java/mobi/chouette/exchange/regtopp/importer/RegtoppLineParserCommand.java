@@ -26,9 +26,9 @@ import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 @Log4j
-public class RegtoppRouteParserCommand implements Command, Constant {
+public class RegtoppLineParserCommand implements Command, Constant {
 
-	public static final String COMMAND = "RegtoppRouteParserCommand";
+	public static final String COMMAND = "RegtoppLineParserCommand";
 
 	@Getter
 	@Setter
@@ -151,12 +151,12 @@ public class RegtoppRouteParserCommand implements Command, Constant {
 
 		@Override
 		protected Command create(InitialContext context) throws IOException {
-			Command result = new RegtoppRouteParserCommand();
+			Command result = new RegtoppLineParserCommand();
 			return result;
 		}
 	}
 
 	static {
-		CommandFactory.factories.put(RegtoppRouteParserCommand.class.getName(), new DefaultCommandFactory());
+		CommandFactory.factories.put(RegtoppLineParserCommand.class.getName(), new DefaultCommandFactory());
 	}
 }

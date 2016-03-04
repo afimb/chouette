@@ -92,12 +92,12 @@ public class RegtoppTripIndexTIX extends RegtoppObject implements Serializable {
 	@Getter
 	@Setter
 	@Field(length = 2)
-	private Integer routeId;
+	private int routeId;
 
 	@Getter
 	@Setter
-	@Field(length = 4)
-	private Integer departureTime;
+	@Field(length = 4,regex = "[0-2][0-9]{3}")
+	private String departureTime;
 
 	@Getter
 	@Setter
