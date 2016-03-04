@@ -32,18 +32,18 @@ public class RegtoppException extends RuntimeException {
 	@Getter
 	private String errorMessage;
 
-	public RegtoppException(Context context) {
+	public RegtoppException(FileParserValidationContext context) {
 		this(context, null);
 	}
 
-	public RegtoppException(Context context, Throwable cause) {
+	public RegtoppException(FileParserValidationContext context, Throwable cause) {
 		super(cause);
 
-		this.field = (String) context.get(Context.FIELD);
-		this.error = (ERROR) context.get(Context.ERROR);
-		this.value = (String) context.get(Context.VALUE);
-		this.lineNumber = (Integer) context.get(Context.LINE_NUMBER);
-		this.errorMessage = (String) context.get(Context.ERROR_MESSAGE);
+		this.field = (String) context.get(FileParserValidationContext.FIELD);
+		this.error = (ERROR) context.get(FileParserValidationContext.ERROR);
+		this.value = (String) context.get(FileParserValidationContext.VALUE);
+		this.lineNumber = (Integer) context.get(FileParserValidationContext.LINE_NUMBER);
+		this.errorMessage = (String) context.get(FileParserValidationContext.ERROR_MESSAGE);
 
 	}
 

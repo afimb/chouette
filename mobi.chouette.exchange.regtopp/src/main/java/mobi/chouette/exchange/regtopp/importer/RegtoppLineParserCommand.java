@@ -103,7 +103,7 @@ public class RegtoppLineParserCommand implements Command, Constant {
 //			gtfsRouteParser.setGtfsRouteId(lineId);
 //			gtfsRouteParser.parse(context);
 
-			addStats(report, referential);
+			//addStats(report, referential);
 			result = SUCCESS;
 		} catch (Exception e) {
 			log.error("error : ", e);

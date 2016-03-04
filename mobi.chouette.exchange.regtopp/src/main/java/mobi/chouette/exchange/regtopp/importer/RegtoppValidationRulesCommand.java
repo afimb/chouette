@@ -32,7 +32,7 @@ public class RegtoppValidationRulesCommand implements Command, Constant {
 			context.put(MAIN_VALIDATION_REPORT, validationReport);
 		}
 		RegtoppImportParameters parameters = (RegtoppImportParameters)context.get(CONFIGURATION);
-		validationReport.setCheckPoints((new RegtoppValidationRules()).checkPoints(parameters));
+		//validationReport.setCheckPoints((new RegtoppValidationRules()).checkPoints(parameters));
 
 		ValidationReporter validationReporter = (ValidationReporter)context.get(REGTOPP_REPORTER);
 		if (validationReporter == null) {

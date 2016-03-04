@@ -44,7 +44,9 @@ import mobi.chouette.exchange.regtopp.model.importer.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.validation.ValidationReporter;
 import mobi.chouette.exchange.report.ActionError;
 import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.FileError;
 import mobi.chouette.exchange.report.FileInfo;
+import mobi.chouette.exchange.report.ActionError.CODE;
 import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
 
 @Log4j
@@ -167,27 +169,37 @@ public class RegtoppFilePresenceValidationCommand implements Command, Constant {
 			}
 
 			if (prefixesFound.size() > 1) {
-				// Multiple prefixes found, should all be the same
-//				validationReporter.reportError(context,
-//						new RegtoppException(StringUtils.join(prefixesFound, ","), 1, null, RegtoppException.ERROR.MULTIPLE_ADMIN_CODES, null, null),
-//						StringUtils.join(prefixesFound, ",") + ".*");
+				// Multiple prefixes found, should all be the same (technically it is allowed, but too complicated for now)
+				ActionError error = new ActionError(CODE.INVALID_DATA,
+						"Multiple companies or versions found in zip file: " + StringUtils.join(prefixesFound, " "));
+				report.setFailure(error);
+			} else {
+				if (!foundExtensions.containsAll(mandatoryFileExtensions)) {
+					// Check that all 4 mandatory files found
+					// Convert to set
+
+					String prefix = prefixesFound.iterator().next();
+
+					Set<String> missingFiles = new HashSet<String>();
+					missingFiles.addAll(mandatoryFileExtensions);
+					missingFiles.removeAll(foundExtensions);
+
+					for (String missingExtension : missingFiles) {
+						FileInfo fileInfo = new FileInfo(prefix + "." + missingExtension, FILE_STATE.ERROR,
+								Arrays.asList(new FileError(FileError.CODE.FILE_NOT_FOUND, null)));
+						report.getFiles().add(fileInfo);
+					}
+
+				} else {
+					result = SUCCESS;
+				}
 			}
-
-			// Check that all 4 mandatory files found
-			// Convert to set
-			if (!mandatoryFileExtensions.containsAll(foundExtensions)) {
-//				validationReporter.reportError(context, new RegtoppException(context),
-//						"TODO list of files expected but missing");
-
-			}
-
-			result = SUCCESS;
 		} catch (RegtoppException e) {
 			// log.error(e,e);
 			if (e.getError().equals(RegtoppException.ERROR.SYSTEM))
 				throw e;
 			else
-				report.setFailure(new ActionError(ActionError.CODE.INVALID_DATA, e.getError().name() ));
+				report.setFailure(new ActionError(ActionError.CODE.INVALID_DATA, e.getError().name()));
 
 		} catch (Exception e) {
 			if (e instanceof RuntimeException)

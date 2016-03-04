@@ -39,7 +39,7 @@ public class RegtoppDayCodeHeaderDKO extends RegtoppObject implements Serializab
 	// @Override
 	// public String toString()
 	// {
-	// return id + ":" + StopTimeExporter.CONVERTER.to(new Context(),this);
+	// return id + ":" + StopTimeExporter.CONVERTER.to(new FileParserValidationContext(),this);
 	// }
 
 	public enum DropOffType implements Serializable {

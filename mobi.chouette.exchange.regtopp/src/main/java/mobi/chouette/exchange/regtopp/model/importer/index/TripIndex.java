@@ -54,7 +54,7 @@ public class TripIndex extends IndexImpl<RegtoppTripIndexTIX>   {
 			}
 		}
 		
-		// stopId is used by a stop_time. OK: See GtfsTripParser.validateStopTimes(Context)
+		// stopId is used by a stop_time. OK: See GtfsTripParser.validateStopTimes(FileParserValidationContext)
 		
 		// stopDesc != stopName
 		boolean result2 = true;
@@ -98,7 +98,7 @@ public class TripIndex extends IndexImpl<RegtoppTripIndexTIX>   {
 		
 		// stopUrl != routeUrl. OK: See RouteById.validate(GtfsRoute bean, GtfsImporter dao)
 		
-		// locationType is set for at least one stop. OK: See GtfsStopParser.validate(Context context)
+		// locationType is set for at least one stop. OK: See GtfsStopParser.validate(FileParserValidationContext context)
 */
 		return result;
 	}

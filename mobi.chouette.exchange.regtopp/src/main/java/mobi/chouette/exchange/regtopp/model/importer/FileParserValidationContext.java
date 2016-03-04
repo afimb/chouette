@@ -2,7 +2,7 @@ package mobi.chouette.exchange.regtopp.model.importer;
 
 import java.util.HashMap;
 
-public class Context extends HashMap<String, Object> {
+public class FileParserValidationContext extends HashMap<String, Object> {
 	private static final long serialVersionUID = 1L;
 
 	public static final String PATH = "path";
@@ -13,11 +13,11 @@ public class Context extends HashMap<String, Object> {
 	public static final String ERROR = "error";
 	public static final String ERROR_MESSAGE = "error_message";
 
-	public Context() {
+	public FileParserValidationContext() {
 		super();
 	}
 
-	public Context(String file, int lineNumber, String field, Object value, RegtoppException.ERROR error, String errorMessage) {
+	public FileParserValidationContext(String file, int lineNumber, String field, Object value, RegtoppException.ERROR error, String errorMessage) {
 		put(FIELD, field);
 		put(ERROR, error);
 		put(VALUE, value);
@@ -26,12 +26,12 @@ public class Context extends HashMap<String, Object> {
 		put(FILE,file);
 	}
 
-	public Context(String path, String file) {
+	public FileParserValidationContext(String path, String file) {
 		put(PATH,path);
 		put(FILE,file);
 	}
 
-	public Context(Context context) {
+	public FileParserValidationContext(FileParserValidationContext context) {
 		put(FIELD, context.get(FIELD));
 		put(ERROR, context.get(ERROR));
 		put(VALUE, context.get(VALUE));

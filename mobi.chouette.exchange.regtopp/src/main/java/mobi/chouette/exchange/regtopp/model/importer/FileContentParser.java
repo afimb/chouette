@@ -19,6 +19,8 @@ import mobi.chouette.common.Context;
 import mobi.chouette.exchange.regtopp.model.RegtoppObject;
 import mobi.chouette.exchange.regtopp.model.importer.RegtoppException.ERROR;
 import mobi.chouette.exchange.regtopp.validation.ValidationReporter;
+import mobi.chouette.exchange.report.FileError;
+import mobi.chouette.exchange.report.FileError.CODE;
 import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
 
 @Log4j
@@ -52,8 +54,8 @@ public class FileContentParser {
 					RecordContext rContext = ex.getRecordContext(i);
 					if (rContext.hasRecordErrors()) {
 						for (String error : rContext.getRecordErrors()) {
-							mobi.chouette.exchange.regtopp.model.importer.Context ctx = new mobi.chouette.exchange.regtopp.model.importer.Context(fileName,
-									rContext.getLineNumber(), rContext.getRecordName(), rContext.getRecordText(), ERROR.INVALID_FIELD_VALUE, error);
+							FileParserValidationContext ctx = new FileParserValidationContext(fileName, rContext.getLineNumber(), rContext.getRecordName(),
+									rContext.getRecordText(), ERROR.INVALID_FIELD_VALUE, error);
 							RegtoppException e = new RegtoppException(ctx, ex);
 							errors.add(e);
 						}
@@ -62,14 +64,16 @@ public class FileContentParser {
 						for (String field : rContext.getFieldErrors().keySet()) {
 							for (String error : rContext.getFieldErrors(field)) {
 
-								mobi.chouette.exchange.regtopp.model.importer.Context ctx = new mobi.chouette.exchange.regtopp.model.importer.Context(fileName,
-										rContext.getLineNumber(), field, rContext.getFieldText(field), ERROR.INVALID_FIELD_VALUE, error);
+								FileParserValidationContext ctx = new FileParserValidationContext(fileName, rContext.getLineNumber(), field,
+										rContext.getFieldText(field), ERROR.INVALID_FIELD_VALUE, error);
 								RegtoppException e = new RegtoppException(ctx, ex);
 								errors.add(e);
 							}
 						}
 					}
 				}
+				parseableFile.getFileInfo().addError(new FileError(CODE.INVALID_FORMAT, ex.getMessage()));
+				
 			}
 		});
 
