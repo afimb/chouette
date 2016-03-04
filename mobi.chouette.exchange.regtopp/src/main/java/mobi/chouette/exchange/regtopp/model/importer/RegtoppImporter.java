@@ -89,9 +89,9 @@ public class RegtoppImporter {
 				index = IndexFactory.build(parser, clazz.getName());
 				_indexMap.put(name, index);
 			} catch (ClassNotFoundException | IOException e) {
-				mobi.chouette.exchange.regtopp.model.importer.Context context = new mobi.chouette.exchange.regtopp.model.importer.Context();
-				context.put(mobi.chouette.exchange.regtopp.model.importer.Context.PATH, _path);
-				context.put(mobi.chouette.exchange.regtopp.model.importer.Context.ERROR, ERROR.SYSTEM);
+				mobi.chouette.exchange.regtopp.model.importer.FileParserValidationContext context = new mobi.chouette.exchange.regtopp.model.importer.FileParserValidationContext();
+				context.put(mobi.chouette.exchange.regtopp.model.importer.FileParserValidationContext.PATH, _path);
+				context.put(mobi.chouette.exchange.regtopp.model.importer.FileParserValidationContext.ERROR, ERROR.SYSTEM);
 				throw new RegtoppException(context, e);
 			}
 
