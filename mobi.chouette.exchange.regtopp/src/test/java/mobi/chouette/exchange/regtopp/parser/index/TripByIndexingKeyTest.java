@@ -5,18 +5,18 @@ import java.io.File;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import mobi.chouette.exchange.regtopp.model.RegtoppDestinationDST;
+import mobi.chouette.exchange.regtopp.model.RegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.model.importer.parser.FileContentParser;
-import mobi.chouette.exchange.regtopp.model.importer.parser.index.DestinationById;
+import mobi.chouette.exchange.regtopp.model.importer.parser.index.TripByIndexingKey;
 
-public class DestinationByIdTest extends AbstractIndexTest{
+public class TripByIndexingKeyTest extends AbstractIndexTest{
 	
 
 	@Test(dependsOnMethods = {"setupImporter"})
 	public void testValidation() throws Exception {
-		FileContentParser fileContentParser = createUnderlyingFileParser(new File("src/test/data/regtopp12/R5001.dst"), new Class[] {RegtoppDestinationDST.class});
-		DestinationById index = new DestinationById(validationReporter,fileContentParser);
-		for(RegtoppDestinationDST obj : index) {
+		FileContentParser fileContentParser = createUnderlyingFileParser(new File("src/test/data/regtopp12/R5001.tix"), new Class[] {RegtoppTripIndexTIX.class});
+		TripByIndexingKey index = new TripByIndexingKey(validationReporter,fileContentParser);
+		for(RegtoppTripIndexTIX obj : index) {
 			boolean validData = index.validate(obj,importer);
 			Assert.assertTrue(validData,"Bean did not validate: "+obj);
 		}

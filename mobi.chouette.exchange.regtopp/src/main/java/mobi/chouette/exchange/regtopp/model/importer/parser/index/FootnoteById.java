@@ -1,12 +1,13 @@
 package mobi.chouette.exchange.regtopp.model.importer.parser.index;
 
-import java.io.IOException;
-
 import org.apache.commons.lang.StringUtils;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Context;
 import mobi.chouette.exchange.regtopp.model.RegtoppFootnoteMRK;
 import mobi.chouette.exchange.regtopp.model.importer.parser.FileContentParser;
+import mobi.chouette.exchange.regtopp.model.importer.parser.FileParserValidationError;
+import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppException;
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 
@@ -48,10 +49,14 @@ public class FootnoteById extends IndexImpl<RegtoppFootnoteMRK>   {
 
 
 	@Override
-	public void index() throws IOException {
+	public void index() throws Exception {
 		for(Object obj : _parser.getRawContent()) {
 			RegtoppFootnoteMRK footnote = (RegtoppFootnoteMRK) obj;
-			_index.put(footnote.getFootnoteId(), footnote);
+			RegtoppFootnoteMRK existing = _index.put(footnote.getFootnoteId(), footnote);
+			if(existing != null) {
+				// TODO fix exception/validation reporting
+				_validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError()), null);
+			}
 		}
 	}
 }

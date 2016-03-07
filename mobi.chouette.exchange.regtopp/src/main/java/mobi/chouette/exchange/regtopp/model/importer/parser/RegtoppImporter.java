@@ -15,7 +15,6 @@ import mobi.chouette.exchange.regtopp.model.RegtoppRouteTMS;
 import mobi.chouette.exchange.regtopp.model.RegtoppStopHPL;
 import mobi.chouette.exchange.regtopp.model.RegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppException.ERROR;
-import mobi.chouette.exchange.regtopp.model.importer.parser.filevalidator.FileContentValidator;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.DaycodeById;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.DestinationById;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.FootnoteById;
@@ -49,7 +48,6 @@ public class RegtoppImporter {
 	private Map<String, Index<RegtoppObject>> _indexMap = new HashMap<String, Index<RegtoppObject>>();
 	private Map<String, FileContentParser> _fileContentMap = new HashMap<String, FileContentParser>();
 	private Map<String, ParseableFile> _fileMap = new HashMap<String, ParseableFile>();
-	private Map<String, FileContentValidator> _validatorMap = new HashMap<String, FileContentValidator>();
 
 	private RegtoppValidationReporter _validationReporter;
 	private Context _context;
@@ -60,10 +58,8 @@ public class RegtoppImporter {
 		_context = context;
 	}
 
-	public void registerFileForIndex(String indexName, ParseableFile parseableFile, FileContentValidator validator) {
+	public void registerFileForIndex(String indexName, ParseableFile parseableFile) {
 		_fileMap.put(indexName, parseableFile);
-		_validatorMap.put(parseableFile.getFile().getName(), validator);
-		
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -101,8 +97,6 @@ public class RegtoppImporter {
 					_fileContentMap.put(parseableFile.getFile().getName(), parser);
 					// Do actual parsing of file
 					parser.parse(_context, parseableFile, _validationReporter);
-					FileContentValidator validator = _validatorMap.get(parseableFile.getFile().getName());
-					validator.validate(_context,parser);
 				}
 
 				index = IndexFactory.build(_validationReporter,parser, clazz.getName());

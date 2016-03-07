@@ -2,6 +2,7 @@ package mobi.chouette.exchange.regtopp.importer;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.naming.InitialContext;
@@ -82,8 +83,12 @@ public class RegtoppImporterProcessingCommands implements ProcessingCommands, Co
 		RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
 
 		try {
+			
+			
 			Index<RegtoppTripIndexTIX> index = importer.getUniqueLinesByTripIndex();
-			for( RegtoppTripIndexTIX line : index) {
+			Iterator<String> keys = index.keys();
+			while(keys.hasNext()) {
+				String lineId = keys.next();
 
 				Chain chain = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
 
@@ -91,7 +96,7 @@ public class RegtoppImporterProcessingCommands implements ProcessingCommands, Co
 				RegtoppLineParserCommand parser = (RegtoppLineParserCommand) CommandFactory.create(initialContext,
 						RegtoppLineParserCommand.class.getName());
 				
-				parser.setLineId(line.getLineId());
+				parser.setLineId(lineId);
 				chain.add(parser);
 				if (withDao && !parameters.isNoSave()) {
 
