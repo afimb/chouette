@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.regtopp.importer;
+package mobi.chouette.exchange.regtopp.importer.parser;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,6 +29,8 @@ import mobi.chouette.dao.LineDAO;
 import mobi.chouette.dao.VehicleJourneyDAO;
 import mobi.chouette.exchange.regtopp.JobDataTest;
 import mobi.chouette.exchange.regtopp.RegtoppTestUtils;
+import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
+import mobi.chouette.exchange.regtopp.importer.RegtoppImporterCommand;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.Line;

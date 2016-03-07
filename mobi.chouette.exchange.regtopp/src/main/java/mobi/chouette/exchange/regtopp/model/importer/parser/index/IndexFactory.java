@@ -1,10 +1,10 @@
-package mobi.chouette.exchange.regtopp.model.importer.index;
+package mobi.chouette.exchange.regtopp.model.importer.parser.index;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import mobi.chouette.exchange.regtopp.model.importer.FileContentParser;
+import mobi.chouette.exchange.regtopp.model.importer.parser.FileContentParser;
 
 public abstract class IndexFactory {
 

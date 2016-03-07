@@ -1,7 +1,7 @@
-package mobi.chouette.exchange.regtopp.model.importer.filevalidator;
+package mobi.chouette.exchange.regtopp.model.importer.parser.filevalidator;
 
 import mobi.chouette.common.Context;
-import mobi.chouette.exchange.regtopp.model.importer.FileContentParser;
+import mobi.chouette.exchange.regtopp.model.importer.parser.FileContentParser;
 
 public class TripIndexValidator extends FileContentValidator {
 

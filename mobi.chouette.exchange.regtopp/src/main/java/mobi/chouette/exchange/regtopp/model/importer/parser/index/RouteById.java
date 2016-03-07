@@ -1,11 +1,11 @@
-package mobi.chouette.exchange.regtopp.model.importer.index;
+package mobi.chouette.exchange.regtopp.model.importer.parser.index;
 
 import java.io.IOException;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.regtopp.model.RegtoppRouteTMS;
-import mobi.chouette.exchange.regtopp.model.importer.FileContentParser;
-import mobi.chouette.exchange.regtopp.model.importer.RegtoppImporter;
+import mobi.chouette.exchange.regtopp.model.importer.parser.FileContentParser;
+import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
 
 @Log4j
 public class RouteById extends IndexImpl<RegtoppRouteTMS>   {

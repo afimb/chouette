@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.regtopp.model.importer.index;
+package mobi.chouette.exchange.regtopp.model.importer.parser.index;
 
 import java.io.IOException;
 import java.util.List;
@@ -7,8 +7,8 @@ import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.regtopp.model.RegtoppDayCodeDKO;
 import mobi.chouette.exchange.regtopp.model.RegtoppDayCodeHeaderDKO;
-import mobi.chouette.exchange.regtopp.model.importer.FileContentParser;
-import mobi.chouette.exchange.regtopp.model.importer.RegtoppImporter;
+import mobi.chouette.exchange.regtopp.model.importer.parser.FileContentParser;
+import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
 
 @Log4j
 public class DaycodeById extends IndexImpl<RegtoppDayCodeDKO>   {

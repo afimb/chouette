@@ -3,7 +3,7 @@
 <suite name="Factory" verbose="5" >
   <test name="ImportRegtopp" >
     <packages>
-      <package name="mobi.chouette.exchange.regtopp.importer" >
+      <package name="mobi.chouette.exchange.regtopp.importer.parser" >
       </package>
    </packages>
   </test>
@@ -15,7 +15,7 @@
   </test>
   <test name="ModelImport" >
     <packages>
-      <package name="mobi.chouette.exchange.regtopp.model.importer" >
+      <package name="mobi.chouette.exchange.regtopp.model.importer.parser" >
       </package>
    </packages>
   </test>

@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.regtopp.model.importer.filevalidator;
+package mobi.chouette.exchange.regtopp.model.importer.parser.filevalidator;
 
 import java.util.HashSet;
 import java.util.List;
@@ -7,7 +7,7 @@ import java.util.Set;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.regtopp.model.RegtoppObject;
-import mobi.chouette.exchange.regtopp.model.importer.FileContentParser;
+import mobi.chouette.exchange.regtopp.model.importer.parser.FileContentParser;
 
 @Log4j
 public abstract class FileContentValidator {

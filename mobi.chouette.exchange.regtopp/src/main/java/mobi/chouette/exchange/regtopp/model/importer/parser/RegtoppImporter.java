@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.regtopp.model.importer;
+package mobi.chouette.exchange.regtopp.model.importer.parser;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -14,17 +14,17 @@ import mobi.chouette.exchange.regtopp.model.RegtoppObject;
 import mobi.chouette.exchange.regtopp.model.RegtoppRouteTMS;
 import mobi.chouette.exchange.regtopp.model.RegtoppStopHPL;
 import mobi.chouette.exchange.regtopp.model.RegtoppTripIndexTIX;
-import mobi.chouette.exchange.regtopp.model.importer.RegtoppException.ERROR;
-import mobi.chouette.exchange.regtopp.model.importer.filevalidator.FileContentValidator;
-import mobi.chouette.exchange.regtopp.model.importer.index.DaycodeById;
-import mobi.chouette.exchange.regtopp.model.importer.index.DestinationById;
-import mobi.chouette.exchange.regtopp.model.importer.index.FootnoteById;
-import mobi.chouette.exchange.regtopp.model.importer.index.Index;
-import mobi.chouette.exchange.regtopp.model.importer.index.IndexFactory;
-import mobi.chouette.exchange.regtopp.model.importer.index.RouteById;
-import mobi.chouette.exchange.regtopp.model.importer.index.StopById;
-import mobi.chouette.exchange.regtopp.model.importer.index.TripByIndexingKey;
-import mobi.chouette.exchange.regtopp.model.importer.index.UniqueLinesByTripIndex;
+import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppException.ERROR;
+import mobi.chouette.exchange.regtopp.model.importer.parser.filevalidator.FileContentValidator;
+import mobi.chouette.exchange.regtopp.model.importer.parser.index.DaycodeById;
+import mobi.chouette.exchange.regtopp.model.importer.parser.index.DestinationById;
+import mobi.chouette.exchange.regtopp.model.importer.parser.index.FootnoteById;
+import mobi.chouette.exchange.regtopp.model.importer.parser.index.Index;
+import mobi.chouette.exchange.regtopp.model.importer.parser.index.IndexFactory;
+import mobi.chouette.exchange.regtopp.model.importer.parser.index.RouteById;
+import mobi.chouette.exchange.regtopp.model.importer.parser.index.StopById;
+import mobi.chouette.exchange.regtopp.model.importer.parser.index.TripByIndexingKey;
+import mobi.chouette.exchange.regtopp.model.importer.parser.index.UniqueLinesByTripIndex;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 
 public class RegtoppImporter {
