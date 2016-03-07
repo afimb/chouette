@@ -42,8 +42,8 @@ public abstract class IndexImpl<T> implements Index<T> {
 	}
 
 	@Override
-	public Iterable<String> keys() {
-		return (Iterable<String>) _index.keySet().iterator();
+	public Iterator<String> keys() {
+		return _index.keySet().iterator();
 	}
 
 	@Override

@@ -1,12 +1,14 @@
 package mobi.chouette.exchange.regtopp.model.importer.parser.index;
 
+import java.util.Iterator;
+
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
 
 public interface Index<T> extends Iterable<T> {
 
 	void dispose();
 
-	Iterable<String> keys();
+	Iterator<String> keys();
 
 	Iterable<T> values(String key);
 

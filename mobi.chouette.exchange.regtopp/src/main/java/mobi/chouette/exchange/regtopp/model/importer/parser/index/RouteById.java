@@ -1,10 +1,11 @@
 package mobi.chouette.exchange.regtopp.model.importer.parser.index;
 
-import java.io.IOException;
-
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Context;
 import mobi.chouette.exchange.regtopp.model.RegtoppRouteTMS;
 import mobi.chouette.exchange.regtopp.model.importer.parser.FileContentParser;
+import mobi.chouette.exchange.regtopp.model.importer.parser.FileParserValidationError;
+import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppException;
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 
@@ -50,10 +51,16 @@ public class RouteById extends IndexImpl<RegtoppRouteTMS>   {
 
 
 	@Override
-	public void index() throws IOException {
+	// TODO this index is not correct, must index on more fields (lineId, direction, routeId and sequenceNumberStop)
+	
+	public void index() throws Exception {
 		for(Object obj : _parser.getRawContent()) {
-			RegtoppRouteTMS stop = (RegtoppRouteTMS) obj;
-			_index.put(stop.getRouteId(), stop);
+			RegtoppRouteTMS route = (RegtoppRouteTMS) obj;
+			RegtoppRouteTMS existing = _index.put(route.getRouteId(), route);
+			if(existing != null) {
+				// TODO fix exception/validation reporting
+		//		_validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError()), null);
+			}
 		}
 	}
 }

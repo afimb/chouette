@@ -25,7 +25,7 @@ public class DaycodeById extends IndexImpl<RegtoppDayCodeDKO>   {
 
 	@Override
 	public boolean validate(RegtoppDayCodeDKO bean, RegtoppImporter dao) {
-		boolean result = false;
+		boolean result = true;
 		
 
 		// Mulige valideringssteg
@@ -33,7 +33,7 @@ public class DaycodeById extends IndexImpl<RegtoppDayCodeDKO>   {
 		
 		
 		
-		log.error("Validation code for RegtoppDestination not implemented");
+		log.warn("Validation code for RegtoppDayCode not implemented");
 	
 		return result;
 	}

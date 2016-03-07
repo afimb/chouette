@@ -3,7 +3,7 @@ package mobi.chouette.exchange.regtopp.parser.index;
 import java.io.File;
 import java.util.Arrays;
 
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.regtopp.model.importer.parser.FileContentParser;
@@ -13,14 +13,14 @@ import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 import mobi.chouette.exchange.report.FileInfo;
 import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
 
-public class IndexTest {
+public abstract class AbstractIndexTest {
 	protected Context context;
 	
 	protected RegtoppImporter importer;
 
 	protected RegtoppValidationReporter validationReporter;
 	
-	@BeforeClass
+	@Test
 	protected void setupImporter() {
 		validationReporter = new RegtoppValidationReporter();
 		context = new Context();

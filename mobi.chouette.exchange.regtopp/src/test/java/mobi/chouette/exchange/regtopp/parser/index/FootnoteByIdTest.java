@@ -9,7 +9,7 @@ import mobi.chouette.exchange.regtopp.model.RegtoppFootnoteMRK;
 import mobi.chouette.exchange.regtopp.model.importer.parser.FileContentParser;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.FootnoteById;
 
-public class FootnoteByIdTest extends IndexTest{
+public class FootnoteByIdTest extends AbstractIndexTest{
 	
 
 	@Test(dependsOnMethods = {"setupImporter"})
