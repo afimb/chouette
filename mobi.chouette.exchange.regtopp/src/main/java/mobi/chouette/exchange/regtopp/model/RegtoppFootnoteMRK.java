@@ -17,7 +17,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Record(minOccurs = 1)
-public class RegtoppRemarkMRK extends RegtoppObject implements Serializable {
+public class RegtoppFootnoteMRK extends RegtoppObject implements Serializable {
 
 	public static final String FILE_EXTENSION = "MRK";
 
@@ -36,16 +36,16 @@ public class RegtoppRemarkMRK extends RegtoppObject implements Serializable {
 	@Getter
 	@Setter
 	@Field(length = 3)
-	private String remarkId;
+	private String footnoteId;
 
 	@Getter
 	@Setter
 	@Field(length = 80)
-	private String remarkText;
+	private String description;
 	
 	@Override
 	public String getIndexingKey() {
-		return adminCode+counter+remarkId;
+		return adminCode+counter+footnoteId;
 	}
 
 

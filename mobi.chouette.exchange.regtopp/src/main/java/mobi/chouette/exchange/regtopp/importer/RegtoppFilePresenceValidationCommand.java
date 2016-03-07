@@ -30,12 +30,12 @@ import mobi.chouette.exchange.regtopp.model.RegtoppInterchangeSAM;
 import mobi.chouette.exchange.regtopp.model.RegtoppLineLIN;
 import mobi.chouette.exchange.regtopp.model.RegtoppPathwayGAV;
 import mobi.chouette.exchange.regtopp.model.RegtoppPeriodPER;
-import mobi.chouette.exchange.regtopp.model.RegtoppRemarkMRK;
+import mobi.chouette.exchange.regtopp.model.RegtoppFootnoteMRK;
 import mobi.chouette.exchange.regtopp.model.RegtoppRoutePointRUT;
 import mobi.chouette.exchange.regtopp.model.RegtoppStopHPL;
 import mobi.chouette.exchange.regtopp.model.RegtoppTableVersionTAB;
 import mobi.chouette.exchange.regtopp.model.RegtoppTripIndexTIX;
-import mobi.chouette.exchange.regtopp.model.RegtoppTripPatternTMS;
+import mobi.chouette.exchange.regtopp.model.RegtoppRouteTMS;
 import mobi.chouette.exchange.regtopp.model.RegtoppVehicleJourneyVLP;
 import mobi.chouette.exchange.regtopp.model.RegtoppZoneSON;
 import mobi.chouette.exchange.regtopp.model.importer.ParseableFile;
@@ -56,10 +56,10 @@ public class RegtoppFilePresenceValidationCommand implements Command, Constant {
 
 	public static final String COMMAND = "RegtoppFilePresenceValidationCommand";
 
-	private static final List<String> mandatoryFileExtensions = Arrays.asList(RegtoppTripIndexTIX.FILE_EXTENSION, RegtoppTripPatternTMS.FILE_EXTENSION,
+	private static final List<String> mandatoryFileExtensions = Arrays.asList(RegtoppTripIndexTIX.FILE_EXTENSION, RegtoppRouteTMS.FILE_EXTENSION,
 			RegtoppStopHPL.FILE_EXTENSION, RegtoppDayCodeDKO.FILE_EXTENSION);
 
-	private static final List<String> optionalFileExtensions = Arrays.asList(RegtoppDestinationDST.FILE_EXTENSION, RegtoppRemarkMRK.FILE_EXTENSION,
+	private static final List<String> optionalFileExtensions = Arrays.asList(RegtoppDestinationDST.FILE_EXTENSION, RegtoppFootnoteMRK.FILE_EXTENSION,
 			RegtoppPathwayGAV.FILE_EXTENSION, RegtoppInterchangeSAM.FILE_EXTENSION, RegtoppZoneSON.FILE_EXTENSION, RegtoppLineLIN.FILE_EXTENSION,
 			RegtoppVehicleJourneyVLP.FILE_EXTENSION, RegtoppTableVersionTAB.FILE_EXTENSION, RegtoppPeriodPER.FILE_EXTENSION,
 			RegtoppRoutePointRUT.FILE_EXTENSION);
@@ -126,9 +126,9 @@ public class RegtoppFilePresenceValidationCommand implements Command, Constant {
 							importer.registerFileForIndex(RegtoppImporter.INDEX.TRIP_INDEX.name(), parseableFile, new TripIndexValidator());
 							importer.registerFileForIndex(RegtoppImporter.INDEX.LINE_BY_TRIPS.name(), parseableFile, new TripIndexValidator());
 						} else if ("TMS".equals(extension)) {
-							ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppTripPatternTMS.class }),
+							ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppRouteTMS.class }),
 									file);
-							importer.registerFileForIndex(RegtoppImporter.INDEX.TRIP_PATTERN.name(), parseableFile, new DefaultEmptyFileContentValidator());
+							importer.registerFileForIndex(RegtoppImporter.INDEX.ROUTE_BY_ID.name(), parseableFile, new DefaultEmptyFileContentValidator());
 						} else if ("HPL".equals(extension)) {
 							ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppStopHPL.class }), file);
 							importer.registerFileForIndex(RegtoppImporter.INDEX.STOP_BY_ID.name(), parseableFile, new DefaultEmptyFileContentValidator());
@@ -141,7 +141,7 @@ public class RegtoppFilePresenceValidationCommand implements Command, Constant {
 									file);
 							importer.registerFileForIndex(RegtoppImporter.INDEX.DESTINATION_BY_ID.name(), parseableFile, new DefaultEmptyFileContentValidator());
 						} else if ("MRK".equals(extension)) {
-							ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppRemarkMRK.class }), file);
+							ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppFootnoteMRK.class }), file);
 							importer.registerFileForIndex(RegtoppImporter.INDEX.REMARK_BY_ID.name(), parseableFile, new DefaultEmptyFileContentValidator());
 						} else if ("GAV".equals(extension)) {
 							ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppPathwayGAV.class }), file);

@@ -7,14 +7,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 import mobi.chouette.common.Context;
+import mobi.chouette.exchange.regtopp.model.RegtoppDayCodeDKO;
+import mobi.chouette.exchange.regtopp.model.RegtoppDestinationDST;
+import mobi.chouette.exchange.regtopp.model.RegtoppFootnoteMRK;
 import mobi.chouette.exchange.regtopp.model.RegtoppObject;
+import mobi.chouette.exchange.regtopp.model.RegtoppRouteTMS;
 import mobi.chouette.exchange.regtopp.model.RegtoppStopHPL;
 import mobi.chouette.exchange.regtopp.model.RegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.model.importer.RegtoppException.ERROR;
 import mobi.chouette.exchange.regtopp.model.importer.filevalidator.FileContentValidator;
+import mobi.chouette.exchange.regtopp.model.importer.index.DaycodeById;
+import mobi.chouette.exchange.regtopp.model.importer.index.DestinationById;
+import mobi.chouette.exchange.regtopp.model.importer.index.FootnoteById;
 import mobi.chouette.exchange.regtopp.model.importer.index.Index;
 import mobi.chouette.exchange.regtopp.model.importer.index.IndexFactory;
+import mobi.chouette.exchange.regtopp.model.importer.index.RouteById;
 import mobi.chouette.exchange.regtopp.model.importer.index.StopById;
+import mobi.chouette.exchange.regtopp.model.importer.index.TripByIndexingKey;
 import mobi.chouette.exchange.regtopp.model.importer.index.UniqueLinesByTripIndex;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 
@@ -33,7 +42,7 @@ public class RegtoppImporter {
 		VEHICLE_JOURNEY,
 		TABLE_VERSION,
 		ROUTE_POINT,
-		LINE_BY_TRIPS
+		LINE_BY_TRIPS, ROUTE_BY_ID
 	}
 
 	private String _path;
@@ -109,8 +118,25 @@ public class RegtoppImporter {
 		return index;
 	}
 
+	@SuppressWarnings("unchecked")
+	public Index<RegtoppStopHPL> getStopById() throws Exception {
+		return getIndex(INDEX.STOP_BY_ID.name(), StopById.class);
+	}
+
+	public Index<RegtoppTripIndexTIX> getUniqueLinesByTripIndex() throws Exception {
+		return getIndex(INDEX.LINE_BY_TRIPS.name(), UniqueLinesByTripIndex.class);
+	}
+
+	public Index<RegtoppTripIndexTIX> getTripIndex() throws Exception {
+		return getIndex(INDEX.TRIP_INDEX.name(), TripByIndexingKey.class);
+	}
+
 	public boolean hasHPLImporter() {
 		return hasImporter(RegtoppStopHPL.FILE_EXTENSION);
+	}
+
+	public boolean hasTIXImporter() {
+		return hasImporter(RegtoppTripIndexTIX.FILE_EXTENSION);
 	}
 
 	private boolean hasImporter(final String pattern) {
@@ -123,14 +149,22 @@ public class RegtoppImporter {
 			}
 		});
 		return matchingFiles.length == 1;
+	}
+
+	public Index<RegtoppRouteTMS> getRouteById() throws Exception {
+		return getIndex(INDEX.ROUTE_BY_ID.name(), RouteById.class);
+	}
+
+	public Index<RegtoppFootnoteMRK> getFootnoteById() throws Exception {
+		return getIndex(INDEX.REMARK_BY_ID.name(), FootnoteById.class);
+	}
+
+	public Index<RegtoppDestinationDST> getDestinationById() throws Exception {
+		return getIndex(INDEX.DESTINATION_BY_ID.name(), DestinationById.class);
+	}
+
+	public Index<RegtoppDayCodeDKO> getDayCodeById() throws Exception {
+		return getIndex(INDEX.DAYCODE_BY_ID.name(), DaycodeById.class);
 	}	
 
-	@SuppressWarnings("unchecked")
-	public Index<RegtoppStopHPL> getStopById() throws Exception {
-		return getIndex(INDEX.STOP_BY_ID.name(), StopById.class);
-	}
-
-	public Index<RegtoppTripIndexTIX> getUniqueLinesByTripIndex() throws Exception {
-		return getIndex(INDEX.LINE_BY_TRIPS.name(), UniqueLinesByTripIndex.class);
-	}
 }

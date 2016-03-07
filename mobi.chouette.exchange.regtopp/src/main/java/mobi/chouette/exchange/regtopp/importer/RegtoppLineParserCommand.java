@@ -18,6 +18,7 @@ import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.regtopp.Constant;
 import mobi.chouette.exchange.regtopp.model.importer.RegtoppImporter;
+import mobi.chouette.exchange.regtopp.parser.RegtoppLineParser;
 import mobi.chouette.exchange.regtopp.parser.RegtoppStopParser;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.DataStats;
@@ -66,19 +67,12 @@ public class RegtoppLineParserCommand implements Command, Constant {
 				stopParser.parse(context);
 			}
 			
+			RegtoppLineParser lineParser = (RegtoppLineParser) ParserFactory.create(RegtoppLineParser.class.getName());
+			lineParser.setLineId(lineId);
+			lineParser.parse(context);
 			
-			// Company
-//			if (referential.getSharedCompanies().isEmpty()) {
-//				GtfsAgencyParser gtfsAgencyParser = (GtfsAgencyParser) ParserFactory.create(GtfsAgencyParser.class
-//						.getName());
-//				gtfsAgencyParser.parse(context);
-//			}
-//
-//			// StopArea
-//			if (referential.getSharedStopAreas().isEmpty()) {
-//				GtfsStopParser gtfsStopParser = (GtfsStopParser) ParserFactory.create(GtfsStopParser.class.getName());
-//				gtfsStopParser.parse(context);
-//			}
+			
+			
 //
 //			// ConnectionLink
 //			if (importer.hasTransferImporter()) {
