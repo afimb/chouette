@@ -73,6 +73,8 @@ public class RegtoppFileConsistencyValidationCommand implements Command, Constan
 			stopParser.validate(context);
 		}
 		
+		// TODO Add all parsers
+		
 		// TODO
 		return true;
 	}

@@ -1,14 +1,17 @@
 package mobi.chouette.exchange.regtopp.model.importer.parser.index;
 
-import java.io.IOException;
 import java.util.List;
 
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Context;
 import mobi.chouette.exchange.regtopp.model.RegtoppDayCodeDKO;
 import mobi.chouette.exchange.regtopp.model.RegtoppDayCodeHeaderDKO;
 import mobi.chouette.exchange.regtopp.model.importer.parser.FileContentParser;
+import mobi.chouette.exchange.regtopp.model.importer.parser.FileParserValidationError;
+import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppException;
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
+import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 
 @Log4j
 public class DaycodeById extends IndexImpl<RegtoppDayCodeDKO>   {
@@ -16,13 +19,13 @@ public class DaycodeById extends IndexImpl<RegtoppDayCodeDKO>   {
 	@Getter
 	private RegtoppDayCodeHeaderDKO header;
 	
-	public DaycodeById(FileContentParser fileParser) throws IOException {
-		super(fileParser);
+	public DaycodeById(RegtoppValidationReporter validationReporter,FileContentParser fileParser) throws Exception {
+		super(validationReporter,fileParser);
 	}
 
 	@Override
 	public boolean validate(RegtoppDayCodeDKO bean, RegtoppImporter dao) {
-		boolean result = true;
+		boolean result = false;
 		
 
 		// Mulige valideringssteg
@@ -39,8 +42,8 @@ public class DaycodeById extends IndexImpl<RegtoppDayCodeDKO>   {
 	public static class DefaultImporterFactory extends IndexFactory {
 		@SuppressWarnings("rawtypes")
 		@Override
-		protected Index create(FileContentParser parser) throws IOException {
-			return new DaycodeById(parser);
+		protected Index create(RegtoppValidationReporter validationReporter,FileContentParser parser) throws Exception {
+			return new DaycodeById(validationReporter,parser);
 		}
 	}
 
@@ -51,7 +54,7 @@ public class DaycodeById extends IndexImpl<RegtoppDayCodeDKO>   {
 
 
 	@Override
-	public void index() throws IOException {
+	public void index() throws Exception {
 		
 		// First object in list will be the header object, the rest the usual DayCodeDKO objects
 		List<Object> rawContent = _parser.getRawContent();
@@ -60,9 +63,14 @@ public class DaycodeById extends IndexImpl<RegtoppDayCodeDKO>   {
 				header = (RegtoppDayCodeHeaderDKO) rawContent.get(i);
 			} else {
 				RegtoppDayCodeDKO dayCode = (RegtoppDayCodeDKO) rawContent.get(i);
-				_index.put(dayCode.getDayCodeId(), dayCode);
+				RegtoppDayCodeDKO existing = _index.put(dayCode.getDayCodeId(), dayCode);
+				if(existing != null) {
+					// TODO fix exception/validation reporting
+					_validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError()), null);
+				}
 				
 			}
 		}
 	}
+
 }

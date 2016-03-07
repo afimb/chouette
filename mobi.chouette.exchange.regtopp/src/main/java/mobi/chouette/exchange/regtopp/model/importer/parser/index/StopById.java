@@ -6,12 +6,13 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.regtopp.model.RegtoppStopHPL;
 import mobi.chouette.exchange.regtopp.model.importer.parser.FileContentParser;
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
+import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 
 @Log4j
 public class StopById extends IndexImpl<RegtoppStopHPL>   {
 
-	public StopById(FileContentParser fileParser) throws IOException {
-		super(fileParser);
+	public StopById(RegtoppValidationReporter validationReporter,FileContentParser fileParser) throws Exception {
+		super(validationReporter,fileParser);
 	}
 
 	@Override
@@ -28,7 +29,7 @@ public class StopById extends IndexImpl<RegtoppStopHPL>   {
 		// Holdeplassnummer X antall siffer
 		
 		
-		log.error("Validation code for RegtoppStopp not implemented");
+		log.warn("Validation code for RegtoppStopp not implemented");
 	
 		return result;
 	}
@@ -37,8 +38,8 @@ public class StopById extends IndexImpl<RegtoppStopHPL>   {
 	public static class DefaultImporterFactory extends IndexFactory {
 		@SuppressWarnings("rawtypes")
 		@Override
-		protected Index create(FileContentParser parser) throws IOException {
-			return new StopById(parser);
+		protected Index create(RegtoppValidationReporter validationReporter,FileContentParser parser) throws Exception {
+			return new StopById(validationReporter,parser);
 		}
 	}
 

@@ -1,6 +1,5 @@
 package mobi.chouette.exchange.regtopp.model.importer.parser.index;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -9,16 +8,18 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.regtopp.model.RegtoppStopHPL;
 import mobi.chouette.exchange.regtopp.model.importer.parser.FileContentParser;
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
+import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 
 @Log4j
 public abstract class IndexImpl<T> implements Index<T> {
 
 	Map<String,T> _index = new HashMap<String,T>();
 	FileContentParser _parser = null;
+	RegtoppValidationReporter _validationReporter = null;
 
-	public IndexImpl(FileContentParser fileParser) throws IOException {
+	public IndexImpl(RegtoppValidationReporter validationReporter,FileContentParser fileParser) throws Exception {
 		_parser = fileParser;
-
+		_validationReporter = validationReporter;
 		index();
 	}
 
