@@ -22,12 +22,12 @@ import mobi.chouette.exchange.regtopp.model.RegtoppInterchangeSAM;
 import mobi.chouette.exchange.regtopp.model.RegtoppLineLIN;
 import mobi.chouette.exchange.regtopp.model.RegtoppPathwayGAV;
 import mobi.chouette.exchange.regtopp.model.RegtoppPeriodPER;
-import mobi.chouette.exchange.regtopp.model.RegtoppRemarkMRK;
+import mobi.chouette.exchange.regtopp.model.RegtoppFootnoteMRK;
 import mobi.chouette.exchange.regtopp.model.RegtoppRoutePointRUT;
 import mobi.chouette.exchange.regtopp.model.RegtoppStopHPL;
 import mobi.chouette.exchange.regtopp.model.RegtoppTableVersionTAB;
 import mobi.chouette.exchange.regtopp.model.RegtoppTripIndexTIX;
-import mobi.chouette.exchange.regtopp.model.RegtoppTripPatternTMS;
+import mobi.chouette.exchange.regtopp.model.RegtoppRouteTMS;
 import mobi.chouette.exchange.regtopp.model.RegtoppVehicleJourneyVLP;
 import mobi.chouette.exchange.regtopp.model.RegtoppZoneSON;
 import mobi.chouette.exchange.regtopp.model.importer.FileContentParser;
@@ -89,7 +89,7 @@ public class FileContentParserTest {
 				regtoppClasses.add(RegtoppTripIndexTIX.class);
 				break;
 			case "TMS":
-				regtoppClasses.add(RegtoppTripPatternTMS.class);
+				regtoppClasses.add(RegtoppRouteTMS.class);
 				break;
 			case "HPL":
 				regtoppClasses.add(RegtoppStopHPL.class);
@@ -102,7 +102,7 @@ public class FileContentParserTest {
 				regtoppClasses.add(RegtoppDestinationDST.class);
 				break;
 			case "MRK":
-				regtoppClasses.add(RegtoppRemarkMRK.class);
+				regtoppClasses.add(RegtoppFootnoteMRK.class);
 				break;
 			case "GAV":
 				regtoppClasses.add(RegtoppPathwayGAV.class);
@@ -161,12 +161,12 @@ public class FileContentParserTest {
 	
 	@Test public void verifyMappingCorrectness() {
 		calculateTotalFieldLenght(RegtoppTripIndexTIX.class, 62);
-		calculateTotalFieldLenght(RegtoppTripPatternTMS.class,47 );
+		calculateTotalFieldLenght(RegtoppRouteTMS.class,47 );
 		calculateTotalFieldLenght(RegtoppStopHPL.class, 87);
 		calculateTotalFieldLenght(RegtoppDayCodeHeaderDKO.class, 7);
 		calculateTotalFieldLenght(RegtoppDayCodeDKO.class, 400);
 		calculateTotalFieldLenght(RegtoppDestinationDST.class,40 );
-		calculateTotalFieldLenght(RegtoppRemarkMRK.class, 87);
+		calculateTotalFieldLenght(RegtoppFootnoteMRK.class, 87);
 		calculateTotalFieldLenght(RegtoppPathwayGAV.class, 42);
 		calculateTotalFieldLenght(RegtoppInterchangeSAM.class, 51);
 		calculateTotalFieldLenght(RegtoppZoneSON.class,45 );

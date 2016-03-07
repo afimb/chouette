@@ -92,7 +92,7 @@ public class RegtoppTripIndexTIX extends RegtoppObject implements Serializable {
 	@Getter
 	@Setter
 	@Field(length = 2)
-	private int routeId;
+	private String routeId;
 
 	@Getter
 	@Setter

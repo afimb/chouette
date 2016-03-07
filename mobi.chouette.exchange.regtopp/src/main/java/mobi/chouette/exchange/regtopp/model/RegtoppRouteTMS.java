@@ -18,7 +18,7 @@ import mobi.chouette.exchange.regtopp.model.enums.DirectionType;
 @NoArgsConstructor
 @AllArgsConstructor
 @Record(minOccurs = 1)
-public class RegtoppTripPatternTMS extends RegtoppObject implements Serializable {
+public class RegtoppRouteTMS extends RegtoppObject implements Serializable {
 
 	public static final String FILE_EXTENSION = "TMS";
 
@@ -27,17 +27,17 @@ public class RegtoppTripPatternTMS extends RegtoppObject implements Serializable
 	@Getter
 	@Setter
 	@Field(length = 3)
-	private Integer adminCode;
+	private String adminCode;
 
 	@Getter
 	@Setter
 	@Field(length = 1)
-	private Integer counter;
+	private String counter;
 
 	@Getter
 	@Setter
 	@Field(length = 4)
-	private Integer lineId;
+	private String lineId;
 
 	@Getter
 	@Setter
@@ -47,7 +47,7 @@ public class RegtoppTripPatternTMS extends RegtoppObject implements Serializable
 	@Getter
 	@Setter
 	@Field(length = 2)
-	private Integer routeId;
+	private String routeId;
 
 	@Getter
 	@Setter
