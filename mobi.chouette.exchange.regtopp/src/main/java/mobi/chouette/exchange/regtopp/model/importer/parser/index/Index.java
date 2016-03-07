@@ -1,8 +1,8 @@
-package mobi.chouette.exchange.regtopp.model.importer.index;
+package mobi.chouette.exchange.regtopp.model.importer.parser.index;
 
 import java.io.IOException;
 
-import mobi.chouette.exchange.regtopp.model.importer.RegtoppImporter;
+import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
 
 public interface Index<T> extends Iterable<T> {
 

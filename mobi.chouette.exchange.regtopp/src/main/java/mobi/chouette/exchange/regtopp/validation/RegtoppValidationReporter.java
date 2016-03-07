@@ -6,8 +6,8 @@ import java.util.Set;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
-import mobi.chouette.exchange.regtopp.model.importer.RegtoppException;
-import mobi.chouette.exchange.regtopp.model.importer.RegtoppExceptionsHashSet;
+import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppException;
+import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppExceptionsHashSet;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.FileError;
 import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
@@ -83,7 +83,7 @@ public class RegtoppValidationReporter implements Constant {
 		}
 	}
 
-	private String checkPointName(String name, mobi.chouette.exchange.regtopp.model.importer.RegtoppException.ERROR errorName) {
+	private String checkPointName(String name, mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppException.ERROR errorName) {
 		name = capitalize(name);
 		switch (errorName) {
 		case SYSTEM:
@@ -135,14 +135,14 @@ public class RegtoppValidationReporter implements Constant {
 			validationReport.findCheckPointByName(checkpointName).setState(CheckPoint.RESULT.OK);
 	}
 
-	public void validate(Context context, String filenameInfo, Set<mobi.chouette.exchange.regtopp.model.importer.RegtoppException.ERROR> errorCodes) {
+	public void validate(Context context, String filenameInfo, Set<mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppException.ERROR> errorCodes) {
 		if (errorCodes != null)
-			for (mobi.chouette.exchange.regtopp.model.importer.RegtoppException.ERROR errorCode : errorCodes) {
+			for (mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppException.ERROR errorCode : errorCodes) {
 				validate(context, filenameInfo, errorCode);
 			}
 	}
 
-	public void validate(Context context, String filenameInfo, mobi.chouette.exchange.regtopp.model.importer.RegtoppException.ERROR errorCode) {
+	public void validate(Context context, String filenameInfo, mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppException.ERROR errorCode) {
 		String checkPointName = checkPointName(name(filenameInfo), errorCode);
 		validate(context, filenameInfo, checkPointName);
 	}

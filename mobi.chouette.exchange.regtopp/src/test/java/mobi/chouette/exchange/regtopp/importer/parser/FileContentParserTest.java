@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.regtopp.importer;
+package mobi.chouette.exchange.regtopp.importer.parser;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,8 +30,8 @@ import mobi.chouette.exchange.regtopp.model.RegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.model.RegtoppRouteTMS;
 import mobi.chouette.exchange.regtopp.model.RegtoppVehicleJourneyVLP;
 import mobi.chouette.exchange.regtopp.model.RegtoppZoneSON;
-import mobi.chouette.exchange.regtopp.model.importer.FileContentParser;
-import mobi.chouette.exchange.regtopp.model.importer.ParseableFile;
+import mobi.chouette.exchange.regtopp.model.importer.parser.FileContentParser;
+import mobi.chouette.exchange.regtopp.model.importer.parser.ParseableFile;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.FileInfo;

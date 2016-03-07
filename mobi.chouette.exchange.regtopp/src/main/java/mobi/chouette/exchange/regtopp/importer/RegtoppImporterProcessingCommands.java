@@ -22,8 +22,8 @@ import mobi.chouette.exchange.importer.LineRegisterCommand;
 import mobi.chouette.exchange.importer.StopAreaRegisterCommand;
 import mobi.chouette.exchange.importer.UncompressCommand;
 import mobi.chouette.exchange.regtopp.model.RegtoppTripIndexTIX;
-import mobi.chouette.exchange.regtopp.model.importer.RegtoppImporter;
-import mobi.chouette.exchange.regtopp.model.importer.index.Index;
+import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
+import mobi.chouette.exchange.regtopp.model.importer.parser.index.Index;
 import mobi.chouette.exchange.validation.ImportedLineValidatorCommand;
 import mobi.chouette.exchange.validation.SharedDataValidatorCommand;
 

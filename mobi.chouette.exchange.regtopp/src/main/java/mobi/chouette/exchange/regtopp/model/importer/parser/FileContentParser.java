@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.regtopp.model.importer;
+package mobi.chouette.exchange.regtopp.model.importer.parser;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -17,7 +17,7 @@ import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.regtopp.model.RegtoppObject;
-import mobi.chouette.exchange.regtopp.model.importer.RegtoppException.ERROR;
+import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppException.ERROR;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 import mobi.chouette.exchange.report.FileError;
 import mobi.chouette.exchange.report.FileError.CODE;

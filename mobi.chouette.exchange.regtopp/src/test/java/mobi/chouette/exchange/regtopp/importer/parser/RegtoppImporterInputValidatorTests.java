@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.regtopp.importer;
+package mobi.chouette.exchange.regtopp.importer.parser;
 
 import mobi.chouette.exchange.parameters.AbstractExportParameter;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;

@@ -14,7 +14,7 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.regtopp.Constant;
-import mobi.chouette.exchange.regtopp.model.importer.RegtoppImporter;
+import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.parser.RegtoppStopParser;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.DataStats;
@@ -56,18 +56,18 @@ public class RegtoppStopParserCommand implements Command, Constant {
 //					gtfsTransferParser.parse(context);
 //				}
 //			}
-			if (configuration.getMaxDistanceForCommercial() > 0)
-			{
-				CommercialStopGenerator commercialStopGenerator = new CommercialStopGenerator();
-				commercialStopGenerator.createCommercialStopPoints(context);
-			}
-			
-			if (configuration.getMaxDistanceForConnectionLink() > 0)
-			{
-			    ConnectionLinkGenerator connectionLinkGenerator = new ConnectionLinkGenerator();
-				connectionLinkGenerator.createConnectionLinks(context);
-				
-			}
+//			if (configuration.getMaxDistanceForCommercial() > 0)
+//			{
+//				CommercialStopGenerator commercialStopGenerator = new CommercialStopGenerator();
+//				commercialStopGenerator.createCommercialStopPoints(context);
+//			}
+//			
+//			if (configuration.getMaxDistanceForConnectionLink() > 0)
+//			{
+//			    ConnectionLinkGenerator connectionLinkGenerator = new ConnectionLinkGenerator();
+//				connectionLinkGenerator.createConnectionLinks(context);
+//				
+//			}
 			
 
 			addStats(report, referential);

@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.regtopp.model.importer;
+package mobi.chouette.exchange.regtopp.model.importer.parser;
 
 import java.util.HashSet;
 

@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.regtopp.model.importer;
+package mobi.chouette.exchange.regtopp.model.importer.parser;
 
 public interface RegtoppValidator {
 
