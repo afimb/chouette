@@ -105,7 +105,7 @@ public class RegtoppImporter {
 					validator.validate(_context,parser);
 				}
 
-				index = IndexFactory.build(parser, clazz.getName());
+				index = IndexFactory.build(_validationReporter,parser, clazz.getName());
 				_indexMap.put(name, index);
 			} catch (ClassNotFoundException | IOException e) {
 				FileParserValidationError context = new FileParserValidationError();

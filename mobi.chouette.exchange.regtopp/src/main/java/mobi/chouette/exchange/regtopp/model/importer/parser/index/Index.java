@@ -1,7 +1,5 @@
 package mobi.chouette.exchange.regtopp.model.importer.parser.index;
 
-import java.io.IOException;
-
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
 
 public interface Index<T> extends Iterable<T> {
@@ -20,6 +18,6 @@ public interface Index<T> extends Iterable<T> {
 
 	int getLength();
 
-	void index() throws IOException;
+	void index() throws Exception;
 	
 }

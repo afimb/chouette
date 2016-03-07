@@ -7,12 +7,13 @@ import mobi.chouette.exchange.regtopp.model.RegtoppStopHPL;
 import mobi.chouette.exchange.regtopp.model.RegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.model.importer.parser.FileContentParser;
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
+import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 
 @Log4j
 public class TripByIndexingKey extends IndexImpl<RegtoppTripIndexTIX>   {
 
-	public TripByIndexingKey(FileContentParser fileParser) throws IOException {
-		super(fileParser);
+	public TripByIndexingKey(RegtoppValidationReporter validationReporter,FileContentParser fileParser) throws Exception {
+		super(validationReporter,fileParser);
 	}
 
 	@Override
@@ -28,8 +29,8 @@ public class TripByIndexingKey extends IndexImpl<RegtoppTripIndexTIX>   {
 	public static class DefaultImporterFactory extends IndexFactory {
 		@SuppressWarnings("rawtypes")
 		@Override
-		protected Index create(FileContentParser parser) throws IOException {
-			return new TripByIndexingKey(parser);
+		protected Index create(RegtoppValidationReporter validationReporter,FileContentParser parser) throws Exception {
+			return new TripByIndexingKey(validationReporter,parser);
 		}
 	}
 

@@ -6,12 +6,13 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.regtopp.model.RegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.model.importer.parser.FileContentParser;
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
+import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 
 @Log4j
 public class UniqueLinesByTripIndex extends IndexImpl<RegtoppTripIndexTIX>   {
 
-	public UniqueLinesByTripIndex(FileContentParser fileParser) throws IOException {
-		super(fileParser);
+	public UniqueLinesByTripIndex(RegtoppValidationReporter validationReporter,FileContentParser fileParser) throws Exception {
+		super(validationReporter,fileParser);
 	}
 
 	@Override
@@ -27,8 +28,8 @@ public class UniqueLinesByTripIndex extends IndexImpl<RegtoppTripIndexTIX>   {
 	public static class DefaultImporterFactory extends IndexFactory {
 		@SuppressWarnings("rawtypes")
 		@Override
-		protected Index create(FileContentParser parser) throws IOException {
-			return new UniqueLinesByTripIndex(parser);
+		protected Index create(RegtoppValidationReporter validationReporter,FileContentParser parser) throws Exception {
+			return new UniqueLinesByTripIndex(validationReporter,parser);
 		}
 	}
 
