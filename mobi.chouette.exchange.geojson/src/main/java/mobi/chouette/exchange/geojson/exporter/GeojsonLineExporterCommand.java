@@ -68,7 +68,7 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 				return result;
 			}
 
-			log.info("[DSU] processing  : " + line.getObjectId());
+			// log.info("[DSU] processing  : " + line.getObjectId());
 
 			SharedData shared = (SharedData) context.get(SHARED_DATA);
 			if (shared == null) {
@@ -86,7 +86,7 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 			List<Route> routes = line.getRoutes();
 			for (Route route : routes) {
 
-				log.info("[DSU] processing  : " + route.getObjectId());
+				// log.info("[DSU] processing  : " + route.getObjectId());
 
 				stats.routeCount++;
 
@@ -95,8 +95,8 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 				for (JourneyPattern journeyPattern : journeyPatterns) {
 					String id = journeyPattern.getObjectId();
 
-					log.info("[DSU] processing  : "
-							+ journeyPattern.getObjectId());
+					// log.info("[DSU] processing  : "
+					// + journeyPattern.getObjectId());
 
 					stats.journeyPatternCount++;
 
@@ -116,6 +116,9 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 							.getNetwork().getObjectId()));
 					properties.put("transport_mode",
 							getProperty(line.getTransportModeName()));
+					properties.put("color", getProperty(line.getColor()));
+					properties.put("text_color",
+							getProperty(line.getTextColor()));
 
 					// route
 					properties.put("route_wayback_code",
@@ -158,8 +161,8 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 						for (int i = 0; i < array.length; i++) {
 							RouteSection routeSection = array[i];
 
-							log.info("[DSU] processing  : "
-									+ routeSection.getObjectId());
+							// log.info("[DSU] processing  : "
+							// + routeSection.getObjectId());
 
 							StopArea departure = routeSection.getDeparture();
 
@@ -233,7 +236,7 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 			return null;
 		}
 
-		log.info("[DSU] create physical stop : " + stopArea.getObjectId());
+		// log.info("[DSU] create physical stop : " + stopArea.getObjectId());
 
 		for (ConnectionLink connectionLink : stopArea.getConnectionStartLinks()) {
 			createConnectionLink(shared, stats, connectionLink);
@@ -266,7 +269,7 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 			return null;
 		}
 
-		log.info("[DSU] create commercial stop : " + stopArea.getObjectId());
+		// log.info("[DSU] create commercial stop : " + stopArea.getObjectId());
 
 		for (ConnectionLink connectionLink : stopArea.getConnectionStartLinks()) {
 			createConnectionLink(shared, stats, connectionLink);
@@ -299,7 +302,7 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 			return null;
 		}
 
-		log.info("[DSU] create access point : " + accessPoint.getObjectId());
+		// log.info("[DSU] create access point : " + accessPoint.getObjectId());
 
 		for (AccessLink accessLink : accessPoint.getAccessLinks()) {
 			createAccessLink(shared, stats, accessLink);
@@ -325,7 +328,7 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 		properties.put("stop_area_objectid", getProperty(accessPoint
 				.getContainedIn().getObjectId()));
 
-		double[] coordinates = new double[0];
+		double[] coordinates = new double[2];
 		if (accessPoint.getLongitude() != null
 				&& accessPoint.getLatitude() != null) {
 			coordinates[0] = accessPoint.getLongitude().doubleValue();
@@ -348,8 +351,8 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 			return null;
 		}
 
-		log.info("[DSU] create connection link : "
-				+ connectionLink.getObjectId());
+		// log.info("[DSU] create connection link : "
+		// + connectionLink.getObjectId());
 
 		Map<String, Object> properties = new HashMap<String, Object>();
 		properties.put("object_version",
@@ -412,7 +415,7 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 			return null;
 		}
 
-		log.info("[DSU] create access link : " + accessLink.getObjectId());
+		// log.info("[DSU] create access link : " + accessLink.getObjectId());
 
 		Map<String, Object> properties = new HashMap<String, Object>();
 		properties.put("object_version",
