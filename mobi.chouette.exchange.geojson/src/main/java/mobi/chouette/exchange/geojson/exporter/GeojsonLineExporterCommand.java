@@ -6,8 +6,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.naming.InitialContext;
 
@@ -56,6 +58,13 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 		Map<String, Feature> accessLinks = new HashMap<String, Feature>();
 	}
 
+	@Data
+	class Keys {
+		Set<String> stopArea = new HashSet<String>();
+		Set<String> accessPoints = new HashSet<String>();
+		Set<String> connectionLinks = new HashSet<String>();
+	}
+
 	@Override
 	public boolean execute(Context context) throws Exception {
 		boolean result = ERROR;
@@ -78,6 +87,7 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 
 			// line stats
 			DataStats stats = new DataStats();
+			Keys keys = new Keys();
 			Report.addLineInfo(context, line, stats);
 			Report.addLineInfo(context, line, LINE_STATE.OK);
 
@@ -167,7 +177,7 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 							StopArea departure = routeSection.getDeparture();
 
 							if (departure != null && departure.hasCoordinates()) {
-								createPhysicaStop(shared, stats, departure);
+								createPhysicaStop(shared, keys, departure);
 								MetaData.updateBoundingBox(context, departure
 										.getLongitude().doubleValue(),
 										departure.getLatitude().doubleValue());
@@ -175,7 +185,7 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 
 							StopArea arrival = routeSection.getArrival();
 							if (arrival != null && arrival.hasCoordinates()) {
-								createPhysicaStop(shared, stats, arrival);
+								createPhysicaStop(shared, keys, arrival);
 								MetaData.updateBoundingBox(context, arrival
 										.getLongitude().doubleValue(), arrival
 										.getLatitude().doubleValue());
@@ -195,6 +205,11 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 					features.add(feature);
 				}
 			}
+
+			// local stats
+			stats.stopAreaCount = keys.getStopArea().size();
+			stats.accessPointCount = keys.getAccessPoints().size();
+			stats.connectionLinkCount = keys.getConnectionLinks().size();
 
 			// global stats
 			ActionReport report = (ActionReport) context.get(REPORT);
@@ -228,248 +243,230 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 		return result;
 	}
 
-	private Feature createPhysicaStop(SharedData shared, DataStats stats,
+	private void createPhysicaStop(SharedData shared, Keys keys,
 			StopArea stopArea) {
 
 		Map<String, Feature> filter = shared.getPhysicalStops();
-		if (filter.containsKey(stopArea.getObjectId())) {
-			return null;
+		if (!filter.containsKey(stopArea.getObjectId())) {
+			Feature feature = createFeature(stopArea);
+			filter.put(stopArea.getObjectId(), feature);
 		}
 
-		// log.info("[DSU] create physical stop : " + stopArea.getObjectId());
+		keys.getStopArea().add(stopArea.getObjectId());
 
 		for (ConnectionLink connectionLink : stopArea.getConnectionStartLinks()) {
-			createConnectionLink(shared, stats, connectionLink);
+			createConnectionLink(shared, keys, connectionLink);
 		}
 
 		for (ConnectionLink connectionLink : stopArea.getConnectionEndLinks()) {
-			createConnectionLink(shared, stats, connectionLink);
+			createConnectionLink(shared, keys, connectionLink);
 		}
 
 		for (AccessPoint accessPoint : stopArea.getAccessPoints()) {
-			createAccessPoint(shared, stats, accessPoint);
+			createAccessPoint(shared, keys, accessPoint);
 		}
 
 		if (stopArea.getParent() != null) {
-			createCommercialStop(shared, stats, stopArea.getParent());
+			createCommercialStop(shared, keys, stopArea.getParent());
 		}
 
-		Feature feature = createFeature(stopArea);
-		filter.put(stopArea.getObjectId(), feature);
-		stats.stopAreaCount++;
-
-		return feature;
 	}
 
-	private Feature createCommercialStop(SharedData shared, DataStats stats,
+	private void createCommercialStop(SharedData shared, Keys keys,
 			StopArea stopArea) {
 
 		Map<String, Feature> filter = shared.getCommercialStops();
-		if (filter.containsKey(stopArea.getObjectId())) {
-			return null;
+		if (!filter.containsKey(stopArea.getObjectId())) {
+			Feature feature = createFeature(stopArea);
+			filter.put(stopArea.getObjectId(), feature);
 		}
 
-		// log.info("[DSU] create commercial stop : " + stopArea.getObjectId());
+		keys.getStopArea().add(stopArea.getObjectId());
 
 		for (ConnectionLink connectionLink : stopArea.getConnectionStartLinks()) {
-			createConnectionLink(shared, stats, connectionLink);
+			createConnectionLink(shared, keys, connectionLink);
 		}
 
 		for (ConnectionLink connectionLink : stopArea.getConnectionEndLinks()) {
-			createConnectionLink(shared, stats, connectionLink);
+			createConnectionLink(shared, keys, connectionLink);
 		}
 
 		for (AccessPoint accessPoint : stopArea.getAccessPoints()) {
-			createAccessPoint(shared, stats, accessPoint);
+			createAccessPoint(shared, keys, accessPoint);
 		}
 
 		if (stopArea.getParent() != null) {
-			createCommercialStop(shared, stats, stopArea.getParent());
+			createCommercialStop(shared, keys, stopArea.getParent());
 		}
 
-		Feature feature = createFeature(stopArea);
-		filter.put(stopArea.getObjectId(), feature);
-		stats.stopAreaCount++;
-
-		return feature;
 	}
 
-	private Feature createAccessPoint(SharedData shared, DataStats stats,
+	private void createAccessPoint(SharedData shared, Keys keys,
 			AccessPoint accessPoint) {
 
 		Map<String, Feature> filter = shared.getAccessPoints();
-		if (filter.containsKey(accessPoint.getObjectId())) {
-			return null;
+		if (!filter.containsKey(accessPoint.getObjectId())) {
+			Map<String, Object> properties = new HashMap<String, Object>();
+			properties.put("object_version",
+					getProperty(accessPoint.getObjectVersion()));
+			properties.put("creation_time",
+					getProperty(accessPoint.getCreationTime()));
+			properties.put("creator_id",
+					getProperty(accessPoint.getCreatorId()));
+			properties.put("name", getProperty(accessPoint.getName()));
+			properties.put("country_code",
+					getProperty(accessPoint.getCountryCode()));
+			properties.put("street_name",
+					getProperty(accessPoint.getStreetName()));
+			properties.put("access_type", getProperty(accessPoint.getType()));
+			properties.put("mobility_restricted_suitability",
+					getProperty(accessPoint.getMobilityRestrictedSuitable()));
+			properties.put("stairs_availability",
+					getProperty(accessPoint.getStairsAvailable()));
+			properties.put("lift_availability",
+					getProperty(accessPoint.getLiftAvailable()));
+			properties.put("stop_area_objectid", getProperty(accessPoint
+					.getContainedIn().getObjectId()));
+
+			double[] coordinates = new double[2];
+			if (accessPoint.getLongitude() != null
+					&& accessPoint.getLatitude() != null) {
+				coordinates[0] = accessPoint.getLongitude().doubleValue();
+				coordinates[1] = accessPoint.getLatitude().doubleValue();
+			}
+
+			Feature feature = new Feature(accessPoint.getObjectId(), new Point(
+					coordinates), properties);
+			filter.put(accessPoint.getObjectId(), feature);
 		}
 
-		// log.info("[DSU] create access point : " + accessPoint.getObjectId());
+		keys.getAccessPoints().add(accessPoint.getObjectId());
 
 		for (AccessLink accessLink : accessPoint.getAccessLinks()) {
-			createAccessLink(shared, stats, accessLink);
+			createAccessLink(shared, accessLink);
 		}
 
-		Map<String, Object> properties = new HashMap<String, Object>();
-		properties.put("object_version",
-				getProperty(accessPoint.getObjectVersion()));
-		properties.put("creation_time",
-				getProperty(accessPoint.getCreationTime()));
-		properties.put("creator_id", getProperty(accessPoint.getCreatorId()));
-		properties.put("name", getProperty(accessPoint.getName()));
-		properties.put("country_code",
-				getProperty(accessPoint.getCountryCode()));
-		properties.put("street_name", getProperty(accessPoint.getStreetName()));
-		properties.put("access_type", getProperty(accessPoint.getType()));
-		properties.put("mobility_restricted_suitability",
-				getProperty(accessPoint.getMobilityRestrictedSuitable()));
-		properties.put("stairs_availability",
-				getProperty(accessPoint.getStairsAvailable()));
-		properties.put("lift_availability",
-				getProperty(accessPoint.getLiftAvailable()));
-		properties.put("stop_area_objectid", getProperty(accessPoint
-				.getContainedIn().getObjectId()));
-
-		double[] coordinates = new double[2];
-		if (accessPoint.getLongitude() != null
-				&& accessPoint.getLatitude() != null) {
-			coordinates[0] = accessPoint.getLongitude().doubleValue();
-			coordinates[1] = accessPoint.getLatitude().doubleValue();
-		}
-
-		Feature feature = new Feature(accessPoint.getObjectId(), new Point(
-				coordinates), properties);
-		filter.put(accessPoint.getObjectId(), feature);
-		stats.accessPointCount++;
-
-		return feature;
 	}
 
-	private Feature createConnectionLink(SharedData shared, DataStats stats,
+	private void createConnectionLink(SharedData shared, Keys keys,
 			ConnectionLink connectionLink) {
 
 		Map<String, Feature> filter = shared.getConnectionLinks();
-		if (filter.containsKey(connectionLink.getObjectId())) {
-			return null;
+		if (!filter.containsKey(connectionLink.getObjectId())) {
+			Map<String, Object> properties = new HashMap<String, Object>();
+			properties.put("object_version",
+					getProperty(connectionLink.getObjectVersion()));
+			properties.put("creation_time",
+					getProperty(connectionLink.getCreationTime()));
+			properties.put("creator_id",
+					getProperty(connectionLink.getCreatorId()));
+			properties.put("name", getProperty(connectionLink.getName()));
+			properties.put("link_distance",
+					getProperty(connectionLink.getLinkDistance()));
+			properties.put("link_type",
+					getProperty(connectionLink.getLinkType()));
+			properties.put("default_duration",
+					getProperty(connectionLink.getDefaultDuration()));
+			properties.put("frequent_traveller_duration",
+					getProperty(connectionLink.getFrequentTravellerDuration()));
+			properties
+					.put("occasional_traveller_duration",
+							getProperty(connectionLink
+									.getOccasionalTravellerDuration()));
+			properties.put("mobility_restricted_traveller_duration",
+					getProperty(connectionLink
+							.getMobilityRestrictedTravellerDuration()));
+			properties
+					.put("mobility_restricted_suitability",
+							getProperty(connectionLink
+									.getMobilityRestrictedSuitable()));
+			properties.put("stairs_availability",
+					getProperty(connectionLink.getStairsAvailable()));
+			properties.put("lift_availability",
+					getProperty(connectionLink.getLiftAvailable()));
+
+			double[][] coordinates = new double[0][2];
+			if (connectionLink.getStartOfLink() != null
+					&& connectionLink.getEndOfLink() != null) {
+				properties.put("departure_objectid", getProperty(connectionLink
+						.getStartOfLink().getObjectId()));
+				properties.put("arrival_objectid", getProperty(connectionLink
+						.getEndOfLink().getObjectId()));
+				coordinates = new double[2][2];
+				coordinates[0][0] = connectionLink.getStartOfLink()
+						.getLongitude().doubleValue();
+				coordinates[0][1] = connectionLink.getStartOfLink()
+						.getLatitude().doubleValue();
+				coordinates[1][0] = connectionLink.getEndOfLink()
+						.getLongitude().doubleValue();
+				coordinates[1][1] = connectionLink.getEndOfLink().getLatitude()
+						.doubleValue();
+			}
+
+			Feature feature = new Feature(connectionLink.getObjectId(),
+					new LineString(coordinates), properties);
+			filter.put(connectionLink.getObjectId(), feature);
 		}
 
-		// log.info("[DSU] create connection link : "
-		// + connectionLink.getObjectId());
-
-		Map<String, Object> properties = new HashMap<String, Object>();
-		properties.put("object_version",
-				getProperty(connectionLink.getObjectVersion()));
-		properties.put("creation_time",
-				getProperty(connectionLink.getCreationTime()));
-		properties
-				.put("creator_id", getProperty(connectionLink.getCreatorId()));
-		properties.put("name", getProperty(connectionLink.getName()));
-		properties.put("link_distance",
-				getProperty(connectionLink.getLinkDistance()));
-		properties.put("link_type", getProperty(connectionLink.getLinkType()));
-		properties.put("default_duration",
-				getProperty(connectionLink.getDefaultDuration()));
-		properties.put("frequent_traveller_duration",
-				getProperty(connectionLink.getFrequentTravellerDuration()));
-		properties.put("occasional_traveller_duration",
-				getProperty(connectionLink.getOccasionalTravellerDuration()));
-		properties.put("mobility_restricted_traveller_duration",
-				getProperty(connectionLink
-						.getMobilityRestrictedTravellerDuration()));
-		properties.put("mobility_restricted_suitability",
-				getProperty(connectionLink.getMobilityRestrictedSuitable()));
-		properties.put("stairs_availability",
-				getProperty(connectionLink.getStairsAvailable()));
-		properties.put("lift_availability",
-				getProperty(connectionLink.getLiftAvailable()));
-
-		double[][] coordinates = new double[0][2];
-		if (connectionLink.getStartOfLink() != null
-				&& connectionLink.getEndOfLink() != null) {
-			properties.put("departure_objectid", getProperty(connectionLink
-					.getStartOfLink().getObjectId()));
-			properties.put("arrival_objectid", getProperty(connectionLink
-					.getEndOfLink().getObjectId()));
-			coordinates = new double[2][2];
-			coordinates[0][0] = connectionLink.getStartOfLink().getLongitude()
-					.doubleValue();
-			coordinates[0][1] = connectionLink.getStartOfLink().getLatitude()
-					.doubleValue();
-			coordinates[1][0] = connectionLink.getEndOfLink().getLongitude()
-					.doubleValue();
-			coordinates[1][1] = connectionLink.getEndOfLink().getLatitude()
-					.doubleValue();
-		}
-
-		Feature feature = new Feature(connectionLink.getObjectId(),
-				new LineString(coordinates), properties);
-		filter.put(connectionLink.getObjectId(), feature);
-		stats.connectionLinkCount++;
-
-		return feature;
+		keys.getConnectionLinks().add(connectionLink.getObjectId());
 	}
 
-	private Feature createAccessLink(SharedData shared, DataStats stats,
-			AccessLink accessLink) {
+	private void createAccessLink(SharedData shared, AccessLink accessLink) {
 
 		Map<String, Feature> filter = shared.getAccessLinks();
-		if (filter.containsKey(accessLink.getObjectId())) {
-			return null;
+		if (!filter.containsKey(accessLink.getObjectId())) {
+			Map<String, Object> properties = new HashMap<String, Object>();
+			properties.put("object_version",
+					getProperty(accessLink.getObjectVersion()));
+			properties.put("creation_time",
+					getProperty(accessLink.getCreationTime()));
+			properties
+					.put("creator_id", getProperty(accessLink.getCreatorId()));
+			properties.put("name", getProperty(accessLink.getName()));
+			properties.put("link_distance",
+					getProperty(accessLink.getLinkDistance()));
+			properties.put("link_type", getProperty(accessLink.getLinkType()));
+			properties.put("default_duration",
+					getProperty(accessLink.getDefaultDuration()));
+			properties.put("frequent_traveller_duration",
+					getProperty(accessLink.getFrequentTravellerDuration()));
+			properties.put("occasional_traveller_duration",
+					getProperty(accessLink.getOccasionalTravellerDuration()));
+			properties.put("mobility_restricted_traveller_duration",
+					getProperty(accessLink
+							.getMobilityRestrictedTravellerDuration()));
+			properties.put("mobility_restricted_suitability",
+					getProperty(accessLink.getMobilityRestrictedSuitable()));
+			properties.put("stairs_availability",
+					getProperty(accessLink.getStairsAvailable()));
+			properties.put("lift_availability",
+					getProperty(accessLink.getLiftAvailable()));
+			properties.put("link_orientation",
+					getProperty(accessLink.getLinkOrientation()));
+
+			double[][] coordinates = new double[0][];
+			if (accessLink.getAccessPoint() != null
+					&& accessLink.getStopArea() != null) {
+				properties.put("access_point_objectid", getProperty(accessLink
+						.getAccessPoint().getObjectId()));
+				properties.put("stop_area_objectid", getProperty(accessLink
+						.getStopArea().getObjectId()));
+
+				coordinates = new double[2][2];
+				coordinates[0][0] = accessLink.getAccessPoint().getLongitude()
+						.doubleValue();
+				coordinates[0][1] = accessLink.getAccessPoint().getLatitude()
+						.doubleValue();
+				coordinates[1][0] = accessLink.getStopArea().getLongitude()
+						.doubleValue();
+				coordinates[1][1] = accessLink.getStopArea().getLatitude()
+						.doubleValue();
+			}
+
+			Feature feature = new Feature(accessLink.getObjectId(),
+					new LineString(coordinates), properties);
+			filter.put(accessLink.getObjectId(), feature);
 		}
-
-		// log.info("[DSU] create access link : " + accessLink.getObjectId());
-
-		Map<String, Object> properties = new HashMap<String, Object>();
-		properties.put("object_version",
-				getProperty(accessLink.getObjectVersion()));
-		properties.put("creation_time",
-				getProperty(accessLink.getCreationTime()));
-		properties.put("creator_id", getProperty(accessLink.getCreatorId()));
-		properties.put("name", getProperty(accessLink.getName()));
-		properties.put("link_distance",
-				getProperty(accessLink.getLinkDistance()));
-		properties.put("link_type", getProperty(accessLink.getLinkType()));
-		properties.put("default_duration",
-				getProperty(accessLink.getDefaultDuration()));
-		properties.put("frequent_traveller_duration",
-				getProperty(accessLink.getFrequentTravellerDuration()));
-		properties.put("occasional_traveller_duration",
-				getProperty(accessLink.getOccasionalTravellerDuration()));
-		properties
-				.put("mobility_restricted_traveller_duration",
-						getProperty(accessLink
-								.getMobilityRestrictedTravellerDuration()));
-		properties.put("mobility_restricted_suitability",
-				getProperty(accessLink.getMobilityRestrictedSuitable()));
-		properties.put("stairs_availability",
-				getProperty(accessLink.getStairsAvailable()));
-		properties.put("lift_availability",
-				getProperty(accessLink.getLiftAvailable()));
-		properties.put("link_orientation",
-				getProperty(accessLink.getLinkOrientation()));
-
-		double[][] coordinates = new double[0][];
-		if (accessLink.getAccessPoint() != null
-				&& accessLink.getStopArea() != null) {
-			properties.put("access_point_objectid", getProperty(accessLink
-					.getAccessPoint().getObjectId()));
-			properties.put("stop_area_objectid", getProperty(accessLink
-					.getStopArea().getObjectId()));
-
-			coordinates = new double[2][2];
-			coordinates[0][0] = accessLink.getAccessPoint().getLongitude()
-					.doubleValue();
-			coordinates[0][1] = accessLink.getAccessPoint().getLatitude()
-					.doubleValue();
-			coordinates[1][0] = accessLink.getStopArea().getLongitude()
-					.doubleValue();
-			coordinates[1][1] = accessLink.getStopArea().getLatitude()
-					.doubleValue();
-		}
-
-		Feature feature = new Feature(accessLink.getObjectId(), new LineString(
-				coordinates), properties);
-		filter.put(accessLink.getObjectId(), feature);
-
-		return feature;
 	}
 
 	private Feature createFeature(StopArea stopArea) {
