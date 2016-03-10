@@ -292,7 +292,7 @@ public class Timetable extends NeptuneIdentifiedObject {
 		if (!getVehicleJourneys().contains(vehicleJourney)) {
 			getVehicleJourneys().add(vehicleJourney);
 		}
-		if (!vehicleJourney.getTimetables().contains(vehicleJourney)) {
+		if (!vehicleJourney.getTimetables().contains(this)) {
 			vehicleJourney.getTimetables().add(this);
 		}
 	}
