@@ -76,6 +76,7 @@ public abstract class AbstractTests implements Constant, ReportConstant {
 		configuration.setOrganisationName("organisation");
 		configuration.setReferentialName("test");
 		configuration.setObjectIdPrefix("test");
+		configuration.setRouteTypeIdScheme("standard");
 		if (all)
 			configuration.setReferencesType("line");
 		else

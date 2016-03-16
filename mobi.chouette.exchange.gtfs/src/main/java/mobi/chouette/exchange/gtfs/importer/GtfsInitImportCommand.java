@@ -34,14 +34,16 @@ public class GtfsInitImportCommand implements Command, Constant {
 		try {
 			JobData jobData = (JobData) context.get(JOB_DATA);
 			context.put(REFERENTIAL, new Referential());
+
+			GtfsImportParameters parameters = (GtfsImportParameters) context.get(CONFIGURATION);
+
 			// prepare importer
 			GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 			if (importer == null) {
 				Path path = Paths.get(jobData.getPathName(), INPUT);
-				importer = new GtfsImporter(path.toString());
+				importer = new GtfsImporter(path.toString(), parameters);
 				context.put(PARSER, importer);
 			}
-			GtfsImportParameters parameters = (GtfsImportParameters) context.get(CONFIGURATION);
 			if (parameters.getReferencesType() == null || parameters.getReferencesType().isEmpty()) {
 				parameters.setReferencesType("line");
 			}
