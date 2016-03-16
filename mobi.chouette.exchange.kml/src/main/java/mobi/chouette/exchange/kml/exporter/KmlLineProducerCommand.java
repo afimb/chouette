@@ -11,6 +11,7 @@ import java.util.Set;
 import javax.naming.InitialContext;
 import javax.xml.datatype.DatatypeConfigurationException;
 
+import lombok.Data;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Constant;
@@ -22,11 +23,13 @@ import mobi.chouette.exchange.kml.exporter.KmlData.KmlItem;
 import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.metadata.NeptuneObjectPresenter;
 import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.DataStats;
 import mobi.chouette.exchange.report.FileInfo;
 import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
 import mobi.chouette.exchange.report.LineError;
 import mobi.chouette.exchange.report.LineInfo;
-import mobi.chouette.exchange.report.DataStats;
+import mobi.chouette.model.AccessPoint;
+import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
@@ -40,6 +43,16 @@ import com.jamonapi.MonitorFactory;
 public class KmlLineProducerCommand implements Command, Constant {
 	public static final String COMMAND = "KmlLineProducerCommand";
 
+	@Data
+	class SharedData {
+		KmlData physicalStops = new KmlData("Arrêts");
+		KmlData commercialStops = new KmlData("Arrêts commerciaux");
+		KmlData stopPlaces = new KmlData("Pôles d'échange");
+		KmlData accessPoints = new KmlData("Accès");
+		KmlData connectionLinks = new KmlData("Correspondances");
+		KmlData accessLinks = new KmlData("Liens d'accès");
+	}
+
 	@Override
 	public boolean execute(Context context) throws Exception {
 		boolean result = ERROR;
@@ -48,6 +61,7 @@ public class KmlLineProducerCommand implements Command, Constant {
 		ActionReport report = (ActionReport) context.get(REPORT);
 
 		try {
+
 			Line line = (Line) context.get(LINE);
 
 			KmlExportParameters configuration = (KmlExportParameters) context.get(CONFIGURATION);
@@ -56,6 +70,13 @@ public class KmlLineProducerCommand implements Command, Constant {
 			if (collection == null) {
 				collection = new ExportableData();
 				context.put(EXPORTABLE_DATA, collection);
+			} else {
+				collection.clear();
+			}
+			SharedData shared = (SharedData) context.get(SHARED_DATA);
+			if (shared == null) {
+				shared = new SharedData();
+				context.put(SHARED_DATA, shared);
 			}
 			Date startDate = null;
 			if (configuration.getStartDate() != null) {
@@ -69,7 +90,7 @@ public class KmlLineProducerCommand implements Command, Constant {
 			KmlDataCollector collector = new KmlDataCollector();
 
 			boolean cont = (collector.collect(collection, line, startDate, endDate));
-			LineInfo lineInfo = new LineInfo(line.getObjectId(),line.getName() + " (" + line.getNumber() + ")");
+			LineInfo lineInfo = new LineInfo(line.getObjectId(), line.getName() + " (" + line.getNumber() + ")");
 			DataStats stats = lineInfo.getStats();
 			stats.setAccessPointCount(collection.getAccessPoints().size());
 			stats.setConnectionLinkCount(collection.getConnectionLinks().size());
@@ -80,9 +101,11 @@ public class KmlLineProducerCommand implements Command, Constant {
 			// stats.setVehicleJourneyCount(collection.getVehicleJourneys().size());
 
 			if (cont) {
-				context.put(EXPORTABLE_DATA, collection);
+				// context.put(EXPORTABLE_DATA, collection);
 
 				saveLine(context, line, collection);
+
+				saveSharedData(context, collection, shared);
 
 				// merge lineStats to global ones
 				DataStats globalStats = report.getStats();
@@ -94,18 +117,52 @@ public class KmlLineProducerCommand implements Command, Constant {
 						+ stats.getJourneyPatternCount());
 				result = SUCCESS;
 			} else {
-				lineInfo.addError(new LineError(LineError.CODE.NO_DATA_ON_PERIOD,"no data to export on period"));
+				lineInfo.addError(new LineError(LineError.CODE.NO_DATA_ON_PERIOD, "no data to export on period"));
 				result = ERROR;
 			}
 			report.getLines().add(lineInfo);
 
 		} catch (Exception e) {
-			log.error(e.getMessage(), e);
+			log.error("fail to export line "+ e.getClass().getName()+" : "+ e.getMessage(), e);
 		} finally {
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		}
 
 		return result;
+	}
+
+	private void saveSharedData(Context context, ExportableData collection, SharedData shared) {
+		Metadata metadata = (Metadata) context.get(METADATA);
+		for (StopArea area : collection.getBoardingPositions()) {
+			shared.getPhysicalStops().addStopArea(area);
+			if (metadata != null && area.hasCoordinates())
+				metadata.getSpatialCoverage().update(area.getLongitude().doubleValue(),
+						area.getLatitude().doubleValue());
+		}
+		for (StopArea area : collection.getQuays()) {
+			shared.getPhysicalStops().addStopArea(area);
+			if (metadata != null && area.hasCoordinates())
+				metadata.getSpatialCoverage().update(area.getLongitude().doubleValue(),
+						area.getLatitude().doubleValue());
+		}
+		for (StopArea area : collection.getCommercialStops()) {
+			shared.getCommercialStops().addStopArea(area);
+			if (metadata != null && area.hasCoordinates())
+				metadata.getSpatialCoverage().update(area.getLongitude().doubleValue(),
+						area.getLatitude().doubleValue());
+		}
+		for (StopArea area : collection.getStopPlaces()) {
+			if (metadata != null && area.hasCoordinates())
+				metadata.getSpatialCoverage().update(area.getLongitude().doubleValue(),
+						area.getLatitude().doubleValue());
+			shared.getStopPlaces().addStopArea(area);
+		}
+		for (ConnectionLink link : collection.getConnectionLinks()) {
+			shared.getConnectionLinks().addConnectionLink(link);
+		}
+		for (AccessPoint point : collection.getAccessPoints()) {
+			shared.getAccessPoints().addAccessPoint(point);
+		}
 	}
 
 	private void saveLine(Context context, Line line, ExportableData collection) throws IOException,
@@ -116,10 +173,8 @@ public class KmlLineProducerCommand implements Command, Constant {
 		Path dir = Paths.get(rootDirectory, OUTPUT);
 		KmlFileWriter writer = new KmlFileWriter();
 		// prepare data for line
-		KmlData lineData = new KmlData();
-		lineData.setName("ligne : " + line.getName());
-		KmlItem lineItem = lineData.addNewItem();
-		lineItem.setId(line.getObjectId());
+		KmlData lineData = new KmlData("ligne : " + line.getName());
+		KmlItem lineItem = lineData.addNewItem(line.getObjectId());
 		lineItem.addAttribute("name", line.getName());
 		lineItem.addExtraData("transport_mode", line.getTransportModeName());
 		lineItem.addExtraData("objectid", line.getObjectId());
@@ -138,10 +193,8 @@ public class KmlLineProducerCommand implements Command, Constant {
 
 		Set<String> linksKey = new HashSet<>();
 		for (Route route : collection.getRoutes()) {
-			KmlData routeData = new KmlData();
-			routeData.setName("séquence d'arrêts : " + route.getName());
-			KmlItem routeItem = routeData.addNewItem();
-			routeItem.setId(route.getObjectId());
+			KmlData routeData = new KmlData("séquence d'arrêts : " + route.getName());
+			KmlItem routeItem = routeData.addNewItem(route.getObjectId());
 			routeItem.addAttribute("direction_code", route.getDirection());
 			routeItem.addExtraData("wayback_code", route.getWayBack());
 			routeItem.addExtraData("objectid", route.getObjectId());
@@ -158,7 +211,8 @@ public class KmlLineProducerCommand implements Command, Constant {
 
 			StopArea previous = null;
 			for (StopPoint point : route.getStopPoints()) {
-				if (point == null) continue;
+				if (point == null)
+					continue;
 				// skip non localized stops
 				if (!point.getContainedInStopArea().hasCoordinates())
 					continue;
@@ -179,32 +233,32 @@ public class KmlLineProducerCommand implements Command, Constant {
 			}
 
 			for (JourneyPattern jp : route.getJourneyPatterns()) {
-				if (collection.getJourneyPatterns().contains(jp))
-				{
-				KmlData jpData = new KmlData();
-				jpData.setName("mission : " + jp.getName());
-				jpData.addExtraData("objectid", jp.getObjectId());
-				jpData.addExtraData("object_version", jp.getObjectVersion());
-				jpData.addExtraData("creation_time", jp.getCreationTime());
-				jpData.addExtraData("creator_id", jp.getCreatorId());
-				jpData.addExtraData("name", jp.getName());
-				jpData.addExtraData("comment", jp.getComment());
-				jpData.addExtraData("registration_number", jp.getRegistrationNumber());
-				jpData.addExtraData("published_name", jp.getPublishedName());
-				jpData.addExtraData("route_objectid", route.getObjectId());
-				for (StopPoint point : route.getStopPoints()) {
-					if (point == null) continue;
-					if (point.getContainedInStopArea().hasCoordinates()) {
-						KmlItem pointItem = jpData.addStopArea(point.getContainedInStopArea());
-						pointItem.addExtraData("stop", Boolean.valueOf(jp.getStopPoints().contains(point)));
+				if (collection.getJourneyPatterns().contains(jp)) {
+					KmlData jpData = new KmlData("mission : " + jp.getName());
+					jpData.addExtraData("objectid", jp.getObjectId());
+					jpData.addExtraData("object_version", jp.getObjectVersion());
+					jpData.addExtraData("creation_time", jp.getCreationTime());
+					jpData.addExtraData("creator_id", jp.getCreatorId());
+					jpData.addExtraData("name", jp.getName());
+					jpData.addExtraData("comment", jp.getComment());
+					jpData.addExtraData("registration_number", jp.getRegistrationNumber());
+					jpData.addExtraData("published_name", jp.getPublishedName());
+					jpData.addExtraData("route_objectid", route.getObjectId());
+					for (StopPoint point : route.getStopPoints()) {
+						if (point == null)
+							continue;
+						if (point.getContainedInStopArea().hasCoordinates()) {
+							KmlItem pointItem = jpData.addStopPoint(point);
+							pointItem.addExtraData("stop", Boolean.valueOf(jp.getStopPoints().contains(point)));
+						}
 					}
-				}
-				// save jp
-				String fileName = "line_" + line.getId() + "_route_" + route.getId() + "_journey_pattern_"+ jp.getId() +".kml";
-				File file = new File(dir.toFile(), fileName);
-				writer.writeXmlFile(jpData, file);
-				FileInfo fileItem = new FileInfo(fileName,FILE_STATE.OK);
-				report.getFiles().add(fileItem);
+					// save jp
+					String fileName = "line_" + line.getId() + "_route_" + route.getId() + "_journey_pattern_"
+							+ jp.getId() + ".kml";
+					File file = new File(dir.toFile(), fileName);
+					writer.writeXmlFile(jpData, file);
+					FileInfo fileItem = new FileInfo(fileName, FILE_STATE.OK);
+					report.getFiles().add(fileItem);
 				}
 
 			}
@@ -213,7 +267,7 @@ public class KmlLineProducerCommand implements Command, Constant {
 			String fileName = "line_" + line.getId() + "_route_" + route.getId() + ".kml";
 			File file = new File(dir.toFile(), fileName);
 			writer.writeXmlFile(routeData, file);
-			FileInfo fileItem = new FileInfo(fileName,FILE_STATE.OK);
+			FileInfo fileItem = new FileInfo(fileName, FILE_STATE.OK);
 			report.getFiles().add(fileItem);
 
 		}
@@ -221,16 +275,17 @@ public class KmlLineProducerCommand implements Command, Constant {
 		String fileName = "line_" + line.getId() + ".kml";
 		File file = new File(dir.toFile(), fileName);
 		writer.writeXmlFile(lineData, file);
-		FileInfo fileItem = new FileInfo(fileName,FILE_STATE.OK);
+		FileInfo fileItem = new FileInfo(fileName, FILE_STATE.OK);
 		report.getFiles().add(fileItem);
 
-		Metadata metadata = (Metadata) context.get(METADATA); 
+		Metadata metadata = (Metadata) context.get(METADATA);
 		if (metadata != null)
-			metadata.getResources().add(metadata.new Resource(fileName, 
-					NeptuneObjectPresenter.getName(collection.getLine().getNetwork()), 
-					NeptuneObjectPresenter.getName(collection.getLine())));
+			metadata.getResources().add(
+					metadata.new Resource(fileName, NeptuneObjectPresenter.getName(collection.getLine().getNetwork()),
+							NeptuneObjectPresenter.getName(collection.getLine())));
 
 	}
+
 	public static class DefaultCommandFactory extends CommandFactory {
 
 		@Override
@@ -243,6 +298,5 @@ public class KmlLineProducerCommand implements Command, Constant {
 	static {
 		CommandFactory.factories.put(KmlLineProducerCommand.class.getName(), new DefaultCommandFactory());
 	}
-
 
 }

@@ -3,7 +3,7 @@
   <parent>
     <groupId>mobi.chouette</groupId>
     <artifactId>mobi.chouette</artifactId>
-    <version>3.3.0-SNAPSHOT</version>
+    <version>3.3.1-SNAPSHOT</version>
   </parent>
   <artifactId>mobi.chouette.exchange.converter</artifactId>
   <packaging>ejb</packaging>
@@ -57,12 +57,12 @@
          <type>pom</type>
          <scope>test</scope>
       </dependency>
-      <dependency>
+<!--       <dependency>
          <groupId>org.postgresql</groupId>
          <artifactId>postgresql</artifactId>
          <scope>test</scope>
       </dependency>
-
+ -->
       <!-- Others Dependencies -->
       <dependency>
          <groupId>org.jboss.spec.javax.ejb</groupId>
@@ -154,7 +154,7 @@
                </execution>
             </executions>
          </plugin>
-         <plugin>
+<!--          <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-ejb-plugin</artifactId>
             <configuration>
@@ -165,7 +165,7 @@
                </archive>
             </configuration>
          </plugin>
-         <plugin>
+ -->         <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>

@@ -96,7 +96,6 @@ public class ConverterCommand implements Command, Constant, ReportConstant {
 
 		boolean result = ERROR;
 		ConvertParameters parameters = (ConvertParameters) context.get(CONFIGURATION);
-		JobData jobData = (JobData) context.get(JOB_DATA);
 		ActionReport report = (ActionReport) context.get(REPORT);
 
 		// initialisation
@@ -283,22 +282,20 @@ public class ConverterCommand implements Command, Constant, ReportConstant {
 
 	private Context prepareImportContext(ConverterJobData importJobData, ValidationParameters validationParameters) {
 		Context context = new Context();
-		context.put(Constant.REPORT, new ActionReport());
-		context.put(Constant.JOB_DATA, importJobData);
+		context.put(REPORT, new ActionReport());
+		context.put(JOB_DATA, importJobData);
 		context.put(CONFIGURATION, importJobData.getConfiguration());
 		if (validationParameters != null)
 			context.put(VALIDATION, validationParameters);
-		context.put(REPORT, new ActionReport());
 		context.put(VALIDATION_REPORT, new ValidationReport());
 		return context;
 	}
 
 	private Context prepareExportContext(ConverterJobData exportJobData) {
 		Context context = new Context();
-		context.put(Constant.REPORT, new ActionReport());
-		context.put(Constant.JOB_DATA, exportJobData);
-		context.put(CONFIGURATION, exportJobData.getConfiguration());
 		context.put(REPORT, new ActionReport());
+		context.put(JOB_DATA, exportJobData);
+		context.put(CONFIGURATION, exportJobData.getConfiguration());
 		return context;
 	}
 

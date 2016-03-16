@@ -3,7 +3,9 @@ package mobi.chouette.exchange.kml.exporter;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,27 +14,34 @@ import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.NeptuneLocalizedObject;
 import mobi.chouette.model.StopArea;
+import mobi.chouette.model.StopPoint;
 
 import org.apache.commons.collections.map.ListOrderedMap;
 
 public class KmlData {
 	@Getter
-	@Setter
 	private String name;
 	@Getter
 	private ListOrderedMap extraData = new ListOrderedMap();
 	@Getter
-	private List<KmlItem> items = new ArrayList<>();
+	private Map<String,KmlItem> items = new HashMap<>();
+	
+	public KmlData(String name)
+	{
+		this.name = name;
+	}
 	
 	public void addExtraData(String key, Object value)
 	{
 		extraData.put(key,valueOf(value));
 	}
 
-	public KmlItem addNewItem()
+	public KmlItem addNewItem(String id)
 	{
+		if (items.containsKey(id)) return null;
 		KmlItem item = new KmlItem();
-		items.add(item);
+		item.setId(id);
+		items.put(id,item);
 		return item;
 	}
 
@@ -86,9 +95,9 @@ public class KmlData {
 
 	public class KmlPoint {
 		@Getter
-		private double latitude;
+		public double latitude;
 		@Getter
-		private double longitude;
+		public double longitude;
 		
 		public KmlPoint(NeptuneLocalizedObject object)
 		{
@@ -120,9 +129,44 @@ public class KmlData {
 		return data.toString();
 	}
 
+	public KmlItem addStopPoint(StopPoint point) {
+		KmlItem item = addNewItem(point.getObjectId());
+		if (item == null) return null;
+		// item.setId(area.getObjectId());
+		StopArea area = point.getContainedInStopArea();
+		if (area != null)
+		{
+		item.addAttribute("name", area.getName());
+		item.addExtraData("objectid", area.getObjectId());
+		item.addExtraData("object_version", area.getObjectVersion());
+		item.addExtraData("creation_time", area.getCreationTime());
+		item.addExtraData("creator_id", area.getCreatorId());
+		item.addExtraData("name", area.getName());
+		item.addExtraData("comment", area.getComment());
+		item.addExtraData("area_type", area.getAreaType());
+		item.addExtraData("registration_number", area.getRegistrationNumber());
+		item.addExtraData("nearest_topic_name", area.getNearestTopicName());
+		item.addExtraData("fare_code", area.getFareCode());
+		item.addExtraData("longitude", area.getLongitude());
+		item.addExtraData("latitude", area.getLatitude());
+		item.addExtraData("long_lat_type", area.getLongLatType());
+		item.addExtraData("country_code", area.getCountryCode());
+		item.addExtraData("street_name", area.getStreetName());
+		item.addExtraData("mobility_restricted_suitability", area.getMobilityRestrictedSuitable());
+		item.addExtraData("stairs_availability", area.getStairsAvailable());
+		item.addExtraData("lift_availability", area.getLiftAvailable());
+		item.addExtraData("int_user_needs", area.getIntUserNeeds());
+		if (area.getParent() != null)
+		   item.addExtraData("parent_objectid", area.getParent().getObjectId());
+		item.setPoint(area);
+		}
+		return item;
+	}
+
 	public KmlItem addStopArea(StopArea area) {
-		KmlItem item = addNewItem();
-		item.setId(area.getObjectId());
+		KmlItem item = addNewItem(area.getObjectId());
+		if (item == null) return null;
+		// item.setId(area.getObjectId());
 		item.addAttribute("name", area.getName());
 		item.addExtraData("objectid", area.getObjectId());
 		item.addExtraData("object_version", area.getObjectVersion());
@@ -150,8 +194,9 @@ public class KmlData {
 	}
 	
 	public KmlItem addConnectionLink(ConnectionLink link) {
-		KmlItem item = addNewItem();
-		item.setId(link.getObjectId());
+		KmlItem item = addNewItem(link.getObjectId());
+		if (item == null) return null;
+		// item.setId(link.getObjectId());
 		item.addAttribute("name", link.getName());
 		item.addExtraData("connection_link_type", link.getLinkType());
 		item.addExtraData("objectid", link.getObjectId());
@@ -181,8 +226,9 @@ public class KmlData {
 	}
 
 	public KmlItem addAccessPoint(AccessPoint point) {
-		KmlItem item = addNewItem();
-		item.setId(point.getObjectId());
+		KmlItem item = addNewItem(point.getObjectId());
+		if (item == null) return null;
+		// item.setId(point.getObjectId());
 		item.addAttribute("name", point.getName());
 		item.addExtraData("objectid", point.getObjectId());
 		item.addExtraData("object_version", point.getObjectVersion());
@@ -208,8 +254,9 @@ public class KmlData {
 	}
 
 	public KmlItem addAccessLink(AccessLink link) {
-		KmlItem item = addNewItem();
-		item.setId(link.getObjectId());
+		KmlItem item = addNewItem(link.getObjectId());
+		if (item == null) return null;
+		// item.setId(link.getObjectId());
 		item.addAttribute("name", link.getName());
 		item.addExtraData("access_link_type", link.getLinkType());
 		item.addExtraData("objectid", link.getObjectId());
