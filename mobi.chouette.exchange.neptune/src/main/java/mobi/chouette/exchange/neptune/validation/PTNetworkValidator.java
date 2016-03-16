@@ -8,12 +8,13 @@ import java.util.Map;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.validation.ValidationConstraints;
+import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.exchange.validation.report.Detail;
-import mobi.chouette.exchange.validation.report.FileLocation;
 import mobi.chouette.exchange.validation.report.Location;
+import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.Network;
 import mobi.chouette.model.util.Referential;
 
@@ -36,9 +37,9 @@ public class PTNetworkValidator extends AbstractValidator implements Validator<N
 		addItemToValidation(context, prefix, "Network", 2, "W", "W");
 	}
 
-	public void addLocation(Context context, String objectId, int lineNumber, int columnNumber)
+	public void addLocation(Context context, NeptuneIdentifiedObject object, int lineNumber, int columnNumber)
 	{
-		addLocation( context,LOCAL_CONTEXT,  objectId,  lineNumber,  columnNumber);
+		addLocation( context,LOCAL_CONTEXT,  object,  lineNumber,  columnNumber);
 		
 	}
 	
@@ -70,11 +71,12 @@ public class PTNetworkValidator extends AbstractValidator implements Validator<N
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 		if (localContext == null || localContext.isEmpty()) return new ValidationConstraints();
+		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
+		Map<String, Location> fileLocations = data.getFileLocations();
 		Context lineContext = (Context) validationContext.get(LineValidator.LOCAL_CONTEXT);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		Map<String, Network> networks = referential.getPtNetworks();
 
-		String fileName = (String) context.get(FILE_NAME);
 		String lineId = lineContext.keySet().iterator().next(); 
 
 		for (String objectId : localContext.keySet()) 
@@ -87,12 +89,9 @@ public class PTNetworkValidator extends AbstractValidator implements Validator<N
 				prepareCheckPoint(context, NETWORK_1);
 				if (!lineIds.contains(lineId))
 				{
-					int lineNumber = ((Integer) objectContext.get(LINE_NUMBER)).intValue();
-					int columnNumber = ((Integer) objectContext.get(COLUMN_NUMBER)).intValue();
-					FileLocation sourceLocation = new FileLocation(fileName, lineNumber, columnNumber);
 					Detail errorItem = new Detail(
 							NETWORK_1,
-							new Location(sourceLocation ,objectId), lineId);
+							fileLocations.get(objectId), lineId);
 					addValidationError(context, NETWORK_1, errorItem);
 				}
 			}
@@ -105,12 +104,9 @@ public class PTNetworkValidator extends AbstractValidator implements Validator<N
 				Network network = networks.get(objectId);
 				if (!sourceType.equals(network.getSourceType().name()))
 				{
-					int lineNumber = ((Integer) objectContext.get(LINE_NUMBER)).intValue();
-					int columnNumber = ((Integer) objectContext.get(COLUMN_NUMBER)).intValue();
-					FileLocation sourceLocation = new FileLocation(fileName, lineNumber, columnNumber);
 					Detail errorItem = new Detail(
 							NETWORK_2,
-							new Location(sourceLocation ,objectId), sourceType,network.getSourceType().name());
+							fileLocations.get(objectId), sourceType,network.getSourceType().name());
 					addValidationError(context, NETWORK_2, errorItem);
 				}
 			}

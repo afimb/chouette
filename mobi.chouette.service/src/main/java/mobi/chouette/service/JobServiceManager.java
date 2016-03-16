@@ -241,7 +241,7 @@ public class JobServiceManager {
 		jobDAO.update(jobService.getJob());
 	}
 
-	public void cancel(String referential, Long id) throws ServiceException {
+	public JobService cancel(String referential, Long id) throws ServiceException {
 		validateReferential(referential);
 		JobService jobService = getJobService(referential, id, true);
 		if (jobService.getStatus().ordinal() <= STATUS.STARTED.ordinal()) {
@@ -261,7 +261,7 @@ public class JobServiceManager {
 			jobDAO.update(jobService.getJob());
 
 		}
-
+        return jobService;
 	}
 
 	public void remove(String referential, Long id) throws ServiceException {

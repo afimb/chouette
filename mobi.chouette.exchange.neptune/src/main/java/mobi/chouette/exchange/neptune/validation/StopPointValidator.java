@@ -1,15 +1,18 @@
 package mobi.chouette.exchange.neptune.validation;
 
 
+import java.util.Map;
+
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.validation.ValidationConstraints;
+import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.exchange.validation.report.Detail;
-import mobi.chouette.exchange.validation.report.FileLocation;
 import mobi.chouette.exchange.validation.report.Location;
+import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.LongLatTypeEnum;
 
@@ -42,9 +45,9 @@ public class StopPointValidator extends AbstractValidator implements Validator<S
 
 	}
 
-	public void addLocation(Context context, String objectId, int lineNumber, int columnNumber)
+	public void addLocation(Context context, NeptuneIdentifiedObject object, int lineNumber, int columnNumber)
 	{
-		addLocation( context,LOCAL_CONTEXT,  objectId,  lineNumber,  columnNumber);
+		addLocation( context,LOCAL_CONTEXT,  object,  lineNumber,  columnNumber);
 		
 	}
 	
@@ -81,11 +84,12 @@ public class StopPointValidator extends AbstractValidator implements Validator<S
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 		if (localContext == null || localContext.isEmpty()) return new ValidationConstraints();
+		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
+		Map<String, Location> fileLocations = data.getFileLocations();
 		Context stopAreasContext = (Context) validationContext.get(StopAreaValidator.LOCAL_CONTEXT);
 		Context linesContext = (Context) validationContext.get(LineValidator.LOCAL_CONTEXT);
 		Context networksContext = (Context) validationContext.get(PTNetworkValidator.LOCAL_CONTEXT);
 
-		String fileName = (String) context.get(FILE_NAME);
 
 	     // 2-NEPTUNE-StopPoint-3 : check existence of stoparea referred by
 	      // containedIn
@@ -97,9 +101,6 @@ public class StopPointValidator extends AbstractValidator implements Validator<S
 		for (String objectId : localContext.keySet()) 
 		{
 			Context objectContext = (Context) localContext.get(objectId);
-			int lineNumber = ((Integer) objectContext.get(LINE_NUMBER)).intValue();
-			int columnNumber = ((Integer) objectContext.get(COLUMN_NUMBER)).intValue();
-			FileLocation sourceLocation = new FileLocation(fileName, lineNumber, columnNumber);
 
 	         if (objectContext.containsKey(LINE_ID_SHORTCUT))
 	         {
@@ -110,7 +111,7 @@ public class StopPointValidator extends AbstractValidator implements Validator<S
 	            {
 					Detail errorItem = new Detail(
 							STOP_POINT_1,
-							new Location(sourceLocation,objectId), lineIdShortCut);
+							fileLocations.get(objectId), lineIdShortCut);
 					addValidationError(context,STOP_POINT_1, errorItem);
 	            }
 
@@ -124,7 +125,7 @@ public class StopPointValidator extends AbstractValidator implements Validator<S
 	            {
 					Detail errorItem = new Detail(
 							STOP_POINT_2,
-							new Location(sourceLocation,objectId), ptNetworkIdShortcut);
+							fileLocations.get(objectId), ptNetworkIdShortcut);
 					addValidationError(context,STOP_POINT_2, errorItem);
 	            }
 
@@ -135,7 +136,7 @@ public class StopPointValidator extends AbstractValidator implements Validator<S
 	         {
 				Detail errorItem = new Detail(
 							STOP_POINT_3,
-							new Location(sourceLocation,objectId), containedIn);
+							fileLocations.get(objectId), containedIn);
 					addValidationError(context,STOP_POINT_3, errorItem);
 	         }
 
@@ -143,7 +144,7 @@ public class StopPointValidator extends AbstractValidator implements Validator<S
 	         {
 					Detail errorItem = new Detail(
 							STOP_POINT_4,
-							new Location(sourceLocation,objectId), objectContext.get(LONG_LAT_TYPE).toString());
+							fileLocations.get(objectId), objectContext.get(LONG_LAT_TYPE).toString());
 					addValidationError(context,STOP_POINT_4, errorItem);
 	         }
 		

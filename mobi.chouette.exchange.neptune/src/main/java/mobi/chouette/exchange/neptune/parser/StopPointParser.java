@@ -45,7 +45,6 @@ public class StopPointParser implements Parser, Constant, JsonExtension {
 				objectId = ParserUtils.getText(xpp.nextText());
 				stopPoint = ObjectFactory.getStopPoint(referential, objectId);
 				stopPoint.setFilled(true);
-				validator.addLocation(context, objectId, lineNumber, columnNumber);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
 				stopPoint.setObjectVersion(version);
@@ -74,6 +73,7 @@ public class StopPointParser implements Parser, Constant, JsonExtension {
 				XPPUtil.skipSubTree(log, xpp);
 			}
 		}
+		validator.addLocation(context, stopPoint, lineNumber, columnNumber);
 	}
 
 

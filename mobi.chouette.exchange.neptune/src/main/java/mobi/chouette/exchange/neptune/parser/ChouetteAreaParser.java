@@ -81,7 +81,6 @@ public class ChouetteAreaParser implements Parser, Constant, JsonExtension {
 				objectId = ParserUtils.getText(xpp.nextText());
 				stopArea = ObjectFactory.getStopArea(referential, objectId);
 				stopArea.setFilled(true);
-				validator.addLocation(context, objectId, lineNumber, columnNumber);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
 				stopArea.setObjectVersion(version);
@@ -183,6 +182,7 @@ public class ChouetteAreaParser implements Parser, Constant, JsonExtension {
 				XPPUtil.skipSubTree(log, xpp);
 			}
 		}
+		validator.addLocation(context, stopArea, lineNumber, columnNumber);
 	}
 
 	private void parseAreaCentroid(Context context, BiMap<String, String> map)
@@ -207,7 +207,6 @@ public class ChouetteAreaParser implements Parser, Constant, JsonExtension {
 				objectId = ParserUtils.getText(xpp.nextText());
 				areaCentroid = factory.getAreaCentroid(objectId);
 				String areaId = inverse.get(objectId);
-				validator.addLocation(context, objectId, lineNumber, columnNumber);
 				stopArea = ObjectFactory.getStopArea(referential, areaId);
 			} else if (xpp.getName().equals("name")) {
 				areaCentroid.setName(ParserUtils.getText(xpp.nextText()));
@@ -263,6 +262,7 @@ public class ChouetteAreaParser implements Parser, Constant, JsonExtension {
 				XPPUtil.skipSubTree(log, xpp);
 			}
 		}
+		validator.addLocation(context, areaCentroid, lineNumber, columnNumber);
 	}
 
 

@@ -47,7 +47,6 @@ public class TimetableParser implements Parser, Constant {
 				 objectId = ParserUtils.getText(xpp.nextText());
 				timetable = ObjectFactory.getTimetable(referential, objectId);
 				timetable.setFilled(true);
-				validator.addLocation(context, objectId, lineNumber, columnNumber);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
 				timetable.setObjectVersion(version);
@@ -92,6 +91,7 @@ public class TimetableParser implements Parser, Constant {
 				XPPUtil.skipSubTree(log, xpp);
 			}
 		}
+		validator.addLocation(context, timetable, lineNumber, columnNumber);
 	}
 
 	static {

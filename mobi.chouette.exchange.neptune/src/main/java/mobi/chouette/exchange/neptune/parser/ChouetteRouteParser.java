@@ -47,7 +47,6 @@ public class ChouetteRouteParser implements Parser, Constant {
 				objectId = ParserUtils.getText(xpp.nextText());
 				route = ObjectFactory.getRoute(referential, objectId);
 				route.setFilled(true);
-				validator.addLocation(context, objectId, lineNumber, columnNumber);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
 				route.setObjectVersion(version);
@@ -74,6 +73,7 @@ public class ChouetteRouteParser implements Parser, Constant {
 				PTLink ptLink = factory.getPTLink(ptLinkId);
 				List<PTLink> list = factory.getPTLinksOnRoute(route);
 				list.add(ptLink);
+				ptLink.setRoute(route);
 			} else if (xpp.getName().equals("RouteExtension")) {
 				while (xpp.nextTag() == XmlPullParser.START_TAG) {
 					if (xpp.getName().equals("wayBack")) {
@@ -97,6 +97,7 @@ public class ChouetteRouteParser implements Parser, Constant {
 				XPPUtil.skipSubTree(log, xpp);
 			}
 		}
+		validator.addLocation(context, route, lineNumber, columnNumber);
 
 	}
 

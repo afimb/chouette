@@ -168,7 +168,7 @@ public class ValidatorCommand implements Command, Constant {
 			// TODO a mettre dans une commande dédiée
 			ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 			Line line = data.getCurrentLine();
-			LineInfo lineInfo = new LineInfo(line.getObjectId(),line.getName() + " (" + line.getNumber() + ")");
+			LineInfo lineInfo = new LineInfo(line);
 			DataStats stats = lineInfo.getStats();
 			stats.setLineCount(1);
 			stats.setJourneyPatternCount(data.getJourneyPatterns().size());

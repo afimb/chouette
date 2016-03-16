@@ -69,7 +69,7 @@ public class KmlLineProducerCommand implements Command, Constant {
 			KmlDataCollector collector = new KmlDataCollector();
 
 			boolean cont = (collector.collect(collection, line, startDate, endDate));
-			LineInfo lineInfo = new LineInfo(line.getObjectId(),line.getName() + " (" + line.getNumber() + ")");
+			LineInfo lineInfo = new LineInfo(line);
 			DataStats stats = lineInfo.getStats();
 			stats.setAccessPointCount(collection.getAccessPoints().size());
 			stats.setConnectionLinkCount(collection.getConnectionLinks().size());

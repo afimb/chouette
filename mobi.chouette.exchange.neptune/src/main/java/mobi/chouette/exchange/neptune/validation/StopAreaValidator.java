@@ -10,12 +10,13 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.validation.ValidationConstraints;
+import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.exchange.validation.report.Detail;
-import mobi.chouette.exchange.validation.report.FileLocation;
 import mobi.chouette.exchange.validation.report.Location;
+import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.ChouetteAreaEnum;
@@ -57,10 +58,10 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 
 	}
 
-	public void addLocation(Context context, String objectId, int lineNumber, int columnNumber)
+	public void addLocation(Context context, NeptuneIdentifiedObject object, int lineNumber, int columnNumber)
 	{
-		if (objectId == null) throw new NullPointerException("null objectId");
-		addLocation( context,LOCAL_CONTEXT,  objectId,  lineNumber,  columnNumber);
+		if (object == null) throw new NullPointerException("null object");
+		addLocation( context,LOCAL_CONTEXT,  object,  lineNumber,  columnNumber);
 	}
 
 	public void addAreaCentroidId(Context  context, String objectId, String centroidId)
@@ -96,22 +97,20 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 		Set<String> objectIds = (Set<String>) validationContext.get(OBJECT_IDS);
 
 		if (localContext == null || localContext.isEmpty()) return new ValidationConstraints();
+		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
+		Map<String, Location> fileLocations = data.getFileLocations();
 		Context stopPointContext = (Context) validationContext.get(StopPointValidator.LOCAL_CONTEXT);
 		Context itlContext = (Context) validationContext.get(ITLValidator.LOCAL_CONTEXT);
 		if (itlContext == null) itlContext = new Context(); 
 		Context areaCentroidContext = (Context) validationContext.get(AreaCentroidValidator.LOCAL_CONTEXT);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		Map<String, StopArea> stopAreas = referential.getStopAreas();
-		String fileName = (String) context.get(FILE_NAME);
 
 		prepareCheckPoint(context,STOP_AREA_1);
 
 		for (String objectId : localContext.keySet()) 
 		{
 			Context objectContext = (Context) localContext.get(objectId);
-			int lineNumber = ((Integer) objectContext.get(LINE_NUMBER)).intValue();
-			int columnNumber = ((Integer) objectContext.get(COLUMN_NUMBER)).intValue();
-			FileLocation sourceLocation = new FileLocation(fileName, lineNumber, columnNumber);
 
 			List<String> contains = (List<String>) objectContext.get(CONTAINS2);
 			//  2-NEPTUNE-StopArea-1 : check if StopArea refers in field contains
@@ -124,7 +123,7 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 					// wrong or unknown reference type
 					Detail errorItem = new Detail(
 							STOP_AREA_1,
-							new Location(sourceLocation,objectId), containedId);
+							fileLocations.get(objectId), containedId);
 					addValidationError(context,STOP_AREA_1, errorItem);
 				}
 			}
@@ -159,12 +158,8 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 							// wrong reference type
 							Detail errorItem = new Detail(
 									STOP_AREA_2,
-									new Location(sourceLocation,stopArea.getObjectId()), child.getAreaType().toString(),ChouetteAreaEnum.StopPlace.toString());
-							Context childContext = (Context) localContext.get(child.getObjectId());
-							lineNumber = ((Integer) childContext.get(LINE_NUMBER)).intValue();
-							columnNumber = ((Integer) childContext.get(COLUMN_NUMBER)).intValue();
-							FileLocation targetLocation = new FileLocation(fileName, lineNumber, columnNumber);
-							errorItem.getTargets().add(new Location(targetLocation, child.getObjectId()));
+									fileLocations.get(stopArea.getObjectId()), child.getAreaType().toString(),ChouetteAreaEnum.StopPlace.toString());
+							errorItem.getTargets().add(fileLocations.get( child.getObjectId()));
 
 							addValidationError(context,STOP_AREA_2, errorItem);
 						}
@@ -174,12 +169,8 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 						// wrong reference type
 						Detail errorItem = new Detail(
 								STOP_AREA_2,
-								new Location(sourceLocation,stopArea.getObjectId()), "StopPoint",ChouetteAreaEnum.StopPlace.toString());
-						Context childContext = (Context) stopPointContext.get(child.getObjectId());
-						lineNumber = ((Integer) childContext.get(LINE_NUMBER)).intValue();
-						columnNumber = ((Integer) childContext.get(COLUMN_NUMBER)).intValue();
-						FileLocation targetLocation = new FileLocation(fileName, lineNumber, columnNumber);
-						errorItem.getTargets().add(new Location(targetLocation, child.getObjectId()));
+								fileLocations.get(stopArea.getObjectId()), "StopPoint",ChouetteAreaEnum.StopPlace.toString());
+						errorItem.getTargets().add(fileLocations.get(child.getObjectId()));
 						addValidationError(context,STOP_AREA_2, errorItem);
 
 					}
@@ -202,12 +193,8 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 							// wrong reference type
 							Detail errorItem = new Detail(
 									STOP_AREA_3,
-									new Location(sourceLocation,stopArea.getObjectId()), child.getAreaType().toString(),ChouetteAreaEnum.CommercialStopPoint.toString());
-							Context childContext = (Context) localContext.get(child.getObjectId());
-							lineNumber = ((Integer) childContext.get(LINE_NUMBER)).intValue();
-							columnNumber = ((Integer) childContext.get(COLUMN_NUMBER)).intValue();
-							FileLocation targetLocation = new FileLocation(fileName, lineNumber, columnNumber);
-							errorItem.getTargets().add(new Location(targetLocation, child.getObjectId()));
+									fileLocations.get(stopArea.getObjectId()), child.getAreaType().toString(),ChouetteAreaEnum.CommercialStopPoint.toString());
+							errorItem.getTargets().add(fileLocations.get( child.getObjectId()));
 							addValidationError(context,STOP_AREA_3, errorItem);
 						}
 					}
@@ -216,12 +203,8 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 						// wrong reference type
 						Detail errorItem = new Detail(
 								STOP_AREA_3,
-								new Location(sourceLocation,stopArea.getObjectId()), "StopPoint",ChouetteAreaEnum.CommercialStopPoint.toString());
-						Context childContext = (Context) stopPointContext.get(child.getObjectId());
-						lineNumber = ((Integer) childContext.get(LINE_NUMBER)).intValue();
-						columnNumber = ((Integer) childContext.get(COLUMN_NUMBER)).intValue();
-						FileLocation targetLocation = new FileLocation(fileName, lineNumber, columnNumber);
-						errorItem.getTargets().add(new Location(targetLocation, child.getObjectId()));
+								fileLocations.get(stopArea.getObjectId()), "StopPoint",ChouetteAreaEnum.CommercialStopPoint.toString());
+						errorItem.getTargets().add(fileLocations.get( child.getObjectId()));
 						addValidationError(context,STOP_AREA_3, errorItem);
 
 					}
@@ -242,12 +225,8 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 						// wrong reference type
 						Detail errorItem = new Detail(
 								STOP_AREA_4,
-								new Location(sourceLocation,stopArea.getObjectId()), area.getAreaType().toString(),stopArea.getAreaType().toString());
-						Context childContext = (Context) localContext.get(child.getObjectId());
-						lineNumber = ((Integer) childContext.get(LINE_NUMBER)).intValue();
-						columnNumber = ((Integer) childContext.get(COLUMN_NUMBER)).intValue();
-						FileLocation targetLocation = new FileLocation(fileName, lineNumber, columnNumber);
-						errorItem.getTargets().add(new Location(targetLocation, child.getObjectId()));
+								fileLocations.get(stopArea.getObjectId()), area.getAreaType().toString(),stopArea.getAreaType().toString());
+						errorItem.getTargets().add(fileLocations.get( child.getObjectId()));
 						addValidationError(context,STOP_AREA_4, errorItem);
 					}
 				}
@@ -268,12 +247,8 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 
 							Detail errorItem = new Detail(
 									ITL_1,
-									new Location(sourceLocation,stopArea.getObjectId()), child.getAreaType().toString(),ChouetteAreaEnum.ITL.toString());
-							Context childContext = (Context) localContext.get(child.getObjectId());
-							lineNumber = ((Integer) childContext.get(LINE_NUMBER)).intValue();
-							columnNumber = ((Integer) childContext.get(COLUMN_NUMBER)).intValue();
-							FileLocation targetLocation = new FileLocation(fileName, lineNumber, columnNumber);
-							errorItem.getTargets().add(new Location(targetLocation, child.getObjectId()));
+									fileLocations.get(stopArea.getObjectId()), child.getAreaType().toString(),ChouetteAreaEnum.ITL.toString());
+							errorItem.getTargets().add(fileLocations.get(child.getObjectId()));
 							addValidationError(context,ITL_1, errorItem);
 						}
 					}
@@ -282,12 +257,8 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 						// wrong reference type
 						Detail errorItem = new Detail(
 								ITL_1,
-								new Location(sourceLocation,stopArea.getObjectId()), "StopPoint",ChouetteAreaEnum.ITL.toString());
-						Context childContext = (Context) stopPointContext.get(child.getObjectId());
-						lineNumber = ((Integer) childContext.get(LINE_NUMBER)).intValue();
-						columnNumber = ((Integer) childContext.get(COLUMN_NUMBER)).intValue();
-						FileLocation targetLocation = new FileLocation(fileName, lineNumber, columnNumber);
-						errorItem.getTargets().add(new Location(targetLocation, child.getObjectId()));
+								fileLocations.get(stopArea.getObjectId()), "StopPoint",ChouetteAreaEnum.ITL.toString());
+						errorItem.getTargets().add(fileLocations.get( child.getObjectId()));
 						addValidationError(context,ITL_1, errorItem);
 
 					}
@@ -303,7 +274,7 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 					// unused ITL Stop
 					Detail errorItem = new Detail(
 							ITL_2,
-							new Location(sourceLocation,stopArea.getObjectId()));
+							fileLocations.get(stopArea.getObjectId()));
 					addValidationError(context,ITL_2, errorItem);
 				}
 
@@ -326,7 +297,7 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 					{
 						Detail errorItem = new Detail(
 								STOP_AREA_5,
-								new Location(sourceLocation,stopArea.getObjectId()), centroidId);
+								fileLocations.get(stopArea.getObjectId()), centroidId);
 						addValidationError(context,STOP_AREA_5, errorItem);
 					} 
 					else
@@ -342,11 +313,8 @@ public class StopAreaValidator extends AbstractValidator implements Validator<St
 							{
 								Detail errorItem = new Detail(
 										STOP_AREA_6,
-										new Location(sourceLocation,stopArea.getObjectId()), containedIn);
-								lineNumber = ((Integer) areaCentroidData.get(LINE_NUMBER)).intValue();
-								columnNumber = ((Integer) areaCentroidData.get(COLUMN_NUMBER)).intValue();
-								FileLocation targetLocation = new FileLocation(fileName, lineNumber, columnNumber);
-								errorItem.getTargets().add(new Location(targetLocation, centroidId));
+										fileLocations.get(stopArea.getObjectId()), containedIn);
+								errorItem.getTargets().add(fileLocations.get( centroidId));
 								addValidationError(context,STOP_AREA_6, errorItem);
 							}
 						}
