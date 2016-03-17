@@ -51,6 +51,7 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 		validationReporter.getExceptions().clear();
 		
 		// routes.txt
+		// log.info("validating routes");
 		if (importer.hasRouteImporter()) { // the file "routes.txt" exists ?
 			validationReporter.reportSuccess(context, GTFS_1_GTFS_Common_1, GTFS_ROUTES_FILE);
 

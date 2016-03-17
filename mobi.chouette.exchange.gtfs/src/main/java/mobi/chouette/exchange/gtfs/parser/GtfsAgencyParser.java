@@ -25,6 +25,7 @@ public class GtfsAgencyParser implements Parser, Validator, Constant {
 		ValidationReporter validationReporter = (ValidationReporter) context.get(GTFS_REPORTER);
 		validationReporter.getExceptions().clear();
 		
+		// log.info("validating agencies");
 		// agency.txt
 		if (importer.hasAgencyImporter()) { // the file "agency.txt" exists
 			validationReporter.reportSuccess(context, GTFS_1_GTFS_Common_1, GTFS_AGENCY_FILE);

@@ -63,6 +63,7 @@ public abstract class IndexImpl<T> extends AbstractIndex<T> {
 		initialize();
 	}
 
+	@Override
 	public String getPath() {
 		return _path;
 	}
