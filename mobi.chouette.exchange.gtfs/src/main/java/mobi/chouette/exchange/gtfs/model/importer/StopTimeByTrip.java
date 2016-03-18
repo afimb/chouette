@@ -1,7 +1,6 @@
 package mobi.chouette.exchange.gtfs.model.importer;
 
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.Map;
 
 import mobi.chouette.common.HTMLTagValidator;
@@ -20,9 +19,6 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements GtfsConve
 
 	private GtfsStopTime _bean = new GtfsStopTime();
 	private String[] _array = new String[FIELDS.values().length];
-
-//	private String _tripId = null;
-//	private String _stopId = null;
 
 	public StopTimeByTrip(String name) throws IOException {
 		super(name, KEY, false);
@@ -220,27 +216,7 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements GtfsConve
 	public boolean validate(GtfsStopTime bean, GtfsImporter dao) {
 		boolean result = true;
 		
-		int id = bean.getId();
 		String tripId = bean.getTripId();
-		Integer stopSequence = bean.getStopSequence();
-		if (tripId == null || stopSequence == null) {
-			result = false;
-		} else {
-			Iterator<GtfsStopTime> iti = dao.getStopTimeByTrip().values(tripId).iterator();
-			while ( iti.hasNext() ) {
-				GtfsStopTime nextStopTime = iti.next();
-				if (nextStopTime.getStopSequence() == null)
-					continue;
-				if (id != nextStopTime.getId() && stopSequence == nextStopTime.getStopSequence()) {
-					result = false;
-					bean.getErrors().add(new GtfsException(_path, nextStopTime.getId(), getIndex(FIELDS.stop_sequence.name()), FIELDS.trip_id.name()+","+FIELDS.stop_sequence.name(), GtfsException.ERROR.DUPLICATE_STOP_SEQUENCE, null, tripId+","+stopSequence));
-				}
-				if (nextStopTime.getId() == id-1)
-					break;
-			}
-		}
-		if (result)
-			bean.getOkTests().add(GtfsException.ERROR.DUPLICATE_STOP_SEQUENCE);
 		
 		boolean result2 = true;
 		String stopId = bean.getStopId();

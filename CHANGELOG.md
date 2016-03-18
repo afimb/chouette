@@ -1,3 +1,7 @@
+# Version 3.2.2 (18/03/2016) 
+* Corrections :
+  * gtfs validation optimisations: stop_times and shapes was too long to process
+
 # Version 3.2.1 (26/02/2016) 
 * Corrections :
   * issue #23 : wrong shape_pt_sequence on GTFS export

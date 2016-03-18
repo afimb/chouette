@@ -8,7 +8,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,7 +32,9 @@ import mobi.chouette.exchange.gtfs.model.importer.GtfsException;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsImporter;
 import mobi.chouette.exchange.gtfs.model.importer.Index;
 import mobi.chouette.exchange.gtfs.model.importer.RouteById;
+import mobi.chouette.exchange.gtfs.model.importer.ShapeById;
 import mobi.chouette.exchange.gtfs.model.importer.StopById;
+import mobi.chouette.exchange.gtfs.model.importer.StopTimeByTrip;
 import mobi.chouette.exchange.gtfs.validation.Constant;
 import mobi.chouette.exchange.gtfs.validation.ValidationReporter;
 import mobi.chouette.exchange.importer.Parser;
@@ -148,7 +149,33 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 				validationReporter.reportErrors(context, bean.getErrors(), GTFS_STOP_TIMES_FILE);
 				validationReporter.validate(context, GTFS_STOP_TIMES_FILE, bean.getOkTests());
 			}
+			// contrôle de la séquence
 			stopTimeParser.setWithValidation(false);
+			{
+				Iterable<String> tripIds = stopTimeParser.keys();
+
+				Map<Integer, Integer> stopSequences = new HashMap<>();
+				for (String tripId : tripIds) {
+					stopSequences.clear();
+					Iterable<GtfsStopTime> stopTimes = stopTimeParser.values(tripId);
+					for (GtfsStopTime bean : stopTimes) {
+						Integer stopSequence = bean.getStopSequence();
+						if (stopSequence != null)
+						{
+							if (stopSequences.containsKey(stopSequence))
+							{
+								validationReporter.reportError(context, new GtfsException(stopTimeParser.getPath(), bean.getId(), stopTimeParser.getIndex(StopTimeByTrip.FIELDS.stop_sequence.name()), StopTimeByTrip.FIELDS.trip_id.name()+","+StopTimeByTrip.FIELDS.stop_sequence.name(), GtfsException.ERROR.DUPLICATE_STOP_SEQUENCE, null, tripId+","+stopSequence), GTFS_STOP_TIMES_FILE);
+							}
+							else
+							{
+								stopSequences.put(stopSequence, bean.getId());
+								validationReporter.validate(context, GTFS_STOP_TIMES_FILE, GtfsException.ERROR.DUPLICATE_STOP_SEQUENCE);
+							}
+						}
+					}
+				}
+					
+			}
 			int i = 1;
 			boolean unsuedId = true;
 			for (GtfsStop bean : importer.getStopById()) {
@@ -219,9 +246,8 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 
 			GtfsException fatalException = null;
 			shapeParser.setWithValidation(true);
-			Iterator<GtfsShape> iti = shapeParser.iterator();
-			while (iti.hasNext()) {
-				GtfsShape bean = iti.next();
+			
+			for (GtfsShape bean : shapeParser) {
 				try {
 					shapeParser.validate(bean, importer);
 				} catch (Exception ex) {
@@ -238,7 +264,33 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 				validationReporter.reportErrors(context, bean.getErrors(), GTFS_SHAPES_FILE);
 				validationReporter.validate(context, GTFS_SHAPES_FILE, bean.getOkTests());
 			}
+			// contrôle de la séquence
 			shapeParser.setWithValidation(false);
+			{
+				Iterable<String> tripIds = shapeParser.keys();
+
+				Map<Integer, Integer> shapeSequences = new HashMap<>();
+				for (String tripId : tripIds) {
+					shapeSequences.clear();
+					Iterable<GtfsShape> shapes = shapeParser.values(tripId);
+					for (GtfsShape bean : shapes) {
+						Integer stopSequence = bean.getShapePtSequence();
+						if (stopSequence != null)
+						{
+							if (shapeSequences.containsKey(stopSequence))
+							{
+								validationReporter.reportError(context, new GtfsException(shapeParser.getPath(), bean.getId(), shapeParser.getIndex(ShapeById.FIELDS.shape_pt_sequence.name()), ShapeById.FIELDS.shape_id.name()+","+ShapeById.FIELDS.shape_pt_sequence.name(), GtfsException.ERROR.DUPLICATE_STOP_SEQUENCE, null, tripId+","+stopSequence), GTFS_SHAPES_FILE);
+							}
+							else
+							{
+								shapeSequences.put(stopSequence, bean.getId());
+								validationReporter.validate(context, GTFS_SHAPES_FILE, GtfsException.ERROR.DUPLICATE_STOP_SEQUENCE);
+							}
+						}
+					}
+				}
+					
+			}
 			if (fatalException != null)
 				throw fatalException;
 		} else {

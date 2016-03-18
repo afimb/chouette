@@ -2,7 +2,6 @@ package mobi.chouette.exchange.gtfs.model.importer;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.Iterator;
 import java.util.Map;
 
 import mobi.chouette.common.HTMLTagValidator;
@@ -184,28 +183,6 @@ public class ShapeById extends IndexImpl<GtfsShape> implements GtfsConverter {
 	public boolean validate(GtfsShape bean, GtfsImporter dao) {
 		boolean result = true;
 		
-		if (bean.getShapeId() == null || bean.getShapePtSequence() == null)
-		{
-			return result;
-		}
-		
-		int id = bean.getId();
-		String shapeId = bean.getShapeId();
-		int shapePtSequence = bean.getShapePtSequence();
-		
-		Iterator<GtfsShape> iti = dao.getShapeById().values(shapeId).iterator();
-		while ( iti.hasNext() ) {
-			GtfsShape nextShape = iti.next();
-			//nextStopTime.getErrors().clear();
-			if (nextShape.getShapePtSequence() == null)
-				continue;
-			if (id != nextShape.getId() && shapePtSequence == nextShape.getShapePtSequence()) {
-				result = false;
-				bean.getErrors().add(new GtfsException(_path, nextShape.getId(), getIndex(FIELDS.shape_pt_sequence.name()), FIELDS.shape_id.name()+","+FIELDS.shape_pt_sequence.name(), GtfsException.ERROR.DUPLICATE_STOP_SEQUENCE, null, shapeId+","+shapePtSequence));
-			}
-			if (nextShape.getId() == id-1)
-				break;
-		}
 
 		return result;
 	}
