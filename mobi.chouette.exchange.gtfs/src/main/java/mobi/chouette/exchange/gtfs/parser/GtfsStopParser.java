@@ -30,6 +30,7 @@ public class GtfsStopParser implements Parser, Validator, Constant {
 		validationReporter.getExceptions().clear();
 		
 		// stops.txt
+		// log.info("validating stops");
 		if (importer.hasStopImporter()) { // the file "stops.txt" exists ?
 			validationReporter.reportSuccess(context, GTFS_1_GTFS_Common_1, GTFS_STOPS_FILE);
 

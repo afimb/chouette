@@ -7,6 +7,7 @@ import mobi.chouette.exchange.validation.ValidationConstraints;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
+import mobi.chouette.model.NeptuneIdentifiedObject;
 
 public class TimeSlotValidator extends AbstractValidator implements Validator<TimeSlot> , Constant{
 	
@@ -20,9 +21,9 @@ public class TimeSlotValidator extends AbstractValidator implements Validator<Ti
 	{
 	}
 
-	public void addLocation(Context context, String objectId, int lineNumber, int columnNumber)
+	public void addLocation(Context context, NeptuneIdentifiedObject object, int lineNumber, int columnNumber)
 	{
-		addLocation( context,LOCAL_CONTEXT,  objectId,  lineNumber,  columnNumber);
+		addLocation( context,LOCAL_CONTEXT,  object,  lineNumber,  columnNumber);
 
 	}
 

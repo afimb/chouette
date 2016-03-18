@@ -47,7 +47,6 @@ public class AccessPointParser implements Parser, Constant {
 				accessPoint = ObjectFactory.getAccessPoint(referential,
 						objectId);
 				accessPoint.setFilled(true);
-				validator.addLocation(context, objectId, lineNumber, columnNumber);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
 				accessPoint.setObjectVersion(version);
@@ -130,6 +129,7 @@ public class AccessPointParser implements Parser, Constant {
 				XPPUtil.skipSubTree(log, xpp);
 			}
 		}
+		validator.addLocation(context, accessPoint, lineNumber, columnNumber);
 	}
 
 	static {

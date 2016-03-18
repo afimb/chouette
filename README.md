@@ -26,10 +26,12 @@ Format documentations are available for:
 The Chouette java project is split into modules :
 
 * chouette-iev : **REST server (ear)**
-* mobi.chouette.command : **Command mode standalone program** (Import, Export and Validation actions)
+* mobi.chouette.command : **Command mode standalone program** (Conversion and Validation actions)
 * mobi.chouette.common : common classes and interfaces
 * mobi.chouette.dao : Dao implementation for model persistence (EJB)
+* mobi.chouette.dao.iev : Dao implementation for iev persistence (EJB)
 * mobi.chouette.exchange : Common classes, interfaces and commands for data exchange 
+* mobi.chouette.exchange.converter : Specific commands for conversion
 * mobi.chouette.exchange.gtfs : Specific commands for GTFS data exchange and validation 
 * mobi.chouette.exchange.hub : Specific commands for HUB data exchange
 * mobi.chouette.exchange.kml : Specific commands for KML data exchange 
@@ -40,6 +42,7 @@ The Chouette java project is split into modules :
 * mobi.chouette.model.iev : JPA entities modelisation for iev jobs
 * mobi.chouette.persistence.hibernate : Hibernate specific tools
 * mobi.chouette.service : Job and tasks managment
+* mobi.chouette.schema.checker : Access control implementation for Chouette GUI
 * mobi.chouette.ws : REST API implementation
 
 For more information see the [Architecture Documentation](http://www.chouette.mobi/developpeurs/) , in French.
@@ -96,7 +99,7 @@ On Debian, **Chouette can also be installed as a package** : see [debian package
 
 Get git repository :
 ```sh
-git clone -b V3_1 git://github.com/afimb/chouette
+git clone -b V3_3 git://github.com/afimb/chouette
 cd chouette
 ```
 
@@ -134,7 +137,7 @@ change the ```iev.started.jobs.max``` value in order to limit the max number of 
 [Install and configure Wildfly](./doc/install/wildfly.md) 
 
 .
-[For an existing chouette_iev deployment : update the postgres / wildfly configuration](./doc/install/update.md) 
+[For an existing chouette_iev deployment prior to 3.2 : update the postgres / wildfly configuration](./doc/install/update.md) 
 
 in the wildfly installation repository :
 ```sh

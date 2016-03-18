@@ -44,7 +44,6 @@ public class GroupOfLineParser implements Parser, Constant, JsonExtension {
 				groupOfLine = ObjectFactory.getGroupOfLine(referential,
 						objectId);
 				groupOfLine.setFilled(true);
-				validator.addLocation(context, objectId, lineNumber, columnNumber);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
 				groupOfLine.setObjectVersion(version);
@@ -66,6 +65,7 @@ public class GroupOfLineParser implements Parser, Constant, JsonExtension {
 				XPPUtil.skipSubTree(log, xpp);
 			}
 		}
+		validator.addLocation(context, groupOfLine, lineNumber, columnNumber);
 	}
 	
 

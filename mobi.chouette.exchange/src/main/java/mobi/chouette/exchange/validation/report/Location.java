@@ -21,6 +21,7 @@ import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.Network;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
+import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.util.NamingUtil;
@@ -32,11 +33,14 @@ import org.codehaus.jettison.json.JSONObject;
 @Data
 @ToString
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "file", "objectId", "name", "objectRefs" })
+@XmlType(propOrder = { "file", "line", "objectId", "name", "objectRefs" })
 public class Location {
 
 	@XmlElement(name = "file")
 	private FileLocation file;
+
+	@XmlElement(name = "line")
+	private LineLocation line;
 
 	@XmlElement(name = "objectid")
 	private String objectId = "";
@@ -50,18 +54,18 @@ public class Location {
 	public Location(String fileName) {
 		this.file = new FileLocation(fileName);
 	}
-	
+
 	public Location(String fileName, String locationName) {
 		this.file = new FileLocation(fileName);
 		this.name = locationName;
 	}
-	
+
 	public Location(String fileName, String locationName, int lineNumber, String objectId) {
 		this.file = new FileLocation(fileName, lineNumber, -1, objectId);
 		this.objectId = objectId;
 		this.name = locationName;
 	}
-	
+
 	public Location(String fileName, String locationName, int lineNumber, int columnNumber, String objectId) {
 		this.file = new FileLocation(fileName, lineNumber, columnNumber, objectId);
 		this.objectId = objectId;
@@ -143,6 +147,7 @@ public class Location {
 		this.file = sourceLocation;
 		this.objectId = chouetteObject.getObjectId();
 		this.name = buildName(chouetteObject);
+		addLineLocation(this,  chouetteObject);
 	}
 
 	public static String buildName(NeptuneIdentifiedObject chouetteObject) {
@@ -186,10 +191,39 @@ public class Location {
 		return "unnammed";
 	}
 
+	public static void addLineLocation(Location loc, NeptuneIdentifiedObject chouetteObject) {
+		if (loc.getLine() != null) return;
+		Line line = null;
+		try {
+			if (chouetteObject instanceof VehicleJourney) {
+				VehicleJourney object = (VehicleJourney) chouetteObject;
+				line = object.getRoute().getLine();
+			} else if (chouetteObject instanceof JourneyPattern) {
+				JourneyPattern object = (JourneyPattern) chouetteObject;
+				line = object.getRoute().getLine();
+			} else if (chouetteObject instanceof StopPoint) {
+				StopPoint object = (StopPoint) chouetteObject;
+				line = object.getRoute().getLine();
+			} else if (chouetteObject instanceof Route) {
+				Route object = (Route) chouetteObject;
+				line = object.getLine();
+			} else if (chouetteObject instanceof Line) {
+				line = (Line) chouetteObject;
+			}
+		} catch (NullPointerException ex) {
+			// ignore line path
+		}
+		if (line != null )
+	       loc.setLine(new LineLocation(line));
+
+	}
+
 	public JSONObject toJson() throws JSONException {
 		JSONObject object = new JSONObject();
 		if (file != null)
 			object.put("file", file.toJson());
+		if (line != null)
+			object.put("line", line.toJson());
 		if (objectId != null)
 			object.put("objectid", objectId);
 		if (name != null)

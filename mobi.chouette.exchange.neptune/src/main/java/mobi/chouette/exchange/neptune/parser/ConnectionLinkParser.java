@@ -48,7 +48,6 @@ public class ConnectionLinkParser implements Parser, Constant {
 				connectionLink = ObjectFactory.getConnectionLink(referential,
 						objectId);
 				connectionLink.setFilled(true);
-				validator.addLocation(context, objectId, lineNumber, columnNumber);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
 				connectionLink.setObjectVersion(version);
@@ -136,6 +135,7 @@ public class ConnectionLinkParser implements Parser, Constant {
 		{
 			connectionLink.setName("anonymous");
 		}
+		validator.addLocation(context, connectionLink, lineNumber, columnNumber);
 	}
 
 	static {

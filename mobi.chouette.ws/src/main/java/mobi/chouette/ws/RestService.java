@@ -347,10 +347,17 @@ public class RestService implements Constant {
 
 			Response result = null;
 
-			jobServiceManager.cancel(referential, id);
+			JobService jobService = jobServiceManager.cancel(referential, id);
 
 			ResponseBuilder builder = Response.ok();
 			result = builder.build();
+
+				// add links
+				for (Link link : jobService.getJob().getLinks()) {
+					URI uri = URI.create(uriInfo.getBaseUri() + link.getHref());
+					builder.link(URI.create(uri.toASCIIString()), link.getRel());
+				}
+			
 			builder.header(api_version_key, api_version);
 
 			return result;

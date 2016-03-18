@@ -1,16 +1,19 @@
 package mobi.chouette.exchange.neptune.validation;
 
 
+import java.util.Map;
+
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.neptune.model.AreaCentroid;
 import mobi.chouette.exchange.validation.ValidationConstraints;
+import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.exchange.validation.report.Detail;
-import mobi.chouette.exchange.validation.report.FileLocation;
 import mobi.chouette.exchange.validation.report.Location;
+import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.type.LongLatTypeEnum;
 
 public class AreaCentroidValidator extends AbstractValidator implements Validator<AreaCentroid> , Constant{
@@ -34,9 +37,9 @@ public class AreaCentroidValidator extends AbstractValidator implements Validato
 				"E", "E");
 	}
 
-	public void addLocation(Context context, String objectId, int lineNumber, int columnNumber)
+	public void addLocation(Context context, NeptuneIdentifiedObject object, int lineNumber, int columnNumber)
 	{
-		addLocation( context,LOCAL_CONTEXT,  objectId,  lineNumber,  columnNumber);
+		addLocation( context,LOCAL_CONTEXT,  object,  lineNumber,  columnNumber);
 
 	}
 
@@ -59,8 +62,8 @@ public class AreaCentroidValidator extends AbstractValidator implements Validato
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 		Context stopAreaContext = (Context) validationContext.get(StopAreaValidator.LOCAL_CONTEXT);
-
-		String fileName = (String) context.get(FILE_NAME);
+		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
+		Map<String, Location> fileLocations = data.getFileLocations();
 
 		if (localContext == null || localContext.isEmpty())
 			return new ValidationConstraints();
@@ -72,9 +75,7 @@ public class AreaCentroidValidator extends AbstractValidator implements Validato
 		{
 
 			Context objectContext = (Context) localContext.get(objectId);
-			int lineNumber = ((Integer) objectContext.get(LINE_NUMBER)).intValue();
-			int columnNumber = ((Integer) objectContext.get(COLUMN_NUMBER)).intValue();
-			FileLocation sourceLocation = new FileLocation(fileName, lineNumber, columnNumber);
+			Location sourceLocation = fileLocations.get(objectId);
 
 			String containedIn = (String) objectContext.get(CONTAINED_IN);
 			if (containedIn == null)
@@ -83,7 +84,7 @@ public class AreaCentroidValidator extends AbstractValidator implements Validato
 			{
 				Detail errorItem = new Detail(
 						AREA_CENTROID_1,
-						new Location(sourceLocation,objectId), containedIn);
+						sourceLocation, containedIn);
 				addValidationError(context, AREA_CENTROID_1, errorItem);
 			}
 		}
@@ -92,15 +93,13 @@ public class AreaCentroidValidator extends AbstractValidator implements Validato
 		for (String objectId : localContext.keySet()) 
 		{
 			Context objectContext = (Context) localContext.get(objectId);
-			int lineNumber = (int) objectContext.get(LINE_NUMBER);
-			int columnNumber = (int) objectContext.get(COLUMN_NUMBER);
-			FileLocation sourceLocation = new FileLocation(fileName, lineNumber, columnNumber);
+			Location sourceLocation = fileLocations.get(objectId);
 
 			if (objectContext.get(LONG_LAT_TYPE).equals(LongLatTypeEnum.WGS84))
 				continue;
 			Detail errorItem = new Detail(
 					AREA_CENTROID_2,
-					new Location(sourceLocation,objectId), objectContext.get(LONG_LAT_TYPE).toString());
+					sourceLocation, objectContext.get(LONG_LAT_TYPE).toString());
 			addValidationError(context, AREA_CENTROID_2, errorItem);
 		}
 

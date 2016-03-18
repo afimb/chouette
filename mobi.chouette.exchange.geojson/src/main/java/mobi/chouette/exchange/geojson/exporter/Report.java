@@ -60,8 +60,7 @@ public class Report implements Constant {
 	private static LineInfo getLineInfo(ActionReport report, Line line) {
 		LineInfo result = report.findLineInfo(line.getObjectId());
 		if (result == null) {
-			result = new LineInfo(line.getObjectId(), line.getName() + " ("
-					+ line.getNumber() + ")");
+			result = new LineInfo(line);
 			report.getLines().add(result);
 		}
 		return result;

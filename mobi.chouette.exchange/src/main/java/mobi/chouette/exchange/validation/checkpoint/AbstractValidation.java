@@ -601,9 +601,11 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 		Location loc = data.getFileLocations().get(object.getObjectId());
 		if (loc == null) {
 			return new Location(null, object);
-		} else if (NamingUtil.isEmpty(loc.getName())) {
+		}
+		if (NamingUtil.isEmpty(loc.getName())) {
 			loc.setName(Location.buildName(object));
 		}
+		Location.addLineLocation(loc,object);
 		return loc;
 	}
 

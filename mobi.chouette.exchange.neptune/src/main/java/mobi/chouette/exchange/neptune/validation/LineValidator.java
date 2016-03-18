@@ -10,13 +10,14 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.validation.ValidationConstraints;
+import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.exchange.validation.report.Detail;
-import mobi.chouette.exchange.validation.report.FileLocation;
 import mobi.chouette.exchange.validation.report.Location;
 import mobi.chouette.model.Line;
+import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.util.Referential;
@@ -47,8 +48,8 @@ public class LineValidator extends AbstractValidator implements Validator<Line>,
 
 	}
 
-	public void addLocation(Context context, String objectId, int lineNumber, int columnNumber) {
-		addLocation(context, LOCAL_CONTEXT, objectId, lineNumber, columnNumber);
+	public void addLocation(Context context, NeptuneIdentifiedObject object, int lineNumber, int columnNumber) {
+		addLocation(context, LOCAL_CONTEXT, object, lineNumber, columnNumber);
 
 	}
 
@@ -87,20 +88,19 @@ public class LineValidator extends AbstractValidator implements Validator<Line>,
 	public ValidationConstraints validate(Context context, Line target) throws ValidationException {
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
+		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
+		Map<String, Location> fileLocations = data.getFileLocations();
 		if (localContext == null || localContext.isEmpty())
 			return new ValidationConstraints();
 		Context networkContext = (Context) validationContext.get(PTNetworkValidator.LOCAL_CONTEXT);
 		Context stopAreaContext = (Context) validationContext.get(StopAreaValidator.LOCAL_CONTEXT);
 		Context routeContext = (Context) validationContext.get(ChouetteRouteValidator.LOCAL_CONTEXT);
-		String fileName = (String) context.get(FILE_NAME);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		Map<String, Line> lines = referential.getLines();
 
 		for (String objectId : localContext.keySet()) {
 			Context objectContext = (Context) localContext.get(objectId);
-			int lineNumber = ((Integer) objectContext.get(LINE_NUMBER)).intValue();
-			int columnNumber = ((Integer) objectContext.get(COLUMN_NUMBER)).intValue();
-			FileLocation sourceLocation = new FileLocation(fileName, lineNumber, columnNumber);
+			Location sourceLocation = fileLocations.get(objectId);
 
 			Line line = lines.get(objectId);
 			// 2-NEPTUNE-Line-1 : check ptnetworkIdShortcut
@@ -109,7 +109,7 @@ public class LineValidator extends AbstractValidator implements Validator<Line>,
 			if (ptnetworkIdShortcut != null) {
 				prepareCheckPoint(context, LINE_1);
 				if (!networkContext.containsKey(ptnetworkIdShortcut)) {
-					Detail errorItem = new Detail(LINE_1, new Location(sourceLocation, objectId), ptnetworkIdShortcut);
+					Detail errorItem = new Detail(LINE_1, sourceLocation, ptnetworkIdShortcut);
 					addValidationError(context, LINE_1, errorItem);
 				}
 			}
@@ -145,13 +145,13 @@ public class LineValidator extends AbstractValidator implements Validator<Line>,
 				for (String endId : lineEnds) {
 					// endId must exists as stopArea ?
 					if (!stopAreaContext.containsKey(endId)) {
-						Detail errorItem = new Detail(LINE_2, new Location(sourceLocation, objectId), endId);
+						Detail errorItem = new Detail(LINE_2, sourceLocation, endId);
 						addValidationError(context, LINE_2, errorItem);
 					} else {
 						// 2-NEPTUNE-Line-3 : check ends of line
 						prepareCheckPoint(context, LINE_3);
 						if (!endAreas.contains(endId)) {
-							Detail errorItem = new Detail(LINE_3, new Location(sourceLocation, objectId), endId);
+							Detail errorItem = new Detail(LINE_3, sourceLocation, endId);
 							addValidationError(context, LINE_3, errorItem);
 						}
 					}
@@ -164,7 +164,7 @@ public class LineValidator extends AbstractValidator implements Validator<Line>,
 			List<String> routeIds = (List<String>) objectContext.get(ROUTE_ID);
 			for (String routeId : routeIds) {
 				if (!routeContext.containsKey(routeId)) {
-					Detail errorItem = new Detail(LINE_4, new Location(sourceLocation, objectId), routeId);
+					Detail errorItem = new Detail(LINE_4, sourceLocation, routeId);
 					addValidationError(context, LINE_4, errorItem);
 				}
 			}
@@ -173,12 +173,8 @@ public class LineValidator extends AbstractValidator implements Validator<Line>,
 			prepareCheckPoint(context, LINE_5);
 			for (String routeId : routeContext.keySet()) {
 				if (!routeIds.contains(routeId)) {
-					Detail errorItem = new Detail(LINE_5, new Location(sourceLocation, objectId), routeId);
-					Context routeCtx = (Context) routeContext.get(routeId);
-					lineNumber = ((Integer) routeCtx.get(LINE_NUMBER)).intValue();
-					columnNumber = ((Integer) routeCtx.get(COLUMN_NUMBER)).intValue();
-					FileLocation targetLocation = new FileLocation(fileName, lineNumber, columnNumber);
-					errorItem.getTargets().add(new Location(targetLocation, routeId));
+					Detail errorItem = new Detail(LINE_5, sourceLocation, routeId);
+					errorItem.getTargets().add(fileLocations.get( routeId));
 					addValidationError(context, LINE_5, errorItem);
 				}
 			}
@@ -188,7 +184,7 @@ public class LineValidator extends AbstractValidator implements Validator<Line>,
 			prepareCheckPoint(context, LINE_6);
 
 			if (isEmpty(line.getName()) && isEmpty(line.getNumber()) && isEmpty(line.getPublishedName())) {
-				Detail errorItem = new Detail(LINE_6, new Location(sourceLocation, objectId));
+				Detail errorItem = new Detail(LINE_6, sourceLocation);
 				addValidationError(context, LINE_6, errorItem);
 			}
 

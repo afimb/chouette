@@ -1,16 +1,19 @@
 package mobi.chouette.exchange.neptune.validation;
 
 
+import java.util.Map;
+
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.neptune.model.PTLink;
 import mobi.chouette.exchange.validation.ValidationConstraints;
+import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.exchange.validation.report.Detail;
-import mobi.chouette.exchange.validation.report.FileLocation;
 import mobi.chouette.exchange.validation.report.Location;
+import mobi.chouette.model.NeptuneIdentifiedObject;
 
 public class PtLinkValidator extends AbstractValidator implements Validator<PTLink> , Constant{
 
@@ -32,9 +35,9 @@ public class PtLinkValidator extends AbstractValidator implements Validator<PTLi
 
 	}
 
-	public void addLocation(Context context, String objectId, int lineNumber, int columnNumber)
+	public void addLocation(Context context, NeptuneIdentifiedObject object, int lineNumber, int columnNumber)
 	{
-		addLocation( context,LOCAL_CONTEXT,  objectId,  lineNumber,  columnNumber);
+		addLocation( context,LOCAL_CONTEXT,  object,  lineNumber,  columnNumber);
 
 	}
 	public void addStartOfLinkId(Context  context, String objectId, String linkId)
@@ -59,26 +62,24 @@ public class PtLinkValidator extends AbstractValidator implements Validator<PTLi
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 		if (localContext == null || localContext.isEmpty()) return new ValidationConstraints();
+		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
+		Map<String, Location> fileLocations = data.getFileLocations();
 		
 		Context stopPointsContext = (Context) validationContext.get(StopPointValidator.LOCAL_CONTEXT);
 
-		String fileName = (String) context.get(FILE_NAME);
 
 		// 2-NEPTUNE-PtLink-1 : check existence of start and end of links
 		prepareCheckPoint(context, PT_LINK_1);
 		for (String objectId : localContext.keySet()) 
 		{
 			Context objectContext = (Context) localContext.get(objectId);
-			int lineNumber = ((Integer) objectContext.get(LINE_NUMBER)).intValue();
-			int columnNumber = ((Integer) objectContext.get(COLUMN_NUMBER)).intValue();
-			FileLocation sourceLocation = new FileLocation(fileName, lineNumber, columnNumber);
 
 			String start = (String) objectContext.get(START_OF_LINK_ID);
 			if (!stopPointsContext.containsKey(start))
 			{
 				Detail errorItem = new Detail(
 						PT_LINK_1,
-						new Location(sourceLocation,objectId), start, "startOfLink");
+						fileLocations.get(objectId), start, "startOfLink");
 				addValidationError(context,PT_LINK_1, errorItem);
 			}
 			String end = (String) objectContext.get(END_OF_LINK_ID);
@@ -86,7 +87,7 @@ public class PtLinkValidator extends AbstractValidator implements Validator<PTLi
 			{
 				Detail errorItem = new Detail(
 						PT_LINK_1,
-						new Location(sourceLocation,objectId), end, "endOfLink");
+						fileLocations.get(objectId), end, "endOfLink");
 				addValidationError(context,PT_LINK_1, errorItem);
 			}
 

@@ -23,4 +23,8 @@ public interface Index<T> extends Iterable<T> {
 	Set<GtfsException.ERROR> getOkTests();
 	
 	void setWithValidation(boolean withValidation);
+
+	String getPath();
+
+	Integer getIndex(String name);
 }

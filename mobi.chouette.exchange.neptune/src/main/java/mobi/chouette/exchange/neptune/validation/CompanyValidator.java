@@ -8,6 +8,7 @@ import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.Company;
+import mobi.chouette.model.NeptuneIdentifiedObject;
 
 public class CompanyValidator extends AbstractValidator implements Validator<Company> , Constant{
 
@@ -25,9 +26,9 @@ public class CompanyValidator extends AbstractValidator implements Validator<Com
 
 	}
 
-	public void addLocation(Context context, String objectId, int lineNumber, int columnNumber)
+	public void addLocation(Context context, NeptuneIdentifiedObject object, int lineNumber, int columnNumber)
 	{
-		addLocation( context,LOCAL_CONTEXT,  objectId,  lineNumber,  columnNumber);
+		addLocation( context,LOCAL_CONTEXT,  object,  lineNumber,  columnNumber);
 		
 	}
 	

@@ -108,7 +108,7 @@ public class LineRegisterCommand implements Command {
 			ActionReport report = (ActionReport) context.get(REPORT);
 			LineInfo info = report.findLineInfo(newValue.getObjectId());
 			if (info == null) {
-				info = new LineInfo(newValue.getObjectId(), newValue.getName());
+				info = new LineInfo(newValue);
 				report.getLines().add(info);
 			}
 			if (ex.getCause() != null) {
