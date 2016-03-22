@@ -1,7 +1,6 @@
 package mobi.chouette.exchange.gtfs.exporter.producer;
 
 import mobi.chouette.core.ChouetteException;
-import mobi.chouette.exchange.gtfs.exporter.GtfsExportParameters;
 import mobi.chouette.exchange.gtfs.exporter.producer.mock.GtfsExporterMock;
 import mobi.chouette.exchange.gtfs.model.GtfsRoute;
 import mobi.chouette.exchange.gtfs.model.exporter.RouteExporter;
@@ -9,28 +8,18 @@ import mobi.chouette.exchange.gtfs.model.importer.Context;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.Line;
+
 import org.testng.Assert;
 import org.testng.Reporter;
-import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
 
-public class GtfsExportRouteProducerTests
+public class GtfsExportRouteProducerTests 
 {
 
-   private GtfsExporterMock mock;
-   private GtfsRouteProducer producer;
-   private Context context;
-
-   @BeforeTest
-   public void beforeClass(){
-      GtfsExportParameters parameters = new GtfsExportParameters();
-      parameters.setRouteTypeIdScheme("standard");
-      mock = new GtfsExporterMock();
-      producer = new GtfsRouteProducer(mock, parameters);
-      context = new Context();
-   }
-
+   private GtfsExporterMock mock = new GtfsExporterMock();
+   private GtfsRouteProducer producer = new GtfsRouteProducer(mock);
+   private Context context = new Context();
 
    @Test(groups = { "Producers" }, description = "test route with both short and long name")
    public void verifyRouteProducerWithShortAndLongName() throws ChouetteException
@@ -55,7 +44,7 @@ public class GtfsExportRouteProducerTests
       Reporter.log("verifyRouteProducerWithShortAndLongName");
       Assert.assertEquals(mock.getExportedRoutes().size(), 1, "Route should be returned");
       GtfsRoute gtfsObject = mock.getExportedRoutes().get(0);
-      Reporter.log(RouteExporter.STANDARD_CONVERTER.to(context, gtfsObject));
+      Reporter.log(RouteExporter.CONVERTER.to(context, gtfsObject));
 
       Assert.assertEquals(gtfsObject.getRouteShortName(), neptuneObject.getNumber(), "RouteShortName must be line Number");
       Assert.assertEquals(gtfsObject.getRouteLongName(), neptuneObject.getPublishedName(), "RouteLongName must be correctly set");
@@ -87,7 +76,7 @@ public class GtfsExportRouteProducerTests
       Reporter.log("verifyRouteProducerWithNoShortName");
       Assert.assertEquals(mock.getExportedRoutes().size(), 1, "Route should be returned");
       GtfsRoute gtfsObject = mock.getExportedRoutes().get(0);
-      Reporter.log(RouteExporter.STANDARD_CONVERTER.to(context, gtfsObject));
+      Reporter.log(RouteExporter.CONVERTER.to(context, gtfsObject));
 
       Assert.assertEquals(gtfsObject.getRouteShortName(), neptuneObject.getName(), "RouteShortName must be line name");
       Assert.assertEquals(gtfsObject.getRouteLongName(), neptuneObject.getPublishedName(), "RouteLongName must be correctly set");
@@ -114,7 +103,7 @@ public class GtfsExportRouteProducerTests
       Reporter.log("verifyRouteProducerWithNoLongName");
       Assert.assertEquals(mock.getExportedRoutes().size(), 1, "Route should be returned");
       GtfsRoute gtfsObject = mock.getExportedRoutes().get(0);
-      Reporter.log(RouteExporter.STANDARD_CONVERTER.to(context, gtfsObject));
+      Reporter.log(RouteExporter.CONVERTER.to(context, gtfsObject));
 
       Assert.assertEquals(gtfsObject.getRouteShortName(), neptuneObject.getNumber(), "RouteShortName must be line Number");
       Assert.assertNull(gtfsObject.getRouteLongName(), "RouteLongName must be empty");

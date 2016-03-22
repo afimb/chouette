@@ -9,7 +9,6 @@
 package mobi.chouette.exchange.gtfs.exporter.producer;
 
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.exchange.gtfs.exporter.GtfsExportParameters;
 import mobi.chouette.exchange.gtfs.model.GtfsRoute;
 import mobi.chouette.exchange.gtfs.model.exporter.GtfsExporterInterface;
 import mobi.chouette.exchange.report.ActionReport;
@@ -21,20 +20,14 @@ import mobi.chouette.model.Line;
  * optimise multiple period timetable with calendarDate inclusion or exclusion
  */
 @Log4j
-public class GtfsRouteProducer extends AbstractProducer {
-
-   private GtfsExportParameters parameters;
-
-   public GtfsRouteProducer(GtfsExporterInterface exporter) {
+public class GtfsRouteProducer extends AbstractProducer
+{
+   public GtfsRouteProducer(GtfsExporterInterface exporter)
+   {
       super(exporter);
    }
 
    private GtfsRoute route = new GtfsRoute();
-
-   public GtfsRouteProducer(GtfsExporterInterface exporter, GtfsExportParameters parameters) {
-      super(exporter);
-      this.parameters = parameters;
-   }
 
    public boolean save(Line neptuneObject, ActionReport report, String prefix)
    {
@@ -91,12 +84,54 @@ public class GtfsRouteProducer extends AbstractProducer {
 
       if (neptuneObject.getTransportModeName() != null)
       {
-         if ("standard".equals(parameters.getRouteTypeIdScheme())) {
-            convertStandard(neptuneObject);
-         } else if ("extended".equals(parameters.getRouteTypeIdScheme())) {
-            convertExtended(neptuneObject);
-         } else {
-            throw new IllegalArgumentException("Invalid route type id scheme '" + parameters.getRouteTypeIdScheme() + "'");
+         switch (neptuneObject.getTransportModeName())
+         {
+            case PrivateVehicle:
+               route.setRouteType(GtfsRoute.RouteType.SelfDrive);
+               break;
+            case Waterborne:
+               route.setRouteType(GtfsRoute.RouteType.WaterTransport);
+               break;
+            case Taxi:
+               route.setRouteType(GtfsRoute.RouteType.Taxi);
+               break;
+            case Air:
+               route.setRouteType(GtfsRoute.RouteType.Air);
+               break;
+            case Tramway:
+               route.setRouteType(GtfsRoute.RouteType.Tram);
+               break;
+            case Trolleybus:
+               route.setRouteType(GtfsRoute.RouteType.TrolleyBus);
+               break;
+            case Coach:
+               route.setRouteType(GtfsRoute.RouteType.Coach);
+               break;
+            case Bus:
+               route.setRouteType(GtfsRoute.RouteType.Bus);
+               break;
+            case Val:
+            case Metro:
+               route.setRouteType(GtfsRoute.RouteType.Metro);
+               break;
+            case RapidTransit:
+               route.setRouteType(GtfsRoute.RouteType.Metro);
+               break;
+            case LocalTrain:
+               route.setRouteType(GtfsRoute.RouteType.SuburbanRailway);
+               break;
+            case LongDistanceTrain:
+            case Train:
+               route.setRouteType(GtfsRoute.RouteType.Railway);
+               break;
+            case Ferry:
+               route.setRouteType(GtfsRoute.RouteType.Ferry);
+               break;
+            case Other:
+               route.setRouteType(GtfsRoute.RouteType.Miscellaneous);
+               break;
+            default:
+               route.setRouteType(GtfsRoute.RouteType.Bus);
          }
       }
       else
@@ -115,85 +150,5 @@ public class GtfsRouteProducer extends AbstractProducer {
       }
 
       return true;
-   }
-
-   private void convertStandard(Line neptuneObject) {
-      switch (neptuneObject.getTransportModeName()) {
-         case Tramway:
-            route.setRouteType(GtfsRoute.RouteType.Tram);
-            break;
-         case Trolleybus:
-         case Coach:
-         case Bus:
-            route.setRouteType(GtfsRoute.RouteType.Bus);
-            break;
-         case Val:
-         case Metro:
-            route.setRouteType(GtfsRoute.RouteType.Metro);
-            break;
-         case RapidTransit:
-         case LocalTrain:
-         case LongDistanceTrain:
-         case Train:
-            route.setRouteType(GtfsRoute.RouteType.Railway);
-            break;
-         case Ferry:
-            route.setRouteType(GtfsRoute.RouteType.Ferry);
-            break;
-         default:
-            route.setRouteType(GtfsRoute.RouteType.Bus);
-      }
-   }
-
-
-   private void convertExtended(Line neptuneObject) {
-      switch (neptuneObject.getTransportModeName()) {
-         case PrivateVehicle:
-            route.setRouteType(GtfsRoute.RouteType.SelfDrive);
-            break;
-         case Waterborne:
-            route.setRouteType(GtfsRoute.RouteType.WaterTransport);
-            break;
-         case Taxi:
-            route.setRouteType(GtfsRoute.RouteType.Taxi);
-            break;
-         case Air:
-            route.setRouteType(GtfsRoute.RouteType.Air);
-            break;
-         case Tramway:
-            route.setRouteType(GtfsRoute.RouteType.Tram);
-            break;
-         case Trolleybus:
-            route.setRouteType(GtfsRoute.RouteType.TrolleyBus);
-            break;
-         case Coach:
-            route.setRouteType(GtfsRoute.RouteType.Coach);
-            break;
-         case Bus:
-            route.setRouteType(GtfsRoute.RouteType.Bus);
-            break;
-         case Val:
-         case Metro:
-            route.setRouteType(GtfsRoute.RouteType.Metro);
-            break;
-         case RapidTransit:
-            route.setRouteType(GtfsRoute.RouteType.Metro);
-            break;
-         case LocalTrain:
-            route.setRouteType(GtfsRoute.RouteType.SuburbanRailway);
-            break;
-         case LongDistanceTrain:
-         case Train:
-            route.setRouteType(GtfsRoute.RouteType.Railway);
-            break;
-         case Ferry:
-            route.setRouteType(GtfsRoute.RouteType.Ferry);
-            break;
-         case Other:
-            route.setRouteType(GtfsRoute.RouteType.Miscellaneous);
-            break;
-         default:
-            route.setRouteType(GtfsRoute.RouteType.Bus);
-      }
    }
 }

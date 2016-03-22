@@ -61,7 +61,7 @@ public class GtfsStopTime extends GtfsObject implements Serializable
    // @Override
    // public String toString()
    // {
-   // return id + ":" + StopTimeExporter.STANDARD_CONVERTER.to(new Context(),this);
+   // return id + ":" + StopTimeExporter.CONVERTER.to(new Context(),this);
    // }
 
    public enum DropOffType implements Serializable

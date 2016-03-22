@@ -53,7 +53,7 @@ public class GtfsAgency extends GtfsObject implements Serializable
    // @Override
    // public String toString()
    // {
-   // return id + ":" + AgencyExporter.STANDARD_CONVERTER.to(new Context(), this);
+   // return id + ":" + AgencyExporter.CONVERTER.to(new Context(), this);
    // }
 
 }

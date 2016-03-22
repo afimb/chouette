@@ -30,7 +30,7 @@ public class RouteById extends IndexImpl<GtfsRoute> {
 
 	public RouteById(String name, GtfsImportParameters gtfsImportParameters) throws IOException {
 		super(name, KEY);
-		this.routeTypeConverter = getRouteTypeConverter(gtfsImportParameters);
+		this.routeTypeConverter = getConverterFromParameters(gtfsImportParameters);
 	}
 
 	@Override
@@ -290,8 +290,8 @@ public class RouteById extends IndexImpl<GtfsRoute> {
 		return result;
 	}
 
-	protected DefaultFieldConverter<GtfsRoute.RouteType> getRouteTypeConverter(GtfsImportParameters parameters) {
-		String routeTypeIdScheme = parameters.getRouteTypeIdScheme();
+	protected DefaultFieldConverter<GtfsRoute.RouteType> getConverterFromParameters(GtfsImportParameters gtfsImportParameters) {
+		String routeTypeIdScheme = gtfsImportParameters.getRouteTypeIdScheme();
 		log.info("Route type id scheme for this import is '" + routeTypeIdScheme + "'.");
 		throwIfEmpty(routeTypeIdScheme, "Empty route type id scheme.");
 		if ("standard".equals(routeTypeIdScheme)) {
