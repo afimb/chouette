@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import mobi.chouette.common.HTMLTagValidator;
-import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime.DropOffType;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime.PickupType;
@@ -278,7 +277,7 @@ public class StopTimeByTrip extends IndexImpl<GtfsStopTime> implements GtfsConve
 
 	public static class DefaultImporterFactory extends IndexFactory {
 		@Override
-		protected Index<GtfsStopTime> create(String name, GtfsImportParameters gtfsImportParameters) throws IOException {
+		protected Index<GtfsStopTime> create(String name) throws IOException {
 			return new StopTimeByTrip(name);
 		}
 	}

@@ -318,33 +318,7 @@ public interface GtfsConverter {
 		}
 	};
 
-	public static DefaultFieldConverter<RouteType> STANDARD_ROUTETYPE_CONVERTER = new DefaultFieldConverter<RouteType>() {
-
-		@Override
-		protected RouteType convertFrom(String input) throws Exception {
-			return RouteType.fromStandardId(Integer.parseInt(input));
-		}
-
-		@Override
-		protected String convertTo(RouteType input) throws Exception {
-			return String.valueOf(input.getStandardId());
-		}
-	};
-
-	public static DefaultFieldConverter<RouteType> EXTENDED_ROUTETYPE_CONVERTER = new DefaultFieldConverter<RouteType>() {
-
-		@Override
-		protected RouteType convertFrom(String input) throws Exception {
-			return RouteType.fromExtendedId(Integer.parseInt(input));
-		}
-
-		@Override
-		protected String convertTo(RouteType input) throws Exception {
-			return String.valueOf(input.getExtendedId());
-		}
-	};
-
-	public static DefaultFieldConverter<RouteType> ANY_ROUTETYPE_CONVERTER = new DefaultFieldConverter<RouteType>() {
+	public static DefaultFieldConverter<RouteType> ROUTETYPE_CONVERTER = new DefaultFieldConverter<RouteType>() {
 
 		@Override
 		protected RouteType convertFrom(String input) throws Exception {
@@ -353,7 +327,7 @@ public interface GtfsConverter {
 
 		@Override
 		protected String convertTo(RouteType input) throws Exception {
-			throw new UnsupportedOperationException("The 'any' route type converter can not be used for exports.");
+			return String.valueOf(input.getExtendedId());
 		}
 	};
 

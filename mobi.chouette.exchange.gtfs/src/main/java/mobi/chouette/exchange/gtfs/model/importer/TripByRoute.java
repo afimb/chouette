@@ -2,7 +2,6 @@ package mobi.chouette.exchange.gtfs.model.importer;
 
 import java.io.IOException;
 
-import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.gtfs.model.GtfsTrip;
 
 public class TripByRoute extends TripIndex {
@@ -15,7 +14,7 @@ public class TripByRoute extends TripIndex {
 
 	public static class DefaultImporterFactory extends IndexFactory {
 		@Override
-		protected Index<GtfsTrip> create(String name, GtfsImportParameters gtfsImportParameters) throws IOException {
+		protected Index<GtfsTrip> create(String name) throws IOException {
 			return new TripByRoute(name);
 		}
 	}

@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Set;
 
 import mobi.chouette.common.HTMLTagValidator;
-import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.gtfs.model.GtfsCalendarDate;
 
 public class CalendarDateByService extends IndexImpl<GtfsCalendarDate>
@@ -148,7 +147,7 @@ public class CalendarDateByService extends IndexImpl<GtfsCalendarDate>
 	public static class DefaultImporterFactory extends IndexFactory {
 		@SuppressWarnings("rawtypes")
 		@Override
-		protected Index create(String name, GtfsImportParameters gtfsImportParameters) throws IOException {
+		protected Index create(String name) throws IOException {
 			return new CalendarDateByService(name);
 		}
 	}

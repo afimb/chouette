@@ -1,18 +1,16 @@
 package mobi.chouette.exchange.gtfs.model.exporter;
 
-import mobi.chouette.exchange.gtfs.model.GtfsRoute;
-import mobi.chouette.exchange.gtfs.model.importer.Context;
-
 import java.awt.Color;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static mobi.chouette.exchange.gtfs.model.importer.GtfsConverter.*;
+import mobi.chouette.exchange.gtfs.model.GtfsRoute;
+import mobi.chouette.exchange.gtfs.model.importer.Context;
+import mobi.chouette.exchange.gtfs.model.importer.GtfsConverter;
 
-
-public class RouteExporter extends ExporterImpl<GtfsRoute> {//implements GtfsConverter {
-
+public class RouteExporter extends ExporterImpl<GtfsRoute> implements
+		GtfsConverter {
 	public static enum FIELDS {
 		route_id, agency_id, route_short_name, route_long_name, route_desc, route_type, route_url, route_color, route_text_color;
 	};
@@ -51,7 +49,7 @@ public class RouteExporter extends ExporterImpl<GtfsRoute> {//implements GtfsCon
 					FIELDS.route_long_name, values.get(i++), true));
 			bean.setRouteDesc(STRING_CONVERTER.from(context, FIELDS.route_desc,
 					values.get(i++), false));
-			bean.setRouteType(STANDARD_ROUTETYPE_CONVERTER.from(context,
+			bean.setRouteType(ROUTETYPE_CONVERTER.from(context,
 					FIELDS.route_type, values.get(i++), true));
 			bean.setRouteUrl(URL_CONVERTER.from(context, FIELDS.route_url,
 					values.get(i++), false));
@@ -78,7 +76,7 @@ public class RouteExporter extends ExporterImpl<GtfsRoute> {//implements GtfsCon
 					input.getRouteLongName(), input.getRouteShortName() == null));
 			values.add(STRING_CONVERTER.to(context, FIELDS.route_desc,
 					input.getRouteDesc(), false));
-			values.add(STANDARD_ROUTETYPE_CONVERTER.to(context, FIELDS.route_type,
+			values.add(ROUTETYPE_CONVERTER.to(context, FIELDS.route_type,
 					input.getRouteType(), true));
 			values.add(URL_CONVERTER.to(context, FIELDS.route_url,
 					input.getRouteUrl(), false));
