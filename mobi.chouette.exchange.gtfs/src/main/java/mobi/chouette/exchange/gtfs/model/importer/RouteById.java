@@ -6,11 +6,15 @@ import java.util.Map;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.HTMLTagValidator;
+import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.gtfs.model.GtfsAgency;
 import mobi.chouette.exchange.gtfs.model.GtfsRoute;
+import org.apache.commons.lang.StringUtils;
+
+import static mobi.chouette.exchange.gtfs.model.importer.GtfsConverter.*;
 
 @Log4j
-public class RouteById extends IndexImpl<GtfsRoute> implements GtfsConverter {
+public class RouteById extends IndexImpl<GtfsRoute> {
 
 	public static enum FIELDS {
 		route_id, agency_id, route_short_name, route_long_name, route_desc, route_type, route_url, route_color, route_text_color;
@@ -22,8 +26,11 @@ public class RouteById extends IndexImpl<GtfsRoute> implements GtfsConverter {
 	private GtfsRoute bean = new GtfsRoute();
 	private String[] array = new String[FIELDS.values().length];
 
-	public RouteById(String name) throws IOException {
+	private DefaultFieldConverter<GtfsRoute.RouteType> routeTypeConverter;
+
+	public RouteById(String name, GtfsImportParameters gtfsImportParameters) throws IOException {
 		super(name, KEY);
+		this.routeTypeConverter = getRouteTypeConverter(gtfsImportParameters);
 	}
 
 	@Override
@@ -152,7 +159,7 @@ public class RouteById extends IndexImpl<GtfsRoute> implements GtfsConverter {
 				bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.route_type.name()), FIELDS.route_type.name(), GtfsException.ERROR.MISSING_REQUIRED_VALUES, null, null));
 		} else {
 			try {
-				bean.setRouteType(ROUTETYPE_CONVERTER.from(context, FIELDS.route_type, value, true));
+				bean.setRouteType(routeTypeConverter.from(context, FIELDS.route_type, value, true));
 			} catch(GtfsException e) {
 				if (withValidation)
 					bean.getErrors().add(new GtfsException(_path, id, getIndex(FIELDS.route_type.name()), FIELDS.route_type.name(), GtfsException.ERROR.INVALID_FORMAT, null, value));
@@ -283,6 +290,27 @@ public class RouteById extends IndexImpl<GtfsRoute> implements GtfsConverter {
 		return result;
 	}
 
+	protected DefaultFieldConverter<GtfsRoute.RouteType> getRouteTypeConverter(GtfsImportParameters parameters) {
+		String routeTypeIdScheme = parameters.getRouteTypeIdScheme();
+		log.info("Route type id scheme for this import is '" + routeTypeIdScheme + "'.");
+		throwIfEmpty(routeTypeIdScheme, "Empty route type id scheme.");
+		if ("standard".equals(routeTypeIdScheme)) {
+			return STANDARD_ROUTETYPE_CONVERTER;
+		} else if ("extended".equals(routeTypeIdScheme)){
+			return EXTENDED_ROUTETYPE_CONVERTER;
+		} else if ("any".equals(routeTypeIdScheme)){
+			return ANY_ROUTETYPE_CONVERTER;
+		} else {
+			throw new IllegalArgumentException("Invalid route type id scheme '" + routeTypeIdScheme + "'.");
+		}
+	}
+
+	private void throwIfEmpty(String string, String message) {
+		if (StringUtils.isEmpty(string)) {
+			throw new IllegalArgumentException(message);
+		}
+	}
+
 	private void clearBean() {
 		//bean.getErrors().clear();
 		bean.setId(null);
@@ -300,8 +328,8 @@ public class RouteById extends IndexImpl<GtfsRoute> implements GtfsConverter {
 	public static class DefaultImporterFactory extends IndexFactory {
 		@SuppressWarnings("rawtypes")
 		@Override
-		protected Index create(String name) throws IOException {
-			return new RouteById(name);
+		protected Index create(String name, GtfsImportParameters gtfsImportParameters) throws IOException {
+			return new RouteById(name, gtfsImportParameters);
 		}
 	}
 

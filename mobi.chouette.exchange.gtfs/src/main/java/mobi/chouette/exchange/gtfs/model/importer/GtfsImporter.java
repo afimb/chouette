@@ -6,6 +6,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
+import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.gtfs.model.GtfsAgency;
 import mobi.chouette.exchange.gtfs.model.GtfsCalendar;
 import mobi.chouette.exchange.gtfs.model.GtfsCalendarDate;
@@ -25,10 +26,16 @@ public class GtfsImporter {
 	}
 
 	private String _path;
+	private GtfsImportParameters _parameters;
 	private Map<String, Index<GtfsObject>> _map = new HashMap<String, Index<GtfsObject>>();
 
 	public GtfsImporter(String path) {
 		_path = path;
+	}
+
+	public GtfsImporter(String path, GtfsImportParameters parameters) {
+		this(path);
+		this._parameters = parameters;
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -47,7 +54,7 @@ public class GtfsImporter {
 		if (importer == null) {
 			try {
 				importer = IndexFactory.build(
-						Paths.get(_path, path).toString(), clazz.getName());
+						Paths.get(_path, path).toString(), clazz.getName(), _parameters);
 				_map.put(name, importer);
 			} catch (ClassNotFoundException | IOException e) {
 				Context context = new Context();

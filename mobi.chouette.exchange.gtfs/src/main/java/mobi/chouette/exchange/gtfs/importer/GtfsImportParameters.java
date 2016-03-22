@@ -25,7 +25,8 @@ import org.apache.log4j.Logger;
 		"maxDistanceForCommercial",
 		"ignoreEndChars",
 		"ignoreLastWord",
-		"referencesType"})
+		"referencesType",
+		"routeTypeIdScheme"})
 public class GtfsImportParameters extends AbstractImportParameter {
 
 	@Getter@Setter
@@ -52,8 +53,11 @@ public class GtfsImportParameters extends AbstractImportParameter {
 	@XmlElement(name = "references_type")
 	private String referencesType;
 
+	@Getter@Setter
+	@XmlElement(name = "route_type_id_scheme", defaultValue = "standard")
+	private String routeTypeIdScheme;
 
-	public boolean isValid(Logger log, String[] allowedTypes)
+	public boolean isValid(Logger log, String[] allowedReferenceTypes, String[] allowedRouteTypeIdSchemes)
 	{
 		if (!super.isValid(log)) return false;
 		
@@ -63,11 +67,19 @@ public class GtfsImportParameters extends AbstractImportParameter {
 		}
 
 		if (referencesType != null && !referencesType.isEmpty()) {
-			if (!Arrays.asList(allowedTypes).contains(referencesType.toLowerCase())) {
+			if (!Arrays.asList(allowedReferenceTypes).contains(referencesType.toLowerCase())) {
 				log.error("invalid type " + referencesType);
 				return false;
 			}
 		}
+
+		if (routeTypeIdScheme != null && !routeTypeIdScheme.isEmpty()) {
+			if (!Arrays.asList(allowedRouteTypeIdSchemes).contains(routeTypeIdScheme.toLowerCase())) {
+				log.error("invalid route type id scheme " + routeTypeIdScheme);
+				return false;
+			}
+		}
+
 		return true;
 
 	}

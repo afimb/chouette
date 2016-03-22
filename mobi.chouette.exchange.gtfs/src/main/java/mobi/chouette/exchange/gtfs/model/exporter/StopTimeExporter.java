@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import mobi.chouette.exchange.gtfs.exporter.GtfsExportParameters;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime.DropOffType;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime.PickupType;
@@ -86,7 +87,7 @@ public class StopTimeExporter extends ExporterImpl<GtfsStopTime> implements Gtfs
 
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		@Override
-		protected Exporter create(String path) throws IOException {
+		protected Exporter create(String path, GtfsExportParameters parameters) throws IOException {
 			return new StopTimeExporter(path);
 		}
 	}

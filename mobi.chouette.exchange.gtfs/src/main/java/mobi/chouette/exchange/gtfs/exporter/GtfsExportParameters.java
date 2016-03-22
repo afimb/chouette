@@ -14,11 +14,13 @@ import mobi.chouette.exchange.parameters.AbstractExportParameter;
 
 import org.apache.log4j.Logger;
 
+import java.util.Arrays;
+
 @XmlRootElement(name = "gtfs-export")
 @NoArgsConstructor
 @ToString(callSuper=true)
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder={"objectIdPrefix","timeZone"})
+@XmlType(propOrder={"objectIdPrefix","timeZone", "routeTypeIdScheme"})
 
 public class GtfsExportParameters  extends AbstractExportParameter {
 		
@@ -29,8 +31,12 @@ public class GtfsExportParameters  extends AbstractExportParameter {
 	@Getter @Setter
 	@XmlElement(name = "object_id_prefix",required = true)
 	private String objectIdPrefix;
+
+	@Getter@Setter
+	@XmlElement(name = "route_type_id_scheme")
+	private String routeTypeIdScheme;
 	
-	public boolean isValid(Logger log, String[] allowedTypes)
+	public boolean isValid(Logger log, String[] allowedTypes, String[] allowedRouteTypeIdSchemes)
 	{
 		if (!super.isValid(log,allowedTypes)) return false;
 
@@ -42,6 +48,13 @@ public class GtfsExportParameters  extends AbstractExportParameter {
 		if (objectIdPrefix == null || objectIdPrefix.isEmpty()) {
 			log.error("missing object_id_prefix");
 			return false;
+		}
+
+		if (routeTypeIdScheme != null && !routeTypeIdScheme.isEmpty()) {
+			if (!Arrays.asList(allowedRouteTypeIdSchemes).contains(routeTypeIdScheme.toLowerCase())) {
+				log.error("invalid route type id scheme " + routeTypeIdScheme);
+				return false;
+			}
 		}
 
 		return true;

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import mobi.chouette.common.HTMLTagValidator;
+import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.gtfs.model.GtfsFrequency;
 
 public class FrequencyByTrip extends IndexImpl<GtfsFrequency> implements
@@ -166,7 +167,7 @@ public class FrequencyByTrip extends IndexImpl<GtfsFrequency> implements
 	public static class DefaultImporterFactory extends IndexFactory {
 		@SuppressWarnings("rawtypes")
 		@Override
-		protected Index create(String name) throws IOException {
+		protected Index create(String name, GtfsImportParameters gtfsImportParameters) throws IOException {
 			return new FrequencyByTrip(name);
 		}
 	}

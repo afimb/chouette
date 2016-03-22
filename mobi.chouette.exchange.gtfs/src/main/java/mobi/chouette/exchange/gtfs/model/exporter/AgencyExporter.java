@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import mobi.chouette.exchange.gtfs.exporter.GtfsExportParameters;
 import mobi.chouette.exchange.gtfs.model.GtfsAgency;
 import mobi.chouette.exchange.gtfs.model.importer.Context;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsConverter;
@@ -89,7 +90,7 @@ public class AgencyExporter extends ExporterImpl<GtfsAgency> implements
 	public static class DefaultExporterFactory extends ExporterFactory {
 
 		@Override
-		protected Exporter<GtfsAgency> create(String path) throws IOException {
+		protected Exporter<GtfsAgency> create(String path, GtfsExportParameters parameters) throws IOException {
 			return new AgencyExporter(path);
 		}
 	}

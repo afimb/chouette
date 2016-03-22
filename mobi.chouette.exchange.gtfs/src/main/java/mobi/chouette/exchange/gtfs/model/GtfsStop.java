@@ -84,7 +84,7 @@ public class GtfsStop extends GtfsObject implements Serializable
    // @Override
    // public String toString()
    // {
-   // return id + ":" + StopExporter.CONVERTER.to(new Context(),this);
+   // return id + ":" + StopExporter.STANDARD_CONVERTER.to(new Context(),this);
    // }
 
    public GtfsStop(GtfsStop bean) {
