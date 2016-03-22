@@ -34,7 +34,7 @@ public class GtfsCalendarDate extends GtfsObject implements Serializable
    // @Override
    // public String toString()
    // {
-   // return id + ":" + CalendarDateExporter.CONVERTER.to(new Context(),this);
+   // return id + ":" + CalendarDateExporter.STANDARD_CONVERTER.to(new Context(),this);
    // }
 
    public enum ExceptionType

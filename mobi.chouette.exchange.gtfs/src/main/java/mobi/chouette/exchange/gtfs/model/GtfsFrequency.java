@@ -41,7 +41,7 @@ public class GtfsFrequency extends GtfsObject implements Serializable
    // @Override
    // public String toString()
    // {
-   // return id + ":" + FrequencyExporter.CONVERTER.to(new Context(),this);
+   // return id + ":" + FrequencyExporter.STANDARD_CONVERTER.to(new Context(),this);
    // }
 
 }

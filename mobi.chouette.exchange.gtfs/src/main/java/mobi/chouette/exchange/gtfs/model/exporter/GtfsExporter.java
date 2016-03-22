@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.exchange.gtfs.exporter.GtfsExportParameters;
 import mobi.chouette.exchange.gtfs.model.GtfsAgency;
 import mobi.chouette.exchange.gtfs.model.GtfsCalendar;
 import mobi.chouette.exchange.gtfs.model.GtfsCalendarDate;
@@ -24,15 +25,22 @@ import mobi.chouette.exchange.report.ActionReport;
 
 @Log4j
 public class GtfsExporter implements GtfsExporterInterface {
+
 	public static enum EXPORTER {
 		AGENCY, CALENDAR, CALENDAR_DATE, FREQUENCY, ROUTE, STOP, STOP_TIME, TRANSFER, TRIP, SHAPE;
 	}
 
 	private String _path;
+	private GtfsExportParameters _parameters;
 	private Map<String, Exporter<GtfsObject>> _map = new HashMap<String, Exporter<GtfsObject>>();
 
 	public GtfsExporter(String path) {
 		_path = path;
+	}
+
+	public GtfsExporter(String path, GtfsExportParameters parameters) {
+		this(path);
+		this._parameters = parameters;
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -54,7 +62,7 @@ public class GtfsExporter implements GtfsExporterInterface {
 		if (result == null) {
 			try {
 				result = ExporterFactory.build(Paths.get(_path, path)
-						.toString(), clazz.getName());
+						.toString(), clazz.getName(), _parameters);
 				_map.put(name, result);
 			} catch (ClassNotFoundException | IOException e) {
 				Context context = new Context();

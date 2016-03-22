@@ -34,9 +34,7 @@ public class GtfsInitImportCommand implements Command, Constant {
 		try {
 			JobData jobData = (JobData) context.get(JOB_DATA);
 			context.put(REFERENTIAL, new Referential());
-
 			GtfsImportParameters parameters = (GtfsImportParameters) context.get(CONFIGURATION);
-
 			// prepare importer
 			GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 			if (importer == null) {

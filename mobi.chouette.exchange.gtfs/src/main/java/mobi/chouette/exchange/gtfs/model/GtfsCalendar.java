@@ -60,6 +60,6 @@ public class GtfsCalendar extends GtfsObject implements Serializable {
 
 	/*
 	 * @Override public String toString() { return id + ":" +
-	 * CalendarExporter.CONVERTER.to(new Context(),this); }
+	 * CalendarExporter.STANDARD_CONVERTER.to(new Context(),this); }
 	 */
 }

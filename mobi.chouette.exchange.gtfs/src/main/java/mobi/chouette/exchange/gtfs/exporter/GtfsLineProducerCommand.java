@@ -127,13 +127,13 @@ public class GtfsLineProducerCommand implements Command, Constant {
 	Line line) {
 		Metadata metadata = (Metadata) context.get(METADATA);
 		GtfsExporter exporter = (GtfsExporter) context.get(GTFS_EXPORTER);
+		GtfsExportParameters configuration = (GtfsExportParameters) context.get(CONFIGURATION);
 		GtfsServiceProducer calendarProducer = new GtfsServiceProducer(exporter);
 		GtfsTripProducer tripProducer = new GtfsTripProducer(exporter);
-		GtfsRouteProducer routeProducer = new GtfsRouteProducer(exporter);
+		GtfsRouteProducer routeProducer = new GtfsRouteProducer(exporter, configuration);
 		GtfsShapeProducer shapeProducer = new GtfsShapeProducer(exporter);
 
 		ActionReport report = (ActionReport) context.get(REPORT);
-		GtfsExportParameters configuration = (GtfsExportParameters) context.get(CONFIGURATION);
 		String prefix = configuration.getObjectIdPrefix();
 		String sharedPrefix = prefix;
 		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);

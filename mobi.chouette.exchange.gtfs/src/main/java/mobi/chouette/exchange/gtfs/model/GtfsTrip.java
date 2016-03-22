@@ -61,7 +61,7 @@ public class GtfsTrip extends GtfsObject implements Serializable
    // @Override
    // public String toString()
    // {
-   // return id + ":" + TripExporter.CONVERTER.to(new Context(),this);
+   // return id + ":" + TripExporter.STANDARD_CONVERTER.to(new Context(),this);
    // }
 
    @AllArgsConstructor

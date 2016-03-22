@@ -133,6 +133,7 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 		configuration.setUserName("userName");
 		configuration.setOrganisationName("organisation");
 		configuration.setReferentialName("test");
+		configuration.setRouteTypeIdScheme("standard");
 		JobDataTest test = new JobDataTest();
 		context.put(JOB_DATA, test);
 		test.setPathName("target/referential/test");

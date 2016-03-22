@@ -59,7 +59,8 @@ public class GtfsInitExportCommand implements Command, Constant {
 			if (!Files.exists(path)) {
 				Files.createDirectories(path);
 			}
-			GtfsExporter gtfsExporter = new GtfsExporter(path.toString());
+			GtfsExportParameters parameters = (GtfsExportParameters) context.get(CONFIGURATION);
+			GtfsExporter gtfsExporter = new GtfsExporter(path.toString(), parameters);
 			context.put(GTFS_EXPORTER, gtfsExporter);
 			result = SUCCESS;
 
