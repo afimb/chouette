@@ -9,7 +9,6 @@ import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 
 import mobi.chouette.exchange.gtfs.model.GtfsCalendarDate.ExceptionType;
-import mobi.chouette.exchange.gtfs.model.GtfsRoute.RouteType;
 import mobi.chouette.exchange.gtfs.model.GtfsStop.LocationType;
 import mobi.chouette.exchange.gtfs.model.GtfsStop.WheelchairBoardingType;
 import mobi.chouette.exchange.gtfs.model.GtfsStopTime.DropOffType;
@@ -19,6 +18,7 @@ import mobi.chouette.exchange.gtfs.model.GtfsTransfer.TransferType;
 import mobi.chouette.exchange.gtfs.model.GtfsTrip.BikesAllowedType;
 import mobi.chouette.exchange.gtfs.model.GtfsTrip.DirectionType;
 import mobi.chouette.exchange.gtfs.model.GtfsTrip.WheelchairAccessibleType;
+import mobi.chouette.exchange.gtfs.model.RouteTypeEnum;
 
 public interface GtfsConverter {
 
@@ -317,17 +317,17 @@ public interface GtfsConverter {
 		}
 	};
 
-	public static DefaultFieldConverter<RouteType> ROUTETYPE_CONVERTER = new DefaultFieldConverter<RouteType>() {
+	public static DefaultFieldConverter<RouteTypeEnum> ROUTETYPE_CONVERTER = new DefaultFieldConverter<RouteTypeEnum>() {
 
 		@Override
-		protected RouteType convertFrom(String input) throws Exception {
+		protected RouteTypeEnum convertFrom(String input) throws Exception {
 			int ordinal = Integer.parseInt(input, 10);
-			return RouteType.values()[ordinal];
+			return RouteTypeEnum.fromValue(ordinal);
 		}
 
 		@Override
-		protected String convertTo(RouteType input) throws Exception {
-			return String.valueOf(input.ordinal());
+		protected String convertTo(RouteTypeEnum input) throws Exception {
+			return Integer.toString(input.value());
 		}
 	};
 

@@ -120,8 +120,26 @@ public class ActionReport {
 	}
 
 	public void addFileInfo(String fileInfoName, FILE_STATE state) {
-		if (findFileInfo(fileInfoName) == null)
+		FileInfo fileInfo = findFileInfo(fileInfoName);
+		if (fileInfo == null)
+		{
 			files.add(new FileInfo(fileInfoName, state));
+		}
+		else
+		{
+			switch (fileInfo.getStatus()) {
+			case IGNORED:
+				fileInfo.setStatus(state);
+				break;
+			case OK: 
+				if (state.equals(FILE_STATE.ERROR))
+					fileInfo.setStatus(state);
+				break;
+			case ERROR:
+			default:
+				break;
+			}
+		}
 	}
 	
 	public void addFileInfo(String fileInfoName, FILE_STATE state, FileError fileError) {

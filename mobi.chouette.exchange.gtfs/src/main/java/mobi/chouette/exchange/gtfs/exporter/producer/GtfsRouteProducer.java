@@ -10,6 +10,7 @@ package mobi.chouette.exchange.gtfs.exporter.producer;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.gtfs.model.GtfsRoute;
+import mobi.chouette.exchange.gtfs.model.RouteTypeEnum;
 import mobi.chouette.exchange.gtfs.model.exporter.GtfsExporterInterface;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.model.Line;
@@ -87,33 +88,33 @@ public class GtfsRouteProducer extends AbstractProducer
          switch (neptuneObject.getTransportModeName())
          {
          case Tramway:
-            route.setRouteType(GtfsRoute.RouteType.Tram);
+            route.setRouteType(RouteTypeEnum.Tram);
             break;
          case Trolleybus:
          case Coach:
          case Bus:
-            route.setRouteType(GtfsRoute.RouteType.Bus);
+            route.setRouteType(RouteTypeEnum.Bus);
             break;
          case Val:
          case Metro:
-            route.setRouteType(GtfsRoute.RouteType.Subway);
+            route.setRouteType(RouteTypeEnum.Subway);
             break;
          case RapidTransit:
          case LocalTrain:
          case LongDistanceTrain:
          case Train:
-            route.setRouteType(GtfsRoute.RouteType.Rail);
+            route.setRouteType(RouteTypeEnum.Rail);
             break;
          case Ferry:
-            route.setRouteType(GtfsRoute.RouteType.Ferry);
+            route.setRouteType(RouteTypeEnum.Ferry);
             break;
          default:
-            route.setRouteType(GtfsRoute.RouteType.Bus);
+            route.setRouteType(RouteTypeEnum.Bus);
          }
       }
       else
       {
-         route.setRouteType(GtfsRoute.RouteType.Bus);
+         route.setRouteType(RouteTypeEnum.Bus);
       }
 
       try
