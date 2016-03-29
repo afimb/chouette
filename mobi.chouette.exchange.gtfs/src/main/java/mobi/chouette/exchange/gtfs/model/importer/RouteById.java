@@ -292,7 +292,7 @@ public class RouteById extends IndexImpl<GtfsRoute> {
 
 	protected DefaultFieldConverter<GtfsRoute.RouteType> getRouteTypeConverter(GtfsImportParameters parameters) {
 		String routeTypeIdScheme = parameters.getRouteTypeIdScheme();
-		log.info("Route type id scheme for this import is '" + routeTypeIdScheme + "'.");
+		log.debug("Route type id scheme for this import is '" + routeTypeIdScheme + "'.");
 		throwIfEmpty(routeTypeIdScheme, "Empty route type id scheme.");
 		if ("standard".equals(routeTypeIdScheme)) {
 			return STANDARD_ROUTETYPE_CONVERTER;

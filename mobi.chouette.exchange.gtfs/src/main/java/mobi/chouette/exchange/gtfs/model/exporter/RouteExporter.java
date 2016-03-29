@@ -162,7 +162,7 @@ public class RouteExporter extends ExporterImpl<GtfsRoute> {	//implements GtfsCo
 
 	static Converter<String, GtfsRoute> getConverter(GtfsExportParameters parameters) {
 		String routeTypeIdScheme = parameters.getRouteTypeIdScheme();
-		log.info("Route type id scheme for this import is '" + routeTypeIdScheme + "'.");
+		log.debug("Route type id scheme for this export is '" + routeTypeIdScheme + "'.");
 		throwIfEmpty(routeTypeIdScheme, "Empty route type id scheme.");
 		if ("standard".equals(routeTypeIdScheme)) {
 			return STANDARD_CONVERTER;
