@@ -236,7 +236,7 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 		case InterRegionalRailService:
 			return TransportModeNameEnum.LongDistanceTrain;
 		case CarTransportRailService:
-			return TransportModeNameEnum.Other;
+			return TransportModeNameEnum.Train;
 		case SleeperRailService:
 			return TransportModeNameEnum.Train;
 		case RegionalRailService:
@@ -248,21 +248,21 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 		case SuburbanRailway:
 			return TransportModeNameEnum.LocalTrain;
 		case ReplacementRailService:
-			return TransportModeNameEnum.Other;
+			return TransportModeNameEnum.Train;
 		case SpecialRailService:
-			return TransportModeNameEnum.Other;
+			return TransportModeNameEnum.Train;
 		case LorryTransportRailService:
-			return TransportModeNameEnum.Other;
+			return TransportModeNameEnum.Train;
 		case AllRailServices:
 			return TransportModeNameEnum.Train;
 		case CrossCountryRailService:
-			return TransportModeNameEnum.Other;
+			return TransportModeNameEnum.Train;
 		case VehicleTransportRailService:
-			return TransportModeNameEnum.Other;
+			return TransportModeNameEnum.Train;
 		case RackandPinionRailway:
-			return TransportModeNameEnum.Other;
+			return TransportModeNameEnum.Train;
 		case AdditionalRailService:
-			return TransportModeNameEnum.Other;
+			return TransportModeNameEnum.Train;
 			// 
 		case CoachService:
 			return TransportModeNameEnum.Coach;
@@ -275,11 +275,11 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 		case RegionalCoachService:
 			return TransportModeNameEnum.Coach;
 		case SpecialCoachService:
-			return TransportModeNameEnum.Other;
+			return TransportModeNameEnum.Coach;
 		case SightseeingCoachService:
-			return TransportModeNameEnum.Other;
+			return TransportModeNameEnum.Coach;
 		case TouristCoachService:
-			return TransportModeNameEnum.Other;
+			return TransportModeNameEnum.Coach;
 		case CommuterCoachService:
 			return TransportModeNameEnum.Coach;
 		case AllCoachServices:
@@ -296,9 +296,9 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 		case UndergroundService:
 			return TransportModeNameEnum.Metro;
 		case UrbanRailwayService2:
-			return TransportModeNameEnum.Other;
+			return TransportModeNameEnum.Metro;
 		case AllUrbanRailwayServices:
-			return TransportModeNameEnum.Other;
+			return TransportModeNameEnum.Metro;
 		case Monorail:
 			return TransportModeNameEnum.Metro;
 			// 
@@ -315,21 +315,21 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 		case ExpressBusService:
 			return TransportModeNameEnum.Bus;
 		case StoppingBusService:
-			return TransportModeNameEnum.Other;
+			return TransportModeNameEnum.Bus;
 		case LocalBusService:
 			return TransportModeNameEnum.Bus;
 		case NightBusService:
 			return TransportModeNameEnum.Bus;
 		case PostBusService:
-			return TransportModeNameEnum.Other;
+			return TransportModeNameEnum.Bus;
 		case SpecialNeedsBus:
-			return TransportModeNameEnum.Other;
+			return TransportModeNameEnum.Bus;
 		case MobilityBusService:
-			return TransportModeNameEnum.Other;
+			return TransportModeNameEnum.Bus;
 		case MobilityBusforRegisteredDisabled:
-			return TransportModeNameEnum.Other;
+			return TransportModeNameEnum.Bus;
 		case SightseeingBus:
-			return TransportModeNameEnum.Other;
+			return TransportModeNameEnum.Bus;
 		case ShuttleBus:
 			return TransportModeNameEnum.Shuttle;
 		case SchoolBus:
@@ -339,7 +339,7 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 		case RailReplacementBusService:
 			return TransportModeNameEnum.Bus;
 		case DemandandResponseBusService:
-			return TransportModeNameEnum.Other;
+			return TransportModeNameEnum.Bus;
 		case AllBusServices:
 			return TransportModeNameEnum.Bus;
 			// 
