@@ -28,10 +28,10 @@ public class NeptuneValidatorInputValidator extends NeptuneImporterInputValidato
 			log.error("invalid parameters for validator " + abstractParameter.getClass().getName());
 			return false;
 		}
-		if (validationParameters == null) {
-			log.error("no validation parameters for validation ");
-			return false;
-		}
+//		if (validationParameters == null) {
+//			log.error("no validation parameters for validation ");
+//			return false;
+//		}
 
 		return super.checkParameters(abstractParameter, validationParameters);
 	}

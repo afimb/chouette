@@ -78,6 +78,12 @@ public class GtfsValidationCommand implements Command, Constant {
 				report.getFiles().add(file);
 				validationReporter.reportError(context, new GtfsException(fileName.getFileName().toString(), 1, null, GtfsException.ERROR.UNUSED_FILE, null, null), fileName.getFileName().toString());
 			}
+			else
+			{
+				// TODO : implement a new status : UNCHECKED
+				FileInfo file = new FileInfo(fileName.getFileName().toString(), FILE_STATE.IGNORED);
+				report.getFiles().add(file);				
+			}
 		}
 		
 		try {

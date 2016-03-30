@@ -42,7 +42,7 @@ public class GtfsRoute extends GtfsObject implements Serializable
 
    @Getter
    @Setter
-   private RouteType routeType;
+   private RouteTypeEnum routeType;
 
    @Getter
    @Setter
@@ -61,11 +61,11 @@ public class GtfsRoute extends GtfsObject implements Serializable
 	   this.setId(bean.getId());
    }
    
-   public enum RouteType implements Serializable
-   {
-      Tram, Subway, Rail, Bus, Ferry, Cable, Gondola, Funicular;
-
-   }
+//   public enum RouteType implements Serializable
+//   {
+//      Tram, Subway, Rail, Bus, Ferry, Cable, Gondola, Funicular;
+//
+//   }
 
    // @Override
    // public String toString()
