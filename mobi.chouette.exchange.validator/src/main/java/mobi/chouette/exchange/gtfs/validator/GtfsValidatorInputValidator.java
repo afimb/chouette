@@ -12,7 +12,7 @@ import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 
 @Log4j
 public class GtfsValidatorInputValidator extends GtfsImporterInputValidator {
-
+ 
 	@Override
 	public AbstractParameter toActionParameter(String abstractParameter) {
 		try {
@@ -27,10 +27,10 @@ public class GtfsValidatorInputValidator extends GtfsImporterInputValidator {
 			log.error("invalid parameters for validator " + abstractParameter.getClass().getName());
 			return false;
 		}
-		if (validationParameters == null) {
-			log.error("no validation parameters for validation ");
-			return false;
-		}
+//		if (validationParameters == null) {
+//			log.error("no validation parameters for validation ");
+//			return false;
+//		}
 
 		return super.checkParameters(abstractParameter, validationParameters);
 	}
