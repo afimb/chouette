@@ -18,6 +18,8 @@ import mobi.chouette.model.StopPoint;
 
 import org.apache.commons.collections.map.ListOrderedMap;
 
+import com.vividsolutions.jts.geom.Coordinate;
+
 public class KmlData {
 	@Getter
 	private String name;
@@ -91,6 +93,17 @@ public class KmlData {
 			}
 				
 		}
+		public void addLineString(com.vividsolutions.jts.geom.LineString geometry)
+		{
+			if (multiLineString == null) multiLineString = new ArrayList<>();
+			List<KmlPoint> ls = new ArrayList<>();
+			multiLineString.add(ls);
+			Coordinate[] coordinates = geometry.getCoordinates();
+			for (Coordinate object : coordinates) {
+				ls.add(new KmlPoint(object.x,object.y));
+			}
+				
+		}
 	}
 
 	public class KmlPoint {
@@ -109,6 +122,11 @@ public class KmlData {
 		{
 			this.latitude = latitude.doubleValue(); 
 			this.longitude = longitude.doubleValue(); 
+		}
+
+		public KmlPoint(double x, double y) {
+			this.latitude = y; 
+			this.longitude = x; 
 		}
 	}
 	

@@ -2,10 +2,12 @@ package mobi.chouette.exchange.kml.exporter;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Date;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.naming.InitialContext;
@@ -33,11 +35,13 @@ import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
+import mobi.chouette.model.RouteSection;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
+import com.vividsolutions.jts.geom.Coordinate;
 
 @Log4j
 public class KmlLineProducerCommand implements Command, Constant {
@@ -235,21 +239,40 @@ public class KmlLineProducerCommand implements Command, Constant {
 			for (JourneyPattern jp : route.getJourneyPatterns()) {
 				if (collection.getJourneyPatterns().contains(jp)) {
 					KmlData jpData = new KmlData("mission : " + jp.getName());
-					jpData.addExtraData("objectid", jp.getObjectId());
-					jpData.addExtraData("object_version", jp.getObjectVersion());
-					jpData.addExtraData("creation_time", jp.getCreationTime());
-					jpData.addExtraData("creator_id", jp.getCreatorId());
-					jpData.addExtraData("name", jp.getName());
-					jpData.addExtraData("comment", jp.getComment());
-					jpData.addExtraData("registration_number", jp.getRegistrationNumber());
-					jpData.addExtraData("published_name", jp.getPublishedName());
-					jpData.addExtraData("route_objectid", route.getObjectId());
+					KmlItem jpItem = jpData.addNewItem(jp.getObjectId());
+					jpItem.addExtraData("object_version", jp.getObjectVersion());
+					jpItem.addExtraData("creation_time", jp.getCreationTime());
+					jpItem.addExtraData("creator_id", jp.getCreatorId());
+					jpItem.addExtraData("name", jp.getName());
+					jpItem.addExtraData("comment", jp.getComment());
+					jpItem.addExtraData("registration_number", jp.getRegistrationNumber());
+					jpItem.addExtraData("published_name", jp.getPublishedName());
+					jpItem.addExtraData("route_objectid", route.getObjectId());
+					List<RouteSection> routeSections = jp
+							.getRouteSections();
+
+					boolean sections = false;
+					if (routeSections != null && !routeSections.isEmpty()) {
+						for (RouteSection routeSection : routeSections) {
+							com.vividsolutions.jts.geom.LineString geometry = (routeSection
+									.getInputGeometry() != null) ? routeSection
+									.getInputGeometry() : routeSection
+									.getProcessedGeometry();
+							if (geometry != null) {
+								jpItem.addLineString(geometry);
+								sections = true;
+							}
+						}
+					}
+					
 					for (StopPoint point : route.getStopPoints()) {
 						if (point == null)
 							continue;
 						if (point.getContainedInStopArea().hasCoordinates()) {
 							KmlItem pointItem = jpData.addStopPoint(point);
 							pointItem.addExtraData("stop", Boolean.valueOf(jp.getStopPoints().contains(point)));
+							if (!sections)
+								jpItem.addPoint(point.getContainedInStopArea());
 						}
 					}
 					// save jp
@@ -284,6 +307,18 @@ public class KmlLineProducerCommand implements Command, Constant {
 					metadata.new Resource(fileName, NeptuneObjectPresenter.getName(collection.getLine().getNetwork()),
 							NeptuneObjectPresenter.getName(collection.getLine())));
 
+	}
+
+	private BigDecimal[][] getCoordinates(
+			com.vividsolutions.jts.geom.LineString geometry, boolean first) {
+		Coordinate[] coordinates = geometry.getCoordinates();
+		BigDecimal[][] result = new BigDecimal[coordinates.length - (first?0:1)][2];
+		
+		for (int i = (first?0:1); i < coordinates.length; i++) {
+			result[i][0] = BigDecimal.valueOf(coordinates[i].x);
+			result[i][1] = BigDecimal.valueOf(coordinates[i].y);
+		}
+		return result;
 	}
 
 	public static class DefaultCommandFactory extends CommandFactory {

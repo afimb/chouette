@@ -2,6 +2,7 @@ package mobi.chouette.exchange.kml.exporter.writer;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.List;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 
@@ -55,6 +56,20 @@ public class KmlDataWriter extends AbstractWriter {
 				}
 				writer.write("         </coordinates>\n");
 				writer.write("        </LineString>\n");
+			}
+			if (item.getMultiLineString() != null) {
+				writer.write("        <MultiGeometry>\n");
+				for (List<KmlPoint> line : item.getMultiLineString()) {
+					writer.write("          <LineString>\n");
+					writer.write("            <coordinates>\n");
+					for (KmlPoint point : line) {
+						writer.write("              " + point.longitude + "," + point.latitude + "\n");
+					}
+					writer.write("           </coordinates>\n");
+					writer.write("          </LineString>\n");
+				}
+				writer.write("        </MultiGeometry>\n");
+
 			}
 			writer.write("        </Placemark>\n");
 		}
