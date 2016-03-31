@@ -10,6 +10,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.exchange.regtopp.model.RegtoppDayCodeDKO;
 import mobi.chouette.exchange.regtopp.model.RegtoppDestinationDST;
 import mobi.chouette.exchange.regtopp.model.RegtoppFootnoteMRK;
+import mobi.chouette.exchange.regtopp.model.RegtoppLineLIN;
 import mobi.chouette.exchange.regtopp.model.RegtoppObject;
 import mobi.chouette.exchange.regtopp.model.RegtoppRouteTMS;
 import mobi.chouette.exchange.regtopp.model.RegtoppStopHPL;
@@ -20,6 +21,7 @@ import mobi.chouette.exchange.regtopp.model.importer.parser.index.DestinationByI
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.FootnoteById;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.Index;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.IndexFactory;
+import mobi.chouette.exchange.regtopp.model.importer.parser.index.LineById;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.RouteById;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.StopById;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.TripByIndexingKey;
@@ -159,6 +161,11 @@ public class RegtoppImporter {
 
 	public Index<RegtoppDayCodeDKO> getDayCodeById() throws Exception {
 		return getIndex(INDEX.DAYCODE_BY_ID.name(), DaycodeById.class);
+	}
+
+	public Index<RegtoppLineLIN> getLineById() throws Exception {
+		return getIndex(INDEX.LINE_BY_ID.name(), LineById.class);
+		
 	}	
 
 }

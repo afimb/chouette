@@ -10,8 +10,10 @@ import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
 import mobi.chouette.exchange.regtopp.model.RegtoppDayCodeDKO;
 import mobi.chouette.exchange.regtopp.model.RegtoppDestinationDST;
 import mobi.chouette.exchange.regtopp.model.RegtoppFootnoteMRK;
+import mobi.chouette.exchange.regtopp.model.RegtoppLineLIN;
 import mobi.chouette.exchange.regtopp.model.RegtoppRouteTMS;
 import mobi.chouette.exchange.regtopp.model.RegtoppTripIndexTIX;
+import mobi.chouette.exchange.regtopp.model.enums.AnnouncementType;
 import mobi.chouette.exchange.regtopp.model.importer.parser.FileParserValidationError;
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppException;
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
@@ -20,8 +22,11 @@ import mobi.chouette.exchange.regtopp.validation.Constant;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 import mobi.chouette.exchange.validation.report.CheckPoint;
 import mobi.chouette.exchange.validation.report.ValidationReport;
+import mobi.chouette.model.Footnote;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
+import mobi.chouette.model.VehicleJourney;
+import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
@@ -95,6 +100,15 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 		// Create the actual Chouette Line and put it in the "referential" space (which is later used by the LineImporterCommand)
 		Line line = ObjectFactory.getLine(referential, chouetteLineId);
 
+		// Find line number (TODO check if index exists)
+		Index<RegtoppLineLIN> lineById = importer.getLineById();
+		RegtoppLineLIN regtoppLine = lineById.getValue(lineId);
+		if(regtoppLine != null) {
+			line.setName(regtoppLine.getName());
+			line.setNumber(line.getName()); // TODO set both fields, must check whether this is necessary or just plain stupid
+		}
+		
+		
 		// Get index over the TMS file
 		Index<RegtoppRouteTMS> routeIndex = importer.getRouteById();
 		
@@ -107,23 +121,72 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 		Index<RegtoppTripIndexTIX> tripIndex = importer.getTripIndex();
 
 		for (RegtoppTripIndexTIX trip : tripIndex) {
-			// Find matching trips
-			if(trip.getLineId().equals(chouetteLineId)) {
-				// Find matching routes
-				RegtoppRouteTMS regtoppRoute = routeIndex.getValue(trip.getRouteId());
+			
+			// Just skip unannouced trips - why would we need them? (TODO)
+			if(trip.getNotificationType() == AnnouncementType.Announced) {
 				
-				String routeId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Route.ROUTE_KEY,
-						trip.getRouteId(), log);
+				
+				
+				// Find matching trips
+				if(trip.getLineId().equals(lineId)) {
+					// Find matching routes
+					
+					// TODO look in referential if we can find an existing route already
+					RegtoppRouteTMS regtoppRoute = routeIndex.getValue(trip.getRouteId());
+					
+					String chouetteRouteId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Route.ROUTE_KEY,
+							regtoppRoute.getRouteId(), log);
 
-				Route route = ObjectFactory.getRoute(referential, routeId);
-				route.setLine(line);
-//				String wayBack = gtfsTrip.getDirectionId().equals(DirectionType.Outbound) ? "A" : "R";
-//				route.setWayBack(wayBack);
-//				return route;
-								
+					
+					Route route = ObjectFactory.getRoute(referential, chouetteRouteId);
+					route.setLine(line);
+					// TODO add stop points to route
+					
+					
+					// Add VehicleJourneys (one for each)
+					String chouetteVehicleJourneyId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Route.VEHICLEJOURNEY_KEY,
+							// Concatenated id
+							trip.getLineId()+trip.getTripId(), log);
+					VehicleJourney vehicleJourney = ObjectFactory.getVehicleJourney(referential, chouetteVehicleJourneyId);
+					
+					// TODO hardcoded to BUS, replace with approproate mapping
+					vehicleJourney.setTransportMode(TransportModeNameEnum.Bus);
+					
+					
+					RegtoppDestinationDST arrivalText = destinationIndex.getValue(trip.getDestinationIdArrival());
+					
+					// TODO unsure
+					if(arrivalText != null) {
+						vehicleJourney.setPublishedJourneyName(arrivalText.getDestinationText());
+					}
+					addFootnote(trip.getRemarkId1(),vehicleJourney,footnoteIndex);
+					addFootnote(trip.getRemarkId2(),vehicleJourney,footnoteIndex);
+					
+					
+//					String wayBack = gtfsTrip.getDirectionId().equals(DirectionType.Outbound) ? "A" : "R";
+//					route.setWayBack(wayBack);
+//					return route;
+									
+					
+				}
 				
+			} else  {
+				log.info("Skipping unannouced trip: "+trip);
 			}
+			
 		
+		}
+	}
+
+	private void addFootnote(String remarkId1, VehicleJourney vehicleJourney,Index<RegtoppFootnoteMRK> index) {
+		if(!"000".equals(remarkId1)) {
+			RegtoppFootnoteMRK footnote1 = index.getValue(remarkId1);
+
+			Footnote f = new Footnote();
+			f.setLabel(footnote1.getDescription());
+			f.setKey(footnote1.getFootnoteId());
+			
+			vehicleJourney.getFootnotes().add(f );
 		}
 	}
 
