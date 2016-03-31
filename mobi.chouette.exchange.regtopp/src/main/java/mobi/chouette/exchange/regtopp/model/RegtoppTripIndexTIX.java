@@ -67,17 +67,17 @@ public class RegtoppTripIndexTIX extends RegtoppObject implements Serializable {
 	@Getter
 	@Setter
 	@Field(length = 3)
-	private Integer remarkId1;
+	private String remarkId1;
 
 	@Getter
 	@Setter
 	@Field(length = 3)
-	private Integer remarkId2;
+	private String remarkId2;
 
 	@Getter
 	@Setter
 	@Field(length = 4)
-	private Integer destinationIdDeparture;
+	private String destinationIdDeparture;
 
 	@Getter
 	@Setter
@@ -122,7 +122,7 @@ public class RegtoppTripIndexTIX extends RegtoppObject implements Serializable {
 	@Getter
 	@Setter
 	@Field(length = 4)
-	private Integer destinationIdArrival;
+	private String destinationIdArrival;
 
 	@Getter
 	@Setter
