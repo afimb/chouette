@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import org.beanio.annotation.Field;
 import org.beanio.annotation.Record;
+import org.joda.time.Duration;
+import org.joda.time.Period;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -57,12 +59,12 @@ public class RegtoppRouteTMS extends RegtoppObject implements Serializable {
 	@Getter
 	@Setter
 	@Field(length = 8)
-	private Integer stopId;
+	private String stopId;
 
 	@Getter
 	@Setter
-	@Field(length = 3)
-	private Integer driverTimeArrival;
+	@Field(length = 3, handlerName = "drivingDuration")
+	private Duration driverTimeArrival;
 
 	@Getter
 	@Setter
@@ -71,8 +73,8 @@ public class RegtoppRouteTMS extends RegtoppObject implements Serializable {
 
 	@Getter
 	@Setter
-	@Field(length = 3)
-	private Integer driverTimeDeparture;
+	@Field(length = 3, handlerName = "drivingDuration")
+	private Duration driverTimeDeparture;
 
 	@Getter
 	@Setter

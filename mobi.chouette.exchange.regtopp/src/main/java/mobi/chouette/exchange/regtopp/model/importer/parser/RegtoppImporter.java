@@ -23,6 +23,7 @@ import mobi.chouette.exchange.regtopp.model.importer.parser.index.Index;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.IndexFactory;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.LineById;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.RouteById;
+import mobi.chouette.exchange.regtopp.model.importer.parser.index.RouteByIndexingKey;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.StopById;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.TripByIndexingKey;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.UniqueLinesByTripIndex;
@@ -43,7 +44,7 @@ public class RegtoppImporter {
 		VEHICLE_JOURNEY,
 		TABLE_VERSION,
 		ROUTE_POINT,
-		LINE_BY_TRIPS, ROUTE_BY_ID
+		LINE_BY_TRIPS, ROUTE_BY_ID, ROUTE_INDEX
 	}
 
 	private String _path;
@@ -166,6 +167,10 @@ public class RegtoppImporter {
 	public Index<RegtoppLineLIN> getLineById() throws Exception {
 		return getIndex(INDEX.LINE_BY_ID.name(), LineById.class);
 		
+	}
+
+	public Index<RegtoppRouteTMS> getRouteIndex() throws Exception {
+		return getIndex(INDEX.ROUTE_INDEX.name(), RouteByIndexingKey.class);
 	}	
 
 }

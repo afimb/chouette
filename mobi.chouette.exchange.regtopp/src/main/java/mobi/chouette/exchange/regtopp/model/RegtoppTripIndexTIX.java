@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import org.beanio.annotation.Field;
 import org.beanio.annotation.Record;
+import org.joda.time.Duration;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -16,7 +17,6 @@ import mobi.chouette.exchange.regtopp.model.enums.DirectionType;
 import mobi.chouette.exchange.regtopp.model.enums.ParcelServiceType;
 import mobi.chouette.exchange.regtopp.model.enums.TrafficType;
 import mobi.chouette.exchange.regtopp.model.enums.TransportType;
-
 
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
@@ -51,7 +51,7 @@ public class RegtoppTripIndexTIX extends RegtoppObject implements Serializable {
 
 	@Getter
 	@Setter
-	@Field(length = 3, regex = "[0-9]{3}", format="toString")
+	@Field(length = 3, regex = "[0-9]{3}", format = "toString")
 	private TransportType typeOfService;
 
 	@Getter
@@ -81,12 +81,12 @@ public class RegtoppTripIndexTIX extends RegtoppObject implements Serializable {
 
 	@Getter
 	@Setter
-	@Field(length = 8,keepPadding = false)
+	@Field(length = 8, keepPadding = false)
 	private String lineNumberVisible;
 
 	@Getter
 	@Setter
-	@Field(length = 1, regex = "[12]{1}", format="toString")
+	@Field(length = 1, regex = "[12]{1}", format = "toString")
 	private DirectionType direction;
 
 	@Getter
@@ -96,12 +96,14 @@ public class RegtoppTripIndexTIX extends RegtoppObject implements Serializable {
 
 	@Getter
 	@Setter
-	@Field(length = 4,regex = "[0-2][0-9]{3}")
-	private String departureTime;
+	@Field(length = 4, regex = "[0-2][0-9]{3}", handlerName = "departureTime")
+	// This is period since we can have start times like 2415 which means 00:15 the next day. This cannot be represented with LocalTime.
+	// Therefore the logic later must be able to 
+	private Duration departureTime;
 
 	@Getter
 	@Setter
-	@Field(length = 1, regex = "[01]{1}", format="toString")
+	@Field(length = 1, regex = "[01]{1}", format = "toString")
 	private ParcelServiceType parcelService;
 
 	@Getter
@@ -111,12 +113,12 @@ public class RegtoppTripIndexTIX extends RegtoppObject implements Serializable {
 
 	@Getter
 	@Setter
-	@Field(length = 1, regex = "[01]{1}", format="toString")
+	@Field(length = 1, regex = "[01]{1}", format = "toString")
 	private AnnouncementType notificationType;
 
 	@Getter
 	@Setter
-	@Field(length = 1, regex = "[01]{1}", format="toString")
+	@Field(length = 1, regex = "[01]{1}", format = "toString")
 	private TrafficType trafficType;
 
 	@Getter
@@ -128,9 +130,9 @@ public class RegtoppTripIndexTIX extends RegtoppObject implements Serializable {
 	@Setter
 	@Field(length = 7)
 	private String weekdaysOfService;
-	
+
 	@Override
 	public String getIndexingKey() {
-		return adminCode+counter+lineId+tripId;
+		return adminCode + counter + lineId + tripId;
 	}
 }
