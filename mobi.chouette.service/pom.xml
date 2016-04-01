@@ -135,6 +135,12 @@
       </dependency>
       <dependency>
          <groupId>${project.groupId}</groupId>
+         <artifactId>mobi.chouette.exchange.regtopp</artifactId>
+         <type>ejb</type>
+         <version>${project.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>${project.groupId}</groupId>
          <artifactId>mobi.chouette.exchange.validator</artifactId>
          <type>ejb</type>
          <version>${project.version}</version>

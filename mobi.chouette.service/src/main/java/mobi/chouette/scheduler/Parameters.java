@@ -30,7 +30,8 @@ public class Parameters {
         	@XmlElement(name = "validate", type = mobi.chouette.exchange.validator.ValidateParameters.class),
         	@XmlElement(name = "neptune-validate", type = mobi.chouette.exchange.neptune.validator.NeptuneValidateParameters.class),
         	@XmlElement(name = "netex-validate", type = mobi.chouette.exchange.netex.validator.NetexValidateParameters.class),
-        	@XmlElement(name = "gtfs-validate", type = mobi.chouette.exchange.gtfs.validator.GtfsValidateParameters.class) })
+        	@XmlElement(name = "gtfs-validate", type = mobi.chouette.exchange.gtfs.validator.GtfsValidateParameters.class),
+			@XmlElement(name = "regtopp-import", type = mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters.class)})
 	private AbstractParameter configuration;
 
 	@XmlElement(name = "validation")
