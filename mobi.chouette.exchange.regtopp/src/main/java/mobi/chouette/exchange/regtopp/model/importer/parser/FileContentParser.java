@@ -12,10 +12,13 @@ import org.beanio.RecordContext;
 import org.beanio.StreamFactory;
 import org.beanio.builder.FixedLengthParserBuilder;
 import org.beanio.builder.StreamBuilder;
+import org.joda.time.Duration;
 
 import lombok.Getter;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
+import mobi.chouette.exchange.regtopp.beanio.DepartureTimeTypeHandler;
+import mobi.chouette.exchange.regtopp.beanio.DrivingDurationTypeHandler;
 import mobi.chouette.exchange.regtopp.model.RegtoppObject;
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppException.ERROR;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
@@ -37,6 +40,8 @@ public class FileContentParser {
 			builder = builder.addRecord(clazz);
 
 		}
+		builder.addTypeHandler("departureTime",Duration.class, new DepartureTimeTypeHandler());
+		builder.addTypeHandler("drivingDuration",Duration.class, new DrivingDurationTypeHandler());
 
 		factory.define(builder);
 
