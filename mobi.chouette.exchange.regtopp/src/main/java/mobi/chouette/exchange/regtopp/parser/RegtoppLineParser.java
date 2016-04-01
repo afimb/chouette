@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.regtopp.parser;
 
+import java.math.BigDecimal;
 import java.sql.Time;
 
 import org.apache.commons.lang.StringUtils;
@@ -198,7 +199,7 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 							if (vehicleStop.getRouteId().equals(trip.getRouteId())) {
 								if (vehicleStop.getDirection() == trip.getDirection()) {
 									VehicleJourneyAtStop vehicleJourneyAtStop = ObjectFactory.getVehicleJourneyAtStop();
-									StopPoint stopPoint = referential.getStopPoints().get(chouetteStopPointId);
+									StopPoint stopPoint = ObjectFactory.getStopPoint(referential, chouetteStopPointId);
 									vehicleJourneyAtStop.setStopPoint(stopPoint);
 
 									Duration arrivalTime = tripDepartureTime.plus(vehicleStop.getDriverTimeArrival());
@@ -246,9 +247,10 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 			RegtoppStopHPL stop = stopById.getValue(routeSegment.getStopId());
 
 			// TODO coordinate system conversion
-			stopArea.setX(stop.getStopLon());
-			stopArea.setY(stop.getStopLat());
+			stopArea.setX(stop.getStopLon().divide(new BigDecimal(10000)));
+			stopArea.setY(stop.getStopLat().divide(new BigDecimal(10000)));
 			stopArea.setName(stop.getFullName());
+			stopArea.setCountryCode("NO");
 		}
 		return stopArea;
 	}
