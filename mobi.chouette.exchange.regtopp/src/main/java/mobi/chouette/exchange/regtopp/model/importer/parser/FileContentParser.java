@@ -1,5 +1,8 @@
 package mobi.chouette.exchange.regtopp.model.importer.parser;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -28,6 +31,7 @@ import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
 
 @Log4j
 public class FileContentParser {
+	private static final String REGTOPP_CHARSET = "ISO-8859-1";
 	@Getter
 	private List<Object> rawContent = new ArrayList<>();
 	
@@ -45,8 +49,12 @@ public class FileContentParser {
 
 		factory.define(builder);
 
+		FileInputStream is = new FileInputStream(parseableFile.getFile());
+		InputStreamReader isr = new InputStreamReader(is, REGTOPP_CHARSET);
+		BufferedReader buffReader = new BufferedReader(isr);
+		
 		// TODO consider using error reporter instead if this continues parsing of the file
-		BeanReader in = factory.createReader("regtopp", parseableFile.getFile());
+		BeanReader in = factory.createReader("regtopp", buffReader);
 
 		final Set<RegtoppException> errors = new HashSet<RegtoppException>();
 		final String fileName = parseableFile.getFile().getName();

@@ -69,7 +69,7 @@ public class RegtoppRouteTMS extends RegtoppObject implements Serializable {
 	@Getter
 	@Setter
 	@Field(length = 2)
-	private Integer stopIdArrival;
+	private String stopIdArrival;
 
 	@Getter
 	@Setter
@@ -79,17 +79,17 @@ public class RegtoppRouteTMS extends RegtoppObject implements Serializable {
 	@Getter
 	@Setter
 	@Field(length = 2)
-	private Integer stopIdDeparture;
+	private String stopIdDeparture;
 
 	@Getter
 	@Setter
 	@Field(length = 4)
-	private Integer destinationId;
+	private String destinationId;
 
 	@Getter
 	@Setter
 	@Field(length = 3)
-	private Integer remarkId;
+	private String remarkId;
 
 	@Getter
 	@Setter

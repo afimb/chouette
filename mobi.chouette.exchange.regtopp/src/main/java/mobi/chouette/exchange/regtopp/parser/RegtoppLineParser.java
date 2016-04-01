@@ -21,6 +21,7 @@ import mobi.chouette.exchange.regtopp.model.RegtoppRouteTMS;
 import mobi.chouette.exchange.regtopp.model.RegtoppStopHPL;
 import mobi.chouette.exchange.regtopp.model.RegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.model.enums.AnnouncementType;
+import mobi.chouette.exchange.regtopp.model.enums.DirectionType;
 import mobi.chouette.exchange.regtopp.model.importer.parser.FileParserValidationError;
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppException;
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
@@ -37,6 +38,9 @@ import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
+import mobi.chouette.model.type.ChouetteAreaEnum;
+import mobi.chouette.model.type.LongLatTypeEnum;
+import mobi.chouette.model.type.PTDirectionEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
@@ -113,7 +117,7 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 		RegtoppLineLIN regtoppLine = lineById.getValue(lineId);
 		if (regtoppLine != null) {
 			line.setName(regtoppLine.getName());
-			line.setNumber(line.getName()); // TODO set both fields, must check whether this is necessary or just plain stupid
+			line.setPublishedName(regtoppLine.getName());
 		}
 
 		// Get index over the TMS file
@@ -134,6 +138,12 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 				// Create route
 				String chouetteRouteId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Route.ROUTE_KEY, routeKey, log);
 				Route route = ObjectFactory.getRoute(referential, chouetteRouteId);
+				RegtoppDestinationDST arrivalText = destinationIndex.getValue(routeSegment.getDestinationId());
+				if(arrivalText != null) {
+					route.setName(arrivalText.getDestinationText());
+				}
+				route.setDirection(routeSegment.getDirection() == DirectionType.Outbound ? PTDirectionEnum.A : PTDirectionEnum.R);
+				route.setNumber(routeSegment.getRouteId());
 				route.setLine(line);
 
 				// Create journey pattern
@@ -153,6 +163,9 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 
 			}
 		}
+		
+		// Loop over routes and link outbound/inbound routes together
+		
 
 		// Add VehicleJourneys
 		Index<RegtoppTripIndexTIX> tripIndex = importer.getTripIndex();
@@ -160,6 +173,9 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 			if (trip.getLineId().equals(lineId)) {
 				if (trip.getNotificationType() == AnnouncementType.Announced) {
 
+					// This is where we get the line number
+					line.setNumber(trip.getLineNumberVisible());
+					
 					String tripKey = trip.getLineId() + trip.getTripId();
 					String routeKey = trip.getLineId() + trip.getDirection() + trip.getRouteId();
 
@@ -194,7 +210,7 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 					// Duration since midnight
 					Duration tripDepartureTime = trip.getDepartureTime();
 
-					for (RegtoppRouteTMS vehicleStop : routeIndex) {
+					for (RegtoppRouteTMS vehicleStop : importer.getRouteIndex()) {
 						if (vehicleStop.getLineId().equals(lineId)) {
 							if (vehicleStop.getRouteId().equals(trip.getRouteId())) {
 								if (vehicleStop.getDirection() == trip.getDirection()) {
@@ -208,11 +224,14 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 									// TODO verify this
 									vehicleJourneyAtStop.setArrivalTime(new Time(arrivalTime.getMillis()));
 									vehicleJourneyAtStop.setDepartureTime(new Time(departureTime.getMillis()));
+									
+									vehicleJourney.getVehicleJourneyAtStops().add(vehicleJourneyAtStop);
 
 								}
 							}
 						}
 					}
+					
 				} else {
 					log.info("Skipping unannouced trip: " + trip);
 				}
@@ -256,11 +275,21 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 			String lat = stopLat.toString();
 			int shiftCommaToLeftPosLat = lat.length()-2;
 			
-			stopArea.setX(stop.getStopLon().movePointLeft(shiftCommaToLeftPos));
-			stopArea.setY(stop.getStopLat().movePointLeft(shiftCommaToLeftPosLat));
+			stopArea.setLongitude(stopLon.movePointLeft(shiftCommaToLeftPos));
+			stopArea.setLatitude(stopLat.movePointLeft(shiftCommaToLeftPosLat));
+			stopArea.setLongLatType(LongLatTypeEnum.WGS84);
+				
+			// UTM coordinates
+			stopArea.setX(stop.getStopLon());
+			stopArea.setY(stop.getStopLat());
+			stopArea.setProjectionType("UTM");
+			
 			stopArea.setName(stop.getFullName());
 			stopArea.setCountryCode("NO");
-		}
+
+			// TODO set correct
+			stopArea.setAreaType(ChouetteAreaEnum.BoardingPosition);
+}
 		return stopArea;
 	}
 
