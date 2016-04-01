@@ -14,7 +14,7 @@ public class TripByIndexingKeyTest extends AbstractIndexTest{
 
 	@Test(dependsOnMethods = {"setupImporter"})
 	public void testValidation() throws Exception {
-		FileContentParser fileContentParser = createUnderlyingFileParser(new File("src/test/data/regtopp12/R5001.tix"), new Class[] {RegtoppTripIndexTIX.class});
+		FileContentParser fileContentParser = createUnderlyingFileParser(new File("src/test/data/regtopp12kolumbus/R5001.tix"), new Class[] {RegtoppTripIndexTIX.class});
 		TripByIndexingKey index = new TripByIndexingKey(validationReporter,fileContentParser);
 		for(RegtoppTripIndexTIX obj : index) {
 			boolean validData = index.validate(obj,importer);
