@@ -246,9 +246,18 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 			Index<RegtoppStopHPL> stopById = importer.getStopById();
 			RegtoppStopHPL stop = stopById.getValue(routeSegment.getStopId());
 
-			// TODO coordinate system conversion
-			stopArea.setX(stop.getStopLon().divide(new BigDecimal(10000)));
-			stopArea.setY(stop.getStopLat().divide(new BigDecimal(10000)));
+			// TODO coordinate system conversion 
+			BigDecimal stopLon = stop.getStopLon();
+			String lon = stopLon.toString();
+			int shiftCommaToLeftPos = lon.length()-2;
+		
+			// TODO all this pure hack to se whether the database will eat it
+			BigDecimal stopLat = stop.getStopLat();
+			String lat = stopLat.toString();
+			int shiftCommaToLeftPosLat = lat.length()-2;
+			
+			stopArea.setX(stop.getStopLon().movePointLeft(shiftCommaToLeftPos));
+			stopArea.setY(stop.getStopLat().movePointLeft(shiftCommaToLeftPosLat));
 			stopArea.setName(stop.getFullName());
 			stopArea.setCountryCode("NO");
 		}
