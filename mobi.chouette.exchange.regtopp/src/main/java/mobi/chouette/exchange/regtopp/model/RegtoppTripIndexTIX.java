@@ -81,7 +81,7 @@ public class RegtoppTripIndexTIX extends RegtoppObject implements Serializable {
 
 	@Getter
 	@Setter
-	@Field(length = 8, keepPadding = false)
+	@Field(length = 8, trim = true)
 	private String lineNumberVisible;
 
 	@Getter

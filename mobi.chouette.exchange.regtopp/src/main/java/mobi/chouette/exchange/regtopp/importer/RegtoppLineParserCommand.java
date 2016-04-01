@@ -62,10 +62,10 @@ public class RegtoppLineParserCommand implements Command, Constant {
 			// Stops
 			// Kalle parse-metode på RegtoppStopParser
 //			// StopArea
-			if (referential.getSharedStopAreas().isEmpty()) {
-				RegtoppStopParser stopParser = (RegtoppStopParser) ParserFactory.create(RegtoppStopParser.class.getName());
-				stopParser.parse(context);
-			}
+//			if (referential.getSharedStopAreas().isEmpty()) {
+//				RegtoppStopParser stopParser = (RegtoppStopParser) ParserFactory.create(RegtoppStopParser.class.getName());
+//				stopParser.parse(context);
+//			}
 			
 			RegtoppLineParser lineParser = (RegtoppLineParser) ParserFactory.create(RegtoppLineParser.class.getName());
 			lineParser.setLineId(lineId);
