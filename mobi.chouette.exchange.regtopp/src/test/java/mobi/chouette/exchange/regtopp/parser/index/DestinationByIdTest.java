@@ -14,7 +14,7 @@ public class DestinationByIdTest extends AbstractIndexTest{
 
 	@Test(dependsOnMethods = {"setupImporter"})
 	public void testValidation() throws Exception {
-		FileContentParser fileContentParser = createUnderlyingFileParser(new File("src/test/data/regtopp12/R5001.dst"), new Class[] {RegtoppDestinationDST.class});
+		FileContentParser fileContentParser = createUnderlyingFileParser(new File("src/test/data/regtopp12kolumbus/R5001.dst"), new Class[] {RegtoppDestinationDST.class});
 		DestinationById index = new DestinationById(validationReporter,fileContentParser);
 		for(RegtoppDestinationDST obj : index) {
 			boolean validData = index.validate(obj,importer);

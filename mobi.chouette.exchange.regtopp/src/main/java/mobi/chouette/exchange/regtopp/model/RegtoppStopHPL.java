@@ -28,67 +28,68 @@ public class RegtoppStopHPL extends RegtoppObject implements Serializable {
 
 	@Getter
 	@Setter
-	@Field(length = 3)
-	private Integer adminCode;
+	@Field(at = 0,length = 3)
+	private String adminCode;
 
 	@Getter
 	@Setter
-	@Field(length = 1)
-	private Integer counter;
+	@Field(at = 3,length = 1)
+	private String counter;
+
 
 	@Getter
 	@Setter
-	@Field(length = 8)
+	@Field(at = 4,length = 8)
 	private String stopId;
 
 	@Getter
 	@Setter
-	@Field(length = 30)
+	@Field(at = 12,length = 30)
 	private String fullName;
 
 	@Getter
 	@Setter
-	@Field(length = 5)
+	@Field(at = 42,length = 5)
 	private String shortName;
 
 	@Getter
 	@Setter
-	@Field(length = 6)
+	@Field(at = 47,length = 6)
 	private String zoneShortName;
 
 	@Getter
 	@Setter
-	@Field(length = 10)
+	@Field(at = 53,length = 10)
 	private BigDecimal stopLat;
 
 	@Getter
 	@Setter
-	@Field(length = 10)
+	@Field(at = 63,length = 10)
 	private BigDecimal stopLon;
 
 	@Getter
 	@Setter
-	@Field(length = 5)
+	@Field(at = 73,length = 5)
 	private Integer zoneId1;
 
 	@Getter
 	@Setter
-	@Field(length = 5)
+	@Field(at = 78,length = 5)
 	private Integer zoneId2;
 
 	@Getter
 	@Setter
-	@Field(length = 1)
+	@Field(at = 83,length = 1)
 	private Integer interchangeType;
 
 	@Getter
 	@Setter
-	@Field(length = 2)
+	@Field(at = 84,length = 2)
 	private Integer interchangeMinutes;
 
 	@Getter
 	@Setter
-	@Field(length = 1)
+	@Field(at = 86,length = 1)
 	private Integer coachClass;
 	
 	@Override

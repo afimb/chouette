@@ -126,7 +126,6 @@ public class RegtoppFilePresenceValidationCommand implements Command, Constant {
 						} else if ("TMS".equals(extension)) {
 							ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppRouteTMS.class }),
 									file);
-							importer.registerFileForIndex(RegtoppImporter.INDEX.ROUTE_BY_ID.name(), parseableFile);
 							importer.registerFileForIndex(RegtoppImporter.INDEX.ROUTE_INDEX.name(), parseableFile);
 						} else if ("HPL".equals(extension)) {
 							ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppStopHPL.class }), file);

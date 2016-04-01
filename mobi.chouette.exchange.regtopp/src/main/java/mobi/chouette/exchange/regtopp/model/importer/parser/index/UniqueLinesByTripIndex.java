@@ -43,7 +43,8 @@ public class UniqueLinesByTripIndex extends IndexImpl<RegtoppTripIndexTIX>   {
 	public void index() throws IOException {
 		for(Object obj : _parser.getRawContent()) {
 			RegtoppTripIndexTIX trip = (RegtoppTripIndexTIX) obj;
-			_index.put(trip.getTripId(),null);
+			_index.put(trip.getLineId(),null);
+			log.info("Found line "+trip.getLineId());
 		}
 	}
 }

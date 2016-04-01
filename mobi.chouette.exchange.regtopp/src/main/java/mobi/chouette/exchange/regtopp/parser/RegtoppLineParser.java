@@ -138,13 +138,16 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 				// Create route
 				String chouetteRouteId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Route.ROUTE_KEY, routeKey, log);
 				Route route = ObjectFactory.getRoute(referential, chouetteRouteId);
-				RegtoppDestinationDST arrivalText = destinationIndex.getValue(routeSegment.getDestinationId());
-				if(arrivalText != null) {
-					route.setName(arrivalText.getDestinationText());
+				if(!route.isFilled()) {
+					RegtoppDestinationDST arrivalText = destinationIndex.getValue(routeSegment.getDestinationId());
+					if(arrivalText != null) {
+						route.setName(arrivalText.getDestinationText());
+					}
+					route.setDirection(routeSegment.getDirection() == DirectionType.Outbound ? PTDirectionEnum.A : PTDirectionEnum.R);
+					route.setNumber(routeSegment.getRouteId());
+					route.setLine(line);
+					route.setFilled(true);
 				}
-				route.setDirection(routeSegment.getDirection() == DirectionType.Outbound ? PTDirectionEnum.A : PTDirectionEnum.R);
-				route.setNumber(routeSegment.getRouteId());
-				route.setLine(line);
 
 				// Create journey pattern
 				String chouetteJourneyPatternId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Route.JOURNEYPATTERN_KEY, routeKey, log);
@@ -153,7 +156,7 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 				journeyPattern.setRoute(route);
 
 				// Create stop point
-				String chouetteStopPointId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Route.STOPPOINT_KEY, routeKey, log);
+				String chouetteStopPointId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Route.STOPPOINT_KEY, routeKey+routeSegment.getSequenceNumberStop(), log);
 
 				StopPoint stopPoint = createStopPoint(referential, context, routeSegment, chouetteStopPointId);
 
@@ -205,16 +208,19 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 					vehicleJourney.setJourneyPattern(journeyPattern);
 					vehicleJourney.setRoute(route);
 
-					String chouetteStopPointId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Route.STOPPOINT_KEY, routeKey, log);
 
 					// Duration since midnight
 					Duration tripDepartureTime = trip.getDepartureTime();
 
+					// TODO this must be precomputed instead of iterating over tens of thousands of records for each trip.
 					for (RegtoppRouteTMS vehicleStop : importer.getRouteIndex()) {
 						if (vehicleStop.getLineId().equals(lineId)) {
 							if (vehicleStop.getRouteId().equals(trip.getRouteId())) {
 								if (vehicleStop.getDirection() == trip.getDirection()) {
 									VehicleJourneyAtStop vehicleJourneyAtStop = ObjectFactory.getVehicleJourneyAtStop();
+									
+									String chouetteStopPointId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Route.STOPPOINT_KEY, routeKey+vehicleStop.getSequenceNumberStop(), log);
+									
 									StopPoint stopPoint = ObjectFactory.getStopPoint(referential, chouetteStopPointId);
 									vehicleJourneyAtStop.setStopPoint(stopPoint);
 

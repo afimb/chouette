@@ -15,7 +15,7 @@ public class DaycodeByIdTest extends AbstractIndexTest{
 
 	@Test(dependsOnMethods = {"setupImporter"})
 	public void testValidation() throws Exception {
-		FileContentParser fileContentParser = createUnderlyingFileParser(new File("src/test/data/regtopp12/R5001.dko"), new Class[] {RegtoppDayCodeHeaderDKO.class,RegtoppDayCodeDKO.class});
+		FileContentParser fileContentParser = createUnderlyingFileParser(new File("src/test/data/regtopp12kolumbus/R5001.dko"), new Class[] {RegtoppDayCodeHeaderDKO.class,RegtoppDayCodeDKO.class});
 		DaycodeById index = new DaycodeById(validationReporter,fileContentParser);
 		for(RegtoppDayCodeDKO obj : index) {
 			boolean validData = index.validate(obj,importer);

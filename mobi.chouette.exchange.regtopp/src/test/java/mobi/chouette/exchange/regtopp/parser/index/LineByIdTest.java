@@ -14,7 +14,7 @@ public class LineByIdTest extends AbstractIndexTest{
 
 	@Test(dependsOnMethods = {"setupImporter"})
 	public void testValidation() throws Exception {
-		FileContentParser fileContentParser = createUnderlyingFileParser(new File("src/test/data/regtopp12/R5001.lin"), new Class[] {RegtoppLineLIN.class});
+		FileContentParser fileContentParser = createUnderlyingFileParser(new File("src/test/data/regtopp12kolumbus/R5001.lin"), new Class[] {RegtoppLineLIN.class});
 		LineById index = new LineById(validationReporter,fileContentParser);
 		for(RegtoppLineLIN obj : index) {
 			boolean validData = index.validate(obj,importer);
