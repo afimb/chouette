@@ -20,7 +20,7 @@ public class RouteByIndexingKey extends IndexImpl<RegtoppRouteTMS>   {
 	}
 
 	@Override
-	public boolean validate(RegtoppStopHPL bean, RegtoppImporter dao) {
+	public boolean validate(RegtoppRouteTMS bean, RegtoppImporter dao) {
 		boolean result = true;
 
 		log.warn("RouteByIndexingKey validation not implemented");
