@@ -23,11 +23,6 @@ public abstract class IndexImpl<T> implements Index<T> {
 		index();
 	}
 
-	public boolean validate(RegtoppStopHPL bean, RegtoppImporter dao) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 	@Override
 	public Iterator<T> iterator() {
 		return (Iterator<T>) _index.values().iterator();

@@ -20,7 +20,7 @@ public class TripByIndexingKey extends IndexImpl<RegtoppTripIndexTIX>   {
 	}
 
 	@Override
-	public boolean validate(RegtoppStopHPL bean, RegtoppImporter dao) {
+	public boolean validate(RegtoppTripIndexTIX bean, RegtoppImporter dao) {
 		boolean result = true;
 
 		log.warn("TripByIndexingKey validation not implemented");
