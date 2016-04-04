@@ -14,6 +14,7 @@ public class Coordinate
 
    public static final String WGS84 = "EPSG:4326";
    public static final String LAMBERT = "EPSG:27572";
+   public static final String UTM_32N = "EPSG:32632";
 
    @Getter
    @Setter
