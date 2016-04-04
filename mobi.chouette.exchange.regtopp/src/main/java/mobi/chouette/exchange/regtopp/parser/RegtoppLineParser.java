@@ -43,6 +43,8 @@ import mobi.chouette.model.VehicleJourneyAtStop;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.LongLatTypeEnum;
 import mobi.chouette.model.type.PTDirectionEnum;
+import mobi.chouette.model.util.Coordinate;
+import mobi.chouette.model.util.CoordinateUtil;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
@@ -293,21 +295,13 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 			// Not initialized
 			Index<RegtoppStopHPL> stopById = importer.getStopById();
 			RegtoppStopHPL stop = stopById.getValue(routeSegment.getStopId());
-
-			// TODO coordinate system conversion 
-			BigDecimal stopLon = stop.getStopLon();
-			String lon = stopLon.toString();
-			int shiftCommaToLeftPos = lon.length()-2;
-		
-			// TODO all this pure hack to se whether the database will eat it
-			BigDecimal stopLat = stop.getStopLat();
-			String lat = stopLat.toString();
-			int shiftCommaToLeftPosLat = lat.length()-2;
-			
-			stopArea.setLongitude(stopLon.movePointLeft(shiftCommaToLeftPos));
-			stopArea.setLatitude(stopLat.movePointLeft(shiftCommaToLeftPosLat));
+													
+			Coordinate wgs84Coordinate = CoordinateUtil.transform(Coordinate.UTM_32N, Coordinate.WGS84, new Coordinate(stop.getStopLat(), stop.getStopLon()));
+							
+			stopArea.setLongitude(wgs84Coordinate.getX());
+			stopArea.setLatitude(wgs84Coordinate.getX());
 			stopArea.setLongLatType(LongLatTypeEnum.WGS84);
-				
+			
 			// UTM coordinates
 			stopArea.setX(stop.getStopLon());
 			stopArea.setY(stop.getStopLat());
