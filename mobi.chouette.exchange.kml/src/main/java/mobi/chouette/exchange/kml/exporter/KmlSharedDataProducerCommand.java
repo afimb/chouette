@@ -86,7 +86,7 @@ public class KmlSharedDataProducerCommand implements Command, Constant {
 		String rootDirectory = jobData.getPathName();
 		Path dir = Paths.get(rootDirectory, OUTPUT);
 		KmlData data = collection.getPhysicalStops();
-		String fileName = "stop_areas.kml";
+		String fileName = "physical_stop_areas.kml";
 		// TODO add metadata?
 		File file = new File(dir.toFile(), fileName);
 		writer.writeXmlFile(data, file);
