@@ -2,6 +2,7 @@ package mobi.chouette.exchange.regtopp.parser;
 
 import java.math.BigDecimal;
 import java.sql.Time;
+import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.Duration;
@@ -13,7 +14,7 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.Validator;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
-import mobi.chouette.exchange.regtopp.model.RegtoppDayCodeDKO;
+import mobi.chouette.exchange.regtopp.model.RegtoppDayCodeHeaderDKO;
 import mobi.chouette.exchange.regtopp.model.RegtoppDestinationDST;
 import mobi.chouette.exchange.regtopp.model.RegtoppFootnoteMRK;
 import mobi.chouette.exchange.regtopp.model.RegtoppLineLIN;
@@ -25,6 +26,7 @@ import mobi.chouette.exchange.regtopp.model.enums.DirectionType;
 import mobi.chouette.exchange.regtopp.model.importer.parser.FileParserValidationError;
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppException;
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
+import mobi.chouette.exchange.regtopp.model.importer.parser.index.DaycodeById;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.Index;
 import mobi.chouette.exchange.regtopp.validation.Constant;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
@@ -126,8 +128,11 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 		// Get index over all footnotes MRK file
 		Index<RegtoppFootnoteMRK> footnoteIndex = importer.getFootnoteById();
 		Index<RegtoppDestinationDST> destinationIndex = importer.getDestinationById();
-		Index<RegtoppDayCodeDKO> dayCodeIndex = importer.getDayCodeById();
 
+		// Add all calendar entries to referential
+		createCalendarEntries(referential,context);
+		
+		
 		// Add routes and journey patterns
 		Index<RegtoppRouteTMS> routeIndex = importer.getRouteIndex();
 
@@ -139,6 +144,7 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 				String chouetteRouteId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Route.ROUTE_KEY, routeKey, log);
 				Route route = ObjectFactory.getRoute(referential, chouetteRouteId);
 				if(!route.isFilled()) {
+					// Filled = only a flag to indicate that we no longer should write data to this entity
 					RegtoppDestinationDST arrivalText = destinationIndex.getValue(routeSegment.getDestinationId());
 					if(arrivalText != null) {
 						route.setName(arrivalText.getDestinationText());
@@ -169,6 +175,8 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 		
 		// Loop over routes and link outbound/inbound routes together
 		
+		
+		
 
 		// Add VehicleJourneys
 		Index<RegtoppTripIndexTIX> tripIndex = importer.getTripIndex();
@@ -182,6 +190,8 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 					String tripKey = trip.getLineId() + trip.getTripId();
 					String routeKey = trip.getLineId() + trip.getDirection() + trip.getRouteId();
 
+					// Parse timetable/calendar
+					
 					String chouetteVehicleJourneyId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Route.VEHICLEJOURNEY_KEY, tripKey,
 							log);
 					VehicleJourney vehicleJourney = ObjectFactory.getVehicleJourney(referential, chouetteVehicleJourneyId);
@@ -243,6 +253,19 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 				}
 			}
 		}
+	}
+
+	private void createCalendarEntries(Referential referential, Context context) throws Exception {
+		RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
+		RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
+		DaycodeById dayCodeIndex = (DaycodeById) importer.getDayCodeById();
+		
+		RegtoppDayCodeHeaderDKO header = dayCodeIndex.getHeader();
+		Date date = header.getDate();
+
+		// TODO parse all daycodes into timetables/calendar
+		
+		
 	}
 
 	private StopPoint createStopPoint(Referential referential, Context context, RegtoppRouteTMS routeSegment, String chouetteStopPointId) throws Exception {
