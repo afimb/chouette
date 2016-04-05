@@ -47,11 +47,10 @@ public class RegtoppZoneSON extends RegtoppObject implements Serializable {
 	@Setter
 	@Field(length = 6)
 	private String zoneRef;
-	
+
 	@Override
 	public String getIndexingKey() {
-		return adminCode+counter+zoneId;
+		return adminCode + counter + zoneId;
 	}
-
 
 }

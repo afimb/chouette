@@ -18,11 +18,11 @@ public class DrivingDurationTypeHandler implements TypeHandler {
 
 	@Override
 	public Object parse(String minutes) throws TypeConversionException {
-		if("999".equals(minutes)) {
+		if ("999".equals(minutes)) {
 			return null;
 		} else {
 			// Minutes to ms
-			return new Duration(Long.parseLong(minutes)*1000*60);
+			return new Duration(Long.parseLong(minutes) * 1000 * 60);
 		}
 	}
 

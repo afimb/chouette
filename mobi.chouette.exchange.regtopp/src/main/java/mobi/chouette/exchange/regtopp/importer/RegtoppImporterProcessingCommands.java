@@ -42,8 +42,7 @@ public class RegtoppImporterProcessingCommands implements ProcessingCommands, Co
 	}
 
 	static {
-		ProcessingCommandsFactory.factories.put(RegtoppImporterProcessingCommands.class.getName(),
-				new DefaultFactory());
+		ProcessingCommandsFactory.factories.put(RegtoppImporterProcessingCommands.class.getName(), new DefaultFactory());
 	}
 
 	@Override
@@ -57,19 +56,19 @@ public class RegtoppImporterProcessingCommands implements ProcessingCommands, Co
 			}
 			// Uncompress zip file
 			commands.add(CommandFactory.create(initialContext, UncompressCommand.class.getName()));
-			// Does nothing but some setup, TODO remove 
+			// Does nothing but some setup, TODO remove
 			commands.add(CommandFactory.create(initialContext, RegtoppValidationRulesCommand.class.getName()));
 			// Does little, instantiates importer, sets up validation
 			commands.add(CommandFactory.create(initialContext, RegtoppInitImportCommand.class.getName()));
-			
+
 			// Validate that files are present, if missing some report this
 			commands.add(CommandFactory.create(initialContext, RegtoppFilePresenceValidationCommand.class.getName()));
-			
+
 			// Parse and validate file consistency
 			commands.add(CommandFactory.create(initialContext, RegtoppFileConsistencyValidationCommand.class.getName()));
 		} catch (Exception e) {
 			log.error(e, e);
-			throw new RuntimeException("unable to call factories",e);
+			throw new RuntimeException("unable to call factories", e);
 		}
 		return commands;
 	}
@@ -83,19 +82,17 @@ public class RegtoppImporterProcessingCommands implements ProcessingCommands, Co
 		RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
 
 		try {
-			
-			
+
 			Index<RegtoppTripIndexTIX> index = importer.getUniqueLinesByTripIndex();
 			Iterator<String> keys = index.keys();
-			while(keys.hasNext()) {
+			while (keys.hasNext()) {
 				String lineId = keys.next();
 
 				Chain chain = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
 
 				// Pull out line by line and convert to Chouette model
-				RegtoppLineParserCommand parser = (RegtoppLineParserCommand) CommandFactory.create(initialContext,
-						RegtoppLineParserCommand.class.getName());
-				
+				RegtoppLineParserCommand parser = (RegtoppLineParserCommand) CommandFactory.create(initialContext, RegtoppLineParserCommand.class.getName());
+
 				parser.setLineId(lineId);
 				chain.add(parser);
 				if (withDao && !parameters.isNoSave()) {
@@ -109,8 +106,7 @@ public class RegtoppImporterProcessingCommands implements ProcessingCommands, Co
 				}
 				if (level3validation) {
 					// add validation
-					Command validate = CommandFactory.create(initialContext,
-							ImportedLineValidatorCommand.class.getName());
+					Command validate = CommandFactory.create(initialContext, ImportedLineValidatorCommand.class.getName());
 					chain.add(validate);
 				}
 				commands.add(chain);
@@ -133,8 +129,7 @@ public class RegtoppImporterProcessingCommands implements ProcessingCommands, Co
 		try {
 			Chain chain = (Chain) CommandFactory.create(initialContext, ChainCommand.class.getName());
 
-			RegtoppStopParserCommand parser = (RegtoppStopParserCommand) CommandFactory.create(initialContext,
-					RegtoppStopParserCommand.class.getName());
+			RegtoppStopParserCommand parser = (RegtoppStopParserCommand) CommandFactory.create(initialContext, RegtoppStopParserCommand.class.getName());
 			chain.add(parser);
 			if (withDao && !parameters.isNoSave()) {
 
@@ -169,6 +164,7 @@ public class RegtoppImporterProcessingCommands implements ProcessingCommands, Co
 		}
 		return commands;
 	}
+
 	@Override
 	public List<? extends Command> getDisposeCommands(Context context, boolean withDao) {
 		InitialContext initialContext = (InitialContext) context.get(INITIAL_CONTEXT);

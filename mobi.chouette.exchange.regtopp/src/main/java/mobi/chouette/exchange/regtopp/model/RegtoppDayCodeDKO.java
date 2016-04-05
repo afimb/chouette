@@ -16,7 +16,7 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
-@Record(name="entry",minOccurs = 1, maxOccurs = Integer.MAX_VALUE, order = 3)
+@Record(name = "entry", minOccurs = 1, maxOccurs = Integer.MAX_VALUE, order = 3)
 public class RegtoppDayCodeDKO extends RegtoppObject implements Serializable {
 
 	public static final String FILE_EXTENSION = "DKO";

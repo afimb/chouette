@@ -28,73 +28,72 @@ public class RegtoppStopHPL extends RegtoppObject implements Serializable {
 
 	@Getter
 	@Setter
-	@Field(at = 0,length = 3)
+	@Field(at = 0, length = 3)
 	private String adminCode;
 
 	@Getter
 	@Setter
-	@Field(at = 3,length = 1)
+	@Field(at = 3, length = 1)
 	private String counter;
-
 
 	@Getter
 	@Setter
-	@Field(at = 4,length = 8)
+	@Field(at = 4, length = 8)
 	private String stopId;
 
 	@Getter
 	@Setter
-	@Field(at = 12,length = 30)
+	@Field(at = 12, length = 30)
 	private String fullName;
 
 	@Getter
 	@Setter
-	@Field(at = 42,length = 5)
+	@Field(at = 42, length = 5)
 	private String shortName;
 
 	@Getter
 	@Setter
-	@Field(at = 47,length = 6)
+	@Field(at = 47, length = 6)
 	private String zoneShortName;
 
 	@Getter
 	@Setter
-	@Field(at = 53,length = 10)
+	@Field(at = 53, length = 10)
 	private BigDecimal x;
 
 	@Getter
 	@Setter
-	@Field(at = 63,length = 10)
+	@Field(at = 63, length = 10)
 	private BigDecimal y;
 
 	@Getter
 	@Setter
-	@Field(at = 73,length = 5)
+	@Field(at = 73, length = 5)
 	private Integer zoneId1;
 
 	@Getter
 	@Setter
-	@Field(at = 78,length = 5)
+	@Field(at = 78, length = 5)
 	private Integer zoneId2;
 
 	@Getter
 	@Setter
-	@Field(at = 83,length = 1)
+	@Field(at = 83, length = 1)
 	private Integer interchangeType;
 
 	@Getter
 	@Setter
-	@Field(at = 84,length = 2)
+	@Field(at = 84, length = 2)
 	private Integer interchangeMinutes;
 
 	@Getter
 	@Setter
-	@Field(at = 86,length = 1)
+	@Field(at = 86, length = 1)
 	private Integer coachClass;
-	
+
 	@Override
 	public String getIndexingKey() {
-		return adminCode+counter+stopId;
+		return adminCode + counter + stopId;
 	}
 
 }

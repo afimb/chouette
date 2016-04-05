@@ -11,10 +11,10 @@ public abstract class IndexFactory {
 	public static Map<String, IndexFactory> factories = new HashMap<String, IndexFactory>();
 
 	@SuppressWarnings("rawtypes")
-	protected abstract Index create(RegtoppValidationReporter validationReporter,FileContentParser parser) throws Exception;
+	protected abstract Index create(RegtoppValidationReporter validationReporter, FileContentParser parser) throws Exception;
 
 	@SuppressWarnings("rawtypes")
-	public static final Index build(RegtoppValidationReporter validationReporter,FileContentParser parser, String clazz)
+	public static final Index build(RegtoppValidationReporter validationReporter, FileContentParser parser, String clazz)
 			throws ClassNotFoundException, Exception
 
 	{
@@ -23,6 +23,6 @@ public abstract class IndexFactory {
 			if (!factories.containsKey(clazz))
 				throw new ClassNotFoundException(clazz);
 		}
-		return ((IndexFactory) factories.get(clazz)).create(validationReporter,parser);
+		return ((IndexFactory) factories.get(clazz)).create(validationReporter, parser);
 	}
 }

@@ -31,104 +31,104 @@ public class RegtoppTripIndexTIX extends RegtoppObject implements Serializable {
 
 	@Getter
 	@Setter
-	@Field(at = 0,length = 3)
+	@Field(at = 0, length = 3)
 	private String adminCode;
 
 	@Getter
 	@Setter
-	@Field(at = 3,length = 1)
+	@Field(at = 3, length = 1)
 	private String counter;
 
 	@Getter
 	@Setter
-	@Field(at = 4,length = 4)
+	@Field(at = 4, length = 4)
 	private String lineId;
 
 	@Getter
 	@Setter
-	@Field(at = 8,length = 4)
+	@Field(at = 8, length = 4)
 	private String tripId;
 
 	@Getter
 	@Setter
-	@Field(at = 12,length = 3, regex = "[0-9]{3}", format = "toString")
+	@Field(at = 12, length = 3, regex = "[0-9]{3}", format = "toString")
 	private TransportType typeOfService;
 
 	@Getter
 	@Setter
-	@Field(at = 15,length = 4)
+	@Field(at = 15, length = 4)
 	private String dayCodeRef;
 
 	@Getter
 	@Setter
-	@Field(at = 19,length = 3)
+	@Field(at = 19, length = 3)
 	private Integer operatorCode;
 
 	@Getter
 	@Setter
-	@Field(at = 22,length = 3)
+	@Field(at = 22, length = 3)
 	private String footnoteId1Ref;
 
 	@Getter
 	@Setter
-	@Field(at = 25,length = 3)
+	@Field(at = 25, length = 3)
 	private String footnoteId2Ref;
 
 	@Getter
 	@Setter
-	@Field(at = 28,length = 4)
+	@Field(at = 28, length = 4)
 	private String destinationIdDepartureRef;
 
 	@Getter
 	@Setter
-	@Field(at = 32,length = 8, trim = true)
+	@Field(at = 32, length = 8, trim = true)
 	private String lineNumberVisible;
 
 	@Getter
 	@Setter
-	@Field(at = 40,length = 1, regex = "[12]{1}", format = "toString")
+	@Field(at = 40, length = 1, regex = "[12]{1}", format = "toString")
 	private DirectionType direction;
 
 	@Getter
 	@Setter
-	@Field(at = 41,length = 2)
+	@Field(at = 41, length = 2)
 	private String routeIdRef;
 
 	@Getter
 	@Setter
-	@Field(at = 43,length = 4, regex = "[0-2][0-9]{3}", handlerName = "departureTime")
+	@Field(at = 43, length = 4, regex = "[0-2][0-9]{3}", handlerName = "departureTime")
 	// This is period since we can have start times like 2415 which means 00:15 the next day. This cannot be represented with LocalTime.
-	// Therefore the logic later must be able to 
+	// Therefore the logic later must be able to
 	private Duration departureTime;
 
 	@Getter
 	@Setter
-	@Field(at = 47,length = 1, regex = "[01]{1}", format = "toString")
+	@Field(at = 47, length = 1, regex = "[01]{1}", format = "toString")
 	private ParcelServiceType parcelService;
 
 	@Getter
 	@Setter
-	@Field(at = 48,length = 1)
+	@Field(at = 48, length = 1)
 	private Integer priceCode;
 
 	@Getter
 	@Setter
-	@Field(at = 49,length = 1, regex = "[01]{1}", format = "toString")
+	@Field(at = 49, length = 1, regex = "[01]{1}", format = "toString")
 	private AnnouncementType notificationType;
 
 	@Getter
 	@Setter
-	@Field(at = 50,length = 1, regex = "[01]{1}", format = "toString")
+	@Field(at = 50, length = 1, regex = "[01]{1}", format = "toString")
 	private TrafficType trafficType;
 
 	@Getter
 	@Setter
-	@Field(at = 51,length = 4)
+	@Field(at = 51, length = 4)
 	private String destinationIdArrivalRef;
 
 	@Getter
 	@Setter
-	@Field(at = 55,length = 7)
+	@Field(at = 55, length = 7)
 	private String weekdaysOfService;
 
 	@Override

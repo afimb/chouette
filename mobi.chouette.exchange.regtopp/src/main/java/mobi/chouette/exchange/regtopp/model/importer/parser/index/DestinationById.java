@@ -14,33 +14,31 @@ import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 
 @Log4j
-public class DestinationById extends IndexImpl<RegtoppDestinationDST>   {
+public class DestinationById extends IndexImpl<RegtoppDestinationDST> {
 
-	public DestinationById(RegtoppValidationReporter validationReporter,FileContentParser fileParser) throws Exception {
-		super(validationReporter,fileParser);
+	public DestinationById(RegtoppValidationReporter validationReporter, FileContentParser fileParser) throws Exception {
+		super(validationReporter, fileParser);
 	}
 
 	@Override
 	public boolean validate(RegtoppDestinationDST bean, RegtoppImporter dao) {
 		boolean result = true;
-		
-		if(StringUtils.trimToNull(bean.getDestinationText()) == null) {
-		//	_validationReporter.reportError(new Context(), ex, filenameInfo);
-			
-			
-			//	TODO add entry to _validationReporter
+
+		if (StringUtils.trimToNull(bean.getDestinationText()) == null) {
+			// _validationReporter.reportError(new Context(), ex, filenameInfo);
+
+			// TODO add entry to _validationReporter
 			result = false;
 		}
-	
+
 		return result;
 	}
-	
 
 	public static class DefaultImporterFactory extends IndexFactory {
 		@SuppressWarnings("rawtypes")
 		@Override
-		protected Index create(RegtoppValidationReporter validationReporter,FileContentParser parser) throws Exception {
-			return new DestinationById(validationReporter,parser);
+		protected Index create(RegtoppValidationReporter validationReporter, FileContentParser parser) throws Exception {
+			return new DestinationById(validationReporter, parser);
 		}
 	}
 
@@ -49,13 +47,12 @@ public class DestinationById extends IndexImpl<RegtoppDestinationDST>   {
 		IndexFactory.factories.put(DestinationById.class.getName(), factory);
 	}
 
-
 	@Override
 	public void index() throws Exception {
-		for(Object obj : _parser.getRawContent()) {
+		for (Object obj : _parser.getRawContent()) {
 			RegtoppDestinationDST destination = (RegtoppDestinationDST) obj;
 			RegtoppDestinationDST existing = _index.put(destination.getDestinationId(), destination);
-			if(existing != null) {
+			if (existing != null) {
 				// TODO fix exception/validation reporting
 				_validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError()), null);
 			}

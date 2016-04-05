@@ -15,6 +15,6 @@ public enum TransportType {
 	private int val;
 
 	public String toString() {
-		return "00"+String.valueOf(val);
+		return "00" + String.valueOf(val);
 	}
 }

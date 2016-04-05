@@ -13,11 +13,11 @@ import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 @Log4j
 public abstract class IndexImpl<T> implements Index<T> {
 
-	Map<String,T> _index = new HashMap<String,T>();
+	Map<String, T> _index = new HashMap<String, T>();
 	FileContentParser _parser = null;
 	RegtoppValidationReporter _validationReporter = null;
 
-	public IndexImpl(RegtoppValidationReporter validationReporter,FileContentParser fileParser) throws Exception {
+	public IndexImpl(RegtoppValidationReporter validationReporter, FileContentParser fileParser) throws Exception {
 		_parser = fileParser;
 		_validationReporter = validationReporter;
 		index();
@@ -33,7 +33,7 @@ public abstract class IndexImpl<T> implements Index<T> {
 		_index.clear();
 		_index = null;
 		_parser = null;
-		
+
 	}
 
 	@Override
@@ -54,7 +54,7 @@ public abstract class IndexImpl<T> implements Index<T> {
 	@Override
 	public T getValue(String key) {
 		return _index.get(key);
-}
+	}
 
 	@Override
 	public boolean validate(T bean, RegtoppImporter dao) {
@@ -66,7 +66,5 @@ public abstract class IndexImpl<T> implements Index<T> {
 	public int getLength() {
 		return _index.size();
 	}
-
-	
 
 }

@@ -18,45 +18,45 @@ import org.apache.log4j.Logger;
 
 @XmlRootElement(name = "regtopp-import")
 @NoArgsConstructor
-@ToString(callSuper=true)
+@ToString(callSuper = true)
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder={"objectIdPrefix",
-		"maxDistanceForConnectionLink",
-		"maxDistanceForCommercial",
-		"ignoreEndChars",
-		"ignoreLastWord",
-		"referencesType"})
+@XmlType(propOrder = { "objectIdPrefix", "maxDistanceForConnectionLink", "maxDistanceForCommercial", "ignoreEndChars", "ignoreLastWord", "referencesType" })
 public class RegtoppImportParameters extends AbstractImportParameter {
 
-	@Getter@Setter
-	@XmlElement(name = "object_id_prefix", required=true)
+	@Getter
+	@Setter
+	@XmlElement(name = "object_id_prefix", required = true)
 	private String objectIdPrefix;
 
-	@Getter@Setter
-	@XmlElement(name = "max_distance_for_connection_link", defaultValue="0")
+	@Getter
+	@Setter
+	@XmlElement(name = "max_distance_for_connection_link", defaultValue = "0")
 	private int maxDistanceForConnectionLink = 0;
 
-	@Getter@Setter
-	@XmlElement(name = "max_distance_for_commercial", defaultValue="0")
+	@Getter
+	@Setter
+	@XmlElement(name = "max_distance_for_commercial", defaultValue = "0")
 	private int maxDistanceForCommercial = 0;
 
-	@Getter@Setter
-	@XmlElement(name = "ignore_end_chars", defaultValue="0")
+	@Getter
+	@Setter
+	@XmlElement(name = "ignore_end_chars", defaultValue = "0")
 	private int ignoreEndChars = 0;
 
-	@Getter@Setter
-	@XmlElement(name = "ignore_last_word", defaultValue="false")
+	@Getter
+	@Setter
+	@XmlElement(name = "ignore_last_word", defaultValue = "false")
 	private boolean ignoreLastWord = false;
 
-	@Getter@Setter
+	@Getter
+	@Setter
 	@XmlElement(name = "references_type")
 	private String referencesType;
 
+	public boolean isValid(Logger log, String[] allowedTypes) {
+		if (!super.isValid(log))
+			return false;
 
-	public boolean isValid(Logger log, String[] allowedTypes)
-	{
-		if (!super.isValid(log)) return false;
-		
 		if (objectIdPrefix == null || objectIdPrefix.isEmpty()) {
 			log.error("missing object_id_prefix");
 			return false;

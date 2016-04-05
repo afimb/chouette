@@ -66,15 +66,14 @@ public class RegtoppFileConsistencyValidationCommand implements Command, Constan
 
 		RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
 
-
 		// Run "validate" on all parsers
-		if(importer.hasHPLImporter()) {
+		if (importer.hasHPLImporter()) {
 			RegtoppStopParser stopParser = (RegtoppStopParser) ParserFactory.create(RegtoppStopParser.class.getName());
 			stopParser.validate(context);
 		}
-		
+
 		// TODO Add all parsers
-		
+
 		// TODO
 		return true;
 	}

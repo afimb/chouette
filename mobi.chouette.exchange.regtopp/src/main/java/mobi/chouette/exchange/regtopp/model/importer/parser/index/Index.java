@@ -21,5 +21,5 @@ public interface Index<T> extends Iterable<T> {
 	int getLength();
 
 	void index() throws Exception;
-	
+
 }

@@ -28,7 +28,7 @@ public class RegtoppStopParserCommand implements Command, Constant {
 	@Override
 	public boolean execute(Context context) throws Exception {
 		boolean result = ERROR;
-		
+
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
 		try {
@@ -43,53 +43,49 @@ public class RegtoppStopParserCommand implements Command, Constant {
 
 			// StopArea
 			if (referential.getSharedStopAreas().isEmpty()) {
-				RegtoppStopParser stopParser = (RegtoppStopParser) ParserFactory
-						.create(RegtoppStopParser.class.getName());
+				RegtoppStopParser stopParser = (RegtoppStopParser) ParserFactory.create(RegtoppStopParser.class.getName());
 				stopParser.parse(context);
 			}
-//
-//			// ConnectionLink
-//			if (importer.hasTransferImporter()) {
-//				if (referential.getSharedConnectionLinks().isEmpty()) {
-//					GtfsTransferParser gtfsTransferParser = (GtfsTransferParser) ParserFactory
-//							.create(GtfsTransferParser.class.getName());
-//					gtfsTransferParser.parse(context);
-//				}
-//			}
-//			if (configuration.getMaxDistanceForCommercial() > 0)
-//			{
-//				CommercialStopGenerator commercialStopGenerator = new CommercialStopGenerator();
-//				commercialStopGenerator.createCommercialStopPoints(context);
-//			}
-//			
-//			if (configuration.getMaxDistanceForConnectionLink() > 0)
-//			{
-//			    ConnectionLinkGenerator connectionLinkGenerator = new ConnectionLinkGenerator();
-//				connectionLinkGenerator.createConnectionLinks(context);
-//				
-//			}
-			
+			//
+			// // ConnectionLink
+			// if (importer.hasTransferImporter()) {
+			// if (referential.getSharedConnectionLinks().isEmpty()) {
+			// GtfsTransferParser gtfsTransferParser = (GtfsTransferParser) ParserFactory
+			// .create(GtfsTransferParser.class.getName());
+			// gtfsTransferParser.parse(context);
+			// }
+			// }
+			// if (configuration.getMaxDistanceForCommercial() > 0)
+			// {
+			// CommercialStopGenerator commercialStopGenerator = new CommercialStopGenerator();
+			// commercialStopGenerator.createCommercialStopPoints(context);
+			// }
+			//
+			// if (configuration.getMaxDistanceForConnectionLink() > 0)
+			// {
+			// ConnectionLinkGenerator connectionLinkGenerator = new ConnectionLinkGenerator();
+			// connectionLinkGenerator.createConnectionLinks(context);
+			//
+			// }
 
 			addStats(report, referential);
-		    
+
 			result = SUCCESS;
 		} catch (Exception e) {
 			log.error("[DSU] error : ", e);
 			throw e;
 		}
-		
+
 		log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		return result;
 	}
 
-	
 	private void addStats(ActionReport report, Referential referential) {
 		DataStats globalStats = report.getStats();
 		globalStats.setConnectionLinkCount(referential.getSharedConnectionLinks().size());
 		globalStats.setStopAreaCount(referential.getSharedStopAreas().size());
 
 	}
-
 
 	public static class DefaultCommandFactory extends CommandFactory {
 
@@ -101,7 +97,6 @@ public class RegtoppStopParserCommand implements Command, Constant {
 	}
 
 	static {
-		CommandFactory.factories.put(RegtoppStopParserCommand.class.getName(),
-				new DefaultCommandFactory());
+		CommandFactory.factories.put(RegtoppStopParserCommand.class.getName(), new DefaultCommandFactory());
 	}
 }

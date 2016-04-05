@@ -3,7 +3,7 @@ package mobi.chouette.exchange.regtopp.model.importer.parser;
 public class RegtoppWarning extends RegtoppException {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	public RegtoppWarning(FileParserValidationError context) {
 		super(context);
 	}

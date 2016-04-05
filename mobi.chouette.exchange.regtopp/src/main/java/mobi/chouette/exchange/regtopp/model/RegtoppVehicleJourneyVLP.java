@@ -62,9 +62,9 @@ public class RegtoppVehicleJourneyVLP extends RegtoppObject implements Serializa
 	@Setter
 	@Field(length = 5)
 	private Integer id;
-	
+
 	@Override
 	public String getIndexingKey() {
-		return adminCode+counter+vehicleJourneyId+dayCodeId+sequenceNumberTrip;
+		return adminCode + counter + vehicleJourneyId + dayCodeId + sequenceNumberTrip;
 	}
 }

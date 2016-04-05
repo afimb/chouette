@@ -24,8 +24,8 @@ public class LocalDateTypeHandler implements TypeHandler {
 	@Override
 	public Object parse(String localDate) throws TypeConversionException {
 		DateTimeFormatter fmt = DateTimeFormat.forPattern("yyMMdd");
-		
-		DateTime dt =  fmt.parseDateTime(localDate);
+
+		DateTime dt = fmt.parseDateTime(localDate);
 		return dt.toLocalDate();
 	}
 

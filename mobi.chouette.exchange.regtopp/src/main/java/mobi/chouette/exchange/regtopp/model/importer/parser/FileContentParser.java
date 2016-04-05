@@ -43,7 +43,7 @@ public class FileContentParser {
 		StreamBuilder builder = new StreamBuilder("regtopp").format("fixedlength").parser(new FixedLengthParserBuilder()).strict().readOnly();
 
 		for (Class<?> clazz : parseableFile.getRegtoppClasses()) {
-				builder = builder.addRecord(clazz);
+			builder = builder.addRecord(clazz);
 		}
 
 		builder.addTypeHandler("departureTime", Duration.class, new DepartureTimeTypeHandler());
@@ -64,7 +64,7 @@ public class FileContentParser {
 
 		// TODO http://beanio.org/2.1/docs/reference/index.html#StreamValidation
 		// Add custom validation error messages
-		
+
 		in.setErrorHandler(new BeanReaderErrorHandlerSupport() {
 			public void invalidRecord(InvalidRecordException ex) throws Exception {
 				// if a bean object is mapped to a record group,
@@ -79,7 +79,7 @@ public class FileContentParser {
 									rContext.getRecordText(), ERROR.INVALID_FIELD_VALUE, error);
 							RegtoppException e = new RegtoppException(ctx, ex);
 							errors.add(e);
-							log.warn("Field error parsing file "+fileName+" at line "+rContext.getLineNumber()+":"+ error);
+							log.warn("Field error parsing file " + fileName + " at line " + rContext.getLineNumber() + ":" + error);
 						}
 					}
 					if (rContext.hasFieldErrors()) {
@@ -91,7 +91,7 @@ public class FileContentParser {
 										rContext.getFieldText(field), ERROR.INVALID_FIELD_VALUE, error);
 								RegtoppException e = new RegtoppException(ctx, ex);
 								errors.add(e);
-								log.warn("Field error parsing file "+fileName+" at line "+rContext.getLineNumber()+":"+ error);
+								log.warn("Field error parsing file " + fileName + " at line " + rContext.getLineNumber() + ":" + error);
 							}
 						}
 					}

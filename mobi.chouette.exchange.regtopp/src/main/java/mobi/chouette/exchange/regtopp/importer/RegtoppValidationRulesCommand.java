@@ -25,21 +25,21 @@ public class RegtoppValidationRulesCommand implements Command, Constant {
 	@Override
 	public boolean execute(Context context) throws Exception {
 		Monitor monitor = MonitorFactory.start(COMMAND);
-		
-		ValidationReport validationReport = (ValidationReport)context.get(MAIN_VALIDATION_REPORT);
+
+		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
 		if (validationReport == null) {
 			validationReport = new ValidationReport();
 			context.put(MAIN_VALIDATION_REPORT, validationReport);
 		}
-		RegtoppImportParameters parameters = (RegtoppImportParameters)context.get(CONFIGURATION);
-		//validationReport.setCheckPoints((new RegtoppValidationRules()).checkPoints(parameters));
+		RegtoppImportParameters parameters = (RegtoppImportParameters) context.get(CONFIGURATION);
+		// validationReport.setCheckPoints((new RegtoppValidationRules()).checkPoints(parameters));
 
-		RegtoppValidationReporter validationReporter = (RegtoppValidationReporter)context.get(REGTOPP_REPORTER);
+		RegtoppValidationReporter validationReporter = (RegtoppValidationReporter) context.get(REGTOPP_REPORTER);
 		if (validationReporter == null) {
 			validationReporter = new RegtoppValidationReporter();
 			context.put(REGTOPP_REPORTER, validationReporter);
 		}
-		
+
 		log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		return SUCCESS;
 	}
