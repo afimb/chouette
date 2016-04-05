@@ -1,10 +1,10 @@
 package mobi.chouette.exchange.regtopp.model;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import org.beanio.annotation.Field;
 import org.beanio.annotation.Record;
+import org.joda.time.LocalDate;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -17,7 +17,7 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
-@Record(minOccurs = 1, maxOccurs = 1, order = 1)
+@Record(name = "header", minOccurs = 1, maxOccurs = 1, order = 2)
 public class RegtoppDayCodeHeaderDKO extends RegtoppObject implements Serializable {
 
 	public static final String FILE_EXTENSION = "DKO";
@@ -26,12 +26,12 @@ public class RegtoppDayCodeHeaderDKO extends RegtoppObject implements Serializab
 
 	@Getter
 	@Setter
-	@Field(length = 6, type = java.util.Date.class, format = "yyMMdd")
-	private Date date;
+	@Field(at = 0, length = 6, type = LocalDate.class, handlerName = "localDate")
+	private LocalDate date;
 
 	@Getter
 	@Setter
-	@Field(length = 1)
+	@Field(at = 6, length = 1)
 	private Integer weekDay;
 
 	@Override

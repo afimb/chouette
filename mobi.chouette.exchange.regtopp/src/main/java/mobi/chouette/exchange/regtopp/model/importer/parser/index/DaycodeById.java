@@ -30,7 +30,7 @@ public class DaycodeById extends IndexImpl<RegtoppDayCodeDKO>   {
 
 		// Mulige valideringssteg
 		
-		
+		// Sjekke lengde boolean array
 		
 		
 		log.warn("Validation code for RegtoppDayCode not implemented");

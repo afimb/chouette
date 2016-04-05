@@ -2,10 +2,10 @@ package mobi.chouette.exchange.regtopp.parser;
 
 import java.math.BigDecimal;
 import java.sql.Time;
-import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.Duration;
+import org.joda.time.LocalDate;
 
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
@@ -14,6 +14,7 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.Validator;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
+import mobi.chouette.exchange.regtopp.model.RegtoppDayCodeDKO;
 import mobi.chouette.exchange.regtopp.model.RegtoppDayCodeHeaderDKO;
 import mobi.chouette.exchange.regtopp.model.RegtoppDestinationDST;
 import mobi.chouette.exchange.regtopp.model.RegtoppFootnoteMRK;
@@ -32,12 +33,15 @@ import mobi.chouette.exchange.regtopp.validation.Constant;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 import mobi.chouette.exchange.validation.report.CheckPoint;
 import mobi.chouette.exchange.validation.report.ValidationReport;
+import mobi.chouette.model.CalendarDay;
 import mobi.chouette.model.Footnote;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
+import mobi.chouette.model.Period;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
 import mobi.chouette.model.type.ChouetteAreaEnum;
@@ -188,18 +192,20 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 					line.setNumber(trip.getLineNumberVisible());
 					
 					String tripKey = trip.getLineId() + trip.getTripId();
-					String routeKey = trip.getLineId() + trip.getDirection() + trip.getRouteId();
+					String routeKey = trip.getLineId() + trip.getDirection() + trip.getRouteIdRef();
 
-					// Parse timetable/calendar
-					
 					String chouetteVehicleJourneyId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Route.VEHICLEJOURNEY_KEY, tripKey,
 							log);
 					VehicleJourney vehicleJourney = ObjectFactory.getVehicleJourney(referential, chouetteVehicleJourneyId);
 
-					addFootnote(trip.getRemarkId1(), vehicleJourney, importer);
-					addFootnote(trip.getRemarkId2(), vehicleJourney, importer);
+					Timetable timetable = ObjectFactory.getTimetable(referential, trip.getDayCodeRef());
+					
+					vehicleJourney.getTimetables().add(timetable);
+					
+					addFootnote(trip.getFootnoteId1Ref(), vehicleJourney, importer);
+					addFootnote(trip.getFootnoteId2Ref(), vehicleJourney, importer);
 
-					RegtoppDestinationDST arrivalText = destinationIndex.getValue(trip.getDestinationIdArrival());
+					RegtoppDestinationDST arrivalText = destinationIndex.getValue(trip.getDestinationIdArrivalRef());
 
 					// TODO unsure
 					if (arrivalText != null) {
@@ -225,7 +231,7 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 					// TODO this must be precomputed instead of iterating over tens of thousands of records for each trip.
 					for (RegtoppRouteTMS vehicleStop : importer.getRouteIndex()) {
 						if (vehicleStop.getLineId().equals(lineId)) {
-							if (vehicleStop.getRouteId().equals(trip.getRouteId())) {
+							if (vehicleStop.getRouteId().equals(trip.getRouteIdRef())) {
 								if (vehicleStop.getDirection() == trip.getDirection()) {
 									VehicleJourneyAtStop vehicleJourneyAtStop = ObjectFactory.getVehicleJourneyAtStop();
 									
@@ -261,9 +267,34 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 		DaycodeById dayCodeIndex = (DaycodeById) importer.getDayCodeById();
 		
 		RegtoppDayCodeHeaderDKO header = dayCodeIndex.getHeader();
-		Date date = header.getDate();
+		LocalDate calStartDate = header.getDate();
 
-		// TODO parse all daycodes into timetables/calendar
+		// TODO try to find patterns (mon-fri, weekends etc)
+		
+		// TODO 2  - find end date of calendars, 392 is the max number of entries allowed (13 months approx)
+		
+		
+		for(RegtoppDayCodeDKO entry : dayCodeIndex) {
+			String chouetteTimetableId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Route.TIMETABLE_KEY, entry.getDayCodeId(), log);
+			
+			Timetable timetable = ObjectFactory.getTimetable(referential, chouetteTimetableId);
+			
+			java.sql.Date startDate = new java.sql.Date(calStartDate.toDateMidnight().toDate().getTime());
+			java.sql.Date endDate = new java.sql.Date(calStartDate.toDateMidnight().toDate().getTime());
+			
+			timetable.setStartOfPeriod(startDate);
+			timetable.setEndOfPeriod(endDate);
+			
+			Period period = new Period(startDate,endDate);
+			timetable.getPeriods().add(period );
+			
+			String includedArray = entry.getDayCode();
+			
+			for(int i=0; i<392;i++) {
+				java.sql.Date currentDate = new java.sql.Date(calStartDate.plusDays(i).toDateMidnight().toDate().getTime());
+				timetable.addCalendarDay(new CalendarDay(currentDate, includedArray.charAt(i) == '1'));
+			}
+		}
 		
 		
 	}
@@ -322,17 +353,22 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 		return stopArea;
 	}
 
-	private void addFootnote(String remarkId1, VehicleJourney vehicleJourney, RegtoppImporter importer) throws Exception {
-		if (!"000".equals(remarkId1)) {
+	private void addFootnote(String footnoteId, VehicleJourney vehicleJourney, RegtoppImporter importer) throws Exception {
+		if (!"000".equals(footnoteId)) {
 
 			Index<RegtoppFootnoteMRK> index = importer.getFootnoteById();
-			RegtoppFootnoteMRK footnote1 = index.getValue(remarkId1);
+			RegtoppFootnoteMRK footnote = index.getValue(footnoteId);
 
-			Footnote f = new Footnote();
-			f.setLabel(footnote1.getDescription());
-			f.setKey(footnote1.getFootnoteId());
+			if(footnote != null) {
+				Footnote f = new Footnote();
+				f.setLabel(footnote.getDescription());
+				f.setKey(footnote.getFootnoteId());
 
-			vehicleJourney.getFootnotes().add(f);
+				vehicleJourney.getFootnotes().add(f);
+			} else {
+				// TODO report correctly
+				log.warn("Invalid footnote id "+footnoteId);
+			}
 		}
 	}
 

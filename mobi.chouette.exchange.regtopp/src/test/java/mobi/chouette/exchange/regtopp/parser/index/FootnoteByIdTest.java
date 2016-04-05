@@ -21,6 +21,7 @@ public class FootnoteByIdTest extends AbstractIndexTest{
 			Assert.assertTrue(validData,"Bean did not validate: "+obj);
 		}
 		
+		Assert.assertEquals(index.getLength(), 58);
 		Assert.assertEquals(0, validationReporter.getExceptions().size());
 	}
 

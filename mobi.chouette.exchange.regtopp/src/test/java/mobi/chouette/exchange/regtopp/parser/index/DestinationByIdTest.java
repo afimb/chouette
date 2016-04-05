@@ -21,6 +21,7 @@ public class DestinationByIdTest extends AbstractIndexTest{
 			Assert.assertTrue(validData,"Bean did not validate: "+obj);
 		}
 		
+		Assert.assertEquals(index.getLength(), 371);
 		Assert.assertEquals(0, validationReporter.getExceptions().size());
 	}
 
