@@ -94,6 +94,8 @@ public class RegtoppTimetableParser implements Parser, Validator, Constant {
 			
 			
 			NamingUtil.setDefaultName(timetable);
+			timetable.setFilled(true);
+
 			log.info("Adding timetable "+timetable);
 		}
 		
