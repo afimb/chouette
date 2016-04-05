@@ -191,22 +191,17 @@ public class KmlData {
 		item.addExtraData("creation_time", area.getCreationTime());
 		item.addExtraData("creator_id", area.getCreatorId());
 		item.addExtraData("name", area.getName());
-		item.addExtraData("comment", area.getComment());
 		item.addExtraData("area_type", area.getAreaType());
 		item.addExtraData("registration_number", area.getRegistrationNumber());
 		item.addExtraData("nearest_topic_name", area.getNearestTopicName());
 		item.addExtraData("fare_code", area.getFareCode());
-		item.addExtraData("longitude", area.getLongitude());
-		item.addExtraData("latitude", area.getLatitude());
-		item.addExtraData("long_lat_type", area.getLongLatType());
 		item.addExtraData("country_code", area.getCountryCode());
 		item.addExtraData("street_name", area.getStreetName());
 		item.addExtraData("mobility_restricted_suitability", area.getMobilityRestrictedSuitable());
 		item.addExtraData("stairs_availability", area.getStairsAvailable());
 		item.addExtraData("lift_availability", area.getLiftAvailable());
-		item.addExtraData("int_user_needs", area.getIntUserNeeds());
 		if (area.getParent() != null)
-		   item.addExtraData("parent_objectid", area.getParent().getObjectId());
+		   item.addExtraData("parent", area.getParent().getObjectId());
 		item.setPoint(area);
 		return item;
 	}
@@ -216,13 +211,11 @@ public class KmlData {
 		if (item == null) return null;
 		// item.setId(link.getObjectId());
 		item.addAttribute("name", link.getName());
-		item.addExtraData("connection_link_type", link.getLinkType());
 		item.addExtraData("objectid", link.getObjectId());
 		item.addExtraData("object_version", link.getObjectVersion());
 		item.addExtraData("creation_time", link.getCreationTime());
 		item.addExtraData("creator_id", link.getCreatorId());
 		item.addExtraData("name", link.getName());
-		item.addExtraData("comment", link.getComment());
 		item.addExtraData("link_distance", link.getLinkDistance());
 		item.addExtraData("link_type", link.getLinkType());
 		item.addExtraData("default_duration", link.getDefaultDuration());
@@ -232,7 +225,6 @@ public class KmlData {
 		item.addExtraData("mobility_restricted_suitability", link.getMobilityRestrictedSuitable());
 		item.addExtraData("stairs_availability", link.getStairsAvailable());
 		item.addExtraData("lift_availability", link.getLiftAvailable());
-		item.addExtraData("int_user_needs", link.getIntUserNeeds());
 		if (link.getStartOfLink() != null && link.getEndOfLink() != null)
 		{
 		   item.addExtraData("departure_objectid", link.getStartOfLink().getObjectId());
@@ -253,16 +245,11 @@ public class KmlData {
 		item.addExtraData("creation_time", point.getCreationTime());
 		item.addExtraData("creator_id", point.getCreatorId());
 		item.addExtraData("name", point.getName());
-		item.addExtraData("comment", point.getComment());
-		item.addExtraData("longitude", point.getLongitude());
-		item.addExtraData("latitude", point.getLatitude());
-		item.addExtraData("long_lat_type", point.getLongLatType());
 		item.addExtraData("country_code", point.getCountryCode());
 		item.addExtraData("street_name", point.getStreetName());
 		item.addExtraData("openning_time", point.getOpeningTime());
 		item.addExtraData("closing_time", point.getClosingTime());
 		item.addExtraData("access_type", point.getType());
-		item.addExtraData("access_point_type", point.getType());
 		item.addExtraData("mobility_restricted_suitability", point.getMobilityRestrictedSuitable());
 		item.addExtraData("stairs_availability", point.getStairsAvailable());
 		item.addExtraData("lift_availability", point.getLiftAvailable());

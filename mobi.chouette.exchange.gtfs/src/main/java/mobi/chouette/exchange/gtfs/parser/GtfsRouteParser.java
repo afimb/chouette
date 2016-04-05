@@ -131,6 +131,7 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 		}
 	}
 
+	
 	/**
 	 * Translate every (mobi.chouette.exchange.gtfs.model.)GtfsRoute 
 	 * to a (mobi.chouette.model.)Line.
@@ -144,7 +145,8 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		GtfsImportParameters configuration = (GtfsImportParameters) context.get(CONFIGURATION);
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
-
+		ValidationReporter validationReporter = (ValidationReporter) context.get(GTFS_REPORTER);
+		
 		Index<GtfsRoute> routes = importer.getRouteById();
 		GtfsRoute gtfsRoute = routes.getValue(gtfsRouteId);
 
@@ -153,6 +155,9 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 		Line line = ObjectFactory.getLine(referential, lineId);
 		convert(context, gtfsRoute, line);
 
+		// update validationreport if necessary
+		validationReporter.updateValidationReport(context, GTFS_ROUTES_FILE, gtfsRouteId, line);
+		
 		// PTNetwork
 		String ptNetworkId = configuration.getObjectIdPrefix() + ":" + Network.PTNETWORK_KEY + ":"
 				+ configuration.getObjectIdPrefix();

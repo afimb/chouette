@@ -363,7 +363,7 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 			properties.put("name", getProperty(connectionLink.getName()));
 			properties.put("link_distance",
 					getProperty(connectionLink.getLinkDistance()));
-			properties.put("link_type",
+			properties.put("link_distance",
 					getProperty(connectionLink.getLinkType()));
 			properties.put("default_duration",
 					getProperty(connectionLink.getDefaultDuration()));

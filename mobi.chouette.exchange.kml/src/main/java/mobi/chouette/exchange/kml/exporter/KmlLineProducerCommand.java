@@ -2,7 +2,6 @@ package mobi.chouette.exchange.kml.exporter;
 
 import java.io.File;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Date;
@@ -41,7 +40,6 @@ import mobi.chouette.model.StopPoint;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
-import com.vividsolutions.jts.geom.Coordinate;
 
 @Log4j
 public class KmlLineProducerCommand implements Command, Constant {
@@ -127,7 +125,7 @@ public class KmlLineProducerCommand implements Command, Constant {
 			report.getLines().add(lineInfo);
 
 		} catch (Exception e) {
-			log.error("fail to export line "+ e.getClass().getName()+" : "+ e.getMessage(), e);
+			log.error("fail to export line " + e.getClass().getName() + " : " + e.getMessage(), e);
 		} finally {
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		}
@@ -169,6 +167,10 @@ public class KmlLineProducerCommand implements Command, Constant {
 		}
 	}
 
+	private boolean isEmpty(String value) {
+		return value == null || value.trim().isEmpty();
+	}
+
 	private void saveLine(Context context, Line line, ExportableData collection) throws IOException,
 			DatatypeConfigurationException {
 		ActionReport report = (ActionReport) context.get(REPORT);
@@ -185,13 +187,12 @@ public class KmlLineProducerCommand implements Command, Constant {
 		lineItem.addExtraData("object_version", line.getObjectVersion());
 		lineItem.addExtraData("creation_time", line.getCreationTime());
 		lineItem.addExtraData("creator_id", line.getCreatorId());
-		lineItem.addExtraData("name", line.getName());
 		lineItem.addExtraData("number", line.getNumber());
 		lineItem.addExtraData("published_name", line.getPublishedName());
 		lineItem.addExtraData("registration_number", line.getRegistrationNumber());
-		lineItem.addExtraData("comment", line.getComment());
+		lineItem.addExtraData("color", line.getColor());
+		lineItem.addExtraData("text_color", line.getTextColor());
 		lineItem.addExtraData("mobility_restricted_suitability", line.getMobilityRestrictedSuitable());
-		lineItem.addExtraData("int_user_needs", line.getIntUserNeeds());
 		lineItem.addExtraData("company_objectid", line.getCompany().getObjectId());
 		lineItem.addExtraData("network_objectid", line.getNetwork().getObjectId());
 
@@ -199,18 +200,16 @@ public class KmlLineProducerCommand implements Command, Constant {
 		for (Route route : collection.getRoutes()) {
 			KmlData routeData = new KmlData("séquence d'arrêts : " + route.getName());
 			KmlItem routeItem = routeData.addNewItem(route.getObjectId());
-			routeItem.addAttribute("direction_code", route.getDirection());
+			if (!isEmpty(route.getName()))
+				routeItem.addAttribute("name", route.getName());
 			routeItem.addExtraData("wayback_code", route.getWayBack());
 			routeItem.addExtraData("objectid", route.getObjectId());
 			routeItem.addExtraData("object_version", route.getObjectVersion());
 			routeItem.addExtraData("creation_time", route.getCreationTime());
 			routeItem.addExtraData("creator_id", route.getCreatorId());
-			routeItem.addExtraData("name", route.getName());
-			routeItem.addExtraData("comment", route.getComment());
 			routeItem.addExtraData("published_name", route.getPublishedName());
 			routeItem.addExtraData("number", route.getNumber());
 			routeItem.addExtraData("direction", route.getDirection());
-			routeItem.addExtraData("wayback", route.getName());
 			routeItem.addExtraData("line_objectid", line.getObjectId());
 
 			StopArea previous = null;
@@ -240,31 +239,28 @@ public class KmlLineProducerCommand implements Command, Constant {
 				if (collection.getJourneyPatterns().contains(jp)) {
 					KmlData jpData = new KmlData("mission : " + jp.getName());
 					KmlItem jpItem = jpData.addNewItem(jp.getObjectId());
+					if (!isEmpty(jp.getName()))
+						jpItem.addAttribute("name", jp.getName());
 					jpItem.addExtraData("object_version", jp.getObjectVersion());
 					jpItem.addExtraData("creation_time", jp.getCreationTime());
 					jpItem.addExtraData("creator_id", jp.getCreatorId());
-					jpItem.addExtraData("name", jp.getName());
-					jpItem.addExtraData("comment", jp.getComment());
 					jpItem.addExtraData("registration_number", jp.getRegistrationNumber());
 					jpItem.addExtraData("published_name", jp.getPublishedName());
 					jpItem.addExtraData("route_objectid", route.getObjectId());
-					List<RouteSection> routeSections = jp
-							.getRouteSections();
+					List<RouteSection> routeSections = jp.getRouteSections();
 
 					boolean sections = false;
 					if (routeSections != null && !routeSections.isEmpty()) {
 						for (RouteSection routeSection : routeSections) {
-							com.vividsolutions.jts.geom.LineString geometry = (routeSection
-									.getInputGeometry() != null) ? routeSection
-									.getInputGeometry() : routeSection
-									.getProcessedGeometry();
+							com.vividsolutions.jts.geom.LineString geometry = (routeSection.getInputGeometry() != null) ? routeSection
+									.getInputGeometry() : routeSection.getProcessedGeometry();
 							if (geometry != null) {
 								jpItem.addLineString(geometry);
 								sections = true;
 							}
 						}
 					}
-					
+
 					for (StopPoint point : route.getStopPoints()) {
 						if (point == null)
 							continue;
@@ -307,18 +303,6 @@ public class KmlLineProducerCommand implements Command, Constant {
 					metadata.new Resource(fileName, NeptuneObjectPresenter.getName(collection.getLine().getNetwork()),
 							NeptuneObjectPresenter.getName(collection.getLine())));
 
-	}
-
-	private BigDecimal[][] getCoordinates(
-			com.vividsolutions.jts.geom.LineString geometry, boolean first) {
-		Coordinate[] coordinates = geometry.getCoordinates();
-		BigDecimal[][] result = new BigDecimal[coordinates.length - (first?0:1)][2];
-		
-		for (int i = (first?0:1); i < coordinates.length; i++) {
-			result[i][0] = BigDecimal.valueOf(coordinates[i].x);
-			result[i][1] = BigDecimal.valueOf(coordinates[i].y);
-		}
-		return result;
 	}
 
 	public static class DefaultCommandFactory extends CommandFactory {

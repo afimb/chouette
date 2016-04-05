@@ -477,6 +477,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
 		GtfsImportParameters configuration = (GtfsImportParameters) context.get(CONFIGURATION);
+		ValidationReporter validationReporter = (ValidationReporter) context.get(GTFS_REPORTER);
 
 		Map<String, JourneyPattern> journeyPatternByStopSequence = new HashMap<String, JourneyPattern>();
 
@@ -506,6 +507,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 					VehicleJourney.VEHICLEJOURNEY_KEY, gtfsTrip.getTripId(), log);
 			VehicleJourney vehicleJourney = ObjectFactory.getVehicleJourney(referential, objectId);
 			convert(context, gtfsTrip, vehicleJourney);
+			
 
 			// VehicleJourneyAtStop
 			boolean afterMidnight = true;
@@ -556,6 +558,8 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 
 			vehicleJourney.setRoute(journeyPattern.getRoute());
 			vehicleJourney.setJourneyPattern(journeyPattern);
+			Line line = journeyPattern.getRoute().getLine();
+			validationReporter.updateValidationReport(context, GTFS_TRIPS_FILE, gtfsTrip.getTripId(), line);
 
 			int length = journeyPattern.getStopPoints().size();
 			for (int i = 0; i < length; i++) {
