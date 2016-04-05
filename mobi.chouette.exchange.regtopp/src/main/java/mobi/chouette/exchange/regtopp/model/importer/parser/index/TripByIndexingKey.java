@@ -1,10 +1,7 @@
 package mobi.chouette.exchange.regtopp.model.importer.parser.index;
 
-import java.io.IOException;
-
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
-import mobi.chouette.exchange.regtopp.model.RegtoppStopHPL;
 import mobi.chouette.exchange.regtopp.model.RegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.model.importer.parser.FileContentParser;
 import mobi.chouette.exchange.regtopp.model.importer.parser.FileParserValidationError;
@@ -22,7 +19,7 @@ public class TripByIndexingKey extends IndexImpl<RegtoppTripIndexTIX>   {
 	@Override
 	public boolean validate(RegtoppTripIndexTIX bean, RegtoppImporter dao) {
 		boolean result = true;
-
+		
 		log.warn("TripByIndexingKey validation not implemented");
 		
 		return result;
