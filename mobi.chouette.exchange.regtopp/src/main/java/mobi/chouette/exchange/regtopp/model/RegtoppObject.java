@@ -10,12 +10,12 @@ import lombok.ToString;
 public abstract class RegtoppObject {
 
 	public abstract String getIndexingKey();
-	
+
 	protected String pad(String val, int size) {
-		return StringUtils.leftPad(val, size,'0');
+		return StringUtils.leftPad(val, size, '0');
 	}
-	
+
 	protected String pad(int val, int size) {
-		return pad(String.valueOf(val),size);
+		return pad(String.valueOf(val), size);
 	}
 }

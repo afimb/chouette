@@ -61,52 +61,50 @@ public class RegtoppLineParserCommand implements Command, Constant {
 
 			// Stops
 			// Kalle parse-metode på RegtoppStopParser
-//			// StopArea
-//			if (referential.getSharedStopAreas().isEmpty()) {
-//				RegtoppStopParser stopParser = (RegtoppStopParser) ParserFactory.create(RegtoppStopParser.class.getName());
-//				stopParser.parse(context);
-//			}
-			
+			// // StopArea
+			// if (referential.getSharedStopAreas().isEmpty()) {
+			// RegtoppStopParser stopParser = (RegtoppStopParser) ParserFactory.create(RegtoppStopParser.class.getName());
+			// stopParser.parse(context);
+			// }
+
 			RegtoppLineParser lineParser = (RegtoppLineParser) ParserFactory.create(RegtoppLineParser.class.getName());
 			lineParser.setLineId(lineId);
 			lineParser.parse(context);
-			
-			
-			
-//
-//			// ConnectionLink
-//			if (importer.hasTransferImporter()) {
-//				if (referential.getSharedConnectionLinks().isEmpty()) {
-//					GtfsTransferParser gtfsTransferParser = (GtfsTransferParser) ParserFactory
-//							.create(GtfsTransferParser.class.getName());
-//					gtfsTransferParser.parse(context);
-//				}
-//			}
-//
-//			if (configuration.getMaxDistanceForCommercial() > 0)
-//			{
-//				CommercialStopGenerator commercialStopGenerator = new CommercialStopGenerator();
-//				commercialStopGenerator.createCommercialStopPoints(context);
-//			}
-//			
-//			if (configuration.getMaxDistanceForConnectionLink() > 0)
-//			{
-//			    ConnectionLinkGenerator connectionLinkGenerator = new ConnectionLinkGenerator();
-//				connectionLinkGenerator.createConnectionLinks(context);
-//				
-//			}
-//			
-//			// Timetable
-//			if (referential.getSharedTimetables().isEmpty()) {
-//				GtfsCalendarParser gtfsCalendarParser = (GtfsCalendarParser) ParserFactory
-//						.create(GtfsCalendarParser.class.getName());
-//				gtfsCalendarParser.parse(context);
-//			}
-//
-//			// Line
-//			GtfsRouteParser gtfsRouteParser = (GtfsRouteParser) ParserFactory.create(GtfsRouteParser.class.getName());
-//			gtfsRouteParser.setGtfsRouteId(lineId);
-//			gtfsRouteParser.parse(context);
+
+			//
+			// // ConnectionLink
+			// if (importer.hasTransferImporter()) {
+			// if (referential.getSharedConnectionLinks().isEmpty()) {
+			// GtfsTransferParser gtfsTransferParser = (GtfsTransferParser) ParserFactory
+			// .create(GtfsTransferParser.class.getName());
+			// gtfsTransferParser.parse(context);
+			// }
+			// }
+			//
+			// if (configuration.getMaxDistanceForCommercial() > 0)
+			// {
+			// CommercialStopGenerator commercialStopGenerator = new CommercialStopGenerator();
+			// commercialStopGenerator.createCommercialStopPoints(context);
+			// }
+			//
+			// if (configuration.getMaxDistanceForConnectionLink() > 0)
+			// {
+			// ConnectionLinkGenerator connectionLinkGenerator = new ConnectionLinkGenerator();
+			// connectionLinkGenerator.createConnectionLinks(context);
+			//
+			// }
+			//
+			// // Timetable
+			// if (referential.getSharedTimetables().isEmpty()) {
+			// GtfsCalendarParser gtfsCalendarParser = (GtfsCalendarParser) ParserFactory
+			// .create(GtfsCalendarParser.class.getName());
+			// gtfsCalendarParser.parse(context);
+			// }
+			//
+			// // Line
+			// GtfsRouteParser gtfsRouteParser = (GtfsRouteParser) ParserFactory.create(GtfsRouteParser.class.getName());
+			// gtfsRouteParser.setGtfsRouteId(lineId);
+			// gtfsRouteParser.parse(context);
 
 			addStats(report, referential);
 			result = SUCCESS;
@@ -132,7 +130,7 @@ public class RegtoppLineParserCommand implements Command, Constant {
 
 	private void addStats(ActionReport report, Referential referential) {
 		Line line = referential.getLines().values().iterator().next();
-		LineInfo lineInfo = new LineInfo(line.getObjectId(),line.getName());
+		LineInfo lineInfo = new LineInfo(line.getObjectId(), line.getName());
 		DataStats stats = lineInfo.getStats();
 		stats.setLineCount(1);
 
@@ -144,7 +142,7 @@ public class RegtoppLineParserCommand implements Command, Constant {
 		globalStats.setConnectionLinkCount(referential.getSharedConnectionLinks().size());
 		globalStats.setStopAreaCount(referential.getSharedStopAreas().size());
 		globalStats.setTimeTableCount(referential.getSharedTimetables().size());
-		
+
 		globalStats.setLineCount(globalStats.getLineCount() + stats.getLineCount());
 		globalStats.setRouteCount(globalStats.getRouteCount() + stats.getRouteCount());
 		globalStats.setVehicleJourneyCount(globalStats.getVehicleJourneyCount() + stats.getVehicleJourneyCount());

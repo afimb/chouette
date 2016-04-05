@@ -4,8 +4,11 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public enum ParcelServiceType {
-	Available(0), NotAvailable(1);
+	Available(0),
+	NotAvailable(1);
 	private int val;
 
-	public String toString() {return String.valueOf(val);}
+	public String toString() {
+		return String.valueOf(val);
+	}
 }

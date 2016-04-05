@@ -60,7 +60,7 @@ public class RegtoppPeriodPER extends RegtoppObject implements Serializable {
 
 	@Override
 	public String getIndexingKey() {
-		return adminCode+counter+periodId+sequenceNumberDateInterval;
+		return adminCode + counter + periodId + sequenceNumberDateInterval;
 	}
 
 }

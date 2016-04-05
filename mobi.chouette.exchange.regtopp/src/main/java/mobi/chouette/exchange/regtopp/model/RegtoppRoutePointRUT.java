@@ -54,17 +54,17 @@ public class RegtoppRoutePointRUT extends RegtoppObject implements Serializable 
 
 	@Getter
 	@Setter
-	@Field(length = 1, regex = "[123]{1}", format="toString")
+	@Field(length = 1, regex = "[123]{1}", format = "toString")
 	private DirectionType direction;
 
 	@Getter
 	@Setter
 	@Field(length = 8)
 	private String stopId;
-	
+
 	@Override
 	public String getIndexingKey() {
-		return adminCode+counter+lineId+periodId+sequenceNumberRoutePoint;
+		return adminCode + counter + lineId + periodId + sequenceNumberRoutePoint;
 	}
 
 }

@@ -55,7 +55,7 @@ public class RegtoppPathwayGAV extends RegtoppObject implements Serializable {
 
 	@Override
 	public String getIndexingKey() {
-		return adminCode+counter+stopIdFrom+stopIdTo;
+		return adminCode + counter + stopIdFrom + stopIdTo;
 	}
 
 }

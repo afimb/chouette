@@ -4,8 +4,11 @@ import lombok.AllArgsConstructor;
 
 @AllArgsConstructor
 public enum TrafficType {
-	Normal(0), Express(1);
+	Normal(0),
+	Express(1);
 	private int val;
 
-	public String toString() {return String.valueOf(val);}
+	public String toString() {
+		return String.valueOf(val);
+	}
 }

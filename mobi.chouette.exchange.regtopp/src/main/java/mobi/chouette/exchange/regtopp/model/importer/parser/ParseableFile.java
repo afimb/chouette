@@ -11,12 +11,11 @@ import mobi.chouette.exchange.report.FileInfo;
 public class ParseableFile {
 	@Getter
 	private File file;
-	
+
 	@Getter
 	private List<Class> regtoppClasses;
-	
+
 	@Getter
 	private FileInfo fileInfo;
-	
-	
+
 }

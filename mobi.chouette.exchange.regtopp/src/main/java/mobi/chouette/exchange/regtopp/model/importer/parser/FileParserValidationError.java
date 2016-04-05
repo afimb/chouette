@@ -23,12 +23,12 @@ public class FileParserValidationError extends HashMap<String, Object> {
 		put(VALUE, value);
 		put(LINE_NUMBER, lineNumber);
 		put(ERROR_MESSAGE, errorMessage);
-		put(FILE,file);
+		put(FILE, file);
 	}
 
 	public FileParserValidationError(String path, String file) {
-		put(PATH,path);
-		put(FILE,file);
+		put(PATH, path);
+		put(FILE, file);
 	}
 
 	public FileParserValidationError(FileParserValidationError context) {

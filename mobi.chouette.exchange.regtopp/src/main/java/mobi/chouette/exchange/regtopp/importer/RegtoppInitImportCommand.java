@@ -41,7 +41,7 @@ public class RegtoppInitImportCommand implements Command, Constant {
 				Path path = Paths.get(jobData.getPathName(), INPUT);
 				// TODO add validationreporter
 				RegtoppValidationReporter reporter = new RegtoppValidationReporter();
-				importer = new RegtoppImporter(context,path.toString(),reporter);
+				importer = new RegtoppImporter(context, path.toString(), reporter);
 				context.put(PARSER, importer);
 			}
 			RegtoppImportParameters parameters = (RegtoppImportParameters) context.get(CONFIGURATION);

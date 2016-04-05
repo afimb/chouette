@@ -32,25 +32,24 @@ public class RegtoppImporterCommand extends AbstractImporterCommand implements C
 
 		InitialContext initialContext = (InitialContext) context.get(INITIAL_CONTEXT);
 
-		ProgressionCommand progression = (ProgressionCommand) CommandFactory.create(initialContext,
-				ProgressionCommand.class.getName());
+		ProgressionCommand progression = (ProgressionCommand) CommandFactory.create(initialContext, ProgressionCommand.class.getName());
 		ActionReport report = (ActionReport) context.get(REPORT);
 		try {
 			// check params
 			Object configuration = context.get(CONFIGURATION);
 			if (!(configuration instanceof RegtoppImportParameters)) {
 				// fatal wrong parameters
-				//log.error("invalid parameters for gtfs import " + configuration.getClass().getName());
-				report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,
-						"invalid parameters for regtopp import " + configuration.getClass().getName()));
+				// log.error("invalid parameters for gtfs import " + configuration.getClass().getName());
+				report.setFailure(
+						new ActionError(ActionError.CODE.INVALID_PARAMETERS, "invalid parameters for regtopp import " + configuration.getClass().getName()));
 				return ERROR;
 			}
 
 			RegtoppImportParameters parameters = (RegtoppImportParameters) configuration;
 			boolean all = !(parameters.getReferencesType().equalsIgnoreCase("stop_area"));
-			
+
 			ProcessingCommands commands = ProcessingCommandsFactory.create(RegtoppImporterProcessingCommands.class.getName());
-			result = process(context, commands, progression, true, (all?Mode.line:Mode.stopareas));
+			result = process(context, commands, progression, true, (all ? Mode.line : Mode.stopareas));
 
 		} catch (Exception e) {
 			// log.error(e.getMessage(), e);
@@ -60,7 +59,6 @@ public class RegtoppImporterCommand extends AbstractImporterCommand implements C
 			log.info(Color.YELLOW + monitor.stop() + Color.NORMAL);
 		}
 
-		
 		return result;
 	}
 

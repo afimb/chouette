@@ -28,77 +28,77 @@ public class RegtoppRouteTMS extends RegtoppObject implements Serializable {
 
 	@Getter
 	@Setter
-	@Field(at = 0,length = 3)
+	@Field(at = 0, length = 3)
 	private String adminCode;
 
 	@Getter
 	@Setter
-	@Field(at = 3,length = 1)
+	@Field(at = 3, length = 1)
 	private String counter;
 
 	@Getter
 	@Setter
-	@Field(at = 4,length = 4)
+	@Field(at = 4, length = 4)
 	private String lineId;
 
 	@Getter
 	@Setter
-	@Field(at = 8,length = 1, regex = "[12]{1}", format = "toString")
+	@Field(at = 8, length = 1, regex = "[12]{1}", format = "toString")
 	private DirectionType direction;
 
 	@Getter
 	@Setter
-	@Field(at = 9,length = 2)
+	@Field(at = 9, length = 2)
 	private String routeId;
 
 	@Getter
 	@Setter
-	@Field(at = 11,length = 3)
+	@Field(at = 11, length = 3)
 	private Integer sequenceNumberStop;
 
 	@Getter
 	@Setter
-	@Field(at = 14,length = 8)
+	@Field(at = 14, length = 8)
 	private String stopId;
 
 	@Getter
 	@Setter
-	@Field(at = 22,length = 3, handlerName = "drivingDuration")
+	@Field(at = 22, length = 3, handlerName = "drivingDuration")
 	private Duration driverTimeArrival;
 
 	@Getter
 	@Setter
-	@Field(at = 25,length = 2)
+	@Field(at = 25, length = 2)
 	private String stopIdArrival;
 
 	@Getter
 	@Setter
-	@Field(at = 27,length = 3, handlerName = "drivingDuration")
+	@Field(at = 27, length = 3, handlerName = "drivingDuration")
 	private Duration driverTimeDeparture;
 
 	@Getter
 	@Setter
-	@Field(at = 30,length = 2)
+	@Field(at = 30, length = 2)
 	private String stopIdDeparture;
 
 	@Getter
 	@Setter
-	@Field(at = 32,length = 4)
+	@Field(at = 32, length = 4)
 	private String destinationId;
 
 	@Getter
 	@Setter
-	@Field(at = 36,length = 3)
+	@Field(at = 36, length = 3)
 	private String remarkId;
 
 	@Getter
 	@Setter
-	@Field(at = 39,length = 2)
+	@Field(at = 39, length = 2)
 	private String monitor;
 
 	@Getter
 	@Setter
-	@Field(at = 41,length = 6)
+	@Field(at = 41, length = 6)
 	private Integer distance;
 
 	@Override

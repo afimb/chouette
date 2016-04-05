@@ -46,7 +46,7 @@ public class RegtoppInterchangeSAM extends RegtoppObject implements Serializable
 
 	@Getter
 	@Setter
-	@Field(length = 3, regex = "[0-9]{3}", format="toString")
+	@Field(length = 3, regex = "[0-9]{3}", format = "toString")
 	private TransportType typeOfService1;
 
 	@Getter
@@ -71,7 +71,7 @@ public class RegtoppInterchangeSAM extends RegtoppObject implements Serializable
 
 	@Getter
 	@Setter
-	@Field(length = 3, regex = "[0-9]{3}", format="toString")
+	@Field(length = 3, regex = "[0-9]{3}", format = "toString")
 	private TransportType typeOfService2;
 
 	@Getter
@@ -99,10 +99,9 @@ public class RegtoppInterchangeSAM extends RegtoppObject implements Serializable
 	@Field(length = 1)
 	private Integer interchangeCode;
 
-	
 	@Override
 	public String getIndexingKey() {
-		return (adminCode1+counter1+lineId1+tripId1)+(adminCode2+counter2+lineId2+tripId2);
+		return (adminCode1 + counter1 + lineId1 + tripId1) + (adminCode2 + counter2 + lineId2 + tripId2);
 	}
 
 }

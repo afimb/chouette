@@ -55,7 +55,7 @@ public class RegtoppTableVersionTAB extends RegtoppObject implements Serializabl
 
 	@Override
 	public String getIndexingKey() {
-		return adminCode+counter+lineId+periodId;
+		return adminCode + counter + lineId + periodId;
 	}
 
 }

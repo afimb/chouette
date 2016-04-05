@@ -43,7 +43,7 @@ public class RegtoppImporter {
 		VEHICLE_JOURNEY,
 		TABLE_VERSION,
 		ROUTE_POINT,
-		LINE_BY_TRIPS, 
+		LINE_BY_TRIPS,
 		ROUTE_INDEX
 	}
 
@@ -90,8 +90,8 @@ public class RegtoppImporter {
 		if (index == null) {
 			try {
 				ParseableFile parseableFile = _fileMap.get(name);
-				if(parseableFile == null) {
-					throw new RuntimeException("No such index "+name);
+				if (parseableFile == null) {
+					throw new RuntimeException("No such index " + name);
 				}
 
 				FileContentParser parser = _fileContentMap.get(parseableFile.getFile().getName());
@@ -102,7 +102,7 @@ public class RegtoppImporter {
 					parser.parse(_context, parseableFile, _validationReporter);
 				}
 
-				index = IndexFactory.build(_validationReporter,parser, clazz.getName());
+				index = IndexFactory.build(_validationReporter, parser, clazz.getName());
 				_indexMap.put(name, index);
 			} catch (ClassNotFoundException | IOException e) {
 				FileParserValidationError context = new FileParserValidationError();
@@ -142,7 +142,7 @@ public class RegtoppImporter {
 
 			@Override
 			public boolean accept(File dir, String name) {
-				return name.toUpperCase().endsWith("."+pattern);
+				return name.toUpperCase().endsWith("." + pattern);
 			}
 		});
 		return matchingFiles.length == 1;
@@ -162,11 +162,11 @@ public class RegtoppImporter {
 
 	public Index<RegtoppLineLIN> getLineById() throws Exception {
 		return getIndex(INDEX.LINE_BY_ID.name(), LineById.class);
-		
+
 	}
 
 	public Index<RegtoppRouteTMS> getRouteIndex() throws Exception {
 		return getIndex(INDEX.ROUTE_INDEX.name(), RouteByIndexingKey.class);
-	}	
+	}
 
 }
