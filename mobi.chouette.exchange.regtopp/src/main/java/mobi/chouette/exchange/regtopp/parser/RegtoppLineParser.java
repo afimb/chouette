@@ -1,6 +1,5 @@
 package mobi.chouette.exchange.regtopp.parser;
 
-import java.math.BigDecimal;
 import java.sql.Time;
 import java.util.Collection;
 import java.util.Collections;
@@ -133,11 +132,6 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 			line.setPublishedName(regtoppLine.getName());
 		}
 
-		// Get index over the TMS file
-		// Index<RegtoppRouteTMS> routeIndex = importer.getRouteById();
-
-		// Get index over all footnotes MRK file
-		Index<RegtoppFootnoteMRK> footnoteIndex = importer.getFootnoteById();
 		Index<RegtoppDestinationDST> destinationIndex = importer.getDestinationById();
 
 		// Add all calendar entries to referential
@@ -183,8 +177,7 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 
 			}
 		}
-		// Sort stopPoints on JourneyPattern?
-
+		// Sort stopPoints on JourneyPattern
 		Collection<JourneyPattern> journeyPatterns = referential.getJourneyPatterns().values();
 		for (JourneyPattern jp : journeyPatterns) {
 			List<StopPoint> stopPoints = jp.getStopPoints();
@@ -192,15 +185,28 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 
 				@Override
 				public int compare(StopPoint arg0, StopPoint arg1) {
-					return arg0.getPosition().intValue() - arg1.getPosition().intValue();
+					return arg0.getPosition().compareTo(arg1.getPosition());
 				}
 			});
 			jp.setDepartureStopPoint(stopPoints.get(0));
 			jp.setArrivalStopPoint(stopPoints.get(stopPoints.size() - 1));
 		}
 
+		// Sort stopPoints on route
+		Collection<Route> routes = referential.getRoutes().values();
+		for (Route r : routes) {
+			List<StopPoint> stopPoints = r.getStopPoints();
+			Collections.sort(stopPoints, new Comparator<StopPoint>() {
+				@Override
+				public int compare(StopPoint arg0, StopPoint arg1) {
+					return arg0.getPosition().compareTo(arg1.getPosition());
+				}
+			});
+		}
+
 		// Loop over routes and link outbound/inbound routes together
 
+		
 		// Add VehicleJourneys
 		Index<RegtoppTripIndexTIX> tripIndex = importer.getTripIndex();
 		for (RegtoppTripIndexTIX trip : tripIndex) {
@@ -328,7 +334,7 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 		RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
 
 		StopPoint stopPoint = ObjectFactory.getStopPoint(referential, chouetteStopPointId);
-		stopPoint.setPosition(routeSegment.getSequenceNumberStop());
+		stopPoint.setPosition(Integer.parseInt(routeSegment.getSequenceNumberStop()));
 
 		String chouetteStopAreaId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Route.STOPAREA_KEY, routeSegment.getStopId(), log);
 
@@ -343,11 +349,13 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 			throws Exception {
 		StopArea stopArea = ObjectFactory.getStopArea(referential, chouetteStopAreaId);
 
-		if (stopArea.getX() == null) {
+		if (!stopArea.isFilled()) {
 			// Not initialized
 			Index<RegtoppStopHPL> stopById = importer.getStopById();
 			RegtoppStopHPL stop = stopById.getValue(routeSegment.getStopId());
 
+			stopArea.setRegistrationNumber(stop.getStopId());
+			
 			Coordinate wgs84Coordinate = CoordinateUtil.transform(Coordinate.UTM_32N, Coordinate.WGS84, new Coordinate(stop.getX(), stop.getY()));
 
 			stopArea.setLongitude(wgs84Coordinate.getY());
@@ -366,6 +374,8 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 
 			// TODO set correct
 			stopArea.setAreaType(ChouetteAreaEnum.BoardingPosition);
+			
+			stopArea.setFilled(true);
 		}
 		return stopArea;
 	}

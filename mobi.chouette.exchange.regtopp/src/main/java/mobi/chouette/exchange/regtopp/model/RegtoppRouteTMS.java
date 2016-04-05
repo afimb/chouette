@@ -54,7 +54,7 @@ public class RegtoppRouteTMS extends RegtoppObject implements Serializable {
 	@Getter
 	@Setter
 	@Field(at = 11, length = 3)
-	private Integer sequenceNumberStop;
+	private String sequenceNumberStop;
 
 	@Getter
 	@Setter
