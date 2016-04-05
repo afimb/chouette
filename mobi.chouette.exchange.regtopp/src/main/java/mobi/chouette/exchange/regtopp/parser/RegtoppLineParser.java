@@ -249,7 +249,8 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 
 
 					// Link to timetable
-					Timetable timetable = ObjectFactory.getTimetable(referential, trip.getDayCodeRef());
+					String chouetteTimetableId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.TIMETABLE_KEY, trip.getDayCodeRef(), log);
+					Timetable timetable = ObjectFactory.getTimetable(referential, chouetteTimetableId);
 					timetable.addVehicleJourney(vehicleJourney);
 
 					addFootnote(trip.getFootnoteId1Ref(), vehicleJourney, importer);

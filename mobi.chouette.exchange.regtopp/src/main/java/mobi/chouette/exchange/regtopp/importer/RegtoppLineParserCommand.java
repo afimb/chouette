@@ -52,19 +52,19 @@ public class RegtoppLineParserCommand implements Command, Constant {
 
 			RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
 
-			// Stops
-			// Kalle parse-metode på RegtoppStopParser
-			// // StopArea
+			// Populate shared stops
 			if (referential.getSharedStopAreas().isEmpty()) {
 				RegtoppStopParser stopParser = (RegtoppStopParser) ParserFactory.create(RegtoppStopParser.class.getName());
 				stopParser.parse(context);
 			}
 
+			// Populate shared timetables
 			if (referential.getSharedTimetables().isEmpty()) {
 				RegtoppTimetableParser timetableParser = (RegtoppTimetableParser) ParserFactory.create(RegtoppTimetableParser.class.getName());
 				timetableParser.parse(context);
 			}
 
+			// Parse this line only
 			RegtoppLineParser lineParser = (RegtoppLineParser) ParserFactory.create(RegtoppLineParser.class.getName());
 			lineParser.setLineId(lineId);
 			lineParser.parse(context);
