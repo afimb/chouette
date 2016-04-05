@@ -79,7 +79,7 @@ public class FileContentParser {
 									rContext.getRecordText(), ERROR.INVALID_FIELD_VALUE, error);
 							RegtoppException e = new RegtoppException(ctx, ex);
 							errors.add(e);
-							log.warn("Error parsing file "+fileName+":"+ error);
+							log.warn("Field error parsing file "+fileName+" at line "+rContext.getLineNumber()+":"+ error);
 						}
 					}
 					if (rContext.hasFieldErrors()) {
@@ -91,6 +91,7 @@ public class FileContentParser {
 										rContext.getFieldText(field), ERROR.INVALID_FIELD_VALUE, error);
 								RegtoppException e = new RegtoppException(ctx, ex);
 								errors.add(e);
+								log.warn("Field error parsing file "+fileName+" at line "+rContext.getLineNumber()+":"+ error);
 							}
 						}
 					}

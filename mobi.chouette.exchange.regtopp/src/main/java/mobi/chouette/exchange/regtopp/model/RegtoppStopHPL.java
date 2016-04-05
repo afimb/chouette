@@ -60,12 +60,12 @@ public class RegtoppStopHPL extends RegtoppObject implements Serializable {
 	@Getter
 	@Setter
 	@Field(at = 53,length = 10)
-	private BigDecimal stopLat;
+	private BigDecimal x;
 
 	@Getter
 	@Setter
 	@Field(at = 63,length = 10)
-	private BigDecimal stopLon;
+	private BigDecimal y;
 
 	@Getter
 	@Setter
