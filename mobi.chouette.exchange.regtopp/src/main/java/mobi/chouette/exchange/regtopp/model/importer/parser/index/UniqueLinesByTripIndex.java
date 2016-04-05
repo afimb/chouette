@@ -44,7 +44,6 @@ public class UniqueLinesByTripIndex extends IndexImpl<RegtoppTripIndexTIX>   {
 		for(Object obj : _parser.getRawContent()) {
 			RegtoppTripIndexTIX trip = (RegtoppTripIndexTIX) obj;
 			_index.put(trip.getLineId(),null);
-			log.info("Found line "+trip.getLineId());
 		}
 	}
 }

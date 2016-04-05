@@ -16,7 +16,7 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
-@Record(minOccurs = 1, order = 2)
+@Record(name="entry",minOccurs = 1, maxOccurs = Integer.MAX_VALUE, order = 3)
 public class RegtoppDayCodeDKO extends RegtoppObject implements Serializable {
 
 	public static final String FILE_EXTENSION = "DKO";
@@ -25,26 +25,26 @@ public class RegtoppDayCodeDKO extends RegtoppObject implements Serializable {
 
 	@Getter
 	@Setter
-	@Field(length = 3)
+	@Field(at = 0, length = 3)
 	private String adminCode;
 
 	@Getter
 	@Setter
-	@Field(length = 1)
+	@Field(at = 3, length = 1)
 	private String counter;
 
 	@Getter
 	@Setter
-	@Field(length = 4)
+	@Field(at = 4, length = 4)
 	private String dayCodeId;
 
 	@Getter
 	@Setter
-	@Field(length = 392)
+	@Field(at = 8, length = 392, regex = "[01]{392}")
 	private String dayCode;
 
 	@Override
 	public String getIndexingKey() {
-		return adminCode+counter+dayCodeId;
+		return adminCode + counter + dayCodeId;
 	}
 }

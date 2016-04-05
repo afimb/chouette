@@ -57,7 +57,7 @@ public class RegtoppTripIndexTIX extends RegtoppObject implements Serializable {
 	@Getter
 	@Setter
 	@Field(at = 15,length = 4)
-	private Integer dayCodeRef;
+	private String dayCodeRef;
 
 	@Getter
 	@Setter
@@ -67,17 +67,17 @@ public class RegtoppTripIndexTIX extends RegtoppObject implements Serializable {
 	@Getter
 	@Setter
 	@Field(at = 22,length = 3)
-	private String remarkId1;
+	private String footnoteId1Ref;
 
 	@Getter
 	@Setter
 	@Field(at = 25,length = 3)
-	private String remarkId2;
+	private String footnoteId2Ref;
 
 	@Getter
 	@Setter
 	@Field(at = 28,length = 4)
-	private String destinationIdDeparture;
+	private String destinationIdDepartureRef;
 
 	@Getter
 	@Setter
@@ -92,7 +92,7 @@ public class RegtoppTripIndexTIX extends RegtoppObject implements Serializable {
 	@Getter
 	@Setter
 	@Field(at = 41,length = 2)
-	private String routeId;
+	private String routeIdRef;
 
 	@Getter
 	@Setter
@@ -124,7 +124,7 @@ public class RegtoppTripIndexTIX extends RegtoppObject implements Serializable {
 	@Getter
 	@Setter
 	@Field(at = 51,length = 4)
-	private String destinationIdArrival;
+	private String destinationIdArrivalRef;
 
 	@Getter
 	@Setter

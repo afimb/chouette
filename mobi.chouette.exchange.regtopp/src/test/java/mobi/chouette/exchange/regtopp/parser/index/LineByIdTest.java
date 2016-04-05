@@ -20,6 +20,7 @@ public class LineByIdTest extends AbstractIndexTest{
 			boolean validData = index.validate(obj,importer);
 			Assert.assertTrue(validData,"Bean did not validate: "+obj);
 		}
+		Assert.assertEquals(index.getLength(), 159);
 		
 		Assert.assertEquals(0, validationReporter.getExceptions().size());
 	}
