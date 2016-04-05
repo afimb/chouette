@@ -24,6 +24,7 @@ import mobi.chouette.exchange.regtopp.model.RegtoppStopHPL;
 import mobi.chouette.exchange.regtopp.model.RegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.model.enums.AnnouncementType;
 import mobi.chouette.exchange.regtopp.model.enums.DirectionType;
+import mobi.chouette.exchange.regtopp.model.enums.TransportType;
 import mobi.chouette.exchange.regtopp.model.importer.parser.FileParserValidationError;
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppException;
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
@@ -46,6 +47,7 @@ import mobi.chouette.model.VehicleJourneyAtStop;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.LongLatTypeEnum;
 import mobi.chouette.model.type.PTDirectionEnum;
+import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.util.Coordinate;
 import mobi.chouette.model.util.CoordinateUtil;
 import mobi.chouette.model.util.ObjectFactory;
@@ -135,29 +137,31 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 
 		for (RegtoppRouteTMS routeSegment : routeIndex) {
 			if (lineId.equals(routeSegment.getLineId())) {
-				
+
 				// Add network
-				String chouetteNetworkId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.PTNETWORK_KEY, routeSegment.getAdminCode(), log);
+				String chouetteNetworkId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.PTNETWORK_KEY,
+						routeSegment.getAdminCode(), log);
 				Network ptNetwork = ObjectFactory.getPTNetwork(referential, chouetteNetworkId);
-				if(!ptNetwork.isFilled()) {
+				if (!ptNetwork.isFilled()) {
 					ptNetwork.setSourceIdentifier("Regtopp");
 					ptNetwork.setName(routeSegment.getAdminCode());
 					ptNetwork.setRegistrationNumber(routeSegment.getAdminCode());
 					ptNetwork.setFilled(true);
 				}
 				line.setNetwork(ptNetwork);
-				
+
 				// Add authority company
-				String chouetteCompanyId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.COMPANY_KEY, routeSegment.getAdminCode(), log);
+				String chouetteCompanyId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.COMPANY_KEY,
+						routeSegment.getAdminCode(), log);
 				Company company = ObjectFactory.getCompany(referential, chouetteCompanyId);
-				if(!company.isFilled()) {
+				if (!company.isFilled()) {
 					company.setRegistrationNumber(routeSegment.getAdminCode());
-					company.setName("Authority "+routeSegment.getAdminCode());
+					company.setName("Authority " + routeSegment.getAdminCode());
 					company.setCode(routeSegment.getAdminCode());
 					line.setCompany(company);
 					company.setFilled(true);
 				}
-				
+
 				String routeKey = routeSegment.getLineId() + routeSegment.getDirection() + routeSegment.getRouteId();
 
 				// Create route
@@ -176,7 +180,8 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 				}
 
 				// Create journey pattern
-				String chouetteJourneyPatternId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.JOURNEYPATTERN_KEY, routeKey, log);
+				String chouetteJourneyPatternId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.JOURNEYPATTERN_KEY,
+						routeKey, log);
 
 				JourneyPattern journeyPattern = ObjectFactory.getJourneyPattern(referential, chouetteJourneyPatternId);
 				journeyPattern.setRoute(route);
@@ -222,7 +227,6 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 
 		// TODO Loop over routes and link outbound/inbound routes together
 
-		
 		// Add VehicleJourneys
 		Index<RegtoppTripIndexTIX> tripIndex = importer.getTripIndex();
 		for (RegtoppTripIndexTIX trip : tripIndex) {
@@ -235,21 +239,22 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 					String tripKey = trip.getLineId() + trip.getTripId();
 					String routeKey = trip.getLineId() + trip.getDirection() + trip.getRouteIdRef();
 
-					String chouetteVehicleJourneyId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.VEHICLEJOURNEY_KEY, tripKey,
-							log);
+					String chouetteVehicleJourneyId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.VEHICLEJOURNEY_KEY,
+							tripKey, log);
 					VehicleJourney vehicleJourney = ObjectFactory.getVehicleJourney(referential, chouetteVehicleJourneyId);
-					
+
 					// Add authority company
-					String chouetteOperatorId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.COMPANY_KEY, trip.getOperatorCode(), log);
+					String chouetteOperatorId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.COMPANY_KEY,
+							trip.getOperatorCode(), log);
 					Company operator = ObjectFactory.getCompany(referential, chouetteOperatorId);
 					operator.setRegistrationNumber(trip.getOperatorCode());
-					operator.setName("Operator "+trip.getOperatorCode());
+					operator.setName("Operator " + trip.getOperatorCode());
 					operator.setCode(trip.getOperatorCode());
 					vehicleJourney.setCompany(operator);
 
-
 					// Link to timetable
-					String chouetteTimetableId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.TIMETABLE_KEY, trip.getDayCodeRef(), log);
+					String chouetteTimetableId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.TIMETABLE_KEY,
+							trip.getDayCodeRef(), log);
 					Timetable timetable = ObjectFactory.getTimetable(referential, chouetteTimetableId);
 					timetable.addVehicleJourney(vehicleJourney);
 
@@ -264,12 +269,14 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 					}
 
 					vehicleJourney.setPublishedJourneyIdentifier(StringUtils.trimToNull(trip.getLineNumberVisible()));
+					TransportType typeOfService = trip.getTypeOfService();
+					TransportModeNameEnum transportMode = convertTypeOfService(typeOfService);
 
 					String chouetteRouteId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.ROUTE_KEY, routeKey, log);
 					Route route = ObjectFactory.getRoute(referential, chouetteRouteId);
 
-					String chouetteJourneyPatternId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.JOURNEYPATTERN_KEY, routeKey,
-							log);
+					String chouetteJourneyPatternId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.JOURNEYPATTERN_KEY,
+							routeKey, log);
 					JourneyPattern journeyPattern = ObjectFactory.getJourneyPattern(referential, chouetteJourneyPatternId);
 
 					vehicleJourney.setJourneyPattern(journeyPattern);
@@ -295,8 +302,8 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 									vehicleJourneyAtStop.setArrivalTime(new Time(arrivalTime.getMillis()));
 									vehicleJourneyAtStop.setDepartureTime(new Time(departureTime.getMillis()));
 
-									String chouetteStopPointId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.STOPPOINT_KEY,
-											routeKey + vehicleStop.getSequenceNumberStop(), log);
+									String chouetteStopPointId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
+											ObjectIdTypes.STOPPOINT_KEY, routeKey + vehicleStop.getSequenceNumberStop(), log);
 
 									StopPoint stopPoint = ObjectFactory.getStopPoint(referential, chouetteStopPointId);
 									vehicleJourneyAtStop.setStopPoint(stopPoint);
@@ -315,6 +322,28 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 		}
 	}
 
+	private TransportModeNameEnum convertTypeOfService(TransportType typeOfService) {
+		switch (typeOfService) {
+		case AirplaneOrAirportExpress:
+			return TransportModeNameEnum.RapidTransit;
+		case ExpressCoach:
+			return TransportModeNameEnum.Coach;
+		case FerryBoat:
+			return TransportModeNameEnum.Ferry;
+		case LocalBus:
+			return TransportModeNameEnum.Bus;
+		case Subway:
+			return TransportModeNameEnum.Metro;
+		case Train:
+			return TransportModeNameEnum.LocalTrain;
+		case Tram:
+			return TransportModeNameEnum.Tramway;
+		case Various:
+			return TransportModeNameEnum.Other;
+		default:
+			return TransportModeNameEnum.Other;
+		}
+	}
 
 	private StopPoint createStopPoint(Referential referential, Context context, RegtoppRouteTMS routeSegment, String chouetteStopPointId) throws Exception {
 
@@ -324,7 +353,8 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 		StopPoint stopPoint = ObjectFactory.getStopPoint(referential, chouetteStopPointId);
 		stopPoint.setPosition(Integer.parseInt(routeSegment.getSequenceNumberStop()));
 
-		String chouetteStopAreaId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.STOPAREA_KEY, routeSegment.getStopId(), log);
+		String chouetteStopAreaId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.STOPAREA_KEY, routeSegment.getStopId(),
+				log);
 
 		StopArea stopArea = ObjectFactory.getStopArea(referential, chouetteStopAreaId);
 
@@ -332,7 +362,6 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 
 		return stopPoint;
 	}
-
 
 	private void addFootnote(String footnoteId, VehicleJourney vehicleJourney, RegtoppImporter importer) throws Exception {
 		if (!"000".equals(footnoteId)) {
