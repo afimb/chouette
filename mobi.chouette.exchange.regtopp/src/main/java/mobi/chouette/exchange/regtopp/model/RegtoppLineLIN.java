@@ -25,27 +25,27 @@ public class RegtoppLineLIN extends RegtoppObject implements Serializable {
 
 	@Getter
 	@Setter
-	@Field(length = 3)
+	@Field(at = 0,length = 3)
 	private String adminCode;
 
 	@Getter
 	@Setter
-	@Field(length = 1)
+	@Field(at = 3,length = 1)
 	private String counter;
 
 	@Getter
 	@Setter
-	@Field(length = 4)
+	@Field(at = 4,length = 4)
 	private String lineId;
 
 	@Getter
 	@Setter
-	@Field(length = 30)
+	@Field(at = 8,length = 30)
 	private String name;
 
 	@Getter
 	@Setter
-	@Field(length = 1)
+	@Field(at = 38,length = 1)
 	private Integer fareCode;
 	
 	@Override

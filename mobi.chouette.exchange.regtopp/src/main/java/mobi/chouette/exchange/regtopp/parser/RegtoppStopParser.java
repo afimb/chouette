@@ -47,8 +47,6 @@ public class RegtoppStopParser implements Parser, Validator, Constant {
 		RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
 
 		// TODO convert to WGS
-		stopArea.setLatitude(regtoppStop.getStopLat());
-		stopArea.setLongitude(regtoppStop.getStopLon());
 		stopArea.setLongLatType(LongLatTypeEnum.WGS84);
 		stopArea.setName(StringUtils.trimToEmpty(regtoppStop.getFullName()));
 

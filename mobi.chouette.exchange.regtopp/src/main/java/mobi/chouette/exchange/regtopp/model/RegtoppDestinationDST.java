@@ -25,22 +25,22 @@ public class RegtoppDestinationDST extends RegtoppObject implements Serializable
 
 	@Getter
 	@Setter
-	@Field(length = 3)
+	@Field(at = 0,length = 3)
 	private String adminCode;
 
 	@Getter
 	@Setter
-	@Field(length = 1)
+	@Field(at = 3,length = 1)
 	private String counter;
 
 	@Getter
 	@Setter
-	@Field(length = 4)
+	@Field(at = 4,length = 4)
 	private String destinationId;
 
 	@Getter
 	@Setter
-	@Field(length = 32)
+	@Field(at = 8,length = 32)
 	private String destinationText;
 
 	@Override

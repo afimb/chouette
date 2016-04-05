@@ -2,6 +2,10 @@ package mobi.chouette.exchange.regtopp.parser;
 
 import java.math.BigDecimal;
 import java.sql.Time;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.Duration;
@@ -49,6 +53,7 @@ import mobi.chouette.model.type.LongLatTypeEnum;
 import mobi.chouette.model.type.PTDirectionEnum;
 import mobi.chouette.model.util.Coordinate;
 import mobi.chouette.model.util.CoordinateUtil;
+import mobi.chouette.model.util.NamingUtil;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
@@ -136,9 +141,8 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 		Index<RegtoppDestinationDST> destinationIndex = importer.getDestinationById();
 
 		// Add all calendar entries to referential
-		createCalendarEntries(referential,context);
-		
-		
+		createCalendarEntries(referential, context);
+
 		// Add routes and journey patterns
 		Index<RegtoppRouteTMS> routeIndex = importer.getRouteIndex();
 
@@ -149,10 +153,10 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 				// Create route
 				String chouetteRouteId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Route.ROUTE_KEY, routeKey, log);
 				Route route = ObjectFactory.getRoute(referential, chouetteRouteId);
-				if(!route.isFilled()) {
+				if (!route.isFilled()) {
 					// Filled = only a flag to indicate that we no longer should write data to this entity
 					RegtoppDestinationDST arrivalText = destinationIndex.getValue(routeSegment.getDestinationId());
-					if(arrivalText != null) {
+					if (arrivalText != null) {
 						route.setName(arrivalText.getDestinationText());
 					}
 					route.setDirection(routeSegment.getDirection() == DirectionType.Outbound ? PTDirectionEnum.A : PTDirectionEnum.R);
@@ -168,7 +172,8 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 				journeyPattern.setRoute(route);
 
 				// Create stop point
-				String chouetteStopPointId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Route.STOPPOINT_KEY, routeKey+routeSegment.getSequenceNumberStop(), log);
+				String chouetteStopPointId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Route.STOPPOINT_KEY,
+						routeKey + routeSegment.getSequenceNumberStop(), log);
 
 				StopPoint stopPoint = createStopPoint(referential, context, routeSegment, chouetteStopPointId);
 
@@ -178,11 +183,23 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 
 			}
 		}
-		
+		// Sort stopPoints on JourneyPattern?
+
+		Collection<JourneyPattern> journeyPatterns = referential.getJourneyPatterns().values();
+		for (JourneyPattern jp : journeyPatterns) {
+			List<StopPoint> stopPoints = jp.getStopPoints();
+			Collections.sort(stopPoints, new Comparator<StopPoint>() {
+
+				@Override
+				public int compare(StopPoint arg0, StopPoint arg1) {
+					return arg0.getPosition().intValue() - arg1.getPosition().intValue();
+				}
+			});
+			jp.setDepartureStopPoint(stopPoints.get(0));
+			jp.setArrivalStopPoint(stopPoints.get(stopPoints.size() - 1));
+		}
+
 		// Loop over routes and link outbound/inbound routes together
-		
-		
-		
 
 		// Add VehicleJourneys
 		Index<RegtoppTripIndexTIX> tripIndex = importer.getTripIndex();
@@ -192,7 +209,7 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 
 					// This is where we get the line number
 					line.setNumber(trip.getLineNumberVisible());
-					
+
 					String tripKey = trip.getLineId() + trip.getTripId();
 					String routeKey = trip.getLineId() + trip.getDirection() + trip.getRouteIdRef();
 
@@ -201,9 +218,10 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 					VehicleJourney vehicleJourney = ObjectFactory.getVehicleJourney(referential, chouetteVehicleJourneyId);
 
 					Timetable timetable = ObjectFactory.getTimetable(referential, trip.getDayCodeRef());
-					
+
 					vehicleJourney.getTimetables().add(timetable);
-					
+					timetable.getVehicleJourneys().add(vehicleJourney);
+
 					addFootnote(trip.getFootnoteId1Ref(), vehicleJourney, importer);
 					addFootnote(trip.getFootnoteId2Ref(), vehicleJourney, importer);
 
@@ -226,7 +244,6 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 					vehicleJourney.setJourneyPattern(journeyPattern);
 					vehicleJourney.setRoute(route);
 
-
 					// Duration since midnight
 					Duration tripDepartureTime = trip.getDepartureTime();
 
@@ -235,27 +252,31 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 						if (vehicleStop.getLineId().equals(lineId)) {
 							if (vehicleStop.getRouteId().equals(trip.getRouteIdRef())) {
 								if (vehicleStop.getDirection() == trip.getDirection()) {
-									VehicleJourneyAtStop vehicleJourneyAtStop = ObjectFactory.getVehicleJourneyAtStop();
-									
-									String chouetteStopPointId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Route.STOPPOINT_KEY, routeKey+vehicleStop.getSequenceNumberStop(), log);
-									
-									StopPoint stopPoint = ObjectFactory.getStopPoint(referential, chouetteStopPointId);
-									vehicleJourneyAtStop.setStopPoint(stopPoint);
 
 									Duration arrivalTime = tripDepartureTime.plus(vehicleStop.getDriverTimeArrival());
 									Duration departureTime = tripDepartureTime.plus(vehicleStop.getDriverTimeDeparture());
-									
+
+									VehicleJourneyAtStop vehicleJourneyAtStop = ObjectFactory.getVehicleJourneyAtStop();
+									// vehicleJourneyAtStop.setId(vehicleStop.getSequenceNumberStop().longValue());
+									vehicleJourneyAtStop.setVehicleJourney(vehicleJourney);
+
 									// TODO verify this
 									vehicleJourneyAtStop.setArrivalTime(new Time(arrivalTime.getMillis()));
 									vehicleJourneyAtStop.setDepartureTime(new Time(departureTime.getMillis()));
-									
+
+									String chouetteStopPointId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Route.STOPPOINT_KEY,
+											routeKey + vehicleStop.getSequenceNumberStop(), log);
+
+									StopPoint stopPoint = ObjectFactory.getStopPoint(referential, chouetteStopPointId);
+									vehicleJourneyAtStop.setStopPoint(stopPoint);
+
 									vehicleJourney.getVehicleJourneyAtStops().add(vehicleJourneyAtStop);
 
 								}
 							}
 						}
 					}
-					
+
 				} else {
 					log.info("Skipping unannouced trip: " + trip);
 				}
@@ -267,38 +288,38 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 		RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
 		RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
 		DaycodeById dayCodeIndex = (DaycodeById) importer.getDayCodeById();
-		
+
 		RegtoppDayCodeHeaderDKO header = dayCodeIndex.getHeader();
 		LocalDate calStartDate = header.getDate();
 
 		// TODO try to find patterns (mon-fri, weekends etc)
-		
-		// TODO 2  - find end date of calendars, 392 is the max number of entries allowed (13 months approx)
-		
-		
-		for(RegtoppDayCodeDKO entry : dayCodeIndex) {
+
+		// TODO 2 - find end date of calendars, 392 is the max number of entries allowed (13 months approx)
+
+		for (RegtoppDayCodeDKO entry : dayCodeIndex) {
 			String chouetteTimetableId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Route.TIMETABLE_KEY, entry.getDayCodeId(), log);
-			
+
 			Timetable timetable = ObjectFactory.getTimetable(referential, chouetteTimetableId);
-			
+
 			java.sql.Date startDate = new java.sql.Date(calStartDate.toDateMidnight().toDate().getTime());
-			java.sql.Date endDate = new java.sql.Date(calStartDate.toDateMidnight().toDate().getTime());
-			
+			java.sql.Date endDate = new java.sql.Date(calStartDate.plusDays(392).toDateMidnight().toDate().getTime());
+
 			timetable.setStartOfPeriod(startDate);
 			timetable.setEndOfPeriod(endDate);
-			
-			Period period = new Period(startDate,endDate);
-			timetable.getPeriods().add(period );
-			
+
+			Period period = new Period(startDate, endDate);
+			timetable.getPeriods().add(period);
+
 			String includedArray = entry.getDayCode();
-			
-			for(int i=0; i<392;i++) {
+
+			for (int i = 0; i < 392; i++) {
 				java.sql.Date currentDate = new java.sql.Date(calStartDate.plusDays(i).toDateMidnight().toDate().getTime());
 				timetable.addCalendarDay(new CalendarDay(currentDate, includedArray.charAt(i) == '1'));
 			}
+
+			NamingUtil.setDefaultName(timetable);
 		}
-		
-		
+
 	}
 
 	private StopPoint createStopPoint(Referential referential, Context context, RegtoppRouteTMS routeSegment, String chouetteStopPointId) throws Exception {
@@ -326,24 +347,26 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 			// Not initialized
 			Index<RegtoppStopHPL> stopById = importer.getStopById();
 			RegtoppStopHPL stop = stopById.getValue(routeSegment.getStopId());
-													
-			Coordinate wgs84Coordinate = CoordinateUtil.transform(Coordinate.UTM_32N, Coordinate.WGS84, new Coordinate(stop.getStopLat(), stop.getStopLon()));
-							
-			stopArea.setLongitude(wgs84Coordinate.getX());
+
+			Coordinate wgs84Coordinate = CoordinateUtil.transform(Coordinate.UTM_32N, Coordinate.WGS84, new Coordinate(stop.getX(), stop.getY()));
+
+			stopArea.setLongitude(wgs84Coordinate.getY());
 			stopArea.setLatitude(wgs84Coordinate.getX());
 			stopArea.setLongLatType(LongLatTypeEnum.WGS84);
-			
+
 			// UTM coordinates
-			stopArea.setX(stop.getStopLon());
-			stopArea.setY(stop.getStopLat());
+			stopArea.setX(stop.getX());
+			stopArea.setY(stop.getY());
 			stopArea.setProjectionType("UTM");
-			
+
 			stopArea.setName(stop.getFullName());
+
+			// TODO set correct, some stops are in other countries
 			stopArea.setCountryCode("NO");
 
 			// TODO set correct
 			stopArea.setAreaType(ChouetteAreaEnum.BoardingPosition);
-}
+		}
 		return stopArea;
 	}
 
@@ -353,7 +376,7 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 			Index<RegtoppFootnoteMRK> index = importer.getFootnoteById();
 			RegtoppFootnoteMRK footnote = index.getValue(footnoteId);
 
-			if(footnote != null) {
+			if (footnote != null) {
 				Footnote f = new Footnote();
 				f.setLabel(footnote.getDescription());
 				f.setKey(footnote.getFootnoteId());
@@ -361,7 +384,7 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 				vehicleJourney.getFootnotes().add(f);
 			} else {
 				// TODO report correctly
-				log.warn("Invalid footnote id "+footnoteId);
+				log.warn("Invalid footnote id " + footnoteId);
 			}
 		}
 	}
