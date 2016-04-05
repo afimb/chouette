@@ -62,7 +62,7 @@ public class RegtoppTripIndexTIX extends RegtoppObject implements Serializable {
 	@Getter
 	@Setter
 	@Field(at = 19, length = 3)
-	private Integer operatorCode;
+	private String operatorCode;
 
 	@Getter
 	@Setter

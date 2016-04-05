@@ -1,7 +1,6 @@
 package mobi.chouette.exchange.regtopp.importer;
 
 import java.io.IOException;
-import java.util.Calendar;
 
 import javax.naming.InitialContext;
 
@@ -20,12 +19,11 @@ import mobi.chouette.exchange.regtopp.Constant;
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.parser.RegtoppLineParser;
 import mobi.chouette.exchange.regtopp.parser.RegtoppStopParser;
+import mobi.chouette.exchange.regtopp.parser.RegtoppTimetableParser;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.DataStats;
 import mobi.chouette.exchange.report.LineInfo;
 import mobi.chouette.model.Line;
-import mobi.chouette.model.Network;
-import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
 @Log4j
@@ -54,18 +52,18 @@ public class RegtoppLineParserCommand implements Command, Constant {
 
 			RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
 
-			// PTNetwork
-			if (referential.getSharedPTNetworks().isEmpty()) {
-				createPTNetwork(referential, configuration);
-			}
-
 			// Stops
 			// Kalle parse-metode på RegtoppStopParser
 			// // StopArea
-			// if (referential.getSharedStopAreas().isEmpty()) {
-			// RegtoppStopParser stopParser = (RegtoppStopParser) ParserFactory.create(RegtoppStopParser.class.getName());
-			// stopParser.parse(context);
-			// }
+			if (referential.getSharedStopAreas().isEmpty()) {
+				RegtoppStopParser stopParser = (RegtoppStopParser) ParserFactory.create(RegtoppStopParser.class.getName());
+				stopParser.parse(context);
+			}
+
+			if (referential.getSharedTimetables().isEmpty()) {
+				RegtoppTimetableParser timetableParser = (RegtoppTimetableParser) ParserFactory.create(RegtoppTimetableParser.class.getName());
+				timetableParser.parse(context);
+			}
 
 			RegtoppLineParser lineParser = (RegtoppLineParser) ParserFactory.create(RegtoppLineParser.class.getName());
 			lineParser.setLineId(lineId);
@@ -115,17 +113,6 @@ public class RegtoppLineParserCommand implements Command, Constant {
 
 		log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		return result;
-	}
-
-	private Network createPTNetwork(Referential referential, RegtoppImportParameters configuration) {
-		String prefix = configuration.getObjectIdPrefix();
-		String ptNetworkId = prefix + ":" + Network.PTNETWORK_KEY + ":" + prefix;
-		Network ptNetwork = ObjectFactory.getPTNetwork(referential, ptNetworkId);
-		ptNetwork.setVersionDate(Calendar.getInstance().getTime());
-		ptNetwork.setName(prefix);
-		ptNetwork.setRegistrationNumber(prefix);
-		ptNetwork.setSourceName("Regtopp");
-		return ptNetwork;
 	}
 
 	private void addStats(ActionReport report, Referential referential) {

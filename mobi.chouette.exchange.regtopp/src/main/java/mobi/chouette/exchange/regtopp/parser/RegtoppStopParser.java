@@ -1,7 +1,5 @@
 package mobi.chouette.exchange.regtopp.parser;
 
-import org.apache.commons.lang.StringUtils;
-
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
@@ -20,6 +18,8 @@ import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.LongLatTypeEnum;
+import mobi.chouette.model.util.Coordinate;
+import mobi.chouette.model.util.CoordinateUtil;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
@@ -33,57 +33,31 @@ public class RegtoppStopParser implements Parser, Validator, Constant {
 		RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
 		RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
 
-		for (RegtoppStopHPL regtoppStop : importer.getStopById()) {
-			String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), StopArea.STOPAREA_KEY, regtoppStop.getStopId(), log);
-
+		for (RegtoppStopHPL stop : importer.getStopById()) {
+			String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), StopArea.STOPAREA_KEY, stop.getStopId(), log);
 			StopArea stopArea = ObjectFactory.getStopArea(referential, objectId);
-			convert(context, regtoppStop, stopArea);
+
+			stopArea.setRegistrationNumber(stop.getStopId());
+			
+			Coordinate wgs84Coordinate = CoordinateUtil.transform(Coordinate.UTM_32N, Coordinate.WGS84, new Coordinate(stop.getX(), stop.getY()));
+
+			stopArea.setLongitude(wgs84Coordinate.getY());
+			stopArea.setLatitude(wgs84Coordinate.getX());
+			stopArea.setLongLatType(LongLatTypeEnum.WGS84);
+
+			// UTM coordinates
+			stopArea.setX(stop.getX());
+			stopArea.setY(stop.getY());
+			stopArea.setProjectionType("UTM");
+
+			stopArea.setName(stop.getFullName());
+
+			// TODO set correct, some stops are in other countries
+			//stopArea.setCountryCode("NO");
+
+			// TODO set correct
+			stopArea.setAreaType(ChouetteAreaEnum.BoardingPosition);
 		}
-	}
-
-	protected void convert(Context context, RegtoppStopHPL regtoppStop, StopArea stopArea) {
-		Referential referential = (Referential) context.get(REFERENTIAL);
-		RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
-		RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
-
-		// TODO convert to WGS
-		stopArea.setLongLatType(LongLatTypeEnum.WGS84);
-		stopArea.setName(StringUtils.trimToEmpty(regtoppStop.getFullName()));
-
-		// TODO
-		stopArea.setAreaType(ChouetteAreaEnum.BoardingPosition);
-
-		// stopArea.setUrl(AbstractConverter.toString(gtfsStop.getStopUrl()));
-		// stopArea.setComment(AbstractConverter.getNonEmptyTrimedString(gtfsStop.getStopDesc()));
-		// stopArea.setTimeZone(AbstractConverter.toString(gtfsStop.getStopTimezone()));
-
-		// TODO stopArea.setFareCode(0);
-
-		// if (gtfsStop.getLocationType() == GtfsStop.LocationType.Station) {
-		// stopArea.setAreaType(ChouetteAreaEnum.CommercialStopPoint);
-		// if (AbstractConverter.getNonEmptyTrimedString(gtfsStop.getParentStation()) != null) {
-		// // TODO report
-		// }
-		// } else {
-		// if (!importer.getStopById().containsKey(gtfsStop.getParentStation())) {
-		// // TODO report
-		// }
-		// stopArea.setAreaType(ChouetteAreaEnum.BoardingPosition);
-		// if (gtfsStop.getParentStation() != null) {
-		// String parenId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
-		// StopArea.STOPAREA_KEY, gtfsStop.getParentStation(), log);
-		// StopArea parent = ObjectFactory.getStopArea(referential, parenId);
-		// stopArea.setParent(parent);
-		// }
-		// }
-
-		// stopArea.setRegistrationNumber(gtfsStop.getStopCode());
-		// stopArea.setMobilityRestrictedSuitable(WheelchairBoardingType.Allowed.equals(gtfsStop.getWheelchairBoarding()));
-		// stopArea.setStreetName(gtfsStop.getAddressLine());
-		// stopArea.setCityName(gtfsStop.getLocality());
-		// stopArea.setZipCode(gtfsStop.getPostalCode());
-		stopArea.setFilled(true);
-
 	}
 
 	@Override
