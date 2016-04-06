@@ -271,6 +271,7 @@ public class RegtoppLineParser implements Parser, Validator, Constant {
 					vehicleJourney.setPublishedJourneyIdentifier(StringUtils.trimToNull(trip.getLineNumberVisible()));
 					TransportType typeOfService = trip.getTypeOfService();
 					TransportModeNameEnum transportMode = convertTypeOfService(typeOfService);
+					vehicleJourney.setTransportMode(transportMode);
 
 					String chouetteRouteId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.ROUTE_KEY, routeKey, log);
 					Route route = ObjectFactory.getRoute(referential, chouetteRouteId);

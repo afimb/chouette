@@ -54,7 +54,7 @@ public class RegtoppTimetableParser implements Parser, Validator, Constant {
 
 		// TODO try to find patterns (mon-fri, weekends etc)
 
-		// TODO 2 - find end date of calendars, 392 is the max number of entries allowed (13 months approx)
+		// TODO 2 ?- find end date of calendars, 392 is the max number of entries allowed (13 months approx)
 
 		for (RegtoppDayCodeDKO entry : dayCodeIndex) {
 			String chouetteTimetableId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.TIMETABLE_KEY, entry.getDayCodeId(), log);
