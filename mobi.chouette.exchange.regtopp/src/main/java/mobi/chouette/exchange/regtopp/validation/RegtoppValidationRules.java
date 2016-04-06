@@ -7,7 +7,9 @@ import java.util.List;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
 import mobi.chouette.exchange.validation.report.CheckPoint;
 
-public class RegtoppValidationRules implements Constant {
+import static mobi.chouette.exchange.regtopp.validation.Constant.*;
+
+public class RegtoppValidationRules {
 
 	public List<CheckPoint> checkPoints(RegtoppImportParameters parameters) {
 		List<CheckPoint> checkPoints = new ArrayList<CheckPoint>();

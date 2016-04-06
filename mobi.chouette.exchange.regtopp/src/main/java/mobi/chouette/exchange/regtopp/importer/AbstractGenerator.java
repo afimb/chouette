@@ -8,13 +8,11 @@
 
 package mobi.chouette.exchange.regtopp.importer;
 
-import mobi.chouette.exchange.regtopp.Constant;
-
 /**
  * @author michel
  * 
  */
-public abstract class AbstractGenerator implements Constant {
+public abstract class AbstractGenerator {
 	protected double distance(double long1, double lat1, double long2, double lat2) {
 		double long1rad = Math.toRadians(long1);
 		double lat1rad = Math.toRadians(lat1);

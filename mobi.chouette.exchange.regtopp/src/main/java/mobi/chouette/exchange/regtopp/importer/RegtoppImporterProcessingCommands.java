@@ -1,5 +1,7 @@
 package mobi.chouette.exchange.regtopp.importer;
 
+import static mobi.chouette.common.Constant.*;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -9,7 +11,6 @@ import javax.naming.InitialContext;
 
 import lombok.Data;
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Chain;
 import mobi.chouette.common.chain.ChainCommand;
@@ -30,7 +31,7 @@ import mobi.chouette.exchange.validation.SharedDataValidatorCommand;
 
 @Data
 @Log4j
-public class RegtoppImporterProcessingCommands implements ProcessingCommands, Constant {
+public class RegtoppImporterProcessingCommands implements ProcessingCommands {
 
 	public static class DefaultFactory extends ProcessingCommandsFactory {
 

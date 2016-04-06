@@ -1,5 +1,7 @@
 package mobi.chouette.exchange.regtopp.importer;
 
+import static mobi.chouette.exchange.regtopp.Constant.*;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -15,19 +17,18 @@ import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.importer.ParserFactory;
-import mobi.chouette.exchange.regtopp.Constant;
 import mobi.chouette.exchange.regtopp.model.RegtoppDayCodeDKO;
 import mobi.chouette.exchange.regtopp.model.RegtoppDestinationDST;
+import mobi.chouette.exchange.regtopp.model.RegtoppFootnoteMRK;
 import mobi.chouette.exchange.regtopp.model.RegtoppInterchangeSAM;
 import mobi.chouette.exchange.regtopp.model.RegtoppLineLIN;
 import mobi.chouette.exchange.regtopp.model.RegtoppPathwayGAV;
 import mobi.chouette.exchange.regtopp.model.RegtoppPeriodPER;
-import mobi.chouette.exchange.regtopp.model.RegtoppFootnoteMRK;
 import mobi.chouette.exchange.regtopp.model.RegtoppRoutePointRUT;
+import mobi.chouette.exchange.regtopp.model.RegtoppRouteTMS;
 import mobi.chouette.exchange.regtopp.model.RegtoppStopHPL;
 import mobi.chouette.exchange.regtopp.model.RegtoppTableVersionTAB;
 import mobi.chouette.exchange.regtopp.model.RegtoppTripIndexTIX;
-import mobi.chouette.exchange.regtopp.model.RegtoppRouteTMS;
 import mobi.chouette.exchange.regtopp.model.RegtoppVehicleJourneyVLP;
 import mobi.chouette.exchange.regtopp.model.RegtoppZoneSON;
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
@@ -35,8 +36,9 @@ import mobi.chouette.exchange.regtopp.parser.RegtoppStopParser;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 import mobi.chouette.exchange.report.ActionReport;
 
+
 @Log4j
-public class RegtoppFileConsistencyValidationCommand implements Command, Constant {
+public class RegtoppFileConsistencyValidationCommand implements Command {
 
 	public static final String COMMAND = "RegtoppFilePresenceValidationCommand";
 

@@ -1,7 +1,5 @@
 package mobi.chouette.exchange.regtopp.model.importer.parser.index;
 
-import java.io.IOException;
-
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.regtopp.model.RegtoppStopHPL;
@@ -50,12 +48,12 @@ public class StopById extends IndexImpl<RegtoppStopHPL> {
 
 	@Override
 	public void index() throws Exception {
-		for (Object obj : _parser.getRawContent()) {
+		for (Object obj : parser.getRawContent()) {
 			RegtoppStopHPL stop = (RegtoppStopHPL) obj;
-			RegtoppStopHPL existing = _index.put(stop.getStopId(), stop);
+			RegtoppStopHPL existing = index.put(stop.getStopId(), stop);
 			if (existing != null) {
 				// TODO fix exception/validation reporting
-				_validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError()), null);
+				validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError()), null);
 			}
 		}
 	}

@@ -1,5 +1,7 @@
 package mobi.chouette.exchange.regtopp.importer;
 
+import static mobi.chouette.exchange.regtopp.Constant.*;
+
 import java.io.IOException;
 
 import javax.naming.InitialContext;
@@ -13,12 +15,11 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.importer.AbstractDisposeImportCommand;
-import mobi.chouette.exchange.regtopp.Constant;
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 
 @Log4j
-public class RegtoppDisposeImportCommand extends AbstractDisposeImportCommand implements Constant {
+public class RegtoppDisposeImportCommand extends AbstractDisposeImportCommand {
 
 	public static final String COMMAND = "RegtoppDisposeImportCommand";
 

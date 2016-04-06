@@ -1,5 +1,7 @@
 package mobi.chouette.exchange.regtopp.importer;
 
+import static mobi.chouette.exchange.regtopp.Constant.*;
+
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -22,7 +24,6 @@ import mobi.chouette.common.FileUtil;
 import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.regtopp.Constant;
 import mobi.chouette.exchange.regtopp.model.RegtoppDayCodeDKO;
 import mobi.chouette.exchange.regtopp.model.RegtoppDayCodeHeaderDKO;
 import mobi.chouette.exchange.regtopp.model.RegtoppDestinationDST;
@@ -50,7 +51,7 @@ import mobi.chouette.exchange.report.FileInfo;
 import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
 
 @Log4j
-public class RegtoppFilePresenceValidationCommand implements Command, Constant {
+public class RegtoppFilePresenceValidationCommand implements Command {
 
 	public static final String COMMAND = "RegtoppFilePresenceValidationCommand";
 

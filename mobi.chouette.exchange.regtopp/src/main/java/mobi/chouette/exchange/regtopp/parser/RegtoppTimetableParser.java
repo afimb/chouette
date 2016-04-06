@@ -1,5 +1,7 @@
 package mobi.chouette.exchange.regtopp.parser;
 
+import static mobi.chouette.common.Constant.*;
+
 import org.joda.time.LocalDate;
 
 import lombok.extern.log4j.Log4j;
@@ -12,7 +14,6 @@ import mobi.chouette.exchange.regtopp.model.RegtoppDayCodeDKO;
 import mobi.chouette.exchange.regtopp.model.RegtoppDayCodeHeaderDKO;
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.DaycodeById;
-import mobi.chouette.exchange.regtopp.validation.Constant;
 import mobi.chouette.model.CalendarDay;
 import mobi.chouette.model.Period;
 import mobi.chouette.model.Timetable;
@@ -22,7 +23,7 @@ import mobi.chouette.model.util.ObjectIdTypes;
 import mobi.chouette.model.util.Referential;
 
 @Log4j
-public class RegtoppTimetableParser implements Parser, Validator, Constant {
+public class RegtoppTimetableParser implements Parser, Validator {
 
 	@Override
 	public void validate(Context context) throws Exception {

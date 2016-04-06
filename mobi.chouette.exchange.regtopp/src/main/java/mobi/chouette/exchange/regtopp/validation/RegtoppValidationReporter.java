@@ -1,6 +1,8 @@
 package mobi.chouette.exchange.regtopp.validation;
 
-//import java.util.HashSet;
+import static mobi.chouette.common.Constant.*;
+import static mobi.chouette.exchange.regtopp.validation.Constant.*;
+
 import java.util.Set;
 
 import lombok.Getter;
@@ -16,7 +18,7 @@ import mobi.chouette.exchange.validation.report.Location;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 
 @Log4j
-public class RegtoppValidationReporter implements Constant {
+public class RegtoppValidationReporter {
 
 	@Getter
 	private Set<RegtoppException> exceptions = new RegtoppExceptionsHashSet<RegtoppException>();
