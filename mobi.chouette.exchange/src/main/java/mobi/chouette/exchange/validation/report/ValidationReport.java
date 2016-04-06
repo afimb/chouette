@@ -1,12 +1,14 @@
 package mobi.chouette.exchange.validation.report;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import lombok.Getter;
@@ -30,9 +32,15 @@ public class ValidationReport {
 	private String result = "NO_VALIDATION";
 
 	@XmlElement(name = "tests")
+	 @Getter
+	 @Setter
+	private List<CheckPoint> checkPoints = new ArrayList<CheckPoint>();
+
+	@XmlTransient
 	@Getter
 	@Setter
-	private List<CheckPoint> checkPoints = new ArrayList<CheckPoint>();
+	private boolean maxByFile = true;
+
 
 	public CheckPoint findCheckPointByName(String name) {
 		for (CheckPoint checkPoint : checkPoints) {
@@ -44,6 +52,20 @@ public class ValidationReport {
 
 	public void checkResult() {
 		result = checkPoints.isEmpty() ? "NO_VALIDATION" : "VALIDATION_PROCEDEED";
+	}
+	
+	public void addCheckPoint(CheckPoint checkPoint)
+	{
+		checkPoint.setMaxByFile(maxByFile);
+		checkPoints.add(checkPoint);
+	}
+
+	public void addAllCheckPoints(Collection<CheckPoint> list)
+	{
+		for (CheckPoint checkPoint : checkPoints) {
+			checkPoint.setMaxByFile(maxByFile);
+		}
+		checkPoints.addAll(list);
 	}
 
 	public JSONObject toJson() throws JSONException {
