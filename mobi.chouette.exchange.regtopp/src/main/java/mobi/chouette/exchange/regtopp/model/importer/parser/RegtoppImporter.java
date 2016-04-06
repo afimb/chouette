@@ -47,66 +47,66 @@ public class RegtoppImporter {
 		ROUTE_INDEX
 	}
 
-	private String _path;
-	private Map<String, Index<RegtoppObject>> _indexMap = new HashMap<String, Index<RegtoppObject>>();
-	private Map<String, FileContentParser> _fileContentMap = new HashMap<String, FileContentParser>();
-	private Map<String, ParseableFile> _fileMap = new HashMap<String, ParseableFile>();
+	private String path;
+	private Map<String, Index<RegtoppObject>> indexMap = new HashMap<String, Index<RegtoppObject>>();
+	private Map<String, FileContentParser> fileContentMap = new HashMap<String, FileContentParser>();
+	private Map<String, ParseableFile> fileMap = new HashMap<String, ParseableFile>();
 
-	private RegtoppValidationReporter _validationReporter;
-	private Context _context;
+	private RegtoppValidationReporter validationReporter;
+	private Context context;
 
 	public RegtoppImporter(Context context, String path, RegtoppValidationReporter validationReporter) {
-		_path = path;
-		_validationReporter = validationReporter;
-		_context = context;
+		this.path = path;
+		this.validationReporter = validationReporter;
+		this.context = context;
 	}
 
 	public void registerFileForIndex(String indexName, ParseableFile parseableFile) {
-		_fileMap.put(indexName, parseableFile);
+		fileMap.put(indexName, parseableFile);
 	}
 
 	@SuppressWarnings("rawtypes")
 	public void dispose() {
-		for (Index importer : _indexMap.values()) {
+		for (Index importer : indexMap.values()) {
 			importer.dispose();
 		}
-		for (FileContentParser parser : _fileContentMap.values()) {
+		for (FileContentParser parser : fileContentMap.values()) {
 			parser.dispose();
 		}
 
-		_indexMap.clear();
-		_indexMap = null;
-		_fileContentMap.clear();
-		_fileContentMap = null;
+		indexMap.clear();
+		indexMap = null;
+		fileContentMap.clear();
+		fileContentMap = null;
 
-		_fileMap.clear();
-		_fileMap = null;
+		fileMap.clear();
+		fileMap = null;
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public Index getIndex(String name, Class clazz) throws Exception {
-		Index index = _indexMap.get(name);
+		Index index = indexMap.get(name);
 
 		if (index == null) {
 			try {
-				ParseableFile parseableFile = _fileMap.get(name);
+				ParseableFile parseableFile = fileMap.get(name);
 				if (parseableFile == null) {
 					throw new RuntimeException("No such index " + name);
 				}
 
-				FileContentParser parser = _fileContentMap.get(parseableFile.getFile().getName());
+				FileContentParser parser = fileContentMap.get(parseableFile.getFile().getName());
 				if (parser == null) {
 					parser = new FileContentParser();
-					_fileContentMap.put(parseableFile.getFile().getName(), parser);
+					fileContentMap.put(parseableFile.getFile().getName(), parser);
 					// Do actual parsing of file
-					parser.parse(_context, parseableFile, _validationReporter);
+					parser.parse(context, parseableFile, validationReporter);
 				}
 
-				index = IndexFactory.build(_validationReporter, parser, clazz.getName());
-				_indexMap.put(name, index);
+				index = IndexFactory.build(validationReporter, parser, clazz.getName());
+				indexMap.put(name, index);
 			} catch (ClassNotFoundException | IOException e) {
 				FileParserValidationError context = new FileParserValidationError();
-				context.put(FileParserValidationError.PATH, _path);
+				context.put(FileParserValidationError.PATH, path);
 				context.put(FileParserValidationError.ERROR, ERROR.SYSTEM);
 				throw new RegtoppException(context, e);
 			}
@@ -137,7 +137,7 @@ public class RegtoppImporter {
 	}
 
 	private boolean hasImporter(final String pattern) {
-		File folder = new File(_path);
+		File folder = new File(path);
 		String[] matchingFiles = folder.list(new FilenameFilter() {
 
 			@Override

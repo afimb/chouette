@@ -22,7 +22,7 @@ import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.model.util.Referential;
 
 @Log4j
-public class RegtoppInitImportCommand implements Command, Constant {
+public class RegtoppInitImportCommand implements Command {
 
 	public static final String COMMAND = "RegtoppInitImportCommand";
 

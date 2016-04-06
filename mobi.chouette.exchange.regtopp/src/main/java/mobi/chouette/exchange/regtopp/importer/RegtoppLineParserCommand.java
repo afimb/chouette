@@ -27,7 +27,7 @@ import mobi.chouette.model.Line;
 import mobi.chouette.model.util.Referential;
 
 @Log4j
-public class RegtoppLineParserCommand implements Command, Constant {
+public class RegtoppLineParserCommand implements Command {
 
 	public static final String COMMAND = "RegtoppLineParserCommand";
 

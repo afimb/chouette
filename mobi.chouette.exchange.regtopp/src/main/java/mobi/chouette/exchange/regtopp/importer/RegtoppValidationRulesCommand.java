@@ -12,13 +12,13 @@ import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.regtopp.validation.Constant;
-import mobi.chouette.exchange.regtopp.validation.RegtoppValidationRules;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 
+import static mobi.chouette.exchange.regtopp.Constant.*;
+
 @Log4j
-public class RegtoppValidationRulesCommand implements Command, Constant {
+public class RegtoppValidationRulesCommand implements Command {
 
 	public static final String COMMAND = "RegtoppValidationRulesCommand";
 
@@ -32,7 +32,7 @@ public class RegtoppValidationRulesCommand implements Command, Constant {
 			context.put(MAIN_VALIDATION_REPORT, validationReport);
 		}
 		RegtoppImportParameters parameters = (RegtoppImportParameters) context.get(CONFIGURATION);
-		// validationReport.setCheckPoints((new RegtoppValidationRules()).checkPoints(parameters));
+//		validationReport.setCheckPoints((new RegtoppValidationRules()).checkPoints(parameters));
 
 		RegtoppValidationReporter validationReporter = (RegtoppValidationReporter) context.get(REGTOPP_REPORTER);
 		if (validationReporter == null) {

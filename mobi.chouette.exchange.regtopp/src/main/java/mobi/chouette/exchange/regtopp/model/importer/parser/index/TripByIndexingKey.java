@@ -40,12 +40,12 @@ public class TripByIndexingKey extends IndexImpl<RegtoppTripIndexTIX> {
 
 	@Override
 	public void index() throws Exception {
-		for (Object obj : _parser.getRawContent()) {
+		for (Object obj : parser.getRawContent()) {
 			RegtoppTripIndexTIX trip = (RegtoppTripIndexTIX) obj;
-			RegtoppTripIndexTIX existing = _index.put(trip.getIndexingKey(), trip);
+			RegtoppTripIndexTIX existing = index.put(trip.getIndexingKey(), trip);
 			if (existing != null) {
 				// TODO fix exception/validation reporting
-				_validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError()), null);
+				validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError()), null);
 			}
 		}
 	}

@@ -23,9 +23,9 @@ public class FootnoteById extends IndexImpl<RegtoppFootnoteMRK> {
 		boolean result = true;
 
 		if (StringUtils.trimToNull(bean.getDescription()) == null) {
-			// _validationReporter.reportError(new Context(), ex, filenameInfo);
+			// validationReporter.reportError(new Context(), ex, filenameInfo);
 
-			// TODO add entry to _validationReporter
+			// TODO add entry to validationReporter
 			result = false;
 		}
 
@@ -47,12 +47,12 @@ public class FootnoteById extends IndexImpl<RegtoppFootnoteMRK> {
 
 	@Override
 	public void index() throws Exception {
-		for (Object obj : _parser.getRawContent()) {
+		for (Object obj : parser.getRawContent()) {
 			RegtoppFootnoteMRK footnote = (RegtoppFootnoteMRK) obj;
-			RegtoppFootnoteMRK existing = _index.put(footnote.getFootnoteId(), footnote);
+			RegtoppFootnoteMRK existing = index.put(footnote.getFootnoteId(), footnote);
 			if (existing != null) {
 				// TODO fix exception/validation reporting
-				_validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError()), null);
+				validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError()), null);
 			}
 		}
 	}

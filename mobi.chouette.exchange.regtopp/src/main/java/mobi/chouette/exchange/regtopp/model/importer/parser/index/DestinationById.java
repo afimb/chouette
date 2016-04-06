@@ -1,7 +1,5 @@
 package mobi.chouette.exchange.regtopp.model.importer.parser.index;
 
-import java.io.IOException;
-
 import org.apache.commons.lang.StringUtils;
 
 import lombok.extern.log4j.Log4j;
@@ -25,9 +23,9 @@ public class DestinationById extends IndexImpl<RegtoppDestinationDST> {
 		boolean result = true;
 
 		if (StringUtils.trimToNull(bean.getDestinationText()) == null) {
-			// _validationReporter.reportError(new Context(), ex, filenameInfo);
+			// validationReporter.reportError(new Context(), ex, filenameInfo);
 
-			// TODO add entry to _validationReporter
+			// TODO add entry to validationReporter
 			result = false;
 		}
 
@@ -49,12 +47,12 @@ public class DestinationById extends IndexImpl<RegtoppDestinationDST> {
 
 	@Override
 	public void index() throws Exception {
-		for (Object obj : _parser.getRawContent()) {
+		for (Object obj : parser.getRawContent()) {
 			RegtoppDestinationDST destination = (RegtoppDestinationDST) obj;
-			RegtoppDestinationDST existing = _index.put(destination.getDestinationId(), destination);
+			RegtoppDestinationDST existing = index.put(destination.getDestinationId(), destination);
 			if (existing != null) {
 				// TODO fix exception/validation reporting
-				_validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError()), null);
+				validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError()), null);
 			}
 		}
 	}

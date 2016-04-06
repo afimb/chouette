@@ -13,7 +13,6 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.importer.ParserFactory;
-import mobi.chouette.exchange.regtopp.Constant;
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.parser.RegtoppStopParser;
 import mobi.chouette.exchange.report.ActionReport;
@@ -21,7 +20,7 @@ import mobi.chouette.exchange.report.DataStats;
 import mobi.chouette.model.util.Referential;
 
 @Log4j
-public class RegtoppStopParserCommand implements Command, Constant {
+public class RegtoppStopParserCommand implements Command {
 
 	public static final String COMMAND = "RegtoppStopParserCommand";
 

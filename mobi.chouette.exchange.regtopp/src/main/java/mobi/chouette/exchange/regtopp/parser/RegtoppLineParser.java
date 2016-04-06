@@ -1,5 +1,9 @@
 package mobi.chouette.exchange.regtopp.parser;
 
+import static mobi.chouette.common.Constant.*;
+import static mobi.chouette.exchange.regtopp.Constant.*;
+import static mobi.chouette.exchange.regtopp.validation.Constant.*;
+
 import java.sql.Time;
 import java.util.Collection;
 import java.util.Collections;
@@ -20,7 +24,6 @@ import mobi.chouette.exchange.regtopp.model.RegtoppDestinationDST;
 import mobi.chouette.exchange.regtopp.model.RegtoppFootnoteMRK;
 import mobi.chouette.exchange.regtopp.model.RegtoppLineLIN;
 import mobi.chouette.exchange.regtopp.model.RegtoppRouteTMS;
-import mobi.chouette.exchange.regtopp.model.RegtoppStopHPL;
 import mobi.chouette.exchange.regtopp.model.RegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.model.enums.AnnouncementType;
 import mobi.chouette.exchange.regtopp.model.enums.DirectionType;
@@ -29,7 +32,6 @@ import mobi.chouette.exchange.regtopp.model.importer.parser.FileParserValidation
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppException;
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.Index;
-import mobi.chouette.exchange.regtopp.validation.Constant;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 import mobi.chouette.exchange.validation.report.CheckPoint;
 import mobi.chouette.exchange.validation.report.ValidationReport;
@@ -44,18 +46,14 @@ import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
-import mobi.chouette.model.type.ChouetteAreaEnum;
-import mobi.chouette.model.type.LongLatTypeEnum;
 import mobi.chouette.model.type.PTDirectionEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
-import mobi.chouette.model.util.Coordinate;
-import mobi.chouette.model.util.CoordinateUtil;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.ObjectIdTypes;
 import mobi.chouette.model.util.Referential;
 
 @Log4j
-public class RegtoppLineParser implements Parser, Validator, Constant {
+public class RegtoppLineParser implements Parser, Validator {
 
 	@Setter
 	private String lineId = null;

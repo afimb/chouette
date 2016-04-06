@@ -44,12 +44,12 @@ public class LineById extends IndexImpl<RegtoppLineLIN> {
 
 	@Override
 	public void index() throws Exception {
-		for (Object obj : _parser.getRawContent()) {
+		for (Object obj : parser.getRawContent()) {
 			RegtoppLineLIN line = (RegtoppLineLIN) obj;
-			RegtoppLineLIN existing = _index.put(line.getLineId(), line);
+			RegtoppLineLIN existing = index.put(line.getLineId(), line);
 			if (existing != null) {
 				// TODO fix exception/validation reporting (this is a duplicate check)
-				_validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError()), null);
+				validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError()), null);
 			}
 		}
 	}

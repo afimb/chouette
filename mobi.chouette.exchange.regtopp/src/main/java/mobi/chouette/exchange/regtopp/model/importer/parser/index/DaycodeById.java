@@ -53,16 +53,16 @@ public class DaycodeById extends IndexImpl<RegtoppDayCodeDKO> {
 	public void index() throws Exception {
 
 		// First object in list will be the header object, the rest the usual DayCodeDKO objects
-		List<Object> rawContent = _parser.getRawContent();
+		List<Object> rawContent = parser.getRawContent();
 		for (int i = 0; i < rawContent.size(); i++) {
 			if (i == 0) {
 				header = (RegtoppDayCodeHeaderDKO) rawContent.get(i);
 			} else {
 				RegtoppDayCodeDKO dayCode = (RegtoppDayCodeDKO) rawContent.get(i);
-				RegtoppDayCodeDKO existing = _index.put(dayCode.getDayCodeId(), dayCode);
+				RegtoppDayCodeDKO existing = index.put(dayCode.getDayCodeId(), dayCode);
 				if (existing != null) {
 					// TODO fix exception/validation reporting
-					_validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError()), null);
+					validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError()), null);
 				}
 
 			}
