@@ -25,27 +25,27 @@ public class RegtoppZoneSON extends RegtoppObject implements Serializable {
 
 	@Getter
 	@Setter
-	@Field(length = 3)
+	@Field(at = 0, length = 3)
 	private String adminCode;
 
 	@Getter
 	@Setter
-	@Field(length = 1)
+	@Field(at = 3, length = 1)
 	private String counter;
 
 	@Getter
 	@Setter
-	@Field(length = 5)
+	@Field(at = 4, length = 5)
 	private String zoneId;
 
 	@Getter
 	@Setter
-	@Field(length = 30)
+	@Field(at = 9, length = 30)
 	private String name;
 
 	@Getter
 	@Setter
-	@Field(length = 6)
+	@Field(at = 39, length = 6)
 	private String zoneRef;
 
 	@Override

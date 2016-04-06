@@ -25,37 +25,37 @@ public class RegtoppPeriodPER extends RegtoppObject implements Serializable {
 
 	@Getter
 	@Setter
-	@Field(length = 3)
+	@Field(at = 0, length = 3)
 	private String adminCode;
 
 	@Getter
 	@Setter
-	@Field(length = 1)
+	@Field(at = 3, length = 1)
 	private String counter;
 
 	@Getter
 	@Setter
-	@Field(length = 10)
+	@Field(at = 4, length = 10)
 	private String periodId;
 
 	@Getter
 	@Setter
-	@Field(length = 1)
+	@Field(at = 14, length = 1)
 	private String sequenceNumberDateInterval;
 
 	@Getter
 	@Setter
-	@Field(length = 6)
+	@Field(at = 15, length = 6)
 	private String startDate;
 
 	@Getter
 	@Setter
-	@Field(length = 6)
+	@Field(at = 21, length = 6)
 	private String endDate;
 
 	@Getter
 	@Setter
-	@Field(length = 73)
+	@Field(at = 27, length = 73)
 	private String periodText;
 
 	@Override

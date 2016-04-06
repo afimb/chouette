@@ -29,37 +29,37 @@ public class RegtoppRoutePointRUT extends RegtoppObject implements Serializable 
 
 	@Getter
 	@Setter
-	@Field(length = 3)
+	@Field(at = 0, length = 3)
 	private String adminCode;
 
 	@Getter
 	@Setter
-	@Field(length = 1)
+	@Field(at = 3, length = 1)
 	private String counter;
 
 	@Getter
 	@Setter
-	@Field(length = 4)
+	@Field(at = 4, length = 4)
 	private String lineId;
 
 	@Getter
 	@Setter
-	@Field(length = 10)
+	@Field(at = 8, length = 10)
 	private String periodId;
 
 	@Getter
 	@Setter
-	@Field(length = 3)
+	@Field(at = 18, length = 3)
 	private String sequenceNumberRoutePoint;
 
 	@Getter
 	@Setter
-	@Field(length = 1, regex = "[123]{1}", format = "toString")
+	@Field(at = 21, length = 1, regex = "[123]{1}", format = "toString")
 	private DirectionType direction;
 
 	@Getter
 	@Setter
-	@Field(length = 8)
+	@Field(at = 22, length = 8)
 	private String stopId;
 
 	@Override

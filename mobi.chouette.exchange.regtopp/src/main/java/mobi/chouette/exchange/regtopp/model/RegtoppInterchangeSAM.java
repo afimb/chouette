@@ -26,77 +26,77 @@ public class RegtoppInterchangeSAM extends RegtoppObject implements Serializable
 
 	@Getter
 	@Setter
-	@Field(length = 3)
+	@Field(at = 0, length = 3)
 	private String adminCode1;
 
 	@Getter
 	@Setter
-	@Field(length = 1)
+	@Field(at = 3, length = 1)
 	private String counter1;
 
 	@Getter
 	@Setter
-	@Field(length = 4)
+	@Field(at = 4, length = 4)
 	private String lineId1;
 
 	@Getter
 	@Setter
-	@Field(length = 4)
+	@Field(at = 8, length = 4)
 	private String tripId1;
 
 	@Getter
 	@Setter
-	@Field(length = 3, regex = "[0-9]{3}", format = "toString")
+	@Field(at = 12, length = 3, regex = "[0-9]{3}", format = "toString")
 	private TransportType typeOfService1;
 
 	@Getter
 	@Setter
-	@Field(length = 3)
+	@Field(at = 15, length = 3)
 	private String adminCode2;
 
 	@Getter
 	@Setter
-	@Field(length = 1)
+	@Field(at = 18, length = 1)
 	private String counter2;
 
 	@Getter
 	@Setter
-	@Field(length = 4)
+	@Field(at = 19, length = 4)
 	private String lineId2;
 
 	@Getter
 	@Setter
-	@Field(length = 4)
+	@Field(at = 23, length = 4)
 	private String tripId2;
 
 	@Getter
 	@Setter
-	@Field(length = 3, regex = "[0-9]{3}", format = "toString")
+	@Field(at = 27, length = 3, regex = "[0-9]{3}", format = "toString")
 	private TransportType typeOfService2;
 
 	@Getter
 	@Setter
-	@Field(length = 4)
+	@Field(at = 30, length = 4)
 	private Integer arrivalTime1;
 
 	@Getter
 	@Setter
-	@Field(length = 4)
+	@Field(at = 34, length = 4)
 	private Integer departureTime2;
 
 	@Getter
 	@Setter
-	@Field(length = 4)
+	@Field(at = 38, length = 4)
 	private String notInUse;
 
 	@Getter
 	@Setter
-	@Field(length = 8)
+	@Field(at = 42, length = 8)
 	private Integer stopId;
 
 	@Getter
 	@Setter
-	@Field(length = 1)
+	@Field(at = 50, length = 1)
 	private Integer interchangeCode;
 
 	@Override
