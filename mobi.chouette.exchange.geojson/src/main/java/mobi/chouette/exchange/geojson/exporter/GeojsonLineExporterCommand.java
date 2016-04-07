@@ -100,8 +100,7 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 
 				stats.routeCount++;
 
-				List<JourneyPattern> journeyPatterns = route
-						.getJourneyPatterns();
+				List<JourneyPattern> journeyPatterns = route.getJourneyPatterns();
 				for (JourneyPattern journeyPattern : journeyPatterns) {
 					String id = journeyPattern.getObjectId();
 
@@ -113,95 +112,76 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 					Map<String, Object> properties = new HashMap<String, Object>();
 
 					// line
-					properties.put("line_objectid",
-							getProperty(line.getObjectId()));
+					properties.put("line_objectid", getProperty(line.getObjectId()));
 					properties.put("line_name", getProperty(line.getName()));
-					properties
-							.put("line_number", getProperty(line.getNumber()));
-					properties.put("line_published_name",
-							getProperty(line.getPublishedName()));
-					properties.put("company_objectid", getProperty(line
-							.getCompany().getObjectId()));
-					properties.put("network_objectid", getProperty(line
-							.getNetwork().getObjectId()));
-					properties.put("transport_mode",
-							getProperty(line.getTransportModeName()));
+					properties.put("line_number", getProperty(line.getNumber()));
+					properties.put("line_published_name", getProperty(line.getPublishedName()));
+					properties.put("company_objectid", getProperty(line.getCompany().getObjectId()));
+					properties.put("network_objectid", getProperty(line.getNetwork().getObjectId()));
+					properties.put("transport_mode", getProperty(line.getTransportModeName()));
 					properties.put("color", getProperty(line.getColor()));
-					properties.put("text_color",
-							getProperty(line.getTextColor()));
+					properties.put("text_color", getProperty(line.getTextColor()));
 
 					// route
-					properties.put("route_wayback_code",
-							getProperty(route.getWayBack()));
-					properties.put("route_objectid",
-							getProperty(route.getObjectId()));
+					properties.put("route_wayback_code", getProperty(route.getWayBack()));
+					properties.put("route_objectid", getProperty(route.getObjectId()));
 					properties.put("route_name", getProperty(route.getName()));
-					properties.put("route_published_name",
-							getProperty(route.getPublishedName()));
-					properties.put("route_number",
-							getProperty(route.getNumber()));
-					properties.put("route_direction",
-							getProperty(route.getDirection()));
+					properties.put("route_published_name", getProperty(route.getPublishedName()));
+					properties.put("route_number", getProperty(route.getNumber()));
+					properties.put("route_direction", getProperty(route.getDirection()));
 
 					// journey pattern
-					properties.put("object_version",
-							getProperty(journeyPattern.getObjectVersion()));
-					properties.put("creation_time",
-							getProperty(journeyPattern.getCreationTime()));
-					properties.put("creator_id",
-							getProperty(journeyPattern.getCreatorId()));
-					properties.put("name",
-							getProperty(journeyPattern.getName()));
-					properties
-							.put("registration_number",
-									getProperty(journeyPattern
-											.getRegistrationNumber()));
-					properties.put("published_name",
-							getProperty(journeyPattern.getPublishedName()));
+					properties.put("object_version", getProperty(journeyPattern.getObjectVersion()));
+					properties.put("creation_time", getProperty(journeyPattern.getCreationTime()));
+					properties.put("creator_id", getProperty(journeyPattern.getCreatorId()));
+					properties.put("name", getProperty(journeyPattern.getName()));
+					properties.put("registration_number", getProperty(journeyPattern.getRegistrationNumber()));
+					properties.put("published_name", getProperty(journeyPattern.getPublishedName()));
 
-					List<RouteSection> routeSections = journeyPattern
-							.getRouteSections();
+					List<RouteSection> routeSections = journeyPattern.getRouteSections();
 					double[][][] coordinates = new double[0][0][2];
 
 					if (routeSections != null && !routeSections.isEmpty()) {
 
-						RouteSection[] array = routeSections
-								.toArray(new RouteSection[routeSections.size()]);
-						coordinates = new double[array.length][][];
-						for (int i = 0; i < array.length; i++) {
-							RouteSection routeSection = array[i];
+						// add filter to remove null entries
+						List<RouteSection> filteredRouteSection = new ArrayList<>();
+						for (RouteSection routeSection : routeSections) {
+							if (routeSection != null)
+								filteredRouteSection.add(routeSection);
+						}
+						if (!filteredRouteSection.isEmpty()) {
+							RouteSection[] array = filteredRouteSection.toArray(new RouteSection[filteredRouteSection.size()]);
+							coordinates = new double[array.length][][];
+							for (int i = 0; i < array.length; i++) {
+								RouteSection routeSection = array[i];
 
-							// log.info("[DSU] processing  : "
-							// + routeSection.getObjectId());
+								// log.info("[DSU] processing  : "
+								// + routeSection.getObjectId());
 
-							StopArea departure = routeSection.getDeparture();
+								StopArea departure = routeSection.getDeparture();
 
-							if (departure != null && departure.hasCoordinates()) {
-								createPhysicaStop(shared, keys, departure);
-								MetaData.updateBoundingBox(context, departure
-										.getLongitude().doubleValue(),
-										departure.getLatitude().doubleValue());
-							}
+								if (departure != null && departure.hasCoordinates()) {
+									createPhysicaStop(shared, keys, departure);
+									MetaData.updateBoundingBox(context, departure.getLongitude().doubleValue(),
+											departure.getLatitude().doubleValue());
+								}
 
-							StopArea arrival = routeSection.getArrival();
-							if (arrival != null && arrival.hasCoordinates()) {
-								createPhysicaStop(shared, keys, arrival);
-								MetaData.updateBoundingBox(context, arrival
-										.getLongitude().doubleValue(), arrival
-										.getLatitude().doubleValue());
-							}
+								StopArea arrival = routeSection.getArrival();
+								if (arrival != null && arrival.hasCoordinates()) {
+									createPhysicaStop(shared, keys, arrival);
+									MetaData.updateBoundingBox(context, arrival.getLongitude().doubleValue(), arrival
+											.getLatitude().doubleValue());
+								}
 
-							com.vividsolutions.jts.geom.LineString geometry = (routeSection
-									.getInputGeometry() != null) ? routeSection
-									.getInputGeometry() : routeSection
-									.getProcessedGeometry();
-							if (geometry != null) {
-								coordinates[i] = getCoordinates(geometry);
+								com.vividsolutions.jts.geom.LineString geometry = (routeSection.getInputGeometry() != null) ? routeSection
+										.getInputGeometry() : routeSection.getProcessedGeometry();
+								if (geometry != null) {
+									coordinates[i] = getCoordinates(geometry);
+								}
 							}
 						}
 					}
-					Feature feature = new Feature(id, new MultiLineString(
-							coordinates), properties);
+					Feature feature = new Feature(id, new MultiLineString(coordinates), properties);
 					features.add(feature);
 				}
 			}
@@ -219,8 +199,7 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 			globalStats.journeyPatternCount += stats.journeyPatternCount;
 			globalStats.connectionLinkCount = shared.connectionLinks.size();
 			globalStats.accessPointCount = shared.accessPoints.size();
-			globalStats.stopAreaCount = shared.physicalStops.size()
-					+ shared.commercialStops.size();
+			globalStats.stopAreaCount = shared.physicalStops.size() + shared.commercialStops.size();
 			Report.addGlobalStats(context, globalStats);
 
 			// save feature collection
@@ -243,8 +222,7 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 		return result;
 	}
 
-	private void createPhysicaStop(SharedData shared, Keys keys,
-			StopArea stopArea) {
+	private void createPhysicaStop(SharedData shared, Keys keys, StopArea stopArea) {
 
 		Map<String, Feature> filter = shared.getPhysicalStops();
 		if (!filter.containsKey(stopArea.getObjectId())) {
@@ -272,8 +250,7 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 
 	}
 
-	private void createCommercialStop(SharedData shared, Keys keys,
-			StopArea stopArea) {
+	private void createCommercialStop(SharedData shared, Keys keys, StopArea stopArea) {
 
 		Map<String, Feature> filter = shared.getCommercialStops();
 		if (!filter.containsKey(stopArea.getObjectId())) {
@@ -301,42 +278,30 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 
 	}
 
-	private void createAccessPoint(SharedData shared, Keys keys,
-			AccessPoint accessPoint) {
+	private void createAccessPoint(SharedData shared, Keys keys, AccessPoint accessPoint) {
 
 		Map<String, Feature> filter = shared.getAccessPoints();
 		if (!filter.containsKey(accessPoint.getObjectId())) {
 			Map<String, Object> properties = new HashMap<String, Object>();
-			properties.put("object_version",
-					getProperty(accessPoint.getObjectVersion()));
-			properties.put("creation_time",
-					getProperty(accessPoint.getCreationTime()));
-			properties.put("creator_id",
-					getProperty(accessPoint.getCreatorId()));
+			properties.put("object_version", getProperty(accessPoint.getObjectVersion()));
+			properties.put("creation_time", getProperty(accessPoint.getCreationTime()));
+			properties.put("creator_id", getProperty(accessPoint.getCreatorId()));
 			properties.put("name", getProperty(accessPoint.getName()));
-			properties.put("country_code",
-					getProperty(accessPoint.getCountryCode()));
-			properties.put("street_name",
-					getProperty(accessPoint.getStreetName()));
+			properties.put("country_code", getProperty(accessPoint.getCountryCode()));
+			properties.put("street_name", getProperty(accessPoint.getStreetName()));
 			properties.put("access_type", getProperty(accessPoint.getType()));
-			properties.put("mobility_restricted_suitability",
-					getProperty(accessPoint.getMobilityRestrictedSuitable()));
-			properties.put("stairs_availability",
-					getProperty(accessPoint.getStairsAvailable()));
-			properties.put("lift_availability",
-					getProperty(accessPoint.getLiftAvailable()));
-			properties.put("stop_area_objectid", getProperty(accessPoint
-					.getContainedIn().getObjectId()));
+			properties.put("mobility_restricted_suitability", getProperty(accessPoint.getMobilityRestrictedSuitable()));
+			properties.put("stairs_availability", getProperty(accessPoint.getStairsAvailable()));
+			properties.put("lift_availability", getProperty(accessPoint.getLiftAvailable()));
+			properties.put("stop_area_objectid", getProperty(accessPoint.getContainedIn().getObjectId()));
 
 			double[] coordinates = new double[2];
-			if (accessPoint.getLongitude() != null
-					&& accessPoint.getLatitude() != null) {
+			if (accessPoint.getLongitude() != null && accessPoint.getLatitude() != null) {
 				coordinates[0] = accessPoint.getLongitude().doubleValue();
 				coordinates[1] = accessPoint.getLatitude().doubleValue();
 			}
 
-			Feature feature = new Feature(accessPoint.getObjectId(), new Point(
-					coordinates), properties);
+			Feature feature = new Feature(accessPoint.getObjectId(), new Point(coordinates), properties);
 			filter.put(accessPoint.getObjectId(), feature);
 		}
 
@@ -348,63 +313,40 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 
 	}
 
-	private void createConnectionLink(SharedData shared, Keys keys,
-			ConnectionLink connectionLink) {
+	private void createConnectionLink(SharedData shared, Keys keys, ConnectionLink connectionLink) {
 
 		Map<String, Feature> filter = shared.getConnectionLinks();
 		if (!filter.containsKey(connectionLink.getObjectId())) {
 			Map<String, Object> properties = new HashMap<String, Object>();
-			properties.put("object_version",
-					getProperty(connectionLink.getObjectVersion()));
-			properties.put("creation_time",
-					getProperty(connectionLink.getCreationTime()));
-			properties.put("creator_id",
-					getProperty(connectionLink.getCreatorId()));
+			properties.put("object_version", getProperty(connectionLink.getObjectVersion()));
+			properties.put("creation_time", getProperty(connectionLink.getCreationTime()));
+			properties.put("creator_id", getProperty(connectionLink.getCreatorId()));
 			properties.put("name", getProperty(connectionLink.getName()));
-			properties.put("link_distance",
-					getProperty(connectionLink.getLinkDistance()));
-			properties.put("link_distance",
-					getProperty(connectionLink.getLinkType()));
-			properties.put("default_duration",
-					getProperty(connectionLink.getDefaultDuration()));
-			properties.put("frequent_traveller_duration",
-					getProperty(connectionLink.getFrequentTravellerDuration()));
-			properties
-					.put("occasional_traveller_duration",
-							getProperty(connectionLink
-									.getOccasionalTravellerDuration()));
+			properties.put("link_distance", getProperty(connectionLink.getLinkDistance()));
+			properties.put("link_distance", getProperty(connectionLink.getLinkType()));
+			properties.put("default_duration", getProperty(connectionLink.getDefaultDuration()));
+			properties.put("frequent_traveller_duration", getProperty(connectionLink.getFrequentTravellerDuration()));
+			properties.put("occasional_traveller_duration",
+					getProperty(connectionLink.getOccasionalTravellerDuration()));
 			properties.put("mobility_restricted_traveller_duration",
-					getProperty(connectionLink
-							.getMobilityRestrictedTravellerDuration()));
-			properties
-					.put("mobility_restricted_suitability",
-							getProperty(connectionLink
-									.getMobilityRestrictedSuitable()));
-			properties.put("stairs_availability",
-					getProperty(connectionLink.getStairsAvailable()));
-			properties.put("lift_availability",
-					getProperty(connectionLink.getLiftAvailable()));
+					getProperty(connectionLink.getMobilityRestrictedTravellerDuration()));
+			properties.put("mobility_restricted_suitability",
+					getProperty(connectionLink.getMobilityRestrictedSuitable()));
+			properties.put("stairs_availability", getProperty(connectionLink.getStairsAvailable()));
+			properties.put("lift_availability", getProperty(connectionLink.getLiftAvailable()));
 
 			double[][] coordinates = new double[0][2];
-			if (connectionLink.getStartOfLink() != null
-					&& connectionLink.getEndOfLink() != null) {
-				properties.put("departure_objectid", getProperty(connectionLink
-						.getStartOfLink().getObjectId()));
-				properties.put("arrival_objectid", getProperty(connectionLink
-						.getEndOfLink().getObjectId()));
+			if (connectionLink.getStartOfLink() != null && connectionLink.getEndOfLink() != null) {
+				properties.put("departure_objectid", getProperty(connectionLink.getStartOfLink().getObjectId()));
+				properties.put("arrival_objectid", getProperty(connectionLink.getEndOfLink().getObjectId()));
 				coordinates = new double[2][2];
-				coordinates[0][0] = connectionLink.getStartOfLink()
-						.getLongitude().doubleValue();
-				coordinates[0][1] = connectionLink.getStartOfLink()
-						.getLatitude().doubleValue();
-				coordinates[1][0] = connectionLink.getEndOfLink()
-						.getLongitude().doubleValue();
-				coordinates[1][1] = connectionLink.getEndOfLink().getLatitude()
-						.doubleValue();
+				coordinates[0][0] = connectionLink.getStartOfLink().getLongitude().doubleValue();
+				coordinates[0][1] = connectionLink.getStartOfLink().getLatitude().doubleValue();
+				coordinates[1][0] = connectionLink.getEndOfLink().getLongitude().doubleValue();
+				coordinates[1][1] = connectionLink.getEndOfLink().getLatitude().doubleValue();
 			}
 
-			Feature feature = new Feature(connectionLink.getObjectId(),
-					new LineString(coordinates), properties);
+			Feature feature = new Feature(connectionLink.getObjectId(), new LineString(coordinates), properties);
 			filter.put(connectionLink.getObjectId(), feature);
 		}
 
@@ -416,95 +358,65 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 		Map<String, Feature> filter = shared.getAccessLinks();
 		if (!filter.containsKey(accessLink.getObjectId())) {
 			Map<String, Object> properties = new HashMap<String, Object>();
-			properties.put("object_version",
-					getProperty(accessLink.getObjectVersion()));
-			properties.put("creation_time",
-					getProperty(accessLink.getCreationTime()));
-			properties
-					.put("creator_id", getProperty(accessLink.getCreatorId()));
+			properties.put("object_version", getProperty(accessLink.getObjectVersion()));
+			properties.put("creation_time", getProperty(accessLink.getCreationTime()));
+			properties.put("creator_id", getProperty(accessLink.getCreatorId()));
 			properties.put("name", getProperty(accessLink.getName()));
-			properties.put("link_distance",
-					getProperty(accessLink.getLinkDistance()));
+			properties.put("link_distance", getProperty(accessLink.getLinkDistance()));
 			properties.put("link_type", getProperty(accessLink.getLinkType()));
-			properties.put("default_duration",
-					getProperty(accessLink.getDefaultDuration()));
-			properties.put("frequent_traveller_duration",
-					getProperty(accessLink.getFrequentTravellerDuration()));
-			properties.put("occasional_traveller_duration",
-					getProperty(accessLink.getOccasionalTravellerDuration()));
+			properties.put("default_duration", getProperty(accessLink.getDefaultDuration()));
+			properties.put("frequent_traveller_duration", getProperty(accessLink.getFrequentTravellerDuration()));
+			properties.put("occasional_traveller_duration", getProperty(accessLink.getOccasionalTravellerDuration()));
 			properties.put("mobility_restricted_traveller_duration",
-					getProperty(accessLink
-							.getMobilityRestrictedTravellerDuration()));
-			properties.put("mobility_restricted_suitability",
-					getProperty(accessLink.getMobilityRestrictedSuitable()));
-			properties.put("stairs_availability",
-					getProperty(accessLink.getStairsAvailable()));
-			properties.put("lift_availability",
-					getProperty(accessLink.getLiftAvailable()));
-			properties.put("link_orientation",
-					getProperty(accessLink.getLinkOrientation()));
+					getProperty(accessLink.getMobilityRestrictedTravellerDuration()));
+			properties.put("mobility_restricted_suitability", getProperty(accessLink.getMobilityRestrictedSuitable()));
+			properties.put("stairs_availability", getProperty(accessLink.getStairsAvailable()));
+			properties.put("lift_availability", getProperty(accessLink.getLiftAvailable()));
+			properties.put("link_orientation", getProperty(accessLink.getLinkOrientation()));
 
 			double[][] coordinates = new double[0][];
-			if (accessLink.getAccessPoint() != null
-					&& accessLink.getStopArea() != null) {
-				properties.put("access_point_objectid", getProperty(accessLink
-						.getAccessPoint().getObjectId()));
-				properties.put("stop_area_objectid", getProperty(accessLink
-						.getStopArea().getObjectId()));
+			if (accessLink.getAccessPoint() != null && accessLink.getStopArea() != null) {
+				properties.put("access_point_objectid", getProperty(accessLink.getAccessPoint().getObjectId()));
+				properties.put("stop_area_objectid", getProperty(accessLink.getStopArea().getObjectId()));
 
 				coordinates = new double[2][2];
-				coordinates[0][0] = accessLink.getAccessPoint().getLongitude()
-						.doubleValue();
-				coordinates[0][1] = accessLink.getAccessPoint().getLatitude()
-						.doubleValue();
-				coordinates[1][0] = accessLink.getStopArea().getLongitude()
-						.doubleValue();
-				coordinates[1][1] = accessLink.getStopArea().getLatitude()
-						.doubleValue();
+				coordinates[0][0] = accessLink.getAccessPoint().getLongitude().doubleValue();
+				coordinates[0][1] = accessLink.getAccessPoint().getLatitude().doubleValue();
+				coordinates[1][0] = accessLink.getStopArea().getLongitude().doubleValue();
+				coordinates[1][1] = accessLink.getStopArea().getLatitude().doubleValue();
 			}
 
-			Feature feature = new Feature(accessLink.getObjectId(),
-					new LineString(coordinates), properties);
+			Feature feature = new Feature(accessLink.getObjectId(), new LineString(coordinates), properties);
 			filter.put(accessLink.getObjectId(), feature);
 		}
 	}
 
 	private Feature createFeature(StopArea stopArea) {
 		Map<String, Object> properties = new HashMap<String, Object>();
-		properties.put("object_version",
-				getProperty(stopArea.getObjectVersion()));
-		properties
-				.put("creation_time", getProperty(stopArea.getCreationTime()));
+		properties.put("object_version", getProperty(stopArea.getObjectVersion()));
+		properties.put("creation_time", getProperty(stopArea.getCreationTime()));
 		properties.put("creator_id", getProperty(stopArea.getCreatorId()));
 		properties.put("name", getProperty(stopArea.getName()));
 		properties.put("area_type", getProperty(stopArea.getAreaType()));
-		properties.put("registration_number",
-				getProperty(stopArea.getRegistrationNumber()));
-		properties.put("nearest_topic_name",
-				getProperty(stopArea.getNearestTopicName()));
+		properties.put("registration_number", getProperty(stopArea.getRegistrationNumber()));
+		properties.put("nearest_topic_name", getProperty(stopArea.getNearestTopicName()));
 		properties.put("fare_code", getProperty(stopArea.getFareCode()));
 		properties.put("country_code", getProperty(stopArea.getCountryCode()));
 		properties.put("street_name", getProperty(stopArea.getStreetName()));
-		properties.put("mobility_restricted_suitability",
-				getProperty(stopArea.getMobilityRestrictedSuitable()));
-		properties.put("stairs_availability",
-				getProperty(stopArea.getStairsAvailable()));
-		properties.put("lift_availability",
-				getProperty(stopArea.getLiftAvailable()));
+		properties.put("mobility_restricted_suitability", getProperty(stopArea.getMobilityRestrictedSuitable()));
+		properties.put("stairs_availability", getProperty(stopArea.getStairsAvailable()));
+		properties.put("lift_availability", getProperty(stopArea.getLiftAvailable()));
 		if (stopArea.getParent() != null)
-			properties.put("parent", getProperty(stopArea.getParent()
-					.getObjectId()));
+			properties.put("parent", getProperty(stopArea.getParent().getObjectId()));
 
 		double[] coordinates = new double[2];
 		coordinates[0] = stopArea.getLongitude().doubleValue();
 		coordinates[1] = stopArea.getLatitude().doubleValue();
-		Feature feature = new Feature(stopArea.getObjectId(), new Point(
-				coordinates), properties);
+		Feature feature = new Feature(stopArea.getObjectId(), new Point(coordinates), properties);
 		return feature;
 	}
 
-	private double[][] getCoordinates(
-			com.vividsolutions.jts.geom.LineString geometry) {
+	private double[][] getCoordinates(com.vividsolutions.jts.geom.LineString geometry) {
 		Coordinate[] coordinates = geometry.getCoordinates();
 		double[][] result = new double[coordinates.length][2];
 		for (int i = 0; i < coordinates.length; i++) {
@@ -528,8 +440,6 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 	}
 
 	static {
-		CommandFactory.factories.put(
-				GeojsonLineExporterCommand.class.getName(),
-				new DefaultCommandFactory());
+		CommandFactory.factories.put(GeojsonLineExporterCommand.class.getName(), new DefaultCommandFactory());
 	}
 }

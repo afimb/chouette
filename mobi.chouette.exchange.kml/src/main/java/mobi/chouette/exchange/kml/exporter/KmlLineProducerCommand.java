@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -251,12 +252,20 @@ public class KmlLineProducerCommand implements Command, Constant {
 
 					boolean sections = false;
 					if (routeSections != null && !routeSections.isEmpty()) {
+						// add filter to remove null entries
+						List<RouteSection> filteredRouteSection = new ArrayList<>();
 						for (RouteSection routeSection : routeSections) {
-							com.vividsolutions.jts.geom.LineString geometry = (routeSection.getInputGeometry() != null) ? routeSection
-									.getInputGeometry() : routeSection.getProcessedGeometry();
-							if (geometry != null) {
-								jpItem.addLineString(geometry);
-								sections = true;
+							if (routeSection != null)
+								filteredRouteSection.add(routeSection);
+						}
+						if (!filteredRouteSection.isEmpty()) {
+							for (RouteSection routeSection : filteredRouteSection) {
+								com.vividsolutions.jts.geom.LineString geometry = (routeSection.getInputGeometry() != null) ? routeSection
+										.getInputGeometry() : routeSection.getProcessedGeometry();
+								if (geometry != null) {
+									jpItem.addLineString(geometry);
+									sections = true;
+								}
 							}
 						}
 					}
