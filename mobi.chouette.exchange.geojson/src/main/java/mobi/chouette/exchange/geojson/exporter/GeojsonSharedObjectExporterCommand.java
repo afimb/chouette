@@ -43,25 +43,20 @@ public class GeojsonSharedObjectExporterCommand implements Command, Constant {
 			Path path = Paths.get(jobData.getPathName(), OUTPUT);
 
 			// save features collections
-			save(path, "physical_stop_areas.json", shared.getPhysicalStops()
-					.values());
-			Report.addFileInfo(context, "physical_stop_areas.json",
-					FILE_STATE.OK);
+			if (save(path, "physical_stop_areas.json", shared.getPhysicalStops().values()))
+				Report.addFileInfo(context, "physical_stop_areas.json", FILE_STATE.OK);
 
-			save(path, "commercial_stop_areas.json", shared
-					.getCommercialStops().values());
-			Report.addFileInfo(context, "commercial_stop_areas.json",
-					FILE_STATE.OK);
+			if (save(path, "commercial_stop_areas.json", shared.getCommercialStops().values()))
+				Report.addFileInfo(context, "commercial_stop_areas.json", FILE_STATE.OK);
 
-			save(path, "access_points.json", shared.getAccessPoints().values());
-			Report.addFileInfo(context, "access_points.json", FILE_STATE.OK);
+			if (save(path, "access_points.json", shared.getAccessPoints().values()))
+				Report.addFileInfo(context, "access_points.json", FILE_STATE.OK);
 
-			save(path, "access_links.json", shared.getAccessLinks().values());
-			Report.addFileInfo(context, "access_links.json", FILE_STATE.OK);
+			if (save(path, "access_links.json", shared.getAccessLinks().values()))
+				Report.addFileInfo(context, "access_links.json", FILE_STATE.OK);
 
-			save(path, "connection_links.json", shared.getConnectionLinks()
-					.values());
-			Report.addFileInfo(context, "connection_links.json", FILE_STATE.OK);
+			if (save(path, "connection_links.json", shared.getConnectionLinks().values()))
+				Report.addFileInfo(context, "connection_links.json", FILE_STATE.OK);
 
 			result = SUCCESS;
 		} catch (Exception e) {
@@ -72,11 +67,13 @@ public class GeojsonSharedObjectExporterCommand implements Command, Constant {
 		return result;
 	}
 
-	private void save(Path path, String filename, Collection<Feature> features)
-			throws IOException {
+	private boolean save(Path path, String filename, Collection<Feature> features) throws IOException {
+		if (features.isEmpty())
+			return false;
 		FeatureCollection target = new FeatureCollection(features);
 		File file = new File(path.toFile(), filename);
 		JAXBSerializer.writeTo(target, file);
+		return true;
 	}
 
 	public static class DefaultCommandFactory extends CommandFactory {
@@ -89,9 +86,7 @@ public class GeojsonSharedObjectExporterCommand implements Command, Constant {
 	}
 
 	static {
-		CommandFactory.factories.put(
-				GeojsonSharedObjectExporterCommand.class.getName(),
-				new DefaultCommandFactory());
+		CommandFactory.factories.put(GeojsonSharedObjectExporterCommand.class.getName(), new DefaultCommandFactory());
 	}
 
 }
