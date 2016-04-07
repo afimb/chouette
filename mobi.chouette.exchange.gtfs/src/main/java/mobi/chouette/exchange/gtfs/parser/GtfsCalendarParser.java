@@ -112,7 +112,7 @@ public class GtfsCalendarParser implements Parser, Validator, Constant {
 		ValidationReporter validationReporter = (ValidationReporter) context.get(GTFS_REPORTER);
 		
 		// calendar_dates.txt
-		log.info("validating calendar dates");
+		//		log.info("validating calendar dates");
 		Index<GtfsCalendarDate> calendarDateParser = null;
 		if (importer.hasCalendarDateImporter()) { // the file "calendar_dates.txt" exists ?
 			validationReporter.reportSuccess(context, GTFS_1_GTFS_Common_2, GTFS_CALENDAR_DATES_FILE);

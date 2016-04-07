@@ -110,14 +110,14 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 					mainCheckPoint.setSeverity(checkPoint.getSeverity());
 				if (checkPoint.getState().ordinal() > mainCheckPoint.getState().ordinal())
 					mainCheckPoint.setState(checkPoint.getState());
-				int detailCount = 0;
+//				int detailCount = 0;
 				for (Detail detail : checkPoint.getDetails()) {
-					if (mainCheckPoint.getDetailCount() + detailCount > CheckPoint.maxDetails)
-						break;
-					mainCheckPoint.getDetails().add(detail);
-					detailCount++;
+//					if (mainCheckPoint.getDetailCount() + detailCount > CheckPoint.maxDetails)
+//						break;
+					mainCheckPoint.addDetail(detail);
+					// detailCount++;
 				}
-				mainCheckPoint.setDetailCount(mainCheckPoint.getDetailCount() + checkPoint.getDetailCount());
+//				mainCheckPoint.setDetailCount(mainCheckPoint.getDetailCount() + checkPoint.getDetailCount());
 			}
 		}
 

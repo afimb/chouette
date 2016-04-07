@@ -1,3 +1,7 @@
+# Version 3.3.1 (07/04/2016)
+* Nouvelles fonctionnalités :
+  * export SIG : nouvel export combinant les format KML et GeoJson
+
 # Version 3.3.0 (25/03/2016) 
 * Nouvelles fonctionnalités :
   * actions de conversion
