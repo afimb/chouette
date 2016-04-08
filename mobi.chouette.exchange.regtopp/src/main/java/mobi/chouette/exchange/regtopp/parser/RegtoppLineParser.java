@@ -127,6 +127,7 @@ public class RegtoppLineParser implements Parser, Validator {
 			line.setName(regtoppLine.getName());
 			line.setPublishedName(regtoppLine.getName());
 		}
+		
 
 		Index<RegtoppDestinationDST> destinationIndex = importer.getDestinationById();
 
@@ -147,6 +148,7 @@ public class RegtoppLineParser implements Parser, Validator {
 					ptNetwork.setFilled(true);
 				}
 				line.setNetwork(ptNetwork);
+				
 
 				// Add authority company
 				String chouetteCompanyId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.COMPANY_KEY,
@@ -156,9 +158,9 @@ public class RegtoppLineParser implements Parser, Validator {
 					company.setRegistrationNumber(routeSegment.getAdminCode());
 					company.setName("Authority " + routeSegment.getAdminCode());
 					company.setCode(routeSegment.getAdminCode());
-					line.setCompany(company);
 					company.setFilled(true);
 				}
+				line.setCompany(company);
 
 				String routeKey = routeSegment.getLineId() + routeSegment.getDirection() + routeSegment.getRouteId();
 
