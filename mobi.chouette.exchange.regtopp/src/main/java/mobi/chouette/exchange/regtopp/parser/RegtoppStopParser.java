@@ -40,7 +40,7 @@ public class RegtoppStopParser implements Parser, Validator {
 			String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), StopArea.STOPAREA_KEY, stop.getStopId(), log);
 			StopArea stopArea = ObjectFactory.getStopArea(referential, objectId);
 
-			stopArea.setRegistrationNumber(stop.getStopId());
+			//stopArea.setRegistrationNumber(stop.getStopId());
 			
 			Coordinate wgs84Coordinate = CoordinateUtil.transform(Coordinate.UTM_32N, Coordinate.WGS84, new Coordinate(stop.getX(), stop.getY()));
 
