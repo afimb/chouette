@@ -173,7 +173,10 @@ public class RegtoppLineParser implements Parser, Validator {
 					if (arrivalText != null) {
 						route.setName(arrivalText.getDestinationText());
 					}
+					
 					route.setDirection(routeSegment.getDirection() == DirectionType.Outbound ? PTDirectionEnum.A : PTDirectionEnum.R);
+					
+					// TODO UNSURE
 					route.setNumber(routeSegment.getRouteId());
 					route.setLine(line);
 					route.setFilled(true);
@@ -321,6 +324,19 @@ public class RegtoppLineParser implements Parser, Validator {
 				}
 			}
 		}
+		
+		for(Route route : referential.getRoutes().values()) {
+			if(route.getName() == null) {
+				// TODO check if Route has name
+			}
+			
+			route.setPublishedName(route.getName());
+
+			for(JourneyPattern jp : route.getJourneyPatterns()) {
+				jp.setName(route.getName());
+			}
+		}
+
 	}
 
 	private TransportModeNameEnum convertTypeOfService(TransportType typeOfService) {
