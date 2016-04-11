@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
 
 import lombok.Getter;
@@ -41,6 +42,7 @@ import mobi.chouette.model.util.Referential;
 @Log4j
 public class RegtoppTimetableParser implements Parser, Validator {
 
+	private static final int ERROR_MARGIN = 5;
 	private static final int MIN_PERCENTAGE_ALL_DAYS_DETECTED = 90;
 
 
@@ -166,19 +168,19 @@ public class RegtoppTimetableParser implements Parser, Validator {
 
 	private DayTypeEnum convertFromJodaTimeDayType(int dayType) {
 		switch (dayType) {
-		case 1:
+		case DateTimeConstants.MONDAY:
 			return DayTypeEnum.Monday;
-		case 2:
+		case DateTimeConstants.TUESDAY:
 			return DayTypeEnum.Tuesday;
-		case 3:
+		case DateTimeConstants.WEDNESDAY:
 			return DayTypeEnum.Wednesday;
-		case 4:
+		case DateTimeConstants.THURSDAY:
 			return DayTypeEnum.Thursday;
-		case 5:
+		case DateTimeConstants.FRIDAY:
 			return DayTypeEnum.Friday;
-		case 6:
+		case DateTimeConstants.SATURDAY:
 			return DayTypeEnum.Saturday;
-		case 7:
+		case DateTimeConstants.SUNDAY:
 			return DayTypeEnum.Sunday;
 		default:
 			return null;
@@ -253,8 +255,8 @@ public class RegtoppTimetableParser implements Parser, Validator {
 		});
 
 		// i = number of days attempted to merge together
-		for (int i = 1; i < 7; i++) {
-			double minDayPercentage = (double) (MIN_PERCENTAGE_ALL_DAYS_DETECTED - 5) / (double) i; // for i=2 this means 42.5 for each day type
+		for (int i = 1; i < DateTimeConstants.DAYS_PER_WEEK; i++) {
+			double minDayPercentage = (double) (MIN_PERCENTAGE_ALL_DAYS_DETECTED - ERROR_MARGIN) / (double) i; // for i=2 this means 42.5 for each day type
 
 			// Start from 0
 			double totalDayPercentage = 0;
