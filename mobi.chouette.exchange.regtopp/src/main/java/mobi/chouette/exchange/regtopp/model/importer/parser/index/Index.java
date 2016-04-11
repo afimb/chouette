@@ -16,6 +16,7 @@ public interface Index<T> extends Iterable<T> {
 
 	T getValue(String key);
 
+	// Validate logical consistency (references to other files etc)
 	boolean validate(T bean, RegtoppImporter dao);
 
 	int getLength();
