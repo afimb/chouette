@@ -44,7 +44,7 @@ public class RegtoppTimetableParser implements Parser, Validator {
 
 	private static final int ERROR_MARGIN = 5;
 	private static final int MIN_PERCENTAGE_ALL_DAYS_DETECTED = 90;
-
+	private static final int MIN_DAYS_FOR_PATTERN = 5;
 
 	@Override
 	public void validate(Context context) throws Exception {
@@ -161,9 +161,11 @@ public class RegtoppTimetableParser implements Parser, Validator {
 			}
 		}
 
-		boolean[] shortenedIncludedArray = Arrays.copyOf(initialIncludedArray, lastSignificantDay);
-
-		return shortenedIncludedArray;
+		if(lastSignificantDay == 0) {
+			return new boolean[0]; // Empty
+		} else {
+			return Arrays.copyOf(initialIncludedArray, lastSignificantDay+1);
+		}
 	}
 
 	private DayTypeEnum convertFromJodaTimeDayType(int dayType) {
@@ -213,6 +215,8 @@ public class RegtoppTimetableParser implements Parser, Validator {
 
 	private Set<DayTypeEnum> computeSignificantDays(LocalDate d, boolean[] included) {
 
+		Set<DayTypeEnum> significantDays = new HashSet<DayTypeEnum>();
+
 		Map<DayTypeEnum, WeekDayEntry> dayMap = new HashMap<DayTypeEnum, WeekDayEntry>();
 
 		dayMap.put(DayTypeEnum.Monday, new WeekDayEntry(DayTypeEnum.Monday));
@@ -237,45 +241,48 @@ public class RegtoppTimetableParser implements Parser, Validator {
 			totalDaysIncluded += entry.getCount();
 		}
 
-		for (WeekDayEntry entry : dayMap.values()) {
-			entry.setPercentage(((double) entry.getCount()) * 100 / (double) totalDaysIncluded);
-		}
+		if (totalDaysIncluded > MIN_DAYS_FOR_PATTERN) {
 
-		Set<DayTypeEnum> significantDays = new HashSet<DayTypeEnum>();
-
-		// Try to find patterns
-		List<WeekDayEntry> entries = new ArrayList<WeekDayEntry>(dayMap.values());
-
-		Collections.sort(entries, new Comparator<WeekDayEntry>() {
-
-			@Override
-			public int compare(WeekDayEntry o1, WeekDayEntry o2) {
-				return (int) (o2.getPercentage() - o1.getPercentage());
+			for (WeekDayEntry entry : dayMap.values()) {
+				entry.setPercentage(((double) entry.getCount()) * 100 / (double) totalDaysIncluded);
 			}
-		});
 
-		// i = number of days attempted to merge together
-		for (int i = 1; i < DateTimeConstants.DAYS_PER_WEEK; i++) {
-			double minDayPercentage = (double) (MIN_PERCENTAGE_ALL_DAYS_DETECTED - ERROR_MARGIN) / (double) i; // for i=2 this means 42.5 for each day type
+			// Try to find patterns
+			List<WeekDayEntry> entries = new ArrayList<WeekDayEntry>(dayMap.values());
 
-			// Start from 0
-			double totalDayPercentage = 0;
-			boolean allDaysAboveMinDayPercentage = true;
-			for (int j = 0; j < i; j++) {
-				double percentage = entries.get(j).getPercentage();
-				if (percentage < minDayPercentage) {
-					allDaysAboveMinDayPercentage &= false;
+			Collections.sort(entries, new Comparator<WeekDayEntry>() {
+
+				@Override
+				public int compare(WeekDayEntry o1, WeekDayEntry o2) {
+					return (int) (o2.getPercentage() - o1.getPercentage());
 				}
-				totalDayPercentage += percentage;
-			}
+			});
 
-			if (allDaysAboveMinDayPercentage && totalDayPercentage > MIN_PERCENTAGE_ALL_DAYS_DETECTED) {
+			// i = number of days attempted to merge together
+			for (int i = 1; i < DateTimeConstants.DAYS_PER_WEEK; i++) {
+				double minDayPercentage = (double) (MIN_PERCENTAGE_ALL_DAYS_DETECTED - ERROR_MARGIN) / (double) i; // for i=2 this means 42.5 for each day type
+
+				// Start from 0
+				double totalDayPercentage = 0;
+				boolean allDaysAboveMinDayPercentage = true;
 				for (int j = 0; j < i; j++) {
-					significantDays.add(entries.get(j).getDayType());
+					double percentage = entries.get(j).getPercentage();
+					if (percentage < minDayPercentage) {
+						allDaysAboveMinDayPercentage &= false;
+					}
+					totalDayPercentage += percentage;
 				}
-				// Found match
-				break;
+
+				if (allDaysAboveMinDayPercentage && totalDayPercentage > MIN_PERCENTAGE_ALL_DAYS_DETECTED) {
+					for (int j = 0; j < i; j++) {
+						significantDays.add(entries.get(j).getDayType());
+					}
+					// Found match
+					break;
+				}
 			}
+		} else {
+			log.info("Too few days to extract pattern, expected at least "+MIN_DAYS_FOR_PATTERN+" but only got "+totalDaysIncluded);
 		}
 
 		return significantDays;
