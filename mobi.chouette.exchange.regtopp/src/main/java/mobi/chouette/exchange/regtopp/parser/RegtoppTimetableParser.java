@@ -1,9 +1,24 @@
 package mobi.chouette.exchange.regtopp.parser;
 
-import static mobi.chouette.common.Constant.*;
+import static mobi.chouette.common.Constant.CONFIGURATION;
+import static mobi.chouette.common.Constant.PARSER;
+import static mobi.chouette.common.Constant.REFERENTIAL;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.joda.time.LocalDate;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
@@ -17,6 +32,7 @@ import mobi.chouette.exchange.regtopp.model.importer.parser.index.DaycodeById;
 import mobi.chouette.model.CalendarDay;
 import mobi.chouette.model.Period;
 import mobi.chouette.model.Timetable;
+import mobi.chouette.model.type.DayTypeEnum;
 import mobi.chouette.model.util.NamingUtil;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.ObjectIdTypes;
@@ -25,6 +41,9 @@ import mobi.chouette.model.util.Referential;
 @Log4j
 public class RegtoppTimetableParser implements Parser, Validator {
 
+	private static final int MIN_PERCENTAGE_ALL_DAYS_DETECTED = 90;
+
+
 	@Override
 	public void validate(Context context) throws Exception {
 
@@ -32,7 +51,9 @@ public class RegtoppTimetableParser implements Parser, Validator {
 
 		// Det som kan sjekkes her er at antall poster stemmer og at alle referanser til andre filer er gyldige
 
-	
+		// Ting å sjekke: Hvis alle dager er tomme -> warning
+
+		// Verifisere at alle kalender entries faktisk er i bruk
 	}
 
 	@Override
@@ -53,55 +74,209 @@ public class RegtoppTimetableParser implements Parser, Validator {
 		RegtoppDayCodeHeaderDKO header = dayCodeIndex.getHeader();
 		LocalDate calStartDate = header.getDate();
 
-		// TODO try to find patterns (mon-fri, weekends etc)
-
-		// TODO 2 ?- find end date of calendars, 392 is the max number of entries allowed (13 months approx)
-
 		for (RegtoppDayCodeDKO entry : dayCodeIndex) {
-			String chouetteTimetableId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.TIMETABLE_KEY, entry.getDayCodeId(), log);
+			Timetable timetable = convertTimetable(referential, configuration, calStartDate, entry);
 
-			Timetable timetable = ObjectFactory.getTimetable(referential, chouetteTimetableId);
+			log.info("Adding timetable " + timetable);
+		}
 
-			java.sql.Date startDate = new java.sql.Date(calStartDate.toDateMidnight().toDate().getTime());
-			java.sql.Date endDate = new java.sql.Date(calStartDate.plusDays(392).toDateMidnight().toDate().getTime());
+	}
 
-			timetable.setStartOfPeriod(startDate);
-			timetable.setEndOfPeriod(endDate);
-					
-//			timetable.addDayType(DayTypeEnum.Monday);
-//			timetable.addDayType(DayTypeEnum.Tuesday);
-//			timetable.addDayType(DayTypeEnum.Wednesday);
-//			timetable.addDayType(DayTypeEnum.Thursday);
-//			timetable.addDayType(DayTypeEnum.Friday);
-//			timetable.addDayType(DayTypeEnum.Saturday);
-//			timetable.addDayType(DayTypeEnum.Sunday);
+	public Timetable convertTimetable(Referential referential, RegtoppImportParameters configuration, LocalDate calStartDate, RegtoppDayCodeDKO entry) {
+		String chouetteTimetableId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.TIMETABLE_KEY, entry.getDayCodeId(),
+				log);
 
-			Period period = new Period(startDate, endDate);
-			timetable.getPeriods().add(period);
+		Timetable timetable = ObjectFactory.getTimetable(referential, chouetteTimetableId);
 
-			String includedArray = entry.getDayCode();
+		String dayCodesBinaryArray = entry.getDayCode();
 
-			for (int i = 0; i < 392; i++) {
-				java.sql.Date currentDate = new java.sql.Date(calStartDate.plusDays(i).toDateMidnight().toDate().getTime());
-				boolean included = includedArray.charAt(i) == '1';
-				if(included) {
-					log.info("Including in calendar: "+currentDate);
-					timetable.addCalendarDay(new CalendarDay(currentDate, included));
-				} else {
-					log.info("Skipping excluded day in calendar: "+currentDate);
+		boolean[] includedDays = computeIncludedDays(dayCodesBinaryArray);
+		Set<DayTypeEnum> significantDaysInWeek = computeSignificantDays(calStartDate, includedDays);
+
+		if (significantDaysInWeek.isEmpty()) {
+			// Add separate dates
+			for (int i = 0; i < includedDays.length; i++) {
+				if (includedDays[i]) {
+					java.sql.Date currentDate = new java.sql.Date(calStartDate.plusDays(i).toDateMidnight().toDate().getTime());
+					timetable.addCalendarDay(new CalendarDay(currentDate, true));
 				}
 			}
 
-			
-			
-			NamingUtil.setDefaultName(timetable);
-			timetable.setFilled(true);
+		} else {
+			// Add day types
+			for (DayTypeEnum dayType : significantDaysInWeek) {
+				timetable.addDayType(dayType);
+			}
 
-			log.info("Adding timetable "+timetable);
+			// Add extra inclusions and exclusions
+			for (int i = 0; i < includedDays.length; i++) {
+				// Find type of day
+				DayTypeEnum dayType = convertFromJodaTimeDayType(calStartDate.plusDays(i).getDayOfWeek());
+
+				// If not included, add extra day
+				if (includedDays[i] && !significantDaysInWeek.contains(dayType)) {
+					java.sql.Date currentDate = new java.sql.Date(calStartDate.plusDays(i).toDateMidnight().toDate().getTime());
+					timetable.addCalendarDay(new CalendarDay(currentDate, true));
+				}
+
+				// If excluded but included in pattern, add exclusion to day
+				if (!includedDays[i] && significantDaysInWeek.contains(dayType)) {
+					java.sql.Date currentDate = new java.sql.Date(calStartDate.plusDays(i).toDateMidnight().toDate().getTime());
+					timetable.addCalendarDay(new CalendarDay(currentDate, false));
+				}
+			}
 		}
-		
-		
 
+		java.sql.Date startDate = new java.sql.Date(calStartDate.toDateMidnight().toDate().getTime());
+		java.sql.Date endDate = new java.sql.Date(calStartDate.plusDays(includedDays.length).toDateMidnight().toDate().getTime());
+
+		timetable.setStartOfPeriod(startDate);
+		timetable.setEndOfPeriod(endDate);
+		Period period = new Period(startDate, endDate);
+		timetable.getPeriods().add(period);
+
+		NamingUtil.setDefaultName(timetable);
+
+		timetable.setFilled(true);
+		return timetable;
+	}
+
+	private boolean[] computeIncludedDays(String includedArray) {
+		int length = includedArray.length();
+		boolean[] initialIncludedArray = new boolean[length];
+
+		// Convert to boolean array
+		for (int i = 0; i < length; i++) {
+			initialIncludedArray[i] = includedArray.charAt(i) == '1';
+		}
+
+		// Shorten array
+		int lastSignificantDay = 0;
+		for (int i = length - 1; i >= 0; i--) {
+			if (initialIncludedArray[i]) {
+				lastSignificantDay = i;
+				break;
+			}
+		}
+
+		boolean[] shortenedIncludedArray = Arrays.copyOf(initialIncludedArray, lastSignificantDay);
+
+		return shortenedIncludedArray;
+	}
+
+	private DayTypeEnum convertFromJodaTimeDayType(int dayType) {
+		switch (dayType) {
+		case 1:
+			return DayTypeEnum.Monday;
+		case 2:
+			return DayTypeEnum.Tuesday;
+		case 3:
+			return DayTypeEnum.Wednesday;
+		case 4:
+			return DayTypeEnum.Thursday;
+		case 5:
+			return DayTypeEnum.Friday;
+		case 6:
+			return DayTypeEnum.Saturday;
+		case 7:
+			return DayTypeEnum.Sunday;
+		default:
+			return null;
+		}
+
+	}
+
+	@ToString
+	private class WeekDayEntry {
+
+		@Getter
+		int count = 0;
+
+		@Setter
+		@Getter
+		double percentage = 0;
+
+		@Getter
+		DayTypeEnum dayType;
+
+		public WeekDayEntry(DayTypeEnum dayType) {
+			this.dayType = dayType;
+		}
+
+		public void addCount() {
+			count++;
+		}
+
+	}
+
+	private Set<DayTypeEnum> computeSignificantDays(LocalDate d, boolean[] included) {
+
+		Map<DayTypeEnum, WeekDayEntry> dayMap = new HashMap<DayTypeEnum, WeekDayEntry>();
+
+		dayMap.put(DayTypeEnum.Monday, new WeekDayEntry(DayTypeEnum.Monday));
+		dayMap.put(DayTypeEnum.Tuesday, new WeekDayEntry(DayTypeEnum.Tuesday));
+		dayMap.put(DayTypeEnum.Wednesday, new WeekDayEntry(DayTypeEnum.Wednesday));
+		dayMap.put(DayTypeEnum.Thursday, new WeekDayEntry(DayTypeEnum.Thursday));
+		dayMap.put(DayTypeEnum.Friday, new WeekDayEntry(DayTypeEnum.Friday));
+		dayMap.put(DayTypeEnum.Saturday, new WeekDayEntry(DayTypeEnum.Saturday));
+		dayMap.put(DayTypeEnum.Sunday, new WeekDayEntry(DayTypeEnum.Sunday));
+
+		// Count hits for each day type
+		for (int i = 0; i < included.length; i++) {
+			int dayOfWeek = d.plusDays(i).getDayOfWeek();
+			if (included[i]) {
+				dayMap.get(convertFromJodaTimeDayType(dayOfWeek)).addCount();
+			}
+		}
+
+		// compute percentages
+		int totalDaysIncluded = 0;
+		for (WeekDayEntry entry : dayMap.values()) {
+			totalDaysIncluded += entry.getCount();
+		}
+
+		for (WeekDayEntry entry : dayMap.values()) {
+			entry.setPercentage(((double) entry.getCount()) * 100 / (double) totalDaysIncluded);
+		}
+
+		Set<DayTypeEnum> significantDays = new HashSet<DayTypeEnum>();
+
+		// Try to find patterns
+		List<WeekDayEntry> entries = new ArrayList<WeekDayEntry>(dayMap.values());
+
+		Collections.sort(entries, new Comparator<WeekDayEntry>() {
+
+			@Override
+			public int compare(WeekDayEntry o1, WeekDayEntry o2) {
+				return (int) (o2.getPercentage() - o1.getPercentage());
+			}
+		});
+
+		// i = number of days attempted to merge together
+		for (int i = 1; i < 7; i++) {
+			double minDayPercentage = (double) (MIN_PERCENTAGE_ALL_DAYS_DETECTED - 5) / (double) i; // for i=2 this means 42.5 for each day type
+
+			// Start from 0
+			double totalDayPercentage = 0;
+			boolean allDaysAboveMinDayPercentage = true;
+			for (int j = 0; j < i; j++) {
+				double percentage = entries.get(j).getPercentage();
+				if (percentage < minDayPercentage) {
+					allDaysAboveMinDayPercentage &= false;
+				}
+				totalDayPercentage += percentage;
+			}
+
+			if (allDaysAboveMinDayPercentage && totalDayPercentage > MIN_PERCENTAGE_ALL_DAYS_DETECTED) {
+				for (int j = 0; j < i; j++) {
+					significantDays.add(entries.get(j).getDayType());
+				}
+				// Found match
+				break;
+			}
+		}
+
+		return significantDays;
 	}
 
 	static {
