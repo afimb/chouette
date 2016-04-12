@@ -261,8 +261,8 @@ public class RegtoppLineParser implements Parser, Validator {
 					Timetable timetable = ObjectFactory.getTimetable(referential, chouetteTimetableId);
 					timetable.addVehicleJourney(vehicleJourney);
 
-					addFootnote(trip.getFootnoteId1Ref(), vehicleJourney, importer);
-					addFootnote(trip.getFootnoteId2Ref(), vehicleJourney, importer);
+					addFootnote(trip.getFootnoteId1Ref(), vehicleJourney, line, importer);
+					addFootnote(trip.getFootnoteId2Ref(), vehicleJourney, line,importer);
 
 					RegtoppDestinationDST arrivalText = destinationIndex.getValue(trip.getDestinationIdArrivalRef());
 
@@ -305,6 +305,7 @@ public class RegtoppLineParser implements Parser, Validator {
 									// TODO verify this
 									vehicleJourneyAtStop.setArrivalTime(new Time(arrivalTime.getMillis()));
 									vehicleJourneyAtStop.setDepartureTime(new Time(departureTime.getMillis()));
+						
 
 									String chouetteStopPointId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
 											ObjectIdTypes.STOPPOINT_KEY, routeKey + vehicleStop.getSequenceNumberStop(), log);
@@ -312,7 +313,7 @@ public class RegtoppLineParser implements Parser, Validator {
 									StopPoint stopPoint = ObjectFactory.getStopPoint(referential, chouetteStopPointId);
 									vehicleJourneyAtStop.setStopPoint(stopPoint);
 
-									vehicleJourney.getVehicleJourneyAtStops().add(vehicleJourneyAtStop);
+									//vehicleJourney.getVehicleJourneyAtStops().add(vehicleJourneyAtStop);
 
 								}
 							}
@@ -380,18 +381,26 @@ public class RegtoppLineParser implements Parser, Validator {
 		return stopPoint;
 	}
 
-	private void addFootnote(String footnoteId, VehicleJourney vehicleJourney, RegtoppImporter importer) throws Exception {
+	private void addFootnote(String footnoteId, VehicleJourney vehicleJourney, Line line, RegtoppImporter importer) throws Exception {
 		if (!"000".equals(footnoteId)) {
 
 			Index<RegtoppFootnoteMRK> index = importer.getFootnoteById();
 			RegtoppFootnoteMRK footnote = index.getValue(footnoteId);
 
 			if (footnote != null) {
+				
 				Footnote f = new Footnote();
+				
 				f.setLabel(footnote.getDescription());
 				f.setKey(footnote.getFootnoteId());
+				f.setCode(footnote.getFootnoteId());
 
+				// TODO footnotes does not persist in database. 
 				vehicleJourney.getFootnotes().add(f);
+				f.setLine(line);
+				line.getFootnotes().add(f);
+				
+				
 			} else {
 				// TODO report correctly
 				log.warn("Invalid footnote id " + footnoteId);
