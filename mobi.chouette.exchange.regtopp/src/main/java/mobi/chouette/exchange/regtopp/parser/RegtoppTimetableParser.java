@@ -4,6 +4,7 @@ import static mobi.chouette.common.Constant.CONFIGURATION;
 import static mobi.chouette.common.Constant.PARSER;
 import static mobi.chouette.common.Constant.REFERENTIAL;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -78,7 +79,10 @@ public class RegtoppTimetableParser implements Parser, Validator {
 
 		for (RegtoppDayCodeDKO entry : dayCodeIndex) {
 			Timetable timetable = convertTimetable(referential, configuration, calStartDate, entry);
-
+			Timetable cloneTimetableAfterMidnight = cloneTimetableAfterMidnight(timetable);
+			
+			referential.getSharedTimetables().put(cloneTimetableAfterMidnight.getObjectId(), cloneTimetableAfterMidnight);
+			
 			log.info("Adding timetable " + timetable);
 		}
 
@@ -288,6 +292,74 @@ public class RegtoppTimetableParser implements Parser, Validator {
 		return significantDays;
 	}
 
+	private Timetable cloneTimetableAfterMidnight(Timetable source) {
+		Timetable timetable = new Timetable();
+		timetable.setObjectId(source.getObjectId() + AFTER_MIDNIGHT_SUFFIX);
+		timetable.setComment(source.getComment() + " (after midnight)");
+		timetable.setVersion(source.getVersion());
+
+		List<DayTypeEnum> dayTypes = new ArrayList<DayTypeEnum>();
+		for (DayTypeEnum dayType : source.getDayTypes()) {
+			switch (dayType) {
+			case Monday:
+				dayTypes.add(DayTypeEnum.Tuesday);
+				break;
+			case Tuesday:
+				dayTypes.add(DayTypeEnum.Wednesday);
+				break;
+			case Wednesday:
+				dayTypes.add(DayTypeEnum.Thursday);
+				break;
+			case Thursday:
+				dayTypes.add(DayTypeEnum.Friday);
+				break;
+			case Friday:
+				dayTypes.add(DayTypeEnum.Saturday);
+				break;
+			case Saturday:
+				dayTypes.add(DayTypeEnum.Sunday);
+				break;
+			case Sunday:
+				dayTypes.add(DayTypeEnum.Monday);
+				break;
+			default:
+				break;
+			}
+		}
+		timetable.setDayTypes(dayTypes);
+
+		for (Period period : source.getPeriods()) {
+			timetable.getPeriods().add(clonePeriodAfterMidnight(period));
+		}
+
+		for (CalendarDay calendarDay : source.getCalendarDays()) {
+			timetable.getCalendarDays().add(cloneDateAfterMidnight(calendarDay));
+		}
+		return timetable;
+	}
+
+	private Period clonePeriodAfterMidnight(Period source) {
+		Period result = new Period();
+
+		result.setStartDate(new Date(source.getStartDate().getTime() + Timetable.ONE_DAY));
+		result.setEndDate(new Date(source.getEndDate().getTime() + Timetable.ONE_DAY));
+
+		return result;
+	}
+
+	private Date cloneDateAfterMidnight(Date source) {
+		return new Date(source.getTime() + Timetable.ONE_DAY);
+	}
+
+	private CalendarDay cloneDateAfterMidnight(CalendarDay source) {
+		return new CalendarDay(cloneDateAfterMidnight(source.getDate()), source.getIncluded().booleanValue());
+	}
+
+	public static final String AFTER_MIDNIGHT_SUFFIX = "_after_midnight";
+
+
+
+	
 	static {
 		ParserFactory.register(RegtoppTimetableParser.class.getName(), new ParserFactory() {
 			@Override
