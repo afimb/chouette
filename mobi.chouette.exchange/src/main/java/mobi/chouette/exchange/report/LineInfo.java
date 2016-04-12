@@ -20,7 +20,7 @@ import org.codehaus.jettison.json.JSONObject;
 
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder={"name","objectid","status","ioType","stats","errors"})
+@XmlType(propOrder={"name","objectId","status","ioType","stats","errors"})
 @Data
 @EqualsAndHashCode(exclude={"name","status","stats","errors"})
 @NoArgsConstructor
