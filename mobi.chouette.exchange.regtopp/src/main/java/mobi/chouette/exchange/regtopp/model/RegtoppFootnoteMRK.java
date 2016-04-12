@@ -38,11 +38,14 @@ public class RegtoppFootnoteMRK extends RegtoppObject implements Serializable {
 	@Field(at = 4, length = 3)
 	private String footnoteId;
 
-	@Getter
 	@Setter
-	@Field(at = 7, length = 80, trim = true)
-	private String description;
+	@Field(at = 7, length = 1, minLength = 0, maxOccurs = 500)
+	private char[] descriptionHack;
 
+	public String getDescription() {
+		return new String(descriptionHack).trim();
+	}
+	
 	@Override
 	public String getIndexingKey() {
 		return adminCode + counter + footnoteId;
