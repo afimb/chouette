@@ -54,7 +54,9 @@ import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
+import mobi.chouette.model.type.AlightingPossibilityEnum;
 import mobi.chouette.model.type.BoardingAlightingPossibilityEnum;
+import mobi.chouette.model.type.BoardingPossibilityEnum;
 import mobi.chouette.model.type.DayTypeEnum;
 import mobi.chouette.model.type.PTDirectionEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
@@ -204,7 +206,7 @@ public class RegtoppLineParser implements Parser, Validator {
 						routeKey + routeSegment.getSequenceNumberStop(), log);
 
 				StopPoint stopPoint = createStopPoint(referential, context, routeSegment, chouetteStopPointId);
-
+				
 				// Add stop point to journey pattern AND route (for now)
 				journeyPattern.addStopPoint(stopPoint);
 				route.getStopPoints().add(stopPoint);
@@ -348,24 +350,15 @@ public class RegtoppLineParser implements Parser, Validator {
 			}
 		}
 		
-		for(Route route : referential.getRoutes().values()) {
-			if(route.getName() == null) {
-				// TODO check if Route has name
-			}
-			
-			route.setPublishedName(route.getName());
-
-			for(JourneyPattern jp : route.getJourneyPatterns()) {
-				jp.setName(route.getName());
-			}
-		}
+		// Post processing
+		processRoutes(referential.getRoutes().values());
+		
 
 	}
 	
 	public static Time calculateTripVisitTime(Duration tripDepartureTime, Duration timeSinceTripDepatureTime){
 		// TODO Ugly ugly ugly 
 		
-		// TODO handle hours after midnight
 		LocalTime localTime = new LocalTime(0,0,0,0).plusSeconds((int)( tripDepartureTime.getStandardSeconds()+timeSinceTripDepatureTime.getStandardSeconds()));
 		
 		java.sql.Time sqlTime = new java.sql.Time(localTime.getHourOfDay(), localTime.getMinuteOfHour(), localTime.getSecondOfMinute());
@@ -442,6 +435,172 @@ public class RegtoppLineParser implements Parser, Validator {
 		}
 	}
 	
+	private void processRoutes(Collection<Route> values) {
+
+
+		for (Route route : values) {
+			if(route.getName() == null) {
+				// TODO check if Route has name
+			}
+			
+			route.setPublishedName(route.getName());
+
+			for(JourneyPattern jp : route.getJourneyPatterns()) {
+				jp.setName(route.getName());
+			}
+
+			
+			// default direction and wayback = R if opposite Route = A, else A
+
+			if (route.getDirection() == null) {
+				PTDirectionEnum oppositeDirection = route.getOppositeRoute() != null ? route.getOppositeRoute()
+						.getDirection() : PTDirectionEnum.R;
+				route.setDirection(getOppositeDirection(oppositeDirection));
+			}
+			if (route.getWayBack() == null) {
+				route.setWayBack(route.getOppositeRoute() != null && route.getWayBack().equals("A") ? "R" : "A");
+			}
+
+			processBoardingAlightingForRoute(route);
+
+		}
+	}
+
+	private void processBoardingAlightingForRoute(Route route) {
+		boolean invalidData = false; 
+		boolean usefullData = false;
+
+		b1: for (JourneyPattern jp : route.getJourneyPatterns()) {
+			for (VehicleJourney vj : jp.getVehicleJourneys()) {
+				for (VehicleJourneyAtStop vjas : vj.getVehicleJourneyAtStops()) {
+					if (!updateStopPoint(vjas)) {
+						invalidData = true;
+						break b1;
+					}
+				}
+			}
+		}
+		if (!invalidData) {
+			// check if every stoppoints were updated, complete missing ones to
+			// normal; if all normal clean all
+			for (StopPoint sp : route.getStopPoints()) {
+				if (sp.getForAlighting() == null)
+					sp.setForAlighting(AlightingPossibilityEnum.normal);
+				if (sp.getForBoarding() == null)
+					sp.setForBoarding(BoardingPossibilityEnum.normal);
+			}
+			for (StopPoint sp : route.getStopPoints()) {
+				if (!sp.getForAlighting().equals(AlightingPossibilityEnum.normal)) {
+					usefullData = true;
+					break;
+				}
+				if (!sp.getForBoarding().equals(BoardingPossibilityEnum.normal)) {
+					usefullData = true;
+					break;
+				}
+			}
+
+		}
+		if (invalidData || !usefullData) {
+			// remove useless informations
+			for (StopPoint sp : route.getStopPoints()) {
+				sp.setForAlighting(null);
+				sp.setForBoarding(null);
+			}
+		}
+
+	}
+
+	private boolean updateStopPoint(VehicleJourneyAtStop vjas) {
+		StopPoint sp = vjas.getStopPoint();
+		BoardingPossibilityEnum forBoarding = getForBoarding(vjas.getBoardingAlightingPossibility());
+		AlightingPossibilityEnum forAlighting = getForAlighting(vjas.getBoardingAlightingPossibility());
+		if (sp.getForBoarding() != null && !sp.getForBoarding().equals(forBoarding))
+			return false;
+		if (sp.getForAlighting() != null && !sp.getForAlighting().equals(forAlighting))
+			return false;
+		sp.setForBoarding(forBoarding);
+		sp.setForAlighting(forAlighting);
+		return true;
+	}
+
+	private AlightingPossibilityEnum getForAlighting(BoardingAlightingPossibilityEnum boardingAlightingPossibility) {
+		if (boardingAlightingPossibility == null)
+			return AlightingPossibilityEnum.normal;
+		switch (boardingAlightingPossibility) {
+		case BoardAndAlight:
+			return AlightingPossibilityEnum.normal;
+		case AlightOnly:
+			return AlightingPossibilityEnum.normal;
+		case BoardOnly:
+			return AlightingPossibilityEnum.forbidden;
+		case NeitherBoardOrAlight:
+			return AlightingPossibilityEnum.forbidden;
+		case BoardAndAlightOnRequest:
+			return AlightingPossibilityEnum.request_stop;
+		case AlightOnRequest:
+			return AlightingPossibilityEnum.request_stop;
+		case BoardOnRequest:
+			return AlightingPossibilityEnum.normal;
+		}
+		return null;
+	}
+
+	private BoardingPossibilityEnum getForBoarding(BoardingAlightingPossibilityEnum boardingAlightingPossibility) {
+		if (boardingAlightingPossibility == null)
+			return BoardingPossibilityEnum.normal;
+		switch (boardingAlightingPossibility) {
+		case BoardAndAlight:
+			return BoardingPossibilityEnum.normal;
+		case AlightOnly:
+			return BoardingPossibilityEnum.forbidden;
+		case BoardOnly:
+			return BoardingPossibilityEnum.normal;
+		case NeitherBoardOrAlight:
+			return BoardingPossibilityEnum.forbidden;
+		case BoardAndAlightOnRequest:
+			return BoardingPossibilityEnum.request_stop;
+		case AlightOnRequest:
+			return BoardingPossibilityEnum.normal;
+		case BoardOnRequest:
+			return BoardingPossibilityEnum.request_stop;
+		}
+		return null;
+	}
+
+	private PTDirectionEnum getOppositeDirection(PTDirectionEnum direction) {
+		if (direction == null)
+			return PTDirectionEnum.A;
+		switch (direction) {
+		case A:
+			return PTDirectionEnum.R;
+		case R:
+			return PTDirectionEnum.A;
+		case ClockWise:
+			return PTDirectionEnum.CounterClockWise;
+		case CounterClockWise:
+			return PTDirectionEnum.ClockWise;
+		case North:
+			return PTDirectionEnum.South;
+		case South:
+			return PTDirectionEnum.North;
+		case NorthWest:
+			return PTDirectionEnum.SouthEast;
+		case SouthWest:
+			return PTDirectionEnum.NorthEast;
+		case NorthEast:
+			return PTDirectionEnum.SouthWest;
+		case SouthEast:
+			return PTDirectionEnum.NorthWest;
+		case East:
+			return PTDirectionEnum.West;
+		case West:
+			return PTDirectionEnum.East;
+		}
+		return PTDirectionEnum.A;
+
+	}
+
 
 	static {
 		ParserFactory.register(RegtoppLineParser.class.getName(), new ParserFactory() {

@@ -33,7 +33,7 @@ import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
 
 @Log4j
 public class FileContentParser {
-	private static final String REGTOPP_CHARSET = "ISO-8859-1";
+	public static final String REGTOPP_CHARSET = "ISO-8859-1";
 	@Getter
 	private List<Object> rawContent = new ArrayList<>();
 

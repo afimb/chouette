@@ -2,6 +2,8 @@ package mobi.chouette.exchange.regtopp.importer.parser;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.ejb.EJB;
 import javax.inject.Inject;
@@ -33,7 +35,12 @@ import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImporterCommand;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.validation.report.ValidationReport;
+import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
+import mobi.chouette.model.Route;
+import mobi.chouette.model.StopArea;
+import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
 public class RegtopImporterCommandTest extends Arquillian implements mobi.chouette.common.Constant{
@@ -126,13 +133,12 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 
 	
 
-	
 	@Test
-	public void importRegtopAtBStopArea() throws Exception {
+	public void importRegtoppKolumbusLineN96() throws Exception {
 		// Prepare context
 		Context context = initImportContext();
 
-		File f = new File("src/test/data/atb-20160118-20160619.zip");
+		File f = new File("src/test/data/kolumbus/line2306.zip");
 		File dest = new File("target/referential/test");
 		FileUtils.copyFileToDirectory(f, dest);
 		JobDataTest job = (JobDataTest) context.get(JOB_DATA);
@@ -140,75 +146,19 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 
 		RegtoppImporterCommand command = (RegtoppImporterCommand) CommandFactory.create(initialContext, RegtoppImporterCommand.class.getName());
 		
-		
-
-		
-	
-		RegtoppImportParameters parameters = (RegtoppImportParameters) context.get(CONFIGURATION);
-		parameters.setObjectIdPrefix("TST");
-		parameters.setReferencesType("stop_area");
-		
-		boolean result = command.execute(context);
-
-		ActionReport report = (ActionReport) context.get(REPORT);
-		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
-		
-		
-//		Assert.assertEquals(report.getResult(), STATUS_OK, "result");
-//		Assert.assertEquals(report.getFiles().size(), 1, "file reported");
-//		Assert.assertEquals(report.getLines().size(), 1, "line reported");
-//		Reporter.log("report line :" + report.getLines().get(0).toString(), true);
-//		Assert.assertEquals(report.getLines().get(0).getStatus(), LINE_STATE.OK, "line status");
-//		RegtoppTestUtils.checkLine(context);
-//		
-//		Referential referential = (Referential) context.get(REFERENTIAL);
-//		Assert.assertNotEquals(referential.getTimetables(),0, "timetables" );
-//		Assert.assertNotEquals(referential.getSharedTimetables(),0, "shared timetables" );
-
-		// line should be saved
-		utx.begin();
-		em.joinTransaction();
-		Line line = lineDao.findByObjectId("NINOXE:Line:15574334");
-		
-//		RegtoppTestUtils.checkMinimalLine(line);
-		
-		utx.rollback();
-
-		if(!result) {
-			System.out.println(ToStringBuilder.reflectionToString(report,ToStringStyle.MULTI_LINE_STYLE));
-			System.out.println(validationReport);
-			
-		}
-		
-		Assert.assertTrue(result,"Importer command execution failed: "+report.getFailure());
-	}
-
-	@Test
-	public void importRegtopAtBLines() throws Exception {
-		// Prepare context
-		Context context = initImportContext();
-
-		File f = new File("src/test/data/atb-20160118-20160619.zip");
-		File dest = new File("target/referential/test");
-		FileUtils.copyFileToDirectory(f, dest);
-		JobDataTest job = (JobDataTest) context.get(JOB_DATA);
-		job.setFilename(f.getName());
-
-		RegtoppImporterCommand command = (RegtoppImporterCommand) CommandFactory.create(initialContext, RegtoppImporterCommand.class.getName());
-		
-		
-
-		
-	
 		RegtoppImportParameters parameters = (RegtoppImportParameters) context.get(CONFIGURATION);
 		parameters.setObjectIdPrefix("TST");
 		parameters.setReferencesType("line");
+		parameters.setNoSave(false);
+
 		
 		boolean result = command.execute(context);
 
 		ActionReport report = (ActionReport) context.get(REPORT);
 		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
 		
+
+		// TODO create asserts on ActionReport and ValidationReport
 		
 //		Assert.assertEquals(report.getResult(), STATUS_OK, "result");
 //		Assert.assertEquals(report.getFiles().size(), 1, "file reported");
@@ -224,65 +174,50 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		// line should be saved
 		utx.begin();
 		em.joinTransaction();
-		Line line = lineDao.findByObjectId("NINOXE:Line:15574334");
+		Line line = lineDao.findByObjectId("TST:Line:2306");
 		
-//		RegtoppTestUtils.checkMinimalLine(line);
-		
-		utx.rollback();
 
-		if(!result) {
-			System.out.println(ToStringBuilder.reflectionToString(report,ToStringStyle.MULTI_LINE_STYLE));
-			System.out.println(validationReport);
-			
+		Assert.assertNotNull(line,"Line not found");
+		Assert.assertNotNull(line.getNetwork(), "line must have a network");
+		Assert.assertNotNull(line.getCompany(), "line must have a company");
+		Assert.assertNotNull(line.getRoutes(), "line must have routes");
+		Assert.assertEquals(line.getRoutes().size(), 9, "number of routes");
+		Set<StopArea> bps = new HashSet<StopArea>();
+
+		int numStopPoints = 0;
+		int numVehicleJourneys = 0;
+		int numJourneyPatterns = 0;
+		
+		for (Route route : line.getRoutes()) {
+			Assert.assertNotEquals(route.getJourneyPatterns().size(), 0 , "line routes must have journeyPattens");
+			for (JourneyPattern jp : route.getJourneyPatterns()) {
+				Assert.assertNotEquals(jp.getStopPoints().size(), 0, "line journeyPattens must have stoppoints");
+				for (StopPoint point : jp.getStopPoints()) {
+
+					numStopPoints++;
+					Assert.assertNotNull(point.getContainedInStopArea(), "stoppoints must have StopAreas");
+					bps.add(point.getContainedInStopArea());
+
+//					Assert.assertNotNull(point.getForAlighting(),"no alighting info StopPoint="+point);
+//					Assert.assertNotNull(point.getForBoarding(),"no boarding info StopPoint="+point);
+
+				}
+				Assert.assertNotEquals(jp.getVehicleJourneys().size(), 0," journeyPattern should have VehicleJourneys");
+                for (VehicleJourney vj : jp.getVehicleJourneys()) {
+                	Assert.assertNotEquals(vj.getTimetables().size(), 0," vehicleJourney should have timetables");
+                	Assert.assertEquals(vj.getVehicleJourneyAtStops().size(), jp.getStopPoints().size()," vehicleJourney should have correct vehicleJourneyAtStop count");
+                	numVehicleJourneys++; 
+                }
+                numJourneyPatterns++;
+			}
 		}
 		
-		Assert.assertTrue(result,"Importer command execution failed: "+report.getFailure());
-	}
+		Assert.assertEquals(numJourneyPatterns, 9,"number of journeyPatterns");
+		Assert.assertEquals(numVehicleJourneys, 12,"number of vehicleJourneys");
+		Assert.assertEquals(numStopPoints, 411,"number of stopPoints in journeyPattern");
+		Assert.assertEquals(bps.size(), 90, "number boarding positions");
 
-	@Test
-	public void importRegtoppKolumbusLines() throws Exception {
-		// Prepare context
-		Context context = initImportContext();
-
-		File f = new File("src/test/data/kolumbus_regtopp_20160329-20160624.zip");
-		File dest = new File("target/referential/test");
-		FileUtils.copyFileToDirectory(f, dest);
-		JobDataTest job = (JobDataTest) context.get(JOB_DATA);
-		job.setFilename(f.getName());
-
-		RegtoppImporterCommand command = (RegtoppImporterCommand) CommandFactory.create(initialContext, RegtoppImporterCommand.class.getName());
-		
-		
-
-		
 	
-		RegtoppImportParameters parameters = (RegtoppImportParameters) context.get(CONFIGURATION);
-		parameters.setObjectIdPrefix("TST");
-		parameters.setReferencesType("line");
-		
-		boolean result = command.execute(context);
-
-		ActionReport report = (ActionReport) context.get(REPORT);
-		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
-		
-		
-//		Assert.assertEquals(report.getResult(), STATUS_OK, "result");
-//		Assert.assertEquals(report.getFiles().size(), 1, "file reported");
-//		Assert.assertEquals(report.getLines().size(), 1, "line reported");
-//		Reporter.log("report line :" + report.getLines().get(0).toString(), true);
-//		Assert.assertEquals(report.getLines().get(0).getStatus(), LINE_STATE.OK, "line status");
-//		RegtoppTestUtils.checkLine(context);
-//		
-//		Referential referential = (Referential) context.get(REFERENTIAL);
-//		Assert.assertNotEquals(referential.getTimetables(),0, "timetables" );
-//		Assert.assertNotEquals(referential.getSharedTimetables(),0, "shared timetables" );
-
-		// line should be saved
-		utx.begin();
-		em.joinTransaction();
-		Line line = lineDao.findByObjectId("NINOXE:Line:15574334");
-		
-//		RegtoppTestUtils.checkMinimalLine(line);
 		
 		utx.rollback();
 
