@@ -21,7 +21,9 @@ public class RegtoppValidationRules {
 
 	private Collection<? extends CheckPoint> commonCheckPoints() {
 		List<CheckPoint> checkPoints = new ArrayList<CheckPoint>();
-		checkPoints.add(new CheckPoint(REGTOPP_SYSTEM, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(REGTOPP_FILE, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		checkPoints.add(new CheckPoint(REGTOPP_INVALID_ID_REFERENCE, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		checkPoints.add(new CheckPoint(REGTOPP_INVALID_OPTIONAL_ID_REFERENCE, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
 
 		return checkPoints;
 	}

@@ -70,6 +70,10 @@ public class RegtoppLineParser implements Parser, Validator {
 	@Setter
 	private String lineId = null;
 
+	/* Validation rules of type I and II are checked during this step,
+	 * and results are stored in reports.
+	 */
+	// TODO. Rename this function "parse(Context context)".
 	@Override
 	public void validate(Context context) throws Exception {
 
@@ -107,10 +111,16 @@ public class RegtoppLineParser implements Parser, Validator {
 						validationReporter.throwUnknownError(context, ex, RegtoppTripIndexTIX.FILE_EXTENSION);
 					}
 				}
-			}
+			validationReporter.reportErrors(context, bean.getErrors(), RegtoppTripIndexTIX.FILE_EXTENSION);
+			validationReporter.validate(context, RegtoppTripIndexTIX.FILE_EXTENSION, bean.getOkTests());			}
 		}
+
 	}
 
+	/*
+	 * Validation rules of type III are checked at this step.
+	 */
+	// TODO. Rename this function "translate(Context context)" or "produce(Context context)", ...
 	@Override
 	public void parse(Context context) throws Exception {
 

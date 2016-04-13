@@ -66,6 +66,7 @@ public class FileContentParser {
 		// Add custom validation error messages
 
 		in.setErrorHandler(new BeanReaderErrorHandlerSupport() {
+			@Override
 			public void invalidRecord(InvalidRecordException ex) throws Exception {
 				// if a bean object is mapped to a record group,
 				// the exception may contain more than one record
@@ -104,7 +105,8 @@ public class FileContentParser {
 		Object record = null;
 
 		try {
-			while ((record = (RegtoppObject) in.read()) != null) {
+			while ((record = in.read()) != null) {
+				((RegtoppObject) record).setRecordLineNumber(in.getLineNumber());
 				rawContent.add(record);
 			}
 			log.info("Parsed file OK: " + parseableFile.getFile().getName());
