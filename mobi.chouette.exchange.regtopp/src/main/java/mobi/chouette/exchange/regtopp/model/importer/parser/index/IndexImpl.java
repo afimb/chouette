@@ -24,7 +24,7 @@ public abstract class IndexImpl<T> implements Index<T> {
 
 	@Override
 	public Iterator<T> iterator() {
-		return (Iterator<T>) index.values().iterator();
+		return index.values().iterator();
 	}
 
 	@Override
@@ -32,7 +32,6 @@ public abstract class IndexImpl<T> implements Index<T> {
 		index.clear();
 		index = null;
 		parser = null;
-
 	}
 
 	@Override
@@ -64,6 +63,16 @@ public abstract class IndexImpl<T> implements Index<T> {
 	@Override
 	public int getLength() {
 		return index.size();
+	}
+
+	protected boolean isEmpty(String value)
+	{
+		return value == null || value.trim().length() == 0;
+	}
+
+	protected boolean isPresent(String value)
+	{
+		return !isEmpty(value);
 	}
 
 }
