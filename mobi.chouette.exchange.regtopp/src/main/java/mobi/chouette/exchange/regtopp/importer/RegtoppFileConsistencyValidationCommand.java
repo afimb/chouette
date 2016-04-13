@@ -32,6 +32,7 @@ import mobi.chouette.exchange.regtopp.model.RegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.model.RegtoppVehicleJourneyVLP;
 import mobi.chouette.exchange.regtopp.model.RegtoppZoneSON;
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
+import mobi.chouette.exchange.regtopp.parser.RegtoppLineParser;
 import mobi.chouette.exchange.regtopp.parser.RegtoppStopParser;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 import mobi.chouette.exchange.report.ActionReport;
@@ -40,7 +41,7 @@ import mobi.chouette.exchange.report.ActionReport;
 @Log4j
 public class RegtoppFileConsistencyValidationCommand implements Command {
 
-	public static final String COMMAND = "RegtoppFilePresenceValidationCommand";
+	public static final String COMMAND = RegtoppFileConsistencyValidationCommand.class.getSimpleName();
 
 	@Override
 	public boolean execute(Context context) throws Exception {
@@ -66,9 +67,13 @@ public class RegtoppFileConsistencyValidationCommand implements Command {
 			stopParser.validate(context);
 		}
 
+		if (importer.hasTIXImporter()) {
+			RegtoppLineParser lineParser = (RegtoppLineParser) ParserFactory.create(RegtoppLineParser.class.getName());
+			lineParser.validate(context);
+		}
+
 		// TODO Add all parsers
 
-		// TODO
 		return true;
 	}
 

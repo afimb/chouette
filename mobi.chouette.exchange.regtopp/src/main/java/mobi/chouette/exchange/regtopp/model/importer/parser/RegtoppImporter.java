@@ -2,7 +2,6 @@ package mobi.chouette.exchange.regtopp.model.importer.parser;
 
 import java.io.File;
 import java.io.FilenameFilter;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -84,7 +83,7 @@ public class RegtoppImporter {
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public Index getIndex(String name, Class clazz) throws Exception {
+	public Index getIndex(String name, Class clazz) {
 		Index index = indexMap.get(name);
 
 		if (index == null) {
@@ -104,7 +103,7 @@ public class RegtoppImporter {
 
 				index = IndexFactory.build(validationReporter, parser, clazz.getName());
 				indexMap.put(name, index);
-			} catch (ClassNotFoundException | IOException e) {
+			} catch (Exception e) {
 				FileParserValidationError context = new FileParserValidationError();
 				context.put(FileParserValidationError.PATH, path);
 				context.put(FileParserValidationError.ERROR, ERROR.SYSTEM);
@@ -116,15 +115,15 @@ public class RegtoppImporter {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Index<RegtoppStopHPL> getStopById() throws Exception {
+	public Index<RegtoppStopHPL> getStopById() {
 		return getIndex(INDEX.STOP_BY_ID.name(), StopById.class);
 	}
 
-	public Index<RegtoppTripIndexTIX> getUniqueLinesByTripIndex() throws Exception {
+	public Index<RegtoppTripIndexTIX> getUniqueLinesByTripIndex() {
 		return getIndex(INDEX.LINE_BY_TRIPS.name(), UniqueLinesByTripIndex.class);
 	}
 
-	public Index<RegtoppTripIndexTIX> getTripIndex() throws Exception {
+	public Index<RegtoppTripIndexTIX> getTripIndex() {
 		return getIndex(INDEX.TRIP_INDEX.name(), TripByIndexingKey.class);
 	}
 
@@ -134,6 +133,10 @@ public class RegtoppImporter {
 
 	public boolean hasTIXImporter() {
 		return hasImporter(RegtoppTripIndexTIX.FILE_EXTENSION);
+	}
+
+	public boolean hasLINImporter() {
+		return hasImporter(RegtoppLineLIN.FILE_EXTENSION);
 	}
 
 	private boolean hasImporter(final String pattern) {
@@ -148,24 +151,24 @@ public class RegtoppImporter {
 		return matchingFiles.length == 1;
 	}
 
-	public Index<RegtoppFootnoteMRK> getFootnoteById() throws Exception {
+	public Index<RegtoppFootnoteMRK> getFootnoteById() {
 		return getIndex(INDEX.REMARK_BY_ID.name(), FootnoteById.class);
 	}
 
-	public Index<RegtoppDestinationDST> getDestinationById() throws Exception {
+	public Index<RegtoppDestinationDST> getDestinationById() {
 		return getIndex(INDEX.DESTINATION_BY_ID.name(), DestinationById.class);
 	}
 
-	public Index<RegtoppDayCodeDKO> getDayCodeById() throws Exception {
+	public Index<RegtoppDayCodeDKO> getDayCodeById() {
 		return getIndex(INDEX.DAYCODE_BY_ID.name(), DaycodeById.class);
 	}
 
-	public Index<RegtoppLineLIN> getLineById() throws Exception {
+	public Index<RegtoppLineLIN> getLineById() {
 		return getIndex(INDEX.LINE_BY_ID.name(), LineById.class);
 
 	}
 
-	public Index<RegtoppRouteTMS> getRouteIndex() throws Exception {
+	public Index<RegtoppRouteTMS> getRouteIndex() {
 		return getIndex(INDEX.ROUTE_INDEX.name(), RouteByIndexingKey.class);
 	}
 

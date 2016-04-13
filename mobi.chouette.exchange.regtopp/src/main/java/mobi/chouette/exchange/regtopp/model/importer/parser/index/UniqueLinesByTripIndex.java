@@ -5,23 +5,13 @@ import java.io.IOException;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.regtopp.model.RegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.model.importer.parser.FileContentParser;
-import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 
 @Log4j
-public class UniqueLinesByTripIndex extends IndexImpl<RegtoppTripIndexTIX> {
+public class UniqueLinesByTripIndex extends TripIndex {
 
 	public UniqueLinesByTripIndex(RegtoppValidationReporter validationReporter, FileContentParser fileParser) throws Exception {
 		super(validationReporter, fileParser);
-	}
-
-	@Override
-	public boolean validate(RegtoppTripIndexTIX bean, RegtoppImporter dao) {
-		boolean result = true;
-
-		log.warn("TripByIndexingKey validation not implemented");
-
-		return result;
 	}
 
 	public static class DefaultImporterFactory extends IndexFactory {

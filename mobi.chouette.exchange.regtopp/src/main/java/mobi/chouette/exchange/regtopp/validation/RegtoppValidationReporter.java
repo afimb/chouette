@@ -46,7 +46,7 @@ public class RegtoppValidationReporter {
 
 	public void validateUnknownError(Context context) {
 		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
-		CheckPoint cp = validationReport.findCheckPointByName(REGTOPP_SYSTEM);
+		CheckPoint cp = validationReport.findCheckPointByName(REGTOPP_FILE);
 		if (cp.getState() == CheckPoint.RESULT.UNCHECK)
 			cp.setState(CheckPoint.RESULT.OK);
 	}
@@ -72,14 +72,33 @@ public class RegtoppValidationReporter {
 		// log.error(ex);
 
 		switch (ex.getError()) {
+		case INVALID_MANDATORY_ID_REFERENCE:
+			checkPointName = checkPointName(name, RegtoppException.ERROR.INVALID_MANDATORY_ID_REFERENCE);
+			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+					new FileError(FileError.CODE.INVALID_FORMAT,
+							"Unreferenced " + ex.getField() + " (rule " + checkPointName + ")"));
+			validationReport.addDetail(checkPointName,
+					new Location(filenameInfo, fieldName, ex.getLineNumber()), ex.getValue(), ex.getField(), CheckPoint.RESULT.UNCHECK);
+			break;
+//			throw ex;
+		case INVALID_OPTIONAL_ID_REFERENCE:
+			checkPointName = checkPointName(name, RegtoppException.ERROR.INVALID_OPTIONAL_ID_REFERENCE);
+			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+					new FileError(FileError.CODE.INVALID_FORMAT,
+							"Unreferenced " + ex.getField() + " (rule " + checkPointName + ")"));
+			validationReport.addDetail(checkPointName,
+					new Location(filenameInfo, fieldName, ex.getLineNumber()), ex.getValue(), ex.getField(), CheckPoint.RESULT.UNCHECK);
+			break;
+//			throw ex;
 		case SYSTEM:
 			// 1-GTFS-CSV-2
 			checkPointName = checkPointName(name, RegtoppException.ERROR.SYSTEM);
 			report.addFileInfo(filenameInfo, FILE_STATE.ERROR, new FileError(FileError.CODE.INVALID_FORMAT,
 					"The first line in file \"" + filenameInfo + "\" must comply with CSV (rule " + checkPointName + ")"));
 			validationReport.addDetail(checkPointName, new Location(filenameInfo, 1, -1), filenameInfo, CheckPoint.RESULT.NOK);
-			throw ex;
-			// throw new Exception("The first line in file \"" + filenameInfo + "\" must comply with CSV");
+			break;
+//			throw ex;
+
 		default:
 			break;
 		}
@@ -89,8 +108,11 @@ public class RegtoppValidationReporter {
 		name = capitalize(name);
 		switch (errorName) {
 		case SYSTEM:
-			return REGTOPP_SYSTEM;
-
+			return REGTOPP_FILE;
+		case INVALID_MANDATORY_ID_REFERENCE:
+			return REGTOPP_INVALID_ID_REFERENCE;
+		case INVALID_OPTIONAL_ID_REFERENCE:
+			return REGTOPP_INVALID_OPTIONAL_ID_REFERENCE;
 		default:
 			return null;
 		}
@@ -109,7 +131,7 @@ public class RegtoppValidationReporter {
 			char c = name.charAt(0);
 			if (c >= 'a' && c <= 'z') {
 				name = name.substring(1);
-				name = (char) ((int) c + (int) 'A' - (int) ('a')) + name;
+				name = (char) (c + 'A' - ('a')) + name;
 			}
 		}
 		return name;

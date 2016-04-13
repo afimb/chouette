@@ -65,7 +65,7 @@ public class RegtoppImporterProcessingCommands implements ProcessingCommands {
 			// Validate that files are present, if missing some report this
 			commands.add(CommandFactory.create(initialContext, RegtoppFilePresenceValidationCommand.class.getName()));
 
-			// Parse and validate file consistency
+			// validate file consistency
 			commands.add(CommandFactory.create(initialContext, RegtoppFileConsistencyValidationCommand.class.getName()));
 		} catch (Exception e) {
 			log.error(e, e);
