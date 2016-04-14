@@ -42,13 +42,13 @@ public class NeptuneSAXErrorHandler implements ErrorHandler, Constant {
 		if (report1 == null) {
 			report1 = new CheckPoint(XML_1, CheckPoint.RESULT.OK,
 					CheckPoint.SEVERITY.ERROR);
-			validationReport.getCheckPoints().add(report1);
+			validationReport.addCheckPoint(report1);
 		}
 		report2 = validationReport.findCheckPointByName(XML_2);
 		if (report2 == null) {
 			report2 = new CheckPoint(XML_2, CheckPoint.RESULT.OK,
 					CheckPoint.SEVERITY.WARNING);
-			validationReport.getCheckPoints().add(report2);
+			validationReport.addCheckPoint(report2);
 		}
 		fileName = new File(new URL(fileURL).toURI()).getName();
 

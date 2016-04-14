@@ -11,9 +11,8 @@ import mobi.chouette.exchange.gtfs.model.importer.GtfsConverter;
 public class TripExporter extends ExporterImpl<GtfsTrip> implements
 		GtfsConverter {
 	public static enum FIELDS {
-		route_id, service_id, trip_id, trip_headsign, trip_short_name, direction_id, wheelchair_accessible; // ,
+		route_id, service_id, trip_id, trip_headsign, trip_short_name, direction_id, wheelchair_accessible, shape_id; // ,
 																											// block_id,
-																											// shape_id,
 																											// bikes_allowed;
 	};
 
@@ -56,9 +55,9 @@ public class TripExporter extends ExporterImpl<GtfsTrip> implements
 			bean.setWheelchairAccessible(WHEELCHAIRACCESSIBLETYPE_CONVERTER
 					.from(context, FIELDS.wheelchair_accessible,
 							values.get(i++), false));
+			bean.setShapeId(STRING_CONVERTER.from(context, FIELDS.shape_id,
+			values.get(i++), false));
 			// bean.setBlockId(STRING_CONVERTER.from(context, FIELDS.block_id,
-			// values.get(i++), false));
-			// bean.setShapeId(STRING_CONVERTER.from(context, FIELDS.shape_id,
 			// values.get(i++), false));
 			// bean.setBikesAllowed(BIKESALLOWEDTYPE_CONVERTER.from(context,
 			// FIELDS.bikes_allowed, values.get(i++), false));
@@ -85,10 +84,10 @@ public class TripExporter extends ExporterImpl<GtfsTrip> implements
 			values.add(WHEELCHAIRACCESSIBLETYPE_CONVERTER.to(context,
 					FIELDS.wheelchair_accessible,
 					input.getWheelchairAccessible(), false));
+			values.add(STRING_CONVERTER.to(context, FIELDS.shape_id,
+			input.getShapeId(), false));
 			// values.add(STRING_CONVERTER.to(context, FIELDS.block_id,
 			// input.getBlockId(), false));
-			// values.add(STRING_CONVERTER.to(context, FIELDS.shape_id,
-			// input.getShapeId(), false));
 			// values.add(BIKESALLOWEDTYPE_CONVERTER.to(context,
 			// FIELDS.bikes_allowed, input.getBikesAllowed(), false));
 

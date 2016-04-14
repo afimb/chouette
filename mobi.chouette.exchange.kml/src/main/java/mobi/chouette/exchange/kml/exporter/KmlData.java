@@ -3,7 +3,9 @@ package mobi.chouette.exchange.kml.exporter;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,27 +14,36 @@ import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.NeptuneLocalizedObject;
 import mobi.chouette.model.StopArea;
+import mobi.chouette.model.StopPoint;
 
 import org.apache.commons.collections.map.ListOrderedMap;
 
+import com.vividsolutions.jts.geom.Coordinate;
+
 public class KmlData {
 	@Getter
-	@Setter
 	private String name;
 	@Getter
 	private ListOrderedMap extraData = new ListOrderedMap();
 	@Getter
-	private List<KmlItem> items = new ArrayList<>();
+	private Map<String,KmlItem> items = new HashMap<>();
+	
+	public KmlData(String name)
+	{
+		this.name = name;
+	}
 	
 	public void addExtraData(String key, Object value)
 	{
 		extraData.put(key,valueOf(value));
 	}
 
-	public KmlItem addNewItem()
+	public KmlItem addNewItem(String id)
 	{
+		if (items.containsKey(id)) return null;
 		KmlItem item = new KmlItem();
-		items.add(item);
+		item.setId(id);
+		items.put(id,item);
 		return item;
 	}
 
@@ -82,13 +93,24 @@ public class KmlData {
 			}
 				
 		}
+		public void addLineString(com.vividsolutions.jts.geom.LineString geometry)
+		{
+			if (multiLineString == null) multiLineString = new ArrayList<>();
+			List<KmlPoint> ls = new ArrayList<>();
+			multiLineString.add(ls);
+			Coordinate[] coordinates = geometry.getCoordinates();
+			for (Coordinate object : coordinates) {
+				ls.add(new KmlPoint(object.x,object.y));
+			}
+				
+		}
 	}
 
 	public class KmlPoint {
 		@Getter
-		private double latitude;
+		public double latitude;
 		@Getter
-		private double longitude;
+		public double longitude;
 		
 		public KmlPoint(NeptuneLocalizedObject object)
 		{
@@ -100,6 +122,11 @@ public class KmlData {
 		{
 			this.latitude = latitude.doubleValue(); 
 			this.longitude = longitude.doubleValue(); 
+		}
+
+		public KmlPoint(double x, double y) {
+			this.latitude = y; 
+			this.longitude = x; 
 		}
 	}
 	
@@ -120,9 +147,13 @@ public class KmlData {
 		return data.toString();
 	}
 
-	public KmlItem addStopArea(StopArea area) {
-		KmlItem item = addNewItem();
-		item.setId(area.getObjectId());
+	public KmlItem addStopPoint(StopPoint point) {
+		KmlItem item = addNewItem(point.getObjectId());
+		if (item == null) return null;
+		// item.setId(area.getObjectId());
+		StopArea area = point.getContainedInStopArea();
+		if (area != null)
+		{
 		item.addAttribute("name", area.getName());
 		item.addExtraData("objectid", area.getObjectId());
 		item.addExtraData("object_version", area.getObjectVersion());
@@ -146,20 +177,45 @@ public class KmlData {
 		if (area.getParent() != null)
 		   item.addExtraData("parent_objectid", area.getParent().getObjectId());
 		item.setPoint(area);
+		}
+		return item;
+	}
+
+	public KmlItem addStopArea(StopArea area) {
+		KmlItem item = addNewItem(area.getObjectId());
+		if (item == null) return null;
+		// item.setId(area.getObjectId());
+		item.addAttribute("name", area.getName());
+		item.addExtraData("objectid", area.getObjectId());
+		item.addExtraData("object_version", area.getObjectVersion());
+		item.addExtraData("creation_time", area.getCreationTime());
+		item.addExtraData("creator_id", area.getCreatorId());
+		item.addExtraData("name", area.getName());
+		item.addExtraData("area_type", area.getAreaType());
+		item.addExtraData("registration_number", area.getRegistrationNumber());
+		item.addExtraData("nearest_topic_name", area.getNearestTopicName());
+		item.addExtraData("fare_code", area.getFareCode());
+		item.addExtraData("country_code", area.getCountryCode());
+		item.addExtraData("street_name", area.getStreetName());
+		item.addExtraData("mobility_restricted_suitability", area.getMobilityRestrictedSuitable());
+		item.addExtraData("stairs_availability", area.getStairsAvailable());
+		item.addExtraData("lift_availability", area.getLiftAvailable());
+		if (area.getParent() != null)
+		   item.addExtraData("parent", area.getParent().getObjectId());
+		item.setPoint(area);
 		return item;
 	}
 	
 	public KmlItem addConnectionLink(ConnectionLink link) {
-		KmlItem item = addNewItem();
-		item.setId(link.getObjectId());
+		KmlItem item = addNewItem(link.getObjectId());
+		if (item == null) return null;
+		// item.setId(link.getObjectId());
 		item.addAttribute("name", link.getName());
-		item.addExtraData("connection_link_type", link.getLinkType());
 		item.addExtraData("objectid", link.getObjectId());
 		item.addExtraData("object_version", link.getObjectVersion());
 		item.addExtraData("creation_time", link.getCreationTime());
 		item.addExtraData("creator_id", link.getCreatorId());
 		item.addExtraData("name", link.getName());
-		item.addExtraData("comment", link.getComment());
 		item.addExtraData("link_distance", link.getLinkDistance());
 		item.addExtraData("link_type", link.getLinkType());
 		item.addExtraData("default_duration", link.getDefaultDuration());
@@ -169,7 +225,6 @@ public class KmlData {
 		item.addExtraData("mobility_restricted_suitability", link.getMobilityRestrictedSuitable());
 		item.addExtraData("stairs_availability", link.getStairsAvailable());
 		item.addExtraData("lift_availability", link.getLiftAvailable());
-		item.addExtraData("int_user_needs", link.getIntUserNeeds());
 		if (link.getStartOfLink() != null && link.getEndOfLink() != null)
 		{
 		   item.addExtraData("departure_objectid", link.getStartOfLink().getObjectId());
@@ -181,24 +236,20 @@ public class KmlData {
 	}
 
 	public KmlItem addAccessPoint(AccessPoint point) {
-		KmlItem item = addNewItem();
-		item.setId(point.getObjectId());
+		KmlItem item = addNewItem(point.getObjectId());
+		if (item == null) return null;
+		// item.setId(point.getObjectId());
 		item.addAttribute("name", point.getName());
 		item.addExtraData("objectid", point.getObjectId());
 		item.addExtraData("object_version", point.getObjectVersion());
 		item.addExtraData("creation_time", point.getCreationTime());
 		item.addExtraData("creator_id", point.getCreatorId());
 		item.addExtraData("name", point.getName());
-		item.addExtraData("comment", point.getComment());
-		item.addExtraData("longitude", point.getLongitude());
-		item.addExtraData("latitude", point.getLatitude());
-		item.addExtraData("long_lat_type", point.getLongLatType());
 		item.addExtraData("country_code", point.getCountryCode());
 		item.addExtraData("street_name", point.getStreetName());
 		item.addExtraData("openning_time", point.getOpeningTime());
 		item.addExtraData("closing_time", point.getClosingTime());
 		item.addExtraData("access_type", point.getType());
-		item.addExtraData("access_point_type", point.getType());
 		item.addExtraData("mobility_restricted_suitability", point.getMobilityRestrictedSuitable());
 		item.addExtraData("stairs_availability", point.getStairsAvailable());
 		item.addExtraData("lift_availability", point.getLiftAvailable());
@@ -208,8 +259,9 @@ public class KmlData {
 	}
 
 	public KmlItem addAccessLink(AccessLink link) {
-		KmlItem item = addNewItem();
-		item.setId(link.getObjectId());
+		KmlItem item = addNewItem(link.getObjectId());
+		if (item == null) return null;
+		// item.setId(link.getObjectId());
 		item.addAttribute("name", link.getName());
 		item.addExtraData("access_link_type", link.getLinkType());
 		item.addExtraData("objectid", link.getObjectId());

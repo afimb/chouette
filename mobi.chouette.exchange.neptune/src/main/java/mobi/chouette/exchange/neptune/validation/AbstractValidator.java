@@ -73,10 +73,10 @@ public abstract class AbstractValidator implements Constant {
 			String key = prefix + name + "-" + i;
 			if (validationReport.findCheckPointByName(key) == null) {
 				if (severities[i - 1].equals("W")) {
-					validationReport.getCheckPoints().add(
+					validationReport.addCheckPoint(
 							new CheckPoint(key, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
 				} else {
-					validationReport.getCheckPoints().add(
+					validationReport.addCheckPoint(
 							new CheckPoint(key, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 				}
 			}

@@ -32,14 +32,16 @@ import mobi.chouette.service.ServiceException;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder = { "id", "referential", "action", "type", "created", "started", "updated", "status", "linkInfos",
 		"actionParameters" })
-// @XmlSeeAlso({NeptuneExportParameters.class,
-// NeptuneImportParameters.class,
+// @XmlSeeAlso({NeptuneImportParameters.class,
+// NeptuneExportParameters.class,
 // GtfsImportParameters.class,
 // GtfsExportParameters.class,
 // NetexImportParameters.class,
 // NetexExportParameters.class,
 // HubExportParameters.class,
 // KmlExportParameters.class,
+// GeojsonExportParameters.class,
+// SigExportParameters.class,
 // ConvertParameters.class,
 // ValidateParameters.class,
 // NeptuneValidateParameters.class,
