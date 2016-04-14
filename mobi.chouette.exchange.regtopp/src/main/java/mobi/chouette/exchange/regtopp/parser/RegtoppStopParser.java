@@ -1,8 +1,11 @@
 package mobi.chouette.exchange.regtopp.parser;
 
-import static mobi.chouette.common.Constant.*;
-import static mobi.chouette.exchange.regtopp.Constant.*;
-import static mobi.chouette.exchange.regtopp.validation.Constant.*;
+import static mobi.chouette.common.Constant.CONFIGURATION;
+import static mobi.chouette.common.Constant.MAIN_VALIDATION_REPORT;
+import static mobi.chouette.common.Constant.PARSER;
+import static mobi.chouette.common.Constant.REFERENTIAL;
+import static mobi.chouette.exchange.regtopp.Constant.REGTOPP_REPORTER;
+import static mobi.chouette.exchange.regtopp.validation.Constant.REGTOPP_FILE_HPL;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
@@ -37,7 +40,7 @@ public class RegtoppStopParser implements Parser, Validator {
 		RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
 
 		for (RegtoppStopHPL stop : importer.getStopById()) {
-			String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), StopArea.STOPAREA_KEY, stop.getStopId(), log);
+			String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), StopArea.STOPAREA_KEY, stop.getStopId());
 			StopArea stopArea = ObjectFactory.getStopArea(referential, objectId);
 
 			//stopArea.setRegistrationNumber(stop.getStopId());

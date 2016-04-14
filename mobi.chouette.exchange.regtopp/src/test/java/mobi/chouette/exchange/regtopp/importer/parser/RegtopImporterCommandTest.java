@@ -28,6 +28,7 @@ import org.testng.annotations.Test;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.LineDAO;
+import mobi.chouette.dao.RouteDAO;
 import mobi.chouette.exchange.regtopp.DummyChecker;
 import mobi.chouette.exchange.regtopp.JobDataTest;
 import mobi.chouette.exchange.regtopp.RegtoppTestUtils;
@@ -65,6 +66,9 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 	
 	@EJB
 	LineDAO lineDao;
+
+	@EJB
+	RouteDAO routeDao;
 
 	@PersistenceContext(unitName = "referential")
 	EntityManager em;
@@ -218,6 +222,17 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		Assert.assertEquals(numStopPoints, 411,"number of stopPoints in journeyPattern");
 		Assert.assertEquals(bps.size(), 90, "number boarding positions");
 	
+		// Check opposite routes
+		Route outbound = routeDao.findByObjectId("TST:Route:2306103");
+		Route inbound = routeDao.findByObjectId("TST:Route:2306203");
+		
+		Assert.assertNotNull(outbound,"Outbound route not found");
+		Assert.assertNotNull(inbound,"Inbound route not found");
+		
+		Assert.assertNotNull(outbound.getOppositeRoute(),"Oppsite route to outbound not found");
+		Assert.assertNotNull(inbound.getOppositeRoute(),"Oppsite route to inbound not found");
+		
+		Assert.assertTrue(outbound.getOppositeRoute().equals(inbound),"Opposite route incorrect");
 		
 		utx.rollback();
 

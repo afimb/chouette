@@ -7,9 +7,7 @@ import static mobi.chouette.common.Constant.REFERENTIAL;
 import static mobi.chouette.exchange.regtopp.Constant.REGTOPP_REPORTER;
 import static mobi.chouette.exchange.regtopp.validation.Constant.REGTOPP_FILE_TIX;
 
-import java.sql.Date;
 import java.sql.Time;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -19,6 +17,9 @@ import org.apache.commons.lang.StringUtils;
 import org.joda.time.Duration;
 import org.joda.time.LocalTime;
 
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
@@ -41,13 +42,11 @@ import mobi.chouette.exchange.regtopp.model.importer.parser.index.Index;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 import mobi.chouette.exchange.validation.report.CheckPoint;
 import mobi.chouette.exchange.validation.report.ValidationReport;
-import mobi.chouette.model.CalendarDay;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.Footnote;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;
-import mobi.chouette.model.Period;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
@@ -57,7 +56,6 @@ import mobi.chouette.model.VehicleJourneyAtStop;
 import mobi.chouette.model.type.AlightingPossibilityEnum;
 import mobi.chouette.model.type.BoardingAlightingPossibilityEnum;
 import mobi.chouette.model.type.BoardingPossibilityEnum;
-import mobi.chouette.model.type.DayTypeEnum;
 import mobi.chouette.model.type.PTDirectionEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.util.ObjectFactory;
@@ -70,8 +68,8 @@ public class RegtoppLineParser implements Parser, Validator {
 	@Setter
 	private String lineId = null;
 
-	/* Validation rules of type I and II are checked during this step,
-	 * and results are stored in reports.
+	/*
+	 * Validation rules of type I and II are checked during this step, and results are stored in reports.
 	 */
 	// TODO. Rename this function "parse(Context context)".
 	@Override
@@ -111,8 +109,9 @@ public class RegtoppLineParser implements Parser, Validator {
 						validationReporter.throwUnknownError(context, ex, RegtoppTripIndexTIX.FILE_EXTENSION);
 					}
 				}
-			validationReporter.reportErrors(context, bean.getErrors(), RegtoppTripIndexTIX.FILE_EXTENSION);
-			validationReporter.validate(context, RegtoppTripIndexTIX.FILE_EXTENSION, bean.getOkTests());			}
+				validationReporter.reportErrors(context, bean.getErrors(), RegtoppTripIndexTIX.FILE_EXTENSION);
+				validationReporter.validate(context, RegtoppTripIndexTIX.FILE_EXTENSION, bean.getOkTests());
+			}
 		}
 
 	}
@@ -137,7 +136,7 @@ public class RegtoppLineParser implements Parser, Validator {
 		RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
 		RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
 
-		String chouetteLineId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Line.LINE_KEY, lineId, log);
+		String chouetteLineId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Line.LINE_KEY, lineId);
 
 		// Create the actual Chouette Line and put it in the "referential" space (which is later used by the LineImporterCommand)
 		Line line = ObjectFactory.getLine(referential, chouetteLineId);
@@ -149,7 +148,6 @@ public class RegtoppLineParser implements Parser, Validator {
 			line.setName(regtoppLine.getName());
 			line.setPublishedName(regtoppLine.getName());
 		}
-		
 
 		Index<RegtoppDestinationDST> destinationIndex = importer.getDestinationById();
 
@@ -161,7 +159,7 @@ public class RegtoppLineParser implements Parser, Validator {
 
 				// Add network
 				String chouetteNetworkId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.PTNETWORK_KEY,
-						routeSegment.getAdminCode(), log);
+						routeSegment.getAdminCode());
 				Network ptNetwork = ObjectFactory.getPTNetwork(referential, chouetteNetworkId);
 				if (!ptNetwork.isFilled()) {
 					ptNetwork.setSourceIdentifier("Regtopp");
@@ -170,11 +168,10 @@ public class RegtoppLineParser implements Parser, Validator {
 					ptNetwork.setFilled(true);
 				}
 				line.setNetwork(ptNetwork);
-				
 
 				// Add authority company
 				String chouetteCompanyId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.COMPANY_KEY,
-						routeSegment.getAdminCode(), log);
+						routeSegment.getAdminCode());
 				Company company = ObjectFactory.getCompany(referential, chouetteCompanyId);
 				if (!company.isFilled()) {
 					company.setRegistrationNumber(routeSegment.getAdminCode());
@@ -184,10 +181,10 @@ public class RegtoppLineParser implements Parser, Validator {
 				}
 				line.setCompany(company);
 
-				String routeKey = routeSegment.getLineId() + routeSegment.getDirection() + routeSegment.getRouteId();
+				RouteKey routeKey = new RouteKey(routeSegment.getLineId(), routeSegment.getDirection(), routeSegment.getRouteId());
 
 				// Create route
-				String chouetteRouteId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.ROUTE_KEY, routeKey, log);
+				String chouetteRouteId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.ROUTE_KEY, routeKey.toString());
 				Route route = ObjectFactory.getRoute(referential, chouetteRouteId);
 				if (!route.isFilled()) {
 					// Filled = only a flag to indicate that we no longer should write data to this entity
@@ -195,41 +192,46 @@ public class RegtoppLineParser implements Parser, Validator {
 					if (arrivalText != null) {
 						route.setName(arrivalText.getDestinationText());
 					}
-					
+
 					route.setDirection(routeSegment.getDirection() == DirectionType.Outbound ? PTDirectionEnum.A : PTDirectionEnum.R);
-					
+
 					// TODO UNSURE
 					route.setNumber(routeSegment.getRouteId());
 					route.setLine(line);
+					
+					// Black magic
+					route.setWayBack(routeSegment.getDirection() == DirectionType.Outbound ? "A" : "R");
+					
 					route.setFilled(true);
+					
 				}
 
 				// Create journey pattern
 				String chouetteJourneyPatternId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.JOURNEYPATTERN_KEY,
-						routeKey, log);
+						routeKey.toString());
 
 				JourneyPattern journeyPattern = ObjectFactory.getJourneyPattern(referential, chouetteJourneyPatternId);
 				journeyPattern.setRoute(route);
 
 				// Create stop point
 				String chouetteStopPointId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.STOPPOINT_KEY,
-						routeKey + routeSegment.getSequenceNumberStop(), log);
+						routeKey + routeSegment.getSequenceNumberStop());
 
 				StopPoint stopPoint = createStopPoint(referential, context, routeSegment, chouetteStopPointId);
-				
+
 				// Add stop point to journey pattern AND route (for now)
 				journeyPattern.addStopPoint(stopPoint);
 				route.getStopPoints().add(stopPoint);
 
 			}
 		}
-		
+
 		Comparator<StopPoint> stopPointSequenceComparator = new Comparator<StopPoint>() {
 			public int compare(StopPoint arg0, StopPoint arg1) {
 				return arg0.getPosition().compareTo(arg1.getPosition());
 			}
 		};
-		
+
 		// Sort stopPoints on JourneyPattern
 		Collection<JourneyPattern> journeyPatterns = referential.getJourneyPatterns().values();
 		for (JourneyPattern jp : journeyPatterns) {
@@ -258,15 +260,15 @@ public class RegtoppLineParser implements Parser, Validator {
 					line.setNumber(trip.getLineNumberVisible());
 
 					String tripKey = trip.getLineId() + trip.getTripId();
-					String routeKey = trip.getLineId() + trip.getDirection() + trip.getRouteIdRef();
+					RouteKey routeKey = new RouteKey(trip.getLineId(), trip.getDirection(), trip.getRouteIdRef());
 
 					String chouetteVehicleJourneyId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.VEHICLEJOURNEY_KEY,
-							tripKey, log);
+							tripKey);
 					VehicleJourney vehicleJourney = ObjectFactory.getVehicleJourney(referential, chouetteVehicleJourneyId);
 
 					// Add authority company
 					String chouetteOperatorId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.COMPANY_KEY,
-							trip.getOperatorCode(), log);
+							trip.getOperatorCode());
 					Company operator = ObjectFactory.getCompany(referential, chouetteOperatorId);
 					operator.setRegistrationNumber(trip.getOperatorCode());
 					operator.setName("Operator " + trip.getOperatorCode());
@@ -274,25 +276,29 @@ public class RegtoppLineParser implements Parser, Validator {
 					vehicleJourney.setCompany(operator);
 
 					addFootnote(trip.getFootnoteId1Ref(), vehicleJourney, line, importer);
-					addFootnote(trip.getFootnoteId2Ref(), vehicleJourney, line,importer);
+					addFootnote(trip.getFootnoteId2Ref(), vehicleJourney, line, importer);
 
-					RegtoppDestinationDST arrivalText = destinationIndex.getValue(trip.getDestinationIdArrivalRef());
+					RegtoppDestinationDST departureText = destinationIndex.getValue(trip.getDestinationIdDepartureRef()); // Turens bestemmelsessted
+					RegtoppDestinationDST arrivalText = destinationIndex.getValue(trip.getDestinationIdArrivalRef()); // Turens startsted
 
 					// TODO unsure
-					if (arrivalText != null) {
-						vehicleJourney.setPublishedJourneyName(arrivalText.getDestinationText());
+					if (departureText != null && arrivalText != null) {
+						vehicleJourney.setPublishedJourneyName(arrivalText.getDestinationText()+" -> "+departureText.getDestinationText());
+					} else if(departureText != null) {
+						vehicleJourney.setPublishedJourneyName(departureText.getDestinationText());
 					}
+					
 
 					vehicleJourney.setPublishedJourneyIdentifier(StringUtils.trimToNull(trip.getLineNumberVisible()));
 					TransportType typeOfService = trip.getTypeOfService();
 					TransportModeNameEnum transportMode = convertTypeOfService(typeOfService);
 					vehicleJourney.setTransportMode(transportMode);
 
-					String chouetteRouteId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.ROUTE_KEY, routeKey, log);
+					String chouetteRouteId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.ROUTE_KEY, routeKey.toString());
 					Route route = ObjectFactory.getRoute(referential, chouetteRouteId);
 
 					String chouetteJourneyPatternId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.JOURNEYPATTERN_KEY,
-							routeKey, log);
+							routeKey.toString());
 					JourneyPattern journeyPattern = ObjectFactory.getJourneyPattern(referential, chouetteJourneyPatternId);
 
 					vehicleJourney.setJourneyPattern(journeyPattern);
@@ -301,16 +307,15 @@ public class RegtoppLineParser implements Parser, Validator {
 					// Duration since midnight
 					// Link to timetable
 					String chouetteTimetableId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.TIMETABLE_KEY,
-							trip.getDayCodeRef(), log);
+							trip.getDayCodeRef());
 
 					Duration tripDepartureTime = trip.getDepartureTime();
-					if(tripDepartureTime.getStandardSeconds() >= 24*60*60) {
-						// After midnight 
-						chouetteTimetableId +=RegtoppTimetableParser.AFTER_MIDNIGHT_SUFFIX;
+					if (tripDepartureTime.getStandardSeconds() >= 24 * 60 * 60) {
+						// After midnight
+						chouetteTimetableId += RegtoppTimetableParser.AFTER_MIDNIGHT_SUFFIX;
 					}
 					Timetable timetable = ObjectFactory.getTimetable(referential, chouetteTimetableId);
 					timetable.addVehicleJourney(vehicleJourney);
-					
 
 					// TODO this must be precomputed instead of iterating over tens of thousands of records for each trip.
 					for (RegtoppRouteTMS vehicleStop : importer.getRouteIndex()) {
@@ -323,16 +328,16 @@ public class RegtoppLineParser implements Parser, Validator {
 
 									// Default = board and alight
 									vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibilityEnum.BoardAndAlight);
-									
+
 									// TODO verify this
-									if(vehicleStop.getDriverTimeArrival() != null) {
+									if (vehicleStop.getDriverTimeArrival() != null) {
 										vehicleJourneyAtStop.setArrivalTime(calculateTripVisitTime(tripDepartureTime, vehicleStop.getDriverTimeArrival()));
 									} else {
 										vehicleJourneyAtStop.setArrivalTime(calculateTripVisitTime(tripDepartureTime, vehicleStop.getDriverTimeDeparture()));
 										vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibilityEnum.BoardOnly);
 									}
-									
-									if(vehicleStop.getDriverTimeDeparture() != null) {
+
+									if (vehicleStop.getDriverTimeDeparture() != null) {
 										vehicleJourneyAtStop.setDepartureTime(calculateTripVisitTime(tripDepartureTime, vehicleStop.getDriverTimeDeparture()));
 									} else {
 										vehicleJourneyAtStop.setDepartureTime(calculateTripVisitTime(tripDepartureTime, vehicleStop.getDriverTimeArrival()));
@@ -340,7 +345,7 @@ public class RegtoppLineParser implements Parser, Validator {
 									}
 
 									String chouetteStopPointId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
-											ObjectIdTypes.STOPPOINT_KEY, routeKey + vehicleStop.getSequenceNumberStop(), log);
+											ObjectIdTypes.STOPPOINT_KEY, routeKey + vehicleStop.getSequenceNumberStop());
 
 									StopPoint stopPoint = ObjectFactory.getStopPoint(referential, chouetteStopPointId);
 									vehicleJourneyAtStop.setStopPoint(stopPoint);
@@ -355,22 +360,43 @@ public class RegtoppLineParser implements Parser, Validator {
 				}
 			}
 		}
-		
+
 		// Post processing
-		processRoutes(referential.getRoutes().values());
-		
+		processRoutes(referential.getRoutes().values(),configuration);
 
 	}
-	
-	public static Time calculateTripVisitTime(Duration tripDepartureTime, Duration timeSinceTripDepatureTime){
-		// TODO Ugly ugly ugly 
-		
-		LocalTime localTime = new LocalTime(0,0,0,0).plusSeconds((int)( tripDepartureTime.getStandardSeconds()+timeSinceTripDepatureTime.getStandardSeconds()));
-		
+
+	@AllArgsConstructor
+	@EqualsAndHashCode
+	class RouteKey {
+		@Getter
+		String lineId;
+		@Getter
+		DirectionType direction;
+		@Getter
+		String routeId;
+
+		public String toString() {
+			return lineId + direction + routeId;
+		}
+
+		public RouteKey(String combined) {
+			lineId = combined.substring(0, 4);
+			direction = DirectionType.parseString(combined.substring(4, 5));
+			routeId = combined.substring(5, 7);
+		}
+	}
+
+	public static Time calculateTripVisitTime(Duration tripDepartureTime, Duration timeSinceTripDepatureTime) {
+		// TODO Ugly ugly ugly
+
+		LocalTime localTime = new LocalTime(0, 0, 0, 0)
+				.plusSeconds((int) (tripDepartureTime.getStandardSeconds() + timeSinceTripDepatureTime.getStandardSeconds()));
+
 		java.sql.Time sqlTime = new java.sql.Time(localTime.getHourOfDay(), localTime.getMinuteOfHour(), localTime.getSecondOfMinute());
-		
+
 		return sqlTime;
-		
+
 	}
 
 	private TransportModeNameEnum convertTypeOfService(TransportType typeOfService) {
@@ -404,8 +430,7 @@ public class RegtoppLineParser implements Parser, Validator {
 		StopPoint stopPoint = ObjectFactory.getStopPoint(referential, chouetteStopPointId);
 		stopPoint.setPosition(Integer.parseInt(routeSegment.getSequenceNumberStop()));
 
-		String chouetteStopAreaId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.STOPAREA_KEY, routeSegment.getStopId(),
-				log);
+		String chouetteStopAreaId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.STOPAREA_KEY, routeSegment.getStopId());
 
 		StopArea stopArea = ObjectFactory.getStopArea(referential, chouetteStopAreaId);
 
@@ -421,56 +446,71 @@ public class RegtoppLineParser implements Parser, Validator {
 			RegtoppFootnoteMRK footnote = index.getValue(footnoteId);
 
 			if (footnote != null) {
-				
+
 				Footnote f = new Footnote();
-				
+
 				f.setLabel(footnote.getDescription());
 				f.setKey(footnote.getFootnoteId());
 				f.setCode(footnote.getFootnoteId());
 
-				// TODO footnotes does not persist in database. 
+				// TODO footnotes does not persist in database.
 				vehicleJourney.getFootnotes().add(f);
 				f.setLine(line);
 				line.getFootnotes().add(f);
-				
-				
+
 			} else {
 				// TODO report correctly
 				log.warn("Invalid footnote id " + footnoteId);
 			}
 		}
 	}
-	
-	private void processRoutes(Collection<Route> values) {
 
+	
+	
+	private void processRoutes(Collection<Route> values, RegtoppImportParameters configuration) {
+
+		// Link opposite routes together
+		for(Route r : values) {
+			if(r.getOppositeRoute() == null) {
+				RouteKey key = new RouteKey(AbstractConverter.extractOriginalId(r.getObjectId()));
+				RouteKey oppositeKey = new RouteKey(key.getLineId(),key.getDirection().getOppositeDirection(),key.getRouteId());
+				String oppositeObjectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix()	, ObjectIdTypes.ROUTE_KEY, oppositeKey.toString());
+				for(Route opposite : values) {
+					if(opposite.getObjectId().equals(oppositeObjectId)) {
+						// Link routes
+						r.setOppositeRoute(opposite);
+						opposite.setOppositeRoute(r);
+						break;
+					}
+				}
+			}
+		}
+		
+		
 
 		for (Route route : values) {
-			if(route.getName() == null) {
+			if (route.getName() == null) {
 				// Set to last stop
 				List<StopPoint> stopPoints = route.getStopPoints();
-				if(stopPoints != null && !stopPoints.isEmpty())	{
-					String lastStopAreaName = stopPoints.get(stopPoints.size()-1).getContainedInStopArea().getName();
+				if (stopPoints != null && !stopPoints.isEmpty()) {
+					String lastStopAreaName = stopPoints.get(stopPoints.size() - 1).getContainedInStopArea().getName();
 					route.setName(lastStopAreaName);
 				}
 			}
 
-			
-			
 			route.setPublishedName(route.getName());
 
-			for(JourneyPattern jp : route.getJourneyPatterns()) {
+			for (JourneyPattern jp : route.getJourneyPatterns()) {
 
 				// Set arrival and departure
-				
+
 				jp.setName(route.getName());
 			}
 
-			
 			// default direction and wayback = R if opposite Route = A, else A
 
 			if (route.getDirection() == null) {
-				PTDirectionEnum oppositeDirection = route.getOppositeRoute() != null ? route.getOppositeRoute()
-						.getDirection() : PTDirectionEnum.R;
+				PTDirectionEnum oppositeDirection = route.getOppositeRoute() != null ? route.getOppositeRoute().getDirection() : PTDirectionEnum.R;
 				route.setDirection(getOppositeDirection(oppositeDirection));
 			}
 			if (route.getWayBack() == null) {
@@ -483,7 +523,7 @@ public class RegtoppLineParser implements Parser, Validator {
 	}
 
 	private void processBoardingAlightingForRoute(Route route) {
-		boolean invalidData = false; 
+		boolean invalidData = false;
 		boolean usefullData = false;
 
 		b1: for (JourneyPattern jp : route.getJourneyPatterns()) {
@@ -616,7 +656,6 @@ public class RegtoppLineParser implements Parser, Validator {
 		return PTDirectionEnum.A;
 
 	}
-
 
 	static {
 		ParserFactory.register(RegtoppLineParser.class.getName(), new ParserFactory() {

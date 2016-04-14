@@ -80,17 +80,16 @@ public class RegtoppTimetableParser implements Parser, Validator {
 		for (RegtoppDayCodeDKO entry : dayCodeIndex) {
 			Timetable timetable = convertTimetable(referential, configuration, calStartDate, entry);
 			Timetable cloneTimetableAfterMidnight = cloneTimetableAfterMidnight(timetable);
-			
+
 			referential.getSharedTimetables().put(cloneTimetableAfterMidnight.getObjectId(), cloneTimetableAfterMidnight);
-			
+
 			log.info("Adding timetable " + timetable);
 		}
 
 	}
 
 	public Timetable convertTimetable(Referential referential, RegtoppImportParameters configuration, LocalDate calStartDate, RegtoppDayCodeDKO entry) {
-		String chouetteTimetableId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.TIMETABLE_KEY, entry.getDayCodeId(),
-				log);
+		String chouetteTimetableId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.TIMETABLE_KEY, entry.getDayCodeId());
 
 		Timetable timetable = ObjectFactory.getTimetable(referential, chouetteTimetableId);
 
@@ -165,10 +164,10 @@ public class RegtoppTimetableParser implements Parser, Validator {
 			}
 		}
 
-		if(lastSignificantDay == 0) {
+		if (lastSignificantDay == 0) {
 			return new boolean[0]; // Empty
 		} else {
-			return Arrays.copyOf(initialIncludedArray, lastSignificantDay+1);
+			return Arrays.copyOf(initialIncludedArray, lastSignificantDay + 1);
 		}
 	}
 
@@ -286,7 +285,7 @@ public class RegtoppTimetableParser implements Parser, Validator {
 				}
 			}
 		} else {
-			log.info("Too few days to extract pattern, expected at least "+MIN_DAYS_FOR_PATTERN+" but only got "+totalDaysIncluded);
+			log.info("Too few days to extract pattern, expected at least " + MIN_DAYS_FOR_PATTERN + " but only got " + totalDaysIncluded);
 		}
 
 		return significantDays;
@@ -357,9 +356,6 @@ public class RegtoppTimetableParser implements Parser, Validator {
 
 	public static final String AFTER_MIDNIGHT_SUFFIX = "_after_midnight";
 
-
-
-	
 	static {
 		ParserFactory.register(RegtoppTimetableParser.class.getName(), new ParserFactory() {
 			@Override
