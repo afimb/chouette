@@ -52,6 +52,17 @@ public class StopPointUpdater implements Updater<StopPoint> {
 			oldValue.setCreatorId(newValue.getCreatorId());
 		}
 
+		// Boarding and alighting
+		if (newValue.getForAlighting() != null
+				&& !newValue.getForAlighting().equals(oldValue.getForAlighting())) {
+			oldValue.setForAlighting(newValue.getForAlighting());
+		}
+		
+		if (newValue.getForBoarding() != null
+				&& !newValue.getForBoarding().equals(oldValue.getForBoarding())) {
+			oldValue.setForBoarding(newValue.getForBoarding());
+		}
+		
 		// StopArea
 		if (newValue.getContainedInStopArea() == null) {
 			oldValue.setContainedInStopArea(null);
