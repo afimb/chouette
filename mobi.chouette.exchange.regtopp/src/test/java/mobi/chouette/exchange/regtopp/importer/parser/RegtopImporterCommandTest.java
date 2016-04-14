@@ -28,6 +28,7 @@ import org.testng.annotations.Test;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.LineDAO;
+import mobi.chouette.dao.StopPointDAO;
 import mobi.chouette.dao.VehicleJourneyDAO;
 import mobi.chouette.exchange.regtopp.JobDataTest;
 import mobi.chouette.exchange.regtopp.RegtoppTestUtils;
@@ -41,6 +42,9 @@ import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
+import mobi.chouette.model.type.AlightingPossibilityEnum;
+import mobi.chouette.model.type.BoardingPossibilityEnum;
+import mobi.chouette.model.util.Referential;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
 public class RegtopImporterCommandTest extends Arquillian implements mobi.chouette.common.Constant{
@@ -68,6 +72,9 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 
 	@EJB
 	VehicleJourneyDAO vjDao;
+	
+	@EJB 
+	StopPointDAO stopPointDao;
 
 
 	@PersistenceContext(unitName = "referential")
@@ -130,6 +137,23 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		return context;
 
 	}
+	
+	@Test public void testPersistStopPoint() {
+		ContextHolder.setContext("chouette_gui"); // set tenant schema
+		StopPoint p = new StopPoint();
+		p.setObjectId("T:StopPoint:1");
+		p.setComment("comment");
+		p.setForAlighting(AlightingPossibilityEnum.request_stop);
+		p.setForBoarding(BoardingPossibilityEnum.is_flexible);
+	
+		stopPointDao.create(p);
+		
+		StopPoint find = stopPointDao.findByObjectId(p.getObjectId());
+	
+		Assert.assertNotNull(find,"Did not find StopPoint");
+		Assert.assertEquals(find.getForAlighting(), p.getForAlighting());
+	
+	}
 
 	
 
@@ -189,8 +213,12 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		int numJourneyPatterns = 0;
 		
 		for (Route route : line.getRoutes()) {
+			Assert.assertNotNull(route.getName(),"No route name");
+			
+			
 			Assert.assertNotEquals(route.getJourneyPatterns().size(), 0 , "line routes must have journeyPattens");
 			for (JourneyPattern jp : route.getJourneyPatterns()) {
+				Assert.assertNotNull(jp.getName(),"No journeypattern name");
 				Assert.assertNotEquals(jp.getStopPoints().size(), 0, "line journeyPattens must have stoppoints");
 				for (StopPoint point : jp.getStopPoints()) {
 
@@ -198,8 +226,8 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 					Assert.assertNotNull(point.getContainedInStopArea(), "stoppoints must have StopAreas");
 					bps.add(point.getContainedInStopArea());
 
-//					Assert.assertNotNull(point.getForAlighting(),"no alighting info StopPoint="+point);
-//					Assert.assertNotNull(point.getForBoarding(),"no boarding info StopPoint="+point);
+					Assert.assertNotNull(point.getForAlighting(),"no alighting info StopPoint="+point);
+					Assert.assertNotNull(point.getForBoarding(),"no boarding info StopPoint="+point);
 
 				}
 				Assert.assertNotEquals(jp.getVehicleJourneys().size(), 0," journeyPattern should have VehicleJourneys");
@@ -216,7 +244,117 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		Assert.assertEquals(numVehicleJourneys, 12,"number of vehicleJourneys");
 		Assert.assertEquals(numStopPoints, 411,"number of stopPoints in journeyPattern");
 		Assert.assertEquals(bps.size(), 90, "number boarding positions");
+	
+		
+		utx.rollback();
 
+		if(!result) {
+			System.out.println(ToStringBuilder.reflectionToString(report,ToStringStyle.MULTI_LINE_STYLE));
+			System.out.println(validationReport);
+			
+		}
+		
+		Assert.assertTrue(result,"Importer command execution failed: "+report.getFailure());
+	}
+
+	@Test
+	public void importRegtoppAtbLineD2Nortura0096() throws Exception {
+		// Prepare context
+		Context context = initImportContext();
+
+		File f = new File("src/test/data/atb/line0098.zip");
+		File dest = new File("target/referential/test");
+		FileUtils.copyFileToDirectory(f, dest);
+		JobDataTest job = (JobDataTest) context.get(JOB_DATA);
+		job.setFilename(f.getName());
+
+		RegtoppImporterCommand command = (RegtoppImporterCommand) CommandFactory.create(initialContext, RegtoppImporterCommand.class.getName());
+		
+		RegtoppImportParameters parameters = (RegtoppImportParameters) context.get(CONFIGURATION);
+		parameters.setObjectIdPrefix("TST");
+		parameters.setReferencesType("line");
+		parameters.setNoSave(false);
+
+		
+		boolean result = command.execute(context);
+
+		ActionReport report = (ActionReport) context.get(REPORT);
+		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
+		
+
+		// TODO create asserts on ActionReport and ValidationReport
+		
+//		Assert.assertEquals(report.getResult(), STATUS_OK, "result");
+//		Assert.assertEquals(report.getFiles().size(), 1, "file reported");
+//		Assert.assertEquals(report.getLines().size(), 1, "line reported");
+//		Reporter.log("report line :" + report.getLines().get(0).toString(), true);
+//		Assert.assertEquals(report.getLines().get(0).getStatus(), LINE_STATE.OK, "line status");
+//		RegtoppTestUtils.checkLine(context);
+//		
+//		Referential referential = (Referential) context.get(REFERENTIAL);
+//		Assert.assertNotEquals(referential.getTimetables(),0, "timetables" );
+//		Assert.assertNotEquals(referential.getSharedTimetables(),0, "shared timetables" );
+
+		// line should be saved
+		utx.begin();
+		em.joinTransaction();
+		Line line = lineDao.findByObjectId("TST:Line:0098");
+		
+
+		Assert.assertNotNull(line,"Line not found");
+		Assert.assertNotNull(line.getNetwork(), "line must have a network");
+		Assert.assertNotNull(line.getCompany(), "line must have a company");
+		Assert.assertNotNull(line.getRoutes(), "line must have routes");
+		Assert.assertEquals(line.getRoutes().size(), 3, "number of routes");
+		Set<StopArea> bps = new HashSet<StopArea>();
+
+		int numStopPoints = 0;
+		int numVehicleJourneys = 0;
+		int numJourneyPatterns = 0;
+		
+		for (Route route : line.getRoutes()) {
+			Assert.assertNotNull(route.getName(),"No route name");
+			
+			
+			Assert.assertNotEquals(route.getJourneyPatterns().size(), 0 , "line routes must have journeyPattens");
+			for (JourneyPattern jp : route.getJourneyPatterns()) {
+				Assert.assertNotNull(jp.getName(),"No journeypattern name");
+				Assert.assertNotEquals(jp.getStopPoints().size(), 0, "line journeyPattens must have stoppoints");
+				for (StopPoint point : jp.getStopPoints()) {
+
+					numStopPoints++;
+					Assert.assertNotNull(point.getContainedInStopArea(), "stoppoints must have StopAreas");
+					bps.add(point.getContainedInStopArea());
+
+//	TODO bug in chouette this not getting persisted? Se StopPointUpdater in exchange package
+//					Assert.assertNotNull(point.getForAlighting(),"no alighting info StopPoint="+point);
+//					Assert.assertNotNull(point.getForBoarding(),"no boarding info StopPoint="+point);
+
+				}
+				Assert.assertNotEquals(jp.getVehicleJourneys().size(), 0," journeyPattern should have VehicleJourneys");
+                for (VehicleJourney vj : jp.getVehicleJourneys()) {
+                	Assert.assertNotEquals(vj.getTimetables().size(), 0," vehicleJourney should have timetables");
+                	Assert.assertEquals(vj.getVehicleJourneyAtStops().size(), jp.getStopPoints().size()," vehicleJourney should have correct vehicleJourneyAtStop count");
+                	numVehicleJourneys++; 
+                }
+				for (StopPoint point : route.getStopPoints()) {
+
+					Assert.assertNotNull(point.getContainedInStopArea(), "stoppoints must have StopAreas");
+					bps.add(point.getContainedInStopArea());
+
+//					TODO bug in chouette this not getting persisted? Se StopPointUpdater in exchange package
+//					Assert.assertNotNull(point.getForAlighting(),"no alighting info StopPoint="+point);
+//					Assert.assertNotNull(point.getForBoarding(),"no boarding info StopPoint="+point);
+
+				}
+                numJourneyPatterns++;
+			}
+		}
+		
+		Assert.assertEquals(numJourneyPatterns, 3,"number of journeyPatterns");
+		Assert.assertEquals(numVehicleJourneys, 3,"number of vehicleJourneys");
+		Assert.assertEquals(numStopPoints, 63,"number of stopPoints in journeyPattern");
+		Assert.assertEquals(bps.size(), 48, "number boarding positions");
 	
 		
 		utx.rollback();

@@ -223,17 +223,18 @@ public class RegtoppLineParser implements Parser, Validator {
 
 			}
 		}
+		
+		Comparator<StopPoint> stopPointSequenceComparator = new Comparator<StopPoint>() {
+			public int compare(StopPoint arg0, StopPoint arg1) {
+				return arg0.getPosition().compareTo(arg1.getPosition());
+			}
+		};
+		
 		// Sort stopPoints on JourneyPattern
 		Collection<JourneyPattern> journeyPatterns = referential.getJourneyPatterns().values();
 		for (JourneyPattern jp : journeyPatterns) {
 			List<StopPoint> stopPoints = jp.getStopPoints();
-			Collections.sort(stopPoints, new Comparator<StopPoint>() {
-
-				@Override
-				public int compare(StopPoint arg0, StopPoint arg1) {
-					return arg0.getPosition().compareTo(arg1.getPosition());
-				}
-			});
+			Collections.sort(stopPoints, stopPointSequenceComparator);
 			jp.setDepartureStopPoint(stopPoints.get(0));
 			jp.setArrivalStopPoint(stopPoints.get(stopPoints.size() - 1));
 		}
@@ -242,12 +243,7 @@ public class RegtoppLineParser implements Parser, Validator {
 		Collection<Route> routes = referential.getRoutes().values();
 		for (Route r : routes) {
 			List<StopPoint> stopPoints = r.getStopPoints();
-			Collections.sort(stopPoints, new Comparator<StopPoint>() {
-				@Override
-				public int compare(StopPoint arg0, StopPoint arg1) {
-					return arg0.getPosition().compareTo(arg1.getPosition());
-				}
-			});
+			Collections.sort(stopPoints, stopPointSequenceComparator);
 		}
 
 		// TODO Loop over routes and link outbound/inbound routes together
@@ -450,12 +446,22 @@ public class RegtoppLineParser implements Parser, Validator {
 
 		for (Route route : values) {
 			if(route.getName() == null) {
-				// TODO check if Route has name
+				// Set to last stop
+				List<StopPoint> stopPoints = route.getStopPoints();
+				if(stopPoints != null && !stopPoints.isEmpty())	{
+					String lastStopAreaName = stopPoints.get(stopPoints.size()-1).getContainedInStopArea().getName();
+					route.setName(lastStopAreaName);
+				}
 			}
+
+			
 			
 			route.setPublishedName(route.getName());
 
 			for(JourneyPattern jp : route.getJourneyPatterns()) {
+
+				// Set arrival and departure
+				
 				jp.setName(route.getName());
 			}
 
