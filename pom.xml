@@ -814,7 +814,7 @@
 		<module>mobi.chouette.exchange.hub</module>
 		<module>mobi.chouette.exchange.gtfs</module>
 		<module>mobi.chouette.exchange.geojson</module>
-      <module>mobi.chouette.exchange.sig</module>
+        <module>mobi.chouette.exchange.sig</module>
 		<module>mobi.chouette.exchange.regtopp</module>
 		<module>mobi.chouette.exchange.validator</module>
 		<module>mobi.chouette.exchange.converter</module>
