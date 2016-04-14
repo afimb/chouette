@@ -117,7 +117,7 @@ public class RegtoppLineParserCommand implements Command {
 
 	private void addStats(ActionReport report, Referential referential) {
 		Line line = referential.getLines().values().iterator().next();
-		LineInfo lineInfo = new LineInfo(line.getObjectId(), line.getName());
+		LineInfo lineInfo = new LineInfo(line);
 		DataStats stats = lineInfo.getStats();
 		stats.setLineCount(1);
 

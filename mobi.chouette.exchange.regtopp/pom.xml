@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>mobi.chouette</groupId>
 		<artifactId>mobi.chouette</artifactId>
-		<version>3.2.1</version>
+		<version>3.3.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>mobi.chouette.exchange.regtopp</artifactId>
 	<packaging>ejb</packaging>
@@ -92,14 +92,12 @@
 			<type>ejb</type>
 			<version>${project.version}</version>
 		</dependency>
-
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>mobi.chouette.exchange.neptune</artifactId>
 			<type>ejb</type>
 			<version>${project.version}</version>
 		</dependency>
-
 	</dependencies>
 	<build>
 		<plugins>

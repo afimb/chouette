@@ -54,4 +54,14 @@ public class RegtoppImporterInputValidator extends AbstractInputValidator {
 		InputValidatorFactory.factories.put(RegtoppImporterInputValidator.class.getName(), new DefaultFactory());
 	}
 
+	@Override
+	public AbstractParameter toActionParameter(String abstractParameter) {
+		throw new RuntimeException("toActionParameter not implemented for abstractParameter "+abstractParameter);
+	}
+
+	@Override
+	public boolean checkParameters(String abstractParameter, String validationParameters) {
+		throw new RuntimeException("checkParameters not implemented for abstractParameter "+abstractParameter+ " and validationParameters "+validationParameters);
+	}
+
 }

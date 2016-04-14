@@ -8,8 +8,6 @@ public class JobDataTest implements JobData {
 
 	private Long id;
 
-	private String filename;
-
 	private String action;
 	
 	private String type;
@@ -17,4 +15,8 @@ public class JobDataTest implements JobData {
 	private String referential;
 	
 	private String pathName;
+
+	private String inputFilename;
+	
+	private String outputFilename;
 }

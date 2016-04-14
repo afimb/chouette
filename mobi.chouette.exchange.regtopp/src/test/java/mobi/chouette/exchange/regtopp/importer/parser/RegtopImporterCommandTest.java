@@ -2,7 +2,9 @@ package mobi.chouette.exchange.regtopp.importer.parser;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.ejb.EJB;
@@ -20,6 +22,9 @@ import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.testng.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.importer.ZipImporter;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.testng.Assert;
@@ -29,9 +34,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.LineDAO;
 import mobi.chouette.dao.StopPointDAO;
-import mobi.chouette.dao.VehicleJourneyDAO;
 import mobi.chouette.exchange.regtopp.JobDataTest;
-import mobi.chouette.exchange.regtopp.RegtoppTestUtils;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImporterCommand;
 import mobi.chouette.exchange.report.ActionReport;
@@ -44,7 +47,6 @@ import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.type.AlightingPossibilityEnum;
 import mobi.chouette.model.type.BoardingPossibilityEnum;
-import mobi.chouette.model.util.Referential;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
 public class RegtopImporterCommandTest extends Arquillian implements mobi.chouette.common.Constant{
@@ -70,9 +72,6 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 	@EJB
 	LineDAO lineDao;
 
-	@EJB
-	VehicleJourneyDAO vjDao;
-	
 	@EJB 
 	StopPointDAO stopPointDao;
 
@@ -84,18 +83,67 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 	UserTransaction utx;
 
 	@Deployment
-	public static WebArchive createDeployment() {
+	public static EnterpriseArchive createDeployment() {
 
-		WebArchive result;
+		EnterpriseArchive result;
+
 
 		File[] files = Maven.resolver().loadPomFromFile("pom.xml")
 				.resolve("mobi.chouette:mobi.chouette.exchange.regtopp").withTransitivity().asFile();
+		List<File> jars = new ArrayList<>();
+		List<JavaArchive> modules = new ArrayList<>();
+		for (File file : files) {
+			if (file.getName().startsWith("mobi.chouette.exchange"))
+			{
+				String name = file.getName().split("\\-")[0]+".jar";
+				
+				JavaArchive archive = ShrinkWrap
+						  .create(ZipImporter.class, name)
+						  .importFrom(file)
+						  .as(JavaArchive.class);
+				modules.add(archive);
+			}
+			else
+			{
+				jars.add(file);
+			}
+		}
+		
+		File[] filesDao = Maven.resolver().loadPomFromFile("pom.xml")
+				.resolve("mobi.chouette:mobi.chouette.dao").withTransitivity().asFile();
+		if (filesDao.length == 0) 
+		{
+			throw new NullPointerException("no dao");
+		}
+		for (File file : filesDao) {
+			if (file.getName().startsWith("mobi.chouette.dao"))
+			{
+				String name = file.getName().split("\\-")[0]+".jar";
+				
+				JavaArchive archive = ShrinkWrap
+						  .create(ZipImporter.class, name)
+						  .importFrom(file)
+						  .as(JavaArchive.class);
+				modules.add(archive);
+				if (!modules.contains(archive))
+				   modules.add(archive);
+			}
+			else
+			{
+				if (!jars.contains(file))
+				   jars.add(file);
+			}
+		}
 
-		result = ShrinkWrap.create(WebArchive.class, "test.war")
-				.addAsWebInfResource("postgres-ds.xml")
-				.addAsLibraries(files)
-				.addClass(RegtoppTestUtils.class)
-				.addClass(JobDataTest.class)
+        
+
+		final WebArchive testWar = ShrinkWrap.create(WebArchive.class, "test.war").addAsWebInfResource("postgres-ds.xml")
+				.addClass(JobDataTest.class);
+		
+		result = ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
+				.addAsLibraries(jars.toArray(new File[0]))
+				.addAsModules(modules.toArray(new JavaArchive[0]))
+				.addAsModule(testWar)
 				.addAsResource(EmptyAsset.INSTANCE, "beans.xml");
 		return result;
 
@@ -166,7 +214,7 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		File dest = new File("target/referential/test");
 		FileUtils.copyFileToDirectory(f, dest);
 		JobDataTest job = (JobDataTest) context.get(JOB_DATA);
-		job.setFilename(f.getName());
+		job.setInputFilename(f.getName());
 
 		RegtoppImporterCommand command = (RegtoppImporterCommand) CommandFactory.create(initialContext, RegtoppImporterCommand.class.getName());
 		
@@ -266,7 +314,7 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		File dest = new File("target/referential/test");
 		FileUtils.copyFileToDirectory(f, dest);
 		JobDataTest job = (JobDataTest) context.get(JOB_DATA);
-		job.setFilename(f.getName());
+		job.setInputFilename(f.getName());
 
 		RegtoppImporterCommand command = (RegtoppImporterCommand) CommandFactory.create(initialContext, RegtoppImporterCommand.class.getName());
 		
