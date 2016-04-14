@@ -3,6 +3,7 @@ package mobi.chouette.exchange.regtopp.importer;
 import java.io.IOException;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.JSONUtil;
 import mobi.chouette.exchange.AbstractInputValidator;
 import mobi.chouette.exchange.InputValidator;
 import mobi.chouette.exchange.InputValidatorFactory;
@@ -13,6 +14,30 @@ import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 public class RegtoppImporterInputValidator extends AbstractInputValidator {
 
 	private static String[] allowedTypes = { "line", "stop_area" };
+
+	@Override
+	public AbstractParameter toActionParameter(String abstractParameter) {
+		try {
+			return JSONUtil.fromJSON(abstractParameter, RegtoppImportParameters.class);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	@Override
+	public boolean checkParameters(String abstractParameterString, String validationParametersString) {
+
+		try {
+			RegtoppImportParameters parameters = JSONUtil.fromJSON(abstractParameterString, RegtoppImportParameters.class);
+
+			ValidationParameters validationParameters = JSONUtil.fromJSON(validationParametersString,
+					ValidationParameters.class);
+
+			return checkParameters(parameters, validationParameters);
+		} catch (Exception ex) {
+			log.error(ex.getMessage());
+			return false;
+		}
+	}
 
 	@Override
 	public boolean checkParameters(AbstractParameter abstractParameter, ValidationParameters validationParameters) {
@@ -54,14 +79,5 @@ public class RegtoppImporterInputValidator extends AbstractInputValidator {
 		InputValidatorFactory.factories.put(RegtoppImporterInputValidator.class.getName(), new DefaultFactory());
 	}
 
-	@Override
-	public AbstractParameter toActionParameter(String abstractParameter) {
-		throw new RuntimeException("toActionParameter not implemented for abstractParameter "+abstractParameter);
-	}
-
-	@Override
-	public boolean checkParameters(String abstractParameter, String validationParameters) {
-		throw new RuntimeException("checkParameters not implemented for abstractParameter "+abstractParameter+ " and validationParameters "+validationParameters);
-	}
 
 }
