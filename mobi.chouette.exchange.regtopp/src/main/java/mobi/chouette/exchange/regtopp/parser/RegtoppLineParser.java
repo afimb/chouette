@@ -6,6 +6,7 @@ import static mobi.chouette.common.Constant.PARSER;
 import static mobi.chouette.common.Constant.REFERENTIAL;
 import static mobi.chouette.exchange.regtopp.RegtoppConstant.REGTOPP_REPORTER;
 import static mobi.chouette.exchange.regtopp.validation.Constant.REGTOPP_FILE_TIX;
+import static mobi.chouette.exchange.regtopp.validation.Constant.REGTOPP_FILE_TMS;
 
 import java.sql.Time;
 import java.util.Collection;
@@ -30,7 +31,6 @@ import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.Validator;
 import mobi.chouette.exchange.regtopp.RegtoppConstant;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
-import mobi.chouette.exchange.regtopp.importer.version.Regtopp12NovusVersionHandler;
 import mobi.chouette.exchange.regtopp.importer.version.VersionHandler;
 import mobi.chouette.exchange.regtopp.model.enums.AnnouncementType;
 import mobi.chouette.exchange.regtopp.model.enums.DirectionType;
@@ -45,7 +45,6 @@ import mobi.chouette.exchange.regtopp.model.v11.RegtoppLineLIN;
 import mobi.chouette.exchange.regtopp.model.v12.RegtoppRouteTMS;
 import mobi.chouette.exchange.regtopp.model.v12.RegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
-import mobi.chouette.exchange.validation.report.CheckPoint;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.Footnote;
@@ -90,8 +89,43 @@ public class RegtoppLineParser implements Parser, Validator {
 
 		ValidationReport mainReporter = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
 
-		mainReporter.getCheckPoints().add(new CheckPoint(REGTOPP_FILE_TIX, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		validateTMSIndex(context, importer, validationReporter);
 
+		validateTIXIndex(context, importer, validationReporter);
+	}
+
+	private void validateTMSIndex(Context context, RegtoppImporter importer,
+			RegtoppValidationReporter validationReporter) throws Exception {
+		if (importer.hasTMSImporter()) {
+			validationReporter.reportSuccess(context, REGTOPP_FILE_TMS, RegtoppRouteTMS.FILE_EXTENSION);
+
+			Index<RegtoppRouteTMS> index = importer.getRouteIndex();
+
+			if (index.getLength() == 0) {
+				FileParserValidationError fileError = new FileParserValidationError(RegtoppRouteTMS.FILE_EXTENSION, 0, null,
+						RegtoppException.ERROR.FILE_WITH_NO_ENTRY, null, "Empty file");
+				validationReporter.reportError(context, new RegtoppException(fileError), RegtoppRouteTMS.FILE_EXTENSION);
+			}
+
+			for (RegtoppRouteTMS bean : index) {
+				try {
+					// Call index validator
+					index.validate(bean, importer);
+				} catch (Exception ex) {
+					if (ex instanceof RegtoppException) {
+						validationReporter.reportError(context, (RegtoppException) ex, RegtoppRouteTMS.FILE_EXTENSION);
+					} else {
+						validationReporter.throwUnknownError(context, ex, RegtoppRouteTMS.FILE_EXTENSION);
+					}
+				}
+				validationReporter.reportErrors(context, bean.getErrors(), RegtoppRouteTMS.FILE_EXTENSION);
+				validationReporter.validate(context, RegtoppRouteTMS.FILE_EXTENSION, bean.getOkTests());
+			}
+		}
+	}
+
+	private void validateTIXIndex(Context context, RegtoppImporter importer,
+			RegtoppValidationReporter validationReporter) throws Exception {
 		if (importer.hasTIXImporter()) {
 			validationReporter.reportSuccess(context, REGTOPP_FILE_TIX, RegtoppTripIndexTIX.FILE_EXTENSION);
 
@@ -237,6 +271,7 @@ public class RegtoppLineParser implements Parser, Validator {
 		}
 
 		Comparator<StopPoint> stopPointSequenceComparator = new Comparator<StopPoint>() {
+			@Override
 			public int compare(StopPoint arg0, StopPoint arg1) {
 				return arg0.getPosition().compareTo(arg1.getPosition());
 			}
@@ -400,6 +435,7 @@ public class RegtoppLineParser implements Parser, Validator {
 		@Getter
 		String routeId;
 
+		@Override
 		public String toString() {
 			return lineId + direction + routeId;
 		}

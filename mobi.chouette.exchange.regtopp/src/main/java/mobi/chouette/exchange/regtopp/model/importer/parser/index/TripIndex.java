@@ -1,5 +1,7 @@
 package mobi.chouette.exchange.regtopp.model.importer.parser.index;
 
+import static mobi.chouette.exchange.regtopp.RegtoppConstant.*;
+
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.regtopp.model.importer.parser.FileContentParser;
 import mobi.chouette.exchange.regtopp.model.importer.parser.FileParserValidationError;
@@ -19,45 +21,45 @@ public abstract class TripIndex extends IndexImpl<RegtoppTripIndexTIX> {
 	public boolean validate(RegtoppTripIndexTIX bean, RegtoppImporter dao) {
 		boolean result = true;
 
-		if (dao.getDayCodeById().containsKey(bean.getDayCodeRef())){
-			bean.getOkTests().add(RegtoppException.ERROR.INVALID_MANDATORY_ID_REFERENCE);
+		if (dao.getRouteByRouteKey().containsKey(bean.getRouteKey())) { 								//Referanse fra TURIX til TURMSTR er feltene Linjenr, Retning og Turmønsternr
+			bean.getOkTests().add(RegtoppException.ERROR.TIX_TMS_CORRESPONDENCE);
 		} else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppTripIndexTIX.FILE_EXTENSION, bean.getRecordLineNumber(), "Dagkodenr", bean.getDayCodeRef(), RegtoppException.ERROR.INVALID_MANDATORY_ID_REFERENCE, "Unreferenced id.")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppTripIndexTIX.FILE_EXTENSION, bean.getRecordLineNumber(), "Rutereferanse (kombinasjonen linjenr, retning og turmønsternr)", bean.getRouteKey(), RegtoppException.ERROR.TIX_TMS_CORRESPONDENCE, "Unreferenced id.")));
 			result = false;
 		}
 
-		if (dao.getRouteIndex().containsKey(bean.getRouteIdRef())){
-			bean.getOkTests().add(RegtoppException.ERROR.INVALID_MANDATORY_ID_REFERENCE);
+		if (dao.getDayCodeById().containsKey(bean.getDayCodeRef())){
+			bean.getOkTests().add(RegtoppException.ERROR.TIX_INVALID_MANDATORY_ID_REFERENCE);
 		} else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppTripIndexTIX.FILE_EXTENSION, bean.getRecordLineNumber(), "Turmønsternr", bean.getRouteIdRef(), RegtoppException.ERROR.INVALID_MANDATORY_ID_REFERENCE, "Unreferenced id.")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppTripIndexTIX.FILE_EXTENSION, bean.getRecordLineNumber(), "Dagkodenr", bean.getDayCodeRef(), RegtoppException.ERROR.TIX_INVALID_MANDATORY_ID_REFERENCE, "Unreferenced id.")));
 			result = false;
 		}
 
 		if (dao.getDestinationById().containsKey(bean.getDestinationIdDepartureRef())){
-			bean.getOkTests().add(RegtoppException.ERROR.INVALID_OPTIONAL_ID_REFERENCE);
+			bean.getOkTests().add(RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE);
 		} else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppTripIndexTIX.FILE_EXTENSION, bean.getRecordLineNumber(), "Destinasjonsnr (avgang)", bean.getDestinationIdDepartureRef(), RegtoppException.ERROR.INVALID_OPTIONAL_ID_REFERENCE, "Unreferenced id.")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppTripIndexTIX.FILE_EXTENSION, bean.getRecordLineNumber(), "Destinasjonsnr (avgang)", bean.getDestinationIdDepartureRef(), RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE, "Unreferenced id.")));
 			result = false;
 		}
 
 		if (dao.getDestinationById().containsKey(bean.getDestinationIdArrivalRef())){
-			bean.getOkTests().add(RegtoppException.ERROR.INVALID_OPTIONAL_ID_REFERENCE);
+			bean.getOkTests().add(RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE);
 		} else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppTripIndexTIX.FILE_EXTENSION, bean.getRecordLineNumber(), "Destinasjonsnr (ankomst)", bean.getDestinationIdArrivalRef(), RegtoppException.ERROR.INVALID_OPTIONAL_ID_REFERENCE, "Unreferenced id.")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppTripIndexTIX.FILE_EXTENSION, bean.getRecordLineNumber(), "Destinasjonsnr (ankomst)", bean.getDestinationIdArrivalRef(), RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE, "Unreferenced id.")));
 			result = false;
 		}
 
-		if (dao.getFootnoteById().containsKey(bean.getFootnoteId1Ref())){
-			bean.getOkTests().add(RegtoppException.ERROR.INVALID_OPTIONAL_ID_REFERENCE);
+		if (bean.getFootnoteId1Ref().equals(FOOTNOTE_NULL_REF) || dao.getFootnoteById().containsKey(bean.getFootnoteId1Ref())){
+			bean.getOkTests().add(RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE);
 		} else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppTripIndexTIX.FILE_EXTENSION, bean.getRecordLineNumber(), "Merknadsnr (1)", bean.getFootnoteId1Ref(), RegtoppException.ERROR.INVALID_OPTIONAL_ID_REFERENCE, "Unreferenced id.")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppTripIndexTIX.FILE_EXTENSION, bean.getRecordLineNumber(), "Merknadsnr (1)", bean.getFootnoteId1Ref(), RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE, "Unreferenced id.")));
 			result = false;
 		}
 
-		if (dao.getFootnoteById().containsKey(bean.getFootnoteId2Ref())){
-			bean.getOkTests().add(RegtoppException.ERROR.INVALID_OPTIONAL_ID_REFERENCE);
+		if (bean.getFootnoteId2Ref().equals(FOOTNOTE_NULL_REF) || dao.getFootnoteById().containsKey(bean.getFootnoteId2Ref())){
+			bean.getOkTests().add(RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE);
 		} else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppTripIndexTIX.FILE_EXTENSION, bean.getRecordLineNumber(), "Merknadsnr (2)", bean.getFootnoteId2Ref(), RegtoppException.ERROR.INVALID_OPTIONAL_ID_REFERENCE, "Unreferenced id.")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppTripIndexTIX.FILE_EXTENSION, bean.getRecordLineNumber(), "Merknadsnr (2)", bean.getFootnoteId2Ref(), RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE, "Unreferenced id.")));
 			result = false;
 		}
 

@@ -5,7 +5,6 @@ import java.io.Serializable;
 import org.beanio.annotation.Field;
 import org.beanio.annotation.Record;
 import org.joda.time.Duration;
-import org.joda.time.Period;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -101,6 +100,13 @@ public class RegtoppRouteTMS extends RegtoppObject implements Serializable {
 	@Setter
 	@Field(at = 41, length = 6)
 	private Integer distance;
+
+	public String getRouteKey() {
+		if (lineId == null || direction == null || routeId == null){
+			throw new IllegalArgumentException("Key");
+		}
+		return lineId + direction + routeId;
+	}
 
 	@Override
 	public String getIndexingKey() {
