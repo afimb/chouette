@@ -464,8 +464,12 @@ public class RegtoppLineParser implements Parser, Validator {
 				f.setCode(footnote.getFootnoteId());
 				
 				footnotes.add(f);
-				if(vehicleJourney != null) {
-					vehicleJourney.getFootnotes().add(f);
+			}
+			if(vehicleJourney != null) {
+				for(Footnote existing : footnotes) {
+					if(existing.getCode().equals(footnoteId)) {
+						vehicleJourney.getFootnotes().add(existing);
+					}
 				}
 			}
 		}

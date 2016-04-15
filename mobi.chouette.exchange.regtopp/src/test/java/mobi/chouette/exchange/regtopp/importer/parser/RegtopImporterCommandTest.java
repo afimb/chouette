@@ -3,6 +3,7 @@ package mobi.chouette.exchange.regtopp.importer.parser;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.ejb.EJB;
@@ -29,6 +30,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.LineDAO;
 import mobi.chouette.dao.RouteDAO;
+import mobi.chouette.dao.VehicleJourneyDAO;
 import mobi.chouette.exchange.regtopp.DummyChecker;
 import mobi.chouette.exchange.regtopp.JobDataTest;
 import mobi.chouette.exchange.regtopp.RegtoppTestUtils;
@@ -36,6 +38,7 @@ import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImporterCommand;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.validation.report.ValidationReport;
+import mobi.chouette.model.Footnote;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
@@ -69,6 +72,9 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 
 	@EJB
 	RouteDAO routeDao;
+
+	@EJB
+	VehicleJourneyDAO vjDao;
 
 	@PersistenceContext(unitName = "referential")
 	EntityManager em;
@@ -311,7 +317,16 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 	
 		// Check footnotes
 		Assert.assertNotNull(line.getFootnotes(),"No footnote lists");
-		Assert.assertEquals(line.getFootnotes().size(), 3, "number of line footnotes");
+		Assert.assertEquals(line.getFootnotes().size(), 1, "number of line footnotes");
+		
+		// Find vehicle journey
+		VehicleJourney vehicleJourney = vjDao.findByObjectId("TST:VehicleJourney:00760015");
+		Assert.assertNotNull(vehicleJourney, "VehicleJourney not found");
+		List<Footnote> footnotes = vehicleJourney.getFootnotes();
+		Assert.assertNotNull(footnotes,"footnotes list null");
+		Assert.assertEquals(footnotes.size(),1,"Expected 1 footnote");
+		Assert.assertEquals(footnotes.get(0).getCode(), "027");
+		
 		
 		utx.rollback();
 
