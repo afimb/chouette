@@ -312,7 +312,6 @@ public class LineUpdater implements Updater<Line> {
 			footnotes.add(pair.getLeft());
 		}
 		
-		// TODO move to updater
 		for(Footnote f : footnotes) {
 			f.setLine(oldValue);
 		}

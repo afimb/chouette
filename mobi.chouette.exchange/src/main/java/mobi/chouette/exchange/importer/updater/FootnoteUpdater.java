@@ -33,8 +33,6 @@ public class FootnoteUpdater implements Updater<Footnote> {
 		// Updated now anyhow
 		oldValue.setUpdatedAt(new Date());
 		
-		// Use new line information
-		oldValue.setLine(newValue.getLine());
 	}
 
 }
