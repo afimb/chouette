@@ -19,6 +19,7 @@ import mobi.chouette.dao.TimebandDAO;
 import mobi.chouette.dao.TimetableDAO;
 import mobi.chouette.dao.VehicleJourneyAtStopDAO;
 import mobi.chouette.model.Company;
+import mobi.chouette.model.Footnote;
 import mobi.chouette.model.JourneyFrequency;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopPoint;
@@ -362,5 +363,9 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 				journeyFrequencyDAO.delete(journeyFrequency);
 			}
 		}
+		
+		// Footnotes
+		// Use new values
+		oldValue.setFootnotes(newValue.getFootnotes());
 	}
 }
