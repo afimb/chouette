@@ -366,6 +366,9 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 		
 		// Footnotes
 		// Use new values
-		oldValue.setFootnotes(newValue.getFootnotes());
+//		oldValue.setFootnotes(newValue.getFootnotes());
+//		for(Footnote f : oldValue.getFootnotes()) {
+//			
+//		}
 	}
 }
