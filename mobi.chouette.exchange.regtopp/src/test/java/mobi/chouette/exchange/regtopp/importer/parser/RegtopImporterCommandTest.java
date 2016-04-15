@@ -272,7 +272,6 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		
 		command.execute(context);
 
-		// line should be saved
 		utx.begin();
 		em.joinTransaction();
 		Line line = lineDao.findByObjectId("TST:Line:5560");
