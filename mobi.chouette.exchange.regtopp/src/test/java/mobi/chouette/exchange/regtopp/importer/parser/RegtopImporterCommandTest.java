@@ -135,7 +135,7 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 	}
 	
 	@Test
-	public void importRegtoppKolumbusLineN96() throws Exception {
+	public void importRegtoppKolumbusLine2306() throws Exception {
 		// Prepare context
 		Context context = initImportContext();
 
@@ -243,6 +243,78 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		}
 		
 		Assert.assertTrue(result,"Importer command execution failed: "+report.getFailure());
+	}
+
+	@Test
+	public void importRegtoppKolumbusLine5560FootnotesByLine() throws Exception {
+		// Prepare context
+		Context context = initImportContext();
+
+		File f = new File("src/test/data/kolumbus/line5560.zip");
+		File dest = new File("target/referential/test");
+		FileUtils.copyFileToDirectory(f, dest);
+		JobDataTest job = (JobDataTest) context.get(JOB_DATA);
+		job.setInputFilename(f.getName());
+
+		RegtoppImporterCommand command = (RegtoppImporterCommand) CommandFactory.create(initialContext, RegtoppImporterCommand.class.getName());
+		
+		RegtoppImportParameters parameters = (RegtoppImportParameters) context.get(CONFIGURATION);
+		parameters.setObjectIdPrefix("TST");
+		parameters.setReferencesType("line");
+		parameters.setNoSave(false);
+
+		
+		command.execute(context);
+
+		// line should be saved
+		utx.begin();
+		em.joinTransaction();
+		Line line = lineDao.findByObjectId("TST:Line:5560");
+
+		Assert.assertNotNull(line,"Line not found");
+	
+		// Check footnotes
+		Assert.assertNotNull(line.getFootnotes(),"No footnote lists");
+		Assert.assertEquals(line.getFootnotes().size(), 3, "number of line footnotes");
+		
+		utx.rollback();
+
+	}
+
+	@Test
+	public void importRegtoppAtBLine0076FootnotesByVehicleJourney() throws Exception {
+		// Prepare context
+		Context context = initImportContext();
+
+		File f = new File("src/test/data/atb/line0076.zip");
+		File dest = new File("target/referential/test");
+		FileUtils.copyFileToDirectory(f, dest);
+		JobDataTest job = (JobDataTest) context.get(JOB_DATA);
+		job.setInputFilename(f.getName());
+
+		RegtoppImporterCommand command = (RegtoppImporterCommand) CommandFactory.create(initialContext, RegtoppImporterCommand.class.getName());
+		
+		RegtoppImportParameters parameters = (RegtoppImportParameters) context.get(CONFIGURATION);
+		parameters.setObjectIdPrefix("TST");
+		parameters.setReferencesType("line");
+		parameters.setNoSave(false);
+
+		
+		command.execute(context);
+
+		// line should be saved
+		utx.begin();
+		em.joinTransaction();
+		Line line = lineDao.findByObjectId("TST:Line:0076");
+
+		Assert.assertNotNull(line,"Line not found");
+	
+		// Check footnotes
+		Assert.assertNotNull(line.getFootnotes(),"No footnote lists");
+		Assert.assertEquals(line.getFootnotes().size(), 3, "number of line footnotes");
+		
+		utx.rollback();
+
 	}
 
 	@Test

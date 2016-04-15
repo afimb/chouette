@@ -8,6 +8,7 @@ import static mobi.chouette.exchange.regtopp.Constant.REGTOPP_REPORTER;
 import static mobi.chouette.exchange.regtopp.validation.Constant.REGTOPP_FILE_TIX;
 
 import java.sql.Time;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -148,7 +149,9 @@ public class RegtoppLineParser implements Parser, Validator {
 			line.setName(regtoppLine.getName());
 			line.setPublishedName(regtoppLine.getName());
 		}
-
+		
+		List<Footnote> footnotes = line.getFootnotes();
+		
 		Index<RegtoppDestinationDST> destinationIndex = importer.getDestinationById();
 
 		// Add routes and journey patterns
@@ -180,6 +183,10 @@ public class RegtoppLineParser implements Parser, Validator {
 					company.setFilled(true);
 				}
 				line.setCompany(company);
+				
+				// Add footnoe to line
+				addFootnote(routeSegment.getRemarkId(), null, footnotes,importer);
+				
 
 				RouteKey routeKey = new RouteKey(routeSegment.getLineId(), routeSegment.getDirection(), routeSegment.getRouteId());
 
@@ -275,8 +282,8 @@ public class RegtoppLineParser implements Parser, Validator {
 					operator.setCode(trip.getOperatorCode());
 					vehicleJourney.setCompany(operator);
 
-					addFootnote(trip.getFootnoteId1Ref(), vehicleJourney, line, importer);
-					addFootnote(trip.getFootnoteId2Ref(), vehicleJourney, line, importer);
+					addFootnote(trip.getFootnoteId1Ref(), vehicleJourney,  footnotes,importer);
+					addFootnote(trip.getFootnoteId2Ref(), vehicleJourney,  footnotes,importer);
 
 					RegtoppDestinationDST departureText = destinationIndex.getValue(trip.getDestinationIdDepartureRef()); // Turens bestemmelsessted
 					RegtoppDestinationDST arrivalText = destinationIndex.getValue(trip.getDestinationIdArrivalRef()); // Turens startsted
@@ -361,6 +368,11 @@ public class RegtoppLineParser implements Parser, Validator {
 			}
 		}
 
+		// Link line to footnotes
+		for(Footnote f : footnotes) {
+			f.setLine(line);
+		}
+		
 		// Post processing
 		processRoutes(referential.getRoutes().values(),configuration);
 
@@ -439,33 +451,34 @@ public class RegtoppLineParser implements Parser, Validator {
 		return stopPoint;
 	}
 
-	private void addFootnote(String footnoteId, VehicleJourney vehicleJourney, Line line, RegtoppImporter importer) throws Exception {
+	private void addFootnote(String footnoteId, VehicleJourney vehicleJourney, List<Footnote> footnotes, RegtoppImporter importer) throws Exception {
 		if (!"000".equals(footnoteId)) {
-
-			Index<RegtoppFootnoteMRK> index = importer.getFootnoteById();
-			RegtoppFootnoteMRK footnote = index.getValue(footnoteId);
-
-			if (footnote != null) {
-
+			if(!footnoteAlreadyAdded(footnotes,footnoteId)) {
+				Index<RegtoppFootnoteMRK> index = importer.getFootnoteById();
+				RegtoppFootnoteMRK footnote = index.getValue(footnoteId);
+				
 				Footnote f = new Footnote();
 
 				f.setLabel(footnote.getDescription());
 				f.setKey(footnote.getFootnoteId());
 				f.setCode(footnote.getFootnoteId());
-
-				// TODO footnotes does not persist in database.
-				vehicleJourney.getFootnotes().add(f);
-				f.setLine(line);
-				line.getFootnotes().add(f);
-
-			} else {
-				// TODO report correctly
-				log.warn("Invalid footnote id " + footnoteId);
+				
+				footnotes.add(f);
+				if(vehicleJourney != null) {
+					vehicleJourney.getFootnotes().add(f);
+				}
 			}
 		}
 	}
-
 	
+	private boolean footnoteAlreadyAdded(List<Footnote> addedFootnotes, String footnoteId) {
+		for(Footnote existing : addedFootnotes) {
+			if(existing.getCode().equals(footnoteId)) {
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	private void processRoutes(Collection<Route> values, RegtoppImportParameters configuration) {
 

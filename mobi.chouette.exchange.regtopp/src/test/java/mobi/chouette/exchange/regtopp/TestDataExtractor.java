@@ -218,8 +218,12 @@ public class TestDataExtractor {
 	public static void main(String[] args) throws IOException, ArchiveException {
 		new TestDataExtractor().extractLine(new File("src/test/data/kolumbus_regtopp_20160329-20160624.zip").getAbsoluteFile(),
 				new File("src/test/data/kolumbus/line2306.zip").getAbsoluteFile(), "500", "1", "2306");
+		new TestDataExtractor().extractLine(new File("src/test/data/kolumbus_regtopp_20160329-20160624.zip").getAbsoluteFile(),
+				new File("src/test/data/kolumbus/line5560.zip").getAbsoluteFile(), "500", "1", "5560");
 		new TestDataExtractor().extractLine(new File("src/test/data/atb-20160118-20160619.zip").getAbsoluteFile(),
 				new File("src/test/data/atb/line0098.zip").getAbsoluteFile(), "161", "1", "0098");
+		new TestDataExtractor().extractLine(new File("src/test/data/atb-20160118-20160619.zip").getAbsoluteFile(),
+				new File("src/test/data/atb/line0076.zip").getAbsoluteFile(), "161", "1", "0076");
 	}
 
 }
