@@ -1,6 +1,6 @@
 package mobi.chouette.exchange.regtopp.importer;
 
-import static mobi.chouette.exchange.regtopp.Constant.*;
+import static mobi.chouette.exchange.regtopp.RegtoppConstant.REGTOPP_REPORTER;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -24,8 +24,11 @@ import mobi.chouette.common.FileUtil;
 import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.regtopp.RegtoppConstant;
+import mobi.chouette.exchange.regtopp.importer.version.Regtopp12NovusVersionHandler;
+import mobi.chouette.exchange.regtopp.importer.version.Regtopp12VersionHandler;
+import mobi.chouette.exchange.regtopp.importer.version.VersionHandler;
 import mobi.chouette.exchange.regtopp.model.RegtoppDayCodeDKO;
-import mobi.chouette.exchange.regtopp.model.RegtoppDayCodeHeaderDKO;
 import mobi.chouette.exchange.regtopp.model.RegtoppDestinationDST;
 import mobi.chouette.exchange.regtopp.model.RegtoppFootnoteMRK;
 import mobi.chouette.exchange.regtopp.model.RegtoppInterchangeSAM;
@@ -39,7 +42,6 @@ import mobi.chouette.exchange.regtopp.model.RegtoppTableVersionTAB;
 import mobi.chouette.exchange.regtopp.model.RegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.model.RegtoppVehicleJourneyVLP;
 import mobi.chouette.exchange.regtopp.model.RegtoppZoneSON;
-import mobi.chouette.exchange.regtopp.model.importer.parser.ParseableFile;
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppException;
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
@@ -55,13 +57,17 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 
 	public static final String COMMAND = "RegtoppFilePresenceValidationCommand";
 
+	// TODO move to version handler
 	private static final List<String> mandatoryFileExtensions = Arrays.asList(RegtoppTripIndexTIX.FILE_EXTENSION, RegtoppRouteTMS.FILE_EXTENSION,
 			RegtoppStopHPL.FILE_EXTENSION, RegtoppDayCodeDKO.FILE_EXTENSION);
 
+	// TODO move to version handler
 	private static final List<String> optionalFileExtensions = Arrays.asList(RegtoppDestinationDST.FILE_EXTENSION, RegtoppFootnoteMRK.FILE_EXTENSION,
 			RegtoppPathwayGAV.FILE_EXTENSION, RegtoppInterchangeSAM.FILE_EXTENSION, RegtoppZoneSON.FILE_EXTENSION, RegtoppLineLIN.FILE_EXTENSION,
 			RegtoppVehicleJourneyVLP.FILE_EXTENSION, RegtoppTableVersionTAB.FILE_EXTENSION, RegtoppPeriodPER.FILE_EXTENSION,
 			RegtoppRoutePointRUT.FILE_EXTENSION);
+
+	private static final List<String> supportedVersions = Arrays.asList("1.2", "1.2Novus");
 
 	@Override
 	public boolean execute(Context context) throws Exception {
@@ -75,143 +81,118 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 		// check ignored files
 
 		RegtoppImportParameters parameters = (RegtoppImportParameters) context.get(CONFIGURATION);
-		// TODO read ie version from here
+		String declaredVersion = parameters.getVersion();
+		if (!supportedVersions.contains(declaredVersion)) {
+			ActionError error = new ActionError(CODE.INVALID_PARAMETERS,
+					"Unsupported Regtopp version declared: " + declaredVersion + ". Supported versions are " + StringUtils.join(supportedVersions, " "));
+			report.setFailure(error);
+		} else {
 
-		RegtoppValidationReporter validationReporter = (RegtoppValidationReporter) context.get(REGTOPP_REPORTER);
+			VersionHandler versionHandler = null;
+			switch(declaredVersion) {
+			case "1.2":
+				versionHandler = new Regtopp12VersionHandler();
+				break;
+			case "1.2Novus":
+				versionHandler = new Regtopp12NovusVersionHandler();
+				break;
+			}
+			
+			context.put(RegtoppConstant.VERSION_HANDLER, versionHandler);
+			
+			RegtoppValidationReporter validationReporter = (RegtoppValidationReporter) context.get(REGTOPP_REPORTER);
 
-		RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
+			// TODO read FORMPAR.FRM to detect which version of Regtopp being used.
+			// Currently 1.2 supported
+			try {
+				RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
 
-		Set<String> validExtensions = new HashSet<String>();
-		validExtensions.addAll(mandatoryFileExtensions);
-		validExtensions.addAll(optionalFileExtensions);
+				Set<String> validExtensions = new HashSet<String>();
+				validExtensions.addAll(mandatoryFileExtensions);
+				validExtensions.addAll(optionalFileExtensions);
 
-		Set<String> prefixesFound = new HashSet<String>();
-		Set<String> foundExtensions = new HashSet<String>();
+				Set<String> prefixesFound = new HashSet<String>();
+				Set<String> foundExtensions = new HashSet<String>();
 
-		// TODO read FORMPAR.FRM to detect which version of Regtopp being used.
-		// Currently 1.2 supported
-		try {
-			Path path = Paths.get(jobData.getPathName(), INPUT);
-			List<Path> list = FileUtil.listFiles(path, "*");
+				Path path = Paths.get(jobData.getPathName(), INPUT);
+				List<Path> list = FileUtil.listFiles(path, "*");
 
-			for (Path fileName : list) {
+				for (Path fileName : list) {
 
-				String name = fileName.getFileName().toString().toUpperCase();
+					String name = fileName.getFileName().toString().toUpperCase();
 
-				if (!name.matches("R[0-9]{4}\\.[A-Z]{3}")) {
-					FileInfo file = new FileInfo(name, FILE_STATE.IGNORED);
-					report.getFiles().add(file);
-				} else {
-
-					String prefix = name.substring(0, name.lastIndexOf("."));
-					String extension = name.substring(name.lastIndexOf(".") + 1);
-
-					if (!validExtensions.contains(extension)) {
-						// Ignore unknown files
+					if (!name.matches("R[0-9]{4}\\.[A-Z]{3}")) {
 						FileInfo file = new FileInfo(name, FILE_STATE.IGNORED);
 						report.getFiles().add(file);
 					} else {
-						// Valid file, add check that we do not include more than one admin code
-						prefixesFound.add(prefix);
-						foundExtensions.add(extension);
 
-						// Add the file with status ERROR, parser will update to OK when parsed OK
-						FileInfo file = new FileInfo(name, FILE_STATE.ERROR);
-						report.getFiles().add(file);
+						String prefix = name.substring(0, name.lastIndexOf("."));
+						String extension = name.substring(name.lastIndexOf(".") + 1);
 
-						// Register file for parsing and necessary indexes
-						if ("TIX".equals(extension)) {
-							ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppTripIndexTIX.class }), file);
-							importer.registerFileForIndex(RegtoppImporter.INDEX.TRIP_INDEX.name(), parseableFile);
-							importer.registerFileForIndex(RegtoppImporter.INDEX.LINE_BY_TRIPS.name(), parseableFile);
-						} else if ("TMS".equals(extension)) {
-							ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppRouteTMS.class }), file);
-							importer.registerFileForIndex(RegtoppImporter.INDEX.ROUTE_INDEX.name(), parseableFile);
-						} else if ("HPL".equals(extension)) {
-							ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppStopHPL.class }), file);
-							importer.registerFileForIndex(RegtoppImporter.INDEX.STOP_BY_ID.name(), parseableFile);
-						} else if ("DKO".equals(extension)) {
-							ParseableFile parseableFile = new ParseableFile(fileName.toFile(),
-									Arrays.asList(new Class[] { RegtoppDayCodeHeaderDKO.class, RegtoppDayCodeDKO.class }), file);
-							importer.registerFileForIndex(RegtoppImporter.INDEX.DAYCODE_BY_ID.name(), parseableFile);
-						} else if ("DST".equals(extension)) {
-							ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppDestinationDST.class }),
-									file);
-							importer.registerFileForIndex(RegtoppImporter.INDEX.DESTINATION_BY_ID.name(), parseableFile);
-						} else if ("MRK".equals(extension)) {
-							ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppFootnoteMRK.class }), file);
-							importer.registerFileForIndex(RegtoppImporter.INDEX.REMARK_BY_ID.name(), parseableFile);
-						} else if ("GAV".equals(extension)) {
-							ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppPathwayGAV.class }), file);
-							importer.registerFileForIndex(RegtoppImporter.INDEX.PATHWAY_FROM_STOP_ID.name(), parseableFile);
-						} else if ("SAM".equals(extension)) {
-							ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppPathwayGAV.class }), file);
-							importer.registerFileForIndex(RegtoppImporter.INDEX.INTERCHANGE.name(), parseableFile);
-						} else if ("SON".equals(extension)) {
-							ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppZoneSON.class }), file);
-							importer.registerFileForIndex(RegtoppImporter.INDEX.ZONE_BY_ID.name(), parseableFile);
-						} else if ("LIN".equals(extension)) {
-							ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppLineLIN.class }), file);
-							importer.registerFileForIndex(RegtoppImporter.INDEX.LINE_BY_ID.name(), parseableFile);
-						} else if ("VLP".equals(extension)) {
-							ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppVehicleJourneyVLP.class }),
-									file);
-							importer.registerFileForIndex(RegtoppImporter.INDEX.VEHICLE_JOURNEY.name(), parseableFile);
-						} else if ("TAB".equals(extension)) {
-							ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppTableVersionTAB.class }),
-									file);
-							importer.registerFileForIndex(RegtoppImporter.INDEX.TABLE_VERSION.name(), parseableFile);
-						} else if ("RUT".equals(extension)) {
-							ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppRoutePointRUT.class }), file);
-							importer.registerFileForIndex(RegtoppImporter.INDEX.ROUTE_POINT.name(), parseableFile);
+						if (!validExtensions.contains(extension)) {
+							// Ignore unknown files
+							FileInfo file = new FileInfo(name, FILE_STATE.IGNORED);
+							report.getFiles().add(file);
+						} else {
+							// Valid file, add check that we do not include more than one admin code
+							prefixesFound.add(prefix);
+							foundExtensions.add(extension);
+
+							// Add the file with status ERROR, parser will update to OK when parsed OK
+							FileInfo file = new FileInfo(name, FILE_STATE.ERROR);
+							report.getFiles().add(file);
+
+							// Register file for parsing and necessary indexes
+							versionHandler.registerFileForIndex(importer, fileName, extension, file);
 						}
 					}
 				}
-			}
 
-			if (prefixesFound.size() > 1) {
-				// Multiple prefixes found, should all be the same (technically it is allowed, but too complicated for now)
-				ActionError error = new ActionError(CODE.INVALID_DATA,
-						"Multiple companies or versions found in zip file: " + StringUtils.join(prefixesFound, " "));
-				report.setFailure(error);
-			} else {
-				if (!foundExtensions.containsAll(mandatoryFileExtensions)) {
-					// Check that all 4 mandatory files found
-					// Convert to set
-
-					String prefix = prefixesFound.iterator().next();
-
-					Set<String> missingFiles = new HashSet<String>();
-					missingFiles.addAll(mandatoryFileExtensions);
-					missingFiles.removeAll(foundExtensions);
-
-					for (String missingExtension : missingFiles) {
-						FileInfo fileInfo = new FileInfo(prefix + "." + missingExtension, FILE_STATE.ERROR,
-								Arrays.asList(new FileError(FileError.CODE.FILE_NOT_FOUND, "Mandatory file missing")));
-						report.getFiles().add(fileInfo);
-					}
-
+				if (prefixesFound.size() > 1) {
+					// Multiple prefixes found, should all be the same (technically it is allowed, but too complicated for now)
+					ActionError error = new ActionError(CODE.INVALID_DATA,
+							"Multiple companies or versions found in zip file: " + StringUtils.join(prefixesFound, " "));
+					report.setFailure(error);
 				} else {
-					result = SUCCESS;
+					if (!foundExtensions.containsAll(mandatoryFileExtensions)) {
+						// Check that all 4 mandatory files found
+						// Convert to set
+
+						String prefix = prefixesFound.iterator().next();
+
+						Set<String> missingFiles = new HashSet<String>();
+						missingFiles.addAll(mandatoryFileExtensions);
+						missingFiles.removeAll(foundExtensions);
+
+						for (String missingExtension : missingFiles) {
+							FileInfo fileInfo = new FileInfo(prefix + "." + missingExtension, FILE_STATE.ERROR,
+									Arrays.asList(new FileError(FileError.CODE.FILE_NOT_FOUND, "Mandatory file missing")));
+							report.getFiles().add(fileInfo);
+						}
+
+					} else {
+						result = SUCCESS;
+					}
 				}
-			}
-		} catch (RegtoppException e) {
-			// log.error(e,e);
-			if (e.getError().equals(RegtoppException.ERROR.SYSTEM))
+			} catch (RegtoppException e) {
+				// log.error(e,e);
+				if (e.getError().equals(RegtoppException.ERROR.SYSTEM))
+					throw e;
+				else
+					report.setFailure(new ActionError(ActionError.CODE.INVALID_DATA, e.getError().name()));
+
+			} catch (Exception e) {
+				if (e instanceof RuntimeException)
+					log.error(e, e);
 				throw e;
-			else
-				report.setFailure(new ActionError(ActionError.CODE.INVALID_DATA, e.getError().name()));
+			} finally {
+				log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
+			}
 
-		} catch (Exception e) {
-			if (e instanceof RuntimeException)
-				log.error(e, e);
-			throw e;
-		} finally {
-			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		}
-
 		return result;
 	}
+
 
 	public static class DefaultCommandFactory extends CommandFactory {
 

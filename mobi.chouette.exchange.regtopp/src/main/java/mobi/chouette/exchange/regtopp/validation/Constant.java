@@ -1,6 +1,6 @@
 package mobi.chouette.exchange.regtopp.validation;
 
-public interface Constant extends mobi.chouette.exchange.regtopp.Constant {
+public interface Constant extends mobi.chouette.exchange.regtopp.RegtoppConstant {
 
 	public static final String REGTOPP_FILE = "1-REGTOPP-FILE-1";
 	public static final String REGTOPP_INVALID_ID_REFERENCE = "1-REGTOPP-CONCISTENCY-1";

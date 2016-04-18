@@ -50,7 +50,7 @@ public class StopById extends IndexImpl<RegtoppStopHPL> {
 	public void index() throws Exception {
 		for (Object obj : parser.getRawContent()) {
 			RegtoppStopHPL stop = (RegtoppStopHPL) obj;
-			RegtoppStopHPL existing = index.put(stop.getStopId(), stop);
+			RegtoppStopHPL existing = index.put(stop.getFullStopId(), stop);
 			if (existing != null) {
 				// TODO fix exception/validation reporting
 				validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError()), null);

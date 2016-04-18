@@ -1,6 +1,6 @@
 package mobi.chouette.exchange.regtopp.importer;
 
-import static mobi.chouette.exchange.regtopp.Constant.*;
+import static mobi.chouette.exchange.regtopp.RegtoppConstant.*;
 
 import java.io.IOException;
 import java.util.Arrays;

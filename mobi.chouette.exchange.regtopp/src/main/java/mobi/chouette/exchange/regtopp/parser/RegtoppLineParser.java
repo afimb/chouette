@@ -4,7 +4,7 @@ import static mobi.chouette.common.Constant.CONFIGURATION;
 import static mobi.chouette.common.Constant.MAIN_VALIDATION_REPORT;
 import static mobi.chouette.common.Constant.PARSER;
 import static mobi.chouette.common.Constant.REFERENTIAL;
-import static mobi.chouette.exchange.regtopp.Constant.REGTOPP_REPORTER;
+import static mobi.chouette.exchange.regtopp.RegtoppConstant.REGTOPP_REPORTER;
 import static mobi.chouette.exchange.regtopp.validation.Constant.REGTOPP_FILE_TIX;
 
 import java.sql.Time;
@@ -28,7 +28,10 @@ import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.Validator;
+import mobi.chouette.exchange.regtopp.RegtoppConstant;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
+import mobi.chouette.exchange.regtopp.importer.version.Regtopp12NovusVersionHandler;
+import mobi.chouette.exchange.regtopp.importer.version.VersionHandler;
 import mobi.chouette.exchange.regtopp.model.RegtoppDestinationDST;
 import mobi.chouette.exchange.regtopp.model.RegtoppFootnoteMRK;
 import mobi.chouette.exchange.regtopp.model.RegtoppLineLIN;
@@ -150,9 +153,9 @@ public class RegtoppLineParser implements Parser, Validator {
 			line.setName(regtoppLine.getName());
 			line.setPublishedName(regtoppLine.getName());
 		}
-		
+
 		List<Footnote> footnotes = line.getFootnotes();
-		
+
 		Index<RegtoppDestinationDST> destinationIndex = importer.getDestinationById();
 
 		// Add routes and journey patterns
@@ -184,10 +187,9 @@ public class RegtoppLineParser implements Parser, Validator {
 					company.setFilled(true);
 				}
 				line.setCompany(company);
-				
+
 				// Add footnoe to line
-				addFootnote(routeSegment.getRemarkId(), null, footnotes,importer);
-				
+				addFootnote(routeSegment.getRemarkId(), null, footnotes, importer);
 
 				RouteKey routeKey = new RouteKey(routeSegment.getLineId(), routeSegment.getDirection(), routeSegment.getRouteId());
 
@@ -206,12 +208,12 @@ public class RegtoppLineParser implements Parser, Validator {
 					// TODO UNSURE
 					route.setNumber(routeSegment.getRouteId());
 					route.setLine(line);
-					
+
 					// Black magic
 					route.setWayBack(routeSegment.getDirection() == DirectionType.Outbound ? "A" : "R");
-					
+
 					route.setFilled(true);
-					
+
 				}
 
 				// Create journey pattern
@@ -257,7 +259,7 @@ public class RegtoppLineParser implements Parser, Validator {
 		}
 
 		Set<TransportModeNameEnum> detectedTransportModes = new HashSet<TransportModeNameEnum>();
-		
+
 		// Add VehicleJourneys
 		Index<RegtoppTripIndexTIX> tripIndex = importer.getTripIndex();
 		for (RegtoppTripIndexTIX trip : tripIndex) {
@@ -283,27 +285,26 @@ public class RegtoppLineParser implements Parser, Validator {
 					operator.setCode(trip.getOperatorCode());
 					vehicleJourney.setCompany(operator);
 
-					addFootnote(trip.getFootnoteId1Ref(), vehicleJourney,  footnotes,importer);
-					addFootnote(trip.getFootnoteId2Ref(), vehicleJourney,  footnotes,importer);
+					addFootnote(trip.getFootnoteId1Ref(), vehicleJourney, footnotes, importer);
+					addFootnote(trip.getFootnoteId2Ref(), vehicleJourney, footnotes, importer);
 
 					RegtoppDestinationDST departureText = destinationIndex.getValue(trip.getDestinationIdDepartureRef()); // Turens bestemmelsessted
 					RegtoppDestinationDST arrivalText = destinationIndex.getValue(trip.getDestinationIdArrivalRef()); // Turens startsted
 
 					// TODO unsure
 					if (departureText != null && arrivalText != null) {
-						vehicleJourney.setPublishedJourneyName(arrivalText.getDestinationText()+" -> "+departureText.getDestinationText());
-					} else if(departureText != null) {
+						vehicleJourney.setPublishedJourneyName(arrivalText.getDestinationText() + " -> " + departureText.getDestinationText());
+					} else if (departureText != null) {
 						vehicleJourney.setPublishedJourneyName(departureText.getDestinationText());
 					}
-					
 
 					vehicleJourney.setPublishedJourneyIdentifier(StringUtils.trimToNull(trip.getLineNumberVisible()));
 					TransportType typeOfService = trip.getTypeOfService();
 					TransportModeNameEnum transportMode = convertTypeOfService(typeOfService);
 					vehicleJourney.setTransportMode(transportMode);
-					
+
 					detectedTransportModes.add(transportMode);
-					
+
 					String chouetteRouteId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.ROUTE_KEY, routeKey.toString());
 					Route route = ObjectFactory.getRoute(referential, chouetteRouteId);
 
@@ -371,21 +372,21 @@ public class RegtoppLineParser implements Parser, Validator {
 			}
 		}
 
-		if(detectedTransportModes.size() == 1 ) {
+		if (detectedTransportModes.size() == 1) {
 			// Only one transport mode used for all routes/journeys
 			line.setTransportModeName(detectedTransportModes.iterator().next());
 		} else {
 			line.setTransportModeName(TransportModeNameEnum.Other);
-			line.setComment("Multiple transport modes: "+StringUtils.join(detectedTransportModes.toArray()));
+			line.setComment("Multiple transport modes: " + StringUtils.join(detectedTransportModes.toArray()));
 		}
-		
+
 		// Link line to footnotes
-		for(Footnote f : footnotes) {
+		for (Footnote f : footnotes) {
 			f.setLine(line);
 		}
-		
+
 		// Post processing
-		processRoutes(referential.getRoutes().values(),configuration);
+		processRoutes(referential.getRoutes().values(), configuration);
 
 	}
 
@@ -449,11 +450,14 @@ public class RegtoppLineParser implements Parser, Validator {
 
 		RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
 		RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
+		VersionHandler versionHandler = (VersionHandler) context.get(RegtoppConstant.VERSION_HANDLER);
 
 		StopPoint stopPoint = ObjectFactory.getStopPoint(referential, chouetteStopPointId);
 		stopPoint.setPosition(Integer.parseInt(routeSegment.getSequenceNumberStop()));
 
-		String chouetteStopAreaId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.STOPAREA_KEY, routeSegment.getStopId());
+		String regtoppId = versionHandler.createStopPointId(routeSegment);
+		String chouetteStopAreaId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.STOPAREA_KEY,
+				regtoppId);
 
 		StopArea stopArea = ObjectFactory.getStopArea(referential, chouetteStopAreaId);
 
@@ -464,47 +468,47 @@ public class RegtoppLineParser implements Parser, Validator {
 
 	private void addFootnote(String footnoteId, VehicleJourney vehicleJourney, List<Footnote> footnotes, RegtoppImporter importer) throws Exception {
 		if (!"000".equals(footnoteId)) {
-			if(!footnoteAlreadyAdded(footnotes,footnoteId)) {
+			if (!footnoteAlreadyAdded(footnotes, footnoteId)) {
 				Index<RegtoppFootnoteMRK> index = importer.getFootnoteById();
 				RegtoppFootnoteMRK footnote = index.getValue(footnoteId);
-				
+
 				Footnote f = new Footnote();
 
 				f.setLabel(footnote.getDescription());
 				f.setKey(footnote.getFootnoteId());
 				f.setCode(footnote.getFootnoteId());
-				
+
 				footnotes.add(f);
 			}
-			if(vehicleJourney != null) {
-				for(Footnote existing : footnotes) {
-					if(existing.getCode().equals(footnoteId)) {
+			if (vehicleJourney != null) {
+				for (Footnote existing : footnotes) {
+					if (existing.getCode().equals(footnoteId)) {
 						vehicleJourney.getFootnotes().add(existing);
 					}
 				}
 			}
 		}
 	}
-	
+
 	private boolean footnoteAlreadyAdded(List<Footnote> addedFootnotes, String footnoteId) {
-		for(Footnote existing : addedFootnotes) {
-			if(existing.getCode().equals(footnoteId)) {
+		for (Footnote existing : addedFootnotes) {
+			if (existing.getCode().equals(footnoteId)) {
 				return true;
 			}
 		}
 		return false;
 	}
-	
+
 	private void processRoutes(Collection<Route> values, RegtoppImportParameters configuration) {
 
 		// Link opposite routes together
-		for(Route r : values) {
-			if(r.getOppositeRoute() == null) {
+		for (Route r : values) {
+			if (r.getOppositeRoute() == null) {
 				RouteKey key = new RouteKey(AbstractConverter.extractOriginalId(r.getObjectId()));
-				RouteKey oppositeKey = new RouteKey(key.getLineId(),key.getDirection().getOppositeDirection(),key.getRouteId());
-				String oppositeObjectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix()	, ObjectIdTypes.ROUTE_KEY, oppositeKey.toString());
-				for(Route opposite : values) {
-					if(opposite.getObjectId().equals(oppositeObjectId)) {
+				RouteKey oppositeKey = new RouteKey(key.getLineId(), key.getDirection().getOppositeDirection(), key.getRouteId());
+				String oppositeObjectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.ROUTE_KEY, oppositeKey.toString());
+				for (Route opposite : values) {
+					if (opposite.getObjectId().equals(oppositeObjectId)) {
 						// Link routes
 						r.setOppositeRoute(opposite);
 						opposite.setOppositeRoute(r);
@@ -513,8 +517,6 @@ public class RegtoppLineParser implements Parser, Validator {
 				}
 			}
 		}
-		
-		
 
 		for (Route route : values) {
 			if (route.getName() == null) {

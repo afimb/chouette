@@ -95,5 +95,9 @@ public class RegtoppStopHPL extends RegtoppObject implements Serializable {
 	public String getIndexingKey() {
 		return adminCode + counter + stopId;
 	}
+	
+	public String getFullStopId() {
+		return stopId;
+	}
 
 }

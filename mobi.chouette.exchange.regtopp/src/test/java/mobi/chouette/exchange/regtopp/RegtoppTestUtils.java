@@ -23,7 +23,7 @@ import mobi.chouette.model.util.Referential;
 import org.apache.commons.io.FileUtils;
 import org.testng.Assert;
 
-public class RegtoppTestUtils implements Constant, ReportConstant{
+public class RegtoppTestUtils implements RegtoppConstant, ReportConstant{
 
 	
 

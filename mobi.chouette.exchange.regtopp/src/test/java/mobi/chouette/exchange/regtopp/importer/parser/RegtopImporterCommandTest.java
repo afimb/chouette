@@ -45,6 +45,7 @@ import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
+import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
@@ -158,6 +159,7 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		parameters.setObjectIdPrefix("TST");
 		parameters.setReferencesType("line");
 		parameters.setNoSave(false);
+		parameters.setVersion("1.2");
 
 		
 		boolean result = command.execute(context);
@@ -269,6 +271,7 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		parameters.setObjectIdPrefix("TST");
 		parameters.setReferencesType("line");
 		parameters.setNoSave(false);
+		parameters.setVersion("1.2");
 
 		
 		command.execute(context);
@@ -305,9 +308,12 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		parameters.setObjectIdPrefix("TST");
 		parameters.setReferencesType("line");
 		parameters.setNoSave(false);
+		parameters.setVersion("1.2");
 
 		
 		command.execute(context);
+		
+		
 
 		// line should be saved
 		utx.begin();
@@ -350,6 +356,7 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		parameters.setObjectIdPrefix("TST");
 		parameters.setReferencesType("line");
 		parameters.setNoSave(false);
+		parameters.setVersion("1.2");
 
 		
 		boolean result = command.execute(context);
@@ -443,4 +450,53 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		
 		Assert.assertTrue(result,"Importer command execution failed: "+report.getFailure());
 	}
+	
+	@Test
+	public void importRegtoppOpplandstrafikkLine5001StopAreaParent() throws Exception {
+		// Prepare context
+		Context context = initImportContext();
+
+		File f = new File("src/test/data/ot/line5001.zip");
+		File dest = new File("target/referential/test");
+		FileUtils.copyFileToDirectory(f, dest);
+		JobDataTest job = (JobDataTest) context.get(JOB_DATA);
+		job.setInputFilename(f.getName());
+
+		RegtoppImporterCommand command = (RegtoppImporterCommand) CommandFactory.create(initialContext, RegtoppImporterCommand.class.getName());
+		
+		RegtoppImportParameters parameters = (RegtoppImportParameters) context.get(CONFIGURATION);
+		parameters.setObjectIdPrefix("TST");
+		parameters.setReferencesType("line");
+		parameters.setNoSave(false);
+		parameters.setVersion("1.2Novus");
+
+		
+		command.execute(context);
+		
+		
+
+		// line should be saved
+		utx.begin();
+		em.joinTransaction();
+		Line line = lineDao.findByObjectId("TST:Line:5001");
+
+		Assert.assertNotNull(line,"Line not found");
+	
+		// Random journey pattern
+		JourneyPattern journeyPattern = line.getRoutes().get(0).getJourneyPatterns().get(0);
+
+		StopPoint departureStopPoint = journeyPattern.getDepartureStopPoint();
+		
+		StopArea containedInStopArea = departureStopPoint.getContainedInStopArea();
+		Assert.assertNotNull(containedInStopArea,"No stop area on stop point");
+		Assert.assertEquals(containedInStopArea.getAreaType(),ChouetteAreaEnum.BoardingPosition);
+		StopArea parent = containedInStopArea.getParent();
+		Assert.assertNotNull(parent);
+		Assert.assertEquals(parent.getAreaType(), ChouetteAreaEnum.StopPlace);
+		
+		utx.rollback();
+
+	}
+
+
 }

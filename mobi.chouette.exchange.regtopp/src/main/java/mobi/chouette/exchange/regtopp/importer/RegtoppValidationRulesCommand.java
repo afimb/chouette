@@ -16,7 +16,7 @@ import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationRules;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 
-import static mobi.chouette.exchange.regtopp.Constant.*;
+import static mobi.chouette.exchange.regtopp.RegtoppConstant.*;
 
 @Log4j
 public class RegtoppValidationRulesCommand implements Command {

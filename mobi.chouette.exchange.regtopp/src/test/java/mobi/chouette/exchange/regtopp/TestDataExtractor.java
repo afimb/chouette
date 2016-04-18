@@ -224,6 +224,8 @@ public class TestDataExtractor {
 				new File("src/test/data/atb/line0098.zip").getAbsoluteFile(), "161", "1", "0098");
 		new TestDataExtractor().extractLine(new File("src/test/data/atb-20160118-20160619.zip").getAbsoluteFile(),
 				new File("src/test/data/atb/line0076.zip").getAbsoluteFile(), "161", "1", "0076");
+		new TestDataExtractor().extractLine(new File("src/test/data/R0511_212F29Mars16_3.zip").getAbsoluteFile(),
+				new File("src/test/data/ot/line5001.zip").getAbsoluteFile(), "051", "1", "5001");
 	}
 
 }
