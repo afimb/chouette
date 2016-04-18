@@ -8,11 +8,12 @@ import static mobi.chouette.exchange.regtopp.Constant.REGTOPP_REPORTER;
 import static mobi.chouette.exchange.regtopp.validation.Constant.REGTOPP_FILE_TIX;
 
 import java.sql.Time;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.Duration;
@@ -255,8 +256,8 @@ public class RegtoppLineParser implements Parser, Validator {
 			Collections.sort(stopPoints, stopPointSequenceComparator);
 		}
 
-		// TODO Loop over routes and link outbound/inbound routes together
-
+		Set<TransportModeNameEnum> detectedTransportModes = new HashSet<TransportModeNameEnum>();
+		
 		// Add VehicleJourneys
 		Index<RegtoppTripIndexTIX> tripIndex = importer.getTripIndex();
 		for (RegtoppTripIndexTIX trip : tripIndex) {
@@ -300,7 +301,9 @@ public class RegtoppLineParser implements Parser, Validator {
 					TransportType typeOfService = trip.getTypeOfService();
 					TransportModeNameEnum transportMode = convertTypeOfService(typeOfService);
 					vehicleJourney.setTransportMode(transportMode);
-
+					
+					detectedTransportModes.add(transportMode);
+					
 					String chouetteRouteId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.ROUTE_KEY, routeKey.toString());
 					Route route = ObjectFactory.getRoute(referential, chouetteRouteId);
 
@@ -368,6 +371,14 @@ public class RegtoppLineParser implements Parser, Validator {
 			}
 		}
 
+		if(detectedTransportModes.size() == 1 ) {
+			// Only one transport mode used for all routes/journeys
+			line.setTransportModeName(detectedTransportModes.iterator().next());
+		} else {
+			line.setTransportModeName(TransportModeNameEnum.Other);
+			line.setComment("Multiple transport modes: "+StringUtils.join(detectedTransportModes.toArray()));
+		}
+		
 		// Link line to footnotes
 		for(Footnote f : footnotes) {
 			f.setLine(line);

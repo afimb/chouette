@@ -45,6 +45,7 @@ import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
+import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
 public class RegtopImporterCommandTest extends Arquillian implements mobi.chouette.common.Constant{
@@ -275,6 +276,7 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		utx.begin();
 		em.joinTransaction();
 		Line line = lineDao.findByObjectId("TST:Line:5560");
+		Assert.assertEquals(line.getTransportModeName(),TransportModeNameEnum.Ferry);
 
 		Assert.assertNotNull(line,"Line not found");
 	
