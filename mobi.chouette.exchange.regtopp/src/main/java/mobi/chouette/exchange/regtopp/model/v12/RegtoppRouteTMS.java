@@ -5,7 +5,6 @@ import java.io.Serializable;
 import org.beanio.annotation.Field;
 import org.beanio.annotation.Record;
 import org.joda.time.Duration;
-import org.joda.time.Period;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
