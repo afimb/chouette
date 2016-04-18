@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 
 import mobi.chouette.exchange.regtopp.model.importer.parser.FileContentParser;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.LineById;
-import mobi.chouette.exchange.regtopp.model.v12.RegtoppLineLIN;
+import mobi.chouette.exchange.regtopp.model.v11.RegtoppLineLIN;
 
 public class LineByIdTest extends AbstractIndexTest{
 	

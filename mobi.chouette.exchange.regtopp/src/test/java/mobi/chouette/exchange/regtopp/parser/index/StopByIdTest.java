@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 
 import mobi.chouette.exchange.regtopp.model.importer.parser.FileContentParser;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.StopById;
-import mobi.chouette.exchange.regtopp.model.v12.RegtoppStopHPL;
+import mobi.chouette.exchange.regtopp.model.v11.RegtoppStopHPL;
 
 public class StopByIdTest extends AbstractIndexTest{
 	

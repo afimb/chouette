@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.regtopp.model.v12;
+package mobi.chouette.exchange.regtopp.model;
 
 import java.util.Set;
 

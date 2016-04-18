@@ -5,19 +5,19 @@ import java.util.Arrays;
 
 import mobi.chouette.exchange.regtopp.model.importer.parser.ParseableFile;
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
-import mobi.chouette.exchange.regtopp.model.v12.RegtoppDayCodeDKO;
-import mobi.chouette.exchange.regtopp.model.v12.RegtoppDayCodeHeaderDKO;
-import mobi.chouette.exchange.regtopp.model.v12.RegtoppDestinationDST;
-import mobi.chouette.exchange.regtopp.model.v12.RegtoppFootnoteMRK;
-import mobi.chouette.exchange.regtopp.model.v12.RegtoppLineLIN;
-import mobi.chouette.exchange.regtopp.model.v12.RegtoppPathwayGAV;
+import mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeDKO;
+import mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeHeaderDKO;
+import mobi.chouette.exchange.regtopp.model.v11.RegtoppDestinationDST;
+import mobi.chouette.exchange.regtopp.model.v11.RegtoppFootnoteMRK;
+import mobi.chouette.exchange.regtopp.model.v11.RegtoppLineLIN;
+import mobi.chouette.exchange.regtopp.model.v11.RegtoppPathwayGAV;
+import mobi.chouette.exchange.regtopp.model.v11.RegtoppStopHPL;
+import mobi.chouette.exchange.regtopp.model.v11.RegtoppZoneSON;
 import mobi.chouette.exchange.regtopp.model.v12.RegtoppRoutePointRUT;
 import mobi.chouette.exchange.regtopp.model.v12.RegtoppRouteTMS;
-import mobi.chouette.exchange.regtopp.model.v12.RegtoppStopHPL;
 import mobi.chouette.exchange.regtopp.model.v12.RegtoppTableVersionTAB;
 import mobi.chouette.exchange.regtopp.model.v12.RegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.model.v12.RegtoppVehicleJourneyVLP;
-import mobi.chouette.exchange.regtopp.model.v12.RegtoppZoneSON;
 import mobi.chouette.exchange.report.FileInfo;
 
 public class Regtopp12VersionHandler implements VersionHandler {

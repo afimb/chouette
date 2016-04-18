@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.regtopp.model.v12;
+package mobi.chouette.exchange.regtopp.model.v11;
 
 import java.io.Serializable;
 
@@ -18,9 +18,9 @@ import mobi.chouette.exchange.regtopp.model.RegtoppObject;
 @NoArgsConstructor
 @AllArgsConstructor
 @Record(minOccurs = 1)
-public class RegtoppPeriodPER extends RegtoppObject implements Serializable {
+public class RegtoppDestinationDST extends RegtoppObject implements Serializable {
 
-	public static final String FILE_EXTENSION = "PER";
+	public static final String FILE_EXTENSION = "DST";
 
 	private static final long serialVersionUID = 1L;
 
@@ -36,32 +36,17 @@ public class RegtoppPeriodPER extends RegtoppObject implements Serializable {
 
 	@Getter
 	@Setter
-	@Field(at = 4, length = 10)
-	private String periodId;
+	@Field(at = 4, length = 4)
+	private String destinationId;
 
 	@Getter
 	@Setter
-	@Field(at = 14, length = 1)
-	private String sequenceNumberDateInterval;
-
-	@Getter
-	@Setter
-	@Field(at = 15, length = 6)
-	private String startDate;
-
-	@Getter
-	@Setter
-	@Field(at = 21, length = 6)
-	private String endDate;
-
-	@Getter
-	@Setter
-	@Field(at = 27, length = 73)
-	private String periodText;
+	@Field(at = 8, length = 32)
+	private String destinationText;
 
 	@Override
 	public String getIndexingKey() {
-		return adminCode + counter + periodId + sequenceNumberDateInterval;
+		return adminCode + counter + destinationId;
 	}
 
 }

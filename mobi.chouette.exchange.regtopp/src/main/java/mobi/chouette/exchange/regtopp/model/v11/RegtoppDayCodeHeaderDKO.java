@@ -1,9 +1,10 @@
-package mobi.chouette.exchange.regtopp.model.v12;
+package mobi.chouette.exchange.regtopp.model.v11;
 
 import java.io.Serializable;
 
 import org.beanio.annotation.Field;
 import org.beanio.annotation.Record;
+import org.joda.time.LocalDate;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -11,13 +12,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import mobi.chouette.exchange.regtopp.model.RegtoppObject;
 
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
-@Record(name = "entry", minOccurs = 1, maxOccurs = Integer.MAX_VALUE, order = 3)
-public class RegtoppDayCodeDKO extends RegtoppObject implements Serializable {
+@Record(name = "header", minOccurs = 1, maxOccurs = 1, order = 2)
+public class RegtoppDayCodeHeaderDKO extends RegtoppObject implements Serializable {
 
 	public static final String FILE_EXTENSION = "DKO";
 
@@ -25,26 +27,16 @@ public class RegtoppDayCodeDKO extends RegtoppObject implements Serializable {
 
 	@Getter
 	@Setter
-	@Field(at = 0, length = 3)
-	private String adminCode;
+	@Field(at = 0, length = 6, type = LocalDate.class, handlerName = "localDate")
+	private LocalDate date;
 
 	@Getter
 	@Setter
-	@Field(at = 3, length = 1)
-	private String counter;
-
-	@Getter
-	@Setter
-	@Field(at = 4, length = 4)
-	private String dayCodeId;
-
-	@Getter
-	@Setter
-	@Field(at = 8, length = 392, regex = "[01]{392}")
-	private String dayCode;
+	@Field(at = 6, length = 1)
+	private Integer weekDay;
 
 	@Override
 	public String getIndexingKey() {
-		return adminCode + counter + dayCodeId;
+		throw new RuntimeException("No key registerted");
 	}
 }

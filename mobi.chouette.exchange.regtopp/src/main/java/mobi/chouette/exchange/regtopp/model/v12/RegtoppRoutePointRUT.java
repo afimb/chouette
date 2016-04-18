@@ -14,6 +14,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import mobi.chouette.exchange.regtopp.model.RegtoppObject;
 import mobi.chouette.exchange.regtopp.model.enums.DirectionType;
 
 @ToString(callSuper = true)

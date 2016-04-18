@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import mobi.chouette.exchange.regtopp.model.RegtoppObject;
 import mobi.chouette.exchange.regtopp.model.enums.AnnouncementType;
 import mobi.chouette.exchange.regtopp.model.enums.DirectionType;
 import mobi.chouette.exchange.regtopp.model.enums.ParcelServiceType;

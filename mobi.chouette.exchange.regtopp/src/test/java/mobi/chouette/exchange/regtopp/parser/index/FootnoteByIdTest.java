@@ -7,7 +7,7 @@ import org.testng.annotations.Test;
 
 import mobi.chouette.exchange.regtopp.model.importer.parser.FileContentParser;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.FootnoteById;
-import mobi.chouette.exchange.regtopp.model.v12.RegtoppFootnoteMRK;
+import mobi.chouette.exchange.regtopp.model.v11.RegtoppFootnoteMRK;
 
 public class FootnoteByIdTest extends AbstractIndexTest{
 	

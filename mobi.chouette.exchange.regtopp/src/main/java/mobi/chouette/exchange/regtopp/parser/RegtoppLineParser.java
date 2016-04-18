@@ -39,9 +39,9 @@ import mobi.chouette.exchange.regtopp.model.importer.parser.FileParserValidation
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppException;
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.Index;
-import mobi.chouette.exchange.regtopp.model.v12.RegtoppDestinationDST;
-import mobi.chouette.exchange.regtopp.model.v12.RegtoppFootnoteMRK;
-import mobi.chouette.exchange.regtopp.model.v12.RegtoppLineLIN;
+import mobi.chouette.exchange.regtopp.model.v11.RegtoppDestinationDST;
+import mobi.chouette.exchange.regtopp.model.v11.RegtoppFootnoteMRK;
+import mobi.chouette.exchange.regtopp.model.v11.RegtoppLineLIN;
 import mobi.chouette.exchange.regtopp.model.v12.RegtoppRouteTMS;
 import mobi.chouette.exchange.regtopp.model.v12.RegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
