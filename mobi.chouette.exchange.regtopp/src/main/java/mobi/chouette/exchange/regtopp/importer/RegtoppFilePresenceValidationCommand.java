@@ -25,6 +25,7 @@ import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.regtopp.RegtoppConstant;
+import mobi.chouette.exchange.regtopp.importer.version.Regtopp11DVersionHandler;
 import mobi.chouette.exchange.regtopp.importer.version.Regtopp12NovusVersionHandler;
 import mobi.chouette.exchange.regtopp.importer.version.Regtopp12VersionHandler;
 import mobi.chouette.exchange.regtopp.importer.version.VersionHandler;
@@ -67,7 +68,7 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 			RegtoppVehicleJourneyVLP.FILE_EXTENSION, RegtoppTableVersionTAB.FILE_EXTENSION, RegtoppPeriodPER.FILE_EXTENSION,
 			RegtoppRoutePointRUT.FILE_EXTENSION);
 
-	private static final List<String> supportedVersions = Arrays.asList("1.2", "1.2Novus");
+	private static final List<String> supportedVersions = Arrays.asList("1.1D","1.2", "1.2Novus");
 
 	@Override
 	public boolean execute(Context context) throws Exception {
@@ -90,6 +91,9 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 
 			VersionHandler versionHandler = null;
 			switch(declaredVersion) {
+			case "1.1D":
+				versionHandler = new Regtopp11DVersionHandler();
+				break;
 			case "1.2":
 				versionHandler = new Regtopp12VersionHandler();
 				break;

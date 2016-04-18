@@ -30,7 +30,7 @@ public class TestDataExtractor {
 	private final Map<String, Set<String>> referenceMap = new HashMap<String, Set<String>>();
 	private final List<String> fileExtensions = new ArrayList<String>();
 
-	public void extractLine(File sourceZipFile, File destZipFile, String adminCode, String counter, String lineId) throws IOException, ArchiveException {
+	public void extractLine(File sourceZipFile, File destZipFile, String adminCode, String counter, String lineId, String version) throws IOException, ArchiveException {
 
 		File tmpFolder = null;
 
@@ -54,6 +54,7 @@ public class TestDataExtractor {
 			registerFileExtension("FRM");
 			registerFileExtension("TIX");
 			registerFileExtension("TMS");
+			registerFileExtension("TDA");
 			registerFileExtension("HPL");
 			registerFileExtension("DKO");
 			registerFileExtension("DST");
@@ -117,7 +118,9 @@ public class TestDataExtractor {
 									registerReference("MRK", line.substring(22, 25));
 									registerReference("MRK", line.substring(25, 28));
 									registerReference("DST", line.substring(28, 32));
-									registerReference("DST", line.substring(51, 55));
+									if(!version.equals("1.1D")) {
+										registerReference("DST", line.substring(51, 55));
+									}
 								}
 								break;
 							case "TMS":
@@ -160,8 +163,14 @@ public class TestDataExtractor {
 							case "LIN":
 								keepLine = line.startsWith(adminCode + counter) && referenceMap.get(fileExtension).contains(line.substring(4, 8));
 								break;
-							case "FRM":
+							case "FRM": {
 								keepLine = true;
+								break;
+							}
+							case "TDA": {
+								keepLine = true;
+								registerReference("HPL", line.substring(0, 8));
+							}
 							}
 
 							if (keepLine) {
@@ -217,15 +226,17 @@ public class TestDataExtractor {
 
 	public static void main(String[] args) throws IOException, ArchiveException {
 		new TestDataExtractor().extractLine(new File("src/test/data/kolumbus_regtopp_20160329-20160624.zip").getAbsoluteFile(),
-				new File("src/test/data/kolumbus/line2306.zip").getAbsoluteFile(), "500", "1", "2306");
+				new File("src/test/data/kolumbus/line2306.zip").getAbsoluteFile(), "500", "1", "2306","1.2");
 		new TestDataExtractor().extractLine(new File("src/test/data/kolumbus_regtopp_20160329-20160624.zip").getAbsoluteFile(),
-				new File("src/test/data/kolumbus/line5560.zip").getAbsoluteFile(), "500", "1", "5560");
+				new File("src/test/data/kolumbus/line5560.zip").getAbsoluteFile(), "500", "1", "5560","1.2");
 		new TestDataExtractor().extractLine(new File("src/test/data/atb-20160118-20160619.zip").getAbsoluteFile(),
-				new File("src/test/data/atb/line0098.zip").getAbsoluteFile(), "161", "1", "0098");
+				new File("src/test/data/atb/line0098.zip").getAbsoluteFile(), "161", "1", "0098","1.2");
 		new TestDataExtractor().extractLine(new File("src/test/data/atb-20160118-20160619.zip").getAbsoluteFile(),
-				new File("src/test/data/atb/line0076.zip").getAbsoluteFile(), "161", "1", "0076");
+				new File("src/test/data/atb/line0076.zip").getAbsoluteFile(), "161", "1", "0076","1.2");
 		new TestDataExtractor().extractLine(new File("src/test/data/R0511_212F29Mars16_3.zip").getAbsoluteFile(),
-				new File("src/test/data/ot/line5001.zip").getAbsoluteFile(), "051", "1", "5001");
+				new File("src/test/data/ot/line5001.zip").getAbsoluteFile(), "051", "1", "5001","1.2");
+		new TestDataExtractor().extractLine(new File("src/test/data/Troms-rutedata-tom-231216.zip").getAbsoluteFile(),
+				new File("src/test/data/troms/line0002.zip").getAbsoluteFile(), "190", "0", "0002","1.1D");
 	}
 
 }

@@ -498,5 +498,42 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 
 	}
 
+	@Test
+	public void importRegtoppTromsLine0002Regtopp11D() throws Exception {
+		// Prepare context
+		Context context = initImportContext();
+
+		File f = new File("src/test/data/troms/line0002.zip");
+		File dest = new File("target/referential/test");
+		FileUtils.copyFileToDirectory(f, dest);
+		JobDataTest job = (JobDataTest) context.get(JOB_DATA);
+		job.setInputFilename(f.getName());
+
+		RegtoppImporterCommand command = (RegtoppImporterCommand) CommandFactory.create(initialContext, RegtoppImporterCommand.class.getName());
+		
+		RegtoppImportParameters parameters = (RegtoppImportParameters) context.get(CONFIGURATION);
+		parameters.setObjectIdPrefix("TST");
+		parameters.setReferencesType("line");
+		parameters.setNoSave(false);
+		parameters.setVersion("1.1D");
+
+		
+		command.execute(context);
+		
+		
+
+		// line should be saved
+		utx.begin();
+		em.joinTransaction();
+		Line line = lineDao.findByObjectId("TST:Line:0002");
+
+		Assert.assertNotNull(line,"Line not found");
+	
+
+		//TODO add more tests as Route pattern definition in 1.1D is different
+		utx.rollback();
+
+	}
+
 
 }

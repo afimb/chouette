@@ -14,6 +14,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.FileUtil;
+import mobi.chouette.exchange.regtopp.model.RegtoppObject;
 import mobi.chouette.exchange.regtopp.model.importer.parser.FileContentParser;
 import mobi.chouette.exchange.regtopp.model.importer.parser.ParseableFile;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeDKO;
@@ -154,27 +155,43 @@ public class FileContentParserTest {
 	}
 
 	@Test
-	public void verifyMappingCorrectness() {
-		calculateTotalFieldLenght(RegtoppTripIndexTIX.class, 62);
-		calculateTotalFieldLenght(RegtoppRouteTMS.class, 47);
-		calculateTotalFieldLenght(RegtoppStopHPL.class, 87);
-		calculateTotalFieldLenght(RegtoppDayCodeHeaderDKO.class, 7);
-		calculateTotalFieldLenght(RegtoppDayCodeDKO.class, 400);
-		calculateTotalFieldLenght(RegtoppDestinationDST.class, 40);
-		calculateTotalFieldLenght(RegtoppFootnoteMRK.class, 8); // Actually 87, but implementation allows more since some companies are ignoring the length
+	public void verifyMappingCorrectnessRegtopp11() {
+		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v11.RegtoppTripIndexTIX.class), 59);
+		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v11.RegtoppRouteTDA.class), 20);
+		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v11.RegtoppStopHPL.class), 87);
+		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeHeaderDKO.class), 7);
+		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeDKO.class), 400);
+		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v11.RegtoppDestinationDST.class), 40);
+		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v11.RegtoppFootnoteMRK.class), 8); // Actually 87), but implementation allows more since some companies are ignoring the length
 																// restriction
-		calculateTotalFieldLenght(RegtoppPathwayGAV.class, 42);
-		calculateTotalFieldLenght(RegtoppInterchangeSAM.class, 51);
-		calculateTotalFieldLenght(RegtoppZoneSON.class, 45);
-		calculateTotalFieldLenght(RegtoppLineLIN.class, 39);
-		calculateTotalFieldLenght(RegtoppVehicleJourneyVLP.class, 29);
-		calculateTotalFieldLenght(RegtoppTableVersionTAB.class, 108);
-		calculateTotalFieldLenght(RegtoppPeriodPER.class, 100);
-		calculateTotalFieldLenght(RegtoppRoutePointRUT.class, 30);
+		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v11.RegtoppPathwayGAV.class), 42);
+		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v11.RegtoppInterchangeSAM.class), 51);
+		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v11.RegtoppZoneSON.class), 45);
+		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v11.RegtoppLineLIN.class), 39);
+		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v11.RegtoppVehicleJourneyVLP.class), 24);
 
 	}
 
-	private void calculateTotalFieldLenght(Class<?> clazz, int expectedLength) {
+	@Test
+	public void verifyMappingCorrectnessRegtopp12() {
+		// Other files same as 1.1D
+		Assert.assertEquals(calculateTotalFieldLenght(RegtoppTripIndexTIX.class), 62);
+		Assert.assertEquals(calculateTotalFieldLenght(RegtoppRouteTMS.class), 47);
+		Assert.assertEquals(calculateTotalFieldLenght(RegtoppVehicleJourneyVLP.class), 29);
+		Assert.assertEquals(calculateTotalFieldLenght(RegtoppTableVersionTAB.class), 108);
+		Assert.assertEquals(calculateTotalFieldLenght(RegtoppPeriodPER.class), 100);
+		Assert.assertEquals(calculateTotalFieldLenght(RegtoppRoutePointRUT.class), 30);
+
+	}
+
+	@Test
+	public void verifyMappingCorrectnessRegtopp12N() {
+		// Other files same as 1.2
+		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v12novus.RegtoppStopHPL.class), 89);
+	}
+
+
+	private int calculateTotalFieldLenght(Class<?> clazz) {
 		int length = 0;
 		for (Field f : clazz.getDeclaredFields()) {
 			org.beanio.annotation.Field column = f.getAnnotation(org.beanio.annotation.Field.class);
@@ -183,6 +200,12 @@ public class FileContentParserTest {
 				length += column.length();
 			}
 		}
-		Assert.assertEquals(length, expectedLength, "Record mapping incorrect, length mismatch for class " + clazz.getSimpleName());
+		
+		Class<?> superclass = clazz.getSuperclass();
+		if(RegtoppObject.class.isAssignableFrom(superclass)) {
+			length += calculateTotalFieldLenght(superclass);
+		}
+		
+		return length;
 	}
 }
