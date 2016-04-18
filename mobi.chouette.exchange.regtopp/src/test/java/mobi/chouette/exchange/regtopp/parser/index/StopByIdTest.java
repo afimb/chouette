@@ -5,9 +5,9 @@ import java.io.File;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import mobi.chouette.exchange.regtopp.model.RegtoppStopHPL;
 import mobi.chouette.exchange.regtopp.model.importer.parser.FileContentParser;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.StopById;
+import mobi.chouette.exchange.regtopp.model.v12.RegtoppStopHPL;
 
 public class StopByIdTest extends AbstractIndexTest{
 	

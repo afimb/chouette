@@ -17,7 +17,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Record(minOccurs = 1)
-public class RegtoppStopHPL extends mobi.chouette.exchange.regtopp.model.RegtoppStopHPL implements Serializable {
+public class RegtoppStopHPL extends mobi.chouette.exchange.regtopp.model.v12.RegtoppStopHPL implements Serializable {
 
 	public static final String FILE_EXTENSION = "HPL";
 

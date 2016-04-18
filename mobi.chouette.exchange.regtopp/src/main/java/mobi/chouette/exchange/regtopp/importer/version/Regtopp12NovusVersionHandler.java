@@ -3,9 +3,9 @@ package mobi.chouette.exchange.regtopp.importer.version;
 import java.nio.file.Path;
 import java.util.Arrays;
 
-import mobi.chouette.exchange.regtopp.model.RegtoppRouteTMS;
 import mobi.chouette.exchange.regtopp.model.importer.parser.ParseableFile;
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
+import mobi.chouette.exchange.regtopp.model.v12.RegtoppRouteTMS;
 import mobi.chouette.exchange.regtopp.model.v12novus.RegtoppStopHPL;
 import mobi.chouette.exchange.report.FileInfo;
 

@@ -5,10 +5,10 @@ import java.io.File;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import mobi.chouette.exchange.regtopp.model.RegtoppDayCodeDKO;
-import mobi.chouette.exchange.regtopp.model.RegtoppDayCodeHeaderDKO;
 import mobi.chouette.exchange.regtopp.model.importer.parser.FileContentParser;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.DaycodeById;
+import mobi.chouette.exchange.regtopp.model.v12.RegtoppDayCodeDKO;
+import mobi.chouette.exchange.regtopp.model.v12.RegtoppDayCodeHeaderDKO;
 
 public class DaycodeByIdTest extends AbstractIndexTest {
 

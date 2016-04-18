@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.regtopp.model;
+package mobi.chouette.exchange.regtopp.model.v12;
 
 import java.io.Serializable;
 
@@ -17,9 +17,9 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Record(minOccurs = 1)
-public class RegtoppTableVersionTAB extends RegtoppObject implements Serializable {
+public class RegtoppZoneSON extends RegtoppObject implements Serializable {
 
-	public static final String FILE_EXTENSION = "TAB";
+	public static final String FILE_EXTENSION = "SON";
 
 	private static final long serialVersionUID = 1L;
 
@@ -35,27 +35,22 @@ public class RegtoppTableVersionTAB extends RegtoppObject implements Serializabl
 
 	@Getter
 	@Setter
-	@Field(at = 4, length = 4)
-	private String lineId;
+	@Field(at = 4, length = 5)
+	private String zoneId;
 
 	@Getter
 	@Setter
-	@Field(at = 8, length = 10)
-	private String periodId;
-
-	@Getter
-	@Setter
-	@Field(at = 18, length = 8)
+	@Field(at = 9, length = 30)
 	private String name;
 
 	@Getter
 	@Setter
-	@Field(at = 26, length = 82)
-	private String text;
+	@Field(at = 39, length = 6)
+	private String zoneRef;
 
 	@Override
 	public String getIndexingKey() {
-		return adminCode + counter + lineId + periodId;
+		return adminCode + counter + zoneId;
 	}
 
 }

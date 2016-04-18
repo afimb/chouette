@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.regtopp.model;
+package mobi.chouette.exchange.regtopp.model.v12;
 
 import java.io.Serializable;
 

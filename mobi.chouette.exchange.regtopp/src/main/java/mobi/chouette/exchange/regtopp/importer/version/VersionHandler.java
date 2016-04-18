@@ -2,8 +2,8 @@ package mobi.chouette.exchange.regtopp.importer.version;
 
 import java.nio.file.Path;
 
-import mobi.chouette.exchange.regtopp.model.RegtoppRouteTMS;
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
+import mobi.chouette.exchange.regtopp.model.v12.RegtoppRouteTMS;
 import mobi.chouette.exchange.report.FileInfo;
 
 public interface VersionHandler {

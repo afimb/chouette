@@ -5,9 +5,9 @@ import java.io.File;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import mobi.chouette.exchange.regtopp.model.RegtoppFootnoteMRK;
 import mobi.chouette.exchange.regtopp.model.importer.parser.FileContentParser;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.FootnoteById;
+import mobi.chouette.exchange.regtopp.model.v12.RegtoppFootnoteMRK;
 
 public class FootnoteByIdTest extends AbstractIndexTest{
 	

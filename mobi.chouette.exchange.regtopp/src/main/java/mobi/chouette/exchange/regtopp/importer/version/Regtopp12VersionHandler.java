@@ -3,21 +3,21 @@ package mobi.chouette.exchange.regtopp.importer.version;
 import java.nio.file.Path;
 import java.util.Arrays;
 
-import mobi.chouette.exchange.regtopp.model.RegtoppDayCodeDKO;
-import mobi.chouette.exchange.regtopp.model.RegtoppDayCodeHeaderDKO;
-import mobi.chouette.exchange.regtopp.model.RegtoppDestinationDST;
-import mobi.chouette.exchange.regtopp.model.RegtoppFootnoteMRK;
-import mobi.chouette.exchange.regtopp.model.RegtoppLineLIN;
-import mobi.chouette.exchange.regtopp.model.RegtoppPathwayGAV;
-import mobi.chouette.exchange.regtopp.model.RegtoppRoutePointRUT;
-import mobi.chouette.exchange.regtopp.model.RegtoppRouteTMS;
-import mobi.chouette.exchange.regtopp.model.RegtoppStopHPL;
-import mobi.chouette.exchange.regtopp.model.RegtoppTableVersionTAB;
-import mobi.chouette.exchange.regtopp.model.RegtoppTripIndexTIX;
-import mobi.chouette.exchange.regtopp.model.RegtoppVehicleJourneyVLP;
-import mobi.chouette.exchange.regtopp.model.RegtoppZoneSON;
 import mobi.chouette.exchange.regtopp.model.importer.parser.ParseableFile;
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
+import mobi.chouette.exchange.regtopp.model.v12.RegtoppDayCodeDKO;
+import mobi.chouette.exchange.regtopp.model.v12.RegtoppDayCodeHeaderDKO;
+import mobi.chouette.exchange.regtopp.model.v12.RegtoppDestinationDST;
+import mobi.chouette.exchange.regtopp.model.v12.RegtoppFootnoteMRK;
+import mobi.chouette.exchange.regtopp.model.v12.RegtoppLineLIN;
+import mobi.chouette.exchange.regtopp.model.v12.RegtoppPathwayGAV;
+import mobi.chouette.exchange.regtopp.model.v12.RegtoppRoutePointRUT;
+import mobi.chouette.exchange.regtopp.model.v12.RegtoppRouteTMS;
+import mobi.chouette.exchange.regtopp.model.v12.RegtoppStopHPL;
+import mobi.chouette.exchange.regtopp.model.v12.RegtoppTableVersionTAB;
+import mobi.chouette.exchange.regtopp.model.v12.RegtoppTripIndexTIX;
+import mobi.chouette.exchange.regtopp.model.v12.RegtoppVehicleJourneyVLP;
+import mobi.chouette.exchange.regtopp.model.v12.RegtoppZoneSON;
 import mobi.chouette.exchange.report.FileInfo;
 
 public class Regtopp12VersionHandler implements VersionHandler {

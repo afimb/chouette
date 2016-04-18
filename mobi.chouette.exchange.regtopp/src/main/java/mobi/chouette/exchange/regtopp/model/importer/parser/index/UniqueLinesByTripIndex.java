@@ -3,8 +3,8 @@ package mobi.chouette.exchange.regtopp.model.importer.parser.index;
 import java.io.IOException;
 
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.exchange.regtopp.model.RegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.model.importer.parser.FileContentParser;
+import mobi.chouette.exchange.regtopp.model.v12.RegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 
 @Log4j

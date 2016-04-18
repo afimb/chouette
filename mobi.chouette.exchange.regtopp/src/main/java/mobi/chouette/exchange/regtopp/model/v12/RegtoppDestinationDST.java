@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.regtopp.model;
+package mobi.chouette.exchange.regtopp.model.v12;
 
 import java.io.Serializable;
 
@@ -17,9 +17,9 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Record(minOccurs = 1)
-public class RegtoppLineLIN extends RegtoppObject implements Serializable {
+public class RegtoppDestinationDST extends RegtoppObject implements Serializable {
 
-	public static final String FILE_EXTENSION = "LIN";
+	public static final String FILE_EXTENSION = "DST";
 
 	private static final long serialVersionUID = 1L;
 
@@ -36,21 +36,16 @@ public class RegtoppLineLIN extends RegtoppObject implements Serializable {
 	@Getter
 	@Setter
 	@Field(at = 4, length = 4)
-	private String lineId;
+	private String destinationId;
 
 	@Getter
 	@Setter
-	@Field(at = 8, length = 30)
-	private String name;
-
-	@Getter
-	@Setter
-	@Field(at = 38, length = 1)
-	private Integer fareCode;
+	@Field(at = 8, length = 32)
+	private String destinationText;
 
 	@Override
 	public String getIndexingKey() {
-		return adminCode + counter + lineId;
+		return adminCode + counter + destinationId;
 	}
 
 }

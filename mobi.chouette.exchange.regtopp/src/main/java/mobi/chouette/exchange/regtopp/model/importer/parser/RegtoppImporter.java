@@ -6,14 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import mobi.chouette.common.Context;
-import mobi.chouette.exchange.regtopp.model.RegtoppDayCodeDKO;
-import mobi.chouette.exchange.regtopp.model.RegtoppDestinationDST;
-import mobi.chouette.exchange.regtopp.model.RegtoppFootnoteMRK;
-import mobi.chouette.exchange.regtopp.model.RegtoppLineLIN;
-import mobi.chouette.exchange.regtopp.model.RegtoppObject;
-import mobi.chouette.exchange.regtopp.model.RegtoppRouteTMS;
-import mobi.chouette.exchange.regtopp.model.RegtoppStopHPL;
-import mobi.chouette.exchange.regtopp.model.RegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppException.ERROR;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.DaycodeById;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.DestinationById;
@@ -25,6 +17,14 @@ import mobi.chouette.exchange.regtopp.model.importer.parser.index.RouteByIndexin
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.StopById;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.TripByIndexingKey;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.UniqueLinesByTripIndex;
+import mobi.chouette.exchange.regtopp.model.v12.RegtoppDayCodeDKO;
+import mobi.chouette.exchange.regtopp.model.v12.RegtoppDestinationDST;
+import mobi.chouette.exchange.regtopp.model.v12.RegtoppFootnoteMRK;
+import mobi.chouette.exchange.regtopp.model.v12.RegtoppLineLIN;
+import mobi.chouette.exchange.regtopp.model.v12.RegtoppObject;
+import mobi.chouette.exchange.regtopp.model.v12.RegtoppRouteTMS;
+import mobi.chouette.exchange.regtopp.model.v12.RegtoppStopHPL;
+import mobi.chouette.exchange.regtopp.model.v12.RegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 
 public class RegtoppImporter {

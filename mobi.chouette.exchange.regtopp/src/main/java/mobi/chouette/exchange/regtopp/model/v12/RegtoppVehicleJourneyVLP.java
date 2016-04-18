@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.regtopp.model;
+package mobi.chouette.exchange.regtopp.model.v12;
 
 import java.io.Serializable;
 
@@ -16,10 +16,10 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
-@Record(name = "entry", minOccurs = 1, maxOccurs = Integer.MAX_VALUE, order = 3)
-public class RegtoppDayCodeDKO extends RegtoppObject implements Serializable {
+@Record(minOccurs = 1)
+public class RegtoppVehicleJourneyVLP extends RegtoppObject implements Serializable {
 
-	public static final String FILE_EXTENSION = "DKO";
+	public static final String FILE_EXTENSION = "VLP";
 
 	private static final long serialVersionUID = 1L;
 
@@ -35,16 +35,36 @@ public class RegtoppDayCodeDKO extends RegtoppObject implements Serializable {
 
 	@Getter
 	@Setter
-	@Field(at = 4, length = 4)
+	@Field(at = 4, length = 6)
+	private String vehicleJourneyId;
+
+	@Getter
+	@Setter
+	@Field(at = 10, length = 4)
 	private String dayCodeId;
 
 	@Getter
 	@Setter
-	@Field(at = 8, length = 392, regex = "[01]{392}")
-	private String dayCode;
+	@Field(at = 14, length = 2)
+	private String sequenceNumberTrip;
+
+	@Getter
+	@Setter
+	@Field(at = 16, length = 4)
+	private Integer lineId;
+
+	@Getter
+	@Setter
+	@Field(at = 20, length = 4)
+	private Integer tripId;
+
+	@Getter
+	@Setter
+	@Field(at = 24, length = 5)
+	private Integer id;
 
 	@Override
 	public String getIndexingKey() {
-		return adminCode + counter + dayCodeId;
+		return adminCode + counter + vehicleJourneyId + dayCodeId + sequenceNumberTrip;
 	}
 }

@@ -5,9 +5,9 @@ import java.io.File;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import mobi.chouette.exchange.regtopp.model.RegtoppDestinationDST;
 import mobi.chouette.exchange.regtopp.model.importer.parser.FileContentParser;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.DestinationById;
+import mobi.chouette.exchange.regtopp.model.v12.RegtoppDestinationDST;
 
 public class DestinationByIdTest extends AbstractIndexTest{
 	
