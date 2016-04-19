@@ -26,6 +26,13 @@ public class RegtoppRouteTDA extends RegtoppObject implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Getter
+	private String routeId;
+	
+	public void setRouteId(int counter) {
+		routeId = pad(counter,7);
+	}
+	
+	@Getter
 	@Setter
 	@Field(at = 0, length = 8)
 	private String stopId;

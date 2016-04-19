@@ -13,10 +13,10 @@ import mobi.chouette.exchange.regtopp.model.v11.RegtoppLineLIN;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppPathwayGAV;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppRouteTDA;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppStopHPL;
+import mobi.chouette.exchange.regtopp.model.v11.RegtoppTripIndexTIX;
+import mobi.chouette.exchange.regtopp.model.v11.RegtoppVehicleJourneyVLP;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppZoneSON;
 import mobi.chouette.exchange.regtopp.model.v12.RegtoppRouteTMS;
-import mobi.chouette.exchange.regtopp.model.v12.RegtoppTripIndexTIX;
-import mobi.chouette.exchange.regtopp.model.v12.RegtoppVehicleJourneyVLP;
 import mobi.chouette.exchange.report.FileInfo;
 
 public class Regtopp11DVersionHandler implements VersionHandler {
@@ -92,4 +92,6 @@ public class Regtopp11DVersionHandler implements VersionHandler {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	
 }
