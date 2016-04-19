@@ -60,7 +60,7 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 		}
 	}
 
-	private void saveReport(Context context) {
+	public static  void saveReport(Context context) {
 		if (context.containsKey("testng"))
 			return;
 		ActionReport report = (ActionReport) context.get(REPORT);
@@ -76,7 +76,7 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 
 	}
 
-	private void saveMainValidationReport(Context context) {
+	public static void saveMainValidationReport(Context context) {
 		if (context.containsKey("testng"))
 			return;
 		ValidationReport report = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
@@ -96,7 +96,7 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 
 	}
 
-	private void mergeValidationReports(Context context) {
+	public static void mergeValidationReports(Context context) {
 		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
 		ValidationReport mainValidationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
 		for (CheckPoint checkPoint : validationReport.getCheckPoints()) {

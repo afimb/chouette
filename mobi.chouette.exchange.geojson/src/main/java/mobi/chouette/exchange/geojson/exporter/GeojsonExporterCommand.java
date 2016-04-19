@@ -71,6 +71,9 @@ public class GeojsonExporterCommand extends AbstractExporterCommand implements
 
 				}
 			}
+			// no validation available for this export
+			parameters.setValidateAfterExport(false);
+			
 			ProcessingCommands commands = ProcessingCommandsFactory
 					.create(GeojsonExporterProcessingCommands.class.getName());
 

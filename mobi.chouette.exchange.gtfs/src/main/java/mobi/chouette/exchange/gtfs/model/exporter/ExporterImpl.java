@@ -33,7 +33,7 @@ public abstract class ExporterImpl<T> implements Exporter<T> {
 	@Override
 	public void write(String text) throws IOException {
 		_writer.write(text);
-		_writer.write("\n");
+		_writer.write("\r\n");
 		_context.put(Context.ID, _total++);
 	}
 

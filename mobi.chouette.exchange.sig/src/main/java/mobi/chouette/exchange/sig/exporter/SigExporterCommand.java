@@ -92,6 +92,10 @@ public class SigExporterCommand implements Command, Constant, ReportConstant {
 			boolean continueLineProcesingOnError) throws Exception {
 		boolean result = ERROR;
 		SigExportParameters parameters = (SigExportParameters) context.get(CONFIGURATION);
+
+		// no validation available for this export
+		parameters.setValidateAfterExport(false);
+		
 		ActionReport report = (ActionReport) context.get(REPORT);
 
 		JobData jobData = (JobData) context.get(JOB_DATA);

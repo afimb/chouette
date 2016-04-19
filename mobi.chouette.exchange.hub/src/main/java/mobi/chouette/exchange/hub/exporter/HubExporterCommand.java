@@ -66,7 +66,9 @@ public class HubExporterCommand extends AbstractExporterCommand implements Comma
 
 				}
 			}
-
+			// no validation available for this export
+			parameters.setValidateAfterExport(false);
+			
 			ProcessingCommands commands = ProcessingCommandsFactory.create(HubExporterProcessingCommands.class.getName());
 			
 			result = process(context, commands, progression, false,Mode.line);

@@ -65,6 +65,9 @@ public class NetexExporterCommand extends AbstractExporterCommand implements Com
 
 				}
 			}
+			// no validation available for this export
+			parameters.setValidateAfterExport(false);
+			
 			ProcessingCommands commands = ProcessingCommandsFactory.create(NetexExporterProcessingCommands.class
 					.getName());
 

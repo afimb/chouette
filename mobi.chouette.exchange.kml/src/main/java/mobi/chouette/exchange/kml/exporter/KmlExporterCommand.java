@@ -67,6 +67,9 @@ public class KmlExporterCommand extends AbstractExporterCommand implements Comma
 				
 			}
 		}
+		// no validation available for this export
+		parameters.setValidateAfterExport(false);
+		
 		ProcessingCommands commands = ProcessingCommandsFactory.create(KmlExporterProcessingCommands.class.getName());
 		
 		result = process(context, commands, progression, true,Mode.line);
