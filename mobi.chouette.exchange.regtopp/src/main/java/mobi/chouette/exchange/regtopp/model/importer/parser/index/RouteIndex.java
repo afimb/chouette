@@ -19,7 +19,7 @@ public abstract class RouteIndex extends IndexImpl<RegtoppRouteTMS> {
 	public boolean validate(RegtoppRouteTMS bean, RegtoppImporter dao) {
 		boolean result = true;
 
-		if (dao.getDestinationById().containsKey(bean.getDestinationId())){
+		if (bean.getDestinationId().equals(DESTINATION_NULL_REF) || dao.getDestinationById().containsKey(bean.getDestinationId())){
 			bean.getOkTests().add(RegtoppException.ERROR.TMS_INVALID_OPTIONAL_ID_REFERENCE);
 		} else {
 			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppRouteTMS.FILE_EXTENSION, bean.getRecordLineNumber(), "Destinasjonsnr", bean.getDestinationId(), RegtoppException.ERROR.TMS_INVALID_OPTIONAL_ID_REFERENCE, "Unreferenced id.")));

@@ -35,18 +35,24 @@ public abstract class TripIndex extends IndexImpl<RegtoppTripIndexTIX> {
 			result = false;
 		}
 
-		if (dao.getDestinationById().containsKey(bean.getDestinationIdDepartureRef())){
-			bean.getOkTests().add(RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE);
-		} else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppTripIndexTIX.FILE_EXTENSION, bean.getRecordLineNumber(), "Destinasjonsnr (avgang)", bean.getDestinationIdDepartureRef(), RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE, "Unreferenced id.")));
+		//One of destinations may be a null ref
+		if (bean.getDestinationIdDepartureRef().equals(DESTINATION_NULL_REF) && bean.getDestinationIdArrivalRef().equals(DESTINATION_NULL_REF)) {
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppTripIndexTIX.FILE_EXTENSION, bean.getRecordLineNumber(), "Enten Destinasjonsnr (avgang) eller Destinasjonsnr (ankomst) må være satt", DESTINATION_NULL_REF, RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE, "Unreferenced id.")));
 			result = false;
-		}
+		} else {
+			if (bean.getDestinationIdDepartureRef().equals(DESTINATION_NULL_REF) || dao.getDestinationById().containsKey(bean.getDestinationIdDepartureRef())) {
+				bean.getOkTests().add(RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE);
+			} else {
+				bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppTripIndexTIX.FILE_EXTENSION, bean.getRecordLineNumber(), "Destinasjonsnr (avgang)", bean.getDestinationIdDepartureRef(), RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE, "Unreferenced id.")));
+				result = false;
+			}
 
-		if (dao.getDestinationById().containsKey(bean.getDestinationIdArrivalRef())){
-			bean.getOkTests().add(RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE);
-		} else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppTripIndexTIX.FILE_EXTENSION, bean.getRecordLineNumber(), "Destinasjonsnr (ankomst)", bean.getDestinationIdArrivalRef(), RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE, "Unreferenced id.")));
-			result = false;
+			if (bean.getDestinationIdArrivalRef().equals(DESTINATION_NULL_REF) || dao.getDestinationById().containsKey(bean.getDestinationIdArrivalRef())) {
+				bean.getOkTests().add(RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE);
+			} else {
+				bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppTripIndexTIX.FILE_EXTENSION, bean.getRecordLineNumber(), "Destinasjonsnr (ankomst)", bean.getDestinationIdArrivalRef(), RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE, "Unreferenced id.")));
+				result = false;
+			}
 		}
 
 		if (bean.getFootnoteId1Ref().equals(FOOTNOTE_NULL_REF) || dao.getFootnoteById().containsKey(bean.getFootnoteId1Ref())){
