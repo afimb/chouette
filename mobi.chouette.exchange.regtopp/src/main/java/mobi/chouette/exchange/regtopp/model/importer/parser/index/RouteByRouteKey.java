@@ -1,17 +1,14 @@
 package mobi.chouette.exchange.regtopp.model.importer.parser.index;
 
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.common.Context;
 import mobi.chouette.exchange.regtopp.model.v12.RegtoppRouteTMS;
 import mobi.chouette.exchange.regtopp.model.importer.parser.FileContentParser;
-import mobi.chouette.exchange.regtopp.model.importer.parser.FileParserValidationError;
-import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppException;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 
 @Log4j
-public class RouteByIndexingKey extends RouteIndex {
+public class RouteByRouteKey extends RouteIndex {
 
-	public RouteByIndexingKey(RegtoppValidationReporter validationReporter, FileContentParser fileParser) throws Exception {
+	public RouteByRouteKey(RegtoppValidationReporter validationReporter, FileContentParser fileParser) throws Exception {
 		super(validationReporter, fileParser);
 	}
 
@@ -19,23 +16,25 @@ public class RouteByIndexingKey extends RouteIndex {
 		@SuppressWarnings("rawtypes")
 		@Override
 		protected Index create(RegtoppValidationReporter validationReporter, FileContentParser parser) throws Exception {
-			return new RouteByIndexingKey(validationReporter, parser);
+			return new RouteByRouteKey(validationReporter, parser);
 		}
 	}
 
 	static {
 		IndexFactory factory = new DefaultImporterFactory();
-		IndexFactory.factories.put(RouteByIndexingKey.class.getName(), factory);
+		IndexFactory.factories.put(RouteByRouteKey.class.getName(), factory);
 	}
 
 	@Override
 	public void index() throws Exception {
 		for (Object obj : parser.getRawContent()) {
 			RegtoppRouteTMS route = (RegtoppRouteTMS) obj;
-			RegtoppRouteTMS existing = index.put(route.getIndexingKey(), route);
+			if (route == null){
+				throw new IllegalArgumentException("Route");
+			}
+			RegtoppRouteTMS existing = index.put(route.getRouteKey(), route);
 			if (existing != null) {
-				// TODO fix exception/validation reporting
-				validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError()), null);
+				continue; // we want to check > 0 occurences
 			}
 		}
 	}

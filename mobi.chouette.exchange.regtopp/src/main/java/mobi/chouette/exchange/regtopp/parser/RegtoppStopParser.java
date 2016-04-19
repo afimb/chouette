@@ -46,9 +46,9 @@ public class RegtoppStopParser implements Parser, Validator {
 		RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
 		RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
 		VersionHandler versionHandler = (VersionHandler)context.get(RegtoppConstant.VERSION_HANDLER);
-		
+
 		for (RegtoppStopHPL stop : importer.getStopById()) {
-			
+
 			String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), StopArea.STOPAREA_KEY, stop.getFullStopId());
 			StopArea stopArea = ObjectFactory.getStopArea(referential, objectId);
 
@@ -73,8 +73,8 @@ public class RegtoppStopParser implements Parser, Validator {
 
 			stopArea.setAreaType(ChouetteAreaEnum.BoardingPosition);
 		}
-		
-		
+
+
 		if(versionHandler instanceof Regtopp12NovusVersionHandler) {
 			// Build parent stop area (commercial stop point)
 
@@ -89,7 +89,7 @@ public class RegtoppStopParser implements Parser, Validator {
 				}
 				list.add(sa);
 			}
-			
+
 			for(String commercialStopAreaId : boardingPositionsByStopArea.keySet()) {
 				List<StopArea> list = boardingPositionsByStopArea.get(commercialStopAreaId);
 				if(list.size() > 1) {
@@ -98,20 +98,20 @@ public class RegtoppStopParser implements Parser, Validator {
 					StopArea stopArea = ObjectFactory.getStopArea(referential, objectId);
 					stopArea.setName(list.get(0).getName()); // TODO using name of first stoppoint, should be identical for all boarding positions according to spec
 					stopArea.setAreaType(ChouetteAreaEnum.StopPlace);
-					
+
 					for(StopArea bp : list) {
 						bp.setParent(stopArea);
 					}
-					
+
 					// Calculate center coordinate
 					// TODO currently using only first boarding position stop coordinates. Need to be centered
 					stopArea.setLongitude(list.get(0).getLongitude());
 					stopArea.setLatitude(list.get(0).getLatitude());
 					stopArea.setLongLatType(list.get(0).getLongLatType());
-					
+
 				}
 			}
-			
+
 		}
 	}
 
@@ -126,7 +126,7 @@ public class RegtoppStopParser implements Parser, Validator {
 
 		ValidationReport mainReporter = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
 
-		mainReporter.getCheckPoints().add(new CheckPoint(REGTOPP_FILE_HPL, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		mainReporter.getCheckPoints().add(new CheckPoint(REGTOPP_FILE_HPL, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
 
 		// stops.txt
 		if (importer.hasHPLImporter()) { // the file "*.hpl" exists ?

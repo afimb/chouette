@@ -15,6 +15,7 @@ import mobi.chouette.exchange.regtopp.model.importer.parser.index.Index;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.IndexFactory;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.LineById;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.RouteByIndexingKey;
+import mobi.chouette.exchange.regtopp.model.importer.parser.index.RouteByRouteKey;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.StopById;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.TripByIndexingKey;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.UniqueLinesByTripIndex;
@@ -43,7 +44,8 @@ public class RegtoppImporter {
 		TABLE_VERSION,
 		ROUTE_POINT,
 		LINE_BY_TRIPS,
-		ROUTE_INDEX
+		ROUTE_INDEX,
+		ROUTE_BY_ROUTE_KEY
 	}
 
 	private String path;
@@ -127,8 +129,8 @@ public class RegtoppImporter {
 		return getIndex(INDEX.TRIP_INDEX.name(), TripByIndexingKey.class);
 	}
 
-	public boolean hasHPLImporter() {
-		return hasImporter(RegtoppStopHPL.FILE_EXTENSION);
+	public boolean hasTMSImporter() {
+		return hasImporter(RegtoppRouteTMS.FILE_EXTENSION);
 	}
 
 	public boolean hasTIXImporter() {
@@ -137,6 +139,10 @@ public class RegtoppImporter {
 
 	public boolean hasLINImporter() {
 		return hasImporter(RegtoppLineLIN.FILE_EXTENSION);
+	}
+
+	public boolean hasHPLImporter() {
+		return hasImporter(RegtoppStopHPL.FILE_EXTENSION);
 	}
 
 	private boolean hasImporter(final String pattern) {
@@ -171,5 +177,11 @@ public class RegtoppImporter {
 	public Index<RegtoppRouteTMS> getRouteIndex() {
 		return getIndex(INDEX.ROUTE_INDEX.name(), RouteByIndexingKey.class);
 	}
+
+	public Index<RegtoppRouteTMS> getRouteByRouteKey() {
+		return getIndex(INDEX.ROUTE_BY_ROUTE_KEY.name(), RouteByRouteKey.class);
+	}
+
+
 
 }

@@ -27,6 +27,7 @@ public class Regtopp12VersionHandler extends Regtopp11DVersionHandler {
 		case "TMS": {
 			ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppRouteTMS.class }), file);
 			importer.registerFileForIndex(RegtoppImporter.INDEX.ROUTE_INDEX.name(), parseableFile);
+			importer.registerFileForIndex(RegtoppImporter.INDEX.ROUTE_BY_ROUTE_KEY.name(), parseableFile);
 			break;
 		}
 

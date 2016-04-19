@@ -136,4 +136,8 @@ public class RegtoppTripIndexTIX extends RegtoppObject implements Serializable {
 	public String getIndexingKey() {
 		return adminCode + counter + lineId + tripId;
 	}
+
+	public String getRouteKey() {
+		return lineId + direction + routeIdRef;
+	}
 }

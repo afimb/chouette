@@ -72,47 +72,62 @@ public class RegtoppValidationReporter {
 		// log.error(ex);
 
 		switch (ex.getError()) {
-		case INVALID_MANDATORY_ID_REFERENCE:
-			checkPointName = checkPointName(name, RegtoppException.ERROR.INVALID_MANDATORY_ID_REFERENCE);
+		case TIX_INVALID_MANDATORY_ID_REFERENCE:
+			checkPointName = checkPointName(name, RegtoppException.ERROR.TIX_INVALID_MANDATORY_ID_REFERENCE);
 			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
 					new FileError(FileError.CODE.INVALID_FORMAT,
 							"Unreferenced " + ex.getField() + " (rule " + checkPointName + ")"));
 			validationReport.addDetail(checkPointName,
 					new Location(filenameInfo, fieldName, ex.getLineNumber()), ex.getValue(), ex.getField(), CheckPoint.RESULT.UNCHECK);
 			break;
-//			throw ex;
-		case INVALID_OPTIONAL_ID_REFERENCE:
-			checkPointName = checkPointName(name, RegtoppException.ERROR.INVALID_OPTIONAL_ID_REFERENCE);
+		case TIX_INVALID_OPTIONAL_ID_REFERENCE:
+			checkPointName = checkPointName(name, RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE);
 			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
 					new FileError(FileError.CODE.INVALID_FORMAT,
 							"Unreferenced " + ex.getField() + " (rule " + checkPointName + ")"));
 			validationReport.addDetail(checkPointName,
 					new Location(filenameInfo, fieldName, ex.getLineNumber()), ex.getValue(), ex.getField(), CheckPoint.RESULT.UNCHECK);
 			break;
-//			throw ex;
+		case TMS_INVALID_OPTIONAL_ID_REFERENCE:
+			checkPointName = checkPointName(name, RegtoppException.ERROR.TMS_INVALID_OPTIONAL_ID_REFERENCE);
+			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+					new FileError(FileError.CODE.INVALID_FORMAT,
+							"Unreferenced " + ex.getField() + " (rule " + checkPointName + ")"));
+			validationReport.addDetail(checkPointName,
+					new Location(filenameInfo, fieldName, ex.getLineNumber()), ex.getValue(), ex.getField(), CheckPoint.RESULT.UNCHECK);
+			break;
+			case TIX_TMS_CORRESPONDENCE:
+				checkPointName = checkPointName(name, RegtoppException.ERROR.TIX_TMS_CORRESPONDENCE);
+				report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+						new FileError(FileError.CODE.INVALID_FORMAT,
+								"Unreferenced " + ex.getField() + " (rule " + checkPointName + ")"));
+				validationReport.addDetail(checkPointName,
+						new Location(filenameInfo, fieldName, ex.getLineNumber()), ex.getValue(), ex.getField(), CheckPoint.RESULT.UNCHECK);
+				break;
 		case SYSTEM:
-			// 1-GTFS-CSV-2
 			checkPointName = checkPointName(name, RegtoppException.ERROR.SYSTEM);
 			report.addFileInfo(filenameInfo, FILE_STATE.ERROR, new FileError(FileError.CODE.INVALID_FORMAT,
 					"The first line in file \"" + filenameInfo + "\" must comply with CSV (rule " + checkPointName + ")"));
 			validationReport.addDetail(checkPointName, new Location(filenameInfo, 1, -1), filenameInfo, CheckPoint.RESULT.NOK);
 			break;
-//			throw ex;
-
 		default:
 			break;
 		}
 	}
 
 	private String checkPointName(String name, mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppException.ERROR errorName) {
-		name = capitalize(name);
+//		name = capitalize(name);
 		switch (errorName) {
 		case SYSTEM:
 			return REGTOPP_FILE;
-		case INVALID_MANDATORY_ID_REFERENCE:
-			return REGTOPP_INVALID_ID_REFERENCE;
-		case INVALID_OPTIONAL_ID_REFERENCE:
-			return REGTOPP_INVALID_OPTIONAL_ID_REFERENCE;
+		case TIX_INVALID_MANDATORY_ID_REFERENCE:
+			return REGTOPP_TIX_INVALID_MANDATORY_ID_REFERENCE;
+		case TIX_INVALID_OPTIONAL_ID_REFERENCE:
+			return REGTOPP_TIX_INVALID_OPTIONAL_ID_REFERENCE;
+		case TMS_INVALID_OPTIONAL_ID_REFERENCE:
+			return REGTOPP_TMS_INVALID_OPTIONAL_ID_REFERENCE;
+		case TIX_TMS_CORRESPONDENCE:
+			return REGTOPP_TIX_TMS_CORRESPONDENCE;
 		default:
 			return null;
 		}

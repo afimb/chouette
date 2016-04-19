@@ -101,6 +101,13 @@ public class RegtoppRouteTMS extends RegtoppObject implements Serializable {
 	@Field(at = 41, length = 6)
 	private Integer distance;
 
+	public String getRouteKey() {
+		if (lineId == null || direction == null || routeId == null){
+			throw new IllegalArgumentException("Key");
+		}
+		return lineId + direction + routeId;
+	}
+
 	@Override
 	public String getIndexingKey() {
 		return pad(adminCode, 3) + counter + pad(lineId, 4) + direction + pad(routeId, 2) + pad(sequenceNumberStop, 3);
