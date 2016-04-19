@@ -1,6 +1,7 @@
 .idea
 .settings
 out
+test-output/
 target/
 .DS_Store
 bin/
