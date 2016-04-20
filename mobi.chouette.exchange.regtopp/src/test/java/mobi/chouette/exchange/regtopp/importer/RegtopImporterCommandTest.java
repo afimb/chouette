@@ -34,8 +34,6 @@ import mobi.chouette.dao.VehicleJourneyDAO;
 import mobi.chouette.exchange.regtopp.DummyChecker;
 import mobi.chouette.exchange.regtopp.JobDataTest;
 import mobi.chouette.exchange.regtopp.RegtoppTestUtils;
-import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
-import mobi.chouette.exchange.regtopp.importer.RegtoppImporterCommand;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.Footnote;
@@ -275,7 +273,6 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		parameters.setVersion("1.2");
 		parameters.setCoordinateProjection("EPSG:32632");
 
-		
 		command.execute(context);
 
 		utx.begin();
@@ -313,7 +310,6 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		parameters.setVersion("1.2");
 		parameters.setCoordinateProjection("EPSG:32632");
 
-		
 		command.execute(context);
 		
 		
@@ -362,7 +358,6 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		parameters.setVersion("1.2");
 		parameters.setCoordinateProjection("EPSG:32632");
 
-		
 		boolean result = command.execute(context);
 
 		ActionReport report = (ActionReport) context.get(REPORT);
@@ -475,7 +470,6 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		parameters.setVersion("1.2Novus");
 		parameters.setCoordinateProjection("EPSG:32632");
 
-		
 		command.execute(context);
 		
 		
@@ -523,7 +517,6 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		parameters.setVersion("1.1D");
 		parameters.setCoordinateProjection("EPSG:32632");
 
-		
 		command.execute(context);
 		
 		ActionReport report = (ActionReport) context.get(REPORT);

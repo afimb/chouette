@@ -21,6 +21,64 @@ public abstract class RouteIndex extends IndexImpl<AbstractRegtoppRouteTMS> {
 	public boolean validate(AbstractRegtoppRouteTMS bean, RegtoppImporter dao) {
 		boolean result = true;
 
+		//Obligatoriske felter
+		if (bean.getAdminCode() != null) {
+			bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
+		}  else {
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppRouteTMS.FILE_EXTENSION, bean.getRecordLineNumber(), "Adminkode", null, RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
+			result = false;
+		}
+
+		if (bean.getCounter() != null) {
+			bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
+		}  else {
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppRouteTMS.FILE_EXTENSION, bean.getRecordLineNumber(), "Løpenr", null, RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
+			result = false;
+		}
+
+		if (bean.getLineId() != null) {
+			bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
+		}  else {
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppRouteTMS.FILE_EXTENSION, bean.getRecordLineNumber(), "Linjenr", null, RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
+			result = false;
+		}
+
+		if (bean.getDirection() != null) {
+			bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
+		}  else {
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppRouteTMS.FILE_EXTENSION, bean.getRecordLineNumber(), "Retning", null, RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
+			result = false;
+		}
+
+		if (bean.getRouteId() != null) {
+			bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
+		}  else {
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppRouteTMS.FILE_EXTENSION, bean.getRecordLineNumber(), "Turmønsternr", null, RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
+			result = false;
+		}
+
+		if (bean.getSequenceNumberStop() != null) {
+			bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
+		}  else {
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppRouteTMS.FILE_EXTENSION, bean.getRecordLineNumber(), "Sekvensnr hpl", null, RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
+			result = false;
+		}
+
+		if (bean.getStopId() != null) {
+			bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
+		}  else {
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppRouteTMS.FILE_EXTENSION, bean.getRecordLineNumber(), "Holdeplassnr", null, RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
+			result = false;
+		}
+
+		//Minst en
+		if (bean.getDriverTimeArrival() != null || bean.getDriverTimeDeparture() != null) {
+			bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
+		}  else {
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppRouteTMS.FILE_EXTENSION, bean.getRecordLineNumber(), "Kjøretid", null, RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
+			result = false;
+		}
+
 		if (bean.getDestinationId().equals(DESTINATION_NULL_REF) || dao.getDestinationById().containsKey(bean.getDestinationId())){
 			bean.getOkTests().add(RegtoppException.ERROR.INVALID_OPTIONAL_ID_REFERENCE);
 		} else {
