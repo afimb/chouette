@@ -14,7 +14,7 @@ public class FootnoteByIdTest extends AbstractIndexTest{
 
 	@Test(dependsOnMethods = {"setupImporter"})
 	public void testValidation() throws Exception {
-		FileContentParser fileContentParser = createUnderlyingFileParser(new File("src/test/data/regtopp12kolumbus/R5001.mrk"), new Class[] {RegtoppFootnoteMRK.class});
+		FileContentParser fileContentParser = createUnderlyingFileParser(new File("src/test/data/fullsets/kolumbus_v12/R5001.mrk"), new Class[] {RegtoppFootnoteMRK.class});
 		FootnoteById index = new FootnoteById(validationReporter,fileContentParser);
 		for(RegtoppFootnoteMRK obj : index) {
 			boolean validData = index.validate(obj,importer);

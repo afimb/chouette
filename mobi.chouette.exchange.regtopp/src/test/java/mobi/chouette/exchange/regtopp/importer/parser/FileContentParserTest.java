@@ -46,14 +46,14 @@ public class FileContentParserTest {
 
 	@Test
 	public void testAtBMappings() throws Exception {
-		File regtoppArchive = new File("src/test/data/atb-20160118-20160619.zip");
+		File regtoppArchive = new File("src/test/data/fullsets/atb-20160118-20160619.zip");
 		parseFile(regtoppArchive);
 
 	}
 
 	@Test
 	public void testKolumbusMappings() throws Exception {
-		File regtoppArchive = new File("src/test/data/kolumbus_regtopp_20160329-20160624.zip");
+		File regtoppArchive = new File("src/test/data/fullsets/kolumbus_regtopp_20160329-20160624.zip");
 		parseFile(regtoppArchive);
 
 	}

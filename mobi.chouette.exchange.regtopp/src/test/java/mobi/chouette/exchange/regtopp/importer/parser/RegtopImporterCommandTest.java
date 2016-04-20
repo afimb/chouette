@@ -147,7 +147,7 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		// Prepare context
 		Context context = initImportContext();
 
-		File f = new File("src/test/data/kolumbus/line2306.zip");
+		File f = new File("src/test/data/lineextracts/kolumbus_line2306.zip");
 		File dest = new File("target/referential/test");
 		FileUtils.copyFileToDirectory(f, dest);
 		JobDataTest job = (JobDataTest) context.get(JOB_DATA);
@@ -259,7 +259,7 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		// Prepare context
 		Context context = initImportContext();
 
-		File f = new File("src/test/data/kolumbus/line5560.zip");
+		File f = new File("src/test/data/lineextracts/kolumbus_line5560.zip");
 		File dest = new File("target/referential/test");
 		FileUtils.copyFileToDirectory(f, dest);
 		JobDataTest job = (JobDataTest) context.get(JOB_DATA);
@@ -296,7 +296,7 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		// Prepare context
 		Context context = initImportContext();
 
-		File f = new File("src/test/data/atb/line0076.zip");
+		File f = new File("src/test/data/lineextracts/atb_line0076.zip");
 		File dest = new File("target/referential/test");
 		FileUtils.copyFileToDirectory(f, dest);
 		JobDataTest job = (JobDataTest) context.get(JOB_DATA);
@@ -344,7 +344,7 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		// Prepare context
 		Context context = initImportContext();
 
-		File f = new File("src/test/data/atb/line0098.zip");
+		File f = new File("src/test/data/lineextracts/atb_line0098.zip");
 		File dest = new File("target/referential/test");
 		FileUtils.copyFileToDirectory(f, dest);
 		JobDataTest job = (JobDataTest) context.get(JOB_DATA);
@@ -456,7 +456,7 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		// Prepare context
 		Context context = initImportContext();
 
-		File f = new File("src/test/data/ot/line5001.zip");
+		File f = new File("src/test/data/lineextracts/ot_line5001.zip");
 		File dest = new File("target/referential/test");
 		FileUtils.copyFileToDirectory(f, dest);
 		JobDataTest job = (JobDataTest) context.get(JOB_DATA);
@@ -503,7 +503,7 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		// Prepare context
 		Context context = initImportContext();
 
-		File f = new File("src/test/data/troms/line0002.zip");
+		File f = new File("src/test/data/lineextracts/troms_line0002.zip");
 		File dest = new File("target/referential/test");
 		FileUtils.copyFileToDirectory(f, dest);
 		JobDataTest job = (JobDataTest) context.get(JOB_DATA);
