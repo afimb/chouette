@@ -10,9 +10,7 @@ import static mobi.chouette.exchange.regtopp.validation.Constant.REGTOPP_FILE_TM
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -28,6 +26,7 @@ import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppException;
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.Index;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppDestinationDST;
+import mobi.chouette.exchange.regtopp.model.v11.RegtoppFootnoteMRK;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppRouteTDA;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.parser.AbstractConverter;
@@ -43,6 +42,7 @@ import mobi.chouette.model.Network;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.type.PTDirectionEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.ObjectIdTypes;
@@ -114,12 +114,10 @@ public class RegtoppRouteParser extends LineSpecificParser {
 
 		String chouetteLineId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), Line.LINE_KEY, lineId);
 		Line line = ObjectFactory.getLine(referential, chouetteLineId);
-		List<Footnote> footnotes = line.getFootnotes();
-
-		Index<RegtoppDestinationDST> destinationIndex = importer.getDestinationById();
 
 		Index<RegtoppRouteTDA> routeIndex = importer.getRouteSegmentByLineNumber();
 		Index<AbstractRegtoppTripIndexTIX> tripIndex = importer.getTripIndex();
+
 		for (AbstractRegtoppTripIndexTIX abstractTrip : tripIndex) {
 			if (abstractTrip.getLineId().equals(lineId)) {
 
@@ -127,52 +125,17 @@ public class RegtoppRouteParser extends LineSpecificParser {
 				RegtoppTripIndexTIX trip = (RegtoppTripIndexTIX) abstractTrip;
 
 				// Add network
-
-				String chouetteNetworkId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.PTNETWORK_KEY,
-						trip.getAdminCode());
-				Network ptNetwork = ObjectFactory.getPTNetwork(referential, chouetteNetworkId);
-				if (!ptNetwork.isFilled()) {
-					ptNetwork.setSourceIdentifier("Regtopp");
-					ptNetwork.setName(trip.getAdminCode());
-					ptNetwork.setRegistrationNumber(trip.getAdminCode());
-					ptNetwork.setFilled(true);
-				}
+				Network ptNetwork = addNetwork(referential, configuration, trip.getAdminCode());
 				line.setNetwork(ptNetwork);
 
 				// Add authority company
-				String chouetteCompanyId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.COMPANY_KEY, trip.getAdminCode());
-				Company company = ObjectFactory.getCompany(referential, chouetteCompanyId);
-				if (!company.isFilled()) {
-					company.setRegistrationNumber(trip.getAdminCode());
-					company.setName("Authority " + trip.getAdminCode());
-					company.setCode(trip.getAdminCode());
-					company.setFilled(true);
-				}
+				Company company = addAuthority(referential, configuration, trip.getAdminCode());
 				line.setCompany(company);
 
+				// Create route
 				RouteKey routeKey = new RouteKey(trip.getLineId(), trip.getDirection(), trip.getRouteIdRef());
-
-				String chouetteRouteId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.ROUTE_KEY, routeKey.toString());
-				Route route = ObjectFactory.getRoute(referential, chouetteRouteId);
-				if (!route.isFilled()) {
-					// Filled = only a flag to indicate that we no longer should write data to this entity
-					RegtoppDestinationDST arrivalText = destinationIndex.getValue(trip.getDestinationIdDepartureRef());
-					if (arrivalText != null) {
-						route.setName(arrivalText.getDestinationText());
-					}
-
-					route.setDirection(trip.getDirection() == DirectionType.Outbound ? PTDirectionEnum.A : PTDirectionEnum.R);
-
-					// TODO UNSURE
-					route.setNumber(trip.getRouteIdRef());
-					route.setLine(line);
-
-					// Black magic
-					route.setWayBack(trip.getDirection() == DirectionType.Outbound ? "A" : "R");
-
-					route.setFilled(true);
-
-				}
+				Route route = createRoute(context, line, trip.getDirection(), trip.getRouteIdRef(), trip.getDestinationIdDepartureRef(), routeKey);
+				
 				String chouetteJourneyPatternId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.JOURNEYPATTERN_KEY,
 						routeKey.toString());
 
@@ -202,7 +165,6 @@ public class RegtoppRouteParser extends LineSpecificParser {
 						stopPoint.setContainedInStopArea(stopArea);
 
 						// Warn: Using comment field as temporary storage for line pointer. Used for lookup when parsing passing times
-						log.info("Setting comment="+lineNumber+" on stopPoint "+stopPoint.getObjectId());
 						stopPoint.setComment(lineNumber);
 
 						// Add stop point to journey pattern AND route (for now)
@@ -219,6 +181,99 @@ public class RegtoppRouteParser extends LineSpecificParser {
 		updateRouteNames(referential, configuration);
 		linkOppositeRoutes(referential, configuration);
 
+	}
+
+	protected Route createRoute(Context context, Line line, 
+			DirectionType direction, String routeId, String destinationId,RouteKey routeKey) {
+		
+		Referential referential = (Referential) context.get(REFERENTIAL);
+		RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
+		RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
+		
+		Index<RegtoppDestinationDST> destinationIndex = importer.getDestinationById();
+		
+		String chouetteRouteId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.ROUTE_KEY, routeKey.toString());
+		Route route = ObjectFactory.getRoute(referential, chouetteRouteId);
+		if (!route.isFilled()) {
+			// Filled = only a flag to indicate that we no longer should write data to this entity
+			RegtoppDestinationDST arrivalText = destinationIndex.getValue(destinationId);
+			if (arrivalText != null) {
+				route.setName(arrivalText.getDestinationText());
+			}
+
+			route.setDirection(direction == DirectionType.Outbound ? PTDirectionEnum.A : PTDirectionEnum.R);
+
+			// TODO UNSURE
+			route.setNumber(routeId);
+			route.setLine(line);
+
+			// Black magic
+			route.setWayBack(direction == DirectionType.Outbound ? "A" : "R");
+
+			route.setFilled(true);
+
+		}
+		return route;
+	}
+
+	protected Network addNetwork(Referential referential, RegtoppImportParameters configuration, String adminCode) {
+		String chouetteNetworkId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.PTNETWORK_KEY,
+				adminCode);
+		Network ptNetwork = ObjectFactory.getPTNetwork(referential, chouetteNetworkId);
+		if (!ptNetwork.isFilled()) {
+			ptNetwork.setSourceIdentifier("Regtopp");
+			ptNetwork.setName(adminCode);
+			ptNetwork.setRegistrationNumber(adminCode);
+			ptNetwork.setFilled(true);
+		}
+		return ptNetwork;
+	}
+	
+	protected Company addAuthority(Referential referential, RegtoppImportParameters configuration, String adminCode) {
+		String chouetteCompanyId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.COMPANY_KEY,
+				adminCode);
+		Company company = ObjectFactory.getCompany(referential, chouetteCompanyId);
+		if (!company.isFilled()) {
+			company.setRegistrationNumber(adminCode);
+			company.setName("Authority " + adminCode);
+			company.setCode(adminCode);
+			company.setFilled(true);
+		}
+		return company;
+	}
+
+	protected void addFootnote(String footnoteId, VehicleJourney vehicleJourney, List<Footnote> footnotes, RegtoppImporter importer) throws Exception {
+		if (!"000".equals(footnoteId)) {
+			if (!footnoteAlreadyAdded(footnotes, footnoteId)) {
+				Index<RegtoppFootnoteMRK> index = importer.getFootnoteById();
+				RegtoppFootnoteMRK footnote = index.getValue(footnoteId);
+
+				Footnote f = new Footnote();
+
+				f.setLabel(footnote.getDescription());
+				f.setKey(footnote.getFootnoteId());
+				f.setCode(footnote.getFootnoteId());
+
+				footnotes.add(f);
+			}
+			if (vehicleJourney != null) {
+				for (Footnote existing : footnotes) {
+					if (existing.getCode().equals(footnoteId)) {
+						vehicleJourney.getFootnotes().add(existing);
+					}
+				}
+			}
+		}
+	}
+
+
+	protected boolean footnoteAlreadyAdded(List<Footnote> addedFootnotes, String footnoteId) {
+		for (Footnote existing : addedFootnotes) {
+			if (existing.getCode().equals(footnoteId)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	protected void sortStopPoints(Referential referential) {

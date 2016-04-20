@@ -1,10 +1,7 @@
 package mobi.chouette.exchange.regtopp.parser.v12novus;
 
 import static mobi.chouette.common.Constant.CONFIGURATION;
-import static mobi.chouette.common.Constant.MAIN_VALIDATION_REPORT;
-import static mobi.chouette.common.Constant.PARSER;
 import static mobi.chouette.common.Constant.REFERENTIAL;
-import static mobi.chouette.exchange.regtopp.validation.Constant.REGTOPP_FILE_HPL;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,25 +12,10 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
-import mobi.chouette.exchange.importer.Validator;
-import mobi.chouette.exchange.regtopp.RegtoppConstant;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
-import mobi.chouette.exchange.regtopp.importer.version.Regtopp12NovusVersionHandler;
-import mobi.chouette.exchange.regtopp.importer.version.VersionHandler;
-import mobi.chouette.exchange.regtopp.model.importer.parser.FileParserValidationError;
-import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppException;
-import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
-import mobi.chouette.exchange.regtopp.model.importer.parser.index.Index;
-import mobi.chouette.exchange.regtopp.model.v11.RegtoppStopHPL;
 import mobi.chouette.exchange.regtopp.parser.AbstractConverter;
-import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
-import mobi.chouette.exchange.validation.report.CheckPoint;
-import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
-import mobi.chouette.model.type.LongLatTypeEnum;
-import mobi.chouette.model.util.Coordinate;
-import mobi.chouette.model.util.CoordinateUtil;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
@@ -50,7 +32,7 @@ public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.parser.v11
 
 
 		// 1.2Novus specific
-		
+
 		// Build parent stop area (commercial stop point)
 
 		// Group boarding positions by original stopId

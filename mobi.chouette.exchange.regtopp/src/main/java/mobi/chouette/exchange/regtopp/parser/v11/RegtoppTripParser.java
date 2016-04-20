@@ -143,18 +143,14 @@ public class RegtoppTripParser extends LineSpecificParser {
 					String chouetteVehicleJourneyId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.VEHICLEJOURNEY_KEY,
 							tripKey);
 
+					String chouetteJourneyPatternId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.JOURNEYPATTERN_KEY,
+							routeKey.toString());
+					JourneyPattern journeyPattern = ObjectFactory.getJourneyPattern(referential, chouetteJourneyPatternId);
+					
 					VehicleJourney vehicleJourney = ObjectFactory.getVehicleJourney(referential, chouetteVehicleJourneyId);
 
-					// Add authority company
-					String chouetteOperatorId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.COMPANY_KEY,
-							trip.getOperatorCode());
-					Company operator = ObjectFactory.getCompany(referential, chouetteOperatorId);
-					if (!operator.isFilled()) {
-						operator.setRegistrationNumber(trip.getOperatorCode());
-						operator.setName("Operator " + trip.getOperatorCode());
-						operator.setCode(trip.getOperatorCode());
-						operator.setFilled(true);
-					}
+					// Add operator company
+					Company operator = createOperator(referential, configuration, trip.getOperatorCode());
 					vehicleJourney.setCompany(operator);
 
 					addFootnote(trip.getFootnoteId1Ref(), vehicleJourney, footnotes, importer);
@@ -168,36 +164,15 @@ public class RegtoppTripParser extends LineSpecificParser {
 					}
 
 					vehicleJourney.setPublishedJourneyIdentifier(StringUtils.trimToNull(trip.getLineNumberVisible()));
-
-					TransportType typeOfService = trip.getTypeOfService();
-					TransportModeNameEnum transportMode = convertTypeOfService(typeOfService);
-					vehicleJourney.setTransportMode(transportMode);
-
-					String chouetteJourneyPatternId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.JOURNEYPATTERN_KEY,
-							routeKey.toString());
-					JourneyPattern journeyPattern = ObjectFactory.getJourneyPattern(referential, chouetteJourneyPatternId);
-
+					vehicleJourney.setTransportMode(convertTypeOfService(trip.getTypeOfService()));
 					vehicleJourney.setJourneyPattern(journeyPattern);
-
 					vehicleJourney.setRoute(route);
 
-					// Duration since midnight
 					// Link to timetable
-					String chouetteTimetableId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.TIMETABLE_KEY,
-							trip.getDayCodeRef());
-
-					Duration tripDepartureTime = trip.getDepartureTime();
-					if (tripDepartureTime.getStandardSeconds() >= 24 * 60 * 60) {
-						// After midnight
-						chouetteTimetableId += RegtoppTimetableParser.AFTER_MIDNIGHT_SUFFIX;
-					}
-					Timetable timetable = ObjectFactory.getTimetable(referential, chouetteTimetableId);
-					timetable.addVehicleJourney(vehicleJourney);
+					Duration tripDepartureTime = linkVehicleJourneyToTimetable(referential, configuration, trip, vehicleJourney);
 
 					for (StopPoint p : journeyPattern.getStopPoints()) {
 						// Warn: Hack. Using comment as temporary holder
-						log.info("iterating over stoppoint "+p.getObjectId() + " in jp "+journeyPattern.getObjectId());
-						log.info("Loading vehicle stop at "+p.getComment());
 						RegtoppRouteTDA vehicleStop = routeIndex.getValue(p.getComment());
 						try {
 							addVehicleJourneyAtStop(vehicleJourney, tripDepartureTime, p,
@@ -214,6 +189,35 @@ public class RegtoppTripParser extends LineSpecificParser {
 				}
 			}
 		}
+	}
+
+	protected Duration linkVehicleJourneyToTimetable(Referential referential, RegtoppImportParameters configuration, AbstractRegtoppTripIndexTIX trip,
+			VehicleJourney vehicleJourney) {
+		String chouetteTimetableId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.TIMETABLE_KEY,
+				trip.getDayCodeRef());
+
+		// Duration since midnight
+		Duration tripDepartureTime = trip.getDepartureTime();
+		if (tripDepartureTime.getStandardSeconds() >= 24 * 60 * 60) {
+			// After midnight
+			chouetteTimetableId += RegtoppTimetableParser.AFTER_MIDNIGHT_SUFFIX;
+		}
+		Timetable timetable = ObjectFactory.getTimetable(referential, chouetteTimetableId);
+		timetable.addVehicleJourney(vehicleJourney);
+		return tripDepartureTime;
+	}
+
+	protected Company createOperator(Referential referential, RegtoppImportParameters configuration, String operatorCode) {
+		String chouetteOperatorId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.COMPANY_KEY,
+				operatorCode);
+		Company operator = ObjectFactory.getCompany(referential, chouetteOperatorId);
+		if (!operator.isFilled()) {
+			operator.setRegistrationNumber(operatorCode);
+			operator.setName("Operator " + operatorCode);
+			operator.setCode(operatorCode);
+			operator.setFilled(true);
+		}
+		return operator;
 	}
 
 	protected VehicleJourneyAtStop addVehicleJourneyAtStop(VehicleJourney vehicleJourney, Duration tripDepartureTime, StopPoint p, Duration driverTimeArrival,
