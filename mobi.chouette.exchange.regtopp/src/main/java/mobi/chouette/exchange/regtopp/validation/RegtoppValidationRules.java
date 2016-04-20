@@ -22,12 +22,13 @@ public class RegtoppValidationRules {
 		List<CheckPoint> checkPoints = new ArrayList<CheckPoint>();
 
 		checkPoints.add(new CheckPoint(REGTOPP_FILE_TIX, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
-		checkPoints.add(new CheckPoint(REGTOPP_TIX_INVALID_MANDATORY_ID_REFERENCE, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
-		checkPoints.add(new CheckPoint(REGTOPP_TIX_INVALID_OPTIONAL_ID_REFERENCE, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
-		checkPoints.add(new CheckPoint(REGTOPP_TIX_TMS_CORRESPONDENCE, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
-
 		checkPoints.add(new CheckPoint(REGTOPP_FILE_TMS, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
-		checkPoints.add(new CheckPoint(REGTOPP_TMS_INVALID_OPTIONAL_ID_REFERENCE, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		checkPoints.add(new CheckPoint(REGTOPP_FILE_HPL, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+
+		checkPoints.add(new CheckPoint(REGTOPP_INVALID_FIELD_VALUE, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+
+		checkPoints.add(new CheckPoint(REGTOPP_INVALID_MANDATORY_ID_REFERENCE, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		checkPoints.add(new CheckPoint(REGTOPP_INVALID_OPTIONAL_ID_REFERENCE, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
 
 		return checkPoints;
 	}

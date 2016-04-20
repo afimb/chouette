@@ -23,15 +23,30 @@ public class StopById extends IndexImpl<RegtoppStopHPL> {
 	public boolean validate(RegtoppStopHPL bean, RegtoppImporter dao) {
 		boolean result = true;
 
+		String stopId = bean.getStopId();
+		String municipalityCodeString = stopId.substring(0, 4);
+		String stopSequenceNumber = stopId.substring(4, 8);
+		int municipalityCode = Integer.valueOf(municipalityCodeString);
+		if (101 <= municipalityCode && municipalityCode <= 2211 && stopSequenceNumber.matches("\\d{4}")) {		//Lots of holes in the 101-2211 range
+			bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
+		} else {
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppStopHPL.FILE_EXTENSION, bean.getRecordLineNumber(), "Holdeplassnr", bean.getStopId(), RegtoppException.ERROR.INVALID_FIELD_VALUE, "Unreferenced id.")));
+			result = false;
+		}
+
 		// Mulige valideringssteg
 
 		// Koordinater ulike
+		if (bean.getX().equals(bean.getY())) {
+			bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
+		} else {
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppStopHPL.FILE_EXTENSION, bean.getRecordLineNumber(), "X = Y", bean.getX(), RegtoppException.ERROR.INVALID_FIELD_VALUE, "Unreferenced id.")));
+			result = false;
+		}
+
+
 		// Sone 1 og 2 forskjellige
 		// Fullstendig navn !§= kortnavn
-
-		// Holdeplassnummer X antall siffer
-
-		log.warn("Validation code for RegtoppStopp not implemented");
 
 		return result;
 	}

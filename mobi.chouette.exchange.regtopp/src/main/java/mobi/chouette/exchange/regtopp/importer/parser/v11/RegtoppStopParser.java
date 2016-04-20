@@ -78,12 +78,16 @@ public class RegtoppStopParser implements Parser, Validator {
 		RegtoppValidationReporter validationReporter = (RegtoppValidationReporter) context.get(RegtoppConstant.REGTOPP_REPORTER);
 		validationReporter.getExceptions().clear();
 
-		ValidationReport mainReporter = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
+//		ValidationReport mainReporter = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
 
-		mainReporter.getCheckPoints().add(new CheckPoint(REGTOPP_FILE_HPL, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		validateHPLIndex(context, importer, validationReporter);
+	}
 
-		// stops.txt
-		if (importer.hasHPLImporter()) { // the file "*.hpl" exists ?
+
+	private void validateHPLIndex(Context context, RegtoppImporter importer,
+								  RegtoppValidationReporter validationReporter) throws Exception {
+		if (importer.hasHPLImporter()) {
+			validationReporter.reportSuccess(context, REGTOPP_FILE_HPL, RegtoppStopHPL.FILE_EXTENSION);
 			validationReporter.reportSuccess(context, REGTOPP_FILE_HPL, RegtoppStopHPL.FILE_EXTENSION);
 
 			Index<RegtoppStopHPL> index = importer.getStopById();
@@ -106,8 +110,11 @@ public class RegtoppStopParser implements Parser, Validator {
 						validationReporter.throwUnknownError(context, ex, RegtoppStopHPL.FILE_EXTENSION);
 					}
 				}
+				validationReporter.reportErrors(context, bean.getErrors(), RegtoppStopHPL.FILE_EXTENSION);
+				validationReporter.validate(context, RegtoppStopHPL.FILE_EXTENSION, bean.getOkTests());
 			}
 		}
+
 	}
 
 	static {
