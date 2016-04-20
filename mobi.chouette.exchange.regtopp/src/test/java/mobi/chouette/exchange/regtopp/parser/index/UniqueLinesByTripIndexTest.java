@@ -6,8 +6,8 @@ import java.util.Iterator;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import mobi.chouette.exchange.regtopp.importer.index.v11.UniqueLinesByTripIndex;
 import mobi.chouette.exchange.regtopp.model.importer.parser.FileContentParser;
-import mobi.chouette.exchange.regtopp.model.importer.parser.index.UniqueLinesByTripIndex;
 import mobi.chouette.exchange.regtopp.model.v12.RegtoppTripIndexTIX;
 
 public class UniqueLinesByTripIndexTest extends AbstractIndexTest {

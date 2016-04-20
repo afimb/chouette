@@ -6,6 +6,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import mobi.chouette.exchange.importer.ParserFactory;
+import mobi.chouette.exchange.regtopp.importer.parser.LineSpecificParser;
+import mobi.chouette.exchange.regtopp.importer.parser.v12.RegtoppRouteParser;
+import mobi.chouette.exchange.regtopp.importer.parser.v12.RegtoppTripParser;
 import mobi.chouette.exchange.regtopp.model.importer.parser.ParseableFile;
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeDKO;
@@ -22,9 +25,6 @@ import mobi.chouette.exchange.regtopp.model.v12.RegtoppRouteTMS;
 import mobi.chouette.exchange.regtopp.model.v12.RegtoppTableVersionTAB;
 import mobi.chouette.exchange.regtopp.model.v12.RegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.model.v12.RegtoppVehicleJourneyVLP;
-import mobi.chouette.exchange.regtopp.parser.LineSpecificParser;
-import mobi.chouette.exchange.regtopp.parser.v12.RegtoppRouteParser;
-import mobi.chouette.exchange.regtopp.parser.v12.RegtoppTripParser;
 import mobi.chouette.exchange.report.FileInfo;
 
 public class Regtopp12VersionHandler extends Regtopp11DVersionHandler {

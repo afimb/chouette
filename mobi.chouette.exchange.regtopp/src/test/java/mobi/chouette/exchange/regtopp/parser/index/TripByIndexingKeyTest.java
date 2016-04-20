@@ -5,9 +5,9 @@ import java.io.File;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import mobi.chouette.exchange.regtopp.importer.index.v11.TripByIndexingKey;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.model.importer.parser.FileContentParser;
-import mobi.chouette.exchange.regtopp.model.importer.parser.index.TripByIndexingKey;
 import mobi.chouette.exchange.regtopp.model.v12.RegtoppTripIndexTIX;
 
 public class TripByIndexingKeyTest extends AbstractIndexTest {

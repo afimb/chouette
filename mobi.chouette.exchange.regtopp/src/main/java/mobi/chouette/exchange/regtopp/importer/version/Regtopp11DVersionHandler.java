@@ -7,6 +7,10 @@ import java.util.List;
 
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
+import mobi.chouette.exchange.regtopp.importer.parser.LineSpecificParser;
+import mobi.chouette.exchange.regtopp.importer.parser.v11.RegtoppRouteParser;
+import mobi.chouette.exchange.regtopp.importer.parser.v11.RegtoppStopParser;
+import mobi.chouette.exchange.regtopp.importer.parser.v11.RegtoppTripParser;
 import mobi.chouette.exchange.regtopp.model.importer.parser.ParseableFile;
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeDKO;
@@ -21,10 +25,6 @@ import mobi.chouette.exchange.regtopp.model.v11.RegtoppStopHPL;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppVehicleJourneyVLP;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppZoneSON;
-import mobi.chouette.exchange.regtopp.parser.LineSpecificParser;
-import mobi.chouette.exchange.regtopp.parser.v11.RegtoppRouteParser;
-import mobi.chouette.exchange.regtopp.parser.v11.RegtoppStopParser;
-import mobi.chouette.exchange.regtopp.parser.v11.RegtoppTripParser;
 import mobi.chouette.exchange.report.FileInfo;
 
 public class Regtopp11DVersionHandler implements VersionHandler {

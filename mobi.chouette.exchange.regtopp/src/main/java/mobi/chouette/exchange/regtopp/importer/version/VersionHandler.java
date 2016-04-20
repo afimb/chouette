@@ -5,8 +5,8 @@ import java.nio.file.Path;
 import java.util.List;
 
 import mobi.chouette.exchange.importer.Parser;
+import mobi.chouette.exchange.regtopp.importer.parser.LineSpecificParser;
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
-import mobi.chouette.exchange.regtopp.parser.LineSpecificParser;
 import mobi.chouette.exchange.report.FileInfo;
 
 public interface VersionHandler {

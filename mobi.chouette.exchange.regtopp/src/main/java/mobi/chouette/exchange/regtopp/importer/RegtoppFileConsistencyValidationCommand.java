@@ -17,6 +17,8 @@ import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.importer.ParserFactory;
+import mobi.chouette.exchange.regtopp.importer.parser.v11.RegtoppLineParser;
+import mobi.chouette.exchange.regtopp.importer.parser.v11.RegtoppStopParser;
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeDKO;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppDestinationDST;
@@ -32,8 +34,6 @@ import mobi.chouette.exchange.regtopp.model.v12.RegtoppRouteTMS;
 import mobi.chouette.exchange.regtopp.model.v12.RegtoppTableVersionTAB;
 import mobi.chouette.exchange.regtopp.model.v12.RegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.model.v12.RegtoppVehicleJourneyVLP;
-import mobi.chouette.exchange.regtopp.parser.v11.RegtoppLineParser;
-import mobi.chouette.exchange.regtopp.parser.v11.RegtoppStopParser;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 import mobi.chouette.exchange.report.ActionReport;
 

@@ -6,12 +6,12 @@ import java.util.Arrays;
 
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
+import mobi.chouette.exchange.regtopp.importer.parser.LineSpecificParser;
+import mobi.chouette.exchange.regtopp.importer.parser.v12novus.RegtoppRouteParser;
+import mobi.chouette.exchange.regtopp.importer.parser.v12novus.RegtoppStopParser;
 import mobi.chouette.exchange.regtopp.model.importer.parser.ParseableFile;
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.model.v12novus.RegtoppStopHPL;
-import mobi.chouette.exchange.regtopp.parser.LineSpecificParser;
-import mobi.chouette.exchange.regtopp.parser.v12novus.RegtoppRouteParser;
-import mobi.chouette.exchange.regtopp.parser.v12novus.RegtoppStopParser;
 import mobi.chouette.exchange.report.FileInfo;
 
 public class Regtopp12NovusVersionHandler extends Regtopp12VersionHandler {
