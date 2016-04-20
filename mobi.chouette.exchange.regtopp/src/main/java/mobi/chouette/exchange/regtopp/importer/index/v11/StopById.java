@@ -23,6 +23,57 @@ public class StopById extends IndexImpl<RegtoppStopHPL> {
 	public boolean validate(RegtoppStopHPL bean, RegtoppImporter dao) {
 		boolean result = true;
 
+		//Obligatoriske felter
+		if (bean.getAdminCode() != null) {
+			bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
+		}  else {
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppStopHPL.FILE_EXTENSION, bean.getRecordLineNumber(), "Adminkode", null, RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
+			result = false;
+		}
+
+		if (bean.getCounter() != null) {
+			bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
+		}  else {
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppStopHPL.FILE_EXTENSION, bean.getRecordLineNumber(), "Løpenr", null, RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
+			result = false;
+		}
+
+		if (bean.getStopId() != null) {
+			bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
+		}  else {
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppStopHPL.FILE_EXTENSION, bean.getRecordLineNumber(), "Holdeplassnr", null, RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
+			result = false;
+		}
+
+		if (bean.getFullName() != null) {
+			bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
+		}  else {
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppStopHPL.FILE_EXTENSION, bean.getRecordLineNumber(), "Fullstendig navn", null, RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
+			result = false;
+		}
+
+		if (bean.getInterchangeType() != null) {
+			bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
+		}  else {
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppStopHPL.FILE_EXTENSION, bean.getRecordLineNumber(), "Type", null, RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
+			result = false;
+		}
+
+		if (bean.getInterchangeMinutes() != null) {
+			bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
+		}  else {
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppStopHPL.FILE_EXTENSION, bean.getRecordLineNumber(), "Spes. omstigningstid", null, RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
+			result = false;
+		}
+
+		if (bean.getCoachClass() != null) {
+			bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
+		}  else {
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppStopHPL.FILE_EXTENSION, bean.getRecordLineNumber(), "Klasse", null, RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
+			result = false;
+		}
+
+
 		//Holdeplass nr er riktig bygd opp (kommunenummer + 4 siffer)
 		String stopId = bean.getStopId();
 		String municipalityCodeString = stopId.substring(0, 4);
@@ -46,24 +97,24 @@ public class StopById extends IndexImpl<RegtoppStopHPL> {
 		}
 
 		// Sone 1 og 2 forskjellige
-//		if (bean.getZoneId1() != null && bean.getZoneId2() != null) {
-//			if (!bean.getZoneId1().equals(bean.getZoneId2())) {
-//				bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
-//			} else {
-//				bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppStopHPL.FILE_EXTENSION, bean.getRecordLineNumber(), "Zone id 1 = Zone id 2", bean.getZoneId1(), RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
-//				result = false;
-//			}
-//		}
+		if (bean.getZoneId1() != null && bean.getZoneId2() != null) {
+			if (!bean.getZoneId1().equals(bean.getZoneId2())) {
+				bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
+			} else {
+				bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppStopHPL.FILE_EXTENSION, bean.getRecordLineNumber(), "Zone id 1 = Zone id 2", bean.getZoneId1(), RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
+				result = false;
+			}
+		}
 
 		// Fullstendig navn !§= kortnavn
-//		if (bean.getShortName() != null) {
-//			if (!bean.getFullName().equals(bean.getShortName())) {
-//				bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
-//			} else {
-//				bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppStopHPL.FILE_EXTENSION, bean.getRecordLineNumber(), "Full name = short name", bean.getFullName(), RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
-//				result = false;
-//			}
-//		}
+		if (bean.getShortName() != null) {
+			if (!bean.getFullName().equals(bean.getShortName())) {
+				bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
+			} else {
+				bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppStopHPL.FILE_EXTENSION, bean.getRecordLineNumber(), "Full name = short name", bean.getFullName(), RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
+				result = false;
+			}
+		}
 
 		return result;
 	}
