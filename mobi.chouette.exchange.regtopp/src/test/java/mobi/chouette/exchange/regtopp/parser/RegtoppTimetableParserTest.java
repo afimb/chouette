@@ -9,6 +9,7 @@ import org.testng.annotations.Test;
 
 import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeDKO;
+import mobi.chouette.exchange.regtopp.parser.v11.RegtoppTimetableParser;
 import mobi.chouette.model.CalendarDay;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.type.DayTypeEnum;

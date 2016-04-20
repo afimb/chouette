@@ -12,9 +12,12 @@ import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
+import mobi.chouette.exchange.regtopp.RegtoppConstant;
+import mobi.chouette.exchange.regtopp.importer.version.VersionHandler;
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
-import mobi.chouette.exchange.regtopp.parser.RegtoppStopParser;
+import mobi.chouette.exchange.regtopp.parser.v11.RegtoppStopParser;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.DataStats;
 import mobi.chouette.model.util.Referential;
@@ -39,10 +42,11 @@ public class RegtoppStopParserCommand implements Command {
 			}
 
 			RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
+			VersionHandler versionHandler = (VersionHandler) context.get(RegtoppConstant.VERSION_HANDLER);
 
 			// StopArea
 			if (referential.getSharedStopAreas().isEmpty()) {
-				RegtoppStopParser stopParser = (RegtoppStopParser) ParserFactory.create(RegtoppStopParser.class.getName());
+				Parser stopParser = versionHandler.createStopParser();
 				stopParser.parse(context);
 			}
 			//

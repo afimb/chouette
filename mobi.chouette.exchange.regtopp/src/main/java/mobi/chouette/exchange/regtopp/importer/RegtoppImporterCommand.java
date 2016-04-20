@@ -51,7 +51,7 @@ public class RegtoppImporterCommand extends AbstractImporterCommand implements C
 			result = process(context, commands, progression, true, (all ? Mode.line : Mode.stopareas));
 
 		} catch (Exception e) {
-			// log.error(e.getMessage(), e);
+			log.error(e.getMessage(), e);
 			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR, "Fatal :" + e));
 		} finally {
 			progression.dispose(context);

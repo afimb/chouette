@@ -32,8 +32,8 @@ import mobi.chouette.exchange.regtopp.model.v12.RegtoppRouteTMS;
 import mobi.chouette.exchange.regtopp.model.v12.RegtoppTableVersionTAB;
 import mobi.chouette.exchange.regtopp.model.v12.RegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.model.v12.RegtoppVehicleJourneyVLP;
-import mobi.chouette.exchange.regtopp.parser.RegtoppLineParser;
-import mobi.chouette.exchange.regtopp.parser.RegtoppStopParser;
+import mobi.chouette.exchange.regtopp.parser.v11.RegtoppLineParser;
+import mobi.chouette.exchange.regtopp.parser.v11.RegtoppStopParser;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 import mobi.chouette.exchange.report.ActionReport;
 

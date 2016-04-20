@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.regtopp.parser;
+package mobi.chouette.exchange.regtopp.parser.v11;
 
 import static mobi.chouette.common.Constant.CONFIGURATION;
 import static mobi.chouette.common.Constant.MAIN_VALIDATION_REPORT;
@@ -25,6 +25,7 @@ import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppException;
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.Index;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppStopHPL;
+import mobi.chouette.exchange.regtopp.parser.AbstractConverter;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 import mobi.chouette.exchange.validation.report.CheckPoint;
 import mobi.chouette.exchange.validation.report.ValidationReport;
@@ -45,7 +46,6 @@ public class RegtoppStopParser implements Parser, Validator {
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
 		RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
-		VersionHandler versionHandler = (VersionHandler)context.get(RegtoppConstant.VERSION_HANDLER);
 
 		for (RegtoppStopHPL stop : importer.getStopById()) {
 
@@ -72,46 +72,6 @@ public class RegtoppStopParser implements Parser, Validator {
 			//stopArea.setCountryCode("NO");
 
 			stopArea.setAreaType(ChouetteAreaEnum.BoardingPosition);
-		}
-
-
-		if(versionHandler instanceof Regtopp12NovusVersionHandler) {
-			// Build parent stop area (commercial stop point)
-
-			// Group boarding positions by original stopId
-			Map<String, List<StopArea>> boardingPositionsByStopArea = new HashMap<String,List<StopArea>>();
-			for(StopArea sa : referential.getStopAreas().values()) {
-				String commercialStopAreaId = AbstractConverter.extractOriginalId(sa.getObjectId()).substring(0,8);
-				List<StopArea> list = boardingPositionsByStopArea.get(commercialStopAreaId);
-				if(list == null) {
-					list = new ArrayList<StopArea>();
-					boardingPositionsByStopArea.put(commercialStopAreaId, list);
-				}
-				list.add(sa);
-			}
-
-			for(String commercialStopAreaId : boardingPositionsByStopArea.keySet()) {
-				List<StopArea> list = boardingPositionsByStopArea.get(commercialStopAreaId);
-				if(list.size() > 1) {
-					// Create parent stopArea
-					String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), StopArea.STOPAREA_KEY, commercialStopAreaId);
-					StopArea stopArea = ObjectFactory.getStopArea(referential, objectId);
-					stopArea.setName(list.get(0).getName()); // TODO using name of first stoppoint, should be identical for all boarding positions according to spec
-					stopArea.setAreaType(ChouetteAreaEnum.StopPlace);
-
-					for(StopArea bp : list) {
-						bp.setParent(stopArea);
-					}
-
-					// Calculate center coordinate
-					// TODO currently using only first boarding position stop coordinates. Need to be centered
-					stopArea.setLongitude(list.get(0).getLongitude());
-					stopArea.setLatitude(list.get(0).getLatitude());
-					stopArea.setLongLatType(list.get(0).getLongLatType());
-
-				}
-			}
-
 		}
 	}
 
@@ -145,6 +105,7 @@ public class RegtoppStopParser implements Parser, Validator {
 					// Call index validator
 					index.validate(bean, importer);
 				} catch (Exception ex) {
+					log.error(ex);
 					if (ex instanceof RegtoppException) {
 						validationReporter.reportError(context, (RegtoppException) ex, RegtoppStopHPL.FILE_EXTENSION);
 					} else {

@@ -112,6 +112,7 @@ public class FileContentParser {
 			log.info("Parsed file OK: " + parseableFile.getFile().getName());
 			parseableFile.getFileInfo().setStatus(FILE_STATE.OK);
 		} catch (InvalidRecordException ex) {
+			log.error(ex);
 		} finally {
 			in.close();
 		}

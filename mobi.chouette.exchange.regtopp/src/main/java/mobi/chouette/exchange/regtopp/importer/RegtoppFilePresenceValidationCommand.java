@@ -31,20 +31,6 @@ import mobi.chouette.exchange.regtopp.importer.version.Regtopp12VersionHandler;
 import mobi.chouette.exchange.regtopp.importer.version.VersionHandler;
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppException;
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
-import mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeDKO;
-import mobi.chouette.exchange.regtopp.model.v11.RegtoppDestinationDST;
-import mobi.chouette.exchange.regtopp.model.v11.RegtoppFootnoteMRK;
-import mobi.chouette.exchange.regtopp.model.v11.RegtoppInterchangeSAM;
-import mobi.chouette.exchange.regtopp.model.v11.RegtoppLineLIN;
-import mobi.chouette.exchange.regtopp.model.v11.RegtoppPathwayGAV;
-import mobi.chouette.exchange.regtopp.model.v11.RegtoppStopHPL;
-import mobi.chouette.exchange.regtopp.model.v11.RegtoppZoneSON;
-import mobi.chouette.exchange.regtopp.model.v12.RegtoppPeriodPER;
-import mobi.chouette.exchange.regtopp.model.v12.RegtoppRoutePointRUT;
-import mobi.chouette.exchange.regtopp.model.v12.RegtoppRouteTMS;
-import mobi.chouette.exchange.regtopp.model.v12.RegtoppTableVersionTAB;
-import mobi.chouette.exchange.regtopp.model.v12.RegtoppTripIndexTIX;
-import mobi.chouette.exchange.regtopp.model.v12.RegtoppVehicleJourneyVLP;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 import mobi.chouette.exchange.report.ActionError;
 import mobi.chouette.exchange.report.ActionError.CODE;
@@ -59,14 +45,6 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 	public static final String COMMAND = "RegtoppFilePresenceValidationCommand";
 
 	// TODO move to version handler
-	private static final List<String> mandatoryFileExtensions = Arrays.asList(RegtoppTripIndexTIX.FILE_EXTENSION, RegtoppRouteTMS.FILE_EXTENSION,
-			RegtoppStopHPL.FILE_EXTENSION, RegtoppDayCodeDKO.FILE_EXTENSION);
-
-	// TODO move to version handler
-	private static final List<String> optionalFileExtensions = Arrays.asList(RegtoppDestinationDST.FILE_EXTENSION, RegtoppFootnoteMRK.FILE_EXTENSION,
-			RegtoppPathwayGAV.FILE_EXTENSION, RegtoppInterchangeSAM.FILE_EXTENSION, RegtoppZoneSON.FILE_EXTENSION, RegtoppLineLIN.FILE_EXTENSION,
-			RegtoppVehicleJourneyVLP.FILE_EXTENSION, RegtoppTableVersionTAB.FILE_EXTENSION, RegtoppPeriodPER.FILE_EXTENSION,
-			RegtoppRoutePointRUT.FILE_EXTENSION);
 
 	private static final List<String> supportedVersions = Arrays.asList("1.1D","1.2", "1.2Novus");
 
@@ -112,8 +90,8 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 				RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
 
 				Set<String> validExtensions = new HashSet<String>();
-				validExtensions.addAll(mandatoryFileExtensions);
-				validExtensions.addAll(optionalFileExtensions);
+				validExtensions.addAll(versionHandler.getMandatoryFileExtensions());
+				validExtensions.addAll(versionHandler.getOptionalFileExtensions());
 
 				Set<String> prefixesFound = new HashSet<String>();
 				Set<String> foundExtensions = new HashSet<String>();
@@ -158,14 +136,14 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 							"Multiple companies or versions found in zip file: " + StringUtils.join(prefixesFound, " "));
 					report.setFailure(error);
 				} else {
-					if (!foundExtensions.containsAll(mandatoryFileExtensions)) {
+					if (!foundExtensions.containsAll(versionHandler.getMandatoryFileExtensions())) {
 						// Check that all 4 mandatory files found
 						// Convert to set
 
 						String prefix = prefixesFound.iterator().next();
 
 						Set<String> missingFiles = new HashSet<String>();
-						missingFiles.addAll(mandatoryFileExtensions);
+						missingFiles.addAll(versionHandler.getMandatoryFileExtensions());
 						missingFiles.removeAll(foundExtensions);
 
 						for (String missingExtension : missingFiles) {
@@ -186,8 +164,7 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 					report.setFailure(new ActionError(ActionError.CODE.INVALID_DATA, e.getError().name()));
 
 			} catch (Exception e) {
-				if (e instanceof RuntimeException)
-					log.error(e, e);
+				log.error(e, e);
 				throw e;
 			} finally {
 				log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);

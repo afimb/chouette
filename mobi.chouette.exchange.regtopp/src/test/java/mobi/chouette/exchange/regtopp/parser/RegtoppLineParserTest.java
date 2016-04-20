@@ -6,6 +6,8 @@ import org.joda.time.Duration;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import mobi.chouette.exchange.regtopp.parser.v11.RegtoppLineParser;
+
 public class RegtoppLineParserTest {
 
 	@Test public void testCalculateDepartureTimeBeforeMidnight() {

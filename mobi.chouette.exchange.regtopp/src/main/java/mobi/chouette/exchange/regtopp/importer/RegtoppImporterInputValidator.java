@@ -20,6 +20,7 @@ public class RegtoppImporterInputValidator extends AbstractInputValidator {
 		try {
 			return JSONUtil.fromJSON(abstractParameter, RegtoppImportParameters.class);
 		} catch (Exception e) {
+			log.error(e);
 			return null;
 		}
 	}
@@ -34,7 +35,7 @@ public class RegtoppImporterInputValidator extends AbstractInputValidator {
 
 			return checkParameters(parameters, validationParameters);
 		} catch (Exception ex) {
-			log.error(ex.getMessage());
+			log.error(ex);
 			return false;
 		}
 	}

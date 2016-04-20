@@ -2,10 +2,10 @@ package mobi.chouette.exchange.regtopp.model.importer.parser.index;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
+import mobi.chouette.exchange.regtopp.model.AbstractRegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.model.importer.parser.FileContentParser;
 import mobi.chouette.exchange.regtopp.model.importer.parser.FileParserValidationError;
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppException;
-import mobi.chouette.exchange.regtopp.model.v12.RegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 
 @Log4j
@@ -31,8 +31,8 @@ public class TripByIndexingKey extends TripIndex {
 	@Override
 	public void index() throws Exception {
 		for (Object obj : parser.getRawContent()) {
-			RegtoppTripIndexTIX trip = (RegtoppTripIndexTIX) obj;
-			RegtoppTripIndexTIX existing = index.put(trip.getIndexingKey(), trip);
+			AbstractRegtoppTripIndexTIX trip = (AbstractRegtoppTripIndexTIX) obj;
+			AbstractRegtoppTripIndexTIX existing = index.put(trip.getIndexingKey(), trip);
 			if (existing != null) {
 				// TODO fix exception/validation reporting
 				validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError()), null);

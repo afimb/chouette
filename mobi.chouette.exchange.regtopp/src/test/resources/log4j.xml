@@ -13,7 +13,17 @@
 			<param name="ConversionPattern" value="%d{dd.MM.yyyy HH:mm:ss} %-5p [%C.%M():%L] %m%n" />
 		</layout>
 	</appender>
-
+	
+	<appender name="file" class="org.apache.log4j.FileAppender">
+		<param name="file" value="target/debug.log" />
+		<param name="append" value="true" />
+		<param name="threshold" value="debug" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{dd.MM.yyyy HH:mm:ss} %-5p [%C.%M():%L] %m%n" />
+		</layout>
+	</appender>
+	
+	
 	<!-- ====================================================================== -->
 	<!-- L O G G E R S -->
 	<!-- ====================================================================== -->
@@ -26,6 +36,7 @@
 	<root>
 		<level value="warn" />
 		<appender-ref ref="console" />
+		<appender-ref ref="file" />
 	</root>
 
 </log4j:configuration>

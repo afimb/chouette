@@ -1,6 +1,9 @@
 package mobi.chouette.exchange.regtopp.importer;
 
-import static mobi.chouette.common.Constant.*;
+import static mobi.chouette.common.Constant.CONFIGURATION;
+import static mobi.chouette.common.Constant.INITIAL_CONTEXT;
+import static mobi.chouette.common.Constant.PARSER;
+import static mobi.chouette.common.Constant.VALIDATION;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,9 +26,9 @@ import mobi.chouette.exchange.importer.CopyCommand;
 import mobi.chouette.exchange.importer.LineRegisterCommand;
 import mobi.chouette.exchange.importer.StopAreaRegisterCommand;
 import mobi.chouette.exchange.importer.UncompressCommand;
+import mobi.chouette.exchange.regtopp.model.AbstractRegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.Index;
-import mobi.chouette.exchange.regtopp.model.v12.RegtoppTripIndexTIX;
 import mobi.chouette.exchange.validation.ImportedLineValidatorCommand;
 import mobi.chouette.exchange.validation.SharedDataValidatorCommand;
 
@@ -84,7 +87,7 @@ public class RegtoppImporterProcessingCommands implements ProcessingCommands {
 
 		try {
 
-			Index<RegtoppTripIndexTIX> index = importer.getUniqueLinesByTripIndex();
+			Index<AbstractRegtoppTripIndexTIX> index = importer.getUniqueLinesByTripIndex();
 			Iterator<String> keys = index.keys();
 			while (keys.hasNext()) {
 				String lineId = keys.next();

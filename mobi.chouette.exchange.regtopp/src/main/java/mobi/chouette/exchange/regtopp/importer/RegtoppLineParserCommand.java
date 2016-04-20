@@ -14,12 +14,12 @@ import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.regtopp.RegtoppConstant;
-import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
-import mobi.chouette.exchange.regtopp.parser.RegtoppLineParser;
-import mobi.chouette.exchange.regtopp.parser.RegtoppStopParser;
-import mobi.chouette.exchange.regtopp.parser.RegtoppTimetableParser;
+import mobi.chouette.exchange.regtopp.importer.version.VersionHandler;
+import mobi.chouette.exchange.regtopp.parser.v11.RegtoppLineParser;
+import mobi.chouette.exchange.regtopp.parser.v11.RegtoppTimetableParser;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.DataStats;
 import mobi.chouette.exchange.report.LineInfo;
@@ -48,13 +48,12 @@ public class RegtoppLineParserCommand implements Command {
 				referential.clear(true);
 			}
 
-			RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
+			VersionHandler versionHandler = (VersionHandler) context.get(RegtoppConstant.VERSION_HANDLER);
 
-			RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
 
 			// Populate shared stops
 			if (referential.getSharedStopAreas().isEmpty()) {
-				RegtoppStopParser stopParser = (RegtoppStopParser) ParserFactory.create(RegtoppStopParser.class.getName());
+				Parser stopParser = versionHandler.createStopParser();
 				stopParser.parse(context);
 			}
 
@@ -64,6 +63,11 @@ public class RegtoppLineParserCommand implements Command {
 				timetableParser.parse(context);
 			}
 
+			// Parse Routes + JourneyPattern
+			
+			// Parse VehicleJourneys
+			
+			
 			// Parse this line only
 			RegtoppLineParser lineParser = (RegtoppLineParser) ParserFactory.create(RegtoppLineParser.class.getName());
 			lineParser.setLineId(lineId);

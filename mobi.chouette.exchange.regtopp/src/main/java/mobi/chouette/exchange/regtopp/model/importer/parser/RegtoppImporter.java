@@ -5,7 +5,9 @@ import java.io.FilenameFilter;
 import java.util.HashMap;
 import java.util.Map;
 
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
+import mobi.chouette.exchange.regtopp.model.AbstractRegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.model.RegtoppObject;
 import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppException.ERROR;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.DaycodeById;
@@ -15,6 +17,7 @@ import mobi.chouette.exchange.regtopp.model.importer.parser.index.Index;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.IndexFactory;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.LineById;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.RouteByIndexingKey;
+import mobi.chouette.exchange.regtopp.model.importer.parser.index.RouteByLineNumber;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.RouteByRouteKey;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.StopById;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.TripByIndexingKey;
@@ -23,11 +26,13 @@ import mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeDKO;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppDestinationDST;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppFootnoteMRK;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppLineLIN;
+import mobi.chouette.exchange.regtopp.model.v11.RegtoppRouteTDA;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppStopHPL;
 import mobi.chouette.exchange.regtopp.model.v12.RegtoppRouteTMS;
 import mobi.chouette.exchange.regtopp.model.v12.RegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 
+@Log4j
 public class RegtoppImporter {
 	public static enum INDEX {
 		STOP_BY_ID,
@@ -45,7 +50,8 @@ public class RegtoppImporter {
 		ROUTE_POINT,
 		LINE_BY_TRIPS,
 		ROUTE_INDEX,
-		ROUTE_BY_ROUTE_KEY
+		ROUTE_BY_ROUTE_KEY,
+		ROUTE_BY_LINE_NUMBER
 	}
 
 	private String path;
@@ -106,6 +112,7 @@ public class RegtoppImporter {
 				index = IndexFactory.build(validationReporter, parser, clazz.getName());
 				indexMap.put(name, index);
 			} catch (Exception e) {
+				log.error(e);
 				FileParserValidationError context = new FileParserValidationError();
 				context.put(FileParserValidationError.PATH, path);
 				context.put(FileParserValidationError.ERROR, ERROR.SYSTEM);
@@ -121,11 +128,11 @@ public class RegtoppImporter {
 		return getIndex(INDEX.STOP_BY_ID.name(), StopById.class);
 	}
 
-	public Index<RegtoppTripIndexTIX> getUniqueLinesByTripIndex() {
+	public Index<AbstractRegtoppTripIndexTIX> getUniqueLinesByTripIndex() {
 		return getIndex(INDEX.LINE_BY_TRIPS.name(), UniqueLinesByTripIndex.class);
 	}
 
-	public Index<RegtoppTripIndexTIX> getTripIndex() {
+	public Index<AbstractRegtoppTripIndexTIX> getTripIndex() {
 		return getIndex(INDEX.TRIP_INDEX.name(), TripByIndexingKey.class);
 	}
 
@@ -143,6 +150,10 @@ public class RegtoppImporter {
 
 	public boolean hasHPLImporter() {
 		return hasImporter(RegtoppStopHPL.FILE_EXTENSION);
+	}
+
+	public boolean hasTDAImporter() {
+		return hasImporter(RegtoppRouteTDA.FILE_EXTENSION);
 	}
 
 	private boolean hasImporter(final String pattern) {
@@ -182,6 +193,8 @@ public class RegtoppImporter {
 		return getIndex(INDEX.ROUTE_BY_ROUTE_KEY.name(), RouteByRouteKey.class);
 	}
 
-
+	public Index<RegtoppRouteTDA> getRouteSegmentByLineNumber() {
+		return getIndex(INDEX.ROUTE_BY_LINE_NUMBER.name(), RouteByLineNumber.class);
+	}
 
 }

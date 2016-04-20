@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.regtopp.parser;
+package mobi.chouette.exchange.regtopp.parser.v11;
 
 import static mobi.chouette.common.Constant.CONFIGURATION;
 import static mobi.chouette.common.Constant.PARSER;
@@ -31,6 +31,7 @@ import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.model.importer.parser.index.DaycodeById;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeDKO;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeHeaderDKO;
+import mobi.chouette.exchange.regtopp.parser.AbstractConverter;
 import mobi.chouette.model.CalendarDay;
 import mobi.chouette.model.Period;
 import mobi.chouette.model.Timetable;
@@ -83,7 +84,7 @@ public class RegtoppTimetableParser implements Parser, Validator {
 
 			referential.getSharedTimetables().put(cloneTimetableAfterMidnight.getObjectId(), cloneTimetableAfterMidnight);
 
-			log.info("Adding timetable " + timetable);
+			log.debug("Adding timetable " + timetable);
 		}
 
 	}
@@ -285,7 +286,7 @@ public class RegtoppTimetableParser implements Parser, Validator {
 				}
 			}
 		} else {
-			log.info("Too few days to extract pattern, expected at least " + MIN_DAYS_FOR_PATTERN + " but only got " + totalDaysIncluded);
+			log.debug("Too few days to extract pattern, expected at least " + MIN_DAYS_FOR_PATTERN + " but only got " + totalDaysIncluded);
 		}
 
 		return significantDays;

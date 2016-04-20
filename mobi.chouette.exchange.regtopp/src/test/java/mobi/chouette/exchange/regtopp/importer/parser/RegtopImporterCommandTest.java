@@ -520,17 +520,27 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		
 		command.execute(context);
 		
-		
+		ActionReport report = (ActionReport) context.get(REPORT);
+		System.out.println(ToStringBuilder.reflectionToString(report, ToStringStyle.MULTI_LINE_STYLE, true));
 
 		// line should be saved
 		utx.begin();
 		em.joinTransaction();
 		Line line = lineDao.findByObjectId("TST:Line:0002");
-
+		
 		Assert.assertNotNull(line,"Line not found");
-	
+		Assert.assertNotNull(line.getNetwork(), "line must have a network");
+		Assert.assertNotNull(line.getCompany(), "line must have a company");
+		Assert.assertNotNull(line.getRoutes(), "line must have routes");
+		Assert.assertEquals(line.getRoutes().size(), 12, "number of routes");
 
-		//TODO add more tests as Route pattern definition in 1.1D is different
+		Route route0002139 = routeDao.findByObjectId("TST:Route:0002139");
+		Assert.assertNotNull(route0002139);
+		List<JourneyPattern> journeyPatterns = route0002139.getJourneyPatterns();
+		Assert.assertEquals(journeyPatterns.size(),1);
+		Assert.assertEquals(journeyPatterns.get(0).getStopPoints().size(), 5);
+		Assert.assertEquals(journeyPatterns.get(0).getVehicleJourneys().size(), 2);
+		
 		utx.rollback();
 
 	}
