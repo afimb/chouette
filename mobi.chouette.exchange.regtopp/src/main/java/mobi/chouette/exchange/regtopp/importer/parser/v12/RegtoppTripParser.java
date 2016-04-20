@@ -137,6 +137,7 @@ public class RegtoppTripParser extends mobi.chouette.exchange.regtopp.importer.p
 				}
 			}
 		}
+		estimateMissingPassingTimes(referential);
 	}
 	
 	static {

@@ -189,6 +189,48 @@ public class RegtoppTripParser extends LineSpecificParser {
 				}
 			}
 		}
+		
+		estimateMissingPassingTimes(referential);
+	}
+	
+	protected void estimateMissingPassingTimes(Referential referential) {
+		for(VehicleJourney vj: referential.getVehicleJourneys().values()) {
+			for(int i=0;i<vj.getVehicleJourneyAtStops().size();i++) {
+				VehicleJourneyAtStop vStop = vj.getVehicleJourneyAtStops().get(i);
+				if(vStop.getDepartureTime() == null && vStop.getArrivalTime() == null) {
+					// Estimate
+					if(i == 0) {
+						// First stop
+						// Use second stop time
+						VehicleJourneyAtStop after = vj.getVehicleJourneyAtStops().get(i+1);
+						vStop.setDepartureTime(after.getDepartureTime());
+						vStop.setArrivalTime(after.getArrivalTime());
+					} else if (i == vj.getVehicleJourneyAtStops().size()-1) {
+						// Last stop
+						VehicleJourneyAtStop before = vj.getVehicleJourneyAtStops().get(i-1);
+						vStop.setDepartureTime(before.getDepartureTime());
+						vStop.setArrivalTime(before.getArrivalTime());
+					} else {
+						// In the middle of journey pattern
+						VehicleJourneyAtStop before = vj.getVehicleJourneyAtStops().get(i-1);
+						VehicleJourneyAtStop after = vj.getVehicleJourneyAtStops().get(i+1);
+				
+						vStop.setArrivalTime(interpolate(before.getArrivalTime(),after.getArrivalTime()));
+						vStop.setDepartureTime(interpolate(before.getDepartureTime(),after.getDepartureTime()));
+					}
+				}
+			}
+		}
+	}
+	
+	protected Time interpolate(Time start, Time end) {
+		Time t = null;
+		
+		if(start != null && end != null) {
+		long duration = end.getTime() - start.getTime();
+		 t = new Time(start.getTime() + (duration/2));
+		}
+		return t;
 	}
 
 	protected Duration linkVehicleJourneyToTimetable(Referential referential, RegtoppImportParameters configuration, AbstractRegtoppTripIndexTIX trip,
