@@ -2,7 +2,7 @@ package mobi.chouette.exchange.regtopp.importer.index;
 
 import java.util.Iterator;
 
-import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
+import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
 
 public interface Index<T> extends Iterable<T> {
 

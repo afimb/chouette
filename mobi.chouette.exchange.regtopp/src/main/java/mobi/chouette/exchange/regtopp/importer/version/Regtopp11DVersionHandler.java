@@ -7,12 +7,12 @@ import java.util.List;
 
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
+import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.importer.parser.LineSpecificParser;
+import mobi.chouette.exchange.regtopp.importer.parser.ParseableFile;
 import mobi.chouette.exchange.regtopp.importer.parser.v11.RegtoppRouteParser;
 import mobi.chouette.exchange.regtopp.importer.parser.v11.RegtoppStopParser;
 import mobi.chouette.exchange.regtopp.importer.parser.v11.RegtoppTripParser;
-import mobi.chouette.exchange.regtopp.model.importer.parser.ParseableFile;
-import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeDKO;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeHeaderDKO;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppDestinationDST;

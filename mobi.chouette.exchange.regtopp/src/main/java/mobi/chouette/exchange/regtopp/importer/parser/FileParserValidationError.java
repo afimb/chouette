@@ -1,6 +1,8 @@
-package mobi.chouette.exchange.regtopp.model.importer.parser;
+package mobi.chouette.exchange.regtopp.importer.parser;
 
 import java.util.HashMap;
+
+import mobi.chouette.exchange.regtopp.validation.RegtoppException;
 
 public class FileParserValidationError extends HashMap<String, Object> {
 	private static final long serialVersionUID = 1L;

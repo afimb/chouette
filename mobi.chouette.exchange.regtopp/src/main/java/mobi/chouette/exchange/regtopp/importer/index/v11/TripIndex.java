@@ -4,13 +4,13 @@ import static mobi.chouette.exchange.regtopp.RegtoppConstant.DESTINATION_NULL_RE
 import static mobi.chouette.exchange.regtopp.RegtoppConstant.FOOTNOTE_NULL_REF;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.importer.index.IndexImpl;
+import mobi.chouette.exchange.regtopp.importer.parser.FileContentParser;
+import mobi.chouette.exchange.regtopp.importer.parser.FileParserValidationError;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppTripIndexTIX;
-import mobi.chouette.exchange.regtopp.model.importer.parser.FileContentParser;
-import mobi.chouette.exchange.regtopp.model.importer.parser.FileParserValidationError;
-import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppException;
-import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.model.v12.RegtoppTripIndexTIX;
+import mobi.chouette.exchange.regtopp.validation.RegtoppException;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 
 @Log4j

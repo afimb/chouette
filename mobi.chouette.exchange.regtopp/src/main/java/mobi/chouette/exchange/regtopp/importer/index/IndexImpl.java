@@ -5,8 +5,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 import lombok.extern.log4j.Log4j;
-import mobi.chouette.exchange.regtopp.model.importer.parser.FileContentParser;
-import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
+import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
+import mobi.chouette.exchange.regtopp.importer.parser.FileContentParser;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 
 @Log4j

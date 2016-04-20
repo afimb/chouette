@@ -5,9 +5,9 @@ import mobi.chouette.common.Context;
 import mobi.chouette.exchange.regtopp.model.v12.RegtoppRouteTMS;
 import mobi.chouette.exchange.regtopp.importer.index.Index;
 import mobi.chouette.exchange.regtopp.importer.index.IndexFactory;
-import mobi.chouette.exchange.regtopp.model.importer.parser.FileContentParser;
-import mobi.chouette.exchange.regtopp.model.importer.parser.FileParserValidationError;
-import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppException;
+import mobi.chouette.exchange.regtopp.importer.parser.FileContentParser;
+import mobi.chouette.exchange.regtopp.importer.parser.FileParserValidationError;
+import mobi.chouette.exchange.regtopp.validation.RegtoppException;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 
 @Log4j

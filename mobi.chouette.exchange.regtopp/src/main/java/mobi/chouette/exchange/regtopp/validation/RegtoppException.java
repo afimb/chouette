@@ -1,8 +1,9 @@
-package mobi.chouette.exchange.regtopp.model.importer.parser;
+package mobi.chouette.exchange.regtopp.validation;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import mobi.chouette.exchange.regtopp.importer.parser.FileParserValidationError;
 
 @ToString
 @EqualsAndHashCode(callSuper = false)

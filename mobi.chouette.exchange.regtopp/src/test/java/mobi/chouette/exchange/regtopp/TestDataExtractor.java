@@ -19,7 +19,7 @@ import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.io.FileUtils;
 
 import mobi.chouette.common.FileUtil;
-import mobi.chouette.exchange.regtopp.model.importer.parser.FileContentParser;
+import mobi.chouette.exchange.regtopp.importer.parser.FileContentParser;
 
 /*
  * This class extracts a single line (transmodel concept) from a regtopp1.2 dataset

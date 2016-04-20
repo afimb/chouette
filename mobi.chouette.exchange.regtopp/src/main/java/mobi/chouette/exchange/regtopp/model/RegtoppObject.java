@@ -8,9 +8,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppErrorsHashSet;
-import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppException;
-import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppExceptionsHashSet;
+import mobi.chouette.exchange.regtopp.validation.RegtoppErrorsHashSet;
+import mobi.chouette.exchange.regtopp.validation.RegtoppException;
+import mobi.chouette.exchange.regtopp.validation.RegtoppExceptionsHashSet;
 
 @ToString
 @NoArgsConstructor

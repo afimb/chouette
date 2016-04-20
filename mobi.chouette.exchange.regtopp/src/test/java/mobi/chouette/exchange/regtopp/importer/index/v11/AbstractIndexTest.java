@@ -6,9 +6,9 @@ import java.util.Arrays;
 import org.testng.annotations.Test;
 
 import mobi.chouette.common.Context;
-import mobi.chouette.exchange.regtopp.model.importer.parser.FileContentParser;
-import mobi.chouette.exchange.regtopp.model.importer.parser.ParseableFile;
-import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
+import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
+import mobi.chouette.exchange.regtopp.importer.parser.FileContentParser;
+import mobi.chouette.exchange.regtopp.importer.parser.ParseableFile;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 import mobi.chouette.exchange.report.FileInfo;
 import mobi.chouette.exchange.report.FileInfo.FILE_STATE;

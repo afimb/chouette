@@ -3,7 +3,7 @@ package mobi.chouette.exchange.regtopp.importer.index;
 import java.util.HashMap;
 import java.util.Map;
 
-import mobi.chouette.exchange.regtopp.model.importer.parser.FileContentParser;
+import mobi.chouette.exchange.regtopp.importer.parser.FileContentParser;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 
 public abstract class IndexFactory {

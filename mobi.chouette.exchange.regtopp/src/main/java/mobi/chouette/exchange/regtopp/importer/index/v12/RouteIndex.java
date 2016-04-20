@@ -2,12 +2,12 @@ package mobi.chouette.exchange.regtopp.importer.index.v12;
 
 import static mobi.chouette.exchange.regtopp.RegtoppConstant.*;
 
+import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.importer.index.IndexImpl;
+import mobi.chouette.exchange.regtopp.importer.parser.FileContentParser;
+import mobi.chouette.exchange.regtopp.importer.parser.FileParserValidationError;
 import mobi.chouette.exchange.regtopp.model.v12.RegtoppRouteTMS;
-import mobi.chouette.exchange.regtopp.model.importer.parser.FileContentParser;
-import mobi.chouette.exchange.regtopp.model.importer.parser.FileParserValidationError;
-import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppException;
-import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppImporter;
+import mobi.chouette.exchange.regtopp.validation.RegtoppException;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 
 public abstract class RouteIndex extends IndexImpl<RegtoppRouteTMS> {

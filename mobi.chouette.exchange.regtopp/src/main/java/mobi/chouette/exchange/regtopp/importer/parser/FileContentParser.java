@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.regtopp.model.importer.parser;
+package mobi.chouette.exchange.regtopp.importer.parser;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -25,8 +25,9 @@ import mobi.chouette.exchange.regtopp.beanio.DepartureTimeTypeHandler;
 import mobi.chouette.exchange.regtopp.beanio.DrivingDurationTypeHandler;
 import mobi.chouette.exchange.regtopp.beanio.LocalDateTypeHandler;
 import mobi.chouette.exchange.regtopp.model.RegtoppObject;
-import mobi.chouette.exchange.regtopp.model.importer.parser.RegtoppException.ERROR;
+import mobi.chouette.exchange.regtopp.validation.RegtoppException;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
+import mobi.chouette.exchange.regtopp.validation.RegtoppException.ERROR;
 import mobi.chouette.exchange.report.FileError;
 import mobi.chouette.exchange.report.FileError.CODE;
 import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
