@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.regtopp.parser.index;
+package mobi.chouette.exchange.regtopp.importer.index.v11;
 
 import java.io.File;
 import java.util.Iterator;

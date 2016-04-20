@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.regtopp.parser;
+package mobi.chouette.exchange.regtopp.importer.parser.v11;
 
 import java.sql.Time;
 
