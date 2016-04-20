@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.regtopp.importer.parser;
+package mobi.chouette.exchange.regtopp.model.importer.parser;
 
 import java.io.File;
 import java.io.IOException;
