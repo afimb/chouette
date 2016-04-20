@@ -28,6 +28,7 @@ import mobi.chouette.exchange.regtopp.RegtoppConstant;
 import mobi.chouette.exchange.regtopp.importer.version.Regtopp11DVersionHandler;
 import mobi.chouette.exchange.regtopp.importer.version.Regtopp12NovusVersionHandler;
 import mobi.chouette.exchange.regtopp.importer.version.Regtopp12VersionHandler;
+import mobi.chouette.exchange.regtopp.importer.version.Regtopp13AVersionHandler;
 import mobi.chouette.exchange.regtopp.importer.version.VersionHandler;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
@@ -45,7 +46,7 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 
 	// TODO move to version handler
 
-	private static final List<String> supportedVersions = Arrays.asList("1.1D","1.2", "1.2Novus");
+	private static final List<String> supportedVersions = Arrays.asList("1.1D", "1.2", "1.2Novus", "1.3A");
 
 	@Override
 	public boolean execute(Context context) throws Exception {
@@ -67,7 +68,7 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 		} else {
 
 			VersionHandler versionHandler = null;
-			switch(declaredVersion) {
+			switch (declaredVersion) {
 			case "1.1D":
 				versionHandler = new Regtopp11DVersionHandler();
 				break;
@@ -77,10 +78,13 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 			case "1.2Novus":
 				versionHandler = new Regtopp12NovusVersionHandler();
 				break;
+			case "1.3A":
+				versionHandler = new Regtopp13AVersionHandler();
+				break;
 			}
-			
+
 			context.put(RegtoppConstant.VERSION_HANDLER, versionHandler);
-			
+
 			RegtoppValidationReporter validationReporter = (RegtoppValidationReporter) context.get(REGTOPP_REPORTER);
 
 			// TODO read FORMPAR.FRM to detect which version of Regtopp being used.
@@ -172,7 +176,6 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 		}
 		return result;
 	}
-
 
 	public static class DefaultCommandFactory extends CommandFactory {
 

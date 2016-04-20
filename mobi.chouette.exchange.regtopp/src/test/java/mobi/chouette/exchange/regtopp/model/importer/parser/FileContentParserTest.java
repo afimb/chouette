@@ -200,6 +200,7 @@ public class FileContentParserTest {
 		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v13.RegtoppTripIndexTIX.class), 71);
 		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v13.RegtoppRouteTMS.class), 50);
 		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v13.RegtoppPathwayGAV.class), 43);
+		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v13.RegtoppRoutePointRUT.class), 32);
 	}
 
 
