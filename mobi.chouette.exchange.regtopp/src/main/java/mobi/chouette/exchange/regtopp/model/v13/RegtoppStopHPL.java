@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.regtopp.model.v11;
+package mobi.chouette.exchange.regtopp.model.v13;
 
 import java.io.Serializable;
 
@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppStopHPL;
+import mobi.chouette.exchange.regtopp.model.enums.StopType;
 
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
@@ -24,17 +25,22 @@ public class RegtoppStopHPL extends AbstractRegtoppStopHPL implements Serializab
 
 	@Getter
 	@Setter
-	@Field(at = 83, length = 1)
+	@Field(at = 83, length = 1, regex = "[01]{1}", format = "toString")
+	private StopType type; 
+
+	@Getter
+	@Setter
+	@Field(at = 84, length = 1)
 	private Integer interchangeType;
 
 	@Getter
 	@Setter
-	@Field(at = 84, length = 2)
+	@Field(at = 85, length = 2)
 	private Integer interchangeMinutes;
 
 	@Getter
 	@Setter
-	@Field(at = 86, length = 1)
+	@Field(at = 87, length = 1)
 	private Integer coachClass;
 
 }

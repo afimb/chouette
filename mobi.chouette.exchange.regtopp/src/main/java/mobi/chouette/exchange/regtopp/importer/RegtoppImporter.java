@@ -22,6 +22,8 @@ import mobi.chouette.exchange.regtopp.importer.index.v12.RouteByRouteKey;
 import mobi.chouette.exchange.regtopp.importer.parser.FileContentParser;
 import mobi.chouette.exchange.regtopp.importer.parser.FileParserValidationError;
 import mobi.chouette.exchange.regtopp.importer.parser.ParseableFile;
+import mobi.chouette.exchange.regtopp.model.AbstractRegtoppRouteTMS;
+import mobi.chouette.exchange.regtopp.model.AbstractRegtoppStopHPL;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.model.RegtoppObject;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeDKO;
@@ -29,12 +31,10 @@ import mobi.chouette.exchange.regtopp.model.v11.RegtoppDestinationDST;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppFootnoteMRK;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppLineLIN;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppRouteTDA;
-import mobi.chouette.exchange.regtopp.model.v11.RegtoppStopHPL;
-import mobi.chouette.exchange.regtopp.model.v12.RegtoppRouteTMS;
 import mobi.chouette.exchange.regtopp.model.v12.RegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException;
-import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException.ERROR;
+import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 
 @Log4j
 public class RegtoppImporter {
@@ -128,7 +128,7 @@ public class RegtoppImporter {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Index<RegtoppStopHPL> getStopById() {
+	public Index<AbstractRegtoppStopHPL> getStopById() {
 		return getIndex(INDEX.STOP_BY_ID.name(), StopById.class);
 	}
 
@@ -141,7 +141,7 @@ public class RegtoppImporter {
 	}
 
 	public boolean hasTMSImporter() {
-		return hasImporter(RegtoppRouteTMS.FILE_EXTENSION);
+		return hasImporter(AbstractRegtoppRouteTMS.FILE_EXTENSION);
 	}
 
 	public boolean hasTIXImporter() {
@@ -153,7 +153,7 @@ public class RegtoppImporter {
 	}
 
 	public boolean hasHPLImporter() {
-		return hasImporter(RegtoppStopHPL.FILE_EXTENSION);
+		return hasImporter(AbstractRegtoppStopHPL.FILE_EXTENSION);
 	}
 
 	public boolean hasTDAImporter() {
@@ -189,11 +189,11 @@ public class RegtoppImporter {
 
 	}
 
-	public Index<RegtoppRouteTMS> getRouteIndex() {
+	public Index<AbstractRegtoppRouteTMS> getRouteIndex() {
 		return getIndex(INDEX.ROUTE_INDEX.name(), RouteByIndexingKey.class);
 	}
 
-	public Index<RegtoppRouteTMS> getRouteByRouteKey() {
+	public Index<AbstractRegtoppRouteTMS> getRouteByRouteKey() {
 		return getIndex(INDEX.ROUTE_BY_ROUTE_KEY.name(), RouteByRouteKey.class);
 	}
 

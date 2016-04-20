@@ -177,12 +177,12 @@ public class FileContentParserTest {
 	@Test
 	public void verifyMappingCorrectnessRegtopp12() {
 		// Other files same as 1.1D
-		Assert.assertEquals(calculateTotalFieldLenght(RegtoppTripIndexTIX.class), 62);
-		Assert.assertEquals(calculateTotalFieldLenght(RegtoppRouteTMS.class), 47);
-		Assert.assertEquals(calculateTotalFieldLenght(RegtoppVehicleJourneyVLP.class), 29);
-		Assert.assertEquals(calculateTotalFieldLenght(RegtoppTableVersionTAB.class), 108);
-		Assert.assertEquals(calculateTotalFieldLenght(RegtoppPeriodPER.class), 100);
-		Assert.assertEquals(calculateTotalFieldLenght(RegtoppRoutePointRUT.class), 30);
+		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v12.RegtoppTripIndexTIX.class), 62);
+		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v12.RegtoppRouteTMS.class), 47);
+		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v12.RegtoppVehicleJourneyVLP.class), 29);
+		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v12.RegtoppTableVersionTAB.class), 108);
+		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v12.RegtoppPeriodPER.class), 100);
+		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v12.RegtoppRoutePointRUT.class), 30);
 
 	}
 
@@ -190,6 +190,16 @@ public class FileContentParserTest {
 	public void verifyMappingCorrectnessRegtopp12N() {
 		// Other files same as 1.2
 		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v12novus.RegtoppStopHPL.class), 89);
+	}
+
+	@Test
+	public void verifyMappingCorrectnessRegtopp13A() {
+		// Other files same as 1.2
+		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v13.RegtoppStopHPL.class), 88);
+		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v13.RegtoppStopPointSTP.class), 94);
+		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v13.RegtoppTripIndexTIX.class), 71);
+		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v13.RegtoppRouteTMS.class), 50);
+		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v13.RegtoppPathwayGAV.class), 43);
 	}
 
 

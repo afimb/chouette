@@ -308,7 +308,7 @@ public class RegtoppTripParser extends LineSpecificParser {
 
 	}
 
-	public static TransportModeNameEnum convertTypeOfService(TransportType typeOfService) {
+	protected TransportModeNameEnum convertTypeOfService(TransportType typeOfService) {
 		switch (typeOfService) {
 		case AirplaneOrAirportExpress:
 			return TransportModeNameEnum.RapidTransit;
@@ -316,12 +316,12 @@ public class RegtoppTripParser extends LineSpecificParser {
 			return TransportModeNameEnum.Coach;
 		case FerryBoat:
 			return TransportModeNameEnum.Ferry;
-		case LocalBus:
+		case Bus:
 			return TransportModeNameEnum.Bus;
 		case Subway:
 			return TransportModeNameEnum.Metro;
 		case Train:
-			return TransportModeNameEnum.LocalTrain;
+			return TransportModeNameEnum.Train;
 		case Tram:
 			return TransportModeNameEnum.Tramway;
 		case Various:

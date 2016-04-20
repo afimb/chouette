@@ -26,5 +26,5 @@ public class RegtoppVehicleJourneyVLP extends mobi.chouette.exchange.regtopp.mod
 	@Getter
 	@Setter
 	@Field(at = 24, length = 5)
-	private Integer id;
+	private Integer vehicleId;
 }

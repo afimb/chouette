@@ -8,19 +8,19 @@ import mobi.chouette.exchange.regtopp.importer.index.IndexFactory;
 import mobi.chouette.exchange.regtopp.importer.index.IndexImpl;
 import mobi.chouette.exchange.regtopp.importer.parser.FileContentParser;
 import mobi.chouette.exchange.regtopp.importer.parser.FileParserValidationError;
-import mobi.chouette.exchange.regtopp.model.v11.RegtoppStopHPL;
+import mobi.chouette.exchange.regtopp.model.AbstractRegtoppStopHPL;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 
 @Log4j
-public class StopById extends IndexImpl<RegtoppStopHPL> {
+public class StopById extends IndexImpl<AbstractRegtoppStopHPL> {
 
 	public StopById(RegtoppValidationReporter validationReporter, FileContentParser fileParser) throws Exception {
 		super(validationReporter, fileParser);
 	}
 
 	@Override
-	public boolean validate(RegtoppStopHPL bean, RegtoppImporter dao) {
+	public boolean validate(AbstractRegtoppStopHPL bean, RegtoppImporter dao) {
 		boolean result = true;
 
 		String stopId = bean.getStopId();
@@ -30,7 +30,7 @@ public class StopById extends IndexImpl<RegtoppStopHPL> {
 		if (101 <= municipalityCode && municipalityCode <= 2211 && stopSequenceNumber.matches("\\d{4}")) {		//Lots of holes in the 101-2211 range
 			bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
 		} else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppStopHPL.FILE_EXTENSION, bean.getRecordLineNumber(), "Holdeplassnr", bean.getStopId(), RegtoppException.ERROR.INVALID_FIELD_VALUE, "Unreferenced id.")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppStopHPL.FILE_EXTENSION, bean.getRecordLineNumber(), "Holdeplassnr", bean.getStopId(), RegtoppException.ERROR.INVALID_FIELD_VALUE, "Unreferenced id.")));
 			result = false;
 		}
 
@@ -40,7 +40,7 @@ public class StopById extends IndexImpl<RegtoppStopHPL> {
 		if (bean.getX().equals(bean.getY())) {
 			bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
 		} else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppStopHPL.FILE_EXTENSION, bean.getRecordLineNumber(), "X = Y", bean.getX(), RegtoppException.ERROR.INVALID_FIELD_VALUE, "Unreferenced id.")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppStopHPL.FILE_EXTENSION, bean.getRecordLineNumber(), "X = Y", bean.getX().toString(), RegtoppException.ERROR.INVALID_FIELD_VALUE, "Unreferenced id.")));
 			result = false;
 		}
 
@@ -67,8 +67,8 @@ public class StopById extends IndexImpl<RegtoppStopHPL> {
 	@Override
 	public void index() throws Exception {
 		for (Object obj : parser.getRawContent()) {
-			RegtoppStopHPL stop = (RegtoppStopHPL) obj;
-			RegtoppStopHPL existing = index.put(stop.getFullStopId(), stop);
+			AbstractRegtoppStopHPL stop = (AbstractRegtoppStopHPL) obj;
+			AbstractRegtoppStopHPL existing = index.put(stop.getFullStopId(), stop);
 			if (existing != null) {
 				// TODO fix exception/validation reporting
 				validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError()), null);

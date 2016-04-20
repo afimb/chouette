@@ -18,12 +18,10 @@ import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.importer.index.Index;
 import mobi.chouette.exchange.regtopp.importer.parser.AbstractConverter;
 import mobi.chouette.exchange.regtopp.importer.parser.RouteKey;
-import mobi.chouette.exchange.regtopp.importer.parser.v11.RegtoppTimetableParser;
+import mobi.chouette.exchange.regtopp.model.AbstractRegtoppRouteTMS;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.model.enums.AnnouncementType;
-import mobi.chouette.exchange.regtopp.model.enums.TransportType;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppDestinationDST;
-import mobi.chouette.exchange.regtopp.model.v12.RegtoppRouteTMS;
 import mobi.chouette.exchange.regtopp.model.v12.RegtoppTripIndexTIX;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.Footnote;
@@ -31,10 +29,7 @@ import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopPoint;
-import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
-import mobi.chouette.model.VehicleJourneyAtStop;
-import mobi.chouette.model.type.TransportModeNameEnum;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.ObjectIdTypes;
 import mobi.chouette.model.util.Referential;
@@ -115,7 +110,7 @@ public class RegtoppTripParser extends mobi.chouette.exchange.regtopp.importer.p
 					Duration tripDepartureTime = linkVehicleJourneyToTimetable(referential, configuration, trip, vehicleJourney);
 
 					// TODO this must be precomputed instead of iterating over tens of thousands of records for each trip.
-					for (RegtoppRouteTMS vehicleStop : importer.getRouteIndex()) {
+					for (AbstractRegtoppRouteTMS vehicleStop : importer.getRouteIndex()) {
 						if (vehicleStop.getLineId().equals(lineId)) {
 							if (vehicleStop.getRouteId().equals(trip.getRouteIdRef())) {
 								if (vehicleStop.getDirection() == trip.getDirection()) {

@@ -8,7 +8,7 @@ import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
 import mobi.chouette.exchange.regtopp.importer.parser.AbstractConverter;
-import mobi.chouette.exchange.regtopp.model.v12.RegtoppRouteTMS;
+import mobi.chouette.exchange.regtopp.model.AbstractRegtoppRouteTMS;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.util.ObjectFactory;
@@ -20,7 +20,7 @@ public class RegtoppRouteParser extends mobi.chouette.exchange.regtopp.importer.
 
 	
 	// Only change here from super class is that the stoppoint here uses both stopId and stopIdDeparture ("stoppunktsnummer");
-	protected StopPoint createStopPoint(Referential referential, Context context, RegtoppRouteTMS routeSegment, String chouetteStopPointId) throws Exception {
+	protected StopPoint createStopPoint(Referential referential, Context context, AbstractRegtoppRouteTMS routeSegment, String chouetteStopPointId) throws Exception {
 
 		RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
 

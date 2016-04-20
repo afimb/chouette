@@ -11,38 +11,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import mobi.chouette.exchange.regtopp.model.RegtoppObject;
+import mobi.chouette.exchange.regtopp.model.AbstractRegtoppPathwayGAV;
 
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
 @Record(minOccurs = 1)
-public class RegtoppPathwayGAV extends RegtoppObject implements Serializable {
-
-	public static final String FILE_EXTENSION = "GAV";
+public class RegtoppPathwayGAV extends AbstractRegtoppPathwayGAV implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
-	@Getter
-	@Setter
-	@Field(at = 0, length = 3)
-	private String adminCode;
-
-	@Getter
-	@Setter
-	@Field(at = 3, length = 1)
-	private String counter;
-
-	@Getter
-	@Setter
-	@Field(at = 4, length = 8)
-	private String stopIdFrom;
-
-	@Getter
-	@Setter
-	@Field(at = 12, length = 8)
-	private String stopIdTo;
 
 	@Getter
 	@Setter
@@ -53,10 +31,5 @@ public class RegtoppPathwayGAV extends RegtoppObject implements Serializable {
 	@Setter
 	@Field(at = 22, length = 20)
 	private String description;
-
-	@Override
-	public String getIndexingKey() {
-		return adminCode + counter + stopIdFrom + stopIdTo;
-	}
 
 }

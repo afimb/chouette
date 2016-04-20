@@ -1,4 +1,4 @@
-package mobi.chouette.exchange.regtopp.model.v11;
+package mobi.chouette.exchange.regtopp.model.v13;
 
 import java.io.Serializable;
 
@@ -11,30 +11,30 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import mobi.chouette.exchange.regtopp.model.AbstractRegtoppStopHPL;
+import mobi.chouette.exchange.regtopp.model.AbstractRegtoppPathwayGAV;
+import mobi.chouette.exchange.regtopp.model.enums.PathwayType;
 
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
 @Record(minOccurs = 1)
-public class RegtoppStopHPL extends AbstractRegtoppStopHPL implements Serializable {
+public class RegtoppPathwayGAV extends AbstractRegtoppPathwayGAV implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Getter
 	@Setter
-	@Field(at = 83, length = 1)
-	private Integer interchangeType;
+	@Field(at = 20, length = 1,regex = "[123]{1}", format = "toString")
+	private PathwayType type;
 
 	@Getter
 	@Setter
-	@Field(at = 84, length = 2)
-	private Integer interchangeMinutes;
+	@Field(at = 21, length = 2)
+	private Integer duration;
 
 	@Getter
 	@Setter
-	@Field(at = 86, length = 1)
-	private Integer coachClass;
-
+	@Field(at = 23, length = 20)
+	private String description;
 }

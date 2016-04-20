@@ -2,11 +2,11 @@ package mobi.chouette.exchange.regtopp.importer.index.v12;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
-import mobi.chouette.exchange.regtopp.model.v12.RegtoppRouteTMS;
 import mobi.chouette.exchange.regtopp.importer.index.Index;
 import mobi.chouette.exchange.regtopp.importer.index.IndexFactory;
 import mobi.chouette.exchange.regtopp.importer.parser.FileContentParser;
 import mobi.chouette.exchange.regtopp.importer.parser.FileParserValidationError;
+import mobi.chouette.exchange.regtopp.model.AbstractRegtoppRouteTMS;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 
@@ -33,8 +33,8 @@ public class RouteByIndexingKey extends RouteIndex {
 	@Override
 	public void index() throws Exception {
 		for (Object obj : parser.getRawContent()) {
-			RegtoppRouteTMS route = (RegtoppRouteTMS) obj;
-			RegtoppRouteTMS existing = index.put(route.getIndexingKey(), route);
+			AbstractRegtoppRouteTMS route = (AbstractRegtoppRouteTMS) obj;
+			AbstractRegtoppRouteTMS existing = index.put(route.getIndexingKey(), route);
 			if (existing != null) {
 				// TODO fix exception/validation reporting
 				validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError()), null);

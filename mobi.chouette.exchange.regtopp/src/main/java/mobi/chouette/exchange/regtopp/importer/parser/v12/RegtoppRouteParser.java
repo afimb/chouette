@@ -19,7 +19,7 @@ import mobi.chouette.exchange.regtopp.importer.index.Index;
 import mobi.chouette.exchange.regtopp.importer.parser.AbstractConverter;
 import mobi.chouette.exchange.regtopp.importer.parser.FileParserValidationError;
 import mobi.chouette.exchange.regtopp.importer.parser.RouteKey;
-import mobi.chouette.exchange.regtopp.model.v12.RegtoppRouteTMS;
+import mobi.chouette.exchange.regtopp.model.AbstractRegtoppRouteTMS;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 import mobi.chouette.exchange.validation.report.ValidationReport;
@@ -60,30 +60,30 @@ public class RegtoppRouteParser extends mobi.chouette.exchange.regtopp.importer.
 
 	private void validateTMSIndex(Context context, RegtoppImporter importer, RegtoppValidationReporter validationReporter) throws Exception {
 		if (importer.hasTMSImporter()) {
-			validationReporter.reportSuccess(context, REGTOPP_FILE_TMS, RegtoppRouteTMS.FILE_EXTENSION);
+			validationReporter.reportSuccess(context, REGTOPP_FILE_TMS, AbstractRegtoppRouteTMS.FILE_EXTENSION);
 
-			Index<RegtoppRouteTMS> index = importer.getRouteIndex();
+			Index<AbstractRegtoppRouteTMS> index = importer.getRouteIndex();
 
 			if (index.getLength() == 0) {
-				FileParserValidationError fileError = new FileParserValidationError(RegtoppRouteTMS.FILE_EXTENSION, 0, null,
+				FileParserValidationError fileError = new FileParserValidationError(AbstractRegtoppRouteTMS.FILE_EXTENSION, 0, null,
 						RegtoppException.ERROR.FILE_WITH_NO_ENTRY, null, "Empty file");
-				validationReporter.reportError(context, new RegtoppException(fileError), RegtoppRouteTMS.FILE_EXTENSION);
+				validationReporter.reportError(context, new RegtoppException(fileError), AbstractRegtoppRouteTMS.FILE_EXTENSION);
 			}
 
-			for (RegtoppRouteTMS bean : index) {
+			for (AbstractRegtoppRouteTMS bean : index) {
 				try {
 					// Call index validator
 					index.validate(bean, importer);
 				} catch (Exception ex) {
 					log.error(ex);
 					if (ex instanceof RegtoppException) {
-						validationReporter.reportError(context, (RegtoppException) ex, RegtoppRouteTMS.FILE_EXTENSION);
+						validationReporter.reportError(context, (RegtoppException) ex, AbstractRegtoppRouteTMS.FILE_EXTENSION);
 					} else {
-						validationReporter.throwUnknownError(context, ex, RegtoppRouteTMS.FILE_EXTENSION);
+						validationReporter.throwUnknownError(context, ex, AbstractRegtoppRouteTMS.FILE_EXTENSION);
 					}
 				}
-				validationReporter.reportErrors(context, bean.getErrors(), RegtoppRouteTMS.FILE_EXTENSION);
-				validationReporter.validate(context, RegtoppRouteTMS.FILE_EXTENSION, bean.getOkTests());
+				validationReporter.reportErrors(context, bean.getErrors(), AbstractRegtoppRouteTMS.FILE_EXTENSION);
+				validationReporter.validate(context, AbstractRegtoppRouteTMS.FILE_EXTENSION, bean.getOkTests());
 			}
 		}
 	}
@@ -108,9 +108,9 @@ public class RegtoppRouteParser extends mobi.chouette.exchange.regtopp.importer.
 		List<Footnote> footnotes = line.getFootnotes();
 
 		// Add routes and journey patterns
-		Index<RegtoppRouteTMS> routeIndex = importer.getRouteIndex();
+		Index<AbstractRegtoppRouteTMS> routeIndex = importer.getRouteIndex();
 
-		for (RegtoppRouteTMS routeSegment : routeIndex) {
+		for (AbstractRegtoppRouteTMS routeSegment : routeIndex) {
 			if (lineId.equals(routeSegment.getLineId())) {
 
 				// Add network
@@ -154,7 +154,7 @@ public class RegtoppRouteParser extends mobi.chouette.exchange.regtopp.importer.
 
 	}
 
-	protected StopPoint createStopPoint(Referential referential, Context context, RegtoppRouteTMS routeSegment, String chouetteStopPointId) throws Exception {
+	protected StopPoint createStopPoint(Referential referential, Context context, AbstractRegtoppRouteTMS routeSegment, String chouetteStopPointId) throws Exception {
 
 		RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
 
