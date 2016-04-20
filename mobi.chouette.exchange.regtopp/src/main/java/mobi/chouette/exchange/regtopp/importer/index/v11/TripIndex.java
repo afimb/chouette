@@ -9,6 +9,7 @@ import mobi.chouette.exchange.regtopp.importer.index.IndexImpl;
 import mobi.chouette.exchange.regtopp.importer.parser.FileContentParser;
 import mobi.chouette.exchange.regtopp.importer.parser.FileParserValidationError;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppTripIndexTIX;
+import mobi.chouette.exchange.regtopp.model.v12.RegtoppRouteTMS;
 import mobi.chouette.exchange.regtopp.model.v12.RegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
@@ -23,6 +24,58 @@ public abstract class TripIndex extends IndexImpl<AbstractRegtoppTripIndexTIX> {
 	@Override
 	public boolean validate(AbstractRegtoppTripIndexTIX bean, RegtoppImporter dao) {
 		boolean result = true;
+
+		//Obligatoriske felter
+		if (bean.getAdminCode() != null) {
+			bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
+		}  else {
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppTripIndexTIX.FILE_EXTENSION, bean.getRecordLineNumber(), "Adminkode", null, RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
+			result = false;
+		}
+
+		if (bean.getCounter() != null) {
+			bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
+		}  else {
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppTripIndexTIX.FILE_EXTENSION, bean.getRecordLineNumber(), "Løpenr", null, RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
+			result = false;
+		}
+
+		if (bean.getLineId() != null) {
+			bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
+		}  else {
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppTripIndexTIX.FILE_EXTENSION, bean.getRecordLineNumber(), "Linjenr", null, RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
+			result = false;
+		}
+
+		if (bean.getTripId() != null) {
+			bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
+		}  else {
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppTripIndexTIX.FILE_EXTENSION, bean.getRecordLineNumber(), "Turnr", null, RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
+			result = false;
+		}
+
+		if (bean.getDirection() != null) {
+			bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
+		}  else {
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppTripIndexTIX.FILE_EXTENSION, bean.getRecordLineNumber(), "Retning", null, RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
+			result = false;
+		}
+
+		if (bean.getRouteIdRef() != null) {
+			bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
+		}  else {
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppTripIndexTIX.FILE_EXTENSION, bean.getRecordLineNumber(), "Trmønsternr", null, RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
+			result = false;
+		}
+
+		if (bean.getDepartureTime() != null) {
+			bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
+		}  else {
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppTripIndexTIX.FILE_EXTENSION, bean.getRecordLineNumber(), "Avgangstid", null, RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
+			result = false;
+		}
+
+
 		if (dao.hasTMSImporter()) {
 			if (dao.getRouteByRouteKey().containsKey(bean.getRouteKey())) { // Referanse fra TURIX til TURMSTR er feltene Linjenr, Retning og Turmønsternr
 				bean.getOkTests().add(RegtoppException.ERROR.INVALID_MANDATORY_ID_REFERENCE);
