@@ -160,6 +160,7 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		parameters.setReferencesType("line");
 		parameters.setNoSave(false);
 		parameters.setVersion("1.2");
+		parameters.setCoordinateProjection("EPSG:32632");
 
 		
 		boolean result = command.execute(context);
@@ -272,8 +273,10 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		parameters.setReferencesType("line");
 		parameters.setNoSave(false);
 		parameters.setVersion("1.2");
+		parameters.setCoordinateProjection("EPSG:32632");
 
-		
+
+
 		command.execute(context);
 
 		utx.begin();
@@ -309,8 +312,10 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		parameters.setReferencesType("line");
 		parameters.setNoSave(false);
 		parameters.setVersion("1.2");
+		parameters.setCoordinateProjection("EPSG:32632");
 
-		
+
+
 		command.execute(context);
 		
 		
@@ -357,8 +362,10 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		parameters.setReferencesType("line");
 		parameters.setNoSave(false);
 		parameters.setVersion("1.2");
+		parameters.setCoordinateProjection("EPSG:32632");
 
-		
+
+
 		boolean result = command.execute(context);
 
 		ActionReport report = (ActionReport) context.get(REPORT);
@@ -469,8 +476,10 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		parameters.setReferencesType("line");
 		parameters.setNoSave(false);
 		parameters.setVersion("1.2Novus");
+		parameters.setCoordinateProjection("EPSG:32632");
 
-		
+
+
 		command.execute(context);
 		
 		
@@ -516,8 +525,10 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		parameters.setReferencesType("line");
 		parameters.setNoSave(false);
 		parameters.setVersion("1.1D");
+		parameters.setCoordinateProjection("EPSG:32632");
 
-		
+
+
 		command.execute(context);
 		
 		ActionReport report = (ActionReport) context.get(REPORT);
