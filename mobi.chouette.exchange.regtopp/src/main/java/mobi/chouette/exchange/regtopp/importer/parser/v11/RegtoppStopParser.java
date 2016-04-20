@@ -6,11 +6,6 @@ import static mobi.chouette.common.Constant.PARSER;
 import static mobi.chouette.common.Constant.REFERENTIAL;
 import static mobi.chouette.exchange.regtopp.validation.Constant.REGTOPP_FILE_HPL;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
@@ -22,8 +17,6 @@ import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.importer.index.Index;
 import mobi.chouette.exchange.regtopp.importer.parser.AbstractConverter;
 import mobi.chouette.exchange.regtopp.importer.parser.FileParserValidationError;
-import mobi.chouette.exchange.regtopp.importer.version.Regtopp12NovusVersionHandler;
-import mobi.chouette.exchange.regtopp.importer.version.VersionHandler;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppStopHPL;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
@@ -46,15 +39,15 @@ public class RegtoppStopParser implements Parser, Validator {
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
 		RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
-
+		
+		
 		for (RegtoppStopHPL stop : importer.getStopById()) {
 
 			String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), StopArea.STOPAREA_KEY, stop.getFullStopId());
 			StopArea stopArea = ObjectFactory.getStopArea(referential, objectId);
 
-			//stopArea.setRegistrationNumber(stop.getFullStopId());
 			
-			Coordinate wgs84Coordinate = CoordinateUtil.transform(Coordinate.UTM_32N, Coordinate.WGS84, new Coordinate(stop.getX(), stop.getY()));
+			Coordinate wgs84Coordinate = CoordinateUtil.transform(configuration.getCoordinateProjection(), Coordinate.WGS84, new Coordinate(stop.getX(), stop.getY()));
 
 			stopArea.setLongitude(wgs84Coordinate.getY());
 			stopArea.setLatitude(wgs84Coordinate.getX());
@@ -66,7 +59,8 @@ public class RegtoppStopParser implements Parser, Validator {
 			stopArea.setProjectionType("UTM");
 
 			stopArea.setName(stop.getFullName());
-
+			stopArea.setRegistrationNumber(stop.getShortName());
+			
 			// TODO set correct, some stops are in other countries
 			// Could use a reverse geocoder for this, would obtain address etc etc.
 			//stopArea.setCountryCode("NO");

@@ -20,7 +20,7 @@ import org.apache.log4j.Logger;
 @NoArgsConstructor
 @ToString(callSuper = true)
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "objectIdPrefix", "maxDistanceForConnectionLink", "maxDistanceForCommercial", "ignoreEndChars", "ignoreLastWord", "referencesType","version" })
+@XmlType(propOrder = { "objectIdPrefix", "maxDistanceForConnectionLink", "maxDistanceForCommercial", "ignoreEndChars", "ignoreLastWord", "referencesType","version","coordinateProjection" })
 public class RegtoppImportParameters extends AbstractImportParameter {
 
 	@Getter
@@ -63,6 +63,12 @@ public class RegtoppImportParameters extends AbstractImportParameter {
 	@Setter
 	@XmlElement(name = "version", required = true)
 	private String version;
+
+	// Coordinate projection ie EPSG:32632 (UTM32_N)
+	@Getter
+	@Setter
+	@XmlElement(name = "coordinate_projection", required = true)
+	private String coordinateProjection;
 
 	public boolean isValid(Logger log, String[] allowedTypes) {
 		if (!super.isValid(log))
