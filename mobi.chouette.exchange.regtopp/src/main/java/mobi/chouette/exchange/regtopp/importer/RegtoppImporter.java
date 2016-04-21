@@ -3,6 +3,7 @@ package mobi.chouette.exchange.regtopp.importer;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import lombok.extern.log4j.Log4j;
@@ -19,6 +20,8 @@ import mobi.chouette.exchange.regtopp.importer.index.v11.TripByIndexingKey;
 import mobi.chouette.exchange.regtopp.importer.index.v11.UniqueLinesByTripIndex;
 import mobi.chouette.exchange.regtopp.importer.index.v12.RouteByIndexingKey;
 import mobi.chouette.exchange.regtopp.importer.index.v12.RouteByRouteKey;
+import mobi.chouette.exchange.regtopp.importer.index.v13.StopPointByIndexingKey;
+import mobi.chouette.exchange.regtopp.importer.index.v13.StopPointByStopId;
 import mobi.chouette.exchange.regtopp.importer.parser.FileContentParser;
 import mobi.chouette.exchange.regtopp.importer.parser.FileParserValidationError;
 import mobi.chouette.exchange.regtopp.importer.parser.ParseableFile;
@@ -32,6 +35,7 @@ import mobi.chouette.exchange.regtopp.model.v11.RegtoppFootnoteMRK;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppLineLIN;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppRouteTDA;
 import mobi.chouette.exchange.regtopp.model.v12.RegtoppTripIndexTIX;
+import mobi.chouette.exchange.regtopp.model.v13.RegtoppStopPointSTP;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException.ERROR;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
@@ -55,7 +59,9 @@ public class RegtoppImporter {
 		LINE_BY_TRIPS,
 		ROUTE_INDEX,
 		ROUTE_BY_ROUTE_KEY,
-		ROUTE_BY_LINE_NUMBER
+		ROUTE_BY_LINE_NUMBER,
+		STOPPOINT_BY_STOP_ID,
+		STOPPOINT_BY_ID
 	}
 
 	private String path;
@@ -160,6 +166,10 @@ public class RegtoppImporter {
 		return hasImporter(RegtoppRouteTDA.FILE_EXTENSION);
 	}
 
+	public boolean hasSTPImporter() {
+		return hasImporter(RegtoppStopPointSTP.FILE_EXTENSION);
+	}
+
 	private boolean hasImporter(final String pattern) {
 		File folder = new File(path);
 		String[] matchingFiles = folder.list(new FilenameFilter() {
@@ -199,6 +209,14 @@ public class RegtoppImporter {
 
 	public Index<RegtoppRouteTDA> getRouteSegmentByLineNumber() {
 		return getIndex(INDEX.ROUTE_BY_LINE_NUMBER.name(), RouteByLineNumber.class);
+	}
+
+	public Index<List<RegtoppStopPointSTP>> getStopPointsByStopId() {
+		return getIndex(INDEX.STOPPOINT_BY_STOP_ID.name(), StopPointByStopId.class);
+	}
+
+	public Index<RegtoppStopPointSTP> getStopPointsByIndexingKey() {
+		return getIndex(INDEX.STOPPOINT_BY_ID.name(), StopPointByIndexingKey.class);
 	}
 
 }

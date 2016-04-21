@@ -5,6 +5,8 @@ import static mobi.chouette.common.Constant.PARSER;
 import static mobi.chouette.common.Constant.REFERENTIAL;
 import static mobi.chouette.exchange.regtopp.validation.Constant.REGTOPP_FILE_HPL;
 
+import java.math.BigDecimal;
+
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
@@ -34,44 +36,40 @@ public class RegtoppStopParser implements Parser, Validator {
 	public void parse(Context context) throws Exception {
 		try {
 
-			Referential referential = (Referential) context.get(REFERENTIAL);
 			RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
+			Referential referential = (Referential) context.get(REFERENTIAL);
 			RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
-
+			String projection = configuration.getCoordinateProjection();
+			
 			for (AbstractRegtoppStopHPL stop : importer.getStopById()) {
-				convertAndAddStopArea(referential, configuration, stop);
+				String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), StopArea.STOPAREA_KEY, stop.getFullStopId());
+
+				StopArea stopArea = ObjectFactory.getStopArea(referential, objectId);
+				stopArea.setName(stop.getFullName());
+				stopArea.setRegistrationNumber(stop.getShortName());
+				stopArea.setAreaType(ChouetteAreaEnum.BoardingPosition);
+
+				convertAndSetCoordinates(stopArea, stop.getX(), stop.getY(), projection);
 			}
 		} catch (Exception e) {
 			log.error("Error parsing StopArea", e);
 			throw e;
 		}
 	}
-
-	protected StopArea convertAndAddStopArea(Referential referential, RegtoppImportParameters configuration, AbstractRegtoppStopHPL stop) {
-		String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), StopArea.STOPAREA_KEY, stop.getFullStopId());
-		StopArea stopArea = ObjectFactory.getStopArea(referential, objectId);
-
-		Coordinate wgs84Coordinate = CoordinateUtil.transform(configuration.getCoordinateProjection(), Coordinate.WGS84,
-				new Coordinate(stop.getX(), stop.getY()));
+	
+	protected void convertAndSetCoordinates(StopArea stopArea, BigDecimal x, BigDecimal y, String projection) {
+		Coordinate wgs84Coordinate = CoordinateUtil.transform(projection, Coordinate.WGS84,
+				new Coordinate(x, y));
 
 		stopArea.setLongitude(wgs84Coordinate.getY());
 		stopArea.setLatitude(wgs84Coordinate.getX());
 		stopArea.setLongLatType(LongLatTypeEnum.WGS84);
 
 		// UTM coordinates
-		stopArea.setX(stop.getX());
-		stopArea.setY(stop.getY());
-		stopArea.setProjectionType(configuration.getCoordinateProjection());
-
-		stopArea.setName(stop.getFullName());
-		stopArea.setRegistrationNumber(stop.getShortName());
-
-		// TODO set correct, some stops are in other countries
-		// Could use a reverse geocoder for this, would obtain address etc etc.
-		// stopArea.setCountryCode("NO");
-
-		stopArea.setAreaType(ChouetteAreaEnum.BoardingPosition);
-		return stopArea;
+		stopArea.setX(x);
+		stopArea.setY(y);
+		stopArea.setProjectionType(projection);
+		
 	}
 
 	@Override
@@ -93,7 +91,7 @@ public class RegtoppStopParser implements Parser, Validator {
 		}
 	}
 
-	private void validateHPLIndex(Context context, RegtoppImporter importer, RegtoppValidationReporter validationReporter) throws Exception {
+	protected void validateHPLIndex(Context context, RegtoppImporter importer, RegtoppValidationReporter validationReporter) throws Exception {
 		if (importer.hasHPLImporter()) {
 			validationReporter.reportSuccess(context, REGTOPP_FILE_HPL, AbstractRegtoppStopHPL.FILE_EXTENSION);
 

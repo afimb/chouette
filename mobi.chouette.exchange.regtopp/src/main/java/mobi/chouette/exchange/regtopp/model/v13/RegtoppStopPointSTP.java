@@ -95,15 +95,11 @@ public  class RegtoppStopPointSTP extends RegtoppObject implements Serializable 
 	@Field(at = 86, length = 8)
 	protected String sourceStopPointId;
 
-	
-
-	// TODO
 	@Override
 	public String getIndexingKey() {
 		return adminCode + counter + stopId + stopPointId;
 	}
 	
-	// TODO
 	public String getFullStopId() {
 		return stopId + stopPointId;
 	}
