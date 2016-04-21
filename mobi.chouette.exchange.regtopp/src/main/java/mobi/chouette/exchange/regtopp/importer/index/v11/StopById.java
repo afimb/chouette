@@ -96,7 +96,7 @@ public class StopById extends IndexImpl<AbstractRegtoppStopHPL> {
 			}
 		}
 
-		// Sone 1 og 2 forskjellige
+		// Sone 1 og 2 forskjellige  //TODO 00000
 		if (bean.getZoneId1() != null && bean.getZoneId2() != null) {
 			if (!bean.getZoneId1().equals(bean.getZoneId2())) {
 				bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
@@ -106,12 +106,12 @@ public class StopById extends IndexImpl<AbstractRegtoppStopHPL> {
 			}
 		}
 
-		// Fullstendig navn !§= kortnavn
+		// Fullstendig navn != kortnavn
 		if (bean.getShortName() != null) {
 			if (!bean.getFullName().equals(bean.getShortName())) {
 				bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
 			} else {
-				bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppStopHPL.FILE_EXTENSION, bean.getRecordLineNumber(), "Full name = short name", bean.getFullName(), RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
+				bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppStopHPL.FILE_EXTENSION, bean.getRecordLineNumber(), "Fullstendig name = kortname", bean.getShortName(), RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
 				result = false;
 			}
 		}

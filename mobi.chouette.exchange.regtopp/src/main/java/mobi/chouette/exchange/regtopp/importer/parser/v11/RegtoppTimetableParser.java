@@ -3,6 +3,8 @@ package mobi.chouette.exchange.regtopp.importer.parser.v11;
 import static mobi.chouette.common.Constant.CONFIGURATION;
 import static mobi.chouette.common.Constant.PARSER;
 import static mobi.chouette.common.Constant.REFERENTIAL;
+import static mobi.chouette.exchange.regtopp.RegtoppConstant.REGTOPP_REPORTER;
+import static mobi.chouette.exchange.regtopp.validation.Constant.REGTOPP_FILE_TIX;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -15,6 +17,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import mobi.chouette.exchange.regtopp.importer.index.Index;
+import mobi.chouette.exchange.regtopp.importer.parser.FileParserValidationError;
+import mobi.chouette.exchange.regtopp.model.AbstractRegtoppTripIndexTIX;
+import mobi.chouette.exchange.regtopp.model.v12.RegtoppTripIndexTIX;
+import mobi.chouette.exchange.regtopp.validation.RegtoppException;
+import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
 
@@ -58,6 +66,43 @@ public class RegtoppTimetableParser implements Parser, Validator {
 		// Ting å sjekke: Hvis alle dager er tomme -> warning
 
 		// Verifisere at alle kalender entries faktisk er i bruk
+
+		RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
+		RegtoppValidationReporter validationReporter = (RegtoppValidationReporter) context.get(REGTOPP_REPORTER);
+		validationReporter.getExceptions().clear();
+
+		validateDKOIndex(context, importer, validationReporter);
+	}
+
+	private void validateDKOIndex(Context context, RegtoppImporter importer, RegtoppValidationReporter validationReporter) throws Exception {
+		if (importer.hasDKOImporter()) {
+			validationReporter.reportSuccess(context, REGTOPP_FILE_TIX, RegtoppDayCodeDKO.FILE_EXTENSION);
+
+			Index<RegtoppDayCodeDKO> index = importer.getDayCodeById();
+
+			if (index.getLength() == 0) {
+				FileParserValidationError fileError = new FileParserValidationError(RegtoppDayCodeDKO.FILE_EXTENSION, 0, null,
+						RegtoppException.ERROR.FILE_WITH_NO_ENTRY, null, "Empty file");
+				validationReporter.reportError(context, new RegtoppException(fileError), RegtoppDayCodeDKO.FILE_EXTENSION);
+			}
+
+			for (RegtoppDayCodeDKO bean : index) {
+				try {
+					// Call index validator
+					index.validate(bean, importer);
+				} catch (Exception ex) {
+					log.error(ex);
+					if (ex instanceof RegtoppException) {
+						validationReporter.reportError(context, (RegtoppException) ex, RegtoppDayCodeDKO.FILE_EXTENSION);
+					} else {
+						validationReporter.throwUnknownError(context, ex, RegtoppDayCodeDKO.FILE_EXTENSION);
+					}
+				}
+				validationReporter.reportErrors(context, bean.getErrors(), RegtoppDayCodeDKO.FILE_EXTENSION);
+				validationReporter.validate(context, RegtoppDayCodeDKO.FILE_EXTENSION, bean.getOkTests());
+			}
+		}
+
 	}
 
 	@Override

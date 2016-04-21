@@ -38,6 +38,7 @@ import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 
 @Log4j
 public class RegtoppImporter {
+
 	public static enum INDEX {
 		STOP_BY_ID,
 		DAYCODE_BY_ID,
@@ -158,6 +159,10 @@ public class RegtoppImporter {
 
 	public boolean hasTDAImporter() {
 		return hasImporter(RegtoppRouteTDA.FILE_EXTENSION);
+	}
+
+	public boolean hasDKOImporter() {
+		return hasImporter(RegtoppDayCodeDKO.FILE_EXTENSION);
 	}
 
 	private boolean hasImporter(final String pattern) {
