@@ -12,6 +12,7 @@ import mobi.chouette.exchange.regtopp.importer.version.RegtoppVersion;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.DataStats;
 import mobi.chouette.exchange.report.LineInfo;
+import mobi.chouette.exchange.validation.report.CheckPoint;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.*;
 import mobi.chouette.model.type.ChouetteAreaEnum;
@@ -43,16 +44,20 @@ import java.util.List;
 import java.util.Set;
 
 import static mobi.chouette.exchange.report.ReportConstant.STATUS_OK;
+import static org.testng.Assert.assertEquals;
 
-public class RegtopImporterCommandTest extends Arquillian implements mobi.chouette.common.Constant {
+public class RegtopImporterCommandTest extends Arquillian implements mobi.chouette.common.Constant{
 
-	private InitialContext initialContext;
+	private InitialContext initialContext ;
 
-	private void init() {
-		if (initialContext == null) {
+	
+	private void init()
+	{
+		if (initialContext == null)
+		{
 			try {
 				initialContext = new InitialContext();
-
+		
 			} catch (NamingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -60,6 +65,7 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		}
 	}
 
+	
 	@EJB
 	LineDAO lineDao;
 
@@ -80,15 +86,23 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 
 		WebArchive result;
 
-		File[] files = Maven.resolver().loadPomFromFile("pom.xml").resolve("mobi.chouette:mobi.chouette.exchange.regtopp", "mobi.chouette:mobi.chouette.dao")
-				.withTransitivity().asFile();
+		File[] files = Maven.resolver().loadPomFromFile("pom.xml")
+				.resolve("mobi.chouette:mobi.chouette.exchange.regtopp","mobi.chouette:mobi.chouette.dao").
+				withTransitivity().asFile();
 
-		result = ShrinkWrap.create(WebArchive.class, "test.war").addAsWebInfResource("postgres-ds.xml").addAsLibraries(files).addClass(DummyChecker.class)
-				.addClass(RegtoppTestUtils.class).addClass(JobDataTest.class).addAsResource(EmptyAsset.INSTANCE, "beans.xml");
+		result = ShrinkWrap.create(WebArchive.class, "test.war")
+				.addAsWebInfResource("postgres-ds.xml")
+				.addAsLibraries(files)
+				.addClass(DummyChecker.class)
+				.addClass(RegtoppTestUtils.class)
+				.addClass(JobDataTest.class)
+				.addAsResource(EmptyAsset.INSTANCE, "beans.xml");
 		return result;
 
 	}
 
+
+	
 	protected Context initImportContext() {
 		init();
 		ContextHolder.setContext("chouette_gui"); // set tenant schema
@@ -106,7 +120,7 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		configuration.setOrganisationName("organisation");
 		configuration.setReferentialName("test");
 		JobDataTest jobData = new JobDataTest();
-		context.put(JOB_DATA, jobData);
+		context.put(JOB_DATA,jobData);
 		jobData.setPathName("target/referential/test");
 		File f = new File("target/referential/test");
 		if (f.exists())
@@ -118,13 +132,13 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		f.mkdirs();
 		jobData.setReferential("chouette_gui");
 		jobData.setAction(IMPORTER);
-		jobData.setType("regtopp");
+		jobData.setType( "regtopp");
 		context.put("testng", "true");
 		context.put(OPTIMIZED, Boolean.FALSE);
 		return context;
 
 	}
-
+	
 	@Test
 	public void importRegtoppKolumbusLine2306() throws Exception {
 		// Prepare context
@@ -145,49 +159,40 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		parameters.setVersion(RegtoppVersion.R12);
 		parameters.setCoordinateProjection("EPSG:32632");
 
+		
 		boolean result = command.execute(context);
 
 		ActionReport report = (ActionReport) context.get(REPORT);
-		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
-
-		// TODO create asserts on ActionReport and ValidationReport
-
+		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
 		assertActionReport(report, STATUS_OK, 11, 1);
 		assertStats(report.getStats(), 1, 9);
 		assertLine(report.getLines().get(0), LineInfo.LINE_STATE.OK);
-
-		assertValidationReport(validationReport, "NO_VALIDATION");
-
-		// Reporter.log("report line :" + report.getLines().get(0).toString(), true);
-
-		// RegtoppTestUtils.checkLine(context);
-		//
-		// Referential referential = (Referential) context.get(REFERENTIAL);
-		// Assert.assertNotEquals(referential.getTimetables(),0, "timetables" );
-		// Assert.assertNotEquals(referential.getSharedTimetables(),0, "shared timetables" );
+		assertValidationReportOk(validationReport, "VALIDATION_PROCEDEED"); 	//typo in chouette
 
 		// line should be saved
 		utx.begin();
 		em.joinTransaction();
 		Line line = lineDao.findByObjectId("TST:Line:2306");
+		
 
-		Assert.assertNotNull(line, "Line not found");
+		Assert.assertNotNull(line,"Line not found");
 		Assert.assertNotNull(line.getNetwork(), "line must have a network");
 		Assert.assertNotNull(line.getCompany(), "line must have a company");
 		Assert.assertNotNull(line.getRoutes(), "line must have routes");
-		Assert.assertEquals(line.getRoutes().size(), 9, "number of routes");
+		assertEquals(line.getRoutes().size(), 9, "number of routes");
 		Set<StopArea> bps = new HashSet<StopArea>();
 
 		int numStopPoints = 0;
 		int numVehicleJourneys = 0;
 		int numJourneyPatterns = 0;
-
+		
 		for (Route route : line.getRoutes()) {
-			Assert.assertNotNull(route.getName(), "No route name");
-
-			Assert.assertNotEquals(route.getJourneyPatterns().size(), 0, "line routes must have journeyPattens");
+			Assert.assertNotNull(route.getName(),"No route name");
+			
+			
+			Assert.assertNotEquals(route.getJourneyPatterns().size(), 0 , "line routes must have journeyPattens");
 			for (JourneyPattern jp : route.getJourneyPatterns()) {
-				Assert.assertNotNull(jp.getName(), "No journeypattern name");
+				Assert.assertNotNull(jp.getName(),"No journeypattern name");
 				Assert.assertNotEquals(jp.getStopPoints().size(), 0, "line journeyPattens must have stoppoints");
 				for (StopPoint point : jp.getStopPoints()) {
 
@@ -195,66 +200,46 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 					Assert.assertNotNull(point.getContainedInStopArea(), "stoppoints must have StopAreas");
 					bps.add(point.getContainedInStopArea());
 
-					Assert.assertNotNull(point.getForAlighting(), "no alighting info StopPoint=" + point);
-					Assert.assertNotNull(point.getForBoarding(), "no boarding info StopPoint=" + point);
+					Assert.assertNotNull(point.getForAlighting(),"no alighting info StopPoint="+point);
+					Assert.assertNotNull(point.getForBoarding(),"no boarding info StopPoint="+point);
 
 				}
-				Assert.assertNotEquals(jp.getVehicleJourneys().size(), 0, " journeyPattern should have VehicleJourneys");
-				for (VehicleJourney vj : jp.getVehicleJourneys()) {
-					Assert.assertNotEquals(vj.getTimetables().size(), 0, " vehicleJourney should have timetables");
-					Assert.assertEquals(vj.getVehicleJourneyAtStops().size(), jp.getStopPoints().size(),
-							" vehicleJourney should have correct vehicleJourneyAtStop count");
-					numVehicleJourneys++;
-				}
-				numJourneyPatterns++;
+				Assert.assertNotEquals(jp.getVehicleJourneys().size(), 0," journeyPattern should have VehicleJourneys");
+                for (VehicleJourney vj : jp.getVehicleJourneys()) {
+                	Assert.assertNotEquals(vj.getTimetables().size(), 0," vehicleJourney should have timetables");
+                	assertEquals(vj.getVehicleJourneyAtStops().size(), jp.getStopPoints().size()," vehicleJourney should have correct vehicleJourneyAtStop count");
+                	numVehicleJourneys++; 
+                }
+                numJourneyPatterns++;
 			}
 		}
-
-		Assert.assertEquals(numJourneyPatterns, 9, "number of journeyPatterns");
-		Assert.assertEquals(numVehicleJourneys, 12, "number of vehicleJourneys");
-		Assert.assertEquals(numStopPoints, 411, "number of stopPoints in journeyPattern");
-		Assert.assertEquals(bps.size(), 90, "number boarding positions");
-
+		
+		assertEquals(numJourneyPatterns, 9,"number of journeyPatterns");
+		assertEquals(numVehicleJourneys, 12,"number of vehicleJourneys");
+		assertEquals(numStopPoints, 411,"number of stopPoints in journeyPattern");
+		assertEquals(bps.size(), 90, "number boarding positions");
+	
 		// Check opposite routes
 		Route outbound = routeDao.findByObjectId("TST:Route:2306103");
 		Route inbound = routeDao.findByObjectId("TST:Route:2306203");
-
-		Assert.assertNotNull(outbound, "Outbound route not found");
-		Assert.assertNotNull(inbound, "Inbound route not found");
-
-		Assert.assertNotNull(outbound.getOppositeRoute(), "Oppsite route to outbound not found");
-		Assert.assertNotNull(inbound.getOppositeRoute(), "Oppsite route to inbound not found");
-
-		Assert.assertTrue(outbound.getOppositeRoute().equals(inbound), "Opposite route incorrect");
-
+		
+		Assert.assertNotNull(outbound,"Outbound route not found");
+		Assert.assertNotNull(inbound,"Inbound route not found");
+		
+		Assert.assertNotNull(outbound.getOppositeRoute(),"Oppsite route to outbound not found");
+		Assert.assertNotNull(inbound.getOppositeRoute(),"Oppsite route to inbound not found");
+		
+		Assert.assertTrue(outbound.getOppositeRoute().equals(inbound),"Opposite route incorrect");
+		
 		utx.rollback();
 
-		if (!result) {
-			System.out.println(ToStringBuilder.reflectionToString(report, ToStringStyle.MULTI_LINE_STYLE));
+		if(!result) {
+			System.out.println(ToStringBuilder.reflectionToString(report,ToStringStyle.MULTI_LINE_STYLE));
 			System.out.println(validationReport);
-
+			
 		}
-
-		Assert.assertTrue(result, "Importer command execution failed: " + report.getFailure());
-	}
-
-	private void assertLine(LineInfo lineInfo, LineInfo.LINE_STATE lineState) {
-		Assert.assertEquals(lineInfo.getStatus(), lineState);
-	}
-
-	private void assertValidationReport(ValidationReport validationReport, String result) {
-		Assert.assertEquals(validationReport.getResult(), result);
-	}
-
-	private void assertStats(DataStats stats, int lines, int routes) {
-		Assert.assertEquals(stats.getLineCount(), lines, "lines reported in stats");
-		Assert.assertEquals(stats.getRouteCount(), routes, "routes reported in stats");
-	}
-
-	private void assertActionReport(ActionReport report, String status, int files, int lines) {
-		Assert.assertEquals(report.getResult(), status, "result");
-		Assert.assertEquals(report.getFiles().size(), files, "file reported");
-		Assert.assertEquals(report.getLines().size(), lines, "line reported");
+		
+		Assert.assertTrue(result,"Importer command execution failed: "+report.getFailure());
 	}
 
 	@Test
@@ -269,7 +254,7 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		job.setInputFilename(f.getName());
 
 		RegtoppImporterCommand command = (RegtoppImporterCommand) CommandFactory.create(initialContext, RegtoppImporterCommand.class.getName());
-
+		
 		RegtoppImportParameters parameters = (RegtoppImportParameters) context.get(CONFIGURATION);
 		parameters.setObjectIdPrefix("TST");
 		parameters.setReferencesType("line");
@@ -279,17 +264,24 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 
 		command.execute(context);
 
+		ActionReport report = (ActionReport) context.get(REPORT);
+		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
+		assertActionReport(report, STATUS_OK, 11, 1);
+		assertStats(report.getStats(), 1, 57);
+		assertLine(report.getLines().get(0), LineInfo.LINE_STATE.OK);
+		assertValidationReportOk(validationReport, "VALIDATION_PROCEDEED"); 	//typo in chouette
+
 		utx.begin();
 		em.joinTransaction();
 		Line line = lineDao.findByObjectId("TST:Line:5560");
-		Assert.assertEquals(line.getTransportModeName(), TransportModeNameEnum.Ferry);
+		assertEquals(line.getTransportModeName(),TransportModeNameEnum.Ferry);
 
-		Assert.assertNotNull(line, "Line not found");
-
+		Assert.assertNotNull(line,"Line not found");
+	
 		// Check footnotes
-		Assert.assertNotNull(line.getFootnotes(), "No footnote lists");
-		Assert.assertEquals(line.getFootnotes().size(), 3, "number of line footnotes");
-
+		Assert.assertNotNull(line.getFootnotes(),"No footnote lists");
+		assertEquals(line.getFootnotes().size(), 3, "number of line footnotes");
+		
 		utx.rollback();
 
 	}
@@ -306,7 +298,7 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		job.setInputFilename(f.getName());
 
 		RegtoppImporterCommand command = (RegtoppImporterCommand) CommandFactory.create(initialContext, RegtoppImporterCommand.class.getName());
-
+		
 		RegtoppImportParameters parameters = (RegtoppImportParameters) context.get(CONFIGURATION);
 		parameters.setObjectIdPrefix("TST");
 		parameters.setReferencesType("line");
@@ -316,25 +308,34 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 
 		command.execute(context);
 
+		ActionReport report = (ActionReport) context.get(REPORT);
+		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
+		assertActionReport(report, STATUS_OK, 11, 1);
+		assertStats(report.getStats(), 1, 9);
+		assertLine(report.getLines().get(0), LineInfo.LINE_STATE.OK);
+		assertValidationReport(validationReport, "VALIDATION_PROCEDEED", 4, 2, 0); 	//typo in chouette
+		
+
 		// line should be saved
 		utx.begin();
 		em.joinTransaction();
 		Line line = lineDao.findByObjectId("TST:Line:0076");
 
-		Assert.assertNotNull(line, "Line not found");
-
+		Assert.assertNotNull(line,"Line not found");
+	
 		// Check footnotes
-		Assert.assertNotNull(line.getFootnotes(), "No footnote lists");
-		Assert.assertEquals(line.getFootnotes().size(), 1, "number of line footnotes");
-
+		Assert.assertNotNull(line.getFootnotes(),"No footnote lists");
+		assertEquals(line.getFootnotes().size(), 1, "number of line footnotes");
+		
 		// Find vehicle journey
 		VehicleJourney vehicleJourney = vjDao.findByObjectId("TST:VehicleJourney:00760015");
 		Assert.assertNotNull(vehicleJourney, "VehicleJourney not found");
 		List<Footnote> footnotes = vehicleJourney.getFootnotes();
-		Assert.assertNotNull(footnotes, "footnotes list null");
-		Assert.assertEquals(footnotes.size(), 1, "Expected 1 footnote");
-		Assert.assertEquals(footnotes.get(0).getCode(), "027");
-
+		Assert.assertNotNull(footnotes,"footnotes list null");
+		assertEquals(footnotes.size(),1,"Expected 1 footnote");
+		assertEquals(footnotes.get(0).getCode(), "027");
+		
+		
 		utx.rollback();
 
 	}
@@ -351,7 +352,7 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		job.setInputFilename(f.getName());
 
 		RegtoppImporterCommand command = (RegtoppImporterCommand) CommandFactory.create(initialContext, RegtoppImporterCommand.class.getName());
-
+		
 		RegtoppImportParameters parameters = (RegtoppImportParameters) context.get(CONFIGURATION);
 		parameters.setObjectIdPrefix("TST");
 		parameters.setReferencesType("line");
@@ -362,43 +363,44 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		boolean result = command.execute(context);
 
 		ActionReport report = (ActionReport) context.get(REPORT);
-		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
+		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
+		assertActionReport(report, STATUS_OK, 11, 1);
+		assertStats(report.getStats(), 1, 3);
+		assertLine(report.getLines().get(0), LineInfo.LINE_STATE.OK);
+		assertValidationReport(validationReport, "VALIDATION_PROCEDEED", 4, 2, 0);	//typo in chouette
 
-		// TODO create asserts on ActionReport and ValidationReport
-
-		// Assert.assertEquals(report.getResult(), STATUS_OK, "result");
-		// Assert.assertEquals(report.getFiles().size(), 1, "file reported");
-		// Assert.assertEquals(report.getLines().size(), 1, "line reported");
-		// Reporter.log("report line :" + report.getLines().get(0).toString(), true);
-		// Assert.assertEquals(report.getLines().get(0).getStatus(), LINE_STATE.OK, "line status");
-		// RegtoppTestUtils.checkLine(context);
-		//
-		// Referential referential = (Referential) context.get(REFERENTIAL);
-		// Assert.assertNotEquals(referential.getTimetables(),0, "timetables" );
-		// Assert.assertNotEquals(referential.getSharedTimetables(),0, "shared timetables" );
+//		Reporter.log("report line :" + report.getLines().get(0).toString(), true);
+//		Assert.assertEquals(report.getLines().get(0).getStatus(), LINE_STATE.OK, "line status");
+//		RegtoppTestUtils.checkLine(context);
+//		
+//		Referential referential = (Referential) context.get(REFERENTIAL);
+//		Assert.assertNotEquals(referential.getTimetables(),0, "timetables" );
+//		Assert.assertNotEquals(referential.getSharedTimetables(),0, "shared timetables" );
 
 		// line should be saved
 		utx.begin();
 		em.joinTransaction();
 		Line line = lineDao.findByObjectId("TST:Line:0098");
+		
 
-		Assert.assertNotNull(line, "Line not found");
+		Assert.assertNotNull(line,"Line not found");
 		Assert.assertNotNull(line.getNetwork(), "line must have a network");
 		Assert.assertNotNull(line.getCompany(), "line must have a company");
 		Assert.assertNotNull(line.getRoutes(), "line must have routes");
-		Assert.assertEquals(line.getRoutes().size(), 3, "number of routes");
+		assertEquals(line.getRoutes().size(), 3, "number of routes");
 		Set<StopArea> bps = new HashSet<StopArea>();
 
 		int numStopPoints = 0;
 		int numVehicleJourneys = 0;
 		int numJourneyPatterns = 0;
-
+		
 		for (Route route : line.getRoutes()) {
-			Assert.assertNotNull(route.getName(), "No route name");
-
-			Assert.assertNotEquals(route.getJourneyPatterns().size(), 0, "line routes must have journeyPattens");
+			Assert.assertNotNull(route.getName(),"No route name");
+			
+			
+			Assert.assertNotEquals(route.getJourneyPatterns().size(), 0 , "line routes must have journeyPattens");
 			for (JourneyPattern jp : route.getJourneyPatterns()) {
-				Assert.assertNotNull(jp.getName(), "No journeypattern name");
+				Assert.assertNotNull(jp.getName(),"No journeypattern name");
 				Assert.assertNotEquals(jp.getStopPoints().size(), 0, "line journeyPattens must have stoppoints");
 				for (StopPoint point : jp.getStopPoints()) {
 
@@ -406,48 +408,48 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 					Assert.assertNotNull(point.getContainedInStopArea(), "stoppoints must have StopAreas");
 					bps.add(point.getContainedInStopArea());
 
-					// TODO bug in chouette this not getting persisted? Se StopPointUpdater in exchange package
-					// Assert.assertNotNull(point.getForAlighting(),"no alighting info StopPoint="+point);
-					// Assert.assertNotNull(point.getForBoarding(),"no boarding info StopPoint="+point);
+//	TODO bug in chouette this not getting persisted? Se StopPointUpdater in exchange package
+//					Assert.assertNotNull(point.getForAlighting(),"no alighting info StopPoint="+point);
+//					Assert.assertNotNull(point.getForBoarding(),"no boarding info StopPoint="+point);
 
 				}
-				Assert.assertNotEquals(jp.getVehicleJourneys().size(), 0, " journeyPattern should have VehicleJourneys");
-				for (VehicleJourney vj : jp.getVehicleJourneys()) {
-					Assert.assertNotEquals(vj.getTimetables().size(), 0, " vehicleJourney should have timetables");
-					Assert.assertEquals(vj.getVehicleJourneyAtStops().size(), jp.getStopPoints().size(),
-							" vehicleJourney should have correct vehicleJourneyAtStop count");
-					numVehicleJourneys++;
-				}
+				Assert.assertNotEquals(jp.getVehicleJourneys().size(), 0," journeyPattern should have VehicleJourneys");
+                for (VehicleJourney vj : jp.getVehicleJourneys()) {
+                	Assert.assertNotEquals(vj.getTimetables().size(), 0," vehicleJourney should have timetables");
+                	assertEquals(vj.getVehicleJourneyAtStops().size(), jp.getStopPoints().size()," vehicleJourney should have correct vehicleJourneyAtStop count");
+                	numVehicleJourneys++; 
+                }
 				for (StopPoint point : route.getStopPoints()) {
 
 					Assert.assertNotNull(point.getContainedInStopArea(), "stoppoints must have StopAreas");
 					bps.add(point.getContainedInStopArea());
 
-					// TODO bug in chouette this not getting persisted? Se StopPointUpdater in exchange package
-					// Assert.assertNotNull(point.getForAlighting(),"no alighting info StopPoint="+point);
-					// Assert.assertNotNull(point.getForBoarding(),"no boarding info StopPoint="+point);
+//					TODO bug in chouette this not getting persisted? Se StopPointUpdater in exchange package
+//					Assert.assertNotNull(point.getForAlighting(),"no alighting info StopPoint="+point);
+//					Assert.assertNotNull(point.getForBoarding(),"no boarding info StopPoint="+point);
 
 				}
-				numJourneyPatterns++;
+                numJourneyPatterns++;
 			}
 		}
-
-		Assert.assertEquals(numJourneyPatterns, 3, "number of journeyPatterns");
-		Assert.assertEquals(numVehicleJourneys, 3, "number of vehicleJourneys");
-		Assert.assertEquals(numStopPoints, 63, "number of stopPoints in journeyPattern");
-		Assert.assertEquals(bps.size(), 48, "number boarding positions");
-
+		
+		assertEquals(numJourneyPatterns, 3,"number of journeyPatterns");
+		assertEquals(numVehicleJourneys, 3,"number of vehicleJourneys");
+		assertEquals(numStopPoints, 63,"number of stopPoints in journeyPattern");
+		assertEquals(bps.size(), 48, "number boarding positions");
+	
+		
 		utx.rollback();
 
-		if (!result) {
-			System.out.println(ToStringBuilder.reflectionToString(report, ToStringStyle.MULTI_LINE_STYLE));
+		if(!result) {
+			System.out.println(ToStringBuilder.reflectionToString(report,ToStringStyle.MULTI_LINE_STYLE));
 			System.out.println(validationReport);
-
+			
 		}
-
-		Assert.assertTrue(result, "Importer command execution failed: " + report.getFailure());
+		
+		Assert.assertTrue(result,"Importer command execution failed: "+report.getFailure());
 	}
-
+	
 	@Test
 	public void importRegtoppOpplandstrafikkLine5001StopAreaParent() throws Exception {
 		// Prepare context
@@ -460,7 +462,7 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		job.setInputFilename(f.getName());
 
 		RegtoppImporterCommand command = (RegtoppImporterCommand) CommandFactory.create(initialContext, RegtoppImporterCommand.class.getName());
-
+		
 		RegtoppImportParameters parameters = (RegtoppImportParameters) context.get(CONFIGURATION);
 		parameters.setObjectIdPrefix("TST");
 		parameters.setReferencesType("line");
@@ -470,25 +472,34 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 
 		command.execute(context);
 
+		ActionReport report = (ActionReport) context.get(REPORT);
+		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
+		assertActionReport(report, STATUS_OK, 11, 1);
+		assertStats(report.getStats(), 1, 10);
+		assertLine(report.getLines().get(0), LineInfo.LINE_STATE.OK);
+		assertValidationReport(validationReport, "VALIDATION_PROCEDEED", 5, 1, 0);	//typo in chouette
+
+
+
 		// line should be saved
 		utx.begin();
 		em.joinTransaction();
 		Line line = lineDao.findByObjectId("TST:Line:5001");
 
-		Assert.assertNotNull(line, "Line not found");
-
+		Assert.assertNotNull(line,"Line not found");
+	
 		// Random journey pattern
 		JourneyPattern journeyPattern = line.getRoutes().get(0).getJourneyPatterns().get(0);
 
 		StopPoint departureStopPoint = journeyPattern.getDepartureStopPoint();
-
+		
 		StopArea containedInStopArea = departureStopPoint.getContainedInStopArea();
-		Assert.assertNotNull(containedInStopArea, "No stop area on stop point");
-		Assert.assertEquals(containedInStopArea.getAreaType(), ChouetteAreaEnum.BoardingPosition);
+		Assert.assertNotNull(containedInStopArea,"No stop area on stop point");
+		assertEquals(containedInStopArea.getAreaType(),ChouetteAreaEnum.BoardingPosition);
 		StopArea parent = containedInStopArea.getParent();
 		Assert.assertNotNull(parent);
-		Assert.assertEquals(parent.getAreaType(), ChouetteAreaEnum.StopPlace);
-
+		assertEquals(parent.getAreaType(), ChouetteAreaEnum.StopPlace);
+		
 		utx.rollback();
 
 	}
@@ -505,7 +516,7 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		job.setInputFilename(f.getName());
 
 		RegtoppImporterCommand command = (RegtoppImporterCommand) CommandFactory.create(initialContext, RegtoppImporterCommand.class.getName());
-
+		
 		RegtoppImportParameters parameters = (RegtoppImportParameters) context.get(CONFIGURATION);
 		parameters.setObjectIdPrefix("TST");
 		parameters.setReferencesType("line");
@@ -516,30 +527,36 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		command.execute(context);
 
 		ActionReport report = (ActionReport) context.get(REPORT);
+		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
+		assertActionReport(report, STATUS_OK, 10, 1);
+		assertStats(report.getStats(), 1, 12);
+		assertLine(report.getLines().get(0), LineInfo.LINE_STATE.OK);
+		assertValidationReport(validationReport, "VALIDATION_PROCEDEED", 5, 0, 1);	//typo in chouette
+
 		System.out.println(ToStringBuilder.reflectionToString(report, ToStringStyle.MULTI_LINE_STYLE, true));
 
 		// line should be saved
 		utx.begin();
 		em.joinTransaction();
 		Line line = lineDao.findByObjectId("TST:Line:0002");
-
-		Assert.assertNotNull(line, "Line not found");
+		
+		Assert.assertNotNull(line,"Line not found");
 		Assert.assertNotNull(line.getNetwork(), "line must have a network");
 		Assert.assertNotNull(line.getCompany(), "line must have a company");
 		Assert.assertNotNull(line.getRoutes(), "line must have routes");
-		Assert.assertEquals(line.getRoutes().size(), 12, "number of routes");
+		assertEquals(line.getRoutes().size(), 12, "number of routes");
 
 		Route route0002139 = routeDao.findByObjectId("TST:Route:0002139");
 		Assert.assertNotNull(route0002139);
 		List<JourneyPattern> journeyPatterns = route0002139.getJourneyPatterns();
-		Assert.assertEquals(journeyPatterns.size(), 1);
-		Assert.assertEquals(journeyPatterns.get(0).getStopPoints().size(), 5);
-		Assert.assertEquals(journeyPatterns.get(0).getVehicleJourneys().size(), 2);
-
+		assertEquals(journeyPatterns.size(),1);
+		assertEquals(journeyPatterns.get(0).getStopPoints().size(), 5);
+		assertEquals(journeyPatterns.get(0).getVehicleJourneys().size(), 2);
+		
 		utx.rollback();
 
 	}
-
+	
 	@Test
 	public void importRegtoppRuterLine0030Regtopp13A() throws Exception {
 		// Prepare context
@@ -618,5 +635,51 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		utx.rollback();
 
 	}
+
+
+
+	private void assertLine(LineInfo lineInfo, LineInfo.LINE_STATE lineState) {
+		assertEquals(lineInfo.getStatus(), lineState);
+	}
+
+	private void assertValidationReportOk(ValidationReport validationReport, String result) {
+		validationReport.checkResult();
+		assertEquals(validationReport.getResult(), result);
+		for (CheckPoint checkPoint : validationReport.getCheckPoints()) {
+			assertEquals(checkPoint.getState(), CheckPoint.RESULT.OK);
+		}
+	}
+
+	private void assertValidationReport(ValidationReport validationReport, String result, int expectedOk, int expectedNok, int expectedUncheck) {
+		validationReport.checkResult();
+		assertEquals(validationReport.getResult(), result);
+		int actualOk = 0;
+		int actualNok = 0;
+		int actualUncheck = 0;
+		for (CheckPoint checkPoint : validationReport.getCheckPoints()) {
+			if (checkPoint.getState().equals(CheckPoint.RESULT.OK)) {
+				actualOk++;
+			} else if (checkPoint.getState().equals(CheckPoint.RESULT.NOK)) {
+				actualNok++;
+			} else if (checkPoint.getState().equals(CheckPoint.RESULT.UNCHECK)) {
+				actualUncheck++;
+			}
+		}
+		assertEquals(actualOk, expectedOk);
+		assertEquals(actualNok, expectedNok);
+		assertEquals(actualUncheck, expectedUncheck);
+	}
+
+	private void assertStats(DataStats stats, int lines, int routes) {
+		assertEquals(stats.getLineCount(), lines, "lines reported in stats");
+		assertEquals(stats.getRouteCount(), routes, "routes reported in stats");
+	}
+
+	private void assertActionReport(ActionReport report, String status, int files, int lines) {
+		assertEquals(report.getResult(), status, "result");
+		assertEquals(report.getFiles().size(), files, "file reported");
+		assertEquals(report.getLines().size(), lines, "line reported");
+	}
+
 
 }
