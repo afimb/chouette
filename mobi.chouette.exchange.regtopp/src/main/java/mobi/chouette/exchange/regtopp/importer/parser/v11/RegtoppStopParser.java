@@ -34,42 +34,44 @@ public class RegtoppStopParser implements Parser, Validator {
 	public void parse(Context context) throws Exception {
 		try {
 
-		Referential referential = (Referential) context.get(REFERENTIAL);
-		RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
-		RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
-		
-		
-		for (AbstractRegtoppStopHPL stop : importer.getStopById()) {
+			Referential referential = (Referential) context.get(REFERENTIAL);
+			RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
+			RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
 
-			
-				String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), StopArea.STOPAREA_KEY, stop.getFullStopId());
-				StopArea stopArea = ObjectFactory.getStopArea(referential, objectId);
-
-				
-				Coordinate wgs84Coordinate = CoordinateUtil.transform(configuration.getCoordinateProjection(), Coordinate.WGS84, new Coordinate(stop.getX(), stop.getY()));
-
-				stopArea.setLongitude(wgs84Coordinate.getY());
-				stopArea.setLatitude(wgs84Coordinate.getX());
-				stopArea.setLongLatType(LongLatTypeEnum.WGS84);
-
-				// UTM coordinates
-				stopArea.setX(stop.getX());
-				stopArea.setY(stop.getY());
-				stopArea.setProjectionType(configuration.getCoordinateProjection());
-
-				stopArea.setName(stop.getFullName());
-				stopArea.setRegistrationNumber(stop.getShortName());
-				
-				// TODO set correct, some stops are in other countries
-				// Could use a reverse geocoder for this, would obtain address etc etc.
-				//stopArea.setCountryCode("NO");
-
-				stopArea.setAreaType(ChouetteAreaEnum.BoardingPosition);
-		}
+			for (AbstractRegtoppStopHPL stop : importer.getStopById()) {
+				convertAndAddStopArea(referential, configuration, stop);
+			}
 		} catch (Exception e) {
-			log.error("Error parsing StopArea",e);
+			log.error("Error parsing StopArea", e);
 			throw e;
 		}
+	}
+
+	protected StopArea convertAndAddStopArea(Referential referential, RegtoppImportParameters configuration, AbstractRegtoppStopHPL stop) {
+		String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), StopArea.STOPAREA_KEY, stop.getFullStopId());
+		StopArea stopArea = ObjectFactory.getStopArea(referential, objectId);
+
+		Coordinate wgs84Coordinate = CoordinateUtil.transform(configuration.getCoordinateProjection(), Coordinate.WGS84,
+				new Coordinate(stop.getX(), stop.getY()));
+
+		stopArea.setLongitude(wgs84Coordinate.getY());
+		stopArea.setLatitude(wgs84Coordinate.getX());
+		stopArea.setLongLatType(LongLatTypeEnum.WGS84);
+
+		// UTM coordinates
+		stopArea.setX(stop.getX());
+		stopArea.setY(stop.getY());
+		stopArea.setProjectionType(configuration.getCoordinateProjection());
+
+		stopArea.setName(stop.getFullName());
+		stopArea.setRegistrationNumber(stop.getShortName());
+
+		// TODO set correct, some stops are in other countries
+		// Could use a reverse geocoder for this, would obtain address etc etc.
+		// stopArea.setCountryCode("NO");
+
+		stopArea.setAreaType(ChouetteAreaEnum.BoardingPosition);
+		return stopArea;
 	}
 
 	@Override
@@ -78,23 +80,20 @@ public class RegtoppStopParser implements Parser, Validator {
 		// Konsistenssjekker, kjøres før parse-metode
 		try {
 
-		RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
-		RegtoppValidationReporter validationReporter = (RegtoppValidationReporter) context.get(RegtoppConstant.REGTOPP_REPORTER);
-		validationReporter.getExceptions().clear();
+			RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
+			RegtoppValidationReporter validationReporter = (RegtoppValidationReporter) context.get(RegtoppConstant.REGTOPP_REPORTER);
+			validationReporter.getExceptions().clear();
 
-//		ValidationReport mainReporter = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
+			// ValidationReport mainReporter = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
 
-		
 			validateHPLIndex(context, importer, validationReporter);
 		} catch (Exception e) {
-			log.error("Error validating HPL:",e);
+			log.error("Error validating HPL:", e);
 			throw e;
 		}
 	}
 
-
-	private void validateHPLIndex(Context context, RegtoppImporter importer,
-								  RegtoppValidationReporter validationReporter) throws Exception {
+	private void validateHPLIndex(Context context, RegtoppImporter importer, RegtoppValidationReporter validationReporter) throws Exception {
 		if (importer.hasHPLImporter()) {
 			validationReporter.reportSuccess(context, REGTOPP_FILE_HPL, AbstractRegtoppStopHPL.FILE_EXTENSION);
 
@@ -111,7 +110,7 @@ public class RegtoppStopParser implements Parser, Validator {
 					// Call index validator
 					index.validate(bean, importer);
 				} catch (Exception ex) {
-					log.error(ex,ex);
+					log.error(ex, ex);
 					if (ex instanceof RegtoppException) {
 						validationReporter.reportError(context, (RegtoppException) ex, AbstractRegtoppStopHPL.FILE_EXTENSION);
 					} else {
