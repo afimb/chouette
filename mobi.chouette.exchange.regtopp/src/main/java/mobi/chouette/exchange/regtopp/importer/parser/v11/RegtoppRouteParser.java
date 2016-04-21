@@ -341,8 +341,12 @@ public class RegtoppRouteParser extends LineSpecificParser {
 				// Set to last stop
 				List<StopPoint> stopPoints = route.getStopPoints();
 				if (stopPoints != null && !stopPoints.isEmpty()) {
-					String lastStopAreaName = stopPoints.get(stopPoints.size() - 1).getContainedInStopArea().getName();
-					route.setName(lastStopAreaName);
+					StopArea lastStopArea = stopPoints.get(stopPoints.size() - 1).getContainedInStopArea();
+					if(lastStopArea.getParent() == null) {
+						route.setName(lastStopArea.getName());
+					} else {
+						route.setName(lastStopArea.getParent().getName());
+					}
 				}
 			}
 
