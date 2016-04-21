@@ -1,5 +1,7 @@
 package mobi.chouette.exchange.regtopp.importer.parser.v13;
 
+import mobi.chouette.exchange.importer.Parser;
+import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.regtopp.model.enums.TransportType;
 import mobi.chouette.model.type.TransportModeNameEnum;
 
@@ -23,6 +25,15 @@ public class RegtoppTripParser extends mobi.chouette.exchange.regtopp.importer.p
 		default:
 			return super.convertTypeOfService(typeOfService);
 		}
+	}
+
+	static {
+		ParserFactory.register(RegtoppTripParser.class.getName(), new ParserFactory() {
+			@Override
+			protected Parser create() {
+				return new RegtoppTripParser();
+			}
+		});
 	}
 
 }

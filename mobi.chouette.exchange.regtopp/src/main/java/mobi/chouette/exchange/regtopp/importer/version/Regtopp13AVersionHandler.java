@@ -10,7 +10,7 @@ import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.importer.parser.LineSpecificParser;
 import mobi.chouette.exchange.regtopp.importer.parser.ParseableFile;
-import mobi.chouette.exchange.regtopp.importer.parser.v12.RegtoppRouteParser;
+import mobi.chouette.exchange.regtopp.importer.parser.v12novus.RegtoppRouteParser;
 import mobi.chouette.exchange.regtopp.importer.parser.v13.RegtoppStopParser;
 import mobi.chouette.exchange.regtopp.importer.parser.v13.RegtoppTripParser;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeDKO;

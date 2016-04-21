@@ -243,7 +243,7 @@ public class RegtoppRouteParser extends LineSpecificParser {
 	}
 
 	protected void addFootnote(String footnoteId, VehicleJourney vehicleJourney, List<Footnote> footnotes, RegtoppImporter importer) throws Exception {
-		if (!"000".equals(footnoteId)) {
+		if (!"000".equals(footnoteId) && StringUtils.trimToNull(footnoteId) != null) {
 			if (!footnoteAlreadyAdded(footnotes, footnoteId)) {
 				Index<RegtoppFootnoteMRK> index = importer.getFootnoteById();
 				RegtoppFootnoteMRK footnote = index.getValue(footnoteId);

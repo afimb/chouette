@@ -162,13 +162,14 @@ public class RegtoppLineParser extends LineSpecificParser {
 		Line line = ObjectFactory.getLine(referential, chouetteLineId);
 
 		// Find line number (TODO check if index exists)
-		Index<RegtoppLineLIN> lineById = importer.getLineById();
-		RegtoppLineLIN regtoppLine = lineById.getValue(lineId);
-		if (regtoppLine != null) {
-			line.setName(regtoppLine.getName());
-			line.setPublishedName(regtoppLine.getName());
+		if (importer.hasLINImporter()) {
+			Index<RegtoppLineLIN> lineById = importer.getLineById();
+			RegtoppLineLIN regtoppLine = lineById.getValue(lineId);
+			if (regtoppLine != null) {
+				line.setName(regtoppLine.getName());
+				line.setPublishedName(regtoppLine.getName());
+			}
 		}
-
 		List<Footnote> footnotes = line.getFootnotes();
 
 		VersionHandler versionHandler = (VersionHandler) context.get(RegtoppConstant.VERSION_HANDLER);
@@ -177,16 +178,15 @@ public class RegtoppLineParser extends LineSpecificParser {
 		LineSpecificParser routeParser = versionHandler.createRouteParser();
 		routeParser.setLineId(lineId);
 		routeParser.parse(context);
-		
+
 		// Parse VehicleJourney
 		LineSpecificParser tripParser = versionHandler.createTripParser();
 		tripParser.setLineId(lineId);
 		tripParser.parse(context);
-		
 
 		// Update transport mode for line
 		updateLineTransportMode(referential, line);
-		
+
 		// Link line to footnotes
 		for (Footnote f : footnotes) {
 			f.setLine(line);
@@ -194,16 +194,29 @@ public class RegtoppLineParser extends LineSpecificParser {
 
 		// Update boarding/alighting at StopPoint
 		updateBoardingAlighting(referential, configuration);
+		updateLineName(referential,line, configuration);
 
+	}
+
+	private void updateLineName(Referential referential, Line line, RegtoppImportParameters configuration) {
+		if(line.getName() == null) {
+			Set<String> routeNames = new HashSet<String>();
+			for(Route r : line.getRoutes()) {
+				routeNames.add(r.getName());
+			}
+			
+			String lineName = StringUtils.join(routeNames, " - ");
+			line.setName(lineName);
+		}
 	}
 
 	private void updateLineTransportMode(Referential referential, Line line) {
 		Set<TransportModeNameEnum> detectedTransportModes = new HashSet<TransportModeNameEnum>();
 
-		for(VehicleJourney vj : referential.getVehicleJourneys().values()) {
+		for (VehicleJourney vj : referential.getVehicleJourneys().values()) {
 			detectedTransportModes.add(vj.getTransportMode());
 		}
-		
+
 		if (detectedTransportModes.size() == 1) {
 			// Only one transport mode used for all routes/journeys
 			line.setTransportModeName(detectedTransportModes.iterator().next());
@@ -224,8 +237,6 @@ public class RegtoppLineParser extends LineSpecificParser {
 		return sqlTime;
 
 	}
-
-	
 
 	private void updateBoardingAlighting(Referential referential, RegtoppImportParameters configuration) {
 
