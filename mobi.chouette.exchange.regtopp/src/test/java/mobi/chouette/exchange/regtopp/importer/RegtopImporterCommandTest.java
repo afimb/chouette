@@ -1,19 +1,21 @@
 package mobi.chouette.exchange.regtopp.importer;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import javax.ejb.EJB;
-import javax.inject.Inject;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.transaction.UserTransaction;
-
+import mobi.chouette.common.Context;
+import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.dao.LineDAO;
+import mobi.chouette.dao.RouteDAO;
+import mobi.chouette.dao.VehicleJourneyDAO;
+import mobi.chouette.exchange.regtopp.DummyChecker;
+import mobi.chouette.exchange.regtopp.JobDataTest;
+import mobi.chouette.exchange.regtopp.RegtoppTestUtils;
+import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.DataStats;
+import mobi.chouette.exchange.report.LineInfo;
+import mobi.chouette.exchange.validation.report.ValidationReport;
+import mobi.chouette.model.*;
+import mobi.chouette.model.type.ChouetteAreaEnum;
+import mobi.chouette.model.type.TransportModeNameEnum;
+import mobi.chouette.persistence.hibernate.ContextHolder;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
@@ -26,26 +28,20 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import mobi.chouette.common.Context;
-import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.dao.LineDAO;
-import mobi.chouette.dao.RouteDAO;
-import mobi.chouette.dao.VehicleJourneyDAO;
-import mobi.chouette.exchange.regtopp.DummyChecker;
-import mobi.chouette.exchange.regtopp.JobDataTest;
-import mobi.chouette.exchange.regtopp.RegtoppTestUtils;
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.validation.report.ValidationReport;
-import mobi.chouette.model.Footnote;
-import mobi.chouette.model.JourneyPattern;
-import mobi.chouette.model.Line;
-import mobi.chouette.model.Route;
-import mobi.chouette.model.StopArea;
-import mobi.chouette.model.StopPoint;
-import mobi.chouette.model.VehicleJourney;
-import mobi.chouette.model.type.ChouetteAreaEnum;
-import mobi.chouette.model.type.TransportModeNameEnum;
-import mobi.chouette.persistence.hibernate.ContextHolder;
+import javax.ejb.EJB;
+import javax.inject.Inject;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.UserTransaction;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import static mobi.chouette.exchange.report.ReportConstant.STATUS_OK;
 
 public class RegtopImporterCommandTest extends Arquillian implements mobi.chouette.common.Constant{
 
@@ -152,7 +148,7 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		job.setInputFilename(f.getName());
 
 		RegtoppImporterCommand command = (RegtoppImporterCommand) CommandFactory.create(initialContext, RegtoppImporterCommand.class.getName());
-		
+
 		RegtoppImportParameters parameters = (RegtoppImportParameters) context.get(CONFIGURATION);
 		parameters.setObjectIdPrefix("TST");
 		parameters.setReferencesType("line");
@@ -165,15 +161,19 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 
 		ActionReport report = (ActionReport) context.get(REPORT);
 		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
-		
+
 
 		// TODO create asserts on ActionReport and ValidationReport
-		
-//		Assert.assertEquals(report.getResult(), STATUS_OK, "result");
-//		Assert.assertEquals(report.getFiles().size(), 1, "file reported");
-//		Assert.assertEquals(report.getLines().size(), 1, "line reported");
+
+		assertActionReport(report, STATUS_OK, 11, 1);
+		assertStats(report.getStats(), 1, 9);
+		assertLine(report.getLines().get(0), LineInfo.LINE_STATE.OK);
+
+		assertValidationReport(validationReport, "NO_VALIDATION");
+
+
 //		Reporter.log("report line :" + report.getLines().get(0).toString(), true);
-//		Assert.assertEquals(report.getLines().get(0).getStatus(), LINE_STATE.OK, "line status");
+
 //		RegtoppTestUtils.checkLine(context);
 //		
 //		Referential referential = (Referential) context.get(REFERENTIAL);
@@ -251,6 +251,25 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 		}
 		
 		Assert.assertTrue(result,"Importer command execution failed: "+report.getFailure());
+	}
+
+	private void assertLine(LineInfo lineInfo, LineInfo.LINE_STATE lineState) {
+		Assert.assertEquals(lineInfo.getStatus(), lineState);
+	}
+
+	private void assertValidationReport(ValidationReport validationReport, String result) {
+		Assert.assertEquals(validationReport.getResult(), result);
+	}
+
+	private void assertStats(DataStats stats, int lines, int routes) {
+		Assert.assertEquals(stats.getLineCount(), lines, "lines reported in stats");
+		Assert.assertEquals(stats.getRouteCount(), routes, "routes reported in stats");
+	}
+
+	private void assertActionReport(ActionReport report, String status, int files, int lines) {
+		Assert.assertEquals(report.getResult(), status, "result");
+		Assert.assertEquals(report.getFiles().size(), files, "file reported");
+		Assert.assertEquals(report.getLines().size(), lines, "line reported");
 	}
 
 	@Test

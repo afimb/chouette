@@ -13,6 +13,7 @@ import mobi.chouette.exchange.regtopp.importer.parser.FileContentParser;
 import mobi.chouette.exchange.regtopp.importer.parser.FileParserValidationError;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeDKO;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeHeaderDKO;
+import mobi.chouette.exchange.regtopp.model.v11.RegtoppStopHPL;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 
@@ -30,11 +31,27 @@ public class DaycodeById extends IndexImpl<RegtoppDayCodeDKO> {
 	public boolean validate(RegtoppDayCodeDKO bean, RegtoppImporter dao) {
 		boolean result = true;
 
-		// Mulige valideringssteg
+		//Obligatoriske felter
+		if (bean.getAdminCode() != null) {
+			bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
+		}  else {
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppDayCodeDKO.FILE_EXTENSION, bean.getRecordLineNumber(), "Adminkode", null, RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
+			result = false;
+		}
 
-		// Sjekke lengde boolean array
+		if (bean.getCounter() != null) {
+			bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
+		}  else {
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppDayCodeDKO.FILE_EXTENSION, bean.getRecordLineNumber(), "Løpenr", null, RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
+			result = false;
+		}
 
-		log.warn("Validation code for RegtoppDayCode not implemented");
+		if (bean.getDayCodeId() != null) {
+			bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
+		}  else {
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppDayCodeDKO.FILE_EXTENSION, bean.getRecordLineNumber(), "Dagkodenr", null, RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
+			result = false;
+		}
 
 		return result;
 	}
