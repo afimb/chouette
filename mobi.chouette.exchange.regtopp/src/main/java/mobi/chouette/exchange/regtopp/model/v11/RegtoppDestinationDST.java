@@ -39,10 +39,13 @@ public class RegtoppDestinationDST extends RegtoppObject implements Serializable
 	@Field(at = 4, length = 4)
 	private String destinationId;
 
-	@Getter
 	@Setter
-	@Field(at = 8, length = 32)
-	private String destinationText;
+	@Field(at = 8, length = 1, minLength = 1, maxOccurs = 255)
+	private char[] destinationTextHack;
+
+	public String getDestinationText() {
+		return new String(destinationTextHack).trim();
+	}
 
 	@Override
 	public String getIndexingKey() {

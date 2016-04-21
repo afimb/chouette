@@ -8,13 +8,14 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.log4j.Logger;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import mobi.chouette.exchange.parameters.AbstractImportParameter;
-
-import org.apache.log4j.Logger;
+import mobi.chouette.exchange.regtopp.importer.version.RegtoppVersion;
 
 @XmlRootElement(name = "regtopp-import")
 @NoArgsConstructor
@@ -62,7 +63,7 @@ public class RegtoppImportParameters extends AbstractImportParameter {
 	@Getter
 	@Setter
 	@XmlElement(name = "version", required = true)
-	private String version;
+	private RegtoppVersion version;
 
 	// Coordinate projection ie EPSG:32632 (UTM32_N)
 	@Getter

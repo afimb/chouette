@@ -163,7 +163,7 @@ public class FileContentParserTest {
 		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v11.RegtoppStopHPL.class), 87);
 		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeHeaderDKO.class), 7);
 		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeDKO.class), 400);
-		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v11.RegtoppDestinationDST.class), 40);
+		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v11.RegtoppDestinationDST.class), 9); // Actually 40, but implementation allows more
 		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v11.RegtoppFootnoteMRK.class), 8); // Actually 87), but implementation allows more since some companies are ignoring the length
 																// restriction
 		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v11.RegtoppPathwayGAV.class), 42);
@@ -209,7 +209,7 @@ public class FileContentParserTest {
 		for (Field f : clazz.getDeclaredFields()) {
 			org.beanio.annotation.Field column = f.getAnnotation(org.beanio.annotation.Field.class);
 			if (column != null) {
-				System.out.println("Found field " + f.getName() + " with length " + column.length());
+//				System.out.println("Found field " + f.getName() + " with length " + column.length());
 				length += column.length();
 			}
 		}

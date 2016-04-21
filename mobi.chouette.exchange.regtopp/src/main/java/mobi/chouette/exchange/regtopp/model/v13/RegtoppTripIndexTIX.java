@@ -23,7 +23,7 @@ public class RegtoppTripIndexTIX extends mobi.chouette.exchange.regtopp.model.v1
 
 	@Getter
 	@Setter
-	@Field(at = 62, length = 9)
+	@Field(at = 62, length = 9, minOccurs = 0)
 	private String sourceTripId;
 
 }
