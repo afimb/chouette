@@ -122,14 +122,13 @@ public class RegtoppTimetableParser implements Parser, Validator {
 
 		RegtoppDayCodeHeaderDKO header = dayCodeIndex.getHeader();
 		LocalDate calStartDate = header.getDate();
-
+		
 		for (RegtoppDayCodeDKO entry : dayCodeIndex) {
 			Timetable timetable = convertTimetable(referential, configuration, calStartDate, entry);
 			Timetable cloneTimetableAfterMidnight = cloneTimetableAfterMidnight(timetable);
 
 			referential.getSharedTimetables().put(cloneTimetableAfterMidnight.getObjectId(), cloneTimetableAfterMidnight);
 
-			log.debug("Adding timetable " + timetable);
 		}
 
 	}
