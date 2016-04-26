@@ -1,7 +1,6 @@
 package mobi.chouette.exchange.regtopp.importer.parser.v11;
 
 import static mobi.chouette.common.Constant.CONFIGURATION;
-import static mobi.chouette.common.Constant.MAIN_VALIDATION_REPORT;
 import static mobi.chouette.common.Constant.PARSER;
 import static mobi.chouette.common.Constant.REFERENTIAL;
 import static mobi.chouette.exchange.regtopp.RegtoppConstant.REGTOPP_REPORTER;
@@ -15,6 +14,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.Duration;
+import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 
 import lombok.extern.log4j.Log4j;
@@ -25,20 +25,22 @@ import mobi.chouette.exchange.regtopp.RegtoppConstant;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.importer.index.Index;
+import mobi.chouette.exchange.regtopp.importer.index.v11.DaycodeById;
 import mobi.chouette.exchange.regtopp.importer.parser.AbstractConverter;
 import mobi.chouette.exchange.regtopp.importer.parser.FileParserValidationError;
 import mobi.chouette.exchange.regtopp.importer.parser.LineSpecificParser;
 import mobi.chouette.exchange.regtopp.importer.version.VersionHandler;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppRouteTMS;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppTripIndexTIX;
+import mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeHeaderDKO;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppLineLIN;
 import mobi.chouette.exchange.regtopp.model.v12.RegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
-import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.Footnote;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
+import mobi.chouette.model.Network;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
@@ -68,7 +70,7 @@ public class RegtoppLineParser extends LineSpecificParser {
 		RegtoppValidationReporter validationReporter = (RegtoppValidationReporter) context.get(REGTOPP_REPORTER);
 		validationReporter.getExceptions().clear();
 
-		ValidationReport mainReporter = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
+//		ValidationReport mainReporter = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
 
 		validateTMSIndex(context, importer, validationReporter);
 
@@ -170,6 +172,9 @@ public class RegtoppLineParser extends LineSpecificParser {
 				line.setPublishedName(regtoppLine.getName());
 			}
 		}
+		
+		
+		
 		List<Footnote> footnotes = line.getFootnotes();
 
 		VersionHandler versionHandler = (VersionHandler) context.get(RegtoppConstant.VERSION_HANDLER);
@@ -195,7 +200,18 @@ public class RegtoppLineParser extends LineSpecificParser {
 		// Update boarding/alighting at StopPoint
 		updateBoardingAlighting(referential, configuration);
 		updateLineName(referential,line, configuration);
+		updateNetworkDate(importer,referential,line,configuration);
 
+	}
+
+	private void updateNetworkDate(RegtoppImporter importer,Referential referential, Line line, RegtoppImportParameters configuration) {
+		DaycodeById dayCodeIndex = (DaycodeById) importer.getDayCodeById();
+
+		RegtoppDayCodeHeaderDKO header = dayCodeIndex.getHeader();
+		LocalDate calStartDate = header.getDate();
+		for(Network network : referential.getPtNetworks().values()) {
+			network.setVersionDate(calStartDate.toDateMidnight().toDate());
+		}
 	}
 
 	private void updateLineName(Referential referential, Line line, RegtoppImportParameters configuration) {
@@ -232,6 +248,7 @@ public class RegtoppLineParser extends LineSpecificParser {
 		LocalTime localTime = new LocalTime(0, 0, 0, 0)
 				.plusSeconds((int) (tripDepartureTime.getStandardSeconds() + timeSinceTripDepatureTime.getStandardSeconds()));
 
+		@SuppressWarnings("deprecation")
 		java.sql.Time sqlTime = new java.sql.Time(localTime.getHourOfDay(), localTime.getMinuteOfHour(), localTime.getSecondOfMinute());
 
 		return sqlTime;
