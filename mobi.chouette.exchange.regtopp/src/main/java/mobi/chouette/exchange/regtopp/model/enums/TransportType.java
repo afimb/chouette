@@ -22,7 +22,8 @@ public enum TransportType {
 	AirportExpressBus(24),
 	CarFerry(51),
 	ExpressBoat(52),
-	AirportExpressTrain(61);
+	AirportExpressTrain(61),
+	Unknown(999);
 	private int val;
 
 	public String toString() {

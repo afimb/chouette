@@ -106,7 +106,7 @@ public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.p
 	private void validateSTPIndex(Context context, RegtoppImporter importer, RegtoppValidationReporter validationReporter) throws Exception {
 
 		if (importer.hasSTPImporter()) {
-			validationReporter.reportSuccess(context, REGTOPP_FILE_STP, RegtoppStopPointSTP.FILE_EXTENSION);
+		// TODO	validationReporter.reportSuccess(context, REGTOPP_FILE_STP, RegtoppStopPointSTP.FILE_EXTENSION);
 
 			Index<RegtoppStopPointSTP> index = importer.getStopPointsByIndexingKey();
 

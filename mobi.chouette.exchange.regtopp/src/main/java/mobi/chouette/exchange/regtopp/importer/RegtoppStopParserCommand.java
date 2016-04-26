@@ -48,6 +48,11 @@ public class RegtoppStopParserCommand implements Command {
 				Parser stopParser = versionHandler.createStopParser();
 				stopParser.parse(context);
 			}
+			// Populate shared connection links
+			if (referential.getSharedConnectionLinks().isEmpty()) {
+				Parser connectionLinkParser = versionHandler.createConnectionLinkParser();
+				connectionLinkParser.parse(context);
+			}
 			//
 			// // ConnectionLink
 			// if (importer.hasTransferImporter()) {

@@ -18,7 +18,7 @@ import mobi.chouette.exchange.regtopp.model.enums.PathwayType;
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
-@Record(minOccurs = 1)
+@Record(minOccurs = 0)
 public class RegtoppPathwayGAV extends AbstractRegtoppPathwayGAV implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -33,8 +33,11 @@ public class RegtoppPathwayGAV extends AbstractRegtoppPathwayGAV implements Seri
 	@Field(at = 21, length = 2)
 	private Integer duration;
 
-	@Getter
 	@Setter
-	@Field(at = 23, length = 20)
-	private String description;
+	@Field(at = 23, length = 0, minLength = 0,minOccurs=0, maxOccurs = 500)
+	private char[] descriptionHack;
+
+	public String getDescription() {
+		return new String(descriptionHack).trim();
+	}
 }

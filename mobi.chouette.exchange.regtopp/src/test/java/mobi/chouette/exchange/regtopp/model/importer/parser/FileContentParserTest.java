@@ -166,7 +166,7 @@ public class FileContentParserTest {
 		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v11.RegtoppDestinationDST.class), 9); // Actually 40, but implementation allows more
 		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v11.RegtoppFootnoteMRK.class), 8); // Actually 87), but implementation allows more since some companies are ignoring the length
 																// restriction
-		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v11.RegtoppPathwayGAV.class), 42);
+		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v11.RegtoppPathwayGAV.class), 22);
 		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v11.RegtoppInterchangeSAM.class), 51);
 		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v11.RegtoppZoneSON.class), 45);
 		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v11.RegtoppLineLIN.class), 39);
@@ -199,7 +199,7 @@ public class FileContentParserTest {
 		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v13.RegtoppStopPointSTP.class), 94);
 		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v13.RegtoppTripIndexTIX.class), 71);
 		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v13.RegtoppRouteTMS.class), 50);
-		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v13.RegtoppPathwayGAV.class), 43);
+		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v13.RegtoppPathwayGAV.class), 23);
 		Assert.assertEquals(calculateTotalFieldLenght(mobi.chouette.exchange.regtopp.model.v13.RegtoppRoutePointRUT.class), 32);
 	}
 

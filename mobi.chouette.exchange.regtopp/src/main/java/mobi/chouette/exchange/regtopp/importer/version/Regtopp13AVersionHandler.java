@@ -22,7 +22,7 @@ import mobi.chouette.exchange.regtopp.model.v11.RegtoppZoneSON;
 import mobi.chouette.exchange.regtopp.model.v12.RegtoppPeriodPER;
 import mobi.chouette.exchange.regtopp.model.v12.RegtoppTableVersionTAB;
 import mobi.chouette.exchange.regtopp.model.v12.RegtoppVehicleJourneyVLP;
-import mobi.chouette.exchange.regtopp.model.v13.RegtoppPathwayGAV;
+import mobi.chouette.exchange.regtopp.model.v11.RegtoppPathwayGAV;
 import mobi.chouette.exchange.regtopp.model.v13.RegtoppRoutePointRUT;
 import mobi.chouette.exchange.regtopp.model.v13.RegtoppRouteTMS;
 import mobi.chouette.exchange.regtopp.model.v13.RegtoppStopHPL;
@@ -31,7 +31,6 @@ import mobi.chouette.exchange.regtopp.model.v13.RegtoppTripIndexTIX;
 import mobi.chouette.exchange.report.FileInfo;
 
 public class Regtopp13AVersionHandler extends Regtopp12VersionHandler {
-
 
 	private static final List<String> mandatoryFileExtensions = Arrays.asList(RegtoppTripIndexTIX.FILE_EXTENSION, RegtoppRouteTMS.FILE_EXTENSION,
 			RegtoppStopHPL.FILE_EXTENSION, RegtoppDayCodeDKO.FILE_EXTENSION, RegtoppStopPointSTP.FILE_EXTENSION);
@@ -84,8 +83,13 @@ public class Regtopp13AVersionHandler extends Regtopp12VersionHandler {
 			break;
 		}
 		case "GAV": {
-			ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppPathwayGAV.class }), file);
-			importer.registerFileForIndex(RegtoppImporter.INDEX.PATHWAY_FROM_STOP_ID.name(), parseableFile);
+			// WARNING WARNING! Ruter as the sole user of Regtopp1.3A sends GAV file according to 1.1D spec. Therefore this is used here.
+			ParseableFile parseableFile = new ParseableFile(fileName.toFile(),
+					Arrays.asList(new Class[] {
+							mobi.chouette.exchange.regtopp.model.v11.RegtoppPathwayGAV.class,
+							mobi.chouette.exchange.regtopp.model.v13.RegtoppPathwayGAV.class }),
+					file);
+			importer.registerFileForIndex(RegtoppImporter.INDEX.PATHWAY_BY_INDEXING_KEY.name(), parseableFile);
 			break;
 		}
 		case "RUT": {

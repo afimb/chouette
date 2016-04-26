@@ -67,12 +67,12 @@ public abstract class AbstractRegtoppStopHPL extends RegtoppObject implements Se
 	@Getter
 	@Setter
 	@Field(at = 73, length = 5)
-	protected Integer zoneId1;
+	protected String zoneId1;
 
 	@Getter
 	@Setter
 	@Field(at = 78, length = 5)
-	protected Integer zoneId2;
+	protected String zoneId2;
 
 	public abstract Integer getInterchangeType();
 

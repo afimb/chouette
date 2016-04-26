@@ -57,11 +57,10 @@ public class TestDataExtractor {
 			registerFileExtension("TMS");
 			registerFileExtension("TDA");
 			registerFileExtension("HPL");
-			registerFileExtension("STP");
+			registerFileExtension("GAV");
 			registerFileExtension("DKO");
 			registerFileExtension("DST");
 			registerFileExtension("MRK");
-			registerFileExtension("GAV");
 			registerFileExtension("SAM");
 			registerFileExtension("SON");
 			registerFileExtension("LIN");
@@ -69,6 +68,13 @@ public class TestDataExtractor {
 			registerFileExtension("TAB");
 			registerFileExtension("PER");
 			registerFileExtension("RUT");
+			
+			// Due to transitive dependencies between stops and pathways, loop over again (registers new references)
+			registerFileExtension("HPL");
+			registerFileExtension("GAV");
+			registerFileExtension("HPL");
+			registerFileExtension("STP");
+			
 
 			// Read in given order
 			for (String fileExtension : fileExtensions) {
@@ -147,6 +153,7 @@ public class TestDataExtractor {
 								if (keepLine) {
 									registerReference("SON", line.substring(47, 53));
 									registerReference("STP", line.substring(4, 12));
+									registerReference("GAV", line.substring(4, 12));
 								}
 								break;
 
@@ -169,6 +176,9 @@ public class TestDataExtractor {
 							case "GAV":
 								keepLine = line.startsWith(adminCode + counter) && (referenceMap.get(fileExtension).contains(line.substring(4, 12))
 										|| referenceMap.get(fileExtension).contains(line.substring(12, 20)));
+								registerReference("HPL", line.substring(4, 12));
+								registerReference("HPL", line.substring(12, 20));
+								
 								break;
 							case "SON":
 								keepLine = line.startsWith(adminCode + counter) && referenceMap.get(fileExtension).contains(line.substring(4, 9));

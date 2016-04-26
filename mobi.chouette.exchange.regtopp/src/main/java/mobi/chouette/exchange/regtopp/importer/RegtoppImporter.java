@@ -14,6 +14,7 @@ import mobi.chouette.exchange.regtopp.importer.index.v11.DaycodeById;
 import mobi.chouette.exchange.regtopp.importer.index.v11.DestinationById;
 import mobi.chouette.exchange.regtopp.importer.index.v11.FootnoteById;
 import mobi.chouette.exchange.regtopp.importer.index.v11.LineById;
+import mobi.chouette.exchange.regtopp.importer.index.v11.PathwayByIndexingKey;
 import mobi.chouette.exchange.regtopp.importer.index.v11.RouteByLineNumber;
 import mobi.chouette.exchange.regtopp.importer.index.v11.StopById;
 import mobi.chouette.exchange.regtopp.importer.index.v11.TripByIndexingKey;
@@ -25,6 +26,7 @@ import mobi.chouette.exchange.regtopp.importer.index.v13.StopPointByStopId;
 import mobi.chouette.exchange.regtopp.importer.parser.FileContentParser;
 import mobi.chouette.exchange.regtopp.importer.parser.FileParserValidationError;
 import mobi.chouette.exchange.regtopp.importer.parser.ParseableFile;
+import mobi.chouette.exchange.regtopp.model.AbstractRegtoppPathwayGAV;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppRouteTMS;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppStopHPL;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppTripIndexTIX;
@@ -33,6 +35,7 @@ import mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeDKO;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppDestinationDST;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppFootnoteMRK;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppLineLIN;
+import mobi.chouette.exchange.regtopp.model.v11.RegtoppPathwayGAV;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppRouteTDA;
 import mobi.chouette.exchange.regtopp.model.v12.RegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.model.v13.RegtoppStopPointSTP;
@@ -48,7 +51,6 @@ public class RegtoppImporter {
 		DAYCODE_BY_ID,
 		DESTINATION_BY_ID,
 		REMARK_BY_ID,
-		PATHWAY_FROM_STOP_ID,
 		TRIP_INDEX,
 		TRIP_PATTERN,
 		INTERCHANGE,
@@ -62,7 +64,8 @@ public class RegtoppImporter {
 		ROUTE_BY_ROUTE_KEY,
 		ROUTE_BY_LINE_NUMBER,
 		STOPPOINT_BY_STOP_ID,
-		STOPPOINT_BY_ID
+		STOPPOINT_BY_ID,
+		PATHWAY_BY_INDEXING_KEY
 	}
 
 	private String path;
@@ -222,6 +225,14 @@ public class RegtoppImporter {
 
 	public Index<RegtoppStopPointSTP> getStopPointsByIndexingKey() {
 		return getIndex(INDEX.STOPPOINT_BY_ID.name(), StopPointByIndexingKey.class);
+	}
+
+	public boolean hasGAVImporter() {
+		return hasImporter(RegtoppPathwayGAV.FILE_EXTENSION);
+	}
+
+	public Index<AbstractRegtoppPathwayGAV> getPathwayByIndexingKey() {
+		return getIndex(INDEX.PATHWAY_BY_INDEXING_KEY.name(), PathwayByIndexingKey.class);
 	}
 
 }

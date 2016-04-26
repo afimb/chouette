@@ -10,6 +10,7 @@ import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.importer.parser.LineSpecificParser;
 import mobi.chouette.exchange.regtopp.importer.parser.ParseableFile;
+import mobi.chouette.exchange.regtopp.importer.parser.v11.RegtoppConnectionLinkParser;
 import mobi.chouette.exchange.regtopp.importer.parser.v11.RegtoppRouteParser;
 import mobi.chouette.exchange.regtopp.importer.parser.v11.RegtoppStopParser;
 import mobi.chouette.exchange.regtopp.importer.parser.v11.RegtoppTripParser;
@@ -74,7 +75,7 @@ public class Regtopp11DVersionHandler implements VersionHandler {
 		}
 		case "GAV": {
 			ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppPathwayGAV.class }), file);
-			importer.registerFileForIndex(RegtoppImporter.INDEX.PATHWAY_FROM_STOP_ID.name(), parseableFile);
+			importer.registerFileForIndex(RegtoppImporter.INDEX.PATHWAY_BY_INDEXING_KEY.name(), parseableFile);
 			break;
 		}
 		case "SAM": {
@@ -116,6 +117,10 @@ public class Regtopp11DVersionHandler implements VersionHandler {
 	}
 
 	@Override
+	public Parser createConnectionLinkParser() throws ClassNotFoundException, IOException {
+		return (RegtoppConnectionLinkParser) ParserFactory.create(RegtoppConnectionLinkParser.class.getName());
+	}
+	@Override
 	public List<String> getMandatoryFileExtensions() {
 		return mandatoryFileExtensions;
 	}
@@ -124,6 +129,7 @@ public class Regtopp11DVersionHandler implements VersionHandler {
 	public List<String> getOptionalFileExtensions() {
 		return optionalFileExtensions;
 	}
+
 
 	
 }

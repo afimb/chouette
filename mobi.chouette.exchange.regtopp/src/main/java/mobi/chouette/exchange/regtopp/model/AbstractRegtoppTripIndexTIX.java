@@ -49,7 +49,7 @@ public abstract class AbstractRegtoppTripIndexTIX extends RegtoppObject implemen
 	@Getter
 	@Setter
 	@Field(at = 12, length = 3, regex = "[0-9]{3}", format = "toString")
-	protected TransportType typeOfService;
+	protected TransportType typeOfService = TransportType.Unknown; // Defaulting to unknown
 
 	@Getter
 	@Setter

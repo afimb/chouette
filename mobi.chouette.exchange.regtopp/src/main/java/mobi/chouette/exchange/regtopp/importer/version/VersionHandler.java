@@ -18,7 +18,10 @@ public interface VersionHandler {
 
 	public LineSpecificParser createTripParser() throws ClassNotFoundException, IOException;
 	
+	public Parser createConnectionLinkParser() throws ClassNotFoundException, IOException;
+
 	public List<String> getMandatoryFileExtensions();
 	
 	public List<String> getOptionalFileExtensions();
+
 }

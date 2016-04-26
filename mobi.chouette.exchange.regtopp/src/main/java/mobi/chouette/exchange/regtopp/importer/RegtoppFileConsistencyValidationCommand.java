@@ -14,12 +14,11 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.importer.ParserFactory;
-import mobi.chouette.exchange.regtopp.importer.parser.v11.RegtoppLineParser;
-import mobi.chouette.exchange.regtopp.importer.parser.v11.RegtoppStopParser;
+import mobi.chouette.exchange.importer.Validator;
+import mobi.chouette.exchange.regtopp.RegtoppConstant;
+import mobi.chouette.exchange.regtopp.importer.version.VersionHandler;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 import mobi.chouette.exchange.report.ActionReport;
-
 
 @Log4j
 public class RegtoppFileConsistencyValidationCommand implements Command {
@@ -43,19 +42,20 @@ public class RegtoppFileConsistencyValidationCommand implements Command {
 		RegtoppValidationReporter validationReporter = (RegtoppValidationReporter) context.get(REGTOPP_REPORTER);
 
 		RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
+		VersionHandler versionHandler = (VersionHandler) context.get(RegtoppConstant.VERSION_HANDLER);
 
 		// Run "validate" on all parsers
-		if (importer.hasHPLImporter()) {
-			RegtoppStopParser stopParser = (RegtoppStopParser) ParserFactory.create(RegtoppStopParser.class.getName());
-			stopParser.validate(context);
-		}
+		Validator stopParser = (Validator) versionHandler.createStopParser();
+		stopParser.validate(context);
 
-		if (importer.hasTIXImporter()) {
-			RegtoppLineParser lineParser = (RegtoppLineParser) ParserFactory.create(RegtoppLineParser.class.getName());
-			lineParser.validate(context);
-		}
+		Validator connectionLinkParser = (Validator) versionHandler.createConnectionLinkParser();
+		connectionLinkParser.validate(context);
 
-		// TODO Add all parsers
+		Validator lineParser = versionHandler.createTripParser();
+		lineParser.validate(context);
+
+		Validator routeParser = versionHandler.createRouteParser();
+		routeParser.validate(context);
 
 		return true;
 	}

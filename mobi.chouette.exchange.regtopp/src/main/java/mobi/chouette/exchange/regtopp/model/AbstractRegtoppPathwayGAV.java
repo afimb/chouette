@@ -17,7 +17,6 @@ import mobi.chouette.exchange.regtopp.model.RegtoppObject;
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
-@Record(minOccurs = 1)
 public abstract class AbstractRegtoppPathwayGAV extends RegtoppObject implements Serializable {
 
 	public static final String FILE_EXTENSION = "GAV";

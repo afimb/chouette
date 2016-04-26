@@ -9,6 +9,7 @@ import mobi.chouette.exchange.regtopp.importer.index.IndexImpl;
 import mobi.chouette.exchange.regtopp.importer.parser.FileContentParser;
 import mobi.chouette.exchange.regtopp.importer.parser.FileParserValidationError;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppTripIndexTIX;
+import mobi.chouette.exchange.regtopp.model.enums.TransportType;
 import mobi.chouette.exchange.regtopp.model.v12.RegtoppRouteTMS;
 import mobi.chouette.exchange.regtopp.model.v12.RegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException;
@@ -72,6 +73,13 @@ public abstract class TripIndex extends IndexImpl<AbstractRegtoppTripIndexTIX> {
 			bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
 		}  else {
 			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppTripIndexTIX.FILE_EXTENSION, bean.getRecordLineNumber(), "Avgangstid", null, RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
+			result = false;
+		}
+
+		if (bean.getTypeOfService() != TransportType.Unknown) {
+			bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
+		}  else {
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppTripIndexTIX.FILE_EXTENSION, bean.getRecordLineNumber(), "Transportmiddel", null, RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
 			result = false;
 		}
 

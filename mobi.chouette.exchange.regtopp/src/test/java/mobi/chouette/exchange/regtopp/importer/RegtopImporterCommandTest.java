@@ -508,10 +508,11 @@ public class RegtopImporterCommandTest extends Arquillian implements mobi.chouet
 
 		ActionReport report = (ActionReport) context.get(REPORT);
 		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
-		assertActionReport(report, STATUS_OK, 10, 1);
+		assertActionReport(report, STATUS_OK, 11, 1);
 		assertStats(report.getStats(), 1, 12);
 		assertLine(report.getLines().get(0), LineInfo.LINE_STATE.OK);
-		assertValidationReport(validationReport, "VALIDATION_PROCEDEED", 5, 0, 1); // typo in chouette
+		// TODO line below must be verified
+		assertValidationReport(validationReport, "VALIDATION_PROCEDEED", 6, 0, 0); // typo in chouette
 
 		System.out.println(ToStringBuilder.reflectionToString(report, ToStringStyle.MULTI_LINE_STYLE, true));
 

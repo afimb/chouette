@@ -57,6 +57,13 @@ public class RegtoppLineParserCommand implements Command {
 				stopParser.parse(context);
 			}
 
+			// Populate shared connection links
+			if (referential.getSharedConnectionLinks().isEmpty()) {
+				log.info("Parsing ConnectionLinks");
+				Parser connectionLinkParser = versionHandler.createConnectionLinkParser();
+				connectionLinkParser.parse(context);
+			}
+
 			// Populate shared timetables
 			if (referential.getSharedTimetables().isEmpty()) {
 				RegtoppTimetableParser timetableParser = (RegtoppTimetableParser) ParserFactory.create(RegtoppTimetableParser.class.getName());

@@ -11,5 +11,6 @@ public interface Constant extends mobi.chouette.exchange.regtopp.RegtoppConstant
 	public static final String REGTOPP_FILE_HPL = "1-REGTOPP-FILE-HPL";
 	public static final String REGTOPP_FILE_TDA = "1-REGTOPP-FILE-TDA";
 	public static final String REGTOPP_FILE_STP = "1-REGTOPP-FILE-STP";
+	public static final String REGTOPP_FILE_GAV = "1-REGTOPP-FILE-GAV";
 
 }
