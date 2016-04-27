@@ -46,7 +46,7 @@ import java.util.Set;
 import static mobi.chouette.exchange.report.ReportConstant.STATUS_OK;
 import static org.testng.Assert.assertEquals;
 
-public class RegtopImporterCommandTest extends Arquillian implements mobi.chouette.common.Constant {
+public class RegtoppImporterCommandTest extends Arquillian implements mobi.chouette.common.Constant {
 
 	private InitialContext initialContext;
 
