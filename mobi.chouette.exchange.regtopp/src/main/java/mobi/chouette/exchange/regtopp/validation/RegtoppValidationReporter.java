@@ -124,24 +124,6 @@ public class RegtoppValidationReporter {
 		}
 	}
 
-	private String capitalize(String name) {
-		// CSV, CalendarDate, StopTime
-		if ("csv".equalsIgnoreCase(name))
-			return "CSV";
-		if ("calendar_date".equalsIgnoreCase(name))
-			return "CalendarDate";
-		if ("stop_time".equalsIgnoreCase(name))
-			return "StopTime";
-		if (name != null && !name.trim().isEmpty()) {
-			name = name.trim();
-			char c = name.charAt(0);
-			if (c >= 'a' && c <= 'z') {
-				name = name.substring(1);
-				name = (char) (c + 'A' - ('a')) + name;
-			}
-		}
-		return name;
-	}
 
 	private String name(String filename) {
 		if (filename != null) {

@@ -79,11 +79,10 @@ public class Regtopp13AVersionHandler extends Regtopp12VersionHandler {
 		case "TMS": {
 			ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppRouteTMS.class }), file);
 			importer.registerFileForIndex(RegtoppImporter.INDEX.ROUTE_INDEX.name(), parseableFile);
-			importer.registerFileForIndex(RegtoppImporter.INDEX.ROUTE_BY_ROUTE_KEY.name(), parseableFile);
 			break;
 		}
 		case "GAV": {
-			// WARNING WARNING! Ruter as the sole user of Regtopp1.3A sends GAV file according to 1.1D spec. Therefore this is used here.
+			// TODO WARNING WARNING! Ruter as the sole user of Regtopp1.3A sends GAV file according to 1.1D spec. Therefore this is used here.
 			ParseableFile parseableFile = new ParseableFile(fileName.toFile(),
 					Arrays.asList(new Class[] {
 							mobi.chouette.exchange.regtopp.model.v11.RegtoppPathwayGAV.class,

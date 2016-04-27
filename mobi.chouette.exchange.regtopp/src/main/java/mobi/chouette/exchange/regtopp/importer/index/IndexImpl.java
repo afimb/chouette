@@ -4,12 +4,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.importer.parser.FileContentParser;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 
-@Log4j
 public abstract class IndexImpl<T> implements Index<T> {
 
 	protected Map<String, T> index = new HashMap<String, T>();
@@ -63,16 +61,6 @@ public abstract class IndexImpl<T> implements Index<T> {
 	@Override
 	public int getLength() {
 		return index.size();
-	}
-
-	protected boolean isEmpty(String value)
-	{
-		return value == null || value.trim().length() == 0;
-	}
-
-	protected boolean isPresent(String value)
-	{
-		return !isEmpty(value);
 	}
 
 }
