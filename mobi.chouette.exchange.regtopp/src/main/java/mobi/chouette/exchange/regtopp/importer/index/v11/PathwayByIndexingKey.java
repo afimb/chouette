@@ -1,5 +1,8 @@
 package mobi.chouette.exchange.regtopp.importer.index.v11;
 
+
+import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Context;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.importer.index.Index;
 import mobi.chouette.exchange.regtopp.importer.index.IndexFactory;
@@ -8,9 +11,12 @@ import mobi.chouette.exchange.regtopp.importer.parser.FileContentParser;
 import mobi.chouette.exchange.regtopp.importer.parser.FileParserValidationError;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppPathwayGAV;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppStopHPL;
+import mobi.chouette.exchange.regtopp.model.v11.RegtoppLineLIN;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException;
+import mobi.chouette.exchange.regtopp.validation.RegtoppException.ERROR;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 
+@Log4j
 public class PathwayByIndexingKey extends IndexImpl<AbstractRegtoppPathwayGAV> {
 
 	public PathwayByIndexingKey(RegtoppValidationReporter validationReporter, FileContentParser fileParser) throws Exception {
@@ -88,10 +94,12 @@ public class PathwayByIndexingKey extends IndexImpl<AbstractRegtoppPathwayGAV> {
 	@Override
 	public void index() throws Exception {
 		for (Object obj : parser.getRawContent()) {
-			AbstractRegtoppPathwayGAV route = (AbstractRegtoppPathwayGAV) obj;
-			AbstractRegtoppPathwayGAV existing = index.put(route.getIndexingKey(), route);
-			if (existing != null) {
-				continue; // we want to check > 0 occurences
+			AbstractRegtoppPathwayGAV newRecord = (AbstractRegtoppPathwayGAV) obj;
+			AbstractRegtoppPathwayGAV existingRecord = index.put(newRecord.getIndexingKey(), newRecord);
+			if (existingRecord != null) {
+				log.error("Duplicate key in GAV file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
+				validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError(RegtoppLineLIN.FILE_EXTENSION,
+						newRecord.getRecordLineNumber(), "Holdeplass fra/til", newRecord.getIndexingKey(), ERROR.DUPLICATE_KEY, "Duplicate key")), null);
 			}
 		}
 	}

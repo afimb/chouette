@@ -20,7 +20,6 @@ import mobi.chouette.exchange.regtopp.importer.index.v11.StopById;
 import mobi.chouette.exchange.regtopp.importer.index.v11.TripByIndexingKey;
 import mobi.chouette.exchange.regtopp.importer.index.v11.UniqueLinesByTripIndex;
 import mobi.chouette.exchange.regtopp.importer.index.v12.RouteByIndexingKey;
-import mobi.chouette.exchange.regtopp.importer.index.v12.RouteByRouteKey;
 import mobi.chouette.exchange.regtopp.importer.index.v13.StopPointByIndexingKey;
 import mobi.chouette.exchange.regtopp.importer.index.v13.StopPointByStopId;
 import mobi.chouette.exchange.regtopp.importer.parser.FileContentParser;
@@ -209,10 +208,6 @@ public class RegtoppImporter {
 
 	public Index<AbstractRegtoppRouteTMS> getRouteIndex() {
 		return getIndex(INDEX.ROUTE_INDEX.name(), RouteByIndexingKey.class);
-	}
-
-	public Index<AbstractRegtoppRouteTMS> getRouteByRouteKey() {
-		return getIndex(INDEX.ROUTE_BY_ROUTE_KEY.name(), RouteByRouteKey.class);
 	}
 
 	public Index<RegtoppRouteTDA> getRouteSegmentByLineNumber() {

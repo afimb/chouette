@@ -7,8 +7,10 @@ import mobi.chouette.exchange.regtopp.importer.index.IndexFactory;
 import mobi.chouette.exchange.regtopp.importer.parser.FileContentParser;
 import mobi.chouette.exchange.regtopp.importer.parser.FileParserValidationError;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppRouteTMS;
+import mobi.chouette.exchange.regtopp.model.v13.RegtoppRouteTMS;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
+import mobi.chouette.exchange.regtopp.validation.RegtoppException.ERROR;
 
 @Log4j
 public class RouteByIndexingKey extends RouteIndex {
@@ -33,11 +35,12 @@ public class RouteByIndexingKey extends RouteIndex {
 	@Override
 	public void index() throws Exception {
 		for (Object obj : parser.getRawContent()) {
-			AbstractRegtoppRouteTMS route = (AbstractRegtoppRouteTMS) obj;
-			AbstractRegtoppRouteTMS existing = index.put(route.getIndexingKey(), route);
-			if (existing != null) {
-				// TODO fix exception/validation reporting
-				validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError()), null);
+			AbstractRegtoppRouteTMS newRecord = (AbstractRegtoppRouteTMS) obj;
+			AbstractRegtoppRouteTMS existingRecord = index.put(newRecord.getIndexingKey(), newRecord);
+			if (existingRecord != null) {
+				log.error("Duplicate key in TMS file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
+				validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError(RegtoppRouteTMS.FILE_EXTENSION,
+						newRecord.getRecordLineNumber(), "Linjenr/Turmønsternr/Retning/Sekvensnummer", newRecord.getIndexingKey(), ERROR.DUPLICATE_KEY, "Duplicate key")), null);
 			}
 		}
 	}

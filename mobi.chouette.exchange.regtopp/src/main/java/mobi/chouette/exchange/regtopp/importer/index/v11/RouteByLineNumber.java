@@ -33,13 +33,7 @@ public class RouteByLineNumber extends IndexImpl<RegtoppRouteTDA> {
 		for (Object obj : parser.getRawContent()) {
 			RegtoppRouteTDA route = (RegtoppRouteTDA) obj;
 			route.setRouteId(route.getRecordLineNumber());
-			if (route == null) {
-				throw new IllegalArgumentException("Route");
-			}
-			RegtoppRouteTDA existing = index.put(route.getRouteId(), route);
-			if (existing != null) {
-				continue; // we want to check > 0 occurences
-			}
+			index.put(route.getRouteId(), route); // File linenumber
 		}
 	}
 }

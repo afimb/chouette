@@ -58,6 +58,7 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 
 		RegtoppImportParameters parameters = (RegtoppImportParameters) context.get(CONFIGURATION);
 		RegtoppVersion declaredVersion = parameters.getVersion();
+		log.info("Parsing Regtopp version "+declaredVersion);
 		VersionHandler versionHandler = null;
 		switch (declaredVersion) {
 		case R11D:

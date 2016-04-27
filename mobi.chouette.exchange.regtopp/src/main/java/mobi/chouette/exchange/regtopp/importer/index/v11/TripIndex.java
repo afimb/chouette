@@ -84,18 +84,6 @@ public abstract class TripIndex extends IndexImpl<AbstractRegtoppTripIndexTIX> {
 		}
 
 
-		if (dao.hasTMSImporter()) {
-			if (dao.getRouteByRouteKey().containsKey(bean.getRouteKey())) { // Referanse fra TURIX til TURMSTR er feltene Linjenr, Retning og Turmønsternr
-				bean.getOkTests().add(RegtoppException.ERROR.INVALID_MANDATORY_ID_REFERENCE);
-			} else {
-				bean.getErrors()
-						.add(new RegtoppException(new FileParserValidationError(AbstractRegtoppTripIndexTIX.FILE_EXTENSION, bean.getRecordLineNumber(),
-								"Rutereferanse (kombinasjonen linjenr, retning og turmønsternr)", bean.getRouteKey(),
-								RegtoppException.ERROR.INVALID_MANDATORY_ID_REFERENCE, "Unreferenced id.")));
-				result = false;
-			}
-		}
-
 		if (dao.getDayCodeById().containsKey(bean.getDayCodeRef())) {
 			bean.getOkTests().add(RegtoppException.ERROR.INVALID_MANDATORY_ID_REFERENCE);
 		} else {

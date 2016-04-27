@@ -28,7 +28,7 @@ public class RegtoppPathwayGAV extends AbstractRegtoppPathwayGAV implements Seri
 	private Integer duration;
 
 	@Setter
-	@Field(at = 22, length = 0, minLength = 0, minOccurs=0, maxOccurs = 500)
+	@Field(at = 22, length = 1, required = false, minLength = 0, minOccurs=0, maxOccurs = 500)
 	private char[] descriptionHack;
 
 	public String getDescription() {

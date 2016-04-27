@@ -41,15 +41,18 @@ public class FileContentParser {
 	public void parse(final Context context, final ParseableFile parseableFile, final RegtoppValidationReporter validationReporter) throws Exception {
 		StreamFactory factory = StreamFactory.newInstance();
 
-		StreamBuilder builder = new StreamBuilder("regtopp").format("fixedlength").parser(new FixedLengthParserBuilder()).strict().readOnly();
-
-		for (Class<?> clazz : parseableFile.getRegtoppClasses()) {
-			builder = builder.addRecord(clazz);
-		}
+		StreamBuilder builder = new StreamBuilder("regtopp");
+		builder.format("fixedlength");
+		builder.parser(new FixedLengthParserBuilder());
+		builder.readOnly();
 
 		builder.addTypeHandler("departureTime", Duration.class, new DepartureTimeTypeHandler());
 		builder.addTypeHandler("drivingDuration", Duration.class, new DrivingDurationTypeHandler());
 		builder.addTypeHandler("localDate", LocalDate.class, new LocalDateTypeHandler());
+
+		for (Class<?> clazz : parseableFile.getRegtoppClasses()) {
+			builder = builder.addRecord(clazz);
+		}
 
 		factory.define(builder);
 

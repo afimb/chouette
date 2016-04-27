@@ -57,8 +57,8 @@ public class RegtoppConnectionLinkParser extends LineSpecificParser {
 			Index<AbstractRegtoppPathwayGAV> index = importer.getPathwayByIndexingKey();
 
 			if (index.getLength() == 0) {
-				FileParserValidationError fileError = new FileParserValidationError(AbstractRegtoppPathwayGAV.FILE_EXTENSION, 0, null,
-						RegtoppException.ERROR.FILE_WITH_NO_ENTRY, null, "Empty file");
+				FileParserValidationError fileError = new FileParserValidationError(AbstractRegtoppPathwayGAV.FILE_EXTENSION, 0, null,null,
+						RegtoppException.ERROR.FILE_WITH_NO_ENTRY, "Empty file");
 				validationReporter.reportError(context, new RegtoppException(fileError), AbstractRegtoppPathwayGAV.FILE_EXTENSION);
 			}
 

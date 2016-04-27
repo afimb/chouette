@@ -44,11 +44,15 @@ public class RegtoppLineLIN extends RegtoppObject implements Serializable {
 	@Field(at = 8, length = 30)
 	private String name;
 
-	@Getter
+	// Hack to work around some different implmenentations
 	@Setter
-	@Field(at = 38, length = 1)
-	private Integer fareCode;
+	@Field(at = 38, length = 1, minLength = 0, maxOccurs = 10)
+	private char[] fareCodeHack;
 
+	public String getFareCode() {
+		return new String(fareCodeHack).trim();
+	}
+	
 	@Override
 	public String getIndexingKey() {
 		return adminCode + counter + lineId;

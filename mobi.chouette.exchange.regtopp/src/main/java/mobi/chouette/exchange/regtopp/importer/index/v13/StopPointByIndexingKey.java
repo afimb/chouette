@@ -9,6 +9,7 @@ import mobi.chouette.exchange.regtopp.importer.parser.FileContentParser;
 import mobi.chouette.exchange.regtopp.importer.parser.FileParserValidationError;
 import mobi.chouette.exchange.regtopp.model.v13.RegtoppStopPointSTP;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException;
+import mobi.chouette.exchange.regtopp.validation.RegtoppException.ERROR;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 
 @Log4j
@@ -34,11 +35,12 @@ public class StopPointByIndexingKey extends IndexImpl<RegtoppStopPointSTP> {
 	@Override
 	public void index() throws Exception {
 		for (Object obj : parser.getRawContent()) {
-			RegtoppStopPointSTP stopPoint = (RegtoppStopPointSTP) obj;
-			RegtoppStopPointSTP existing = index.put(stopPoint.getIndexingKey(), stopPoint);
-			if (existing != null) {
-				// TODO fix exception/validation reporting
-				validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError()), null);
+			RegtoppStopPointSTP newRecord = (RegtoppStopPointSTP) obj;
+			RegtoppStopPointSTP existingRecord = index.put(newRecord.getIndexingKey(), newRecord);
+			if (existingRecord != null) {
+				log.error("Duplicate key in STP file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
+				validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError(RegtoppStopPointSTP.FILE_EXTENSION,
+						newRecord.getRecordLineNumber(), "Holdeplassnr/Stoppunktsnummer", newRecord.getIndexingKey(), ERROR.DUPLICATE_KEY, "Duplicate key")), null);
 			}
 		}
 	}

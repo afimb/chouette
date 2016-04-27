@@ -49,10 +49,14 @@ public class RegtoppTableVersionTAB extends RegtoppObject implements Serializabl
 	@Field(at = 18, length = 8)
 	private String name;
 
-	@Getter
+	// Hack to work around some different implmenentations
 	@Setter
-	@Field(at = 26, length = 82)
-	private String text;
+	@Field(at = 26, length = 1, minLength = 0, maxOccurs = 255)
+	private char[] textHack;
+
+	public String getText() {
+		return new String(textHack).trim();
+	}
 
 	@Override
 	public String getIndexingKey() {

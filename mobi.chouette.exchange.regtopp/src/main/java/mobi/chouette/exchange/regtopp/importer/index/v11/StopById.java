@@ -9,8 +9,11 @@ import mobi.chouette.exchange.regtopp.importer.index.IndexImpl;
 import mobi.chouette.exchange.regtopp.importer.parser.FileContentParser;
 import mobi.chouette.exchange.regtopp.importer.parser.FileParserValidationError;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppStopHPL;
+import mobi.chouette.exchange.regtopp.model.v11.RegtoppLineLIN;
+import mobi.chouette.exchange.regtopp.model.v13.RegtoppStopHPL;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
+import mobi.chouette.exchange.regtopp.validation.RegtoppException.ERROR;
 
 @Log4j
 public class StopById extends IndexImpl<AbstractRegtoppStopHPL> {
@@ -135,11 +138,12 @@ public class StopById extends IndexImpl<AbstractRegtoppStopHPL> {
 	@Override
 	public void index() throws Exception {
 		for (Object obj : parser.getRawContent()) {
-			AbstractRegtoppStopHPL stop = (AbstractRegtoppStopHPL) obj;
-			AbstractRegtoppStopHPL existing = index.put(stop.getFullStopId(), stop);
-			if (existing != null) {
-				// TODO fix exception/validation reporting
-				validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError()), null);
+			AbstractRegtoppStopHPL newRecord = (AbstractRegtoppStopHPL) obj;
+			AbstractRegtoppStopHPL existingRecord = index.put(newRecord.getFullStopId(), newRecord);
+			if (existingRecord != null) {
+				log.error("Duplicate key in HPL file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
+				validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError(RegtoppStopHPL.FILE_EXTENSION,
+						newRecord.getRecordLineNumber(), "Holdeplassnr", newRecord.getStopId(), ERROR.DUPLICATE_KEY, "Duplicate key")), null);
 			}
 		}
 	}

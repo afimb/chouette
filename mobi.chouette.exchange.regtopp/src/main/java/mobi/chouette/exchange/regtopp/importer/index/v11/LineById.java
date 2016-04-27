@@ -10,6 +10,7 @@ import mobi.chouette.exchange.regtopp.importer.parser.FileContentParser;
 import mobi.chouette.exchange.regtopp.importer.parser.FileParserValidationError;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppLineLIN;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException;
+import mobi.chouette.exchange.regtopp.validation.RegtoppException.ERROR;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 
 @Log4j
@@ -48,11 +49,12 @@ public class LineById extends IndexImpl<RegtoppLineLIN> {
 	@Override
 	public void index() throws Exception {
 		for (Object obj : parser.getRawContent()) {
-			RegtoppLineLIN line = (RegtoppLineLIN) obj;
-			RegtoppLineLIN existing = index.put(line.getLineId(), line);
-			if (existing != null) {
-				// TODO fix exception/validation reporting (this is a duplicate check)
-				validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError()), null);
+			RegtoppLineLIN newRecord = (RegtoppLineLIN) obj;
+			RegtoppLineLIN existingRecord = index.put(newRecord.getLineId(), newRecord);
+			if (existingRecord != null) {
+				log.error("Duplicate key in LIN file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
+				validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError(RegtoppLineLIN.FILE_EXTENSION,
+						newRecord.getRecordLineNumber(), "Linjenr", newRecord.getLineId(), ERROR.DUPLICATE_KEY, "Duplicate key")), null);
 			}
 		}
 	}

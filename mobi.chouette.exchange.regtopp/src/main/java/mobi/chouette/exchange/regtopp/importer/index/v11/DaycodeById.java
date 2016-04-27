@@ -13,9 +13,11 @@ import mobi.chouette.exchange.regtopp.importer.parser.FileContentParser;
 import mobi.chouette.exchange.regtopp.importer.parser.FileParserValidationError;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeDKO;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeHeaderDKO;
+import mobi.chouette.exchange.regtopp.model.v11.RegtoppLineLIN;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppStopHPL;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
+import mobi.chouette.exchange.regtopp.validation.RegtoppException.ERROR;
 
 @Log4j
 public class DaycodeById extends IndexImpl<RegtoppDayCodeDKO> {
@@ -78,11 +80,12 @@ public class DaycodeById extends IndexImpl<RegtoppDayCodeDKO> {
 			if (i == 0) {
 				header = (RegtoppDayCodeHeaderDKO) rawContent.get(i);
 			} else {
-				RegtoppDayCodeDKO dayCode = (RegtoppDayCodeDKO) rawContent.get(i);
-				RegtoppDayCodeDKO existing = index.put(dayCode.getDayCodeId(), dayCode);
-				if (existing != null) {
-					// TODO fix exception/validation reporting
-					validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError()), null);
+				RegtoppDayCodeDKO newRecord = (RegtoppDayCodeDKO) rawContent.get(i);
+				RegtoppDayCodeDKO existingRecord = index.put(newRecord.getDayCodeId(), newRecord);
+				if (existingRecord != null) {
+					log.error("Duplicate key in DKO file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
+					validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError(RegtoppDayCodeDKO.FILE_EXTENSION,
+							newRecord.getRecordLineNumber(), "Dagkode", newRecord.getDayCode(), ERROR.DUPLICATE_KEY, "Duplicate key")), null);
 				}
 
 			}
