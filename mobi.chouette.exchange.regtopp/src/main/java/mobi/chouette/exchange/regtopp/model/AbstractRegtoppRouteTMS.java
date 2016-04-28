@@ -57,9 +57,9 @@ public abstract class AbstractRegtoppRouteTMS extends RegtoppObject implements S
 
 	public abstract String getStopId();
 
-	public abstract String getStopIdDeparture();
+	public abstract String getStopPointIdDeparture();
 
-	public abstract String getStopIdArrival();
+	public abstract String getStopPointIdArrival();
 
 	public abstract Duration getDriverTimeArrival();
 

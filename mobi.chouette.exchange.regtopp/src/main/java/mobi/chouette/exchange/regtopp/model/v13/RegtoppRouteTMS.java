@@ -23,7 +23,7 @@ public class RegtoppRouteTMS extends AbstractRegtoppRouteTMS implements Serializ
 
 	@Override
 	public String getFullStopId() {
-		return stopId+getStopIdArrival();
+		return stopId+getStopPointIdArrival();
 	}
 
 	private static final long serialVersionUID = 1L;
@@ -41,12 +41,12 @@ public class RegtoppRouteTMS extends AbstractRegtoppRouteTMS implements Serializ
 	@Getter
 	@Setter
 	@Field(at = 23, length = 2)
-	private String stopIdDeparture;
+	private String stopPointIdDeparture;
 
 	@Getter
 	@Setter
 	@Field(at = 25, length = 2)
-	private String stopIdArrival;
+	private String stopPointIdArrival;
 
 	@Getter
 	@Setter

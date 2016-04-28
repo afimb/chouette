@@ -17,7 +17,7 @@ public class RegtoppRouteTMS extends mobi.chouette.exchange.regtopp.model.v12.Re
 
 	@Override
 	public String getFullStopId() {
-		return getStopId()+getStopIdArrival();
+		return getStopId()+getStopPointIdArrival();
 	}
 
 }

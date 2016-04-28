@@ -36,7 +36,7 @@ public class RegtoppRouteTMS extends AbstractRegtoppRouteTMS implements Serializ
 	@Getter
 	@Setter
 	@Field(at = 25, length = 2)
-	private String stopIdArrival;
+	private String stopPointIdArrival;
 
 	@Getter
 	@Setter
@@ -46,7 +46,7 @@ public class RegtoppRouteTMS extends AbstractRegtoppRouteTMS implements Serializ
 	@Getter
 	@Setter
 	@Field(at = 30, length = 2)
-	private String stopIdDeparture;
+	private String stopPointIdDeparture;
 
 	@Getter
 	@Setter
