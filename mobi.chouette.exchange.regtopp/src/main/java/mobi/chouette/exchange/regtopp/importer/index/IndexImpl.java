@@ -102,7 +102,7 @@ public abstract class IndexImpl<T> implements Index<T> {
 					if (bean instanceof RegtoppObject) {
 						// TODO some indices returns List<?> as bean
 						validationReporter.reportErrors(context, ((RegtoppObject) bean).getErrors(), filename);
-						validationReporter.validate(context, filename, ((RegtoppObject) bean).getOkTests());
+						validationReporter.validate(context, ((RegtoppObject) bean).getOkTests());
 					}
 				}
 			}

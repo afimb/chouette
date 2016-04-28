@@ -34,23 +34,23 @@ public class DaycodeById extends IndexImpl<RegtoppDayCodeDKO> {
 
 		//Obligatoriske felter
 		if (bean.getAdminCode() != null) {
-			bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
+			bean.getOkTests().add(RegtoppException.ERROR.DKO_INVALID_FIELD_VALUE);
 		}  else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppDayCodeDKO.FILE_EXTENSION, bean.getRecordLineNumber(), "Adminkode", null, RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppDayCodeDKO.FILE_EXTENSION, bean.getRecordLineNumber(), "Adminkode", null, RegtoppException.ERROR.DKO_INVALID_FIELD_VALUE, "")));
 			result = false;
 		}
 
 		if (bean.getCounter() != null) {
-			bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
+			bean.getOkTests().add(RegtoppException.ERROR.DKO_INVALID_FIELD_VALUE);
 		}  else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppDayCodeDKO.FILE_EXTENSION, bean.getRecordLineNumber(), "Løpenr", null, RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppDayCodeDKO.FILE_EXTENSION, bean.getRecordLineNumber(), "Løpenr", null, RegtoppException.ERROR.DKO_INVALID_FIELD_VALUE, "")));
 			result = false;
 		}
 
 		if (bean.getDayCodeId() != null) {
-			bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
+			bean.getOkTests().add(RegtoppException.ERROR.DKO_INVALID_FIELD_VALUE);
 		}  else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppDayCodeDKO.FILE_EXTENSION, bean.getRecordLineNumber(), "Dagkodenr", null, RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppDayCodeDKO.FILE_EXTENSION, bean.getRecordLineNumber(), "Dagkodenr", null, RegtoppException.ERROR.DKO_INVALID_FIELD_VALUE, "")));
 			result = false;
 		}
 

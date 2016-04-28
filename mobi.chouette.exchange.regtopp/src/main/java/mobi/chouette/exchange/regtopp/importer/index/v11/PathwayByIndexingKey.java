@@ -55,22 +55,22 @@ public class PathwayByIndexingKey extends IndexImpl<AbstractRegtoppPathwayGAV> {
 		Index<AbstractRegtoppStopHPL> stopById = dao.getStopById();
 		
 		if(stopById.containsKey(from)) {
-			bean.getOkTests().add(RegtoppException.ERROR.INVALID_MANDATORY_ID_REFERENCE);
+			bean.getOkTests().add(RegtoppException.ERROR.GAV_INVALID_MANDATORY_ID_REFERENCE);
 		} else {
 			bean.getErrors()
 					.add(new RegtoppException(new FileParserValidationError(AbstractRegtoppPathwayGAV.FILE_EXTENSION, bean.getRecordLineNumber(),
 							"Holdeplassnr fra", from,
-							RegtoppException.ERROR.INVALID_MANDATORY_ID_REFERENCE, "Unreferenced id.")));
+							RegtoppException.ERROR.GAV_INVALID_MANDATORY_ID_REFERENCE, "Unreferenced id.")));
 			result = false;
 			
 		}
 		if(stopById.containsKey(to)) {
-			bean.getOkTests().add(RegtoppException.ERROR.INVALID_MANDATORY_ID_REFERENCE);
+			bean.getOkTests().add(RegtoppException.ERROR.GAV_INVALID_MANDATORY_ID_REFERENCE);
 		} else {
 			bean.getErrors()
 					.add(new RegtoppException(new FileParserValidationError(AbstractRegtoppPathwayGAV.FILE_EXTENSION, bean.getRecordLineNumber(),
 							"Holdeplassnr til", from,
-							RegtoppException.ERROR.INVALID_MANDATORY_ID_REFERENCE, "Unreferenced id.")));
+							RegtoppException.ERROR.GAV_INVALID_MANDATORY_ID_REFERENCE, "Unreferenced id.")));
 			result = false;
 			
 		}
