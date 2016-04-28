@@ -1,11 +1,8 @@
 package mobi.chouette.exchange.regtopp.importer.parser.v11;
 
 import static mobi.chouette.common.Constant.CONFIGURATION;
-import static mobi.chouette.common.Constant.MAIN_VALIDATION_REPORT;
 import static mobi.chouette.common.Constant.PARSER;
 import static mobi.chouette.common.Constant.REFERENTIAL;
-import static mobi.chouette.exchange.regtopp.RegtoppConstant.REGTOPP_REPORTER;
-import static mobi.chouette.exchange.regtopp.validation.Constant.REGTOPP_FILE_TMS;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -22,7 +19,6 @@ import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.importer.index.Index;
 import mobi.chouette.exchange.regtopp.importer.parser.AbstractConverter;
-import mobi.chouette.exchange.regtopp.importer.parser.FileParserValidationError;
 import mobi.chouette.exchange.regtopp.importer.parser.LineSpecificParser;
 import mobi.chouette.exchange.regtopp.importer.parser.RouteKey;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppTripIndexTIX;
@@ -31,9 +27,6 @@ import mobi.chouette.exchange.regtopp.model.v11.RegtoppDestinationDST;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppFootnoteMRK;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppRouteTDA;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppTripIndexTIX;
-import mobi.chouette.exchange.regtopp.validation.RegtoppException;
-import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
-import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.Footnote;
 import mobi.chouette.model.JourneyPattern;
@@ -50,56 +43,6 @@ import mobi.chouette.model.util.Referential;
 
 @Log4j
 public class RegtoppRouteParser extends LineSpecificParser {
-
-	/*
-	 * Validation rules of type I and II are checked during this step, and results are stored in reports.
-	 */
-	// TODO. Rename this function "parse(Context context)".
-	@Override
-	public void validate(Context context) throws Exception {
-
-		// Konsistenssjekker, kjøres før parse-metode.
-
-		// Det som kan sjekkes her er at antall poster stemmer og at alle referanser til andre filer er gyldige
-
-		RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
-		RegtoppValidationReporter validationReporter = (RegtoppValidationReporter) context.get(REGTOPP_REPORTER);
-		validationReporter.getExceptions().clear();
-
-		ValidationReport mainReporter = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
-
-		validateTDAIndex(context, importer, validationReporter);
-	}
-
-	private void validateTDAIndex(Context context, RegtoppImporter importer, RegtoppValidationReporter validationReporter) throws Exception {
-		if (importer.hasTDAImporter()) {
-			validationReporter.reportSuccess(context, REGTOPP_FILE_TMS, RegtoppRouteTDA.FILE_EXTENSION);
-
-			Index<RegtoppRouteTDA> index = importer.getRouteSegmentByLineNumber();
-
-			if (index.getLength() == 0) {
-				FileParserValidationError fileError = new FileParserValidationError(RegtoppRouteTDA.FILE_EXTENSION, 0, null,
-						RegtoppException.ERROR.FILE_WITH_NO_ENTRY, null, "Empty file");
-				validationReporter.reportError(context, new RegtoppException(fileError), RegtoppRouteTDA.FILE_EXTENSION);
-			}
-
-			for (RegtoppRouteTDA bean : index) {
-				try {
-					// Call index validator
-					index.validate(bean, importer);
-				} catch (Exception ex) {
-					log.error(ex);
-					if (ex instanceof RegtoppException) {
-						validationReporter.reportError(context, (RegtoppException) ex, RegtoppRouteTDA.FILE_EXTENSION);
-					} else {
-						validationReporter.throwUnknownError(context, ex, RegtoppRouteTDA.FILE_EXTENSION);
-					}
-				}
-				validationReporter.reportErrors(context, bean.getErrors(), RegtoppRouteTDA.FILE_EXTENSION);
-				validationReporter.validate(context, RegtoppRouteTDA.FILE_EXTENSION, bean.getOkTests());
-			}
-		}
-	}
 
 	/*
 	 * Validation rules of type III are checked at this step.
@@ -184,7 +127,7 @@ public class RegtoppRouteParser extends LineSpecificParser {
 	}
 
 	protected Route createRoute(Context context, Line line, 
-			DirectionType direction, String routeId, String destinationId,RouteKey routeKey) {
+			DirectionType direction, String routeId, String destinationId,RouteKey routeKey) throws Exception {
 		
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);

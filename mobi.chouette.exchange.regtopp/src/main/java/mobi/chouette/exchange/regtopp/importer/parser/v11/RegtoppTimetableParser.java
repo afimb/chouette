@@ -3,8 +3,6 @@ package mobi.chouette.exchange.regtopp.importer.parser.v11;
 import static mobi.chouette.common.Constant.CONFIGURATION;
 import static mobi.chouette.common.Constant.PARSER;
 import static mobi.chouette.common.Constant.REFERENTIAL;
-import static mobi.chouette.exchange.regtopp.RegtoppConstant.REGTOPP_REPORTER;
-import static mobi.chouette.exchange.regtopp.validation.Constant.REGTOPP_FILE_TIX;
 
 import java.sql.Date;
 import java.util.ArrayList;
@@ -17,12 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import mobi.chouette.exchange.regtopp.importer.index.Index;
-import mobi.chouette.exchange.regtopp.importer.parser.FileParserValidationError;
-import mobi.chouette.exchange.regtopp.model.AbstractRegtoppTripIndexTIX;
-import mobi.chouette.exchange.regtopp.model.v12.RegtoppTripIndexTIX;
-import mobi.chouette.exchange.regtopp.validation.RegtoppException;
-import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 import org.joda.time.DateTimeConstants;
 import org.joda.time.LocalDate;
 
@@ -33,7 +25,6 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
-import mobi.chouette.exchange.importer.Validator;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.importer.index.v11.DaycodeById;
@@ -50,60 +41,13 @@ import mobi.chouette.model.util.ObjectIdTypes;
 import mobi.chouette.model.util.Referential;
 
 @Log4j
-public class RegtoppTimetableParser implements Parser, Validator {
+public class RegtoppTimetableParser implements Parser {
 
 	private static final int ERROR_MARGIN = 5;
 	private static final int MIN_PERCENTAGE_ALL_DAYS_DETECTED = 90;
 	private static final int MIN_DAYS_FOR_PATTERN = 5;
 
-	@Override
-	public void validate(Context context) throws Exception {
-
-		// Konsistenssjekker, kjøres før parse-metode.
-
-		// Det som kan sjekkes her er at antall poster stemmer og at alle referanser til andre filer er gyldige
-
-		// Ting å sjekke: Hvis alle dager er tomme -> warning
-
-		// Verifisere at alle kalender entries faktisk er i bruk
-
-		RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
-		RegtoppValidationReporter validationReporter = (RegtoppValidationReporter) context.get(REGTOPP_REPORTER);
-		validationReporter.getExceptions().clear();
-
-		validateDKOIndex(context, importer, validationReporter);
-	}
-
-	private void validateDKOIndex(Context context, RegtoppImporter importer, RegtoppValidationReporter validationReporter) throws Exception {
-		if (importer.hasDKOImporter()) {
-			validationReporter.reportSuccess(context, REGTOPP_FILE_TIX, RegtoppDayCodeDKO.FILE_EXTENSION);
-
-			Index<RegtoppDayCodeDKO> index = importer.getDayCodeById();
-
-			if (index.getLength() == 0) {
-				FileParserValidationError fileError = new FileParserValidationError(RegtoppDayCodeDKO.FILE_EXTENSION, 0, null,
-						RegtoppException.ERROR.FILE_WITH_NO_ENTRY, null, "Empty file");
-				validationReporter.reportError(context, new RegtoppException(fileError), RegtoppDayCodeDKO.FILE_EXTENSION);
-			}
-
-			for (RegtoppDayCodeDKO bean : index) {
-				try {
-					// Call index validator
-					index.validate(bean, importer);
-				} catch (Exception ex) {
-					log.error(ex);
-					if (ex instanceof RegtoppException) {
-						validationReporter.reportError(context, (RegtoppException) ex, RegtoppDayCodeDKO.FILE_EXTENSION);
-					} else {
-						validationReporter.throwUnknownError(context, ex, RegtoppDayCodeDKO.FILE_EXTENSION);
-					}
-				}
-				validationReporter.reportErrors(context, bean.getErrors(), RegtoppDayCodeDKO.FILE_EXTENSION);
-				validationReporter.validate(context, RegtoppDayCodeDKO.FILE_EXTENSION, bean.getOkTests());
-			}
-		}
-
-	}
+	
 
 	@Override
 	public void parse(Context context) throws Exception {

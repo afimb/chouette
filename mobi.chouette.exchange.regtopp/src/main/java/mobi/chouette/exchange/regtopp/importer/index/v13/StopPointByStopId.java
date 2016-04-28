@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.importer.index.Index;
 import mobi.chouette.exchange.regtopp.importer.index.IndexFactory;
 import mobi.chouette.exchange.regtopp.importer.index.IndexImpl;
@@ -43,5 +44,11 @@ public class StopPointByStopId extends IndexImpl<List<RegtoppStopPointSTP>> {
 			// TODO check if list already have this stopPoint registered
 			listOfStopPoints.add(stopPoint);
 		}
+	}
+
+	@Override
+	public boolean validate(List<RegtoppStopPointSTP> bean, RegtoppImporter dao) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

@@ -2,6 +2,7 @@ package mobi.chouette.exchange.regtopp.importer.index.v13;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
+import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.importer.index.Index;
 import mobi.chouette.exchange.regtopp.importer.index.IndexFactory;
 import mobi.chouette.exchange.regtopp.importer.index.IndexImpl;
@@ -43,5 +44,11 @@ public class StopPointByIndexingKey extends IndexImpl<RegtoppStopPointSTP> {
 						newRecord.getRecordLineNumber(), "Holdeplassnr/Stoppunktsnummer", newRecord.getIndexingKey(), ERROR.DUPLICATE_KEY, "Duplicate key")), null);
 			}
 		}
+	}
+
+	@Override
+	public boolean validate(RegtoppStopPointSTP bean, RegtoppImporter dao) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

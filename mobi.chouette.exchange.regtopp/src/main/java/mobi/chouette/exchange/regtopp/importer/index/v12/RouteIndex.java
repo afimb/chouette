@@ -18,7 +18,7 @@ public abstract class RouteIndex extends IndexImpl<AbstractRegtoppRouteTMS> {
 	}
 
 	@Override
-	public boolean validate(AbstractRegtoppRouteTMS bean, RegtoppImporter dao) {
+	public boolean validate(AbstractRegtoppRouteTMS bean, RegtoppImporter dao) throws Exception {
 		boolean result = true;
 
 		//Obligatoriske felter
@@ -93,12 +93,13 @@ public abstract class RouteIndex extends IndexImpl<AbstractRegtoppRouteTMS> {
 			result = false;
 		}
 
-		if (dao.getStopById().containsKey(bean.getStopId())){
+		if (dao.getStopById().containsKey(bean.getFullStopId())){
 			bean.getOkTests().add(RegtoppException.ERROR.INVALID_MANDATORY_ID_REFERENCE);
 		} else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppRouteTMS.FILE_EXTENSION, bean.getRecordLineNumber(), "Holdeplassnr", bean.getStopId(), RegtoppException.ERROR.INVALID_MANDATORY_ID_REFERENCE, "Unreferenced id.")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppRouteTMS.FILE_EXTENSION, bean.getRecordLineNumber(), "Holdeplassnr/stoppunktnr avg.", bean.getFullStopId(), RegtoppException.ERROR.INVALID_MANDATORY_ID_REFERENCE, "Unreferenced id.")));
 			result = false;
 		}
+
 
 		return result;
 	}

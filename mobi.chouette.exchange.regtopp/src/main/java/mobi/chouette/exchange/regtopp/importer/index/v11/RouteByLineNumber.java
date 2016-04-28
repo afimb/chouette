@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.regtopp.importer.index.v11;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.importer.index.Index;
 import mobi.chouette.exchange.regtopp.importer.index.IndexFactory;
 import mobi.chouette.exchange.regtopp.importer.index.IndexImpl;
@@ -35,5 +36,11 @@ public class RouteByLineNumber extends IndexImpl<RegtoppRouteTDA> {
 			route.setRouteId(route.getRecordLineNumber());
 			index.put(route.getRouteId(), route); // File linenumber
 		}
+	}
+
+	@Override
+	public boolean validate(RegtoppRouteTDA bean, RegtoppImporter dao) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

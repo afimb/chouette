@@ -31,6 +31,7 @@ import mobi.chouette.exchange.regtopp.importer.version.Regtopp12VersionHandler;
 import mobi.chouette.exchange.regtopp.importer.version.Regtopp13AVersionHandler;
 import mobi.chouette.exchange.regtopp.importer.version.RegtoppVersion;
 import mobi.chouette.exchange.regtopp.importer.version.VersionHandler;
+import mobi.chouette.exchange.regtopp.validation.Constant;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 import mobi.chouette.exchange.report.ActionError;
@@ -39,6 +40,8 @@ import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.FileError;
 import mobi.chouette.exchange.report.FileInfo;
 import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
+import mobi.chouette.exchange.validation.report.CheckPoint;
+import mobi.chouette.exchange.validation.report.ValidationReport;
 
 @Log4j
 public class RegtoppFilePresenceValidationCommand implements Command {
@@ -58,7 +61,7 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 
 		RegtoppImportParameters parameters = (RegtoppImportParameters) context.get(CONFIGURATION);
 		RegtoppVersion declaredVersion = parameters.getVersion();
-		log.info("Parsing Regtopp version "+declaredVersion);
+		log.info("Parsing Regtopp version " + declaredVersion);
 		VersionHandler versionHandler = null;
 		switch (declaredVersion) {
 		case R11D:
@@ -77,6 +80,7 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 
 		context.put(RegtoppConstant.VERSION_HANDLER, versionHandler);
 
+		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
 		RegtoppValidationReporter validationReporter = (RegtoppValidationReporter) context.get(REGTOPP_REPORTER);
 
 		// TODO read FORMPAR.FRM to detect which version of Regtopp being used.
@@ -120,6 +124,11 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 						report.getFiles().add(file);
 
 						// Register file for parsing and necessary indexes
+
+						// Add checkpoint for file
+						validationReport.addCheckPoint(
+								new CheckPoint(Constant.REGTOPP_FILE_POSTFIX + extension, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+
 						versionHandler.registerFileForIndex(importer, fileName, extension, file);
 					}
 				}

@@ -21,6 +21,11 @@ import mobi.chouette.exchange.regtopp.model.AbstractRegtoppRouteTMS;
 @Record(minOccurs = 1)
 public class RegtoppRouteTMS extends AbstractRegtoppRouteTMS implements Serializable {
 
+	@Override
+	public String getFullStopId() {
+		return stopId+getStopIdArrival();
+	}
+
 	private static final long serialVersionUID = 1L;
 
 	@Getter

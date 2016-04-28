@@ -42,21 +42,39 @@ public class RegtoppFileConsistencyValidationCommand implements Command {
 		RegtoppValidationReporter validationReporter = (RegtoppValidationReporter) context.get(REGTOPP_REPORTER);
 
 		RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
-		VersionHandler versionHandler = (VersionHandler) context.get(RegtoppConstant.VERSION_HANDLER);
 
-		// Run "validate" on all parsers
-		Validator stopParser = (Validator) versionHandler.createStopParser();
-		stopParser.validate(context);
-
-		Validator connectionLinkParser = (Validator) versionHandler.createConnectionLinkParser();
-		connectionLinkParser.validate(context);
-
-		Validator lineParser = versionHandler.createTripParser();
-		lineParser.validate(context);
-
-		Validator routeParser = versionHandler.createRouteParser();
-		routeParser.validate(context);
-
+		if(importer.hasDSTImporter()) {
+			importer.getDestinationById();
+		}
+		if(importer.hasMRKImporter()) {
+			importer.getFootnoteById();
+		}
+		if(importer.hasDKOImporter()) {
+			importer.getDayCodeById();
+		}
+		if(importer.hasHPLImporter()) {
+			importer.getStopById();
+		}
+		if(importer.hasLINImporter()) {
+			importer.getLineById();
+		}
+		if(importer.hasGAVImporter()) {
+			importer.getPathwayByIndexingKey();
+		}
+		if(importer.hasSTPImporter()) {
+			importer.getStopPointsByIndexingKey();
+		}
+		if(importer.hasTDAImporter()) {
+			importer.getRouteSegmentByLineNumber();
+		}
+		if(importer.hasTIXImporter()) {
+			importer.getTripIndex();
+		}
+		if(importer.hasTMSImporter()) {
+			importer.getRouteIndex();
+		}
+		
+		
 		return true;
 	}
 

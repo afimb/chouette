@@ -38,6 +38,7 @@ public class RegtoppRouteParser extends mobi.chouette.exchange.regtopp.importer.
 	}
 
 
+
 	static {
 		ParserFactory.register(RegtoppRouteParser.class.getName(), new ParserFactory() {
 			@Override

@@ -23,7 +23,7 @@ public abstract class TripIndex extends IndexImpl<AbstractRegtoppTripIndexTIX> {
 	}
 
 	@Override
-	public boolean validate(AbstractRegtoppTripIndexTIX bean, RegtoppImporter dao) {
+	public boolean validate(AbstractRegtoppTripIndexTIX bean, RegtoppImporter dao) throws Exception {
 		boolean result = true;
 
 		//Obligatoriske felter

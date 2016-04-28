@@ -13,21 +13,20 @@ import mobi.chouette.exchange.regtopp.importer.parser.FileContentParser;
 import mobi.chouette.exchange.regtopp.importer.parser.FileParserValidationError;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeDKO;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeHeaderDKO;
-import mobi.chouette.exchange.regtopp.model.v11.RegtoppLineLIN;
-import mobi.chouette.exchange.regtopp.model.v11.RegtoppStopHPL;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException;
-import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException.ERROR;
+import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 
 @Log4j
+
 public class DaycodeById extends IndexImpl<RegtoppDayCodeDKO> {
+
+	public DaycodeById(RegtoppValidationReporter validationReporter, FileContentParser parser) throws Exception {
+		super(validationReporter, parser);
+	}
 
 	@Getter
 	private RegtoppDayCodeHeaderDKO header;
-
-	public DaycodeById(RegtoppValidationReporter validationReporter, FileContentParser fileParser) throws Exception {
-		super(validationReporter, fileParser);
-	}
 
 	@Override
 	public boolean validate(RegtoppDayCodeDKO bean, RegtoppImporter dao) {

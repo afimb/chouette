@@ -2,7 +2,9 @@ package mobi.chouette.exchange.regtopp.importer.index;
 
 import java.util.Iterator;
 
+import mobi.chouette.common.Context;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
+import mobi.chouette.exchange.regtopp.importer.parser.ParseableFile;
 
 public interface Index<T> extends Iterable<T> {
 
@@ -17,7 +19,9 @@ public interface Index<T> extends Iterable<T> {
 	T getValue(String key);
 
 	// Validate logical consistency (references to other files etc)
-	boolean validate(T bean, RegtoppImporter dao);
+	boolean validate(T bean, RegtoppImporter importer) throws Exception;
+	
+	void validate(Context context,ParseableFile parseableFile) throws Exception;
 
 	int getLength();
 

@@ -1,24 +1,26 @@
 package mobi.chouette.exchange.regtopp.importer;
 
-import mobi.chouette.common.Context;
-import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.dao.LineDAO;
-import mobi.chouette.dao.RouteDAO;
-import mobi.chouette.dao.VehicleJourneyDAO;
-import mobi.chouette.exchange.regtopp.DummyChecker;
-import mobi.chouette.exchange.regtopp.JobDataTest;
-import mobi.chouette.exchange.regtopp.RegtoppTestUtils;
-import mobi.chouette.exchange.regtopp.importer.version.RegtoppVersion;
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.DataStats;
-import mobi.chouette.exchange.report.LineInfo;
-import mobi.chouette.exchange.validation.report.CheckPoint;
-import mobi.chouette.exchange.validation.report.ValidationReport;
-import mobi.chouette.model.*;
-import mobi.chouette.model.type.ChouetteAreaEnum;
-import mobi.chouette.model.type.TransportModeNameEnum;
-import mobi.chouette.persistence.hibernate.ContextHolder;
+import static mobi.chouette.exchange.report.ReportConstant.STATUS_OK;
+import static org.testng.Assert.assertEquals;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.ejb.EJB;
+import javax.inject.Inject;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.UserTransaction;
+
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -30,21 +32,35 @@ import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import javax.ejb.EJB;
-import javax.inject.Inject;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.transaction.UserTransaction;
-import java.io.File;
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import static mobi.chouette.exchange.report.ReportConstant.STATUS_OK;
-import static org.testng.Assert.assertEquals;
+import mobi.chouette.common.Context;
+import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.dao.LineDAO;
+import mobi.chouette.dao.RouteDAO;
+import mobi.chouette.dao.VehicleJourneyDAO;
+import mobi.chouette.exchange.regtopp.DummyChecker;
+import mobi.chouette.exchange.regtopp.JobDataTest;
+import mobi.chouette.exchange.regtopp.RegtoppTestUtils;
+import mobi.chouette.exchange.regtopp.importer.version.RegtoppVersion;
+import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.DataStats;
+import mobi.chouette.exchange.report.FileInfo;
+import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
+import mobi.chouette.exchange.report.LineInfo;
+import mobi.chouette.exchange.report.LineInfo.LINE_STATE;
+import mobi.chouette.exchange.validation.report.CheckPoint;
+import mobi.chouette.exchange.validation.report.CheckPoint.RESULT;
+import mobi.chouette.exchange.validation.report.Detail;
+import mobi.chouette.exchange.validation.report.ValidationReport;
+import mobi.chouette.model.Footnote;
+import mobi.chouette.model.JourneyPattern;
+import mobi.chouette.model.Line;
+import mobi.chouette.model.Route;
+import mobi.chouette.model.StopArea;
+import mobi.chouette.model.StopPoint;
+import mobi.chouette.model.VehicleJourney;
+import mobi.chouette.model.type.ChouetteAreaEnum;
+import mobi.chouette.model.type.TransportModeNameEnum;
+import mobi.chouette.persistence.hibernate.ContextHolder;
 
 public class RegtoppImporterCommandTest extends Arquillian implements mobi.chouette.common.Constant {
 
@@ -148,10 +164,11 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		parameters.setCoordinateProjection("EPSG:32632");
 
 		boolean result = command.execute(context);
+		dumpReports(context);
 
 		ActionReport report = (ActionReport) context.get(REPORT);
 		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
-		assertActionReport(report, STATUS_OK, 11, 1);
+		assertActionReport(report, STATUS_OK, 8, 1);
 		assertStats(report.getStats(), 1, 9);
 		assertLine(report.getLines().get(0), LineInfo.LINE_STATE.OK);
 		assertValidationReportOk(validationReport, "VALIDATION_PROCEDEED"); // typo in chouette
@@ -219,12 +236,6 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 
 		utx.rollback();
 
-		if (!result) {
-			System.out.println(ToStringBuilder.reflectionToString(report, ToStringStyle.MULTI_LINE_STYLE));
-			System.out.println(validationReport);
-
-		}
-
 		Assert.assertTrue(result, "Importer command execution failed: " + report.getFailure());
 	}
 
@@ -249,10 +260,11 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		parameters.setCoordinateProjection("EPSG:32632");
 
 		command.execute(context);
+		dumpReports(context);
 
 		ActionReport report = (ActionReport) context.get(REPORT);
 		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
-		assertActionReport(report, STATUS_OK, 11, 1);
+		assertActionReport(report, STATUS_OK, 8, 1);
 		assertStats(report.getStats(), 1, 57);
 		assertLine(report.getLines().get(0), LineInfo.LINE_STATE.OK);
 		assertValidationReportOk(validationReport, "VALIDATION_PROCEDEED"); // typo in chouette
@@ -293,13 +305,14 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		parameters.setCoordinateProjection("EPSG:32632");
 
 		command.execute(context);
+		dumpReports(context);
 
 		ActionReport report = (ActionReport) context.get(REPORT);
 		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
-		assertActionReport(report, STATUS_OK, 11, 1);
+		assertActionReport(report, STATUS_OK, 8, 1);
 		assertStats(report.getStats(), 1, 9);
 		assertLine(report.getLines().get(0), LineInfo.LINE_STATE.OK);
-		assertValidationReport(validationReport, "VALIDATION_PROCEDEED", 4, 2, 0); // typo in chouette
+		assertValidationReport(validationReport, "VALIDATION_PROCEDEED", 9, 1, 0); // typo in chouette
 
 		// line should be saved
 		utx.begin();
@@ -345,13 +358,14 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		parameters.setCoordinateProjection("EPSG:32632");
 
 		boolean result = command.execute(context);
+		dumpReports(context);
 
 		ActionReport report = (ActionReport) context.get(REPORT);
 		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
-		assertActionReport(report, STATUS_OK, 11, 1);
+		assertActionReport(report, STATUS_OK, 8, 1);
 		assertStats(report.getStats(), 1, 3);
 		assertLine(report.getLines().get(0), LineInfo.LINE_STATE.OK);
-		assertValidationReport(validationReport, "VALIDATION_PROCEDEED", 4, 2, 0); // typo in chouette
+		assertValidationReport(validationReport, "VALIDATION_PROCEDEED", 9, 1, 0); // typo in chouette
 
 		// Reporter.log("report line :" + report.getLines().get(0).toString(), true);
 		// Assert.assertEquals(report.getLines().get(0).getStatus(), LINE_STATE.OK, "line status");
@@ -453,13 +467,15 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		parameters.setCoordinateProjection("EPSG:32632");
 
 		command.execute(context);
+		dumpReports(context);
 
 		ActionReport report = (ActionReport) context.get(REPORT);
 		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
-		assertActionReport(report, STATUS_OK, 11, 1);
+
+		assertActionReport(report, STATUS_OK, 8, 1);
 		assertStats(report.getStats(), 1, 10);
 		assertLine(report.getLines().get(0), LineInfo.LINE_STATE.OK);
-		assertValidationReport(validationReport, "VALIDATION_PROCEDEED", 5, 1, 0); // typo in chouette
+		assertValidationReport(validationReport, "VALIDATION_PROCEDEED", 10, 0, 0); // typo in chouette
 
 		// line should be saved
 		utx.begin();
@@ -506,13 +522,15 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 
 		command.execute(context);
 
+		dumpReports(context);
+
 		ActionReport report = (ActionReport) context.get(REPORT);
 		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
-		assertActionReport(report, STATUS_OK, 11, 1);
+		assertActionReport(report, STATUS_OK, 8, 1);
 		assertStats(report.getStats(), 1, 12);
 		assertLine(report.getLines().get(0), LineInfo.LINE_STATE.OK);
 		// TODO line below must be verified
-		assertValidationReport(validationReport, "VALIDATION_PROCEDEED", 6, 0, 0); // typo in chouette
+		assertValidationReport(validationReport, "VALIDATION_PROCEDEED", 9, 0, 1); // typo in chouette
 
 		System.out.println(ToStringBuilder.reflectionToString(report, ToStringStyle.MULTI_LINE_STYLE, true));
 
@@ -559,9 +577,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		parameters.setCoordinateProjection("EPSG:32632");
 
 		command.execute(context);
-
-		ActionReport report = (ActionReport) context.get(REPORT);
-		System.out.println(ToStringBuilder.reflectionToString(report, ToStringStyle.MULTI_LINE_STYLE, true));
+		dumpReports(context);
 
 		// line should be saved
 		utx.begin();
@@ -592,26 +608,27 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 				for (StopPoint p : jp.getStopPoints()) {
 					StopArea stopArea = p.getContainedInStopArea();
 
-					Assert.assertEquals(stopArea.getAreaType(),ChouetteAreaEnum.BoardingPosition,"stoppoint does not refer to boarding position");
+					Assert.assertEquals(stopArea.getAreaType(), ChouetteAreaEnum.BoardingPosition, "stoppoint does not refer to boarding position");
 					boardingPositions.add(stopArea);
-					Assert.assertNotNull(stopArea.getParent(),"parent is null");
-					Assert.assertEquals(stopArea.getParent().getAreaType(),ChouetteAreaEnum.StopPlace,"stoppoint -> stoparea -> parent is not of type stopPlace");
-					
+					Assert.assertNotNull(stopArea.getParent(), "parent is null");
+					Assert.assertEquals(stopArea.getParent().getAreaType(), ChouetteAreaEnum.StopPlace,
+							"stoppoint -> stoparea -> parent is not of type stopPlace");
+
 				}
 			}
 		}
-		
+
 		Assert.assertEquals(line.getRoutes().size(), 8, "routes");
 		Assert.assertEquals(numVehicleJourneys, 453, "vehicleJourneys");
 		Assert.assertEquals(boardingPositions.size(), 66, "numBoardingPositions");
 		Assert.assertEquals(numStopPoints, 212, "numStopPoints");
 
-//		Route route0002139 = routeDao.findByObjectId("TST:Route:0002139");
-//		Assert.assertNotNull(route0002139);
-//		List<JourneyPattern> journeyPatterns = route0002139.getJourneyPatterns();
-//		Assert.assertEquals(journeyPatterns.size(), 1);
-//		Assert.assertEquals(journeyPatterns.get(0).getStopPoints().size(), 5);
-//		Assert.assertEquals(journeyPatterns.get(0).getVehicleJourneys().size(), 2);
+		// Route route0002139 = routeDao.findByObjectId("TST:Route:0002139");
+		// Assert.assertNotNull(route0002139);
+		// List<JourneyPattern> journeyPatterns = route0002139.getJourneyPatterns();
+		// Assert.assertEquals(journeyPatterns.size(), 1);
+		// Assert.assertEquals(journeyPatterns.get(0).getStopPoints().size(), 5);
+		// Assert.assertEquals(journeyPatterns.get(0).getVehicleJourneys().size(), 2);
 
 		utx.rollback();
 
@@ -658,6 +675,64 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		assertEquals(report.getResult(), status, "result");
 		assertEquals(report.getFiles().size(), files, "file reported");
 		assertEquals(report.getLines().size(), lines, "line reported");
+	}
+
+	public void dumpReports(Context context) {
+		ActionReport actionReport = (ActionReport) context.get(REPORT);
+	
+		ReflectionToStringBuilder builder = new ReflectionToStringBuilder(actionReport, ToStringStyle.MULTI_LINE_STYLE, null, null, true, true);
+		builder.setExcludeFieldNames(new String[] { "files", "lines" });
+		System.out.println(builder.toString());
+		for (FileInfo object : actionReport.getFiles()) {
+			String toString = ToStringBuilder.reflectionToString(object, ToStringStyle.SHORT_PREFIX_STYLE, true);
+			if(object.getStatus() == FILE_STATE.ERROR) {
+				logError(toString);
+			} else {
+				logOk(System.out,toString);
+			}
+		}
+		for (LineInfo object : actionReport.getLines()) {
+			String toString = ToStringBuilder.reflectionToString(object, ToStringStyle.SHORT_PREFIX_STYLE, true);
+			if(object.getStatus() == LINE_STATE.ERROR) {
+				logError(toString);
+			} else {
+				logOk(System.out,toString);
+			}
+		}
+
+		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
+		ReflectionToStringBuilder validationBuilder = new ReflectionToStringBuilder(validationReport, ToStringStyle.SHORT_PREFIX_STYLE, null, null, true, true);
+		validationBuilder.setExcludeFieldNames(new String[] { "checkPoints" });
+		System.out.println(validationBuilder.toString());
+	
+		for (CheckPoint object : validationReport.getCheckPoints()) {
+			ReflectionToStringBuilder checkpointBuilder = new ReflectionToStringBuilder(object, ToStringStyle.SHORT_PREFIX_STYLE, null, null, true, true);
+			checkpointBuilder.setExcludeFieldNames(new String[] { "details" });
+			String checkpointAsString = checkpointBuilder.toString();
+		
+			List<String> lines = new ArrayList<String>();
+			lines.add(checkpointAsString);
+			for(Detail d : object.getDetails()) {
+				lines.add("   "+ToStringBuilder.reflectionToString(d, ToStringStyle.SHORT_PREFIX_STYLE, true));
+			}
+			
+			if(object.getState() == RESULT.NOK) {
+				logError(lines.toArray(new String[0]));
+			} else {
+				logOk(System.out,lines.toArray(new String[0]));
+			}
+		}
+	}
+	
+	private void logError(String... data) {
+		logOk(System.err,data);
+	}
+	
+	private void logOk(PrintStream stream, String... data) {
+		for(String d : data) {
+			stream.println(d);
+		}
+		
 	}
 
 }

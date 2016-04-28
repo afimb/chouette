@@ -72,6 +72,10 @@ public abstract class AbstractRegtoppRouteTMS extends RegtoppObject implements S
 	public abstract String getMonitor();
 
 	public abstract Integer getDistance();
+	
+	public String getFullStopId() {
+		return getStopId();
+	}
 
 	public String getRouteKey() {
 		if (lineId == null || direction == null || routeId == null) {

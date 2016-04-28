@@ -1,8 +1,13 @@
 package mobi.chouette.exchange.regtopp.validation;
 
-import static mobi.chouette.common.Constant.*;
-import static mobi.chouette.exchange.regtopp.validation.Constant.*;
+import static mobi.chouette.common.Constant.MAIN_VALIDATION_REPORT;
+import static mobi.chouette.common.Constant.REPORT;
+import static mobi.chouette.exchange.regtopp.validation.Constant.REGTOPP_FILE;
+import static mobi.chouette.exchange.regtopp.validation.Constant.REGTOPP_INVALID_FIELD_VALUE;
+import static mobi.chouette.exchange.regtopp.validation.Constant.REGTOPP_INVALID_MANDATORY_ID_REFERENCE;
+import static mobi.chouette.exchange.regtopp.validation.Constant.REGTOPP_INVALID_OPTIONAL_ID_REFERENCE;
 
+import java.util.List;
 import java.util.Set;
 
 import lombok.Getter;
@@ -10,6 +15,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.FileError;
+import mobi.chouette.exchange.report.FileInfo;
 import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
 import mobi.chouette.exchange.validation.report.CheckPoint;
 import mobi.chouette.exchange.validation.report.Location;
@@ -29,7 +35,7 @@ public class RegtoppValidationReporter {
 	public void throwUnknownError(Context context, Exception ex, String filenameInfo) throws Exception {
 		ActionReport report = (ActionReport) context.get(REPORT);
 		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
-		String name = name(filenameInfo);
+		String name = filenameInfo;
 		String checkPointName = checkPointName(name, RegtoppException.ERROR.SYSTEM);
 
 		if (filenameInfo != null && filenameInfo.indexOf('.') > 0) {
@@ -42,13 +48,6 @@ public class RegtoppValidationReporter {
 		}
 	}
 
-	public void validateUnknownError(Context context) {
-		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
-		CheckPoint cp = validationReport.findCheckPointByName(REGTOPP_FILE);
-		if (cp.getState() == CheckPoint.RESULT.UNCHECK)
-			cp.setState(CheckPoint.RESULT.OK);
-	}
-
 	public void reportErrors(Context context, Set<RegtoppException> errors, String filename) throws Exception {
 		for (RegtoppException error : errors) {
 			reportError(context, error, filename);
@@ -58,49 +57,44 @@ public class RegtoppValidationReporter {
 	public void reportError(Context context, RegtoppException ex, String filenameInfo) throws Exception {
 		if (!exceptions.add(ex))
 			return;
-		ActionReport report = (ActionReport) context.get(REPORT);
+		ActionReport actionReport = (ActionReport) context.get(REPORT);
 		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
-		String name = name(filenameInfo);
-		String filenameInfo2 = "";
 		String checkPointName = "";
 		String fieldName = "";
-		String fieldName2 = "";
-		String value = "";
 
-		// log.error(ex);
-
-
-		//TODO improve messages below
+		// TODO improve messages below
 
 		switch (ex.getError()) {
 		case INVALID_MANDATORY_ID_REFERENCE:
-			checkPointName = checkPointName(name, RegtoppException.ERROR.INVALID_MANDATORY_ID_REFERENCE);
-			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-					new FileError(FileError.CODE.INVALID_FORMAT,
-							"Unreferenced " + ex.getField() + " (rule " + checkPointName + ")"));
-			validationReport.addDetail(checkPointName,
-					new Location(filenameInfo, fieldName, ex.getLineNumber()), ex.getValue(), ex.getField(), CheckPoint.RESULT.UNCHECK);
+			checkPointName = checkPointName(filenameInfo, RegtoppException.ERROR.INVALID_MANDATORY_ID_REFERENCE);
+			addError(actionReport, filenameInfo,
+					new FileError(FileError.CODE.INVALID_FORMAT, "Unreferenced " + ex.getField() + " (rule " + checkPointName + ")"));
+			actionReport.addFileInfo(filenameInfo, FILE_STATE.ERROR);
+			validationReport.addDetail(checkPointName, new Location(filenameInfo, fieldName, ex.getLineNumber()), ex.getValue(), ex.getField(),
+					CheckPoint.RESULT.UNCHECK);
 			break;
 		case INVALID_OPTIONAL_ID_REFERENCE:
-			checkPointName = checkPointName(name, RegtoppException.ERROR.INVALID_OPTIONAL_ID_REFERENCE);
-			report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-					new FileError(FileError.CODE.INVALID_FORMAT,
-							"Unreferenced " + ex.getField() + " (rule " + checkPointName + ")"));
-			validationReport.addDetail(checkPointName,
-					new Location(filenameInfo, fieldName, ex.getLineNumber()), ex.getValue(), ex.getField(), CheckPoint.RESULT.UNCHECK);
+			checkPointName = checkPointName(filenameInfo, RegtoppException.ERROR.INVALID_OPTIONAL_ID_REFERENCE);
+
+			addError(actionReport, filenameInfo,
+					new FileError(FileError.CODE.INVALID_FORMAT, "Unreferenced " + ex.getField() + " (rule " + checkPointName + ")"));
+			actionReport.addFileInfo(filenameInfo, FILE_STATE.ERROR);
+			validationReport.addDetail(checkPointName, new Location(filenameInfo, fieldName, ex.getLineNumber()), ex.getValue(), ex.getField(),
+					CheckPoint.RESULT.UNCHECK);
 			break;
 		case INVALID_FIELD_VALUE:
-				checkPointName = checkPointName(name, RegtoppException.ERROR.INVALID_FIELD_VALUE);
-				report.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
-						new FileError(FileError.CODE.INVALID_FORMAT,
-								"Invalid value in field " + ex.getField() + " (rule " + checkPointName + ")"));
-				validationReport.addDetail(checkPointName,
-						new Location(filenameInfo, fieldName, ex.getLineNumber()), ex.getValue(), ex.getField(), CheckPoint.RESULT.UNCHECK);
-				break;
+			checkPointName = checkPointName(filenameInfo, RegtoppException.ERROR.INVALID_FIELD_VALUE);
+			addError(actionReport, filenameInfo,
+					new FileError(FileError.CODE.INVALID_FORMAT, "Invalid value in field " + ex.getField() + " (rule " + checkPointName + ")"));
+			actionReport.addFileInfo(filenameInfo, FILE_STATE.ERROR);
+			validationReport.addDetail(checkPointName, new Location(filenameInfo, fieldName, ex.getLineNumber()), ex.getValue(), ex.getField(),
+					CheckPoint.RESULT.UNCHECK);
+			break;
 		case SYSTEM:
-			checkPointName = checkPointName(name, RegtoppException.ERROR.SYSTEM);
-			report.addFileInfo(filenameInfo, FILE_STATE.ERROR, new FileError(FileError.CODE.INVALID_FORMAT,
+			checkPointName = checkPointName(filenameInfo, RegtoppException.ERROR.SYSTEM);
+			addError(actionReport, filenameInfo, new FileError(FileError.CODE.INVALID_FORMAT,
 					"The first line in file \"" + filenameInfo + "\" must comply with CSV (rule " + checkPointName + ")"));
+			actionReport.addFileInfo(filenameInfo, FILE_STATE.ERROR);
 			validationReport.addDetail(checkPointName, new Location(filenameInfo, 1, -1), filenameInfo, CheckPoint.RESULT.NOK);
 			break;
 		default:
@@ -109,7 +103,7 @@ public class RegtoppValidationReporter {
 	}
 
 	private String checkPointName(String name, mobi.chouette.exchange.regtopp.validation.RegtoppException.ERROR errorName) {
-//		name = capitalize(name);
+		// name = capitalize(name);
 		switch (errorName) {
 		case SYSTEM:
 			return REGTOPP_FILE;
@@ -122,20 +116,6 @@ public class RegtoppValidationReporter {
 		default:
 			return null;
 		}
-	}
-
-
-	private String name(String filename) {
-		if (filename != null) {
-			if (filename.indexOf('.') > 0)
-				filename = filename.substring(0, filename.lastIndexOf('.'));
-			if (filename.endsWith("ies"))
-				filename = filename.substring(0, filename.lastIndexOf('i')) + "y";
-			if (filename.endsWith("s"))
-				filename = filename.substring(0, filename.lastIndexOf('s'));
-			return filename;
-		}
-		return "";
 	}
 
 	public void reportSuccess(Context context, String checkpointName, String filenameInfo) {
@@ -155,7 +135,7 @@ public class RegtoppValidationReporter {
 	}
 
 	public void validate(Context context, String filenameInfo, mobi.chouette.exchange.regtopp.validation.RegtoppException.ERROR errorCode) {
-		String checkPointName = checkPointName(name(filenameInfo), errorCode);
+		String checkPointName = checkPointName(filenameInfo, errorCode);
 		validate(context, filenameInfo, checkPointName);
 	}
 
@@ -167,6 +147,17 @@ public class RegtoppValidationReporter {
 		if (checkPoint != null)
 			if (checkPoint.getState() == CheckPoint.RESULT.UNCHECK)
 				checkPoint.setState(CheckPoint.RESULT.OK);
+
+	}
+
+	private void addError(ActionReport actionReport, String filename, FileError error) {
+		List<FileInfo> files = actionReport.getFiles();
+		for (FileInfo f : files) {
+			if (f.getName().equals(filename)) {
+				f.addError(error);
+				break;
+			}
+		}
 
 	}
 

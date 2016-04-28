@@ -103,12 +103,14 @@ public class RegtoppImporter {
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public Index getIndex(String name, Class clazz) {
+	public Index getIndex(String name, Class clazz) throws Exception {
 		Index index = indexMap.get(name);
 
+		ParseableFile parseableFile = null;
+		
 		if (index == null) {
 			try {
-				ParseableFile parseableFile = fileMap.get(name);
+				parseableFile = fileMap.get(name);
 				if (parseableFile == null) {
 					throw new RuntimeException("No such index " + name);
 				}
@@ -132,22 +134,12 @@ public class RegtoppImporter {
 			}
 
 		}
+		
+		index.validate(context,parseableFile);
+		
 		return index;
 	}
-
-	@SuppressWarnings("unchecked")
-	public Index<AbstractRegtoppStopHPL> getStopById() {
-		return getIndex(INDEX.STOP_BY_ID.name(), StopById.class);
-	}
-
-	public Index<AbstractRegtoppTripIndexTIX> getUniqueLinesByTripIndex() {
-		return getIndex(INDEX.LINE_BY_TRIPS.name(), UniqueLinesByTripIndex.class);
-	}
-
-	public Index<AbstractRegtoppTripIndexTIX> getTripIndex() {
-		return getIndex(INDEX.TRIP_INDEX.name(), TripByIndexingKey.class);
-	}
-
+	
 	public boolean hasTMSImporter() {
 		return hasImporter(AbstractRegtoppRouteTMS.FILE_EXTENSION);
 	}
@@ -176,6 +168,18 @@ public class RegtoppImporter {
 		return hasImporter(RegtoppDayCodeDKO.FILE_EXTENSION);
 	}
 
+	public boolean hasGAVImporter() {
+		return hasImporter(RegtoppPathwayGAV.FILE_EXTENSION);
+	}
+
+	public boolean hasMRKImporter() {
+		return hasImporter(RegtoppFootnoteMRK.FILE_EXTENSION);
+	}
+
+	public boolean hasDSTImporter() {
+		return hasImporter(RegtoppDestinationDST.FILE_EXTENSION);
+	}
+
 	private boolean hasImporter(final String pattern) {
 		File folder = new File(path);
 		String[] matchingFiles = folder.list(new FilenameFilter() {
@@ -188,45 +192,52 @@ public class RegtoppImporter {
 		return matchingFiles.length == 1;
 	}
 
-	public Index<RegtoppFootnoteMRK> getFootnoteById() {
+	@SuppressWarnings("unchecked")
+	public Index<AbstractRegtoppStopHPL> getStopById() throws Exception {
+		return getIndex(INDEX.STOP_BY_ID.name(), StopById.class);
+	}
+
+	public Index<AbstractRegtoppTripIndexTIX> getUniqueLinesByTripIndex() throws Exception {
+		return getIndex(INDEX.LINE_BY_TRIPS.name(), UniqueLinesByTripIndex.class);
+	}
+
+	public Index<AbstractRegtoppTripIndexTIX> getTripIndex() throws Exception {
+		return getIndex(INDEX.TRIP_INDEX.name(), TripByIndexingKey.class);
+	}
+
+	public Index<RegtoppFootnoteMRK> getFootnoteById() throws Exception {
 		return getIndex(INDEX.REMARK_BY_ID.name(), FootnoteById.class);
 	}
 
-	public Index<RegtoppDestinationDST> getDestinationById() {
+	public Index<RegtoppDestinationDST> getDestinationById() throws Exception {
 		return getIndex(INDEX.DESTINATION_BY_ID.name(), DestinationById.class);
 	}
 
-	public Index<RegtoppDayCodeDKO> getDayCodeById() {
+	public Index<RegtoppDayCodeDKO> getDayCodeById() throws Exception {
 		return getIndex(INDEX.DAYCODE_BY_ID.name(), DaycodeById.class);
 	}
 
-	public Index<RegtoppLineLIN> getLineById() {
+	public Index<RegtoppLineLIN> getLineById() throws Exception {
 		return getIndex(INDEX.LINE_BY_ID.name(), LineById.class);
-
 	}
 
-	public Index<AbstractRegtoppRouteTMS> getRouteIndex() {
+	public Index<AbstractRegtoppRouteTMS> getRouteIndex() throws Exception {
 		return getIndex(INDEX.ROUTE_INDEX.name(), RouteByIndexingKey.class);
 	}
 
-	public Index<RegtoppRouteTDA> getRouteSegmentByLineNumber() {
+	public Index<RegtoppRouteTDA> getRouteSegmentByLineNumber() throws Exception {
 		return getIndex(INDEX.ROUTE_BY_LINE_NUMBER.name(), RouteByLineNumber.class);
 	}
 
-	public Index<List<RegtoppStopPointSTP>> getStopPointsByStopId() {
+	public Index<List<RegtoppStopPointSTP>> getStopPointsByStopId() throws Exception {
 		return getIndex(INDEX.STOPPOINT_BY_STOP_ID.name(), StopPointByStopId.class);
 	}
 
-	public Index<RegtoppStopPointSTP> getStopPointsByIndexingKey() {
+	public Index<RegtoppStopPointSTP> getStopPointsByIndexingKey() throws Exception {
 		return getIndex(INDEX.STOPPOINT_BY_ID.name(), StopPointByIndexingKey.class);
 	}
 
-	public boolean hasGAVImporter() {
-		return hasImporter(RegtoppPathwayGAV.FILE_EXTENSION);
-	}
-
-	public Index<AbstractRegtoppPathwayGAV> getPathwayByIndexingKey() {
+	public Index<AbstractRegtoppPathwayGAV> getPathwayByIndexingKey() throws Exception {
 		return getIndex(INDEX.PATHWAY_BY_INDEXING_KEY.name(), PathwayByIndexingKey.class);
 	}
-
 }

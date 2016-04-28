@@ -24,7 +24,7 @@ public class PathwayByIndexingKey extends IndexImpl<AbstractRegtoppPathwayGAV> {
 	}
 
 	@Override
-	public boolean validate(AbstractRegtoppPathwayGAV bean, RegtoppImporter dao) {
+	public boolean validate(AbstractRegtoppPathwayGAV bean, RegtoppImporter dao) throws Exception {
 		boolean result = true;
 
 		if (bean.getDescription() != null) {
