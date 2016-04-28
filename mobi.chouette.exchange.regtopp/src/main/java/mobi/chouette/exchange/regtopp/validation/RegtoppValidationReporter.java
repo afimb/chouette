@@ -179,6 +179,85 @@ public class RegtoppValidationReporter {
 				break;
 
 
+
+			case DST_INVALID_MANDATORY_ID_REFERENCE:
+				checkPointName = checkPointName(RegtoppException.ERROR.DST_INVALID_MANDATORY_ID_REFERENCE);
+				actionReport.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+						new FileError(FileError.CODE.INVALID_FORMAT,
+								"Invalid mandatory id reference " + ex.getField() + " (rule " + checkPointName + ")"));
+				validationReport.addDetail(checkPointName,
+						new Location(filenameInfo, fieldName, ex.getLineNumber()), ex.getValue(), ex.getField(), CheckPoint.RESULT.UNCHECK);
+				break;
+			case DST_INVALID_OPTIONAL_ID_REFERENCE:
+				checkPointName = checkPointName(RegtoppException.ERROR.DST_INVALID_OPTIONAL_ID_REFERENCE);
+				actionReport.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+						new FileError(FileError.CODE.INVALID_FORMAT,
+								"Invalid optional id reference  " + ex.getField() + " (rule " + checkPointName + ")"));
+				validationReport.addDetail(checkPointName,
+						new Location(filenameInfo, fieldName, ex.getLineNumber()), ex.getValue(), ex.getField(), CheckPoint.RESULT.UNCHECK);
+				break;
+			case DST_INVALID_FIELD_VALUE:
+				checkPointName = checkPointName(RegtoppException.ERROR.DST_INVALID_FIELD_VALUE);
+				actionReport.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+						new FileError(FileError.CODE.INVALID_FORMAT,
+								"Invalid value in field " + ex.getField() + " (rule " + checkPointName + ")"));
+				validationReport.addDetail(checkPointName,
+						new Location(filenameInfo, fieldName, ex.getLineNumber()), ex.getValue(), ex.getField(), CheckPoint.RESULT.UNCHECK);
+				break;
+
+
+
+			case MRK_INVALID_MANDATORY_ID_REFERENCE:
+				checkPointName = checkPointName(RegtoppException.ERROR.MRK_INVALID_MANDATORY_ID_REFERENCE);
+				actionReport.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+						new FileError(FileError.CODE.INVALID_FORMAT,
+								"Invalid mandatory id reference " + ex.getField() + " (rule " + checkPointName + ")"));
+				validationReport.addDetail(checkPointName,
+						new Location(filenameInfo, fieldName, ex.getLineNumber()), ex.getValue(), ex.getField(), CheckPoint.RESULT.UNCHECK);
+				break;
+			case MRK_INVALID_OPTIONAL_ID_REFERENCE:
+				checkPointName = checkPointName(RegtoppException.ERROR.MRK_INVALID_OPTIONAL_ID_REFERENCE);
+				actionReport.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+						new FileError(FileError.CODE.INVALID_FORMAT,
+								"Invalid optional id reference  " + ex.getField() + " (rule " + checkPointName + ")"));
+				validationReport.addDetail(checkPointName,
+						new Location(filenameInfo, fieldName, ex.getLineNumber()), ex.getValue(), ex.getField(), CheckPoint.RESULT.UNCHECK);
+				break;
+			case MRK_INVALID_FIELD_VALUE:
+				checkPointName = checkPointName(RegtoppException.ERROR.MRK_INVALID_FIELD_VALUE);
+				actionReport.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+						new FileError(FileError.CODE.INVALID_FORMAT,
+								"Invalid value in field " + ex.getField() + " (rule " + checkPointName + ")"));
+				validationReport.addDetail(checkPointName,
+						new Location(filenameInfo, fieldName, ex.getLineNumber()), ex.getValue(), ex.getField(), CheckPoint.RESULT.UNCHECK);
+				break;
+
+			case LIN_INVALID_MANDATORY_ID_REFERENCE:
+				checkPointName = checkPointName(RegtoppException.ERROR.LIN_INVALID_MANDATORY_ID_REFERENCE);
+				actionReport.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+						new FileError(FileError.CODE.INVALID_FORMAT,
+								"Invalid mandatory id reference " + ex.getField() + " (rule " + checkPointName + ")"));
+				validationReport.addDetail(checkPointName,
+						new Location(filenameInfo, fieldName, ex.getLineNumber()), ex.getValue(), ex.getField(), CheckPoint.RESULT.UNCHECK);
+				break;
+			case LIN_INVALID_OPTIONAL_ID_REFERENCE:
+				checkPointName = checkPointName(RegtoppException.ERROR.LIN_INVALID_OPTIONAL_ID_REFERENCE);
+				actionReport.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+						new FileError(FileError.CODE.INVALID_FORMAT,
+								"Invalid optional id reference  " + ex.getField() + " (rule " + checkPointName + ")"));
+				validationReport.addDetail(checkPointName,
+						new Location(filenameInfo, fieldName, ex.getLineNumber()), ex.getValue(), ex.getField(), CheckPoint.RESULT.UNCHECK);
+				break;
+			case LIN_INVALID_FIELD_VALUE:
+				checkPointName = checkPointName(RegtoppException.ERROR.LIN_INVALID_FIELD_VALUE);
+				actionReport.addFileInfo(filenameInfo, FILE_STATE.IGNORED,
+						new FileError(FileError.CODE.INVALID_FORMAT,
+								"Invalid value in field " + ex.getField() + " (rule " + checkPointName + ")"));
+				validationReport.addDetail(checkPointName,
+						new Location(filenameInfo, fieldName, ex.getLineNumber()), ex.getValue(), ex.getField(), CheckPoint.RESULT.UNCHECK);
+				break;
+
+
 			default:
 				break;
 		}
@@ -219,6 +298,26 @@ public class RegtoppValidationReporter {
 			case GAV_INVALID_OPTIONAL_ID_REFERENCE:
 				return REGTOPP_GAV_INVALID_OPTIONAL_ID_REFERENCE;
 
+			case DST_INVALID_FIELD_VALUE:
+				return REGTOPP_DST_INVALID_FIELD_VALUE;
+			case DST_INVALID_MANDATORY_ID_REFERENCE:
+				return REGTOPP_DST_INVALID_MANDATORY_ID_REFERENCE;
+			case DST_INVALID_OPTIONAL_ID_REFERENCE:
+				return REGTOPP_DST_INVALID_OPTIONAL_ID_REFERENCE;
+
+			case MRK_INVALID_FIELD_VALUE:
+				return REGTOPP_MRK_INVALID_FIELD_VALUE;
+			case MRK_INVALID_MANDATORY_ID_REFERENCE:
+				return REGTOPP_MRK_INVALID_MANDATORY_ID_REFERENCE;
+			case MRK_INVALID_OPTIONAL_ID_REFERENCE:
+				return REGTOPP_MRK_INVALID_OPTIONAL_ID_REFERENCE;
+
+			case LIN_INVALID_FIELD_VALUE:
+				return REGTOPP_LIN_INVALID_FIELD_VALUE;
+			case LIN_INVALID_MANDATORY_ID_REFERENCE:
+				return REGTOPP_LIN_INVALID_MANDATORY_ID_REFERENCE;
+			case LIN_INVALID_OPTIONAL_ID_REFERENCE:
+				return REGTOPP_LIN_INVALID_OPTIONAL_ID_REFERENCE;
 
 			default:
 				return null;

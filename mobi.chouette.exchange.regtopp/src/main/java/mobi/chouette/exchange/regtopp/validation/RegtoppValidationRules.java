@@ -45,6 +45,18 @@ public class RegtoppValidationRules {
 		checkPoints.add(new CheckPoint(REGTOPP_TMS_INVALID_MANDATORY_ID_REFERENCE, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
 		checkPoints.add(new CheckPoint(REGTOPP_TMS_INVALID_OPTIONAL_ID_REFERENCE, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
 
+		checkPoints.add(new CheckPoint(REGTOPP_DST_INVALID_FIELD_VALUE, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		checkPoints.add(new CheckPoint(REGTOPP_DST_INVALID_MANDATORY_ID_REFERENCE, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		checkPoints.add(new CheckPoint(REGTOPP_DST_INVALID_OPTIONAL_ID_REFERENCE, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+
+		checkPoints.add(new CheckPoint(REGTOPP_MRK_INVALID_FIELD_VALUE, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		checkPoints.add(new CheckPoint(REGTOPP_MRK_INVALID_MANDATORY_ID_REFERENCE, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		checkPoints.add(new CheckPoint(REGTOPP_MRK_INVALID_OPTIONAL_ID_REFERENCE, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+
+		checkPoints.add(new CheckPoint(REGTOPP_LIN_INVALID_FIELD_VALUE, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		checkPoints.add(new CheckPoint(REGTOPP_LIN_INVALID_MANDATORY_ID_REFERENCE, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		checkPoints.add(new CheckPoint(REGTOPP_LIN_INVALID_OPTIONAL_ID_REFERENCE, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+
 		return checkPoints;
 	}
 }

@@ -28,22 +28,22 @@ public class PathwayByIndexingKey extends IndexImpl<AbstractRegtoppPathwayGAV> {
 		boolean result = true;
 
 		if (bean.getDescription() != null) {
-			bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
+			bean.getOkTests().add(RegtoppException.ERROR.GAV_INVALID_FIELD_VALUE);
 		} else {
 			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppPathwayGAV.FILE_EXTENSION, bean.getRecordLineNumber(),
-					"Gangveitekst", null, RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
+					"Gangveitekst", null, RegtoppException.ERROR.GAV_INVALID_FIELD_VALUE, "")));
 			result = false;
 		}
 
 		if (bean.getDuration() != null) {
-			bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
+			bean.getOkTests().add(RegtoppException.ERROR.GAV_INVALID_FIELD_VALUE);
 		} else if (bean.getDuration() == null) {
 			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppPathwayGAV.FILE_EXTENSION, bean.getRecordLineNumber(),
-					"Gangtid", null, RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
+					"Gangtid", null, RegtoppException.ERROR.GAV_INVALID_FIELD_VALUE, "")));
 			result = false;
 		} else if (bean.getDuration() <= 0) {
 			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppPathwayGAV.FILE_EXTENSION, bean.getRecordLineNumber(),
-					"Gangtid", null, RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
+					"Gangtid", null, RegtoppException.ERROR.GAV_INVALID_FIELD_VALUE, "")));
 			result = false;
 		}
 		
