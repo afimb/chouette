@@ -171,7 +171,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		assertActionReport(report, STATUS_OK, 8, 1);
 		assertStats(report.getStats(), 1, 9);
 		assertLine(report.getLines().get(0), LineInfo.LINE_STATE.OK);
-		assertValidationReport(validationReport, "VALIDATION_PROCEDEED", 12, 0, 13); // typo in chouette
+		assertValidationReport(validationReport, "VALIDATION_PROCEDEED", 14, 0, 20); // typo in chouette
 
 		// line should be saved
 		utx.begin();
@@ -267,7 +267,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		assertActionReport(report, STATUS_OK, 8, 1);
 		assertStats(report.getStats(), 1, 57);
 		assertLine(report.getLines().get(0), LineInfo.LINE_STATE.OK);
-		assertValidationReport(validationReport, "VALIDATION_PROCEDEED", 12, 0, 13); // typo in chouette
+		assertValidationReport(validationReport, "VALIDATION_PROCEDEED", 15, 0, 19); // typo in chouette
 
 		utx.begin();
 		em.joinTransaction();
@@ -312,7 +312,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		assertActionReport(report, STATUS_OK, 8, 1);
 		assertStats(report.getStats(), 1, 9);
 		assertLine(report.getLines().get(0), LineInfo.LINE_STATE.OK);
-		assertValidationReport(validationReport, "VALIDATION_PROCEDEED", 11, 1, 13); // typo in chouette
+		assertValidationReport(validationReport, "VALIDATION_PROCEDEED", 14, 1, 19); // typo in chouette
 
 		// line should be saved
 		utx.begin();
@@ -365,7 +365,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		assertActionReport(report, STATUS_OK, 8, 1);
 		assertStats(report.getStats(), 1, 3);
 		assertLine(report.getLines().get(0), LineInfo.LINE_STATE.OK);
-		assertValidationReport(validationReport, "VALIDATION_PROCEDEED", 11, 1, 13); // typo in chouette
+		assertValidationReport(validationReport, "VALIDATION_PROCEDEED", 13, 1, 20); // typo in chouette
 
 		// Reporter.log("report line :" + report.getLines().get(0).toString(), true);
 		// Assert.assertEquals(report.getLines().get(0).getStatus(), LINE_STATE.OK, "line status");
@@ -475,7 +475,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		assertActionReport(report, STATUS_OK, 8, 1);
 		assertStats(report.getStats(), 1, 10);
 		assertLine(report.getLines().get(0), LineInfo.LINE_STATE.OK);
-		assertValidationReport(validationReport, "VALIDATION_PROCEDEED", 12, 0, 13); // typo in chouette
+		assertValidationReport(validationReport, "VALIDATION_PROCEDEED", 14, 0, 20); // typo in chouette
 
 		// line should be saved
 		utx.begin();
@@ -530,7 +530,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		assertStats(report.getStats(), 1, 12);
 		assertLine(report.getLines().get(0), LineInfo.LINE_STATE.OK);
 		// TODO line below must be verified
-		assertValidationReport(validationReport, "VALIDATION_PROCEDEED", 11, 0, 13); // typo in chouette
+		assertValidationReport(validationReport, "VALIDATION_PROCEDEED", 13, 0, 20); // typo in chouette
 
 		System.out.println(ToStringBuilder.reflectionToString(report, ToStringStyle.MULTI_LINE_STYLE, true));
 

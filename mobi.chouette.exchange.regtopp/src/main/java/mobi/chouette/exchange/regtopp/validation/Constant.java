@@ -35,9 +35,17 @@ public interface Constant extends mobi.chouette.exchange.regtopp.RegtoppConstant
 	public static final String REGTOPP_TMS_INVALID_MANDATORY_ID_REFERENCE = "2-REGTOPP-TMS-2";
 	public static final String REGTOPP_TMS_INVALID_OPTIONAL_ID_REFERENCE = "2-REGTOPP-TMS-3";
 
+	public static final String REGTOPP_DST_INVALID_FIELD_VALUE = "2-REGTOPP-DST-1";
+	public static final String REGTOPP_DST_INVALID_MANDATORY_ID_REFERENCE = "2-REGTOPP-DST-2";
+	public static final String REGTOPP_DST_INVALID_OPTIONAL_ID_REFERENCE = "2-REGTOPP-DST-3";
 
+	public static final String REGTOPP_MRK_INVALID_FIELD_VALUE = "2-REGTOPP-MRK-1";
+	public static final String REGTOPP_MRK_INVALID_MANDATORY_ID_REFERENCE = "2-REGTOPP-MRK-2";
+	public static final String REGTOPP_MRK_INVALID_OPTIONAL_ID_REFERENCE = "2-REGTOPP-MRK-3";
 
-
+	public static final String REGTOPP_LIN_INVALID_FIELD_VALUE = "2-REGTOPP-LIN-1";
+	public static final String REGTOPP_LIN_INVALID_MANDATORY_ID_REFERENCE = "2-REGTOPP-LIN-2";
+	public static final String REGTOPP_LIN_INVALID_OPTIONAL_ID_REFERENCE = "2-REGTOPP-LIN-3";
 
 	// Postfix with file extension
 	public static final String REGTOPP_FILE_POSTFIX = "1-REGTOPP-FILE-";

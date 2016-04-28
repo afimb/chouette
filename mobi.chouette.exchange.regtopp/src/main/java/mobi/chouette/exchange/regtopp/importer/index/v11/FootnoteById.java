@@ -26,10 +26,10 @@ public class FootnoteById extends IndexImpl<RegtoppFootnoteMRK> {
 	public boolean validate(RegtoppFootnoteMRK bean, RegtoppImporter dao) {
 		boolean result = true;
 
-		if (StringUtils.trimToNull(bean.getDescription()) == null) {
-			// validationReporter.reportError(new Context(), ex, filenameInfo);
-
-			// TODO add entry to validationReporter
+		if (StringUtils.trimToNull(bean.getDescription()) != null) {
+			bean.getOkTests().add(RegtoppException.ERROR.MRK_INVALID_FIELD_VALUE);
+		} else {
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppFootnoteMRK.FILE_EXTENSION, bean.getRecordLineNumber(), "Destinasjonstekst", null, RegtoppException.ERROR.MRK_INVALID_FIELD_VALUE, "")));
 			result = false;
 		}
 

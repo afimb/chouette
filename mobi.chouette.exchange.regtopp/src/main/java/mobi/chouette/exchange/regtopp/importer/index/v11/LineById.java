@@ -12,6 +12,7 @@ import mobi.chouette.exchange.regtopp.model.v11.RegtoppLineLIN;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException.ERROR;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
+import org.apache.commons.lang.StringUtils;
 
 @Log4j
 public class LineById extends IndexImpl<RegtoppLineLIN> {
@@ -24,11 +25,12 @@ public class LineById extends IndexImpl<RegtoppLineLIN> {
 	public boolean validate(RegtoppLineLIN bean, RegtoppImporter dao) {
 		boolean result = true;
 
-		// Mulige valideringssteg
-
-		// TODO
-
-		log.warn("Validation code for RegtoppLine not implemented");
+		if (StringUtils.trimToNull(bean.getName()) != null) {
+			bean.getOkTests().add(RegtoppException.ERROR.LIN_INVALID_FIELD_VALUE);
+		} else {
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppLineLIN.FILE_EXTENSION, bean.getRecordLineNumber(), "Linjenavn", null, RegtoppException.ERROR.LIN_INVALID_FIELD_VALUE, "")));
+			result = false;
+		}
 
 		return result;
 	}

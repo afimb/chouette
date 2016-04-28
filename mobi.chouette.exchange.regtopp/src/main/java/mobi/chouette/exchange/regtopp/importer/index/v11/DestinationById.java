@@ -26,10 +26,10 @@ public class DestinationById extends IndexImpl<RegtoppDestinationDST> {
 	public boolean validate(RegtoppDestinationDST bean, RegtoppImporter dao) {
 		boolean result = true;
 
-		if (StringUtils.trimToNull(bean.getDestinationText()) == null) {
-			// validationReporter.reportError(new Context(), ex, filenameInfo);
-
-			// TODO add entry to validationReporter
+		if (StringUtils.trimToNull(bean.getDestinationText()) != null) {
+			bean.getOkTests().add(RegtoppException.ERROR.DST_INVALID_FIELD_VALUE);
+		} else {
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppDestinationDST.FILE_EXTENSION, bean.getRecordLineNumber(), "Destinasjonstekst", null, RegtoppException.ERROR.DST_INVALID_FIELD_VALUE, "")));
 			result = false;
 		}
 
