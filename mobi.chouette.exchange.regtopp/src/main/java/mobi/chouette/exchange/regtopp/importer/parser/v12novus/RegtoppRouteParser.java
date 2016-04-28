@@ -18,26 +18,38 @@ import mobi.chouette.model.util.Referential;
 @Log4j
 public class RegtoppRouteParser extends mobi.chouette.exchange.regtopp.importer.parser.v12.RegtoppRouteParser {
 
-	
 	// Only change here from super class is that the stoppoint here uses both stopId and stopIdDeparture ("stoppunktsnummer");
-	protected StopPoint createStopPoint(Referential referential, Context context, AbstractRegtoppRouteTMS routeSegment, String chouetteStopPointId) throws Exception {
+	protected StopPoint createStopPoint(Referential referential, Context context, AbstractRegtoppRouteTMS routeSegment, String chouetteStopPointId)
+			throws Exception {
 
 		RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
 
 		StopPoint stopPoint = ObjectFactory.getStopPoint(referential, chouetteStopPointId);
 		stopPoint.setPosition(Integer.parseInt(routeSegment.getSequenceNumberStop()));
 
-		String regtoppId = routeSegment.getStopId()+routeSegment.getStopPointIdDeparture();
+		String regtoppId = routeSegment.getStopId() + routeSegment.getStopPointIdDeparture();
 		String chouetteStopAreaId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.STOPAREA_KEY, regtoppId);
 
-		StopArea stopArea = ObjectFactory.getStopArea(referential, chouetteStopAreaId);
+		if (referential.getSharedStopAreas().containsKey(chouetteStopAreaId)) {
+			StopArea stopArea = ObjectFactory.getStopArea(referential, chouetteStopAreaId);
 
-		stopPoint.setContainedInStopArea(stopArea);
+			stopPoint.setContainedInStopArea(stopArea);
+		} else {
+			
+			String parentStopPlaceId = routeSegment.getStopId() ;
+			String chouetteParentStopAreaId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.STOPAREA_KEY, parentStopPlaceId);
+			
+			if (referential.getSharedStopAreas().containsKey(chouetteParentStopAreaId)) {
+				log.warn("StopPoint "+stopPoint+" is refering to non existent StopArea "+chouetteStopAreaId+". Luckily there is a parent StopArea with id "+chouetteParentStopAreaId);
+				StopArea stopArea = ObjectFactory.getStopArea(referential, chouetteParentStopAreaId);
+				stopPoint.setContainedInStopArea(stopArea);
+			} else {
+				log.error("Unable to link StopPoint "+stopPoint+ " to either a StopArea with identifier "+chouetteStopAreaId+" or the parent StopArea with id "+chouetteParentStopAreaId);
+			}
+		}
 
 		return stopPoint;
 	}
-
-
 
 	static {
 		ParserFactory.register(RegtoppRouteParser.class.getName(), new ParserFactory() {

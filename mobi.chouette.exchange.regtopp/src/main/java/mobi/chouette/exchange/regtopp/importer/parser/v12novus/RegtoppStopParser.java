@@ -49,7 +49,7 @@ public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.p
 
 		for (String commercialStopAreaId : boardingPositionsByStopArea.keySet()) {
 			List<StopArea> list = boardingPositionsByStopArea.get(commercialStopAreaId);
-			if (list.size() > 1) {
+			if (list.size() > 0) {
 				// Create parent stopArea
 				String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), StopArea.STOPAREA_KEY, commercialStopAreaId);
 				StopArea stopArea = ObjectFactory.getStopArea(referential, objectId);
