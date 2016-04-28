@@ -2,7 +2,6 @@ package mobi.chouette.exchange.regtopp.importer.version;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.List;
 
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
@@ -20,8 +19,8 @@ public interface VersionHandler {
 	
 	public Parser createConnectionLinkParser() throws ClassNotFoundException, IOException;
 
-	public List<String> getMandatoryFileExtensions();
+	public String[] getMandatoryFileExtensions();
 	
-	public List<String> getOptionalFileExtensions();
+	public String[] getOptionalFileExtensions();
 
 }

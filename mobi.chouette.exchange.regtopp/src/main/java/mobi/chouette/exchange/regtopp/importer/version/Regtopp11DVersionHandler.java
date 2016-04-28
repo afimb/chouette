@@ -3,7 +3,6 @@ package mobi.chouette.exchange.regtopp.importer.version;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.List;
 
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
@@ -18,24 +17,14 @@ import mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeDKO;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeHeaderDKO;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppDestinationDST;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppFootnoteMRK;
-import mobi.chouette.exchange.regtopp.model.v11.RegtoppInterchangeSAM;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppLineLIN;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppPathwayGAV;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppRouteTDA;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppStopHPL;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppTripIndexTIX;
-import mobi.chouette.exchange.regtopp.model.v11.RegtoppVehicleJourneyVLP;
-import mobi.chouette.exchange.regtopp.model.v11.RegtoppZoneSON;
 import mobi.chouette.exchange.report.FileInfo;
 
 public class Regtopp11DVersionHandler implements VersionHandler {
-
-	private static final List<String> mandatoryFileExtensions = Arrays.asList(RegtoppTripIndexTIX.FILE_EXTENSION, RegtoppRouteTDA.FILE_EXTENSION,
-			RegtoppStopHPL.FILE_EXTENSION, RegtoppDayCodeDKO.FILE_EXTENSION);
-
-	private static final List<String> optionalFileExtensions = Arrays.asList(RegtoppDestinationDST.FILE_EXTENSION, RegtoppFootnoteMRK.FILE_EXTENSION,
-			RegtoppPathwayGAV.FILE_EXTENSION, RegtoppInterchangeSAM.FILE_EXTENSION, RegtoppZoneSON.FILE_EXTENSION, RegtoppLineLIN.FILE_EXTENSION,
-			RegtoppVehicleJourneyVLP.FILE_EXTENSION);
 
 	@Override
 	public void registerFileForIndex(RegtoppImporter importer, Path fileName, String extension, FileInfo file) {
@@ -73,31 +62,31 @@ public class Regtopp11DVersionHandler implements VersionHandler {
 			importer.registerFileForIndex(RegtoppImporter.INDEX.REMARK_BY_ID.name(), parseableFile);
 			break;
 		}
-		case "GAV": {
-			ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppPathwayGAV.class }), file);
-			importer.registerFileForIndex(RegtoppImporter.INDEX.PATHWAY_BY_INDEXING_KEY.name(), parseableFile);
-			break;
-		}
-		case "SAM": {
-			ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppPathwayGAV.class }), file);
-			importer.registerFileForIndex(RegtoppImporter.INDEX.INTERCHANGE.name(), parseableFile);
-			break;
-		}
-		case "SON": {
-			ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppZoneSON.class }), file);
-			importer.registerFileForIndex(RegtoppImporter.INDEX.ZONE_BY_ID.name(), parseableFile);
-			break;
-		}
 		case "LIN": {
 			ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppLineLIN.class }), file);
 			importer.registerFileForIndex(RegtoppImporter.INDEX.LINE_BY_ID.name(), parseableFile);
 			break;
 		}
-		case "VLP": {
-			ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppVehicleJourneyVLP.class }), file);
-			importer.registerFileForIndex(RegtoppImporter.INDEX.VEHICLE_JOURNEY.name(), parseableFile);
+		case "GAV": {
+			ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppPathwayGAV.class }), file);
+			importer.registerFileForIndex(RegtoppImporter.INDEX.PATHWAY_BY_INDEXING_KEY.name(), parseableFile);
 			break;
 		}
+//		case "SAM": {
+//			ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppPathwayGAV.class }), file);
+//			importer.registerFileForIndex(RegtoppImporter.INDEX.INTERCHANGE.name(), parseableFile);
+//			break;
+//		}
+//		case "SON": {
+//			ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppZoneSON.class }), file);
+//			importer.registerFileForIndex(RegtoppImporter.INDEX.ZONE_BY_ID.name(), parseableFile);
+//			break;
+//		}
+//		case "VLP": {
+//			ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppVehicleJourneyVLP.class }), file);
+//			importer.registerFileForIndex(RegtoppImporter.INDEX.VEHICLE_JOURNEY.name(), parseableFile);
+//			break;
+//		}
 		}
 	}
 
@@ -120,16 +109,23 @@ public class Regtopp11DVersionHandler implements VersionHandler {
 	public Parser createConnectionLinkParser() throws ClassNotFoundException, IOException {
 		return (RegtoppConnectionLinkParser) ParserFactory.create(RegtoppConnectionLinkParser.class.getName());
 	}
+
 	@Override
-	public List<String> getMandatoryFileExtensions() {
-		return mandatoryFileExtensions;
+	public String[] getMandatoryFileExtensions() {
+		return new String[] {
+				RegtoppTripIndexTIX.FILE_EXTENSION,
+				RegtoppRouteTDA.FILE_EXTENSION,
+				RegtoppStopHPL.FILE_EXTENSION,
+				RegtoppDayCodeDKO.FILE_EXTENSION };
 	}
 
 	@Override
-	public List<String> getOptionalFileExtensions() {
-		return optionalFileExtensions;
+	public String[] getOptionalFileExtensions() {
+		return new String[] {
+				RegtoppDestinationDST.FILE_EXTENSION,
+				RegtoppFootnoteMRK.FILE_EXTENSION,
+				RegtoppPathwayGAV.FILE_EXTENSION,
+				RegtoppLineLIN.FILE_EXTENSION };
 	}
 
-
-	
 }

@@ -89,8 +89,14 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 			RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
 
 			Set<String> validExtensions = new HashSet<String>();
-			validExtensions.addAll(versionHandler.getMandatoryFileExtensions());
-			validExtensions.addAll(versionHandler.getOptionalFileExtensions());
+			Set<String> mandatoryFileExtensions = new HashSet<String>();
+			Set<String> optionalFileExtensions = new HashSet<String>();
+			
+			mandatoryFileExtensions.addAll(Arrays.asList(versionHandler.getMandatoryFileExtensions()));
+			optionalFileExtensions.addAll(Arrays.asList(versionHandler.getOptionalFileExtensions()));
+			
+			validExtensions.addAll(mandatoryFileExtensions);
+			validExtensions.addAll(optionalFileExtensions);
 
 			Set<String> prefixesFound = new HashSet<String>();
 			Set<String> foundExtensions = new HashSet<String>();
@@ -140,14 +146,14 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 						"Multiple companies or versions found in zip file: " + StringUtils.join(prefixesFound, " "));
 				report.setFailure(error);
 			} else {
-				if (!foundExtensions.containsAll(versionHandler.getMandatoryFileExtensions())) {
+				if (!foundExtensions.containsAll(mandatoryFileExtensions)) {
 					// Check that all 4 mandatory files found
 					// Convert to set
 
 					String prefix = prefixesFound.iterator().next();
 
 					Set<String> missingFiles = new HashSet<String>();
-					missingFiles.addAll(versionHandler.getMandatoryFileExtensions());
+					missingFiles.addAll(mandatoryFileExtensions);
 					missingFiles.removeAll(foundExtensions);
 
 					for (String missingExtension : missingFiles) {
