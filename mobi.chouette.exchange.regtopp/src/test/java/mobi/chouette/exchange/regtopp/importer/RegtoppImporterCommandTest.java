@@ -530,11 +530,7 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 		assertStats(report.getStats(), 1, 12);
 		assertLine(report.getLines().get(0), LineInfo.LINE_STATE.OK);
 		// TODO line below must be verified
-<<<<<<< HEAD
-		assertValidationReport(validationReport, "VALIDATION_PROCEDEED", 9, 0, 0); // typo in chouette
-=======
-		assertValidationReport(validationReport, "VALIDATION_PROCEDEED", 11, 0, 14); // typo in chouette
->>>>>>> 7a2ef2298e5b6f38d2b66d504705b573fa6b4e3b
+		assertValidationReport(validationReport, "VALIDATION_PROCEDEED", 11, 0, 13); // typo in chouette
 
 		System.out.println(ToStringBuilder.reflectionToString(report, ToStringStyle.MULTI_LINE_STYLE, true));
 
