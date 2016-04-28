@@ -9,7 +9,6 @@ import mobi.chouette.exchange.regtopp.importer.index.IndexImpl;
 import mobi.chouette.exchange.regtopp.importer.parser.FileContentParser;
 import mobi.chouette.exchange.regtopp.importer.parser.FileParserValidationError;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppStopHPL;
-import mobi.chouette.exchange.regtopp.model.v11.RegtoppLineLIN;
 import mobi.chouette.exchange.regtopp.model.v13.RegtoppStopHPL;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
@@ -28,51 +27,51 @@ public class StopById extends IndexImpl<AbstractRegtoppStopHPL> {
 
 		//Obligatoriske felter
 		if (bean.getAdminCode() != null) {
-			bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
+			bean.getOkTests().add(RegtoppException.ERROR.HPL_INVALID_FIELD_VALUE);
 		}  else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppStopHPL.FILE_EXTENSION, bean.getRecordLineNumber(), "Adminkode", null, RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppStopHPL.FILE_EXTENSION, bean.getRecordLineNumber(), "Adminkode", null, RegtoppException.ERROR.HPL_INVALID_FIELD_VALUE, "")));
 			result = false;
 		}
 
 		if (bean.getCounter() != null) {
-			bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
+			bean.getOkTests().add(RegtoppException.ERROR.HPL_INVALID_FIELD_VALUE);
 		}  else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppStopHPL.FILE_EXTENSION, bean.getRecordLineNumber(), "Løpenr", null, RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppStopHPL.FILE_EXTENSION, bean.getRecordLineNumber(), "Løpenr", null, RegtoppException.ERROR.HPL_INVALID_FIELD_VALUE, "")));
 			result = false;
 		}
 
 		if (bean.getStopId() != null) {
-			bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
+			bean.getOkTests().add(RegtoppException.ERROR.HPL_INVALID_FIELD_VALUE);
 		}  else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppStopHPL.FILE_EXTENSION, bean.getRecordLineNumber(), "Holdeplassnr", null, RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppStopHPL.FILE_EXTENSION, bean.getRecordLineNumber(), "Holdeplassnr", null, RegtoppException.ERROR.HPL_INVALID_FIELD_VALUE, "")));
 			result = false;
 		}
 
 		if (bean.getFullName() != null) {
-			bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
+			bean.getOkTests().add(RegtoppException.ERROR.HPL_INVALID_FIELD_VALUE);
 		}  else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppStopHPL.FILE_EXTENSION, bean.getRecordLineNumber(), "Fullstendig navn", null, RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppStopHPL.FILE_EXTENSION, bean.getRecordLineNumber(), "Fullstendig navn", null, RegtoppException.ERROR.HPL_INVALID_FIELD_VALUE, "")));
 			result = false;
 		}
 
 		if (bean.getInterchangeType() != null) {
-			bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
+			bean.getOkTests().add(RegtoppException.ERROR.HPL_INVALID_FIELD_VALUE);
 		}  else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppStopHPL.FILE_EXTENSION, bean.getRecordLineNumber(), "Type", null, RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppStopHPL.FILE_EXTENSION, bean.getRecordLineNumber(), "Type", null, RegtoppException.ERROR.HPL_INVALID_FIELD_VALUE, "")));
 			result = false;
 		}
 
 		if (bean.getInterchangeMinutes() != null) {
-			bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
+			bean.getOkTests().add(RegtoppException.ERROR.HPL_INVALID_FIELD_VALUE);
 		}  else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppStopHPL.FILE_EXTENSION, bean.getRecordLineNumber(), "Spes. omstigningstid", null, RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppStopHPL.FILE_EXTENSION, bean.getRecordLineNumber(), "Spes. omstigningstid", null, RegtoppException.ERROR.HPL_INVALID_FIELD_VALUE, "")));
 			result = false;
 		}
 
 		if (bean.getCoachClass() != null) {
-			bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
+			bean.getOkTests().add(RegtoppException.ERROR.HPL_INVALID_FIELD_VALUE);
 		}  else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppStopHPL.FILE_EXTENSION, bean.getRecordLineNumber(), "Klasse", null, RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppStopHPL.FILE_EXTENSION, bean.getRecordLineNumber(), "Klasse", null, RegtoppException.ERROR.HPL_INVALID_FIELD_VALUE, "")));
 			result = false;
 		}
 
@@ -83,18 +82,18 @@ public class StopById extends IndexImpl<AbstractRegtoppStopHPL> {
 		String stopSequenceNumber = stopId.substring(4, 8);
 		int municipalityCode = Integer.valueOf(municipalityCodeString);
 		if (101 <= municipalityCode && municipalityCode <= 2211 && stopSequenceNumber.matches("\\d{4}")) {		//Lots of holes in the 101-2211 range
-			bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
+			bean.getOkTests().add(RegtoppException.ERROR.HPL_INVALID_FIELD_VALUE);
 		} else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppStopHPL.FILE_EXTENSION, bean.getRecordLineNumber(), "Holdeplassnr", bean.getStopId(), RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppStopHPL.FILE_EXTENSION, bean.getRecordLineNumber(), "Holdeplassnr", bean.getStopId(), RegtoppException.ERROR.HPL_INVALID_FIELD_VALUE, "")));
 			result = false;
 		}
 
 		// Koordinater ulike
 		if (bean.getX() != null && bean.getY() != null){
 			if (!bean.getX().equals(bean.getY())) {
-				bean.getOkTests().add(RegtoppException.ERROR.INVALID_FIELD_VALUE);
+				bean.getOkTests().add(RegtoppException.ERROR.HPL_INVALID_FIELD_VALUE);
 			} else {
-				bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppStopHPL.FILE_EXTENSION, bean.getRecordLineNumber(), "X = Y", bean.getX().toString(), RegtoppException.ERROR.INVALID_FIELD_VALUE, "")));
+				bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppStopHPL.FILE_EXTENSION, bean.getRecordLineNumber(), "X = Y", bean.getX().toString(), RegtoppException.ERROR.HPL_INVALID_FIELD_VALUE, "")));
 				result = false;
 			}
 		}
