@@ -57,86 +57,134 @@ public class RegtoppValidationReporter {
 		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
 
 		switch (ex.getError()) {
-		case SYSTEM:
-			addError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.ERROR, "Error ");
-			break;
-		case INVALID_FIELD_VALUE:
-			addInvalidFieldValueError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
-			break;
+			case SYSTEM:
+				addError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.ERROR, "Error ");
+				break;
+			case INVALID_FIELD_VALUE:
+				addInvalidFieldValueError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				break;
+			case MULTIPLE_ADMIN_CODES:
+				addMultipleAdminCodesError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				break;
+			case MISSING_MANDATORY_FILES:
+				addMissingMandatoryFilesError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				break;
+			case FILE_WITH_NO_ENTRY:
+				addFileWithNoEntryError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				break;
 
-		case TIX_INVALID_MANDATORY_ID_REFERENCE:
-			addInvalidMandatoryReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
-			break;
-		case TIX_INVALID_OPTIONAL_ID_REFERENCE:
-			addInvalidOptionalReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
-			break;
-		case TIX_INVALID_FIELD_VALUE:
-			addInvalidFieldValueError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
-			break;
+			case TIX_INVALID_MANDATORY_ID_REFERENCE:
+				addInvalidMandatoryReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				break;
+			case TIX_INVALID_OPTIONAL_ID_REFERENCE:
+				addInvalidOptionalReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				break;
+			case TIX_INVALID_FIELD_VALUE:
+				addInvalidFieldValueError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				break;
+			case TIX_DUPLICATE_KEY:
+				addDuplicateKeyError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				break;
 
-		case HPL_INVALID_MANDATORY_ID_REFERENCE:
-			addInvalidMandatoryReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
-			break;
-		case HPL_INVALID_OPTIONAL_ID_REFERENCE:
-			addInvalidOptionalReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
-			break;
-		case HPL_INVALID_FIELD_VALUE:
-			addInvalidFieldValueError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
-			break;
+			case HPL_INVALID_MANDATORY_ID_REFERENCE:
+				addInvalidMandatoryReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				break;
+			case HPL_INVALID_OPTIONAL_ID_REFERENCE:
+				addInvalidOptionalReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				break;
+			case HPL_INVALID_FIELD_VALUE:
+				addInvalidFieldValueError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				break;
 
-		case DKO_INVALID_MANDATORY_ID_REFERENCE:
-			addInvalidMandatoryReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
-			break;
-		case DKO_INVALID_OPTIONAL_ID_REFERENCE:
-			addInvalidOptionalReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
-			break;
-		case DKO_INVALID_FIELD_VALUE:
-			addInvalidFieldValueError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
-			break;
+			case DKO_INVALID_MANDATORY_ID_REFERENCE:
+				addInvalidMandatoryReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				break;
+			case DKO_INVALID_OPTIONAL_ID_REFERENCE:
+				addInvalidOptionalReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				break;
+			case DKO_INVALID_FIELD_VALUE:
+				addInvalidFieldValueError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				break;
 
-		case GAV_INVALID_MANDATORY_ID_REFERENCE:
-			addInvalidMandatoryReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
-			break;
-		case GAV_INVALID_OPTIONAL_ID_REFERENCE:
-			addInvalidOptionalReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
-			break;
-		case GAV_INVALID_FIELD_VALUE:
-			addInvalidFieldValueError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
-			break;
+			case GAV_INVALID_MANDATORY_ID_REFERENCE:
+				addInvalidMandatoryReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				break;
+			case GAV_INVALID_OPTIONAL_ID_REFERENCE:
+				addInvalidOptionalReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				break;
+			case GAV_INVALID_FIELD_VALUE:
+				addInvalidFieldValueError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				break;
 
-		case DST_INVALID_MANDATORY_ID_REFERENCE:
-			addInvalidMandatoryReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
-			break;
-		case DST_INVALID_OPTIONAL_ID_REFERENCE:
-			addInvalidOptionalReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
-			break;
-		case DST_INVALID_FIELD_VALUE:
-			addInvalidFieldValueError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
-			break;
+			case DST_INVALID_MANDATORY_ID_REFERENCE:
+				addInvalidMandatoryReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				break;
+			case DST_INVALID_OPTIONAL_ID_REFERENCE:
+				addInvalidOptionalReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				break;
+			case DST_INVALID_FIELD_VALUE:
+				addInvalidFieldValueError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				break;
 
-		case MRK_INVALID_MANDATORY_ID_REFERENCE:
-			addInvalidMandatoryReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
-			break;
-		case MRK_INVALID_OPTIONAL_ID_REFERENCE:
-			addInvalidOptionalReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
-			break;
-		case MRK_INVALID_FIELD_VALUE:
-			addInvalidFieldValueError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
-			break;
+			case MRK_INVALID_MANDATORY_ID_REFERENCE:
+				addInvalidMandatoryReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				break;
+			case MRK_INVALID_OPTIONAL_ID_REFERENCE:
+				addInvalidOptionalReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				break;
+			case MRK_INVALID_FIELD_VALUE:
+				addInvalidFieldValueError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				break;
 
-		case LIN_INVALID_MANDATORY_ID_REFERENCE:
-			addInvalidMandatoryReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
-			break;
-		case LIN_INVALID_OPTIONAL_ID_REFERENCE:
-			addInvalidOptionalReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
-			break;
-		case LIN_INVALID_FIELD_VALUE:
-			addInvalidFieldValueError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
-			break;
+			case LIN_INVALID_MANDATORY_ID_REFERENCE:
+				addInvalidMandatoryReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				break;
+			case LIN_INVALID_OPTIONAL_ID_REFERENCE:
+				addInvalidOptionalReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				break;
+			case LIN_INVALID_FIELD_VALUE:
+				addInvalidFieldValueError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				break;
 
-		default:
-			break;
+			case TDA_INVALID_MANDATORY_ID_REFERENCE:
+				addInvalidMandatoryReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				break;
+			case TDA_INVALID_OPTIONAL_ID_REFERENCE:
+				addInvalidOptionalReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				break;
+			case TDA_INVALID_FIELD_VALUE:
+				addInvalidFieldValueError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				break;
+
+			case STP_INVALID_MANDATORY_ID_REFERENCE:
+				addInvalidMandatoryReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				break;
+			case STP_INVALID_OPTIONAL_ID_REFERENCE:
+				addInvalidOptionalReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				break;
+			case STP_INVALID_FIELD_VALUE:
+				addInvalidFieldValueError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				break;
+
+			default:
+				break;
 		}
+	}
+
+	private void addFileWithNoEntryError(ActionReport actionReport, ValidationReport validationReport, String filenameInfo, RegtoppException ex, CODE invalidFormat, FILE_STATE ignored) {
+		addError(actionReport, validationReport, filenameInfo, ex, invalidFormat, ignored, "Duplicate key value");
+	}
+
+	private void addMissingMandatoryFilesError(ActionReport actionReport, ValidationReport validationReport, String filenameInfo, RegtoppException ex, CODE invalidFormat, FILE_STATE ignored) {
+		addError(actionReport, validationReport, filenameInfo, ex, invalidFormat, ignored, "Duplicate key value");
+	}
+
+	private void addMultipleAdminCodesError(ActionReport actionReport, ValidationReport validationReport, String filenameInfo, RegtoppException ex, CODE invalidFormat, FILE_STATE ignored) {
+		addError(actionReport, validationReport, filenameInfo, ex, invalidFormat, ignored, "Duplicate key value");
+	}
+
+	private void addDuplicateKeyError(ActionReport actionReport, ValidationReport validationReport, String filenameInfo, RegtoppException ex, CODE invalidFormat, FILE_STATE ignored) {
+		addError(actionReport, validationReport, filenameInfo, ex, invalidFormat, ignored, "Duplicate key value");
 	}
 
 	private void addInvalidFieldValueError(ActionReport actionReport, ValidationReport validationReport, String filenameInfo, RegtoppException ex,
@@ -178,62 +226,84 @@ public class RegtoppValidationReporter {
 
 	private String checkPointName(mobi.chouette.exchange.regtopp.validation.RegtoppException.ERROR errorName) {
 		switch (errorName) {
-		case SYSTEM:
-			return REGTOPP_FILE;
-		case INVALID_FIELD_VALUE:
-			return REGTOPP_INVALID_FIELD_VALUE;
+			case SYSTEM:
+				return REGTOPP_FILE;
+			case INVALID_FIELD_VALUE:
+				return REGTOPP_INVALID_FIELD_VALUE;
 
-		case TIX_INVALID_FIELD_VALUE:
-			return REGTOPP_TIX_INVALID_FIELD_VALUE;
-		case TIX_INVALID_MANDATORY_ID_REFERENCE:
-			return REGTOPP_TIX_INVALID_MANDATORY_ID_REFERENCE;
-		case TIX_INVALID_OPTIONAL_ID_REFERENCE:
-			return REGTOPP_TIX_INVALID_OPTIONAL_ID_REFERENCE;
+			case MULTIPLE_ADMIN_CODES:
+				return REGTOPP_MULTIPLE_ADMIN_CODES;
+			case MISSING_MANDATORY_FILES:
+				return REGTOPP_MISSING_MANDATORY_FILES;
+			case FILE_WITH_NO_ENTRY:
+				return REGTOPP_FILE_WITH_NO_ENTRY;
 
-		case HPL_INVALID_FIELD_VALUE:
-			return REGTOPP_HPL_INVALID_FIELD_VALUE;
-		case HPL_INVALID_MANDATORY_ID_REFERENCE:
-			return REGTOPP_HPL_INVALID_MANDATORY_ID_REFERENCE;
-		case HPL_INVALID_OPTIONAL_ID_REFERENCE:
-			return REGTOPP_HPL_INVALID_OPTIONAL_ID_REFERENCE;
 
-		case DKO_INVALID_FIELD_VALUE:
-			return REGTOPP_DKO_INVALID_FIELD_VALUE;
-		case DKO_INVALID_MANDATORY_ID_REFERENCE:
-			return REGTOPP_DKO_INVALID_MANDATORY_ID_REFERENCE;
-		case DKO_INVALID_OPTIONAL_ID_REFERENCE:
-			return REGTOPP_DKO_INVALID_OPTIONAL_ID_REFERENCE;
+			case TIX_INVALID_FIELD_VALUE:
+				return REGTOPP_TIX_INVALID_FIELD_VALUE;
+			case TIX_INVALID_MANDATORY_ID_REFERENCE:
+				return REGTOPP_TIX_INVALID_MANDATORY_ID_REFERENCE;
+			case TIX_INVALID_OPTIONAL_ID_REFERENCE:
+				return REGTOPP_TIX_INVALID_OPTIONAL_ID_REFERENCE;
+			case TIX_DUPLICATE_KEY:
+				return REGTOPP_TIX_DUPLICATE_KEY;
 
-		case GAV_INVALID_FIELD_VALUE:
-			return REGTOPP_GAV_INVALID_FIELD_VALUE;
-		case GAV_INVALID_MANDATORY_ID_REFERENCE:
-			return REGTOPP_GAV_INVALID_MANDATORY_ID_REFERENCE;
-		case GAV_INVALID_OPTIONAL_ID_REFERENCE:
-			return REGTOPP_GAV_INVALID_OPTIONAL_ID_REFERENCE;
+			case HPL_INVALID_FIELD_VALUE:
+				return REGTOPP_HPL_INVALID_FIELD_VALUE;
+			case HPL_INVALID_MANDATORY_ID_REFERENCE:
+				return REGTOPP_HPL_INVALID_MANDATORY_ID_REFERENCE;
+			case HPL_INVALID_OPTIONAL_ID_REFERENCE:
+				return REGTOPP_HPL_INVALID_OPTIONAL_ID_REFERENCE;
+			case HPL_DUPLICATE_KEY:
+				return REGTOPP_HPL_DUPLICATE_KEY;
 
-		case DST_INVALID_FIELD_VALUE:
-			return REGTOPP_DST_INVALID_FIELD_VALUE;
-		case DST_INVALID_MANDATORY_ID_REFERENCE:
-			return REGTOPP_DST_INVALID_MANDATORY_ID_REFERENCE;
-		case DST_INVALID_OPTIONAL_ID_REFERENCE:
-			return REGTOPP_DST_INVALID_OPTIONAL_ID_REFERENCE;
+			case DKO_INVALID_FIELD_VALUE:
+				return REGTOPP_DKO_INVALID_FIELD_VALUE;
+			case DKO_INVALID_MANDATORY_ID_REFERENCE:
+				return REGTOPP_DKO_INVALID_MANDATORY_ID_REFERENCE;
+			case DKO_INVALID_OPTIONAL_ID_REFERENCE:
+				return REGTOPP_DKO_INVALID_OPTIONAL_ID_REFERENCE;
+			case DKO_DUPLICATE_KEY:
+				return REGTOPP_DKO_DUPLICATE_KEY;
 
-		case MRK_INVALID_FIELD_VALUE:
-			return REGTOPP_MRK_INVALID_FIELD_VALUE;
-		case MRK_INVALID_MANDATORY_ID_REFERENCE:
-			return REGTOPP_MRK_INVALID_MANDATORY_ID_REFERENCE;
-		case MRK_INVALID_OPTIONAL_ID_REFERENCE:
-			return REGTOPP_MRK_INVALID_OPTIONAL_ID_REFERENCE;
+			case GAV_INVALID_FIELD_VALUE:
+				return REGTOPP_GAV_INVALID_FIELD_VALUE;
+			case GAV_INVALID_MANDATORY_ID_REFERENCE:
+				return REGTOPP_GAV_INVALID_MANDATORY_ID_REFERENCE;
+			case GAV_INVALID_OPTIONAL_ID_REFERENCE:
+				return REGTOPP_GAV_INVALID_OPTIONAL_ID_REFERENCE;
+			case GAV_DUPLICATE_KEY:
+				return REGTOPP_GAV_DUPLICATE_KEY;
 
-		case LIN_INVALID_FIELD_VALUE:
-			return REGTOPP_LIN_INVALID_FIELD_VALUE;
-		case LIN_INVALID_MANDATORY_ID_REFERENCE:
-			return REGTOPP_LIN_INVALID_MANDATORY_ID_REFERENCE;
-		case LIN_INVALID_OPTIONAL_ID_REFERENCE:
-			return REGTOPP_LIN_INVALID_OPTIONAL_ID_REFERENCE;
+			case DST_INVALID_FIELD_VALUE:
+				return REGTOPP_DST_INVALID_FIELD_VALUE;
+			case DST_INVALID_MANDATORY_ID_REFERENCE:
+				return REGTOPP_DST_INVALID_MANDATORY_ID_REFERENCE;
+			case DST_INVALID_OPTIONAL_ID_REFERENCE:
+				return REGTOPP_DST_INVALID_OPTIONAL_ID_REFERENCE;
+			case DST_DUPLICATE_KEY:
+				return REGTOPP_DST_DUPLICATE_KEY;
 
-		default:
-			return null;
+			case MRK_INVALID_FIELD_VALUE:
+				return REGTOPP_MRK_INVALID_FIELD_VALUE;
+			case MRK_INVALID_MANDATORY_ID_REFERENCE:
+				return REGTOPP_MRK_INVALID_MANDATORY_ID_REFERENCE;
+			case MRK_INVALID_OPTIONAL_ID_REFERENCE:
+				return REGTOPP_MRK_INVALID_OPTIONAL_ID_REFERENCE;
+			case MRK_DUPLICATE_KEY:
+				return REGTOPP_MRK_DUPLICATE_KEY;
+
+			case LIN_INVALID_FIELD_VALUE:
+				return REGTOPP_LIN_INVALID_FIELD_VALUE;
+			case LIN_INVALID_MANDATORY_ID_REFERENCE:
+				return REGTOPP_LIN_INVALID_MANDATORY_ID_REFERENCE;
+			case LIN_INVALID_OPTIONAL_ID_REFERENCE:
+				return REGTOPP_LIN_INVALID_OPTIONAL_ID_REFERENCE;
+			case LIN_DUPLICATE_KEY:
+				return REGTOPP_LIN_DUPLICATE_KEY;
+
+			default:
+				return null;
 		}
 	}
 
@@ -249,24 +319,16 @@ public class RegtoppValidationReporter {
 	public void validate(Context context, Set<mobi.chouette.exchange.regtopp.validation.RegtoppException.ERROR> errorCodes) {
 		if (errorCodes != null)
 			for (mobi.chouette.exchange.regtopp.validation.RegtoppException.ERROR errorCode : errorCodes) {
-				validate(context, errorCode);
+				String checkPointName = checkPointName(errorCode);
+				ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
+
+				CheckPoint checkPoint = validationReport.findCheckPointByName(checkPointName);
+
+				if (checkPoint != null)
+                    if (checkPoint.getState() == CheckPoint.RESULT.UNCHECK)
+                        checkPoint.setState(CheckPoint.RESULT.OK);
+
 			}
-	}
-
-	public void validate(Context context, mobi.chouette.exchange.regtopp.validation.RegtoppException.ERROR errorCode) {
-		String checkPointName = checkPointName(errorCode);
-		validate(context, checkPointName);
-	}
-
-	public void validate(Context context, String checkPointName) {
-		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
-
-		CheckPoint checkPoint = validationReport.findCheckPointByName(checkPointName);
-
-		if (checkPoint != null)
-			if (checkPoint.getState() == CheckPoint.RESULT.UNCHECK)
-				checkPoint.setState(CheckPoint.RESULT.OK);
-
 	}
 
 }

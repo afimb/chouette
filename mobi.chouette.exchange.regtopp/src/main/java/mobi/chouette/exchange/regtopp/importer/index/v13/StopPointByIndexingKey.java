@@ -12,6 +12,7 @@ import mobi.chouette.exchange.regtopp.model.v13.RegtoppStopPointSTP;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException.ERROR;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
+import org.apache.commons.lang.StringUtils;
 
 @Log4j
 public class StopPointByIndexingKey extends IndexImpl<RegtoppStopPointSTP> {
@@ -41,14 +42,23 @@ public class StopPointByIndexingKey extends IndexImpl<RegtoppStopPointSTP> {
 			if (existingRecord != null) {
 				log.error("Duplicate key in STP file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
 				validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError(getUnderlyingFilename(),
-						newRecord.getRecordLineNumber(), "Holdeplassnr/Stoppunktsnummer", newRecord.getIndexingKey(), ERROR.DUPLICATE_KEY, "Duplicate key")), null);
+						newRecord.getRecordLineNumber(), "Holdeplassnr/Stoppunktsnummer", newRecord.getIndexingKey(), ERROR.STP_DUPLICATE_KEY, "Duplicate key")), null);
 			}
 		}
 	}
 
 	@Override
 	public boolean validate(RegtoppStopPointSTP bean, RegtoppImporter dao) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean result = true;
+
+		if (StringUtils.trimToNull(bean.getStopId()) != null) {
+			bean.getOkTests().add(RegtoppException.ERROR.STP_INVALID_FIELD_VALUE);
+		} else {
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppStopPointSTP.FILE_EXTENSION, bean.getRecordLineNumber(),
+					"Holdeplassnr", null, RegtoppException.ERROR.STP_INVALID_FIELD_VALUE, "")));
+			result = false;
+		}
+
+		return result;
 	}
 }

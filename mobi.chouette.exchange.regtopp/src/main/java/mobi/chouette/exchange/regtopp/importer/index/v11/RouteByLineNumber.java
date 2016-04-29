@@ -6,8 +6,11 @@ import mobi.chouette.exchange.regtopp.importer.index.Index;
 import mobi.chouette.exchange.regtopp.importer.index.IndexFactory;
 import mobi.chouette.exchange.regtopp.importer.index.IndexImpl;
 import mobi.chouette.exchange.regtopp.importer.parser.FileContentParser;
+import mobi.chouette.exchange.regtopp.importer.parser.FileParserValidationError;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppRouteTDA;
+import mobi.chouette.exchange.regtopp.validation.RegtoppException;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
+import org.apache.commons.lang.StringUtils;
 
 @Log4j
 public class RouteByLineNumber extends IndexImpl<RegtoppRouteTDA> {
@@ -40,7 +43,16 @@ public class RouteByLineNumber extends IndexImpl<RegtoppRouteTDA> {
 
 	@Override
 	public boolean validate(RegtoppRouteTDA bean, RegtoppImporter dao) {
-		// TODO Auto-generated method stub
-		return false;
+		boolean result = true;
+
+		if (StringUtils.trimToNull(bean.getStopId()) != null) {
+			bean.getOkTests().add(RegtoppException.ERROR.TDA_INVALID_FIELD_VALUE);
+		} else {
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppRouteTDA.FILE_EXTENSION, bean.getRecordLineNumber(),
+					"Holdeplassnr", null, RegtoppException.ERROR.TDA_INVALID_FIELD_VALUE, "")));
+			result = false;
+		}
+
+		return result;
 	}
 }

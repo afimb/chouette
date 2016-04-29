@@ -38,7 +38,7 @@ public class StopPointByStopId extends IndexImpl<List<RegtoppStopPointSTP>> {
 			RegtoppStopPointSTP stopPoint = (RegtoppStopPointSTP) obj;
 			List<RegtoppStopPointSTP> listOfStopPoints = index.get(stopPoint.getStopId());
 			if(listOfStopPoints == null) {
-				listOfStopPoints = new ArrayList<RegtoppStopPointSTP>();
+				listOfStopPoints = new ArrayList<>();
 				index.put(stopPoint.getStopId(),listOfStopPoints);
 			}
 			// TODO check if list already have this stopPoint registered
