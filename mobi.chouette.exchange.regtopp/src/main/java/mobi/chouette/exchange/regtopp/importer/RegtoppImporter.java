@@ -117,10 +117,10 @@ public class RegtoppImporter {
 
 				FileContentParser parser = fileContentMap.get(parseableFile.getFile().getName());
 				if (parser == null) {
-					parser = new FileContentParser();
+					parser = new FileContentParser(parseableFile);
 					fileContentMap.put(parseableFile.getFile().getName(), parser);
 					// Do actual parsing of file
-					parser.parse(context, parseableFile, validationReporter);
+					parser.parse(context, validationReporter);
 				}
 
 				index = IndexFactory.build(validationReporter, parser, clazz.getName());

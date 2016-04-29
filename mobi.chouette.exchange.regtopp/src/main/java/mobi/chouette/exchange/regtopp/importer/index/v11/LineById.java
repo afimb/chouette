@@ -28,7 +28,7 @@ public class LineById extends IndexImpl<RegtoppLineLIN> {
 		if (StringUtils.trimToNull(bean.getName()) != null) {
 			bean.getOkTests().add(RegtoppException.ERROR.LIN_INVALID_FIELD_VALUE);
 		} else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppLineLIN.FILE_EXTENSION, bean.getRecordLineNumber(), "Linjenavn", null, RegtoppException.ERROR.LIN_INVALID_FIELD_VALUE, "")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), "Linjenavn", null, RegtoppException.ERROR.LIN_INVALID_FIELD_VALUE, "")));
 			result = false;
 		}
 
@@ -50,12 +50,13 @@ public class LineById extends IndexImpl<RegtoppLineLIN> {
 
 	@Override
 	public void index() throws Exception {
+		
 		for (Object obj : parser.getRawContent()) {
 			RegtoppLineLIN newRecord = (RegtoppLineLIN) obj;
 			RegtoppLineLIN existingRecord = index.put(newRecord.getLineId(), newRecord);
 			if (existingRecord != null) {
 				log.error("Duplicate key in LIN file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
-				validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError(RegtoppLineLIN.FILE_EXTENSION,
+				validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError(getUnderlyingFilename(),
 						newRecord.getRecordLineNumber(), "Linjenr", newRecord.getLineId(), ERROR.DUPLICATE_KEY, "Duplicate key")), null);
 			}
 		}

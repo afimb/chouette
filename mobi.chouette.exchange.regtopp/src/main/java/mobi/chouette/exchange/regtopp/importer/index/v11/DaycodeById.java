@@ -36,21 +36,21 @@ public class DaycodeById extends IndexImpl<RegtoppDayCodeDKO> {
 		if (bean.getAdminCode() != null) {
 			bean.getOkTests().add(RegtoppException.ERROR.DKO_INVALID_FIELD_VALUE);
 		}  else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppDayCodeDKO.FILE_EXTENSION, bean.getRecordLineNumber(), "Adminkode", null, RegtoppException.ERROR.DKO_INVALID_FIELD_VALUE, "")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), "Adminkode", null, RegtoppException.ERROR.DKO_INVALID_FIELD_VALUE, "")));
 			result = false;
 		}
 
 		if (bean.getCounter() != null) {
 			bean.getOkTests().add(RegtoppException.ERROR.DKO_INVALID_FIELD_VALUE);
 		}  else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppDayCodeDKO.FILE_EXTENSION, bean.getRecordLineNumber(), "Løpenr", null, RegtoppException.ERROR.DKO_INVALID_FIELD_VALUE, "")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), "Løpenr", null, RegtoppException.ERROR.DKO_INVALID_FIELD_VALUE, "")));
 			result = false;
 		}
 
 		if (bean.getDayCodeId() != null) {
 			bean.getOkTests().add(RegtoppException.ERROR.DKO_INVALID_FIELD_VALUE);
 		}  else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppDayCodeDKO.FILE_EXTENSION, bean.getRecordLineNumber(), "Dagkodenr", null, RegtoppException.ERROR.DKO_INVALID_FIELD_VALUE, "")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), "Dagkodenr", null, RegtoppException.ERROR.DKO_INVALID_FIELD_VALUE, "")));
 			result = false;
 		}
 
@@ -72,7 +72,6 @@ public class DaycodeById extends IndexImpl<RegtoppDayCodeDKO> {
 
 	@Override
 	public void index() throws Exception {
-
 		// First object in list will be the header object, the rest the usual DayCodeDKO objects
 		List<Object> rawContent = parser.getRawContent();
 		for (int i = 0; i < rawContent.size(); i++) {
@@ -83,7 +82,7 @@ public class DaycodeById extends IndexImpl<RegtoppDayCodeDKO> {
 				RegtoppDayCodeDKO existingRecord = index.put(newRecord.getDayCodeId(), newRecord);
 				if (existingRecord != null) {
 					log.error("Duplicate key in DKO file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
-					validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError(RegtoppDayCodeDKO.FILE_EXTENSION,
+					validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError(getUnderlyingFilename(),
 							newRecord.getRecordLineNumber(), "Dagkode", newRecord.getDayCode(), ERROR.DUPLICATE_KEY, "Duplicate key")), null);
 				}
 

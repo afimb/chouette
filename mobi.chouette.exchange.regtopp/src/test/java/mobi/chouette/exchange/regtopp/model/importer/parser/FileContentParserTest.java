@@ -84,7 +84,6 @@ public class FileContentParserTest {
 			context.put(Constant.REPORT, report);
 
 			RegtoppValidationReporter reporter = new RegtoppValidationReporter();
-			FileContentParser parser = new FileContentParser();
 			String name = f.getName().toUpperCase();
 			String extension = name.substring(name.lastIndexOf(".") + 1);
 			List<Class> regtoppClasses = new ArrayList<Class>();
@@ -142,14 +141,14 @@ public class FileContentParserTest {
 
 			}
 
-			Assert.assertNotNull(parser, "No parser registered for " + name);
 			Assert.assertTrue(regtoppClasses.size() > 0, "No class registered for " + name);
 
 			FileInfo fileInfo = new FileInfo(name, FILE_STATE.ERROR);
 			report.getFiles().add(fileInfo);
 			ParseableFile parseableFile = new ParseableFile(f, regtoppClasses, fileInfo);
+			FileContentParser parser = new FileContentParser(parseableFile);
 
-			parser.parse(context, parseableFile, reporter);
+			parser.parse(context, reporter);
 
 			// TODO enable assertions again, there are errors in one of Atb's files
 			// Assert.assertEquals(0,reporter.getExceptions().size(),"Validation exceptions: "+ToStringBuilder.reflectionToString(reporter));

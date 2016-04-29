@@ -37,8 +37,16 @@ public class FileContentParser {
 	public static final String REGTOPP_CHARSET = "ISO-8859-1";
 	@Getter
 	private List<Object> rawContent = new ArrayList<>();
+	
+	@Getter
+	private ParseableFile parseableFile = null;
 
-	public void parse(final Context context, final ParseableFile parseableFile, final RegtoppValidationReporter validationReporter) throws Exception {
+	public FileContentParser(ParseableFile parseableFile) {
+		super();
+		this.parseableFile = parseableFile;
+	}
+
+	public void parse(final Context context, final RegtoppValidationReporter validationReporter) throws Exception {
 		StreamFactory factory = StreamFactory.newInstance();
 
 		StreamBuilder builder = new StreamBuilder("regtopp");
@@ -129,4 +137,5 @@ public class FileContentParser {
 	public void dispose() {
 		rawContent.clear();
 	}
+
 }

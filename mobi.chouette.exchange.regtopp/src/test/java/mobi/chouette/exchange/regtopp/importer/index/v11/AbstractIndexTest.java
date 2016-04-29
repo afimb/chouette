@@ -15,27 +15,26 @@ import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
 
 public abstract class AbstractIndexTest {
 	protected Context context;
-	
+
 	protected RegtoppImporter importer;
 
 	protected RegtoppValidationReporter validationReporter;
-	
+
 	@Test
 	protected void setupImporter() {
 		validationReporter = new RegtoppValidationReporter();
 		context = new Context();
 		String path = "src/test/data";
-		importer =  new RegtoppImporter(context, path, validationReporter);
+		importer = new RegtoppImporter(context, path, validationReporter);
 	}
 
-	
 	protected FileContentParser createUnderlyingFileParser(File file, Class[] regtoppClasses) throws Exception {
-		FileContentParser fileContentParser = new FileContentParser();
-		RegtoppValidationReporter validationReporter = new RegtoppValidationReporter();
-		FileInfo fileInfo = new FileInfo(file.getName(),FILE_STATE.ERROR);
+		FileInfo fileInfo = new FileInfo(file.getName(), FILE_STATE.ERROR);
 		ParseableFile parseableFile = new ParseableFile(file, Arrays.asList(regtoppClasses), fileInfo);
+		FileContentParser fileContentParser = new FileContentParser(parseableFile);
+		RegtoppValidationReporter validationReporter = new RegtoppValidationReporter();
 		Context context = new Context();
-		fileContentParser.parse(context , parseableFile, validationReporter);
+		fileContentParser.parse(context, validationReporter);
 		return fileContentParser;
 	}
 }

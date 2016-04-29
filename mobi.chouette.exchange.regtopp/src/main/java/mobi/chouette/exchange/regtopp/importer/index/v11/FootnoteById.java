@@ -29,7 +29,7 @@ public class FootnoteById extends IndexImpl<RegtoppFootnoteMRK> {
 		if (StringUtils.trimToNull(bean.getDescription()) != null) {
 			bean.getOkTests().add(RegtoppException.ERROR.MRK_INVALID_FIELD_VALUE);
 		} else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppFootnoteMRK.FILE_EXTENSION, bean.getRecordLineNumber(), "Destinasjonstekst", null, RegtoppException.ERROR.MRK_INVALID_FIELD_VALUE, "")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), "Destinasjonstekst", null, RegtoppException.ERROR.MRK_INVALID_FIELD_VALUE, "")));
 			result = false;
 		}
 
@@ -57,7 +57,7 @@ public class FootnoteById extends IndexImpl<RegtoppFootnoteMRK> {
 			if (existingRecord != null) {
 				// TODO fix exception/validation reporting
 				log.error("Duplicate key in MRK file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
-				validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError(RegtoppFootnoteMRK.FILE_EXTENSION,
+				validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError(getUnderlyingFilename(),
 						newRecord.getRecordLineNumber(), "Merknadsnr", newRecord.getFootnoteId(), ERROR.DUPLICATE_KEY, "Duplicate key")), null);
 			}
 		}

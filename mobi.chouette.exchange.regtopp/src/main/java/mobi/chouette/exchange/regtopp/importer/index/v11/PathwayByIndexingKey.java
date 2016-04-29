@@ -30,7 +30,7 @@ public class PathwayByIndexingKey extends IndexImpl<AbstractRegtoppPathwayGAV> {
 		if (bean.getDescription() != null) {
 			bean.getOkTests().add(RegtoppException.ERROR.GAV_INVALID_FIELD_VALUE);
 		} else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppPathwayGAV.FILE_EXTENSION, bean.getRecordLineNumber(),
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(),
 					"Gangveitekst", null, RegtoppException.ERROR.GAV_INVALID_FIELD_VALUE, "")));
 			result = false;
 		}
@@ -38,11 +38,11 @@ public class PathwayByIndexingKey extends IndexImpl<AbstractRegtoppPathwayGAV> {
 		if (bean.getDuration() != null) {
 			bean.getOkTests().add(RegtoppException.ERROR.GAV_INVALID_FIELD_VALUE);
 		} else if (bean.getDuration() == null) {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppPathwayGAV.FILE_EXTENSION, bean.getRecordLineNumber(),
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(),
 					"Gangtid", null, RegtoppException.ERROR.GAV_INVALID_FIELD_VALUE, "")));
 			result = false;
 		} else if (bean.getDuration() <= 0) {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppPathwayGAV.FILE_EXTENSION, bean.getRecordLineNumber(),
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(),
 					"Gangtid", null, RegtoppException.ERROR.GAV_INVALID_FIELD_VALUE, "")));
 			result = false;
 		}
@@ -58,7 +58,7 @@ public class PathwayByIndexingKey extends IndexImpl<AbstractRegtoppPathwayGAV> {
 			bean.getOkTests().add(RegtoppException.ERROR.GAV_INVALID_MANDATORY_ID_REFERENCE);
 		} else {
 			bean.getErrors()
-					.add(new RegtoppException(new FileParserValidationError(AbstractRegtoppPathwayGAV.FILE_EXTENSION, bean.getRecordLineNumber(),
+					.add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(),
 							"Holdeplassnr fra", from,
 							RegtoppException.ERROR.GAV_INVALID_MANDATORY_ID_REFERENCE, "Unreferenced id.")));
 			result = false;
@@ -68,7 +68,7 @@ public class PathwayByIndexingKey extends IndexImpl<AbstractRegtoppPathwayGAV> {
 			bean.getOkTests().add(RegtoppException.ERROR.GAV_INVALID_MANDATORY_ID_REFERENCE);
 		} else {
 			bean.getErrors()
-					.add(new RegtoppException(new FileParserValidationError(AbstractRegtoppPathwayGAV.FILE_EXTENSION, bean.getRecordLineNumber(),
+					.add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(),
 							"Holdeplassnr til", from,
 							RegtoppException.ERROR.GAV_INVALID_MANDATORY_ID_REFERENCE, "Unreferenced id.")));
 			result = false;
@@ -98,7 +98,7 @@ public class PathwayByIndexingKey extends IndexImpl<AbstractRegtoppPathwayGAV> {
 			AbstractRegtoppPathwayGAV existingRecord = index.put(newRecord.getIndexingKey(), newRecord);
 			if (existingRecord != null) {
 				log.error("Duplicate key in GAV file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
-				validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError(RegtoppLineLIN.FILE_EXTENSION,
+				validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError(getUnderlyingFilename(),
 						newRecord.getRecordLineNumber(), "Holdeplass fra/til", newRecord.getIndexingKey(), ERROR.DUPLICATE_KEY, "Duplicate key")), null);
 			}
 		}

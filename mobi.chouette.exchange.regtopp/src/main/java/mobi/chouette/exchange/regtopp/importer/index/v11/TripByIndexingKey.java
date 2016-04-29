@@ -35,12 +35,13 @@ public class TripByIndexingKey extends TripIndex {
 
 	@Override
 	public void index() throws Exception {
+		
 		for (Object obj : parser.getRawContent()) {
 			AbstractRegtoppTripIndexTIX newRecord = (AbstractRegtoppTripIndexTIX) obj;
 			AbstractRegtoppTripIndexTIX existingRecord = index.put(newRecord.getIndexingKey(), newRecord);
 			if (existingRecord != null) {
 				log.error("Duplicate key in TIX file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
-				validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError(RegtoppTripIndexTIX.FILE_EXTENSION,
+				validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError(getUnderlyingFilename(),
 						newRecord.getRecordLineNumber(), "Linjenr/Turnr", newRecord.getIndexingKey(), ERROR.DUPLICATE_KEY, "Duplicate key")), null);
 			}
 		}

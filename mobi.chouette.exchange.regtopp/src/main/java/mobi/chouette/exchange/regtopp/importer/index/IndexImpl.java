@@ -24,13 +24,23 @@ public abstract class IndexImpl<T> implements Index<T> {
 	protected RegtoppValidationReporter validationReporter = null;
 
 	private boolean validated = false;
+	
+	private String filename = null;
 
 	public IndexImpl(RegtoppValidationReporter validationReporter, FileContentParser parser) throws Exception {
 		this.parser = parser;
 		this.validationReporter = validationReporter;
 
+		filename = parser.getParseableFile().getFile().getName().toUpperCase();
+
+		
 		index();
 	}
+	
+	public String getUnderlyingFilename() {
+		return filename;
+	}
+	
 
 	@Override
 	public Iterator<T> iterator() {

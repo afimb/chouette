@@ -29,7 +29,7 @@ public class DestinationById extends IndexImpl<RegtoppDestinationDST> {
 		if (StringUtils.trimToNull(bean.getDestinationText()) != null) {
 			bean.getOkTests().add(RegtoppException.ERROR.DST_INVALID_FIELD_VALUE);
 		} else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppDestinationDST.FILE_EXTENSION, bean.getRecordLineNumber(), "Destinasjonstekst", null, RegtoppException.ERROR.DST_INVALID_FIELD_VALUE, "")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), "Destinasjonstekst", bean.getDestinationText(), RegtoppException.ERROR.DST_INVALID_FIELD_VALUE, "")));
 			result = false;
 		}
 
@@ -56,7 +56,7 @@ public class DestinationById extends IndexImpl<RegtoppDestinationDST> {
 			RegtoppDestinationDST existingRecord = index.put(newRecord.getDestinationId(), newRecord);
 			if (existingRecord != null) {
 				log.error("Duplicate key in DST file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
-				validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError(RegtoppDestinationDST.FILE_EXTENSION,
+				validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError(getUnderlyingFilename(),
 						newRecord.getRecordLineNumber(), "Destinasjonsnr", newRecord.getDestinationId(), ERROR.DUPLICATE_KEY, "Duplicate key")), null);
 			}
 		}

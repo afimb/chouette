@@ -30,56 +30,56 @@ public abstract class TripIndex extends IndexImpl<AbstractRegtoppTripIndexTIX> {
 		if (bean.getAdminCode() != null) {
 			bean.getOkTests().add(RegtoppException.ERROR.TIX_INVALID_FIELD_VALUE);
 		}  else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppTripIndexTIX.FILE_EXTENSION, bean.getRecordLineNumber(), "Adminkode", null, RegtoppException.ERROR.TIX_INVALID_FIELD_VALUE, "")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), "Adminkode", null, RegtoppException.ERROR.TIX_INVALID_FIELD_VALUE, "")));
 			result = false;
 		}
 
 		if (bean.getCounter() != null) {
 			bean.getOkTests().add(RegtoppException.ERROR.TIX_INVALID_FIELD_VALUE);
 		}  else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppTripIndexTIX.FILE_EXTENSION, bean.getRecordLineNumber(), "Løpenr", null, RegtoppException.ERROR.TIX_INVALID_FIELD_VALUE, "")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), "Løpenr", null, RegtoppException.ERROR.TIX_INVALID_FIELD_VALUE, "")));
 			result = false;
 		}
 
 		if (bean.getLineId() != null) {
 			bean.getOkTests().add(RegtoppException.ERROR.TIX_INVALID_FIELD_VALUE);
 		}  else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppTripIndexTIX.FILE_EXTENSION, bean.getRecordLineNumber(), "Linjenr", null, RegtoppException.ERROR.TIX_INVALID_FIELD_VALUE, "")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), "Linjenr", null, RegtoppException.ERROR.TIX_INVALID_FIELD_VALUE, "")));
 			result = false;
 		}
 
 		if (bean.getTripId() != null) {
 			bean.getOkTests().add(RegtoppException.ERROR.TIX_INVALID_FIELD_VALUE);
 		}  else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppTripIndexTIX.FILE_EXTENSION, bean.getRecordLineNumber(), "Turnr", null, RegtoppException.ERROR.TIX_INVALID_FIELD_VALUE, "")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), "Turnr", null, RegtoppException.ERROR.TIX_INVALID_FIELD_VALUE, "")));
 			result = false;
 		}
 
 		if (bean.getDirection() != null) {
 			bean.getOkTests().add(RegtoppException.ERROR.TIX_INVALID_FIELD_VALUE);
 		}  else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppTripIndexTIX.FILE_EXTENSION, bean.getRecordLineNumber(), "Retning", null, RegtoppException.ERROR.TIX_INVALID_FIELD_VALUE, "")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), "Retning", null, RegtoppException.ERROR.TIX_INVALID_FIELD_VALUE, "")));
 			result = false;
 		}
 
 		if (bean.getRouteIdRef() != null) {
 			bean.getOkTests().add(RegtoppException.ERROR.TIX_INVALID_FIELD_VALUE);
 		}  else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppTripIndexTIX.FILE_EXTENSION, bean.getRecordLineNumber(), "Trmønsternr", null, RegtoppException.ERROR.TIX_INVALID_FIELD_VALUE, "")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), "Trmønsternr", null, RegtoppException.ERROR.TIX_INVALID_FIELD_VALUE, "")));
 			result = false;
 		}
 
 		if (bean.getDepartureTime() != null) {
 			bean.getOkTests().add(RegtoppException.ERROR.TIX_INVALID_FIELD_VALUE);
 		}  else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppTripIndexTIX.FILE_EXTENSION, bean.getRecordLineNumber(), "Avgangstid", null, RegtoppException.ERROR.TIX_INVALID_FIELD_VALUE, "")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), "Avgangstid", null, RegtoppException.ERROR.TIX_INVALID_FIELD_VALUE, "")));
 			result = false;
 		}
 
 		if (bean.getTypeOfService() != TransportType.Unknown) {
 			bean.getOkTests().add(RegtoppException.ERROR.TIX_INVALID_FIELD_VALUE);
 		}  else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppTripIndexTIX.FILE_EXTENSION, bean.getRecordLineNumber(), "Transportmiddel", null, RegtoppException.ERROR.TIX_INVALID_FIELD_VALUE, "")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), "Transportmiddel", null, RegtoppException.ERROR.TIX_INVALID_FIELD_VALUE, "")));
 			result = false;
 		}
 
@@ -87,7 +87,7 @@ public abstract class TripIndex extends IndexImpl<AbstractRegtoppTripIndexTIX> {
 		if (dao.getDayCodeById().containsKey(bean.getDayCodeRef())) {
 			bean.getOkTests().add(RegtoppException.ERROR.TIX_INVALID_MANDATORY_ID_REFERENCE);
 		} else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppTripIndexTIX.FILE_EXTENSION, bean.getRecordLineNumber(),
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(),
 					"Dagkodenr", bean.getDayCodeRef(), RegtoppException.ERROR.TIX_INVALID_MANDATORY_ID_REFERENCE, "Unreferenced id.")));
 			result = false;
 		}
@@ -99,7 +99,7 @@ public abstract class TripIndex extends IndexImpl<AbstractRegtoppTripIndexTIX> {
 
 			if (tix.getDestinationIdDepartureRef().equals(DESTINATION_NULL_REF) && tix.getDestinationIdArrivalRef().equals(DESTINATION_NULL_REF)) {
 				bean.getErrors()
-						.add(new RegtoppException(new FileParserValidationError(AbstractRegtoppTripIndexTIX.FILE_EXTENSION, bean.getRecordLineNumber(),
+						.add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(),
 								"Enten Destinasjonsnr (avgang) eller Destinasjonsnr (ankomst) må være satt", DESTINATION_NULL_REF,
 								RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE, "Unreferenced id.")));
 				result = false;
@@ -109,7 +109,7 @@ public abstract class TripIndex extends IndexImpl<AbstractRegtoppTripIndexTIX> {
 					bean.getOkTests().add(RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE);
 				} else {
 					bean.getErrors()
-							.add(new RegtoppException(new FileParserValidationError(AbstractRegtoppTripIndexTIX.FILE_EXTENSION, bean.getRecordLineNumber(),
+							.add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(),
 									"Destinasjonsnr (avgang)", bean.getDestinationIdDepartureRef(), RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE,
 									"Unreferenced id.")));
 					result = false;
@@ -119,7 +119,7 @@ public abstract class TripIndex extends IndexImpl<AbstractRegtoppTripIndexTIX> {
 					bean.getOkTests().add(RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE);
 				} else {
 					bean.getErrors()
-							.add(new RegtoppException(new FileParserValidationError(AbstractRegtoppTripIndexTIX.FILE_EXTENSION, bean.getRecordLineNumber(),
+							.add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(),
 									"Destinasjonsnr (ankomst)", tix.getDestinationIdArrivalRef(), RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE,
 									"Unreferenced id.")));
 					result = false;
@@ -133,7 +133,7 @@ public abstract class TripIndex extends IndexImpl<AbstractRegtoppTripIndexTIX> {
 		if (bean.getFootnoteId1Ref().equals(FOOTNOTE_NULL_REF) || dao.getFootnoteById().containsKey(bean.getFootnoteId1Ref())) {
 			bean.getOkTests().add(RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE);
 		} else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppTripIndexTIX.FILE_EXTENSION, bean.getRecordLineNumber(),
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(),
 					"Merknadsnr (1)", bean.getFootnoteId1Ref(), RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE, "Unreferenced id.")));
 			result = false;
 		}
@@ -141,7 +141,7 @@ public abstract class TripIndex extends IndexImpl<AbstractRegtoppTripIndexTIX> {
 		if (bean.getFootnoteId2Ref().equals(FOOTNOTE_NULL_REF) || dao.getFootnoteById().containsKey(bean.getFootnoteId2Ref())) {
 			bean.getOkTests().add(RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE);
 		} else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(AbstractRegtoppTripIndexTIX.FILE_EXTENSION, bean.getRecordLineNumber(),
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(),
 					"Merknadsnr (2)", bean.getFootnoteId2Ref(), RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE, "Unreferenced id.")));
 			result = false;
 		}
