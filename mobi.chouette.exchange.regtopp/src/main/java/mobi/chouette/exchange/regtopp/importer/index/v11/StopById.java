@@ -77,23 +77,23 @@ public class StopById extends IndexImpl<AbstractRegtoppStopHPL> {
 
 
 		//Holdeplass nr er riktig bygd opp (kommunenummer + 4 siffer)
-		String stopId = bean.getStopId();
-		String municipalityCodeString = stopId.substring(0, 4);
-		String stopSequenceNumber = stopId.substring(4, 8);
-		int municipalityCode = Integer.valueOf(municipalityCodeString);
-		if (101 <= municipalityCode && municipalityCode <= 2211 && stopSequenceNumber.matches("\\d{4}")) {		//Lots of holes in the 101-2211 range
-			bean.getOkTests().add(RegtoppException.ERROR.HPL_INVALID_FIELD_VALUE);
-		} else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), "Holdeplassnr", bean.getStopId(), RegtoppException.ERROR.HPL_INVALID_FIELD_VALUE, "")));
-			result = false;
-		}
-
+//		String stopId = bean.getStopId();
+//		String municipalityCodeString = stopId.substring(0, 4);
+//		String stopSequenceNumber = stopId.substring(4, 8);
+//		int municipalityCode = Integer.valueOf(municipalityCodeString);
+//		if (101 <= municipalityCode && municipalityCode <= 2211 && stopSequenceNumber.matches("\\d{4}")) {		//Lots of holes in the 101-2211 range
+//			bean.getOkTests().add(RegtoppException.ERROR.HPL_INVALID_FIELD_VALUE);
+//		} else {
+//			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), "Holdeplassnr", bean.getStopId(), RegtoppException.ERROR.HPL_INVALID_FIELD_VALUE, "")));
+//			result = false;
+//		}
+		
 		// Koordinater ulike
 		if (bean.getX() != null && bean.getY() != null){
 			if (!bean.getX().equals(bean.getY())) {
 				bean.getOkTests().add(RegtoppException.ERROR.HPL_INVALID_FIELD_VALUE);
 			} else {
-				bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), "X = Y", bean.getX().toString(), RegtoppException.ERROR.HPL_INVALID_FIELD_VALUE, "")));
+				bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), "Koordinate X og Y like", bean.getX().toString(), RegtoppException.ERROR.HPL_INVALID_FIELD_VALUE, "")));
 				result = false;
 			}
 		}
