@@ -21,6 +21,7 @@ import mobi.chouette.exchange.regtopp.importer.parser.RouteKey;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppRouteTMS;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.model.enums.AnnouncementType;
+import mobi.chouette.exchange.regtopp.model.enums.TransportType;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppDestinationDST;
 import mobi.chouette.exchange.regtopp.model.v12.RegtoppTripIndexTIX;
 import mobi.chouette.model.Company;
@@ -106,6 +107,12 @@ public class RegtoppTripParser extends mobi.chouette.exchange.regtopp.importer.p
 					vehicleJourney.setJourneyPattern(journeyPattern);
 					vehicleJourney.setRoute(route);
 
+					boolean byRequestOnly = false;
+					if(trip.getTypeOfService() == TransportType.FlexibleBus) {
+						byRequestOnly = true;
+						line.setFlexibleService(Boolean.TRUE);
+					}
+
 					// Link to timetable
 					Duration tripDepartureTime = linkVehicleJourneyToTimetable(referential, configuration, trip, vehicleJourney);
 
@@ -120,7 +127,7 @@ public class RegtoppTripParser extends mobi.chouette.exchange.regtopp.importer.p
 
 									StopPoint stopPoint = ObjectFactory.getStopPoint(referential, chouetteStopPointId);
 									addVehicleJourneyAtStop(vehicleJourney, tripDepartureTime, stopPoint,
-											vehicleStop.getDriverTimeArrival(), vehicleStop.getDriverTimeDeparture());
+											vehicleStop.getDriverTimeArrival(), vehicleStop.getDriverTimeDeparture(),byRequestOnly);
 								}
 							}
 						}

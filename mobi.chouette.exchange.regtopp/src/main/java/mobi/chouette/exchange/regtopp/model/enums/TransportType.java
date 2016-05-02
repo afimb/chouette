@@ -15,6 +15,9 @@ public enum TransportType {
 	Train(6),
 	Tram(7),
 	Subway(8),
+	
+	// Finnmark
+	FlexibleBus(9),
 
 	// Since Regtopp 1.3
 	LocalBus(22),

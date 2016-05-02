@@ -112,6 +112,12 @@ public class RegtoppTripParser extends LineSpecificParser {
 					vehicleJourney.setJourneyPattern(journeyPattern);
 					vehicleJourney.setRoute(route);
 
+					boolean byRequestOnly = false;
+					if(trip.getTypeOfService() == TransportType.FlexibleBus) {
+						byRequestOnly = true;
+						line.setFlexibleService(Boolean.TRUE);
+					}
+					
 					// Link to timetable
 					Duration tripDepartureTime = linkVehicleJourneyToTimetable(referential, configuration, trip, vehicleJourney);
 
@@ -120,7 +126,7 @@ public class RegtoppTripParser extends LineSpecificParser {
 						RegtoppRouteTDA vehicleStop = routeIndex.getValue(p.getComment());
 						try {
 							addVehicleJourneyAtStop(vehicleJourney, tripDepartureTime, p,
-									vehicleStop.getDriverTimeArrival(), vehicleStop.getDriverTimeDeparture());
+									vehicleStop.getDriverTimeArrival(), vehicleStop.getDriverTimeDeparture(),byRequestOnly);
 							
 						} catch (Exception e) {
 							log.error("Error parsing vehicleStop: " + vehicleStop, e);
@@ -207,7 +213,7 @@ public class RegtoppTripParser extends LineSpecificParser {
 	}
 
 	protected VehicleJourneyAtStop addVehicleJourneyAtStop(VehicleJourney vehicleJourney, Duration tripDepartureTime, StopPoint p, Duration driverTimeArrival,
-			Duration driverTimeDeparture) {
+			Duration driverTimeDeparture, boolean byRequestOnly) {
 		VehicleJourneyAtStop vehicleJourneyAtStop = ObjectFactory.getVehicleJourneyAtStop();
 		vehicleJourneyAtStop.setVehicleJourney(vehicleJourney);
 
@@ -236,7 +242,14 @@ public class RegtoppTripParser extends LineSpecificParser {
 			}
 
 		}
+		
 		vehicleJourneyAtStop.setStopPoint(p);
+		
+		if(byRequestOnly) {
+			// Override alighting/boarding
+			vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibilityEnum.BoardAndAlightOnRequest);
+		}
+		
 		return vehicleJourneyAtStop;
 	}
 
@@ -260,6 +273,8 @@ public class RegtoppTripParser extends LineSpecificParser {
 			return TransportModeNameEnum.Coach;
 		case FerryBoat:
 			return TransportModeNameEnum.Ferry;
+		case SchoolBus:
+		case FlexibleBus:
 		case Bus:
 			return TransportModeNameEnum.Bus;
 		case Subway:
