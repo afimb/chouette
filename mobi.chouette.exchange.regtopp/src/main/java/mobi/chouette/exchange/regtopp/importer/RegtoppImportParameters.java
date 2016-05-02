@@ -86,6 +86,12 @@ public class RegtoppImportParameters extends AbstractImportParameter {
 				return false;
 			}
 		}
+		
+		if(version == null) {
+			log.error("missing regtopp version");
+			return false;
+		}
+		
 		return true;
 
 	}
