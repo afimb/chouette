@@ -104,6 +104,13 @@ public class ValidationReport {
 		checkPoint.addDetail(new Detail(checkPointName, location, value,refValue));
 	}
 
+	public void addDetail(String checkPointName, Location location, String value, String refValue, String errorDescription, RESULT result) {
+		CheckPoint checkPoint = findCheckPointByName(checkPointName);
+		if (checkPoint == null) throw new NullPointerException("unknown checkPointName "+checkPointName);
+		checkPoint.setState(result);
+		checkPoint.addDetail(new Detail(checkPointName, location, value,refValue,errorDescription));
+	}
+
 
 	public void addDetail(String checkPointName, Location[] locations, String value, RESULT result) {
 		CheckPoint checkPoint = findCheckPointByName(checkPointName);
