@@ -16,15 +16,15 @@ import mobi.chouette.exchange.regtopp.validation.RegtoppException.ERROR;
 @Log4j
 public class TripByIndexingKey extends TripIndex {
 
-	public TripByIndexingKey(RegtoppValidationReporter validationReporter, FileContentParser fileParser) throws Exception {
-		super(validationReporter, fileParser);
+	public TripByIndexingKey(Context context, RegtoppValidationReporter validationReporter, FileContentParser fileParser) throws Exception {
+		super(context, validationReporter, fileParser);
 	}
 
 	public static class DefaultImporterFactory extends IndexFactory {
 		@SuppressWarnings("rawtypes")
 		@Override
-		protected Index create(RegtoppValidationReporter validationReporter, FileContentParser parser) throws Exception {
-			return new TripByIndexingKey(validationReporter, parser);
+		protected Index create(Context context, RegtoppValidationReporter validationReporter, FileContentParser parser) throws Exception {
+			return new TripByIndexingKey(context, validationReporter, parser);
 		}
 	}
 
@@ -41,7 +41,7 @@ public class TripByIndexingKey extends TripIndex {
 			AbstractRegtoppTripIndexTIX existingRecord = index.put(newRecord.getIndexingKey(), newRecord);
 			if (existingRecord != null) {
 				log.error("Duplicate key in TIX file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
-				validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError(getUnderlyingFilename(),
+				validationReporter.reportError(context, new RegtoppException(new FileParserValidationError(getUnderlyingFilename(),
 						newRecord.getRecordLineNumber(), "Linjenr/Turnr", newRecord.getIndexingKey(), ERROR.TIX_DUPLICATE_KEY, "Duplicate key")), null);
 			}
 		}

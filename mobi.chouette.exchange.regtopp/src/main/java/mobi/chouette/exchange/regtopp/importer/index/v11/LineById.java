@@ -17,8 +17,8 @@ import org.apache.commons.lang.StringUtils;
 @Log4j
 public class LineById extends IndexImpl<RegtoppLineLIN> {
 
-	public LineById(RegtoppValidationReporter validationReporter, FileContentParser fileParser) throws Exception {
-		super(validationReporter, fileParser);
+	public LineById(Context context, RegtoppValidationReporter validationReporter, FileContentParser fileParser) throws Exception {
+		super(context, validationReporter, fileParser);
 	}
 
 	@Override
@@ -38,8 +38,8 @@ public class LineById extends IndexImpl<RegtoppLineLIN> {
 	public static class DefaultImporterFactory extends IndexFactory {
 		@SuppressWarnings("rawtypes")
 		@Override
-		protected Index create(RegtoppValidationReporter validationReporter, FileContentParser parser) throws Exception {
-			return new LineById(validationReporter, parser);
+		protected Index create(Context context, RegtoppValidationReporter validationReporter, FileContentParser parser) throws Exception {
+			return new LineById(context, validationReporter, parser);
 		}
 	}
 
@@ -56,7 +56,7 @@ public class LineById extends IndexImpl<RegtoppLineLIN> {
 			RegtoppLineLIN existingRecord = index.put(newRecord.getLineId(), newRecord);
 			if (existingRecord != null) {
 				log.error("Duplicate key in LIN file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
-				validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError(getUnderlyingFilename(),
+				validationReporter.reportError(context, new RegtoppException(new FileParserValidationError(getUnderlyingFilename(),
 						newRecord.getRecordLineNumber(), "Linjenr", newRecord.getLineId(), ERROR.LIN_DUPLICATE_KEY, "Duplicate key")), null);
 			}
 		}

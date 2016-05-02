@@ -18,8 +18,8 @@ import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 @Log4j
 public class DestinationById extends IndexImpl<RegtoppDestinationDST> {
 
-	public DestinationById(RegtoppValidationReporter validationReporter, FileContentParser fileParser) throws Exception {
-		super(validationReporter, fileParser);
+	public DestinationById(Context context, RegtoppValidationReporter validationReporter, FileContentParser fileParser) throws Exception {
+		super(context, validationReporter, fileParser);
 	}
 
 	@Override
@@ -39,8 +39,8 @@ public class DestinationById extends IndexImpl<RegtoppDestinationDST> {
 	public static class DefaultImporterFactory extends IndexFactory {
 		@SuppressWarnings("rawtypes")
 		@Override
-		protected Index create(RegtoppValidationReporter validationReporter, FileContentParser parser) throws Exception {
-			return new DestinationById(validationReporter, parser);
+		protected Index create(Context context, RegtoppValidationReporter validationReporter, FileContentParser parser) throws Exception {
+			return new DestinationById(context, validationReporter, parser);
 		}
 	}
 
@@ -56,7 +56,7 @@ public class DestinationById extends IndexImpl<RegtoppDestinationDST> {
 			RegtoppDestinationDST existingRecord = index.put(newRecord.getDestinationId(), newRecord);
 			if (existingRecord != null) {
 				log.error("Duplicate key in DST file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
-				validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError(getUnderlyingFilename(),
+				validationReporter.reportError(context, new RegtoppException(new FileParserValidationError(getUnderlyingFilename(),
 						newRecord.getRecordLineNumber(), "Destinasjonsnr", newRecord.getDestinationId(), ERROR.DST_DUPLICATE_KEY, "Duplicate key")), null);
 			}
 		}

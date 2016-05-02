@@ -4,6 +4,7 @@ import static mobi.chouette.exchange.regtopp.RegtoppConstant.DESTINATION_NULL_RE
 import static mobi.chouette.exchange.regtopp.RegtoppConstant.FOOTNOTE_NULL_REF;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Context;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.importer.index.IndexImpl;
 import mobi.chouette.exchange.regtopp.importer.parser.FileContentParser;
@@ -18,8 +19,8 @@ import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 @Log4j
 public abstract class TripIndex extends IndexImpl<AbstractRegtoppTripIndexTIX> {
 
-	public TripIndex(RegtoppValidationReporter validationReporter, FileContentParser fileParser) throws Exception {
-		super(validationReporter, fileParser);
+	public TripIndex(Context context, RegtoppValidationReporter validationReporter, FileContentParser fileParser) throws Exception {
+		super(context, validationReporter, fileParser);
 	}
 
 	@Override

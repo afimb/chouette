@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.regtopp.importer.index.v11;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Context;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.importer.index.Index;
 import mobi.chouette.exchange.regtopp.importer.index.IndexFactory;
@@ -15,15 +16,15 @@ import org.apache.commons.lang.StringUtils;
 @Log4j
 public class RouteByLineNumber extends IndexImpl<RegtoppRouteTDA> {
 
-	public RouteByLineNumber(RegtoppValidationReporter validationReporter, FileContentParser fileParser) throws Exception {
-		super(validationReporter, fileParser);
+	public RouteByLineNumber(Context context, RegtoppValidationReporter validationReporter, FileContentParser fileParser) throws Exception {
+		super(context, validationReporter, fileParser);
 	}
 
 	public static class DefaultImporterFactory extends IndexFactory {
 		@SuppressWarnings("rawtypes")
 		@Override
-		protected Index create(RegtoppValidationReporter validationReporter, FileContentParser parser) throws Exception {
-			return new RouteByLineNumber(validationReporter, parser);
+		protected Index create(Context context, RegtoppValidationReporter validationReporter, FileContentParser parser) throws Exception {
+			return new RouteByLineNumber(context, validationReporter, parser);
 		}
 	}
 

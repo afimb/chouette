@@ -17,15 +17,15 @@ import org.apache.commons.lang.StringUtils;
 @Log4j
 public class StopPointByIndexingKey extends IndexImpl<RegtoppStopPointSTP> {
 
-	public StopPointByIndexingKey(RegtoppValidationReporter validationReporter, FileContentParser fileParser) throws Exception {
-		super(validationReporter, fileParser);
+	public StopPointByIndexingKey(Context context, RegtoppValidationReporter validationReporter, FileContentParser fileParser) throws Exception {
+		super(context, validationReporter, fileParser);
 	}
 
 	public static class DefaultImporterFactory extends IndexFactory {
 		@SuppressWarnings("rawtypes")
 		@Override
-		protected Index create(RegtoppValidationReporter validationReporter, FileContentParser parser) throws Exception {
-			return new StopPointByIndexingKey(validationReporter, parser);
+		protected Index create(Context context, RegtoppValidationReporter validationReporter, FileContentParser parser) throws Exception {
+			return new StopPointByIndexingKey(context, validationReporter, parser);
 		}
 	}
 
@@ -41,7 +41,7 @@ public class StopPointByIndexingKey extends IndexImpl<RegtoppStopPointSTP> {
 			RegtoppStopPointSTP existingRecord = index.put(newRecord.getIndexingKey(), newRecord);
 			if (existingRecord != null) {
 				log.error("Duplicate key in STP file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
-				validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError(getUnderlyingFilename(),
+				validationReporter.reportError(context, new RegtoppException(new FileParserValidationError(getUnderlyingFilename(),
 						newRecord.getRecordLineNumber(), "Holdeplassnr/Stoppunktsnummer", newRecord.getIndexingKey(), ERROR.STP_DUPLICATE_KEY, "Duplicate key")), null);
 			}
 		}

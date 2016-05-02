@@ -22,12 +22,14 @@ public abstract class IndexImpl<T> implements Index<T> {
 	protected Map<String, T> index = new HashMap<String, T>();
 	protected FileContentParser parser = null;
 	protected RegtoppValidationReporter validationReporter = null;
+	protected Context context = null;
 
 	private boolean validated = false;
 	
 	private String filename = null;
 
-	public IndexImpl(RegtoppValidationReporter validationReporter, FileContentParser parser) throws Exception {
+	public IndexImpl(Context context, RegtoppValidationReporter validationReporter, FileContentParser parser) throws Exception {
+		this.context = context;
 		this.parser = parser;
 		this.validationReporter = validationReporter;
 

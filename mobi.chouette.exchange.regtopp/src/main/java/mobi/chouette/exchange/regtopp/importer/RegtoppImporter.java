@@ -123,7 +123,7 @@ public class RegtoppImporter {
 					parser.parse(context, validationReporter);
 				}
 
-				index = IndexFactory.build(validationReporter, parser, clazz.getName());
+				index = IndexFactory.build(context, validationReporter, parser, clazz.getName());
 				indexMap.put(name, index);
 			} catch (Exception e) {
 				log.error(e);

@@ -21,8 +21,8 @@ import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 
 public class DaycodeById extends IndexImpl<RegtoppDayCodeDKO> {
 
-	public DaycodeById(RegtoppValidationReporter validationReporter, FileContentParser parser) throws Exception {
-		super(validationReporter, parser);
+	public DaycodeById(Context context, RegtoppValidationReporter validationReporter, FileContentParser parser) throws Exception {
+		super(context, validationReporter, parser);
 	}
 
 	@Getter
@@ -60,8 +60,8 @@ public class DaycodeById extends IndexImpl<RegtoppDayCodeDKO> {
 	public static class DefaultImporterFactory extends IndexFactory {
 		@SuppressWarnings("rawtypes")
 		@Override
-		protected Index create(RegtoppValidationReporter validationReporter, FileContentParser parser) throws Exception {
-			return new DaycodeById(validationReporter, parser);
+		protected Index create(Context context, RegtoppValidationReporter validationReporter, FileContentParser parser) throws Exception {
+			return new DaycodeById(context, validationReporter, parser);
 		}
 	}
 
@@ -82,7 +82,7 @@ public class DaycodeById extends IndexImpl<RegtoppDayCodeDKO> {
 				RegtoppDayCodeDKO existingRecord = index.put(newRecord.getDayCodeId(), newRecord);
 				if (existingRecord != null) {
 					log.error("Duplicate key in DKO file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
-					validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError(getUnderlyingFilename(),
+					validationReporter.reportError(context, new RegtoppException(new FileParserValidationError(getUnderlyingFilename(),
 							newRecord.getRecordLineNumber(), "Dagkode", newRecord.getDayCode(), ERROR.DKO_DUPLICATE_KEY, "Duplicate key")), null);
 				}
 

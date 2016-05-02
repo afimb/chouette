@@ -18,8 +18,8 @@ import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 @Log4j
 public class FootnoteById extends IndexImpl<RegtoppFootnoteMRK> {
 
-	public FootnoteById(RegtoppValidationReporter validationReporter, FileContentParser fileParser) throws Exception {
-		super(validationReporter, fileParser);
+	public FootnoteById(Context context, RegtoppValidationReporter validationReporter, FileContentParser fileParser) throws Exception {
+		super(context, validationReporter, fileParser);
 	}
 
 	@Override
@@ -39,8 +39,8 @@ public class FootnoteById extends IndexImpl<RegtoppFootnoteMRK> {
 	public static class DefaultImporterFactory extends IndexFactory {
 		@SuppressWarnings("rawtypes")
 		@Override
-		protected Index create(RegtoppValidationReporter validationReporter, FileContentParser parser) throws Exception {
-			return new FootnoteById(validationReporter, parser);
+		protected Index create(Context context, RegtoppValidationReporter validationReporter, FileContentParser parser) throws Exception {
+			return new FootnoteById(context, validationReporter, parser);
 		}
 	}
 
@@ -57,7 +57,7 @@ public class FootnoteById extends IndexImpl<RegtoppFootnoteMRK> {
 			if (existingRecord != null) {
 				// TODO fix exception/validation reporting
 				log.error("Duplicate key in MRK file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
-				validationReporter.reportError(new Context(), new RegtoppException(new FileParserValidationError(getUnderlyingFilename(),
+				validationReporter.reportError(context, new RegtoppException(new FileParserValidationError(getUnderlyingFilename(),
 						newRecord.getRecordLineNumber(), "Merknadsnr", newRecord.getFootnoteId(), ERROR.MRK_DUPLICATE_KEY, "Duplicate key")), null);
 			}
 		}
