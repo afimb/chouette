@@ -123,7 +123,7 @@ public class StopById extends IndexImpl<AbstractRegtoppStopHPL> {
 			if (existingRecord != null) {
 				log.error("Duplicate key in HPL file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
 				validationReporter.reportError(context, new RegtoppException(new FileParserValidationError(getUnderlyingFilename(),
-						newRecord.getRecordLineNumber(), "Holdeplassnr", newRecord.getStopId(), ERROR.HPL_DUPLICATE_KEY, "Duplicate key")), null);
+						newRecord.getRecordLineNumber(), "Holdeplassnr", newRecord.getStopId(), ERROR.HPL_DUPLICATE_KEY, "Duplicate key")), getUnderlyingFilename());
 			}
 		}
 	}

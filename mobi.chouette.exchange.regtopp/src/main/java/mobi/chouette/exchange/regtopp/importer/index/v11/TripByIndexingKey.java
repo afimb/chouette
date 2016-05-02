@@ -42,7 +42,7 @@ public class TripByIndexingKey extends TripIndex {
 			if (existingRecord != null) {
 				log.error("Duplicate key in TIX file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
 				validationReporter.reportError(context, new RegtoppException(new FileParserValidationError(getUnderlyingFilename(),
-						newRecord.getRecordLineNumber(), "Linjenr/Turnr", newRecord.getIndexingKey(), ERROR.TIX_DUPLICATE_KEY, "Duplicate key")), null);
+						newRecord.getRecordLineNumber(), "Linjenr/Turnr", newRecord.getIndexingKey(), ERROR.TIX_DUPLICATE_KEY, "Duplicate key")), getUnderlyingFilename());
 			}
 		}
 	}

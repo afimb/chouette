@@ -17,6 +17,7 @@ import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
 import mobi.chouette.exchange.validation.report.CheckPoint;
 import mobi.chouette.exchange.validation.report.Location;
 import mobi.chouette.exchange.validation.report.ValidationReport;
+import org.codehaus.jettison.json.JSONException;
 
 @Log4j
 public class RegtoppValidationReporter {
@@ -225,7 +226,6 @@ public class RegtoppValidationReporter {
 				break;
 			}
 		}
-
 	}
 
 	private String checkPointName(mobi.chouette.exchange.regtopp.validation.RegtoppException.ERROR errorName) {

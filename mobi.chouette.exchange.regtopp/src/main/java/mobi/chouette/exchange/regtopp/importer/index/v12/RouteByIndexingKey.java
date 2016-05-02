@@ -44,7 +44,7 @@ public class RouteByIndexingKey extends  IndexImpl<AbstractRegtoppRouteTMS> {
 			if (existingRecord != null) {
 				log.error("Duplicate key in TMS file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
 				validationReporter.reportError(context, new RegtoppException(new FileParserValidationError(getUnderlyingFilename(),
-						newRecord.getRecordLineNumber(), "Linjenr/Turmønsternr/Retning/Sekvensnummer", newRecord.getIndexingKey(), ERROR.TMS_DUPLICATE_KEY, "Duplicate key")), null);
+						newRecord.getRecordLineNumber(), "Linjenr/Turmønsternr/Retning/Sekvensnummer", newRecord.getIndexingKey(), ERROR.TMS_DUPLICATE_KEY, "Duplicate key")), getUnderlyingFilename());
 			}
 		}
 	}

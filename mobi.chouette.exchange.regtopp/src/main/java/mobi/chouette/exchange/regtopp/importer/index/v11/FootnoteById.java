@@ -58,7 +58,7 @@ public class FootnoteById extends IndexImpl<RegtoppFootnoteMRK> {
 				// TODO fix exception/validation reporting
 				log.error("Duplicate key in MRK file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
 				validationReporter.reportError(context, new RegtoppException(new FileParserValidationError(getUnderlyingFilename(),
-						newRecord.getRecordLineNumber(), "Merknadsnr", newRecord.getFootnoteId(), ERROR.MRK_DUPLICATE_KEY, "Duplicate key")), null);
+						newRecord.getRecordLineNumber(), "Merknadsnr", newRecord.getFootnoteId(), ERROR.MRK_DUPLICATE_KEY, "Duplicate key")), getUnderlyingFilename());
 			}
 		}
 	}

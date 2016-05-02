@@ -104,6 +104,11 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 
 				String name = fileName.getFileName().toString().toUpperCase();
 
+				if (name == null) {
+					log.warn("Got a file with missing name. Unable to report error properly.");
+					continue;
+				}
+
 				if (!name.matches("R[0-9]{4}\\.[A-Z]{3}")) {
 					FileInfo file = new FileInfo(name, FILE_STATE.IGNORED);
 					report.getFiles().add(file);
