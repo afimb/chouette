@@ -8,11 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.beanio.BeanReader;
-import org.beanio.BeanReaderErrorHandlerSupport;
-import org.beanio.InvalidRecordException;
-import org.beanio.RecordContext;
-import org.beanio.StreamFactory;
+import org.beanio.*;
 import org.beanio.builder.FixedLengthParserBuilder;
 import org.beanio.builder.StreamBuilder;
 import org.joda.time.Duration;
@@ -111,10 +107,31 @@ public class FileContentParser {
 				parseableFile.getFileInfo().addError(new FileError(CODE.INVALID_FORMAT, ex.getMessage()));
 
 			}
+
+			@Override
+			public void unexpectedRecord(UnexpectedRecordException ex) throws Exception {
+				log.warn("Got UnexpectedRecordException.", ex);
+			}
+
+			@Override
+			public void unidentifiedRecord(UnidentifiedRecordException ex) throws Exception {
+				log.warn("Got UnidentifiedRecordException.", ex);
+			}
+
+			@Override
+			public void malformedRecord(MalformedRecordException ex) throws Exception {
+				log.warn("Got MalformedRecordException.", ex);
+			}
+
+			@Override
+			public void fatalError(BeanReaderException ex) throws Exception {
+				log.error("Got BeanReaderException.", ex);
+			}
+
+
 		});
 
-		Object record = null;
-
+		Object record;
 		try {
 			while ((record = in.read()) != null) {
 				((RegtoppObject) record).setRecordLineNumber(in.getLineNumber());
@@ -122,8 +139,8 @@ public class FileContentParser {
 			}
 			log.info("Parsed file OK: " + parseableFile.getFile().getName());
 			parseableFile.getFileInfo().setStatus(FILE_STATE.OK);
-		} catch (InvalidRecordException ex) {
-			log.error(ex);
+		} catch (RuntimeException ex) {
+			log.error("Unexpected error while parsing", ex);
 		} finally {
 			in.close();
 		}
