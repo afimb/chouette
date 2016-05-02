@@ -1,3 +1,7 @@
+# Version 3.4.0 (en cours)
+* Nouvelles fonctionnalités :
+  * validation à l'export : après exports Neptune ou GTFS, une validation des fichiers produits est ajoutée sur option
+
 # Version 3.3.1 (07/04/2016)
 * Nouvelles fonctionnalités :
   * export SIG : nouvel export combinant les format KML et GeoJson
