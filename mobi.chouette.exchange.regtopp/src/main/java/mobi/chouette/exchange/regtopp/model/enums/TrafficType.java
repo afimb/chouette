@@ -5,7 +5,9 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public enum TrafficType {
 	Normal(0),
-	Express(1);
+	Express(1),
+	// AkT using this
+	SchoolBus(8);
 	private int val;
 
 	public String toString() {
