@@ -22,6 +22,7 @@ import mobi.chouette.exchange.regtopp.model.v11.RegtoppPathwayGAV;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppRouteTDA;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppStopHPL;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppTripIndexTIX;
+import mobi.chouette.exchange.regtopp.validation.RegtoppException;
 import mobi.chouette.exchange.report.FileInfo;
 
 public class Regtopp11DVersionHandler implements VersionHandler {
@@ -31,44 +32,44 @@ public class Regtopp11DVersionHandler implements VersionHandler {
 		switch (extension) {
 
 		case "TIX": {
-			ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppTripIndexTIX.class }), file);
+			ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppTripIndexTIX.class }), RegtoppException.ERROR.TIX_INVALID_FIELD_VALUE, file);
 			importer.registerFileForIndex(RegtoppImporter.INDEX.TRIP_INDEX.name(), parseableFile);
 			importer.registerFileForIndex(RegtoppImporter.INDEX.LINE_BY_TRIPS.name(), parseableFile);
 			break;
 		}
 		case "TDA": {
-			ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppRouteTDA.class }), file);
+			ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppRouteTDA.class }), RegtoppException.ERROR.TDA_INVALID_FIELD_VALUE, file);
 			importer.registerFileForIndex(RegtoppImporter.INDEX.ROUTE_BY_LINE_NUMBER.name(), parseableFile);
 			break;
 		}
 		case "HPL": {
-			ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppStopHPL.class }), file);
+			ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppStopHPL.class }), RegtoppException.ERROR.HPL_INVALID_FIELD_VALUE, file);
 			importer.registerFileForIndex(RegtoppImporter.INDEX.STOP_BY_ID.name(), parseableFile);
 			break;
 		}
 		case "DKO": {
 			ParseableFile parseableFile = new ParseableFile(fileName.toFile(),
-					Arrays.asList(new Class[] { RegtoppDayCodeHeaderDKO.class, RegtoppDayCodeDKO.class }), file);
+					Arrays.asList(new Class[] { RegtoppDayCodeHeaderDKO.class, RegtoppDayCodeDKO.class }), RegtoppException.ERROR.DKO_INVALID_FIELD_VALUE,file);
 			importer.registerFileForIndex(RegtoppImporter.INDEX.DAYCODE_BY_ID.name(), parseableFile);
 			break;
 		}
 		case "DST": {
-			ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppDestinationDST.class }), file);
+			ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppDestinationDST.class }), RegtoppException.ERROR.DST_INVALID_FIELD_VALUE, file);
 			importer.registerFileForIndex(RegtoppImporter.INDEX.DESTINATION_BY_ID.name(), parseableFile);
 			break;
 		}
 		case "MRK": {
-			ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppFootnoteMRK.class }), file);
+			ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppFootnoteMRK.class }), RegtoppException.ERROR.MRK_INVALID_FIELD_VALUE, file);
 			importer.registerFileForIndex(RegtoppImporter.INDEX.REMARK_BY_ID.name(), parseableFile);
 			break;
 		}
 		case "LIN": {
-			ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppLineLIN.class }), file);
+			ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppLineLIN.class }), RegtoppException.ERROR.LIN_INVALID_FIELD_VALUE, file);
 			importer.registerFileForIndex(RegtoppImporter.INDEX.LINE_BY_ID.name(), parseableFile);
 			break;
 		}
 		case "GAV": {
-			ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppPathwayGAV.class }), file);
+			ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppPathwayGAV.class }), RegtoppException.ERROR.GAV_INVALID_FIELD_VALUE, file);
 			importer.registerFileForIndex(RegtoppImporter.INDEX.PATHWAY_BY_INDEXING_KEY.name(), parseableFile);
 			break;
 		}

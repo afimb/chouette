@@ -2,6 +2,7 @@ package mobi.chouette.exchange.regtopp.importer.index.v11;
 
 import java.io.File;
 
+import mobi.chouette.exchange.regtopp.validation.RegtoppException;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -15,7 +16,7 @@ public class DaycodeByIdTest extends AbstractIndexTest {
 	@Test(dependsOnMethods = { "setupImporter" })
 	public void testValidation() throws Exception {
 		FileContentParser fileContentParser = createUnderlyingFileParser(new File("src/test/data/fullsets/kolumbus_v12/R5001.dko"),
-				new Class[] { RegtoppDayCodeHeaderDKO.class, RegtoppDayCodeDKO.class });
+				new Class[] { RegtoppDayCodeHeaderDKO.class, RegtoppDayCodeDKO.class }, RegtoppException.ERROR.DKO_INVALID_FIELD_VALUE);
 		DaycodeById index = new DaycodeById(validationReporter, fileContentParser);
 		for (RegtoppDayCodeDKO obj : index) {
 			boolean validData = index.validate(obj, importer);

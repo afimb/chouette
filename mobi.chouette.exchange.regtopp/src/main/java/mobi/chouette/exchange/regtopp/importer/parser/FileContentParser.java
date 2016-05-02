@@ -27,7 +27,6 @@ import mobi.chouette.exchange.regtopp.beanio.LocalDateTypeHandler;
 import mobi.chouette.exchange.regtopp.model.RegtoppObject;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
-import mobi.chouette.exchange.regtopp.validation.RegtoppException.ERROR;
 import mobi.chouette.exchange.report.FileError;
 import mobi.chouette.exchange.report.FileError.CODE;
 import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
@@ -89,10 +88,10 @@ public class FileContentParser {
 
 							// TODO report this in a better fashion
 							FileParserValidationError ctx = new FileParserValidationError(fileName, rContext.getLineNumber(), rContext.getRecordName(),
-									rContext.getRecordText(), ERROR.INVALID_FIELD_VALUE, error);
+									rContext.getRecordText(), parseableFile.getInvalidFieldValue(), error);
 							RegtoppException e = new RegtoppException(ctx, ex);
 							errors.add(e);
-							log.warn("Field error parsing file " + fileName + " at line " + rContext.getLineNumber() + ":" + error);
+							log.warn("Field error parsing record " + rContext.getRecordName() + " in file " + fileName + " at line " + rContext.getLineNumber() + ":" + error);
 						}
 					}
 					if (rContext.hasFieldErrors()) {
@@ -101,10 +100,10 @@ public class FileContentParser {
 
 								// TODO report this in a better fashion
 								FileParserValidationError ctx = new FileParserValidationError(fileName, rContext.getLineNumber(), field,
-										rContext.getFieldText(field), ERROR.INVALID_FIELD_VALUE, error);
+										rContext.getFieldText(field), parseableFile.getInvalidFieldValue(), error);
 								RegtoppException e = new RegtoppException(ctx, ex);
 								errors.add(e);
-								log.warn("Field error parsing file " + fileName + " at line " + rContext.getLineNumber() + ":" + error);
+								log.warn("Field error parsing field " + field + " in file " + fileName + " at line " + rContext.getLineNumber() + ":" + error);
 							}
 						}
 					}

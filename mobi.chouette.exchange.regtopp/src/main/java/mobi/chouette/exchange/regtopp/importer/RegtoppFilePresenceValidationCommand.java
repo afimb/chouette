@@ -1,7 +1,5 @@
 package mobi.chouette.exchange.regtopp.importer;
 
-import static mobi.chouette.exchange.regtopp.RegtoppConstant.REGTOPP_REPORTER;
-
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -33,7 +31,6 @@ import mobi.chouette.exchange.regtopp.importer.version.RegtoppVersion;
 import mobi.chouette.exchange.regtopp.importer.version.VersionHandler;
 import mobi.chouette.exchange.regtopp.validation.Constant;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException;
-import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 import mobi.chouette.exchange.report.ActionError;
 import mobi.chouette.exchange.report.ActionError.CODE;
 import mobi.chouette.exchange.report.ActionReport;
@@ -81,7 +78,6 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 		context.put(RegtoppConstant.VERSION_HANDLER, versionHandler);
 
 		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
-		RegtoppValidationReporter validationReporter = (RegtoppValidationReporter) context.get(REGTOPP_REPORTER);
 
 		// TODO read FORMPAR.FRM to detect which version of Regtopp being used.
 		// Currently 1.2 supported

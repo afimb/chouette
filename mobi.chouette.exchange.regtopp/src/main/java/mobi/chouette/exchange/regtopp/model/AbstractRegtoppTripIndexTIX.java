@@ -2,6 +2,7 @@ package mobi.chouette.exchange.regtopp.model;
 
 import java.io.Serializable;
 
+import mobi.chouette.exchange.regtopp.validation.RegtoppException;
 import org.beanio.annotation.Field;
 import org.beanio.annotation.Record;
 import org.joda.time.Duration;
@@ -15,6 +16,8 @@ import lombok.ToString;
 import mobi.chouette.exchange.regtopp.model.enums.DirectionType;
 import mobi.chouette.exchange.regtopp.model.enums.TransportType;
 
+import static mobi.chouette.exchange.regtopp.validation.RegtoppException.ERROR.TIX_INVALID_FIELD_VALUE;
+
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
@@ -25,6 +28,7 @@ public abstract class AbstractRegtoppTripIndexTIX extends RegtoppObject implemen
 	private static final long serialVersionUID = 1L;
 
 	public static final String FILE_EXTENSION = "TIX";
+	public static final RegtoppException.ERROR INVALID_FIELD_ERROR = RegtoppException.ERROR.TIX_INVALID_FIELD_VALUE;
 
 	@Getter
 	@Setter

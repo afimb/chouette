@@ -22,7 +22,7 @@ public class RegtoppValidationRules {
 		List<CheckPoint> checkPoints = new ArrayList<CheckPoint>();
 
 		checkPoints.add(new CheckPoint(REGTOPP_FILE, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
-		checkPoints.add(new CheckPoint(REGTOPP_INVALID_FIELD_VALUE, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+//		checkPoints.add(new CheckPoint(REGTOPP_INVALID_FIELD_VALUE, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
 		checkPoints.add(new CheckPoint(REGTOPP_FILE_WITH_NO_ENTRY, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
 		checkPoints.add(new CheckPoint(REGTOPP_MISSING_MANDATORY_FILES, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
 		checkPoints.add(new CheckPoint(REGTOPP_MULTIPLE_ADMIN_CODES, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
@@ -86,6 +86,8 @@ public class RegtoppValidationRules {
 		checkPoints.add(new CheckPoint(REGTOPP_STP_INVALID_MANDATORY_ID_REFERENCE, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
 		checkPoints.add(new CheckPoint(REGTOPP_STP_INVALID_OPTIONAL_ID_REFERENCE, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
 		checkPoints.add(new CheckPoint(REGTOPP_STP_DUPLICATE_KEY, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+
+		checkPoints.add(new CheckPoint(REGTOPP_VLP_INVALID_FIELD_VALUE, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
 
 		return checkPoints;
 	}

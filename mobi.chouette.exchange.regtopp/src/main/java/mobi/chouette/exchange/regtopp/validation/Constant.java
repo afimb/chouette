@@ -3,10 +3,10 @@ package mobi.chouette.exchange.regtopp.validation;
 public interface Constant extends mobi.chouette.exchange.regtopp.RegtoppConstant {
 
 	public static final String REGTOPP_FILE = "1-REGTOPP-FILE-1";
-	public static final String REGTOPP_INVALID_FIELD_VALUE = "1-REGTOPP-FIELD-VALUE-1";
-	public static final String REGTOPP_MULTIPLE_ADMIN_CODES = "1-REGTOPP-MULTIPLE_ADMIN_CODES-1";
-	public static final String REGTOPP_FILE_WITH_NO_ENTRY = "1-REGTOPP-FILE_WITH_NO_ENTRY-1";
-	public static final String REGTOPP_MISSING_MANDATORY_FILES = "1-REGTOPP-MISSING_MANDATORY_FILES-1";
+//	public static final String REGTOPP_INVALID_FIELD_VALUE = "1-REGTOPP-FIELD-VALUE-1";
+	public static final String REGTOPP_MULTIPLE_ADMIN_CODES = "1-REGTOPP-FIELD-ADMINCODES-1";
+	public static final String REGTOPP_FILE_WITH_NO_ENTRY = "1-REGTOPP-FILE-NOENTRY-1";
+	public static final String REGTOPP_MISSING_MANDATORY_FILES = "1-REGTOPP-FILE-MANDATORY-1";
 
 	public static final String REGTOPP_FILE_TIX = "1-REGTOPP-TIX-1";
 	public static final String REGTOPP_FILE_HPL = "1-REGTOPP-HPL-1";
@@ -68,6 +68,8 @@ public interface Constant extends mobi.chouette.exchange.regtopp.RegtoppConstant
 	public static final String REGTOPP_STP_INVALID_MANDATORY_ID_REFERENCE = "2-REGTOPP-STP-2";
 	public static final String REGTOPP_STP_INVALID_OPTIONAL_ID_REFERENCE = "2-REGTOPP-STP-3";
 	public static final String REGTOPP_STP_DUPLICATE_KEY = "2-REGTOPP-STP-4";
+
+	public static final String REGTOPP_VLP_INVALID_FIELD_VALUE = "2-REGTOPP-VLP-1";
 
 	// Postfix with file extension
 	public static final String REGTOPP_FILE_POSTFIX = "1-REGTOPP-FILE-";

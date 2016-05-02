@@ -13,6 +13,7 @@ import mobi.chouette.exchange.regtopp.importer.parser.v12novus.RegtoppRouteParse
 import mobi.chouette.exchange.regtopp.importer.parser.v12novus.RegtoppStopParser;
 import mobi.chouette.exchange.regtopp.model.v12novus.RegtoppRouteTMS;
 import mobi.chouette.exchange.regtopp.model.v12novus.RegtoppStopHPL;
+import mobi.chouette.exchange.regtopp.validation.RegtoppException;
 import mobi.chouette.exchange.report.FileInfo;
 
 public class Regtopp12NovusVersionHandler extends Regtopp12VersionHandler {
@@ -22,12 +23,12 @@ public class Regtopp12NovusVersionHandler extends Regtopp12VersionHandler {
 
 		switch (extension) {
 		case "HPL": {
-			ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppStopHPL.class }), file);
+			ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppStopHPL.class }), RegtoppException.ERROR.HPL_INVALID_FIELD_VALUE, file);
 			importer.registerFileForIndex(RegtoppImporter.INDEX.STOP_BY_ID.name(), parseableFile);
 			break;
 		}
 		case "TMS": {
-			ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppRouteTMS.class }), file);
+			ParseableFile parseableFile = new ParseableFile(fileName.toFile(), Arrays.asList(new Class[] { RegtoppRouteTMS.class }), RegtoppException.ERROR.TMS_INVALID_FIELD_VALUE, file);
 			importer.registerFileForIndex(RegtoppImporter.INDEX.ROUTE_INDEX.name(), parseableFile);
 			break;
 		}

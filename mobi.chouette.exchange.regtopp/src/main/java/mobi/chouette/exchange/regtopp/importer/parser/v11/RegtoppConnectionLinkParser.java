@@ -3,7 +3,6 @@ package mobi.chouette.exchange.regtopp.importer.parser.v11;
 import static mobi.chouette.common.Constant.CONFIGURATION;
 import static mobi.chouette.common.Constant.PARSER;
 import static mobi.chouette.common.Constant.REFERENTIAL;
-import static mobi.chouette.exchange.regtopp.RegtoppConstant.REGTOPP_REPORTER;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
@@ -15,7 +14,6 @@ import mobi.chouette.exchange.regtopp.importer.index.Index;
 import mobi.chouette.exchange.regtopp.importer.parser.AbstractConverter;
 import mobi.chouette.exchange.regtopp.importer.parser.LineSpecificParser;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppPathwayGAV;
-import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.util.ObjectFactory;
@@ -37,7 +35,6 @@ public class RegtoppConnectionLinkParser extends LineSpecificParser {
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
 		RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
-		RegtoppValidationReporter validationReporter = (RegtoppValidationReporter) context.get(REGTOPP_REPORTER);
 
 		if (importer.hasGAVImporter()) {
 			Index<AbstractRegtoppPathwayGAV> routeIndex = importer.getPathwayByIndexingKey();

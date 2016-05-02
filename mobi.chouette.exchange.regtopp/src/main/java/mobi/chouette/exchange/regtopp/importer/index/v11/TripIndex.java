@@ -99,9 +99,8 @@ public abstract class TripIndex extends IndexImpl<AbstractRegtoppTripIndexTIX> {
 
 			if (tix.getDestinationIdDepartureRef().equals(DESTINATION_NULL_REF) && tix.getDestinationIdArrivalRef().equals(DESTINATION_NULL_REF)) {
 				bean.getErrors()
-						.add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(),
-								"Enten Destinasjonsnr (avgang) eller Destinasjonsnr (ankomst) må være satt", DESTINATION_NULL_REF,
-								RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE, "Unreferenced id.")));
+						.add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), "Destinasjonsnr"
+								, DESTINATION_NULL_REF, RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE, "Either Destinasjonsnr (avgang) or Destinasjonsnr (ankomst) must be present")));
 				result = false;
 			} else {
 				if (bean.getDestinationIdDepartureRef().equals(DESTINATION_NULL_REF)

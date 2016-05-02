@@ -1,24 +1,18 @@
 package mobi.chouette.exchange.regtopp.importer;
 
-import static mobi.chouette.exchange.regtopp.RegtoppConstant.REGTOPP_REPORTER;
-
-import java.io.IOException;
-
-import javax.naming.InitialContext;
+//import static mobi.chouette.exchange.regtopp.RegtoppConstant.REGTOPP_REPORTER;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
-
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.importer.Validator;
-import mobi.chouette.exchange.regtopp.RegtoppConstant;
-import mobi.chouette.exchange.regtopp.importer.version.VersionHandler;
-import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 import mobi.chouette.exchange.report.ActionReport;
+
+import javax.naming.InitialContext;
+import java.io.IOException;
 
 @Log4j
 public class RegtoppFileConsistencyValidationCommand implements Command {
@@ -38,8 +32,6 @@ public class RegtoppFileConsistencyValidationCommand implements Command {
 
 		RegtoppImportParameters parameters = (RegtoppImportParameters) context.get(CONFIGURATION);
 		// TODO read ie version from here
-
-		RegtoppValidationReporter validationReporter = (RegtoppValidationReporter) context.get(REGTOPP_REPORTER);
 
 		RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
 

@@ -6,6 +6,9 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
+import mobi.chouette.exchange.regtopp.validation.RegtoppException;
+import mobi.chouette.exchange.regtopp.validation.RegtoppValidationRules;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -78,8 +81,7 @@ public class FileContentParserTest {
 
 			Context context = new Context();
 			ValidationReport validationReport = new ValidationReport();
-			CheckPoint checkPoint = new CheckPoint("1-REGTOPP-FIELD-VALUE-1", RESULT.OK, SEVERITY.ERROR);
-			validationReport.getCheckPoints().add(checkPoint);
+			validationReport.addAllCheckPoints(new RegtoppValidationRules().checkPoints(new RegtoppImportParameters()));
 			context.put(Constant.MAIN_VALIDATION_REPORT, validationReport);
 			context.put(Constant.REPORT, report);
 
@@ -87,51 +89,68 @@ public class FileContentParserTest {
 			String name = f.getName().toUpperCase();
 			String extension = name.substring(name.lastIndexOf(".") + 1);
 			List<Class> regtoppClasses = new ArrayList<Class>();
+
+			RegtoppException.ERROR error = null;
+
 			switch (extension) {
 
 			case "TIX":
 				regtoppClasses.add(RegtoppTripIndexTIX.class);
+				error = RegtoppException.ERROR.TIX_INVALID_FIELD_VALUE;
 				break;
 			case "TMS":
 				regtoppClasses.add(RegtoppRouteTMS.class);
+				error = RegtoppException.ERROR.TMS_INVALID_FIELD_VALUE;
 				break;
 			case "HPL":
 				regtoppClasses.add(RegtoppStopHPL.class);
+				error = RegtoppException.ERROR.HPL_INVALID_FIELD_VALUE;
 				break;
 			case "DKO":
 				regtoppClasses.add(RegtoppDayCodeHeaderDKO.class);
 				regtoppClasses.add(RegtoppDayCodeDKO.class);
+				error = RegtoppException.ERROR.DKO_INVALID_FIELD_VALUE;
 				break;
 			case "DST":
 				regtoppClasses.add(RegtoppDestinationDST.class);
+				error = RegtoppException.ERROR.DST_INVALID_FIELD_VALUE;
 				break;
 			case "MRK":
 				regtoppClasses.add(RegtoppFootnoteMRK.class);
+				error = RegtoppException.ERROR.MRK_INVALID_FIELD_VALUE;
 				break;
 			case "GAV":
 				regtoppClasses.add(RegtoppPathwayGAV.class);
+				error = RegtoppException.ERROR.GAV_INVALID_FIELD_VALUE;
 				break;
-			case "SAM":
-				regtoppClasses.add(RegtoppInterchangeSAM.class);
-				break;
-			case "SON":
-				regtoppClasses.add(RegtoppZoneSON.class);
-				break;
+//			case "SAM":
+//				regtoppClasses.add(RegtoppInterchangeSAM.class);
+//				error = RegtoppException.ERROR.SAM_INVALID_FIELD_VALUE;
+//				break;
+//			case "SON":
+//				regtoppClasses.add(RegtoppZoneSON.class);
+//				error = RegtoppException.ERROR.SON_INVALID_FIELD_VALUE;
+//				break;
 			case "LIN":
 				regtoppClasses.add(RegtoppLineLIN.class);
+				error = RegtoppException.ERROR.LIN_INVALID_FIELD_VALUE;
 				break;
 			case "VLP":
 				regtoppClasses.add(RegtoppVehicleJourneyVLP.class);
+				error = RegtoppException.ERROR.VLP_INVALID_FIELD_VALUE;
 				break;
-			case "TAB":
-				regtoppClasses.add(RegtoppTableVersionTAB.class);
-				break;
-			case "PER":
-				regtoppClasses.add(RegtoppPeriodPER.class);
-				break;
-			case "RUT":
-				regtoppClasses.add(RegtoppRoutePointRUT.class);
-				break;
+//			case "TAB":
+//				regtoppClasses.add(RegtoppTableVersionTAB.class);
+//				error = RegtoppException.ERROR.TAB_INVALID_FIELD_VALUE;
+//				break;
+//			case "PER":
+//				regtoppClasses.add(RegtoppPeriodPER.class);
+//				error = RegtoppException.ERROR.PER_INVALID_FIELD_VALUE;
+//				break;
+//			case "RUT":
+//				regtoppClasses.add(RegtoppRoutePointRUT.class);
+//				error = RegtoppException.ERROR.RUT_INVALID_FIELD_VALUE;
+//				break;
 			case "FRM":
 				log.info("Ignoring version file " + extension);
 				continue;
@@ -145,7 +164,7 @@ public class FileContentParserTest {
 
 			FileInfo fileInfo = new FileInfo(name, FILE_STATE.ERROR);
 			report.getFiles().add(fileInfo);
-			ParseableFile parseableFile = new ParseableFile(f, regtoppClasses, fileInfo);
+			ParseableFile parseableFile = new ParseableFile(f, regtoppClasses, error, fileInfo);
 			FileContentParser parser = new FileContentParser(parseableFile);
 
 			parser.parse(context, reporter);

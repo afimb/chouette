@@ -60,9 +60,9 @@ public class RegtoppValidationReporter {
 			case SYSTEM:
 				addError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.ERROR, "Error ");
 				break;
-			case INVALID_FIELD_VALUE:
-				addInvalidFieldValueError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
-				break;
+//			case INVALID_FIELD_VALUE:
+//				addInvalidFieldValueError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+//				break;
 			case MULTIPLE_ADMIN_CODES:
 				addMultipleAdminCodesError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
 				break;
@@ -166,6 +166,10 @@ public class RegtoppValidationReporter {
 				addInvalidFieldValueError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
 				break;
 
+			case VLP_INVALID_FIELD_VALUE:
+				addInvalidFieldValueError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				break;
+
 			default:
 				break;
 		}
@@ -207,7 +211,7 @@ public class RegtoppValidationReporter {
 		String checkPointName = checkPointName(ex.getError());
 		addError(actionReport, filenameInfo, new FileError(fileErrorCode, messagePrefix + " field='" + ex.getField() + "' value='"+ex.getValue()+"' (rule " + checkPointName + ")"));
 		actionReport.addFileInfo(filenameInfo, fileState);
-		validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getField(), ex.getLineNumber()), ex.getValue(), ex.getField(),
+		validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getField(), ex.getLineNumber(), null), ex.getValue(), ex.getField(), ex.getErrorMessage(),
 				CheckPoint.RESULT.UNCHECK);
 
 	}
@@ -228,8 +232,8 @@ public class RegtoppValidationReporter {
 		switch (errorName) {
 			case SYSTEM:
 				return REGTOPP_FILE;
-			case INVALID_FIELD_VALUE:
-				return REGTOPP_INVALID_FIELD_VALUE;
+//			case INVALID_FIELD_VALUE:
+//				return REGTOPP_INVALID_FIELD_VALUE;
 
 			case MULTIPLE_ADMIN_CODES:
 				return REGTOPP_MULTIPLE_ADMIN_CODES;
@@ -301,6 +305,9 @@ public class RegtoppValidationReporter {
 				return REGTOPP_LIN_INVALID_OPTIONAL_ID_REFERENCE;
 			case LIN_DUPLICATE_KEY:
 				return REGTOPP_LIN_DUPLICATE_KEY;
+
+			case VLP_INVALID_FIELD_VALUE:
+				return REGTOPP_VLP_INVALID_FIELD_VALUE;
 
 			default:
 				return null;

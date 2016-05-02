@@ -2,6 +2,7 @@ package mobi.chouette.exchange.regtopp.importer.index.v11;
 
 import java.io.File;
 
+import mobi.chouette.exchange.regtopp.validation.RegtoppException;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -15,7 +16,7 @@ public class TripByIndexingKeyTest extends AbstractIndexTest {
 	@Test(dependsOnMethods = { "setupImporter" })
 	public void testValidation() throws Exception {
 		FileContentParser fileContentParser = createUnderlyingFileParser(new File("src/test/data/fullsets/kolumbus_v12/R5001.tix"),
-				new Class[] { RegtoppTripIndexTIX.class });
+				new Class[] { RegtoppTripIndexTIX.class }, RegtoppException.ERROR.TIX_INVALID_FIELD_VALUE);
 		TripByIndexingKey index = new TripByIndexingKey(validationReporter, fileContentParser);
 		for (AbstractRegtoppTripIndexTIX obj : index) {
 			boolean validData = index.validate(obj, importer);
