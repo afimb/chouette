@@ -4,6 +4,7 @@ import mobi.chouette.exchange.parameters.AbstractExportParameter;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImporterInputValidator;
 
+import mobi.chouette.exchange.regtopp.importer.version.RegtoppVersion;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -16,6 +17,7 @@ public class RegtoppImporterInputValidatorTests
 		RegtoppImporterInputValidator validator = new RegtoppImporterInputValidator();
 		RegtoppImportParameters parameters = new RegtoppImportParameters();
 		parameters.setObjectIdPrefix("Regtopp");
+		parameters.setVersion(RegtoppVersion.R12);
 		
 		boolean result = validator.checkParameters(parameters,null);
 		Assert.assertTrue(result, "check for good parameters");
