@@ -104,8 +104,6 @@ public class FileContentParser {
 						}
 					}
 				}
-				parseableFile.getFileInfo().addError(new FileError(CODE.INVALID_FORMAT, ex.getMessage()));
-
 			}
 
 			@Override
