@@ -96,6 +96,9 @@ public class RegtoppValidationReporter {
 			case HPL_INVALID_FIELD_VALUE:
 				addInvalidFieldValueError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
 				break;
+			case HPL_DUPLICATE_KEY:
+				addDuplicateKeyError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				break;
 
 			case DKO_INVALID_MANDATORY_ID_REFERENCE:
 				addInvalidMandatoryReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
@@ -105,6 +108,9 @@ public class RegtoppValidationReporter {
 				break;
 			case DKO_INVALID_FIELD_VALUE:
 				addInvalidFieldValueError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				break;
+			case DKO_DUPLICATE_KEY:
+				addDuplicateKeyError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
 				break;
 
 			case GAV_INVALID_MANDATORY_ID_REFERENCE:
@@ -116,6 +122,9 @@ public class RegtoppValidationReporter {
 			case GAV_INVALID_FIELD_VALUE:
 				addInvalidFieldValueError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
 				break;
+			case GAV_DUPLICATE_KEY:
+				addDuplicateKeyError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				break;
 
 			case DST_INVALID_MANDATORY_ID_REFERENCE:
 				addInvalidMandatoryReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
@@ -125,6 +134,9 @@ public class RegtoppValidationReporter {
 				break;
 			case DST_INVALID_FIELD_VALUE:
 				addInvalidFieldValueError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				break;
+			case DST_DUPLICATE_KEY:
+				addDuplicateKeyError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
 				break;
 
 			case MRK_INVALID_MANDATORY_ID_REFERENCE:
@@ -136,6 +148,9 @@ public class RegtoppValidationReporter {
 			case MRK_INVALID_FIELD_VALUE:
 				addInvalidFieldValueError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
 				break;
+			case MRK_DUPLICATE_KEY:
+				addDuplicateKeyError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				break;
 
 			case LIN_INVALID_MANDATORY_ID_REFERENCE:
 				addInvalidMandatoryReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
@@ -145,6 +160,9 @@ public class RegtoppValidationReporter {
 				break;
 			case LIN_INVALID_FIELD_VALUE:
 				addInvalidFieldValueError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				break;
+			case LIN_DUPLICATE_KEY:
+				addDuplicateKeyError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
 				break;
 
 			case TDA_INVALID_MANDATORY_ID_REFERENCE:
@@ -156,6 +174,9 @@ public class RegtoppValidationReporter {
 			case TDA_INVALID_FIELD_VALUE:
 				addInvalidFieldValueError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
 				break;
+			case TDA_DUPLICATE_KEY:
+				addDuplicateKeyError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				break;
 
 			case STP_INVALID_MANDATORY_ID_REFERENCE:
 				addInvalidMandatoryReferenceError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
@@ -165,6 +186,9 @@ public class RegtoppValidationReporter {
 				break;
 			case STP_INVALID_FIELD_VALUE:
 				addInvalidFieldValueError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
+				break;
+			case STP_DUPLICATE_KEY:
+				addDuplicateKeyError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
 				break;
 
 			case VLP_INVALID_FIELD_VALUE:
