@@ -177,7 +177,7 @@ public class RegtoppValidationReporter {
 	}
 
 	private void addFileWithNoEntryError(ActionReport actionReport, ValidationReport validationReport, String filenameInfo, RegtoppException ex, CODE invalidFormat, FILE_STATE ignored) {
-		addError(actionReport, validationReport, filenameInfo, ex, invalidFormat, ignored, "Duplicate key value");
+		addError(actionReport, validationReport, filenameInfo, ex, invalidFormat, ignored, "Empty file");
 	}
 
 	private void addMissingMandatoryFilesError(ActionReport actionReport, ValidationReport validationReport, String filenameInfo, RegtoppException ex, CODE invalidFormat, FILE_STATE ignored) {
@@ -210,11 +210,22 @@ public class RegtoppValidationReporter {
 	private void addError(ActionReport actionReport, ValidationReport validationReport, String filenameInfo, RegtoppException ex, FileError.CODE fileErrorCode,
 			FILE_STATE fileState, String messagePrefix) {
 		String checkPointName = checkPointName(ex.getError());
+
+		String message = createMessage(messagePrefix, ex, checkPointName);
 		addError(actionReport, filenameInfo, new FileError(fileErrorCode, messagePrefix + " field='" + ex.getField() + "' value='"+ex.getValue()+"' (rule " + checkPointName + ")"));
 		actionReport.addFileInfo(filenameInfo, fileState);
 		validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getField(), ex.getLineNumber(), null), ex.getValue(), ex.getField(), ex.getErrorMessage(),
 				CheckPoint.RESULT.UNCHECK);
 
+	}
+
+	private String createMessage(String messagePrefix, RegtoppException ex, String checkPointName) {
+		if (ex.getField() == null) {
+			return messagePrefix + "' (rule " + checkPointName + ")";
+		} else {
+			String value = (ex.getValue() == null) ? "" : ex.getValue();
+			return messagePrefix + " field='" + ex.getField() + "' value='" + value + "' (rule " + checkPointName + ")";
+		}
 	}
 
 	/* Add FileError detail manually as ActionReport does not work properly */
