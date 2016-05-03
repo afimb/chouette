@@ -1,0 +1,5 @@
+batch
+/child-node-type=/subsystem=ee/managed-executor-service=default/ :undefine-attribute(name=max-threads)
+/child-node-type=/subsystem=ee/managed-executor-service=default/ :undefine-attribute(name=keepalive-time)
+/child-node-type=/subsystem=ee/managed-executor-service=default/ :undefine-attribute(name=queue-length)
+run-batch

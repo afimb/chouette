@@ -28,6 +28,7 @@ wait_for_server
 echo "=> Executing the commands"
 
 $JBOSS_CLI -c --file=$JBOSS_HOME/customization/wildfly_db.cli
+$JBOSS_CLI -c --file=$JBOSS_HOME/customization/wildfly_threadpool.cli
 $JBOSS_CLI -c --file=$JBOSS_HOME/customization/wildfly_fsize.cli
 # $JBOSS_CLI -c --file=$JBOSS_HOME/customization/wildfly_deploy.cli
 

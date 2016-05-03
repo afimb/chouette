@@ -8,7 +8,4 @@ data-source add --jndi-name=java:jboss/datasources/iev --name=iev --connection-u
 
 data-source add --jndi-name=java:jboss/datasources/chouette --name=chouette --connection-url=jdbc:postgresql_postGIS://chouettedb:5432/chouette2 --driver-class=org.postgis.DriverWrapper --driver-name=postgresql --user-name=chouette --password=chouette --max-pool-size=30
 
-/subsystem=ee/managed-executor-service=default/ :write-attribute(name=max-threads,value=15)
-/subsystem=ee/managed-executor-service=default/ :write-attribute(name=queue-length,value=15)
-
 run-batch
