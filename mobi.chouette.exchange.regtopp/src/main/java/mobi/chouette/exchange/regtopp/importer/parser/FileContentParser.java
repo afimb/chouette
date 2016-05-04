@@ -45,6 +45,7 @@ public class FileContentParser {
 		StreamFactory factory = StreamFactory.newInstance();
 
 		StreamBuilder builder = new StreamBuilder("regtopp");
+		builder.resourceBundle("mobi.chouette.exchange.regtopp.customMessages");
 		builder.format("fixedlength");
 		builder.parser(new FixedLengthParserBuilder());
 		builder.readOnly();
