@@ -13,7 +13,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 @ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Record(minOccurs = 1)

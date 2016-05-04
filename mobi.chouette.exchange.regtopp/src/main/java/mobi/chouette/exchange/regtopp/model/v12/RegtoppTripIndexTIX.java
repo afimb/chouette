@@ -17,7 +17,7 @@ import mobi.chouette.exchange.regtopp.model.enums.ParcelServiceType;
 import mobi.chouette.exchange.regtopp.model.enums.TrafficType;
 
 @ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Record(minOccurs = 1)

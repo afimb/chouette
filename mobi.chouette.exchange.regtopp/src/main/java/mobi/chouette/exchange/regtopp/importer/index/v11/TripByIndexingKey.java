@@ -40,7 +40,34 @@ public class TripByIndexingKey extends TripIndex {
 			AbstractRegtoppTripIndexTIX newRecord = (AbstractRegtoppTripIndexTIX) obj;
 			AbstractRegtoppTripIndexTIX existingRecord = index.put(newRecord.getIndexingKey(), newRecord);
 			if (existingRecord != null) {
-				log.error("Duplicate key in TIX file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
+				if(!existingRecord.equals(newRecord)) {
+					// Since not equal, try to find a new tripId and reinsert record
+					
+					// First make sure first entry in tix file remains untouched, it is the newRecord we want to update with a new tripId
+					index.remove(newRecord.getIndexingKey());
+					index.put(existingRecord.getIndexingKey(),existingRecord);
+					
+					
+					int counter = 1;
+					boolean foundSlot = false;
+					String originalTripId = newRecord.getTripId();
+					
+					// Iterate over possible tripIds with the counter value appended
+					while(!foundSlot) {
+						newRecord.setTripId(originalTripId+counter);
+						foundSlot = !index.containsKey(newRecord.getIndexingKey());
+						if(foundSlot) {
+							index.put(newRecord.getIndexingKey(),newRecord);
+							log.warn("Duplicate key in TIX file. Existing: "+existingRecord+" New updated trip: "+newRecord);
+						}
+						counter++;
+					}
+					
+					
+					
+				} else {
+					log.error("Duplicate key in TIX file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
+				}
 				validationReporter.reportError(context, new RegtoppException(new FileParserValidationError(getUnderlyingFilename(),
 						newRecord.getRecordLineNumber(), "Linjenr/Turnr", newRecord.getIndexingKey(), ERROR.TIX_DUPLICATE_KEY, "Duplicate key")), getUnderlyingFilename());
 			}

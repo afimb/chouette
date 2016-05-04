@@ -2,7 +2,6 @@ package mobi.chouette.exchange.regtopp.model;
 
 import java.io.Serializable;
 
-import mobi.chouette.exchange.regtopp.validation.RegtoppException;
 import org.beanio.annotation.Field;
 import org.beanio.annotation.Record;
 import org.joda.time.Duration;
@@ -15,8 +14,7 @@ import lombok.Setter;
 import lombok.ToString;
 import mobi.chouette.exchange.regtopp.model.enums.DirectionType;
 import mobi.chouette.exchange.regtopp.model.enums.TransportType;
-
-import static mobi.chouette.exchange.regtopp.validation.RegtoppException.ERROR.TIX_INVALID_FIELD_VALUE;
+import mobi.chouette.exchange.regtopp.validation.RegtoppException;
 
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)

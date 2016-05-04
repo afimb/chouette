@@ -15,7 +15,7 @@ import mobi.chouette.exchange.regtopp.model.AbstractRegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.model.enums.ParcelServiceType;
 
 @ToString(callSuper = true)
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Record(minOccurs = 1)
