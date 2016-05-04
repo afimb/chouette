@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import mobi.chouette.exchange.regtopp.messages.RegtoppMessages;
 import org.beanio.*;
 import org.beanio.builder.FixedLengthParserBuilder;
 import org.beanio.builder.StreamBuilder;
@@ -82,25 +83,37 @@ public class FileContentParser {
 					RecordContext rContext = ex.getRecordContext(i);
 					if (rContext.hasRecordErrors()) {
 						for (String error : rContext.getRecordErrors()) {
+							String key = rContext.getRecordName();
+							String recordNameLabel = RegtoppMessages.getLabel(key);
+							if (recordNameLabel == null){
+								log.warn("Could not look up key '" + key + "', falling back to record name '" + rContext.getRecordName() + "'");
+								recordNameLabel = rContext.getRecordName();
+							}
 
 							// TODO report this in a better fashion
-							FileParserValidationError ctx = new FileParserValidationError(fileName, rContext.getLineNumber(), rContext.getRecordName(),
+							FileParserValidationError ctx = new FileParserValidationError(fileName, rContext.getLineNumber(), recordNameLabel,
 									rContext.getRecordText(), parseableFile.getInvalidFieldValue(), error);
 							RegtoppException e = new RegtoppException(ctx, ex);
 							errors.add(e);
-							log.warn("Field error parsing record " + rContext.getRecordName() + " in file " + fileName + " at line " + rContext.getLineNumber() + ":" + error);
+							log.warn("Field error parsing record " + recordNameLabel + " in file " + fileName + " at line " + rContext.getLineNumber() + ":" + error);
 						}
 					}
 					if (rContext.hasFieldErrors()) {
 						for (String field : rContext.getFieldErrors().keySet()) {
 							for (String error : rContext.getFieldErrors(field)) {
+								String key = rContext.getRecordName() + "." + field;
+								String fieldLabel = RegtoppMessages.getLabel(key);
+								if (fieldLabel == null){
+									log.warn("Could not look up key '" + key + "', falling back to field name '" + field + "'");
+									fieldLabel = field;
+								}
 
 								// TODO report this in a better fashion
-								FileParserValidationError ctx = new FileParserValidationError(fileName, rContext.getLineNumber(), field,
+								FileParserValidationError ctx = new FileParserValidationError(fileName, rContext.getLineNumber(), fieldLabel,
 										rContext.getFieldText(field), parseableFile.getInvalidFieldValue(), error);
 								RegtoppException e = new RegtoppException(ctx, ex);
 								errors.add(e);
-								log.warn("Field error parsing field " + field + " in file " + fileName + " at line " + rContext.getLineNumber() + ":" + error);
+								log.warn("Field error parsing field '" + fieldLabel + "' in file " + fileName + " at line " + rContext.getLineNumber() + ":" + error);
 							}
 						}
 					}
