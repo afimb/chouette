@@ -15,6 +15,8 @@ import mobi.chouette.exchange.regtopp.validation.RegtoppException;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException.ERROR;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 
+import static mobi.chouette.exchange.regtopp.messages.RegtoppMessages.getMessage;
+
 @Log4j
 public class FootnoteById extends IndexImpl<RegtoppFootnoteMRK> {
 
@@ -29,7 +31,7 @@ public class FootnoteById extends IndexImpl<RegtoppFootnoteMRK> {
 		if (StringUtils.trimToNull(bean.getDescription()) != null) {
 			bean.getOkTests().add(RegtoppException.ERROR.MRK_INVALID_FIELD_VALUE);
 		} else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), "Destinasjonstekst", null, RegtoppException.ERROR.MRK_INVALID_FIELD_VALUE, "")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), getMessage("label.regtoppFootnoteMRK.descriptionHack"), null, RegtoppException.ERROR.MRK_INVALID_FIELD_VALUE, getMessage("label.validation.invalidFieldValue"))));
 			result = false;
 		}
 
@@ -58,7 +60,7 @@ public class FootnoteById extends IndexImpl<RegtoppFootnoteMRK> {
 				// TODO fix exception/validation reporting
 				log.error("Duplicate key in MRK file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
 				validationReporter.reportError(context, new RegtoppException(new FileParserValidationError(getUnderlyingFilename(),
-						newRecord.getRecordLineNumber(), "Merknadsnr", newRecord.getFootnoteId(), ERROR.MRK_DUPLICATE_KEY, "Duplicate key")), getUnderlyingFilename());
+						newRecord.getRecordLineNumber(), getMessage("label.regtoppFootnoteMRK.footnoteId"), newRecord.getFootnoteId(), ERROR.MRK_DUPLICATE_KEY, getMessage("label.validation.duplicateKeyError"))), getUnderlyingFilename());
 			}
 		}
 	}

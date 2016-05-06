@@ -17,6 +17,8 @@ import mobi.chouette.exchange.regtopp.validation.RegtoppException;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException.ERROR;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 
+import static mobi.chouette.exchange.regtopp.messages.RegtoppMessages.getMessage;
+
 @Log4j
 
 public class DaycodeById extends IndexImpl<RegtoppDayCodeDKO> {
@@ -32,25 +34,25 @@ public class DaycodeById extends IndexImpl<RegtoppDayCodeDKO> {
 	public boolean validate(RegtoppDayCodeDKO bean, RegtoppImporter dao) {
 		boolean result = true;
 
-		//Obligatoriske felter
-		if (bean.getAdminCode() != null) {
+		//Mandatory fields
+		if (isNotNull(bean.getAdminCode())) {
 			bean.getOkTests().add(RegtoppException.ERROR.DKO_INVALID_FIELD_VALUE);
 		}  else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), "Adminkode", null, RegtoppException.ERROR.DKO_INVALID_FIELD_VALUE, "")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), getMessage("label.regtoppDayCodeDKO.adminCode"), bean.getAdminCode(), RegtoppException.ERROR.DKO_INVALID_FIELD_VALUE, getMessage("label.validation.invalidFieldValue"))));
 			result = false;
 		}
 
-		if (bean.getCounter() != null) {
+		if (isNotNull(bean.getCounter())) {
 			bean.getOkTests().add(RegtoppException.ERROR.DKO_INVALID_FIELD_VALUE);
 		}  else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), "Løpenr", null, RegtoppException.ERROR.DKO_INVALID_FIELD_VALUE, "")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), getMessage("label.regtoppDayCodeDKO.counter"), bean.getCounter(), RegtoppException.ERROR.DKO_INVALID_FIELD_VALUE, getMessage("label.validation.invalidFieldValue"))));
 			result = false;
 		}
 
-		if (bean.getDayCodeId() != null) {
+		if (isNotNull(bean.getDayCodeId())) {
 			bean.getOkTests().add(RegtoppException.ERROR.DKO_INVALID_FIELD_VALUE);
 		}  else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), "Dagkodenr", null, RegtoppException.ERROR.DKO_INVALID_FIELD_VALUE, "")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), getMessage("label.regtoppDayCodeDKO.dayCodeId"), bean.getDayCodeId(), RegtoppException.ERROR.DKO_INVALID_FIELD_VALUE, getMessage("label.validation.invalidFieldValue"))));
 			result = false;
 		}
 
@@ -83,7 +85,7 @@ public class DaycodeById extends IndexImpl<RegtoppDayCodeDKO> {
 				if (existingRecord != null) {
 					log.error("Duplicate key in DKO file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
 					validationReporter.reportError(context, new RegtoppException(new FileParserValidationError(getUnderlyingFilename(),
-							newRecord.getRecordLineNumber(), "Dagkode", newRecord.getDayCode(), ERROR.DKO_DUPLICATE_KEY, "Duplicate key")), getUnderlyingFilename());
+							newRecord.getRecordLineNumber(), getMessage("label.regtoppDayCodeDKO.dayCode"), newRecord.getDayCode(), ERROR.DKO_DUPLICATE_KEY, getMessage("label.validation.duplicateKeyError"))), getUnderlyingFilename());
 				}
 
 			}

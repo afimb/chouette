@@ -1,6 +1,5 @@
 package mobi.chouette.exchange.regtopp.importer.index.v11;
 
-
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
@@ -11,10 +10,11 @@ import mobi.chouette.exchange.regtopp.importer.parser.FileContentParser;
 import mobi.chouette.exchange.regtopp.importer.parser.FileParserValidationError;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppPathwayGAV;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppStopHPL;
-import mobi.chouette.exchange.regtopp.model.v11.RegtoppLineLIN;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException.ERROR;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
+
+import static mobi.chouette.exchange.regtopp.messages.RegtoppMessages.getMessage;
 
 @Log4j
 public class PathwayByIndexingKey extends IndexImpl<AbstractRegtoppPathwayGAV> {
@@ -31,7 +31,7 @@ public class PathwayByIndexingKey extends IndexImpl<AbstractRegtoppPathwayGAV> {
 			bean.getOkTests().add(RegtoppException.ERROR.GAV_INVALID_FIELD_VALUE);
 		} else {
 			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(),
-					"Gangveitekst", null, RegtoppException.ERROR.GAV_INVALID_FIELD_VALUE, "")));
+					getMessage("label.regtoppPathwayGAV.descriptionHack"), null, RegtoppException.ERROR.GAV_INVALID_FIELD_VALUE, getMessage("label.validation.invalidFieldValue"))));
 			result = false;
 		}
 
@@ -39,11 +39,11 @@ public class PathwayByIndexingKey extends IndexImpl<AbstractRegtoppPathwayGAV> {
 			bean.getOkTests().add(RegtoppException.ERROR.GAV_INVALID_FIELD_VALUE);
 		} else if (bean.getDuration() == null) {
 			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(),
-					"Gangtid", null, RegtoppException.ERROR.GAV_INVALID_FIELD_VALUE, "")));
+					getMessage("label.regtoppPathwayGAV.duration"), null, RegtoppException.ERROR.GAV_INVALID_FIELD_VALUE, getMessage("label.validation.invalidFieldValue"))));
 			result = false;
 		} else if (bean.getDuration() <= 0) {
 			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(),
-					"Gangtid", null, RegtoppException.ERROR.GAV_INVALID_FIELD_VALUE, "")));
+					getMessage("label.regtoppPathwayGAV.duration"), null, RegtoppException.ERROR.GAV_INVALID_FIELD_VALUE, getMessage("label.validation.invalidFieldValue"))));
 			result = false;
 		}
 		
@@ -59,8 +59,8 @@ public class PathwayByIndexingKey extends IndexImpl<AbstractRegtoppPathwayGAV> {
 		} else {
 			bean.getErrors()
 					.add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(),
-							"Holdeplassnr fra", from,
-							RegtoppException.ERROR.GAV_INVALID_MANDATORY_ID_REFERENCE, "Unreferenced id.")));
+							getMessage("label.regtoppPathwayGAV.stopIdFrom"), from,
+							RegtoppException.ERROR.GAV_INVALID_MANDATORY_ID_REFERENCE, getMessage("label.validation.invalidMandatoryReference"))));
 			result = false;
 			
 		}
@@ -69,8 +69,8 @@ public class PathwayByIndexingKey extends IndexImpl<AbstractRegtoppPathwayGAV> {
 		} else {
 			bean.getErrors()
 					.add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(),
-							"Holdeplassnr til", from,
-							RegtoppException.ERROR.GAV_INVALID_MANDATORY_ID_REFERENCE, "Unreferenced id.")));
+							getMessage("label.regtoppPathwayGAV.stopIdTo"), from,
+							RegtoppException.ERROR.GAV_INVALID_MANDATORY_ID_REFERENCE, getMessage("label.validation.invalidMandatoryReference"))));
 			result = false;
 			
 		}
@@ -99,7 +99,7 @@ public class PathwayByIndexingKey extends IndexImpl<AbstractRegtoppPathwayGAV> {
 			if (existingRecord != null) {
 				log.error("Duplicate key in GAV file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
 				validationReporter.reportError(context, new RegtoppException(new FileParserValidationError(getUnderlyingFilename(),
-						newRecord.getRecordLineNumber(), "Holdeplass fra/til", newRecord.getIndexingKey(), ERROR.GAV_DUPLICATE_KEY, "Duplicate key")), getUnderlyingFilename());
+						newRecord.getRecordLineNumber(), getMessage("label.regtoppPathwayGAV.stopIdFrom")+"/"+getMessage("label.regtoppPathwayGAV.stopIdTo"), newRecord.getIndexingKey(), ERROR.GAV_DUPLICATE_KEY, getMessage("label.validation.duplicateKeyError"))), getUnderlyingFilename());
 			}
 		}
 	}

@@ -13,6 +13,8 @@ import mobi.chouette.exchange.regtopp.validation.RegtoppException;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 import org.apache.commons.lang.StringUtils;
 
+import static mobi.chouette.exchange.regtopp.messages.RegtoppMessages.getMessage;
+
 @Log4j
 public class RouteByLineNumber extends IndexImpl<RegtoppRouteTDA> {
 
@@ -50,7 +52,7 @@ public class RouteByLineNumber extends IndexImpl<RegtoppRouteTDA> {
 			bean.getOkTests().add(RegtoppException.ERROR.TDA_INVALID_FIELD_VALUE);
 		} else {
 			bean.getErrors().add(new RegtoppException(new FileParserValidationError(RegtoppRouteTDA.FILE_EXTENSION, bean.getRecordLineNumber(),
-					"Holdeplassnr", null, RegtoppException.ERROR.TDA_INVALID_FIELD_VALUE, "")));
+					getMessage("label.regtoppRouteTDA.stopId"), bean.getStopId(), RegtoppException.ERROR.TDA_INVALID_FIELD_VALUE, getMessage("label.validation.invalidFieldValue"))));
 			result = false;
 		}
 

@@ -28,6 +28,8 @@ import mobi.chouette.exchange.report.FileError;
 import mobi.chouette.exchange.report.FileError.CODE;
 import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
 
+import static mobi.chouette.exchange.regtopp.messages.RegtoppMessages.*;
+
 @Log4j
 public class FileContentParser {
 	public static final String REGTOPP_CHARSET = "ISO-8859-1";
@@ -83,8 +85,8 @@ public class FileContentParser {
 					RecordContext rContext = ex.getRecordContext(i);
 					if (rContext.hasRecordErrors()) {
 						for (String error : rContext.getRecordErrors()) {
-							String key = rContext.getRecordName();
-							String recordNameLabel = RegtoppMessages.getLabel(key);
+							String key = "label." + rContext.getRecordName();
+							String recordNameLabel = getMessage(key);
 							if (recordNameLabel == null){
 								log.warn("Could not look up key '" + key + "', falling back to record name '" + rContext.getRecordName() + "'");
 								recordNameLabel = rContext.getRecordName();
@@ -101,8 +103,8 @@ public class FileContentParser {
 					if (rContext.hasFieldErrors()) {
 						for (String field : rContext.getFieldErrors().keySet()) {
 							for (String error : rContext.getFieldErrors(field)) {
-								String key = rContext.getRecordName() + "." + field;
-								String fieldLabel = RegtoppMessages.getLabel(key);
+								String key = "label." + rContext.getRecordName() + "." + field;
+								String fieldLabel = getMessage(key);
 								if (fieldLabel == null){
 									log.warn("Could not look up key '" + key + "', falling back to field name '" + field + "'");
 									fieldLabel = field;
@@ -120,6 +122,8 @@ public class FileContentParser {
 				}
 			}
 
+
+			//TODO Does not seem like this ever occurs
 			@Override
 			public void unexpectedRecord(UnexpectedRecordException ex) throws Exception {
 				log.warn("Got UnexpectedRecordException.", ex);

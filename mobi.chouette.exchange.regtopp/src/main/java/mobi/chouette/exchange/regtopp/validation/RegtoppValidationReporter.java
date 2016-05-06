@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.regtopp.validation;
 
 import static mobi.chouette.common.Constant.*;
+import static mobi.chouette.exchange.regtopp.messages.RegtoppMessages.getMessage;
 import static mobi.chouette.exchange.regtopp.validation.Constant.*;
 
 import java.util.List;
@@ -17,7 +18,6 @@ import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
 import mobi.chouette.exchange.validation.report.CheckPoint;
 import mobi.chouette.exchange.validation.report.Location;
 import mobi.chouette.exchange.validation.report.ValidationReport;
-import org.codehaus.jettison.json.JSONException;
 
 @Log4j
 public class RegtoppValidationReporter {
@@ -34,14 +34,14 @@ public class RegtoppValidationReporter {
 		ActionReport report = (ActionReport) context.get(REPORT);
 		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
 		String checkPointName = checkPointName(RegtoppException.ERROR.SYSTEM);
-
 		if (filenameInfo != null && filenameInfo.indexOf('.') > 0) {
+			String errorMessage = getMessage("label.validation.fileError");
 			report.addFileInfo(filenameInfo, FILE_STATE.ERROR, new FileError(FileError.CODE.FILE_NOT_FOUND,
-					"A problem occured while reading the file \"" + filenameInfo + "\" (" + checkPointName + ") : " + ex.getMessage()));
+					errorMessage + "\"" + filenameInfo + "\" (" + checkPointName + ") : " + ex.getMessage()));
 			validationReport.addDetail(checkPointName, new Location(filenameInfo), ex.getMessage(), CheckPoint.RESULT.NOK);
 			String message = ex.getMessage() != null ? ex.getMessage() : ex.getClass().getName();
 			log.error(ex, ex);
-			throw new Exception("A problem occured while reading the file \"" + filenameInfo + "\" : " + message);
+			throw new Exception(errorMessage+ "\"" + filenameInfo + "\" : " + message);
 		}
 	}
 
@@ -59,11 +59,8 @@ public class RegtoppValidationReporter {
 
 		switch (ex.getError()) {
 			case SYSTEM:
-				addError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.ERROR, "Error ");
+				addError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.ERROR, getMessage("label.validation.error"));
 				break;
-//			case INVALID_FIELD_VALUE:
-//				addInvalidFieldValueError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
-//				break;
 			case MULTIPLE_ADMIN_CODES:
 				addMultipleAdminCodesError(actionReport, validationReport, filenameInfo, ex, FileError.CODE.INVALID_FORMAT, FILE_STATE.IGNORED);
 				break;
@@ -201,42 +198,41 @@ public class RegtoppValidationReporter {
 	}
 
 	private void addFileWithNoEntryError(ActionReport actionReport, ValidationReport validationReport, String filenameInfo, RegtoppException ex, CODE invalidFormat, FILE_STATE ignored) {
-		addError(actionReport, validationReport, filenameInfo, ex, invalidFormat, ignored, "Empty file");
+		addError(actionReport, validationReport, filenameInfo, ex, invalidFormat, ignored, getMessage("label.validation.emptyFile"));
 	}
 
 	private void addMissingMandatoryFilesError(ActionReport actionReport, ValidationReport validationReport, String filenameInfo, RegtoppException ex, CODE invalidFormat, FILE_STATE ignored) {
-		addError(actionReport, validationReport, filenameInfo, ex, invalidFormat, ignored, "Duplicate key value");
+		addError(actionReport, validationReport, filenameInfo, ex, invalidFormat, ignored, getMessage("label.validation.missingMandatoryFile"));
 	}
 
 	private void addMultipleAdminCodesError(ActionReport actionReport, ValidationReport validationReport, String filenameInfo, RegtoppException ex, CODE invalidFormat, FILE_STATE ignored) {
-		addError(actionReport, validationReport, filenameInfo, ex, invalidFormat, ignored, "Duplicate key value");
+		addError(actionReport, validationReport, filenameInfo, ex, invalidFormat, ignored, getMessage("label.validation.multipleAdminCodes"));
 	}
 
 	private void addDuplicateKeyError(ActionReport actionReport, ValidationReport validationReport, String filenameInfo, RegtoppException ex, CODE invalidFormat, FILE_STATE ignored) {
-		addError(actionReport, validationReport, filenameInfo, ex, invalidFormat, ignored, "Duplicate key value");
+		addError(actionReport, validationReport, filenameInfo, ex, invalidFormat, ignored, getMessage("label.validation.duplicateKeyError"));
 	}
 
 	private void addInvalidFieldValueError(ActionReport actionReport, ValidationReport validationReport, String filenameInfo, RegtoppException ex,
 			CODE invalidFormat, FILE_STATE ignored) {
-		addError(actionReport, validationReport, filenameInfo, ex, invalidFormat, ignored, "Invalid field value");
+		addError(actionReport, validationReport, filenameInfo, ex, invalidFormat, ignored, getMessage("label.validation.invalidFieldValue"));
 	}
 
 	private void addInvalidMandatoryReferenceError(ActionReport actionReport, ValidationReport validationReport, String filenameInfo, RegtoppException ex,
 			CODE invalidFormat, FILE_STATE ignored) {
-		addError(actionReport, validationReport, filenameInfo, ex, invalidFormat, ignored, "Invalid mandatory reference");
+		addError(actionReport, validationReport, filenameInfo, ex, invalidFormat, ignored, getMessage("label.validation.invalidMandatoryReference"));
 	}
 
 	private void addInvalidOptionalReferenceError(ActionReport actionReport, ValidationReport validationReport, String filenameInfo, RegtoppException ex,
 			CODE invalidFormat, FILE_STATE ignored) {
-		addError(actionReport, validationReport, filenameInfo, ex, invalidFormat, ignored, "Invalid optional reference");
+		addError(actionReport, validationReport, filenameInfo, ex, invalidFormat, ignored, getMessage("label.validation.invalidOptionalReference"));
 	}
 
 	private void addError(ActionReport actionReport, ValidationReport validationReport, String filenameInfo, RegtoppException ex, FileError.CODE fileErrorCode,
 			FILE_STATE fileState, String messagePrefix) {
 		String checkPointName = checkPointName(ex.getError());
-
 		String message = createMessage(messagePrefix, ex, checkPointName);
-		addError(actionReport, filenameInfo, new FileError(fileErrorCode, messagePrefix + " field='" + ex.getField() + "' value='"+ex.getValue()+"' (rule " + checkPointName + ")"));
+		addError(actionReport, filenameInfo, new FileError(fileErrorCode, message));
 		actionReport.addFileInfo(filenameInfo, fileState);
 		validationReport.addDetail(checkPointName, new Location(filenameInfo, ex.getField(), ex.getLineNumber(), null), ex.getValue(), ex.getField(), ex.getErrorMessage(),
 				CheckPoint.RESULT.UNCHECK);
@@ -244,11 +240,15 @@ public class RegtoppValidationReporter {
 	}
 
 	private String createMessage(String messagePrefix, RegtoppException ex, String checkPointName) {
+		String ruleLabel = getMessage("label.validation.rule");
+		String fieldLabel = getMessage("label.validation.field");
+		String valueLabel = getMessage("label.validation.value");
+
 		if (ex.getField() == null) {
-			return messagePrefix + "' (rule " + checkPointName + ")";
+			return messagePrefix + "' (" + ruleLabel + " " + checkPointName + ")";
 		} else {
 			String value = (ex.getValue() == null) ? "" : ex.getValue();
-			return messagePrefix + " field='" + ex.getField() + "' value='" + value + "' (rule " + checkPointName + ")";
+			return messagePrefix + " " + fieldLabel + "='" + ex.getField() + "' " + valueLabel + "='" + value + "' (" + ruleLabel + " " + checkPointName + ")";
 		}
 	}
 
@@ -267,16 +267,12 @@ public class RegtoppValidationReporter {
 		switch (errorName) {
 			case SYSTEM:
 				return REGTOPP_FILE;
-//			case INVALID_FIELD_VALUE:
-//				return REGTOPP_INVALID_FIELD_VALUE;
-
 			case MULTIPLE_ADMIN_CODES:
 				return REGTOPP_MULTIPLE_ADMIN_CODES;
 			case MISSING_MANDATORY_FILES:
 				return REGTOPP_MISSING_MANDATORY_FILES;
 			case FILE_WITH_NO_ENTRY:
 				return REGTOPP_FILE_WITH_NO_ENTRY;
-
 
 			case TIX_INVALID_FIELD_VALUE:
 				return REGTOPP_TIX_INVALID_FIELD_VALUE;
