@@ -6,6 +6,8 @@ import static mobi.chouette.common.Constant.REFERENTIAL;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
@@ -56,7 +58,12 @@ public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.p
 
 						convertAndSetCoordinates(stopPoint, regtoppStopPoint.getX(), regtoppStopPoint.getY(), projection);
 
-						stopPoint.setName(regtoppStopPoint.getDescription());
+						if(StringUtils.trimToNull(regtoppStopPoint.getDescription()) == null) {
+							stopPoint.setName(stopArea.getName());
+							log.warn("StopPoint with no description, using HPL stop name instead: "+regtoppStopPoint);
+						} else {
+							stopPoint.setName(regtoppStopPoint.getDescription());
+						}
 						stopPoint.setRegistrationNumber(stopArea.getRegistrationNumber());
 						stopPoint.setAreaType(ChouetteAreaEnum.BoardingPosition);
 
@@ -64,7 +71,7 @@ public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.p
 					}
 
 				} else {
-					// TODO parse other node types (if really used, only Opplandstrafikk uses this)
+					// TODO parse other node types (if really used, only Ruter uses this)
 					log.warn("Ignoring HPL stop of type Other: "+stop);
 				}
 
