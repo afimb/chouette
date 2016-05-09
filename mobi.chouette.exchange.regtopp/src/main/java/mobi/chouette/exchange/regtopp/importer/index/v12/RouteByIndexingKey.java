@@ -1,8 +1,5 @@
 package mobi.chouette.exchange.regtopp.importer.index.v12;
 
-import static mobi.chouette.exchange.regtopp.RegtoppConstant.DESTINATION_NULL_REF;
-import static mobi.chouette.exchange.regtopp.RegtoppConstant.FOOTNOTE_NULL_REF;
-
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
@@ -16,8 +13,10 @@ import mobi.chouette.exchange.regtopp.validation.RegtoppException;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException.ERROR;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 
+import static mobi.chouette.exchange.regtopp.messages.RegtoppMessages.getMessage;
+
 @Log4j
-public class RouteByIndexingKey extends  IndexImpl<AbstractRegtoppRouteTMS> {
+public class RouteByIndexingKey extends IndexImpl<AbstractRegtoppRouteTMS> {
 
 	public RouteByIndexingKey(Context context, RegtoppValidationReporter validationReporter, FileContentParser fileParser) throws Exception {
 		super(context, validationReporter, fileParser);
@@ -42,9 +41,11 @@ public class RouteByIndexingKey extends  IndexImpl<AbstractRegtoppRouteTMS> {
 			AbstractRegtoppRouteTMS newRecord = (AbstractRegtoppRouteTMS) obj;
 			AbstractRegtoppRouteTMS existingRecord = index.put(newRecord.getIndexingKey(), newRecord);
 			if (existingRecord != null) {
+				String fields = getMessage("label.regtoppRouteTMS.lineId") + "/" + getMessage("label.regtoppRouteTMS.routeId") +
+						"/" + getMessage("label.regtoppRouteTMS.direction") + "/" + getMessage("label.regtoppRouteTMS.counter");
 				log.error("Duplicate key in TMS file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
 				validationReporter.reportError(context, new RegtoppException(new FileParserValidationError(getUnderlyingFilename(),
-						newRecord.getRecordLineNumber(), "Linjenr/Turmønsternr/Retning/Sekvensnummer", newRecord.getIndexingKey(), ERROR.TMS_DUPLICATE_KEY, "Duplicate key")), getUnderlyingFilename());
+						newRecord.getRecordLineNumber(), fields, newRecord.getIndexingKey(), ERROR.TMS_DUPLICATE_KEY, getMessage("label.validation.duplicateKeyError"))), getUnderlyingFilename());
 			}
 		}
 	}
@@ -53,85 +54,72 @@ public class RouteByIndexingKey extends  IndexImpl<AbstractRegtoppRouteTMS> {
 	public boolean validate(AbstractRegtoppRouteTMS bean, RegtoppImporter dao) throws Exception {
 		boolean result = true;
 
-		//Obligatoriske felter
-		if (bean.getAdminCode() != null) {
+		//Mandatory fields
+		if (isNotNull(bean.getAdminCode())) {
 			bean.getOkTests().add(RegtoppException.ERROR.TMS_INVALID_FIELD_VALUE);
 		}  else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), "Adminkode", null, RegtoppException.ERROR.TMS_INVALID_FIELD_VALUE, "")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), getMessage("label.regtoppRouteTMS.adminCode"), bean.getAdminCode(), RegtoppException.ERROR.TMS_INVALID_FIELD_VALUE, getMessage("label.validation.invalidFieldValue"))));
 			result = false;
 		}
 
-		if (bean.getCounter() != null) {
+		if (isNotNull(bean.getCounter())) {
 			bean.getOkTests().add(RegtoppException.ERROR.TMS_INVALID_FIELD_VALUE);
 		}  else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), "Løpenr", null, RegtoppException.ERROR.TMS_INVALID_FIELD_VALUE, "")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), getMessage("label.regtoppRouteTMS.counter"), bean.getCounter(), RegtoppException.ERROR.TMS_INVALID_FIELD_VALUE, getMessage("label.validation.invalidFieldValue"))));
 			result = false;
 		}
 
-		if (bean.getLineId() != null) {
+		if (isNotNull(bean.getLineId())) {
 			bean.getOkTests().add(RegtoppException.ERROR.TMS_INVALID_FIELD_VALUE);
 		}  else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), "Linjenr", null, RegtoppException.ERROR.TMS_INVALID_FIELD_VALUE, "")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), getMessage("label.regtoppRouteTMS.lineId"), bean.getLineId(), RegtoppException.ERROR.TMS_INVALID_FIELD_VALUE, getMessage("label.validation.invalidFieldValue"))));
 			result = false;
 		}
 
-		if (bean.getDirection() != null) {
+		if (isNotNull(bean.getRouteId())) {
 			bean.getOkTests().add(RegtoppException.ERROR.TMS_INVALID_FIELD_VALUE);
 		}  else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), "Retning", null, RegtoppException.ERROR.TMS_INVALID_FIELD_VALUE, "")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), getMessage("label.regtoppRouteTMS.routeId"), bean.getRouteId(), RegtoppException.ERROR.TMS_INVALID_FIELD_VALUE, getMessage("label.validation.invalidFieldValue"))));
 			result = false;
 		}
 
-		if (bean.getRouteId() != null) {
+		if (isNotNull(bean.getSequenceNumberStop())) {
 			bean.getOkTests().add(RegtoppException.ERROR.TMS_INVALID_FIELD_VALUE);
 		}  else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), "Turmønsternr", null, RegtoppException.ERROR.TMS_INVALID_FIELD_VALUE, "")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), getMessage("label.regtoppRouteTMS.sequenceNumberStop"), bean.getSequenceNumberStop(), RegtoppException.ERROR.TMS_INVALID_FIELD_VALUE, getMessage("label.validation.invalidFieldValue"))));
 			result = false;
 		}
 
-		if (bean.getSequenceNumberStop() != null) {
+		if (isNotNull(bean.getStopId())) {
 			bean.getOkTests().add(RegtoppException.ERROR.TMS_INVALID_FIELD_VALUE);
 		}  else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), "Sekvensnr hpl", null, RegtoppException.ERROR.TMS_INVALID_FIELD_VALUE, "")));
-			result = false;
-		}
-
-		if (bean.getStopId() != null) {
-			bean.getOkTests().add(RegtoppException.ERROR.TMS_INVALID_FIELD_VALUE);
-		}  else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), "Holdeplassnr", null, RegtoppException.ERROR.TMS_INVALID_FIELD_VALUE, "")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), getMessage("label.regtoppRouteTMS.stopId"), bean.getStopId(), RegtoppException.ERROR.TMS_INVALID_FIELD_VALUE, getMessage("label.validation.invalidFieldValue"))));
 			result = false;
 		}
 
 		//Minst en
-		if (bean.getDriverTimeArrival() != null || bean.getDriverTimeDeparture() != null) {
+		if (isNotNull(bean.getDriverTimeArrival()) || isNotNull(bean.getDriverTimeDeparture())) {
 			bean.getOkTests().add(RegtoppException.ERROR.TMS_INVALID_FIELD_VALUE);
 		}  else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), "Kjøretid", null, RegtoppException.ERROR.TMS_INVALID_FIELD_VALUE, "")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), getMessage("label.regtoppRouteTMS.driverTimeArrival"), bean.getDriverTimeArrival() + "/" + bean.getDriverTimeDeparture(), RegtoppException.ERROR.TMS_INVALID_FIELD_VALUE, getMessage("label.validation.invalidFieldValue"))));
 			result = false;
 		}
 
-		if (bean.getDestinationId().equals(DESTINATION_NULL_REF) || dao.getDestinationById().containsKey(bean.getDestinationId())){
+		if (isNotNull(bean.getDestinationId()) || dao.getDestinationById().containsKey(bean.getDestinationId())){
 			bean.getOkTests().add(RegtoppException.ERROR.TMS_INVALID_OPTIONAL_ID_REFERENCE);
 		} else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), "Destinasjonsnr", bean.getDestinationId(), RegtoppException.ERROR.TMS_INVALID_OPTIONAL_ID_REFERENCE, "Unreferenced id.")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), getMessage("label.regtoppRouteTMS.destinationId"), bean.getDestinationId(), RegtoppException.ERROR.TMS_INVALID_OPTIONAL_ID_REFERENCE, getMessage("label.validation.invalidOptionalReference"))));
 			result = false;
 		}
 
-		if (bean.getRemarkId().equals(FOOTNOTE_NULL_REF) || dao.getFootnoteById().containsKey(bean.getRemarkId())){
+		if (isNotNull(bean.getRemarkId()) || dao.getFootnoteById().containsKey(bean.getRemarkId())){
 			bean.getOkTests().add(RegtoppException.ERROR.TMS_INVALID_OPTIONAL_ID_REFERENCE);
 		} else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), "Merknadssnr", bean.getRemarkId(), RegtoppException.ERROR.TMS_INVALID_OPTIONAL_ID_REFERENCE, "Unreferenced id.")));
-			result = false;
-		}
-
-		if (dao.getStopById().containsKey(bean.getFullStopId())){
-			bean.getOkTests().add(RegtoppException.ERROR.TMS_INVALID_MANDATORY_ID_REFERENCE);
-		} else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), "Holdeplassnr", bean.getFullStopId(), RegtoppException.ERROR.TMS_INVALID_MANDATORY_ID_REFERENCE, "Unreferenced id.")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), getMessage("label.regtoppRouteTMS.remarkId"), bean.getRemarkId(), RegtoppException.ERROR.TMS_INVALID_OPTIONAL_ID_REFERENCE, getMessage("label.validation.invalidOptionalReference"))));
 			result = false;
 		}
 
 		return result;
 	}
+
 }

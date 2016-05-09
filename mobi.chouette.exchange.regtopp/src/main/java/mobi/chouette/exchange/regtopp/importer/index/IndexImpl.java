@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.regtopp.importer.index;
 
 import static mobi.chouette.common.Constant.PARSER;
+import static mobi.chouette.exchange.regtopp.messages.RegtoppMessages.getMessage;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -15,6 +16,7 @@ import mobi.chouette.exchange.regtopp.importer.parser.ParseableFile;
 import mobi.chouette.exchange.regtopp.model.RegtoppObject;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
+import org.joda.time.Duration;
 
 @Log4j
 public abstract class IndexImpl<T> implements Index<T> {
@@ -94,7 +96,7 @@ public abstract class IndexImpl<T> implements Index<T> {
 
 			if (getLength() == 0) {
 				FileParserValidationError fileError = new FileParserValidationError(filename, 0, null, null, RegtoppException.ERROR.FILE_WITH_NO_ENTRY,
-						"Empty file");
+						getMessage("label.validation.emptyFile"));
 				validationReporter.reportError(context, new RegtoppException(fileError), filename);
 			}
 
@@ -119,6 +121,18 @@ public abstract class IndexImpl<T> implements Index<T> {
 				}
 			}
 		}
+	}
+
+	protected boolean isNotNull(String string) {
+		return !string.matches("[0]+");
+	}
+
+	protected boolean isNotNull(Integer integer) {
+		return integer != null;
+	}
+
+	protected boolean isNotNull(Duration duration) {
+		return duration != null;
 	}
 
 }

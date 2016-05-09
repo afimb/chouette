@@ -14,6 +14,8 @@ import mobi.chouette.exchange.regtopp.validation.RegtoppException.ERROR;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 import org.apache.commons.lang.StringUtils;
 
+import static mobi.chouette.exchange.regtopp.messages.RegtoppMessages.getMessage;
+
 @Log4j
 public class LineById extends IndexImpl<RegtoppLineLIN> {
 
@@ -28,7 +30,7 @@ public class LineById extends IndexImpl<RegtoppLineLIN> {
 		if (StringUtils.trimToNull(bean.getName()) != null) {
 			bean.getOkTests().add(RegtoppException.ERROR.LIN_INVALID_FIELD_VALUE);
 		} else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), "Linjenavn", null, RegtoppException.ERROR.LIN_INVALID_FIELD_VALUE, "")));
+			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), getMessage("label.regtoppLineLIN.name"), bean.getName(), RegtoppException.ERROR.LIN_INVALID_FIELD_VALUE, getMessage("label.validation.invalidFieldValue"))));
 			result = false;
 		}
 
@@ -57,7 +59,7 @@ public class LineById extends IndexImpl<RegtoppLineLIN> {
 			if (existingRecord != null) {
 				log.error("Duplicate key in LIN file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
 				validationReporter.reportError(context, new RegtoppException(new FileParserValidationError(getUnderlyingFilename(),
-						newRecord.getRecordLineNumber(), "Linjenr", newRecord.getLineId(), ERROR.LIN_DUPLICATE_KEY, "Duplicate key")), getUnderlyingFilename());
+						newRecord.getRecordLineNumber(), getMessage("label.regtoppLineLIN.lineId"), newRecord.getLineId(), ERROR.LIN_DUPLICATE_KEY, getMessage("label.validation.duplicateKeyError"))), getUnderlyingFilename());
 			}
 		}
 	}

@@ -11,6 +11,8 @@ import mobi.chouette.exchange.regtopp.validation.RegtoppException;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException.ERROR;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 
+import static mobi.chouette.exchange.regtopp.messages.RegtoppMessages.getMessage;
+
 @Log4j
 public class TripByIndexingKey extends TripIndex {
 
@@ -64,7 +66,7 @@ public class TripByIndexingKey extends TripIndex {
 					log.error("Duplicate key in TIX file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
 				}
 				validationReporter.reportError(context, new RegtoppException(new FileParserValidationError(getUnderlyingFilename(),
-						newRecord.getRecordLineNumber(), "Linjenr/Turnr", existingRecord.getIndexingKey(), ERROR.TIX_DUPLICATE_KEY, "Duplicate key")), getUnderlyingFilename());
+						newRecord.getRecordLineNumber(), getMessage("label.regtoppTripIndexTIX.lineId") + "/" + getMessage("label.regtoppTripIndexTIX.tripId"), newRecord.getIndexingKey(), ERROR.TIX_DUPLICATE_KEY, getMessage("label.validation.duplicateKeyError"))), getUnderlyingFilename());
 			}
 		}
 	}
