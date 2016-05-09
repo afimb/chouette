@@ -132,10 +132,6 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 
 						// Register file for parsing and necessary indexes
 
-						// Add checkpoint for file
-						validationReport.addCheckPoint(
-								new CheckPoint(Constant.REGTOPP_FILE_POSTFIX + extension, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
-
 						versionHandler.registerFileForIndex(importer, fileName, extension, file);
 					}
 				}

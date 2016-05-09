@@ -3,7 +3,6 @@ package mobi.chouette.exchange.regtopp.validation;
 public interface Constant extends mobi.chouette.exchange.regtopp.RegtoppConstant {
 
 	public static final String REGTOPP_FILE = "1-REGTOPP-FILE-1";
-//	public static final String REGTOPP_INVALID_FIELD_VALUE = "1-REGTOPP-FIELD-VALUE-1";
 	public static final String REGTOPP_MULTIPLE_ADMIN_CODES = "1-REGTOPP-FIELD-ADMINCODES-1";
 	public static final String REGTOPP_FILE_WITH_NO_ENTRY = "1-REGTOPP-FILE-NOENTRY-1";
 	public static final String REGTOPP_MISSING_MANDATORY_FILES = "1-REGTOPP-FILE-MANDATORY-1";
@@ -71,7 +70,9 @@ public interface Constant extends mobi.chouette.exchange.regtopp.RegtoppConstant
 
 	public static final String REGTOPP_VLP_INVALID_FIELD_VALUE = "2-REGTOPP-VLP-1";
 
-	// Postfix with file extension
-	public static final String REGTOPP_FILE_POSTFIX = "1-REGTOPP-FILE-";
+	// Prefix with file extension
+	public static final String REGTOPP_FILE_PREFIX = "1-REGTOPP-";
 
+	// Postfix to match existing checkpoint names
+	public static final String REGTOPP_FILE_POSTFIX = "-1";
 }

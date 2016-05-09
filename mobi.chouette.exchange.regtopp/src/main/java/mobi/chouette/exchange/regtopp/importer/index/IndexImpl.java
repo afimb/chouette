@@ -14,6 +14,7 @@ import mobi.chouette.exchange.regtopp.importer.parser.FileContentParser;
 import mobi.chouette.exchange.regtopp.importer.parser.FileParserValidationError;
 import mobi.chouette.exchange.regtopp.importer.parser.ParseableFile;
 import mobi.chouette.exchange.regtopp.model.RegtoppObject;
+import mobi.chouette.exchange.regtopp.validation.Constant;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 import org.joda.time.Duration;
@@ -92,7 +93,7 @@ public abstract class IndexImpl<T> implements Index<T> {
 			String filename = parseableFile.getFile().getName().toUpperCase();
 			String fileType = filename.substring(filename.lastIndexOf(".") + 1);
 
-			validationReporter.reportSuccess(context, mobi.chouette.exchange.regtopp.validation.Constant.REGTOPP_FILE_POSTFIX + fileType, filename);
+			validationReporter.reportSuccess(context, mobi.chouette.exchange.regtopp.validation.Constant.REGTOPP_FILE_PREFIX + fileType + Constant.REGTOPP_FILE_POSTFIX, filename);
 
 			if (getLength() == 0) {
 				FileParserValidationError fileError = new FileParserValidationError(filename, 0, null, null, RegtoppException.ERROR.FILE_WITH_NO_ENTRY,
