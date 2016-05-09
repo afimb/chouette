@@ -51,14 +51,41 @@ public class RegtoppStopParser implements Parser {
 	}
 	
 	protected void convertAndSetCoordinates(StopArea stopArea, BigDecimal x, BigDecimal y, String projection) {
-		Coordinate wgs84Coordinate = CoordinateUtil.transform(projection, Coordinate.WGS84,
-				new Coordinate(x, y));
+		
+		BigDecimal _x = x;
+		BigDecimal _y = y;
+		
+		// Some send values without decimals, adjus
+		if(Coordinate.WGS84.equals(projection)) {
+			
+			// Switch coordinates
+			_x = y;
+			_y = x;
+			
+			while(Math.abs(_x.doubleValue()) > 180) {
+				_x = _x.divide(BigDecimal.TEN);
+			}
+			while(Math.abs(_y.doubleValue()) > 90) {
+				_y = _y.divide(BigDecimal.TEN);
+			}
 
-		stopArea.setLongitude(wgs84Coordinate.getY());
-		stopArea.setLatitude(wgs84Coordinate.getX());
+			stopArea.setLongitude(_y);
+			stopArea.setLatitude(_x);
+
+			log.info("Adjusted WGS84 coordinates from "+x+"->"+_x+" and "+y+"->"+_y );
+			
+		} else {
+			Coordinate wgs84Coordinate = CoordinateUtil.transform(projection, Coordinate.WGS84,
+					new Coordinate(_x, _y));
+
+			stopArea.setLongitude(wgs84Coordinate.getY());
+			stopArea.setLatitude(wgs84Coordinate.getX());
+			
+		}
+		
 		stopArea.setLongLatType(LongLatTypeEnum.WGS84);
 
-		// UTM coordinates
+		// Original coordinates
 		stopArea.setX(x);
 		stopArea.setY(y);
 		stopArea.setProjectionType(projection);
