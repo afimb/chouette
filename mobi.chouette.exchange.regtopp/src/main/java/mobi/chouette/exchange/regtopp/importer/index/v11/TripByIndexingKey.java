@@ -7,11 +7,9 @@ import mobi.chouette.exchange.regtopp.importer.index.IndexFactory;
 import mobi.chouette.exchange.regtopp.importer.parser.FileContentParser;
 import mobi.chouette.exchange.regtopp.importer.parser.FileParserValidationError;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppTripIndexTIX;
-import mobi.chouette.exchange.regtopp.model.v11.RegtoppLineLIN;
-import mobi.chouette.exchange.regtopp.model.v13.RegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException;
-import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException.ERROR;
+import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 
 @Log4j
 public class TripByIndexingKey extends TripIndex {
@@ -62,9 +60,6 @@ public class TripByIndexingKey extends TripIndex {
 						}
 						counter++;
 					}
-					
-					
-					
 				} else {
 					log.error("Duplicate key in TIX file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
 				}
