@@ -771,10 +771,14 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 						+ previousLocation.objectIdSuffix() + "_" + location.objectIdSuffix() + "_" + intFactor;
 				RouteSection section = ObjectFactory.getRouteSection(referential, routeSectionId);
 				if (!section.isFilled()) {
+					Coordinate[] inputCoords = new Coordinate[2];
 					section.setDeparture(previousLocation);
+					inputCoords[0] = new Coordinate(previousLocation.getLongitude().doubleValue(), previousLocation.getLatitude().doubleValue());
 					section.setArrival(location);
+					inputCoords[1] = new Coordinate(location.getLongitude().doubleValue(), location.getLatitude().doubleValue());
 					section.setProcessedGeometry(factory.createLineString(coords.toArray(new Coordinate[coords.size()])));
-					section.setInputGeometry(factory.createLineString(coords.toArray(new Coordinate[coords.size()])));
+					section.setInputGeometry(factory.createLineString(inputCoords));
+					section.setNoProcessing(false);
 					try {
 						double distance = section.getProcessedGeometry().getLength();
 						distance *= (Math.PI / 180) * 6378137;

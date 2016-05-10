@@ -114,9 +114,13 @@ public class GtfsTripProducer extends AbstractProducer {
 					index++;
 				}
 				if (index < routeSections.size()) {
-					distance += routeSections.get(index).getDistance().floatValue();
+					distance += (float) computeDistance(routeSections.get(index));
 				}
 				index++;
+			}
+			else
+			{
+			   time.setShapeDistTraveled(null);
 			}
 
 			try {
@@ -128,6 +132,22 @@ public class GtfsTripProducer extends AbstractProducer {
 
 		}
 		return true;
+	}
+	
+	private double computeDistance(RouteSection section)
+	{
+		if (section.getNoProcessing())
+		{
+			double distance = section.getInputGeometry().getLength();
+			distance *= (Math.PI / 180) * 6378137;
+			return distance;
+		}
+		else
+		{
+			double distance = section.getProcessedGeometry().getLength();
+			distance *= (Math.PI / 180) * 6378137;
+			return distance;
+		}
 	}
 
 	private void addDropOffAndPickUpType(GtfsStopTime time, Line l, VehicleJourney vj, VehicleJourneyAtStop vjas) {

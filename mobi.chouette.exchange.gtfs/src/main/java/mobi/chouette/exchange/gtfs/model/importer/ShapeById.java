@@ -2,7 +2,6 @@ package mobi.chouette.exchange.gtfs.model.importer;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.Iterator;
 import java.util.Map;
 
 import mobi.chouette.common.HTMLTagValidator;
