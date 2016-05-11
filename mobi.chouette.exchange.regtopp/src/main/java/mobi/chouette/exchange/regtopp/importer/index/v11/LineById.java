@@ -57,7 +57,7 @@ public class LineById extends IndexImpl<RegtoppLineLIN> {
 			RegtoppLineLIN newRecord = (RegtoppLineLIN) obj;
 			RegtoppLineLIN existingRecord = index.put(newRecord.getLineId(), newRecord);
 			if (existingRecord != null) {
-				log.error("Duplicate key in LIN file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
+				log.warn("Duplicate key in LIN file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
 				validationReporter.reportError(context, new RegtoppException(new FileParserValidationError(getUnderlyingFilename(),
 						newRecord.getRecordLineNumber(), getMessage("label.regtoppLineLIN.lineId"), newRecord.getLineId(), ERROR.LIN_DUPLICATE_KEY, getMessage("label.validation.duplicateKeyError"))), getUnderlyingFilename());
 			}

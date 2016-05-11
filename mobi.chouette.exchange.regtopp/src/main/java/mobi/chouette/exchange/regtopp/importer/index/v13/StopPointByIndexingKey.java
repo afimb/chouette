@@ -42,7 +42,7 @@ public class StopPointByIndexingKey extends IndexImpl<RegtoppStopPointSTP> {
 			RegtoppStopPointSTP newRecord = (RegtoppStopPointSTP) obj;
 			RegtoppStopPointSTP existingRecord = index.put(newRecord.getIndexingKey(), newRecord);
 			if (existingRecord != null) {
-				log.error("Duplicate key in STP file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
+				log.warn("Duplicate key in STP file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
 				validationReporter.reportError(context, new RegtoppException(new FileParserValidationError(getUnderlyingFilename(),
 						newRecord.getRecordLineNumber(), getMessage("label.regtoppStopPointSTP.stopId") + "/" + getMessage("label.regtoppStopPointSTP.stopPointId"), newRecord.getIndexingKey(), ERROR.STP_DUPLICATE_KEY, getMessage("label.validation.duplicateKeyError"))), getUnderlyingFilename());
 			}

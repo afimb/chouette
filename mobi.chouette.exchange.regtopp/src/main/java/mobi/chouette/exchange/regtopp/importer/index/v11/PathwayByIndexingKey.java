@@ -97,7 +97,7 @@ public class PathwayByIndexingKey extends IndexImpl<AbstractRegtoppPathwayGAV> {
 			AbstractRegtoppPathwayGAV newRecord = (AbstractRegtoppPathwayGAV) obj;
 			AbstractRegtoppPathwayGAV existingRecord = index.put(newRecord.getIndexingKey(), newRecord);
 			if (existingRecord != null) {
-				log.error("Duplicate key in GAV file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
+				log.warn("Duplicate key in GAV file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
 				validationReporter.reportError(context, new RegtoppException(new FileParserValidationError(getUnderlyingFilename(),
 						newRecord.getRecordLineNumber(), getMessage("label.regtoppPathwayGAV.stopIdFrom")+"/"+getMessage("label.regtoppPathwayGAV.stopIdTo"), newRecord.getIndexingKey(), ERROR.GAV_DUPLICATE_KEY, getMessage("label.validation.duplicateKeyError"))), getUnderlyingFilename());
 			}

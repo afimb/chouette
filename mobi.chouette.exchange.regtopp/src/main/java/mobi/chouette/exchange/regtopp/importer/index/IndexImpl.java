@@ -3,9 +3,7 @@ package mobi.chouette.exchange.regtopp.importer.index;
 import static mobi.chouette.common.Constant.PARSER;
 import static mobi.chouette.exchange.regtopp.messages.RegtoppMessages.getMessage;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
@@ -101,7 +99,10 @@ public abstract class IndexImpl<T> implements Index<T> {
 				validationReporter.reportError(context, new RegtoppException(fileError), filename);
 			}
 
-			for (T bean : index.values()) {
+			Set<String> invalidKeys = new HashSet<>();
+
+			for (Map.Entry<String, T> entry : index.entrySet()) {
+				T bean = entry.getValue();
 				if (bean != null) {
 					try {
 						// Call index validator
@@ -115,12 +116,24 @@ public abstract class IndexImpl<T> implements Index<T> {
 						}
 					}
 					if (bean instanceof RegtoppObject) {
+						RegtoppObject reBean = ((RegtoppObject) bean);
+						if (reBean.isInvalid()){
+							log.warn("Removing value with key '" + entry.getKey() + "' from index " + this.getClass().getSimpleName() + " due to fatal error(s).");
+							invalidKeys.add(entry.getKey());
+						}
 						// TODO some indices returns List<?> as bean
-						validationReporter.reportErrors(context, ((RegtoppObject) bean).getErrors(), filename);
+						validationReporter.reportErrors(context, reBean.getErrors(), filename);
 						validationReporter.validate(context, ((RegtoppObject) bean).getOkTests());
 					}
 				}
 			}
+			removeKeys(invalidKeys);
+		}
+	}
+
+	private void removeKeys(Set<String> invalidKeys) {
+		for (String key : invalidKeys) {
+			index.remove(key);
 		}
 	}
 

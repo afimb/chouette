@@ -57,7 +57,7 @@ public class DestinationById extends IndexImpl<RegtoppDestinationDST> {
 			RegtoppDestinationDST newRecord = (RegtoppDestinationDST) obj;
 			RegtoppDestinationDST existingRecord = index.put(newRecord.getDestinationId(), newRecord);
 			if (existingRecord != null) {
-				log.error("Duplicate key in DST file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
+				log.warn("Duplicate key in DST file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
 				validationReporter.reportError(context, new RegtoppException(new FileParserValidationError(getUnderlyingFilename(),
 						newRecord.getRecordLineNumber(), getMessage("label.regtoppDestinationDST.destinationId"), newRecord.getDestinationId(), ERROR.DST_DUPLICATE_KEY, getMessage("label.validation.duplicateKeyError"))), getUnderlyingFilename());
 			}

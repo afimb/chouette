@@ -13,11 +13,8 @@ public class RegtoppException extends RuntimeException {
 	public enum ERROR {
 		MULTIPLE_ADMIN_CODES,
 		MISSING_MANDATORY_FILES,
-//		INVALID_FIELD_VALUE,
 		SYSTEM,
 		FILE_WITH_NO_ENTRY,
-//		MISSING_KEY,
-//		DUPLICATE_KEY,
 		HPL_DUPLICATE_KEY,
 		HPL_INVALID_FIELD_VALUE,
 		HPL_INVALID_MANDATORY_ID_REFERENCE,
@@ -93,11 +90,12 @@ public class RegtoppException extends RuntimeException {
 
 	public boolean isFatal() {
 		switch (error) {
-		case MULTIPLE_ADMIN_CODES:
-		case MISSING_MANDATORY_FILES:
-			return true;
-		default:
-			return false;
+			case MULTIPLE_ADMIN_CODES:
+			case MISSING_MANDATORY_FILES:
+			case TMS_INVALID_MANDATORY_ID_REFERENCE:
+				return true;
+			default:
+				return false;
 		}
 	}
 

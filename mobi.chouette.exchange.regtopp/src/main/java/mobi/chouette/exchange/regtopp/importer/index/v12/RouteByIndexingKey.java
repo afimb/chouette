@@ -43,7 +43,7 @@ public class RouteByIndexingKey extends IndexImpl<AbstractRegtoppRouteTMS> {
 			if (existingRecord != null) {
 				String fields = getMessage("label.regtoppRouteTMS.lineId") + "/" + getMessage("label.regtoppRouteTMS.routeId") +
 						"/" + getMessage("label.regtoppRouteTMS.direction") + "/" + getMessage("label.regtoppRouteTMS.counter");
-				log.error("Duplicate key in TMS file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
+				log.warn("Duplicate key in TMS file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
 				validationReporter.reportError(context, new RegtoppException(new FileParserValidationError(getUnderlyingFilename(),
 						newRecord.getRecordLineNumber(), fields, newRecord.getIndexingKey(), ERROR.TMS_DUPLICATE_KEY, getMessage("label.validation.duplicateKeyError"))), getUnderlyingFilename());
 			}
@@ -95,6 +95,15 @@ public class RouteByIndexingKey extends IndexImpl<AbstractRegtoppRouteTMS> {
 		}  else {
 			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), getMessage("label.regtoppRouteTMS.stopId"), bean.getStopId(), RegtoppException.ERROR.TMS_INVALID_FIELD_VALUE, getMessage("label.validation.invalidFieldValue"))));
 			result = false;
+		}
+
+		if (dao.hasHPLImporter()) {
+			if (dao.getStopById().containsKey(bean.getStopId())) {
+				bean.getOkTests().add(ERROR.TMS_INVALID_MANDATORY_ID_REFERENCE);
+			} else {
+				bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), getMessage("label.regtoppRouteTMS.stopId"), bean.getStopId(), RegtoppException.ERROR.TMS_INVALID_MANDATORY_ID_REFERENCE, getMessage("label.validation.invalidMandatoryReference"))));
+				result = false;
+			}
 		}
 
 		//Minst en

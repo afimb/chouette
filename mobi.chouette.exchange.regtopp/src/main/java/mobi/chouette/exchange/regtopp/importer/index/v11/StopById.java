@@ -95,7 +95,7 @@ public class StopById extends IndexImpl<AbstractRegtoppStopHPL> {
 			AbstractRegtoppStopHPL newRecord = (AbstractRegtoppStopHPL) obj;
 			AbstractRegtoppStopHPL existingRecord = index.put(newRecord.getFullStopId(), newRecord);
 			if (existingRecord != null) {
-				log.error("Duplicate key in HPL file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
+				log.warn("Duplicate key in HPL file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
 				validationReporter.reportError(context, new RegtoppException(new FileParserValidationError(getUnderlyingFilename(),
 						newRecord.getRecordLineNumber(), getMessage("label.regtoppStopHPL.stopId"), newRecord.getStopId(), ERROR.HPL_DUPLICATE_KEY, getMessage("label.validation.duplicateKeyError"))), getUnderlyingFilename());
 			}

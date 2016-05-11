@@ -63,7 +63,7 @@ public class TripByIndexingKey extends TripIndex {
 						counter++;
 					}
 				} else {
-					log.error("Duplicate key in TIX file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
+					log.warn("Duplicate key in TIX file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
 				}
 				validationReporter.reportError(context, new RegtoppException(new FileParserValidationError(getUnderlyingFilename(),
 						newRecord.getRecordLineNumber(), getMessage("label.regtoppTripIndexTIX.lineId") + "/" + getMessage("label.regtoppTripIndexTIX.tripId"), newRecord.getIndexingKey(), ERROR.TIX_DUPLICATE_KEY, getMessage("label.validation.duplicateKeyError"))), getUnderlyingFilename());

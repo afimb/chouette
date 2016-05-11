@@ -1,5 +1,7 @@
 package mobi.chouette.exchange.regtopp.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -35,5 +37,14 @@ public abstract class RegtoppObject {
 
 	@Getter
 	protected Set<RegtoppException.ERROR> okTests = new RegtoppErrorsHashSet<>();
+
+	public boolean isInvalid(){
+		for (RegtoppException re : errors) {
+			if (re.isFatal()){
+				return true;
+			}
+		}
+		return false;
+	}
 
 }

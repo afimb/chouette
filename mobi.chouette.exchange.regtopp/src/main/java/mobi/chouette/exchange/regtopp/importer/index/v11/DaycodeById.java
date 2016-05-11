@@ -83,7 +83,7 @@ public class DaycodeById extends IndexImpl<RegtoppDayCodeDKO> {
 				RegtoppDayCodeDKO newRecord = (RegtoppDayCodeDKO) rawContent.get(i);
 				RegtoppDayCodeDKO existingRecord = index.put(newRecord.getDayCodeId(), newRecord);
 				if (existingRecord != null) {
-					log.error("Duplicate key in DKO file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
+					log.warn("Duplicate key in DKO file. Existing: "+existingRecord+" Ignored duplicate: "+newRecord);
 					validationReporter.reportError(context, new RegtoppException(new FileParserValidationError(getUnderlyingFilename(),
 							newRecord.getRecordLineNumber(), getMessage("label.regtoppDayCodeDKO.dayCode"), newRecord.getDayCode(), ERROR.DKO_DUPLICATE_KEY, getMessage("label.validation.duplicateKeyError"))), getUnderlyingFilename());
 				}
