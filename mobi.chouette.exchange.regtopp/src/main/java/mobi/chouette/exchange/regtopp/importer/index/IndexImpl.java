@@ -116,19 +116,30 @@ public abstract class IndexImpl<T> implements Index<T> {
 						}
 					}
 					if (bean instanceof RegtoppObject) {
-						RegtoppObject reBean = ((RegtoppObject) bean);
-						if (reBean.isInvalid()){
-							log.warn("Removing value with key '" + entry.getKey() + "' from index " + this.getClass().getSimpleName() + " due to fatal error(s).");
+						RegtoppObject regtoppObject = ((RegtoppObject) bean);
+						if (regtoppObject.isInvalid()){
+							log.warn("Removing value with key '" + entry.getKey() + "' from index " + this.getClass() +
+									" due to the following fatal error(s): " + getInvalidErrors(regtoppObject));
 							invalidKeys.add(entry.getKey());
 						}
 						// TODO some indices returns List<?> as bean
-						validationReporter.reportErrors(context, reBean.getErrors(), filename);
+						validationReporter.reportErrors(context, regtoppObject.getErrors(), filename);
 						validationReporter.validate(context, ((RegtoppObject) bean).getOkTests());
 					}
 				}
 			}
 			removeKeys(invalidKeys);
 		}
+	}
+
+	private String getInvalidErrors(RegtoppObject regtoppObject) {
+		List<RegtoppException> invalidErrors = new ArrayList<>();
+		for (RegtoppException regtoppException : regtoppObject.getErrors()) {
+			if (regtoppException.isFatal()) {
+				invalidErrors.add(regtoppException);
+			}
+		}
+		return Arrays.toString(invalidErrors.toArray());
 	}
 
 	private void removeKeys(Set<String> invalidKeys) {

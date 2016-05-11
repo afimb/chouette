@@ -98,10 +98,10 @@ public class RouteByIndexingKey extends IndexImpl<AbstractRegtoppRouteTMS> {
 		}
 
 		if (dao.hasHPLImporter()) {
-			if (dao.getStopById().containsKey(bean.getStopId())) {
+			if (dao.getStopById().containsKey(bean.getFullStopId())) {
 				bean.getOkTests().add(ERROR.TMS_INVALID_MANDATORY_ID_REFERENCE);
 			} else {
-				bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), getMessage("label.regtoppRouteTMS.stopId"), bean.getStopId(), RegtoppException.ERROR.TMS_INVALID_MANDATORY_ID_REFERENCE, getMessage("label.validation.invalidMandatoryReference"))));
+				bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), getMessage("label.regtoppRouteTMS.stopId"), bean.getFullStopId(), RegtoppException.ERROR.TMS_INVALID_MANDATORY_ID_REFERENCE, getMessage("label.validation.invalidMandatoryReference"))));
 				result = false;
 			}
 		}
