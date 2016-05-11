@@ -115,20 +115,24 @@ public abstract class TripIndex extends IndexImpl<AbstractRegtoppTripIndexTIX> {
 			// TODO
 		}
 
-		if (isNotNull(bean.getFootnoteId1Ref()) && dao.getFootnoteById().containsKey(bean.getFootnoteId1Ref())) {
-			bean.getOkTests().add(RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE);
-		} else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(),
-					getMessage("label.regtoppTripIndexTIX.footnoteId1Ref"), bean.getFootnoteId1Ref(), RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE, getMessage("label.validation.invalidOptionalReference"))));
-			result = false;
+		if (isNotNull(bean.getFootnoteId1Ref())) {
+			if (dao.getFootnoteById().containsKey(bean.getFootnoteId1Ref())) {
+				bean.getOkTests().add(RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE);
+			} else {
+				bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(),
+						getMessage("label.regtoppTripIndexTIX.footnoteId1Ref"), bean.getFootnoteId1Ref(), RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE, getMessage("label.validation.invalidOptionalReference"))));
+				result = false;
+			}
 		}
 
-		if (isNotNull(bean.getFootnoteId2Ref()) && dao.getFootnoteById().containsKey(bean.getFootnoteId2Ref())) {
-			bean.getOkTests().add(RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE);
-		} else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(),
-					getMessage("label.regtoppTripIndexTIX.footnoteId2Ref"), bean.getFootnoteId2Ref(), RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE, getMessage("label.validation.invalidOptionalReference"))));
-			result = false;
+		if (isNotNull(bean.getFootnoteId2Ref())) {
+			if (dao.getFootnoteById().containsKey(bean.getFootnoteId2Ref())) {
+				bean.getOkTests().add(RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE);
+			} else {
+				bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(),
+						getMessage("label.regtoppTripIndexTIX.footnoteId2Ref"), bean.getFootnoteId2Ref(), RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE, getMessage("label.validation.invalidOptionalReference"))));
+				result = false;
+			}
 		}
 
 		return result;
