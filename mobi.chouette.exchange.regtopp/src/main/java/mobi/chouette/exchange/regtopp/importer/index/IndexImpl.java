@@ -118,7 +118,7 @@ public abstract class IndexImpl<T> implements Index<T> {
 					if (bean instanceof RegtoppObject) {
 						RegtoppObject regtoppObject = ((RegtoppObject) bean);
 						if (regtoppObject.isInvalid()){
-							log.warn("Removing value with key '" + entry.getKey() + "' from index " + this.getClass() +
+							log.warn("Removing " + regtoppObject.getClass() + " value with key '" + entry.getKey() + "' from index " + this.getClass() +
 									" due to the following fatal error(s): " + getInvalidErrors(regtoppObject));
 							invalidKeys.add(entry.getKey());
 						}

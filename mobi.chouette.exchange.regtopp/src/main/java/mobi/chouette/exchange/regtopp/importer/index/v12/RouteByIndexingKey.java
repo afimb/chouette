@@ -13,6 +13,11 @@ import mobi.chouette.exchange.regtopp.validation.RegtoppException;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException.ERROR;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+
 import static mobi.chouette.exchange.regtopp.messages.RegtoppMessages.getMessage;
 
 @Log4j
@@ -98,10 +103,15 @@ public class RouteByIndexingKey extends IndexImpl<AbstractRegtoppRouteTMS> {
 		}
 
 		if (dao.hasHPLImporter()) {
-			if (dao.getStopById().containsKey(bean.getFullStopId())) {
+			String stopId = bean.getFullStopId();
+			if (bean instanceof mobi.chouette.exchange.regtopp.model.v13.RegtoppRouteTMS) {
+				stopId = bean.getStopId();
+			}
+			if (dao.getStopById().containsKey(stopId)) {
 				bean.getOkTests().add(ERROR.TMS_INVALID_MANDATORY_ID_REFERENCE);
 			} else {
-				bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), getMessage("label.regtoppRouteTMS.stopId"), bean.getFullStopId(), RegtoppException.ERROR.TMS_INVALID_MANDATORY_ID_REFERENCE, getMessage("label.validation.invalidMandatoryReference"))));
+				log.warn("Bean with stopId value of '" + stopId + "' had no match in index: " + getLogString(dao.getStopById().keys()));
+				bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), getMessage("label.regtoppRouteTMS.stopId"), stopId, RegtoppException.ERROR.TMS_INVALID_MANDATORY_ID_REFERENCE, getMessage("label.validation.invalidMandatoryReference"))));
 				result = false;
 			}
 		}
@@ -129,6 +139,19 @@ public class RouteByIndexingKey extends IndexImpl<AbstractRegtoppRouteTMS> {
 		}
 
 		return result;
+	}
+
+	// TODO Use Java 8 Stream API when chouette has dropped Java 7 support
+	private String getLogString(Iterator<String> it) {
+		return Arrays.toString(toList(it).toArray());
+	}
+
+	private List<String> toList(Iterator<String> it) {
+		List<String> strings = new ArrayList<>();
+		while(it.hasNext()) {
+			strings.add(it.next());
+		}
+		return strings;
 	}
 
 }
