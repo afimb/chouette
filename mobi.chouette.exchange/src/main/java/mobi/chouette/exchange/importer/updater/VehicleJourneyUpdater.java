@@ -13,6 +13,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.Pair;
 import mobi.chouette.dao.CompanyDAO;
 import mobi.chouette.dao.JourneyFrequencyDAO;
+import mobi.chouette.dao.LineDAO;
 import mobi.chouette.dao.RouteDAO;
 import mobi.chouette.dao.StopPointDAO;
 import mobi.chouette.dao.TimebandDAO;
@@ -87,6 +88,9 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 
 	@EJB 
 	private JourneyFrequencyDAO journeyFrequencyDAO;
+
+	@EJB 
+	private LineDAO lineDAO;
 
 	@EJB(beanName = TimetableUpdater.BEAN_NAME)
 	private Updater<Timetable> timetableUpdater;

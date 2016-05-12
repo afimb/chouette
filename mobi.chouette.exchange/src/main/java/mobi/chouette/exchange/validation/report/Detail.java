@@ -19,7 +19,7 @@ import org.codehaus.jettison.json.JSONObject;
 @Data
 @ToString
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "key", "source", "targets", "value", "referenceValue" })
+@XmlType(propOrder = { "key", "source", "targets", "value", "referenceValue", "error_description" })
 public class Detail {
 
 	@XmlElement(name = "source")
@@ -37,6 +37,9 @@ public class Detail {
 	@XmlElement(name = "reference_value")
 	private String referenceValue = "";
 
+	@XmlElement(name = "error_description")
+	private String errorDescription = "";
+
 	public Detail(String key, Location source) {
 		setKey(key.replaceAll("-", "_").toLowerCase());
 		this.source = source;
@@ -53,6 +56,12 @@ public class Detail {
 		this(key, source, value);
 		this.referenceValue = refValue;
 
+	}
+
+	public Detail(String key, Location source, String value, String refValue, String errorDescription) {
+		this(key, source, value);
+		this.referenceValue = refValue;
+		this.errorDescription = errorDescription;
 	}
 
 	public Detail(String key, Location source, Location... targets) {
@@ -92,6 +101,9 @@ public class Detail {
 		}
 		if (referenceValue != null) {
 			object.put("reference_value", referenceValue);
+		}
+		if (errorDescription != null) {
+			object.put("error_description", errorDescription);
 		}
 		return object;
 	}

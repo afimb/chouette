@@ -1,0 +1,22 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="Factory" verbose="5">
+	<test name="ImportRegtopp">
+		<packages>
+			<package name="mobi.chouette.exchange.regtopp.importer">
+			</package>
+		</packages>
+	</test>
+	<test name="ValidationRegtopp">
+		<packages>
+			<package name="mobi.chouette.exchange.regtopp.validation">
+			</package>
+		</packages>
+	</test>
+	<test name="ModelImport">
+		<packages>
+			<package name="mobi.chouette.exchange.regtopp.model.importer.parser">
+			</package>
+		</packages>
+	</test>
+</suite>

@@ -120,6 +120,9 @@ public class ActionReport {
 	}
 
 	public void addFileInfo(String fileInfoName, FILE_STATE state) {
+		if (fileInfoName == null) {
+			throw new IllegalArgumentException("File info name cannot be null.");
+		}
 		FileInfo fileInfo = findFileInfo(fileInfoName);
 		if (fileInfo == null)
 		{
