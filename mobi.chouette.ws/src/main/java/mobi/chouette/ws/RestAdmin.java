@@ -23,6 +23,7 @@ import javax.ws.rs.core.UriInfo;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Constant;
+import mobi.chouette.common.ContenerChecker;
 import mobi.chouette.common.PropertyNames;
 import mobi.chouette.model.iev.Job;
 import mobi.chouette.service.JobService;
@@ -45,6 +46,9 @@ public class RestAdmin implements Constant {
 
 	@Inject
 	JobServiceManager jobServiceManager;
+	
+	@Inject 
+	ContenerChecker checker;
 
 	@Context
 	UriInfo uriInfo;
@@ -62,9 +66,9 @@ public class RestAdmin implements Constant {
 			builder.header(api_version_key, api_version);
 			return builder.build();
 		}
-		String securityToken = System.getProperty(PropertyNames.ADMIN_KEY);
+		String securityToken = System.getProperty(checker.getContext()+PropertyNames.ADMIN_KEY);
 		if (securityToken == null || securityToken.isEmpty()) {
-			log.warn("admin call without property " + PropertyNames.ADMIN_KEY + " set");
+			log.warn("admin call without property " + checker.getContext()+PropertyNames.ADMIN_KEY + " set");
 			ResponseBuilder builder = Response.status(Status.FORBIDDEN);
 			builder.header(api_version_key, api_version);
 			return builder.build();

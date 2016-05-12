@@ -13,6 +13,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.exchange.report.StepProgression;
@@ -52,10 +53,6 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 	}
 
 	public void dispose(Context context) {
-//		ActionReport report = (ActionReport) context.get(REPORT);
-//		StepProgression step = report.getProgression().getSteps().get(STEP.FINALISATION.ordinal());
-//		boolean terminated = step.getRealized() == step.getTotal();
-//		if (terminated) report.getProgression().setCurrentStep(STEP.TERMINATED.ordinal());
 		saveReport(context);
 		if (context.containsKey(VALIDATION_REPORT)) {
 			mergeValidationReports(context);
@@ -71,7 +68,7 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 		Path path = Paths.get(jobData.getPathName(), REPORT_FILE);
 		// pseudo pretty print
 		try {
-			String data = report.toJson().toString(2);//JSONUtil.toJSON(report);
+			String data = report.toJson().toString(2);
 			FileUtils.writeStringToFile(path.toFile(), data, "UTF-8");
 		} catch (Exception e) {
 			log.error("failed to save report", e);
@@ -91,7 +88,7 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 
 		try {
 			report.checkResult();
-			String data = report.toJson().toString(2);//JSONUtil.toJSON(report);
+			String data = report.toJson().toString(2);
 			FileUtils.writeStringToFile(path.toFile(), data, "UTF-8");
 		} catch (Exception e) {
 			log.error("failed to save validation report", e);
@@ -113,14 +110,14 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 					mainCheckPoint.setSeverity(checkPoint.getSeverity());
 				if (checkPoint.getState().ordinal() > mainCheckPoint.getState().ordinal())
 					mainCheckPoint.setState(checkPoint.getState());
-				int detailCount = 0;
+//				int detailCount = 0;
 				for (Detail detail : checkPoint.getDetails()) {
-					if (mainCheckPoint.getDetailCount() + detailCount > CheckPoint.maxDetails)
-						break;
-					mainCheckPoint.getDetails().add(detail);
-					detailCount++;
+//					if (mainCheckPoint.getDetailCount() + detailCount > CheckPoint.maxDetails)
+//						break;
+					mainCheckPoint.addDetail(detail);
+					// detailCount++;
 				}
-				mainCheckPoint.setDetailCount(mainCheckPoint.getDetailCount() + checkPoint.getDetailCount());
+//				mainCheckPoint.setDetailCount(mainCheckPoint.getDetailCount() + checkPoint.getDetailCount());
 			}
 		}
 
@@ -141,8 +138,14 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 		// reset validationReport
 		context.put(VALIDATION_REPORT, new ValidationReport());
 		if (context.containsKey(CANCEL_ASKED) || Thread.currentThread().isInterrupted()) {
-			log.info(Color.YELLOW + "Command cancelled" + Color.NORMAL);
-			throw new RuntimeException(COMMAND_CANCELLED);
+			log.info("Command cancelled");
+			throw new CommandCancelledException(COMMAND_CANCELLED);
+		}
+		AbstractParameter params = (AbstractParameter) context.get(CONFIGURATION);
+		if (params.isTest())
+		{
+			log.info(Color.YELLOW + "Mode test on: waiting 10 s" + Color.NORMAL);
+			Thread.sleep(10000);
 		}
 		return result;
 	}

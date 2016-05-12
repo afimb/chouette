@@ -51,31 +51,31 @@ public class DaoSharedDataValidatorCommand implements Command, Constant {
 	@Resource
 	private SessionContext daoContext;
 
-	@EJB
+	@EJB 
 	private LineDAO lineDAO;
 
-	@EJB
+	@EJB 
 	private NetworkDAO ptNetworkDAO;
 
-	@EJB
+	@EJB 
 	private CompanyDAO companyDAO;
 
-	@EJB
+	@EJB 
 	private GroupOfLineDAO groupOfLineDAO;
 
-	@EJB
+	@EJB 
 	private StopAreaDAO stopAreaDAO;
 
-	@EJB
+	@EJB 
 	private TimetableDAO timetableDAO;
 
-	@EJB
+	@EJB 
 	private ConnectionLinkDAO connectionLinkDAO;
 
-	@EJB
+	@EJB 
 	private AccessLinkDAO accessLinkDAO;
 
-	@EJB
+	@EJB 
 	private AccessPointDAO accessPointDAO;
 
 	@Override

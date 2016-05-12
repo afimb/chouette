@@ -37,7 +37,7 @@ import com.jamonapi.MonitorFactory;
 /**
  *
  */
-@Log4j
+@Log4j 
 @Stateless(name = DaoLineValidatorCommand.COMMAND)
 public class DaoLineValidatorCommand implements Command, Constant {
 	public static final String COMMAND = "DaoLineValidatorCommand";
@@ -45,7 +45,7 @@ public class DaoLineValidatorCommand implements Command, Constant {
 	@Resource
 	private SessionContext daoContext;
 	
-	@EJB
+	@EJB 
 	private LineDAO lineDAO;
 
 	@Override

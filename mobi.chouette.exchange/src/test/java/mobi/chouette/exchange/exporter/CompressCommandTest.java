@@ -27,7 +27,7 @@ public class CompressCommandTest implements Constant
 		JobDataTest test = new JobDataTest();
 		context.put(JOB_DATA, test);
 		test.setPathName("target/referential/test");
-		test.setFilename("output.zip");
+		test.setOutputFilename("output.zip");
 		if (d.exists())
 			try {
 				org.apache.commons.io.FileUtils.deleteDirectory(d);

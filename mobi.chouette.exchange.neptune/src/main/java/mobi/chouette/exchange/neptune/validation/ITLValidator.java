@@ -6,6 +6,7 @@ import java.util.Map;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.validation.ValidationConstraints;
+import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
@@ -13,6 +14,7 @@ import mobi.chouette.exchange.validation.report.Detail;
 import mobi.chouette.exchange.validation.report.FileLocation;
 import mobi.chouette.exchange.validation.report.Location;
 import mobi.chouette.model.Line;
+import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import mobi.chouette.model.util.Referential;
@@ -43,9 +45,9 @@ public class ITLValidator extends AbstractValidator implements Validator<StopAre
 
 	}
 
-	public void addLocation(Context context, String objectId, int lineNumber, int columnNumber)
+	public void addLocation(Context context, NeptuneIdentifiedObject object, int lineNumber, int columnNumber)
 	{
-		addLocation( context,LOCAL_CONTEXT,  objectId,  lineNumber,  columnNumber);
+		addLocation( context,LOCAL_CONTEXT,  object,  lineNumber,  columnNumber);
 
 	}
 
@@ -68,6 +70,8 @@ public class ITLValidator extends AbstractValidator implements Validator<StopAre
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 		if (localContext == null || localContext.isEmpty()) return new ValidationConstraints();
+		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
+		Map<String, Location> fileLocations = data.getFileLocations();
 		Context stopAreaContext = (Context) validationContext.get(StopAreaValidator.LOCAL_CONTEXT);
 		Context lineContext = (Context) validationContext.get(LineValidator.LOCAL_CONTEXT);
 		Referential referential = (Referential) context.get(REFERENTIAL);
@@ -110,7 +114,7 @@ public class ITLValidator extends AbstractValidator implements Validator<StopAre
 					lineNumber = ((Integer) stopAreaData.get(LINE_NUMBER)).intValue();
 					columnNumber = ((Integer) stopAreaData.get(COLUMN_NUMBER)).intValue();
 					FileLocation targetLocation = new FileLocation(fileName, lineNumber, columnNumber);
-					errorItem.getTargets().add(new Location(targetLocation, stopAreaId));
+					errorItem.getTargets().add(fileLocations.get( stopAreaId));
 					addValidationError(context, ITL_4, errorItem);
 
 				}
@@ -130,7 +134,7 @@ public class ITLValidator extends AbstractValidator implements Validator<StopAre
 					lineNumber = ((Integer) lineData.get(LINE_NUMBER)).intValue();
 					columnNumber = ((Integer) lineData.get(COLUMN_NUMBER)).intValue();
 					FileLocation targetLocation = new FileLocation(fileName, lineNumber, columnNumber);
-					errorItem.getTargets().add(new Location(targetLocation, line.getObjectId()));
+					errorItem.getTargets().add(fileLocations.get( line.getObjectId()));
 					addValidationError(context, ITL_5, errorItem);
 				}
 

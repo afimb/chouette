@@ -167,7 +167,6 @@ public class GtfsExporterMock implements GtfsExporterInterface
          }
          catch (Exception e)
          {
-            // TODO Auto-generated catch block
             e.printStackTrace();
          }
       }
@@ -184,7 +183,6 @@ public class GtfsExporterMock implements GtfsExporterInterface
          }
          catch (Exception e)
          {
-            // TODO Auto-generated catch block
             e.printStackTrace();
          }
       }
@@ -201,7 +199,6 @@ public class GtfsExporterMock implements GtfsExporterInterface
          }
          catch (Exception e)
          {
-            // TODO Auto-generated catch block
             e.printStackTrace();
          }
       }
@@ -218,7 +215,6 @@ public class GtfsExporterMock implements GtfsExporterInterface
          }
          catch (Exception e)
          {
-            // TODO Auto-generated catch block
             e.printStackTrace();
          }
       }
@@ -235,7 +231,6 @@ public class GtfsExporterMock implements GtfsExporterInterface
          }
          catch (Exception e)
          {
-            // TODO Auto-generated catch block
             e.printStackTrace();
          }
       }
@@ -253,7 +248,6 @@ public class GtfsExporterMock implements GtfsExporterInterface
          }
          catch (Exception e)
          {
-            // TODO Auto-generated catch block
             e.printStackTrace();
          }
       }
@@ -271,7 +265,6 @@ public class GtfsExporterMock implements GtfsExporterInterface
          }
          catch (Exception e)
          {
-            // TODO Auto-generated catch block
             e.printStackTrace();
          }
       }
@@ -288,7 +281,6 @@ public class GtfsExporterMock implements GtfsExporterInterface
          }
          catch (Exception e)
          {
-            // TODO Auto-generated catch block
             e.printStackTrace();
          }
       }
@@ -305,7 +297,6 @@ public class GtfsExporterMock implements GtfsExporterInterface
          }
          catch (Exception e)
          {
-            // TODO Auto-generated catch block
             e.printStackTrace();
          }
       }
@@ -322,7 +313,6 @@ public class GtfsExporterMock implements GtfsExporterInterface
          }
          catch (Exception e)
          {
-            // TODO Auto-generated catch block
             e.printStackTrace();
          }
       }

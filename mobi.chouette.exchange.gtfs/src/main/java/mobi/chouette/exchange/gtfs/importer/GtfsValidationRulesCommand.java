@@ -31,8 +31,9 @@ public class GtfsValidationRulesCommand implements Command, Constant {
 			validationReport = new ValidationReport();
 			context.put(MAIN_VALIDATION_REPORT, validationReport);
 		}
+		validationReport.setMaxByFile(true);
 		GtfsImportParameters parameters = (GtfsImportParameters)context.get(CONFIGURATION);
-		validationReport.setCheckPoints((new GtfsValidationRules()).checkPoints(parameters));
+		validationReport.addAllCheckPoints((new GtfsValidationRules()).checkPoints(parameters));
 
 		ValidationReporter validationReporter = (ValidationReporter)context.get(GTFS_REPORTER);
 		if (validationReporter == null) {

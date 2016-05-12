@@ -62,35 +62,35 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 		}
 	};
 
-	@EJB
-	private CompanyDAO companyDAO;
-
 	@EJB(beanName = CompanyUpdater.BEAN_NAME)
 	private Updater<Company> companyUpdater;
 
-	@EJB
-	private RouteDAO routeDAO;
+	@EJB 
+	private CompanyDAO companyDAO;
 
-	@EJB
+	@EJB 
+	private RouteDAO  routeDAO;
+
+	@EJB 
 	private StopPointDAO stopPointDAO;
 
-	@EJB
+	@EJB 
 	private VehicleJourneyAtStopDAO vehicleJourneyAtStopDAO;
 
-	@EJB
+	@EJB 
 	private TimetableDAO timetableDAO;
+
+	@EJB 
+	private TimebandDAO timebandDAO;
+
+	@EJB 
+	private JourneyFrequencyDAO journeyFrequencyDAO;
 
 	@EJB(beanName = TimetableUpdater.BEAN_NAME)
 	private Updater<Timetable> timetableUpdater;
 
 	@EJB(beanName = VehicleJourneyAtStopUpdater.BEAN_NAME)
 	private Updater<VehicleJourneyAtStop> vehicleJourneyAtStopUpdater;
-
-	@EJB
-	private TimebandDAO timebandDAO;
-
-	@EJB
-	private JourneyFrequencyDAO journeyFrequencyDAO;
 
 	@EJB(beanName = JourneyFrequencyUpdater.BEAN_NAME)
 	private Updater<JourneyFrequency> journeyFrequencyUpdater;

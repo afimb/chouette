@@ -17,7 +17,7 @@ public class ConnectionLinkUpdater implements Updater<ConnectionLink> {
 
 	public static final String BEAN_NAME = "ConnectionLinkUpdater";
 
-	@EJB
+	@EJB 
 	private StopAreaDAO stopAreaDAO;
 
 	@Override

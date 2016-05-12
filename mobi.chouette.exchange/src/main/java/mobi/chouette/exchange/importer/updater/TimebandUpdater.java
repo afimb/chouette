@@ -14,7 +14,7 @@ public class TimebandUpdater implements Updater<Timeband> {
 
 	public static final String BEAN_NAME = "TimebandUpdater";
 
-	@EJB
+	@EJB 
 	private TimebandDAO timebandDAO;
 
 	@Override

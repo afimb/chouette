@@ -9,6 +9,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.parameters.DummyParameter;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.exchange.report.StepProgression.STEP;
@@ -39,6 +40,7 @@ public void testProgressionInitialize() throws Exception
 	context.put(REPORT, new ActionReport());
 	ActionReport report = (ActionReport)  context.get(REPORT);
 	context.put(MAIN_VALIDATION_REPORT, new ValidationReport());
+	context.put(CONFIGURATION,new DummyParameter());
 	if (d.exists())
 		try {
 			FileUtils.deleteDirectory(d);

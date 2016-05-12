@@ -146,8 +146,7 @@ public class NeptuneSAXParserCommand implements Command, Constant {
 			tmp.delete();
 
 		} catch (IOException | URISyntaxException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	          log.error("fail to correct Neptune old fashion file "+e.getClass().getName()+" "+e.getMessage());
 		}
 
 	}

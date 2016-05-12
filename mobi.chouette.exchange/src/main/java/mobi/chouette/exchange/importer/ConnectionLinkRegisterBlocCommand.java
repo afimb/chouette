@@ -36,10 +36,10 @@ public class ConnectionLinkRegisterBlocCommand implements Command {
 
 	public static final String COMMAND = "ConnectionLinkRegisterBlocCommand";
 
-	@EJB
+	@EJB 
 	private StopAreaDAO stopAreaDAO;
 
-	@EJB
+	@EJB 
 	private ConnectionLinkDAO connectionLinkDAO;
 
 	@EJB(beanName = ConnectionLinkUpdater.BEAN_NAME)

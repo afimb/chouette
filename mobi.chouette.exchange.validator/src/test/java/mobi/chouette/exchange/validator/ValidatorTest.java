@@ -46,6 +46,7 @@ public class ValidatorTest extends Arquillian implements Constant,ReportConstant
 
 		result = ShrinkWrap.create(WebArchive.class, "test.war").addAsWebInfResource("postgres-ds.xml")
 				.addAsLibraries(files)
+				.addClass(DummyChecker.class)
 				.addClass(JobDataTest.class)
 				.addAsResource(EmptyAsset.INSTANCE, "beans.xml");
 		return result;
@@ -59,7 +60,6 @@ public class ValidatorTest extends Arquillian implements Constant,ReportConstant
 			try {
 				initialContext = new InitialContext();
 			} catch (NamingException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
@@ -125,7 +125,7 @@ public class ValidatorTest extends Arquillian implements Constant,ReportConstant
 				NeptuneImporterCommand.class.getName());
 		TestsUtils.copyFile(file);
 		JobDataTest test =  (JobDataTest) context.get(JOB_DATA);
-		test.setFilename( file);
+		test.setInputFilename( file);
 		NeptuneImportParameters configuration = (NeptuneImportParameters) context.get(CONFIGURATION);
 		configuration.setNoSave(false);
 		configuration.setCleanRepository(true);

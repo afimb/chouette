@@ -49,7 +49,6 @@ public class AccessLinkParser implements Parser, Constant {
 			    objectId = ParserUtils.getText(xpp.nextText());
 				accessLink = ObjectFactory.getAccessLink(referential, objectId);
 				accessLink.setFilled(true);
-				validator.addLocation(context, objectId, lineNumber, columnNumber);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
 				accessLink.setObjectVersion(version);
@@ -147,6 +146,7 @@ public class AccessLinkParser implements Parser, Constant {
 				XPPUtil.skipSubTree(log, xpp);
 			}
 		}
+		validator.addLocation(context, accessLink, lineNumber, columnNumber);
 	}
 
 	static {

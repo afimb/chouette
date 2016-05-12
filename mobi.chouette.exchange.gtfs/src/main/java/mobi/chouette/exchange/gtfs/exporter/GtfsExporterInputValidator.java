@@ -3,6 +3,7 @@ package mobi.chouette.exchange.gtfs.exporter;
 import java.io.IOException;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.JSONUtil;
 import mobi.chouette.exchange.AbstractInputValidator;
 import mobi.chouette.exchange.InputValidator;
 import mobi.chouette.exchange.InputValidatorFactory;
@@ -14,6 +15,30 @@ public class GtfsExporterInputValidator extends AbstractInputValidator {
 
 	private static String[] allowedTypes = { "line", "network", "company", "group_of_line", "stop_area" };
 	private static String[] allowedRouteTypeIdSchemes = { "standard", "extended" };
+
+	@Override
+	public AbstractParameter toActionParameter(String abstractParameter) {
+		try {
+			return JSONUtil.fromJSON(abstractParameter, GtfsExportParameters.class);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	@Override
+	public boolean checkParameters(String abstractParameterString, String validationParametersString) {
+
+		try {
+			GtfsExportParameters parameters = JSONUtil.fromJSON(abstractParameterString, GtfsExportParameters.class);
+
+			ValidationParameters validationParameters = JSONUtil.fromJSON(validationParametersString,
+					ValidationParameters.class);
+
+			return checkParameters(parameters, validationParameters);
+		} catch (Exception ex) {
+			log.error(ex.getMessage());
+			return false;
+		}
+	}
 
 	@Override
 	public boolean checkParameters(AbstractParameter abstractParameter, ValidationParameters validationParameters) {

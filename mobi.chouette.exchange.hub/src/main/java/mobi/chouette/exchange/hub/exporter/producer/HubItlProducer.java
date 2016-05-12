@@ -8,6 +8,7 @@
 
 package mobi.chouette.exchange.hub.exporter.producer;
 
+import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.hub.model.HubItl;
 import mobi.chouette.exchange.hub.model.exporter.HubExporterInterface;
 import mobi.chouette.exchange.report.ActionReport;
@@ -20,6 +21,7 @@ import mobi.chouette.model.type.BoardingPossibilityEnum;
  * <p>
  * optimise multiple period timetable with calendarDate inclusion or exclusion
  */
+@Log4j
 public class HubItlProducer extends AbstractProducer {
 	
 	private int compteur = 1;
@@ -66,8 +68,7 @@ public class HubItlProducer extends AbstractProducer {
 		try {
 			getExporter().getItlExporter().export(hubObject);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	          log.error("fail to produce ITL "+e.getClass().getName()+" "+e.getMessage());
 			return false;
 		}
 		return true;

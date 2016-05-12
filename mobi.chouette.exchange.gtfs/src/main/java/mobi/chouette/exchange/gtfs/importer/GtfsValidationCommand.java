@@ -71,12 +71,18 @@ public class GtfsValidationCommand implements Command, Constant {
 			processableFiles = processableStopAreaFiles;
 		}
 		
+		ValidationReporter validationReporter = (ValidationReporter) context.get(GTFS_REPORTER);
 		for (Path fileName : list) {
-			FileInfo file = new FileInfo(fileName.getFileName().toString(), FILE_STATE.IGNORED);
-			report.getFiles().add(file);
-			ValidationReporter validationReporter = (ValidationReporter) context.get(GTFS_REPORTER);
 			if (!processableFiles.contains(fileName.getFileName().toString())) {
+				FileInfo file = new FileInfo(fileName.getFileName().toString(), FILE_STATE.IGNORED);
+				report.getFiles().add(file);
 				validationReporter.reportError(context, new GtfsException(fileName.getFileName().toString(), 1, null, GtfsException.ERROR.UNUSED_FILE, null, null), fileName.getFileName().toString());
+			}
+			else
+			{
+				// TODO : implement a new status : UNCHECKED
+				FileInfo file = new FileInfo(fileName.getFileName().toString(), FILE_STATE.IGNORED);
+				report.getFiles().add(file);				
 			}
 		}
 		

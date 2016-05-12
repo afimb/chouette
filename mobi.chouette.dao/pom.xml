@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>mobi.chouette</groupId>
 		<artifactId>mobi.chouette</artifactId>
-    <version>3.2.1</version>
+    <version>3.3.1</version>
 	</parent>
 	<artifactId>mobi.chouette.dao</artifactId>
 	<packaging>ejb</packaging>
@@ -65,13 +65,13 @@
 			<type>ejb</type>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
+<!-- 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>mobi.chouette.model.iev</artifactId>
 			<type>ejb</type>
 			<version>${project.version}</version>
 		</dependency>
-		<dependency>
+ -->		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>mobi.chouette.persistence.hibernate</artifactId>
 			<type>ejb</type>

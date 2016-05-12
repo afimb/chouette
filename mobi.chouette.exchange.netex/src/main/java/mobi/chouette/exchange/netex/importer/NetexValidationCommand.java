@@ -58,7 +58,7 @@ public class NetexValidationCommand implements Command, Constant {
 
 	private void addStats(ActionReport report, Referential referential) {
 		Line line = referential.getLines().values().iterator().next();
-		LineInfo lineInfo = new LineInfo(line.getObjectId(),line.getName());
+		LineInfo lineInfo = new LineInfo(line);
 		DataStats stats = lineInfo.getStats();
 		stats.setLineCount(1);
 		stats.setRouteCount(referential.getRoutes().size());

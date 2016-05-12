@@ -14,7 +14,7 @@ public class VehicleJourneyAtStopUpdater implements
 
 	public static final String BEAN_NAME = "VehicleJourneyAtStopUpdater";
 
-	@EJB
+	@EJB 
 	private StopPointDAO stopPointDAO;
 
 	

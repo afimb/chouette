@@ -77,7 +77,7 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 				objectId = ParserUtils.getText(xpp.nextText());
 				vehicleJourney = ObjectFactory.getVehicleJourney(referential, objectId);
 				vehicleJourney.setFilled(true);
-				validator.addLocation(context, objectId, lineNumber, columnNumber);
+				validator.addLocation(context, vehicleJourney, lineNumber, columnNumber);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
 				vehicleJourney.setObjectVersion(version);
@@ -142,6 +142,7 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 		}
 
 		Collections.sort(vehicleJourney.getVehicleJourneyAtStops(), VEHICLE_JOURNEY_AT_STOP_COMPARATOR);
+		validator.addLocation(context, vehicleJourney, lineNumber, columnNumber);
 	}
 
 	private void parseVehicleJourneyAtStop(Context context, VehicleJourney vehicleJourney, JourneyFrequency journeyFrequency) throws Exception {

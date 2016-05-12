@@ -24,13 +24,13 @@ public class JourneyPatternUpdater implements Updater<JourneyPattern> {
 
 	public static final String BEAN_NAME = "JourneyPatternUpdater";
 
-	@EJB
+	@EJB 
 	private StopPointDAO stopPointDAO;
 
-	@EJB
+	@EJB 
 	private VehicleJourneyDAO vehicleJourneyDAO;
 	
-	@EJB
+	@EJB 
 	private RouteSectionDAO routeSectionDAO;
 
 	@EJB(beanName = VehicleJourneyUpdater.BEAN_NAME)

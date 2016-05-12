@@ -10,6 +10,7 @@ import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlType;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import org.codehaus.jettison.json.JSONArray;
@@ -17,8 +18,9 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "name", "status", "errors" })
+@XmlType(propOrder = { "name", "status","ioType", "errors" })
 @Data
+@EqualsAndHashCode(exclude={"status", "errors"})
 @NoArgsConstructor
 public class FileInfo {
 
@@ -33,6 +35,9 @@ public class FileInfo {
 
 	@XmlElement(name = "status", required = true)
 	private FILE_STATE status;
+	
+	@XmlElement(name = "io_type")
+	private IO_TYPE ioType;
 
 	@XmlElement(name = "errors")
 	private List<FileError> errors = new ArrayList<>();
@@ -63,6 +68,10 @@ public class FileInfo {
 		JSONObject object = new JSONObject();
 		object.put("name", name);
 		object.put("status", status);
+		if (ioType != null)
+		{
+			object.put("io_type",ioType);
+		}
 		if (!errors.isEmpty()) {
 			JSONArray array = new JSONArray();
 			object.put("errors", array);

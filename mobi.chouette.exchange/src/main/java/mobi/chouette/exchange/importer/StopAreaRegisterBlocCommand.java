@@ -37,13 +37,13 @@ public class StopAreaRegisterBlocCommand implements Command {
 
 	public static final String COMMAND = "StopAreaRegisterBlocCommand";
 
-	@EJB
+	@EJB 
 	private StopAreaDAO stopAreaDAO;
 
-	@EJB
+	@EJB 
 	private AccessLinkDAO accessLinkDAO;
 
-	@EJB
+	@EJB 
 	private AccessPointDAO accessPointDAO;
 
 	@EJB(beanName = StopAreaUpdater.BEAN_NAME)

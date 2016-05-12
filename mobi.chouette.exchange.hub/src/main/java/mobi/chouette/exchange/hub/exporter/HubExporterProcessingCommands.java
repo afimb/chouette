@@ -88,7 +88,6 @@ public class HubExporterProcessingCommands implements ProcessingCommands, Consta
 
 	@Override
 	public List<? extends Command> getStopAreaProcessingCommands(Context context, boolean withDao) {
-		// TODO Auto-generated method stub
 		return new ArrayList<>();
 	}
 	@Override

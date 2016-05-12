@@ -10,7 +10,8 @@ import mobi.chouette.exchange.parameters.AbstractParameter;
 public class CommandJobData implements JobData {
 
 	private Long id;
-	private String filename;
+	private String inputFilename;
+	private String outputFilename;
 	private String referential;
 	private String action;
 	private String type;

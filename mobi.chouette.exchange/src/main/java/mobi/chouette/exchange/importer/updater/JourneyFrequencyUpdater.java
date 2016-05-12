@@ -15,7 +15,7 @@ public class JourneyFrequencyUpdater implements Updater<JourneyFrequency> {
 
 	public static final String BEAN_NAME = "JourneyFrequencyUpdater";
 
-	@EJB
+	@EJB 
 	private TimebandDAO timebandDAO;
 
 	@EJB(beanName = TimebandUpdater.BEAN_NAME)

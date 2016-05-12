@@ -3,7 +3,7 @@
 Chouette is a java project for handling public transport (PT) data in different formats: Neptune, NeTEx, GTFS and provides 3 main services:
 
 * Import PT data files from Neptune, NeTEx and GTFS formats
-* Export PT data to Neptune, NeTEx, GTFS and KML formats
+* Export PT data to Neptune, NeTEx, GTFS,  KML and GeoJson formats
 * Validate PT data
 
 The Import, Export and Validation services are provided as Web Services and performed asynchronously.
@@ -12,7 +12,9 @@ The Chouette Web Service API is specified here :
 * [Interface Specification Document](./doc/interface/Chouette-API serveur IEV-1.0.pdf)
 * inputs and outputs data structures [Jobs](./doc/interface/Jobs.xsd), [Reports](./doc/interface/Reports.xsd)
 
-Chouette is used by [Chouette2 ](https://github.com/afimb/chouette2), a standard-based PT planned data management web application.
+Chouette is used by : 
+* [Chouette2 ](https://github.com/afimb/chouette2), a standard-based PT planned data management web application.
+* [CVDTC ](https://gitub.com/afimb/cvdtc), a web platform for PT planned data conversion and validation 
 
 Format documentations are available for:
 * Neptune
@@ -26,20 +28,25 @@ Format documentations are available for:
 The Chouette java project is split into modules :
 
 * chouette-iev : **REST server (ear)**
-* mobi.chouette.command : **Command mode standalone program** (Import, Export and Validation actions)
+* mobi.chouette.command : **Command mode standalone program** (Conversion and Validation actions)
 * mobi.chouette.common : common classes and interfaces
 * mobi.chouette.dao : Dao implementation for model persistence (EJB)
+* mobi.chouette.dao.iev : Dao implementation for iev persistence (EJB)
 * mobi.chouette.exchange : Common classes, interfaces and commands for data exchange 
+* mobi.chouette.exchange.converter : Specific commands for conversion
+* mobi.chouette.exchange.geojson : Specific commands for GeoJson data export 
 * mobi.chouette.exchange.gtfs : Specific commands for GTFS data exchange and validation 
-* mobi.chouette.exchange.hub : Specific commands for HUB data exchange
-* mobi.chouette.exchange.kml : Specific commands for KML data exchange 
+* mobi.chouette.exchange.hub : Specific commands for HUB data exchange 
+* mobi.chouette.exchange.kml : Specific commands for KML data export 
 * mobi.chouette.exchange.neptune : Specific commands for Neptune data exchange and validation 
-* mobi.chouette.exchange.netex : Specific commands for NeTEx data exchange 
+* mobi.chouette.exchange.netex : Specific commands for NeTEx data exchange (experimental local agreement)
+* mobi.chouette.exchange.sig : Specific commands for GeoJson and kml data export at same time
 * mobi.chouette.exchange.validator : Specific commands for common data validation 
 * mobi.chouette.model : JPA entities modelisation for public transport model
 * mobi.chouette.model.iev : JPA entities modelisation for iev jobs
 * mobi.chouette.persistence.hibernate : Hibernate specific tools
 * mobi.chouette.service : Job and tasks managment
+* mobi.chouette.schema.checker : Access control implementation for Chouette GUI
 * mobi.chouette.ws : REST API implementation
 
 For more information see the [Architecture Documentation](http://www.chouette.mobi/developpeurs/) , in French.
@@ -96,7 +103,7 @@ On Debian, **Chouette can also be installed as a package** : see [debian package
 
 Get git repository :
 ```sh
-git clone -b V3_1 git://github.com/afimb/chouette
+git clone -b V3_3 git://github.com/afimb/chouette
 cd chouette
 ```
 
@@ -134,7 +141,7 @@ change the ```iev.started.jobs.max``` value in order to limit the max number of 
 [Install and configure Wildfly](./doc/install/wildfly.md) 
 
 .
-[For an existing chouette_iev deployment : update the postgres / wildfly configuration](./doc/install/update.md) 
+[For an existing chouette_iev deployment prior to 3.2 : update the postgres / wildfly configuration](./doc/install/update.md) 
 
 in the wildfly installation repository :
 ```sh

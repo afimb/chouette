@@ -86,7 +86,6 @@ public class NetexExporterProcessingCommands implements ProcessingCommands, Cons
 
 	@Override
 	public List<? extends Command> getStopAreaProcessingCommands(Context context, boolean withDao) {
-		// TODO Auto-generated method stub
 		return new ArrayList<>();
 	}
 	

@@ -18,6 +18,7 @@ import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
+import mobi.chouette.exchange.CommandCancelledException;
 import mobi.chouette.exchange.DaoReader;
 import mobi.chouette.exchange.ProcessingCommands;
 import mobi.chouette.exchange.ProcessingCommandsFactory;
@@ -92,6 +93,9 @@ public class ValidatorCommand implements Command, Constant {
 			result = process(context, commands, progression, false);
 
 
+		} catch (CommandCancelledException e) {
+			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR, "Command cancelled"));
+			log.error(e.getMessage());
 		} catch (Exception e) {
 			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR, "Fatal :" + e));
 			log.error(e.getMessage(), e);
@@ -164,7 +168,7 @@ public class ValidatorCommand implements Command, Constant {
 			// TODO a mettre dans une commande dédiée
 			ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
 			Line line = data.getCurrentLine();
-			LineInfo lineInfo = new LineInfo(line.getObjectId(),line.getName() + " (" + line.getNumber() + ")");
+			LineInfo lineInfo = new LineInfo(line);
 			DataStats stats = lineInfo.getStats();
 			stats.setLineCount(1);
 			stats.setJourneyPatternCount(data.getJourneyPatterns().size());

@@ -23,16 +23,16 @@ public class RouteUpdater implements Updater<Route> {
 
 	public static final String BEAN_NAME = "RouteUpdater";
 
-	@EJB
+	@EJB 
 	private RouteDAO routeDAO;
 
-	@EJB
+	@EJB 
 	private StopPointDAO stopPointDAO;
 
 	@EJB(beanName = StopPointUpdater.BEAN_NAME)
 	private Updater<StopPoint> stopPointUpdater;
 
-	@EJB
+	@EJB 
 	private JourneyPatternDAO journeyPatternDAO;
 
 	@EJB(beanName = JourneyPatternUpdater.BEAN_NAME)

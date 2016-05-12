@@ -14,9 +14,9 @@ import mobi.chouette.exchange.gtfs.model.importer.GtfsConverter;
 public class StopTimeExporter extends ExporterImpl<GtfsStopTime> implements GtfsConverter {
 
 	public static enum FIELDS {
-		trip_id, stop_id, stop_sequence, arrival_time, departure_time, pickup_type, drop_off_type;// ,
+		trip_id, stop_id, stop_sequence, arrival_time, departure_time, pickup_type, drop_off_type, shape_dist_traveled;// ,
 		// stop_headsign,
-		// shape_dist_traveled
+		//
 	};
 
 	public static final String FILENAME = "stop_times.txt";
@@ -54,8 +54,7 @@ public class StopTimeExporter extends ExporterImpl<GtfsStopTime> implements Gtfs
 					PickupType.Scheduled, false));
 			bean.setDropOffType(DROPOFFTYPE_CONVERTER.from(context, FIELDS.drop_off_type, values.get(i++),
 					DropOffType.Scheduled, false));
-			// bean.setShapeDistTraveled(FLOAT_CONVERTER.from(context,
-			// FIELDS.shape_dist_traveled, values.get(i++), false));
+ 			bean.setShapeDistTraveled(FLOAT_CONVERTER.from(context, FIELDS.shape_dist_traveled, values.get(i++), false));
 
 			return bean;
 		}
@@ -73,9 +72,7 @@ public class StopTimeExporter extends ExporterImpl<GtfsStopTime> implements Gtfs
 			// input.getStopHeadsign(), false));
 			values.add(PICKUP_CONVERTER.to(context, FIELDS.pickup_type, input.getPickupType(), false));
 			values.add(DROPOFFTYPE_CONVERTER.to(context, FIELDS.drop_off_type, input.getDropOffType(), false));
-			// values.add(FLOAT_CONVERTER.to(context,
-			// FIELDS.shape_dist_traveled,
-			// input.getShapeDistTraveled(), false));
+ 			values.add(FLOAT_CONVERTER.to(context, FIELDS.shape_dist_traveled, input.getShapeDistTraveled(), false));
 
 			result = Tokenizer.untokenize(values);
 			return result;

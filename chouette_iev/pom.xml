@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>mobi.chouette</groupId>
 		<artifactId>mobi.chouette</artifactId>
-		<version>3.2.1</version>
+		<version>3.3.1</version>
 	</parent>
 	<artifactId>chouette_iev</artifactId>
 	<packaging>ear</packaging>
@@ -120,42 +120,12 @@
 	<dependencies>
 
 		<!-- Modules -->
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>mobi.chouette.common</artifactId>
-			<type>ejb</type>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>mobi.chouette.persistence.hibernate</artifactId>
-			<type>ejb</type>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>mobi.chouette.model</artifactId>
-			<type>ejb</type>
-			<version>${project.version}</version>
-		</dependency>
       <dependency>
          <groupId>${project.groupId}</groupId>
-         <artifactId>mobi.chouette.model.iev</artifactId>
+         <artifactId>mobi.chouette.dao</artifactId>
          <type>ejb</type>
          <version>${project.version}</version>
       </dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>mobi.chouette.dao</artifactId>
-			<type>ejb</type>
-			<version>${project.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>mobi.chouette.exchange</artifactId>
-			<type>ejb</type>
-			<version>${project.version}</version>
-		</dependency>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>mobi.chouette.exchange.neptune</artifactId>
@@ -165,6 +135,12 @@
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>mobi.chouette.exchange.gtfs</artifactId>
+			<type>ejb</type>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>${project.groupId}</groupId>
+			<artifactId>mobi.chouette.exchange.geojson</artifactId>
 			<type>ejb</type>
 			<version>${project.version}</version>
 		</dependency>
@@ -182,6 +158,12 @@
       </dependency>
       <dependency>
          <groupId>${project.groupId}</groupId>
+         <artifactId>mobi.chouette.exchange.sig</artifactId>
+         <type>ejb</type>        
+         <version>${project.version}</version>
+      </dependency>
+      <dependency>
+         <groupId>${project.groupId}</groupId>
          <artifactId>mobi.chouette.exchange.hub</artifactId>
          <type>ejb</type>        
          <version>${project.version}</version>
@@ -192,6 +174,13 @@
          <type>ejb</type>        
          <version>${project.version}</version>
       </dependency>
+      <dependency>
+         <groupId>${project.groupId}</groupId>
+         <artifactId>mobi.chouette.schema.checker</artifactId>
+         <type>ejb</type>        
+         <version>${project.version}</version>
+      </dependency>
+
       <dependency>
          <groupId>${project.groupId}</groupId>
          <artifactId>mobi.chouette.service</artifactId>

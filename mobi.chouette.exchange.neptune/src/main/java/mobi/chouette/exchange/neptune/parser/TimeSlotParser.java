@@ -50,7 +50,6 @@ public class TimeSlotParser implements Parser, Constant {
 				objectId = ParserUtils.getText(xpp.nextText());
 				timeSlot = factory.getTimeSlot(objectId);
 				timeSlot.setFilled(true);
-				validator.addLocation(context, objectId, lineNumber, columnNumber);
 				
 				timeband = ObjectFactory.getTimeband(referential, objectId);
 				timeband.setFilled(true);
@@ -85,6 +84,7 @@ public class TimeSlotParser implements Parser, Constant {
 		}
 		SimpleDateFormat sdf = new SimpleDateFormat("HH:MM");
 		timeband.setName(sdf.format(timeband.getStartTime())+"->"+sdf.format(timeband.getEndTime()));
+		validator.addLocation(context, timeSlot, lineNumber, columnNumber);
 	}
 
 	static {

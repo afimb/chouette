@@ -19,7 +19,7 @@ import org.testng.annotations.Test;
 
 public class LineDaoTest extends Arquillian
 {
-	@EJB
+	@EJB 
 	LineDAO lineDao;
 
 

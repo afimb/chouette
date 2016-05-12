@@ -1,9 +1,12 @@
 package mobi.chouette.exchange.neptune.validation;
 
 
+import java.util.Map;
+
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.validation.ValidationConstraints;
+import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
@@ -11,6 +14,7 @@ import mobi.chouette.exchange.validation.report.Detail;
 import mobi.chouette.exchange.validation.report.FileLocation;
 import mobi.chouette.exchange.validation.report.Location;
 import mobi.chouette.model.AccessLink;
+import mobi.chouette.model.NeptuneIdentifiedObject;
 
 public class AccessLinkValidator extends AbstractValidator implements Validator<AccessLink> , Constant{
 
@@ -35,9 +39,9 @@ public class AccessLinkValidator extends AbstractValidator implements Validator<
 	}
 
     @Override
-	public void addLocation(Context context, String objectId, int lineNumber, int columnNumber)
+	public void addLocation(Context context, NeptuneIdentifiedObject object, int lineNumber, int columnNumber)
 	{
-		addLocation( context,LOCAL_CONTEXT,  objectId,  lineNumber,  columnNumber);
+		addLocation( context,LOCAL_CONTEXT,  object,  lineNumber,  columnNumber);
 
 	}
 
@@ -65,9 +69,12 @@ public class AccessLinkValidator extends AbstractValidator implements Validator<
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 		Context stopAreasContext = (Context) validationContext.get(StopAreaValidator.LOCAL_CONTEXT);
 		Context accessPointsContext = (Context) validationContext.get(AccessPointValidator.LOCAL_CONTEXT);
+		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
+		Map<String, Location> fileLocations = data.getFileLocations();
+
 		if (localContext == null || localContext.isEmpty()) return new ValidationConstraints();
 
-		String fileName = (String) context.get(FILE_NAME);
+		// String fileName = (String) context.get(FILE_NAME);
 
 		// 2-NEPTUNE-AccessLink-1 : check existence of start and end of links
 		prepareCheckPoint(context, ACCESS_LINK_1);
@@ -75,9 +82,10 @@ public class AccessLinkValidator extends AbstractValidator implements Validator<
 		for (String objectId : localContext.keySet()) 
 		{
 			Context objectContext = (Context) localContext.get(objectId);
-			int lineNumber = ((Integer) objectContext.get(LINE_NUMBER)).intValue();
-			int columnNumber = ((Integer) objectContext.get(COLUMN_NUMBER)).intValue();
-			FileLocation sourceLocation = new FileLocation(fileName, lineNumber, columnNumber);
+//			int lineNumber = ((Integer) objectContext.get(LINE_NUMBER)).intValue();
+//			int columnNumber = ((Integer) objectContext.get(COLUMN_NUMBER)).intValue();		
+//          FileLocation sourceLocation = new FileLocation(fileName, lineNumber, columnNumber);
+			Location sourceLocation = fileLocations.get(objectId);
 
 			boolean step1 = true;
 
@@ -87,7 +95,7 @@ public class AccessLinkValidator extends AbstractValidator implements Validator<
 			{
 				Detail errorItem = new Detail(
 						ACCESS_LINK_1,
-						new Location(sourceLocation,objectId), start);
+						sourceLocation /*new Location(sourceLocation,objectId)*/ , start);
 				addValidationError(context,ACCESS_LINK_1, errorItem);
 				step1 = false;
 			}
@@ -97,7 +105,7 @@ public class AccessLinkValidator extends AbstractValidator implements Validator<
 			{
 				Detail errorItem = new Detail(
 						ACCESS_LINK_1,
-						new Location(sourceLocation,objectId), end);
+						sourceLocation, end);
 				addValidationError(context,ACCESS_LINK_1, errorItem);
 				step1 = false;
 			}
@@ -114,7 +122,7 @@ public class AccessLinkValidator extends AbstractValidator implements Validator<
 	            continue;
 				Detail errorItem = new Detail(
 						ACCESS_LINK_2,
-						new Location(sourceLocation,objectId), start , end);
+						sourceLocation, start , end);
 				addValidationError(context,ACCESS_LINK_2, errorItem);
 
 		}

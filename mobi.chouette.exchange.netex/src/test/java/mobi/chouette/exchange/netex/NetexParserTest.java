@@ -26,7 +26,6 @@ public class NetexParserTest  implements mobi.chouette.common.Constant{
 			try {
 				initialContext = new InitialContext();
 			} catch (NamingException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

@@ -29,12 +29,12 @@ public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 		this.type = type;
 	}
 
-	@Override
+	
 	public T find(final Object id) {
 		return em.find(type, id);
 	}
 
-	@Override
+	
 	public List<T> find(final String hql, final List<Object> values) {
 		List<T> result = null;
 		if (values.isEmpty()) {
@@ -51,7 +51,7 @@ public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 		return result;
 	}
 
-	@Override
+	
 	public List<T> findAll(final Collection<Long> ids) {
 		List<T> result = null;
 		CriteriaBuilder builder = em.getCriteriaBuilder();
@@ -63,8 +63,8 @@ public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 		result = query.getResultList();
 		return result;
 	}
+
 	
-	@Override
 	public List<T> findAll() {
 		List<T> result = null;
 		CriteriaBuilder builder = em.getCriteriaBuilder();
@@ -76,7 +76,7 @@ public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
+	
 	public T findByObjectId(final String objectId) {
 		Session session = em.unwrap(Session.class);
 		T result = (T) session.bySimpleNaturalId(type).load(objectId);
@@ -84,13 +84,13 @@ public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 		return result;
 	}
 
-
-	@Override
+	
 	public List<T> findByObjectId(final Collection<String> objectIds) {
 		// System.out.println("GenericDAOImpl.findByObjectId() : " + objectIds);
 		List<T> result = null;
-		if (objectIds.isEmpty()) return result;
-		
+		if (objectIds.isEmpty())
+			return result;
+
 		Iterable<List<String>> iterator = Iterables.partition(objectIds, 32000);
 		for (List<String> ids : iterator) {
 			CriteriaBuilder builder = em.getCriteriaBuilder();
@@ -100,34 +100,34 @@ public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 			criteria.where(predicate);
 			TypedQuery<T> query = em.createQuery(criteria);
 			if (result == null)
-			   result = query.getResultList();
+				result = query.getResultList();
 			else
-			   result.addAll(query.getResultList());
+				result.addAll(query.getResultList());
 		}
 		return result;
 	}
 
-	@Override
-	public void create(final T entity) {		
+	
+	public void create(final T entity) {
 		em.persist(entity);
 	}
 
-	@Override
+	
 	public T update(final T entity) {
 		return em.merge(entity);
 	}
 
-	@Override
+	
 	public void delete(final T entity) {
 		em.remove(entity);
 	}
 
-	@Override
+	
 	public void detach(final T entity) {
 		em.detach(entity);
 	}
 
-	@Override
+	
 	public int deleteAll() {
 		int result = 0;
 		CriteriaBuilder builder = em.getCriteriaBuilder();
@@ -137,25 +137,22 @@ public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 		result = query.executeUpdate();
 		return result;
 	}
+
 	
-	@Override
 	public int truncate() {
-		String query = new StringBuilder("TRUNCATE TABLE ")
-        .append(type.getAnnotation(Table.class).name())
-        .append(" CASCADE")
-        .toString();        
-        return em.createNativeQuery(query).executeUpdate();
+		String query = new StringBuilder("TRUNCATE TABLE ").append(type.getAnnotation(Table.class).name())
+				.append(" CASCADE").toString();
+		return em.createNativeQuery(query).executeUpdate();
 	}
 
-
-	@Override
+	
 	public void evictAll() {
 		EntityManagerFactory factory = em.getEntityManagerFactory();
 		Cache cache = factory.getCache();
 		cache.evictAll();
 	}
 
-	@Override
+	
 	public void flush() {
 		em.flush();
 	}
@@ -171,5 +168,6 @@ public abstract class GenericDAOImpl<T> implements GenericDAO<T> {
 			em.detach(object);
 		}
 	}
+
 	
 }

@@ -1,0 +1,14 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="converter" verbose="5">
+   
+   
+<test name="Converter">
+       <packages>
+         <package name="mobi.chouette.exchange.converter" >
+         </package>
+       </packages>
+</test>
+
+   
+</suite>

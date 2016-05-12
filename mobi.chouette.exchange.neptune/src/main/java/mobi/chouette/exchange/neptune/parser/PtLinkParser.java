@@ -45,7 +45,6 @@ public class PtLinkParser implements Parser, Constant {
 				 objectId = ParserUtils.getText(xpp.nextText());
 				ptLink = factory.getPTLink(objectId);
 				ptLink.setFilled(true);
-				validator.addLocation(context, objectId, lineNumber, columnNumber);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
 				ptLink.setObjectVersion(version);
@@ -73,6 +72,7 @@ public class PtLinkParser implements Parser, Constant {
 				XPPUtil.skipSubTree(log, xpp);
 			}
 		}
+		validator.addLocation(context, ptLink, lineNumber, columnNumber);
 	}
 
 	static {

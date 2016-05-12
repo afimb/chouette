@@ -32,7 +32,7 @@ public class DaoNeptuneLineProducerCommand implements Command, Constant {
 	@Resource 
 	private SessionContext daoContext;
 	
-	@EJB
+	@EJB 
 	private LineDAO lineDAO;
 
 	@Override

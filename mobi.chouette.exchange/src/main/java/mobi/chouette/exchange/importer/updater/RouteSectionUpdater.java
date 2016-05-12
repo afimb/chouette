@@ -14,11 +14,8 @@ public class RouteSectionUpdater implements Updater<RouteSection> {
 
 	public static final String BEAN_NAME = "RouteSectionUpdater";
 
-	@EJB
+	@EJB 
 	private StopAreaDAO stopAreaDAO;
-
-//	@EJB
-//	private RouteSectionDAO routeSectionDAO;
 
 	@Override
 	public void update(Context context, RouteSection oldValue, RouteSection newValue) throws Exception {

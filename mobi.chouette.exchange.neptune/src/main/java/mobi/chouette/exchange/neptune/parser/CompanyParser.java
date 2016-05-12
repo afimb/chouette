@@ -40,7 +40,6 @@ public class CompanyParser implements Parser, Constant {
 				objectId = ParserUtils.getText(xpp.nextText());
 				company = ObjectFactory.getCompany(referential, objectId);
 				company.setFilled(true);
-				validator.addLocation(context, objectId, lineNumber, columnNumber);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
 				company.setObjectVersion(version);
@@ -83,6 +82,7 @@ public class CompanyParser implements Parser, Constant {
 				XPPUtil.skipSubTree(log, xpp);
 			}
 		}
+		validator.addLocation(context, company, lineNumber, columnNumber);
 	}
 
 	static {

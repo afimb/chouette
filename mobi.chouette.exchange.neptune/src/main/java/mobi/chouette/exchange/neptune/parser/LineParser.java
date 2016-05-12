@@ -51,7 +51,6 @@ public class LineParser implements Parser, Constant, JsonExtension {
 				line.setFilled(true);
 				line.setNetwork(getPtNetwork(referential));
 				line.setCompany(getFirstCompany(referential));
-				validator.addLocation(context, objectId, lineNumber, columnNumber);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
 				line.setObjectVersion(version);
@@ -118,6 +117,7 @@ public class LineParser implements Parser, Constant, JsonExtension {
 				XPPUtil.skipSubTree(log, xpp);
 			}
 		}
+		validator.addLocation(context, line, lineNumber, columnNumber);
 	}
 
 

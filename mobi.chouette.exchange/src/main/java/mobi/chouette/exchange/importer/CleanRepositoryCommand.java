@@ -31,25 +31,25 @@ public class CleanRepositoryCommand implements Command {
 
 	public static final String COMMAND = "CleanRepositoryCommand";
 
-	@EJB
+	@EJB 
 	private LineDAO lineDAO;
 
-	@EJB
+	@EJB 
 	private NetworkDAO networkDAO;
 	
-	@EJB
+	@EJB 
 	private StopAreaDAO stopAreaDAO;
 
-	@EJB
+	@EJB 
 	private RouteSectionDAO routeSectionDAO;
 
-	@EJB
+	@EJB 
 	private CompanyDAO companyDAO;
 	
-	@EJB
+	@EJB 
 	private TimetableDAO timetableDAO;
 	
-	@EJB
+	@EJB 
 	private GroupOfLineDAO groupOfLineDAO;
 	
 	@Override

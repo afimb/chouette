@@ -40,7 +40,6 @@ public class ITLParser implements Parser, Constant {
 				objectId = ParserUtils.getText(xpp.nextText());
 				stopArea = ObjectFactory.getStopArea(referential, objectId);
 				if (line != null) line.addRoutingConstraint(stopArea);
-				validator.addLocation(context, objectId, lineNumber, columnNumber);
 			} else if (xpp.getName().equals("lineIdShortCut")) {
 				String lineIdShortCut = ParserUtils.getText(xpp.nextText());
 				validator.addLineId(context, objectId, lineIdShortCut);
@@ -52,6 +51,7 @@ public class ITLParser implements Parser, Constant {
 				XPPUtil.skipSubTree(log, xpp);
 			}
 		}
+		validator.addLocation(context, stopArea, lineNumber, columnNumber);
 	}
 	
 	private Line getLine(Referential referential)

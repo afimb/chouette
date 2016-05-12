@@ -21,16 +21,16 @@ import mobi.chouette.model.Network;
 @Stateless 
 public class DaoReader {
 
-	@EJB
+	@EJB 
 	protected LineDAO lineDAO;
 
-	@EJB
+	@EJB 
 	protected NetworkDAO ptNetworkDAO;
 
-	@EJB
+	@EJB 
 	protected CompanyDAO companyDAO;
 
-	@EJB
+	@EJB 
 	protected GroupOfLineDAO groupOfLineDAO;
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)

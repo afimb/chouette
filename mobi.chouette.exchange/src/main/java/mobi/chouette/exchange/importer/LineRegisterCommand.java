@@ -49,11 +49,11 @@ public class LineRegisterCommand implements Command {
 	@EJB
 	private LineDAO lineDAO;
 
-	@EJB(beanName = LineUpdater.BEAN_NAME)
-	private Updater<Line> lineUpdater;
-
 	@EJB
 	private VehicleJourneyDAO vehicleJourneyDAO;
+
+	@EJB(beanName = LineUpdater.BEAN_NAME)
+	private Updater<Line> lineUpdater;
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -70,14 +70,14 @@ public class LineRegisterCommand implements Command {
 		context.put(CACHE, cache);
 
 		Referential referential = (Referential) context.get(REFERENTIAL);
-		
+
 		Line newValue = referential.getLines().values().iterator().next();
 		log.info("register line : " + newValue.getObjectId() + " " + newValue.getName() + " vehicleJourney count = "
 				+ referential.getVehicleJourneys().size());
 		try {
-			
+
 			optimiser.initialize(cache, referential);
-			
+
 			Line oldValue = cache.getLines().get(newValue.getObjectId());
 			lineUpdater.update(context, oldValue, newValue);
 			lineDAO.create(oldValue);
@@ -98,7 +98,7 @@ public class LineRegisterCommand implements Command {
 						write(buffer, vehicleJourney, stopPoint, vehicleJourneyAtStop);
 					}
 				}
-				vehicleJourneyDAO.deleteVehicleJourneyAtStops(list);
+				vehicleJourneyDAO.deleteChildren(list);
 				context.put(BUFFER, buffer.toString());
 			}
 
@@ -108,7 +108,7 @@ public class LineRegisterCommand implements Command {
 			ActionReport report = (ActionReport) context.get(REPORT);
 			LineInfo info = report.findLineInfo(newValue.getObjectId());
 			if (info == null) {
-				info = new LineInfo(newValue.getObjectId(), newValue.getName());
+				info = new LineInfo(newValue);
 				report.getLines().add(info);
 			}
 			if (ex.getCause() != null) {
@@ -125,11 +125,9 @@ public class LineRegisterCommand implements Command {
 					LineError error = new LineError(LineError.CODE.INTERNAL_ERROR, e.getMessage());
 					info.addError(error);
 				}
-			}
-			else
-			{
+			} else {
 				LineError error = new LineError(LineError.CODE.INTERNAL_ERROR, ex.getMessage());
-				info.addError(error);				
+				info.addError(error);
 			}
 			throw ex;
 		} finally {
@@ -140,7 +138,9 @@ public class LineRegisterCommand implements Command {
 
 	private void write(StringWriter buffer, VehicleJourney vehicleJourney, StopPoint stopPoint,
 			VehicleJourneyAtStop vehicleJourneyAtStop) throws IOException {
-		// The list of fields to sunchronize with VehicleJourneyAtStopUpdater.update(Context context, VehicleJourneyAtStop oldValue,
+		// The list of fields to sunchronize with
+		// VehicleJourneyAtStopUpdater.update(Context context,
+		// VehicleJourneyAtStop oldValue,
 		// VehicleJourneyAtStop newValue)
 
 		DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
@@ -160,14 +160,14 @@ public class LineRegisterCommand implements Command {
 		// buffer.append(SEP);
 
 		// if (vehicleJourneyAtStop.getElapseDuration() != null)
-		// 	buffer.write(timeFormat.format(vehicleJourneyAtStop.getElapseDuration()));
+		// buffer.write(timeFormat.format(vehicleJourneyAtStop.getElapseDuration()));
 		// else
-		// 	buffer.write(NULL);
+		// buffer.write(NULL);
 		// buffer.append(SEP);
 		// if (vehicleJourneyAtStop.getHeadwayFrequency() != null)
-		// 	buffer.write(timeFormat.format(vehicleJourneyAtStop.getHeadwayFrequency()));
+		// buffer.write(timeFormat.format(vehicleJourneyAtStop.getHeadwayFrequency()));
 		// else
-		// 	buffer.write(NULL);
+		// buffer.write(NULL);
 		buffer.append('\n');
 	}
 

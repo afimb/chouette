@@ -7,12 +7,13 @@ import java.util.Map;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.validation.ValidationConstraints;
+import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.exchange.validation.report.Detail;
-import mobi.chouette.exchange.validation.report.FileLocation;
 import mobi.chouette.exchange.validation.report.Location;
+import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.Period;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.util.Referential;
@@ -35,8 +36,8 @@ public class TimetableValidator extends AbstractValidator implements Validator<T
 
 	}
 
-	public void addLocation(Context context, String objectId, int lineNumber, int columnNumber) {
-		addLocation(context, LOCAL_CONTEXT, objectId, lineNumber, columnNumber);
+	public void addLocation(Context context, NeptuneIdentifiedObject object, int lineNumber, int columnNumber) {
+		addLocation(context, LOCAL_CONTEXT, object, lineNumber, columnNumber);
 
 	}
 
@@ -59,11 +60,11 @@ public class TimetableValidator extends AbstractValidator implements Validator<T
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 		if (localContext == null || localContext.isEmpty())
 			return new ValidationConstraints();
+		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
+		Map<String, Location> fileLocations = data.getFileLocations();
 		Context vehicleJourneyContext = (Context) validationContext.get(VehicleJourneyValidator.LOCAL_CONTEXT);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		Map<String, Timetable> timetables = referential.getTimetables();
-
-		String fileName = (String) context.get(FILE_NAME);
 
 		// 2-NEPTUNE-Timetable-1 : check if timetable refers at least one
 		// existing vehiclejourney (w)
@@ -76,9 +77,6 @@ public class TimetableValidator extends AbstractValidator implements Validator<T
 
 		for (String objectId : localContext.keySet()) {
 			Context objectContext = (Context) localContext.get(objectId);
-			int lineNumber = ((Integer) objectContext.get(LINE_NUMBER)).intValue();
-			int columnNumber = ((Integer) objectContext.get(COLUMN_NUMBER)).intValue();
-			FileLocation sourceLocation = new FileLocation(fileName, lineNumber, columnNumber);
 
 			boolean vjFound = false;
 			for (String vjId : (List<String>) objectContext.get(VEHICLE_JOURNEY_ID)) {
@@ -87,7 +85,7 @@ public class TimetableValidator extends AbstractValidator implements Validator<T
 				unreferencedVehicleJourneys.remove(vjId);
 			}
 			if (!vjFound) {
-				Detail errorItem = new Detail(TIMETABLE_1, new Location(sourceLocation, objectId));
+				Detail errorItem = new Detail(TIMETABLE_1, fileLocations.get( objectId));
 				addValidationError(context, TIMETABLE_1, errorItem);
 
 			}
@@ -100,7 +98,7 @@ public class TimetableValidator extends AbstractValidator implements Validator<T
 				for (Period period : timetable.getPeriods()) {
 					if (period.getEndDate().after(period.getStartDate()))
 						continue;
-					Detail errorItem = new Detail(TIMETABLE_3, new Location(sourceLocation, objectId));
+					Detail errorItem = new Detail(TIMETABLE_3, fileLocations.get( objectId));
 					addValidationError(context, TIMETABLE_3, errorItem);
 					break;
 				}
@@ -109,11 +107,7 @@ public class TimetableValidator extends AbstractValidator implements Validator<T
 		}
 		if (!unreferencedVehicleJourneys.isEmpty()) {
 			for (String vjId : unreferencedVehicleJourneys) {
-				Context vjctx = (Context) vehicleJourneyContext.get(vjId);
-				int lineNumber = ((Integer) vjctx.get(LINE_NUMBER)).intValue();
-				int columnNumber = ((Integer) vjctx.get(COLUMN_NUMBER)).intValue();
-				FileLocation sourceLocation = new FileLocation(fileName, lineNumber, columnNumber);
-				Detail errorItem = new Detail(TIMETABLE_2, new Location(sourceLocation, vjId));
+				Detail errorItem = new Detail(TIMETABLE_2, fileLocations.get( vjId));
 				addValidationError(context, TIMETABLE_2, errorItem);
 			}
 		}

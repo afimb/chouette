@@ -104,8 +104,7 @@ public class GtfsAgencyProducer extends AbstractProducer
       }
       catch (Exception e)
       {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
+         log.error("fail to produce agency "+e.getClass().getName()+" "+e.getMessage());
          return false;
       }
       return true;

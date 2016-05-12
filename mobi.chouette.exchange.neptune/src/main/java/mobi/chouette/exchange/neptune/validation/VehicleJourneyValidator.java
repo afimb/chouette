@@ -11,12 +11,14 @@ import java.util.Map;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.validation.ValidationConstraints;
+import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.exchange.validation.report.Detail;
 import mobi.chouette.exchange.validation.report.FileLocation;
 import mobi.chouette.exchange.validation.report.Location;
+import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.util.Referential;
 
@@ -74,9 +76,9 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 
 	}
 
-	public void addLocation(Context context, String objectId, int lineNumber, int columnNumber)
+	public void addLocation(Context context, NeptuneIdentifiedObject object, int lineNumber, int columnNumber)
 	{
-		addLocation( context,LOCAL_CONTEXT,  objectId,  lineNumber,  columnNumber);
+		addLocation( context,LOCAL_CONTEXT,  object,  lineNumber,  columnNumber);
 	}
 
 
@@ -168,6 +170,8 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 		if (localContext == null || localContext.isEmpty()) return new ValidationConstraints();
+		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
+		Map<String, Location> fileLocations = data.getFileLocations();
 		Context stopPointsContext = (Context) validationContext.get(StopPointValidator.LOCAL_CONTEXT);
 		Context routesContext = (Context) validationContext.get(ChouetteRouteValidator.LOCAL_CONTEXT);
 		Context journeyPatternsContext = (Context) validationContext.get(JourneyPatternValidator.LOCAL_CONTEXT);
@@ -205,9 +209,6 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 		{
 			boolean fkOK = true;
 			Context objectContext = (Context) localContext.get(objectId);
-			int lineNumber = ((Integer) objectContext.get(LINE_NUMBER)).intValue();
-			int columnNumber = ((Integer) objectContext.get(COLUMN_NUMBER)).intValue();
-			FileLocation sourceLocation = new FileLocation(fileName, lineNumber, columnNumber);
 
 			// 2-NEPTUNE-VehicleJourney-1 : check if route and JourneyPattern
 			// are coherent (e)
@@ -216,7 +217,7 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 			{
 				Detail errorItem = new Detail(
 						VEHICLE_JOURNEY_1,
-						new Location(sourceLocation,objectId), routeId.toString());
+						fileLocations.get(objectId), routeId.toString());
 				addValidationError(context,VEHICLE_JOURNEY_1, errorItem);
 				fkOK = false;
 			}
@@ -236,7 +237,7 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 				{
 					Detail errorItem = new Detail(
 							VEHICLE_JOURNEY_2,
-							new Location(sourceLocation,objectId), objectContext.get(JOURNEY_PATTERN_ID).toString());
+							fileLocations.get(objectId), objectContext.get(JOURNEY_PATTERN_ID).toString());
 					addValidationError(context,VEHICLE_JOURNEY_2, errorItem);
 					fkOK = false;
 				}
@@ -251,7 +252,7 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 				{
 					Detail errorItem = new Detail(
 							VEHICLE_JOURNEY_8,
-							new Location(sourceLocation,objectId));
+							fileLocations.get(objectId));
 					addValidationError(context,VEHICLE_JOURNEY_8, errorItem);
 					fkOK = false;					
 				}
@@ -270,7 +271,7 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 				{
 					Detail errorItem = new Detail(
 							VEHICLE_JOURNEY_3,
-							new Location(sourceLocation,objectId), objectContext.get(LINE_ID_SHORTCUT).toString());
+							fileLocations.get(objectId), objectContext.get(LINE_ID_SHORTCUT).toString());
 					addValidationError(context,VEHICLE_JOURNEY_3, errorItem);
 				}
 			}
@@ -282,7 +283,7 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 				{
 					Detail errorItem = new Detail(
 							VEHICLE_JOURNEY_4,
-							new Location(sourceLocation,objectId), objectContext.get(OPERATOR_ID).toString());
+							fileLocations.get(objectId), objectContext.get(OPERATOR_ID).toString());
 					addValidationError(context,VEHICLE_JOURNEY_4, errorItem);
 				}
 			}
@@ -294,7 +295,7 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 				{
 					Detail errorItem = new Detail(
 							VEHICLE_JOURNEY_5,
-							new Location(sourceLocation,objectId), objectContext.get(TIME_SLOT_ID).toString());
+							fileLocations.get(objectId), objectContext.get(TIME_SLOT_ID).toString());
 					addValidationError(context,VEHICLE_JOURNEY_5, errorItem);
 				}
 			}
@@ -308,16 +309,17 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 
 			for (Context vjas : vjass)
 			{
-				lineNumber = ((Integer) objectContext.get(LINE_NUMBER)).intValue();
-				columnNumber = ((Integer) objectContext.get(COLUMN_NUMBER)).intValue();
-				FileLocation vjasLocation = new FileLocation(fileName, lineNumber, columnNumber);
+				Integer lineNumber = ((Integer) objectContext.get(LINE_NUMBER)).intValue();
+				Integer columnNumber = ((Integer) objectContext.get(COLUMN_NUMBER)).intValue();
+				Location vjasLocation = new Location(new FileLocation(fileName, lineNumber, columnNumber),objectId);
+				vjasLocation.setLine(fileLocations.get(objectId).getLine());
 
 				String stopPointId = (String) vjas.get(STOP_POINT_ID);
 				if (!stopPointsContext.containsKey(stopPointId))
 				{
 					Detail errorItem = new Detail(
 							VEHICLE_JOURNEY_AT_STOP_1,
-							new Location(vjasLocation,objectId), stopPointId);
+							vjasLocation, stopPointId);
 					addValidationError(context,VEHICLE_JOURNEY_AT_STOP_1, errorItem);
 					fkOK = false;
 				} else
@@ -334,7 +336,7 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 					{
 						Detail errorItem = new Detail(
 								VEHICLE_JOURNEY_AT_STOP_2,
-								new Location(vjasLocation,objectId), vehicleJourneyId);
+								vjasLocation, vehicleJourneyId);
 						addValidationError(context,VEHICLE_JOURNEY_AT_STOP_2, errorItem);
 					}
 				}
@@ -351,7 +353,7 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 					{
 						Detail errorItem = new Detail(
 								VEHICLE_JOURNEY_6,
-								new Location(sourceLocation,objectId), journeyPatternId,routeId);
+								fileLocations.get(objectId), journeyPatternId,routeId);
 						addValidationError(context,VEHICLE_JOURNEY_6, errorItem);
 					} else
 					{
@@ -362,7 +364,7 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 						{
 							Detail errorItem = new Detail(
 									VEHICLE_JOURNEY_AT_STOP_4,
-									new Location(sourceLocation,objectId), journeyPatternId);
+									fileLocations.get(objectId), journeyPatternId);
 							addValidationError(context,VEHICLE_JOURNEY_AT_STOP_4, errorItem);
 						}
 					}
@@ -383,7 +385,7 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 				{
 					Detail errorItem = new Detail(
 							VEHICLE_JOURNEY_AT_STOP_3,
-							new Location(sourceLocation,objectId), routeId);
+							fileLocations.get(objectId), routeId);
 					addValidationError(context,VEHICLE_JOURNEY_AT_STOP_3, errorItem);
 				}
 			}
@@ -393,14 +395,10 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 			// unused journeyPatterns : warning
 			for (String jpId : unreferencedJourneyPatterns)
 			{
-				Context jpCtx = (Context) journeyPatternsContext.get(jpId);
-				int lineNumber = ((Integer) jpCtx.get(LINE_NUMBER)).intValue();
-				int columnNumber = ((Integer) jpCtx.get(COLUMN_NUMBER)).intValue();
-				FileLocation sourceLocation = new FileLocation(fileName, lineNumber, columnNumber);
 
 				Detail errorItem = new Detail(
 						VEHICLE_JOURNEY_7,
-						new Location(sourceLocation,jpId));
+						fileLocations.get(jpId));
 				addValidationError(context,VEHICLE_JOURNEY_7, errorItem);
 
 			}

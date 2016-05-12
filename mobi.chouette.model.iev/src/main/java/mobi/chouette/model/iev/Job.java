@@ -26,7 +26,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @EqualsAndHashCode(of = { "id" })
-@ToString(exclude={"parametersAsString"})
+@ToString(exclude = { "parametersAsString" })
 @Entity
 @Table(name = "jobs")
 @Data
@@ -35,7 +35,7 @@ public class Job implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@SequenceGenerator(name = "jobs_seq", sequenceName = "jobs_seq", allocationSize=20)
+	@SequenceGenerator(name = "jobs_seq", sequenceName = "jobs_seq", allocationSize = 20)
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "jobs_seq")
 	@Column(name = "id", nullable = false)
 	private Long id;
@@ -49,8 +49,15 @@ public class Job implements Serializable {
 	@Column(name = "type")
 	private String type;
 
+	@Deprecated
 	@Column(name = "filename")
-	private String filename;
+	private String dataFilename;
+
+	@Column(name = "input_filename")
+	private String inputFilename;
+
+	@Column(name = "output_filename")
+	private String outputFilename;
 
 	@Column(name = "created")
 	private Date created;
@@ -64,23 +71,22 @@ public class Job implements Serializable {
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status")
 	private STATUS status;
-	
-	@Column(name = "parameters",columnDefinition="TEXT")
+
+	@Column(name = "parameters", columnDefinition = "TEXT")
 	private String parametersAsString;
 
-	@ElementCollection(targetClass = Link.class, fetch = FetchType.EAGER)
+	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name = "links", joinColumns = @JoinColumn(name = "job_id"))
 	private List<Link> links = new ArrayList<Link>();
 
 	public Job() {
 		super();
-		status = STATUS.CREATED; 
+		status = STATUS.CREATED;
 		created = new Date();
 		updated = new Date();
 	}
-	
-	public Job(String referential, String action, String type)
-	{
+
+	public Job(String referential, String action, String type) {
 		this();
 		this.referential = referential;
 		this.action = action;
@@ -90,6 +96,6 @@ public class Job implements Serializable {
 	@XmlType
 	@XmlEnum(String.class)
 	public enum STATUS implements java.io.Serializable {
-		 CREATED, SCHEDULED, STARTED, TERMINATED, CANCELED, ABORTED, DELETED
+		CREATED, SCHEDULED, STARTED, TERMINATED, CANCELED, ABORTED, DELETED
 	}
 }

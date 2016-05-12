@@ -32,6 +32,7 @@ public class GtfsTransferParser implements Parser, Validator, Constant {
 		validationReporter.getExceptions().clear();
 		
 		// transfers.txt
+		// log.info("validating transfers");
 		if (importer.hasTransferImporter()) { // the file "transfers.txt" exists ?
 			validationReporter.reportSuccess(context, GTFS_1_GTFS_Common_1, GTFS_TRANSFERS_FILE);
 
@@ -135,6 +136,7 @@ public class GtfsTransferParser implements Parser, Validator, Constant {
 					+ connectionLink.getEndOfLink().getName());
 		}
 		connectionLink.setFilled(true);
+		AbstractConverter.addLocation(context, "transfers.txt", connectionLink.getObjectId(), gtfsTransfer.getId());
 	}
 
 	static {

@@ -8,7 +8,9 @@ public class JobDataTest implements JobData {
 
 	private Long id;
 
-	private String filename;
+	private String inputFilename;
+
+	private String outputFilename;
 
 	private String action;
 	

@@ -7,11 +7,12 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlEnum;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import mobi.chouette.model.Line;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -19,8 +20,9 @@ import org.codehaus.jettison.json.JSONObject;
 
 
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder={"name","status","stats","errors"})
+@XmlType(propOrder={"name","objectId","status","ioType","stats","errors"})
 @Data
+@EqualsAndHashCode(exclude={"name","status","stats","errors"})
 @NoArgsConstructor
 public class LineInfo {
 
@@ -41,16 +43,19 @@ public class LineInfo {
 	@XmlElement(name = "stats",required=true)
 	private DataStats stats = new DataStats();
 
+	@XmlElement(name = "io_type")
+	private IO_TYPE ioType;
+
 	@XmlElement(name="errors")
 	private List<LineError> errors = new ArrayList<>();
 	
-	@XmlTransient
+	@XmlElement(name="objectid")
 	private String objectId;
 	
-	public LineInfo(String objectId,String name)
+	public LineInfo(Line line)
 	{
-		this.objectId = objectId;
-		this.name = name;
+		this.objectId = line.getObjectId();
+		this.name = line.getName() + " (" + line.getNumber() + ")";
 	}
 	
 	/**
@@ -67,7 +72,12 @@ public class LineInfo {
 	public JSONObject toJson() throws JSONException {
 		JSONObject object = new JSONObject();
 		object.put("name", name);
+		object.put("objectid", objectId);
 		object.put("status", status);
+		if (ioType != null)
+		{
+			object.put("io_type",ioType);
+		}
 		if (stats != null)
 		   object.put("stats", stats.toJson());
 		if (!errors.isEmpty()) {

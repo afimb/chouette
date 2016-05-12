@@ -42,7 +42,6 @@ public class PTNetworkParser implements Parser, Constant {
 				objectId = ParserUtils.getText(xpp.nextText());
 				network = ObjectFactory.getPTNetwork(referential, objectId);
 				network.setFilled(true);
-				validator.addLocation(context, objectId, lineNumber, columnNumber);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
 				network.setObjectVersion(version);
@@ -83,6 +82,7 @@ public class PTNetworkParser implements Parser, Constant {
 				XPPUtil.skipSubTree(log, xpp);
 			}
 		}
+		validator.addLocation(context, network, lineNumber, columnNumber);
 	}
 	
 	private PTNetworkSourceTypeEnum buildSourceType(String type, PTNetworkValidator validator, Context context, String objectId)

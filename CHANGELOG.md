@@ -1,3 +1,16 @@
+# Version 3.3.1 (07/04/2016)
+* Nouvelles fonctionnalités :
+  * export SIG : nouvel export combinant les format KML et GeoJson
+
+# Version 3.3.0 (25/03/2016) 
+* Nouvelles fonctionnalités :
+  * actions de conversion
+  * modularisation pour créer le backoffice de conversion/validation : cvdtc_cv
+  * import GTFS : prise en compte des modes de transport étendus
+* Correction 
+  * Mantis 43096 : Import GTFS, pas de rapport sur les fichiers non traités dans le cas d'une erreur bloquante sur un fichier 
+  * Mantis 43093 : Import GTFS, les fichiers obligatoires absents n'apparaissent pas en erreur dans le rapport d'import
+
 # Version 3.2.1 (26/02/2016) 
 * Corrections :
   * issue #23 : wrong shape_pt_sequence on GTFS export

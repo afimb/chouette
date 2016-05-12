@@ -9,7 +9,6 @@ import java.io.InputStream;
 import lombok.Data;
 import mobi.chouette.exchange.parameters.AbstractParameter;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
-import mobi.chouette.scheduler.Parameters;
 
 /**
  *

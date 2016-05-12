@@ -14,14 +14,11 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.metadata.Metadata;
+import mobi.chouette.exchange.kml.exporter.KmlLineProducerCommand.SharedData;
 import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.DataStats;
 import mobi.chouette.exchange.report.FileInfo;
 import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
-import mobi.chouette.exchange.report.DataStats;
-import mobi.chouette.model.AccessPoint;
-import mobi.chouette.model.ConnectionLink;
-import mobi.chouette.model.StopArea;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -39,17 +36,18 @@ public class KmlSharedDataProducerCommand implements Command, Constant {
 		ActionReport report = (ActionReport) context.get(REPORT);
 		try {
 
-			ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
-			if (collection == null) {
+			SharedData shared = (SharedData) context.get(SHARED_DATA);
+			if (shared == null) {
 				return ERROR;
 			}
 
 			saveData(context);
 			DataStats globalStats = report.getStats();
-			globalStats.setConnectionLinkCount(collection.getConnectionLinks().size());
-			globalStats.setStopAreaCount(collection.getStopAreas().size());
-			globalStats.setAccessPointCount(collection.getAccessPoints().size());
-			// globalStats.setTimeTableCount(collection.getTimetables().size());
+			globalStats.connectionLinkCount = shared.getConnectionLinks().getItems().size();
+			globalStats.stopAreaCount = shared.getPhysicalStops().getItems().size();
+			globalStats.stopAreaCount += shared.getCommercialStops().getItems().size();
+			globalStats.stopAreaCount += shared.getStopPlaces().getItems().size();
+			globalStats.accessPointCount = shared.getAccessPoints().getItems().size();
 			result = SUCCESS;
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
@@ -81,26 +79,14 @@ public class KmlSharedDataProducerCommand implements Command, Constant {
 	}
 
 	private void savePhysicalStops(Context context) throws Exception {
-		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
-		if (collection.getBoardingPositions().isEmpty() && collection.getQuays().isEmpty())
+		SharedData collection = (SharedData) context.get(SHARED_DATA);
+		if (collection.getPhysicalStops().getItems().isEmpty())
 			return;
-		Metadata metadata = (Metadata) context.get(METADATA); 
 		JobData jobData = (JobData) context.get(JOB_DATA);
 		String rootDirectory = jobData.getPathName();
 		Path dir = Paths.get(rootDirectory, OUTPUT);
-		KmlData data = new KmlData();
-		data.setName("Arrêts");
-		for (StopArea area : collection.getBoardingPositions()) {
-			data.addStopArea(area);
-			if (metadata != null && area.hasCoordinates())
-				metadata.getSpatialCoverage().update(area.getLongitude().doubleValue(), area.getLatitude().doubleValue());
-		}
-		for (StopArea area : collection.getQuays()) {
-			data.addStopArea(area);
-			if (metadata != null && area.hasCoordinates())
-				metadata.getSpatialCoverage().update(area.getLongitude().doubleValue(), area.getLatitude().doubleValue());
-		}
-		String fileName = "stop_areas.kml";
+		KmlData data = collection.getPhysicalStops();
+		String fileName = "physical_stop_areas.kml";
 		// TODO add metadata?
 		File file = new File(dir.toFile(), fileName);
 		writer.writeXmlFile(data, file);
@@ -111,20 +97,13 @@ public class KmlSharedDataProducerCommand implements Command, Constant {
 	}
 
 	private void saveCommercialStops(Context context) throws Exception {
-		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
-		if (collection.getCommercialStops().isEmpty())
+		SharedData collection = (SharedData) context.get(SHARED_DATA);
+		if (collection.getCommercialStops().getItems().isEmpty())
 			return;
-		Metadata metadata = (Metadata) context.get(METADATA); 
 		JobData jobData = (JobData) context.get(JOB_DATA);
 		String rootDirectory = jobData.getPathName();
 		Path dir = Paths.get(rootDirectory, OUTPUT);
-		KmlData data = new KmlData();
-		data.setName("Arrêts commerciaux");
-		for (StopArea area : collection.getCommercialStops()) {
-			data.addStopArea(area);
-			if (metadata != null && area.hasCoordinates())
-				metadata.getSpatialCoverage().update(area.getLongitude().doubleValue(), area.getLatitude().doubleValue());
-		}
+		KmlData data = collection.getCommercialStops();
 		String fileName = "commercial_stop_areas.kml";
 		// TODO add metadata?
 		File file = new File(dir.toFile(), fileName);
@@ -136,20 +115,13 @@ public class KmlSharedDataProducerCommand implements Command, Constant {
 	}
 
 	private void saveStopPlaces(Context context) throws Exception {
-		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
-		if (collection.getStopPlaces().isEmpty())
+		SharedData collection = (SharedData) context.get(SHARED_DATA);
+		if (collection.getStopPlaces().getItems().isEmpty())
 			return;
-		Metadata metadata = (Metadata) context.get(METADATA); 
 		JobData jobData = (JobData) context.get(JOB_DATA);
 		String rootDirectory = jobData.getPathName();
 		Path dir = Paths.get(rootDirectory, OUTPUT);
-		KmlData data = new KmlData();
-		data.setName("Pôles d'échange");
-		for (StopArea area : collection.getStopPlaces()) {
-			if (metadata != null && area.hasCoordinates())
-				metadata.getSpatialCoverage().update(area.getLongitude().doubleValue(), area.getLatitude().doubleValue());
-			data.addStopArea(area);
-		}
+		KmlData data = collection.getStopPlaces();
 		String fileName = "stop_places.kml";
 		// TODO add metadata?
 		File file = new File(dir.toFile(), fileName);
@@ -161,17 +133,13 @@ public class KmlSharedDataProducerCommand implements Command, Constant {
 	}
 
 	private void saveConnectionLinks(Context context) throws Exception {
-		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
-		if (collection.getConnectionLinks().isEmpty())
+		SharedData collection = (SharedData) context.get(SHARED_DATA);
+		if (collection.getConnectionLinks().getItems().isEmpty())
 			return;
 		JobData jobData = (JobData) context.get(JOB_DATA);
 		String rootDirectory = jobData.getPathName();
 		Path dir = Paths.get(rootDirectory, OUTPUT);
-		KmlData data = new KmlData();
-		data.setName("Correspondance");
-		for (ConnectionLink link : collection.getConnectionLinks()) {
-			data.addConnectionLink(link);
-		}
+		KmlData data = collection.getConnectionLinks();
 		String fileName = "connection_links.kml";
 		File file = new File(dir.toFile(), fileName);
 		writer.writeXmlFile(data, file);
@@ -182,17 +150,13 @@ public class KmlSharedDataProducerCommand implements Command, Constant {
 	}
 
 	private void saveAccessPoints(Context context) throws Exception {
-		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
-		if (collection.getAccessPoints().isEmpty())
+		SharedData collection = (SharedData) context.get(SHARED_DATA);
+		if (collection.getAccessPoints().getItems().isEmpty())
 			return;
 		JobData jobData = (JobData) context.get(JOB_DATA);
 		String rootDirectory = jobData.getPathName();
 		Path dir = Paths.get(rootDirectory, OUTPUT);
-		KmlData data = new KmlData();
-		data.setName("Accès");
-		for (AccessPoint point : collection.getAccessPoints()) {
-			data.addAccessPoint(point);
-		}
+		KmlData data = collection.getAccessPoints();
 		String fileName = "access_points.kml";
 		// TODO add metadata?
 		File file = new File(dir.toFile(), fileName);
@@ -204,7 +168,6 @@ public class KmlSharedDataProducerCommand implements Command, Constant {
 	}
 
 	private void saveAccessLinks(Context context) throws Exception {
-		// TODO Auto-generated method stub
 
 	}
 

@@ -3,7 +3,7 @@
   <parent>
     <groupId>mobi.chouette</groupId>
     <artifactId>mobi.chouette</artifactId>
-    <version>3.2.1</version>
+    <version>3.3.1</version>
   </parent>
   <artifactId>mobi.chouette.service</artifactId>
   <packaging>ejb</packaging>
@@ -93,7 +93,7 @@
       <!-- Modules -->
       <dependency>
          <groupId>${project.groupId}</groupId>
-         <artifactId>mobi.chouette.dao</artifactId>
+         <artifactId>mobi.chouette.dao.iev</artifactId>
          <type>ejb</type>
          <version>${project.version}</version>
       </dependency>
@@ -103,53 +103,24 @@
          <type>ejb</type>
          <version>${project.version}</version>
       </dependency>
-      <dependency>
+       <dependency>
          <groupId>${project.groupId}</groupId>
-         <artifactId>mobi.chouette.exchange.neptune</artifactId>
+         <artifactId>mobi.chouette.exchange</artifactId>
          <type>ejb</type>
          <version>${project.version}</version>
       </dependency>
-      <dependency>
-         <groupId>${project.groupId}</groupId>
-         <artifactId>mobi.chouette.exchange.gtfs</artifactId>
-         <type>ejb</type>
-         <version>${project.version}</version>
-      </dependency>
-      <dependency>
-         <groupId>${project.groupId}</groupId>
-         <artifactId>mobi.chouette.exchange.netex</artifactId>
-         <type>ejb</type>
-         <version>${project.version}</version>
-      </dependency>
-      <dependency>
-         <groupId>${project.groupId}</groupId>
-         <artifactId>mobi.chouette.exchange.kml</artifactId>
-         <type>ejb</type>
-         <version>${project.version}</version>
-      </dependency>
-      <dependency>
-         <groupId>${project.groupId}</groupId>
-         <artifactId>mobi.chouette.exchange.hub</artifactId>
-         <type>ejb</type>
-         <version>${project.version}</version>
-      </dependency>
-      <dependency>
-         <groupId>${project.groupId}</groupId>
-         <artifactId>mobi.chouette.exchange.validator</artifactId>
-         <type>ejb</type>
-         <version>${project.version}</version>
-      </dependency>
-
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
 			<scope>provided</scope>
 		</dependency>
-<!-- 		<dependency> -->
-<!-- 			<groupId>org.hibernate</groupId> -->
-<!-- 			<artifactId>hibernate-entitymanager</artifactId> -->
-<!-- 			<scope>provided</scope> -->
-<!-- 		</dependency> -->
+       <dependency>
+         <groupId>${project.groupId}</groupId>
+         <artifactId>mobi.chouette.dao</artifactId>
+         <type>ejb</type>
+         <version>${project.version}</version>
+         <scope>test</scope>
+      </dependency>
 
    </dependencies>
    </project>

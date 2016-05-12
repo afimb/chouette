@@ -3,17 +3,19 @@ package mobi.chouette.exchange.neptune.validation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.validation.ValidationConstraints;
+import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.exchange.validation.report.Detail;
-import mobi.chouette.exchange.validation.report.FileLocation;
 import mobi.chouette.exchange.validation.report.Location;
 import mobi.chouette.model.JourneyPattern;
+import mobi.chouette.model.NeptuneIdentifiedObject;
 
 public class JourneyPatternValidator extends AbstractValidator implements Validator<JourneyPattern> , Constant{
 
@@ -40,9 +42,9 @@ public class JourneyPatternValidator extends AbstractValidator implements Valida
 
 	}
 
-	public void addLocation(Context context, String objectId, int lineNumber, int columnNumber)
+	public void addLocation(Context context, NeptuneIdentifiedObject object, int lineNumber, int columnNumber)
 	{
-		addLocation( context,LOCAL_CONTEXT,  objectId,  lineNumber,  columnNumber);
+		addLocation( context,LOCAL_CONTEXT,  object,  lineNumber,  columnNumber);
 
 	}
 
@@ -82,10 +84,11 @@ public class JourneyPatternValidator extends AbstractValidator implements Valida
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 		if (localContext == null || localContext.isEmpty()) return new ValidationConstraints();
+		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
+		Map<String, Location> fileLocations = data.getFileLocations();
 		Context stopPointsContext = (Context) validationContext.get(StopPointValidator.LOCAL_CONTEXT);
 		Context routesContext = (Context) validationContext.get(ChouetteRouteValidator.LOCAL_CONTEXT);
 		Context linesContext = (Context) validationContext.get(LineValidator.LOCAL_CONTEXT);
-		String fileName = (String) context.get(FILE_NAME);
 
 		// 2-NEPTUNE-JourneyPattern-1 : check existence of route
 		prepareCheckPoint(context, JOURNEY_PATTERN_1);
@@ -96,9 +99,6 @@ public class JourneyPatternValidator extends AbstractValidator implements Valida
 		for (String objectId : localContext.keySet()) 
 		{
 			Context objectContext = (Context) localContext.get(objectId);
-			int lineNumber = ((Integer) objectContext.get(LINE_NUMBER)).intValue();
-			int columnNumber = ((Integer) objectContext.get(COLUMN_NUMBER)).intValue();
-			FileLocation sourceLocation = new FileLocation(fileName, lineNumber, columnNumber);
 
 			// 2-NEPTUNE-JourneyPattern-1 : check existence of route
 			if (objectContext.containsKey(ROUTE_ID))
@@ -108,7 +108,7 @@ public class JourneyPatternValidator extends AbstractValidator implements Valida
 				{
 					Detail errorItem = new Detail(
 							JOURNEY_PATTERN_1,
-							new Location(sourceLocation,objectId), routeId);
+							fileLocations.get(objectId), routeId);
 					addValidationError(context,JOURNEY_PATTERN_1, errorItem);
 
 				}
@@ -121,7 +121,7 @@ public class JourneyPatternValidator extends AbstractValidator implements Valida
 	            {
 	            	Detail errorItem = new Detail(
 	            			JOURNEY_PATTERN_2,
-							new Location(sourceLocation,objectId), stopPointId);
+	            			fileLocations.get(objectId), stopPointId);
 					addValidationError(context,JOURNEY_PATTERN_2, errorItem);
 	             
 	            }
@@ -135,7 +135,7 @@ public class JourneyPatternValidator extends AbstractValidator implements Valida
 	            {
 	            	Detail errorItem = new Detail(
 	            			JOURNEY_PATTERN_3,
-							new Location(sourceLocation,objectId), lineIdShortCut);
+	            			fileLocations.get(objectId), lineIdShortCut);
 					addValidationError(context,JOURNEY_PATTERN_3, errorItem);
 	            }
 

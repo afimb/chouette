@@ -45,7 +45,6 @@ public class JourneyPatternParser implements Parser, Constant {
 				journeyPattern = ObjectFactory.getJourneyPattern(referential,
 						objectId);
 				journeyPattern.setFilled(true);
-				validator.addLocation(context, objectId, lineNumber, columnNumber);
 			} else if (xpp.getName().equals("objectVersion")) {
 				Integer version = ParserUtils.getInt(xpp.nextText());
 				journeyPattern.setObjectVersion(version);
@@ -70,14 +69,12 @@ public class JourneyPatternParser implements Parser, Constant {
 				StopPoint departureStopPoint = ObjectFactory.getStopPoint(
 						referential, origin);
 				journeyPattern.setDepartureStopPoint(departureStopPoint);
-				// TODO origin
 
 			} else if (xpp.getName().equals("destination")) {
 				String destination = ParserUtils.getText(xpp.nextText());
 				StopPoint arrivalStopPoint = ObjectFactory.getStopPoint(
 						referential, destination);
 				journeyPattern.setArrivalStopPoint(arrivalStopPoint);
-				// TODO destination
 
 			} else if (xpp.getName().equals("stopPointList")) {
 				String stopPointId = ParserUtils.getText(xpp.nextText());
@@ -104,6 +101,7 @@ public class JourneyPatternParser implements Parser, Constant {
 				XPPUtil.skipSubTree(log, xpp);
 			}
 		}
+		validator.addLocation(context, journeyPattern, lineNumber, columnNumber);
 		NeptuneUtil.refreshDepartureArrivals(journeyPattern);
 	}
 

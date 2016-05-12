@@ -1,16 +1,19 @@
 package mobi.chouette.exchange.neptune.validation;
 
 
+import java.util.Map;
+
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.validation.ValidationConstraints;
+import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.exchange.validation.report.Detail;
-import mobi.chouette.exchange.validation.report.FileLocation;
 import mobi.chouette.exchange.validation.report.Location;
 import mobi.chouette.model.ConnectionLink;
+import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.util.Referential;
 
 public class ConnectionLinkValidator extends AbstractValidator implements Validator<ConnectionLink> , Constant{
@@ -34,9 +37,9 @@ public class ConnectionLinkValidator extends AbstractValidator implements Valida
 
 	}
 
-	public void addLocation(Context context, String objectId, int lineNumber, int columnNumber)
+	public void addLocation(Context context, NeptuneIdentifiedObject object, int lineNumber, int columnNumber)
 	{
-		addLocation( context,LOCAL_CONTEXT,  objectId,  lineNumber,  columnNumber);
+		addLocation( context,LOCAL_CONTEXT,  object,  lineNumber,  columnNumber);
 
 	}
 
@@ -62,26 +65,23 @@ public class ConnectionLinkValidator extends AbstractValidator implements Valida
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 		Context stopAreaContext = (Context) validationContext.get(StopAreaValidator.LOCAL_CONTEXT);
 		if (localContext == null || localContext.isEmpty()) return new ValidationConstraints();
+		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
+		Map<String, Location> fileLocations = data.getFileLocations();
 
 		Referential referential = (Referential) context.get(REFERENTIAL);
-		String fileName = (String) context.get(FILE_NAME);
 
 		// 2-NEPTUNE-ConnectionLink-1 : check presence of start or end of link
 		prepareCheckPoint(context, CONNECTION_LINK_1);
 		for (String objectId : localContext.keySet()) 
 		{
-			Context objectContext = (Context) localContext.get(objectId);
 			ConnectionLink connectionLink = referential.getConnectionLinks().get(objectId);
-			int lineNumber = ((Integer) objectContext.get(LINE_NUMBER)).intValue();
-			int columnNumber = ((Integer) objectContext.get(COLUMN_NUMBER)).intValue();
-			FileLocation sourceLocation = new FileLocation(fileName, lineNumber, columnNumber);
 
 			if (stopAreaContext.containsKey(connectionLink.getStartOfLink().getObjectId()) 
 					|| stopAreaContext.containsKey(connectionLink.getEndOfLink().getObjectId()))
 				continue;
 			Detail errorItem = new Detail(
 					CONNECTION_LINK_1,
-					new Location(sourceLocation,connectionLink.getObjectId()));
+					fileLocations.get(connectionLink.getObjectId()));
 			addValidationError(context, CONNECTION_LINK_1, errorItem);
 
 		}

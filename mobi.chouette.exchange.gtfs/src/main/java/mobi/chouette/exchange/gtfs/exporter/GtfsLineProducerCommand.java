@@ -66,7 +66,7 @@ public class GtfsLineProducerCommand implements Command, Constant {
 				collection = new ExportableData();
 				context.put(EXPORTABLE_DATA, collection);
 			}
-			LineInfo lineInfo = new LineInfo(line.getObjectId(),line.getName() + " (" + line.getNumber() + ")");
+			LineInfo lineInfo = new LineInfo(line);
 			if (line.getCompany() == null) {
 			    lineInfo.addError(new LineError(LineError.CODE.INVALID_FORMAT,"no company for this line"));
 			    report.getLines().add(lineInfo);

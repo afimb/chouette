@@ -27,25 +27,25 @@ public class StopAreaUpdater implements Updater<StopArea> {
 
 	public static final String BEAN_NAME = "StopAreaUpdater";
 
-	@EJB
+	@EJB 
 	private StopAreaDAO stopAreaDAO;
 
 	@EJB(beanName = StopAreaUpdater.BEAN_NAME)
 	private Updater<StopArea> stopAreaUpdater;
 
-	@EJB
+	@EJB 
 	private AccessPointDAO accessPointDAO;
 
 	@EJB(beanName = AccessPointUpdater.BEAN_NAME)
 	private Updater<AccessPoint> accessPointUpdater;
 
-	@EJB
+	@EJB 
 	private AccessLinkDAO accessLinkDAO;
 
 	@EJB(beanName = AccessLinkUpdater.BEAN_NAME)
 	private Updater<AccessLink> accessLinkUpdater;
 
-	@EJB
+	@EJB 
 	private ConnectionLinkDAO connectionLinkDAO;
 
 	@EJB(beanName = ConnectionLinkUpdater.BEAN_NAME)

@@ -46,13 +46,13 @@ public class LineUpdater implements Updater<Line> {
 	@EJB(beanName = GroupOfLineUpdater.BEAN_NAME)
 	private Updater<GroupOfLine> groupOfLineUpdater;
 
-	@EJB
+	@EJB 
 	private RouteDAO routeDAO;
 
 	@EJB(beanName = RouteUpdater.BEAN_NAME)
 	private Updater<Route> routeUpdater;
 
-	@EJB
+	@EJB 
 	private StopAreaDAO stopAreaDAO;
 
 	@EJB(beanName = StopAreaUpdater.BEAN_NAME)

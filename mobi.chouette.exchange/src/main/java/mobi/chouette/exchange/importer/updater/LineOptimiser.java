@@ -40,46 +40,46 @@ import mobi.chouette.model.util.Referential;
 @Stateless
 public class LineOptimiser {
 
-	@EJB
+	@EJB 
 	private ConnectionLinkDAO connectionLinkDAO;
 
-	@EJB
+	@EJB 
 	private AccessLinkDAO accessLinkDAO;
 
-	@EJB
+	@EJB 
 	private AccessPointDAO accessPointDAO;
 
 	@EJB
 	private StopAreaDAO stopAreaDAO;
 
-	@EJB
+	@EJB 
 	private TimetableDAO timetableDAO;
 
-	@EJB
+	@EJB 
 	private NetworkDAO ptNetworkDAO;
 
 	@EJB
 	private CompanyDAO companyDAO;
 
-	@EJB
+	@EJB 
 	private GroupOfLineDAO groupOfLineDAO;
 
-	@EJB
+	@EJB 
 	private LineDAO lineDAO;
 
-	@EJB
+	@EJB 
 	private RouteDAO routeDAO;
 
-	@EJB
+	@EJB 
 	private JourneyPatternDAO journeyPatternDAO;
 
-	@EJB
+	@EJB 
 	private VehicleJourneyDAO vehicleJourneyDAO;
 
-	@EJB
+	@EJB 
 	private StopPointDAO stopPointDAO;
 
-	@EJB
+	@EJB 
 	private TimebandDAO timebandDAO;
 
 

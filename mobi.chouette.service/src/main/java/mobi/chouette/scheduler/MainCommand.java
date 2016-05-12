@@ -1,7 +1,6 @@
 package mobi.chouette.scheduler;
 
 import java.io.IOException;
-import java.nio.file.Paths;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -13,12 +12,12 @@ import javax.naming.NamingException;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
-import mobi.chouette.common.JSONUtil;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.report.ActionError;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.ReportConstant;
+import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.service.JobService;
 import mobi.chouette.service.JobServiceManager;
@@ -37,19 +36,16 @@ public class MainCommand implements Command, Constant {
 	public boolean execute(Context context) throws Exception {
 		boolean result = false;
 
-		Long id = (Long) context.get(JOB_ID);
-		JobService jobService = jobManager.getJobService(id);
+		// Long id = (Long) context.get(JOB_ID);
+		// JobService jobService = jobManager.getJobService(id);
+		JobService jobService = (JobService) context.get(JOB_DATA);
 		try {
 			// set job status to started
 			// jobManager.start(jobService);
-
-			context.put(JOB_DATA, jobService);
-
-			Parameters parameters = JSONUtil.fromJSON(Paths.get(jobService.getPathName(), PARAMETERS_FILE),
-					Parameters.class);
-			context.put(CONFIGURATION, parameters.getConfiguration());
-			if (parameters.getValidation() != null)
-			   context.put(VALIDATION, parameters.getValidation());
+			context.put(CONFIGURATION, jobService.getActionParameter());
+			ValidationParameters validationParameters = jobService.getValidationParameter();
+			if (validationParameters != null)
+			   context.put(VALIDATION, validationParameters);
 			context.put(REPORT, new ActionReport());
 			context.put(MAIN_VALIDATION_REPORT, new ValidationReport());
 
@@ -67,7 +63,7 @@ public class MainCommand implements Command, Constant {
 				jobManager.terminate(jobService);
 
 		} catch (javax.ejb.EJBTransactionRolledbackException ex) {
-			log.warn("execption bypassed " + ex);
+			log.warn("exception bypassed " + ex);
 			// just ignore this exception
 			ActionReport report = (ActionReport) context.get(REPORT);
 			if (report.getResult().equals(ReportConstant.STATUS_ERROR)

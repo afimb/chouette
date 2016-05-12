@@ -4,14 +4,18 @@ import java.net.URL;
 import java.sql.Time;
 import java.util.TimeZone;
 
+import mobi.chouette.common.Constant;
+import mobi.chouette.common.Context;
 import mobi.chouette.exchange.gtfs.model.GtfsTime;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsException;
 import mobi.chouette.exchange.report.FileError;
 import mobi.chouette.exchange.report.FileInfo;
+import mobi.chouette.exchange.validation.ValidationData;
+import mobi.chouette.exchange.validation.report.Location;
 
 import org.apache.log4j.Logger;
 
-public abstract class AbstractConverter {
+public abstract class AbstractConverter implements Constant{
 
 	/**
 	 * @param source
@@ -89,6 +93,17 @@ public abstract class AbstractConverter {
 			file.addError(new FileError(FileError.CODE.INTERNAL_ERROR, message));
 
 		}
+	}
+	
+	public static void addLocation(Context context,String fileName, String objectId, int lineNumber)
+	{
+		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
+		if (data != null && fileName != null)
+		{
+			Location loc = new Location(fileName,lineNumber,0,objectId);
+			data.getFileLocations().put(objectId, loc);
+		}
+		
 	}
 
 }

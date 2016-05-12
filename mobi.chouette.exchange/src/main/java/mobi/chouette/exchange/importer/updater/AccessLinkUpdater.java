@@ -15,7 +15,7 @@ public class AccessLinkUpdater implements Updater<AccessLink> {
 
 	public static final String BEAN_NAME = "AccessLinkUpdater";
 
-	@EJB
+	@EJB 
 	private AccessPointDAO accessPointDAO;
 
 	@Override
