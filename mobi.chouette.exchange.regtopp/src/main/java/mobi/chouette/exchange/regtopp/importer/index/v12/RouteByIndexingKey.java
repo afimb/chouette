@@ -103,15 +103,11 @@ public class RouteByIndexingKey extends IndexImpl<AbstractRegtoppRouteTMS> {
 		}
 
 		if (dao.hasHPLImporter()) {
-			String stopId = bean.getFullStopId();
-			if (bean instanceof mobi.chouette.exchange.regtopp.model.v13.RegtoppRouteTMS) {
-				stopId = bean.getStopId();
-			}
-			if (dao.getStopById().containsKey(stopId)) {
+			if (dao.getStopById().containsKey(bean.getFullStopId())) {
 				bean.getOkTests().add(ERROR.TMS_INVALID_MANDATORY_ID_REFERENCE);
 			} else {
-				log.warn("Bean with stopId value of '" + stopId + "' had no match in index: " + getLogString(dao.getStopById().keys()));
-				bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), getMessage("label.regtoppRouteTMS.stopId"), stopId, RegtoppException.ERROR.TMS_INVALID_MANDATORY_ID_REFERENCE, getMessage("label.validation.invalidMandatoryReference"))));
+				log.debug("Bean with stopId value of '" + bean.getFullStopId() + "' had no match in index: " + getLogString(dao.getStopById().keys()));
+				bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), getMessage("label.regtoppRouteTMS.stopId"), bean.getFullStopId(), RegtoppException.ERROR.TMS_INVALID_MANDATORY_ID_REFERENCE, getMessage("label.validation.invalidMandatoryReference"))));
 				result = false;
 			}
 		}

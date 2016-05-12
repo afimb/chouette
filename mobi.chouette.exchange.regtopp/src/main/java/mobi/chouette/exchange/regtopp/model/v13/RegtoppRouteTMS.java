@@ -73,9 +73,4 @@ public class RegtoppRouteTMS extends AbstractRegtoppRouteTMS implements Serializ
 	@Field(at = 44, length = 6)
 	private Integer distance;
 
-	@Override
-	public String getFullStopId() {
-		return stopId+getStopPointIdArrival();
-	}
-
 }
