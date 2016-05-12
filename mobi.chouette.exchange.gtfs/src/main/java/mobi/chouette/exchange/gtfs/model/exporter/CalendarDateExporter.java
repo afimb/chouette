@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import mobi.chouette.exchange.gtfs.exporter.GtfsExportParameters;
 import mobi.chouette.exchange.gtfs.model.GtfsCalendarDate;
 import mobi.chouette.exchange.gtfs.model.importer.Context;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsConverter;
@@ -70,7 +69,7 @@ public class CalendarDateExporter extends ExporterImpl<GtfsCalendarDate>
 
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		@Override
-		protected Exporter create(String path, GtfsExportParameters parameters) throws IOException {
+		protected Exporter create(String path) throws IOException {
 			return new CalendarDateExporter(path);
 		}
 	}

@@ -14,7 +14,6 @@ import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 public class GtfsImporterInputValidator extends AbstractInputValidator {
 
 	private static String[] allowedTypes = { "line", "stop_area" };
-	private static String[] allowedRouteTypeIdSchemes = { "standard", "extended", "any" };
 
 	@Override
 	public AbstractParameter toActionParameter(String abstractParameter) {
@@ -48,7 +47,7 @@ public class GtfsImporterInputValidator extends AbstractInputValidator {
 		}
 
 		GtfsImportParameters parameters = (GtfsImportParameters) abstractParameter;
-		return parameters.isValid(log, allowedTypes, allowedRouteTypeIdSchemes);
+		return parameters.isValid(log, allowedTypes);
 	}
 
 	@Override

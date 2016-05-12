@@ -43,6 +43,6 @@ public class GtfsTransfer extends GtfsObject implements Serializable
    // @Override
    // public String toString()
    // {
-   // return id + ":" + TransferExporter.STANDARD_CONVERTER.to(new Context(),this);
+   // return id + ":" + TransferExporter.CONVERTER.to(new Context(),this);
    // }
 }
