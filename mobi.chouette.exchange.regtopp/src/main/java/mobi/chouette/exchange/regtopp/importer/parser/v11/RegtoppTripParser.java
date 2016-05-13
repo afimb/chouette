@@ -186,7 +186,7 @@ public class RegtoppTripParser extends LineSpecificParser {
 	protected Duration linkVehicleJourneyToTimetable(Referential referential, RegtoppImportParameters configuration, AbstractRegtoppTripIndexTIX trip,
 			VehicleJourney vehicleJourney) {
 		String chouetteTimetableId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.TIMETABLE_KEY,
-				trip.getDayCodeRef());
+				trip.getAdminCode()+trip.getDayCodeRef());
 
 		// Duration since midnight
 		Duration tripDepartureTime = trip.getDepartureTime();
