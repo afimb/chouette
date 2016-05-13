@@ -7,7 +7,7 @@
 
 	<datasource jndi-name="java:jboss/datasources/chouette"
 		pool-name="chouette" enabled="true" use-java-context="true">
-		<connection-url>jdbc:postgresql_postGIS://localhost:5432/chouette-test</connection-url>
+		<connection-url>jdbc:postgresql_postGIS://localhost:5432/chouette_test</connection-url>
 		<driver-class>org.postgis.DriverWrapper</driver-class>
 		<driver>postgresql</driver>
 		<security>
