@@ -168,10 +168,6 @@ public class FileContentParserTest {
 			FileContentParser parser = new FileContentParser(parseableFile);
 
 			parser.parse(context, reporter);
-
-			// TODO enable assertions again, there are errors in one of Atb's files
-			// Assert.assertEquals(0,reporter.getExceptions().size(),"Validation exceptions: "+ToStringBuilder.reflectionToString(reporter));
-
 		}
 
 		for (FileInfo fileInfo : report.getFiles()) {

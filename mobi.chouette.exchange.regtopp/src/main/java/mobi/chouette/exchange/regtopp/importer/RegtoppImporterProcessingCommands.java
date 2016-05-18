@@ -59,7 +59,7 @@ public class RegtoppImporterProcessingCommands implements ProcessingCommands {
 			}
 			// Uncompress zip file
 			commands.add(CommandFactory.create(initialContext, UncompressCommand.class.getName()));
-			// Does nothing but some setup, TODO remove
+			// Add checkpoints
 			commands.add(CommandFactory.create(initialContext, RegtoppValidationRulesCommand.class.getName()));
 			// Does little, instantiates importer, sets up validation
 			commands.add(CommandFactory.create(initialContext, RegtoppInitImportCommand.class.getName()));

@@ -72,7 +72,6 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 				initialContext = new InitialContext();
 
 			} catch (NamingException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -404,10 +403,6 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 					Assert.assertNotNull(point.getContainedInStopArea(), "stoppoints must have StopAreas");
 					bps.add(point.getContainedInStopArea());
 
-					// TODO bug in chouette this not getting persisted? Se StopPointUpdater in exchange package
-					// Assert.assertNotNull(point.getForAlighting(),"no alighting info StopPoint="+point);
-					// Assert.assertNotNull(point.getForBoarding(),"no boarding info StopPoint="+point);
-
 				}
 				Assert.assertNotEquals(jp.getVehicleJourneys().size(), 0, " journeyPattern should have VehicleJourneys");
 				for (VehicleJourney vj : jp.getVehicleJourneys()) {
@@ -417,14 +412,8 @@ public class RegtoppImporterCommandTest extends Arquillian implements mobi.choue
 					numVehicleJourneys++;
 				}
 				for (StopPoint point : route.getStopPoints()) {
-
 					Assert.assertNotNull(point.getContainedInStopArea(), "stoppoints must have StopAreas");
 					bps.add(point.getContainedInStopArea());
-
-					// TODO bug in chouette this not getting persisted? Se StopPointUpdater in exchange package
-					// Assert.assertNotNull(point.getForAlighting(),"no alighting info StopPoint="+point);
-					// Assert.assertNotNull(point.getForBoarding(),"no boarding info StopPoint="+point);
-
 				}
 				numJourneyPatterns++;
 			}

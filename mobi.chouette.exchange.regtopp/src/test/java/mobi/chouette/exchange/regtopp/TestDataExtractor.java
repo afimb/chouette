@@ -231,9 +231,6 @@ public class TestDataExtractor {
 		fileExtensions.add(fileExtension);
 		Set<String> referenceSet = new HashSet<String>();
 		referenceMap.put(fileExtension, referenceSet);
-
-		// TODO Auto-generated method stub
-
 	}
 
 	private void registerReference(String fileExtension, String id) {

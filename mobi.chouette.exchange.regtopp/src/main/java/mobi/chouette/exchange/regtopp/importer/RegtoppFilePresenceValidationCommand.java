@@ -77,10 +77,6 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 
 		context.put(RegtoppConstant.VERSION_HANDLER, versionHandler);
 
-		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
-
-		// TODO read FORMPAR.FRM to detect which version of Regtopp being used.
-		// Currently 1.2 supported
 		try {
 			RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
 
