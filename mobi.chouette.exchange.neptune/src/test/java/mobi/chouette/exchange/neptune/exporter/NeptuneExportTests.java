@@ -40,7 +40,9 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.testng.Assert;
+import org.testng.Reporter;
 import org.testng.annotations.Test;
+import org.trident.schema.trident.TridentObjectType;
 
 @Log4j
 public class NeptuneExportTests  extends Arquillian implements Constant, ReportConstant {
@@ -53,7 +55,6 @@ public class NeptuneExportTests  extends Arquillian implements Constant, ReportC
 	public static EnterpriseArchive createDeployment() {
 
 		EnterpriseArchive result;
-
 
 		File[] files = Maven.resolver().loadPomFromFile("pom.xml")
 				.resolve("mobi.chouette:mobi.chouette.exchange.neptune").withTransitivity().asFile();
@@ -187,6 +188,7 @@ public class NeptuneExportTests  extends Arquillian implements Constant, ReportC
 		configuration.setUserName("userName");
 		configuration.setOrganisationName("organisation");
 		configuration.setReferentialName("test");
+		configuration.setValidateAfterExport(true);
 		JobDataTest test = new JobDataTest();
 		context.put(JOB_DATA, test);
 
@@ -257,11 +259,15 @@ public class NeptuneExportTests  extends Arquillian implements Constant, ReportC
 //		}
 //		
 //		ActionReport report = (ActionReport) context.get(REPORT);
+//		Reporter.log("report " + report.toString(), true);
+//		ValidationReport vreport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
 //		Assert.assertEquals(report.getResult(), STATUS_OK, "result");
 //		Assert.assertEquals(report.getFiles().size(), 1, "file reported");
 //		Assert.assertEquals(report.getLines().size(), 1, "line reported");
 //		Reporter.log("report line :" + report.getLines().get(0).toString(), true);
 //		Assert.assertEquals(report.getLines().get(0).getStatus(), LINE_STATE.OK, "line status");
+//		Reporter.log("validation report size :" + vreport.getCheckPoints().size(), true);
+//		Assert.assertFalse(vreport.getCheckPoints().isEmpty(),"validation report should not be empty");
 
 	}
 

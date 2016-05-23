@@ -2,6 +2,7 @@ package mobi.chouette.exchange.gtfs.exporter;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -16,6 +17,7 @@ import javax.transaction.UserTransaction;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
+import mobi.chouette.common.JSONUtil;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.LineDAO;
@@ -30,6 +32,7 @@ import mobi.chouette.exchange.report.FileInfo;
 import mobi.chouette.exchange.report.LineInfo;
 import mobi.chouette.exchange.report.LineInfo.LINE_STATE;
 import mobi.chouette.exchange.report.ReportConstant;
+import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.exchange.validation.report.CheckPoint;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.Line;
@@ -189,6 +192,7 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 		configuration.setUserName("userName");
 		configuration.setOrganisationName("organisation");
 		configuration.setReferentialName("test");
+		configuration.setValidateAfterExport(true);
 		JobDataTest test = new JobDataTest();
 		context.put(JOB_DATA, test);
 		test.setPathName("target/referential/test");
@@ -209,6 +213,7 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 		return context;
 
 	}
+	
 
    @Test(groups = { "export" }, description = "test export GTFS Line")
    public void verifyExportLines() throws Exception
@@ -234,6 +239,7 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 		}
 		
 		ActionReport report = (ActionReport) context.get(REPORT);
+		ValidationReport vreport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
 		Assert.assertEquals(report.getResult(), STATUS_OK, "result");
 		for (FileInfo info : report.getFiles()) {
 			Reporter.log(info.toString(),true);
@@ -245,6 +251,8 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 		Assert.assertEquals(report.getLines().size(), 6, "line reported");
 		Reporter.log("report line :" + report.getLines().get(0).toString(), true);
 		Assert.assertEquals(report.getLines().get(0).getStatus(), LINE_STATE.OK, "line status");
+		Reporter.log("validation report size :" + vreport.getCheckPoints().size(), true);
+		Assert.assertFalse(vreport.getCheckPoints().isEmpty(),"validation report should not be empty");
 
    }
 

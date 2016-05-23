@@ -23,7 +23,7 @@
 		<postgis.version>2.1.7.2</postgis.version>
 		<hibernate-spatial.version>4.3</hibernate-spatial.version>
 		<jts.version>1.13</jts.version>
-		<arquillian-version>1.1.7.Final</arquillian-version>
+		<arquillian-version>1.1.11.Final</arquillian-version>
 		<project.rootDir>${project.basedir}</project.rootDir>
 	</properties>
 	<distributionManagement>
@@ -185,11 +185,6 @@
 										${project.rootDir}/target/wildfly-${wildfly.version}/modules/system/layers/base/org/hibernate/main
 									</outputDirectory>
 								</artifactItem>
-								<!-- <artifactItem> <groupId>org.postgresql</groupId> <artifactId>postgresql</artifactId> 
-									<version>${postgresql.version}</version> <overWrite>false</overWrite> <outputDirectory>${project.rootDir}/target/wildfly-${wildfly.version}/standalone/deployments</outputDirectory> 
-									</artifactItem> <artifactItem> <groupId>net.postgis</groupId> <artifactId>postgis-jdbc</artifactId> 
-									<version>${postgis.version}</version> <overWrite>false</overWrite> <outputDirectory>${project.rootDir}/target/wildfly-${wildfly.version}/standalone/deployments</outputDirectory> 
-									</artifactItem> -->
 							</artifactItems>
 						</configuration>
 					</execution>
