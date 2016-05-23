@@ -47,7 +47,7 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 
 	public void terminate(Context context, int stepCount) {
 		ActionReport report = (ActionReport) context.get(REPORT);
-		report.getProgression().setCurrentStep(STEP.FINALISATION.ordinal()+1);
+		report.getProgression().setCurrentStep(STEP.FINALISATION.ordinal() + 1);
 		report.getProgression().getSteps().get(STEP.FINALISATION.ordinal()).setTotal(stepCount);
 		saveReport(context);
 	}
@@ -60,7 +60,7 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 		}
 	}
 
-	public static  void saveReport(Context context) {
+	public static void saveReport(Context context) {
 		if (context.containsKey("testng"))
 			return;
 		ActionReport report = (ActionReport) context.get(REPORT);
@@ -110,40 +110,47 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 					mainCheckPoint.setSeverity(checkPoint.getSeverity());
 				if (checkPoint.getState().ordinal() > mainCheckPoint.getState().ordinal())
 					mainCheckPoint.setState(checkPoint.getState());
-//				int detailCount = 0;
+				// int detailCount = 0;
 				for (Detail detail : checkPoint.getDetails()) {
-//					if (mainCheckPoint.getDetailCount() + detailCount > CheckPoint.maxDetails)
-//						break;
+					// if (mainCheckPoint.getDetailCount() + detailCount >
+					// CheckPoint.maxDetails)
+					// break;
 					mainCheckPoint.addDetail(detail);
 					// detailCount++;
 				}
-//				mainCheckPoint.setDetailCount(mainCheckPoint.getDetailCount() + checkPoint.getDetailCount());
+				// mainCheckPoint.setDetailCount(mainCheckPoint.getDetailCount()
+				// + checkPoint.getDetailCount());
 			}
 		}
-
+		// reset validationReport
+        validationReport.clear();
+		context.put(VALIDATION_REPORT, new ValidationReport());
 	}
 
 	@Override
 	public boolean execute(Context context) throws Exception {
 		boolean result = SUCCESS;
 
-		if (context.containsKey(VALIDATION_REPORT)) {
-			mergeValidationReports(context);
+		if (context.containsKey(MAIN_VALIDATION_REPORT)) {
+			if (context.containsKey(VALIDATION_REPORT)) {
+				mergeValidationReports(context);
+			}
+			else
+			{
+				context.put(VALIDATION_REPORT, new ValidationReport());
+			}
 			saveMainValidationReport(context);
 		}
 		ActionReport report = (ActionReport) context.get(REPORT);
-		StepProgression step = report.getProgression().getSteps().get(report.getProgression().getCurrentStep()-1);
+		StepProgression step = report.getProgression().getSteps().get(report.getProgression().getCurrentStep() - 1);
 		step.setRealized(step.getRealized() + 1);
 		saveReport(context);
-		// reset validationReport
-		context.put(VALIDATION_REPORT, new ValidationReport());
 		if (context.containsKey(CANCEL_ASKED) || Thread.currentThread().isInterrupted()) {
 			log.info("Command cancelled");
 			throw new CommandCancelledException(COMMAND_CANCELLED);
 		}
 		AbstractParameter params = (AbstractParameter) context.get(CONFIGURATION);
-		if (params.isTest())
-		{
+		if (params.isTest()) {
 			log.info(Color.YELLOW + "Mode test on: waiting 10 s" + Color.NORMAL);
 			Thread.sleep(10000);
 		}

@@ -27,6 +27,7 @@ import mobi.chouette.exchange.neptune.importer.NeptuneParserCommand;
 import mobi.chouette.exchange.neptune.importer.NeptuneSAXParserCommand;
 import mobi.chouette.exchange.neptune.importer.NeptuneValidationCommand;
 import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.validation.report.ValidationReport;
 
 import org.apache.commons.io.FileUtils;
 
@@ -93,7 +94,6 @@ public class NeptuneValidateExportCommand implements Command, Constant {
 					Command validation = CommandFactory
 							.create(initialContext, NeptuneValidationCommand.class.getName());
 					validation.execute(validateContext);
-
 					ProgressionCommand.mergeValidationReports(validateContext);
 				}
 			} catch (Exception ex) {
@@ -107,12 +107,6 @@ public class NeptuneValidateExportCommand implements Command, Constant {
 			}
 			// save report in folder
 			context.put(MAIN_VALIDATION_REPORT, validateContext.get(MAIN_VALIDATION_REPORT));
-			ProgressionCommand.saveMainValidationReport(context);
-			File srcFile = new File(jobData.getPathName(), VALIDATION_FILE);
-			if (srcFile.exists()) {
-				File destFile = new File(output, VALIDATION_FILE);
-				FileUtils.copyFile(srcFile, destFile);
-			}
 			result = SUCCESS;
 
 		} catch (Exception e) {

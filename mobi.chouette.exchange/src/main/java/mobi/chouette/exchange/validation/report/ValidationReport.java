@@ -112,4 +112,9 @@ public class ValidationReport {
 		for (Location location : locations)
 			checkPoint.addDetail(new Detail(checkPointName, location, value));
 	}
+
+	public void clear() {
+		result = "NO_VALIDATION";
+		checkPoints.clear();
+	}
 }

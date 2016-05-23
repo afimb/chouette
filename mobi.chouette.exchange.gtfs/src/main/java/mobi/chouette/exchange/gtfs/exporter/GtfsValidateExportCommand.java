@@ -82,12 +82,6 @@ public class GtfsValidateExportCommand implements Command, Constant {
 			}
 			// save report in folder
 			context.put(MAIN_VALIDATION_REPORT, validateContext.get(MAIN_VALIDATION_REPORT));
-			ProgressionCommand.saveMainValidationReport(context);
-			File srcFile = new File(jobData.getPathName(), VALIDATION_FILE);
-			if (srcFile.exists()) {
-				File destFile = new File(output, VALIDATION_FILE);
-				FileUtils.copyFile(srcFile, destFile);
-			}
 			result = SUCCESS;
 
 		} catch (Exception e) {
