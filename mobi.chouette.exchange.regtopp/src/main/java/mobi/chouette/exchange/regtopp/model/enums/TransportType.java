@@ -19,6 +19,11 @@ public enum TransportType {
 	// Finnmark
 	FlexibleBus(9),
 
+	// Ruter
+	SchoolBusRuter(10),
+	FlexibleBusRuter(13),
+	NightBusRuter(14),
+
 	// Since Regtopp 1.3
 	LocalBus(22),
 	SchoolBus(23),
