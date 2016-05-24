@@ -49,6 +49,10 @@ public class GtfsShapeProducer extends AbstractProducer
 
 	   for (RouteSection rs : neptuneObject.getRouteSections() ) {
 		   shape.setShapeId(toGtfsId(neptuneObject.getObjectId(), prefix));
+		   if (rs == null)
+		   {
+		      continue;
+		   }
 		   LineString ls = rs.getProcessedGeometry();
 		   if (rs.getNoProcessing() || rs.getProcessedGeometry() == null)
 		    ls = rs.getInputGeometry();
