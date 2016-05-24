@@ -1,3 +1,7 @@
+# Version 3.3.3 (24/05/2016)
+* Correction 
+  * Mantis 44559: Export GTFS Shape.txt : rupture de numérotation dans la table journey_pattern_sections
+
 # Version 3.3.2 (10/05/2016)
 * Correction 
   * Mantis 43811: Export GTFS Shape.txt : inversion latitude et longitude
