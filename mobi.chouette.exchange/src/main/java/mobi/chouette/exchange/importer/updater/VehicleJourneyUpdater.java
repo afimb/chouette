@@ -386,7 +386,7 @@ public class VehicleJourneyUpdater implements Updater<VehicleJourney> {
 		
 		// Find added footnotes
 		Collection<Footnote> addedFootnotes = CollectionUtil.substract(
-				newValue.getFootnotes(), oldValue.getFootnotes(),
+				oldValue.getFootnotes(), newValue.getFootnotes(),
 				footnoteCodeCompatator);
 		
 		// add all new footnotes
