@@ -31,8 +31,6 @@ import mobi.chouette.model.util.Referential;
 @Log4j
 public class RegtoppRouteParser extends mobi.chouette.exchange.regtopp.importer.parser.v11.RegtoppRouteParser {
 
-
-
 	/*
 	 * Validation rules of type III are checked at this step.
 	 */
@@ -84,12 +82,14 @@ public class RegtoppRouteParser extends mobi.chouette.exchange.regtopp.importer.
 				String chouetteStopPointId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.STOPPOINT_KEY,
 						routeKey + routeSegment.getSequenceNumberStop());
 
+				// Might return null if invalid stopPoint
 				StopPoint stopPoint = createStopPoint(referential, context, routeSegment, chouetteStopPointId);
 
-				// Add stop point to journey pattern AND route (for now)
-				journeyPattern.addStopPoint(stopPoint);
-				route.getStopPoints().add(stopPoint);
-
+				if (stopPoint != null) {
+					// Add stop point to journey pattern AND route (for now)
+					journeyPattern.addStopPoint(stopPoint);
+					route.getStopPoints().add(stopPoint);
+				}
 			}
 		}
 
@@ -99,7 +99,8 @@ public class RegtoppRouteParser extends mobi.chouette.exchange.regtopp.importer.
 
 	}
 
-	protected StopPoint createStopPoint(Referential referential, Context context, AbstractRegtoppRouteTMS routeSegment, String chouetteStopPointId) throws Exception {
+	protected StopPoint createStopPoint(Referential referential, Context context, AbstractRegtoppRouteTMS routeSegment, String chouetteStopPointId)
+			throws Exception {
 
 		RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
 
@@ -116,7 +117,6 @@ public class RegtoppRouteParser extends mobi.chouette.exchange.regtopp.importer.
 		return stopPoint;
 	}
 
-	
 	static {
 		ParserFactory.register(RegtoppRouteParser.class.getName(), new ParserFactory() {
 			@Override
