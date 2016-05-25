@@ -397,7 +397,7 @@ public class Line extends NeptuneIdentifiedObject implements ObjectIdTypes {
 	 */
 	@Getter
 	@Setter
-	@OneToMany(mappedBy = "line", cascade = { CascadeType.ALL })
+	@OneToMany(mappedBy = "line", cascade = { CascadeType.PERSIST, CascadeType.MERGE })
 	private List<Footnote> footnotes = new ArrayList<>(0);
 
 	/**
