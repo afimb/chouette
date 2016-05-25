@@ -22,6 +22,12 @@ public class RegtoppTripParser extends mobi.chouette.exchange.regtopp.importer.p
 			return TransportModeNameEnum.Waterborne;
 		case AirportExpressTrain:
 			return TransportModeNameEnum.Train;
+		case SchoolBusRuter:
+			return TransportModeNameEnum.Bus;
+		case FlexibleBusRuter:
+			return TransportModeNameEnum.Bus;
+		case NightBusRuter:
+			return TransportModeNameEnum.Bus;
 		default:
 			return super.convertTypeOfService(typeOfService);
 		}
