@@ -125,9 +125,15 @@ public class RegtoppTripParser extends mobi.chouette.exchange.regtopp.importer.p
 									String chouetteStopPointId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(),
 											ObjectIdTypes.STOPPOINT_KEY, routeKey + vehicleStop.getSequenceNumberStop());
 
-									StopPoint stopPoint = ObjectFactory.getStopPoint(referential, chouetteStopPointId);
+									
+									
+									StopPoint stopPoint = referential.getStopPoints().get(chouetteStopPointId);
+									if(stopPoint != null) {
 									addVehicleJourneyAtStop(vehicleJourney, tripDepartureTime, stopPoint,
 											vehicleStop.getDriverTimeArrival(), vehicleStop.getDriverTimeDeparture(),byRequestOnly);
+									} else {
+										log.warn("Not adding VehicleJourneyAtStop since StopPoint with id "+chouetteStopPointId+" is missing");
+									}
 								}
 							}
 						}

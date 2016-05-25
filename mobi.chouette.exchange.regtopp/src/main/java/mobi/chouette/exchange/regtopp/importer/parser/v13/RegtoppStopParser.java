@@ -28,7 +28,6 @@ import mobi.chouette.model.util.Referential;
 @Log4j
 public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.parser.v11.RegtoppStopParser {
 
-	
 	@Override
 	public void parse(Context context) throws Exception {
 		try {
@@ -41,9 +40,9 @@ public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.p
 
 			for (AbstractRegtoppStopHPL abstractStop : importer.getStopById()) {
 				RegtoppStopHPL stop = (RegtoppStopHPL) abstractStop;
-				if (stop.getType() == StopType.Stop) {
+				if (stop.getType() == StopType.Stop || (stop.getType() == StopType.Other && !"Lokasjonspunkt".equals(stop.getFullName()))) {
 					String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), StopArea.STOPAREA_KEY, stop.getStopId());
-					
+
 					StopArea stopArea = ObjectFactory.getStopArea(referential, objectId);
 					stopArea.setName(stop.getFullName());
 					stopArea.setRegistrationNumber(stop.getShortName());
@@ -53,14 +52,15 @@ public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.p
 
 					List<RegtoppStopPointSTP> stopPoints = stopPointsByStopId.getValue(stop.getStopId());
 					for (RegtoppStopPointSTP regtoppStopPoint : stopPoints) {
-						String chouetteStopPointId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), StopArea.STOPAREA_KEY, regtoppStopPoint.getFullStopId());
+						String chouetteStopPointId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), StopArea.STOPAREA_KEY,
+								regtoppStopPoint.getFullStopId());
 						StopArea stopPoint = ObjectFactory.getStopArea(referential, chouetteStopPointId);
 
 						convertAndSetCoordinates(stopPoint, regtoppStopPoint.getX(), regtoppStopPoint.getY(), projection);
 
-						if(StringUtils.trimToNull(regtoppStopPoint.getDescription()) == null) {
+						if (StringUtils.trimToNull(regtoppStopPoint.getDescription()) == null) {
 							stopPoint.setName(stopArea.getName());
-							log.warn("StopPoint with no description, using HPL stop name instead: "+regtoppStopPoint);
+							log.warn("StopPoint with no description, using HPL stop name instead: " + regtoppStopPoint);
 						} else {
 							stopPoint.setName(regtoppStopPoint.getDescription());
 						}
@@ -72,21 +72,17 @@ public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.p
 
 				} else {
 					// TODO parse other node types (if really used, only Ruter uses this)
-					log.warn("Ignoring HPL stop of type Other: "+stop);
+					log.warn("Ignoring HPL stop of type Other: " + stop);
 				}
 
 			}
-			
-			
-			
+
 		} catch (Exception e) {
 			log.error("Error parsing StopArea", e);
 			throw e;
 		}
 	}
 
-
-	
 	static {
 		ParserFactory.register(RegtoppStopParser.class.getName(), new ParserFactory() {
 			@Override
@@ -95,7 +91,5 @@ public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.p
 			}
 		});
 	}
-
-
 
 }
