@@ -45,7 +45,7 @@ public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.p
 
 					StopArea stopArea = ObjectFactory.getStopArea(referential, objectId);
 					stopArea.setName(stop.getFullName());
-					stopArea.setRegistrationNumber(stop.getShortName());
+					//stopArea.setRegistrationNumber(stop.getShortName());
 					stopArea.setAreaType(ChouetteAreaEnum.StopPlace);
 
 					convertAndSetCoordinates(stopArea, stop.getX(), stop.getY(), projection);
@@ -64,7 +64,7 @@ public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.p
 						} else {
 							stopPoint.setName(regtoppStopPoint.getDescription());
 						}
-						stopPoint.setRegistrationNumber(stopArea.getRegistrationNumber());
+						//stopPoint.setRegistrationNumber(stopArea.getRegistrationNumber());
 						stopPoint.setAreaType(ChouetteAreaEnum.BoardingPosition);
 
 						stopPoint.setParent(stopArea);

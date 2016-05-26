@@ -39,7 +39,7 @@ public class RegtoppStopParser implements Parser {
 
 				StopArea stopArea = ObjectFactory.getStopArea(referential, objectId);
 				stopArea.setName(stop.getFullName());
-				stopArea.setRegistrationNumber(stop.getShortName());
+				//stopArea.setRegistrationNumber(stop.getShortName());
 				stopArea.setAreaType(ChouetteAreaEnum.BoardingPosition);
 
 				convertAndSetCoordinates(stopArea, stop.getX(), stop.getY(), projection);
