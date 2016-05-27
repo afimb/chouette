@@ -98,13 +98,13 @@ public class CheckPoint {
 			if (count == null)
 			{
 				count = new Integer(0);
-				fileMap.put(fileName, count);
 			}
 			if (count < maxDetails)
 			{
 				details.add(item);
 			}
 			count ++;
+			fileMap.put(fileName, count); // integer is not mutable !
 		} else if (detailCount < maxDetails) {
 			details.add(item);
 		}
