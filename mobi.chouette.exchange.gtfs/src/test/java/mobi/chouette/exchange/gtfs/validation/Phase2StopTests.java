@@ -63,11 +63,11 @@ public class Phase2StopTests extends AbstractPhase2Tests {
 			Assert.assertNotNull(detail.getSource().getFile(), "detail must refer a file source");
 			if (count == 0) {
 				count++;
-				Assert.assertEquals(detail.getSource().getFile().getFilename(), "stop_times.txt", "detail must refer bad file");
+				Assert.assertEquals(detail.getSource().getFile().getFilename(), "stops.txt", "detail must refer bad file");
 				// Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(1), "detail must refer bad line");
 			} else if (count == 1) {
 				count++;
-				Assert.assertEquals(detail.getSource().getFile().getFilename(), "stop_times.txt", "detail must refer bad file");
+				Assert.assertEquals(detail.getSource().getFile().getFilename(), "stops.txt", "detail must refer bad file");
 				//Assert.assertEquals(detail.getSource().getFile().getLineNumber(), Integer.valueOf(101), "detail must refer bad line");
 			}
 		}
