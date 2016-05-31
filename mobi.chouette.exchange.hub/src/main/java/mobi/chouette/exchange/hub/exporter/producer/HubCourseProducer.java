@@ -39,7 +39,7 @@ public class HubCourseProducer extends AbstractProducer {
 		hubObject.setNumero(Integer.valueOf(rank));
 		VehicleJourneyAtStop vjas1 = neptuneObject.getVehicleJourneyAtStops().get(0);
 		hubObject.setCodeArret(toHubId(vjas1.getStopPoint().getContainedInStopArea()));
-		hubObject.setHeure(toHubTime(vjas1.getDepartureTime()));
+		hubObject.setHeure(toHubTime(vjas1.getDepartureTime()) + (86400 * vjas1.getDepartureDayOffset()));
 		hubObject.setIdentifiantArret(toInt(vjas1.getStopPoint().getContainedInStopArea().getRegistrationNumber()));
 		hubObject.setCodeLigne(toHubId(neptuneObject.getRoute().getLine()));
 		hubObject.setCodeChemin(toHubId(neptuneObject.getJourneyPattern()));
@@ -79,7 +79,7 @@ public class HubCourseProducer extends AbstractProducer {
 		VehicleJourneyAtStop vjas2 = neptuneObject.getVehicleJourneyAtStops().get(
 				neptuneObject.getVehicleJourneyAtStops().size() - 1);
 		hubObject.setCodeArret(toHubId(vjas2.getStopPoint().getContainedInStopArea()));
-		hubObject.setHeure(toHubTime(vjas2.getArrivalTime()));
+		hubObject.setHeure(toHubTime(vjas2.getArrivalTime()) + (86400 * vjas1.getArrivalDayOffset()));
 		hubObject.setType(HubCourse.TYPE_ARRIVEE);
 		hubObject.setIdentifiantArret(toInt(vjas2.getStopPoint().getContainedInStopArea().getRegistrationNumber()));
 		hubObject.setIdentifiant((vjas2.getId()).intValue());

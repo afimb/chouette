@@ -845,6 +845,10 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 		vehicleJourneyAtStop.setStopPoint(stopPoint);
 		vehicleJourneyAtStop.setArrivalTime(gtfsStopTime.getArrivalTime().getTime());
 		vehicleJourneyAtStop.setDepartureTime(gtfsStopTime.getDepartureTime().getTime());
+		
+		/** GJT : Setting arrival and departure offset to vehicleJourneyAtStop object */
+		vehicleJourneyAtStop.setArrivalDayOffset(gtfsStopTime.getArrivalTime().getDay());
+		vehicleJourneyAtStop.setDepartureDayOffset(gtfsStopTime.getDepartureTime().getDay());
 	}
 
 	protected void convert(Context context, GtfsTrip gtfsTrip, VehicleJourney vehicleJourney) {
