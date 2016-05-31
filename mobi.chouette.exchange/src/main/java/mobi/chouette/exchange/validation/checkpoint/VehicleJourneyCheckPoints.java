@@ -27,6 +27,7 @@ import mobi.chouette.model.type.TransportModeNameEnum;
  * <li>3-VehicleJourney-2 : check speed progression</li>
  * <li>3-VehicleJourney-3 : check if two journeys progress similarly</li>
  * <li>3-VehicleJourney-4 : check if each journey has minimum one timetable</li>
+ * <li>3-VehicleJourney-5 : check if time progress correctly with offset on each stop and between two stops</li>
  * </ul>
  * 
  * 
@@ -57,6 +58,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 		// 3-VehicleJourney-2 : check speed progression
 		// 3-VehicleJourney-3 : check if two journeys progress similarly
 		// 3-VehicleJourney-4 : check if each journey has minimum one timetable
+		// 3-VehicleJourney-5 : check if time progress correctly with offset on each stop and between two stops
 		// 4-VehicleJourney-2 : (optional) check transport modes
 		boolean test4_1 = (parameters.getCheckVehicleJourney() != 0);
 		boolean test4_2 = parameters.getCheckAllowedTransportModes() == 1;
@@ -65,7 +67,8 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 		initCheckPoint(report, VEHICLE_JOURNEY_2, CheckPoint.SEVERITY.WARNING);
 		initCheckPoint(report, VEHICLE_JOURNEY_3, CheckPoint.SEVERITY.WARNING);
 		initCheckPoint(report, VEHICLE_JOURNEY_4, CheckPoint.SEVERITY.WARNING);
-
+		initCheckPoint(report, VEHICLE_JOURNEY_5, CheckPoint.SEVERITY.ERROR);
+		
 		// checkPoint is applicable
 		prepareCheckPoint(report, VEHICLE_JOURNEY_1);
 		prepareCheckPoint(report, VEHICLE_JOURNEY_2);
@@ -103,6 +106,9 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 			// 3-VehicleJourney-4 : check if each journey has minimum one
 			// timetable
 			check3VehicleJourney4(context,report, vj);
+			
+			// 3-VehicleJourney-5 : check if time progress correctly with offset on each stop and between two stops
+			check3VehicleJourney5(context,report, vj);
 
 			// 4-VehicleJourney-1 : (optionnal) check columns constraints
 			if (test4_1)
@@ -116,14 +122,30 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 		return null;
 	}
 
-	private long diffTime(Time first, Time last) {
+	
+	/**
+	 * Time between two time values with offset handling
+	 * @param first
+	 * @param firstTimeOffset
+	 * @param last
+	 * @param lastTimeOffset
+	 * @return
+	 */
+	private long diffTime(Time first, int firstTimeOffset, Time last, int lastTimeOffset) {
 		if (first == null || last == null)
 			return Long.MIN_VALUE; // TODO
-		long diff = last.getTime() / 1000L - first.getTime() / 1000L;
-		if (diff < 0)
-			diff += 86400L; // step upon midnight : add one day in seconds
+		
+		long firstOffset = firstTimeOffset * 86400L;
+		long lastOffset = lastTimeOffset * 86400L;
+		
+		long lastTime = (last.getTime() / 1000L) + lastOffset;
+		long firstTime = (first.getTime() / 1000L) + firstOffset;
+		
+		long diff = lastTime - firstTime;
+		
 		return diff;
 	}
+	
 
 	private void check3VehicleJourney1(Context context, ValidationReport report, VehicleJourney vj, ValidationParameters parameters) {
 		// 3-VehicleJourney-1 : check if time progress correctly on each stop
@@ -134,7 +156,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 		long maxDiffTime = parameters.getInterStopDurationMax();
 		List<VehicleJourneyAtStop> vjasList = vj.getVehicleJourneyAtStops();
 		for (VehicleJourneyAtStop vjas : vjasList) {
-			long diffTime = Math.abs(diffTime(vjas.getArrivalTime(), vjas.getDepartureTime()));
+			long diffTime = Math.abs(diffTime(vjas.getArrivalTime(), vjas.getArrivalDayOffset(), vjas.getDepartureTime(), vjas.getDepartureDayOffset())); /** GJT */
 			if (diffTime > maxDiffTime) {
 				Location location = buildLocation(context,vj);
 				Location target = buildLocation(context,vjas.getStopPoint().getContainedInStopArea());
@@ -142,6 +164,17 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 						Long.toString(maxDiffTime), target);
 				addValidationError(report, VEHICLE_JOURNEY_1, detail);
 			}
+			
+			/** GJT : Difference between two times on one stop cannot be negative 
+			else if (diffTime < 0) {
+				//TODO Créer un message de rapport spécifique à différence négative
+				Location location = buildLocation(context,vj);
+				Location target = buildLocation(context,vjas.getStopPoint().getContainedInStopArea());
+				Detail detail = new Detail(VEHICLE_JOURNEY_1, location, Long.toString(diffTime),
+						Long.toString(maxDiffTime), target);
+				addValidationError(report, VEHICLE_JOURNEY_1, detail);
+			}
+			*/
 		}
 
 	}
@@ -158,7 +191,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 			VehicleJourneyAtStop vjas0 = vjasList.get(i - 1);
 			VehicleJourneyAtStop vjas1 = vjasList.get(i);
 
-			long diffTime = diffTime(vjas0.getDepartureTime(), vjas1.getArrivalTime());
+			long diffTime = diffTime(vjas0.getDepartureTime(), vjas0.getDepartureDayOffset(), vjas1.getArrivalTime(), vjas1.getArrivalDayOffset()); /** GJT */
 			if (diffTime < 0) {
 				// chronologie inverse ou non définie
 				Location source = buildLocation(context,vj);
@@ -240,8 +273,8 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 				TransportModeNameEnum transportMode1 = getTransportMode(vj1);
 				if (transportMode1.equals(transportMode0)) {
 					for (int j = 1; j < vjas0.size(); j++) {
-						long duration0 = diffTime(vjas0.get(j - 1).getDepartureTime(), vjas0.get(j).getArrivalTime());
-						long duration1 = diffTime(vjas1.get(j - 1).getDepartureTime(), vjas1.get(j).getArrivalTime());
+						long duration0 = diffTime(vjas0.get(j - 1).getDepartureTime(), vjas0.get(j - 1).getDepartureDayOffset(), vjas0.get(j).getArrivalTime(), vjas0.get(j).getArrivalDayOffset()); /** GJT */
+						long duration1 = diffTime(vjas1.get(j - 1).getDepartureTime(), vjas1.get(j - 1).getDepartureDayOffset(), vjas1.get(j).getArrivalTime(), vjas1.get(j).getArrivalDayOffset()); /** GJT */
 						if (Math.abs(duration0 - duration1) > maxDuration) {
 							Location source = buildLocation(context,vj0);
 							Location target1 = buildLocation(context,vj1);
@@ -266,6 +299,72 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 			Detail detail = new Detail(VEHICLE_JOURNEY_4, location);
 			addValidationError(report, VEHICLE_JOURNEY_4, detail);
 
+		}
+
+	}
+	
+	private void check3VehicleJourney5(Context context, ValidationReport report, VehicleJourney vj) {
+		// 3-VehicleJourney-5 : check if time progress correctly on each stop including offset
+		if (isEmpty(vj.getVehicleJourneyAtStops())) {
+			log.error("vehicleJourney " + vj.getObjectId() + " has no vehicleJourneyAtStop");
+			return;
+		}
+		
+		
+		VehicleJourneyAtStop previous_vjas = null;
+		long diffTime = 0;
+		
+		List<VehicleJourneyAtStop> vjasList = vj.getVehicleJourneyAtStops();
+		for (VehicleJourneyAtStop vjas : vjasList) {
+			
+			/** First stop */
+			if(previous_vjas == null) {
+				
+				/** Difference between arrival and departure time for the first stop */
+				diffTime = diffTime(vjas.getArrivalTime(), vjas.getArrivalDayOffset(), vjas.getDepartureTime(), vjas.getDepartureDayOffset());
+				
+				/** GJT : Difference between two times on one stop cannot be negative */
+				if (diffTime < 0) {
+					//TODO Créer un message de rapport spécifique à différence négative
+					Location location = buildLocation(context,vj);
+					Location target = buildLocation(context,vjas.getStopPoint().getContainedInStopArea());
+					Detail detail = new Detail(VEHICLE_JOURNEY_5, location, Long.toString(diffTime),
+							Long.toString(diffTime), target);
+					addValidationError(report, VEHICLE_JOURNEY_5, detail);
+				}
+				
+			} else {
+				
+				/** Difference between arrival times of two stops */
+				diffTime = diffTime(previous_vjas.getArrivalTime(), previous_vjas.getArrivalDayOffset(), vjas.getArrivalTime(), vjas.getArrivalDayOffset());
+				
+				/** GJT : Difference between two times on one stop cannot be negative */
+				if (diffTime < 0) {
+					//TODO Créer un message de rapport spécifique à différence négative
+					Location location = buildLocation(context,vj);
+					Location target = buildLocation(context,vjas.getStopPoint().getContainedInStopArea());
+					Detail detail = new Detail(VEHICLE_JOURNEY_5, location, Long.toString(diffTime),
+							Long.toString(diffTime), target);
+					addValidationError(report, VEHICLE_JOURNEY_5, detail);
+				}
+				
+				/** Difference between departure times of two stops */
+				diffTime = diffTime(previous_vjas.getDepartureTime(), previous_vjas.getDepartureDayOffset(), vjas.getDepartureTime(), vjas.getDepartureDayOffset());
+				
+				/** GJT : Difference between two times on one stop cannot be negative */
+				if (diffTime < 0) {
+					//TODO Créer un message de rapport spécifique à différence négative
+					Location location = buildLocation(context,vj);
+					Location target = buildLocation(context,vjas.getStopPoint().getContainedInStopArea());
+					Detail detail = new Detail(VEHICLE_JOURNEY_5, location, Long.toString(diffTime),
+							Long.toString(diffTime), target);
+					addValidationError(report, VEHICLE_JOURNEY_5, detail);
+				}
+				
+			}
+			
+			previous_vjas = vjas;
+			
 		}
 
 	}

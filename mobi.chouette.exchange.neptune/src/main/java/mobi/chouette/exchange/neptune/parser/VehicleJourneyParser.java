@@ -4,6 +4,7 @@ import java.sql.Time;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.List;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.neptune.Constant;
@@ -19,6 +20,7 @@ import mobi.chouette.exchange.neptune.model.TimeSlot;
 import mobi.chouette.exchange.neptune.validation.VehicleJourneyValidator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.model.Company;
+import mobi.chouette.model.Footnote;
 import mobi.chouette.model.JourneyFrequency;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Route;
@@ -142,6 +144,7 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 		}
 
 		Collections.sort(vehicleJourney.getVehicleJourneyAtStops(), VEHICLE_JOURNEY_AT_STOP_COMPARATOR);
+		setVehicleJourneyAtStopListOffset(vehicleJourney.getVehicleJourneyAtStops());
 		validator.addLocation(context, vehicleJourney, lineNumber, columnNumber);
 	}
 
@@ -219,4 +222,68 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 			}
 		});
 	}
+	
+	/**
+	 * Set the correct offset depending on journey stops times
+	 * @param lstVehicleJourneyAtStop
+	 */
+	private void setVehicleJourneyAtStopListOffset(List<VehicleJourneyAtStop> lstVehicleJourneyAtStop) {
+		VehicleJourneyAtStop previous_vjas = null;
+		int currentArrivalOffset = 0;
+		int currentDepartureOffset = 0;
+		boolean print = false;
+		
+		if (lstVehicleJourneyAtStop != null) {
+			if(lstVehicleJourneyAtStop.get(0).getVehicleJourney().getObjectId().equalsIgnoreCase("NINOXE:VehicleJourney:15574500")){
+				print = true;
+			}
+				;
+			for (VehicleJourneyAtStop vjas: lstVehicleJourneyAtStop) {
+				/** First stop */
+				if(previous_vjas == null) {
+					/** Check Offset between first arrival departure time */
+					if(checkIfDiffAfterMidnight(vjas.getArrivalTime(), vjas.getDepartureTime())) {
+						currentDepartureOffset += 1;
+					}	
+				}
+				else {
+					/** Check Offset between previous and current arrival time */
+					if(checkIfDiffAfterMidnight(previous_vjas.getArrivalTime(), vjas.getArrivalTime())) {
+						currentArrivalOffset += 1;
+					}
+					
+					/** Check Offset between previous and current departure time */
+					if(checkIfDiffAfterMidnight(previous_vjas.getDepartureTime(), vjas.getDepartureTime())) {
+						currentDepartureOffset += 1;
+					}
+				}
+				
+				vjas.setArrivalDayOffset(currentArrivalOffset);
+				vjas.setDepartureDayOffset(currentDepartureOffset);
+				
+				previous_vjas = vjas;
+				
+				if(print) {
+					log.info("Vehicle Journey ID : " + vjas.getVehicleJourney().getObjectId());
+					log.info("Stop arrival offset" + vjas.getArrivalDayOffset());
+					log.info("Stop departure offset" + vjas.getDepartureDayOffset());
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Check if lastTime belongs to the next day
+	 * @param firstTime
+	 * @param lastTime
+	 * @return
+	 */
+	private boolean checkIfDiffAfterMidnight(Time firstTime, Time lastTime) {
+		long diffTime = lastTime.getTime() - firstTime.getTime();
+		
+		return diffTime < 0;
+	}
+	
+	
+	
 }
