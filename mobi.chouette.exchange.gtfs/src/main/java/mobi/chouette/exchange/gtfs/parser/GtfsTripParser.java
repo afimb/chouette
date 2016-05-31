@@ -186,13 +186,13 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 						unsuedId = false;
 						validationReporter.reportError(context, new GtfsException(GTFS_STOPS_FILE, i,
 								StopById.FIELDS.stop_id.name(), GtfsException.ERROR.UNUSED_ID, null, bean.getStopId()),
-								GTFS_STOP_TIMES_FILE);
+								GTFS_STOPS_FILE);
 					}
 				}
 				i++;
 			}
 			if (unsuedId)
-				validationReporter.validate(context, GTFS_STOP_TIMES_FILE, GtfsException.ERROR.UNUSED_ID);
+				validationReporter.validate(context, GTFS_STOPS_FILE, GtfsException.ERROR.UNUSED_ID);
 			validationReporter.getExceptions().clear();
 			if (fatalException != null)
 				throw fatalException;
