@@ -237,7 +237,6 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 			if(lstVehicleJourneyAtStop.get(0).getVehicleJourney().getObjectId().equalsIgnoreCase("NINOXE:VehicleJourney:15574500")){
 				print = true;
 			}
-				;
 			for (VehicleJourneyAtStop vjas: lstVehicleJourneyAtStop) {
 				/** First stop */
 				if(previous_vjas == null) {

@@ -300,11 +300,6 @@ public class NeptuneImportTests extends Arquillian implements Constant, ReportCo
 		
 		NeptuneTestsUtils.checkMinimalLine(line);
 		
-		/** GJT Test vehicle journey timesheet after midnight neptune */
-		Line lineAfterMidnight = lineDao.findByObjectId("NINOXE:VehicleJourney:15574500");
-		if(lineAfterMidnight != null)
-			NeptuneTestsUtils.checkMinimalLine(lineAfterMidnight);
-		
 		utx.rollback();
 
 	}

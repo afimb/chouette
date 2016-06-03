@@ -157,12 +157,10 @@ public class LineRegisterCommand implements Command {
 			buffer.write(timeFormat.format(vehicleJourneyAtStop.getDepartureTime()));
 		else
 			buffer.write(NULL);
-		
-			buffer.write(vehicleJourneyAtStop.getArrivalDayOffset());
-		
 		buffer.append(SEP);
-		
-			buffer.write(vehicleJourneyAtStop.getDepartureDayOffset());
+		buffer.write(vehicleJourneyAtStop.getArrivalDayOffset());
+		buffer.append(SEP);
+		buffer.write(vehicleJourneyAtStop.getDepartureDayOffset());
 		
 		// buffer.append(SEP);
 
