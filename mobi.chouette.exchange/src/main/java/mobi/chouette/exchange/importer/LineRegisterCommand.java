@@ -158,9 +158,9 @@ public class LineRegisterCommand implements Command {
 		else
 			buffer.write(NULL);
 		buffer.append(SEP);
-		buffer.write(new Integer(vehicleJourneyAtStop.getArrivalDayOffset()).toString());
+		buffer.write(Integer.toString(vehicleJourneyAtStop.getArrivalDayOffset()));
 		buffer.append(SEP);
-		buffer.write(new Integer(vehicleJourneyAtStop.getDepartureDayOffset()).toString());
+		buffer.write(Integer.toString(vehicleJourneyAtStop.getDepartureDayOffset()));
 		
 		// buffer.append(SEP);
 
