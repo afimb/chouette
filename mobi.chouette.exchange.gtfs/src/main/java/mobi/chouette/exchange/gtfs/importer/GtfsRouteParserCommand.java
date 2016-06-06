@@ -88,13 +88,14 @@ public class GtfsRouteParserCommand implements Command, Constant {
 			{
 				CommercialStopGenerator commercialStopGenerator = new CommercialStopGenerator();
 				commercialStopGenerator.createCommercialStopPoints(context);
+				configuration.setMaxDistanceForCommercial(0);
 			}
 			
 			if (configuration.getMaxDistanceForConnectionLink() > 0)
 			{
 			    ConnectionLinkGenerator connectionLinkGenerator = new ConnectionLinkGenerator();
 				connectionLinkGenerator.createConnectionLinks(context);
-				
+				configuration.setMaxDistanceForConnectionLink(0);
 			}
 			
 			// Timetable
