@@ -136,7 +136,7 @@ public class LineRegisterCommand implements Command {
 		return result;
 	}
 
-	private void write(StringWriter buffer, VehicleJourney vehicleJourney, StopPoint stopPoint,
+	protected void write(StringWriter buffer, VehicleJourney vehicleJourney, StopPoint stopPoint,
 			VehicleJourneyAtStop vehicleJourneyAtStop) throws IOException {
 		// The list of fields to sunchronize with
 		// VehicleJourneyAtStopUpdater.update(Context context,
