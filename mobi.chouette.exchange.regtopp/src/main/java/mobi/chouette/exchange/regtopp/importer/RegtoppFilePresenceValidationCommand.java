@@ -1,8 +1,10 @@
 package mobi.chouette.exchange.regtopp.importer;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
@@ -25,6 +27,7 @@ import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.regtopp.RegtoppConstant;
+import mobi.chouette.exchange.regtopp.importer.parser.FileContentParser;
 import mobi.chouette.exchange.regtopp.importer.version.Regtopp11DVersionHandler;
 import mobi.chouette.exchange.regtopp.importer.version.Regtopp12NovusVersionHandler;
 import mobi.chouette.exchange.regtopp.importer.version.Regtopp12VersionHandler;
@@ -76,12 +79,14 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 		}
 		
 		RegtoppVersion declaredVersion = parameters.getVersion();
+		RegtoppVersion usedVersion = declaredVersion;
 		if(declaredVersion != detectedVersion) {
-			log.error("Declared regtopp version is "+declaredVersion+", but detected version is "+detectedVersion+", import will fail badly");
+			log.warn("Declared regtopp version is "+declaredVersion+", but detected version is "+detectedVersion+", overriding");
+			usedVersion= detectedVersion;
 		}
 		log.info("Parsing Regtopp file="+jobData.getInputFilename()+" referential="+jobData.getReferential()+" declaredVersion=" + declaredVersion+" detectedVersion="+detectedVersion);
 		VersionHandler versionHandler = null;
-		switch (declaredVersion) {
+		switch (usedVersion) {
 		case R11D:
 			versionHandler = new Regtopp11DVersionHandler();
 			break;
@@ -202,10 +207,12 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 		for (Path fileName : list) {
 			String name = fileName.getFileName().toString().toUpperCase();
 			if(name.endsWith(string)) {
-				BufferedReader br = new BufferedReader(new FileReader(fileName.toFile()));
-				String line = br.readLine();
+				FileInputStream is = new FileInputStream(fileName.toFile());
+				InputStreamReader isr = new InputStreamReader(is, FileContentParser.REGTOPP_CHARSET);
+				BufferedReader buffReader = new BufferedReader(isr);
+				String line = buffReader.readLine();
 				lineLength = line.length();
-				br.close();
+				buffReader.close();
 			}
 		}
 		
