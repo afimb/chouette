@@ -33,12 +33,12 @@ public abstract class TripIndex extends IndexImpl<AbstractRegtoppTripIndexTIX> {
 			result = false;
 		}
 
-		if (isNotNull(bean.getCounter())) {
-			bean.getOkTests().add(RegtoppException.ERROR.TIX_INVALID_FIELD_VALUE);
-		}  else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), getMessage("label.regtoppTripIndexTIX.counter"), bean.getCounter(), RegtoppException.ERROR.TIX_INVALID_FIELD_VALUE, getMessage("label.validation.invalidFieldValue"))));
-			result = false;
-		}
+//		if (isNotNull(bean.getCounter())) {
+//			bean.getOkTests().add(RegtoppException.ERROR.TIX_INVALID_FIELD_VALUE);
+//		}  else {
+//			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), getMessage("label.regtoppTripIndexTIX.counter"), bean.getCounter(), RegtoppException.ERROR.TIX_INVALID_FIELD_VALUE, getMessage("label.validation.invalidFieldValue"))));
+//			result = false;
+//		}
 
 		if (isNotNull(bean.getLineId())) {
 			bean.getOkTests().add(RegtoppException.ERROR.TIX_INVALID_FIELD_VALUE);
@@ -81,7 +81,8 @@ public abstract class TripIndex extends IndexImpl<AbstractRegtoppTripIndexTIX> {
 			// Regtopp 1.2
 			mobi.chouette.exchange.regtopp.model.v12.RegtoppTripIndexTIX tix = (RegtoppTripIndexTIX) bean;
 
-			if (isNotNull(tix.getDestinationIdDepartureRef()) && isNotNull(tix.getDestinationIdArrivalRef())) {
+			
+			if (isNull(tix.getDestinationIdDepartureRef()) && isNull(tix.getDestinationIdArrivalRef())) {
 				String errorMessage = getMessage("label.validation.oneOf") + ": " + getMessage("label.regtoppTripIndexTIX.destinationIdDepartureRef") + ", " + getMessage("label.regtoppTripIndexTIX.destinationIdArrivalRef");
 				bean.getErrors()
 						.add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(),
@@ -90,7 +91,7 @@ public abstract class TripIndex extends IndexImpl<AbstractRegtoppTripIndexTIX> {
 				result = false;
 			} else {
 				if (isNotNull(bean.getDestinationIdDepartureRef())
-						|| dao.getDestinationById().containsKey(bean.getDestinationIdDepartureRef())) {
+						&& dao.getDestinationById().containsKey(bean.getDestinationIdDepartureRef())) {
 					bean.getOkTests().add(RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE);
 				} else {
 					bean.getErrors()
@@ -100,7 +101,7 @@ public abstract class TripIndex extends IndexImpl<AbstractRegtoppTripIndexTIX> {
 					result = false;
 				}
 
-				if (isNotNull(tix.getDestinationIdArrivalRef()) || dao.getDestinationById().containsKey(tix.getDestinationIdArrivalRef())) {
+				if (isNotNull(tix.getDestinationIdArrivalRef()) && dao.getDestinationById().containsKey(tix.getDestinationIdArrivalRef())) {
 					bean.getOkTests().add(RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE);
 				} else {
 					bean.getErrors()

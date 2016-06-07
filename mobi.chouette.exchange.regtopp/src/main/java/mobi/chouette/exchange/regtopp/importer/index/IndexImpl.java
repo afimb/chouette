@@ -149,7 +149,11 @@ public abstract class IndexImpl<T> implements Index<T> {
 	}
 
 	protected boolean isNotNull(String string) {
-		return !string.matches("[0]+");
+		return !isNull(string);
+	}
+	
+	protected boolean isNull(String string) {
+		return string.matches("^[0]+$");
 	}
 
 	protected boolean isNotNull(Integer integer) {
