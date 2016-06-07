@@ -21,6 +21,8 @@ public class DrivingDurationTypeHandler implements TypeHandler {
 		if ("999".equals(minutes) || "9999".equals(minutes)) {
 			return null;
 		} else {
+			minutes = minutes.replace(" ", "");
+			
 			// Minutes to ms
 			return new Duration(Long.parseLong(minutes) * 1000 * 60);
 		}
