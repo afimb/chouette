@@ -34,12 +34,12 @@ public class StopById extends IndexImpl<AbstractRegtoppStopHPL> {
 			result = false;
 		}
 
-		if (isNotNull(bean.getCounter())) {
-			bean.getOkTests().add(RegtoppException.ERROR.HPL_INVALID_FIELD_VALUE);
-		}  else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), getMessage("label.regtoppStopHPL.counter"), bean.getCounter(), RegtoppException.ERROR.HPL_INVALID_FIELD_VALUE, getMessage("label.validation.invalidFieldValue"))));
-			result = false;
-		}
+//		if (isNotNull(bean.getCounter())) {
+//			bean.getOkTests().add(RegtoppException.ERROR.HPL_INVALID_FIELD_VALUE);
+//		}  else {
+//			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), getMessage("label.regtoppStopHPL.counter"), bean.getCounter(), RegtoppException.ERROR.HPL_INVALID_FIELD_VALUE, getMessage("label.validation.invalidFieldValue"))));
+//			result = false;
+//		}
 
 		if (isNotNull(bean.getStopId())) {
 			bean.getOkTests().add(RegtoppException.ERROR.HPL_INVALID_FIELD_VALUE);

@@ -42,12 +42,12 @@ public class DaycodeById extends IndexImpl<RegtoppDayCodeDKO> {
 			result = false;
 		}
 
-		if (isNotNull(bean.getCounter())) {
-			bean.getOkTests().add(RegtoppException.ERROR.DKO_INVALID_FIELD_VALUE);
-		}  else {
-			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), getMessage("label.regtoppDayCodeDKO.counter"), bean.getCounter(), RegtoppException.ERROR.DKO_INVALID_FIELD_VALUE, getMessage("label.validation.invalidFieldValue"))));
-			result = false;
-		}
+//		if (isNotNull(bean.getCounter())) {
+//			bean.getOkTests().add(RegtoppException.ERROR.DKO_INVALID_FIELD_VALUE);
+//		}  else {
+//			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), getMessage("label.regtoppDayCodeDKO.counter"), bean.getCounter(), RegtoppException.ERROR.DKO_INVALID_FIELD_VALUE, getMessage("label.validation.invalidFieldValue"))));
+//			result = false;
+//		}
 
 		if (isNotNull(bean.getDayCodeId())) {
 			bean.getOkTests().add(RegtoppException.ERROR.DKO_INVALID_FIELD_VALUE);
