@@ -1,5 +1,7 @@
 package mobi.chouette.exchange.regtopp.importer;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -29,7 +31,6 @@ import mobi.chouette.exchange.regtopp.importer.version.Regtopp12VersionHandler;
 import mobi.chouette.exchange.regtopp.importer.version.Regtopp13AVersionHandler;
 import mobi.chouette.exchange.regtopp.importer.version.RegtoppVersion;
 import mobi.chouette.exchange.regtopp.importer.version.VersionHandler;
-import mobi.chouette.exchange.regtopp.validation.Constant;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException;
 import mobi.chouette.exchange.report.ActionError;
 import mobi.chouette.exchange.report.ActionError.CODE;
@@ -37,8 +38,6 @@ import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.FileError;
 import mobi.chouette.exchange.report.FileInfo;
 import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
-import mobi.chouette.exchange.validation.report.CheckPoint;
-import mobi.chouette.exchange.validation.report.ValidationReport;
 
 @Log4j
 public class RegtoppFilePresenceValidationCommand implements Command {
@@ -57,8 +56,30 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 		// check ignored files
 
 		RegtoppImportParameters parameters = (RegtoppImportParameters) context.get(CONFIGURATION);
+		
+		// Detect version
+		RegtoppVersion detectedVersion = null;
+		
+		
+		Path path = Paths.get(jobData.getPathName(), INPUT);
+		if(hasFileExtension(path, ".TDA")) {
+			detectedVersion = RegtoppVersion.R11D;
+		} else if (hasFileExtension(path, ".STP")) {
+			detectedVersion = RegtoppVersion.R13A;
+		} else {
+			int lineLength = findLineLength(path,".HPL");
+			if(lineLength == 87) {
+				detectedVersion = RegtoppVersion.R12;
+			} else if(lineLength == 89){
+				detectedVersion = RegtoppVersion.R12N;
+			}
+		}
+		
 		RegtoppVersion declaredVersion = parameters.getVersion();
-		log.info("Parsing Regtopp version " + declaredVersion);
+		if(declaredVersion != detectedVersion) {
+			log.error("Declared regtopp version is "+declaredVersion+", but detected version is "+detectedVersion+", import will fail badly");
+		}
+		log.info("Parsing Regtopp file="+jobData.getInputFilename()+" referential="+jobData.getReferential()+" declaredVersion=" + declaredVersion+" detectedVersion="+detectedVersion);
 		VersionHandler versionHandler = null;
 		switch (declaredVersion) {
 		case R11D:
@@ -93,7 +114,6 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 			Set<String> prefixesFound = new HashSet<String>();
 			Set<String> foundExtensions = new HashSet<String>();
 
-			Path path = Paths.get(jobData.getPathName(), INPUT);
 			List<Path> list = FileUtil.listFiles(path, "*");
 
 			for (Path fileName : list) {
@@ -174,6 +194,34 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 		}
 
 		return result;
+	}
+		
+	private int findLineLength(Path path, String string) throws IOException {
+		List<Path> list = FileUtil.listFiles(path, "*");
+		int lineLength = -1;
+		for (Path fileName : list) {
+			String name = fileName.getFileName().toString().toUpperCase();
+			if(name.endsWith(string)) {
+				BufferedReader br = new BufferedReader(new FileReader(fileName.toFile()));
+				String line = br.readLine();
+				lineLength = line.length();
+				br.close();
+			}
+		}
+		
+		return lineLength;
+	}
+
+	private boolean hasFileExtension(Path rootDir, String fileExtension) throws IOException {
+		List<Path> list = FileUtil.listFiles(rootDir, "*");
+		for (Path fileName : list) {
+			String name = fileName.getFileName().toString().toUpperCase();
+			if(name.endsWith(fileExtension)) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 
 	public static class DefaultCommandFactory extends CommandFactory {
