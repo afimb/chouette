@@ -59,32 +59,40 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 		// check ignored files
 
 		RegtoppImportParameters parameters = (RegtoppImportParameters) context.get(CONFIGURATION);
-		
+
 		// Detect version
 		RegtoppVersion detectedVersion = null;
-		
-		
+
 		Path path = Paths.get(jobData.getPathName(), INPUT);
-		if(hasFileExtension(path, ".TDA")) {
+		if (hasFileExtension(path, ".TDA")) {
 			detectedVersion = RegtoppVersion.R11D;
 		} else if (hasFileExtension(path, ".STP")) {
 			detectedVersion = RegtoppVersion.R13A;
 		} else {
-			int lineLength = findLineLength(path,".HPL");
-			if(lineLength == 87) {
+			int lineLength = findLineLength(path, ".HPL");
+			if (lineLength == 87) {
 				detectedVersion = RegtoppVersion.R12;
-			} else if(lineLength == 89){
+			} else if (lineLength == 89) {
 				detectedVersion = RegtoppVersion.R12N;
+			} else {
+				log.error("Unexpected HPL line length: "+lineLength);
 			}
 		}
-		
+
 		RegtoppVersion declaredVersion = parameters.getVersion();
 		RegtoppVersion usedVersion = declaredVersion;
-		if(declaredVersion != detectedVersion) {
-			log.warn("Declared regtopp version is "+declaredVersion+", but detected version is "+detectedVersion+", overriding");
-			usedVersion= detectedVersion;
+
+		if (declaredVersion != detectedVersion) {
+			if (detectedVersion == null) {
+				log.error("Unable to detect regtopp version!");
+
+			} else {
+				log.warn("Declared regtopp version is " + declaredVersion + ", but detected version is " + detectedVersion + ", overriding");
+				usedVersion = detectedVersion;
+			}
 		}
-		log.info("Parsing Regtopp file="+jobData.getInputFilename()+" referential="+jobData.getReferential()+" declaredVersion=" + declaredVersion+" detectedVersion="+detectedVersion);
+		log.info("Parsing Regtopp file=" + jobData.getInputFilename() + " referential=" + jobData.getReferential() + " declaredVersion=" + declaredVersion
+				+ " detectedVersion=" + detectedVersion);
 		VersionHandler versionHandler = null;
 		switch (usedVersion) {
 		case R11D:
@@ -109,10 +117,10 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 			Set<String> validExtensions = new HashSet<String>();
 			Set<String> mandatoryFileExtensions = new HashSet<String>();
 			Set<String> optionalFileExtensions = new HashSet<String>();
-			
+
 			mandatoryFileExtensions.addAll(Arrays.asList(versionHandler.getMandatoryFileExtensions()));
 			optionalFileExtensions.addAll(Arrays.asList(versionHandler.getOptionalFileExtensions()));
-			
+
 			validExtensions.addAll(mandatoryFileExtensions);
 			validExtensions.addAll(optionalFileExtensions);
 
@@ -200,13 +208,13 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 
 		return result;
 	}
-		
+
 	private int findLineLength(Path path, String string) throws IOException {
 		List<Path> list = FileUtil.listFiles(path, "*");
 		int lineLength = -1;
 		for (Path fileName : list) {
 			String name = fileName.getFileName().toString().toUpperCase();
-			if(name.endsWith(string)) {
+			if (name.endsWith(string)) {
 				FileInputStream is = new FileInputStream(fileName.toFile());
 				InputStreamReader isr = new InputStreamReader(is, FileContentParser.REGTOPP_CHARSET);
 				BufferedReader buffReader = new BufferedReader(isr);
@@ -215,7 +223,7 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 				buffReader.close();
 			}
 		}
-		
+
 		return lineLength;
 	}
 
@@ -223,11 +231,11 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 		List<Path> list = FileUtil.listFiles(rootDir, "*");
 		for (Path fileName : list) {
 			String name = fileName.getFileName().toString().toUpperCase();
-			if(name.endsWith(fileExtension)) {
+			if (name.endsWith(fileExtension)) {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 
