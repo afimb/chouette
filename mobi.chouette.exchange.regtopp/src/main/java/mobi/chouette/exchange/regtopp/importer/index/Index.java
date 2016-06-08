@@ -21,7 +21,7 @@ public interface Index<T> extends Iterable<T> {
 	// Validate logical consistency (references to other files etc)
 	boolean validate(T bean, RegtoppImporter importer) throws Exception;
 	
-	void validate(Context context,ParseableFile parseableFile) throws Exception;
+	void validate(Context context,ParseableFile<T> parseableFile) throws Exception;
 
 	int getLength();
 

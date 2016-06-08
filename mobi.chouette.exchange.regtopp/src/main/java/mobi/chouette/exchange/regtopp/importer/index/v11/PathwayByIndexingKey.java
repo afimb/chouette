@@ -19,7 +19,7 @@ import static mobi.chouette.exchange.regtopp.messages.RegtoppMessages.getMessage
 @Log4j
 public class PathwayByIndexingKey extends IndexImpl<AbstractRegtoppPathwayGAV> {
 
-	public PathwayByIndexingKey(Context context, RegtoppValidationReporter validationReporter, FileContentParser fileParser) throws Exception {
+	public PathwayByIndexingKey(Context context, RegtoppValidationReporter validationReporter, FileContentParser<AbstractRegtoppPathwayGAV> fileParser) throws Exception {
 		super(context, validationReporter, fileParser);
 	}
 

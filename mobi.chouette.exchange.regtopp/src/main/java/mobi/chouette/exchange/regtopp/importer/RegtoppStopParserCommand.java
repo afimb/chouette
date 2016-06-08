@@ -13,9 +13,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.importer.Parser;
-import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.regtopp.RegtoppConstant;
-import mobi.chouette.exchange.regtopp.importer.parser.v11.RegtoppStopParser;
 import mobi.chouette.exchange.regtopp.importer.version.VersionHandler;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.DataStats;
@@ -34,13 +32,11 @@ public class RegtoppStopParserCommand implements Command {
 
 		try {
 			Referential referential = (Referential) context.get(REFERENTIAL);
-			RegtoppImportParameters configuration = (RegtoppImportParameters) context.get(CONFIGURATION);
 			ActionReport report = (ActionReport) context.get(REPORT);
 			if (referential != null) {
 				referential.clear(true);
 			}
 
-			RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
 			VersionHandler versionHandler = (VersionHandler) context.get(RegtoppConstant.VERSION_HANDLER);
 
 			// StopArea
@@ -53,27 +49,6 @@ public class RegtoppStopParserCommand implements Command {
 				Parser connectionLinkParser = versionHandler.createConnectionLinkParser();
 				connectionLinkParser.parse(context);
 			}
-			//
-			// // ConnectionLink
-			// if (importer.hasTransferImporter()) {
-			// if (referential.getSharedConnectionLinks().isEmpty()) {
-			// GtfsTransferParser gtfsTransferParser = (GtfsTransferParser) ParserFactory
-			// .create(GtfsTransferParser.class.getName());
-			// gtfsTransferParser.parse(context);
-			// }
-			// }
-			// if (configuration.getMaxDistanceForCommercial() > 0)
-			// {
-			// CommercialStopGenerator commercialStopGenerator = new CommercialStopGenerator();
-			// commercialStopGenerator.createCommercialStopPoints(context);
-			// }
-			//
-			// if (configuration.getMaxDistanceForConnectionLink() > 0)
-			// {
-			// ConnectionLinkGenerator connectionLinkGenerator = new ConnectionLinkGenerator();
-			// connectionLinkGenerator.createConnectionLinks(context);
-			//
-			// }
 
 			addStats(report, referential);
 

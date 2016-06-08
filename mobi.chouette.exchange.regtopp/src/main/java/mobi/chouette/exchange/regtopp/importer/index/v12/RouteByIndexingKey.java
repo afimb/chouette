@@ -23,7 +23,7 @@ import static mobi.chouette.exchange.regtopp.messages.RegtoppMessages.getMessage
 @Log4j
 public class RouteByIndexingKey extends IndexImpl<AbstractRegtoppRouteTMS> {
 
-	public RouteByIndexingKey(Context context, RegtoppValidationReporter validationReporter, FileContentParser fileParser) throws Exception {
+	public RouteByIndexingKey(Context context, RegtoppValidationReporter validationReporter, FileContentParser<AbstractRegtoppRouteTMS> fileParser) throws Exception {
 		super(context, validationReporter, fileParser);
 	}
 

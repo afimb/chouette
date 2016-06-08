@@ -20,7 +20,7 @@ import static mobi.chouette.exchange.regtopp.messages.RegtoppMessages.getMessage
 @Log4j
 public class DestinationById extends IndexImpl<RegtoppDestinationDST> {
 
-	public DestinationById(Context context, RegtoppValidationReporter validationReporter, FileContentParser fileParser) throws Exception {
+	public DestinationById(Context context, RegtoppValidationReporter validationReporter, FileContentParser<RegtoppDestinationDST> fileParser) throws Exception {
 		super(context, validationReporter, fileParser);
 	}
 

@@ -9,12 +9,12 @@ import mobi.chouette.exchange.regtopp.validation.RegtoppException;
 import mobi.chouette.exchange.report.FileInfo;
 
 @AllArgsConstructor
-public class ParseableFile {
+public class ParseableFile<T> {
 	@Getter
 	private File file;
 
 	@Getter
-	private List<Class> regtoppClasses;
+	private List<Class<T>> regtoppClasses;
 
 	// Error to be returned when parsing detects an error
 	@Getter

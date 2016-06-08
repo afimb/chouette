@@ -17,7 +17,7 @@ import static mobi.chouette.exchange.regtopp.messages.RegtoppMessages.getMessage
 @Log4j
 public abstract class TripIndex extends IndexImpl<AbstractRegtoppTripIndexTIX> {
 
-	public TripIndex(Context context, RegtoppValidationReporter validationReporter, FileContentParser fileParser) throws Exception {
+	public TripIndex(Context context, RegtoppValidationReporter validationReporter, FileContentParser<AbstractRegtoppTripIndexTIX> fileParser) throws Exception {
 		super(context, validationReporter, fileParser);
 	}
 

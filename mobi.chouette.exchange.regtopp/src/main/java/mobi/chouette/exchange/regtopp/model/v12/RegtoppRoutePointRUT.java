@@ -1,9 +1,6 @@
 package mobi.chouette.exchange.regtopp.model.v12;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.net.URL;
-import java.util.TimeZone;
 
 import org.beanio.annotation.Field;
 import org.beanio.annotation.Record;

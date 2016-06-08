@@ -11,7 +11,6 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
-import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
@@ -41,7 +40,7 @@ import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.ObjectIdTypes;
 import mobi.chouette.model.util.Referential;
 
-@Log4j
+
 public class RegtoppRouteParser extends LineSpecificParser {
 
 	/*

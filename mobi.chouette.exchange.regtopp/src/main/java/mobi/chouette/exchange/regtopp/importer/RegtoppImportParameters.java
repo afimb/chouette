@@ -21,37 +21,13 @@ import mobi.chouette.exchange.regtopp.importer.version.RegtoppVersion;
 @NoArgsConstructor
 @ToString(callSuper = true)
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "objectIdPrefix", "maxDistanceForConnectionLink", "maxDistanceForCommercial", "ignoreEndChars", "ignoreLastWord", "referencesType","version","coordinateProjection" })
+@XmlType(propOrder = { "objectIdPrefix", "referencesType", "version", "coordinateProjection" })
 public class RegtoppImportParameters extends AbstractImportParameter {
 
 	@Getter
 	@Setter
 	@XmlElement(name = "object_id_prefix", required = true)
 	private String objectIdPrefix;
-
-	// TODO do we need this?
-	@Getter
-	@Setter
-	@XmlElement(name = "max_distance_for_connection_link", defaultValue = "0")
-	private int maxDistanceForConnectionLink = 0;
-
-	// TODO do we need this?
-	@Getter
-	@Setter
-	@XmlElement(name = "max_distance_for_commercial", defaultValue = "0")
-	private int maxDistanceForCommercial = 0;
-
-	// TODO do we need this?
-	@Getter
-	@Setter
-	@XmlElement(name = "ignore_end_chars", defaultValue = "0")
-	private int ignoreEndChars = 0;
-
-	// TODO do we need this?
-	@Getter
-	@Setter
-	@XmlElement(name = "ignore_last_word", defaultValue = "false")
-	private boolean ignoreLastWord = false;
 
 	// Type of data to import (line/stop_area)
 	@Getter
@@ -62,7 +38,7 @@ public class RegtoppImportParameters extends AbstractImportParameter {
 	// Regtopp version
 	@Getter
 	@Setter
-	@XmlElement(name = "version", required = true)
+	@XmlElement(name = "version", required = false)
 	private RegtoppVersion version;
 
 	// Coordinate projection ie EPSG:32632 (UTM32_N)
@@ -86,12 +62,7 @@ public class RegtoppImportParameters extends AbstractImportParameter {
 				return false;
 			}
 		}
-		
-		if(version == null) {
-			log.error("missing regtopp version");
-			return false;
-		}
-		
+
 		return true;
 
 	}

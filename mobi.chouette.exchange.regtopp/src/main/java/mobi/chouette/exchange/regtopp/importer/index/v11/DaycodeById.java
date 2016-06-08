@@ -23,7 +23,7 @@ import static mobi.chouette.exchange.regtopp.messages.RegtoppMessages.getMessage
 
 public class DaycodeById extends IndexImpl<RegtoppDayCodeDKO> {
 
-	public DaycodeById(Context context, RegtoppValidationReporter validationReporter, FileContentParser parser) throws Exception {
+	public DaycodeById(Context context, RegtoppValidationReporter validationReporter, FileContentParser<RegtoppDayCodeDKO> parser) throws Exception {
 		super(context, validationReporter, parser);
 	}
 
