@@ -1,5 +1,7 @@
 package mobi.chouette.exchange.regtopp.importer.parser;
 
+import static mobi.chouette.exchange.regtopp.messages.RegtoppMessages.getMessage;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
@@ -8,8 +10,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import mobi.chouette.exchange.regtopp.messages.RegtoppMessages;
-import org.beanio.*;
+import org.beanio.BeanReader;
+import org.beanio.BeanReaderErrorHandlerSupport;
+import org.beanio.BeanReaderException;
+import org.beanio.InvalidRecordException;
+import org.beanio.MalformedRecordException;
+import org.beanio.RecordContext;
+import org.beanio.StreamFactory;
+import org.beanio.UnexpectedRecordException;
+import org.beanio.UnidentifiedRecordException;
 import org.beanio.builder.FixedLengthParserBuilder;
 import org.beanio.builder.StreamBuilder;
 import org.joda.time.Duration;
@@ -24,22 +33,18 @@ import mobi.chouette.exchange.regtopp.beanio.LocalDateTypeHandler;
 import mobi.chouette.exchange.regtopp.model.RegtoppObject;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
-import mobi.chouette.exchange.report.FileError;
-import mobi.chouette.exchange.report.FileError.CODE;
 import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
 
-import static mobi.chouette.exchange.regtopp.messages.RegtoppMessages.*;
-
 @Log4j
-public class FileContentParser {
+public class FileContentParser<T> {
 	public static final String REGTOPP_CHARSET = "ISO-8859-1";
 	@Getter
 	private List<Object> rawContent = new ArrayList<>();
-	
-	@Getter
-	private ParseableFile parseableFile = null;
 
-	public FileContentParser(ParseableFile parseableFile) {
+	@Getter
+	private ParseableFile<T> parseableFile = null;
+
+	public FileContentParser(ParseableFile<T> parseableFile) {
 		super();
 		this.parseableFile = parseableFile;
 	}
@@ -57,7 +62,7 @@ public class FileContentParser {
 		builder.addTypeHandler("drivingDuration", Duration.class, new DrivingDurationTypeHandler());
 		builder.addTypeHandler("localDate", LocalDate.class, new LocalDateTypeHandler());
 
-		for (Class<?> clazz : parseableFile.getRegtoppClasses()) {
+		for (Class<T> clazz : parseableFile.getRegtoppClasses()) {
 			builder = builder.addRecord(clazz);
 		}
 
@@ -67,14 +72,10 @@ public class FileContentParser {
 		InputStreamReader isr = new InputStreamReader(is, REGTOPP_CHARSET);
 		BufferedReader buffReader = new BufferedReader(isr);
 
-		// TODO consider using error reporter instead if this continues parsing of the file
 		BeanReader in = factory.createReader("regtopp", buffReader);
 
 		final Set<RegtoppException> errors = new HashSet<RegtoppException>();
 		final String fileName = parseableFile.getFile().getName();
-
-		// TODO http://beanio.org/2.1/docs/reference/index.html#StreamValidation
-		// Add custom validation error messages
 
 		in.setErrorHandler(new BeanReaderErrorHandlerSupport() {
 			@Override
@@ -87,7 +88,7 @@ public class FileContentParser {
 						for (String error : rContext.getRecordErrors()) {
 							String key = "label." + rContext.getRecordName();
 							String recordNameLabel = getMessage(key);
-							if (recordNameLabel == null){
+							if (recordNameLabel == null) {
 								log.warn("Could not look up key '" + key + "', falling back to record name '" + rContext.getRecordName() + "'");
 								recordNameLabel = rContext.getRecordName();
 							}
@@ -97,7 +98,8 @@ public class FileContentParser {
 									rContext.getRecordText(), parseableFile.getInvalidFieldValue(), error);
 							RegtoppException e = new RegtoppException(ctx, ex);
 							errors.add(e);
-							log.warn("Field error parsing record " + recordNameLabel + " in file " + fileName + " at line " + rContext.getLineNumber() + ":" + error);
+							log.warn("Field error parsing record " + recordNameLabel + " in file " + fileName + " at line " + rContext.getLineNumber() + ":"
+									+ error);
 						}
 					}
 					if (rContext.hasFieldErrors()) {
@@ -105,7 +107,7 @@ public class FileContentParser {
 							for (String error : rContext.getFieldErrors(field)) {
 								String key = "label." + rContext.getRecordName() + "." + field;
 								String fieldLabel = getMessage(key);
-								if (fieldLabel == null){
+								if (fieldLabel == null) {
 									log.warn("Could not look up key '" + key + "', falling back to field name '" + field + "'");
 									fieldLabel = field;
 								}
@@ -115,15 +117,15 @@ public class FileContentParser {
 										rContext.getFieldText(field), parseableFile.getInvalidFieldValue(), error);
 								RegtoppException e = new RegtoppException(ctx, ex);
 								errors.add(e);
-								log.warn("Field error parsing field '" + fieldLabel + "' in file " + fileName + " at line " + rContext.getLineNumber() + ":" + error);
+								log.warn("Field error parsing field '" + fieldLabel + "' in file " + fileName + " at line " + rContext.getLineNumber() + ":"
+										+ error);
 							}
 						}
 					}
 				}
 			}
 
-
-			//TODO Does not seem like this ever occurs
+			// TODO Does not seem like this ever occurs
 			@Override
 			public void unexpectedRecord(UnexpectedRecordException ex) throws Exception {
 				log.warn("Got UnexpectedRecordException.", ex);
@@ -143,7 +145,6 @@ public class FileContentParser {
 			public void fatalError(BeanReaderException ex) throws Exception {
 				log.error("Got BeanReaderException.", ex);
 			}
-
 
 		});
 

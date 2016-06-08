@@ -18,7 +18,7 @@ import static mobi.chouette.exchange.regtopp.messages.RegtoppMessages.getMessage
 @Log4j
 public class StopById extends IndexImpl<AbstractRegtoppStopHPL> {
 
-	public StopById(Context context, RegtoppValidationReporter validationReporter, FileContentParser fileParser) throws Exception {
+	public StopById(Context context, RegtoppValidationReporter validationReporter, FileContentParser<AbstractRegtoppStopHPL> fileParser) throws Exception {
 		super(context, validationReporter, fileParser);
 	}
 

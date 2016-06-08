@@ -21,7 +21,7 @@ import org.joda.time.Duration;
 public abstract class IndexImpl<T> implements Index<T> {
 
 	protected Map<String, T> index = new HashMap<String, T>();
-	protected FileContentParser parser = null;
+	protected FileContentParser<T> parser = null;
 	protected RegtoppValidationReporter validationReporter = null;
 	protected Context context = null;
 
@@ -29,7 +29,7 @@ public abstract class IndexImpl<T> implements Index<T> {
 
 	private String filename = null;
 
-	public IndexImpl(Context context, RegtoppValidationReporter validationReporter, FileContentParser parser) throws Exception {
+	public IndexImpl(Context context, RegtoppValidationReporter validationReporter, FileContentParser<T> parser) throws Exception {
 		this.context = context;
 		this.parser = parser;
 		this.validationReporter = validationReporter;

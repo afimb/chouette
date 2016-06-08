@@ -20,7 +20,7 @@ import static mobi.chouette.exchange.regtopp.messages.RegtoppMessages.getMessage
 @Log4j
 public class FootnoteById extends IndexImpl<RegtoppFootnoteMRK> {
 
-	public FootnoteById(Context context, RegtoppValidationReporter validationReporter, FileContentParser fileParser) throws Exception {
+	public FootnoteById(Context context, RegtoppValidationReporter validationReporter, FileContentParser<RegtoppFootnoteMRK> fileParser) throws Exception {
 		super(context, validationReporter, fileParser);
 	}
 

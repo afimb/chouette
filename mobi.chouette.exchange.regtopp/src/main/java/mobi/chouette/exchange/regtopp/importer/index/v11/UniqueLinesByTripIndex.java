@@ -10,7 +10,7 @@ import mobi.chouette.exchange.regtopp.importer.parser.FileContentParser;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
 
-@Log4j
+
 public class UniqueLinesByTripIndex extends TripIndex {
 
 	public UniqueLinesByTripIndex(Context context, RegtoppValidationReporter validationReporter, FileContentParser fileParser) throws Exception {

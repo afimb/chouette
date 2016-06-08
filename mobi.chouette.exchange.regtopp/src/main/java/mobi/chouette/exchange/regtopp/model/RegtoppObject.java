@@ -1,7 +1,5 @@
 package mobi.chouette.exchange.regtopp.model;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -48,3 +46,4 @@ public abstract class RegtoppObject {
 	}
 
 }
+

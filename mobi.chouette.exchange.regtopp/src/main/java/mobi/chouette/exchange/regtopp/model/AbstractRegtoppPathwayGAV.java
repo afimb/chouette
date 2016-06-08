@@ -3,7 +3,6 @@ package mobi.chouette.exchange.regtopp.model;
 import java.io.Serializable;
 
 import org.beanio.annotation.Field;
-import org.beanio.annotation.Record;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -11,7 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import mobi.chouette.exchange.regtopp.model.RegtoppObject;
 
 @ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = false)
