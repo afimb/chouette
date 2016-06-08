@@ -26,7 +26,7 @@ public abstract class IndexImpl<T> implements Index<T> {
 	protected Context context = null;
 
 	private boolean validated = false;
-	
+
 	private String filename = null;
 
 	public IndexImpl(Context context, RegtoppValidationReporter validationReporter, FileContentParser parser) throws Exception {
@@ -36,14 +36,12 @@ public abstract class IndexImpl<T> implements Index<T> {
 
 		filename = parser.getParseableFile().getFile().getName().toUpperCase();
 
-		
 		index();
 	}
-	
+
 	public String getUnderlyingFilename() {
 		return filename;
 	}
-	
 
 	@Override
 	public Iterator<T> iterator() {
@@ -91,7 +89,8 @@ public abstract class IndexImpl<T> implements Index<T> {
 			String filename = parseableFile.getFile().getName().toUpperCase();
 			String fileType = filename.substring(filename.lastIndexOf(".") + 1);
 
-			validationReporter.reportSuccess(context, mobi.chouette.exchange.regtopp.validation.Constant.REGTOPP_FILE_PREFIX + fileType + Constant.REGTOPP_FILE_POSTFIX, filename);
+			validationReporter.reportSuccess(context,
+					mobi.chouette.exchange.regtopp.validation.Constant.REGTOPP_FILE_PREFIX + fileType + Constant.REGTOPP_FILE_POSTFIX, filename);
 
 			if (getLength() == 0) {
 				FileParserValidationError fileError = new FileParserValidationError(filename, 0, null, null, RegtoppException.ERROR.FILE_WITH_NO_ENTRY,
@@ -117,9 +116,9 @@ public abstract class IndexImpl<T> implements Index<T> {
 					}
 					if (bean instanceof RegtoppObject) {
 						RegtoppObject regtoppObject = ((RegtoppObject) bean);
-						if (regtoppObject.isInvalid()){
-							log.warn("Removing " + regtoppObject.getClass() + " value with key '" + entry.getKey() + "' from index " + this.getClass() +
-									" due to the following fatal error(s): " + getInvalidErrors(regtoppObject));
+						if (regtoppObject.isInvalid()) {
+							log.warn("Removing " + regtoppObject.getClass() + " value with key '" + entry.getKey() + "' from index " + this.getClass()
+									+ " due to the following fatal error(s): " + getInvalidErrors(regtoppObject));
 							invalidKeys.add(entry.getKey());
 						}
 						// TODO some indices returns List<?> as bean
@@ -148,19 +147,19 @@ public abstract class IndexImpl<T> implements Index<T> {
 		}
 	}
 
-	protected boolean isNotNull(String string) {
+	public static boolean isNotNull(String string) {
 		return !isNull(string);
 	}
-	
-	protected boolean isNull(String string) {
+
+	public static boolean isNull(String string) {
 		return string.matches("^[0]+$");
 	}
 
-	protected boolean isNotNull(Integer integer) {
+	public static boolean isNotNull(Integer integer) {
 		return integer != null;
 	}
 
-	protected boolean isNotNull(Duration duration) {
+	public static boolean isNotNull(Duration duration) {
 		return duration != null;
 	}
 
