@@ -59,9 +59,13 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 
 		RegtoppImportParameters parameters = (RegtoppImportParameters) context.get(CONFIGURATION);
 
-		// Detect version
+		
+		RegtoppVersion declaredVersion = parameters.getVersion();
 		RegtoppVersion detectedVersion = null;
-
+		RegtoppVersion parserVersion = null;
+		
+		
+		// Detect version
 		Path path = Paths.get(jobData.getPathName(), INPUT);
 		if (hasFileExtension(path, ".TDA")) {
 			detectedVersion = RegtoppVersion.R11D;
@@ -74,26 +78,28 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 			} else if (lineLength == 89) {
 				detectedVersion = RegtoppVersion.R12N;
 			} else {
-				log.error("Unexpected HPL line length: "+lineLength);
+				log.error("Error detecting Regtopp version: Unexpected HPL line length: "+lineLength);
 			}
 		}
 
-		RegtoppVersion declaredVersion = parameters.getVersion();
-		RegtoppVersion usedVersion = declaredVersion;
-
-		if (declaredVersion != detectedVersion) {
-			if (detectedVersion == null) {
-				log.error("Unable to detect regtopp version!");
-
-			} else {
-				log.warn("Declared regtopp version is " + declaredVersion + ", but detected version is " + detectedVersion + ", overriding");
-				usedVersion = detectedVersion;
+		if(declaredVersion != null) {
+			if(declaredVersion != detectedVersion) {
+				log.warn("Declared regtopp version is " + declaredVersion + ", but detected version is " + detectedVersion + ". Using declaredVersion for parsing");
 			}
+			parserVersion = declaredVersion;
+		} else 	if(declaredVersion == null) {
+			parserVersion = detectedVersion;
 		}
+		
+		if(parserVersion == null) {
+			log.error("Unable to detect regtopp version and declaredVersion is null. Aborting import");
+			return ERROR;
+		}
+		
 		log.info("Parsing Regtopp file=" + jobData.getInputFilename() + " referential=" + jobData.getReferential() + " declaredVersion=" + declaredVersion
 				+ " detectedVersion=" + detectedVersion);
 		VersionHandler versionHandler = null;
-		switch (usedVersion) {
+		switch (parserVersion) {
 		case R11D:
 			versionHandler = new Regtopp11DVersionHandler();
 			break;

@@ -62,7 +62,7 @@ public class RegtoppImportParameters extends AbstractImportParameter {
 	// Regtopp version
 	@Getter
 	@Setter
-	@XmlElement(name = "version", required = true)
+	@XmlElement(name = "version", required = false)
 	private RegtoppVersion version;
 
 	// Coordinate projection ie EPSG:32632 (UTM32_N)
@@ -85,11 +85,6 @@ public class RegtoppImportParameters extends AbstractImportParameter {
 				log.error("invalid type " + referencesType);
 				return false;
 			}
-		}
-		
-		if(version == null) {
-			log.error("missing regtopp version");
-			return false;
 		}
 		
 		return true;
