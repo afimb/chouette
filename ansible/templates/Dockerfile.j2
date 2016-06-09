@@ -40,4 +40,4 @@ RUN rm -rf /opt/jboss/wildfly/standalone/configuration/standalone_xml_history
 # This argument comes from https://github.com/jboss-dockerfiles/wildfly
 # It enables the admin interface.
 
-CMD ["/opt/jboss/wildfly/bin/standalone.sh", "--debug", "-b", "0.0.0.0", "-bmanagement", "0.0.0.0"]
+CMD ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0", "-bmanagement", "0.0.0.0"]
