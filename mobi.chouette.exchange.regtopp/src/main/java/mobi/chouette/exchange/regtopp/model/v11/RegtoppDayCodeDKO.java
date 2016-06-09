@@ -41,8 +41,12 @@ public class RegtoppDayCodeDKO extends RegtoppObject implements Serializable {
 
 	@Getter
 	@Setter
-	@Field(at = 8, length = 392, regex = "[01]{392}")
-	private String dayCode;
+	@Field(at = 8, length = 1, minLength = 0,regex = "[01]", maxOccurs = 500)
+	private char[] dayCodeHack;
+
+	public String getDayCode() {
+		return new String(dayCodeHack).trim();
+	}
 
 	@Override
 	public String getIndexingKey() {

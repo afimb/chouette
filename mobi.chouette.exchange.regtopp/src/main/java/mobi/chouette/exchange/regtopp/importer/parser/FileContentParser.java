@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.beanio.BeanReader;
 import org.beanio.BeanReaderErrorHandlerSupport;
@@ -53,7 +54,8 @@ public class FileContentParser<T> {
 		log.info(this.hashCode() +" Starting to parse "+parseableFile);
 		StreamFactory factory = StreamFactory.newInstance();
 
-		StreamBuilder builder = new StreamBuilder("regtopp");
+		String streamName = "regtopp-"+UUID.randomUUID().toString();
+		StreamBuilder builder = new StreamBuilder(streamName);
 		builder.resourceBundle("mobi.chouette.exchange.regtopp.customMessages");
 		builder.format("fixedlength");
 		builder.parser(new FixedLengthParserBuilder());
@@ -73,7 +75,7 @@ public class FileContentParser<T> {
 		InputStreamReader isr = new InputStreamReader(is, REGTOPP_CHARSET);
 		BufferedReader buffReader = new BufferedReader(isr);
 
-		BeanReader in = factory.createReader("regtopp", buffReader);
+		BeanReader in = factory.createReader(streamName, buffReader);
 
 		final Set<RegtoppException> errors = new HashSet<RegtoppException>();
 		final String fileName = parseableFile.getFile().getName();
