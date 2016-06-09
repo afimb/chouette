@@ -20,6 +20,11 @@ RUN /opt/jboss/wildfly/customization/execute.sh
 # TODO Consider to make password for chouette iev console configurable
 RUN /opt/jboss/wildfly/bin/add-user.sh admin pingu123 --silent
 
+# Overriding previously installed java version:
+RUN curl -L http://jump.rutebanken.org/jdk-8u92-linux-x64.tar.gz > jdk.tgz
+RUN tar xzf jdk.tgz
+ENV JAVA_HOME /opt/jboss/jdk1.8.0_92/
+
 # Deploying by copying to deployment directory
 COPY chouette.ear /opt/jboss/wildfly/standalone/deployments/
 
@@ -34,5 +39,5 @@ RUN rm -rf /opt/jboss/wildfly/standalone/configuration/standalone_xml_history
 
 # This argument comes from https://github.com/jboss-dockerfiles/wildfly
 # It enables the admin interface.
-# TODO Remove the choette iev interface when it is not needed
-CMD ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0", "-bmanagement", "0.0.0.0"]
+
+CMD ["/opt/jboss/wildfly/bin/standalone.sh", "--debug", "-b", "0.0.0.0", "-bmanagement", "0.0.0.0"]
