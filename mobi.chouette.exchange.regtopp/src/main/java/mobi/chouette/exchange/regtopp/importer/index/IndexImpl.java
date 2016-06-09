@@ -15,6 +15,8 @@ import mobi.chouette.exchange.regtopp.model.RegtoppObject;
 import mobi.chouette.exchange.regtopp.validation.Constant;
 import mobi.chouette.exchange.regtopp.validation.RegtoppException;
 import mobi.chouette.exchange.regtopp.validation.RegtoppValidationReporter;
+
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.Duration;
 
 @Log4j
@@ -152,7 +154,7 @@ public abstract class IndexImpl<T> implements Index<T> {
 	}
 
 	public static boolean isNull(String string) {
-		return string.matches("^[0]+$");
+		return string.matches("^[0]+$") || StringUtils.trimToNull(string) == null;
 	}
 
 	public static boolean isNotNull(Integer integer) {

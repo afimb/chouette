@@ -39,7 +39,10 @@ public class RegtoppInitImportCommand implements Command {
 				Path path = Paths.get(jobData.getPathName(), INPUT);
 				RegtoppValidationReporter reporter = new RegtoppValidationReporter();
 				importer = new RegtoppImporter(context, path.toString(), reporter);
+				log.info("Creating new importer for jobData "+jobData+" and path "+path.toString());
 				context.put(PARSER, importer);
+			} else {
+				log.error("RegtoppImporter found in context");
 			}
 			RegtoppImportParameters parameters = (RegtoppImportParameters) context.get(CONFIGURATION);
 			if (parameters.getReferencesType() == null || parameters.getReferencesType().isEmpty()) {

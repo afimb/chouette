@@ -120,14 +120,14 @@ public class RouteByIndexingKey extends IndexImpl<AbstractRegtoppRouteTMS> {
 			result = false;
 		}
 
-		if (isNotNull(bean.getDestinationId()) || dao.getDestinationById().containsKey(bean.getDestinationId())){
+		if (isNotNull(bean.getDestinationId()) && dao.getDestinationById().containsKey(bean.getDestinationId())){
 			bean.getOkTests().add(RegtoppException.ERROR.TMS_INVALID_OPTIONAL_ID_REFERENCE);
 		} else {
 			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), getMessage("label.regtoppRouteTMS.destinationId"), bean.getDestinationId(), RegtoppException.ERROR.TMS_INVALID_OPTIONAL_ID_REFERENCE, getMessage("label.validation.invalidOptionalReference"))));
 			result = false;
 		}
 
-		if (isNotNull(bean.getRemarkId()) || dao.getFootnoteById().containsKey(bean.getRemarkId())){
+		if (isNotNull(bean.getRemarkId()) && dao.getFootnoteById().containsKey(bean.getRemarkId())){
 			bean.getOkTests().add(RegtoppException.ERROR.TMS_INVALID_OPTIONAL_ID_REFERENCE);
 		} else {
 			bean.getErrors().add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(), getMessage("label.regtoppRouteTMS.remarkId"), bean.getRemarkId(), RegtoppException.ERROR.TMS_INVALID_OPTIONAL_ID_REFERENCE, getMessage("label.validation.invalidOptionalReference"))));

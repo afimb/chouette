@@ -59,7 +59,6 @@ public class RegtoppLineParserCommand implements Command {
 
 			// Populate shared connection links
 			if (referential.getSharedConnectionLinks().isEmpty()) {
-				log.info("Parsing ConnectionLinks");
 				Parser connectionLinkParser = versionHandler.createConnectionLinkParser();
 				connectionLinkParser.parse(context);
 			}

@@ -133,9 +133,9 @@ public class RegtoppImporter {
 				throw new RegtoppException(context, e);
 			}
 
+			index.validate(context,parseableFile);
 		}
 		
-		index.validate(context,parseableFile);
 		
 		return index;
 	}

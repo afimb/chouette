@@ -10,7 +10,10 @@ public class IndexImplTest {
 	@Test 
 	public void testIsNotNullString() {
 		Assert.assertTrue(IndexImpl.isNull("0000"));
+		Assert.assertTrue(IndexImpl.isNull("    "));
+		Assert.assertTrue(IndexImpl.isNull(""));
 		Assert.assertTrue(IndexImpl.isNotNull("0001"));
+		Assert.assertTrue(IndexImpl.isNotNull("1"));
 	}
 	
 }
