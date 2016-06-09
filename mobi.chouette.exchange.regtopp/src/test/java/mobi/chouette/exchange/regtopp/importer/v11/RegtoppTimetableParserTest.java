@@ -171,7 +171,7 @@ public class RegtoppTimetableParserTest {
 	
 	private RegtoppDayCodeDKO create(String dayCode) {
 		RegtoppDayCodeDKO entry = new RegtoppDayCodeDKO();
-		entry.setDayCode(dayCode);
+		entry.setDayCodeHack(dayCode.toCharArray());
 		entry.setDayCodeId("0001");
 		return entry;
 	}

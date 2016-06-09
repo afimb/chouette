@@ -48,8 +48,15 @@ public class RegtoppLineParserCommand implements Command {
 				referential.clear(true);
 			}
 
+			if(referential == null) {
+				log.error("Referential is null!");
+			}
+			
 			VersionHandler versionHandler = (VersionHandler) context.get(RegtoppConstant.VERSION_HANDLER);
 
+			if(versionHandler == null) {
+				log.error("Versionhandler is null!");
+			}
 
 			// Populate shared stops
 			if (referential.getSharedStopAreas().isEmpty()) {
@@ -69,55 +76,17 @@ public class RegtoppLineParserCommand implements Command {
 				timetableParser.parse(context);
 			}
 
-			// Parse Routes + JourneyPattern
-			
-			// Parse VehicleJourneys
-			
-			
 			// Parse this line only
 			RegtoppLineParser lineParser = (RegtoppLineParser) ParserFactory.create(RegtoppLineParser.class.getName());
 			lineParser.setLineId(lineId);
 			lineParser.parse(context);
 
-			//
-			// // ConnectionLink
-			// if (importer.hasTransferImporter()) {
-			// if (referential.getSharedConnectionLinks().isEmpty()) {
-			// GtfsTransferParser gtfsTransferParser = (GtfsTransferParser) ParserFactory
-			// .create(GtfsTransferParser.class.getName());
-			// gtfsTransferParser.parse(context);
-			// }
-			// }
-			//
-			// if (configuration.getMaxDistanceForCommercial() > 0)
-			// {
-			// CommercialStopGenerator commercialStopGenerator = new CommercialStopGenerator();
-			// commercialStopGenerator.createCommercialStopPoints(context);
-			// }
-			//
-			// if (configuration.getMaxDistanceForConnectionLink() > 0)
-			// {
-			// ConnectionLinkGenerator connectionLinkGenerator = new ConnectionLinkGenerator();
-			// connectionLinkGenerator.createConnectionLinks(context);
-			//
-			// }
-			//
-			// // Timetable
-			// if (referential.getSharedTimetables().isEmpty()) {
-			// GtfsCalendarParser gtfsCalendarParser = (GtfsCalendarParser) ParserFactory
-			// .create(GtfsCalendarParser.class.getName());
-			// gtfsCalendarParser.parse(context);
-			// }
-			//
-			// // Line
-			// GtfsRouteParser gtfsRouteParser = (GtfsRouteParser) ParserFactory.create(GtfsRouteParser.class.getName());
-			// gtfsRouteParser.setGtfsRouteId(lineId);
-			// gtfsRouteParser.parse(context);
 
 			addStats(report, referential);
 			result = SUCCESS;
 		} catch (Exception e) {
-			log.error("error : ", e);
+			log.error("Failed hard to parse line:", e);
+			e.printStackTrace();
 			throw e;
 		}
 
