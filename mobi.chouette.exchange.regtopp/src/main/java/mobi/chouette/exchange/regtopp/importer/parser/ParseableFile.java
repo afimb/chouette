@@ -10,6 +10,12 @@ import mobi.chouette.exchange.report.FileInfo;
 
 @AllArgsConstructor
 public class ParseableFile<T> {
+	@Override
+	public String toString() {
+		return "ParseableFile [file=" + file.getAbsolutePath() + ", regtoppClasses=" + regtoppClasses + ", fileInfo=" + fileInfo
+				+ "]";
+	}
+
 	@Getter
 	private File file;
 

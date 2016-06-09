@@ -50,6 +50,7 @@ public class FileContentParser<T> {
 	}
 
 	public void parse(final Context context, final RegtoppValidationReporter validationReporter) throws Exception {
+		log.info(this.hashCode() +" Starting to parse "+parseableFile);
 		StreamFactory factory = StreamFactory.newInstance();
 
 		StreamBuilder builder = new StreamBuilder("regtopp");
@@ -98,7 +99,7 @@ public class FileContentParser<T> {
 									rContext.getRecordText(), parseableFile.getInvalidFieldValue(), error);
 							RegtoppException e = new RegtoppException(ctx, ex);
 							errors.add(e);
-							log.warn("Field error parsing record " + recordNameLabel + " in file " + fileName + " at line " + rContext.getLineNumber() + ":"
+							log.warn(this.hashCode()+ " Field error parsing record " + recordNameLabel + " in file " + fileName + " at line " + rContext.getLineNumber() + ":"
 									+ error);
 						}
 					}
@@ -154,7 +155,7 @@ public class FileContentParser<T> {
 				((RegtoppObject) record).setRecordLineNumber(in.getLineNumber());
 				rawContent.add(record);
 			}
-			log.info("Parsed file OK: " + parseableFile.getFile().getName());
+			log.info(this.hashCode() +" Parsed file OK: " + parseableFile);
 			parseableFile.getFileInfo().setStatus(FILE_STATE.OK);
 		} catch (RuntimeException ex) {
 			log.error("Unexpected error while parsing", ex);
@@ -164,11 +165,17 @@ public class FileContentParser<T> {
 		if (errors.size() > 0) {
 			validationReporter.reportErrors(context, errors, fileName);
 		}
+		log.info(this.hashCode() +" Finished parsing "+parseableFile);
 
 	}
 
 	public void dispose() {
 		rawContent.clear();
+	}
+
+	@Override
+	public String toString() {
+		return "FileContentParser [parseableFile=" + parseableFile + "]";
 	}
 
 }

@@ -90,25 +90,27 @@ public abstract class TripIndex extends IndexImpl<AbstractRegtoppTripIndexTIX> {
 								, tix.getDestinationIdDepartureRef(), RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE, errorMessage)));
 				result = false;
 			} else {
-				if (isNotNull(bean.getDestinationIdDepartureRef())
-						&& dao.getDestinationById().containsKey(bean.getDestinationIdDepartureRef())) {
-					bean.getOkTests().add(RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE);
-				} else {
-					bean.getErrors()
-							.add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(),
-									getMessage("label.regtoppTripIndexTIX.destinationIdDepartureRef"), bean.getDestinationIdDepartureRef(), RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE,
-									getMessage("label.validation.invalidOptionalReference"))));
-					result = false;
+				if (isNotNull(bean.getDestinationIdDepartureRef())) {
+					if(dao.getDestinationById().containsKey(bean.getDestinationIdDepartureRef())) {
+						bean.getOkTests().add(RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE);
+					} else {
+						bean.getErrors()
+						.add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(),
+								getMessage("label.regtoppTripIndexTIX.destinationIdDepartureRef"), bean.getDestinationIdDepartureRef(), RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE,
+								getMessage("label.validation.invalidOptionalReference"))));
+						result = false;
+					}
 				}
-
-				if (isNotNull(tix.getDestinationIdArrivalRef()) && dao.getDestinationById().containsKey(tix.getDestinationIdArrivalRef())) {
-					bean.getOkTests().add(RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE);
-				} else {
-					bean.getErrors()
-							.add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(),
-									getMessage("label.regtoppTripIndexTIX.destinationIdArrivalRef"), tix.getDestinationIdArrivalRef(), RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE,
-									getMessage("label.validation.invalidOptionalReference"))));
-					result = false;
+				if (isNotNull(tix.getDestinationIdArrivalRef())) {
+					if(dao.getDestinationById().containsKey(tix.getDestinationIdArrivalRef())) {
+						bean.getOkTests().add(RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE);
+					} else {
+						bean.getErrors()
+						.add(new RegtoppException(new FileParserValidationError(getUnderlyingFilename(), bean.getRecordLineNumber(),
+								getMessage("label.regtoppTripIndexTIX.destinationIdArrivalRef"), tix.getDestinationIdArrivalRef(), RegtoppException.ERROR.TIX_INVALID_OPTIONAL_ID_REFERENCE,
+								getMessage("label.validation.invalidOptionalReference"))));
+						result = false;
+					}
 				}
 			}
 		} else {
