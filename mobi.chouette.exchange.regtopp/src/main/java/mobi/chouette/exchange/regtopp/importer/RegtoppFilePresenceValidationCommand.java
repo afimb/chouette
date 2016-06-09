@@ -214,27 +214,32 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 		return result;
 	}
 
-	private int findLineLength(Path path, String string) throws IOException {
-		List<Path> list = FileUtil.listFiles(path, "*");
-		int lineLength = -1;
+	private int findLineLength(Path rootDir, String fileExtension) throws IOException {
+		log.info("Looking for files in path "+rootDir);
+
+		List<Path> list = FileUtil.listFiles(rootDir, "*");
 		for (Path fileName : list) {
+			log.info("Matching "+fileName+" for fileExtension "+fileExtension+" to find lineLength");
 			String name = fileName.getFileName().toString().toUpperCase();
-			if (name.endsWith(string)) {
+			if (name.endsWith(fileExtension)) {
 				FileInputStream is = new FileInputStream(fileName.toFile());
 				InputStreamReader isr = new InputStreamReader(is, FileContentParser.REGTOPP_CHARSET);
 				BufferedReader buffReader = new BufferedReader(isr);
 				String line = buffReader.readLine();
-				lineLength = line.length();
+				int lineLength = line.length();
 				buffReader.close();
+				return lineLength;
 			}
 		}
 
-		return lineLength;
+		return -1;
 	}
 
 	private boolean hasFileExtension(Path rootDir, String fileExtension) throws IOException {
+		log.info("Looking for files in path "+rootDir);
 		List<Path> list = FileUtil.listFiles(rootDir, "*");
 		for (Path fileName : list) {
+			log.info("Matching "+fileName+" for fileExtension "+fileExtension);
 			String name = fileName.getFileName().toString().toUpperCase();
 			if (name.endsWith(fileExtension)) {
 				return true;
