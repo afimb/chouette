@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.gtfs.exporter;
 
+import java.nio.file.Paths;
 import java.util.Date;
 
 import mobi.chouette.exchange.parameters.AbstractExportParameter;
@@ -76,6 +77,9 @@ public class GtfsExporterInputValidatorTests
 		parameters.setObjectIdPrefix("GTFS");
 		result = validator.checkFilename("data.zip");
 		Assert.assertFalse(result, "check for no filename");
+		
+		result = validator.checkFile("", Paths.get("bidon"), null);
+		Assert.assertFalse(result, "check for bad zip file");
 	}
 
 

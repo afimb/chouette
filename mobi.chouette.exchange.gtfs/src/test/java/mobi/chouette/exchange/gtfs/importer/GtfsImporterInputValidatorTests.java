@@ -1,5 +1,7 @@
 package mobi.chouette.exchange.gtfs.importer;
 
+import java.nio.file.Paths;
+
 import mobi.chouette.exchange.parameters.AbstractExportParameter;
 
 import org.testng.Assert;
@@ -23,6 +25,13 @@ public class GtfsImporterInputValidatorTests
 		 result = validator.checkFilename("data.txt");
 
 		Assert.assertTrue(result, "check for good file name ");
+		
+		result = validator.checkFile("good.txt", Paths.get("/home/gjamot/Bureau/CITYWAY/WORKSPACE/chouette/mobi.chouette.exchange.gtfs/src/test/data/good.txt"), null);
+		Assert.assertTrue(result, "check for good txt file");
+		
+		
+		result = validator.checkFile("good.zip", Paths.get("/home/gjamot/Bureau/CITYWAY/WORKSPACE/chouette/mobi.chouette.exchange.gtfs/src/test/data/good.zip"), null);
+		Assert.assertTrue(result, "check for good zip file");
 	}
 
 	@Test(groups = { "InputValidator" }, description = "test bad inputs")
@@ -51,6 +60,11 @@ public class GtfsImporterInputValidatorTests
 		parameters.setObjectIdPrefix("GTFS");
 		result = validator.checkFilename(null);
 		Assert.assertFalse(result, "check for filename");
+		
+		
+		result = validator.checkFile("bad.zip", Paths.get("/home/gjamot/Bureau/CITYWAY/WORKSPACE/chouette/mobi.chouette.exchange.gtfs/src/test/data/bad.zip"), null);
+		Assert.assertFalse(result, "check for bad zip file");
+		
 	}
 
 

@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.sig.exporter;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Arrays;
 
 import lombok.extern.log4j.Log4j;
@@ -73,6 +74,15 @@ public class SigExporterInputValidator extends AbstractInputValidator {
 	public boolean checkFilename(String fileName) {
 		if (fileName != null)
 		{
+			log.error("input data not expected");
+			return false;
+		}
+		return true;
+	}
+	
+	@Override
+	public boolean checkFile(String fileName, Path filePath, AbstractParameter abstractParameter) {
+		if (fileName != null) {
 			log.error("input data not expected");
 			return false;
 		}
