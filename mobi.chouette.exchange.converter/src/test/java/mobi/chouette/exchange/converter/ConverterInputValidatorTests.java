@@ -1,5 +1,7 @@
 package mobi.chouette.exchange.converter;
 
+import java.nio.file.Paths;
+
 import mobi.chouette.exchange.gtfs.exporter.GtfsExportParameters;
 import mobi.chouette.exchange.neptune.exporter.NeptuneExportParameters;
 import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
@@ -30,8 +32,9 @@ public class ConverterInputValidatorTests
 		boolean result = validator.checkParameters(parameters,null);
 		Assert.assertTrue(result, "check for good parameters");
 		
-		result = validator.checkFilename("data.zip");
-		Assert.assertTrue(result, "check for good file name");
+		result = validator.checkFile("good.zip", Paths.get("/home/gjamot/Bureau/CITYWAY/WORKSPACE/chouette/mobi.chouette.exchange.converter/src/test/data/good.zip"), parameters);
+		Assert.assertTrue(result, "check for good zip file");
+		
 	}
 
 	@Test(groups = { "InputValidator" }, description = "test bad inputs")
@@ -69,6 +72,9 @@ public class ConverterInputValidatorTests
 		Assert.assertFalse(result, "check for missing filename");
 		result = validator.checkFilename("test.rar");
 		Assert.assertFalse(result, "check for filename type ");
+		
+		result = validator.checkFile("bad.zip", Paths.get("/home/gjamot/Bureau/CITYWAY/WORKSPACE/chouette/mobi.chouette.exchange.converter/src/test/data/bad.zip"), parameters);
+		Assert.assertFalse(result, "check for bad zip file");
 	}
 
 

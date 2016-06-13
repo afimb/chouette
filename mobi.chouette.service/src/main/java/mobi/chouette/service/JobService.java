@@ -110,7 +110,12 @@ public class JobService implements JobData, ServiceConstants {
 				throw new RequestServiceException(RequestExceptionCode.INVALID_PARAMETERS, "");
 			if (!validator.checkFilename(job.getInputFilename()))
 				throw new RequestServiceException(RequestExceptionCode.INVALID_FILE_FORMAT, "");
-
+			
+			if (inputStreamName != null) {
+				if (!validator.checkFile(job.getInputFilename(), filePath(inputStreamName), parameters.getConfiguration()))
+					throw new RequestServiceException(RequestExceptionCode.INVALID_FORMAT, "");
+			}
+			
 			JSONUtil.toJSON(filePath(ACTION_PARAMETERS_FILE), parameters.getConfiguration());
 			addLink(MediaType.APPLICATION_JSON, Link.ACTION_PARAMETERS_REL);
 

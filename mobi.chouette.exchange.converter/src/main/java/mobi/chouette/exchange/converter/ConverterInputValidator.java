@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.converter;
 
 import java.io.IOException;
+import java.nio.file.Path;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.JSONUtil;
@@ -128,6 +129,49 @@ public class ConverterInputValidator extends AbstractInputValidator {
 			return false;
 		}
 
+		return true;
+	}
+	
+	@Override
+	public boolean checkFile(String fileName, Path pathFile, AbstractParameter abstractParameter) {
+		if (!(abstractParameter instanceof ConvertParameters)) {
+			log.error("invalid parameters for converter " + abstractParameter.getClass().getName());
+			return false;
+		}
+
+		ConvertParameters parameters = (ConvertParameters) abstractParameter;
+		if (parameters.getImportConfiguration() == null) {
+			log.error("missing import parameters for converter ");
+			return false;
+		}
+		if (parameters.getExportConfiguration() == null) {
+			log.error("missing export parameters for converter ");
+			return false;
+		}
+		
+		InputValidator importValidator = null;
+		String importFormat = "unknown";
+
+		if (parameters.getImportConfiguration() instanceof NeptuneImportParameters) {
+			importFormat = "neptune";
+		} else if (parameters.getImportConfiguration() instanceof GtfsImportParameters) {
+			importFormat = "gtfs";
+		} else if (parameters.getImportConfiguration() instanceof NetexImportParameters) {
+			importFormat = "netex";
+		} else {
+			log.error("unknown import format for converter " + parameters.getImportConfiguration().getClass().getName());
+			return false;
+		}
+
+		try {
+			importValidator = InputValidatorFactory.create(getCommandInputValidatorName(importFormat, "importer"));
+		} catch (ClassNotFoundException | IOException e) {
+			log.error("missing import module for converter " + parameters.getImportConfiguration().getClass().getName());
+			return false;
+		}
+		
+		if (!importValidator.checkFile(fileName, pathFile, parameters.getImportConfiguration()))
+			return false;
 		return true;
 	}
 

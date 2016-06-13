@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.neptune.importer;
 
 import java.io.IOException;
+import java.nio.file.Path;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.JSONUtil;
@@ -59,6 +60,11 @@ public class NeptuneImporterInputValidator extends AbstractInputValidator {
 
 		return true;
 
+	}
+	
+	@Override
+	public boolean checkFile(String fileName, Path filePath, AbstractParameter abstractParameter) {
+		return checkFileExistenceInZip(fileName, filePath, "xml");
 	}
 
 	public static class DefaultFactory extends InputValidatorFactory {

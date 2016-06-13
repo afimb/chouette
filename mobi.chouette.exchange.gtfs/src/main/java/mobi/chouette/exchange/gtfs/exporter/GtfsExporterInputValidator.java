@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.gtfs.exporter;
 
 import java.io.IOException;
+import java.nio.file.Path;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.JSONUtil;
@@ -58,6 +59,15 @@ public class GtfsExporterInputValidator extends AbstractInputValidator {
 			return false;
 		}
 
+		return true;
+	}
+	
+	@Override
+	public boolean checkFile(String fileName, Path filePath, AbstractParameter abstractParameter) {
+		if (fileName != null) {
+			log.error("input data not expected");
+			return false;
+		}
 		return true;
 	}
 

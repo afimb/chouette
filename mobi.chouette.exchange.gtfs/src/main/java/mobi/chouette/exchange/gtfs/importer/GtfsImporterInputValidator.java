@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.gtfs.importer;
 
 import java.io.IOException;
+import java.nio.file.Path;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.JSONUtil;
@@ -64,6 +65,11 @@ public class GtfsImporterInputValidator extends AbstractInputValidator {
 		}
 
 		return true;
+	}
+	
+	@Override
+	public boolean checkFile(String fileName, Path filePath, AbstractParameter abstractParameter) {
+		return checkFileExistenceInZip(fileName, filePath, "txt");
 	}
 
 	public static class DefaultFactory extends InputValidatorFactory {

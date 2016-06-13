@@ -1,5 +1,7 @@
 package mobi.chouette.exchange.dummy.importer;
 
+import java.nio.file.Path;
+
 import mobi.chouette.common.JSONUtil;
 import mobi.chouette.exchange.AbstractInputValidator;
 import mobi.chouette.exchange.parameters.AbstractParameter;
@@ -28,6 +30,11 @@ public class DummyImporterInputValidator extends AbstractInputValidator {
 
 	@Override
 	public boolean checkFilename(String fileName) {
+		return true;
+	}
+	
+	@Override
+	public boolean checkFile(String fileName, Path filePath, AbstractParameter abstractParameter) {
 		return true;
 	}
 

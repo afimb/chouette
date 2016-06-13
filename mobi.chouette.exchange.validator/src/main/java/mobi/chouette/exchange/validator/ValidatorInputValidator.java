@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.validator;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.Arrays;
 
 import lombok.extern.log4j.Log4j;
@@ -72,6 +73,15 @@ public class ValidatorInputValidator extends AbstractInputValidator {
 			return false;
 		}
 
+		return true;
+	}
+	
+	@Override
+	public boolean checkFile(String fileName, Path pathFile, AbstractParameter abstractParameter) {
+		if (fileName != null) {
+			log.error("input data not expected");
+			return false;
+		}
 		return true;
 	}
 	
