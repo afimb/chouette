@@ -44,7 +44,7 @@ public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.p
 					String objectId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), StopArea.STOPAREA_KEY, stop.getStopId());
 
 					StopArea stopArea = ObjectFactory.getStopArea(referential, objectId);
-					stopArea.setName(stop.getFullName());
+					stopArea.setName(StringUtils.trimToNull(stop.getFullName()));
 					//stopArea.setRegistrationNumber(stop.getShortName());
 					stopArea.setAreaType(ChouetteAreaEnum.StopPlace);
 
@@ -58,8 +58,15 @@ public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.p
 
 						convertAndSetCoordinates(stopPoint, regtoppStopPoint.getX(), regtoppStopPoint.getY(), projection);
 
-						// Use parent name
-						stopPoint.setName(stopArea.getName());
+						if(stopArea.getName() != null) {
+							// Use parent stop area name
+							stopPoint.setName(stopArea.getName());
+						} else if(StringUtils.trimToNull(regtoppStopPoint.getDescription()) != null) {
+							// If parent is empty, use stop point description on both stop point and stop area
+							stopPoint.setName(StringUtils.trimToNull(regtoppStopPoint.getDescription()));
+							stopArea.setName(stopPoint.getName());
+						}
+						
 //						if (StringUtils.trimToNull(regtoppStopPoint.getDescription()) == null) {
 //							stopPoint.setName(stopArea.getName());
 //							log.warn("StopPoint with no description, using HPL stop name instead: " + regtoppStopPoint);
@@ -70,6 +77,11 @@ public class RegtoppStopParser extends mobi.chouette.exchange.regtopp.importer.p
 						stopPoint.setAreaType(ChouetteAreaEnum.BoardingPosition);
 
 						stopPoint.setParent(stopArea);
+					}
+					
+					if(stopArea.getName() == null) {
+						// Fallback, must have name
+						stopArea.setName("Noname");
 					}
 
 				} else {
