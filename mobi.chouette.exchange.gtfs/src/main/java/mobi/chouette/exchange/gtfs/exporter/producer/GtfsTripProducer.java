@@ -253,7 +253,9 @@ public class GtfsTripProducer extends AbstractProducer {
 		else
 			trip.setTripShortName(null);
 
-		if (!isEmpty(jp.getPublishedName()))
+		if (!isEmpty(vj.getPublishedJourneyName()))
+			trip.setTripHeadSign(vj.getPublishedJourneyName());
+		else if (!isEmpty(jp.getPublishedName()))
 			trip.setTripHeadSign(jp.getPublishedName());
 		else
 			trip.setTripHeadSign(null);
