@@ -41,7 +41,7 @@ public abstract class AbstractRegtoppStopHPL extends RegtoppObject implements Se
 
 	@Getter
 	@Setter
-	@Field(at = 12, length = 30)
+	@Field(at = 12, length = 30, trim = true)
 	protected String fullName;
 
 	@Getter
