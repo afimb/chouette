@@ -25,10 +25,10 @@ public class NeptuneImporterInputValidatorTests
 		result = validator.checkFilename("data.xml");
 		Assert.assertTrue(result, "check for good file name ");
 		
-		result = validator.checkFile("good.xml", Paths.get("/home/gjamot/Bureau/CITYWAY/WORKSPACE/chouette/mobi.chouette.exchange.neptune/src/test/data/good.xml"), null);
+		result = validator.checkFile("good.xml", Paths.get("src/test/data/good.xml"), null);
 		Assert.assertTrue(result, "check for good zip file");
 		
-		result = validator.checkFile("good.zip", Paths.get("/home/gjamot/Bureau/CITYWAY/WORKSPACE/chouette/mobi.chouette.exchange.neptune/src/test/data/good.zip"), null);
+		result = validator.checkFile("good.zip", Paths.get("src/test/data/good.zip"), null);
 		Assert.assertTrue(result, "check for good zip file");
 				
 	}
@@ -50,7 +50,7 @@ public class NeptuneImporterInputValidatorTests
 		Assert.assertFalse(result, "check for filename");
 		
 		
-		result = validator.checkFile("bad.zip", Paths.get("/home/gjamot/Bureau/CITYWAY/WORKSPACE/chouette/mobi.chouette.exchange.neptune/src/test/data/bad.zip"), parameters);
+		result = validator.checkFile("bad.zip", Paths.get("src/test/data/bad.zip"), parameters);
 		Assert.assertFalse(result, "check for bad zip file");
 		
 	}
