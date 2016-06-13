@@ -32,7 +32,7 @@ public class ConverterInputValidatorTests
 		boolean result = validator.checkParameters(parameters,null);
 		Assert.assertTrue(result, "check for good parameters");
 		
-		result = validator.checkFile("good.zip", Paths.get("/home/gjamot/Bureau/CITYWAY/WORKSPACE/chouette/mobi.chouette.exchange.converter/src/test/data/good.zip"), parameters);
+		result = validator.checkFile("good.zip", Paths.get("src/test/data/good.zip"), parameters);
 		Assert.assertTrue(result, "check for good zip file");
 		
 	}
@@ -73,7 +73,7 @@ public class ConverterInputValidatorTests
 		result = validator.checkFilename("test.rar");
 		Assert.assertFalse(result, "check for filename type ");
 		
-		result = validator.checkFile("bad.zip", Paths.get("/home/gjamot/Bureau/CITYWAY/WORKSPACE/chouette/mobi.chouette.exchange.converter/src/test/data/bad.zip"), parameters);
+		result = validator.checkFile("bad.zip", Paths.get("src/test/data/bad.zip"), parameters);
 		Assert.assertFalse(result, "check for bad zip file");
 	}
 
