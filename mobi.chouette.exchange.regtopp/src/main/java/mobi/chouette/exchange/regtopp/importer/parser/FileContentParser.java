@@ -51,10 +51,10 @@ public class FileContentParser<T> {
 	}
 
 	public void parse(final Context context, final RegtoppValidationReporter validationReporter) throws Exception {
-		log.info(this.hashCode() +" Starting to parse "+parseableFile);
+		log.info("Starting to parse "+parseableFile);
 		StreamFactory factory = StreamFactory.newInstance();
 
-		String streamName = "regtopp-"+UUID.randomUUID().toString();
+		String streamName = "regtopp";
 		StreamBuilder builder = new StreamBuilder(streamName);
 		builder.resourceBundle("mobi.chouette.exchange.regtopp.customMessages");
 		builder.format("fixedlength");
@@ -157,7 +157,7 @@ public class FileContentParser<T> {
 				((RegtoppObject) record).setRecordLineNumber(in.getLineNumber());
 				rawContent.add(record);
 			}
-			log.info(this.hashCode() +" Parsed file OK: " + parseableFile);
+			log.info("Parsed file OK: " + parseableFile);
 			parseableFile.getFileInfo().setStatus(FILE_STATE.OK);
 		} catch (RuntimeException ex) {
 			log.error("Unexpected error while parsing", ex);
@@ -167,7 +167,7 @@ public class FileContentParser<T> {
 		if (errors.size() > 0) {
 			validationReporter.reportErrors(context, errors, fileName);
 		}
-		log.info(this.hashCode() +" Finished parsing "+parseableFile);
+		log.info("Finished parsing "+parseableFile);
 
 	}
 
