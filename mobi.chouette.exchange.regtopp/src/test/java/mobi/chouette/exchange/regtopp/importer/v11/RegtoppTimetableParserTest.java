@@ -10,6 +10,7 @@ import org.testng.annotations.Test;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
 import mobi.chouette.exchange.regtopp.importer.parser.v11.RegtoppTimetableParser;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeDKO;
+import mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeHeaderDKO;
 import mobi.chouette.model.CalendarDay;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.type.DayTypeEnum;
@@ -28,7 +29,7 @@ public class RegtoppTimetableParserTest {
 
 		RegtoppImportParameters configuration = new RegtoppImportParameters();
 		Referential referential = new Referential();
-		Timetable timetable = parser.convertTimetable(referential, configuration, calStartDate, entry);
+		Timetable timetable = parser.convertTimetable(referential, configuration, calStartDate, entry,new RegtoppDayCodeHeaderDKO(new LocalDate(), 1));
 
 		Assert.assertNotNull(timetable);
 		Assert.assertEquals(new DateMidnight(timetable.getStartOfPeriod()), calStartDate.toDateMidnight());
@@ -49,7 +50,7 @@ public class RegtoppTimetableParserTest {
 
 		RegtoppImportParameters configuration = new RegtoppImportParameters();
 		Referential referential = new Referential();
-		Timetable timetable = parser.convertTimetable(referential, configuration, calStartDate, entry);
+		Timetable timetable = parser.convertTimetable(referential, configuration, calStartDate, entry,new RegtoppDayCodeHeaderDKO(new LocalDate(), 1));
 
 		Assert.assertEquals(new DateMidnight(timetable.getStartOfPeriod()), calStartDate.toDateMidnight());
 		Assert.assertEquals(new DateMidnight(timetable.getEndOfPeriod()), calStartDate.plusDays(154).toDateMidnight());
@@ -71,7 +72,7 @@ public class RegtoppTimetableParserTest {
 
 		RegtoppImportParameters configuration = new RegtoppImportParameters();
 		Referential referential = new Referential();
-		Timetable timetable = parser.convertTimetable(referential, configuration, calStartDate, entry);
+		Timetable timetable = parser.convertTimetable(referential, configuration, calStartDate, entry,new RegtoppDayCodeHeaderDKO(new LocalDate(), 1));
 
 		Assert.assertEquals(new DateMidnight(timetable.getEndOfPeriod()), calStartDate.plusDays(153).toDateMidnight());
 
@@ -92,7 +93,7 @@ public class RegtoppTimetableParserTest {
 
 		RegtoppImportParameters configuration = new RegtoppImportParameters();
 		Referential referential = new Referential();
-		Timetable timetable = parser.convertTimetable(referential, configuration, calStartDate, entry);
+		Timetable timetable = parser.convertTimetable(referential, configuration, calStartDate, entry,new RegtoppDayCodeHeaderDKO(new LocalDate(), 1));
 
 		Assert.assertEquals(new DateMidnight(timetable.getEndOfPeriod()), calStartDate.plusDays(152).toDateMidnight());
 
@@ -113,7 +114,7 @@ public class RegtoppTimetableParserTest {
 
 		RegtoppImportParameters configuration = new RegtoppImportParameters();
 		Referential referential = new Referential();
-		Timetable timetable = parser.convertTimetable(referential, configuration, calStartDate, entry);
+		Timetable timetable = parser.convertTimetable(referential, configuration, calStartDate, entry,new RegtoppDayCodeHeaderDKO(new LocalDate(), 1));
 
 		Assert.assertEquals(new DateMidnight(timetable.getEndOfPeriod()), calStartDate.plusDays(150).toDateMidnight());
 
@@ -134,7 +135,7 @@ public class RegtoppTimetableParserTest {
 
 		RegtoppImportParameters configuration = new RegtoppImportParameters();
 		Referential referential = new Referential();
-		Timetable timetable = parser.convertTimetable(referential, configuration, calStartDate, entry);
+		Timetable timetable = parser.convertTimetable(referential, configuration, calStartDate, entry,new RegtoppDayCodeHeaderDKO(new LocalDate(), 1));
 
 		Assert.assertEquals(new DateMidnight(timetable.getEndOfPeriod()), calStartDate.plusDays(38).toDateMidnight());
 
@@ -156,7 +157,7 @@ public class RegtoppTimetableParserTest {
 
 		RegtoppImportParameters configuration = new RegtoppImportParameters();
 		Referential referential = new Referential();
-		Timetable timetable = parser.convertTimetable(referential, configuration, calStartDate, entry);
+		Timetable timetable = parser.convertTimetable(referential, configuration, calStartDate, entry,new RegtoppDayCodeHeaderDKO(new LocalDate(), 1));
 
 		Assert.assertEquals(new DateMidnight(timetable.getEndOfPeriod()), calStartDate.plusDays(152).toDateMidnight());
 

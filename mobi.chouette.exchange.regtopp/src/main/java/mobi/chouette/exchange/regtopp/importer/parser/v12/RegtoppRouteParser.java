@@ -76,6 +76,7 @@ public class RegtoppRouteParser extends mobi.chouette.exchange.regtopp.importer.
 
 				JourneyPattern journeyPattern = ObjectFactory.getJourneyPattern(referential, chouetteJourneyPatternId);
 				journeyPattern.setRoute(route);
+				journeyPattern.setPublishedName(route.getPublishedName());
 
 				// Create stop point
 				String chouetteStopPointId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.STOPPOINT_KEY,

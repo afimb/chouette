@@ -85,6 +85,7 @@ public class RegtoppRouteParser extends LineSpecificParser {
 				JourneyPattern journeyPattern = ObjectFactory.getJourneyPattern(referential, chouetteJourneyPatternId);
 				if (!journeyPattern.isFilled()) {
 					journeyPattern.setRoute(route);
+					journeyPattern.setPublishedName(route.getPublishedName());
 
 					String firstStop = trip.getFirstStop();
 					Integer numStops = trip.getNumStops();
@@ -93,7 +94,7 @@ public class RegtoppRouteParser extends LineSpecificParser {
 						// TODO use another identifier as it causes duplicate stoppoints in route
 						String lineNumber = StringUtils.leftPad("" + (Integer.parseInt(firstStop) + i), 7, "0");
 						RegtoppRouteTDA routeSegment = routeIndex.getValue(lineNumber);
-
+						
 						// Create stop point
 						String chouetteStopPointId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.STOPPOINT_KEY,
 								routeKey.toString() + i);
@@ -142,6 +143,7 @@ public class RegtoppRouteParser extends LineSpecificParser {
 			RegtoppDestinationDST arrivalText = destinationIndex.getValue(destinationId);
 			if (arrivalText != null) {
 				route.setName(arrivalText.getDestinationText());
+				route.setPublishedName(route.getName());
 			}
 
 			route.setDirection(direction == DirectionType.Outbound ? PTDirectionEnum.A : PTDirectionEnum.R);

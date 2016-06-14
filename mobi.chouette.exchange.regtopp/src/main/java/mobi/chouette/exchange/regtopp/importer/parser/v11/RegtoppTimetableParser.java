@@ -25,6 +25,7 @@ import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
+import mobi.chouette.exchange.regtopp.importer.CalendarStrategy;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.importer.index.v11.DaycodeById;
@@ -52,12 +53,8 @@ public class RegtoppTimetableParser implements Parser {
 	@Override
 	public void parse(Context context) throws Exception {
 
-		// Her tar vi allerede konsistenssjekkede data (ref validate-metode over) og bygger opp tilsvarende struktur i chouette.
-		// Merk at import er linje-sentrisk, så man skal i denne klassen returnerer 1 line med x antall routes og stoppesteder, journeypatterns osv
 
 		Referential referential = (Referential) context.get(REFERENTIAL);
-
-		// Clear any previous data as this referential is reused / TODO
 
 		// Add all calendar entries to referential
 		RegtoppImporter importer = (RegtoppImporter) context.get(PARSER);
@@ -68,7 +65,7 @@ public class RegtoppTimetableParser implements Parser {
 		LocalDate calStartDate = header.getDate();
 		
 		for (RegtoppDayCodeDKO entry : dayCodeIndex) {
-			Timetable timetable = convertTimetable(referential, configuration, calStartDate, entry);
+			Timetable timetable = convertTimetable(referential, configuration, calStartDate, entry,header);
 			Timetable cloneTimetableAfterMidnight = cloneTimetableAfterMidnight(timetable);
 
 			referential.getSharedTimetables().put(cloneTimetableAfterMidnight.getObjectId(), cloneTimetableAfterMidnight);
@@ -77,9 +74,19 @@ public class RegtoppTimetableParser implements Parser {
 
 	}
 
-	public Timetable convertTimetable(Referential referential, RegtoppImportParameters configuration, LocalDate calStartDate, RegtoppDayCodeDKO entry) {
-		String chouetteTimetableId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.TIMETABLE_KEY, entry.getAdminCode()+entry.getDayCodeId());
-
+	public Timetable convertTimetable(Referential referential, RegtoppImportParameters configuration, LocalDate calStartDate, RegtoppDayCodeDKO entry, RegtoppDayCodeHeaderDKO header) {
+		
+		String chouetteTimetableId;
+		
+		switch(configuration.getCalendarStrategy()) {
+		case ADD:
+			 chouetteTimetableId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.TIMETABLE_KEY, entry.getAdminCode()+entry.getDayCodeId()+header.getDate().toString());
+			 break;
+		case OVERWRITE:
+			default:
+			chouetteTimetableId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.TIMETABLE_KEY, entry.getAdminCode()+entry.getDayCodeId());
+		}
+		
 		Timetable timetable = ObjectFactory.getTimetable(referential, chouetteTimetableId);
 
 		String dayCodesBinaryArray = entry.getDayCode();

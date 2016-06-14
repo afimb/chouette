@@ -21,7 +21,7 @@ import mobi.chouette.exchange.regtopp.importer.version.RegtoppVersion;
 @NoArgsConstructor
 @ToString(callSuper = true)
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(propOrder = { "objectIdPrefix", "referencesType", "version", "coordinateProjection" })
+@XmlType(propOrder = { "objectIdPrefix", "referencesType", "version", "coordinateProjection","calendarStrategy" })
 public class RegtoppImportParameters extends AbstractImportParameter {
 
 	@Getter
@@ -46,6 +46,13 @@ public class RegtoppImportParameters extends AbstractImportParameter {
 	@Setter
 	@XmlElement(name = "coordinate_projection", required = true)
 	private String coordinateProjection;
+
+	// Regtopp version
+	@Getter
+	@Setter
+	@XmlElement(name = "calendar_strategy", required = false)
+	private CalendarStrategy calendarStrategy = CalendarStrategy.ADD;
+
 
 	public boolean isValid(Logger log, String[] allowedTypes) {
 		if (!super.isValid(log))
