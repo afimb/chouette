@@ -16,12 +16,14 @@ import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.importer.index.Index;
+import mobi.chouette.exchange.regtopp.importer.index.v11.DaycodeById;
 import mobi.chouette.exchange.regtopp.importer.parser.AbstractConverter;
 import mobi.chouette.exchange.regtopp.importer.parser.RouteKey;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppRouteTMS;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.model.enums.AnnouncementType;
 import mobi.chouette.exchange.regtopp.model.enums.TransportType;
+import mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeHeaderDKO;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppDestinationDST;
 import mobi.chouette.exchange.regtopp.model.v12.RegtoppTripIndexTIX;
 import mobi.chouette.model.Company;
@@ -58,6 +60,9 @@ public class RegtoppTripParser extends mobi.chouette.exchange.regtopp.importer.p
 		List<Footnote> footnotes = line.getFootnotes();
 
 		Index<RegtoppDestinationDST> destinationIndex = importer.getDestinationById();
+
+		DaycodeById dayCodeIndex = (DaycodeById) importer.getDayCodeById();
+		RegtoppDayCodeHeaderDKO dayCodeHeader = dayCodeIndex.getHeader();
 
 		// Add VehicleJourneys
 		Index<AbstractRegtoppTripIndexTIX> tripIndex = importer.getTripIndex();
@@ -114,7 +119,7 @@ public class RegtoppTripParser extends mobi.chouette.exchange.regtopp.importer.p
 					}
 
 					// Link to timetable
-					Duration tripDepartureTime = linkVehicleJourneyToTimetable(referential, configuration, trip, vehicleJourney);
+					Duration tripDepartureTime = linkVehicleJourneyToTimetable(referential, configuration, trip, vehicleJourney,dayCodeHeader);
 
 					// TODO this must be precomputed instead of iterating over tens of thousands of records for each trip.
 					for (AbstractRegtoppRouteTMS vehicleStop : importer.getRouteIndex()) {
