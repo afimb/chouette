@@ -215,11 +215,11 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 	}
 
 	private int findLineLength(Path rootDir, String fileExtension) throws IOException {
-		log.info("Looking for files in path "+rootDir);
+//		log.info("Looking for files in path "+rootDir);
 
 		List<Path> list = FileUtil.listFiles(rootDir, "*");
 		for (Path fileName : list) {
-			log.info("Matching "+fileName+" for fileExtension "+fileExtension+" to find lineLength");
+//			log.info("Matching "+fileName+" for fileExtension "+fileExtension+" to find lineLength");
 			String name = fileName.getFileName().toString().toUpperCase();
 			if (name.endsWith(fileExtension)) {
 				FileInputStream is = new FileInputStream(fileName.toFile());
@@ -236,10 +236,10 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 	}
 
 	private boolean hasFileExtension(Path rootDir, String fileExtension) throws IOException {
-		log.info("Looking for files in path "+rootDir);
+//		log.info("Looking for files in path "+rootDir);
 		List<Path> list = FileUtil.listFiles(rootDir, "*");
 		for (Path fileName : list) {
-			log.info("Matching "+fileName+" for fileExtension "+fileExtension);
+//			log.info("Matching "+fileName+" for fileExtension "+fileExtension);
 			String name = fileName.getFileName().toString().toUpperCase();
 			if (name.endsWith(fileExtension)) {
 				return true;
