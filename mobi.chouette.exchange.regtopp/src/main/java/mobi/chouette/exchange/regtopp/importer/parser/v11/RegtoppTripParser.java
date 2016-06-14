@@ -18,11 +18,13 @@ import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImportParameters;
 import mobi.chouette.exchange.regtopp.importer.RegtoppImporter;
 import mobi.chouette.exchange.regtopp.importer.index.Index;
+import mobi.chouette.exchange.regtopp.importer.index.v11.DaycodeById;
 import mobi.chouette.exchange.regtopp.importer.parser.AbstractConverter;
 import mobi.chouette.exchange.regtopp.importer.parser.LineSpecificParser;
 import mobi.chouette.exchange.regtopp.importer.parser.RouteKey;
 import mobi.chouette.exchange.regtopp.model.AbstractRegtoppTripIndexTIX;
 import mobi.chouette.exchange.regtopp.model.enums.TransportType;
+import mobi.chouette.exchange.regtopp.model.v11.RegtoppDayCodeHeaderDKO;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppDestinationDST;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppFootnoteMRK;
 import mobi.chouette.exchange.regtopp.model.v11.RegtoppRouteTDA;
@@ -44,8 +46,6 @@ import mobi.chouette.model.util.Referential;
 
 @Log4j
 public class RegtoppTripParser extends LineSpecificParser {
-
-	
 
 	/*
 	 * Validation rules of type III are checked at this step.
@@ -69,6 +69,9 @@ public class RegtoppTripParser extends LineSpecificParser {
 		Index<RegtoppDestinationDST> destinationIndex = importer.getDestinationById();
 		Index<RegtoppRouteTDA> routeIndex = importer.getRouteSegmentByLineNumber();
 
+		DaycodeById dayCodeIndex = (DaycodeById) importer.getDayCodeById();
+		RegtoppDayCodeHeaderDKO dayCodeHeader = dayCodeIndex.getHeader();
+
 		// Add VehicleJourneys
 		Index<AbstractRegtoppTripIndexTIX> tripIndex = importer.getTripIndex();
 		for (AbstractRegtoppTripIndexTIX abstractTrip : tripIndex) {
@@ -90,7 +93,7 @@ public class RegtoppTripParser extends LineSpecificParser {
 					String chouetteJourneyPatternId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.JOURNEYPATTERN_KEY,
 							routeKey.toString());
 					JourneyPattern journeyPattern = ObjectFactory.getJourneyPattern(referential, chouetteJourneyPatternId);
-					
+
 					VehicleJourney vehicleJourney = ObjectFactory.getVehicleJourney(referential, chouetteVehicleJourneyId);
 
 					// Add operator company
@@ -113,21 +116,21 @@ public class RegtoppTripParser extends LineSpecificParser {
 					vehicleJourney.setRoute(route);
 
 					boolean byRequestOnly = false;
-					if(trip.getTypeOfService() == TransportType.FlexibleBus) {
+					if (trip.getTypeOfService() == TransportType.FlexibleBus) {
 						byRequestOnly = true;
 						line.setFlexibleService(Boolean.TRUE);
 					}
-					
+
 					// Link to timetable
-					Duration tripDepartureTime = linkVehicleJourneyToTimetable(referential, configuration, trip, vehicleJourney);
+					Duration tripDepartureTime = linkVehicleJourneyToTimetable(referential, configuration, trip, vehicleJourney, dayCodeHeader);
 
 					for (StopPoint p : journeyPattern.getStopPoints()) {
 						// Warn: Hack. Using comment as temporary holder
 						RegtoppRouteTDA vehicleStop = routeIndex.getValue(p.getComment());
 						try {
-							addVehicleJourneyAtStop(vehicleJourney, tripDepartureTime, p,
-									vehicleStop.getDriverTimeArrival(), vehicleStop.getDriverTimeDeparture(),byRequestOnly);
-							
+							addVehicleJourneyAtStop(vehicleJourney, tripDepartureTime, p, vehicleStop.getDriverTimeArrival(),
+									vehicleStop.getDriverTimeDeparture(), byRequestOnly);
+
 						} catch (Exception e) {
 							log.error("Error parsing vehicleStop: " + vehicleStop, e);
 						}
@@ -139,54 +142,64 @@ public class RegtoppTripParser extends LineSpecificParser {
 				}
 			}
 		}
-		
+
 		estimateMissingPassingTimes(referential);
 	}
-	
+
 	protected void estimateMissingPassingTimes(Referential referential) {
-		for(VehicleJourney vj: referential.getVehicleJourneys().values()) {
-			for(int i=0;i<vj.getVehicleJourneyAtStops().size();i++) {
+		for (VehicleJourney vj : referential.getVehicleJourneys().values()) {
+			for (int i = 0; i < vj.getVehicleJourneyAtStops().size(); i++) {
 				VehicleJourneyAtStop vStop = vj.getVehicleJourneyAtStops().get(i);
-				if(vStop.getDepartureTime() == null && vStop.getArrivalTime() == null) {
+				if (vStop.getDepartureTime() == null && vStop.getArrivalTime() == null) {
 					// Estimate
-					if(i == 0) {
+					if (i == 0) {
 						// First stop
 						// Use second stop time
-						VehicleJourneyAtStop after = vj.getVehicleJourneyAtStops().get(i+1);
+						VehicleJourneyAtStop after = vj.getVehicleJourneyAtStops().get(i + 1);
 						vStop.setDepartureTime(after.getDepartureTime());
 						vStop.setArrivalTime(after.getArrivalTime());
-					} else if (i == vj.getVehicleJourneyAtStops().size()-1) {
+					} else if (i == vj.getVehicleJourneyAtStops().size() - 1) {
 						// Last stop
-						VehicleJourneyAtStop before = vj.getVehicleJourneyAtStops().get(i-1);
+						VehicleJourneyAtStop before = vj.getVehicleJourneyAtStops().get(i - 1);
 						vStop.setDepartureTime(before.getDepartureTime());
 						vStop.setArrivalTime(before.getArrivalTime());
 					} else {
 						// In the middle of journey pattern
-						VehicleJourneyAtStop before = vj.getVehicleJourneyAtStops().get(i-1);
-						VehicleJourneyAtStop after = vj.getVehicleJourneyAtStops().get(i+1);
-				
-						vStop.setArrivalTime(interpolate(before.getArrivalTime(),after.getArrivalTime()));
-						vStop.setDepartureTime(interpolate(before.getDepartureTime(),after.getDepartureTime()));
+						VehicleJourneyAtStop before = vj.getVehicleJourneyAtStops().get(i - 1);
+						VehicleJourneyAtStop after = vj.getVehicleJourneyAtStops().get(i + 1);
+
+						vStop.setArrivalTime(interpolate(before.getArrivalTime(), after.getArrivalTime()));
+						vStop.setDepartureTime(interpolate(before.getDepartureTime(), after.getDepartureTime()));
 					}
 				}
 			}
 		}
 	}
-	
+
 	protected Time interpolate(Time start, Time end) {
 		Time t = null;
-		
-		if(start != null && end != null) {
-		long duration = end.getTime() - start.getTime();
-		 t = new Time(start.getTime() + (duration/2));
+
+		if (start != null && end != null) {
+			long duration = end.getTime() - start.getTime();
+			t = new Time(start.getTime() + (duration / 2));
 		}
 		return t;
 	}
 
 	protected Duration linkVehicleJourneyToTimetable(Referential referential, RegtoppImportParameters configuration, AbstractRegtoppTripIndexTIX trip,
-			VehicleJourney vehicleJourney) {
-		String chouetteTimetableId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.TIMETABLE_KEY,
-				trip.getAdminCode()+trip.getDayCodeRef());
+			VehicleJourney vehicleJourney, RegtoppDayCodeHeaderDKO header) {
+		String chouetteTimetableId;
+
+		switch (configuration.getCalendarStrategy()) {
+		case ADD:
+			chouetteTimetableId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.TIMETABLE_KEY,
+					trip.getAdminCode() + trip.getDayCodeRef() + header.getDate().toString());
+			break;
+		case OVERWRITE:
+		default:
+			chouetteTimetableId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.TIMETABLE_KEY,
+					trip.getAdminCode() + trip.getDayCodeRef());
+		}
 
 		// Duration since midnight
 		Duration tripDepartureTime = trip.getDepartureTime();
@@ -200,8 +213,7 @@ public class RegtoppTripParser extends LineSpecificParser {
 	}
 
 	protected Company createOperator(Referential referential, RegtoppImportParameters configuration, String operatorCode) {
-		String chouetteOperatorId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.COMPANY_KEY,
-				operatorCode);
+		String chouetteOperatorId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.COMPANY_KEY, operatorCode);
 		Company operator = ObjectFactory.getCompany(referential, chouetteOperatorId);
 		if (!operator.isFilled()) {
 			operator.setRegistrationNumber(operatorCode);
@@ -242,14 +254,14 @@ public class RegtoppTripParser extends LineSpecificParser {
 			}
 
 		}
-		
+
 		vehicleJourneyAtStop.setStopPoint(p);
-		
-		if(byRequestOnly) {
+
+		if (byRequestOnly) {
 			// Override alighting/boarding
 			vehicleJourneyAtStop.setBoardingAlightingPossibility(BoardingAlightingPossibilityEnum.BoardAndAlightOnRequest);
 		}
-		
+
 		return vehicleJourneyAtStop;
 	}
 
