@@ -11,6 +11,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import lombok.Data;
 import lombok.ToString;
+import mobi.chouette.exchange.validation.report.ValidationReporter.RESULT;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -27,9 +28,6 @@ public class CheckPointReport {
 		WARNING, ERROR, IMPROVMENT
 	};
 
-	public enum RESULT {
-		UNCHECK, OK, NOK
-	};
 
 	@XmlElement(name = "test_id", required = true)
 	private String name;
