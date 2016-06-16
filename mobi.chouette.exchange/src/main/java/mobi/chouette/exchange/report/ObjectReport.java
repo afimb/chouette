@@ -10,8 +10,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlType;
 
-import mobi.chouette.exchange.report.LineInfo.LINE_STATE;
-import mobi.chouette.exchange.validation.report.CheckPointReport.RESULT;
 import mobi.chouette.model.Line;
 
 import org.codehaus.jettison.json.JSONArray;

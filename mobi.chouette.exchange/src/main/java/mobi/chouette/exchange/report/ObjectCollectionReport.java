@@ -11,16 +11,12 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
+import lombok.Data;
+import lombok.ToString;
+
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
-
-import lombok.Data;
-import lombok.ToString;
-import mobi.chouette.exchange.validation.report.CheckPoint;
-import mobi.chouette.exchange.validation.report.Detail;
-import mobi.chouette.exchange.validation.report.CheckPoint.RESULT;
-import mobi.chouette.exchange.validation.report.CheckPoint.SEVERITY;
 
 @Data
 @ToString

@@ -5,7 +5,6 @@ import mobi.chouette.common.Context;
 import mobi.chouette.exchange.model.DataLocation;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
-import mobi.chouette.exchange.validation.report.CheckPointReport.RESULT;
 
 public class ValidationReporterImpl implements ValidationReporter, Constant{
 
@@ -18,10 +17,10 @@ public class ValidationReporterImpl implements ValidationReporter, Constant{
 			if (validationReport.findCheckPointReportByName(key) == null) {
 				if (severities[i - 1].equals("W")) {
 					validationReport.addCheckPointReport(
-							new CheckPointReport(key, CheckPointReport.RESULT.UNCHECK, CheckPointReport.SEVERITY.WARNING));
+							new CheckPointReport(key, RESULT.UNCHECK, CheckPointReport.SEVERITY.WARNING));
 				} else {
 					validationReport.addCheckPointReport(
-							new CheckPointReport(key, CheckPointReport.RESULT.UNCHECK, CheckPointReport.SEVERITY.ERROR));
+							new CheckPointReport(key, RESULT.UNCHECK, CheckPointReport.SEVERITY.ERROR));
 				}
 			}
 		}
@@ -87,8 +86,8 @@ public class ValidationReporterImpl implements ValidationReporter, Constant{
 		CheckPointReport checkPoint = validationReport.findCheckPointReportByName(checkpointName);
 		report.addFileInfo(filenameInfo, FILE_STATE.OK);
 		
-		if (checkPoint.getState().equals(CheckPointReport.RESULT.UNCHECK))
-			checkPoint.setState(CheckPointReport.RESULT.OK);
+		if (checkPoint.getState().equals(RESULT.UNCHECK))
+			checkPoint.setState(RESULT.OK);
 	}
 
 	@Override
@@ -96,8 +95,8 @@ public class ValidationReporterImpl implements ValidationReporter, Constant{
 		ValidationReport2 validationReport = (ValidationReport2) context.get(VALIDATION_REPORT);
 		CheckPointReport checkPoint = validationReport.findCheckPointReportByName(checkPointName);
 		if (checkPoint != null) {
-			if (checkPoint.getState().equals(CheckPointReport.RESULT.UNCHECK))
-				updateCheckPointReportState(context, checkPointName, CheckPointReport.RESULT.OK);
+			if (checkPoint.getState().equals(RESULT.UNCHECK))
+				updateCheckPointReportState(context, checkPointName, RESULT.OK);
 		}
 	}
 
