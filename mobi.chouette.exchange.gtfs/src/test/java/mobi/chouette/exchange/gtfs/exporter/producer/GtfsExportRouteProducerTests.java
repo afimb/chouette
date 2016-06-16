@@ -3,12 +3,14 @@ package mobi.chouette.exchange.gtfs.exporter.producer;
 import mobi.chouette.core.ChouetteException;
 import mobi.chouette.exchange.gtfs.exporter.producer.mock.GtfsExporterMock;
 import mobi.chouette.exchange.gtfs.model.GtfsRoute;
+import mobi.chouette.exchange.gtfs.model.RouteTypeEnum;
 import mobi.chouette.exchange.gtfs.model.exporter.RouteExporter;
 import mobi.chouette.exchange.gtfs.model.importer.Context;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.Line;
 
+import mobi.chouette.model.type.TransportModeNameEnum;
 import org.testng.Assert;
 import org.testng.Reporter;
 import org.testng.annotations.Test;
@@ -128,4 +130,23 @@ public class GtfsExportRouteProducerTests
 
    }
 
+   @Test(groups = { "Producers" }, description = "test route with no name")
+   public void verifyRouteProducerWithTransportTypeAir() throws Exception {
+      mock.reset();
+
+      GtfsRouteProducer routeProducer = new GtfsRouteProducer(mock);
+      Line line = new Line();
+      line.setObjectId("GTFS:Line:4321");
+      line.setName("short name");
+
+      Company company = new Company();
+      company.setObjectId("TFS:Company:1234");
+      line.setCompany(company);
+      line.setTransportModeName(TransportModeNameEnum.Air);
+
+      boolean result = routeProducer.save(line, new ActionReport(), "prefix");
+      Assert.assertTrue(result);
+      Assert.assertEquals(mock.getExportedRoutes().size(), 1);
+      Assert.assertEquals(mock.getExportedRoutes().get(0).getRouteType(), RouteTypeEnum.AirService);
+   }
 }
