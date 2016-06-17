@@ -9,9 +9,21 @@ public interface ActionReporter {
 	FileReport findFileReport(Context context, String name, FILE_STATE state);
 	void addFileReport(Context context, String fileInfoName, FILE_STATE state);
 	void addFileReport(Context context, String fileInfoName, FILE_STATE state, FileError fileError);
+	
 	/**
-	 * Action reporter creation factory
-	 * @return
+	 * Factory for using action reporter instance
+	 * @author gjamot
+	 *
 	 */
-	ActionReporterImpl createActionReporter();
+	public class Factory {
+		private static ActionReporter actionReporter;
+		
+		public static synchronized ActionReporter getInstance() {
+			if(actionReporter == null) {
+				actionReporter = new ActionReporterImpl();
+			}
+			
+			return actionReporter;
+		}
+	}
 }

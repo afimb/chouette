@@ -2,19 +2,15 @@ package mobi.chouette.exchange.validation.report;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.model.DataLocation;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.ActionReporterImpl;
 
 public interface ValidationReporter {
 	
 	public enum RESULT {
 		UNCHECK, OK, NOK
 	};
-	
-	/**
-	 * Validation reporter creation factory
-	 * @return
-	 */
-	ValidationReporterImpl createValidationReporter();
-	
+		
 	/**
 	 * Add one or more checkpoints with severity to validation report
 	 * Note : you can add more checkpoints using severities arg (W, E, W, ...)
@@ -88,4 +84,21 @@ public interface ValidationReporter {
 	 * @param context
 	 */
 	void clearValidationReport(Context context);
+	
+	/**
+	 * Factory for using validation reporter instance
+	 * @author gjamot
+	 *
+	 */
+	public class Factory {
+		private static ValidationReporter validationReporter;
+		
+		public static synchronized ValidationReporter getInstance() {
+			if(validationReporter == null) {
+				validationReporter = new ValidationReporterImpl();
+			}
+			
+			return validationReporter;
+		}
+	}
 }

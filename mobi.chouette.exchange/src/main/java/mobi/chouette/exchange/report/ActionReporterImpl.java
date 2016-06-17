@@ -6,8 +6,7 @@ import mobi.chouette.exchange.report.FileReport.FILE_STATE;
 import mobi.chouette.exchange.validation.report.ValidationReporterImpl;
 
 public class ActionReporterImpl implements ActionReporter, Constant{
-	private ActionReporterImpl actionReporter;
-	
+
 	@Override
 	public FileReport findFileReport(Context context, String name) {
 		ActionReport2 actionReport = (ActionReport2) context.get(REPORT);
@@ -76,13 +75,4 @@ public class ActionReporterImpl implements ActionReporter, Constant{
 			fileReport.addError(new FileError(FileError.CODE.READ_ERROR, "Il y a des erreurs dans ce fichier."));
 		//findFileReport(fileInfoName, state).addError(fileError);
 	}
-
-	@Override
-	public synchronized ActionReporterImpl createActionReporter() {
-		if (this.actionReporter == null)
-			actionReporter = new ActionReporterImpl();
-		
-		return actionReporter;
-	}
-
 }

@@ -8,8 +8,6 @@ import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
 
 public class ValidationReporterImpl implements ValidationReporter, Constant{
 	
-	private ValidationReporterImpl validationReporter;
-	  
 	@Override
 	public void addItemToValidationReport(Context context, String prefix,
 			String name, int count, String... severities) {
@@ -114,14 +112,5 @@ public class ValidationReporterImpl implements ValidationReporter, Constant{
 		ValidationReport2 validationReport = (ValidationReport2) context.get(VALIDATION_REPORT);
 		validationReport.setResult("NO_VALIDATION");
 		validationReport.getCheckPoints().clear();
-	}
-
-
-	@Override
-	public synchronized ValidationReporterImpl createValidationReporter() {
-		if (this.validationReporter == null)
-			validationReporter = new ValidationReporterImpl();
-		    
-		return validationReporter;
 	}
 }
