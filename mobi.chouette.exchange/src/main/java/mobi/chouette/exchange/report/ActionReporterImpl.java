@@ -3,8 +3,10 @@ package mobi.chouette.exchange.report;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.report.FileReport.FILE_STATE;
+import mobi.chouette.exchange.validation.report.ValidationReporterImpl;
 
 public class ActionReporterImpl implements ActionReporter, Constant{
+	private ActionReporterImpl actionReporter;
 	
 	@Override
 	public FileReport findFileReport(Context context, String name) {
@@ -73,6 +75,14 @@ public class ActionReporterImpl implements ActionReporter, Constant{
 		if (fileReport.getErrors().size() <= 0)
 			fileReport.addError(new FileError(FileError.CODE.READ_ERROR, "Il y a des erreurs dans ce fichier."));
 		//findFileReport(fileInfoName, state).addError(fileError);
+	}
+
+	@Override
+	public synchronized ActionReporterImpl createActionReporter() {
+		if (this.actionReporter == null)
+			actionReporter = new ActionReporterImpl();
+		
+		return actionReporter;
 	}
 
 }

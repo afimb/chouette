@@ -10,6 +10,12 @@ public interface ValidationReporter {
 	};
 	
 	/**
+	 * Validation reporter creation factory
+	 * @return
+	 */
+	ValidationReporterImpl createValidationReporter();
+	
+	/**
 	 * Add one or more checkpoints with severity to validation report
 	 * Note : you can add more checkpoints using severities arg (W, E, W, ...)
 	 * @param context
