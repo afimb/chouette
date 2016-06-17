@@ -43,14 +43,17 @@ public class ValidationReporterImpl implements ValidationReporter, Constant{
 	public void addCheckPointReportError(Context context, String checkPointName, String detail,
 			DataLocation location, String value, String refValue, RESULT result) {
 		ValidationReport2 validationReport = (ValidationReport2) context.get(VALIDATION_REPORT);
-		Location detailLocation = new Location(location.getFilename(), location.getName(), location.getLineNumber(), location.getColumnNumber(), location.getObjectId());
+		Location detailLocation = null;
+		if(location != null)
+			detailLocation = new Location(location.getFilename(), location.getName(), location.getLineNumber(), location.getColumnNumber(), location.getObjectId());
+		
 		CheckPointReport checkPoint = validationReport.findCheckPointReportByName(checkPointName);
 		
 		if (checkPoint == null) throw new NullPointerException("unknown checkPointName "+checkPointName);
 		checkPoint.setState(result);
 		CheckPointErrorReport newCheckPointError;
 		
-		if(detail != null)
+		if(detail != null && detailLocation != null)
 			newCheckPointError = new CheckPointErrorReport(checkPointName+"_"+detail, detailLocation, value);
 		else
 			newCheckPointError = new CheckPointErrorReport(checkPointName, detailLocation, value, refValue);
