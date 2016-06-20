@@ -14,6 +14,7 @@ import javax.xml.bind.annotation.XmlType;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import mobi.chouette.exchange.report.Report;
 import mobi.chouette.exchange.validation.report.CheckPoint.RESULT;
 
 import org.codehaus.jettison.json.JSONArray;
@@ -24,7 +25,7 @@ import org.codehaus.jettison.json.JSONObject;
 @XmlRootElement(name = "validation_report")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder = { "result", "checkPoints" })
-public class ValidationReport {
+public class ValidationReport implements Report {
 
 	@XmlElement(name = "result")
 	@Getter
@@ -50,10 +51,6 @@ public class ValidationReport {
 		return null;
 	}
 
-	public void checkResult() {
-		result = checkPoints.isEmpty() ? "NO_VALIDATION" : "VALIDATION_PROCEDEED";
-	}
-	
 	public void addCheckPoint(CheckPoint checkPoint)
 	{
 		checkPoint.setMaxByFile(maxByFile);
@@ -69,6 +66,7 @@ public class ValidationReport {
 	}
 
 	public JSONObject toJson() throws JSONException {
+		result = checkPoints.isEmpty() ? "NO_VALIDATION" : "VALIDATION_PROCEDEED";
 		JSONObject validationReport = new JSONObject();
 		validationReport.put("result", result);
 		if (!checkPoints.isEmpty()) {
@@ -116,5 +114,13 @@ public class ValidationReport {
 	public void clear() {
 		result = "NO_VALIDATION";
 		checkPoints.clear();
+	}
+
+	@Override
+	public boolean isEmpty() {
+		// used to know if report has to be saved
+		// Validation Report has to be saved if checkPoints were defined
+		
+		return checkPoints.isEmpty();
 	}
 }

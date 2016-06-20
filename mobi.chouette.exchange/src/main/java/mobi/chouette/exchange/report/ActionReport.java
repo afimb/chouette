@@ -22,7 +22,7 @@ import org.codehaus.jettison.json.JSONObject;
 @XmlType(propOrder = { "progression", "result", "zip", "files", "lines", "stats", "failure" })
 @NoArgsConstructor
 @Data
-public class ActionReport {
+public class ActionReport implements ProgressionReport, Report {
 
 	@XmlElement(name = "progression", required = true)
 	private Progression progression = new Progression();
@@ -157,5 +157,12 @@ public class ActionReport {
 		if (fileInfo.getErrors().size() <= 0)
 			fileInfo.addError(new FileError(FileError.CODE.READ_ERROR, "Il y a des erreurs dans ce fichier."));
 		//findFileInfo(fileInfoName, state).addError(fileError);
+	}
+
+	@Override
+	public boolean isEmpty() {
+		// used to know if report has to be saved
+		// Action Report has to be saved any time
+		return false;
 	}
 }
