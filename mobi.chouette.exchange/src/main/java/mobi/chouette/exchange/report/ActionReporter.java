@@ -1,14 +1,48 @@
 package mobi.chouette.exchange.report;
 
 import mobi.chouette.common.Context;
-import mobi.chouette.exchange.report.FileReport.FILE_STATE;
-import mobi.chouette.exchange.validation.report.ValidationReporterImpl;
 
 public interface ActionReporter {
-	FileReport findFileReport(Context context, String name);
-	FileReport findFileReport(Context context, String name, FILE_STATE state);
+	
+	public enum OBJECT_TYPE {
+		NETWORK,
+		COMPANY,
+		STOP_AREA,
+		LINE,
+		ROUTE,
+		STOP_POINT,
+		JOURNEY_PATTERN
+	};
+	
+	public enum FILE_STATE {
+		IGNORED, OK, ERROR
+	};
+	
+	public enum ERROR_CODE 
+	{
+		INVALID_PARAMETERS,
+		NO_DATA_FOUND,
+		NO_DATA_PROCEEDED,
+		INVALID_DATA,
+		INTERNAL_ERROR
+	};
+	
+	public enum OBJECT_STATE 
+	{
+		OK,
+		WARNING,
+		ERROR
+	};
+	
 	void addFileReport(Context context, String fileInfoName, FILE_STATE state);
 	void addFileReport(Context context, String fileInfoName, FILE_STATE state, FileError fileError);
+	void setActionError(Context context, ERROR_CODE code, String description);
+	void addObjectReport(Context context, String objectId, String type, String description, OBJECT_STATE status, IO_TYPE ioType);
+	void addObjectReportToSpecificCollection(Context context, String objectId, String type, String description, OBJECT_STATE status, IO_TYPE ioType);
+	void addErrorToObjectReport(Context context, String objectId, String type, String description, OBJECT_STATE status, IO_TYPE ioType, ERROR_CODE code, String descriptionError);
+	void addStatToObjectReport(Context context, String objectId, String type, String description, OBJECT_STATE status, IO_TYPE ioType, String statType);
+	
+	
 	
 	/**
 	 * Factory for using action reporter instance

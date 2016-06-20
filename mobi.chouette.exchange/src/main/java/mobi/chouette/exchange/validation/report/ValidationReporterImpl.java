@@ -29,19 +29,19 @@ public class ValidationReporterImpl implements ValidationReporter, Constant{
 
 	@Override
 	public void addCheckPointReportError(Context context, String checkPointName,
-			DataLocation location, String value, RESULT result) {
-		addCheckPointReportError(context, checkPointName, null, location, value, null, result);
+			DataLocation location, String value) {
+		addCheckPointReportError(context, checkPointName, null, location, value, null);
 	}
 
 	@Override
 	public void addCheckPointReportError(Context context, String checkPointName,
-			String detail, DataLocation location, String value, RESULT result) {
-		addCheckPointReportError(context, checkPointName, detail, location, value, null, result);
+			String detail, DataLocation location, String value) {
+		addCheckPointReportError(context, checkPointName, detail, location, value, null);
 	}
 
 	@Override
 	public void addCheckPointReportError(Context context, String checkPointName, String detail,
-			DataLocation location, String value, String refValue, RESULT result) {
+			DataLocation location, String value, String refValue) {
 		ValidationReport2 validationReport = (ValidationReport2) context.get(VALIDATION_REPORT);
 		Location detailLocation = null;
 		if(location != null)
@@ -50,7 +50,7 @@ public class ValidationReporterImpl implements ValidationReporter, Constant{
 		CheckPointReport checkPoint = validationReport.findCheckPointReportByName(checkPointName);
 		
 		if (checkPoint == null) throw new NullPointerException("unknown checkPointName "+checkPointName);
-		checkPoint.setState(result);
+		checkPoint.setState(RESULT.NOK);
 		CheckPointErrorReport newCheckPointError;
 		
 		if(detail != null && detailLocation != null)
@@ -64,7 +64,7 @@ public class ValidationReporterImpl implements ValidationReporter, Constant{
 
 	@Override
 	public void addCheckPointReportError(Context context, String checkPointName,
-			DataLocation[] locations, String value, RESULT result) {
+			DataLocation[] locations, String value) {
 		ValidationReport2 validationReport = (ValidationReport2) context.get(VALIDATION_REPORT);
 		
 		for (DataLocation location : locations) {
@@ -72,7 +72,7 @@ public class ValidationReporterImpl implements ValidationReporter, Constant{
 			CheckPointReport checkPoint = validationReport.findCheckPointReportByName(checkPointName);
 			
 			if (checkPoint == null) throw new NullPointerException("unknown checkPointName "+checkPointName);
-			checkPoint.setState(result);
+			checkPoint.setState(RESULT.NOK);
 			
 			CheckPointErrorReport newCheckPointError = new CheckPointErrorReport(checkPointName, detailLocation, value);
 			validationReport.addCheckPointErrorReport(newCheckPointError);

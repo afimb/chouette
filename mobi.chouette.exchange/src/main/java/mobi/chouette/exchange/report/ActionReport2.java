@@ -10,6 +10,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import lombok.Data;
+import mobi.chouette.common.Constant;
+import mobi.chouette.common.Context;
+import mobi.chouette.exchange.report.ActionReporter.FILE_STATE;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -19,7 +22,7 @@ import org.codehaus.jettison.json.JSONObject;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder = { "progression", "result", "zip", "files", "lines", "stats", "failure", "objects", "collections" })
 @Data
-public class ActionReport2 {
+public class ActionReport2 implements Constant{
 
 	@XmlElement(name = "progression", required = true)
 	private Progression progression = new Progression();
@@ -34,7 +37,7 @@ public class ActionReport2 {
 	private List<FileReport> files = new ArrayList<>();
 
 	@XmlElement(name = "failure")
-	private ActionError failure;
+	private ActionError2 failure;
 	
 	
 	@XmlElement(name = "objects")
@@ -42,13 +45,46 @@ public class ActionReport2 {
 	
 	@XmlElement(name = "collections")
 	private List<ObjectCollectionReport> collections = new ArrayList<ObjectCollectionReport>();
-
+	
+	/**
+	 * Find file report from name
+	 * @param name
+	 * @return
+	 */
+	protected FileReport findFileReport(String name) {
+		for (FileReport fileReport : files) {
+			if (fileReport.getName().equals(name))
+				return fileReport;
+		}
+		return null;
+	}
+	
+	/**
+	 * Find file report from name and state
+	 * @param name
+	 * @param state
+	 * @return
+	 */
+	protected FileReport findFileReport(String name, FILE_STATE state) {
+		for (FileReport fileReport : files) {
+			if (fileReport.getName().equals(name) &&
+					(fileReport.getStatus().name().equals(state.name()) ||
+							FILE_STATE.OK.equals(fileReport.getStatus().name()) ||
+							FILE_STATE.OK.equals(state.name()))) {
+				if (FILE_STATE.OK.equals(fileReport.getStatus().name()))
+					fileReport.setStatus(state);
+				return fileReport;
+			}
+		}
+		return null;
+	}
+	
 	/**
 	 * set or unset error ; will set result to ERROR if error != null
 	 * 
 	 * @param error
 	 */
-	protected void setFailure(ActionError error) {
+	protected void setFailure(ActionError2 error) {
 		if (error == null) {
 			result = ReportConstant.STATUS_OK;
 			failure = null;
@@ -72,6 +108,17 @@ public class ActionReport2 {
 	 */
 	protected void addObjectCollectionReport(ObjectCollectionReport collection) {
 		collections.add(collection);	
+	}
+	
+	/**
+	 * 
+	 * @param objectReport
+	 */
+	protected void addObjectReportToSpecificCollection(ObjectReport objectReport) {
+		for(ObjectCollectionReport collection: collections) {
+			if(collection.getObjectType().equals(objectReport.getType()))
+					collection.addObjectReport(objectReport);
+		}
 	}
 
 	/**

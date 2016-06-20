@@ -10,6 +10,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlType;
 
+import lombok.Getter;
+import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
 import mobi.chouette.model.Line;
 
 import org.codehaus.jettison.json.JSONArray;
@@ -17,16 +19,9 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
 public class ObjectReport {
-	@XmlType(name="objectState")
-	@XmlEnum
-	public enum OBJECT_STATE 
-	{
-		OK,
-		WARNING,
-		ERROR
-	};
-	
+
 	@XmlElement(name = "type",required=true)
+	@Getter
 	private String type;
 	
 	@XmlElement(name = "description",required=true)
@@ -42,7 +37,7 @@ public class ObjectReport {
 	private IO_TYPE ioType;
 
 	@XmlElement(name="errors")
-	private List<ObjectError> errors = new ArrayList<ObjectError>();
+	private List<ObjectError2> errors = new ArrayList<ObjectError2>();
 	
 	@XmlElement(name="checkpoint_errors")
 	private List<Integer> checkPointErrorKeys = new ArrayList<Integer>();
@@ -56,10 +51,13 @@ public class ObjectReport {
 	@XmlElement(name="objectid")
 	private String objectId;
 	
-	protected ObjectReport(Line line)
+	protected ObjectReport(String objectId, String type, String description, OBJECT_STATE status, IO_TYPE ioType)
 	{
-		this.objectId = line.getObjectId();
-		this.description = line.getName() + " (" + line.getNumber() + ")";
+		this.objectId = objectId;
+		this.type = type;
+		this.description = description;
+		this.status = status;
+		this.ioType = ioType;
 	}
 	
 	/**
@@ -67,7 +65,7 @@ public class ObjectReport {
 	 * 
 	 * @param error
 	 */
-	protected void addError(ObjectError error)
+	protected void addError(ObjectError2 error)
 	{
 		status = OBJECT_STATE.ERROR;
 		errors.add(error);
@@ -116,7 +114,7 @@ public class ObjectReport {
 		if (!errors.isEmpty()) {
 			JSONArray array = new JSONArray();
 			object.put("errors", array);
-			for (ObjectError error : errors) {
+			for (ObjectError2 error : errors) {
 				array.put(error.toJson());
 			}
 		}

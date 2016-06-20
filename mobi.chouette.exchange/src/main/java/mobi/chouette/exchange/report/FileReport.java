@@ -12,6 +12,7 @@ import javax.xml.bind.annotation.XmlType;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import mobi.chouette.exchange.report.ActionReporter.FILE_STATE;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -24,11 +25,6 @@ import org.codehaus.jettison.json.JSONObject;
 @NoArgsConstructor
 public class FileReport {
 
-	@XmlType(name = "fileState")
-	@XmlEnum
-	public enum FILE_STATE {
-		IGNORED, OK, ERROR
-	};
 
 	@XmlElement(name = "name", required = true)
 	private String name;

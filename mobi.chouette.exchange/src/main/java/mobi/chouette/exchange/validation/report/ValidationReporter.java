@@ -29,7 +29,7 @@ public interface ValidationReporter {
 	 * @param value
 	 * @param result
 	 */
-	void addCheckPointReportError(Context context, String checkPointName, DataLocation location, String value, RESULT result);
+	void addCheckPointReportError(Context context, String checkPointName, DataLocation location, String value);
 	/**
 	 * Bind error and location to checkpoint in validation report
 	 * @param context
@@ -39,7 +39,7 @@ public interface ValidationReporter {
 	 * @param value
 	 * @param result
 	 */
-	void addCheckPointReportError(Context context, String checkPointName, String detail, DataLocation location, String value, RESULT result);
+	void addCheckPointReportError(Context context, String checkPointName, String detail, DataLocation location, String value);
 	/**
 	 * Bind error and location to checkpoint in validation report
 	 * @param context
@@ -49,7 +49,7 @@ public interface ValidationReporter {
 	 * @param refValue
 	 * @param result
 	 */
-	void addCheckPointReportError(Context context, String checkPointName, String detail, DataLocation location, String value, String refValue, RESULT result);
+	void addCheckPointReportError(Context context, String checkPointName, String detail, DataLocation location, String value, String refValue);
 	/**
 	 * Bind error and location to checkpoint in validation report
 	 * @param context
@@ -58,7 +58,7 @@ public interface ValidationReporter {
 	 * @param value
 	 * @param result
 	 */
-	void addCheckPointReportError(Context context, String checkPointName, DataLocation[] locations, String value, RESULT result);
+	void addCheckPointReportError(Context context, String checkPointName, DataLocation[] locations, String value);
 	/**
 	 * Report if test is successful for specific checkpoint
 	 * @param context
