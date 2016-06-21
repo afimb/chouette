@@ -6,47 +6,30 @@ import mobi.chouette.common.Context;
 public class ActionReporterImpl implements ActionReporter, Constant{
 
 	@Override
-	public void addFileReport(Context context, String fileInfoName, FILE_STATE state) {
+	public void addFileReport(Context context, String fileInfoName, boolean isZipFile) {
 		ActionReport2 actionReport = (ActionReport2) context.get(REPORT);
 		FileReport fileReport = actionReport.findFileReport(fileInfoName);
 		
 		if (fileReport == null)
 		{
-			actionReport.addFileReport(new FileReport(fileInfoName, state));
-		}
-		else
-		{
-			switch (fileReport.getStatus()) {
-			case IGNORED:
-				fileReport.setStatus(state);
-				break;
-			case OK: 
-				if (state.equals(FILE_STATE.ERROR))
-					fileReport.setStatus(state);
-				break;
-			case ERROR:
-			default:
-				break;
+			if(isZipFile) {
+				actionReport.setZip(new FileReport(fileInfoName, FILE_STATE.OK));
+			} else {
+				actionReport.addFileReport(new FileReport(fileInfoName, FILE_STATE.OK));
 			}
 		}
 	}
 	
 	@Override
-	public void addFileReport(Context context, String fileInfoName, FILE_STATE state, FileError fileError) {
-		addFileReport(context, fileInfoName, state);
+	public void addFileErrorInReport(Context context, String fileInfoName, FILE_ERROR_CODE code, String message, boolean isZipFile) {
+		addFileReport(context, fileInfoName, isZipFile);
 		ActionReport2 actionReport = (ActionReport2) context.get(REPORT);
 		FileReport fileReport = actionReport.findFileReport(fileInfoName);
-		switch (fileReport.getStatus()) {
-		case IGNORED:
-		case OK:
-			fileReport.setStatus(state);
-			break;
-		case ERROR:
-		default:
-			break;
-		}
-		if (fileReport.getErrors().size() <= 0)
-			fileReport.addError(new FileError(FileError.CODE.READ_ERROR, "Il y a des erreurs dans ce fichier."));
+		
+		if(fileReport == null)
+			actionReport.addFileReport(new FileReport(fileInfoName, FILE_STATE.ERROR));
+		
+		fileReport.addError(new FileError2(code, message));
 		
 	}
 

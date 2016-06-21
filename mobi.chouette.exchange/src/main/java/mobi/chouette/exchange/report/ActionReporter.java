@@ -34,8 +34,17 @@ public interface ActionReporter {
 		ERROR
 	};
 	
-	void addFileReport(Context context, String fileInfoName, FILE_STATE state);
-	void addFileReport(Context context, String fileInfoName, FILE_STATE state, FileError fileError);
+	public enum FILE_ERROR_CODE 
+	{
+		FILE_NOT_FOUND,
+		READ_ERROR,
+		WRITE_ERROR,
+		INVALID_FORMAT,
+		INTERNAL_ERROR
+	};
+	
+	void addFileReport(Context context, String fileInfoName, boolean isZipFile);
+	void addFileErrorInReport(Context context, String fileInfoName, FILE_ERROR_CODE code, String message, boolean isZipFile);
 	void setActionError(Context context, ERROR_CODE code, String description);
 	void addObjectReport(Context context, String objectId, String type, String description, OBJECT_STATE status, IO_TYPE ioType);
 	void addObjectReportToSpecificCollection(Context context, String objectId, String type, String description, OBJECT_STATE status, IO_TYPE ioType);

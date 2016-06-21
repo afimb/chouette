@@ -36,7 +36,7 @@ public class FileReport {
 	private IO_TYPE ioType;
 
 	@XmlElement(name = "errors")
-	private List<FileError> errors = new ArrayList<>();
+	private List<FileError2> errors = new ArrayList<>();
 	
 	@XmlElement(name="checkpoint_errors")
 	private List<Integer> checkPointErrorKeys = new ArrayList<Integer>();
@@ -48,9 +48,9 @@ public class FileReport {
 	private Integer checkPointWarningCount;
 	
 
-	protected void addError(FileError error) {
+	protected void addError(FileError2 fileError2) {
 		status = FILE_STATE.ERROR;
-		errors.add(error);
+		errors.add(fileError2);
 	}
 
 	protected FileReport(String name, FILE_STATE state) {
@@ -58,13 +58,13 @@ public class FileReport {
 		this.status = state;
 	}
 
-	protected FileReport(String name, FILE_STATE state, FileError fileError) {
+	protected FileReport(String name, FILE_STATE state, FileError2 fileError) {
 		this.name = name;
 		this.status = state;
 		errors.add(fileError);
 	}
 
-	protected FileReport(String name, FILE_STATE state, List<FileError> fileErrors) {
+	protected FileReport(String name, FILE_STATE state, List<FileError2> fileErrors) {
 		this.name = name;
 		this.status = state;
 		errors.addAll(fileErrors);
@@ -90,7 +90,7 @@ public class FileReport {
 		if (!errors.isEmpty()) {
 			JSONArray array = new JSONArray();
 			object.put("errors", array);
-			for (FileError error : errors) {
+			for (FileError2 error : errors) {
 				array.put(error.toJson());
 			}
 		}

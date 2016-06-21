@@ -115,9 +115,20 @@ public class ActionReport2 implements Constant{
 	 * @param objectReport
 	 */
 	protected void addObjectReportToSpecificCollection(ObjectReport objectReport) {
+		boolean collectionExists = false;
 		for(ObjectCollectionReport collection: collections) {
-			if(collection.getObjectType().equals(objectReport.getType()))
+			if(collection.getObjectType().equals(objectReport.getType())) {
 					collection.addObjectReport(objectReport);
+					collectionExists = true;
+					break;
+			}
+		}
+		
+		if(!collectionExists) {
+			ObjectCollectionReport collection =  new ObjectCollectionReport();
+			collection.setObjectType(objectReport.getType());
+			addObjectCollectionReport(collection);
+			collection.addObjectReport(objectReport);
 		}
 	}
 
@@ -128,6 +139,7 @@ public class ActionReport2 implements Constant{
 	protected void addFileReport(FileReport file) {
 		files.add(file);
 	}
+	
 	
 	
 	public JSONObject toJson() throws JSONException {
