@@ -14,6 +14,7 @@ import javax.xml.bind.annotation.XmlType;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import mobi.chouette.exchange.report.Report;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -23,7 +24,7 @@ import org.codehaus.jettison.json.JSONObject;
 @XmlRootElement(name = "validation_report")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder = { "result", "checkPoints", "checkPointErrors" })
-public class ValidationReport2 {
+public class ValidationReport2 implements Report {
 
 	@XmlElement(name = "result")
 	@Getter
@@ -98,5 +99,12 @@ public class ValidationReport2 {
 		JSONObject object = new JSONObject();
 		object.put("validation_report", validationReport);
 		return object;
+	}
+	@Override
+	public boolean isEmpty() {
+		// used to know if report has to be saved
+		// Validation Report has to be saved if checkPoints were defined
+		
+		return checkPoints.isEmpty();
 	}
 }

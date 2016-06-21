@@ -14,7 +14,8 @@ import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.parameters.AbstractParameter;
-import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.ProgressionReport;
+import mobi.chouette.exchange.report.Report;
 import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.exchange.report.StepProgression;
 import mobi.chouette.exchange.report.StepProgression.STEP;
@@ -30,7 +31,7 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 	public static final String COMMAND = "ProgressionCommand";
 
 	public void initialize(Context context, int stepCount) {
-		ActionReport report = (ActionReport) context.get(REPORT);
+		ProgressionReport report = (ProgressionReport) context.get(REPORT);
 		report.getProgression().setCurrentStep(STEP.INITIALISATION.ordinal() + 1);
 		report.getProgression().getSteps().get(STEP.INITIALISATION.ordinal()).setTotal(stepCount);
 		saveReport(context);
@@ -38,7 +39,7 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 	}
 
 	public void start(Context context, int stepCount) {
-		ActionReport report = (ActionReport) context.get(REPORT);
+		ProgressionReport report = (ProgressionReport) context.get(REPORT);
 		report.getProgression().setCurrentStep(STEP.PROCESSING.ordinal() + 1);
 		report.getProgression().getSteps().get(STEP.PROCESSING.ordinal()).setTotal(stepCount);
 		saveReport(context);
@@ -46,7 +47,7 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 	}
 
 	public void terminate(Context context, int stepCount) {
-		ActionReport report = (ActionReport) context.get(REPORT);
+		ProgressionReport report = (ProgressionReport) context.get(REPORT);
 		report.getProgression().setCurrentStep(STEP.FINALISATION.ordinal() + 1);
 		report.getProgression().getSteps().get(STEP.FINALISATION.ordinal()).setTotal(stepCount);
 		saveReport(context);
@@ -63,7 +64,7 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 	public static void saveReport(Context context) {
 		if (context.containsKey("testng"))
 			return;
-		ActionReport report = (ActionReport) context.get(REPORT);
+		Report report = (Report) context.get(REPORT);
 		JobData jobData = (JobData) context.get(JOB_DATA);
 		Path path = Paths.get(jobData.getPathName(), REPORT_FILE);
 		// pseudo pretty print
@@ -79,15 +80,14 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 	public static void saveMainValidationReport(Context context) {
 		if (context.containsKey("testng"))
 			return;
-		ValidationReport report = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
+		Report report = (Report) context.get(MAIN_VALIDATION_REPORT);
 		// ne pas sauver un rapport null ou vide
-		if (report == null || report.getCheckPoints().isEmpty())
+		if (report == null || report.isEmpty())
 			return;
 		JobData jobData = (JobData) context.get(JOB_DATA);
 		Path path = Paths.get(jobData.getPathName(), VALIDATION_FILE);
 
 		try {
-			report.checkResult();
 			String data = report.toJson().toString(2);
 			FileUtils.writeStringToFile(path.toFile(), data, "UTF-8");
 		} catch (Exception e) {
@@ -97,6 +97,8 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 	}
 
 	public static void mergeValidationReports(Context context) {
+		if (context.get(VALIDATION_REPORT) instanceof ValidationReport)
+		{
 		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
 		ValidationReport mainValidationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
 		for (CheckPoint checkPoint : validationReport.getCheckPoints()) {
@@ -125,6 +127,7 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 		// reset validationReport
         validationReport.clear();
 		context.put(VALIDATION_REPORT, new ValidationReport());
+		}
 	}
 
 	@Override
@@ -141,7 +144,7 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 			}
 			saveMainValidationReport(context);
 		}
-		ActionReport report = (ActionReport) context.get(REPORT);
+		ProgressionReport report = (ProgressionReport) context.get(REPORT);
 		StepProgression step = report.getProgression().getSteps().get(report.getProgression().getCurrentStep() - 1);
 		step.setRealized(step.getRealized() + 1);
 		saveReport(context);

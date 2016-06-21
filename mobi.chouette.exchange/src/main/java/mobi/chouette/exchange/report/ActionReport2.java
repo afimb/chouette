@@ -11,7 +11,6 @@ import javax.xml.bind.annotation.XmlType;
 
 import lombok.Data;
 import mobi.chouette.common.Constant;
-import mobi.chouette.common.Context;
 import mobi.chouette.exchange.report.ActionReporter.FILE_STATE;
 
 import org.codehaus.jettison.json.JSONArray;
@@ -22,7 +21,7 @@ import org.codehaus.jettison.json.JSONObject;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder = { "progression", "result", "zip", "files", "lines", "stats", "failure", "objects", "collections" })
 @Data
-public class ActionReport2 implements Constant{
+public class ActionReport2 implements Constant , ProgressionReport, Report {
 
 	@XmlElement(name = "progression", required = true)
 	private Progression progression = new Progression();
@@ -179,5 +178,12 @@ public class ActionReport2 implements Constant{
 		JSONObject object = new JSONObject();
 		object.put("action_report", actionReport);
 		return object;
+	}
+	
+	@Override
+	public boolean isEmpty() {
+		// used to know if report has to be saved
+		// Action Report has to be saved any time
+		return false;
 	}
 }
