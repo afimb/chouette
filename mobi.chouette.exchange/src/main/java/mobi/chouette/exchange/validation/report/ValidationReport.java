@@ -64,23 +64,7 @@ public class ValidationReport implements Report {
 		}
 		checkPoints.addAll(list);
 	}
-
-	public JSONObject toJson() throws JSONException {
-		result = checkPoints.isEmpty() ? "NO_VALIDATION" : "VALIDATION_PROCEDEED";
-		JSONObject validationReport = new JSONObject();
-		validationReport.put("result", result);
-		if (!checkPoints.isEmpty()) {
-			JSONArray tests = new JSONArray();
-			for (CheckPoint checkPoint : checkPoints) {
-				tests.put(checkPoint.toJson());
-			}
-			validationReport.put("tests", tests);
-		}
-		JSONObject object = new JSONObject();
-		object.put("validation_report", validationReport);
-		return object;
-	}
-
+	
 	public void addDetail(String checkPointName, Location location, String value, RESULT result) {
 		CheckPoint checkPoint = findCheckPointByName(checkPointName);
 		if (checkPoint == null) throw new NullPointerException("unknown checkPointName "+checkPointName);
@@ -114,6 +98,22 @@ public class ValidationReport implements Report {
 	public void clear() {
 		result = "NO_VALIDATION";
 		checkPoints.clear();
+	}
+
+	public JSONObject toJson() throws JSONException {
+		result = checkPoints.isEmpty() ? "NO_VALIDATION" : "VALIDATION_PROCEDEED";
+		JSONObject validationReport = new JSONObject();
+		validationReport.put("result", result);
+		if (!checkPoints.isEmpty()) {
+			JSONArray tests = new JSONArray();
+			for (CheckPoint checkPoint : checkPoints) {
+				tests.put(checkPoint.toJson());
+			}
+			validationReport.put("tests", tests);
+		}
+		JSONObject object = new JSONObject();
+		object.put("validation_report", validationReport);
+		return object;
 	}
 
 	@Override

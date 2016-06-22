@@ -2,8 +2,7 @@ package mobi.chouette.exchange.validation.report;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.model.DataLocation;
-import mobi.chouette.exchange.report.ActionReporter;
-import mobi.chouette.exchange.report.ActionReporterImpl;
+import mobi.chouette.exchange.validation.report.CheckPoint.SEVERITY;
 
 public interface ValidationReporter {
 	
@@ -11,6 +10,13 @@ public interface ValidationReporter {
 		UNCHECK, OK, NOK
 	};
 		
+	/**
+	 * add a single checkpoint entry
+	 * @param context
+	 * @param key
+	 * @param severity (W or E)
+	 */
+	void addItemToValidationReport(Context context, String key, String severity);
 	/**
 	 * Add one or more checkpoints with severity to validation report
 	 * Note : you can add more checkpoints using severities arg (W, E, W, ...)
@@ -27,7 +33,6 @@ public interface ValidationReporter {
 	 * @param checkPointName
 	 * @param location
 	 * @param value
-	 * @param result
 	 */
 	void addCheckPointReportError(Context context, String checkPointName, DataLocation location, String value);
 	/**
@@ -37,7 +42,6 @@ public interface ValidationReporter {
 	 * @param detail
 	 * @param location
 	 * @param value
-	 * @param result
 	 */
 	void addCheckPointReportError(Context context, String checkPointName, String detail, DataLocation location, String value);
 	/**
@@ -47,16 +51,24 @@ public interface ValidationReporter {
 	 * @param location
 	 * @param value
 	 * @param refValue
-	 * @param result
 	 */
 	void addCheckPointReportError(Context context, String checkPointName, String detail, DataLocation location, String value, String refValue);
 	/**
 	 * Bind error and location to checkpoint in validation report
 	 * @param context
 	 * @param checkPointName
+	 * @param sourceLocation
+	 * @param value
+	 * @param refValue
+	 * @param targetLocations
+	 */
+	void addCheckPointReportError(Context context, String checkPointName, String detail, DataLocation sourceLocation, String value, String refValue, DataLocation... targetLocations);
+	/**
+	 * Bind error and location to checkpoint in validation report
+	 * @param context
+	 * @param checkPointName
 	 * @param locations
 	 * @param value
-	 * @param result
 	 */
 	void addCheckPointReportError(Context context, String checkPointName, DataLocation[] locations, String value);
 	/**
@@ -101,4 +113,5 @@ public interface ValidationReporter {
 			return validationReporter;
 		}
 	}
+
 }

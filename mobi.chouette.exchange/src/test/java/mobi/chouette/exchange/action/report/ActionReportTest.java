@@ -79,11 +79,11 @@ public class ActionReportTest implements Constant{
 		
 		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
 		validationReporter.addItemToValidationReport(context, "Neptune-", "Checkpoint", 1, "W");
-		DataLocation location = new DataLocation();
-		location.setColumnNumber(1);
-		location.setFilename("filename");
-		location.setObjectId("1234");
-		location.setLineNumber(3);
+		DataLocation location = new DataLocation("filename",3,1,"1234");
+//		location.setColumnNumber(1);
+//		location.setFilename("filename");
+//		location.setObjectId("1234");
+//		location.setLineNumber(3);
 		ValidationReport2 validationReport = (ValidationReport2) context.get(VALIDATION_REPORT);
 		
 		JSONObject array = new JSONObject("{\"validation_report\":{\"result\":\"NO_VALIDATION\",\"tests\":[{\"error_id\":\"neptune_checkpoint_1\",\"source\":{\"file\":{\"filename\":\"filename\",\"line_number\":3,\"column_number\":1},\"objectid\":\"1234\",\"label\":\"\"},\"error_value\":\"test\"}]}}");

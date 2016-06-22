@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import lombok.Data;
+import mobi.chouette.exchange.model.DataLocation;
 import mobi.chouette.exchange.validation.report.Location;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
@@ -50,6 +51,7 @@ public class ValidationData {
 	private List<StopPoint> stopPoints = new ArrayList<>();
 	private Line currentLine;
 	private Map<String,Location> fileLocations = new HashMap<>();
+	private Map<String,DataLocation> dataLocations = new HashMap<>();
 	private Map<String,Set<String>> linesOfStopAreas = new HashMap<>();
 
 	public void clear() {
@@ -83,6 +85,7 @@ public class ValidationData {
 		timetables.clear();
 		timetableIds.clear();
 		fileLocations.clear();
+		dataLocations.clear();
 		linesOfStopAreas.clear();
 	}
 }

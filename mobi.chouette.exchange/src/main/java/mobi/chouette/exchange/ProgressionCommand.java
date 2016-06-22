@@ -55,10 +55,10 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 
 	public void dispose(Context context) {
 		saveReport(context);
-		if (context.containsKey(VALIDATION_REPORT)) {
-			mergeValidationReports(context);
+//		if (context.containsKey(VALIDATION_REPORT)) {
+//			mergeValidationReports(context);
 			saveMainValidationReport(context);
-		}
+//		}
 	}
 
 	public static void saveReport(Context context) {
@@ -80,7 +80,7 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 	public static void saveMainValidationReport(Context context) {
 		if (context.containsKey("testng"))
 			return;
-		Report report = (Report) context.get(MAIN_VALIDATION_REPORT);
+		Report report = (Report) context.get(VALIDATION_REPORT);
 		// ne pas sauver un rapport null ou vide
 		if (report == null || report.isEmpty())
 			return;
@@ -97,51 +97,44 @@ public class ProgressionCommand implements Command, Constant, ReportConstant {
 	}
 
 	public static void mergeValidationReports(Context context) {
-		if (context.get(VALIDATION_REPORT) instanceof ValidationReport)
-		{
-		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
-		ValidationReport mainValidationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
-		for (CheckPoint checkPoint : validationReport.getCheckPoints()) {
-			String name = checkPoint.getName();
-			CheckPoint mainCheckPoint = mainValidationReport.findCheckPointByName(name);
-			if (mainCheckPoint == null) {
-				mainValidationReport.getCheckPoints().add(checkPoint);
-			} else {
-
-				if (checkPoint.getSeverity().ordinal() > mainCheckPoint.getSeverity().ordinal())
-					mainCheckPoint.setSeverity(checkPoint.getSeverity());
-				if (checkPoint.getState().ordinal() > mainCheckPoint.getState().ordinal())
-					mainCheckPoint.setState(checkPoint.getState());
-				// int detailCount = 0;
-				for (Detail detail : checkPoint.getDetails()) {
-					// if (mainCheckPoint.getDetailCount() + detailCount >
-					// CheckPoint.maxDetails)
-					// break;
-					mainCheckPoint.addDetail(detail);
-					// detailCount++;
-				}
-				// mainCheckPoint.setDetailCount(mainCheckPoint.getDetailCount()
-				// + checkPoint.getDetailCount());
-			}
-		}
-		// reset validationReport
-        validationReport.clear();
-		context.put(VALIDATION_REPORT, new ValidationReport());
-		}
+//		if (context.get(VALIDATION_REPORT) instanceof ValidationReport)
+//		{
+//		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
+//		ValidationReport mainValidationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
+//		for (CheckPoint checkPoint : validationReport.getCheckPoints()) {
+//			String name = checkPoint.getName();
+//			CheckPoint mainCheckPoint = mainValidationReport.findCheckPointByName(name);
+//			if (mainCheckPoint == null) {
+//				mainValidationReport.getCheckPoints().add(checkPoint);
+//			} else {
+//
+//				if (checkPoint.getSeverity().ordinal() > mainCheckPoint.getSeverity().ordinal())
+//					mainCheckPoint.setSeverity(checkPoint.getSeverity());
+//				if (checkPoint.getState().ordinal() > mainCheckPoint.getState().ordinal())
+//					mainCheckPoint.setState(checkPoint.getState());
+//				for (Detail detail : checkPoint.getDetails()) {
+//					mainCheckPoint.addDetail(detail);
+//				}
+//			}
+//		}
+//		// reset validationReport
+//        validationReport.clear();
+//		context.put(VALIDATION_REPORT, new ValidationReport());
+//		}
 	}
 
 	@Override
 	public boolean execute(Context context) throws Exception {
 		boolean result = SUCCESS;
 
-		if (context.containsKey(MAIN_VALIDATION_REPORT)) {
-			if (context.containsKey(VALIDATION_REPORT)) {
-				mergeValidationReports(context);
-			}
-			else
-			{
-				context.put(VALIDATION_REPORT, new ValidationReport());
-			}
+		if (context.containsKey(VALIDATION_REPORT)) {
+//			if (context.containsKey(VALIDATION_REPORT)) {
+//				mergeValidationReports(context);
+//			}
+//			else
+//			{
+//				context.put(VALIDATION_REPORT, new ValidationReport());
+//			}
 			saveMainValidationReport(context);
 		}
 		ProgressionReport report = (ProgressionReport) context.get(REPORT);
