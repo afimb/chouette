@@ -5,9 +5,11 @@ import mobi.chouette.common.Context;
 import mobi.chouette.exchange.model.DataLocation;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
+import mobi.chouette.exchange.validation.report.CheckPoint.RESULT;
+import mobi.chouette.exchange.validation.report.CheckPointReport.SEVERITY;
 
 public class ValidationReporterImpl implements ValidationReporter, Constant {
-
+	
 	@Override
 	public void addItemToValidationReport(Context context, String key, String severity) {
 		ValidationReport2 validationReport = (ValidationReport2) context.get(VALIDATION_REPORT);
@@ -163,6 +165,37 @@ public class ValidationReporterImpl implements ValidationReporter, Constant {
 		ValidationReport2 validationReport = (ValidationReport2) context.get(VALIDATION_REPORT);
 		validationReport.setResult("NO_VALIDATION");
 		validationReport.getCheckPoints().clear();
+	}
+
+	@Override
+	public void updateCheckPointReportSeverity(Context context, String checkPointName,
+			SEVERITY severity) {
+		ValidationReport2 validationReport = (ValidationReport2) context.get(VALIDATION_REPORT);
+		CheckPointReport checkPoint = validationReport.findCheckPointReportByName(checkPointName);
+		if (checkPoint != null) {
+			if (checkPoint.getSeverity().ordinal() < severity.ordinal())
+				checkPoint.setSeverity(severity);
+		}
+		
+	}
+
+	@Override
+	public boolean checkValidationReportValidity(Context context) {
+		ValidationReport2 validationReport = (ValidationReport2) context.get(VALIDATION_REPORT);
+		for (CheckPointReport checkPoint : validationReport.getCheckPoints()) {
+			if (checkPoint.getSeverity().equals(SEVERITY.ERROR) && checkPoint.getState().equals(RESULT.NOK)) {
+				return ERROR;
+			}
+		}
+		return SUCCESS;
+	}
+
+	@Override
+	public boolean checkIfCheckPointExists(Context context, String checkPointName) {
+		ValidationReport2 validationReport = (ValidationReport2) context.get(VALIDATION_REPORT);
+		CheckPointReport checkPoint = validationReport.findCheckPointReportByName(checkPointName);
+		
+		return (checkPoint != null);
 	}
 
 }

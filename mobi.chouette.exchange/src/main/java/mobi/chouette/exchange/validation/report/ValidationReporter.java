@@ -92,6 +92,28 @@ public interface ValidationReporter {
 	void updateCheckPointReportState(Context context, String checkPointName, RESULT state);
 	
 	/**
+	 * Update checkpoint severity
+	 * @param context
+	 * @param checkPointName
+	 * @param severity
+	 */
+	void updateCheckPointReportSeverity(Context context, String checkPointName, CheckPointReport.SEVERITY severity);
+	
+	/**
+	 * Check if validation report validity
+	 * @param context
+	 * @return
+	 */
+	boolean checkValidationReportValidity(Context context);
+	
+	/**
+	 * Check if checkpoint exists
+	 * @param context
+	 * @param checkPointName
+	 * @return
+	 */
+	boolean checkIfCheckPointExists(Context context, String checkPointName);
+	/**
 	 * Clear all validation report checkpoints
 	 * @param context
 	 */
