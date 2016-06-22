@@ -5,7 +5,6 @@ import mobi.chouette.common.Context;
 import mobi.chouette.exchange.model.DataLocation;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
-import mobi.chouette.exchange.validation.report.CheckPoint.RESULT;
 import mobi.chouette.exchange.validation.report.CheckPointReport.SEVERITY;
 
 public class ValidationReporterImpl implements ValidationReporter, Constant {

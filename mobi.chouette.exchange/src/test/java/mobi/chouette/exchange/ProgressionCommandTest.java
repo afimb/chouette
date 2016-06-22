@@ -13,10 +13,9 @@ import mobi.chouette.exchange.parameters.DummyParameter;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.exchange.report.StepProgression.STEP;
-import mobi.chouette.exchange.validation.report.CheckPoint;
-import mobi.chouette.exchange.validation.report.CheckPoint.RESULT;
-import mobi.chouette.exchange.validation.report.CheckPoint.SEVERITY;
 import mobi.chouette.exchange.validation.report.ValidationReport;
+import mobi.chouette.exchange.validation.report.ValidationReport2;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
 
 import org.apache.commons.io.FileUtils;
 import org.testng.Assert;
@@ -85,10 +84,10 @@ public void testProgressionExecute() throws Exception
 	Assert.assertEquals(report.getProgression().getSteps().get(1).getTotal(), 2," total progression should be 2");
 	Assert.assertEquals(report.getProgression().getSteps().get(1).getRealized(), 1," current progression should be 1");
 
-    ValidationReport validation = new ValidationReport();
+    ValidationReport2 validation = new ValidationReport2();
     context.put(VALIDATION_REPORT, validation);
-    CheckPoint checkPoint = new CheckPoint("1-TEST-1", RESULT.OK, SEVERITY.ERROR);
-	validation.getCheckPoints().add(checkPoint);
+    ValidationReporter reporter = ValidationReporter.Factory.getInstance();
+    reporter.addItemToValidationReport(context, "1-TEST-1", "E");
 	progression.execute(context);
 	context.remove(VALIDATION_REPORT);
 	File validationFile = new File(d,VALIDATION_FILE);
