@@ -28,13 +28,13 @@ import org.codehaus.jettison.json.JSONObject;
 public class ValidationReport implements Report {
 
 	@XmlElement(name = "result")
-	@Getter
-	@Setter
+//	@Getter
+//	@Setter
 	private String result = "NO_VALIDATION";
 
 	@XmlElement(name = "tests")
-	 @Getter
-	 @Setter
+//	 @Getter
+//	 @Setter
 	private List<CheckPoint> checkPoints = new ArrayList<CheckPoint>();
 
 	@XmlTransient
@@ -42,7 +42,7 @@ public class ValidationReport implements Report {
 	@Setter
 	private boolean maxByFile = true;
 
-
+/*
 	public CheckPoint findCheckPointByName(String name) {
 		for (CheckPoint checkPoint : checkPoints) {
 			if (checkPoint.getName().equals(name))
@@ -99,7 +99,7 @@ public class ValidationReport implements Report {
 		result = "NO_VALIDATION";
 		checkPoints.clear();
 	}
-
+*/
 	public JSONObject toJson() throws JSONException {
 		result = checkPoints.isEmpty() ? "NO_VALIDATION" : "VALIDATION_PROCEDEED";
 		JSONObject validationReport = new JSONObject();

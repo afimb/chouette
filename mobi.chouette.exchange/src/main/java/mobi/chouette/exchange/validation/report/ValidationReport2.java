@@ -52,7 +52,7 @@ public class ValidationReport2 implements Report {
 		result = checkPoints.isEmpty() ? "NO_VALIDATION" : "VALIDATION_PROCEDEED";
 	}
 	
-	protected CheckPointReport findCheckPointReportByName(String name) {
+	public CheckPointReport findCheckPointReportByName(String name) {
 		for (CheckPointReport checkPoint : checkPoints) {
 			if (checkPoint.getName().equals(name))
 				return checkPoint;

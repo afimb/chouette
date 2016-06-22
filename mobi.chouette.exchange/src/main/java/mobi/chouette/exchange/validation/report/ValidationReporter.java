@@ -2,7 +2,6 @@ package mobi.chouette.exchange.validation.report;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.model.DataLocation;
-import mobi.chouette.exchange.validation.report.CheckPoint.SEVERITY;
 
 public interface ValidationReporter {
 	
@@ -32,6 +31,20 @@ public interface ValidationReporter {
 	 * @param context
 	 * @param checkPointName
 	 * @param location
+	 */
+	void addCheckPointReportError(Context context, String checkPointName, DataLocation location);
+	/**
+	 * Bind error and location to checkpoint in validation report
+	 * @param context
+	 * @param checkPointName
+	 * @param location
+	 */
+	void addCheckPointReportError(Context context, String checkPointName, String detail, DataLocation location);
+	/**
+	 * Bind error and location to checkpoint in validation report
+	 * @param context
+	 * @param checkPointName
+	 * @param location
 	 * @param value
 	 */
 	void addCheckPointReportError(Context context, String checkPointName, DataLocation location, String value);
@@ -52,7 +65,26 @@ public interface ValidationReporter {
 	 * @param value
 	 * @param refValue
 	 */
+	void addCheckPointReportError(Context context, String checkPointName,  DataLocation location, String value, String refValue);
+	/**
+	 * Bind error and location to checkpoint in validation report
+	 * @param context
+	 * @param checkPointName
+	 * @param location
+	 * @param value
+	 * @param refValue
+	 */
 	void addCheckPointReportError(Context context, String checkPointName, String detail, DataLocation location, String value, String refValue);
+	/**
+	 * Bind error and location to checkpoint in validation report
+	 * @param context
+	 * @param checkPointName
+	 * @param sourceLocation
+	 * @param value
+	 * @param refValue
+	 * @param targetLocations
+	 */
+	void addCheckPointReportError(Context context, String checkPointName, DataLocation sourceLocation, String value, String refValue, DataLocation... targetLocations);
 	/**
 	 * Bind error and location to checkpoint in validation report
 	 * @param context
