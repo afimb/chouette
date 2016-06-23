@@ -35,6 +35,7 @@ import mobi.chouette.exchange.report.LineInfo;
 import mobi.chouette.exchange.report.DataStats;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.exchange.validation.report.CheckPoint;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.exchange.validation.report.CheckPoint.RESULT;
 import mobi.chouette.exchange.validation.report.CheckPoint.SEVERITY;
 import mobi.chouette.exchange.validation.report.ValidationReport;
@@ -218,15 +219,20 @@ public class NeptuneValidationCommand implements Command, Constant {
 
 	}
 
+//	private boolean checkValid(Context context) {
+//		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
+//
+//		for (CheckPoint checkPoint : report.getCheckPoints()) {
+//			if (checkPoint.getSeverity().equals(SEVERITY.ERROR) && checkPoint.getState().equals(RESULT.NOK)) {
+//				return ERROR;
+//			}
+//		}
+//		return SUCCESS;
+//	}
+	
 	private boolean checkValid(Context context) {
-		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
-
-		for (CheckPoint checkPoint : report.getCheckPoints()) {
-			if (checkPoint.getSeverity().equals(SEVERITY.ERROR) && checkPoint.getState().equals(RESULT.NOK)) {
-				return ERROR;
-			}
-		}
-		return SUCCESS;
+		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+		return validationReporter.checkValidationReportValidity(context);
 	}
 
 	public static class DefaultCommandFactory extends CommandFactory {

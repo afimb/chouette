@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import mobi.chouette.common.Context;
+import mobi.chouette.exchange.model.DataLocation;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.validation.ValidationConstraints;
 import mobi.chouette.exchange.validation.ValidationData;
@@ -13,6 +14,7 @@ import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.exchange.validation.report.Detail;
 import mobi.chouette.exchange.validation.report.Location;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.Period;
 import mobi.chouette.model.Timetable;
@@ -61,7 +63,8 @@ public class TimetableValidator extends AbstractValidator implements Validator<T
 		if (localContext == null || localContext.isEmpty())
 			return new ValidationConstraints();
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
-		Map<String, Location> fileLocations = data.getFileLocations();
+//		Map<String, Location> fileLocations = data.getFileLocations();
+		Map<String, DataLocation> fileLocations = data.getDataLocations();
 		Context vehicleJourneyContext = (Context) validationContext.get(VehicleJourneyValidator.LOCAL_CONTEXT);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		Map<String, Timetable> timetables = referential.getTimetables();
@@ -85,9 +88,10 @@ public class TimetableValidator extends AbstractValidator implements Validator<T
 				unreferencedVehicleJourneys.remove(vjId);
 			}
 			if (!vjFound) {
-				Detail errorItem = new Detail(TIMETABLE_1, fileLocations.get( objectId));
-				addValidationError(context, TIMETABLE_1, errorItem);
-
+//				Detail errorItem = new Detail(TIMETABLE_1, fileLocations.get( objectId));
+//				addValidationError(context, TIMETABLE_1, errorItem);
+				ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+				validationReporter.addCheckPointReportError(context, TIMETABLE_1, fileLocations.get(objectId));
 			}
 
 			Timetable timetable = timetables.get(objectId);
@@ -98,8 +102,10 @@ public class TimetableValidator extends AbstractValidator implements Validator<T
 				for (Period period : timetable.getPeriods()) {
 					if (period.getEndDate().after(period.getStartDate()))
 						continue;
-					Detail errorItem = new Detail(TIMETABLE_3, fileLocations.get( objectId));
-					addValidationError(context, TIMETABLE_3, errorItem);
+//					Detail errorItem = new Detail(TIMETABLE_3, fileLocations.get( objectId));
+//					addValidationError(context, TIMETABLE_3, errorItem);
+					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+					validationReporter.addCheckPointReportError(context, TIMETABLE_3, fileLocations.get(objectId));
 					break;
 				}
 
@@ -107,8 +113,10 @@ public class TimetableValidator extends AbstractValidator implements Validator<T
 		}
 		if (!unreferencedVehicleJourneys.isEmpty()) {
 			for (String vjId : unreferencedVehicleJourneys) {
-				Detail errorItem = new Detail(TIMETABLE_2, fileLocations.get( vjId));
-				addValidationError(context, TIMETABLE_2, errorItem);
+//				Detail errorItem = new Detail(TIMETABLE_2, fileLocations.get( vjId));
+//				addValidationError(context, TIMETABLE_2, errorItem);
+				ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+				validationReporter.addCheckPointReportError(context, TIMETABLE_2, fileLocations.get(vjId));
 			}
 		}
 		return new ValidationConstraints();

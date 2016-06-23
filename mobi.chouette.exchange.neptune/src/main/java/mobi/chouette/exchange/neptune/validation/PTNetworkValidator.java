@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import mobi.chouette.common.Context;
+import mobi.chouette.exchange.model.DataLocation;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.validation.ValidationConstraints;
 import mobi.chouette.exchange.validation.ValidationData;
@@ -14,6 +15,7 @@ import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.exchange.validation.report.Detail;
 import mobi.chouette.exchange.validation.report.Location;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.Network;
 import mobi.chouette.model.util.Referential;
@@ -72,7 +74,8 @@ public class PTNetworkValidator extends AbstractValidator implements Validator<N
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 		if (localContext == null || localContext.isEmpty()) return new ValidationConstraints();
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
-		Map<String, Location> fileLocations = data.getFileLocations();
+//		Map<String, Location> fileLocations = data.getFileLocations();
+		Map<String, DataLocation> fileLocations = data.getDataLocations();
 		Context lineContext = (Context) validationContext.get(LineValidator.LOCAL_CONTEXT);
 		Referential referential = (Referential) context.get(REFERENTIAL);
 		Map<String, Network> networks = referential.getPtNetworks();
@@ -89,10 +92,12 @@ public class PTNetworkValidator extends AbstractValidator implements Validator<N
 				prepareCheckPoint(context, NETWORK_1);
 				if (!lineIds.contains(lineId))
 				{
-					Detail errorItem = new Detail(
-							NETWORK_1,
-							fileLocations.get(objectId), lineId);
-					addValidationError(context, NETWORK_1, errorItem);
+//					Detail errorItem = new Detail(
+//							NETWORK_1,
+//							fileLocations.get(objectId), lineId);
+//					addValidationError(context, NETWORK_1, errorItem);	
+					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+					validationReporter.addCheckPointReportError(context, NETWORK_1, fileLocations.get(objectId), lineId);
 				}
 			}
 			
@@ -104,10 +109,12 @@ public class PTNetworkValidator extends AbstractValidator implements Validator<N
 				Network network = networks.get(objectId);
 				if (!sourceType.equals(network.getSourceType().name()))
 				{
-					Detail errorItem = new Detail(
-							NETWORK_2,
-							fileLocations.get(objectId), sourceType,network.getSourceType().name());
-					addValidationError(context, NETWORK_2, errorItem);
+//					Detail errorItem = new Detail(
+//							NETWORK_2,
+//							fileLocations.get(objectId), sourceType,network.getSourceType().name());
+//					addValidationError(context, NETWORK_2, errorItem);
+					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+					validationReporter.addCheckPointReportError(context, NETWORK_2, fileLocations.get(objectId), sourceType,network.getSourceType().name());
 				}
 			}
 

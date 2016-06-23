@@ -4,6 +4,7 @@ package mobi.chouette.exchange.neptune.validation;
 import java.util.Map;
 
 import mobi.chouette.common.Context;
+import mobi.chouette.exchange.model.DataLocation;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.validation.ValidationConstraints;
 import mobi.chouette.exchange.validation.ValidationData;
@@ -12,6 +13,7 @@ import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.exchange.validation.report.Detail;
 import mobi.chouette.exchange.validation.report.Location;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.type.LongLatTypeEnum;
@@ -85,7 +87,8 @@ public class StopPointValidator extends AbstractValidator implements Validator<S
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 		if (localContext == null || localContext.isEmpty()) return new ValidationConstraints();
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
-		Map<String, Location> fileLocations = data.getFileLocations();
+//		Map<String, Location> fileLocations = data.getFileLocations();
+		Map<String, DataLocation> fileLocations = data.getDataLocations();
 		Context stopAreasContext = (Context) validationContext.get(StopAreaValidator.LOCAL_CONTEXT);
 		Context linesContext = (Context) validationContext.get(LineValidator.LOCAL_CONTEXT);
 		Context networksContext = (Context) validationContext.get(PTNetworkValidator.LOCAL_CONTEXT);
@@ -109,10 +112,12 @@ public class StopPointValidator extends AbstractValidator implements Validator<S
 	            String lineIdShortCut = (String) objectContext.get(LINE_ID_SHORTCUT);
 	            if (!linesContext.containsKey(lineIdShortCut))
 	            {
-					Detail errorItem = new Detail(
-							STOP_POINT_1,
-							fileLocations.get(objectId), lineIdShortCut);
-					addValidationError(context,STOP_POINT_1, errorItem);
+//					Detail errorItem = new Detail(
+//							STOP_POINT_1,
+//							fileLocations.get(objectId), lineIdShortCut);
+//					addValidationError(context,STOP_POINT_1, errorItem);
+					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+					validationReporter.addCheckPointReportError(context, STOP_POINT_1, fileLocations.get(objectId), lineIdShortCut);
 	            }
 
 	         }
@@ -123,10 +128,12 @@ public class StopPointValidator extends AbstractValidator implements Validator<S
 	            String ptNetworkIdShortcut = (String) objectContext.get(PT_NETWORK_ID_SHORTCUT);
 	            if (!networksContext.containsKey(ptNetworkIdShortcut))
 	            {
-					Detail errorItem = new Detail(
-							STOP_POINT_2,
-							fileLocations.get(objectId), ptNetworkIdShortcut);
-					addValidationError(context,STOP_POINT_2, errorItem);
+//					Detail errorItem = new Detail(
+//							STOP_POINT_2,
+//							fileLocations.get(objectId), ptNetworkIdShortcut);
+//					addValidationError(context,STOP_POINT_2, errorItem);
+					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+					validationReporter.addCheckPointReportError(context, STOP_POINT_2, fileLocations.get(objectId), ptNetworkIdShortcut);
 	            }
 
 	         }
@@ -134,18 +141,22 @@ public class StopPointValidator extends AbstractValidator implements Validator<S
 	            String containedIn = (String) objectContext.get(CONTAINED_ID);
 	         if (!stopAreasContext.containsKey(containedIn))
 	         {
-				Detail errorItem = new Detail(
-							STOP_POINT_3,
-							fileLocations.get(objectId), containedIn);
-					addValidationError(context,STOP_POINT_3, errorItem);
+//				Detail errorItem = new Detail(
+//							STOP_POINT_3,
+//							fileLocations.get(objectId), containedIn);
+//					addValidationError(context,STOP_POINT_3, errorItem);
+					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+					validationReporter.addCheckPointReportError(context, STOP_POINT_3, fileLocations.get(objectId), containedIn);
 	         }
 
 	         if (!LongLatTypeEnum.WGS84.equals(objectContext.get(LONG_LAT_TYPE)))
 	         {
-					Detail errorItem = new Detail(
-							STOP_POINT_4,
-							fileLocations.get(objectId), objectContext.get(LONG_LAT_TYPE).toString());
-					addValidationError(context,STOP_POINT_4, errorItem);
+//					Detail errorItem = new Detail(
+//							STOP_POINT_4,
+//							fileLocations.get(objectId), objectContext.get(LONG_LAT_TYPE).toString());
+//					addValidationError(context,STOP_POINT_4, errorItem);
+					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+					validationReporter.addCheckPointReportError(context, STOP_POINT_4, fileLocations.get(objectId), objectContext.get(LONG_LAT_TYPE).toString());
 	         }
 		
 		}

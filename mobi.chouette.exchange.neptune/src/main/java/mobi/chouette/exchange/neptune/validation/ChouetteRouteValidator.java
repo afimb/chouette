@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import mobi.chouette.common.Context;
+import mobi.chouette.exchange.model.DataLocation;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.validation.ValidationConstraints;
 import mobi.chouette.exchange.validation.ValidationData;
@@ -15,6 +16,7 @@ import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.exchange.validation.report.Detail;
 import mobi.chouette.exchange.validation.report.Location;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
@@ -142,7 +144,8 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 	private boolean phase1(Context context) 
 	{
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
-		Map<String, Location> fileLocations = data.getFileLocations();
+//		Map<String, Location> fileLocations = data.getFileLocations();
+		Map<String, DataLocation> fileLocations = data.getDataLocations();
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 		Context journeyPatternsContext = (Context) validationContext.get(JourneyPatternValidator.LOCAL_CONTEXT);
@@ -163,10 +166,12 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 			{
 				if (!ptLinksContext.containsKey(ptLinkId))
 				{
-					Detail errorItem = new Detail(
-							ROUTE_2,
-							fileLocations.get(objectId), ptLinkId);
-					addValidationError(context,ROUTE_2, errorItem);
+//					Detail errorItem = new Detail(
+//							ROUTE_2,
+//							fileLocations.get(objectId), ptLinkId);
+//					addValidationError(context,ROUTE_2, errorItem);
+					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+					validationReporter.addCheckPointReportError(context, ROUTE_2, fileLocations.get(objectId), ptLinkId);
 					routeok = false;
 					continue;
 				}
@@ -178,12 +183,16 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 					routeok = false;
 
 					// ptlink is referenced by more than one route
-					Detail errorItem = new Detail(
-							ROUTE_4,
-							fileLocations.get(objectId),ptLinkId );
+//					Detail errorItem = new Detail(
+//							ROUTE_4,
+//							fileLocations.get(objectId),ptLinkId );
 					String routeId = ptLinkInRoute.get(ptLinkId);
-					errorItem.getTargets().add(fileLocations.get(routeId));
-					addValidationError(context,ROUTE_4, errorItem);
+//					errorItem.getTargets().add(fileLocations.get(routeId));
+//					addValidationError(context,ROUTE_4, errorItem);
+					
+					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+					validationReporter.addCheckPointReportError(context, ROUTE_4, fileLocations.get(objectId), ptLinkId);
+					validationReporter.addTargetLocationToCheckPointError(context, ROUTE_4, fileLocations.get(routeId));
 				} else
 				{
 					ptLinkInRoute.put(ptLinkId,objectId);
@@ -198,10 +207,12 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 				{
 					if (!journeyPatternsContext.containsKey(journeyPatternId))
 					{
-						Detail errorItem = new Detail(
-								ROUTE_1,
-								fileLocations.get(objectId), journeyPatternId);
-						addValidationError(context,ROUTE_1, errorItem);
+//						Detail errorItem = new Detail(
+//								ROUTE_1,
+//								fileLocations.get(objectId), journeyPatternId);
+//						addValidationError(context,ROUTE_1, errorItem);
+						ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+						validationReporter.addCheckPointReportError(context, ROUTE_1, fileLocations.get(objectId), journeyPatternId);
 					}
 
 				}
@@ -215,7 +226,8 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 			Map<String, List<String>> mapPTLinksByEndId) 
 	{
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
-		Map<String, Location> fileLocations = data.getFileLocations();
+//		Map<String, Location> fileLocations = data.getFileLocations();
+		Map<String, DataLocation> fileLocations = data.getDataLocations();
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context ptLinksContext = (Context) validationContext.get(PtLinkValidator.LOCAL_CONTEXT);
 		for (String ptLinkId : ptLinksContext.keySet()) 
@@ -250,11 +262,15 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 			for (String ptLinkId : ptLinkOfStop)
 			{
 				routeok = false;
-				Location linkLocation = fileLocations.get(ptLinkId);
-				Detail errorItem = new Detail(
-						ROUTE_5,
-						linkLocation, stopPointId,"startOfLink");
-				addValidationError(context,ROUTE_5, errorItem);
+//				Location linkLocation = fileLocations.get(ptLinkId);
+//				Detail errorItem = new Detail(
+//						ROUTE_5,
+//						linkLocation, stopPointId,"startOfLink");
+//				addValidationError(context,ROUTE_5, errorItem);
+				
+				DataLocation linkLocation = fileLocations.get(ptLinkId);
+				ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+				validationReporter.addCheckPointReportError(context, ROUTE_5, linkLocation, stopPointId, "startOfLink");
 
 			}
 		}
@@ -266,11 +282,14 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 			for (String ptLinkId  : ptLinkOfStop)
 			{
 				routeok = false;
-				Location linkLocation = fileLocations.get(ptLinkId);
-				Detail errorItem = new Detail(
-						ROUTE_5,
-						linkLocation, stopPointId,"endOfLink");
-				addValidationError(context,ROUTE_5, errorItem);
+//				Location linkLocation = fileLocations.get(ptLinkId);
+//				Detail errorItem = new Detail(
+//						ROUTE_5,
+//						linkLocation, stopPointId,"endOfLink");
+//				addValidationError(context,ROUTE_5, errorItem);
+				DataLocation linkLocation = fileLocations.get(ptLinkId);
+				ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+				validationReporter.addCheckPointReportError(context, ROUTE_5, linkLocation, stopPointId, "endOfLink");
 			}
 		}
 		return routeok;
@@ -280,7 +299,8 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 	private void phase3(Context context) 
 	{
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
-		Map<String, Location> fileLocations = data.getFileLocations();
+//		Map<String, Location> fileLocations = data.getFileLocations();
+		Map<String, DataLocation> fileLocations = data.getDataLocations();
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 		Context journeyPatternsContext = (Context) validationContext.get(JourneyPatternValidator.LOCAL_CONTEXT);
@@ -301,10 +321,12 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 					if (jpsOfRoute == null 
 							|| !(jpsOfRoute.contains(journeyPatternId)))
 					{
-						Detail errorItem = new Detail(
-								ROUTE_7,
-								fileLocations.get(routeId), journeyPatternId);
-						addValidationError(context,ROUTE_7, errorItem);
+//						Detail errorItem = new Detail(
+//								ROUTE_7,
+//								fileLocations.get(routeId), journeyPatternId);
+//						addValidationError(context,ROUTE_7, errorItem);
+						ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+						validationReporter.addCheckPointReportError(context, ROUTE_7, fileLocations.get(routeId), journeyPatternId);
 					}
 				}
 			}
@@ -314,7 +336,8 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 	private boolean phase4(Context context,  Map<String, List<String>> mapPTLinksByStartId,
 			Map<String, List<String>> mapPTLinksByEndId, String objectId) {
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
-		Map<String, Location> fileLocations = data.getFileLocations();
+//		Map<String, Location> fileLocations = data.getFileLocations();
+		Map<String, DataLocation> fileLocations = data.getDataLocations();
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 		Context ptLinksContext = (Context) validationContext.get(PtLinkValidator.LOCAL_CONTEXT);
@@ -340,11 +363,16 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 				else
 				{
 					// found 2 startLink = broken Route
-					Detail errorItem = new Detail(
-							ROUTE_6+ "_2",
-							fileLocations.get(objectId),linkId );
-					errorItem.getTargets().add(fileLocations.get(linkId));
-					addValidationError(context,ROUTE_6, errorItem);
+//					Detail errorItem = new Detail(
+//							ROUTE_6+ "_2",
+//							fileLocations.get(objectId),linkId );
+//					errorItem.getTargets().add(fileLocations.get(linkId));
+//					addValidationError(context,ROUTE_6, errorItem);
+					
+					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+					validationReporter.addCheckPointReportError(context, ROUTE_6+ "_2", fileLocations.get(objectId));
+					validationReporter.addTargetLocationToCheckPointError(context, ROUTE_6, fileLocations.get(linkId));
+					
 					route3ok = false;
 				}
 			}
@@ -352,10 +380,12 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 		if (startLink == null)
 		{
 			// no first id : circle route
-			Detail errorItem = new Detail(
-					ROUTE_6+ "_1",
-					fileLocations.get(objectId) );
-			addValidationError(context,ROUTE_6, errorItem);
+//			Detail errorItem = new Detail(
+//					ROUTE_6+ "_1",
+//					fileLocations.get(objectId) );
+//			addValidationError(context,ROUTE_6, errorItem);
+			ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+			validationReporter.addCheckPointReportError(context, ROUTE_6+ "_1", fileLocations.get(objectId));
 			route3ok = false;
 		} 
 		else
@@ -381,11 +411,15 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 				} else
 				{
 					// broken route but ptlink exists
-					Detail errorItem = new Detail(
-							ROUTE_6+ "_2",
-							fileLocations.get(objectId),linkId );
-					errorItem.getTargets().add(fileLocations.get(linkId));
-					addValidationError(context,ROUTE_6, errorItem);
+//					Detail errorItem = new Detail(
+//							ROUTE_6+ "_2",
+//							fileLocations.get(objectId),linkId );
+//					errorItem.getTargets().add(fileLocations.get(linkId));
+//					addValidationError(context,ROUTE_6, errorItem);
+					
+					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+					validationReporter.addCheckPointReportError(context, ROUTE_6+ "_2", fileLocations.get(objectId), linkId);
+					validationReporter.addTargetLocationToCheckPointError(context, ROUTE_6, fileLocations.get(linkId));
 					route3ok = false;
 					break;
 				}
@@ -402,7 +436,8 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 	@SuppressWarnings("unchecked")
 	private void phase5(Context context, String objectId) {
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
-		Map<String, Location> fileLocations = data.getFileLocations();
+//		Map<String, Location> fileLocations = data.getFileLocations();
+		Map<String, DataLocation> fileLocations = data.getDataLocations();
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 		Context stopPointsContext = (Context) validationContext.get(StopPointValidator.LOCAL_CONTEXT);
@@ -430,11 +465,14 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 					List<String> stopsOnJp = (List<String>) jpCtx.get(JourneyPatternValidator.STOP_POINT_LIST);
 					if (!pointIds.containsAll(stopsOnJp))
 					{
-						Detail errorItem = new Detail(
-								ROUTE_8,
-								fileLocations.get(objectId));
-						errorItem.getTargets().add(fileLocations.get(jpId));
-						addValidationError(context,ROUTE_8, errorItem);
+//						Detail errorItem = new Detail(
+//								ROUTE_8,
+//								fileLocations.get(objectId));
+//						errorItem.getTargets().add(fileLocations.get(jpId));
+//						addValidationError(context,ROUTE_8, errorItem);
+						ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+						validationReporter.addCheckPointReportError(context, ROUTE_8, fileLocations.get(objectId));
+						validationReporter.addTargetLocationToCheckPointError(context, ROUTE_8, fileLocations.get(jpId));
 					}
 					unusedPointIds.removeAll(stopsOnJp);
 				}
@@ -446,15 +484,18 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 			{
 				for (String stopPointId : unusedPointIds)
 				{
-					Detail errorItem = new Detail(
-							ROUTE_9,
-							fileLocations.get(objectId),stopPointId);
+//					Detail errorItem = new Detail(
+//							ROUTE_9,
+//							fileLocations.get(objectId),stopPointId);
+					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+					validationReporter.addCheckPointReportError(context, ROUTE_9, fileLocations.get(objectId), stopPointId);
 					Context stopCtx = (Context) stopPointsContext.get(stopPointId);
 					if (stopCtx != null)
 					{
-						errorItem.getTargets().add(fileLocations.get(stopPointId));
+//						errorItem.getTargets().add(fileLocations.get(stopPointId));
+						validationReporter.addTargetLocationToCheckPointError(context, ROUTE_9, fileLocations.get(stopPointId));
 					}
-					addValidationError(context,ROUTE_9, errorItem);
+//					addValidationError(context,ROUTE_9, errorItem);
 				}
 			}
 		}
@@ -463,7 +504,8 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 	@SuppressWarnings("unchecked")
 	private void phase6(Context context) {
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
-		Map<String, Location> fileLocations = data.getFileLocations();
+//		Map<String, Location> fileLocations = data.getFileLocations();
+		Map<String, DataLocation> fileLocations = data.getDataLocations();
 		Context validationContext = (Context) context.get(VALIDATION_CONTEXT);
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 		Referential referential = (Referential) context.get(REFERENTIAL);
@@ -480,10 +522,14 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 				String wayBackRouteId = (String) objectContext.get(WAY_BACK_ROUTE_ID);
 				if (!localContext.containsKey(wayBackRouteId))
 				{
-					Detail errorItem = new Detail(
-							ROUTE_3,
-							fileLocations.get(objectId), wayBackRouteId);
-					addValidationError(context,ROUTE_3, errorItem);
+//					Detail errorItem = new Detail(
+//							ROUTE_3,
+//							fileLocations.get(objectId), wayBackRouteId);
+//					addValidationError(context,ROUTE_3, errorItem);
+					
+					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+					validationReporter.addCheckPointReportError(context, ROUTE_3, fileLocations.get(objectId), wayBackRouteId);
+					
 					continue;
 				}
 
@@ -494,11 +540,15 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 				if (! wayBackCtx.containsKey(WAY_BACK_ROUTE_ID)
 						|| ! wayBackCtx.get(WAY_BACK_ROUTE_ID).equals(objectId))
 				{
-					Detail errorItem = new Detail(
-							ROUTE_10,
-							fileLocations.get(objectId));
-					errorItem.getTargets().add(fileLocations.get( wayBackRouteId));
-					addValidationError(context,ROUTE_10, errorItem);
+//					Detail errorItem = new Detail(
+//							ROUTE_10,
+//							fileLocations.get(objectId));
+//					errorItem.getTargets().add(fileLocations.get( wayBackRouteId));
+//					addValidationError(context,ROUTE_10, errorItem);
+					
+					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+					validationReporter.addCheckPointReportError(context, ROUTE_10, fileLocations.get(objectId));
+					validationReporter.addTargetLocationToCheckPointError(context, ROUTE_10, fileLocations.get(wayBackRouteId));
 					continue;
 				}
 
@@ -515,11 +565,15 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 							.toLowerCase().substring(0, 1);
 					if (wk1.equals(wk2))
 					{
-						Detail errorItem = new Detail(
-								ROUTE_11,
-								fileLocations.get(objectId),wayBackRoute.getWayBack(),route.getWayBack());
-						errorItem.getTargets().add(fileLocations.get(wayBackRouteId));
-						addValidationError(context,ROUTE_11, errorItem);
+//						Detail errorItem = new Detail(
+//								ROUTE_11,
+//								fileLocations.get(objectId),wayBackRoute.getWayBack(),route.getWayBack());
+//						errorItem.getTargets().add(fileLocations.get(wayBackRouteId));
+//						addValidationError(context,ROUTE_11, errorItem);
+						
+						ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+						validationReporter.addCheckPointReportError(context, ROUTE_11, fileLocations.get(objectId), wayBackRoute.getWayBack(),route.getWayBack());
+						validationReporter.addTargetLocationToCheckPointError(context, ROUTE_11, fileLocations.get(wayBackRouteId));
 					}
 				}
 				// 2-NEPTUNE-Route-12 : check terminus of wayback routes (W)
@@ -543,11 +597,14 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 					if (startParentCommercial.equals(endParentCommercial))
 						continue;
 					// warning
-					Detail errorItem = new Detail(
-							ROUTE_12,
-							fileLocations.get(objectId),startParentCommercial.getObjectId(),endParentCommercial.getObjectId());
-					errorItem.getTargets().add(fileLocations.get(wayBackRouteId));
-					addValidationError(context,ROUTE_12, errorItem);
+//					Detail errorItem = new Detail(
+//							ROUTE_12,
+//							fileLocations.get(objectId),startParentCommercial.getObjectId(),endParentCommercial.getObjectId());
+//					errorItem.getTargets().add(fileLocations.get(wayBackRouteId));
+//					addValidationError(context,ROUTE_12, errorItem);
+					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+					validationReporter.addCheckPointReportError(context, ROUTE_12, fileLocations.get(objectId), startParentCommercial.getObjectId(),endParentCommercial.getObjectId());
+					validationReporter.addTargetLocationToCheckPointError(context, ROUTE_12, fileLocations.get(wayBackRouteId));
 
 				}
 			}

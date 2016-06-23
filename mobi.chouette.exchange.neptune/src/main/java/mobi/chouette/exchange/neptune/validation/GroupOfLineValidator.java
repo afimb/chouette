@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import mobi.chouette.common.Context;
+import mobi.chouette.exchange.model.DataLocation;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.validation.ValidationConstraints;
 import mobi.chouette.exchange.validation.ValidationData;
@@ -14,6 +15,7 @@ import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.exchange.validation.report.Detail;
 import mobi.chouette.exchange.validation.report.Location;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.GroupOfLine;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 
@@ -64,7 +66,8 @@ public class GroupOfLineValidator extends AbstractValidator implements Validator
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 		if (localContext == null || localContext.isEmpty()) return new ValidationConstraints();
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
-		Map<String, Location> fileLocations = data.getFileLocations();
+//		Map<String, Location> fileLocations = data.getFileLocations();
+		Map<String, DataLocation> fileLocations = data.getDataLocations();
 		
 		
 		Context lineContext = (Context) validationContext.get(LineValidator.LOCAL_CONTEXT);
@@ -80,10 +83,13 @@ public class GroupOfLineValidator extends AbstractValidator implements Validator
 				prepareCheckPoint(context, GROUP_OF_LINE_1);
 				if (!lineIds.contains(lineId))
 				{
-					Detail errorItem = new Detail(
-							GROUP_OF_LINE_1,
-							fileLocations.get(objectId), lineId);
-					addValidationError(context, GROUP_OF_LINE_1, errorItem);
+//					Detail errorItem = new Detail(
+//							GROUP_OF_LINE_1,
+//							fileLocations.get(objectId), lineId);
+//					addValidationError(context, GROUP_OF_LINE_1, errorItem);
+					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+					validationReporter.addCheckPointReportError(context, GROUP_OF_LINE_1, fileLocations.get(objectId), lineId);
+
 				}
 			}
 

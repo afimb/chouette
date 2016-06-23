@@ -60,6 +60,14 @@ public class ValidationReport2 implements Report {
 		return null;
 	}
 	
+	public CheckPointErrorReport findCheckPointReportErrorByKey(String key) {
+		for (CheckPointErrorReport checkPointError : checkPointErrors) {
+			if (checkPointError.getKey().equals(key))
+				return checkPointError;
+		}
+		return null;
+	}
+	
 	protected void addCheckPointReport(CheckPointReport checkPoint)
 	{
 		checkPoint.setMaxByFile(maxByFile);

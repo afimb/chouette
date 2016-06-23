@@ -219,4 +219,15 @@ public class ValidationReporterImpl implements ValidationReporter, Constant {
 		return (checkPoint != null);
 	}
 
+	@Override
+	public void addTargetLocationToCheckPointError(Context context,
+			String errorKey, DataLocation targetLocation) {
+		ValidationReport2 validationReport = (ValidationReport2) context.get(VALIDATION_REPORT);
+		CheckPointErrorReport checkPointError = validationReport.findCheckPointReportErrorByKey(errorKey);
+		if(checkPointError != null) {
+			Location location = new Location(targetLocation.getFilename(), targetLocation.getLineNumber(), targetLocation.getColumnNumber());
+			checkPointError.getTargets().add(location);
+		}
+	}
+
 }

@@ -13,6 +13,7 @@ import mobi.chouette.exchange.validation.report.Detail;
 import mobi.chouette.exchange.validation.report.LineLocation;
 import mobi.chouette.exchange.validation.report.Location;
 import mobi.chouette.exchange.validation.report.ValidationReport;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.util.Referential;
@@ -68,33 +69,23 @@ public abstract class AbstractValidator implements Constant {
 
 	protected static void addItemToValidation(Context context, String prefix, String name, int count,
 			String... severities) {
-		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
-		for (int i = 1; i <= count; i++) {
-			String key = prefix + name + "-" + i;
-			if (validationReport.findCheckPointByName(key) == null) {
-				if (severities[i - 1].equals("W")) {
-					validationReport.addCheckPoint(
-							new CheckPoint(key, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
-				} else {
-					validationReport.addCheckPoint(
-							new CheckPoint(key, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
-				}
-			}
-		}
+//		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
+//		for (int i = 1; i <= count; i++) {
+//			String key = prefix + name + "-" + i;
+//			if (validationReport.findCheckPointByName(key) == null) {
+//				if (severities[i - 1].equals("W")) {
+//					validationReport.addCheckPoint(
+//							new CheckPoint(key, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+//				} else {
+//					validationReport.addCheckPoint(
+//							new CheckPoint(key, CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+//				}
+//			}
+//		}
+//			
+		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+		validationReporter.addItemToValidationReport(context, prefix, name, count, severities);
 		return;
-	}
-
-	/**
-	 * add a detail on a checkpoint
-	 * 
-	 * @param checkPointKey
-	 * @param item
-	 */
-	protected void addValidationError(Context context, String checkPointKey, Detail item) {
-		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
-		CheckPoint checkPoint = validationReport.findCheckPointByName(checkPointKey);
-		checkPoint.addDetail(item);
-
 	}
 
 	/**
@@ -103,14 +94,21 @@ public abstract class AbstractValidator implements Constant {
 	 * @param checkPointKey
 	 */
 	protected void prepareCheckPoint(Context context, String checkPointKey) {
-		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
-		CheckPoint checkPoint = validationReport.findCheckPointByName(checkPointKey);
-		if (checkPoint == null) {
+//		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
+//		CheckPoint checkPoint = validationReport.findCheckPointByName(checkPointKey);
+//		if (checkPoint == null) {
+//			initializeCheckPoints(context);
+//			checkPoint = validationReport.findCheckPointByName(checkPointKey);
+//		}
+//		if (checkPoint.getDetails().isEmpty())
+//			checkPoint.setState(CheckPoint.RESULT.OK);
+		
+		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+		
+		if (!validationReporter.checkIfCheckPointExists(context, checkPointKey)) {
 			initializeCheckPoints(context);
-			checkPoint = validationReport.findCheckPointByName(checkPointKey);
+			validationReporter.prepareCheckPointReport(context, checkPointKey);
 		}
-		if (checkPoint.getDetails().isEmpty())
-			checkPoint.setState(CheckPoint.RESULT.OK);
 	}
 
 	protected static Line getLine(Referential referential) {

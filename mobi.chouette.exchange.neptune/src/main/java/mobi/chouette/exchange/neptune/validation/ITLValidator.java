@@ -4,6 +4,7 @@ package mobi.chouette.exchange.neptune.validation;
 import java.util.Map;
 
 import mobi.chouette.common.Context;
+import mobi.chouette.exchange.model.DataLocation;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.validation.ValidationConstraints;
 import mobi.chouette.exchange.validation.ValidationData;
@@ -13,6 +14,7 @@ import mobi.chouette.exchange.validation.ValidatorFactory;
 import mobi.chouette.exchange.validation.report.Detail;
 import mobi.chouette.exchange.validation.report.FileLocation;
 import mobi.chouette.exchange.validation.report.Location;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.StopArea;
@@ -71,7 +73,8 @@ public class ITLValidator extends AbstractValidator implements Validator<StopAre
 		Context localContext = (Context) validationContext.get(LOCAL_CONTEXT);
 		if (localContext == null || localContext.isEmpty()) return new ValidationConstraints();
 		ValidationData data = (ValidationData) context.get(VALIDATION_DATA);
-		Map<String, Location> fileLocations = data.getFileLocations();
+//		Map<String, Location> fileLocations = data.getFileLocations();
+		Map<String, DataLocation> fileLocations = data.getDataLocations();
 		Context stopAreaContext = (Context) validationContext.get(StopAreaValidator.LOCAL_CONTEXT);
 		Context lineContext = (Context) validationContext.get(LineValidator.LOCAL_CONTEXT);
 		Referential referential = (Referential) context.get(REFERENTIAL);
@@ -95,10 +98,14 @@ public class ITLValidator extends AbstractValidator implements Validator<StopAre
 			if (!stopAreaContext.containsKey(stopAreaId) || !stopAreas.containsKey(stopAreaId))
 
 			{
-				Detail errorItem = new Detail(
-						ITL_3,
-						new Location(sourceLocation,(String) objectContext.get(ITL_NAME)), stopAreaId);
-				addValidationError(context, ITL_3, errorItem);
+//				Detail errorItem = new Detail(
+//						ITL_3,
+//						new Location(sourceLocation,(String) objectContext.get(ITL_NAME)), stopAreaId);
+//				addValidationError(context, ITL_3, errorItem);
+				
+				ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+				validationReporter.addCheckPointReportError(context, ITL_3, new DataLocation(sourceLocation.getFilename(), sourceLocation.getLineNumber(), sourceLocation.getColumnNumber(), (String) objectContext.get(ITL_NAME)), stopAreaId);
+				
 			} else
 			{
 				// 2-NEPTUNE-ITL-4 : Check if ITL refers StopArea of ITL
@@ -107,16 +114,19 @@ public class ITLValidator extends AbstractValidator implements Validator<StopAre
 				StopArea stopArea = stopAreas.get(stopAreaId);
 				if (!stopArea.getAreaType().equals(ChouetteAreaEnum.ITL))
 				{
-					Detail errorItem = new Detail(
-							ITL_4,
-							new Location(sourceLocation,(String) objectContext.get(ITL_NAME)), stopArea.getAreaType().toString());
+//					Detail errorItem = new Detail(
+//							ITL_4,
+//							new Location(sourceLocation,(String) objectContext.get(ITL_NAME)), stopArea.getAreaType().toString());
 					Context stopAreaData = (Context) stopAreaContext.get(stopAreaId);
 					lineNumber = ((Integer) stopAreaData.get(LINE_NUMBER)).intValue();
 					columnNumber = ((Integer) stopAreaData.get(COLUMN_NUMBER)).intValue();
 					FileLocation targetLocation = new FileLocation(fileName, lineNumber, columnNumber);
-					errorItem.getTargets().add(fileLocations.get( stopAreaId));
-					addValidationError(context, ITL_4, errorItem);
-
+//					errorItem.getTargets().add(fileLocations.get( stopAreaId));
+//					addValidationError(context, ITL_4, errorItem);
+					
+					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+					validationReporter.addCheckPointReportError(context, ITL_4, new DataLocation(sourceLocation.getFilename(), sourceLocation.getLineNumber(), sourceLocation.getColumnNumber(), (String) objectContext.get(ITL_NAME)), stopArea.getAreaType().toString());
+					validationReporter.addTargetLocationToCheckPointError(context, ITL_4, fileLocations.get( stopAreaId));
 				}
 			}
 
@@ -127,15 +137,20 @@ public class ITLValidator extends AbstractValidator implements Validator<StopAre
 				prepareCheckPoint(context, ITL_5);
 				if (!lineId.equals(line.getObjectId()))
 				{
-					Detail errorItem = new Detail(
-							ITL_5,
-							new Location(sourceLocation,objectId), lineId);
+//					Detail errorItem = new Detail(
+//							ITL_5,
+//							new Location(sourceLocation,objectId), lineId);
 					Context lineData = (Context) lineContext.get(line.getObjectId());
 					lineNumber = ((Integer) lineData.get(LINE_NUMBER)).intValue();
 					columnNumber = ((Integer) lineData.get(COLUMN_NUMBER)).intValue();
 					FileLocation targetLocation = new FileLocation(fileName, lineNumber, columnNumber);
-					errorItem.getTargets().add(fileLocations.get( line.getObjectId()));
-					addValidationError(context, ITL_5, errorItem);
+//					errorItem.getTargets().add(fileLocations.get( line.getObjectId()));
+//					addValidationError(context, ITL_5, errorItem);
+					
+
+					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
+					validationReporter.addCheckPointReportError(context, ITL_5, new DataLocation(sourceLocation.getFilename(), sourceLocation.getLineNumber(), sourceLocation.getColumnNumber(), objectId), lineId);
+					validationReporter.addTargetLocationToCheckPointError(context, ITL_5, fileLocations.get(line.getObjectId()));
 				}
 
 			}
