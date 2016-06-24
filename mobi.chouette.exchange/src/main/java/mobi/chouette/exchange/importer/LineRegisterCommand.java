@@ -24,14 +24,12 @@ import mobi.chouette.dao.LineDAO;
 import mobi.chouette.dao.VehicleJourneyDAO;
 import mobi.chouette.exchange.importer.updater.LineOptimiser;
 import mobi.chouette.exchange.importer.updater.LineUpdater;
+import mobi.chouette.exchange.importer.updater.NeTExStopPlaceRegisterUpdater;
 import mobi.chouette.exchange.importer.updater.Updater;
 import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.exchange.report.LineError;
 import mobi.chouette.exchange.report.LineInfo;
-import mobi.chouette.model.Line;
-import mobi.chouette.model.StopPoint;
-import mobi.chouette.model.VehicleJourney;
-import mobi.chouette.model.VehicleJourneyAtStop;
+import mobi.chouette.model.*;
 import mobi.chouette.model.util.Referential;
 
 import com.jamonapi.Monitor;
@@ -55,6 +53,9 @@ public class LineRegisterCommand implements Command {
 	@EJB(beanName = LineUpdater.BEAN_NAME)
 	private Updater<Line> lineUpdater;
 
+	@EJB(beanName = NeTExStopPlaceRegisterUpdater.BEAN_NAME)
+	private Updater<StopArea> stopPlaceRegisterUpdater;
+
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public boolean execute(Context context) throws Exception {
@@ -70,6 +71,13 @@ public class LineRegisterCommand implements Command {
 		context.put(CACHE, cache);
 
 		Referential referential = (Referential) context.get(REFERENTIAL);
+
+		log.warn("About to loop through stop areas");
+		for(String key : referential.getStopAreas().keySet()) {
+			log.warn("Key: {}" + key);
+			StopArea stopArea = referential.getStopAreas().get(key);
+			stopPlaceRegisterUpdater.update(context, stopArea, stopArea);
+		}
 
 		Line newValue = referential.getLines().values().iterator().next();
 		log.info("register line : " + newValue.getObjectId() + " " + newValue.getName() + " vehicleJourney count = "

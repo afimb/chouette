@@ -1,10 +1,34 @@
 package mobi.chouette.exchange.importer.updater;
 
-import static org.testng.Assert.*;
+import mobi.chouette.common.Context;
+import mobi.chouette.model.StopArea;
+import mobi.chouette.model.type.ChouetteAreaEnum;
+import org.testng.annotations.Test;
+import java.math.BigDecimal;
 
-/**
- * Created by cristoffer on 23.06.16.
- */
+
 public class NeTExStopPlaceRegisterUpdaterTest {
+
+    @Test(enabled = true)
+    public void exportStopArea() throws Exception {
+
+        NeTExStopPlaceRegisterUpdater neTExStopPlaceRegisterUpdater = new NeTExStopPlaceRegisterUpdater();
+
+        StopArea oldStoparea = new StopArea();
+        oldStoparea.setName("Nesbru æøå");
+        oldStoparea.setAreaType(ChouetteAreaEnum.StopPlace);
+
+        StopArea stopArea = new StopArea();
+        stopArea.setName("Nesbru");
+        stopArea.setAreaType(ChouetteAreaEnum.StopPlace);
+
+        stopArea.setLatitude(new BigDecimal(59.9202707));
+        stopArea.setLongitude(new BigDecimal(10.7913503));
+
+        Context context = new Context();
+
+        neTExStopPlaceRegisterUpdater.update(context, oldStoparea, stopArea);
+
+    }
 
 }
