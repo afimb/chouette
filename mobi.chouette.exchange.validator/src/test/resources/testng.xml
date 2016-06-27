@@ -1,12 +1,11 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
 <suite name="Validation Phase 3" verbose="1" >
-<!--
    <test name="Test_A_ok" preserve-order="true">
       <classes>
          <class name="mobi.chouette.exchange.validation.checkpoint.ValidationNominal" />
       </classes>
-</test>  
+   </test>  
    <test name="Test_B_lines" preserve-order="true">
       <classes>
          <class name="mobi.chouette.exchange.validation.checkpoint.ValidationLines" />
@@ -67,5 +66,4 @@
          <class name="mobi.chouette.exchange.validation.checkpoint.ValidationTimetables" />
       </classes>
   </test> 
-  -->
 </suite> 

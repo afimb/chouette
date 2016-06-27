@@ -9,8 +9,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
 
 import org.codehaus.jettison.json.JSONArray;
@@ -20,31 +20,48 @@ import org.codehaus.jettison.json.JSONObject;
 @XmlRootElement(name = "action_report")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder = { "progression", "result", "zip", "files", "lines", "stats", "failure" })
-@NoArgsConstructor
-@Data
+
 public class ActionReport implements ProgressionReport, Report {
 
 	@XmlElement(name = "progression", required = true)
+	@Getter
+	@Setter
 	private Progression progression = new Progression();
 
 	@XmlElement(name = "result", required = true)
+	@Getter
+//	@Setter
 	private String result = ReportConstant.STATUS_OK;
 
 	@XmlElement(name = "zip_file")
+//	@Getter
+//	@Setter
 	private FileInfo zip;
 
 	@XmlElement(name = "files")
+	@Getter
+//	@Setter
 	private List<FileInfo> files = new ArrayList<>();
 
 	@XmlElement(name = "lines")
+	@Getter
+//	@Setter
 	private List<LineInfo> lines = new ArrayList<>();
 
 	@XmlElement(name = "stats", required = true)
+	@Getter
+	@Setter
 	private DataStats stats = new DataStats();
 
 	@XmlElement(name = "failure")
+	@Getter
 	private ActionError failure;
 
+	public ActionReport()
+	{
+		
+	}
+	
 	/**
 	 * set or unset error ; will set result to ERROR if error != null
 	 * 
@@ -90,34 +107,6 @@ public class ActionReport implements ProgressionReport, Report {
 		return null;
 	}
 
-	public JSONObject toJson() throws JSONException {
-		JSONObject actionReport = new JSONObject();
-		actionReport.put("progression", progression.toJson());
-		// "result","zip","files","lines","stats","failure"
-		actionReport.put("result", result);
-		if (zip != null)
-			actionReport.put("zip_file", zip.toJson());
-		if (!files.isEmpty()) {
-			JSONArray array = new JSONArray();
-			actionReport.put("files", array);
-			for (FileInfo file : files) {
-				array.put(file.toJson());
-			}
-		}
-		if (!lines.isEmpty()) {
-			JSONArray array = new JSONArray();
-			actionReport.put("lines", array);
-			for (LineInfo line : lines) {
-				array.put(line.toJson());
-			}
-		}
-		actionReport.put("stats", stats.toJson());
-		if (failure != null)
-			actionReport.put("failure", failure.toJson());
-		JSONObject object = new JSONObject();
-		object.put("action_report", actionReport);
-		return object;
-	}
 
 	public void addFileInfo(String fileInfoName, FILE_STATE state) {
 		FileInfo fileInfo = findFileInfo(fileInfoName);
@@ -159,6 +148,35 @@ public class ActionReport implements ProgressionReport, Report {
 		//findFileInfo(fileInfoName, state).addError(fileError);
 	}
 
+	@Override
+	public JSONObject toJson() throws JSONException {
+		JSONObject actionReport = new JSONObject();
+		actionReport.put("progression", progression.toJson());
+		// "result","zip","files","lines","stats","failure"
+		actionReport.put("result", result);
+		if (zip != null)
+			actionReport.put("zip_file", zip.toJson());
+		if (!files.isEmpty()) {
+			JSONArray array = new JSONArray();
+			actionReport.put("files", array);
+			for (FileInfo file : files) {
+				array.put(file.toJson());
+			}
+		}
+		if (!lines.isEmpty()) {
+			JSONArray array = new JSONArray();
+			actionReport.put("lines", array);
+			for (LineInfo line : lines) {
+				array.put(line.toJson());
+			}
+		}
+		actionReport.put("stats", stats.toJson());
+		if (failure != null)
+			actionReport.put("failure", failure.toJson());
+		JSONObject object = new JSONObject();
+		object.put("action_report", actionReport);
+		return object;
+	}
 	@Override
 	public boolean isEmpty() {
 		// used to know if report has to be saved

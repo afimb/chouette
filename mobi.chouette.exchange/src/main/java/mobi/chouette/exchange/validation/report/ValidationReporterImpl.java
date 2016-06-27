@@ -3,8 +3,8 @@ package mobi.chouette.exchange.validation.report;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.model.DataLocation;
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.exchange.validation.report.CheckPointReport.SEVERITY;
 
 public class ValidationReporterImpl implements ValidationReporter, Constant {
@@ -65,7 +65,7 @@ public class ValidationReporterImpl implements ValidationReporter, Constant {
 	@Override
 	public void addCheckPointReportError(Context context, String checkPointName, DataLocation location,
 			String value, String refValue) {
-		addCheckPointReportError(context, checkPointName, null, location, value, null);
+		addCheckPointReportError(context, checkPointName, null, location, value, refValue);
 
 	}
 	@Override
@@ -85,7 +85,7 @@ public class ValidationReporterImpl implements ValidationReporter, Constant {
 		CheckPointErrorReport newCheckPointError;
 
 		if (detail != null )
-			newCheckPointError = new CheckPointErrorReport(checkPointName + "_" + detail, detailLocation, value);
+			newCheckPointError = new CheckPointErrorReport(checkPointName + "_" + detail, detailLocation, value ,refValue);
 		else
 			newCheckPointError = new CheckPointErrorReport(checkPointName, detailLocation, value, refValue);
 
@@ -96,7 +96,7 @@ public class ValidationReporterImpl implements ValidationReporter, Constant {
 	@Override
 	public void addCheckPointReportError(Context context, String checkPointName, DataLocation location,
 			String value, String refValue, DataLocation... targetLocations) {
-		addCheckPointReportError(context, checkPointName, null, location, value, null,targetLocations);
+		addCheckPointReportError(context, checkPointName, null, location, value, refValue,targetLocations);
 	}
 	
 	@Override
@@ -116,7 +116,7 @@ public class ValidationReporterImpl implements ValidationReporter, Constant {
 		CheckPointErrorReport newCheckPointError;
 
 		if (detail != null)
-			newCheckPointError = new CheckPointErrorReport(checkPointName + "_" + detail, detailLocation, value);
+			newCheckPointError = new CheckPointErrorReport(checkPointName + "_" + detail, detailLocation, value, refValue);
 		else
 			newCheckPointError = new CheckPointErrorReport(checkPointName, detailLocation, value, refValue);
 		
@@ -155,10 +155,10 @@ public class ValidationReporterImpl implements ValidationReporter, Constant {
 
 	@Override
 	public void reportSuccess(Context context, String checkpointName, String filenameInfo) {
-		ActionReport report = (ActionReport) context.get(REPORT);
+		ActionReporter reporter = ActionReporter.Factory.getInstance();
 		ValidationReport2 validationReport = (ValidationReport2) context.get(VALIDATION_REPORT);
 		CheckPointReport checkPoint = validationReport.findCheckPointReportByName(checkpointName);
-		report.addFileInfo(filenameInfo, FILE_STATE.OK);
+		reporter.addFileReport(context, filenameInfo, IO_TYPE.INPUT);
 
 		if (checkPoint.getState().equals(RESULT.UNCHECK))
 			checkPoint.setState(RESULT.OK);

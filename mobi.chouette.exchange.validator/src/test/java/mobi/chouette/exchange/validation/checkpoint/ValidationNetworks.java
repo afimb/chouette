@@ -4,19 +4,18 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Color;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.JSONUtil;
-import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.ActionReport2;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
-import mobi.chouette.exchange.validation.report.CheckPoint;
-import mobi.chouette.exchange.validation.report.Detail;
-import mobi.chouette.exchange.validation.report.ValidationReport;
+import mobi.chouette.exchange.validation.report.CheckPointErrorReport;
+import mobi.chouette.exchange.validation.report.CheckPointReport;
+import mobi.chouette.exchange.validation.report.ValidationReport2;
 import mobi.chouette.exchange.validator.JobDataTest;
 import mobi.chouette.exchange.validator.ValidateParameters;
 import mobi.chouette.model.Network;
@@ -29,7 +28,7 @@ import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.Test;
 
 @Log4j
-public class ValidationNetworks implements Constant{
+public class ValidationNetworks extends AbstractTestValidation implements Constant{
 	private NetworkCheckPoints checkPoint = new NetworkCheckPoints();
 	private ValidationParameters fullparameters;
 	private Network bean1;
@@ -48,7 +47,7 @@ public class ValidationNetworks implements Constant{
 	public void init() {
 		BasicConfigurator.configure();
 
-		Locale.setDefault(Locale.ENGLISH);
+		super.init();
 		long id = 1;
 
 		fullparameters = null;
@@ -77,9 +76,9 @@ public class ValidationNetworks implements Constant{
 		ContextHolder.setContext("chouette_gui"); // set tenant schema
 
 		Context context = new Context();
-		context.put(INITIAL_CONTEXT, null);
-		context.put(REPORT, new ActionReport());
-		context.put(MAIN_VALIDATION_REPORT, new ValidationReport());
+		context.put(INITIAL_CONTEXT, initialContext);
+		context.put(REPORT, new ActionReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport2());
 		ValidateParameters configuration = new ValidateParameters();
 		context.put(CONFIGURATION, configuration);
 		configuration.setName("name");
@@ -111,7 +110,7 @@ public class ValidationNetworks implements Constant{
 		log.info(Color.BLUE + "4-Network-1 no test" + Color.NORMAL);
 		Context context = initValidatorContext();
 		Assert.assertNotNull(fullparameters, "no parameters for test");
-		context.put(VALIDATION_REPORT, new ValidationReport());
+		context.put(VALIDATION_REPORT, new ValidationReport2());
 
 		fullparameters.setCheckNetwork(0);
 		context.put(VALIDATION, fullparameters);
@@ -121,18 +120,18 @@ public class ValidationNetworks implements Constant{
 
 		checkPoint.validate(context, null);
 
-		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
-		Assert.assertTrue(report.findCheckPointByName("4-Network-1") == null,
+		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		Assert.assertTrue(report.findCheckPointReportByName("4-Network-1") == null,
 				" report must not have item 4-Network-1");
 
 
 		fullparameters.setCheckNetwork(1);
-		context.put(VALIDATION_REPORT, new ValidationReport());
+		context.put(VALIDATION_REPORT, new ValidationReport2());
 
 		checkPoint.validate(context, null);
-		report = (ValidationReport) context.get(VALIDATION_REPORT);
-		Assert.assertTrue(report.findCheckPointByName("4-Network-1") != null, " report must have item 4-ConnectionLink-1");
-		Assert.assertEquals(report.findCheckPointByName("4-Network-1").getDetailCount(), 0,
+		report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		Assert.assertTrue(report.findCheckPointReportByName("4-Network-1") != null, " report must have item 4-ConnectionLink-1");
+		Assert.assertEquals(report.findCheckPointReportByName("4-Network-1").getCheckPointErrorCount(), 0,
 				" checkpoint must have no detail");
 
 
@@ -145,7 +144,7 @@ public class ValidationNetworks implements Constant{
 		Context context = initValidatorContext();
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
-		context.put(VALIDATION_REPORT, new ValidationReport());
+		context.put(VALIDATION_REPORT, new ValidationReport2());
 
 		fullparameters.setCheckNetwork(1);
 		fullparameters.getNetwork().getObjectId().setUnique(1);
@@ -157,12 +156,12 @@ public class ValidationNetworks implements Constant{
 		checkPoint.validate(context, null);
 		fullparameters.getNetwork().getObjectId().setUnique(0);
 
-		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
+		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
 
 		Assert.assertFalse(report.getCheckPoints().isEmpty(), " report must have items");
-		Assert.assertNotNull(report.findCheckPointByName("4-Network-1"), " report must have 1 item on key "+"4-Network-1");
-		CheckPoint checkPointReport = report.findCheckPointByName("4-Network-1");
-		Assert.assertEquals(checkPointReport.getDetails().size(), 1, " checkpoint must have "+1+" detail");
+		Assert.assertNotNull(report.findCheckPointReportByName("4-Network-1"), " report must have 1 item on key "+"4-Network-1");
+		CheckPointReport checkPointReport = report.findCheckPointReportByName("4-Network-1");
+		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 1, " checkpoint must have "+1+" detail");
 	}
 
 	@Test(groups = { "network" }, description = "4-Network-1 pattern numeric", priority = 3)
@@ -172,7 +171,7 @@ public class ValidationNetworks implements Constant{
 		Context context = initValidatorContext();
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
-		context.put(VALIDATION_REPORT, new ValidationReport());
+		context.put(VALIDATION_REPORT, new ValidationReport2());
 
 		// pattern
 		bean1.setRegistrationNumber("1234");
@@ -187,8 +186,8 @@ public class ValidationNetworks implements Constant{
 		context.put(VALIDATION_DATA, data);
 		checkPoint.validate(context, null);
 
-		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
-		checkReportForTest4_1(report, "4-Network-1",1);
+		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		checkReportForTest(report, "4-Network-1",1);
 	}
 
 	@Test(groups = { "network" }, description = "4-Network-1 pattern alphabetic", priority = 4)
@@ -198,7 +197,7 @@ public class ValidationNetworks implements Constant{
 		Context context = initValidatorContext();
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
-		context.put(VALIDATION_REPORT, new ValidationReport());
+		context.put(VALIDATION_REPORT, new ValidationReport2());
 		bean1.setRegistrationNumber("AzErTy");
 		bean2.setRegistrationNumber("az234ZDER");
 
@@ -210,8 +209,8 @@ public class ValidationNetworks implements Constant{
 		context.put(VALIDATION_DATA, data);
 		checkPoint.validate(context, null);
 
-		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
-		checkReportForTest4_1(report, "4-Network-1",1);
+		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		checkReportForTest(report, "4-Network-1",1);
 	}
 
 	@Test(groups = { "network" }, description = "4-Network-1 pattern uppercase", priority = 5)
@@ -221,7 +220,7 @@ public class ValidationNetworks implements Constant{
 		Context context = initValidatorContext();
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
-		context.put(VALIDATION_REPORT, new ValidationReport());
+		context.put(VALIDATION_REPORT, new ValidationReport2());
 		bean1.setRegistrationNumber("AZERTY");
 		bean2.setRegistrationNumber("az234ZDER");
 
@@ -233,8 +232,8 @@ public class ValidationNetworks implements Constant{
 		context.put(VALIDATION_DATA, data);
 		checkPoint.validate(context, null);
 
-		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
-		checkReportForTest4_1(report, "4-Network-1",1);
+		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		checkReportForTest(report, "4-Network-1",1);
 	}
 
 	@Test(groups = { "network" }, description = "4-Network-1 pattern lowercase", priority = 6)
@@ -244,7 +243,7 @@ public class ValidationNetworks implements Constant{
 		Context context = initValidatorContext();
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
-		context.put(VALIDATION_REPORT, new ValidationReport());
+		context.put(VALIDATION_REPORT, new ValidationReport2());
 		bean1.setRegistrationNumber("azerty");
 		bean2.setRegistrationNumber("az234ZDER");
 
@@ -256,8 +255,8 @@ public class ValidationNetworks implements Constant{
 		context.put(VALIDATION_DATA, data);
 		checkPoint.validate(context, null);
 
-		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
-		checkReportForTest4_1(report, "4-Network-1",1);
+		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		checkReportForTest(report, "4-Network-1",1);
 	}
 
 	@Test(groups = { "network" }, description = "4-Network-1 min_size alpha", priority = 7)
@@ -267,7 +266,7 @@ public class ValidationNetworks implements Constant{
 		Context context = initValidatorContext();
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
-		context.put(VALIDATION_REPORT, new ValidationReport());
+		context.put(VALIDATION_REPORT, new ValidationReport2());
 
 		// minsize alpha
 		bean1.setRegistrationNumber("1234");
@@ -282,8 +281,8 @@ public class ValidationNetworks implements Constant{
 		checkPoint.validate(context, null);
 		fullparameters.getNetwork().getRegistrationNumber().setMinSize("");
 
-		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
-		checkReportForTest4_1(report, "4-Network-1",1);
+		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		checkReportForTest(report, "4-Network-1",1);
 
 	}
 
@@ -294,7 +293,7 @@ public class ValidationNetworks implements Constant{
 		Context context = initValidatorContext();
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
-		context.put(VALIDATION_REPORT, new ValidationReport());
+		context.put(VALIDATION_REPORT, new ValidationReport2());
 		// maxsize alpha
 		bean1.setRegistrationNumber("12345");
 		bean2.setRegistrationNumber("123456");
@@ -307,8 +306,8 @@ public class ValidationNetworks implements Constant{
 		checkPoint.validate(context, null);
 		fullparameters.getNetwork().getRegistrationNumber().setMaxSize("");
 
-		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
-		checkReportForTest4_1(report, "4-Network-1",1);
+		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		checkReportForTest(report, "4-Network-1",1);
 	}
 
 	@Test(groups = { "network" }, description = "4-Network-1 min_size numeric", priority = 9)
@@ -318,7 +317,7 @@ public class ValidationNetworks implements Constant{
 		Context context = initValidatorContext();
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
-		context.put(VALIDATION_REPORT, new ValidationReport());
+		context.put(VALIDATION_REPORT, new ValidationReport2());
 		// minsize num
 		bean1.setRegistrationNumber("124");
 		bean2.setRegistrationNumber("123");
@@ -332,8 +331,8 @@ public class ValidationNetworks implements Constant{
 		checkPoint.validate(context, null);
 		fullparameters.getNetwork().getRegistrationNumber().setMinSize("");
 
-		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
-		checkReportForTest4_1(report, "4-Network-1",1);
+		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		checkReportForTest(report, "4-Network-1",1);
 	}
 
 	@Test(groups = { "network" }, description = "4-Network-1 max_size numeric", priority = 10)
@@ -343,7 +342,7 @@ public class ValidationNetworks implements Constant{
 		Context context = initValidatorContext();
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
-		context.put(VALIDATION_REPORT, new ValidationReport());
+		context.put(VALIDATION_REPORT, new ValidationReport2());
 		// maxsize num
 		bean1.setRegistrationNumber("1240");
 		bean2.setRegistrationNumber("1241");
@@ -357,22 +356,23 @@ public class ValidationNetworks implements Constant{
 		context.put(VALIDATION_DATA, data);
 		checkPoint.validate(context, null);
 
-		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
-		checkReportForTest4_1(report, "4-Network-1",1);
+		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		checkReportForTest(report, "4-Network-1",1);
 	}
 
 	/**
 	 * @param report
 	 */
-	protected void checkReportForTest4_1(ValidationReport report, String key, int detailSize) {
+	protected List<CheckPointErrorReport> checkReportForTest(ValidationReport2 report, String key, int detailSize) {
 		Assert.assertFalse(report.getCheckPoints().isEmpty(), " report must have items");
-		Assert.assertNotNull(report.findCheckPointByName(key), " report must have 1 item on key "+key);
-		CheckPoint checkPointReport = report.findCheckPointByName(key);
-		Assert.assertEquals(checkPointReport.getDetails().size(), detailSize, " checkpoint must have "+detailSize+" detail");
-		List<Detail> details = checkPointReport.getDetails();
-		Detail detail = details.get(0);
+		Assert.assertNotNull(report.findCheckPointReportByName(key), " report must have 1 item on key "+key);
+		CheckPointReport checkPointReport = report.findCheckPointReportByName(key);
+		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), detailSize, " checkpoint must have "+detailSize+" detail");
+		List<CheckPointErrorReport> details = super.checkReportForTest(report,key,-1);
+		CheckPointErrorReport detail = details.get(0);
 		Assert.assertEquals(detail.getReferenceValue(), "RegistrationNumber", "detail must refer column");
 		Assert.assertEquals(detail.getValue(), bean2.getRegistrationNumber(), "detail must refer value");
+		return details;
 	}
 
 }

@@ -32,14 +32,16 @@ public class FileLocation {
 
 	public FileLocation(String fileName, int lineNumber, int columnNumber) {
 		this.filename = fileName;
-		this.lineNumber = Integer.valueOf(lineNumber);
+		if (Integer.valueOf(lineNumber) >= 0)
+		    this.lineNumber = Integer.valueOf(lineNumber);
 		if (Integer.valueOf(columnNumber) >= 0)
 			this.columnNumber = Integer.valueOf(columnNumber);
 	}
 
 	public FileLocation(String fileName, int lineNumber, int columnNumber, String objectId) {
 		this.filename = fileName;
-		this.lineNumber = Integer.valueOf(lineNumber);
+		if (Integer.valueOf(lineNumber) >= 0)
+		    this.lineNumber = Integer.valueOf(lineNumber);
 		if (Integer.valueOf(columnNumber) >= 0)
 			this.columnNumber = Integer.valueOf(columnNumber);
 	}

@@ -16,9 +16,12 @@ import mobi.chouette.common.Context;
 import mobi.chouette.dao.LineDAO;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
-import mobi.chouette.exchange.validation.report.CheckPoint;
-import mobi.chouette.exchange.validation.report.Detail;
-import mobi.chouette.exchange.validation.report.ValidationReport;
+import mobi.chouette.exchange.validation.report.CheckPointErrorReport;
+import mobi.chouette.exchange.validation.report.CheckPointReport;
+import mobi.chouette.exchange.validation.report.ValidationReport2;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
+import mobi.chouette.exchange.validator.DummyChecker;
+import mobi.chouette.exchange.validator.JobDataTest;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
@@ -60,7 +63,7 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 
 		EnterpriseArchive result;
 		File[] files = Maven.resolver().loadPomFromFile("pom.xml")
-				.resolve("mobi.chouette:mobi.chouette.exchange.validation").withTransitivity().asFile();
+				.resolve("mobi.chouette:mobi.chouette.exchange.validator").withTransitivity().asFile();
 		List<File> jars = new ArrayList<>();
 		List<JavaArchive> modules = new ArrayList<>();
 		for (File file : files) {
@@ -104,6 +107,9 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 			}
 		}
 		final WebArchive testWar = ShrinkWrap.create(WebArchive.class, "test.war").addAsWebInfResource("postgres-ds.xml")
+				.addClass(DummyChecker.class)
+				.addClass(JobDataTest.class)
+				.addClass(AbstractTestValidation.class)
 				.addClass(ValidationVehicleJourneys.class);
 		
 		result = ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
@@ -166,7 +172,7 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 		Context context = initValidatorContext();
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 		context.put(VALIDATION, fullparameters);
-		context.put(VALIDATION_REPORT, new ValidationReport());
+		context.put(VALIDATION_REPORT, new ValidationReport2());
 
 		fullparameters.setCheckVehicleJourney(0);
 		ValidationData data = new ValidationData();
@@ -175,17 +181,17 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 
 		checkPoint.validate(context, null);
 
-		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
-		Assert.assertTrue(report.findCheckPointByName("4-VehicleJourney-1") == null, " report must not have item 4-VehicleJourney-1");
+		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		Assert.assertTrue(report.findCheckPointReportByName("4-VehicleJourney-1") == null, " report must not have item 4-VehicleJourney-1");
 
 		fullparameters.setCheckVehicleJourney(1);
 
-		context.put(VALIDATION_REPORT, new ValidationReport());
+		context.put(VALIDATION_REPORT, new ValidationReport2());
 
 		checkPoint.validate(context, null);
-		report = (ValidationReport) context.get(VALIDATION_REPORT);
-		Assert.assertTrue(report.findCheckPointByName("4-VehicleJourney-1") != null, " report must have item 4-VehicleJourney-1");
-		Assert.assertEquals(report.findCheckPointByName("4-VehicleJourney-1").getDetailCount(), 0,
+		report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		Assert.assertTrue(report.findCheckPointReportByName("4-VehicleJourney-1") != null, " report must have item 4-VehicleJourney-1");
+		Assert.assertEquals(report.findCheckPointReportByName("4-VehicleJourney-1").getCheckPointErrorCount(), 0,
 				" checkpoint must have no detail");
 
 	}
@@ -198,7 +204,7 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
 		context.put(VALIDATION, fullparameters);
-		context.put(VALIDATION_REPORT, new ValidationReport());
+		context.put(VALIDATION_REPORT, new ValidationReport2());
 
 		fullparameters.setCheckVehicleJourney(1);
 		fullparameters.getVehicleJourney().getObjectId().setUnique(1);
@@ -210,10 +216,10 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 		checkPoint.validate(context, null);
 		fullparameters.getRoute().getObjectId().setUnique(0);
 		// unique
-		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
+		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
 
-		List<Detail> details = checkReportForTest4_1(report, "4-VehicleJourney-1", 3);
-		for (Detail detail : details) {
+		List<CheckPointErrorReport> details = checkReportForTest(report, "4-VehicleJourney-1", 3);
+		for (CheckPointErrorReport detail : details) {
 			Assert.assertEquals(detail.getReferenceValue(), "ObjectId", "detail must refer column");
 			Assert.assertEquals(detail.getValue(), bean2.getObjectId().split(":")[2], "detail must refer value");
 		}
@@ -224,7 +230,7 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 		// 3-VehicleJourney-1 : check if time progress correctly on each stop
 		log.info(Color.BLUE + "3-VehicleJourney-1" + Color.NORMAL);
 		Context context = initValidatorContext();
-		context.put(VALIDATION_REPORT, new ValidationReport());
+		context.put(VALIDATION_REPORT, new ValidationReport2());
 
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
@@ -260,25 +266,25 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 
 		checkPoint.validate(context, null);
 
-		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
+		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
 		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 		
-		CheckPoint checkPointReport = report.findCheckPointByName("3-VehicleJourney-1");
+		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-VehicleJourney-1");
 		Assert.assertNotNull(checkPointReport, "report must contain a 3-VehicleJourney-1 checkPoint");
 
-		Assert.assertEquals(checkPointReport.getState(), CheckPoint.RESULT.NOK, " checkPointReport must be nok");
-		Assert.assertEquals(checkPointReport.getSeverity(), CheckPoint.SEVERITY.WARNING,
+		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
+		Assert.assertEquals(checkPointReport.getSeverity(), CheckPointReport.SEVERITY.WARNING,
 				" checkPointReport must be on level warning");
-		Assert.assertEquals(checkPointReport.getDetailCount(), 4, " checkPointReport must have 4 item");
+		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 4, " checkPointReport must have 4 item");
 
 		String detailKey = "3-VehicleJourney-1".replaceAll("-", "_").toLowerCase();
-		List<Detail> details = checkPointReport.getDetails();
-		for (Detail detail : details) {
+		List<CheckPointErrorReport> details = checkReportForTest(report,"3-VehicleJourney-1",-1);
+		for (CheckPointErrorReport detail : details) {
 			Assert.assertTrue(detail.getKey().startsWith(detailKey),
 					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
 		}
 		// check detail keys
-		for (Detail detail : checkPointReport.getDetails()) {
+		for (CheckPointErrorReport detail : details) {
 			Assert.assertEquals(detail.getSource().getObjectId(), vj1.getObjectId(),
 					"vj 1 must be source of error");
 		}
@@ -292,7 +298,7 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 		// 3-VehicleJourney-2 : check speed progression
 		log.info(Color.BLUE + "3-VehicleJourney-2" + Color.NORMAL);
 		Context context = initValidatorContext();
-		context.put(VALIDATION_REPORT, new ValidationReport());
+		context.put(VALIDATION_REPORT, new ValidationReport2());
 
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
@@ -325,21 +331,21 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 
 		checkPoint.validate(context, null);
 
-		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
+		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
 		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 		
 
-		CheckPoint checkPointReport = report.findCheckPointByName("3-VehicleJourney-2");
+		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-VehicleJourney-2");
 		Assert.assertNotNull(checkPointReport, "report must contain a 3-VehicleJourney-2 checkPoint");
 
-		Assert.assertEquals(checkPointReport.getState(), CheckPoint.RESULT.NOK, " checkPointReport must be nok");
-		Assert.assertEquals(checkPointReport.getSeverity(), CheckPoint.SEVERITY.WARNING,
+		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
+		Assert.assertEquals(checkPointReport.getSeverity(), CheckPointReport.SEVERITY.WARNING,
 				" checkPointReport must be on level warning");
 		
-		Assert.assertEquals(checkPointReport.getDetailCount(), 81, " checkPointReport must have 81 item");
+		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 81, " checkPointReport must have 81 item");
 		String detailKey = "3-VehicleJourney-2".replaceAll("-", "_").toLowerCase();
-		List<Detail> details = checkPointReport.getDetails();
-		for (Detail detail : details) {
+		List<CheckPointErrorReport> details = checkReportForTest(report,"3-VehicleJourney-2",-1);
+		for (CheckPointErrorReport detail : details) {
 			Assert.assertTrue(detail.getKey().startsWith(detailKey),
 					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
 		}
@@ -352,7 +358,7 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 		// 3-VehicleJourney-3 : check if two journeys progress similarly
 		log.info(Color.BLUE + "3-VehicleJourney-3" + Color.NORMAL);
 		Context context = initValidatorContext();
-		context.put(VALIDATION_REPORT, new ValidationReport());
+		context.put(VALIDATION_REPORT, new ValidationReport2());
 
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
@@ -394,21 +400,21 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 
 		checkPoint.validate(context, null);
 
-		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
+		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
 		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 		
 
-		CheckPoint checkPointReport = report.findCheckPointByName("3-VehicleJourney-3");
+		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-VehicleJourney-3");
 		Assert.assertNotNull(checkPointReport, "report must contain a 3-VehicleJourney-3 checkPoint");
 
-		Assert.assertEquals(checkPointReport.getState(), CheckPoint.RESULT.NOK, " checkPointReport must be nok");
-		Assert.assertEquals(checkPointReport.getSeverity(), CheckPoint.SEVERITY.WARNING,
+		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
+		Assert.assertEquals(checkPointReport.getSeverity(), CheckPointReport.SEVERITY.WARNING,
 				" checkPointReport must be on level warning");
 		
-		Assert.assertEquals(checkPointReport.getDetailCount(), 26, " checkPointReport must have 26 item");
+		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 26, " checkPointReport must have 26 item");
 		String detailKey = "3-VehicleJourney-3".replaceAll("-", "_").toLowerCase();
-		List<Detail> details = checkPointReport.getDetails();
-		for (Detail detail : details) {
+		List<CheckPointErrorReport> details = checkReportForTest(report,"3-VehicleJourney-3",-1);
+		for (CheckPointErrorReport detail : details) {
 			Assert.assertTrue(detail.getKey().startsWith(detailKey),
 					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
 		}
@@ -421,7 +427,7 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 		// 3-VehicleJourney-4 : check if each journey has minimum one timetable
 		log.info(Color.BLUE + "3-VehicleJourney-3" + Color.NORMAL);
 		Context context = initValidatorContext();
-		context.put(VALIDATION_REPORT, new ValidationReport());
+		context.put(VALIDATION_REPORT, new ValidationReport2());
 
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
@@ -452,21 +458,21 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 
 		checkPoint.validate(context, null);
 
-		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
+		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
 		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 		
 
-		CheckPoint checkPointReport = report.findCheckPointByName("3-VehicleJourney-4");
+		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-VehicleJourney-4");
 		Assert.assertNotNull(checkPointReport, "report must contain a 3-VehicleJourney-4 checkPoint");
 
-		Assert.assertEquals(checkPointReport.getState(), CheckPoint.RESULT.NOK, " checkPointReport must be nok");
-		Assert.assertEquals(checkPointReport.getSeverity(), CheckPoint.SEVERITY.WARNING,
+		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
+		Assert.assertEquals(checkPointReport.getSeverity(), CheckPointReport.SEVERITY.WARNING,
 				" checkPointReport must be on level warning");
 		
-		Assert.assertEquals(checkPointReport.getDetailCount(), 1, " checkPointReport must have 1 item");
+		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 1, " checkPointReport must have 1 item");
 		String detailKey = "3-VehicleJourney-4".replaceAll("-", "_").toLowerCase();
-		List<Detail> details = checkPointReport.getDetails();
-		for (Detail detail : details) {
+		List<CheckPointErrorReport> details = checkReportForTest(report,"3-VehicleJourney-4",-1);
+		for (CheckPointErrorReport detail : details) {
 			Assert.assertTrue(detail.getKey().startsWith(detailKey),
 					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
 		}
@@ -503,15 +509,15 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 			ValidationData data = new ValidationData();
 			context.put(VALIDATION_DATA, data);
 			data.getVehicleJourneys().addAll(jp1.getVehicleJourneys());
-			context.put(VALIDATION_REPORT, new ValidationReport());
+			context.put(VALIDATION_REPORT, new ValidationReport2());
 			fullparameters.setCheckAllowedTransportModes(0);
 			context.put(VALIDATION,fullparameters);
 			checkPoint.validate(context, null);
-			ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
+			ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
 
 			Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
-			CheckPoint checkPointReport = report.findCheckPointByName("4-VehicleJourney-2");
+			CheckPointReport checkPointReport = report.findCheckPointReportByName("4-VehicleJourney-2");
 			Assert.assertNull(checkPointReport, "report must not contain a 4-VehicleJourney-2 checkPoint");
 		}
 
@@ -521,16 +527,16 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 			ValidationData data = new ValidationData();
 			context.put(VALIDATION_DATA, data);
 			data.getVehicleJourneys().addAll(jp1.getVehicleJourneys());
-			context.put(VALIDATION_REPORT, new ValidationReport());
+			context.put(VALIDATION_REPORT, new ValidationReport2());
 			fullparameters.setCheckAllowedTransportModes(1);
 			fullparameters.getModeBus().setAllowedTransport(1);
 			context.put(VALIDATION,fullparameters);
 			checkPoint.validate(context, null);
-			ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
+			ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
 
 			Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
-			CheckPoint checkPointReport = report.findCheckPointByName("4-VehicleJourney-2");
+			CheckPointReport checkPointReport = report.findCheckPointReportByName("4-VehicleJourney-2");
 			Assert.assertNotNull(checkPointReport, "report must contain a 4-VehicleJourney-2 checkPoint");
 		}
 
@@ -539,25 +545,25 @@ public class ValidationVehicleJourneys extends AbstractTestValidation {
 			ValidationData data = new ValidationData();
 			context.put(VALIDATION_DATA, data);
 			data.getVehicleJourneys().addAll(jp1.getVehicleJourneys());
-			context.put(VALIDATION_REPORT, new ValidationReport());
+			context.put(VALIDATION_REPORT, new ValidationReport2());
 			fullparameters.setCheckAllowedTransportModes(1);
 			fullparameters.getModeBus().setAllowedTransport(0);
 			context.put(VALIDATION,fullparameters);
 			checkPoint.validate(context, null);
-			ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
+			ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
 
 			Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
-			CheckPoint checkPointReport = report.findCheckPointByName("4-VehicleJourney-2");
+			CheckPointReport checkPointReport = report.findCheckPointReportByName("4-VehicleJourney-2");
 			Assert.assertNotNull(checkPointReport, "report must contain a 4-VehicleJourney-2 checkPoint");
 
 			Assert.assertEquals(checkPointReport.getState(),
-					CheckPoint.RESULT.NOK,
+					ValidationReporter.RESULT.NOK,
 					" checkPointReport must be nok");
 			Assert.assertEquals(checkPointReport.getSeverity(),
-					CheckPoint.SEVERITY.ERROR,
+					CheckPointReport.SEVERITY.ERROR,
 					" checkPointReport must be on severity error");
-			Assert.assertEquals(checkPointReport.getDetailCount(), 1,
+			Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 1,
 					" checkPointReport must have 1 item");
 		}
 		utx.rollback();

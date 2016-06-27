@@ -2,6 +2,7 @@ package mobi.chouette.exchange.neptune.validation;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -10,18 +11,19 @@ import javax.naming.NamingException;
 
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.neptune.JobDataTest;
 import mobi.chouette.exchange.neptune.Constant;
+import mobi.chouette.exchange.neptune.JobDataTest;
 import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.neptune.importer.NeptuneParserCommand;
 import mobi.chouette.exchange.neptune.importer.NeptuneSAXParserCommand;
 import mobi.chouette.exchange.neptune.importer.NeptuneValidationCommand;
-import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.ActionReport2;
 import mobi.chouette.exchange.report.ReportConstant;
-import mobi.chouette.exchange.validation.report.CheckPoint;
-import mobi.chouette.exchange.validation.report.CheckPoint.RESULT;
-import mobi.chouette.exchange.validation.report.Detail;
-import mobi.chouette.exchange.validation.report.ValidationReport;
+import mobi.chouette.exchange.validation.report.CheckPointErrorReport;
+import mobi.chouette.exchange.validation.report.CheckPointReport;
+import mobi.chouette.exchange.validation.report.CheckPointReport.SEVERITY;
+import mobi.chouette.exchange.validation.report.ValidationReport2;
+import mobi.chouette.exchange.validation.report.ValidationReporter.RESULT;
 import mobi.chouette.model.util.Referential;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
@@ -55,8 +57,8 @@ public class ValidationTests implements Constant, ReportConstant
 
 		Context context = new Context();
 		context.put(INITIAL_CONTEXT, initialContext);
-		context.put(REPORT, new ActionReport());
-		context.put(VALIDATION_REPORT, new ValidationReport());
+		context.put(REPORT, new ActionReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport2());
 		NeptuneImportParameters configuration = new NeptuneImportParameters();
 		context.put(CONFIGURATION, configuration);
 		context.put(REFERENTIAL, new Referential());
@@ -87,7 +89,7 @@ public class ValidationTests implements Constant, ReportConstant
 	}
 
    protected void verifyValidation(String testFile,
-         String mandatoryErrorTest, CheckPoint.SEVERITY severity, RESULT status) throws Exception
+         String mandatoryErrorTest, SEVERITY severity, RESULT status) throws Exception
    {
       Context context = initImportContext();
     		  
@@ -103,7 +105,7 @@ public class ValidationTests implements Constant, ReportConstant
    }
 
    protected void verifySaxValidation(String testFile,
-	         String mandatoryErrorTest, CheckPoint.SEVERITY severity, RESULT status) throws Exception
+	         String mandatoryErrorTest, SEVERITY severity, RESULT status) throws Exception
 	   {
 	      Context context = initImportContext();
 	    		  
@@ -137,21 +139,21 @@ public class ValidationTests implements Constant, ReportConstant
     * @param valReport
     * @param state
     */
-   private void checkMandatoryTest(Context context, String mandatoryTest, CheckPoint.SEVERITY severity,
+   private void checkMandatoryTest(Context context, String mandatoryTest, SEVERITY severity,
           RESULT state)
    {
-	   ValidationReport valReport = (ValidationReport) context.get(VALIDATION_REPORT);
+	   ValidationReport2 valReport = (ValidationReport2) context.get(VALIDATION_REPORT);
       if (mandatoryTest.equals("NONE"))
       {
-         for (CheckPoint phase : valReport.getCheckPoints())
+         for (CheckPointReport phase : valReport.getCheckPoints())
          {
             Assert.assertFalse(phase.getState().equals(RESULT.NOK),
                   phase.getName() + " must have status " + state);
          }
       } else
       {
-    	  CheckPoint foundItem = null;
-         for (CheckPoint cp : valReport.getCheckPoints())
+    	  CheckPointReport foundItem = null;
+         for (CheckPointReport cp : valReport.getCheckPoints())
             {
                if (cp.getName().equals(mandatoryTest))
                {
@@ -168,14 +170,36 @@ public class ValidationTests implements Constant, ReportConstant
          if (foundItem.getState().equals(RESULT.NOK))
          {
         	 String detailKey = mandatoryTest.replaceAll("-", "_").toLowerCase();
-        	 Assert.assertNotEquals(foundItem.getDetails(), 0, "details should be present");
-        	 List<Detail> details = foundItem.getDetails();
-        	 for (Detail detail : details) {
+        	 Assert.assertNotEquals(foundItem.getCheckPointErrorCount(), 0, "details should be present");
+        	 List<CheckPointErrorReport> details = checkReportForTest(valReport,mandatoryTest,-1);
+        	 for (CheckPointErrorReport detail : details) {
 				Assert.assertTrue(detail.getKey().startsWith(detailKey),"details key should start with test key : expected "+detailKey+", found : "+detail.getKey());
 			}
          }
       }
    }
+	/**
+	 * check and return details for checkpoint
+	 * 
+	 * @param report
+	 * @param key
+	 * @param detailSize (negative for not checked
+	 * @return
+	 */
+	protected List<CheckPointErrorReport> checkReportForTest(ValidationReport2 report, String key, int detailSize)
+	{
+		Assert.assertFalse(report.getCheckPoints().isEmpty(), " report must have items");
+		Assert.assertNotNull(report.findCheckPointReportByName(key), " report must have 1 item on key "+key);
+		CheckPointReport checkPointReport = report.findCheckPointReportByName(key);
+		if (detailSize >= 0)
+		   Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), detailSize, " checkpoint must have "+detailSize+" detail");
+		
+		List<CheckPointErrorReport> details = new ArrayList<>();
+		for (Integer errorkey : checkPointReport.getCheckPointErrorsKeys() ) {
+			details.add(report.getCheckPointErrors().get(errorkey));
+		}
+		return details;
+	}
 
 
 }

@@ -148,7 +148,7 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 		Context context = new Context();
 		context.put(INITIAL_CONTEXT, initialContext);
 		context.put(REPORT, new ActionReport());
-		context.put(MAIN_VALIDATION_REPORT, new ValidationReport());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 		NeptuneImportParameters configuration = new NeptuneImportParameters();
 		configuration.setCleanRepository(true);
 		configuration.setNoSave(false);
@@ -185,7 +185,7 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 		Context context = new Context();
 		context.put(INITIAL_CONTEXT, initialContext);
 		context.put(REPORT, new ActionReport());
-		context.put(MAIN_VALIDATION_REPORT, new ValidationReport());
+		context.put(VALIDATION_REPORT, new ValidationReport());
 		GtfsExportParameters configuration = new GtfsExportParameters();
 		context.put(CONFIGURATION, configuration);
 		configuration.setName("name");
@@ -239,7 +239,7 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 		}
 		
 		ActionReport report = (ActionReport) context.get(REPORT);
-		ValidationReport vreport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
+		ValidationReport vreport = (ValidationReport) context.get(VALIDATION_REPORT);
 		Assert.assertEquals(report.getResult(), STATUS_OK, "result");
 		for (FileInfo info : report.getFiles()) {
 			Reporter.log(info.toString(),true);
@@ -375,7 +375,7 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 		}
 		ActionReport report = (ActionReport) context.get(REPORT);
 		Reporter.log(report.toString(),true);
-		ValidationReport valReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
+		ValidationReport valReport = (ValidationReport) context.get(VALIDATION_REPORT);
 		for (CheckPoint cp : valReport.getCheckPoints()) 
 		{
 			if (cp.getState().equals(CheckPoint.RESULT.NOK))

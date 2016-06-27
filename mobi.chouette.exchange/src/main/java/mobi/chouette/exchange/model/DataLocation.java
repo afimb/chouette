@@ -1,5 +1,6 @@
 package mobi.chouette.exchange.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Data;
@@ -25,13 +26,13 @@ import mobi.chouette.model.util.NamingUtil;
 public class DataLocation {
 	private String objectType; // Line route stop area..
 	private String filename;
-	private Integer lineNumber;
-	private Integer columnNumber;
+	private int lineNumber = -1 ;
+	private int columnNumber = -1;
 	private String objectId = "";
 	private String name = "";
 	private NeptuneIdentifiedObject object;
 	private Line line;
-	private List<NeptuneIdentifiedObject> path;
+	private List<NeptuneIdentifiedObject> path = new ArrayList<>();
 	
 	public DataLocation(String fileName) {
 		this.filename = fileName;
@@ -44,43 +45,43 @@ public class DataLocation {
 
 	public DataLocation(String fileName, String locationName, int lineNumber, String objectId) {
 		this.filename = fileName;
-		this.lineNumber = Integer.valueOf(lineNumber);
+		this.lineNumber = lineNumber;
 		this.objectId = objectId;
 		this.name = locationName;
 	}
 
 	public DataLocation(String fileName, String locationName, int lineNumber, int columnNumber, String objectId) {
 		this.filename = fileName;
-		this.lineNumber = Integer.valueOf(lineNumber);
-		this.columnNumber = Integer.valueOf(columnNumber);
+		this.lineNumber = lineNumber;
+		this.columnNumber = columnNumber;
 		this.objectId = objectId;
 		this.name = locationName;
 	}
 
 	public DataLocation(String fileName, String locationName, int lineNumber) {
 		this.filename = fileName;
-		this.lineNumber = Integer.valueOf(lineNumber);
+		this.lineNumber = lineNumber;
 		this.name = locationName;
 	}
 
 	public DataLocation(String fileName, int lineNumber, int columnNumber) {
 		this.filename = fileName;
-		this.lineNumber = Integer.valueOf(lineNumber);
-		this.columnNumber = Integer.valueOf(columnNumber);
+		this.lineNumber = lineNumber;
+		this.columnNumber = columnNumber;
 	}
 
 	public DataLocation(String fileName, int lineNumber, int columnNumber, String objectId) {
 		this.filename = fileName;
-		this.lineNumber = Integer.valueOf(lineNumber);
-		this.columnNumber = Integer.valueOf(columnNumber);
+		this.lineNumber = lineNumber;
+		this.columnNumber = columnNumber;
 		this.objectId = objectId;
 	}
 	
 
 	public DataLocation(String fileName, int lineNumber, int columnNumber, NeptuneIdentifiedObject chouetteObject) {
 		this.filename = fileName;
-		this.lineNumber = Integer.valueOf(lineNumber);
-		this.columnNumber = Integer.valueOf(columnNumber);
+		this.lineNumber = lineNumber;
+		this.columnNumber = columnNumber;
 		this.objectId = chouetteObject.getObjectId();
 		this.name = buildName(chouetteObject);
 		addLineLocation(this,  chouetteObject);

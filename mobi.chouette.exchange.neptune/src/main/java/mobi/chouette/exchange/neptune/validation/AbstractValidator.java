@@ -5,14 +5,12 @@ import java.util.List;
 import java.util.Set;
 
 import mobi.chouette.common.Context;
+import mobi.chouette.exchange.model.DataLocation;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.neptune.model.PTLink;
 import mobi.chouette.exchange.validation.ValidationData;
-import mobi.chouette.exchange.validation.report.CheckPoint;
-import mobi.chouette.exchange.validation.report.Detail;
 import mobi.chouette.exchange.validation.report.LineLocation;
 import mobi.chouette.exchange.validation.report.Location;
-import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.NeptuneIdentifiedObject;
@@ -160,6 +158,23 @@ public abstract class AbstractValidator implements Constant {
 				loc.setName(Location.buildName(object));
 			}
 			data.getFileLocations().put(objectId, loc);
+		}
+		if (data != null && fileName != null) {
+			DataLocation loc = new DataLocation(fileName, lineNumber, columnNumber, objectId);
+			// manage neptune specific model
+			if (object instanceof PTLink) {
+				try {
+					Line line = ((PTLink) object).getRoute().getLine();
+					if (line != null)
+						loc.setLine(line);
+				} catch (NullPointerException e) {
+
+				}
+			} else {
+				DataLocation.addLineLocation(loc, object);
+				loc.setName(DataLocation.buildName(object));
+			}
+			data.getDataLocations().put(objectId, loc);
 		}
 
 	}

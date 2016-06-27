@@ -22,11 +22,12 @@ import mobi.chouette.exchange.neptune.JobDataTest;
 import mobi.chouette.exchange.neptune.NeptuneTestsUtils;
 import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.neptune.importer.NeptuneImporterCommand;
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.LineInfo;
-import mobi.chouette.exchange.report.LineInfo.LINE_STATE;
+import mobi.chouette.exchange.report.ActionReport2;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
+import mobi.chouette.exchange.report.ObjectReport;
 import mobi.chouette.exchange.report.ReportConstant;
-import mobi.chouette.exchange.validation.report.ValidationReport;
+import mobi.chouette.exchange.validation.report.ValidationReport2;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
 import org.apache.commons.io.FileUtils;
@@ -40,9 +41,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.testng.Assert;
-import org.testng.Reporter;
 import org.testng.annotations.Test;
-import org.trident.schema.trident.TridentObjectType;
 
 @Log4j
 public class NeptuneExportTests  extends Arquillian implements Constant, ReportConstant {
@@ -61,11 +60,9 @@ public class NeptuneExportTests  extends Arquillian implements Constant, ReportC
 		List<File> jars = new ArrayList<>();
 		List<JavaArchive> modules = new ArrayList<>();
 		for (File file : files) {
-			System.out.println(file.getName());
 			if (file.getName().startsWith("mobi.chouette.exchange"))
 			{
 				String name = file.getName().split("\\-")[0]+".jar";
-				System.out.println(name);
 				
 				JavaArchive archive = ShrinkWrap
 						  .create(ZipImporter.class, name)
@@ -86,11 +83,9 @@ public class NeptuneExportTests  extends Arquillian implements Constant, ReportC
 			throw new NullPointerException("no dao");
 		}
 		for (File file : filesDao) {
-			System.out.println(file.getName());
 			if (file.getName().startsWith("mobi.chouette.dao"))
 			{
 				String name = file.getName().split("\\-")[0]+".jar";
-				System.out.println(name);
 				
 				JavaArchive archive = ShrinkWrap
 						  .create(ZipImporter.class, name)
@@ -145,8 +140,8 @@ public class NeptuneExportTests  extends Arquillian implements Constant, ReportC
 
 		Context context = new Context();
 		context.put(INITIAL_CONTEXT, initialContext);
-		context.put(REPORT, new ActionReport());
-		context.put(MAIN_VALIDATION_REPORT, new ValidationReport());
+		context.put(REPORT, new ActionReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport2());
 		NeptuneImportParameters configuration = new NeptuneImportParameters();
 		context.put(CONFIGURATION, configuration);
 		configuration.setName("name");
@@ -180,8 +175,8 @@ public class NeptuneExportTests  extends Arquillian implements Constant, ReportC
 
 		Context context = new Context();
 		context.put(INITIAL_CONTEXT, initialContext);
-		context.put(REPORT, new ActionReport());
-		context.put(MAIN_VALIDATION_REPORT, new ValidationReport());
+		context.put(REPORT, new ActionReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport2());
 		NeptuneExportParameters configuration = new NeptuneExportParameters();
 		context.put(CONFIGURATION, configuration);
 		configuration.setName("name");
@@ -231,7 +226,7 @@ public class NeptuneExportTests  extends Arquillian implements Constant, ReportC
 			log.error("test failed", ex);
 			throw ex;
 		}
-		ActionReport report = (ActionReport) context.get(REPORT);
+		ActionReport2 report = (ActionReport2) context.get(REPORT);
 		Assert.assertEquals(report.getResult(), STATUS_ERROR, "result");
 		Assert.assertTrue(report.getFailure().getDescription().contains("before"), "failure");
 	}
@@ -291,12 +286,13 @@ public class NeptuneExportTests  extends Arquillian implements Constant, ReportC
 			log.error("test failed", ex);
 			throw ex;
 		}
-		ActionReport report = (ActionReport) context.get(REPORT);
+		ActionReport2 report = (ActionReport2) context.get(REPORT);
 		Assert.assertEquals(report.getResult(), STATUS_OK, "result");
 		Assert.assertEquals(report.getFiles().size(), fileCount, "file reported");
-		Assert.assertEquals(report.getLines().size(), lineCount, "line reported");
-		for (LineInfo info : report.getLines()) {
-			Assert.assertEquals(info.getStatus(), LINE_STATE.OK, "line status");
+		Assert.assertNotNull(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE), "line reported");
+		Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().size(), lineCount, "line reported");
+		for (ObjectReport info : report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports()) {
+			Assert.assertEquals(info.getStatus(), OBJECT_STATE.OK, "line status");
 		}
 
 

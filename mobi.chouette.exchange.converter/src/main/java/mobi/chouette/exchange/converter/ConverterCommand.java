@@ -26,15 +26,14 @@ import mobi.chouette.exchange.netex.exporter.NetexExportParameters;
 import mobi.chouette.exchange.netex.importer.NetexImportParameters;
 import mobi.chouette.exchange.parameters.AbstractExportParameter;
 import mobi.chouette.exchange.parameters.AbstractImportParameter;
-import mobi.chouette.exchange.report.ActionError;
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.FileInfo;
+import mobi.chouette.exchange.report.ActionReport2;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.ActionReporter.ERROR_CODE;
 import mobi.chouette.exchange.report.IO_TYPE;
-import mobi.chouette.exchange.report.LineInfo;
 import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
-import mobi.chouette.exchange.validation.report.ValidationReport;
+import mobi.chouette.exchange.validation.report.ValidationReport2;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.util.Referential;
 
@@ -55,7 +54,7 @@ public class ConverterCommand implements Command, Constant, ReportConstant {
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
 		InitialContext initialContext = (InitialContext) context.get(INITIAL_CONTEXT);
-		ActionReport report = (ActionReport) context.get(REPORT);
+		ActionReporter reporter = ActionReporter.Factory.getInstance();
 
 		// initialize reporting and progression
 		ProgressionCommand progression = (ProgressionCommand) CommandFactory.create(initialContext,
@@ -67,8 +66,7 @@ public class ConverterCommand implements Command, Constant, ReportConstant {
 			if (!(configuration instanceof ConvertParameters)) {
 				// fatal wrong parameters
 				log.error("invalid parameters for conversion " + configuration.getClass().getName());
-				report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,
-						"invalid parameters for conversion " + configuration.getClass().getName()));
+				reporter.setActionError(context, ERROR_CODE.INVALID_PARAMETERS, "invalid parameters for conversion " + configuration.getClass().getName());
 				return ERROR;
 			}
 
@@ -78,10 +76,10 @@ public class ConverterCommand implements Command, Constant, ReportConstant {
 			result = process(context, progression, false);
 
 		} catch (CommandCancelledException e) {
-			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR, "Command cancelled"));
+			reporter.setActionError(context, ERROR_CODE.INTERNAL_ERROR, "Command cancelled");
 			log.error(e.getMessage());
 		} catch (Exception e) {
-			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR, "Fatal :" + e));
+			reporter.setActionError(context, ERROR_CODE.INTERNAL_ERROR, "Fatal :" + e);
 			log.error(e.getMessage(), e);
 		} finally {
 			progression.dispose(context);
@@ -96,7 +94,7 @@ public class ConverterCommand implements Command, Constant, ReportConstant {
 
 		boolean result = ERROR;
 		ConvertParameters parameters = (ConvertParameters) context.get(CONFIGURATION);
-		ActionReport report = (ActionReport) context.get(REPORT);
+		ActionReporter reporter = ActionReporter.Factory.getInstance();
 
 		// initialisation
 		AbstractImportParameter importConfiguration = parameters.getImportConfiguration();
@@ -124,9 +122,9 @@ public class ConverterCommand implements Command, Constant, ReportConstant {
 					.initialize(context, preProcessingImportCommands.size() + preProcessingExportCommands.size() + 1);
 			for (Command command : preProcessingImportCommands) {
 				result = command.execute(importContext);
-				mergeReports(report, importContext, IO_TYPE.INPUT);
+				mergeReports(context, importContext, IO_TYPE.INPUT);
 				if (!result) {
-					report.setFailure(new ActionError(ActionError.CODE.NO_DATA_FOUND, "no data to import"));
+					reporter.setActionError(context, ERROR_CODE.NO_DATA_FOUND, "no data to import");
 					progression.execute(context);
 					return ERROR;
 				}
@@ -134,9 +132,9 @@ public class ConverterCommand implements Command, Constant, ReportConstant {
 			}
 			for (Command command : preProcessingExportCommands) {
 				result = command.execute(exportContext);
-				mergeReports(report, exportContext, IO_TYPE.OUTPUT);
+				mergeReports(context, exportContext, IO_TYPE.OUTPUT);
 				if (!result) {
-					report.setFailure(new ActionError(ActionError.CODE.NO_DATA_FOUND, "no data selected"));
+					reporter.setActionError(context, ERROR_CODE.NO_DATA_FOUND, "no data selected");
 					progression.execute(context);
 					return ERROR;
 				}
@@ -154,7 +152,7 @@ public class ConverterCommand implements Command, Constant, ReportConstant {
 			for (Command importCommand : lineImportProcessingCommands) {
 				boolean exportFailed = false;
 				result = importCommand.execute(importContext);
-				mergeReports(report, importContext, IO_TYPE.INPUT);
+				mergeReports(context, importContext, IO_TYPE.INPUT);
 				if (!result) {
 					log.error("fail to execute " + importCommand.getClass().getName());
 					progression.execute(context);
@@ -179,7 +177,7 @@ public class ConverterCommand implements Command, Constant, ReportConstant {
 				// execute commands
 				for (Command exportCommand : lineExportProcessingCommands) {
 					result = exportCommand.execute(exportContext);
-					mergeReports(report, exportContext, IO_TYPE.OUTPUT);
+					mergeReports(context, exportContext, IO_TYPE.OUTPUT);
 					if (!result) {
 						exportFailed = true;
 						log.error("fail to execute " + exportCommand.getClass().getName());
@@ -212,21 +210,21 @@ public class ConverterCommand implements Command, Constant, ReportConstant {
 			// input post processing
 			for (Command importCommand : postImportProcessingCommands) {
 				result = importCommand.execute(importContext);
-				mergeReports(report, importContext, IO_TYPE.INPUT);
+				mergeReports(context, importContext, IO_TYPE.INPUT);
 				if (!result) {
 					log.error("fail to execute " + importCommand.getClass().getName());
 				}
 				progression.execute(context);
 			}
 			if (lineCount == 0) {
-				report.setFailure(new ActionError(ActionError.CODE.NO_DATA_PROCEEDED, "no data exported"));
+				reporter.setActionError(context, ERROR_CODE.NO_DATA_PROCEEDED, "no data converted");
 				progression.execute(context);
 				
 				return ERROR;
 			} else {
 				for (Command exportCommand : postExportProcessingCommands) {
 					result = exportCommand.execute(exportContext);
-					mergeReports(report, exportContext, IO_TYPE.OUTPUT);
+					mergeReports(context, exportContext, IO_TYPE.OUTPUT);
 					if (!result) {
 						log.error("fail to execute " + exportCommand.getClass().getName());
 						break;
@@ -259,41 +257,43 @@ public class ConverterCommand implements Command, Constant, ReportConstant {
 		return result;
 	}
 
-	private void mergeReports(ActionReport report, Context localContext, IO_TYPE ioType) {
-		ActionReport localReport = (ActionReport) localContext.get(REPORT);
-		for (FileInfo fileInfo : localReport.getFiles())
-		{
-			fileInfo.setIoType(ioType);
-			if (!report.getFiles().contains(fileInfo)) report.getFiles().add(fileInfo);
-		}
-		for (LineInfo lineInfo : localReport.getLines())
-		{
-			lineInfo.setIoType(ioType);
-			if (!report.getLines().contains(lineInfo)) report.getLines().add(lineInfo);
-		}
-        if (localReport.getZip() != null)
-        {
-        	localReport.getZip().setIoType(ioType);
-        	if (!localReport.getZip().equals(report.getZip())) report.setZip(localReport.getZip());
-        }
-        if (ioType.equals(IO_TYPE.OUTPUT) && report.getStats().getLineCount() == 0)
-           report.setStats(localReport.getStats()); 
+	private void mergeReports(Context context, Context localContext, IO_TYPE ioType) {
+		// TODO to Be refactored
+//		ActionReport localReport = (ActionReport) localContext.get(REPORT);
+//		
+//		for (FileInfo fileInfo : localReport.getFiles())
+//		{
+//			fileInfo.setIoType(ioType);
+//			if (!report.getFiles().contains(fileInfo)) report.getFiles().add(fileInfo);
+//		}
+//		for (LineInfo lineInfo : localReport.getLines())
+//		{
+//			lineInfo.setIoType(ioType);
+//			if (!report.getLines().contains(lineInfo)) report.getLines().add(lineInfo);
+//		}
+//        if (localReport.getZip() != null)
+//        {
+//        	localReport.getZip().setIoType(ioType);
+//        	if (!localReport.getZip().equals(report.getZip())) report.setZip(localReport.getZip());
+//        }
+//        if (ioType.equals(IO_TYPE.OUTPUT) && report.getStats().getLineCount() == 0)
+//           report.setStats(localReport.getStats()); 
 	}
 
 	private Context prepareImportContext(ConverterJobData importJobData, ValidationParameters validationParameters) {
 		Context context = new Context();
-		context.put(REPORT, new ActionReport());
+		context.put(REPORT, new ActionReport2());
 		context.put(JOB_DATA, importJobData);
 		context.put(CONFIGURATION, importJobData.getConfiguration());
 		if (validationParameters != null)
 			context.put(VALIDATION, validationParameters);
-		context.put(VALIDATION_REPORT, new ValidationReport());
+		context.put(VALIDATION_REPORT, new ValidationReport2());
 		return context;
 	}
 
 	private Context prepareExportContext(ConverterJobData exportJobData) {
 		Context context = new Context();
-		context.put(REPORT, new ActionReport());
+		context.put(REPORT, new ActionReport2());
 		context.put(JOB_DATA, exportJobData);
 		context.put(CONFIGURATION, exportJobData.getConfiguration());
 		return context;

@@ -10,12 +10,12 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.netex.Constant;
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.FileError;
-import mobi.chouette.exchange.report.FileInfo;
-import mobi.chouette.exchange.report.LineInfo;
-import mobi.chouette.exchange.report.DataStats;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
+import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
+import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.model.Line;
+import mobi.chouette.model.util.NamingUtil;
 import mobi.chouette.model.util.Referential;
 
 import com.jamonapi.Monitor;
@@ -32,9 +32,8 @@ public class NetexValidationCommand implements Command, Constant {
 		boolean result = ERROR;
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
-		ActionReport report = (ActionReport) context.get(REPORT);
+		ActionReporter reporter = ActionReporter.Factory.getInstance();
 		String fileName = (String) context.get(FILE_NAME);
-		FileInfo fileInfo = report.findFileInfo(fileName);
 		try {
 			Referential referential = (Referential) context.get(REFERENTIAL);
 			
@@ -42,7 +41,7 @@ public class NetexValidationCommand implements Command, Constant {
 			
 			result = SUCCESS;
 			if (result)
-				addStats(report, referential);
+				addStats(context, reporter, referential);
 
 		} catch (Exception e) {
 			log.error("Neptune validation failed ", e);
@@ -51,34 +50,35 @@ public class NetexValidationCommand implements Command, Constant {
 			log.info(Color.MAGENTA + monitor.stop() + Color.NORMAL);
 		}
 		if (result == ERROR) {
-			fileInfo.addError(new FileError(FileError.CODE.INVALID_FORMAT, "Neptune compliance failed"));
+			reporter.addFileErrorInReport(context, fileName, ActionReporter.FILE_ERROR_CODE.INVALID_FORMAT, "Netex compliance failed");
 		}
 		return result;
 	}
 
-	private void addStats(ActionReport report, Referential referential) {
+	private void addStats(Context context, ActionReporter reporter, Referential referential) {
 		Line line = referential.getLines().values().iterator().next();
-		LineInfo lineInfo = new LineInfo(line);
-		DataStats stats = lineInfo.getStats();
-		stats.setLineCount(1);
-		stats.setRouteCount(referential.getRoutes().size());
-		stats.setConnectionLinkCount(referential.getConnectionLinks().size());
-		stats.setTimeTableCount(referential.getTimetables().size());
-		stats.setStopAreaCount(referential.getStopAreas().size());
-		stats.setAccessPointCount(referential.getAccessPoints().size());
-		stats.setVehicleJourneyCount(referential.getVehicleJourneys().size());
-		stats.setJourneyPatternCount(referential.getJourneyPatterns().size());
+		
+		reporter.addObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, NamingUtil.getName(line), OBJECT_STATE.OK, IO_TYPE.INPUT);
+		reporter.addStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 1);
+		reporter.addStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.JOURNEY_PATTERN, referential.getJourneyPatterns().size());
+		reporter.addStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ROUTE, referential.getRoutes().size());
+		reporter.addStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.VEHICLE_JOURNEY, referential.getVehicleJourneys().size());
+		reporter.addStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.CONNECTION_LINK, referential.getConnectionLinks().size());
+		reporter.addStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.TIME_TABLE, referential.getTimetables().size());
+		reporter.addStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ACCESS_POINT, referential.getAccessPoints().size());
+		reporter.addStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.STOP_AREA, referential.getStopAreas().size());
 
-		report.getLines().add(lineInfo);
-		DataStats globalStats = report.getStats();
-		globalStats.setLineCount(globalStats.getLineCount() + stats.getLineCount());
-		globalStats.setAccessPointCount(globalStats.getAccessPointCount() + stats.getAccessPointCount());
-		globalStats.setRouteCount(globalStats.getRouteCount() + stats.getRouteCount());
-		globalStats.setConnectionLinkCount(globalStats.getConnectionLinkCount() + stats.getConnectionLinkCount());
-		globalStats.setVehicleJourneyCount(globalStats.getVehicleJourneyCount() + stats.getVehicleJourneyCount());
-		globalStats.setJourneyPatternCount(globalStats.getJourneyPatternCount() + stats.getJourneyPatternCount());
-		globalStats.setStopAreaCount(globalStats.getStopAreaCount() + stats.getStopAreaCount());
-		globalStats.setTimeTableCount(globalStats.getTimeTableCount() + stats.getTimeTableCount());
+		// TODO report on end of processing
+//		report.getLines().add(lineInfo);
+//		DataStats globalStats = report.getStats();
+//		globalStats.setLineCount(globalStats.getLineCount() + stats.getLineCount());
+//		globalStats.setAccessPointCount(globalStats.getAccessPointCount() + stats.getAccessPointCount());
+//		globalStats.setRouteCount(globalStats.getRouteCount() + stats.getRouteCount());
+//		globalStats.setConnectionLinkCount(globalStats.getConnectionLinkCount() + stats.getConnectionLinkCount());
+//		globalStats.setVehicleJourneyCount(globalStats.getVehicleJourneyCount() + stats.getVehicleJourneyCount());
+//		globalStats.setJourneyPatternCount(globalStats.getJourneyPatternCount() + stats.getJourneyPatternCount());
+//		globalStats.setStopAreaCount(globalStats.getStopAreaCount() + stats.getStopAreaCount());
+//		globalStats.setTimeTableCount(globalStats.getTimeTableCount() + stats.getTimeTableCount());
 
 	}
 

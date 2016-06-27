@@ -70,6 +70,7 @@ public class VehicleJourneyCheckPoints extends AbstractValidation<VehicleJourney
 		prepareCheckPoint(context, VEHICLE_JOURNEY_1);
 		prepareCheckPoint(context, VEHICLE_JOURNEY_2);
 		prepareCheckPoint(context, VEHICLE_JOURNEY_4);
+		prepareCheckPoint(context, VEHICLE_JOURNEY_5);
 
 		//
 		if (test4_2) {

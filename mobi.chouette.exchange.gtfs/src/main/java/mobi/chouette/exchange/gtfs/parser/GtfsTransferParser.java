@@ -12,7 +12,7 @@ import mobi.chouette.exchange.gtfs.model.importer.GtfsException;
 import mobi.chouette.exchange.gtfs.model.importer.GtfsImporter;
 import mobi.chouette.exchange.gtfs.model.importer.Index;
 import mobi.chouette.exchange.gtfs.validation.Constant;
-import mobi.chouette.exchange.gtfs.validation.ValidationReporter;
+import mobi.chouette.exchange.gtfs.validation.GtfsValidationReporter;
 import mobi.chouette.exchange.importer.Parser;
 import mobi.chouette.exchange.importer.ParserFactory;
 import mobi.chouette.exchange.importer.Validator;
@@ -28,45 +28,45 @@ public class GtfsTransferParser implements Parser, Validator, Constant {
 	@Override
 	public void validate(Context context) throws Exception {
 		GtfsImporter importer = (GtfsImporter) context.get(PARSER);
-		ValidationReporter validationReporter = (ValidationReporter) context.get(GTFS_REPORTER);
-		validationReporter.getExceptions().clear();
+		GtfsValidationReporter gtfsValidationReporter = (GtfsValidationReporter) context.get(GTFS_REPORTER);
+		gtfsValidationReporter.getExceptions().clear();
 		
 		// transfers.txt
 		// log.info("validating transfers");
 		if (importer.hasTransferImporter()) { // the file "transfers.txt" exists ?
-			validationReporter.reportSuccess(context, GTFS_1_GTFS_Common_1, GTFS_TRANSFERS_FILE);
+			gtfsValidationReporter.reportSuccess(context, GTFS_1_GTFS_Common_1, GTFS_TRANSFERS_FILE);
 
 			Index<GtfsTransfer> parser = null;
 			try { // Read and check the header line of the file "transfers.txt"
 				parser = importer.getTransferByFromStop(); 
 			} catch (Exception ex ) {
 				if (ex instanceof GtfsException) {
-					validationReporter.reportError(context, (GtfsException)ex, GTFS_TRANSFERS_FILE);
+					gtfsValidationReporter.reportError(context, (GtfsException)ex, GTFS_TRANSFERS_FILE);
 				} else {
-					validationReporter.throwUnknownError(context, ex, GTFS_TRANSFERS_FILE);
+					gtfsValidationReporter.throwUnknownError(context, ex, GTFS_TRANSFERS_FILE);
 				}
 			}
 
-			validationReporter.validateOkCSV(context, GTFS_TRANSFERS_FILE);
+			gtfsValidationReporter.validateOkCSV(context, GTFS_TRANSFERS_FILE);
 			
 			if (parser == null) { // importer.getTransferByFromStop() fails for any other reason
-				validationReporter.throwUnknownError(context, new Exception("Cannot instantiate TransferByFromStop class"), GTFS_TRANSFERS_FILE);
+				gtfsValidationReporter.throwUnknownError(context, new Exception("Cannot instantiate TransferByFromStop class"), GTFS_TRANSFERS_FILE);
 			} else {
-				validationReporter.validate(context, GTFS_TRANSFERS_FILE, parser.getOkTests());
-				validationReporter.validateUnknownError(context);
+				gtfsValidationReporter.validate(context, GTFS_TRANSFERS_FILE, parser.getOkTests());
+				gtfsValidationReporter.validateUnknownError(context);
 			}
 			
 			if (!parser.getErrors().isEmpty()) {
-				validationReporter.reportErrors(context, parser.getErrors(), GTFS_TRANSFERS_FILE);
+				gtfsValidationReporter.reportErrors(context, parser.getErrors(), GTFS_TRANSFERS_FILE);
 				parser.getErrors().clear();
 			}
 			
-			validationReporter.validateOKGeneralSyntax(context, GTFS_TRANSFERS_FILE);
+			gtfsValidationReporter.validateOKGeneralSyntax(context, GTFS_TRANSFERS_FILE);
 			
 			if (parser.getLength() == 0) {
-				validationReporter.reportError(context, new GtfsException(GTFS_TRANSFERS_FILE, 1, null, GtfsException.ERROR.OPTIONAL_FILE_WITH_NO_ENTRY, null, null), GTFS_TRANSFERS_FILE);
+				gtfsValidationReporter.reportError(context, new GtfsException(GTFS_TRANSFERS_FILE, 1, null, GtfsException.ERROR.OPTIONAL_FILE_WITH_NO_ENTRY, null, null), GTFS_TRANSFERS_FILE);
 			} else {
-				validationReporter.validate(context, GTFS_TRANSFERS_FILE, GtfsException.ERROR.FILE_WITH_NO_ENTRY);
+				gtfsValidationReporter.validate(context, GTFS_TRANSFERS_FILE, GtfsException.ERROR.FILE_WITH_NO_ENTRY);
 			}
 			
 			GtfsException fatalException = null;
@@ -76,23 +76,23 @@ public class GtfsTransferParser implements Parser, Validator, Constant {
 					parser.validate(bean, importer);
 				} catch (Exception ex) {
 					if (ex instanceof GtfsException) {
-						validationReporter.reportError(context, (GtfsException)ex, GTFS_TRANSFERS_FILE);
+						gtfsValidationReporter.reportError(context, (GtfsException)ex, GTFS_TRANSFERS_FILE);
 					} else {
-						validationReporter.throwUnknownError(context, ex, GTFS_TRANSFERS_FILE);
+						gtfsValidationReporter.throwUnknownError(context, ex, GTFS_TRANSFERS_FILE);
 					}
 				}
 				for(GtfsException ex : bean.getErrors()) {
 					if (ex.isFatal())
 						fatalException = ex;
 				}
-				validationReporter.reportErrors(context, bean.getErrors(), GTFS_TRANSFERS_FILE);
-				validationReporter.validate(context, GTFS_TRANSFERS_FILE, bean.getOkTests());
+				gtfsValidationReporter.reportErrors(context, bean.getErrors(), GTFS_TRANSFERS_FILE);
+				gtfsValidationReporter.validate(context, GTFS_TRANSFERS_FILE, bean.getOkTests());
 			}
 			parser.setWithValidation(false);
 			if (fatalException != null)
 				throw fatalException;
 		} else {
-			validationReporter.reportError(context, new GtfsException(GTFS_TRANSFERS_FILE, 1, null, GtfsException.ERROR.MISSING_OPTIONAL_FILE, null, null), GTFS_TRANSFERS_FILE);
+			gtfsValidationReporter.reportError(context, new GtfsException(GTFS_TRANSFERS_FILE, 1, null, GtfsException.ERROR.MISSING_OPTIONAL_FILE, null, null), GTFS_TRANSFERS_FILE);
 		}
 	}
 

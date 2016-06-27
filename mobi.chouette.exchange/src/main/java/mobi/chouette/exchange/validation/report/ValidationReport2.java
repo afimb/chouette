@@ -88,6 +88,7 @@ public class ValidationReport2 implements Report {
 	}
 
 	public JSONObject toJson() throws JSONException {
+		result = checkPoints.isEmpty() ? "NO_VALIDATION" : "VALIDATION_PROCEDEED";
 		JSONObject validationReport = new JSONObject();
 		validationReport.put("result", result);
 		if (!checkPoints.isEmpty()) {
@@ -95,14 +96,14 @@ public class ValidationReport2 implements Report {
 			for (CheckPointReport checkPoint : checkPoints) {
 				tests.put(checkPoint.toJson());
 			}
-			validationReport.put("tests", tests);
+			validationReport.put("check_points", tests);
 		}
 		if (!checkPointErrors.isEmpty()) {
 			JSONArray tests = new JSONArray();
 			for (CheckPointErrorReport checkPointError : checkPointErrors) {
 				tests.put(checkPointError.toJson());
 			}
-			validationReport.put("tests", tests);
+			validationReport.put("errors", tests);
 		}
 		JSONObject object = new JSONObject();
 		object.put("validation_report", validationReport);

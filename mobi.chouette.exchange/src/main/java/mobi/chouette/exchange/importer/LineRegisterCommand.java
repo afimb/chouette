@@ -25,13 +25,16 @@ import mobi.chouette.dao.VehicleJourneyDAO;
 import mobi.chouette.exchange.importer.updater.LineOptimiser;
 import mobi.chouette.exchange.importer.updater.LineUpdater;
 import mobi.chouette.exchange.importer.updater.Updater;
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.LineError;
-import mobi.chouette.exchange.report.LineInfo;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.ActionReporter.ERROR_CODE;
+import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
+import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
+import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.VehicleJourneyAtStop;
+import mobi.chouette.model.util.NamingUtil;
 import mobi.chouette.model.util.Referential;
 
 import com.jamonapi.Monitor;
@@ -105,12 +108,9 @@ public class LineRegisterCommand implements Command {
 			result = SUCCESS;
 		} catch (Exception ex) {
 			log.error(ex.getMessage());
-			ActionReport report = (ActionReport) context.get(REPORT);
-			LineInfo info = report.findLineInfo(newValue.getObjectId());
-			if (info == null) {
-				info = new LineInfo(newValue);
-				report.getLines().add(info);
-			}
+			ActionReporter reporter = ActionReporter.Factory.getInstance();
+			reporter.addObjectReport(context, newValue.getObjectId(), 
+					OBJECT_TYPE.LINE, NamingUtil.getName(newValue), OBJECT_STATE.ERROR, IO_TYPE.INPUT);
 			if (ex.getCause() != null) {
 				Throwable e = ex.getCause();
 				while (e.getCause() != null) {
@@ -119,15 +119,13 @@ public class LineRegisterCommand implements Command {
 				}
 				if (e instanceof SQLException) {
 					e = ((SQLException) e).getNextException();
-					LineError error = new LineError(LineError.CODE.WRITE_ERROR, e.getMessage());
-					info.addError(error);
+					reporter.addErrorToObjectReport(context, newValue.getObjectId(), OBJECT_TYPE.LINE, ERROR_CODE.WRITE_ERROR,  e.getMessage());
+					
 				} else {
-					LineError error = new LineError(LineError.CODE.INTERNAL_ERROR, e.getMessage());
-					info.addError(error);
+					reporter.addErrorToObjectReport(context, newValue.getObjectId(), OBJECT_TYPE.LINE, ERROR_CODE.INTERNAL_ERROR,  e.getMessage());
 				}
 			} else {
-				LineError error = new LineError(LineError.CODE.INTERNAL_ERROR, ex.getMessage());
-				info.addError(error);
+				reporter.addErrorToObjectReport(context, newValue.getObjectId(), OBJECT_TYPE.LINE, ERROR_CODE.INTERNAL_ERROR,  ex.getMessage());
 			}
 			throw ex;
 		} finally {

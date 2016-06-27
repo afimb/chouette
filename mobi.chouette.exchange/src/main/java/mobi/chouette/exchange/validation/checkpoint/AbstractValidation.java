@@ -275,7 +275,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 	 * @param parameters
 	 * @return
 	 */
-	protected Polygon getEnveloppe(ValidationParameters parameters) throws Exception {
+	public Polygon getEnveloppe(ValidationParameters parameters) throws Exception {
 		// validationPerimeter : default = France
 		String perimeter = parameters.getStopAreasArea();
 		if (perimeter == null || perimeter.isEmpty() || !perimeter.startsWith("[")) {

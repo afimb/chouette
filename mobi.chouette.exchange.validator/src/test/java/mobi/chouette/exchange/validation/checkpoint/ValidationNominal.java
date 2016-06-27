@@ -12,8 +12,11 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.LineDAO;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
-import mobi.chouette.exchange.validation.report.CheckPoint;
-import mobi.chouette.exchange.validation.report.ValidationReport;
+import mobi.chouette.exchange.validation.report.CheckPointReport;
+import mobi.chouette.exchange.validation.report.ValidationReport2;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
+import mobi.chouette.exchange.validator.DummyChecker;
+import mobi.chouette.exchange.validator.JobDataTest;
 import mobi.chouette.exchange.validator.ValidateParameters;
 import mobi.chouette.exchange.validator.ValidatorCommand;
 import mobi.chouette.model.Line;
@@ -27,6 +30,7 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.testng.Assert;
+import org.testng.Reporter;
 import org.testng.annotations.Test;
 
 @Log4j
@@ -40,11 +44,11 @@ public class ValidationNominal extends AbstractTestValidation {
 
 		EnterpriseArchive result;
 		File[] files = Maven.resolver().loadPomFromFile("pom.xml")
-				.resolve("mobi.chouette:mobi.chouette.exchange.validation").withTransitivity().asFile();
+				.resolve("mobi.chouette:mobi.chouette.exchange.validator").withTransitivity().asFile();
 		List<File> jars = new ArrayList<>();
 		List<JavaArchive> modules = new ArrayList<>();
 		for (File file : files) {
-			if (file.getName().startsWith("mobi.chouette.exchange"))
+			if (file.getName().startsWith("mobi.chouette.exchange") )
 			{
 				String name = file.getName().split("\\-")[0]+".jar";
 				JavaArchive archive = ShrinkWrap
@@ -84,6 +88,9 @@ public class ValidationNominal extends AbstractTestValidation {
 			}
 		}
 		final WebArchive testWar = ShrinkWrap.create(WebArchive.class, "test.war").addAsWebInfResource("postgres-ds.xml")
+				.addClass(DummyChecker.class)
+				.addClass(JobDataTest.class)
+				.addClass(AbstractTestValidation.class)
 				.addClass(ValidationNominal.class);
 		
 		result = ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
@@ -119,15 +126,16 @@ public class ValidationNominal extends AbstractTestValidation {
 		Command command = (Command) CommandFactory.create(initialContext, ValidatorCommand.class.getName());
 
 		command.execute(context);
-		ValidationReport report = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
+		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+        Reporter.log(report.toString(),true);
 		Assert.assertFalse(report.getCheckPoints().isEmpty(), "report must have items");
-		for (CheckPoint checkPoint : report.getCheckPoints()) {
+		for (CheckPointReport checkPoint : report.getCheckPoints()) {
 			log.warn(checkPoint);
 			if (checkPoint.getName().equals("3-Route-5")) {
-				Assert.assertEquals(checkPoint.getState(), CheckPoint.RESULT.UNCHECK,
+				Assert.assertEquals(checkPoint.getState(), ValidationReporter.RESULT.UNCHECK,
 						"checkPoint " + checkPoint.getName() + " must not be on level " + checkPoint.getState());
 			} else {
-				Assert.assertEquals(checkPoint.getState(), CheckPoint.RESULT.OK, "checkPoint " + checkPoint.getName()
+				Assert.assertEquals(checkPoint.getState(), ValidationReporter.RESULT.OK, "checkPoint " + checkPoint.getName()
 						+ " must not be on level " + checkPoint.getState());
 			}
 

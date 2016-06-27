@@ -5,8 +5,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.exchange.model.DataLocation;
 import mobi.chouette.exchange.report.ActionReport2;
 import mobi.chouette.exchange.report.ActionReporter;
-import mobi.chouette.exchange.report.ActionReporter.FILE_STATE;
-import mobi.chouette.exchange.validation.report.CheckPointReport;
+import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.exchange.validation.report.ValidationReport2;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 
@@ -20,10 +19,10 @@ public class ActionReportTest implements Constant{
 		Context context = new Context();
 		context.put(REPORT, new ActionReport2());
 		ActionReporter actionReporter = ActionReporter.Factory.getInstance();
-		actionReporter.addFileReport(context, "ZipFile1", true);
+		actionReporter.addZipReport(context, "ZipFile1",IO_TYPE.INPUT);
 		ActionReport2 actionReport = (ActionReport2) context.get(REPORT);
 		
-		Assert.assertNotNull(actionReport.getZip(), "Zip file must exist in action report");
+		Assert.assertEquals(actionReport.getZips().size(),1, "Zip file must exist in action report");
 	}
 	
 	@Test(groups = { "File" }, description = "verify file add" ,priority=102 )
@@ -31,7 +30,7 @@ public class ActionReportTest implements Constant{
 		Context context = new Context();
 		context.put(REPORT, new ActionReport2());
 		ActionReporter actionReporter = ActionReporter.Factory.getInstance();
-		actionReporter.addFileReport(context, "File1", false);
+		actionReporter.addFileReport(context, "File1",IO_TYPE.INPUT);
 		ActionReport2 actionReport = (ActionReport2) context.get(REPORT);
 		
 		Assert.assertEquals(actionReport.getFiles().size(), 1);
@@ -42,7 +41,7 @@ public class ActionReportTest implements Constant{
 		Context context = new Context();
 		context.put(REPORT, new ActionReport2());
 		ActionReporter actionReporter = ActionReporter.Factory.getInstance();
-		actionReporter.addFileReport(context, "File1", false);
+		actionReporter.addFileReport(context, "File1",IO_TYPE.INPUT);
 		ActionReport2 actionReport = (ActionReport2) context.get(REPORT);
 		
 		Assert.assertEquals(actionReport.getFiles().size(), 1);
@@ -53,7 +52,7 @@ public class ActionReportTest implements Constant{
 		Context context = new Context();
 		context.put(REPORT, new ActionReport2());
 		ActionReporter actionReporter = ActionReporter.Factory.getInstance();
-		actionReporter.addFileReport(context, "File1", false);
+		actionReporter.addFileReport(context, "File1",IO_TYPE.INPUT);
 		ActionReport2 actionReport = (ActionReport2) context.get(REPORT);
 		
 		Assert.assertEquals(actionReport.getFiles().size(), 1);
@@ -64,7 +63,7 @@ public class ActionReportTest implements Constant{
 		Context context = new Context();
 		context.put(REPORT, new ActionReport2());
 		ActionReporter actionReporter = ActionReporter.Factory.getInstance();
-		actionReporter.addFileReport(context, "File1", false);
+		actionReporter.addFileReport(context, "File1",IO_TYPE.INPUT);
 		ActionReport2 actionReport = (ActionReport2) context.get(REPORT);
 		
 		Assert.assertEquals(actionReport.getFiles().size(), 1);
@@ -86,7 +85,13 @@ public class ActionReportTest implements Constant{
 //		location.setLineNumber(3);
 		ValidationReport2 validationReport = (ValidationReport2) context.get(VALIDATION_REPORT);
 		
-		JSONObject array = new JSONObject("{\"validation_report\":{\"result\":\"NO_VALIDATION\",\"tests\":[{\"error_id\":\"neptune_checkpoint_1\",\"source\":{\"file\":{\"filename\":\"filename\",\"line_number\":3,\"column_number\":1},\"objectid\":\"1234\",\"label\":\"\"},\"error_value\":\"test\"}]}}");
+		String result = "{\"validation_report\":{\"result\":\"VALIDATION_PROCEDEED\",\"check_points\":" +
+				"[{\"test_id\":\"Neptune-Checkpoint-1\",\"level\":\"Neptune\",\"type\":\"Checkpoint\"," +
+				"\"rank\":\"1\",\"severity\":\"WARNING\",\"result\":\"NOK\",\"check_point_error_count\":1,\"check_point_errors\":[0]}]," +
+				"\"errors\":[{\"error_id\":\"neptune_checkpoint_1\"," +
+				"\"source\":{\"file\":{\"filename\":\"filename\",\"line_number\":3,\"column_number\":1}," +
+				"\"objectid\":\"1234\",\"label\":\"\"},\"error_value\":\"test\"}]}}";
+		JSONObject array = new JSONObject(result);
 		validationReporter.addCheckPointReportError(context, "Neptune-Checkpoint-1", location, "test");
 		Assert.assertEquals(validationReport.toJson().toString(), array.toString(), "Invalid validation report json");
 	

@@ -76,14 +76,14 @@ public class Report implements Constant {
 	}
 
 	private static ActionReport getReport(Context context) {
-		ActionReport result = null;
-		Object object = context.get(REPORT);
-		if (object != null && object instanceof ActionReport) {
-			result = (ActionReport) object;
-		} else {
-			result = new ActionReport();
-			context.put(REPORT, result);
-		}
+		ActionReport result = (ActionReport) context.get(REPORT);
+//		Object object = context.get(REPORT);
+//		if (object != null && object instanceof ActionReport) {
+//			result = (ActionReport) object;
+//		} else {
+//			result = new ActionReport();
+//			context.put(REPORT, result);
+//		}
 		return result;
 	}
 }

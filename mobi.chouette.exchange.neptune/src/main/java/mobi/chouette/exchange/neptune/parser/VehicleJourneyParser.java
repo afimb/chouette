@@ -231,12 +231,8 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 		VehicleJourneyAtStop previous_vjas = null;
 		int currentArrivalOffset = 0;
 		int currentDepartureOffset = 0;
-		boolean print = false;
 		
 		if (lstVehicleJourneyAtStop != null) {
-			if(lstVehicleJourneyAtStop.get(0).getVehicleJourney().getObjectId().equalsIgnoreCase("NINOXE:VehicleJourney:15574500")){
-				print = true;
-			}
 			for (VehicleJourneyAtStop vjas: lstVehicleJourneyAtStop) {
 				/** First stop */
 				if(previous_vjas == null) {
@@ -262,11 +258,6 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 				
 				previous_vjas = vjas;
 				
-				if(print) {
-					log.info("Vehicle Journey ID : " + vjas.getVehicleJourney().getObjectId());
-					log.info("Stop arrival offset" + vjas.getArrivalDayOffset());
-					log.info("Stop departure offset" + vjas.getDepartureDayOffset());
-				}
 			}
 		}
 	}

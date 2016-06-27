@@ -86,18 +86,18 @@ public class CheckPointReport {
 		JSONObject object = new JSONObject();
 		object.put("test_id", name);
 		object.put("level", phase);
-		object.put("object_type", target);
+		object.put("type", target);
 		object.put("rank", rank);
 		object.put("severity", severity);
 		object.put("result", state);
-		object.put("error_count", checkPointErrorCount);
+		object.put("check_point_error_count", checkPointErrorCount);
 		if (checkPointErrorCount > 0) {
 			JSONArray errors = new JSONArray();
 
 			for (Integer errorKey : checkPointErrorsKeys) {
 				errors.put(errorKey);
 			}
-			object.put("errors", errors);
+			object.put("check_point_errors", errors);
 		}
 
 		return object;

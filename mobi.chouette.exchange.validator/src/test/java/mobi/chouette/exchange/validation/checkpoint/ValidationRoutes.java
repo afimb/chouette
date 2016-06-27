@@ -16,9 +16,12 @@ import mobi.chouette.common.Context;
 import mobi.chouette.dao.LineDAO;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
-import mobi.chouette.exchange.validation.report.CheckPoint;
-import mobi.chouette.exchange.validation.report.Detail;
-import mobi.chouette.exchange.validation.report.ValidationReport;
+import mobi.chouette.exchange.validation.report.CheckPointErrorReport;
+import mobi.chouette.exchange.validation.report.CheckPointReport;
+import mobi.chouette.exchange.validation.report.ValidationReport2;
+import mobi.chouette.exchange.validation.report.ValidationReporter;
+import mobi.chouette.exchange.validator.DummyChecker;
+import mobi.chouette.exchange.validator.JobDataTest;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
@@ -59,7 +62,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 
 		EnterpriseArchive result;
 		File[] files = Maven.resolver().loadPomFromFile("pom.xml")
-				.resolve("mobi.chouette:mobi.chouette.exchange.validation").withTransitivity().asFile();
+				.resolve("mobi.chouette:mobi.chouette.exchange.validator").withTransitivity().asFile();
 		List<File> jars = new ArrayList<>();
 		List<JavaArchive> modules = new ArrayList<>();
 		for (File file : files) {
@@ -103,6 +106,9 @@ public class ValidationRoutes extends AbstractTestValidation {
 			}
 		}
 		final WebArchive testWar = ShrinkWrap.create(WebArchive.class, "test.war").addAsWebInfResource("postgres-ds.xml")
+				.addClass(DummyChecker.class)
+				.addClass(JobDataTest.class)
+				.addClass(AbstractTestValidation.class)
 				.addClass(ValidationRoutes.class);
 		
 		result = ShrinkWrap.create(EnterpriseArchive.class, "test.ear")
@@ -154,7 +160,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		Context context = initValidatorContext();
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 		context.put(VALIDATION, fullparameters);
-		context.put(VALIDATION_REPORT, new ValidationReport());
+		context.put(VALIDATION_REPORT, new ValidationReport2());
 
 		fullparameters.setCheckRoute(0);
 		ValidationData data = new ValidationData();
@@ -163,16 +169,16 @@ public class ValidationRoutes extends AbstractTestValidation {
 
 		checkPoint.validate(context, null);
 
-		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
-		Assert.assertTrue(report.findCheckPointByName("4-Route-1") == null, " report must not have item 4-Route-1");
+		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		Assert.assertTrue(report.findCheckPointReportByName("4-Route-1") == null, " report must not have item 4-Route-1");
 
 		fullparameters.setCheckRoute(1);
-		context.put(VALIDATION_REPORT, new ValidationReport());
+		context.put(VALIDATION_REPORT, new ValidationReport2());
 
 		checkPoint.validate(context, null);
-		report = (ValidationReport) context.get(VALIDATION_REPORT);
-		Assert.assertTrue(report.findCheckPointByName("4-Route-1") != null, " report must have item 4-Route-1");
-		Assert.assertEquals(report.findCheckPointByName("4-Route-1").getDetailCount(), 0,
+		report = (ValidationReport2) context.get(VALIDATION_REPORT);
+		Assert.assertTrue(report.findCheckPointReportByName("4-Route-1") != null, " report must have item 4-Route-1");
+		Assert.assertEquals(report.findCheckPointReportByName("4-Route-1").getCheckPointErrorCount(), 0,
 				" checkpoint must have no detail");
 
 	}
@@ -185,7 +191,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
 		context.put(VALIDATION, fullparameters);
-		context.put(VALIDATION_REPORT, new ValidationReport());
+		context.put(VALIDATION_REPORT, new ValidationReport2());
 
 		fullparameters.setCheckRoute(1);
 		fullparameters.getRoute().getObjectId().setUnique(1);
@@ -197,10 +203,10 @@ public class ValidationRoutes extends AbstractTestValidation {
 		checkPoint.validate(context, null);
 		fullparameters.getRoute().getObjectId().setUnique(0);
 		// unique
-		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
+		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
 
-		List<Detail> details = checkReportForTest4_1(report, "4-Route-1", 3);
-		for (Detail detail : details) {
+		List<CheckPointErrorReport> details = checkReportForTest(report, "4-Route-1", 3);
+		for (CheckPointErrorReport detail : details) {
 			Assert.assertEquals(detail.getReferenceValue(), "ObjectId", "detail must refer column");
 			Assert.assertEquals(detail.getValue(), bean2.getObjectId().split(":")[2], "detail must refer value");
 		}
@@ -212,7 +218,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		log.info(Color.BLUE + "3-Route-1" + Color.NORMAL);
 		Context context = initValidatorContext();
 		context.put(VALIDATION, fullparameters);
-		context.put(VALIDATION_REPORT, new ValidationReport());
+		context.put(VALIDATION_REPORT, new ValidationReport2());
 
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
@@ -235,25 +241,25 @@ public class ValidationRoutes extends AbstractTestValidation {
 
 		checkPoint.validate(context, null);
 
-		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
+		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
 		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
-		CheckPoint checkPointReport = report.findCheckPointByName("3-Route-1");
+		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-Route-1");
 		Assert.assertNotNull(checkPointReport, "report must contain a 3-Route-1 checkPoint");
 
-		Assert.assertEquals(checkPointReport.getState(), CheckPoint.RESULT.NOK, " checkPointReport must be nok");
-		Assert.assertEquals(checkPointReport.getSeverity(), CheckPoint.SEVERITY.WARNING,
+		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
+		Assert.assertEquals(checkPointReport.getSeverity(), CheckPointReport.SEVERITY.WARNING,
 				" checkPointReport must be on level warning");
-		Assert.assertEquals(checkPointReport.getDetailCount(), 1, " checkPointReport must have 1 item");
+		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 1, " checkPointReport must have 1 item");
 
 		String detailKey = "3-Route-1".replaceAll("-", "_").toLowerCase();
-		List<Detail> details = checkPointReport.getDetails();
-		for (Detail detail : details) {
+		List<CheckPointErrorReport> details = checkReportForTest(report,"3-Route-1",-1);
+		for (CheckPointErrorReport detail : details) {
 			Assert.assertTrue(detail.getKey().startsWith(detailKey),
 					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
 		}
 		// check detail keys
-		for (Detail detail : checkPointReport.getDetails()) {
+		for (CheckPointErrorReport detail : details) {
 			Assert.assertEquals(detail.getSource().getObjectId(), route1.getObjectId(),
 					"route 1 must be source of error");
 		}
@@ -266,7 +272,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		log.info(Color.BLUE + "3-Route-2" + Color.NORMAL);
 		Context context = initValidatorContext();
 		context.put(VALIDATION, fullparameters);
-		context.put(VALIDATION_REPORT, new ValidationReport());
+		context.put(VALIDATION_REPORT, new ValidationReport2());
 
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
@@ -298,19 +304,19 @@ public class ValidationRoutes extends AbstractTestValidation {
 
 		checkPoint.validate(context, null);
 
-		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
+		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
 		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
-		CheckPoint checkPointReport = report.findCheckPointByName("3-Route-2");
+		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-Route-2");
 		Assert.assertNotNull(checkPointReport, "report must contain a 3-Route-2 checkPoint");
 
-		Assert.assertEquals(checkPointReport.getState(), CheckPoint.RESULT.NOK, " checkPointReport must be nok");
-		Assert.assertEquals(checkPointReport.getSeverity(), CheckPoint.SEVERITY.WARNING,
+		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
+		Assert.assertEquals(checkPointReport.getSeverity(), CheckPointReport.SEVERITY.WARNING,
 				" checkPointReport must be on level warning");
-		Assert.assertEquals(checkPointReport.getDetailCount(), 2, " checkPointReport must have 2 item");
+		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 2, " checkPointReport must have 2 item");
 		String detailKey = "3-Route-2".replaceAll("-", "_").toLowerCase();
-		List<Detail> details = checkPointReport.getDetails();
-		for (Detail detail : details) {
+		List<CheckPointErrorReport> details = checkReportForTest(report,"3-Route-2",-1);
+		for (CheckPointErrorReport detail : details) {
 			Assert.assertTrue(detail.getKey().startsWith(detailKey),
 					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
 		}
@@ -318,7 +324,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		// check detail keys = route1 and route2 objectids
 		boolean route1objectIdFound = false;
 		boolean route2objectIdFound = false;
-		for (Detail detailReport : checkPointReport.getDetails()) {
+		for (CheckPointErrorReport detailReport : details) {
 
 			if (detailReport.getSource().getObjectId().equals(route1.getObjectId()))
 				route1objectIdFound = true;
@@ -337,7 +343,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		// 3-Route-3 : check distance between stops
 		log.info(Color.BLUE + "3-Route-3" + Color.NORMAL);
 		Context context = initValidatorContext();
-		context.put(VALIDATION_REPORT, new ValidationReport());
+		context.put(VALIDATION_REPORT, new ValidationReport2());
 
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
@@ -388,27 +394,27 @@ public class ValidationRoutes extends AbstractTestValidation {
 
 		checkPoint.validate(context, null);
 
-		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
+		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
 		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
-		CheckPoint checkPointReport = report.findCheckPointByName("3-Route-3");
+		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-Route-3");
 		Assert.assertNotNull(checkPointReport, "report must contain a 3-Route-3 checkPoint");
 
-		Assert.assertEquals(checkPointReport.getState(), CheckPoint.RESULT.NOK, " checkPointReport must be nok");
-		Assert.assertEquals(checkPointReport.getSeverity(), CheckPoint.SEVERITY.WARNING,
+		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
+		Assert.assertEquals(checkPointReport.getSeverity(), CheckPointReport.SEVERITY.WARNING,
 				" checkPointReport must be on level warning");
-		Assert.assertEquals(checkPointReport.getDetailCount(), 2, " checkPointReport must have 2 item");
+		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 2, " checkPointReport must have 2 item");
 
 		String detailKey = "3-Route-3".replaceAll("-", "_").toLowerCase();
-		List<Detail> details = checkPointReport.getDetails();
-		for (Detail detail : details) {
+		List<CheckPointErrorReport> details = checkReportForTest(report,"3-Route-3",-1);
+		for (CheckPointErrorReport detail : details) {
 			Assert.assertTrue(detail.getKey().startsWith(detailKey),
 					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
 		}
 		// check detail keys
 		boolean route1objectIdFound = false;
 		boolean route2objectIdFound = false;
-		for (Detail detailReport : checkPointReport.getDetails()) {
+		for (CheckPointErrorReport detailReport : details) {
 
 			if (detailReport.getSource().getObjectId().equals(route1.getObjectId()))
 				route1objectIdFound = true;
@@ -426,7 +432,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		// 3-Route-4 : check identical routes
 		log.info(Color.BLUE + "3-Route-4" + Color.NORMAL);
 		Context context = initValidatorContext();
-		context.put(VALIDATION_REPORT, new ValidationReport());
+		context.put(VALIDATION_REPORT, new ValidationReport2());
 
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
@@ -461,26 +467,26 @@ public class ValidationRoutes extends AbstractTestValidation {
 
 		checkPoint.validate(context, null);
 
-		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
+		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
 		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
-		CheckPoint checkPointReport = report.findCheckPointByName("3-Route-4");
+		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-Route-4");
 		Assert.assertNotNull(checkPointReport, "report must contain a 3-Route-4 checkPoint");
 
-		Assert.assertEquals(checkPointReport.getState(), CheckPoint.RESULT.NOK, " checkPointReport must be nok");
-		Assert.assertEquals(checkPointReport.getSeverity(), CheckPoint.SEVERITY.WARNING,
+		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
+		Assert.assertEquals(checkPointReport.getSeverity(), CheckPointReport.SEVERITY.WARNING,
 				" checkPointReport must be on level warning");
-		Assert.assertEquals(checkPointReport.getDetailCount(), 1, " checkPointReport must have 1 item");
+		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 1, " checkPointReport must have 1 item");
 
 		String detailKey = "3-Route-4".replaceAll("-", "_").toLowerCase();
-		List<Detail> details = checkPointReport.getDetails();
-		for (Detail detail : details) {
+		List<CheckPointErrorReport> details = checkReportForTest(report,"3-Route-4",-1);
+		for (CheckPointErrorReport detail : details) {
 			Assert.assertTrue(detail.getKey().startsWith(detailKey),
 					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
 		}
 		boolean route1objectIdFound = false;
 		boolean route2objectIdFound = false;
-		for (Detail detailReport : checkPointReport.getDetails()) {
+		for (CheckPointErrorReport detailReport : details) {
 
 			if (detailReport.getSource().getObjectId().equals(route1.getObjectId()))
 				route1objectIdFound = true;
@@ -498,7 +504,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		// 3-Route-5 : check for potentially waybacks
 		log.info(Color.BLUE + "3-Route-5" + Color.NORMAL);
 		Context context = initValidatorContext();
-		context.put(VALIDATION_REPORT, new ValidationReport());
+		context.put(VALIDATION_REPORT, new ValidationReport2());
 
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
@@ -525,26 +531,26 @@ public class ValidationRoutes extends AbstractTestValidation {
 
 		checkPoint.validate(context, null);
 
-		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
+		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
 		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
-		CheckPoint checkPointReport = report.findCheckPointByName("3-Route-5");
+		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-Route-5");
 		Assert.assertNotNull(checkPointReport, "report must contain a 3-Route-5 checkPoint");
 
-		Assert.assertEquals(checkPointReport.getState(), CheckPoint.RESULT.NOK, " checkPointReport must be nok");
-		Assert.assertEquals(checkPointReport.getSeverity(), CheckPoint.SEVERITY.WARNING,
+		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
+		Assert.assertEquals(checkPointReport.getSeverity(), CheckPointReport.SEVERITY.WARNING,
 				" checkPointReport must be on level warning");
-		Assert.assertEquals(checkPointReport.getDetailCount(), 1, " checkPointReport must have 1 item");
+		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 1, " checkPointReport must have 1 item");
 
 		String detailKey = "3-Route-5".replaceAll("-", "_").toLowerCase();
-		List<Detail> details = checkPointReport.getDetails();
-		for (Detail detail : details) {
+		List<CheckPointErrorReport> details = checkReportForTest(report,"3-Route-5",-1);
+		for (CheckPointErrorReport detail : details) {
 			Assert.assertTrue(detail.getKey().startsWith(detailKey),
 					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
 		}
 		boolean route1objectIdFound = false;
 		boolean route2objectIdFound = false;
-		for (Detail detailReport : checkPointReport.getDetails()) {
+		for (CheckPointErrorReport detailReport : details) {
 
 			if (detailReport.getSource().getObjectId().equals(route1.getObjectId()))
 				route1objectIdFound = true;
@@ -562,7 +568,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		// 3-Route-6 : check if route has minimum 2 StopPoints
 		log.info(Color.BLUE + "3-Route-6" + Color.NORMAL);
 		Context context = initValidatorContext();
-		context.put(VALIDATION_REPORT, new ValidationReport());
+		context.put(VALIDATION_REPORT, new ValidationReport2());
 
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
@@ -587,25 +593,25 @@ public class ValidationRoutes extends AbstractTestValidation {
 
 		checkPoint.validate(context, null);
 
-		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
+		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
 		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
-		CheckPoint checkPointReport = report.findCheckPointByName("3-Route-6");
+		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-Route-6");
 		Assert.assertNotNull(checkPointReport, "report must contain a 3-Route-6 checkPoint");
 
-		Assert.assertEquals(checkPointReport.getState(), CheckPoint.RESULT.NOK, " checkPointReport must be nok");
-		Assert.assertEquals(checkPointReport.getSeverity(), CheckPoint.SEVERITY.ERROR,
+		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
+		Assert.assertEquals(checkPointReport.getSeverity(), CheckPointReport.SEVERITY.ERROR,
 				" checkPointReport must be on level warning");
-		Assert.assertEquals(checkPointReport.getDetailCount(), 1, " checkPointReport must have 1 item");
+		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 1, " checkPointReport must have 1 item");
 
 		String detailKey = "3-Route-6".replaceAll("-", "_").toLowerCase();
-		List<Detail> details = checkPointReport.getDetails();
-		for (Detail detail : details) {
+		List<CheckPointErrorReport> details = checkReportForTest(report,"3-Route-6",-1);
+		for (CheckPointErrorReport detail : details) {
 			Assert.assertTrue(detail.getKey().startsWith(detailKey),
 					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
 		}
 		boolean route1objectIdFound = false;
-		for (Detail detailReport : checkPointReport.getDetails()) {
+		for (CheckPointErrorReport detailReport : details) {
 
 			if (detailReport.getSource().getObjectId().equals(route1.getObjectId()))
 				route1objectIdFound = true;
@@ -620,7 +626,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		// 3-Route-7 : check if route has minimum 1 JourneyPattern
 		log.info(Color.BLUE + "3-Route-7" + Color.NORMAL);
 		Context context = initValidatorContext();
-		context.put(VALIDATION_REPORT, new ValidationReport());
+		context.put(VALIDATION_REPORT, new ValidationReport2());
 
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
@@ -645,25 +651,25 @@ public class ValidationRoutes extends AbstractTestValidation {
 
 		checkPoint.validate(context, null);
 
-		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
+		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
 		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
-		CheckPoint checkPointReport = report.findCheckPointByName("3-Route-7");
+		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-Route-7");
 		Assert.assertNotNull(checkPointReport, "report must contain a 3-Route-7 checkPoint");
 
-		Assert.assertEquals(checkPointReport.getState(), CheckPoint.RESULT.NOK, " checkPointReport must be nok");
-		Assert.assertEquals(checkPointReport.getSeverity(), CheckPoint.SEVERITY.ERROR,
+		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
+		Assert.assertEquals(checkPointReport.getSeverity(), CheckPointReport.SEVERITY.ERROR,
 				" checkPointReport must be on level warning");
-		Assert.assertEquals(checkPointReport.getDetailCount(), 1, " checkPointReport must have 1 item");
+		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 1, " checkPointReport must have 1 item");
 
 		String detailKey = "3-Route-7".replaceAll("-", "_").toLowerCase();
-		List<Detail> details = checkPointReport.getDetails();
-		for (Detail detail : details) {
+		List<CheckPointErrorReport> details = checkReportForTest(report,"3-Route-7",-1);
+		for (CheckPointErrorReport detail : details) {
 			Assert.assertTrue(detail.getKey().startsWith(detailKey),
 					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
 		}
 		boolean route1objectIdFound = false;
-		for (Detail detailReport : checkPointReport.getDetails()) {
+		for (CheckPointErrorReport detailReport : details) {
 
 			if (detailReport.getSource().getObjectId().equals(route1.getObjectId()))
 				route1objectIdFound = true;
@@ -678,7 +684,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		// 3-Route-8 : check if all stopPoints are used by journeyPatterns
 		log.info(Color.BLUE + "3-Route-8" + Color.NORMAL);
 		Context context = initValidatorContext();
-		context.put(VALIDATION_REPORT, new ValidationReport());
+		context.put(VALIDATION_REPORT, new ValidationReport2());
 
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
@@ -703,25 +709,25 @@ public class ValidationRoutes extends AbstractTestValidation {
 
 		checkPoint.validate(context, null);
 
-		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
+		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
 		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
-		CheckPoint checkPointReport = report.findCheckPointByName("3-Route-8");
+		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-Route-8");
 		Assert.assertNotNull(checkPointReport, "report must contain a 3-Route-8 checkPoint");
 
-		Assert.assertEquals(checkPointReport.getState(), CheckPoint.RESULT.NOK, " checkPointReport must be nok");
-		Assert.assertEquals(checkPointReport.getSeverity(), CheckPoint.SEVERITY.WARNING,
+		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
+		Assert.assertEquals(checkPointReport.getSeverity(), CheckPointReport.SEVERITY.WARNING,
 				" checkPointReport must be on level warning");
-		Assert.assertEquals(checkPointReport.getDetailCount(), 1, " checkPointReport must have 1 item");
+		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 1, " checkPointReport must have 1 item");
 
 		String detailKey = "3-Route-8".replaceAll("-", "_").toLowerCase();
-		List<Detail> details = checkPointReport.getDetails();
-		for (Detail detail : details) {
+		List<CheckPointErrorReport> details = checkReportForTest(report,"3-Route-8",-1);
+		for (CheckPointErrorReport detail : details) {
 			Assert.assertTrue(detail.getKey().startsWith(detailKey),
 					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
 		}
 		boolean route1objectIdFound = false;
-		for (Detail detailReport : checkPointReport.getDetails()) {
+		for (CheckPointErrorReport detailReport : details) {
 
 			if (detailReport.getSource().getObjectId().equals(route1.getObjectId()))
 				route1objectIdFound = true;
@@ -736,7 +742,7 @@ public class ValidationRoutes extends AbstractTestValidation {
 		// 3-Route-9 : check if one journeyPattern uses all stopPoints
 		log.info(Color.BLUE + "3-Route-9" + Color.NORMAL);
 		Context context = initValidatorContext();
-		context.put(VALIDATION_REPORT, new ValidationReport());
+		context.put(VALIDATION_REPORT, new ValidationReport2());
 
 		Assert.assertNotNull(fullparameters, "no parameters for test");
 
@@ -768,25 +774,25 @@ public class ValidationRoutes extends AbstractTestValidation {
 
 		checkPoint.validate(context, null);
 
-		ValidationReport report = (ValidationReport) context.get(VALIDATION_REPORT);
+		ValidationReport2 report = (ValidationReport2) context.get(VALIDATION_REPORT);
 		Assert.assertNotEquals(report.getCheckPoints().size(), 0, " report must have items");
 
-		CheckPoint checkPointReport = report.findCheckPointByName("3-Route-9");
+		CheckPointReport checkPointReport = report.findCheckPointReportByName("3-Route-9");
 		Assert.assertNotNull(checkPointReport, "report must contain a 3-Route-9 checkPoint");
 
-		Assert.assertEquals(checkPointReport.getState(), CheckPoint.RESULT.NOK, " checkPointReport must be nok");
-		Assert.assertEquals(checkPointReport.getSeverity(), CheckPoint.SEVERITY.WARNING,
+		Assert.assertEquals(checkPointReport.getState(), ValidationReporter.RESULT.NOK, " checkPointReport must be nok");
+		Assert.assertEquals(checkPointReport.getSeverity(), CheckPointReport.SEVERITY.WARNING,
 				" checkPointReport must be on level warning");
-		Assert.assertEquals(checkPointReport.getDetailCount(), 1, " checkPointReport must have 1 item");
+		Assert.assertEquals(checkPointReport.getCheckPointErrorCount(), 1, " checkPointReport must have 1 item");
 
 		String detailKey = "3-Route-9".replaceAll("-", "_").toLowerCase();
-		List<Detail> details = checkPointReport.getDetails();
-		for (Detail detail : details) {
+		List<CheckPointErrorReport> details = checkReportForTest(report,"3-Route-9",-1);
+		for (CheckPointErrorReport detail : details) {
 			Assert.assertTrue(detail.getKey().startsWith(detailKey),
 					"details key should start with test key : expected " + detailKey + ", found : " + detail.getKey());
 		}
 		boolean route1objectIdFound = false;
-		for (Detail detailReport : checkPointReport.getDetails()) {
+		for (CheckPointErrorReport detailReport : details) {
 			log.warn(detailReport);
 			if (detailReport.getSource().getObjectId().equals(route1.getObjectId()))
 				route1objectIdFound = true;

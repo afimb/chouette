@@ -12,8 +12,7 @@ import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.report.ActionError;
-import mobi.chouette.exchange.report.ActionReport;
+import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
@@ -70,7 +69,7 @@ public class StopAreaRegisterCommand implements Command {
 				log.info("ConnectionLinks proceded :" + count + "/" + orderedlinks.size());
 			}
 		} catch (Exception ex) {
-			ActionReport report = (ActionReport) context.get(REPORT);
+			ActionReporter reporter = ActionReporter.Factory.getInstance();
 			if (ex.getCause() != null) {
 				Throwable e = ex.getCause();
 				while (e.getCause() != null) {
@@ -79,15 +78,12 @@ public class StopAreaRegisterCommand implements Command {
 				}
 				if (e instanceof SQLException) {
 					e = ((SQLException) e).getNextException();
-					ActionError error = new ActionError(ActionError.CODE.INTERNAL_ERROR, e.getMessage());
-					report.setFailure(error);
+					reporter.setActionError(context, ActionReporter.ERROR_CODE.INTERNAL_ERROR, e.getMessage());
 				} else {
-					ActionError error = new ActionError(ActionError.CODE.INTERNAL_ERROR, e.getMessage());
-					report.setFailure(error);
+					reporter.setActionError(context, ActionReporter.ERROR_CODE.INTERNAL_ERROR, e.getMessage());
 				}
 			} else {
-				ActionError error = new ActionError(ActionError.CODE.INTERNAL_ERROR, ex.getMessage());
-				report.setFailure(error);
+				reporter.setActionError(context, ActionReporter.ERROR_CODE.INTERNAL_ERROR, ex.getMessage());
 			}
 
 		} finally {

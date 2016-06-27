@@ -19,7 +19,7 @@ import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.Line;
 
 @Log4j
-public class ValidationReporter implements Constant {
+public class GtfsValidationReporter implements Constant {
 
 	@Getter
 	private Set<GtfsException> exceptions = new GtfsExceptionsHashSet<GtfsException>();
@@ -31,7 +31,7 @@ public class ValidationReporter implements Constant {
 
 	public void throwUnknownError(Context context, Exception ex, String filenameInfo) throws Exception {
 		ActionReport report = (ActionReport) context.get(REPORT);
-		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
+		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
 		String name = name(filenameInfo);
 		String checkPointName = checkPointName(name, GtfsException.ERROR.SYSTEM);
 
@@ -48,7 +48,7 @@ public class ValidationReporter implements Constant {
 	}
 
 	public void validateUnknownError(Context context) {
-		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
+		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
 		CheckPoint cp = validationReport.findCheckPointByName(GTFS_1_GTFS_CSV_1);
 		if (cp.getState() == CheckPoint.RESULT.UNCHECK)
 			cp.setState(CheckPoint.RESULT.OK);
@@ -64,7 +64,7 @@ public class ValidationReporter implements Constant {
 		if (!exceptions.add(ex))
 			return;
 		ActionReport report = (ActionReport) context.get(REPORT);
-		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
+		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
 		String name = name(filenameInfo);
 		String filenameInfo2 = "";
 		String checkPointName = "";
@@ -690,7 +690,7 @@ public class ValidationReporter implements Constant {
 
 	public void reportSuccess(Context context, String checkpointName, String filenameInfo) {
 		ActionReport report = (ActionReport) context.get(REPORT);
-		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
+		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
 
 		report.addFileInfo(filenameInfo, FILE_STATE.OK);
 		if (validationReport.findCheckPointByName(checkpointName).getState() == CheckPoint.RESULT.UNCHECK)
@@ -712,7 +712,7 @@ public class ValidationReporter implements Constant {
 	}
 
 	public void validate(Context context, String filenameInfo, String checkPointName) {
-		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
+		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
 
 		CheckPoint checkPoint = validationReport.findCheckPointByName(checkPointName);
 
@@ -723,7 +723,7 @@ public class ValidationReporter implements Constant {
 	}
 
 	public void updateValidationReport(Context context, String filename, String gtfsid, Line line) {
-		ValidationReport validationReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
+		ValidationReport validationReport = (ValidationReport) context.get(VALIDATION_REPORT);
 		for (CheckPoint checkpoint : validationReport.getCheckPoints()) {
 			if (checkpoint.getDetailCount() > 0) {
 				for (Detail detail : checkpoint.getDetails()) {

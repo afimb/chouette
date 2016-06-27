@@ -9,9 +9,10 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlType;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import mobi.chouette.model.Line;
 
 import org.codehaus.jettison.json.JSONArray;
@@ -21,7 +22,6 @@ import org.codehaus.jettison.json.JSONObject;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder={"name","objectId","status","ioType","stats","errors"})
-@Data
 @EqualsAndHashCode(exclude={"name","status","stats","errors"})
 @NoArgsConstructor
 public class LineInfo {
@@ -35,21 +35,33 @@ public class LineInfo {
 		ERROR
 	};
 	@XmlElement(name = "name",required=true)
+	@Getter
+	@Setter
 	private String name;
 
 	@XmlElement(name = "status",required=true)
+	@Getter
+	@Setter
 	private LINE_STATE status = LINE_STATE.OK;
 	
 	@XmlElement(name = "stats",required=true)
+	@Getter
+	@Setter
 	private DataStats stats = new DataStats();
 
 	@XmlElement(name = "io_type")
+	@Getter
+	@Setter
 	private IO_TYPE ioType;
 
 	@XmlElement(name="errors")
+	@Getter
+	@Setter
 	private List<LineError> errors = new ArrayList<>();
 	
 	@XmlElement(name="objectid")
+	@Getter
+	@Setter
 	private String objectId;
 	
 	public LineInfo(Line line)

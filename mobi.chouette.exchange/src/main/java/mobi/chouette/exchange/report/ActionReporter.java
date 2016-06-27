@@ -8,10 +8,13 @@ public interface ActionReporter {
 		NETWORK,
 		COMPANY,
 		STOP_AREA,
+		CONNECTION_LINK,
+		ACCESS_POINT,
+		TIME_TABLE,
 		LINE,
 		ROUTE,
-		STOP_POINT,
-		JOURNEY_PATTERN
+		JOURNEY_PATTERN,
+		VEHICLE_JOURNEY
 	};
 	
 	public enum FILE_STATE {
@@ -23,8 +26,11 @@ public interface ActionReporter {
 		INVALID_PARAMETERS,
 		NO_DATA_FOUND,
 		NO_DATA_PROCEEDED,
+		NO_DATA_ON_PERIOD,
 		INVALID_DATA,
-		INTERNAL_ERROR
+		INVALID_FORMAT,
+		INTERNAL_ERROR,
+		WRITE_ERROR
 	};
 	
 	public enum OBJECT_STATE 
@@ -43,14 +49,91 @@ public interface ActionReporter {
 		INTERNAL_ERROR
 	};
 	
-	void addFileReport(Context context, String fileInfoName, boolean isZipFile);
-	void addFileErrorInReport(Context context, String fileInfoName, FILE_ERROR_CODE code, String message, boolean isZipFile);
+	/**
+	 * @param context
+	 * @param fileInfoName
+	 * @param ioType
+	 */
+	void addZipReport(Context context, String fileInfoName,IO_TYPE ioType);
+	/**
+	 * @param context
+	 * @param fileInfoName
+	 * @param code
+	 * @param message
+	 */
+	void addZipErrorInReport(Context context, String fileInfoName, FILE_ERROR_CODE code, String message);
+	/**
+	 * @param context
+	 * @param fileInfoName
+	 * @param ioType
+	 */
+	void addFileReport(Context context, String fileInfoName,IO_TYPE ioType);
+	/**
+	 * @param context
+	 * @param fileInfoName
+	 * @param ioType
+	 */
+	void setFileState(Context context, String fileInfoName,IO_TYPE ioType,FILE_STATE state);
+	/**
+	 * @param context
+	 * @param fileInfoName
+	 * @param code
+	 * @param message
+	 */
+	void addFileErrorInReport(Context context, String fileInfoName, FILE_ERROR_CODE code, String message);
+	/**
+	 * @param context
+	 * @param code
+	 * @param description
+	 */
 	void setActionError(Context context, ERROR_CODE code, String description);
-	void addObjectReport(Context context, String objectId, String type, String description, OBJECT_STATE status, IO_TYPE ioType);
-	void addObjectReportToSpecificCollection(Context context, String objectId, String type, String description, OBJECT_STATE status, IO_TYPE ioType);
-	void addErrorToObjectReport(Context context, String objectId, String type, String description, OBJECT_STATE status, IO_TYPE ioType, ERROR_CODE code, String descriptionError);
-	void addStatToObjectReport(Context context, String objectId, String type, String description, OBJECT_STATE status, IO_TYPE ioType, String statType);
-	
+    /**
+     * @param context
+     * @return
+     */
+    boolean hasActionError(Context context);
+	/**
+	 * @param context
+	 * @param objectId
+	 * @param type
+	 * @param description
+	 * @param status
+	 * @param ioType
+	 */
+	void addObjectReport(Context context, String objectId, OBJECT_TYPE type, String description, OBJECT_STATE status, IO_TYPE ioType);
+	/**
+	 * @param context
+	 * @param objectId
+	 * @param type
+	 * @param code
+	 * @param descriptionError
+	 */
+	void addErrorToObjectReport(Context context, String objectId, OBJECT_TYPE type, ERROR_CODE code, String descriptionError);
+	/**
+	 * add statistics value for object 
+	 * @param context
+	 * @param objectId
+	 * @param type
+	 * @param statType
+	 * @param count value to add 
+	 */
+	void addStatToObjectReport(Context context, String objectId, OBJECT_TYPE type, OBJECT_TYPE statType, int count);
+	/**
+	 * set statistics value for object 
+	 * @param context
+	 * @param objectId
+	 * @param type
+	 * @param statType
+	 * @param count value to set
+	 */
+	void setStatToObjectReport(Context context, String objectId, OBJECT_TYPE type, OBJECT_TYPE statType, int count);
+	/**
+	 * @param context
+	 * @param line
+	 * @return
+	 */
+	boolean hasInfo(Context context, OBJECT_TYPE line);
+
 	
 	
 	/**
@@ -69,4 +152,7 @@ public interface ActionReporter {
 			return actionReporter;
 		}
 	}
+
+
+
 }

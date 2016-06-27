@@ -134,7 +134,7 @@ public abstract class AbstractTests implements Constant, ReportConstant {
 	 */
 	private CheckPoint checkMandatoryTest(Logger log, Context context, String mandatoryTest,
 			CheckPoint.SEVERITY severity, RESULT state) {
-		ValidationReport valReport = (ValidationReport) context.get(MAIN_VALIDATION_REPORT);
+		ValidationReport valReport = (ValidationReport) context.get(VALIDATION_REPORT);
 		for (CheckPoint phase : valReport.getCheckPoints()) {
 			if (!phase.getState().equals(RESULT.UNCHECK))
 			{

@@ -13,6 +13,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import lombok.Data;
 import lombok.ToString;
+import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -23,18 +24,18 @@ import org.codehaus.jettison.json.JSONObject;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder = { "objectType", "objectReports", "stats", "ioType" })
 public class ObjectCollectionReport {
-	@XmlElement(name = "type",required=true)
-	private String objectType;
-	
+	@XmlElement(name = "type", required = true)
+	private ActionReporter.OBJECT_TYPE objectType;
+
 	@XmlElement(name = "object_reports")
 	private List<ObjectReport> objectReports = new ArrayList<ObjectReport>();
-	
+
 	@XmlElement(name = "stats")
-	private Map<String, Integer> stats = new HashMap<String, Integer>();
-	
+	private Map<ActionReporter.OBJECT_TYPE, Integer> stats = new HashMap<ActionReporter.OBJECT_TYPE, Integer>();
+
 	@XmlElement(name = "io_type")
 	private IO_TYPE ioType;
-	
+
 	/**
 	 * 
 	 * @param object
@@ -42,42 +43,51 @@ public class ObjectCollectionReport {
 	protected void addObjectReport(ObjectReport object) {
 		objectReports.add(object);
 	}
-	
+
 	/**
 	 * Add stat to data type
+	 * 
 	 * @param type
 	 */
-	protected void addStatTypeToObject(String type) {
-		if(stats.containsKey(type)) {
-			stats.put(type, new Integer(stats.get(type).intValue() + 1));
+	protected void addStatTypeToObject(ActionReporter.OBJECT_TYPE type, int count) {
+		if (stats.containsKey(type)) {
+			stats.put(type, new Integer(stats.get(type).intValue() + count));
 		} else {
-			stats.put(type, new Integer(1));
+			stats.put(type, new Integer(count));
 		}
 	}
-	
+
 	public JSONObject toJson() throws JSONException {
 		JSONObject object = new JSONObject();
-		object.put("type", objectType);
-	
-		JSONArray lines = new JSONArray();
+		object.put("type", objectType.toString().toLowerCase());
+
+		JSONArray objects = new JSONArray();
 
 		for (ObjectReport objectReport : objectReports) {
-			lines.put(objectReport.toJson());
+			objects.put(objectReport.toJson());
 		}
-		object.put("lines", lines);
-		
+		object.put("objects", objects);
+
 		if (!stats.isEmpty()) {
-			JSONArray array = new JSONArray();
-			object.put("stats", array);
-			for (Entry<String, Integer> entry : stats.entrySet())
-			{
-				array.put(entry.getKey() + " - " + entry.getValue());
+			JSONObject map = new JSONObject();
+			object.put("stats", map);
+			for (Entry<OBJECT_TYPE, Integer> entry : stats.entrySet()) {
+
+				map.put(entry.getKey().toString().toLowerCase(), entry.getValue());
 			}
 		}
-		
-		if(ioType != null)
+
+		if (ioType != null)
 			object.put("io_type", ioType);
 
 		return object;
+	}
+
+	public ObjectReport findObjectReport(String objectId) {
+		for (ObjectReport object : objectReports) {
+			if (object.getObjectId().equals(objectId))
+				return object;
+		}
+		return null;
 	}
 }

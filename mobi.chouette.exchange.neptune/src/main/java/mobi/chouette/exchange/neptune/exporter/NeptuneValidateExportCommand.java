@@ -13,23 +13,17 @@ import mobi.chouette.common.Color;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.FileUtil;
 import mobi.chouette.common.JobData;
-import mobi.chouette.common.chain.Chain;
-import mobi.chouette.common.chain.ChainCommand;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.ProgressionCommand;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.neptune.importer.NeptuneDisposeImportCommand;
-import mobi.chouette.exchange.neptune.importer.NeptuneImportExtensionsCommand;
 import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.neptune.importer.NeptuneInitImportCommand;
 import mobi.chouette.exchange.neptune.importer.NeptuneParserCommand;
 import mobi.chouette.exchange.neptune.importer.NeptuneSAXParserCommand;
 import mobi.chouette.exchange.neptune.importer.NeptuneValidationCommand;
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.validation.report.ValidationReport;
-
-import org.apache.commons.io.FileUtils;
+import mobi.chouette.exchange.report.ActionReport2;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -58,7 +52,7 @@ public class NeptuneValidateExportCommand implements Command, Constant {
 			parameters.setNoSave(true);
 			parameters.setReferentialName(configuration.getReferentialName());
 			validateContext.put(CONFIGURATION, parameters);
-			validateContext.put(REPORT, new ActionReport());
+			validateContext.put(REPORT, new ActionReport2());
 			// rename output folder to input folder
 			JobData jobData = (JobData) context.get(JOB_DATA);
 			String pathName = jobData.getPathName();
@@ -106,7 +100,7 @@ public class NeptuneValidateExportCommand implements Command, Constant {
 				c.execute(validateContext);
 			}
 			// save report in folder
-			context.put(MAIN_VALIDATION_REPORT, validateContext.get(MAIN_VALIDATION_REPORT));
+			context.put(VALIDATION_REPORT, validateContext.get(VALIDATION_REPORT));
 			result = SUCCESS;
 
 		} catch (Exception e) {

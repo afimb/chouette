@@ -7,110 +7,138 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlEnum;
-import javax.xml.bind.annotation.XmlType;
 
 import lombok.Getter;
+import lombok.ToString;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
-import mobi.chouette.model.Line;
+import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
+@ToString
 public class ObjectReport {
 
-	@XmlElement(name = "type",required=true)
+	@XmlElement(name = "type", required = true)
 	@Getter
-	private String type;
-	
-	@XmlElement(name = "description",required=true)
+	private ActionReporter.OBJECT_TYPE type;
+
+	@XmlElement(name = "description", required = true)
+	@Getter
 	private String description;
 
-	@XmlElement(name = "status",required=true)
+	@XmlElement(name = "status", required = true)
+	@Getter
 	private OBJECT_STATE status = OBJECT_STATE.OK;
-	
-	@XmlElement(name = "stats",required=true)
-	private Map<String, Integer> stats = new HashMap<String, Integer>();
+
+	@XmlElement(name = "stats", required = true)
+	@Getter
+	private Map<OBJECT_TYPE, Integer> stats = new HashMap<OBJECT_TYPE, Integer>();
 
 	@XmlElement(name = "io_type")
+	@Getter
 	private IO_TYPE ioType;
 
-	@XmlElement(name="errors")
+	@XmlElement(name = "errors")
+	@Getter
 	private List<ObjectError2> errors = new ArrayList<ObjectError2>();
-	
-	@XmlElement(name="checkpoint_errors")
+
+	@XmlElement(name = "checkpoint_errors")
+	@Getter
 	private List<Integer> checkPointErrorKeys = new ArrayList<Integer>();
-	
-	@XmlElement(name="checkpoint_error_count")
+
+	@XmlElement(name = "checkpoint_error_count")
+	@Getter
 	private int checkPointErrorCount;
-	
-	@XmlElement(name="checkpoint_improvment_count")
-	private int checkPointImprovmentCount;
-	
-	@XmlElement(name="objectid")
+
+	@XmlElement(name = "checkpoint_warning_count")
+	@Getter
+	private int checkPointWarningCount;
+
+	@XmlElement(name = "objectid")
+	@Getter
 	private String objectId;
-	
-	protected ObjectReport(String objectId, String type, String description, OBJECT_STATE status, IO_TYPE ioType)
-	{
+
+	protected ObjectReport(String objectId, OBJECT_TYPE type, String description, OBJECT_STATE status, IO_TYPE ioType) {
 		this.objectId = objectId;
 		this.type = type;
 		this.description = description;
 		this.status = status;
 		this.ioType = ioType;
 	}
-	
+
 	/**
 	 * add an error; status will be set to ERROR
 	 * 
 	 * @param error
 	 */
-	protected void addError(ObjectError2 error)
-	{
+	protected void addError(ObjectError2 error) {
 		status = OBJECT_STATE.ERROR;
 		errors.add(error);
 	}
-	
+
 	/**
 	 * 
 	 * @param checkPointErrorId
 	 */
 	protected void addCheckPointError(int checkPointErrorId) {
-		checkPointErrorKeys.add(new Integer(checkPointErrorId));		
+		checkPointErrorKeys.add(new Integer(checkPointErrorId));
 		checkPointErrorCount++;
 	}
-	
+
 	/**
 	 * Add stat to data type
+	 * 
 	 * @param type
+	 * @param count
 	 */
-	protected void addStatTypeToObject(String type) {
-		if(stats.containsKey(type)) {
-			stats.put(type, new Integer(stats.get(type).intValue() + 1));
+	protected void addStatTypeToObject(OBJECT_TYPE type, int count) {
+
+		if (stats.containsKey(type)) {
+			stats.put(type, new Integer(stats.get(type).intValue() + count));
 		} else {
-			stats.put(type, new Integer(1));
+			stats.put(type, new Integer(count));
 		}
+
+	}
+
+	/**
+	 * set stat to data type 
+	 * 
+	 * @param type
+	 * @param count
+	 * @return previous value
+	 */
+	protected int setStatTypeToObject(OBJECT_TYPE type, int count) {
+
+		int oldvalue = 0;
+		if (stats.containsKey(type)) {
+			oldvalue = stats.get(type).intValue();
+		}
+		stats.put(type, new Integer(count));
+		return oldvalue;
+
 	}
 
 	public JSONObject toJson() throws JSONException {
 		JSONObject object = new JSONObject();
-		object.put("type", type);
+		object.put("type", type.toString().toLowerCase());
 		object.put("description", description);
 		object.put("objectid", objectId);
 		object.put("status", status);
-		if (ioType != null)
-		{
-			object.put("io_type",ioType);
+		if (ioType != null) {
+			object.put("io_type", ioType);
 		}
 		if (!stats.isEmpty()) {
-			JSONArray array = new JSONArray();
-			object.put("stats", array);
-			for (Entry<String, Integer> entry : stats.entrySet())
-			{
-				array.put(entry.getKey() + " - " + entry.getValue());
+			JSONObject map = new JSONObject();
+			object.put("stats", map);
+			for (Entry<OBJECT_TYPE, Integer> entry : stats.entrySet()) {
+				
+				map.put(entry.getKey().toString().toLowerCase(),entry.getValue());
 			}
 		}
-		
+
 		if (!errors.isEmpty()) {
 			JSONArray array = new JSONArray();
 			object.put("errors", array);
@@ -118,17 +146,17 @@ public class ObjectReport {
 				array.put(error.toJson());
 			}
 		}
-		
+
 		if (!checkPointErrorKeys.isEmpty()) {
 			JSONArray array = new JSONArray();
-			object.put("checkPointerrorKeys", array);
+			object.put("check_point_errors", array);
 			for (Integer value : checkPointErrorKeys) {
 				array.put(value);
 			}
 		}
-		
-		object.put("errors number : ", checkPointErrorCount);
-		object.put("improvments number : ", checkPointImprovmentCount);
+
+		object.put("check_point_error_count", checkPointErrorCount);
+		object.put("check_point_warning_count", checkPointWarningCount);
 		return object;
 	}
 }

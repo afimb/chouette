@@ -370,7 +370,7 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 //					addValidationError(context,ROUTE_6, errorItem);
 					
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, ROUTE_6+ "_2", fileLocations.get(objectId));
+					validationReporter.addCheckPointReportError(context, ROUTE_6,"2", fileLocations.get(objectId));
 					validationReporter.addTargetLocationToCheckPointError(context, ROUTE_6, fileLocations.get(linkId));
 					
 					route3ok = false;
@@ -385,7 +385,7 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 //					fileLocations.get(objectId) );
 //			addValidationError(context,ROUTE_6, errorItem);
 			ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-			validationReporter.addCheckPointReportError(context, ROUTE_6+ "_1", fileLocations.get(objectId));
+			validationReporter.addCheckPointReportError(context, ROUTE_6, "1", fileLocations.get(objectId));
 			route3ok = false;
 		} 
 		else
@@ -418,7 +418,7 @@ public class ChouetteRouteValidator extends AbstractValidator implements Validat
 //					addValidationError(context,ROUTE_6, errorItem);
 					
 					ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-					validationReporter.addCheckPointReportError(context, ROUTE_6+ "_2", fileLocations.get(objectId), linkId);
+					validationReporter.addCheckPointReportError(context, ROUTE_6, "2", fileLocations.get(objectId), linkId);
 					validationReporter.addTargetLocationToCheckPointError(context, ROUTE_6, fileLocations.get(linkId));
 					route3ok = false;
 					break;
