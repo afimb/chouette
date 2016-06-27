@@ -82,7 +82,7 @@ public class RegtoppTimetableParser implements Parser {
 		case ADD:
 			 chouetteTimetableId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.TIMETABLE_KEY, entry.getAdminCode()+entry.getDayCodeId()+header.getDate().toString());
 			 break;
-		case OVERWRITE:
+		case UPDATE:
 			default:
 			chouetteTimetableId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.TIMETABLE_KEY, entry.getAdminCode()+entry.getDayCodeId());
 		}

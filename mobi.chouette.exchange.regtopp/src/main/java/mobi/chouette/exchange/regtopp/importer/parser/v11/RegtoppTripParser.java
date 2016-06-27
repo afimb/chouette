@@ -195,7 +195,7 @@ public class RegtoppTripParser extends LineSpecificParser {
 			chouetteTimetableId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.TIMETABLE_KEY,
 					trip.getAdminCode() + trip.getDayCodeRef() + header.getDate().toString());
 			break;
-		case OVERWRITE:
+		case UPDATE:
 		default:
 			chouetteTimetableId = AbstractConverter.composeObjectId(configuration.getObjectIdPrefix(), ObjectIdTypes.TIMETABLE_KEY,
 					trip.getAdminCode() + trip.getDayCodeRef());
