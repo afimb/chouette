@@ -51,7 +51,7 @@ public class RegtoppImportParameters extends AbstractImportParameter {
 	@Getter
 	@Setter
 	@XmlElement(name = "calendar_strategy", required = false)
-	private CalendarStrategy calendarStrategy = CalendarStrategy.OVERWRITE;
+	private CalendarStrategy calendarStrategy = CalendarStrategy.UPDATE;
 
 
 	public boolean isValid(Logger log, String[] allowedTypes) {
