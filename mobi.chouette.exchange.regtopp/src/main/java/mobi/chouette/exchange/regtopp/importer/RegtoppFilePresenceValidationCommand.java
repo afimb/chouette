@@ -97,7 +97,7 @@ public class RegtoppFilePresenceValidationCommand implements Command {
 		}
 		
 		log.info("Parsing Regtopp file=" + jobData.getInputFilename() + " referential=" + jobData.getReferential() + " declaredVersion=" + declaredVersion
-				+ " detectedVersion=" + detectedVersion);
+				+ " detectedVersion=" + detectedVersion+ " calendarStrategy="+parameters.getCalendarStrategy());
 		VersionHandler versionHandler = null;
 		switch (parserVersion) {
 		case R11D:
