@@ -14,6 +14,7 @@ import javax.xml.bind.annotation.XmlType;
 import lombok.Data;
 import mobi.chouette.common.Constant;
 import mobi.chouette.exchange.report.ActionReporter.FILE_STATE;
+import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -209,5 +210,20 @@ public class ActionReport2 implements Constant, ProgressionReport, Report {
 		// used to know if report has to be saved
 		// Action Report has to be saved any time
 		return false;
+	}
+
+	public ObjectReport findObjectReport(String objectId, OBJECT_TYPE type) {
+		if (collections.containsKey(type))
+		{
+			ObjectCollectionReport collection = collections.get(type);
+			for (ObjectReport objectReport : collection.getObjectReports()) {
+				if (objectReport.getObjectId().equals(objectId)) return objectReport;
+			}
+		}
+		else if (objects.containsKey(type))
+		{
+			return objects.get(type);
+		}
+		return null;
 	}
 }

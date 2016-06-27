@@ -12,6 +12,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import mobi.chouette.exchange.report.ActionReporter.FILE_STATE;
+import mobi.chouette.exchange.validation.report.CheckPointReport.SEVERITY;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -24,6 +25,7 @@ import org.codehaus.jettison.json.JSONObject;
 @EqualsAndHashCode(exclude = { "status", "errors" })
 @NoArgsConstructor
 public class FileReport {
+	public static final int maxErrors = 30;
 
 	@XmlElement(name = "name", required = true)
 	private String name;
@@ -41,10 +43,10 @@ public class FileReport {
 	private List<Integer> checkPointErrorKeys = new ArrayList<Integer>();
 
 	@XmlElement(name = "checkpoint_error_count")
-	private Integer checkPointErrorCount;
+	private int checkPointErrorCount = 0;
 
 	@XmlElement(name = "checkpoint_warning_count")
-	private Integer checkPointWarningCount;
+	private int checkPointWarningCount = 0;
 
 	protected void addError(FileError2 fileError2) {
 		status = FILE_STATE.ERROR;
@@ -70,10 +72,27 @@ public class FileReport {
 	/**
 	 * 
 	 * @param checkPointErrorId
+	 * @param severity
 	 */
-	protected void addCheckPointError(int checkPointErrorId) {
-		checkPointErrorKeys.add(new Integer(checkPointErrorId));
-		checkPointErrorCount++;
+	protected boolean addCheckPointError(int checkPointErrorId, SEVERITY severity) {
+		boolean ret = false;
+
+		if (checkPointErrorCount + checkPointWarningCount < maxErrors) {
+			checkPointErrorKeys.add(new Integer(checkPointErrorId));
+			ret = true;
+		}
+
+		switch (severity) {
+		case WARNING:
+			checkPointWarningCount++;
+			break;
+
+		default: // ERROR
+			checkPointErrorCount++;
+			status = FILE_STATE.ERROR;
+			break;
+		}
+		return ret;
 	}
 
 	public JSONObject toJson() throws JSONException {

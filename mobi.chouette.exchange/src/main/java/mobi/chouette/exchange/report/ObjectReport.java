@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.ToString;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
+import mobi.chouette.exchange.validation.report.CheckPointReport.SEVERITY;
 
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
@@ -19,6 +20,7 @@ import org.codehaus.jettison.json.JSONObject;
 
 @ToString
 public class ObjectReport {
+	public static final int maxErrors = 30;
 
 	@XmlElement(name = "type", required = true)
 	@Getter
@@ -50,11 +52,11 @@ public class ObjectReport {
 
 	@XmlElement(name = "checkpoint_error_count")
 	@Getter
-	private int checkPointErrorCount;
+	private int checkPointErrorCount = 0;
 
 	@XmlElement(name = "checkpoint_warning_count")
 	@Getter
-	private int checkPointWarningCount;
+	private int checkPointWarningCount = 0;
 
 	@XmlElement(name = "objectid")
 	@Getter
@@ -82,9 +84,25 @@ public class ObjectReport {
 	 * 
 	 * @param checkPointErrorId
 	 */
-	protected void addCheckPointError(int checkPointErrorId) {
-		checkPointErrorKeys.add(new Integer(checkPointErrorId));
-		checkPointErrorCount++;
+	protected boolean addCheckPointError(int checkPointErrorId, SEVERITY severity) {
+		boolean ret = false;
+
+		if (checkPointErrorCount + checkPointWarningCount < maxErrors) {
+			checkPointErrorKeys.add(new Integer(checkPointErrorId));
+			ret = true;
+		}
+
+		switch (severity) {
+		case WARNING:
+			checkPointWarningCount++;
+			break;
+
+		default: // ERROR
+			checkPointErrorCount++;
+			status = OBJECT_STATE.ERROR;
+			break;
+		}
+		return ret;
 	}
 
 	/**

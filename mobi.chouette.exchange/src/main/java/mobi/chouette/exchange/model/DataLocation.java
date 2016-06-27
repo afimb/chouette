@@ -79,12 +79,10 @@ public class DataLocation {
 	
 
 	public DataLocation(String fileName, int lineNumber, int columnNumber, NeptuneIdentifiedObject chouetteObject) {
+		this(chouetteObject);
 		this.filename = fileName;
 		this.lineNumber = lineNumber;
 		this.columnNumber = columnNumber;
-		this.objectId = chouetteObject.getObjectId();
-		this.name = buildName(chouetteObject);
-		addLineLocation(this,  chouetteObject);
 	}
 
 
@@ -139,6 +137,7 @@ public class DataLocation {
 			Timetable object = (Timetable) chouetteObject;
 			path.add(object);
 		}
+		addLineLocation(this,  chouetteObject);
 		
 	}
 	

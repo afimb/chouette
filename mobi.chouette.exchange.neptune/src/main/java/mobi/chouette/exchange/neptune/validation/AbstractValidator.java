@@ -160,10 +160,15 @@ public abstract class AbstractValidator implements Constant {
 			data.getFileLocations().put(objectId, loc);
 		}
 		if (data != null && fileName != null) {
-			DataLocation loc = new DataLocation(fileName, lineNumber, columnNumber, objectId);
+			DataLocation loc = new DataLocation(fileName, lineNumber, columnNumber, object);
 			// manage neptune specific model
 			if (object instanceof PTLink) {
 				try {
+					List<NeptuneIdentifiedObject> path = loc.getPath();
+					path.add(object);
+					path.add(((PTLink) object).getRoute());
+					path.add(((PTLink) object).getRoute().getLine());
+
 					Line line = ((PTLink) object).getRoute().getLine();
 					if (line != null)
 						loc.setLine(line);

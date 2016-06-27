@@ -77,7 +77,7 @@ public class NeptuneLineProducerCommand implements Command, Constant {
 					collection.getVehicleJourneys().size());
 			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.CONNECTION_LINK,
 					collection.getConnectionLinks().size());
-			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.TIME_TABLE,
+			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.TIMETABLE,
 					collection.getTimetables().size());
 			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ACCESS_POINT,
 					collection.getAccessPoints().size());
@@ -111,9 +111,9 @@ public class NeptuneLineProducerCommand implements Command, Constant {
 							IO_TYPE.INPUT);
 					reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.STOP_AREA, OBJECT_TYPE.STOP_AREA,
 							sharedData.getStopAreaIds().size());
-					reporter.addObjectReport(context, "merged", OBJECT_TYPE.TIME_TABLE, "calendars", OBJECT_STATE.OK,
+					reporter.addObjectReport(context, "merged", OBJECT_TYPE.TIMETABLE, "calendars", OBJECT_STATE.OK,
 							IO_TYPE.INPUT);
-					reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.TIME_TABLE, OBJECT_TYPE.TIME_TABLE,
+					reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.TIMETABLE, OBJECT_TYPE.TIMETABLE,
 							sharedData.getTimetableIds().size());
 					result = SUCCESS;
 				} catch (MarshalException e) {

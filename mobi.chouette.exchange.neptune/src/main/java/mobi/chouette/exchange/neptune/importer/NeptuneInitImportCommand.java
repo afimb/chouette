@@ -42,7 +42,7 @@ public class NeptuneInitImportCommand implements Command, Constant {
             reporter.addObjectReport(context, "", OBJECT_TYPE.COMPANY, "merged", OBJECT_STATE.OK, IO_TYPE.INPUT);
             reporter.addObjectReport(context, "", OBJECT_TYPE.CONNECTION_LINK, "merged", OBJECT_STATE.OK, IO_TYPE.INPUT);
             reporter.addObjectReport(context, "", OBJECT_TYPE.ACCESS_POINT, "merged", OBJECT_STATE.OK, IO_TYPE.INPUT);
-            reporter.addObjectReport(context, "", OBJECT_TYPE.TIME_TABLE, "merged", OBJECT_STATE.OK, IO_TYPE.INPUT);
+            reporter.addObjectReport(context, "", OBJECT_TYPE.TIMETABLE, "merged", OBJECT_STATE.OK, IO_TYPE.INPUT);
 			result = SUCCESS;
 
 		} catch (Exception e) {

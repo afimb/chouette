@@ -187,7 +187,7 @@ public class NeptuneValidationCommand implements Command, Constant {
 		{
 			Context localContext = (Context) validationContext.get(TimetableValidator.LOCAL_CONTEXT);
 			int count = (localContext != null) ? localContext.size() : 0;
-			reporter.addStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.TIME_TABLE, count);
+			reporter.addStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.TIMETABLE, count);
 		}
 		{
 			Context localContext = (Context) validationContext.get(StopAreaValidator.LOCAL_CONTEXT);

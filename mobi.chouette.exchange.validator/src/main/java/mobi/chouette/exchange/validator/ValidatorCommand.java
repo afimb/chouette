@@ -218,8 +218,8 @@ public class ValidatorCommand implements Command, Constant {
 		reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.ACCESS_POINT, OBJECT_TYPE.ACCESS_POINT, data.getAccessPoints().size());
 		reporter.addObjectReport(context, "merged", OBJECT_TYPE.STOP_AREA, "stop areas", OBJECT_STATE.OK, IO_TYPE.INPUT);
 		reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.STOP_AREA, OBJECT_TYPE.STOP_AREA, data.getStopAreas().size());
-		reporter.addObjectReport(context, "merged", OBJECT_TYPE.TIME_TABLE, "calendars", OBJECT_STATE.OK, IO_TYPE.INPUT);
-		reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.TIME_TABLE, OBJECT_TYPE.TIME_TABLE, data.getTimetables().size());
+		reporter.addObjectReport(context, "merged", OBJECT_TYPE.TIMETABLE, "calendars", OBJECT_STATE.OK, IO_TYPE.INPUT);
+		reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.TIMETABLE, OBJECT_TYPE.TIMETABLE, data.getTimetables().size());
 		return result;
 	}
 

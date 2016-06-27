@@ -73,13 +73,18 @@ public class CheckPointReport {
 		}
 	}
 
-	protected void addCheckPointError(int checkPointErrorId) {
+	protected boolean addCheckPointError(int checkPointErrorId) {
+		boolean ret = false;
 		if (maxByFile) {
 			if (checkPointErrorCount < maxErrors) 
+			{
 				checkPointErrorsKeys.add(new Integer(checkPointErrorId));
+				ret = true;
+			}
 		}
 		checkPointErrorCount++;
 		state = RESULT.NOK;
+		return ret;
 	}
 
 	public JSONObject toJson() throws JSONException {

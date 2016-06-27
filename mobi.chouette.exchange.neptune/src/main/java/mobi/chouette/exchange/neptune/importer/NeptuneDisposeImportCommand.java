@@ -43,7 +43,7 @@ public class NeptuneDisposeImportCommand extends AbstractDisposeImportCommand im
 						referential.getSharedConnectionLinks().size());
 				reporter.addStatToObjectReport(context, "", OBJECT_TYPE.ACCESS_POINT, OBJECT_TYPE.ACCESS_POINT,
 						referential.getSharedAccessPoints().size());
-				reporter.addStatToObjectReport(context, "", OBJECT_TYPE.TIME_TABLE, OBJECT_TYPE.TIME_TABLE,
+				reporter.addStatToObjectReport(context, "", OBJECT_TYPE.TIMETABLE, OBJECT_TYPE.TIMETABLE,
 						referential.getSharedTimetables().size());
 			}
 			super.execute(context);

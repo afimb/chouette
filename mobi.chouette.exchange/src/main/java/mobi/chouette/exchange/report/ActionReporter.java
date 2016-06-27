@@ -1,6 +1,7 @@
 package mobi.chouette.exchange.report;
 
 import mobi.chouette.common.Context;
+import mobi.chouette.exchange.validation.report.CheckPointReport.SEVERITY;
 
 public interface ActionReporter {
 	
@@ -10,7 +11,7 @@ public interface ActionReporter {
 		STOP_AREA,
 		CONNECTION_LINK,
 		ACCESS_POINT,
-		TIME_TABLE,
+		TIMETABLE,
 		LINE,
 		ROUTE,
 		JOURNEY_PATTERN,
@@ -83,6 +84,13 @@ public interface ActionReporter {
 	void addFileErrorInReport(Context context, String fileInfoName, FILE_ERROR_CODE code, String message);
 	/**
 	 * @param context
+	 * @param fileInfoName
+	 * @param code
+	 * @return
+	 */
+	boolean addValidationErrorToFileReport(Context context, String fileInfoName, int code, SEVERITY severity);
+	/**
+	 * @param context
 	 * @param code
 	 * @param description
 	 */
@@ -109,6 +117,14 @@ public interface ActionReporter {
 	 * @param descriptionError
 	 */
 	void addErrorToObjectReport(Context context, String objectId, OBJECT_TYPE type, ERROR_CODE code, String descriptionError);
+	/**
+	 * @param context
+	 * @param objectId
+	 * @param type
+	 * @param code
+	 * @return
+	 */
+	boolean addValidationErrorToObjectReport(Context context,  String objectId, OBJECT_TYPE type, int code, SEVERITY severity);
 	/**
 	 * add statistics value for object 
 	 * @param context
