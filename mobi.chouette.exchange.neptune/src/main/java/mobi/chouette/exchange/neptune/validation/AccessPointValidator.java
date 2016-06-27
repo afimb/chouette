@@ -14,9 +14,6 @@ import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
-import mobi.chouette.exchange.validation.report.Detail;
-import mobi.chouette.exchange.validation.report.FileLocation;
-import mobi.chouette.exchange.validation.report.Location;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
@@ -133,7 +130,7 @@ public class AccessPointValidator extends AbstractValidator implements Validator
 				prepareCheckPoint(context,ACCESS_POINT_2);
 				if (parent.getAreaType().equals(ChouetteAreaEnum.ITL))
 				{
-					Context parentContext = (Context) stopAreaContext.get(containedIn);
+//					Context parentContext = (Context) stopAreaContext.get(containedIn);
 //					Location targetLocation = fileLocations.get(containedIn);
 					DataLocation targetLocation = fileLocations.get(containedIn);
 					Map<String, Object> map = new HashMap<String, Object>();

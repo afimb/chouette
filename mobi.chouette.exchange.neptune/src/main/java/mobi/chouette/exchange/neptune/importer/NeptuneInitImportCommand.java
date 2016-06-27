@@ -37,12 +37,12 @@ public class NeptuneInitImportCommand implements Command, Constant {
 			   context.put(VALIDATION_DATA, new ValidationData());
 			// prepare entries for shared objects 
 			ActionReporter reporter = ActionReporter.Factory.getInstance();
-            reporter.addObjectReport(context, "", OBJECT_TYPE.NETWORK, "merged", OBJECT_STATE.OK, IO_TYPE.INPUT);
-            reporter.addObjectReport(context, "", OBJECT_TYPE.STOP_AREA, "merged", OBJECT_STATE.OK, IO_TYPE.INPUT);
-            reporter.addObjectReport(context, "", OBJECT_TYPE.COMPANY, "merged", OBJECT_STATE.OK, IO_TYPE.INPUT);
-            reporter.addObjectReport(context, "", OBJECT_TYPE.CONNECTION_LINK, "merged", OBJECT_STATE.OK, IO_TYPE.INPUT);
-            reporter.addObjectReport(context, "", OBJECT_TYPE.ACCESS_POINT, "merged", OBJECT_STATE.OK, IO_TYPE.INPUT);
-            reporter.addObjectReport(context, "", OBJECT_TYPE.TIMETABLE, "merged", OBJECT_STATE.OK, IO_TYPE.INPUT);
+            reporter.addObjectReport(context, "merged", OBJECT_TYPE.NETWORK, "networks", OBJECT_STATE.OK, IO_TYPE.INPUT);
+            reporter.addObjectReport(context, "merged", OBJECT_TYPE.STOP_AREA, "stop areas", OBJECT_STATE.OK, IO_TYPE.INPUT);
+            reporter.addObjectReport(context, "merged", OBJECT_TYPE.COMPANY, "companies", OBJECT_STATE.OK, IO_TYPE.INPUT);
+            reporter.addObjectReport(context, "merged", OBJECT_TYPE.CONNECTION_LINK, "connection links", OBJECT_STATE.OK, IO_TYPE.INPUT);
+            reporter.addObjectReport(context, "merged", OBJECT_TYPE.ACCESS_POINT, "access points", OBJECT_STATE.OK, IO_TYPE.INPUT);
+            reporter.addObjectReport(context, "merged", OBJECT_TYPE.TIMETABLE, "calendars", OBJECT_STATE.OK, IO_TYPE.INPUT);
 			result = SUCCESS;
 
 		} catch (Exception e) {

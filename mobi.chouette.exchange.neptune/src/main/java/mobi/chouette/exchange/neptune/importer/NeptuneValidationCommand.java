@@ -172,64 +172,46 @@ public class NeptuneValidationCommand implements Command, Constant {
 		Line line = referential.getLines().values().iterator().next();
 		reporter.addObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, NamingUtil.getName(line),
 				OBJECT_STATE.OK, IO_TYPE.INPUT);
-		reporter.addStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 1);
+		reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 1);
 		{
 			Context localContext = (Context) validationContext.get(ChouetteRouteValidator.LOCAL_CONTEXT);
 			int count = (localContext != null) ? localContext.size() : 0;
-			reporter.addStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ROUTE, count);
+			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ROUTE, count);
 		}
 		{
 			Context localContext = (Context) validationContext.get(ConnectionLinkValidator.LOCAL_CONTEXT);
 			int count = (localContext != null) ? localContext.size() : 0;
-			reporter.addStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.CONNECTION_LINK,
+			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.CONNECTION_LINK,
 					count);
 		}
 		{
 			Context localContext = (Context) validationContext.get(TimetableValidator.LOCAL_CONTEXT);
 			int count = (localContext != null) ? localContext.size() : 0;
-			reporter.addStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.TIMETABLE, count);
+			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.TIMETABLE, count);
 		}
 		{
 			Context localContext = (Context) validationContext.get(StopAreaValidator.LOCAL_CONTEXT);
 			int count = (localContext != null) ? localContext.size() : 0;
-			reporter.addStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.STOP_AREA, count);
+			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.STOP_AREA, count);
 		}
 		{
 			Context localContext = (Context) validationContext.get(AccessPointValidator.LOCAL_CONTEXT);
 			int count = (localContext != null) ? localContext.size() : 0;
-			reporter.addStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ACCESS_POINT,
+			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ACCESS_POINT,
 					count);
 		}
 		{
 			Context localContext = (Context) validationContext.get(VehicleJourneyValidator.LOCAL_CONTEXT);
 			int count = (localContext != null) ? localContext.size() : 0;
-			reporter.addStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.VEHICLE_JOURNEY,
+			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.VEHICLE_JOURNEY,
 					count);
 		}
 		{
 			Context localContext = (Context) validationContext.get(JourneyPatternValidator.LOCAL_CONTEXT);
 			int count = (localContext != null) ? localContext.size() : 0;
-			reporter.addStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.JOURNEY_PATTERN,
+			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.JOURNEY_PATTERN,
 					count);
 		}
-
-		// DataStats globalStats = report.getStats();
-		// globalStats.setLineCount(globalStats.getLineCount() +
-		// stats.getLineCount());
-		// globalStats.setAccessPointCount(globalStats.getAccessPointCount() +
-		// stats.getAccessPointCount());
-		// globalStats.setRouteCount(globalStats.getRouteCount() +
-		// stats.getRouteCount());
-		// globalStats.setConnectionLinkCount(globalStats.getConnectionLinkCount()
-		// + stats.getConnectionLinkCount());
-		// globalStats.setVehicleJourneyCount(globalStats.getVehicleJourneyCount()
-		// + stats.getVehicleJourneyCount());
-		// globalStats.setJourneyPatternCount(globalStats.getJourneyPatternCount()
-		// + stats.getJourneyPatternCount());
-		// globalStats.setStopAreaCount(globalStats.getStopAreaCount() +
-		// stats.getStopAreaCount());
-		// globalStats.setTimeTableCount(globalStats.getTimeTableCount() +
-		// stats.getTimeTableCount());
 
 	}
 

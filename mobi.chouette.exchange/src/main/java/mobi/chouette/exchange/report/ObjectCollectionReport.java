@@ -41,7 +41,8 @@ public class ObjectCollectionReport {
 	 * @param object
 	 */
 	protected void addObjectReport(ObjectReport object) {
-		objectReports.add(object);
+		if (findObjectReport(object.getObjectId()) == null)
+		   objectReports.add(object);
 	}
 
 	/**

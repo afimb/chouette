@@ -67,7 +67,7 @@ public class NeptuneLineProducerCommand implements Command, Constant {
 			NeptuneDataCollector collector = new NeptuneDataCollector();
 			boolean cont = (collector.collect(collection, line, startDate, endDate));
 			reporter.addObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, NamingUtil.getName(line),
-					OBJECT_STATE.OK, IO_TYPE.INPUT);
+					OBJECT_STATE.OK, IO_TYPE.OUTPUT);
 			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 0);
 			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.JOURNEY_PATTERN,
 					collection.getJourneyPatterns().size());
@@ -92,27 +92,27 @@ public class NeptuneLineProducerCommand implements Command, Constant {
 					reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 1);
 					// merge lineStats to global ones
 					reporter.addObjectReport(context, "merged", OBJECT_TYPE.NETWORK, "networks", OBJECT_STATE.OK,
-							IO_TYPE.INPUT);
+							IO_TYPE.OUTPUT);
 					reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.NETWORK, OBJECT_TYPE.NETWORK,
 							sharedData.getNetworkIds().size());
 					reporter.addObjectReport(context, "merged", OBJECT_TYPE.COMPANY, "companies", OBJECT_STATE.OK,
-							IO_TYPE.INPUT);
+							IO_TYPE.OUTPUT);
 					reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.COMPANY, OBJECT_TYPE.COMPANY,
 							sharedData.getCompanyIds().size());
 					reporter.addObjectReport(context, "merged", OBJECT_TYPE.CONNECTION_LINK, "connection links",
-							OBJECT_STATE.OK, IO_TYPE.INPUT);
+							OBJECT_STATE.OK, IO_TYPE.OUTPUT);
 					reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.CONNECTION_LINK,
 							OBJECT_TYPE.CONNECTION_LINK, sharedData.getConnectionLinkIds().size());
 					reporter.addObjectReport(context, "merged", OBJECT_TYPE.ACCESS_POINT, "access points",
-							OBJECT_STATE.OK, IO_TYPE.INPUT);
+							OBJECT_STATE.OK, IO_TYPE.OUTPUT);
 					reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.ACCESS_POINT,
 							OBJECT_TYPE.ACCESS_POINT, sharedData.getAccessPointIds().size());
 					reporter.addObjectReport(context, "merged", OBJECT_TYPE.STOP_AREA, "stop areas", OBJECT_STATE.OK,
-							IO_TYPE.INPUT);
+							IO_TYPE.OUTPUT);
 					reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.STOP_AREA, OBJECT_TYPE.STOP_AREA,
 							sharedData.getStopAreaIds().size());
 					reporter.addObjectReport(context, "merged", OBJECT_TYPE.TIMETABLE, "calendars", OBJECT_STATE.OK,
-							IO_TYPE.INPUT);
+							IO_TYPE.OUTPUT);
 					reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.TIMETABLE, OBJECT_TYPE.TIMETABLE,
 							sharedData.getTimetableIds().size());
 					result = SUCCESS;

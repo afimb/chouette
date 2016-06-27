@@ -52,7 +52,7 @@ public class NeptuneValidateExportCommand implements Command, Constant {
 			parameters.setNoSave(true);
 			parameters.setReferentialName(configuration.getReferentialName());
 			validateContext.put(CONFIGURATION, parameters);
-			validateContext.put(REPORT, new ActionReport2());
+			validateContext.put(REPORT, context.get(REPORT));
 			// rename output folder to input folder
 			JobData jobData = (JobData) context.get(JOB_DATA);
 			String pathName = jobData.getPathName();

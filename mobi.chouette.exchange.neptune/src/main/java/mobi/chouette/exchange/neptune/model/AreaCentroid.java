@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import mobi.chouette.model.NeptuneLocalizedObject;
+import mobi.chouette.model.StopArea;
 
 /**
  * Chouette PTLink : a link between 2 successive StopPoints in a route
@@ -58,7 +59,7 @@ public class AreaCentroid extends NeptuneLocalizedObject
     */
    @Getter
    @Setter
-   private String containedInId;
+   private StopArea containedIn;
 
 
 

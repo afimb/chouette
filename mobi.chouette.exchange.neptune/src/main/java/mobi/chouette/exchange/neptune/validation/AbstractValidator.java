@@ -7,6 +7,7 @@ import java.util.Set;
 import mobi.chouette.common.Context;
 import mobi.chouette.exchange.model.DataLocation;
 import mobi.chouette.exchange.neptune.Constant;
+import mobi.chouette.exchange.neptune.model.AreaCentroid;
 import mobi.chouette.exchange.neptune.model.PTLink;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.report.LineLocation;
@@ -175,7 +176,15 @@ public abstract class AbstractValidator implements Constant {
 				} catch (NullPointerException e) {
 
 				}
-			} else {
+			} else if (object instanceof AreaCentroid) {
+				try {
+					List<NeptuneIdentifiedObject> path = loc.getPath();
+					path.add(object);
+					path.add(((AreaCentroid) object).getContainedIn());
+				} catch (NullPointerException e) {
+
+				}
+			}{
 				DataLocation.addLineLocation(loc, object);
 				loc.setName(DataLocation.buildName(object));
 			}

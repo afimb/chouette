@@ -11,7 +11,6 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
-import mobi.chouette.exchange.ProgressionCommand;
 import mobi.chouette.exchange.gtfs.Constant;
 import mobi.chouette.exchange.gtfs.importer.GtfsDisposeImportCommand;
 import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
@@ -19,8 +18,6 @@ import mobi.chouette.exchange.gtfs.importer.GtfsInitImportCommand;
 import mobi.chouette.exchange.gtfs.importer.GtfsValidationCommand;
 import mobi.chouette.exchange.gtfs.importer.GtfsValidationRulesCommand;
 import mobi.chouette.exchange.report.ActionReport;
-
-import org.apache.commons.io.FileUtils;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;

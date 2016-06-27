@@ -11,9 +11,7 @@ import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
-import mobi.chouette.exchange.validation.report.Detail;
 import mobi.chouette.exchange.validation.report.FileLocation;
-import mobi.chouette.exchange.validation.report.Location;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.NeptuneIdentifiedObject;
@@ -120,7 +118,7 @@ public class ITLValidator extends AbstractValidator implements Validator<StopAre
 					Context stopAreaData = (Context) stopAreaContext.get(stopAreaId);
 					lineNumber = ((Integer) stopAreaData.get(LINE_NUMBER)).intValue();
 					columnNumber = ((Integer) stopAreaData.get(COLUMN_NUMBER)).intValue();
-					FileLocation targetLocation = new FileLocation(fileName, lineNumber, columnNumber);
+// 					FileLocation targetLocation = new FileLocation(fileName, lineNumber, columnNumber);
 //					errorItem.getTargets().add(fileLocations.get( stopAreaId));
 //					addValidationError(context, ITL_4, errorItem);
 					
@@ -143,7 +141,7 @@ public class ITLValidator extends AbstractValidator implements Validator<StopAre
 					Context lineData = (Context) lineContext.get(line.getObjectId());
 					lineNumber = ((Integer) lineData.get(LINE_NUMBER)).intValue();
 					columnNumber = ((Integer) lineData.get(COLUMN_NUMBER)).intValue();
-					FileLocation targetLocation = new FileLocation(fileName, lineNumber, columnNumber);
+//					FileLocation targetLocation = new FileLocation(fileName, lineNumber, columnNumber);
 //					errorItem.getTargets().add(fileLocations.get( line.getObjectId()));
 //					addValidationError(context, ITL_5, errorItem);
 					

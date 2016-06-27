@@ -18,7 +18,7 @@ public class FrequencyByTrip extends IndexImpl<GtfsFrequency> implements
 
 	private GtfsFrequency bean = new GtfsFrequency();
 	private String[] array = new String[FIELDS.values().length];
-	private String _tripId = null;
+	// private String _tripId = null;
 
 	public FrequencyByTrip(String name) throws IOException {
 		super(name, KEY, false);

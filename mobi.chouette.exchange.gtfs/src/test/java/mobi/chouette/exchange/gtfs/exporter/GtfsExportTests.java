@@ -2,7 +2,6 @@ package mobi.chouette.exchange.gtfs.exporter;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -17,7 +16,6 @@ import javax.transaction.UserTransaction;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
-import mobi.chouette.common.JSONUtil;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.dao.LineDAO;
@@ -32,7 +30,6 @@ import mobi.chouette.exchange.report.FileInfo;
 import mobi.chouette.exchange.report.LineInfo;
 import mobi.chouette.exchange.report.LineInfo.LINE_STATE;
 import mobi.chouette.exchange.report.ReportConstant;
-import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.exchange.validation.report.CheckPoint;
 import mobi.chouette.exchange.validation.report.ValidationReport;
 import mobi.chouette.model.Line;

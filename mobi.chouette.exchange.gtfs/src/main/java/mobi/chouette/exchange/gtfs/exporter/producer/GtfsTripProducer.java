@@ -69,17 +69,11 @@ public class GtfsTripProducer extends AbstractProducer {
 			return false;
 		Line l = vj.getRoute().getLine();
 	
-		Time previousArrival = null;
-		
-		Time previousDeparture = null;
-		
 		/**
 		 * GJT : Attributes used to handle times after midnight 
 		 */
 		int departureOffset = 0;
 		int arrivalOffset = 0;
-		int previousDepartureOffset = 0;
-		int previousArrivalOffset = 0;
 		
 		String tripId = toGtfsId(vj.getObjectId(), prefix);
 		time.setTripId(tripId);
@@ -103,16 +97,12 @@ public class GtfsTripProducer extends AbstractProducer {
 				arrivalOffset = vjas.getDepartureDayOffset(); /** GJT */
 			}
 			
-			previousArrival = arrival;
-			previousArrivalOffset = arrivalOffset; /** GJT */
 			
 			time.setArrivalTime(new GtfsTime(arrival, arrivalOffset)); /** GJT */
 			Time departure = vjas.getDepartureTime();
 			departureOffset = vjas.getDepartureDayOffset(); /** GJT */
 			
 			time.setDepartureTime(new GtfsTime(departure, departureOffset)); /** GJT */
-			previousDeparture = departure;
-			previousDepartureOffset = departureOffset; /** GJT */
 			
 			time.setStopSequence((int) vjas.getStopPoint().getPosition());
 
@@ -318,17 +308,4 @@ public class GtfsTripProducer extends AbstractProducer {
 		return ( ( cal.get(Calendar.HOUR_OF_DAY) * 60 + cal.get(Calendar.MINUTE) ) * 60 + cal.get(Calendar.SECOND) );
 	}
 	
-	/**
-	 * Adds an offset in days to a time
-	 * @param time
-	 * @param offset
-	 * @return
-	 */
-	private Time getTimeWithOffset(Time time, int offset) {
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(time);
-		cal.add(Calendar.DATE, offset); 
-		
-		return new Time(cal.getTime().getTime());
-	}
 }

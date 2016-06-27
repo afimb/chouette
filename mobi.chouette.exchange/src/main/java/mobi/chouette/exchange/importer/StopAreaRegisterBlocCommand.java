@@ -93,7 +93,7 @@ public class StopAreaRegisterBlocCommand implements Command {
 	}
 
 	private void initializeStopArea(Referential cache, Collection<StopArea> list) {
-		Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
+		// Collection<String> objectIds = UpdaterUtils.getObjectIds(list);
 		List<StopArea> objects = stopAreaDAO.findAll();// ByObjectId(objectIds);
 		for (StopArea object : objects) {
 			cache.getStopAreas().put(object.getObjectId(), object);
@@ -105,14 +105,14 @@ public class StopAreaRegisterBlocCommand implements Command {
 		}
 	}
 
-	private void addParent(Referential cache, StopArea object) {
-		if (object.getParent() != null) {
-			if (!cache.getStopAreas().containsKey(object.getParent().getObjectId())) {
-				cache.getStopAreas().put(object.getParent().getObjectId(), object.getParent());
-				addParent(cache, object.getParent());
-			}
-		}
-	}
+//	private void addParent(Referential cache, StopArea object) {
+//		if (object.getParent() != null) {
+//			if (!cache.getStopAreas().containsKey(object.getParent().getObjectId())) {
+//				cache.getStopAreas().put(object.getParent().getObjectId(), object.getParent());
+//				addParent(cache, object.getParent());
+//			}
+//		}
+//	}
 
 	private void addStopAreaIfMissing(Referential cache, StopArea item) {
 		StopArea object = cache.getStopAreas().get(item.getObjectId());
