@@ -131,6 +131,8 @@ public class ValidationReporterImpl implements ValidationReporter, Constant {
 
 		validationReport.addCheckPointErrorReport(newCheckPointError);
 		checkPoint.addCheckPointError(validationReport.getCheckPointErrors().indexOf(newCheckPointError));
+
+	     // TODO : ajouter la relation vers le fichier ou l'objet selon les données du source location
 	}
 
 	@Override
@@ -149,6 +151,7 @@ public class ValidationReporterImpl implements ValidationReporter, Constant {
 			CheckPointErrorReport newCheckPointError = new CheckPointErrorReport(checkPointName, detailLocation, value);
 			validationReport.addCheckPointErrorReport(newCheckPointError);
 			checkPoint.addCheckPointError(validationReport.getCheckPointErrors().indexOf(newCheckPointError));
+		     // TODO : ajouter la relation vers le fichier ou l'objet selon les données du source location
 		}
 
 	}
