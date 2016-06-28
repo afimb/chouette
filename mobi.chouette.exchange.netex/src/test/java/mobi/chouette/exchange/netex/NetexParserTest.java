@@ -8,8 +8,8 @@ import javax.naming.NamingException;
 import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.netex.importer.NetexParserCommand;
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.validation.report.ValidationReport;
+import mobi.chouette.exchange.report.ActionReport2;
+import mobi.chouette.exchange.validation.report.ValidationReport2;
 import mobi.chouette.model.util.Referential;
 
 import org.testng.annotations.Test;
@@ -45,8 +45,8 @@ public class NetexParserTest  implements mobi.chouette.common.Constant{
 		job.setPathName("target/referential/test");
 		job.setReferential("chouette_gui");
 		
-		ActionReport report = new ActionReport();
-		ValidationReport validationReport = new ValidationReport();
+		ActionReport2 report = new ActionReport2();
+		ValidationReport2 validationReport = new ValidationReport2();
 		command.setFileURL("file://"+f.getAbsolutePath());
 		context.put(Constant.REPORT, report);
 		context.put(REFERENTIAL, new Referential());

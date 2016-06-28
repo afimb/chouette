@@ -33,12 +33,12 @@ public class CommuneExporter extends ExporterImpl<HubCommune> implements
 
 
 		@Override
-		public String to(Context context, HubCommune input) {
+		public String to(HubContext hubContext, HubCommune input) {
 			String result = null;
 			List<String> values = new ArrayList<String>();
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.code_insee,
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.code_insee,
 					input.getCodeInsee(), true));
-			values.add(STRING_CONVERTER.to(context, FIELDS.nom,
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.nom,
 					input.getNom(), true));
 			result = Tokenizer.untokenize(values);
 			return result;

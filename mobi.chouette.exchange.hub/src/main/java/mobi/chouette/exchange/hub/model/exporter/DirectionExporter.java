@@ -33,16 +33,16 @@ public class DirectionExporter extends ExporterImpl<HubDirection> implements
 
 
 		@Override
-		public String to(Context context, HubDirection input) {
+		public String to(HubContext hubContext, HubDirection input) {
 			String result = null;
 			List<String> values = new ArrayList<String>();
-			values.add(STRING_CONVERTER.to(context, FIELDS.direction,
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.direction,
 					input.getDirection(), true));
-			values.add(STRING_CONVERTER.to(context, FIELDS.code_ligne,
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.code_ligne,
 					input.getCodeLigne(), true));
-			values.add(NUMBER_CONVERTER.to(context, FIELDS.sens,
+			values.add(NUMBER_CONVERTER.to(hubContext, FIELDS.sens,
 					input.getSens(), true));
-			values.add(STRING_CONVERTER.to(context, FIELDS.code_chemin,
+			values.add(STRING_CONVERTER.to(hubContext, FIELDS.code_chemin,
 					input.getCodeChemin(), false));
 			result = Tokenizer.untokenize(values);
 			return result;

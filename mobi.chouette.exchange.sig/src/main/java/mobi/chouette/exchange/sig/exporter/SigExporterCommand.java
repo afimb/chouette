@@ -28,10 +28,8 @@ import mobi.chouette.exchange.geojson.exporter.GeojsonExporterProcessingCommands
 import mobi.chouette.exchange.kml.exporter.KmlExportParameters;
 import mobi.chouette.exchange.kml.exporter.KmlExporterProcessingCommands;
 import mobi.chouette.exchange.parameters.AbstractExportParameter;
-import mobi.chouette.exchange.report.ActionError;
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.FileInfo;
-import mobi.chouette.exchange.report.LineInfo;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.ActionReporter.ERROR_CODE;
 import mobi.chouette.exchange.report.ReportConstant;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -53,7 +51,7 @@ public class SigExporterCommand implements Command, Constant, ReportConstant {
 		Monitor monitor = MonitorFactory.start(COMMAND);
 
 		InitialContext initialContext = (InitialContext) context.get(INITIAL_CONTEXT);
-		ActionReport report = (ActionReport) context.get(REPORT);
+		ActionReporter reporter = ActionReporter.Factory.getInstance();
 
 		// initialize reporting and progression
 		ProgressionCommand progression = (ProgressionCommand) CommandFactory.create(initialContext,
@@ -64,9 +62,8 @@ public class SigExporterCommand implements Command, Constant, ReportConstant {
 			Object configuration = context.get(CONFIGURATION);
 			if (!(configuration instanceof SigExportParameters)) {
 				// fatal wrong parameters
-				log.error("invalid parameters for conversion " + configuration.getClass().getName());
-				report.setFailure(new ActionError(ActionError.CODE.INVALID_PARAMETERS,
-						"invalid parameters for conversion " + configuration.getClass().getName()));
+				log.error("invalid parameters for SIG export " + configuration.getClass().getName());
+				reporter.setActionError(context, ERROR_CODE.INVALID_PARAMETERS,"invalid parameters for SIG export " + configuration.getClass().getName());
 				return ERROR;
 			}
 
@@ -75,10 +72,10 @@ public class SigExporterCommand implements Command, Constant, ReportConstant {
 			result = process(context, progression, false);
 
 		} catch (CommandCancelledException e) {
-			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR, "Command cancelled"));
+			reporter.setActionError(context, ERROR_CODE.INTERNAL_ERROR, "Command cancelled");
 			log.error(e.getMessage());
 		} catch (Exception e) {
-			report.setFailure(new ActionError(ActionError.CODE.INTERNAL_ERROR, "Fatal :" + e));
+			reporter.setActionError(context, ERROR_CODE.INTERNAL_ERROR,"Fatal :" + e);
 			log.error(e.getMessage(), e);
 		} finally {
 			progression.dispose(context);
@@ -95,8 +92,8 @@ public class SigExporterCommand implements Command, Constant, ReportConstant {
 
 		// no validation available for this export
 		parameters.setValidateAfterExport(false);
+		ActionReporter reporter = ActionReporter.Factory.getInstance();
 		
-		ActionReport report = (ActionReport) context.get(REPORT);
 
 		JobData jobData = (JobData) context.get(JOB_DATA);
 		jobData.setOutputFilename("export_" + jobData.getType() + "_" + jobData.getId() + ".zip");
@@ -115,23 +112,23 @@ public class SigExporterCommand implements Command, Constant, ReportConstant {
 		for (Command exportCommand : preProcessingKmlCommands) {
 			result = exportCommand.execute(kmlContext);
 			if (!result) {
-				report.setFailure(new ActionError(ActionError.CODE.NO_DATA_FOUND, "no data selected"));
-				mergeReports(report,kmlContext);
+				reporter.setActionError(context, ERROR_CODE.NO_DATA_FOUND,"no data selected");
+				// mergeReports(report,kmlContext);
 				progression.execute(context);
 				return ERROR;
 			}
-			mergeReports(report,kmlContext);
+			// mergeReports(report,kmlContext);
 			progression.execute(context);
 		}
 		for (Command exportCommand : preProcessingGeojsonCommands) {
 			result = exportCommand.execute(geojsonContext);
 			if (!result) {
-				report.setFailure(new ActionError(ActionError.CODE.NO_DATA_FOUND, "no data selected"));
-				mergeReports(report,geojsonContext);
+				reporter.setActionError(context, ERROR_CODE.NO_DATA_FOUND,"no data selected");
+				// mergeReports(report,geojsonContext);
 				progression.execute(context);
 				return ERROR;
 			}
-			mergeReports(report,geojsonContext);
+			// mergeReports(report,geojsonContext);
 			progression.execute(context);
 		}
 
@@ -152,7 +149,7 @@ public class SigExporterCommand implements Command, Constant, ReportConstant {
 
 			Set<Long> lines = reader.loadLines(type, ids);
 			if (lines.isEmpty()) {
-				report.setFailure(new ActionError(ActionError.CODE.NO_DATA_FOUND, "no data selected"));
+				reporter.setActionError(context, ERROR_CODE.NO_DATA_FOUND,"no data selected");
 				return ERROR;
 
 			}
@@ -182,22 +179,23 @@ public class SigExporterCommand implements Command, Constant, ReportConstant {
 						break;
 					}
 				}
-				mergeReports(report,kmlContext);
-				mergeReports(report,geojsonContext);
+//				mergeReports(report,kmlContext);
+//				mergeReports(report,geojsonContext);
 				progression.execute(context);
 				if (!exportFailed) {
 					lineCount++;
 				} else if (!continueLineProcesingOnError) {
-					report.setFailure(new ActionError(ActionError.CODE.INVALID_DATA, "unable to export data"));
+					reporter.setActionError(context, ERROR_CODE.INVALID_DATA,"unable to export data");
 					return ERROR;
 				}
 			}
 			// check if data where exported
 			if (lineCount == 0) {
-				mergeReports(report,kmlContext);
-				mergeReports(report,geojsonContext);
+//				mergeReports(report,kmlContext);
+//				mergeReports(report,geojsonContext);
 				progression.terminate(context, 1);
-				report.setFailure(new ActionError(ActionError.CODE.NO_DATA_PROCEEDED, "no data exported"));
+				reporter.setActionError(context, ERROR_CODE.NO_DATA_PROCEEDED,"no data exported");
+// 				report.setFailure(new ActionError(ActionError.CODE.NO_DATA_PROCEEDED, "no data exported"));
 				progression.execute(context);
 				return ERROR;
 			}
@@ -209,21 +207,21 @@ public class SigExporterCommand implements Command, Constant, ReportConstant {
 		for (Command exportCommand : postProcessingKmlCommands) {
 			result = exportCommand.execute(kmlContext);
 			if (!result) {
-				if (report.getFailure() == null)
-					report.setFailure(new ActionError(ActionError.CODE.NO_DATA_PROCEEDED, "no data exported"));
+				if (!reporter.hasActionError(context))
+					reporter.setActionError(context, ERROR_CODE.NO_DATA_PROCEEDED,"no data exported");
 				return ERROR;
 			}
-			mergeReports(report,kmlContext);
+			// mergeReports(report,kmlContext);
 			progression.execute(context);
 		}
 		for (Command exportCommand : postProcessingGeojsonCommands) {
 			result = exportCommand.execute(geojsonContext);
 			if (!result) {
-				if (report.getFailure() == null)
-					report.setFailure(new ActionError(ActionError.CODE.NO_DATA_PROCEEDED, "no data exported"));
+				if (!reporter.hasActionError(context))
+					reporter.setActionError(context, ERROR_CODE.NO_DATA_PROCEEDED,"no data exported");
 				return ERROR;
 			}
-			mergeReports(report,geojsonContext);
+			// mergeReports(report,geojsonContext);
 			progression.execute(context);
 		}
 		
@@ -236,27 +234,27 @@ public class SigExporterCommand implements Command, Constant, ReportConstant {
 		return result;
 	}
 
-	private void mergeReports(ActionReport report, Context localContext) {
-		ActionReport localReport = (ActionReport) localContext.get(REPORT);
-		for (FileInfo fileInfo : localReport.getFiles())
-		{
-			if (!report.getFiles().contains(fileInfo)) report.getFiles().add(fileInfo);
-		}
-		for (LineInfo lineInfo : localReport.getLines())
-		{
-			if (!report.getLines().contains(lineInfo)) report.getLines().add(lineInfo);
-		}
-//        if (localReport.getZip() != null)
-//        {
-//        	if (!localReport.getZip().equals(report.getZip())) report.setZip(localReport.getZip());
-//        }
-        // todo : merge stats ?
-           report.setStats(localReport.getStats()); 
-	}
+//	private void mergeReports(ActionReport report, Context localContext) {
+//		ActionReport localReport = (ActionReport) localContext.get(REPORT);
+//		for (FileInfo fileInfo : localReport.getFiles())
+//		{
+//			if (!report.getFiles().contains(fileInfo)) report.getFiles().add(fileInfo);
+//		}
+//		for (LineInfo lineInfo : localReport.getLines())
+//		{
+//			if (!report.getLines().contains(lineInfo)) report.getLines().add(lineInfo);
+//		}
+////        if (localReport.getZip() != null)
+////        {
+////        	if (!localReport.getZip().equals(report.getZip())) report.setZip(localReport.getZip());
+////        }
+//        // todo : merge stats ?
+//           report.setStats(localReport.getStats()); 
+//	}
 
 	private Context prepareContext(Context baseContext, SigJobData jobData) {
 		Context context = new Context();
-		context.put(REPORT, new ActionReport());
+		context.put(REPORT, baseContext.get(REPORT));
 		context.put(JOB_DATA, jobData);
 		context.put(CONFIGURATION, jobData.getConfiguration());
 		context.put(INITIAL_CONTEXT, baseContext.get(INITIAL_CONTEXT));

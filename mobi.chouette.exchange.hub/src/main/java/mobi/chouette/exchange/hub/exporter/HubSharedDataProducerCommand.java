@@ -25,9 +25,11 @@ import mobi.chouette.exchange.hub.exporter.producer.HubTransporteurProducer;
 import mobi.chouette.exchange.hub.model.HubException;
 import mobi.chouette.exchange.hub.model.exporter.HubExporter;
 import mobi.chouette.exchange.metadata.Metadata;
-import mobi.chouette.exchange.report.ActionError;
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.DataStats;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.IO_TYPE;
+import mobi.chouette.exchange.report.ActionReporter.ERROR_CODE;
+import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
+import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
 import mobi.chouette.model.Company;
 import mobi.chouette.model.ConnectionLink;
 import mobi.chouette.model.GroupOfLine;
@@ -47,7 +49,7 @@ public class HubSharedDataProducerCommand implements Command, Constant {
 	public boolean execute(Context context) throws Exception {
 		boolean result = ERROR;
 		Monitor monitor = MonitorFactory.start(COMMAND);
-		ActionReport report = (ActionReport) context.get(REPORT);
+		ActionReporter reporter = ActionReporter.Factory.getInstance();
 		try {
 
 			ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
@@ -56,14 +58,22 @@ public class HubSharedDataProducerCommand implements Command, Constant {
 			}
 
 			saveData(context);
-			DataStats globalStats = report.getStats();
-			globalStats.setConnectionLinkCount(collection.getConnectionLinks().size());
-			globalStats.setStopAreaCount(collection.getStopAreas().size());
-			globalStats.setTimeTableCount(collection.getTimetables().size());
+			reporter.addObjectReport(context, "merged", OBJECT_TYPE.CONNECTION_LINK, "connection links",
+					OBJECT_STATE.OK, IO_TYPE.OUTPUT);
+			reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.CONNECTION_LINK,
+					OBJECT_TYPE.CONNECTION_LINK, collection.getConnectionLinks().size());
+			reporter.addObjectReport(context, "merged", OBJECT_TYPE.STOP_AREA, "stop areas", OBJECT_STATE.OK,
+					IO_TYPE.OUTPUT);
+			reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.STOP_AREA, OBJECT_TYPE.STOP_AREA,
+					collection.getStopAreas().size());
+			reporter.addObjectReport(context, "merged", OBJECT_TYPE.TIMETABLE, "calendars", OBJECT_STATE.OK,
+					IO_TYPE.OUTPUT);
+			reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.TIMETABLE, OBJECT_TYPE.TIMETABLE,
+					collection.getTimetables().size());
 			result = SUCCESS;
 		} catch (HubException e) {
 			log.error(e);
-			report.setFailure(new ActionError(ActionError.CODE.INVALID_DATA,"unable to export data : "+e));
+			reporter.setActionError(context, ERROR_CODE.INVALID_DATA,"unable to export data : "+e);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		} finally {
@@ -105,9 +115,8 @@ public class HubSharedDataProducerCommand implements Command, Constant {
 	}
 
 	private void saveCities(Context context) {
-		ActionReport report = (ActionReport) context.get(REPORT);
 		HubCommuneProducer producer = (HubCommuneProducer) context.get(HUB_COMMUNE_PRODUCER);
-		if (producer != null) producer.saveAll(report);
+		if (producer != null) producer.saveAll(context);
 		
 	}
 
@@ -118,13 +127,12 @@ public class HubSharedDataProducerCommand implements Command, Constant {
 		HubExporter exporter = (HubExporter) context.get(HUB_EXPORTER);
 		HubReseauProducer producer =  new HubReseauProducer(exporter);
 
-		ActionReport report = (ActionReport) context.get(REPORT);
 
 		List<Network> neptuneObjects = new ArrayList<>(collection.getNetworks());
 		Collections.sort(neptuneObjects,new ObjectIdSorter());
 		
 		for (Network neptuneObject : neptuneObjects) {
-			producer.save(neptuneObject, report);
+			producer.save(context, neptuneObject);
 		}
 		
 	}
@@ -136,12 +144,10 @@ public class HubSharedDataProducerCommand implements Command, Constant {
 		HubExporter exporter = (HubExporter) context.get(HUB_EXPORTER);
 		HubTransporteurProducer producer =  new HubTransporteurProducer(exporter);
 
-		ActionReport report = (ActionReport) context.get(REPORT);
-
 		List<Company> neptuneObjects = new ArrayList<>(collection.getCompanies());
 		Collections.sort(neptuneObjects,new ObjectIdSorter());
 		for (Company neptuneObject : neptuneObjects) {
-			producer.save(neptuneObject, report);
+			producer.save(context,neptuneObject);
 		}
 		
 	}
@@ -153,20 +159,17 @@ public class HubSharedDataProducerCommand implements Command, Constant {
 		HubExporter exporter = (HubExporter) context.get(HUB_EXPORTER);
 		HubGroupeDeLigneProducer producer =  new HubGroupeDeLigneProducer(exporter);
 
-		ActionReport report = (ActionReport) context.get(REPORT);
-
 		List<GroupOfLine> neptuneObjects = new ArrayList<>(collection.getGroupOfLines());
 		Collections.sort(neptuneObjects,new ObjectIdSorter());
 		for (GroupOfLine neptuneObject : neptuneObjects) {
-			producer.save(neptuneObject, report);
+			producer.save(context,neptuneObject);
 		}
 		
 	}
 
 	private void saveTransportModes(Context context) {
-		ActionReport report = (ActionReport) context.get(REPORT);
 		HubModeTransportProducer producer = (HubModeTransportProducer) context.get(HUB_MODETRANSPORT_PRODUCER);
-		if (producer != null) producer.saveAll(report);
+		if (producer != null) producer.saveAll(context);
 		
 	}
 
@@ -177,13 +180,12 @@ public class HubSharedDataProducerCommand implements Command, Constant {
 		HubExporter exporter = (HubExporter) context.get(HUB_EXPORTER);
 		HubPeriodeProducer producer =  new HubPeriodeProducer(exporter);
 
-		ActionReport report = (ActionReport) context.get(REPORT);
 		Metadata metadata = (Metadata) context.get(METADATA);
 
 		List<Timetable> neptuneObjects = new ArrayList<>(collection.getTimetables());
 		Collections.sort(neptuneObjects,new ObjectIdSorter());
 		for (Timetable neptuneObject : neptuneObjects) {
-			producer.save(neptuneObject, report);
+			producer.save(context,neptuneObject);
 			metadata.getTemporalCoverage().update(neptuneObject.getStartOfPeriod(), neptuneObject.getEndOfPeriod());
 		}
 		
@@ -204,12 +206,11 @@ public class HubSharedDataProducerCommand implements Command, Constant {
 //			communeProducer = new HubCommuneProducer(exporter);
 //			context.put(HUB_COMMUNE_PRODUCER, communeProducer);	
 //		}
-		ActionReport report = (ActionReport) context.get(REPORT);
 
 		List<StopArea> stops = new ArrayList<>(collection.getPhysicalStops());
 		Collections.sort(stops,new ObjectIdSorter());
 		for (StopArea stop : stops) {
-			producer.save(stop, report);
+			producer.save(context,stop);
 //			communeProducer.addCity(stop);
 		}
 
@@ -230,12 +231,11 @@ public class HubSharedDataProducerCommand implements Command, Constant {
 			communeProducer = new HubCommuneProducer(exporter);
 			context.put(HUB_COMMUNE_PRODUCER, communeProducer);	
 		}
-		ActionReport report = (ActionReport) context.get(REPORT);
 
 		List<StopArea> stops = new ArrayList<>(collection.getCommercialStops());
 		Collections.sort(stops,new ObjectIdSorter());
 		for (StopArea stop : stops) {
-			producer.save(stop, report);
+			producer.save(context,stop);
 			communeProducer.addCity(stop);
 		}
 
@@ -249,12 +249,10 @@ public class HubSharedDataProducerCommand implements Command, Constant {
 		HubExporter exporter = (HubExporter) context.get(HUB_EXPORTER);
 		HubCorrespondanceProducer producer =  new HubCorrespondanceProducer(exporter);
 
-		ActionReport report = (ActionReport) context.get(REPORT);
-
 		List<ConnectionLink> links = new ArrayList<>(collection.getConnectionLinks());
 		Collections.sort(links,new ObjectIdSorter());
 		for (ConnectionLink link : links) {
-			producer.save(link, report);
+			producer.save(context,link);
 		}
 
 	}

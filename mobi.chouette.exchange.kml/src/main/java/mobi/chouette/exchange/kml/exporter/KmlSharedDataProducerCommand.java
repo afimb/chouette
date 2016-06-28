@@ -15,10 +15,10 @@ import mobi.chouette.common.JobData;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.kml.exporter.KmlLineProducerCommand.SharedData;
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.DataStats;
-import mobi.chouette.exchange.report.FileInfo;
-import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.IO_TYPE;
+import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
+import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -33,7 +33,7 @@ public class KmlSharedDataProducerCommand implements Command, Constant {
 	public boolean execute(Context context) throws Exception {
 		boolean result = ERROR;
 		Monitor monitor = MonitorFactory.start(COMMAND);
-		ActionReport report = (ActionReport) context.get(REPORT);
+		ActionReporter reporter = ActionReporter.Factory.getInstance();
 		try {
 
 			SharedData shared = (SharedData) context.get(SHARED_DATA);
@@ -42,12 +42,19 @@ public class KmlSharedDataProducerCommand implements Command, Constant {
 			}
 
 			saveData(context);
-			DataStats globalStats = report.getStats();
-			globalStats.connectionLinkCount = shared.getConnectionLinks().getItems().size();
-			globalStats.stopAreaCount = shared.getPhysicalStops().getItems().size();
-			globalStats.stopAreaCount += shared.getCommercialStops().getItems().size();
-			globalStats.stopAreaCount += shared.getStopPlaces().getItems().size();
-			globalStats.accessPointCount = shared.getAccessPoints().getItems().size();
+			// save shared stats
+			reporter.addObjectReport(context, "merged", OBJECT_TYPE.CONNECTION_LINK, "connection links",
+					OBJECT_STATE.OK, IO_TYPE.OUTPUT);
+			reporter.addObjectReport(context, "merged", OBJECT_TYPE.ACCESS_POINT, "access points",
+					OBJECT_STATE.OK, IO_TYPE.OUTPUT);
+			reporter.addObjectReport(context, "merged", OBJECT_TYPE.STOP_AREA, "stop areas",
+					OBJECT_STATE.OK, IO_TYPE.OUTPUT);
+			reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.CONNECTION_LINK, OBJECT_TYPE.CONNECTION_LINK,
+					shared.connectionLinks.getItems().size());
+			reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.ACCESS_POINT, OBJECT_TYPE.ACCESS_POINT,
+					shared.accessPoints.getItems().size());
+			reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.STOP_AREA, OBJECT_TYPE.STOP_AREA,
+					shared.physicalStops.getItems().size()+ shared.commercialStops.getItems().size()+shared.getStopPlaces().getItems().size());
 			result = SUCCESS;
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
@@ -90,9 +97,8 @@ public class KmlSharedDataProducerCommand implements Command, Constant {
 		// TODO add metadata?
 		File file = new File(dir.toFile(), fileName);
 		writer.writeXmlFile(data, file);
-		ActionReport report = (ActionReport) context.get(REPORT);
-		FileInfo fileItem = new FileInfo(fileName,FILE_STATE.OK);
-		report.getFiles().add(fileItem);
+		ActionReporter reporter = ActionReporter.Factory.getInstance();
+		reporter.addFileReport(context, fileName, IO_TYPE.OUTPUT);
 
 	}
 
@@ -108,9 +114,8 @@ public class KmlSharedDataProducerCommand implements Command, Constant {
 		// TODO add metadata?
 		File file = new File(dir.toFile(), fileName);
 		writer.writeXmlFile(data, file);
-		ActionReport report = (ActionReport) context.get(REPORT);
-		FileInfo fileItem = new FileInfo(fileName,FILE_STATE.OK);
-		report.getFiles().add(fileItem);
+		ActionReporter reporter = ActionReporter.Factory.getInstance();
+		reporter.addFileReport(context, fileName, IO_TYPE.OUTPUT);
 
 	}
 
@@ -126,9 +131,8 @@ public class KmlSharedDataProducerCommand implements Command, Constant {
 		// TODO add metadata?
 		File file = new File(dir.toFile(), fileName);
 		writer.writeXmlFile(data, file);
-		ActionReport report = (ActionReport) context.get(REPORT);
-		FileInfo fileItem = new FileInfo(fileName,FILE_STATE.OK);
-		report.getFiles().add(fileItem);
+		ActionReporter reporter = ActionReporter.Factory.getInstance();
+		reporter.addFileReport(context, fileName, IO_TYPE.OUTPUT);
 
 	}
 
@@ -143,9 +147,8 @@ public class KmlSharedDataProducerCommand implements Command, Constant {
 		String fileName = "connection_links.kml";
 		File file = new File(dir.toFile(), fileName);
 		writer.writeXmlFile(data, file);
-		ActionReport report = (ActionReport) context.get(REPORT);
-		FileInfo fileItem = new FileInfo(fileName,FILE_STATE.OK);
-		report.getFiles().add(fileItem);
+		ActionReporter reporter = ActionReporter.Factory.getInstance();
+		reporter.addFileReport(context, fileName, IO_TYPE.OUTPUT);
 
 	}
 
@@ -161,9 +164,8 @@ public class KmlSharedDataProducerCommand implements Command, Constant {
 		// TODO add metadata?
 		File file = new File(dir.toFile(), fileName);
 		writer.writeXmlFile(data, file);
-		ActionReport report = (ActionReport) context.get(REPORT);
-		FileInfo fileItem = new FileInfo(fileName,FILE_STATE.OK);
-		report.getFiles().add(fileItem);
+		ActionReporter reporter = ActionReporter.Factory.getInstance();
+		reporter.addFileReport(context, fileName, IO_TYPE.OUTPUT);
 
 	}
 

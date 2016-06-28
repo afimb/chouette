@@ -12,9 +12,9 @@ import java.io.IOException;
 import java.sql.Date;
 
 import lombok.extern.log4j.Log4j;
+import mobi.chouette.common.Context;
 import mobi.chouette.exchange.hub.model.HubPeriode;
 import mobi.chouette.exchange.hub.model.exporter.HubExporterInterface;
-import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.model.Timetable;
 
 /**
@@ -34,7 +34,7 @@ public class HubPeriodeProducer extends AbstractProducer {
 	
 	private HubPeriode hubObject = new HubPeriode();
 
-	public boolean save(Timetable neptuneObject, ActionReport report) {
+	public boolean save(Context context,Timetable neptuneObject) {
 
 		hubObject.clear();
 		hubObject.setCode(toHubId(neptuneObject));

@@ -9,15 +9,15 @@ import mobi.chouette.common.JobData;
 import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.metadata.NeptuneObjectPresenter;
 import mobi.chouette.exchange.netex.Constant;
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.FileInfo;
-import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.model.StopArea;
 
 public class NetexLineProducer implements Constant {
 
 	public void produce(Context context) throws Exception {
 
+		ActionReporter reporter = ActionReporter.Factory.getInstance();
 		ExportableData collection = (ExportableData) context.get(EXPORTABLE_DATA);
 		JobData jobData = (JobData) context.get(JOB_DATA);
 		String rootDirectory = jobData.getPathName();
@@ -40,9 +40,7 @@ public class NetexLineProducer implements Constant {
 		NetexFileWriter writer = new NetexFileWriter();
 		writer.writeXmlFile(collection, file);
 
-		ActionReport report = (ActionReport) context.get(REPORT);
-		FileInfo fileItem = new FileInfo(fileName, FILE_STATE.OK);
-		report.getFiles().add(fileItem);
+		reporter.addFileReport(context, fileName, IO_TYPE.OUTPUT);
 
 		if (metadata != null) {
 			metadata.getResources().add(

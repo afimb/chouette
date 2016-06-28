@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import mobi.chouette.exchange.hub.model.HubException;
 
-public class Context extends HashMap<String, Object> {
+public class HubContext extends HashMap<String, Object> {
 	private static final long serialVersionUID = 1L;
 
 	public static final String PATH = "path";
@@ -15,11 +15,11 @@ public class Context extends HashMap<String, Object> {
 	public static final String CODE = "code";
 	public static final String VALUE = "value";
 
-	public Context() {
+	public HubContext() {
 		super();
 	}
 
-	public Context(String path, int id, String field, HubException.ERROR error, String code, Object value) {
+	public HubContext(String path, int id, String field, HubException.ERROR error, String code, Object value) {
 		put(PATH, path);
 		put(ID, id);
 		put(FIELD, field);
@@ -29,13 +29,13 @@ public class Context extends HashMap<String, Object> {
 
 	}
 
-	public Context(Context context) {
-		put(PATH, context.get(PATH));
-		put(ID, context.get(ID));
-		put(FIELD, context.get(FIELD));
-		put(ERROR, context.get(ERROR));
-		put(CODE, context.get(CODE));
-		put(VALUE, context.get(VALUE));
+	public HubContext(HubContext hubContext) {
+		put(PATH, hubContext.get(PATH));
+		put(ID, hubContext.get(ID));
+		put(FIELD, hubContext.get(FIELD));
+		put(ERROR, hubContext.get(ERROR));
+		put(CODE, hubContext.get(CODE));
+		put(VALUE, hubContext.get(VALUE));
 
 	}
 
