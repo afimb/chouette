@@ -27,10 +27,10 @@ import mobi.chouette.exchange.geojson.JAXBSerializer;
 import mobi.chouette.exchange.geojson.LineString;
 import mobi.chouette.exchange.geojson.MultiLineString;
 import mobi.chouette.exchange.geojson.Point;
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.DataStats;
-import mobi.chouette.exchange.report.FileInfo.FILE_STATE;
-import mobi.chouette.exchange.report.LineInfo.LINE_STATE;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.IO_TYPE;
+import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
+import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.ConnectionLink;
@@ -39,6 +39,7 @@ import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.RouteSection;
 import mobi.chouette.model.StopArea;
+import mobi.chouette.model.util.NamingUtil;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -70,6 +71,7 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 		boolean result = ERROR;
 
 		Monitor monitor = MonitorFactory.start(COMMAND);
+		ActionReporter reporter = ActionReporter.Factory.getInstance();
 
 		try {
 			Line line = (Line) context.get(LINE);
@@ -86,19 +88,20 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 			}
 
 			// line stats
-			DataStats stats = new DataStats();
 			Keys keys = new Keys();
-			Report.addLineInfo(context, line, stats);
-			Report.addLineInfo(context, line, LINE_STATE.OK);
+			reporter.addObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, NamingUtil.getName(line),
+					OBJECT_STATE.OK, IO_TYPE.OUTPUT);
 
 			// create route section feature
 			List<Feature> features = new ArrayList<Feature>();
 			List<Route> routes = line.getRoutes();
+			int routeCount = 0;
+			int journeyPatternCount = 0;
 			for (Route route : routes) {
 
 				// log.info("[DSU] processing  : " + route.getObjectId());
 
-				stats.routeCount++;
+				routeCount++;
 
 				List<JourneyPattern> journeyPatterns = route.getJourneyPatterns();
 				for (JourneyPattern journeyPattern : journeyPatterns) {
@@ -107,7 +110,7 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 					// log.info("[DSU] processing  : "
 					// + journeyPattern.getObjectId());
 
-					stats.journeyPatternCount++;
+					journeyPatternCount++;
 
 					Map<String, Object> properties = new HashMap<String, Object>();
 
@@ -187,20 +190,30 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 			}
 
 			// local stats
-			stats.stopAreaCount = keys.getStopArea().size();
-			stats.accessPointCount = keys.getAccessPoints().size();
-			stats.connectionLinkCount = keys.getConnectionLinks().size();
-
+			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 1);
+			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.JOURNEY_PATTERN,
+					journeyPatternCount);
+			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ROUTE, routeCount);
+			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.CONNECTION_LINK,
+					keys.getConnectionLinks().size());
+			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ACCESS_POINT,
+					keys.getAccessPoints().size());
+			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.STOP_AREA,
+					keys.getStopArea().size());
+			
 			// global stats
-			ActionReport report = (ActionReport) context.get(REPORT);
-			DataStats globalStats = report.getStats();
-			globalStats.lineCount++;
-			globalStats.routeCount += stats.routeCount;
-			globalStats.journeyPatternCount += stats.journeyPatternCount;
-			globalStats.connectionLinkCount = shared.connectionLinks.size();
-			globalStats.accessPointCount = shared.accessPoints.size();
-			globalStats.stopAreaCount = shared.physicalStops.size() + shared.commercialStops.size();
-			Report.addGlobalStats(context, globalStats);
+			reporter.addObjectReport(context, "merged", OBJECT_TYPE.CONNECTION_LINK, "connection links",
+					OBJECT_STATE.OK, IO_TYPE.OUTPUT);
+			reporter.addObjectReport(context, "merged", OBJECT_TYPE.ACCESS_POINT, "access points",
+					OBJECT_STATE.OK, IO_TYPE.OUTPUT);
+			reporter.addObjectReport(context, "merged", OBJECT_TYPE.STOP_AREA, "stop areas",
+					OBJECT_STATE.OK, IO_TYPE.OUTPUT);
+			reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.CONNECTION_LINK, OBJECT_TYPE.CONNECTION_LINK,
+					shared.connectionLinks.size());
+			reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.ACCESS_POINT, OBJECT_TYPE.ACCESS_POINT,
+					shared.accessPoints.size());
+			reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.STOP_AREA, OBJECT_TYPE.STOP_AREA,
+					shared.physicalStops.size()+ shared.commercialStops.size());
 
 			// save feature collection
 			FeatureCollection target = new FeatureCollection(features);
@@ -210,7 +223,7 @@ public class GeojsonLineExporterCommand implements Command, Constant {
 			File file = new File(path.toFile(), filename);
 			JAXBSerializer.writeTo(target, file);
 			MetaData.addTableOfContentsEntry(context, file, line);
-			Report.addFileInfo(context, filename, FILE_STATE.OK);
+			reporter.addFileReport(context, filename, IO_TYPE.OUTPUT);
 
 			result = SUCCESS;
 		} catch (Exception e) {
