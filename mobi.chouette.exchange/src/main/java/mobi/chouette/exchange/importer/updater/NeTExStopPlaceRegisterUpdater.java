@@ -48,7 +48,9 @@ public class NeTExStopPlaceRegisterUpdater implements Updater<Map<String, StopAr
                         new PublicationDeliveryStructure.DataObjects()
                                 .withCompositeFrameOrCommonFrame(Arrays.asList(jaxSiteFrame)));
 
-        client.sendPublicationDelivery(publicationDelivery);
+        PublicationDeliveryStructure response = client.sendPublicationDelivery(publicationDelivery);
+        log.info("Got publication delivery structure back with "+response.getDataObjects().getCompositeFrameOrCommonFrame().size()
+                + " composite frames or common frames");
     }
 
 

@@ -4,9 +4,7 @@ import lombok.extern.log4j.Log4j;
 import no.rutebanken.netex.model.ObjectFactory;
 import no.rutebanken.netex.model.PublicationDeliveryStructure;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
+import javax.xml.bind.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -24,19 +22,18 @@ public class PublicationDeliveryClient {
         this.publicationDeliveryUrl = publicationDeliveryUrl;
     }
 
-    public void sendPublicationDelivery(PublicationDeliveryStructure publicationDelivery) throws JAXBException {
+    public PublicationDeliveryStructure sendPublicationDelivery(PublicationDeliveryStructure publicationDelivery) throws JAXBException {
         JAXBContext jaxbContext = JAXBContext.newInstance(PublicationDeliveryStructure.class);
         Marshaller marshaller = jaxbContext.createMarshaller();
+        Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
         try {
-            // TODO: use proper http client
             URL url = new URL(publicationDeliveryUrl);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-type", "application/xml");
-
             connection.setDoOutput(true);
 
             marshaller.marshal(objectFactory.createPublicationDelivery(publicationDelivery), connection.getOutputStream());
@@ -46,20 +43,11 @@ public class PublicationDeliveryClient {
 
             log.info("Response Code : " + responseCode);
 
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String inputLine;
-            StringBuffer response = new StringBuffer();
+            JAXBElement<PublicationDeliveryStructure> element = (JAXBElement<PublicationDeliveryStructure>) unmarshaller.unmarshal(connection.getInputStream());
 
-            while ((inputLine = bufferedReader.readLine()) != null) {
-                response.append(inputLine);
-            }
-            bufferedReader.close();
-
-            log.info("Response: " + response.toString());
-
-
+            return element.getValue();
         } catch (IOException e) {
-            log.warn("Error posting XML to " + publicationDeliveryUrl, e);
+            throw new RuntimeException("Error posting XML to " + publicationDeliveryUrl, e);
         }
 
     }
