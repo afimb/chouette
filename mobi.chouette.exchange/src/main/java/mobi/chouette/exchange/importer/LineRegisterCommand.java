@@ -7,6 +7,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -54,7 +55,7 @@ public class LineRegisterCommand implements Command {
 	private Updater<Line> lineUpdater;
 
 	@EJB(beanName = NeTExStopPlaceRegisterUpdater.BEAN_NAME)
-	private Updater<StopArea> stopPlaceRegisterUpdater;
+	private Updater<Map<String, StopArea>> stopPlaceRegisterUpdater;
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -72,12 +73,7 @@ public class LineRegisterCommand implements Command {
 
 		Referential referential = (Referential) context.get(REFERENTIAL);
 
-		log.warn("About to loop through stop areas");
-		for(String key : referential.getStopAreas().keySet()) {
-			log.warn("Key: {}" + key);
-			StopArea stopArea = referential.getStopAreas().get(key);
-			stopPlaceRegisterUpdater.update(context, stopArea, stopArea);
-		}
+		stopPlaceRegisterUpdater.update(context, referential.getStopAreas(), referential.getStopAreas());
 
 		Line newValue = referential.getLines().values().iterator().next();
 		log.info("register line : " + newValue.getObjectId() + " " + newValue.getName() + " vehicleJourney count = "

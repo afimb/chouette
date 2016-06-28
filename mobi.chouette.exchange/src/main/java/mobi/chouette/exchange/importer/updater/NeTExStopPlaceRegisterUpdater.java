@@ -14,41 +14,31 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Log4j
 @Stateless(name = NeTExStopPlaceRegisterUpdater.BEAN_NAME)
-public class NeTExStopPlaceRegisterUpdater implements Updater<StopArea> {
+public class NeTExStopPlaceRegisterUpdater implements Updater<Map<String, StopArea>> {
     public static final String BEAN_NAME = "NeTExStopPlaceRegisterUpdater";
 
     @Override
-    public void update(Context context, StopArea oldValue, StopArea newValue) throws Exception {
+    public void update(Context context, Map<String, StopArea> oldValue, Map<String, StopArea> newValue) throws Exception {
 
-        log.info("Received context "+newValue);
+        log.info("Received " + newValue.values().size() + " stop areas");
 
-
-        // TODO: Separate component for mapping to NeTEx
-        StopPlace stopPlace = new StopPlace();
-
-        stopPlace.setCentroid(
-                new SimplePoint_VersionStructure()
-                        .withLocation(
-                                new LocationStructure()
-                                        .withLatitude(newValue.getLatitude())
-                                        .withLongitude(newValue.getLongitude())));
-
-        stopPlace.setName(
-                new MultilingualString()
-                        .withValue(newValue.getName())
-                        .withLang("")
-                        .withTextIdType(""));
+        List<StopPlace> stopPlaces = mapStopAreasToStopPlaces(newValue);
 
         SiteFrame siteFrame = new SiteFrame();
         siteFrame.setStopPlaces(
                 new StopPlacesInFrame_RelStructure()
-                        .withStopPlace(Arrays.asList(stopPlace)));
+                        .withStopPlace(stopPlaces));
 
         ObjectFactory objectFactory = new ObjectFactory();
+        log.info("Create site frame with "+stopPlaces.size() + " stop places");
         JAXBElement<SiteFrame> jaxSiteFrame = objectFactory.createSiteFrame(siteFrame);
 
         PublicationDeliveryStructure publicationDelivery = new PublicationDeliveryStructure()
@@ -76,6 +66,37 @@ public class NeTExStopPlaceRegisterUpdater implements Updater<StopArea> {
         sendStopPlace(xml);
     }
 
+
+    private List<StopPlace> mapStopAreasToStopPlaces(Map<String, StopArea> stopAreas) {
+
+        List<StopPlace> stopPlaces = new ArrayList<>();
+        for(StopArea stopArea: stopAreas.values()) {
+            StopPlace stopPlace = mapStopAreaToStopPlace(stopArea);
+            stopPlaces.add(stopPlace);
+        }
+        return stopPlaces;
+
+    }
+
+    private StopPlace mapStopAreaToStopPlace(StopArea stopArea) {
+        StopPlace stopPlace = new StopPlace();
+        log.info("Mapping stop area "+stopArea.getId() + " " + stopArea.getName() + " to netext stop place");
+
+        stopPlace.setCentroid(
+                new SimplePoint_VersionStructure()
+                        .withLocation(
+                                new LocationStructure()
+                                        .withLatitude(stopArea.getLatitude())
+                                        .withLongitude(stopArea.getLongitude())));
+
+        stopPlace.setName(
+                new MultilingualString()
+                        .withValue(stopArea.getName())
+                        .withLang("")
+                        .withTextIdType(""));
+
+        return stopPlace;
+    }
 
     private void sendStopPlace(String xml) {
 

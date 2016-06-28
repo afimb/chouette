@@ -5,6 +5,8 @@ import mobi.chouette.model.StopArea;
 import mobi.chouette.model.type.ChouetteAreaEnum;
 import org.testng.annotations.Test;
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class NeTExStopPlaceRegisterUpdaterTest {
@@ -27,8 +29,10 @@ public class NeTExStopPlaceRegisterUpdaterTest {
 
         Context context = new Context();
 
-        neTExStopPlaceRegisterUpdater.update(context, oldStoparea, stopArea);
+        Map<String, StopArea> stopAreas = new HashMap<>();
+        stopAreas.put("key", stopArea);
 
+        neTExStopPlaceRegisterUpdater.update(context, stopAreas, stopAreas);
     }
 
 }
