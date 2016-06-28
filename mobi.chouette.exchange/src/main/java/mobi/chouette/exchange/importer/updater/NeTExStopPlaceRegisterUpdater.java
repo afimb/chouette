@@ -8,6 +8,7 @@ import no.rutebanken.netex.model.*;
 import javax.ejb.Stateless;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -25,6 +26,8 @@ import java.util.stream.Collectors;
 public class NeTExStopPlaceRegisterUpdater implements Updater<Map<String, StopArea>> {
     public static final String BEAN_NAME = "NeTExStopPlaceRegisterUpdater";
 
+    private static final ObjectFactory objectFactory = new ObjectFactory();
+
     @Override
     public void update(Context context, Map<String, StopArea> oldValue, Map<String, StopArea> newValue) throws Exception {
 
@@ -37,7 +40,6 @@ public class NeTExStopPlaceRegisterUpdater implements Updater<Map<String, StopAr
                 new StopPlacesInFrame_RelStructure()
                         .withStopPlace(stopPlaces));
 
-        ObjectFactory objectFactory = new ObjectFactory();
         log.info("Create site frame with "+stopPlaces.size() + " stop places");
         JAXBElement<SiteFrame> jaxSiteFrame = objectFactory.createSiteFrame(siteFrame);
 
@@ -49,21 +51,8 @@ public class NeTExStopPlaceRegisterUpdater implements Updater<Map<String, StopAr
                         new PublicationDeliveryStructure.DataObjects()
                                 .withCompositeFrameOrCommonFrame(Arrays.asList(jaxSiteFrame)));
 
-        JAXBContext jaxbContext = JAXBContext.newInstance(PublicationDeliveryStructure.class);
-        Marshaller marshaller = jaxbContext.createMarshaller();
 
-
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-
-        marshaller.marshal(objectFactory.createPublicationDelivery(publicationDelivery), byteArrayOutputStream);
-
-        String xml = byteArrayOutputStream.toString();
-
-        log.info("Generated xml: \n" + xml);
-
-        sendStopPlace(xml);
+        sendPublicationDelivery(publicationDelivery);
     }
 
 
@@ -98,7 +87,11 @@ public class NeTExStopPlaceRegisterUpdater implements Updater<Map<String, StopAr
         return stopPlace;
     }
 
-    private void sendStopPlace(String xml) {
+    private void sendPublicationDelivery(PublicationDeliveryStructure publicationDelivery) throws JAXBException {
+
+        JAXBContext jaxbContext = JAXBContext.newInstance(PublicationDeliveryStructure.class);
+        Marshaller marshaller = jaxbContext.createMarshaller();
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 
         // TODO: Separate logic for mapping chouette objects to netex in separate
         // TODO: Sending data to stop place register in separate class
@@ -114,11 +107,7 @@ public class NeTExStopPlaceRegisterUpdater implements Updater<Map<String, StopAr
 
             connection.setDoOutput(true);
 
-            OutputStreamWriter writer = new OutputStreamWriter(connection.getOutputStream(), Charset.forName("UTF-8"));
-
-            // TODO: Stream xml
-            writer.write(xml);
-            writer.close();
+            marshaller.marshal(objectFactory.createPublicationDelivery(publicationDelivery), connection.getOutputStream());
 
             int responseCode = connection.getResponseCode();
             log.info("POSTed stop place to URL : " + url);
