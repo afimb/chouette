@@ -208,6 +208,11 @@ public class VehicleJourneyParser implements Parser, Constant, JsonExtension {
 				XPPUtil.skipSubTree(log, xpp);
 			}
 		}
+		// protection from missing arrival time (mandatory for Chouette)
+		if (vehicleJourneyAtStop.getArrivalTime() == null)
+		{
+			vehicleJourneyAtStop.setArrivalTime(new Time(vehicleJourneyAtStop.getDepartureTime().getTime()));
+		}
 	}
 
 

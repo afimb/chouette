@@ -114,8 +114,8 @@ public class FileReport {
 				array.put(value);
 			}
 		}
-		object.put("check_point_error_count : ", checkPointErrorCount);
-		object.put("check_point_warning_count : ", checkPointWarningCount);
+		object.put("check_point_error_count", checkPointErrorCount);
+		object.put("check_point_warning_count", checkPointWarningCount);
 
 		return object;
 	}
