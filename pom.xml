@@ -25,6 +25,8 @@
 		<jts.version>1.13</jts.version>
 		<arquillian-version>1.1.7.Final</arquillian-version>
 		<jaxb-version>2.2.11</jaxb-version>
+		<lombok-version>1.16.8</lombok-version>
+		<lombok-maven-plugin-version>1.16.8.0</lombok-maven-plugin-version>
 		<project.rootDir>${project.basedir}</project.rootDir>
 	</properties>
 	<distributionManagement>
@@ -210,8 +212,8 @@
 										${project.rootDir}/target/wildfly-${wildfly.version}/modules/system/layers/base/com/sun/xml/bind/main
 									</outputDirectory>
 								</artifactItem>
-	
-								<!-- <artifactItem> <groupId>org.postgresql</groupId> <artifactId>postgresql</artifactId> 
+
+								<!-- <artifactItem> <groupId>org.postgresql</groupId> <artifactId>postgresql</artifactId>
 									<version>${postgresql.version}</version> <overWrite>false</overWrite> <outputDirectory>${project.rootDir}/target/wildfly-${wildfly.version}/standalone/deployments</outputDirectory> 
 									</artifactItem> <artifactItem> <groupId>net.postgis</groupId> <artifactId>postgis-jdbc</artifactId> 
 									<version>${postgis.version}</version> <overWrite>false</overWrite> <outputDirectory>${project.rootDir}/target/wildfly-${wildfly.version}/standalone/deployments</outputDirectory> 
@@ -285,7 +287,7 @@
 			<plugin>
 				<groupId>org.projectlombok</groupId>
 				<artifactId>lombok-maven-plugin</artifactId>
-				<version>1.12.4.0</version>
+				<version>${lombok-maven-plugin-version}</version>
 				<dependencies>
 					<dependency>
 						<groupId>sun.jdk</groupId>
@@ -302,14 +304,12 @@
 						<goals>
 							<goal>delombok</goal>
 						</goals>
-<!--
 						<configuration>
 							<addOutputDirectory>false</addOutputDirectory>
 							<sourceDirectory>src/main/java</sourceDirectory>
 							<verbose>false</verbose>
 							<skip>${skipDelombok}</skip>
 						</configuration>
--->
 					</execution>
 				</executions>
 			</plugin>
@@ -339,7 +339,7 @@
 							<value>http://docs.oracle.com/javase/7/docs/api/</value>
 						</property>
 					</javaApiLinks>
-					<source>1.7</source>
+					<source>1.8</source>
 					<skip>${skipDelombok}</skip>
 				</configuration>
 				<executions>
@@ -427,7 +427,7 @@
 									<pluginExecutionFilter>
 										<groupId>org.projectlombok</groupId>
 										<artifactId>lombok-maven-plugin</artifactId>
-										<versionRange>[1.12.4.0,)</versionRange>
+										<versionRange>[{lombok-maven-plugin-version},)</versionRange>
 										<goals>
 											<goal>delombok</goal>
 										</goals>
@@ -678,7 +678,7 @@
 			<dependency>
 				<groupId>org.projectlombok</groupId>
 				<artifactId>lombok</artifactId>
-				<version>1.14.8</version>
+				<version>${lombok-version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.jamonapi</groupId>
