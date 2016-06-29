@@ -10,10 +10,8 @@ import no.rutebanken.netex.model.*;
 import javax.ejb.Stateless;
 import javax.xml.bind.JAXBElement;
 import java.time.ZonedDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Log4j
 @Stateless(name = NeTExStopPlaceRegisterUpdater.BEAN_NAME)
@@ -51,6 +49,17 @@ public class NeTExStopPlaceRegisterUpdater implements Updater<Map<String, StopAr
         PublicationDeliveryStructure response = client.sendPublicationDelivery(publicationDelivery);
         log.info("Got publication delivery structure back with "+response.getDataObjects().getCompositeFrameOrCommonFrame().size()
                 + " composite frames or common frames");
+
+        List<StopPlace> receivedStopPlaces = response.getDataObjects().getCompositeFrameOrCommonFrame().stream()
+                .filter(jaxbElement -> jaxbElement.getValue() instanceof SiteFrame)
+                .map(jaxbElement -> (SiteFrame) jaxbElement.getValue())
+                .flatMap(receivedSiteFrame -> receivedSiteFrame.getStopPlaces().getStopPlace().stream())
+                .peek(stopPlace -> log.info("got stop place with ID "+stopPlace.getId() + " and name "+  stopPlace.getName() + " back"))
+                .collect(Collectors.toList());
+
+
+
+
     }
 
 
