@@ -9,6 +9,7 @@ import no.rutebanken.netex.model.*;
 
 import javax.ejb.Stateless;
 import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
 import java.time.ZonedDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -22,6 +23,9 @@ public class NeTExStopPlaceRegisterUpdater implements Updater<Map<String, StopAr
     private final StopPlaceMapper stopPlaceMapper = new StopPlaceMapper();
 
     private static final ObjectFactory objectFactory = new ObjectFactory();
+
+    public NeTExStopPlaceRegisterUpdater() throws JAXBException {
+    }
 
     @Override
     public void update(Context context, Map<String, StopArea> oldValue, Map<String, StopArea> newValue) throws Exception {

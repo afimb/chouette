@@ -5,9 +5,7 @@ import no.rutebanken.netex.model.ObjectFactory;
 import no.rutebanken.netex.model.PublicationDeliveryStructure;
 
 import javax.xml.bind.*;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -18,12 +16,15 @@ public class PublicationDeliveryClient {
 
     private final String publicationDeliveryUrl;
 
-    public PublicationDeliveryClient(String publicationDeliveryUrl) {
+    private final JAXBContext jaxbContext;
+
+    public PublicationDeliveryClient(String publicationDeliveryUrl) throws JAXBException {
         this.publicationDeliveryUrl = publicationDeliveryUrl;
+        this.jaxbContext = JAXBContext.newInstance(PublicationDeliveryStructure.class);
     }
 
     public PublicationDeliveryStructure sendPublicationDelivery(PublicationDeliveryStructure publicationDelivery) throws JAXBException {
-        JAXBContext jaxbContext = JAXBContext.newInstance(PublicationDeliveryStructure.class);
+
         Marshaller marshaller = jaxbContext.createMarshaller();
         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
