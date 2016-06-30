@@ -234,6 +234,10 @@ public class GtfsTripProducer extends AbstractProducer {
 			String shapeId = toGtfsId(jp.getObjectId(), prefix);
 			trip.setShapeId(shapeId);
 		}
+		else
+		{
+			trip.setShapeId(null);
+		}
 		Route route = vj.getRoute();
 		Line line = route.getLine();
 		trip.setRouteId(toGtfsId(line.getObjectId(), prefix));

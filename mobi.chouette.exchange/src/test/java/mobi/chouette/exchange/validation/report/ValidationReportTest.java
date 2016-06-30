@@ -77,7 +77,7 @@ public class ValidationReportTest implements Constant {
 		String result = "{\"validation_report\":{\"result\":\"VALIDATION_PROCEDEED\",\"check_points\":" +
 				"[{\"test_id\":\"Neptune-Checkpoint-1\",\"level\":\"Neptune\",\"type\":\"Checkpoint\"," +
 				"\"rank\":\"1\",\"severity\":\"WARNING\",\"result\":\"NOK\",\"check_point_error_count\":1,\"check_point_errors\":[0]}]," +
-				"\"errors\":[{\"error_id\":\"neptune_checkpoint_1\"," +
+				"\"errors\":[{\"test_id\":\"Neptune-Checkpoint-1\",\"error_id\":\"neptune_checkpoint_1\"," +
 				"\"source\":{\"file\":{\"filename\":\"filename\",\"line_number\":3,\"column_number\":1}," +
 				"\"objectid\":\"1234\",\"label\":\"\"},\"error_value\":\"test\"}]}}";
 		JSONObject array = new JSONObject(result);
