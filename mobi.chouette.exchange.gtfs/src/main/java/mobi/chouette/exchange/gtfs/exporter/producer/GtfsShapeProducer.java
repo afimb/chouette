@@ -13,7 +13,6 @@ import java.math.BigDecimal;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.gtfs.model.GtfsShape;
 import mobi.chouette.exchange.gtfs.model.exporter.GtfsExporterInterface;
-import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.RouteSection;
 import mobi.chouette.model.type.SectionStatusEnum;
@@ -38,7 +37,7 @@ public class GtfsShapeProducer extends AbstractProducer
 
    private GtfsShape shape = new GtfsShape();
 
-   public boolean save(JourneyPattern neptuneObject, ActionReport report, String prefix)
+   public boolean save(JourneyPattern neptuneObject,  String prefix)
    {
 	   boolean result = true;
 	   if (neptuneObject.getSectionStatus() != SectionStatusEnum.Completed)

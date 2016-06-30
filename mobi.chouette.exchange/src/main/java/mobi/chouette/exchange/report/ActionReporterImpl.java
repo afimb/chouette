@@ -84,14 +84,22 @@ public class ActionReporterImpl implements ActionReporter, Constant {
 			OBJECT_STATE status, IO_TYPE ioType) {
 		ActionReport2 actionReport = (ActionReport2) context.get(REPORT);
 		if (actionReport != null) {
-			// lines are to be reported separatedly in a collection
-			switch (type) {
-			case LINE:
-				actionReport.addObjectReportToSpecificCollection(new ObjectReport(objectId, type, description, status,
-						ioType));
-				break;
-			default:
-				actionReport.addObjectReport(new ObjectReport(objectId, type, description, status, ioType));
+			ObjectReport old = actionReport.findObjectReport(objectId, type);
+			if (old != null) {
+				// objectreport exists, set 
+				old.setDescription(description);
+//				if (old.getStatus().ordinal() < status.ordinal())
+//					old.setStatTus(status);
+			} else {
+				// lines are to be reported separatedly in a collection
+				switch (type) {
+				case LINE:
+					actionReport.addObjectReportToSpecificCollection(new ObjectReport(objectId, type, description,
+							status, ioType));
+					break;
+				default:
+					actionReport.addObjectReport(new ObjectReport(objectId, type, description, status, ioType));
+				}
 			}
 		}
 	}
@@ -101,13 +109,12 @@ public class ActionReporterImpl implements ActionReporter, Constant {
 			String descriptionError) {
 		ActionReport2 actionReport = (ActionReport2) context.get(REPORT);
 		if (actionReport != null) {
-			if (actionReport.getObjects().containsKey(type)) {
-				ObjectReport object = actionReport.getObjects().get(type);
+			if (actionReport.findObjectReport(objectId, type) == null) {
+				addObjectReport(context, objectId, type, "", OBJECT_STATE.OK, IO_TYPE.INPUT);
+			}
+			ObjectReport object = actionReport.findObjectReport(objectId, type);
+			if (object != null) {
 				object.addError(new ObjectError2(code, descriptionError));
-			} else if (actionReport.getCollections().containsKey(type)) {
-				ObjectReport object = actionReport.getCollections().get(type).findObjectReport(objectId);
-				if (object != null)
-					object.addError(new ObjectError2(code, descriptionError));
 			}
 		}
 	}
@@ -173,30 +180,44 @@ public class ActionReporterImpl implements ActionReporter, Constant {
 	}
 
 	@Override
-	public boolean addValidationErrorToFileReport(Context context, String fileInfoName, int code,  SEVERITY severity ) {
+	public boolean addValidationErrorToFileReport(Context context, String fileInfoName, int code, SEVERITY severity) {
 		ActionReport2 actionReport = (ActionReport2) context.get(REPORT);
 		boolean ret = false;
 		if (actionReport != null) {
-		   FileReport fileReport = actionReport.findFileReport(fileInfoName);
-		   if (fileReport != null)
-		   {
-			   ret = fileReport.addCheckPointError(code,severity);
-		   }
+			FileReport fileReport = actionReport.findFileReport(fileInfoName);
+			if (fileReport != null) {
+				ret = fileReport.addCheckPointError(code, severity);
+			}
 		}
 		return ret;
 	}
 
 	@Override
-	public boolean addValidationErrorToObjectReport(Context context, String objectId, OBJECT_TYPE type, int code, SEVERITY severity) {
+	public boolean addValidationErrorToObjectReport(Context context, String objectId, OBJECT_TYPE type, int code,
+			SEVERITY severity) {
 		ActionReport2 actionReport = (ActionReport2) context.get(REPORT);
 		boolean ret = false;
 		if (actionReport != null) {
-		   ObjectReport objectReport = actionReport.findObjectReport(objectId, type);
-		   if (objectReport != null)
-		   {
-			   ret = objectReport.addCheckPointError(code,severity);
-		   }
+			if (actionReport.findObjectReport(objectId, type) == null) {
+				addObjectReport(context, objectId, type, "", OBJECT_STATE.OK, IO_TYPE.INPUT);
+			}
+			ObjectReport objectReport = actionReport.findObjectReport(objectId, type);
+			if (objectReport != null) {
+				ret = objectReport.addCheckPointError(code, severity);
+			}
 		}
 		return ret;
+	}
+
+	@Override
+	public boolean hasFileValidationErrors(Context context, String filename) {
+		ActionReport2 actionReport = (ActionReport2) context.get(REPORT);
+		if (actionReport == null)
+			return false;
+		FileReport fileReport = actionReport.findFileReport(filename);
+		if (fileReport == null)
+			return false;
+
+		return fileReport.getCheckPointErrorCount() > 0;
 	}
 }

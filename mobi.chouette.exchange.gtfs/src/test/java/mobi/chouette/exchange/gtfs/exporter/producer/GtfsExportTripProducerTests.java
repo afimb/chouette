@@ -10,7 +10,6 @@ import mobi.chouette.exchange.gtfs.model.GtfsTrip.WheelchairAccessibleType;
 import mobi.chouette.exchange.gtfs.model.exporter.StopTimeExporter;
 import mobi.chouette.exchange.gtfs.model.exporter.TripExporter;
 import mobi.chouette.exchange.gtfs.model.importer.Context;
-import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Route;
@@ -36,10 +35,9 @@ public class GtfsExportTripProducerTests
       
       mock.reset();
 
-      ActionReport report = new ActionReport();
       VehicleJourney neptuneObject = buildNeptuneObject(true);
 
-      producer.save(neptuneObject, "tm_01", report, "GTFS", "GTFS");
+      producer.save(neptuneObject, "tm_01", "GTFS", "GTFS");
       Reporter.log("verifyTripProducerWithFullData");
 
       Assert.assertEquals(mock.getExportedTrips().size(), 1, "Trip should be returned");
@@ -103,10 +101,9 @@ public class GtfsExportTripProducerTests
       
       mock.reset();
 
-      ActionReport report = new ActionReport();
       VehicleJourney neptuneObject = buildNeptuneObject(false);
 
-      producer.save(neptuneObject, "tm_01", report, "GTFS", "GTFS");
+      producer.save(neptuneObject, "tm_01", "GTFS", "GTFS");
       Reporter.log("verifyTripProducerWithLessData");
 
       Assert.assertEquals(mock.getExportedTrips().size(), 1, "Trip should be returned");
@@ -170,11 +167,10 @@ public class GtfsExportTripProducerTests
       mock.reset();
       Reporter.log("verifyTripProducerForWheelChairMapping");
 
-      ActionReport report = new ActionReport();
       VehicleJourney neptuneObject = buildNeptuneObject(true);
       neptuneObject.setMobilityRestrictedSuitability(Boolean.TRUE);
 
-      producer.save(neptuneObject, "tm_01", report, "GTFS", "GTFS");
+      producer.save(neptuneObject, "tm_01",  "GTFS", "GTFS");
 
       Assert.assertEquals(mock.getExportedTrips().size(), 1, "Trip should be returned");
       GtfsTrip gtfsObject = mock.getExportedTrips().get(0);
@@ -183,7 +179,7 @@ public class GtfsExportTripProducerTests
 
       mock.reset();
       neptuneObject.setMobilityRestrictedSuitability(Boolean.FALSE);
-      producer.save(neptuneObject, "tm_01", report, "GTFS", "GTFS");
+      producer.save(neptuneObject, "tm_01", "GTFS", "GTFS");
       Assert.assertEquals(mock.getExportedTrips().size(), 1, "Trip should be returned");
       gtfsObject = mock.getExportedTrips().get(0);
       Reporter.log(TripExporter.CONVERTER.to(context,gtfsObject));
@@ -191,7 +187,7 @@ public class GtfsExportTripProducerTests
 
       mock.reset();
       neptuneObject.setMobilityRestrictedSuitability(null);
-      producer.save(neptuneObject, "tm_01", report, "GTFS", "GTFS");
+      producer.save(neptuneObject, "tm_01",  "GTFS", "GTFS");
       Assert.assertEquals(mock.getExportedTrips().size(), 1, "Trip should be returned");
       gtfsObject = mock.getExportedTrips().get(0);
       Reporter.log(TripExporter.CONVERTER.to(context,gtfsObject));
@@ -205,11 +201,10 @@ public class GtfsExportTripProducerTests
       mock.reset();
       Reporter.log("verifyTripProducerForDirectionMapping");
 
-      ActionReport report = new ActionReport();
       VehicleJourney neptuneObject = buildNeptuneObject(true);
       Route r = neptuneObject.getRoute();
       r.setWayBack("A");
-      producer.save(neptuneObject, "tm_01", report, "GTFS", "GTFS");
+      producer.save(neptuneObject, "tm_01", "GTFS", "GTFS");
 
       Assert.assertEquals(mock.getExportedTrips().size(), 1, "Trip should be returned");
       GtfsTrip gtfsObject = mock.getExportedTrips().get(0);
@@ -217,14 +212,14 @@ public class GtfsExportTripProducerTests
 
       mock.reset();
       r.setWayBack("R");
-      producer.save(neptuneObject, "tm_01", report, "GTFS", "GTFS");
+      producer.save(neptuneObject, "tm_01",  "GTFS", "GTFS");
       Assert.assertEquals(mock.getExportedTrips().size(), 1, "Trip should be returned");
       gtfsObject = mock.getExportedTrips().get(0);
       Assert.assertEquals(gtfsObject.getDirectionId(), DirectionType.Inbound, "DirectionId must be correctly set");
 
       mock.reset();
       r.setWayBack(null);
-      producer.save(neptuneObject, "tm_01", report, "GTFS", "GTFS");
+      producer.save(neptuneObject, "tm_01",  "GTFS", "GTFS");
       Assert.assertEquals(mock.getExportedTrips().size(), 1, "Trip should be returned");
       gtfsObject = mock.getExportedTrips().get(0);
       Assert.assertEquals(gtfsObject.getDirectionId(), DirectionType.Outbound, "DirectionId must be correctly set");

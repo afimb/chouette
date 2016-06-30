@@ -361,7 +361,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 					tripParser.validate(bean, importer);
 				} catch (Exception ex) {
 					if (ex instanceof GtfsException) {
-						gtfsValidationReporter.reportError(context, (GtfsException) ex, GTFS_TRIPS_FILE);
+						gtfsValidationReporter.reportError(context, bean.getRouteId(), (GtfsException) ex, GTFS_TRIPS_FILE);
 					} else {
 						gtfsValidationReporter.throwUnknownError(context, ex, GTFS_TRIPS_FILE);
 					}
@@ -370,7 +370,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 					if (ex.isFatal())
 						fatalException = ex;
 				}
-				gtfsValidationReporter.reportErrors(context, bean.getErrors(), GTFS_TRIPS_FILE);
+				gtfsValidationReporter.reportErrors(context,  bean.getRouteId(), bean.getErrors(), GTFS_TRIPS_FILE);
 				gtfsValidationReporter.validate(context, GTFS_TRIPS_FILE, bean.getOkTests());
 			}
 			tripParser.setWithValidation(false);
@@ -559,7 +559,7 @@ public class GtfsTripParser implements Parser, Validator, Constant {
 			vehicleJourney.setRoute(journeyPattern.getRoute());
 			vehicleJourney.setJourneyPattern(journeyPattern);
 			Line line = journeyPattern.getRoute().getLine();
-			gtfsValidationReporter.updateValidationReport(context, GTFS_TRIPS_FILE, gtfsTrip.getTripId(), line);
+			// gtfsValidationReporter.updateValidationReport(context, GTFS_TRIPS_FILE, gtfsTrip.getTripId(), line);
 
 			int length = journeyPattern.getStopPoints().size();
 			for (int i = 0; i < length; i++) {

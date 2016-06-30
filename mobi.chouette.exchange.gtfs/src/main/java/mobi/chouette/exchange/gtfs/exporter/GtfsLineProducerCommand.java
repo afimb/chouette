@@ -25,20 +25,21 @@ import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.gtfs.Constant;
 import mobi.chouette.exchange.gtfs.exporter.producer.GtfsRouteProducer;
-import mobi.chouette.exchange.gtfs.exporter.producer.GtfsShapeProducer;
 import mobi.chouette.exchange.gtfs.exporter.producer.GtfsServiceProducer;
+import mobi.chouette.exchange.gtfs.exporter.producer.GtfsShapeProducer;
 import mobi.chouette.exchange.gtfs.exporter.producer.GtfsTripProducer;
 import mobi.chouette.exchange.gtfs.model.exporter.GtfsExporter;
 import mobi.chouette.exchange.metadata.Metadata;
 import mobi.chouette.exchange.metadata.NeptuneObjectPresenter;
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.LineError;
-import mobi.chouette.exchange.report.LineInfo;
-import mobi.chouette.exchange.report.DataStats;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
+import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
+import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
+import mobi.chouette.model.util.NamingUtil;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -54,7 +55,7 @@ public class GtfsLineProducerCommand implements Command, Constant {
 	public boolean execute(Context context) throws Exception {
 		boolean result = ERROR;
 		Monitor monitor = MonitorFactory.start(COMMAND);
-		ActionReport report = (ActionReport) context.get(REPORT);
+		ActionReporter reporter = ActionReporter.Factory.getInstance();
 
 		try {
 
@@ -66,12 +67,13 @@ public class GtfsLineProducerCommand implements Command, Constant {
 				collection = new ExportableData();
 				context.put(EXPORTABLE_DATA, collection);
 			}
-			LineInfo lineInfo = new LineInfo(line);
+			reporter.addObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, NamingUtil.getName(line),
+					OBJECT_STATE.OK, IO_TYPE.OUTPUT);
 			if (line.getCompany() == null) {
-			    lineInfo.addError(new LineError(LineError.CODE.INVALID_FORMAT,"no company for this line"));
-			    report.getLines().add(lineInfo);
-			    return SUCCESS;
-                        }
+				reporter.addErrorToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE,
+						ActionReporter.ERROR_CODE.INVALID_FORMAT, "no company for this line");
+				return SUCCESS;
+			}
 
 			Date startDate = null;
 			if (configuration.getStartDate() != null) {
@@ -85,34 +87,25 @@ public class GtfsLineProducerCommand implements Command, Constant {
 
 			GtfsDataCollector collector = new GtfsDataCollector();
 			boolean cont = collector.collect(collection, line, startDate, endDate);
-			DataStats stats = lineInfo.getStats();
-			// stats.setAccessPointCount(collection.getAccessPoints().size());
-			// stats.setConnectionLinkCount(collection.getConnectionLinks().size());
-			stats.setJourneyPatternCount(collection.getJourneyPatterns().size());
-			stats.setRouteCount(collection.getRoutes().size());
-			// stats.setStopAreaCount(collection.getCommercialStops().size()+collection.getPhysicalStops().size());
-			// stats.setTimeTableCount(collection.getTimetables().size());
-			stats.setVehicleJourneyCount(collection.getVehicleJourneys().size());
+			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 0);
+			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.JOURNEY_PATTERN,
+					collection.getJourneyPatterns().size());
+			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ROUTE, collection
+					.getRoutes().size());
+			reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.VEHICLE_JOURNEY,
+					collection.getVehicleJourneys().size());
 
 			if (cont) {
 				context.put(EXPORTABLE_DATA, collection);
 
 				saveLine(context, line);
-				stats.setLineCount(1);
-				// merge lineStats to global ones
-				DataStats globalStats = report.getStats();
-				globalStats.setLineCount(globalStats.getLineCount() + stats.getLineCount());
-				globalStats.setRouteCount(globalStats.getRouteCount() + stats.getRouteCount());
-				globalStats.setVehicleJourneyCount(globalStats.getVehicleJourneyCount()
-						+ stats.getVehicleJourneyCount());
-				globalStats.setJourneyPatternCount(globalStats.getJourneyPatternCount()
-						+ stats.getJourneyPatternCount());
+				reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 1);
 				result = SUCCESS;
 			} else {
-				lineInfo.addError(new LineError(LineError.CODE.NO_DATA_ON_PERIOD,"no data on period"));
+				reporter.addErrorToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE,
+						ActionReporter.ERROR_CODE.NO_DATA_ON_PERIOD, "no data on period");
 				result = SUCCESS; // else export will stop here
 			}
-			report.getLines().add(lineInfo);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		} finally {
@@ -132,7 +125,6 @@ public class GtfsLineProducerCommand implements Command, Constant {
 		GtfsRouteProducer routeProducer = new GtfsRouteProducer(exporter);
 		GtfsShapeProducer shapeProducer = new GtfsShapeProducer(exporter);
 
-		ActionReport report = (ActionReport) context.get(REPORT);
 		GtfsExportParameters configuration = (GtfsExportParameters) context.get(CONFIGURATION);
 		String prefix = configuration.getObjectIdPrefix();
 		String sharedPrefix = prefix;
@@ -147,7 +139,7 @@ public class GtfsLineProducerCommand implements Command, Constant {
 			for (VehicleJourney vj : collection.getVehicleJourneys()) {
 				String tmKey = calendarProducer.key(vj.getTimetables(), sharedPrefix);
 				if (tmKey != null) {
-					if (tripProducer.save(vj, tmKey, report, prefix, sharedPrefix)) {
+					if (tripProducer.save(vj, tmKey, prefix, sharedPrefix)) {
 						hasVj = true;
 						jps.add(vj.getJourneyPattern());
 						if (!timetables.containsKey(tmKey)) {
@@ -157,10 +149,10 @@ public class GtfsLineProducerCommand implements Command, Constant {
 				}
 			} // vj loop
 			for (JourneyPattern jp : jps) {
-				shapeProducer.save(jp, report, prefix);
+				shapeProducer.save(jp, prefix);
 			}
 			if (hasVj) {
-				routeProducer.save(line, report, prefix);
+				routeProducer.save(line, prefix);
 				hasLine = true;
 				if (metadata != null) {
 					metadata.getResources().add(

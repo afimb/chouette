@@ -33,7 +33,6 @@ import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
 import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.exchange.validation.ValidatorFactory;
-import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.util.NamingUtil;
 import mobi.chouette.model.util.Referential;
@@ -148,7 +147,7 @@ public class NeptuneValidationCommand implements Command, Constant {
 					validator.validate(context, null);
 				}
 				// check if ok before add stats to report
-				result = checkValid(context);
+				result = !reporter.hasFileValidationErrors(context, fileName);
 				if (result)
 					addStats(context, reporter, validationContext, referential);
 
@@ -215,10 +214,6 @@ public class NeptuneValidationCommand implements Command, Constant {
 
 	}
 
-	private boolean checkValid(Context context) {
-		ValidationReporter validationReporter = ValidationReporter.Factory.getInstance();
-		return validationReporter.checkValidationReportValidity(context);
-	}
 
 	public static class DefaultCommandFactory extends CommandFactory {
 

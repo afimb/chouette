@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 import javax.xml.bind.annotation.XmlElement;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
@@ -28,6 +29,7 @@ public class ObjectReport {
 
 	@XmlElement(name = "description", required = true)
 	@Getter
+	@Setter
 	private String description;
 
 	@XmlElement(name = "status", required = true)

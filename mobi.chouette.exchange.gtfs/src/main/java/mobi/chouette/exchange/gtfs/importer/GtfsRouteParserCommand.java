@@ -20,11 +20,13 @@ import mobi.chouette.exchange.gtfs.parser.GtfsRouteParser;
 import mobi.chouette.exchange.gtfs.parser.GtfsStopParser;
 import mobi.chouette.exchange.gtfs.parser.GtfsTransferParser;
 import mobi.chouette.exchange.importer.ParserFactory;
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.DataStats;
-import mobi.chouette.exchange.report.LineInfo;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.IO_TYPE;
+import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
+import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.Network;
+import mobi.chouette.model.util.NamingUtil;
 import mobi.chouette.model.util.ObjectFactory;
 import mobi.chouette.model.util.Referential;
 
@@ -48,7 +50,6 @@ public class GtfsRouteParserCommand implements Command, Constant {
 
 		try {
 			Referential referential = (Referential) context.get(REFERENTIAL);
-			ActionReport report = (ActionReport) context.get(REPORT);
 			if (referential != null) {
 				referential.clear(true);
 			}
@@ -110,7 +111,7 @@ public class GtfsRouteParserCommand implements Command, Constant {
 			gtfsRouteParser.setGtfsRouteId(gtfsRouteId);
 			gtfsRouteParser.parse(context);
 
-			addStats(report, referential);
+			addStats(context, referential);
 			result = SUCCESS;
 		} catch (Exception e) {
 			log.error("error : ", e);
@@ -132,25 +133,19 @@ public class GtfsRouteParserCommand implements Command, Constant {
 		return ptNetwork;
 	}
 
-	private void addStats(ActionReport report, Referential referential) {
-		Line line = referential.getLines().values().iterator().next();
-		LineInfo lineInfo = new LineInfo(line);
-		DataStats stats = lineInfo.getStats();
-		stats.setLineCount(1);
+	private void addStats(Context context, Referential referential) {
+		ActionReporter reporter = ActionReporter.Factory.getInstance();
 
-		stats.setRouteCount(referential.getRoutes().size());
-		stats.setVehicleJourneyCount(referential.getVehicleJourneys().size());
-		stats.setJourneyPatternCount(referential.getJourneyPatterns().size());
-		report.getLines().add(lineInfo);
-		DataStats globalStats = report.getStats();
-		globalStats.setConnectionLinkCount(referential.getSharedConnectionLinks().size());
-		globalStats.setStopAreaCount(referential.getSharedStopAreas().size());
-		globalStats.setTimeTableCount(referential.getSharedTimetables().size());
-		
-		globalStats.setLineCount(globalStats.getLineCount() + stats.getLineCount());
-		globalStats.setRouteCount(globalStats.getRouteCount() + stats.getRouteCount());
-		globalStats.setVehicleJourneyCount(globalStats.getVehicleJourneyCount() + stats.getVehicleJourneyCount());
-		globalStats.setJourneyPatternCount(globalStats.getJourneyPatternCount() + stats.getJourneyPatternCount());
+		Line line = referential.getLines().values().iterator().next();
+		reporter.addObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, NamingUtil.getName(line),
+				OBJECT_STATE.OK, IO_TYPE.INPUT);
+		reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.LINE, 1);
+		reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.JOURNEY_PATTERN,
+				referential.getJourneyPatterns().size());
+		reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.ROUTE, referential
+				.getRoutes().size());
+		reporter.setStatToObjectReport(context, line.getObjectId(), OBJECT_TYPE.LINE, OBJECT_TYPE.VEHICLE_JOURNEY,
+				referential.getVehicleJourneys().size());
 
 	}
 

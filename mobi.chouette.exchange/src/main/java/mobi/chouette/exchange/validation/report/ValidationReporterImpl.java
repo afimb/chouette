@@ -3,12 +3,11 @@ package mobi.chouette.exchange.validation.report;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
-import mobi.chouette.exchange.model.DataLocation;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
 import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.exchange.validation.report.CheckPointReport.SEVERITY;
-import mobi.chouette.model.NeptuneIdentifiedObject;
+import mobi.chouette.exchange.validation.report.DataLocation.Path;
 
 @Log4j
 public class ValidationReporterImpl implements ValidationReporter, Constant {
@@ -90,10 +89,10 @@ public class ValidationReporterImpl implements ValidationReporter, Constant {
 		CheckPointErrorReport newCheckPointError;
 
 		if (detail != null)
-			newCheckPointError = new CheckPointErrorReport(checkPointName + "_" + detail, detailLocation, value,
+			newCheckPointError = new CheckPointErrorReport(checkPointName, checkPointName + "_" + detail, detailLocation, value,
 					refValue);
 		else
-			newCheckPointError = new CheckPointErrorReport(checkPointName, detailLocation, value, refValue);
+			newCheckPointError = new CheckPointErrorReport(checkPointName, checkPointName, detailLocation, value, refValue);
 
 		int index = validationReport.getCheckPointErrors().size();
 		boolean checkPointAdded = checkPoint.addCheckPointError(index);
@@ -127,10 +126,10 @@ public class ValidationReporterImpl implements ValidationReporter, Constant {
 		CheckPointErrorReport newCheckPointError;
 
 		if (detail != null)
-			newCheckPointError = new CheckPointErrorReport(checkPointName + "_" + detail, detailLocation, value,
+			newCheckPointError = new CheckPointErrorReport(checkPointName,checkPointName + "_" + detail, detailLocation, value,
 					refValue);
 		else
-			newCheckPointError = new CheckPointErrorReport(checkPointName, detailLocation, value, refValue);
+			newCheckPointError = new CheckPointErrorReport(checkPointName,checkPointName, detailLocation, value, refValue);
 
 		if (targetLocations.length > 0) {
 			for (DataLocation dataLocation : targetLocations) {
@@ -159,7 +158,7 @@ public class ValidationReporterImpl implements ValidationReporter, Constant {
 				ret = true;
 		}
 		if (!location.getPath().isEmpty()) {
-			NeptuneIdentifiedObject object = location.getPath().get(location.getPath().size() - 1);
+			DataLocation.Path object = location.getPath().get(location.getPath().size() - 1);
 			OBJECT_TYPE type = getType(object);
 			if (type != null) {
 				if (reporter.addValidationErrorToObjectReport(context, object.getObjectId(), type, code, severity))
@@ -169,21 +168,31 @@ public class ValidationReporterImpl implements ValidationReporter, Constant {
 		return ret;
 	}
 
+	private OBJECT_TYPE getType(Path object) {
+		String name = object.getObjectClass().replaceAll("(.)(\\p{Upper})", "$1_$2").toUpperCase();
+		try {
+			return OBJECT_TYPE.valueOf(name);
+		} catch (Exception ex) {
+			log.error("unknown type " + object.getObjectClass());
+			return null;
+		}
+	}
+
 	protected static String toUnderscore(String camelcase) {
 
 		return camelcase.replaceAll("(.)(\\p{Upper})", "$1_$2").toLowerCase();
 	}
 
-	private OBJECT_TYPE getType(NeptuneIdentifiedObject object) {
-		String name = object.getClass().getSimpleName();
-		name = name.replaceAll("(.)(\\p{Upper})", "$1_$2").toUpperCase();
-		try {
-			return OBJECT_TYPE.valueOf(name);
-		} catch (Exception ex) {
-			log.error("unknown type " + object.getClass().getSimpleName());
-			return null;
-		}
-	}
+//	private OBJECT_TYPE getType(NeptuneIdentifiedObject object) {
+//		String name = object.getClass().getSimpleName();
+//		name = name.replaceAll("(.)(\\p{Upper})", "$1_$2").toUpperCase();
+//		try {
+//			return OBJECT_TYPE.valueOf(name);
+//		} catch (Exception ex) {
+//			log.error("unknown type " + object.getClass().getSimpleName());
+//			return null;
+//		}
+//	}
 
 	@Override
 	public void addCheckPointReportError(Context context, String checkPointName, DataLocation[] locations, String value) {
@@ -198,7 +207,7 @@ public class ValidationReporterImpl implements ValidationReporter, Constant {
 				throw new NullPointerException("unknown checkPointName " + checkPointName);
 			checkPoint.setState(RESULT.NOK);
 
-			CheckPointErrorReport newCheckPointError = new CheckPointErrorReport(checkPointName, detailLocation, value);
+			CheckPointErrorReport newCheckPointError = new CheckPointErrorReport(checkPointName, checkPointName, detailLocation, value);
 			int index = validationReport.getCheckPointErrors().size();
 			boolean checkPointAdded = checkPoint.addCheckPointError(index);
 
@@ -216,6 +225,15 @@ public class ValidationReporterImpl implements ValidationReporter, Constant {
 		ValidationReport2 validationReport = (ValidationReport2) context.get(VALIDATION_REPORT);
 		CheckPointReport checkPoint = validationReport.findCheckPointReportByName(checkpointName);
 		reporter.addFileReport(context, filenameInfo, IO_TYPE.INPUT);
+
+		if (checkPoint.getState().equals(RESULT.UNCHECK))
+			checkPoint.setState(RESULT.OK);
+	}
+
+	@Override
+	public void reportSuccess(Context context, String checkpointName) {
+		ValidationReport2 validationReport = (ValidationReport2) context.get(VALIDATION_REPORT);
+		CheckPointReport checkPoint = validationReport.findCheckPointReportByName(checkpointName);
 
 		if (checkPoint.getState().equals(RESULT.UNCHECK))
 			checkPoint.setState(RESULT.OK);
@@ -256,16 +274,16 @@ public class ValidationReporterImpl implements ValidationReporter, Constant {
 
 	}
 
-	@Override
-	public boolean checkValidationReportValidity(Context context) {
-		ValidationReport2 validationReport = (ValidationReport2) context.get(VALIDATION_REPORT);
-		for (CheckPointReport checkPoint : validationReport.getCheckPoints()) {
-			if (checkPoint.getSeverity().equals(SEVERITY.ERROR) && checkPoint.getState().equals(RESULT.NOK)) {
-				return ERROR;
-			}
-		}
-		return SUCCESS;
-	}
+//	@Override
+//	public boolean checkValidationReportValidity(Context context) {
+//		ValidationReport2 validationReport = (ValidationReport2) context.get(VALIDATION_REPORT);
+//		for (CheckPointReport checkPoint : validationReport.getCheckPoints()) {
+//			if (checkPoint.getSeverity().equals(SEVERITY.ERROR) && checkPoint.getState().equals(RESULT.NOK)) {
+//				return ERROR;
+//			}
+//		}
+//		return SUCCESS;
+//	}
 
 	@Override
 	public boolean checkIfCheckPointExists(Context context, String checkPointName) {

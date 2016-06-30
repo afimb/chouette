@@ -150,6 +150,7 @@ public interface ActionReporter {
 	 */
 	boolean hasInfo(Context context, OBJECT_TYPE line);
 
+	boolean hasFileValidationErrors(Context context, String filename);
 	
 	
 	/**

@@ -15,7 +15,6 @@ import java.util.TimeZone;
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.exchange.gtfs.model.GtfsAgency;
 import mobi.chouette.exchange.gtfs.model.exporter.GtfsExporterInterface;
-import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.model.Company;
 
 /**
@@ -34,7 +33,7 @@ public class GtfsAgencyProducer extends AbstractProducer
    private GtfsAgency agency = new GtfsAgency();
 
 
-   public boolean save(Company neptuneObject, ActionReport report, String prefix, TimeZone timeZone)
+   public boolean save(Company neptuneObject, String prefix, TimeZone timeZone)
    {
       agency.setAgencyId(toGtfsId(neptuneObject.getObjectId(),prefix));
 

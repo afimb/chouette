@@ -43,20 +43,21 @@ public class GtfsValidationRules implements Constant {
 		
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_8   , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_9 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
-		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Route_1 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_10 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_11 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
 		
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_12   , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
-		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Route_2 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
-		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Calendar_1 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_13 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_14 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
-		// checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_4_5 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_15 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
-		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Calendar_2 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 
 		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Common_16   , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Calendar_1 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Calendar_2 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Route_1 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
+		checkPoints.add(new CheckPoint(GTFS_1_GTFS_Route_2 , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 
 		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Common_1   , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.ERROR));
 		checkPoints.add(new CheckPoint(GTFS_2_GTFS_Common_2   , CheckPoint.RESULT.UNCHECK, CheckPoint.SEVERITY.WARNING));

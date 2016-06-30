@@ -14,8 +14,10 @@ import mobi.chouette.exchange.gtfs.model.importer.GtfsImporter;
 import mobi.chouette.exchange.gtfs.parser.GtfsStopParser;
 import mobi.chouette.exchange.gtfs.parser.GtfsTransferParser;
 import mobi.chouette.exchange.importer.ParserFactory;
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.DataStats;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
+import mobi.chouette.exchange.report.ActionReporter.OBJECT_TYPE;
+import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.model.util.Referential;
 
 import com.jamonapi.Monitor;
@@ -35,7 +37,6 @@ public class GtfsStopParserCommand implements Command, Constant {
 		try {
 			Referential referential = (Referential) context.get(REFERENTIAL);
 			GtfsImportParameters configuration = (GtfsImportParameters) context.get(CONFIGURATION);
-			ActionReport report = (ActionReport) context.get(REPORT);
 			if (referential != null) {
 				referential.clear(true);
 			}
@@ -71,7 +72,7 @@ public class GtfsStopParserCommand implements Command, Constant {
 			}
 			
 
-			addStats(report, referential);
+			addStats(context, referential);
 		    
 			result = SUCCESS;
 		} catch (Exception e) {
@@ -84,10 +85,15 @@ public class GtfsStopParserCommand implements Command, Constant {
 	}
 
 	
-	private void addStats(ActionReport report, Referential referential) {
-		DataStats globalStats = report.getStats();
-		globalStats.setConnectionLinkCount(referential.getSharedConnectionLinks().size());
-		globalStats.setStopAreaCount(referential.getSharedStopAreas().size());
+	private void addStats(Context context, Referential referential) {
+		ActionReporter reporter = ActionReporter.Factory.getInstance();
+		reporter.addObjectReport(context, "merged", OBJECT_TYPE.CONNECTION_LINK, "connection links", OBJECT_STATE.OK,
+				IO_TYPE.INPUT);
+		reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.CONNECTION_LINK, OBJECT_TYPE.CONNECTION_LINK,
+				referential.getSharedConnectionLinks().size());
+		reporter.addObjectReport(context, "merged", OBJECT_TYPE.STOP_AREA, "stop areas", OBJECT_STATE.OK,
+				IO_TYPE.INPUT);
+		reporter.setStatToObjectReport(context, "merged", OBJECT_TYPE.STOP_AREA, OBJECT_TYPE.STOP_AREA, referential.getSharedStopAreas().size());
 
 	}
 

@@ -5,11 +5,11 @@ import java.util.List;
 import java.util.Set;
 
 import mobi.chouette.common.Context;
-import mobi.chouette.exchange.model.DataLocation;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.neptune.model.AreaCentroid;
 import mobi.chouette.exchange.neptune.model.PTLink;
 import mobi.chouette.exchange.validation.ValidationData;
+import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.LineLocation;
 import mobi.chouette.exchange.validation.report.Location;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
@@ -165,27 +165,27 @@ public abstract class AbstractValidator implements Constant {
 			// manage neptune specific model
 			if (object instanceof PTLink) {
 				try {
-					List<NeptuneIdentifiedObject> path = loc.getPath();
-					path.add(object);
-					path.add(((PTLink) object).getRoute());
-					path.add(((PTLink) object).getRoute().getLine());
+					List<DataLocation.Path> path = loc.getPath();
+					path.add(loc.new Path(object));
+					path.add(loc.new Path(((PTLink) object).getRoute()));
+					path.add(loc.new Path(((PTLink) object).getRoute().getLine()));
 
-					Line line = ((PTLink) object).getRoute().getLine();
-					if (line != null)
-						loc.setLine(line);
+//					Line line = ((PTLink) object).getRoute().getLine();
+//					if (line != null)
+//						loc.setLine(line);
 				} catch (NullPointerException e) {
 
 				}
 			} else if (object instanceof AreaCentroid) {
 				try {
-					List<NeptuneIdentifiedObject> path = loc.getPath();
-					path.add(object);
-					path.add(((AreaCentroid) object).getContainedIn());
+					List<DataLocation.Path> path = loc.getPath();
+					path.add(loc.new Path(object));
+					path.add(loc.new Path(((AreaCentroid) object).getContainedIn()));
 				} catch (NullPointerException e) {
 
 				}
 			}{
-				DataLocation.addLineLocation(loc, object);
+//				DataLocation.addLineLocation(loc, object);
 				loc.setName(DataLocation.buildName(object));
 			}
 			data.getDataLocations().put(objectId, loc);

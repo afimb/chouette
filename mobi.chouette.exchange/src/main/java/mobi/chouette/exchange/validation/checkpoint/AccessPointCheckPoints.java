@@ -5,11 +5,11 @@ import java.util.List;
 
 import lombok.extern.log4j.Log4j;
 import mobi.chouette.common.Context;
-import mobi.chouette.exchange.model.DataLocation;
 import mobi.chouette.exchange.validation.ValidationConstraints;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
+import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.AccessPoint;
 import mobi.chouette.model.StopArea;

@@ -42,6 +42,7 @@ public abstract class AbstractConverter implements Constant{
 
 	public static String composeObjectId(String prefix, String type, String id, Logger logger) {
 
+		if (id == null || id.isEmpty() ) return "";
 		String[] tokens = id.split("\\.");
 		if (tokens.length == 2) {
 			// id should be produced by Chouette

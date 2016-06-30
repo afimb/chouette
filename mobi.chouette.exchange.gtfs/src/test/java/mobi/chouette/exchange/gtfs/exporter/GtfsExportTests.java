@@ -25,13 +25,15 @@ import mobi.chouette.exchange.gtfs.GtfsTestsUtils;
 import mobi.chouette.exchange.gtfs.JobDataTest;
 import mobi.chouette.exchange.neptune.importer.NeptuneImportParameters;
 import mobi.chouette.exchange.neptune.importer.NeptuneImporterCommand;
-import mobi.chouette.exchange.report.ActionReport;
-import mobi.chouette.exchange.report.FileInfo;
-import mobi.chouette.exchange.report.LineInfo;
-import mobi.chouette.exchange.report.LineInfo.LINE_STATE;
+import mobi.chouette.exchange.report.ActionReport2;
+import mobi.chouette.exchange.report.ActionReporter;
+import mobi.chouette.exchange.report.ActionReporter.OBJECT_STATE;
+import mobi.chouette.exchange.report.FileReport;
+import mobi.chouette.exchange.report.ObjectReport;
 import mobi.chouette.exchange.report.ReportConstant;
-import mobi.chouette.exchange.validation.report.CheckPoint;
-import mobi.chouette.exchange.validation.report.ValidationReport;
+import mobi.chouette.exchange.validation.report.CheckPointReport;
+import mobi.chouette.exchange.validation.report.ValidationReport2;
+import mobi.chouette.exchange.validation.report.ValidationReporter.RESULT;
 import mobi.chouette.model.Line;
 import mobi.chouette.persistence.hibernate.ContextHolder;
 
@@ -144,8 +146,8 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 
 		Context context = new Context();
 		context.put(INITIAL_CONTEXT, initialContext);
-		context.put(REPORT, new ActionReport());
-		context.put(VALIDATION_REPORT, new ValidationReport());
+		context.put(REPORT, new ActionReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport2());
 		NeptuneImportParameters configuration = new NeptuneImportParameters();
 		configuration.setCleanRepository(true);
 		configuration.setNoSave(false);
@@ -181,8 +183,8 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 
 		Context context = new Context();
 		context.put(INITIAL_CONTEXT, initialContext);
-		context.put(REPORT, new ActionReport());
-		context.put(VALIDATION_REPORT, new ValidationReport());
+		context.put(REPORT, new ActionReport2());
+		context.put(VALIDATION_REPORT, new ValidationReport2());
 		GtfsExportParameters configuration = new GtfsExportParameters();
 		context.put(CONFIGURATION, configuration);
 		configuration.setName("name");
@@ -235,19 +237,21 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 			throw ex;
 		}
 		
-		ActionReport report = (ActionReport) context.get(REPORT);
-		ValidationReport vreport = (ValidationReport) context.get(VALIDATION_REPORT);
+		ActionReport2 report = (ActionReport2) context.get(REPORT);
+		ValidationReport2 vreport = (ValidationReport2) context.get(VALIDATION_REPORT);
 		Assert.assertEquals(report.getResult(), STATUS_OK, "result");
-		for (FileInfo info : report.getFiles()) {
-			Reporter.log(info.toString(),true);
+		Assert.assertEquals(report.getResult(), STATUS_OK, "result");
+		for (FileReport info : report.getFiles()) {
+		    Reporter.log(info.toString(),true);
 		}
 		Assert.assertEquals(report.getFiles().size(), 6, "file reported");
-		for (LineInfo info : report.getLines()) {
-			Reporter.log(info.toString(),true);
+		for (ObjectReport info : report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports()) {
+		    Reporter.log(info.toString(),true);
 		}
-		Assert.assertEquals(report.getLines().size(), 6, "line reported");
-		Reporter.log("report line :" + report.getLines().get(0).toString(), true);
-		Assert.assertEquals(report.getLines().get(0).getStatus(), LINE_STATE.OK, "line status");
+		Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().size(), 6, "line reported");
+		for (int i = 0; i < 6; i++) {
+			Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().get(i).getStatus(), OBJECT_STATE.OK, "line status");
+		}
 		Reporter.log("validation report size :" + vreport.getCheckPoints().size(), true);
 		Assert.assertFalse(vreport.getCheckPoints().isEmpty(),"validation report should not be empty");
 
@@ -276,14 +280,13 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 			throw ex;
 		}
 		
-		ActionReport report = (ActionReport) context.get(REPORT);
+		ActionReport2 report = (ActionReport2) context.get(REPORT);
 		Assert.assertEquals(report.getResult(), STATUS_OK, "result");
-		for (FileInfo info : report.getFiles()) {
+		for (FileReport info : report.getFiles()) {
 			Reporter.log(info.toString(),true);
 		}
 		Assert.assertEquals(report.getFiles().size(), 1, "file reported");
 		
-		Assert.assertEquals(report.getLines().size(), 0, "line reported");
 
 
    }
@@ -310,7 +313,7 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 	em.joinTransaction();
 	Line myLine = lineDAO.findByObjectId("CITURA:Line:01");
 	myLine.setCompany(null);
-	String myLineName = myLine.getName() + " (01)";
+	String myLineName = myLine.getName();
 	utx.commit();
                
 	GtfsExportParameters configuration = (GtfsExportParameters) context.get(CONFIGURATION);
@@ -328,23 +331,22 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 	    throw ex;
 	}
                
-	ActionReport report = (ActionReport) context.get(REPORT);
+	ActionReport2 report = (ActionReport2) context.get(REPORT);
                
 	Assert.assertEquals(report.getResult(), STATUS_OK, "result");
-	for (FileInfo info : report.getFiles()) {
+	for (FileReport info : report.getFiles()) {
 	    Reporter.log(info.toString(),true);
 	}
 	Assert.assertEquals(report.getFiles().size(), 6, "file reported");
-	for (LineInfo info : report.getLines()) {
+	for (ObjectReport info : report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports()) {
 	    Reporter.log(info.toString(),true);
 	}
-	Assert.assertEquals(report.getLines().size(), 6, "line reported");
+	Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().size(), 6, "line reported");
 	for (int i = 0; i < 6; i++) {
-	    Reporter.log("report line :" + report.getLines().get(i).toString(), true);
-	    if (myLineName.equals(report.getLines().get(i).getName()))
-		Assert.assertEquals(report.getLines().get(i).getStatus(), LINE_STATE.ERROR, "no company for this line");
+	    if (myLineName.equals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().get(i).getDescription()))
+		Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().get(i).getStatus(), OBJECT_STATE.ERROR, "no company for this line");
 	    else
-		Assert.assertEquals(report.getLines().get(i).getStatus(), LINE_STATE.OK, "line status");
+		Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().get(i).getStatus(), OBJECT_STATE.OK, "line status");
 	}
 
     }
@@ -370,23 +372,22 @@ public class GtfsExportTests extends Arquillian implements Constant, ReportConst
 			log.error("test failed", ex);
 			throw ex;
 		}
-		ActionReport report = (ActionReport) context.get(REPORT);
+		ActionReport2 report = (ActionReport2) context.get(REPORT);
 		Reporter.log(report.toString(),true);
-		ValidationReport valReport = (ValidationReport) context.get(VALIDATION_REPORT);
-		for (CheckPoint cp : valReport.getCheckPoints()) 
+		ValidationReport2 valReport = (ValidationReport2) context.get(VALIDATION_REPORT);
+		for (CheckPointReport cp : valReport.getCheckPoints()) 
 		{
-			if (cp.getState().equals(CheckPoint.RESULT.NOK))
+			if (cp.getState().equals(RESULT.NOK))
 			{
 				Reporter.log(cp.toString(),true);
 			}
 		}
 		Assert.assertEquals(report.getResult(), STATUS_OK, "result");
 		Assert.assertEquals(report.getFiles().size(), fileCount, "file reported");
-		Assert.assertEquals(report.getLines().size(), lineCount, "line reported");
-		for (LineInfo info : report.getLines()) {
-			Assert.assertEquals(info.getStatus(), LINE_STATE.OK, "line status");
+		Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().size(), lineCount, "line reported");
+		for (int i = 0; i < 6; i++) {
+			Assert.assertEquals(report.getCollections().get(ActionReporter.OBJECT_TYPE.LINE).getObjectReports().get(i).getStatus(), OBJECT_STATE.OK, "line status");
 		}
-
 
 	}
 

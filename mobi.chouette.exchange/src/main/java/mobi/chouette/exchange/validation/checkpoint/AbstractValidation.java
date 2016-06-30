@@ -20,12 +20,12 @@ import java.util.regex.Pattern;
 
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
-import mobi.chouette.exchange.model.DataLocation;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.parameters.FieldParameters;
 import mobi.chouette.exchange.validation.parameters.TransportModeParameters;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
 import mobi.chouette.exchange.validation.parameters.ValidationParametersUtil;
+import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.NeptuneLocalizedObject;
@@ -635,7 +635,7 @@ public abstract class AbstractValidation<T extends NeptuneIdentifiedObject> impl
 		if (NamingUtil.isEmpty(loc.getName())) {
 			loc.setName(DataLocation.buildName(object));
 		}
-		DataLocation.addLineLocation(loc,object);
+		// DataLocation.addLineLocation(loc,object);
 		return loc;
 	}
 

@@ -2,10 +2,10 @@ package mobi.chouette.exchange.action.report;
 
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
-import mobi.chouette.exchange.model.DataLocation;
 import mobi.chouette.exchange.report.ActionReport2;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.IO_TYPE;
+import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReport2;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 

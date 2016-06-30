@@ -10,9 +10,7 @@ import mobi.chouette.common.Context;
 import mobi.chouette.common.chain.Command;
 import mobi.chouette.common.chain.CommandFactory;
 import mobi.chouette.exchange.gtfs.validation.Constant;
-import mobi.chouette.exchange.gtfs.validation.GtfsValidationRules;
 import mobi.chouette.exchange.gtfs.validation.GtfsValidationReporter;
-import mobi.chouette.exchange.validation.report.ValidationReport;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -26,18 +24,9 @@ public class GtfsValidationRulesCommand implements Command, Constant {
 	public boolean execute(Context context) throws Exception {
 		Monitor monitor = MonitorFactory.start(COMMAND);
 		
-		ValidationReport validationReport = (ValidationReport)context.get(VALIDATION_REPORT);
-		if (validationReport == null) {
-			validationReport = new ValidationReport();
-			context.put(VALIDATION_REPORT, validationReport);
-		}
-		validationReport.setMaxByFile(true);
-		GtfsImportParameters parameters = (GtfsImportParameters)context.get(CONFIGURATION);
-		validationReport.addAllCheckPoints((new GtfsValidationRules()).checkPoints(parameters));
-
 		GtfsValidationReporter gtfsValidationReporter = (GtfsValidationReporter)context.get(GTFS_REPORTER);
 		if (gtfsValidationReporter == null) {
-			gtfsValidationReporter = new GtfsValidationReporter();
+			gtfsValidationReporter = new GtfsValidationReporter(context);
 			context.put(GTFS_REPORTER, gtfsValidationReporter);
 		}
 		

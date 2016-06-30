@@ -9,13 +9,13 @@ import java.util.List;
 import java.util.Map;
 
 import mobi.chouette.common.Context;
-import mobi.chouette.exchange.model.DataLocation;
 import mobi.chouette.exchange.neptune.Constant;
 import mobi.chouette.exchange.validation.ValidationConstraints;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.ValidationException;
 import mobi.chouette.exchange.validation.Validator;
 import mobi.chouette.exchange.validation.ValidatorFactory;
+import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.ValidationReporter;
 import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.VehicleJourney;
@@ -328,7 +328,7 @@ public class VehicleJourneyValidator extends AbstractValidator implements Valida
 //				vjasLocation.setLine(fileLocations.get(objectId).getLine());
 				
 				DataLocation vjasLocation = new DataLocation(fileName, lineNumber, columnNumber, objectId);
-				vjasLocation.setLine(fileLocations.get(objectId).getLine());
+				vjasLocation.setPath(fileLocations.get(objectId).getPath());
 
 				String stopPointId = (String) vjas.get(STOP_POINT_ID);
 				if (!stopPointsContext.containsKey(stopPointId))

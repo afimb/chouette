@@ -40,36 +40,37 @@ public class CheckPointErrorReport {
 	@XmlElement(name = "reference_value")
 	private String referenceValue = "";
 
-	protected CheckPointErrorReport(String key, Location source) {
+	protected CheckPointErrorReport(String testId, String key, Location source) {
 		setKey(key.replaceAll("-", "_").toLowerCase());
 		this.source = source;
+		this.testId = testId;
 
 	}
 
-	protected CheckPointErrorReport(String key, Location source, String value) {
-		this(key, source);
+	protected CheckPointErrorReport(String testId, String key, Location source, String value) {
+		this(testId, key, source);
 		this.value = value;
 
 	}
 
-	protected CheckPointErrorReport(String key, Location source, String value, String refValue) {
-		this(key, source, value);
+	protected CheckPointErrorReport(String testId, String key, Location source, String value, String refValue) {
+		this(testId,key, source, value);
 		this.referenceValue = refValue;
 
 	}
 
-	protected CheckPointErrorReport(String key, Location source, Location... targets) {
-		this(key, source);
+	protected CheckPointErrorReport(String testId, String key, Location source, Location... targets) {
+		this(testId,key, source);
 		this.getTargets().addAll(Arrays.asList(targets));
 	}
 
-	protected CheckPointErrorReport(String key, Location source, String value, Location... targets) {
-		this(key, source, value);
+	protected CheckPointErrorReport(String testId, String key, Location source, String value, Location... targets) {
+		this(testId,key, source, value);
 		this.getTargets().addAll(Arrays.asList(targets));
 	}
 
-	protected CheckPointErrorReport(String key, Location source, String value, String refValue, Location... targets) {
-		this(key, source, value, refValue);
+	protected CheckPointErrorReport(String testId, String key, Location source, String value, String refValue, Location... targets) {
+		this(testId, key, source, value, refValue);
 		this.getTargets().addAll(Arrays.asList(targets));
 	}
 

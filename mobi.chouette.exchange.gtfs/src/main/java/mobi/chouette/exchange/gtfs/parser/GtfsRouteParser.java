@@ -96,7 +96,7 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 					parser.validate(bean, importer);
 				} catch (Exception ex) {
 					if (ex instanceof GtfsException) {
-						gtfsValidationReporter.reportError(context, (GtfsException)ex, GTFS_ROUTES_FILE);
+						gtfsValidationReporter.reportError(context, bean.getRouteId(),(GtfsException)ex, GTFS_ROUTES_FILE);
 					} else {
 						gtfsValidationReporter.throwUnknownError(context, ex, GTFS_ROUTES_FILE);
 					}
@@ -109,7 +109,7 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 					if (ex.isFatal())
 						fatalException = ex;
 				}
-				gtfsValidationReporter.reportErrors(context, bean.getErrors(), GTFS_ROUTES_FILE);
+				gtfsValidationReporter.reportErrors(context, bean.getRouteId(),bean.getErrors(), GTFS_ROUTES_FILE);
 				gtfsValidationReporter.validate(context, GTFS_ROUTES_FILE, bean.getOkTests());
 			}
 			parser.setWithValidation(false);
@@ -156,7 +156,7 @@ public class GtfsRouteParser implements Parser, Validator, Constant {
 		convert(context, gtfsRoute, line);
 
 		// update validationreport if necessary
-		gtfsValidationReporter.updateValidationReport(context, GTFS_ROUTES_FILE, gtfsRouteId, line);
+		// gtfsValidationReporter.updateValidationReport(context, GTFS_ROUTES_FILE, gtfsRouteId, line);
 		
 		// PTNetwork
 		String ptNetworkId = configuration.getObjectIdPrefix() + ":" + Network.PTNETWORK_KEY + ":"

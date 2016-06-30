@@ -23,7 +23,6 @@ import mobi.chouette.exchange.neptune.importer.NeptuneInitImportCommand;
 import mobi.chouette.exchange.neptune.importer.NeptuneParserCommand;
 import mobi.chouette.exchange.neptune.importer.NeptuneSAXParserCommand;
 import mobi.chouette.exchange.neptune.importer.NeptuneValidationCommand;
-import mobi.chouette.exchange.report.ActionReport2;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;

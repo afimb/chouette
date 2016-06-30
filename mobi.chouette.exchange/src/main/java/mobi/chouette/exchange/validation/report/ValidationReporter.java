@@ -1,7 +1,6 @@
 package mobi.chouette.exchange.validation.report;
 
 import mobi.chouette.common.Context;
-import mobi.chouette.exchange.model.DataLocation;
 
 public interface ValidationReporter {
 	
@@ -110,6 +109,13 @@ public interface ValidationReporter {
 	 * @param filenameInfo
 	 */
 	void reportSuccess(Context context, String checkpointName, String filenameInfo);
+
+	/**
+	 * @param context
+	 * @param checkpointName
+	 */
+	void reportSuccess(Context context, String checkpointName);
+
 	/**
 	 * Suppose that test for specific checkpoint is successful
 	 * @param context
@@ -131,12 +137,12 @@ public interface ValidationReporter {
 	 */
 	void updateCheckPointReportSeverity(Context context, String checkPointName, CheckPointReport.SEVERITY severity);
 	
-	/**
-	 * Check if validation report validity
-	 * @param context
-	 * @return
-	 */
-	boolean checkValidationReportValidity(Context context);
+//	/**
+//	 * Check if validation report validity
+//	 * @param context
+//	 * @return
+//	 */
+//	boolean checkValidationReportValidity(Context context);
 	
 	/**
 	 * Check if checkpoint exists
@@ -176,5 +182,6 @@ public interface ValidationReporter {
 			return validationReporter;
 		}
 	}
+
 
 }

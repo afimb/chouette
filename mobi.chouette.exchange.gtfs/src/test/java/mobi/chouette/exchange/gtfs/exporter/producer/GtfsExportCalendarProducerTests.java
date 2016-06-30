@@ -13,7 +13,6 @@ import mobi.chouette.exchange.gtfs.model.GtfsCalendarDate.ExceptionType;
 import mobi.chouette.exchange.gtfs.model.exporter.CalendarDateExporter;
 import mobi.chouette.exchange.gtfs.model.exporter.CalendarExporter;
 import mobi.chouette.exchange.gtfs.model.importer.Context;
-import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.model.CalendarDay;
 import mobi.chouette.model.Period;
 import mobi.chouette.model.Timetable;
@@ -40,7 +39,6 @@ public class GtfsExportCalendarProducerTests
       c.set(Calendar.DAY_OF_MONTH, 1);
       c.set(Calendar.HOUR_OF_DAY, 12);
 
-      ActionReport report = new ActionReport();
       Timetable neptuneObject = new Timetable();
       neptuneObject.setObjectId("GTFS:Timetable:1234");
       neptuneObject.setComment("name");
@@ -54,7 +52,7 @@ public class GtfsExportCalendarProducerTests
 
       List<Timetable> tms = new ArrayList<>();
       tms.add(neptuneObject);
-      producer.save(tms, report, "GTFS");
+      producer.save(tms,  "GTFS");
       Reporter.log("verifyCalendarProducer1");
       Assert.assertEquals(mock.getExportedCalendars().size(),1,"Calendar must be returned");
       GtfsCalendar gtfsObject = mock.getExportedCalendars().get(0);
@@ -83,7 +81,6 @@ public class GtfsExportCalendarProducerTests
       c.set(Calendar.DAY_OF_MONTH, 1);
       c.set(Calendar.HOUR_OF_DAY, 12);
 
-      ActionReport report = new ActionReport();
       Timetable neptuneObject = new Timetable();
       neptuneObject.setObjectId("GTFS:Timetable:1234");
       neptuneObject.setComment("name");
@@ -97,7 +94,7 @@ public class GtfsExportCalendarProducerTests
 
       List<Timetable> tms = new ArrayList<>();
       tms.add(neptuneObject);
-      producer.save(tms, report, "GTFS");
+      producer.save(tms,  "GTFS");
       Reporter.log("verifyCalendarProducer2");
 
       Assert.assertEquals(mock.getExportedCalendars().size(), 0, "no calendar produced");
@@ -128,7 +125,6 @@ public class GtfsExportCalendarProducerTests
       c.set(Calendar.DAY_OF_MONTH, 1);
       c.set(Calendar.HOUR_OF_DAY, 12);
 
-      ActionReport report = new ActionReport();
       Timetable neptuneObject = new Timetable();
       neptuneObject.setObjectId("GTFS:Timetable:1234");
       neptuneObject.setComment("name");
@@ -152,7 +148,7 @@ public class GtfsExportCalendarProducerTests
 
       List<Timetable> tms = new ArrayList<>();
       tms.add(neptuneObject);
-      producer.save(tms, report, "GTFS");
+      producer.save(tms,  "GTFS");
       Reporter.log("verifyCalendarProducer3");
       Assert.assertEquals(mock.getExportedCalendars().size(),1,"Calendar must be returned");
       GtfsCalendar gtfsObject = mock.getExportedCalendars().get(0);
@@ -195,7 +191,6 @@ public class GtfsExportCalendarProducerTests
       c.set(Calendar.DAY_OF_MONTH, 1);
       c.set(Calendar.HOUR_OF_DAY, 12);
 
-      ActionReport report = new ActionReport();
       Timetable neptuneObject = new Timetable();
       neptuneObject.setObjectId("GTFS:Timetable:1234");
       neptuneObject.setComment("name");
@@ -219,7 +214,7 @@ public class GtfsExportCalendarProducerTests
 
       List<Timetable> tms = new ArrayList<>();
       tms.add(neptuneObject);
-      producer.save(tms, report, "GTFS");
+      producer.save(tms,  "GTFS");
       Reporter.log("verifyCalendarProducer4");
 
       Assert.assertEquals(mock.getExportedCalendars().size(), 0, "no calendar produced");

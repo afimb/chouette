@@ -1,9 +1,10 @@
-package mobi.chouette.exchange.model;
+package mobi.chouette.exchange.validation.report;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Data;
+import lombok.Getter;
 import lombok.ToString;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;
@@ -16,7 +17,6 @@ import mobi.chouette.model.NeptuneIdentifiedObject;
 import mobi.chouette.model.Network;
 import mobi.chouette.model.Route;
 import mobi.chouette.model.StopArea;
-import mobi.chouette.model.StopPoint;
 import mobi.chouette.model.Timetable;
 import mobi.chouette.model.VehicleJourney;
 import mobi.chouette.model.util.NamingUtil;
@@ -31,8 +31,8 @@ public class DataLocation {
 	private String objectId = "";
 	private String name = "";
 	private NeptuneIdentifiedObject object;
-	private Line line;
-	private List<NeptuneIdentifiedObject> path = new ArrayList<>();
+	// private Line line;
+	private List<Path> path = new ArrayList<>();
 
 	public DataLocation(String fileName) {
 		this.filename = fileName;
@@ -88,46 +88,46 @@ public class DataLocation {
 		this.objectId = chouetteObject.getObjectId();
 		this.object = chouetteObject;
 		this.name = buildName(chouetteObject);
-		path.add(object);
+		path.add(new Path(object));
 		if (chouetteObject instanceof VehicleJourney) {
 			VehicleJourney object = (VehicleJourney) chouetteObject;
 			if (object.getJourneyPattern() != null) {
-				path.add(object.getJourneyPattern());
+				path.add(new Path(object.getJourneyPattern()));
 				if (object.getJourneyPattern().getRoute() != null) {
-					path.add(object.getJourneyPattern().getRoute());
+					path.add(new Path(object.getJourneyPattern().getRoute()));
 					if (object.getJourneyPattern().getRoute().getLine() != null) {
-						path.add(object.getJourneyPattern().getRoute().getLine());
+						path.add(new Path(object.getJourneyPattern().getRoute().getLine()));
 					}
 				}
 			}
 		} else if (chouetteObject instanceof JourneyPattern) {
 			JourneyPattern object = (JourneyPattern) chouetteObject;
 			if (object.getRoute() != null) {
-				path.add(object.getRoute());
+				path.add(new Path(object.getRoute()));
 				if (object.getRoute().getLine() != null) {
-					path.add(object.getRoute().getLine());
+					path.add(new Path(object.getRoute().getLine()));
 				}
 			}
 		} else if (chouetteObject instanceof Route) {
 			Route object = (Route) chouetteObject;
 			if (object.getLine() != null) {
-				path.add(object.getLine());
+				path.add(new Path(object.getLine()));
 			}
 		} else if (chouetteObject instanceof AccessLink) {
 			AccessLink object = (AccessLink) chouetteObject;
 			if (object.getAccessPoint() != null) {
-				path.add(object.getAccessPoint());
+				path.add(new Path(object.getAccessPoint()));
 				if (object.getAccessPoint().getContainedIn() != null) {
-					path.add(object.getAccessPoint().getContainedIn());
+					path.add(new Path(object.getAccessPoint().getContainedIn()));
 				}
 			}
 		} else if (chouetteObject instanceof AccessPoint) {
 			AccessPoint object = (AccessPoint) chouetteObject;
 			if (object.getContainedIn() != null) {
-			path.add(object.getContainedIn());
+			path.add(new Path(object.getContainedIn()));
 			}
 		}
-		addLineLocation(this, chouetteObject);
+//		addLineLocation(this, chouetteObject);
 
 	}
 
@@ -172,32 +172,57 @@ public class DataLocation {
 		return "unnammed";
 	}
 
-	public static void addLineLocation(DataLocation loc, NeptuneIdentifiedObject chouetteObject) {
-		if (loc.getLine() != null)
-			return;
-		Line line = null;
-		try {
-			if (chouetteObject instanceof VehicleJourney) {
-				VehicleJourney object = (VehicleJourney) chouetteObject;
-				line = object.getRoute().getLine();
-			} else if (chouetteObject instanceof JourneyPattern) {
-				JourneyPattern object = (JourneyPattern) chouetteObject;
-				line = object.getRoute().getLine();
-			} else if (chouetteObject instanceof StopPoint) {
-				StopPoint object = (StopPoint) chouetteObject;
-				line = object.getRoute().getLine();
-			} else if (chouetteObject instanceof Route) {
-				Route object = (Route) chouetteObject;
-				line = object.getLine();
-			} else if (chouetteObject instanceof Line) {
-				line = (Line) chouetteObject;
-			}
-		} catch (NullPointerException ex) {
-			// ignore line path
+//	public static void addLineLocation(DataLocation loc, NeptuneIdentifiedObject chouetteObject) {
+//		if (loc.getLine() != null)
+//			return;
+//		Line line = null;
+//		try {
+//			if (chouetteObject instanceof VehicleJourney) {
+//				VehicleJourney object = (VehicleJourney) chouetteObject;
+//				line = object.getRoute().getLine();
+//			} else if (chouetteObject instanceof JourneyPattern) {
+//				JourneyPattern object = (JourneyPattern) chouetteObject;
+//				line = object.getRoute().getLine();
+//			} else if (chouetteObject instanceof StopPoint) {
+//				StopPoint object = (StopPoint) chouetteObject;
+//				line = object.getRoute().getLine();
+//			} else if (chouetteObject instanceof Route) {
+//				Route object = (Route) chouetteObject;
+//				line = object.getLine();
+//			} else if (chouetteObject instanceof Line) {
+//				line = (Line) chouetteObject;
+//			}
+//		} catch (NullPointerException ex) {
+//			// ignore line path
+//		}
+//		if (line != null)
+//			loc.setLine(line);
+//
+//	}
+
+	public class Path
+	{
+		@Getter
+		String objectClass;
+		@Getter
+		String objectId;
+		
+		public Path(String className,String objectId)
+		{
+			this.objectClass = className;
+			this.objectId = objectId;
 		}
-		if (line != null)
-			loc.setLine(line);
+		
+		public Path(NeptuneIdentifiedObject object)
+		{
+			this(object.getClass().getSimpleName(),object.getObjectId());
+		}
+		
+		public String toString()
+		{
+			return "class = "+objectClass+", id = "+objectId;
+		}
 
 	}
-
+	
 }

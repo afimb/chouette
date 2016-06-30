@@ -2,7 +2,6 @@ package mobi.chouette.exchange.validation.report;
 
 import mobi.chouette.common.Constant;
 import mobi.chouette.common.Context;
-import mobi.chouette.exchange.model.DataLocation;
 import mobi.chouette.exchange.report.ActionReport2;
 
 import org.codehaus.jettison.json.JSONObject;

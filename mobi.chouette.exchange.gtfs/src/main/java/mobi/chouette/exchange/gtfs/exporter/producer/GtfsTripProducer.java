@@ -24,7 +24,6 @@ import mobi.chouette.exchange.gtfs.model.GtfsStopTime.PickupType;
 import mobi.chouette.exchange.gtfs.model.GtfsTime;
 import mobi.chouette.exchange.gtfs.model.GtfsTrip;
 import mobi.chouette.exchange.gtfs.model.exporter.GtfsExporterInterface;
-import mobi.chouette.exchange.report.ActionReport;
 import mobi.chouette.model.JourneyFrequency;
 import mobi.chouette.model.JourneyPattern;
 import mobi.chouette.model.Line;
@@ -64,7 +63,7 @@ public class GtfsTripProducer extends AbstractProducer {
 	 * @param sharedPrefix
 	 * @return list of stoptimes
 	 */
-	private boolean saveTimes(VehicleJourney vj, ActionReport report, String prefix, String sharedPrefix) {
+	private boolean saveTimes(VehicleJourney vj, String prefix, String sharedPrefix) {
 		if (vj.getVehicleJourneyAtStops().isEmpty())
 			return false;
 		Line l = vj.getRoute().getLine();
@@ -224,7 +223,7 @@ public class GtfsTripProducer extends AbstractProducer {
 	 *            vehicle journey with multiple timetables
 	 * @return gtfs trip
 	 */
-	public boolean save(VehicleJourney vj, String serviceId, ActionReport report, String prefix, String sharedPrefix) {
+	public boolean save(VehicleJourney vj, String serviceId,  String prefix, String sharedPrefix) {
 
 		String tripId = toGtfsId(vj.getObjectId(), prefix);
 
@@ -269,7 +268,7 @@ public class GtfsTripProducer extends AbstractProducer {
 		// trip.setBikeAllowed();
 
 		// add StopTimes
-		if (saveTimes(vj, report, prefix, sharedPrefix)) {
+		if (saveTimes(vj,  prefix, sharedPrefix)) {
 			try {
 				getExporter().getTripExporter().export(trip);
 			} catch (Exception e) {

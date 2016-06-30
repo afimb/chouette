@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import lombok.Data;
-import mobi.chouette.exchange.model.DataLocation;
+import mobi.chouette.exchange.validation.report.DataLocation;
 import mobi.chouette.exchange.validation.report.Location;
 import mobi.chouette.model.AccessLink;
 import mobi.chouette.model.AccessPoint;

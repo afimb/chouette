@@ -17,7 +17,6 @@ import mobi.chouette.exchange.gtfs.importer.GtfsImportParameters;
 import mobi.chouette.exchange.gtfs.importer.GtfsInitImportCommand;
 import mobi.chouette.exchange.gtfs.importer.GtfsValidationCommand;
 import mobi.chouette.exchange.gtfs.importer.GtfsValidationRulesCommand;
-import mobi.chouette.exchange.report.ActionReport;
 
 import com.jamonapi.Monitor;
 import com.jamonapi.MonitorFactory;
@@ -48,7 +47,7 @@ public class GtfsValidateExportCommand implements Command, Constant {
 			parameters.setReferencesType(configuration.getReferencesType());
 			parameters.setObjectIdPrefix(configuration.getObjectIdPrefix());
 			validateContext.put(CONFIGURATION, parameters);
-			validateContext.put(REPORT, new ActionReport());
+			validateContext.put(REPORT, context.get(REPORT));
 			// rename output folder to input folder
 			JobData jobData = (JobData) context.get(JOB_DATA);
 			String path = jobData.getPathName();
