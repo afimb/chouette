@@ -48,10 +48,17 @@ public class RegtoppImportParameters extends AbstractImportParameter {
 	private String coordinateProjection;
 
 	// Regtopp version
-	@Getter
 	@Setter
 	@XmlElement(name = "calendar_strategy", required = false)
 	private CalendarStrategy calendarStrategy = CalendarStrategy.ADD;
+	
+	public CalendarStrategy getCalendarStrategy() {
+		if(calendarStrategy == null) {
+			calendarStrategy = CalendarStrategy.ADD;
+		}
+		
+		return calendarStrategy;
+	}
 
 
 	public boolean isValid(Logger log, String[] allowedTypes) {
