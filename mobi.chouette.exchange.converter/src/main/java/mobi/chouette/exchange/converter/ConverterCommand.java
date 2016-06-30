@@ -26,14 +26,11 @@ import mobi.chouette.exchange.netex.exporter.NetexExportParameters;
 import mobi.chouette.exchange.netex.importer.NetexImportParameters;
 import mobi.chouette.exchange.parameters.AbstractExportParameter;
 import mobi.chouette.exchange.parameters.AbstractImportParameter;
-import mobi.chouette.exchange.report.ActionReport2;
 import mobi.chouette.exchange.report.ActionReporter;
 import mobi.chouette.exchange.report.ActionReporter.ERROR_CODE;
-import mobi.chouette.exchange.report.IO_TYPE;
 import mobi.chouette.exchange.report.ReportConstant;
 import mobi.chouette.exchange.validation.ValidationData;
 import mobi.chouette.exchange.validation.parameters.ValidationParameters;
-import mobi.chouette.exchange.validation.report.ValidationReport2;
 import mobi.chouette.model.Line;
 import mobi.chouette.model.util.Referential;
 
@@ -109,9 +106,9 @@ public class ConverterCommand implements Command, Constant, ReportConstant {
 				.create(buildCommandProcessingClassName(exportData));
 
 		ValidationParameters validationParameters = (ValidationParameters) context.get(VALIDATION);
-		Context importContext = prepareImportContext(importData, validationParameters);
-		context.put(VALIDATION_REPORT, importContext.get(VALIDATION_REPORT));
-		Context exportContext = prepareExportContext(exportData);
+		Context importContext = prepareImportContext(context, importData, validationParameters);
+// 		context.put(VALIDATION_REPORT, importContext.get(VALIDATION_REPORT));
+		Context exportContext = prepareExportContext(context, exportData);
 
 		try {
 			List<? extends Command> preProcessingImportCommands = importProcessingCommands.getPreProcessingCommands(
@@ -122,7 +119,6 @@ public class ConverterCommand implements Command, Constant, ReportConstant {
 					.initialize(context, preProcessingImportCommands.size() + preProcessingExportCommands.size() + 1);
 			for (Command command : preProcessingImportCommands) {
 				result = command.execute(importContext);
-				mergeReports(context, importContext, IO_TYPE.INPUT);
 				if (!result) {
 					reporter.setActionError(context, ERROR_CODE.NO_DATA_FOUND, "no data to import");
 					progression.execute(context);
@@ -132,7 +128,6 @@ public class ConverterCommand implements Command, Constant, ReportConstant {
 			}
 			for (Command command : preProcessingExportCommands) {
 				result = command.execute(exportContext);
-				mergeReports(context, exportContext, IO_TYPE.OUTPUT);
 				if (!result) {
 					reporter.setActionError(context, ERROR_CODE.NO_DATA_FOUND, "no data selected");
 					progression.execute(context);
@@ -152,7 +147,6 @@ public class ConverterCommand implements Command, Constant, ReportConstant {
 			for (Command importCommand : lineImportProcessingCommands) {
 				boolean exportFailed = false;
 				result = importCommand.execute(importContext);
-				mergeReports(context, importContext, IO_TYPE.INPUT);
 				if (!result) {
 					log.error("fail to execute " + importCommand.getClass().getName());
 					progression.execute(context);
@@ -177,7 +171,6 @@ public class ConverterCommand implements Command, Constant, ReportConstant {
 				// execute commands
 				for (Command exportCommand : lineExportProcessingCommands) {
 					result = exportCommand.execute(exportContext);
-					mergeReports(context, exportContext, IO_TYPE.OUTPUT);
 					if (!result) {
 						exportFailed = true;
 						log.error("fail to execute " + exportCommand.getClass().getName());
@@ -210,7 +203,6 @@ public class ConverterCommand implements Command, Constant, ReportConstant {
 			// input post processing
 			for (Command importCommand : postImportProcessingCommands) {
 				result = importCommand.execute(importContext);
-				mergeReports(context, importContext, IO_TYPE.INPUT);
 				if (!result) {
 					log.error("fail to execute " + importCommand.getClass().getName());
 				}
@@ -224,7 +216,6 @@ public class ConverterCommand implements Command, Constant, ReportConstant {
 			} else {
 				for (Command exportCommand : postExportProcessingCommands) {
 					result = exportCommand.execute(exportContext);
-					mergeReports(context, exportContext, IO_TYPE.OUTPUT);
 					if (!result) {
 						log.error("fail to execute " + exportCommand.getClass().getName());
 						break;
@@ -257,45 +248,23 @@ public class ConverterCommand implements Command, Constant, ReportConstant {
 		return result;
 	}
 
-	private void mergeReports(Context context, Context localContext, IO_TYPE ioType) {
-		// TODO to Be refactored
-//		ActionReport localReport = (ActionReport) localContext.get(REPORT);
-//		
-//		for (FileInfo fileInfo : localReport.getFiles())
-//		{
-//			fileInfo.setIoType(ioType);
-//			if (!report.getFiles().contains(fileInfo)) report.getFiles().add(fileInfo);
-//		}
-//		for (LineInfo lineInfo : localReport.getLines())
-//		{
-//			lineInfo.setIoType(ioType);
-//			if (!report.getLines().contains(lineInfo)) report.getLines().add(lineInfo);
-//		}
-//        if (localReport.getZip() != null)
-//        {
-//        	localReport.getZip().setIoType(ioType);
-//        	if (!localReport.getZip().equals(report.getZip())) report.setZip(localReport.getZip());
-//        }
-//        if (ioType.equals(IO_TYPE.OUTPUT) && report.getStats().getLineCount() == 0)
-//           report.setStats(localReport.getStats()); 
-	}
-
-	private Context prepareImportContext(ConverterJobData importJobData, ValidationParameters validationParameters) {
+	private Context prepareImportContext(Context convertContext, ConverterJobData importJobData, ValidationParameters validationParameters) {
 		Context context = new Context();
-		context.put(REPORT, new ActionReport2());
+		context.put(REPORT, convertContext.get(REPORT));
 		context.put(JOB_DATA, importJobData);
 		context.put(CONFIGURATION, importJobData.getConfiguration());
 		if (validationParameters != null)
 			context.put(VALIDATION, validationParameters);
-		context.put(VALIDATION_REPORT, new ValidationReport2());
+		context.put(VALIDATION_REPORT, convertContext.get(VALIDATION_REPORT));
 		return context;
 	}
 
-	private Context prepareExportContext(ConverterJobData exportJobData) {
+	private Context prepareExportContext(Context convertContext, ConverterJobData exportJobData) {
 		Context context = new Context();
-		context.put(REPORT, new ActionReport2());
+		context.put(REPORT, convertContext.get(REPORT));
 		context.put(JOB_DATA, exportJobData);
 		context.put(CONFIGURATION, exportJobData.getConfiguration());
+		// context.put(VALIDATION_REPORT, new ValidationReport2());
 		return context;
 	}
 
@@ -347,6 +316,7 @@ public class ConverterCommand implements Command, Constant, ReportConstant {
 		// force export mode to lines
 		AbstractExportParameter exportConfiguration = (AbstractExportParameter) configuration;
 		exportConfiguration.setReferencesType("line");
+		exportConfiguration.setValidateAfterExport(false);
 
 		data.setConfiguration(configuration);
 		return data;
