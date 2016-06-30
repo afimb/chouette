@@ -37,8 +37,6 @@ public class RegtoppImporterCommand extends AbstractImporterCommand implements C
 			// check params
 			Object configuration = context.get(CONFIGURATION);
 			if (!(configuration instanceof RegtoppImportParameters)) {
-				// fatal wrong parameters
-				// log.error("invalid parameters for gtfs import " + configuration.getClass().getName());
 				report.setFailure(
 						new ActionError(ActionError.CODE.INVALID_PARAMETERS, "invalid parameters for regtopp import " + configuration.getClass().getName()));
 				return ERROR;
